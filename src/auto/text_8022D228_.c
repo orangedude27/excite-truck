@@ -433,21 +433,24 @@ void fn_8022DF14(void *arg0) {
 }
 
 void fn_8022DF48(void *arg0) {
-    int *temp_r6;
-    int temp_r5;
-    int var_r0;
-    int var_r3;
-    temp_r6 = *(int **)((char *)arg0 + 4);
-    temp_r5 = *(int *)((char *)arg0 + 0xC);
-    var_r0 = *temp_r6 - 1;
-    if (temp_r5 < var_r0) {
-        var_r0 = temp_r5;
+    int cur;
+    int hi;
+    int *p;
+    int v;
+    int lo;
+    p = *(int **)((char *)arg0 + 4);
+    hi = *(int *)((char *)arg0 + 0xC);
+    cur = *p;
+    if (hi < cur - 1) {
+        v = hi;
+    } else {
+        v = cur - 1;
     }
-    var_r3 = *(int *)((char *)arg0 + 8);
-    if (var_r0 > var_r3) {
-        var_r3 = var_r0;
+    lo = *(int *)((char *)arg0 + 8);
+    if (v > lo) {
+        lo = v;
     }
-    *temp_r6 = var_r3;
+    *p = lo;
 }
 
 extern char *fn_8022D82C(void *, int, int);
