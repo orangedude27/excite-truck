@@ -1221,10 +1221,15 @@ void GXSetVtxAttrFmtv(s16 fmt, const GXVtxAttrFmtList *list) {
 }
 #pragma pop
 void __GXSetVAT(void) {
-    unsigned int *data = __GXData;
-    unsigned int *ptr = data;
-    unsigned int i = 0;
-    unsigned int mask = *(unsigned char *)((char *)data + 0x5FB);
+    unsigned int *ptr;
+    unsigned int *data;
+    unsigned int i;
+    unsigned int mask;
+
+    data = __GXData;
+    ptr = data;
+    i = 0;
+    mask = *(unsigned char *)((char *)data + 0x5FB);
     do {
         if (mask & 1) {
             *(volatile unsigned char *)0xCC008000 = 8;
@@ -1484,31 +1489,39 @@ void GXGetVtxAttrFmt(void) {
 #pragma use_lmw_stmw off
 extern char __GXIsGPFifoReady(void) __attribute__((noinline));
 void GXGetVtxAttrFmtv(void) {
-    unsigned int old, value, high, firstHigh, low, shiftedHigh;
-    unsigned long long start, now;
+    unsigned int old, value;
+    signed long long start, now;
     unsigned int *data = __GXData;
     if (*(unsigned char *)((char *)data + 0x5FA) &&
         (((unsigned int)__GXIsGPFifoReady() & 0xFF) != 0)) {
-        do {
-            high = *(volatile unsigned short *)((char *)__memReg + 0x4E);
+        unsigned int high, firstHigh, low;
+        volatile unsigned short *reg;
+        for (;;) {
+            reg = (volatile unsigned short *)__memReg;
+            high = reg[0x4E / 2];
             firstHigh = high;
-            low = *(volatile unsigned short *)((char *)__memReg + 0x50);
-            high = *(volatile unsigned short *)((char *)__memReg + 0x4E);
-        } while (high != firstHigh);
-        old = (high << 16) | low;
+            low = reg[0x50 / 2];
+            high = reg[0x4E / 2];
+            if (firstHigh == high)
+                break;
+        }
+        old = (firstHigh << 16) | low;
         for (;;) {
             start = OSGetTime();
             do {
                 now = OSGetTime();
-                if ((signed long long)(now - start) >= 8)
-                    break;
-            } while (1);
-            do {
-                high = *(volatile unsigned short *)((char *)__memReg + 0x4E);
-                firstHigh = high;
-                low = *(volatile unsigned short *)((char *)__memReg + 0x50);
-                high = *(volatile unsigned short *)((char *)__memReg + 0x4E);
-            } while (high != firstHigh);
+            } while (now - start <= 8);
+            {
+                volatile unsigned short *reg2 = (volatile unsigned short *)__memReg;
+                for (;;) {
+                    high = reg2[0x4E / 2];
+                    firstHigh = high;
+                    low = reg2[0x50 / 2];
+                    high = reg2[0x4E / 2];
+                    if (firstHigh == high)
+                        break;
+                }
+            }
             value = (high << 16) | low;
             {
                 unsigned int previous = old;
@@ -1523,16 +1536,12 @@ void GXGetVtxAttrFmtv(void) {
     start = OSGetTime();
     do {
         now = OSGetTime();
-        if ((signed long long)(now - start) >= 50)
-            break;
-    } while (1);
+    } while (now - start <= 50);
     *(volatile unsigned int *)0xCC003018 = 0;
     start = OSGetTime();
     do {
         now = OSGetTime();
-        if ((signed long long)(now - start) >= 5)
-            break;
-    } while (1);
+    } while (now - start <= 5);
     if (((unsigned int)__GXIsGPFifoReady() & 0xFF) != 0) {
         __GXCleanGPFifo();
         __GXInitRevisionBits();
@@ -2321,92 +2330,110 @@ void GXSetCopyClear(unsigned char *color, s32 depth) {
     *(volatile unsigned short *)((char *)data + 2) = 0;
 }
 
+#pragma use_lmw_stmw off
 void GXSetCopyFilter(s32 arg0, u8 *arg1, s32 arg2, u8 *arg3) {
-    u32 msLoc[4];
-    u32 coeff0;
-    u32 coeff1;
+    union MSLoc {
+        u32 word;
+        struct {
+            u32 tag : 8;
+            u32 n5 : 4;
+            u32 n4 : 4;
+            u32 n3 : 4;
+            u32 n2 : 4;
+            u32 n1 : 4;
+            u32 n0 : 4;
+        } bits;
+    };
+    union Coeff {
+        u32 word;
+        struct {
+            u32 tag : 8;
+            u32 f3 : 6;
+            u32 f2 : 6;
+            u32 f1 : 6;
+            u32 f0 : 6;
+        } bits;
+    };
+    union MSLoc a,b,c,d;
+    union Coeff coeff0,coeff1;
 
     if (arg0 != 0) {
-        msLoc[0] = 0;
-        msLoc[0] = (msLoc[0] & 0xFFFFFFF0u) | ((u32)arg1[0] & 0xFu);
-        msLoc[0] = (msLoc[0] & 0xFFFFFF0Fu) | (((u32)arg1[1] & 0xFu) << 4);
-        msLoc[0] = (msLoc[0] & 0xFFFFF0FFu) | (((u32)arg1[2] & 0xFu) << 8);
-        msLoc[0] = (msLoc[0] & 0xFFFF0FFFu) | (((u32)arg1[3] & 0xFu) << 12);
-        msLoc[0] = (msLoc[0] & 0xFFF0FFFFu) | (((u32)arg1[4] & 0xFu) << 16);
-        msLoc[0] = (msLoc[0] & 0xFF0FFFFFu) | (((u32)arg1[5] & 0xFu) << 20);
-        msLoc[0] = (msLoc[0] & 0x00FFFFFFu) | 0x01000000u;
-
-        msLoc[1] = 0;
-        msLoc[1] = (msLoc[1] & 0xFFFFFFF0u) | ((u32)arg1[6] & 0xFu);
-        msLoc[1] = (msLoc[1] & 0xFFFFFF0Fu) | (((u32)arg1[7] & 0xFu) << 4);
-        msLoc[1] = (msLoc[1] & 0xFFFFF0FFu) | (((u32)arg1[8] & 0xFu) << 8);
-        msLoc[1] = (msLoc[1] & 0xFFFF0FFFu) | (((u32)arg1[9] & 0xFu) << 12);
-        msLoc[1] = (msLoc[1] & 0xFFF0FFFFu) | (((u32)arg1[10] & 0xFu) << 16);
-        msLoc[1] = (msLoc[1] & 0xFF0FFFFFu) | (((u32)arg1[11] & 0xFu) << 20);
-        msLoc[1] = (msLoc[1] & 0x00FFFFFFu) | 0x02000000u;
-
-        msLoc[2] = 0;
-        msLoc[2] = (msLoc[2] & 0xFFFFFFF0u) | ((u32)arg1[12] & 0xFu);
-        msLoc[2] = (msLoc[2] & 0xFFFFFF0Fu) | (((u32)arg1[13] & 0xFu) << 4);
-        msLoc[2] = (msLoc[2] & 0xFFFFF0FFu) | (((u32)arg1[14] & 0xFu) << 8);
-        msLoc[2] = (msLoc[2] & 0xFFFF0FFFu) | (((u32)arg1[15] & 0xFu) << 12);
-        msLoc[2] = (msLoc[2] & 0xFFF0FFFFu) | (((u32)arg1[16] & 0xFu) << 16);
-        msLoc[2] = (msLoc[2] & 0xFF0FFFFFu) | (((u32)arg1[17] & 0xFu) << 20);
-        msLoc[2] = (msLoc[2] & 0x00FFFFFFu) | 0x03000000u;
-
-        msLoc[3] = 0;
-        msLoc[3] = (msLoc[3] & 0xFFFFFFF0u) | ((u32)arg1[18] & 0xFu);
-        msLoc[3] = (msLoc[3] & 0xFFFFFF0Fu) | (((u32)arg1[19] & 0xFu) << 4);
-        msLoc[3] = (msLoc[3] & 0xFFFFF0FFu) | (((u32)arg1[20] & 0xFu) << 8);
-        msLoc[3] = (msLoc[3] & 0xFFFF0FFFu) | (((u32)arg1[21] & 0xFu) << 12);
-        msLoc[3] = (msLoc[3] & 0xFFF0FFFFu) | (((u32)arg1[22] & 0xFu) << 16);
-        msLoc[3] = (msLoc[3] & 0xFF0FFFFFu) | (((u32)arg1[23] & 0xFu) << 20);
-        msLoc[3] = (msLoc[3] & 0x00FFFFFFu) | 0x04000000u;
+        a.word = 0;
+        a.bits.n0 = arg1[0];
+        a.bits.n1 = arg1[1];
+        a.bits.n2 = arg1[2];
+        a.bits.n3 = arg1[3];
+        a.bits.n4 = arg1[4];
+        a.bits.n5 = arg1[5];
+        a.bits.tag = 1;
+        b.word = 0;
+        b.bits.n0 = arg1[6];
+        b.bits.n1 = arg1[7];
+        b.bits.n2 = arg1[8];
+        b.bits.n3 = arg1[9];
+        b.bits.n4 = arg1[10];
+        b.bits.n5 = arg1[11];
+        b.bits.tag = 2;
+        c.word = 0;
+        c.bits.n0 = arg1[12];
+        c.bits.n1 = arg1[13];
+        c.bits.n2 = arg1[14];
+        c.bits.n3 = arg1[15];
+        c.bits.n4 = arg1[16];
+        c.bits.n5 = arg1[17];
+        c.bits.tag = 3;
+        d.word = 0;
+        d.bits.n0 = arg1[18];
+        d.bits.n1 = arg1[19];
+        d.bits.n2 = arg1[20];
+        d.bits.n3 = arg1[21];
+        d.bits.n4 = arg1[22];
+        d.bits.n5 = arg1[23];
+        d.bits.tag = 4;
     } else {
-        msLoc[0] = 0x01666666u;
-        msLoc[1] = 0x02666666u;
-        msLoc[2] = 0x03666666u;
-        msLoc[3] = 0x04666666u;
+        a.word = 0x01666666u;
+        b.word = 0x02666666u;
+        c.word = 0x03666666u;
+        d.word = 0x04666666u;
     }
 
     *(volatile u8 *)0xCC008000 = 0x61;
-    *(volatile u32 *)0xCC008000 = msLoc[0];
+    *(volatile u32 *)0xCC008000 = a.word;
     *(volatile u8 *)0xCC008000 = 0x61;
-    *(volatile u32 *)0xCC008000 = msLoc[1];
+    *(volatile u32 *)0xCC008000 = b.word;
     *(volatile u8 *)0xCC008000 = 0x61;
-    *(volatile u32 *)0xCC008000 = msLoc[2];
+    *(volatile u32 *)0xCC008000 = c.word;
     *(volatile u8 *)0xCC008000 = 0x61;
-    *(volatile u32 *)0xCC008000 = msLoc[3];
+    *(volatile u32 *)0xCC008000 = d.word;
 
-    coeff0 = 0;
-    coeff0 = (coeff0 & 0x00FFFFFFu) | 0x53000000u;
-    coeff1 = 0;
-    coeff1 = (coeff1 & 0x00FFFFFFu) | 0x54000000u;
+    coeff0.word = 0;
+    coeff0.bits.tag = 0x53;
+    coeff1.word = 0;
+    coeff1.bits.tag = 0x54;
     if (arg2 != 0) {
-        coeff0 = (coeff0 & 0xFFFFFFC0u) | ((u32)arg3[0] & 0x3Fu);
-        coeff0 = (coeff0 & 0xFFFFF03Fu) | (((u32)arg3[1] & 0x3Fu) << 6);
-        coeff0 = (coeff0 & 0xFFFC0FFFu) | (((u32)arg3[2] & 0x3Fu) << 12);
-        coeff0 = (coeff0 & 0xF03FFFFFu) | (((u32)arg3[3] & 0x3Fu) << 18);
-        coeff1 = (coeff1 & 0xFFFFFFC0u) | ((u32)arg3[4] & 0x3Fu);
-        coeff1 = (coeff1 & 0xFFFFF03Fu) | (((u32)arg3[5] & 0x3Fu) << 6);
-        coeff1 = (coeff1 & 0xFFFC0FFFu) | (((u32)arg3[6] & 0x3Fu) << 12);
+        coeff0.bits.f0 = arg3[0];
+        coeff0.bits.f1 = arg3[1];
+        coeff0.bits.f2 = arg3[2];
+        coeff0.bits.f3 = arg3[3];
+        coeff1.bits.f0 = arg3[4];
+        coeff1.bits.f1 = arg3[5];
+        coeff1.bits.f2 = arg3[6];
     } else {
-        coeff0 = (coeff0 & 0xFFFFFFC0u);
-        coeff0 = (coeff0 & 0xFFFFF03Fu);
-        coeff0 = (coeff0 & 0xFFFC0FFFu) | (21u << 12);
-        coeff0 = (coeff0 & 0xF03FFFFFu) | (22u << 18);
-        coeff1 = (coeff1 & 0xFFFFFFC0u) | 21u;
-        coeff1 = (coeff1 & 0xFFFFF03Fu);
-        coeff1 = (coeff1 & 0xFFFC0FFFu);
+        coeff0.bits.f0 = 0;
+        coeff0.bits.f1 = 0;
+        coeff0.bits.f2 = 21;
+        coeff0.bits.f3 = 22;
+        coeff1.bits.f0 = 21;
+        coeff1.bits.f1 = 0;
+        coeff1.bits.f2 = 0;
     }
 
     *(volatile u8 *)0xCC008000 = 0x61;
-    *(volatile u32 *)0xCC008000 = coeff0;
+    *(volatile u32 *)0xCC008000 = coeff0.word;
     *(volatile u8 *)0xCC008000 = 0x61;
-    *(volatile u32 *)0xCC008000 = coeff1;
+    *(volatile u32 *)0xCC008000 = coeff1.word;
     *(volatile u16 *)((u8 *)__GXData + 2) = 0;
 }
-
 void GXSetDispCopyGamma(s32 arg0) {
     ((GXDispCopyGammaReg *)&__GXData[0x23c / 4])->gamma = arg0;
 }
