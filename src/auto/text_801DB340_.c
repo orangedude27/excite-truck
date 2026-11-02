@@ -234,25 +234,24 @@ float fn_801DB398(float grid[4][4], float t, float u) {
 #pragma pop
 
 static inline float eval_spline(const float *p, int stride, float t, float *out_deriv) {
-    float p1 = p[stride];
     float p2 = p[stride * 2];
     float p0 = p[0];
-    float p3 = p[stride * 3];
+    float p1 = p[stride];
     float dp20 = p2 - p0;
+    float p3 = p[stride * 3];
     float dp21 = p2 - p1;
     float dp31 = p3 - p1;
     float half20 = lbl_80562B64 * dp20;
+    float c3_term = lbl_80562B6C * dp21;
     float half31 = lbl_80562B64 * dp31;
     float twice20 = lbl_80562B68 * half20;
-    float sum = half20 + half31;
     float twice21 = lbl_80562B68 * dp21;
-    float coeff3 = lbl_80562B6C * dp21;
-    float coeff2;
+    float sum = half20 + half31;
+    float coeff3 = c3_term - twice20;
+    float coeff2 = sum - twice21;
     float t2 = t * t;
     float t3 = t2 * t;
 
-    coeff3 = coeff3 - twice20;
-    coeff2 = sum - twice21;
     coeff3 = coeff3 - half31;
 
     if (out_deriv != 0) {
