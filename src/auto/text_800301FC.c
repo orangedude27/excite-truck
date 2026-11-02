@@ -951,7 +951,7 @@ void fn_80031C9C(unsigned short arg0) {
     lbl_8055D730 = arg0;
 }
 
-extern u8 lbl_8035EE20[];
+extern u64 lbl_8035EE20[];
 extern s32 lbl_8055D788;
 extern s32 lbl_8055D754, lbl_8055D758, lbl_8055D750;
 extern void fn_80032EAC(u32, void *);
