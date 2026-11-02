@@ -13,9 +13,9 @@ extern "C" void fn_802E30C8(const char *, ...);
 extern char lbl_8033BC50[];
 extern char lbl_8033BC68[];
 
-struct Rec80207490 { int v; int pad[2]; };
+struct Rec80207490 { void *v; int pad[2]; };
 struct Obj80207490 {
-    char pad0[0x10]; int key; char pad1[4]; bool flag18; char pad2[0x55]; bool flag6e;
+    char pad0[0x10]; void *key; char pad1[4]; bool flag18; char pad2[0x55]; bool flag6e;
 };
 
 class Obj80206518 {
