@@ -838,4 +838,3 @@ extern s32 fn_801EB000(s32 *, void *);
 extern s32 fn_801EB96C(s32 *, s32);
 extern void fn_801EB634(void *, s32);
 #pragma dont_inline on
-#pragma ppc_psq_save off
