@@ -278,12 +278,12 @@ extern "C" void fn_80145438(void *arg0, void *arg1) {
 #pragma push
 #pragma dont_inline on
 extern "C" s32 fn_801454E8(void *arg0, const char *arg1) {
-    class V { public: virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual const char *f5(); };
-    extern char lbl_80559DF8[];
+    class V { public: virtual void f0(); virtual void f1(); virtual void f2(); virtual const char *f3(const char *); };
+    extern int lbl_80559DF8;
     extern int sscanf(const char *, const char *, ...);
     s32 result;
-    const char *text = ((V *)arg0)->f5();
-    if (sscanf(text, lbl_80559DF8, &result) != 1)
+    const char *text = ((V *)arg0)->f3(arg1);
+    if (sscanf(text, (const char *)&lbl_80559DF8, &result) != 1)
         result = -1;
     return result;
 }
