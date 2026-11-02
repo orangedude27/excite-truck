@@ -9,6 +9,19 @@ extern int fn_802CAC28(const char *, int);
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void fn_80128668(void *);
+static inline void CopyStr_8023512C(char *dst, const char *src, int n) {
+    char c;
+    do {
+        c = *src++;
+        *dst++ = c;
+        if (c == 0) break;
+        if (--n <= 0) { dst[-1] = 0; break; }
+    } while (1);
+}
+static inline void CatStr_8023512C(char *dst, const char *src, int n) {
+    while (*dst != 0) { n--; dst++; }
+    if (n > 0) CopyStr_8023512C(dst, src, n);
+}
 extern void *fn_801284F8(int, const char *);
 extern void fn_802E317C(const char *, ...);
 extern unsigned char lbl_80340670[];
@@ -285,6 +298,7 @@ void fn_80235CBC(void *arg0, int arg1, int arg2, float x, float y, float z, floa
     void *node;
     int index;
     float n0, n1, n2, n3;
+    Vtx_80235CBC t0, t1, t2, t3;
     struct Frame {
         Idx_80235CBC ids;
         unsigned char pad[4];
@@ -303,10 +317,14 @@ void fn_80235CBC(void *arg0, int arg1, int arg2, float x, float y, float z, floa
     n3 = *((float *)node + 3);
     fn_802C8C04(*(int *)((char *)arg0 + 0x84));
     index = fn_80230B9C(arg2);
-    frame.v[0] = fn_80230A68(index, x, y, z, n0, n1);
-    frame.v[1] = fn_80230A68(index, x + dx, y, z, n2, n1);
-    frame.v[2] = fn_80230A68(index, x, y - dy, z, n0, n3);
-    frame.v[3] = fn_80230A68(index, x + dx, y - dy, z, n2, n3);
+    t3 = fn_80230A68(index, x, y, z, n0, n1);
+    frame.v[0].a = t3.a; frame.v[0].b = t3.b; frame.v[0].c = t3.c; frame.v[0].d = t3.d; frame.v[0].e = t3.e;
+    t2 = fn_80230A68(index, x + dx, y, z, n2, n1);
+    frame.v[1].a = t2.a; frame.v[1].b = t2.b; frame.v[1].c = t2.c; frame.v[1].d = t2.d; frame.v[1].e = t2.e;
+    t1 = fn_80230A68(index, x, y - dy, z, n0, n3);
+    frame.v[2].a = t1.a; frame.v[2].b = t1.b; frame.v[2].c = t1.c; frame.v[2].d = t1.d; frame.v[2].e = t1.e;
+    t0 = fn_80230A68(index, x + dx, y - dy, z, n2, n3);
+    frame.v[3].a = t0.a; frame.v[3].b = t0.b; frame.v[3].c = t0.c; frame.v[3].d = t0.d; frame.v[3].e = t0.e;
     frame.ids = lbl_802FA020;
     fn_802C8DB8(frame.v, 4, frame.ids.i, 6);
     fn_802C8D74();
