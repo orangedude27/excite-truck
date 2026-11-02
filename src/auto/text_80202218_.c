@@ -109,6 +109,7 @@ int fn_80202378(int arg0, int arg1, int arg2, int arg3) {
     return ((arg2 * (arg3 - arg1)) + ((lbl_8055ECC0 * 0x64) + arg0)) % lbl_8055ECC0;
 }
 
+#pragma pop
 void *fn_802023C8(void) { return lbl_80488964; }
 
 #pragma push
