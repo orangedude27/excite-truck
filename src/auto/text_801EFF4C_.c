@@ -146,7 +146,7 @@ extern int lbl_8055B0E0;
 extern int lbl_8055B0E8;
 extern int lbl_80562F20;
 extern int lbl_80562F24;
-extern float lbl_80558DC4;
+__declspec(section ".data") extern float lbl_80558DC4;
 extern char lbl_8033A3F0[];
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" int fn_8012C33C(char *);
@@ -181,25 +181,23 @@ extern "C" void fn_801F0488(void *arg0, void *arg1) {
         virtual void *v21(const char *);
     };
 
-    Fn801F0488Resource *res = (Fn801F0488Resource *)arg1;
     const char *strings = lbl_8033A3F0;
     int id;
-    int count;
-    int found;
     char *entry;
+    int found;
+    int count;
     char name[0x40];
-    char pad[16];
-    float bounds[2];
+    float bounds[6];
     int labels[2];
 
-    id = res->v3((const char *)&lbl_8055B0E0);
-    found = 0;
+    id = ((Fn801F0488Resource *)arg1)->v3((const char *)&lbl_8055B0E0);
     entry = (char *)arg0;
+    found = 0;
 
     for (count = 0; count < *(int *)((char *)arg0 + 0xE8); count++, entry += 0x18) {
-        int i;
         char *curr = entry;
         int *pLabel = labels;
+        int i;
 
         for (i = 0; i < 2; i++, curr += 4, pLabel++) {
             labels[0] = lbl_80562F20;
@@ -219,11 +217,11 @@ extern "C" void fn_801F0488(void *arg0, void *arg1) {
             }
 
             if (count != 1 || !found) {
-                if (res->v21(strings + 0x78)) {
-                    fn_801F004C((int)name, *(int *)((char *)arg0 + 0x10), res->v21(strings + 0x78));
+                if (((Fn801F0488Resource *)arg1)->v21(strings + 0x78)) {
+                    fn_801F004C((int)name, *(int *)((char *)arg0 + 0x10), ((Fn801F0488Resource *)arg1)->v21(strings + 0x78));
                 }
-                if (res->v21(strings + 0x84)) {
-                    fn_801F004C((int)name, *(int *)((char *)arg0 + 0x14), res->v21(strings + 0x84));
+                if (((Fn801F0488Resource *)arg1)->v21(strings + 0x84)) {
+                    fn_801F004C((int)name, *(int *)((char *)arg0 + 0x14), ((Fn801F0488Resource *)arg1)->v21(strings + 0x84));
                 }
             }
 
@@ -232,7 +230,7 @@ extern "C" void fn_801F0488(void *arg0, void *arg1) {
         }
     }
 
-    if (fabs(*(float *)((char *)arg0 + 0x20)) > lbl_80558DC4) {
+    if (!((float)__fabs(*(float *)((char *)arg0 + 0x20)) <= *(float *)&lbl_80558DC4)) {
         fn_802C77F0(*(int *)((char *)arg0 + 0x28), bounds);
         *(float *)((char *)arg0 + 0x24) = *(float *)((char *)arg0 + 0x20) / (bounds[1] - bounds[0]);
     }
