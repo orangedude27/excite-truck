@@ -369,7 +369,6 @@ extern unsigned char lbl_804FC558[];
 extern int lbl_8055FF78;
 extern int lbl_8055FFA0;
 extern int *lbl_8055FF9C;
-extern int fn_802E5AE8(void);
 extern void fn_8012BEF0(unsigned char *);
 extern void fn_8012C41C(void (*)(void), int, unsigned char *);
 extern int fn_802E582C(void);
@@ -452,11 +451,13 @@ extern void *fn_8012850C(void *, char *);
 
 void *fn_802E5DD8(const char *arg0, unsigned int arg1, int arg2, int arg3, int arg4) {
     int i, index = -1;
-    unsigned char *base = (unsigned char *)lbl_8055FF90, *slot, *dst;
+    unsigned char *p = (unsigned char *)lbl_8055FF90;
+    char *slot, *dst;
     const char *src = arg0;
-    for (i = 0; i < 0x20; i++) if (*(int *)(base + i * 0x50 + 0x94) == 0) { index = i; break; }
-    if (index < 0) fn_802E317C(lbl_8034D554, (int)arg0, (void *)0);
-    slot = base + index * 0xB0;
+    unsigned char c;
+    for (i = 0; i < 0x100; p += 0xB0, i++) if (*(int *)(p + 0x94) == 0) { index = i; break; }
+    if (index < 0) fn_802E317C(lbl_8034D554, (int)arg0);
+    slot = (char *)lbl_8055FF90 + index * 0xB0;
     memset(slot, 0, 0xB0);
     fn_801282EC(0x80); fn_801282F4();
     *(void **)(slot + 0x90) = fn_8012850C((void *)arg1, lbl_8034D578);
@@ -469,7 +470,16 @@ void *fn_802E5DD8(const char *arg0, unsigned int arg1, int arg2, int arg3, int a
     *(int *)(slot + 0x88) = arg3; *(int *)(slot + 0x8C) = arg4; *(int *)(slot + 0x98) = 0;
     *(float *)(slot + 0xA8) = lbl_80565128; *(float *)(slot + 0xA4) = lbl_80565148;
     dst = slot; i = 0x20;
-    do { unsigned char c = *src++; *dst++ = c; if ((signed char)c == 0) break; if (--i <= 0) { dst[-1] = 0; break; } } while (1);
+    goto copy;
+chk:
+    if (--i > 0) goto copy;
+    dst[-1] = 0;
+    goto end;
+copy:
+    c = *src++;
+    *dst++ = c;
+    if ((signed char)c != 0) goto chk;
+end:
     return slot;
 }
 
