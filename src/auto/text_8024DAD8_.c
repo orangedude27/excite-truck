@@ -1860,7 +1860,7 @@ copy_c128_continue: ;
 extern f32 lbl_80563960;
 extern void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
 extern f32 fn_80216CB4(void);
-extern void fn_80231220(s32, s32, u32, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32);
+extern void fn_80231220(s32, s32, u32, f32, f32, f32, f32, f32, f32, f32, f32);
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
@@ -2122,7 +2122,6 @@ extern "C" const f32 lbl_80563964, lbl_80563980, lbl_8056398C, lbl_80563990, lbl
 extern "C" void fn_80231220(s32, s32, u32, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32);
 extern "C" double __fabs(double);
 extern "C" void fn_80251B04(void *arg0) {
-    extern void fn_80231220(s32, s32, u32, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32);
     extern s32 lbl_8055CFF0;
     extern u32 lbl_8055CFF4;
     extern const f32 lbl_80563964, lbl_80563980, lbl_8056398C, lbl_80563990, lbl_80563994, lbl_80563998, lbl_8056399C, lbl_805639A0, lbl_805639A4, lbl_805639A8, lbl_805639AC, lbl_805639B0, lbl_805639B4, lbl_805639B8, lbl_805639BC;
@@ -2130,8 +2129,9 @@ extern "C" void fn_80251B04(void *arg0) {
     f32 temp_f3, temp_f10, f27, f26, f28, f29, f31, f21, f22, f23, f24, f25;
     s32 i;
     s32 off;
-    temp_f3 = (lbl_80563990 * (f32)lbl_8055CFF0) / lbl_80563994;
+    temp_f3 = lbl_80563990 * (f32)lbl_8055CFF0;
     temp_f10 = (f32)((s32)(((u32)lbl_8055CFF4 >> 31) + lbl_8055CFF4) >> 1);
+    temp_f3 = temp_f3 / lbl_80563994;
     f27 = temp_f10 - lbl_8056398C;
     fn_80231220(*(s32 *)((char *)arg0 + 0x20), -1, lbl_8055CFF4, lbl_80563998 * temp_f3, lbl_8056399C, temp_f3, lbl_805639A0, lbl_80563960, lbl_80563960, lbl_805639A4, lbl_80563964, lbl_8056398C, temp_f10);
     f26 = fn_80216CB4();
@@ -2147,13 +2147,14 @@ extern "C" void fn_80251B04(void *arg0) {
     f25 = lbl_805639A4;
     for (; i < *(s32 *)((char *)arg0 + 0x1C); i++, off += 0xC) {
         char *p = *(char **)((char *)arg0 + 0x18) + off;
-        f32 a, b;
+        f32 a, b, c;
         a = f28 - (f32)__fabs(*(f32 *)(p + 8));
         if (!(a < f26)) a = f26;
-        b = (f32)__fabs(*(f32 *)((char *)arg0 + 0x28) - (f32)i);
+        c = *(f32 *)((char *)arg0 + 0x28);
+        b = (f32)__fabs(c - (f32)i);
         if (f28 < b) b = f28;
         if (!(b > f23)) b = f23;
-        (*(void (**)(void *, s32, s32, f32, f32, f32, f32, f32))(*(char **)arg0 + 0x60))(arg0, i, *(s32 *)p, f31 * ((f32)i - b) - f21, (f27 - f22 * (f29 * (f28 - a))) + f24 * a, lbl_805639AC, f29 * a + f25 * a, f28 - b);
+        (*(void (**)(void *, s32, s32, f32, f32, f32, f32, f32))(*(char **)arg0 + 0x60))(arg0, i, *(s32 *)p, f31 * ((f32)i - c) - f21, (f27 - f22 * (f29 * (f28 - a))) + f24 * a, lbl_805639AC, f29 * a + f25 * a, f28 - b);
     }
     fn_802354A0(*(s32 *)((char *)arg0 + 0x24), 2, -1, lbl_805639B8, lbl_805639B4 + f27, lbl_80563960, lbl_805639AC, lbl_805639BC);
 }
