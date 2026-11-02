@@ -10,6 +10,7 @@ extern const char lbl_8034B314[];
 #pragma small_data off
 extern void fn_802D6C48(void);
 extern void fn_802D6C44(void);
+extern void fn_802D6C4C(float);
 #pragma pop
 void fn_802C5DF0(void *, void *);
 extern int lbl_8055D008;
