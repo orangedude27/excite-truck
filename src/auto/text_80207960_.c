@@ -266,6 +266,7 @@ void fn_80207C7C(void) {
 
 void fn_80207E70(void* arg0);
 void fn_80207F34(void *arg0);
+typedef struct SlotLimits { signed long total; signed long lim[9]; signed long pad; } SlotLimits;
 
 void fn_80207C80(void *arg0) {
     /* Fix note: iterate the item list twice, then run the matching completion callbacks. */
@@ -387,6 +388,76 @@ extern "C" void fn_80207E70(void *arg0) {
             src = (char *)src + 4;
             dst = (char *)dst + 4;
             i++;
+        }
+    }
+}
+
+void fn_80207F34(void *arg0) {
+    char *obj = (char *)arg0;
+    signed long idx = (signed long)fn_802090B4() * 0x2C;
+    signed long rem = *(signed long *)((char *)lbl_802F9DC8 + idx);
+    signed long counts[9];
+    signed long sel[9];
+    signed long row, j, take, done;
+    memset(counts, 0, 0x24);
+    if (rem > 0) {
+        char *rp = obj;
+        for (row = 0; row < 9; row++) {
+            counts[row] = 0;
+            if (*(unsigned char *)(obj + 5) == 0 || row == 0) {
+                signed long n = *(signed long *)(rp + 0x18);
+                for (j = 0; j < n; j++) {
+                    if (*(unsigned char *)(*(char **)(*(char **)(rp + 0x14) + j * 4) + 0x18) != 0) {
+                        counts[row]++;
+                    }
+                }
+            }
+            rp += 8;
+        }
+    }
+    memset(sel, 0, 0x24);
+    do {
+        signed long *lim = (signed long *)((char *)lbl_802F9DC8 + idx);
+        done = 1;
+        row = 0;
+        while (rem > 0 && row < 9) {
+            signed long c = counts[row];
+            if (c != 0) {
+                take = rem;
+                if (lim[1] < rem) take = lim[1];
+                if (c > take) {
+                    rem -= take;
+                    done = 0;
+                    sel[row] = sel[row] + take;
+                    counts[row] = counts[row] - sel[row];
+                } else {
+                    sel[row] += c;
+                    rem -= counts[row];
+                    counts[row] = 0;
+                }
+            }
+            row++;
+            lim++;
+        }
+    } while (done == 0 && rem > 0);
+    {
+        char *rp = obj + 0x14;
+        for (row = 0; row < 9; row++) {
+            signed long n = *(signed long *)(rp + 4);
+            for (j = 0; j < n; j++) {
+                char *item = *(char **)(*(char **)rp + j * 4);
+                if (*(unsigned char *)(item + 0x18) != 0) {
+                    if (sel[row] == 0) {
+                        item[0x48] = 1;
+                    } else {
+                        sel[row]--;
+                        item[0x48] = 0;
+                    }
+                } else {
+                    item[0x48] = 1;
+                }
+            }
+            rp += 8;
         }
     }
 }
