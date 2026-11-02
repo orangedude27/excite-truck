@@ -122,6 +122,17 @@ void fn_80176734(void);
 int fn_801312EC(void*, void*);
 void fn_80131318();
 int fn_80232BA4(int, int, int, int, float, float, float, float, float);
+extern void *fn_80131810(void *);
+extern void fn_80131818(void *);
+extern int fn_80277960(void *, void *, void *);
+extern void fn_802E30C8(const char *, ...);
+extern void fn_802E317C(const char *, ...);
+extern int fn_80019B84(void);
+extern int fn_80019B90(void);
+extern int fn_80019B3C(void);
+extern int strcmp(const char *, const char *);
+extern char lbl_80558D90[];
+extern char lbl_80558D98[];
 
 #pragma scheduling invalid_target
 void fn_8001FD7C(void) {
@@ -538,32 +549,33 @@ int fn_800213DC(int arg0) {
     return r;
 }
 
-void fn_80021464(void *arg0, int arg1) {
-    char *a = (char *)arg0;
-    char *p;
-    char *obj;
+void fn_80021464(KArg *a, int arg1) {
+    KArg *p;
+    KObj *o;
     int sp[6];
-    int c, n, r, k, v, h;
+    int c, n, r, k, v, h, id;
+    char *base = lbl_802FE138;
     lbl_8055D62C = 1;
     fn_8001FEE8();
-    fn_800081BC(fn_80012820(*(int *)(a + 4)) + 8);
+    fn_800081BC(fn_80012820(a->f4) + 8);
     lbl_8055D660 = fn_80008188();
-    obj = *(char **)(a + 0x20);
-    lbl_8055D664 = (*(int (**)(void *, void *, int))(*(char **)obj + 0x18))(obj, lbl_802FE138 + 0x284, fn_80012910(*(int *)a));
-    obj = *(char **)(a + 0x20);
-    lbl_8055D646 = (*(unsigned char (**)(void *, void *))(*(char **)obj + 0xC))(obj, lbl_802FE138 + 0x294);
+    id = fn_80012910(a->f0);
+    o = a->obj;
+    lbl_8055D664 = o->vt->f18(o, base + 0x284, id);
+    o = a->obj;
+    lbl_8055D646 = o->vt->f0C(o, base + 0x294);
     if (lbl_8055D646 != 0) {
-        lbl_8055D660 = fn_80131234(lbl_802FE138 + 0x2A0);
+        lbl_8055D660 = fn_80131234(base + 0x2A0);
     }
-    c = *(int *)(a + 8);
+    c = a->f8;
     lbl_8055D66C = arg1;
-    lbl_8055D668 = *(int *)a;
+    lbl_8055D668 = a->f0;
     lbl_8055D647 = (c != 0x180302);
-    p = (char *)fn_8001285C(*(int *)a);
-    fn_80012820(*(int *)(p + 4));
-    lbl_8035BAD8.f8 = *(int *)(p + 0xC);
-    obj = *(char **)(p + 0x20);
-    v = (*(int (**)(void *, int))(*(char **)obj + 0x5C))(obj, fn_80205268(lbl_802FE138 + 0x2B4, lbl_8055D66C, lbl_8055D668));
+    p = fn_8001285C(a->f0);
+    fn_80012820(p->f4);
+    lbl_8035BAD8.f8 = p->fC;
+    o = p->obj;
+    v = o->vt->f5C(o, fn_80205268(base + 0x2B4, lbl_8055D66C, lbl_8055D668));
     if (v != 0) {
         fn_8001D884(sp, v);
         r = fn_8027DED0();
