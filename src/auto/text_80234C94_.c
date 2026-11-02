@@ -28,6 +28,7 @@ static inline void CatStr_8023512C(char *dst, const char *src, int n) {
 }
 static inline void CopyStrB_8023512C(const char *src, int n, char *dst) {
     unsigned char c;
+    (void)*src;
     goto body;
 dec:
     if (--n > 0) goto body;
@@ -216,10 +217,12 @@ void *fn_8023512C(const char *arg0) {
     char name[0x80];
     int *obj;
     char *dot;
+    char *d;
     CopyStrB_8023512C(arg0, 0x80, full);
     if (fn_8012C33C(arg0) == 0) {
         fn_802E30C8(tbl + 0x120, arg0);
-        CopyStrB_8023512C(tbl + 0x140, 0x80, full);
+        d = full;
+        CopyStrB_8023512C(tbl + 0x140, 0x80, d);
     }
     obj = ((void *(*)(char *))fn_80234E88)(full);
     if (obj != 0) {
@@ -233,13 +236,14 @@ void *fn_8023512C(const char *arg0) {
     obj[0x80 / 4] = 1;
     obj[0x88 / 4] = 0;
     CopyStrB_8023512C(full, 0x80, (char *)obj);
-    CopyStrB_8023512C(full, 0x80, name);
+    d = name;
+    CopyStrB_8023512C(full, 0x80, d);
     dot = fn_80029004(name, 0x2E);
     if (dot != 0)
         *dot = 0;
     else
         fn_802E317C(tbl + 0x168, name);
-    CatStrB_8023512C(lbl_8055B9F0, 0x80, name);
+    CatStrC_8023512C(lbl_8055B9F0, 0x80, name);
     fn_80234EF4(obj, name);
     fn_80234D44((int)obj);
     return obj;
