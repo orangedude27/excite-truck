@@ -574,32 +574,24 @@ void OSGetFontTexel(char *arg0, unsigned char *arg1, int arg2, int arg3, int *ar
 
 extern void DCStoreRange(void *, unsigned int);
 int ExpandFontSheet(void *arg0, void *src0, void *dst0) {
-    unsigned char *src = src0, *dst = dst0;
-    unsigned char *table = (unsigned char *)arg0 + 0x2C;
-    int format = *(unsigned short *)((char *)arg0 + 0x18);
-    int size = *(int *)((char *)arg0 + 0x28);
-    if (format == 0) {
-        int count = (size + (size >> 31)) >> 1;
-        int i;
-        for (i = 0; i < count; i++) {
-            unsigned char x = src[count - i - 1];
-            dst[(count - i - 1) * 2] = table[(x >> 6) & 3];
-            dst[(count - i - 1) * 2 + 1] = table[(x >> 4) & 3];
-            dst[(count - i - 1) * 2 - 2] = table[(x >> 2) & 3];
-            dst[(count - i - 1) * 2 - 1] = table[x & 3];
+    int i;
+    unsigned char *src = (unsigned char *)src0;
+    unsigned char *dst = (unsigned char *)dst0;
+    const unsigned char *tmp = (unsigned char *)arg0 + 0x2C;
+    if (*(unsigned short *)((char *)arg0 + 0x18) == 0) {
+        for (i = *(int *)((char *)arg0 + 0x28) / 2 - 1; i >= 0; i--) {
+            dst[i * 2 + 0] = tmp[src[i] >> 6 & 3] & 0xF0 | tmp[src[i] >> 4 & 3] & 0x0F;
+            dst[i * 2 + 1] = tmp[src[i] >> 2 & 3] & 0xF0 | tmp[src[i] >> 0 & 3] & 0x0F;
         }
-    } else if (format == 2) {
-        int count = size / 4;
-        int i;
-        for (i = 0; i < count; i++) {
-            unsigned char x = src[count - i - 1];
-            int j;
-            for (j = 0; j < 4; j++)
-                dst[(count - i - 1) * 4 + j] = table[(x >> (6 - 2 * j)) & 3];
+    } else if (*(unsigned short *)((char *)arg0 + 0x18) == 2) {
+        for (i = *(int *)((char *)arg0 + 0x28) / 4 - 1; i >= 0; i--) {
+            dst[i * 4 + 0] = tmp[src[i] >> 6 & 3];
+            dst[i * 4 + 1] = tmp[src[i] >> 4 & 3];
+            dst[i * 4 + 2] = tmp[src[i] >> 2 & 3];
+            dst[i * 4 + 3] = tmp[src[i] >> 0 & 3];
         }
     }
-    DCStoreRange(dst, size);
-    return size;
+    DCStoreRange(dst, *(int *)((char *)arg0 + 0x28));
 }
 
 extern int ExpandFontSheet(void *, void *, void *);
