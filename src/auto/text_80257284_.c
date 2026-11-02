@@ -35,44 +35,58 @@ class MatchDispatch {
 public:
     virtual void unused();
     virtual int matches(const char *);
+    virtual void unused2();
+    virtual void unused3();
+    virtual void *fetch(const char *, void *);
 };
 #pragma cplusplus reset
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_80257284(void) {
-    // Fix note: use the project's MenuEntry field order and the full object workspace in the stack frame.
+    // Fix note: keep the record label live while loading the two menu tables, matching target register pressure.
     typedef struct { int v[5]; } Header;
     typedef struct { int label; int type; int value; int flags; int id; } Entry;
     typedef struct { Header header; Entry entries[9]; int object[0x74]; } Frame;
     Frame frame;
     int result;
+    register int zero asm("r31") = 0;
+    register int arg_label asm("r22");
+    register int six asm("r23");
+    register int setting asm("r24");
+    register int minus_one asm("r25") = -1;
+    register int mask asm("r26") = 0x1B;
+    register int number asm("r27");
+    register int second_label asm("r28");
+    register int handler asm("r29");
+    register int second_count asm("r30");
+    register int *table asm("r7");
 
     if (fn_80247624()) { fn_80012794(); fn_80012780(); }
     fn_80257470(frame.object);
 
-    frame.entries[0].label = 0;
-    frame.entries[0].type = 5;
     frame.entries[0].value = (int)&frame.object[0];
+    frame.entries[0].type = 5;
+    frame.entries[0].label = 0;
     frame.entries[0].flags = 0;
     frame.entries[0].id = 0;
-    frame.entries[1].label = (int)&lbl_8055C1D8;
     frame.entries[1].type = 13;
+    frame.entries[1].label = (int)&lbl_8055C1D8;
     frame.entries[1].value = (int)&frame.object[0];
     frame.entries[1].flags = 0;
     frame.entries[1].id = 0;
-    frame.entries[2].label = (int)&lbl_8055C1E0;
     frame.entries[2].type = 13;
+    frame.entries[2].label = (int)&lbl_8055C1E0;
     frame.entries[2].value = (int)&frame.object[7];
     frame.entries[2].flags = 0;
     frame.entries[2].id = 0;
-    frame.entries[3].label = (int)&lbl_8055C1E8;
     frame.entries[3].type = 13;
+    frame.entries[3].label = (int)&lbl_8055C1E8;
     frame.entries[3].value = (int)&frame.object[21];
     frame.entries[3].flags = 0;
     frame.entries[3].id = 0;
-    frame.entries[4].label = (int)&lbl_8055C1F0;
     frame.entries[4].type = 13;
+    frame.entries[4].label = (int)&lbl_8055C1F0;
     frame.entries[4].value = (int)&frame.object[99];
     frame.entries[4].flags = 1;
     frame.entries[4].id = 0;
@@ -83,25 +97,38 @@ void fn_80257284(void) {
     result = fn_8000DB34();
     frame.entries[5].value = result;
 
-    frame.header.v[0] = *(int *)&lbl_802FA5E0;
+    arg_label = (int)&lbl_80344CD4;
+    table = (int *)((char *)&lbl_802FA5E0 - 4);
+    frame.header.v[0] = *++table;
     frame.header.v[1] = (int)frame.entries;
-    frame.header.v[2] = *(int *)((char *)&lbl_802FA5E0 + 8);
-    frame.header.v[3] = *(int *)((char *)&lbl_802FA5E0 + 12);
-    frame.header.v[4] = *(int *)((char *)&lbl_802FA5E0 + 16);
-    frame.entries[5].label = (int)&lbl_80344CD4;
-    frame.entries[5].type = 3;
-    frame.entries[5].flags = 0;
-    frame.entries[5].id = 0;
-    frame.entries[6].label = (int)&lbl_8055B860;
-    frame.entries[6].type = 6;
-    frame.entries[6].value = 0;
-    frame.entries[6].flags = -1;
-    frame.entries[6].id = 0x1B;
-    frame.entries[7].label = (int)&lbl_8055BAB8;
-    frame.entries[7].type = 8;
-    frame.entries[7].value = (int)fn_80236914;
+    frame.header.v[2] = table[2];
+    frame.header.v[3] = table[3];
+    frame.header.v[4] = table[4];
+
+    number = 3;
+    six = 6;
+    setting = (int)&lbl_8055B860;
+    minus_one = -1;
+    mask = 0x1B;
+    second_label = (int)&lbl_8055BAB8;
+    handler = (int)fn_80236914;
+    second_count = 6;
+
+    frame.entries[5].label = arg_label;
+    frame.entries[5].type = number;
+    frame.entries[5].flags = zero;
+    frame.entries[5].id = zero;
+    frame.entries[6].label = setting;
+    frame.entries[6].type = second_count;
+    frame.entries[6].value = zero;
+    frame.entries[6].flags = minus_one;
+    frame.entries[6].id = mask;
+    number = 8;
+    frame.entries[7].label = second_label;
+    frame.entries[7].type = number;
+    frame.entries[7].value = handler;
     frame.entries[7].flags = 2;
-    frame.entries[7].id = 0;
+    frame.entries[7].id = zero;
     frame.entries[8].label = *(int *)&lbl_80498E38;
     frame.entries[8].type = *(int *)((char *)&lbl_80498E38 + 4);
     frame.entries[8].value = *(int *)((char *)&lbl_80498E38 + 8);
