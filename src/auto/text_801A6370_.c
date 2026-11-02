@@ -99,8 +99,9 @@ extern void fn_801BE168(void *, void *, void *, void *);
 extern void fn_801A7444(void *);
 #pragma cplusplus on
 struct Fn801A67C4Vt {
-    virtual void d0(); virtual void d1(); virtual char *d2(); virtual void d3();
-    virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+    virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+    virtual char *d4(); virtual void d5(); virtual void d6(); virtual void d7();
+    virtual void d8(); virtual void d9();
 };
 #pragma cplusplus reset
 void fn_801A6524(void *arg0) {
