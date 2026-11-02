@@ -252,13 +252,15 @@ static inline float eval_spline(float p0, float p1, float p2, float p3, float t,
     coeff3 = coeff3 - half31;
 
     if (out_deriv != 0) {
-        *out_deriv = half20 + (lbl_80562B6C * coeff2 * t2 + lbl_80562B68 * coeff3 * t);
+        *out_deriv = (lbl_80562B6C * coeff2 * t2 + lbl_80562B68 * coeff3 * t) + half20;
     }
-    return p1 + (coeff2 * t3 + coeff3 * t2 + half20 * t);
+    return (coeff2 * t3 + coeff3 * t2) + half20 * t + p1;
 }
 
 #pragma push
 #pragma processor 750
+#pragma opt_common_subs off
+#pragma scheduling invalid_target
 float fn_801DB514(float grid[4][4], void *out, float t, float u) {
     float b[4];
     float a[4];
@@ -268,6 +270,11 @@ float fn_801DB514(float grid[4][4], void *out, float t, float u) {
     float *pb = b;
     int i;
     float height;
+    float t2 = t * t;
+    float c64 = lbl_80562B64;
+    float t3 = t2 * t;
+    float c68 = lbl_80562B68;
+    float c6C = lbl_80562B6C;
 
     for (i = 0; i < 4; i++) {
         *pb++ = eval_spline(grid[0][i], grid[1][i], grid[2][i], grid[3][i], t, pa);
