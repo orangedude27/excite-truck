@@ -5,6 +5,7 @@ typedef int s32;
 typedef unsigned int u32;
 typedef float f32;
 typedef unsigned char u8;
+#pragma ppc_psq_save off
 
 #pragma cplusplus on
 class EB000Context {
@@ -728,14 +729,16 @@ extern void fn_802B05D8(void);
 extern s32 fn_801E85B4(void);
 extern char *fn_801E7E34(void);
 #pragma ppc_psq_save off
+extern double __fabs(double);
 void fn_801EBF00(void) {
     f32 m[12];
-    f32 r[9];
     f32 pos[3];
+    f32 r[9];
     char *item;
     f32 *p;
     f32 a, scale, c, s, t;
     s32 v, clamped;
+    u8 b;
     void **o;
 
     if (lbl_8055EBA0 != 0) {
@@ -762,11 +765,12 @@ void fn_801EBF00(void) {
         ((void (*)(void *, s32))((void **)*o)[8])(o, 0);
         item = fn_801E7E34() + fn_801E85B4() * 0xE0;
         a = *(f32 *)(item + 0xD8);
-        if ((f32)fabs(a) > lbl_80558DC4[0]) {
+        if ((f32)__fabs(a) > lbl_80558DC4[0]) {
             v = (s32)(lbl_80562E78 * a);
             clamped = v & ~(v >> 31);
-            if (clamped > 0xFF) clamped = 0xFF;
-            fn_802C9474((clamped << 16) | (clamped << 8) | clamped | 0xFF000000);
+            b = 0xFF;
+            if (clamped < 0xFF) b = clamped;
+            fn_802C9474((b << 16) | (b << 8) | b | 0xFF000000);
             p = fn_802C86DC();
             pos[0] = p[9];
             pos[1] = p[10];
