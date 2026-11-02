@@ -203,6 +203,47 @@ int fn_800132E4(void *arg0, int arg1, int arg2) {
     return arg2;
 }
 
+extern char lbl_80558B1C[4];
+extern char lbl_80558B68[4];
+extern char lbl_80558B70[4];
+extern char lbl_80558B78[4];
+extern int stricmp();
+extern int fn_8012C33C();
+extern int fn_80012AB4();
+extern void fn_80012B50();
+void fn_8001335C(int a0, int arg1) {
+    void *arg0 = (void *)a0;
+    void *obj;
+    int i;
+    if (arg0 != 0) {
+        for (i = 0; (obj = VCALL_8001335C(arg0, 3)(arg0, i)) != 0; i++) {
+            if (stricmp(VCALL_8001335C(obj, 2)(obj), lbl_80558B68) == 0) {
+                if (fn_8012C33C(VCALL_8001335C(obj, 5)(obj, lbl_80558B1C)) == 0)
+                    fn_802E317C(lbl_802FC610 + 0x488, VCALL_8001335C(obj, 5)(obj, lbl_80558B1C));
+                VCALL_8001335C(obj, 6)(obj, lbl_80558B1C, 0);
+                ((void (*)())fn_80013618)();
+            } else if (stricmp(VCALL_8001335C(obj, 2)(obj), lbl_80558B70) == 0) {
+                if ((int)lbl_8055D504 >= 0x23)
+                    fn_802E317C(lbl_802FC610 + 0x4B4, (int)lbl_8055D504 - 1);
+                if (fn_80012AB4(obj) != 0) {
+                    fn_80012B50(lbl_803518C0 + (int)lbl_8055D504 * 0x84, (int)lbl_8055D504, obj, arg1);
+                    lbl_8055D504 = (void *)((int)lbl_8055D504 + 1);
+                }
+            } else if (stricmp(VCALL_8001335C(obj, 2)(obj), lbl_80558B78) == 0) {
+                if (lbl_8055D518 >= 0x23)
+                    fn_802E317C(lbl_802FC610 + 0x4E4, lbl_8055D518 - 1);
+                if (fn_80012AB4(obj) != 0) {
+                    fn_80012B50(lbl_803551E0 + lbl_8055D518 * 0x88, -1 - lbl_8055D518, obj, arg1);
+                    *(int *)(lbl_803551E0 + lbl_8055D518 * 0x88 + 0x84) = 0;
+                    lbl_8055D518 += 1;
+                }
+            } else if (stricmp(VCALL_8001335C(obj, 2)(obj), lbl_802FC610 + 0x524) == 0 && lbl_8055D514 == 0) {
+                lbl_8055D514 = (int)obj;
+            }
+        }
+    }
+}
+
 extern char lbl_802FCB74[];
 extern int fn_8012C33C(void);
 extern int fn_80131808(int);
