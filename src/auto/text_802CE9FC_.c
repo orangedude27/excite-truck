@@ -2245,6 +2245,7 @@ void fn_802D3BB4(float *arg0, float *arg1, float *arg2, float *arg3, unsigned in
     verts[3].v = lbl_80564F8C;
     fn_802D68C4(verts, 4, indices, 6);
 }
+#pragma pop
 
 void fn_802D3D50(void) {
     lbl_804C97B0[0] = 0;
