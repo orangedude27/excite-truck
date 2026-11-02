@@ -12,6 +12,8 @@ extern float lbl_80562470;
 extern char lbl_8055A850;
 extern void *fn_801A9234(const char *);
 extern int lbl_80435050[];
+typedef struct Rec_801A7A5C { float f[8]; unsigned char b[0x20]; int w[8]; unsigned char c; } Rec_801A7A5C;
+typedef struct Tail_801A7A5C { float x, y; unsigned char a, b, c; } Tail_801A7A5C;
 extern unsigned char lbl_80435370[];
 extern int lbl_8055CFF0;
 extern int lbl_8055CFF4;
