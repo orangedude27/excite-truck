@@ -336,8 +336,12 @@ f32 fn_801495D4(s32 arg0) {
 
 void fn_80149650(void) { fn_801495D4(0x40); }
 
+#pragma dont_inline on
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" void fn_80149CEC(void *arg0, void *arg1) {
+extern "C" void fn_80149CEC(void *arg0, void * __restrict arg1) {
     struct Dummy {
         virtual void f0();
         virtual void f1();
@@ -346,7 +350,7 @@ extern "C" void fn_80149CEC(void *arg0, void *arg1) {
     void *r5 = *(void **)((u8 *)arg1 + 0x68);
     void *r3;
     s32 val;
-    *(volatile f32 *)((u8 *)arg0 + 0x28) = *(volatile f32 *)((u8 *)r5 + 0x8D4);
+    *(f32 *)((u8 *)arg0 + 0x28) = *(f32 *)((u8 *)r5 + 0x8D4);
     r3 = *(void **)((u8 *)fn_8017960C(*(s32 *)arg1) + 0x270);
     r3 = ((Dummy *)r3)->f2();
     val = *(s32 *)((u8 *)r3 + 4);
@@ -354,7 +358,8 @@ extern "C" void fn_80149CEC(void *arg0, void *arg1) {
     *(s32 *)((u8 *)arg0 + 0x10) = val - 1;
     fn_80149D64(arg0, arg1, val);
 }
-#pragma cplusplus reset
+#pragma pop
+#pragma dont_inline reset
 extern f32 fn_80149F00(void *, void *);
 extern s32 fn_801609C4(s32);
 void fn_80149D64(void *arg0, void *arg1, s32 arg2) {
@@ -1543,7 +1548,9 @@ void fn_80150B58(void *arg0, s32 arg1) {
 
 s32 fn_8014F088(s32 arg0, s32 arg1);
 s32 fn_8014F088(s32, s32);
-#pragma scheduling invalid_target
+#pragma push
+#pragma scheduling off
+#pragma peephole off
 void fn_80150B60(void *arg0) {
     u8 *p;
     fn_8016783C(arg0);
@@ -1557,10 +1564,10 @@ void fn_80150B60(void *arg0) {
     if (p != 0) {
         p[0x4A] = 1;
         p[0x4C] = 0;
-        ((u8 *)arg0)[0x450] = 0;
     }
+    ((u8 *)arg0)[0x450] = 0;
 }
-#pragma scheduling on
+#pragma pop
 s32 fn_80151604(void) { return 0; }
 
 s32 fn_8015160C(void) {
