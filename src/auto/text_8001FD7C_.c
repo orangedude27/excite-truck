@@ -9,7 +9,25 @@ extern int fn_80012820(int);
 extern void fn_800081BC(int);
 extern int fn_80008188(void);
 extern int fn_80012910(int);
-extern void *fn_8001285C(int);
+typedef struct KObj KObj;
+struct KVt {
+    char pad0[0xC];
+    unsigned char (*f0C)(KObj *, void *);
+    char pad1[8];
+    int (*f18)(KObj *, void *, int);
+    char pad2[0x40];
+    int (*f5C)(KObj *, int);
+};
+struct KObj { struct KVt *vt; };
+typedef struct KArg {
+    int f0;
+    int f4;
+    int f8;
+    int fC;
+    char pad[0x10];
+    KObj *obj;
+} KArg;
+extern KArg *fn_8001285C(int);
 extern int fn_80131234(void *);
 extern int fn_80131264(void *);
 extern int fn_80205268(void *, int, int);
@@ -519,6 +537,60 @@ int fn_800213DC(int arg0) {
     }
     return r;
 }
+
+void fn_80021464(void *arg0, int arg1) {
+    char *a = (char *)arg0;
+    char *p;
+    char *obj;
+    int sp[6];
+    int c, n, r, k, v, h;
+    lbl_8055D62C = 1;
+    fn_8001FEE8();
+    fn_800081BC(fn_80012820(*(int *)(a + 4)) + 8);
+    lbl_8055D660 = fn_80008188();
+    obj = *(char **)(a + 0x20);
+    lbl_8055D664 = (*(int (**)(void *, void *, int))(*(char **)obj + 0x18))(obj, lbl_802FE138 + 0x284, fn_80012910(*(int *)a));
+    obj = *(char **)(a + 0x20);
+    lbl_8055D646 = (*(unsigned char (**)(void *, void *))(*(char **)obj + 0xC))(obj, lbl_802FE138 + 0x294);
+    if (lbl_8055D646 != 0) {
+        lbl_8055D660 = fn_80131234(lbl_802FE138 + 0x2A0);
+    }
+    c = *(int *)(a + 8);
+    lbl_8055D66C = arg1;
+    lbl_8055D668 = *(int *)a;
+    lbl_8055D647 = (c != 0x180302);
+    p = (char *)fn_8001285C(*(int *)a);
+    fn_80012820(*(int *)(p + 4));
+    lbl_8035BAD8.f8 = *(int *)(p + 0xC);
+    obj = *(char **)(p + 0x20);
+    v = (*(int (**)(void *, int))(*(char **)obj + 0x5C))(obj, fn_80205268(lbl_802FE138 + 0x2B4, lbl_8055D66C, lbl_8055D668));
+    if (v != 0) {
+        fn_8001D884(sp, v);
+        r = fn_8027DED0();
+        if (r == -1) {
+            r = sp[5];
+        }
+        lbl_8035BAD8.f4 = fn_8001DA48(sp, r);
+    }
+    lbl_8035BAD8.f0 = fn_8014E7DC(lbl_8055D668, arg1);
+    n = 0;
+    for (;;) {
+        fn_8001FFD0(n, c, lbl_8035BB18, 0x40);
+        if (fn_80131264(lbl_8035BB18) == 0) break;
+        n++;
+    }
+    if (n == 0) n = 1;
+    k = 0;
+    do {
+        h = fn_80129D18(1, n);
+        if (h != lbl_80558DA4) break;
+        k++;
+    } while (k < 10);
+    lbl_80558DA4 = h;
+    fn_8001FFD0(h, c, lbl_8035BB18, 0x40);
+    lbl_8055D65C = fn_80131234(lbl_8035BB18);
+}
+
 #pragma pop
 void fn_8002167C(void) {
     fn_8001FF24();
