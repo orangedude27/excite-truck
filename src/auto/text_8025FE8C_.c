@@ -521,36 +521,59 @@ s32 fn_802610C8(void) {
     return 0;
 }
 
-s32 fn_80261178(void *arg0) {
-    s32 i = 0;
-    s32 offset = 0;
-    u32 *base;
-    void *obj;
-    void **vt;
+#pragma push
+#pragma cplusplus on
+extern "C" s32 fn_80261178(void *arg0) {
+    struct Obj {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void v20(); virtual void v21();
+        virtual void f60(); virtual void f64(); virtual void f68(); virtual void f6c(); virtual void f70();
+    };
+    s32 offset;
+    s32 i;
     if (lbl_8055F3EB != 0) return 1;
     lbl_8055F3EB = 1;
-    base = (u32 *)lbl_8055F420;
-    base[0] = base[1] * 2;
-    for (i = 0; i < (s32)base[2]; i++, offset += 4) {
-        obj = *(void **)((u8 *)arg0 + 0x18 + offset);
-        vt = *(void ***)obj;
-        ((void (*)(void *))vt[0x60/4])(obj);
-        obj = *(void **)((u8 *)base + 0x18 + offset);
-        vt = *(void ***)obj;
-        ((void (*)(void *))vt[0x6c/4])(obj);
+    i = 0;
+    offset = 0;
+    *(s32 *)lbl_8055F420 = *(s32 *)(lbl_8055F420 + 4) << 1;
+    for (; i < *(s32 *)(lbl_8055F420 + 8); offset += 4, i++) {
+        if (lbl_8055F3EB == 0) {
+            (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x18) + offset))->f60();
+            (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x18) + offset))->f6c();
+        } else if (i == *(s32 *)lbl_8055F420) {
+            (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x18) + offset))->f68();
+        } else if (i == *(s32 *)(lbl_8055F420 + 4) * 2 || i == *(s32 *)(lbl_8055F420 + 4) * 2 + 1) {
+            (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x18) + offset))->f64();
+            (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x18) + offset))->f6c();
+        } else {
+            (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x18) + offset))->f6c();
+        }
     }
-    i = 0; offset = 0;
-    for (; i < (s32)base[3]; i++, offset += 4) {
-        obj = *(void **)((u8 *)base + 0x3c + offset);
-        vt = *(void ***)obj;
-        ((void (*)(void *))vt[0x64/4])(obj);
-        obj = *(void **)((u8 *)base + 0x3c + offset);
-        vt = *(void ***)obj;
-        ((void (*)(void *))vt[0x6c/4])(obj);
+    i = 0;
+    offset = 0;
+    for (; i < *(s32 *)(lbl_8055F420 + 0xC); offset += 4, i++) {
+        if (lbl_8055F3EB == 0) {
+            if (i == *(s32 *)(lbl_8055F420 + 4)) {
+                (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset))->f68();
+            } else {
+                (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset))->f64();
+                (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset))->f6c();
+            }
+        } else if (i == *(s32 *)(lbl_8055F420 + 4)) {
+            (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset))->f68();
+            (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + *(s32 *)(lbl_8055F420 + 4) * 4))->f70();
+        } else {
+            (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset))->f60();
+            (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset))->f6c();
+        }
     }
     return 0;
 }
-
+#pragma pop
 s32 fn_802613E0(void) {
     s32 j, i, count;
     volatile u32 *base = (volatile u32 *)lbl_8055F420;
@@ -748,7 +771,7 @@ void fn_80261AE8(s32 *arg0, s32 arg1) { *arg0 = arg1; }
 
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_80261AF0(s32 *arg0, s32 arg1) {
     struct Frame {
         s32 args[6];
@@ -756,20 +779,77 @@ void fn_80261AF0(s32 *arg0, s32 arg1) {
         char buffer[100];
     } frame;
 
+    register s32 zero = 0;
+    register s32 zero1;
+    register s32 zero2;
+    register s32 three;
+    register s32 two;
+    register s32 *a;
+    register s32 *b;
+    register void *func;
+    register s32 six;
+    register s32 minusTwo;
+    register s32 thirteen;
+    register s32 eight;
+    s32 hash1;
+    s32 hash2;
+
     fn_801345D8(frame.buffer, 0x64, lbl_80345DE0, arg1);
 
-    fn_802619E8(&frame.objects[0], 0, (s32)lbl_80498F20);
-    fn_80261980(&frame.objects[1], (s32)&lbl_8055C418, fn_80131234(lbl_80345E0C), 0);
-    fn_80261980(&frame.objects[2], (s32)&lbl_8055C420, fn_80131234(frame.buffer), 0);
-    fn_80261688(&frame.objects[3], 0xD, -2, 0);
-    fn_80261A18(&frame.objects[4], (s32)fn_80261A40);
-    fn_80260E04((s32*)&frame.objects[5], (s32*)&lbl_80498F00);
+    frame.objects[0][0] = zero;
+    frame.objects[0][1] = 5;
+    frame.objects[0][2] = (s32)lbl_80498F20;
+    zero1 = 0;
+    frame.objects[0][3] = zero;
+    frame.objects[0][4] = zero;
 
-    frame.args[0] = lbl_802FA6D4[0];
-    frame.args[1] = lbl_802FA6D4[1];
-    frame.args[2] = lbl_802FA6D4[2];
-    frame.args[3] = lbl_802FA6D4[3];
-    frame.args[4] = lbl_802FA6D4[4];
+    hash1 = fn_80131234(lbl_80345E0C);
+    three = 3;
+    frame.objects[1][2] = hash1;
+    frame.objects[1][1] = three;
+    zero2 = 0;
+    frame.objects[1][0] = (s32)&lbl_8055C418;
+    frame.objects[1][3] = zero1;
+    frame.objects[1][4] = zero;
+
+    hash2 = fn_80131234(frame.buffer);
+
+    a = lbl_802FA6D4;
+    b = (s32*)lbl_80498F00;
+    frame.objects[2][2] = hash2;
+    func = (void*)fn_80261A40;
+    six = 6;
+    minusTwo = -2;
+    frame.objects[2][1] = three;
+    thirteen = 13;
+    eight = 8;
+    frame.objects[2][0] = (s32)&lbl_8055C420;
+    two = 2;
+    frame.objects[2][3] = zero2;
+    frame.objects[2][4] = zero;
+
+    frame.objects[3][1] = six;
+    frame.objects[3][0] = (s32)&lbl_8055B860;
+    frame.objects[3][2] = zero;
+    frame.objects[3][3] = minusTwo;
+    frame.objects[3][4] = thirteen;
+
+    frame.objects[4][1] = eight;
+    frame.objects[4][0] = (s32)&lbl_8055BAB8;
+    frame.objects[4][2] = (s32)func;
+    frame.objects[4][3] = two;
+    frame.objects[4][4] = zero;
+
+    frame.objects[5][0] = b[0];
+    frame.objects[5][1] = b[1];
+    frame.objects[5][2] = b[2];
+    frame.objects[5][3] = b[3];
+    frame.objects[5][4] = b[4];
+
+    frame.args[0] = a[0];
+    frame.args[2] = a[2];
+    frame.args[3] = a[3];
+    frame.args[4] = a[4];
     frame.args[1] = (s32)frame.objects;
 
     fn_802146BC(frame.args, -0x3E7, -0x3E7, 1);
