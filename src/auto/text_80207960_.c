@@ -247,13 +247,13 @@ void fn_80207C4C(void) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_80207C50(void* arg0, void* arg1, signed long arg2) {
-    signed long c = ((signed long*)arg1)[2];
-    signed long b = ((signed long*)arg1)[1];
-    signed long a = ((signed long*)arg1)[0];
-    signed long* dst = (signed long*)arg0 + arg2 * 3 + 23;
-    dst[0] = a;
-    dst[1] = b;
-    dst[2] = c;
+    signed long c = *((signed long*)arg1 + 2);
+    signed long b = *((signed long*)arg1 + 1);
+    signed long a = *(signed long*)arg1;
+    void* dst = (void*)((char*)arg0 + arg2 * 0xC);
+    *(signed long*)((char*)dst + 0x5C) = a;
+    *(signed long*)((char*)dst + 0x60) = b;
+    *(signed long*)((char*)dst + 0x64) = c;
 }
 #pragma pop
 void fn_80207C74(void* arg0, signed long arg1) {
@@ -265,6 +265,7 @@ void fn_80207C7C(void) {
 }
 
 void fn_80207E70(void* arg0);
+void fn_80207F34(void *arg0);
 
 void fn_80207C80(void *arg0) {
     /* Fix note: iterate the item list twice, then run the matching completion callbacks. */
