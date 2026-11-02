@@ -14,8 +14,8 @@ extern void GXSetNumTexGens(unsigned char);
 extern double fn_8002F208(double);
 extern double fn_8002EFBC(double, double);
 extern double ceil(double);
-extern double fabs(double);
-extern void fn_802D3DF8(int, signed char, float, float);
+extern double __fabs(double);
+extern void fn_802D3DF8(int, int, float, float);
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -868,6 +868,69 @@ void fn_802DCAE4(void *arg0, void *arg1, float farg0) {
          }
      }
  }
+
+void fn_802DCFCC(int arg0, int arg1, int arg2, float farg0, float farg1) {
+    float scaled;
+    float log_val;
+    float diff;
+    float c;
+    float factor;
+    int r0;
+    int r3;
+    int exp;
+    float p;
+    float div;
+    fn_802DCAE4_GXColor col;
+
+    lbl_8055D148 = farg1;
+    fn_802DBD88();
+    if (arg2 != -2) {
+        fn_802CADD0(arg2, 1);
+    }
+    fn_802DB778(2);
+    if (arg1 != -2) {
+        lbl_8055FEC0 = 1;
+        scaled = lbl_80565050 * farg0;
+        log_val = (float)fn_8002F208(scaled);
+        diff = (float)fn_8002F208(lbl_80565058) - log_val;
+        c = (float)ceil(lbl_80565060 + (float)fabs(diff));
+        if (diff > lbl_80565048) {
+            factor = lbl_80565064;
+        } else {
+            factor = lbl_80565068;
+        }
+        r0 = -0x2E;
+        r3 = (int)(factor * c);
+        if (r3 > -0x2E) {
+            r0 = r3;
+        }
+        exp = 0x11;
+        if (r0 < 0x11) {
+            exp = r0;
+        }
+        p = (float)fn_8002EFBC(lbl_80565070, (double)exp);
+        div = (scaled * lbl_80565078) / p;
+        fn_802D3DF8(fn_802CA294(arg1), exp, div, div);
+        GXSetNumIndStages(1);
+        GXSetTevIndirect(0, 0, 0, 3, 1, 0, 0, 0, 0, 0);
+        GXSetIndTexOrder(0, lbl_8055FEA4, 2);
+        GXSetNumTexGens((unsigned char)(lbl_8055FEA4 + 1));
+        GXSetTexCoordGen2(lbl_8055FEA4, 1, 0, 0x24, 0, 0x7D);
+    }
+    GXClearVtxDesc();
+    GXSetVtxDesc(9, 3);
+    GXSetVtxDesc(0xB, 3);
+    GXSetVtxDesc(0xD, 3);
+    GXSetVtxAttrFmt(0, 9, 1, 4, 0);
+    GXSetVtxAttrFmt(0, 0xB, 1, 5, 0);
+    GXSetVtxAttrFmt(0, 0xD, 1, 4, 0);
+    col.r = 0xC0;
+    col.g = 0xC0;
+    col.b = 0xC0;
+    col.a = 0x14;
+    GXSetTevColor(2, col);
+}
+
 #pragma pop
 void fn_802DD228(void) { if (lbl_8055FEC0 != 0) { fn_802D3E88(); lbl_8055FEC0 = 0; } fn_802DBDD8(); fn_802CADD0(-1, 1); GXSetNumIndStages(0); GXSetTevDirect(0); }
 
