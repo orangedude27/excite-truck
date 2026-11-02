@@ -1174,9 +1174,8 @@ extern void fn_802D5FE4(void *);
 extern void fn_802E30C8(const char *, ...);
 extern void fn_80128670(s32);
 
-void fn_802D68C4(void *vertices, void *unused, u16 *indices, s32 count) {
-    s32 i;
-    volatile f32 *fifo = (volatile f32 *)0xCC008000;
+void fn_802D68C4(FifoVtx *__restrict vertices, void *unused, u16 *__restrict indices, s32 count) {
+    register s32 i;
     lbl_8055FD25 = 0;
     lbl_804C5700[9] = 0;
     *(u32 *)(lbl_804C5700 + 4) = 0;
@@ -1190,66 +1189,20 @@ void fn_802D68C4(void *vertices, void *unused, u16 *indices, s32 count) {
     GXSetVtxAttrFmt(0, 0xB, 1, 5, 0);
     GXSetVtxAttrFmt(0, 0xD, 1, 4, 0);
     GXBegin(0x90, 0, (u16)count);
-    if ((s32)count > 0) {
-        s32 pairCount = count >> 1;
-        s32 remainder = count & 1;
-        s32 idx = 0;
-        if (pairCount > 0) {
-            do {
-                u16 i0 = indices[idx];
-                u16 i1 = indices[idx + 1];
-                u8 *v0 = (u8 *)vertices + i0 * 0x18;
-                u8 *v1 = (u8 *)vertices + i1 * 0x18;
-                f32 x0 = *(f32 *)(v0 + 0);
-                f32 y0 = *(f32 *)(v0 + 4);
-                f32 z0 = *(f32 *)(v0 + 8);
-                u32 c0 = *(u32 *)(v0 + 0xC);
-                f32 x1 = *(f32 *)(v0 + 0x10);
-                f32 y1 = *(f32 *)(v0 + 0x14);
-                
-                f32 x2 = *(f32 *)(v1 + 0);
-                f32 y2 = *(f32 *)(v1 + 4);
-                f32 z2 = *(f32 *)(v1 + 8);
-                u32 c1 = *(u32 *)(v1 + 0xC);
-                f32 x3 = *(f32 *)(v1 + 0x10);
-                f32 y3 = *(f32 *)(v1 + 0x14);
-                
-                fifo[0] = x0;
-                fifo[1] = y0;
-                fifo[2] = z0;
-                *(u32 *)&fifo[3] = (c0 << 8) | (c0 >> 24);
-                fifo[4] = x1;
-                fifo[5] = y1;
-                
-                fifo[6] = x2;
-                fifo[7] = y2;
-                fifo[8] = z2;
-                *(u32 *)&fifo[9] = (c1 << 8) | (c1 >> 24);
-                fifo[10] = x3;
-                fifo[11] = y3;
-                
-                fifo += 12;
-                idx += 2;
-            } while (idx < pairCount * 2);
-        }
-        if (remainder > 0) {
-            u16 i = indices[idx];
-            u8 *v = (u8 *)vertices + i * 0x18;
-            f32 x = *(f32 *)(v + 0);
-            f32 y = *(f32 *)(v + 4);
-            f32 z = *(f32 *)(v + 8);
-            u32 c = *(u32 *)(v + 0xC);
-            f32 x2 = *(f32 *)(v + 0x10);
-            f32 y2 = *(f32 *)(v + 0x14);
-            
-            fifo[0] = x;
-            fifo[1] = y;
-            fifo[2] = z;
-            *(u32 *)&fifo[3] = (c << 8) | (c >> 24);
-            fifo[4] = x2;
-            fifo[5] = y2;
-        }
+    for (i = 0; i < count; i++) {
+        register FifoVtx *v = &vertices[indices[i]];
+        FifoVtx t;
+        t.pos = v->pos;
+        t.color = v->color;
+        t.u = v->u;
+        t.v = v->v;
+        *(volatile f32 *)0xCC008000 = t.pos.x;
+        *(volatile f32 *)0xCC008000 = t.pos.y;
+        *(volatile f32 *)0xCC008000 = t.pos.z;
+        *(volatile u32 *)0xCC008000 = (t.color << 8) | (t.color >> 24);
+        *(volatile f32 *)0xCC008000 = t.u;
+        *(volatile f32 *)0xCC008000 = t.v;
     }
     fn_802D6C68();
 }
-#pragma scheduling invalid_target
+#pragma scheduling on
