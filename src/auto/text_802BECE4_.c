@@ -176,6 +176,108 @@ float fn_802BF02C(float arg0, int arg1) {
     return points[6].y;
 }
 
+extern unsigned int lbl_802FABD8[], lbl_802FAC00[];
+extern float lbl_8055FAF8, lbl_80564D98, lbl_80564D80, lbl_80564D90, lbl_80564DA8, lbl_80564DAC;
+extern double lbl_80564DA0;
+extern float fn_802BEFB4(void);
+extern float fn_801E7E24(void);
+extern double fn_8002EFB4(double, double);
+extern double cos(double);
+extern void fn_802C9648(float);
+extern void fn_802D3D6C(void);
+extern float fn_802BF02C(float, int);
+extern void fn_802C9900(float);
+extern void fn_802D3D94(void *, int);
+extern void fn_802C7040(int);
+extern void fn_802C9904(void);
+extern void fn_802D3D80(void);
+extern void fn_802C967C(void);
+#pragma scheduling invalid_target
+#pragma processor 750
+void fn_802BF160(void) {
+    unsigned int scratch[17];
+    register unsigned int *table;
+    register volatile float *point;
+    register unsigned int *src;
+    register unsigned int i;
+    register float f27, f28, f29, f30, f31;
+    register float f2, f0, f1, f3, f5, f4;
+    register unsigned int m3, m5, m7, m0, m1, m2, m4, m6;
+    float elapsed, rate;
+
+    if (lbl_8055CF6C == -1) return;
+    elapsed = fn_802BEFB4();
+    rate = fn_801E7E24();
+    lbl_8055FAF8 += elapsed * rate;
+    src = lbl_802FABD8;
+    scratch[8] = *src++; scratch[9] = *src++; scratch[10] = *src++;
+    scratch[11] = *src++; scratch[12] = *src++; scratch[13] = *src++;
+    scratch[14] = *src++; scratch[15] = *src++; scratch[16] = *src;
+    fn_802C9648(lbl_80564D98);
+    fn_802D3D6C();
+    f31 = lbl_80564D80;
+    f30 = lbl_80564DA8;
+    point = (volatile float *)(scratch + 8);
+    table = lbl_802FAC00;
+    f29 = lbl_80564DAC;
+    f28 = lbl_80564D90;
+    i = 0;
+    do {
+        f1 = lbl_8055FAF8;
+        f0 = point[2];
+        f1 = f1 + f0;
+        f27 = (float)fn_8002EFB4((double)f1, lbl_80564DA0);
+        f1 = f27;
+        f2 = (float)cos((double)f1);
+        f0 = point[0];
+        f1 = f31 - f0;
+        f0 = f2 - f30;
+        f2 = f0 * f29;
+        if (f31 < f2) f2 = f31;
+        if (f2 < f28) f2 = f28;
+        f3 = point[0];
+        f0 = f1 - f28;
+        m3 = table[3];
+        f1 = f27;
+        f5 = f31 / f3;
+        m5 = table[5];
+        m7 = table[7];
+        m0 = table[0];
+        m1 = table[1];
+        f2 = f2 * f0;
+        m2 = table[2];
+        f0 = -f5;
+        m4 = table[4];
+        m6 = table[6];
+        f4 = f28 + f2;
+        ((volatile unsigned int *)scratch)[3] = m3;
+        f2 = point[1];
+        scratch[5] = m5;
+        f3 = f4 + f3;
+        f4 = f0 * f4;
+        scratch[7] = m7;
+        f0 = f28 - f3;
+        scratch[0] = m0;
+        scratch[1] = m1;
+        f0 = f5 * f0;
+        scratch[2] = m2;
+        f0 = f28 + f0;
+        scratch[4] = m4;
+        f0 = f0 - f4;
+        scratch[6] = m6;
+        ((volatile float *)scratch)[3] = f2;
+        ((volatile float *)scratch)[5] = f0;
+        ((volatile float *)scratch)[7] = f4;
+        fn_802C9900(fn_802BF02C(f27, (int)m6));
+        fn_802D3D94(0, (int)scratch);
+        fn_802C7040(lbl_8055CF6C);
+        ++i;
+        point += 3;
+    } while (i < 3);
+    fn_802C9904();
+    fn_802D3D80();
+    fn_802C967C();
+}
 void fn_802BF350(void) {
     int i;
     fn_802BEDFC();
@@ -386,19 +488,19 @@ extern "C" void *fn_802BFA58(void *arg0, int arg1) {
 #pragma cplusplus reset
 extern float lbl_80564DCC, lbl_80564DD0, lbl_80564DD4;
 extern unsigned short lbl_802FAC20;
-extern void fn_80015A20(void *, float *, float, float, float, float, float);
+extern void fn_80015A20(void *, float *);
 extern void fn_80015B20(float *, void *, float *);
 extern void fn_802C8B98(int, float *);
 extern void fn_802C8DB8(void *, int, unsigned short *, int);
 extern void fn_802C8D74(void);
 void fn_802BFE48(void *arg0, void *arg1, float arg2) {
-    struct V { float x,y,z; int pad; float nx,ny,nz; int pad2; } v[4];
-    float mat[16];
-    float point[4];
-    float *p;
-    float x, y, z;
+    struct V { float x, y, z; int color; float u, v; } v[4];
+    float mat[12];
+    float rot[9];
+    unsigned short idx[6] = { 0, 1, 2, 2, 1, 3 };
+    float vec[3];
+    float x, y;
     int i;
-    unsigned short *indices = &lbl_802FAC20;
     if (*(int *)((char *)arg0 + 0x18) == -2) return;
     x = lbl_80564DCC * arg2;
     y = lbl_80564DD0 * arg2;
@@ -406,22 +508,21 @@ void fn_802BFE48(void *arg0, void *arg1, float arg2) {
         v[i].x = (i & 1) ? x : -x;
         v[i].y = (i & 2) ? x : -x;
         v[i].z = y;
-        v[i].pad = -1;
-        v[i].nx = (i & 1) ? lbl_80564D80 : lbl_80564D90;
-        v[i].ny = (i & 2) ? lbl_80564D80 : lbl_80564D90;
-        v[i].nz = lbl_80564D90;
-        v[i].pad2 = -1;
+        v[i].color = -1;
+        v[i].u = (i & 1) ? lbl_80564D80 : lbl_80564D90;
+        v[i].v = (i & 2) ? lbl_80564D80 : lbl_80564D90;
     }
-    p = mat + 8;
-    p[0]=lbl_80564D80; p[1]=lbl_80564D90; p[2]=lbl_80564D90; p[3]=lbl_80564D90;
-    p[4]=lbl_80564D80; p[5]=lbl_80564D90; p[6]=lbl_80564D90; p[7]=lbl_80564D90;
-    p[8]=lbl_80564D80;
-    point[0]=lbl_80564DD4; point[1]=lbl_80564D90; point[2]=lbl_80564D90;
-    fn_80015A20(point, mat + 2, lbl_80564D90, lbl_80564D80,
-                ((float *)arg1)[11], ((float *)arg1)[10], ((float *)arg1)[9]);
-    fn_80015B20(mat + 8, point, mat + 8);
-    fn_802C8B98(*(int *)((char *)arg0 + 0x18), mat + 8);
-    fn_802C8DB8(v, 4, indices, 6);
+    mat[0] = lbl_80564D80; mat[1] = lbl_80564D90; mat[2] = lbl_80564D90; mat[3] = lbl_80564D90;
+    mat[4] = lbl_80564D80; mat[5] = lbl_80564D90; mat[6] = lbl_80564D90; mat[7] = lbl_80564D90;
+    mat[8] = lbl_80564D80;
+    mat[9] = ((float *)arg1)[9];
+    mat[10] = ((float *)arg1)[10];
+    mat[11] = ((float *)arg1)[11];
+    vec[0] = lbl_80564DD4; vec[1] = lbl_80564D90; vec[2] = lbl_80564D90;
+    fn_80015A20(rot, vec);
+    fn_80015B20(mat, rot, mat);
+    fn_802C8B98(*(int *)((char *)arg0 + 0x18), mat);
+    fn_802C8DB8(v, 4, idx, 6);
     fn_802C8D74();
 }
 
@@ -455,6 +556,102 @@ int fn_802C00A4(void) {
         }
     }
     return (int)obj;
+}
+
+void *fn_802C0138(void *arg0) {
+    register char *resourceB = lbl_8034ACA0 + 0x144;
+    register char *resourceA = lbl_8034ACA0 + 0x134;
+    void *vtable = lbl_8034AE08;
+    float initial = lbl_80564DF0;
+    char *out;
+    register int row;
+    register int rowBase;
+    int innerBase;
+
+    *(unsigned char *)((char *)arg0 + 0x2C5C) = 0;
+    *(void **)arg0 = vtable;
+    *(int *)((char *)arg0 + 0x2C50) = -2;
+    *(int *)((char *)arg0 + 0x2C54) = -2;
+    *(int *)((char *)arg0 + 0x2C58) = 0;
+    lbl_8055FB04 = initial;
+    if (fn_8012C33C(lbl_8034ACA0 + 0x154, 0, vtable, lbl_8034ACA0) == 0)
+        return arg0;
+    if (fn_8012C33C(resourceA) != 0)
+        *(int *)((char *)arg0 + 0x2C50) = fn_802CAC28(resourceA, 0);
+    *(int *)((char *)arg0 + 0x2C58) = fn_802BF6AC();
+    if (fn_8012C33C(resourceB) != 0)
+        *(int *)((char *)arg0 + 0x2C54) = fn_802CAC28(resourceB, 0);
+
+    out = (char *)arg0 + 4;
+    row = 0;
+    rowBase = 0;
+    do {
+        int r7 = (row + 1) << 4;
+        int r6 = r7;
+        int count;
+        innerBase = 0;
+        for (count = 0; count < 3; count++) {
+            int r4 = innerBase + rowBase;
+            int r3 = r4;
+            int r9;
+            int r8;
+            int r10;
+            int r12;
+            int r29;
+            int r11;
+            int r30;
+            *(short *)(out + 0x00) = r4;
+            r3 = r3 + 1;
+            *(short *)(out + 0x02) = r3;
+            r9 = innerBase + r7;
+            r8 = innerBase + r7;
+            *(short *)(out + 0x04) = r6;
+            *(short *)(out + 0x06) = r6;
+            r8 = r8 + 1;
+            r10 = r4 + 2;
+            *(short *)(out + 0x08) = r3;
+            r12 = r4 + 3;
+            r29 = r4 + 4;
+            *(short *)(out + 0x0A) = r8;
+            r11 = r9 + 3;
+            r30 = r9 + 4;
+            *(short *)(out + 0x0C) = r3;
+            r3 = r9;
+            r9 = r9 + 2;
+            *(short *)(out + 0x0E) = r10;
+            r4 = r4 + 5;
+            r3 = r3 + 5;
+            *(short *)(out + 0x10) = r8;
+            r6 = r6 + 5;
+            innerBase = innerBase + 5;
+            *(short *)(out + 0x12) = r8;
+            *(short *)(out + 0x14) = r10;
+            *(short *)(out + 0x16) = r9;
+            *(short *)(out + 0x18) = r10;
+            *(short *)(out + 0x1A) = r12;
+            *(short *)(out + 0x1C) = r9;
+            *(short *)(out + 0x1E) = r9;
+            *(short *)(out + 0x20) = r12;
+            *(short *)(out + 0x22) = r11;
+            *(short *)(out + 0x24) = r12;
+            *(short *)(out + 0x26) = r29;
+            *(short *)(out + 0x28) = r11;
+            *(short *)(out + 0x2A) = r11;
+            *(short *)(out + 0x2C) = r29;
+            *(short *)(out + 0x2E) = r30;
+            *(short *)(out + 0x30) = r29;
+            *(short *)(out + 0x32) = r4;
+            *(short *)(out + 0x34) = r30;
+            *(short *)(out + 0x36) = r30;
+            *(short *)(out + 0x38) = r4;
+            *(short *)(out + 0x3A) = r3;
+            out += 0x3C;
+        }
+        row++;
+        rowBase += 16;
+    } while (row < 63);
+    *(unsigned char *)((char *)arg0 + 0x2C5C) = 1;
+    return arg0;
 }
 
 extern char lbl_8034AE08[];
