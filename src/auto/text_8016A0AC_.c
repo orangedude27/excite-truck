@@ -156,6 +156,59 @@ s32 fn_8016A30C(void) {
  return f;} return 0;
 }
 
+#pragma ppc_psq_save off
+void fn_8016A438(void) {
+    Blk8016A438 blk;
+    s32 i;
+    s32 j;
+    char *ent;
+    char *rec;
+    f32 now;
+    f32 t;
+    f32 scale;
+    for (i = 0; i < lbl_80430340.unk_0x4; i++) {
+        ent = lbl_80430340.unk_0x0 + i * 0x2C;
+        j = *(s32 *)(ent + 0x24);
+        while (j-- > 0) {
+            rec = *(char **)lbl_80430318 + (*(s32 *)(ent + 0x20) + j) * 0x48;
+            if (*(u8 *)rec == 0)
+                continue;
+            now = fn_801E7E18();
+            t = ((now - *(f32 *)(rec + 0x44)) - lbl_80561970) / lbl_80561974;
+            if (t > lbl_80561960)
+                t = lbl_80561960;
+            if (!(t > lbl_80561970))
+                t = lbl_80561970;
+            scale = lbl_80561970 + t * lbl_80561960;
+            if (*(u8 *)(rec + 0x3C) == 0)
+                scale = lbl_80561960 - scale;
+            if (scale > lbl_80561978) {
+                fn_802C9900(scale);
+                blk = *(Blk8016A438 *)(rec + 0xC);
+                blk.f[0] *= scale;
+                blk.f[1] *= scale;
+                blk.f[2] *= scale;
+                blk.f[3] *= scale;
+                blk.f[4] *= scale;
+                blk.f[5] *= scale;
+                blk.f[6] *= scale;
+                blk.f[7] *= scale;
+                blk.f[8] *= scale;
+                if (*(u8 *)(rec + 0x3D) != 0) {
+                    fn_802C70AC(*(s32 *)(*(char **)(rec + 8) + 0x20), blk.f, -1, 4);
+                    if (now - *(f32 *)(rec + 0x40) > lbl_8056197C && *(u8 *)(rec + 0x3C) != 0) {
+                        *(u8 *)(rec + 0x3C) = 0;
+                        *(f32 *)(rec + 0x44) = lbl_8055E3C8;
+                    }
+                } else {
+                    fn_802C70AC(*(s32 *)(*(char **)(rec + 8) + 0x20), blk.f, -1, 2);
+                }
+                fn_802C9904();
+            }
+        }
+    }
+}
+
 void fn_8016B634(s32 arg0);
 
 void fn_8016A68C(void* arg0) {
