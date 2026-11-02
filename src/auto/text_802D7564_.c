@@ -37,6 +37,10 @@ extern char lbl_8055D110[];
 extern void *fn_8012850C(void *, void *);
 extern char lbl_8055D118[4];
 extern void *fn_802D7600(void *queue);
+extern char lbl_8034C4F8[];
+extern char lbl_8034C528[];
+extern void fn_801282F4(void);
+extern void *fn_801284E8(void *, int);
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
@@ -634,45 +638,48 @@ void fn_802D9628(register void *arg0, register s32 arg1, register s32 arg2, regi
 #pragma scheduling invalid_target
 #pragma opt_common_subs off
 int fn_802D972C(register void *arg0, register int arg1, register int arg2) {
-    register int mip;
-    register int wrap;
-    register int base;
+    int mip;
+    int wrap;
+    int pixelFormat;
+    int base;
     int tile;
-    unsigned int ysign, yoff, xsign, xoff;
+    unsigned int ysign;
+    unsigned int yoff;
+    unsigned int xsign;
+    unsigned int xoff;
     int pixel;
     unsigned int value;
     int doubled;
-
     mip = GXGetTexObjMipMap((char *)arg0 + 0x24);
     wrap = GXGetTexObjWrapS((char *)arg0 + 0x24) & 0xFFFF;
     GXGetTexObjWrapT((char *)arg0 + 0x24);
-    base = (int)GXGetTexObjFmt((char *)arg0 + 0x24) - 0x40000000;
+    pixelFormat = (int)GXGetTexObjFmt((char *)arg0 + 0x24);
+    base = pixelFormat - 0x40000000;
     if (mip == 0) {
         tile = arg1 / 8 + (arg2 / 8) * (wrap / 8);
         base += tile << 5;
         ysign = (unsigned int)arg2 >> 31;
         yoff = (arg2 << 29) - ysign;
+        xoff = arg1 << 29;
         xsign = (unsigned int)arg1 >> 31;
-        xoff = (arg1 << 29) - xsign;
+        xoff -= xsign;
         pixel = (int)((((xoff << 3) | (xoff >> 29)) + xsign +
                       ((((yoff << 3) | (yoff >> 29)) + ysign) * 8)) * 4) / 8;
-        if (arg1 & 1) {
+        if (arg1 & 1)
             value = *(unsigned char *)(base + pixel) & 0xF;
-        } else {
+        else
             value = (*(unsigned char *)(base + pixel) >> 4) & 0xF;
-        }
         doubled = value | (value * 0x10);
-        value = (doubled << 16) | doubled;
-        value |= doubled << 8;
-        return (doubled << 24) | value;
+        return (doubled << 24) | ((doubled << 16) | doubled | (doubled << 8));
     }
     if (mip == 6) {
         tile = arg1 / 4 + (arg2 / 4) * (wrap / 4);
         base += tile << 6;
         ysign = (unsigned int)arg2 >> 31;
         yoff = (arg2 << 30) - ysign;
+        xoff = arg1 << 30;
         xsign = (unsigned int)arg1 >> 31;
-        xoff = (arg1 << 30) - xsign;
+        xoff -= xsign;
         pixel = (int)((((xoff << 2) | (xoff >> 30)) + xsign +
                       ((((yoff << 2) | (yoff >> 30)) + ysign) * 4)) * 0x10) / 8;
         value = *(unsigned short *)(base + pixel);
