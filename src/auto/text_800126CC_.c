@@ -28,6 +28,16 @@ extern int fn_80007F90(int);
 extern int fn_801345D8(void *, int, const char *, ...);
 void fn_80012984();
 typedef void *(*Vfn_8001335C)();
+struct Obj_8001335C;
+typedef struct VT_8001335C {
+    void *pad0, *pad1;
+    char *(*name)(struct Obj_8001335C *);
+    struct Obj_8001335C *(*child)(struct Obj_8001335C *, int);
+    void *pad4;
+    char *(*get)(struct Obj_8001335C *, char *);
+    void (*set)(struct Obj_8001335C *, char *, int);
+} VT_8001335C;
+typedef struct Obj_8001335C { VT_8001335C *vt; } Obj_8001335C;
 #define VCALL_8001335C(o, slot) ((Vfn_8001335C)((*(void ***)(o))[slot]))
 #pragma scheduling invalid_target
 void *fn_800126CC(int arg0) DECOMP_DONT_INLINE {
