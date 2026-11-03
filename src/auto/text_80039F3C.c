@@ -98,7 +98,6 @@ void fn_8003A1A0(int arg0, void (*arg1)(int, int)) {
     }
 }
 
-#pragma scheduling invalid_target
 int DVDCompareDiskID(unsigned char *arg0, unsigned char *arg1) {
     if ((signed char)arg0[0] == 0)
         goto disk_id_suffix;
@@ -431,8 +430,10 @@ int DVDLowOpenPartition(unsigned int offset, const void *ticket, unsigned int ce
                         const void *certs, void *tmd,
                         void *callback) {
     const char *msg = lbl_80302848;
-    IPCIOVector *ioVec = (IPCIOVector *)(lbl_8037B820 + 0xC0);
+    unsigned char *base = lbl_8037B820;
+    unsigned int one = 1;
     DVDLowContext *ctx;
+    IPCIOVector *ioVec;
     int result;
 
     if (ticket != (void *)0 && ((unsigned int)ticket % 32 != 0)) {
@@ -450,12 +451,14 @@ int DVDLowOpenPartition(unsigned int offset, const void *ticket, unsigned int ce
         return 0;
     }
 
-    lbl_8055D8E0 = 1;
-    ctx = newContext(callback, 1, msg);
+    lbl_8055D8E0 = one;
+    ctx = newContext(callback, one, msg);
 
     nextCommandBuf();
     *(unsigned char *)(lbl_8055D8FC + lbl_8055D8E4 * 32) = 0x8B;
     *(unsigned int *)(lbl_8055D8FC + lbl_8055D8E4 * 32 + 4) = offset;
+
+    ioVec = (IPCIOVector *)(base + 0xC0);
 
     // Input vector 1: DI command
     ioVec[0].length = 32;
@@ -482,7 +485,7 @@ int DVDLowOpenPartition(unsigned int offset, const void *ticket, unsigned int ce
     ioVec[3].length = 0x49E4;
 
     // Output vector 2: Ticket error
-    ioVec[4].base = lbl_8037B820 + 0x100;
+    ioVec[4].base = base + 0x100;
     ioVec[4].length = 32;
 
     result = IOS_IoctlvAsync(lbl_80558E18, 0x8B, 3, 2, ioVec,
