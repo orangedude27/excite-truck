@@ -712,8 +712,7 @@ s8 nw4hbm::ut::detail::ResFontBase::GetLineFeed() const {
     if(i==0&&(v&0xF8000000U)!=0xD0000000U)h=0;
     if(h==0&&(v&0xFFFFC000U)!=0xE0000000U)g=0;
     if(g==0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x129,file+0x128);
-    u8 r = *(u8*)(*(u32*)((char*)this+0x14)+1);
-    return (s8)r;
+    return *(u8*)(*(u32*)((char*)this+0x14)+1);
 }
 
 s32 nw4hbm::ut::detail::ResFontBase::GetDefaultCharWidths() const {
@@ -5280,6 +5279,31 @@ extern "C" s32 GetFont__Q36nw4hbm2ut10CharWriterCFv_801120E8(void *arg0) {
  if (r6==0 && (u32)((p&0xFFFFC000)+0x20000000)<1U) r5=0;
  if (r5==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329560,0x15A,lbl_80329578,arg0);
  return *(s32*)((char*)arg0+0x54);
+}
+
+extern "C" void SetFont__Q36nw4hbm2ut10CharWriterFRCQ36nw4hbm2ut4Font_80112200(void* self, const void* font) {
+    const char* file=lbl_80329530;
+    u32 value=(u32)self;
+    int a=1,b=1,c=1,d=1,e=1,f=1;
+    u32 t=value&0xFF000000U;
+    if(t!=0x80000000U&&(value&0xFF800000U)!=0x81000000U)f=0;
+    if(f==0&&(value&0xF8000000U)!=0x90000000U)e=0;
+    if(e==0&&t!=0xC0000000U)d=0;
+    if(d==0&&(value&0xFF800000U)!=0xC1000000U)c=0;
+    if(c==0&&(value&0xF8000000U)!=0xD0000000U)b=0;
+    if(b==0&&(value&0xFFFFC000U)!=0xE0000000U)a=0;
+    if(a==0)Panic__Q26nw4hbm2dbFPCciPCce(file+0x30,0x72,file+0x48,self);
+    u32 v=(u32)font;
+    int g=1,h=1,i=1,j=1,k=1,l=1;
+    u32 t2=v&0xFF000000U;
+    if(t2!=0x80000000U&&(v&0xFF800000U)!=0x81000000U)l=0;
+    if(l==0&&(v&0xF8000000U)!=0x90000000U)k=0;
+    if(k==0&&t2!=0xC0000000U)j=0;
+    if(j==0&&(v&0xFF800000U)!=0xC1000000U)i=0;
+    if(i==0&&(v&0xF8000000U)!=0xD0000000U)h=0;
+    if(h==0&&(v&0xFFFFC000U)!=0xE0000000U)g=0;
+    if(g==0)Panic__Q26nw4hbm2dbFPCciPCce(file+0x30,0x73,file+0x80,font);
+    *(const void**)((char*)self+0x5c)=font;
 }
 
 extern "C" void *GetFont__Q36nw4hbm2ut10CharWriterCFv_80112410(void *arg0) {
