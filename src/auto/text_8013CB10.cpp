@@ -1219,13 +1219,13 @@ extern "C" void fn_80140B98(void *arg0, void *arg1, s32 arg2) {
 
 #pragma scheduling reset
 #pragma pop
-extern "C" void fn_8013EB30(void);
+extern "C" void fn_8013EB30(void *);
 extern "C" void fn_80140B98(void *, void *, s32);
 extern "C" void fn_80141558(void *, s32, s32, s32);
 // fn_80140D1C: processes array items, flushing buffer to fn_80141558 when item[0x1E] set, or stores to dst
 extern "C" void fn_80140D1C(void *arg0, void *arg1, void *arg2) {
  f32 buffer[16]; f32 *dst=buffer; s32 count=*(s32 *)((u8 *)arg1+4)-1, idx=0, i, cap, head, end; u8 *item;
- fn_8013EB30();
+ fn_8013EB30(arg0);
  while(count>=0){ item=*(u8 **)(*(u8 **)arg1+count*8);
  if(item[0x1E]){ if(idx>0){fn_80141558((u8 *)arg0+0x280,(s32)dst,idx,*(s32 *)((u8 *)arg0+0x288));idx=0;} fn_80140B98(arg0,*(void **)(*(u8 **)arg1+count*8),2);}
  else {dst[idx*3]=*(f32 *)item;dst[idx*3+1]=*(f32 *)(item+4);dst[idx*3+2]=*(f32 *)(item+8);idx++;dst[idx*3]=*(f32 *)(item+0xC);dst[idx*3+1]=*(f32 *)(item+0x10);dst[idx*3+2]=*(f32 *)(item+0x14);idx++;} count--;}
