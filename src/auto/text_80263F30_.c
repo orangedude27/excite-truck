@@ -60,6 +60,21 @@ extern void fn_80236914(void);
 extern void fn_80264098(void *, int);
 extern void *fn_80264A54(void);
 extern void *fn_80264580(void);
+#pragma push
+#pragma cplusplus on
+struct PropertyReader802640C4 {
+    virtual ~PropertyReader802640C4();
+    virtual void slot08();
+    virtual void slot0C();
+    virtual void slot10();
+    virtual char *getString(const char *);
+    virtual void slot18();
+    virtual int getInt(const char *);
+    virtual void slot20();
+    virtual void slot24();
+    virtual float getFloat(const char *, float);
+};
+#pragma pop
 
 extern char lbl_80346338[];
 extern int lbl_8055C450;
@@ -147,6 +162,84 @@ void fn_802640A0(void *arg0) {
     *(int *)((char *)arg0 + 0xc) = 0;
     *(int *)((char *)arg0 + 0x10) = 0;
 }
+
+#pragma push
+#pragma processor 750
+#pragma dont_inline on
+void fn_802640C4(void *arg0, void *arg1) {
+    extern char lbl_8055C45C[4], lbl_8055C464[4], lbl_8055C46C[4], lbl_8055C474[4], lbl_8055C47C[4], lbl_8055C484[4];
+    extern unsigned char lbl_80498F78[];
+    extern void *fn_801284F8(unsigned int, void *);
+    extern void fn_8026523C(void *), fn_80265558(void *), fn_802655A4(void *);
+    extern void fn_80265268(void *, int, char *, float), fn_8026557C(void *, float), fn_80265610(void *, float);
+    struct PropertyVtable {
+        void *pad0[5];
+        char *(*get_string)(void *, char *);
+        void *pad1;
+        int (*get_int)(void *, char *);
+        void *pad2[2];
+        float (*get_float)(void *, char *, float);
+    };
+    struct Property { struct PropertyVtable *vt; };
+    struct Property *properties = (struct Property *)arg1;
+    char *base=lbl_80346338;
+    char *kind;
+    void *obj;
+    int count;
+    void **items;
+    char *name;
+    int val;
+    float value;
+    kind = properties->vt->get_string(arg1,lbl_8055C45C);
+    if (stricmp(kind,lbl_8055C464)==0) {
+        *(char **)arg0=properties->vt->get_string(arg1,lbl_8055C46C);
+        fn_80264098(arg0,3);
+        *(char **)((char *)arg0+8)=properties->vt->get_string(arg1,lbl_8055C474);
+        *(int *)((char *)arg0+12)=0;
+    } else if (stricmp(kind,base+0xf0)==0) {
+        obj=fn_801284F8(0xbc,base+0xfc);
+        if (obj) fn_8026523C(obj);
+        value=properties->vt->get_float(arg1,lbl_8055C484,lbl_80563BF0);
+        name=properties->vt->get_string(arg1,lbl_8055C474);
+        val=properties->vt->get_int(arg1,lbl_8055C47C);
+        fn_80265268(obj,val,name,value);
+        count=*(int *)(lbl_80498F78+4);
+        items=*(void ***)lbl_80498F78;
+        *(int *)(lbl_80498F78+4)=count+1;
+        items[count]=obj;
+        *(char **)arg0=properties->vt->get_string(arg1,lbl_8055C46C);
+        fn_80264098(arg0,5);
+        *(void **)((char *)arg0+8)=obj;
+    } else if (stricmp(kind,base+0x108)==0) {
+        obj=fn_801284F8(0x20,base+0x114);
+        if(obj) fn_80265558(obj);
+        value=properties->vt->get_float(arg1,lbl_8055C484,lbl_80563BF0);
+        fn_8026557C(obj,value);
+        count=*(int *)(lbl_80498F78+4);
+        items=*(void ***)lbl_80498F78;
+        *(int *)(lbl_80498F78+4)=count+1;
+        items[count]=obj;
+        *(int *)arg0=0;
+        fn_80264098(arg0,5);
+        *(void **)((char *)arg0+8)=obj;
+    } else if (stricmp(kind,base+0x120)==0) {
+        obj=fn_801284F8(0x24,base+0x12c);
+        if(obj) fn_802655A4(obj);
+        value=properties->vt->get_float(arg1,lbl_8055C484,lbl_80563BF0);
+        fn_80265610(obj,value);
+        count=*(int *)(lbl_80498F78+4);
+        items=*(void ***)lbl_80498F78;
+        *(int *)(lbl_80498F78+4)=count+1;
+        items[count]=obj;
+        *(int *)arg0=0;
+        fn_80264098(arg0,5);
+        *(void **)((char *)arg0+8)=obj;
+    } else {
+        fn_802E317C(base+0x138,kind);
+    }
+}
+#pragma pop
+
 #pragma scheduling invalid_target
 void fn_802643B8(void *arg0) {
     *(void **)arg0 = &lbl_8055C458;
@@ -281,6 +374,88 @@ void fn_80264618(void *arg0) {
     b = limit > b ? limit : b;
     *(float *)((char *)arg0 + 0x1C) = b;
 }
+
+#pragma push
+#pragma use_lmw_stmw off
+void *fn_802646D0(void *arg0) {
+    extern int lbl_802FA700[], lbl_80346364[], lbl_80346678[];
+    extern char lbl_8055C490[4];
+    extern float lbl_80563BFC, lbl_80563C04;
+    extern void *fn_8023512C(const char *);
+    extern void *fn_8012850C(int, void *);
+    struct Desc { int a[15]; };
+    struct Desc desc = *(struct Desc *)lbl_802FA700;
+    char *p = (char *)arg0;
+    int n;
+    void *data;
+    float f;
+    *(int *)(p+0x14) = 0;
+    *(int **)(p+0) = lbl_80346678;
+    *(int *)(p+0x18)=desc.a[0];
+    *(int *)(p+0x1c)=desc.a[1];
+    *(int *)(p+0x20)=desc.a[2];
+    *(int *)(p+0x24)=desc.a[3];
+    *(int *)(p+0x28)=desc.a[4];
+    *(int *)(p+0x2c)=desc.a[5];
+    *(int *)(p+0x30)=desc.a[6];
+    *(int *)(p+0x34)=desc.a[7];
+    *(int *)(p+0x38)=desc.a[8];
+    *(int *)(p+0x3c)=desc.a[9];
+    *(int *)(p+0x40)=desc.a[10];
+    *(int *)(p+0x44)=desc.a[11];
+    *(int *)(p+0x48)=desc.a[12];
+    *(int *)(p+0x4c)=desc.a[13];
+    *(int *)(p+0x50)=desc.a[14];
+    *(void **)(p+0x54) = fn_8023512C((const char *)desc.a[0]);
+    n = lbl_802FA700[9];
+    data = fn_8012850C(n*32, lbl_8055C490);
+    *(void **)(p+0x58)=data; *(int *)(p+0x60)=n; *(int *)(p+0x5c)=0; *(void **)(p+0x64)=data;
+    f = *(float *)(p+0x44);
+    f = f < lbl_80563BFC ? lbl_80563BFC : f;
+    *(float *)(p+0x68)=lbl_80563C00/f;
+    f = *(float *)(p+0x44);
+    f = f < lbl_80563BFC ? lbl_80563BFC : f;
+    *(float *)(p+0x6c)=lbl_80563C04/f;
+    f = *(float *)(p+0x48);
+    f = f < lbl_80563BFC ? lbl_80563BFC : f;
+    *(int *)(p+0x5c)=0;
+    *(float *)(p+0x74)=lbl_80563BF0;
+    *(float *)(p+0x70)=lbl_80563C00/f;
+    *(int *)(p+0x78) = ((int *)lbl_80346364)[0];
+    *(int *)(p+0x7c) = ((int *)lbl_80346364)[1];
+    *(int *)(p+0x80) = ((int *)lbl_80346364)[2];
+    *(int *)(p+0x84) = ((int *)lbl_80346364)[3];
+    *(int *)(p+0x88) = ((int *)lbl_80346364)[4];
+    *(int *)(p+0x8c) = ((int *)lbl_80346364)[5];
+    *(int *)(p+0x90) = ((int *)lbl_80346364)[6];
+    *(int *)(p+0x94) = ((int *)lbl_80346364)[7];
+    *(int *)(p+0x98) = ((int *)lbl_80346364)[8];
+    *(int *)(p+0x9c) = ((int *)lbl_80346364)[9];
+    *(int *)(p+0xa0) = ((int *)lbl_80346364)[10];
+    *(int *)(p+0xa4) = ((int *)lbl_80346364)[11];
+    *(int *)(p+0xa8) = ((int *)lbl_80346364)[12];
+    *(int *)(p+0xac) = ((int *)lbl_80346364)[13];
+    *(int *)(p+0xb0) = ((int *)lbl_80346364)[14];
+    *(void **)(p+0xb4) = fn_8023512C((const char *)lbl_80346364[0]);
+    n = lbl_80346364[9];
+    data = fn_8012850C(n*32, lbl_8055C490);
+    *(void **)(p+0xb8)=data; *(int *)(p+0xc0)=n; *(int *)(p+0xbc)=0; *(void **)(p+0xc4)=data;
+    f=*(float *)(p+0xa4);
+    f = f < lbl_80563BFC ? lbl_80563BFC : f;
+    *(float *)(p+0xc8)=lbl_80563C00/f;
+    f=*(float *)(p+0xa4);
+    f = f < lbl_80563BFC ? lbl_80563BFC : f;
+    *(float *)(p+0xcc)=lbl_80563C04/f;
+    f=*(float *)(p+0xa8);
+    f = f < lbl_80563BFC ? lbl_80563BFC : f;
+    *(int *)(p+0xbc)=0;
+    *(float *)(p+0xd4)=lbl_80563BF0;
+    *(float *)(p+0xd0)=lbl_80563C00/f;
+    lbl_8055F448=arg0;
+    return arg0;
+}
+#pragma pop
+
 #pragma dont_inline off
 void *fn_80264968(void *arg0, int arg1) {
     struct Local {
