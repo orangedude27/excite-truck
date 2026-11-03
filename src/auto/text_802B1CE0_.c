@@ -526,6 +526,88 @@ void fn_802B28BC(int *dst, int count) {
         offset += 4;
     }
 }
+
+extern void fn_802B2C34(void (*)(void *), void *);
+extern char lbl_8055CDE0[8], lbl_8055CDE8[4], lbl_8055CDEC[4];
+extern void fn_802C6B44(void *);
+extern int fn_802B110C(void *, int);
+extern int fn_802C9C24(void *);
+extern void fn_802E317C(const char *, ...);
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma dont_inline on
+void *fn_802B2958(void *arg0, void *arg1) {
+    char *base = lbl_8034A288;
+    char *obj = arg0;
+    char *p = fn_801284F8(12, base + 0x70);
+    char *name;
+    void *item, *child;
+    int key, value, valid;
+    float *entry;
+    float angle, c, sn, radius, zero, one;
+    unsigned int i;
+    if (p != 0) {
+        name = ((char *(*)(void *, const char *))(*(void ***)arg1)[5])(arg1, lbl_8055CDE0);
+        *(int *)(p + 8) = -2;
+        if (stricmp(name, lbl_8055CDE8) == 0) {
+            *(void **)p = 0;
+        } else {
+            item = ((void *(*)(void *, void *))fn_802B2C34)((void *)fn_802C6B44, name);
+            *(void **)p = item;
+            if (item != 0) {
+                child = *(void **)((char *)item + 4);
+                key = fn_802C9C24(child);
+                value = *(int *)((char *)child + 12);
+                valid = 0;
+                if (value != 0) {
+                    *(int *)(p + 8) = ((int (*)(void *, int))fn_802B110C)((void *)fn_802B1D38, key);
+                    if (*(int *)(p + 8) == -2)
+                        fn_802E317C(base + 0x80, key);
+                    *(int *)(p + 4) = value;
+                    valid = 1;
+                }
+                if (!valid) fn_802E317C(base + 0xA0, name);
+            } else {
+                fn_802E317C(base + 0xE4, name);
+            }
+        }
+    }
+    *(void **)(obj + 12) = p;
+    *(int *)(obj + 0x14) = 0;
+    *(int *)(obj + 0x10) = 0;
+    *(int *)obj = ((int (*)(void *, const char *, int))(*(void ***)arg1)[8])(arg1, lbl_8055CDEC, 1);
+    *(void **)(obj + 0x2A4) = ((void *(*)(void *, const char *))(*(void ***)arg1)[5])(arg1, lbl_8055CDE0);
+    *(float *)(obj + 8) = ((float (*)(void *, const char *, float))(*(void ***)arg1)[10])(arg1, base + 0x104, lbl_80564C00);
+    *(float *)(obj + 0x298) = ((float (*)(void *, const char *, float))(*(void ***)arg1)[10])(arg1, base + 0x110, lbl_80564C04);
+    *(float *)(obj + 0x29C) = ((float (*)(void *, const char *, float))(*(void ***)arg1)[10])(arg1, base + 0x11C, lbl_80564C04);
+    *(char *)(obj + 4) = ((int (*)(void *, const char *, int))(*(void ***)arg1)[12])(arg1, base + 0x128, 0);
+    entry = (float *)(obj + 0x18);
+    zero = lbl_80564C00;
+    one = lbl_80564C04;
+    for (i = 0; i < 16; i++, entry += 10) {
+        entry[9] = ((float (*)(int, float, float))fn_80129DC4)(0, *(float *)(obj + 0x298), *(float *)(obj + 0x29C));
+        angle = ((float (*)(int, float, float))fn_80129DC4)(0, lbl_80564C00, lbl_80564C08);
+        c = (float)cos(angle);
+        sn = (float)sin(angle);
+        radius = entry[9];
+        entry[0] = c * radius;
+        entry[1] = zero * radius;
+        entry[2] = -sn * radius;
+        radius = entry[9];
+        entry[3] = zero * radius;
+        entry[4] = one * radius;
+        entry[5] = zero * radius;
+        radius = entry[9];
+        entry[6] = sn * radius;
+        entry[7] = zero * radius;
+        entry[8] = c * radius;
+    }
+    *(char *)(obj + 0x2A0) = 0;
+    return obj;
+}
+#pragma pop
+
 #pragma scheduling invalid_target
 void fn_802B2C34(void (*fn)(void *), void *arg) {
     fn(arg);
