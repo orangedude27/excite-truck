@@ -953,6 +953,7 @@ void fn_802BAA50(void *arg0) {
 #pragma dont_inline on
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
 extern "C" void fn_802BAD0C(void *, float);
 extern "C" float fn_802BAD90(float);
 extern "C" void *fn_802BAA68(void **arg0, char *arg1) {
@@ -1206,9 +1207,9 @@ void fn_802BAFF8(void ***arg0, int *arg1) {
 void fn_802BB0FC(int a, int b) {
     /* Traverse pending render batches, draw them, and clear their lists. */
     RenderList *list = (RenderList *)lbl_804BFFF4;
-    RenderEntry *entry;
-    RenderNode *node;
     RenderBatch *batch;
+    RenderNode *node;
+    RenderEntry *entry;
     u16 **items;
     int i, j, v;
     RenderMatrix matrix;
