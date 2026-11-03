@@ -68,6 +68,18 @@ extern int fn_80287B38(void *);
 extern int lbl_8055F6D8;
 extern char lbl_80348A90[];
 extern void fn_80288A74(void **, int);
+static inline void transform_vector(float *m, float *v, float *out) {
+    if (out == v) {
+        float x = v[2]*m[6]+(v[0]*m[0]+v[1]*m[3]);
+        float y = v[2]*m[7]+(v[0]*m[1]+v[1]*m[4]);
+        float z = v[2]*m[8]+(v[0]*m[2]+v[1]*m[5]);
+        out[0]=x; out[1]=y; out[2]=z;
+    } else {
+        out[0]=v[2]*m[6]+(v[0]*m[0]+v[1]*m[3]);
+        out[1]=v[2]*m[7]+(v[0]*m[1]+v[1]*m[4]);
+        out[2]=v[2]*m[8]+(v[0]*m[2]+v[1]*m[5]);
+    }
+}
 void fn_802888D8(void) {
     int r3;
     int r0;
@@ -1177,9 +1189,10 @@ int fn_8028A330(int *arg0, int arg1) {
  float *vec=*(float**)(*(char**)arg0+arg1*0x68+0x64);
  float a,b,c;
  if(vec==sp14) {
-  sp14[0]=vec[2]*mat[6]+(vec[0]*mat[0]+vec[1]*mat[3]);
-  sp14[1]=vec[2]*mat[7]+(vec[0]*mat[1]+vec[1]*mat[4]);
-  sp14[2]=vec[2]*mat[8]+(vec[0]*mat[2]+vec[1]*mat[5]);
+  float x=vec[2]*mat[6]+(vec[0]*mat[0]+vec[1]*mat[3]);
+  float y=vec[2]*mat[7]+(vec[0]*mat[1]+vec[1]*mat[4]);
+  float z=vec[2]*mat[8]+(vec[0]*mat[2]+vec[1]*mat[5]);
+  sp14[0]=x; sp14[1]=y; sp14[2]=z;
  } else {
   sp14[0]=vec[2]*mat[6]+(vec[0]*mat[0]+vec[1]*mat[3]);
   sp14[1]=vec[2]*mat[7]+(vec[0]*mat[1]+vec[1]*mat[4]);
