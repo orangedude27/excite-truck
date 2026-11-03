@@ -699,6 +699,66 @@ void fn_80232D3C(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 farg0, f3
         fn_80232040(arg0, arg1, sp8, arg3, arg4, farg0, farg1, farg2, farg3, farg4, lbl_8056368C);
     }
 }
+
+#pragma push
+#pragma scheduling invalid_target
+void fn_80232DF4(u8 *text, s32 font, s32 color, s32 flags, f32 x, f32 y, f32 scale, f32 spacing, f32 extra) {
+    s32 sp10 = color;
+    f32 spC = y;
+    f32 sp8 = x;
+
+    fn_80231714(&sp10);
+    if ((s8)*text != 0) {
+        f32 rate = *(f32 *)((u8 *)fn_8022EDC4() + 0x34);
+        f32 f0 = (f32)*(u8 *)(font + 4) * scale;
+        f32 fontHeight = f0 * rate;
+        fn_80233BF0(text, (u8 *)font, &sp8, &spC, flags, scale, extra);
+        {
+            f32 startX = sp8;
+            s32 passes;
+
+            strlen((const char *)text);
+            for (passes = (*(void **)(font + 8) != NULL) + 1; passes > 0; passes--) {
+                s32 curColor = sp10;
+                s32 curFont = font;
+                s32 textOffset = 0;
+
+                sp8 = startX;
+                if (passes == 2) {
+                    curFont = *(s32 *)(font + 8);
+                    curColor = fn_80231718(curColor);
+                }
+                fn_80233E80((s32 *)curFont, curColor);
+                while ((s8)text[textOffset] != 0) {
+                    u8 first = text[textOffset];
+                    u8 *start = text + textOffset;
+                    u8 *end;
+                    u32 code;
+                    s32 offset;
+
+                    if ((first & 0xF0) == 0xE0) {
+                        code = ((first & 0x0F) << 12) | ((start[1] & 0x3F) << 6) | (start[2] & 0x3F);
+                        end = start + 3;
+                    } else if ((first & 0xE0) == 0xC0) {
+                        code = ((first & 0x1F) << 6) | __rlwinm(start[1], 0, 26, 23);
+                        end = start + 2;
+                    } else {
+                        code = first & 0x7F;
+                        end = start + 1;
+                    }
+                    code = (u16)code;
+                    offset = code * 0x1C;
+                    sp8 += scale * *(f32 *)(*(u8 **)(curFont + 0x10) + offset) * extra;
+                    fn_80233AA4((void *)curFont, code, sp8, spC - fontHeight, sp8 + scale * *(f32 *)(*(u8 **)(curFont + 0x10) + offset + 4), spC, spacing);
+                    textOffset += end - start;
+                    sp8 += scale * *(f32 *)(*(u8 **)(curFont + 0x10) + offset + 4);
+                    sp8 += extra * (scale * *(f32 *)(*(u8 **)(curFont + 0x10) + offset + 8));
+                }
+                fn_80233EBC();
+            }
+        }
+    }
+}
 #pragma pop
 extern u8 fn_80232B70(void *);
 extern void fn_802344CC(s32, s32, s32, s32, f32, f32, f32);
@@ -1002,6 +1062,10 @@ void fn_8023423C(s32 arg0, s32 arg1) {
     }
 }
 #pragma pop
+
+f32 fn_8023400C(s32 arg0) {
+    return (f32)arg0;
+}
 
 void fn_8023441C(const char *arg0) {
     lbl_8055F06C = (s32)((void *(*)(s32, const char *))fn_8012850C)(0x2100, lbl_80340614);
