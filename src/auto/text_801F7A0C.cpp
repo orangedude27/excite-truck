@@ -1404,13 +1404,10 @@ extern "C" void fn_801FA550(void) {
     void *other;
     node = lbl_8055EC50;
     while (node != 0) {
-        if (*(u8 *)((u8 *)node + 0x41) == 0 &&
-            *(u8 *)((u8 *)node + 0x40) != 0 &&
+        if (*((u8 *)node + 0x41) == 0 &&
+            *((u8 *)node + 0x40) != 0 &&
             fn_801F7A0C() != 0) {
-            void *arg = *(void **)((u8 *)node + 0x34);
-            s32 id = *(s32 *)node;
-            if (arg == 0) arg = (u8 *)node + 4;
-            fn_802C70AC(id, arg, -1, -15);
+            fn_802C70AC(*(s32 *)node, *(void **)((u8 *)node + 0x34) ? *(void **)((u8 *)node + 0x34) : (u8 *)node + 4, -1, -0xF);
         }
         node = *(void **)((u8 *)node + 0x44);
     }
@@ -1937,25 +1934,24 @@ extern "C" void fn_801FC274(void *arg0, void *arg1) {
 
     void *object = fn_801284F8(0x6c, (void *)lbl_8055B3A8);
     if (object != 0) {
-        void *resource = *(void **)((u8 *)arg1 + 0x34);
         *(const char **)((u8 *)object + 0x64) = lbl_8055B3B0;
+        void *resource = *(void **)((u8 *)arg1 + 0x34);
         *(void **)((u8 *)object + 0x30) =
             fn_801E6A3C(*(s32 *)((u8 *)arg0 + 0x13c),
                         *(u8 *)((u8 *)arg0 + 0x165) != 0, 0);
-        s32 count = *(s32 *)((u8 *)arg0 + 0x160);
-        *(s32 *)((u8 *)object + 0x54) = count;
-        void *inputEntry = arg0;
-        void *outputEntry = (u8 *)object + 0x34;
+        *(s32 *)((u8 *)object + 0x54) = *(s32 *)((u8 *)arg0 + 0x160);
         s32 i = 0;
-        while (i < count) {
-            *(void **)outputEntry = fn_801E6BEC(*(char **)((u8 *)inputEntry + 0x140));
-            inputEntry = (u8 *)inputEntry + 4;
-            outputEntry = (u8 *)outputEntry + 4;
+        void *source = arg0;
+        void *destination = object;
+        while (i < *(s32 *)((u8 *)object + 0x54)) {
+            *(void **)((u8 *)destination + 0x34) =
+                fn_801E6BEC(*(char **)((u8 *)source + 0x140));
+            source = (u8 *)source + 4;
+            destination = (u8 *)destination + 4;
             i++;
         }
-        void *manager = *(void **)((u8 *)object + 0x30);
-        s32 num = *(s32 *)((u8 *)object + 0x54);
-        fn_801E6CC8(manager, (s8)(num <= 1));
+        fn_801E6CC8(*(void **)((u8 *)object + 0x30),
+                    *(s32 *)((u8 *)object + 0x54) <= 1);
         if (*(u8 *)((u8 *)arg0 + 0x165) != 0) {
             *(s32 *)((u8 *)object + 0x60) = 1;
             *(u8 *)((u8 *)object + 0x59) = 1;
@@ -1971,9 +1967,9 @@ extern "C" void fn_801FC274(void *arg0, void *arg1) {
         } else {
             *(s32 *)((u8 *)object + 0x60) = 2;
             s32 index = fn_80129D90(0, 0, *(s32 *)((u8 *)object + 0x54));
+            volatile s32 *entries = (volatile s32 *)((u8 *)object + index * 4);
             fn_801E6CD0(*(void **)((u8 *)object + 0x30),
-                        *(s32 *)((u8 *)object + 0x34 + index * 4),
-                        lbl_80562FF0);
+                        entries[0x34 / 4], lbl_80562FF0);
         }
         *(u8 *)((u8 *)object + 0x5a) = 0;
         u32 a = *(u32 *)((u8 *)arg0 + 0x10c);
