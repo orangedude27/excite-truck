@@ -842,39 +842,44 @@ void GXSetVtxDesc(unsigned int attr, unsigned int type) {
 
 void GXSetVtxDescv(unsigned int *desc) {
     unsigned int *data = __GXData;
-    unsigned int attr;
-    unsigned int type;
-    for (;;) {
-        attr = desc[0]; type = desc[1];
-        if (attr == 0xff) break;
+    while ((int)desc[0] != 0xff) {
+        unsigned int attr = *(volatile unsigned int *)desc;
+        unsigned int type = *(volatile unsigned int *)(desc + 1);
         switch (attr) {
-        case 0: data[5] = (data[5] & 0x7fffffff) | (type & 1) << 31; break;
-        case 1: data[5] = (data[5] & 0xbfffffff) | (type & 1) << 30; break;
-        case 2: data[5] = (data[5] & 0xdfffffff) | (type & 1) << 29; break;
-        case 3: data[5] = (data[5] & 0xefffffff) | (type & 1) << 28; break;
-        case 4: data[5] = (data[5] & 0xf7ffffff) | (type & 1) << 27; break;
-        case 5: data[5] = (data[5] & 0xfbffffff) | (type & 1) << 26; break;
-        case 6: data[5] = (data[5] & 0xfdffffff) | (type & 1) << 25; break;
-        case 7: data[5] = (data[5] & 0xfeffffff) | (type & 1) << 24; break;
-        case 8: data[5] = (data[5] & 0xff7fffff) | (type & 1) << 23; break;
-        case 9: data[5] = (data[5] & 0xff9fffff) | (type & 3) << 21; break;
-        case 10: if (type) { ((unsigned char *)data)[0x524]=1; ((unsigned char *)data)[0x525]=0; data[0x520/4]=type; } else ((unsigned char *)data)[0x524]=0; break;
-        case 11: if (type) { ((unsigned char *)data)[0x525]=1; ((unsigned char *)data)[0x524]=0; data[0x520/4]=type; } else ((unsigned char *)data)[0x525]=0; break;
-        case 12: data[5] = (data[5] & 0xfff9ffff) | (type & 3) << 17; break;
-        case 13: data[5] = (data[5] & 0xfffe7fff) | (type & 3) << 15; break;
-        case 14: data[6] = (data[6] & 0x3fffffff) | (type & 3) << 30; break;
-        case 15: data[6] = (data[6] & 0xcfffffff) | (type & 3) << 28; break;
-        case 16: data[6] = (data[6] & 0xf3ffffff) | (type & 3) << 26; break;
-        case 17: data[6] = (data[6] & 0xfcffffff) | (type & 3) << 24; break;
-        case 18: data[6] = (data[6] & 0xff3fffff) | (type & 3) << 22; break;
-        case 19: data[6] = (data[6] & 0xffcfffff) | (type & 3) << 20; break;
-        case 20: data[6] = (data[6] & 0xfff3ffff) | (type & 3) << 18; break;
-        case 21: data[6] = (data[6] & 0xfffcffff) | (type & 3) << 16; break;
+        case 0: data[5] = __rlwimi(data[5],type,0,31,31); break;
+        case 1: data[5] = __rlwimi(data[5],type,1,30,30); break;
+        case 2: data[5] = __rlwimi(data[5],type,2,29,29); break;
+        case 3: data[5] = __rlwimi(data[5],type,3,28,28); break;
+        case 4: data[5] = __rlwimi(data[5],type,4,27,27); break;
+        case 5: data[5] = __rlwimi(data[5],type,5,26,26); break;
+        case 6: data[5] = __rlwimi(data[5],type,6,25,25); break;
+        case 7: data[5] = __rlwimi(data[5],type,7,24,24); break;
+        case 8: data[5] = __rlwimi(data[5],type,8,23,23); break;
+        case 9: data[5] = __rlwimi(data[5],type,9,21,22); break;
+        case 10:
+            if (type) { ((u8 *)data)[0x524]=1; ((u8 *)data)[0x525]=0; data[0x520/4]=type; }
+            else ((u8 *)data)[0x524]=0;
+            break;
+        case 25:
+            if (type) { ((u8 *)data)[0x525]=1; ((u8 *)data)[0x524]=0; data[0x520/4]=type; }
+            else ((u8 *)data)[0x525]=0;
+            break;
+        case 11: data[5] = __rlwimi(data[5],type,13,17,18); break;
+        case 12: data[5] = __rlwimi(data[5],type,15,15,16); break;
+        case 13: data[6] = __rlwimi(data[6],type,0,30,31); break;
+        case 14: data[6] = __rlwimi(data[6],type,2,28,29); break;
+        case 15: data[6] = __rlwimi(data[6],type,4,26,27); break;
+        case 16: data[6] = __rlwimi(data[6],type,6,24,25); break;
+        case 17: data[6] = __rlwimi(data[6],type,8,22,23); break;
+        case 18: data[6] = __rlwimi(data[6],type,10,20,21); break;
+        case 19: data[6] = __rlwimi(data[6],type,12,18,19); break;
+        case 20: data[6] = __rlwimi(data[6],type,14,16,17); break;
         }
         desc += 2;
     }
-    if (!((unsigned char *)data)[0x524] && !((unsigned char *)data)[0x525]) data[5] &= 0xffffe7ff;
-    else data[5] = (data[5] & 0xffffe7ff) | ((data[0x520/4] & 3) << 11);
+    if (((u8 *)data)[0x524] || ((u8 *)data)[0x525])
+        data[5] = __rlwimi(data[5], data[0x520/4], 11, 19, 20);
+    else data[5] &= 0xffffe7ff;
     data[0x5fc/4] |= 8;
 }
 
@@ -2935,49 +2940,56 @@ void __GetImageTileCount(unsigned int format, int width, int height, int *tiles_
     *compressed = ((int)format == 6 || (int)format == 0x16) ? 2 : 1;
 }
 
-void GXInitTexObj(void *obj, void *image, unsigned short width, unsigned short height, int format, int wrapS, int wrapT, int mipmap) {
-    unsigned int *p = (unsigned int *)obj;
-    unsigned int v;
-    unsigned int rowShift, colShift;
-    unsigned int fmt;
-    unsigned int value;
-    unsigned int level;
+void GXInitTexObj(register void *obj, void *image, unsigned short width, unsigned short height, int format, int wrapS, int wrapT, int mipmap) {
+    u32 *p = (u32 *)obj;
+    u32 mode, image0, image3;
+    u32 level;
+    int rowShift, colShift;
     memset(obj, 0, 0x20);
-    v = p[0];
-    v = (v & 0xfffffff0) | ((unsigned int)format & 3) | (((unsigned int)wrapS & 3) << 2) | 0x10;
-    p[0] = v;
+    mode = p[0];
+    mode = __rlwimi(mode, wrapS, 0, 30, 31);
+    mode = __rlwimi(mode, wrapT, 2, 28, 29);
+    mode |= 0x10;
+    p[0] = mode;
     if (mipmap) {
-        ((unsigned char *)obj)[0x1f] |= 1;
-        v = (v & 0xffffff1f) | ((wrapT >= 8 && wrapT <= 10 ? 5 : 6) << 5);
-        p[0] = v;
-        level = width > height ? __cntlzw(width) : __cntlzw(height);
-        level = 31 - level;
-        value = (unsigned int)(31.0f * ((double)level - 4503601774854144.0));
-        p[1] = (p[1] & 0xffff00ff) | ((value & 0xff) << 8);
+        ((u8 *)obj)[0x1f] |= 1;
+        if ((u32)(format - 8) <= 2) {
+            mode = __rlwimi(mode, 5, 5, 24, 26); p[0] = mode;
+        } else {
+            mode = __rlwimi(mode, 6, 5, 24, 26); p[0] = mode;
+        }
+        if (width > height) level = 31 - __cntlzw(width);
+        else level = 31 - __cntlzw(height);
+        p[1] = __rlwimi(p[1], (u8)(16.0f * (f32)level), 8, 16, 23);
     } else {
-        p[0] = (v & 0xffffff1f) | (4 << 5);
+        mode = __rlwimi(mode, 4, 5, 24, 26);
+        p[0] = mode;
     }
-    p[5] = wrapT;
-    p[3] = (p[3] & 0xff000000) | ((unsigned int)image >> 5 & 0xffffff);
-    p[2] = (p[2] & 0xff000000) | ((width - 1) & 0x3ff) | (((height - 1) & 0x3ff) << 10) | (((unsigned int)wrapT & 0xf) << 20);
-    fmt = (unsigned int)wrapT & 0xf;
-    if (fmt > 0xe) {
-        ((unsigned char *)obj)[0x1e] = 2;
-        ((unsigned char *)obj)[0x1f] |= 2;
-        *(unsigned short *)((char *)obj + 0x1c) = (((width + 3) >> 2) * ((height + 3) >> 2)) & 0x7fff;
-        return;
+    image0 = p[2];
+    image0 = __rlwimi(image0, width - 1, 0, 22, 31);
+    image0 = __rlwimi(image0, height - 1, 10, 12, 21);
+    p[5] = format;
+    image3 = p[3];
+    image3 = __rlwimi(image3, (u32)image, 27, 8, 31);
+    image0 = __rlwimi(image0, format, 20, 8, 11);
+    p[3] = image3;
+    p[2] = image0;
+    switch ((u32)format & 15) {
+    case 0: case 8:
+        ((u8 *)obj)[0x1e] = 1; rowShift = 3; colShift = 3; break;
+    case 1: case 2: case 9:
+        ((u8 *)obj)[0x1e] = 2; rowShift = 3; colShift = 2; break;
+    case 3: case 4: case 5: case 10:
+        ((u8 *)obj)[0x1e] = 2; rowShift = 2; colShift = 2; break;
+    case 6:
+        ((u8 *)obj)[0x1e] = 3; rowShift = 2; colShift = 2; break;
+    case 14:
+        ((u8 *)obj)[0x1e] = 0; rowShift = 3; colShift = 3; break;
+    default:
+        ((u8 *)obj)[0x1e] = 2; rowShift = 2; colShift = 2; break;
     }
-    switch (fmt) {
-    case 0: ((unsigned char *)obj)[0x1e]=1; rowShift=3; colShift=3; break;
-    case 1: ((unsigned char *)obj)[0x1e]=2; rowShift=3; colShift=2; break;
-    case 2: ((unsigned char *)obj)[0x1e]=2; rowShift=2; colShift=2; break;
-    case 3: ((unsigned char *)obj)[0x1e]=3; rowShift=2; colShift=2; break;
-    case 4: ((unsigned char *)obj)[0x1e]=0; rowShift=3; colShift=3; break;
-    case 5: ((unsigned char *)obj)[0x1e]=2; rowShift=2; colShift=2; break;
-    default: rowShift=0; colShift=0; break;
-    }
-    ((unsigned char *)obj)[0x1f] |= 2;
-    *(unsigned short *)((char *)obj + 0x1c) = ((((width + (1 << rowShift)) - 1) >> rowShift) * (((height + (1 << colShift)) - 1) >> colShift)) & 0x7fff;
+    ((u8 *)obj)[0x1f] |= 2;
+    *(u16 *)((u8 *)obj + 0x1c) = (((width + (1 << rowShift) - 1) >> rowShift) * ((height + (1 << colShift) - 1) >> colShift)) & 0x7fff;
 }
 
 extern void GXInitTexObj(void *, void *, unsigned short, unsigned short, int, int, int, int);
