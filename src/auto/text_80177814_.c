@@ -182,6 +182,7 @@ extern "C" void fn_80177CEC(void) {
     lbl_8055E43C++;
 }
 #pragma cplusplus off
+#pragma dont_inline on
 void fn_80177EE4(void) {
     int i;
     if (lbl_8055E44C != 0) {
@@ -193,6 +194,7 @@ void fn_80177EE4(void) {
         lbl_8055E44C = 0;
     }
 }
+#pragma dont_inline off
 
 void fn_80176A6C(void);
 void fn_80176A34(int);
@@ -228,6 +230,8 @@ void fn_801B24B8(void);
 void fn_801279D0(void);
 void fn_80178DBC(int, float);
 double sin(double);
+#pragma push
+#pragma ppc_psq_save off
 void fn_80177F40(void) {
     extern void *lbl_8055E458;
     extern unsigned char lbl_8055E45C;
@@ -318,7 +322,7 @@ void fn_80177F40(void) {
     fn_801279D0();
     if (active != 0) lbl_8055E3BD = saved;
 }
-
+#pragma pop
 extern char jumptable_803318F8[];
 #pragma dont_inline off
 long fn_801781B8(void) { return 0; }
@@ -856,11 +860,14 @@ void* fn_80179318(void) {
 void fn_80179320(void) {
     extern float lbl_8055E460;
     extern float lbl_80561B6C;
-    int i;
-    int offset;
-    int *values;
-    char *base;
+    register char *base = (char *)lbl_80430590;
+    register int i;
+    register int offset;
+    register int *values;
+    register char *p;
     void *object;
+    void **vtable;
+    int old;
     int *field;
     char *bytes;
 
@@ -894,7 +901,8 @@ void fn_80179320(void) {
     offset = 0;
     while (i < lbl_8055E438) {
         object = *(void **)((char *)lbl_8055E434 + offset);
-        ((void (*)(void *))(*(void ***)object)[4])(object);
+        vtable = *(void ***)object;
+        ((void (*)(void *))vtable[4])(object);
         offset += 4;
         i += 1;
     }
@@ -902,26 +910,26 @@ void fn_80179320(void) {
     fn_801B2910();
     fn_80267680();
     if (fn_801CF064() == 0) {
-        values = lbl_80430590;
+        values = (int *)base;
         i = 0;
         while (i < (int)lbl_8055E430) {
-            fn_8026A248(values[i], i);
+            old = *values;
+            fn_8026A248(old, i);
             values += 1;
             i += 1;
         }
     }
 
-    base = (char *)lbl_80430590;
+    p = base + 0x10;
     i = 0;
     do {
-        memset(base + 0x10, 0, 8);
-        base += 8;
+        memset(p, 0, 8);
         i += 1;
+        p += 8;
     } while (i < 4);
 
-    base = (char *)lbl_80430590;
+    base[0x32F0] = 0;
     bytes = base + 0x32F0;
-    bytes[0] = 0;
     bytes[0x108] = 0;
     bytes[0x210] = 0;
     bytes[0x318] = 0;
@@ -939,8 +947,9 @@ void fn_80179320(void) {
         field[6] = 0;
     }
 
-    lbl_8055E448 = lbl_8055E448 + 1;
-    fn_801349C4(lbl_8055E448 - 1);
+    old = lbl_8055E448;
+    lbl_8055E448 = old + 1;
+    fn_801349C4(old);
     fn_801CB320();
     fn_801D481C();
     fn_801C4BAC();
