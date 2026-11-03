@@ -7,6 +7,7 @@ extern double lbl_805606A8, lbl_805606B0, lbl_805606B8, lbl_805606C0, lbl_805606
 extern double lbl_805606D8, lbl_805606E0, lbl_805606E8, lbl_805606F0, lbl_805606F8, lbl_80560700, lbl_80560708;
 extern int lbl_80558DB0[];
 extern double fabs(double);
+extern double __fabs(double);
 extern double fn_8002F234(double);
 
 static const double huge = 1.0e300;
@@ -142,6 +143,52 @@ double __ieee754_acos(double x) {
         w = r * s + c;
         return 2.0 * (df + w);
     }
+}
+
+double __ieee754_asin(x)
+double x;
+{
+    double t, w, p, q, c, r, s;
+    int hx, ix;
+
+    hx = __HI(x);
+    ix = hx & 0x7fffffff;
+    if (ix >= 0x3ff00000) {
+        if (((ix - 0x3ff00000) | __LO(x)) == 0)
+            return x * lbl_80560688 + x * lbl_80560690;
+        return *(float *)&lbl_80558DB0;
+    } else if (ix < 0x3fe00000) {
+        if (ix < 0x3e400000) {
+            if (lbl_80560698 + x > lbl_805606A0)
+                return x;
+        } else
+            t = x * x;
+        p = t * (lbl_805606A8 + t * (lbl_805606B0 + t * (lbl_805606B8 + t * (lbl_805606C0 + t * (lbl_805606C8 + t * lbl_805606D0)))));
+        q = lbl_805606A0 + t * (lbl_805606D8 + t * (lbl_805606E0 + t * (lbl_805606E8 + t * lbl_805606F0)));
+        w = p / q;
+        return x + x * w;
+    }
+    w = lbl_805606A0 - fabs(x);
+    t = w * lbl_805606F8;
+    p = t * (lbl_805606A8 + t * (lbl_805606B0 + t * (lbl_805606B8 + t * (lbl_805606C0 + t * (lbl_805606C8 + t * lbl_805606D0)))));
+    q = lbl_805606A0 + t * (lbl_805606D8 + t * (lbl_805606E0 + t * (lbl_805606E8 + t * lbl_805606F0)));
+    s = fn_8002F234(t);
+    if (ix >= 0x3FEF3333) {
+        w = p / q;
+        t = lbl_80560688 - (lbl_80560700 * (s + s * w) - lbl_80560690);
+    } else {
+        w = s;
+        __LO(w) = 0;
+        c = (t - w * w) / (s + w);
+        r = p / q;
+        p = lbl_80560700 * s * r - (lbl_80560690 - lbl_80560700 * c);
+        q = lbl_80560708 - lbl_80560700 * w;
+        t = lbl_80560708 - (p - q);
+    }
+    if (hx > 0)
+        return t;
+    else
+        return -t;
 }
 
 extern double atan(double);
