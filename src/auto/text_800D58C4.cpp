@@ -181,7 +181,7 @@ extern "C" s32 fn_800D58C4(const char* a, const char* b) { return strncmp(a, b, 
 
 extern "C" int fn_800D58F0(const char *a, const char *b) { return strncmp(a, b, 0x14) == 0; }
 
-#pragma dont_inline fn_800D591C
+#pragma dont_inline on
 extern "C" s32 fn_800D591C(void* arg0) {
     s32 result = 0;
     if (*(u16*)((u8*)arg0 + 4) == 0xFEFF &&
@@ -190,6 +190,7 @@ extern "C" s32 fn_800D591C(void* arg0) {
     }
     return result;
 }
+#pragma dont_inline reset
 
 #pragma dont_inline fn_800D5944
 extern "C" s32 fn_800D5944(void* arg0, u32 arg1) {
