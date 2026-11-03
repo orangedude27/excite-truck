@@ -90,11 +90,11 @@ void DEBUGPrint(const char* pFmt, ...) {
 RVL_LIB_VERSION(WPAD, "May 17 2007", "01:52:03", "0x4199_60831");
 
 OSAlarm _managerAlarm = {0};
-WPADCB* _wpdcb[WPAD_MAX_CONTROLLERS];
-u8 __WPADiManageHandlerStack[0x1000] ALIGN(32);
-s8 _dev_handle_index[WUD_MAX_DEV_ENTRY];
+WPADCB* _wpdcb[WPAD_MAX_CONTROLLERS] = {0};
+u8 __WPADiManageHandlerStack[0x1000] ALIGN(32) = {0};
+s8 _dev_handle_index[WUD_MAX_DEV_ENTRY] = {0};
 u8 FAKE_ALIGNMENT[0x10] = {0};
-WPADCB _wpd[WPAD_MAX_CONTROLLERS];
+WPADCB _wpd[WPAD_MAX_CONTROLLERS] = {0};
 
 u8 _sleepTime;
 u8 _dpdSensitivity;
