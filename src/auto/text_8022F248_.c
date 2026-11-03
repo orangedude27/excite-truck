@@ -269,6 +269,65 @@ void fn_8022F868(void *arg0, void *arg1) {
     fn_80015B20(arg0, arg1, (void *)temp);
 }
 
+#pragma push
+#pragma processor 750
+#pragma dont_inline on
+void fn_8022F8CC(void *arg0) {
+    extern void fn_80230A68(void *, int, float, float, float, float, float);
+    extern int fn_80230B9C(int);
+    extern void fn_8022F868(void *, void *);
+    extern void fn_802C8B98(int, void *);
+    extern void fn_802C8DB8(void *, int, unsigned short *, int);
+    extern void fn_802C8D74(void);
+    extern unsigned short lbl_802F9FB0[6];
+    struct V { double a; int b, c; float d, e; } __declspec(align(16)) arr[4];
+    struct X { int a, b, c, d, e, f, g, h, i, j, k, l; } spB0, sp80;
+    struct V v0, v1, v2, v3;
+    unsigned short ids[6];
+    float u, z, x, y;
+    int state;
+
+    u = *(int *)((char *)arg0 + 0x80);
+    z = *(float *)((char *)arg0 + 0x7c);
+    state = fn_80230B9C(*(int *)((char *)arg0 + 0x38));
+    x = *(int *)((char *)arg0 + 0x84);
+    y = *(int *)((char *)arg0 + 0x88);
+
+    fn_80230A68(&v0, state, -x, y, z, lbl_805635FC, lbl_805635FC);
+    arr[0].a = v0.a;
+    arr[0].b = v0.b;
+    arr[0].c = v0.c;
+    arr[0].d = v0.d;
+    arr[0].e = v0.e;
+    fn_80230A68(&v1, state, x, y, z, u, lbl_805635FC);
+    arr[1].a = v1.a;
+    arr[1].b = v1.b;
+    arr[1].c = v1.c;
+    arr[1].d = v1.d;
+    arr[1].e = v1.e;
+    fn_80230A68(&v2, state, -x, -y, z, lbl_805635FC, u);
+    arr[2].a = v2.a;
+    arr[2].b = v2.b;
+    arr[2].c = v2.c;
+    arr[2].d = v2.d;
+    arr[2].e = v2.e;
+    fn_80230A68(&v3, state, x, -y, z, u, u);
+    arr[3].a = v3.a;
+    arr[3].b = v3.b;
+    arr[3].c = v3.c;
+    arr[3].d = v3.d;
+    arr[3].e = v3.e;
+    { struct X *p = &sp80; struct X *q = &spB0;
+    { unsigned short *p = lbl_802F9FB0 - 1;
+      ids[0] = *++p; ids[1] = *++p; ids[2] = *++p;
+      ids[3] = *++p; ids[4] = *++p; ids[5] = *++p; }
+    sp80 = *(struct X *)arg0;
+    fn_8022F868(q, p); }
+    fn_802C8B98(*(int *)((char *)arg0 + 0x30), &spB0);
+    fn_802C8DB8(arr, 4, ids, 6);
+    fn_802C8D74();
+}
+#pragma pop
 extern float lbl_80563608;
 int fn_80129D90(int, int, int);
 #pragma push
