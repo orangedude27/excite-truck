@@ -1517,19 +1517,12 @@ extern "C" s32 fn_801632C8(void *arg0) {
         virtual void *slot2(const char *);
     };
     struct Object {
-        virtual void slot0();
-        virtual void slot1();
-        virtual void slot2();
-        virtual void slot3();
-        virtual void slot4();
-        virtual void slot5();
-        virtual void slot6();
-        virtual void slot7();
+        virtual void slot0(); virtual void slot1(); virtual void slot2(); virtual void slot3();
+        virtual void slot4(); virtual void slot5(); virtual void slot6(); virtual void slot7();
         virtual s32 ready();
     };
     const char *text = (const char *)lbl_8032F588;
-    f32 spC;
-    f32 sp8;
+    f32 spC, sp8;
     void *first;
     void *settings;
     void *objectSettings;
@@ -1539,7 +1532,6 @@ extern "C" s32 fn_801632C8(void *arg0) {
     fn_801476D8((s32)first, -1, lbl_8055E2E8);
     first = ((Manager *)lbl_8055E2E0)->slot2((const char *)&lbl_8055A100);
     fn_801476D8((s32)first, -1, lbl_8055E2EC);
-
     if (((Object *)arg0)->ready() != 0) {
         first = ((Manager *)lbl_8055E2E0)->slot2(text + 0x4C8);
         fn_801476D8((s32)first, -1, lbl_8055E2F0);
@@ -1551,24 +1543,26 @@ extern "C" s32 fn_801632C8(void *arg0) {
         fn_801476D8((s32)first, -1, lbl_8055E2F4);
         fn_801473F8(lbl_8055E2E0, text + 0x4D4,
             fn_80131234((void *)(text + 0x510)));
-        if (*(s32 *)((u8 *)arg0 + 8) == 4) {
+        if (*(s32 *)((u8 *)arg0 + 8) == 4)
             selected = fn_80131234((void *)(text + 0x528));
-        } else if (*(s32 *)((u8 *)arg0 + 8) == 2) {
+        else if (*(s32 *)((u8 *)arg0 + 8) == 2)
             selected = fn_80131234((void *)(text + 0x544));
-        } else {
+        else
             selected = fn_80131234((void *)(text + 0x560));
-        }
     }
-
     settings = ((Manager *)lbl_8055E2E0)->slot1(text + 0x57C);
     objectSettings = ((Manager *)lbl_8055E2E0)->slot2(text + 0x4C8);
     if (settings != 0 && objectSettings != 0) {
-        fn_80148134(&spC, &sp8, *(s32 *)((u8 *)settings + 0xC),
-            *(f32 *)((u8 *)settings + 4), *(f32 *)((u8 *)settings + 8));
+        f32 value4 = *(f32 *)((u8 *)settings + 4);
+        f32 value8 = *(volatile f32 *)((u8 *)settings + 8);
+        s32 valueC = *(s32 *)((u8 *)settings + 0xC);
+        fn_80148134(&spC, &sp8, valueC, value4, value8);
+        f32 firstValue = *(f32 *)((u8 *)objectSettings + 0x10);
+        f32 settingValue = *(f32 *)((u8 *)settings + 0x10);
+        f32 delta = firstValue - lbl_80561860;
         fn_800103B8(*(s32 *)((u8 *)settings + 0x18),
             *(s32 *)((u8 *)settings + 0x14), (s32 *)&lbl_8055A0DC, selected,
-            *(f32 *)((u8 *)settings + 0x10), spC, sp8,
-            *(f32 *)((u8 *)objectSettings + 0x10) - lbl_80561860);
+            settingValue, spC, sp8, delta);
     }
     if (*(f32 *)((u8 *)arg0 + 0x8C) > lbl_8056185C) {
         ((Manager *)lbl_8055E2E0)->slot1(text + 0x110);
