@@ -128,6 +128,7 @@ extern int fn_80289558(int, int);
 extern void fn_80289FC4(int **, int, int);
 __declspec(section ".data") extern float lbl_80558DC4;
 #pragma push
+#pragma processor 750
 #pragma use_lmw_stmw off
 void fn_80288A74(void **arg0, int arg1) {
     void **q;
@@ -143,8 +144,7 @@ void fn_80288A74(void **arg0, int arg1) {
         limit = lbl_80564270;
         p = arg0;
         q = arg0;
-        i = 0;
-        while (i < arg1) {
+        for (i = 0; i < arg1; i++) {
             if (*((unsigned char *)q + 0xC) && *((float *)q + 2) < limit) {
                 obj = (int *)*q;
                 temp = obj[23];
@@ -154,7 +154,6 @@ void fn_80288A74(void **arg0, int arg1) {
             }
             p = (void **)((char *)p + 0x10);
             q = (void **)((char *)q + 0x10);
-            i++;
         }
     }
 }
@@ -1138,7 +1137,9 @@ int fn_8028A1A4(int out) {
         (int)fn_8012850C(count * 0x68 + 0x10, lbl_80348B7C, count * 0x68),
         fn_8028A32C, 0, 0x68, count);
 
-    for (i = 0, offset = 0; i < fn_80287B14(); offset += 0x68, i++) {
+    i = 0;
+    offset = 0;
+    while (i < fn_80287B14()) {
         obj = (char *)fn_80288208(i);
         entry = (char *)*(void **)out + (int)offset;
         if (fn_80287E20((Object *)obj, lbl_80348B8C)) {
@@ -1159,6 +1160,8 @@ int fn_8028A1A4(int out) {
         } else {
             *(int *)(entry + 0x60) = 0;
         }
+        offset += 0x68;
+        i++;
     }
 }
 #pragma scheduling on
