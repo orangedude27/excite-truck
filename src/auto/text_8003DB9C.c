@@ -56,6 +56,33 @@ typedef struct {
     u8 r, g, b, a;
 } GXColor;
 
+#ifndef GX_BITSET
+#define GX_BITSET(field, pos, size, value) \
+    __rlwimi((field), (value), 31 - (pos) - (size) + 1, (pos), (pos) + (size) - 1)
+#endif
+#define GX_FOG_GET_PROJ(x) ((x) >> 3 & 1)
+#define GX_FOG_GET_FSEL(x) ((x) & 7)
+#define GX_BP_SET_OPCODE(cmd, opcode) (cmd) = GX_BITSET(cmd, 0, 8, (opcode))
+#define GX_BP_SET_FOGPARAM0_A_MANT(reg, x) ((reg) = GX_BITSET((reg), 21, 11, x))
+#define GX_BP_SET_FOGPARAM0_A_EXP(reg, x) ((reg) = GX_BITSET((reg), 13, 8, x))
+#define GX_BP_SET_FOGPARAM0_A_SIGN(reg, x) ((reg) = GX_BITSET((reg), 12, 1, x))
+#define GX_BP_SET_FOGPARAM1_B_MAG(reg, x) ((reg) = GX_BITSET((reg), 8, 24, x))
+#define GX_BP_SET_FOGPARAM2_B_SHIFT(reg, x) ((reg) = GX_BITSET((reg), 27, 5, x))
+#define GX_BP_SET_FOGPARAM3_C_MANT(reg, x) ((reg) = GX_BITSET((reg), 21, 11, x))
+#define GX_BP_SET_FOGPARAM3_C_EXP(reg, x) ((reg) = GX_BITSET((reg), 13, 8, x))
+#define GX_BP_SET_FOGPARAM3_C_SIGN(reg, x) ((reg) = GX_BITSET((reg), 12, 1, x))
+#define GX_BP_SET_FOGPARAM3_PROJ(reg, x) ((reg) = GX_BITSET((reg), 11, 1, x))
+#define GX_BP_SET_FOGPARAM3_FSEL(reg, x) ((reg) = GX_BITSET((reg), 8, 3, x))
+#define GX_BP_SET_FOGCOLOR_RGB(reg, x) ((reg) = GX_BITSET((reg), 8, 24, x))
+#define GX_BP_REG_FOGPARAM0 0xEE
+#define GX_BP_REG_FOGPARAM1 0xEF
+#define GX_BP_REG_FOGPARAM2 0xF0
+#define GX_BP_REG_FOGPARAM3 0xF1
+#define GX_BP_REG_FOGCOLOR  0xF2
+#define GX_BP_LOAD_REG(data) \
+    *(volatile u8 *)0xCC008000 = 0x61; \
+    *(volatile u32 *)0xCC008000 = (data)
+
 typedef struct {
     unsigned short unused0 : 11;
     unsigned short pointSize : 1;
