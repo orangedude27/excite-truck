@@ -13,6 +13,7 @@ extern int fn_8002F768(void *, int, int);
 typedef struct { float v[7]; unsigned char c[3]; float f0; float f1; } EfEntry;
 typedef struct { float x, y, z; } EfVec;
 typedef struct { EfVec a; EfVec b; } EfPair;
+typedef struct { int mode; char pad4[0x34]; unsigned char en38; char pad39[0x4B]; int v84; unsigned char en88; char pad89[3]; void *buf; int head; int tail; int cap; } EfObj;
 typedef struct { EfPair p; float v6; unsigned char c0, c1, c2; float f0; float f1; } EfEntry2;
 
 extern char lbl_803490D4[];
@@ -1081,30 +1082,31 @@ extern char lbl_80349024[];
 extern char lbl_80349078[];
 extern unsigned char lbl_8055F74C;
 void fn_8028FEE4(void *arg0, int arg1, float *arg2, float farg0, float farg1) {
-    EfEntry e;
+    EfEntry2 *d;
     float *a = (float *)arg1;
     char *o = (char *)arg0;
+    EfEntry2 e;
     if (lbl_8055F73C == 0 && lbl_8055F74C == 0) {
         lbl_8055F74C = 1;
         fn_802E30C8(lbl_8055C918, lbl_80349024);
     }
-    e.v[0] = a[0];
-    e.v[1] = a[1];
-    e.v[2] = a[2];
-    e.v[3] = arg2[0];
-    e.v[4] = arg2[1];
-    e.v[5] = arg2[2];
-    e.v[6] = lbl_8055F738;
+    e.p.a.x = a[0];
+    e.p.a.y = a[1];
+    e.p.a.z = a[2];
+    e.p.b.x = arg2[0];
+    e.p.b.y = arg2[1];
+    e.p.b.z = arg2[2];
+    e.v6 = lbl_8055F738;
     e.f1 = farg1;
     switch (*(int *)o) {
     case 0:
-        e.c[0] = *(unsigned char *)(o + 0x38) ? fn_80287B5C(4) : 0;
+        e.c0 = *(unsigned char *)(o + 0x38) ? fn_80287B5C(4) : 0;
         break;
     case 1:
-        e.c[1] = *(unsigned char *)(o + 0x88) ? fn_80287B5C(*(int *)(o + 0x84)) : 0;
+        e.c1 = *(unsigned char *)(o + 0x88) ? fn_80287B5C(*(int *)(o + 0x84)) : 0;
         break;
     case 2:
-        e.c[2] = *(unsigned char *)(o + 0x38) ? fn_80287B5C(0xff) : 0;
+        e.c2 = *(unsigned char *)(o + 0x38) ? fn_80287B5C(0xff) : 0;
         e.f0 = farg0;
         break;
     default:
@@ -1112,12 +1114,26 @@ void fn_8028FEE4(void *arg0, int arg1, float *arg2, float farg0, float farg1) {
         break;
     }
     if (*(int *)(o + 0x90) < 0) {
-        *(EfEntry *)*(void **)(o + 0x8c) = e;
+        d = *(EfEntry2 **)(o + 0x8c);
+        d->p = e.p;
+        d->v6 = e.v6;
+        d->c0 = e.c0;
+        d->c1 = e.c1;
+        d->c2 = e.c2;
+        d->f0 = e.f0;
+        d->f1 = e.f1;
         *(int *)(o + 0x90) = 0;
         *(int *)(o + 0x94) = 1;
         return;
     }
-    ((EfEntry *)*(void **)(o + 0x8c))[*(int *)(o + 0x94)] = e;
+    d = *(EfEntry2 **)(o + 0x8c) + *(int *)(o + 0x94);
+    d->p = e.p;
+    d->v6 = e.v6;
+    d->c0 = e.c0;
+    d->c1 = e.c1;
+    d->c2 = e.c2;
+    d->f0 = e.f0;
+    d->f1 = e.f1;
     *(int *)(o + 0x94) = (*(int *)(o + 0x94) + 1) % *(int *)(o + 0x98);
 }
 
