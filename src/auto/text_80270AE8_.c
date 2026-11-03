@@ -148,7 +148,7 @@ int fn_80270D1C(int arg0) {
     }
 }
 
-#pragma scheduling off
+#pragma peephole off
 int fn_80270D4C(void *arg0, void *arg1) {
     float *right;
     float *left;
@@ -164,7 +164,7 @@ int fn_80270D4C(void *arg0, void *arg1) {
     }
     return (int)(*left - *right);
 }
-#pragma scheduling on
+#pragma peephole reset
 extern float lbl_80563F40;
 #pragma scheduling invalid_target
 void fn_80270DB0(void *arg0, void *arg1, float farg0) {
@@ -189,6 +189,87 @@ void fn_80270DB0(void *arg0, void *arg1, float farg0) {
     if (*(unsigned char *)((unsigned char *)arg1 + 4)) right3 = (float *)(*(char **)arg1 + 0xC); else right3 = (float *)(*(char **)arg1 + 4);
     *right3 = f3;
 }
+
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma dont_inline on
+int fn_80270EC4(void *arg0, int arg1) {
+    struct SortEntry {
+        char *record;
+        unsigned char special;
+        unsigned char pad[3];
+    };
+    extern char lbl_80346B00[];
+    extern char lbl_8049F9D8[];
+    extern int lbl_8055F554;
+    extern void qsort(void *, unsigned int, unsigned int, int (*)(const void *, const void *));
+    struct SortEntry entries[64];
+    register int flags = arg1;
+    register int count, byteOffset, i, category, groupOffset, one, zero;
+    register char *name = lbl_80346B00;
+    fn_80270C04(arg0, flags);
+    if ((flags & 0x100) != 0) {
+        category = 0;
+        groupOffset = 0;
+        one = 1;
+        zero = 0;
+        do {
+            char *record = lbl_8049F9D8;
+            count = 0;
+            byteOffset = 0;
+            i = 0;
+            while (i < *(volatile int *)&lbl_8055F554) {
+                if (category == fn_80270D1C(*(int *)(*(char **)record + 0x5C))) {
+                    struct SortEntry *out = (struct SortEntry *)((char *)entries + byteOffset);
+                    out->record = record;
+                    out->special = zero;
+                    if (*(unsigned char *)(record + 0x14) != 0) {
+                        byteOffset += 8;
+                        out = (struct SortEntry *)((char *)entries + byteOffset);
+                        out->record = out[-1].record;
+                        out->special = one;
+                        count++;
+                    }
+                    count++;
+                    byteOffset += 8;
+                }
+                record += 0x1C;
+                i++;
+            }
+            if (count > 0) {
+                int j;
+                int last;
+                float threshold;
+                qsort(entries, count, 8, (int (*)(const void *, const void *))fn_80270D4C);
+                threshold = *(float *)((char *)*(void **)((char *)arg0 + 0x2C) + groupOffset + 8);
+                last = count - 1;
+                for (j = 0; j < last; j++) {
+                    fn_80270DB0(&entries[j], &entries[j + 1], threshold);
+                }
+                fn_80270DB0(&entries[last], &entries[0], threshold);
+            }
+            category++;
+            groupOffset += 4;
+        } while (category < 3);
+        DBPrintf_80270B00(name + 0x250, lbl_8055F554);
+        {
+            int j;
+            char *record = lbl_8049F9D8;
+            for (j = 0; j < *(volatile int *)&lbl_8055F554; j++, record += 0x1C) {
+                DBPrintf_80270B00(name + 0x268, j,
+                                  *(float *)(record + 4), *(float *)(record + 8));
+                if (*(unsigned char *)(record + 0x14) != 0) {
+                    DBPrintf_80270B00(name + 0x27C, j,
+                                      *(float *)(record + 0xC), *(float *)(record + 0x10));
+                }
+            }
+        }
+    }
+}
+#pragma dont_inline reset
+#pragma pop
+
 #pragma scheduling on
 extern char lbl_80346E90[];
 void fn_802712F8(void *);
@@ -378,45 +459,85 @@ void fn_802723B4(void *arg0, void *arg1) {
 #pragma scheduling on
 extern float lbl_8055F560, lbl_80563F40, lbl_80563F48;
 extern void fn_80136468(void **, void *, float);
+#pragma ppc_psq_save off
+#pragma ppc_psq_save off
 float fn_80272428(void *arg0, void *arg1, float a, float b, float radius) {
-    float period = *(float *)((char *)*(void **)((char *)arg0 + 0x2C) + 8);
-    void *p;
-    float t, x, y, dx, dy, d0, d1, mid;
-    if (a > b) {
-        float d = b - (a - period);
-        if (d * d < lbl_8055F560) return a;
-    } else {
-        float d = b - a;
-        if (d * d < lbl_8055F560) return a;
-    }
-    fn_80136468(&p, arg0, a);
-    t = *(float *)((char *)&p + 4);
-    {
-        void *v = *(void **)((char *)p + 0x14);
-        x = *(float *)p + t * (*(float *)v - *(float *)p);
-        y = *(float *)((char *)p + 4) + t * (*(float *)((char *)v + 4) - *(float *)((char *)p + 4));
-    }
-    dx=x-*(float *)arg1; dy=y-*(float *)((char *)arg1+4);
-    d0=(float)__fabsf(radius-(dx*dx+dy*dy));
-    if (d0 < lbl_8055F560) return a;
-    fn_80136468(&p, arg0, b);
-    t = *(float *)((char *)&p + 4);
-    {
-        void *v = *(void **)((char *)p + 0x14);
-        x = *(float *)p + t * (*(float *)v - *(float *)p);
-        y = *(float *)((char *)p + 4) + t * (*(float *)((char *)v + 4) - *(float *)((char *)p + 4));
-    }
-    dx=x-*(float *)arg1; dy=y-*(float *)((char *)arg1+4);
-    d1=(float)__fabsf(radius-(dx*dx+dy*dy));
-    if (d1 < lbl_8055F560) return b;
-    if (a > b) {
-        mid=(b+(a-period))*lbl_80563F40;
-        if (mid < lbl_80563F48) mid+=period;
-    } else mid=(a+b)*lbl_80563F40;
-    if (d0 < d1) return fn_80272428(arg0,arg1,a,radius,0);
-    return fn_80272428(arg0,arg1,mid,b,radius);
-}
+    struct Result { void *node; float fraction; s32 mode; };
+    struct Point { float x; float y; };
+    float period = *(float *)((u8 *)*(void **)((u8 *)arg0 + 0x2C) + 8);
+    struct Result resultA;
+    struct Result resultB;
+    volatile struct Point pointA;
+    volatile struct Point deltaA;
+    volatile struct Point pointB;
+    volatile struct Point deltaB;
+    void *node;
+    void *next;
+    float fraction;
+    float x;
+    float y;
+    float dx;
+    float dy;
+    float squareX;
+    float squareY;
+    float distA;
+    float distB;
+    float mid;
 
+    if (a > b) {
+        float span = b - (a - period);
+        if (span * span < lbl_8055F560) return a;
+    } else {
+        float span = b - a;
+        if (span * span < lbl_8055F560) return a;
+    }
+
+    fn_80136468((void **)&resultA, arg0, a);
+    node = resultA.node;
+    fraction = resultA.fraction;
+    next = *(void **)((u8 *)node + 0x14);
+    x = *(float *)node + fraction * (*(float *)next - *(float *)node);
+    y = *(float *)((u8 *)node + 4) + fraction * (*(float *)((u8 *)next + 4) - *(float *)((u8 *)node + 4));
+    dx = x - *(float *)arg1;
+    pointA.x = x;
+    dy = y - *(float *)((u8 *)arg1 + 4);
+    pointA.y = y;
+    squareX = dx * dx;
+    deltaA.x = dx;
+    squareY = dy * dy;
+    deltaA.y = dy;
+    distA = (float)__fabsf(radius - (squareX + squareY));
+    if (distA < lbl_8055F560) return a;
+
+    fn_80136468((void **)&resultB, arg0, b);
+    node = resultB.node;
+    fraction = resultB.fraction;
+    next = *(void **)((u8 *)node + 0x14);
+    x = *(float *)node + fraction * (*(float *)next - *(float *)node);
+    y = *(float *)((u8 *)node + 4) + fraction * (*(float *)((u8 *)node + 4));
+    y = *(float *)((u8 *)node + 4) + fraction * (*(float *)((u8 *)next + 4) - *(float *)((u8 *)node + 4));
+    dx = x - *(float *)arg1;
+    pointB.x = x;
+    dy = y - *(float *)((u8 *)arg1 + 4);
+    pointB.y = y;
+    squareX = dx * dx;
+    deltaB.x = dx;
+    squareY = dy * dy;
+    deltaB.y = dy;
+    distB = (float)__fabsf(radius - (squareX + squareY));
+    if (distB < lbl_8055F560) return b;
+
+    if (a > b) {
+        mid = (b + (a - period)) * lbl_80563F40;
+        if (mid < lbl_80563F48) mid += period;
+    } else {
+        mid = (a + b) * lbl_80563F40;
+    }
+    if (distA < distB) return fn_80272428(arg0, arg1, a, mid, radius);
+    return fn_80272428(arg0, arg1, mid, b, radius);
+}
+#pragma ppc_psq_save reset
+#pragma ppc_psq_save reset
 extern char lbl_8034705C[];
 extern void fn_802723B4(void *, void *);
 void fn_8027264C(int arg0, void *arg1, float farg0) {
