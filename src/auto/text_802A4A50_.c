@@ -593,14 +593,13 @@ check:
 
 #pragma scheduling invalid_target
 void *fn_802A5AE8(void *arg0, s32 arg1, s32 arg2) {
-    s32 count = arg1;
-    s32 bytes = count * 12;
-    void *buffer = ((void *(*)(s32, void *, s32))fn_8012850C)(count * 12 + 16, lbl_80349CA0, count * 12);
-    *(s32 *)arg0 = fn_8002F37C((s32)buffer, (void *)fn_8001BA68, 0, 12, count);
-    *(s32 *)((u8 *)arg0 + 8) = count;
-    *(s32 *)((u8 *)arg0 + 12) = fn_802CAC28((void *)lbl_8055CBBC, 0);
-    *(s32 *)((u8 *)arg0 + 16) = fn_802CAC28((void *)lbl_8055CBB8, 0);
-    *(s32 *)((u8 *)arg0 + 28) = arg2;
+    s32 size = arg1 * 0xC;
+    s32 buffer = ((s32 (*)(s32, void *, s32))fn_8012850C)(size + 0x10, lbl_80349CA0, size);
+    *(s32 *)arg0 = fn_8002F37C(buffer, (void *)fn_8001BA68, 0, 0xC, arg1);
+    *(s32 *)((u8 *)arg0 + 8) = arg1;
+    *(s32 *)((u8 *)arg0 + 0xC) = fn_802CAC28((void *)lbl_8055CBBC, 0);
+    *(s32 *)((u8 *)arg0 + 0x10) = fn_802CAC28((void *)lbl_8055CBB8, 0);
+    *(s32 *)((u8 *)arg0 + 0x1C) = arg2;
     fn_802A5C1C(arg0);
     return arg0;
 }
@@ -1400,7 +1399,7 @@ void fn_802A775C(void *arg0) {
 
 #pragma scheduling invalid_target
 s32 fn_802A79CC(s32 arg0) {
-    s32 object = arg0;
+    u8 *object = (u8 *)arg0;
     f32 pointScaleFactor;
     double intBias;
     f32 rate;
@@ -1417,10 +1416,10 @@ s32 fn_802A79CC(s32 arg0) {
     s32 offset;
     s32 i;
 
-    distance = PSQUATMultiply((u8 *)fn_802C86DC() + 0x24, (u8 *)object + 0xC);
+    distance = PSQUATMultiply((u8 *)fn_802C86DC() + 0x24, object + 0xC);
     radiusScale = lbl_80564850;
     alpha = 0xFF;
-    radius = *(f32 *)((u8 *)object + 0x18);
+    radius = *(f32 *)(object + 0x18);
     delta = distance - (radiusScale * radius);
     scaled = lbl_805648D8 * (lbl_80564854 * delta);
     raw = (s32)scaled;
@@ -1429,10 +1428,10 @@ s32 fn_802A79CC(s32 arg0) {
         alpha = magnitude;
 
     if (alpha > 0) {
-        rate = fn_802C9A4C(*(f32 *)((u8 *)object + 0x30));
-        fn_802C8BD0(*(s32 *)((u8 *)object + 0x2C));
+        rate = fn_802C9A4C(*(f32 *)(object + 0x30));
+        fn_802C8BD0(*(s32 *)(object + 0x2C));
 
-        if (fn_802CE860(*(s32 *)((u8 *)object + 4)) != 0) {
+        if (fn_802CE860(*(s32 *)(object + 4)) != 0) {
             u32 alphaWord = (u32)alpha ^ 0x80000000;
             u32 highWord = 0x43300000;
             volatile union {
@@ -1444,7 +1443,7 @@ s32 fn_802A79CC(s32 arg0) {
             } conversion;
 
             intBias = lbl_80564848;
-            radius = *(f32 *)((u8 *)object + 0x18);
+            radius = *(f32 *)(object + 0x18);
             radiusSquared = radius * radius;
             conversion.words.low = alphaWord;
             conversion.words.high = highWord;
@@ -1456,9 +1455,9 @@ s32 fn_802A79CC(s32 arg0) {
 
         loop:
             {
-                u8 *point = *(u8 **)(void *)object + offset;
-                f32 distSq = PSVECSquareDistance(point, (u8 *)object + 0xC);
-                f32 pointScale = pointScaleFactor * *(f32 *)((u8 *)object + 8);
+                u8 *point = *(u8 **)object + offset;
+                f32 distSq = PSVECSquareDistance(point, object + 0xC);
+                f32 pointScale = pointScaleFactor * *(f32 *)(object + 8);
                 f32 pointX = *(f32 *)(point + 0);
                 f32 pointY = *(f32 *)(point + 4);
                 f32 pointZ = *(f32 *)(point + 8);
@@ -1476,7 +1475,7 @@ s32 fn_802A79CC(s32 arg0) {
                 i++;
             }
         check:
-            if (i < *(s32 *)((u8 *)object + 4))
+            if (i < *(s32 *)(object + 4))
                 goto loop;
             fn_802CE868();
         }
@@ -1494,7 +1493,7 @@ extern s32 fn_802C90F0(s32);
 extern void fn_802C9118(void);
 extern void fn_802C9124(s32, s32, f32, f32, u32, f32, f32, f32, f32);
 extern void fn_802D3D50(void);
-extern void fn_802A5FE4(void);
+extern void fn_802A5FE4();
 extern void *fn_801E7E34(void);
 #pragma cplusplus on
 struct Obj802A5878 {
