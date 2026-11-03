@@ -127,6 +127,13 @@ int strncmp(const char *, const char *, unsigned int);
 extern "C" int strncmp(const char *, const char *, unsigned int);
 struct AlphaColor { u8 r, g, b, a; };
 struct ResBlockSetTmp { u32 a, b, c, d; };
+namespace nw4hbm { namespace lyt {
+namespace res { struct Picture; struct TextBox; struct Window; }
+struct ResBlockSet { u32 a, b, c, d; };
+class Picture { public: Picture(const res::Picture *, const ResBlockSet &); };
+class TextBox { public: TextBox(const res::TextBox *, const ResBlockSet &); };
+class Window { public: Window(const res::Window *, const ResBlockSet &); };
+}}
 struct AnimEnableVTable {
     virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
     virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8();
@@ -983,32 +990,35 @@ extern "C" const char lbl_8031F728[];
 extern "C" const char lbl_8031F854[];
 extern "C" void* BuildPaneObj__Q36nw4hbm3lyt6LayoutFlPCvRCQ36nw4hbm3lyt11ResBlockSet(u32 kind, const void* pane, const ResBlockSetTmp* set) {
     void* obj;
-    ResBlockSetTmp tmp;
     switch (kind) {
     case 0x70616E31:
         obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0xD4);
         if (!obj) return 0;
         return __ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(obj, pane);
-    case 0x70696331:
-        tmp = *set;
+    case 0x70696331: {
+        ResBlockSetTmp tmp = *set;
         obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0xEC);
         if (!obj) return 0;
         return __ct__Q36nw4hbm3lyt7PictureFPCQ46nw4hbm3lyt3res7PictureRCQ36nw4hbm3lyt11ResBlockSet(obj, pane, &tmp);
-    case 0x74787431:
-        tmp = *set;
+    }
+    case 0x74787431: {
+        ResBlockSetTmp tmp = *set;
         obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0x100);
         if (!obj) return 0;
         return __ct__Q36nw4hbm3lyt7TextBoxFPCQ46nw4hbm3lyt3res7TextBoxRCQ36nw4hbm3lyt11ResBlockSet(obj, pane, &tmp);
-    case 0x776E6431:
-        tmp = *set;
+    }
+    case 0x776E6431: {
+        ResBlockSetTmp tmp = *set;
         obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0x104);
         if (!obj) return 0;
         return __ct__Q36nw4hbm3lyt6WindowFPCQ46nw4hbm3lyt3res6WindowRCQ36nw4hbm3lyt11ResBlockSet(obj, pane, &tmp);
-    case 0x626E6431:
-        tmp = *set;
+    }
+    case 0x626E6431: {
+        ResBlockSetTmp tmp = *set;
         obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0xD4);
         if (!obj) return 0;
         return fn_800D57AC(obj, pane, &tmp);
+    }
     default:
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F728, 0x1F7, lbl_8031F854);
         return 0;
