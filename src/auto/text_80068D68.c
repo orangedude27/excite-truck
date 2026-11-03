@@ -1571,6 +1571,52 @@ void fn_8006AED4(s32 arg0) {
     BTM_VendorSpecificCommand(0xFC4C, (u8)(length + 4), packet, fn_8006B044);
 }
 
+void fn_8006B044(tBTM_VSC_CMPL *arg0) {
+    extern u8 lbl_8055DC39;
+    extern u8 lbl_8055DC3A;
+    extern u8 lbl_80313600[];
+    extern void fn_8006B26C(tBTM_VSC_CMPL *);
+    u8 buf[0x100];
+    u8 packet[0x100];
+    s32 i;
+    s32 length;
+    s32 count;
+    s32 size;
+    u32 header;
+    u32 off;
+
+    if (arg0 != 0) {
+        off = lbl_8055DC40;
+        if (lbl_8055DC44 == off) {
+            lbl_8055DC39 = 0;
+            count = lbl_80313600[0];
+            lbl_8055DC3A = count;
+            count = count < 0x13 ? count : 0x13;
+            buf[0] = count;
+            count = (u8)count;
+            size = count * 0xD;
+            memcpy(buf + 1, lbl_80313600 + 1, size);
+            lbl_8055DC39 += count;
+            BTM_VendorSpecificCommand(0xFC4F, (u8)(size + 1), buf, (tBTM_VSC_CMPL_CB *)fn_8006B26C);
+            return;
+        }
+        length = lbl_8055DC44 - off;
+        length = (u32)length < 0xFB ? length : 0xFB;
+        length = (u8)length;
+        header = lbl_8055DC3C + off;
+        packet[0] = (u8)header;
+        packet[1] = (u8)(header >> 8);
+        packet[2] = (u8)(header >> 16);
+        packet[3] = (u8)(header >> 24);
+        for (i = 0; i < length; i++)
+            packet[i + 4] = lbl_803135C0[lbl_8055DC40 + i + 8];
+        lbl_8055DC40 += length;
+        BTM_VendorSpecificCommand(0xFC4C, (u8)(length + 4), packet, (tBTM_VSC_CMPL_CB *)fn_8006B044);
+        return;
+    }
+    fn_8006B330();
+}
+
 void fn_8006B26C(tBTM_VSC_CMPL *arg0) {
     extern u8 lbl_8055DC39;
     extern u8 lbl_8055DC3A;
@@ -6594,14 +6640,15 @@ found:
 
 void btm_chg_all_acl_pkt_types(BOOLEAN start) {
     u8 *log = lbl_80315CA0;
-    u8 *p = lbl_803C0F78 + 0x34;
     u32 i;
+    u8 *p = lbl_803C0F78 + 0x34;
     u16 mask, pkt, temp;
     u8 mode, sp8;
     u8 spC[12];
     if (start) {
-        for (i = 0; i < 4; ++i, p += 0x11C) {
-            if (!p[0x119]) continue;
+        i = 0;
+        do {
+            if (!p[0x119]) goto next1;
             if (lbl_803C0F78[0x27C0] >= 5) fn_80070954(0xD0004, log + 0x38C, *(u16 *)p);
             *(u16 *)(p + 4) = *(u16 *)(p + 2);
             pkt = 0x18;
@@ -6613,12 +6660,16 @@ void btm_chg_all_acl_pkt_types(BOOLEAN start) {
             else temp &= ~0x3306;
             if (lbl_803C0F78[0x27C0] >= 4) fn_80070954(0xD0003, log + 0x40, temp);
             if (btsnd_hcic_change_conn_type(*(u16 *)p, temp)) *(u16 *)(p + 2) = temp;
-        }
+next1:
+            ++i;
+            p += 0x11C;
+        } while (i < 4);
     } else {
-        for (i = 0; i < 4; ++i, p += 0x11C) {
-            if (!p[0x119]) continue;
-            if (!*(u16 *)(p + 4)) continue;
-            if (BTM_ReadPowerMode(p + 8, &sp8)) continue;
+        i = 0;
+        do {
+            if (!p[0x119]) goto next2;
+            if (!*(u16 *)(p + 4)) goto next2;
+            if (BTM_ReadPowerMode(p + 8, &sp8)) goto next2;
             if (sp8 == 2) {
                 if (lbl_803C0F78[0x27C0] >= 5) fn_80070954(0xD0004, log + 0x3BC, *(u16 *)p);
                 spC[8] = 0;
@@ -6635,7 +6686,10 @@ void btm_chg_all_acl_pkt_types(BOOLEAN start) {
                 if (btsnd_hcic_change_conn_type(*(u16 *)p, temp)) *(u16 *)(p + 2) = temp;
                 *(u16 *)(p + 4) = 0;
             }
-        }
+next2:
+            ++i;
+            p += 0x11C;
+        } while (i < 4);
     }
 }
 
@@ -8430,6 +8484,63 @@ void btm_pm_proc_cmd_status(UINT8 status) {
     lbl_803C0F78[0x564] = 4;
 }
 
+void btm_pm_proc_mode_change(u8 status, u16 handle, u8 mode, u16 interval) {
+    extern char lbl_80316530[];
+    extern tBTM_STATUS btm_pm_snd_md_req(UINT8, int, tBTM_PM_PWR_MD *);
+    u8 *acl, *pm, *reg, *dev, *addr;
+    int offset, index;
+    index = (u8)btm_handle_to_acl_index(handle);
+    if (index >= 4) return;
+    offset = index * 0x11c;
+    acl = lbl_803C0F78 + offset;
+    if (mode == 0 && *(u16 *)(acl + 0x38) != 0 && (u8)btm_num_sco_links_active() == 0) {
+        *(u16 *)(acl + 0x38) = 0;
+        if (lbl_803C0F78[0x27c0] >= 5)
+            fn_8007096C(0xD0004, lbl_80316530, handle, *(u16 *)(acl + 0x36));
+        btsnd_hcic_change_conn_type(*(u16 *)(acl + 0x34), *(u16 *)(acl + 0x36));
+    }
+    pm = lbl_803C0F78 + index * 0x22;
+    pm[0x4ec] = mode;
+    *(u16 *)(pm + 0x4ea) = interval;
+    {
+        tBTM_PM_PWR_MD *req = (tBTM_PM_PWR_MD *)(pm + 0x4cc);
+        int n;
+        for (n = 0; n < 2; n++) {
+            if (mode == 0 && req[n].mode == 1) req[n].mode = 0;
+        }
+    }
+    if (pm[0x4ed] == 1) btm_pm_snd_md_req(0x80, index, 0);
+    reg = lbl_803C0F78;
+    for (index = 0; index < 2; index++, reg += 8) {
+        if (reg[0x558] & 2)
+            (*(void (**)(u8 *, u8, u16, u8))(reg + 0x554))(acl + 0x3c, mode, interval, status);
+    }
+    {
+    u8 *link = (u8 *)((u32)lbl_803C0F78 + offset);
+    if (link[0x14f] == 1) {
+        addr = link + 0x3c;
+        dev = (u8 *)btm_find_dev(addr);
+        if (dev != 0 && (dev[0x76] & 4)) {
+            if (btsnd_hcic_set_conn_encrypt(handle, 0)) {
+                link[0x14f] = 2;
+                return;
+            }
+        } else {
+            if (btsnd_hcic_switch_role(addr, lbl_803C0F78[offset + 0x14e] == 0)) {
+                link[0x14f] = 0;
+                return;
+            }
+        }
+        link[0x14f] = 0;
+        if (*(void (**)(void *))(lbl_803C0F78 + 0x62c) != 0) {
+            lbl_803C0F78[0x624] = status;
+            (*(void (**)(void *))(lbl_803C0F78 + 0x62c))(lbl_803C0F78 + 0x624);
+            *(void (**)(void *))(lbl_803C0F78 + 0x62c) = 0;
+        }
+    }
+    }
+}
+
 void fn_8007D4C4(void) {
     extern u32 lbl_802EEBF8[];
     u8 *dst = lbl_803C0F78;
@@ -9604,16 +9715,20 @@ void BTM_SetPinType(UINT8 pin_type, PIN_CODE pin_code, UINT8 pin_code_len) {
 
 BOOLEAN BTM_SetSecurityLevel(BOOLEAN is_originator, char *p_name, UINT8 service_id, UINT16 sec_level, UINT16 psm, UINT32 mx_proto_id, UINT32 mx_chan_id) {
     char *trace = lbl_80316870;
-    u8 *entry = lbl_803C0F78 + 0x1990;
-    u16 index = 0;
-    u16 first_free = 0xFFFF;
-    BOOLEAN found = FALSE;
+    u8 *entry;
+    u16 index;
+    u16 first_free;
+    BOOLEAN found;
 
+    first_free = 0xFFFF;
+    entry = lbl_803C0F78 + 0x1990;
+    found = FALSE;
+    index = 0;
     for (; index < 0x18; index++, entry += 0x3C) {
         if (entry[0xE] & 0x80) {
             if (*(u16 *)(entry + 0xC) == psm &&
                 *(u32 *)(entry + 0x0) == mx_proto_id &&
-                entry[0xF] == service_id &&
+                service_id == entry[0xF] &&
                 (strncmp(p_name, (char *)(entry + 0x10), 0x15) == 0 ||
                  strncmp(p_name, (char *)(entry + 0x26), 0x15) == 0)) {
                 found = TRUE;
@@ -9634,7 +9749,7 @@ BOOLEAN BTM_SetSecurityLevel(BOOLEAN is_originator, char *p_name, UINT8 service_
         *(u32 *)(entry + 0x0) = mx_proto_id;
         if (is_originator) {
             *(u32 *)(entry + 0x4) = mx_chan_id;
-            entry[0xE] &= 0xC7;
+            entry[0xE] &= ~0x38;
             strncpy((char *)(entry + 0x10), p_name, 0x15);
         } else {
             *(u32 *)(entry + 0x8) = mx_chan_id;
