@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+#pragma ppc_psq_save off
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((char *)(expr) + (offset)))
 
 extern void fn_8017E930(void *);
@@ -136,8 +137,7 @@ extern void fn_802E85A8(int, float, float, float);
 extern void fn_802E85AC(int, float, float, float);
 extern float lbl_8055A334;
 extern float lbl_80561C60;
-#pragma push
-#pragma use_lmw_stmw off
+#pragma ppc_psq_save off
 void fn_8017F628(void *arg0) {
     float scale = lbl_8055A334;
     if (fn_801769F8() == 0 && fn_801B526C() == 0 && fn_801C5B60() == 0 &&
@@ -160,7 +160,7 @@ void fn_8017F628(void *arg0) {
         }
     } else ((void (*)(int))fn_802E8518)(*(int *)((char *)arg0 + 8));
 }
-#pragma pop
+#pragma ppc_psq_save reset
 float fn_8017F70C(float arg0) { double temp = __fabs(arg0); return temp; }
 
 extern int fn_80128668(void);
@@ -370,20 +370,64 @@ void fn_80181480(void *arg0, int arg1) {
  if(old>arg1) *(int *)((char *)arg0+0x50)=arg1;
 }
 
-float fn_80181498(void *arg0) {
- float f31=*(float *)((char *)arg0+0xC);
- float f2;
- float f0;
- if (f31 <= lbl_80561C48) f31=lbl_80561C48;
- f2=*(float *)((char *)arg0+0xC);
- if (f2 >= lbl_80561C58) {} else f2=lbl_80561C58;
- f0=*(float *)((char *)arg0+0xC)+*(float *)((char *)arg0+0x10);
- if (f31 < f0) f31=f0;
- if (f31 > f2) f31=f2;
- if (((int (*)(void *))(*(char **)arg0+0x5C))(arg0)) f31=*(float *)((char *)arg0+0xC);
- return f31;
-}
+#pragma push
+#pragma cplusplus on
+#pragma paired_single off
+#pragma scheduling invalid_target
+extern "C" float fn_80181498(void *arg0) {
+    class Callback {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+        virtual void f10();
+        virtual void f11();
+        virtual void f12();
+        virtual void f13();
+        virtual void f14();
+        virtual void f15();
+        virtual void f16();
+        virtual void f17();
+        virtual void f18();
+        virtual void f19();
+        virtual void f20();
+        virtual int f21();
+    };
+    float f31 = *(float *)((char *)arg0 + 0xC);
+    float f2;
+    float f0;
 
+    f0 = lbl_80561C48;
+    if (f31 > f0) {
+    } else {
+        f31 = f0;
+    }
+    f2 = *(float *)((char *)arg0 + 0xC);
+    f0 = lbl_80561C58;
+    if (f2 < f0) {
+        f2 = f0;
+    }
+    f0 = *(float *)((char *)arg0 + 0xC);
+    f0 += *(float *)((char *)arg0 + 0x10);
+    if (f31 < f0) {
+        f31 = f0;
+    }
+    if (f31 > f2) {
+        f31 = f2;
+    }
+    if (((Callback *)arg0)->f21() != 0) {
+        f31 = *(float *)((char *)arg0 + 0xC);
+    }
+    return f31;
+}
+#pragma pop
 float fn_80181548(void *arg0) {
     float value = *(float *)((char *)arg0 + 0x20) + *(float *)((char *)arg0 + 0x24);
     if (value < lbl_80561C48) return value;
