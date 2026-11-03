@@ -183,6 +183,7 @@ extern "C" {
 extern u8 lbl_8033B1EC[];
 extern u8 lbl_8033B210[];
 extern u8 lbl_8033B024[];
+extern u32 lbl_802F9BA0[8];
 __declspec(section ".sdata") extern u8 lbl_8055B2CC[];
 __declspec(section ".sdata") extern u8 lbl_8055B2D4[];
 __declspec(section ".sdata") extern u8 lbl_8055B2DC[];
