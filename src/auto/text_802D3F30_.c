@@ -64,6 +64,11 @@ extern u32 lbl_8055FDE8;
 extern u8 lbl_8055FDEC;
 typedef struct { f32 x, y, z; } FifoVec3;
 typedef struct { FifoVec3 pos; u32 color; f32 u, v; } FifoVtx;
+extern f32 lbl_804C5690[];
+extern f32 lbl_804C56C0[];
+extern f32 lbl_804DB068[];
+extern f32 lbl_8056500C;
+extern f32 PSVECSquareDistance(void *, void *);
 void fn_802D3F30(void) {
 }
 
@@ -986,52 +991,66 @@ extern f32 lbl_80565010;
 extern f32 lbl_80565014;
 void fn_802D65F8(s32 arg0, s32 arg1) {
     u8 *bytes = (u8 *)arg0;
-    u8 a, b, c, d, e, f, g;
+    u8 a, b, c, d, e, f, g, h;
     s32 count = *(s32 *)(bytes + 0x1C);
     u8 *entries;
+    s32 i;
 
     extern void fn_802D63FC(void *, s32);
     fn_802D63FC((void *)arg0, arg1);
-    a=bytes[0x2C]; b=bytes[0x2F]; c=bytes[0x2D]; d=bytes[0x2E];
-    e=bytes[0x30]; f=bytes[0x33]; g=bytes[0x31];
-    bytes[0x2C]=b; bytes[0x2F]=a; bytes[0x2D]=d; bytes[0x2E]=c;
-    bytes[0x30]=f; bytes[0x33]=e; bytes[0x31]=bytes[0x32]; bytes[0x32]=g;
-    fn_802D657C((s32 *)(bytes+0x30),arg1);
-    if(bytes[8]==0x1A) fn_802D6594(bytes);
-    count=*(s32 *)(bytes+0x1C);
-    if(bytes[8]==0x13) {
-        entries=*(u8 **)(bytes+0x20);
-        if(count>0) {
+    a = bytes[0x2C];
+    b = bytes[0x2F];
+    c = bytes[0x2D];
+    d = bytes[0x2E];
+    e = bytes[0x30];
+    f = bytes[0x33];
+    g = bytes[0x31];
+    h = bytes[0x32];
+    bytes[0x2C] = b;
+    bytes[0x2F] = a;
+    bytes[0x2D] = d;
+    bytes[0x2E] = c;
+    bytes[0x30] = f;
+    bytes[0x33] = e;
+    bytes[0x31] = h;
+    bytes[0x32] = g;
+    fn_802D657C((s32 *)(bytes + 0x30), arg1);
+    if (bytes[8] == 0x1A) fn_802D6594(bytes);
+
+    count = *(s32 *)(bytes + 0x1C);
+    if (bytes[8] == 0x13) {
+        entries = *(u8 **)(bytes + 0x20);
+        if (count > 0) {
             do {
-                if((entries[0xC]!=0x4C && entries[0xC]!=0x4D) || entries[0xD]!=0) goto second;
-                entries+=0x10;
-            } while(--count!=0);
+                if ((entries[0xC] != 0x4C && entries[0xC] != 0x4D) || entries[0xD] != 0)
+                    goto second;
+                entries += 0x10;
+            } while (--count != 0);
         }
         fn_802E317C(lbl_8034C3B4);
-        count=*(s32 *)(bytes+0x1C);
-        entries=*(u8 **)(bytes+0x20);
-        bytes[8]=0x1A;
-        while(count-->0) {
-            f32 value=lbl_80565010*(f32)entries[0xE]/lbl_80565014;
-            *(f32 *)(entries+0xC)=entries[0xC]==0x4C ? value : -value;
-            entries+=0x10;
+        bytes[8] = 0x1A;
+        entries = *(u8 **)(bytes + 0x20);
+        for (i = 0; i < *(s32 *)(bytes + 0x1C); ++i) {
+            f32 value = lbl_80565010 * (f32)entries[0xE] / lbl_80565014;
+            *(f32 *)(entries + 0xC) = entries[0xC] == 0x4C ? value : -value;
+            entries += 0x10;
         }
     }
 second:
-    if(bytes[8]==0x19) {
-        count=*(s32 *)(bytes+0x1C);
-        entries=*(u8 **)(bytes+0x20);
-        if(count>0) do {
-            if((entries[0xC]!=0x4C && entries[0xC]!=0x4D) || entries[0xD]!=0) return;
-            entries+=0x18;
-        } while(--count!=0);
-        count=*(s32 *)(bytes+0x1C);
-        entries=*(u8 **)(bytes+0x20);
-        bytes[8]=0x1B;
-        while(count-->0) {
-            f32 value=lbl_80565010*(f32)entries[0xE]/lbl_80565014;
-            *(f32 *)(entries+0xC)=entries[0xC]==0x4C ? value : -value;
-            entries+=0x18;
+    if (bytes[8] == 0x19) {
+        count = *(s32 *)(bytes + 0x1C);
+        entries = *(u8 **)(bytes + 0x20);
+        if (count > 0) do {
+            if ((entries[0xC] != 0x4C && entries[0xC] != 0x4D) || entries[0xD] != 0)
+                return;
+            entries += 0x18;
+        } while (--count != 0);
+        bytes[8] = 0x1B;
+        entries = *(u8 **)(bytes + 0x20);
+        for (i = 0; i < *(s32 *)(bytes + 0x1C); ++i) {
+            f32 value = lbl_80565010 * (f32)entries[0xE] / lbl_80565014;
+            *(f32 *)(entries + 0xC) = entries[0xC] == 0x4C ? value : -value;
+            entries += 0x18;
         }
     }
 }
