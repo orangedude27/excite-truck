@@ -14009,24 +14009,22 @@ extern "C" s32 fn_800C3CDC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     fn_800C4B5C(arg2, arg3);
     p = (s32 *)fn_800C4B8C(0xED78);
     ((void (*)(void *, s32, s32))fn_800C4BD8)(p, 0, 0xED78);
-    register u16 capacity = 0x400;
-    register s32 zero = 0;
-    p[1] = zero;
-    p[2] = zero;
-    p[3] = zero;
-    p[5] = zero;
-    p[6] = zero;
-    *(s32 *)((u8 *)p + 0x9CC) = zero;
-    *(s32 *)((u8 *)p + 0x9D0) = zero;
-    *(s32 *)((u8 *)p + 0x9D4) = zero;
-    *(s32 *)((u8 *)p + 0x9D8) = zero;
-    *(s32 *)((u8 *)p + 0x9DC) = zero;
-    *(s32 *)((u8 *)p + 0x9E0) = zero;
-    *(s32 *)((u8 *)p + 0x9E4) = zero;
-    *(s32 *)((u8 *)p + 0x9E8) = zero;
-    *(u16 *)((u8 *)p + 0x27C) = capacity;
+    p[1] = 0;
+    p[2] = 0;
+    p[3] = 0;
+    p[5] = 0;
+    p[6] = 0;
+    *(s32 *)((u8 *)p + 0x9CC) = 0;
+    *(s32 *)((u8 *)p + 0x9D0) = 0;
+    *(s32 *)((u8 *)p + 0x9D4) = 0;
+    *(s32 *)((u8 *)p + 0x9D8) = 0;
+    *(s32 *)((u8 *)p + 0x9DC) = 0;
+    *(s32 *)((u8 *)p + 0x9E0) = 0;
+    *(s32 *)((u8 *)p + 0x9E4) = 0;
+    *(s32 *)((u8 *)p + 0x9E8) = 0;
+    *(u16 *)((u8 *)p + 0x27C) = 0x400;
     *(s32 *)((u8 *)p + 0x278) = arg1;
-    fn_800BEE64(p, arg0, zero);
+    ((s32 (*)(void *, s32))fn_800BEE64)(p, arg0);
     return (s32)p;
 }
 #pragma pop
@@ -15459,6 +15457,7 @@ extern "C" void *fn_800D0F1C(void *, s32);
 extern "C" s32 fn_800D67B8(s32, s32);
 extern "C" void fn_800C6A1C(void *arg0, s32 arg1) {
     u8 *self = (u8 *)arg0;
+    u8 *q;
     s32 i;
     if (arg0 != 0) {
         ((Freeable800C6A1C *)*(void **)(self + 0x1F4))->free(-1);
@@ -15466,34 +15465,34 @@ extern "C" void fn_800C6A1C(void *arg0, s32 arg1) {
         ((Freeable800C6A1C *)*(void **)(self + 0x1E0))->free(-1);
         MEMFreeToAllocator(lbl_80559708, *(void **)(self + 0x1E0));
         if (*(s32 *)((u8 *)*(void **)(self + 4) + 0x20) == 0) {
-            for (i = 0; i < 4; i++) {
-                void *p = *(void **)(self + 0x1E4 + i * 4);
-                ((Freeable800C6A1C *)p)->free(-1);
-                MEMFreeToAllocator(lbl_80559708, p);
+            q = self;
+            for (i = 0; i < 4; i++, q += 4) {
+                ((Freeable800C6A1C *)*(void **)(q + 0x1E4))->free(-1);
+                MEMFreeToAllocator(lbl_80559708, *(void **)(q + 0x1E4));
             }
         }
-        for (i = 0; i < *(s32 *)(self + 0xC); i++) {
-            void *p = *(void **)(self + 0x268 + i * 4);
-            ((Freeable800C6A1C *)p)->free(-1);
-            MEMFreeToAllocator(lbl_80559708, p);
+        q = self;
+        for (i = 0; i < *(s32 *)(self + 0xC); i++, q += 4) {
+            ((Freeable800C6A1C *)*(void **)(q + 0x268))->free(-1);
+            MEMFreeToAllocator(lbl_80559708, *(void **)(q + 0x268));
         }
-        for (i = 0; i < 0xF; i++) {
-            void *p = *(void **)(self + 0x3C0 + i * 4);
-            ((Freeable800C6A1C *)p)->free(-1);
-            MEMFreeToAllocator(lbl_80559708, p);
+        q = self;
+        for (i = 0; i < 0xF; i++, q += 4) {
+            ((Freeable800C6A1C *)*(void **)(q + 0x3C0))->free(-1);
+            MEMFreeToAllocator(lbl_80559708, *(void **)(q + 0x3C0));
         }
-        for (i = 0; i < 0x4A; i++) {
-            void *p = *(void **)(self + 0x298 + i * 4);
-            ((Freeable800C6A1C *)p)->free(-1);
-            MEMFreeToAllocator(lbl_80559708, p);
+        q = self;
+        for (i = 0; i < 0x4A; i++, q += 4) {
+            ((Freeable800C6A1C *)*(void **)(q + 0x298))->free(-1);
+            MEMFreeToAllocator(lbl_80559708, *(void **)(q + 0x298));
         }
         MEMFreeToAllocator(lbl_80559708, *(void **)(self + 0x1FC));
         ((Freeable28_800C6A1C *)*(void **)(self + 0x1F8))->free(-1);
         MEMFreeToAllocator(lbl_80559708, *(void **)(self + 0x1F8));
-        for (i = 0; i < 4; i++) {
-            void *p = *(void **)(self + 0x254 + i * 4);
-            fn_800D0F1C(p, -1);
-            MEMFreeToAllocator(lbl_80559708, p);
+        q = self;
+        for (i = 0; i < 4; i++, q += 4) {
+            fn_800D0F1C(*(void **)(q + 0x254), -1);
+            MEMFreeToAllocator(lbl_80559708, *(void **)(q + 0x254));
         }
         ((Freeable800C6A1C *)((u8 *)*(void **)(self + 0x264) + 0x1F0))->free(-1);
         MEMFreeToAllocator(lbl_80559708, *(void **)(self + 0x264));
@@ -21123,8 +21122,9 @@ extern "C" void fn_800CD38C(const char *selfArg, const char *paneName) {
 
 extern "C" void reset_btn__Q210homebutton10HomeButtonFv(void *arg0) {
     u8 *self=(u8*)arg0;
-    s32 i=0, j;
+    void *pane;
     u8 *cursor=self;
+    s32 i=0, j;
     for(;i<*(s32*)(self+8);cursor+=4,i++) {
         if(*(s32*)(cursor+0x1c)) {
             s32 *entry=lbl_802F4528;
@@ -21135,14 +21135,14 @@ extern "C" void reset_btn__Q210homebutton10HomeButtonFv(void *arg0) {
             }
             j=-1;
 found:
-            void *pane=*(void**)(self+0x268+j*4);
+            pane=*(void**)(self+0x268+j*4);
             fn_800CF3EC(pane);
             *(s32*)((u8*)pane+0x14)=1;
             *(s32*)(cursor+0x1c)=0;
         }
     }
     if(*(s32*)(self+0x1c+*(s32*)(self+8)*4)) {
-        void *pane=*(void**)(self+0x3f0);
+        pane=*(void**)(self+0x3f0);
         fn_800CF3EC(pane);
         *(s32*)((u8*)pane+0x14)=1;
         *(s32*)(self+0x1c+(*(s32*)(self+8)+1)*4)=0;
@@ -21151,26 +21151,26 @@ found:
         if(*(s32*)self==1) {
             if(*(s32*)(self+0x18)==0) {
                 s32 *entry=lbl_802F4588;
-                for(j=0;j<74;j++,entry+=2) {
-                    if(entry[0]!=5) continue;
-                    if(entry[1]==20) goto found20;
-                }
+                j=0; for(s32 k=0;k<37;k++,entry+=4,j++) {
+ if(entry[0]==5 && entry[1]==20) goto found20;
+ j++; if(entry[2]==5 && entry[3]==20) goto found20;
+}
                 j=-1;
 found20:
-                void *pane=*(void**)(self+0x298+j*4);
+                pane=*(void**)(self+0x298+j*4);
                 fn_800CF3EC(pane);
                 *(s32*)((u8*)pane+0x14)=1;
                 *(s32*)(self+0x1c+*(s32*)(self+8)*4)=0;
             }
         } else {
             s32 *entry=lbl_802F4588;
-            for(j=0;j<74;j++,entry+=2) {
-                if(entry[0]!=5) continue;
-                if(entry[1]==3) goto found3;
-            }
+            j=0; for(s32 k=0;k<37;k++,entry+=4,j++) {
+ if(entry[0]==5 && entry[1]==3) goto found3;
+ j++; if(entry[2]==5 && entry[3]==3) goto found3;
+}
             j=-1;
 found3:
-            void *pane=*(void**)(self+0x298+j*4);
+            pane=*(void**)(self+0x298+j*4);
             fn_800CF3EC(pane);
             *(s32*)((u8*)pane+0x14)=1;
             *(s32*)(self+0x1c+*(s32*)(self+8)*4)=0;
