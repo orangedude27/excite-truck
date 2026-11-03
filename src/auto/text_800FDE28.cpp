@@ -70,6 +70,26 @@ extern "C" void fn_8002F634(void*, void*, s32, s32);
 extern "C" s32 ExecuteSingle__Q46nw4hbm3snd6detail11TaskManagerFv(void*);
 extern "C" u32 OSDisableInterrupts(void);
 extern "C" void OSRestoreInterrupts(u32 level);
+struct TaskListIterator { void *node; };
+static inline u8 *TaskManagerPopFront(u8 *self, s32 off) {
+    u32 level = OSDisableInterrupts();
+    u8 *task;
+    if (*(s32 *)(self + off) == 0) {
+        OSRestoreInterrupts(level);
+        task = 0;
+    } else {
+        TaskListIterator it;
+        if (*(s32 *)(self + off) == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326F98, 0x1F1, (const char *)lbl_80326F74);
+        task = *(u8 **)(self + off + 4);
+        if (!task) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326F38, 0x23D, (const char *)lbl_80326F14);
+        task -= 4;
+        if (!task) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326F68, 0x193, (const char *)lbl_80326F44);
+        it.node = *(void **)(self + off + 4);
+        ((void (*)(void *, TaskListIterator))Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator)(self + off, it);
+        OSRestoreInterrupts(level);
+    }
+    return task;
+}
 extern "C" void Stop__Q36nw4hbm3snd10WavePlayerFv(void *);
 extern "C" void Free__Q46nw4hbm3snd6detail7AxVoiceFv(void *);
 extern "C" void Stop__Q46nw4hbm3snd6detail7AxVoiceFv(void *);
@@ -258,6 +278,84 @@ extern "C" void fn_800FE1D0(void) {
     do {
     } while (ExecuteSingle__Q46nw4hbm3snd6detail11TaskManagerFv((void *)0) != 0);
 }
+
+extern "C" s32 ExecuteSingle__Q46nw4hbm3snd6detail11TaskManagerFv(void *arg0) {
+    struct Iterator { void *node; };
+    typedef void (*EraseFn)(void *, struct Iterator);
+    u32 level;
+    u8 *self = (u8 *)arg0;
+    OSLockMutex(self);
+    level = OSDisableInterrupts();
+    u8 *task;
+    if (*(s32 *)(self + 0x38) == 0) {
+        OSRestoreInterrupts(level);
+        task = 0;
+    } else {
+        struct Iterator it;
+        if (*(s32 *)(self + 0x38) == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326F98, 0x1F1, (const char *)lbl_80326F74);
+        task = *(u8 **)(self + 0x3C);
+        if (!task) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326F38, 0x23D, (const char *)lbl_80326F14);
+        task -= 4;
+        if (!task) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326F68, 0x193, (const char *)lbl_80326F44);
+        it.node = *(void **)(self + 0x3C);
+        ((EraseFn)Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator)(self + 0x38, it);
+        OSRestoreInterrupts(level);
+    }
+    *(u8 **)(self + 0x1C) = task;
+    if (task == 0) {
+        level = OSDisableInterrupts();
+        if (*(s32 *)(self + 0x2C) == 0) {
+            OSRestoreInterrupts(level);
+            task = 0;
+        } else {
+            struct Iterator it;
+            if (*(s32 *)(self + 0x2C) == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326F98, 0x1F1, (const char *)lbl_80326F74);
+            task = *(u8 **)(self + 0x30);
+            if (!task) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326F38, 0x23D, (const char *)lbl_80326F14);
+            task -= 4;
+            if (!task) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326F68, 0x193, (const char *)lbl_80326F44);
+            it.node = *(void **)(self + 0x30);
+            ((EraseFn)Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator)(self + 0x2C, it);
+            OSRestoreInterrupts(level);
+        }
+        *(u8 **)(self + 0x1C) = task;
+        if (task == 0) {
+            level = OSDisableInterrupts();
+            if (*(s32 *)(self + 0x20) == 0) {
+                OSRestoreInterrupts(level);
+                task = 0;
+            } else {
+                struct Iterator it;
+                if (*(s32 *)(self + 0x20) == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326F98, 0x1F1, (const char *)lbl_80326F74);
+                task = *(u8 **)(self + 0x24);
+                if (!task) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326F38, 0x23D, (const char *)lbl_80326F14);
+                task -= 4;
+                if (!task) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326F68, 0x193, (const char *)lbl_80326F44);
+                it.node = *(void **)(self + 0x24);
+                ((EraseFn)Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator)(self + 0x20, it);
+                OSRestoreInterrupts(level);
+            }
+            *(u8 **)(self + 0x1C) = task;
+            if (task == 0) {
+                OSUnlockMutex(self);
+                return 0;
+            }
+        }
+    }
+    {
+        void *node = *(void **)(self + 0x1C);
+        ((void (*)(void *))(*(void ***)node)[3])(node);
+    }
+    task = *(u8 **)(self + 0x1C);
+    if (*(void **)(self + 0x18) == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326E08, 0x5D, (const char *)lbl_80326E70);
+    level = OSDisableInterrupts();
+    MEMAdjustFrmHeap(*(void **)(self + 0x18), task);
+    OSRestoreInterrupts(level);
+    *(void **)(self + 0x1C) = 0;
+    OSUnlockMutex(self);
+    return 1;
+}
+
 #pragma dont_inline reset
 
 extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(void *, void *);
