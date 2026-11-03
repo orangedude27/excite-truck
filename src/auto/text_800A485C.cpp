@@ -214,7 +214,7 @@ class Freeable28_800C6A1C { public: virtual void d0(); virtual void d1(); virtua
 extern "C" s32 fn_800A8D08(s32, void **, s32 *, s32, s32 *);
 extern "C" s32 fn_800B5260(void *, void *, u32, u32, s32);
 extern "C" s32 fn_800ACA5C(void *, void *, u32);
-extern "C" s32 fn_800AFBA8(void *, u16, u32 *);
+extern "C" s32 fn_800AFBA8(void *, u16, u32 *, void *);
 extern "C" s32 fn_800B05C8(void *, s32, u32 *, void *);
 extern "C" s32 fn_800B00E8(void *, s32, u32 *, void *);
 class Fn800C6610Dispatch { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7(); virtual void d8(); virtual void d9(); virtual void d10(void *); };
@@ -4997,7 +4997,7 @@ extern "C" s32 fn_800AE664(void *arg0, u32 arg1, u32 arg2, s32 *arg3, s32 *arg4)
 
 extern "C" s32 VFiPFCACHE_FreeFATPage_800A8E10(void *, void *);
 extern "C" s32 fn_800A8D08(s32, void **, s32 *, s32, s32 *);
-extern "C" s32 fn_800AFBA8(void *, u16, u32 *);
+extern "C" s32 fn_800AFBA8(void *, u16, u32 *, void *);
 extern "C" s32 fn_800B00E8(void *, s32, u32 *, void *);
 extern "C" s32 fn_800B05C8(void *, s32, u32 *, void *);
 extern "C" s32 fn_800AEBA0(void *arg0, u32 arg1, u32 arg2, u32 *arg3, s32 arg_sp0) {
@@ -5036,7 +5036,7 @@ dispatch:
     type = *(s32 *)((u8 *)object + 0x1C);
     switch (type) {
     case 0:
-        result = fn_800AFBA8(object, (u16)arg1, &value);
+        result = fn_800AFBA8(object, (u16)arg1, &value, pageForRead);
         break;
     case 1:
         result = fn_800B00E8(object, arg1, &value, pageForRead);
@@ -8578,93 +8578,69 @@ extern "C" s32 VFiPFCODE_CP932_OEM2Unicode(s32 arg0, u16 *arg1) {
     return fn_800A4BE8(2, 2);
 }
 
-void VFiPFCODE_CP932_Unicode2OEM(unsigned short *param_1, char *param_2)
-{
-    short sVar1;
-    short sVar2;
-    unsigned long long uVar3;
-    unsigned short uVar4;
-    unsigned short *puVar5;
-    int iVar6;
-    int iVar7;
-    int iVar8;
-    unsigned short *puVar9;
-    long long lVar10;
+extern "C" s32 VFiPFCODE_CP932_Unicode2OEM(s32 arg0, u32 *arg1) {
+    u8 *out = (u8 *)arg1;
+    u16 *rowp;
+    s32 row;
+    s32 col;
+    u16 *p;
+    u16 sjis;
+    u16 code;
+    u16 raw = *(u16 *)arg0;
+    u8 lo = raw;
+    u8 hi = raw >> 8;
 
-    uVar4 = *param_1;
-    if (((uVar4 & 0xff) < 0x80) && ((int)(unsigned int)uVar4 >> 8 == 0)) {
-        *param_2 = (char)uVar4;
-        param_2[1] = '\0';
-        fn_800A4BE8(1, 2);
-        return;
+    if (lo < 0x80 && hi == 0) {
+        out[0] = lo;
+        out[1] = 0;
+        return fn_800A4BE8(1, 2);
     }
-    uVar3 = (unsigned long long)((int)(unsigned int)uVar4 >> 8) * 0x100 + (uVar4 & 0xff);
-    if ((0xff60 < uVar3) && (uVar3 < 0xffa0)) {
-        param_2[1] = '\0';
-        *param_2 = (char)uVar3 + '@';
-        fn_800A4BE8(1, 2);
-        return;
+    code = (hi << 8) + lo;
+    if (code >= 0xff61 && code <= 0xff9f) {
+        s32 v = code - 0x10000;
+        v += 0x140;
+        out[1] = 0;
+        out[0] = v;
+        return fn_800A4BE8(1, 2);
     }
-    if (uVar3 == 0x5f) {
-        *param_2 = '_';
-        fn_800A4BE8(1, 2);
-        return;
+    if (code == 0x5f) {
+        out[0] = 0x5f;
+        return fn_800A4BE8(1, 2);
     }
-    iVar6 = 0;
-    puVar5 = lbl_802EEF80;
-    do {
-        lVar10 = 0x15;
-        puVar9 = puVar5;
-        iVar7 = 0;
-        do {
-            iVar8 = iVar7;
-            if ((((((*puVar9 == uVar3) || (iVar8 = iVar7 + 1, puVar9[1] == uVar3)) ||
-                (iVar8 = iVar7 + 2, puVar9[2] == uVar3)) ||
-               ((iVar8 = iVar7 + 3, puVar9[3] == uVar3 || (iVar8 = iVar7 + 4, puVar9[4] == uVar3)))) ||
-              ((iVar8 = iVar7 + 5, puVar9[5] == uVar3 ||
-               ((iVar8 = iVar7 + 6, puVar9[6] == uVar3 || (iVar8 = iVar7 + 7, puVar9[7] == uVar3)))))) ||
-             (iVar8 = iVar7 + 8, puVar9[8] == uVar3)) break;
-            iVar8 = iVar7 + 9;
-            puVar9 += 9;
-            lVar10--;
-            iVar7 = iVar8;
-        } while (lVar10 != 0);
-        if (iVar8 < 0xbd) break;
-        iVar6++;
-        puVar5 += 0xbd;
-    } while (iVar6 < 0x2d);
-    if (iVar8 == 0xbd) {
-        *param_2 = '_';
-        fn_800A4BE8(1, 2);
-        return;
-    }
-    sVar1 = (short)iVar8;
-    sVar2 = (short)iVar6;
-    if (iVar6 < 0 || 3 < iVar6) {
-        if (iVar6 < 4 || 0x1c < iVar6) {
-            if (iVar6 < 0x1d || 0x27 < iVar6) {
-                if (iVar6 < 0x28 || 0x29 < iVar6) {
-                    if (iVar6 < 0x2a || 0x2c < iVar6) {
-                        *param_2 = '_';
-                        fn_800A4BE8(1, 2);
-                        return;
-                    }
-                    uVar4 = (sVar2 + 0xd0) * 0x100 | sVar1 + 0x40U;
-                } else {
-                    uVar4 = (sVar2 + 0xc5) * 0x100 | sVar1 + 0x40U;
-                }
-            } else {
-                uVar4 = (sVar2 + 0xc3) * 0x100 | sVar1 + 0x40U;
+    rowp = lbl_802EEF80;
+    for (row = 0; row < 0x2d; row++) {
+        p = rowp;
+        for (col = 0; col < 0xbd; col++, p++) {
+            if (*p == code) {
+                break;
             }
-        } else {
-            uVar4 = (sVar2 + 0x83) * 0x100 | sVar1 + 0x40U;
         }
-    } else {
-        uVar4 = (sVar2 + 0x81) * 0x100 | sVar1 + 0x40U;
+        if (col < 0xbd) {
+            break;
+        }
+        rowp += 0xbd;
     }
-    param_2[1] = (char)uVar4;
-    *param_2 = (char)(uVar4 >> 8);
-    fn_800A4BE8(2, 2);
+    if (col == 0xbd) {
+        out[0] = 0x5f;
+        return fn_800A4BE8(1, 2);
+    }
+    if (row >= 0 && row <= 3) {
+        sjis = ((row + 0x81) << 8) | (col + 0x40);
+    } else if (row >= 4 && row <= 0x1c) {
+        sjis = ((row + 0x83) << 8) | (col + 0x40);
+    } else if (row >= 0x1d && row <= 0x27) {
+        sjis = ((row + 0xc3) << 8) | (col + 0x40);
+    } else if (row >= 0x28 && row <= 0x29) {
+        sjis = ((row + 0xc5) << 8) | (col + 0x40);
+    } else if (row >= 0x2a && row <= 0x2c) {
+        sjis = ((row + 0xd0) << 8) | (col + 0x40);
+    } else {
+        out[0] = 0x5f;
+        return fn_800A4BE8(1, 2);
+    }
+    out[1] = sjis;
+    out[0] = sjis >> 8;
+    return fn_800A4BE8(2, 2);
 }
 
 #pragma dont_inline reset
@@ -18701,7 +18677,7 @@ extern "C" void fn_800C7F8C(void *arg0, s32 arg1) {
             }
             s32 *entry=lbl_802F4588;
             j=0;
-            for(k=0;k<37;k++,entry+=4,j++) {
+            for(k=0;k<37;entry+=4,k++,j++) {
                 if(i+31==entry[0] && entry[1]==17) goto found1;
                 j++;
                 if(i+31==entry[2] && entry[3]==17) goto found1;
@@ -18721,7 +18697,7 @@ found1:
             }
             s32 *entry=lbl_802F4588;
             j=0;
-            for(k=0;k<37;k++,entry+=4,j++) {
+            for(k=0;k<37;entry+=4,k++,j++) {
                 if(i+31==entry[0] && entry[1]==16) goto found0;
                 j++;
                 if(i+31==entry[2] && entry[3]==16) goto found0;
