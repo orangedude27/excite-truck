@@ -292,6 +292,8 @@ extern void fn_802C8C04(int);
 extern unsigned short lbl_802FA008[6];
 extern Idx_80235CBC lbl_802FA020;
 __declspec(section ".data") extern float lbl_80558DC4;
+extern float lbl_805636B0;
+extern float lbl_805636B4;
 extern void *fn_8022EDC4(void);
 extern void fn_802C8DB8(void *, int, unsigned short *, int);
 extern void fn_802C8D74(void);
