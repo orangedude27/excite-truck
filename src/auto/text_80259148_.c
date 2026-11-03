@@ -353,6 +353,15 @@ void fn_80259740(int arg0, float farg0) {
     lbl_8055F3A0 = (arg0 - 2) == 0;
 }
 
+extern float lbl_80563AF4;
+extern float lbl_80563AF8;
+extern float lbl_80563AEC;
+extern float lbl_80563AF0;
+extern int fn_8001EFA0(int, int);
+extern int fn_8001EFA4(int, int);
+extern void fn_8001EFB0(void *);
+extern void fn_80130FCC(void *, int, int);
+extern int fn_8025978C(void **);
 int fn_8025A1C4(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0)
         fn_80128668((void *)arg0);
