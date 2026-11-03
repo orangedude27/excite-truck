@@ -28,6 +28,50 @@ extern void *fn_80131810(const char *);
 extern void fn_80131818(void *);
 extern void *fn_8023512C(const char *);
 extern void *fn_802CAC28(const char *, s32);
+
+typedef struct {
+    const char *seq;
+    f32 scale;
+    s32 handle;
+    void *resource;
+    s32 artIdx;
+    u8 flag;
+    u8 pad[3];
+    f32 field18;
+} Fn80232230_Record;
+
+struct Fn80232230_Entry;
+
+struct Fn80232230_EntryVtable {
+    void *slot0;
+    void *slot1;
+    const char *(*getName)(void *);
+    s32 (*hasKey)(void *, const char *);
+    void *slot4;
+    const char *(*getString)(void *, const char *);
+    void *slot6;
+    s32 (*getInt)(void *, const char *);
+    void *slot8;
+    void *slot9;
+    f32 (*getFloat)(void *, const char *, f32);
+    void *slot11;
+    u8 (*getByte)(void *, const char *, s32);
+};
+
+struct Fn80232230_Entry {
+    struct Fn80232230_EntryVtable *vtable;
+};
+
+struct Fn80232230_ListVtable {
+    void *slot0;
+    void *slot1;
+    void *slot2;
+    struct Fn80232230_Entry *(*getEntry)(void *, s32);
+};
+
+struct Fn80232230_List {
+    struct Fn80232230_ListVtable *vtable;
+};
 extern f32 lbl_80563680;
 extern f32 lbl_80563684;
 extern f32 lbl_80563688;
