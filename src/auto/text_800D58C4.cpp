@@ -155,6 +155,8 @@ struct Dummy_800DB1E8 {
     virtual void *call();
 };
 struct StateNode_800D6CA0 { StateNode_800D6CA0* next; };
+extern "C" const char lbl_8031E908[];
+extern "C" const char lbl_8031E92C[];
 extern "C" s32 lbl_8055DE08;
 struct PaneAnimLink {
     PaneAnimLink* next;
@@ -818,7 +820,6 @@ extern "C" void *CreateAnimTransform__Q36nw4hbm3lyt6LayoutFPCvPQ36nw4hbm3lyt16Re
     extern const char lbl_8031F8C0[];
     extern const char lbl_8031F89C[];
     const char *msg=lbl_8031F728;
-    int id=0x70616931;
     void *result=0;
     int i;
     char *block;
@@ -829,7 +830,8 @@ extern "C" void *CreateAnimTransform__Q36nw4hbm3lyt6LayoutFPCvPQ36nw4hbm3lyt16Re
     if (count!=8) Panic__Q26nw4hbm2dbFPCciPCce(msg,0x137,msg+0x6C,count>>8,count&0xFF,0,8);
     block=(char *)resource+*(unsigned short *)((char *)resource+0xC);
     for (i=0; i<*(unsigned short *)((char *)resource+0xE); i++) {
-        if (*(int *)block==id) {
+        switch (*(int *)block) {
+        case 0x70616931: {
             if (result!=0) Panic__Q26nw4hbm2dbFPCciPCce(msg,0x141,msg+0x108);
             int tag=*(int *)resource;
             switch(tag) {
@@ -850,6 +852,8 @@ extern "C" void *CreateAnimTransform__Q36nw4hbm3lyt6LayoutFPCvPQ36nw4hbm3lyt16Re
                 if (result==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F8C0,0x233,lbl_8031F89C);
                 Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)self+4,(void **)&it,(char *)result+4);
             }
+            break;
+        }
         }
         block+=*(int *)(block+4);
     }
