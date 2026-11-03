@@ -264,6 +264,10 @@ static inline DVDLowContext *newContext(void *callback, unsigned int arg2, const
     return &((DVDLowContext *)lbl_8037B820)[id];
 }
 
+int DVDLowInit(void) {
+    return 0;
+}
+
 #pragma scheduling invalid_target
 int fn_8003A834(void *arg0, void *arg1) {
     unsigned int one = 1;
