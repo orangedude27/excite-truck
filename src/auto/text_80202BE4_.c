@@ -61,7 +61,7 @@ struct lbl_80488B88_t { s32 w[12]; };
 extern struct lbl_80488B88_t lbl_80488B88;
 extern void fn_80202BFC(s32);
 extern void fn_80203380(void*);
-extern void fn_802036E4(void);
+extern void fn_802036E4(s32, u8*, s32, s32, f32, f32);
 extern s32 fn_802BE07C(s32, s32, s32, s32, s32, s32, s32, s32);
 extern s32 fn_802C8BD0(s32);
 extern void fn_802C8D74(void);
@@ -142,6 +142,8 @@ void fn_80202BFC(s32 arg0) {
     } while (i < 2);
 }
 
+#pragma push
+#pragma paired_single off
 void fn_80202D50(f32 *arg0) {
     f32 mag, inv, y, ny, lo, t, th;
     s32 i, n, r;
@@ -185,7 +187,6 @@ void fn_80202D50(f32 *arg0) {
     }
     fn_802D30DC(r);
 }
-
 #pragma pop
 
 #pragma paired_single off
@@ -542,22 +543,21 @@ void fn_802039CC(s32 arg0, struct lbl_80488B88_t* arg1) {
     fn_802BE07C(arg0 + 0x24, (s32)fn_802036E4, w10, w9, w8, w7, w6, w5);
     fn_802C8D74();
 }
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_80203A88(void* arg0, s32 arg1, unk_80203A88_dest* arg2) {
     f32 var_f0;
     f32 var_f1;
     f32 var_f2;
     f32 var_f3;
-    volatile f32* input = (volatile f32*)arg0;
 
     if (fn_80202BE4() == 0) {
         fn_802D3050(1);
         fn_802D306C(0x5A);
-        var_f2 = input[1];
+        var_f2 = ((f32*)arg0)[1];
         var_f0 = lbl_80563130;
-        var_f3 = input[0];
+        var_f3 = ((f32*)arg0)[0];
         var_f0 = var_f2 + var_f0;
-        var_f1 = input[2];
+        var_f1 = ((f32*)arg0)[2];
         arg2->x = var_f3;
         arg2->z = var_f1;
         arg2->y = var_f0;
@@ -566,10 +566,6 @@ void fn_80203A88(void* arg0, s32 arg1, unk_80203A88_dest* arg2) {
         fn_802D306C(0);
     }
 }
-
-#pragma push
-#pragma scheduling invalid_target
-#pragma opt_propagation off
 void fn_80203B20(void *arg0, void *arg1, s32 arg2) {
     u8 stack[0x60];
 
