@@ -861,6 +861,83 @@ void fn_800066B4(void *arg0) {
     fn_8001DFCC();
 }
 
+#pragma ppc_psq_save off
+#pragma use_lmw_stmw off
+extern s32 fn_80010E94(s32, s32, f32, f32, f32, f32);
+extern f32 fn_80011E34(void);
+extern f32 fn_80011E54(void);
+extern void *fn_800122B4(s32, void *);
+extern void fn_801345D8(void *, s32, const char *, ...);
+extern s32 fn_801EA994(void);
+extern void *fn_801EA9B0(s32);
+extern f32 lbl_80560118, lbl_80560170, lbl_80560174, lbl_80560178, lbl_8056017C;
+extern f32 lbl_80560180, lbl_80560184, lbl_80560188, lbl_8056018C;
+extern const char lbl_80558930[], lbl_80558934[], lbl_80558940[];
+void fn_80006B18(void *arg0) {
+    u8 sp8[8];
+    u8 sp10[16];
+    f32 start;
+    f32 now;
+    f32 y;
+    f32 advance;
+    f32 scale;
+    f32 gap;
+    f32 threshold;
+    f32 percent;
+    f32 offset;
+    f32 percentScale;
+    f32 value;
+    s32 i;
+    s32 flags;
+    s32 whole;
+    s32 remainder;
+    void *entry;
+
+    start = fn_80011E34();
+    now = fn_80011E54() - lbl_80560170;
+    i = 0;
+    scale = lbl_80560174;
+    gap = lbl_80560178;
+    threshold = lbl_8056017C;
+    percent = lbl_80560188;
+    offset = lbl_80560184;
+    percentScale = lbl_8056018C;
+    for (; i < fn_801EA994(); i++) {
+        entry = fn_801EA9B0(i);
+        y = now - scale * (f32)i;
+        fn_80010E94(*(s32 *)((u8 *)arg0 + 0x14), 0, start,
+                    y - gap, lbl_80560118, lbl_8056017C);
+        flags = *(s32 *)((u8 *)entry + 0xC);
+        advance = start + scale;
+        if (flags & 1) {
+            fn_8000FF88(-0x100, 0x41, (void *)lbl_80558930,
+                        lbl_80560180, advance, (y - gap) - threshold,
+                        *(void **)((u8 *)entry + 0x14));
+            advance += offset;
+        } else if (flags & 2) {
+            value = *(f32 *)((u8 *)entry + 0x18);
+            if (value < lbl_8056011C) {
+                fn_801345D8(sp8, 8, lbl_80558934);
+            } else {
+                whole = (s32)value;
+                remainder = (s32)(percent * value) - whole * 100;
+                fn_801345D8(sp8, 8, lbl_80558940, whole, remainder);
+            }
+            fn_8000FF88(-0x100, 0x41, lbl_80558948,
+                        lbl_80560180, advance, (y - gap) - threshold, sp8);
+            advance += percentScale;
+        } else {
+            fn_8000FF88(-0x100, 0x41, lbl_80558948,
+                        lbl_80560180, advance, (y - gap) - threshold,
+                        fn_800122B4(i + 1, sp10));
+            advance += offset;
+        }
+        fn_8000FF88(-0x100, 0x21, lbl_80558948,
+                    lbl_80560130, advance, (y - gap) - threshold,
+                    (u8 *)entry + 0x48);
+    }
+}
+
 void fn_80006D30(void) {
     char sp8[0x48];
     if (((s32 *)((u8 *)*(void **)((u8 *)lbl_8055D350 + 0x2C) + 0x2C0))[0] & 0x10) {
