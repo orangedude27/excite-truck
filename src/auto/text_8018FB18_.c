@@ -14,6 +14,10 @@ typedef s32 M2C_UNK;
 #define M2C_BITWISE(type, expr) ((type)(expr))
 #endif
 
+extern void fn_801333E8(void *, void *, void *);
+extern s32 fn_8018B06C(void *);
+extern char lbl_80332E70[];
+extern s32 lbl_8055D430;
 typedef struct VObj318 { void **vtbl; } VObj318;
 #define VCALL0(o, off, ret) ((ret (*)(void *))((VObj318 *)(o))->vtbl[(off) / 4])(o)
 extern void fn_801B6650(int);
