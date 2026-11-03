@@ -392,6 +392,7 @@ extern void fn_80072AE4(u8 *, u8 *, u8 *);
 extern void bta_dm_disc_remname_cback(u8 *);
 extern void bta_dm_find_services(u8 *);
 extern u16 lbl_802EE990[];
+void *fn_80095C64(void **head, u32 attr);
 extern char lbl_80316870[];
 extern char lbl_80315D00[];
 extern char lbl_8031669C[];
@@ -13672,10 +13673,12 @@ void hidh_sec_check_complete_term(u8 *bd_addr, void *p_ref_data, u8 res) {
 
 void hidh_l2cif_connect_ind(u8 *addr, u16 cid, u16 psm, u8 id) {
     extern void hidh_sec_check_complete_term(u8 *, void *, u8);
-    char *strings = lbl_80317838;
+    char *strings;
     u8 *entry;
+    int accept;
     int i;
-    int accept = 1;
+    strings = lbl_80317838;
+    accept = 1;
     if (lbl_803C3C38[0x401] >= 4)
         fn_8007096C(0x1e0003, strings + 0x58, psm, cid);
     entry = lbl_803C3C38;
