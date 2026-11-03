@@ -64,7 +64,6 @@ extern void *fn_80264580(void);
 #pragma cplusplus on
 struct PropertyReader802640C4 {
     virtual ~PropertyReader802640C4();
-    virtual void slot08();
     virtual void slot0C();
     virtual void slot10();
     virtual char *getString(const char *);
@@ -166,22 +165,14 @@ void fn_802640A0(void *arg0) {
 #pragma push
 #pragma processor 750
 #pragma dont_inline on
-void fn_802640C4(void *arg0, void *arg1) {
+#pragma cplusplus on
+extern "C" void fn_802640C4(void *arg0, void *arg1) {
     extern char lbl_8055C45C[4], lbl_8055C464[4], lbl_8055C46C[4], lbl_8055C474[4], lbl_8055C47C[4], lbl_8055C484[4];
     extern unsigned char lbl_80498F78[];
     extern void *fn_801284F8(unsigned int, void *);
     extern void fn_8026523C(void *), fn_80265558(void *), fn_802655A4(void *);
     extern void fn_80265268(void *, int, char *, float), fn_8026557C(void *, float), fn_80265610(void *, float);
-    struct PropertyVtable {
-        void *pad0[5];
-        char *(*get_string)(void *, char *);
-        void *pad1;
-        int (*get_int)(void *, char *);
-        void *pad2[2];
-        float (*get_float)(void *, char *, float);
-    };
-    struct Property { struct PropertyVtable *vt; };
-    struct Property *properties = (struct Property *)arg1;
+    PropertyReader802640C4 *properties = (PropertyReader802640C4 *)arg1;
     char *base=lbl_80346338;
     char *kind;
     void *obj;
@@ -190,30 +181,30 @@ void fn_802640C4(void *arg0, void *arg1) {
     char *name;
     int val;
     float value;
-    kind = properties->vt->get_string(arg1,lbl_8055C45C);
+    kind = properties->getString(lbl_8055C45C);
     if (stricmp(kind,lbl_8055C464)==0) {
-        *(char **)arg0=properties->vt->get_string(arg1,lbl_8055C46C);
+        *(char **)arg0=properties->getString(lbl_8055C46C);
         fn_80264098(arg0,3);
-        *(char **)((char *)arg0+8)=properties->vt->get_string(arg1,lbl_8055C474);
+        *(char **)((char *)arg0+8)=properties->getString(lbl_8055C474);
         *(int *)((char *)arg0+12)=0;
     } else if (stricmp(kind,base+0xf0)==0) {
         obj=fn_801284F8(0xbc,base+0xfc);
         if (obj) fn_8026523C(obj);
-        value=properties->vt->get_float(arg1,lbl_8055C484,lbl_80563BF0);
-        name=properties->vt->get_string(arg1,lbl_8055C474);
-        val=properties->vt->get_int(arg1,lbl_8055C47C);
+        value=properties->getFloat(lbl_8055C484,lbl_80563BF0);
+        name=properties->getString(lbl_8055C474);
+        val=properties->getInt(lbl_8055C47C);
         fn_80265268(obj,val,name,value);
         count=*(int *)(lbl_80498F78+4);
         items=*(void ***)lbl_80498F78;
         *(int *)(lbl_80498F78+4)=count+1;
         items[count]=obj;
-        *(char **)arg0=properties->vt->get_string(arg1,lbl_8055C46C);
+        *(char **)arg0=properties->getString(lbl_8055C46C);
         fn_80264098(arg0,5);
         *(void **)((char *)arg0+8)=obj;
     } else if (stricmp(kind,base+0x108)==0) {
         obj=fn_801284F8(0x20,base+0x114);
         if(obj) fn_80265558(obj);
-        value=properties->vt->get_float(arg1,lbl_8055C484,lbl_80563BF0);
+        value=properties->getFloat(lbl_8055C484,lbl_80563BF0);
         fn_8026557C(obj,value);
         count=*(int *)(lbl_80498F78+4);
         items=*(void ***)lbl_80498F78;
@@ -225,7 +216,7 @@ void fn_802640C4(void *arg0, void *arg1) {
     } else if (stricmp(kind,base+0x120)==0) {
         obj=fn_801284F8(0x24,base+0x12c);
         if(obj) fn_802655A4(obj);
-        value=properties->vt->get_float(arg1,lbl_8055C484,lbl_80563BF0);
+        value=properties->getFloat(lbl_8055C484,lbl_80563BF0);
         fn_80265610(obj,value);
         count=*(int *)(lbl_80498F78+4);
         items=*(void ***)lbl_80498F78;
