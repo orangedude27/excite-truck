@@ -62,6 +62,7 @@ extern struct lbl_80488B88_t lbl_80488B88;
 extern void fn_80202BFC(s32);
 extern void fn_80203380(void*);
 extern void fn_802036E4(s32, u8*, s32, s32, f32, f32);
+#define LBL_80488B88_F ((f32*)&lbl_80488B88)
 extern u16 lbl_8055ECF0;
 extern f32 lbl_80563124, lbl_8056312C;
 extern void fn_802D3ECC(u16);
@@ -500,7 +501,88 @@ void fn_80203380(void *argp) {
     fn_802C8E48();
     fn_802C8D74();
 }
-#pragma scheduling invalid_target
+
+#pragma push
+#pragma processor 750
+#pragma opt_strength_reduction off
+void fn_802036E4(s32 arg0, u8* arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1) {
+    struct { f32 n[2]; f32 d[3]; f32 v[3]; f32 p[3]; } s;
+    f32 mag;
+    s32 i;
+    s32 j;
+    u8* e;
+    f32 dx, dy, dz;
+    f32 inv;
+    f32 den;
+    f32 a, b, c;
+
+    if (arg0 != lbl_8055ED1C) {
+        lbl_8055ED1C = arg0;
+        fn_802C8D74();
+        fn_802C8BD0(lbl_8055ED1C);
+        fn_802D3ECC(lbl_8055ECF0);
+    }
+    if (((s32 (*)(s32))fn_802C8DBC)(arg3 * 8) != 0) {
+        f32* g = (f32*)&lbl_80488B88;
+        f32 f26 = lbl_805630F8;
+        f32 f27 = lbl_805630D4;
+        f32 f28 = lbl_80563124;
+        f32 f31 = lbl_8056312C;
+        for (i = 0; i < arg3; i++) {
+            e = arg1 + i * arg2;
+            dx = *(f32*)e - g[9];
+            dz = ((f32*)e)[2] - g[11];
+            dy = ((f32*)e)[1] - g[10];
+            s.v[0] = dx;
+            s.v[1] = dy;
+            s.v[2] = dz;
+            s.n[0] = dz;
+            s.n[1] = -dx;
+            mag = (f32)((double (*)(f32))fn_8002F234)(dz * dz + s.n[1] * s.n[1]);
+            if (mag > f31) {
+                inv = f27 / mag;
+                s.n[0] *= inv;
+                s.n[1] *= inv;
+                for (j = 0; j < 4; j++) {
+                    s32 bit0 = j & 1;
+                    s32 bit1 = j & 2;
+                    s.p[0] = ((f32*)e)[0];
+                    s.p[1] = ((f32*)e)[1];
+                    s.p[2] = ((f32*)e)[2];
+                    if (bit0 != 0) {
+                        s.p[0] = s.p[0] + s.n[0] * farg0;
+                        s.p[2] = s.p[2] + s.n[1] * farg0;
+                    } else {
+                        s.p[0] = s.p[0] - s.n[0] * farg0;
+                        s.p[2] = s.p[2] - s.n[1] * farg0;
+                    }
+                    if (bit1 != 0) {
+                        s.p[1] += farg1;
+                    }
+                    a = s.p[0] - g[9];
+                    b = s.p[1] - g[10];
+                    c = s.p[2] - g[11];
+                    s.d[0] = a * g[0] + b * g[1] + c * g[2];
+                    s.d[1] = a * g[3] + b * g[4] + c * g[5];
+                    s.d[2] = a * g[6] + b * g[7] + c * g[8];
+                    mag = PSVECMag(s.d);
+                    if (f26 > mag) {
+                        mag = f26;
+                    }
+                    inv = f27 / mag;
+                    s.d[0] = s.d[0] * inv;
+                    s.d[1] = s.d[1] * inv;
+                    s.d[2] = s.d[2] * inv;
+                    den = f27 + s.d[1];
+                    fn_802C8E00((s32)0xFF404040, (s64)j >= 2, (f28 * s.d[0]) / den, lbl_805630CC, (f28 * s.d[2]) / den,
+                                bit1 != 0 ? f27 : lbl_805630CC, bit0 != 0 ? lbl_805630D4 : lbl_805630CC);
+                }
+            }
+        }
+        fn_802C8E48();
+    }
+}
+#pragma pop
 void fn_802039CC(s32 arg0, struct lbl_80488B88_t* arg1) {
     struct lbl_80488B88_t* dest;
     s32 w0;
