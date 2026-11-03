@@ -188,6 +188,7 @@ extern u8 lbl_8055DC50;
 extern u8 lbl_8055DC51;
 extern void uusb_CloseDeviceCB(s8);
 extern void uusb_issue_intr_read(void);
+extern void uusb_issue_bulk_read(void);
 extern s32 IUSB_ReadIntrMsgAsync(s32, u32, u32, void *, void (*)(void), void *);
 extern void rfc_port_sm_state_closed(void *, u16, void *);
 extern void rfc_port_sm_sabme_wait_ua(void *, u16, void *);
