@@ -987,6 +987,9 @@ extern "C" void* __ct__Q36nw4hbm3lyt7PictureFPCQ46nw4hbm3lyt3res7PictureRCQ36nw4
 extern "C" void* __ct__Q36nw4hbm3lyt7TextBoxFPCQ46nw4hbm3lyt3res7TextBoxRCQ36nw4hbm3lyt11ResBlockSet(void*, const void*, const void*);
 extern "C" void* __ct__Q36nw4hbm3lyt6WindowFPCQ46nw4hbm3lyt3res6WindowRCQ36nw4hbm3lyt11ResBlockSet(void*, const void*, const void*);
 extern "C" void* fn_800D57AC(void*, const void*, const void*);
+struct Bounding_800D58C4 {
+    Bounding_800D58C4(const void *pane, const ResBlockSetTmp &set) { fn_800D57AC(this, pane, &set); }
+};
 extern "C" const char lbl_8031F728[];
 extern "C" const char lbl_8031F854[];
 extern "C" void* BuildPaneObj__Q36nw4hbm3lyt6LayoutFlPCvRCQ36nw4hbm3lyt11ResBlockSet(u32 kind, const void* pane, const ResBlockSetTmp* set) {
@@ -994,8 +997,8 @@ extern "C" void* BuildPaneObj__Q36nw4hbm3lyt6LayoutFlPCvRCQ36nw4hbm3lyt11ResBloc
     switch (kind) {
     case 0x70616E31:
         obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0xD4);
-        if (!obj) return 0;
-        return __ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(obj, pane);
+        if (obj) return new (obj) nw4hbm::lyt::Pane((const nw4hbm::lyt::res::Pane*)pane);
+        return 0;
     case 0x70696331: {
         ResBlockSetTmp tmp = *set;
         obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0xEC);
