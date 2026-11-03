@@ -3453,55 +3453,59 @@ extern "C" void fn_8021F7EC(void *arg0) {
 }
 
 extern "C" f32 lbl_80563518;
+#pragma push
+#pragma opt_common_subs off
 extern "C" s32 fn_8021F848(void *arg0, s32 arg1) {
     s32 *idx = *(s32 **)((u8 *)arg0 + 0x274);
-    f32 *value = *(f32 **)((u8 *)arg0 + 0x250);
-    f32 old;
-    f32 min;
-    f32 max;
-    f32 span;
-    f32 t;
-    s32 n;
-    s32 step;
-    void *obj;
     if (idx == 0) return 0;
     if (*(s32 *)((u8 *)arg0 + 0x278) != *idx) return 0;
-    old = *value;
+    f32 *value = *(f32 **)((u8 *)arg0 + 0x250);
+    f32 old = *value;
     switch (arg1) {
-    case 0x127:
-    case 0x125:
-        min = *(f32 *)((u8 *)arg0 + 0x248);
-        max = *(f32 *)((u8 *)arg0 + 0x24C);
-        n = *(s32 *)((u8 *)arg0 + 0x254) - 1;
-        span = max - min;
-        t = old - min;
-        if (arg1 == 0x127) step = (s32)(lbl_80563518 + ((f32)n * t) / span) + 1;
-        else step = (s32)(lbl_80563518 + ((f32)n * t) / span) - 1;
-        t = min + ((f32)step * span) / (f32)n;
+    case 0x127: {
+        f32 min = *(f32 *)((u8 *)arg0 + 0x248);
+        f32 max = *(f32 *)((u8 *)arg0 + 0x24c);
+        s32 n = *(s32 *)((u8 *)arg0 + 0x254) - 1;
+        f32 span = max - min;
+        f32 delta = old - min;
+        f32 product = (f32)n * delta;
+        s32 step = (s32)(lbl_80563518 + product / span) + 1;
+        f32 t = min + (f32)step * span / (f32)n;
         if (t < min) t = min;
-        if (t > max) t = max;
+        if (t > *(f32 *)((u8 *)arg0 + 0x24c)) t = *(f32 *)((u8 *)arg0 + 0x24c);
         *value = t;
-        if (fabsf(*value - old) <= *(f32 *)&lbl_80558DC4) fn_80216D28();
+        if ((f32)__fabs((double)(**(f32 **)((u8 *)arg0 + 0x250) - old)) <= *(f32 *)&lbl_80558DC4) fn_80216D28();
         return 1;
-    case 0x126:
-        obj = *(void **)((u8 *)arg0 + 0x2C);
-        if (*(s32 *)((u8 *)obj + 0x494) > 1) {
-            fn_80217D84((s32)obj);
-            return 1;
-        }
-        return 0;
-    case 0x128:
-        obj = *(void **)((u8 *)arg0 + 0x2C);
-        if (*(s32 *)((u8 *)obj + 0x494) > 1) {
-            fn_80217C4C((s32)obj);
-            return 1;
-        }
-        return 0;
-    default:
-        return 0;
     }
+    case 0x125: {
+        f32 min = *(f32 *)((u8 *)arg0 + 0x248);
+        f32 max = *(f32 *)((u8 *)arg0 + 0x24c);
+        s32 n = *(s32 *)((u8 *)arg0 + 0x254) - 1;
+        f32 span = max - min;
+        f32 delta = old - min;
+        f32 product = (f32)n * delta;
+        s32 step = (s32)(lbl_80563518 + product / span) - 1;
+        f32 t = min + (f32)step * span / (f32)n;
+        if (t < min) t = min;
+        if (t > *(f32 *)((u8 *)arg0 + 0x24c)) t = *(f32 *)((u8 *)arg0 + 0x24c);
+        *value = t;
+        if ((f32)__fabs((double)(**(f32 **)((u8 *)arg0 + 0x250) - old)) <= *(f32 *)&lbl_80558DC4) fn_80216D28();
+        return 1;
+    }
+    case 0x126: {
+        void *obj = *(void **)((u8 *)arg0 + 0x2C);
+        if (*(s32 *)((u8 *)obj + 0x494) > 1) { fn_80217D84((s32)obj); return 1; }
+        break;
+    }
+    case 0x128: {
+        void *obj = *(void **)((u8 *)arg0 + 0x2C);
+        if (*(s32 *)((u8 *)obj + 0x494) > 1) { fn_80217C4C((s32)obj); return 1; }
+        break;
+    }
+    }
+    return 0;
 }
-
+#pragma pop
 extern "C" s32 fn_8021FBC4(void *, s32, s32);
 #pragma push
 #pragma scheduling invalid_target
@@ -5939,62 +5943,76 @@ extern "C" void fn_80225918(void *arg0) {
 }
 
 extern "C" f32 lbl_80563548;
+#pragma push
+#pragma unroll off
+#pragma opt_loop_invariants off
 extern "C" void fn_8022591C(void *arg0) {
     u8 *obj = (u8 *)arg0;
-    s32 mode = *(s32 *)(obj + 0x274);
-    if (mode == 0)
+    if (*(s32 *)(obj + 0x274) == 0)
         return;
     f32 time = fn_8023659C();
     f32 *duration = (f32 *)(obj + 0x250);
     if (*duration > time)
         *duration = time - lbl_80563548;
+    f32 limit = lbl_80563548;
     f32 remain = time - *duration;
-    f32 *entries = *(f32 **)(obj + 0x278);
-    s32 count = *(s32 *)(*(u8 **)(obj + 0x244) + 8);
-    if (remain > lbl_80563548) {
-        for (s32 i = 0; i < count; i++) {
-            entries[i * 3] = entries[i * 3 + 2];
-            entries[i * 3 + 1] = entries[i * 3 + 2];
+    if (remain > limit) {
+        for (s32 i = 0; i < *(s32 *)(*(u8 **)(obj + 0x244) + 8); i++) {
+            f32 end = (*(f32 **)(obj + 0x278))[i * 3 + 2];
+            (*(f32 **)(obj + 0x278))[i * 3] = end;
+            (*(f32 **)(obj + 0x278))[i * 3 + 1] = end;
         }
         *(s32 *)(obj + 0x274) = 0;
         return;
     }
-    for (s32 i = 0; i < count; i++) {
-        f32 *entry = entries + i * 3;
-        f32 low = entry[1];
-        f32 high = entry[2];
-        if (mode == 1) {
-            if (high < low) {
-                entry[0] = low + (remain / lbl_80563548) * (high - low);
-            } else if (high > low) {
-                if (entry[0] < high) {
-                    f32 base = (high - *(f32 *)(obj + 0x264)) + *(f32 *)(obj + 0x268);
-                    entry[0] = low + (remain / lbl_80563548) * (base - low);
-                } else if (entry[0] > high) {
-                    f32 base = *(f32 *)(obj + 0x264) + (low - *(f32 *)(obj + 0x268));
-                    entry[0] = base + (remain / lbl_80563548) * (high - base);
-                }
-            }
-        } else if (mode < 3) {
-            if (high > low) {
-                entry[0] = low + (remain / lbl_80563548) * (high - low);
-            } else if (high < low) {
+    for (s32 i = 0; i < *(s32 *)(*(u8 **)(obj + 0x244) + 8); i++) {
+        switch (*(s32 *)(obj + 0x274)) {
+        case 0: break;
+        case 2: {
+            f32 *entry = *(f32 **)(obj + 0x278) + i * 3;
+            f32 low, high;
+            high = entry[2];
+            low = entry[1];
+            if (high > low)
+                entry[0] = low + (remain / limit) * (high - low);
+            else if (high < low) {
                 if (entry[0] > high) {
                     f32 base = *(f32 *)(obj + 0x264) + (high - *(f32 *)(obj + 0x268));
-                    entry[0] = low + (remain / lbl_80563548) * (base - low);
+                    entry[0] = low + (remain / limit) * (base - low);
                 } else if (entry[0] < high) {
                     f32 base = *(f32 *)(obj + 0x268) - (*(f32 *)(obj + 0x264) - low);
-                    entry[0] = base + (remain / lbl_80563548) * (high - base);
+                    entry[0] = base + (remain / limit) * (high - base);
                 }
             }
+            break;
         }
+        case 1: {
+            f32 *entry = *(f32 **)(obj + 0x278) + i * 3;
+            f32 low, high;
+            high = entry[2];
+            low = entry[1];
+            if (high < low)
+                entry[0] = low + (remain / limit) * (high - low);
+            else if (high > low) {
+                if (entry[0] < high) {
+                    f32 base = *(f32 *)(obj + 0x268) - (*(f32 *)(obj + 0x264) - high);
+                    entry[0] = low + (remain / limit) * (base - low);
+                } else if (entry[0] > high) {
+                    f32 base = *(f32 *)(obj + 0x264) + (low - *(f32 *)(obj + 0x268));
+                    entry[0] = base + (remain / limit) * (high - base);
+                }
+            }
+            break;
+        }
+        }
+        f32 *entry = *(f32 **)(obj + 0x278) + i * 3;
         if (entry[0] > *(f32 *)(obj + 0x264))
             entry[0] -= *(f32 *)(obj + 0x260);
         else if (entry[0] < *(f32 *)(obj + 0x268))
             entry[0] += *(f32 *)(obj + 0x260);
     }
 }
-
+#pragma pop
 extern "C" s32 fn_80217C4C(s32);
 extern "C" s32 fn_80217D84(s32);
 extern "C" void fn_80226570(void *, s32);
