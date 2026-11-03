@@ -1338,6 +1338,20 @@ extern "C" long fn_8027CFB4(long arg0) {
     } while (i < 5);
     return 0;
 }
+
+extern "C" long fn_8027D0E0(long arg0) {
+    long value = *fn_8027C26C((void *)lbl_8055F654, (const char *)arg0);
+    switch (value) {
+    case 0:
+        return ((long (*)(void))fn_8027C788)();
+    case 1:
+        return ((long (*)(void))fn_8027CB28)();
+    default:
+        ((void (*)(const char *, ...))fn_802E317C)(lbl_80347C70, arg0, value);
+        return 1;
+    }
+}
+
 void fn_8027C8B8(long, char *, long);
 #pragma opt_propagation off
 extern "C" void fn_8027D158(long arg0, char *arg1, long arg2) {
