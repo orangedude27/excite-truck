@@ -481,6 +481,87 @@ void *fn_8016C29C(void *arg0, int arg1) {
     return arg0;
 }
 
+#pragma cplusplus on
+#pragma ppc_psq_save off
+extern "C" void fn_8016C328(void *arg0) {
+    class Cfg {
+    public:
+        virtual void s8();
+        virtual int has(const char *);
+        virtual void s10();
+        virtual void enter(const char *);
+        virtual void s18();
+        virtual void s1C();
+        virtual void s20();
+        virtual f32 getF(const char *);
+    };
+    class List {
+    public:
+        virtual void s8();
+        virtual void *get(s32);
+    };
+    struct Entry { u8 b; s32 w; f32 a; f32 c; };
+    const char *base = lbl_803306D0;
+    char buf[0x28];
+    Cfg *cfg;
+    void *obj;
+    List *list;
+    void *item;
+    s32 i;
+    cfg = *(Cfg **)((u8 *)fn_8000AC38() + 0x20);
+    if (cfg->has(base + 0x50)) {
+        fn_8016CE94((u8 *)arg0 + 8, cfg->getF(base + 0x50));
+    } else {
+        fn_8016CE94((u8 *)arg0 + 8, lbl_8056199C);
+    }
+    fn_801345D8(buf, 0x1E, base + 0x5C);
+    obj = (void *)fn_801284F8(0x10, base + 0x6C);
+    if (obj) {
+        obj = fn_8016CD68(obj, fn_8016CDF8(arg0, cfg), (s32)(base + 0x80));
+    }
+    *(void **)((u8 *)arg0 + 0x18) = obj;
+    while (!cfg->has(buf)) {
+        cfg->enter(buf);
+        list = (List *)fn_80131810();
+        if (!list) {
+            fn_802E30C8(base + 0x90, buf);
+            return;
+        }
+        i = 0;
+        goto get;
+        do {
+            fn_8016C768((void *)fn_8016CD4C(*(void **)((u8 *)arg0 + 0x18)), item, (u8 *)arg0 + 0x14);
+            i++;
+get:
+            item = list->get(i);
+        } while (item);
+        fn_80131818((s32)list);
+        *(s32 *)((u8 *)arg0 + 0x3C) = *(s32 *)((u8 *)arg0 + 0x3C) + 1;
+        fn_801345D8(buf, 0x1E, base + 0xD8, *(s32 *)((u8 *)arg0 + 0x3C));
+    }
+    *(s32 *)((u8 *)arg0 + 0x3C) = fn_8016C760(*(void **)((u8 *)arg0 + 0x18));
+    *(s32 *)((u8 *)arg0 + 0x38) = ((s32 (*)(void *))fn_8016C5F0)(arg0);
+    obj = (void *)fn_801284F8(0x10, base + 0xE8);
+    if (obj) {
+        obj = fn_8016C598(obj, *(s32 *)((u8 *)arg0 + 0x38), (int)(base + 0xE8));
+    }
+    *(void **)((u8 *)arg0 + 0x1C) = obj;
+    {
+        f32 zero = lbl_80561998;
+        for (i = 0; i < *(s32 *)((u8 *)arg0 + 0x38); i++) {
+            Entry e;
+            e.b = 0;
+            e.w = -1;
+            e.a = zero;
+            e.c = zero;
+            fn_8016C55C(*(void **)((u8 *)arg0 + 0x1C), &e);
+        }
+    }
+}
+#pragma ppc_psq_save on
+#pragma cplusplus reset
+
+#pragma ppc_psq_save on
 void fn_8016C55C(void *arg0, void *arg1) {
     int index;
     void *dst;
