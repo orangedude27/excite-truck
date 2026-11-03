@@ -1,6 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+struct RenderWords5 { unsigned int words[5]; };
+struct RenderWords3 { unsigned int words[3]; };
 extern int lbl_80344EA0[];
 extern char lbl_80344FE0[];
 extern char lbl_80345098[];
@@ -737,6 +739,94 @@ void fn_8025AD8C(void *unused, float *out, float *a, float *b, float t) {
 }
 #pragma scheduling on
 float fn_8025ADF4(float arg0) { return (float)fn_8002F234(arg0); }
+
+extern float lbl_802FA628[5];
+extern char lbl_80345218[];
+extern float lbl_80563B18, lbl_80563B1C, lbl_80563B20, lbl_80563B24, lbl_80563B28, lbl_80563B2C, lbl_80563B30, lbl_8055F39C;
+extern void *fn_8022EDC4(void);
+extern void fn_8025B134(void);
+extern void fn_8025B0E8(void *, const void *);
+extern float fn_8025B0A8(void *);
+extern float fn_8025B0C4(float);
+extern void fn_80144D80(void *, float, float, float);
+extern void fn_802C77F0(int, void *);
+extern void fn_802E30C8(const char *, ...);
+extern void fn_801C2B9C(void *, void *, void *);
+extern void fn_8001BA68(void *);
+extern void fn_801E67B4(void *, void *, void *);
+extern void fn_801C0E60(void *, void *, void *);
+extern void fn_801BFE7C(void *, void *, void *);
+extern int fn_802C9950(int);
+extern int fn_802C9994(int);
+extern float fn_802C99E8(float);
+extern void *fn_802C9A40(void);
+extern void fn_802C9A1C(void *);
+extern void fn_802D7554(int);
+extern void fn_802CA294(int);
+extern void fn_802D9230(void);
+extern void fn_802C9694(void *, float, float, float);
+extern void fn_802C744C(int, void *);
+extern void fn_802C96DC(void *, int);
+#pragma push
+#pragma processor 750
+#pragma dont_inline on
+void fn_8025AE18(void *arg0) {
+    char *obj = (char *)arg0;
+    float matrix[9];
+    float values[5];
+    float ranges[6];
+    float color[3], oldcolor[3];
+    float state[3], vec[3];
+    char *camera, *other;
+    int a, b, index;
+    float size, ratio, x, y, z, old;
+    if (*(int *)(obj + 0x50) == -1 || *(unsigned char *)(obj + 0x4A) == 0) return;
+    fn_8025B0E8(obj + 0x54, ((void *(*)(void *))fn_8025B134)(obj + 0x84));
+    other = (char *)fn_8022EDC4();
+    x = *(float *)(other + 0x38);
+    fn_80144D80(matrix, x, x, x);
+    fn_80015B20(obj + 0x54, obj + 0x54, matrix);
+    fn_802C77F0(*(int *)(obj + 0x50), ranges);
+    values[0] = lbl_802FA628[0]; values[1] = lbl_802FA628[1];
+    values[2] = lbl_802FA628[2]; values[3] = lbl_802FA628[3]; values[4] = lbl_802FA628[4];
+    index = *(int *)(obj + 0x4C);
+    if (index <= 0) {
+        fn_802E30C8(lbl_80345218);
+    } else {
+        size = lbl_80563B18 * values[index - 1] * lbl_80563B1C;
+        ratio = size / fn_8025B0C4(lbl_80563B1C * lbl_8055F39C);
+        size = lbl_80563B20 + size;
+        camera = (char *)fn_802C86DC();
+        fn_801429D0(ratio, size);
+        fn_801C2B9C(obj + 0x78, camera + 0x24, camera + 0x18);
+        fn_8001BA68(vec);
+        z = fn_8025B0A8(&ranges[4]);
+        y = fn_8025B0A8(&ranges[2]);
+        x = fn_8025B0A8(&ranges[0]);
+        GXInitLightAttnA_801BFEBC(vec, x, y, z);
+        fn_801E67B4(vec, vec, obj + 0x54);
+        fn_801C0E60(obj + 0x78, obj + 0x78, vec);
+        fn_801BFE7C(obj + 0x78, obj + 0x78, other + 0x24);
+    }
+    color[0] = lbl_80563B24; color[1] = lbl_80563B28; color[2] = lbl_80563B2C;
+    a = fn_802C9950(0xFF646464);
+    b = fn_802C9994(0xFFB4B4B4);
+    old = fn_802C99E8(lbl_80563AE0);
+    { float *p = (float *)fn_802C9A40(); oldcolor[0] = p[0]; oldcolor[1] = p[1]; oldcolor[2] = p[2]; }
+    fn_802C9A1C(color);
+    fn_802D7554(1);
+    fn_802CA294(*(int *)(obj + 0xA8));
+    fn_802D9230();
+    fn_802C9694(state, lbl_80563B20, lbl_80563B30, lbl_8055F39C);
+    fn_802C744C(*(int *)(obj + 0x50), obj + 0x54);
+    fn_802D7554(0);
+    fn_802C9A1C(oldcolor);
+    fn_802C99E8(old);
+    fn_802C9994(b);
+    fn_802C9950(a);
+    fn_802C96DC(state, -1);
+}
+#pragma pop
 
 extern double sin(double);
 typedef unsigned int u32;
