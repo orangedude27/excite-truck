@@ -1,5 +1,21 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+#pragma push
+#pragma cplusplus on
+class ParticleConfig {
+public:
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual const char *getText(const char *);
+    virtual void v4();
+    virtual int getInt(const char *, int);
+    virtual void v6();
+    virtual float getFloat(const char *, float);
+    virtual void v8();
+    virtual int getBool(const char *, int);
+};
+#pragma pop
 extern void *fn_801284F8(int, const char *);
 extern void fn_801345D8(char *, int, const char *, ...);
 extern void fn_802B2C7C(void *);
