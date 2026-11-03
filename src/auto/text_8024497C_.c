@@ -174,29 +174,37 @@ extern float lbl_80563800, lbl_80563804, lbl_80563808, lbl_8056380C, lbl_8056381
 #pragma push
 #pragma use_lmw_stmw off
 #pragma processor 750
+#pragma scheduling invalid_target
 void fn_80244D6C(void *arg0) {
     char *p = (char *)arg0;
     float x, y;
-    float width, mid, xicon, xcount, scale1, scale2;
+    float xpos, mid, step, h3, h2, h1, width, xicon, xcount, scale1, scale2, row;
     int progress, i;
     fn_80230C30(&x, &y, *(int *)(p+4), *(int *)(p+8));
     width = (float)*(int *)(p+0xc);
-    xicon = x + width - (float)fn_802C51C0(*(int *)(p+0xb4));
-    mid = x + width / lbl_80563804;
+    {
+    float icon_width = (float)fn_802C51C0(*(int *)(p+0xb4));
+    xpos = x;
+    xicon = xpos + width - icon_width;
+    }
     xcount = xicon - lbl_80563800;
+    mid = xpos + width / lbl_80563804;
     scale1 = lbl_80563808 / (float)fn_80232B70(*(int *)(p+0xb0));
     scale2 = lbl_8056380C / (float)fn_80232B70(*(int *)(p+0xb0));
     progress = fn_80019888();
-    for (i=0; i<3; i++, y -= lbl_80563824) {
+    row = y;
+    h1 = lbl_80563810; h2 = lbl_80563814; h3 = lbl_80563818; step = lbl_80563824;
+    for (i=0; i<3; i++, row -= step) {
         int *entry;
-        char buf[64] = {0};
-        float y2, y1, y3;
+        float y1, y2, y3;
         int icon;
         if (*(int *)(p+0x1c) + i >= *(int *)(p+0x18)) break;
         entry = fn_80019054(*(int *)(p+0x1c) + i);
-        y1 = y - lbl_80563810;
-        y2 = y - lbl_80563814;
-        y3 = y + lbl_80563818;
+        {
+        char buf[64] = {0};
+        y2 = row - h2;
+        y1 = row - h1;
+        y3 = h3 + row;
         if (stricmp((char *)entry[0], &lbl_8055BE28) == 0) {
             fn_8013C8E8(entry[1]);
             sprintf(buf, &lbl_8055BE2C, fn_8013C9C8());
@@ -205,12 +213,13 @@ void fn_80244D6C(void *arg0) {
         } else {
             fn_802E30C8(lbl_80342F98, entry[0], entry[1]);
         }
-        fn_80232BA4((char *)entry[1], *(int *)(p+0xb0), 0xffdfdf20, 9, x, y1, scale1, lbl_8056381C, lbl_80563820);
+        fn_80232BA4((char *)entry[1], *(int *)(p+0xb0), 0xffdfdf20, 9, xpos, y1, scale1, lbl_8056381C, lbl_80563820);
         icon = 2;
         if (entry[2] <= progress || *((u8 *)entry + 0xc)) icon = 3;
         fn_802C5310(*(int *)(p+0xb4), icon, xicon, y3, lbl_8056381C);
         fn_802337A0(*(int *)(p+0xb0), -1, 10, &lbl_8055BE44, xcount, y2, lbl_8056381C, scale2, lbl_80563820, entry[2]);
         fn_80232BA4(buf, *(int *)(p+0xb0), -1, 9, mid, y2, scale2, lbl_8056381C, lbl_80563820);
+        }
     }
 }
 #pragma pop
