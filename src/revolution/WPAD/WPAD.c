@@ -93,7 +93,7 @@ OSAlarm _managerAlarm = {0};
 WPADCB* _wpdcb[WPAD_MAX_CONTROLLERS];
 u8 __WPADiManageHandlerStack[0x1000] ALIGN(32);
 s8 _dev_handle_index[WUD_MAX_DEV_ENTRY];
-static u8 FAKE_ALIGNMENT[0x10];
+u8 FAKE_ALIGNMENT[0x10];
 WPADCB _wpd[WPAD_MAX_CONTROLLERS];
 
 u8 _sleepTime;
