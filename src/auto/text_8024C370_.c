@@ -188,16 +188,19 @@ extern void fn_802149FC(int);
 extern int fn_8024C524(void);
 extern int fn_8024C578(int);
 extern int lbl_802FA538[];
+extern int lbl_802FA54C[];
 extern char lbl_804989E8[];
 extern char lbl_8055B860[];
 extern char lbl_8055BAC0[], lbl_8055C01C[], lbl_8055C024[], lbl_8055C02C[];
 extern char lbl_8055C034[], lbl_8055C03C[], lbl_8055C044[], lbl_8055C04C[];
 extern char lbl_8055C054[], lbl_8055C05C[], lbl_8055C064[];
+extern char lbl_8055C06C[], lbl_8055C074[], lbl_8055C07C[], lbl_8055C084[];
 extern unsigned char lbl_8055F2C9, lbl_8055F2CA, lbl_8055F2CC;
 __declspec(section ".sdata") extern char lbl_8055B860[];
 __declspec(section ".sdata") extern char lbl_8055BAC0[], lbl_8055C01C[], lbl_8055C024[], lbl_8055C02C[];
 __declspec(section ".sdata") extern char lbl_8055C034[], lbl_8055C03C[], lbl_8055C044[], lbl_8055C04C[];
 __declspec(section ".sdata") extern char lbl_8055C054[], lbl_8055C05C[], lbl_8055C064[];
+__declspec(section ".sdata") extern char lbl_8055C06C[], lbl_8055C074[], lbl_8055C07C[], lbl_8055C084[];
 #pragma scheduling invalid_target
 #pragma dont_inline on
 unsigned int fn_8024C768(void) {
