@@ -175,7 +175,7 @@ void fn_802D7780(void *arg0, void *arg1) {
 
 #pragma push
 #pragma dont_inline on
-#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 void fn_802D78D4(void *arg0, void *arg1, unsigned int arg2, unsigned int arg3) {
     union Pixel { unsigned int word; unsigned char c[4]; };
     unsigned short *rgb = (unsigned short *)arg0;
