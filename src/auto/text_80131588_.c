@@ -126,7 +126,7 @@ extern void __register_global_object(void*, void (*)(void*), void*);
 extern void fn_802E317C(const char*, ...);
 extern s32 fn_8012F9E8(void*, s32, const char*);
 extern char lbl_80559B24[]; /* "%f, %f" */
-extern char lbl_80559B2C[], lbl_80559B38[], lbl_80559B40[], lbl_80559B48[];
+__declspec(section ".sdata") extern char lbl_80559B2C[], lbl_80559B38[], lbl_80559B40[], lbl_80559B48[];
 extern char lbl_8032B818[]; /* "Bad vector value \"%s\" for \"%s\" i" */
 extern char lbl_8032B840[]; /* "Bad real64 value \"%s\" for \"%s\" i" */
 #pragma push
@@ -572,6 +572,59 @@ Vec2 fn_801324E0(void *arg0, s32 arg1) {
             ((char *(*)(void *))(*(void **)((char *)*(void **)arg0 + 8)))(arg0));
     }
     return result;
+}
+
+void fn_80132584(void *arg0, void *arg1, const char *arg2) {
+    typedef struct { float x, y, z; } Vec3;
+    Vec3 v4;
+    Vec3 v3;
+    Vec3 v2;
+    Vec3 v1;
+    const char *value;
+    float *out;
+
+    value = ((const char *(**)(void *, const char *))(*(void **)arg1))[5](arg1, arg2);
+    if (fn_8012F9E8(arg0, 0x30, value) != 0) {
+        u8 *p = (u8 *)arg0;
+        int i;
+        for (i = 0; i < 2; i++, p += 0x18) {
+            u8 t;
+            t = p[0]; p[0] = p[3]; p[3] = t;
+            t = p[1]; p[1] = p[2]; p[2] = t;
+            t = p[4]; p[4] = p[7]; p[7] = t;
+            t = p[5]; p[5] = p[6]; p[6] = t;
+            t = p[8]; p[8] = p[0xB]; p[0xB] = t;
+            t = p[9]; p[9] = p[0xA]; p[0xA] = t;
+            t = p[0xC]; p[0xC] = p[0xF]; p[0xF] = t;
+            t = p[0xD]; p[0xD] = p[0xE]; p[0xE] = t;
+            t = p[0x10]; p[0x10] = p[0x13]; p[0x13] = t;
+            t = p[0x11]; p[0x11] = p[0x12]; p[0x12] = t;
+            t = p[0x14]; p[0x14] = p[0x17]; p[0x17] = t;
+            t = p[0x15]; p[0x15] = p[0x16]; p[0x16] = t;
+        }
+        return;
+    }
+
+    out = (float *)arg0;
+    ((void (**)(Vec3 *, void *, const char *))*(void **)arg1)[13](&v1, arg1, lbl_80559B48);
+    out[0] = v1.x;
+    out[1] = v1.y;
+    out[2] = v1.z;
+
+    ((void (**)(Vec3 *, void *, const char *))*(void **)arg1)[13](&v2, arg1, lbl_80559B40);
+    out[3] = v2.x;
+    out[4] = v2.y;
+    out[5] = v2.z;
+
+    ((void (**)(Vec3 *, void *, const char *))*(void **)arg1)[13](&v3, arg1, lbl_80559B38);
+    out[6] = v3.x;
+    out[7] = v3.y;
+    out[8] = v3.z;
+
+    ((void (**)(Vec3 *, void *, const char *))*(void **)arg1)[13](&v4, arg1, lbl_80559B2C);
+    out[9] = v4.x;
+    out[10] = v4.y;
+    out[11] = v4.z;
 }
 
 #pragma push
