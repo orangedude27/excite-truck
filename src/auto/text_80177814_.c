@@ -1,4 +1,5 @@
 #include <types.h>
+#pragma ppc_psq_save off
 extern void *lbl_8055E430;
 extern char lbl_8055E45D;
 extern char lbl_8055E45F;
@@ -232,7 +233,7 @@ void fn_801B24B8(void);
 void fn_801279D0(void);
 void fn_80178DBC(int, float);
 double sin(double);
-#pragma push
+#pragma paired_single off
 #pragma ppc_psq_save off
 void fn_80177F40(void) {
     extern void *lbl_8055E458;
@@ -244,7 +245,7 @@ void fn_80177F40(void) {
     extern float lbl_80561B50, lbl_80561B54, lbl_80561B58, lbl_80561B5C;
     char *base = (char *)lbl_80430590;
     unsigned char saved;
-    int active, flag, other, i, off;
+    int active, flag, other, i, off, zero;
     float *dst, *src;
     int cur;
 
@@ -281,7 +282,7 @@ void fn_80177F40(void) {
         }
         cur = lbl_8055A300;
         if (cur >= 0 && cur < 0x4B) {
-            float s = (float)sin(lbl_80561B54 * (lbl_80561B58 * lbl_8055E3C8));
+            float s = (float)sin(lbl_80561B54 * (lbl_8055E3C8 * lbl_80561B58));
             fn_80178DBC(cur, lbl_80561B5C + lbl_80561B5C * s);
         }
         fn_801B8BF4();
@@ -303,10 +304,11 @@ void fn_80177F40(void) {
         fn_80177E14();
         i = 0;
         off = 0;
+        zero = 0;
         while (i < lbl_8055E438) {
             void **obj = *(void ***)((char *)lbl_8055E434 + off);
             char *r = ((char *(*)(void **))(*(char ***)obj)[0x3C / 4])(obj);
-            if (r != 0) *(int *)(r + 0x1E4) = 0;
+            if (r != 0) *(int *)(r + 0x1E4) = zero;
             off += 4;
             i++;
         }
@@ -324,7 +326,8 @@ void fn_80177F40(void) {
     fn_801279D0();
     if (active != 0) lbl_8055E3BD = saved;
 }
-#pragma pop
+#pragma ppc_psq_save reset
+#pragma paired_single reset
 extern char jumptable_803318F8[];
 #pragma dont_inline off
 long fn_801781B8(void) { return 0; }
@@ -862,19 +865,20 @@ void* fn_80179318(void) {
 void fn_80179320(void) {
     extern float lbl_8055E460;
     extern float lbl_80561B6C;
+    float initial = lbl_80561B6C;
     register char *base = (char *)lbl_80430590;
-    register int i;
     register int offset;
+    register int i;
     register int *values;
     register char *p;
     void *object;
     void **vtable;
     int old;
-    int *field;
-    char *bytes;
+    volatile int *field;
+    volatile char *bytes;
 
     lbl_8055E43C = 0;
-    lbl_8055E460 = lbl_80561B6C;
+    lbl_8055E460 = initial;
     lbl_8055E44C = 0;
     lbl_8055E458 = 0;
     fn_80177990();
@@ -899,8 +903,8 @@ void fn_80179320(void) {
     fn_801AED74();
     fn_801E2294();
 
-    i = 0;
     offset = 0;
+    i = 0;
     while (i < lbl_8055E438) {
         object = *(void **)((char *)lbl_8055E434 + offset);
         vtable = *(void ***)object;
@@ -939,12 +943,12 @@ void fn_80179320(void) {
     bytes[0x528] = 0;
     bytes[0x630] = 0;
     bytes[0x738] = 0;
-    fn_80265D60(bytes);
+    fn_80265D60((void *)bytes);
     fn_801CECE0();
     if (fn_80265D64() == 0) {
-        field = (int *)(base + 0x2C0);
+        field = (volatile int *)(base + 0x2C0);
         field[4] = 0;
-        *((char *)field + 0x14) = 1;
+        *((volatile char *)field + 0x14) = 1;
         field[7] = 0;
         field[6] = 0;
     }
