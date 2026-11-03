@@ -19,7 +19,8 @@ extern void fn_80127D58(void (*)(void));
 extern void fn_802E30C8(const char*, ...);
 extern void fn_802E2C20(void);
 extern s32 lbl_8055DF30;
-extern void fn_801274C8(s32);
+extern void fn_801274C8(void);
+extern void fn_8012766C(void);
 extern u32 lbl_8055DF34;
 extern u64 lbl_8055DF18;
 extern u64 lbl_8055DF20;
@@ -60,7 +61,8 @@ void fn_801275AC(void) {
 }
 #pragma scheduling on
 void fn_80127930(void* alarm) {
-    fn_801274C8(fn_8012766C(alarm));
+    fn_8012766C();
+    fn_801274C8();
 }
 
 void fn_80127954(void) {
