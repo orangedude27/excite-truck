@@ -2590,29 +2590,47 @@ extern "C" void *fn_800A9B0C(void *arg0) {
 #pragma pop
 #pragma dont_inline reset
 extern "C" s32 fn_800B3A70(void *, void *, s32);
-extern "C" s32 fn_800A9BB4(void *arg0, void *arg1, s32 arg2, s32 arg3, u32 arg4, s32 arg5, s32 *arg6, s32 arg_sp0) {
- extern s32 VFiPFPATH_cmpName(void*,s32,s32); extern s32 fn_800B317C(void*,s32); extern void fn_800B3BEC(void*,u8); extern s32 lbl_803D2140[];
- s32 sp8; s32 mask=arg3; s32 ret=1, valid=1, i; u8 sum=0;
- if((mask&15)==15)return 1;
- if(mask==0)mask=0x40;
- if(arg4&0x80){s32 a=arg4&0x7f,b=arg5&0x7f;if((a&&(a!=(a&mask)))||(b&&(b==(b&mask))))valid=0;}
- else if(arg4!=0x7f&&(u32)mask!=arg4&&(!(mask&arg4)||(mask&arg5)))valid=0;
- if(!valid)return ret;
- if(mask&8){*(u8*)((u8*)arg0+0x20a)=0;*(u16*)arg0=0;}
- fn_800B3BEC((u8*)arg0+0x20e,*(u8*)((u8*)arg1+0xb));
- if(*(u8*)((u8*)arg0+0x20e)==5)*(u8*)((u8*)arg0+0x20e)=0xe5;
- if(*(u8*)((u8*)arg0+0x20a)&&*(u8*)((u8*)arg0+0x20b)==1){
-  fn_800B3A70(&sp8,(u8*)arg0+0x20e,0);
-  for(i=0;i<11;i++){u8 x=((u8*)&sp8)[i];sum=(sum<<7|sum>>1)+x;}
-  if(*(u8*)((u8*)arg0+0x20c)!=sum)return ret;
-  ret=fn_800B317C(arg0,arg2)!=0;
+extern "C" void fn_800B3BEC(u8 *, u8 *, u8);
+extern "C" s32 fn_800B317C(s32, s32);
+extern "C" s32 VFiPFPATH_cmpName(void *, s32, s32);
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" s32 fn_800A9BB4(u8 *arg0, u8 *arg1, s32 arg2, s32 arg3, u32 arg4, s32 arg5, s32 *arg6, s32 arg_sp0) {
+ s32 flag;
+ s32 ret=1, valid=1;
+ u8 buf[13];
+ u32 sum, next;
+ u16 i;
+ if ((arg3 & 15)==15) { ret=1; goto done; }
+ if (arg3==0) arg3=0x40;
+ if (arg4&0x80) {
+  s32 b=arg5&0x7f, a=arg4&0x7f;
+  if ((a && a!=(a&arg3)) || (b && b==(b&arg3))) valid=0;
+ } else if (arg4!=0x7f && (u32)arg3!=arg4 && (!(arg3&arg4) || (arg3&arg5))) valid=0;
+ if (!valid) { ret=1; goto done; }
+ flag=arg3&8;
+ if (flag) { *(u8*)(&arg0[0x20a])=0; *(u16*)arg0=0; }
+ fn_800B3BEC(&arg0[0x20e],(u8*)arg1,*(u8*)((u8*)arg1+0xb));
+ if (*(s8*)(&arg0[0x20e])==5) *(s8*)(&arg0[0x20e])=-27;
+ if (*(u8*)(&arg0[0x20a]) && *(u8*)(&arg0[0x20b])==1) {
+  fn_800B3A70(buf,&arg0[0x20e],0);
+  sum=0;
+  for (i=0;i<11;i++) {
+  next=((sum&0xfe)>>1)+((sum&1)?0x80:0)+buf[i];
+  sum=next&0xff;
  }
- if(ret){if(((lbl_803D2140[0x60/4]&2)==2)&&!(mask&8)){if(!VFiPFPATH_cmpName((u8*)arg0+0x20e,arg2,0))ret=0;}
- else if(!VFiPFPATH_cmpName((u8*)arg0+0x20e,arg2,1))ret=0;}
- if(ret)(*arg6)++;
+  if (*(u8*)(&arg0[0x20c])==sum) ret=fn_800B317C((s32)arg0,arg2)!=0;
+ }
+ if (ret==1) {
+  if (((u32)lbl_803D2140[0x60/4]&2U)==2U && !flag) {
+   if (!VFiPFPATH_cmpName(&arg0[0x20e],arg2,0)) ret=0;
+  } else if (!VFiPFPATH_cmpName(&arg0[0x20e],arg2,1)) ret=0;
+ }
+ if (ret==1) ++*arg6;
+done:
  return ret;
 }
-
+#pragma pop
 extern "C" s32 fn_800AF530(void *, void *, s32, s32);
 extern "C" s32 VFiPFENT_searchEmptyTailSFN(void *, u32, void *, s32 *);
 #pragma push
