@@ -89,7 +89,7 @@ void DEBUGPrint(const char* pFmt, ...) {
 
 RVL_LIB_VERSION(WPAD, "May 17 2007", "01:52:03", "0x4199_60831");
 
-OSAlarm _managerAlarm;
+static OSAlarm _managerAlarm;
 WPADCB* _wpdcb[WPAD_MAX_CONTROLLERS];
 u8 __WPADiManageHandlerStack[0x1000] ALIGN(32);
 s8 _dev_handle_index[WUD_MAX_DEV_ENTRY];
@@ -3119,13 +3119,12 @@ s32 fn_8005D234(s32 chan, WPADGameInfo* pInfo)
 
 // fn_8005EB44: WPAD initialization
 void fn_8005EB44(void) {
-    register u8* base asm("r31") = (u8*)&lbl_8038F4C0;
+    register u8* base asm("r31") = (u8*)&_managerAlarm;
     register s32 zero asm("r30") = 0;
     register u8* p_wpd asm("r29");
     register u8* p_wpdcb asm("r28");
     register u8* p_active asm("r27");
     register s32 chan asm("r26");
-    register s8* p_dev asm("r4");
     s32 i;
     u8 sens;
     u8 vol;
@@ -3144,15 +3143,14 @@ void fn_8005EB44(void) {
     *(volatile u32*)0xCD0000C0 |= 0x100;
     OSRestoreInterrupts(enabled);
 
-    p_dev = (s8*)(base + 0x1040);
-    for (i = 0; i < 16; i++) {
-        p_dev[i] = -1;
+    for (i = 0; i < WUD_MAX_DEV_ENTRY; i++) {
+        _dev_handle_index[i] = WUD_DEV_HANDLE_INVALID;
     }
 
     DBPrintf_80068D68(lbl_80312158);
 
-    p_wpd = base + 0x1060;
-    p_wpdcb = base + 0x30;
+    p_wpd = (u8*)&_wpd[0];
+    p_wpdcb = (u8*)&_wpdcb[0];
     chan = 0;
     p_active = lbl_8055DC08;
     do {
@@ -3201,8 +3199,8 @@ void fn_8005EB44(void) {
     lbl_8055DC00[1] = zero;
     lbl_8055DC00[0] = zero;
 
-    OSCreateAlarm((OSAlarm*)base);
-    OSSetPeriodicAlarm((OSAlarm*)base, OSGetTime(), OS_MSEC_TO_TICKS(1), WPADiManageHandler0);
+    OSCreateAlarm(&_managerAlarm);
+    OSSetPeriodicAlarm(&_managerAlarm, OSGetTime(), OS_MSEC_TO_TICKS(1), WPADiManageHandler0);
 
     lbl_8055DC05 = zero;
     lbl_8055DC11 = zero;
