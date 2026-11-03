@@ -388,36 +388,39 @@ void fn_80231AF0(char *text, void *ctx, f32 x, f32 y, f32 z, f32 w, f32 sx, f32 
     strlen(text);
     half = lbl_80563690;
     while (*text != 0) {
-        f32 adv = w;
+        f64 adv = w;
         s32 skip;
-        s32 i;
         u8 c;
         u16 code;
         char *next;
         s32 off;
         u8 *g;
 
-        skip = 0;
         if (*text == '\\') {
-            for (i = 0; i < ((Fn80231AF0_Table *)lbl_80497F14)->count; i++) {
+            s32 i = 0;
+            while (i < ((Fn80231AF0_Table *)lbl_80497F14)->count) {
                 Fn80231AF0_Entry *e;
                 const char *name = ((Fn80231AF0_Table *)lbl_80497F14)->entries[i].name;
                 if (fn_8002B1D8(text + 1, name, strlen(name)) == 0) {
                     e = &((Fn80231AF0_Table *)lbl_80497F14)->entries[i];
                     if (e->unkC != 0) {
                         f32 r = w / fn_80235F64(e->unkC, e->unk10);
-                        adv = e->scale * (r * fn_80235EF0(e->unkC, e->unk10)) + e->scale * (e->unk18 * r);
+                        f32 t = r * fn_80235EF0(e->unkC, e->unk10);
+                        adv = e->scale * t + e->scale * (e->unk18 * r);
                     } else {
                         adv = w * e->scale;
                     }
                     skip = strlen(((Fn80231AF0_Table *)lbl_80497F14)->entries[i].name) + 1;
-                    break;
+                    goto have;
                 }
+                i++;
             }
         }
+        skip = 0;
+have:
         if (skip > 0) {
             text += skip;
-            x += adv;
+            x += (f32)adv;
             continue;
         }
         c = *(u8 *)text;
@@ -433,8 +436,7 @@ void fn_80231AF0(char *text, void *ctx, f32 x, f32 y, f32 z, f32 w, f32 sx, f32 
         }
         off = code * 0x1C;
         text += next - text;
-        g = (u8 *)((Fn80231AF0_Ctx *)ctx)->glyphs;
-        x += sy * (sx * *(f32 *)(g + off));
+        x += sy * (sx * *(f32 *)((u8 *)((Fn80231AF0_Ctx *)ctx)->glyphs + off));
         if (lbl_8055F074) {
             ((void (*)(f32 *, f32 *, f32, f32))lbl_8055F070)(&spC, &sp8, x - half, half + y);
             spC += half;
@@ -445,7 +447,8 @@ void fn_80231AF0(char *text, void *ctx, f32 x, f32 y, f32 z, f32 w, f32 sx, f32 
         g = (u8 *)((Fn80231AF0_Ctx *)ctx)->glyphs + off;
         fn_80233AA4(ctx, code, spC, sp8 + w, spC + sx * *(f32 *)(g + 4), sp8, z);
         g = (u8 *)((Fn80231AF0_Ctx *)ctx)->glyphs + off;
-        x += sx * *(f32 *)(g + 4) + (sp + sy * (sx * *(f32 *)(g + 8)));
+        x += sx * *(f32 *)(g + 4);
+        x += sp + sy * (sx * *(f32 *)(g + 8));
     }
 }
 #pragma pop
@@ -464,6 +467,7 @@ extern void fn_80233BF0(u8 *, u8 *, f32 *, f32 *, s32, f32, f32);
 extern void fn_80233DD8(s32 *, s32);
 extern void fn_80233E34(s32 *, s32, s32);
 extern void fn_80233EBC(void);
+extern void fn_80233EC0(void *, s32, f32, f32, f32, f32, f32, f32);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
