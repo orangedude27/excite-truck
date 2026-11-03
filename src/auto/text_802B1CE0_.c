@@ -9,6 +9,7 @@ public:
     virtual void v2();
     virtual const char *getText(const char *);
     virtual void v4();
+    virtual void v5();
     virtual int getInt(const char *, int);
     virtual void v6();
     virtual float getFloat(const char *, float);
@@ -551,25 +552,26 @@ extern int fn_802C9C24(void *);
 extern void fn_802E317C(const char *, ...);
 #pragma push
 #pragma processor 750
+#pragma cplusplus on
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-void *fn_802B2958(void *arg0, void *arg1) {
+extern "C" void *fn_802B2958(void *arg0, void *arg1) {
     char *base = lbl_8034A288;
-    char *obj = arg0;
-    char *p = fn_801284F8(12, base + 0x70);
-    char *name;
+    char *obj = (char *)arg0;
+    char *p = (char *)fn_801284F8(12, base + 0x70);
+    const char *name;
     void *item, *child;
     int key, value, valid;
     float *entry;
     float angle, c, sn, radius, zero, one;
     unsigned int i;
     if (p != 0) {
-        name = ((char *(*)(void *, const char *))(*(void ***)arg1)[5])(arg1, lbl_8055CDE0);
+        name = ((ParticleConfig *)arg1)->getText(lbl_8055CDE0);
         *(int *)(p + 8) = -2;
         if (stricmp(name, lbl_8055CDE8) == 0) {
             *(void **)p = 0;
         } else {
-            item = ((void *(*)(void *, void *))fn_802B2C34)((void *)fn_802C6B44, name);
+            item = ((void *(*)(void *, void *))fn_802B2C34)((void *)fn_802C6B44, (void *)name);
             *(void **)p = item;
             if (item != 0) {
                 child = *(void **)((char *)item + 4);
@@ -592,12 +594,12 @@ void *fn_802B2958(void *arg0, void *arg1) {
     *(void **)(obj + 12) = p;
     *(int *)(obj + 0x14) = 0;
     *(int *)(obj + 0x10) = 0;
-    *(int *)obj = ((int (*)(void *, const char *, int))(*(void ***)arg1)[8])(arg1, lbl_8055CDEC, 1);
-    *(void **)(obj + 0x2A4) = ((void *(*)(void *, const char *))(*(void ***)arg1)[5])(arg1, lbl_8055CDE0);
-    *(float *)(obj + 8) = ((float (*)(void *, const char *, float))(*(void ***)arg1)[10])(arg1, base + 0x104, lbl_80564C00);
-    *(float *)(obj + 0x298) = ((float (*)(void *, const char *, float))(*(void ***)arg1)[10])(arg1, base + 0x110, lbl_80564C04);
-    *(float *)(obj + 0x29C) = ((float (*)(void *, const char *, float))(*(void ***)arg1)[10])(arg1, base + 0x11C, lbl_80564C04);
-    *(char *)(obj + 4) = ((int (*)(void *, const char *, int))(*(void ***)arg1)[12])(arg1, base + 0x128, 0);
+    *(int *)obj = ((ParticleConfig *)arg1)->getInt(lbl_8055CDEC, 1);
+    *(const char **)(obj + 0x2A4) = ((ParticleConfig *)arg1)->getText(lbl_8055CDE0);
+    *(float *)(obj + 8) = ((ParticleConfig *)arg1)->getFloat(base + 0x104, lbl_80564C00);
+    *(float *)(obj + 0x298) = ((ParticleConfig *)arg1)->getFloat(base + 0x110, lbl_80564C04);
+    *(float *)(obj + 0x29C) = ((ParticleConfig *)arg1)->getFloat(base + 0x11C, lbl_80564C04);
+    *(char *)(obj + 4) = ((ParticleConfig *)arg1)->getBool(base + 0x128, 0);
     entry = (float *)(obj + 0x18);
     zero = lbl_80564C00;
     one = lbl_80564C04;
