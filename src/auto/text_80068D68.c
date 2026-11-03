@@ -3105,11 +3105,11 @@ void uusb_CloseDeviceCB(s8 arg0) {
 extern char lbl_80558FF8[];
 extern char lbl_80559000[];
 void uusb_ReadBulkDataCB(s32 length, BT_HDR *buf) {
-    uusb_cb_t *control=&lbl_803BD1E0;
-    char *report=lbl_803142C8;
-    BT_HDR *copy;
     s32 size, i;
     u8 *p;
+    BT_HDR *copy;
+    char *report=lbl_803142C8;
+    uusb_cb_t *control=&lbl_803BD1E0;
     if(control->state!=2) {
         if(control->at_0x28) OSReport(report+0x15c);
         if(lbl_803BD1E0.at_0x28) OSReport(report+0x1a0);
@@ -3202,7 +3202,7 @@ void uusb_issue_intr_read(void) {
     };
     register struct uusb_intr_cb_view *control = (struct uusb_intr_cb_view *)&lbl_803BD1E0;
     extern char lbl_803142C8[];
-    extern void uusb_ReadIntrDataCB(void);
+    extern void uusb_ReadIntrDataCB(s32, BT_HDR *);
     extern u16 fn_8006D8D0(u32);
     register char *report = lbl_803142C8;
     register u8 *buf;
@@ -3223,7 +3223,7 @@ void uusb_issue_intr_read(void) {
     *(u16 *)(buf + 4) = header;
     result = IUSB_ReadIntrMsgAsync(lbl_803BD1E0.fd, control->endpoint,
                                    fn_8006D8D0((u32)buf) - 0x28 - header,
-                                   aligned, uusb_ReadIntrDataCB, buf);
+                                   aligned, (void (*)(void))uusb_ReadIntrDataCB, buf);
     if (result != 0) {
         if (control->at_0x28 != 0) OSReport(report + 0x3CC, result);
         if (lbl_803BD1E0.at_0x28 != 0) OSReport(report + 0x404, result);
