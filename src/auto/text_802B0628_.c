@@ -21,8 +21,8 @@ extern void __AXGetStackHead_802BC30C(int);
 extern void fn_802DBF00(void);
 extern void fn_802DBF30(void);
 extern void fn_802DC078(int, int, int, int, int, int);
-extern void fn_802BB0FC(int);
-extern void fn_802BB3B8(int);
+extern void fn_802BB0FC(int, int);
+extern void fn_802BB3B8(int, int);
 
 extern void *lbl_8055F9A0;
 void fn_802B087C(void **arg0);
