@@ -3,6 +3,12 @@
 #include <types.h>
 extern void __GXSetDirtyState(void);
 extern void __GXFlushTextureState(void);
+extern void __GXSetVAT(void);
+extern void __GXSetSUTexRegs(void);
+extern void __GXUpdateBPMask(void);
+extern void __GXSetProjection(void);
+extern void __GXSetViewport(void);
+extern void __GXSetMatrixIndex(s32);
 extern void GXCPInterruptHandler(short, void *);
 typedef void (*GXFifoIntrHandler)(short, void *);
 extern void *OSGetCurrentThread(void);
