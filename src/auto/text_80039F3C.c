@@ -105,22 +105,26 @@ typedef struct DVDDiskID {
     unsigned char version;
 } DVDDiskID;
 
-int DVDCompareDiskID(unsigned char *arg0, unsigned char *arg1) {
-    if ((signed char)arg0[0] == 0)
-        goto disk_id_suffix;
-    if ((signed char)arg1[0] == 0)
-        goto disk_id_suffix;
-    if (strncmp((char *)arg0, (char *)arg1, 4) == 0)
-        goto disk_id_suffix;
-    return 0;
+int DVDCompareDiskID(const DVDDiskID *id1, const DVDDiskID *id2) {
+    if (id1->game[0] != '\0' && id2->game[0] != '\0' &&
+        strncmp(id1->game, id2->game, 4) != 0) {
+        return 0;
+    }
 
-disk_id_suffix:
-    if ((signed char)arg0[4] != 0 && (signed char)arg1[4] != 0 && strncmp((char *)arg0 + 4, (char *)arg1 + 4, 2) != 0)
+    if (id1->company[0] == '\0' || id2->company[0] == '\0' ||
+        strncmp(id1->company, id2->company, 2) != 0) {
         return 0;
-    if (arg0[6] != 0xFF && arg1[6] != 0xFF && arg0[6] != arg1[6])
+    }
+
+    if (id1->disk != 0xFF && id2->disk != 0xFF && id1->disk != id2->disk) {
         return 0;
-    if (arg0[7] != 0xFF && arg1[7] != 0xFF && arg0[7] != arg1[7])
+    }
+
+    if (id1->version != 0xFF && id2->version != 0xFF &&
+        id1->version != id2->version) {
         return 0;
+    }
+
     return 1;
 }
 #pragma scheduling invalid_target
