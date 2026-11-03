@@ -13,6 +13,41 @@ extern double fn_8002EFB4(float, double);
 
 typedef struct UnkAA9D4 { unsigned char pad[0xDC]; unsigned char active; unsigned char padDD[3]; float amount; unsigned char padE4[0x14]; float width, depth, height; } UnkAA9D4;
 typedef union UnkAAF04Conversion { unsigned int words[2]; double value; } UnkAAF04Conversion;
+typedef struct InitStruct {
+    int field_00;
+    int field_04;
+    float field_08;
+    float field_0C;
+    Vec vA;
+    Vec vB;
+    Vec vC;
+    float field_34;
+    float pad38[3];
+    int field_44;
+    float field_48;
+    float field_4C;
+    float field_50;
+    float field_54;
+    float field_58;
+    float field_5C;
+    float field_60;
+    float field_64;
+    float field_68;
+    float field_6C;
+    float field_70;
+    float field_74;
+    float field_78;
+    float field_7C;
+    float pad80[3];
+} InitStruct;
+
+extern const char lbl_80349DC8[];
+extern void *fn_8012850C(int, const char *);
+extern void *fn_8002F37C(void *, void (*)(void), void *, int, int);
+extern int fn_802CAC28(const char *, int);
+extern void fn_801EEFDC(void *, int);
+extern void *fn_801E87A8(void);
+
 void fn_8028E240(int);
 int fn_802C2C00(int);
 int fn_802C990C(int);
