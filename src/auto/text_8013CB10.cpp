@@ -616,25 +616,21 @@ extern "C" void fn_8013E3A8(void *arg0, void *arg1) {
     *(f32 *)(dst + 0x24) = lbl_805614F8;
     *(s32 *)(dst + 0x2C) = (s32)((f32)*(s32 *)(dst + 0x2C) * scale);
 }
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
 extern "C" void *fn_8013E6E4(void *arg0) {
-    register f32 first;
-    void *field;
-
-    first = *(volatile f32 *)&lbl_805614AC;
-    field = (u8 *)arg0 + 0x98;
-    fn_8001DAE0(field, first);
-    fn_8001DAE0((u8 *)arg0 + 0xA0, lbl_805614FC);
-    fn_8001DAE0((u8 *)arg0 + 0xA8, lbl_805614FC);
-    fn_8001DAE0((u8 *)arg0 + 0xB0, lbl_805614FC);
-    fn_8001DAE0((u8 *)arg0 + 0xB8, lbl_80561500);
-    fn_8001DAE0((u8 *)arg0 + 0xC0, lbl_805614AC);
-    fn_8001DAE0((u8 *)arg0 + 0xC8, lbl_80561498);
-    fn_8001DAE0((u8 *)arg0 + 0xD0, lbl_80561498);
-    fn_8001DAE0((u8 *)arg0 + 0xD8, lbl_80561498);
+    fn_8001DAE0((u8 *)arg0 + 0x98, 1.0f);
+    fn_8001DAE0((u8 *)arg0 + 0xA0, 1.25f);
+    fn_8001DAE0((u8 *)arg0 + 0xA8, 1.25f);
+    fn_8001DAE0((u8 *)arg0 + 0xB0, 1.25f);
+    fn_8001DAE0((u8 *)arg0 + 0xB8, 1.65f);
+    fn_8001DAE0((u8 *)arg0 + 0xC0, 1.0f);
+    fn_8001DAE0((u8 *)arg0 + 0xC8, 0.5f);
+    fn_8001DAE0((u8 *)arg0 + 0xD0, 0.5f);
+    fn_8001DAE0((u8 *)arg0 + 0xD8, 0.5f);
     return arg0;
 }
-#pragma scheduling on
+#pragma pop
 extern "C" void fn_802C6CF8(s32);
 extern "C" void fn_802CAC54(s32);
 extern "C" void fn_8002F6AC(s32, void *);
@@ -745,7 +741,8 @@ extern "C" void fn_8013EB30(void *arg0) {
                 s32 n = idx + 1;
                 if (n < total) {
                     s32 count = total - n;
-                    for (; count > 0; count--) {
+                    s32 j;
+                    for (j = n; j < total; j++) {
                         do {
                             item = NextPathNode(self, item);
                         } while (item[0x1E] != 0);
