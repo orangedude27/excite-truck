@@ -4,6 +4,12 @@
 #pragma dont_inline on
 #pragma scheduling on
 extern s32 lbl_802F3238[];
+struct Fn800BD710Tbl {
+    s32 a[8];
+    s32 b[8];
+    s32 c[42];
+    s32 d[34];
+};
 struct Fn800BD710Obj {
     u8 pad0[4];
     s32 mode;
@@ -1743,8 +1749,9 @@ extern "C" s32 fn_800A7774(void *a, void *out, void *base, void *data, u16 count
     u8 *b = (u8*)base;
     u32 d = (u32)data;
     u32 rem, last, i;
+    u32 zero=0, invalid=(u32)-1;
     u8 *p, *end;
-    u32 flags;
+    u16 flags;
     if (!n) return 30;
     if (n == 1) {
         flags = *(u16*)b & 0xfffc;
@@ -1772,8 +1779,8 @@ extern "C" s32 fn_800A7774(void *a, void *out, void *base, void *data, u16 count
         *(void**)(p+0x24)=b+(i-step)*40;
         *(void**)(p+0x20)=b+(i+step)*40;
         *(u32*)(p+4)=d; *(u32*)(p+8)=d;
-        *(u32*)(p+12)=0; *(u32*)(p+16)=0; *(u32*)(p+20)=size;
-        *(s32*)(p+24)=-1; *(u16*)(p+2)=0; *(u32*)(p+28)=0;
+        *(u32*)(p+12)=zero; *(u32*)(p+16)=zero; *(u32*)(p+20)=size;
+        *(s32*)(p+24)=invalid; *(u16*)(p+2)=0; *(u32*)(p+28)=0;
         *(u16*)p &= 0xfffc;
         if(flag) *(u16*)p |= 4; else *(u16*)p &= ~4;
         p+=advance; d+=stride;
@@ -1782,8 +1789,8 @@ extern "C" s32 fn_800A7774(void *a, void *out, void *base, void *data, u16 count
     *(void**)(p+0x24)=b+(count-rem-2*step)*40;
     *(void**)(p+0x20)=b;
     *(u32*)(p+4)=(u32)data+(last<<9); *(u32*)(p+8)=(u32)data+(last<<9);
-    *(u32*)(p+12)=0; *(u32*)(p+16)=0; *(u32*)(p+20)=size;
-    *(s32*)(p+24)=-1; *(u16*)(p+2)=0; *(u32*)(p+28)=0;
+    *(u32*)(p+12)=zero; *(u32*)(p+16)=zero; *(u32*)(p+20)=size;
+    *(s32*)(p+24)=invalid; *(u16*)(p+2)=0; *(u32*)(p+28)=0;
     *(u16*)end &= 0xfffc;
     if(flag) *(u16*)end |= 4; else *(u16*)end &= ~4;
     return 0;
@@ -11552,35 +11559,38 @@ extern "C" u8 lbl_80559268;
 
 extern s32 lbl_802F3238[];
 extern "C" void fn_800BD710(void *arg0, s16 arg1, s16 arg2, void *arg3, void *arg4) {
-    u8 *obj = (u8 *)arg0;
+    Fn800BD710Obj *obj = (Fn800BD710Obj *)arg0;
+    s32 *t = lbl_802F3238;
     s32 *out0 = (s32 *)arg3;
     s32 *out1 = (s32 *)arg4;
-    s16 *tab = (s16 *)(obj + 0xA6E);
-    int i;
 
-    if (*(s32 *)(obj + 4) == 0) {
-        *out1 = (s32)(((s64)*out0 * lbl_802F3238[8 + arg2]) >> 20);
-        *out0 = (s32)(((s64)*out0 * lbl_802F3238[arg2]) >> 20);
+    if (obj->mode == 0) {
+        s32 *a = t;
+        s32 *b = t + 8;
+        *out1 = (s32)(((s64)*out0 * b[arg2]) >> 20);
+        *out0 = (s32)(((s64)*out0 * a[arg2]) >> 20);
         return;
     }
-    if (*(s32 *)(obj + 0x9E8) == 0) {
-        *(s32 *)(obj + 0x9E8) = 1;
+    if (obj->inited == 0) {
+        obj->inited = 1;
         if (arg1 == 1) {
-            for (i = 0; i < 33; i++) {
-                tab[i] = (s16)lbl_802F3238[58 + i];
+            s32 *src = t + 58;
+            for (int i = 0; i < 33; i++) {
+                obj->tab[i] = (s16)src[i];
             }
         } else {
-            for (i = 0; i < 33; i++) {
-                tab[i] = (s16)lbl_802F3238[16 + i];
+            s32 *src = t + 16;
+            for (int i = 0; i < 33; i++) {
+                obj->tab[i] = (s16)src[i];
             }
         }
     }
     if ((arg2 & 1) == 1) {
         *out1 = *out0;
-        *out0 = (s32)(((s64)*out0 * tab[(s16)(arg2 + 1)]) >> 20);
+        *out0 = (s32)(((s64)*out0 * obj->tab[(s16)(arg2 + 1)]) >> 20);
         return;
     }
-    *out1 = (s32)(((s64)*out0 * tab[arg2]) >> 20);
+    *out1 = (s32)(((s64)*out0 * obj->tab[arg2]) >> 20);
 }
 
 extern "C" s16 fn_800BDD7C(s32, s32, s32 *);
@@ -21107,6 +21117,63 @@ extern "C" void fn_800CD38C(const char *selfArg, const char *paneName) {
             case 9:
                 break;
             }
+        }
+    }
+}
+
+extern "C" void reset_btn__Q210homebutton10HomeButtonFv(void *arg0) {
+    u8 *self=(u8*)arg0;
+    s32 i=0, j;
+    u8 *cursor=self;
+    for(;i<*(s32*)(self+8);cursor+=4,i++) {
+        if(*(s32*)(cursor+0x1c)) {
+            s32 *entry=lbl_802F4528;
+            s32 count=*(s32*)(self+0xc);
+            for(j=0;j<count;entry+=2,j++) {
+                if(i != entry[0]) continue;
+                if(entry[1]==2) goto found;
+            }
+            j=-1;
+found:
+            void *pane=*(void**)(self+0x268+j*4);
+            fn_800CF3EC(pane);
+            *(s32*)((u8*)pane+0x14)=1;
+            *(s32*)(cursor+0x1c)=0;
+        }
+    }
+    if(*(s32*)(self+0x1c+*(s32*)(self+8)*4)) {
+        void *pane=*(void**)(self+0x3f0);
+        fn_800CF3EC(pane);
+        *(s32*)((u8*)pane+0x14)=1;
+        *(s32*)(self+0x1c+(*(s32*)(self+8)+1)*4)=0;
+    }
+    if(*(s32*)(self+0x1c+(*(s32*)(self+8)+1)*4)) {
+        if(*(s32*)self==1) {
+            if(*(s32*)(self+0x18)==0) {
+                s32 *entry=lbl_802F4588;
+                for(j=0;j<74;j++,entry+=2) {
+                    if(entry[0]!=5) continue;
+                    if(entry[1]==20) goto found20;
+                }
+                j=-1;
+found20:
+                void *pane=*(void**)(self+0x298+j*4);
+                fn_800CF3EC(pane);
+                *(s32*)((u8*)pane+0x14)=1;
+                *(s32*)(self+0x1c+*(s32*)(self+8)*4)=0;
+            }
+        } else {
+            s32 *entry=lbl_802F4588;
+            for(j=0;j<74;j++,entry+=2) {
+                if(entry[0]!=5) continue;
+                if(entry[1]==3) goto found3;
+            }
+            j=-1;
+found3:
+            void *pane=*(void**)(self+0x298+j*4);
+            fn_800CF3EC(pane);
+            *(s32*)((u8*)pane+0x14)=1;
+            *(s32*)(self+0x1c+*(s32*)(self+8)*4)=0;
         }
     }
 }
