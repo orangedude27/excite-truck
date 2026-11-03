@@ -477,7 +477,7 @@ void fn_802473A4(void) {
         case 9:
             old=lbl_8055D430 & 1; lbl_8055D430|=1;
             fn_8000DC70(0); fn_800169F8(0); fn_80137C78(1); fn_8000DA10();
-            prior=0; fn_802E4A10(); fn_80137C84(prior); fn_802E4A10();
+            prior=0; fn_802E4A10(); ((void (*)(int, int))fn_80137C84)(0, 0); fn_802E4A10();
             fn_80129AEC(0); fn_8023BCEC(); lbl_8055D430=(lbl_8055D430&~1)|old; break;
         case 10: fn_8025812C(); break;
         case 11: fn_8025C054(); break;
