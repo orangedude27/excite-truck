@@ -115,6 +115,7 @@ extern void fn_801E5348(void);
 extern void fn_802C8D74(void);
 extern f32 lbl_8055F880;
 extern f32 lbl_80564884;
+extern f32 lbl_80564890;
 s32 fn_802C90F0(s32);
 void fn_802C9118(void);
 void fn_802C9124(s32, s32, f32, f32, u32, f32, f32, f32, f32);
