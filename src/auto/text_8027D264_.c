@@ -38,6 +38,24 @@ extern void fn_80012790(int);
 extern void fn_8027E0C8(void *, int);
 extern unsigned char lbl_8055F66C;
 extern void fn_8027B834(void);
+typedef struct Ent_8027DB40 { const char *name; int id; int val; } Ent_8027DB40;
+typedef struct VTbl_8027DB40 { void *s[3]; void (*add)(void *, int, int, int); } VTbl_8027DB40;
+typedef struct Obj_8027DB40 { VTbl_8027DB40 *vt; } Obj_8027DB40;
+extern int fn_80019714(void);
+extern int fn_80018FB4(void);
+extern Ent_8027DB40 *fn_80019054(int);
+extern int fn_80019088(void);
+extern int fn_80016604(int);
+extern int *fn_8001668C(int, int);
+extern int fn_80018FA8(int);
+extern int fn_80019144(int);
+extern int fn_800194CC(void);
+extern int fn_80019534(void);
+extern int fn_80019604(void);
+extern int fn_80019664(void);
+extern int stricmp(const char *, const char *);
+extern char lbl_8055C794[8];
+void fn_8027DE68(void);
 extern void fn_8027B94C(void);
 #pragma scheduling invalid_target
 void fn_8027D264(void) {
@@ -208,6 +226,11 @@ extern "C" void fn_8027D77C(void *arg0) {
 #pragma scheduling invalid_target
 extern "C" void fn_8027D7B8(void *arg0) {
     fn_80007F90(*(int *)((char *)fn_8001285C(((int *)arg0)[3]) + sizeof(int) * 2));
+}
+
+#pragma scheduling invalid_target
+extern "C" void fn_8027D7E4(void *arg0) {
+    fn_80007FF0(*(int *)((char *)fn_8001285C(((int *)arg0)[3]) + sizeof(int) * 2));
 }
 #pragma scheduling on
 extern "C" void fn_8027D810(void *arg0) {
