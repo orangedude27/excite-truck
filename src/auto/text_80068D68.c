@@ -177,6 +177,7 @@ typedef struct {
 
 #define UUSB_CB_DEFINED_EARLY 1
 extern u8 lbl_803C0F78[];
+extern BOOLEAN l2c_link_hci_conn_comp(UINT8 status, UINT16 handle, UINT8 *p_bda);
 static inline u8 *btm_bda_to_acl_inl(u8 *bda) {
     u8 *q = lbl_803C0F78 + 0x34;
     u32 j = 0;
