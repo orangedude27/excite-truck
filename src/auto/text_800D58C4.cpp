@@ -158,14 +158,6 @@ struct StateNode_800D6CA0 { StateNode_800D6CA0* next; };
 extern "C" const char lbl_8031E908[];
 extern "C" const char lbl_8031E92C[];
 extern "C" s32 lbl_8055DE08;
-static inline bool HasPaneState_800D6CA0(u8 *pane) {
-    StateNode_800D6CA0 *type = (StateNode_800D6CA0 *)((StateObject_800D6CA0 *)pane)->v1();
-    while (type) {
-        if (type == (StateNode_800D6CA0 *)&lbl_8055DE08) return true;
-        type = type->next;
-    }
-    return false;
-}
 struct PaneAnimLink {
     PaneAnimLink* next;
     void* unk4;
