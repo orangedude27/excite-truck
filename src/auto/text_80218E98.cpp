@@ -113,6 +113,11 @@ extern "C" void *lbl_8033DEAC[];
 extern "C" void fn_80227880(s32, f32, f32, f32, f32);
 extern "C" void fn_80230924(s32, s32, f32, f32, f32, f32, f32);
 extern "C" f32 lbl_80563514;
+extern "C" { __declspec(section ".data") extern char lbl_8033E038; }
+extern "C" u8 lbl_8055EFBC;
+extern "C" char lbl_8055B8A4[4];
+extern "C" s32 fn_80235FD8(s32);
+extern "C" void fn_80227044(void *, f32, f32, f32);
 
 extern "C" s32 fn_8022F638(s32, s32, s32, s32, f32);
 extern f32 lbl_805634E4;
@@ -3176,6 +3181,34 @@ extern "C" void fn_8021EC1C(void* arg0, s32 arg1) {
     if (*(u8*)((u8*)arg0+0x19)) { fn_8022B390(*(s32*)((u8*)arg0+0xA58),*(s32*)((u8*)arg0+0xA54),*(s32*)((u8*)arg0+0x250),&spC,&sp8); r0=sp8+*(s32*)((u8*)arg0+8); r3=spC+*(s32*)((u8*)arg0+4); ((void(*)(s32,s32,s32,s32,s32))fn_802C47B8)(r3,r0+2,r3,r0+0xC,lbl_8055FBF8); }
     fn_802C3014(arg1);
 }
+
+#pragma push
+#pragma processor 750
+extern "C" void fn_8021EDA4(void *self) {
+    u8 *p = (u8 *)self;
+    char text[256];
+    if (*(s32 *)(p + 0xA60)) {
+        f32 height, x, y;
+        x = (f32)(*(s32 *)(p + 4) - lbl_8055FB9C / 2);
+        y = (f32)(lbl_8055FBA0 / 2 - *(s32 *)(p + 8));
+        height = (f32)fn_802C5220(*(s32 *)(p + 0xA60));
+        f32 width = (f32)((Vf78 *)self)->get();
+        fn_802C5320(*(s32 *)(p + 0xA60), 0, x, y, lbl_805634A8, width, height);
+    }
+    #pragma scheduling off
+    ((void (*)(s32,s32,s32,s32,s32,s32,s32,s32,f32,s32))fn_8022BAD0)(*(s32 *)(p + 0xA58), *(s32 *)(p + 4), *(s32 *)(p + 8), 0, 0, 0, *(s32 *)(p + 0xA54), *(u8 *)(p + 0x19) != 0, lbl_805634A4, 0);
+    #pragma scheduling on
+    if (*(u8 *)(p + 0x19)) {
+        f32 x = (f32)(*(s32 *)(p + 4) - lbl_8055FB9C / 2);
+        f32 y = (f32)(lbl_8055FBA0 / 2 - *(s32 *)(p + 8));
+        strcpy(text, *(char **)(p + 0xA54));
+        if (*(s32 *)(p + 0x250) >= 0) text[*(s32 *)(p + 0x250)] = 0;
+        x += (f32)fn_8022B498(*(s32 *)(p + 0xA58), (s32)text);
+        f32 height = (f32)fn_8022B620(*(s32 *)(p + 0xA58), text);
+        ((void (*)(s32,f32,f32,f32,f32,f32))fn_80230924)(-0x100, x, y - lbl_80563514, lbl_805634A4 + x, lbl_80563514 + (y - height), lbl_805634A8);
+    }
+}
+#pragma pop
 
 extern "C" void fn_8021EFE0(void *arg0, s32 arg1, s32 arg2) {
     volatile s32 *p = (volatile s32 *)arg0;
