@@ -300,6 +300,73 @@ extern int fn_802E8BE4(void);
 extern void fn_802E8C2C(void);
 extern void fn_802E8920(int);
 u32 fn_802E8D84(void) { return 1; }
+#pragma use_lmw_stmw off
+
+int fn_802E8D8C(const char *path, void *buf, int len) {
+    struct { int pad; char info[0x8C]; } s;
+    char *msg = lbl_8034D9C0;
+    int a, b, r, n;
+    unsigned char saved;
+
+    lbl_80560030 = (int)path;
+    if (((int (*)(void *, void (*)(void)))fn_802E95E0)(msg + 0x550, fn_802E8838) == 0) {
+        if (&s.pad != 0) lbl_80560030 = 0;
+        return 0;
+    }
+    saved = lbl_8055D255;
+    lbl_8055D255 = 0;
+    a = fn_802E8A18();
+    b = fn_802E8AE8(path);
+    if (a == 0 && b == 0) {
+        fn_802E30C8(msg + 0x560);
+        if (saved != 0) fn_802E8920(len);
+        if (&s.pad != 0) lbl_80560030 = 0;
+        return 0;
+    }
+    if (a == 0 || b == 0) {
+        fn_802E30C8(msg + 0x594);
+        if (fn_802E8BE4() != 0) fn_802E8920(len);
+        if (&s.pad != 0) lbl_80560030 = 0;
+        return 0;
+    }
+    r = NANDOpen(path, s.info, 1);
+    if (r != 0) {
+        fn_802E30C8(msg + 0x5CC, r);
+        if (saved != 0) fn_802E8920(len);
+        if (&s.pad != 0) lbl_80560030 = 0;
+        return 0;
+    }
+    if (lbl_80560020 != 0) {
+        if (len > 0x55730) {
+            fn_802E317C(msg + 0x5F0, len);
+        }
+        n = NANDRead(s.info, (void *)lbl_80560020, len);
+        if (n == len) {
+            memcpy(buf, (void *)lbl_80560020, len);
+        }
+    } else {
+        n = NANDRead(s.info, buf, len);
+    }
+    if (n != len) {
+        fn_802E30C8(msg + 0x624, n);
+        NANDClose(s.info);
+        if (n == -4) {
+            fn_802E8C2C();
+        } else if (fn_802E8BE4() != 0) {
+            fn_802E8920(len);
+        }
+        if (&s.pad != 0) lbl_80560030 = 0;
+        return 0;
+    }
+    r = NANDClose(s.info);
+    if (r != 0) {
+        fn_802E30C8(msg + 0x644, r);
+        if (&s.pad != 0) lbl_80560030 = 0;
+        return 0;
+    }
+    if (&s.pad != 0) lbl_80560030 = 0;
+    return 1;
+}
 
 #pragma push
 #pragma optimization_level 3
