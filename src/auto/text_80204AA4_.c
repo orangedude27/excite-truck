@@ -39,7 +39,7 @@ int fn_80204CF0(void) {
 }
 
 extern double atof(const char *);
-extern const char lbl_8055B4AC[];
+__declspec(section ".sdata") extern const char lbl_8055B4AC[];
 extern const char lbl_8033BBF4[];
 float fn_80204CFC(const char *arg0) {
     char buf[0x64];
@@ -181,80 +181,138 @@ void fn_80205208(void) {
 extern const char lbl_8033BBE4[];
 extern void *fn_80131808(const char *);
 extern int fn_80012854(void);
+#pragma dont_inline on
 int fn_80205268(const char *arg0, int arg1, int arg2) {
+    volatile struct { int arg1; void *mgr; void *cur; void *val; void *sel; } s;
     char buf[0x64];
-    void *manager;
-    void *entry;
-    void *current;
+    char *entry;
     int result;
-    int *value;
-    int valid;
-    void *(*getStage)(int);
-    manager = fn_80131808(lbl_8033BBE4);
-    entry = fn_80204B18(arg1);
-    current = (*(void *(*)(void *, int))(*(void ***)manager + 2))(manager, *(int *)((char *)entry + 8));
-    valid = arg2 >= 0 && arg2 < fn_80012854();
+    void *o;
+    s.arg1 = arg1;
+    s.mgr = 0;
+    s.cur = 0;
+    s.val = 0;
+    s.sel = 0;
+    s.mgr = fn_80131808(lbl_8033BBE4);
+    entry = (char *)fn_80204B18(arg1);
+    o = s.mgr;
+    s.cur = (*(void *(**)(void *, int))(*(void ***)o + 2))(o, *(int *)(entry + 8));
+    if (arg2 >= 0 && arg2 < fn_80012854()) {
+        void *stage = *(void **)((char *)((void *(*)(int))fn_8001285C)(arg2) + 0x20);
+        int ok = (*(int (**)(void *, int))(*(void ***)stage + 23))(stage, *(int *)(entry + 8)) != 0;
+        if (ok) {
+            s.val = (*(void *(**)(void *, int))(*(void ***)stage + 23))(stage, *(int *)(entry + 8));
+        }
+        s.sel = ((void *(*)(int))fn_80204AA4)(arg2);
+    }
     result = 0;
-    if (valid) {
-        void *candidate;
-        int check;
-        getStage = (void *(*)(int))fn_8001285C;
-        candidate = *(void **)((char *)getStage(arg2) + 0x20);
-        check = (*(int (*)(void *, int))(*(void ***)candidate + 0x5C))(candidate, *(int *)((char *)entry + 8));
-        if (check != 0) value = (int *)(*(int (*)(void *, int))(*(void ***)candidate + 0x5C))(candidate, *(int *)((char *)entry + 8));
-        else value = 0;
-        value = ((int *(*)(int))fn_80204AA4)(arg2);
-    } else value = 0;
-    if (value != 0) {
+    if (s.sel != 0) {
         fn_801345D8(buf, 0x64, lbl_8055B4AC, arg0);
-        if (value != 0 && (*(int (**)(void *, const char *))(*(void ***)value + 3))(value, buf)) {
-            result = (*(int (**)(void *, const char *))(*(void ***)value + 5))(value, buf);
-        } else if ((*(int (**)(void *, const char *))(*(void ***)current + 3))(current, buf)) {
-            result = (*(int (**)(void *, const char *))(*(void ***)current + 5))(current, buf);
+        o = s.val;
+        if (o != 0 && (*(int (**)(void *, const char *))(*(void ***)o + 3))(o, buf) != 0) {
+            o = s.val;
+            result = (*(int (**)(void *, const char *))(*(void ***)o + 5))(o, buf);
+        } else {
+            o = s.cur;
+            if ((*(int (**)(void *, const char *))(*(void ***)o + 3))(o, buf) != 0) {
+                o = s.cur;
+                result = (*(int (**)(void *, const char *))(*(void ***)o + 5))(o, buf);
+            } else {
+                result = 0;
+            }
         }
     }
     if (result == 0) {
-        if (value != 0 && (*(int (**)(void *, const char *))(*(void ***)value + 3))(value, arg0)) result = (*(int (**)(void *, const char *))(*(void ***)value + 5))(value, arg0);
-        else if ((*(int (**)(void *, const char *))(*(void ***)current + 3))(current, arg0)) result = (*(int (**)(void *, const char *))(*(void ***)current + 5))(current, arg0);
+        o = s.val;
+        if (o != 0 && (*(int (**)(void *, const char *))(*(void ***)o + 3))(o, arg0) != 0) {
+            o = s.val;
+            result = (*(int (**)(void *, const char *))(*(void ***)o + 5))(o, arg0);
+        } else {
+            o = s.cur;
+            if ((*(int (**)(void *, const char *))(*(void ***)o + 3))(o, arg0) != 0) {
+                o = s.cur;
+                result = (*(int (**)(void *, const char *))(*(void ***)o + 5))(o, arg0);
+            } else {
+                result = 0;
+            }
+        }
     }
     if (result == 0) fn_802E317C(lbl_8033BBF4, arg0);
-    fn_80131818((int)manager);
+    s.sel = 0;
+    s.cur = 0;
+    s.val = 0;
+    fn_80131818((int)s.mgr);
+    s.mgr = 0;
     return result;
 }
-
-int fn_802054EC(const char *arg0, int arg1, int arg2) {
+#pragma push
+#pragma dont_inline on
+#pragma cplusplus on
+extern "C" int fn_802054EC(const char *arg0, int arg1, int arg2) {
+    class Manager { public: virtual void *get(int); };
+    class Stage { public: virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11(); virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15(); virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19(); virtual void f20(); virtual void *get(int); };
+    class Resource { public: virtual void f0(); virtual int has(const char *); virtual void f2(); virtual int get(const char *); };
+    volatile struct { int arg1; void *mgr; void *cur; void *val; void *sel; } s;
     char buf[0x64];
-    void *manager;
-    void *entry;
-    void *sp10;
-    void *sp14 = 0;
-    int *sp18 = 0;
-    int result = 0;
-    void *(*getStage)(int);
-    manager = fn_80131808(lbl_8033BBE4);
-    entry = fn_80204B18(arg1);
-    sp10 = (*(void *(*)(void *, int))(*(void ***)manager + 2))(manager, *(int *)((char *)entry + 8));
+    char *entry;
+    int result;
+    void *o;
+    s.arg1 = arg1;
+    s.mgr = 0;
+    s.cur = 0;
+    s.val = 0;
+    s.sel = 0;
+    s.mgr = fn_80131808(lbl_8033BBE4);
+    entry = (char *)fn_80204B18(arg1);
+    o = s.mgr;
+    s.cur = ((Manager *)o)->get(*(int *)(entry + 8));
     if (arg2 >= 0 && arg2 < fn_80012854()) {
-        void *stage;
-        int check;
-        getStage = (void *(*)(int))fn_8001285C;
-        stage = *(void **)((char *)getStage(arg2) + 0x20);
-        check = (*(int (*)(void *, int))(*(void ***)stage + 0x5C))(stage, *(int *)((char *)entry + 8));
-        if ((-check | check) < 0) sp14 = (void *)(*(int (*)(void *, int))(*(void ***)stage + 0x5C))(stage, *(int *)((char *)entry + 8));
-        sp18 = ((int *(*)(int))fn_80204AA4)(arg2);
+        void *stage = *(void **)((char *)((void *(*)(int))fn_8001285C)(arg2) + 0x20);
+        int ok = ((Stage *)stage)->get(*(int *)(entry + 8)) != 0;
+        if (ok) {
+            s.val = ((Stage *)stage)->get(*(int *)(entry + 8));
+        }
+        s.sel = ((void *(*)(int))fn_80204AA4)(arg2);
     }
-    if (sp18 != 0) {
+    result = 0;
+    if (s.sel != 0) {
         fn_801345D8(buf, 0x64, lbl_8055B4AC, arg0);
-        if (sp14 != 0 && (*(int (**)(void *, const char *))(*(void ***)sp14 + 3))(sp14, buf)) result = (*(int (**)(void *, const char *))(*(void ***)sp14 + 5))(sp14, buf);
-        else if ((*(int (**)(void *, const char *))(*(void ***)sp10 + 3))(sp10, buf)) result = (*(int (**)(void *, const char *))(*(void ***)sp10 + 5))(sp10, buf);
+        o = s.val;
+        if (o != 0 && ((Resource *)o)->has(buf) != 0) {
+            o = s.val;
+            result = ((Resource *)o)->get(buf);
+        } else {
+            o = s.cur;
+            if (((Resource *)o)->has(buf) != 0) {
+                o = s.cur;
+                result = ((Resource *)o)->get(buf);
+            } else {
+                result = 0;
+            }
+        }
     }
     if (result == 0) {
-        if (sp14 != 0 && (*(int (**)(void *, const char *))(*(void ***)sp14 + 3))(sp14, arg0)) result = (*(int (**)(void *, const char *))(*(void ***)sp14 + 5))(sp14, arg0);
-        else if ((*(int (**)(void *, const char *))(*(void ***)sp10 + 3))(sp10, arg0)) result = (*(int (**)(void *, const char *))(*(void ***)sp10 + 5))(sp10, arg0);
+        o = s.val;
+        if (o != 0 && ((Resource *)o)->has(arg0) != 0) {
+            o = s.val;
+            result = ((Resource *)o)->get(arg0);
+        } else {
+            o = s.cur;
+            if (((Resource *)o)->has(arg0) != 0) {
+                o = s.cur;
+                result = ((Resource *)o)->get(arg0);
+            } else {
+                result = 0;
+            }
+        }
     }
     if (result == 0) fn_802E317C(lbl_8033BBF4, arg0);
     result = stricmp((const char *)result, lbl_8055B4B4) == 0 || stricmp((const char *)result, lbl_8055B4B8) == 0;
-    fn_80131818(*(int *)manager);
+    s.sel = 0;
+    s.cur = 0;
+    s.val = 0;
+    fn_80131818((int)s.mgr);
+    s.mgr = 0;
     return result;
 }
-
+#pragma pop
