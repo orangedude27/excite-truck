@@ -481,8 +481,8 @@ void *fn_8016C29C(void *arg0, int arg1) {
     return arg0;
 }
 
-#pragma cplusplus on
 #pragma ppc_psq_save off
+#pragma cplusplus on
 extern "C" void fn_8016C328(void *arg0) {
     class Cfg {
     public:
