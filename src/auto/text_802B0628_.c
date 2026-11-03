@@ -17,7 +17,7 @@ extern void fn_802B1BEC(void);
 extern void fn_802B1758(void *);
 extern int fn_802C2C00(int);
 extern void fn_802CADD0(int, int);
-extern void __AXGetStackHead_802BC30C(int);
+extern int __AXGetStackHead_802BC30C(int);
 extern void fn_802C28C0(void);
 extern void fn_802C8BD0();
 extern void fn_802C8D74(void);
@@ -456,6 +456,85 @@ void fn_802B13F8(void *arg0, int arg1, void *arg2, int arg3, float farg0) {
 
     fn_802BAFF8(arg1, &sp8);
 }
+
+void fn_802B14B4(void *arg0) {
+    int i;
+    int j;
+    int k;
+    int count;
+    int obj;
+    unsigned mask;
+    unsigned idx;
+    int *slot;
+    int *node;
+    int c;
+    int saved;
+    int cache;
+    int cacheCount;
+    int flag;
+
+    fn_802B1BEC();
+    if (fn_802B1BE4((char *)arg0 + 0x318) > 0) {
+        fn_802B1B60(arg0);
+        saved = fn_802C2C00(0);
+        if (lbl_8055FA59 != 0) {
+            fn_802C8BD0(*(int *)((char *)arg0 + 4));
+        } else {
+            fn_802C28C0();
+            fn_802C8BD0();
+        }
+        fn_802B05EC();
+        fn_802DBF00();
+        for (i = 0; i < fn_802B1AF0((char *)arg0 + 0xC); i++) {
+            obj = fn_802B1B50((int *)((char *)arg0 + 0xC), i) + 4;
+            if (lbl_8055FA59 != 0) {
+                fn_802CADD0(*(int *)(fn_802B1B50((int *)((char *)arg0 + 0xC), i) + 0x7C), 1);
+                __AXGetStackHead_802BC30C(i);
+                fn_802CADD0(0, 2);
+            } else {
+                for (j = 0; j < fn_802B1B38((void *)obj); j++) {
+                    fn_802CADD0(*(int *)fn_802B1B40((int *)obj, j), j + 1);
+                }
+                __AXGetStackHead_802BC30C(i);
+                fn_802CADD0(0, 3);
+            }
+            cache = fn_802B1B28((int *)((char *)arg0 + 0x318), 0);
+            cacheCount = fn_802B1BE4((char *)arg0 + 0x318);
+            mask = 1 << i;
+            idx = mask;
+            slot = (int *)((char *)arg0 + mask * 4 + 0x934);
+            for (; idx <= 0x40; idx++, slot++) {
+                if ((idx & mask) && fn_802B1B18(slot) == 0) {
+                    flag = (((mask - 1) & idx) == 0);
+                    for (node = (int *)fn_802B1B10(slot); node != 0; node = (int *)node[3]) {
+                        c = fn_802B1B08(node);
+                        if (c > 0) {
+                            fn_802DC078(cache, cacheCount, fn_802B1AF8(node, 0), c, flag, i);
+                        }
+                    }
+                }
+            }
+            if (lbl_8055FA59 != 0) {
+                fn_802CADD0(-1, 1);
+                fn_802CADD0(-1, 2);
+            } else {
+                for (k = 0; k < fn_802B1B38((void *)obj); k++) {
+                    fn_802CADD0(-1, k + 1);
+                }
+                fn_802CADD0(-1, 3);
+            }
+        }
+        fn_802DBF30();
+        fn_802C8D74();
+        fn_802C2C00(saved);
+        count = fn_802B1BE4((char *)arg0 + 0x318);
+        fn_802BB0FC(fn_802B1B28((int *)((char *)arg0 + 0x318), 0), count);
+        fn_802B1758(arg0);
+        count = fn_802B1BE4((char *)arg0 + 0x318);
+        fn_802BB3B8(fn_802B1B28((int *)((char *)arg0 + 0x318), 0), count);
+    }
+}
+
 #pragma scheduling on
 extern float lbl_80564BB8, lbl_80564BD0, lbl_80564BD4, lbl_80564BD8;
 extern float lbl_80564BDC, lbl_80564BE0, lbl_80564BE4, lbl_80564BE8;
