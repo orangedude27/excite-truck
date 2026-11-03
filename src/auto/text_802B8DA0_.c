@@ -1033,6 +1033,7 @@ found:
     lbl_8055FA84=(void *)((int)lbl_8055FA84+1);
     return result;
 }
+#pragma pop
 #pragma cplusplus reset
 
 void fn_802BAD0C(void *arg0, float angle) {
@@ -1217,7 +1218,7 @@ void fn_802BB0FC(int a, int b) {
         node = entry->nodes;
         if (!node) continue;
         if (entry->state == -2) goto clear_nodes;
-        if (node->type >= 0 && node->type < 2) {
+        switch (node->type) { case 0: case 1: {
             fn_802C8BD0(); fn_802DC130();
             node = entry->nodes;
             while (node) {
@@ -1240,7 +1241,7 @@ void fn_802BB0FC(int a, int b) {
                 node = node->next;
             }
             fn_802DC134(); fn_802C8D74();
-        } else if (node->type == 2) {
+        break; } case 2: {
             fn_802C28C0(); fn_802C8BD0(); fn_802DC278();
             fn_802CADD0(entry->state,1);
             fn_802CADD0(((int (*)(void))fn_802C21B8)(),2);
@@ -1265,7 +1266,7 @@ void fn_802BB0FC(int a, int b) {
                 node = node->next;
             }
             fn_802CADD0(-1,1); fn_802CADD0(-1,2); fn_802DC27C(); fn_802C8D74();
-        }
+        break; } }
         continue;
 clear_nodes:
         while (node) { node->count = 0; node->batches = 0; node = node->next; }
