@@ -52,6 +52,9 @@ extern f32 lbl_80560B88;
 extern u32 __cvt_fp2unsigned(f32);
   extern void GXGetVtxDesc(void);
   extern void __GXSaveFifo(void);
+typedef struct {
+    u8 r, g, b, a;
+} GXColor;
 
 typedef struct {
     unsigned short unused0 : 11;
