@@ -261,6 +261,9 @@ static inline s32 fn_80163F7C_method_read(void *obj, const char *key, s32 index,
 extern s32 lbl_8055E300;
 extern unsigned char lbl_8032F858[];
 extern int lbl_8055E2E4;
+extern int lbl_8055A0F8;
+extern int lbl_8055A100;
+extern s32 fn_80131234(void *);
 extern int lbl_8055E2E8;
 extern int lbl_8055E2EC;
 extern int lbl_8055E2F0;
@@ -2193,7 +2196,76 @@ void fn_80164D60(void) {
 
 }
 
+extern void fn_8018ADBC(void *, f32);
+extern void fn_8018ADB4(void *, f32);
+extern void fn_8018ADA4(void *, f32);
+extern void fn_8017CFFC(void *, u32 *, f32 *, f32 *);
+extern void fn_80176780(int, int);
+extern void fn_8017691C(void);
+extern f32 lbl_80561878;
+extern f32 lbl_80561874;
+extern f64 lbl_80561880;
+extern s32 lbl_8055E4D0;
 #pragma scheduling invalid_target
+void fn_80164D64(void *arg0, s32 arg1) {
+    struct Head { u32 word[8]; };
+    struct Work { f32 a[3]; f32 b[3]; struct Head head; u32 tail[4]; } work;
+    register u32 word64;
+    register u32 word60;
+    register int *cars;
+    register int index;
+    register void *car;
+    register f32 offset;
+    register f32 scale;
+    register f32 zero;
+    f32 factor;
+    if (lbl_8055A0B4 <= fn_80161D50()) {
+        if (lbl_8055A0B8 > fn_80161D50()) {
+            if (*(u8 *)((u8 *)arg0 + 7) == 0) {
+                fn_801DF074(8, 1);
+                *(u8 *)((u8 *)arg0 + 7) = 1;
+            }
+        }
+    }
+    zero = *(volatile f32 *)&lbl_80561848;
+    scale = *(volatile f32 *)&lbl_80561878;
+    offset = *(volatile f32 *)&lbl_80561874;
+    for (cars = lbl_804348E8, index = 0; index < lbl_8055E4D0; cars++, index++) {
+        car = (void *)*cars;
+        fn_8018ADBC(car, lbl_80561840);
+        fn_8018ADB4(car, lbl_80561848);
+        fn_8018ADA4(car, lbl_80561848);
+        work.head = *(struct Head *)((u8 *)car + 0x3C);
+        work.tail[0] = *(u32 *)((u8 *)car + 0x5C);
+        word60 = *(volatile u32 *)((u8 *)car + 0x60);
+        word64 = *(volatile u32 *)((u8 *)car + 0x64);
+        work.tail[1] = word60;
+        work.tail[2] = word64;
+        work.tail[3] = *(volatile u32 *)((u8 *)car + 0x68);
+        ((f32 *)work.tail)[1] = zero;
+        factor = (f32)index;
+        ((f32 *)work.tail)[2] = offset + scale * factor;
+        ((f32 *)work.tail)[3] = zero;
+        work.a[2] = work.a[1] = work.a[0] = zero;
+        work.b[2] = work.b[1] = work.b[0] = zero;
+        fn_8017CFFC(car, work.head.word, work.b, work.a);
+    }
+    if (*(u8 *)((u8 *)arg0 + 4)) {
+        register s32 value;
+        register s32 limit;
+        fn_801796BC(0);
+        value = *(s32 *)((u8 *)arg0 + 8);
+        *(u8 *)((u8 *)arg0 + 4) = 0;
+        *(u8 *)((u8 *)arg0 + 5) = 1;
+        lbl_8055E304 = value;
+        limit = *(s32 *)((u8 *)lbl_8042FDEC + 4);
+        if (value < limit)
+            fn_80176780(0x8002, 0);
+        else
+            fn_8017691C();
+    }
+}
+#pragma scheduling on
 void fn_80164F50(void *arg0) {
     extern void fn_801796BC(unsigned char);
     extern s32 fn_80131234(void *);
