@@ -5,7 +5,7 @@ extern "C" const char lbl_80329530[];
 extern f32 lbl_80561178, lbl_80561188;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
-namespace nw4hbm { namespace ut { class ResFont { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18(); virtual int GetEncoding(); bool SetResource(void*); }; struct List; void List_Remove(List*, void*); void List_Init(List*, unsigned short); void List_Append(List*, void*); void* List_GetNth(const List*, unsigned short); void* List_GetNext(const List*, const void*); struct Font; struct Glyph; struct CharWidths; class CharWriter { public: void* pad[23]; void* font; void* GetFont() const; void SetFont(const Font&); }; namespace detail { class ResFontBase { public: u16 GetTextureFormat() const; s8 GetLineFeed() const; s32 GetDescent() const; s8 GetBaselinePos() const; s32 GetDefaultCharWidths() const; void GetGlyph(nw4hbm::ut::Glyph*, unsigned short) const; void GetGlyphFromIndex(nw4hbm::ut::Glyph*, unsigned short) const; void SetLineFeed(int); void SetDefaultCharWidths(const CharWidths&); }; } } }
+namespace nw4hbm { namespace ut { class ResFont { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18(); virtual int GetEncoding(); bool SetResource(void*); }; struct List; void List_Remove(List*, void*); void List_Init(List*, unsigned short); void List_Append(List*, void*); void* List_GetNth(const List*, unsigned short); void* List_GetNext(const List*, const void*); struct Font; struct Glyph; struct CharWidths; class CharWriter { public: void* pad[23]; void* font; void* GetFont() const; void SetFont(const Font&); }; namespace detail { class ResFontBase { public: u16 GetTextureFormat() const; s8 GetLineFeed() const; s32 GetDescent() const; s8 GetBaselinePos() const; u8 GetWidth() const; s32 GetDefaultCharWidths() const; void GetGlyph(nw4hbm::ut::Glyph*, unsigned short) const; void GetGlyphFromIndex(nw4hbm::ut::Glyph*, unsigned short) const; void SetLineFeed(int); void SetDefaultCharWidths(const CharWidths&); }; } } }
 
 extern "C" const char lbl_80328828[];
 extern "C" const char lbl_80328834[];
@@ -33,7 +33,7 @@ extern "C" void* __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void* self, int doFre
     const char* file = lbl_80328680;
     if (self != 0) {
         void* head = (char*)self + 4;
-        void* node = *(void**)((char*)self + 4);
+        void* node = *(void**)head;
         while (node != head) {
             void* next = *(void**)node;
             if (*(s32*)self == 0)
@@ -55,7 +55,7 @@ extern "C" void* __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void* self, int doFre
             *(void**)((char*)node + 4) = 0;
             node = next;
         }
-        if (doFree > 0)
+        if (doFree >= 1)
             ((s32 (*)(s32))fn_80128668)((s32)self);
     }
     return self;
@@ -63,57 +63,72 @@ extern "C" void* __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void* self, int doFre
 
 extern "C" void* Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(void* self, void** iterator) {
     extern const char lbl_80328680[];
-    const char* file = lbl_80328680;
-    void* head = (char*)self + 4;
-    void* first = *iterator;
-    if (first == head)
-        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x1F, file + 0xD0);
-    void* node = *iterator;
-    void* stop = *(void**)node;
-    while (node != stop) {
-        void* next = *(void**)node;
+    struct LocalSelf { int count; void* first; };
+    void* head;
+    void* stop;
+    register const char* file = lbl_80328680;
+    void* nextNode;
+    void* prevNode;
+    void* next;
+    void* zero;
+    if (*iterator == &((LocalSelf*)self)->first)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328680, 0x1F, file + 0xD0);
+    iterator = (void**)*iterator;
+    head = (char*)self + 4;
+    zero = 0;
+    stop = *(void**)iterator;
+    while ((void*)iterator != stop) {
+        next = *(void**)iterator;
         if (*(s32*)self == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(file, 0x60, file + 0x10);
-        if (node == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(file, 0x61, file + 0x34);
-        if (node == head)
-            Panic__Q26nw4hbm2dbFPCciPCce(file, 0x62, file + 0x58);
-        void* nextNode = *(void**)node;
-        void* prevNode = *(void**)((char*)node + 4);
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328680, 0x60, file + 0x10);
+        if (iterator == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328680, 0x61, file + 0x34);
+        if ((void*)iterator == head)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328680, 0x62, file + 0x58);
+        nextNode = *(void**)iterator;
+        prevNode = *(void**)((char*)iterator + 4);
         if (nextNode == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(file, 0x65, file + 0x80);
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328680, 0x65, file + 0x80);
         *(void**)((char*)nextNode + 4) = prevNode;
         if (prevNode == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(file, 0x67, file + 0xA8);
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328680, 0x67, file + 0xA8);
         *(void**)prevNode = nextNode;
         --*(s32*)self;
-        *(void**)node = 0;
-        *(void**)((char*)node + 4) = 0;
-        node = next;
+        *(void**)iterator = zero;
+        *(void**)((char*)iterator + 4) = zero;
+        iterator = (void**)next;
     }
     return stop;
 }
 
-#pragma pop
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void Clear__Q46nw4hbm2ut6detail12LinkListImplFv(void *self) {
     extern const char lbl_80328680[];
-    void *head = (char *)self + 4;
-    void *node = *(void **)((char *)self + 4);
+    void *head;
+    const char *file;
+    void *nextNode;
+    void *prev;
+    void *next;
+    void *node;
+    file = lbl_80328680;
+    node = *(void **)((char *)self + 4);
+    head = (char *)self + 4;
     while (node != head) {
-        void *next = *(void **)node;
+        next = *(void **)node;
         if (*(s32 *)self == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328680, 0x60, lbl_80328680 + 0x10);
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328680, 0x60, file + 0x10);
         if (node == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328680, 0x61, lbl_80328680 + 0x34);
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328680, 0x61, file + 0x34);
         if (node == head)
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328680, 0x62, lbl_80328680 + 0x58);
-        void *prev = *(void **)((char *)node + 4);
-        void *nextNode = *(void **)node;
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328680, 0x62, file + 0x58);
+        prev = *(void **)((char *)node + 4);
+        nextNode = *(void **)node;
         if (nextNode == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328680, 0x65, lbl_80328680 + 0x80);
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328680, 0x65, file + 0x80);
         *(void **)((char *)nextNode + 4) = prev;
         if (prev == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328680, 0x67, lbl_80328680 + 0xA8);
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328680, 0x67, file + 0xA8);
         *(void **)prev = nextNode;
         --*(s32 *)self;
         *(void **)node = 0;
@@ -121,18 +136,24 @@ extern "C" void Clear__Q46nw4hbm2ut6detail12LinkListImplFv(void *self) {
         node = next;
     }
 }
-
+#pragma pop
 extern "C" void* Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void* arg0, void** arg1, void* arg2) {
     extern const char lbl_80328680[];
     extern void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
     const char* file = lbl_80328680;
+    const char* message;
+    int line;
     void* node;
     void* prev;
     if (arg2 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x4A, file + 0x34);
     node = *arg1;
     if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x4C, file + 0xFC);
     prev = *(void**)((char*)node + 4);
-    if (prev == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x4F, file + 0x124);
+    if (prev == 0) {
+        message = file + 0x124;
+        line = 0x4F;
+        Panic__Q26nw4hbm2dbFPCciPCce(file, line, message);
+    }
     if (*(void**)arg2 != 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x51, file + 0x150);
     if (*(void**)((char*)arg2 + 4) != 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x52, file + 0x17C);
     *(void**)arg2 = node;
@@ -142,28 +163,28 @@ extern "C" void* Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12
     ++*(int*)arg0;
     return arg2;
 }
-
+#pragma use_lmw_stmw off
 extern "C" void* Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(int* arg0, void* arg1) {
     extern const char lbl_80328680[];
     extern void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
     const char* file = lbl_80328680;
     void* next;
     void* prev;
-    if (*arg0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x60, file + 0x10);
-    if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x61, file + 0x34);
-    if (arg1 == (char*)arg0 + 4) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x62, file + 0x58);
+    if (*arg0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x60, file + 0x10);
+    if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x61, file + 0x34);
+    if (arg1 == (char*)arg0 + 4) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x62, file + 0x58);
     next = *(void**)arg1;
     prev = *(void**)((char*)arg1 + 4);
-    if (next == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x65, file + 0x80);
+    if (next == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x65, file + 0x80);
     *(void**)((char*)next + 4) = prev;
-    if (prev == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x67, file + 0xA8);
+    if (prev == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x67, file + 0xA8);
     *(void**)prev = next;
     --*arg0;
     *(void**)arg1 = 0;
     *(void**)((char*)arg1 + 4) = 0;
     return next;
 }
-
+#pragma use_lmw_stmw reset
 void nw4hbm::ut::List_Init(nw4hbm::ut::List *list, unsigned short size) {
     if (list == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328828, 0x29, lbl_80328834);
@@ -174,34 +195,51 @@ void nw4hbm::ut::List_Init(nw4hbm::ut::List *list, unsigned short size) {
 }
 
 void nw4hbm::ut::List_Append(nw4hbm::ut::List* list, void* item) {
-    register nw4hbm::ut::List* savedList = list;
-    register void* savedItem = item;
+    struct LocalList { void* first; void* last; u16 count; u16 stride; };
+    struct LocalNode { void* next; void* previous; };
     const char* file = lbl_80328828;
-    if (savedList == 0)
+    LocalList* self = (LocalList*)list;
+    if (list == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(file, 0x59, file + 0xC);
-    if (savedItem == 0)
+    if (item == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(file, 0x5A, file + 0x34);
-    if (*(void**)savedList == 0) {
-        if (savedList == 0)
+    if (self->first == 0) {
+        if (list == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(file, 0x40, file + 0xC);
-        if (savedItem == 0)
+        if (item == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(file, 0x41, file + 0x34);
-        *(void**)((char*)savedItem + *(u16*)((char*)savedList + 0xA) + 4) = 0;
-        *(void**)savedItem = 0;
-        u16 count = *(u16*)((char*)savedList + 8);
-        *(void**)savedList = savedItem;
-        *(void**)((char*)savedList + 4) = savedItem;
-        *(u16*)((char*)savedList + 8) = count + 1;
+        LocalNode* node = (LocalNode*)((char*)item + self->stride);
+        node->previous = 0;
+        node->next = 0;
+        self->first = item;
+        self->last = item;
+        self->count += 1;
     } else {
-        u16 stride = *(u16*)((char*)savedList + 0xA);
-        void* tail = *(void**)((char*)savedList + 4);
-        *(void**)((char*)savedItem + stride) = tail;
-        *(void**)((char*)savedItem + stride + 4) = 0;
-        *(void**)((char*)tail + stride + 4) = savedItem;
-        u16 count = *(u16*)((char*)savedList + 8);
-        *(void**)((char*)savedList + 4) = savedItem;
-        *(u16*)((char*)savedList + 8) = count + 1;
+        LocalNode* node = (LocalNode*)((char*)item + self->stride);
+        LocalNode* tail = (LocalNode*)((char*)self->last + self->stride);
+        node->next = self->last;
+        node->previous = 0;
+        tail->previous = item;
+        self->last = item;
+        self->count += 1;
     }
+}
+
+void nw4hbm::ut::List_Remove(nw4hbm::ut::List* list, void* item) {
+    const char* file = lbl_80328828;
+    if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0xcb, file + 0xc);
+    if (item == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0xcc, file + 0x34);
+    unsigned short offset = *(unsigned short*)((char*)list + 0xa);
+    void* prev = *(void* volatile*)((char*)item + offset);
+    char* link = (char*)item + offset;
+    if (prev == 0) *(void**)list = *(void**)(link + 4);
+    else *(void**)((char*)prev + offset + 4) = *(void**)(link + 4);
+    void* next = *(void**)(link + 4);
+    if (next == 0) *(void**)((char*)list + 4) = *(void**)link;
+    else *(void**)((char*)next + *(unsigned short*)((char*)list + 0xa)) = *(void**)link;
+    *(void**)link = 0;
+    *(void**)(link + 4) = 0;
+    *(unsigned short*)((char*)list + 8) -= 1;
 }
 
 void* nw4hbm::ut::List_GetNext(const nw4hbm::ut::List* list, const void* item) {
@@ -5100,18 +5138,18 @@ extern "C" s32 GetFont__Q36nw4hbm2ut10CharWriterCFv_801120E8(void *arg0) {
  return *(s32*)((char*)arg0+0x54);
 }
 
-void* nw4hbm::ut::CharWriter::GetFont() const {
-    const unsigned int p = (unsigned int)this;
+extern "C" void *GetFont__Q36nw4hbm2ut10CharWriterCFv_80112410(void *arg0) {
+    const unsigned int p = (unsigned int)arg0;
     unsigned int r5=1, r6=1, r7=1, r8=1, r9=1, r10=1;
     unsigned int r11=p&0xFF000000;
-    if ((r11+0x80000000U)!=0 && ((p&0xFF800000)+0x7F000000U)!=0) r10=0;
-    if (r10==0 && ((p&0xF8000000)+0x70000000U)!=0) r9=0;
-    if (r9==0 && (r11+0x40000000U)!=0) r8=0;
-    if (r8==0 && ((p&0xFF800000)+0x3F000000U)!=0) r7=0;
-    if (r7==0 && ((p&0xF8000000)+0x30000000U)!=0) r6=0;
-    if (r6==0 && ((p&0xFFFFC000)+0x20000000U)!=0) r5=0;
-    if (r5==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329560,0x97,lbl_80329578,this);
-    return font;
+    if (!((u32)(r11+0x80000000U)<1U) && !((u32)((p&0xFF800000)+0x7F000000U)<1U)) r10=0;
+    if (r10==0 && !((u32)((p&0xF8000000)+0x70000000U)<1U)) r9=0;
+    if (r9==0 && !((u32)(r11+0x40000000U)<1U)) r8=0;
+    if (r8==0 && !((u32)((p&0xFF800000)+0x3F000000U)<1U)) r7=0;
+    if (r7==0 && !((u32)((p&0xF8000000)+0x30000000U)<1U)) r6=0;
+    if (r6==0 && !((u32)((p&0xFFFFC000)+0x20000000U)<1U)) r5=0;
+    if (r5==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329560,0x97,lbl_80329578,arg0);
+    return *(void **)((char *)arg0 + 0x5C);
 }
 
 extern "C" const char lbl_80329530[];
