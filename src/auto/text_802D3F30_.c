@@ -706,6 +706,52 @@ void fn_802D5ACC(void *arg0) {
     lbl_8055FD19 = 1;
 }
 
+#pragma push
+#pragma processor 750
+void fn_802D5B8C(void *arg0) {
+    s32 count = *(s32 *)((char *)arg0 + 0x1C);
+    u32 *colors = (u32 *)fn_802CFF64(count * 4);
+    f32 *uvs = (f32 *)fn_802CFF64(count * 8);
+    if (colors != 0 && uvs != 0) {
+        f32 *pos = *(f32 **)((char *)arg0 + 0x20);
+        u32 *srcColor = *(u32 **)((char *)arg0 + 0x24);
+        f32 d0 = lbl_804C56C0[9] - lbl_804C5690[9];
+        f32 d1 = lbl_804C56C0[10] - lbl_804C5690[10];
+        f32 *srcUv = *(f32 **)((char *)arg0 + 0x28);
+        f32 d2 = lbl_804C56C0[11] - lbl_804C5690[11];
+        f32 vec[3];
+        f32 offU = lbl_804DB068[3];
+        f32 offV = lbl_804DB068[4];
+        f32 scale = lbl_804DB068[5];
+        f32 one = lbl_8056500C;
+        u32 *outC = colors;
+        f32 *outUv = uvs;
+        s32 i;
+        vec[0] = d0 * lbl_804C5690[0] + d1 * lbl_804C5690[1] + d2 * lbl_804C5690[2];
+        vec[1] = d0 * lbl_804C5690[3] + d1 * lbl_804C5690[4] + d2 * lbl_804C5690[5];
+        vec[2] = d0 * lbl_804C5690[6] + d1 * lbl_804C5690[7] + d2 * lbl_804C5690[8];
+        for (i = 0; i < count; i++) {
+            u32 c = *srcColor;
+            f32 factor = one - PSVECSquareDistance(pos, vec) * scale;
+            s32 a = (s32)((f32)(u8)c * factor) > 0 ? (s32)((f32)(u8)c * factor) : 0;
+            if (a > 0xFF) a = 0xFF;
+            *outC = (c & ~0xFF) | (a & 0xFF);
+            pos += 3;
+            srcColor++;
+            outC++;
+            i = i;
+            outUv[0] = srcUv[0] + offU;
+            outUv[1] = srcUv[1] + offV;
+            srcUv += 2;
+            outUv += 2;
+        }
+        GXSetArray(9, *(void **)((char *)arg0 + 0x20), 0xC);
+        GXSetArray(0xB, colors, 4);
+        GXSetArray(0xD, uvs, 8);
+        GXCallDisplayList(*(void **)((char *)arg0 + 0x30), *(u32 *)((char *)arg0 + 0x2C));
+    }
+}
+
 void fn_802D5DE8(u32 flags) {
     int desc[54];
     int *p;
