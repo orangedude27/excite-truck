@@ -579,11 +579,19 @@ extern "C" s32 fn_80261178(void *arg0) {
     }
     return 0;
 }
-#pragma pop
-s32 fn_802613E0(void) {
+#pragma cplusplus on
+extern "C" s32 fn_802613E0(void) {
+    struct Obj {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void v20(); virtual void v21();
+        virtual void f60(); virtual void f64(); virtual void f68(); virtual void f6c(); virtual void f70();
+    };
     s32 offset;
     s32 i;
-    void *obj;
 
     if (lbl_8055F3EB == 0) {
         *(s32 *)(lbl_8055F420 + 4) += 1;
@@ -601,21 +609,15 @@ s32 fn_802613E0(void) {
     offset = 0;
     for (; i < *(s32 *)(lbl_8055F420 + 8); offset += 4, i++) {
         if (lbl_8055F3EB == 0) {
-            obj = *(void **)(*(u8 **)(lbl_8055F420 + 0x18) + offset);
-            (*(void (***)(void*))obj)[0x60/4](obj);
-            obj = *(void **)(*(u8 **)(lbl_8055F420 + 0x18) + offset);
-            (*(void (***)(void*))obj)[0x6c/4](obj);
+            (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x18) + offset))->f60();
+            (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x18) + offset))->f6c();
         } else if (i == *(s32 *)lbl_8055F420) {
-            obj = *(void **)(*(u8 **)(lbl_8055F420 + 0x18) + offset);
-            (*(void (***)(void*))obj)[0x68/4](obj);
+            (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x18) + offset))->f68();
         } else if (i == *(s32 *)(lbl_8055F420 + 4) * 2 || i == *(s32 *)(lbl_8055F420 + 4) * 2 + 1) {
-            obj = *(void **)(*(u8 **)(lbl_8055F420 + 0x18) + offset);
-            (*(void (***)(void*))obj)[0x64/4](obj);
-            obj = *(void **)(*(u8 **)(lbl_8055F420 + 0x18) + offset);
-            (*(void (***)(void*))obj)[0x6c/4](obj);
+            (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x18) + offset))->f64();
+            (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x18) + offset))->f6c();
         } else {
-            obj = *(void **)(*(u8 **)(lbl_8055F420 + 0x18) + offset);
-            (*(void (***)(void*))obj)[0x6c/4](obj);
+            (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x18) + offset))->f6c();
         }
     }
     i = 0;
@@ -623,29 +625,22 @@ s32 fn_802613E0(void) {
     for (; i < *(s32 *)(lbl_8055F420 + 0xC); offset += 4, i++) {
         if (lbl_8055F3EB == 0) {
             if (i == *(s32 *)(lbl_8055F420 + 4)) {
-                obj = *(void **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset);
-                (*(void (***)(void*))obj)[0x68/4](obj);
+                (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset))->f68();
             } else {
-                obj = *(void **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset);
-                (*(void (***)(void*))obj)[0x64/4](obj);
-                obj = *(void **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset);
-                (*(void (***)(void*))obj)[0x6c/4](obj);
+                (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset))->f64();
+                (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset))->f6c();
             }
         } else if (i == *(s32 *)(lbl_8055F420 + 4)) {
-            obj = *(void **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset);
-            (*(void (***)(void*))obj)[0x68/4](obj);
-            obj = *(void **)(*(u8 **)(lbl_8055F420 + 0x3C) + *(s32 *)(lbl_8055F420 + 4) * 4);
-            (*(void (***)(void*))obj)[0x70/4](obj);
+            (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset))->f68();
+            (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + *(s32 *)(lbl_8055F420 + 4) * 4))->f70();
         } else {
-            obj = *(void **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset);
-            (*(void (***)(void*))obj)[0x60/4](obj);
-            obj = *(void **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset);
-            (*(void (***)(void*))obj)[0x6c/4](obj);
+            (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset))->f60();
+            (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset))->f6c();
         }
     }
     return 0;
 }
-
+#pragma cplusplus off
 extern s32 lbl_802FA6A8[];
 extern u8 lbl_8055B860;
 #pragma push
