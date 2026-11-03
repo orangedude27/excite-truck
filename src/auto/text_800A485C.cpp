@@ -4021,6 +4021,71 @@ extern "C" s32 VFiPFFAT_WriteCluster(void *object, s32 arg1, s32 arg2, s32 arg3,
  return 0;
 }
 
+extern "C" s32 fn_800AF8EC(void *, s32, u32, void *);
+extern "C" s32 fn_800AFFE0(void *, s32, u16, void *, s32);
+extern "C" s32 fn_800B0488(void *, u32, u32, void *, s32);
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" s32 VFiPFFAT_WriteClusterPage(void *object, u32 arg1, u32 arg2, u32 arg3, s32 arg4, void *page) {
+ u8 *p=(u8 *)object;
+ u32 cluster=arg2, value=arg3, entry=arg1;
+ u32 unused, flag=arg4;
+ s32 result;
+ u32 index, n, count, *table;
+ { u8 *context = *(u8 **)(p+0x34);
+ switch (*(s32 *)(context+0x1c)) {
+ case 0:
+  if (value>0xfff) result=0x10;
+  else result=fn_800AF8EC(context,(u16)entry,(u16)value,page);
+  break;
+ case 1:
+  if (value>0xffff) result=0x10;
+  else result=((s32 (*)(void *,s32,s32,void *))fn_800AFFE0)(context,entry,value,page);
+  break;
+ case 2:
+  if (value>0xfffffff) result=0x10;
+  else result=((s32 (*)(void *,u32,u32,void *))fn_800B0488)(context,entry,value,page);
+  break;
+ default: result=0xf; break;
+ }
+ }
+ if (result) return result;
+ table=*(u32 **)(p+0x1c);
+ if (table && flag==1) {
+  if (!value) {
+   n=*(u16 *)(p+0x20)+1;
+   index=cluster/n;
+   if (*(u32 *)(p+0x28)>=index) {
+    if (cluster%n==0) table[index]=0;
+    if (*(u32 *)(p+0x2c)>=cluster) {
+     count=cluster-1;
+     *(u32 *)(p+0x2c)=count;
+     n=*(u16 *)(p+0x20)+1;
+     *(u32 *)(p+0x24)=count/n;
+     *(u16 *)(p+0x22)=count%n;
+    }
+   }
+  } else if (entry!=lbl_802EEF40[*(s32 *)(*(u8 **)(p+0x34)+0x1c)*5+2]) {
+   result=fn_800AD0B0(object,cluster,&unused,&flag,page);
+   if (result) return result;
+   if (flag==0) {
+    index=*(u32 *)(p+0x24);
+    count=*(u32 *)(p+0x28);
+    if (count>index && count!=0) {
+     if (cluster==index*(*(u16 *)(p+0x20)+1)) {
+      *(u16 *)(p+0x22)=0;
+      (*(u32 **)(p+0x1c))[index]=entry;
+      *(u32 *)(p+0x24)+=1;
+     } else *(u16 *)(p+0x22)+=1;
+     *(u32 *)(p+0x2c)=cluster;
+    }
+   }
+  }
+ }
+ return 0;
+}
+#pragma pop
+
 #pragma pop
 
 #pragma pop
