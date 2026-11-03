@@ -43,7 +43,7 @@ extern unsigned char lbl_8055F564;
 extern float lbl_8055F568;
 extern unsigned char lbl_8055F559;
 extern unsigned char lbl_8055F55A;
-extern const char lbl_8055C59C[];
+extern const char lbl_8055C59C[4];
 extern const char lbl_80346D90[];
 extern const char lbl_80346DC8[];
 extern char lbl_8049EDC8[];
@@ -282,6 +282,157 @@ int fn_80270EC4(void *arg0, int arg1) {
         }
     }
 }
+
+int fn_802710A0(void *arg0, int arg1) {
+    struct ManagerVtable { char pad[0x18]; void *(*getCamera)(void *); };
+    struct Manager { struct ManagerVtable *vtable; };
+    struct { void *first; float second; } sp18;
+    struct { void *first; float second; } spC;
+    float sp8;
+    float f31_val;
+    float var_f30;
+    float var_f29;
+    char *p;
+    int var_r29;
+    int var_r28;
+    int var_r27;
+    int var_r26;
+    int i;
+
+    var_f30 = lbl_80563F44;
+    var_f29 = var_f30;
+    var_r29 = 0;
+    var_r28 = 0;
+    var_r27 = -1;
+    var_r26 = -1;
+
+    if (lbl_8055F564 != 0) {
+        struct Manager *manager = *(struct Manager **)((char *)arg0 + 0x270);
+        void *camera = manager->vtable->getCamera(manager);
+        float *dest = &lbl_8055F568;
+        if (fn_801B526C() != 0) {
+            fn_80136414(&sp18, camera, *(int *)((char *)arg0 + 0x2678));
+            *dest = *(float *)((char *)sp18.first + 0x1C) + *(float *)((char *)sp18.first + 0x18) * sp18.second;
+        } else {
+            int offset = fn_801363A0(camera, (char *)camera + 4);
+            fn_80136414(&spC, camera, offset);
+            *dest = *(float *)((char *)spC.first + 0x1C) + *(float *)((char *)spC.first + 0x18) * spC.second;
+        }
+    }
+
+    f31_val = lbl_80563F48;
+    p = lbl_8049F9D8;
+    for (i = 0; i < lbl_8055F554; i++, p += 0x1C) {
+        sp8 = f31_val;
+        if (fn_80272C74(p, arg0, &sp8, arg1) != 0) {
+            if (var_r29 == 0 || sp8 > var_f30) {
+                var_f30 = sp8;
+                var_r27 = i;
+                var_r29 = 1;
+            }
+        } else if (var_r29 == 0) {
+            if (var_r28 == 0 || sp8 > var_f29) {
+                if (*(int *)(*(char **)p + 0x58) != 0) {
+                    var_f29 = sp8;
+                    var_r26 = i;
+                    var_r28 = 1;
+                }
+            }
+        }
+    }
+
+    if (var_r29 == 0) {
+        var_r29 = var_r28;
+        var_r27 = var_r26;
+    }
+
+    if (var_r29 == 0) {
+        if (arg1 != -1) {
+            if (lbl_8055F559 == 0) {
+                lbl_8055F559 = 1;
+                fn_802E30C8(lbl_8055C59C, lbl_80346D90);
+            }
+            return fn_802710A0(arg0, -1);
+        }
+        if (lbl_8055F55A == 0) {
+            lbl_8055F55A = 1;
+            fn_802E30C8(lbl_8055C59C, lbl_80346DC8);
+        }
+        return -1;
+    }
+
+    return ((unsigned int)*(char **)(lbl_8049F9D8 + var_r27 * 0x1C) - (unsigned int)lbl_8049EDC8) / 96U;
+}
+
+#pragma scheduling invalid_target
+void fn_802712F8(void *arg0) {
+    extern char lbl_80346B00[];
+    extern char lbl_8049A2C8[];
+    extern char lbl_8049EDC8[];
+    extern const char lbl_8055C59C[];
+    extern char lbl_8055C5A0[];
+    extern int lbl_8055F548;
+    extern int lbl_8055F550;
+    extern unsigned char lbl_8055F55B;
+    extern int fn_8012C33C(void *);
+    extern void *fn_80131808(void *);
+    extern void fn_80131818(void *);
+    extern int fn_80272028(void *, void *);
+    extern int fn_80272DCC(void *, void *);
+    extern void fn_80277740(void);
+    extern int fn_80277754(void *);
+    extern void fn_80277828(void);
+    extern void fn_802E30C8(const char *, ...);
+    extern int stricmp(const char *, const char *);
+    register char *strings = lbl_80346B00;
+    lbl_8055F550 = 0;
+    lbl_8055F548 = 0;
+    fn_80277740();
+    if (fn_8012C33C(arg0) != 0) {
+        register void *iterator = fn_80131808(arg0);
+        register char *tableA = lbl_8049A2C8;
+        register char *tableB = lbl_8049EDC8;
+        register int index = 0;
+        register void *item;
+        while ((item = ((void *(*)(void *, int))(*(void ***)iterator)[3])(iterator, index)) != 0) {
+            if (stricmp(((char *(*)(void *))(*(void ***)item)[2])(item), lbl_8055C5A0) == 0) {
+                if (fn_80272DCC(tableA + lbl_8055F548 * 0x60, item) != 0)
+                    lbl_8055F548 += 1;
+            } else if (stricmp(((char *(*)(void *))(*(void ***)item)[2])(item), strings + 0x2FC) == 0) {
+                if (fn_80272028(tableB + lbl_8055F550 * 0x60, item) != 0)
+                    lbl_8055F550 += 1;
+            } else if (fn_80277754(item) == 0) {
+                fn_802E30C8(strings + 0x30C, ((char *(*)(void *))(*(void ***)item)[2])(item));
+            }
+            index += 1;
+        }
+        fn_80131818(iterator);
+    } else if (fn_8012C33C(strings + 0x334) != 0) {
+        register void *iterator = fn_80131808(strings + 0x334);
+        register char *tableA = lbl_8049A2C8;
+        register int index = 0;
+        register void *item;
+        while ((item = ((void *(*)(void *, int))(*(void ***)iterator)[3])(iterator, index)) != 0) {
+            if (stricmp(((char *(*)(void *))(*(void ***)item)[2])(item), lbl_8055C5A0) == 0) {
+                if (lbl_8055F548 < 0xC8) {
+                    if (fn_80272DCC(tableA + lbl_8055F548 * 0x60, item) != 0) {
+                        lbl_8055F548 += 1;
+                    } else {
+                        fn_802E30C8(strings + 0x340, index);
+                    }
+                } else if (lbl_8055F55B == 0) {
+                    lbl_8055F55B = 1;
+                    fn_802E30C8(lbl_8055C59C, strings + 0x370);
+                }
+            }
+            index += 1;
+        }
+        fn_80131818(iterator);
+    }
+    fn_80277828();
+}
+#pragma scheduling on
+
 #pragma dont_inline reset
 #pragma pop
 
