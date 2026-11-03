@@ -4933,10 +4933,10 @@ void bta_hh_ctrl_dat_act(void *arg0, void *arg1) {
     register u8 *tail = (u8 *)buf + len;
     register u8 *strings = lbl_803151D8;
     u8 cfm[10];
-    register u8 *msg;
     s32 event;
 
     if (lbl_8055DC80 >= 5) {
+        register u8 *msg;
         switch (*(u16 *)(cb + 0x10)) {
         case 4: msg = strings + 0x16C; break;
         case 5: msg = strings + 0x180; break;
@@ -4961,8 +4961,8 @@ void bta_hh_ctrl_dat_act(void *arg0, void *arg1) {
     if (event >= 7) goto event_high;
     if (event == 5) goto second_trace;
     if (event >= 5) goto byte6;
-    if (event >= 4) goto copy_eight;
-    goto second_trace;
+    if (event < 4) goto second_trace;
+    goto copy_eight;
 
 event_high:
     if (event == 9) goto second_trace;
@@ -4980,19 +4980,21 @@ byte6:
 
 second_trace:
     if (lbl_8055DC80 >= 5) {
+        register u8 *msg;
         switch (event) {
-        case 4: msg = strings + 0x16C; break;
-        case 5: msg = strings + 0x180; break;
-        case 6: msg = strings + 0x194; break;
-        case 7: msg = strings + 0x1AC; break;
-        case 8: msg = strings + 0x1C4; break;
-        case 9: msg = strings + 0x1D8; break;
-        case 2: msg = strings + 0x1F0; break;
+        case 4: msg = strings + 0x16C; goto emit_log;
+        case 5: msg = strings + 0x180; goto emit_log;
+        case 6: msg = strings + 0x194; goto emit_log;
+        case 7: msg = strings + 0x1AC; goto emit_log;
+        case 8: msg = strings + 0x1C4; goto emit_log;
+        case 9: msg = strings + 0x1D8; goto emit_log;
+        case 2: msg = strings + 0x1F0; goto emit_log;
         case 0:
         case 1:
-        case 3: msg = strings + 0x200; break;
-        default: break;
+        case 3: msg = strings + 0x200; goto emit_log;
+        default: goto emit_log;
         }
+emit_log:
         ((void (*)(u32, void *, void *))fn_80070954)(
             0x504, strings + 0x2CC, msg);
     }
@@ -6096,6 +6098,7 @@ void btm_acl_role_changed(u8 status, u8 *bd_addr, u8 role) {
             entry = NULL;
             break;
         }
+        continue;
     }
 
     buffer = lbl_803C0F78 + 0x624;
@@ -6122,6 +6125,7 @@ void btm_acl_role_changed(u8 status, u8 *bd_addr, u8 role) {
                 other = NULL;
                 break;
             }
+            continue;
         }
         if (other != NULL) {
             *(u16 *)(other + 0x10E) = supervision_timeout;
@@ -21898,11 +21902,11 @@ u8 fn_8006CA6C(void) {
 #pragma push
 #pragma opt_propagation off
 void fn_8006CF44(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4, u32 arg8) {
-    u8 *ptr = (u8 *)&lbl_80392960;
-    void (*func)(void);
+    u32 *ptr = (u32 *)&lbl_80392960;
+    void (*func)(void *, void *, void *);
     if (arg8 == 3) {
-        func = *(void (**)(void))(ptr + 0x66C);
-        if (func) func();
+        func = (void (*)(void *, void *, void *))ptr[0x66C / 4];
+        if (func) func(arg0, arg1, arg2);
     } else {
         DBPrintf_8006CFA8(lbl_803140D0, arg8);
     }
