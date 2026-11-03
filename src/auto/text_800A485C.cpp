@@ -7274,6 +7274,80 @@ extern "C" s32 fn_800B5618(void *arg0, void *arg1, u32 arg2, u16 arg3, s32 arg4)
     return result & ((-result | result) >> 31);
 }
 
+extern "C" s32 fn_800A5530(void);
+extern "C" s32 fn_800AED1C(void *);
+extern "C" s32 fn_800A5800(void *, s32);
+extern "C" s32 fn_800B5988(void *arg0) {
+    s32 sp8;
+    s32 r;
+    u32 i;
+    u8 *slot;
+    u16 hdr;
+    s32 n;
+    *(s32 *)((u8 *)arg0 + 0x1F80) = 0;
+    *(s32 *)((u8 *)arg0 + 0x1F84) = 0;
+    r = fn_800A5530();
+    if (r != 0) return r;
+    hdr = *(u16 *)arg0;
+    if (hdr == 0 || (hdr & 0x1FF)) return 0xF;
+    n = (hdr >> 9) & 0x7F;
+    if (n > *(u16 *)((u8 *)arg0 + 0x1628) || n * 2 > *(u16 *)((u8 *)arg0 + 0x162A)) return 0x1E;
+    r = VFiPFCACHE_InitCaches(arg0);
+    if (r != 0) return r;
+    {
+        u16 f = *(u16 *)((u8 *)arg0 + 0x1F8C) | 8;
+        *(u16 *)((u8 *)arg0 + 0x1F8C) = f;
+        if (!(f & 8)) {
+            r = 9;
+        } else {
+            s32 hit;
+            ((void (*)(s32 *))fn_800B78F0)(&sp8);
+            *(u32 *)((u8 *)arg0 + 0x1654) |= 1;
+            {
+                s32 key = sp8;
+                u32 *c = (u32 *)lbl_803D2140;
+                u32 t;
+                t = c[0x88 / 4] & 1;
+                c[0x88 / 4] = t;
+                if (t && key == (s32)c[0x8C / 4]) hit = 1;
+                else {
+                    c = (u32 *)((u8 *)c + 0x10);
+                    t = c[0x80 / 4] & 1;
+                    c[0x80 / 4] = t;
+                    if (t && key == (s32)c[0x84 / 4]) hit = 1;
+                    else {
+                        t = c[0x88 / 4] & 1;
+                        c[0x88 / 4] = t;
+                        if (t && key == (s32)c[0x8C / 4]) hit = 1;
+                        else hit = 0;
+                    }
+                }
+            }
+            if (hit) {
+                *(u32 *)((u8 *)arg0 + 0x189C) |= 1;
+                *(s32 *)((u8 *)arg0 + 0x18A0) = sp8;
+            }
+            slot = (u8 *)arg0 + 0x165C;
+            for (i = 0; i < 4; i++, slot += 0x248) {
+                r = fn_800AAEFC((s32)arg0, slot);
+                if (r == 0) continue;
+                goto done;
+            }
+            r = 0;
+        }
+    }
+done:
+    if (r == 0 && (*(u16 *)((u8 *)arg0 + 0x1F8C) & 0x40)) {
+        r = fn_800A5800(arg0, *(s32 *)((u8 *)arg0 + 0x1FC4));
+        if (r == 0 && !(*(u16 *)((u8 *)arg0 + 0x1F8C) & 0x80)) {
+            r = fn_800AED1C(arg0);
+            if (r == 0) r = fn_800AAF70(arg0);
+        }
+    }
+    if (r != 0) *(u16 *)((u8 *)arg0 + 0x1F8C) &= ~8;
+    return r;
+}
+
 extern "C" s32 fn_800B5CB4(u32 arg0, void *arg1) {
     u32 first;
     volatile u8 *state;
@@ -7396,6 +7470,17 @@ done:
 struct CacheSlotData { u8 b[0x240]; };
 struct CacheSlot { u32 flag; s32 key; CacheSlotData data; };
 struct CacheKey { u32 flag; s32 key; };
+static inline s32 CacheKeyMatch(CacheKey *e, s32 key) {
+    e->flag &= 1;
+    return e->flag != 0 && key == e->key;
+}
+static inline s32 CacheKeyFind(s32 key) {
+    CacheKey *e = (CacheKey *)((u8 *)lbl_803D2140 + 0x88);
+    if (CacheKeyMatch(e, key)) return 1;
+    if (CacheKeyMatch(e + 1, key)) return 1;
+    if (CacheKeyMatch(e + 2, key)) return 1;
+    return 0;
+}
 extern "C" s32 fn_800B6200(void *arg0, void *arg1) {
     s32 key;
     s32 i, j, found;
@@ -20434,6 +20519,44 @@ extern "C" void fn_800CEDE8(void) {
     GXSetAlphaUpdate(0);
     GXSetZMode(0, 7, 0);
 }
+
+extern "C" void *__ct__Q36nw4hbm3snd18SoundArchivePlayerFv(void *);
+extern "C" u32 GetRequiredMemSize__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchive(void *, void *);
+extern "C" u32 GetRequiredStrmBufferSize__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchive(void *, void *);
+extern "C" s32 Setup__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchivePvUlPvUl(void *, void *, void *, u32, void *, u32);
+extern "C" void *fn_800F8310(void *);
+extern "C" void fn_800F83C8(void *, void *, u32);
+extern "C" s32 fn_800F6C7C(void *, s32, void *, s32);
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" void fn_800CEF60(void *object, void *archive, s32 enable) {
+ u8 *self=(u8 *)object;
+ typedef void (*PanicFn)(const char *, s32, const char *, ...);
+ const char *file=(const char *)lbl_8031D840;
+ void *p, *stream, *buffer;
+ u32 size, streamSize;
+ p=MEMAllocFromAllocator((MEMAllocator *)lbl_804075F0,0xd8);
+ if(p) { p=__ct__Q36nw4hbm3snd18SoundArchivePlayerFv(p); *(void **)(self+0x5c0)=p; }
+ if(!*(void * volatile *)(self+0x5c0)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)lbl_8031D840,0xe62,file+0xe14);
+ size=GetRequiredMemSize__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchive(*(void **)(self+0x5c0),archive);
+ streamSize=GetRequiredStrmBufferSize__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchive(*(void **)(self+0x5c0),archive);
+ stream=MEMAllocFromAllocator((MEMAllocator *)lbl_804075F0,streamSize);
+ buffer=MEMAllocFromAllocator((MEMAllocator *)lbl_804075F0,size);
+ if(!Setup__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchivePvUlPvUl(*(void **)(self+0x5c0),archive,buffer,size,stream,streamSize)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)lbl_8031D840,0xe74,file+0xd2c);
+ p=MEMAllocFromAllocator((MEMAllocator *)lbl_804075F0,4);
+ if(p) { *(u32 *)p=0; *(void **)(self+0x5d4)=p; }
+ if(!*(void * volatile *)(self+0x5d4)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)lbl_8031D840,0xe7b,file+0xe44);
+ if(enable) {
+  p=MEMAllocFromAllocator((MEMAllocator *)lbl_804075F0,0x2c);
+  if(p) { p=fn_800F8310(p); *(void **)(self+0x5d0)=p; }
+  if(!*(void * volatile *)(self+0x5d0)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)lbl_8031D840,0xe84,file+0xe6c);
+  p=MEMAllocFromAllocator((MEMAllocator *)lbl_804075F0,0x60000);
+  fn_800F83C8(*(void **)(self+0x5d0),p,0x60000);
+  if(!*(u32 *)(*(u8 **)(self+0x5d0)+0x1c)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)lbl_8031D840,0xe8b,file+0xe90);
+  if(!fn_800F6C7C(*(void **)(self+0x5c0),0,*(void **)(self+0x5d0),0)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)lbl_8031D840,0xe8e,file+0xd2c);
+ } else *(void **)(self+0x5d0)=0;
+}
+#pragma pop
 
 extern "C" void fn_800EB36C(void *);
 extern "C" void fn_800ECC58(void);
