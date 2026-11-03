@@ -192,7 +192,6 @@ void fn_8020D29C(void) {
     fn_80206454();
     fn_801769EC();
 }
-#pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_8020DABC(void) {
     fn_8020C908(lbl_8055EE8C);
