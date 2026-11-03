@@ -1063,10 +1063,6 @@ void fn_8023423C(s32 arg0, s32 arg1) {
 }
 #pragma pop
 
-f32 fn_8023400C(s32 arg0) {
-    return (f32)arg0;
-}
-
 void fn_8023441C(const char *arg0) {
     lbl_8055F06C = (s32)((void *(*)(s32, const char *))fn_8012850C)(0x2100, lbl_80340614);
     lbl_8055F058 = fn_80232578(arg0);
