@@ -447,8 +447,8 @@ void fn_80161618(void) {
         lbl_8055E300 = 0;
         lbl_8055E304 = -1;
     }
-    offset = 0;
     i = 0;
+    offset = 0;
     while (i < *(s32 *)(lbl_8042FDEC + 4)) {
         item = *(void **)(*(s32 *)lbl_8042FDEC + offset);
 #pragma cplusplus on
@@ -460,8 +460,8 @@ void fn_80161618(void) {
         };
         ((struct Interface *)item)->slot1();
 #pragma cplusplus reset
-        offset += sizeof(s32);
-        ++i;
+        offset += 4;
+        i++;
     }
 }
 
