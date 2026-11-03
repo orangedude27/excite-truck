@@ -42,6 +42,18 @@ s32 fn_8001FA8C();
 extern void fn_802E6BD8(int, int, void *, int, void (*)(long));
 extern void fn_8000DBC8(void (*)(long, long));
 void fn_8001F528(void);
+void fn_8001EFF0(void);
+extern char lbl_802FDE68[];
+extern char lbl_802FE0D4[], lbl_802FE0E0[], lbl_802FE0EC[], lbl_802FE0FC[];
+extern char lbl_80558D5C[], lbl_80558D64[], lbl_80558D6C[];
+extern s32 fn_80131234(s32);
+extern s32 fn_80131810(void*);
+extern void* fn_801284F8(int, void*);
+extern void* fn_8012850C(int, void*);
+extern void fn_802E317C(const char*, ...);
+extern void fn_802E30C8(const char *, ...);
+s32 fn_8001F41C(const char* arg);
+#define VFN(o, off, T) ((T)(*(void***)(o))[(off) / 4])
 void fn_8001EF38(void* alarm) {
     fn_8001F528();
     fn_8001EFF0();
@@ -223,41 +235,51 @@ void fn_8001F578(void) {
 #pragma scheduling on
 extern void *memcpy(void *, const void *, unsigned long);
 void fn_8001F5BC(void *arg0, void *arg1, int arg2) {
-    int *a = (int *)arg0;
-    int *b = (int *)arg1;
-    int sum0 = a[0] + b[0];
-    int sum1 = a[1] + b[1];
-    int sum2 = a[2] + b[2];
-    int sum3 = a[3] + b[3];
-    int sum4 = a[4] + b[4];
-    int sum5 = a[5] + b[5];
-    int sum6 = a[6] + b[6];
-    int sum7 = a[7] + b[7];
-    char *input;
+    volatile int *a = (volatile int *)arg0;
+    volatile int *b = (volatile int *)arg1;
+    char *input = (char *)arg1 + 0x50;
+    char *output = (char *)arg0;
     char *entry;
-    int found;
-    int empty;
+    int sum7, sum6, sum5, sum4, sum3, sum2, sum1, sum0;
+    int found, empty;
     unsigned int i, j;
-    a[0] = sum0; a[1] = sum1; a[2] = sum2; a[3] = sum3;
-    a[4] = sum4; a[5] = sum5; a[6] = sum6; a[7] = sum7;
-    input = (char *)arg1 + 0x50;
-    for (i = 0; i < 0x32; i++, input += 0x28) {
-        entry = (char *)arg0 + 0x50;
+
+    sum0 = a[0] + b[0];
+    sum1 = a[1] + b[1];
+    sum2 = a[2] + b[2];
+    sum3 = a[3] + b[3];
+    sum4 = a[4] + b[4];
+    sum5 = a[5] + b[5];
+    sum6 = a[6] + b[6];
+    sum7 = a[7] + b[7];
+    a[0] = sum0;
+    a[1] = sum1;
+    a[2] = sum2;
+    a[3] = sum3;
+    a[4] = sum4;
+    a[5] = sum5;
+    a[6] = sum6;
+    a[7] = sum7;
+
+    i = 0;
+    for (; i < 0x32; i++, input += 0x28) {
+        entry = output + 0x50;
         found = 0;
         empty = -1;
-        for (j = 0; j < 0x32 && found == 0; j++, entry += 0x28) {
-            if (empty >= 0) {
-            } else if ((signed char)*entry == 0) {
+        for (j = 0; found == 0 && j < 0x32; entry += 0x28, j++) {
+            if (empty < 0 && (signed char)*entry == 0) {
                 empty = j;
-                continue;
             } else if (stricmp(entry, input) == 0) {
+                int value20 = *(int *)(entry + 0x20) + *(int *)(input + 0x20);
+                int value24 = *(int *)(input + 0x24);
                 found = 1;
-                *(int *)(entry + 0x20) += *(int *)(input + 0x20);
-                *(int *)(entry + 0x24) += *(int *)(input + 0x24);
+                *(volatile int *)(entry + 0x20) = value20;
+                *(int *)(entry + 0x24) += value24;
             }
         }
-        if (found == 0)
-            memcpy((char *)arg0 + 0x50 + empty * 0x28, input, 0x28);
+        if (found == 0) {
+            memcpy(output + 0x50 + empty * 0x28, input, 0x28);
+        }
     }
 }
 
@@ -441,8 +463,8 @@ void fn_8001FBE4(s32 arg0, const char *arg1, s32 arg2) {
     s32 found;
     s32 empty;
     u32 i;
-    s32 rowOffset;
     s32 address;
+    s32 rowOffset;
 
     if (fn_8001FD24() == 0)
         return;
@@ -454,11 +476,10 @@ void fn_8001FBE4(s32 arg0, const char *arg1, s32 arg2) {
     empty = -1;
     i = 0;
     do {
-        if (empty < 0 && (signed char)record[0x50] == 0) {
+        if (empty < 0 && (signed char)record[0x50] == 0)
             empty = i;
-        } else if (stricmp(entry, name) == 0) {
+        else if (stricmp(entry, name) == 0)
             found = i;
-        }
         i++;
         record += 0x28;
         entry += 0x28;
@@ -483,9 +504,8 @@ void fn_8001FBE4(s32 arg0, const char *arg1, s32 arg2) {
         address += arg0 * 4;
         *(s32 *)(address + 0x70) = arg2;
     } else {
-        rowOffset = found * 0x28;
         address = (s32)lbl_8035AF38;
-        address += rowOffset;
+        address += found * 0x28;
         address += arg0 * 4;
         *(s32 *)(address + 0x70) += arg2;
     }
