@@ -1517,6 +1517,16 @@ extern "C" s32 fn_8019E834(s32 arg0, s32 arg1) {
 }
 
 extern "C" s32 fn_8019E874(void*, void**, void*, f32, f32, f32, f32);
+extern "C" s32 fn_8019B4D8(void*, void*, void*, s32, f32);
+struct Fn8019E874Xf { f32 m[9]; Vec pos; };
+class Fn8019E874Obj {
+public:
+    virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03(); virtual void v04();
+    virtual void v05(); virtual void v06(); virtual void v07(); virtual void v08(); virtual void v09();
+    virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14();
+    virtual void v15(); virtual void v16(); virtual void v17();
+    virtual Fn8019E874Xf* GetXf();
+};
 extern void fn_8019AA34(void*, void*, void*, s32, s32, void*, f32, f32);
 extern void fn_8019A820(void*, s32, s32, s32, f32);
 #pragma scheduling invalid_target
@@ -3263,6 +3273,10 @@ extern "C" void fn_801A3BE0(void* arg0, void* arg1) {
 #pragma small_data off
 extern s32 lbl_80333728;
 extern "C" void *fn_801A3DAC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+#pragma push
+#pragma small_data off
+    extern s32 lbl_80333728;
+#pragma pop
     struct Vec { f32 x, y, z; };
     void *object;
     Vec *vectors;
@@ -3285,11 +3299,14 @@ extern "C" void *fn_801A3DAC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     i = 1;
     offset = 0x0C;
     {
-        register f32 x = vectors[0].x;
+        register f32 z;
+        register f32 y;
+        register f32 x;
+        x = vectors[0].x;
         *(volatile f32 *)((u8 *)arg0 + 0x34) = x;
-        register f32 y = vectors[0].y;
+        y = vectors[0].y;
         *(volatile f32 *)((u8 *)arg0 + 0x38) = y;
-        register f32 z = vectors[0].z;
+        z = vectors[0].z;
         *(volatile f32 *)((u8 *)arg0 + 0x3C) = z;
         *(volatile f32 *)((u8 *)arg0 + 0x28) = x;
         *(volatile f32 *)((u8 *)arg0 + 0x2C) = y;
@@ -3300,21 +3317,24 @@ extern "C" void *fn_801A3DAC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
         Vec *base = (Vec *)*(void **)((u8 *)loopObject + 0x08);
         Vec *point = (Vec *)((u8 *)base + offset);
         f32 maxZ = *(volatile f32 *)((u8 *)arg0 + 0x30);
-        if (maxZ < point->z) maxZ = point->z;
+        maxZ = maxZ < point->z ? point->z : maxZ;
         f32 maxY = *(volatile f32 *)((u8 *)arg0 + 0x2C);
-        if (maxY < point->y) maxY = point->y;
+        maxY = maxY < point->y ? point->y : maxY;
         f32 maxX = *(volatile f32 *)((u8 *)arg0 + 0x28);
-        if (maxX < point->x) maxX = point->x;
+        maxX = maxX < point->x ? point->x : maxX;
+        f32 minZ = *(volatile f32 *)((u8 *)arg0 + 0x3C);
         *(volatile f32 *)((u8 *)arg0 + 0x28) = maxX;
         *(volatile f32 *)((u8 *)arg0 + 0x2C) = maxY;
         *(volatile f32 *)((u8 *)arg0 + 0x30) = maxZ;
         maxSpill.x = maxX; maxSpill.y = maxY; maxSpill.z = maxZ;
-        f32 minZ = *(volatile f32 *)((u8 *)arg0 + 0x3C);
-        if (minZ > point->z) minZ = point->z;
+        void *minLoopObject = *(void **)((u8 *)arg0 + 0x24);
+        Vec *minBase = (Vec *)*(void **)((u8 *)minLoopObject + 0x08);
+        Vec *minPoint = (Vec *)((u8 *)minBase + offset);
+        minZ = minZ > minPoint->z ? minPoint->z : minZ;
         f32 minY = *(volatile f32 *)((u8 *)arg0 + 0x38);
-        if (minY > point->y) minY = point->y;
+        minY = minY > minPoint->y ? minPoint->y : minY;
         f32 minX = *(volatile f32 *)((u8 *)arg0 + 0x34);
-        if (minX > point->x) minX = point->x;
+        minX = minX > minPoint->x ? minPoint->x : minX;
         minSpill.x = minX; minSpill.y = minY; minSpill.z = minZ;
         *(volatile f32 *)((u8 *)arg0 + 0x34) = minX;
         *(volatile f32 *)((u8 *)arg0 + 0x38) = minY;
