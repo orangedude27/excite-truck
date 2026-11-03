@@ -371,6 +371,50 @@ void fn_802321D8(void) {
     memset(lbl_8055F068, 0, 0x16C);
 }
 
+typedef struct {
+    const char *seq;
+    f32 scale;
+    s32 handle;
+    void *resource;
+    s32 artIdx;
+    u8 flag;
+    u8 pad[3];
+    f32 field18;
+} Fn80232230_Record;
+
+struct Fn80232230_Entry;
+
+struct Fn80232230_EntryVtable {
+    void *slot0;
+    void *slot1;
+    const char *(*getName)(void *);
+    s32 (*hasKey)(void *, const char *);
+    void *slot4;
+    const char *(*getString)(void *, const char *);
+    void *slot6;
+    s32 (*getInt)(void *, const char *);
+    void *slot8;
+    void *slot9;
+    f32 (*getFloat)(void *, const char *, f32);
+    void *slot11;
+    u8 (*getByte)(void *, const char *, s32);
+};
+
+struct Fn80232230_Entry {
+    struct Fn80232230_EntryVtable *vtable;
+};
+
+struct Fn80232230_ListVtable {
+    void *slot0;
+    void *slot1;
+    void *slot2;
+    struct Fn80232230_Entry *(*getEntry)(void *, s32);
+};
+
+struct Fn80232230_List {
+    struct Fn80232230_ListVtable *vtable;
+};
+
 extern void fn_80235380(void);
 #pragma push
 #pragma scheduling invalid_target
