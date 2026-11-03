@@ -1498,15 +1498,15 @@ extern "C" s32 fn_8019E2D0(s32 arg0, s32 arg1, s32 arg2, void *arg3, f32 f0, f32
     Vec origin, direction;
     f32 minimum, maximum;
     f32 *matrix = (f32 *)arg3;
-    register f32 m0 = matrix[0];
-    register f32 m1 = matrix[1];
-    register f32 m4 = matrix[4];
-    register f32 m3 = matrix[3];
-    register f32 m6 = matrix[6];
-    register f32 m7 = matrix[7];
-    register f32 m8 = matrix[8];
-    register f32 m2 = matrix[2];
-    register f32 m5 = matrix[5];
+    f32 m0 = matrix[0];
+    f32 m1 = matrix[1];
+    f32 m4 = matrix[4];
+    f32 m3 = matrix[3];
+    f32 m6 = matrix[6];
+    f32 m7 = matrix[7];
+    f32 m8 = matrix[8];
+    f32 m2 = matrix[2];
+    f32 m5 = matrix[5];
     f32 *p = (f32 *)arg0;
     f32 *v = (f32 *)arg1;
     f32 x = p[0] - matrix[9];
@@ -1514,7 +1514,7 @@ extern "C" s32 fn_8019E2D0(s32 arg0, s32 arg1, s32 arg2, void *arg3, f32 f0, f32
     f32 z = p[2] - matrix[11];
     origin.y = z * m5 + (x * m3 + y * m4);
     origin.x = z * m2 + (x * m0 + y * m1);
-    origin.z = z * m8 + (x * m6 + y * m7);
+    origin.z = (x * m6 + y * m7) + z * m8;
     if ((f32 *)&direction == v) {
         f32 vx = v[0], vy = v[1], vz = v[2];
         direction.x = vz * m2 + (vx * m0 + vy * m1);
@@ -1545,7 +1545,7 @@ extern "C" s32 fn_8019B4D8(void*, void*, void*, s32, f32);
 struct Fn8019E874Xf { f32 m[9]; Vec pos; };
 class Fn801A0F10Child {
 public:
-    virtual void v00(); virtual void v01(); virtual void v02();
+    virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03(); virtual void v04();
     virtual void Update();
 };
 extern "C" void fn_801BEAEC(s32, s32, void*);
@@ -2353,6 +2353,55 @@ extern "C" void fn_801A0444(void* arg0, void* arg1) {
     *(f32*)((u8*)arg0 + 0x164) = *(f32*)((u8*)arg1 + 0x24);
     *(f32*)((u8*)arg0 + 0x168) = *(f32*)((u8*)arg1 + 0x28);
     *(f32*)((u8*)arg0 + 0x16C) = *(f32*)((u8*)arg1 + 0x2C);
+}
+
+extern "C" void fn_801A0F10(void* arg0) {
+    s32 count;
+    Vec v;
+    Vec d;
+    Vec tmp;
+    u8 buffer[0x300];
+    s32 i;
+    fn_801A0160(arg0);
+    for (i = 0; i < *(s32*)((u8*)arg0 + 0x174); i++) {
+        ((Fn801A0F10Child*)*(void**)((u8*)arg0 + 0x24 + i * 4))->Update();
+    }
+    if (lbl_8055E5A0 != 0) {
+        u8* obj = *(u8**)((u8*)arg0 + 4);
+        if (obj != 0) {
+            s32 tag = *(s32*)(obj + 0x10);
+            if (tag == 0x4E434152 || tag == 0x43415220 || tag == 0x41434152 || tag == 0x50434152) {
+                s32 e = *(s32*)(obj + 0x1EC);
+                s32 k;
+                f32 one = lbl_805622E0;
+                f32 zero = lbl_805622D4;
+                for (k = 0; k < 4; k++) {
+                    fn_801BEAEC(e, k, &tmp);
+                    v = tmp;
+                    v.x += *(f32*)(obj + 0x48) * one;
+                    v.y += *(f32*)(obj + 0x4C) * one;
+                    v.z += *(f32*)(obj + 0x50) * one;
+                    count = 0x40;
+                    fn_801CF080(lbl_8055E5A0, &v, buffer, &count, 0, lbl_8056234C);
+                    Vec* cur = (Vec*)buffer;
+                    for (i = 0; i < count; i++) {
+                        d.x = v.x - cur->x;
+                        d.y = v.y - cur->y;
+                        d.z = v.z - cur->z;
+                        f32 mag = PSVECMag(&d);
+                        if (mag > zero) {
+                            f32 inv = one / mag;
+                            d.x *= inv;
+                            d.y *= inv;
+                            d.z *= inv;
+                            fn_801BEB44(e, k, (f32*)cur, (f32*)&d);
+                        }
+                        cur++;
+                    }
+                }
+            }
+        }
+    }
 }
 
 extern "C" void fn_801A0160(void*);
