@@ -19,6 +19,7 @@ int fn_802B2E08(int);
 int fn_802B3340(int);
 extern int lbl_8055F9B4;
 extern int lbl_8055F9B0;
+extern float lbl_80564C00, lbl_80564C04, lbl_80564C08;
 extern char lbl_8034A288[];
 extern char lbl_8034A3F8[];
 extern int lbl_8055CDC0;
