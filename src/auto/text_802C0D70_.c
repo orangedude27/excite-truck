@@ -21,14 +21,14 @@ extern void fn_802C0FD4(int *queue);
 void fn_802C0D70(float *arg0) {
     float length;
     float y;
-    length = fn_8002F234(arg0[0] * arg0[0] + arg0[2] * arg0[2]);
+    length = (float)fn_8002F234((double)(arg0[2] * arg0[2] + arg0[0] * arg0[0]));
     y = -arg0[1];
-    if (atan(y / length) < lbl_8055FB10) {
-        fn_802E30C8(lbl_8034AE98, lbl_80564E30 * atan(y / length) / lbl_80564E34,
+    if ((float)atan(y / length) < lbl_8055FB10) {
+        fn_802E30C8(lbl_8034AE98, lbl_80564E30 * (float)atan(y / length) / lbl_80564E34,
                     lbl_80564E30 * lbl_8055FB10 / lbl_80564E34, lbl_80564E30);
-        arg0[0] *= cos(lbl_8055FB10) / length;
-        arg0[1] = -sin(lbl_8055FB10);
-        arg0[2] *= cos(lbl_8055FB10) / length;
+        arg0[0] *= (float)cos(lbl_8055FB10) / length;
+        arg0[1] = -(float)sin(lbl_8055FB10);
+        arg0[2] *= (float)cos(lbl_8055FB10) / length;
     }
 }
 
@@ -143,12 +143,13 @@ extern char lbl_8055CF98[4];
 extern float lbl_804C0800[3];
 extern float lbl_80564E38;
 extern float lbl_80564E48;
-#pragma scheduling invalid_target
+#pragma push
+#pragma opt_propagation off
 void fn_802C1020(void) {
     float sp[12];
-    float *sp_ptr = sp;
     float *obj;
     if (*(int *)lbl_8055FB14 != -1) {
+        float *sp_ptr = sp;
         sp[1] = lbl_80564E38;
         sp[0] = lbl_80564E48;
         sp[2] = lbl_80564E38;
@@ -167,7 +168,7 @@ void fn_802C1020(void) {
     fn_802A4E08();
     fn_8029231C((char *)lbl_804C0800);
 }
-#pragma scheduling on
+#pragma pop
 void fn_802C10B8(void) {
     *(s32 *)lbl_8055FB14 = -1;
     fn_802C0F4C();
