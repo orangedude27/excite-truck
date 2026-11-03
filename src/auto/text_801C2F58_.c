@@ -2541,39 +2541,11 @@ void fn_801C6AD0(s32 *arg0) {
 }
 
 void fn_801C6D94(void) {
-    s32 r30, r31, r12, r11, r10, r9, r8, r7, r6, r5, r4, r0;
-    s32 *src;
-    s32 *dst;
-    
-    src = lbl_80499050;
-    dst = lbl_80438220;
-    
-    r30 = *src++;
-    *dst++ = r30;
-    r31 = *src;  *src++;
-    *dst = r31;  dst++;
-    r12 = *src;  *src++;
-    *dst = r12;  dst++;
-    r11 = *src;  *src++;
-    *dst = r11;  dst++;
-    r10 = *src;  *src++;
-    *dst = r10;  dst++;
-    r9 = *src;   *src++;
-    *dst = r9;   dst++;
-    r8 = *src;   *src++;
-    *dst = r8;   dst++;
-    r7 = *src;   *src++;
-    *dst = r7;   dst++;
-    r6 = *src;   *src++;
-    *dst = r6;   dst++;
-    r5 = *src;   *src++;
-    *dst = r5;   dst++;
-    r4 = *src;   *src++;
-    *dst = r4;   dst++;
-    r0 = *src;   *src++;
-    *dst = r0;   dst++;
-    
-    fn_801C957C(1, r4, r5, r6, r7, r8, r9, r10);
+    struct MtxCopy {
+        s32 data[12];
+    };
+    *(struct MtxCopy*)lbl_80438220 = *(struct MtxCopy*)lbl_80499050;
+    fn_801C957C(1);
 }
 void fn_801C7254(void *arg0) {
     f32 *p = (f32 *)arg0;
