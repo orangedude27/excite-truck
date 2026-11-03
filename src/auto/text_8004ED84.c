@@ -409,7 +409,7 @@ typedef struct OSFontHeader {
 
 int __OSReadROM(void *, int, const void *);
 
-static inline void ReadROM(const void* src, s32 size, void* dst) {
+static inline void ReadROM(void* dst, s32 size, const void* src) {
     s32 blockSize;
 
     while (size > 0) {
