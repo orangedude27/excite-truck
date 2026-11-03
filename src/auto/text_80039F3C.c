@@ -426,10 +426,12 @@ int fn_8003A834(void *arg0, void *arg1) {
 }
 extern int IOS_IoctlvAsync(int, int, int, int, void *, void *, void *);
 extern int doTransactionCallback(int, void *);
+#pragma scheduling 750
 int DVDLowOpenPartition(unsigned int offset, const void *ticket, unsigned int certsSize,
                         const void *certs, void *tmd,
                         void *callback) {
     const char *msg = lbl_80302848;
+    unsigned char *base = lbl_8037B820;
     DVDLowContext *ctx;
     IPCIOVector *ioVec;
     DVDLowDICommand *cmd;
@@ -458,7 +460,7 @@ int DVDLowOpenPartition(unsigned int offset, const void *ticket, unsigned int ce
     cmd->command = 0x8B;
     cmd->arg1 = offset;
 
-    ioVec = (IPCIOVector *)(lbl_8037B820 + 0xC0);
+    ioVec = (IPCIOVector *)(base + 0xC0);
 
     // Input vector 1: DI command
     ioVec[0].base = cmd;
@@ -485,7 +487,7 @@ int DVDLowOpenPartition(unsigned int offset, const void *ticket, unsigned int ce
     ioVec[3].length = 0x49E4;
 
     // Output vector 2: Ticket error
-    ioVec[4].base = lbl_8037B820 + 0x100;
+    ioVec[4].base = base + 0x100;
     ioVec[4].length = 32;
 
     result = IOS_IoctlvAsync(lbl_80558E18, 0x8B, 3, 2, ioVec,
