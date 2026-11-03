@@ -53,6 +53,7 @@ extern void fn_802AB500(void);
 extern void fn_802AB5B8(void);
 extern void fn_801EEFDC(void *, int);
 extern void *fn_801E87A8(void);
+extern int fn_8028E2F8(void *, const void *, const void *, ...);
 
 void fn_8028E240(int);
 int fn_802C2C00(int);
