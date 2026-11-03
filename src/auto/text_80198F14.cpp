@@ -1498,23 +1498,26 @@ extern "C" s32 fn_8019E2D0(s32 arg0, s32 arg1, s32 arg2, void *arg3, f32 f0, f32
     Vec origin, direction;
     f32 minimum, maximum;
     f32 *matrix = (f32 *)arg3;
+    f32 m0 = matrix[0], m1 = matrix[1], m2 = matrix[2];
+    f32 m3 = matrix[3], m4 = matrix[4], m5 = matrix[5];
+    f32 m6 = matrix[6], m7 = matrix[7], m8 = matrix[8];
     f32 *p = (f32 *)arg0;
     f32 *v = (f32 *)arg1;
     f32 x = p[0] - matrix[9];
     f32 y = p[1] - matrix[10];
     f32 z = p[2] - matrix[11];
-    origin.x = z * matrix[2] + (x * matrix[0] + y * matrix[1]);
-    origin.y = z * matrix[5] + (x * matrix[3] + y * matrix[4]);
-    origin.z = z * matrix[8] + (x * matrix[6] + y * matrix[7]);
+    origin.x = z * m2 + (x * m0 + y * m1);
+    origin.y = z * m5 + (x * m3 + y * m4);
+    origin.z = z * m8 + (x * m6 + y * m7);
     if ((f32 *)&direction == v) {
         f32 vx = v[0], vy = v[1], vz = v[2];
-        direction.x = vz * matrix[2] + (vx * matrix[0] + vy * matrix[1]);
-        direction.y = vz * matrix[5] + (vx * matrix[3] + vy * matrix[4]);
-        direction.z = vz * matrix[8] + (vx * matrix[6] + vy * matrix[7]);
+        direction.x = vz * m2 + (vx * m0 + vy * m1);
+        direction.y = vz * m5 + (vx * m3 + vy * m4);
+        direction.z = vz * m8 + (vx * m6 + vy * m7);
     } else {
-        direction.x = v[2] * matrix[2] + (v[0] * matrix[0] + v[1] * matrix[1]);
-        direction.y = v[2] * matrix[5] + (v[0] * matrix[3] + v[1] * matrix[4]);
-        direction.z = v[2] * matrix[8] + (v[0] * matrix[6] + v[1] * matrix[7]);
+        direction.x = v[2] * m2 + (v[0] * m0 + v[1] * m1);
+        direction.y = v[2] * m5 + (v[0] * m3 + v[1] * m4);
+        direction.z = v[2] * m8 + (v[0] * m6 + v[1] * m7);
     }
     minimum = lbl_80562364;
     maximum = lbl_80562368;
@@ -1535,6 +1538,9 @@ extern f32 lbl_8056236C;
 extern "C" s32 fn_8019B4D8(void*, void*, void*, s32, f32);
 struct Fn8019E874Xf { f32 m[9]; Vec pos; };
 struct Fn801A4548Hdr { s32 count; u8* list; s32 count2; u8* shorts; s32 unk10; void* fn; };
+static inline void Fn801A4548Swap2(u8* q) {
+    u8 t = q[0]; q[0] = q[1]; q[1] = t;
+}
 static inline void Fn801A4548Swap4(u8* q) {
     u8 t;
     t=q[0]; q[0]=q[3]; q[3]=t;
@@ -3663,23 +3669,16 @@ extern "C" void* fn_801A4548(s32 arg0) {
     if (h && ok) {
         u8* p = (u8*)h;
         u8 t;
-        t=p[0]; p[0]=p[3]; p[3]=t;
-        t=p[1]; p[1]=p[2]; p[2]=t;
-        t=p[8]; p[8]=p[11]; p[11]=t;
-        t=p[9]; p[9]=p[10]; p[10]=t;
-        t=p[4]; p[4]=p[7]; p[7]=t;
-        t=p[5]; p[5]=p[6]; p[6]=t;
-        t=p[12]; p[12]=p[15]; p[15]=t;
-        t=p[13]; p[13]=p[14]; p[14]=t;
-        t=p[16]; p[16]=p[19]; p[19]=t;
-        t=p[17]; p[17]=p[18]; p[18]=t;
+        Fn801A4548Swap4(p);
+        Fn801A4548Swap4(p+8);
+        Fn801A4548Swap4(p+4);
+        Fn801A4548Swap4(p+12);
+        Fn801A4548Swap4(p+16);
         fn_801A4768((s32*)&h->list, (s32)h);
         fn_801A4780((s32*)&h->unk10, (s32)h);
         fn_801A4798((s32*)&h->shorts, (s32)h);
         for (s32 i=0; i<h->count; i++) {
-            u8* q=h->list+i*4;
-            t=q[0]; q[0]=q[3]; q[3]=t;
-            t=q[1]; q[1]=q[2]; q[2]=t;
+            Fn801A4548Swap4(h->list+i*4);
             fn_801A47B0((s32*)(h->list+i*4), (s32)h);
         }
         for (s32 i=0; i<h->count2; i++) {
