@@ -35,8 +35,90 @@ void fn_801D14EC(void) {
 #pragma scheduling on
 
 extern float lbl_80562A58;
+void fn_801D1540();
 void fn_801D153C(void) {
     fn_801D1540();
+}
+
+void fn_801D183C(int arg0, int idx) {
+    Obj801D *p = (Obj801D *)arg0;
+    unsigned char *cfg = lbl_804348E8[idx];
+    float g = *(float *)(cfg + 0x25F4);
+    int in = p->in;
+    int cur;
+    int tgt;
+    float x;
+    float step = lbl_80562A7C;
+    p->f4 = lbl_80562A58;
+    if (in == -10) {
+        if (p->target < 1) {
+            p->target = 1;
+            p->cur = 1;
+        }
+    } else {
+        p->target = in;
+    }
+    cur = p->cur;
+    if (p->in != -10) {
+        cur = p->in;
+        p->cur = cur;
+    } else if (cur == p->target) {
+        Rec801D *r;
+        float lo, v, k;
+        if (cur < 1) {
+            cur = 1;
+            p->target = cur;
+        }
+        r = &p->rec[cur - 1];
+        k = *(float *)(cfg + 0x25CC);
+        v = (k + lbl_80562A70 * (*(float *)(cfg + 0x25D8) * lbl_80562A6C - k)) / p->div;
+        lo = r->d + g * (r->c - r->d);
+        if (cur > 0) {
+            if (v > r->b) {
+                if (cur < p->max) cur++;
+            } else if (v < lo) {
+                if (cur > 1) cur--;
+            }
+        }
+        p->cur = cur;
+    }
+    tgt = p->target;
+    if (cur != tgt) {
+        float lim;
+        int f = 0;
+        if (cur == p->prev && cur < tgt) f = 1;
+        lim = f ? lbl_80562A74 : lbl_80562A78;
+        if (cur >= 1 && tgt >= 1 && !(p->timer2 > lim)) {
+            cur = tgt;
+            p->cur = tgt;
+        }
+    }
+    tgt = p->target;
+    p->timer2 += step;
+    if (tgt != cur) {
+        p->timer1 += step;
+        if (cur >= 1 && tgt >= 1 && p->timer1 > lbl_80562A80) {
+            p->prev = tgt;
+            p->target = cur;
+            p->timer1 = lbl_80562A58;
+            p->timer2 = lbl_80562A58;
+        } else if (cur > 1 && tgt > cur) {
+            p->f4 = lbl_80562A84;
+        } else if (tgt < cur && tgt != 0) {
+            p->f4 = lbl_80562A88;
+        }
+    } else {
+        p->timer1 = lbl_80562A58;
+    }
+    if (cur != 0) {
+        x = p->rec[fn_800241CC(cur) - 1].a * p->mul;
+    } else {
+        x = lbl_80562A58;
+    }
+    p->out = x;
+    if (cur < 0) {
+        p->out = (float)x * lbl_80562A8C;
+    }
 }
 
 void fn_801D1008(void*, unsigned int);
