@@ -2314,16 +2314,17 @@ extern "C" int fn_802839D0(void) {
     return 0;
 }
 #pragma cplusplus reset
-static inline int find_item(void *value) {
-    int i;
+struct Container80283AC8 {
+    void **items;
     int count;
-    void **base;
-    void **p;
+};
 
-    count = (int)lbl_804B30D8[1];
+static inline int find_item(struct Container80283AC8 *c, void *value) {
+    int i;
+    int count = c->count;
+    void **p;
     i = 0;
-    base = (void **)lbl_804B30D8[0];
-    p = base;
+    p = c->items;
     for (; i < count; ++p, ++i) {
         if (*p == value) {
             return i;
