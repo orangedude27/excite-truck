@@ -1,4 +1,7 @@
 #include "revolution/GX/GXVert.h"
+typedef struct { int words[8]; } GXDescCopy;
+typedef struct { int words[16]; } GXMatrix4Copy;
+typedef struct { int words[12]; } GXMatrix3Copy;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -131,8 +134,8 @@ void fn_802DD754(void) {
         fn_802DE788();
         base = lbl_804DB6A0;
         for (i = 0; i < 5; i++) {
-            GXSetTexCopySrc(0, 0, (unsigned short)lbl_8055FED0, (unsigned short)lbl_8055FED4);
             texObj = lbl_8055FED8;
+            GXSetTexCopySrc(0, 0, (unsigned short)lbl_8055FED0, (unsigned short)lbl_8055FED4);
             GXSetTexCopyDst(
                 (unsigned short)*(int *)((char *)texObj + 0x44),
                 (unsigned short)*(int *)((char *)texObj + 0x48),
