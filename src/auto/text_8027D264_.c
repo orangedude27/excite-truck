@@ -56,6 +56,7 @@ extern int fn_80019664(void);
 extern int stricmp(const char *, const char *);
 extern char lbl_8055C794[8];
 void fn_8027DE68(void);
+extern void *fn_8025007C(int);
 extern void fn_8027B94C(void);
 #pragma scheduling invalid_target
 void fn_8027D264(void) {
