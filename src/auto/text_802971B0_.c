@@ -234,7 +234,8 @@ void fn_802976DC(s32 *arg0) {
     fn_80128668(arg0);
 }
 
-#pragma ppc_psq_save on
+#pragma push
+#pragma processor 750
 #pragma cplusplus on
 extern "C" s32 fn_8029771C(void *arg0, void *arg1, float arg2) {
     struct Dummy {
@@ -268,8 +269,7 @@ extern "C" s32 fn_8029771C(void *arg0, void *arg1, float arg2) {
     answer = arg2 < *(float *)((u8 *)arg0 + 8);
     return answer;
 }
-#pragma cplusplus reset
-#pragma ppc_psq_save reset
+#pragma pop
 void *fn_80297814(void *arg0, s32 arg1) {
     s32 value;
     if (arg0 != 0) {
