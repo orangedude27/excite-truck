@@ -392,7 +392,7 @@ extern "C" void *fn_802B23A8(void *arg0, void *arg1, void *arg2) {
         virtual void *v22(int);
     };
 
-    Obj *self = (Obj *)arg1;
+    int j;
     void *item;
     void *alloc;
     void *sp8;
@@ -419,15 +419,15 @@ extern "C" void *fn_802B23A8(void *arg0, void *arg1, void *arg2) {
     } while (--i);
 
     fn_802B2504((int *)((char *)arg0 + 8), 0x80);
-    *(char *)((char *)arg0 + 5) = self->v10(&lbl_8055CDD8, 1);
+    *(char *)((char *)arg0 + 5) = ((Obj *)arg1)->v10(&lbl_8055CDD8, 1);
     *(char *)((char *)arg0 + 4) = *(char *)((char *)arg0 + 5);
 
-    for (int j = 0; (item = self->v22(j)) != 0; j++) {
+    for (j = 0; (item = ((Obj *)arg1)->v22(j)) != 0; j++) {
         if (fn_802B1DE8(item) != 0) {
             alloc = fn_801284F8(0x2A8, lbl_8034A2E8);
             if (alloc != 0) {
                 sp8 = fn_802B2958(alloc, item);
-                fn_802B2934((unsigned char *)arg0 + 0x408, &sp8);
+                fn_802B2934((char *)arg0 + 0x408, &sp8);
             }
         }
     }
@@ -962,23 +962,30 @@ void fn_802B2C7C(void *arg0) {
 }
 #pragma scheduling on
 
+#pragma push
+#pragma use_lmw_stmw off
+#pragma opt_common_subs off
 #pragma scheduling invalid_target
 int fn_802B2C98(char *arg0) {
-    Unk802B2C98 *base = &lbl_804BE1FC;
+    void *table;
+    int off_i;
     int result;
     int i;
+
+    table = &lbl_804BE1FC;
     result = 0;
     i = 0;
-    while (i < base->m4) {
-        if (stricmp(arg0, *(char **)((char *)((void **)lbl_804BE1FC.m0)[i] + 0x24)) == 0) {
-            result = (int)((void **)lbl_804BE1FC.m0)[i];
+    off_i = 0;
+    for (; i < *(int *)((char *)table + 4); off_i += 4, i++) {
+        if (stricmp(arg0, *(char **)(*(char **)(*(char **)&lbl_804BE1FC + off_i) + 0x24)) == 0) {
+            result = (int)((void **)*(char **)&lbl_804BE1FC)[i];
             break;
         }
-        i++;
     }
     return result;
 }
 #pragma scheduling on
+#pragma pop
 void fn_802B2D24(void *arg0) {
     int i = 0;
     int j;
