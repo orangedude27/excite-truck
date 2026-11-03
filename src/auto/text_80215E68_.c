@@ -1,7 +1,7 @@
 extern void fn_8021889C(void);
 
 #include <types.h>
-static inline void fn_80216244_rotate(const f32 *m, const f32 *v, f32 *out) {
+static inline void fn_80216244_rotate(const f32 *m, f32 *out, const f32 *v) {
     if (v == out) {
         f32 x = v[2]*m[6] + (v[0]*m[0] + v[1]*m[3]);
         f32 y = v[2]*m[7] + (v[0]*m[1] + v[1]*m[4]);
