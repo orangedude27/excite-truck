@@ -1,5 +1,6 @@
 #include "revolution/BTE/stack/include/btm_api.h"
 #include "revolution/BTE/stack/btm/btm_int.h"
+#pragma ppc_psq_save off
 #pragma cplusplus on
 extern "C" char lbl_80330A90[];
 extern "C" void fn_80128670(s32);
