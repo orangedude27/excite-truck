@@ -1,6 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern int fn_802CB128(int, int, int, int);
+extern char lbl_8055CF84[4];
 extern int fn_801E85A4(void);
 extern double atan(double), fn_8002EF30(float);
 extern void fn_802BDD8C(float);
@@ -489,6 +491,62 @@ extern "C" void *fn_802BFA58(void *arg0, int arg1) {
     }
     return arg0;
 }
+
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+extern "C" void fn_802BFB70(void *arg0, int arg1, float angle) {
+    class Camera { public: virtual void a(); virtual void b(); virtual void c(); virtual void d(); virtual void unused(); virtual void e(void *, int, void *); };
+    /* Draw the six views and restore the previous render state. */
+    float transform[12], old2[12], old1[12], matrix[12];
+    float rotation[3], viewport[4], direction[3], viewport0[4], initial[3], adjust[3], value;
+    char *obj = (char *)arg0;
+    char *views;
+    char *p;
+    int *handles;
+    int i;
+    float theta;
+    *(float *)(obj + 0x14) = fn_801E85A4() == 2 ? lbl_80564DB4 : lbl_80564D80;
+    views = *(char **)(obj + 4);
+    if (!*(unsigned char *)(views + 0x1a8)) {
+        p = views + 0x1c; handles = (int *)views;
+        for (i=0; i<6; i++, handles++, p+=0x30) {
+            fn_802CB274(*handles); fn_802C9294(*handles,0);
+            fn_802C9694(initial,lbl_80564D80,lbl_80564DB8,lbl_80564DBC);
+            fn_802C86F0(viewport0,0,0,0x100,0x100);
+            fn_802C8B08(old1); fn_802C8638(p); fn_802C88BC(3); fn_802C10C8();
+            fn_802C9294(-2,0); fn_802C8638(old1); fn_802C8750(viewport0,-1); fn_802C96DC(initial,-1);
+        }
+        *(unsigned char *)(views + 0x1a8) = 1;
+    }
+    fn_802CB274(*(int *)(obj+8)); fn_802C9294(*(int *)(obj+8),1);
+    direction[0]=lbl_80564D90; direction[1]=lbl_80564D80; direction[2]=lbl_80564D90;
+    ((Camera *)arg0)->e(transform,arg1,direction);
+    theta=lbl_80564DB0 * (float)atan(*(float *)(obj+0x14) * (float)fn_8002EF30(lbl_80564DAC * angle));
+    fn_802C9694(rotation,lbl_80564D80,lbl_80564DC0,theta);
+    fn_802C86F0(viewport,0,0,0x100,0x100);
+    fn_802C8B08(old2); fn_802C8638(transform); fn_802C88BC(2);
+    if (*(void **)(obj+4)) {
+        value=theta; views=*(char **)(obj+4);
+        ((void (*)(float *))fn_802C00A0)(&value);
+        fn_802C9694(adjust,lbl_80564DC4,lbl_80564DB0,value);
+        handles=(int *)views; p=views+0x1c;
+        for(i=0;i<6;i++,handles++,p+=0x30) {
+            fn_80144DC8(matrix); fn_802C0054(matrix,p);
+            fn_80144DAC((char *)matrix+0x24,(char *)transform+0x24);
+            fn_802C8B98(*handles,matrix);
+            fn_802C8DB8(views+0x13c,4,(unsigned short *)(views+0x19c),6); fn_802C8D74();
+        }
+        fn_802BFE48(views,transform,lbl_80564D80); fn_802C96DC(adjust,-1);
+    }
+    fn_802C7040(*(int *)(obj+0xc));
+    if (fn_801E85A4()==1) fn_802BDD8C(lbl_80564DC8);
+    if (*(int *)(obj+0x10)!=-1) fn_802C7040(*(int *)(obj+0x10));
+    fn_802C9294(-2,0); fn_802C8638(old2); fn_802C8750(viewport,-1); fn_802C96DC(rotation,-1);
+}
+#pragma pop
+
 #pragma cplusplus reset
 extern float lbl_80564DCC, lbl_80564DD0, lbl_80564DD4;
 extern unsigned short lbl_802FAC20;
