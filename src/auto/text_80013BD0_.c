@@ -998,6 +998,7 @@ extern void fn_80148134(f32*,f32*,s32,f32,f32);
 #pragma processor 750
 #pragma cplusplus on
 #pragma use_lmw_stmw off
+#pragma processor 750
 extern "C" void fn_80015F30(void* arg0) {
  struct Desc { s32 a; f32 x,y; s32 d; f32 w,h; s32 g,k; };
  class Obj { public:
