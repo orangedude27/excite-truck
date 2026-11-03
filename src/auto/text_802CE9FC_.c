@@ -257,6 +257,44 @@ void fn_802CED50(int arg0, int arg1, int arg2, int arg3) {
     state[1] = 1;
 }
 
+extern void KPADSetBtnRepeat(int *, int *, int *, int *);
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+void fn_802CED78(void) {
+    extern char lbl_8034BD18[];
+    extern void GXGetGPStatus(char *, char *, char *, char *, char *);
+    int a1, a0, a3, a2, b1, b0, b3, b2;
+    unsigned char status2, status3, status0, status1, status4;
+    char *base = lbl_8034BD18;
+    int changed2, changed3, same1, same0;
+    int c0, c1, c2, c3, c4;
+    KPADSetBtnRepeat(&a0, &a1, &a2, &a3);
+    KPADSetBtnRepeat(&b0, &b1, &b2, &b3);
+    same1 = a1 == b1;
+    same0 = a0 == b0;
+    changed3 = (b3 - a3) != 0;
+    changed2 = (b2 - a2) != 0;
+    GXGetGPStatus((char *)&status0, (char *)&status1, (char *)&status2, (char *)&status3, (char *)&status4);
+    c4 = status4 ? 'B' : '-';
+    c3 = status3 ? '-' : 'C';
+    c2 = status2 ? '-' : 'R';
+    c1 = status1 ? 'U' : '-';
+    c0 = status0 ? 'O' : '-';
+    OSReport(base + 0x12C, c0, c1, c2, c3, c4, same1, same0, changed3, changed2);
+    if (!same0 && changed3) {
+        OSReport(base + 0x15C);
+    } else if (!same1 && same0 && changed3) {
+        OSReport(base + 0x180);
+    } else if (!status3 && same1 && same0 && changed3) {
+        OSReport(base + 0x1A8);
+    } else if (status2 && status3 && same1 && same0 && changed3 && changed2) {
+        OSReport(base + 0x1D0);
+    } else {
+        OSReport(base + 0x200);
+    }
+}
+#pragma pop
 void fn_802CEF90(void) {
     extern void GXGetGPStatus(char *, char *, char *, char *, char *);
     extern void *GXGetCurrentGXThread(void);
@@ -1510,10 +1548,12 @@ extern int lbl_8055FDCC;
 extern float lbl_80564FD4;
 extern void GXLoadLightObjImm(void *, unsigned int);
 extern void GXSetChanCtrl(int, int, int, int, unsigned int, int, int);
+#pragma push
+#pragma scheduling reset
 void fn_802D18E8(void) {
-    volatile unsigned char *base = (volatile unsigned char *)lbl_804C5650;
-    volatile float *from = (volatile float *)(base + 0x40);
-    volatile float *to = (volatile float *)(base + 0x70);
+    unsigned char *base = (unsigned char *)lbl_804C5650;
+    float *from = (float *)(base + 0x40);
+    float *to = (float *)(base + 0x70);
     unsigned char color[4];
     float direction[3];
     float mag;
@@ -1584,10 +1624,6 @@ light_test:
     GXSetChanCtrl(1, 1, 0, 0, var_r28, 0, 0);
     GXSetChanCtrl(3, 0, 0, 0, 0, 0, 2);
 }
-
-#pragma scheduling on
-#pragma paired_single reset
-#pragma paired reset
 #pragma pop
 
 #pragma push
@@ -2053,6 +2089,51 @@ void fn_802D3360(void) {
     GXSetTevOp(0, 0);
     GXSetCurrentMtx(0);
 }
+
+extern float lbl_80564FE0, lbl_80564FE4;
+#pragma push
+#pragma processor 750
+void fn_802D3420(void) {
+    float ident[3][4], mtx[3][4], proj[4][4];
+    float width, height;
+    register float zero = lbl_80564F88;
+    register float one = lbl_80564F8C;
+    volatile float *fifo = (volatile float *)0xCC008000;
+    ident[0][1] = zero;
+    ident[0][0] = one;
+    ident[0][2] = zero;
+    ident[0][3] = zero;
+    ident[1][0] = one;
+    ident[1][1] = zero;
+    ident[1][2] = zero;
+    ident[1][3] = zero;
+    ident[2][0] = one;
+    ident[2][1] = zero;
+    ident[2][2] = zero;
+    ident[2][3] = zero;
+    fn_802D0DD4(mtx, ident);
+    GXLoadPosMtxImm(mtx, 0);
+    C_MTXOrtho(proj, lbl_80564F88, lbl_80564FBC, lbl_80564F88, lbl_80564FE0, lbl_80564F8C, lbl_80564FCC);
+    GXSetProjection(proj, 1);
+    GXSetCullMode(0);
+    GXClearVtxDesc();
+    GXSetVtxDesc(9, 1);
+    GXSetVtxDesc(13, 1);
+    GXSetVtxAttrFmt(0, 9, 1, 4, 0);
+    GXSetVtxAttrFmt(0, 13, 1, 4, 0);
+    width = (float)*(int *)(lbl_804C9778 + 0x24) / lbl_80564FE0;
+    height = width * (float)*(int *)(lbl_804C9778 + 0x28) / lbl_80564FB8;
+    GXBegin(0x80, 0, 4);
+    *fifo = lbl_80564F88; *fifo = lbl_80564F88; *fifo = lbl_80564FE4; *fifo = lbl_80564F88; *fifo = lbl_80564F88;
+    *fifo = lbl_80564FE0; *fifo = lbl_80564F88; *fifo = lbl_80564FE4; *fifo = width; *fifo = lbl_80564F88;
+    *fifo = lbl_80564FE0; *fifo = lbl_80564FBC; *fifo = lbl_80564FE4; *fifo = width; *fifo = height;
+    *fifo = lbl_80564F88; *fifo = lbl_80564FBC; *fifo = lbl_80564FE4; *fifo = lbl_80564F88; *fifo = height;
+    fn_802D6C68();
+    lbl_804C9778[0] = 1;
+    lbl_8055FD70 = 1;
+}
+#pragma pop
+
 #pragma dont_inline reset
 void fn_802D37E4(void) {
     int i = 4;
@@ -2208,41 +2289,47 @@ extern void fn_802D68C4(FifoVtx *, int, unsigned short *, int);
 void fn_802D3BB4(float *arg0, float *arg1, float *arg2, float *arg3, unsigned int arg4, float scale, unsigned int arg_sp0) {
     FifoVtx verts[4];
     unsigned short indices[6];
-    float neg = -scale;
     float p0 = arg1[0], p1 = arg1[1], p2 = arg1[2];
     float a0 = arg2[0], a1 = arg2[1], a2 = arg2[2];
     float b0 = arg3[0], b1 = arg3[1], b2 = arg3[2];
     unsigned int alpha = (arg4 & 0xFFFFFF) | ((unsigned int)(int)(arg0[5] * (float)(arg4 >> 24)) << 24);
-    indices[0] = lbl_802FACC8[0];
-    indices[1] = lbl_802FACC8[1];
-    indices[2] = lbl_802FACC8[2];
-    indices[3] = lbl_802FACC8[3];
-    indices[4] = lbl_802FACC8[4];
-    indices[5] = lbl_802FACC8[5];
+    float neg = -scale;
+    const unsigned short *idx = lbl_802FACC8;
+
+    indices[0] = *idx;
+    indices[1] = idx[1];
+    indices[2] = idx[2];
+    indices[3] = idx[3];
+    indices[4] = idx[4];
+    indices[5] = idx[5];
+
     verts[0].pos.x = p0 + a0 * scale;
     verts[0].pos.y = p1 + a1 * scale;
     verts[0].pos.z = p2 + a2 * scale;
-    verts[0].color = alpha;
-    verts[0].u = lbl_80564F88;
-    verts[0].v = lbl_80564F88;
     verts[1].pos.x = p0 + b0 * scale;
     verts[1].pos.y = p1 + b1 * scale;
     verts[1].pos.z = p2 + b2 * scale;
-    verts[1].color = alpha;
-    verts[1].u = lbl_80564F8C;
-    verts[1].v = lbl_80564F88;
     verts[2].pos.x = p0 + b0 * neg;
     verts[2].pos.y = p1 + b1 * neg;
     verts[2].pos.z = p2 + b2 * neg;
-    verts[2].color = alpha;
-    verts[2].u = lbl_80564F88;
-    verts[2].v = lbl_80564F8C;
     verts[3].pos.x = p0 + a0 * neg;
     verts[3].pos.y = p1 + a1 * neg;
     verts[3].pos.z = p2 + a2 * neg;
+
     verts[3].color = alpha;
+    verts[2].color = alpha;
+    verts[1].color = alpha;
+    verts[0].color = alpha;
+
+    verts[2].u = lbl_80564F88;
+    verts[0].u = lbl_80564F88;
     verts[3].u = lbl_80564F8C;
+    verts[1].u = lbl_80564F8C;
+    verts[1].v = lbl_80564F88;
+    verts[0].v = lbl_80564F88;
     verts[3].v = lbl_80564F8C;
+    verts[2].v = lbl_80564F8C;
+
     fn_802D68C4(verts, 4, indices, 6);
 }
 #pragma pop
