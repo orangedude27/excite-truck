@@ -432,9 +432,9 @@ int DVDLowOpenPartition(unsigned int offset, const void *ticket, unsigned int ce
                         void *callback) {
     const char *msg = lbl_80302848;
     unsigned char *base = lbl_8037B820;
+    unsigned int one = 1;
     DVDLowContext *ctx;
     IPCIOVector *ioVec;
-    DVDLowDICommand *cmd;
     int result;
 
     if (ticket != (void *)0 && ((unsigned int)ticket % 32 != 0)) {
@@ -452,19 +452,18 @@ int DVDLowOpenPartition(unsigned int offset, const void *ticket, unsigned int ce
         return 0;
     }
 
-    lbl_8055D8E0 = 1;
-    ctx = newContext(callback, 1, msg);
+    lbl_8055D8E0 = one;
+    ctx = newContext(callback, one, msg);
 
     nextCommandBuf();
-    cmd = (DVDLowDICommand *)(lbl_8055D8FC + lbl_8055D8E4 * 32);
-    cmd->command = 0x8B;
-    cmd->arg1 = offset;
+    *(unsigned char *)(lbl_8055D8FC + lbl_8055D8E4 * 32) = 0x8B;
+    *(unsigned int *)(lbl_8055D8FC + lbl_8055D8E4 * 32 + 4) = offset;
 
     ioVec = (IPCIOVector *)(base + 0xC0);
 
     // Input vector 1: DI command
-    ioVec[0].base = cmd;
     ioVec[0].length = 32;
+    ioVec[0].base = lbl_8055D8FC + lbl_8055D8E4 * 32;
 
     // Input vector 2: eTicket
     ioVec[1].base = (void *)ticket;
