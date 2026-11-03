@@ -208,6 +208,8 @@ extern "C" { DECL_SECTION(".sdata") extern const char lbl_805597F0[]; }
 extern "C" const char lbl_8031F208[];
 extern "C" f32 lbl_80560E64;
 class Freeable800C6A1C { public: virtual void free(s32); };
+class Pad1F0_800C6A1C { public: u8 pad[0x1F0]; };
+class Freeable1F0_800C6A1C : public Pad1F0_800C6A1C { public: virtual void free(s32); };
 class Freeable28_800C6A1C { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void free(s32); };
 extern "C" s32 fn_800A8D08(s32, void **, s32 *, s32, s32 *);
 extern "C" s32 fn_800B5260(void *, void *, u32, u32, s32);
@@ -21122,8 +21124,8 @@ extern "C" void fn_800CD38C(const char *selfArg, const char *paneName) {
 
 extern "C" void reset_btn__Q210homebutton10HomeButtonFv(void *arg0) {
     u8 *self=(u8*)arg0;
-    void *pane;
-    u8 *cursor=self;
+    register void *pane;
+    register u8 *cursor=self;
     s32 i=0, j;
     for(;i<*(s32*)(self+8);cursor+=4,i++) {
         if(*(s32*)(cursor+0x1c)) {
