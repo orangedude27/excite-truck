@@ -1922,7 +1922,7 @@ scan:
   page=0;
 next:
   if (page) {
-   pos=((u32 *)page)[6];
+   pos=*(u32 *)(page+0x18);
    if (pos!=0xffffffff) {
     if (pos<=start && pos+*(u32 *)(page+0x14)>=end) {
      VFipf_memcpy((void *)dest,*(u8 **)(page+4)+((start-pos)<<volume[0x20]),count<<volume[0x20]);
@@ -1932,7 +1932,7 @@ next:
      VFipf_memcpy((u8 *)dest+((pos-start)<<volume[0x20]),*(u8 **)(page+4),length<<volume[0x20]);
      remaining-=*(u32 *)(page+0x14);
     } else if (pos>start && pos<end && pos+*(u32 *)(page+0x14)>=end) {
-     end2=start+count;
+     end2=(u32)((u8 *)count+start);
      VFipf_memcpy((u8 *)dest+((pos-start)<<volume[0x20]),*(u8 **)(page+4),(end2-pos)<<volume[0x20]);
      remaining-=end2-*(u32 *)(page+0x18);
     } else if (pos<start && pos+*(u32 *)(page+0x14)>start && pos+*(u32 *)(page+0x14)<=end) {
@@ -6561,6 +6561,81 @@ extern "C" s32 fn_800B1EB8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4) {
     return temp;
 }
 
+extern "C" s32 fn_800B1FF4(void *arg0, u32 arg1, s32 arg2) {
+    u8 *vol;
+    s32 r;
+    u8 *file;
+    u32 pos;
+    u32 t;
+    u8 *v;
+    vol = arg0 == 0 ? 0 : *(u8 **)(*(u8 **)((u8 *)arg0 + 8) + 0x268);
+    fn_800B77C0(vol + 0x1F90);
+    r = fn_800B5E14(vol);
+    if (r != 0) {
+        fn_800B783C(vol + 0x1F90);
+        lbl_803D2140[0x40 / 4] = r;
+        *(s32 *)(vol + 0x1F80) = r;
+        return r;
+    }
+    file = *(u8 **)((u8 *)arg0 + 8);
+    if (!(*(u32 *)file & 1) || !(*(u32 *)file & 2)) {
+        fn_800B783C(vol + 0x1F90);
+        lbl_803D2140[0x40 / 4] = 0x26;
+        *(s32 *)(vol + 0x1F80) = 0x26;
+        return 0x26;
+    }
+    switch (arg2) {
+    case 1:
+        pos = *(u32 *)((u8 *)arg0 + 0x1C);
+        break;
+    case 0:
+        pos = 0;
+        break;
+    case 2:
+        pos = *(u32 *)(file + 0x264);
+        break;
+    default:
+        fn_800B783C(vol + 0x1F90);
+        lbl_803D2140[0x40 / 4] = 0xA;
+        *(s32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 8) + 0x38) + 0x1F80) = 0xA;
+        *(s32 *)((u8 *)arg0 + 0x18) = 0xA;
+        return 0xA;
+    }
+    if (arg1 & 0x80000000) {
+        t = (~arg1 & 0x7FFFFFFF) + 1;
+        if (pos < t) {
+            fn_800B783C(vol + 0x1F90);
+            lbl_803D2140[0x40 / 4] = 0xA;
+            *(s32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 8) + 0x38) + 0x1F80) = 0xA;
+            *(s32 *)((u8 *)arg0 + 0x18) = 0xA;
+            return 0xA;
+        }
+        pos -= t;
+    } else {
+        if (arg1 > 0xFFFFFFFF - pos) {
+            fn_800B783C(vol + 0x1F90);
+            lbl_803D2140[0x40 / 4] = 0x25;
+            *(s32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 8) + 0x38) + 0x1F80) = 0x25;
+            *(s32 *)((u8 *)arg0 + 0x18) = 0x25;
+            return 0x25;
+        }
+        pos += arg1;
+    }
+    *(s32 *)((u8 *)arg0 + 0x20) = -1;
+    *(u32 *)((u8 *)arg0 + 0x1C) = 0;
+    v = arg0 == 0 ? 0 : *(u8 **)(*(u8 **)((u8 *)arg0 + 8) + 0x268);
+    t = *(u32 *)((u8 *)arg0 + 0x1C);
+    *(u32 *)((u8 *)arg0 + 0x24) = t >> v[0x20];
+    *(u32 *)((u8 *)arg0 + 0x1C) = pos;
+    *(u16 *)((u8 *)arg0 + 0x28) = t & (*(u16 *)v - 1);
+    v = arg0 == 0 ? 0 : *(u8 **)(*(u8 **)((u8 *)arg0 + 8) + 0x268);
+    pos = *(u32 *)((u8 *)arg0 + 0x1C);
+    *(u32 *)((u8 *)arg0 + 0x24) = pos >> v[0x20];
+    *(u16 *)((u8 *)arg0 + 0x28) = pos & (*(u16 *)v - 1);
+    fn_800B783C(vol + 0x1F90);
+    return r;
+}
+
 extern "C" void *fn_800B224C(void *arg0, void *arg1) {
     s32 result;
     FatCopyA sa;
@@ -7770,7 +7845,7 @@ extern "C" s32 fn_800B5618(void *arg0, void *arg1, u32 arg2, u16 arg3, s32 arg4)
     return result & ((-result | result) >> 31);
 }
 
-extern "C" s32 fn_800A5530(void);
+extern "C" s32 fn_800A5530(void *);
 extern "C" s32 fn_800AED1C(void *);
 extern "C" s32 fn_800A5800(void *, s32);
 extern "C" s32 fn_800B5988(void *arg0) {
@@ -7782,7 +7857,7 @@ extern "C" s32 fn_800B5988(void *arg0) {
     s32 n;
     *(s32 *)((u8 *)arg0 + 0x1F80) = 0;
     *(s32 *)((u8 *)arg0 + 0x1F84) = 0;
-    r = fn_800A5530();
+    r = fn_800A5530(arg0);
     if (r != 0) return r;
     hdr = *(u16 *)arg0;
     if (hdr == 0 || (hdr & 0x1FF)) return 0xF;
