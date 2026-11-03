@@ -89,13 +89,12 @@ void DEBUGPrint(const char* pFmt, ...) {
 
 RVL_LIB_VERSION(WPAD, "May 17 2007", "01:52:03", "0x4199_60831");
 
-WPADCB _wpd[WPAD_MAX_CONTROLLERS];
-WPADCB* _wpdcb[WPAD_MAX_CONTROLLERS];
-
-u8 __WPADiManageHandlerStack[0x1000] ALIGN(32);
-
-s8 _dev_handle_index[WUD_MAX_DEV_ENTRY];
 OSAlarm _managerAlarm;
+WPADCB* _wpdcb[WPAD_MAX_CONTROLLERS];
+u8 __WPADiManageHandlerStack[0x1000] ALIGN(32);
+s8 _dev_handle_index[WUD_MAX_DEV_ENTRY];
+static u8 FAKE_ALIGNMENT[0x10];
+WPADCB _wpd[WPAD_MAX_CONTROLLERS];
 
 u8 _sleepTime;
 u8 _dpdSensitivity;
@@ -3123,39 +3122,57 @@ s32 fn_8005D234(s32 chan, WPADGameInfo* pInfo)
 
 // fn_8005EB44: WPAD initialization
 void fn_8005EB44(void) {
+    register u8* base asm("r31") = (u8*)&lbl_8038F4C0;
+    register s32 zero asm("r30") = 0;
+    register u8* p_wpd asm("r29");
+    register u8* p_wpdcb asm("r28");
+    register u8* p_active asm("r27");
+    register s32 chan asm("r26");
+    register s8* p_dev asm("r4");
     s32 i;
-    s32 chan;
     u8 sens;
     u8 vol;
+    BOOL enabled;
 
-    if (!_regShutdown) {
-        OSRegisterShutdownFunction(&ShutdownFunctionInfo);
-        _regShutdown = TRUE;
+    if (!lbl_8055DBF8) {
+        OSRegisterShutdownFunction(&lbl_80312130);
+        lbl_8055DBF8 = 1;
     }
 
     if (!WUDInit()) {
         return;
     }
 
-    WPADSetSensorBarPower(TRUE);
+    enabled = OSDisableInterrupts();
+    *(volatile u32*)0xCD0000C0 |= 0x100;
+    OSRestoreInterrupts(enabled);
 
-    for (i = 0; i < WUD_MAX_DEV_ENTRY; i++) {
-        _dev_handle_index[i] = WUD_DEV_HANDLE_INVALID;
+    p_dev = (s8*)(base + 0x1040);
+    for (i = 0; i < 16; i++) {
+        p_dev[i] = -1;
     }
 
-    DEBUGPrint("WPADInit()\n");
+    DBPrintf_80068D68(lbl_80312158);
 
-    for (chan = 0; chan < WPAD_MAX_CONTROLLERS; chan++) {
-        _wpdcb[chan] = &_wpd[chan];
-        _chan_active_state[chan] = FALSE;
-        _wpdcb[chan]->connectCB = NULL;
+    p_wpd = base + 0x1060;
+    p_wpdcb = base + 0x30;
+    chan = 0;
+    p_active = lbl_8055DC08;
+    do {
+        *(void**)p_wpdcb = p_wpd;
+        *p_active = zero;
+        *(void**)((u8*)*(void**)p_wpdcb + 0x7E4) = (void*)zero;
         __ClearControlBlock(chan);
-        OSInitThreadQueue(&_wpd[chan].threadQueue);
-    }
+        OSInitThreadQueue((OSThreadQueue*)(p_wpd + 0x824));
+        chan++;
+        p_wpdcb += 4;
+        p_active++;
+        p_wpd += 0x8E0;
+    } while (chan < 4);
 
-    _sleepTime = 5;
-    _gamecode = OSGetAppGamename();
-    _gametype = OSGetAppType();
+    lbl_8055DC1A = 5;
+    lbl_8055DC0C = OSGetAppGamename();
+    lbl_8055DC10 = OSGetAppType();
 
     sens = SCGetBtDpdSensibility();
     if (sens < 1) {
@@ -3164,38 +3181,38 @@ void fn_8005EB44(void) {
     if (sens > 5) {
         sens = 5;
     }
-    _dpdSensitivity = sens;
+    lbl_8055DC19 = sens;
 
-    _sensorBarPos = (SCGetWpadSensorBarPosition() == 1);
-    _rumble = (SCGetWpadMotorMode() == 1);
+    lbl_8055DC18 = (SCGetWpadSensorBarPosition() == 1);
+    lbl_8055DC14 = (void*)(SCGetWpadMotorMode() == 1);
 
     vol = SCGetWpadSpeakerVolume();
     if (vol > 127) {
         vol = 127;
     }
-    _speakerVolume = vol;
+    lbl_8055DC12 = vol;
 
     WUDSetHidConnCallback(WPADiConnCallback);
     WUDSetHidRecvCallback(WPADiRecvCallback);
 
-    _senseCnt = 0;
-    _checkCnt = 0;
-    _initialized = FALSE;
-    _afhCnt = 0;
+    lbl_8055DBFA = zero;
+    lbl_8055DBFC = zero;
+    lbl_8055DBFD = zero;
+    lbl_8055DBFE = zero;
+    lbl_8055DC00[3] = zero;
+    lbl_8055DC00[2] = zero;
+    lbl_8055DC00[1] = zero;
+    lbl_8055DC00[0] = zero;
 
-    for (i = 0; i < WPAD_MAX_CONTROLLERS; i++) {
-        _extCnt[i] = 0;
-    }
+    OSCreateAlarm((OSAlarm*)base);
+    OSSetPeriodicAlarm((OSAlarm*)base, OSGetTime(), OS_MSEC_TO_TICKS(1), WPADiManageHandler0);
 
-    OSCreateAlarm(&_managerAlarm);
-    OSSetPeriodicAlarm(&_managerAlarm, OSGetTime(), OS_MSEC_TO_TICKS(1), WPADiManageHandler0);
+    lbl_8055DC05 = zero;
+    lbl_8055DC11 = zero;
+    lbl_8055DC06 = 1;
+    lbl_8055DC04 = -1;
 
-    _shutdown = FALSE;
-    _scFlush = FALSE;
-    _scSetting = TRUE;
-    _afhChannel = -1;
-
-    OSRegisterVersion(__WPADVersion);
+    OSRegisterVersion(lbl_80558FD8);
 }
 
 // fn_8005ED8C: WPAD reset
