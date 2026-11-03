@@ -787,6 +787,7 @@ void fn_802A5FE4(void *arg0) {
         fn_802C9118();
     }
 }
+#pragma pop
 
 #pragma push
 #pragma processor 750
