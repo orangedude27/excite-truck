@@ -2997,21 +2997,16 @@ void fn_8011BDF0(s32 arg0) {
 
 void *fn_8011BE48(s32 arg0) {
     void *ptr;
-    register s32 zero;
-    register s32 sign;
-    register s32 one;
+
     ptr = fn_8011FFC4(0x40);
     if (ptr != NULL) {
         memset(ptr, 0, 0x40);
-        zero = 0;
-        sign = arg0 >> 31;
-        one = 1;
-        *(s32 *)((u8 *)ptr + 0x00) = zero;
-        *(s32 *)((u8 *)ptr + 0x04) = one;
-        arg0 = (sign ^ arg0) - sign;
-        *(s32 *)((u8 *)ptr + 0x30) = zero;
-        *(s32 *)((u8 *)ptr + 0x34) = one;
-        *(s32 *)((u8 *)ptr + 0x38) = zero;
+        *(s32 *)((u8 *)ptr + 0x00) = 0;
+        *(s32 *)((u8 *)ptr + 0x04) = 1;
+        arg0 = (arg0 < 0) ? -arg0 : arg0;
+        *(s32 *)((u8 *)ptr + 0x30) = 0;
+        *(s32 *)((u8 *)ptr + 0x34) = 1;
+        *(s32 *)((u8 *)ptr + 0x38) = 0;
         *(s32 *)((u8 *)ptr + 0x3C) = arg0;
     }
     return ptr;
@@ -3856,6 +3851,103 @@ if(bits < -22) memset(*(u8**)((u8*)arg0+0x2c), **(u8**)((u8*)arg0+0x2c), -bits-2
 *(u32*)((u8*)arg2+0x180)=node;
 }else{out=*(u8**)((u8*)arg0+0x2c);*(u8**)((u8*)arg0+4)=out;*(u8**)arg0=out+4;}
 *(u32*)((u8*)arg1+4)=(u32)src;*(u32*)arg1=bits;*(u32*)((u8*)arg1+8)=remain;
+}
+
+void fn_8011D5F0(void* arg0, void* arg1) {
+    u8* self = (u8*)arg0;
+    u32* ptr;
+    u32 bits;
+    u32 cnt;
+    u32 n;
+    u32 val;
+    if (*(u8**)(self + 0) == *(u8**)(self + 4)) {
+        cnt = *(u32*)((u8*)arg1 + 8);
+        n = *(u32*)(self + 0x28);
+        ptr = *(u32**)((u8*)arg1 + 4);
+        bits = *(u32*)((u8*)arg1 + 0);
+        if (cnt < n) {
+            u32 w = *ptr;
+            val = (0xFFFFFFFFU >> (0x20 - n)) & (bits | (w << cnt));
+            bits = w >> (n - cnt);
+            cnt = cnt + 0x20 - n;
+            ptr++;
+        } else {
+            cnt = cnt - n;
+            val = bits & (0xFFFFFFFFU >> (0x20 - n));
+            bits = bits >> n;
+        }
+        if (val != 0) {
+            u32 flag;
+            *(u8**)(self + 0) = *(u8**)(self + 0x2C);
+            *(u8**)(self + 4) = *(u8**)(self + 0x2C) + val;
+            if (cnt == 0) {
+                flag = *ptr;
+                cnt = 0x1F;
+                ptr++;
+                bits = flag >> 1;
+            } else {
+                flag = bits;
+                bits = bits >> 1;
+                cnt--;
+            }
+            if ((flag & 1) == 0) {
+                u32 mask;
+                u32 k = *(u32*)(self + 0x20);
+                u8* out = *(u8**)(self + 0x2C);
+                u8* tbl = *(u8**)(self + 0x24);
+                u8* names = self + 0x10;
+                mask = 0xFFFFFFFFU >> (0x20 - k);
+                do {
+                    u32 e;
+                    u32 len;
+                    val--;
+                    if (cnt >= k) {
+                        e = tbl[bits & mask];
+                        len = e >> 4;
+                        *out = names[e & 0xF];
+                        out++;
+                        bits = bits >> len;
+                        cnt -= len;
+                    } else {
+                        u32 w = *ptr;
+                        e = tbl[mask & (bits | (w << cnt))];
+                        len = e >> 4;
+                        *out = names[e & 0xF];
+                        out++;
+                        if (cnt >= len) {
+                            bits = bits >> len;
+                            cnt -= len;
+                        } else {
+                            bits = w >> (len - cnt);
+                            ptr++;
+                            cnt = cnt + 0x20 - len;
+                        }
+                    }
+                } while (val != 0);
+            } else {
+                u32 v4;
+                if (cnt < 4) {
+                    u32 w = *ptr;
+                    ptr++;
+                    v4 = (bits | (w << cnt)) & 0xF;
+                    bits = w >> (4 - cnt);
+                    cnt += 0x1C;
+                } else {
+                    v4 = bits & 0xF;
+                    bits = bits >> 4;
+                    cnt -= 4;
+                }
+                memset(*(u8**)(self + 0x2C), v4, val);
+            }
+        } else {
+            u8* base = *(u8**)(self + 0x2C);
+            *(u8**)(self + 4) = base;
+            *(u8**)(self + 0) = base + 4;
+        }
+        *(u32**)((u8*)arg1 + 4) = ptr;
+        *(u32*)((u8*)arg1 + 0) = bits;
+        *(u32*)((u8*)arg1 + 8) = cnt;
+    }
 }
 
 void fn_8011D7F8(void *arg0, void *arg1) {
@@ -5359,6 +5451,8 @@ void fn_80122E08(s32 arg0, void *arg1, s32 arg2, void *arg3) {
 
 #pragma scheduling invalid_target
 extern void fn_801237C4(s32, void *, void *);
+extern void fn_801231B8(s32, void *, s32, void *);
+extern void fn_80123DC0(s32, void *, s32, void *);
 void fn_80122ED8(s32 arg0, void *arg1, s32 arg2, void *arg3) {
     s32 n = arg0 >> 2;
     fn_801237C4(arg0, arg1, (u8 *)arg3 + (arg2 - arg0) * 4);
@@ -5959,6 +6053,133 @@ void fn_80123E98(void *arg0, void *arg1) {
     (*(f32 *)((s8 *)arg0 + 0x1C)) = (f32) (temp_f0_5 - temp_f6_7);
 }
 
+void fn_80124AD8(void *arg0, void *arg1) {
+    f32 temp_f0;
+    f32 temp_f0_2;
+    f32 temp_f0_3;
+    f32 temp_f10;
+    f32 temp_f10_2;
+    f32 temp_f11;
+    f32 temp_f11_2;
+    f32 temp_f11_3;
+    f32 temp_f12;
+    f32 temp_f12_2;
+    f32 temp_f12_3;
+    f32 temp_f13;
+    f32 temp_f1;
+    f32 temp_f1_2;
+    f32 temp_f1_3;
+    f32 temp_f22;
+    f32 temp_f22_2;
+    f32 temp_f22_3;
+    f32 temp_f23;
+    f32 temp_f23_2;
+    f32 temp_f24;
+    f32 temp_f24_2;
+    f32 temp_f25;
+    f32 temp_f25_2;
+    f32 temp_f26;
+    f32 temp_f28;
+    f32 temp_f29;
+    f32 temp_f2;
+    f32 temp_f2_2;
+    f32 temp_f2_3;
+    f32 temp_f30;
+    f32 temp_f31;
+    f32 temp_f3;
+    f32 temp_f3_2;
+    f32 temp_f3_3;
+    f32 temp_f4;
+    f32 temp_f4_2;
+    f32 temp_f4_3;
+    f32 temp_f5;
+    f32 temp_f5_2;
+    f32 temp_f5_3;
+    f32 temp_f6;
+    f32 temp_f6_2;
+    f32 temp_f6_3;
+    f32 temp_f6_4;
+    f32 temp_f7;
+    f32 temp_f7_2;
+    f32 temp_f7_3;
+    f32 temp_f7_4;
+    f32 temp_f8;
+    f32 temp_f8_2;
+    f32 temp_f9;
+    f32 temp_f9_2;
+
+    temp_f1 = ((f32 *)arg0)[2];
+    temp_f0 = ((f32 *)arg0)[10];
+    temp_f31 = ((f32 *)arg0)[3];
+    temp_f13 = ((f32 *)arg0)[11];
+    temp_f3 = temp_f1 - temp_f0;
+    temp_f0_2 = temp_f1 + temp_f0;
+    temp_f2 = ((f32 *)arg0)[6];
+    temp_f1_2 = ((f32 *)arg0)[14];
+    temp_f4 = temp_f31 - temp_f13;
+    temp_f12 = ((f32 *)arg0)[7];
+    temp_f6 = temp_f2 - temp_f1_2;
+    temp_f11 = ((f32 *)arg0)[15];
+    temp_f1_3 = temp_f2 + temp_f1_2;
+    temp_f10 = ((f32 *)arg0)[0];
+    temp_f2_2 = temp_f12 - temp_f11;
+    temp_f5 = ((f32 *)arg0)[8];
+    temp_f29 = temp_f4 + temp_f6;
+    temp_f23 = ((f32 *)arg0)[1];
+    temp_f22 = temp_f4 - temp_f6;
+    temp_f24 = ((f32 *)arg0)[9];
+    temp_f28 = temp_f3 - temp_f2_2;
+    temp_f25 = ((f32 *)arg0)[4];
+    temp_f30 = temp_f3 + temp_f2_2;
+    temp_f26 = ((f32 *)arg0)[12];
+    temp_f3_2 = temp_f10 + temp_f5;
+    temp_f9 = ((f32 *)arg0)[5];
+    temp_f6_2 = ((f32 *)arg0)[13];
+    temp_f2_3 = ((f32 *)arg1)[1];
+    temp_f28 = temp_f28 - temp_f29;
+    temp_f5_2 = temp_f10 - temp_f5;
+    temp_f22_2 = temp_f12 + temp_f11;
+    temp_f7 = temp_f25 + temp_f26;
+    temp_f12_2 = temp_f0_2 + temp_f1_3;
+    temp_f4_2 = temp_f23 + temp_f24;
+    temp_f11_2 = temp_f3_2 + temp_f7;
+    temp_f8 = temp_f9 + temp_f6_2;
+    temp_f10_2 = temp_f9 - temp_f6_2;
+    temp_f6_3 = temp_f23 - temp_f24;
+    temp_f23_2 = temp_f31 + temp_f13;
+    temp_f9_2 = temp_f25 - temp_f26;
+    temp_f25_2 = temp_f23_2 + temp_f22_2;
+    temp_f24_2 = temp_f4_2 + temp_f8;
+    ((f32 *)arg0)[0] = (f32) (temp_f11_2 + temp_f12_2);
+    temp_f3_3 = temp_f3_2 - temp_f7;
+    temp_f7_2 = temp_f4_2 - temp_f8;
+    ((f32 *)arg0)[2] = (f32) (temp_f11_2 - temp_f12_2);
+    temp_f22_3 = temp_f23_2 - temp_f22_2;
+    temp_f0_3 = temp_f0_2 - temp_f1_3;
+    ((f32 *)arg0)[3] = (f32) (temp_f24_2 - temp_f25_2);
+    ((f32 *)arg0)[1] = (f32) (temp_f24_2 + temp_f25_2);
+    temp_f7_3 = temp_f5_2 - temp_f10_2;
+    ((f32 *)arg0)[4] = (f32) (temp_f3_3 - temp_f22_3);
+    temp_f11_3 = temp_f2_3 * temp_f28;
+    ((f32 *)arg0)[6] = (f32) (temp_f3_3 + temp_f22_3);
+    temp_f8_2 = temp_f6_3 + temp_f9_2;
+    temp_f12_3 = temp_f2_3 * (temp_f28 + 2.0f * temp_f29);
+    ((f32 *)arg0)[5] = (f32) (temp_f7_2 + temp_f0_3);
+    ((f32 *)arg0)[7] = (f32) (temp_f7_2 - temp_f0_3);
+    ((f32 *)arg0)[8] = (f32) (temp_f7_3 + temp_f11_3);
+    temp_f4_3 = temp_f5_2 + temp_f10_2;
+    temp_f5_3 = temp_f6_3 - temp_f9_2;
+    temp_f7_4 = temp_f2_3 * (temp_f30 + temp_f22);
+    ((f32 *)arg0)[9] = (f32) (temp_f8_2 + temp_f12_3);
+    temp_f6_4 = temp_f2_3 * (temp_f30 - temp_f22);
+    ((f32 *)arg0)[10] = (f32) (temp_f7_3 - temp_f11_3);
+    ((f32 *)arg0)[11] = (f32) (temp_f8_2 - temp_f12_3);
+    ((f32 *)arg0)[12] = (f32) (temp_f4_3 - temp_f7_4);
+    ((f32 *)arg0)[13] = (f32) (temp_f5_3 + temp_f6_4);
+    ((f32 *)arg0)[14] = (f32) (temp_f4_3 + temp_f7_4);
+    ((f32 *)arg0)[15] = (f32) (temp_f5_3 - temp_f6_4);
+}
+
 #pragma push
 #pragma processor 750
 void fn_80124F90(void *arg0) {
@@ -6044,91 +6265,84 @@ void fn_80125098(void *arg0) {
     *(f32 *)((u8 *)arg0 + 12) = f2 + f0;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 void fn_801250CC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    f32 *a = (f32 *)arg1;
-    f32 *w = (f32 *)arg3;
+    s32 j = 2;
+    s32 i = 0;
+    f32 *a = (f32 *)arg1, *w = (f32 *)arg3, *q = w;
     s32 half = arg0 >> 1;
     s32 step = (arg2 * 2) / half;
-    s32 stride = step * 4;
-    s32 i = 0;
-    s32 j = 2;
     f32 *p = a + 2;
-    f32 *q = w;
-    s32 n = (half - 1) >> 1;
+    u32 n = (u32)(half - 1) >> 1;
+    f32 one = lbl_80561210;
     if (half > 2) {
-        s32 k = n >> 1;
-        while (k != 0) {
+        u32 k = n / 2;
+        while (k--) {
+            f32 x, y, t, v, z, c, re, im;
+            f32 *back;
             i += step;
-            {
-                f32 x = p[0], y = w[arg2 - i], u = a[arg0 - j], v = p[1] + a[arg0 - j + 1];
-                f32 z = lbl_80561210 - y;
-                f32 t = x - u;
-                f32 c = *q;
-                f32 re = z * t - c * v;
-                f32 im = z * v + c * t;
-                p[0] = x - re; p[1] -= im;
-                a[arg0-j] += re; a[arg0-j+1] -= im;
-                i += step; j += 2;
-            }
-            {
-                f32 x = p[2], y = w[arg2 - i], u = a[arg0 - j], v = p[3] + a[arg0-j+1];
-                f32 z = lbl_80561210 - y;
-                f32 t = x-u;
-                f32 c = q[stride/4];
-                f32 re = z*t-c*v;
-                f32 im = z*v+c*t;
-                p[2] = x-re; p[3] -= im;
-                a[arg0-j] += re; a[arg0-j+1] -= im;
-            }
-            j += 2; p += 4; q += stride/4; k--;
+            back = &a[arg0 - j];
+            x = p[0]; y = w[arg2 - i];
+            z = one - y; t = x - back[0];
+            v = p[1] + back[1]; q += step; c = *q;
+            re = z*t-c*v; im = c*t+z*v;
+            p[0] = x-re; p[1] -= im;
+            back[0] += re; back[1] -= im;
+            j += 2; i += step;
+            back = &a[arg0 - j];
+            x = p[2]; y = w[arg2 - i];
+            z = one-y; t = x-back[0];
+            v = p[3]+back[1]; q += step; c = *q;
+            re = z*t-c*v; im = c*t+z*v;
+            p[2]=x-re; p[3]-=im;
+            back[0]+=re; back[1]-=im;
+            j+=2; p+=4;
         }
         n &= 1;
         if (n) {
             do {
+                f32 x, y, t, v, z, c, re, im;
+                f32 *back;
                 i += step;
-                {
-                    f32 x=p[0], y=w[arg2-i], u=a[arg0-j], v=p[1]+a[arg0-j+1];
-                    f32 z=lbl_80561210-y, t=x-u, c=*q;
-                    f32 re=z*t-c*v, im=z*v+c*t;
-                    p[0]=x-re; p[1]-=im; a[arg0-j]+=re; a[arg0-j+1]-=im;
-                }
-                j+=2; p+=2; q+=stride/4;
+                back = &a[arg0 - j];
+                x = p[0]; y = w[arg2 - i];
+                z = one-y; t = x-back[0];
+                v = p[1]+back[1]; q += step; c = *q;
+                re=z*t-c*v; im=c*t+z*v;
+                p[0]=x-re; p[1]-=im;
+                back[0]+=re; back[1]-=im;
+                j+=2; p+=2;
             } while (--n);
         }
     }
 }
-
+#pragma pop
 void fn_801252D8(s32 n, f32 *a, s32 m, f32 *w) {
-    s32 half, step, i, j, count, k, x, off;
+    s32 half, step, i, j, count, k;
     f32 *p, *q, *r;
-    f32 t, u, c, d, e, z, h, l, v, y, re, im;
+    f32 t, c, d, e, z, re, im;
+    f32 one = lbl_80561210;
     half = n >> 1; step = (m * 2) / half; i = 0; j = 2;
     p = a + 2; q = w; count = (half - 1) >> 1;
     if (half <= 2) return;
-    if ((count >> 1) != 0) {
-        k = count >> 1;
-        do {
-            x = i + step; t = *p; u = w[m - x]; r = a + n - j;
-            i = x + step; c = lbl_80561210 - u; d = t - r[0]; j += 2;
-            e = p[1] + r[1]; z = *q; q += step; h = c * d; l = z * d;
-            v = z * e; off = (n - j) * 4; y = c * e; j += 2;
-            re = h + v; im = y - l; p[0] = t - re; p[1] -= im;
-            r[0] += re; r[1] -= im; r = (f32 *)((u8 *)a + off);
-            t = p[2]; c = lbl_80561210 - w[m - i]; d = t - r[0]; z = *q;
-            q += step; e = p[3] + r[1]; h = c * d; v = z * e; l = z * d;
-            y = c * e; re = h + v; im = y - l; p[2] = t - re; p[3] -= im;
-            p += 4; r[0] += re; r[1] -= im;
-        } while (--k != 0);
-        count &= 1;
+    for (k = 0; k < (count >> 1); k++) {
+        i += step; t = *p; r = a + (n - j); c = one - w[m - i];
+        d = t - r[0]; j += 2; e = p[1] + r[1]; q += step; z = *q;
+        re = c * d + z * e; im = c * e - z * d;
+        p[0] = t - re; p[1] -= im; r[0] += re; r[1] -= im;
+        i += step; t = p[2]; r = a + (n - j); c = one - w[m - i];
+        d = t - r[0]; j += 2; e = p[3] + r[1]; q += step; z = *q;
+        re = c * d + z * e; im = c * e - z * d;
+        p[2] = t - re; p[3] -= im; r[0] += re; r[1] -= im;
+        p += 4;
     }
-    if (count != 0) {
-        do {
-            i += step; t = *p; off = (n - j) * 4; r = (f32 *)((u8 *)a + off);
-            d = t - r[0]; j += 2; c = lbl_80561210 - w[m - i]; z = *q;
-            q += step; e = p[1] + r[1]; h = c * d; l = z * d; v = z * e;
-            y = c * e; re = h + v; im = y - l; p[0] = t - re; p[1] -= im;
-            p += 2; r[0] += re; r[1] -= im;
-        } while (--count != 0);
+    for (k = 0; k < (count & 1); k++) {
+        i += step; t = *p; r = a + (n - j); c = one - w[m - i];
+        d = t - r[0]; j += 2; e = p[1] + r[1]; q += step; z = *q;
+        re = c * d + z * e; im = c * e - z * d;
+        p[0] = t - re; p[1] -= im; r[0] += re; r[1] -= im;
+        p += 2;
     }
 }
 
