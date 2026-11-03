@@ -992,6 +992,176 @@ void fn_80006D9C(void) {
 void fn_80006E50(void) {
 }
 
+extern void fn_8001DD6C(void);
+extern void fn_8000FB44(void);
+extern void fn_800120BC(void);
+extern void fn_8000F158(void);
+extern void fn_80020430(void);
+extern void fn_80209110(void *);
+extern void *memset(void *, int, unsigned int);
+#pragma cplusplus on
+extern "C" void fn_80006E54(void) {
+    struct Object {
+        virtual void release(s32) = 0;
+    };
+    struct ManagerObject {
+        virtual void v0() = 0;
+        virtual void v1() = 0;
+        virtual void v2() = 0;
+    };
+    struct Service {
+        virtual void v0() = 0;
+        virtual void v1() = 0;
+        virtual void v2() = 0;
+        virtual void v3() = 0;
+        virtual void v4() = 0;
+        virtual void v5() = 0;
+        virtual void v6() = 0;
+        virtual void v7() = 0;
+        virtual void v8() = 0;
+        virtual void v9() = 0;
+        virtual void v10() = 0;
+        virtual void v11() = 0;
+        virtual void v12() = 0;
+        virtual void v13() = 0;
+        virtual void v14() = 0;
+        virtual void v15() = 0;
+        virtual void v16() = 0;
+        virtual void v17() = 0;
+        virtual void v18() = 0;
+        virtual void v19() = 0;
+        virtual void v20() = 0;
+        virtual void v21() = 0;
+        virtual void v22() = 0;
+        virtual void v23() = 0;
+        virtual void v24() = 0;
+        virtual void v25() = 0;
+        virtual void v26() = 0;
+        virtual void v27() = 0;
+        virtual void v28() = 0;
+        virtual void v29() = 0;
+        virtual void v30() = 0;
+        virtual void v31() = 0;
+        virtual void v32() = 0;
+        virtual void v33() = 0;
+        virtual void v34() = 0;
+        virtual void v35() = 0;
+        virtual void v36() = 0;
+        virtual void v37() = 0;
+        virtual void v38() = 0;
+        virtual void v39() = 0;
+        virtual void v40() = 0;
+        virtual void v41() = 0;
+        virtual void v42() = 0;
+        virtual void v43() = 0;
+        virtual void v44() = 0;
+        virtual void v45() = 0;
+        virtual void v46() = 0;
+        virtual void v47() = 0;
+        virtual void v48() = 0;
+        virtual void v49() = 0;
+        virtual void v50() = 0;
+        virtual void v51() = 0;
+        virtual void v52() = 0;
+        virtual void v53() = 0;
+        virtual void v54() = 0;
+        virtual void v55() = 0;
+        virtual void v56() = 0;
+        virtual void v57() = 0;
+        virtual void v58() = 0;
+        virtual void v59() = 0;
+        virtual void v60() = 0;
+        virtual void setup() = 0;
+    };
+    void *object;
+
+    ((Service *)fn_801B83A0())->setup();
+    fn_8001DD6C();
+
+    {
+        u8 *entry = (u8 *)lbl_8034EEB8;
+        s32 i = 0;
+        goto loop_test;
+loop_body:
+        object = *(void **)(entry + 0x18);
+        if (object != 0) {
+            ((Object *)object)->release(1);
+        }
+        entry += 0x10;
+        i += 1;
+loop_test:
+        if (i < ((s32 *)lbl_8055D350)[5]) {
+            goto loop_body;
+        }
+    }
+
+    object = *(void **)((u8 *)lbl_8034EEB8 + 0xC);
+    if (object != 0) {
+        ((Object *)object)->release(1);
+    }
+
+    object = *(void **)lbl_8034EEB8;
+    if (object != 0) {
+        if (object != 0) {
+            ((Object *)object)->release(1);
+        }
+        *(void **)lbl_8034EEB8 = 0;
+    }
+
+    if (lbl_8034EEB8[1] != 0) {
+        if (lbl_8034EEB8[1] != 0) {
+            ((Object *)lbl_8034EEB8[1])->release(1);
+        }
+        lbl_8034EEB8[1] = 0;
+    }
+
+    object = lbl_8055D344;
+    if (object != 0) {
+        ((ManagerObject *)object)->v2();
+    } else {
+        object = *(void **)((u8 *)lbl_8034EEB8 + 0x5C);
+        if (object != 0) {
+            ((Object *)object)->release(1);
+        }
+    }
+
+    object = *(void **)((u8 *)lbl_8034EEB8 + 0x54);
+    if (object != 0) {
+        ((Object *)object)->release(1);
+    }
+
+    object = *(void **)((u8 *)lbl_8034EEB8 + 0x50);
+    if (object != 0 && object != 0) {
+        ((Object *)object)->release(1);
+    }
+
+    object = *(void **)((u8 *)lbl_8034EEB8 + 0x58);
+    if (object != 0) {
+        ((Object *)object)->release(1);
+    }
+
+    if (lbl_8034EEB8[2] != 0) {
+        if (lbl_8034EEB8[2] != 0) {
+            ((Object *)lbl_8034EEB8[2])->release(1);
+        }
+        lbl_8034EEB8[2] = 0;
+    }
+
+    object = *(void **)((u8 *)lbl_8034EEB8 + 0x60);
+    if (object != 0 && object != 0) {
+        ((Object *)object)->release(1);
+    }
+
+    memset(lbl_8034EEB8, 0, 0x64);
+    fn_80209110(&lbl_8055D354);
+    fn_8000FB44();
+    fn_800120BC();
+    fn_8000F158();
+    fn_801A7F8C();
+    fn_80020430();
+}
+#pragma cplusplus off
+
 void fn_800070D4(void) {
     return;
 }
