@@ -100,7 +100,7 @@ extern "C" void fn_8019ECC4(void);
 extern char lbl_80333B48[];
 extern f32 lbl_80562314;
 extern f32 lbl_80562318;
-extern f32 lbl_80562364, lbl_80562368;
+extern f32 lbl_8056235C, lbl_80562360, lbl_80562364, lbl_80562368;
 extern f32 lbl_80562370;
 extern f32 lbl_8056232C;
 extern "C" void** fn_801B83A0(void);
@@ -2359,7 +2359,6 @@ extern "C" void fn_801A0444(void* arg0, void* arg1) {
 #pragma dont_inline on
 extern "C" void fn_801A0F10(void* arg0) {
     s32 count;
-    Vec v;
     Vec d;
     Vec tmp;
     u8 buffer[0x300];
@@ -2373,7 +2372,7 @@ extern "C" void fn_801A0F10(void* arg0) {
     }
     if (lbl_8055E5A0 != 0) {
         u8* obj = *(u8**)((u8*)arg0 + 4);
-        s32 ok = 0;
+        s32 ok;
         if (obj != 0) {
             switch (*(s32*)(obj + 0x10)) {
             case 0x4E434152:
@@ -2386,6 +2385,8 @@ extern "C" void fn_801A0F10(void* arg0) {
                 ok = 0;
                 break;
             }
+        } else {
+            ok = 0;
         }
         if (ok != 0) {
             s32 e = *(s32*)(obj + 0x1EC);
@@ -2394,7 +2395,7 @@ extern "C" void fn_801A0F10(void* arg0) {
             f32 zero = lbl_805622D4;
             for (k = 0; k < 4; k++) {
                 fn_801BEAEC(e, k, &tmp);
-                v = tmp;
+                Vec v = tmp;
                 v.x += *(f32*)(obj + 0x48) * one;
                 v.y += *(f32*)(obj + 0x4C) * one;
                 v.z += *(f32*)(obj + 0x50) * one;
