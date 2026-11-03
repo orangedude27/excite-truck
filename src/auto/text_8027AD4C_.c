@@ -63,45 +63,76 @@ extern long fn_8027CFB4(long);
 extern char lbl_804A4380[];
 #pragma push
 #pragma use_lmw_stmw off
-unsigned char fn_8027AD4C(void *arg0, void *arg1) {
+#pragma cplusplus on
+extern "C" unsigned char fn_8027AD4C(char *a0, void *arg1) {
     extern char lbl_80347A50[];
-    extern void fn_802E30C8(const char *, ...);
-    extern void fn_8001D8B4(void *, long);
-    extern long fn_8027CEC4(long), fn_8027CF3C(long), fn_8027CE4C(long), fn_8027CFB4(long);
-    char *a0 = (char *)arg0;
+    class First {
+    public:
+        virtual char *m0();
+        virtual void m1();
+        virtual void m2();
+        virtual char *m3(const char *);
+    };
+    class Second {
+    public:
+        virtual void m0();
+        virtual long m1(const char *);
+        virtual void m2();
+        virtual char *m3(const char *);
+        virtual void m4();
+        virtual void m5();
+        virtual void m6();
+        virtual void m7();
+        virtual void m8();
+        virtual void m9();
+        virtual void m10();
+        virtual void m11();
+        virtual void m12();
+        virtual void m13();
+        virtual void m14();
+        virtual void m15();
+        virtual void m16();
+        virtual void m17();
+        virtual void m18();
+        virtual void m19();
+        virtual void m20();
+        virtual long m21(long);
+    };
+    char *base = lbl_80347A50;
     char *name;
     int found, i;
     void *res;
 
     *(void **)(a0 + 8) = arg1;
     *(unsigned char *)(a0 + 4) = 1;
-    if (stricmp(((char *(*)(void *))(*(long **)arg1)[2])(arg1), lbl_80347A50) == 0) {
-        name = ((char *(*)(void *, char *))(*(long **)arg1)[5])(arg1, lbl_80347A50 + 0xC);
+    if (stricmp(((First *)arg1)->m0(), base) == 0) {
+        name = ((First *)arg1)->m3(base + 0xC);
         *(long *)(a0 + 0x30) = fn_8027D1F4();
         found = 0;
         for (i = 0; i < fn_80012854(); i++) {
             char *p = (char *)fn_8001285C(i);
-            if (((long (*)(void *, char *))(**(long ***)(p + 0x20))[3])(*(void **)(p + 0x20), &lbl_8055C758) != 0) {
-                if (stricmp(((char *(*)(void *, char *))(**(long ***)(p + 0x20))[5])(*(void **)(p + 0x20), &lbl_8055C758), name) == 0) {
+            if ((*(Second **)(p + 0x20))->m1(&lbl_8055C758) != 0) {
+                if (stricmp((*(Second **)(p + 0x20))->m3(&lbl_8055C758), name) == 0) {
                     if (found != 0) {
-                        fn_802E30C8(lbl_80347A50 + 0x1C, name);
+                        fn_802E30C8(base + 0x1C, name);
                     } else {
-                        long id, r;
+                        long id, r, key;
+                        key = *(long *)p;
                         found = 1;
-                        *(long *)(a0 + 0xC) = *(long *)p;
-                        id = fn_80205268(lbl_80347A50 + 0x60, *(long *)(a0 + 0x30), *(long *)p);
-                        r = ((long (*)(void *, long))(**(long ***)(p + 0x20))[0x17])(*(void **)(p + 0x20), id);
+                        *(long *)(a0 + 0xC) = key;
+                        id = fn_80205268(base + 0x60, *(long *)(a0 + 0x30), key);
+                        r = (*(Second **)(p + 0x20))->m21(id);
                         if ((((unsigned long)(-r | r)) >> 31) != 0) {
-                            fn_8001D8B4(a0 + 0x14, ((long (*)(void *, long))(**(long ***)(p + 0x20))[0x17])(*(void **)(p + 0x20), id));
+                            fn_8001D8B4(a0 + 0x14, (*(Second **)(p + 0x20))->m21(id));
                         } else {
-                            fn_802E30C8(lbl_80347A50 + 0x6C, name, id);
+                            fn_802E30C8(base + 0x6C, name, id);
                         }
                     }
                 }
             }
         }
         if (found == 0) {
-            fn_802E30C8(lbl_80347A50 + 0x98, name);
+            ((void (*)(char *, ...))fn_802E317C)(base + 0x98, name);
             return 0;
         }
         *(long *)(a0 + 0x2C) = fn_8027CFB4((long)name);
@@ -121,6 +152,7 @@ unsigned char fn_8027AD4C(void *arg0, void *arg1) {
     }
     return *(unsigned char *)(a0 + 4);
 }
+#pragma cplusplus reset
 #pragma pop
 unsigned char fn_8027AF84(void *arg0) {
     return *((unsigned char *)arg0 + 0x11);
@@ -570,51 +602,103 @@ void fn_8027BCC8(long arg0, long arg1, long arg2) {
     fn_8027BB4C(arg0, arg1, arg2, 1);
 }
 
-void fn_8027BCD0(void *arg0, long arg1) {
-    long outer, inner, item, i, j, k, n, found;
-    void *group, *entry, *object, *base, *record;
-    outer = 0;
+#pragma push
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+extern "C" void fn_8027BCD0(void *arg0, long arg1) {
+    class Obj {
+    public:
+        virtual void m0();
+        virtual long m1();
+        virtual void m2();
+        virtual void m3();
+        virtual void m4();
+        virtual long m5();
+        virtual long m6();
+        virtual void m7();
+        virtual void m8();
+        virtual void m9();
+        virtual void m10();
+        virtual void m11();
+        virtual void m12();
+        virtual void m13();
+        virtual void m14();
+        virtual long m15();
+    };
+    class Entry {
+    public:
+        virtual void m0();
+        virtual long m1();
+        virtual void m2();
+        virtual void m3();
+        virtual long m4();
+        virtual Obj *m5(long);
+        virtual void m6();
+        virtual long m7();
+        virtual void m8();
+        virtual long m9();
+    };
+    class Group {
+    public:
+        virtual void m0();
+        virtual long m1();
+        virtual Entry *m2(long);
+    };
+    char *a0 = (char *)arg0;
+    long k;
+
+    k = 0;
     do {
-        group = fn_8027B834((void *)outer);
-        for (inner = 0; inner < ((long (*)(void *))(*(void ***)group)[3])(group); inner++) {
-            entry = ((void *(*)(void *, long))(*(void ***)group)[4])(group, inner);
-            for (item = 0; item < ((long (*)(void *))(*(void ***)entry)[6])(entry); item++) {
-                object = ((void *(*)(void *, long))(*(void ***)entry)[7])(entry, item);
-                n = ((long (*)(void *))(*(void ***)object)[8])(object);
-                found = -1;
-                for (i = 0; i < *(long *)((char *)arg0 + 4); i++) {
-                    if (*(long *)((char *)*(void **)arg0 + i * 0x18) == n) {
-                        found = i;
-                        break;
-                    }
+        Group *group = (Group *)fn_8027B834((void *)k);
+        long j;
+        for (j = 0; j < group->m1(); j++) {
+            Entry *entry = group->m2(j);
+            long i;
+            for (i = 0; i < entry->m4(); i++) {
+                Obj *obj = entry->m5(i);
+                long key = obj->m6();
+                long idx;
+                char *rec;
+                long flag;
+                for (idx = 0; idx < *(long *)(a0 + 4); idx++) {
+                    if (*(long *)(*(char **)a0 + idx * 0x18) != key)
+                        continue;
+                    goto found;
                 }
-                if (found == -1) {
-                    base = *(void **)arg0;
-                    i = *(long *)((char *)arg0 + 4);
-                    *(long *)((char *)arg0 + 4) = i + 1;
-                    record = (char *)base + i * 0x18;
-                    *(long *)((char *)record + 0) = ((long (*)(void *, long, long))(*(void ***)object)[8])(object, i, (long)base);
-                    *(long *)((char *)record + 4) = ((long (*)(void *))(*(void ***)entry)[3])(entry);
-                    *(long *)((char *)record + 8) = inner;
-                    *(long *)((char *)record + 0xC) = ((long (*)(void *))(*(void ***)object)[3])(object);
-                    *(long *)((char *)record + 0x10) = ((long (*)(void *))(*(void ***)object)[7])(object);
-                    *(unsigned char *)((char *)record + 0x14) =
-                        ((long (*)(void *))(*(void ***)entry)[9])(entry) &&
-                        ((long (*)(void *))(*(void ***)object)[17])(object);
-                    *(unsigned char *)((char *)record + 0x15) = ((long (*)(void *))(*(void ***)entry)[11])(entry);
+                idx = -1;
+            found:
+                if (idx == -1) {
+                    long cnt = *(long *)(a0 + 4);
+                    rec = *(char **)a0 + cnt * 0x18;
+                    *(long *)(a0 + 4) = cnt + 1;
+                    *(long *)(rec + 0) = obj->m6();
+                    *(long *)(rec + 4) = entry->m1();
+                    *(long *)(rec + 8) = j;
+                    *(long *)(rec + 0xC) = obj->m1();
+                    *(long *)(rec + 0x10) = obj->m5();
+                    flag = 0;
+                    if (entry->m7() != 0) {
+                        if (obj->m15() != 0)
+                            flag = 1;
+                    }
+                    *(unsigned char *)(rec + 0x14) = flag;
+                    *(unsigned char *)(rec + 0x15) = entry->m9();
                 } else {
-                    record = (char *)*(void **)arg0 + found * 0x18;
-                    *(unsigned char *)((char *)record + 0x14) =
-                        *(unsigned char *)((char *)record + 0x14) ||
-                        (((long (*)(void *))(*(void ***)entry)[9])(entry) &&
-                         ((long (*)(void *))(*(void ***)object)[17])(object));
+                    rec = *(char **)a0 + idx * 0x18;
+                    flag = 0;
+                    if (entry->m7() != 0) {
+                        if (obj->m15() != 0)
+                            flag = 1;
+                    }
+                    *(unsigned char *)(rec + 0x14) = ((*(unsigned char *)(rec + 0x14) | flag) != 0);
                 }
             }
         }
-        outer++;
-    } while (outer < 3);
+        k++;
+    } while (k < 3);
 }
-
+#pragma cplusplus reset
+#pragma pop
 extern long fn_80012790(long);
 extern long fn_80012794(void);
 extern long fn_80012810(void);
@@ -1209,6 +1293,20 @@ long fn_8027CE4C(long arg0) {
         return 1;
     }
 }
+
+long fn_8027CEC4(long arg0) {
+    long value = *fn_8027C120(lbl_8055F654, arg0);
+    switch (value) {
+    case 0:
+        return ((long (*)(void))fn_8027C650)();
+    case 1:
+        return ((long (*)(void))fn_8027CA1C)();
+    default:
+        ((void (*)(const char *, ...))fn_802E317C)(lbl_80347C38, arg0, value);
+        return 1;
+    }
+}
+
 #pragma cplusplus on
 extern "C" long fn_8027CFB4(long arg0) {
     long *obj = fn_8027C120(lbl_8055F654, arg0);
@@ -1229,11 +1327,10 @@ extern "C" long fn_8027CFB4(long arg0) {
     return 0;
 }
 void fn_8027C8B8(long, char *, long);
-#pragma push
-#pragma scheduling invalid_target
+#pragma opt_propagation off
 extern "C" void fn_8027D158(long arg0, char *arg1, long arg2) {
-    int *result = (int *)fn_8027C26C((void *)lbl_8055F654, (const char *)arg0);
-    switch (*result) {
+    long *result = fn_8027C26C((void *)lbl_8055F654, (const char *)arg0);
+    switch (*(unsigned long *)result) {
     case 0:
         fn_8027C8B8((long)result, arg1, arg2);
         break;
@@ -1245,8 +1342,6 @@ extern "C" void fn_8027D158(long arg0, char *arg1, long arg2) {
         break;
     }
 }
-#pragma scheduling on
-#pragma pop
 long fn_8027D1F4(void) {
     return *(long *)((char *)lbl_8055F654 + 0xB01C);
 }
