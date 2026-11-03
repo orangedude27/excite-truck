@@ -757,6 +757,122 @@ void fn_802C40E8(void *arg0, s32 arg1, s32 arg2) {
         lbl_8055FC00, arg1, arg2);
 }
 
+#pragma scheduling invalid_target
+void fn_802C4108(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
+    s32 sp1C, sp18, sp14, sp10, spC, sp8;
+    s32 skipSrc, skipDst, i, a, ia;
+    u16 *src, *dst;
+    u32 s, d, b, g, r;
+    s32 g5;
+
+    sp8 = arg1;
+    spC = arg2;
+    sp10 = arg6;
+    sp14 = arg7;
+    sp1C = arg3 - arg1;
+    sp18 = arg4 - arg2;
+    if (fn_802C3170((void *)arg5, &sp10, &sp14, &sp8, &spC, &sp1C, &sp18) != 0) {
+        u8 fmt;
+        src = (u16 *)fn_802C3044((void *)arg0, sp8, spC);
+        dst = (u16 *)fn_802C3044((void *)arg5, sp10, sp14);
+        skipSrc = (*(s32 *)((u8 *)arg0 + 0x10) - sp1C * 2) / 2;
+        fmt = *(u8 *)arg5;
+        skipDst = (*(s32 *)((u8 *)arg5 + 0x10) - sp1C * 2) / 2;
+        if ((s8)fmt == 3) {
+            do {
+                i = sp1C;
+                do {
+                    s = *src;
+                    d = *dst;
+                    src++;
+                    i--;
+                    a = (s32)((s >> 8) & 0xF0) >> 4;
+                    ia = 15 - a;
+                    b = (ia * ((d << 3) & 0xF8) + a * ((s << 4) & 0xF0)) / 15;
+                    r = (ia * ((d >> 7) & 0xF8) + a * ((s >> 4) & 0xF0)) / 15;
+                    g = (ia * ((d >> 2) & 0xF8) + a * (s & 0xF0)) / 15;
+                    g5 = (s32)(g & 0xFF) >> 3;
+                    *dst = ((s32)(b & 0xFF) >> 3) | ((g >> 1) & 0x3E0) | (((s32)(r & 0xFF) >> 3) << 10);
+                    dst++;
+                } while (i > 0);
+                src += skipSrc;
+                dst += skipDst;
+                sp18--;
+            } while (sp18 > 0);
+            return;
+        }
+        if ((s8)fmt == 4) {
+            do {
+                i = sp1C;
+                do {
+                    s = *src;
+                    d = *dst;
+                    src++;
+                    i--;
+                    a = (s32)((s >> 8) & 0xF0) >> 4;
+                    ia = 15 - a;
+                    b = (ia * ((d << 3) & 0xF8) + a * ((s << 4) & 0xF0)) / 15;
+                    r = (ia * ((d >> 8) & 0xF8) + a * ((s >> 4) & 0xF0)) / 15;
+                    g = (ia * ((d >> 3) & 0xFC) + a * (s & 0xF0)) / 15;
+                    *dst = ((s32)(b & 0xFF) >> 3) | ((g << 3) & 0x7E0) | ((r << 8) & 0xF800);
+                    dst++;
+                } while (i > 0);
+                src += skipSrc;
+                dst += skipDst;
+                sp18--;
+            } while (sp18 > 0);
+            return;
+        }
+        fn_802E317C(lbl_8034B124);
+    }
+}
+
+#pragma scheduling invalid_target
+void fn_802C4388(s32 src, s32 x, s32 y, s32 x2, s32 y2, s32 dst, s32 dx, s32 dy) {
+    /* Blend source pixels into the two supported 16-bit destination formats. */
+    s32 w, h, ty, tx, sy, sx;
+    s32 srcskip, dstskip, n;
+    u32 *sp;
+    u16 *dp;
+    sx = x; sy = y; tx = dx; ty = dy; w = x2 - x; h = y2 - y;
+    if (!fn_802C3170((void *)dst, &tx, &ty, &sx, &sy, &w, &h)) return;
+    sp = (u32 *)fn_802C3060((void *)src, sx, sy);
+    dp = (u16 *)fn_802C3044((void *)dst, tx, ty);
+    srcskip = (*(s32 *)((u8 *)src + 0x10) - w * 4) / 4;
+    dstskip = (*(s32 *)((u8 *)dst + 0x10) - w * 2) / 2;
+    if (*(s8 *)dst == 3) {
+        do {
+            n = w;
+            do {
+                u32 pixel = *sp++;
+                u16 old = *dp;
+                u32 a = pixel >> 24, inv = 255 - a;
+                u8 b = (u8)((inv * ((old << 3) & 0xf8) + a * (u8)pixel) / 255);
+                u8 g = (u8)((inv * ((old >> 2) & 0xf8) + a * (u8)(pixel >> 8)) / 255);
+                u8 r = (u8)((inv * ((old >> 7) & 0xf8) + a * (u8)(pixel >> 16)) / 255);
+                *dp++ = ((r >> 3) << 10) | ((g >> 3) << 5) | (b >> 3);
+            } while (--n > 0);
+            sp += srcskip;
+            dp += dstskip;
+        } while (--h > 0);
+    } else if (*(s8 *)dst == 4) {
+        do {
+            n = w;
+            do {
+                u16 old = *dp;
+                u32 pixel = *sp++;
+                u32 a = pixel >> 24, inv = 255 - a;
+                u32 b = (inv * (u8)(((old << 3) & 0xf8) + 1) + a * (u8)pixel) * 0x10101;
+                u32 g = (inv * (u8)(((old >> 3) & 0xfc) + 1) + a * (u8)(pixel >> 8)) * 0x10101;
+                u32 r = (inv * (u8)(((old >> 8) & 0xf8) + 1) + a * (u8)(pixel >> 16)) * 0x10101;
+                *dp++ = (b >> 27) | ((g >> 21) & 0x7e0) | ((r >> 16) & 0xf800);
+            } while (--n > 0);
+            sp += srcskip;
+            dp += dstskip;
+        } while (--h > 0);
+    } else fn_802E317C(lbl_8034B124);
+}
+#pragma scheduling on
 void fn_802C4610(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
     s32 sp1C, sp18, sp14, sp10, spC, sp8;
     s32 i, widthBytes, skipSrc, skipDst, var_r6;
@@ -878,73 +994,62 @@ void fn_802C47B8(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
 #pragma pop
 extern void *fn_8012C370(s32, u32 *, s32 *, s32, u8 *);
 extern const char lbl_8034B144[];
+#pragma push
+#pragma opt_unroll_loops off
 void *fn_802C49E8(s32 arg0) {
-    u32 size;
     s32 unused;
+    u32 size;
     u8 swap;
     u8 *obj;
     u8 *p;
+    u8 *base;
     s32 x;
-    s32 y;
-    s32 count;
-    u32 *words;
-    u32 temp;
+    u8 t;
 
-    obj = (u8 *)fn_8012C370(0x53544D50, &size, &unused, 0, &swap);
+    swap = 0;
+    unused = 0;
+    obj = (u8 *)((void *(*)(s32, s32, u32 *, s32 *, s32, u8 *))fn_8012C370)(arg0, 0x53544D50, &size, &unused, 0, &swap);
     if (obj == 0)
-        return 0;
+        goto ret0;
     if (size != 3)
-        fn_802E317C(lbl_8034B144, arg0, 3);
+        fn_802E317C(lbl_8034B144, arg0, size, 3);
     if (swap != 0) {
-        for (x = 0; x < 5; x++) {
-            u32 base = x * 4;
-            u8 t = obj[base];
-            obj[base] = obj[base + 3];
-            obj[base + 3] = t;
-            t = obj[base + 1];
-            obj[base + 1] = obj[base + 2];
-            obj[base + 2] = t;
-        }
-        p = obj + 0x814;
-        for (x = 0; x < 2; x++) {
-            u8 t = p[x * 4];
-            p[x * 4] = p[x * 4 + 3];
-            p[x * 4 + 3] = t;
-            t = p[x * 4 + 1];
-            p[x * 4 + 1] = p[x * 4 + 2];
-            p[x * 4 + 2] = t;
-        }
-        p = obj + 0x818;
-        {
-            u8 t = p[0];
-            p[0] = p[3]; p[3] = t;
-            t = p[1]; p[1] = p[2]; p[2] = t;
-        }
-        *(u32 *)(obj + 0x814) = (u32)(obj + 0x81c);
-        words = (u32 *)(obj + 0x814);
-        count = *(u32 *)(obj + 4) * *(u32 *)(obj + 0x10);
-        for (y = 0; y < count; y++) {
-            u32 *word = (u32 *)((u8 *)words[0] + y * 4);
-            *word = *word + *(u32 *)(obj + 0x818);
+        t = obj[0]; obj[0] = obj[3]; obj[3] = t;
+        t = obj[1]; obj[1] = obj[2]; obj[2] = t;
+        t = obj[4]; obj[4] = obj[7]; obj[7] = t;
+        t = obj[5]; obj[5] = obj[6]; obj[6] = t;
+        t = obj[8]; obj[8] = obj[11]; obj[11] = t;
+        t = obj[9]; obj[9] = obj[10]; obj[10] = t;
+        t = obj[12]; obj[12] = obj[15]; obj[15] = t;
+        t = obj[13]; obj[13] = obj[14]; obj[14] = t;
+        t = obj[16]; obj[16] = obj[19]; obj[19] = t;
+        t = obj[17]; obj[17] = obj[18]; obj[18] = t;
+        t = obj[0x814]; obj[0x814] = obj[0x817]; obj[0x817] = t;
+        t = obj[0x815]; obj[0x815] = obj[0x816]; obj[0x816] = t;
+        t = obj[0x818]; obj[0x818] = obj[0x81b]; obj[0x81b] = t;
+        t = obj[0x819]; obj[0x819] = obj[0x81a]; obj[0x81a] = t;
+        base = obj + 0x81c;
+        *(u32 *)(obj + 0x814) = (u32)base;
+        *(u32 *)(obj + 0x818) = (u32)base + *(u32 *)(obj + 4) * *(u32 *)(obj + 0x10) * 4;
+        for (x = 0; x < (s32)(*(u32 *)(obj + 4) * *(u32 *)(obj + 0x10)); x++) {
+            u8 a, b;
+            p = *(u8 **)(obj + 0x814) + x * 4;
+            a = p[0]; p[0] = p[3]; p[3] = a;
+            b = p[1]; p[1] = p[2]; p[2] = b;
+            *(u32 *)(*(u8 **)(obj + 0x814) + x * 4) += *(u32 *)(obj + 0x818);
         }
         p = obj + 0x414;
-        for (x = 0; x < 0x40; x++) {
-            u8 t = p[0]; p[0] = p[3]; p[3] = t;
+        for (x = 0; x < 0x100; x++) {
+            t = p[0]; p[0] = p[3]; p[3] = t;
             t = p[1]; p[1] = p[2]; p[2] = t;
-            t = p[4]; p[4] = p[7]; p[7] = t;
-            t = p[5]; p[5] = p[6]; p[6] = t;
-            t = p[8]; p[8] = p[11]; p[11] = t;
-            t = p[9]; p[9] = p[10]; p[10] = t;
-            t = p[12]; p[12] = p[15]; p[15] = t;
-            t = p[13]; p[13] = p[14]; p[14] = t;
-            p += 16;
+            p += 4;
         }
     }
     return obj;
+ret0:
+    return 0;
 }
-
-#pragma scheduling on
-#pragma dont_inline reset
+#pragma pop
 void fn_802C4C80(void* arg0) {
     if (arg0 == NULL) {
         return;
