@@ -1,4 +1,5 @@
 #include "types.h"
+typedef struct { f32 x, y, z, w; } Vec4_80252;
 extern f32 lbl_805639C8, lbl_805639D0, lbl_805639D4, lbl_805639D8;
 extern f32 fn_80129DC4(s32, f32, f32);
 extern f64 cos(void);
@@ -29,20 +30,8 @@ void fn_802526E0(void *arg0) {
     volatile f32 spC;
     volatile f32 sp8;
     volatile f32 *out = (volatile f32 *)arg0;
-    f32 temp_f31;
-    f32 temp_f30;
-    f32 temp_f29;
-    register f32 temp_f4 asm("f4");
-    f32 temp_f4_2;
-    f32 temp_f5;
-    f32 temp_f1;
-    f32 temp_f2;
-    f32 temp_f3;
-    f32 temp_f2_2;
-    f32 temp_f4_3;
-    f32 temp_f5_2;
-    f32 temp_f6;
-
+    f32 temp_f31, temp_f30, temp_f29, temp_f4, temp_f4_2, temp_f5;
+    f32 temp_f1, temp_f2, temp_f3, temp_f2_2, temp_f4_3, temp_f5_2, temp_f6;
     temp_f29 = fn_80129DC4(0, lbl_805639CC, lbl_805639D0);
     temp_f31 = lbl_805639D4;
     sp8 = temp_f31;
@@ -64,8 +53,7 @@ void fn_802526E0(void *arg0) {
     out[11] = temp_f2;
     temp_f2_2 = -spC;
     temp_f4_3 = sp8;
-    temp_f5_2 = lbl_805639D8 + ((f32 (*)(s32, f32, f32, f32, f32, f32))fn_801DCF48)(
-        0, temp_f1, temp_f2, temp_f3, temp_f4_2, temp_f5);
+    temp_f5_2 = lbl_805639D8 + ((f32 (*)(s32, f32, f32, f32, f32, f32))fn_801DCF48)(0, temp_f1, temp_f2, temp_f3, temp_f4_2, temp_f5);
     temp_f6 = sp8;
     out[10] = temp_f5_2;
     out[0] = temp_f4_3;
@@ -109,6 +97,53 @@ void fn_80252C78(void) {
     lbl_8055F308 = 1;
     lbl_8055F2F8 -= 1;
 }
+
+extern void fn_801BEDA8(int *, int *, int *, int *, int *);
+extern void fn_801BEDD4(void);
+extern void fn_801BF1B4(void);
+extern void fn_8025280C(void *, float);
+extern double fn_8002EFB4(float, double);
+extern unsigned char lbl_8055F300;
+extern double lbl_805639F0;
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+void fn_80252C90(void) {
+    int a,b,c,d,count;
+    int i,j;
+    u8 *dst;
+    float phase;
+    fn_801BEDA8(&a,&b,&c,&d,&count);
+    for (i=0;i<count;i++)
+        fn_8025280C((void *)(a+i*0xb0), *(float *)(&lbl_8055F300+4));
+    fn_801BEDD4();
+    phase = lbl_805639D0;
+    dst=lbl_80498D00;
+    for(i=0;i<count;i++,dst+=0x78) {
+        float *src=(float *)(a+i*0xb0);
+        float *angles=(float *)(b+i*0x1f0);
+        float *wheel=(float *)(c+i*0x190);
+        float previous[4];
+        float *out=(float *)dst;
+        { float z=src[2], y=src[1], x=src[0]; out[9]=x; out[10]=y; out[11]=z; }
+        { float z=src[6], y=src[5], x=src[4]; out[0]=x; out[1]=y; out[2]=z; }
+        { float z=src[10], y=src[9], x=src[8]; out[3]=x; out[4]=y; out[5]=z; }
+        { float z=src[14], y=src[13], x=src[12]; out[6]=x; out[7]=y; out[8]=z; }
+        { float z=src[22], y=src[21], x=src[20]; out[24]=x; out[25]=y; out[26]=z; }
+        { float z=src[26], y=src[25], x=src[24]; out[27]=x; out[28]=y; out[29]=z; }
+        previous[0]=angles[0]; previous[1]=angles[1]; previous[2]=angles[2]; previous[3]=angles[3];
+        out[20]=angles[4]; out[21]=angles[5]; out[22]=angles[6]; out[23]=angles[7];
+        for (j=0;j<4;j++) {
+            out[20+j]=(float)fn_8002EFB4(phase+out[20+j],lbl_805639F0);
+            out[16+j]=wheel[j*4+1]+previous[j];
+        }
+        angles[4]=out[20]; angles[5]=out[21]; angles[6]=out[22]; angles[7]=out[23];
+        dst[0x30]=1;
+    }
+    fn_801BF1B4();
+}
+#pragma pop
 
 extern s8 lbl_8055F308;
 extern void fn_801BD808(void);
