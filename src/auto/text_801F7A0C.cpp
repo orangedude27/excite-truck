@@ -628,6 +628,7 @@ return object;
 }
 
 extern u32 lbl_802F9B30[];
+extern "C" u32 lbl_802F9BA0[8];
 extern u8 lbl_8055B2CC[];
 __declspec(section ".sdata") extern u8 lbl_8055B2CC[];
 extern "C" int fn_801F88F4(void *arg0) {
