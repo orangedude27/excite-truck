@@ -41,7 +41,7 @@ extern "C" s32 fn_800A9DC0(void *object, void *iterator, s32 arg2, s32 arg3, s32
  __sthbrx(*(u16 *)(it+0x64),(u8 *)object+0x226,0);
  word=*(u32 *)(it+0x68);
  *(u32 *)((u8 *)object+0x228)=(word>>24)|((word>>8)&0xff00)|((word&0xff00)<<8)|(word<<24);
- a=*(u16 *)(it+0x60); b=*(u16 *)(it+0x66);
+ b=*(u16 *)(it+0x66); a=*(u16 *)(it+0x60);
  *(u32 *)((u8 *)object+0x234)=((u32)(u16)((a<<8)|(a>>8))<<16)|(u16)((b<<8)|(b>>8));
  *(u32 *)((u8 *)object+0x238)=*(u32 *)(it+0x44);
  *(u16 *)((u8 *)object+0x23c)=*(u16 *)(it+0x48);
@@ -4931,14 +4931,27 @@ checkMax:
 }
 
 extern "C" s32 fn_800A8C90(void *, s32, void **, s32 *);
+static inline s32 FatSetEndMark(void *ctx, s32 idx, u32 value) {
+    switch (*(s32 *)((u8 *)ctx + 0x1C)) {
+    case 0:
+        if (value > 0xFFF) return 0x10;
+        return fn_800AF734(ctx, idx, (u16)value);
+    case 1:
+        if (value > 0xFFFF) return 0x10;
+        return ((s32 (*)(void *, s32))fn_800AFF28)(ctx, idx);
+    case 2:
+        if (value > 0xFFFFFFF) return 0x10;
+        return ((s32 (*)(void *, s32))fn_800B037C)(ctx, idx);
+    }
+    return 0xF;
+}
 extern "C" s32 fn_800AED1C(void *arg0) {
+    s32 type;
+    u32 v;
     void *page;
     s32 sp8;
     s32 r;
     u32 i;
-    u32 v;
-    u32 b;
-    s32 type;
     r = fn_800A8C90(arg0, -1, &page, &sp8);
     if (r != 0) return r;
     fn_800A499C((const char *)*(void **)((u8 *)page + 8), 0, *(u16 *)arg0);
@@ -4953,8 +4966,7 @@ extern "C" s32 fn_800AED1C(void *arg0) {
     }
     VFiPFCACHE_FreeFATPage(arg0, page);
     type = *(s32 *)((u8 *)arg0 + 0x1C);
-    b = *(u8 *)((u8 *)arg0 + 0x1A);
-    v = b | lbl_802EEF40[type * 5 + 3];
+    v = *(u8 *)((u8 *)arg0 + 0x1A) | lbl_802EEF40[type * 5 + 3];
     switch (type) {
     case 0:
         if (v > 0xFFF) r = 0x10;
