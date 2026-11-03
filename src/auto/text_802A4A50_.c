@@ -105,7 +105,7 @@ extern s32 lbl_8055CFF0, lbl_8055CFF4;
 void fn_802A5A90(void);
 void fn_802A6D68(void *);
 void fn_802D3D50(void);
-void fn_802A5FE4(void);
+void fn_802A5FE4(void *);
 void *fn_801E7E34(void);
 s32 fn_802C90F0(s32);
 void fn_802C9118(void);
