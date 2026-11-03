@@ -2,6 +2,9 @@ extern double lbl_80560600, lbl_80560608, lbl_80560610, lbl_80560670;
 extern double lbl_80560618, lbl_80560620, lbl_80560628, lbl_80560630, lbl_80560638, lbl_80560640;
 extern double lbl_80560648, lbl_80560650, lbl_80560658, lbl_80560660, lbl_80560668;
 extern double lbl_80560678, lbl_80560680;
+extern double lbl_80560688, lbl_80560690, lbl_80560698, lbl_805606A0;
+extern double lbl_805606A8, lbl_805606B0, lbl_805606B8, lbl_805606C0, lbl_805606C8, lbl_805606D0;
+extern double lbl_805606D8, lbl_805606E0, lbl_805606E8, lbl_805606F0, lbl_805606F8, lbl_80560700, lbl_80560708;
 extern int lbl_80558DB0[];
 
 static const double huge = 1.0e300;
@@ -617,48 +620,55 @@ double __kernel_sin(int iy, double x, double y) {
 extern double lbl_802EE748[];
 extern double lbl_80560A48, lbl_80560A50, lbl_80560A58, lbl_80560A60, lbl_80560A68;
 double atan(double x) {
-    union { double d; unsigned int w[2]; } u;
-    int hx, ix, id;
-    double z, w, s1, s2;
-    u.d = x;
-    hx = u.w[0];
+    double w, s1, s2, z, t;
+    int ix, hx, id;
+    double *atanhi = lbl_802EE748;
+    double *atanlo = lbl_802EE748 + 4;
+    double *aT = lbl_802EE748 + 8;
+    hx = __HI(x);
     ix = hx & 0x7fffffff;
     if (ix >= 0x44100000) {
-        if (ix > 0x7ff00000 || ((ix + 0x80100000 == 0) && u.w[1] != 0))
+        if (ix > 0x7ff00000 || (ix == 0x7ff00000 && (__LO(x) != 0)))
             return x + x;
-        return hx > 0 ? lbl_802EE748[3] + lbl_802EE748[7] :
-            -lbl_802EE748[3] - lbl_802EE748[7];
+        if (hx > 0)
+            return atanhi[3] + atanlo[3];
+        else
+            return -atanhi[3] - atanlo[3];
     }
     if (ix < 0x3fdc0000) {
-        if (ix < 0x3e200000 && lbl_80560A48 + x > lbl_80560A50)
-            return x;
+        if (ix < 0x3e200000) {
+            if (lbl_80560A48 + x > lbl_80560A50)
+                return x;
+        }
         id = -1;
     } else {
-        z = x;
-        if (z < 0.0) z = -z;
+        t = __fabs(x);
         if (ix < 0x3ff30000) {
             if (ix < 0x3fe60000) {
                 id = 0;
-                z = (lbl_80560A58 * z - lbl_80560A50) / (lbl_80560A58 + z);
+                x = (lbl_80560A58 * t - lbl_80560A50) / (lbl_80560A58 + t);
             } else {
                 id = 1;
-                z = (z - lbl_80560A50) / (lbl_80560A50 + z);
+                x = (t - lbl_80560A50) / (lbl_80560A50 + t);
             }
-        } else if (ix < 0x40038000) {
-            id = 2;
-            z = (z - lbl_80560A60) / (lbl_80560A50 + lbl_80560A60 * z);
         } else {
-            id = 3;
-            z = lbl_80560A68 / z;
+            if (ix < 0x40038000) {
+                id = 2;
+                x = (t - lbl_80560A60) / (lbl_80560A50 + lbl_80560A60 * t);
+            } else {
+                id = 3;
+                x = lbl_80560A68 / t;
+            }
         }
     }
+    z = x * x;
     w = z * z;
-    s1 = w * (lbl_802EE748[8] + w * (lbl_802EE748[10] + w * (lbl_802EE748[12] + w * (lbl_802EE748[14] + w * lbl_802EE748[16]))));
-    s2 = w * (lbl_802EE748[9] + w * (lbl_802EE748[11] + w * (lbl_802EE748[13] + w * (lbl_802EE748[15] + w * (lbl_802EE748[17] + w * lbl_802EE748[18])))));
-    if (id < 0) return z - z * (s1 + s2);
-    z = lbl_802EE748[id] - ((z * (s1 + s2) - lbl_802EE748[id + 4]) - z);
-    if (hx < 0) z = -z;
-    return z;
+    s1 = z * (aT[0] + w * (aT[2] + w * (aT[4] + w * (aT[6] + w * (aT[8] + w * aT[10])))));
+    s2 = w * (aT[1] + w * (aT[3] + w * (aT[5] + w * (aT[7] + w * aT[9]))));
+    if (id < 0)
+        return x - x * (s1 + s2);
+    z = atanhi[id] - ((x * (s1 + s2) - atanlo[id]) - x);
+    return (hx < 0) ? -z : z;
 }
 
 double ceil(double x) {
