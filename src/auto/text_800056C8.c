@@ -937,6 +937,8 @@ void fn_80006B18(void *arg0) {
                     (u8 *)entry + 0x48);
     }
 }
+#pragma ppc_psq_save reset
+#pragma use_lmw_stmw reset
 
 void fn_80006D30(void) {
     char sp8[0x48];
