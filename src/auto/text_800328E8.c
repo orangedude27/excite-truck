@@ -3,6 +3,19 @@
 
 extern void *lbl_8055D7E0;
 extern unsigned char lbl_80363C60[];
+extern unsigned char lbl_80368460[];
+extern unsigned char lbl_8036C460[];
+extern unsigned char lbl_8036D460[];
+extern unsigned int lbl_802FED20[];
+extern int lbl_8055D7E4;
+extern unsigned int lbl_8055D7E8;
+extern void DCInvalidateRange(void *, unsigned int);
+extern void DCFlushRange(void *, unsigned int);
+extern int fn_80031248(void);
+extern void *TRKReadBuffer_ui8(int);
+extern void __AXDepopVoice(void *);
+extern void fn_800328F0(void *);
+extern void TRKAppendBuffer(void *);
 void* fn_800328E8(void) {
     return lbl_8055D7E0;
 }
@@ -28,6 +41,72 @@ void fn_80033148(void *arg0) {
     *(short *)(p + 0x244) = 0;
     *(short *)(p + 0x246) = 0;
     *(short *)(p + 0x248) = 0;
+}
+
+extern unsigned char lbl_80368460[];
+extern unsigned char lbl_8036C460[];
+extern unsigned char lbl_8036D460[];
+extern int lbl_8055D7E4;
+extern unsigned int lbl_8055D7E8;
+extern void TRKReadBuffer(void);
+extern void DCFlushRange(void *, unsigned int);
+void fn_800331A0(void) {
+    unsigned int i;
+    int j;
+    int *p;
+    lbl_8055D7E4 = 0;
+    lbl_8055D7E8 = *(unsigned int *)0x800000F8 / 667;
+    p = (int *)lbl_80363C60;
+    for (j = 0; j < 0x200; j++) {
+        int k;
+        for (k = 0; k < 9; k++) *p++ = 0;
+    }
+    p = (int *)lbl_8036C460;
+    for (j = 0; j < 0x80; j++) {
+        int k;
+        for (k = 0; k < 8; k++) *p++ = 0;
+    }
+    p = (int *)lbl_8036D460;
+    for (j = 0; j < 0x3c0; j++) {
+        int k;
+        for (k = 0; k < 10; k++) *p++ = 0;
+    }
+    for (i = 0; i < 0x40; i++) {
+        unsigned char *vpb = lbl_8036D460 + i * 0x258;
+        unsigned char *buf = lbl_80363C60 + i * 0x120;
+        unsigned char *b2 = lbl_8036C460 + i * 0x40;
+        unsigned char *b3 = lbl_80368460 + i * 0x100;
+        *(unsigned int *)(vpb + 0x18) = i;
+        *(void **)(vpb + 0x134) = b2;
+        fn_80033148(vpb);
+        if (i == 0x3F) {
+            *(unsigned short *)(buf + 2) = 0;
+            *(unsigned short *)(vpb + 0x13A) = 0;
+            *(unsigned short *)(buf + 0) = 0;
+            *(unsigned short *)(vpb + 0x138) = 0;
+        } else {
+            unsigned int next = (unsigned int)(buf + 0x120);
+            *(unsigned short *)(vpb + 0x138) = next >> 16;
+            *(unsigned short *)(buf + 0) = next >> 16;
+            *(unsigned short *)(vpb + 0x13A) = next;
+            *(unsigned short *)(buf + 2) = next;
+        }
+        *(unsigned short *)(vpb + 0x13C) = (unsigned int)buf >> 16;
+        *(unsigned short *)(vpb + 0x13E) = (unsigned int)buf;
+        *(unsigned short *)(buf + 4) = (unsigned int)buf >> 16;
+        *(unsigned short *)(buf + 6) = (unsigned int)buf;
+        *(unsigned short *)(vpb + 0x17E) = (unsigned int)b2 >> 16;
+        *(unsigned short *)(vpb + 0x180) = (unsigned int)b2;
+        *(unsigned short *)(buf + 0x46) = (unsigned int)b2 >> 16;
+        *(unsigned short *)(buf + 0x48) = (unsigned int)b2;
+        *(unsigned short *)(vpb + 0x190) = (unsigned int)b3 >> 16;
+        *(unsigned short *)(vpb + 0x192) = (unsigned int)b3;
+        *(unsigned short *)(buf + 0x58) = (unsigned int)b3 >> 16;
+        *(unsigned short *)(buf + 0x5A) = (unsigned int)b3;
+        *(int *)(vpb + 0xC) = 1;
+        TRKReadBuffer();
+    }
+    DCFlushRange(lbl_80363C60, 0x4800);
 }
 
 void fn_80033404(void) {
