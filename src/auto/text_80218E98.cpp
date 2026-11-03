@@ -21,6 +21,7 @@ extern "C" char lbl_8055B860;
 extern "C" double fabs(double);
 extern "C" f32 fabsf(f32);
 #define FN8021C18C_ABS(x) __fabs(x)
+static inline f32 constructor_abs(f32 value) { return (f32)__fabs((double)value); }
 extern "C" char lbl_8055B884;
 extern "C" void fn_802C4F58(s32, s32, const char *, s32);
 
@@ -6268,7 +6269,49 @@ extern "C" void fn_80226B6C(void *arg0) {
         fn_8022EDB8();
     }
 }
-#pragma scheduling on
+
+#pragma push
+#pragma opt_common_subs off
+extern "C" void *fn_80226CBC(void *arg0, void *arg1) {
+    u8 *self = (u8 *)arg0;
+    u8 *arg = (u8 *)arg1;
+    char *base = lbl_8033D878;
+    f32 x, y, z;
+    ((void *(*)(void *, void *))fn_80218F80)(arg0, arg1);
+    *(void **)self = &lbl_8033E038;
+    *(f32 *)(self + 0x250) = (f32)(*(s32 *)(self + 0x10) - *(s32 *)(self + 8));
+    *(f32 *)(self + 0x254) = (f32)((Vf78 *)self)->get();
+    s32 type = *(s32 *)(arg + 0x9C);
+    *(s32 *)(self + 0x258) = type;
+    if (type < 0 || type > 15) fn_802E30C8(base + 0x2A4, type);
+    if (*(s32 *)(self + 0x258) == 0 || *(s32 *)(self + 0x258) == 1) {
+        if (!lbl_8055EFBC) {
+            lbl_8055EFBC = 1;
+            fn_802E30C8(lbl_8055B8A4, base + 0x2D0);
+        }
+        if (*(s32 *)(self + 0x258) == 0) *(s32 *)(self + 0x258) = 4;
+        else *(s32 *)(self + 0x258) = 7;
+    }
+    char *name = base + 0x328;
+    *(s32 *)(self + 0x244) = fn_8023512C((s32)name);
+    if (!*(s32 *)(self + 0x244)) fn_802E30C8(base + 0x338, name);
+    if (*(s32 *)(self + 0x244) && fn_80235FD8(*(s32 *)(self + 0x244)) != 15) {
+        fn_802E30C8(base + 0x368, name, fn_80235FD8(*(s32 *)(self + 0x244)));
+        fn_80235380(*(void **)(self + 0x244));
+        *(s32 *)(self + 0x244) = 0;
+    }
+    *(u8 *)(self + 0x260) = 0;
+    *(s32 *)(self + 0x25C) = 0;
+    memcpy(&x, arg + 0xA4, 4);
+    memcpy(&y, arg + 0xA8, 4);
+    memcpy(&z, arg + 0xAC, 4);
+    f32 threshold = *(f32 *)lbl_80558DC4;
+    f32 absx = (f32)__fabs((double)x);
+    if (!(absx <= threshold) || !((f32)__fabs((double)y) <= threshold) || !((f32)__fabs((double)z) <= threshold))
+        fn_80227044(self, x, y, z);
+    return self;
+}
+#pragma pop
 
 extern "C" { __declspec(section ".data") extern char lbl_8033E038; }
 extern "C" void fn_80235380(void *);
