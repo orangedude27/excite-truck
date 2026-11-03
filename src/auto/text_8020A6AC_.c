@@ -1,6 +1,11 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern void *fn_802E6058(int);
+extern void fn_802E6ABC(int);
+extern void fn_80207938(void);
+extern void fn_802E61BC(void *);
+extern void fn_802E61A8(void *);
 extern void fn_802E317C(const char *, ...);
 extern const char lbl_8033C510[];
 extern void fn_802E61E4(float);
@@ -490,6 +495,90 @@ void fn_8020B908(void *arg0) {
     }
 }
 
+extern void *fn_802E6058(int);
+extern void fn_802E6ABC(int);
+extern void fn_80207938(void);
+extern void fn_802E61BC(void *);
+extern void fn_802E61A8(void *);
+#pragma push
+#pragma processor 750
+void fn_8020B9D4(void *arg0) {
+    char *p = (char *)arg0;
+    float f31, f1, f0;
+    int i;
+    void *h;
+    void *h8;
+    if (*(unsigned char *)(p + 0x3e) != 0) {
+        *(unsigned char *)(p + 0x3e) = 0;
+        if (*(int *)(p + 4) == 1 && *(void **)(p + 8) == 0) {
+            if (*(int *)(p + 0x10) != 0 && *(void **)(p + 8) == 0) {
+                *(void **)(p + 8) = fn_802E6058(*(int *)(p + 0x10));
+                if (*(void **)(p + 8) == 0) {
+                    fn_802E6ABC(*(int *)(p + 0x10));
+                    fn_80207938();
+                } else if (*(int *)(p + 0x14) != 0) {
+                    *(void **)(p + 0xc) = fn_802E6058(*(int *)(p + 0x14));
+                    if (*(void **)(p + 0xc) == 0) {
+                        ((void (*)(void *))fn_802E6138)(*(void **)(p + 8));
+                        *(void **)(p + 8) = 0;
+                    }
+                }
+            }
+            h8 = *(void **)(p + 8);
+            if (h8 != 0) {
+                f1 = *(float *)(p + 0x1c) * *(float *)(*(char **)(p + 0x18) + 0x20);
+                if (*(unsigned char *)(p + 0x3e) != 0) {
+                    f31 = lbl_805632B0;
+                } else {
+                    if (*(unsigned char *)(p + 0x3c) != 0) {
+                    } else {
+                        f1 = f1 * lbl_8055B590;
+                    }
+                    f31 = lbl_8055B598 * f1;
+                }
+                if (*(void **)(p + 0xc) != 0) {
+                    f1 = lbl_805632B4;
+                    f0 = f1 + -*(float *)(p + 0x20);
+                    f1 = (f1 < f0) ? f1 : f0;
+                    f1 = (f1 > lbl_805632B0) ? f1 : lbl_805632B0;
+                    fn_802E61E4(f31 * f1);
+                    fn_802E61EC(*(void **)(p + 8), lbl_805632B8);
+                    f1 = lbl_805632B4;
+                    f0 = f1 + *(float *)(p + 0x20);
+                    f1 = (f1 < f0) ? f1 : f0;
+                    f1 = (f1 > lbl_805632B0) ? f1 : lbl_805632B0;
+                    fn_802E61E4(f31 * f1);
+                    fn_802E61EC(*(void **)(p + 0xc), lbl_805632B4);
+                } else {
+                    fn_802E61E4(f31);
+                    fn_802E61EC(*(void **)(p + 8), *(float *)(p + 0x20));
+                }
+                i = 0;
+                do {
+                    if (i == 0) h = *(void **)(p + 8);
+                    else h = *(void **)(p + 0xc);
+                    if (h != 0) {
+                        fn_802E620C(h, *(float *)(p + 0x28));
+                        fn_802E6234(h, *(float *)(p + 0x2c));
+                        fn_802E6238(h, *(float *)(p + 0x30));
+                        fn_802E623C(h, *(float *)(p + 0x34));
+                        fn_802E622C(h, *(float *)(p + 0x24));
+                        fn_802E6240(h, *(int *)(p + 0x38));
+                    }
+                    i++;
+                } while (i < 2);
+                if (*(unsigned char *)(p + 0x3d) != 0) {
+                    fn_802E61BC(*(void **)(p + 8));
+                    if (*(void **)(p + 0xc) != 0) fn_802E61BC(*(void **)(p + 0xc));
+                } else {
+                    fn_802E61A8(*(void **)(p + 8));
+                    if (*(void **)(p + 0xc) != 0) fn_802E61A8(*(void **)(p + 0xc));
+                }
+            }
+        }
+    }
+}
+#pragma pop
 void fn_8020BC50(void *arg0, float farg0) { *(float *)((char *)arg0 + 0x24) = farg0; }
 
 typedef float f32;
