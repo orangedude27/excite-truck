@@ -8499,7 +8499,7 @@ void btm_pm_proc_mode_change(u8 status, u16 handle, u8 mode, u16 interval) {
             fn_8007096C(0xD0004, lbl_80316530, handle, *(u16 *)(acl + 0x36));
         btsnd_hcic_change_conn_type(*(u16 *)(acl + 0x34), *(u16 *)(acl + 0x36));
     }
-    pm = lbl_803C0F78 + index * 0x22;
+    pm = (u8 *)(index * 0x22 + (u32)lbl_803C0F78);
     pm[0x4ec] = mode;
     *(u16 *)(pm + 0x4ea) = interval;
     {
@@ -22375,6 +22375,85 @@ s32 fn_8009D000(void) {
     }
     lbl_8055DCA4 = 0xA5FF005A;
     return 0;
+}
+
+s32 WriteUARTN(char *msg, u32 n) {
+    extern u32 lbl_8055DCA4;
+    extern u32 lbl_8055DC98;
+    extern u32 lbl_8055DC9C;
+    extern u32 lbl_80560B10;
+    extern s32 EXILock(s32, s32, void *);
+    extern s32 EXISelect(s32, s32, u32);
+    extern s32 EXIImm(s32, void *, s32, s32, void *);
+    extern s32 EXISync(s32);
+    extern s32 EXIDeselect(s32);
+    extern s32 EXIUnlock(s32);
+    char *p;
+    u32 freq;
+    s32 length;
+    s32 err;
+    char *it;
+    u32 cmd;
+    u32 ch;
+    u32 imm;
+    u32 q;
+
+    p = msg;
+    if (lbl_8055DCA4 != 0xA5FF005A) {
+        return 2;
+    }
+    if (!lbl_8055DC98 && !EUARTInit()) {
+        return 2;
+    }
+    if (!lbl_8055DC98) {
+        lbl_8055DC9C = 1;
+        return 2;
+    }
+    if (!EXILock(0, 1, 0)) {
+        return 0;
+    }
+    for (it = p; it - msg < n; it++) {
+        if (*it == '\n') {
+            *it = '\r';
+        }
+    }
+    freq = lbl_80560B10;
+    err = 0;
+    cmd = 0xB0000100;
+    while (n > 0) {
+        if (!EXISelect(0, 1, freq)) {
+            length = -1;
+        } else {
+            q = 0x30000100;
+            EXIImm(0, &q, 4, 1, 0);
+            EXISync(0);
+            EXIImm(0, &imm, 4, 0, 0);
+            EXISync(0);
+            EXIDeselect(0);
+            length = 32 - ((imm >> 24) % 64);
+        }
+        if (length < 0) {
+            err = 3;
+            break;
+        }
+        if (length != 32) {
+            continue;
+        }
+        if (!EXISelect(0, 1, freq)) {
+            err = 3;
+            break;
+        }
+        EXIImm(0, &cmd, 4, 1, 0);
+        EXISync(0);
+        for (; length > 0 && n > 0; p++, length--, n--) {
+            ch = *p << 24;
+            EXIImm(0, &ch, 4, 1, 0);
+            EXISync(0);
+        }
+        EXIDeselect(0);
+    }
+    EXIUnlock(0);
+    return err;
 }
 
 u16 fn_8006D8D0(u32 arg0) {
