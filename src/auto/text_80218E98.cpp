@@ -2219,28 +2219,46 @@ extern "C" void fn_802180BC();
 extern "C" void fn_802180C8();
 extern "C" void fn_802180D4();
 extern "C" f32 fabsf(f32);
+#pragma push
+#pragma processor 750
 extern "C" s32 fn_8021C730(void *arg0, s32 arg1) {
-    s32 *p=(s32 *)*(void **)((u8*)arg0+0x2a8); f32 base;
-    if(!p) return 0;
-    if(*(s32*)((u8*)arg0+0x2ac)!=*p) return 0;
-    void *obj=*(void**)((u8*)arg0+0x2a4); base=((V24x*)obj)->get();
-    switch(arg1) {
-    case 0x125:
-        if(*(u8*)((u8*)arg0+0x2d0)) { ((V18x*)obj)->get(); if(fabsf(base-((V24x*)obj)->get())<=*(f32 *)&lbl_80558DC4) fn_80216D28(); return 1; }
-        if(*(s32*)((u8*)*(void**)((u8*)arg0+0x2c)+0x494)>1) { fn_802180B0(); return 1; } return 0;
+    s32 *p = *(s32 **)((u8 *)arg0 + 0x2a8);
+    if (!p) return 0;
+    if (*(s32 *)((u8 *)arg0 + 0x2ac) != *p) return 0;
+    f32 base = ((V24x *)*(void **)((u8 *)arg0 + 0x2a4))->get();
+    switch (arg1) {
     case 0x127:
-        if(*(u8*)((u8*)arg0+0x2d0)) { ((V14x*)obj)->get(); if(fabsf(base-((V24x*)obj)->get())<=*(f32 *)&lbl_80558DC4) fn_80216D28(); return 1; }
-        if(*(s32*)((u8*)*(void**)((u8*)arg0+0x2c)+0x494)>1) { fn_802180BC(); return 1; } return 0;
+        if (*(u8 *)((u8 *)arg0 + 0x2d0)) {
+            ((V14x *)*(void **)((u8 *)arg0 + 0x2a4))->get();
+            if ((f32)__fabs((double)(base - ((V24x *)*(void **)((u8 *)arg0 + 0x2a4))->get())) <= *(f32 *)&lbl_80558DC4) fn_80216D28();
+            return 1;
+        }
+        if (*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x2c) + 0x494) > 1) { fn_802180BC(); return 1; }
+        break;
+    case 0x125:
+        if (*(u8 *)((u8 *)arg0 + 0x2d0)) {
+            ((V18x *)*(void **)((u8 *)arg0 + 0x2a4))->get();
+            if ((f32)__fabs((double)(base - ((V24x *)*(void **)((u8 *)arg0 + 0x2a4))->get())) <= *(f32 *)&lbl_80558DC4) fn_80216D28();
+            return 1;
+        }
+        if (*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x2c) + 0x494) > 1) { fn_802180B0(); return 1; }
+        break;
     case 0x126:
-        if(!*(u8*)((u8*)arg0+0x2d0) && *(s32*)((u8*)*(void**)((u8*)arg0+0x2c)+0x494)>1) { fn_802180C8(); return 1; } return 0;
+        if (!*(u8 *)((u8 *)arg0 + 0x2d0) && *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x2c) + 0x494) > 1) { fn_802180C8(); return 1; }
+        break;
     case 0x128:
-        if(!*(u8*)((u8*)arg0+0x2d0) && *(s32*)((u8*)*(void**)((u8*)arg0+0x2c)+0x494)>1) { fn_802180D4(); return 1; } return 0;
-    case 0xD: *(u8*)((u8*)arg0+0x2d0)=!*(u8*)((u8*)arg0+0x2d0); return 1;
-    case 0x1B: if(*(u8*)((u8*)arg0+0x2d0)){*(u8*)((u8*)arg0+0x2d0)=0;return 1;} return 0;
+        if (!*(u8 *)((u8 *)arg0 + 0x2d0) && *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x2c) + 0x494) > 1) { fn_802180D4(); return 1; }
+        break;
+    case 0xD:
+        *(s8 *)((u8 *)arg0 + 0x2d0) = !*(u8 *)((u8 *)arg0 + 0x2d0);
+        return 1;
+    case 0x1B:
+        if (*(u8 *)((u8 *)arg0 + 0x2d0)) { *(u8 *)((u8 *)arg0 + 0x2d0) = 0; return 1; }
+        return 0;
     }
     return 0;
 }
-
+#pragma pop
 extern "C" s32 fn_8021C974(void) { return 0; }
 
 extern "C" void *fn_8021C97C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
@@ -6271,6 +6289,7 @@ extern "C" void fn_80226B6C(void *arg0) {
 
 #pragma push
 #pragma opt_common_subs off
+#pragma processor 750
 extern "C" void *fn_80226CBC(void *arg0, void *arg1) {
     u8 *self = (u8 *)arg0;
     u8 *arg = (u8 *)arg1;
@@ -6304,9 +6323,7 @@ extern "C" void *fn_80226CBC(void *arg0, void *arg1) {
     memcpy(&x, arg + 0xA4, 4);
     memcpy(&y, arg + 0xA8, 4);
     memcpy(&z, arg + 0xAC, 4);
-    f32 threshold = *(f32 *)lbl_80558DC4;
-    f32 absx = (f32)__fabs((double)x);
-    if (!(absx <= threshold) || !((f32)__fabs((double)y) <= threshold) || !((f32)__fabs((double)z) <= threshold))
+    if (!((f32)__fabs((double)x) <= *(f32 *)lbl_80558DC4) || !((f32)__fabs((double)y) <= *(f32 *)lbl_80558DC4) || !((f32)__fabs((double)z) <= *(f32 *)lbl_80558DC4))
         fn_80227044(self, x, y, z);
     return self;
 }
