@@ -1443,6 +1443,16 @@ ret1:
 extern "C" u8 lbl_80435020[];
 extern f32 lbl_8056236C;
 #pragma scheduling invalid_target
+extern "C" s32 fn_8019B4D8(void*, void*, void*, s32, f32);
+struct Fn8019E874Xf { f32 m[9]; Vec pos; };
+class Fn8019E874Obj {
+public:
+    virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03(); virtual void v04();
+    virtual void v05(); virtual void v06(); virtual void v07(); virtual void v08(); virtual void v09();
+    virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14();
+    virtual void v15(); virtual void v16(); virtual void v17();
+    virtual Fn8019E874Xf* GetXf();
+};
 extern "C" s32 fn_8019E500(void* arg0, void* arg1) {
     u32 copied[12];
     f32 rows[3][4];
