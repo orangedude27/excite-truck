@@ -297,36 +297,20 @@ static inline int allocateStructures(const char *msg) {
     return 1;
 }
 
+#pragma scheduling reset
 static inline void initDvdContexts(void) {
-    DVDLowContext *ctx = (DVDLowContext *)lbl_8037B820;
-
-    ctx[0].callback = (void *)0;
-    ctx[0].WORD_0x4 = 0;
-    ctx[0].inUse = 0;
-    ctx[0].magic = 0xFEEBDAED;
-    ctx[0].id = 0;
-
-    ctx[1].callback = (void *)0;
-    ctx[1].WORD_0x4 = 0;
-    ctx[1].inUse = 0;
-    ctx[1].magic = 0xFEEBDAED;
-    ctx[1].id = 1;
-
-    ctx[2].callback = (void *)0;
-    ctx[2].WORD_0x4 = 0;
-    ctx[2].inUse = 0;
-    ctx[2].magic = 0xFEEBDAED;
-    ctx[2].id = 2;
-
-    ctx[3].callback = (void *)0;
-    ctx[3].WORD_0x4 = 0;
-    ctx[3].inUse = 0;
-    ctx[3].magic = 0xFEEBDAED;
-    ctx[3].id = 3;
-
+    int i;
+    for (i = 0; i < 4; i++) {
+        ((DVDLowContext *)lbl_8037B820)[i].callback = (void *)0;
+        ((DVDLowContext *)lbl_8037B820)[i].WORD_0x4 = 0;
+        ((DVDLowContext *)lbl_8037B820)[i].inUse = 0;
+        ((DVDLowContext *)lbl_8037B820)[i].magic = 0xFEEBDAED;
+        ((DVDLowContext *)lbl_8037B820)[i].id = i;
+    }
     lbl_8055D8E8 = 0;
     lbl_8055D8EC = 1;
 }
+#pragma scheduling 750
 
 int DVDLowInit(void) {
     const char *msg = lbl_80302848;
