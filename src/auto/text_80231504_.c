@@ -634,6 +634,10 @@ void fn_80232930(void) {
     lbl_8055F060 = (void *)lbl_8055F04C;
 }
 
+f32 fn_8023293C(s32 font, char *text, f32 extra) {
+    return lbl_8056368C;
+}
+
 u8 fn_80232B70(void *arg0) {
     return ((u8 *)arg0)[4];
 }
@@ -722,7 +726,8 @@ void fn_80232DF4(u8 *text, s32 font, s32 color, s32 flags, f32 x, f32 y, f32 sca
             s32 passes;
 
             strlen((const char *)text);
-            for (passes = (*(void **)(font + 8) != NULL) + 1; passes > 0; passes--) {
+            passes = (*(void **)(font + 8) != NULL) + 1;
+            while (passes > 0) {
                 s32 curColor = sp10;
                 s32 curFont = font;
                 s32 textOffset = 0;
@@ -759,6 +764,7 @@ void fn_80232DF4(u8 *text, s32 font, s32 color, s32 flags, f32 x, f32 y, f32 sca
                     sp8 += extra * (scale * *(f32 *)(*(u8 **)(curFont + 0x10) + offset + 8));
                 }
                 fn_80233EBC();
+                passes--;
             }
         }
     }
@@ -1019,103 +1025,100 @@ void fn_80233EC0(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg
 }
 
 f32 fn_8023400C(s32 arg0) {
-    s32 offset;
-    s32 index;
-    s32 tokenIndex;
-    s32 tokenOffset;
-    s32 consumed;
-    s32 codepoint;
-    s32 glyphOffset;
+    register s32 offset = arg0 * 0x58;
+    register s32 index = 0;
+    register u32 magic = 0x43300000;
+    register f32 width = lbl_8056368C;
+    register f32 height = width;
     u8 *text;
     u8 *font;
-    u8 *records;
-    u8 *glyphTable;
-    u8 *glyph;
+    register s32 *recordCount;
+    u8 *next;
     u8 *entry;
+    u8 *glyphs;
+    u8 *glyph;
+    s32 tokenIndex;
+    s32 tokenOffset;
+    u8 *character;
     const char *token;
-    signed char current;
+    register u16 codepoint;
     u8 first;
-    f32 charSize;
-    f32 escapeScale;
-    f32 escapeWidth;
-    f32 width;
-    f32 height;
+    register f32 escapeScale;
+    register f32 escapeWidth;
+    s32 consumed;
 
-    offset = arg0 * 0x58;
-    font = (u8 *)lbl_8055F058;
-    text = (u8 *)lbl_8055F06C + offset;
-    records = (u8 *)*(u32 *)lbl_80497F14;
-    width = lbl_8056368C;
-    height = width;
-    index = 0;
+    text = (u8 *)(*(volatile s32 *)&lbl_8055F06C) + offset;
+    font = (u8 *)(*(volatile s32 *)&lbl_8055F058);
     strlen((const char *)text);
+    recordCount = (s32 *)lbl_80497F14;
+    goto char_body;
 
-    for (;;) {
-        current = (signed char)text[index];
-        if (current == 0) {
-            break;
-        }
+char_body:
+    escapeWidth = (f32)font[4];
+    escapeScale = (f32)font[4];
+    if ((s8)text[index] == '\\') {
+        tokenIndex = 0;
+        tokenOffset = 0;
+        character = text + index + 1;
+        goto token_body;
+    }
+    goto glyph_body;
 
-        charSize = (f32)font[4];
-        escapeScale = (f32)font[4];
-        consumed = 0;
-
-        if (current == '\\') {
-            tokenIndex = 0;
-            tokenOffset = 0;
-            for (;;) {
-                if (tokenIndex >= *(s32 *)((u8 *)lbl_80497F14 + 4)) {
-                    break;
-                }
-                token = *(const char **)(records + tokenOffset);
-                if (fn_8002B1D8((const char *)text + index + 1, token, strlen(token)) == 0) {
-                    entry = records + tokenOffset;
-                    if (*(s32 *)(entry + 0xC) != 0) {
-                        escapeScale /= fn_80235F64(*(s32 *)(entry + 0xC),
-                                                    *(s32 *)(entry + 0x10));
-                        escapeWidth = *(f32 *)(entry + 4);
-                        escapeWidth = escapeWidth *
-                            (escapeScale * fn_80235EF0(*(s32 *)(entry + 0xC),
-                                                       *(s32 *)(entry + 0x10))) +
-                            escapeWidth * (*(f32 *)(entry + 0x18) * escapeScale);
-                    } else {
-                        escapeWidth = escapeScale * *(f32 *)(entry + 4);
-                    }
-                    consumed = strlen(token) + 1;
-                    break;
-                }
-                tokenOffset += 0x1C;
-                tokenIndex++;
-            }
-        }
-
-        if (consumed != 0) {
-            index += consumed;
-            width += escapeWidth;
+token_body:
+    token = *(const char **)(*(u8 **)lbl_80497F14 + tokenOffset);
+    if (fn_8002B1D8((const char *)character, token, strlen(token)) == 0) {
+        entry = *(u8 **)lbl_80497F14 + tokenIndex * 0x1C;
+        if (*(s32 *)(entry + 0xC) != 0) {
+            escapeScale /= fn_80235F64(*(s32 *)(entry + 0xC),
+                                        *(s32 *)(entry + 0x10));
+            escapeWidth = *(f32 *)(entry + 4) *
+                (escapeScale * fn_80235EF0(*(s32 *)(entry + 0xC),
+                                           *(s32 *)(entry + 0x10))) +
+                *(f32 *)(entry + 4) * (*(f32 *)(entry + 0x18) * escapeScale);
         } else {
-            first = text[index];
-            if ((first & 0xF0) == 0xE0) {
-                codepoint = (first & 0x0F) << 12;
-                codepoint |= (text[index + 1] & 0x3F) << 6;
-                codepoint |= text[index + 2] & 0x3F;
-                consumed = 3;
-            } else if ((first & 0xE0) == 0xC0) {
-                codepoint = (first & 0x1F) << 6;
-                codepoint |= text[index + 1] & 0x3F;
-                consumed = 2;
-            } else {
-                codepoint = first & 0x7F;
-                consumed = 1;
-            }
-            glyphTable = *(u8 **)(font + 0x10);
-            glyphOffset = codepoint * 0x1C;
-            glyph = glyphTable + glyphOffset;
-            index += consumed;
-            width += *(f32 *)(glyph + 4);
-            height += *(f32 *)(glyph + 0) + *(f32 *)(glyph + 8);
+            escapeWidth = escapeScale * *(f32 *)(entry + 4);
         }
+        consumed = strlen(*(const char **)entry) + 1;
+        goto token_done;
+    }
+    tokenOffset += 0x1C;
+    tokenIndex++;
+    if (tokenIndex < *(volatile s32 *)(recordCount + 1)) goto token_body;
+    consumed = 0;
+    goto token_done;
+
+token_done:
+    if (consumed != 0) {
+        index += consumed;
+        width += escapeWidth;
+        goto char_body;
     }
 
+glyph_body:
+    character = text + index;
+    first = character[0];
+    if ((first & 0xF0) == 0xE0) {
+        codepoint = ((first & 0x0F) << 12) |
+                    ((character[1] & 0x3F) << 6) |
+                    (character[2] & 0x3F);
+        next = character + 3;
+    } else if ((first & 0xE0) == 0xC0) {
+        codepoint = ((first & 0x1F) << 6) |
+                    __rlwinm(character[1], 0, 26, 23);
+        next = character + 2;
+    } else {
+        codepoint = first & 0x7F;
+        next = character + 1;
+    }
+    glyphs = *(u8 **)(font + 0x10);
+    glyph = glyphs + codepoint * 0x1C;
+    index += next - character;
+    width += *(volatile f32 *)(glyph + 4);
+    height += *(volatile f32 *)(glyph + 0) + *(volatile f32 *)(glyph + 8);
+    if ((s8)text[index] != 0) goto char_body;
+
+finished:
+    text = (u8 *)(*(volatile s32 *)&lbl_8055F06C) + offset;
     return width * *(f32 *)(text + 0x50) + height * *(f32 *)(text + 0x54);
 }
 
