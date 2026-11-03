@@ -374,6 +374,9 @@ typedef struct {
 } AXFX_REVERBHI_EXP_FREE_VIEW;
 
 extern u8 lbl_803C0F78[];
+extern char lbl_803164B8[];
+__declspec(section ".sdata") extern u8 lbl_80560D30[];
+__declspec(section ".sdata") extern u8 lbl_80560D34[];
 extern u8 lbl_80316570[];
 extern void fn_80072AE4(u8 *, u8 *, u8 *);
 extern void bta_dm_disc_remname_cback(u8 *);
@@ -3141,10 +3144,10 @@ void uusb_ReadIntrDataCB(s32 length, BT_HDR *buf) {
     extern char lbl_803BD240[];
     char *report = lbl_803142C8;
     BT_HDR *copy;
-    u8 *p;
-    uusb_cb_t *control;
-    u32 zero;
     s32 size, i;
+    u32 zero;
+    uusb_cb_t *control;
+    u8 *p;
     if (lbl_803BD1E0.at_0x28) OSReport(report);
     zero = ((u8 *)&lbl_803BD1E0)[0x2B] = 0;
     if (lbl_803BD1E0.state != 2) {
