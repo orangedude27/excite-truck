@@ -231,6 +231,11 @@ typedef struct DVDLowDICommand {
     unsigned int arg7;
 } DVDLowDICommand;
 
+typedef struct IPCIOVector {
+    void *base;
+    unsigned int length;
+} IPCIOVector;
+
 static inline void nextCommandBuf(void) {
     if ((int)++lbl_8055D8E4 >= 4) {
         lbl_8055D8E4 = 0;
