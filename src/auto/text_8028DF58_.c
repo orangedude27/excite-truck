@@ -1075,7 +1075,7 @@ void fn_8028FD00(void *arg0, void *arg1, int arg2) {
 
 extern int fn_80287B5C(int);
 extern int fn_802E30C8(void *, const char *, ...);
-extern char lbl_8055C918[];
+extern char lbl_8055C918[4];
 extern char lbl_80349024[];
 extern char lbl_80349078[];
 extern unsigned char lbl_8055F74C;
