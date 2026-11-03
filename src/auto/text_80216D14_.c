@@ -756,7 +756,7 @@ void fn_802180E0(void *arg0, int arg1) {
     extern void fn_802E30C8(const char *, ...);
     extern char lbl_8033D83C[];
     if (arg1 < 0 || arg1 >= *(int *)((char *)arg0 + 0x494)) {
-        fn_802E30C8(lbl_8033D83C);
+        fn_802E30C8(lbl_8033D83C, arg1, *(int *)((char *)arg0 + 0x494));
         return;
     }
     *(int *)((char *)arg0 + 0x498) = *(int *)((char *)arg0 + 0x4A0 + arg1 * 8);
@@ -977,12 +977,21 @@ extern void *fn_8022EDC4(void);
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_80218574(void *arg0) {
-    struct State { int matrix[12]; float a,b,c; };
+    struct Mtx { int w[12]; };
+    struct State { struct Mtx m; float a, b, c; };
+    struct VObj;
+    struct VTab { void *pad0[10]; void (*f28)(struct VObj *); void *pad1[19]; int (*f78)(struct VObj *); };
+    struct VObj { struct VTab *vt; };
     struct State state;
+    struct State *src;
     float x,y;
-    char *base=arg0, *entry;
-    int i,current;
-    float zero,one,limit;
+    int index;
+    char *entry;
+    int current, i;
+    float limit, one, zero;
+    char *obj;
+    char *base;
+    base=arg0;
     if (*(void **)(base+8)) {
         fn_80230C30(&x,&y,0,0);
         fn_802C5310(*(void **)(base+8),0,x,y,lbl_80563490);
@@ -992,11 +1001,11 @@ void fn_80218574(void *arg0) {
     zero=lbl_80563490; one=lbl_80563494; limit=lbl_80563498;
     current=-1; entry=base;
     for(i=0;i<*(int *)(base+0x430);i++,entry+=4) {
-        char *obj=*(char **)(entry+0x30);
         int active=0;
+        obj=*(char **)(entry+0x30);
         if(*(unsigned char *)(obj+0x1a) || *(float *)(obj+0x20)>=zero) active=1;
         if(active) {
-            int index, pushed;
+            int pushed;
             float alpha;
             int *p=*(int **)(obj+0x240);
             if(p) index=*p; else index=*(int *)(obj+0x23c);
@@ -1006,25 +1015,27 @@ void fn_80218574(void *arg0) {
                 fn_8022ED00(base+index*0x3c+0x6a0);
             }
             if (*(float *)(obj+0x20)>=zero) alpha=one-*(float *)(obj+0x20);
-else if (*(float *)(obj+0x1c)>=zero) alpha=*(float *)(obj+0x1c);
-else if (*(unsigned char *)(obj+0x1a)) alpha=lbl_80563494;
-else alpha=zero;
+            else if (*(float *)(obj+0x1c)>=zero) alpha=*(float *)(obj+0x1c);
+            else if (*(unsigned char *)(obj+0x1a)) alpha=lbl_80563494;
+            else alpha=zero;
             pushed=0;
             if(alpha<limit && *(void **)(base+0x444)) {
-                int a,b,c,result;
+                int b,a,c,result;
                 float innerAlpha;
                 pushed=1;
-                state=*(struct State *)fn_8022EDC4();
+                src=(struct State *)fn_8022EDC4();
+                state.m = src->m;
+                state.a=src->a; state.b=src->b; state.c=src->c;
                 if (*(float *)(obj+0x20)>=zero) innerAlpha=one-*(float *)(obj+0x20);
-else if (*(float *)(obj+0x1c)>=zero) innerAlpha=*(float *)(obj+0x1c);
-else if (*(unsigned char *)(obj+0x1a)) innerAlpha=lbl_80563494;
-else innerAlpha=zero;
+                else if (*(float *)(obj+0x1c)>=zero) innerAlpha=*(float *)(obj+0x1c);
+                else if (*(unsigned char *)(obj+0x1a)) innerAlpha=lbl_80563494;
+                else innerAlpha=zero;
                 c=*(int *)(obj+8); b=*(int *)(obj+4); a=*(int *)(obj+0x238);
-                result=((int (*)(void *))(*(void ***)obj)[0x78/4])(obj);
+                result=((struct VObj *)obj)->vt->f78((struct VObj *)obj);
                 (*(void (**)(void *,int,int,int,int,int,int,float))(base+0x444))(&state,a,b,c,result,*(int *)(obj+0x10)-c,0,innerAlpha);
                 fn_8022ED00(&state);
             }
-            ((void (*)(void *))(*(void ***)obj)[0x28/4])(obj);
+            ((struct VObj *)obj)->vt->f28((struct VObj *)obj);
             if(pushed) fn_8022EDB8();
         }
     }
