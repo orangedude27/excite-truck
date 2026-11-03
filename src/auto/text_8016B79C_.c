@@ -76,6 +76,13 @@ extern void fn_8016CDE0(void *);
 extern void *fn_8016C168(void *, s32);
 extern void *fn_8016C29C(void *, int);
 extern int fn_8016C25C(int, int);
+extern f32 lbl_80561984;
+static inline void SetNodeF8(void *node, f32 value) {
+    if (node != 0 && value != *(f32 *)((u8 *)node + 8)) {
+        *(u8 *)((u8 *)node + 0x4D) = 1;
+        *(f32 *)((u8 *)node + 8) = value;
+    }
+}
 #pragma cplusplus on
 extern "C" void fn_80131818(s32);
 class TObj4C {
