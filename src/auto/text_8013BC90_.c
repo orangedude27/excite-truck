@@ -51,20 +51,41 @@ extern char lbl_8032C3D8[];
 __declspec(section ".sdata") extern const char lbl_80559CE0[];
 __declspec(section ".sdata") extern const char lbl_80559CE8[];
 __declspec(section ".sdata") extern const char lbl_80559CF0[];
-void fn_8013BD5C(void *arg0, void *arg1) {
+#pragma cplusplus on
+#pragma scheduling invalid_target
+extern "C" void fn_8013BD5C(void *arg0, void *arg1) {
+    class Selector {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void v20();
+        virtual void *select(const char *);
+    };
+    class Getter {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual float get(const char *, float);
+    };
     float *v = (float *)arg0;
+    const char *names = lbl_8032C3D8;
     void *p;
+
     fn_8013BD30(arg0);
-    p = (*(void *(*)(void *, const char *))((char *)*(void **)arg1 + 0x5c))(arg1, lbl_8032C3D8);
+    p = ((Selector *)arg1)->select(names);
     if (p != 0) {
-        v[0] = (*(float (*)(void *, const char *, float))((char *)*(void **)p + 0x28))(p, lbl_80559CE0, v[0]);
-        v[1] = (*(float (*)(void *, const char *, float))((char *)*(void **)p + 0x28))(p, lbl_80559CE8, v[1]);
-        v[2] = (*(float (*)(void *, const char *, float))((char *)*(void **)p + 0x28))(p, (const char *)lbl_8032C3D8 + 0xC, v[2]);
-        v[4] = (*(float (*)(void *, const char *, float))((char *)*(void **)p + 0x28))(p, (const char *)lbl_8032C3D8 + 0x18, v[4]);
-        v[3] = (*(float (*)(void *, const char *, float))((char *)*(void **)p + 0x28))(p, lbl_80559CF0, v[3]);
+        v[0] = ((Getter *)p)->get(lbl_80559CE0, v[0]);
+        v[1] = ((Getter *)p)->get(lbl_80559CE8, v[1]);
+        v[2] = ((Getter *)p)->get(names + 0xC, v[2]);
+        v[4] = ((Getter *)p)->get(names + 0x18, v[4]);
+        v[3] = ((Getter *)p)->get(lbl_80559CF0, v[3]);
     }
 }
-
+#pragma scheduling on
+#pragma cplusplus reset
 extern void fn_8013A2FC(void *, int);
 extern void fn_8013BD5C(void *, void *);
 extern const char lbl_8032C420[];
@@ -131,7 +152,8 @@ void fn_8013BFE4(void) {
 
 }
 
-extern void fn_80128658(void);
+typedef struct { void *ptr; unsigned char name[64]; int refs; } ResourceEntry;
+extern void fn_80128658(int);
 extern void fn_80128668(void *);
 extern void fn_8013A598(void *, int);
 extern unsigned char lbl_8042F8C8[];
@@ -141,8 +163,7 @@ void fn_8013C428(void *arg0) {
     unsigned char *r5 = lbl_8042F8C8;
     i = 0;
     count = *(int *)(lbl_8042F8C8 + 0x240);
-    if (count > 0) {
-        do {
+    for (; count > 0; --count) {
             if (*(void **)r5 == arg0) {
                 int offset = i * 0x48;
                 unsigned char *entry = lbl_8042F8C8 + offset;
@@ -153,7 +174,7 @@ void fn_8013C428(void *arg0) {
                     int tail;
                     unsigned char *dst;
                     unsigned char *src;
-                    if (*(int *)((char *)arg0 + 0x74) != 0) fn_80128658();
+                    if (*(int *)((char *)arg0 + 0x74) != 0) ((void (*)(int))fn_80128658)(*(int *)((char *)arg0 + 0x74));
                     if (arg0 != 0) {
                         fn_8013A598((char *)arg0 + 0x40, -1);
                         fn_80128668(arg0);
@@ -202,7 +223,6 @@ void fn_8013C428(void *arg0) {
             }
             r5 += 0x48;
             i++;
-        } while (--count);
     }
 }
 
