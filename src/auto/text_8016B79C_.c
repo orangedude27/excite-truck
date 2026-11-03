@@ -481,7 +481,6 @@ void *fn_8016C29C(void *arg0, int arg1) {
     return arg0;
 }
 
-#pragma ppc_psq_save off
 #pragma cplusplus on
 extern "C" void fn_8016C328(void *arg0) {
     class Cfg {
@@ -501,6 +500,7 @@ extern "C" void fn_8016C328(void *arg0) {
         virtual void *get(s32);
     };
     struct Entry { u8 b; s32 w; f32 a; f32 c; };
+    struct Self { char p0[8]; char f8[0x0C]; void *f14; void *f18; };
     const char *base = lbl_803306D0;
     char buf[0x28];
     Cfg *cfg;
@@ -527,7 +527,7 @@ extern "C" void fn_8016C328(void *arg0) {
             i = 0;
             goto get;
             do {
-                fn_8016C768((void *)fn_8016CD4C(*(void **)((u8 *)arg0 + 0x18)), item, (u8 *)arg0 + 0x14);
+                fn_8016C768((void *)fn_8016CD4C(*(void **)((u8 *)arg0 + 0x18)), item, &((Self *)arg0)->f14);
                 i++;
 get:
                 item = list->get(i);
