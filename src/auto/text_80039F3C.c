@@ -264,6 +264,7 @@ static inline DVDLowContext *newContext(void *callback, unsigned int arg2, const
     return &((DVDLowContext *)lbl_8037B820)[id];
 }
 
+#pragma scheduling reset
 static inline void *ddrAllocAligned32(unsigned int size, const char *msg) {
     unsigned char *lo = (unsigned char *)IPCGetBufferLo();
     unsigned char *hi = (unsigned char *)IPCGetBufferHi();
