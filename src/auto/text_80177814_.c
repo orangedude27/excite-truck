@@ -55,6 +55,7 @@ void fn_80177814(int *arg0) {
     lbl_8055E464 += 0x2F1CD;
 }
 
+#pragma dont_inline on
 void fn_801778C0(void) {
     void **var_r31 = &lbl_804340C0[0];
     void **var_r28;
