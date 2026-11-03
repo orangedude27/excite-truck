@@ -873,7 +873,7 @@ void fn_80015770(void *arg0, f64 x, f64 y, f32 a, f32 b, f32 c) {
     fn_801E4FF4();
     fn_802C8D74();
 }
-#pragma use_lmw_stmw on
+#pragma pop
 void fn_80015AA0(void *, f32);
 void fn_80015EB0(void *, f32);
 #pragma push
