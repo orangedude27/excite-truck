@@ -39,6 +39,39 @@ void *fn_8025D96C(void *arg0, int arg1)
   return arg0;
 }
 
+void *fn_8025D9D0(void *arg0) {
+    char *src;
+    char *dst;
+    int count;
+
+    *(int *)((char *)arg0 + 0x420) = 0;
+    *(void **)((char *)arg0 + 0x40C) = lbl_80345718;
+    *(int *)((char *)arg0 + 0x424) = 0;
+    *((char *)arg0 + 0x42C) = 0;
+    *(void **)((char *)arg0 + 0x434) = fn_8023512C(lbl_80345694, lbl_80345694, lbl_80345718);
+    dst = (char *)arg0 + 4;
+    *(void **)arg0 = lbl_8055C3E0;
+    src = lbl_8055C3E0;
+    count = 0x14;
+    while (1) {
+        if (*src == 0)
+            break;
+        *dst = *src;
+        src += 1;
+        dst += 1;
+        if (--count <= 0) {
+            *(char *)(dst - 1) = 0;
+            break;
+        }
+    }
+    *(int *)((char *)arg0 + 0x408) = 0;
+    *(void **)((char *)arg0 + 0x1C) = lbl_8055C3E0;
+    *(void **)((char *)arg0 + 0x18) = lbl_8055C3E0;
+    *((char *)arg0 + 0x20) = 0;
+    *((char *)arg0 + 0x42C) = 0;
+    return arg0;
+}
+
 void* __dt__Q28PSSystem7SeqHeapFv_8025DA88(void* arg0, int arg1) {
     if (arg0 != 0) {
         *(void**)arg0 = lbl_80345718;
@@ -62,4 +95,4 @@ void fn_8025DF80(void *arg0) {
     }
 }
 #pragma pop
-extern void *fn_8000DA10(void); extern int fn_80012854(void); extern void *fn_8001285C(int); extern int fn_80012820(void *); extern void *fn_80016510(void); extern int fn_8001BA6C(void *); extern void fn_8001BC38(void *, void *, void *, int, int); extern int fn_8001BCF0(void *); extern int fn_8001BD6C(void *, void *); extern void fn_8001BD38(void *, void *, int); extern void fn_8001BD54(void *, void *); extern char *fn_80008188(void *); extern char *fn_801345D8(char *, int, const char *, char *, char *); extern int stricmp(const char *, const char *); extern char lbl_8055C3E4[], lbl_8055C3E8[], lbl_8055C3EC[], lbl_8055C3F8[]; extern char lbl_803456A4[];
+extern void *fn_8000DA10(void); extern int fn_80012854(void); extern void *fn_8001285C(int); extern int fn_80012820(void *); extern void *fn_80016510(int); extern int fn_8001BA6C(void *); extern void fn_8001BC38(void *, void *, void *, int, int); extern int fn_8001BCF0(void *); extern int fn_8001BD6C(void *, void *); extern void fn_8001BD38(void *, void *, int); extern void fn_8001BD54(void *, void *); extern char *fn_80008188(void *); extern char *fn_801345D8(char *, int, const char *, char *, char *); extern int stricmp(const char *, const char *); extern char lbl_8055C3E4[], lbl_8055C3E8[], lbl_8055C3EC[], lbl_8055C3F8[]; extern char lbl_803456A4[];
