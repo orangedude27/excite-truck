@@ -1517,16 +1517,6 @@ extern "C" s32 fn_8019E834(s32 arg0, s32 arg1) {
 }
 
 extern "C" s32 fn_8019E874(void*, void**, void*, f32, f32, f32, f32);
-extern "C" s32 fn_8019B4D8(void*, void*, void*, s32, f32);
-struct Fn8019E874Xf { f32 m[9]; Vec pos; };
-class Fn8019E874Obj {
-public:
-    virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03(); virtual void v04();
-    virtual void v05(); virtual void v06(); virtual void v07(); virtual void v08(); virtual void v09();
-    virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14();
-    virtual void v15(); virtual void v16(); virtual void v17();
-    virtual Fn8019E874Xf* GetXf();
-};
 extern void fn_8019AA34(void*, void*, void*, s32, s32, void*, f32, f32);
 extern void fn_8019A820(void*, s32, s32, s32, f32);
 #pragma scheduling invalid_target
