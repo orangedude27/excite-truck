@@ -3649,9 +3649,9 @@ void fn_8006022C(s32 chan)
 s32 fn_800604E8(s32 chan, s32 format, void* data) {
     WPADCB* cb = lbl_8038F4F0[chan];
     s32 enabled, innerEnabled, result, status;
-    register s32 scratch asm("r4");
-    register s32 mask asm("r3");
-    register s32 minusTwo asm("r0");
+    s32 scratch;
+    s32 minusTwo;
+    s32 mask;
     u8 command[0x60] ALIGN(8);
     u8* queue;
     s8 diff, index;
@@ -3681,8 +3681,8 @@ s32 fn_800604E8(s32 chan, s32 format, void* data) {
             diff = (s8)(queue[1] - scratch);
             if (diff < 0) {
                 diff = (s8)(diff + *(u32*)(queue + 8));
-                OSRestoreInterrupts(innerEnabled);
             }
+            OSRestoreInterrupts(innerEnabled);
             if (*(u32*)(queue + 8) - 1 == (u32)diff) {
                 OSRestoreInterrupts(enabled);
                 scratch = 0;
@@ -5073,46 +5073,29 @@ void fn_80064740(s32 chan, s32 param_2) {
 
 #pragma push
 #pragma opt_propagation off
-WPADCB* getGameInfo(s32 chan, s32 param_2, s32 param_3) {
+void getGameInfo(s32 chan, s32 param_2, s32 param_3) {
     WPADCB* cb = lbl_8038F4F0[chan];
     u8* src = (u8*)cb->samplingBufSize;
-    u32 sum = 0;
-    u32 i;
-    u32 offset;
+    s32 sum = 0;
+    s32 i;
+    s32 j;
+    s32 offset;
     u8* p;
 
     if (param_2 == 0) {
         offset = 0;
         for (i = 0; i < 2; i++) {
-            p = src + offset;
-            sum += src[offset];
-            sum += p[1];
-            sum += p[2];
-            sum += p[3];
-            sum += p[4];
-            sum += p[5];
-            sum += p[6];
-            offset += 7;
-
-            p = src + offset;
-            sum += src[offset];
-            sum += p[1];
-            sum += p[2];
-            sum += p[3];
-            sum += p[4];
-            sum += p[5];
-            sum += p[6];
-            offset += 7;
-
-            p = src + offset;
-            sum += src[offset];
-            sum += p[1];
-            sum += p[2];
-            sum += p[3];
-            sum += p[4];
-            sum += p[5];
-            sum += p[6];
-            offset += 7;
+            for (j = 0; j < 3; j++) {
+                p = src + offset;
+                sum += src[offset];
+                sum += p[1];
+                sum += p[2];
+                sum += p[3];
+                sum += p[4];
+                sum += p[5];
+                sum += p[6];
+                offset += 7;
+            }
         }
         sum += src[offset];
         sum += src[offset + 1];
@@ -5127,7 +5110,6 @@ WPADCB* getGameInfo(s32 chan, s32 param_2, s32 param_3) {
             *(s32*)((u8*)cb + (u8)param_3 * 4 + 0x38) = -4;
         }
     }
-    return cb;
 }
 #pragma pop
 s32 WPADiHIDParser(u8 port, u8* p_rpt) {
