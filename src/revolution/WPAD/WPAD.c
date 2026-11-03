@@ -2972,10 +2972,12 @@ u8 fn_80062458(void) {
 }
 
 // fn_8005D0DC: WUD initialization helper
+#pragma push
+#pragma opt_propagation off
 s32 fn_8005D0DC(s32 chan, s32 modeArg) {
-    register s32 mode asm("r31") = modeArg;
-    register u8* result asm("r30") = NULL;
-    register s32 chanReg asm("r29") = chan;
+    register s32 mode = modeArg;
+    register s32 chanReg = chan;
+    u8* result = NULL;
     s32 status = fn_8006A940();
 
     if (chanReg != 0)
@@ -2992,11 +2994,12 @@ s32 fn_8005D0DC(s32 chan, s32 modeArg) {
     goto done;
 
 positive_mode:
-    if (mode >= 7)
-        goto done;
-    if (mode >= 4)
-        goto reset_path;
-    goto clear_path;
+    if (mode < 7) {
+        if (mode >= 4)
+            goto reset_path;
+        goto clear_path;
+    }
+    goto done;
 
 clear_path:
     if (lbl_8055DC05 == 0) {
@@ -3029,9 +3032,7 @@ reset_path:
     goto done;
 
 status_tail:
-    if (status == 4)
-        goto done;
-    if (status == 1) {
+    if (status == 4 || status == 1) {
         result = NULL;
         goto done;
     }
@@ -3045,7 +3046,7 @@ return_one:
 done:
     return (s32)result;
 }
-
+#pragma pop
 s32 fn_8005D234(s32 chan, WPADGameInfo* pInfo)
 {
     WPADCB** table = lbl_8038F4F0;
@@ -4793,9 +4794,10 @@ BOOL fn_80063744(WPADCommandQueue *p, s8 idx, u32 val1, WPADCallback callback) {
     BOOL enabled;
     BOOL innerEnabled;
     s8 diff;
-    s32 lastIndex;
     s8 index;
+    s32 lastIndex;
     s32 wrapMask;
+    u32 cap;
 
     *(u8 *)((u8 *)&idx + 1) = 1;
     *(u32 *)&buffer[0] = 0x16;
@@ -4816,8 +4818,8 @@ BOOL fn_80063744(WPADCommandQueue *p, s8 idx, u32 val1, WPADCallback callback) {
     diff = (s8)(p->back - p->front);
     if (diff < 0) {
         diff = (s8)(diff + p->capacity);
-        OSRestoreInterrupts(innerEnabled);
     }
+    OSRestoreInterrupts(innerEnabled);
     if (p->capacity - 1 == (u32)diff) {
         OSRestoreInterrupts(enabled);
         return FALSE;
@@ -4825,8 +4827,9 @@ BOOL fn_80063744(WPADCommandQueue *p, s8 idx, u32 val1, WPADCallback callback) {
     memset(p->buffer + (s8)p->back, 0, sizeof(WPADCommand));
     memcpy(p->buffer + (s8)p->back, (u8 *)buffer + 0x30, sizeof(WPADCommand));
     index = p->back;
-    lastIndex = p->capacity - 1;
-    wrapMask = ~(((s32)index - lastIndex) | (lastIndex - (s32)index)) >> 31;
+    cap = p->capacity;
+    lastIndex = cap - 1;
+    wrapMask = ~((lastIndex - index) | (index - lastIndex)) >> 31;
     p->back = (index + 1) & ~wrapMask;
     OSRestoreInterrupts(enabled);
     return TRUE;
@@ -5068,6 +5071,8 @@ void fn_80064740(s32 chan, s32 param_2) {
     }
 }
 
+#pragma push
+#pragma opt_propagation off
 WPADCB* getGameInfo(s32 chan, s32 param_2, s32 param_3) {
     WPADCB* cb = lbl_8038F4F0[chan];
     u8* src = (u8*)cb->samplingBufSize;
@@ -5124,7 +5129,7 @@ WPADCB* getGameInfo(s32 chan, s32 param_2, s32 param_3) {
     }
     return cb;
 }
-
+#pragma pop
 s32 WPADiHIDParser(u8 port, u8* p_rpt) {
 #pragma dont_inline on
     BOOL enabled;
@@ -5947,5 +5952,4 @@ void fn_8005E8E0(s32 chan)
     *(u32*)(lbl_80392900 + i + 16) = 0;
 }
 
-extern WPADCB* getGameInfo(s32 param_1, s32 param_2, s32 param_3);
 #include <types.h>
