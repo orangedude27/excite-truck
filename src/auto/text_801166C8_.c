@@ -2066,7 +2066,7 @@ void fn_8011A45C(void *arg0, s32 arg1, s32 arg2) {
     temp_r3 = fn_80116D30();
     var_r31 = temp_r3;
     *counter = *counter + (temp_r31 - (temp_r3 - arg2));
-    do {
+    while (*counter > 0) {
         do {
             temp_r3_2 = fn_80116D30();
             temp_r0 = *counter;
@@ -2074,7 +2074,7 @@ void fn_8011A45C(void *arg0, s32 arg1, s32 arg2) {
         } while (temp_r4 < temp_r0);
         var_r31 = temp_r3_2;
         *counter = temp_r0 - temp_r4;
-    } while (*counter > 0);
+    }
 }
 
 void fn_8011A4F8(u32 arg0, void *arg1) {
