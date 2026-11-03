@@ -14,6 +14,16 @@ extern unsigned char lbl_8055D900;
 extern int lbl_8055D8F4;
 extern unsigned char lbl_8037B8C0[];
 extern const char lbl_80302848[];
+extern unsigned char lbl_8055D8ED;
+extern unsigned char lbl_8055D8EC;
+extern char *lbl_8055D8F8;
+extern const char lbl_80558E20[];
+extern int IPCCltInit(void);
+extern void *IPCGetBufferLo(void);
+extern void *IPCGetBufferHi(void);
+extern void IPCSetBufferLo(void *);
+extern int IOS_Open(const char *, int);
+extern char *strncpy(char *, const char *, unsigned int);
 void OSReport(const char *, ...);
 extern void (*FatalFunc_8055D8D8)(void);
 extern unsigned char lbl_80560B08, lbl_80560B09, lbl_80560B0A, lbl_80560B0B;
@@ -740,7 +750,7 @@ int fn_8003B69C(int arg0, void *arg1) {
 }
 
 #pragma scheduling invalid_target
-int fn_8003B81C(void *arg0, int arg1, int arg2, int arg3) {
+int fn_8003B81C(void *arg0, int arg1, int arg2, void (*arg3)(int, void *)) {
     DVDLowContext *base;
     int slot;
     DVDLowContext *p;
@@ -796,7 +806,7 @@ int fn_8003B81C(void *arg0, int arg1, int arg2, int arg3) {
     *(int *)(lbl_8055D8FC + (*(volatile unsigned int *)&lbl_8055D8E4) * 0x20 + 8) = arg2;
     result = IOS_IoctlAsync(lbl_80558E18, 0x71,
         lbl_8055D8FC + (*(volatile unsigned int *)&lbl_8055D8E4) * 0x20,
-        0x20, arg0, arg1, (void (*)(int, void *))doTransactionCallback, entry);
+        0x20, arg0, arg1, arg3, entry);
     if (result != 0) {
         OSReport(msg + 0xA4C, result);
         entry->inUse = 0;
