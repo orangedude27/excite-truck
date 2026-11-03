@@ -2465,6 +2465,21 @@ extern "C" void fn_8021CEAC(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x244) = 0;
 }
 
+extern char lbl_8033ECB8[];
+extern "C" void fn_8021CF9C(void *);
+extern "C" void *fn_8021CEEC(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, f32 x, f32 y) {
+    ((void *(*)(void *, s32, s32, s32, s32, s32, s32))fn_80219568)(arg0, arg1, arg2, 0, arg5, 0, 0);
+    *(s32 *)((u8 *)arg0 + 0x25C) = arg3;
+    *(void **)arg0 = lbl_8033ECB8;
+    *(f32 *)((u8 *)arg0 + 0x254) = x;
+    *(f32 *)((u8 *)arg0 + 0x258) = y;
+    *(s32 *)((u8 *)arg0 + 0x260) = arg4;
+    *(u8 *)((u8 *)arg0 + 0x264) = 0;
+    fn_80219440(arg0, 0, (void *)arg3, 4);
+    fn_8021CF9C(arg0);
+    return arg0;
+}
+
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void fn_8021CF9C(void *arg0) {
