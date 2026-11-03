@@ -99,6 +99,7 @@ extern "C" f64 fn_8002F234(f32);
 extern "C" void fn_8019ECC4(void);
 extern char lbl_80333B48[];
 extern f32 lbl_80562314;
+extern f32 lbl_80562318;
 extern f32 lbl_80562370;
 extern f32 lbl_8056232C;
 extern "C" void** fn_801B83A0(void);
@@ -1524,6 +1525,41 @@ extern "C" s32 fn_8019E834(s32 arg0, s32 arg1) {
         fn_80128668();
     }
     return arg0;
+}
+
+extern "C" s32 fn_8019E874(void* arg0, void** arg1, void* arg2, f32 f1, f32 f2, f32 f3, f32 f4) {
+    s32 kind = *(s32*)((u8*)arg0 + 0x20);
+    if (kind == 0x73) {
+        return fn_8019E500(arg0, arg1);
+    }
+    if (kind == 0x74) {
+        return fn_8019E500(arg0, arg1);
+    }
+    Vec p;
+    Vec d;
+    Fn8019E874Xf b = *((Fn8019E874Obj*)arg1)->GetXf();
+    Fn8019E874Xf a = **(Fn8019E874Xf**)((u8*)arg0 + 0xC);
+    d.x = a.pos.x - b.pos.x;
+    d.y = a.pos.y - b.pos.y;
+    d.z = a.pos.z - b.pos.z;
+    p.x = a.pos.x;
+    p.y = a.pos.y;
+    p.z = a.pos.z;
+    f32 lim = *(f32*)((u8*)arg0 + 0x28);
+    f32 neg = -lim;
+    f32 t = -PSVECDotProduct((Vec*)&a.m[6], &d);
+    if (lim < t) {
+    } else {
+        lim = t;
+    }
+    if (lim > neg) {
+    } else {
+        lim = neg;
+    }
+    p.x += a.m[6] * lim;
+    p.y += a.m[7] * lim;
+    p.z += a.m[8] * lim;
+    return fn_8019B4D8(arg0, arg1, &p, 0, *(f32*)((u8*)arg0 + 0x24));
 }
 
 extern "C" s32 fn_8019E874(void*, void**, void*, f32, f32, f32, f32);
