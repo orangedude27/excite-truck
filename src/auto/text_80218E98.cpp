@@ -7525,14 +7525,10 @@ extern "C" void fn_80229CD8(void *arg0) {
 extern "C" void fn_802C5280(void *, s32, s32, s32, s32, void *);
 extern "C" f32 lbl_805634A8;
 extern "C" void fn_80229CF8(void *arg0) {
-    u8 *p = (u8 *)arg0;
-    u8 flag = p[0x1A];
-    u8 one = 1;
-    f32 val = lbl_805634A8;
-    p[0x18] = one;
-    *(f32 *)(p + 0x248) = val;
-    if (flag != 0) {
-        p[0x234] = one;
+    (*(u8 *)((u8 *)arg0 + 0x18)) = 1;
+    (*(f32 *)((u8 *)arg0 + 0x248)) = 0.0f;
+    if ((*(u8 *)((u8 *)arg0 + 0x1A)) != 0) {
+        (*(u8 *)((u8 *)arg0 + 0x234)) = 1;
     }
 }
 extern "C" void fn_80229D1C(void *arg0) {
