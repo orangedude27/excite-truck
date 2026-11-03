@@ -415,6 +415,50 @@ void fn_802321D8(void) {
     memset(lbl_8055F068, 0, 0x16C);
 }
 
+#pragma push
+#pragma scheduling invalid_target
+void fn_80232230(void) {
+    char *stringBase;
+    struct Fn80232230_List *list;
+    s32 i;
+    struct Fn80232230_Entry *entry;
+    Fn80232230_Record *record;
+    s32 count;
+    s32 offset;
+    f32 temp_f31;
+
+    *(s32 *)(lbl_80497F14 + 4) = 0;
+    stringBase = lbl_80340440;
+    list = (struct Fn80232230_List *)fn_80131810(stringBase + 0x94);
+    if (list != NULL) {
+        temp_f31 = lbl_8056368C;
+        for (i = 0; (entry = list->vtable->getEntry(list, i)) != NULL; i++) {
+            if (stricmp(entry->vtable->getName(entry), lbl_8055B9B0) == 0) {
+                count = *(s32 *)(lbl_80497F14 + 4);
+                *(s32 *)(lbl_80497F14 + 4) = count + 1;
+                offset = count * 0x1C;
+                record = (Fn80232230_Record *)(*(u8 **)lbl_80497F14 + offset);
+                record->seq = entry->vtable->getString(entry, lbl_8055B9B8);
+                if (entry->vtable->hasKey(entry, lbl_8055B9BC) != 0 &&
+                    entry->vtable->hasKey(entry, lbl_8055B9C0) != 0) {
+                    record->resource = fn_8023512C(entry->vtable->getString(entry, lbl_8055B9BC));
+                    record->artIdx = entry->vtable->getInt(entry, lbl_8055B9C0);
+                    record->field18 = entry->vtable->getFloat(entry, stringBase + 0xA0, lbl_8056368C);
+                    record->handle = -1;
+                } else {
+                    record->resource = 0;
+                    record->artIdx = 0;
+                    record->field18 = temp_f31;
+                    record->handle = (s32)fn_802CAC28(entry->vtable->getString(entry, lbl_8055B9C8), 0);
+                }
+                record->scale = entry->vtable->getFloat(entry, lbl_8055B9CC, lbl_80563684);
+                record->flag = entry->vtable->getByte(entry, stringBase + 0xB0, 0);
+            }
+        }
+        fn_80131818(list);
+    }
+}
+#pragma pop
 extern void fn_80235380(void);
 #pragma push
 #pragma scheduling invalid_target
@@ -639,6 +683,10 @@ extern f32 lbl_8056368C;
 extern f32 lbl_80563684;
 extern void fn_80232040(u8 *, s32, s32, s32, s32, f32, f32, f32, f32, f32, f32);
 extern void fn_80232BA4(char *, s32, s32, s32, f32, f32, f32, f32, f32);
+extern void fn_80233AA4(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4);
+extern void fn_80233BF0(u8 *arg0, u8 *arg1, f32 *arg2, f32 *arg3, s32 arg4, f32 farg0, f32 farg1);
+extern void fn_80233E80(s32 *arg0, s32 arg1);
+extern void fn_80233EBC(void);
 extern void fn_802C8D74(void);
 #pragma push
 #pragma processor 750
