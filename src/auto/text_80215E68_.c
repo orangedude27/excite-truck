@@ -1,6 +1,18 @@
 extern void fn_8021889C(void);
 
 #include <types.h>
+static inline void fn_80216244_rotate(const f32 *m, const f32 *v, f32 *out) {
+    if (v == out) {
+        f32 x = m[0]*v[0] + m[3]*v[1] + m[6]*v[2];
+        f32 y = m[1]*v[0] + m[4]*v[1] + m[7]*v[2];
+        f32 z = m[2]*v[0] + m[5]*v[1] + m[8]*v[2];
+        out[0] = x; out[1] = y; out[2] = z;
+    } else {
+        out[0] = m[0]*v[0] + m[3]*v[1] + m[6]*v[2];
+        out[1] = m[1]*v[0] + m[4]*v[1] + m[7]*v[2];
+        out[2] = m[2]*v[0] + m[5]*v[1] + m[8]*v[2];
+    }
+}
 
 extern void *lbl_8055EF88;
 extern s32 lbl_8055EF78;
@@ -223,6 +235,9 @@ s32 fn_802161CC(s32 arg0) {
     } while (i < 16);
 }
 
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 s32 fn_80216244(void) {
     s32 i;
     u32 *p;
@@ -235,7 +250,7 @@ s32 fn_80216244(void) {
     void (*callback)(void);
 
     p = lbl_804908C8;
-    for (i = 0; i < 16; i++, p++) if (*p != 0) fn_802184D0();
+    for (i = 0; i < 16; i++, p++) if (*p != 0) ((void (*)(void *))fn_802184D0)((void *)*p);
     callback = (void (*)(void))lbl_8055EF8C;
     if (callback != 0) callback();
     fn_802C86E8(0xFF0000FF);
@@ -262,13 +277,13 @@ s32 fn_80216244(void) {
             matrix[10] += pos[1];
             matrix[11] += pos[2];
             fn_802C8638(matrix);
-            fn_8023108C(*p == (u32)lbl_8055EF88);
-            fn_80218574((void *)*p);
+            fn_8023108C(obj == lbl_8055EF88);
+            fn_80218574(obj);
         }
     }
     fn_8023108C(1);
 }
-
+#pragma pop
 extern s32 fn_80127A50(void *);
 extern s32 lbl_8055CFF0, lbl_8055CFF4;
 extern f32 lbl_8056347C, lbl_80563480;
