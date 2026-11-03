@@ -634,10 +634,95 @@ void fn_80232930(void) {
     lbl_8055F060 = (void *)lbl_8055F04C;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 f32 fn_8023293C(s32 font, char *text, f32 extra) {
-    return lbl_8056368C;
-}
+    register f64 magicDouble;
+    register f32 width;
+    register f32 height;
+    register f32 ext;
+    f64 escapeWidth;
+    f32 escapeScale;
+    register s32 index;
+    register u8 *recordCount;
+    s32 tokenIndex;
+    u8 *character;
+    const char *token;
+    register u8 *next;
+    register u8 *glyphs;
+    register u8 *glyph;
+    s32 consumed;
+    register u16 codepoint;
+    u8 first;
 
+    ext = extra;
+    if (text == NULL) {
+        return lbl_8056368C;
+    }
+
+    width = lbl_8056368C;
+    height = width;
+    index = 0;
+    strlen(text);
+    recordCount = (u8 *)(&((s32 *)lbl_80497F14)[1]);
+
+    while ((s8)text[index] != 0) {
+        escapeWidth = (f32)*(u8 *)(font + 4);
+        escapeScale = (f32)*(u8 *)(font + 4);
+
+        if ((s8)text[index] == '\\') {
+            character = (u8 *)text + index + 1;
+            for (tokenIndex = 0; tokenIndex < *(s32 *)recordCount; tokenIndex++) {
+                token = *(const char **)(*(u8 **)lbl_80497F14 + tokenIndex * 0x1C);
+                if (fn_8002B1D8((const char *)character, token, strlen(token)) == 0) {
+                    u8 *entry = *(u8 **)lbl_80497F14 + tokenIndex * 0x1C;
+                    if (*(s32 *)(entry + 0xC) != 0) {
+                        escapeScale /= fn_80235F64(*(s32 *)(entry + 0xC), *(s32 *)(entry + 0x10));
+                        escapeWidth = *(f32 *)(entry + 4) * (escapeScale * fn_80235EF0(*(s32 *)(entry + 0xC), *(s32 *)(entry + 0x10)))
+                                    + *(f32 *)(entry + 4) * (*(f32 *)(entry + 0x18) * escapeScale);
+                    } else {
+                        escapeWidth = escapeScale * *(f32 *)(entry + 4);
+                    }
+                    consumed = strlen(*(const char **)(*(u8 **)lbl_80497F14 + tokenIndex * 0x1C)) + 1;
+                    goto match;
+                }
+            }
+            consumed = 0;
+match: ;
+        } else {
+            consumed = 0;
+        }
+
+        if (consumed != 0) {
+            index += consumed;
+            width += (f32)escapeWidth;
+            continue;
+        }
+
+        first = text[index];
+        character = (u8 *)text + index;
+        if ((first & 0xF0) == 0xE0) {
+            codepoint = ((first & 0x0F) << 12) | ((character[1] & 0x3F) << 6) | (character[2] & 0x3F);
+            next = character + 3;
+        } else if ((first & 0xE0) == 0xC0) {
+            codepoint = ((first & 0x1F) << 6) | __rlwinm(character[1], 0, 26, 23);
+            next = character + 2;
+        } else {
+            codepoint = first & 0x7F;
+            next = character + 1;
+        }
+
+        glyphs = *(u8 **)(font + 0x10);
+        glyph = glyphs + (u16)codepoint * 0x1C;
+        index += next - character;
+        width += *(f32 *)(glyph + 4);
+        height += *(f32 *)glyph + *(f32 *)(glyph + 8);
+    }
+
+    height *= ext;
+    return (width + height) * *(f32 *)((u8 *)fn_8022EDC4() + 0x38);
+}
+#pragma pop
 u8 fn_80232B70(void *arg0) {
     return ((u8 *)arg0)[4];
 }
@@ -932,7 +1017,6 @@ void fn_80233AA4(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg
 #pragma pop
 
 extern f32 lbl_80563688;
-extern f64 lbl_80563698;
 #pragma scheduling invalid_target
 void fn_80233BF0(u8 *arg0, u8 *arg1, f32 *arg2, f32 *arg3, s32 arg4, f32 farg0, f32 farg1) {
     u32 code;
@@ -1025,101 +1109,96 @@ void fn_80233EC0(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg
 }
 
 f32 fn_8023400C(s32 arg0) {
-    register s32 offset = arg0 * 0x58;
-    register s32 index = 0;
-    register u32 magic = 0x43300000;
-    register f32 width = lbl_8056368C;
-    register f32 height = width;
-    u8 *text;
+    register f32 width;
+    register f32 height;
+    f64 escapeWidth;
+    f32 escapeScale;
+    register s32 offset;
+    register s32 index;
     u8 *font;
-    register s32 *recordCount;
-    u8 *next;
-    u8 *entry;
-    u8 *glyphs;
-    u8 *glyph;
-    s32 tokenIndex;
-    s32 tokenOffset;
-    u8 *character;
+    char *text;
+    register u8 *recordCount;
+    register s32 tokenIndex;
+    register s32 tokenOffset;
+    register u8 *character;
     const char *token;
-    register u16 codepoint;
-    u8 first;
-    register f32 escapeScale;
-    register f32 escapeWidth;
+    register u8 *next;
+    register u8 *entry;
+    register u8 *glyphs;
+    register u8 *glyph;
     s32 consumed;
+    u16 codepoint;
+    u8 first;
 
-    text = (u8 *)(*(volatile s32 *)&lbl_8055F06C) + offset;
+    offset = arg0 * 0x58;
+    width = lbl_8056368C;
+    index = 0;
+    height = width;
+    text = (char *)(*(volatile s32 *)&lbl_8055F06C) + offset;
     font = (u8 *)(*(volatile s32 *)&lbl_8055F058);
-    strlen((const char *)text);
-    recordCount = (s32 *)lbl_80497F14;
-    goto char_body;
+    strlen(text);
+    recordCount = (u8 *)lbl_80497F14 + 4;
+    goto char_test;
 
 char_body:
-    escapeWidth = (f32)font[4];
-    escapeScale = (f32)font[4];
+    escapeWidth = (f32)*(u8 *)(font + 4);
+    escapeScale = (f32)*(u8 *)(font + 4);
+
     if ((s8)text[index] == '\\') {
-        tokenIndex = 0;
-        tokenOffset = 0;
-        character = text + index + 1;
-        goto token_body;
-    }
-    goto glyph_body;
-
-token_body:
-    token = *(const char **)(*(u8 **)lbl_80497F14 + tokenOffset);
-    if (fn_8002B1D8((const char *)character, token, strlen(token)) == 0) {
-        entry = *(u8 **)lbl_80497F14 + tokenIndex * 0x1C;
-        if (*(s32 *)(entry + 0xC) != 0) {
-            escapeScale /= fn_80235F64(*(s32 *)(entry + 0xC),
-                                        *(s32 *)(entry + 0x10));
-            escapeWidth = *(f32 *)(entry + 4) *
-                (escapeScale * fn_80235EF0(*(s32 *)(entry + 0xC),
-                                           *(s32 *)(entry + 0x10))) +
-                *(f32 *)(entry + 4) * (*(f32 *)(entry + 0x18) * escapeScale);
-        } else {
-            escapeWidth = escapeScale * *(f32 *)(entry + 4);
+        character = (u8 *)text + index + 1;
+        for (tokenIndex = 0, tokenOffset = 0; tokenIndex < *(s32 *)recordCount; tokenOffset += 0x1C, tokenIndex++) {
+            token = *(const char **)(*(u8 **)lbl_80497F14 + tokenOffset);
+            if (fn_8002B1D8((const char *)character, token, strlen(token)) == 0) {
+                entry = *(u8 **)lbl_80497F14 + tokenIndex * 0x1C;
+                if (*(s32 *)(entry + 0xC) != 0) {
+                    escapeScale /= fn_80235F64(*(s32 *)(entry + 0xC), *(s32 *)(entry + 0x10));
+                    escapeWidth = *(f32 *)(entry + 4) * (escapeScale * fn_80235EF0(*(s32 *)(entry + 0xC), *(s32 *)(entry + 0x10)))
+                                + *(f32 *)(entry + 4) * (*(f32 *)(entry + 0x18) * escapeScale);
+                } else {
+                    escapeWidth = escapeScale * *(f32 *)(entry + 4);
+                }
+                consumed = strlen(*(const char **)(*(u8 **)lbl_80497F14 + tokenOffset)) + 1;
+                goto match;
+            }
         }
-        consumed = strlen(*(const char **)entry) + 1;
-        goto token_done;
+        consumed = 0;
+match: ;
+    } else {
+        consumed = 0;
     }
-    tokenOffset += 0x1C;
-    tokenIndex++;
-    if (tokenIndex < *(volatile s32 *)(recordCount + 1)) goto token_body;
-    consumed = 0;
-    goto token_done;
 
-token_done:
     if (consumed != 0) {
         index += consumed;
-        width += escapeWidth;
-        goto char_body;
+        width += (f32)escapeWidth;
+        goto char_test;
     }
 
-glyph_body:
-    character = text + index;
-    first = character[0];
+    first = text[index];
+    character = (u8 *)text + index;
     if ((first & 0xF0) == 0xE0) {
-        codepoint = ((first & 0x0F) << 12) |
-                    ((character[1] & 0x3F) << 6) |
-                    (character[2] & 0x3F);
+        codepoint = ((first & 0x0F) << 12) | ((character[1] & 0x3F) << 6) | (character[2] & 0x3F);
         next = character + 3;
     } else if ((first & 0xE0) == 0xC0) {
-        codepoint = ((first & 0x1F) << 6) |
-                    __rlwinm(character[1], 0, 26, 23);
+        codepoint = ((first & 0x1F) << 6) | __rlwinm(character[1], 0, 26, 23);
         next = character + 2;
     } else {
         codepoint = first & 0x7F;
         next = character + 1;
     }
+
     glyphs = *(u8 **)(font + 0x10);
     glyph = glyphs + codepoint * 0x1C;
     index += next - character;
-    width += *(volatile f32 *)(glyph + 4);
-    height += *(volatile f32 *)(glyph + 0) + *(volatile f32 *)(glyph + 8);
+    width += *(f32 *)(glyph + 4);
+    height += *(f32 *)glyph + *(f32 *)(glyph + 8);
+
+char_test:
     if ((s8)text[index] != 0) goto char_body;
 
-finished:
-    text = (u8 *)(*(volatile s32 *)&lbl_8055F06C) + offset;
-    return width * *(f32 *)(text + 0x50) + height * *(f32 *)(text + 0x54);
+    text = (char *)(*(volatile s32 *)&lbl_8055F06C) + offset;
+    width *= *(f32 *)(text + 0x50);
+    height *= *(f32 *)(text + 0x54);
+    return width + height;
 }
 
 #pragma push
