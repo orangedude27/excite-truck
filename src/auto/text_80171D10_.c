@@ -1320,13 +1320,13 @@ int fn_8017483C(void *arg0, void *arg1, int arg2) {
         xy[1] = *(float *)((char *)entry + 4) * lbl_80561A50;
         length = (float)fn_8002F234(xy[0] * xy[0] + xy[1] * xy[1]);
         minimum = lbl_80561AD0;
-        minimum = (length > minimum) ? length : minimum;
+        minimum = (minimum > length) ? minimum : length;
         scale = lbl_80561A40 / minimum;
         xy[0] = xy[0] * scale;
         xy[1] = xy[1] * scale;
         fn_801B7C8C(arg1, entry, xy);
-        *(int *)((char *)arg1 + 0x48) = 0;
         *(int *)((char *)arg1 + 0x44) = 2;
+        *(int *)((char *)arg1 + 0x48) = 0;
         *(int *)((char *)arg1 + 0x4C) = 0;
         return 1;
     }
@@ -1539,20 +1539,21 @@ int fn_80175A68(void *unused, float *arg0, float *arg1, int arg2, void *unused2,
 extern int fn_801B3050(int);
 extern float fn_801725C8(float);
 #pragma push
-#pragma use_lmw_stmw on
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_80175B0C(char *arg0) {
     float k = lbl_80561B04;
-    float step = lbl_80561A38;
-    float shrink = lbl_80561B08;
-    float min26 = lbl_80561A80;
-    float min25 = lbl_80561B0C;
-    float shrink24 = lbl_80561ABC;
     float min24 = lbl_80561A78;
+    float shrink24 = lbl_80561ABC;
+    float min25 = lbl_80561B0C;
+    float min26 = lbl_80561A80;
+    float shrink = lbl_80561B08;
+    float step = lbl_80561A38;
     char *out = arg0;
     int i = 0;
     for (; i < *(int *)(arg0 + 0x124); i++, out += 0x24) {
         float a, b, f24, f25, f26;
-        float v[2], w[2], d[2];
+        float d[2], v[2], w[2];
         int n;
         char *obj;
         if (fn_801B3050(i) & 1) {
@@ -1567,7 +1568,7 @@ void fn_80175B0C(char *arg0) {
         f24 = lbl_80561B00;
         n = 0x13;
         do {
-            float len, rad, c, s;
+            float len, rad, c, s, dx, dy;
             obj = (char *)fn_8017960C(i);
             v[0] = *(float *)(obj + 0x60);
             v[1] = *(float *)(obj + 0x68);
@@ -1580,15 +1581,13 @@ void fn_80175B0C(char *arg0) {
                 d[1] *= inv;
             }
             rad = fn_80129DC4(3, k * a, k * b);
+            dx = d[0];
             c = (float)cos(rad);
             s = (float)sin(rad);
             w[0] = *(float *)(obj + 0x60);
-            {
-                float dx = d[0];
-                float dy = d[1];
-                d[0] = dx * c - dy * s;
-                d[1] = dx * s + dy * c;
-            }
+            dy = d[1];
+            d[0] = dx * c - dy * s;
+            d[1] = dx * s + dy * c;
             w[0] = w[0] + d[0];
             w[1] = *(float *)(obj + 0x68) + d[1];
             if (fn_80171EF8(v, w) != 0)
@@ -1596,11 +1595,11 @@ void fn_80175B0C(char *arg0) {
             f26 = shrink * f26;
             a -= step;
             b += step;
-            if (!(f26 > min26)) f26 = min26;
+            if (f26 > min26) {} else f26 = min26;
             f25 = shrink * f25;
-            if (!(f25 > min25)) f25 = min25;
+            if (f25 > min25) {} else f25 = min25;
             f24 = shrink24 * f24;
-            if (!(f24 > min24)) f24 = min24;
+            if (f24 > min24) {} else f24 = min24;
         } while (n-- > 0);
         *(float *)(out + 0x18) = w[0];
         *(float *)(out + 0x1C) = w[1];
