@@ -38,6 +38,21 @@ extern int lbl_8055F554;
 extern int lbl_8055F54C;
 extern signed char lbl_8055F558;
 extern float lbl_80563E78;
+extern float lbl_80563F44;
+extern unsigned char lbl_8055F564;
+extern float lbl_8055F568;
+extern unsigned char lbl_8055F559;
+extern unsigned char lbl_8055F55A;
+extern const char lbl_8055C59C[];
+extern const char lbl_80346D90[];
+extern const char lbl_80346DC8[];
+extern char lbl_8049EDC8[];
+extern int fn_801B526C(void);
+extern void fn_80136414(void *, void *, int);
+extern int fn_801363A0(void *, void *);
+extern void fn_802E30C8(const char *, ...);
+extern int fn_80272C74(void *, void *, float *, int);
+extern int fn_802710A0(void *, int);
 void fn_80270AE8(void *arg0) {
     float value = lbl_80563E78;
     ((float *)arg0)[0] = value;
@@ -483,16 +498,19 @@ float fn_80272428(void *arg0, void *arg1, float a, float b, float radius) {
     float distA;
     float distB;
     float mid;
+    register float argA = argA;
+    register float argB = argB;
+    register float argR = argR;
 
-    if (a > b) {
-        float span = b - (a - period);
-        if (span * span < lbl_8055F560) return a;
+    if (argA > argB) {
+        float span = argB - (argA - period);
+        if (span * span < lbl_8055F560) return argA;
     } else {
-        float span = b - a;
-        if (span * span < lbl_8055F560) return a;
+        float span = argB - argA;
+        if (span * span < lbl_8055F560) return argA;
     }
 
-    fn_80136468((void **)&resultA, arg0, a);
+    fn_80136468((void **)&resultA, arg0, argA);
     node = resultA.node;
     fraction = resultA.fraction;
     next = *(void **)((u8 *)node + 0x14);
@@ -506,10 +524,10 @@ float fn_80272428(void *arg0, void *arg1, float a, float b, float radius) {
     deltaA.x = dx;
     squareY = dy * dy;
     deltaA.y = dy;
-    distA = (float)__fabsf(radius - (squareX + squareY));
-    if (distA < lbl_8055F560) return a;
+    distA = (float)__fabsf(argR - (squareX + squareY));
+    if (distA < lbl_8055F560) return argA;
 
-    fn_80136468((void **)&resultB, arg0, b);
+    fn_80136468((void **)&resultB, arg0, argB);
     node = resultB.node;
     fraction = resultB.fraction;
     next = *(void **)((u8 *)node + 0x14);
@@ -523,17 +541,17 @@ float fn_80272428(void *arg0, void *arg1, float a, float b, float radius) {
     deltaB.x = dx;
     squareY = dy * dy;
     deltaB.y = dy;
-    distB = (float)__fabsf(radius - (squareX + squareY));
-    if (distB < lbl_8055F560) return b;
+    distB = (float)__fabsf(argR - (squareX + squareY));
+    if (distB < lbl_8055F560) return argB;
 
-    if (a > b) {
-        mid = (b + (a - period)) * lbl_80563F40;
+    if (argA > argB) {
+        mid = (argB + (argA - period)) * lbl_80563F40;
         if (mid < lbl_80563F48) mid += period;
     } else {
-        mid = (a + b) * lbl_80563F40;
+        mid = (argA + argB) * lbl_80563F40;
     }
-    if (distA < distB) return fn_80272428(arg0, arg1, a, mid, radius);
-    return fn_80272428(arg0, arg1, mid, b, radius);
+    if (distA < distB) return fn_80272428(arg0, arg1, argA, mid, argR);
+    return fn_80272428(arg0, arg1, mid, argB, argR);
 }
 #pragma ppc_psq_save reset
 #pragma ppc_psq_save reset
