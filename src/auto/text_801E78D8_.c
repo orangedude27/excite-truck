@@ -65,7 +65,7 @@ extern float lbl_80562E00, lbl_80562E04, lbl_80562E08;
 extern unsigned char lbl_8055AF24;
 extern void fn_80206464();
 extern void fn_8020646C(long, long);
-extern void fn_801E7984(void);
+extern void fn_801E7984();
 extern char lbl_8055EB11;
 extern long lbl_80487CF0[];
 extern unsigned char lbl_80487DE0[];
@@ -151,7 +151,7 @@ extern "C" void fn_801E7C28(void *arg0) {
     extern float lbl_80562DAC;
     extern float lbl_80562DB0;
     extern float *lbl_8055EB04;
-    extern volatile char lbl_8055EB10;
+    extern char lbl_8055EB10;
     extern char lbl_8055EB12;
     extern char lbl_8055EB20;
     extern void *lbl_8055EB30;
@@ -204,8 +204,7 @@ extern "C" void fn_801E7C28(void *arg0) {
     fn_802C7A00();
     fn_801FC900();
     fn_802877D0();
-    if ((unsigned char)lbl_8055EB11 != 0)
-        return;
+    if ((unsigned char)lbl_8055EB11 == 0) {
         fn_8000D7F4(arg0);
         fn_80136768();
         fn_8001255C(strings + 0xB0, lbl_80562DB0);
@@ -220,6 +219,7 @@ extern "C" void fn_801E7C28(void *arg0) {
         fn_8020449C();
         fn_802E3D00();
         fn_8000D878();
+    }
 }
 #pragma pop
 #pragma scheduling on
