@@ -429,11 +429,10 @@ extern int doTransactionCallback(int, void *);
 int DVDLowOpenPartition(unsigned int offset, const void *ticket, unsigned int certsSize,
                         const void *certs, void *tmd,
                         void *callback) {
-    register const char *msg = lbl_80302848;
-    register DVDLowContext *ctx;
-    register unsigned int slot;
-    register unsigned int one = 1;
+    unsigned int one = 1;
     unsigned char *base = lbl_8037B820;
+    const char *msg = lbl_80302848;
+    DVDLowContext *ctx;
     IPCIOVector *ioVec;
     int result;
 
@@ -453,7 +452,6 @@ int DVDLowOpenPartition(unsigned int offset, const void *ticket, unsigned int ce
     }
 
     lbl_8055D8E0 = one;
-    slot = lbl_8055D8E8;
     ctx = newContext(callback, one, msg);
 
     nextCommandBuf();
