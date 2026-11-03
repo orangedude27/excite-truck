@@ -82,12 +82,74 @@ void fn_801BD790(void) {
     lbl_8055E790 = 0;
 }
 
+extern void *memset(void *, int, unsigned long);
+extern double cos(double);
+extern double sin(double);
+extern void fn_801E9DC4(void *);
+extern void fn_801BDA70(void);
+extern void fn_801BDA74();
+extern int lbl_8055E78C, lbl_8055E794, lbl_8055E798, lbl_8055E79C, lbl_8055E7A4;
+extern float lbl_80562838, lbl_8056283C, lbl_8056284C, lbl_80562850, lbl_80562854;
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+void fn_801BD808(void) {
+    int idx = lbl_8055E78C;
+    float *o30;
+    float *o29;
+    void *o28;
+    void *o27;
+    float q[7][4];
+    float m[4][4];
+    float buf[0x50];
+    float z, s, c;
+    o30 = (float *)(lbl_8055E794 + idx * 0xB0);
+    lbl_8055E78C = idx + 1;
+    o29 = (float *)(lbl_8055E798 + idx * 0x1F0);
+    o28 = (void *)(lbl_8055E79C + idx * 0x190);
+    o27 = (void *)(lbl_8055E7A4 + idx * 0x14);
+    memset(o30, 0, 0xB0);
+    memset(o29, 0, 0x1F0);
+    memset(o28, 0, 0x190);
+    memset(o27, 0, 0x14);
+    fn_801E9DC4(o27);
+    z = lbl_80562838;
+    o30[0] = z; o30[1] = lbl_8056284C; o30[2] = z; o30[3] = m[3][3];
+    o30[0x14] = z; o30[0x15] = z; o30[0x16] = z; o30[0x17] = m[2][3];
+    o30[0x18] = z; o30[0x19] = z; o30[0x1a] = lbl_80562850; o30[0x1b] = m[1][3];
+    o30[0x28] = z; o30[0x29] = z; o30[0x2a] = z;
+    m[3][0] = z; m[3][1] = lbl_8056284C; m[3][2] = z;
+    m[2][0] = z; m[2][1] = z; m[2][2] = z;
+    m[1][0] = z; m[1][1] = z; m[1][2] = lbl_80562850;
+    m[0][0] = z; m[0][1] = z; m[0][2] = z;
+    o30[0x2b] = m[0][3];
+    c = (float)cos(lbl_80562854 * z);
+    s = (float)sin(lbl_80562854 * z);
+    o30[0x10] = lbl_80562838; o30[0x11] = lbl_80562838; o30[0x12] = s; o30[0x13] = c;
+    o30[4] = lbl_8056283C; o30[5] = lbl_80562838; o30[6] = lbl_80562838; o30[7] = q[5][3];
+    o30[8] = lbl_80562838; o30[9] = lbl_8056283C; o30[10] = lbl_80562838; o30[11] = q[4][3];
+    o30[12] = lbl_80562838; o30[13] = lbl_80562838; o30[14] = lbl_8056283C; o30[15] = q[3][3];
+    o29[0x64] = lbl_80562838; o29[0x65] = lbl_80562838; o29[0x66] = lbl_80562838; o29[0x67] = lbl_80562838;
+    o29[0x68] = lbl_80562838; o29[0x69] = lbl_80562838; o29[0x6a] = lbl_80562838; o29[0x6b] = lbl_80562838;
+    o29[0xc] = lbl_80562838; o29[0xd] = lbl_80562838; o29[0xe] = lbl_80562838;
+    q[6][0] = lbl_80562838; q[6][1] = lbl_80562838; q[6][2] = s; q[6][3] = c;
+    q[5][0] = lbl_8056283C; q[5][1] = lbl_80562838; q[5][2] = lbl_80562838;
+    q[4][0] = lbl_80562838; q[4][1] = lbl_8056283C; q[4][2] = lbl_80562838;
+    q[3][0] = lbl_80562838; q[3][1] = lbl_80562838; q[3][2] = lbl_8056283C;
+    q[2][0] = lbl_80562838; q[2][1] = lbl_80562838; q[2][2] = lbl_80562838; q[2][3] = lbl_80562838;
+    q[1][0] = lbl_80562838; q[1][1] = lbl_80562838; q[1][2] = lbl_80562838; q[1][3] = lbl_80562838;
+    q[0][0] = lbl_80562838; q[0][1] = lbl_80562838; q[0][2] = lbl_80562838; q[0][3] = lbl_80562838;
+    o29[0xf] = lbl_80562838;
+    ((void (*)(void *, float, float, float, float, float))fn_801BDA70)(buf, q[4][3], q[5][3], lbl_8056283C, lbl_80562838, s);
+    ((void (*)(int, void *))fn_801BDA74)(idx, buf);
+}
+#pragma pop
 void fn_801BDA70(void) {
     fn_80279D40();
 }
 
 extern float lbl_80562838, lbl_8056283C, lbl_80562854;
-extern float fn_8002F234(float);
+extern double fn_8002F234(float);
 void fn_801BE168(int index, float *v, float *a, float *b, float w) {
     extern int lbl_8055E794;
     float out[4], t = v[0] + v[4] + v[8], q;
@@ -142,32 +204,37 @@ extern float lbl_80562838, lbl_8056283C, lbl_805628A8, lbl_805628AC, lbl_805628B
 extern float PSVECDotProduct(const void *, const void *);
 extern void PSVECNormalize(const void *, void *);
 void fn_801BEB44(int i, int j, float *target, float *velocity) {
-    unsigned char *p = (unsigned char *)lbl_8055E798 + i * 0x1F0 + j * 16;
-    float diff[3], n[3], a[3], b[3], tmp[3], lerp[3];
+    unsigned char *base = (unsigned char *)lbl_8055E798 + i * 0x1F0;
+    int off = j * 16;
+    unsigned char *p = base + off;
+    Vec801BD a, b, n, diff, tmp, lerp;
+    Vec801BD *tg = (Vec801BD *)target;
+    Vec801BD *vel = (Vec801BD *)velocity;
     float d0, d1, t;
-    a[0] = *(float *)(p + 0x40); a[1] = *(float *)(p + 0x44); a[2] = *(float *)(p + 0x48);
-    b[0] = *(float *)(p + 0x150); b[1] = *(float *)(p + 0x154); b[2] = *(float *)(p + 0x158);
-    diff[0] = a[0] - b[0]; diff[1] = a[1] - b[1]; diff[2] = a[2] - b[2];
-    n[0] = *(float *)(p + 0x110); n[1] = *(float *)(p + 0x114); n[2] = *(float *)(p + 0x118);
-    d0 = PSVECDotProduct(diff, n);
-    tmp[0] = a[0] - target[0]; tmp[1] = a[1] - target[1]; tmp[2] = a[2] - target[2];
-    d1 = PSVECDotProduct(tmp, velocity) - d0;
+    Vec801BD_Copy(&a, (Vec801BD *)(p + 0x40));
+    Vec801BD_Copy(&b, (Vec801BD *)(p + 0x150));
+    diff.x = a.x - b.x; diff.y = a.y - b.y; diff.z = a.z - b.z;
+    Vec801BD_Copy(&n, (Vec801BD *)(p + 0x110));
+    d0 = PSVECDotProduct(&diff, &n);
+    tmp.x = a.x - tg->x; tmp.y = a.y - tg->y; tmp.z = a.z - tg->z;
+    d1 = PSVECDotProduct(&tmp, vel) - d0;
     if (d1 > lbl_805628A8) return;
-    if (PSVECDotProduct(velocity, n) < lbl_805628AC) return;
+    if (PSVECDotProduct(vel, &n) < lbl_805628AC) return;
     t = lbl_805628B0 * (lbl_805628A8 + d1);
     t = (lbl_8056283C < t) ? lbl_8056283C : t;
     t = (t > lbl_80562838) ? t : lbl_80562838;
-    lerp[0] = velocity[0] + t * (n[0] - velocity[0]);
-    lerp[1] = velocity[1] + t * (n[1] - velocity[1]);
-    lerp[2] = velocity[2] + t * (n[2] - velocity[2]);
-    n[0] = lerp[0]; n[1] = lerp[1]; n[2] = lerp[2];
-    PSVECNormalize(n, n);
-    b[0] = target[0] + t * (b[0] - target[0]);
-    b[1] = target[1] + t * (b[1] - target[1]);
-    b[2] = target[2] + t * (b[2] - target[2]);
-    *(float *)(p + 0x150) = b[0]; *(float *)(p + 0x154) = b[1]; *(float *)(p + 0x158) = b[2];
+    lerp.x = vel->x + t * (n.x - vel->x);
+    lerp.y = vel->y + t * (n.y - vel->y);
+    lerp.z = vel->z + t * (n.z - vel->z);
+    Vec801BD_Copy(&n, &lerp);
+    PSVECNormalize(&n, &n);
+    lerp.x = tg->x + t * (b.x - tg->x);
+    lerp.y = tg->y + t * (b.y - tg->y);
+    lerp.z = tg->z + t * (b.z - tg->z);
+    p = base + off;
+    Vec801BD_Copy((Vec801BD *)(p + 0x150), &lerp);
     *(float *)(p + 0x15C) = *(float *)(p + 0x24);
-    *(float *)(p + 0x110) = n[0]; *(float *)(p + 0x114) = n[1]; *(float *)(p + 0x118) = n[2];
+    Vec801BD_Copy((Vec801BD *)(p + 0x110), &n);
     *(float *)(p + 0x11C) = *(float *)(p + 0x14);
 }
 
