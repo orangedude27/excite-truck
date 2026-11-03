@@ -53,19 +53,47 @@ unsigned int fn_8020437C(void) {
     shifted = ((int)value.u) >> 1;
     return (unsigned int)(shifted - masked) >> 31;
 }
-#pragma dont_inline reset
+#pragma push
+#pragma scheduling invalid_target
+#pragma dont_inline on
 void fn_802043B0(int *arg0) {
- float val = lbl_80563168;
- float temp = ((float)fn_80204354() - lbl_8056316C) / lbl_80563170;
- int packed;
- if (val < temp) val = temp;
- if (val > lbl_80563174) val = lbl_80563174;
- packed = *arg0 & 0xFFFFFF;
- *arg0 = packed;
- *arg0 = packed | ((int)(lbl_80563178 + val * lbl_8056317C) << 24);
+    int elapsed;
+    volatile int *out = arg0;
+    int original;
+    int packed;
+    int final_value;
+    float temp;
+    float value;
+    float coefficient;
+    float product;
+    float offset;
+    float result;
+    elapsed = fn_80204354();
+    temp = ((float)elapsed - lbl_8056316C) / lbl_80563170;
+    value = lbl_80563168;
+    if (value < temp) {
+        value = temp;
+    } else {
+        value = value;
+    }
+    if (value > lbl_80563174) {
+        value = lbl_80563174;
+    } else {
+        value = value;
+    }
+    coefficient = lbl_8056317C;
+    original = *out;
+    product = value * coefficient;
+    offset = lbl_80563178;
+    packed = original & 0xFFFFFF;
+    *out = packed;
+    result = offset + product;
+    final_value = (int)result;
+    packed |= final_value << 24;
+    *out = packed;
 }
-
 #pragma dont_inline reset
+#pragma pop
 void fn_80204460(void) {
     lbl_8055ED3C = 0;
     lbl_8055ED40 = 0;
@@ -137,65 +165,110 @@ int fn_802044E8(void) {
  return result;
 }
 
+extern int __cntlzw(unsigned int);
 int fn_80204870(int arg0) {
-    int index, type;
-    char *entry;
-    float *value;
-    float f;
-    if (fn_8020437C() == 0) return 0;
-    switch (arg0) {
-    case 0x126:
-        index = lbl_8055ED40 - 1;
-        lbl_8055ED40 = index & ~(index >> 31);
-        break;
-    case 0x128:
-        index = lbl_8055ED40 + 1;
-        if (index > lbl_8055ED3C - 1) index = lbl_8055ED3C - 1;
-        lbl_8055ED40 = index;
-        break;
-    case 0x125:
-    case 0x127:
-        index = lbl_8055ED40;
-        if (index >= 0 && index < lbl_8055ED3C) {
-            entry = lbl_80488BD0 + index * 0x18;
-            type = *(int *)(entry + 4);
-            if (type == 1) {
-                value = *(float **)(entry + 8);
-                if (arg0 == 0x127) {
-                    f = *value + *(float *)(entry + 0x14);
-                    if (f > *(float *)(entry + 0x10)) f = *(float *)(entry + 0x10);
-                    *value = f;
-                } else {
-                    f = *value - *(float *)(entry + 0x14);
-                    if (f < *(float *)(entry + 0xC)) f = *(float *)(entry + 0xC);
-                    *value = f;
-                }
-            } else if (type == 0) {
-                value = (float *)*(void **)(entry + 8);
-                *(unsigned char *)value = !*(unsigned char *)value;
-            }
+    register int index;
+    register struct Entry80204 *table;
+    register int type;
+    if (fn_8020437C() == 0)
+        goto return_zero;
+    if (arg0 == 0x127)
+        goto edit_record;
+    if (arg0 >= 0x127)
+        goto above_127;
+    if (arg0 == 0x125)
+        goto edit_record;
+    if (arg0 >= 0x125)
+        goto decrement;
+    goto return_zero;
+above_127:
+    if (arg0 >= 0x129)
+        goto return_zero;
+    goto increment;
+decrement:
+    index = lbl_8055ED40 - 1;
+    lbl_8055ED40 = index & ~(index >> 31);
+    goto update;
+increment: {
+    int limit = lbl_8055ED3C - 1;
+    index = lbl_8055ED40 + 1;
+    if (limit >= index)
+        goto increment_store;
+    index = limit;
+increment_store:
+    lbl_8055ED40 = index;
+    goto update;
+}
+edit_record:
+    index = lbl_8055ED40;
+    if (index < 0 || index >= lbl_8055ED3C)
+        goto return_zero;
+    table = (struct Entry80204 *)lbl_80488BD0;
+    type = table[index].unk_0x4;
+    switch (type) {
+    case 1:
+        if ((unsigned int)arg0 == 0x127u) {
+            register float *value = (float *)(unsigned int)table[index].unk_0x8;
+            float step = table[index].unk_0x14;
+            float current = *value;
+            float bound = table[index].unk_0x10;
+            float candidate = current + step;
+            float result;
+            if (bound < candidate)
+                result = bound;
+            else
+                result = candidate;
+            *value = result;
+        } else {
+            register float *value = (float *)(unsigned int)table[index].unk_0x8;
+            float step = table[index].unk_0x14;
+            float current = *value;
+            float bound = table[index].unk_0xc;
+            float candidate = current - step;
+            float result;
+            if (bound > candidate)
+                result = bound;
+            else
+                result = candidate;
+            *value = result;
         }
         break;
-    default:
-        return 0;
+    case 0: {
+        register unsigned char *value = (unsigned char *)(unsigned int)table[index].unk_0x8;
+        *value = (unsigned char)((unsigned int)__cntlzw((unsigned int)*value) >> 5);
+        break;
     }
+    default:
+        goto return_zero;
+    }
+update:
     fn_80204330();
     return 1;
+return_zero:
+    return 0;
 }
 
+#pragma push
+#pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_802049DC(int a, int b, float c, float d, float e) {
-    int i = lbl_8055ED3C;
-    if (i < 0x40) {
-        int *entry = (int *)lbl_80488BD0 + i * 6;
-        entry[0] = a;
-        entry[1] = 1;
-        entry[2] = b;
-        ((float *)entry)[3] = c;
-        ((float *)entry)[4] = d;
-        *(volatile int *)&lbl_8055ED3C = i + 1;
-        ((float *)entry)[5] = e;
+    int i;
+    char *entry;
+    i = lbl_8055ED3C;
+    if (i >= 0x40) {
+        return;
     }
+    i = i;
+    entry = lbl_80488BD0 + (i * 0x18);
+    *((int *)(entry + 0)) = a;
+    *((int *)(entry + 4)) = 1;
+    *((int *)(entry + 8)) = b;
+    *((float *)(entry + 0xC)) = c;
+    *((float *)(entry + 0x10)) = d;
+    lbl_8055ED3C = i + 1;
+    *((float *)(entry + 0x14)) = e;
 }
+#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
