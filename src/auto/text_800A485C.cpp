@@ -215,6 +215,7 @@ extern "C" s32 fn_800A8D08(s32, void **, s32 *, s32, s32 *);
 extern "C" s32 fn_800B5260(void *, void *, u32, u32, s32);
 extern "C" s32 fn_800ACA5C(void *, void *, u32);
 extern "C" s32 fn_800AFBA8(void *, u16, u32 *, void *);
+extern "C" s32 fn_800B5618(void *, void *, u32, u16, s32);
 extern "C" s32 fn_800B05C8(void *, s32, u32 *, void *);
 extern "C" s32 fn_800B00E8(void *, s32, u32 *, void *);
 class Fn800C6610Dispatch { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7(); virtual void d8(); virtual void d9(); virtual void d10(void *); };
@@ -8589,6 +8590,7 @@ extern "C" s32 VFiPFCODE_CP932_Unicode2OEM(s32 arg0, u32 *arg1) {
     u16 raw = *(u16 *)arg0;
     u8 lo = raw;
     u8 hi = raw >> 8;
+    s32 w;
 
     if (lo < 0x80 && hi == 0) {
         out[0] = lo;
@@ -8597,10 +8599,10 @@ extern "C" s32 VFiPFCODE_CP932_Unicode2OEM(s32 arg0, u32 *arg1) {
     }
     code = (hi << 8) + lo;
     if (code >= 0xff61 && code <= 0xff9f) {
-        s32 v = code - 0x10000;
-        v += 0x140;
+        w = code - 0x10000;
+        w += 0x140;
         out[1] = 0;
-        out[0] = v;
+        out[0] = w;
         return fn_800A4BE8(1, 2);
     }
     if (code == 0x5f) {
