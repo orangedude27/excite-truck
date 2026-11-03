@@ -42,6 +42,42 @@ void fn_8020CF68(void) {
     fn_802104D0();
 }
 
+#pragma push
+#pragma scheduling invalid_target
+void fn_8020CF6C(int arg0) {
+    float value;
+
+    if (arg0 == 1)
+        goto case_one;
+    if (arg0 < 1) {
+        if (arg0 >= 0)
+            goto case_zero;
+        return;
+    }
+    if (arg0 == 4)
+        goto case_four;
+    return;
+
+case_one:
+    value = lbl_80563318 + lbl_8055EE8C;
+    if (value < lbl_8056331C)
+        value = lbl_8056331C;
+    lbl_8055EE8C = value;
+    fn_8020C908(value);
+    return;
+
+case_zero:
+    value = lbl_80563318 + lbl_8055EE90;
+    if (value < lbl_8056331C)
+        value = lbl_8056331C;
+    lbl_8055EE90 = value;
+    return;
+
+case_four:
+    fn_8000C6E4();
+    return;
+}
+#pragma pop
 extern float lbl_80563318;
 extern void fn_8020A5F8(float);
 extern void fn_8020C908(float);
@@ -57,22 +93,34 @@ extern char lbl_8033C690[], lbl_8033C6A0[];
 extern void fn_8000C6E4(void);
 void fn_8020CFEC(int arg0) {
     float value;
-    if (arg0 == 1) {
-        value = lbl_8055EE8C - lbl_80563318;
-        if (value > lbl_80563320)
-            value = lbl_80563320;
+    if (arg0 == 1)
+        goto case_one;
+    if (arg0 >= 1)
+        goto check_four;
+    if (arg0 >= 0)
+        goto case_zero;
+    return;
+check_four:
+    if (arg0 == 4)
+        goto call_four;
+    return;
+case_one:
+    value = lbl_8055EE8C - lbl_80563318;
+    if (value > lbl_80563320)
+        lbl_8055EE8C = lbl_80563320;
+    else
         lbl_8055EE8C = value;
-        fn_8020C908(value);
-    } else if (arg0 >= 0) {
-        if (arg0 == 0) {
-            value = lbl_8055EE90 - lbl_80563318;
-            if (value > lbl_80563320)
-                value = lbl_80563320;
-            lbl_8055EE90 = value;
-        } else if (arg0 == 4) {
-            fn_8000C730();
-        }
-    }
+    fn_8020C908(lbl_8055EE8C);
+    return;
+case_zero:
+    value = lbl_8055EE90 - lbl_80563318;
+    if (value > lbl_80563320)
+        lbl_8055EE90 = lbl_80563320;
+    else
+        lbl_8055EE90 = value;
+    return;
+call_four:
+    fn_8000C730();
 }
 
 void fn_8020D06C(void) {
@@ -139,12 +187,14 @@ void fn_8020D224(void) {
     fn_80230E90(1);
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_8020D29C(void) {
-    fn_80209190((lbl_8055EE94 = 0, lbl_8055EE74), lbl_8056331C);
+    lbl_8055EE94 = 0;
+    fn_80209190(lbl_8055EE74, lbl_8056331C);
     fn_80206454();
     fn_801769EC();
 }
+#pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_8020DABC(void) {
     fn_8020C908(lbl_8055EE8C);
