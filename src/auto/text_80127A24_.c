@@ -6,7 +6,10 @@ extern int lbl_8055DF54;
 extern int lbl_8055DF58;
 extern int lbl_8055DF5C;
 extern int lbl_8055DF60;
-extern unsigned char lbl_8041DF58[];
+struct Struct80127 {
+    int words[5];
+};
+extern struct Struct80127 lbl_8041DF58[];
 extern int fn_80127AA0(void);
 extern int fn_80127464(int);
 extern int fn_80127AB8(void *);
@@ -31,20 +34,25 @@ int fn_80127AA0(void) {
     return lbl_8055DF50 == lbl_8055DF54;
 }
 
+#pragma push
+#pragma dont_inline on
 int fn_80127AB8(void *arg0) {
     int index;
-    unsigned char *src;
-    if (fn_80127AA0() == 0) {
-        index = lbl_8055DF50;
-        src = lbl_8041DF58 + index * 20;
-        *(int *)((unsigned char *)arg0 + 0) = *(int *)(src + 0);
-        *(int *)((unsigned char *)arg0 + 4) = *(int *)(src + 4);
-        *(int *)((unsigned char *)arg0 + 8) = *(int *)(src + 8);
-        *(int *)((unsigned char *)arg0 + 12) = *(int *)(src + 12);
-        *(int *)((unsigned char *)arg0 + 16) = *(int *)(src + 16);
-        lbl_8055DF50 = (index + 1) % 16;
-        return 1;
-    }
+    volatile int (*table)[5];
+    int (*row)[5];
+    int *dst = (int *)arg0;
+    if (fn_80127AA0() != 0) goto fail;
+    index = lbl_8055DF50;
+    table = (volatile int (*)[5])lbl_8041DF58;
+    row = (int (*)[5])table + index;
+    dst[0] = table[index][0];
+    dst[1] = row[0][1];
+    dst[2] = row[0][2];
+    dst[3] = row[0][3];
+    dst[4] = row[0][4];
+    lbl_8055DF50 = (lbl_8055DF50 + 1) % 16;
+    return 1;
+fail:
     return 0;
 }
-
+#pragma pop
