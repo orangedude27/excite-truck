@@ -2540,8 +2540,6 @@ void fn_801C6AD0(s32 *arg0) {
     }
 }
 
-#pragma push
-#pragma scheduling off
 void fn_801C6D94(void) {
     s32 r30, r31, r12, r11, r10, r9, r8, r7, r6, r5, r4, r0;
     s32 *src;
@@ -2577,7 +2575,6 @@ void fn_801C6D94(void) {
     
     fn_801C957C(1, r4, r5, r6, r7, r8, r9, r10);
 }
-#pragma pop
 void fn_801C7254(void *arg0) {
     f32 *p = (f32 *)arg0;
     f32 t;
