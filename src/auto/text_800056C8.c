@@ -1184,6 +1184,7 @@ s32 fn_800074C4(void) {
     return result;
 }
 
+extern s32 fn_800213DC(void);
 s32 fn_800074EC(s32 arg0) {
     s32 result;
     if (fn_800213DC() != 0) {
