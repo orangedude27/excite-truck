@@ -365,18 +365,14 @@ void fn_801E12A4(void) {
         *(s32 *)(obj + slot * 4 + 0x6C) = fn_801E866C();
         fn_802C8BD0(*(void **)(obj + 4));
         entry = (s32 *)(obj + slot * 0x18);
-        i = 0;
-        do {
+        for (i = 0; i < fn_801E137C(obj + 0x7C); i++) {
             fn_801E1384(fn_801E1510((s32 *)(obj + 0x7C), i), *(s32 *)(entry + 8));
-            i++;
-        } while (i < fn_801E137C(obj + 0x7C));
+        }
         fn_802C8D74();
         fn_802C8BD0(*(void **)(obj + 8));
-        i = 0;
-        do {
+        for (i = 0; i < fn_801E137C(obj + 0x7C); i++) {
             fn_801E1384(fn_801E1510((s32 *)(obj + 0x7C), i), *(s32 *)(entry + 7));
-            i++;
-        } while (i < fn_801E137C(obj + 0x7C));
+        }
         fn_802C8D74();
     }
 }
