@@ -69,4 +69,3 @@ void fn_801DF3BC(void) {
 
     __register_global_object(base + 0x108, (void *)&fn_801DF678, base + 0xFC);
 }
-#pragma scheduling on
