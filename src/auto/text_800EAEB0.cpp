@@ -194,23 +194,21 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_800EAF54(
 
 extern "C" void RegisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(
     void* this_, void* pCallback) {
-    void* node;
-    void* pThis;
-    void* pCb;
     u32 level;
+    void* node;
+    void* iter;
 
-    pThis = this_;
-    pCb = pCallback;
-    node = (void*)((u8*)pThis + 4);
     level = OSDisableInterrupts();
+    node = (void*)((u8*)this_ + 4);
 
-    if (pCb == NULL) {
+    if (pCallback == NULL) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322B74, 0x233,
                                      (const char*)lbl_80322B50);
     }
 
+    iter = node;
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(
-        pThis, &node, pCb);
+        this_, &iter, pCallback);
 
     OSRestoreInterrupts(level);
 }
