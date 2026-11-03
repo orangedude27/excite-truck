@@ -365,7 +365,124 @@ void fn_802671CC(void *arg0, int arg1) {
     }
     (void)arg1;
 }
-#pragma ppc_psq_save reset
+
+extern int fn_8026A554(int *);
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+void fn_80267420(void) {
+    extern void *__AXFXGetLfoSinTable_801769CC(void);
+    extern float lbl_80563C54;
+    extern int lbl_8055F494;
+    extern void *lbl_8055F490;
+    extern char lbl_803467D0[], lbl_803467DC[];
+    extern void fn_80276B8C(void), fn_80278214(void), fn_80273354(void), fn_8027045C(void);
+    extern void fn_80267680(void), fn_80268D94(void), fn_80268E00(void);
+    extern int fn_802090D4(void *);
+    extern void *fn_80207848(void *, int);
+    extern void fn_801EEFDC(void *, int);
+    extern void *memset(void *, int, unsigned long);
+    struct M33 { float m[9]; };
+    struct V3 { float v[3]; };
+    char *p;
+    float angle, one, zero;
+    int i;
+
+    __AXFXGetLfoSinTable_801769CC();
+    zero = lbl_80563C20;
+    one = lbl_80563C2C;
+    p = lbl_80499080;
+    angle = lbl_80563C54;
+    for (i = 0; i < 4; i++, p += 0x228) {
+        memset(p, 0, 0x228);
+        *(int *)(p + 0x0) = i;
+        *(float *)(p + 0x8) = zero;
+        *(float *)(p + 0xC) = zero;
+        *(int *)(p + 0x24) = 0;
+        *(int *)(p + 0x20) = 0;
+        *(int *)(p + 0x14) = 10;
+        *(int *)(p + 0x10) = 10;
+        *(float *)(p + 0x28) = zero;
+        *(float *)(p + 0x2C) = one;
+        *(float *)(p + 0x30) = zero;
+        *(float *)(p + 0x34) = zero;
+        *(float *)(p + 0x38) = zero;
+        *(float *)(p + 0x3C) = zero;
+        *(char *)(p + 0x138) = 1;
+        *(float *)(p + 0x58) = one;
+        *(float *)(p + 0x5C) = zero;
+        *(float *)(p + 0x60) = zero;
+        *(float *)(p + 0x64) = zero;
+        *(float *)(p + 0x68) = one;
+        *(float *)(p + 0x6C) = zero;
+        *(float *)(p + 0x70) = zero;
+        *(float *)(p + 0x74) = zero;
+        *(float *)(p + 0x78) = one;
+        *(float *)(p + 0x7C) = zero;
+        *(float *)(p + 0x80) = zero;
+        *(float *)(p + 0x84) = zero;
+        *(struct M33 *)(p + 0x88) = *(struct M33 *)(p + 0x58);
+        *(struct V3 *)(p + 0xAC) = *(struct V3 *)(p + 0x7C);
+        *(float *)(p + 0x120) = zero;
+        *(float *)(p + 0x124) = zero;
+        *(float *)(p + 0x128) = zero;
+        *(float *)(p + 0x12C) = zero;
+        *(float *)(p + 0x130) = zero;
+        *(float *)(p + 0x134) = zero;
+        *(float *)(p + 0xF0) = one;
+        *(float *)(p + 0xF4) = zero;
+        *(float *)(p + 0xF8) = zero;
+        *(float *)(p + 0xFC) = zero;
+        *(float *)(p + 0x100) = one;
+        *(float *)(p + 0x104) = zero;
+        *(float *)(p + 0x108) = zero;
+        *(float *)(p + 0x10C) = zero;
+        *(float *)(p + 0x110) = one;
+        *(float *)(p + 0x114) = zero;
+        *(float *)(p + 0x118) = zero;
+        *(float *)(p + 0x11C) = zero;
+        *(float *)(p + 0xC0) = one;
+        *(float *)(p + 0xC4) = zero;
+        *(float *)(p + 0xC8) = zero;
+        *(float *)(p + 0xCC) = zero;
+        *(float *)(p + 0xD0) = one;
+        *(float *)(p + 0xD4) = zero;
+        *(float *)(p + 0xD8) = zero;
+        *(float *)(p + 0xDC) = zero;
+        *(float *)(p + 0xE0) = one;
+        *(float *)(p + 0xE4) = zero;
+        *(float *)(p + 0xE8) = zero;
+        *(float *)(p + 0xEC) = zero;
+        *(int *)(p + 0x140) = 0;
+        *(int *)(p + 0x144) = 0;
+        *(int *)(p + 0x4) = 10;
+        *(int *)(p + 0x1C) = 10;
+        *(float *)(p + 0x1A4) = one;
+        *(float *)(p + 0x1A8) = zero;
+        *(float *)(p + 0x1AC) = zero;
+        *(float *)(p + 0x1B0) = zero;
+        *(float *)(p + 0x1B4) = one;
+        *(float *)(p + 0x1B8) = zero;
+        *(float *)(p + 0x1BC) = zero;
+        *(float *)(p + 0x1C0) = zero;
+        *(float *)(p + 0x1C4) = one;
+        *(float *)(p + 0x1C8) = zero;
+        *(float *)(p + 0x1CC) = zero;
+        *(float *)(p + 0x1D0) = zero;
+        *(float *)(p + 0x1D4) = angle;
+    }
+    fn_80276B8C();
+    fn_80268D94();
+    fn_80268E00();
+    fn_80278214();
+    fn_80273354();
+    fn_8027045C();
+    lbl_8055F494 = fn_802090D4(lbl_803467D0);
+    lbl_8055F490 = fn_80207848(lbl_803467DC, 0);
+    fn_801EEFDC((void *)fn_8026A554, 0xD);
+    fn_80267680();
+}
+#pragma pop
 
 #pragma scheduling invalid_target
 #pragma push
