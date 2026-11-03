@@ -70,26 +70,6 @@ extern "C" void fn_8002F634(void*, void*, s32, s32);
 extern "C" s32 ExecuteSingle__Q46nw4hbm3snd6detail11TaskManagerFv(void*);
 extern "C" u32 OSDisableInterrupts(void);
 extern "C" void OSRestoreInterrupts(u32 level);
-struct TaskListIterator { void *node; };
-static inline u8 *TaskManagerPopFront(u8 *self, s32 off) {
-    u32 level = OSDisableInterrupts();
-    u8 *task;
-    if (*(s32 *)(self + off) == 0) {
-        OSRestoreInterrupts(level);
-        task = 0;
-    } else {
-        TaskListIterator it;
-        if (*(s32 *)(self + off) == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326F98, 0x1F1, (const char *)lbl_80326F74);
-        task = *(u8 **)(self + off + 4);
-        if (!task) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326F38, 0x23D, (const char *)lbl_80326F14);
-        task -= 4;
-        if (!task) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326F68, 0x193, (const char *)lbl_80326F44);
-        it.node = *(void **)(self + off + 4);
-        ((void (*)(void *, TaskListIterator))Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator)(self + off, it);
-        OSRestoreInterrupts(level);
-    }
-    return task;
-}
 extern "C" void Stop__Q36nw4hbm3snd10WavePlayerFv(void *);
 extern "C" void Free__Q46nw4hbm3snd6detail7AxVoiceFv(void *);
 extern "C" void Stop__Q46nw4hbm3snd6detail7AxVoiceFv(void *);
