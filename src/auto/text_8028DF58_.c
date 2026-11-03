@@ -10,6 +10,7 @@ extern int fn_8028FA1C(int);
 extern char lbl_80348FD0[];
 extern int fn_8002F768(void *, int, int);
 // split_file divides it into the game's real files (file_status shows its range).
+typedef struct { float v[7]; unsigned char c[3]; float f0; float f1; } EfEntry;
 
 extern char lbl_803490D4[];
 extern int fn_80128668(void *);
@@ -492,69 +493,147 @@ int fn_8028F0C0(int *arg0, int arg1, int arg2) {
 }
 #pragma pop
 
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_8028F114(int *arg0, int arg1, int arg2) {
     void *tmp[64];
-    int n1=0,n2=0,n3=0;
-    int i,j,k;
-    memset(tmp,0,0x100);
+    register int n2 = 0;
+    register int n3 = 0;
+    register int n1 = 0;
+
+    memset(tmp, 0, 0x100);
     if (arg1 != -2) {
-        int *p=arg0;
-        for (i=0;i<*(int*)((char*)arg0+0x100);i++,p++) {
-            void *v=*(void**)p;
-            if (*(int*)((char*)v+0xa4)==arg1) tmp[n1++]=v;
+        int *src = arg0;
+        void **dst = tmp;
+        int i = 0;
+        goto first_test;
+    first_loop:
+        {
+            void *item = *(void **)src;
+            if (*(int *)((char *)item + 0xA4) == arg1) {
+                *dst++ = item;
+                n1++;
+            }
         }
+        src++;
+        i++;
+    first_test:
+        if (i < *(int *)((char *)arg0 + 0x100))
+            goto first_loop;
     }
+
     if (arg2 != -2) {
-        int *p=arg0;
-        for (i=0;i<*(int*)((char*)arg0+0x100);i++,p++) {
-            void *v=*(void**)p;
-            if (*(int*)((char*)v+0xa4)==arg2) tmp[*(int*)((char*)arg0+0x100)-n2-1]=v,n2++;
+        int *src = arg0;
+        int i = 0;
+        goto second_test;
+    second_loop:
+        {
+            void *item = *(void **)src;
+            if (*(int *)((char *)item + 0xA4) == arg2) {
+                tmp[*(int *)((char *)arg0 + 0x100) - n2 - 1] = item;
+                n2++;
+            }
         }
+        src++;
+        i++;
+    second_test:
+        if (i < *(int *)((char *)arg0 + 0x100))
+            goto second_loop;
     }
+
     {
-        int *p=arg0;
-        for (i=0;i<*(int*)((char*)arg0+0x100);i++,p++) {
-            void *v=*(void**)p;
-            int id=*(int*)((char*)v+0xa4),found=0;
-            if (id!=arg1 && id!=arg2) {
-                for (j=0;j<n3;j++) if (*(int*)((char*)tmp[n1+j]+0xa4)==id) { found=1; break; }
-                if (!found) {
-                    tmp[n1+n3++]=v;
-                    for (k=i+1;k<*(int*)((char*)arg0+0x100);k++) {
-                        void *q=*(void**)((char*)arg0+k*4);
-                        if (*(int*)((char*)q+0xa4)==id) tmp[n1+n3++]=q;
+        int *src = arg0;
+        int i = 0;
+        goto outer_test;
+    outer_loop:
+        {
+            void *item = *(void **)src;
+            int id = *(int *)((char *)item + 0xA4);
+            if (id != arg1 && id != arg2) {
+                int *search = (int *)(tmp + n1);
+                int j = 0;
+                int equal = 0;
+            search_loop:
+                {
+                    void *q = *(void **)search;
+                    search++;
+                    j++;
+                    equal = (*(int *)((char *)q + 0xA4) == id);
+                }
+                if (equal != 0)
+                    goto search_done;
+                if (j < n3)
+                    goto search_loop;
+            search_done:
+                if (equal == 0) {
+                    tmp[n1 + n3] = item;
+                    n3++;
+                    {
+                        int k = i + 1;
+                        void **dst = tmp + n1 + n3;
+                        int *siblings = arg0 + k;
+                        goto sibling_test;
+                    sibling_loop:
+                        if (*(int *)((char *)*(void **)siblings + 0xA4) == id) {
+                            *dst++ = *(void **)siblings;
+                            n3++;
+                        }
+                        siblings++;
+                        k++;
+                    sibling_test:
+                        if (k < *(int *)((char *)arg0 + 0x100))
+                            goto sibling_loop;
                     }
                 }
             }
         }
+        src++;
+        i++;
+    outer_test:
+        if (i < *(int *)((char *)arg0 + 0x100))
+            goto outer_loop;
     }
-    memcpy(arg0,tmp,*(int*)((char*)arg0+0x100)*4);
+    memcpy(arg0, tmp, *(int *)((char *)arg0 + 0x100) * 4);
 }
-
+#pragma scheduling on
+#pragma use_lmw_stmw on
 void fn_8028F2EC(int *arg0) {
-    int workspace[8][65];
-    int finalValue;
-    int descriptor[65];
-    int i, last, index, size;
+    int records[9][65];
+    char *p;
+    char *end;
+    int last;
+    int index;
+    int i;
+    int size;
     int result;
-    int *block = descriptor;
-    int *nextBlock;
-    for (i = 0; i < 8; i++) workspace[i][64] = 0;
-    finalValue = 0;
-    fn_8028EFC4((int)descriptor, arg0);
+    int *block;
+
+    records[0][64] = 0;
+    p = (char *)&records[1][0];
+    end = (char *)&records[9][0];
+    while (p < end) {
+        *(volatile int *)(p + 0x100) = 0;
+        p += 0x104;
+    }
+
+    fn_8028EFC4((int)records, arg0);
+    block = records[0];
     last = -2;
     index = 0;
-    for (i = 0; i < 9; i++) {
-        result = fn_8028F0C0(descriptor, i, last);
+    i = 0;
+    do {
+        result = fn_8028F0C0(records[0], i, last);
         fn_8028F114(block, last, result);
         size = block[64];
         memcpy((char *)arg0 + index * 4, block, size * 4);
+        i++;
         last = result;
-        index += size;
+        index += block[64];
         block = (int *)((char *)block + 0x104);
-    }
+    } while (i < 9);
 }
-
+#pragma scheduling on
+#pragma pop
 extern float fn_80129DC4(int, float, float);
 #pragma push
 #pragma processor 750
@@ -610,8 +689,14 @@ void *__dt__Q34nw4r2ef6EffectFv_8028F5A8(void *arg0, int arg1) {
 extern double fn_8002EFB4(double, double);
 extern float lbl_80564424, lbl_80564430, lbl_80564434, lbl_80564438;
 extern double lbl_80564428;
-void fn_8028F608(float *out0, float *out1, float *matrix, float angle) {
-    float d, x, y, d2, a, b, c, e, g, h;
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+void fn_8028F608(float *out0, float *out1, float (*matrix)[3], float angle) {
+    extern double fn_8002EFB4(double, double);
+    extern double lbl_80564428;
+    extern float lbl_80564424, lbl_80564430, lbl_80564434, lbl_80564438;
+    float d, x, d2, a, b, g, e, c, y, h;
     union { float f; unsigned int u; } bits;
     d = (float)fn_8002EFB4(angle, lbl_80564428) - lbl_80564430;
     bits.f = d;
@@ -629,14 +714,12 @@ void fn_8028F608(float *out0, float *out1, float *matrix, float angle) {
         d2 = -d2;
         y = -(lbl_80564424 - ((lbl_80564434 * d2 / lbl_80564430 - lbl_80564424) * (lbl_80564434 * d2 / lbl_80564430 - lbl_80564424)));
     }
-    a=matrix[0]; b=matrix[3]; c=matrix[1]; e=matrix[4]; g=matrix[2]; h=matrix[5];
+    a=matrix[0][0]; b=matrix[1][0]; c=matrix[0][1]; e=matrix[1][1]; g=matrix[0][2]; h=matrix[1][2];
     out0[0]=y*a+x*b; out0[1]=y*c+x*e; out0[2]=y*g+x*h;
     out1[0]=y*b-x*a; out1[1]=y*e-x*c; out1[2]=y*h-x*g;
 }
-
-#pragma push
-#pragma scheduling invalid_target
 #pragma scheduling on
+#pragma pop
 int fn_8028F7AC(void *arg0, void *arg1, int arg2) {
     int count;
     void *self;
@@ -836,6 +919,10 @@ void fn_8028FC40(void *arg0, int arg1, float *arg2, float farg0) {
 #pragma pop
 extern int fn_8028F534(int);
 extern double lbl_80564440;
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_8028FD00(void *arg0, void *arg1, int arg2) {
     struct Data {
         int f0; int f4; float f8; float fc;
@@ -845,25 +932,145 @@ void fn_8028FD00(void *arg0, void *arg1, int arg2) {
         float f3c; float f40; int f44; float f48; float f4c;
         float f50; float f54; float f58; float f5c; float f60; float f64;
         float f68; float f6c; float f70; float f74; float f78; float f7c; float f80;
-        int f84; unsigned char f88; unsigned char f89; unsigned char pad8a[6];
-        float a0; int pad_a4; int a8; float ac;
-    } *dst = (struct Data *)arg0, *src = (struct Data *)arg1;
-    float temp;
+        int f84; unsigned char f88; unsigned char f89; unsigned char pad8a[0x16];
+        float a0; int pad_a4; volatile int a8; float ac;
+    };
+    volatile struct Data *src = (volatile struct Data *)arg1;
+    struct Data *dst = (struct Data *)arg0;
+    unsigned char f89;
+    unsigned char f88;
+    int f84;
+    float f80;
+    float f7c;
+    float f78;
+    float f74;
+    float f70;
+    float f6c;
+    float f68;
+    float f64;
+    float f60;
+    float f5c;
+    float f58;
+    float f54;
+    float f50;
+    float f4c;
+    float f48;
+    int f44;
+    float f40;
+    float f3c;
+    int f38;
+    float f34;
+    float f30;
+    float f2c;
+    float f28;
+    int f24;
+    int f20;
+    int f1c;
+    int f18;
+    int f14;
+    int f10;
+    float fc;
+    float f8;
+    int f4;
+    int f0;
+    float a0;
 
-    *dst = *src;
-    dst->a0 = lbl_80564424 / src->f8;
-    if (src->f0 == 1) {
-        int result = fn_8028F534(src->f84);
+    f8 = src->f8;
+    dst = (struct Data *)arg0;
+    a0 = lbl_80564424;
+    f0 = src->f0;
+    a0 = a0 / f8;
+    f4 = src->f4;
+    fc = src->fc;
+    f10 = src->f10;
+    f14 = src->f14;
+    f18 = src->f18;
+    f1c = src->f1c;
+    f20 = src->f20;
+    f24 = src->f24;
+    f28 = src->f28;
+    f2c = src->f2c;
+    f30 = src->f30;
+    f34 = src->f34;
+    f38 = src->f38;
+    f3c = src->f3c;
+    f40 = src->f40;
+    f44 = src->f44;
+    f48 = src->f48;
+    f4c = src->f4c;
+    f50 = src->f50;
+    f54 = src->f54;
+    f58 = src->f58;
+    f5c = src->f5c;
+    f60 = src->f60;
+    f64 = src->f64;
+    f68 = src->f68;
+    f6c = src->f6c;
+    f70 = src->f70;
+    f74 = src->f74;
+    f78 = src->f78;
+    f7c = src->f7c;
+    f80 = src->f80;
+    f84 = src->f84;
+    f88 = src->f88;
+    f89 = src->f89;
+    dst->f0 = f0;
+    dst->f4 = f4;
+    dst->f8 = f8;
+    dst->fc = fc;
+    dst->f10 = f10;
+    dst->f14 = f14;
+    dst->f18 = f18;
+    dst->f1c = f1c;
+    dst->f20 = f20;
+    dst->f24 = f24;
+    dst->f28 = f28;
+    dst->f2c = f2c;
+    dst->f30 = f30;
+    dst->f34 = f34;
+    dst->f38 = f38;
+    dst->f3c = f3c;
+    dst->f40 = f40;
+    dst->f44 = f44;
+    dst->f48 = f48;
+    dst->f4c = f4c;
+    dst->f50 = f50;
+    dst->f54 = f54;
+    dst->f58 = f58;
+    dst->f5c = f5c;
+    dst->f60 = f60;
+    dst->f64 = f64;
+    dst->f68 = f68;
+    dst->f6c = f6c;
+    dst->f70 = f70;
+    dst->f74 = f74;
+    dst->f78 = f78;
+    dst->f7c = f7c;
+    dst->f80 = f80;
+    dst->f84 = f84;
+    dst->f88 = f88;
+    dst->f89 = f89;
+    dst->a0 = a0;
+    switch (f0) {
+    case 1: {
+        int result = fn_8028F534(f84);
+        float converted = (float)result;
         dst->a8 = result;
-        dst->ac = lbl_80564424 / (float)result;
+        dst->ac = lbl_80564424 / converted;
+        break;
     }
-    temp = dst->f34;
-    if (temp < lbl_80564424) temp = lbl_80564424;
-    if (temp > lbl_80564420) temp = lbl_80564420;
-    dst->f34 = temp;
+    default:
+        break;
+    }
+    {
+        float temp = dst->f34;
+        if (temp < lbl_80564424) temp = lbl_80564424;
+        if (temp > lbl_80564420) temp = lbl_80564420;
+        dst->f34 = temp;
+    }
     fn_8028F8C4((int)arg0);
 }
-
+#pragma pop
 extern float lbl_80564424, lbl_80564448, lbl_8056444C, lbl_80564450, lbl_80564454, lbl_80564458;
 #pragma push
 #pragma scheduling off
