@@ -574,6 +574,11 @@ extern "C" void fn_800EBB88(void *arg0) {
 
 extern "C" void MEMFreeToFrmHeap(void *, u32);
 extern "C" void MEMDestroyFrmHeap(void *);
+extern "C" void *MEMAllocFromFrmHeapEx(void *, u32, s32);
+#pragma push
+#pragma small_data off
+extern u8 lbl_80322D60[];
+#pragma pop
 extern u8 lbl_80322F38[], lbl_80322F5C[], lbl_80322F68[], lbl_80322F8C[];
 extern u8 lbl_80322F98[], lbl_80322FBC[], lbl_80322FC8[], lbl_80322FEC[];
 extern u8 lbl_80322FF8[], lbl_8032301C[];
