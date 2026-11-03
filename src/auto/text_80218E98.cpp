@@ -5396,6 +5396,15 @@ done:
     }
 }
 
+extern "C" void fn_80224160(void *arg0) {
+    s32 handle;
+    fn_80219354();
+    handle = *(s32 *)((u8 *)arg0 + 0x254);
+    if (handle != 0) {
+        ((void (*)(s32))fn_802ECFEC)(handle);
+    }
+}
+
 extern "C" void fn_802ED038(s32, f32, f32, f32, f32);
 extern "C" void fn_802ECFEC(void);
 extern "C" void *lbl_8033E2CC[];
