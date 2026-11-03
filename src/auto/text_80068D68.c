@@ -3169,10 +3169,9 @@ void uusb_ReadIntrDataCB(s32 length, BT_HDR *buf) {
             GKI_freebuf(buf);
             return;
         }
-        size = (u16)length + buf->offset + 8;
         buf->len = length;
         buf->event = 0x1000;
-        size = (size & ~3) + 4;
+        size = (((u16)buf->len + buf->offset + 8) & ~3) + 4;
         memcpy(copy, buf, size);
         if (lbl_803BD1E0.at_0x28) OSReport(report + 0x114, copy->len, copy->offset, size);
         control = &lbl_803BD1E0;
@@ -7994,6 +7993,57 @@ static tBTM_STATUS btm_set_inq_event_filter(UINT8 filter_cond_type, UINT8 *p_fil
     }
 
     return 3;
+}
+
+void btm_event_filter_complete(UINT8 *p) {
+    u8 *cleanup;
+    u8 *base=lbl_803C0F78;
+    u8 *lap;
+    u8 status;
+    void (*callback)(void *)=*(void (**)(void *))(base+0x16b8);
+    if(base[0x1845]) { base[0x1845]--; return; }
+    if(base[0x1844]!=1) return;
+    if(*p) {
+        if(base[0x27c0]>=2) fn_80070954(0xd0001,lbl_803164B8,*p);
+        status=10;
+    } else status=0;
+    if(base[0x1847]==0) {
+        base[0x1844]=0;
+        if(callback) callback(&status);
+    } else if(status) {
+        ((void (*)(UINT8))btm_process_inq_complete)(10);
+        base[0x1844]=0; base[0x1848]=0; base[0x1847]=0;
+    } else if(base[0x1847]==1) {
+        status=btm_set_inq_event_filter(base[0x1837],base+0x1838);
+        if(status==1) base[0x1847]=2;
+        else { base[0x1844]=0; ((void (*)(UINT8))btm_process_inq_complete)(10); }
+    } else {
+        u8 old=base[0x1836];
+        base[0x1847]=3;
+        base[0x1844]=0;
+        base[0x1836]=old<=12 ? old : 12;
+        lap=lbl_80560D30;
+        if(base[0x1848]&1) lap=lbl_80560D34;
+        if(base[0x1848]&4) {
+            if(!btsnd_hcic_per_inq_mode(*(u16*)(base+0x1842),*(u16*)(base+0x1840),lap,base[0x1835],base[0x1836]))
+                ((void (*)(UINT8))btm_process_inq_complete)(3);
+        } else {
+            cleanup=lbl_803C0F78;
+            if(*(void**)(cleanup+0x16dc)) {
+                GKI_freebuf(*(void**)(cleanup+0x16dc));
+                *(void**)(cleanup+0x16dc)=NULL;
+            }
+            *(u16*)(cleanup+0x16e0)=0;
+            *(u16*)(cleanup+0x16e2)=0;
+            *(void**)(base+0x16dc)=GKI_getbuf(0x708);
+            if(*(void**)(base+0x16dc)) {
+                *(u16*)(base+0x16e2)=0x96;
+                memset(*(void**)(base+0x16dc),0,0x708);
+            }
+            if(!btsnd_hcic_inquiry(lap,base[0x1835],0))
+                ((void (*)(UINT8))btm_process_inq_complete)(3);
+        }
+    }
 }
 
 void btm_process_inq_complete(UINT8 status, UINT8 unused) {
