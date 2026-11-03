@@ -2,6 +2,7 @@
 #include <macros.h>
 #pragma push
 #pragma dont_inline on
+#pragma scheduling on
 extern "C" s32 fn_800A9BB4(u8 *, u8 *, s32, s32, u32, s32, s32 *, s32);
 extern "C" s32 VFiPFENT_LoadLFNEntryFieldsFromBuf(void *, void *);
 extern "C" s32 fn_800B3A70(void *, void *, s32);
@@ -12,7 +13,8 @@ extern "C" s32 fn_800A9DC0(void *object, void *iterator, s32 arg2, s32 arg3, s32
  u8 flags=it[0x57];
  u8 name[16], buf[13];
  u32 sum,next,word;
- u16 i,a,b;
+ u16 i;
+ u32 a,b;
  s32 len;
  if (((s32 (*)(u8 *,u8 *,s32,s32,u32,s32,s32 *))fn_800A9BB4)((u8 *)object,it+0x4c,arg2,flags,arg3,arg4,arg5)==1) {
   if ((flags&15)==15) {
@@ -4925,6 +4927,71 @@ checkMax:
         goto dispatch;
     VFiPFCACHE_FreeFATPage_800A8E10(object, page);
     return 0xD;
+}
+
+extern "C" s32 fn_800A8C90(void *, s32, void **, s32 *);
+extern "C" s32 fn_800AED1C(void *arg0) {
+    s32 sp8;
+    void *page;
+    s32 r;
+    u32 i;
+    u32 v;
+    s32 type;
+    r = fn_800A8C90(arg0, -1, &page, &sp8);
+    if (r != 0) return r;
+    fn_800A499C((const char *)*(void **)((u8 *)page + 8), 0, *(u16 *)arg0);
+    i = *(u16 *)((u8 *)arg0 + 2);
+    while (i < *(u32 *)((u8 *)arg0 + 0x2C)) {
+        r = VFiPFCACHE_WriteFATSectorAndFreeIfNeeded(arg0, *(s32 *)((u8 *)page + 8), (u16)i);
+        if (r != 0) {
+            VFiPFCACHE_FreeFATPage(arg0, page);
+            return r;
+        }
+        i = (u16)(i + 1);
+    }
+    VFiPFCACHE_FreeFATPage(arg0, page);
+    type = *(s32 *)((u8 *)arg0 + 0x1C);
+    v = *(u8 *)((u8 *)arg0 + 0x1A) | lbl_802EEF40[type * 5 + 3];
+    switch (type) {
+    case 0:
+        if (v > 0xFFF) r = 0x10;
+        else r = fn_800AF734(arg0, 0, (u16)v);
+        break;
+    case 1:
+        if (v > 0xFFFF) r = 0x10;
+        else r = ((s32 (*)(void *, s32))fn_800AFF28)(arg0, 0);
+        break;
+    case 2:
+        if (v > 0xFFFFFFF - 1 + 0) r = 0x10;
+        else r = ((s32 (*)(void *, s32))fn_800B037C)(arg0, 0);
+        break;
+    default:
+        r = 0xF;
+        break;
+    }
+    if (r != 0) return r;
+    type = *(s32 *)((u8 *)arg0 + 0x1C);
+    v = lbl_802EEF40[type * 5 + 4];
+    switch (type) {
+    case 0:
+        if (v > 0xFFF) r = 0x10;
+        else r = fn_800AF734(arg0, 1, (u16)v);
+        break;
+    case 1:
+        if (v > 0xFFFF) r = 0x10;
+        else r = ((s32 (*)(void *, s32))fn_800AFF28)(arg0, 1);
+        break;
+    case 2:
+        if (v > 0xFFFFFFF - 1 + 0) r = 0x10;
+        else r = ((s32 (*)(void *, s32))fn_800B037C)(arg0, 1);
+        break;
+    default:
+        r = 0xF;
+        break;
+    }
+    if (r != 0) return r;
+    r = fn_800A9104(arg0);
+    return r & ((s32)(-r | r) >> 31);
 }
 
 s32 fn_800AEF6C(void *);
