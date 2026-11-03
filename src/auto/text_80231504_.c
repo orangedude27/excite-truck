@@ -28,6 +28,9 @@ extern void *fn_80131810(const char *);
 extern void fn_80131818(void *);
 extern void *fn_8023512C(const char *);
 extern void *fn_802CAC28(const char *, s32);
+extern s32 fn_8002B1D8(const char *, const char *, s32);
+extern f32 fn_80235EF0(s32, s32);
+extern f32 fn_80235F64(s32, s32);
 
 typedef struct {
     const char *seq;
