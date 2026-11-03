@@ -537,9 +537,9 @@ extern void fn_801352B8(void *);
 extern int fn_80135D60(void *, int);
 extern void fn_8013530C(void *, int);
 extern void fn_802C8DBC(int);
-extern void fn_802C8E00(int, int, float, float, float, float, float, float, float, float);
+extern void fn_802C8E00(int, int, float, float, float, float, float);
 extern void fn_802C8E48(void);
-extern float fn_8002F234(float, float, float, float, float);
+extern double fn_8002F234(double);
 extern float lbl_80560418, lbl_80560420, lbl_80560424, lbl_80560440;
 #pragma processor 750
 #pragma use_lmw_stmw off
@@ -590,7 +590,7 @@ int fn_8001B478(float farg0) {
             float z1 = z0 + t * (*(float *)next - z0);
             float w1 = w0 + t * (*(float *)((char *)next + 4) - w0);
             a[0] = x1; a[1] = y1; a[2] = z1; a[3] = w1;
-            norm = fn_8002F234(x1*x1 + y1*y1, 0, 0, 0, 0);
+            norm = (float)fn_8002F234(x1*x1 + y1*y1);
             inv = x / norm;
             dx = y1 * inv;
             dy = -(x1 * inv);
@@ -602,10 +602,10 @@ int fn_8001B478(float farg0) {
             nx = -farg0 * y;
             x0 = z1 + dx * nx;
             y0 = w1 + dy * nx;
-            fn_802C8E00(-1, result, x0, lbl_80560418, y0, lbl_80560418, ratio, z1, dx*nx, nx);
+            fn_802C8E00(-1, result, x0, lbl_80560418, y0, lbl_80560418, ratio);
             nx = farg0 * y;
             fn_802C8E00(-1, result, z1 + dx * nx, lbl_80560418, w1 + dy * nx,
-                        lbl_80560424, ratio, z1, dx*nx, nx);
+                        lbl_80560424, ratio);
             result = 1;
         }
     }
