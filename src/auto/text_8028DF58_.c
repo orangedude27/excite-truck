@@ -11,6 +11,8 @@ extern char lbl_80348FD0[];
 extern int fn_8002F768(void *, int, int);
 // split_file divides it into the game's real files (file_status shows its range).
 typedef struct { float v[7]; unsigned char c[3]; float f0; float f1; } EfEntry;
+typedef struct { float x, y, z; } EfVec;
+typedef struct { EfVec a; EfVec b; float v6; unsigned char c0, c1, c2; float f0; float f1; } EfEntry2;
 
 extern char lbl_803490D4[];
 extern int fn_80128668(void *);
@@ -1070,6 +1072,54 @@ void fn_8028FD00(void *arg0, void *arg1, int arg2) {
     }
     fn_8028F8C4((int)arg0);
 }
+
+extern int fn_80287B5C(int);
+extern int fn_802E30C8(void *, const char *, ...);
+extern char lbl_8055C918[];
+extern char lbl_80349024[];
+extern char lbl_80349078[];
+extern unsigned char lbl_8055F74C;
+void fn_8028FEE4(void *arg0, int arg1, float *arg2, float farg0, float farg1) {
+    EfEntry e;
+    float *a = (float *)arg1;
+    char *o = (char *)arg0;
+    if (lbl_8055F73C == 0 && lbl_8055F74C == 0) {
+        lbl_8055F74C = 1;
+        fn_802E30C8(lbl_8055C918, lbl_80349024);
+    }
+    e.v[0] = a[0];
+    e.v[1] = a[1];
+    e.v[2] = a[2];
+    e.v[3] = arg2[0];
+    e.v[4] = arg2[1];
+    e.v[5] = arg2[2];
+    e.v[6] = lbl_8055F738;
+    e.f1 = farg1;
+    switch (*(int *)o) {
+    case 0:
+        e.c[0] = *(unsigned char *)(o + 0x38) ? fn_80287B5C(4) : 0;
+        break;
+    case 1:
+        e.c[1] = *(unsigned char *)(o + 0x88) ? fn_80287B5C(*(int *)(o + 0x84)) : 0;
+        break;
+    case 2:
+        e.c[2] = *(unsigned char *)(o + 0x38) ? fn_80287B5C(0xff) : 0;
+        e.f0 = farg0;
+        break;
+    default:
+        fn_802E317C(lbl_80349078);
+        break;
+    }
+    if (*(int *)(o + 0x90) < 0) {
+        *(EfEntry *)*(void **)(o + 0x8c) = e;
+        *(int *)(o + 0x90) = 0;
+        *(int *)(o + 0x94) = 1;
+        return;
+    }
+    ((EfEntry *)*(void **)(o + 0x8c))[*(int *)(o + 0x94)] = e;
+    *(int *)(o + 0x94) = (*(int *)(o + 0x94) + 1) % *(int *)(o + 0x98);
+}
+
 #pragma pop
 extern float lbl_80564424, lbl_80564448, lbl_8056444C, lbl_80564450, lbl_80564454, lbl_80564458;
 #pragma push
