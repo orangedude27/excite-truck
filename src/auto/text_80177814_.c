@@ -106,7 +106,6 @@ void fn_80177A18(void) {
         var_r31 += 1;
     } while (var_r31 < 4);
 }
-#pragma dont_inline off
 
 void fn_80177A54(void) {
     if (lbl_8055E3C0 == 2 && fn_801CF064() != 0 && fn_8018FD38() != 0) {
