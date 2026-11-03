@@ -3102,6 +3102,48 @@ void uusb_CloseDeviceCB(s8 arg0) {
         (*(void (**)(s32, s8))(control + 0x20))(4, arg0);
 }
 
+extern char lbl_80558FF8[];
+extern char lbl_80559000[];
+void uusb_ReadBulkDataCB(s32 length, BT_HDR *buf) {
+    uusb_cb_t *control=&lbl_803BD1E0;
+    char *report=lbl_803142C8;
+    BT_HDR *copy;
+    s32 size, i;
+    u8 *p;
+    if(control->state!=2) {
+        if(control->at_0x28) OSReport(report+0x15c);
+        if(lbl_803BD1E0.at_0x28) OSReport(report+0x1a0);
+        GKI_freebuf(buf);
+        GKI_delete_pool(((u8*)&lbl_803BD1E0)[0x1d]);
+        ((u8*)&lbl_803BD1E0)[0x1d]=0xff;
+        return;
+    }
+    if(length<=0) {
+        if(control->at_0x28) OSReport(report+0x200,length);
+        GKI_freebuf(buf);
+    } else {
+        buf->len=length;
+        copy=GKI_getpoolbuf(3);
+        if(copy==0) GKI_freebuf(buf);
+        else {
+            size=((buf->len+buf->offset+8)&~3)+4;
+            memcpy(copy,buf,size);
+            if(control->at_0x28) OSReport(report+0x238,copy->len,copy->offset,size);
+            p=(u8*)(copy+1)+copy->offset;
+            for(i=0;i<copy->len;i++,p++) {
+                if(lbl_803BD1E0.at_0x28) OSReport(lbl_80558FF8,*p);
+            }
+            if(lbl_803BD1E0.at_0x28) OSReport(lbl_80559000);
+            copy=l2cap_link_chk_pkt_start(copy);
+            if(copy && l2cap_link_chk_pkt_end()) {
+                OSSwitchFiberEx((u32)copy,0,0,0,fn_80070844,lbl_803BE240+0x1000);
+            }
+            GKI_freebuf(buf);
+        }
+    }
+    uusb_issue_bulk_read();
+}
+
 extern s32 IUSB_ReadBlkMsgAsync(s32, u32, u32, void *, void (*)(void), void *);
 #pragma push
 #pragma use_lmw_stmw off
@@ -11386,6 +11428,66 @@ void btm_cback(u32 index, void *param) {
 void fn_800833E8(void *arg0) { btm_cback(0, arg0); }
 
 void fn_800833F4(void *arg0) { btm_cback(1, arg0); }
+
+extern char lbl_80317558[];
+extern char lbl_8031759C[];
+void gap_find_addr_name_cb(void *param) {
+    u8 *state = lbl_803C3740;
+    u16 *out = (u16 *)(state + 0x34);
+    u8 *p = (u8 *)param;
+    void *info;
+    u16 val;
+
+    if (state[0x7E] == 0) return;
+    if (*(u16 *)p == 0) {
+        if (state[0x28] >= 4)
+            ((void (*)(u32, void *, u16, void *))fn_8007096C)(0xE0003, lbl_80317558, *(u16 *)p, p + 4);
+        if (strncmp((char *)(out + 4), (char *)(p + 4), strlen((char *)(out + 4))) == 0) {
+            memcpy((u8 *)out + 2, (u8 *)*(void **)(state + 0x30) + 2, 6);
+            *out = 0;
+        } else {
+            info = BTM_InqDbNext(*(void **)(state + 0x30));
+            *(void **)(state + 0x30) = info;
+            if (info != 0) {
+                if ((u8)BTM_ReadRemoteDeviceName((u8 *)info + 2, gap_find_addr_name_cb) == 1)
+                    return;
+                switch (*(u16 *)p & 0xFF) {
+                case 0: val = 0; break;
+                case 1: val = 0x10B; break;
+                case 2: val = 0x103; break;
+                case 4:
+                case 5: val = 0x109; break;
+                case 6: val = 0x10C; break;
+                case 7: val = 0x10D; break;
+                case 8: val = 0x115; break;
+                default: val = 0x114; break;
+                }
+                *out = val;
+            } else {
+                *out = 0x102;
+            }
+        }
+    } else {
+        if (state[0x28] >= 4)
+            ((void (*)(u32, void *))fn_80070954)(0xE0003, lbl_8031759C);
+        switch (*(u16 *)p & 0xFF) {
+        case 0: val = 0; break;
+        case 1: val = 0x10B; break;
+        case 2: val = 0x103; break;
+        case 4:
+        case 5: val = 0x109; break;
+        case 6: val = 0x10C; break;
+        case 7: val = 0x10D; break;
+        case 8: val = 0x115; break;
+        default: val = 0x114; break;
+        }
+        *out = val;
+    }
+    if (*(void (**)(u32, u16 *))(state + 0x2C) != 0)
+        (*(void (**)(u32, u16 *))(state + 0x2C))(5, out);
+    state[0x7E] = 0;
+    *(void **)(state + 0x2C) = 0;
+}
 
 extern char lbl_80317620[];
 extern void gap_find_addr_name_cb(void *);
