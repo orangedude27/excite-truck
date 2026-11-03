@@ -157,6 +157,7 @@ extern void fn_80128658(int);
 extern void fn_80128668(void *);
 extern void fn_8013A598(void *, int);
 extern unsigned char lbl_8042F8C8[];
+#pragma scheduling invalid_target
 void fn_8013C428(void *arg0) {
     int i;
     int count;
@@ -173,7 +174,7 @@ void fn_8013C428(void *arg0) {
                     int n;
                     int tail;
                     unsigned char *dst;
-                    unsigned char *src;
+                    volatile unsigned char *src;
                     if (*(int *)((char *)arg0 + 0x74) != 0) ((void (*)(int))fn_80128658)(*(int *)((char *)arg0 + 0x74));
                     if (arg0 != 0) {
                         fn_8013A598((char *)arg0 + 0x40, -1);
@@ -182,9 +183,9 @@ void fn_8013C428(void *arg0) {
                     n = *(int *)(lbl_8042F8C8 + 0x240) - 1;
                     *(int *)(lbl_8042F8C8 + 0x240) = n;
                     tail = n * 0x48;
-                    dst = lbl_8042F8C8 + offset;
+                    dst = lbl_8042F8C8 + (unsigned int)offset;
                     src = lbl_8042F8C8 + tail;
-                    *(int *)dst = *(int *)src;
+                    *(int *)dst = *(int *)(void *)src;
                     { unsigned char a = src[4]; unsigned char b = src[5]; dst[4] = a; dst[5] = b; }
                     { unsigned char a = src[6]; unsigned char b = src[7]; dst[6] = a; dst[7] = b; }
                     { unsigned char a = src[8]; unsigned char b = src[9]; dst[8] = a; dst[9] = b; }
@@ -217,7 +218,7 @@ void fn_8013C428(void *arg0) {
                     { unsigned char a = src[62]; unsigned char b = src[63]; dst[62] = a; dst[63] = b; }
                     { unsigned char a = src[64]; unsigned char b = src[65]; dst[64] = a; dst[65] = b; }
                     { unsigned char a = src[66]; unsigned char b = src[67]; dst[66] = a; dst[67] = b; }
-                    *(int *)(entry + 0x44) = *(int *)(src + 0x44);
+                    *(int *)(entry + 0x44) = *(int *)(void *)(src + 0x44);
                 }
                 break;
             }
@@ -225,4 +226,4 @@ void fn_8013C428(void *arg0) {
             i++;
     }
 }
-
+#pragma scheduling on
