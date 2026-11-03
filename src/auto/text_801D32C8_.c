@@ -25,6 +25,15 @@ public:
     virtual char getByte(const char *, int);
 };
 
+struct Table80338340 {
+    char max_life[12];
+    char friction[12];
+    char surf_type[12];
+    char ground_test[12];
+    char effect_id[12];
+    char error[20];
+};
+
 struct Fn801D334CData {
     float max_life;
     float mass;
@@ -100,6 +109,55 @@ int fn_801D32E0(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
     fn_801D3FA4(result, arg0, arg1, arg2, arg3, arg4, arg5);
     return result;
 }
+
+#pragma cplusplus on
+#pragma scheduling invalid_target
+extern "C" void fn_801D334C(void *arg0, void *arg1) {
+    const char (*base)[12] = (const char (*)[12])lbl_80338340;
+    Fn801D334CObj *obj = (Fn801D334CObj *)arg1;
+    struct Fn801D334CData *data = (struct Fn801D334CData *)arg0;
+    f32 temp_f2;
+    int mode;
+
+    data->max_life = obj->getFloat(base[0]);
+    data->mass = obj->getFloat((const char *)&lbl_8055AC30);
+    data->mx = obj->getFloat((const char *)&lbl_8055AC38);
+    data->my = obj->getFloat((const char *)&lbl_8055AC3C);
+    data->mz = obj->getFloat((const char *)&lbl_8055AC40);
+    temp_f2 = lbl_80562AA4 * data->mass;
+    data->spring = obj->getFloatDef((const char *)&lbl_8055AC44, lbl_80562AA0 * (temp_f2 / lbl_80562AA8));
+    data->friction = obj->getFloatDef(base[1], lbl_80562AAC);
+    if (obj->hasKey(base[2]) != 0) {
+        data->surf_type = fn_801D04D0(obj->getString(base[2]));
+    } else {
+        data->surf_type = 100;
+    }
+    data->ground_test = obj->getByte(base[3], 1);
+    data->effect_id = obj->getInt(base[4], -1);
+    mode = fn_801D37C4(obj->getString((const char *)&lbl_8055AC4C));
+    data->mode = mode;
+    switch (mode) {
+    case 0:
+        data->f2c = obj->getFloat((const char *)&lbl_8055AC54);
+        break;
+    case 1:
+        data->f2c = obj->getFloat((const char *)&lbl_8055AC54);
+        data->f30 = obj->getFloat((const char *)&lbl_8055AC58);
+        break;
+    case 2:
+        data->f2c = obj->getFloat((const char *)&lbl_8055AC54);
+        data->f30 = obj->getFloat((const char *)&lbl_8055AC5C);
+        break;
+    case 3:
+        data->f2c = obj->getFloat((const char *)&lbl_8055AC58);
+        break;
+    default:
+        fn_802E317C(base[5], mode);
+        break;
+    }
+}
+#pragma scheduling on
+#pragma cplusplus reset
 
 extern void *fn_80131810(int);
 extern void fn_80131818(void *);
