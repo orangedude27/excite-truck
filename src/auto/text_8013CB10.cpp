@@ -37,7 +37,9 @@ extern "C" void **fn_801284F8(s32, void *);
 extern "C" f32 lbl_80561498;
 extern "C" f32 lbl_805614A4;
 extern "C" f32 lbl_805614AC;
+#pragma small_data off
 extern "C" f32 lbl_80558DC4;
+#pragma small_data on
 extern "C" u8 lbl_8055E1BC;
 extern "C" f32 fn_8001DAE8(void *);
 extern "C" f32 fn_8013CB3C(void);
@@ -709,6 +711,107 @@ extern "C" void fn_8013EB0C(void *arg0, s32 arg1) {
     u8 *entry = *(u8 **)((u8 *)arg0 + 0xB8) + arg1 * 0x12C;
     if (*(u8 *)(entry + 0x118))
         *(s32 *)entry = 1;
+}
+
+extern "C" void fn_8013ED74(void *arg0) {
+    struct Entry {
+        u8 *item;
+        f32 dist;
+    };
+    struct List {
+        Entry *data;
+        s32 count;
+        s32 cap;
+    };
+    Entry storage[8];
+    List list;
+    f32 dist;
+    u8 *self = (u8 *)arg0;
+    s32 i;
+    f32 *pos;
+    s32 a, b;
+    u8 *item;
+
+    list.data = storage;
+    list.cap = 8;
+    list.count = 0;
+    {
+        s32 idx = fn_801E866C(-1);
+        u8 *obj = *(u8 **)(self + 0xB8) + idx * 0x12C;
+        item = *(u8 **)(obj + 0x104);
+        if (*(u8 *)(obj + 0x118) != 0 && item != 0) {
+            f32 spread;
+            b = 0;
+            a = 0;
+            pos = fn_802C86DC();
+            spread = lbl_80561498;
+            i = 0;
+            do {
+                s32 ok = 1;
+                u8 flag = item[0x1E];
+                if (flag != 0 && a < 5) {
+                    a++;
+                } else if (flag == 0 && b < 2) {
+                    b++;
+                } else {
+                    ok = 0;
+                }
+                if (ok != 0 && fn_8013CFF0((f32 *)item, pos, &dist) != 0) {
+                    s32 v;
+                    u8 *p;
+                    if (list.count + 1 > list.cap) break;
+                    p = item;
+                    v = 0;
+                    do {
+                        fn_801E9E30(item + 0x1C, (f32 *)p);
+                        *(f32 *)(p + 4) += spread;
+                        v++;
+                        p += 0xC;
+                    } while ((u32)v < 2);
+                    {
+                        s32 n = list.count;
+                        Entry *e;
+                        list.count = n + 1;
+                        e = &list.data[n];
+                        e->item = item;
+                        e->dist = (f32)fn_8002F234(dist);
+                    }
+                }
+                {
+                    u8 *group = *(u8 **)(*(u8 **)(self + 0x64) + 4) + *(s32 *)(self + 0x68) * 0x14;
+                    u8 *array = *(u8 **)(group + 4);
+                    u8 *last = array + *(s32 *)group * 0x24 - 0x24;
+                    if (item != last) array = item + 0x24;
+                    item = array;
+                }
+                i++;
+            } while (i < 10);
+        }
+    }
+    if (list.count > 0) {
+        f32 v = fn_801E7E24();
+        if (!((f32)__fabs((f64)v) <= lbl_80558DC4)) {
+            s32 k;
+            s32 off;
+            k = 0;
+            off = 0;
+            for (; k < list.count; off += 8, k++) {
+                u8 *it = *(u8 **)((u8 *)list.data + off);
+                if (it[0x1E] == 0) {
+                    u32 w = 0;
+                    do {
+                        fn_802981F8(it);
+                        w++;
+                        it += 0xC;
+                    } while (w < 2);
+                }
+            }
+        }
+        ((void (*)(void *, void *))fn_80140D1C)(arg0, &list);
+    }
+    list.data = 0;
+    list.count = 0;
+    list.cap = 0;
 }
 
 extern "C" f32 lbl_80561510;
