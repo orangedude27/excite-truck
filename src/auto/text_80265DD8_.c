@@ -301,34 +301,192 @@ void fn_80267130(void *arg0) {
 extern float lbl_8055D020;
 extern double lbl_80563C38;
 extern float fn_801EA0E8(unsigned int, float, float, float);
+#pragma ppc_psq_save off
 void fn_802671CC(void *arg0, int arg1) {
+    union IntDouble {
+        double value;
+        unsigned int word[2];
+    } width, height;
+    float output[3];
     float corner[3];
+    float *matrix = (float *)arg0;
     float z = *(float *)((char *)arg0 + 0x48);
-    float dx = z * *(float *)((char *)arg0 + 0x34);
-    float xstep = dx / lbl_8055D020;
+    float delta = z * *(float *)((char *)arg0 + 0x34);
+    float xstep = delta / lbl_8055D020;
+    float widthValue;
+    float heightValue;
     float ystep;
     float best = lbl_80563C20;
+    double bias = lbl_80563C38;
     int i;
-    unsigned int hi = 0x43300000;
-    double d;
-    *((unsigned int *)&d + 1) = (unsigned int)(*(int *)((char *)arg0 + 0x44) ^ 0x80000000);
-    *((unsigned int *)&d) = hi;
-    ystep = (float)((d - lbl_80563C38) * dx / lbl_8055D020);
+
+    width.word[0] = 0x43300000;
+    width.word[1] = *(unsigned int *)((char *)arg0 + 0x44) ^ 0x80000000;
+    height.word[0] = 0x43300000;
+    height.word[1] = *(unsigned int *)((char *)arg0 + 0x40) ^ 0x80000000;
+    widthValue = (float)(width.value - bias);
+    heightValue = (float)(height.value - bias);
+    ystep = widthValue * delta / heightValue;
+
     for (i = 0; i < 4; i++) {
-        float x = (i & 1) ? xstep : -xstep;
-        float y = (i & 2) ? ystep : -ystep;
-        float *m = (float *)arg0;
-        corner[0] = x*m[0] + y*m[3] + z*m[6] + m[9];
-        corner[1] = x*m[1] + y*m[4] + z*m[7] + m[10];
-        corner[2] = x*m[2] + y*m[5] + z*m[8] + m[11];
-        fn_801EA0E8(0x43300000, corner[0], corner[1], corner[2]);
-        if (best > corner[1]) best = corner[1];
+        float x;
+        float y;
+        float *out = output;
+        float *in = corner;
+        float heightDiff;
+
+        if ((i & 1) != 0) x = xstep;
+        else x = -xstep;
+        if ((i & 2) != 0) y = ystep;
+        else y = -ystep;
+
+        if (out == in) {
+            corner[0] = x * matrix[0] + y * matrix[3] + z * matrix[6];
+            corner[1] = x * matrix[1] + y * matrix[4] + z * matrix[7];
+            corner[2] = x * matrix[2] + y * matrix[5] + z * matrix[8];
+        } else {
+            in[0] = x;
+            in[1] = y;
+            in[2] = z;
+            out[0] = in[0] * matrix[0] + in[1] * matrix[3] + in[2] * matrix[6];
+            out[1] = in[0] * matrix[1] + in[1] * matrix[4] + in[2] * matrix[7];
+            out[2] = in[0] * matrix[2] + in[1] * matrix[5] + in[2] * matrix[8];
+        }
+        output[0] += matrix[9];
+        output[1] += matrix[10];
+        output[2] += matrix[11];
+        heightDiff = fn_801EA0E8(0x43300000, output[0], output[1], output[2]) - output[1];
+        if (best > heightDiff) best = heightDiff;
     }
-    if (*(int *)((char *)arg0 + 0x58) != 0x11 && *(int *)((char *)arg0 + 0x58) != 0x15)
+
+    if (*(int *)((char *)arg0 + 0x58) != 0x11 &&
+        *(int *)((char *)arg0 + 0x58) != 0x15) {
         *(float *)((char *)arg0 + 0x28) += best;
+    }
     (void)arg1;
 }
+#pragma ppc_psq_save reset
 
+#pragma scheduling invalid_target
+#pragma push
+#pragma optimize_for_size on
+#pragma use_lmw_stmw on
+void fn_80267680(void) {
+    extern float lbl_80563C54, lbl_80563C58, lbl_80563C5C, lbl_80563C60, lbl_80563C64;
+    extern int lbl_8055F494;
+    extern float lbl_8055F48C;
+    extern void fn_802733C8(void);
+    extern int fn_80276BE4(int, int);
+    extern void fn_801E9DC4(int *);
+    extern void fn_80209190(int, float);
+    extern void fn_80268B94(int);
+    extern void fn_80270484(void);
+    struct StackData {
+        float matrix[12];
+        union { double d; unsigned int word[2]; } value;
+    };
+    char *p;
+    volatile struct StackData temp;
+    unsigned int high;
+    int oneInt, minusOne, zeroInt, i;
+    float bottom, limit;
+    double conversionConstant;
+    float start, angle, one, zero;
+    fn_802733C8();
+    zero = lbl_80563C20;
+    one = lbl_80563C2C;
+    p = lbl_80499080;
+    angle = lbl_80563C54;
+    i = 0;
+    start = lbl_80563C58;
+    conversionConstant = lbl_80563C38;
+    zeroInt = 0;
+    limit = lbl_80563C5C;
+    minusOne = -1;
+    bottom = lbl_80563C60;
+    oneInt = 1;
+    high = 0x43300000;
+    do {
+        *(float *)(p + 8) = zero;
+        *(float *)(p + 0xC) = zero;
+        *(int *)(p + 0x144) = zeroInt;
+        *(int *)(p + 0xB8) = minusOne;
+        *(unsigned char *)(p + 0x138) = (unsigned char)oneInt;
+        *(unsigned char *)(p + 0x139) = (unsigned char)oneInt;
+        *(float *)(p + 0x13C) = zero;
+        *(float *)(p + 0x40) = zero;
+        *(float *)(p + 0x44) = zero;
+        *(float *)(p + 0x48) = zero;
+        *(float *)(p + 0x28) = zero;
+        *(float *)(p + 0x2C) = one;
+        *(float *)(p + 0x30) = zero;
+        *(int *)(p + 0x148) = zeroInt;
+        *(float *)(p + 0x194) = angle;
+        fn_80265E08(p + 0x160);
+        fn_80266150(p + 0x178);
+        temp.value.word[0] = high;
+        temp.value.word[1] = ((unsigned int)i) ^ 0x80000000;
+        *(float *)(p + 0x158) = start;
+        *(float *)(p + 0x15C) = temp.value.d - conversionConstant;
+        *(float *)(p + 0x198) = zero;
+        *(float *)(p + 0x19C) = zero;
+        *(int *)(p + 0x14C) = minusOne;
+        *(int *)(p + 0x150) = minusOne;
+        if (fn_801796B4() == 0) {
+            temp.matrix[0] = one;
+            temp.matrix[1] = zero;
+            temp.matrix[2] = zero;
+            temp.matrix[3] = zero;
+            temp.matrix[4] = one;
+            temp.matrix[5] = zero;
+            temp.matrix[6] = zero;
+            temp.matrix[7] = zero;
+            temp.matrix[8] = one;
+            temp.matrix[9] = zero;
+            temp.matrix[10] = zero;
+            temp.matrix[11] = zero;
+            fn_80276BE4((int)(p + 0x1A4), (int)(p + 0x1D4));
+        }
+        fn_801E9DC4((int *)(p + 0x1EC));
+        *(float *)(p + 0x1F8) = one;
+        ++i;
+        *(float *)(p + 0x1FC) = zero;
+        *(float *)(p + 0x200) = zero;
+        *(float *)(p + 0x204) = zero;
+        *(float *)(p + 0x208) = one;
+        *(float *)(p + 0x20C) = zero;
+        *(float *)(p + 0x210) = zero;
+        *(float *)(p + 0x214) = zero;
+        *(float *)(p + 0x218) = one;
+        *(float *)(p + 0x21C) = zero;
+        *(float *)(p + 0x220) = zero;
+        *(float *)(p + 0x224) = zero;
+        *(float *)(p + 0x1F4) = limit;
+        *(float *)(p + 0x1F0) = bottom;
+        p += 0x228;
+    } while (i < 4);
+    lbl_8055F488 = 0;
+    lbl_8055F48C = lbl_80563C64;
+    fn_80209190(lbl_8055F494, lbl_80563C2C);
+    fn_80265E2C();
+    fn_80268B94(0);
+    fn_80270484();
+    zero = lbl_80563C20;
+    {
+        float *out = lbl_80499980;
+        *out++ = zero;
+        *out++ = zero;
+        *out++ = zero;
+        *out++ = zero;
+        *out++ = zero;
+        *out++ = zero;
+        *out++ = zero;
+        *out++ = zero;
+    }
+}
+#pragma scheduling on
+#pragma use_lmw_stmw reset
+#pragma pop
 extern void *lbl_8055F490;
 extern int lbl_8055F494;
 extern void *fn_80267EE4(int);
@@ -442,8 +600,8 @@ void fn_80268BD4(void *out, int arg1, float t, float angle) {
     float z;
     float w;
     float scale;
-    float xx;
-    float yy;
+    float xScaled;
+    float yScaled;
     float rotation;
     float cosine;
     float sine;
@@ -461,15 +619,18 @@ void fn_80268BD4(void *out, int arg1, float t, float angle) {
         (float)((double (*)(void *, float, float, float, float, float, float, float, float))fn_8002F234)(
             out, x * x + y * y, x * x, t * (b[1] - inp[1]),
             z, inp[0], inp[1], y, x);
-    xx = sp[0] * scale;
-    yy = sp[1] * scale;
+    xScaled = sp[0] * scale;
+    yScaled = sp[1] * scale;
+    sp[0] = yScaled;
+    sp[1] = -xScaled;
 
     *(float *)((char *)out + 0x28) = lbl_80563C20;
     rotation = lbl_80563C8C * inp[10] - lbl_80563C90;
-    *(float *)((char *)out + 0x24) = sp[2] + yy * rotation;
-    *(float *)((char *)out + 0x2C) = sp[3] + (-xx * rotation);
-    fn_801EA140((char *)out + 0x24, sp[3], sp[2] + yy * rotation,
-                yy * rotation, rotation, -xx * rotation, yy, xx);
+    *(float *)((char *)out + 0x24) = sp[2] + yScaled * rotation;
+    *(float *)((char *)out + 0x2C) = sp[3] + sp[1] * rotation;
+    fn_801EA140((char *)out + 0x24, sp[3],
+                sp[2] + yScaled * rotation, yScaled * rotation,
+                rotation, sp[1], yScaled, xScaled);
     *(float *)((char *)out + 0x28) += lbl_80563C94;
 
     cosine = (float)cos(angle);
@@ -477,9 +638,9 @@ void fn_80268BD4(void *out, int arg1, float t, float angle) {
     *(float *)((char *)out + 0xC) = lbl_80563C20;
     *(float *)((char *)out + 0x10) = lbl_80563C2C;
     *(float *)((char *)out + 0x14) = lbl_80563C20;
-    *(float *)((char *)out + 0x18) = xx * cosine - yy * sine;
+    *(float *)((char *)out + 0x18) = yScaled * cosine - sp[1] * sine;
     *(float *)((char *)out + 0x1C) = lbl_80563C20;
-    *(float *)((char *)out + 0x20) = xx * sine + yy * cosine;
+    *(float *)((char *)out + 0x20) = yScaled * sine + sp[1] * cosine;
     PSVECCrossProduct((char *)out + 0xC, (char *)out + 0x18, out);
 }
 #pragma pop
