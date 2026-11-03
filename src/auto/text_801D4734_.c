@@ -111,28 +111,57 @@ void fn_801D4908(void) {
 
 extern void fn_8000FF88(int, int, void *, char *, float, float, float);
 extern char lbl_80442310[];
-extern char lbl_8055AD58[], lbl_8055AD5C[];
+extern char lbl_8055AD58[3], lbl_8055AD5C[3];
 extern float lbl_8055E3C8, lbl_80562AD8, lbl_80562ADC, lbl_80562AE0, lbl_80562AE4, lbl_80562AE8, lbl_80562AEC, lbl_80562AF0, lbl_80562AF4, lbl_80562AF8, lbl_80562AFC;
 extern char *strchr(char *, int);
 void fn_801D490C(void) {
- float x, width, right, alpha, t, edge, y, dy; int color,n; char text[0x40], *src,*dst,*part,*caret;
- x=*(float *)lbl_80442310; width=*(float *)(lbl_80442310+4); right=x+width; alpha=lbl_80562AE0; y=lbl_80562AD8; dy=lbl_80562AFC; src=lbl_80442310+8; dst=text; n=0x40;
- if(lbl_8055E3C8>=right)return;
- if(width>lbl_80562AE4) {
-  t=lbl_8055E3C8-x;
-  if(t<lbl_80562AE8) {
-   t=t/((lbl_80562AE8+x)-x); if(alpha<t)alpha=t; if(alpha>lbl_80562ADC)alpha=lbl_80562ADC; alpha=lbl_80562ADC+alpha*lbl_80562AE0;
-  } else {
-   edge=right-lbl_80562AE8;
-   if(lbl_8055E3C8>edge) { t=(lbl_8055E3C8-edge)/(right-edge); if(alpha<t)alpha=t; if(alpha>lbl_80562ADC)alpha=lbl_80562ADC; alpha=lbl_80562AE0+alpha*lbl_80562AEC; }
-  }
- }
- color=((int)(lbl_80562AF0*alpha)<<24)|0x00ffffff;
- fn_8000FF88(color,0xC,lbl_8055AD5C,lbl_80442310+0x48,lbl_80562AF4,lbl_80562ADC,lbl_80562AF8);
- while(n>0) { char c=*src++; *dst++=c; if((signed char)c==0)break; n--; }
- if(n<=0)dst[-1]=0;
- part=text;
- do { caret=strchr(part,0x5e); if(caret)*caret=0; fn_8000FF88(color,0xC,lbl_8055AD58,part,lbl_80562AE0,lbl_80562ADC,y); if(caret)part=caret+1;else part=0; y-=dy; } while(part&&(signed char)*part);
+    float alpha, right, width, x, t, edge, dy, y;
+    int color, n;
+    char text[0x40], *src, *dst, *part, *caret;
+    x = *(float *)lbl_80442310;
+    width = *(float *)(lbl_80442310 + 4);
+    right = x + width;
+    if (lbl_8055E3C8 < right) {
+        alpha = lbl_80562AE0;
+        if (width > lbl_80562AE4) {
+            t = lbl_8055E3C8 - x;
+            if (t < lbl_80562AE8) {
+                t = t / ((lbl_80562AE8 + x) - x);
+                alpha = alpha < t ? t : alpha;
+                alpha = alpha > lbl_80562ADC ? lbl_80562ADC : alpha;
+                alpha = lbl_80562ADC + alpha * lbl_80562AE0;
+            } else {
+                edge = right - lbl_80562AE8;
+                if (lbl_8055E3C8 > edge) {
+                    t = (lbl_8055E3C8 - edge) / (right - edge);
+                    alpha = alpha >= t ? alpha : t;
+                    alpha = alpha <= lbl_80562ADC ? alpha : lbl_80562ADC;
+                    alpha = lbl_80562AE0 + alpha * lbl_80562AEC;
+                }
+            }
+        }
+        color = (((unsigned int)(int)(lbl_80562AF0 * alpha) << 24) | 0x00ffffff) & 0xffffff00;
+        fn_8000FF88(color, 0xC, lbl_8055AD5C, lbl_80442310 + 0x48, lbl_80562AF4, lbl_80562ADC, lbl_80562AF8);
+        src = lbl_80442310 + 8; dst = text; n = 0x40;
+        goto copy;
+    limit:
+        if (--n > 0) goto copy;
+        dst[-1] = 0;
+        goto done;
+    copy:
+        { char c = *src++; *dst++ = c; if ((signed char)c) goto limit; }
+    done:
+        y = lbl_80562AD8;
+        dy = lbl_80562AFC;
+        part = text;
+        while (part && (signed char)*part) {
+            caret = strchr(part, 0x5e);
+            if (caret) *caret = 0;
+            fn_8000FF88(color, 0xC, lbl_8055AD58, part, lbl_80562AE0, lbl_80562ADC, y);
+            if (caret) part = caret + 1; else part = 0;
+            y -= dy;
+        }
+    }
 }
 
 #pragma dont_inline on
