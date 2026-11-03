@@ -153,8 +153,9 @@ s32 fn_801C3954(s32 arg0) {
     char *token;
     char *p;
     s32 result;
-    p = strcpy(buf, (char *)arg0);
-    token = p + 0;
+    strcpy(buf, (char *)arg0);
+    token = buf;
+    p = token;
     result = 0;
     do {
         s32 found = 0;
