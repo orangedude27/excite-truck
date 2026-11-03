@@ -382,32 +382,53 @@ int fn_802B12E0(void *arg0, void *arg1, void *arg2, int arg3) {
 
 #pragma scheduling invalid_target
 void fn_802B13F8(void *arg0, int arg1, void *arg2, int arg3, float farg0) {
-    int *self = (int *)arg0;
-    int *obj;
-    int flag;
+    typedef struct Node_802B {
+        void *data;
+        volatile int size;
+        int capacity;
+        struct Node_802B *next;
+    } Node_802B;
+
+    typedef struct Entry_802B {
+        int id;
+        float time;
+    } Entry_802B;
+
+    typedef struct Self_802B {
+        char pad[0x324];
+        Entry_802B *entries;
+        volatile int used;
+        int capacity;
+    } Self_802B;
+
+    Self_802B *self = (Self_802B *)arg0;
+    Node_802B **nodePtr;
+    Node_802B *node;
     int sp8;
-    int h;
-    volatile int *count = (volatile int *)((char *)self + 0x328);
+    int flag;
+    unsigned short h;
+    Entry_802B *entry;
+    float f;
+
     if (self == 0) return;
-    flag = 0;
-    sp8 = ((int *)arg2)[0];
-    obj = *(int **)((char *)self + 0xa38);
+
+    sp8 = *(int *)arg2;
+    nodePtr = *(Node_802B ***)((char *)self + 0xa38);
     h = *(unsigned short *)((char *)arg2 + 4);
-    obj = *(int **)obj;
-    obj[1] = obj[1] - (0x18 - h);
-    *(int *)((char *)self + 0xa38) = flag;
-    if (arg3 == 4 && farg0 < lbl_80564BD0)
-        flag = 1;
-    if (flag != 0) {
-        if (*count + 1 <= self[0x32c / 4]) {
-            int i = *count;
-            float f = lbl_80564BD0 - farg0;
-            int *dst = (int *)((char *)self[0x324 / 4] + i * 8);
-            *count = i + 1;
-            ((float *)dst)[1] = f;
-            dst[0] = sp8;
+    node = *nodePtr;
+    node->size -= 0x18 - h;
+    *(void **)((char *)self + 0xa38) = 0;
+
+    flag = (arg3 == 4 && farg0 < lbl_80564BD0);
+    if (flag) {
+        if (self->used + 1 <= self->capacity) {
+            f = lbl_80564BD0 - farg0;
+            entry = &self->entries[self->used++];
+            entry->time = f;
+            entry->id = sp8;
         }
     }
+
     fn_802BAFF8(arg1, &sp8);
 }
 #pragma scheduling on
