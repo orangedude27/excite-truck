@@ -297,6 +297,7 @@ extern float lbl_805636B4;
 extern void *fn_8022EDC4(void);
 extern void fn_802C8DB8(void *, int, unsigned short *, int);
 extern void fn_802C8D74(void);
+extern void fn_802C8B98(int, int);
 #pragma paired off
 #pragma paired_single off
 void fn_802353F4(int arg0, int arg1, float arg2, float arg3, float arg4) {
