@@ -284,6 +284,15 @@ void fn_80235380(void *arg0) {
     }
 }
 
+typedef struct Vtx_80235CBC { double a; int b, c; float d, e; } Vtx_80235CBC;
+typedef struct Idx_80235CBC { unsigned short i[6]; } Idx_80235CBC;
+extern Vtx_80235CBC fn_80230A68(int, float, float, float, float, float);
+extern int fn_80230B9C(int);
+extern void fn_802C8C04(int);
+extern unsigned short lbl_802FA008[6];
+extern Idx_80235CBC lbl_802FA020;
+__declspec(section ".data") extern float lbl_80558DC4;
+extern void *fn_8022EDC4(void);
 extern void fn_802C8DB8(void *, int, unsigned short *, int);
 extern void fn_802C8D74(void);
 #pragma paired off
@@ -301,15 +310,6 @@ void fn_802353F4(int arg0, int arg1, float arg2, float arg3, float arg4) {
                 *(float *)((char *)node + 0x10));
 }
 
-typedef struct Vtx_80235CBC { double a; int b, c; float d, e; } Vtx_80235CBC;
-typedef struct Idx_80235CBC { unsigned short i[6]; } Idx_80235CBC;
-extern Vtx_80235CBC fn_80230A68(int, float, float, float, float, float);
-extern int fn_80230B9C(int);
-extern void fn_802C8C04(int);
-extern unsigned short lbl_802FA008[6];
-extern Idx_80235CBC lbl_802FA020;
-__declspec(section ".data") extern float lbl_80558DC4;
-extern void *fn_8022EDC4(void);
 extern double cos(float);
 extern double sin(float);
 extern void fn_80231380(void *, int, float, float, float, float, float);
