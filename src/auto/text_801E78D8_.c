@@ -1,4 +1,4 @@
-extern char lbl_80339BA0[], lbl_8055AF14[], lbl_8055AF18[];
+extern char lbl_80339BA0[], lbl_8055AF14[4], lbl_8055AF18[4];
 extern unsigned long lbl_80487CE0[];
 extern char lbl_8055EB08, lbl_8055EB10, lbl_8055EB12, lbl_8055EB20;
 extern float *lbl_8055EB04;
@@ -108,6 +108,52 @@ void fn_801E78D8(long arg0) {
 
 #pragma dont_inline on
 void fn_801E797C(void) { fn_80206464(0); }
+
+void fn_801E7984(long arg0) {
+    /* Initialize the scene and its subsystems in the original call order. */
+    long sp8;
+    long start;
+    long *p;
+    char *base = (char *)lbl_80487CE0;
+    char *strings = lbl_80339BA0;
+    fn_801E78D8(arg0);
+    start = fn_802E2C20();
+    fn_8012E81C(strings);
+    memcpy(base + 0x100, (void *)arg0, 0x3f8);
+    lbl_8055EB12 = 1;
+    lbl_8055EB30 = (void *)fn_800167F4();
+    lbl_8055EB2C = (void *)-1;
+    fn_8001255C(lbl_8055AF14, lbl_80562DA0);
+    fn_80204460(); fn_80127464();
+    lbl_8055EB0C = -1; lbl_8055EB04 = 0; lbl_8055EB1C = 0; lbl_8055EB20 = 0;
+    memset(base, 0, 0x10);
+    p = (long *)(base + 0x10);
+    p[0] = 0; p[1] = 0; p[2] = 0; p[3] = 0;
+    fn_801E89FC(); lbl_8055EB10 = 1;
+    fn_80127464(); fn_801EA2E8();
+    lbl_8055EB3C = fn_8012850C(0xb40, strings + 0x10);
+    lbl_8055EB40 = fn_8012850C(0xb40, strings + 0x20);
+    lbl_8055EB38 = 0; lbl_8055EB34 = 0; lbl_8055EB08 = 1;
+    fn_8001255C(lbl_8055AF18, lbl_80562DA4);
+    fn_801EEFC8(); memset(&sp8, 0, 4); sp8 = *(long *)(arg0 + 0x3e0);
+    fn_80127464(); fn_80204BB8(); fn_80203C50(2); fn_801EFF4C(); fn_801EA4C4();
+    fn_801AEF28(arg0); fn_80127464(); fn_80176460(arg0 + 0x3e4, arg0, &sp8);
+    if (lbl_8055EB11 == 0) fn_8000D7F0(arg0);
+    fn_801EA1D8(); fn_80287780(arg0); fn_801F4CD8(); fn_801EA31C(arg0 + 0x3e4);
+    fn_801EA394(); fn_801FFB6C(); fn_8000A868(); fn_801B826C(arg0);
+    fn_80136764(); fn_8013477C(arg0); fn_801F9E04(arg0); fn_80265D8C(arg0);
+    fn_8001255C(strings + 0x34, lbl_80562DA0); fn_801DCE0C(0);
+    fn_801FC8DC(arg0); fn_8001285C(*(long *)(arg0 + 0x3e4)); fn_80139F5C(); fn_80127464();
+    fn_801FA298(arg0); fn_801E96D8(arg0); fn_801EC11C(); fn_801E9564(arg0);
+    fn_80127464(); fn_80287800(arg0); fn_80127464(); fn_80176614(); fn_80127464();
+    fn_8027AA50(); fn_801FA9AC(); fn_80127464(); fn_801EEE38(); fn_802C6C30(); fn_80127464();
+    fn_8001255C(strings + 0x40, lbl_80562DA8); fn_801EA38C(); fn_80127464();
+    fn_802023D4(); fn_80127464(); fn_800125D4(strings + 0x4c, 1);
+    fn_8000D878(); fn_802C2C60(1); fn_802C8218(0); fn_80203FEC(); fn_80127464();
+    fn_802E30C8(strings + 0x60, fn_802E2C20() - start);
+    fn_802ECC18(1); fn_80127464();
+}
+
 #pragma dont_inline off
 
 void fn_801E7C1C(long arg0) {
