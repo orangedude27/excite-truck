@@ -6,6 +6,7 @@ extern void fn_80241354(void*);
 extern s32 lbl_803428B0[][16][3];
 extern char lbl_80342CEC[];
 s32 fn_80243478(s32);
+extern s32 fn_80244558(void *);
 
 void fn_80243460(void* arg0) {
     fn_80241354((u8*)arg0 - 0x10);
@@ -74,17 +75,17 @@ s32 fn_80243528(s32 arg0, s32 arg1) {
 
 #pragma unroll on
 s32 fn_8024360C(s32 value, s32 tableIndex) {
-    s32 *entry = (s32 *)lbl_803428B0 + tableIndex * 48;
-    s32 start = 0;
-    s32 best = 0;
-    s32 index = 0;
-    s32 length;
-    s32 end;
+    register s32 (*table)[3] = lbl_803428B0[tableIndex];
+    register s32 start = 0;
+    register s32 best = 0;
+    register s32 index = 0;
+    register s32 length;
+    register s32 end;
     s32 i;
     s32 j;
     for (i = 0; i < 4; i++) {
         for (j = 0; j < 4; j++) {
-            length = entry[1 + j * 3];
+            length = table[i * 4 + j][1];
             end = start + length;
             if (length > 0)
                 best = index;
@@ -93,7 +94,6 @@ s32 fn_8024360C(s32 value, s32 tableIndex) {
             start = end;
             index++;
         }
-        entry += 12;
     }
     return best;
 }
@@ -222,41 +222,53 @@ extern s32 fn_80232578(s32);
 extern s32 fn_802C5130(s32);
 extern void fn_802E30C8(const char *, ...);
 extern s32 fn_80131234(const char *);
+#pragma push
+#pragma use_lmw_stmw off
+#pragma optimize_for_size on
 void fn_80243A38(void *arg0) {
-    s32 *entry;
-    s32 group, i, type;
-    *(s32 *)((u8 *)arg0 + 0x20) = fn_80232578((s32)((u8 *)lbl_803428B0 + 0x3C0));
-    *(s32 *)((u8 *)arg0 + 0x24) = fn_802C5130((s32)((u8 *)lbl_803428B0 + 0x3CC));
+    register char *globalBase = (char *)lbl_803428B0;
+    register s32 *base;
+    register s32 *entry;
+    register s32 group;
+    register s32 i;
+
+    *(s32 *)((u8 *)arg0 + 0x20) = fn_80232578((s32)(globalBase + 0x3C0));
+    *(s32 *)((u8 *)arg0 + 0x24) = fn_802C5130((s32)(globalBase + 0x3CC));
     if (*(s32 *)((u8 *)arg0 + 0x24) == 0)
-        fn_802E30C8((char *)lbl_803428B0 + 0x3D8);
+        fn_802E30C8(globalBase + 0x3D8);
     fn_80243938(*(char **)((u8 *)arg0 + 0x18), *(char **)((u8 *)arg0 + 0x1C));
-    entry = (s32 *)lbl_803428B0;
+
+    base = (s32 *)globalBase;
     group = 0;
     do {
+        entry = base;
         i = 0;
         while (i < fn_80243478(group)) {
-            type = entry[2];
-            if (type == 4) goto next;
-            if (type < 4) {
-                if (type != 2) goto next;
-                if (entry[0] == 0) goto next;
-                if (strlen((char *)entry[0]) >= 1) goto next;
-                entry[0] = fn_80131234((char *)lbl_803428B0 + 0x410);
-            } else {
-                if (type >= 6) goto next;
-                if (entry[0] == 0) goto next;
-                if (strlen((char *)entry[0]) >= 1) goto next;
-                entry[0] = fn_80131234((char *)lbl_803428B0 + (type == 3 ? 0x3FC : 0x420));
+            switch (entry[2]) {
+            case 3:
+                if (entry[0] == 0 || strlen((char *)entry[0]) < 1)
+                    entry[0] = fn_80131234(globalBase + 0x3FC);
+                break;
+            case 2:
+                if (entry[0] == 0 || strlen((char *)entry[0]) < 1)
+                    entry[0] = fn_80131234(globalBase + 0x410);
+                break;
+            case 5:
+                if (entry[0] == 0 || strlen((char *)entry[0]) < 1)
+                    entry[0] = fn_80131234(globalBase + 0x420);
+                break;
+            default:
+                break;
             }
-        next:
             entry += 3;
             i++;
         }
         group++;
-        entry = (s32 *)lbl_803428B0 + group * 48;
+        base += 48;
     } while (group < 5);
 }
-
+#pragma optimize_for_size reset
+#pragma pop
 extern s32 fn_802328D4(char *);
 extern s32 fn_802C519C(char *);
 void fn_80243B84(void *arg0) {
