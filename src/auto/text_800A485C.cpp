@@ -1893,6 +1893,56 @@ extern "C" s32 fn_800A7C20(void *arg0, void **arg1, u32 arg2, void **arg3, s32 *
     }
     return 0;
 }
+
+extern "C" s32 fn_800A586C(void *, s32, s32, s32, s32);
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" s32 VFiPFCACHE_DoReadNumSector(void *object, s32 list, s32 dest, u32 start, s32 amount, s32 output) {
+ u8 *volume=(u8 *)object;
+ u8 *page=0;
+ u32 count, remaining, end, end2, pos, length;
+ s32 result;
+ u32 *read=(u32 *)output;
+ *read=0;
+ result=fn_800A586C(object,dest,start,amount,output);
+ if (result) return result;
+ count=*read; remaining=count; end=start+count;
+ do {
+  if (!page) page=*(u8 **)list;
+  else { page=*(u8 **)(page+0x20); if (page==*(u8 **)list) { page=0; goto next; } }
+  while (*(u16 *)page&1) {
+   if (*(u32 *)(page+0x18)!=0xffffffff) { *(u32 *)(page+8)=*(u32 *)(page+4); break; }
+   page=*(u8 **)(page+0x20);
+  }
+  if (!(*(u16 *)page&1)) page=0;
+next:
+  if (page) {
+   pos=*(u32 *)(page+0x18);
+   if (pos!=0xffffffff) {
+    if (pos<=start && pos+*(u32 *)(page+0x14)>=end) {
+     VFipf_memcpy((void *)dest,*(u8 **)(page+4)+((start-pos)<<volume[0x20]),count<<volume[0x20]);
+     remaining-=count;
+    } else if (pos>=start && pos+*(u32 *)(page+0x14)<=end) {
+     length=*(u32 *)(page+0x14);
+     VFipf_memcpy((u8 *)dest+((pos-start)<<volume[0x20]),*(u8 **)(page+4),length<<volume[0x20]);
+     remaining-=*(u32 *)(page+0x14);
+    } else if (pos>start && pos<end && pos+*(u32 *)(page+0x14)>=end) {
+     end2=start+count;
+     VFipf_memcpy((u8 *)dest+((pos-start)<<volume[0x20]),*(u8 **)(page+4),(end2-pos)<<volume[0x20]);
+     remaining-=end2-*(u32 *)(page+0x18);
+    } else if (pos<start && pos+*(u32 *)(page+0x14)>start && pos+*(u32 *)(page+0x14)<=end) {
+     length=*(u32 *)(page+0x14);
+     VFipf_memcpy((void *)dest,*(u8 **)(page+4)+((start-pos)<<volume[0x20]),(length-(start-pos))<<volume[0x20]);
+     remaining-=*(u32 *)(page+0x14)-(start-*(u32 *)(page+0x18));
+    }
+   }
+  }
+ } while (page && remaining);
+ if (*read!=(u32)amount && *(u32 *)(volume+8)!=start+*read) return 0x11;
+ return 0;
+}
+#pragma pop
+
 #pragma pop
 extern "C" s32 fn_800A7B34(void *, void *);
 extern "C" s32 fn_800A8504(void *arg0, void *arg1, s32 arg2, s32 arg3) {
@@ -7183,25 +7233,29 @@ block_27:
     return 0;
 }
 
+static inline s32 CopyBaseName(u8 *out, const u8 *in) {
+    s32 last = -1;
+    s32 i;
+    for (i = 0; i < 8; i++) {
+        u8 c = in[i];
+        out[i] = c;
+        if (c != ' ') last = i;
+    }
+    return last;
+}
 extern "C" void fn_800B3BEC(u8 *out, u8 *in, u8 flags) {
     s32 last = -1;
     s32 ext;
     s32 i;
-    u8 *d = out;
-    u8 *s = in;
+    u8 c;
     for (i = 0; i < 8; i++) {
-        s32 c = *s++;
-        *d++ = c;
+        c = in[i];
+        out[i] = c;
         if (c != ' ') last = i;
     }
     out += last + 1;
-    ext = 7;
-    if ((u32)in[8] != ' ') {
-        ext = 8;
-        if ((u32)in[9] != ' ') {
-            ext = 9;
-            if ((u32)in[10] != ' ') ext = 10;
-        }
+    for (ext = 7; ext < 10; ext++) {
+        if ((u32)in[ext + 1] == ' ') break;
     }
     if (ext > 7) {
         if ((flags & 8) == 0) {
