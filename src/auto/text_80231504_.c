@@ -9,7 +9,24 @@ extern f32 fn_8023293C(s32, char *, f32);
 extern s32 lbl_8055F04C;
 extern s32 lbl_8055F070;
 extern void *lbl_8055B9A8;
-extern void fn_80231AF0(void);
+extern void fn_80231AF0(char *, void *, f32, f32, f32, f32, f32, f32, f32);
+typedef struct {
+    const char *name;
+    f32 scale;
+    s32 unk8;
+    s32 unkC;
+    s32 unk10;
+    s32 unk14;
+    f32 unk18;
+} Fn80231AF0_Entry;
+typedef struct {
+    Fn80231AF0_Entry *entries;
+    s32 count;
+} Fn80231AF0_Table;
+typedef struct {
+    s32 unk0, unk4, unk8, unkC;
+    f32 *glyphs;
+} Fn80231AF0_Ctx;
 extern void fn_80231D84(char *, void *, f32, f32, f32, f32, f32, f32, f32);
 extern u8 lbl_8055F064;
 extern u8 *lbl_8055F068;
@@ -1120,14 +1137,14 @@ f32 fn_8023400C(s32 arg0) {
     register u8 *recordCount;
     register s32 tokenIndex;
     register s32 tokenOffset;
-    register u8 *character;
+    u8 *character;
     const char *token;
     register u8 *next;
     register u8 *entry;
     register u8 *glyphs;
     register u8 *glyph;
     s32 consumed;
-    u16 codepoint;
+    register u16 codepoint;
     u8 first;
 
     offset = arg0 * 0x58;
@@ -1187,7 +1204,7 @@ match: ;
     }
 
     glyphs = *(u8 **)(font + 0x10);
-    glyph = glyphs + codepoint * 0x1C;
+    glyph = glyphs + (u16)codepoint * 0x1C;
     index += next - character;
     width += *(f32 *)(glyph + 4);
     height += *(f32 *)glyph + *(f32 *)(glyph + 8);
