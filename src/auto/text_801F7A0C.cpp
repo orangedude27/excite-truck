@@ -541,6 +541,87 @@ extern "C" s32 fn_801F812C(const char *arg) {
 extern "C" const f32 lbl_80562FF0;
 extern "C" s32 fn_801F815C(const char *arg) { return stricmp(arg, lbl_8055B2C4) == 0; }
 
+extern "C" void *fn_801F8188(void *arg0, s32 arg1, s32 arg2) {
+    class Node {
+    public:
+        virtual void s8();
+        virtual void sC();
+        virtual void s10();
+        virtual const char *getName(const char *);
+        virtual void s18();
+        virtual void s1C();
+        virtual void s20();
+        virtual void s24();
+        virtual f32 getFloat(const char *, f32);
+        virtual void s2C();
+        virtual u8 getFlag(const char *, s32);
+        virtual void s34();
+        virtual void s38();
+        virtual void s3C();
+        virtual void s40();
+        virtual void s44();
+        virtual void s48();
+        virtual void s4C();
+        virtual void s50();
+        virtual void s54();
+        virtual void s58();
+        virtual void *getNode(const char *);
+    };
+    struct Ent {
+        s32 (*pred)(const char *);
+        void *(*make)(void *);
+    };
+    struct Tbl { Ent e[4]; };
+    Ent *e;
+    const char *name = ((Node *)arg0)->getName((const char *)lbl_8055B2CC);
+    Tbl table = *(Tbl *)lbl_802F9BA0;
+    u8 *obj = 0;
+    e = table.e;
+    for (u32 i = 0; i < 4; i++, e++) {
+        if (e->pred == 0 || e->pred(name) != 0) {
+            obj = (u8 *)table.e[i].make(arg0);
+            break;
+        }
+    }
+    if (fn_801F80FC(name) == 0) {
+        const char *s = ((Node *)arg0)->getName(lbl_8055B2A8);
+        s32 n = 0x10;
+        char *d = (char *)obj + 0x61;
+        u8 c;
+        goto body1;
+        for (;;) {
+            if (--n <= 0) { d[-1] = 0; break; }
+body1:
+            c = *s++;
+            *d++ = c;
+            if ((s8)c == 0) break;
+        }
+        obj[0x60] = fn_801F7EB0(obj + 0x30, arg0, arg1);
+        fn_801F7E20(arg0, obj);
+        obj[0x2C] = ((Node *)arg0)->getFlag((const char *)lbl_8033B024, 0);
+        if (((Node *)arg0)->getNode((const char *)lbl_8055B2D4) != 0) {
+            ((void (*)(void *, void *))fn_801F7FA0)(obj + 0x78, ((Node *)arg0)->getNode((const char *)lbl_8055B2D4));
+        }
+    } else {
+        *(f32 *)(obj + 0x28) = ((Node *)arg0)->getFloat(lbl_8033AFDC, *(f32 *)(obj + 0x28));
+    }
+    if (arg2 != 0) {
+        const char *s = ((Node *)arg0)->getName((const char *)lbl_8055B2DC);
+        s32 n = 0x20;
+        char *d = (char *)obj;
+        u8 c;
+        goto body2;
+        for (;;) {
+            if (--n <= 0) { d[-1] = 0; break; }
+body2:
+            c = *s++;
+            *d++ = c;
+            if ((s8)c == 0) break;
+        }
+    }
+    return obj;
+}
+
 __declspec(section ".sdata") extern const char lbl_8055B2A8[], lbl_8055B2B0[], lbl_8055B2B8[], lbl_8055B2C0[], lbl_8055B2E4[], lbl_8055B2EC[];
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" void *fn_801F83E4(void *arg0) {
