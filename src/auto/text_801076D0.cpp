@@ -412,48 +412,31 @@ extern "C" s32 fn_80109040(s32 arg0, s32 arg1) {
 }
 
 extern "C" void SetResourceBuffer__Q46nw4hbm2ut6detail11ResFontBaseFPvPQ36nw4hbm2ut15FontInformation(void* self, void* resource, void* info) {
-    const char* file = lbl_80329140;
-    u32 address = (u32)resource;
-    u32 infoAddress = (u32)info;
-    u32 valid = 1;
-    if ((address & 0xFF000000) != 0x80000000 &&
-        (address & 0xFF800000) != 0x81000000)
-        valid = 0;
-    if (valid == 0 && (address & 0xF8000000) != 0x78000000)
-        valid = 1;
-    if (valid == 0 && (address & 0xFF000000) != 0x40000000)
-        valid = 1;
-    if (valid == 0 && (address & 0xFF800000) != 0xC1000000)
-        valid = 1;
-    if (valid == 0 && (address & 0xF8000000) != 0xD0000000)
-        valid = 1;
-    if (valid == 0 && (address & 0xFFFFC000) != 0xE0000000)
-        valid = 1;
-    if (valid == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x4F, file + 0x20, resource);
-
-    valid = 1;
-    if ((infoAddress & 0xFF000000) != 0x80000000 &&
-        (infoAddress & 0xFF800000) != 0x81000000)
-        valid = 0;
-    if (valid == 0 && (infoAddress & 0xF8000000) != 0x78000000)
-        valid = 1;
-    if (valid == 0 && (infoAddress & 0xFF000000) != 0x40000000)
-        valid = 1;
-    if (valid == 0 && (infoAddress & 0xFF800000) != 0xC1000000)
-        valid = 1;
-    if (valid == 0 && (infoAddress & 0xF8000000) != 0xD0000000)
-        valid = 1;
-    if (valid == 0 && (infoAddress & 0xFFFFC000) != 0xE0000000)
-        valid = 1;
-    if (valid == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x50, file + 0x5C, info);
-    if (*(void**)((char*)self + 0x10) != 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x51, file + 0x98);
-    if (*(void**)((char*)self + 0x14) != 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x52, file + 0xC4);
-    *(void**)((char*)self + 0x10) = resource;
-    *(void**)((char*)self + 0x14) = info;
+    const char* file=lbl_80329140;
+    u32 value=(u32)resource;
+    int a=1,b=1,c=1,d=1,e=1,f=1;
+    u32 t=value&0xFF000000U;
+    if(t!=0x80000000U&&(value&0xFF800000U)!=0x81000000U)f=0;
+    if(f==0&&(value&0xF8000000U)!=0x90000000U)e=0;
+    if(e==0&&t!=0xC0000000U)d=0;
+    if(d==0&&(value&0xFF800000U)!=0xC1000000U)c=0;
+    if(c==0&&(value&0xF8000000U)!=0xD0000000U)b=0;
+    if(b==0&&(value&0xFFFFC000U)!=0xE0000000U)a=0;
+    if(a==0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x4F,file+0x20,resource);
+    u32 v=(u32)info;
+    int g=1,h=1,i=1,j=1,k=1,l=1;
+    u32 t2=v&0xFF000000U;
+    if(t2!=0x80000000U&&(v&0xFF800000U)!=0x81000000U)l=0;
+    if(l==0&&(v&0xF8000000U)!=0x90000000U)k=0;
+    if(k==0&&t2!=0xC0000000U)j=0;
+    if(j==0&&(v&0xFF800000U)!=0xC1000000U)i=0;
+    if(i==0&&(v&0xF8000000U)!=0xD0000000U)h=0;
+    if(h==0&&(v&0xFFFFC000U)!=0xE0000000U)g=0;
+    if(g==0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x50,file+0x5C,info);
+    if(*(void**)((char*)self+0x10)!=0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x51,file+0x98);
+    if(*(void**)((char*)self+0x14)!=0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x52,file+0xC4);
+    *(void**)((char*)self+0x10)=resource;
+    *(void**)((char*)self+0x14)=info;
 }
 
 u8 nw4hbm::ut::detail::ResFontBase::GetWidth() const {
@@ -744,8 +727,11 @@ s32 nw4hbm::ut::detail::ResFontBase::GetDefaultCharWidths() const {
     if(i==0&&(v&0xF8000000U)!=0xD0000000U)h=0;
     if(h==0&&(v&0xFFFFC000U)!=0xE0000000U)g=0;
     if(g==0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x13A,file+0x128);
-    u32 p=*(u32*)((char*)this+0x14);
-    return (*(u16*)(p+4)<<16) | (*(u8*)(p+6)<<8);
+    u8* p=(u8*)*(u32*)((char*)this+0x14);
+    u32 r=*(u16*)(p+4);
+    r<<=16;
+    r|=((u32)p[6]<<8)&0xFF00;
+    return r;
 }
 
 void nw4hbm::ut::detail::ResFontBase::SetDefaultCharWidths(const CharWidths& widths) {
