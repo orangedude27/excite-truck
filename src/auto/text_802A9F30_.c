@@ -42,6 +42,10 @@ typedef struct InitStruct {
 } InitStruct;
 
 extern const char lbl_80349DC8[];
+extern const char lbl_80349DFC[], lbl_80349E24[], lbl_80349E18[], lbl_80349E08[];
+extern float lbl_8055CC80;
+extern int lbl_8055CC60, lbl_8055CC64;
+extern float lbl_805649F0, lbl_805649F4, lbl_805649FC, lbl_80564A00, lbl_80564A04, lbl_80564A58, lbl_80564A68, lbl_80564A6C, lbl_80564A70, lbl_80564A74, lbl_80564A78, lbl_80564A7C, lbl_80564A80, lbl_80564A84, lbl_80564A88, lbl_80564A8C, lbl_80564A90, lbl_80564A94;
 extern void *fn_8012850C(int, const char *);
 extern void *fn_8002F37C(void *, void (*)(void), void *, int, int);
 extern int fn_802CAC28(const char *, int);
