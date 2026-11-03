@@ -6567,6 +6567,7 @@ extern "C" s32 fn_800B1FF4(void *arg0, u32 arg1, s32 arg2) {
     u8 *file;
     u32 pos;
     u32 t;
+    u32 fl;
     u8 *v;
     vol = arg0 == 0 ? 0 : *(u8 **)(*(u8 **)((u8 *)arg0 + 8) + 0x268);
     fn_800B77C0(vol + 0x1F90);
@@ -6578,7 +6579,8 @@ extern "C" s32 fn_800B1FF4(void *arg0, u32 arg1, s32 arg2) {
         return r;
     }
     file = *(u8 **)((u8 *)arg0 + 8);
-    if (!(*(u32 *)file & 1) || !(*(u32 *)file & 2)) {
+    fl = *(u32 *)file;
+    if (!(fl & 1) || !(fl & 2)) {
         fn_800B783C(vol + 0x1F90);
         lbl_803D2140[0x40 / 4] = 0x26;
         *(s32 *)(vol + 0x1F80) = 0x26;
@@ -8696,31 +8698,28 @@ extern "C" s32 fn_800B73E4(s32 arg0) {
 extern "C" s32 fn_800B73BC(s32);
 
 #pragma dont_inline on
-extern "C" void fn_800B7408(volatile s32* arg0, void* arg1) {
- extern s32 fn_800B6628(void*, void*, s32);
- extern s32 fn_800B73BC(s32);
- extern s32 lbl_803D2140[];
- s32 result;
- s32 entry;
- if ((arg0 == 0) || (*arg0 == 0)) {
-   result = 10;
-   *(s32*)((u8*)lbl_803D2140 + 0x40) = 10;
- } else {
-   entry = *arg0;
-   do {
-     if (arg1 != 0)
-       result = fn_800B6628((void*)entry, arg1, *(s32*)((u8*)arg1 + 0x50));
-     else
-       result = fn_800B6628((void*)entry, 0, 0);
-     if (result != 0) {
-       fn_800B73BC(result);
-       return;
-     }
-     arg0 = (volatile s32*)((u8*)arg0 + 4);
-     entry = *(volatile s32*)((u8*)arg0);
-   } while (entry != 0);
- }
-   fn_800B73BC(result);
+extern "C" void fn_800B7408(s32* arg0, void* arg1) {
+    extern s32 fn_800B6628(void*, void*, s32);
+    extern s32 fn_800B73BC(s32);
+    extern s32 lbl_803D2140[];
+    s32 result;
+    if ((arg0 == 0) || (*arg0 == 0)) {
+        result = 10;
+        *(s32*)((u8*)lbl_803D2140 + 0x40) = 10;
+    } else {
+        while (*arg0 != 0) {
+            if (arg1 != 0)
+                result = fn_800B6628((void*)*arg0, arg1, *(s32*)((u8*)arg1 + 0x50));
+            else
+                result = fn_800B6628((void*)*arg0, 0, 0);
+            if (result != 0) {
+                fn_800B73BC(result);
+                return;
+            }
+            arg0++;
+        }
+    }
+    fn_800B73BC(result);
 }
 #pragma dont_inline reset
 
@@ -21809,6 +21808,52 @@ error:
 done:
     return 0;
 }
+
+extern "C" s32 fn_800A728C(void *);
+extern "C" s32 fn_800A71E0(s32, void *);
+extern "C" s32 fn_800A5AE4(void *, void *);
+extern "C" s32 fn_800A5E00(void *, void *, u32 *, u32 *);
+extern "C" s32 fn_800A5530(void *object) {
+ u8 *p=(u8 *)object;
+ s32 result, err, read;
+ s32 info[5], pageNo;
+ void *page;
+ result=fn_800A728C(*(void **)(p+0x1fbc));
+ if (result) {
+  if (result==0x15) {
+   err=fn_800A71D8(*(void **)(p+0x1fbc));
+   lbl_803D2140[0x44/4]=err; *(s32 *)(p+0x1f84)=err;
+   return 0x1000;
+  }
+  return -1;
+ }
+ if (fn_800A71E0(*(s32 *)(p+0x1fbc),info)) { fn_800A7568(*(void **)(p+0x1fbc),0); return -1; }
+ if (info[3]&1) *(u16 *)(p+0x1f8c)|=2;
+ else *(u16 *)(p+0x1f8c)&=~2;
+ if (info[3]&2) { *(u16 *)(p+0x1f8c)|=0x40; *(s32 *)(p+0x1fc4)=info[4]; }
+ if (info[3]&8) *(u16 *)(p+0x1f8c)|=0x80;
+ ((s32 (*)(void *,s32,void **,s32 *))fn_800A8D08)(object,-1,&page,&pageNo);
+ result=fn_800A73A0(*(void **)(p+0x1fbc),*(s32 *)((u8 *)page+4),0,1,0x200,(s32)&read);
+ if (result) {
+  if (result==0x15) { err=fn_800A71D8(*(void **)(p+0x1fbc)); lbl_803D2140[0x44/4]=err; *(s32 *)(p+0x1f84)=err; result=0x1000; }
+  else result=-1;
+  fn_800A7568(*(void **)(p+0x1fbc),0);
+  return result;
+ }
+ if (fn_800A5AE4(object,*(void **)((u8 *)page+4))) { fn_800A7568(*(void **)(p+0x1fbc),0); return 7; }
+ *(s32 *)(p+0x38)=-1; *(s32 *)(p+0x3c)=-1;
+ if (*(s32 *)(p+0x1c)==2) {
+  result=fn_800A73A0(*(void **)(p+0x1fbc),*(s32 *)((u8 *)page+4),*(u16 *)(p+0x14),1,0x200,(s32)&read);
+  if (result) {
+   if (result==0x15) { err=fn_800A71D8(*(void **)(p+0x1fbc)); lbl_803D2140[0x44/4]=err; *(s32 *)(p+0x1f84)=err; result=0x1000; }
+   else result=-1;
+   fn_800A7568(*(void **)(p+0x1fbc),0); return result;
+  }
+  if (fn_800A5E00(object,*(void **)((u8 *)page+4),(u32 *)(p+0x38),(u32 *)(p+0x3c))) { fn_800A7568(*(void **)(p+0x1fbc),0); return -1; }
+ }
+ return 0;
+}
+
 #pragma dont_inline on
 extern "C" s32 fn_800A5788(void *arg0, s32 arg1) {
     s32 result = fn_800A7568(*(void **)((u8 *)arg0 + 0x1FBC), (arg1 - 1) == 0);
