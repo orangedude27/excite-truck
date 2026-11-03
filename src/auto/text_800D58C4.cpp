@@ -181,6 +181,7 @@ extern "C" s32 fn_800D58C4(const char* a, const char* b) { return strncmp(a, b, 
 
 extern "C" int fn_800D58F0(const char *a, const char *b) { return strncmp(a, b, 0x14) == 0; }
 
+#pragma dont_inline fn_800D591C
 extern "C" s32 fn_800D591C(void* arg0) {
     s32 result = 0;
     if (*(u16*)((u8*)arg0 + 4) == 0xFEFF &&
@@ -813,18 +814,22 @@ s32 nw4hbm::lyt::Layout::Build(const void *arg1, nw4hbm::lyt::ResourceAccessor *
 }
 #pragma pop
 extern "C" void *CreateAnimTransform__Q36nw4hbm3lyt6LayoutFPCvPQ36nw4hbm3lyt16ResourceAccessor(void *self, const void *resource, void *accessor) {
+    extern const char lbl_8031F8C0[];
+    extern const char lbl_8031F89C[];
     const char *msg=lbl_8031F728;
     int id=0x70616931;
     void *result=0;
+    int i;
+    char *block;
     if (lbl_8055DDF0==0) Panic__Q26nw4hbm2dbFPCciPCce(msg,0x127,msg+0x10);
     if (resource==0) Panic__Q26nw4hbm2dbFPCciPCce(msg,0x128,msg+0xDC);
     if (fn_800D591C((void *)resource)==0) return 0;
     unsigned short count=*(unsigned short *)((char *)resource+6);
     if (count!=8) Panic__Q26nw4hbm2dbFPCciPCce(msg,0x137,msg+0x6C,count>>8,count&0xFF,0,8);
-    char *block=(char *)resource+*(unsigned short *)((char *)resource+0xC);
-    int i=0;
-    do {
+    block=(char *)resource+*(unsigned short *)((char *)resource+0xC);
+    for (i=0; i<*(unsigned short *)((char *)resource+0xE); i++) {
         if (*(int *)block==id) {
+            if (result!=0) Panic__Q26nw4hbm2dbFPCciPCce(msg,0x141,msg+0x108);
             int tag=*(int *)resource;
             switch(tag) {
             case 0x524C5450: case 0x524C4D43: case 0x524C414E: case 0x524C5041:
@@ -841,13 +846,12 @@ extern "C" void *CreateAnimTransform__Q36nw4hbm3lyt6LayoutFPCvPQ36nw4hbm3lyt16Re
             }
             if (result) {
                 void *it=(char *)self+8;
+                if (result==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F8C0,0x233,lbl_8031F89C);
                 Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)self+4,(void **)&it,(char *)result+4);
             }
         }
-        int size=*(int *)(block+4);
-        block+=size;
-        i++;
-    } while(i<*(unsigned short *)((char *)resource+0xE));
+        block+=*(int *)(block+4);
+    }
     return result;
 }
 #pragma dont_inline reset
@@ -992,33 +996,39 @@ extern "C" const char lbl_8031F854[];
 extern "C" void* BuildPaneObj__Q36nw4hbm3lyt6LayoutFlPCvRCQ36nw4hbm3lyt11ResBlockSet(u32 kind, const void* pane, const ResBlockSetTmp* set) {
     void* obj;
     switch (kind) {
-    case 0x70616E31:
+    case 0x70616E31: {
+        const void *data = pane;
         obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0xD4);
-        if (obj) return new (obj) nw4hbm::lyt::Pane((const nw4hbm::lyt::res::Pane*)pane);
+        if (obj) return new (obj) nw4hbm::lyt::Pane((const nw4hbm::lyt::res::Pane*)data);
         return 0;
+    }
     case 0x70696331: {
+        const void *data = pane;
         ResBlockSetTmp tmp = *set;
         obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0xEC);
-        if (obj) return new (obj) nw4hbm::lyt::Picture((const nw4hbm::lyt::res::Picture*)pane, *(const nw4hbm::lyt::ResBlockSet*)&tmp);
+        if (obj) return new (obj) nw4hbm::lyt::Picture((const nw4hbm::lyt::res::Picture*)data, *(const nw4hbm::lyt::ResBlockSet*)&tmp);
         return 0;
     }
     case 0x74787431: {
+        const void *data = pane;
         ResBlockSetTmp tmp = *set;
         obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0x100);
-        if (obj) return new (obj) nw4hbm::lyt::TextBox((const nw4hbm::lyt::res::TextBox*)pane, *(const nw4hbm::lyt::ResBlockSet*)&tmp);
+        if (obj) return new (obj) nw4hbm::lyt::TextBox((const nw4hbm::lyt::res::TextBox*)data, *(const nw4hbm::lyt::ResBlockSet*)&tmp);
         return 0;
     }
     case 0x776E6431: {
+        const void *data = pane;
         ResBlockSetTmp tmp = *set;
         obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0x104);
-        if (obj) return new (obj) nw4hbm::lyt::Window((const nw4hbm::lyt::res::Window*)pane, *(const nw4hbm::lyt::ResBlockSet*)&tmp);
+        if (obj) return new (obj) nw4hbm::lyt::Window((const nw4hbm::lyt::res::Window*)data, *(const nw4hbm::lyt::ResBlockSet*)&tmp);
         return 0;
     }
     case 0x626E6431: {
+        const void *data = pane;
         ResBlockSetTmp tmp = *set;
         obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0xD4);
         if (!obj) return 0;
-        return fn_800D57AC(obj, pane, &tmp);
+        return fn_800D57AC(obj, data, &tmp);
     }
     default:
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F728, 0x1F7, lbl_8031F854);
