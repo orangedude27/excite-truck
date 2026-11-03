@@ -836,48 +836,53 @@ void *GXInitVtxDescList(void) {
 }
 
 void GXSetVtxDesc(unsigned int attr, unsigned int type) {
-    unsigned int *data;
-    data = __GXData;
     switch (attr) {
-    case 0: data[5] = (data[5] & 0x7fffffff) | (type & 1) << 31; break;
-    case 1: data[5] = (data[5] & 0xbfffffff) | (type & 1) << 30; break;
-    case 2: data[5] = (data[5] & 0xdfffffff) | (type & 1) << 29; break;
-    case 3: data[5] = (data[5] & 0xefffffff) | (type & 1) << 28; break;
-    case 4: data[5] = (data[5] & 0xf7ffffff) | (type & 1) << 27; break;
-    case 5: data[5] = (data[5] & 0xfbffffff) | (type & 1) << 26; break;
-    case 6: data[5] = (data[5] & 0xfdffffff) | (type & 1) << 25; break;
-    case 7: data[5] = (data[5] & 0xfeffffff) | (type & 1) << 24; break;
-    case 8: data[5] = (data[5] & 0xff7fffff) | (type & 1) << 23; break;
-    case 9: data[5] = (data[5] & 0xff9fffff) | (type & 3) << 21; break;
+    case 0: __GXData[5] = __rlwimi(__GXData[5], type, 0, 31, 31); break;
+    case 1: __GXData[5] = __rlwimi(__GXData[5], type, 1, 30, 30); break;
+    case 2: __GXData[5] = __rlwimi(__GXData[5], type, 2, 29, 29); break;
+    case 3: __GXData[5] = __rlwimi(__GXData[5], type, 3, 28, 28); break;
+    case 4: __GXData[5] = __rlwimi(__GXData[5], type, 4, 27, 27); break;
+    case 5: __GXData[5] = __rlwimi(__GXData[5], type, 5, 26, 26); break;
+    case 6: __GXData[5] = __rlwimi(__GXData[5], type, 6, 25, 25); break;
+    case 7: __GXData[5] = __rlwimi(__GXData[5], type, 7, 24, 24); break;
+    case 8: __GXData[5] = __rlwimi(__GXData[5], type, 8, 23, 23); break;
+    case 9: __GXData[5] = __rlwimi(__GXData[5], type, 9, 21, 22); break;
     case 10:
-        if (type) { ((unsigned char *)data)[0x524] = 1; ((unsigned char *)data)[0x525] = 0; data[0x520 / 4] = type; }
-        else ((unsigned char *)data)[0x524] = 0;
+        if (type) {
+            ((u8 *)__GXData)[0x524] = 1;
+            ((u8 *)__GXData)[0x525] = 0;
+            __GXData[0x520 / 4] = type;
+        } else {
+            ((u8 *)__GXData)[0x524] = 0;
+        }
         break;
     case 11:
-        if (type) { ((unsigned char *)data)[0x525] = 1; ((unsigned char *)data)[0x524] = 0; data[0x520 / 4] = type; }
-        else ((unsigned char *)data)[0x525] = 0;
+        if (type) {
+            ((u8 *)__GXData)[0x525] = 1;
+            ((u8 *)__GXData)[0x524] = 0;
+            __GXData[0x520 / 4] = type;
+        } else {
+            ((u8 *)__GXData)[0x525] = 0;
+        }
         break;
-    case 12: data[5] = (data[5] & 0xfff9ffff) | (type & 3) << 17; break;
-    case 13: data[5] = (data[5] & 0xfffe7fff) | (type & 3) << 15; break;
-    case 14: data[6] = (data[6] & 0x3fffffff) | (type & 3) << 30; break;
-    case 15: data[6] = (data[6] & 0xcfffffff) | (type & 3) << 28; break;
-    case 16: data[6] = (data[6] & 0xf3ffffff) | (type & 3) << 26; break;
-    case 17: data[6] = (data[6] & 0xfcffffff) | (type & 3) << 24; break;
-    case 18: data[6] = (data[6] & 0xff3fffff) | (type & 3) << 22; break;
-    case 19: data[6] = (data[6] & 0xffcfffff) | (type & 3) << 20; break;
-    case 20: data[6] = (data[6] & 0xfff3ffff) | (type & 3) << 18; break;
-    case 21: data[6] = (data[6] & 0xfffcffff) | (type & 3) << 16; break;
-    case 22: data[6] = (data[6] & 0xfff3ffff) | (type & 3) << 14; break;
-    case 23: data[6] = (data[6] & 0xfffcffff) | (type & 3) << 12; break;
-    case 24: data[6] = (data[6] & 0xfff3ffff) | (type & 3) << 10; break;
-    case 25: data[6] = (data[6] & 0xfffcffff) | (type & 3) << 8; break;
+    case 12: __GXData[5] = __rlwimi(__GXData[5], type, 13, 17, 18); break;
+    case 13: __GXData[5] = __rlwimi(__GXData[5], type, 15, 15, 16); break;
+    case 14: __GXData[6] = __rlwimi(__GXData[6], type, 0, 30, 31); break;
+    case 15: __GXData[6] = __rlwimi(__GXData[6], type, 2, 28, 29); break;
+    case 16: __GXData[6] = __rlwimi(__GXData[6], type, 4, 26, 27); break;
+    case 17: __GXData[6] = __rlwimi(__GXData[6], type, 6, 24, 25); break;
+    case 18: __GXData[6] = __rlwimi(__GXData[6], type, 8, 22, 23); break;
+    case 19: __GXData[6] = __rlwimi(__GXData[6], type, 10, 20, 21); break;
+    case 20: __GXData[6] = __rlwimi(__GXData[6], type, 12, 18, 19); break;
+    case 21: __GXData[6] = __rlwimi(__GXData[6], type, 14, 16, 17); break;
+    case 25: break;
     }
-    if (((unsigned char *)data)[0x524] == 0 && ((unsigned char *)data)[0x525] != 0) {
-        data[5] = (data[5] & 0xfff1ffff) | (data[0x520 / 4] & 3) << 11;
-    } else if (((unsigned char *)data)[0x524] == 0) {
-        data[5] &= 0xfff1ffff;
+    if (((u8 *)__GXData)[0x524] || ((u8 *)__GXData)[0x525]) {
+        __GXData[5] = __rlwimi(__GXData[5], __GXData[0x520 / 4], 11, 19, 20);
+    } else {
+        __GXData[5] &= 0xFFFFE7FF;
     }
-    data[0x5fc / 4] |= 8;
+    __GXData[0x5FC / 4] |= 8;
 }
 
 void GXSetVtxDescv(unsigned int *desc) {
