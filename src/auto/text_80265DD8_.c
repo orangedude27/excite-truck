@@ -300,7 +300,7 @@ void fn_80267130(void *arg0) {
 #pragma scheduling on
 extern float lbl_8055D020;
 extern double lbl_80563C38;
-extern float fn_801EA0E8(unsigned int, float, float, float);
+extern float fn_801EA0E8(float, float);
 static inline void fn_802671CC_mul_vec(float *out, float *in, float *matrix, float x, float y, float z) {
     if (out == in) {
         out[0] = x * matrix[0] + y * matrix[3] + z * matrix[6];
@@ -371,23 +371,12 @@ void fn_802671CC(void *arg0, int arg1) {
         in[0] = x;
         in[1] = y;
         in[2] = z;
-        if (out == in) {
-            out[0] = x * matrix[0] + y * matrix[3] + z * matrix[6];
-            out[1] = x * matrix[1] + y * matrix[4] + z * matrix[7];
-            out[2] = x * matrix[2] + y * matrix[5] + z * matrix[8];
-        } else {
-            out[0] = in[0] * matrix[0] + in[1] * matrix[3] + in[2] * matrix[6];
-            out[1] = in[0] * matrix[1] + in[1] * matrix[4] + in[2] * matrix[7];
-            out[2] = in[0] * matrix[2] + in[1] * matrix[5] + in[2] * matrix[8];
-        }
+        fn_802671CC_mul_vec(out, in, matrix, x, y, z);
         out[0] += matrix[9];
         out[1] += matrix[10];
         out[2] += matrix[11];
-        {
-            float heightDiff;
-            heightDiff = fn_801EA0E8(0x43300000, out[0], out[1], out[2]) - out[1];
-            if (best > heightDiff) best = heightDiff;
-        }
+        heightDiff = fn_801EA0E8(out[0], out[2]) - out[1];
+        if (best > heightDiff) best = heightDiff;
     }
 
     if (*(int *)((char *)arg0 + 0x58) != 0x11 &&
