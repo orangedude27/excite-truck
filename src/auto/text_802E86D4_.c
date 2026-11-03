@@ -291,6 +291,13 @@ extern int lbl_80560020;
 extern char lbl_8055D248;
 extern char lbl_8055D250;
 extern char lbl_8034DEC4[];
+extern int NANDRead(void *, void *, unsigned int);
+extern void *memcpy(void *, const void *, unsigned int);
+extern int fn_802E8A18(void);
+extern int fn_802E8AE8(const char *);
+extern int fn_802E8BE4(void);
+extern void fn_802E8C2C(void);
+extern void fn_802E8920(int);
 u32 fn_802E8D84(void) { return 1; }
 
 #pragma push
