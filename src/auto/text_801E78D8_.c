@@ -12,6 +12,7 @@ extern void fn_8001255C(const char *, float);
 extern void fn_8000D878(void);
 extern void fn_802E30C8(const char *, ...);
 extern void fn_802ECC18(long);
+extern void fn_801E89FC(void);
 extern void fn_802E2C9C(void);
 extern void fn_802A4CA8(void);
 extern void fn_802C276C(void);
