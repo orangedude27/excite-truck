@@ -1014,6 +1014,8 @@ void fn_80233EC0(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg
     }
 }
 
+f32 fn_8023400C(s32 arg0) { return (f32)arg0; }
+
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
@@ -1045,7 +1047,7 @@ void fn_8023423C(s32 arg0, s32 arg1) {
             *(volatile f32 *)(base + offset + 0x40) -= scale * glyphRate;
         }
     } else if (arg1 & 2) {
-        *(f32 *)((u8 *)lbl_8055F06C + offset + 0x40) -= 0.0f;
+        *(f32 *)((u8 *)lbl_8055F06C + offset + 0x40) -= fn_8023400C(arg0);
     } else if (arg1 & 4) {
         *(f32 *)((u8 *)lbl_8055F06C + offset + 0x40) -= 0.0f;
     }
