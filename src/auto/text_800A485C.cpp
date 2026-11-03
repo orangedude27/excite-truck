@@ -2679,8 +2679,6 @@ extern "C" u8 VFiPFENT_CalcCheckSum(u8 *p_ent) {
     return (u8)sum;
 }
 
-#pragma push
-#pragma scheduling invalid_target
 extern "C" void fn_800AA4EC(u8 *p_ent, u8 *p_buf) {
     s32 value = (s32)p_buf[0xB];
     ((void (*)(u8 *, u8 *, s32))fn_800B3BEC)(&p_ent[0x20E], p_buf, value);
@@ -2688,7 +2686,6 @@ extern "C" void fn_800AA4EC(u8 *p_ent, u8 *p_buf) {
         ((s8 *)p_ent)[0x20E] = -0x1B;
     }
 }
-#pragma pop
 extern "C" void VFiPFENT_loadEntryNumericFieldsFromBuf(u8 *p_ent, u8 *p_buf) {
     u8 byteB = p_buf[0xB];
     u8 byteC = p_buf[0xC];
@@ -8772,7 +8769,7 @@ extern "C" s32 fn_800B8FE4(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
     return 0;
 }
 
-extern "C" s32 fn_800B90A8(u32 arg0) {
+extern "C" s32 fn_800B90A8(s32 arg0) {
     s32 result;
     s32 tmp;
     u32 length;
@@ -8785,7 +8782,7 @@ extern "C" s32 fn_800B90A8(u32 arg0) {
         return -20;
     }
     for (i = 0; i < 0x17; i++) {
-        if (((NandFileSlot *)lbl_80405D58)[i].id == arg0) {
+        if (((NandFileSlot *)lbl_80405D58)[i].id == (u32)arg0) {
             ((NandFileSlot *)lbl_80405D58)[i].err = 0;
             break;
         }
@@ -8793,7 +8790,7 @@ extern "C" s32 fn_800B90A8(u32 arg0) {
     result = (i == 0x17) ? -0x16 : 0;
     if (result == 0) {
         for (i = 0; i < 0x17; i++) {
-            if (((NandFileSlot *)lbl_80405D58)[i].id == arg0) { entry = (u8 *)&((NandFileSlot *)lbl_80405D58)[i]; break; }
+            if (((NandFileSlot *)lbl_80405D58)[i].id == (u32)arg0) { entry = (u8 *)&((NandFileSlot *)lbl_80405D58)[i]; break; }
         }
         if ((i == 0x17) ? -0x16 : 0) { fn_800B8048(lbl_8055DD30); return -20; }
         *(u32 *)(entry + 0xE4) &= ~2;
@@ -8808,7 +8805,7 @@ extern "C" s32 fn_800B90A8(u32 arg0) {
         if (result < 0) {
         fail:
             for (i = 0; i < 0x17; i++) {
-                if (((NandFileSlot *)lbl_80405D58)[i].id == arg0) { ((NandFileSlot *)lbl_80405D58)[i].err = result; break; }
+                if (((NandFileSlot *)lbl_80405D58)[i].id == (u32)arg0) { ((NandFileSlot *)lbl_80405D58)[i].err = result; break; }
             }
         }
     }
