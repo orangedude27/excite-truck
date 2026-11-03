@@ -47,14 +47,14 @@ extern void fn_8021037C(void);
 extern s32 fn_80207848(const char *, s32);
 extern const char lbl_8033C5FC[];
 extern s32 lbl_8055EE38;
-#pragma paired_single off
+#pragma scheduling invalid_target
 void fn_8020C41C(void) {
     fn_8021037C();
     lbl_8055EE38 = fn_80207848(lbl_8033C5FC, 1);
     lbl_8055EE45 = 0;
     lbl_8055EE46 = 0;
 }
-
+#pragma scheduling on
 extern s32 fn_8012E498(s32 *);
 extern s32 fn_802103BC(void);
 __declspec(section ".data") extern s32 lbl_80489BE0;
