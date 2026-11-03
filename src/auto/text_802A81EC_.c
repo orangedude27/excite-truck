@@ -14,7 +14,8 @@ static inline void transform_802A8A4C(f32 *m, f32 *src, f32 *dst) {
 }
 extern f32 PSVECDotProduct(const void *, const void *);
 extern void PSVECNormalize(const void *, void *);
-extern f32 lbl_80558DC4, lbl_80564928, lbl_8056494C;
+__declspec(section ".data") extern f32 lbl_80558DC4;
+extern f32 lbl_80564928, lbl_8056494C;
 extern void *memset(void *, int, unsigned long);
 extern void *memcpy(void *, const void *, unsigned long);
 extern f32 fn_80287BC8(f32, f32);
@@ -40,11 +41,12 @@ void fn_802A81EC(void) {
 extern void fn_80128668(void *);
 extern void fn_802C6CF8(s32);
 void fn_802A85C8(void) {
-    s32 i;
-    s32 offset;
-    s32 j;
-    s32 suboffset;
     void *entry;
+    s32 j;
+    s32 offset;
+    s32 suboffset;
+    s32 i;
+
     i = 0;
     offset = 0;
     while (i < lbl_804BD6C4[1]) {
@@ -52,22 +54,27 @@ void fn_802A85C8(void) {
         if (entry != 0) {
             j = 0;
             suboffset = 0;
-            while (j < *(s32 *)((u8 *)entry + 0x2c)) {
+            while (j < *(s32 *)((u8 *)entry + 0x2C)) {
                 fn_802C6CF8(*(s32 *)((u32)*(u32 *)((u8 *)entry + 0x28) + suboffset));
                 suboffset += 4;
                 j++;
             }
-            *(s32 *)((u8 *)entry + 0x2c) = 0;
+            *(s32 *)((u8 *)entry + 0x2C) = 0;
             *(s32 *)((u8 *)entry + 0x70) = 0;
-            if ((u32)entry + 0x6c != 0) {
-                *(s32 *)((u8 *)entry + 0x6c) = 0;
+            if ((u32)entry + 0x6C != 0) {
                 *(s32 *)((u8 *)entry + 0x70) = 0;
-                *(s32 *)((u8 *)entry + 0x74) = 0;
+                if ((u32)entry + 0x6C != 0) {
+                    *(s32 *)((u8 *)entry + 0x6C) = 0;
+                    *(s32 *)((u8 *)entry + 0x70) = 0;
+                    *(s32 *)((u8 *)entry + 0x74) = 0;
+                }
             }
             if ((u32)entry + 0x28 != 0) {
-                *(s32 *)((u8 *)entry + 0x28) = 0;
-                *(s32 *)((u8 *)entry + 0x2c) = 0;
-                *(s32 *)((u8 *)entry + 0x30) = 0;
+                if ((u32)entry + 0x28 != 0) {
+                    *(s32 *)((u8 *)entry + 0x28) = 0;
+                    *(s32 *)((u8 *)entry + 0x2C) = 0;
+                    *(s32 *)((u8 *)entry + 0x30) = 0;
+                }
             }
             fn_80128668(entry);
         }
@@ -79,13 +86,13 @@ void fn_802A85C8(void) {
 
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
 void fn_802A86A4(void) {
     struct { f32 a[4]; f32 p[3]; f32 v[3]; } sp;
     s32 i, offset, j, suboffset;
     u8 *entry;
     f32 *v;
     f32 z, y, x, scale, speed;
-    f32 *epsilon = &lbl_80558DC4;
     f32 zero = lbl_80564928;
     f32 one = lbl_8056494C;
     f32 half = lbl_80564950;
@@ -109,7 +116,7 @@ void fn_802A86A4(void) {
         ((f32 *)entry)[3] = fn_80287BC8(lbl_80564944, lbl_80564948);
         ((f32 *)entry)[4] = zero;
         ((f32 *)entry)[5] = z;
-        if ((f32)__fabs(PSVECDotProduct(entry + 0xc, entry + 0xc)) <= *epsilon) ((f32 *)entry)[3] = one;
+        if ((f32)__fabs(PSVECDotProduct(entry + 0xc, entry + 0xc)) <= lbl_80558DC4) ((f32 *)entry)[3] = one;
         PSVECNormalize(entry + 0xc, entry + 0xc);
         speed = ((f32 *)entry)[8];
         ((f32 *)entry)[3] *= speed;
@@ -135,7 +142,7 @@ void fn_802A86A4(void) {
             y = fn_80287BC8(lbl_80564944, lbl_80564948);
             v[3] = fn_80287BC8(lbl_80564944, lbl_80564948);
             v[4] = zero; v[5] = y;
-            if ((f32)__fabs(PSVECDotProduct(v + 3, v + 3)) <= *epsilon) v[3] = one;
+            if ((f32)__fabs(PSVECDotProduct(v + 3, v + 3)) <= lbl_80558DC4) v[3] = one;
             PSVECNormalize(v + 3, v + 3);
             speed = v[8];
             v[3] *= speed; v[4] *= speed; v[5] *= speed;
@@ -168,8 +175,7 @@ void fn_802A8978(void) {
         fn_802A8A4C((s32)entry, (s32)(entry + 0x60));
         j = 0;
         while (j < fn_802A8A34((void*)(entry + 0x6c))) {
-            fn_802A8A3C((s32 *)(entry + 0x6c), j);
-            fn_802A8A4C((s32)(entry + 0x6c), (s32)entry);
+            fn_802A8A4C(fn_802A8A3C((s32 *)(entry + 0x6c), j), (s32)entry);
             j++;
         }
         offset += 4;
@@ -238,60 +244,59 @@ extern void fn_802C744C(s32 arg0, void *arg1);
 extern f32 lbl_80558DC4;
 extern f32 lbl_80564928;
 extern f32 lbl_8056494C;
+__declspec(section ".data") extern f32 lbl_80558DC4;
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+#pragma paired off
+#pragma paired_single off
+#pragma use_lmw_stmw off
 void fn_802A8DE8(void) {
-    f32 sp34;
-    f32 sp30;
-    f32 sp2C;
-    f32 sp28;
-    f32 sp24;
-    f32 sp20;
-    f32 sp1C;
-    f32 sp18;
-    f32 sp14;
-    f32 sp8;
-    f32 spC;
-    f32 sp10;
-    f32 sp14b;
-    s32 i;
-    s32 j;
-    s32 offset;
-    void *entry;
-    f32 *vec;
-    f32 fx, fy, fz;
+    f32 vecData[6];
+    f32 crossIn[3];
+    f32 crossOut[3];
+    f32 fx;
+    f32 fy;
+    register s32 i;
+    register s32 *table;
+    register s32 offset;
+    register u8 *vec;
+    register void *entry;
+    register s32 j;
 
-    fx = lbl_80564928;
-    fy = lbl_8056494C;
+    fy = lbl_80564928;
+    fx = lbl_8056494C;
+    table = (s32 *)&lbl_804BD6C4;
     i = 0;
     offset = 0;
-    while (i < lbl_804BD6C4[1]) {
+    while (i < table[1]) {
         entry = *(void **)((u32)lbl_804BD6C4[0] + offset);
         j = 0;
-        vec = (f32 *)0;
+        vec = (u8 *)0;
         while (j < *(s32 *)((u8 *)entry + 0x70)) {
-            s32 *vp = (s32 *)((u8 *)entry + 0x6C);
-            f32 *v = (f32 *)(*(u32 *)vp + (u32)vec);
-            sp2C = v[0];
-            sp30 = v[1];
-            sp34 = v[2];
-            sp20 = v[3];
-            sp24 = v[4];
-            sp28 = v[5];
-            if (__fabsf(PSVECDotProduct((void *)&sp20, (void *)&sp20)) == lbl_80558DC4) {
-                sp20 = fx;
-                sp24 = fx;
-                sp28 = fy;
+            f32 *src = (f32 *)(*(u32 *)((u8 *)entry + 0x6C) + (u32)vec);
+            vecData[3] = src[0];
+            vecData[4] = src[1];
+            vecData[5] = src[2];
+            vecData[0] = src[3];
+            vecData[1] = src[4];
+            vecData[2] = src[5];
+            if ((f32)__fabs((f64)PSVECDotProduct(&vecData[0], &vecData[0])) <= lbl_80558DC4) {
+                vecData[0] = fy;
+                vecData[1] = fy;
+                vecData[2] = fx;
             }
-            PSVECNormalize((void *)&sp20, (void *)&sp20);
-            sp14 = fx;
-            sp18 = fy;
-            sp1C = fx;
-            PSVECCrossProduct((void *)&sp14, (void *)&sp20, (void *)&sp8);
-            fn_802C744C(*(s32 *)((u8 *)entry + 0x28 + ((j % *(s32 *)((u8 *)entry + 0x2C)) * 4)), &sp8);
-            vec = (f32 *)((u32)vec + 0x28);
+            PSVECNormalize(&vecData[0], &vecData[0]);
+            crossIn[0] = fy;
+            crossIn[1] = fx;
+            crossIn[2] = fy;
+            PSVECCrossProduct(crossIn, &vecData[0], crossOut);
+            fn_802C744C(*(s32 *)(*(u32 *)((u8 *)entry + 0x28) + ((j % *(s32 *)((u8 *)entry + 0x2C)) * 4)), crossOut);
+            vec = (u8 *)((u32)vec + 0x28);
             j++;
         }
         offset += 4;
         i++;
     }
 }
-
+#pragma pop
