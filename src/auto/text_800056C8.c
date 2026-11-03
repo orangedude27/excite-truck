@@ -861,6 +861,7 @@ void fn_800066B4(void *arg0) {
     fn_8001DFCC();
 }
 
+#pragma paired_single reset
 #pragma ppc_psq_save off
 #pragma use_lmw_stmw off
 extern s32 fn_80010E94(s32, s32, f32, f32, f32, f32);
