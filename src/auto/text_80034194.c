@@ -1198,7 +1198,6 @@ void fn_80036624(s32 arg0) {
     }
 }
 
-#pragma pop
 extern u8 lbl_80376A80[];
 extern s32 lbl_8055D87C, lbl_8055D8BC;
 extern s32 IDShouldBe_8055D8C4, executing_8055D8C8, lbl_8055D860;
