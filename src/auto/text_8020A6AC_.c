@@ -8,7 +8,7 @@ extern void fn_802E61BC(void *);
 extern void fn_802E61A8(void *);
 extern const char lbl_8033C3D8[], lbl_8033C3E4[], lbl_8033C4A0[], lbl_8033C4C8[];
 extern char lbl_8033C3F4[];
-extern const char lbl_8055B5B8[], lbl_8055B5C0[];
+__declspec(section ".sdata") extern const char lbl_8055B5B8[], lbl_8055B5C0[];
 extern float lbl_805632BC, lbl_805632C0, lbl_805632C4;
 extern void *fn_802E5AE8(void *);
 extern float fn_802E6040(void *);
@@ -359,6 +359,83 @@ void fn_8020AC2C(void *arg0) {
  }
  fn_802E6264();
 }
+
+#pragma dont_inline on
+void *fn_8020AF18(void *arg0, char *name, int unused, unsigned char flag) {
+    int i;
+    for (i = 0; i < 0x200; i++) {
+        if (((void **)*(void **)((char *)arg0 + 4))[i] == 0) {
+            char *obj = ((void *(*)(int, const char *))fn_8020A788)(0x54, lbl_8033C3D8);
+            if (obj != 0) {
+                char buffer[64], *src, *dst, *dot;
+                int left;
+                float length;
+                *(void **)obj = lbl_8033C3F4;
+                *(float *)(obj + 0x48) = lbl_805632B0;
+                *(int *)(obj + 0x40) = i;
+                *(int *)(obj + 0x44) = 0;
+                *(int *)(obj + 4) = 3;
+                *(int *)(obj + 0xc) = 0;
+                *(int *)(obj + 8) = 0;
+                *(int *)(obj + 0x14) = 0;
+                *(int *)(obj + 0x10) = 0;
+                *(unsigned char *)(obj + 0x3d) = 0;
+                *(unsigned char *)(obj + 0x3e) = 0;
+                *(unsigned char *)(obj + 0x3c) = flag;
+                *(void **)(obj + 0x10) = fn_802E5AE8(name);
+                if (*(void **)(obj + 0x10) != 0) {
+                    src = name; dst = buffer; left = 0x40;
+                    goto copy_check;
+copy_next:
+                    if (--left > 0) goto copy_check;
+                    dst[-1] = 0; goto copied;
+copy_check:
+                    { unsigned char c = *src++; *dst++ = c; if ((signed char)c != 0) goto copy_next; }
+copied:
+                    dot = strchr(buffer, '.');
+                    if (dot != 0) {
+                        if (stricmp(dot, lbl_8055B5C0) != 0) fn_802E317C(lbl_8033C4C8, name);
+                        *dot = 0;
+                        dst = buffer; left = 0x40;
+                        while (*dst != 0) { left--; dst++; }
+                        if (left > 0) {
+                            src = (char *)lbl_8055B5B8;
+                            goto append_check;
+append_next:
+                            if (--left > 0) goto append_check;
+                            dst[-1] = 0; goto appended;
+append_check:
+                            { unsigned char c = *src++; *dst++ = c; if ((signed char)c != 0) goto append_next; }
+appended:                   ;
+                        }
+                    } else fn_802E317C(lbl_8033C4A0, name);
+                    *(void **)(obj + 0x14) = fn_802E5AE8(buffer);
+                    *(void **)(obj + 0x18) = fn_8020A6AC(name);
+                    length = fn_802E6040(*(void **)(obj + 0x10));
+                    *(float *)(obj + 0x48) = length;
+                    *(unsigned int *)(obj + 0x4c) = (unsigned int)(lbl_805632BC * (lbl_805632C0 + lbl_805632C4 * length));
+                    *(float *)(obj + 0x20) = lbl_805632B0;
+                    *(float *)(obj + 0x1c) = lbl_805632B0;
+                    *(float *)(obj + 0x24) = lbl_805632B4;
+                    *(float *)(obj + 0x28) = lbl_805632B4;
+                    *(float *)(obj + 0x2c) = lbl_805632B0;
+                    *(float *)(obj + 0x30) = lbl_805632B0;
+                    *(float *)(obj + 0x34) = lbl_805632B0;
+                    *(int *)(obj + 0x38) = 0;
+                }
+            }
+            if (((int (*)(void *))(*(void ***)obj)[4])(obj) == 0) {
+                if (obj != 0) ((void (*)(void *, int))(*(void ***)obj)[2])(obj, 1);
+                return 0;
+            }
+            ((void **)*(void **)((char *)arg0 + 4))[i] = obj;
+            return obj;
+        }
+    }
+    fn_802E30C8(lbl_8033C3E4);
+    return 0;
+}
+#pragma dont_inline reset
 
 extern char lbl_8033C3F4[];
 #pragma scheduling invalid_target
