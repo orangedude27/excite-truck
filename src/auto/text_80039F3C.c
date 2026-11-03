@@ -98,6 +98,13 @@ void fn_8003A1A0(int arg0, void (*arg1)(int, int)) {
     }
 }
 
+typedef struct DVDDiskID {
+    char game[4];
+    char company[2];
+    unsigned char disk;
+    unsigned char version;
+} DVDDiskID;
+
 int DVDCompareDiskID(unsigned char *arg0, unsigned char *arg1) {
     if ((signed char)arg0[0] == 0)
         goto disk_id_suffix;
