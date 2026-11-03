@@ -301,14 +301,15 @@ void fn_80267130(void *arg0) {
 extern float lbl_8055D020;
 extern double lbl_80563C38;
 extern float fn_801EA0E8(unsigned int, float, float, float);
+#pragma push
 #pragma ppc_psq_save off
 void fn_802671CC(void *arg0, int arg1) {
+    float output[3];
+    float corner[3];
     union IntDouble {
         double value;
         unsigned int word[2];
     } width, height;
-    float output[3];
-    float corner[3];
     float *matrix = (float *)arg0;
     float z = *(float *)((char *)arg0 + 0x48);
     float delta = z * *(float *)((char *)arg0 + 0x34);
