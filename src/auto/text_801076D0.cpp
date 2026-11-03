@@ -725,24 +725,27 @@ s32 nw4hbm::ut::detail::ResFontBase::GetDefaultCharWidths() const {
     const char* file=lbl_80329140;
     u32 value=(u32)this;
     int a=1,b=1,c=1,d=1,e=1,f=1;
-    if ((u32)((value&0xFF000000U)+0x80000000U)!=0U && (u32)((value&0xFF800000U)+0x7F000000U)!=0U)f=0;
-    if(f==0&&(u32)((value&0xF8000000U)+0x70000000U)!=0U)e=0;
-    if(e==0&&(u32)((value&0xFF000000U)+0x40000000U)!=0U)d=0;
-    if(d==0&&(u32)((value&0xFF800000U)+0x3F000000U)!=0U)c=0;
-    if(c==0&&(u32)((value&0xF8000000U)+0x30000000U)!=0U)b=0;
-    if(b==0&&(u32)((value&0xFFFFC000U)+0x20000000U)!=0U)a=0;
+    u32 t=value&0xFF000000U;
+    if (t!=0x80000000U && (value&0xFF800000U)!=0x81000000U) f=0;
+    if (f==0 && (value&0xF8000000U)!=0x90000000U)e=0;
+    if (e==0 && t!=0xC0000000U)d=0;
+    if (d==0 && (value&0xFF800000U)!=0xC1000000U)c=0;
+    if (c==0 && (value&0xF8000000U)!=0xD0000000U)b=0;
+    if (b==0 && (value&0xFFFFC000U)!=0xE0000000U)a=0;
     if(a==0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x139,file+0xF0,this);
+    int g=1,h=1;
     u32 v=*(u32*)((char*)this+0x14);
-    int g=1,h=1,i=1,j=1,k=1,l=1;
-    if((u32)((v&0xFF000000U)+0x80000000U)!=0U&&(u32)((v&0xFF800000U)+0x7F000000U)!=0U)l=0;
-    if(l==0&&(u32)((v&0xF8000000U)+0x70000000U)!=0U)k=0;
-    if(k==0&&(u32)((v&0xFF000000U)+0x40000000U)!=0U)j=0;
-    if(j==0&&(u32)((v&0xFF800000U)+0x3F000000U)!=0U)i=0;
-    if(i==0&&(u32)((v&0xF8000000U)+0x30000000U)!=0U)h=0;
-    if(h==0&&(u32)((v&0xFFFFC000U)+0x20000000U)!=0U)g=0;
+    int i=1,j=1,k=1,l=1;
+    u32 t2=v&0xFF000000U;
+    if(t2!=0x80000000U&&(v&0xFF800000U)!=0x81000000U)l=0;
+    if(l==0&&(v&0xF8000000U)!=0x90000000U)k=0;
+    if(k==0&&t2!=0xC0000000U)j=0;
+    if(j==0&&(v&0xFF800000U)!=0xC1000000U)i=0;
+    if(i==0&&(v&0xF8000000U)!=0xD0000000U)h=0;
+    if(h==0&&(v&0xFFFFC000U)!=0xE0000000U)g=0;
     if(g==0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x13A,file+0x128);
-    u32 p=*(u32*)((char*)v+8);
-    return (*(u16*)((char*)v+4)<<16) | (*(u8*)((char*)v+6)<<8);
+    u32 p=*(u32*)((char*)this+0x14);
+    return (*(u16*)(p+4)<<16) | (*(u8*)(p+6)<<8);
 }
 
 void nw4hbm::ut::detail::ResFontBase::SetDefaultCharWidths(const CharWidths& widths) {
@@ -929,28 +932,32 @@ checkIndex:
 #pragma pop
 
 void nw4hbm::ut::detail::ResFontBase::SetLineFeed(int lineFeed) {
-    u32 p = (u32)this;
-    int a = 1, b = 1, c = 1, d = 1, e = 1, f = 1;
-    if ((u32)((p & 0xFF000000) + 0x80000000) != 0 && (u32)((p & 0xFF800000) + 0x7F000000) != 0) a = 0;
-    if (a == 0 && (u32)((p & 0xF8000000) + 0x70000000) != 0) b = 0;
-    if (b == 0 && (u32)((p & 0xFF000000) + 0x40000000) != 0) c = 0;
-    if (c == 0 && (u32)((p & 0xFF800000) + 0x3F000000) != 0) d = 0;
-    if (d == 0 && (u32)((p & 0xF8000000) + 0x30000000) != 0) e = 0;
-    if (e == 0 && (u32)((p & 0xFFFFC000) + 0x20000000) != 0) f = 0;
-    if (f == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329140 + 0xC, 0x177, lbl_80329140 + 0xF0, this);
-    s32* field = (s32*)((char*)this + 0x14);
-    p = (u32)*field;
-    a = b = c = d = e = f = 1;
-    if ((u32)((p & 0xFF000000) + 0x80000000) != 0 && (u32)((p & 0xFF800000) + 0x7F000000) != 0) a = 0;
-    if (a == 0 && (u32)((p & 0xF8000000) + 0x70000000) != 0) b = 0;
-    if (b == 0 && (u32)((p & 0xFF000000) + 0x40000000) != 0) c = 0;
-    if (c == 0 && (u32)((p & 0xFF800000) + 0x3F000000) != 0) d = 0;
-    if (d == 0 && (u32)((p & 0xF8000000) + 0x30000000) != 0) e = 0;
-    if (e == 0 && (u32)((p & 0xFFFFC000) + 0x20000000) != 0) f = 0;
-    if (f == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329140 + 0xC, 0x178, lbl_80329140 + 0x128);
-    if (lineFeed < -128 || lineFeed > 127)
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329140 + 0xC, 0x179, lbl_80329140 + 0x1A0, lineFeed, -128, 127);
-    *(s8*)((char*)*field + 1) = lineFeed;
+    const char* file=lbl_80329140;
+    u32 value=(u32)this;
+    int a=1,b=1,c=1,d=1,e=1,f=1;
+    u32 t=value&0xFF000000U;
+    if(t!=0x80000000U&&(value&0xFF800000U)!=0x81000000U)f=0;
+    if(f==0&&(value&0xF8000000U)!=0x90000000U)e=0;
+    if(e==0&&t!=0xC0000000U)d=0;
+    if(d==0&&(value&0xFF800000U)!=0xC1000000U)c=0;
+    if(c==0&&(value&0xF8000000U)!=0xD0000000U)b=0;
+    if(b==0&&(value&0xFFFFC000U)!=0xE0000000U)a=0;
+    if(a==0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x177,file+0xF0,this);
+    int g=1,h=1;
+    u32 v=*(u32*)((char*)this+0x14);
+    int i=1,j=1,k=1,l=1;
+    u32 t2=v&0xFF000000U;
+    if(t2!=0x80000000U&&(v&0xFF800000U)!=0x81000000U)l=0;
+    if(l==0&&(v&0xF8000000U)!=0x90000000U)k=0;
+    if(k==0&&t2!=0xC0000000U)j=0;
+    if(j==0&&(v&0xFF800000U)!=0xC1000000U)i=0;
+    if(i==0&&(v&0xF8000000U)!=0xD0000000U)h=0;
+    if(h==0&&(v&0xFFFFC000U)!=0xE0000000U)g=0;
+    if(g==0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x178,file+0x128);
+    int valid=0;
+    if(lineFeed>=-128 && lineFeed<=127) valid=1;
+    if(!valid)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x179,file+0x1A0,lineFeed,-128,127);
+    *(s8*)(*(u32*)((char*)this+0x14)+1)=lineFeed;
 }
 
 extern "C" s8 fn_8010B2BC(void *arg0) {
