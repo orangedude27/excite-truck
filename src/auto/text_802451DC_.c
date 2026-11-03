@@ -145,9 +145,9 @@ extern int lbl_802FA350[5];
 #pragma cplusplus on
 #pragma small_data off
 #pragma scheduling invalid_target
-extern "C" void fn_802462A0(void *arg0, void *arg1) {
+extern "C" void fn_802462A0(register void *arg0, register void *arg1) {
     struct Frame {
-        int args[5];
+        unsigned int args[5];
         int pad;
         struct {
             void *object;
@@ -156,7 +156,7 @@ extern "C" void fn_802462A0(void *arg0, void *arg1) {
             float value;
             int result;
         } state;
-        int config[20];
+        unsigned int config[20];
     };
     struct Dummy {
         virtual void f0();
@@ -165,6 +165,10 @@ extern "C" void fn_802462A0(void *arg0, void *arg1) {
         virtual void f3();
     };
     struct Frame frame;
+    int firstLength;
+    int firstPointer;
+    int secondLength;
+    int secondPointer;
 
     if (*(unsigned char *)((char *)arg0 + 0x1D) == 0) {
         ((Dummy *)((char *)arg0 + 4))->f3();
@@ -175,20 +179,25 @@ extern "C" void fn_802462A0(void *arg0, void *arg1) {
     frame.state.zero = 0;
     frame.state.result = fn_8023512C(&lbl_803430CC);
 
-    frame.config[3] = strlen(*(char **)arg1);
-    frame.config[2] = *(int *)arg1;
-    frame.config[0] = (int)&lbl_8055BE70;
+    firstLength = strlen(*(char **)arg1);
+    firstPointer = *(int *)arg1;
+    frame.config[3] = firstLength;
+    frame.config[0] = (unsigned int)&lbl_8055BE70;
     frame.config[1] = 3;
+    frame.config[2] = firstPointer;
     frame.config[4] = 0;
-    frame.config[8] = strlen(*(char **)((char *)arg1 + 4));
-    frame.config[7] = *(int *)((char *)arg1 + 4);
-    frame.config[5] = (int)&lbl_8055BE78;
+
+    secondPointer = *(int *)((char *)arg1 + 4);
+    secondLength = strlen((char *)secondPointer);
+    frame.config[5] = (unsigned int)&lbl_8055BE78;
     frame.config[6] = 3;
+    frame.config[7] = secondPointer;
+    frame.config[8] = secondLength;
     frame.config[9] = 0;
 
-    frame.config[10] = (int)&lbl_803430D8;
+    frame.config[10] = (unsigned int)&lbl_803430D8;
     frame.config[11] = 5;
-    frame.config[12] = (int)&frame.state;
+    frame.config[12] = (unsigned int)&frame.state;
     frame.config[13] = 0;
     frame.config[14] = 0;
     frame.config[15] = lbl_80498890[0];
@@ -202,13 +211,13 @@ extern "C" void fn_802462A0(void *arg0, void *arg1) {
     frame.args[2] = lbl_802FA350[2];
     frame.args[3] = lbl_802FA350[3];
     frame.args[4] = lbl_802FA350[4];
-    frame.args[1] = (int)&frame.config[0];
+    frame.args[1] = (unsigned int)&frame.config[0];
 
     *(int *)((char *)arg0 + 0x24) = 0;
     fn_80216CA8(lbl_802FA350[4], lbl_802FA350[3], lbl_802FA350[2],
                 lbl_802FA350[0], lbl_802FA350, lbl_80498890[1],
                 lbl_80498890[0], 5);
-    fn_802146BC(frame.args, -0x3E7, -0x3E7, 1);
+    fn_802146BC((int *)frame.args, -0x3E7, -0x3E7, 1);
     frame.state.object = &lbl_803430E8;
     if (frame.state.result != 0)
         fn_80235380(frame.state.result);
@@ -271,6 +280,55 @@ done:
     return 1;
 }
 
+extern void fn_80230C30(float *, float *, int, int);
+extern void fn_80230924(int, float, float, float, float, float);
+extern float fn_80235EF0(int, int);
+extern float fn_80235F64(int, int);
+extern void fn_802353F4(int, int, float, float, float);
+extern void fn_802354A0(int, int, int, float, float, float, float, float);
+extern void fn_80235758(int, int, int, float, float, float, float, float, float, float, float);
+extern float lbl_80563834;
+extern float lbl_80563844;
+#pragma push
+#pragma processor 750
+void fn_802465A4(void *arg0) {
+    float x, y, xpos;
+    float width, height, left, right, mid, total, barheight, fill, part;
+    int obj;
+    fn_80230C30(&x, &y, *(int *)((char *)arg0+4), *(int *)((char *)arg0+8));
+    width = (float)*(int *)((char *)arg0+0xc);
+    height = (float)*(int *)((char *)arg0+0x10);
+    obj = *(int *)((char *)arg0+0x1c);
+    if (obj) {
+        left = fn_80235EF0(obj, 0);
+        right = fn_80235EF0(*(int *)((char *)arg0+0x1c), 2);
+        mid = (width-left)-right;
+        total = right+(left+mid);
+        barheight = fn_80235F64(*(int *)((char *)arg0+0x1c), 0);
+        x = (x + lbl_80563844*width) - lbl_80563844*total;
+        y = (y + lbl_80563844*height) - lbl_80563844*barheight;
+        fill = total * *(float *)((char *)arg0+0x18);
+        if (fill < left) {
+            fn_80235758(*(int *)((char *)arg0+0x1c), 3, -1, x, y, fill, barheight, lbl_80563830, lbl_80563830, fill/left, lbl_80563834);
+        } else if (fill < left+mid) {
+            fn_802353F4(*(int *)((char *)arg0+0x1c), 3, x, y, lbl_80563830);
+            part = fill-left;
+            fn_80235758(*(int *)((char *)arg0+0x1c), 4, -1, x+left, y, part, barheight, lbl_80563830, lbl_80563830, part/mid, lbl_80563834);
+        } else {
+            fn_802353F4(*(int *)((char *)arg0+0x1c), 3, x, y, lbl_80563830);
+            fn_802354A0(*(int *)((char *)arg0+0x1c), 4, -1, x+left, y, lbl_80563830, mid, barheight);
+            xpos = x+left;
+            part = (fill-left)-mid;
+            fn_80235758(*(int *)((char *)arg0+0x1c), 5, -1, mid+xpos, y, part, barheight, lbl_80563830, lbl_80563830, part/right, lbl_80563834);
+        }
+        fn_802353F4(*(int *)((char *)arg0+0x1c), 0, x, y, lbl_80563830);
+        fn_802354A0(*(int *)((char *)arg0+0x1c), 1, -1, x+left, y, lbl_80563830, mid, barheight);
+        fn_802353F4(*(int *)((char *)arg0+0x1c), 2, mid+(x+left), y, lbl_80563830);
+    } else {
+        fn_80230924(-1, x, y, x+width* *(float *)((char *)arg0+0x18), y-height, lbl_80563830);
+    }
+}
+#pragma pop
 extern int fn_80129AF4(void);
 extern int fn_801298E8(void *, int);
 extern int fn_80214FD8(const char *, const char *);
