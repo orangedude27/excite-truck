@@ -80,7 +80,8 @@ extern "C" int lbl_80565230;
 extern "C" s32 fn_80128668(void);
 namespace nw4hbm { namespace lyt {
 struct DrawInfo;
-class Pane { public: void CalculateMtx(const DrawInfo &); };
+namespace res { struct Pane; }
+class Pane { public: Pane(const res::Pane *); void CalculateMtx(const DrawInfo &); };
 struct PaneMtxDispatch {
     virtual void d0(); virtual void d1();
     virtual void Apply(const DrawInfo &);
@@ -998,20 +999,20 @@ extern "C" void* BuildPaneObj__Q36nw4hbm3lyt6LayoutFlPCvRCQ36nw4hbm3lyt11ResBloc
     case 0x70696331: {
         ResBlockSetTmp tmp = *set;
         obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0xEC);
-        if (!obj) return 0;
-        return __ct__Q36nw4hbm3lyt7PictureFPCQ46nw4hbm3lyt3res7PictureRCQ36nw4hbm3lyt11ResBlockSet(obj, pane, &tmp);
+        if (obj) return new (obj) nw4hbm::lyt::Picture((const nw4hbm::lyt::res::Picture*)pane, *(const nw4hbm::lyt::ResBlockSet*)&tmp);
+        return 0;
     }
     case 0x74787431: {
         ResBlockSetTmp tmp = *set;
         obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0x100);
-        if (!obj) return 0;
-        return __ct__Q36nw4hbm3lyt7TextBoxFPCQ46nw4hbm3lyt3res7TextBoxRCQ36nw4hbm3lyt11ResBlockSet(obj, pane, &tmp);
+        if (obj) return new (obj) nw4hbm::lyt::TextBox((const nw4hbm::lyt::res::TextBox*)pane, *(const nw4hbm::lyt::ResBlockSet*)&tmp);
+        return 0;
     }
     case 0x776E6431: {
         ResBlockSetTmp tmp = *set;
         obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0x104);
-        if (!obj) return 0;
-        return __ct__Q36nw4hbm3lyt6WindowFPCQ46nw4hbm3lyt3res6WindowRCQ36nw4hbm3lyt11ResBlockSet(obj, pane, &tmp);
+        if (obj) return new (obj) nw4hbm::lyt::Window((const nw4hbm::lyt::res::Window*)pane, *(const nw4hbm::lyt::ResBlockSet*)&tmp);
+        return 0;
     }
     case 0x626E6431: {
         ResBlockSetTmp tmp = *set;
