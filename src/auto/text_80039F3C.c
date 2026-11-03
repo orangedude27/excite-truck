@@ -264,6 +264,50 @@ static inline DVDLowContext *newContext(void *callback, unsigned int arg2, const
     return &((DVDLowContext *)lbl_8037B820)[id];
 }
 
+static inline void *ddrAllocAligned32(unsigned int size) {
+    unsigned char *lo = (unsigned char *)IPCGetBufferLo();
+    unsigned char *hi = (unsigned char *)IPCGetBufferHi();
+
+    if ((unsigned int)lo % 32 != 0) {
+        lo = (unsigned char *)(((unsigned int)lo + 31) & 31);
+    }
+
+    if (lo + size > hi) {
+        OSReport(lbl_80302848 + 0x80, size);
+    }
+
+    IPCSetBufferLo(lo + size);
+    return lo;
+}
+
+static inline int allocateStructures(void) {
+    lbl_8055D8FC = (unsigned char *)ddrAllocAligned32(128);
+    if (lbl_8055D8FC == (void *)0) {
+        OSReport(lbl_80302848 + 0xBC);
+        return 0;
+    }
+
+    lbl_8055D8F8 = (char *)ddrAllocAligned32(32);
+    if (lbl_8055D8F8 == (void *)0) {
+        OSReport(lbl_80302848 + 0xE4);
+        return 0;
+    }
+
+    return 1;
+}
+
+static inline void initDvdContexts(void) {
+    int i;
+    for (i = 0; i < 4; i++) {
+        ((DVDLowContext *)lbl_8037B820)[i].callback = (void *)0;
+        ((DVDLowContext *)lbl_8037B820)[i].WORD_0x4 = 0;
+        ((DVDLowContext *)lbl_8037B820)[i].inUse = 0;
+        ((DVDLowContext *)lbl_8037B820)[i].magic = 0xFEEBDAED;
+        ((DVDLowContext *)lbl_8037B820)[i].id = i;
+    }
+    lbl_8055D8E8 = 0;
+}
+
 int DVDLowInit(void) {
     return 0;
 }
