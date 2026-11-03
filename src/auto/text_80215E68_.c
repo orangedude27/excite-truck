@@ -3,14 +3,14 @@ extern void fn_8021889C(void);
 #include <types.h>
 static inline void fn_80216244_rotate(const f32 *m, const f32 *v, f32 *out) {
     if (v == out) {
-        f32 x = m[0]*v[0] + m[3]*v[1] + m[6]*v[2];
-        f32 y = m[1]*v[0] + m[4]*v[1] + m[7]*v[2];
-        f32 z = m[2]*v[0] + m[5]*v[1] + m[8]*v[2];
+        f32 x = v[2]*m[6] + (v[0]*m[0] + v[1]*m[3]);
+        f32 y = v[2]*m[7] + (v[0]*m[1] + v[1]*m[4]);
+        f32 z = v[2]*m[8] + (v[0]*m[2] + v[1]*m[5]);
         out[0] = x; out[1] = y; out[2] = z;
     } else {
-        out[0] = m[0]*v[0] + m[3]*v[1] + m[6]*v[2];
-        out[1] = m[1]*v[0] + m[4]*v[1] + m[7]*v[2];
-        out[2] = m[2]*v[0] + m[5]*v[1] + m[8]*v[2];
+        out[0] = v[2]*m[6] + (v[0]*m[0] + v[1]*m[3]);
+        out[1] = v[2]*m[7] + (v[0]*m[1] + v[1]*m[4]);
+        out[2] = v[2]*m[8] + (v[0]*m[2] + v[1]*m[5]);
     }
 }
 
@@ -238,13 +238,15 @@ s32 fn_802161CC(s32 arg0) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma dont_inline reset
 s32 fn_80216244(void) {
     s32 i;
     u32 *p;
     u8 *obj;
     f32 matrix[12];
-    f32 pos[3];
-    f32 x, y, z;
+    f32 vec[3], pos[3];
+    f32 x, y;
+    register f32 z;
     f64 d;
     u32 raw;
     void (*callback)(void);
@@ -257,6 +259,7 @@ s32 fn_80216244(void) {
     fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
     fn_802C88BC(2);
     p = lbl_804908C8;
+    z = lbl_80563458;
     for (i = 0; i < 16; i++, p++) {
         if (*p != 0) {
             obj = (u8 *)*p;
@@ -264,15 +267,11 @@ s32 fn_80216244(void) {
             fn_80230B5C(matrix);
             fn_802C974C(lbl_80563468, lbl_8056346C, lbl_80563470);
             raw = *(u32 *)(obj + 0x454);
-            d = (f64)(s32)raw;
-            x = -(f32)(d);
+            x = -(f32)(s32)raw;
             raw = *(u32 *)(obj + 0x458);
-            d = (f64)(s32)raw;
-            y = (f32)d;
-            z = lbl_80563458;
-            pos[0] = x * matrix[0] + y * matrix[3] + z * matrix[6];
-            pos[1] = x * matrix[1] + y * matrix[4] + z * matrix[7];
-            pos[2] = x * matrix[2] + y * matrix[5] + z * matrix[8];
+            y = (f32)(s32)raw;
+            vec[0] = x; vec[1] = y; vec[2] = z;
+            fn_80216244_rotate(matrix, vec, pos);
             matrix[9] += pos[0];
             matrix[10] += pos[1];
             matrix[11] += pos[2];
