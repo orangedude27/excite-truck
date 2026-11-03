@@ -743,6 +743,53 @@ void fn_802A5CA4(void *arg0) {
 
 #pragma push
 #pragma processor 750
+void fn_802A5FE4(void *arg0) {
+    f32 saved;
+    s32 scaled, alpha, t;
+    s32 i, j;
+    if (*(s32 *)((char *)arg0 + 4) >= 1) {
+        saved = fn_802C9A4C(lbl_8055F880);
+        fn_802C8B98(*(s32 *)((char *)arg0 + 0xC), fn_802C86DC());
+        scaled = (s32)(lbl_80564854 * (lbl_8056485C / (lbl_80564890 * PSVECMag((f32 *)((char *)arg0 + 0x44)))));
+        alpha = 0xff;
+        t = scaled & ~(scaled >> 31);
+        if (t < 0xff) alpha = t;
+        if (fn_801E501C(*(s32 *)((char *)arg0 + 4), (char *)arg0 + 0x44, lbl_80564844, (u8)alpha) != 0) {
+            s32 k = 0;
+            s32 off = 0;
+            while (k < *(s32 *)((char *)arg0 + 4)) {
+                f32 *e = (f32 *)(*(s32 *)arg0 + off);
+                fn_801E5174(e, e[0], e[1], e[2]);
+                off += 0xC;
+                k++;
+            }
+            fn_801E5348();
+        }
+        fn_802C8D74();
+        fn_802C9A4C(saved);
+        fn_802C90F0(*(s32 *)((char *)arg0 + 0x10));
+        for (i = 0; i < lbl_8055CFF0 / 64 + 1; i++) {
+            for (j = 0; j < lbl_8055CFF4 / 64 + 1; j++) {
+                s32 y1 = (j + 1) << 6;
+                s32 x1 = (i + 1) << 6;
+                f32 p14 = *(f32 *)((char *)arg0 + 0x14);
+                f32 p18 = *(f32 *)((char *)arg0 + 0x18);
+                if (lbl_8055CFF4 < y1) y1 = lbl_8055CFF4;
+                if (lbl_8055CFF0 < x1) x1 = lbl_8055CFF0;
+                ((void (*)(s32, s32, s32, s32, u32, f32, f32, f32, f32))fn_802C9124)(
+                    i << 6, j << 6, x1, y1, 0x6EFFFFFF,
+                    p14 + (f32)(i * 7) / lbl_80564884,
+                    p18 + (f32)(j * 7) / lbl_80564888,
+                    (lbl_8056485C + p14) + (f32)(i * 7) / lbl_80564884,
+                    (lbl_8056485C + p18) + (f32)(j * 7) / lbl_80564888);
+            }
+        }
+        fn_802C9118();
+    }
+}
+
+#pragma push
+#pragma processor 750
 void fn_802A6234(void *arg0) {
     f32 temp_f30;
     f32 temp_f31;
