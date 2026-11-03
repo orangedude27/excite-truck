@@ -304,10 +304,12 @@ u32 fn_802E8D84(void) { return 1; }
 
 int fn_802E8D8C(const char *path, void *buf, int len) {
     struct { int pad; char info[0x8C]; } s;
-    char *msg = lbl_8034D9C0;
-    int a, b, r, n;
-    unsigned char saved;
+    int a, saved;
+    char *msg;
+    int n;
+    int b, r;
 
+    msg = lbl_8034D9C0;
     lbl_80560030 = (int)path;
     if (((int (*)(void *, void (*)(void)))fn_802E95E0)(msg + 0x550, fn_802E8838) == 0) {
         if (&s.pad != 0) lbl_80560030 = 0;
@@ -325,7 +327,7 @@ int fn_802E8D8C(const char *path, void *buf, int len) {
     }
     if (a == 0 || b == 0) {
         fn_802E30C8(msg + 0x594);
-        if (fn_802E8BE4() != 0) fn_802E8920(len);
+        if (((int (*)(void))fn_802E8BE4)() != 0) fn_802E8920(len);
         if (&s.pad != 0) lbl_80560030 = 0;
         return 0;
     }
@@ -338,7 +340,7 @@ int fn_802E8D8C(const char *path, void *buf, int len) {
     }
     if (lbl_80560020 != 0) {
         if (len > 0x55730) {
-            fn_802E317C(msg + 0x5F0, len);
+            fn_802E317C(msg + 0x5F0, len, 0x55730);
         }
         n = NANDRead(s.info, (void *)lbl_80560020, len);
         if (n == len) {
@@ -351,8 +353,8 @@ int fn_802E8D8C(const char *path, void *buf, int len) {
         fn_802E30C8(msg + 0x624, n);
         NANDClose(s.info);
         if (n == -4) {
-            fn_802E8C2C();
-        } else if (fn_802E8BE4() != 0) {
+            ((void (*)(void))fn_802E8C2C)();
+        } else if (((int (*)(void))fn_802E8BE4)() != 0) {
             fn_802E8920(len);
         }
         if (&s.pad != 0) lbl_80560030 = 0;
