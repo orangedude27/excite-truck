@@ -9,7 +9,55 @@ public:
     virtual void unused1();
     virtual int isAvailable(int);
 };
+
+class Fn801D334CObj {
+public:
+    virtual void dummy08();
+    virtual int hasKey(const char *);
+    virtual void dummy10();
+    virtual const char *getString(const char *);
+    virtual void dummy18();
+    virtual void dummy1C();
+    virtual int getInt(const char *, int);
+    virtual float getFloat(const char *);
+    virtual float getFloatDef(const char *, float);
+    virtual void dummy2C();
+    virtual char getByte(const char *, int);
+};
+
+struct Fn801D334CData {
+    float max_life;
+    float mass;
+    float mx;
+    float my;
+    float mz;
+    float spring;
+    float friction;
+    int surf_type;
+    char ground_test;
+    char pad[3];
+    int effect_id;
+    int mode;
+    float f2c;
+    float f30;
+};
 #pragma cplusplus reset
+
+extern const char lbl_80338340[];
+extern unsigned int lbl_8055AC30;
+extern unsigned int lbl_8055AC38;
+extern unsigned int lbl_8055AC3C;
+extern unsigned int lbl_8055AC40;
+extern unsigned int lbl_8055AC44;
+extern unsigned int lbl_8055AC4C;
+extern unsigned int lbl_8055AC54;
+extern unsigned int lbl_8055AC58;
+extern unsigned int lbl_8055AC5C;
+extern float lbl_80562AA0;
+extern float lbl_80562AA4;
+extern float lbl_80562AA8;
+extern int fn_801D04D0(const char *);
+extern int fn_801D37C4(const char *);
 
 #pragma cplusplus on
 extern "C" void fn_802E317C(const char *, ...);
@@ -91,9 +139,9 @@ extern "C" void fn_801D3610(void *arg0, int arg1) {
 #pragma cplusplus reset
 extern int fn_801D411C(void *);
 extern void *lbl_804421D8[];
+#pragma push
+#pragma processor 750
 #pragma cplusplus on
-#pragma paired off
-#pragma paired_single off
 #pragma scheduling invalid_target
 extern "C" int fn_801D36E8(void) {
     struct Dummy {
@@ -114,15 +162,11 @@ extern "C" int fn_801D36E8(void) {
         virtual void f14();
         virtual int check();
     };
-    float bestValue;
-    void **entry;
-    void *best;
-    int index;
+    float bestValue = lbl_80562AB8;
+    void **entry = lbl_804421D8;
+    void *best = 0;
+    int index = 0;
 
-    bestValue = lbl_80562AB8;
-    entry = lbl_804421D8;
-    best = 0;
-    index = 0;
     goto check_loop;
 loop:
     if (((struct Dummy *)*entry)->check() == 0)
@@ -139,10 +183,7 @@ check_loop:
     fn_801D411C(best);
     return (int)best;
 }
-#pragma paired reset
-#pragma paired_single reset
-#pragma cplusplus reset
-#pragma scheduling off
+#pragma pop
 unsigned int fn_801D37AC(void *arg0) {
     int temp_r4;
     temp_r4 = *(int *)((char *)arg0 + 0x1EC);
@@ -225,10 +266,12 @@ void fn_801D3A1C(void *arg0) {
     char *sound = *(char **)(self + 0x244);
     int zeroInt = 0;
     int minusOne = -1;
-    float zero = lbl_80562AB8;
+    float one;
+    float zero;
     volatile float sp8, spC, sp10, sp14, sp18, sp1C;
-    int v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11;
+    int v11, v10, v9, v8, v7, v6, v5, v4, v3, v2, v1, v0;
 
+    zero = lbl_80562AB8;
     *(int *)(self + 0x1EC) = minusOne;
     *(int *)(self + 0x1F0) = minusOne;
     *(float *)(self + 0x224) = zero;
@@ -236,8 +279,9 @@ void fn_801D3A1C(void *arg0) {
     *(int *)(self + 0x22C) = zeroInt;
     *(int *)(self + 0x23C) = zeroInt;
     *(int *)(self + 0x24) = *(int *)(self + 0x28);
+#pragma scheduling off
     if (sound != 0) {
-        float one = lbl_80562AAC;
+        one = lbl_80562AAC;
         *(void **)(sound + 0xC) = self + 0x3C;
         *(void **)(sound + 4) = arg0;
         *(int *)(sound + 8) = zeroInt;
@@ -265,11 +309,13 @@ void fn_801D3A1C(void *arg0) {
         if (arg0 != 0)
             fn_8019EECC(arg0, sound + 0x28);
     }
+#pragma scheduling on
 
     {
-        float zero2 = lbl_80562AB8;
-        float one2 = lbl_80562AAC;
-        float special = lbl_80562ABC;
+        float special, zero2, one2;
+        zero2 = lbl_80562AB8;
+        one2 = lbl_80562AAC;
+        special = lbl_80562ABC;
         *(float *)(self + 0x220) = zero2;
         *(int *)(self + 0x24) = zeroInt;
         *(float *)(self + 0x1F4) = one2;
