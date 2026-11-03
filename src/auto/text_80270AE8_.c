@@ -20,8 +20,7 @@ struct Manager {
     virtual void v3() = 0;
     virtual void *getCamera() = 0;
 };
-#pragma inline_max_size(1000)
-extern "C" inline void *callGetCamera(void *manager) {
+extern "C" static inline void *callGetCamera(void *manager) {
     return ((Manager *)manager)->getCamera();
 }
 #pragma cplusplus reset
@@ -401,7 +400,7 @@ extern "C" void fn_802712F8(void *arg0) {
     extern void fn_80277828(void);
     extern void fn_802E30C8(const char *, ...);
     extern int stricmp(const char *, const char *);
-    register const char *strings = lbl_80346B00;
+    register char *strings = lbl_80346B00;
     lbl_8055F550 = 0;
     lbl_8055F548 = 0;
     fn_80277740();
@@ -424,8 +423,8 @@ extern "C" void fn_802712F8(void *arg0) {
             index += 1;
         }
         fn_80131818(iterator);
-    } else if (fn_8012C33C((void *)(strings + 0x334)) != 0) {
-        register Iterator *iterator = (Iterator *)fn_80131808((void *)(strings + 0x334));
+    } else if (fn_8012C33C(strings + 0x334) != 0) {
+        register Iterator *iterator = (Iterator *)fn_80131808(strings + 0x334);
         register char *tableA = lbl_8049A2C8;
         register Item *item;
         register int index = 0;
