@@ -112,6 +112,7 @@ extern "C" void *lbl_8033DEAC[];
 
 extern "C" void fn_80227880(s32, f32, f32, f32, f32);
 extern "C" void fn_80230924(s32, s32, f32, f32, f32, f32, f32);
+extern "C" f32 lbl_80563514;
 
 extern "C" s32 fn_8022F638(s32, s32, s32, s32, f32);
 extern f32 lbl_805634E4;
