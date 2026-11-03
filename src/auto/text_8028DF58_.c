@@ -12,7 +12,8 @@ extern int fn_8002F768(void *, int, int);
 // split_file divides it into the game's real files (file_status shows its range).
 typedef struct { float v[7]; unsigned char c[3]; float f0; float f1; } EfEntry;
 typedef struct { float x, y, z; } EfVec;
-typedef struct { EfVec a; EfVec b; float v6; unsigned char c0, c1, c2; float f0; float f1; } EfEntry2;
+typedef struct { EfVec a; EfVec b; } EfPair;
+typedef struct { EfPair p; float v6; unsigned char c0, c1, c2; float f0; float f1; } EfEntry2;
 
 extern char lbl_803490D4[];
 extern int fn_80128668(void *);
