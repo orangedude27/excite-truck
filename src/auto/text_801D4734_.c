@@ -109,7 +109,7 @@ void fn_801D4908(void) {
     fn_801D5A2C();
 }
 
-extern void fn_8000FF88(int, int, void *, char *, float, float, float);
+extern void fn_8000FF88(int, int, const char *, float, float, float, ...);
 extern char lbl_80442310[];
 extern char lbl_8055AD58[3], lbl_8055AD5C[3];
 extern float lbl_8055E3C8, lbl_80562AD8, lbl_80562ADC, lbl_80562AE0, lbl_80562AE4, lbl_80562AE8, lbl_80562AEC, lbl_80562AF0, lbl_80562AF4, lbl_80562AF8, lbl_80562AFC;
@@ -141,7 +141,7 @@ void fn_801D490C(void) {
             }
         }
         color = (((unsigned int)(int)(lbl_80562AF0 * alpha) << 24) | 0x00ffffff) & 0xffffff00;
-        fn_8000FF88(color, 0xC, lbl_8055AD5C, lbl_80442310 + 0x48, lbl_80562AF4, lbl_80562ADC, lbl_80562AF8);
+        fn_8000FF88(color, 0xC, lbl_8055AD5C, lbl_80562AF4, lbl_80562ADC, lbl_80562AF8, lbl_80442310 + 0x48);
         src = lbl_80442310 + 8; dst = text; n = 0x40;
         goto copy;
     limit:
@@ -157,7 +157,7 @@ void fn_801D490C(void) {
         while (part && (signed char)*part) {
             caret = strchr(part, 0x5e);
             if (caret) *caret = 0;
-            fn_8000FF88(color, 0xC, lbl_8055AD58, part, lbl_80562AE0, lbl_80562ADC, y);
+            fn_8000FF88(color, 0xC, lbl_8055AD58, lbl_80562AE0, lbl_80562ADC, y, part);
             if (caret) part = caret + 1; else part = 0;
             y -= dy;
         }
@@ -227,6 +227,96 @@ int fn_801D4CB8(int arg0, int arg1) {
     }
     return arg0;
 }
+
+#pragma cplusplus on
+extern "C" int fn_801D4CF8(void *arg0, void *arg1) {
+    struct Node {
+        virtual const char *name();
+    };
+    struct Dummy {
+        virtual void v0();
+        virtual int has(char *);
+        virtual void v2();
+        virtual char *get(char *);
+        virtual void v4();
+        virtual void v5();
+        virtual int getInt(char *, int);
+        virtual void v7();
+        virtual float value(char *, float);
+        virtual void v9();
+        virtual unsigned char flag(char *, int);
+        virtual void v11();
+        virtual void v12();
+        virtual void v13();
+        virtual void v14();
+        virtual void v15();
+        virtual void v16();
+        virtual void v17();
+        virtual void v18();
+        virtual void v19();
+        virtual void v20();
+        virtual void v21();
+        virtual Node *child(int);
+    };
+    extern char lbl_8055AC80;
+    extern char lbl_8055AC88;
+    extern float lbl_80562B00;
+    extern void *fn_801D7334(void *);
+    extern void fn_802E30C8(const char *, const char *);
+    extern int stricmp(const char *, const char *);
+    Dummy *obj = (Dummy *)arg1;
+    char *base = &lbl_80338460;
+    char *src;
+    char *dst;
+    int remaining;
+    int i;
+    Node *node;
+
+    if (obj->has(&lbl_8055AC80) == 0) {
+        ((void (*)(const char *, ...))fn_802E30C8)(base + 0x44);
+        return 0;
+    }
+    src = obj->get(&lbl_8055AC80);
+    dst = (char *)arg0 + 8;
+    remaining = 0x14;
+    goto copy_body;
+copy_limit:
+    if (--remaining > 0)
+        goto copy_body;
+    dst[-1] = 0;
+    goto copy_done;
+copy_body:
+    if ((signed char)(*dst++ = *src++) != 0)
+        goto copy_limit;
+copy_done:
+    i = 0;
+    node = obj->child(i);
+    goto loop_test;
+loop_body:
+    if (stricmp(node->name(), &lbl_8055AC88) == 0) {
+        void *r = fn_801D7334(node);
+        if (r != 0) {
+            int n = *(int *)((char *)arg0 + 0x34);
+            *(int *)((char *)arg0 + 0x34) = n + 1;
+            ((void **)*(int *)((char *)arg0 + 0x30))[n] = r;
+        }
+    } else {
+        ((void (*)(const char *, ...))fn_802E30C8)(base + 0x88, (char *)arg0 + 8, node->name());
+    }
+    i++;
+    node = obj->child(i);
+loop_test:
+    if (node != 0) goto loop_body;
+    *(unsigned char *)((char *)arg0 + 0x20) = obj->flag(base + 0xC8, 0);
+    *(float *)((char *)arg0 + 0x1C) = obj->value(base + 0xD4, lbl_80562B00);
+    *(unsigned char *)((char *)arg0 + 0x21) = obj->flag(base + 0xE0, 1);
+    *(unsigned char *)((char *)arg0 + 0x22) = obj->flag(base + 0xF0, 1);
+    *(int *)((char *)arg0 + 0x24) = obj->getInt(base + 0xFC, -1);
+    *(int *)((char *)arg0 + 0x28) = obj->getInt(base + 0x110, -1);
+    *(int *)((char *)arg0 + 4) = 1;
+    return 1;
+}
+#pragma cplusplus reset
 
 void fn_801D4F9C(void) {
 }
