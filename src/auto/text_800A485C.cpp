@@ -3968,20 +3968,22 @@ extern "C" s32 VFiPFFAT_WriteCluster(void *object, s32 arg1, s32 arg2, s32 arg3,
  u32 unused, flag=arg4;
  s32 result;
  u32 index, n, count, *table;
- switch (*(s32 *)(*(u8 **)(object ? p+0x34 : p+0x34)+0x1c)) {
+ { u8 *context = *(u8 **)(p+0x34);
+ switch (*(s32 *)(context+0x1c)) {
  case 0:
   if (value>0xfff) result=0x10;
-  else result=fn_800AF734(object,(u16)entry,(u16)value);
+  else result=fn_800AF734(context,(u16)entry,(u16)value);
   break;
  case 1:
   if (value>0xffff) result=0x10;
-  else result=((s32 (*)(void *,s32,s32))fn_800AFF28)(object,entry,value);
+  else result=((s32 (*)(void *,s32,s32))fn_800AFF28)(context,entry,value);
   break;
  case 2:
   if (value>0xfffffff) result=0x10;
-  else result=fn_800B037C(object,entry,value);
+  else result=fn_800B037C(context,entry,value);
   break;
  default: result=0xf; break;
+ }
  }
  if (result) return result;
  table=*(u32 **)(p+0x1c);
