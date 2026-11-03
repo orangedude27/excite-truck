@@ -27,6 +27,20 @@ typedef struct {
     s32 unk0, unk4, unk8, unkC;
     f32 *glyphs;
 } Fn80231AF0_Ctx;
+typedef struct {
+    s32 idx;
+    f32 x;
+    f32 y;
+    f32 z;
+    f32 w;
+    f32 w2;
+    s32 flag;
+} Fn80231D84_Rec;
+typedef struct {
+    Fn80231D84_Rec *recs;
+    s32 count;
+} Fn80231D84_Table;
+extern s32 lbl_8055F050;
 extern volatile u8 lbl_8055F074;
 extern f32 lbl_80563690;
 extern void fn_80233AA4(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4);
@@ -381,6 +395,8 @@ void fn_80231ADC(void) {
 
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_80231AF0(char *text, void *ctx, f32 x, f32 y, f32 z, f32 w, f32 sx, f32 sy, f32 sp) {
     f32 spC;
     f32 sp8;
@@ -397,10 +413,13 @@ void fn_80231AF0(char *text, void *ctx, f32 x, f32 y, f32 z, f32 w, f32 sx, f32 
         u8 *g;
 
         if (*text == '\\') {
-            s32 i = 0;
+            s32 eo;
+            s32 i;
+            i = 0;
+            eo = 0;
             while (i < ((Fn80231AF0_Table *)lbl_80497F14)->count) {
                 Fn80231AF0_Entry *e;
-                const char *name = ((Fn80231AF0_Table *)lbl_80497F14)->entries[i].name;
+                const char *name = *(const char **)((u8 *)((Fn80231AF0_Table *)lbl_80497F14)->entries + eo);
                 if (fn_8002B1D8(text + 1, name, strlen(name)) == 0) {
                     e = &((Fn80231AF0_Table *)lbl_80497F14)->entries[i];
                     if (e->unkC != 0) {
@@ -413,6 +432,7 @@ void fn_80231AF0(char *text, void *ctx, f32 x, f32 y, f32 z, f32 w, f32 sx, f32 
                     skip = strlen(((Fn80231AF0_Table *)lbl_80497F14)->entries[i].name) + 1;
                     goto have;
                 }
+                eo += 0x1C;
                 i++;
             }
         }
@@ -436,7 +456,8 @@ have:
         }
         off = code * 0x1C;
         text += next - text;
-        x += sy * (sx * *(f32 *)((u8 *)((Fn80231AF0_Ctx *)ctx)->glyphs + off));
+        g = (u8 *)((Fn80231AF0_Ctx *)ctx)->glyphs;
+        x += sy * (sx * *(f32 *)(g + off));
         if (lbl_8055F074) {
             ((void (*)(f32 *, f32 *, f32, f32))lbl_8055F070)(&spC, &sp8, x - half, half + y);
             spC += half;
@@ -1020,6 +1041,86 @@ void fn_80233010(char *arg0, s32 font, s32 color, s32 flags, s32 mode, f32 x, f3
         }
     }
 }
+
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+void fn_80233354(u8 *text, u8 *ctx, s32 arg2, s32 flags, f32 x, f32 y, f32 sx, f32 z) {
+    s32 sp8;
+    f32 y0;
+    f32 charW;
+    s32 pass;
+    s32 pos;
+    u8 *base;
+
+    sp8 = arg2;
+    fn_80231714(&sp8);
+    y0 = y;
+    strlen((char *)text);
+    if ((s8)*text != 0) {
+        u8 c0 = *text;
+        charW = (f32)ctx[4] * sx;
+        if ((c0 & 0xF0) == 0xE0) {
+        } else if ((c0 & 0xE0) == 0xC0) {
+        }
+        if (flags & 1) {
+        } else if (flags & 2) {
+            fn_8023293C((s32)ctx, (char *)text, lbl_80563684);
+        } else if (flags & 4) {
+            fn_8023293C((s32)ctx, (char *)text, lbl_80563684);
+        }
+        if (flags & 8) {
+            x += (f32)ctx[4] * sx;
+        } else if (flags & 0x20) {
+            x += (f32)ctx[6] * sx;
+        } else if (flags & 0x10) {
+            x += (f32)ctx[4] * sx * lbl_80563688;
+        }
+        pass = (*(u32 *)(ctx + 8) != 0) + 1;
+        while (pass > 0) {
+            s32 arg;
+            y = y0;
+            arg = sp8;
+            base = ctx;
+            pos = 0;
+            if (pass == 2) {
+                base = *(u8 **)(ctx + 8);
+                arg = fn_80231718(arg);
+            }
+            fn_80233DD8((s32 *)base, arg);
+            while ((s8)text[pos] != 0) {
+                u8 *p = text + pos;
+                u8 ch = text[pos];
+                u8 *next;
+                u16 code;
+                s32 off;
+                u8 *g;
+                if ((ch & 0xF0) == 0xE0) {
+                    next = p + 3;
+                    code = ((ch & 0xF) << 12) | ((p[1] & 0x3F) << 6) | (p[2] & 0x3F);
+                } else if ((ch & 0xE0) == 0xC0) {
+                    next = p + 2;
+                    code = ((ch & 0x1F) << 6) | (p[1] & 0x3F);
+                } else {
+                    code = ch & 0x7F;
+                    next = p + 1;
+                }
+                g = *(u8 **)(base + 0x10);
+                off = code * 0x1C;
+                y = y - sx * *(f32 *)(g + off);
+                fn_80233EC0(base, code, x, y, z, x + charW, y - sx * *(f32 *)(g + off + 4), z);
+                pos += next - p;
+                g = *(u8 **)(base + 0x10) + off;
+                y -= sx * (*(f32 *)(g + 4) + *(f32 *)(g + 8));
+            }
+            fn_80233EBC();
+            pass--;
+        }
+    }
+}
+#pragma pop
+
 #pragma pop
 #pragma scheduling reset
 
