@@ -28,32 +28,50 @@ typedef struct AIConfig {
     f32 f1C;
 } AIConfig;
 
-struct EntryVtable {
-    void *_00;
-    void *_04;
-    const char *(*GetName)(void *);
-    void *_0C;
-    void *_10;
-    void *_14;
-    void *_18;
-    void *_1C;
-    void *_20;
-    f32 (*GetFloat)(void *, const void *);
-    f32 (*GetFloatDef)(void *, const void *, f32);
-};
-
+#pragma push
+#pragma cplusplus on
 struct Entry {
-    struct EntryVtable *vtable;
-};
-
-struct ContainerVtable {
-    void *_pad[24];
-    struct Entry *(*GetEntry)(void *, int);
+    virtual void _00();
+    virtual void _04();
+    virtual const char *GetName();
+    virtual void _0C();
+    virtual void _10();
+    virtual void _14();
+    virtual void _18();
+    virtual void _1C();
+    virtual void _20();
+    virtual f32 GetFloat(const void *);
+    virtual f32 GetFloatDef(const void *, f32);
 };
 
 struct Container {
-    struct ContainerVtable *vtable;
+    virtual void _00();
+    virtual void _04();
+    virtual void _08();
+    virtual void _0C();
+    virtual void _10();
+    virtual void _14();
+    virtual void _18();
+    virtual void _1C();
+    virtual void _20();
+    virtual void _24();
+    virtual void _28();
+    virtual void _2C();
+    virtual void _30();
+    virtual void _34();
+    virtual void _38();
+    virtual void _3C();
+    virtual void _40();
+    virtual void _44();
+    virtual void _48();
+    virtual void _4C();
+    virtual void _50();
+    virtual void _54();
+    virtual void _58();
+    virtual void _5C();
+    virtual Entry *GetEntry(int);
 };
+#pragma pop
 
 void *fn_801284F8(unsigned int, const void *);
 void *fn_80128668();
@@ -87,27 +105,29 @@ void *fn_8013A264(void *arg0) {
 
 #pragma push
 #pragma processor 750
-void fn_8013A2FC(AIConfig *config, struct Container *container) {
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+extern "C" void fn_8013A2FC(AIConfig *config, struct Container *container) {
+    const char *base = (const char *)lbl_8032C118;
     if (container != 0) {
-        const char *base = (const char *)lbl_8032C118;
-        f32 f29 = lbl_80561424;
-        f32 f30 = lbl_80561428;
-        f32 f31 = lbl_8056142C;
+        f32 step = lbl_8056142C;
+        f32 min = lbl_80561428;
+        f32 max = lbl_80561424;
         int i;
         struct Entry *entry;
 
-        for (i = 0; (entry = container->vtable->GetEntry(container, i)) != 0; i++) {
-            if (stricmp(entry->vtable->GetName(entry), base + 0x34) == 0) {
+        for (i = 0; (entry = container->GetEntry(i)) != 0; i++) {
+            if (stricmp(entry->GetName(), base + 0x34) == 0) {
                 Node604 *node = (Node604 *)fn_801284F8(0x28, base + 0x40);
-                node->lo = entry->vtable->GetFloat(entry, &lbl_80559C68);
-                node->hi = entry->vtable->GetFloat(entry, &lbl_80559C70);
-                node->f8 = entry->vtable->GetFloatDef(entry, &lbl_80559C78, config->f4);
-                node->fC = entry->vtable->GetFloatDef(entry, &lbl_80559C80, config->f8);
-                node->f10 = entry->vtable->GetFloatDef(entry, &lbl_80559C88, config->fC);
-                node->f14 = entry->vtable->GetFloatDef(entry, base + 0x20, config->f10);
-                node->f18 = entry->vtable->GetFloatDef(entry, base + 0x4C, config->f14);
-                node->f1C = entry->vtable->GetFloatDef(entry, &lbl_80559C60, config->f18);
-                node->f20 = entry->vtable->GetFloatDef(entry, base + 0x58, config->f1C);
+                node->lo = entry->GetFloat(&lbl_80559C68);
+                node->hi = entry->GetFloat(&lbl_80559C70);
+                node->f8 = entry->GetFloatDef(&lbl_80559C78, config->f4);
+                node->fC = entry->GetFloatDef(&lbl_80559C80, config->f8);
+                node->f10 = entry->GetFloatDef(&lbl_80559C88, config->fC);
+                node->f14 = entry->GetFloatDef(base + 0x20, config->f10);
+                node->f18 = entry->GetFloatDef(base + 0x4C, config->f14);
+                node->f1C = entry->GetFloatDef(&lbl_80559C60, config->f18);
+                node->f20 = entry->GetFloatDef(base + 0x58, config->f1C);
                 node->next = config->head;
                 config->head = node;
 
@@ -116,18 +136,19 @@ void fn_8013A2FC(AIConfig *config, struct Container *container) {
                     if (copy != 0) {
                         *copy = *node;
                     }
-                    node->hi = f29;
-                    copy->lo = f30;
-                    copy->f8 = f31;
+                    node->hi = max;
+                    copy->lo = min;
+                    copy->f8 = step;
                     copy->next = config->head;
                     config->head = copy;
                 }
             }
         }
 
-        fn_802E30C8(base + 0x68, i, (i == 1) ? &lbl_80559C94 : &lbl_80559C90);
+        fn_802E30C8(base + 0x68, i, (i != 1) ? &lbl_80559C90 : &lbl_80559C94);
     }
 }
+#pragma cplusplus reset
 #pragma pop
 
 void **fn_8013A598(void **arg0, s32 arg1) {
