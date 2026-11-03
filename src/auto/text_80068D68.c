@@ -6200,13 +6200,15 @@ void btm_read_remote_features_complete(UINT8 *p) {
                 j = 0;
                 policy = *(u16 *)(lbl_803C0F78 + 0x4C6);
                 q = lbl_803C0F78 + 0x34;
-                for (; j < 4; j++, q += 0x11C) {
-                    if (!q[0x119]) continue;
-                    if (memcmp(q + 8, acl + 8, 6) != 0) continue;
-                    goto found;
+                while (1) {
+                    if (q[0x119] && memcmp(q + 8, acl + 8, 6) == 0) break;
+                    j++;
+                    q += 0x11C;
+                    if (j >= 4) {
+                        q = 0;
+                        break;
+                    }
                 }
-                q = 0;
-found:
                 if (q) {
                     *(u16 *)(q + 0x10E) = policy;
                     if (!q[0x11A]) btsnd_hcic_write_policy_set_80085668(*(u16 *)q, policy);
@@ -8517,6 +8519,56 @@ tBTM_PM_MODE btm_pm_get_set_mode(UINT8 pm_id, tBTM_PM_MCB *p_cb, tBTM_PM_PWR_MD 
     }
 
     return p_res->mode;
+}
+
+tBTM_STATUS btm_pm_snd_md_req(UINT8 pm_id, int link_ind, tBTM_PM_PWR_MD *p_mode) {
+    extern BOOLEAN btsnd_hcic_sniff_mode(BT_HDR *, s16, s16, s16, s16, u16);
+    extern s32 btsnd_hcic_exit_sniff_mode(void *, u16);
+    extern s32 btsnd_hcic_exit_sniff_mode_80084AE8(u8 *, u16);
+    extern s32 btsnd_hcic_hold_mode_80084A34(u8 *, u16, u16, u16);
+    tBTM_PM_PWR_MD result;
+    u8 mode;
+    u8 *cb = lbl_803C0F78 + 0x4cc + link_ind * 0x22;
+    u8 changed = 0;
+    u8 *buf;
+    mode = btm_pm_get_set_mode(pm_id, (tBTM_PM_MCB *)cb, p_mode, &result);
+    result.mode = mode;
+    if (cb[0x20] == mode) {
+        if (mode == 0 || (result.max >= *(u16 *)(cb + 0x1e) && result.min <= *(u16 *)(cb + 0x1e))) return 13;
+        changed = 1;
+    }
+    cb[0x21] = changed;
+    if (mode != 0 && cb[0x20] != 0) cb[0x21] = 1;
+    buf = GKI_getpoolbuf(2);
+    if (buf == 0) return 3;
+    if (cb[0x21] == 1) result.mode = 0;
+    lbl_803C0F78[0x564] = link_ind;
+    lbl_803C0F78[0x565] = pm_id;
+    switch (result.mode) {
+    case 0:
+        switch (cb[0x20]) {
+        case 2:
+            btsnd_hcic_exit_sniff_mode(buf, *(u16 *)(lbl_803C0F78 + link_ind * 0x11c + 0x34));
+            break;
+        case 3:
+            btsnd_hcic_exit_sniff_mode_80084AE8(buf, *(u16 *)(lbl_803C0F78 + link_ind * 0x11c + 0x34));
+            break;
+        default: lbl_803C0F78[0x564] = 4; break;
+        }
+        break;
+    case 1:
+        ((BOOLEAN (*)(void *, u16, u16, u16))btsnd_hcic_hold_mode)(buf, *(u16 *)(lbl_803C0F78 + link_ind * 0x11c + 0x34), result.max, result.min);
+        break;
+    case 2:
+        ((BOOLEAN (*)(BT_HDR *, u16, u16, u16, u16, u16))btsnd_hcic_sniff_mode)((BT_HDR *)buf, *(u16 *)(lbl_803C0F78 + link_ind * 0x11c + 0x34), result.max, result.min, result.attempt, result.timeout);
+        break;
+    case 3:
+        btsnd_hcic_hold_mode_80084A34(buf, *(u16 *)(lbl_803C0F78 + link_ind * 0x11c + 0x34), result.max, result.min);
+        break;
+    default: lbl_803C0F78[0x564] = 4; break;
+    }
+    if (lbl_803C0F78[0x564] == 4) GKI_freebuf(buf);
+    return 1;
 }
 
 void btm_pm_proc_cmd_status(UINT8 status) {
