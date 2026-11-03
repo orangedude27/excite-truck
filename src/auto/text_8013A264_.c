@@ -61,13 +61,13 @@ int stricmp(const char *, const char *);
 void fn_802E30C8(const char *, ...);
 extern f32 lbl_8032C118[];
 extern f32 lbl_80559C60;
-extern char lbl_80559C68[];
-extern char lbl_80559C70[];
-extern char lbl_80559C78[];
-extern char lbl_80559C80[];
-extern char lbl_80559C88[];
-extern char lbl_80559C90[];
-extern char lbl_80559C94[];
+extern char lbl_80559C68;
+extern char lbl_80559C70;
+extern char lbl_80559C78;
+extern char lbl_80559C80;
+extern char lbl_80559C88;
+extern char lbl_80559C90;
+extern char lbl_80559C94;
 extern f32 lbl_80561418, lbl_8056141C, lbl_80561420;
 extern f32 lbl_80561424, lbl_80561428, lbl_8056142C;
 f32 fn_80134B58(f32 *, f32);
@@ -84,6 +84,51 @@ void *fn_8013A264(void *arg0) {
     *(s32 *)arg0 = 0;
     return arg0;
 }
+
+#pragma push
+#pragma processor 750
+void fn_8013A2FC(AIConfig *config, struct Container *container) {
+    if (container != 0) {
+        const char *base = (const char *)lbl_8032C118;
+        f32 f29 = lbl_80561424;
+        f32 f30 = lbl_80561428;
+        f32 f31 = lbl_8056142C;
+        int i;
+        struct Entry *entry;
+
+        for (i = 0; (entry = container->vtable->GetEntry(container, i)) != 0; i++) {
+            if (stricmp(entry->vtable->GetName(entry), base + 0x34) == 0) {
+                Node604 *node = (Node604 *)fn_801284F8(0x28, base + 0x40);
+                node->lo = entry->vtable->GetFloat(entry, &lbl_80559C68);
+                node->hi = entry->vtable->GetFloat(entry, &lbl_80559C70);
+                node->f8 = entry->vtable->GetFloatDef(entry, &lbl_80559C78, config->f4);
+                node->fC = entry->vtable->GetFloatDef(entry, &lbl_80559C80, config->f8);
+                node->f10 = entry->vtable->GetFloatDef(entry, &lbl_80559C88, config->fC);
+                node->f14 = entry->vtable->GetFloatDef(entry, base + 0x20, config->f10);
+                node->f18 = entry->vtable->GetFloatDef(entry, base + 0x4C, config->f14);
+                node->f1C = entry->vtable->GetFloatDef(entry, &lbl_80559C60, config->f18);
+                node->f20 = entry->vtable->GetFloatDef(entry, base + 0x58, config->f1C);
+                node->next = config->head;
+                config->head = node;
+
+                if (node->lo > node->hi) {
+                    Node604 *copy = (Node604 *)fn_801284F8(0x28, base + 0x40);
+                    if (copy != 0) {
+                        *copy = *node;
+                    }
+                    node->hi = f29;
+                    copy->lo = f30;
+                    copy->f8 = f31;
+                    copy->next = config->head;
+                    config->head = copy;
+                }
+            }
+        }
+
+        fn_802E30C8(base + 0x68, i, (i == 1) ? &lbl_80559C94 : &lbl_80559C90);
+    }
+}
+#pragma pop
 
 void **fn_8013A598(void **arg0, s32 arg1) {
     if (arg0 != 0) {
