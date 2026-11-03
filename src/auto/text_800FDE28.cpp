@@ -39,6 +39,14 @@ extern u8 lbl_8041D4AC[];
 extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(void *, void *);
 
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...);
+extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(void *, void *);
+extern "C" void OSLockMutex(void *);
+extern "C" void OSUnlockMutex(void *);
+extern "C" void *MEMAdjustFrmHeap(void *, void *);
+#pragma push
+#pragma small_data off
+extern u8 lbl_80326F98[], lbl_80326F74[], lbl_80326F38[], lbl_80326F14[], lbl_80326F68[], lbl_80326F44[], lbl_80326E08[], lbl_80326E70[];
+#pragma pop
 extern double __ieee754_pow(double, double);
 extern "C" double fn_8002EFBC(double, double);
 
@@ -234,7 +242,7 @@ void nw4hbm::snd::detail::TaskManager::AppendTask(
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326E08, 0x7D, (const char *)lbl_80326ED0, priority, 0, 3);
     }
     level = OSDisableInterrupts();
-    u8 *p = (u8 *)this + priority * 0xC;
+    register u8 *p = (u8 *)this + priority * 0xC;
     list = p + 0x20;
     it = (u8 *)list + 4;
     if (task == 0) {
