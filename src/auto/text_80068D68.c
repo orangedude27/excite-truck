@@ -3107,10 +3107,10 @@ void uusb_ReadIntrDataCB(s32 length, BT_HDR *buf) {
     s32 size, i;
     u8 *p;
     BT_HDR *copy;
-    u8 zero = 0;
+    BT_HDR *zero = 0;
     char *report = lbl_803142C8;
     if (lbl_803BD1E0.at_0x28) OSReport(report);
-    ((u8 *)&lbl_803BD1E0)[0x2B] = zero;
+    ((u8 *)&lbl_803BD1E0)[0x2B] = (u32)zero;
     if (lbl_803BD1E0.state != 2) {
         if (lbl_803BD1E0.at_0x28) OSReport(report + 0x28);
         if (lbl_803BD1E0.at_0x28) OSReport(report + 0x6c);
@@ -3119,7 +3119,7 @@ void uusb_ReadIntrDataCB(s32 length, BT_HDR *buf) {
         ((u8 *)&lbl_803BD1E0)[0x1c] = 0xff;
         return;
     }
-    if ((u32)buf != zero) {
+    if (buf != zero) {
         if (length <= 0) {
             if (lbl_803BD1E0.at_0x28) OSReport(report + 0xdc, length);
             GKI_freebuf(buf);
@@ -3131,10 +3131,10 @@ void uusb_ReadIntrDataCB(s32 length, BT_HDR *buf) {
             return;
         }
         size = (((u16)length + buf->offset + 8) & ~3) + 4;
-        buf->event = length;
-        buf->len = 0x1000;
+        buf->len = length;
+        buf->event = 0x1000;
         memcpy(copy, buf, size);
-        if (lbl_803BD1E0.at_0x28) OSReport(report + 0x114, copy->event, copy->offset, size);
+        if (lbl_803BD1E0.at_0x28) OSReport(report + 0x114, copy->len, copy->offset, size);
         p = (u8 *)(copy + 1) + copy->offset;
         for (i = 0; i < length; i++, p++) {
             if (lbl_803BD1E0.at_0x28) OSReport(lbl_80558FF8, *p);
@@ -5856,15 +5856,6 @@ void btm_acl_device_down(void)
     }
 }
 
-static inline u8 *find_role_acl(BD_ADDR addr) {
-    u32 i;
-    u8 *entry = lbl_803C0F78 + 0x34;
-    for (i = 0; i < 4; i++, entry += 0x11c) {
-        if (entry[0x119] && memcmp(entry + 8, addr, 6) == 0)
-            return entry;
-    }
-    return NULL;
-}
 tBTM_STATUS BTM_SwitchRole(BD_ADDR remote_bd_addr, UINT8 new_role, tBTM_CMPL_CB *p_cb) {
     u32 i; u8 *entry; u8 power_mode; u8 status; tBTM_PM_PWR_MD spC;
     if ((lbl_803C0F78[0x640] & 0x20) == 0) return 4;
