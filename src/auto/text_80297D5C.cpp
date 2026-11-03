@@ -485,9 +485,12 @@ extern "C" void fn_80298B48(void* arg0) {
 static inline void XformRot3(const float *m, const float *src, float *dst) {
     if (dst == src) {
         float x = src[0], y = src[1], z = src[2];
-        dst[0] = x * m[0] + y * m[3] + z * m[6];
-        dst[1] = x * m[1] + y * m[4] + z * m[7];
-        dst[2] = x * m[2] + y * m[5] + z * m[8];
+        float r0 = x * m[0] + y * m[3] + z * m[6];
+        float r1 = x * m[1] + y * m[4] + z * m[7];
+        float r2 = x * m[2] + y * m[5] + z * m[8];
+        dst[0] = r0;
+        dst[1] = r1;
+        dst[2] = r2;
     } else {
         dst[0] = src[0] * m[0] + src[1] * m[3] + src[2] * m[6];
         dst[1] = src[0] * m[1] + src[1] * m[4] + src[2] * m[7];
@@ -495,33 +498,37 @@ static inline void XformRot3(const float *m, const float *src, float *dst) {
     }
 }
 extern "C" void fn_80298BBC(void *arg0) {
-    float sp8, spC, sp10;
-    float now=fn_801E7E18();
-    float reset=lbl_805645B8, threshold=lbl_8056459C;
-    int i=0, offset=0;
-    for (;;) {
-        if (*(float *)((char *)*(void **)arg0+offset+0x1C)>threshold) {
-            void *m=(void *)fn_80287B24(i);
-            void *p=(char *)*(void **)arg0+offset;
-            if (&sp8==p) {
-                float x=*(float *)p, y=*(float *)((char *)p+4), z=*(float *)((char *)p+8);
-                sp8=y* *(float *)((char *)m+0xC)+x* *(float *)m+z* *(float *)((char *)m+0x18);
-                spC=y* *(float *)((char *)m+0x10)+x* *(float *)((char *)m+4)+z* *(float *)((char *)m+0x1C);
-                sp10=y* *(float *)((char *)m+0x14)+x* *(float *)((char *)m+8)+z* *(float *)((char *)m+0x20);
-            } else {
-                sp8=*(float *)((char *)p+4)* *(float *)((char *)m+0xC)+*(float *)p* *(float *)m+*(float *)((char *)p+8)* *(float *)((char *)m+0x18);
-                spC=*(float *)((char *)p+4)* *(float *)((char *)m+0x10)+*(float *)p* *(float *)((char *)m+4)+*(float *)((char *)p+8)* *(float *)((char *)m+0x1C);
-                sp10=*(float *)((char *)p+4)* *(float *)((char *)m+0x14)+*(float *)p* *(float *)((char *)m+8)+*(float *)((char *)p+8)* *(float *)((char *)m+0x20);
+    float v[3];
+    float threshold;
+    float now;
+    float reset;
+    int offset;
+    int i;
+    now = fn_801E7E18();
+    reset = lbl_805645B8;
+    threshold = lbl_8056459C;
+    i = 0;
+    offset = 0;
+    goto test;
+    do {
+        char *items = *(char **)arg0;
+        if (*(float *)(items + offset + 0x1C) > threshold) {
+            const float *m = (const float *)fn_80287B24(i);
+            float *p = (float *)(*(char **)arg0 + offset);
+            XformRot3(m, p, v);
+            v[0] += m[9];
+            v[1] += m[10];
+            v[2] += m[11];
+            p = (float *)(*(char **)arg0 + offset);
+            if (fn_8029771C(*(void **)((char *)arg0 + 8), v, p, now - p[7]) == 0) {
+                *(float *)(*(char **)arg0 + offset + 0x1C) = reset;
             }
-            sp8+=*(float *)((char *)m+0x24); spC+=*(float *)((char *)m+0x28); sp10+=*(float *)((char *)m+0x2C);
-            p=(char *)*(void **)arg0+offset;
-            if (fn_8029771C(*(void **)((char *)arg0+8),&sp8,p,now-*(float *)((char *)p+0x1C))==0)
-                *(float *)((char *)*(void **)arg0+offset+0x1C)=reset;
         }
-        offset+=0x20;i++;
-        if(i>=fn_80287B14())break;
-    }
-  }
+        offset += 0x20;
+        i++;
+test:;
+    } while (i < fn_80287B14());
+}
   
 void fn_80298DE0(void* arg0, void* arg1, int arg2) {}
 
