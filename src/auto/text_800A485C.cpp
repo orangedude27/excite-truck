@@ -7316,21 +7316,17 @@ extern "C" s32 fn_800B5988(void *arg0) {
             ((void (*)(s32 *))fn_800B78F0)(&sp8);
             *(u32 *)((u8 *)arg0 + 0x1654) |= 1;
             {
+                u32 *e = (u32 *)lbl_803D2140;
                 s32 key = sp8;
-                u32 *c = (u32 *)lbl_803D2140;
-                u32 t;
-                t = c[0x88 / 4] & 1;
-                c[0x88 / 4] = t;
-                if (t && key == (s32)c[0x8C / 4]) hit = 1;
+                e[0x88 / 4] &= 1;
+                if (e[0x88 / 4] && key == (s32)e[0x8C / 4]) hit = 1;
                 else {
-                    c = (u32 *)((u8 *)c + 0x10);
-                    t = c[0x80 / 4] & 1;
-                    c[0x80 / 4] = t;
-                    if (t && key == (s32)c[0x84 / 4]) hit = 1;
+                    e += 4;
+                    e[0x80 / 4] &= 1;
+                    if (e[0x80 / 4] && key == (s32)e[0x84 / 4]) hit = 1;
                     else {
-                        t = c[0x88 / 4] & 1;
-                        c[0x88 / 4] = t;
-                        if (t && key == (s32)c[0x8C / 4]) hit = 1;
+                        e[0x88 / 4] &= 1;
+                        if (e[0x88 / 4] && key == (s32)e[0x8C / 4]) hit = 1;
                         else hit = 0;
                     }
                 }
@@ -20546,7 +20542,7 @@ extern "C" void fn_800CEF60(void *object, void *archive, s32 enable) {
  typedef void (*PanicFn)(const char *, s32, const char *, ...);
  const char *file=(const char *)lbl_8031D840;
  void *p, *stream, *buffer;
- u32 size, streamSize;
+ unsigned long size, streamSize;
  p=MEMAllocFromAllocator((MEMAllocator *)lbl_804075F0,0xd8);
  if(p) { p=__ct__Q36nw4hbm3snd18SoundArchivePlayerFv(p); *(void **)(self+0x5c0)=p; }
  if(!*(void * volatile *)(self+0x5c0)) ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)((const char *)lbl_8031D840,0xe62,file+0xe14);
@@ -21787,6 +21783,35 @@ done:
     if (arg10 != 0 && res != 0 && buf != 0) iosFree(lbl_80559248, buf);
     return res;
 }
+
+extern "C" s32 IOS_IoctlAsync(s32, s32, void *, s32, void *, s32, void *, void *);
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" s32 fn_800BB0A8(s32 arg0,s32 arg1,s32 arg2,s32 arg3,s32 arg4,s32 arg5,s32 arg6,s32 arg7,s32 arg8,s32 arg9,s32 arg10,s32 arg11) {
+ const char *str=lbl_8031B838;
+ s32 res;
+ s32 *buf, *cb;
+ buf=(s32 *)iosAlloc(lbl_80559248,0x40);
+ if(!buf) { OSReport(str+0x15c,0x40); res=-0x16; goto done; }
+ buf[0]=arg1; buf[1]=arg2; buf[2]=arg3; buf[3]=arg4; buf[6]=arg5; buf[4]=arg6; buf[5]=arg7; buf[7]=arg8;
+ if (arg9) {
+ if (arg10) {
+  cb=(s32 *)iosAlloc(lbl_80559248,0x1c);
+  if (!cb) { OSReport(str+0x188); res=-0x16; goto done; }
+  cb[0]=arg10; cb[1]=arg11; cb[5]=arg9; cb[3]=arg1; cb[4]=1; cb[6]=(s32)buf;
+  res=IOS_IoctlAsync(arg0,7,buf,0x24,lbl_8055DD74,0x10,(void *)fn_800BAA8C,cb);
+  if(res) { OSReport(str+0x1c4,res); res=(s32)0xc1000000; }
+ } else {
+  res=IOS_Ioctl(arg0,7,buf,0x24,lbl_8055DD74,0x10);
+  if(res) { if ((u32)arg1==7) res=0; else OSReport(str+0x1e8,res,res,buf); }
+  else { ((s32 *)arg9)[0]=((s32 *)lbl_8055DD74)[0]; ((s32 *)arg9)[1]=((s32 *)lbl_8055DD74)[1]; ((s32 *)arg9)[2]=((s32 *)lbl_8055DD74)[2]; ((s32 *)arg9)[3]=((s32 *)lbl_8055DD74)[3]; }
+ }
+ } else { OSReport(str+0x218); res=(s32)0xc1000000; }
+done:
+ if ((!arg9 || !arg10 || res) && buf) iosFree(lbl_80559248,buf);
+ return res;
+}
+#pragma pop
 
 extern "C" s32 fn_800BB2C4(void *arg0) {
     /* Fix note: preserve the device-read result while clearing the shared busy flag on every completed ioctl. */
