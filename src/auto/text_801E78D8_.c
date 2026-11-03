@@ -94,9 +94,9 @@ void fn_801E78D8(long arg0) {
 void fn_801E797C(void) { fn_80206464(0); }
 #pragma dont_inline off
 
-void fn_801E7C1C(void) {
+void fn_801E7C1C(long arg0) {
     lbl_8055EB11 = 0;
-    fn_801E7984();
+    fn_801E7984(arg0);
 }
 
 #pragma cplusplus on
