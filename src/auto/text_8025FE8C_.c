@@ -627,6 +627,7 @@ void fn_80261688(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     p[3] = arg2;
     p[4] = arg1;
 }
+#pragma pop
 #pragma push
 #pragma cplusplus on
 extern "C" s32 fn_802616A8(void) {
