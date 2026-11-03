@@ -14,6 +14,9 @@ extern "C" f64 lbl_80561780;
 extern "C" char lbl_8032F39C[];
 extern "C" f32 lbl_8042FD08[];
 extern "C" f32 lbl_80558DC4[];
+extern "C" f32 PSVECDotProduct(const void *, const void *);
+extern "C" f32 lbl_80561750, lbl_80561754, lbl_8056177C, lbl_80561788, lbl_8056178C, lbl_80561790, lbl_80561794, lbl_80561798;
+extern "C" f32 lbl_80561760;
 extern "C" s32 lbl_8055A058[1];
 extern "C" f32 fn_80204CFC(const char*);
 extern "C" void* fn_8023139C(void*,s32,u32);
@@ -1125,7 +1128,60 @@ extern "C" void fn_80158A84(Unk801577F0 *arg0) {
     *(f32 *)((u8 *)arg0 + 0x264) = finalZero;
     arg0->v31();
 }
+
 #pragma scheduling on
+extern "C" f32 fn_80158B0C(void* arg0, void* arg1) {
+    class Iface {
+    public:
+        virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
+        virtual void m4(); virtual void m5(); virtual void m6(); virtual void m7();
+        virtual void m8(); virtual void m9(); virtual void m10(); virtual void m11();
+        virtual void m12(); virtual void m13(); virtual void m14(); virtual void m15();
+        virtual void m16(); virtual void m17(); virtual void m18(); virtual void m19();
+        virtual void m20(); virtual s32 m23();
+        virtual void m24(); virtual void m25(); virtual void m26(); virtual void m27();
+        virtual void m28(); virtual void m29(); virtual void m30(); virtual void m31();
+        virtual void m32(); virtual void m33(); virtual void m34(); virtual void m35();
+        virtual void m36(); virtual s32 m37(void*);
+    };
+    Iface* self = (Iface*)arg0;
+    f32 result = lbl_80561754;
+    *((u8*)arg0 + 0x272) = 0;
+    fn_8014AEC8(arg1);
+    if (((s32 (*)(void))fn_80141F7C)() != 0 && self->m37(arg1) != 0) {
+        if (*(f32*)((u8*)arg0 + 0x25C) > *(f32*)((u8*)arg0 + 0x24C)) self->m32();
+        f32 speed = fn_80158E80(arg1);
+        f32 scale = lbl_8056177C;
+        f32 delta = scale * speed;
+        f32 x = *(f32*)((u8*)arg0 + 0x25C) + delta;
+        f32 y = *(f32*)((u8*)arg0 + 0x260) + delta;
+        f32 z = *(f32*)((u8*)arg0 + 0x264) + delta;
+        *(f32*)((u8*)arg0 + 0x25C) = x;
+        *(f32*)((u8*)arg0 + 0x260) = y;
+        *(f32*)((u8*)arg0 + 0x264) = z;
+        self->m34();
+        if (*(f32*)((u8*)arg0 + 0x25C) > *(f32*)((u8*)arg0 + 0x24C) && self->m23() > 0) {
+            *(f32*)((u8*)arg0 + 0x258) = lbl_80561754;
+            void* object = *(void**)((u8*)arg0 + 0x26C);
+            if (object != 0) fn_80158E74(object);
+        }
+        result = lbl_80561754;
+    } else if (((s32 (*)(f32))fn_80141F7C)(*(f32*)((u8*)arg0 + 0x258)) != 0) {
+        result = fn_80158D60(arg0, arg1);
+    } else {
+        self->m33();
+        f32 old = *(f32*)((u8*)arg0 + 0x258);
+        *(f32*)((u8*)arg0 + 0x258) = old + lbl_8056177C;
+        fn_80158D0C(arg0);
+    }
+    if (self->m23() == fn_80158D04(arg0) - 1) {
+        result = fn_80158D60(arg0, arg1);
+    }
+    *((u8*)arg0 + 0x273) = (*((u8*)arg0 + 0x272) != 0 && *((u8*)arg0 + 0x271) != 0);
+    *((u8*)arg0 + 0x270) = 0;
+    *((u8*)arg0 + 0x271) = 0;
+    return result;
+}
 extern "C" s32 fn_80158D04(void* arg0) {
     return *(s32*)((u8*)arg0 + 0xC);
 }
@@ -1370,7 +1426,7 @@ extern "C" f32 fn_80159C34(Fn80159C34Obj* arg0, void* arg1) {
  if(arg0->v37()!=0) { n=*(s32*)((u8*)arg0+0xc); if(arg0->v21()==n-1) done=1; }
  if((f32)__fabs(arg0->m254)<=lbl_80558DC4[0] || done) {
   if(done || arg0->m264>0) {
-   if(arg0->m264>0){ f32 temp=arg0->m25c*arg0->v18(arg0->v21()); arg0->v33(&temp); arg0->v31(); arg0->m25c=lbl_80561750; arg0->m264=0; result=temp; }
+   if(arg0->m264>0){ f32 temp=arg0->m25c*arg0->v18(arg0->v21()); arg0->v33(&temp); arg0->v31(); arg0->m264=0; arg0->m25c=lbl_80561750; result=temp; }
    if(!done && arg0->m260>0){if(arg0->m258!=0)fn_801CB6E4((void*)arg0->m258,*(s32*)((u8*)arg0+4)); arg0->m260=0;}
   }
  } else if(arg0->m264>0)arg0->v32();
