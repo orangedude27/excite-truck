@@ -6,10 +6,7 @@ extern int lbl_8055DF54;
 extern int lbl_8055DF58;
 extern int lbl_8055DF5C;
 extern int lbl_8055DF60;
-struct Struct80127 {
-    int words[5];
-};
-extern struct Struct80127 lbl_8041DF58[];
+extern int lbl_8041DF58[][5];
 extern int fn_80127AA0(void);
 extern int fn_80127464(int);
 extern int fn_80127AB8(void *);
