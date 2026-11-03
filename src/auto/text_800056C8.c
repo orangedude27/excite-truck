@@ -1,4 +1,5 @@
 #include <types.h>
+extern void fn_8000FF88(s32, s32, void *, f32, f32, f32, ...);
 extern void *fn_801E87A8(void);
 extern s32 fn_801B87A0(s32, s32);
 extern s32 fn_801769A8(void);
