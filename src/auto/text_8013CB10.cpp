@@ -3,6 +3,11 @@ extern "C" f64 fn_8002F234(f32);
 extern "C" s32 fn_801E9E30(void *, f32 *);
 extern "C" s32 fn_80136594(void **, s32, f32 *, f32);
 extern "C" s32 fn_80178C9C(void);
+extern "C" f32 fn_801E7E24(void);
+extern "C" void fn_802981F8(void *);
+extern "C" f32 *fn_802C86DC(void);
+extern "C" s32 fn_801E866C(s32);
+extern "C" void fn_80140D1C(void *, void *, void *);
 extern "C" void qsort(void *, u32, u32, int (*)(const void *, const void *));
 extern "C" void *memset(void *, s32, u32);
 extern "C" void fn_802AE0E0(int);
@@ -849,14 +854,16 @@ extern "C" f32 lbl_80561538;
 extern "C" f32 lbl_8056153C;
 extern "C" f32 lbl_80561540;
 extern "C" f32 lbl_805614A4, lbl_805614AC, lbl_80561530, lbl_80561538, lbl_8056153C, lbl_80561540;
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
+#pragma scheduling on
 extern "C" s32 fn_8013F438(f32 x) {
     f32 t = (x - lbl_80561530) / lbl_80561538;
     f32 v = (lbl_805614AC < t) ? lbl_805614AC : t;
-    v = (v > lbl_805614A4) ? lbl_805614A4 : v;
+    v = (v > lbl_805614A4) ? v : lbl_805614A4;
     return (s32)(lbl_8056153C + v * lbl_80561540);
 }
-#pragma scheduling on
+#pragma pop
 extern float lbl_805614A4, lbl_805614AC, lbl_805614F8, lbl_80561518, lbl_80561544, lbl_80561548;
 #pragma scheduling invalid_target
 extern "C" void fn_8013F498(void *arg0, void *arg1, f32 farg0) {
@@ -2606,14 +2613,8 @@ extern "C" s32 fn_80144454(void) { return 0; }
 extern "C" s32 fn_8013D1F0(s32);
 #pragma dont_inline on
 extern "C" s32 fn_8014445C(s32 arg0, s32 arg1) {
-    s32 value = fn_8013D1F0(arg1);
-    value ^= 0xA;
-    s32 half = value >> 1;
-    s32 mask = value & 0xA;
-    if (half - mask < 0) {
-        return 1;
-    }
-    return 0;
+    s32 v = fn_8013D1F0(arg1) ^ 0xA;
+    return ((v >> 1) - (v & 0xA)) < 0;
 }
 #pragma dont_inline off
 extern "C" s32 fn_80144494(s32 arg0, s32 arg1) { return arg1; }
