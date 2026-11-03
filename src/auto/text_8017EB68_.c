@@ -2,7 +2,6 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
-#pragma ppc_psq_save off
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((char *)(expr) + (offset)))
 
 extern void fn_8017E930(void *);
@@ -137,7 +136,7 @@ extern void fn_802E85A8(int, float, float, float);
 extern void fn_802E85AC(int, float, float, float);
 extern float lbl_8055A334;
 extern float lbl_80561C60;
-#pragma ppc_psq_save off
+#pragma ppc_gen_fp_pair off
 void fn_8017F628(void *arg0) {
     float scale = lbl_8055A334;
     if (fn_801769F8() == 0 && fn_801B526C() == 0 && fn_801C5B60() == 0 &&
@@ -160,7 +159,6 @@ void fn_8017F628(void *arg0) {
         }
     } else ((void (*)(int))fn_802E8518)(*(int *)((char *)arg0 + 8));
 }
-#pragma ppc_psq_save reset
 float fn_8017F70C(float arg0) { double temp = __fabs(arg0); return temp; }
 
 extern int fn_80128668(void);
