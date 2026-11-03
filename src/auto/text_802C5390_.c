@@ -45,6 +45,7 @@ int fn_802C6DC4(int, int, int, int);
 void fn_802C6C38(int);
 extern float *fn_802C9A40(void);
 extern float lbl_80564EF4;
+extern int fn_802C9638(void *, unsigned char *, float);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
