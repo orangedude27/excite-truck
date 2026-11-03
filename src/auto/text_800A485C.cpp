@@ -6,6 +6,7 @@
 extern "C" s32 fn_800A9BB4(u8 *, u8 *, s32, s32, u32, s32, s32 *, s32);
 extern "C" s32 VFiPFENT_LoadLFNEntryFieldsFromBuf(void *, void *);
 extern "C" s32 fn_800B3A70(void *, void *, s32);
+extern "C" void VFiPFENT_loadEntryNumericFieldsFromBuf(u8 *, u8 *);
 extern "C" s32 VFiPFPATH_transformInUnicode(s16 *, s32, s32);
 extern "C" void VFiPFPATH_getLongNameformShortName(void *, void *, s32);
 extern "C" s32 fn_800A9DC0(void *object, void *iterator, s32 arg2, s32 arg3, s32 arg4, s32 *arg5) {
@@ -23,10 +24,10 @@ extern "C" s32 fn_800A9DC0(void *object, void *iterator, s32 arg2, s32 arg3, s32
   return -1;
  }
  if (!((u8 *)object)[0x20a] && (it[0x58]&0x18)) {
-  VFiPFPATH_getLongNameformShortName((u8 *)object+0x20e,name,it[0x58]);
+  VFiPFPATH_getLongNameformShortName((void *)((u32)object+0x20e),name,it[0x58]);
   len=((s32 (*)(s16 *,s32))VFiPFPATH_transformInUnicode)((s16 *)object,(s32)name);
   ((u8 *)object)[0x20a]=len/13+(len%13!=0);
-  fn_800B3A70(buf,(u8 *)object+0x20e,0);
+  fn_800B3A70(buf,&((u8 *)object)[0x20e],0);
   sum=0;
   for (i=0;i<11;i++) { next=((sum&0xfe)>>1)+((sum&1)?0x80:0)+buf[i]; sum=next&0xff; }
   ((u8 *)object)[0x20c]=sum;
@@ -41,7 +42,7 @@ extern "C" s32 fn_800A9DC0(void *object, void *iterator, s32 arg2, s32 arg3, s32
  word=*(u32 *)(it+0x68);
  *(u32 *)((u8 *)object+0x228)=(word>>24)|((word>>8)&0xff00)|((word&0xff00)<<8)|(word<<24);
  a=*(u16 *)(it+0x60); b=*(u16 *)(it+0x66);
- *(u32 *)((u8 *)object+0x234)=((u32)(a&0xff)<<24)|((u32)(a&0xff00)<<8)|((u32)(b&0xff)<<8)|(b>>8);
+ *(u32 *)((u8 *)object+0x234)=((u32)(u16)((a<<8)|(a>>8))<<16)|(u16)((b<<8)|(b>>8));
  *(u32 *)((u8 *)object+0x238)=*(u32 *)(it+0x44);
  *(u16 *)((u8 *)object+0x23c)=*(u16 *)(it+0x48);
  if ((((u8 *)object)[0x21c]&0x10) && !*(u32 *)((u8 *)object+0x234)) *(u32 *)((u8 *)object+0x234)=1;
@@ -4931,27 +4932,29 @@ checkMax:
 
 extern "C" s32 fn_800A8C90(void *, s32, void **, s32 *);
 extern "C" s32 fn_800AED1C(void *arg0) {
-    s32 sp8;
     void *page;
+    s32 sp8;
     s32 r;
     u32 i;
     u32 v;
+    u32 b;
     s32 type;
     r = fn_800A8C90(arg0, -1, &page, &sp8);
     if (r != 0) return r;
     fn_800A499C((const char *)*(void **)((u8 *)page + 8), 0, *(u16 *)arg0);
     i = *(u16 *)((u8 *)arg0 + 2);
     while (i < *(u32 *)((u8 *)arg0 + 0x2C)) {
-        r = VFiPFCACHE_WriteFATSectorAndFreeIfNeeded(arg0, *(s32 *)((u8 *)page + 8), (u16)i);
+        r = ((s32 (*)(void *, s32, u32))VFiPFCACHE_WriteFATSectorAndFreeIfNeeded)(arg0, *(s32 *)((u8 *)page + 8), i);
         if (r != 0) {
             VFiPFCACHE_FreeFATPage(arg0, page);
             return r;
         }
-        i = (u16)(i + 1);
+        i++;
     }
     VFiPFCACHE_FreeFATPage(arg0, page);
     type = *(s32 *)((u8 *)arg0 + 0x1C);
-    v = *(u8 *)((u8 *)arg0 + 0x1A) | lbl_802EEF40[type * 5 + 3];
+    b = *(u8 *)((u8 *)arg0 + 0x1A);
+    v = b | lbl_802EEF40[type * 5 + 3];
     switch (type) {
     case 0:
         if (v > 0xFFF) r = 0x10;
@@ -4962,7 +4965,7 @@ extern "C" s32 fn_800AED1C(void *arg0) {
         else r = ((s32 (*)(void *, s32))fn_800AFF28)(arg0, 0);
         break;
     case 2:
-        if (v > 0xFFFFFFF - 1 + 0) r = 0x10;
+        if (v > 0xFFFFFFF) r = 0x10;
         else r = ((s32 (*)(void *, s32))fn_800B037C)(arg0, 0);
         break;
     default:
@@ -4982,7 +4985,7 @@ extern "C" s32 fn_800AED1C(void *arg0) {
         else r = ((s32 (*)(void *, s32))fn_800AFF28)(arg0, 1);
         break;
     case 2:
-        if (v > 0xFFFFFFF - 1 + 0) r = 0x10;
+        if (v > 0xFFFFFFF) r = 0x10;
         else r = ((s32 (*)(void *, s32))fn_800B037C)(arg0, 1);
         break;
     default:
@@ -4990,7 +4993,7 @@ extern "C" s32 fn_800AED1C(void *arg0) {
         break;
     }
     if (r != 0) return r;
-    r = fn_800A9104(arg0);
+    r = ((s32 (*)(void *))fn_800A9104)(arg0);
     return r & ((s32)(-r | r) >> 31);
 }
 
