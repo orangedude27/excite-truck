@@ -20,7 +20,7 @@ struct Manager {
     virtual void v3() = 0;
     virtual void *getCamera() = 0;
 };
-extern "C" inline void *callGetCamera(void *manager) {
+extern "C" static inline void *callGetCamera(void *manager) {
     return ((Manager *)manager)->getCamera();
 }
 #pragma cplusplus reset
