@@ -2314,24 +2314,6 @@ extern "C" int fn_802839D0(void) {
     return 0;
 }
 #pragma cplusplus reset
-static inline int find_item(void) {
-    int i;
-    int count;
-    unsigned int value;
-    void **p;
-    void **base;
-    count = (int)lbl_804B30D8[1];
-    i = 0;
-    value = (unsigned int)lbl_8055F698;
-    base = (void **)lbl_804B30D8[0];
-    p = base;
-    for (; i < count; ++i) {
-        if (*p == (void *)value) return i;
-        ++p;
-    }
-    return -1;
-}
-
 int fn_80283A50(void) {
     int i = 0;
     int count = (int)lbl_804B30D8[1];
