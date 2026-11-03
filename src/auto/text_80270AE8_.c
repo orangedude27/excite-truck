@@ -193,26 +193,75 @@ int fn_80270D4C(void *arg0, void *arg1) {
 extern float lbl_80563F40;
 #pragma scheduling invalid_target
 void fn_80270DB0(void *arg0, void *arg1, float farg0) {
-    register unsigned char flag;
-    register float *left, *right, *left2, *left3, *left4, *right2, *right3;
+    unsigned char flag = *(unsigned char *)((char *)arg0 + 4);
+    char *record;
+    float *left, *right;
     float f2, f3, f0;
-    flag = *(unsigned char *)((unsigned char *)arg0 + 4);
-    if (flag) left = (float *)(*(char **)arg0 + 0x10); else left = (float *)(*(char **)arg0 + 8);
+
+    if (flag) {
+        record = *(char **)arg0;
+        left = (float *)(record + 0x10);
+    } else {
+        record = *(char **)arg0;
+        left = (float *)(record + 8);
+    }
     f2 = *left;
-    if (*(unsigned char *)((unsigned char *)arg1 + 4)) right = (float *)(*(char **)arg1 + 0xC); else right = (float *)(*(char **)arg1 + 4);
+
+    if (*(unsigned char *)((char *)arg1 + 4)) {
+        right = (float *)(*(char **)arg1 + 0xC);
+    } else {
+        right = (float *)(*(char **)arg1 + 4);
+    }
     f3 = *right;
-    if (flag) left2 = (float *)(*(char **)arg0 + 0xC); else left2 = (float *)(*(char **)arg0 + 4);
-    if (f2 < *left2) f2 += farg0;
-    if (flag) left3 = (float *)(*(char **)arg0 + 0xC); else left3 = (float *)(*(char **)arg0 + 4);
-    if (f3 < *left3) f3 += farg0;
-    if (flag) left4 = (float *)(*(char **)arg0 + 0xC); else left4 = (float *)(*(char **)arg0 + 4);
+
+    if (flag) {
+        left = (float *)(record + 0xC);
+    } else {
+        left = (float *)(record + 4);
+    }
+    if (f2 < *left) {
+        f2 += farg0;
+    }
+
+    if (flag) {
+        left = (float *)(record + 0xC);
+    } else {
+        left = (float *)(record + 4);
+    }
+    if (f3 < *left) {
+        f3 += farg0;
+    }
+
+    if (flag) {
+        left = (float *)(record + 0xC);
+    } else {
+        left = (float *)(record + 4);
+    }
+
     f0 = lbl_80563F40 * (f2 + f3);
-    if (*left4 > f0) f3 = *left4; else f3 = f0;
-    if (f3 >= farg0) f3 -= farg0;
-    if (flag) right2 = (float *)(*(char **)arg0 + 0x10); else right2 = (float *)(*(char **)arg0 + 8);
-    *right2 = f3;
-    if (*(unsigned char *)((unsigned char *)arg1 + 4)) right3 = (float *)(*(char **)arg1 + 0xC); else right3 = (float *)(*(char **)arg1 + 4);
-    *right3 = f3;
+    if (*left > f0) {
+        f3 = *left;
+    } else {
+        f3 = f0;
+    }
+
+    if (f3 >= farg0) {
+        f3 -= farg0;
+    }
+
+    if (flag) {
+        left = (float *)(record + 0x10);
+    } else {
+        left = (float *)(record + 8);
+    }
+    *left = f3;
+
+    if (*(unsigned char *)((char *)arg1 + 4)) {
+        right = (float *)(*(char **)arg1 + 0xC);
+    } else {
+        right = (float *)(*(char **)arg1 + 4);
+    }
+    *right = f3;
 }
 
 #pragma push
@@ -316,8 +365,9 @@ int fn_802710A0(void *arg0, int arg1) {
 
     if (lbl_8055F564 != 0) {
         void *manager = *(void **)((char *)arg0 + 0x270);
+        void **vtable = *(void ***)manager;
         float *dest;
-        p = ((void *(*)(void *))(*(void ***)manager)[6])(manager);
+        p = ((void *(*)(void *))vtable[6])(manager);
         dest = &lbl_8055F568;
         if (fn_801B526C() != 0) {
             fn_80136414(&sp18, p, *(int *)((char *)arg0 + 0x2678));
