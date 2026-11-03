@@ -45,6 +45,8 @@ extern const char lbl_80349DC8[];
 extern void *fn_8012850C(int, const char *);
 extern void *fn_8002F37C(void *, void (*)(void), void *, int, int);
 extern int fn_802CAC28(const char *, int);
+extern void fn_802AB500(void);
+extern void fn_802AB5B8(void);
 extern void fn_801EEFDC(void *, int);
 extern void *fn_801E87A8(void);
 
