@@ -631,26 +631,29 @@ extern "C" u8 GetCellHeight__Q46nw4hbm2ut6detail11ResFontBaseCFv_80109F24(void* 
 }
 
 extern "C" u8 GetCellHeight__Q46nw4hbm2ut6detail11ResFontBaseCFv_8010A130(void* self) {
-    const char* file = lbl_80329140;
-    u32 value = (u32)self;
+    const char* file=lbl_80329140;
+    u32 value=(u32)self;
     int a=1,b=1,c=1,d=1,e=1,f=1;
-    if ((u32)((value & 0xFF000000U) + 0x80000000U) != 0U && (u32)((value & 0xFF800000U) + 0x7F000000U) != 0U) f=0;
-    if (f==0 && (u32)((value & 0xF8000000U) + 0x70000000U) != 0U) e=0;
-    if (e==0 && (u32)((value & 0xFF000000U) + 0x40000000U) != 0U) d=0;
-    if (d==0 && (u32)((value & 0xFF800000U) + 0x3F000000U) != 0U) c=0;
-    if (c==0 && (u32)((value & 0xF8000000U) + 0x30000000U) != 0U) b=0;
-    if (b==0 && (u32)((value & 0xFFFFC000U) + 0x20000000U) != 0U) a=0;
-    if (a==0) Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0xF7,file+0xF0,self);
+    u32 t=value&0xFF000000U;
+    if (t!=0x80000000U && (value&0xFF800000U)!=0x81000000U) f=0;
+    if (f==0 && (value&0xF8000000U)!=0x90000000U)e=0;
+    if (e==0 && t!=0xC0000000U)d=0;
+    if (d==0 && (value&0xFF800000U)!=0xC1000000U)c=0;
+    if (c==0 && (value&0xF8000000U)!=0xD0000000U)b=0;
+    if (b==0 && (value&0xFFFFC000U)!=0xE0000000U)a=0;
+    if(a==0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0xF7,file+0xF0,self);
+    int g=1,h=1;
     u32 v=*(u32*)((char*)self+0x14);
-    int g=1,h=1,i=1,j=1,k=1,l=1;
-    if ((u32)((v&0xFF000000U)+0x80000000U)!=0U && (u32)((v&0xFF800000U)+0x7F000000U)!=0U) l=0;
-    if (l==0 && (u32)((v&0xF8000000U)+0x70000000U)!=0U) k=0;
-    if (k==0 && (u32)((v&0xFF000000U)+0x40000000U)!=0U) j=0;
-    if (j==0 && (u32)((v&0xFF800000U)+0x3F000000U)!=0U) i=0;
-    if (i==0 && (u32)((v&0xF8000000U)+0x30000000U)!=0U) h=0;
-    if (h==0 && (u32)((v&0xFFFFC000U)+0x20000000U)!=0U) g=0;
-    if (g==0) Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0xF8,file+0x128);
-    return *(u8*)(*(u32*)((char*)v+8)+3);
+    int i=1,j=1,k=1,l=1;
+    u32 t2=v&0xFF000000U;
+    if(t2!=0x80000000U&&(v&0xFF800000U)!=0x81000000U)l=0;
+    if(l==0&&(v&0xF8000000U)!=0x90000000U)k=0;
+    if(k==0&&t2!=0xC0000000U)j=0;
+    if(j==0&&(v&0xFF800000U)!=0xC1000000U)i=0;
+    if(i==0&&(v&0xF8000000U)!=0xD0000000U)h=0;
+    if(h==0&&(v&0xFFFFC000U)!=0xE0000000U)g=0;
+    if(g==0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0xF8,file+0x128);
+    return *(u8*)(*(u32*)(*(u32*)((char*)self+0x14)+8)+3);
 }
 
 extern "C" u8 fn_8010A33C(void) {
