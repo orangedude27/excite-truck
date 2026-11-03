@@ -409,7 +409,7 @@ typedef struct OSFontHeader {
 
 int __OSReadROM(void *, int, const void *);
 
-static inline void ReadROM(void* dst, s32 size, const void* src) {
+static inline void ReadROM(const void* src, s32 size, void* dst) {
     s32 blockSize;
 
     while (size > 0) {
@@ -438,120 +438,71 @@ extern u16 lbl_80560CBC;
 extern u16 lbl_80560CBE;
 #pragma use_lmw_stmw off
 int ReadFont(int dst, int encode, int font) {
-    typedef struct OSFontHeader {
-        u16 type;
-        u16 firstChar;
-        u16 lastChar;
-        u16 invalidChar;
-        u16 ascent;
-        u16 descent;
-        u16 width;
-        u16 leading;
-        u16 cellWidth;
-        u16 cellHeight;
-        u32 sheetSize;
-        u16 sheetFormat;
-        u16 sheetNumCol;
-        u16 sheetNumRow;
-        u16 sheetWidth;
-        u16 sheetHeight;
-        u16 widthTableOfs;
-        u32 sheetImageOfs;
-        u32 sheetFullSize;
-        u8 c0;
-        u8 c1;
-        u8 c2;
-        u8 c3;
-    } OSFontHeader;
-    
-    OSFontHeader *f = (OSFontHeader *)font;
+    u8* tex;
+    int i;
+    u32 code;
     u32 size;
-    
+    s32 sheet;
+    s32 numRestTex;
+    s32 row;
+    s32 col;
+    u8* tmp;
+    OSFontHeader* f = (OSFontHeader*)font;
+
     if ((u32)encode == 1) {
-        u8 *dstPtr = (u8 *)dst;
-        u32 src = 0x001AFF00;
-        s32 romSize = 0x0004D000;
-        while (romSize > 0) {
-            s32 blockSize = (romSize <= 256) ? romSize : 256;
-            romSize -= blockSize;
-            while (!__OSReadROM(dstPtr, blockSize, (const void *)src)) {
-            }
-            src += blockSize;
-            dstPtr += blockSize;
-        }
+        ReadROM((void*)dst, 0x0004D000, (void*)0x001AFF00);
     } else {
-        u8 *dstPtr = (u8 *)dst;
-        u32 src = 0x001FCF00;
-        s32 romSize = 0x00003000;
-        while (romSize > 0) {
-            s32 blockSize = (romSize <= 256) ? romSize : 256;
-            romSize -= blockSize;
-            while (!__OSReadROM(dstPtr, blockSize, (const void *)src)) {
-            }
-            src += blockSize;
-            dstPtr += blockSize;
-        }
+        ReadROM((void*)dst, 0x00003000, (void*)0x001FCF00);
     }
-    
-    if (((u8 *)dst)[0] == 'Y' && ((u8 *)dst)[1] == 'a' && ((u8 *)dst)[2] == 'y') {
-        size = *(u32 *)((u8 *)dst + 4);
-    } else {
-        size = 0;
-    }
-    
+
+    size = GetFontSize((const u8*)dst);
     if (size == 0) {
         return 0;
     }
-    
-    Decode((void *)dst, (void *)font);
-    
+
+    Decode((void*)dst, (void*)font);
+
     if ((u32)encode == 1) {
         u16 c0 = lbl_80560CB8;
         u16 c1 = lbl_80560CBA;
         u16 c2 = lbl_80560CBC;
         u16 c3 = lbl_80560CBE;
-        u8 *tex;
-        u8 *tmp;
-        s32 sheet;
-        s32 numRestTex;
-        s32 row;
-        s32 col;
-        u32 code = GetFontCode(encode, 'T');
-        
+
+        code = GetFontCode(encode, 'T');
         sheet = (s32)code / (f->sheetNumCol * f->sheetNumRow);
         numRestTex = code - (sheet * (f->sheetNumCol * f->sheetNumRow));
         row = numRestTex / f->sheetNumCol;
         col = numRestTex - row * f->sheetNumCol;
         row *= f->cellHeight;
         col *= f->cellWidth;
-        tex = (u8 *)font + f->sheetImageOfs;
+        tex = (u8*)font + f->sheetImageOfs;
         tex += sheet * f->sheetSize / 2;
 
         tmp = tex + (((f->sheetWidth / 8) * 32) / 2) * ((row + 4) / 8);
         tmp += (col / 8) * 16;
         tmp += ((row + 4) % 8) * 2;
         tmp += (col % 8) / 4;
-        *(u16 *)tmp = c0;
+        *(u16*)tmp = c0;
 
         tmp = tex + (((f->sheetWidth / 8) * 32) / 2) * ((row + 5) / 8);
         tmp += (col / 8) * 16;
         tmp += ((row + 5) % 8) * 2;
         tmp += (col % 8) / 4;
-        *(u16 *)tmp = c1;
+        *(u16*)tmp = c1;
 
         tmp = tex + (((f->sheetWidth / 8) * 32) / 2) * ((row + 6) / 8);
         tmp += (col / 8) * 16;
         tmp += ((row + 6) % 8) * 2;
         tmp += (col % 8) / 4;
-        *(u16 *)tmp = c2;
+        *(u16*)tmp = c2;
 
         tmp = tex + (((f->sheetWidth / 8) * 32) / 2) * ((row + 7) / 8);
         tmp += (col / 8) * 16;
         tmp += ((row + 7) % 8) * 2;
         tmp += (col % 8) / 4;
-        *(u16 *)tmp = c3;
+        *(u16*)tmp = c3;
     }
-    
+
     return size;
 }
 #pragma use_lmw_stmw reset
