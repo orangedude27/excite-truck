@@ -36,111 +36,239 @@ extern u8 lbl_8055B52C, lbl_8055B534, lbl_8055B53C;
 extern f32 lbl_8055EDB8;
 extern f32 lbl_80563238, lbl_8056323C, lbl_80563240, lbl_80563244;
 extern f32 lbl_80563248, lbl_8056324C, lbl_80563250, lbl_80563254;
-void *fn_80209448(void *arg0) {
-    void *result, *item, *manager, *object, *props, *props2;
-    void *block, *entry, *base;
-    const char *text;
-    f32 width, scale, height, z, x, y, a, b, c, d, e;
-    s32 index, count, mode;
-    result = fn_801284F8(0x158, (const char *)&lbl_8055B500);
-    if (result == 0) return result;
-    M2C_FIELD(result, void **, 0) = (void *)&lbl_8033C1E0;
-    if (lbl_8055EDBC == 0) {
-        lbl_8055EDB8 = lbl_80563238;
-        fn_80127C90((void *)fn_80209904, (const char *)&lbl_8055B520);
-    }
-    lbl_8055EDBC++;
-    M2C_FIELD(result, void **, 0x140) = arg0;
-    M2C_FIELD(result, s32 *, 0x13C) = 0;
-    object = M2C_FIELD(M2C_FIELD(arg0, void **, 0x26C), void **, 0x2134);
-    object = M2C_VFUNC(object, 2, M2CPtr1)(object, (const char *)&lbl_8033C248);
-    M2C_VFUNC(object, 6, M2CPtr2)(object, (const char *)&lbl_8033C238, lbl_8055B4F8);
-    manager = fn_80131808();
-    object = M2C_VFUNC(manager, 2, M2CPtr1)(manager, (const char *)&lbl_8055B53C);
-    M2C_FIELD(result, f32 *, 0x14C) =
-        M2C_VFUNC(object, 10, M2CF32_2)(object, (const char *)&lbl_8033C22C, lbl_8056323C);
-    width = M2C_VFUNC(object, 9, M2CF32_1)(object, (const char *)&lbl_8033C21C);
-    M2C_FIELD(result, f32 *, 0x144) = width;
-    M2C_FIELD(result, f32 *, 0x148) = lbl_80563240 * width;
-    scale = lbl_8056323C;
-    height = lbl_80563244;
-    z = lbl_80563238;
-    index = 0;
-    do {
-        item = M2C_VFUNC(manager, 3, M2CPtrIndex)(manager, index);
-        if (item == 0) break;
-        if (strcmp(M2C_VFUNC(item, 2, M2CPtr0)(item), (const char *)&lbl_8055B534) == 0) {
-            count = M2C_FIELD(result, s32 *, 0x13C);
-            M2C_FIELD(result, s32 *, 0x13C) = count + 1;
-            base = (u8 *)result + count * 0x34;
-            block = (u8 *)base + 4;
-            memset(block, 0, 0x34);
-            text = M2C_VFUNC(item, 5, M2CPtr1)(item, (const char *)&lbl_8055B52C);
-            object = M2C_FIELD(result, void **, 0x140);
-            if (M2C_FIELD(object, s32 *, 0x1F0) != 0x50) {
-                entry = fn_802077A4(3, (u8 *)object + 0x118, (u8 *)arg0 + 0x60);
-                M2C_FIELD(block, void **, 0) = entry;
-            } else {
-                entry = fn_80207848(2);
-                if (entry != 0) {
-                    if (fn_80137C74() == 2) {
-                        mode = M2C_FIELD(object, u8 *, 0x260) & 3;
-                        if (mode == 0) {
-                            if (height != M2C_FIELD(entry, f32 *, 0x64)) {
-                                M2C_FIELD(entry, u8 *, 0x6C) = 1;
-                                M2C_FIELD(entry, f32 *, 0x64) = height;
-                            }
-                        } else if (scale != M2C_FIELD(entry, f32 *, 0x64)) {
-                            M2C_FIELD(entry, u8 *, 0x6C) = 1;
-                            M2C_FIELD(entry, f32 *, 0x64) = scale;
-                        }
-                    }
-                    if (z != M2C_FIELD(entry, f32 *, 0x68)) {
-                        M2C_FIELD(entry, u8 *, 0x6D) = 1;
-                        M2C_FIELD(entry, f32 *, 0x68) = z;
-                    }
-                }
-                M2C_FIELD(block, void **, 0) = entry;
-            }
-            M2C_FIELD(block, f32 *, 0x30) = z;
-            entry = M2C_FIELD(block, void **, 0);
-            if (entry == 0) {
-                fn_802E30C8((const char *)&lbl_8033C208, text);
-                M2C_FIELD(result, s32 *, 0x13C)--;
-            } else {
-                M2C_FIELD(entry, s32 *, 0x10) = M2C_FIELD(arg0, s32 *, 0x1EC);
-                props = M2C_VFUNC(item, 23, M2CPtr1)(item, (const char *)&lbl_8033C1FC);
-                y = M2C_VFUNC(props, 10, M2CF32_2)(props, (const char *)&lbl_8055B508, lbl_8056323C);
-                x = M2C_VFUNC(props, 10, M2CF32_2)(props, (const char *)&lbl_8055B510, lbl_80563248);
-                a = M2C_VFUNC(props, 10, M2CF32_2)(props, (const char *)&lbl_8055B514, lbl_8056324C);
-                b = M2C_VFUNC(props, 10, M2CF32_2)(props, (const char *)&lbl_8055B518, lbl_80563250);
-                c = M2C_VFUNC(props, 10, M2CF32_2)(props, (const char *)&lbl_8055B51C, lbl_80563254);
-                M2C_FIELD(block, f32 *, 0x1C) = b;
-                M2C_FIELD(block, f32 *, 0x20) = a;
-                d = scale / (b - c);
-                M2C_FIELD(block, f32 *, 0x24) = d;
-                M2C_FIELD(block, f32 *, 0x28) = scale / (x - a);
-                M2C_FIELD(block, f32 *, 0x2C) = y;
-                props2 = M2C_VFUNC(item, 23, M2CPtr1)(item, (const char *)&lbl_8055B528);
-                e = M2C_VFUNC(props2, 10, M2CF32_2)(props2, (const char *)&lbl_8055B508, lbl_8056323C);
-                a = M2C_VFUNC(props2, 10, M2CF32_2)(props2, (const char *)&lbl_8055B510, lbl_80563248);
-                x = M2C_VFUNC(props2, 10, M2CF32_2)(props2, (const char *)&lbl_8055B514, lbl_8056324C);
-                b = M2C_VFUNC(props2, 10, M2CF32_2)(props2, (const char *)&lbl_8055B518, lbl_80563250);
-                c = M2C_VFUNC(props2, 10, M2CF32_2)(props2, (const char *)&lbl_8055B51C, lbl_80563254);
-                M2C_FIELD(block, f32 *, 8) = b;
-                M2C_FIELD(block, f32 *, 0xC) = x;
-                d = scale / (b - c);
-                M2C_FIELD(block, f32 *, 0x10) = d;
-                M2C_FIELD(block, f32 *, 0x14) = scale / (a - x);
-                M2C_FIELD(block, f32 *, 0x18) = e;
-                M2C_FIELD(block, f32 *, 4) =
-                    scale / M2C_VFUNC(item, 9, M2CF32_1)(item, (const char *)&lbl_8033C1F0);
-            }
-        }
-        index++;
-    } while (1);
-    fn_80131818(manager);
-    M2C_FIELD(result, f32 *, 0x150) = lbl_80563238;
-    M2C_FIELD(result, f32 *, 0x154) = lbl_80563238;
-    return result;
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void *fn_80209448(void *arg0, M2C_UNK arg_sp0) {
+struct M2CKeyObject {
+virtual void *f2(const char *);
+virtual void *f3();
+virtual void *f4();
+virtual void *f5();
+virtual void *f6(const char *, s32);
+};
+struct M2CManager {
+virtual void *f2(const char *);
+virtual void *f3(s32);
+};
+struct M2CItem {
+virtual const char *f2();
+virtual void *f3();
+virtual void *f4();
+virtual void *f5(const char *);
+virtual void *f6();
+virtual void *f7();
+virtual void *f8();
+virtual f32 f9(const char *);
+virtual void *f10();
+virtual void *f11();
+virtual void *f12();
+virtual void *f13();
+virtual void *f14();
+virtual void *f15();
+virtual void *f16();
+virtual void *f17();
+virtual void *f18();
+virtual void *f19();
+virtual void *f20();
+virtual void *f21();
+virtual void *f22();
+virtual void *f23(const char *);
+};
+struct M2CValues {
+virtual void *f2();
+virtual void *f3();
+virtual void *f4();
+virtual void *f5();
+virtual void *f6();
+virtual void *f7();
+virtual void *f8();
+virtual f64 f9(const char *);
+virtual f32 f10(const char *, f32);
+};
+void *result, *item, *manager, *object;
+void *block, *entry, *text;
+f64 temp_f1;
+f32 width, scale, height, z, x, y, a, b, c, d, e;
+s32 index, count, flag;
+result = fn_801284F8(0x158, (const char *)&lbl_8055B500);
+if (result != 0) {
+M2C_FIELD(result, void **, 0) = (void *)&lbl_8033C1E0;
+if (lbl_8055EDBC == 0) {
+lbl_8055EDB8 = lbl_80563238;
+fn_80127C90((void *)fn_80209904, (const char *)&lbl_8055B520);
 }
+lbl_8055EDBC++;
+M2C_FIELD(result, void **, 0x140) = arg0;
+M2C_FIELD(result, s32 *, 0x13C) = 0;
+object = M2C_FIELD(M2C_FIELD(arg0, void **, 0x26C), void **, 0x2134);
+object = ((M2CKeyObject *)object)->f2((const char *)&lbl_8033C248);
+((M2CKeyObject *)object)->f6((const char *)&lbl_8033C238, lbl_8055B4F8);
+manager = fn_80131808();
+block = ((M2CManager *)manager)->f2((const char *)&lbl_8055B53C);
+M2C_FIELD(result, f32 *, 0x14C) =
+((M2CValues *)block)->f10((const char *)&lbl_8033C22C, lbl_8056323C);
+temp_f1 = ((M2CValues *)block)->f9((const char *)&lbl_8033C21C);
+M2C_FIELD(result, volatile f32 *, 0x144) = temp_f1;
+width = (f32)temp_f1;
+M2C_FIELD(result, f32 *, 0x148) = lbl_80563240 * width;
+scale = lbl_8056323C;
+height = lbl_80563244;
+z = lbl_80563238;
+index = 0;
+flag = 1;
+goto loop_test;
+loop_body:
+if (strcmp(((M2CItem *)item)->f2(), (const char *)&lbl_8055B534) == 0) {
+count = M2C_FIELD(result, s32 *, 0x13C);
+M2C_FIELD(result, s32 *, 0x13C) = count + 1;
+block = (u8 *)result + count * 0x34 + 4;
+memset(block, 0, 0x34);
+text = ((M2CItem *)item)->f5((const char *)&lbl_8055B52C);
+object = M2C_FIELD(result, void **, 0x140);
+if (M2C_FIELD(object, s32 *, 0x1F0) != 0x50) {
+entry = fn_802077A4(3, (u8 *)object + 0x118, (u8 *)arg0 + 0x60);
+M2C_FIELD(block, void **, 0) = entry;
+} else {
+entry = fn_80207848(2);
+if (entry != 0) {
+if (fn_80137C74() == 2) {
+if ((M2C_FIELD(M2C_FIELD(result, void **, 0x140), u8 *, 0x260) & 3) == 0) {
+if (height != M2C_FIELD(entry, f32 *, 0x64)) {
+M2C_FIELD(entry, u8 *, 0x6C) = flag;
+M2C_FIELD(entry, f32 *, 0x64) = height;
+}
+} else if (scale != M2C_FIELD(entry, f32 *, 0x64)) {
+M2C_FIELD(entry, u8 *, 0x6C) = flag;
+M2C_FIELD(entry, f32 *, 0x64) = scale;
+}
+}
+if (z != M2C_FIELD(entry, f32 *, 0x68)) {
+M2C_FIELD(entry, u8 *, 0x6D) = flag;
+M2C_FIELD(entry, f32 *, 0x68) = z;
+}
+}
+M2C_FIELD(block, void **, 0) = entry;
+}
+M2C_FIELD(block, f32 *, 0x30) = z;
+entry = M2C_FIELD(block, void **, 0);
+if (entry == 0) {
+fn_802E30C8((const char *)&lbl_8033C208, text);
+M2C_FIELD(result, s32 *, 0x13C)--;
+} else {
+M2C_FIELD(entry, s32 *, 0x10) = M2C_FIELD(arg0, s32 *, 0x1EC);
+text = ((M2CItem *)item)->f23((const char *)&lbl_8033C1FC);
+y = ((M2CValues *)text)->f10((const char *)&lbl_8055B508, lbl_8056323C);
+x = ((M2CValues *)text)->f10((const char *)&lbl_8055B510, lbl_80563248);
+a = ((M2CValues *)text)->f10((const char *)&lbl_8055B514, lbl_8056324C);
+b = ((M2CValues *)text)->f10((const char *)&lbl_8055B518, lbl_80563250);
+c = ((M2CValues *)text)->f10((const char *)&lbl_8055B51C, lbl_80563254);
+M2C_FIELD(block, f32 *, 0x1C) = b;
+M2C_FIELD(block, f32 *, 0x20) = a;
+d = scale / (b - c);
+M2C_FIELD(block, f32 *, 0x24) = d;
+M2C_FIELD(block, f32 *, 0x28) = scale / (x - a);
+M2C_FIELD(block, f32 *, 0x2C) = y;
+text = M2C_VFUNC(item, 23, M2CPtr1)(item, (const char *)&lbl_8055B528);
+e = ((M2CValues *)text)->f10((const char *)&lbl_8055B508, lbl_8056323C);
+a = ((M2CValues *)text)->f10((const char *)&lbl_8055B510, lbl_80563248);
+x = ((M2CValues *)text)->f10((const char *)&lbl_8055B514, lbl_8056324C);
+b = ((M2CValues *)text)->f10((const char *)&lbl_8055B518, lbl_80563250);
+c = ((M2CValues *)text)->f10((const char *)&lbl_8055B51C, lbl_80563254);
+M2C_FIELD(block, f32 *, 8) = b;
+M2C_FIELD(block, f32 *, 0xC) = x;
+d = scale / (b - c);
+M2C_FIELD(block, f32 *, 0x10) = d;
+M2C_FIELD(block, f32 *, 0x14) = scale / (a - x);
+M2C_FIELD(block, f32 *, 0x18) = e;
+M2C_FIELD(block, f32 *, 4) =
+scale / ((M2CItem *)item)->f9((const char *)&lbl_8033C1F0);
+}
+}
+index++;
+loop_test:
+item = ((M2CManager *)manager)->f3(index);
+if (item != 0) goto loop_body;
+fn_80131818(manager);
+M2C_FIELD(result, f32 *, 0x150) = lbl_80563238;
+M2C_FIELD(result, f32 *, 0x154) = lbl_80563238;
+}
+return result;
+}
+
+extern "C" s32 fn_80178CA4(void);
+extern "C" s32 fn_8026A344(s32);
+extern f32 lbl_8056325C, lbl_80563260, lbl_80563264, lbl_80563268, lbl_8056326C, lbl_80563270;
+extern "C" s32 fn_80178CA4(void);
+extern "C" s32 fn_8026A344(s32);
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+extern "C" void fn_80209A64(void *obj, s32 muted) {
+    void *cfg = M2C_FIELD(obj, void **, 0x140);
+    f32 old = M2C_FIELD(obj, f32 *, 0x154);
+    f32 speed = M2C_FIELD(obj, f32 *, 0x14c) * M2C_FIELD(cfg, f32 *, 0x25d0);
+    f32 value, factor, weight, rpm;
+    s32 i, count, found = 0;
+    u8 *entry;
+    M2C_FIELD(obj, f32 *, 0x150) = speed;
+    M2C_FIELD(obj, f32 *, 0x154) = old + lbl_8056325C * (lbl_8056323C - old);
+    rpm = M2C_FIELD(cfg, f32 *, 0x25fc);
+    count = fn_80178CA4();
+    for (i = 0; i < count; i++) {
+        s32 id = M2C_FIELD(M2C_FIELD(obj, void **, 0x140), s32 *, 0x1ec);
+        if (fn_8026A344(i) == id) { found = 1; break; }
+    }
+    factor = found ? M2C_FIELD(obj, f32 *, 0x144) : M2C_FIELD(obj, f32 *, 0x148);
+    if (muted) factor = lbl_80563238;
+    entry = (u8 *)obj + 4;
+    {
+    f32 one = lbl_8056323C, smooth = lbl_80563260, two = lbl_80563264, hi = lbl_80563268, lo = lbl_8056326C, gain = lbl_80563270;
+    for (i = 0; i < M2C_FIELD(obj, s32 *, 0x13c); i++, entry += 0x34) {
+        f32 a = one, b = one, temp, x, out;
+        void *sound;
+        if (speed < M2C_FIELD(entry, f32 *, 8)) {
+            temp = M2C_FIELD(entry, f32 *, 0x10) * (M2C_FIELD(entry, f32 *, 8) - speed);
+            if (a >= temp) a = temp;
+            a = one - a;
+        } else if (speed > M2C_FIELD(entry, f32 *, 0xc)) {
+            temp = M2C_FIELD(entry, f32 *, 0x14) * (speed - M2C_FIELD(entry, f32 *, 0xc));
+            if (a >= temp) a = temp;
+            a = one - a;
+        }
+        x = (smooth - two * a) * (a * a) * M2C_FIELD(entry, f32 *, 0x18);
+        if (rpm < M2C_FIELD(entry, f32 *, 0x1c)) {
+            temp = M2C_FIELD(entry, f32 *, 0x24) * (M2C_FIELD(entry, f32 *, 0x1c) - rpm);
+            if (b >= temp) b = temp;
+            b = one - b;
+        } else if (rpm > M2C_FIELD(entry, f32 *, 0x20)) {
+            temp = M2C_FIELD(entry, f32 *, 0x28) * (rpm - M2C_FIELD(entry, f32 *, 0x20));
+            if (b >= temp) b = temp;
+            b = one - b;
+        }
+        weight = (smooth - two * b) * (b * b) * M2C_FIELD(entry, f32 *, 0x2c);
+        sound = M2C_FIELD(entry, void **, 0);
+        M2C_FIELD(sound, u8 *, 0x4a) = 0;
+        M2C_FIELD(sound, u8 *, 0x4b) = 1;
+        M2C_FIELD(sound, u8 *, 0x49) = 1;
+        value = speed * M2C_FIELD(entry, f32 *, 4);
+        if (value != M2C_FIELD(sound, f32 *, 4)) {
+            M2C_FIELD(sound, u8 *, 0x4e) = 1;
+            M2C_FIELD(sound, f32 *, 4) = value;
+        }
+        temp = lbl_8055EDB8 * x * weight - M2C_FIELD(entry, f32 *, 0x30);
+        if (hi < temp) temp = hi;
+        if (temp <= lo) temp = lo;
+        out = M2C_FIELD(entry, f32 *, 0x30) + temp;
+        M2C_FIELD(entry, f32 *, 0x30) = out;
+        value = (gain + gain * M2C_FIELD(obj, f32 *, 0x154)) * (out * factor);
+        if (value != M2C_FIELD(sound, f32 *, 8)) {
+            M2C_FIELD(sound, u8 *, 0x4d) = 1;
+            M2C_FIELD(sound, f32 *, 8) = value;
+        }
+    }
+    }
+}
+#pragma pop
+
+#pragma scheduling on
+#pragma cplusplus reset
