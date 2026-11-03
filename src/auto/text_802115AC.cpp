@@ -1352,11 +1352,15 @@ extern "C" s32 fn_80214934(const void*, s32, void*, s32);
 extern "C" s32 fn_8021481C(void*);
 extern "C" char lbl_8033D388[];
 extern "C" char lbl_8033D268[];
+#pragma push
+#pragma dont_inline on
 extern "C" void fn_802149FC(s32 arg0) {
     char sp8[0x64];
     fn_80214934(lbl_8033D268, arg0, sp8, 0x64);
     fn_8021481C(sp8);
 }
+#pragma dont_inline reset
+#pragma pop
 
 #pragma scheduling invalid_target
 extern "C" s32 fn_80214A38(s32 arg0) {
