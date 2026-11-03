@@ -607,6 +607,8 @@ extern hcisu_h2_cb_t lbl_803BD1A0;
 #define hcisu_h2_cb lbl_803BD1A0
 extern void UUSB_Register(tUUSB *uusb);
 extern void UUSB_Open(tUUSB *uusb, void *cback);
+extern s32 IUSB_OpenLib(void);
+extern s32 uusb_get_devId(u32 arg0, u32 arg1);
 extern void UUSB_Close(void *uusb);
 void fn_80070758(void);
 
@@ -8224,6 +8226,52 @@ void btm_event_filter_complete(UINT8 *p) {
     }
 }
 
+void btm_process_inq_results(UINT8 *p, UINT8 mode)
+{
+    UINT8 n, i, bda[6], dc[3], rep, per, scan = 0, rssi = 0;
+    UINT16 clock;
+    UINT8 *entry, *cur;
+    UINT32 j, is_new = 1;
+    void (*cb)(void *) = *(void (**)(void *))(lbl_803C0F78 + 0x16b4);
+    if (!lbl_803C0F78[0x1848]) return;
+    n = *p++;
+    for (i = 0; i < n; i++) {
+        bda[5] = *p++; bda[4] = *p++; bda[3] = *p++;
+        bda[2] = *p++; bda[1] = *p++; bda[0] = *p++;
+        rep = *p++; per = *p++;
+        if (!mode) scan = *p++;
+        dc[2] = *p++; dc[1] = *p++; dc[0] = *p++;
+        clock = p[0] + (p[1] << 8); p += 2;
+        if (mode) rssi = *p++;
+        if (btm_inq_find_bdaddr(bda)) continue;
+        if (*(UINT8 (**)(UINT8 *, UINT8 *))(lbl_803C0F78 + 0x184c) &&
+            !(*(UINT8 (**)(UINT8 *, UINT8 *))(lbl_803C0F78 + 0x184c))(bda, dc)) continue;
+        entry = lbl_803C0F78 + 0x16e4;
+        for (j = 0; j < 12; j++, entry += 0x1c) {
+            if (entry[0x1a] && !memcmp(entry + 0xa, bda, 6)) break;
+        }
+        if (j == 12) entry = 0;
+        if (!entry) { entry = (UINT8 *)btm_inq_db_new(bda); is_new = 1; }
+        else if (*(UINT32 *)(entry + 4) == *(UINT32 *)(lbl_803C0F78 + 0x16c0)) is_new = 0;
+        if (is_new == 1) {
+            entry[0x13] = rep; entry[0x14] = per; cur = entry + 8;
+            entry[0x15] = scan;
+            entry[0x10] = dc[0]; entry[0x11] = dc[1]; entry[0x12] = dc[2];
+            *(UINT16 *)(entry + 8) = clock | 0x8000;
+            if (mode) cur[0xe] = rssi; else cur[0xe] = 0x7f;
+            *(UINT32 *)entry = fn_8006E4F8();
+            *(UINT32 *)(entry + 4) = *(UINT32 *)(lbl_803C0F78 + 0x16c0);
+            lbl_803C0F78[0x183f]++;
+            if (!(lbl_803C0F78[0x1848] & 4) && lbl_803C0F78[0x1836] &&
+                lbl_803C0F78[0x183f] == lbl_803C0F78[0x1836]) btsnd_hcic_inq_cancel();
+            entry[0x18] = 0;
+            if (cb) cb(cur);
+            if (*(void (**)(void *, UINT8))(lbl_803C0F78 + 0x16bc))
+                (*(void (**)(void *, UINT8))(lbl_803C0F78 + 0x16bc))(cur, 1);
+        }
+    }
+}
+
 void btm_process_inq_complete(UINT8 status, UINT8 unused) {
     u8 result;
     void *zero;
@@ -9404,6 +9452,78 @@ void bta_dm_disc_rmt_name(void *arg0) {
     }
     *(s32 *)((u8 *)arg0 + 0x108) = 0;
     ((void (*)(s32, void *))*(u32 *)lbl_803C0B98)(2, (u8 *)arg0 + 8);
+}
+
+void bta_dm_sdp_result(u8 *arg0) {
+    u32 ok = 0;
+    u8 *msg;
+    u8 *state;
+    tSDP_DISC_REC *rec = 0;
+    u16 status = *(u16 *)(arg0 + 8);
+    u16 service;
+    u8 *name;
+
+    if (status == 0 || status == 0xFFF0 || status == 0xFFF4) {
+        service = lbl_802EE990[lbl_803C0B98[0x70] - 1];
+        if (status == 0xFFF4 ||
+            (rec = SDP_FindServiceInDb(*(tSDP_DISCOVERY_DB **)(lbl_803C0B98 + 0x14), service, 0)) != 0) {
+            if (service == 0x1200) {
+                if (rec != 0 && fn_80095C64((void **)rec, (u16)0x8001) != 0)
+                    ok = 1;
+            } else {
+                ok = 1;
+            }
+            if (ok != 0) {
+                *(u32 *)(lbl_803C0B98 + 0x10) |= 1 << (lbl_803C0B98[0x70] - 1);
+            }
+        }
+        state = lbl_803C0B98;
+        GKI_freebuf(*(void **)(state + 0x14));
+        *(void **)(state + 0x14) = 0;
+        if (*(u32 *)(state + 0xC) != 0) {
+            bta_dm_find_services(state + 0x1A);
+            return;
+        }
+        BTM_SecDeleteRmtNameNotifyCallback(fn_80072AE4);
+        msg = GKI_getbuf(0x110);
+        if (msg != 0) {
+            *(u16 *)msg = 0x208;
+            msg[0x10C] = 0;
+            *(u32 *)(msg + 0x108) = *(u32 *)(state + 0x10);
+            fn_80070FA4(msg + 8, state + 0x1A);
+            name = state + 0x20;
+            if ((s8)state[0x20] == 0) {
+                u8 *read_name = (u8 *)BTM_SecReadDevName(state + 0x1A);
+                if (read_name != 0)
+                    name = read_name;
+            }
+            strncpy((char *)msg + 0xE, (char *)name, 0x20);
+            fn_80071450(msg);
+        }
+    } else {
+        if (status == 0xFFF1 || (u16)(status + 10) <= 1)
+            lbl_803C0B98[0x78] = 0;
+        state = lbl_803C0B98;
+        GKI_freebuf(*(void **)(state + 0x14));
+        *(void **)(state + 0x14) = 0;
+        BTM_SecDeleteRmtNameNotifyCallback(fn_80072AE4);
+        msg = GKI_getbuf(0x110);
+        if (msg != 0) {
+            u8 *read_name;
+            *(u16 *)msg = 0x208;
+            msg[0x10C] = 1;
+            *(u32 *)(msg + 0x108) = *(u32 *)(state + 0x10);
+            fn_80070FA4(msg + 8, state + 0x1A);
+            name = state + 0x20;
+            if ((s8)state[0x20] == 0) {
+                read_name = (u8 *)BTM_SecReadDevName(state + 0x1A);
+                if (read_name != 0)
+                    name = read_name;
+            }
+            strncpy((char *)msg + 0xE, (char *)name, 0x20);
+            fn_80071450(msg);
+        }
+    }
 }
 
 void fn_80072434(void) {
@@ -13673,12 +13793,10 @@ void hidh_sec_check_complete_term(u8 *bd_addr, void *p_ref_data, u8 res) {
 
 void hidh_l2cif_connect_ind(u8 *addr, u16 cid, u16 psm, u8 id) {
     extern void hidh_sec_check_complete_term(u8 *, void *, u8);
-    char *strings;
     u8 *entry;
-    int accept;
+    char *strings = lbl_80317838;
+    int accept = 1;
     int i;
-    strings = lbl_80317838;
-    accept = 1;
     if (lbl_803C3C38[0x401] >= 4)
         fn_8007096C(0x1e0003, strings + 0x58, psm, cid);
     entry = lbl_803C3C38;
