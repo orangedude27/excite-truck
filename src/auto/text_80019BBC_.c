@@ -12,7 +12,7 @@ extern float lbl_80560444, lbl_80560448, lbl_8056044C;
 extern float fn_80235EF0(void *, int);
 extern void fn_80235AFC(void *, int, unsigned int, float, float, float, float, float, float);
 extern void fn_802354A0(void *, int, int, float, float, float, float, float);
-extern int fn_8001B478(float);
+extern void fn_8001B478(float);
 extern void *fn_80156A40(void);
 extern float lbl_80560418;
 extern float lbl_8056041C;
@@ -543,18 +543,19 @@ extern double fn_8002F234(double);
 extern float lbl_80560418, lbl_80560420, lbl_80560424, lbl_80560440;
 #pragma processor 750
 #pragma use_lmw_stmw off
-int fn_8001B478(float farg0) {
+void fn_8001B478(float farg0) {
     unsigned char sp20[0x30];
     int i, count, result;
     float step, ratio, angle, x, y, z, w, nx, ny, norm, inv, dx, dy, t;
-    float a[4], texscale;
+    float a[4];
+    float texscale;
     void *shape;
     void *node;
     void *head;
     fn_801352B8(sp20);
     if (fn_80135D60(sp20, 0) == 0) {
         fn_8013530C(sp20, -1);
-        return 0;
+        return;
     }
     shape = *(void **)(sp20 + 0x2c);
     step = *(float *)((char *)shape + 8);
@@ -569,7 +570,7 @@ int fn_8001B478(float farg0) {
         node = *(void **)((char *)node + 0x14);
         i++;
     }
-    if ((i & 3) != 0) i += 4 - (i & 3);
+    if ((i % 4) != 0) i += 4 - (i & 3);
     fn_802C8DBC((i / 4) * 2 + 2);
     angle = lbl_80560440;
     t = lbl_80560418;
@@ -590,28 +591,27 @@ int fn_8001B478(float farg0) {
             float z1 = z0 + t * (*(float *)next - z0);
             float w1 = w0 + t * (*(float *)((char *)next + 4) - w0);
             a[0] = x1; a[1] = y1; a[2] = z1; a[3] = w1;
-            norm = (float)fn_8002F234(x1*x1 + y1*y1);
+            norm = (float)fn_8002F234(*(volatile float *)&a[0]* *(volatile float *)&a[0] + *(volatile float *)&a[1]* *(volatile float *)&a[1]);
             inv = x / norm;
-            dx = y1 * inv;
-            dy = -(x1 * inv);
+            dx = a[1] * inv;
+            dy = -(a[0] * inv);
             a[0] = dx; a[1] = dy;
             if (*(float *)((char *)node + 0x1c) < angle)
                 ratio = texscale * (*(float *)((char *)node + 0x1c) + step);
             else ratio = *(float *)((char *)node + 0x1c) * texscale;
             angle = *(float *)((char *)node + 0x1c);
             nx = -farg0 * y;
-            x0 = z1 + dx * nx;
-            y0 = w1 + dy * nx;
+            x0 = a[2] + dx * nx;
+            y0 = a[3] + dy * nx;
             fn_802C8E00(-1, result, x0, lbl_80560418, y0, lbl_80560418, ratio);
             nx = farg0 * y;
-            fn_802C8E00(-1, result, z1 + dx * nx, lbl_80560418, w1 + dy * nx,
+            fn_802C8E00(-1, result, a[2] + dx * nx, lbl_80560418, a[3] + dy * nx,
                         lbl_80560424, ratio);
             result = 1;
         }
     }
     fn_802C8E48();
     fn_8013530C(sp20, -1);
-    return result;
 }
 
 #pragma push
@@ -697,7 +697,7 @@ void fn_8001B7BC(void *arg0) {
 #pragma small_data on
 extern float lbl_80560418;
 extern float lbl_8056041C;
-extern int fn_8001B478(float);
+extern void fn_8001B478(float);
 extern void *fn_80156A40(void);
 extern double cos(double);
 extern double sin(double);
