@@ -5,6 +5,15 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+typedef struct RenderBatch { u16 **items; int count; int unused; struct RenderBatch *next; } RenderBatch;
+typedef struct RenderNode { RenderBatch *batches; int count; int type; u8 enabled; char pad[3]; struct RenderNode *next; char data[0x40]; } RenderNode;
+typedef struct RenderEntry { void *name; int state; int kind; RenderNode *nodes; } RenderEntry;
+typedef struct RenderList { RenderEntry **items; int count; } RenderList;
+typedef struct RenderMatrix { int words[8]; } RenderMatrix;
+extern int lbl_802FAB40[];
+extern void fn_802C21B8(void), fn_802C28C0(void), fn_802C8BD0(void), fn_802C8D74(void), fn_802DC130(void), fn_802DC134(void), fn_802DC278(void), fn_802DC27C(void);
+extern void fn_802CADD0(int,int), fn_802D3D94(int,void*,...);
+extern void fn_802DC138(int,int,void*,int), fn_802DC280(int,int,void*,int);
 int fn_8012C33C(void);
 extern double cos(double);
 extern double sin(double);
@@ -365,7 +374,7 @@ void fn_802B9B68(void) {
     struct Manager {
         void *pool;
         void *records;
-        volatile int index;
+        int index;
         int count;
         void *allocation;
     };
@@ -376,8 +385,9 @@ void fn_802B9B68(void) {
         int unused;
     };
     struct Manager *manager;
-    volatile struct Record *records;
+    struct Record *records;
     void *pool;
+    int count;
     int i;
     int offset;
     int index;
@@ -391,12 +401,13 @@ void fn_802B9B68(void) {
                           void *(*)(void *, s32), int, int))fn_8002F37C)(
             ((void *(*)(int, void *))fn_8012850C)(0x5010, &lbl_8055CEF0),
             fn_802B9CF4, fn_802B9C9C, 0x10, 0x500);
-        manager->count = 0x500;
+        count = 0x500;
+        manager->count = count;
         manager->index = 0;
         manager->allocation = manager->records;
         manager->pool = ((void *(*)(int, void *))fn_8012850C)(
-            manager->count * 0x10, lbl_8034AA1C);
-        records = (volatile struct Record *)manager->records;
+            manager->count << 4, lbl_8034AA1C);
+        records = (struct Record *)manager->records;
         pool = manager->pool;
         i = 0;
         offset = 0;
@@ -404,7 +415,7 @@ void fn_802B9B68(void) {
             index = manager->index;
             i++;
             pool = manager->pool;
-            records = (volatile struct Record *)manager->records;
+            records = (struct Record *)manager->records;
             manager->index = index + 1;
             records[index].data = (char *)pool + offset;
             offset += 0x10;
@@ -720,6 +731,68 @@ extern "C" void fn_802BA010(void *arg0, int arg1) {
         fn_802E30C8(&lbl_8034A064, *(void *volatile *)(sp + 0x10));
     }
 }
+
+extern "C" void fn_802BA560(void *);
+extern "C" char lbl_8034A9D0[];
+extern "C" char lbl_8034A9E4[];
+extern "C" void fn_802BA348(void) {
+    struct Dummy { virtual void v0(); virtual void *v1(int); };
+    struct {
+        char *name;
+        int start;
+        void **data;
+        int count;
+        int cap;
+        void *buf[4];
+    } s;
+    int i, j, total, n;
+    void *first, *cur, *p, *obj, *entry, *buffer, *items;
+    s.name = lbl_8034A9D0;
+    s.start = fn_802E2C20(lbl_8034A9D0);
+    s.data = s.buf;
+    s.cap = 4;
+    s.count = 0;
+    first = ((Dummy *)fn_80156A40())->v1(0);
+    cur = first;
+    for (i = 0; s.count + 1 <= s.cap && i < 3;) {
+        if (cur != 0) {
+            n = s.count++;
+            s.data[n] = cur;
+        }
+        i++;
+        cur = ((Dummy *)fn_80156A40())->v1(i);
+        if (cur == first || cur == 0) break;
+    }
+    total = 0;
+    for (i = 0; i < s.count; i++) {
+        obj = s.data[i];
+        p = fn_80138B4C(obj, 0);
+        if (p != 0) {
+            do {
+                total += *(int *)((char *)p + 8);
+                p = fn_80138B4C(obj, p);
+            } while (p != 0);
+        }
+    }
+    entry = fn_801284F8(0x10, lbl_8034A9E4);
+    if (entry != 0) {
+        buffer = ((void *(*)(int, void *))fn_8012850C)(total * 0x54 + 0x10, lbl_8034A9E4);
+        items = fn_8002F37C(buffer, (void *)fn_802BA560, 0, 0x54, total);
+        *(void **)entry = items;
+        *(int *)((char *)entry + 8) = total;
+        *(int *)((char *)entry + 4) = 0;
+        *(void **)((char *)entry + 0xC) = items;
+    }
+    lbl_8055FA78 = entry;
+    for (j = 0; j < s.count; j++)
+        fn_802BA010(s.data[j], j);
+    s.data = 0;
+    s.count = 0;
+    s.cap = 0;
+    if (((int (*)(void))fn_802E2C20)() - s.start > 0x1F4)
+        fn_802E30C8(&lbl_8034A064, s.name);
+}
+
 #pragma cplusplus reset
 
 void fn_802BA560(void *arg0) {
@@ -821,21 +894,49 @@ found:
 }
 
 extern f32 lbl_80564CCC, lbl_80564CD8, lbl_80564CEC;
-void fn_802BA848(f32 *out, f32 *a, f32 *b, f32 *c) {
-    f32 x0=b[0], x1=b[1], y0=a[0], y1=a[1], z0=c[0], z1=c[1];
-    f32 d=y0*x1-x0*y1;
-    f32 hi=x0+(z0+y0), lo=z0+x0;
-    f32 u=y0/d, v=-x0/d, w=-y1/d, q=x1/d;
-    out[10]=lbl_80564CD8; out[11]=v;
-    out[14]=lbl_80564CD8*lbl_80564CEC;
-    out[9]=q; out[13]=w*lbl_80564CEC; out[15]=u*lbl_80564CEC;
-    out[12]=-(z0*q+z1*v);
-    out[16]=(-((z1*u+z0*w))*lbl_80564CEC)+lbl_80564CCC;
-    if(lo<hi) lo=hi;
-    hi=z0+y0; if(hi<lo) hi=lo; lo=z0; if(lo<hi) lo=hi; out[5]=lo;
-    lo=z1+x1; hi=x1+(z1+y1); if(lo<hi) lo=hi; hi=z1+y1; if(hi<lo) hi=lo; z1=c[1]; if(z1<hi) z1=hi; out[6]=z1;
-    z0=c[0]; x0=b[0]; lo=z0+x0; hi=x0+(z0+a[0]); if(lo>hi) lo=hi; hi=z0+a[0]; if(hi>lo) hi=lo; z0=c[0]; if(z0>hi) z0=hi; out[7]=z0;
-    z1=c[1]; x1=b[1]; lo=z1+x1; hi=x1+(z1+a[1]); if(lo>hi) lo=hi; hi=z1+a[1]; if(hi>lo) hi=lo; z1=c[1]; if(z1>hi) z1=hi; out[8]=z1;
+extern "C" f32 lbl_80564CCC, lbl_80564CD8, lbl_80564CEC;
+extern "C" void fn_802BA848(f32 *out, f32 *a, f32 *b, f32 *c) {
+    f32 x0 = b[0], y1 = a[1], y0 = a[0], x1 = b[1], z0 = c[0];
+    f32 d = y0 * x1 - x0 * y1;
+    f32 hi = x0 + (z0 + y0), z1 = c[1];
+    f32 lo = z0 + x0;
+    f32 u, v, w, q;
+    f32 k0 = lbl_80564CD8, k1 = lbl_80564CEC;
+    out[10] = k0;
+    u = y0 / d;
+    v = -x0 / d;
+    out[11] = v;
+    w = -y1 / d;
+    out[14] = k0 * k1;
+    q = x1 / d;
+    out[9] = q;
+    out[13] = w * k1;
+    out[15] = u * k1;
+    out[12] = -(z0 * q + z1 * v);
+    out[16] = (f32)(-(double)(z1 * u + z0 * w)) * k1 + lbl_80564CCC;
+    lo = (lo < hi) ? lo : hi;
+    hi = c[0] + a[0];
+    lo = (hi < lo) ? hi : lo;
+    hi = c[0];
+    out[5] = (hi < lo) ? hi : lo;
+    lo = c[1] + b[1]; hi = b[1] + (c[1] + a[1]);
+    lo = (lo < hi) ? lo : hi;
+    hi = c[1] + a[1];
+    lo = (hi < lo) ? hi : lo;
+    hi = c[1];
+    out[6] = (hi < lo) ? hi : lo;
+    lo = c[0] + b[0]; hi = b[0] + (c[0] + a[0]);
+    lo = (lo > hi) ? lo : hi;
+    hi = c[0] + a[0];
+    lo = (hi > lo) ? hi : lo;
+    hi = c[0];
+    out[7] = (hi > lo) ? hi : lo;
+    lo = c[1] + b[1]; hi = b[1] + (c[1] + a[1]);
+    lo = (lo > hi) ? lo : hi;
+    hi = c[1] + a[1];
+    lo = (hi > lo) ? hi : lo;
+    hi = c[1];
+    out[8] = (hi > lo) ? hi : lo;
 }
 
 #pragma cplusplus reset
@@ -847,6 +948,90 @@ void fn_802BAA50(void *arg0) {
     *(float *)arg0 = b;
     *((float *)arg0 + 1) = -a;
 }
+
+#pragma cplusplus on
+#pragma dont_inline on
+extern "C" void fn_802BAD0C(void *, float);
+extern "C" float fn_802BAD90(float);
+extern "C" void *fn_802BAA68(void **arg0, char *arg1) {
+    class Object { public:
+        virtual void v0(); virtual void v1(); virtual void v2();
+        virtual char *name(void *);
+        virtual void v4(); virtual void v5();
+        virtual int v6(void *, int);
+        virtual void v7();
+        virtual float v8(void *, float);
+        virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual unsigned long long value(void *);
+    };
+    extern int fn_802E317C(const char *, ...);
+    extern int fn_802B110C(void *, char *);
+    extern int stricmp(const char *,const char *);
+    extern void fn_801602B0(void *);
+    extern void fn_8016029C(void *, void *);
+    extern void fn_80160B18(void *);
+    extern void fn_80160BA0(void *, void *, float);
+    extern void fn_80160288(void *, void *);
+    extern void fn_801E0F78(void *, void *, void *, float);
+    extern float lbl_80564CDC, lbl_80564CD8, lbl_80564CEC;
+    extern int lbl_8055CF10, lbl_8055CF0C, lbl_8055CEF8, lbl_8055CECC;
+    union { unsigned long long bits; float v[2]; } value;
+    float e[2], c[2], b[2], a[2];
+    char *result;
+    char *name;
+    int *entry;
+    int **items;
+    int index;
+    int state;
+    int count;
+    int extra;
+    float angle;
+    result = *(char **)lbl_8055FA7C + (*(int *)((char *)lbl_8055FA7C+4))*0x44;
+    ++*(int *)((char *)lbl_8055FA7C+4);
+    fn_801602B0(a); fn_801602B0(b); fn_801602B0(c);
+    fn_8016029C(b, arg1 + 0x18);
+    fn_80160B18(b);
+    fn_8016029C(c, arg1);
+    fn_80160B18(c);
+    fn_8016029C(a, arg1 + 0x24);
+    value.bits = ((Object *)arg0)->value(&lbl_8055CF10);
+    fn_80160288(e, &value);
+    fn_80160BA0(b, b, e[1]);
+    fn_80160BA0(c, c, e[1]);
+    angle = fn_802BAD90(lbl_80564CEC * ((Object *)arg0)->v8(&lbl_8055CF0C, lbl_80564CD8));
+    fn_802BAD0C(b, angle);
+    fn_802BAD0C(c, angle);
+    fn_801E0F78(a, a, c, lbl_80564CDC);
+    fn_801E0F78(a, a, b, lbl_80564CDC);
+    fn_802BA848((float *)result, c, b, a);
+    *(int *)(result+8) = 0;
+    name = ((Object *)arg0)->name(&lbl_8055CEF8);
+    extra = ((Object *)arg0)->v6(&lbl_8055CEE4, 0x378);
+    for(index=0; index < *(int *)((char *)&lbl_804BFFF4+4); index++) {
+        entry=(*(int ***)&lbl_804BFFF4)[index];
+        if (stricmp((char *)entry[0],name)==0) goto found;
+    }
+    count=*(int *)((char *)&lbl_804BFFF4+4);
+    items=*(int ***)&lbl_804BFFF4;
+    *(int *)((char *)&lbl_804BFFF4+4)=count+1;
+    entry=(int *)fn_801284F8(0x10,&lbl_8055CECC);
+    if(entry) {
+        entry[0]=(int)name;
+        if ((signed char)*name) state=fn_802B110C((void *)fn_802B8E50,name);
+        else state=-2;
+        entry[1]=state;
+        if(state==-2 && (signed char)*name) fn_802E317C((char *)&lbl_8034AA2C,name);
+        entry[3]=0;
+        entry[2]=extra;
+    }
+    items[count]=entry;
+found:
+    *(int *)(result+16)=entry[3];
+    entry[3]=(int)result;
+    lbl_8055FA84=(void *)((int)lbl_8055FA84+1);
+    return result;
+}
+#pragma cplusplus reset
 
 void fn_802BAD0C(void *arg0, float angle) {
     register float c;
@@ -904,29 +1089,26 @@ extern void fn_801286A0(void *, int);
 extern void fn_80265DCC(void *, void *, int, int (**)(int **, int **));
 extern void fn_802E30C8(void *, ...);
 void fn_802BAE50(void) {
-    short size;
-    short doubled;
     int total;
-    int dimension;
-    int start;
+    volatile int start;
     int n;
     void *table;
     void *items;
-    char *name;
+    char * volatile name;
+    char *allocationName;
+    short listSize;
+    short passSize;
 
     name = (char *)&lbl_8034AA00;
-    start = fn_802E2C20(name);
+    start = fn_802E2C20((char *)&lbl_8034AA00);
 
     total = 0;
-    size = 4;
-    do {
-        doubled = size * 2;
-        dimension = 0x400 / doubled;
-        total += dimension * dimension * 5;
-        size = doubled;
-    } while (size <= 0x40);
+    for (passSize = 4; passSize <= 0x40; passSize *= 2) {
+        total += (0x400 / (passSize * 2)) * (0x400 / (passSize * 2)) * 5;
+    }
 
-    table = fn_801284F8(0x10, &lbl_8034AA10);
+    allocationName = (char *)&lbl_8034AA10;
+    table = fn_801284F8(0x10, allocationName);
     if (table != 0) {
         items = ((void *(*)(int, void *))fn_8012850C)(total * 4, &lbl_8055CEF0);
         ((void **)table)[0] = items;
@@ -936,11 +1118,8 @@ void fn_802BAE50(void) {
     }
     lbl_8055FA80 = table;
 
-    size = 4;
-    do {
-        fn_802B9108(size);
-        size *= 2;
-    } while (size <= 0x40);
+    for (listSize = 4; listSize <= 0x40; listSize *= 2)
+        fn_802B9108(listSize);
 
     table = lbl_8055FA80;
     if (((int *)table)[1] < ((int *)table)[2]) {
@@ -951,7 +1130,7 @@ void fn_802BAE50(void) {
 
     fn_80265DCC(*(void **)lbl_804BFFF4, *((void **)lbl_804BFFF4 + 1), 4,
                 (int (**)(int **, int **))fn_802B9B50);
-    if (fn_802E2C20(0) - start > 0x1F4)
+    if (((int (*)(void))fn_802E2C20)() - start > 0x1F4)
         fn_802E30C8(&lbl_8034A064, name);
 }
 
