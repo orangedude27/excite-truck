@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+struct BillboardIndices { unsigned short a[6]; };
 extern void *fn_802C86DC(void);
 extern float fn_801E7E18(void);
 extern float PSVECDotProduct(float *, float *);
@@ -424,8 +425,7 @@ void *__dt__14CollisionSpaceFv_801F2E24(void *arg0, int arg1) {
 }
 
 #pragma push
-#pragma small_data on
-#pragma ppc_psq_save off
+#pragma processor 750
 void fn_801F2E88(void *arg0, void *arg1) {
     extern float fn_801F3174(void);
     extern void fn_801F3198(void *);
@@ -449,6 +449,7 @@ void fn_801F2E88(void *arg0, void *arg1) {
     float t4[3],t3[3],t2[3],t1[3],t0[3];
     unsigned short indices[6];
     float vec[3];
+    float scale0 = lbl_80562F50, scale1 = lbl_80562F54, scale2 = lbl_80562F58, scale3 = lbl_80562F5C;
     void *p = arg1;
     while (p != 0) {
         void *camera = fn_802C86DC();
@@ -459,12 +460,12 @@ void fn_801F2E88(void *arg0, void *arg1) {
         pos = (char *)p + 0x20;
         fn_801C0E60(vec,pos,(char *)camera + 0x24);
         fn_801F3198(vec);
-        frame = (int)(lbl_80562F50 * (-((float (*)(float,float))fn_801F3174)(vec[0],vec[2]) / lbl_80562F54));
+        frame = (int)(scale0 * (-((float (*)(float,float))fn_801F3174)(vec[0],vec[2]) / scale1));
         if (frame < 0) frame += 32;
-        u = lbl_80562F58 * (float)(frame % 8);
-        v = lbl_80562F5C * (float)(frame / 8);
-        u1 = lbl_80562F58 + u;
-        v1 = lbl_80562F5C + v;
+        u = scale2 * (float)(frame % 8);
+        v = scale3 * (float)(frame / 8);
+        u1 = scale2 + u;
+        v1 = scale3 + v;
         fn_801F3158((float *)base,GXInitLightAttnA_80144B44(t0,lbl_80562F40,lbl_80562F40,lbl_80562F40));
         ((float *)base)[4]=u;
         ((float *)base)[5]=v;
@@ -473,9 +474,7 @@ void fn_801F2E88(void *arg0, void *arg1) {
         fn_801F3124(vertices[1],base);
         fn_801F3124(vertices[2],base);
         fn_801F3124(vertices[3],base);
-        indices[0]=lbl_802F9B20[0]; indices[1]=lbl_802F9B20[1];
-        indices[2]=lbl_802F9B20[2]; indices[3]=lbl_802F9B20[3];
-        indices[4]=lbl_802F9B20[4]; indices[5]=lbl_802F9B20[5];
+        { struct IndexSet { unsigned short a[6]; }; *(struct IndexSet *)indices = *(struct IndexSet *)lbl_802F9B20; }
         ((float *)vertices[3])[4]=u1;
         ((float *)vertices[1])[4]=u1;
         ((float *)vertices[3])[5]=v1;
@@ -656,11 +655,12 @@ void fn_801F3514(void *arg0) {
     extern double sin(double);
     extern double cos(double);
     float v[3];
-    float f31, f30, t;
+    float f31, f30, t, sq;
     char *p = (char *)arg0;
 
     if (*(int *)(p + 0x10) == 0) {
-        float a = lbl_80562F40, b = lbl_80562F74, c = lbl_80562F78;
+        float c, b, a;
+        a = lbl_80562F40; b = lbl_80562F74; c = lbl_80562F78;
         *(int *)(p + 0x10) = 0xFDFEE7;
         *(float *)(p + 4) = a;
         *(float *)(p + 8) = b;
@@ -668,7 +668,8 @@ void fn_801F3514(void *arg0) {
         fn_802E30C8(lbl_8033ABC4);
     }
     if (*fn_801E1F44() == 1) {
-        float a = lbl_80562F40, b = lbl_80562F7C, c = lbl_80562F80;
+        float c, b, a;
+        a = lbl_80562F40; b = lbl_80562F7C; c = lbl_80562F80;
         *(int *)(p + 0x10) = 0x75889B;
         *(float *)(p + 4) = a;
         *(float *)(p + 8) = b;
@@ -680,7 +681,8 @@ void fn_801F3514(void *arg0) {
     v[1] = *(float *)(p + 8) * lbl_80562F48;
     v[2] = *(float *)(p + 0xC) * lbl_80562F48;
     PSVECNormalize(v, v);
-    f30 = (float)fn_8002F234(v[0] * v[0] + v[2] * v[2]);
+    sq = v[2] * v[2];
+    f30 = (float)fn_8002F234(v[0] * v[0] + sq);
     f31 = -v[1];
     if ((float)atan(f31 / f30) < lbl_8055EC04) {
         fn_802E30C8(lbl_8033AC18, (lbl_80562F84 * (float)atan(f31 / f30)) / lbl_80562F88, (lbl_80562F84 * lbl_8055EC04) / lbl_80562F88);
