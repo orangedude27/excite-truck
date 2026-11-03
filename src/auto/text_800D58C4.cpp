@@ -987,9 +987,6 @@ extern "C" void* __ct__Q36nw4hbm3lyt7PictureFPCQ46nw4hbm3lyt3res7PictureRCQ36nw4
 extern "C" void* __ct__Q36nw4hbm3lyt7TextBoxFPCQ46nw4hbm3lyt3res7TextBoxRCQ36nw4hbm3lyt11ResBlockSet(void*, const void*, const void*);
 extern "C" void* __ct__Q36nw4hbm3lyt6WindowFPCQ46nw4hbm3lyt3res6WindowRCQ36nw4hbm3lyt11ResBlockSet(void*, const void*, const void*);
 extern "C" void* fn_800D57AC(void*, const void*, const void*);
-struct Bounding_800D58C4 {
-    Bounding_800D58C4(const void *pane, const ResBlockSetTmp &set) { fn_800D57AC(this, pane, &set); }
-};
 extern "C" const char lbl_8031F728[];
 extern "C" const char lbl_8031F854[];
 extern "C" void* BuildPaneObj__Q36nw4hbm3lyt6LayoutFlPCvRCQ36nw4hbm3lyt11ResBlockSet(u32 kind, const void* pane, const ResBlockSetTmp* set) {
