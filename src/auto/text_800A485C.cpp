@@ -21815,9 +21815,9 @@ extern "C" s32 fn_800A5AE4(void *, void *);
 extern "C" s32 fn_800A5E00(void *, void *, u32 *, u32 *);
 extern "C" s32 fn_800A5530(void *object) {
  u8 *p=(u8 *)object;
- s32 result, err, read;
  s32 info[5], pageNo;
  void *page;
+ s32 result, err, read;
  result=fn_800A728C(*(void **)(p+0x1fbc));
  if (result) {
   if (result==0x15) {
@@ -21830,9 +21830,9 @@ extern "C" s32 fn_800A5530(void *object) {
  if (fn_800A71E0(*(s32 *)(p+0x1fbc),info)) { fn_800A7568(*(void **)(p+0x1fbc),0); return -1; }
  if (info[3]&1) *(u16 *)(p+0x1f8c)|=2;
  else *(u16 *)(p+0x1f8c)&=~2;
- if (info[3]&2) { *(u16 *)(p+0x1f8c)|=0x40; *(s32 *)(p+0x1fc4)=info[4]; }
+ if (info[3]&2) { s32 v=info[4]; *(u16 *)(p+0x1f8c)|=0x40; *(s32 *)(p+0x1fc4)=v; }
  if (info[3]&8) *(u16 *)(p+0x1f8c)|=0x80;
- ((s32 (*)(void *,s32,void **,s32 *))fn_800A8D08)(object,-1,&page,&pageNo);
+ ((Fn800A8D08C4 *)(s32 (*)(s32,void **,s32 *,s32,s32 *))fn_800A8D08)(object,-1,&page,&pageNo);
  result=fn_800A73A0(*(void **)(p+0x1fbc),*(s32 *)((u8 *)page+4),0,1,0x200,(s32)&read);
  if (result) {
   if (result==0x15) { err=fn_800A71D8(*(void **)(p+0x1fbc)); lbl_803D2140[0x44/4]=err; *(s32 *)(p+0x1f84)=err; result=0x1000; }
