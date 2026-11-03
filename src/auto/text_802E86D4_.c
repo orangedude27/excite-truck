@@ -291,6 +291,7 @@ extern int lbl_80560020;
 extern char lbl_8055D248;
 extern char lbl_8055D250;
 extern char lbl_8034DEC4[];
+extern unsigned char lbl_8055D255;
 extern int NANDRead(void *, void *, unsigned int);
 extern void *memcpy(void *, const void *, unsigned int);
 extern int fn_802E8A18(void);
