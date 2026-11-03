@@ -318,6 +318,18 @@ extern "C" s32 fn_800B960C(s32, s32, s32, s32, s32 *, s32);
 struct FatCopyA { s32 w[4]; };
 struct FatCopyB { s32 w[3]; };
 extern "C" s32 lbl_803D2140[];
+struct CacheEnt { u32 flag; s32 key; };
+static inline s32 CacheEntMatch(CacheEnt *e, s32 key) {
+    e->flag &= 1;
+    return e->flag != 0 && key == e->key;
+}
+static inline s32 CacheEntFind(s32 key) {
+    CacheEnt *e = (CacheEnt *)((u8 *)lbl_803D2140 + 0x88);
+    if (CacheEntMatch(e, key)) return 1;
+    if (CacheEntMatch(e + 1, key)) return 1;
+    if (CacheEntMatch(e + 2, key)) return 1;
+    return 0;
+}
 extern "C" s32 lbl_8031D7C0[];
 extern "C" void fn_800C51BC(s32 *, s32 *, s32 *);
 extern "C" void fn_800C5298(s32 *, s32 *, s32 *);
