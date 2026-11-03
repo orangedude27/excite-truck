@@ -6,6 +6,18 @@ extern "C" void fn_80128670(s32);
 extern "C" void fn_80131818(s32);
 extern "C" void fn_80235380(void *, char *);
 extern "C" void fn_802C2930(void *, s32);
+extern "C" void *fn_8000AC38(void);
+extern "C" void *fn_80131810(void);
+extern "C" void fn_8016C55C(void *, void *);
+extern "C" void *fn_8016C598(void *, int, int);
+extern "C" void fn_8016C768(void *, void *, void *);
+extern "C" s32 fn_8016CD4C(void *);
+extern "C" void *fn_8016CD68(void *, s32, s32);
+extern "C" s32 fn_8016CDF8(void *, void *);
+extern "C" void fn_8016CE94(void *, f32);
+extern "C" int fn_8016C760(void *);
+extern "C" void fn_802E30C8(const char *, ...);
+extern "C" f32 lbl_8056199C;
 #pragma cplusplus reset
 extern s32 fn_801284F8(s32, const char *);
 extern char lbl_80330A90[];
@@ -348,6 +360,65 @@ extern "C" void *fn_8016BE60(void *arg0) {
     }
     return object;
 }
+
+#pragma cplusplus on
+#pragma cplusplus reset
+#pragma scheduling on
+#pragma cplusplus on
+extern "C" void *fn_8016BF74(void *arg0, s32 arg1) {
+    class VObj { public: virtual void destroy(int); };
+    VObj *p;
+    register s32 *data;
+    register void *object = arg0;
+    register s32 freeFlag = arg1;
+
+    if (object != 0) {
+        *(char **)((u8 *)object + 4) = lbl_80330A90;
+        fn_80235380(*(void **)((u8 *)object + 0x20), lbl_80330A90);
+        p = *(VObj **)((u8 *)object + 0x4C);
+        if (p != 0) { if (p != 0) p->destroy(1); }
+        p = *(VObj **)((u8 *)object + 0x54);
+        if (p != 0) { if (p != 0) p->destroy(1); }
+        p = *(VObj **)((u8 *)object + 0x58);
+        if (p != 0) { if (p != 0) p->destroy(1); }
+        p = *(VObj **)((u8 *)object + 0x50);
+        if (p != 0) { if (p != 0) p->destroy(1); }
+        p = *(VObj **)((u8 *)object + 0x5C);
+        if (p != 0) { if (p != 0) p->destroy(1); }
+        p = *(VObj **)((u8 *)object + 0x60);
+        if (p != 0) { if (p != 0) p->destroy(1); }
+        p = *(VObj **)((u8 *)object + 0x64);
+        if (p != 0) { if (p != 0) p->destroy(1); }
+
+        data = *(s32 **)((u8 *)object + 0x18);
+        if (data != 0) {
+            ((s32 (*)(s32, void *))fn_8002F6AC)(data[3], fn_8016C168);
+            if (data != 0) {
+                *(volatile s32 *)&data[0] = 0;
+                *(volatile s32 *)&data[1] = 0;
+                *(volatile s32 *)&data[2] = 0;
+                fn_80128668(data);
+            }
+        }
+        data = *(s32 **)((u8 *)object + 0x1C);
+        if (data != 0) {
+            fn_80128670(data[3]);
+            if (data != 0) {
+                *(volatile s32 *)&data[0] = 0;
+                *(volatile s32 *)&data[1] = 0;
+                *(volatile s32 *)&data[2] = 0;
+                fn_80128668(data);
+            }
+        }
+        if ((u32)object + 0x14 != 0) fn_80131818(*(s32 *)((u8 *)object + 0x14));
+        fn_802C2930(object, 0);
+        if (freeFlag > 0) fn_80128668(object);
+    }
+    return object;
+}
+#pragma cplusplus reset
+#pragma scheduling on
+
 #pragma scheduling on
 #pragma pop
 
