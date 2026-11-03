@@ -16,6 +16,7 @@ typedef s32 M2C_UNK;
 
 extern void fn_801333E8(void *, void *, void *);
 extern s32 fn_8018B06C(void *);
+extern void *memset(void *, int, u32);
 extern char lbl_80332E70[];
 extern s32 lbl_8055D430;
 typedef struct VObj318 { void **vtbl; } VObj318;
