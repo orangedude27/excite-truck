@@ -775,7 +775,6 @@ extern void *fn_80131808(void *);
 extern void *fn_8023512C(void *);
 extern void *fn_802076A0(void *, s32, s32, s32);
 extern s32 fn_80204CF0(void);
-#pragma scheduling off
 void *fn_8016D024(void *arg0) {
     char *base = lbl_803306D0;
     ((void (*)(void *))fn_802C2914)(arg0);
