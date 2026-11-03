@@ -395,7 +395,7 @@ void fn_802DE774(void) {
     *(int *)((char *)lbl_804DB6A0 + 0x90) = 0;
 }
 
-extern unsigned char lbl_802FAD58[];
+extern unsigned int lbl_802FAD58[];
 extern int lbl_8055FED0, lbl_8055FED4;
 extern float lbl_8056508C, lbl_80565090;
 extern double lbl_805650A0;
@@ -418,13 +418,13 @@ void fn_802DE788(void) {
     for (i=0;i<8;i++) desc[i]=((int*)lbl_802FAD58)[i];
     GXClearVtxDesc();
     GXSetVtxDescv(desc);
-    for (i=0;i<16;i++) fmt[i]=((int*)(lbl_802FAD58+0x20))[i];
+    for (i=0;i<16;i++) fmt[i]=((int*)(lbl_802FAD58+8))[i];
     GXSetVtxAttrFmtv(0,fmt);
     GXSetViewport(lbl_80565090,lbl_80565090,
       (float)lbl_8055FED0,(float)lbl_8055FED4,lbl_80565090,lbl_8056508C);
-    for (i=0;i<16;i++) proj[i]=((int*)(lbl_802FAD58+0x60))[i];
+    for (i=0;i<16;i++) proj[i]=((int*)(lbl_802FAD58+24))[i];
     GXSetProjection(proj,1);
-    for (i=0;i<12;i++) mtx[i]=((int*)(lbl_802FAD58+0xA0))[i];
+    for (i=0;i<12;i++) mtx[i]=((int*)(lbl_802FAD58+40))[i];
     GXLoadPosMtxImm(mtx,0);
     GXSetCurrentMtx(0); GXSetNumChans(1);
     GXSetChanCtrl(4,0,1,1,0,0,2); GXSetChanCtrl(5,0,1,1,0,0,2);
