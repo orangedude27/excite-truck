@@ -4229,6 +4229,57 @@ s32 bta_dm_l2cap_server_compress_cback(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s
     return result;
 }
 
+void bta_dm_compress_cback(s32 event, u8 service, u8 id, s32 addr) {
+    extern u8 *lbl_80559014;
+    extern u8 lbl_803C0B68[];
+    extern char lbl_8031510C[], lbl_80315148[];
+    int found;
+    u8 k, j, i;
+    u8 *table;
+    u8 *entry, *slot;
+    if (event == 0) {
+        table = lbl_80559014;
+        for (i = 1; i <= table[1]; i++) {
+            entry = table + i * 3;
+            if ((id == entry[1] || entry[1] == 0xff) && service == entry[0] && entry[2] == 1) {
+                u8 count = *(volatile u8 *)(table + 1);
+                found = 0;
+                for (j = 1; j <= count; j++) {
+                    if (table[j * 3 + 2] == 2) {
+                        for (k = 0; k < lbl_803C0D18[0]; k++) {
+                            if (lbl_803C0D18[k * 9 + 7] == table[j * 3]) found = 1;
+                        }
+                    }
+                }
+                if (!found) {
+                    int offset = ((int)i - 1) * 9;
+                    u8 *base = lbl_803C0B68;
+                    slot = base + offset;
+                    slot[7] = id;
+                    slot[6] = service;
+                    fn_80070FA4(slot, (void *)addr);
+                    slot[8] = 1;
+                    if (lbl_8055DC80 >= 4)
+                        ((void (*)(u32, void *, u8, u8, u8))fn_80070984)(0x503, lbl_8031510C, base[offset + 7], base[offset + 6], base[offset + 8]);
+                }
+                return;
+            }
+        }
+    } else if ((u32)event == 1) {
+        table = lbl_80559014;
+        for (i = 1; i <= table[1]; i++) {
+            entry = table + i * 3;
+            if ((id == entry[1] || entry[1] == 0xff) && service == entry[0]) {
+                slot = lbl_803C0B68 + (i - 1) * 9;
+                slot[8] = 0;
+                if (lbl_8055DC80 >= 4)
+                    ((void (*)(u32, void *, u8, u8, u8))fn_80070984)(0x503, lbl_80315148, slot[7], slot[6], slot[8]);
+                return;
+            }
+        }
+    }
+}
+
 extern u8 *lbl_80559010;
 void bta_dm_rm_cback(s32 status, u8 addr_type, u8 addr, u8 *bd_addr, u32 unused) {
     u8 i;
@@ -14937,6 +14988,70 @@ initial_done:
         ((void (*)(void *, u8, void *, u16))l2c_link_check_send_pkts)(*(void **)(ctx + 0x10), 0, data, count);
         data = (BT_HDR *)GKI_dequeue((BUFFER_Q *)(ctx + 0x70));
     }
+}
+
+BOOLEAN l2c_link_hci_conn_comp(UINT8 status, UINT16 handle, UINT8 *p_bda) {
+    extern u8 lbl_80318C30[];
+    extern u8 lbl_80318C58[];
+    extern void l2cu_release_lcb(void *);
+    extern void l2c_process_held_packets(u8 timed_out);
+    extern void l2cu_send_peer_echo_req(void *p_lcb, u8 *p_data, s32 data_len);
+    extern u8 l2cu_lcb_disconnecting(void);
+    u8 *p_lcb;
+    u8 *p_buf;
+    u8 *next;
+    u8 *p_dev;
+    u8 bda[24];
+
+    *(volatile u8 *)&bda[6] = status;
+    memcpy(bda, p_bda, 6);
+    p_lcb = l2cu_find_lcb_by_bd_addr(bda);
+    if (p_lcb == 0) {
+        if (!(u8)fn_8007FEFC(handle) && lbl_803C4040[0] >= 2) {
+            fn_8007093C(0x80001, lbl_80318C30);
+        }
+        return FALSE;
+    }
+    if (*(s32 *)(p_lcb + 4) != 3) {
+        if (lbl_803C4040[0] >= 1) {
+            ((void (*)(u32, void *, s32, s32))fn_8007096C)(0x80000, lbl_80318C58, *(s32 *)(p_lcb + 4), status);
+        }
+        if (status != 0) {
+            l2c_link_hci_disc_comp(*(u16 *)(p_lcb + 0x28), status);
+        }
+        return FALSE;
+    }
+    *(u16 *)(p_lcb + 0x28) = handle;
+    if (bda[6] == 0) {
+        *(s32 *)(p_lcb + 4) = 4;
+        p_dev = (u8 *)btm_find_dev(p_bda);
+        if (p_dev) {
+            ((void (*)(u8 *, u8 *, u8 *, u16, u8))btm_acl_created)(bda, p_dev + 0x22, p_dev + 0x35, handle, p_lcb[0x30]);
+        } else {
+            ((void (*)(u8 *, u8 *, u8 *, u16, u8))btm_acl_created)(bda, 0, 0, handle, p_lcb[0x30]);
+        }
+        l2c_process_held_packets(0);
+        fn_80070F90(p_lcb + 0x10);
+        for (p_buf = *(u8 **)(p_lcb + 8); p_buf; p_buf = *(u8 **)(p_buf + 8)) {
+            fn_80089E40(p_buf, 0, bda);
+        }
+        if (*(s32 *)(p_lcb + 0x54) != 0) {
+            l2cu_send_peer_echo_req(p_lcb, 0, 0);
+            btu_start_timer((TIMER_LIST_ENT *)(p_lcb + 0x10), 2, 0x1E);
+        } else if (*(void **)(p_lcb + 8) == 0) {
+            btu_start_timer((TIMER_LIST_ENT *)(p_lcb + 0x10), 2, 0x3C);
+        }
+    } else if (bda[6] == 9 && l2cu_lcb_disconnecting()) {
+        *(s32 *)(p_lcb + 4) = 1;
+        *(u16 *)(p_lcb + 0x28) = 0xFFFF;
+    } else {
+        for (p_buf = *(u8 **)(p_lcb + 8); p_buf; p_buf = next) {
+            next = *(u8 **)(p_buf + 8);
+            fn_80089E40(p_buf, 1, bda);
+        }
+        l2cu_release_lcb(p_lcb);
+    }
+    return TRUE;
 }
 
 void l2c_link_sec_comp(BD_ADDR bd_addr, void *ref_data, UINT8 status)
