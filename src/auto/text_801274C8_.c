@@ -4,6 +4,36 @@
 #include <types.h>
 struct State { s32 *next; s32 size; s32 zero; };
 extern struct State lbl_8041DEE0;
+
+struct Channel {
+    u8 pad0[0x10];
+    u32 words[10];
+    u8 pad38[9];
+    u8 flag;
+    u8 pad42[6];
+};
+
+struct Player {
+    struct Channel channels[8];
+};
+
+struct SoundSub {
+    u8 flag;
+    u8 pad1[0x23];
+    u32 *ptr;
+    u8 pad2[4];
+};
+
+struct SoundGroup {
+    struct SoundSub subs[7];
+    struct SoundSub master;
+};
+
+struct SoundSystem {
+    struct Player players[2];
+    void (*callbacks[4])(s32);
+    struct SoundGroup groups[2];
+};
 extern u8 lbl_8041D790[];
 extern void fn_80127968(void);
 extern void *memset(void*, int, unsigned long);
@@ -67,10 +97,11 @@ void fn_801275AC(void) {
 }
 
 void fn_8012766C(void) {
-    u8 *r31 = lbl_8041D790;
-    u8 *r3 = r31;
+    u8 *base = lbl_8041D790;
+    u8 *r3 = base + 0;
     u8 *r5;
-    s32 i, j;
+    s32 i;
+    s32 idx;
     void (**cb)(s32);
 
     for (i = 0; i < 2; i++) {
@@ -173,32 +204,48 @@ void fn_8012766C(void) {
         r3 += 0x240;
     }
 
-    lbl_8055DF1C = 0;
-    r5 = r31 + 0x490;
     lbl_8055DF18 = 0;
+    r5 = base + 0x490;
     lbl_8055DF30 = 0;
     lbl_8055DF34 = 0;
-    lbl_8055DF2C = 0;
     lbl_8055DF28 = 0;
-    lbl_8055DF3C = 0;
     lbl_8055DF38 = 0;
 
-    for (i = 0; i < 2; i++) {
-        for (j = 0; j < 8; j++) {
-            u8 *e = r5 + j * 0x2C;
-            if (e[0] != 0) {
-                **(u32**)(e + 0x24) = 0;
-            }
+    idx = 0;
+    for (i = 0; i < 2; i++, idx += 7) {
+        if (r5[0x00] != 0) {
+            **(u32**)(r5 + 0x24) = 0;
+        }
+        if (r5[0x2C] != 0) {
+            **(u32**)(r5 + 0x50) = 0;
+        }
+        if (r5[0x58] != 0) {
+            **(u32**)(r5 + 0x7C) = 0;
+        }
+        if (r5[0x84] != 0) {
+            **(u32**)(r5 + 0xA8) = 0;
+        }
+        if (r5[0xB0] != 0) {
+            **(u32**)(r5 + 0xD4) = 0;
+        }
+        if (r5[0xDC] != 0) {
+            **(u32**)(r5 + 0x100) = 0;
+        }
+        if (r5[0x108] != 0) {
+            **(u32**)(r5 + 0x12C) = 0;
+        }
+        if (r5[0x134] != 0) {
+            **(u32**)(r5 + 0x158) = 0;
         }
         r5 += 0x160;
     }
 
     lbl_8055DF40 = fn_802E2C20();
 
-    cb = (void (**)(s32))(r31 + 0x480);
-    for (i = 0; i < 4; i++) {
-        if (cb[i] != NULL) {
-            cb[i](0);
+    cb = (void (**)(s32))(base + 0x480);
+    for (i = 0; i < 4; i++, cb++) {
+        if (*cb != NULL) {
+            (*cb)(0);
         }
     }
 }
