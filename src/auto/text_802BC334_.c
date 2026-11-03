@@ -658,29 +658,29 @@ void fn_802BD69C(void *arg0, int arg1) {
     unsigned char *entry;
     unsigned int i;
     int offset;
-    unsigned char a, b, c, d, e, f, g, h;
-    a=p[4]; b=p[7]; c=p[5]; d=p[6];
-    p[4]=b; e=p[0]; f=p[3]; p[7]=a;
-    g=p[1]; h=p[2]; p[5]=d; p[6]=c;
-    p[0]=f; p[3]=e; p[1]=h; p[2]=g;
+    unsigned char b5, b4, b1, b0, b3, b2, b6, b7;
+    b4=p[4]; b5=p[5]; b6=p[6];
+    p[4]=p[7]; b0=p[0]; b3=p[3]; p[7]=b4;
+    b1=p[1]; b2=p[2]; p[5]=b6; p[6]=b5;
+    p[0]=b3; p[3]=b0; p[1]=b2; p[2]=b1;
     *(int *)(p+4)=fn_802BD80C(*(int *)(p+4),arg1);
     i=0; offset=0;
     while (i < *(unsigned int *)p) {
         int j;
         entry=*(unsigned char **)(p+4)+offset+0xC;
         for (j=0;j<2;j++,entry+=0x18) {
-            a=entry[0]; b=entry[3]; entry[0]=b; entry[3]=a;
-            a=entry[1]; b=entry[2]; entry[1]=b; entry[2]=a;
-            a=entry[4]; b=entry[7]; entry[4]=b; entry[7]=a;
-            a=entry[5]; b=entry[6]; entry[5]=b; entry[6]=a;
-            a=entry[8]; b=entry[11]; entry[8]=b; entry[11]=a;
-            a=entry[9]; b=entry[10]; entry[9]=b; entry[10]=a;
-            a=entry[12]; b=entry[15]; entry[12]=b; entry[15]=a;
-            a=entry[13]; b=entry[14]; entry[13]=b; entry[14]=a;
-            a=entry[16]; b=entry[19]; entry[16]=b; entry[19]=a;
-            a=entry[17]; b=entry[18]; entry[17]=b; entry[18]=a;
-            a=entry[20]; b=entry[23]; entry[20]=b; entry[23]=a;
-            a=entry[21]; b=entry[22]; entry[21]=b; entry[22]=a;
+            b4=entry[0]; b7=entry[3]; entry[0]=b7; entry[3]=b4;
+            b4=entry[1]; b7=entry[2]; entry[1]=b7; entry[2]=b4;
+            b4=entry[4]; b7=entry[7]; entry[4]=b7; entry[7]=b4;
+            b4=entry[5]; b7=entry[6]; entry[5]=b7; entry[6]=b4;
+            b4=entry[8]; b7=entry[11]; entry[8]=b7; entry[11]=b4;
+            b4=entry[9]; b7=entry[10]; entry[9]=b7; entry[10]=b4;
+            b4=entry[12]; b7=entry[15]; entry[12]=b7; entry[15]=b4;
+            b4=entry[13]; b7=entry[14]; entry[13]=b7; entry[14]=b4;
+            b4=entry[16]; b7=entry[19]; entry[16]=b7; entry[19]=b4;
+            b4=entry[17]; b7=entry[18]; entry[17]=b7; entry[18]=b4;
+            b4=entry[20]; b7=entry[23]; entry[20]=b7; entry[23]=b4;
+            b4=entry[21]; b7=entry[22]; entry[21]=b7; entry[22]=b4;
         }
         offset+=0x44; i++;
     }
@@ -708,7 +708,7 @@ void fn_802BDBA8(void) {
     if (result == 0) {
         return;
     }
-    fn_802BD210();
+    ((int (*)(void))fn_802BD210)();
     object = fn_801284F8(8, (int)(strings + 0x104));
     if (object != 0) {
         fn_802C2914(object);
