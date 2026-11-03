@@ -31,6 +31,7 @@ typedef struct {
 #include <revolution/OS/OSAlarm.h>
 #include <revolution/OS/OSContext.h>
 #include <revolution/DVD/dvd.h>
+#include "revolution/OS/OSCache.h"
 void fn_8011C120();
 extern s32 fn_80119300(void *, s32, s32);
 void fn_8011C274(s32, void *);
@@ -102,44 +103,56 @@ BOOL ARCFastOpen(ARCHandle *handle, s32 entrynum, ARCFileInfo *info) {
 
 extern u8 lbl_802FE850[];
 s32 ARCConvertPathToEntrynum(ARCHandle *handle, const char *path) {
-    u32 *fst = (u32 *)handle->FSTStart;
     u32 entry = handle->currDir;
-    u32 parent;
-    u32 node;
-    const char *name;
-    const char *p;
-    char *entryName;
-    u8 *arc = *(u8 **)(lbl_802FE850 + 0x38);
-    u8 *caseTable = *(u8 **)(arc + 0x10);
-    while (*path != 0) {
-        if (*path == '/') { entry = 0; path++; continue; }
-        if (*path == '.' && path[1] == '.' && path[2] == '/') {
-            path += 3; entry = fst[entry * 3 + 1]; continue;
-        }
-        if (*path == '.' && path[1] == '/') { path += 2; continue; }
-        name = path;
-        while (*path != 0 && *path != '/') path++;
-        parent = entry;
-        entry = parent + 1;
-        while (entry < fst[parent * 3 + 2]) {
-            node = fst[entry * 3];
-            if ((node & 0xFF000000) == 0) { entry = fst[entry * 3 + 2]; continue; }
-            entryName = handle->FSTStringStart + (node & 0xFFFFFF);
-            p = name;
-            while (*entryName != 0) {
-                u8 a = *entryName++;
-                u8 b = *p++;
-                if (a >= 0x80 || b >= 0x80) { if (a != b) break; }
-                else if (caseTable[a] != caseTable[b]) break;
-            }
-            if (*entryName == 0 && (*p == '/' || *p == 0)) break;
-            entry++;
-        }
-        if (entry >= fst[parent * 3 + 2]) return -1;
+    u32 *fst = (u32 *)handle->FSTStart;
+    u8 *locale = *(u8 **)(lbl_802FE850 + 0x38);
+    for (;;) {
+        const char *end;
+        u32 length, limit, node;
+        int hasSlash;
         if (*path == 0) return entry;
-        path++;
+        if (*path == '/') { entry = 0; path++; continue; }
+        if (*path == '.') {
+            if (path[1] == '.') {
+                if (path[2] == '/') { entry = fst[entry * 3 + 1]; path += 3; continue; }
+                if (path[2] == 0) return fst[entry * 3 + 1];
+            } else {
+                if (path[1] == '/') { path += 2; continue; }
+                if (path[1] == 0) return entry;
+            }
+        }
+        end = path;
+        while (*end && *end != '/') end++;
+        length = end - path;
+        limit = fst[entry * 3 + 2];
+        entry++;
+        hasSlash = *end != 0;
+        while (entry < limit) {
+            char *name;
+            const char *p;
+            node = fst[entry * 3];
+            if ((node >> 24) == 0 && hasSlash == 1) goto next;
+            name = handle->FSTStringStart + (node & 0xffffff);
+            if (name[0] == '.' && name[1] == 0) { entry++; continue; }
+            p = path;
+            while (*name) {
+                int a = *name++;
+                int b;
+                a = (a < 0 || a >= 256) ? a : (*(u8 **)(locale + 0x10))[a];
+                b = *p++;
+                b = (b < 0 || b >= 256) ? b : (*(u8 **)(locale + 0x10))[b];
+                if (a != b) goto next;
+            }
+            if (*p == '/' || *p == 0) goto found;
+        next:
+            if (fst[entry * 3] & 0xff000000) entry = fst[entry * 3 + 2];
+            else entry++;
+        }
+        return -1;
+    found:
+        if (!hasSlash) return entry;
+        path += length + 1;
     }
-    return entry;
 }
 
 void* ARCGetStartAddrInMem(ARCFileInfo* info) {
@@ -1496,6 +1509,53 @@ void fn_80119558(void *arg0) {
 void fn_801195A0(void *arg0) {
     fn_8011943C(arg0, 0);
     *(s32 *)((u8 *)arg0 + 0x38) = 1;
+}
+
+void fn_801195D8(void *arg0) {
+    u8 *base = (u8 *)arg0;
+    u32 available = *(u32 *)(base + 0x40);
+    register u8 *src;
+    register u32 count;
+    u32 pos, capacity, state;
+    if (available > *(u32 *)(base + 0x54)) {
+        count = *(u32 *)(base + 0xbc);
+        if (count > available) count = available;
+        pos = *(u32 *)(base + 0xb8);
+        capacity = *(u32 *)(base + 0x94);
+        if (count + pos > capacity) count = capacity - pos;
+        src = *(u8 **)(base + 0x38);
+        if (src + count > *(u8 **)(base + 0x30)) count = *(u8 **)(base + 0x30) - src;
+        if (*(s32 *)(base + 0x78) != 1) {
+            u16 *left = (u16 *)(*(u8 **)(base + 0x84) + (pos >> 1));
+            u16 *right = (u16 *)(*(u8 **)(base + 0x88) + (pos >> 1));
+            u16 *l = left, *r = right;
+            u32 i;
+            for (i = count >> 2; i != 0; --i) {
+                *l++ = *(u16 *)src; src += 2;
+                *r++ = *(u16 *)src; src += 2;
+            }
+            DCFlushRange(left, (l - left) * 2);
+            DCFlushRange(right, (r - right) * 2);
+        } else {
+            u8 *dst = *(u8 **)(base + 0x84) + pos;
+            memcpy(dst, src, count);
+            DCFlushRange(dst, count);
+            src += count & ~1;
+        }
+        state = OSDisableInterrupts();
+        *(u32 *)(base + 0x40) -= count;
+        OSRestoreInterrupts(state);
+        if (src >= *(u8 **)(base + 0x30)) src = *(u8 **)(base + 0x2c);
+        *(u8 **)(base + 0x38) = src;
+        pos = *(u32 *)(base + 0xb8) + count;
+        capacity = *(u32 *)(base + 0x94);
+        *(u32 *)(base + 0xb8) = pos;
+        if (pos >= capacity) *(u32 *)(base + 0xb8) = pos - capacity;
+        count = *(u32 *)(base + 0xbc) - count;
+        *(u32 *)(base + 0xbc) = count;
+        if (*(s32 *)(base + 0xb0) == 0 && count == 0 && *(s32 *)(base + 0xb4) == 0)
+            fn_80119558(base + 0x7c);
+    }
 }
 
 s32 fn_80119824(void *arg0) {
@@ -3836,21 +3896,75 @@ void fn_8011D0E8(void *arg0, void *arg1, void *arg2) {
 }
 
 void fn_8011D378(void *arg0, void *arg1, void *arg2) {
-u32 *src; u32 bits, index, remain, node, tmp; u8 *out; u32 endbits, mask;
-if (*(u32*)arg0 != *(u32*)((u8*)arg0+4)) return;
-remain=*(u32*)((u8*)arg1+8); index=*(u32*)((u8*)arg0+0x28); src=*(u32**)((u8*)arg1+4); bits=*(u32*)arg1;
-if(remain<index){tmp=*src++; bits=(bits|(tmp<<remain))&(0xFFFFFFFFU>>(32-index)); remain=remain+32-index; bits=tmp>>(index-*(u32*)((u8*)arg1+8));}else{remain-=index;bits&=0xFFFFFFFFU>>(32-index);bits>>= index;}
-if(bits){out=*(u8**)((u8*)arg0+0x2c);endbits=*(u32*)((u8*)arg0+0x20);*(u8**)arg0=out;*(u8**)((u8*)arg0+4)=out+bits;node=*(u32*)((u8*)arg2+0x180);
-if(remain==0){tmp=*src++;remain=31;bits=tmp>>1;}else{tmp=bits;bits>>=1;remain--;}
-if(tmp&1)bits=-20-bits; mask=0xFFFFFFFFU>>(32-endbits);
-do{bits--;{u32 n=*(u32*)((u8*)arg2+node*4+0x100);u8 v;if(remain>=n){v=*(*(u8**)((u8*)arg2+node*4+0x140)+(bits&(0xFFFFFFFFU>>(32-n))));node=*((u8*)arg2+node*16+(v&15));tmp=v>>4;bits>>=tmp;remain-=tmp;}else{u32 w=*src;v=*(*(u8**)((u8*)arg2+node*4+0x140)+((bits|(w<<remain))&(0xFFFFFFFFU>>(32-n))));node=*((u8*)arg2+node*16+(v&15));tmp=v>>4;if(remain>=tmp){bits>>=tmp;remain-=tmp;}else{bits=w>>(tmp-remain);src++;remain=remain+32-tmp;}}}
-{u8 v;if(remain>=endbits){v=*((u8*)arg0+0x24+(bits&mask));tmp=*(u8*)((u8*)arg0+0x10+(v&15));bits>>=v>>4;remain-=v>>4;}else{u32 w=*src;v=*((u8*)arg0+0x24+((bits|(w<<remain))&mask));tmp=*(u8*)((u8*)arg0+0x10+(v&15));if(remain>=v>>4){bits>>=v>>4;remain-=v>>4;}else{bits=w>>((v>>4)-remain);src++;remain=remain+32-(v>>4);}}}
-*out++=(u8)(tmp|(node<<4));
-}while(bits>0);
-if(bits < -22) memset(*(u8**)((u8*)arg0+0x2c), **(u8**)((u8*)arg0+0x2c), -bits-21);
-*(u32*)((u8*)arg2+0x180)=node;
-}else{out=*(u8**)((u8*)arg0+0x2c);*(u8**)((u8*)arg0+4)=out;*(u8**)arg0=out+4;}
-*(u32*)((u8*)arg1+4)=(u32)src;*(u32*)arg1=bits;*(u32*)((u8*)arg1+8)=remain;
+    u32 *src;
+    u32 value, remain, index, node, tmp, bit, mask, width, code;
+    s32 count;
+    u8 *out, *table, *lookup;
+    if (*(u32 *)arg0 != *(u32 *)((u8 *)arg0 + 4)) return;
+    remain = *(u32 *)((u8 *)arg1 + 8);
+    index = *(u32 *)((u8 *)arg0 + 0x28);
+    src = *(u32 **)((u8 *)arg1 + 4);
+    value = *(u32 *)arg1;
+    if (remain < index) {
+        u32 next = *src++;
+        count = (value | (next << remain)) & (0xffffffffU >> (32 - index));
+        value = next >> (index - remain);
+        remain = remain + 32 - index;
+    } else {
+        count = value & (0xffffffffU >> (32 - index));
+        value >>= index;
+        remain -= index;
+    }
+    if (count != 0) {
+        out = *(u8 **)((u8 *)arg0 + 0x2c);
+        width = *(u32 *)((u8 *)arg0 + 0x20);
+        table = (u8 *)arg0 + 0x10;
+        lookup = *(u8 **)((u8 *)arg0 + 0x24);
+        *(u8 **)arg0 = out;
+        *(u8 **)((u8 *)arg0 + 4) = out + count;
+        node = *(u32 *)((u8 *)arg2 + 0x180);
+        if (remain == 0) { bit = *src++; value = bit >> 1; remain = 31; }
+        else { bit = value; value >>= 1; remain--; }
+        if (bit & 1) count = -20 - count;
+        mask = 0xffffffffU >> (32 - width);
+        do {
+            u32 n = *(u32 *)((u8 *)arg2 + node * 4 + 0x100);
+            u32 v;
+            count--;
+            if (remain >= n) {
+                v = (*(u8 **)((u8 *)arg2 + node * 4 + 0x140))[value & (0xffffffffU >> (32 - n))];
+                node = *((u8 *)arg2 + node * 16 + (v & 15));
+                tmp = v >> 4;
+                value >>= tmp; remain -= tmp;
+            } else {
+                u32 next = *src;
+                v = (*(u8 **)((u8 *)arg2 + node * 4 + 0x140))[(value | (next << remain)) & (0xffffffffU >> (32 - n))];
+                tmp = v >> 4;
+                node = *((u8 *)arg2 + node * 16 + (v & 15));
+                if (remain >= tmp) { value >>= tmp; remain -= tmp; }
+                else { value = next >> (tmp - remain); src++; remain = remain + 32 - tmp; }
+            }
+            if (remain >= width) {
+                code = lookup[value & mask];
+                tmp = table[code & 15];
+                value >>= code >> 4; remain -= code >> 4;
+            } else {
+                u32 next = *src;
+                code = lookup[(value | (next << remain)) & mask];
+                tmp = table[code & 15];
+                if (remain >= code >> 4) { value >>= code >> 4; remain -= code >> 4; }
+                else { value = next >> ((code >> 4) - remain); src++; remain = remain + 32 - (code >> 4); }
+            }
+            *out++ = tmp | (node << 4);
+        } while (count > 0);
+        if (count < -22) memset(*(u8 **)((u8 *)arg0 + 0x2c), **(u8 **)((u8 *)arg0 + 0x2c), -count - 21);
+        *(u32 *)((u8 *)arg2 + 0x180) = node;
+    } else {
+        out = *(u8 **)((u8 *)arg0 + 0x2c);
+        *(u8 **)((u8 *)arg0 + 4) = out; *(u8 **)arg0 = out + 4;
+    }
+    *(u32 **)((u8 *)arg1 + 4) = src;
+    *(u32 *)arg1 = value; *(u32 *)((u8 *)arg1 + 8) = remain;
 }
 
 void fn_8011D5F0(void* arg0, void* arg1) {
@@ -4044,8 +4158,8 @@ void fn_8011D7F8(void *arg0, void *arg1) {
 
 void fn_8011D9E4(void *arg0, void *arg1) {
     u32 *bits;
-    u32 value, bitCount, available, mask, count, i, code, len;
-    u8 *dst, *table, *lookup;
+    u32 value, bitCount, available, mask, count, i, code, len, bit;
+    u8 *lookup, *table, *dst;
     s32 symbol;
     if (*(u32 *)arg0 != *(u32 *)((u8 *)arg0 + 4)) return;
     bitCount = *(u32 *)((u8 *)arg1 + 8);
@@ -4066,31 +4180,33 @@ void fn_8011D9E4(void *arg0, void *arg1) {
         dst = *(u8 **)((u8 *)arg0 + 0x2C);
         *(u8 **)arg0 = dst;
         *(u8 **)((u8 *)arg0 + 4) = dst + count;
-        if (bitCount == 0) { value = *bits++ >> 1; bitCount = 31; }
-        else { bitCount--; value >>= 1; }
-        if ((value & 1) == 0) {
+        if (bitCount == 0) { bit = *bits++; value = bit >> 1; bitCount = 31; }
+        else { bit = value; bitCount--; value >>= 1; }
+        if ((bit & 1) == 0) {
+            dst = *(u8 * volatile *)((u8 *)arg0 + 0x2c);
             table = (u8 *)arg0 + 0x10;
             lookup = *(u8 **)((u8 *)arg0 + 0x24);
             available = *(u32 *)((u8 *)arg0 + 0x20);
             mask = 0xFFFFFFFFU >> (32 - available);
-            for (i = 0; i < count; i++) {
+            do {
+                count--;
                 if (bitCount >= available) {
-                    code = value & mask; symbol = lookup[code]; len = symbol >> 4;
+                    code = value & mask; code = lookup[code]; len = code >> 4; symbol = code;
                     symbol = table[symbol & 15]; value >>= len; bitCount -= len;
                 } else {
                     u32 next = *bits;
                     code = (value | (next << bitCount)) & mask;
-                    symbol = lookup[code]; len = symbol >> 4; symbol = table[symbol & 15];
+                    { u32 entry = lookup[code]; symbol = table[entry & 15]; len = entry >> 4; }
                     if (bitCount >= len) { value >>= len; bitCount -= len; }
                     else { value = next >> (len - bitCount); bits++; bitCount = bitCount + 32 - len; }
                 }
                 if (symbol != 0) {
-                    if (bitCount == 0) { value = *bits++ >> 1; bitCount = 31; }
-                    else { bitCount--; value >>= 1; }
-                    if (value & 1) symbol = -symbol;
+                    if (bitCount == 0) { bit = *bits++; value = bit >> 1; bitCount = 31; }
+                    else { bit = value; bitCount--; value >>= 1; }
+                    if (bit & 1) symbol = -symbol;
                 }
                 *dst++ = symbol;
-            }
+            } while (count != 0);
         } else {
             if (bitCount < 4) {
                 u32 next = *bits++;
@@ -4098,9 +4214,9 @@ void fn_8011D9E4(void *arg0, void *arg1) {
                 value = next >> (4 - bitCount); bitCount += 28;
             } else { code = value & 15; value >>= 4; bitCount -= 4; }
             if (code != 0) {
-                if (bitCount == 0) { value = *bits++ >> 1; bitCount = 31; }
-                else { bitCount--; value >>= 1; }
-                if (value & 1) code = -code;
+                if (bitCount == 0) { bit = *bits++; value = bit >> 1; bitCount = 31; }
+                else { bit = value; bitCount--; value >>= 1; }
+                if (bit & 1) code = -code;
             }
             memset(*(void **)((u8 *)arg0 + 0x2C), code, count);
         }
@@ -6175,7 +6291,6 @@ void fn_80124AD8(void *arg0, void *arg1) {
     temp_f9 = ((f32 *)arg0)[5];
     temp_f6_2 = ((f32 *)arg0)[13];
     temp_f2_3 = ((f32 *)arg1)[1];
-    temp_f28 = temp_f28 - temp_f29;
     temp_f5_2 = temp_f10 - temp_f5;
     temp_f22_2 = temp_f12 + temp_f11;
     temp_f7 = temp_f25 + temp_f26;
@@ -6199,10 +6314,10 @@ void fn_80124AD8(void *arg0, void *arg1) {
     ((f32 *)arg0)[1] = (f32) (temp_f24_2 + temp_f25_2);
     temp_f7_3 = temp_f5_2 - temp_f10_2;
     ((f32 *)arg0)[4] = (f32) (temp_f3_3 - temp_f22_3);
-    temp_f11_3 = temp_f2_3 * temp_f28;
+    temp_f11_3 = temp_f2_3 * (temp_f28 - temp_f29);
     ((f32 *)arg0)[6] = (f32) (temp_f3_3 + temp_f22_3);
     temp_f8_2 = temp_f6_3 + temp_f9_2;
-    temp_f12_3 = temp_f2_3 * (temp_f28 + 2.0f * temp_f29);
+    temp_f12_3 = temp_f2_3 * (temp_f28 + temp_f29);
     ((f32 *)arg0)[5] = (f32) (temp_f7_2 + temp_f0_3);
     ((f32 *)arg0)[7] = (f32) (temp_f7_2 - temp_f0_3);
     ((f32 *)arg0)[8] = (f32) (temp_f7_3 + temp_f11_3);
