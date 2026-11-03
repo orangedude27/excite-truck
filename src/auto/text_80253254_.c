@@ -7,6 +7,11 @@ typedef signed int s32;
 __declspec(section ".sdata") extern char lbl_8055C178[];
 __declspec(section ".sdata") extern char lbl_8055C180[];
 __declspec(section ".sdata") extern char lbl_8055C188[];
+__declspec(section ".sdata") extern char lbl_8055C198[];
+__declspec(section ".sdata") extern char lbl_8055C1A0[];
+__declspec(section ".sdata") extern char lbl_8055C1A8[];
+__declspec(section ".sdata") extern char lbl_8055C1B0[];
+__declspec(section ".sdata") extern char lbl_8055C1B8[];
 extern void fn_80253824(void *);
 extern s32 fn_80128668(void);
 extern char lbl_80344B98[];
@@ -893,6 +898,75 @@ void fn_80255200(void *arg0, s32 arg1) {
     if (obj) *(void **)(p + 8) = ((void *(*)(void))fn_8025343C)();
     fn_80255A84(p);
 }
+
+void fn_8025539C(void *arg0, s32 arg1) {
+    extern int fn_8012C33C(void *);
+    extern void fn_802E30C8(void *, ...);
+    extern char lbl_8055C198[];
+    extern char lbl_8055C1A0[];
+    extern char lbl_8055C1A8[];
+    extern char lbl_8055C1B0[];
+    extern char lbl_8055C1B8[];
+    extern float lbl_80563A04;
+    extern float lbl_80563A5C;
+    char *strings;
+    void *manager;
+    void *obj;
+    void *result;
+    void *item;
+    float *stats;
+    struct Vec3 { float x, y, z; };
+    struct Vec3 initial, input;
+    float output[3];
+
+    strings = lbl_803447C0;
+    manager = strings + 0x128;
+    if (fn_8012C33C(manager) != 0) {
+        obj = fn_80131808(manager);
+        if (((int (*)(void *, s32))(*(void ***)obj)[4])(obj, arg1) != 0) {
+            result = ((void *(*)(void *, s32))(*(void ***)obj)[2])(obj, arg1);
+            *(float *)((char *)arg0 + 0xEC) =
+                ((float (*)(void *, const char *, float))(*(void ***)result)[10])
+                    (result, strings + 0x134, lbl_80563A5C);
+            initial.x = lbl_80563A04;
+            initial.y = lbl_80563A04;
+            initial.z = lbl_80563A04;
+            input = initial;
+            ((void (*)(float *, void *, const char *, struct Vec3 *, unsigned int, unsigned int))(*(void ***)result)[14])
+                (output, result, strings + 0x140, &input,
+                 *(unsigned int *)&initial.y, *(unsigned int *)&initial.x);
+            *(float *)((char *)arg0 + 0xF0) = output[0];
+            *(float *)((char *)arg0 + 0xF4) = output[1];
+            *(float *)((char *)arg0 + 0xF8) = output[2];
+            item = ((void *(*)(void *, const char *))(*(void ***)result)[23])(result, lbl_8055C198);
+            if (item != 0) {
+                stats = (float *)(strings + 0xD0);
+                stats[1] = ((float (*)(void *, const char *, float))(*(void ***)item)[10])
+                               (item, lbl_8055C1A0, lbl_80563A04);
+                stats[2] = ((float (*)(void *, const char *, float))(*(void ***)item)[10])
+                               (item, strings + 0x150, lbl_80563A04);
+                stats[4] = ((float (*)(void *, const char *, float))(*(void ***)item)[10])
+                               (item, lbl_8055C1A8, lbl_80563A04);
+                stats[5] = ((float (*)(void *, const char *, float))(*(void ***)item)[10])
+                               (item, strings + 0x15C, lbl_80563A04);
+                stats[7] = ((float (*)(void *, const char *, float))(*(void ***)item)[10])
+                               (item, lbl_8055C1B0, lbl_80563A04);
+                stats[8] = ((float (*)(void *, const char *, float))(*(void ***)item)[10])
+                               (item, strings + 0x168, lbl_80563A04);
+                stats[10] = ((float (*)(void *, const char *, float))(*(void ***)item)[10])
+                                (item, lbl_8055C1B8, lbl_80563A04);
+                stats[11] = ((float (*)(void *, const char *, float))(*(void ***)item)[10])
+                                (item, strings + 0x174, lbl_80563A04);
+            }
+        } else {
+            fn_802E30C8(strings + 0x180, arg1, manager);
+        }
+        ((void (*)(void *))fn_80131818)(obj);
+    } else {
+        fn_802E30C8(strings + 0x1B8, manager);
+    }
+}
+
 #pragma pop
 void fn_80255604(s32 arg0) {
     extern char lbl_803447C0[];
