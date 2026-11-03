@@ -13,6 +13,16 @@ struct Parser {
     virtual int getOption(const char *, int);
     virtual float getFloat(const char *);
 };
+struct Manager {
+    virtual void v0() = 0;
+    virtual void v1() = 0;
+    virtual void v2() = 0;
+    virtual void v3() = 0;
+    virtual void *getCamera() = 0;
+};
+extern "C" inline void *callGetCamera(void *manager) {
+    return ((Manager *)manager)->getCamera();
+}
 #pragma cplusplus reset
 
 // split_file divides it into the game's real files (file_status shows its range).
@@ -284,15 +294,13 @@ int fn_80270EC4(void *arg0, int arg1) {
 }
 
 int fn_802710A0(void *arg0, int arg1) {
-    struct ManagerVtable { char pad[0x18]; void *(*getCamera)(void *); };
-    struct Manager { struct ManagerVtable *vtable; };
-    struct { void *first; float second; } sp18;
-    struct { void *first; float second; } spC;
+    struct { void *first; float second; int third; } sp18;
+    struct { void *first; float second; int third; } spC;
     float sp8;
     float f31_val;
     float var_f30;
     float var_f29;
-    char *p;
+    void *p;
     int var_r29;
     int var_r28;
     int var_r27;
@@ -307,31 +315,34 @@ int fn_802710A0(void *arg0, int arg1) {
     var_r26 = -1;
 
     if (lbl_8055F564 != 0) {
-        struct Manager *manager = *(struct Manager **)((char *)arg0 + 0x270);
-        void *camera = manager->vtable->getCamera(manager);
-        float *dest = &lbl_8055F568;
+        typedef void *(*CamFunc)(void *);
+        void *manager = *(void **)((char *)arg0 + 0x270);
+        CamFunc fn = (*(CamFunc **)manager)[6];
+        float *dest;
+        p = fn(manager);
+        dest = &lbl_8055F568;
         if (fn_801B526C() != 0) {
-            fn_80136414(&sp18, camera, *(int *)((char *)arg0 + 0x2678));
+            fn_80136414(&sp18, p, *(int *)((char *)arg0 + 0x2678));
             *dest = *(float *)((char *)sp18.first + 0x1C) + *(float *)((char *)sp18.first + 0x18) * sp18.second;
         } else {
-            int offset = fn_801363A0(camera, (char *)camera + 4);
-            fn_80136414(&spC, camera, offset);
+            int offset = fn_801363A0(p, (char *)p + 4);
+            fn_80136414(&spC, p, offset);
             *dest = *(float *)((char *)spC.first + 0x1C) + *(float *)((char *)spC.first + 0x18) * spC.second;
         }
     }
 
     f31_val = lbl_80563F48;
     p = lbl_8049F9D8;
-    for (i = 0; i < lbl_8055F554; i++, p += 0x1C) {
+    for (i = 0; i < lbl_8055F554; p = (char *)p + 0x1C, i++) {
         sp8 = f31_val;
         if (fn_80272C74(p, arg0, &sp8, arg1) != 0) {
-            if (var_r29 == 0 || sp8 > var_f30) {
+            if (var_r29 == 0 || var_f30 < sp8) {
                 var_f30 = sp8;
                 var_r27 = i;
                 var_r29 = 1;
             }
         } else if (var_r29 == 0) {
-            if (var_r28 == 0 || sp8 > var_f29) {
+            if (var_r28 == 0 || var_f29 < sp8) {
                 if (*(int *)(*(char **)p + 0x58) != 0) {
                     var_f29 = sp8;
                     var_r26 = i;
@@ -361,16 +372,32 @@ int fn_802710A0(void *arg0, int arg1) {
         return -1;
     }
 
-    return ((unsigned int)*(char **)(lbl_8049F9D8 + var_r27 * 0x1C) - (unsigned int)lbl_8049EDC8) / 96U;
+    return ((unsigned int)*(char **)((char *)lbl_8049F9D8 + var_r27 * 0x1C) - (unsigned int)lbl_8049EDC8) / 96U;
 }
 
+#pragma push
+#pragma small_data on
+extern const char lbl_8055C5A0[];
+#pragma push
+#pragma cplusplus on
 #pragma scheduling invalid_target
-void fn_802712F8(void *arg0) {
+extern "C" void fn_802712F8(void *arg0) {
+    class Item {
+    public:
+        virtual const char *getName();
+    };
+    class Iterator {
+    public:
+        virtual void unused();
+        virtual Item *next(int);
+    };
+#pragma small_data off
     extern char lbl_80346B00[];
     extern char lbl_8049A2C8[];
     extern char lbl_8049EDC8[];
+#pragma small_data on
     extern const char lbl_8055C59C[];
-    extern char lbl_8055C5A0[];
+    extern const char lbl_8055C5A0[];
     extern int lbl_8055F548;
     extern int lbl_8055F550;
     extern unsigned char lbl_8055F55B;
@@ -389,31 +416,31 @@ void fn_802712F8(void *arg0) {
     lbl_8055F548 = 0;
     fn_80277740();
     if (fn_8012C33C(arg0) != 0) {
-        register void *iterator = fn_80131808(arg0);
+        register Iterator *iterator = (Iterator *)fn_80131808(arg0);
         register char *tableA = lbl_8049A2C8;
         register char *tableB = lbl_8049EDC8;
         register int index = 0;
-        register void *item;
-        while ((item = ((void *(*)(void *, int))(*(void ***)iterator)[3])(iterator, index)) != 0) {
-            if (stricmp(((char *(*)(void *))(*(void ***)item)[2])(item), lbl_8055C5A0) == 0) {
+        register Item *item;
+        while ((item = iterator->next(index)) != 0) {
+            if (stricmp(item->getName(), lbl_8055C5A0) == 0) {
                 if (fn_80272DCC(tableA + lbl_8055F548 * 0x60, item) != 0)
                     lbl_8055F548 += 1;
-            } else if (stricmp(((char *(*)(void *))(*(void ***)item)[2])(item), strings + 0x2FC) == 0) {
+            } else if (stricmp(item->getName(), strings + 0x2FC) == 0) {
                 if (fn_80272028(tableB + lbl_8055F550 * 0x60, item) != 0)
                     lbl_8055F550 += 1;
             } else if (fn_80277754(item) == 0) {
-                fn_802E30C8(strings + 0x30C, ((char *(*)(void *))(*(void ***)item)[2])(item));
+                fn_802E30C8(strings + 0x30C, item->getName());
             }
             index += 1;
         }
         fn_80131818(iterator);
     } else if (fn_8012C33C(strings + 0x334) != 0) {
-        register void *iterator = fn_80131808(strings + 0x334);
+        register Iterator *iterator = (Iterator *)fn_80131808(strings + 0x334);
         register char *tableA = lbl_8049A2C8;
         register int index = 0;
-        register void *item;
-        while ((item = ((void *(*)(void *, int))(*(void ***)iterator)[3])(iterator, index)) != 0) {
-            if (stricmp(((char *(*)(void *))(*(void ***)item)[2])(item), lbl_8055C5A0) == 0) {
+        register Item *item;
+        while ((item = iterator->next(index)) != 0) {
+            if (stricmp(item->getName(), lbl_8055C5A0) == 0) {
                 if (lbl_8055F548 < 0xC8) {
                     if (fn_80272DCC(tableA + lbl_8055F548 * 0x60, item) != 0) {
                         lbl_8055F548 += 1;
@@ -431,7 +458,7 @@ void fn_802712F8(void *arg0) {
     }
     fn_80277828();
 }
-#pragma scheduling on
+#pragma pop
 
 #pragma dont_inline reset
 #pragma pop
