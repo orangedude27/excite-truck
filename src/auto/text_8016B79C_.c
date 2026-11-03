@@ -481,8 +481,8 @@ void *fn_8016C29C(void *arg0, int arg1) {
     return arg0;
 }
 
-#pragma ppc_psq_save off
 #pragma cplusplus on
+#pragma ppc_psq_save off
 extern "C" void fn_8016C328(void *arg0) {
     class Cfg {
     public:
@@ -523,19 +523,20 @@ extern "C" void fn_8016C328(void *arg0) {
     while (!cfg->has(buf)) {
         cfg->enter(buf);
         list = (List *)fn_80131810();
-        if (!list) {
+        if (list) {
+            i = 0;
+            goto get;
+            do {
+                fn_8016C768((void *)fn_8016CD4C(*(void **)((u8 *)arg0 + 0x18)), item, (u8 *)arg0 + 0x14);
+                i++;
+get:
+                item = list->get(i);
+            } while (item);
+            fn_80131818((s32)list);
+        } else {
             fn_802E30C8(base + 0x90, buf);
             return;
         }
-        i = 0;
-        goto get;
-        do {
-            fn_8016C768((void *)fn_8016CD4C(*(void **)((u8 *)arg0 + 0x18)), item, (u8 *)arg0 + 0x14);
-            i++;
-get:
-            item = list->get(i);
-        } while (item);
-        fn_80131818((s32)list);
         *(s32 *)((u8 *)arg0 + 0x3C) = *(s32 *)((u8 *)arg0 + 0x3C) + 1;
         fn_801345D8(buf, 0x1E, base + 0xD8, *(s32 *)((u8 *)arg0 + 0x3C));
     }
@@ -558,7 +559,6 @@ get:
         }
     }
 }
-#pragma ppc_psq_save on
 #pragma cplusplus reset
 
 #pragma ppc_psq_save on
