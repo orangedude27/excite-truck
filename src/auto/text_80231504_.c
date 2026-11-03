@@ -18,6 +18,16 @@ extern s32 fn_8022EDC4(void);
 extern s32 fn_80230B9C(s32);
 extern void fn_802C8B98(s32, s32);
 extern u8 lbl_80497F14[];
+__declspec(section ".sdata") extern char lbl_8055B9B0[];
+__declspec(section ".sdata") extern char lbl_8055B9B8[];
+__declspec(section ".sdata") extern char lbl_8055B9BC[];
+__declspec(section ".sdata") extern char lbl_8055B9C0[];
+__declspec(section ".sdata") extern char lbl_8055B9C8[];
+__declspec(section ".sdata") extern char lbl_8055B9CC[];
+extern void *fn_80131810(const char *);
+extern void fn_80131818(void *);
+extern void *fn_8023512C(const char *);
+extern void *fn_802CAC28(const char *, s32);
 extern f32 lbl_80563680;
 extern f32 lbl_80563684;
 extern f32 lbl_80563688;
@@ -765,6 +775,7 @@ extern f64 lbl_80563698;
 void fn_80233BF0(u8 *arg0, u8 *arg1, f32 *arg2, f32 *arg3, s32 arg4, f32 farg0, f32 farg1) {
     u32 code;
     f32 value;
+    f32 metric;
 
     if (arg4 & 1) {
         u8 first = arg0[0];
@@ -779,7 +790,8 @@ void fn_80233BF0(u8 *arg0, u8 *arg1, f32 *arg2, f32 *arg3, s32 arg4, f32 farg0, 
     } else if (arg4 & 2) {
         *arg2 -= farg0 * fn_8023293C((s32)arg1, (char *)arg0, farg1);
     } else if (arg4 & 4) {
-        *arg2 -= lbl_80563688 * (farg0 * fn_8023293C((s32)arg1, (char *)arg0, farg1));
+        metric = fn_8023293C((s32)arg1, (char *)arg0, farg1);
+        *arg2 -= (farg0 * metric) * lbl_80563688;
     }
     value = *(f32 *)((u8 *)fn_8022EDC4() + 0x38);
     if (arg4 & 8) {
@@ -787,7 +799,7 @@ void fn_80233BF0(u8 *arg0, u8 *arg1, f32 *arg2, f32 *arg3, s32 arg4, f32 farg0, 
     } else if (arg4 & 0x20) {
         *arg3 -= value * ((f32)arg1[6] * farg0);
     } else if (arg4 & 0x10) {
-        *arg3 -= lbl_80563688 * (value * ((f32)arg1[4] * farg0));
+        *arg3 -= value * ((f32)arg1[4] * farg0) * lbl_80563688;
     }
 }
 #pragma scheduling on
@@ -851,6 +863,7 @@ void fn_80233EC0(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg
 }
 
 #pragma push
+#pragma processor 750
 #pragma scheduling invalid_target
 void fn_8023423C(s32 arg0, s32 arg1) {
     register s32 offset = arg0 * 0x58;
