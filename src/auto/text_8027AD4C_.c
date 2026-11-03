@@ -1305,6 +1305,19 @@ long fn_8027CEC4(long arg0) {
     }
 }
 
+long fn_8027CF3C(long arg0) {
+    long value = *fn_8027C120(lbl_8055F654, arg0);
+    switch (value) {
+    case 0:
+        return ((long (*)(void))fn_8027C71C)();
+    case 1:
+        return ((long (*)(void))fn_8027CAB4)();
+    default:
+        ((void (*)(const char *, ...))fn_802E317C)(lbl_80347C38, arg0, value);
+        return 1;
+    }
+}
+
 #pragma cplusplus on
 extern "C" long fn_8027CFB4(long arg0) {
     long *obj = fn_8027C120(lbl_8055F654, arg0);
