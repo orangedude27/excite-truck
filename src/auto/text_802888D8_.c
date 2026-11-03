@@ -68,18 +68,6 @@ extern int fn_80287B38(void *);
 extern int lbl_8055F6D8;
 extern char lbl_80348A90[];
 extern void fn_80288A74(void **, int);
-static inline void transform_vector(float *m, float *v, float *out) {
-    if (out == v) {
-        float x = v[2]*m[6]+(v[0]*m[0]+v[1]*m[3]);
-        float y = v[2]*m[7]+(v[0]*m[1]+v[1]*m[4]);
-        float z = v[2]*m[8]+(v[0]*m[2]+v[1]*m[5]);
-        out[0]=x; out[1]=y; out[2]=z;
-    } else {
-        out[0]=v[2]*m[6]+(v[0]*m[0]+v[1]*m[3]);
-        out[1]=v[2]*m[7]+(v[0]*m[1]+v[1]*m[4]);
-        out[2]=v[2]*m[8]+(v[0]*m[2]+v[1]*m[5]);
-    }
-}
 void fn_802888D8(void) {
     int r3;
     int r0;
@@ -1184,26 +1172,37 @@ void fn_8028A32C(void) {}
 
 extern float lbl_805642B4;
 extern void *fn_80287B24(int);
+#pragma push
+#pragma scheduling invalid_target
 int fn_8028A330(int *arg0, int arg1) {
  float sp14[3], sp8[3], *mat=(float*)fn_80287B24(arg1);
  float *vec=*(float**)(*(char**)arg0+arg1*0x68+0x64);
- float a,b,c;
- if(vec==sp14) {
-  float x=vec[2]*mat[6]+(vec[0]*mat[0]+vec[1]*mat[3]);
-  float y=vec[2]*mat[7]+(vec[0]*mat[1]+vec[1]*mat[4]);
-  float z=vec[2]*mat[8]+(vec[0]*mat[2]+vec[1]*mat[5]);
-  sp14[0]=x; sp14[1]=y; sp14[2]=z;
+ if (sp14 == vec) {
+ float x=mat[6]*vec[2]+(mat[0]*vec[0]+mat[3]*vec[1]);
+ float y=mat[7]*vec[2]+(mat[1]*vec[0]+mat[4]*vec[1]);
+ float z=mat[8]*vec[2]+(mat[2]*vec[0]+mat[5]*vec[1]);
+ sp14[0]=x; sp14[1]=y; sp14[2]=z;
  } else {
-  sp14[0]=vec[2]*mat[6]+(vec[0]*mat[0]+vec[1]*mat[3]);
-  sp14[1]=vec[2]*mat[7]+(vec[0]*mat[1]+vec[1]*mat[4]);
-  sp14[2]=vec[2]*mat[8]+(vec[0]*mat[2]+vec[1]*mat[5]);
+ sp14[0]=mat[6]*vec[2]+(mat[0]*vec[0]+mat[3]*vec[1]);
+ sp14[1]=mat[7]*vec[2]+(mat[1]*vec[0]+mat[4]*vec[1]);
+ sp14[2]=mat[8]*vec[2]+(mat[2]*vec[0]+mat[5]*vec[1]);
  }
  sp14[0]+=mat[9]; sp14[1]+=mat[10]; sp14[2]+=mat[11];
- a=vec[3]*lbl_805642B4; b=vec[4]*lbl_805642B4; c=vec[5]*lbl_805642B4;
- sp8[0]=a*mat[0]+b*mat[3]+c*mat[6];
- sp8[1]=a*mat[1]+b*mat[4]+c*mat[7];
- sp8[2]=a*mat[2]+b*mat[5]+c*mat[8];
+ sp8[0]=vec[3]*lbl_805642B4; sp8[1]=vec[4]*lbl_805642B4; sp8[2]=vec[5]*lbl_805642B4;
+ {
+ volatile float *p = sp8;
+ if ((volatile float *)sp8 == p) {
+ float x=sp8[2]*mat[6]+(sp8[0]*mat[0]+sp8[1]*mat[3]);
+ float y=sp8[2]*mat[7]+(sp8[0]*mat[1]+sp8[1]*mat[4]);
+ float z=sp8[2]*mat[8]+(sp8[0]*mat[2]+sp8[1]*mat[5]);
+ sp8[0]=x; sp8[1]=y; sp8[2]=z;
+ } else {
+ sp8[0]=p[2]*mat[6]+(p[0]*mat[0]+p[1]*mat[3]);
+ sp8[1]=p[2]*mat[7]+(p[0]*mat[1]+p[1]*mat[4]);
+ sp8[2]=p[2]*mat[8]+(p[0]*mat[2]+p[1]*mat[5]);
+ }
+ }
  sp8[0]+=mat[13]; sp8[1]+=mat[14]; sp8[2]+=mat[15];
  fn_8028E584(arg0[1],(int)sp14,(int)sp8);
 }
-
+#pragma pop
