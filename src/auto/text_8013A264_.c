@@ -31,8 +31,6 @@ typedef struct AIConfig {
 #pragma push
 #pragma cplusplus on
 struct Entry {
-    virtual void _00();
-    virtual void _04();
     virtual const char *GetName();
     virtual void _0C();
     virtual void _10();
@@ -67,8 +65,6 @@ struct Container {
     virtual void _4C();
     virtual void _50();
     virtual void _54();
-    virtual void _58();
-    virtual void _5C();
     virtual Entry *GetEntry(int);
 };
 #pragma pop
