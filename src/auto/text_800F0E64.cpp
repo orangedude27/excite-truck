@@ -692,18 +692,17 @@ extern "C" void SetDecay__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
 extern "C" void SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
 extern "C" void SetRelease__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
 extern "C" void Warning__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...);
-static inline bool ResolveArchivePath(void *self, const char *&path, char *buf) {
-    if (*path == '/') return true;
+static inline const char *ResolveArchivePath(void *self, const char *path, char *buf) {
+    if (*path == '/') return path;
     unsigned long pathLen = strlen(path);
     unsigned long prefixLen = strlen((const char *)self + 8);
     if (pathLen + prefixLen >= 0x100) {
         Warning__Q26nw4hbm2dbFPCciPCce(lbl_803247E0, 0x155, lbl_80324828, (const char *)self + 8, path);
-        return false;
+        return 0;
     }
     strncpy(buf, (const char *)self + 8, prefixLen + 1);
     fn_80028E2C(buf, path, pathLen + 1);
-    path = buf;
-    return true;
+    return buf;
 }
 extern "C" f32 lbl_80561080;
 extern "C" f64 lbl_805610A0;
