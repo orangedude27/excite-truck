@@ -1933,6 +1933,41 @@ void DBPrintf_8006CFA8(const char *fmt, ...) {
 #pragma unused(fmt)
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+void gki_init_free_queue(UINT8 id, UINT16 size, UINT16 total, void *p_mem) {
+    UINT16 i;
+    UINT16 act_size;
+    BUFFER_HDR_T *hdr;
+    BUFFER_HDR_T *hdr1 = NULL;
+    UINT32 *magic;
+    INT32 tempsize = size;
+    tGKI_COM_CB *p_cb = (tGKI_COM_CB *)((u8 *)lbl_803946C0 + 0x54);
+    tempsize = (INT32)ALIGN_POOL(size);
+    act_size = (UINT16)(tempsize + BUFFER_PADDING_SIZE);
+    p_cb->pool_start[id] = (UINT8 *)p_mem;
+    p_cb->pool_end[id] = (UINT8 *)p_mem + (act_size * total);
+    p_cb->pool_size[id] = act_size;
+    p_cb->freeq[id].size = (UINT16)tempsize;
+    p_cb->freeq[id].total = total;
+    p_cb->freeq[id].cur_cnt = 0;
+    p_cb->freeq[id].max_cnt = 0;
+    hdr = (BUFFER_HDR_T *)p_mem;
+    p_cb->freeq[id].p_first = hdr;
+    for (i=0; i<total; i++) {
+        hdr->task_id = GKI_INVALID_TASK;
+        hdr->q_id = id;
+        hdr->status = BUF_STATUS_FREE;
+        magic = (UINT32 *)((UINT8 *)hdr + BUFFER_HDR_SIZE + tempsize);
+        *magic = MAGIC_NO;
+        hdr1 = hdr;
+        hdr = (BUFFER_HDR_T *)((UINT8 *)hdr + act_size);
+        hdr1->p_next = hdr;
+    }
+    hdr1->p_next = NULL;
+    p_cb->freeq[id].p_last = hdr1;
+}
+#pragma pop
 extern void gki_init_free_queue(UINT8, UINT16, UINT16, void *);
 void gki_buffer_init(void)
 {
@@ -3104,13 +3139,14 @@ void uusb_CloseDeviceCB(s8 arg0) {
 
 void uusb_ReadIntrDataCB(s32 length, BT_HDR *buf) {
     extern char lbl_803BD240[];
-    s32 size, i;
-    u8 *p;
-    BT_HDR *copy;
-    BT_HDR *zero = 0;
     char *report = lbl_803142C8;
+    BT_HDR *copy;
+    u8 *p;
+    uusb_cb_t *control;
+    u32 zero;
+    s32 size, i;
     if (lbl_803BD1E0.at_0x28) OSReport(report);
-    ((u8 *)&lbl_803BD1E0)[0x2B] = (u32)zero;
+    zero = ((u8 *)&lbl_803BD1E0)[0x2B] = 0;
     if (lbl_803BD1E0.state != 2) {
         if (lbl_803BD1E0.at_0x28) OSReport(report + 0x28);
         if (lbl_803BD1E0.at_0x28) OSReport(report + 0x6c);
@@ -3119,7 +3155,7 @@ void uusb_ReadIntrDataCB(s32 length, BT_HDR *buf) {
         ((u8 *)&lbl_803BD1E0)[0x1c] = 0xff;
         return;
     }
-    if (buf != zero) {
+    if ((u32)buf != zero) {
         if (length <= 0) {
             if (lbl_803BD1E0.at_0x28) OSReport(report + 0xdc, length);
             GKI_freebuf(buf);
@@ -3130,14 +3166,16 @@ void uusb_ReadIntrDataCB(s32 length, BT_HDR *buf) {
             GKI_freebuf(buf);
             return;
         }
-        size = (((u16)length + buf->offset + 8) & ~3) + 4;
+        size = (u16)length + buf->offset + 8;
         buf->len = length;
         buf->event = 0x1000;
+        size = (size & ~3) + 4;
         memcpy(copy, buf, size);
         if (lbl_803BD1E0.at_0x28) OSReport(report + 0x114, copy->len, copy->offset, size);
+        control = &lbl_803BD1E0;
         p = (u8 *)(copy + 1) + copy->offset;
         for (i = 0; i < length; i++, p++) {
-            if (lbl_803BD1E0.at_0x28) OSReport(lbl_80558FF8, *p);
+            if (control->at_0x28) OSReport(lbl_80558FF8, *p);
         }
         if (lbl_803BD1E0.at_0x28) OSReport(lbl_80559000);
         OSSwitchFiberEx((u32)copy, 0, 0, 0, fn_80070844, lbl_803BD240 + 0x1000);
@@ -5856,6 +5894,8 @@ void btm_acl_device_down(void)
     }
 }
 
+#pragma push
+#pragma optimization_level 3
 tBTM_STATUS BTM_SwitchRole(BD_ADDR remote_bd_addr, UINT8 new_role, tBTM_CMPL_CB *p_cb) {
     u32 i; u8 *entry; u8 power_mode; u8 status; tBTM_PM_PWR_MD spC;
     if ((lbl_803C0F78[0x640] & 0x20) == 0) return 4;
@@ -5899,7 +5939,7 @@ found:
     *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x62C) = p_cb;
     return 1;
 }
-
+#pragma pop
 void btm_acl_encrypt_change(u16 handle, u8 status, u8 enable)
 {
     u8 *base = lbl_803C0F78;
