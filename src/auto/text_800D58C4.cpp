@@ -158,6 +158,14 @@ struct StateNode_800D6CA0 { StateNode_800D6CA0* next; };
 extern "C" const char lbl_8031E908[];
 extern "C" const char lbl_8031E92C[];
 extern "C" s32 lbl_8055DE08;
+static inline bool HasPaneState_800D6CA0(u8 *pane) {
+    StateNode_800D6CA0 *type = (StateNode_800D6CA0 *)((StateObject_800D6CA0 *)pane)->v1();
+    while (type) {
+        if (type == (StateNode_800D6CA0 *)&lbl_8055DE08) return true;
+        type = type->next;
+    }
+    return false;
+}
 struct PaneAnimLink {
     PaneAnimLink* next;
     void* unk4;
@@ -626,13 +634,14 @@ extern "C" void* FindGroupByName__Q36nw4hbm3lyt14GroupContainerFPCc(void* arg0, 
 extern "C" void fn_800D6CA0(s32 arg0, s32 arg1) {
     u8 *self = (u8 *)arg0;
     StateNode_800D6CA0 *type;
+    StateNode_800D6CA0 *needle = (StateNode_800D6CA0 *)&lbl_8055DE08;
     StateNode_800D6CA0 *n1, *n2, *n3;
     u8 *p1, *p2, *p3;
     bool found;
     type = (StateNode_800D6CA0 *)((StateObject_800D6CA0 *)self)->v1();
     while (type) {
-        if (type == (StateNode_800D6CA0 *)&lbl_8055DE08) { found = true; goto found1; }
-        type = type->next;
+        if (type == needle) { found = true; goto found1; }
+        type = *(StateNode_800D6CA0 **)type;
     }
     found = false;
     found1:
@@ -644,8 +653,8 @@ extern "C" void fn_800D6CA0(s32 arg0, s32 arg1) {
         if (!p1) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
         type = (StateNode_800D6CA0 *)((StateObject_800D6CA0 *)p1)->v1();
         while (type) {
-            if (type == (StateNode_800D6CA0 *)&lbl_8055DE08) { found = true; goto found2; }
-            type = type->next;
+            if (type == needle) { found = true; goto found2; }
+            type = *(StateNode_800D6CA0 **)type;
         }
         found = false;
         found2:
@@ -657,8 +666,8 @@ extern "C" void fn_800D6CA0(s32 arg0, s32 arg1) {
             if (!p2) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
             type = (StateNode_800D6CA0 *)((StateObject_800D6CA0 *)p2)->v1();
             while (type) {
-                if (type == (StateNode_800D6CA0 *)&lbl_8055DE08) { found = true; goto found3; }
-                type = type->next;
+                if (type == needle) { found = true; goto found3; }
+                type = *(StateNode_800D6CA0 **)type;
             }
             found = false;
             found3:
@@ -669,11 +678,11 @@ extern "C" void fn_800D6CA0(s32 arg0, s32 arg1) {
                 p3 = (u8 *)n3 - 4;
                 if (!p3) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
                 fn_800D6CA0((s32)p3, arg1);
-                n3 = n3->next;
+                n3 = *(StateNode_800D6CA0 **)n3;
             }
-            n2 = n2->next;
+            n2 = *(StateNode_800D6CA0 **)n2;
         }
-        n1 = n1->next;
+        n1 = *(StateNode_800D6CA0 **)n1;
     }
 }
 
