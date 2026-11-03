@@ -303,37 +303,53 @@ extern double lbl_80563C38;
 extern float fn_801EA0E8(unsigned int, float, float, float);
 #pragma push
 #pragma ppc_psq_save off
+#pragma scheduling invalid_target
 void fn_802671CC(void *arg0, int arg1) {
-    float output[3];
-    float corner[3];
     union IntDouble {
         double value;
         unsigned int word[2];
-    } width, height;
-    float *matrix = (float *)arg0;
-    float z = *(float *)((char *)arg0 + 0x48);
-    float delta = z * *(float *)((char *)arg0 + 0x34);
-    float xstep = delta / lbl_8055D020;
+    };
+    struct Scratch {
+        float output[3];
+        float input[3];
+        union IntDouble width;
+        union IntDouble height;
+    } scratch;
+    float *in = scratch.input;
+    float *out = scratch.output;
+    float *matrix;
+    unsigned int widthBits;
+    unsigned int heightBits;
+    float z;
+    float delta;
+    float xstep;
     float widthValue;
     float heightValue;
     float ystep;
-    float best = lbl_80563C20;
-    double bias = lbl_80563C38;
+    float best;
+    double bias;
     int i;
 
-    width.word[0] = 0x43300000;
-    width.word[1] = *(unsigned int *)((char *)arg0 + 0x44) ^ 0x80000000;
-    height.word[0] = 0x43300000;
-    height.word[1] = *(unsigned int *)((char *)arg0 + 0x40) ^ 0x80000000;
-    widthValue = (float)(width.value - bias);
-    heightValue = (float)(height.value - bias);
+    widthBits = *(unsigned int *)((char *)arg0 + 0x44) ^ 0x80000000;
+    heightBits = *(unsigned int *)((char *)arg0 + 0x40) ^ 0x80000000;
+    scratch.width.word[0] = 0x43300000;
+    scratch.width.word[1] = widthBits;
+    matrix = (float *)arg0;
+    z = *(float *)((char *)arg0 + 0x48);
+    delta = z * *(float *)((char *)arg0 + 0x34);
+    xstep = delta / lbl_8055D020;
+    scratch.height.word[1] = heightBits;
+    scratch.height.word[0] = 0x43300000;
+    bias = lbl_80563C38;
+    widthValue = (float)(scratch.width.value - bias);
+    heightValue = (float)(scratch.height.value - bias);
     ystep = widthValue * delta / heightValue;
+    best = lbl_80563C20;
+    i = 0;
 
-    for (i = 0; i < 4; i++) {
+    for (; i < 4; i++) {
         float x;
         float y;
-        float *out = output;
-        float *in = corner;
         float heightDiff;
 
         if ((i & 1) != 0) x = xstep;
@@ -341,22 +357,22 @@ void fn_802671CC(void *arg0, int arg1) {
         if ((i & 2) != 0) y = ystep;
         else y = -ystep;
 
+        in[0] = x;
+        in[1] = y;
+        in[2] = z;
         if (out == in) {
-            corner[0] = x * matrix[0] + y * matrix[3] + z * matrix[6];
-            corner[1] = x * matrix[1] + y * matrix[4] + z * matrix[7];
-            corner[2] = x * matrix[2] + y * matrix[5] + z * matrix[8];
+            out[0] = x * matrix[0] + y * matrix[3] + z * matrix[6];
+            out[1] = x * matrix[1] + y * matrix[4] + z * matrix[7];
+            out[2] = x * matrix[2] + y * matrix[5] + z * matrix[8];
         } else {
-            in[0] = x;
-            in[1] = y;
-            in[2] = z;
             out[0] = in[0] * matrix[0] + in[1] * matrix[3] + in[2] * matrix[6];
             out[1] = in[0] * matrix[1] + in[1] * matrix[4] + in[2] * matrix[7];
             out[2] = in[0] * matrix[2] + in[1] * matrix[5] + in[2] * matrix[8];
         }
-        output[0] += matrix[9];
-        output[1] += matrix[10];
-        output[2] += matrix[11];
-        heightDiff = fn_801EA0E8(0x43300000, output[0], output[1], output[2]) - output[1];
+        out[0] += matrix[9];
+        out[1] += matrix[10];
+        out[2] += matrix[11];
+        heightDiff = fn_801EA0E8(0x43300000, out[0], out[1], out[2]) - out[1];
         if (best > heightDiff) best = heightDiff;
     }
 
