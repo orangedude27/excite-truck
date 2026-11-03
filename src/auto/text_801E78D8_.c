@@ -1,3 +1,16 @@
+extern char lbl_80339BA0[], lbl_8055AF14[], lbl_8055AF18[];
+extern unsigned long lbl_80487CE0[];
+extern char lbl_8055EB08, lbl_8055EB10, lbl_8055EB12, lbl_8055EB20;
+extern float *lbl_8055EB04;
+extern long lbl_8055EB0C;
+extern void *lbl_8055EB30;
+extern float lbl_80562DA4;
+extern void *memcpy(void *, const void *, unsigned long);
+extern long fn_802E2C20(void);
+extern long *fn_8012850C(long, void *);
+extern void fn_8001255C(const char *, float);
+extern void fn_8000D878(void);
+extern void fn_802E30C8(const char *, ...);
 extern void fn_802ECC18(long);
 extern void fn_802E2C9C(void);
 extern void fn_802A4CA8(void);
