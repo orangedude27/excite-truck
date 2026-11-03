@@ -951,6 +951,8 @@ void fn_802BAA50(void *arg0) {
 
 #pragma cplusplus on
 #pragma dont_inline on
+#pragma push
+#pragma processor 750
 extern "C" void fn_802BAD0C(void *, float);
 extern "C" float fn_802BAD90(float);
 extern "C" void *fn_802BAA68(void **arg0, char *arg1) {
@@ -1199,6 +1201,77 @@ void fn_802BAFF8(void ***arg0, int *arg1) {
     }
 }
 
+#pragma scheduling invalid_target
+void fn_802BB0FC(int a, int b) {
+    /* Traverse pending render batches, draw them, and clear their lists. */
+    RenderList *list = (RenderList *)lbl_804BFFF4;
+    RenderEntry *entry;
+    RenderNode *node;
+    RenderBatch *batch;
+    u16 **items;
+    int i, j, v;
+    RenderMatrix matrix;
+    for (i = 0; i < list->count; i++) {
+        entry = list->items[i];
+        if (entry->kind != 999) continue;
+        node = entry->nodes;
+        if (!node) continue;
+        if (entry->state == -2) goto clear_nodes;
+        if (node->type >= 0 && node->type < 2) {
+            fn_802C8BD0(); fn_802DC130();
+            node = entry->nodes;
+            while (node) {
+                if (node->batches) {
+                    if (node->enabled) {
+                        ((void (*)(int,void *))fn_802D3D94)(0, (char *)node + 0x24);
+                        batch = node->batches;
+                        do {
+                            for (j = 0; j < batch->count; j++) {
+                                items = batch->items;
+                                fn_802DC138(a,b,items[j],*items[j]+1);
+                                v = *items[j] - 1;
+                                lbl_8055FA6C += v & ~(v >> 31);
+                            }
+                            batch = batch->next;
+                        } while (batch);
+                    }
+                    node->count = 0; node->batches = 0;
+                }
+                node = node->next;
+            }
+            fn_802DC134(); fn_802C8D74();
+        } else if (node->type == 2) {
+            fn_802C28C0(); fn_802C8BD0(); fn_802DC278();
+            fn_802CADD0(entry->state,1);
+            fn_802CADD0(((int (*)(void))fn_802C21B8)(),2);
+            matrix = *(RenderMatrix *)lbl_802FAB40;
+            ((void (*)(int,void *))fn_802D3D94)(2,&matrix);
+            node = entry->nodes;
+            while (node) {
+                if (node->batches) {
+                    ((void (*)(int,void *))fn_802D3D94)(0,(char *)node + 0x34);
+                    batch = node->batches;
+                    do {
+                        for (j = 0; j < batch->count; j++) {
+                            items = batch->items;
+                            fn_802DC280(a,b,items[j],*items[j]+1);
+                            v = *items[j] - 1;
+                            lbl_8055FA6C += v & ~(v >> 31);
+                        }
+                        batch = batch->next;
+                    } while (batch);
+                    node->count = 0; node->batches = 0;
+                }
+                node = node->next;
+            }
+            fn_802CADD0(-1,1); fn_802CADD0(-1,2); fn_802DC27C(); fn_802C8D74();
+        }
+        continue;
+clear_nodes:
+        while (node) { node->count = 0; node->batches = 0; node = node->next; }
+    }
+}
+#pragma scheduling on
 extern void fn_802C21B8(void); extern void fn_802C28C0(void); extern void fn_802C8BD0(void); extern void fn_802C8D74(void); extern void fn_802CADD0(int,int); extern void fn_802D3D94(int,void*,...); extern void fn_802DC130(void); extern void fn_802DC134(void); extern void fn_802DC138(int,int,void*,int); extern void fn_802DC278(void); extern void fn_802DC27C(void); extern void fn_802DC280(int,int,void*,int); extern int lbl_802FAB40[]; void fn_802BB3B8(int a,int b,int c){ int i,j; void *item,*list,*node; for(i=0;i<((int*)lbl_804BFFF4)[1];i++){ item=((void**)((int*)lbl_804BFFF4)[0])[i]; if(*(int*)((char*)item+8)==999)continue; list=*(void**)((char*)item+12); if(!list)continue; if(*(int*)((char*)item+4)==-2){while(list){*(int*)((char*)list+4)=0;*(int*)list=0;list=*(void**)((char*)list+16);}continue;} j=*(int*)((char*)list+8); if(j==2){fn_802C28C0();fn_802C8BD0();fn_802DC278();fn_802CADD0(*(int*)((char*)item+4),1);fn_802C21B8();fn_802CADD0(2,0);fn_802D3D94(2,lbl_802FAB40);list=*(void**)((char*)item+12);while(list){node=*(void**)list;if(node){fn_802D3D94(0,(char*)list+52);while(node){int n=*(int*)((char*)node+4);for(j=0;j<n;j++){void*p=((void**)*(void**)node)[j];fn_802DC280(a,b,p,*(unsigned short*)p+1);lbl_8055FA6C+=(*(unsigned short*)p)-1>0?(*(unsigned short*)p)-1:0;}node=*(void**)((char*)node+12);}*(int*)((char*)list+4)=0;*(void**)list=0;}list=*(void**)((char*)list+16);}fn_802CADD0(-1,1);fn_802CADD0(-1,2);fn_802DC27C();fn_802C8D74();}else if(j>=0){fn_802C8BD0();fn_802DC130();while(list){node=*(void**)list;if(node&&*(unsigned char*)((char*)list+12)){fn_802D3D94(0,(char*)list+36);while(node){int n=*(int*)((char*)node+4);for(j=0;j<n;j++){void*p=((void**)*(void**)node)[j];fn_802DC138(a,b,p,*(unsigned short*)p+1);lbl_8055FA6C+=(*(unsigned short*)p)-1>0?(*(unsigned short*)p)-1:0;}node=*(void**)((char*)node+12);}*(int*)((char*)list+4)=0;*(void**)list=0;}list=*(void**)((char*)list+16);}fn_802DC134();fn_802C8D74();}}}
 
 extern int lbl_804C0088[];
