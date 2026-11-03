@@ -14,6 +14,8 @@ typedef s32 M2C_UNK;
 #define M2C_BITWISE(type, expr) ((type)(expr))
 #endif
 
+typedef struct VObj318 { void **vtbl; } VObj318;
+#define VCALL0(o, off, ret) ((ret (*)(void *))((VObj318 *)(o))->vtbl[(off) / 4])(o)
 extern void fn_801B6650(int);
 extern void fn_802793B0(int);
 
@@ -154,6 +156,7 @@ int fn_8018FF84(int arg0, int arg1) {
 }
 
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_8018FFC4(void *arg0, void *arg1, void *arg2) {
     class ResultMethods {
@@ -238,9 +241,15 @@ extern "C" void fn_8018FFC4(void *arg0, void *arg1, void *arg2) {
     }
     *(void **)((u8 *)arg0 + 4) = temp_r3;
     *(void **)((u8 *)*(void **)((u8 *)arg0 + 0xC) + 0x38) = temp_r3;
-    *(u8 *)((u8 *)arg0 + 0x25) = *(s32 *)((u8 *)arg2 + 0x5C) == 0;
-    *(void **)((u8 *)arg0 + 0x20) = arg1;
-    *(u8 *)((u8 *)arg0 + 0x26) = *(s32 *)((u8 *)arg2 + 0x5C) != 0;
+    u32 leading = __cntlzw(*(u32 *)((u8 *)arg2 + 0x5C));
+    leading >>= 5;
+    *(u8 *)((u8 *)arg0 + 0x25) = leading;
+    {
+        s32 value = *(s32 *)((u8 *)arg2 + 0x5C);
+        s32 negative = -value;
+        *(void **)((u8 *)arg0 + 0x20) = arg1;
+        *(u8 *)((u8 *)arg0 + 0x26) = (u32)(negative | value) >> 31;
+    }
     temp_r3_6 = *(s32 *)((u8 *)arg1 + 0x1EC);
     *(s32 *)((u8 *)arg0 + 0x1C) = temp_r3_6;
     method18Obj = (Method18 *)fn_801B2EC0(temp_r3_6);
@@ -254,6 +263,7 @@ extern "C" void fn_8018FFC4(void *arg0, void *arg1, void *arg2) {
         lbl_8055E528 = 1;
     }
 }
+#pragma scheduling on
 #pragma use_lmw_stmw reset
 #pragma cplusplus on
 extern "C" void fn_80190184(void *arg0, void *arg1) {
