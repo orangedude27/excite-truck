@@ -1339,6 +1339,19 @@ extern "C" long fn_8027CFB4(long arg0) {
     return 0;
 }
 
+extern "C" long fn_8027D068(long arg0) {
+    long value = *fn_8027C26C((void *)lbl_8055F654, (const char *)arg0);
+    switch (value) {
+    case 0:
+        return ((long (*)(void))fn_8027C850)();
+    case 1:
+        return ((long (*)(void))fn_8027CBF0)();
+    default:
+        ((void (*)(const char *, ...))fn_802E317C)(lbl_80347C70, arg0, value);
+        return 1;
+    }
+}
+
 extern "C" long fn_8027D0E0(long arg0) {
     long value = *fn_8027C26C((void *)lbl_8055F654, (const char *)arg0);
     switch (value) {
