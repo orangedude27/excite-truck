@@ -37,7 +37,7 @@ extern int *lbl_8055DA50;
 extern int *lbl_8055DA54;
 extern unsigned short lbl_803049F0[];
 extern unsigned short lbl_80304B70[];
-extern int ReadFont(int, int, int);
+extern int ReadFont();
 extern char *ParseStringS(int, char *, int **, int *);
 extern void *ParseStringW(int, void *, int *, int *, int);
 extern int IOS_IoctlvReboot(int, int, int, int, void *, int);
