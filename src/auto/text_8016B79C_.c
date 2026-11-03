@@ -8,6 +8,7 @@ extern "C" void fn_80235380(void *, char *);
 extern "C" void fn_802C2930(void *, s32);
 extern "C" void *fn_8000AC38(void);
 extern "C" void *fn_80131810(void);
+extern "C" s32 fn_8016C5F0(void);
 extern "C" void fn_8016C55C(void *, void *);
 extern "C" void *fn_8016C598(void *, int, int);
 extern "C" void fn_8016C768(void *, void *, void *);
