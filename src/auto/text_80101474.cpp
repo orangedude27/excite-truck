@@ -223,42 +223,40 @@ extern "C" void SetAttack__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
 extern "C" void SetDecay__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
 extern "C" void SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
 extern "C" void Start__Q46nw4hbm3snd6detail7ChannelFRCQ46nw4hbm3snd6detail8WaveDatal(void *, const void *, int);
-extern "C" int Parse__Q46nw4hbm3snd6detail8WsdTrackFPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUlb(void *arg0, const void *arg1, unsigned long arg2, bool arg3) {
-    struct CallbackVtable {
-        virtual int f0();
-        virtual int GetWave(void *, void *, void *, int, int, int, unsigned long);
-    };
+#pragma push
+#pragma optimization_level 3
+int nw4hbm::snd::detail::WsdTrack::Parse(const nw4hbm::snd::detail::WsdTrack::WsdCallback *callback, unsigned long arg2, bool arg3) {
     unsigned char sp8[0x10];
     unsigned char sp18[0x90];
-
-    if (*(void **)((char *)arg0 + 0x2C) == 0) {
+    if (*(void **)((char *)this + 0x2C) == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327CB8, 0x189, lbl_80327CCC);
-    }
-    if (*(int *)((char *)arg0 + 8) == 0) {
-        if (!((CallbackVtable *)arg1)->GetWave((char *)arg0 + 0x20, sp8, sp18,
-                                                *(int *)arg0, *(int *)((char *)arg0 + 4), 0, arg2)) return -1;
-        int voices = sp18[2] > 2 ? 2 : sp18[2];
-        void *owner = *(void **)((char *)arg0 + 0x2C);
+    if (*(int *)((char *)this + 8) == 0) {
+        void *owner = *(void **)((char *)this + 0x2C);
+        int pitch = *((unsigned char *)this + 0x1D) + *(unsigned char *)((char *)owner + 0x90);
+        if (!callback->GetWave((char *)this + 0x20, sp8, sp18,
+                               *(int *)this, *(int *)((char *)this + 4), 0, arg2))
+            return -1;
+        owner = *(void **)((char *)this + 0x2C);
+        int maxVoices = *(int *)((char *)owner + 0x8C);
+        int count = (int)sp18[2];
+        int voices = count > 2 ? 2 : count;
         void *channel = AllocChannel__Q46nw4hbm3snd6detail7ChannelFiiiPFPQ46nw4hbm3snd6detail7ChannelQ56nw4hbm3snd6detail7Channel21ChannelCallbackStatusUl_vUl(
-            voices, *(int *)((char *)owner + 0x8C),
-            *((unsigned char *)arg0 + 0x1D) + *(unsigned char *)((char *)owner + 0x90),
+            voices, maxVoices, pitch,
             ChannelCallbackFunc__Q46nw4hbm3snd6detail8WsdTrackFPQ46nw4hbm3snd6detail7ChannelQ56nw4hbm3snd6detail7Channel21ChannelCallbackStatusUl,
-            arg0);
+            this);
         if (channel == 0) return -1;
         SetAttack__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, sp8[4]);
         SetDecay__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, sp8[5]);
         SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, sp8[6]);
         SetRelease__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, sp8[7]);
         Start__Q46nw4hbm3snd6detail7ChannelFRCQ46nw4hbm3snd6detail8WaveDatal(channel, sp18, -1);
-        *(void **)((char *)channel + 0xE4) = *(void **)((char *)arg0 + 0x30);
-        *(void **)((char *)arg0 + 0x30) = channel;
-        *(int *)((char *)arg0 + 8) += 1;
-    } else if (*(void **)((char *)arg0 + 0x30) == 0) {
-        return -1;
-    }
+        *(void **)((char *)channel + 0xE4) = *(void **)((char *)this + 0x30);
+        *(void **)((char *)this + 0x30) = channel;
+        *(int *)((char *)this + 8) += 1;
+    } else if (*(void **)((char *)this + 0x30) == 0) return -1;
     return 0;
 }
-
+#pragma pop
 extern "C" const char lbl_80327CB8[];
 void nw4hbm::snd::detail::WsdTrack::ChannelCallbackFunc(nw4hbm::snd::detail::Channel *arg0, nw4hbm::snd::detail::Channel::ChannelCallbackStatus arg1, unsigned long arg2) {
     const char *base = lbl_80327CB8;
@@ -357,79 +355,106 @@ extern "C" unsigned char ReadNextCharUTF8__Q36nw4hbm2ut14CharStrmReaderFv(void *
 }
 
 extern "C" unsigned short ReadNextCharUTF16__Q36nw4hbm2ut14CharStrmReaderFv(void *arg0) {
-    void *reader=arg0;
-    const char *base=lbl_80328030;
-    int temp_r11,temp_r6,var_r10,var_r10_2,var_r4,var_r5,var_r5_2,var_r6,var_r7,var_r7_2,var_r8,var_r8_2,var_r9,var_r9_2;
-    unsigned short value;
-    temp_r11=(unsigned int)reader&0xFF000000U;var_r5=1;var_r6=1;var_r7=1;var_r8=1;var_r9=1;var_r10=1;
-    if((unsigned int)(temp_r11+0x80000000U)!=0U&&(unsigned int)(((unsigned int)reader&0xFF800000U)+0x7F000000U)!=0U)var_r10=0;
-    if(var_r10==0&&(unsigned int)(((unsigned int)reader&0xF8000000U)+0x70000000U)!=0U)var_r9=0;
-    if(var_r9==0&&(unsigned int)(temp_r11+0x40000000U)!=0U)var_r8=0;
-    if(var_r8==0&&(unsigned int)(((unsigned int)reader&0xFF800000U)+0x3F000000U)!=0U)var_r7=0;
-    if(var_r7==0&&(unsigned int)(((unsigned int)reader&0xF8000000U)+0x30000000U)!=0U)var_r6=0;
-    if(var_r6==0&&(unsigned int)(((unsigned int)reader&0xFFFFC000U)+0x20000000U)!=0U)var_r5=0;
-    if(var_r5==0)Panic__Q26nw4hbm2dbFPCciPCce(base,0x81,base+0x18,reader);
-    temp_r6=*(int *)reader;var_r4=1;var_r5_2=1;var_r7_2=1;temp_r11=temp_r6&0xFF000000;var_r8_2=1;var_r9_2=1;var_r10_2=1;
-    if((unsigned int)(temp_r11+0x80000000)!=0U&&(unsigned int)((temp_r6&0xFF800000)+0x7F000000)!=0U)var_r10_2=0;
-    if(var_r10_2==0&&(unsigned int)((temp_r6&0xF8000000)+0x70000000)!=0U)var_r9_2=0;
-    if(var_r9_2==0&&(unsigned int)(temp_r11+0x40000000)!=0U)var_r8_2=0;
-    if(var_r8_2==0&&(unsigned int)((temp_r6&0xFF800000)+0x3F000000)!=0U)var_r7_2=0;
-    if(var_r7_2==0&&(unsigned int)((temp_r6&0xF8000000)+0x30000000)!=0U)var_r5_2=0;
-    if(var_r5_2==0&&(unsigned int)((temp_r6&0xFFFFC000)+0x20000000)!=0U)var_r4=0;
-    if(var_r4==0)Panic__Q26nw4hbm2dbFPCciPCce(base,0x82,base+0x50);
-    if(*(int *)reader&1)Panic__Q26nw4hbm2dbFPCciPCce(base,0x83,base+0xFC);
-    value=**(unsigned short **)reader;*(int *)reader=*(int *)reader+2;return value;
+    const char *file = lbl_80328030;
+    int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
+    unsigned int top = (unsigned int)arg0 & 0xFF000000U;
+    if (top != 0x80000000U && ((unsigned int)arg0 & 0xFF800000U) != 0x81000000U) r10 = 0;
+    if (r10 == 0 && ((unsigned int)arg0 & 0xF8000000U) != 0x90000000U) r9 = 0;
+    if (r9 == 0 && top != 0xC0000000U) r8 = 0;
+    if (r8 == 0 && ((unsigned int)arg0 & 0xFF800000U) != 0xC1000000U) r7 = 0;
+    if (r7 == 0 && ((unsigned int)arg0 & 0xF8000000U) != 0xD0000000U) r6 = 0;
+    if (r6 == 0 && ((unsigned int)arg0 & 0xFFFFC000U) != 0xE0000000U) r5 = 0;
+    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x81, file + 0x18, arg0);
+
+    int f4 = 1, f5 = 1;
+    unsigned int value = *(unsigned int *)arg0;
+    int f7 = 1, f8 = 1, f9 = 1, f10 = 1;
+    unsigned int top2 = value & 0xFF000000U;
+    if (top2 != 0x80000000U && (value & 0xFF800000U) != 0x81000000U) f10 = 0;
+    if (f10 == 0 && (value & 0xF8000000U) != 0x90000000U) f9 = 0;
+    if (f9 == 0 && top2 != 0xC0000000U) f8 = 0;
+    if (f8 == 0 && (value & 0xFF800000U) != 0xC1000000U) f7 = 0;
+    if (f7 == 0 && (value & 0xF8000000U) != 0xD0000000U) f5 = 0;
+    if (f5 == 0 && (value & 0xFFFFC000U) != 0xE0000000U) f4 = 0;
+    if (f4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x82, file + 0x50);
+
+    unsigned int align = *(unsigned int *)arg0;
+    if (align & 1) {
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x83, file + 0xFC);
+    }
+
+    unsigned short ch = **(const unsigned short **)arg0;
+    *(const unsigned short **)arg0 = (const unsigned short *)(*(const char **)arg0 + 2);
+    return ch;
 }
 
 extern "C" const char lbl_80328030[];
 extern "C" unsigned char ReadNextCharCP1252__Q36nw4hbm2ut14CharStrmReaderFv(void *arg0) {
-    unsigned int top = (unsigned int)arg0 & 0xFF000000U;
+    const char *file = lbl_80328030;
     int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
-    if ((unsigned int)(top + 0x80000000U) != 0U && (unsigned int)(((unsigned int)arg0 & 0xFF800000U) + 0x7F000000U) != 0U) r10 = 0;
-    if (r10 == 0 && (unsigned int)(((unsigned int)arg0 & 0xF8000000U) + 0x70000000U) != 0U) r9 = 0;
-    if (r9 == 0 && (unsigned int)(top + 0x40000000U) != 0U) r8 = 0;
-    if (r8 == 0 && (unsigned int)(((unsigned int)arg0 & 0xFF800000U) + 0x3F000000U) != 0U) r7 = 0;
-    if (r7 == 0 && (unsigned int)(((unsigned int)arg0 & 0xF8000000U) + 0x30000000U) != 0U) r6 = 0;
-    if (r6 == 0 && (unsigned int)(((unsigned int)arg0 & 0xFFFFC000U) + 0x20000000U) != 0U) r5 = 0;
-    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328030, 0x9B, lbl_80328030 + 0x18, arg0);
+    unsigned int top = (unsigned int)arg0 & 0xFF000000U;
+    if (top != 0x80000000U && ((unsigned int)arg0 & 0xFF800000U) != 0x81000000U) r10 = 0;
+    if (r10 == 0 && ((unsigned int)arg0 & 0xF8000000U) != 0x90000000U) r9 = 0;
+    if (r9 == 0 && top != 0xC0000000U) r8 = 0;
+    if (r8 == 0 && ((unsigned int)arg0 & 0xFF800000U) != 0xC1000000U) r7 = 0;
+    if (r7 == 0 && ((unsigned int)arg0 & 0xF8000000U) != 0xD0000000U) r6 = 0;
+    if (r6 == 0 && ((unsigned int)arg0 & 0xFFFFC000U) != 0xE0000000U) r5 = 0;
+    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x9B, &file[0x18], arg0);
+    int f4 = 1, f5 = 1;
     unsigned int value = *(unsigned int *)arg0;
-    top = value & 0xFF000000U;
-    int r4 = 1; r5 = 1; r6 = 1; r7 = 1; r8 = 1; r9 = 1;
-    if ((unsigned int)(top + 0x80000000U) != 0U && (unsigned int)((value & 0xFF800000U) + 0x7F000000U) != 0U) r9 = 0;
-    if (r9 == 0 && (unsigned int)((value & 0xF8000000U) + 0x70000000U) != 0U) r8 = 0;
-    if (r8 == 0 && (unsigned int)(top + 0x40000000U) != 0U) r7 = 0;
-    if (r7 == 0 && (unsigned int)((value & 0xFF800000U) + 0x3F000000U) != 0U) r6 = 0;
-    if (r6 == 0 && (unsigned int)((value & 0xF8000000U) + 0x30000000U) != 0U) r5 = 0;
-    if (r5 == 0 && (unsigned int)((value & 0xFFFFC000U) + 0x20000000U) != 0U) r4 = 0;
-    if (r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328030, 0x9C, lbl_80328030 + 0x50);
-    unsigned char *ptr = *(unsigned char **)arg0;
-    unsigned char result = *ptr;
-    *(unsigned int *)arg0 = value + 1;
+    int f6 = 1, f7 = 1, f8 = 1, f9 = 1;
+    unsigned int top2 = value & 0xFF000000U;
+    if (top2 != 0x80000000U && (value & 0xFF800000U) != 0x81000000U) f9 = 0;
+    if (f9 == 0 && (value & 0xF8000000U) != 0x90000000U) f8 = 0;
+    if (f8 == 0 && top2 != 0xC0000000U) f7 = 0;
+    if (f7 == 0 && (value & 0xFF800000U) != 0xC1000000U) f6 = 0;
+    if (f6 == 0 && (value & 0xF8000000U) != 0xD0000000U) f5 = 0;
+    if (f5 == 0 && (value & 0xFFFFC000U) != 0xE0000000U) f4 = 0;
+    if (f4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328030 + 0, 0x9C, file + 0x50);
+    unsigned char result = **(unsigned char **)arg0;
+    *(unsigned int *)arg0 = *(unsigned int *)arg0 + 1;
     return result;
 }
 
-extern "C" unsigned char ReadNextCharSJIS__Q36nw4hbm2ut14CharStrmReaderFv(void *arg0) {
-void *reader=arg0;const char *base=lbl_80328030;unsigned int top=(unsigned int)reader&0xFF000000U;
-int r5=1,r6=1,r7=1,r8=1,r9=1,r10=1;
-if((unsigned int)(top+0x80000000U)!=0U&&(unsigned int)(((unsigned int)reader&0xFF800000U)+0x7F000000U)!=0U)r10=0;
-if(r10==0&&(unsigned int)(((unsigned int)reader&0xF8000000U)+0x70000000U)!=0U)r9=0;
-if(r9==0&&(unsigned int)(top+0x40000000U)!=0U)r8=0;
-if(r8==0&&(unsigned int)(((unsigned int)reader&0xFF800000U)+0x3F000000U)!=0U)r7=0;
-if(r7==0&&(unsigned int)(((unsigned int)reader&0xF8000000U)+0x30000000U)!=0U)r6=0;
-if(r6==0&&(unsigned int)(((unsigned int)reader&0xFFFFC000U)+0x20000000U)!=0U)r5=0;
-if(r5==0)Panic__Q26nw4hbm2dbFPCciPCce(base,0xB4,base+0x18,reader);
-unsigned int p=*(unsigned int *)reader;top=p&0xFF000000U;
-int r4=1;r5=1;r6=1;r7=1;r8=1;r9=1;
-if((unsigned int)(top+0x80000000U)!=0U&&(unsigned int)((p&0xFF800000U)+0x7F000000U)!=0U)r9=0;
-if(r9==0&&(unsigned int)((p&0xF8000000U)+0x70000000U)!=0U)r8=0;
-if(r8==0&&(unsigned int)(top+0x40000000U)!=0U)r7=0;
-if(r7==0&&(unsigned int)((p&0xFF800000U)+0x3F000000U)!=0U)r6=0;
-if(r6==0&&(unsigned int)((p&0xF8000000U)+0x30000000U)!=0U)r5=0;
-if(r5==0&&(unsigned int)((p&0xFFFFC000U)+0x20000000U)!=0U)r4=0;
-if(r4==0)Panic__Q26nw4hbm2dbFPCciPCce(base,0xB5,base+0x50);
-unsigned char first=*(unsigned char *)p;
-if((first>=0x81&&first<0xA0)||first>=0xE0){unsigned char second=*((unsigned char *)p+1);*(unsigned int *)reader=p+2;return (unsigned char)((first<<8)|second);}
-*(unsigned int *)reader=p+1;return first;
+static inline bool IsSJISLeadByte(unsigned char c) {
+    return (c >= 0x81 && c < 0xA0) || c >= 0xE0;
+}
+
+extern "C" unsigned short ReadNextCharSJIS__Q36nw4hbm2ut14CharStrmReaderFv(void *arg0) {
+    const char *file = lbl_80328030;
+    int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
+    unsigned int top = (unsigned int)arg0 & 0xFF000000U;
+    if (top != 0x80000000U && ((unsigned int)arg0 & 0xFF800000U) != 0x81000000U) r10 = 0;
+    if (r10 == 0 && ((unsigned int)arg0 & 0xF8000000U) != 0x90000000U) r9 = 0;
+    if (r9 == 0 && top != 0xC0000000U) r8 = 0;
+    if (r8 == 0 && ((unsigned int)arg0 & 0xFF800000U) != 0xC1000000U) r7 = 0;
+    if (r7 == 0 && ((unsigned int)arg0 & 0xF8000000U) != 0xD0000000U) r6 = 0;
+    if (r6 == 0 && ((unsigned int)arg0 & 0xFFFFC000U) != 0xE0000000U) r5 = 0;
+    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0xB4, &file[0x18], arg0);
+
+    int f4 = 1, f5 = 1;
+    unsigned int value = *(unsigned int *)arg0;
+    int f7 = 1, f8 = 1, f9 = 1, f10 = 1;
+    unsigned int top2 = value & 0xFF000000U;
+    if (top2 != 0x80000000U && (value & 0xFF800000U) != 0x81000000U) f10 = 0;
+    if (f10 == 0 && (value & 0xF8000000U) != 0x90000000U) f9 = 0;
+    if (f9 == 0 && top2 != 0xC0000000U) f8 = 0;
+    if (f8 == 0 && (value & 0xFF800000U) != 0xC1000000U) f7 = 0;
+    if (f7 == 0 && (value & 0xF8000000U) != 0xD0000000U) f5 = 0;
+    if (f5 == 0 && (value & 0xFFFFC000U) != 0xE0000000U) f4 = 0;
+    if (f4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0xB5, file + 0x50);
+
+    const unsigned char *s = *(const unsigned char **)arg0;
+    unsigned char c = *s;
+    int two = 0;
+    if ((c >= 0x81 && c < 0xA0) || c >= 0xE0) two = 1;
+    if (two) {
+        unsigned short r = s[1] | (c << 8);
+        *(const unsigned char **)arg0 += 2;
+        return r;
+    }
+    *(const unsigned char **)arg0 += 1;
+    return c;
 }
 
 extern "C" s32 fn_801033F0(s32 arg0, s32 arg1) {
@@ -440,25 +465,31 @@ extern "C" s32 fn_801033F0(s32 arg0, s32 arg1) {
 }
 
 extern "C" void SetFont__Q36nw4hbm2ut10CharWriterFRCQ36nw4hbm2ut4Font(void *arg0, void *arg1) {
-    unsigned int top = (unsigned int)arg0 & 0xFF000000U;
-    int r5=1,r6=1,r7=1,r8=1,r9=1,r10=1;
-    if ((unsigned int)(top+0x80000000U)!=0U && (unsigned int)(((unsigned int)arg0&0xFF800000U)+0x7F000000U)!=0U) r10=0;
-    if (r10==0 && (unsigned int)(((unsigned int)arg0&0xF8000000U)+0x70000000U)!=0U) r9=0;
-    if (r9==0 && (unsigned int)(top+0x40000000U)!=0U) r8=0;
-    if (r8==0 && (unsigned int)(((unsigned int)arg0&0xFF800000U)+0x3F000000U)!=0U) r7=0;
-    if (r7==0 && (unsigned int)(((unsigned int)arg0&0xF8000000U)+0x30000000U)!=0U) r6=0;
-    if (r6==0 && (unsigned int)(((unsigned int)arg0&0xFFFFC000U)+0x20000000U)!=0U) r5=0;
-    if (r5==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178,0x85,lbl_80328178+0x14,arg0);
-    top=(unsigned int)arg1&0xFF000000U;
-    int r4=1; r5=1; r6=1; r7=1; r8=1; r9=1;
-    if ((unsigned int)(top+0x80000000U)!=0U && (unsigned int)(((unsigned int)arg1&0xFF800000U)+0x7F000000U)!=0U) r9=0;
-    if (r9==0 && (unsigned int)(((unsigned int)arg1&0xF8000000U)+0x70000000U)!=0U) r8=0;
-    if (r8==0 && (unsigned int)(top+0x40000000U)!=0U) r7=0;
-    if (r7==0 && (unsigned int)(((unsigned int)arg1&0xFF800000U)+0x3F000000U)!=0U) r6=0;
-    if (r6==0 && (unsigned int)(((unsigned int)arg1&0xF8000000U)+0x30000000U)!=0U) r5=0;
-    if (r5==0 && (unsigned int)(((unsigned int)arg1&0xFFFFC000U)+0x20000000U)!=0U) r4=0;
-    if (r4==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178,0x86,lbl_80328178+0x4C,arg1);
-    *(void **)((char *)arg0+0x48)=arg1;
+    const char *panicData = lbl_80328178;
+    void *writer = arg0;
+    void *font = arg1;
+
+    int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
+    unsigned int top = (unsigned int)writer & 0xFF000000;
+    if ((top != 0x80000000) && (((unsigned int)writer & 0xFF800000) != 0x81000000)) r10 = 0;
+    if (r10 == 0 && (((unsigned int)writer & 0xF8000000) != 0x90000000)) r9 = 0;
+    if (r9 == 0 && (top != 0xC0000000)) r8 = 0;
+    if (r8 == 0 && (((unsigned int)writer & 0xFF800000) != 0xC1000000)) r7 = 0;
+    if (r7 == 0 && (((unsigned int)writer & 0xF8000000) != 0xD0000000)) r6 = 0;
+    if (r6 == 0 && (((unsigned int)writer & 0xFFFFC000) != 0xE0000000)) r5 = 0;
+    if (r5 == 0) ((void (*)(const char *, int, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(panicData, 0x85, panicData + 0x14, writer);
+
+    int f4 = 1, f5 = 1, f6 = 1, f7 = 1, f8 = 1, f9 = 1;
+    unsigned int ftop = (unsigned int)font & 0xFF000000;
+    if ((ftop != 0x80000000) && (((unsigned int)font & 0xFF800000) != 0x81000000)) f9 = 0;
+    if (f9 == 0 && (((unsigned int)font & 0xF8000000) != 0x90000000)) f8 = 0;
+    if (f8 == 0 && (ftop != 0xC0000000)) f7 = 0;
+    if (f7 == 0 && (((unsigned int)font & 0xFF800000) != 0xC1000000)) f6 = 0;
+    if (f6 == 0 && (((unsigned int)font & 0xF8000000) != 0xD0000000)) f5 = 0;
+    if (f5 == 0 && (((unsigned int)font & 0xFFFFC000) != 0xE0000000)) f4 = 0;
+    if (f4 == 0) ((void (*)(const char *, int, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(panicData, 0x86, panicData + 0x4C, font);
+
+    *(void **)((char *)writer + 0x48) = font;
 }
 
 extern "C" int GetFont__Q36nw4hbm2ut10CharWriterCFv(int arg0) {
@@ -966,84 +997,130 @@ void nw4hbm::ut::CharWriter::SetFontSize(float farg0, float farg1) {
     *(float *)((char *)this + 0x28) = farg1;
 }
 
+#pragma push
+#pragma opt_propagation off
 extern "C" float GetFontWidth__Q36nw4hbm2ut10CharWriterCFv(void *arg0) {
-    unsigned int top=(unsigned int)arg0 & 0xFF000000U;
-    unsigned int r5=1,r6=1,r7=1,r8=1,r9=1,r10=1;
-    if ((unsigned int)(top+0x80000000U)!=0U && (unsigned int)(((unsigned int)arg0&0xFF800000U)+0x7F000000U)!=0U) r10=0;
-    if (r10==0U && (unsigned int)(((unsigned int)arg0&0xF8000000U)+0x70000000U)!=0U) r9=0;
-    if (r9==0U && (unsigned int)(top+0x40000000U)!=0U) r8=0;
-    if (r8==0U && (unsigned int)(((unsigned int)arg0&0xFF800000U)+0x3F000000U)!=0U) r7=0;
-    if (r7==0U && (unsigned int)(((unsigned int)arg0&0xF8000000U)+0x30000000U)!=0U) r6=0;
-    if (r6==0U && (unsigned int)(((unsigned int)arg0&0xFFFFC000U)+0x20000000U)!=0U) r5=0;
-    if (r5==0U) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178,0x259,lbl_80328178+0x14,arg0);
-    unsigned int value=*(unsigned int *)((char *)arg0+0x48);
-    top=value&0xFF000000U;
-    unsigned int r4=1; r5=1; r6=1; r7=1; r8=1; r9=1;
-    if ((unsigned int)(top+0x80000000U)!=0U && (unsigned int)((value&0xFF800000U)+0x7F000000U)!=0U) r9=0;
-    if (r9==0U && (unsigned int)((value&0xF8000000U)+0x70000000U)!=0U) r8=0;
-    if (r8==0U && (unsigned int)(top+0x40000000U)!=0U) r7=0;
-    if (r7==0U && (unsigned int)((value&0xFF800000U)+0x3F000000U)!=0U) r6=0;
-    if (r6==0U && (unsigned int)((value&0xF8000000U)+0x30000000U)!=0U) r5=0;
-    if (r5==0U && (unsigned int)((value&0xFFFFC000U)+0x20000000U)!=0U) r4=0;
-    if (r4==0U) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178,0x25A,lbl_80328178+0xF4);
-    FontForWidth *font=(FontForWidth *)value;
-    int width=font->v2();
-    return *(float *)((char *)arg0+0x24) * (float)width;
-}
-
-extern "C" float GetFontWidth__Q36nw4hbm2ut10CharWriterCFv_801056A4(void *arg0) {
+    struct FontVTable {
+        virtual void f0();
+        virtual int GetWidth() const;
+    };
     const char *base = lbl_80328178;
-    int top, r4, r5, r6, r7, r8, r9, r10;
-    void *font;
-    top = (unsigned int)arg0 & 0xFF000000U;
-    r5=1; r6=1; r7=1; r8=1; r9=1; r10=1;
-    if ((unsigned int)(top+0x80000000U)!=0U && (unsigned int)(((unsigned int)arg0&0xFF800000U)+0x7F000000U)!=0U) r10=0;
-    if (r10==0 && (unsigned int)(((unsigned int)arg0&0xF8000000U)+0x70000000U)!=0U) r9=0;
-    if (r9==0 && (unsigned int)(top+0x40000000U)!=0U) r8=0;
-    if (r8==0 && (unsigned int)(((unsigned int)arg0&0xFF800000U)+0x3F000000U)!=0U) r7=0;
-    if (r7==0 && (unsigned int)(((unsigned int)arg0&0xF8000000U)+0x30000000U)!=0U) r6=0;
-    if (r6==0 && (unsigned int)(((unsigned int)arg0&0xFFFFC000U)+0x20000000U)!=0U) r5=0;
-    if (r5==0) Panic__Q26nw4hbm2dbFPCciPCce(base,0x26A,base+0x14,arg0);
-    font=*(void **)((char *)arg0+0x48);
-    top=(unsigned int)font&0xFF000000U; r4=1; r5=1; r7=1; r8=1; r9=1; r10=1;
-    if ((unsigned int)(top+0x80000000U)!=0U && (unsigned int)(((unsigned int)font&0xFF800000U)+0x7F000000U)!=0U) r10=0;
-    if (r10==0 && (unsigned int)(((unsigned int)font&0xF8000000U)+0x70000000U)!=0U) r9=0;
-    if (r9==0 && (unsigned int)(top+0x40000000U)!=0U) r8=0;
-    if (r8==0 && (unsigned int)(((unsigned int)font&0xFF800000U)+0x3F000000U)!=0U) r7=0;
-    if (r7==0 && (unsigned int)(((unsigned int)font&0xF8000000U)+0x30000000U)!=0U) r5=0;
-    if (r5==0 && (unsigned int)(((unsigned int)font&0xFFFFC000U)+0x20000000U)!=0U) r4=0;
-    if (r4==0) Panic__Q26nw4hbm2dbFPCciPCce(base,0x26B,base+0xF4);
-    #pragma cplusplus on
-    int width = ((FontForWidth *)font)->v3();
-    #pragma cplusplus reset
-    return *(float *)((char *)arg0+0x28) * (float)width;
-}
+    void *self = arg0;
 
+    int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
+    unsigned int top = (unsigned int)self & 0xFF000000U;
+    if (top != 0x80000000U && ((unsigned int)self & 0xFF800000U) != 0x81000000U) r10 = 0;
+    if (r10 == 0 && ((unsigned int)self & 0xF8000000U) != 0x90000000U) r9 = 0;
+    if (r9 == 0 && top != 0xC0000000U) r8 = 0;
+    if (r8 == 0 && ((unsigned int)self & 0xFF800000U) != 0xC1000000U) r7 = 0;
+    if (r7 == 0 && ((unsigned int)self & 0xF8000000U) != 0xD0000000U) r6 = 0;
+    if (r6 == 0 && ((unsigned int)self & 0xFFFFC000U) != 0xE0000000U) r5 = 0;
+    if (r5 == 0) {
+        void *s = self;
+        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x259, base + 0x14, s);
+    }
+
+    {
+        int f4 = 1, f5 = 1;
+        void *font = *(void **)((char *)self + 0x48);
+        int f7 = 1, f8 = 1, f9 = 1, f10 = 1;
+        unsigned int top2 = (unsigned int)font & 0xFF000000U;
+        if (top2 != 0x80000000U && ((unsigned int)font & 0xFF800000U) != 0x81000000U) f10 = 0;
+        if (f10 == 0 && ((unsigned int)font & 0xF8000000U) != 0x90000000U) f9 = 0;
+        if (f9 == 0 && top2 != 0xC0000000U) f8 = 0;
+        if (f8 == 0 && ((unsigned int)font & 0xFF800000U) != 0xC1000000U) f7 = 0;
+        if (f7 == 0 && ((unsigned int)font & 0xF8000000U) != 0xD0000000U) f5 = 0;
+        if (f5 == 0 && ((unsigned int)font & 0xFFFFC000U) != 0xE0000000U) f4 = 0;
+        if (f4 == 0) {
+            void *msg = (void *)(base + 0xF4);
+            Panic__Q26nw4hbm2dbFPCciPCce(base, 0x25A, (const char *)msg);
+        }
+    }
+
+    const FontVTable *f = *(const FontVTable **)((char *)self + 0x48);
+    int width = f->GetWidth();
+    return *(float *)((char *)self + 0x24) * (float)width;
+}
+#pragma push
+#pragma opt_common_subs off
+extern "C" float GetFontWidth__Q36nw4hbm2ut10CharWriterCFv_801056A4(void *arg0) {
+    struct FontVTable {
+        virtual void f0();
+        virtual void f1();
+        virtual int GetWidth() const;
+    };
+    const char *base = lbl_80328178;
+    void *self = arg0;
+
+    int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
+    unsigned int top = (unsigned int)self & 0xFF000000U;
+    if (top != 0x80000000U && ((unsigned int)self & 0xFF800000U) != 0x81000000U) r10 = 0;
+    if (r10 == 0 && ((unsigned int)self & 0xF8000000U) != 0x90000000U) r9 = 0;
+    if (r9 == 0 && top != 0xC0000000U) r8 = 0;
+    if (r8 == 0 && ((unsigned int)self & 0xFF800000U) != 0xC1000000U) r7 = 0;
+    if (r7 == 0 && ((unsigned int)self & 0xF8000000U) != 0xD0000000U) r6 = 0;
+    if (r6 == 0 && ((unsigned int)self & 0xFFFFC000U) != 0xE0000000U) r5 = 0;
+    if (r5 == 0) {
+        void *s = self;
+        Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x26A, &base[0x14], s);
+    }
+
+    {
+        int f4 = 1, f5 = 1;
+        void *font = *(void **)((char *)self + 0x48);
+        int f7 = 1, f8 = 1, f9 = 1, f10 = 1;
+        unsigned int top2 = (unsigned int)font & 0xFF000000U;
+        if (top2 != 0x80000000U && ((unsigned int)font & 0xFF800000U) != 0x81000000U) f10 = 0;
+        if (f10 == 0 && ((unsigned int)font & 0xF8000000U) != 0x90000000U) f9 = 0;
+        if (f9 == 0 && top2 != 0xC0000000U) f8 = 0;
+        if (f8 == 0 && ((unsigned int)font & 0xFF800000U) != 0xC1000000U) f7 = 0;
+        if (f7 == 0 && ((unsigned int)font & 0xF8000000U) != 0xD0000000U) f5 = 0;
+        if (f5 == 0 && ((unsigned int)font & 0xFFFFC000U) != 0xE0000000U) f4 = 0;
+        if (f4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x26B, &base[0xF4]);
+    }
+
+    const FontVTable *f = *(const FontVTable **)((char *)self + 0x48);
+    int width = f->GetWidth();
+    return *(float *)((char *)self + 0x28) * (float)width;
+}
+#pragma pop
 extern "C" float GetFontWidth__Q36nw4hbm2ut10CharWriterCFv_801058DC(void *arg0) {
-    struct FontVTable { virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual int GetWidth(); };
-    void *self=arg0;
-    const char *base=lbl_80328178;
-    unsigned int top=(unsigned int)self&0xFF000000U;
-    int r5=1,r6=1,r7=1,r8=1,r9=1,r10=1;
-    if((unsigned int)(top+0x80000000U)!=0U&&(unsigned int)(((unsigned int)self&0xFF800000U)+0x7F000000U)!=0U)r10=0;
-    if(r10==0&&(unsigned int)(((unsigned int)self&0xF8000000U)+0x70000000U)!=0U)r9=0;
-    if(r9==0&&(unsigned int)(top+0x40000000U)!=0U)r8=0;
-    if(r8==0&&(unsigned int)(((unsigned int)self&0xFF800000U)+0x3F000000U)!=0U)r7=0;
-    if(r7==0&&(unsigned int)(((unsigned int)self&0xF8000000U)+0x30000000U)!=0U)r6=0;
-    if(r6==0&&(unsigned int)(((unsigned int)self&0xFFFFC000U)+0x20000000U)!=0U)r5=0;
-    if(r5==0)Panic__Q26nw4hbm2dbFPCciPCce(base,0x27B,base+0x14,self);
-    void *font=*(void **)((char *)self+0x48);
-    top=(unsigned int)font&0xFF000000U;
-    int r4=1;r5=1;r6=1;r7=1;r8=1;r9=1;
-    if((unsigned int)(top+0x80000000U)!=0U&&(unsigned int)(((unsigned int)font&0xFF800000U)+0x7F000000U)!=0U)r9=0;
-    if(r9==0&&(unsigned int)(((unsigned int)font&0xF8000000U)+0x70000000U)!=0U)r8=0;
-    if(r8==0&&(unsigned int)(top+0x40000000U)!=0U)r7=0;
-    if(r7==0&&(unsigned int)(((unsigned int)font&0xFF800000U)+0x3F000000U)!=0U)r6=0;
-    if(r6==0&&(unsigned int)(((unsigned int)font&0xF8000000U)+0x30000000U)!=0U)r5=0;
-    if(r5==0&&(unsigned int)(((unsigned int)font&0xFFFFC000U)+0x20000000U)!=0U)r4=0;
-    if(r4==0)Panic__Q26nw4hbm2dbFPCciPCce(base,0x27C,base+0xF4);
-    int width=((FontVTable *)font)->GetWidth();
-    return *(float *)((char *)self+0x28)*(float)width;
+    struct FontVTable {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual int GetWidth() const;
+    };
+    const char *base = lbl_80328178;
+    void *self = arg0;
+
+    int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
+    unsigned int top = (unsigned int)self & 0xFF000000U;
+    if (top != 0x80000000U && ((unsigned int)self & 0xFF800000U) != 0x81000000U) r10 = 0;
+    if (r10 == 0 && ((unsigned int)self & 0xF8000000U) != 0x90000000U) r9 = 0;
+    if (r9 == 0 && top != 0xC0000000U) r8 = 0;
+    if (r8 == 0 && ((unsigned int)self & 0xFF800000U) != 0xC1000000U) r7 = 0;
+    if (r7 == 0 && ((unsigned int)self & 0xF8000000U) != 0xD0000000U) r6 = 0;
+    if (r6 == 0 && ((unsigned int)self & 0xFFFFC000U) != 0xE0000000U) r5 = 0;
+    if (r5 == 0) ((void (*)(const char *, int, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(base, 0x27B, base + 0x14, self);
+
+    {
+        int f4 = 1, f5 = 1;
+        void *font = *(void **)((char *)self + 0x48);
+        int f7 = 1, f8 = 1, f9 = 1, f10 = 1;
+        unsigned int top2 = (unsigned int)font & 0xFF000000U;
+        if (top2 != 0x80000000U && ((unsigned int)font & 0xFF800000U) != 0x81000000U) f10 = 0;
+        if (f10 == 0 && ((unsigned int)font & 0xF8000000U) != 0x90000000U) f9 = 0;
+        if (f9 == 0 && top2 != 0xC0000000U) f8 = 0;
+        if (f8 == 0 && ((unsigned int)font & 0xFF800000U) != 0xC1000000U) f7 = 0;
+        if (f7 == 0 && ((unsigned int)font & 0xF8000000U) != 0xD0000000U) f5 = 0;
+        if (f5 == 0 && ((unsigned int)font & 0xFFFFC000U) != 0xE0000000U) f4 = 0;
+        if (f4 == 0) ((void (*)(const char *, int, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(base, 0x27C, base + 0xF4, font);
+    }
+
+    const FontVTable *f = *(const FontVTable **)((char *)self + 0x48);
+    int width = f->GetWidth();
+    return *(float *)((char *)self + 0x28) * (float)width;
 }
 
 #pragma push
