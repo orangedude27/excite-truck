@@ -604,14 +604,16 @@ extern "C" void *fn_801F861C(void) {
 }
 
 extern "C" void *fn_801F86C8(void *arg0) {
-class NodeVTable { public: virtual void v0();virtual void v1();virtual void v2();virtual void *getString(const char *);virtual void v6();virtual void v7();virtual int query20(const char *,int);virtual void v9();virtual void v10();virtual void v11();virtual int query30(const char *,int);virtual void v13();virtual void v14();virtual void v15();virtual void v16();virtual void v17();virtual void v18();virtual void v19();virtual void v20();virtual void v21();virtual void v22();virtual void v23();virtual void *query5C(const char *);};
+struct F86Obj { char pad[0x10C]; int f10C; };
+class NodeVTable { public: virtual void v0();virtual void v1();virtual void v2();virtual void *getString(const char *);virtual void v6();virtual void v7();virtual int query20(const char *,int);virtual void v9();virtual void v10();virtual void v11();virtual int query30(const char *,int);virtual void v13();virtual void v14();virtual void v15();virtual void v16();virtual void v17();virtual void v18();virtual void v19();virtual void v20();virtual void v21();virtual void v22();virtual void *query5C(const char *);};
 const char *base=lbl_8033AF80;void *saved=arg0;void *object;
 object=fn_801284F8(0x1A0,(void *)(base+0xF4));
 if(object){
 fn_801F92AC((F92Obj *)object);*(void **)((char *)object+0x108)=lbl_8033B440;
-((void (*)(void *))fn_801F92A8)((char *)object+0x10C);
-*(int *)((char *)object+0x190)=0;*(volatile int *)((char *)object+0x10C)=0;
-fn_801F8988((char *)object+0x10C,saved);
+((void (*)(void *))fn_801F92A8)(&((F86Obj *)object)->f10C);
+*(int *)((char *)object+0x190)=0;
+{F86Obj *sub=(F86Obj *)object;sub->f10C=0;
+fn_801F8988(&sub->f10C,saved);}
 if(fn_801F88F4(saved)==0)*(int *)((char *)object+0x190)|=4;
 if(((NodeVTable *)saved)->query30(base+0x100,0))*(int *)((char *)object+0x190)|=1;
 if(((NodeVTable *)saved)->query30(base+0x110,0))*(int *)((char *)object+0x190)|=0x100;
