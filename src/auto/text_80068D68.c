@@ -4242,7 +4242,7 @@ void bta_dm_compress_cback(s32 event, u8 service, u8 id, s32 addr) {
         for (i = 1; i <= table[1]; i++) {
             entry = table + i * 3;
             if ((id == entry[1] || entry[1] == 0xff) && service == entry[0] && entry[2] == 1) {
-                u8 count = *(volatile u8 *)(table + 1);
+                register u8 count = *(volatile u8 *)(table + 1);
                 found = 0;
                 for (j = 1; j <= count; j++) {
                     if (table[j * 3 + 2] == 2) {
@@ -4252,13 +4252,16 @@ void bta_dm_compress_cback(s32 event, u8 service, u8 id, s32 addr) {
                     }
                 }
                 if (!found) {
-                    int offset = ((int)i - 1) * 9;
-                    u8 *base = lbl_803C0B68;
-                    slot = base + offset;
-                    slot[7] = id;
-                    slot[6] = service;
-                    fn_80070FA4(slot, (void *)addr);
-                    slot[8] = 1;
+                    int offset;
+                    u8 *base;
+                    u8 *current;
+                    base = lbl_803C0B68;
+                    offset = ((int)i - 1) * 9;
+                    current = base + offset;
+                    current[7] = id;
+                    current[6] = service;
+                    fn_80070FA4(current, (void *)addr);
+                    current[8] = 1;
                     if (lbl_8055DC80 >= 4)
                         ((void (*)(u32, void *, u8, u8, u8))fn_80070984)(0x503, lbl_8031510C, base[offset + 7], base[offset + 6], base[offset + 8]);
                 }
@@ -20385,6 +20388,51 @@ BOOLEAN SDP_AddServiceClassIdList(UINT32 handle, UINT16 num_services, UINT16 *p_
     }
 
     return SDP_AddAttribute(handle, 1, 6, (UINT32)(p - buff), buff);
+}
+
+BOOLEAN SDP_DeleteAttribute(UINT32 handle, UINT16 attr_id) {
+    extern u8 lbl_8031A000[];
+    UINT16 zz, yy;
+    UINT16 len2;
+    UINT32 len;
+    UINT8 *pad_ptr;
+    tSDP_RECORD *p_rec = (tSDP_RECORD *)(lbl_803C4C40 + 0x1224);
+    tSDP_ATTRIBUTE *p_attr;
+
+    for (zz = 0; zz < *(UINT16 *)(lbl_803C4C40 + 0x1222); zz++, p_rec = (tSDP_RECORD *)((UINT8 *)p_rec + 0x298)) {
+        if (p_rec->record_handle == handle) {
+            p_attr = &p_rec->attribute[0];
+            if (lbl_803C4C40[0x4630] >= 3) {
+                ((void (*)(u32, void *, u32, u32))fn_8007096C)(0xA0002, lbl_8031A000, attr_id, handle);
+            }
+            for (zz = 0; zz < p_rec->num_attributes; zz++, p_attr++) {
+                if (p_attr->id == attr_id) {
+                    len = p_attr->len;
+                    pad_ptr = p_attr->value_ptr;
+                    if (len != 0) {
+                        for (yy = 0; yy < p_rec->num_attributes; yy++) {
+                            if (p_rec->attribute[yy].value_ptr > pad_ptr) {
+                                p_rec->attribute[yy].value_ptr -= len;
+                            }
+                        }
+                    }
+                    p_rec->num_attributes--;
+                    for (yy = zz; yy < p_rec->num_attributes; yy++, p_attr++) {
+                        *p_attr = *(p_attr + 1);
+                    }
+                    if (len != 0) {
+                        len2 = p_rec->free_pad_ptr - (pad_ptr + len - p_rec->attr_pad);
+                        for (yy = 0; yy < len2; yy++, pad_ptr++) {
+                            *pad_ptr = *(pad_ptr + len);
+                        }
+                        p_rec->free_pad_ptr -= len;
+                    }
+                    return TRUE;
+                }
+            }
+        }
+    }
+    return FALSE;
 }
 
 u8 *sdpu_build_uuid_seq(u8 *out, u32 count, u8 *uuid) {
