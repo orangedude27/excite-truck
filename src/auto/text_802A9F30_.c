@@ -48,6 +48,7 @@ extern int lbl_8055CC60, lbl_8055CC64;
 extern float lbl_805649F0, lbl_805649F4, lbl_805649FC, lbl_80564A00, lbl_80564A04, lbl_80564A58, lbl_80564A68, lbl_80564A6C, lbl_80564A70, lbl_80564A74, lbl_80564A78, lbl_80564A7C, lbl_80564A80, lbl_80564A84, lbl_80564A88, lbl_80564A8C, lbl_80564A90, lbl_80564A94;
 extern void *fn_8012850C(int, const char *);
 extern void *fn_801284F8(int, const char *);
+extern void fn_8028E61C(void *);
 extern void *fn_8002F37C(void *, void (*)(void), void *, int, int);
 extern int fn_802CAC28(const char *, int);
 extern void fn_802AB500(void);
