@@ -116,6 +116,7 @@ extern void fn_802C8D74(void);
 extern f32 lbl_8055F880;
 extern f32 lbl_80564884;
 extern f32 lbl_80564890;
+typedef struct { f32 *pts; s32 count; s32 pad8; s32 unkC; s32 unk10; f32 x14; f32 y18; char pad1C[0x28]; f32 vec[3]; } Obj802A5FE4;
 s32 fn_802C90F0(s32);
 void fn_802C9118(void);
 void fn_802C9124(s32, s32, f32, f32, u32, f32, f32, f32, f32);
