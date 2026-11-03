@@ -36,6 +36,20 @@ extern u8 lbl_8055DC08[WPAD_MAX_CONTROLLERS];
 extern u8 lbl_8055DC11;
 extern u8 lbl_8055DC1A;
 extern u8 lbl_80392900[];
+extern u8 lbl_8055DBF8;
+extern OSShutdownFunctionInfo lbl_80312130;
+extern u16 lbl_8055DBFA;
+extern u8 lbl_8055DBFC;
+extern u8 lbl_8055DBFD;
+extern u16 lbl_8055DBFE;
+extern u8 lbl_8055DC00[WPAD_MAX_CONTROLLERS];
+extern s8 lbl_8055DC04;
+extern u8 lbl_8055DC06;
+extern const char* lbl_8055DC0C;
+extern u8 lbl_8055DC10;
+extern u8 lbl_8055DC18;
+extern const char* lbl_80558FD8;
+extern const char lbl_80312158[];
 
 // BTA_HhClose from BTE
 extern void BTA_HhClose(u8 devHandle);
@@ -517,14 +531,12 @@ static BOOL IsControllerDataChanged(WPADCB* p, void* pLhs, void* pRhs) {
 void fn_8005E09C(s32 port) {
     WPADCB* p;
     s32 enabled;
-    void* src;
-    s32 changed;
-    s32 devType;
-    s32 devHandle;
-    u16 counter;
     u8 devMode;
+    s32 offset;
     u16 filterDiff;
     u16 filterSame;
+    s32 devHandle;
+    u16 counter;
     s32 timeDiff;
     s32 timeout;
 
@@ -539,13 +551,10 @@ void fn_8005E09C(s32 port) {
     enabled = OSDisableInterrupts();
     
     devMode = *(u8*)((u8*)p + 0x806);
-    devType = devMode * 0x60;
-    src = (void*)((u8*)p + 0x40 + devType + 0x60);
+    offset = devMode * 0x60;
     
-    changed = IsControllerDataChanged(p, src, (void*)((u8*)p + 0x40));
-
-    if (changed != 0) {
-        memcpy((void*)((u8*)p + 0x40), src, 0x60);
+    if (IsControllerDataChanged(p, (void*)((u8*)p + 0x40 + offset + 0x60), (void*)((u8*)p + 0x40))) {
+        memcpy((void*)((u8*)p + 0x40), (void*)((u8*)p + 0x40 + offset + 0x60), 0x60);
         
         if (*(u8*)((u8*)p + 0x69) != 0) {
             memset((void*)((u8*)p + 0x40), 0, 0x60);
@@ -555,46 +564,62 @@ void fn_8005E09C(s32 port) {
     OSRestoreInterrupts(enabled);
 
     enabled = OSDisableInterrupts();
-    counter = *(u16*)((u8*)p + 0x852);
-    counter++;
-    *(u16*)((u8*)p + 0x852) = counter;
+    
+    // Check filter conditions
+    filterDiff = *(u16*)((u8*)p + 0x852);
+    if (*(u16*)((u8*)p + 0xA0 + offset) == 0x1C10) {
+        filterSame = 1;
+    } else if (*(s32*)((u8*)p + 0x7F8) - 6 <= 2 && *(u16*)((u8*)p + 0xCA + offset) == 0x1450) {
+        filterSame = 1;
+    } else {
+        filterSame = 0;
+    }
+    
+    if (filterSame != 0) {
+        filterDiff++;
+    } else {
+        filterDiff = 0;
+    }
+    *(u16*)((u8*)p + 0x852) = filterDiff;
     OSRestoreInterrupts(enabled);
 
-    if (counter > 600) {
+    if (filterDiff > 600) {
         enabled = OSDisableInterrupts();
         *(u8*)((u8*)p + 0x851) = 0;
         OSRestoreInterrupts(enabled);
     }
 
-    if (changed == 0) {
-        if (lbl_8055DC1A != 0) {
-            s64 currentTime = __OSGetSystemTime();
-            s64 lastTime = *(s64*)((u8*)p + 0x830);
-            timeDiff = (s32)(currentTime - lastTime);
-            timeout = lbl_8055DC1A * 60;
+    if (*(s32*)((u8*)p + 0x7FC) == -1) {
+        goto _end;
+    }
 
-            if (timeDiff > timeout) {
+    enabled = OSDisableInterrupts();
+    if (lbl_8055DC1A != 0) {
+        s64 currentTime = __OSGetSystemTime();
+        s64 lastTime = *(s64*)((u8*)p + 0x830);
+        
+        timeDiff = (s32)(currentTime - lastTime);
+        timeout = lbl_8055DC1A * 60;
+        
+        if (timeDiff > timeout) {
+            devHandle = *(s32*)((u8*)p + 0x7FC);
+            OSRestoreInterrupts(enabled);
+            
+            if (devHandle != -1) {
                 enabled = OSDisableInterrupts();
-                devHandle = *(s32*)((u8*)p + 0x7FC);
-                OSRestoreInterrupts(enabled);
-
-                if (devHandle != -1) {
-                    enabled = OSDisableInterrupts();
-                    if (*(u8*)((u8*)p + 0x8C6) == 0) {
-                        *(u8*)((u8*)p + 0x8C6) = 1;
-                        OSRestoreInterrupts(enabled);
-                        BTA_HhClose(*(u8*)((u8*)p + 0x803));
-                    } else {
-                        OSRestoreInterrupts(enabled);
-                    }
+                if (*(u8*)((u8*)p + 0x8C6) == 0) {
+                    *(u8*)((u8*)p + 0x8C6) = 1;
+                    OSRestoreInterrupts(enabled);
+                    BTA_HhClose(*(u8*)((u8*)p + 0x803));
+                } else {
+                    OSRestoreInterrupts(enabled);
                 }
             }
+        } else {
+            OSRestoreInterrupts(enabled);
         }
     } else {
-        enabled = OSDisableInterrupts();
-        *(s64*)((u8*)p + 0x830) = __OSGetSystemTime();
         OSRestoreInterrupts(enabled);
-        fn_8005B00C();
     }
 
 _end:
@@ -3098,16 +3123,79 @@ s32 fn_8005D234(s32 chan, WPADGameInfo* pInfo)
 
 // fn_8005EB44: WPAD initialization
 void fn_8005EB44(void) {
-    BOOL enabled = OSDisableInterrupts();
-    if (lbl_8055DC05 == 0) {
-        lbl_8055DC05 = 1;
-        WUDSetVisibility(0, 0);
-        memset(lbl_80393058 + 0x2bd, 0, 0x46 * 4);
-        OSCancelAlarm(&lbl_8038F4C0);
-        fn_8006ADC4(NULL);
-        fn_8006A81C();
+    s32 i;
+    s32 chan;
+    u8 sens;
+    u8 vol;
+
+    if (!_regShutdown) {
+        OSRegisterShutdownFunction(&ShutdownFunctionInfo);
+        _regShutdown = TRUE;
     }
-    OSRestoreInterrupts(enabled);
+
+    if (!WUDInit()) {
+        return;
+    }
+
+    WPADSetSensorBarPower(TRUE);
+
+    for (i = 0; i < WUD_MAX_DEV_ENTRY; i++) {
+        _dev_handle_index[i] = WUD_DEV_HANDLE_INVALID;
+    }
+
+    DEBUGPrint("WPADInit()\n");
+
+    for (chan = 0; chan < WPAD_MAX_CONTROLLERS; chan++) {
+        _wpdcb[chan] = &_wpd[chan];
+        _chan_active_state[chan] = FALSE;
+        _wpdcb[chan]->connectCB = NULL;
+        __ClearControlBlock(chan);
+        OSInitThreadQueue(&_wpd[chan].threadQueue);
+    }
+
+    _sleepTime = 5;
+    _gamecode = OSGetAppGamename();
+    _gametype = OSGetAppType();
+
+    sens = SCGetBtDpdSensibility();
+    if (sens < 1) {
+        sens = 1;
+    }
+    if (sens > 5) {
+        sens = 5;
+    }
+    _dpdSensitivity = sens;
+
+    _sensorBarPos = (SCGetWpadSensorBarPosition() == 1);
+    _rumble = (SCGetWpadMotorMode() == 1);
+
+    vol = SCGetWpadSpeakerVolume();
+    if (vol > 127) {
+        vol = 127;
+    }
+    _speakerVolume = vol;
+
+    WUDSetHidConnCallback(WPADiConnCallback);
+    WUDSetHidRecvCallback(WPADiRecvCallback);
+
+    _senseCnt = 0;
+    _checkCnt = 0;
+    _initialized = FALSE;
+    _afhCnt = 0;
+
+    for (i = 0; i < WPAD_MAX_CONTROLLERS; i++) {
+        _extCnt[i] = 0;
+    }
+
+    OSCreateAlarm(&_managerAlarm);
+    OSSetPeriodicAlarm(&_managerAlarm, OSGetTime(), OS_MSEC_TO_TICKS(1), WPADiManageHandler0);
+
+    _shutdown = FALSE;
+    _scFlush = FALSE;
+    _scSetting = TRUE;
+    _afhChannel = -1;
+
+    OSRegisterVersion(__WPADVersion);
 }
 
 // fn_8005ED8C: WPAD reset
@@ -5169,83 +5257,43 @@ void fn_800656E8(s32 chan, WPADStatusEx* pStatus)
     WPADCB* pCB;
     volatile u8* pBuf;
     u32 i;
-    u32 offset;
+    u32 idx;
+    BOOL enabled;
     u8* p = (u8*)pStatus;
 
     pCB = lbl_8038F4F0[(u8)chan];
-    pBuf = (volatile u8*)pCB + *(u8*)((u8*)pCB + 0x806) * 0x60 + 0xA0;
-    offset = 0;
-    for (i = 0; i < 2; i++) {
-        pBuf[offset] = 0;
-        pBuf[offset + 1] = 0;
-        pBuf[offset + 2] = 0;
-        pBuf[offset + 3] = 0;
-        pBuf[offset + 4] = 0;
-        pBuf[offset + 5] = 0;
-        pBuf[offset + 6] = 0;
-        pBuf[offset + 7] = 0;
-        offset += 8;
-        pBuf[offset] = 0;
-        pBuf[offset + 1] = 0;
-        pBuf[offset + 2] = 0;
-        pBuf[offset + 3] = 0;
-        pBuf[offset + 4] = 0;
-        pBuf[offset + 5] = 0;
-        pBuf[offset + 6] = 0;
-        pBuf[offset + 7] = 0;
-        offset += 8;
-        pBuf[offset] = 0;
-        pBuf[offset + 1] = 0;
-        pBuf[offset + 2] = 0;
-        pBuf[offset + 3] = 0;
-        pBuf[offset + 4] = 0;
-        pBuf[offset + 5] = 0;
-        pBuf[offset + 6] = 0;
-        pBuf[offset + 7] = 0;
-        offset += 8;
-        pBuf[offset] = 0;
-        pBuf[offset + 1] = 0;
-        pBuf[offset + 2] = 0;
-        pBuf[offset + 3] = 0;
-        pBuf[offset + 4] = 0;
-        pBuf[offset + 5] = 0;
-        pBuf[offset + 6] = 0;
-        pBuf[offset + 7] = 0;
-        offset += 8;
-        pBuf[offset] = 0;
-        pBuf[offset + 1] = 0;
-        pBuf[offset + 2] = 0;
-        pBuf[offset + 3] = 0;
-        pBuf[offset + 4] = 0;
-        pBuf[offset + 5] = 0;
-        pBuf[offset + 6] = 0;
-        pBuf[offset + 7] = 0;
-        offset += 8;
-        pBuf[offset] = 0;
-        pBuf[offset + 1] = 0;
-        pBuf[offset + 2] = 0;
-        pBuf[offset + 3] = 0;
-        pBuf[offset + 4] = 0;
-        pBuf[offset + 5] = 0;
-        pBuf[offset + 6] = 0;
-        pBuf[offset + 7] = 0;
-        offset += 8;
+    idx = *(u8*)((u8*)pCB + 0x806);
+    pBuf = (volatile u8*)pCB + idx * 0x60 + 0xA0;
+    for (i = 0; i < 0x60; i++) {
+        pBuf[i] = 0;
     }
     *(u16*)pBuf = ((u16)p[2] << 8) | p[1];
     *(u16*)pBuf &= 0x9F1F;
-    if (*(s32*)((u8*)pCB + 0x7F8) > 1) {
-        if (*(s32*)((u8*)pCB + 0x7FC) == 0) *(u8*)(pBuf + 0x29) = -4;
-    } else {
-        *(u8*)(pBuf + 0x29) = *(u8*)((u8*)pCB + 0x7FC);
+    if (*(u32*)((u8*)pCB + 0x7F8) <= 1) {
+        *(u8*)(pBuf + 0x29) = *(u32*)((u8*)pCB + 0x7FC);
+    } else if (*(s32*)((u8*)pCB + 0x7FC) == 0) {
+        *(s8*)(pBuf + 0x29) = -4;
     }
     *(u8*)(pBuf + 0x28) = *(u8*)((u8*)pCB + 0x801);
-    *(u32*)((u8*)pCB + 0x788) = p[1] & 1;
-    *(s16*)(pBuf + 2) = (s16)((((u16)p[3] << 2) & 0xFFFC) | ((p[1] >> 6) & 3)) - *(s16*)((u8*)pCB + 0x7B4);
-    *(s16*)(pBuf + 4) = (s16)((((u16)p[4] << 2) & 0xFFFC) | ((p[2] >> 6) & 3)) - *(s16*)((u8*)pCB + 0x7B6);
-    *(s16*)(pBuf + 6) = (s16)((((u16)p[5] << 2) & 0xFFFC) | ((p[2] >> 5) & 3)) - *(s16*)((u8*)pCB + 0x7B8);
-    OSDisableInterrupts();
-    *(u8*)((u8*)pCB + 0x806) = __cntlzw(*(u8*)((u8*)pCB + 0x806)) >> 24;
-    OSRestoreInterrupts(0);
+    *(u32*)((u8*)pCB + 0x788) = (p[1] >> 7) & 1;
+    {
+        s16 a = p[3] << 2;
+        a &= ~3;
+        *(s16*)(pBuf + 2) = (s16)(a | ((p[1] >> 5) & 3)) - *(s16*)((u8*)pCB + 0x7B4);
+    }
+    {
+        s16 b = p[4] << 2;
+        b &= ~3;
+        *(s16*)(pBuf + 4) = (s16)(b | (s16)((p[2] >> 4) & 2)) - *(s16*)((u8*)pCB + 0x7B6);
+    }
+    {
+        s16 c = p[5] << 2;
+        c &= ~3;
+        *(s16*)(pBuf + 6) = (s16)(c | (s16)((p[2] >> 5) & 2)) - *(s16*)((u8*)pCB + 0x7B8);
+    }
+    enabled = OSDisableInterrupts();
+    *(u8*)((u8*)pCB + 0x806) = (u8)((u32)__cntlzw(*(u8*)((u8*)pCB + 0x806)) >> 5);
+    OSRestoreInterrupts(enabled);
 }
 
 // fn_80065934: WPAD data processing
@@ -5757,15 +5805,17 @@ u16 _WUDGetNotAckedSize(s8 handle) {
 u8 _WUDGetLinkNumber(void) { return 0; }
 void __a1_22_ack(u8 chan, u8* pReport)
 {
+    const char* strBase = (const char*)lbl_80312338;
     WPADCB* pCB;
     volatile u8* pBuf;
     u32 offset;
     u8 type;
     u8 ext;
     BOOL intr;
+    s32 status;
 
     intr = OSDisableInterrupts();
-    DBPrintf_80068D68((const char*)lbl_80312338 + 0x3E0);
+    DBPrintf_80068D68(strBase + 0x3E0);
     pCB = lbl_8038F4F0[(u8)chan];
     pBuf = (volatile u8*)pCB + *(u8*)((u8*)pCB + 0x806) * 0x60 + 0xA0;
     for (offset = 0; offset < 96; offset += 8) {
@@ -5773,26 +5823,27 @@ void __a1_22_ack(u8 chan, u8* pReport)
         pBuf[offset + 1] = 0; pBuf[offset + 2] = 0; pBuf[offset + 3] = 0;
         pBuf[offset + 4] = 0; pBuf[offset + 5] = 0; pBuf[offset + 6] = 0; pBuf[offset + 7] = 0;
     }
-    *(u16*)(pBuf + 0x60) = ((u16)pReport[1] << 8 | pReport[2]) & 0x9F1F;
+    *(u16*)pBuf = ((u16)pReport[1] | ((u16)pReport[2] << 8)) & 0x9F1F;
     type = pReport[3];
     ext = pReport[4];
-    DBPrintf_80068D68((const char*)lbl_80312338 + 0x3F0, type, ext);
-    pBuf[0x89] = -2;
-    pBuf[0x88] = *((u8*)pCB + 0x801);
+    DBPrintf_80068D68(strBase + 0x3F0, type, ext);
+    pBuf[0x29] = -2;
+    pBuf[0x28] = *((u8*)pCB + 0x801);
+    status = (ext == 0) ? 0 : -3;
     if (ext) {
-        DBPrintf_80068D68((const char*)lbl_80312338 + 0x41C, type, ext);
-        if (*((u8*)pCB + 0x8C7) == type) {
-            WPADCallback callback = *(WPADCallback*)((u8*)pCB + 0x7DC);
-            if (callback) {
-                callback(chan, -2);
-                *(u32*)((u8*)pCB + 0x7DC) = 0;
-                *(u32*)((u8*)pCB + 0x7FC) = 0;
-            }
-        } else {
-            DBPrintf_80068D68((const char*)lbl_80312338 + 0x44C);
-        }
+        DBPrintf_80068D68(strBase + 0x41C, type, ext);
     }
-    *((u8*)pCB + 0x806) = __cntlzw(*((u8*)pCB + 0x806)) >> 24;
+    if (*((u8*)pCB + 0x8C7) == type) {
+        WPADCallback callback = *(WPADCallback*)((u8*)pCB + 0x7DC);
+        if (callback) {
+            callback(chan, status);
+            *(WPADCallback*)((u8*)pCB + 0x7DC) = 0;
+            *(s32*)((u8*)pCB + 0x7FC) = 0;
+        }
+    } else {
+        DBPrintf_80068D68(strBase + 0x44C);
+    }
+    *((u8*)pCB + 0x806) = !*((u8*)pCB + 0x806);
     OSRestoreInterrupts(intr);
 }
 
