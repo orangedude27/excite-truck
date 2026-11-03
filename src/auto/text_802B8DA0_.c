@@ -868,20 +868,22 @@ extern "C" void *fn_802BA580(void **arg0, void *arg1, float scale) {
     fn_802BA848(result,c,b,a);
     *(int *)(result+8)=1;
     name=((Object *)arg0)->name(&lbl_8055CEF8);
-    for(index=0; index < *(int *)((char *)&lbl_804BFFF4+4); index++) {
-        entry=(*(int ***)&lbl_804BFFF4)[index];
-        if (stricmp((char *)entry[0],name)==0) goto found;
+    RenderList *list = (RenderList *)lbl_804BFFF4;
+    for(index=0; index < list->count; index++) {
+        entry=(int *)list->items[index];
+        if (stricmp((char *)entry[0],name)==0) break;
     }
-    count=*(int *)((char *)&lbl_804BFFF4+4);
-    items=*(int ***)&lbl_804BFFF4;
-    *(int *)((char *)&lbl_804BFFF4+4)=count+1;
+    if (index < list->count) goto found;
+    count=list->count;
+    items=(int **)list->items;
+    list->count=count+1;
     entry=(int *)fn_801284F8(0x10,&lbl_8055CECC);
     if(entry) {
         entry[0]=(int)name;
         if ((signed char)*name) state=fn_802B110C((void *)fn_802B8E50,name);
         else state=-2;
         entry[1]=state;
-        if(state==-2 && (signed char)*name) fn_802E317C((char *)&lbl_8034AA2C,name);
+        if(state==-2 && (signed char)*name) fn_802E317C((char *)lbl_8034AA2C,name);
         entry[3]=0;
         entry[2]=999;
     }
@@ -980,15 +982,15 @@ extern "C" void *fn_802BAA68(void **arg0, char *arg1) {
     extern int lbl_8055CF10, lbl_8055CF0C, lbl_8055CEF8, lbl_8055CECC;
     union { unsigned long long bits; float v[2]; } value;
     float e[2], c[2], b[2], a[2];
+    int extra;
+    int index;
+    int *entry;
+    int off;
+    int count;
     char *result;
     char *name;
-    int *entry;
-    int **items;
-    int index;
-    int state;
-    int count;
-    int extra;
     float angle;
+    float k;
     result = *(char **)lbl_8055FA7C + (*(int *)((char *)lbl_8055FA7C+4))*0x44;
     ++*(int *)((char *)lbl_8055FA7C+4);
     fn_801602B0(a); fn_801602B0(b); fn_801602B0(c);
@@ -1001,7 +1003,8 @@ extern "C" void *fn_802BAA68(void **arg0, char *arg1) {
     fn_80160288(e, &value);
     fn_80160BA0(b, b, e[1]);
     fn_80160BA0(c, c, e[1]);
-    angle = fn_802BAD90(lbl_80564CEC * ((Object *)arg0)->v8(&lbl_8055CF0C, lbl_80564CD8));
+    k = lbl_80564CEC;
+    angle = fn_802BAD90(k * ((Object *)arg0)->v8(&lbl_8055CF0C, lbl_80564CD8));
     fn_802BAD0C(b, angle);
     fn_802BAD0C(c, angle);
     fn_801E0F78(a, a, c, lbl_80564CDC);
@@ -1010,24 +1013,30 @@ extern "C" void *fn_802BAA68(void **arg0, char *arg1) {
     *(int *)(result+8) = 0;
     name = ((Object *)arg0)->name(&lbl_8055CEF8);
     extra = ((Object *)arg0)->v6(&lbl_8055CEE4, 0x378);
-    for(index=0; index < *(int *)((char *)&lbl_804BFFF4+4); index++) {
-        entry=(*(int ***)&lbl_804BFFF4)[index];
+    index = 0;
+    off = 0;
+    for(; index < *(int *)((char *)&lbl_804BFFF4+4); ) {
+        entry = *(int **)(*(char **)&lbl_804BFFF4 + off);
         if (stricmp((char *)entry[0],name)==0) goto found;
+        off += 4;
+        index++;
     }
     count=*(int *)((char *)&lbl_804BFFF4+4);
-    items=*(int ***)&lbl_804BFFF4;
+    {
+    char *items=*(char **)&lbl_804BFFF4;
     *(int *)((char *)&lbl_804BFFF4+4)=count+1;
+    off = count << 2;
     entry=(int *)fn_801284F8(0x10,&lbl_8055CECC);
     if(entry) {
         entry[0]=(int)name;
-        if ((signed char)*name) state=fn_802B110C((void *)fn_802B8E50,name);
-        else state=-2;
-        entry[1]=state;
-        if(state==-2 && (signed char)*name) fn_802E317C((char *)&lbl_8034AA2C,name);
+        if ((signed char)*name) entry[1]=fn_802B110C((void *)fn_802B8E50,name);
+        else entry[1]=-2;
+        if(entry[1]==-2 && (signed char)*name) fn_802E317C((char *)&lbl_8034AA2C,name);
         entry[3]=0;
         entry[2]=extra;
     }
-    items[count]=entry;
+    *(int **)(items + off) = entry;
+    }
 found:
     *(int *)(result+16)=entry[3];
     entry[3]=(int)result;
@@ -1274,7 +1283,75 @@ clear_nodes:
     }
 }
 #pragma scheduling on
-extern void fn_802C21B8(void); extern void fn_802C28C0(void); extern void fn_802C8BD0(void); extern void fn_802C8D74(void); extern void fn_802CADD0(int,int); extern void fn_802D3D94(int,void*,...); extern void fn_802DC130(void); extern void fn_802DC134(void); extern void fn_802DC138(int,int,void*,int); extern void fn_802DC278(void); extern void fn_802DC27C(void); extern void fn_802DC280(int,int,void*,int); extern int lbl_802FAB40[]; void fn_802BB3B8(int a,int b,int c){ int i,j; void *item,*list,*node; for(i=0;i<((int*)lbl_804BFFF4)[1];i++){ item=((void**)((int*)lbl_804BFFF4)[0])[i]; if(*(int*)((char*)item+8)==999)continue; list=*(void**)((char*)item+12); if(!list)continue; if(*(int*)((char*)item+4)==-2){while(list){*(int*)((char*)list+4)=0;*(int*)list=0;list=*(void**)((char*)list+16);}continue;} j=*(int*)((char*)list+8); if(j==2){fn_802C28C0();fn_802C8BD0();fn_802DC278();fn_802CADD0(*(int*)((char*)item+4),1);fn_802C21B8();fn_802CADD0(2,0);fn_802D3D94(2,lbl_802FAB40);list=*(void**)((char*)item+12);while(list){node=*(void**)list;if(node){fn_802D3D94(0,(char*)list+52);while(node){int n=*(int*)((char*)node+4);for(j=0;j<n;j++){void*p=((void**)*(void**)node)[j];fn_802DC280(a,b,p,*(unsigned short*)p+1);lbl_8055FA6C+=(*(unsigned short*)p)-1>0?(*(unsigned short*)p)-1:0;}node=*(void**)((char*)node+12);}*(int*)((char*)list+4)=0;*(void**)list=0;}list=*(void**)((char*)list+16);}fn_802CADD0(-1,1);fn_802CADD0(-1,2);fn_802DC27C();fn_802C8D74();}else if(j>=0){fn_802C8BD0();fn_802DC130();while(list){node=*(void**)list;if(node&&*(unsigned char*)((char*)list+12)){fn_802D3D94(0,(char*)list+36);while(node){int n=*(int*)((char*)node+4);for(j=0;j<n;j++){void*p=((void**)*(void**)node)[j];fn_802DC138(a,b,p,*(unsigned short*)p+1);lbl_8055FA6C+=(*(unsigned short*)p)-1>0?(*(unsigned short*)p)-1:0;}node=*(void**)((char*)node+12);}*(int*)((char*)list+4)=0;*(void**)list=0;}list=*(void**)((char*)list+16);}fn_802DC134();fn_802C8D74();}}}
+void fn_802BB3B8(int a, int b) {
+    /* Traverse pending render batches, draw them, and clear their lists. */
+    RenderList *list = (RenderList *)lbl_804BFFF4;
+    RenderBatch *batch;
+    RenderNode *node;
+    RenderEntry *entry;
+    u16 **items;
+    int i, j, v;
+    RenderMatrix matrix; int zero = 0;
+    for (i = 0; i < list->count; i++) {
+        entry = list->items[i];
+        if (entry->kind == 999) continue;
+        node = entry->nodes;
+        if (!node) continue;
+        if (entry->state == -2) goto clear_nodes;
+        switch (node->type) { case 0: case 1: {
+            fn_802C8BD0(); fn_802DC130();
+            node = entry->nodes;
+            while (node) {
+                if (node->batches) {
+                    if (node->enabled) {
+                        ((void (*)(int,void *))fn_802D3D94)(0, (char *)node + 0x24);
+                        batch = node->batches;
+                        do {
+                            for (j = 0; j < batch->count; j++) {
+                                items = batch->items;
+                                fn_802DC138(a,b,items[j],*items[j]+1);
+                                v = *items[j] - 1;
+                                lbl_8055FA6C += v & ~(v >> 31);
+                            }
+                            batch = batch->next;
+                        } while (batch);
+                    }
+                    node->count = zero; node->batches = (RenderBatch *)zero;
+                }
+                node = node->next;
+            }
+            fn_802DC134(); fn_802C8D74();
+        break; } case 2: {
+            fn_802C28C0(); fn_802C8BD0(); fn_802DC278();
+            fn_802CADD0(entry->state,1);
+            fn_802CADD0(((int (*)(void))fn_802C21B8)(),2);
+            matrix = *(RenderMatrix *)lbl_802FAB40;
+            ((void (*)(int,void *))fn_802D3D94)(2,&matrix);
+            node = entry->nodes;
+            while (node) {
+                if (node->batches) {
+                    ((void (*)(int,void *))fn_802D3D94)(0,(char *)node + 0x34);
+                    batch = node->batches;
+                    do {
+                        for (j = 0; j < batch->count; j++) {
+                            items = batch->items;
+                            fn_802DC280(a,b,items[j],*items[j]+1);
+                            v = *items[j] - 1;
+                            lbl_8055FA6C += v & ~(v >> 31);
+                        }
+                        batch = batch->next;
+                    } while (batch);
+                    node->count = zero; node->batches = (RenderBatch *)zero;
+                }
+                node = node->next;
+            }
+            fn_802CADD0(-1,1); fn_802CADD0(-1,2); fn_802DC27C(); fn_802C8D74();
+        break; } }
+        continue;
+clear_nodes:
+        while (node) { node->count = zero; node->batches = (RenderBatch *)zero; node = node->next; }
+    }
+}
 
 extern int lbl_804C0088[];
 extern int lbl_8034AA50;
