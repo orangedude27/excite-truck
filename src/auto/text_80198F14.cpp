@@ -1498,7 +1498,7 @@ extern "C" s32 fn_8019E2D0(s32 arg0, s32 arg1, s32 arg2, void *arg3, f32 f0, f32
     Vec origin, direction;
     f32 minimum, maximum;
     f32 *matrix = (f32 *)arg3;
-    f32 m0 = matrix[0];
+
     f32 m1 = matrix[1];
     f32 m4 = matrix[4];
     f32 m3 = matrix[3];
@@ -1513,15 +1513,15 @@ extern "C" s32 fn_8019E2D0(s32 arg0, s32 arg1, s32 arg2, void *arg3, f32 f0, f32
     f32 y = p[1] - matrix[10];
     f32 z = p[2] - matrix[11];
     origin.y = z * m5 + (x * m3 + y * m4);
-    origin.x = z * m2 + (x * m0 + y * m1);
-    origin.z = (x * m6 + y * m7) + z * m8;
+    origin.x = z * m2 + (x * matrix[0] + y * m1);
+    origin.z = z * m8 + (x * m6 + y * m7);
     if ((f32 *)&direction == v) {
         f32 vx = v[0], vy = v[1], vz = v[2];
-        direction.x = vz * m2 + (vx * m0 + vy * m1);
+        direction.x = vz * m2 + (vx * matrix[0] + vy * m1);
         direction.y = vz * m5 + (vx * m3 + vy * m4);
         direction.z = vz * m8 + (vx * m6 + vy * m7);
     } else {
-        direction.x = v[2] * m2 + (v[0] * m0 + v[1] * m1);
+        direction.x = v[2] * m2 + (v[0] * matrix[0] + v[1] * m1);
         direction.y = v[2] * m5 + (v[0] * m3 + v[1] * m4);
         direction.z = v[2] * m8 + (v[0] * m6 + v[1] * m7);
     }
@@ -1545,7 +1545,7 @@ extern "C" s32 fn_8019B4D8(void*, void*, void*, s32, f32);
 struct Fn8019E874Xf { f32 m[9]; Vec pos; };
 class Fn801A0F10Child {
 public:
-    virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03(); virtual void v04();
+    virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03();
     virtual void Update();
 };
 extern "C" void fn_801BEAEC(s32, s32, void*);
@@ -2355,6 +2355,8 @@ extern "C" void fn_801A0444(void* arg0, void* arg1) {
     *(f32*)((u8*)arg0 + 0x16C) = *(f32*)((u8*)arg1 + 0x2C);
 }
 
+#pragma push
+#pragma dont_inline on
 extern "C" void fn_801A0F10(void* arg0) {
     s32 count;
     Vec v;
@@ -2403,7 +2405,7 @@ extern "C" void fn_801A0F10(void* arg0) {
         }
     }
 }
-
+#pragma pop
 extern "C" void fn_801A0160(void*);
 #pragma scheduling invalid_target
 extern "C" s32 fn_801A1148(void *arg0, const f32 *vec, s32 arg2, f32 *arg3, s32 arg4) {
