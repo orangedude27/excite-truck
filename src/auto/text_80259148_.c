@@ -359,6 +359,8 @@ int fn_8025A1C4(int arg0, int arg1) {
     return arg0;
 }
 
+extern float lbl_80563AF4;
+extern float lbl_80563AF8;
 int fn_8025A4CC(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0)
         fn_80128668((void *)arg0);
@@ -631,6 +633,9 @@ extern float lbl_80563AEC, lbl_80563B08, lbl_80563B0C, lbl_80563B10;
 extern float lbl_80498EAC[3];
 #pragma push
 #pragma processor 750
+#pragma dont_inline on
+#pragma opt_common_subs off
+#pragma opt_propagation off
 void fn_8025AA90(void *arg0, float farg0) {
     unsigned char info[0x60];
     float rot[9];
@@ -779,7 +784,7 @@ void fn_8025AE18(void *arg0) {
     float state[3], vec[3];
     char *camera, *other;
     int a, b, index;
-    float size, ratio, x, y, z, old;
+    float ratio, size, z, y, x, old;
     if (*(int *)(obj + 0x50) == -1 || *(unsigned char *)(obj + 0x4A) == 0) return;
     fn_8025B0E8(obj + 0x54, ((void *(*)(void *))fn_8025B134)(obj + 0x84));
     other = (char *)fn_8022EDC4();
@@ -787,13 +792,12 @@ void fn_8025AE18(void *arg0) {
     fn_80144D80(matrix, x, x, x);
     fn_80015B20(obj + 0x54, obj + 0x54, matrix);
     fn_802C77F0(*(int *)(obj + 0x50), ranges);
-    values[0] = lbl_802FA628[0]; values[1] = lbl_802FA628[1];
-    values[2] = lbl_802FA628[2]; values[3] = lbl_802FA628[3]; values[4] = lbl_802FA628[4];
+    *(struct RenderWords5 *)values = *(struct RenderWords5 *)lbl_802FA628;
     index = *(int *)(obj + 0x4C);
     if (index <= 0) {
         fn_802E30C8(lbl_80345218);
     } else {
-        size = lbl_80563B18 * values[index - 1] * lbl_80563B1C;
+        size = (lbl_80563B18 * values[index - 1]) * lbl_80563B1C;
         ratio = size / fn_8025B0C4(lbl_80563B1C * lbl_8055F39C);
         size = lbl_80563B20 + size;
         camera = (char *)fn_802C86DC();
@@ -812,7 +816,7 @@ void fn_8025AE18(void *arg0) {
     a = fn_802C9950(0xFF646464);
     b = fn_802C9994(0xFFB4B4B4);
     old = fn_802C99E8(lbl_80563AE0);
-    { float *p = (float *)fn_802C9A40(); oldcolor[0] = p[0]; oldcolor[1] = p[1]; oldcolor[2] = p[2]; }
+    *(struct RenderWords3 *)oldcolor = *(struct RenderWords3 *)fn_802C9A40();
     fn_802C9A1C(color);
     fn_802D7554(1);
     fn_802CA294(*(int *)(obj + 0xA8));
