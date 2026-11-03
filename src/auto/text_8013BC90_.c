@@ -152,7 +152,6 @@ void fn_8013BFE4(void) {
 
 }
 
-typedef struct { void *ptr; unsigned char name[64]; int refs; } ResourceEntry;
 extern void fn_80128658(int);
 extern void fn_80128668(void *);
 extern void fn_8013A598(void *, int);
