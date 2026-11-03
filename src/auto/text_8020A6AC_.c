@@ -21,7 +21,8 @@ extern float fn_80209028(void), fn_802091CC(void);
 extern int fn_802090CC(void), fn_802E2C20(void);
 extern void fn_802E625C(int);
 extern void fn_802E61EC(void *, float), fn_802E620C(void *, float), fn_802E6234(void *, float), fn_802E6238(void *, float), fn_802E623C(void *, float), fn_802E622C(void *, float), fn_802E6240(void *, int);
-extern float lbl_8055B590, lbl_8055B594, lbl_80558DC4, lbl_805632B8;
+__declspec(section ".data") extern float lbl_80558DC4;
+extern float lbl_8055B590, lbl_8055B594, lbl_805632B8;
 extern int lbl_8055EDF8;
 extern unsigned int lbl_8055EE00;
 
@@ -360,16 +361,19 @@ void fn_8020AC2C(void *arg0) {
  fn_802E6264();
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 #pragma dont_inline on
 void *fn_8020AF18(void *arg0, char *name, int unused, unsigned char flag) {
+    char *obj;
     int i;
     for (i = 0; i < 0x200; i++) {
         if (((void **)*(void **)((char *)arg0 + 4))[i] == 0) {
-            char *obj = ((void *(*)(int, const char *))fn_8020A788)(0x54, lbl_8033C3D8);
+            obj = ((void *(*)(int, const char *))fn_8020A788)(0x54, lbl_8033C3D8);
             if (obj != 0) {
                 char buffer[64], *src, *dst, *dot;
                 int left;
-                float length;
+                double length;
                 *(void **)obj = lbl_8033C3F4;
                 *(float *)(obj + 0x48) = lbl_805632B0;
                 *(int *)(obj + 0x40) = i;
@@ -411,17 +415,18 @@ appended:                   ;
                     } else fn_802E317C(lbl_8033C4A0, name);
                     *(void **)(obj + 0x14) = fn_802E5AE8(buffer);
                     *(void **)(obj + 0x18) = fn_8020A6AC(name);
-                    length = fn_802E6040(*(void **)(obj + 0x10));
+                    length = ((double (*)(void *))fn_802E6040)(*(void **)(obj + 0x10));
                     *(float *)(obj + 0x48) = length;
-                    *(unsigned int *)(obj + 0x4c) = (unsigned int)(lbl_805632BC * (lbl_805632C0 + lbl_805632C4 * length));
-                    *(float *)(obj + 0x20) = lbl_805632B0;
-                    *(float *)(obj + 0x1c) = lbl_805632B0;
-                    *(float *)(obj + 0x24) = lbl_805632B4;
-                    *(float *)(obj + 0x28) = lbl_805632B4;
-                    *(float *)(obj + 0x2c) = lbl_805632B0;
-                    *(float *)(obj + 0x30) = lbl_805632B0;
-                    *(float *)(obj + 0x34) = lbl_805632B0;
-                    *(int *)(obj + 0x38) = 0;
+                    *(unsigned int *)(obj + 0x4c) = (unsigned int)(lbl_805632BC * (lbl_805632C0 + lbl_805632C4 * (float)length));
+                    { float zero = lbl_805632B0, one = lbl_805632B4;
+                    *(float *)(obj + 0x20) = zero;
+                    *(float *)(obj + 0x1c) = zero;
+                    *(float *)(obj + 0x24) = one;
+                    *(float *)(obj + 0x28) = one;
+                    *(float *)(obj + 0x2c) = zero;
+                    *(float *)(obj + 0x30) = zero;
+                    *(float *)(obj + 0x34) = zero;
+                    *(int *)(obj + 0x38) = 0; }
                 }
             }
             if (((int (*)(void *))(*(void ***)obj)[4])(obj) == 0) {
@@ -435,7 +440,7 @@ appended:                   ;
     fn_802E30C8(lbl_8033C3E4);
     return 0;
 }
-#pragma dont_inline reset
+#pragma pop
 
 extern char lbl_8033C3F4[];
 #pragma scheduling invalid_target
