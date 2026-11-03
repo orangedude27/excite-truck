@@ -295,6 +295,9 @@ __declspec(section ".data") extern float lbl_80558DC4;
 extern float lbl_805636B0;
 extern float lbl_805636B4;
 extern void *fn_8022EDC4(void);
+static inline int is_close(float a, float b) {
+    return (float)__fabs(a - b) <= lbl_80558DC4;
+}
 extern void fn_802C8DB8(void *, int, unsigned short *, int);
 extern void fn_802C8D74(void);
 extern void fn_802C8B98(int, int);
@@ -312,6 +315,71 @@ void fn_802353F4(int arg0, int arg1, float arg2, float arg3, float arg4) {
                 *(float *)((char *)node + 0x14),
                 *(float *)((char *)node + 0x10));
 }
+
+#pragma push
+#pragma processor 750
+void fn_802354A0(int arg0, int arg1, int arg2, float x, float y, float z, float dx, float dy) {
+    unsigned short ids[6];
+    Vtx_80235CBC t0, t1, t2, t3;
+    struct Frame {
+        Vtx_80235CBC v[4];
+    } __attribute__((aligned(16))) frame;
+    void *node;
+    float n0, n1, n2, n3;
+    float sx;
+    float sy;
+    int flag;
+
+    if (arg1 < 0)
+        return;
+
+    node = fn_8023505C((void *)arg0, arg1);
+    if (node == 0) {
+        fn_802E30C8(lbl_80340808, arg1, arg0);
+        return;
+    }
+
+    sy = dy;
+    n3 = *((float *)node + 3);
+    sx = dx;
+    n2 = *((float *)node + 2);
+    n1 = *((float *)node + 1);
+    n0 = *(float *)node;
+
+    arg1 = *(int *)((char *)arg0 + 0x84);
+    arg0 = (int)fn_8022EDC4();
+    fn_802C8B98(arg1, arg0);
+    arg1 = fn_80230B9C(arg2);
+
+    flag = (float)__fabs(*(float *)((char *)arg0 + 0x38) - lbl_805636B0) <= lbl_80558DC4;
+    if (!flag) {
+        float s = *(float *)((char *)arg0 + 0x38);
+        sx = dx * s;
+        sy = dy * s;
+        x += lbl_805636B4 * (dx * (lbl_805636B0 - s));
+        y -= lbl_805636B4 * (dy * (lbl_805636B0 - s));
+    }
+
+    t0 = fn_80230A68(arg1, x, y, z, n0, n1);
+    frame.v[0] = t0;
+    t1 = fn_80230A68(arg1, x + sx, y, z, n2, n1);
+    frame.v[1] = t1;
+    t2 = fn_80230A68(arg1, x, y - sy, z, n0, n3);
+    frame.v[2] = t2;
+    t3 = fn_80230A68(arg1, x + sx, y - sy, z, n2, n3);
+
+    frame.v[3] = t3;
+    ids[0] = lbl_802FA008[0];
+    ids[1] = lbl_802FA008[1];
+    ids[2] = lbl_802FA008[2];
+    ids[3] = lbl_802FA008[3];
+    ids[4] = lbl_802FA008[4];
+    ids[5] = lbl_802FA008[5];
+
+    fn_802C8DB8(frame.v, 4, ids, 6);
+    fn_802C8D74();
+}
+#pragma pop
 
 extern double cos(float);
 extern double sin(float);
