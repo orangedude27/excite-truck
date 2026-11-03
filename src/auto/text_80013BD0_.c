@@ -43,6 +43,7 @@ extern void fn_801E4F3C(s32, s32, f32, f32, f32, f32, f32);
 extern void fn_801E4FF4(void);
 extern void fn_802C8D74(void);
 extern f32 lbl_805603E8, lbl_805603EC, lbl_805603F0, lbl_805603F4;
+#pragma always_inline on
 static inline void MultVec(f32 *m, f32 *src, f32 *dst) {
     f32 x = src[0], y = src[1], z = src[2];
     if (src == dst) {
@@ -813,41 +814,36 @@ void fn_80015658(void *arg0) {
 }
 
 void fn_80015A20(void *arg0, volatile f32 *arg1);
-void fn_80015770(void *arg0, f32 x, f32 y, f32 a, f32 b, f32 c) {
-    f32 vec[3];
+void fn_80015770(void *arg0, f64 x, f64 y, f32 a, f32 b, f32 c) {
+    f32 vec[4];
     f32 mtx[12];
     f32 verts[4][3];
     f32 *p;
     f32 *q;
     s32 i;
+    f64 z = lbl_80560360;
     vec[0] = lbl_80560360;
     vec[1] = lbl_80560360;
     vec[2] = c;
     fn_80015A20(mtx, vec);
     mtx[9] = x;
     mtx[10] = y;
-    mtx[11] = lbl_80560360;
+    mtx[11] = z;
     p = verts[0];
     q = p;
-    for (i = 0; i < 4; i++) {
-        if (i % 2 != 0) {
-            p[1] = b * lbl_805603BC;
-        } else {
-            p[1] = -b * lbl_805603BC;
-        }
-        if (i < 2) {
-            p[0] = a - lbl_805603E8;
-        } else {
-            p[0] = lbl_805603EC;
-        }
-        p[2] = lbl_80560360;
+    i = 0;
+    do {
+        p[1] = (i % 2 != 0) ? b * lbl_805603BC : -b * lbl_805603BC;
+        p[0] = (i < 2) ? a - lbl_805603E8 : lbl_805603EC;
+        p[2] = z;
         MultVec(mtx, p, q);
         q += 3;
-        p[0] += x;
-        p[1] += y;
-        p[2] += lbl_80560360;
+        p[0] = p[0] + (f32)x;
+        p[1] = p[1] + (f32)y;
+        p[2] = p[2] + (f32)z;
         p += 3;
-    }
+        i++;
+    } while (i < 4);
     fn_802C8BD0(*(s32 *)((u8 *)arg0 + 0x44));
     fn_801E4F20(4);
     p = verts[0];
