@@ -47,7 +47,6 @@ extern void fn_8021037C(void);
 extern s32 fn_80207848(const char *, s32);
 extern const char lbl_8033C5FC[];
 extern s32 lbl_8055EE38;
-#pragma scheduling off
 #pragma paired_single off
 void fn_8020C41C(void) {
     fn_8021037C();
