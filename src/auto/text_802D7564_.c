@@ -173,21 +173,118 @@ void fn_802D7780(void *arg0, void *arg1) {
 }
 #pragma pop
 
+#pragma push
 #pragma dont_inline on
+#pragma scheduling invalid_target
 void fn_802D78D4(void *arg0, void *arg1, unsigned int arg2, unsigned int arg3) {
-    unsigned int i;
-    unsigned char *pixels = (unsigned char *)arg2;
+    union Pixel { unsigned int word; unsigned char c[4]; };
     unsigned short *rgb = (unsigned short *)arg0;
     unsigned short *alpha = (unsigned short *)arg1;
-    for (i = 0; i < arg3; i++) {
-        unsigned int r = pixels[i * 4 + 0];
-        unsigned int g = pixels[i * 4 + 1];
-        unsigned int b = pixels[i * 4 + 2];
-        unsigned int a = pixels[i * 4 + 3];
-        rgb[i] = (unsigned short)(((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3));
-        alpha[i] = (unsigned short)(a << 8);
+    unsigned int *src = (unsigned int *)arg2;
+    int n = (int)arg3;
+    int i;
+    for (i = 0; i < n; i++) {
+        union Pixel p;
+        p.word = src[i];
+        rgb[i] = (unsigned short)(((p.c[0] & 0xF8) << 8) | ((p.c[1] & 0xFC) << 3) | ((p.c[2] & 0xF8) >> 3));
+        alpha[i] = (unsigned short)(p.c[3] << 8);
     }
 }
+#pragma pop
+
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+void *fn_802D7B5C(void *arg0, void *arg1) {
+    int isCi4;
+    void *texture;
+    void *obj = arg0;
+    char *name = (char *)arg1;
+    int entries;
+    int palBytes;
+    u32 rawPal;
+    int width;
+    int height;
+    char *texData;
+    int count;
+    char *dst;
+    unsigned char ch;
+    int size;
+    u32 type;
+
+    type = *(u32 *)obj;
+    isCi4 = 1;
+    if (type != 0 && type != 0x40) {
+        isCi4 = 0;
+    }
+
+    texture = *(void **)((char *)obj + 0x30);
+    if (texture == 0) {
+        texture = fn_802D7600(name);
+    }
+
+    count = 0x20;
+    dst = (char *)texture;
+    goto copy_char;
+count_down:
+    count--;
+    if (count > 0) {
+        goto copy_char;
+    }
+    dst[-1] = 0;
+    goto copied_name;
+copy_char:
+    ch = (unsigned char)*name;
+    name++;
+    *dst = (char)ch;
+    dst++;
+    if ((signed char)ch != 0) {
+        goto count_down;
+    }
+copied_name:
+    entries = 0x100;
+    if (isCi4 != 0) {
+        entries = 0x10;
+    }
+    texData = *(char **)((char *)obj + 0x2C);
+    rawPal = *(u32 *)texData;
+    fn_801282EC(0x20);
+    palBytes = entries * 2;
+    *(void **)((char *)texture + 0x70) = fn_8012850C((void *)palBytes, lbl_8034C4DC);
+    fn_801282EC(0x20);
+    dst = (char *)fn_8012850C((void *)palBytes, lbl_8034C4E8);
+    *(void **)((char *)texture + 0xC4) = dst;
+    *(char *)((char *)texture + 0xCC) = 1;
+    *(u32 *)((char *)texture + 0xD8) = rawPal;
+    *(u32 *)((char *)texture + 0x74) = (u32)palBytes;
+    fn_802D78D4(*(void **)((char *)texture + 0x70), dst, rawPal, entries);
+    DCFlushRange(*(void **)((char *)texture + 0x70), *(u32 *)((char *)texture + 0x74));
+    GXInitTlutObj((char *)texture + 0x64, *(void **)((char *)texture + 0x70), 1, (unsigned short)entries);
+    *(u32 *)((char *)texture + 0xC8) = (u32)palBytes;
+    DCFlushRange(*(void **)((char *)texture + 0xC4), (u32)palBytes);
+    GXInitTlutObj((char *)texture + 0xB8, *(void **)((char *)texture + 0xC4), 0, (unsigned short)entries);
+
+    width = *(int *)((char *)obj + 0x24);
+    height = *(int *)((char *)obj + 0x28);
+    GXGetTexBufferSize((unsigned short)width, (unsigned short)height, (isCi4 != 0) ? 8 : 9, 0, 1);
+    texData = *(char **)((char *)obj + 0x2C);
+    dst = *(char **)(texData + 4);
+    *(char **)((char *)texture + 0xD0) = dst;
+    size = (width * height) / ((isCi4 != 0) + 1);
+    *(int *)((char *)texture + 0xD4) = size;
+    DCFlushRange(dst, size);
+
+    GXInitTexObjCI((char *)texture + 0x24, *(void **)(texData + 4),
+                   (unsigned short)width, (unsigned short)height,
+                   (isCi4 != 0) ? 8 : 9, 1, 1, 0, 0);
+    GXInitTexObjCI((char *)texture + 0x78, *(void **)(texData + 4),
+                   (unsigned short)width, (unsigned short)height,
+                   (isCi4 != 0) ? 8 : 9, 1, 1, 0, 1);
+    GXInvalidateTexAll();
+    fn_802D7780(texture, obj);
+    return texture;
+}
+#pragma pop
 
 #pragma push
 #pragma use_lmw_stmw off
