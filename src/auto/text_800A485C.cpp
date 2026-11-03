@@ -2028,7 +2028,7 @@ extern "C" s32 VFiPFCACHE_InitCaches(void *arg0) {
     return status & ((-status | status) >> 31);
 }
 
-extern "C" s32 fn_800A7C20(void *, s32, void *, s32);
+extern "C" s32 fn_800A7C20(void *, void **, u32, void **, s32 *);
 extern "C" s32 fn_800A8D08(s32 arg0, void **arg1, s32 *arg2, s32 arg3, s32 *arg4) {
     s32 result;
 
@@ -2040,7 +2040,7 @@ extern "C" s32 fn_800A8D08(s32 arg0, void **arg1, s32 *arg2, s32 arg3, s32 *arg4
         *arg2 = (s32)*(void **)((u8 *)arg0 + 0x162C);
         return 0;
     }
-    result = fn_800A7C20((void *)arg0, (s32)((u8 *)arg0 + 0x1634), (void *)arg1, (s32)arg2);
+    result = ((s32 (*)(void *, s32, void *, s32))fn_800A7C20)((void *)arg0, (s32)((u8 *)arg0 + 0x1634), (void *)arg1, (s32)arg2);
     return result & ((s32)(-result | result) >> 31);
 }
 
