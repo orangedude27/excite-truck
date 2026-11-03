@@ -43,19 +43,6 @@ extern void fn_801E4F3C(s32, s32, f32, f32, f32, f32, f32);
 extern void fn_801E4FF4(void);
 extern void fn_802C8D74(void);
 extern f32 lbl_805603E8, lbl_805603EC, lbl_805603F0, lbl_805603F4;
-#pragma always_inline on
-static inline void MultVec(f32 *m, f32 *src, f32 *dst) {
-    f32 x = src[0], y = src[1], z = src[2];
-    if (src == dst) {
-        dst[0] = x * m[0] + y * m[3] + z * m[6];
-        dst[1] = x * m[1] + y * m[4] + z * m[7];
-        dst[2] = x * m[2] + y * m[5] + z * m[8];
-    } else {
-        dst[0] = src[0] * m[0] + src[1] * m[3] + src[2] * m[6];
-        dst[1] = dst[0] * m[1] + src[1] * m[4] + src[2] * m[7];
-        dst[2] = dst[1] * m[2] + src[1] * m[5] + src[2] * m[8];
-    }
-}
 void fn_80014B9C(void *);
 s32 fn_800151DC(void *);
 void fn_800154B8(void);
