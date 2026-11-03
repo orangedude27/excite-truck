@@ -2,7 +2,7 @@ extern void fn_8021889C(void);
 
 #include <types.h>
 static inline void fn_80216244_rotate(const f32 *m, f32 *out, const f32 *v) {
-    if (v == out) {
+    if (out == v) {
         f32 x = v[2]*m[6] + (v[0]*m[0] + v[1]*m[3]);
         f32 y = v[2]*m[7] + (v[0]*m[1] + v[1]*m[4]);
         f32 z = v[2]*m[8] + (v[0]*m[2] + v[1]*m[5]);
@@ -271,7 +271,7 @@ s32 fn_80216244(void) {
             raw = *(u32 *)(obj + 0x458);
             y = (f32)(s32)raw;
             vec[0] = x; vec[1] = y; vec[2] = z;
-            fn_80216244_rotate(matrix, vec, pos);
+            fn_80216244_rotate(matrix, pos, vec);
             matrix[9] += pos[0];
             matrix[10] += pos[1];
             matrix[11] += pos[2];
