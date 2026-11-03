@@ -145,42 +145,57 @@ void fn_802AA1D0(unsigned int arg0) {
 
 #pragma push
 #pragma processor 750
-void fn_802AA9D4(void *arg0, void *arg1, float delta) {
- extern float lbl_805649F4, lbl_80564A08, lbl_80564A04, lbl_80564A48, lbl_80564A4C, lbl_80564A50;
- extern float fn_80287BC8(float, float);
- extern void fn_8028E590(int, Vec *, Vec *, float);
- Vec pos, dir, callpos, calldir, side, forward;
- float width = lbl_805649F4 * *(float *)((char *)arg0+0xF8);
- float depth = lbl_805649F4 * *(float *)((char *)arg0+0xFC);
- float height = lbl_805649F4 * *(float *)((char *)arg0+0x100);
- float v, angle, scale;
- if (*(unsigned char *)((char *)arg0+0xDC)) {
-   *(unsigned char *)((char *)arg0+0xDC)=0;
-   v=*(float *)((char *)arg0+0xE0)+lbl_80564A08*delta;
-   *(float *)((char *)arg0+0xE0)=v<lbl_805649FC?v:lbl_805649FC;
- } else {
-   v=*(float *)((char *)arg0+0xE0)-lbl_80564A08*delta;
-   *(float *)((char *)arg0+0xE0)=v>lbl_805649F0?v:lbl_805649F0;
- }
- if ((float)fabs(delta)<=*(float *)(void *)&lbl_80558DC4) return;
- if (fn_80287BC8(lbl_805649F0,lbl_805649FC)>=*(float *)((char *)arg0+0xE0)) return;
- angle=fn_80287BC8(lbl_80564A48,lbl_80564A4C);
- forward=*(Vec *)arg1;
- side=*(Vec *)((char *)arg1+0x18);
- pos=*(Vec *)((char *)arg1+0x24);
- scale=width*(float)cos(angle);
- pos.x+=forward.x*scale; pos.y+=forward.y*scale; pos.z+=forward.z*scale;
- scale=depth*(float)sin(angle);
- pos.x+=side.x*scale; pos.y+=side.y*scale; pos.z+=side.z*scale;
- scale=fn_80287BC8(lbl_805649F0,lbl_80564A04*height);
- pos.x+=*(float *)((char *)arg1+0xC)*scale;
- pos.y+=*(float *)((char *)arg1+0x10)*scale;
- pos.z+=*(float *)((char *)arg1+0x14)*scale;
- dir=*(Vec *)((char *)arg1+0x34);
- if (*(float *)((char *)arg1+0x4C)>=lbl_80564A50-*(float *)(void *)&lbl_80558DC4) {
- callpos=pos; calldir=dir;
- fn_8028E590(*(int *)lbl_8055F924,&callpos,&calldir,lbl_805649FC);
- }
+void fn_802AA9D4(UnkAA9D4 *arg0, void *arg1, float delta) {
+    extern float lbl_805649F4, lbl_80564A08, lbl_80564A04, lbl_80564A48, lbl_80564A4C, lbl_80564A50;
+    extern float fn_80287BC8(float, float);
+    extern void fn_8028E590(int, Vec *, Vec *, float);
+    Vec pos, dir, callpos, calldir, side, forward;
+    float width = lbl_805649F4 * arg0->width;
+    float depth = lbl_805649F4 * arg0->depth;
+    float height = lbl_805649F4 * arg0->height;
+    float v, angle, scale;
+
+    if (arg0->active) {
+        float max;
+        v = arg0->amount;
+        v += lbl_80564A08 * delta;
+        max = lbl_805649FC;
+        arg0->active = 0;
+        arg0->amount = v < max ? v : max;
+    } else {
+        v = arg0->amount - lbl_80564A08 * delta;
+        arg0->amount = v > lbl_805649F0 ? v : lbl_805649F0;
+    }
+
+    if ((float)fabs(delta) <= *(float *)lbl_80558DC4) return;
+    if (!(fn_80287BC8(lbl_805649F0, lbl_805649FC) < arg0->amount)) return;
+
+    angle = fn_80287BC8(lbl_80564A48, lbl_80564A4C);
+    forward = *(Vec *)arg1;
+    side = *(Vec *)((char *)arg1 + 0x18);
+    pos = *(Vec *)((char *)arg1 + 0x24);
+
+    scale = width * (float)cos(angle);
+    pos.x += forward.x * scale;
+    pos.y += forward.y * scale;
+    pos.z += forward.z * scale;
+
+    scale = depth * (float)sin(angle);
+    pos.x += side.x * scale;
+    pos.y += side.y * scale;
+    pos.z += side.z * scale;
+
+    scale = fn_80287BC8(lbl_805649F0, lbl_80564A04 * height);
+    pos.x += *(float *)((char *)arg1 + 0xC) * scale;
+    pos.y += *(float *)((char *)arg1 + 0x10) * scale;
+    pos.z += *(float *)((char *)arg1 + 0x14) * scale;
+
+    dir = *(Vec *)((char *)arg1 + 0x34);
+    if (*(float *)((char *)arg1 + 0x4C) >= lbl_80564A50 - *(float *)lbl_80558DC4) {
+        calldir = dir;
+        callpos = pos;
+        fn_8028E590(*(int *)lbl_8055F924, &callpos, &calldir, lbl_805649FC);
+    }
 }
 #pragma pop
 
@@ -517,6 +532,8 @@ void fn_802AB6D4(void) {
     }
 }
 
+#pragma push
+#pragma processor 750
 void fn_802AB770(int arg0) {
     extern int lbl_8055F928;
     extern unsigned char lbl_8055F92C, lbl_8055F92D;
@@ -525,25 +542,28 @@ void fn_802AB770(int arg0) {
     extern float lbl_80564AA8, lbl_80564AAC;
     extern double lbl_80564AA0;
     extern int lbl_804BD7B0[4];
+    extern double __fabs(double);
     extern float fn_801E7E24(void);
-    extern unsigned char fn_80129D90(int, int, int);
     extern float fn_80287BC8(float, float);
     extern double fn_8002EFB4(float, double);
     extern int fn_802C2C00(int);
     extern int fn_802C990C(int);
     extern void fn_802C2BB8(int *, int *, int *);
     extern void fn_802C2B78(float, float, float);
-    float delta = fn_801E7E24();
     char *state = (char *)(lbl_8055F928 + arg0 * 0x108);
-    int obj = fn_80287B24(lbl_8055F928);
+    int obj = fn_80287B24(arg0);
+    unsigned char r, g, b;
+    float delta = fn_801E7E24();
     float angle;
-    float wave;
+    float wave1;
+    float wave2;
     int color;
-    if (delta < -*(float *)(void *)&lbl_80558DC4 || delta > *(float *)(void *)&lbl_80558DC4) {
-        int r = fn_80129D90(0, 0x8C, 0xFF);
-        int g = fn_80129D90(0, 0xFA, 0xFF);
-        int b = fn_80129D90(0, 0xF0, 0xFF);
-        *(int *)(state + 0xE8) = (b << 16) | (g << 8) | r | 0xFF000000;
+    int lt;
+    if (!((float)__fabs(delta) <= *(float *)(void *)&lbl_80558DC4)) {
+        r = fn_80129D90(0, 0x8C, 0xFF) & 0xFF;
+        g = fn_80129D90(0, 0xFA, 0xFF) & 0xFF;
+        b = fn_80129D90(0, 0xF0, 0xFF);
+        *(int *)(state + 0xE8) = (0xFF000000 | (b << 16)) | ((g << 8) | r);
     }
     angle = *(float *)((char *)obj + 0x4C);
     if (lbl_8055F92C != 0) angle = lbl_80564A98;
@@ -551,22 +571,22 @@ void fn_802AB770(int arg0) {
         *(float *)(state + 0xE4) = fn_80287BC8(lbl_80564A8C, lbl_80564A68);
     else
         *(float *)(state + 0xE4) += lbl_80564A34 * delta;
-    wave = lbl_805649F0;
-    if (delta < -*(float *)(void *)&lbl_80558DC4 || delta > *(float *)(void *)&lbl_80558DC4)
-        wave = lbl_80564A9C * (float)(int)fn_80287BC8(lbl_805649F0, lbl_805649FC);
+    wave1 = lbl_805649F0;
+    if (!((float)__fabs(delta) <= *(float *)(void *)&lbl_80558DC4))
+        wave1 = lbl_80564A9C * (float)(int)fn_80287BC8(wave1, lbl_805649FC);
     color = 1;
-    if (angle > lbl_80564A00 && (float)fn_8002EFB4(angle, lbl_80564AA0) <= lbl_80564A34) color = 0;
-    wave = lbl_805649F0;
-    if (color != 0) wave = lbl_80564AA8 * *(float *)(state + 0xE4) - wave;
+    lt = angle < lbl_80564A00;
+    if (lt && !((float)fn_8002EFB4(angle, lbl_80564AA0) > lbl_80564A34)) color = 0;
+    wave2 = lbl_805649F0;
+    if (color != 0) wave2 = lbl_80564AA8 * *(float *)(state + 0xE4) - wave1;
     {
         int old = *(int *)(state + 0xE8);
         lbl_8055F92D = fn_802C2C00(1);
         lbl_804BD7B0[0] = fn_802C990C(old);
         fn_802C2BB8(&lbl_804BD7B0[1], &lbl_804BD7B0[2], &lbl_804BD7B0[3]);
-        fn_802C2B78(wave, lbl_80564AAC + wave, lbl_805649FC);
+        fn_802C2B78(wave2, lbl_80564AAC + wave2, lbl_805649FC);
     }
 }
-
 #pragma pop
 void fn_802AB994(void) {
     fn_802C990C(lbl_804BD7B0[0]);
@@ -586,6 +606,8 @@ extern int fn_8028E2F8(void *, const void *, const void *, ...);
 extern const char lbl_80349DFC[], lbl_80349E24[], lbl_80349E18[], lbl_80349E08[];
 extern float lbl_805649F0, lbl_805649F4, lbl_805649FC, lbl_80564A00, lbl_80564A04, lbl_80564A58, lbl_80564A68, lbl_80564A6C, lbl_80564A70, lbl_80564A74, lbl_80564A78, lbl_80564A7C, lbl_80564A80, lbl_80564A84, lbl_80564A88, lbl_80564A8C, lbl_80564A90, lbl_80564A94;
 extern float lbl_8055CC80;
+#pragma push
+#pragma processor 750
 void fn_802AB9E8(void) {
     unsigned char sp[0x144]; void **p; float t31, t13, t3, t2; int two=2, five=5;
     fn_8028DFFC(); p=(void **)fn_801284F8(8,lbl_80349DFC);
@@ -603,7 +625,7 @@ void fn_802AB9E8(void) {
         *(float *)&sp[0x128]=lbl_805649FC; *(float *)&sp[0x130]=lbl_805649FC; *(float *)&sp[0x138]=lbl_805649FC;
         *(float *)&sp[0x11C]=lbl_805649F0; *(float *)&sp[0x120]=lbl_80564A7C; *(float *)&sp[0x110]=t13; *(float *)&sp[0x114]=t2; *(float *)&sp[0x118]=lbl_80564A58;
         *(float *)&sp[0x13C]=lbl_805649F0; *(float *)&sp[0x140]=lbl_80564A04;
-        p[0]=(void *)fn_8028E2F8(&sp[0xC4],lbl_80349E24,lbl_80349E18,lbl_80564A58,t2,t3,lbl_80564A7C,lbl_80564A78,lbl_80564A74,lbl_80564A70,lbl_80564A6C,lbl_805649F0,lbl_805649F4,lbl_805649FC,lbl_80564A68,t13);
+        p[0]=(void *)((int (*)(void *, const void *, const void *, float, float, float, float, float, float, float, float, float, float, float, float, float))fn_8028E2F8)(&sp[0xC4],lbl_80349E24,lbl_80349E18,lbl_80564A58,t2,t3,lbl_80564A7C,lbl_80564A78,lbl_80564A74,lbl_80564A70,lbl_80564A6C,lbl_805649F0,lbl_805649F4,lbl_805649FC,lbl_80564A68,t13);
         fn_8028E61C(&sp[0x38]); *(int *)&sp[0x38]=two; *(int *)&sp[0x3C]=0x60; *(float *)&sp[0x40]=lbl_805649F4; *(float *)&sp[0x44]=lbl_805649FC;
         *(float *)&sp[0x80]=lbl_805649F4; *(int *)&sp[0x7C]=five; *(float *)&sp[8]=lbl_805649F0; *(float *)&sp[0xC]=lbl_805649F0; *(float *)&sp[0x10]=lbl_805649F0;
         *(float *)&sp[0x48]=lbl_805649F0; *(float *)&sp[0x4C]=lbl_805649F0; *(float *)&sp[0x50]=lbl_805649F0;
@@ -611,11 +633,11 @@ void fn_802AB9E8(void) {
         *(float *)&sp[0x60]=lbl_805649F0; *(float *)&sp[0x64]=lbl_80564A00; *(float *)&sp[0x68]=lbl_805649F0; *(float *)&sp[0x6C]=lbl_80564A74;
         *(float *)&sp[0xA8]=lbl_80564A78; *(float *)&sp[0xA0]=lbl_80564A78; *(float *)&sp[0x98]=lbl_80564A78; *(float *)&sp[0xAC]=lbl_80564A88; *(float *)&sp[0xA4]=lbl_80564A88; *(float *)&sp[0x9C]=lbl_80564A88;
         *(float *)&sp[0x90]=lbl_80564A78; *(float *)&sp[0x94]=lbl_80564A8C; *(float *)&sp[0x88]=lbl_80564A8C; *(float *)&sp[0x8C]=lbl_80564A90; *(float *)&sp[0xB0]=lbl_80564A94; *(float *)&sp[0xB4]=lbl_805649FC;
-        p[1]=(void *)fn_8028E2F8(&sp[0x38],&lbl_8055CC80,lbl_80349E08,lbl_80564A90,lbl_80564A8C,lbl_80564A88,lbl_80564A78,lbl_80564A74,lbl_80564A00,lbl_805649F0,lbl_805649FC,lbl_805649F4);
+        p[1]=(void *)((int (*)(void *, const void *, const void *, float, float, float, float, float, float, float, float, float))fn_8028E2F8)(&sp[0x38],&lbl_8055CC80,lbl_80349E08,lbl_80564A90,lbl_80564A8C,lbl_80564A88,lbl_80564A78,lbl_80564A74,lbl_80564A00,lbl_805649F0,lbl_805649FC,lbl_805649F4);
     }
     lbl_8055F924=p; fn_8028E024();
 }
-
+#pragma pop
 void fn_802ABC2C(void) {
     int *p = (int *)lbl_8055F924;
     if (p == 0) return;
@@ -630,7 +652,7 @@ void fn_802ABC2C(void) {
 #pragma push
 #pragma processor 750
 #pragma scheduling on
-void fn_802ABC80(void *arg0, void *arg1, float farg0, float farg1, float farg2) {
+void fn_802ABC80(Vec *arg0, Vec *arg1, float farg0, float farg1, float farg2) {
     extern float fn_80287BC8(float, float);
     extern void fn_8028E590(int, Vec *, Vec *, float);
     extern float lbl_80564A04, lbl_80564A48, lbl_80564A4C, lbl_805649F0, lbl_805649FC;
@@ -639,16 +661,16 @@ void fn_802ABC80(void *arg0, void *arg1, float farg0, float farg1, float farg2) 
     Vec pos, callpos, dir, side, forward;
     float angle, scale;
     angle=fn_80287BC8(lbl_80564A48,lbl_80564A4C);
-    forward=*(Vec*)arg0; side=*(Vec*)((char*)arg0+0x18); pos=*(Vec*)((char*)arg0+0x24);
+    forward=arg0[0]; side=*(Vec*)((char*)arg0+0x18); pos=*(Vec*)((char*)arg0+0x24);
     scale=farg0*(float)cos(angle);
     pos.x+=forward.x*scale; pos.y+=forward.y*scale; pos.z+=forward.z*scale;
     scale=farg1*(float)sin(angle);
     pos.x+=side.x*scale; pos.y+=side.y*scale; pos.z+=side.z*scale;
     scale=fn_80287BC8(lbl_805649F0,lbl_80564A04*farg2);
-    pos.x+=((float*)((char*)arg0+0xC))[0]*scale;
-    pos.y+=((float*)((char*)arg0+0xC))[1]*scale;
-    pos.z+=((float*)((char*)arg0+0xC))[2]*scale;
-    dir=*(Vec*)arg1;
+    pos.x+=arg0[1].x*scale;
+    pos.y+=arg0[1].y*scale;
+    pos.z+=arg0[1].z*scale;
+    dir=*arg1;
     callpos=pos;
     fn_8028E590(*(int*)lbl_8055F924,&callpos,&dir,lbl_805649FC);
 }
@@ -734,4 +756,37 @@ extern unsigned char lbl_8055F92C;
 unsigned char fn_80129D90(int, int, int);
 float fn_80287BC8(float, float);
 double fn_8002EFB4(float, double);
+typedef struct InitStruct {
+    int field_00;
+    int field_04;
+    float field_08;
+    float field_0C;
+    Vec vA;
+    Vec vB;
+    Vec vC;
+    float field_34;
+    float pad38[3];
+    int field_44;
+    float field_48;
+    float field_4C;
+    float field_50;
+    float field_54;
+    float field_58;
+    float field_5C;
+    float field_60;
+    float field_64;
+    float field_68;
+    float field_6C;
+    float field_70;
+    float field_74;
+    float field_78;
+    float field_7C;
+    float pad80[3];
+} InitStruct;
 
+extern const char lbl_80349DC8[];
+extern void *fn_8012850C(int, const char *);
+extern void *fn_8002F37C(void *, void (*)(void), void *, int, int);
+extern int fn_802CAC28(const char *, int);
+extern void fn_801EEFDC(void *, int);
+extern void *fn_801E87A8(void);
