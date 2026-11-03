@@ -187,10 +187,8 @@ void fn_8020D224(void) {
     fn_80230E90(1);
 }
 
-#pragma scheduling on
 void fn_8020D29C(void) {
-    lbl_8055EE94 = 0;
-    fn_80209190(lbl_8055EE74, lbl_8056331C);
+    fn_80209190((lbl_8055EE94 = 0, lbl_8055EE74), lbl_8056331C);
     fn_80206454();
     fn_801769EC();
 }
