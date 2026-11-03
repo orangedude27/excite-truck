@@ -12,11 +12,35 @@ extern unsigned char lbl_8055AE2C;
 extern unsigned char lbl_8055E9D0;
 extern int lbl_8055E9D8;
 
+struct Elem {
+    s8 f0;
+    void *f4;
+    void *f8;
+    s32 fC;
+    s32 f10;
+    s32 f14;
+    s32 f18;
+};
+
+struct Container {
+    struct Elem *elems;
+    s32 count;
+    s32 capacity;
+    struct Elem buf[8];
+};
+
+struct BigObj {
+    struct Elem arr[9];
+    char pad[0xC];
+    struct Container container;
+};
+
 #define FIELD_PTR(base, offset) (*(void **)((char *)(base) + (offset)))
 #define FIELD_S32(base, offset) (*(s32 *)((char *)(base) + (offset)))
 #define FIELD_S8(base, offset) (*(s8 *)((char *)(base) + (offset)))
 
 void fn_801DF3BC(void) {
+    char *base;
     s32 temp_r12;
     s32 temp_r6_2;
     s32 temp_r7;
@@ -24,7 +48,7 @@ void fn_801DF3BC(void) {
     s32 var_r5;
     s32 var_r5_2;
     s32 var_r6;
-    u32 temp_r11;
+    s32 temp_r11;
     u32 var_ctr;
     u32 var_ctr_2;
     char *temp_r5;
@@ -34,13 +58,14 @@ void fn_801DF3BC(void) {
     char *temp_r9;
     char *var_r3;
 
+    base = lbl_804872B0;
     fn_8000D838(&lbl_8055E9D0);
     lbl_8055E9D8 = 0x7F000000;
-    fn_8002F53C(lbl_804872B0, &fn_801DF6D0, 0, 0x1C, 9);
-    temp_r9 = lbl_804872B0 + 0x108;
+    fn_8002F53C(base, &fn_801DF6D0, 0, 0x1C, 9);
+    temp_r9 = base + 0x108;
     temp_r8 = temp_r9 + 0xC;
     var_r3 = temp_r8 + 0x1C;
-    FIELD_PTR(lbl_804872B0, 0x108) = temp_r8;
+    FIELD_PTR(base, 0x108) = temp_r8;
     FIELD_S32(temp_r9, 4) = 0;
     temp_r5 = temp_r9 + 0xEC;
     FIELD_PTR(temp_r9, 0x10) = &lbl_8055AE2C;
@@ -54,7 +79,7 @@ void fn_801DF3BC(void) {
     if (var_r3 < temp_r5) {
         temp_r6 = temp_r9 + 0x28;
         temp_r7 = (s32)(temp_r5 - temp_r6);
-        temp_r11 = (u32)(temp_r7 + 0x1B) / 28;
+        temp_r11 = (s32)(temp_r7 + 0x1B) / 28;
         temp_r12 = temp_r11 + 1;
         if (temp_r12 > 8) {
             var_r4 = 0;
@@ -160,5 +185,5 @@ void fn_801DF3BC(void) {
             } while (var_ctr_2 != 0);
         }
     }
-    __register_global_object(lbl_804872B0 + 0x108, (void *)&fn_801DF678, lbl_804872B0 + 0xFC);
+    __register_global_object(base + 0x108, (void *)&fn_801DF678, base + 0xFC);
 }
