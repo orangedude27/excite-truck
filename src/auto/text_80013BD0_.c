@@ -814,6 +814,8 @@ void fn_80015658(void *arg0) {
 }
 
 void fn_80015A20(void *arg0, volatile f32 *arg1);
+#pragma push
+#pragma use_lmw_stmw off
 void fn_80015770(void *arg0, f64 x, f64 y, f32 a, f32 b, f32 c) {
     f32 vec[4];
     f32 mtx[12];
@@ -821,34 +823,49 @@ void fn_80015770(void *arg0, f64 x, f64 y, f32 a, f32 b, f32 c) {
     f32 *p;
     f32 *q;
     s32 i;
-    f64 z = lbl_80560360;
+    f64 z;
+    f32 ox, oy, oz;
+    f32 k1, k2;
     vec[0] = lbl_80560360;
     vec[1] = lbl_80560360;
     vec[2] = c;
     fn_80015A20(mtx, vec);
+    z = lbl_80560360;
     mtx[9] = x;
     mtx[10] = y;
     mtx[11] = z;
+    ox = x;
+    oy = y;
+    oz = z;
+    k1 = lbl_805603BC;
+    k2 = lbl_805603E8;
     p = verts[0];
     q = p;
-    i = 0;
-    do {
-        p[1] = (i % 2 != 0) ? b * lbl_805603BC : -b * lbl_805603BC;
-        p[0] = (i < 2) ? a - lbl_805603E8 : lbl_805603EC;
+    for (i = 0; i < 4; i++) {
+        p[1] = (i % 2 != 0) ? b * k1 : -b * k1;
+        p[0] = (i < 2) ? a - k2 : lbl_805603EC;
         p[2] = z;
-        MultVec(mtx, p, q);
+        if (p == q) {
+            f32 vx = p[0], vy = p[1], vz = p[2];
+            p[0] = vx * mtx[0] + vy * mtx[3] + vz * mtx[6];
+            p[1] = vx * mtx[1] + vy * mtx[4] + vz * mtx[7];
+            p[2] = vx * mtx[2] + vy * mtx[5] + vz * mtx[8];
+        } else {
+            q[0] = p[0] * mtx[0] + p[1] * mtx[3] + p[2] * mtx[6];
+            q[1] = q[0] * mtx[1] + p[1] * mtx[4] + p[2] * mtx[7];
+            q[2] = q[1] * mtx[2] + p[1] * mtx[5] + p[2] * mtx[8];
+        }
         q += 3;
-        p[0] = p[0] + (f32)x;
-        p[1] = p[1] + (f32)y;
-        p[2] = p[2] + (f32)z;
+        p[0] = p[0] + ox;
+        p[1] = p[1] + oy;
+        p[2] = p[2] + oz;
         p += 3;
-        i++;
-    } while (i < 4);
+    }
     fn_802C8BD0(*(s32 *)((u8 *)arg0 + 0x44));
     fn_801E4F20(4);
     p = verts[0];
     for (i = 0; i < 4; i++) {
-        fn_801E4F3C(-1, i >= 2, p[0], p[1], p[2],
+        fn_801E4F3C(-1, i > 1, p[0], p[1], p[2],
                     (i % 2 != 0) ? lbl_805603F0 : lbl_80560368,
                     (i < 2) ? lbl_805603F4 : lbl_80560368);
         p += 3;
@@ -856,7 +873,7 @@ void fn_80015770(void *arg0, f64 x, f64 y, f32 a, f32 b, f32 c) {
     fn_801E4FF4();
     fn_802C8D74();
 }
-
+#pragma use_lmw_stmw on
 void fn_80015AA0(void *, f32);
 void fn_80015EB0(void *, f32);
 #pragma push
