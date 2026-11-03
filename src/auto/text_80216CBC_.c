@@ -5,7 +5,7 @@
 #include <macros.h>
 
 void fn_8000D838(void *arg0);
-extern char lbl_8055EF60[];
+extern char lbl_8055EF60[4];
 extern int lbl_804908B0[];
 extern u32 lbl_8055EF68;
 extern u32 lbl_8055EF6C;
