@@ -1,6 +1,28 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 extern void fn_802DAA18(void);
+extern unsigned char lbl_8055FA59;
+extern int fn_802B1AF0(void *);
+extern int fn_802B1AF8(int *, int);
+extern int fn_802B1B08(void *);
+extern int fn_802B1B10(int *);
+extern int fn_802B1B18(int *);
+extern int fn_802B1B28(int *, int);
+extern int fn_802B1B38(void *);
+extern int fn_802B1B40(int *, int);
+extern int fn_802B1B50(int *, int);
+extern void fn_802B1B60(void *);
+extern int fn_802B1BE4(void *);
+extern void fn_802B1BEC(void);
+extern void fn_802B1758(void *);
+extern int fn_802C2C00(int);
+extern void fn_802CADD0(int, int);
+extern void __AXGetStackHead_802BC30C(int);
+extern void fn_802DBF00(void);
+extern void fn_802DBF30(void);
+extern void fn_802DC078(int, int, int, int, int, int);
+extern void fn_802BB0FC(int);
+extern void fn_802BB3B8(int);
 
 extern void *lbl_8055F9A0;
 void fn_802B087C(void **arg0);
