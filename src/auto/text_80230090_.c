@@ -293,9 +293,10 @@ void fn_80230B38(void* alarm) {
 void fn_80230B5C(void *arg0) {
     extern f32 lbl_8056364C;
     f32 *p = (f32 *)arg0;
+    f32 c;
     f32 a = lbl_80563614;
     f32 b = lbl_80563610;
-    f32 c = lbl_8056364C;
+    c = lbl_8056364C;
     p[0]=b; p[3]=a; p[2]=a; p[1]=a;
     p[4]=b; p[7]=a; p[6]=a; p[5]=a;
     p[8]=b; p[9]=a; p[10]=a; p[11]=c;
@@ -496,15 +497,15 @@ extern s32 fn_802C9A68(void);
 extern f32 lbl_8055D020, lbl_80563610, lbl_80563614, lbl_8056365C;
 extern f32 lbl_80563670, lbl_80563674, lbl_80563678, lbl_8056367C;
 void fn_80231094(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
-    f32 f0, f1, f2, f3, f4;
+    register f32 f0, f2, f1, f3, f4;
     s32 r5, r6;
-    if (fn_802C9A68()) f2 = lbl_80563670;
-    else f2 = lbl_80563674;
-    f0 = lbl_80563610;
-    f1 = lbl_80563678;
+    if (fn_802C9A68()) f2 = (*(volatile f32 *)&lbl_80563670);
+    else f2 = (*(volatile f32 *)&lbl_80563674);
+    f0 = (*(volatile f32 *)&lbl_80563610);
+    f1 = (*(volatile f32 *)&lbl_80563678);
     f3 = f0 - f2;
-    f0 = lbl_8056367C;
-    f2 = lbl_8056365C;
+    f0 = (*(volatile f32 *)&lbl_8056367C);
+    f2 = (*(volatile f32 *)&lbl_8056365C);
     f1 = f1 * f3;
     f0 = f0 * f3;
     f1 = f2 * f1;
@@ -522,23 +523,23 @@ void fn_80231094(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
     *arg0 = 0x18;
     *arg1 = 4;
     if (!fn_802C9A60() && fn_802C9A58()) {
-        f4 = lbl_80563610;
-        f0 = lbl_8055D020;
-        f2 = lbl_80563678;
+        f4 = (*(volatile f32 *)&lbl_80563610);
+        f0 = (*(volatile f32 *)&lbl_8055D020);
+        f2 = (*(volatile f32 *)&lbl_80563678);
         f3 = f4 / f0;
-        f1 = lbl_8056365C;
-        f0 = lbl_80563614;
+        f1 = (*(volatile f32 *)&lbl_8056365C);
+        f0 = (*(volatile f32 *)&lbl_80563614);
         f3 = f3 - f4;
         f2 = f2 * f3;
         f2 = f1 * f2;
         if (f2 < f0) f0 = f2 - f1;
         else f0 = f1 + f2;
         *arg2 -= (s32)f0;
-        f3 = f4 / lbl_8055D020;
+        f3 = f4 / (*(volatile f32 *)&lbl_8055D020);
         f3 = f3 - f4;
-        f2 = lbl_80563678 * f3;
+        f2 = (*(volatile f32 *)&lbl_80563678) * f3;
         f2 = f1 * f2;
-        if (f2 < lbl_80563614) f0 = f2 - f1;
+        if (f2 < (*(volatile f32 *)&lbl_80563614)) f0 = f2 - f1;
         else f0 = f1 + f2;
         *arg3 -= (s32)f0;
     }
