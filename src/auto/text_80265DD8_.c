@@ -301,6 +301,17 @@ void fn_80267130(void *arg0) {
 extern float lbl_8055D020;
 extern double lbl_80563C38;
 extern float fn_801EA0E8(unsigned int, float, float, float);
+static inline void fn_802671CC_mul_vec(float *out, float *in, float *matrix, float x, float y, float z) {
+    if (out == in) {
+        out[0] = x * matrix[0] + y * matrix[3] + z * matrix[6];
+        out[1] = x * matrix[1] + y * matrix[4] + z * matrix[7];
+        out[2] = x * matrix[2] + y * matrix[5] + z * matrix[8];
+    } else {
+        out[0] = in[0] * matrix[0] + in[1] * matrix[3] + in[2] * matrix[6];
+        out[1] = in[0] * matrix[1] + in[1] * matrix[4] + in[2] * matrix[7];
+        out[2] = in[0] * matrix[2] + in[1] * matrix[5] + in[2] * matrix[8];
+    }
+}
 #pragma push
 #pragma ppc_psq_save off
 #pragma scheduling invalid_target
@@ -372,8 +383,11 @@ void fn_802671CC(void *arg0, int arg1) {
         out[0] += matrix[9];
         out[1] += matrix[10];
         out[2] += matrix[11];
-        heightDiff = fn_801EA0E8(0x43300000, out[0], out[1], out[2]) - out[1];
-        if (best > heightDiff) best = heightDiff;
+        {
+            float heightDiff;
+            heightDiff = fn_801EA0E8(0x43300000, out[0], out[1], out[2]) - out[1];
+            if (best > heightDiff) best = heightDiff;
+        }
     }
 
     if (*(int *)((char *)arg0 + 0x58) != 0x11 &&
