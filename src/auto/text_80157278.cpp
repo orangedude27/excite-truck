@@ -64,7 +64,7 @@ public:
  virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
  virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31();
  virtual void v32(); virtual void v33(); virtual void v34(); virtual void v35(f32*);
- virtual void v36(); virtual s32 v37(); virtual void v38(f32);
+ virtual void v36(); virtual s32 v37(); virtual void v38(f32); virtual s32 v39();
 };
 
 
@@ -1930,6 +1930,63 @@ extern "C" void fn_8015B340(Unk801577F0* self) {
     *(f32*)((u8*)self + 0x284) = tailZero;
 }
 
+#pragma push
+#pragma processor 750
+extern "C" f32 fn_8015B404(void* arg0) {
+    Fn8015B404Obj* self = (Fn8015B404Obj*)arg0;
+    u8* base = (u8*)arg0;
+    f32 one = lbl_8056177C;
+    f32 zero = lbl_80561754;
+    u8* p = base;
+    s32 i = 0;
+    *(u8*)(base + 0x294) = 0;
+    *(f32*)(base + 0x290) = zero;
+    *(f32*)(base + 0x28C) = zero;
+    do {
+        s32 active = *(f32*)(p + 0x24C) > lbl_80558DC4[0];
+        if (active) {
+            f32 a = *(f32*)(p + 0x250);
+            f32 b = *(f32*)(base + 0x28C);
+            b = (b > a) ? b : a;
+            *(f32*)(base + 0x28C) = b;
+            s32 still = *(f32*)(p + 0x24C) > lbl_80558DC4[0];
+            if (still) {
+                *(f32*)(p + 0x24C) = *(f32*)(p + 0x24C) - one;
+            }
+            u8* o = (u8*)fn_8017960C(i);
+            s32 more;
+            s32 flag;
+            if (o != 0) {
+                flag = !((f32)__fabs(*(f32*)(o + 0x2690)) <= lbl_80558DC4[0]);
+            } else {
+                flag = 0;
+            }
+            if (flag != 0 || (more = *(f32*)(p + 0x24C) > lbl_80558DC4[0]) == 0) {
+                *(f32*)(p + 0x24C) = zero;
+                *(u8*)(base + 0x294) = flag;
+                f32 d = *(f32*)(p + 0x250);
+                f32 c = *(f32*)(base + 0x290);
+                c = (c > d) ? c : d;
+                *(f32*)(base + 0x290) = c;
+            }
+        }
+        i++;
+        p += 8;
+    } while (i < 8);
+    f32 result = lbl_80561754;
+    if (*(f32*)(base + 0x28C) > lbl_80558DC4[0]) {
+        self->v30();
+        self->v32();
+        if (*(f32*)(base + 0x290) > lbl_80558DC4[0]) {
+            f32 sp8 = self->v18(self->v21());
+            self->v33(&sp8);
+            self->v31();
+            result = sp8;
+        }
+    }
+    return result;
+}
+#pragma pop
 extern "C" void fn_8015B618(void* arg0, void* arg1) {
     class LocalVtable {
     public:
