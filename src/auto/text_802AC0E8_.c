@@ -321,10 +321,12 @@ void *fn_802ADE60(void **arg0, int arg1) {
     if (arg0 != 0) {
         count = *(int *)((char *)*arg0 + 4);
         offset = count * 0x74;
+        goto loop_test;
         do {
             fn_802AD30C(*(void **)(*(char **)*arg0 + offset + 0x64));
+loop_test:
             offset -= 0x74;
-        } while (!(count-- <= 0));
+        } while (count-- > 0);
         *(int *)((char *)*arg0 + 4) = 0;
         obj = *arg0;
         if (obj != 0) {
@@ -336,8 +338,8 @@ void *fn_802ADE60(void **arg0, int arg1) {
                     *(int *)((char *)obj + 4) = zero;
                     *(int *)((char *)obj + 8) = zero;
                 }
-                fn_80128668(obj);
             }
+            fn_80128668(obj);
         }
         if (arg1 > 0) fn_80128668(arg0);
     }
