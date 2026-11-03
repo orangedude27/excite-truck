@@ -353,6 +353,7 @@ void fn_80259740(int arg0, float farg0) {
     lbl_8055F3A0 = (arg0 - 2) == 0;
 }
 
+extern double lbl_80563B00;
 extern float lbl_80563AF4;
 extern float lbl_80563AF8;
 extern float lbl_80563AEC;
@@ -367,6 +368,98 @@ int fn_8025A1C4(int arg0, int arg1) {
         fn_80128668((void *)arg0);
     return arg0;
 }
+
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+void fn_8025A204(void) {
+    extern unsigned char *fn_8001EFAC(int, int);
+    struct State {
+        char pad0[0x0C]; volatile int state; volatile int object; volatile int selected; volatile int next;
+        volatile int index; float number; char shortText[0x14]; char spareText[0x14];
+        float fade; volatile unsigned char flag; char pad1[7]; char title[0x32];
+        char pad2[0x32]; volatile unsigned char dialog; unsigned char difference;
+        char pad3[2]; int saved; float value;
+    } state;
+    float base;
+    int *entry;
+    int index, changed, current, result, count, firstResult, secondResult;
+    char *src, *dst;
+    char * volatile text;
+    register int zero = 0;
+    ((void (*)(void))fn_80259148)();
+    base = lbl_80563AE4;
+    lbl_80498EAC[0] = base;
+    lbl_80498EAC[1] = lbl_80563AEC;
+    lbl_80498EAC[2] = base;
+    lbl_8055F398 = lbl_80563AF0;
+    index = 0;
+    entry = lbl_80344EA0;
+    do {
+        float f;
+        if (*entry == 0) f = lbl_80563AF4;
+        else f = lbl_80563AF8;
+        state.state = zero;
+        text = lbl_80345098;
+        state.index = index;
+        state.object = *entry;
+        state.fade = f;
+        state.value = base;
+        fn_8001EFB0((void *)&state.object);
+        if (lbl_8055F67C != 0) {
+            state.next = state.selected + 0x32;
+            firstResult = fn_8001EFA0(state.object, state.next);
+            secondResult = fn_8001EFA0(state.object, state.selected);
+            state.difference = (unsigned int)((firstResult - secondResult) | (secondResult - firstResult)) >> 31;
+        }
+        state.number = (float)(int)state.selected;
+        current = (int)(state.number + lbl_80558DC4);
+        fn_80130FCC(state.shortText, 0x14, current);
+        changed = 1;
+        if (state.dialog != 0 && state.flag == 0 && state.difference == 0)
+            changed = zero;
+        current = fn_8001EFA0(state.object, current);
+        state.saved = current;
+        result = fn_8001EFA4(state.object, current + 1);
+        if (result >= 0) {
+            fn_80130FCC(state.spareText, 0x14, result);
+        } else {
+            src = (char *)lbl_8055C380;
+            count = 0x14;
+            dst = state.spareText;
+            while ((*dst++ = *src++) != 0) {
+                count -= 1;
+                if (count <= 0) { dst[-1] = (char)zero; break; }
+            }
+        }
+        src = (char *)fn_8001EFAC(state.object, state.saved);
+        if (src != 0 && changed != 0) {
+            dst = state.title;
+            count = 0x32;
+            while ((*dst++ = *src++) != 0) {
+                count -= 1;
+                if (count <= 0) { dst[-1] = 0; break; }
+            }
+        } else {
+            src = (char *)lbl_8055C380;
+            count = 0x32;
+            dst = state.title;
+            while ((*dst++ = *src++) != 0) {
+                count -= 1;
+                if (count <= 0) { dst[-1] = 0; break; }
+            }
+        }
+        state.dialog = 1;
+        if (state.next != state.selected) {
+            ((void (*)(void *, void *))(*(void ***)lbl_8055F394)[14])(lbl_8055F394, lbl_80344DE0);
+            fn_8025978C((void **)&text);
+        }
+        index++;
+        entry += 2;
+    } while (index < 7);
+    fn_802591D8();
+}
+#pragma pop
 
 extern float lbl_80563AF4;
 extern float lbl_80563AF8;
