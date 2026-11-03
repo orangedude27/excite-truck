@@ -2258,21 +2258,60 @@ void GXSetCopyClamp(s32 value) {
 }
 
 f32 GXGetYScaleFactor(u32 arg0, u32 arg1) {
- f32 ratio, previous, c0, c1;
- u32 numerator, height, scale, factor;
- ratio=(f32)arg1/(f32)arg0; height=arg1;
- factor=(u32)(lbl_80560B40/ratio)&0x1FF;
- numerator=(arg0-1)<<8; scale=numerator/factor+1;
- if(factor>0x80&&factor<0x100){while(!(factor&1))factor>>=1;if(arg0%factor==0)scale++;}
- if(scale>0x400)scale=0x400;
- while(scale>arg1){height--;ratio=(f32)height/(f32)arg0;factor=(u32)(lbl_80560B40/ratio)&0x1FF;scale=numerator/factor+1;
- if(factor>0x80&&factor<0x100){while(!(factor&1))factor>>=1;if(arg0%factor==0)scale++;}
- if(scale>0x400)scale=0x400;}
- previous=ratio;
- while(scale<arg1){height++;previous=ratio;ratio=(f32)height/(f32)arg0;factor=(u32)(lbl_80560B40/ratio)&0x1FF;scale=numerator/factor+1;
- if(factor>0x80&&factor<0x100){while(!(factor&1))factor>>=1;if(arg0%factor==0)scale++;}
- if(scale>0x400)scale=0x400;}
- return previous;
+    f32 previous;
+    f32 ratio;
+    u32 numerator, height, scale, factor;
+
+    ratio = (f32)arg1 / (f32)arg0;
+    height = arg1;
+    factor = (u32)(256.0f / ratio) & 0x1FF;
+    numerator = (arg0 - 1) << 8;
+    scale = numerator / factor + 1;
+
+    if (factor > 0x80 && factor < 0x100) {
+        while (!(factor & 1))
+            factor >>= 1;
+        if (arg0 % factor == 0)
+            scale++;
+    }
+
+    if (scale > 0x400)
+        scale = 0x400;
+
+    while (scale > arg1) {
+        height--;
+        ratio = (f32)height / (f32)arg0;
+        factor = (u32)(256.0f / ratio) & 0x1FF;
+        scale = numerator / factor + 1;
+        if (factor > 0x80 && factor < 0x100) {
+            while (!(factor & 1))
+                factor >>= 1;
+            if (arg0 % factor == 0)
+                scale++;
+        }
+        if (scale > 0x400)
+            scale = 0x400;
+    }
+
+    previous = ratio;
+
+    while (scale < arg1) {
+        height++;
+        previous = ratio;
+        ratio = (f32)height / (f32)arg0;
+        factor = (u32)(256.0f / ratio) & 0x1FF;
+        scale = numerator / factor + 1;
+        if (factor > 0x80 && factor < 0x100) {
+            while (!(factor & 1))
+                factor >>= 1;
+            if (arg0 % factor == 0)
+                scale++;
+        }
+        if (scale > 0x400)
+            scale = 0x400;
+    }
+
+    return previous;
 }
 
 extern f32 lbl_80560B40;
@@ -4135,7 +4174,8 @@ void GXSetNumTevStages(s32 count) {
     __GXData[0x5FC / 4] |= 4;
 }
 
-void GXSetFog(int type, GXColor color, f32 start, f32 end, f32 near, f32 far) {
+typedef u32 GXFogType;
+void GXSetFog(GXFogType type, GXColor color, f32 start, f32 end, f32 near, f32 far) {
     f32 a, c;
     u32 a_bits, c_bits;
 
@@ -4146,7 +4186,7 @@ void GXSetFog(int type, GXColor color, f32 start, f32 end, f32 near, f32 far) {
     u32 fogParamReg3 = 0;
 
     u32 fsel = GX_FOG_GET_FSEL(type);
-    int ortho = GX_FOG_GET_PROJ(type);
+    BOOL ortho = GX_FOG_GET_PROJ(type);
 
     if (ortho) {
         if (far == near || end == start) {
