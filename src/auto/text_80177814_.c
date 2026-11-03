@@ -73,6 +73,7 @@ void fn_801778C0(void) {
     }
 }
 
+#pragma dont_inline off
 long fn_80177980(void) {
     return 0;
 }
