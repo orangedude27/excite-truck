@@ -261,27 +261,22 @@ void fn_802662D8(float *arg0, float *arg1, float *arg2, float *arg3, int arg4) {
     arg1[2] = z;
 }
 
-void fn_802670A0(int arg0, int *arg1) {
+void fn_802670A0(int *arg0, int arg1) {
     int count;
-    int x;
-    int y;
+    int cols;
     int div;
     int a;
     int b;
+
     count = fn_80178CA4();
-    x = count ^ 1;
-    y = x >> 1;
-    x &= count;
-    y -= x;
-    y = ((unsigned int)y) >> 31;
-    y += 1;
-    div = (count + y - 1) / y;
-    a = lbl_8055CFF0 / y;
+    cols = (count > 1) ? 2 : 1;
+    div = (count + cols - 1) / cols;
+    a = lbl_8055CFF0 / cols;
     b = lbl_8055CFF4 / div;
-    arg1[16] = a;
-    arg1[17] = b;
-    arg1[14] = a * (arg0 / div);
-    arg1[15] = b * (arg0 % div);
+    arg0[16] = a;
+    arg0[17] = b;
+    arg0[14] = a * (arg1 / div);
+    arg0[15] = b * (arg1 % div);
 }
 
 #pragma scheduling invalid_target
@@ -304,32 +299,36 @@ extern float fn_801EA0E8(float, float);
 #pragma push
 #pragma ppc_psq_save off
 void fn_802671CC(void *arg0, int arg1) {
-    union IntDouble { double value; unsigned int word[2]; };
+    union IntDouble {
+        double value;
+        unsigned int word[2];
+    };
     struct Scratch {
         float output[3];
         float input[3];
         union IntDouble width;
         union IntDouble height;
     } scratch;
-    register float *in = scratch.input;
-    register float *out = scratch.output;
-    register float *matrix = (float *)arg0;
-    register unsigned int widthBits;
-    register unsigned int heightBits;
-    register float z;
-    register float delta;
-    register float xstep;
+    float *in = scratch.input;
+    float *out = scratch.output;
+    float *matrix;
+    unsigned int widthBits;
+    unsigned int heightBits;
+    float z;
+    float delta;
+    float xstep;
     float widthValue;
     float heightValue;
-    register float ystep;
-    register float best;
+    float ystep;
+    float best;
     double bias;
-    register int i;
+    int i;
 
     widthBits = *(unsigned int *)((char *)arg0 + 0x44) ^ 0x80000000;
     heightBits = *(unsigned int *)((char *)arg0 + 0x40) ^ 0x80000000;
     scratch.width.word[0] = 0x43300000;
     scratch.width.word[1] = widthBits;
+    matrix = (float *)arg0;
     z = *(float *)((char *)arg0 + 0x48);
     delta = z * *(float *)((char *)arg0 + 0x34);
     xstep = delta / lbl_8055D020;
@@ -343,8 +342,8 @@ void fn_802671CC(void *arg0, int arg1) {
     i = 0;
 
     for (; i < 4; i++) {
-        register float x;
-        register float y;
+        float x;
+        float y;
         float heightDiff;
 
         if ((i & 1) != 0) x = xstep;
