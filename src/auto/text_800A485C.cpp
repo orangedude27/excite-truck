@@ -15035,50 +15035,31 @@ extern "C" s32 fn_800CFBC0(void *arg0, s32 arg1) {
     return *(s32 *)((char *)entry + 4);
 }
 
-s32 homebutton::gui::Manager::update(int arg1, f32 farg0, f32 farg1, unsigned long arg2, unsigned long arg3, unsigned long arg4, void *arg5) {
-    class ObjDispatch {
-    public:
-        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5();
-        virtual s32 d6(); virtual void d7(unsigned long, u32 *); virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11(); virtual void d12();
-        virtual void prepare(unsigned long, u32 *);
-        virtual void d14(); virtual void d15();
-        virtual s32 handle(s32, f32, f32, unsigned long, unsigned long, unsigned long, void *);
-        virtual s32 check();
-    };
-    class MgrDispatch {
-    public:
-        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5();
-        virtual void d6(); virtual void d7(); virtual void d8(); virtual void d9();
-        virtual void apply(s32, s32, void *);
-    };
-    u32 sp14[3];
-    u32 sp8[3];
+#pragma push
+#pragma processor 750
+extern "C" s32 update__Q310homebutton3gui9ComponentFiffUlUlUlPv(void *self, int index, f32 x, f32 y, unsigned long a, unsigned long b, unsigned long c, void *arg) {
+    ComponentUpdateDispatch *obj = (ComponentUpdateDispatch *)self;
     s32 result = 0;
-    ObjDispatch *last = 0;
-    u32 index = 0;
-    while (index < *(u16 *)((u8 *)this + 0x10)) {
-        void *item = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs((u8 *)this + 8, (u16)index);
-        if ((*(ObjDispatch **)((u8 *)item + 4))->handle(arg1, farg0, farg1, arg2, arg3, arg4, arg5)) {
-            if ((*(ObjDispatch **)((u8 *)item + 4))->check()) last = *(ObjDispatch **)((u8 *)item + 4);
+    if (obj->enabled()) {
+        if (obj->hit(x, y)) {
+            if (obj->active(index)) {
+                obj->motion(x, y);
+                (*(ComponentUpdateManager **)((u8 *)self + 0x28))->notify(obj->id(), 3, arg);
+            } else {
+                obj->setActive(index, 1);
+                obj->enter();
+                (*(ComponentUpdateManager **)((u8 *)self + 0x28))->notify(obj->id(), 1, arg);
+            }
             result = 1;
-        }
-        index++;
-        if ((u32)this + 8 == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
-    }
-    if (last) {
-        if (arg2) {
-            last->prepare(arg2, sp14);
-            ((MgrDispatch *)this)->apply(last->d6(), 0, arg5);
-        }
-        if (arg4) {
-            last->prepare(arg4, sp8);
-            ((MgrDispatch *)this)->apply(last->d6(), 5, arg5);
+        } else if (obj->active(index)) {
+            obj->setActive(index, 0);
+            obj->leave();
+            (*(ComponentUpdateManager **)((u8 *)self + 0x28))->notify(obj->id(), 2, arg);
         }
     }
     return result;
 }
-
+#pragma pop
 extern "C" u8 fn_800CFDB4(void *arg0) { return *((u8 *)((u8 *)arg0 + 0x24)); }
 
 extern "C" void fn_800CFDBC(void *arg0, s32 arg1, void *arg2) {
