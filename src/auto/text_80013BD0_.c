@@ -812,6 +812,55 @@ void fn_80015658(void *arg0) {
     ((void (*)(s32, s32, void *, s32, ...))fn_8000FF88)(-0x100, 0xA, &lbl_80558BA4, temp_r30, lbl_805603E0, temp_f31 - lbl_805603A0, temp_f30 - lbl_805603E4);
 }
 
+void fn_80015A20(void *arg0, volatile f32 *arg1);
+void fn_80015770(void *arg0, f32 x, f32 y, f32 a, f32 b, f32 c) {
+    f32 vec[3];
+    f32 mtx[12];
+    f32 verts[4][3];
+    f32 *p;
+    f32 *q;
+    s32 i;
+    vec[0] = lbl_80560360;
+    vec[1] = lbl_80560360;
+    vec[2] = c;
+    fn_80015A20(mtx, vec);
+    mtx[9] = x;
+    mtx[10] = y;
+    mtx[11] = lbl_80560360;
+    p = verts[0];
+    q = p;
+    for (i = 0; i < 4; i++) {
+        if (i % 2 != 0) {
+            p[1] = b * lbl_805603BC;
+        } else {
+            p[1] = -b * lbl_805603BC;
+        }
+        if (i < 2) {
+            p[0] = a - lbl_805603E8;
+        } else {
+            p[0] = lbl_805603EC;
+        }
+        p[2] = lbl_80560360;
+        MultVec(mtx, p, q);
+        q += 3;
+        p[0] += x;
+        p[1] += y;
+        p[2] += lbl_80560360;
+        p += 3;
+    }
+    fn_802C8BD0(*(s32 *)((u8 *)arg0 + 0x44));
+    fn_801E4F20(4);
+    p = verts[0];
+    for (i = 0; i < 4; i++) {
+        fn_801E4F3C(-1, i >= 2, p[0], p[1], p[2],
+                    (i % 2 != 0) ? lbl_805603F0 : lbl_80560368,
+                    (i < 2) ? lbl_805603F4 : lbl_80560368);
+        p += 3;
+    }
+    fn_801E4FF4();
+    fn_802C8D74();
+}
+
 void fn_80015AA0(void *, f32);
 void fn_80015EB0(void *, f32);
 #pragma push
@@ -945,7 +994,6 @@ extern f32 lbl_805603F8,lbl_805603FC,lbl_80560408,lbl_8056040C,lbl_80560410,lbl_
 extern void fn_801478E0(void*,void*,s32,s32);
 extern void fn_80147F30(s32,s32,s32,f32,f32,f32,f32,f32,f32,f32,f32,f32,f32);
 extern void fn_80148134(f32*,f32*,s32,f32,f32);
-extern void fn_80015770(void*,f32,f32,f32,f32,f32);
 #pragma push
 #pragma processor 750
 #pragma cplusplus on
