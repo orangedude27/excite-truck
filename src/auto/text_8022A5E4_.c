@@ -63,6 +63,12 @@ extern void fn_8022C9D0(void);
 extern int fn_80232B70(int);
 extern void fn_8022A8E4(int);
 extern double lbl_80563590;
+extern float lbl_80563598;
+extern int fn_802C4EFC(int);
+extern int fn_802C5220(void);
+extern int fn_801E4B00(int *);
+extern int fn_801E4B48(int *);
+extern int fn_80232B78(int);
 extern char lbl_8033FF98[];
 extern int stricmp(const char *, const char *);
 extern void fn_8022CAA8();
@@ -831,28 +837,29 @@ extern char lbl_8055B950[];
 extern char lbl_8033FBE8[], lbl_8055B930[], lbl_8055B938[], lbl_8055B940[], lbl_8055B948[], lbl_8055B950[];
 #pragma dont_inline(fn_8022CD0C)
 void fn_8022CDE4(int *d, void *o) {
- char *s; void **v;
- if (!o) return;
- v=*(void ***)o;
- if (((int(*)(void*,const char*))v[3])(o,lbl_8033FBE8+0x498)) { s=((char*(*)(void*,const char*))v[5])(o,lbl_8033FBE8+0x498); d[0]=fn_8022CD0C(s); }
- v=*(void ***)o;
- if (((int(*)(void*,const char*))v[3])(o,lbl_8033FBE8+0x4A4)) { s=((char*(*)(void*,const char*))v[5])(o,lbl_8033FBE8+0x4A4); d[1]=fn_8022CD0C(s); }
- v=*(void ***)o;
- if (((int(*)(void*,const char*))v[3])(o,lbl_8033FBE8+0x4BC)) { s=((char*(*)(void*,const char*))v[5])(o,lbl_8033FBE8+0x4BC); d[2]=fn_8022CD0C(s); }
- v=*(void ***)o;
- if (((int(*)(void*,const char*))v[3])(o,lbl_8033FBE8+0x4C8)) { s=((char*(*)(void*,const char*))v[5])(o,lbl_8033FBE8+0x4C8); d[3]=fn_8022CD0C(s); }
- v=*(void ***)o;
- if (((int(*)(void*,const char*))v[3])(o,lbl_8033FBE8+0x4E0)) {
-  s=((char*(*)(void*,const char*))v[5])(o,lbl_8033FBE8+0x4E0);
+ char *s; const char *base = lbl_8033FBE8;
+ if (o == 0) goto end;
+ 
+ if (((int(*)(void*,const char*))(*(void ***)o)[3])(o,base+0x498)) { s=((char*(*)(void*,const char*))(*(void ***)o)[5])(o,base+0x498); d[0]=fn_8022CD0C(s); }
+ 
+ if (((int(*)(void*,const char*))(*(void ***)o)[3])(o,base+0x4A4)) { s=((char*(*)(void*,const char*))(*(void ***)o)[5])(o,base+0x4A4); d[1]=fn_8022CD0C(s); }
+ 
+ if (((int(*)(void*,const char*))(*(void ***)o)[3])(o,base+0x4BC)) { s=((char*(*)(void*,const char*))(*(void ***)o)[5])(o,base+0x4BC); d[2]=fn_8022CD0C(s); }
+ 
+ if (((int(*)(void*,const char*))(*(void ***)o)[3])(o,base+0x4C8)) { s=((char*(*)(void*,const char*))(*(void ***)o)[5])(o,base+0x4C8); d[3]=fn_8022CD0C(s); }
+ 
+ if (((int(*)(void*,const char*))(*(void ***)o)[3])(o,base+0x4E0)) {
+  s=((char*(*)(void*,const char*))(*(void ***)o)[5])(o,base+0x4E0);
   if (!stricmp(s,lbl_8055B930)) d[4]=0;
   else if (!stricmp(s,lbl_8055B938)) d[4]=4;
   else if (!stricmp(s,lbl_8055B940)) d[4]=2;
-  else if (!stricmp(s,lbl_8033FBE8+0x4EC)) d[4]=1;
-  else if (!stricmp(s,lbl_8033FBE8+0x4F8)) d[4]=5;
-  else if (!stricmp(s,lbl_8033FBE8+0x504)) d[4]=6;
+  else if (!stricmp(s,base+0x4EC)) d[4]=1;
+  else if (!stricmp(s,base+0x4F8)) d[4]=5;
+  else if (!stricmp(s,base+0x504)) d[4]=6;
   else d[4]=fn_8022CD0C(s);
  }
- v=*(void ***)o;
- if (((int(*)(void*,const char*))v[3])(o,lbl_8055B948)) { s=((char*(*)(void*,const char*))v[5])(o,lbl_8055B948); sscanf(s,lbl_8055B950,&d[5],&d[6]); }
+ 
+ if (((int(*)(void*,const char*))(*(void ***)o)[3])(o,lbl_8055B948)) { s=((char*(*)(void*,const char*))(*(void ***)o)[5])(o,lbl_8055B948); sscanf(s,lbl_8055B950,&d[5],&d[6]); }
+end:;
 }
 #pragma dont_inline reset
