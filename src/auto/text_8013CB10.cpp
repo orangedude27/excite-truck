@@ -7,11 +7,13 @@ extern "C" f32 PSVECSquareDistance(void *, void *);
 extern "C" void fn_802A9BFC(void *, void *, s32, s32, s32, s32, s32, f32);
 extern "C" f32 lbl_80561504;
 extern "C" f32 lbl_80561508;
+struct PathNode { u8 data[0x24]; };
+struct PathGroup { s32 count; PathNode *nodes; s32 pad[3]; };
+struct PathData { s32 count; PathGroup *groups; };
 static inline u8 *NextPathNode(u8 *self, u8 *item) {
-    u8 *group = *(u8 **)(*(u8 **)(self + 0x64) + 4) + *(s32 *)(self + 0x68) * 0x14;
-    u8 *array = *(u8 **)(group + 4);
-    u8 *last = array + *(s32 *)group * 0x24 - 0x24;
-    return item == last ? array : item + 0x24;
+    PathGroup *g = &(*(PathData **)(self + 0x64))->groups[*(s32 *)(self + 0x68)];
+    PathNode *last = &g->nodes[g->count] - 1;
+    return (PathNode *)item == last ? (u8 *)g->nodes : item + 0x24;
 }
 extern "C" f32 fn_801E7E24(void);
 extern "C" void fn_802981F8(void *);
@@ -721,6 +723,60 @@ extern "C" void fn_8013EB0C(void *arg0, s32 arg1) {
     u8 *entry = *(u8 **)((u8 *)arg0 + 0xB8) + arg1 * 0x12C;
     if (*(u8 *)(entry + 0x118))
         *(s32 *)entry = 1;
+}
+
+extern "C" void fn_8013EB30(void *arg0) {
+    struct Vec3 {
+        f32 x, y, z;
+    };
+    u8 *self = (u8 *)arg0;
+    f32 elapsed = fn_8013CB3C() - *(f32 *)(self + 0x290);
+    u8 *obj = *(u8 **)(self + 0xB8) + fn_801E866C(0) * 0x12C;
+    u8 *item = *(u8 **)(obj + 0x104);
+    if (item != 0) {
+        s32 idx = *(s32 *)(obj + 0xE8);
+        s32 total = *(s32 *)(lbl_8042FB3C + 4);
+        if (total - idx < 3) {
+            Vec3 a, b;
+            while (item[0x1E] != 0) {
+                item = NextPathNode(self, item);
+            }
+            {
+                s32 n = idx + 1;
+                if (n < total) {
+                    s32 count = total - n;
+                    for (; count > 0; count--) {
+                        do {
+                            item = NextPathNode(self, item);
+                        } while (item[0x1E] != 0);
+                    }
+                }
+            }
+            if (item == *(u8 **)(self + 0x28C) ||
+                PSVECSquareDistance(item, (u8 *)fn_802C86DC() + 0x24) < lbl_80561504) {
+                s32 r7, r9;
+                f32 y;
+                if (*(u8 **)(self + 0x28C) != item) {
+                    *(u8 **)(self + 0x28C) = item;
+                    *(f32 *)(self + 0x290) = fn_8013CB3C();
+                }
+                a = *(Vec3 *)item;
+                b = *(Vec3 *)(item + 0xC);
+                y = a.y;
+                if (!(y > b.y)) y = b.y;
+                y = lbl_80561508 + y;
+                b.y = y;
+                a.y = y;
+                r7 = 0;
+                r9 = 0x48;
+                if (*(s32 *)(self + 0x68) == *(s32 *)(lbl_8042FB3C + 0x14) - 1) {
+                    r7 = 0x48;
+                    r9 = 0x72;
+                }
+                fn_802A9BFC(&a, &b, *(s32 *)(self + 0xA4), 0, r7, 0x100, r9, elapsed);
+            }
+        }
+    }
 }
 
 #pragma push
