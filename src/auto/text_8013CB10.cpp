@@ -3,6 +3,16 @@ extern "C" f64 fn_8002F234(f32);
 extern "C" s32 fn_801E9E30(void *, f32 *);
 extern "C" s32 fn_80136594(void **, s32, f32 *, f32);
 extern "C" s32 fn_80178C9C(void);
+extern "C" f32 PSVECSquareDistance(void *, void *);
+extern "C" void fn_802A9BFC(void *, void *, s32, s32, s32, s32, s32, f32);
+extern "C" f32 lbl_80561504;
+extern "C" f32 lbl_80561508;
+static inline u8 *NextPathNode(u8 *self, u8 *item) {
+    u8 *group = *(u8 **)(*(u8 **)(self + 0x64) + 4) + *(s32 *)(self + 0x68) * 0x14;
+    u8 *array = *(u8 **)(group + 4);
+    u8 *last = array + *(s32 *)group * 0x24 - 0x24;
+    return item == last ? array : item + 0x24;
+}
 extern "C" f32 fn_801E7E24(void);
 extern "C" void fn_802981F8(void *);
 extern "C" f32 *fn_802C86DC(void);
@@ -713,6 +723,8 @@ extern "C" void fn_8013EB0C(void *arg0, s32 arg1) {
         *(s32 *)entry = 1;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void fn_8013ED74(void *arg0) {
     struct Entry {
         u8 *item;
@@ -813,7 +825,7 @@ extern "C" void fn_8013ED74(void *arg0) {
     list.count = 0;
     list.cap = 0;
 }
-
+#pragma pop
 extern "C" f32 lbl_80561510;
 extern "C" f32 lbl_80561514;
 extern "C" void fn_802AE220(int);
