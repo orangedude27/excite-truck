@@ -74,7 +74,7 @@ extern int fn_802ECF00(int);
 extern int fn_802ECF04(void);
 extern void fn_802E317C(const char *, ...);
 extern void fn_80265940(void);
-extern void fn_802646D0(void *);
+extern void *fn_802646D0(void *);
 extern void fn_8026451C(void *);
 extern int stricmp(const char *, const char *);
 extern int fn_802656C8(void *);
@@ -446,7 +446,7 @@ void fn_80264D5C(void *arg0) {
     float dt;
     int i, count;
 
-    l = (SparkList *)arg0;
+    l = (SparkList *)((char *)arg0 + 0x40);
     dt = fn_80214D48();
     i = 0;
     while (i < l->count) {
@@ -476,7 +476,7 @@ void fn_80264D5C(void *arg0) {
             p->a10 += p->a14 * dt;
         }
     }
-    l = (SparkList *)((char *)arg0 + 0x60);
+    l = (SparkList *)((char *)arg0 + 0xA0);
     dt = fn_80214D48();
     i = 0;
     while (i < l->count) {
