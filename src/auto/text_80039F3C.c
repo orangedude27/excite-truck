@@ -424,27 +424,80 @@ int fn_8003A834(void *arg0, void *arg1) {
     }
     return 1;
 }
-extern int IOS_IoctlvAsync(int,int,int,int,void*,void*,void*,void*);
-extern int doTransactionCallback(int,void*);
-int DVDLowOpenPartition(int arg0,int arg1,int arg2,int arg3,int arg4,int arg5) {
-    unsigned int slot, idx; unsigned char *entry; unsigned char *vec; int result;
-    if (arg1 && (arg1 & 31)) { OSReport(lbl_80302848+0x338); return 0; }
-    if (arg3 && (arg3 & 31)) { OSReport(lbl_80302848+0x370); return 0; }
-    if (arg4 && (arg4 & 31)) { OSReport(lbl_80302848+0x370); return 0; }
-    slot=lbl_8055D8E8; entry=lbl_8037B820+slot*32; lbl_8055D8E0=1;
-    if (entry[8]) { OSReport(lbl_80302848+0x218,slot); OSReport(lbl_80302848+0x250); for(;;){} }
-    if (*(unsigned int *)(entry+12)+0x01150000 != 0xFEEBDAED) { OSReport(lbl_80302848+0x280); for(;;){} }
-    *(int *)entry=arg5; *(int *)(entry+4)=1; entry[8]=1;
-    idx=slot+1; if(idx>=4)idx=0; lbl_8055D8E8=idx;
-    idx=lbl_8055D8E4+1; lbl_8055D8E4=idx; if(idx>=4){idx=0;lbl_8055D8E4=0;}
-    vec=lbl_8055D8FC+idx*32; vec[0]=0x8B; *(int *)(vec+4)=arg0;
-    *(int *)(lbl_8037B820+0xC4)=32; *(void **)(lbl_8037B820+0xC0)=vec;
-    *(int *)(lbl_8037B820+0xC8)=arg1; *(int *)(lbl_8037B820+0xCC)=arg1?0x2A4:0;
-    *(int *)(lbl_8037B820+0xD0)=arg3; *(int *)(lbl_8037B820+0xD4)=arg3?arg2:0;
-    *(int *)(lbl_8037B820+0xD8)=arg4; *(int *)(lbl_8037B820+0xDC)=0x49E4;
-    *(void **)(lbl_8037B820+0xE0)=lbl_8037B820+0x100; *(int *)(lbl_8037B820+0xE4)=32;
-    result=IOS_IoctlvAsync(lbl_80558E18,0x8B,3,2,lbl_8037B820+0xC0,doTransactionCallback,entry,lbl_8037B820+0xC0);
-    if(result){OSReport(lbl_80302848+0x3A8,result);entry[8]=0;return 0;} return 1;
+extern int IOS_IoctlvAsync(int, int, int, int, void *, void *, void *);
+extern int doTransactionCallback(int, void *);
+int DVDLowOpenPartition(unsigned int offset, const void *ticket, unsigned int certsSize,
+                        const void *certs, void *tmd,
+                        void *callback) {
+    const char *msg = lbl_80302848;
+    DVDLowContext *ctx;
+    IPCIOVector *ioVec;
+    DVDLowDICommand *cmd;
+    int result;
+
+    if (ticket != (void *)0 && ((unsigned int)ticket % 32 != 0)) {
+        OSReport(msg + 0x338);
+        return 0;
+    }
+
+    if (certs != (void *)0 && ((unsigned int)certs % 32 != 0)) {
+        OSReport(msg + 0x370);
+        return 0;
+    }
+
+    if (tmd != (void *)0 && ((unsigned int)tmd % 32 != 0)) {
+        OSReport(msg + 0x370);
+        return 0;
+    }
+
+    lbl_8055D8E0 = 1;
+    ctx = newContext(callback, 1, msg);
+
+    nextCommandBuf();
+    cmd = (DVDLowDICommand *)(lbl_8055D8FC + lbl_8055D8E4 * 32);
+    cmd->command = 0x8B;
+    cmd->arg1 = offset;
+
+    ioVec = (IPCIOVector *)(lbl_8037B820 + 0xC0);
+
+    // Input vector 1: DI command
+    ioVec[0].base = cmd;
+    ioVec[0].length = 32;
+
+    // Input vector 2: eTicket
+    ioVec[1].base = (void *)ticket;
+    if (ticket == (void *)0) {
+        ioVec[1].length = 0;
+    } else {
+        ioVec[1].length = 0x2A4;
+    }
+
+    // Input vector 3: Shared certs
+    ioVec[2].base = (void *)certs;
+    if (certs == (void *)0) {
+        ioVec[2].length = 0;
+    } else {
+        ioVec[2].length = certsSize;
+    }
+
+    // Output vector 1: TMD
+    ioVec[3].base = tmd;
+    ioVec[3].length = 0x49E4;
+
+    // Output vector 2: Ticket error
+    ioVec[4].base = lbl_8037B820 + 0x100;
+    ioVec[4].length = 32;
+
+    result = IOS_IoctlvAsync(lbl_80558E18, 0x8B, 3, 2, ioVec,
+                             (void *)doTransactionCallback, ctx);
+
+    if (result != 0) {
+        OSReport(msg + 0x3A8, result);
+        ctx->inUse = 0;
+        return 0;
+    }
+
+    return 1;
 }
 
 extern unsigned int lbl_8055D8E4, lbl_8055D8E8;
