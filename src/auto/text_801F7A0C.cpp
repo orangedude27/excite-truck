@@ -182,6 +182,9 @@ struct F92Node {
 extern "C" {
 extern u8 lbl_8033B1EC[];
 extern u8 lbl_8033B210[];
+extern u8 lbl_8033B024[];
+__declspec(section ".sdata") extern u8 lbl_8055B2CC[];
+__declspec(section ".sdata") extern u8 lbl_8055B2D4[];
 __declspec(section ".sdata") extern u8 lbl_8055B2DC[];
 extern s32 lbl_8055B36C;
 __declspec(section ".sdata") extern const char lbl_8055B37C[];
