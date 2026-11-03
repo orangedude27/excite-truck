@@ -392,24 +392,21 @@ extern "C" void fn_802BF600(void *arg0, void *dst, void *src) {
 extern "C" void *fn_802BF780(void *);
 extern "C" int fn_802BF6AC(void) {
     struct Dummy {
-        virtual void f0(int);
+        virtual ~Dummy();
+        virtual int f0();
         virtual int f1();
         virtual int f2();
-        virtual int f3();
     };
     extern void *fn_801284F8(int, const char *);
-    extern void *fn_802BF780(void);
     extern const char lbl_8034AD90[];
-    register void *obj;
-    obj = fn_801284F8(0x18, lbl_8034AD90);
+    Dummy *obj = (Dummy *)fn_801284F8(0x18, lbl_8034AD90);
     if (obj != 0) {
-        obj = fn_802BF780();
-        if (obj != 0) {
-            if (((Dummy *)obj)->f3() == 0) {
-                if (obj != 0)
-                    ((Dummy *)obj)->f0(1);
-                obj = 0;
-            }
+        obj = (Dummy *)fn_802BF780(obj);
+    }
+    if (obj != 0) {
+        if (obj->f2() == 0) {
+            delete obj;
+            obj = 0;
         }
     }
     return (int)obj;
