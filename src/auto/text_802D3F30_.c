@@ -751,6 +751,7 @@ void fn_802D5B8C(void *arg0) {
         GXCallDisplayList(*(void **)((char *)arg0 + 0x30), *(u32 *)((char *)arg0 + 0x2C));
     }
 }
+#pragma pop
 
 void fn_802D5DE8(u32 flags) {
     int desc[54];
