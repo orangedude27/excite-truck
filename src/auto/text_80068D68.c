@@ -6200,15 +6200,15 @@ void btm_read_remote_features_complete(UINT8 *p) {
                 j = 0;
                 policy = *(u16 *)(lbl_803C0F78 + 0x4C6);
                 q = lbl_803C0F78 + 0x34;
-                while (1) {
-                    if (q[0x119] && memcmp(q + 8, acl + 8, 6) == 0) break;
-                    j++;
-                    q += 0x11C;
-                    if (j >= 4) {
-                        q = 0;
-                        break;
+                for (;;) {
+                    if (q[0x119] && memcmp(q + 8, acl + 8, 6) == 0) {
+                        goto found;
                     }
+                    q += 0x11C;
+                    if (++j >= 4) break;
                 }
+                q = 0;
+found:
                 if (q) {
                     *(u16 *)(q + 0x10E) = policy;
                     if (!q[0x11A]) btsnd_hcic_write_policy_set_80085668(*(u16 *)q, policy);
@@ -14295,6 +14295,49 @@ void L2CA_Deregister(UINT16 psm) {
     if (lbl_803C4040[0] >= 2) {
         fn_80070954(0x80001, lbl_80317CFC, psm);
     }
+}
+
+u16 L2CA_ConnectReq(u16 psm, u8 *addr) {
+    extern void *l2cu_find_rcb_by_psm(u16);
+    extern void *l2cu_allocate_lcb(u8 *);
+    extern void *l2cu_allocate_ccb(void *, u16);
+    extern BOOLEAN l2cu_create_conn(void *);
+    u8 *log = lbl_80317C20;
+    void *rcb;
+    u8 *lcb, *ccb;
+    if (lbl_803C4040[0] >= 3) fn_80070954(0x80002, log + 0x110, psm);
+    if (lbl_803C4040[0] >= 3) fn_800709CC(0x80002, log + 0x130, addr[0], addr[1], addr[2], addr[3], addr[4], addr[5]);
+    if (!fn_80079514()) {
+        if (lbl_803C4040[0] >= 2) fn_8007093C(0x80001, log + 0x168);
+        return 0;
+    }
+    rcb = l2cu_find_rcb_by_psm(psm);
+    if (rcb == 0) {
+        if (lbl_803C4040[0] >= 2) fn_80070954(0x80001, log + 0x18c, psm);
+        return 0;
+    }
+    lcb = l2cu_find_lcb_by_bd_addr(addr);
+    if (lcb == 0) {
+        lcb = l2cu_allocate_lcb(addr);
+        if (lcb == 0) {
+            if (lbl_803C4040[0] >= 2) fn_8007093C(0x80001, log + 0x1bc);
+            return 0;
+        }
+        if (!l2cu_create_conn(lcb)) return 0;
+    }
+    if (*(s32 *)(lcb + 4) == 5) {
+        if (lbl_803C4040[0] >= 3) fn_8007093C(0x80002, log + 0x1e0);
+        return 0;
+    }
+    ccb = ((void *(*)(void *))l2cu_allocate_ccb)(lcb);
+    if (ccb == 0) {
+        if (lbl_803C4040[0] >= 2) fn_8007093C(0x80001, log + 0x218);
+        return 0;
+    }
+    *(void **)(ccb + 0x30) = rcb;
+    if (*(s32 *)(lcb + 4) == 4) fn_80089E40(ccb, 0x14, 0);
+    if (lbl_803C4040[0] >= 3) fn_80070954(0x80002, log + 0x23c, *(u16 *)(ccb + 0x14));
+    return *(u16 *)(ccb + 0x14);
 }
 
 BOOLEAN L2CA_ConnectRsp(BD_ADDR addr, UINT8 id, UINT16 lcid, UINT16 result, UINT16 status) {
