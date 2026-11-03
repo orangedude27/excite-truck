@@ -379,7 +379,7 @@ extern s32 fn_8000DA10(void);
 extern int fn_8000DBAC(void);
 extern void fn_802E6FBC(void), fn_8000DC70(int), fn_800169F8(int), fn_80137C78(int);
 extern s32 fn_802E4A10(void);
-extern void fn_80137C84(int), fn_8023BCEC(void);
+extern void fn_80137C84(int, int), fn_8023BCEC(void);
 extern void fn_8025812C(void), fn_8025C054(void), fn_800196FC(void), fn_80161DE4(void);
 extern void fn_8027DE6C(void), fn_80263F30(int,int,int);
 extern void fn_802E317C(const char *, ...);
