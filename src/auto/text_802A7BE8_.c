@@ -115,7 +115,7 @@ extern s32 fn_8027AC64(void);
 extern s32 fn_8027AC80(void);
 extern s32 fn_800122B4(u32, void *);
 void qsort(void *, u32, u32, s32 (*)(s32 *, s32 *));
-void fn_802339A8(f32 a, s32 b, f32 c, s32 d, ...);
+void fn_802339A8(s32 a, f32 b, s32 c, f32 d, ...);
 s32 fn_802A7E08(s32 *arg0, s32 *arg1) {
     f32 a[3];
     f32 dist;
@@ -150,6 +150,7 @@ void fn_802A7EEC(void) {
     float screen[3];
     int array[8];
     void *truck;
+    int *p;
     int j;
     int id;
     int i;
@@ -173,13 +174,16 @@ void fn_802A7EEC(void) {
         return;
     }
 
+    p = array;
     for (j = 0; j < fn_801EA994(); j++) {
-        array[j] = j;
+        *p = j;
+        p++;
     }
 
     qsort(array, fn_801EA994(), 4, fn_802A7E08);
 
     c24 = lbl_805648F4;
+    p = array;
     c25 = lbl_805648FC;
     c31 = lbl_80564910;
     c30 = lbl_80564914;
@@ -188,8 +192,8 @@ void fn_802A7EEC(void) {
     c27 = lbl_80564900;
     c28 = lbl_80564920;
 
-    for (i = 0; i < fn_801EA994(); i++) {
-        id = array[i];
+    for (i = 0; i < fn_801EA994(); i++, p++) {
+        id = *p;
         if (id == fn_801E866C(-1)) {
             continue;
         }
