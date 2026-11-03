@@ -315,6 +315,7 @@ void fn_8017248C(int arg0) {
 }
 #pragma scheduling on
 #pragma optimization_level reset
+#pragma dont_inline on
 float fn_801725C8(float arg0) {
     extern float lbl_8043038C[];
     extern float lbl_80561A40;
@@ -682,8 +683,6 @@ extern "C" void *fn_80172E64(void *arg0, int arg1) {
     extern void fn_802ADE60(int, int);
     extern int fn_80128668(void);
     VObj *first;
-    register VObj *p;
-    register int value;
     if (arg0 != 0) {
         first = *(VObj **)((char *)arg0 + 0x2B4);
         *(void **)arg0 = lbl_80331018;
@@ -697,39 +696,38 @@ extern "C" void *fn_80172E64(void *arg0, int arg1) {
         fn_802CAC54(*(int *)&lbl_8055E3A8);
         fn_802CAC54(*(int *)((char *)arg0 + 0x198));
         if ((char *)arg0 + 0x1AC != 0) {
-            value = *(int *)((char *)arg0 + 0x1B8);
-            if (value != 0) {
-                fn_802ADE60(value, 1);
+            if (*(int *)((char *)arg0 + 0x1B8) != 0) {
+                fn_802ADE60(*(int *)((char *)arg0 + 0x1B8), 1);
                 *(int *)((char *)arg0 + 0x1B8) = 0;
             }
-            p = *(VObj **)((char *)arg0 + 0x1C0);
-            if (p != 0) {
-                if (p != 0) p->destroy(1);
+            if (*(VObj **)((char *)arg0 + 0x1C0) != 0) {
+                if (*(VObj **)((char *)arg0 + 0x1C0) != 0)
+                    (*(VObj **)((char *)arg0 + 0x1C0))->destroy(1);
                 *(VObj **)((char *)arg0 + 0x1C0) = 0;
             }
-            p = *(VObj **)((char *)arg0 + 0x1C4);
-            if (p != 0) {
-                if (p != 0) p->destroy(1);
+            if (*(VObj **)((char *)arg0 + 0x1C4) != 0) {
+                if (*(VObj **)((char *)arg0 + 0x1C4) != 0)
+                    (*(VObj **)((char *)arg0 + 0x1C4))->destroy(1);
                 *(VObj **)((char *)arg0 + 0x1C4) = 0;
             }
-            p = *(VObj **)((char *)arg0 + 0x1C8);
-            if (p != 0) {
-                if (p != 0) p->destroy(1);
+            if (*(VObj **)((char *)arg0 + 0x1C8) != 0) {
+                if (*(VObj **)((char *)arg0 + 0x1C8) != 0)
+                    (*(VObj **)((char *)arg0 + 0x1C8))->destroy(1);
                 *(VObj **)((char *)arg0 + 0x1C8) = 0;
             }
-            p = *(VObj **)((char *)arg0 + 0x1D0);
-            if (p != 0) {
-                if (p != 0) p->destroy(1);
+            if (*(VObj **)((char *)arg0 + 0x1D0) != 0) {
+                if (*(VObj **)((char *)arg0 + 0x1D0) != 0)
+                    (*(VObj **)((char *)arg0 + 0x1D0))->destroy(1);
                 *(VObj **)((char *)arg0 + 0x1D0) = 0;
             }
-            p = *(VObj **)((char *)arg0 + 0x1D4);
-            if (p != 0) {
-                if (p != 0) p->destroy(1);
+            if (*(VObj **)((char *)arg0 + 0x1D4) != 0) {
+                if (*(VObj **)((char *)arg0 + 0x1D4) != 0)
+                    (*(VObj **)((char *)arg0 + 0x1D4))->destroy(1);
                 *(VObj **)((char *)arg0 + 0x1D4) = 0;
             }
-            p = *(VObj **)((char *)arg0 + 0x1D8);
-            if (p != 0) {
-                if (p != 0) p->destroy(1);
+            if (*(VObj **)((char *)arg0 + 0x1D8) != 0) {
+                if (*(VObj **)((char *)arg0 + 0x1D8) != 0)
+                    (*(VObj **)((char *)arg0 + 0x1D8))->destroy(1);
                 *(VObj **)((char *)arg0 + 0x1D8) = 0;
             }
         }
@@ -1536,6 +1534,82 @@ int fn_80175A68(void *unused, float *arg0, float *arg1, int arg2, void *unused2,
     stack[2] = y;
     return 1;
 }
+
+extern int fn_801B3050(int);
+extern float fn_801725C8(float);
+#pragma push
+#pragma use_lmw_stmw on
+void fn_80175B0C(char *arg0) {
+    float k = lbl_80561B04;
+    float step = lbl_80561A38;
+    float shrink = lbl_80561B08;
+    float min26 = lbl_80561A80;
+    float min25 = lbl_80561B0C;
+    float shrink24 = lbl_80561ABC;
+    float min24 = lbl_80561A78;
+    char *out = arg0;
+    int i = 0;
+    for (; i < *(int *)(arg0 + 0x124); i++, out += 0x24) {
+        float a, b, f24, f25, f26;
+        float v[2], w[2], d[2];
+        int n;
+        char *obj;
+        if (fn_801B3050(i) & 1) {
+            a = lbl_80561AF8;
+            b = lbl_80561A44;
+        } else {
+            a = lbl_80561A44;
+            b = lbl_80561AFC;
+        }
+        f25 = fn_801725C8(lbl_8055E3C8);
+        f26 = lbl_80561A38;
+        f24 = lbl_80561B00;
+        n = 0x13;
+        do {
+            float len, rad, c, s;
+            obj = (char *)fn_8017960C(i);
+            v[0] = *(float *)(obj + 0x60);
+            v[1] = *(float *)(obj + 0x68);
+            d[0] = *(float *)(obj + 0x54);
+            d[1] = *(float *)(obj + 0x5C);
+            len = (float)fn_8002F234(d[0] * d[0] + d[1] * d[1]);
+            if (!((float)__fabs(len) <= lbl_80558DC4[0])) {
+                float inv = f24 / len;
+                d[0] *= inv;
+                d[1] *= inv;
+            }
+            rad = fn_80129DC4(3, k * a, k * b);
+            c = (float)cos(rad);
+            s = (float)sin(rad);
+            w[0] = *(float *)(obj + 0x60);
+            {
+                float dx = d[0];
+                float dy = d[1];
+                d[0] = dx * c - dy * s;
+                d[1] = dx * s + dy * c;
+            }
+            w[0] = w[0] + d[0];
+            w[1] = *(float *)(obj + 0x68) + d[1];
+            if (fn_80171EF8(v, w) != 0)
+                break;
+            f26 = shrink * f26;
+            a -= step;
+            b += step;
+            if (!(f26 > min26)) f26 = min26;
+            f25 = shrink * f25;
+            if (!(f25 > min25)) f25 = min25;
+            f24 = shrink24 * f24;
+            if (!(f24 > min24)) f24 = min24;
+        } while (n-- > 0);
+        *(float *)(out + 0x18) = w[0];
+        *(float *)(out + 0x1C) = w[1];
+        *(float *)(out + 0x20) = f25;
+        *(float *)(out + 0x24) = f26 + lbl_8055E3C8;
+        *(char *)(out + 4) = 0;
+        *(int *)(out + 0x14) = -1;
+    }
+}
+#pragma pop
 
 #pragma push
 #pragma processor 750
