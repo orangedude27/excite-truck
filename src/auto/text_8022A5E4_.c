@@ -451,7 +451,117 @@ int fn_8022B498(int unused, const char *arg1) {
     }
     return max;
 }
-#pragma scheduling invalid_target
+
+#pragma push
+#pragma processor 750
+int fn_8022B620(int unused, int arg1) {
+    void *ctx;
+    int max;
+    int w;
+    int h;
+    int value;
+    int flags;
+    float scale;
+    float cur;
+    float prod;
+
+    ctx = fn_8022CA2C();
+    max = 0;
+    value = *(int *)((char *)ctx + 0x64);
+    if (value != 0) {
+        max = fn_802C4EFC(value);
+    } else if ((value = *(int *)((char *)ctx + 0x68)) != 0) {
+        max = ((int (*)(int))fn_802C5220)(value);
+    }
+    if (arg1 != 0) {
+        w = 0;
+        if (*(int *)((char *)ctx + 4) != 0) {
+            flags = *(int *)((char *)ctx + 0x38);
+            if (flags & 8) {
+                w = fn_801E4BA8(*(int **)((char *)ctx + 4));
+            } else if (flags & 0x10) {
+                int t = fn_801E4BA8(*(int **)((char *)ctx + 4));
+                w = ((int)((unsigned int)t >> 31) + t) >> 1;
+            } else {
+                int t;
+                if (flags & 0x20) {
+                    t = fn_801E4B48(*(int **)((char *)ctx + 4));
+                } else {
+                    t = 0;
+                }
+                w = t;
+            }
+        }
+        if (*(int *)((char *)ctx + 8) != 0) {
+            flags = *(int *)((char *)ctx + 0x38);
+            if (flags & 8) {
+                float f = *(float *)((char *)ctx + 0x34);
+                if (f < lbl_80563588) {
+                    w = fn_80232B70(*(int *)((char *)ctx + 8));
+                } else {
+                    w = (int)f;
+                }
+            } else if (flags & 0x10) {
+                float f = *(float *)((char *)ctx + 0x34);
+                if (f < lbl_80563588) {
+                    int t = fn_80232B70(*(int *)((char *)ctx + 8));
+                    w = ((int)((unsigned int)t >> 31) + t) >> 1;
+                } else {
+                    w = (int)(lbl_80563598 * f);
+                }
+            } else {
+                w = 0;
+            }
+        }
+        h = 0;
+        if (*(int *)((char *)ctx + 4) != 0) {
+            flags = *(int *)((char *)ctx + 0x38);
+            if (flags & 0x10) {
+                int t = fn_801E4BA8(*(int **)((char *)ctx + 4));
+                h = ((int)((unsigned int)t >> 31) + t) >> 1;
+            } else if (flags & 0x20) {
+                h = fn_801E4B00(*(int **)((char *)ctx + 4));
+            } else {
+                int t;
+                if (flags & 0x40) {
+                    t = fn_801E4BA8(*(int **)((char *)ctx + 4));
+                } else {
+                    t = 0;
+                }
+                h = t;
+            }
+        }
+        if (*(int *)((char *)ctx + 8) != 0) {
+            cur = *(float *)((char *)ctx + 0x34);
+            scale = lbl_80563588;
+            if (cur < scale) {
+                scale = lbl_80563588;
+            } else {
+                scale = *(float *)((char *)ctx + 0x34) /
+                    (float)fn_80232B70(*(int *)((char *)ctx + 8));
+            }
+            flags = *(int *)((char *)ctx + 0x38);
+            if (flags & 0x10) {
+                prod = scale * (float)fn_80232B70(*(int *)((char *)ctx + 8));
+                h = (int)(prod * lbl_80563598);
+            } else if (flags & 0x20) {
+                h = (int)(scale * (float)fn_80232B78(*(int *)((char *)ctx + 8)));
+            } else if (flags & 0x40) {
+                h = (int)(scale * (float)fn_80232B70(*(int *)((char *)ctx + 8)));
+            } else {
+                h = 0;
+            }
+        }
+        value = *(int *)((char *)ctx + 0x50);
+        if (*(int *)((char *)ctx + 0x48) > value) {
+            value = *(int *)((char *)ctx + 0x48);
+        }
+        value = h + (value + w);
+        return max > value ? max : value;
+    }
+    return max;
+}
+#pragma pop
 void fn_8022B91C(void *unused, int x, int y, char *text, unsigned int flagsArg) {
     extern int fn_802C4F14(int);
     extern int fn_802C4C90(int, int, int, int, int);
