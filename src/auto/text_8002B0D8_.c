@@ -6,6 +6,8 @@ extern double lbl_80560688, lbl_80560690, lbl_80560698, lbl_805606A0;
 extern double lbl_805606A8, lbl_805606B0, lbl_805606B8, lbl_805606C0, lbl_805606C8, lbl_805606D0;
 extern double lbl_805606D8, lbl_805606E0, lbl_805606E8, lbl_805606F0, lbl_805606F8, lbl_80560700, lbl_80560708;
 extern int lbl_80558DB0[];
+extern double fabs(double);
+extern double fn_8002F234(double);
 
 static const double huge = 1.0e300;
 
