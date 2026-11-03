@@ -1516,7 +1516,7 @@ s32 fn_80119824(void *arg0) {
     } else {
     }
     if (*(s32 *)((u8 *)arg0 + 0xB0) == 0) {
-        fn_801195D8();
+        fn_801195D8(arg0);
         return 0;
     }
     var_r30 = *(u32 *)((u8 *)arg0 + 0xC4);
@@ -5465,6 +5465,45 @@ void fn_80122ED8(s32 arg0, void *arg1, s32 arg2, void *arg3) {
     }
     fn_801231B8(arg0, arg1, arg2, arg3);
 }
+
+void fn_801231B8(s32 n, void *data, s32 index, void *table) {
+    s32 half = n >> 1, size = n >> 2, step, i;
+    f32 *a, *b, *p, *q;
+    while (size > 0x80) {
+        a = (f32 *)((u8 *)table + (index - (size >> 1)) * 4);
+        b = (f32 *)((u8 *)table + (index - size) * 4);
+        for (step = size; step < half; step *= 4) {
+            for (i = step - size, p = (f32 *)data + i; i < half; p += step * 2, i += step * 2) {
+                fn_801233F8(size, p, a);
+                fn_801233F8(size, (f32 *)((u8 *)data + (half + i) * 4), a);
+            }
+            for (i = step * 2 - size, p = (f32 *)data + i; i < half; i += step * 4, p += step * 4) {
+                fn_801237C4(size, p, b);
+                fn_801237C4(size, (f32 *)((u8 *)data + (half + i) * 4), b);
+            }
+        }
+        size >>= 2;
+    }
+    a = (f32 *)((u8 *)table + (index - (size >> 1)) * 4);
+    b = (f32 *)((u8 *)table + (index - size) * 4);
+    for (step = size; step < half; step *= 4) {
+        for (i = step - size, p = (f32 *)data + i; i < half; p += step * 2, i += step * 2) {
+            fn_801233F8(size, p, a);
+            fn_80123CEC(size, p, index, table);
+            q = (f32 *)((u8 *)data + (half + i) * 4);
+            fn_801233F8(size, q, a);
+            fn_80123CEC(size, q, index, table);
+        }
+        for (i = step * 2 - size, p = (f32 *)data + i; i < half; i += step * 4, p += step * 4) {
+            fn_801237C4(size, p, b);
+            fn_80123DC0(size, p, index, table);
+            q = (f32 *)((u8 *)data + (half + i) * 4);
+            fn_801237C4(size, q, b);
+            fn_80123DC0(size, q, index, table);
+        }
+    }
+}
+
 #pragma scheduling on
 void fn_801233F8(s32 arg0, volatile f32 *arg1, f32 *arg2) {
     f32 temp_f0, temp_f0_2, temp_f0_3, temp_f1, temp_f1_2, temp_f1_3;
