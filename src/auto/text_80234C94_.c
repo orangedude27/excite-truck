@@ -309,6 +309,7 @@ extern void fn_802C8C04(int);
 extern unsigned short lbl_802FA008[6];
 extern Idx_80235CBC lbl_802FA020;
 __declspec(section ".data") extern float lbl_80558DC4;
+extern void *fn_8022EDC4(void);
 extern double cos(float);
 extern double sin(float);
 extern void fn_80231380(void *, int, float, float, float, float, float);
