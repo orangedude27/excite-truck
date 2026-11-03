@@ -9,8 +9,8 @@ extern float fn_80129DC4(int, float, float);
 extern char lbl_8055EA20;
 extern char lbl_804874D4[];
 extern char lbl_804874B8[];
-extern char lbl_8055EA22;
-extern char lbl_8055EA22;
+extern unsigned char lbl_8055EA22;
+extern unsigned char lbl_8055EA22;
 extern float lbl_80562CAC;
 extern float lbl_80562CC8;
 extern float lbl_80562CCC;
@@ -34,6 +34,9 @@ extern int stricmp(const char *, const char *);
 extern unsigned char lbl_8055AE60, lbl_8055AE68, lbl_8055AE6C, lbl_8055AE74, lbl_8055AE7C, lbl_8055AE84, lbl_8055AE8C, lbl_8055AE94, lbl_8055AE9C, lbl_8055AEA8;
 extern unsigned char lbl_80339860[], lbl_8033986C[];
 extern float lbl_80562CA8;
+#pragma push
+#pragma inline_depth(0)
+#pragma scheduling invalid_target
 int fn_801E1894(void) {
  void **obj; void **settings; char *name; float v[3]; int r,g,b;
  fn_801E1874();
@@ -49,9 +52,9 @@ int fn_801E1894(void) {
   *((unsigned char *)&lbl_804874D4+4)=((int(*)(void *,const char *,int))(*(void ***)obj)[12])(obj,(const char *)lbl_8033986C,0);
   if(settings) {
    ((void(*)(float *,void *,const char *))(*(void ***)settings)[13])(v,settings,(const char *)&lbl_8055AE8C);
-   r=(int)(lbl_80562CA8*v[0]); if(r<0)r=-r; if(r>255)r=255;
-   g=(int)(lbl_80562CA8*v[1]); if(g<0)g=-g; if(g>255)g=255;
-   b=(int)(lbl_80562CA8*v[2]); if(b<0)b=-b; if(b>255)b=255;
+   r=(int)(lbl_80562CA8*v[0]); if(r<0)r=0; if(r>255)r=255;
+   g=(int)(lbl_80562CA8*v[1]); if(g<0)g=0; if(g>255)g=255;
+   b=(int)(lbl_80562CA8*v[2]); if(b<0)b=0; if(b>255)b=255;
    *(int *)((char *)&lbl_804874D4+8)=(r<<16)|0xff000000|(g<<8)|b;
    *(float *)((char *)&lbl_804874D4+0xc)=((float(*)(void *,const char *))(*(void ***)settings)[9])(settings,(const char *)&lbl_8055AE94);
    *(float *)((char *)&lbl_804874D4+0x10)=((float(*)(void *,const char *))(*(void ***)settings)[9])(settings,(const char *)&lbl_8055AE9C);
@@ -62,7 +65,7 @@ int fn_801E1894(void) {
  lbl_8055EA20=1;
  return 0;
 }
-
+#pragma pop
 extern float __fabsf(float);
 extern double __fabs(double);
 #pragma scheduling invalid_target
