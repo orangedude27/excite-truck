@@ -20,7 +20,8 @@ struct Manager {
     virtual void v3() = 0;
     virtual void *getCamera() = 0;
 };
-extern "C" static inline void *callGetCamera(void *manager) {
+#pragma inline_max_size(1000)
+extern "C" inline void *callGetCamera(void *manager) {
     return ((Manager *)manager)->getCamera();
 }
 #pragma cplusplus reset
@@ -315,11 +316,9 @@ int fn_802710A0(void *arg0, int arg1) {
     var_r26 = -1;
 
     if (lbl_8055F564 != 0) {
-        typedef void *(*CamFunc)(void *);
         void *manager = *(void **)((char *)arg0 + 0x270);
-        CamFunc fn = (*(CamFunc **)manager)[6];
         float *dest;
-        p = fn(manager);
+        p = ((void *(*)(void *))(*(void ***)manager)[6])(manager);
         dest = &lbl_8055F568;
         if (fn_801B526C() != 0) {
             fn_80136414(&sp18, p, *(int *)((char *)arg0 + 0x2678));
@@ -382,22 +381,13 @@ extern const char lbl_8055C5A0[];
 #pragma cplusplus on
 #pragma scheduling invalid_target
 extern "C" void fn_802712F8(void *arg0) {
-    class Item {
-    public:
-        virtual const char *getName();
-    };
-    class Iterator {
-    public:
-        virtual void unused();
-        virtual Item *next(int);
-    };
-#pragma small_data off
+    class Item { public: virtual const char *getName(); };
+    class Iterator { public: virtual void unused(); virtual Item *next(int); };
     extern char lbl_80346B00[];
     extern char lbl_8049A2C8[];
     extern char lbl_8049EDC8[];
-#pragma small_data on
-    extern const char lbl_8055C59C[];
-    extern const char lbl_8055C5A0[];
+    extern const char lbl_8055C59C[4];
+    extern const char lbl_8055C5A0[1];
     extern int lbl_8055F548;
     extern int lbl_8055F550;
     extern unsigned char lbl_8055F55B;
@@ -411,7 +401,7 @@ extern "C" void fn_802712F8(void *arg0) {
     extern void fn_80277828(void);
     extern void fn_802E30C8(const char *, ...);
     extern int stricmp(const char *, const char *);
-    register char *strings = lbl_80346B00;
+    register const char *strings = lbl_80346B00;
     lbl_8055F550 = 0;
     lbl_8055F548 = 0;
     fn_80277740();
@@ -419,8 +409,8 @@ extern "C" void fn_802712F8(void *arg0) {
         register Iterator *iterator = (Iterator *)fn_80131808(arg0);
         register char *tableA = lbl_8049A2C8;
         register char *tableB = lbl_8049EDC8;
-        register int index = 0;
         register Item *item;
+        register int index = 0;
         while ((item = iterator->next(index)) != 0) {
             if (stricmp(item->getName(), lbl_8055C5A0) == 0) {
                 if (fn_80272DCC(tableA + lbl_8055F548 * 0x60, item) != 0)
@@ -434,19 +424,18 @@ extern "C" void fn_802712F8(void *arg0) {
             index += 1;
         }
         fn_80131818(iterator);
-    } else if (fn_8012C33C(strings + 0x334) != 0) {
-        register Iterator *iterator = (Iterator *)fn_80131808(strings + 0x334);
+    } else if (fn_8012C33C((void *)(strings + 0x334)) != 0) {
+        register Iterator *iterator = (Iterator *)fn_80131808((void *)(strings + 0x334));
         register char *tableA = lbl_8049A2C8;
-        register int index = 0;
         register Item *item;
+        register int index = 0;
         while ((item = iterator->next(index)) != 0) {
             if (stricmp(item->getName(), lbl_8055C5A0) == 0) {
                 if (lbl_8055F548 < 0xC8) {
-                    if (fn_80272DCC(tableA + lbl_8055F548 * 0x60, item) != 0) {
+                    if (fn_80272DCC(tableA + lbl_8055F548 * 0x60, item) != 0)
                         lbl_8055F548 += 1;
-                    } else {
+                    else
                         fn_802E30C8(strings + 0x340, index);
-                    }
                 } else if (lbl_8055F55B == 0) {
                     lbl_8055F55B = 1;
                     fn_802E30C8(lbl_8055C59C, strings + 0x370);
