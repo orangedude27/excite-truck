@@ -481,6 +481,19 @@ extern "C" void fn_80298B48(void* arg0) {
     }
 }
 #pragma scheduling on
+#pragma ppc_psq_save off
+static inline void XformRot3(const float *m, const float *src, float *dst) {
+    if (dst == src) {
+        float x = src[0], y = src[1], z = src[2];
+        dst[0] = x * m[0] + y * m[3] + z * m[6];
+        dst[1] = x * m[1] + y * m[4] + z * m[7];
+        dst[2] = x * m[2] + y * m[5] + z * m[8];
+    } else {
+        dst[0] = src[0] * m[0] + src[1] * m[3] + src[2] * m[6];
+        dst[1] = src[0] * m[1] + src[1] * m[4] + src[2] * m[7];
+        dst[2] = src[0] * m[2] + src[1] * m[5] + src[2] * m[8];
+    }
+}
 extern "C" void fn_80298BBC(void *arg0) {
     float sp8, spC, sp10;
     float now=fn_801E7E18();
