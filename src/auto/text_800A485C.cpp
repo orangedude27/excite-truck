@@ -8578,8 +8578,6 @@ extern "C" s32 VFiPFCODE_CP932_OEM2Unicode(s32 arg0, u16 *arg1) {
     return fn_800A4BE8(2, 2);
 }
 
-extern unsigned short lbl_802EEF80[];
-extern void fn_800A4BE8(int, int);
 void VFiPFCODE_CP932_Unicode2OEM(unsigned short *param_1, char *param_2)
 {
     short sVar1;
@@ -15475,13 +15473,13 @@ extern "C" void fn_800C6A1C(void *arg0, s32 arg1) {
         MEMFreeToAllocator(lbl_80559708, *(void **)(self + 0x1E0));
         if (*(s32 *)((u8 *)*(void **)(self + 4) + 0x20) == 0) {
             q = self;
-            for (i = 0; i < 4; i++, q += 4) {
+            for (i = 0; i < 4; q += 4, i++) {
                 ((Freeable800C6A1C *)*(void **)(q + 0x1E4))->free(-1);
                 MEMFreeToAllocator(lbl_80559708, *(void **)(q + 0x1E4));
             }
         }
         q = self;
-        for (i = 0; i < *(s32 *)(self + 0xC); i++, q += 4) {
+        for (i = 0; i < *(s32 *)(self + 0xC); q += 4, i++) {
             ((Freeable800C6A1C *)*(void **)(q + 0x268))->free(-1);
             MEMFreeToAllocator(lbl_80559708, *(void **)(q + 0x268));
         }
@@ -18689,16 +18687,17 @@ extern "C" void fn_800C7E6C(void *arg0) {
 
 extern "C" s32 lbl_80559718;
 extern "C" void fn_800C7F8C(void *arg0, s32 arg1) {
-    u8 *self=(u8*)arg0;
-    u8 *cursor=self, *info=self+0x158;
     s32 *state=(s32*)arg1;
+    u8 *cursor=(u8*)arg0;
+    u8 *info=(u8*)arg0+0x158;
     s32 i,j,k;
-    for(i=0;i<4;i++,cursor+=4,info+=0x18,state+=4) {
+    u8 *self=(u8*)arg0;
+    for(i=0;i<4;i++,cursor+=4,state+=4,info+=0x18) {
         if(*state) {
             if(*(s32*)(*(u8**)(self+4)+0x20)==0) {
                 void *obj=*(void**)(*(u8**)(cursor+0x1e4)+0x10);
-                void *pane=(*(void *(**)(void*,s32,s32))(*(u8**)obj+0x3c))(obj,lbl_80559718,1);
-                *(u8*)((u8*)pane+0xcf) = (*(u8*)((u8*)pane+0xcf) & ~1) | 1;
+                void *pane=((PaneFindDispatch*)obj)->find(lbl_80559718,1);
+                *(u8*)((u8*)pane+0xcf) = (*(u8*)((u8*)pane+0xcf) & 0xfe) | 1;
             }
             s32 *entry=lbl_802F4588;
             j=0;
@@ -18717,7 +18716,7 @@ found1:
         } else {
             if(*(s32*)(*(u8**)(self+4)+0x20)==0) {
                 void *obj=*(void**)(*(u8**)(cursor+0x1e4)+0x10);
-                void *pane=(*(void *(**)(void*,s32,s32))(*(u8**)obj+0x3c))(obj,lbl_80559718,1);
+                void *pane=((PaneFindDispatch*)obj)->find(lbl_80559718,1);
                 *(u8*)((u8*)pane+0xcf) &= ~1;
             }
             s32 *entry=lbl_802F4588;
@@ -18739,7 +18738,7 @@ found0:
         s32 *ids=lbl_8031E370+i*4;
         for(j=0;j<4;j++) {
             void *obj=*(void**)(*(u8**)(self+0x1e0)+0x10);
-            void *pane=(*(void *(**)(void*,s32,s32))(*(u8**)obj+0x3c))(obj,ids[j],1);
+            void *pane=((PaneFindDispatch*)obj)->find(ids[j],1);
             *(u8*)((u8*)pane+0xcf) &= ~1;
         }
     }
