@@ -7,7 +7,44 @@ extern "C" s32 VFiPFENT_LoadLFNEntryFieldsFromBuf(void *, void *);
 extern "C" s32 fn_800B3A70(void *, void *, s32);
 extern "C" s32 VFiPFPATH_transformInUnicode(s16 *, s32, s32);
 extern "C" void VFiPFPATH_getLongNameformShortName(void *, void *, s32);
-extern "C" s32 fn_800A9DC0(void *, void *, s32, s32, s32, s32 *) { return 0; }
+extern "C" s32 fn_800A9DC0(void *object, void *iterator, s32 arg2, s32 arg3, s32 arg4, s32 *arg5) {
+ u8 *p=(u8 *)object, *it=(u8 *)iterator;
+ u8 flags=it[0x57];
+ u8 buf[13], name[16];
+ u32 sum,next,word;
+ u16 i,a,b;
+ s32 len;
+ if (((s32 (*)(u8 *,u8 *,s32,s32,u32,s32,s32 *))fn_800A9BB4)(p,it+0x4c,arg2,flags,arg3,arg4,arg5)==1) {
+  if ((flags&15)==15) {
+   if (VFiPFENT_LoadLFNEntryFieldsFromBuf(p,it+0x4c)) { p[0x20a]=0; *(u16 *)p=0; }
+  } else { p[0x20a]=0; *(u16 *)p=0; }
+  return -1;
+ }
+ if (!p[0x20a] && (it[0x58]&0x18)) {
+  VFiPFPATH_getLongNameformShortName(p+0x20e,name,it[0x58]);
+  len=((s32 (*)(s16 *,s32))VFiPFPATH_transformInUnicode)((s16 *)p,(s32)name);
+  p[0x20a]=len/13+(len%13!=0);
+  fn_800B3A70(buf,p+0x20e,0);
+  sum=0;
+  for (i=0;i<11;i++) { next=((sum&0xfe)>>1)+((sum&1)?0x80:0)+buf[i]; sum=next&0xff; }
+  p[0x20c]=sum;
+  p[0x20b]=1;
+ }
+ p[0x21c]=it[0x57]; p[0x21b]=it[0x58]; p[0x21d]=it[0x59];
+ __sthbrx(*(u16 *)(it+0x5a),p+0x21e,0);
+ __sthbrx(*(u16 *)(it+0x5c),p+0x220,0);
+ __sthbrx(*(u16 *)(it+0x5e),p+0x222,0);
+ __sthbrx(*(u16 *)(it+0x62),p+0x224,0);
+ __sthbrx(*(u16 *)(it+0x64),p+0x226,0);
+ word=*(u32 *)(it+0x68);
+ *(u32 *)(p+0x228)=(word<<24)|((word&0xff00)<<8)|((word>>8)&0xff00)|(word>>24);
+ a=*(u16 *)(it+0x60); b=*(u16 *)(it+0x66);
+ *(u32 *)(p+0x234)=((u32)(a&0xff)<<24)|((u32)(a&0xff00)<<8)|((u32)(b&0xff)<<8)|(b>>8);
+ *(u32 *)(p+0x238)=*(u32 *)(it+0x44);
+ *(u16 *)(p+0x23c)=*(u16 *)(it+0x48);
+ if ((p[0x21c]&0x10) && !*(u32 *)(p+0x234)) *(u32 *)(p+0x234)=1;
+ return 0;
+}
 #pragma pop
 extern "C" { typedef s32 Fn800A8D08C4(void *, s32, void **, s32 *); typedef s32 Fn800B05C8C(void *, s32, u32 *); }
 #include <revolution/MEM/mem_allocator.h>
@@ -16145,24 +16182,23 @@ extern "C" void updateSound__Q210homebutton10ControllerFv(void *arg0) {
                 ((u8 *)arg0)[0x43] = 0;
             }
         }
-    } else if (((u8 *)arg0)[0x42] != 0) {
+    } else if (((u8 *)arg0)[0x42] != 0 &&
+               (((u8 *)arg0)[0x43] = 0,
+                (u32)((u32)OSGetTime() - *(u32 *)((u8 *)arg0 + 0x34)) /
+                        ((*(volatile u32 *)0x800000F8 >> 2) / 1000U) >= 0x75300U)) {
+        sound = *(s32 *)arg0;
+        ((u8 *)arg0)[0x42] = 0;
         ((u8 *)arg0)[0x43] = 0;
-        if ((u32)((u32)OSGetTime() - *(u32 *)((u8 *)arg0 + 0x34)) /
-                ((*(volatile u32 *)0x800000F8 >> 2) / 1000U) >= 0x75300U) {
-            sound = *(s32 *)arg0;
-            ((u8 *)arg0)[0x42] = 0;
-            ((u8 *)arg0)[0x43] = 0;
-            if (fn_80060C7C((void *)sound) != 0) {
-                OSAlarm *alarm;
-                fn_80060CC0((void *)sound, 2, 0);
-                alarm = (OSAlarm *)((u8 *)lbl_804076C0 + sound * 0x30);
-                OSSetAlarmUserData(alarm, (void *)sound);
-                OSCancelAlarm(alarm);
-                ((void (*)(OSAlarm *, u32, u32, u32, OSAlarmHandler))OSSetAlarm)(
-                    alarm, 0x10624DD3, 0, ((*(volatile u32 *)0x800000F8 >> 2) / 1000U) * 1000U,
-                    soundOnCallback__Q210homebutton10ControllerFP7OSAlarmP9OSContext);
-                ((u8 *)arg0)[0x41] = 1;
-            }
+        if (fn_80060C7C((void *)sound) != 0) {
+            OSAlarm *alarm;
+            fn_80060CC0((void *)sound, 2, 0);
+            alarm = (OSAlarm *)((u8 *)lbl_804076C0 + sound * 0x30);
+            OSSetAlarmUserData(alarm, (void *)sound);
+            OSCancelAlarm(alarm);
+            ((void (*)(OSAlarm *, u32, u32, u32, OSAlarmHandler))OSSetAlarm)(
+                alarm, 0x10624DD3, 0, ((*(volatile u32 *)0x800000F8 >> 2) / 1000U) * 1000U,
+                soundOnCallback__Q210homebutton10ControllerFP7OSAlarmP9OSContext);
+            ((u8 *)arg0)[0x41] = 1;
         }
     } else if (((u8 *)arg0)[0x41] == 0 && fn_8005EE80(sound) <= 0x55) {
         s32 id = *(s32 *)arg0;
