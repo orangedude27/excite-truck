@@ -31,31 +31,31 @@ void fn_801E1874(void) {
 #pragma scheduling on
 extern void *fn_802AE414(const char *);
 extern int stricmp(const char *, const char *);
-extern unsigned char lbl_8055AE60[], lbl_8055AE68[], lbl_8055AE6C[], lbl_8055AE74[], lbl_8055AE7C[], lbl_8055AE84[], lbl_8055AE8C[], lbl_8055AE94[], lbl_8055AE9C[], lbl_8055AEA8[];
+extern unsigned char lbl_8055AE60, lbl_8055AE68, lbl_8055AE6C, lbl_8055AE74, lbl_8055AE7C, lbl_8055AE84, lbl_8055AE8C, lbl_8055AE94, lbl_8055AE9C, lbl_8055AEA8;
 extern unsigned char lbl_80339860[], lbl_8033986C[];
 extern float lbl_80562CA8;
 int fn_801E1894(void) {
  void **obj; void **settings; char *name; float v[3]; int r,g,b;
  fn_801E1874();
- if (fn_802AE414((const char *)lbl_8055AE60) != 0) {
-  obj=fn_802AE414((const char *)lbl_8055AE60);
-  settings=((void **(*)(void *,const char *))(*(void ***)obj)[23])(obj,(const char *)lbl_8055AE68);
-  name=((char *(*)(void *,const char *,const char *))(*(void ***)obj)[6])(obj,(const char *)lbl_8055AE6C,(const char *)lbl_8055AE74);
-  if(stricmp(name,(const char *)lbl_8055AE7C)==0) *(int *)&lbl_804874D4=1;
-  else if(stricmp(name,(const char *)lbl_8055AE84)==0) *(int *)&lbl_804874D4=2;
+ if (fn_802AE414((const char *)&lbl_8055AE60) != 0) {
+  obj=fn_802AE414((const char *)&lbl_8055AE60);
+  settings=((void **(*)(void *,const char *))(*(void ***)obj)[23])(obj,(const char *)&lbl_8055AE68);
+  name=((char *(*)(void *,const char *,const char *))(*(void ***)obj)[6])(obj,(const char *)&lbl_8055AE6C,(const char *)&lbl_8055AE74);
+  if(stricmp(name,(const char *)&lbl_8055AE7C)==0) *(int *)&lbl_804874D4=1;
+  else if(stricmp(name,(const char *)&lbl_8055AE84)==0) *(int *)&lbl_804874D4=2;
   if(((int(*)(void *,const char *))(*(void ***)obj)[3])(obj,(const char *)lbl_80339860)!=0)
    lbl_8055EA22=((int(*)(void *,const char *))(*(void ***)obj)[11])(obj,(const char *)lbl_80339860);
   else lbl_8055EA22=(*(int *)&lbl_804874D4==1);
   *((unsigned char *)&lbl_804874D4+4)=((int(*)(void *,const char *,int))(*(void ***)obj)[12])(obj,(const char *)lbl_8033986C,0);
   if(settings) {
-   ((void(*)(float *,void *,const char *))(*(void ***)settings)[13])(v,settings,(const char *)lbl_8055AE8C);
+   ((void(*)(float *,void *,const char *))(*(void ***)settings)[13])(v,settings,(const char *)&lbl_8055AE8C);
    r=(int)(lbl_80562CA8*v[0]); if(r<0)r=-r; if(r>255)r=255;
    g=(int)(lbl_80562CA8*v[1]); if(g<0)g=-g; if(g>255)g=255;
    b=(int)(lbl_80562CA8*v[2]); if(b<0)b=-b; if(b>255)b=255;
    *(int *)((char *)&lbl_804874D4+8)=(r<<16)|0xff000000|(g<<8)|b;
-   *(float *)((char *)&lbl_804874D4+0xc)=((float(*)(void *,const char *))(*(void ***)settings)[9])(settings,(const char *)lbl_8055AE94);
-   *(float *)((char *)&lbl_804874D4+0x10)=((float(*)(void *,const char *))(*(void ***)settings)[9])(settings,(const char *)lbl_8055AE9C);
-   *(float *)((char *)&lbl_804874D4+0x14)=((float(*)(void *,const char *))(*(void ***)settings)[9])(settings,(const char *)lbl_8055AEA8);
+   *(float *)((char *)&lbl_804874D4+0xc)=((float(*)(void *,const char *))(*(void ***)settings)[9])(settings,(const char *)&lbl_8055AE94);
+   *(float *)((char *)&lbl_804874D4+0x10)=((float(*)(void *,const char *))(*(void ***)settings)[9])(settings,(const char *)&lbl_8055AE9C);
+   *(float *)((char *)&lbl_804874D4+0x14)=((float(*)(void *,const char *))(*(void ***)settings)[9])(settings,(const char *)&lbl_8055AEA8);
    *((unsigned char *)&lbl_804874D4+0x18)=1;
   }
  }
@@ -63,6 +63,67 @@ int fn_801E1894(void) {
  return 0;
 }
 
+extern float __fabsf(float);
+extern double __fabs(double);
+#pragma scheduling invalid_target
+void fn_801E1B30(void) {
+    float temp = lbl_8055E3C8;
+    char *state = lbl_804874B8;
+    int zero = 0;
+
+    if (fn_80129D18(4, 0x12C) == 0 || (unsigned char)lbl_8055EA21 != 0) {
+        if (*(int *)state == 1 || (unsigned char)lbl_8055EA21 != 0) {
+            if (fn_80129D18(4, 0xA) < 6 || (unsigned char)lbl_8055EA21 != 0) {
+                *(int *)state = 2;
+                *(float *)(state + 0x10) = fn_80129DC4(4, lbl_80562CAC, lbl_80562CB0);
+            } else {
+                *(int *)state = 3;
+                *(float *)(state + 0xC) = temp + fn_80129DC4(4, lbl_80562CB4, lbl_80562CB8);
+            }
+            *(float *)(state + 8) = fn_80129DC4(4, lbl_80562CB8, lbl_80562CBC);
+        } else if (*(float *)(state + 4) > *(float *)(state + 8)) {
+            *(float *)(state + 8) = fn_80129DC4(4, *(float *)(state + 4), lbl_80562CC0);
+        }
+    }
+
+    lbl_8055EA21 = zero;
+    if (*(int *)state != 1) {
+        float target = *(float *)(state + 8);
+        float current = *(float *)(state + 4);
+        if ((float)__fabs((double)(target - current)) < lbl_80562CC4) {
+#pragma small_data off
+            if ((float)__fabs((double)target) <= lbl_80558DC4) {
+#pragma small_data on
+                goto set_mode;
+            }
+            *(float *)(state + 8) = lbl_80562CAC;
+            goto after_mode;
+        set_mode:
+            *(int *)state = 1;
+        after_mode:
+            ;
+        }
+        *(float *)(state + 4) =
+            *(float *)(state + 4) +
+            lbl_80562CB4 * (*(float *)(state + 8) - *(float *)(state + 4));
+    }
+
+    if (*(void **)(lbl_804874B8 + 0x18) != 0 &&
+        *(float *)(state + 0xC) > lbl_80562CAC &&
+        temp > *(float *)(state + 0xC)) {
+        unsigned char *obj = *(unsigned char **)(lbl_804874B8 + 0x18);
+        if (obj[0x19] != 0) {
+            obj[0x4C] = 1;
+            obj[0x4A] = 0;
+        } else {
+            obj[0x49] = 1;
+            obj[0x4B] = 0;
+            obj[0x4A] = 0;
+        }
+        *(float *)(state + 0xC) = lbl_80562CC8;
+    }
+}
+#pragma scheduling on
 void fn_801E1D20(void) {
     lbl_8055EA20 = 0;
 }
@@ -78,20 +139,28 @@ void fn_801E1D38(void) {
     }
 }
 
-void fn_801E1D9C(void) {
-    void *p;
-    p = *(void **)((char *)&lbl_804874B8 + 0x18);
-    if (p != 0) {
-        ((void (*)(void *, int))(*(void ***)p)[2])(p, 1);
+#pragma cplusplus on
+extern "C" void fn_801E1D9C(void) {
+    struct Dummy_801E1D9C_Local {
+        virtual void d1(int);
+    };
+    typedef Dummy_801E1D9C_Local *LocalPtr;
+
+    if (*(LocalPtr *)((char *)&lbl_804874B8 + 0x18) != 0) {
+        if (*(LocalPtr *)((char *)&lbl_804874B8 + 0x18) != 0) {
+            ((LocalPtr)*(LocalPtr *)((char *)&lbl_804874B8 + 0x18))->d1(1);
+        }
         *(void **)((char *)&lbl_804874B8 + 0x18) = 0;
     }
-    p = *(void **)((char *)&lbl_804874B8 + 0x14);
-    if (p != 0) {
-        ((void (*)(void *, int))(*(void ***)p)[2])(p, 1);
+
+    if (*(LocalPtr *)((char *)&lbl_804874B8 + 0x14) != 0) {
+        if (*(LocalPtr *)((char *)&lbl_804874B8 + 0x14) != 0) {
+            ((LocalPtr)*(LocalPtr *)((char *)&lbl_804874B8 + 0x14))->d1(1);
+        }
         *(void **)((char *)&lbl_804874B8 + 0x14) = 0;
     }
 }
-
+#pragma cplusplus off
 void fn_801E1E30(void) {
     int v = lbl_8055EA22;
     float x = lbl_80562CAC;
