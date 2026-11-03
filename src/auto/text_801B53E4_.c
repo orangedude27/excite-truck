@@ -9,6 +9,16 @@ extern f32 lbl_805626A4;
 extern f32 lbl_805626A8;
 extern f32 lbl_80435EB8[4];
 extern void fn_801B561C(void *, s32, void *, s32, f32, f32, f32, f32, f32, f32);
+extern f32 lbl_80562698, lbl_8056269C;
+extern s32 lbl_8055E6EC;
+extern s32 lbl_8055E6F0;
+extern void *lbl_8055E6F4;
+extern char lbl_80335E88[], lbl_80335EB4[];
+extern void *fn_8012850C(s32, void *);
+extern void *fn_8002F37C(void *, void *, void *, s32, s32);
+extern void fn_802E317C(const char *, ...);
+extern void fn_801B5984(void *);
+extern void *fn_801B591C(void *, s32);
 extern void fn_8002F6AC(void *(*)(void *, s32));
 extern void fn_80128668(void *);
 
@@ -288,7 +298,7 @@ void *fn_801B5D30(s32 *arg0) {
     fn_80128670(lbl_8055E6F4);
     lbl_8055E6F4 = NULL;
     if (tmp1[2] != 0) {
-        fn_8002F6AC((void *)fn_801B591C);
+        ((void (*)(void *, void *(*)(void *, s32)))fn_8002F6AC)((void *)tmp1[2], fn_801B591C);
     }
     obj = (s32 *)fn_801284E8(lbl_8055A8C8, size + lbl_8055E6EC * 2 + lbl_8055E6E8 * 8 + 0x18);
     obj[0] = count;
@@ -318,7 +328,7 @@ void *fn_801B5D30(s32 *arg0) {
     lbl_8055E6F4 = NULL;
     *arg0 = 0;
     if (tmp2[2] != 0) {
-        fn_8002F6AC((void *)fn_801B591C);
+        ((void (*)(void *, void *(*)(void *, s32)))fn_8002F6AC)((void *)tmp2[2], fn_801B591C);
     }
     return obj;
 }
