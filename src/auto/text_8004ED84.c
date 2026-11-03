@@ -381,6 +381,180 @@ unsigned short OSSetFontEncode(unsigned short arg0) {
     return old;
 }
 
+typedef struct OSFontHeader {
+    u16 type;
+    u16 firstChar;
+    u16 lastChar;
+    u16 invalidChar;
+    u16 ascent;
+    u16 descent;
+    u16 width;
+    u16 leading;
+    u16 cellWidth;
+    u16 cellHeight;
+    u32 sheetSize;
+    u16 sheetFormat;
+    u16 sheetNumCol;
+    u16 sheetNumRow;
+    u16 sheetWidth;
+    u16 sheetHeight;
+    u16 widthTableOfs;
+    u32 sheetImageOfs;
+    u32 sheetFullSize;
+    u8 c0;
+    u8 c1;
+    u8 c2;
+    u8 c3;
+} OSFontHeader;
+
+int __OSReadROM(void *, int, const void *);
+
+static inline void ReadROM(void* dst, s32 size, const void* src) {
+    s32 blockSize;
+
+    while (size > 0) {
+        blockSize = (size <= 256) ? size : 256;
+        size -= blockSize;
+
+        while (!__OSReadROM(dst, blockSize, src)) {
+            ;
+        }
+
+        src = (u8*)src + blockSize;
+        dst = (u8*)dst + blockSize;
+    }
+}
+
+static inline u32 GetFontSize(const u8* font) {
+    if (font[0] == 'Y' && font[1] == 'a' && font[2] == 'y') {
+        return *(u32*)(font + 0x4);
+    }
+
+    return 0;
+}
+extern u16 lbl_80560CB8;
+extern u16 lbl_80560CBA;
+extern u16 lbl_80560CBC;
+extern u16 lbl_80560CBE;
+#pragma use_lmw_stmw off
+int ReadFont(int dst, int encode, int font) {
+    typedef struct OSFontHeader {
+        u16 type;
+        u16 firstChar;
+        u16 lastChar;
+        u16 invalidChar;
+        u16 ascent;
+        u16 descent;
+        u16 width;
+        u16 leading;
+        u16 cellWidth;
+        u16 cellHeight;
+        u32 sheetSize;
+        u16 sheetFormat;
+        u16 sheetNumCol;
+        u16 sheetNumRow;
+        u16 sheetWidth;
+        u16 sheetHeight;
+        u16 widthTableOfs;
+        u32 sheetImageOfs;
+        u32 sheetFullSize;
+        u8 c0;
+        u8 c1;
+        u8 c2;
+        u8 c3;
+    } OSFontHeader;
+    
+    OSFontHeader *f = (OSFontHeader *)font;
+    u32 size;
+    
+    if ((u32)encode == 1) {
+        u8 *dstPtr = (u8 *)dst;
+        u32 src = 0x001AFF00;
+        s32 romSize = 0x0004D000;
+        while (romSize > 0) {
+            s32 blockSize = (romSize <= 256) ? romSize : 256;
+            romSize -= blockSize;
+            while (!__OSReadROM(dstPtr, blockSize, (const void *)src)) {
+            }
+            src += blockSize;
+            dstPtr += blockSize;
+        }
+    } else {
+        u8 *dstPtr = (u8 *)dst;
+        u32 src = 0x001FCF00;
+        s32 romSize = 0x00003000;
+        while (romSize > 0) {
+            s32 blockSize = (romSize <= 256) ? romSize : 256;
+            romSize -= blockSize;
+            while (!__OSReadROM(dstPtr, blockSize, (const void *)src)) {
+            }
+            src += blockSize;
+            dstPtr += blockSize;
+        }
+    }
+    
+    if (((u8 *)dst)[0] == 'Y' && ((u8 *)dst)[1] == 'a' && ((u8 *)dst)[2] == 'y') {
+        size = *(u32 *)((u8 *)dst + 4);
+    } else {
+        size = 0;
+    }
+    
+    if (size == 0) {
+        return 0;
+    }
+    
+    Decode((void *)dst, (void *)font);
+    
+    if ((u32)encode == 1) {
+        u16 c0 = lbl_80560CB8;
+        u16 c1 = lbl_80560CBA;
+        u16 c2 = lbl_80560CBC;
+        u16 c3 = lbl_80560CBE;
+        u8 *tex;
+        u8 *tmp;
+        s32 sheet;
+        s32 numRestTex;
+        s32 row;
+        s32 col;
+        u32 code = GetFontCode(encode, 'T');
+        
+        sheet = (s32)code / (f->sheetNumCol * f->sheetNumRow);
+        numRestTex = code - (sheet * (f->sheetNumCol * f->sheetNumRow));
+        row = numRestTex / f->sheetNumCol;
+        col = numRestTex - row * f->sheetNumCol;
+        row *= f->cellHeight;
+        col *= f->cellWidth;
+        tex = (u8 *)font + f->sheetImageOfs;
+        tex += sheet * f->sheetSize / 2;
+
+        tmp = tex + (((f->sheetWidth / 8) * 32) / 2) * ((row + 4) / 8);
+        tmp += (col / 8) * 16;
+        tmp += ((row + 4) % 8) * 2;
+        tmp += (col % 8) / 4;
+        *(u16 *)tmp = c0;
+
+        tmp = tex + (((f->sheetWidth / 8) * 32) / 2) * ((row + 5) / 8);
+        tmp += (col / 8) * 16;
+        tmp += ((row + 5) % 8) * 2;
+        tmp += (col % 8) / 4;
+        *(u16 *)tmp = c1;
+
+        tmp = tex + (((f->sheetWidth / 8) * 32) / 2) * ((row + 6) / 8);
+        tmp += (col / 8) * 16;
+        tmp += ((row + 6) % 8) * 2;
+        tmp += (col % 8) / 4;
+        *(u16 *)tmp = c2;
+
+        tmp = tex + (((f->sheetWidth / 8) * 32) / 2) * ((row + 7) / 8);
+        tmp += (col / 8) * 16;
+        tmp += ((row + 7) % 8) * 2;
+        tmp += (col % 8) / 4;
+        *(u16 *)tmp = c3;
+    }
+    
+    return size;
+}
+#pragma use_lmw_stmw reset
 int OSLoadFont(int arg0, int arg1) {
     int result;
 
@@ -530,21 +704,25 @@ output:
     *outCode = ((unsigned int (*)(int, unsigned short))GetFontCode)(format, ch);
     return input;
 }
-#pragma pop
+#pragma use_lmw_stmw off
 void OSGetFontTexel(char *arg0, unsigned char *arg1, int arg2, int arg3, int *arg4) {
-    void *spC;
+    unsigned char *spC;
     int sp8;
     unsigned short mode = lbl_80558F58;
-    unsigned int a, b, c, d;
-    int x, y;
-    unsigned char *pixels;
-    unsigned char *table;
+    int perSheet, tileRowBytes, sheetNo, cell, row, col;
+    int xOff, yOff;
     int i, j;
+    unsigned char *data;
+    unsigned char *table;
+
     if (mode == 0xFFFF) {
         int console = *(volatile int *)0x800000CC;
         if (console == 0) {
             mode = (*(volatile unsigned short *)0xCC00206E >> 1) & 1;
             lbl_80558F58 = mode;
+        } else if (console < 0) {
+            mode = 0;
+            lbl_80558F58 = 0;
         } else {
             mode = 0;
             lbl_80558F58 = 0;
@@ -552,26 +730,35 @@ void OSGetFontTexel(char *arg0, unsigned char *arg1, int arg2, int arg3, int *ar
         lbl_8055DA48 = ParseStringS;
     }
     ((char *(*)(int, char *, int **, int *))lbl_8055DA48)(mode, arg0, (int **)&spC, &sp8);
-    a = *(unsigned short *)((char *)spC + 0x1A);
-    b = *(unsigned short *)((char *)spC + 0x1C);
-    pixels = (unsigned char *)spC + *(int *)((char *)spC + 0x24);
-    table = (unsigned char *)spC + 0x2C;
-    x = sp8;
-    y = arg3;
-    for (i = 0; i < *(unsigned short *)((char *)spC + 0x12); i++) {
-        for (j = 0; j < *(unsigned short *)((char *)spC + 0x10); j++) {
-            unsigned int index = (unsigned int)(j + arg2);
-            unsigned int outIndex = (unsigned int)(i + arg3);
-            unsigned char *out = arg1 + ((outIndex >> 3) * (*(unsigned short *)((char *)spC + 0x12) * 4)) + ((index >> 3) * 32) + ((outIndex & 7) * 4);
-            unsigned int src = (unsigned int)(x * *(unsigned short *)((char *)spC + 0x10) + j);
-            unsigned char v = pixels[src] & 0xF;
-            *out = (*out & 0xF0) | v;
+    perSheet = *(unsigned short *)(spC + 0x1A) * *(unsigned short *)(spC + 0x1C);
+    tileRowBytes = ((arg3 * 4) / 8) * 32;
+    data = spC + *(int *)(spC + 0x24);
+    table = spC + 0x2C;
+    sheetNo = sp8 / perSheet;
+    cell = sp8 - sheetNo * perSheet;
+    data += ((unsigned int)(sheetNo * *(int *)(spC + 0x14))) >> 1;
+    row = cell / *(unsigned short *)(spC + 0x1A);
+    col = cell - row * *(unsigned short *)(spC + 0x1A);
+    yOff = row * *(unsigned short *)(spC + 0x12);
+    xOff = col * *(unsigned short *)(spC + 0x10);
+    for (i = 0; i < *(unsigned short *)(spC + 0x12); i++) {
+        int srcY = yOff + i;
+        for (j = 0; j < *(unsigned short *)(spC + 0x10); j++) {
+            int srcX = xOff + j;
+            int dx = arg2 + j;
+            unsigned char byte, val, old, *p;
+            int mask = 0xF0;
+            byte = data[(srcY / 8) * (((*(unsigned short *)(spC + 0x1E)) / 8 * 32) / 2) + (srcX / 8) * 16 + (srcY % 8) * 2 + (srcX % 8) / 4];
+            val = table[(byte >> (6 - (srcX % 4) * 2)) & 3];
+            p = arg1 + (i / 8) * tileRowBytes + (dx / 8) * 32 + (i % 8) * 4 + (dx % 8) / 2;
+            old = *p;
+            if ((dx % 2) != 0) mask = 0xF;
+            *p = old | (unsigned char)(val & mask);
         }
     }
     if (arg4 != 0)
-        *arg4 = *(unsigned char *)((char *)spC + *(unsigned short *)((char *)spC + 0x22) + sp8);
+        *arg4 = *(unsigned char *)(spC + *(unsigned short *)(spC + 0x22) + sp8);
 }
-
 extern void DCStoreRange(void *, unsigned int);
 int ExpandFontSheet(void *arg0, void *src0, void *dst0) {
     int i;
