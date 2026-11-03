@@ -391,6 +391,7 @@ extern u8 lbl_80316570[];
 extern void fn_80072AE4(u8 *, u8 *, u8 *);
 extern void bta_dm_disc_remname_cback(u8 *);
 extern void bta_dm_find_services(u8 *);
+extern u16 lbl_802EE990[];
 extern char lbl_80316870[];
 extern char lbl_80315D00[];
 extern char lbl_8031669C[];
@@ -13669,6 +13670,56 @@ void hidh_sec_check_complete_term(u8 *bd_addr, void *p_ref_data, u8 res) {
     }
 }
 
+void hidh_l2cif_connect_ind(u8 *addr, u16 cid, u16 psm, u8 id) {
+    extern void hidh_sec_check_complete_term(u8 *, void *, u8);
+    char *strings = lbl_80317838;
+    u8 *entry;
+    int i;
+    int accept = 1;
+    if (lbl_803C3C38[0x401] >= 4)
+        fn_8007096C(0x1e0003, strings + 0x58, psm, cid);
+    entry = lbl_803C3C38;
+    for (i = 0; i < 16; i++, entry += 0x34) {
+        if (entry[0] && memcmp(addr, entry + 1, 6) == 0) break;
+    }
+    if (i == 16) {
+        L2CA_ConnectRsp(addr, id, cid, 3, 0);
+        return;
+    }
+    entry = lbl_803C3C38 + i * 0x34;
+    if (psm == 0x13) {
+        if (*(u16 *)(entry + 0x14) == 0) {
+            if (lbl_803C3C38[0x401] >= 2) fn_8007093C(0x1e0001, strings + 0x8c);
+            accept = 0;
+        }
+        if (entry[0x10] != 2) {
+            if (lbl_803C3C38[0x401] >= 2) fn_80070954(0x1e0001, strings + 0xc0, entry[0x10]);
+            accept = 0;
+        }
+    } else if (entry[0x10] != 0) {
+        if (lbl_803C3C38[0x401] >= 2) fn_80070954(0x1e0001, strings + 0xf0, entry[0x10]);
+        accept = 0;
+    }
+    if (!accept) {
+        L2CA_ConnectRsp(addr, id, cid, 4, 0);
+        return;
+    }
+    if (psm == 0x11) {
+        entry[0x11] = 0;
+        *(u16 *)(entry + 0x14) = cid;
+        entry[0x12] = id;
+        *(u16 *)(entry + 0x1a) = 0x100;
+        entry[0x10] = 6;
+        btm_sec_mx_access_request(entry + 1, 0x11, 0, 6, 2 - ((*(u16 *)(entry + 8) >> 15) & 1), hidh_sec_check_complete_term, entry);
+    } else {
+        entry[0x10] = 3;
+        *(u16 *)(entry + 0x16) = cid;
+        L2CA_ConnectRsp(addr, id, cid, 0, 0);
+        L2CA_ConfigReq(cid, (void *)(lbl_803C3C38 + 0x344));
+        if (lbl_803C3C38[0x401] >= 4) fn_8007096C(0x1e0003, strings + 0x120, psm, cid);
+    }
+}
+
 extern char lbl_8031799C[];
 void hidh_proc_repage_timeout(TIMER_LIST_ENT *p_tle) {
     UINT32 handle = p_tle->param;
@@ -13988,10 +14039,9 @@ extern char lbl_80317B58[];
 void hidh_l2cif_disconnect_cfm(u32 handle) {
     u8 dhandle;
     u8 *found = 0;
-    u8 *entry;
 
     for (dhandle = 0; dhandle < 0x10; dhandle++) {
-        entry = (u8 *)lbl_803C3C38 + dhandle * 0x34;
+        u8 *entry = (u8 *)lbl_803C3C38 + dhandle * 0x34;
         if (entry[0] != 0 && entry[0x10] != 0 &&
             (handle == *(u16 *)(entry + 0x14) ||
              handle == *(u16 *)(entry + 0x16)))
@@ -14011,8 +14061,7 @@ void hidh_l2cif_disconnect_cfm(u32 handle) {
         else
             *(u16 *)(found + 6) = 0;
         if (*(u16 *)(found + 4) == 0 && *(u16 *)(found + 6) == 0) {
-            entry = (u8 *)lbl_803C3C38 + dhandle * 0x34;
-            entry[0xA] = 0;
+            *((u8 *)lbl_803C3C38 + dhandle * 0x34 + 0xA) = 0;
             found[0] = 0;
             ((void (*)(u8, u32, u32, u32, u32, u32))
                 (*(void **)((u8 *)lbl_803C3C38 + 0x340)))(dhandle, 1, *(u16 *)(found + 0xA), 0,
