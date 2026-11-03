@@ -604,6 +604,13 @@ extern "C" void *fn_80128520(s32);
 extern "C" void List_Append__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv(void *, void *);
 namespace homebutton { namespace gui { class Manager; class Component { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void *first(); virtual void d7(); virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11(); virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15(); virtual void d16(); virtual void d17(); virtual void d18(); virtual void second(Manager *); }; class Manager { public: s32 update(s32, f32, f32, unsigned long, unsigned long, unsigned long, void *); s32 update(int, f32, f32, unsigned long, unsigned long, unsigned long, void *); void init(); void addComponent(Component *); }; } }
 
+class PaneFindDispatch {
+public:
+    virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+    virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+    virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
+    virtual void d12(); virtual void *find(s32, s32);
+};
 class ComponentUpdateDispatch {
 public:
     virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4(); virtual void p5();
@@ -15496,7 +15503,7 @@ extern "C" void fn_800C6A1C(void *arg0, s32 arg1) {
             fn_800D0F1C(*(void **)(q + 0x254), -1);
             MEMFreeToAllocator(lbl_80559708, *(void **)(q + 0x254));
         }
-        ((Freeable800C6A1C *)((u8 *)*(void **)(self + 0x264) + 0x1F0))->free(-1);
+        ((Freeable1F0_800C6A1C *)*(void **)(self + 0x264))->free(-1);
         MEMFreeToAllocator(lbl_80559708, *(void **)(self + 0x264));
         *(void **)(self + 0x264) = 0;
         MEMFreeToAllocator(lbl_80559708, *(void **)(self + 0xA4));
@@ -18678,6 +18685,65 @@ extern "C" void fn_800C7E6C(void *arg0) {
     callback = *(void (**)(s32, s32))((u8 *)object + 0x14);
     if (callback != 0) callback(1, 0);
     self[0x8E] = 1;
+}
+
+extern "C" s32 lbl_80559718;
+extern "C" void fn_800C7F8C(void *arg0, s32 arg1) {
+    u8 *self=(u8*)arg0;
+    u8 *cursor=self, *info=self+0x158;
+    s32 *state=(s32*)arg1;
+    s32 i,j,k;
+    for(i=0;i<4;i++,cursor+=4,info+=0x18,state+=4) {
+        if(*state) {
+            if(*(s32*)(*(u8**)(self+4)+0x20)==0) {
+                void *obj=*(void**)(*(u8**)(cursor+0x1e4)+0x10);
+                void *pane=(*(void *(**)(void*,s32,s32))(*(u8**)obj+0x3c))(obj,lbl_80559718,1);
+                *(u8*)((u8*)pane+0xcf) = (*(u8*)((u8*)pane+0xcf) & ~1) | 1;
+            }
+            s32 *entry=lbl_802F4588;
+            j=0;
+            for(k=0;k<37;k++,entry+=4,j++) {
+                if(i+31==entry[0] && entry[1]==17) goto found1;
+                j++;
+                if(i+31==entry[2] && entry[3]==17) goto found1;
+            }
+            j=-1;
+found1:
+            void *pane=*(void**)(self+0x298+j*4);
+            fn_800CF3EC(pane);
+            *(s32*)((u8*)pane+0x14)=1;
+            *(u8*)(self+0x7c+i)=1;
+            getInfoAsync__Q210homebutton10ControllerFP8WPADInfo(*(void**)(cursor+0x254),info);
+        } else {
+            if(*(s32*)(*(u8**)(self+4)+0x20)==0) {
+                void *obj=*(void**)(*(u8**)(cursor+0x1e4)+0x10);
+                void *pane=(*(void *(**)(void*,s32,s32))(*(u8**)obj+0x3c))(obj,lbl_80559718,1);
+                *(u8*)((u8*)pane+0xcf) &= ~1;
+            }
+            s32 *entry=lbl_802F4588;
+            j=0;
+            for(k=0;k<37;k++,entry+=4,j++) {
+                if(i+31==entry[0] && entry[1]==16) goto found0;
+                j++;
+                if(i+31==entry[2] && entry[3]==16) goto found0;
+            }
+            j=-1;
+found0:
+            void *pane=*(void**)(self+0x298+j*4);
+            fn_800CF3EC(pane);
+            *(s32*)((u8*)pane+0x14)=1;
+            *(u8*)(self+0x7c+i)=0;
+        }
+    }
+    for(i=0;i<4;i++) {
+        s32 *ids=lbl_8031E370+i*4;
+        for(j=0;j<4;j++) {
+            void *obj=*(void**)(*(u8**)(self+0x1e0)+0x10);
+            void *pane=(*(void *(**)(void*,s32,s32))(*(u8**)obj+0x3c))(obj,ids[j],1);
+            *(u8*)((u8*)pane+0xcf) &= ~1;
+        }
+    }
+    *(s32*)(self+0x78)=0;
 }
 
 extern "C" void fn_800D15B4(void *);
