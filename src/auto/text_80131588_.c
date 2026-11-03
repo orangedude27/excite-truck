@@ -126,6 +126,7 @@ extern void __register_global_object(void*, void (*)(void*), void*);
 extern void fn_802E317C(const char*, ...);
 extern s32 fn_8012F9E8(void*, s32, const char*);
 extern char lbl_80559B24[]; /* "%f, %f" */
+extern char lbl_80559B2C[], lbl_80559B38[], lbl_80559B40[], lbl_80559B48[];
 extern char lbl_8032B818[]; /* "Bad vector value \"%s\" for \"%s\" i" */
 extern char lbl_8032B840[]; /* "Bad real64 value \"%s\" for \"%s\" i" */
 #pragma push
@@ -177,11 +178,10 @@ extern s32 fn_80131234(char *);
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_80131960(void *arg0, void *arg1) {
-    u8 *obj = (u8 *)arg0;
-    u32 *words = (u32 *)arg0;
-    u8 *base = (u8 *)arg1;
-    u8 t;
-    s32 i, count;
+    register u8 *obj = (u8 *)arg0;
+    register u8 *base = (u8 *)arg1;
+    register u8 t;
+    register s32 i, count;
 
     t = obj[0x10]; obj[0x10] = obj[0x13]; obj[0x13] = t;
     t = obj[0x11]; obj[0x11] = obj[0x12]; obj[0x12] = t;
@@ -192,17 +192,17 @@ void fn_80131960(void *arg0, void *arg1) {
     t = obj[8]; obj[8] = obj[0xB]; obj[0xB] = t;
     t = obj[9]; obj[9] = obj[0xA]; obj[0xA] = t;
 
-    words[5] = 0;
-    words[0] = (u32)lbl_8032B5E0;
-    words[4] += (u32)base;
-    if (words[1] != 0)
-        words[1] += (u32)base;
-    if (words[2] != 0)
-        words[2] += (u32)base;
+    *(u32 *)(obj + 0x14) = 0;
+    *(void **)obj = lbl_8032B5E0;
+    *(u32 *)(obj + 0x10) += (u32)base;
+    if (*(u32 *)(obj + 4) != 0)
+        *(u32 *)(obj + 4) += (u32)base;
+    if (*(u32 *)(obj + 8) != 0)
+        *(u32 *)(obj + 8) += (u32)base;
 
-    count = (s32)words[3];
+    count = *(s32 *)(obj + 0xC);
     for (i = 0; i < count; i++) {
-        u8 *entry = (u8 *)(words[4] + i * 8);
+        register u8 *entry = (u8 *)(*(u32 *)(obj + 0x10) + i * 8);
         t = entry[0]; entry[0] = entry[3]; entry[3] = t;
         t = entry[1]; entry[1] = entry[2]; entry[2] = t;
         t = entry[4]; entry[4] = entry[7]; entry[7] = t;
