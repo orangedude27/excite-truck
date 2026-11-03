@@ -3107,7 +3107,7 @@ extern s32 IUSB_ReadBlkMsgAsync(s32, u32, u32, void *, void (*)(void), void *);
 #pragma use_lmw_stmw off
 void uusb_issue_bulk_read(void) {
     extern char lbl_803142C8[];
-    extern void uusb_ReadBulkDataCB(void);
+    extern void uusb_ReadBulkDataCB(s32, BT_HDR *);
     extern u16 fn_8006D8D0(u32);
     uusb_cb_t *control = &lbl_803BD1E0;
     char *report = lbl_803142C8;
@@ -3134,7 +3134,7 @@ void uusb_issue_bulk_read(void) {
 
     result = IUSB_ReadBlkMsgAsync(lbl_803BD1E0.fd, control->endpoint,
                                   fn_8006D8D0((u32)buf) - 0x28 - header,
-                                  aligned, uusb_ReadBulkDataCB, buf);
+                                  aligned, (void (*)(void))uusb_ReadBulkDataCB, buf);
     if (result != 0) {
         if (control->at_0x28 != 0) {
             OSReport(report + 0x2D4, result);
