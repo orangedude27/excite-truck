@@ -254,18 +254,20 @@ return_zero:
 void fn_802049DC(int a, int b, float c, float d, float e) {
     int i;
     char *entry;
+    int next;
     i = lbl_8055ED3C;
     if (i >= 0x40) {
         return;
     }
     i = i;
     entry = lbl_80488BD0 + (i * 0x18);
+    next = i + 1;
     *((int *)(entry + 0)) = a;
     *((int *)(entry + 4)) = 1;
     *((int *)(entry + 8)) = b;
     *((float *)(entry + 0xC)) = c;
     *((float *)(entry + 0x10)) = d;
-    lbl_8055ED3C = i + 1;
+    lbl_8055ED3C = next;
     *((float *)(entry + 0x14)) = e;
 }
 #pragma pop
