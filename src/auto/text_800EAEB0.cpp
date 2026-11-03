@@ -576,6 +576,7 @@ extern "C" void MEMFreeToFrmHeap(void *, u32);
 extern "C" void MEMDestroyFrmHeap(void *);
 extern "C" void *MEMAllocFromFrmHeapEx(void *, u32, s32);
 struct AssertFile { char name[1]; };
+struct CallbackList { u32 unk[3]; void *head; };
 #pragma push
 #pragma small_data off
 extern u8 lbl_80322D60[];
@@ -634,15 +635,16 @@ extern "C" void fn_800EC1A4(void *arg0) {
     if (state->heap == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x87, file + 0x44);
     }
+    register void *head;
     if (state->count == 0) goto skip_loop;
-    register FrameHeapDestroyListView *head = &state->list;
+    head = (u8 *)state + 8;
     goto loop_test;
 loop_body:
     if (state->count == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_8032301C, 0x1FB, (const char *)lbl_80322FF8);
     }
     {
-        void *list = head->tail;
+        void *list = *(void **)((u8 *)head + 4);
         if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FBC, 0x23D, (const char *)lbl_80322F98);
         if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FEC, 0x193, (const char *)lbl_80322FC8);
         if (list != 0) {
@@ -661,7 +663,7 @@ loop_body:
             if ((u8 *)list + 8 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)list + 8, 0);
         }
         if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F8C, 0x233, (const char *)lbl_80322F68);
-        Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((u8 *)state + 4, list);
+        Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((u8 *)head - 4, list);
     }
 loop_test:
     if (state->count != 0) goto loop_body;
@@ -682,10 +684,11 @@ skip_loop:
             *((void **)temp_r3_2 + 3) = temp_r4;
             *((void **)temp_r3_2 + 4) = temp_r4;
         }
+        head = (u8 *)state + 8;
         if (temp_r3_2 == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F8C, 0x233, (const char *)lbl_80322F68);
         }
-        void *sp8 = &state->list;
+        void *sp8 = head;
         Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((u8 *)state + 4, &sp8, temp_r3_2);
         var_r0 = 1;
     }
