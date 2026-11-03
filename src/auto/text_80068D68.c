@@ -17373,6 +17373,74 @@ void fn_800916F4(void *arg0, s32 arg1, s16 *arg2) {
     }
 }
 
+void rfc_mx_sm_state_idle(void *p_mcb, s32 event, void *p_data) {
+    extern u8 lbl_803C4828[];
+    extern char jumptable_803197F8[];
+    extern void fn_80070954(u32, void *, u16);
+    extern void fn_8007096C(u32, void *, u16, u16);
+    extern void PORT_StartCnf(void *, u16);
+    extern void rfc_timer_start(void *, u16);
+    char *trace = jumptable_803197F8;
+    u8 *mcb = (u8 *)p_mcb;
+    u8 config[0x3C];
+
+    if (lbl_803C4828[0x414] >= 4)
+        ((void (*)(u32, void *, s32))fn_80070954)(0x90003, trace + 0x1C, event);
+
+    switch (event) {
+    case 6: {
+        u16 lcid;
+        *(u16 *)(mcb + 0x6A) = 0x29A;
+        lcid = L2CA_ConnectReq(3, mcb + 0x62);
+        *(u16 *)(mcb + 0x68) = lcid;
+        if (lcid == 0) {
+            PORT_StartCnf(p_mcb, 1);
+            return;
+        }
+        fn_800916D8(p_mcb, lcid);
+        mcb[0x6C] = 1;
+        break;
+    }
+    case 7:
+    case 9:
+    case 11:
+    case 12:
+        if (lbl_803C4828[0x414] >= 1)
+            ((void (*)(u32, void *, u8, s32))fn_8007096C)(0x90000, trace + 0x3C, mcb[0x6C], event);
+        break;
+    case 10:
+        if (mcb[0x6D] != 0) {
+            L2CA_ConnectRsp(mcb + 0x62, *(u8 *)p_data, *(u16 *)(mcb + 0x68), 1, 0);
+            break;
+        }
+        rfc_timer_start(p_mcb, 0x78);
+        L2CA_ConnectRsp(mcb + 0x62, *(u8 *)p_data, *(u16 *)(mcb + 0x68), 0, 0);
+        if (lbl_803C4828[0x414] >= 4)
+            fn_8007093C(0x90003, trace + 0x58);
+        memset(config, 0, sizeof(config));
+        config[2] = 1;
+        *(u16 *)(config + 4) = 0x69B;
+        config[0x20] = 0;
+        config[6] = 0;
+        ((void (*)(u32, void *))L2CA_ConfigReq)(*(u16 *)(mcb + 0x68), config);
+        mcb[0x6C] = 2;
+        break;
+    case 1:
+    case 2:
+        return;
+    case 3:
+        rfc_send_dm(p_mcb, 0, 1);
+        break;
+    case 4:
+        rfc_send_dm(p_mcb, 0, 0);
+        break;
+    default:
+        if (lbl_803C4828[0x414] >= 4)
+            ((void (*)(u32, void *, s32, u8))fn_8007096C)(0x90003, trace + 0x70, event, mcb[0x6C]);
+        break;
+    }
+}
+
 void rfc_mx_sm_state_wait_conn_cnf(void *p_mcb, s32 event, void *p_data) {
     extern u8 lbl_803C4828[];
     extern char jumptable_803197F8[];
