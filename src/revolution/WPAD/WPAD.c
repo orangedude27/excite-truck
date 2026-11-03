@@ -3119,12 +3119,11 @@ s32 fn_8005D234(s32 chan, WPADGameInfo* pInfo)
 
 // fn_8005EB44: WPAD initialization
 void fn_8005EB44(void) {
-    register u8* base asm("r31") = (u8*)&_managerAlarm;
-    register s32 zero asm("r30") = 0;
     register u8* p_wpd asm("r29");
     register u8* p_wpdcb asm("r28");
     register u8* p_active asm("r27");
     register s32 chan asm("r26");
+    register s32 zero asm("r30") = 0;
     s32 i;
     u8 sens;
     u8 vol;
@@ -3156,13 +3155,13 @@ void fn_8005EB44(void) {
     do {
         *(void**)p_wpdcb = p_wpd;
         *p_active = zero;
-        *(void**)((u8*)*(void**)p_wpdcb + 0x7E4) = (void*)zero;
+        *(void**)(*(u8**)p_wpdcb + 0x7E4) = (void*)zero;
         __ClearControlBlock(chan);
         OSInitThreadQueue((OSThreadQueue*)(p_wpd + 0x824));
         chan++;
+        p_wpd += 0x8E0;
         p_wpdcb += 4;
         p_active++;
-        p_wpd += 0x8E0;
     } while (chan < 4);
 
     lbl_8055DC1A = 5;
