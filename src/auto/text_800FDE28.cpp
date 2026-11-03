@@ -174,17 +174,17 @@ extern "C" s32 MEMFreeByStateToFrmHeap(s32);
 extern "C" s32 Alloc__Q46nw4hbm3snd6detail11TaskManagerFv(void *arg0)
 {
     u32 temp_r31;
-    const char (*base)[0xC8] = (const char (*)[0xC8])lbl_80326E08;
+    const char *base = (const char *)lbl_80326E08;
     s32 var_r29;
 
     if (*(s32 *)((u8 *)arg0 + 0x18) == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(&(*base)[0], 0x45, &(*base)[0x68]);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)((char *)base), 0x45, base + 0x68);
     }
     temp_r31 = OSDisableInterrupts();
     var_r29 = MEMFreeByStateToFrmHeap(*(s32 *)((u8 *)arg0 + 0x18));
     while (var_r29 == 0) {
         if (ExecuteSingle__Q46nw4hbm3snd6detail11TaskManagerFv(arg0) == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(&(*base)[0], 0x4C, &(*base)[0xA8]);
+            Panic__Q26nw4hbm2dbFPCciPCce((const char *)((char *)base), 0x4C, base + 0xA8);
         }
         var_r29 = MEMFreeByStateToFrmHeap(*(s32 *)((u8 *)arg0 + 0x18));
     }
@@ -211,6 +211,9 @@ namespace detail {
 struct Task;
 struct TaskManager {
     enum TaskPriority { TaskPriority0 = 0 };
+    inline void *GetTaskListBase(TaskPriority priority) {
+        return (u8 *)this + priority * 0xC;
+    }
     void AppendTask(Task *, TaskPriority);
 };
 }
@@ -221,8 +224,8 @@ void nw4hbm::snd::detail::TaskManager::AppendTask(
     nw4hbm::snd::detail::Task *task,
     nw4hbm::snd::detail::TaskManager::TaskPriority priority) {
     u32 level;
-    void *list;
     void *it;
+    void *list;
     s32 valid;
 
     valid = 0;
@@ -231,12 +234,14 @@ void nw4hbm::snd::detail::TaskManager::AppendTask(
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326E08, 0x7D, (const char *)lbl_80326ED0, priority, 0, 3);
     }
     level = OSDisableInterrupts();
-    list = (u8 *)this + priority * 0xC + 0x20;
+    u8 *p = (u8 *)this + priority * 0xC;
+    list = p + 0x20;
     it = (u8 *)list + 4;
     if (task == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326FC8, 0x233, (const char *)lbl_80326FA4);
     }
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(list, &it, (u8 *)task + 4);
+    void *itCopy = it;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(list, &itCopy, (u8 *)task + 4);
     OSRestoreInterrupts(level);
 }
 
@@ -548,6 +553,66 @@ extern "C" void fn_800FEC1C(s32 *arg0, s32 arg1) {
     *arg0 = arg1;
 }
 
+extern "C" u32 GetSampleByDspAddress__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hbm3snd6detail7AxVoice6Format(const void *, u32, u32);
+extern "C" s32 ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3snd6detail8WaveDataPCv(void **self, u8 *out, const void *base) {
+    struct Coef { u16 v[20]; };
+    u16 *d;
+    u16 *s;
+    u32 *dst;
+    u32 *table;
+    s32 i;
+    u8 *h = (u8 *)*self;
+    u8 *h2;
+    u32 fmt;
+    u32 f;
+    out[0] = h[0];
+    out[2] = h[2];
+    *(u32 *)(out + 4) = (h[3] << 16) + *(u16 *)(h + 4);
+    out[1] = h[1];
+    fmt = h[0];
+    if (fmt == 1) {
+        f = 10;
+    } else {
+        f = 0;
+        if (fmt == 0) f = 0x19;
+    }
+    *(u32 *)(out + 8) = GetSampleByDspAddress__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hbm3snd6detail7AxVoice6Format(
+        0, *(u32 *)(h + 8), f);
+    h2 = (u8 *)*self;
+    fmt = h2[0];
+    if (fmt == 1) {
+        f = 10;
+    } else {
+        f = 0;
+        if (fmt == 0) f = 0x19;
+    }
+    *(u32 *)(out + 0xC) = GetSampleByDspAddress__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hbm3snd6detail7AxVoice6Format(
+        0, *(u32 *)(h2 + 0xC), f) + 1;
+    h = (u8 *)*self;
+    table = (u32 *)(*(u32 *)(h + 0x10) + (u32)h);
+    dst = (u32 *)(out + 0x10);
+    for (i = 0; i < ((u8 *)*self)[2]; i++, table++, dst += 0x11) {
+        u8 *entry = (u8 *)(*table + (u32)*self);
+        u32 off;
+        dst[1] = *(u32 *)(entry + 8);
+        dst[2] = *(u32 *)(entry + 0xC);
+        dst[3] = *(u32 *)(entry + 0x10);
+        dst[4] = *(u32 *)(entry + 0x14);
+        off = *(u32 *)(entry + 4);
+        if (off != 0) {
+            s = (u16 *)(off + (u32)*self);
+            d = (u16 *)(dst + 5);
+            *(Coef *)d = *(Coef *)s;
+            d[20] = s[20];
+            d[21] = s[21];
+            d[22] = s[22];
+            d[23] = s[23];
+        }
+        dst[0] = *(u32 *)entry + (*(u32 *)((u8 *)*self + 0x14) + (u32)base);
+    }
+    return 1;
+}
+
 extern "C" void* __dt__Q36nw4hbm3snd10WavePlayerFv(void *this_, s32 arg1, u32 arg2) {
     if (this_ != NULL) {
         *(void **)this_ = lbl_80327334;
@@ -642,6 +707,86 @@ extern "C" void Stop__Q36nw4hbm3snd10WavePlayerFv(void *arg0) {
     *((u8 *)arg0 + 0x1F) = zero;
     OSRestoreInterrupts(level);
 }
+
+extern "C" void fn_800FF090(void *arg0) {
+    struct WaveData {
+        u8 format;
+        u8 loop;
+        u8 channels;
+        u8 pad0;
+        u32 sampleRate;
+        u32 loopStart;
+        u32 sampleBytes;
+        const void *sampleData;
+        u8 pad[0x34];
+    };
+    struct WaveData waveData[2];
+    u32 interruptLevel;
+    u32 wave;
+    const char *base;
+    u32 format;
+    u8 *waveOut;
+    s32 i;
+
+    base = (const char *)lbl_80327040;
+    if (*(u32 *)((u8 *)arg0 + 4) == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x1F7, base + 0x240);
+    }
+    if (*(void **)((u8 *)arg0 + 0x18) == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x1F8, base + 0x274);
+    }
+    interruptLevel = OSDisableInterrupts();
+    if (*(u32 *)((u8 *)arg0 + 4) == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327430, 0x1F1,
+                                    (const char *)lbl_8032740C);
+    }
+    wave = (u32)*(void **)((u8 *)arg0 + 8);
+    if (wave == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327490, 0x23D,
+                                    (const char *)lbl_8032746C);
+    }
+    wave -= 0x18;
+    if (wave == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327460, 0x193,
+                                    (const char *)lbl_8032743C);
+    }
+    switch (*(u32 *)((u8 *)arg0 + 0x20)) {
+    case 1:
+        waveData[0].format = 1;
+        format = 0xA;
+        break;
+    case 2:
+        waveData[0].format = 0;
+        format = 0x19;
+        break;
+    default:
+        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x20B, base + 0xD4);
+        OSRestoreInterrupts(interruptLevel);
+        return;
+    }
+    waveData[0].loop = 0;
+    waveData[0].channels = *(u32 *)((u8 *)arg0 + 0x10);
+    waveData[0].sampleRate = (u16)*(u32 *)((u8 *)arg0 + 0x24);
+    waveData[0].loopStart = 0;
+    waveData[0].sampleBytes =
+        GetSampleByByte__Q46nw4hbm3snd6detail7AxVoiceFUlQ56nw4hbm3snd6detail7AxVoice6Format(
+            *(u32 *)((u8 *)wave + 0x10), format);
+    waveOut = (u8 *)&waveData[0];
+    for (i = 0; i < *(s32 *)((u8 *)arg0 + 0x10); i++) {
+        *(const void **)(waveOut + 0x10) = *(const void **)((u8 *)wave + 8);
+        wave += 4;
+        waveOut += 0x44;
+    }
+    Setup__Q46nw4hbm3snd6detail7AxVoiceFRCQ46nw4hbm3snd6detail8WaveData(
+        *(void **)((u8 *)arg0 + 0x18), &waveData[0]);
+    fn_800E519C(*(void **)((u8 *)arg0 + 0x18));
+    Pause__Q46nw4hbm3snd6detail7AxVoiceFb(*(void **)((u8 *)arg0 + 0x18),
+                                         *(u8 *)((u8 *)arg0 + 0x1F));
+    *(u8 *)((u8 *)arg0 + 0x1D) = 1;
+    *(u8 *)((u8 *)arg0 + 0x1E) = 0;
+    OSRestoreInterrupts(interruptLevel);
+}
+
 #pragma pop
 
 extern "C" u32 GetCurrentPlayingDspAddress__Q46nw4hbm3snd6detail7AxVoiceCFv(void *);
@@ -676,6 +821,63 @@ yes:
 no:
     return 0;
 }
+
+extern "C" void SetBaseAddress__Q46nw4hbm3snd6detail7AxVoiceFiPCv(void *, s32, const void *);
+extern "C" void StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *, s32, const void *, u32);
+extern "C" void UpdateWavePacket__Q36nw4hbm3snd10WavePlayerFv(void *self) {
+    struct PacketNode {
+        u32 unk0, unk4;
+        const void *data;
+        u32 unkC, sampleBytes;
+        u8 valid, pad[3];
+    };
+    register u32 sample;
+    register s32 i;
+    register PacketNode *node;
+    u64 size;
+    void *iterator;
+    void (*callback)(s32, void *, void *, u32);
+    if (*(u32 *)((u8 *)self + 4) == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327430, 0x1f1,
+                                     (const char *)lbl_8032740C);
+    node = (PacketNode *)*(void **)((u8 *)self + 8);
+    if (node == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327490, 0x23d,
+                                     (const char *)lbl_8032746C);
+    node -= 1;
+    if (node == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327460, 0x193,
+                                     (const char *)lbl_8032743C);
+    *(volatile u8 *)&node->valid = 0;
+    iterator = *(void **)((u8 *)self + 8);
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator((u8 *)self + 4, &iterator);
+    size = node->sampleBytes;
+    if (*(s32 *)((u8 *)self + 0x20) == 1) size >>= 1;
+    *(u64 *)((u8 *)self + 0x28) += size;
+    callback = *(void (**)(s32, void *, void *, u32))((u8 *)self + 0x8c);
+    if (callback != 0) callback(0, self, node, *(u32 *)((u8 *)self + 0x90));
+    if (*(u32 *)((u8 *)self + 4) != 0) {
+        if (*(u32 *)((u8 *)self + 4) == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327430, 0x1f1,
+                                         (const char *)lbl_8032740C);
+        node = (PacketNode *)*(void **)((u8 *)self + 8);
+        if (node == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327490, 0x23d,
+                                         (const char *)lbl_8032746C);
+        node -= 1;
+        if (node == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327460, 0x193,
+                                         (const char *)lbl_8032743C);
+        sample = GetSampleByByte__Q46nw4hbm3snd6detail7AxVoiceFUlQ56nw4hbm3snd6detail7AxVoice6Format(
+            node->sampleBytes, *(u32 *)((u8 *)*(void **)((u8 *)self + 0x18) + 0x118));
+        for (i = 0; i < *(s32 *)((u8 *)self + 0x10); node = (PacketNode *)((u8 *)node + 4), ++i) {
+            SetBaseAddress__Q46nw4hbm3snd6detail7AxVoiceFiPCv(*(void **)((u8 *)self + 0x18), i, node->data);
+            StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(*(void **)((u8 *)self + 0x18), i, node->data, sample);
+        }
+    }
+    *(u8 *)((u8 *)self + 0x1e) = 0;
+}
+
 #pragma use_lmw_stmw reset
 extern "C" s32 IsNextWavePacket__Q36nw4hbm3snd10WavePlayerCFv(void *);
 extern "C" void UpdateWavePacket__Q36nw4hbm3snd10WavePlayerFv(void *);
