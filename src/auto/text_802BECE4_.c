@@ -416,7 +416,6 @@ extern "C" int fn_802BF6AC(void) {
 #pragma scheduling on
 #pragma cplusplus reset
 extern void *fn_801284F8(int, const char*);
-extern void* fn_802BF780(void);
 extern const char lbl_8034AD90[];
 extern void* lbl_804C07F0[];
 extern float lbl_80564DA8, lbl_80564DB0, lbl_8055FAE0;
@@ -494,36 +493,40 @@ extern void fn_802C8B98(int, float *);
 extern void fn_802C8DB8(void *, int, unsigned short *, int);
 extern void fn_802C8D74(void);
 void fn_802BFE48(void *arg0, void *arg1, float arg2) {
-    struct V { float x, y, z; int color; float u, v; } v[4];
-    float mat[12];
-    float rot[9];
-    unsigned short idx[6] = { 0, 1, 2, 2, 1, 3 };
-    float vec[3];
-    float x, y;
-    int i;
-    if (*(int *)((char *)arg0 + 0x18) == -2) return;
-    x = lbl_80564DCC * arg2;
-    y = lbl_80564DD0 * arg2;
-    for (i = 0; i < 4; i++) {
-        v[i].x = (i & 1) ? x : -x;
-        v[i].y = (i & 2) ? x : -x;
-        v[i].z = y;
-        v[i].color = -1;
-        v[i].u = (i & 1) ? lbl_80564D80 : lbl_80564D90;
-        v[i].v = (i & 2) ? lbl_80564D80 : lbl_80564D90;
+    if (*(int *)((char *)arg0 + 0x18) != -2) {
+        struct V { float x, y, z; int color; float u, v; } v[4];
+        float matbuf[12];
+        float rot[9];
+        unsigned short idx[6] = { 0, 1, 2, 2, 1, 3 };
+        float vec[3];
+        float x, y;
+        float *mat = matbuf;
+        struct V *p = v;
+        int i;
+        x = lbl_80564DCC * arg2;
+        y = lbl_80564DD0 * arg2;
+        for (i = 0; i < 4; i++) {
+            p->x = (i & 1) ? x : -x;
+            p->y = (i & 2) ? x : -x;
+            p->z = y;
+            p->color = -1;
+            p->u = (i & 1) ? lbl_80564D80 : lbl_80564D90;
+            p->v = (i & 2) ? lbl_80564D80 : lbl_80564D90;
+            p++;
+        }
+        mat[0] = lbl_80564D80; mat[1] = lbl_80564D90; mat[2] = lbl_80564D90; mat[3] = lbl_80564D90;
+        mat[4] = lbl_80564D80; mat[5] = lbl_80564D90; mat[6] = lbl_80564D90; mat[7] = lbl_80564D90;
+        mat[8] = lbl_80564D80;
+        mat[9] = ((float *)arg1)[9];
+        mat[10] = ((float *)arg1)[10];
+        mat[11] = ((float *)arg1)[11];
+        vec[0] = lbl_80564DD4; vec[1] = lbl_80564D90; vec[2] = lbl_80564D90;
+        fn_80015A20(rot, vec);
+        fn_80015B20(mat, rot, mat);
+        fn_802C8B98(*(int *)((char *)arg0 + 0x18), mat);
+        fn_802C8DB8(v, 4, idx, 6);
+        fn_802C8D74();
     }
-    mat[0] = lbl_80564D80; mat[1] = lbl_80564D90; mat[2] = lbl_80564D90; mat[3] = lbl_80564D90;
-    mat[4] = lbl_80564D80; mat[5] = lbl_80564D90; mat[6] = lbl_80564D90; mat[7] = lbl_80564D90;
-    mat[8] = lbl_80564D80;
-    mat[9] = ((float *)arg1)[9];
-    mat[10] = ((float *)arg1)[10];
-    mat[11] = ((float *)arg1)[11];
-    vec[0] = lbl_80564DD4; vec[1] = lbl_80564D90; vec[2] = lbl_80564D90;
-    fn_80015A20(rot, vec);
-    fn_80015B20(mat, rot, mat);
-    fn_802C8B98(*(int *)((char *)arg0 + 0x18), mat);
-    fn_802C8DB8(v, 4, idx, 6);
-    fn_802C8D74();
 }
 
 void fn_802C0054(void *dst, const void *src) {
