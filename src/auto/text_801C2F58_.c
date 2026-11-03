@@ -2320,32 +2320,50 @@ void fn_801C9830(void) {
 
 extern void fn_801C855C(void);
 void fn_801C9834(void) {
-    u8 *p;
-    s32 idx;
-    s32 i;
-    s32 a;
-    s32 b;
-    s32 c;
-    s32 d;
+    u8 *var_r3;
+    s32 temp_r4;
+    s32 temp_r4_2;
+    s32 temp_r4_3;
+    s32 temp_r4_4;
+    s32 var_ctr;
+    s32 var_r4;
 
     fn_801C855C();
-    i = 11;
-    p = (u8 *)&lbl_80337474;
-    idx = 0;
-loop:
-    if (p[0] == 0xFF) { lbl_8055E824 = idx; goto done; }
-    a = idx + 1;
-    if (p[1] == 0xFF) { lbl_8055E824 = a; goto done; }
-    b = a + 1;
-    if (p[2] == 0xFF) { lbl_8055E824 = b; goto done; }
-    c = b + 1;
-    if (p[3] == 0xFF) { lbl_8055E824 = c; goto done; }
-    d = c + 1;
-    if (p[4] == 0xFF) { lbl_8055E824 = d; goto done; }
-    p += 5;
-    idx = d + 1;
-    if (--i) goto loop;
-done:
+    var_r3 = (u8 *)lbl_80337474;
+    var_r4 = 0;
+    for (var_ctr = 0; var_ctr < 11; var_ctr++) {
+        if (var_r3[0] == 0xFF) {
+            lbl_8055E824 = var_r4;
+            break;
+        } else {
+            temp_r4 = var_r4 + 1;
+            if (var_r3[1] == 0xFF) {
+                lbl_8055E824 = temp_r4;
+                break;
+            } else {
+                temp_r4_2 = temp_r4 + 1;
+                if (var_r3[2] == 0xFF) {
+                    lbl_8055E824 = temp_r4_2;
+                    break;
+                } else {
+                    temp_r4_3 = temp_r4_2 + 1;
+                    if (var_r3[3] == 0xFF) {
+                        lbl_8055E824 = temp_r4_3;
+                        break;
+                    } else {
+                        temp_r4_4 = temp_r4_3 + 1;
+                        if (var_r3[4] == 0xFF) {
+                            lbl_8055E824 = temp_r4_4;
+                            break;
+                        } else {
+                            var_r3 += 5;
+                            var_r4 = temp_r4_4 + 1;
+                        }
+                    }
+                }
+            }
+        }
+    }
     lbl_8055E838 = 0;
 }
 #pragma scheduling on
