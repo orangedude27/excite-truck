@@ -482,6 +482,32 @@ u8 nw4hbm::ut::detail::ResFontBase::GetWidth() const {
     return *(u8*)(*(u32*)((char*)this+0x14)+0x15);
 }
 
+extern "C" u8 GetWidth__Q46nw4hbm2ut6detail11ResFontBaseCFv_801094E8(void* self) {
+    const char* file=lbl_80329140;
+    u32 value=(u32)self;
+    int a=1,b=1,c=1,d=1,e=1,f=1;
+    u32 t=value&0xFF000000U;
+    if (t!=0x80000000U && (value&0xFF800000U)!=0x81000000U) f=0;
+    if (f==0 && (value&0xF8000000U)!=0x90000000U)e=0;
+    if (e==0 && t!=0xC0000000U)d=0;
+    if (d==0 && (value&0xFF800000U)!=0xC1000000U)c=0;
+    if (c==0 && (value&0xF8000000U)!=0xD0000000U)b=0;
+    if (b==0 && (value&0xFFFFC000U)!=0xE0000000U)a=0;
+    if(a==0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x91,file+0xF0,self);
+    int g=1,h=1;
+    u32 v=*(u32*)((char*)self+0x14);
+    int i=1,j=1,k=1,l=1;
+    u32 t2=v&0xFF000000U;
+    if(t2!=0x80000000U&&(v&0xFF800000U)!=0x81000000U)l=0;
+    if(l==0&&(v&0xF8000000U)!=0x90000000U)k=0;
+    if(k==0&&t2!=0xC0000000U)j=0;
+    if(j==0&&(v&0xFF800000U)!=0xC1000000U)i=0;
+    if(i==0&&(v&0xF8000000U)!=0xD0000000U)h=0;
+    if(h==0&&(v&0xFFFFC000U)!=0xE0000000U)g=0;
+    if(g==0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x92,file+0x128);
+    return *(u8*)(*(u32*)((char*)self+0x14)+0x14);
+}
+
 s32 nw4hbm::ut::detail::ResFontBase::GetDescent() const {
     const u32 value = (u32)this;
     const u32 data = *(const u32*)(value + 0x14);
