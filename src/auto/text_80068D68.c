@@ -6593,45 +6593,46 @@ found:
 }
 
 void btm_chg_all_acl_pkt_types(BOOLEAN start) {
-    u8 *cb = lbl_803C0F78;
-    u8 *p = cb + 0x34;
-    s32 i;
-    u16 mask, pkt;
+    u8 *log = lbl_80315CA0;
+    u8 *p = lbl_803C0F78 + 0x34;
+    u32 i;
+    u16 mask, pkt, temp;
     u8 mode, sp8;
-    s8 sp14;
-    u8 spC[4];
+    u8 spC[12];
     if (start) {
-        for (i = 0; i < 4; i++, p += 0x11C) {
+        for (i = 0; i < 4; ++i, p += 0x11C) {
             if (!p[0x119]) continue;
-            if (cb[0x27C0] >= 5) fn_80070954(0xD0004, lbl_80315CA0 + 0x38C, *(u16 *)p);
+            if (lbl_803C0F78[0x27C0] >= 5) fn_80070954(0xD0004, log + 0x38C, *(u16 *)p);
             *(u16 *)(p + 4) = *(u16 *)(p + 2);
             pkt = 0x18;
-            mode = cb[0x636];
+            mode = lbl_803C0F78[0x636];
             if (mode >= 3) pkt |= 0x3300;
-            mask = *(u16 *)(cb + 0x654);
-            pkt &= mask;
-            pkt &= 0xCC18;
-            if (mode >= 3) pkt |= (u16)((0x18 | 0x3300 | mask) & 0x3306);
-            if (cb[0x27C0] >= 4) fn_80070954(0xD0003, lbl_80315CA0 + 0x40, pkt);
-            if (btsnd_hcic_change_conn_type(*(u16 *)p, pkt)) *(u16 *)(p + 2) = pkt;
+            mask = *(u16 *)(lbl_803C0F78 + 0x654);
+            temp = pkt & mask & 0xCC18;
+            if (mode >= 3) temp |= (pkt | mask) & 0x3306;
+            else temp &= ~0x3306;
+            if (lbl_803C0F78[0x27C0] >= 4) fn_80070954(0xD0003, log + 0x40, temp);
+            if (btsnd_hcic_change_conn_type(*(u16 *)p, temp)) *(u16 *)(p + 2) = temp;
         }
     } else {
-        for (i = 0; i < 4; i++, p += 0x11C) {
-            if (!p[0x119] || !*(u16 *)(p + 4) || BTM_ReadPowerMode(p + 8, &sp8)) continue;
+        for (i = 0; i < 4; ++i, p += 0x11C) {
+            if (!p[0x119]) continue;
+            if (!*(u16 *)(p + 4)) continue;
+            if (BTM_ReadPowerMode(p + 8, &sp8)) continue;
             if (sp8 == 2) {
-                if (cb[0x27C0] >= 5) fn_80070954(0xD0004, lbl_80315CA0 + 0x3BC, *(u16 *)p);
-                sp14 = 0;
+                if (lbl_803C0F78[0x27C0] >= 5) fn_80070954(0xD0004, log + 0x3BC, *(u16 *)p);
+                spC[8] = 0;
                 BTM_SetPowerMode(0x80, p + 8, (void *)spC);
             } else {
-                if (cb[0x27C0] >= 5) fn_8007096C(0xD0004, lbl_80315CA0 + 0x3EC, *(u16 *)p, *(u16 *)(p + 2));
+                if (lbl_803C0F78[0x27C0] >= 5) fn_8007096C(0xD0004, log + 0x3EC, *(u16 *)p, *(u16 *)(p + 2));
                 pkt = *(u16 *)(p + 4);
-                mask = *(u16 *)(cb + 0x654);
-                mode = cb[0x636];
-                pkt &= mask;
-                pkt &= 0xCC18;
-                if (mode >= 3) pkt |= (u16)((*(u16 *)(p + 4) | mask) & 0x3306);
-                if (cb[0x27C0] >= 4) fn_80070954(0xD0003, lbl_80315CA0 + 0x40, pkt);
-                if (btsnd_hcic_change_conn_type(*(u16 *)p, pkt)) *(u16 *)(p + 2) = pkt;
+                mask = *(u16 *)(lbl_803C0F78 + 0x654);
+                mode = lbl_803C0F78[0x636];
+                temp = pkt & mask & 0xCC18;
+                if (mode >= 3) temp |= (pkt | mask) & 0x3306;
+                else temp &= ~0x3306;
+                if (lbl_803C0F78[0x27C0] >= 4) fn_80070954(0xD0003, log + 0x40, temp);
+                if (btsnd_hcic_change_conn_type(*(u16 *)p, temp)) *(u16 *)(p + 2) = temp;
                 *(u16 *)(p + 4) = 0;
             }
         }
@@ -8998,6 +8999,72 @@ void bta_dm_discover(void *arg0) {
             fn_80071450(msg);
         }
     }
+}
+
+void bta_dm_inq_cmpl(void *arg0) {
+    extern void bta_dm_remname_cback(u8 *);
+    u8 result[0x108], info[0x108];
+    u8 *entry, *addr;
+    void *buf;
+    int done = 1;
+    entry = (u8 *)BTM_InqDbFirst();
+    *(void **)(lbl_803C0B98 + 4) = entry;
+    if (entry != 0) {
+        done = 0;
+        if (*(u32 *)(lbl_803C0B98 + 8) != 0) {
+            if (BTM_IsAclConnectionUp(entry + 2)) lbl_803C0B98[0x78] = 0;
+            else lbl_803C0B98[0x78] = 1;
+            lbl_803C0B98[0x79] = 0;
+            BTM_SecAddRmtNameNotifyCallback(fn_80072AE4);
+            lbl_803C0B98[0x70] = 0;
+            *(u32 *)(lbl_803C0B98 + 0x10) = 0;
+            *(u32 *)(lbl_803C0B98 + 0xC) = *(u32 *)(lbl_803C0B98 + 8);
+            lbl_803C0B98[0x20] = 0;
+            fn_80070FA4(lbl_803C0B98 + 0x1A, (u8 *)*(void **)(lbl_803C0B98 + 4) + 2);
+            bta_dm_find_services((u8 *)*(void **)(lbl_803C0B98 + 4) + 2);
+        } else {
+            done = 1;
+            goto check_entry;
+            do {
+                if (entry[0x10] != 0) {
+                    fn_80070FA4(info, entry + 2);
+                    info[6] = 0;
+                    *(u32 *)(info + 0x100) = 0;
+                    ((void (*)(int, void *))*(u32 *)lbl_803C0B98)(2, info);
+
+                } else {
+                    if (*(u16 *)(lbl_803C0F78 + 0x64C) < 0x7530)
+                        fn_8007146C((s32)(lbl_803C0B98 + 0x58), 0x205, *(u16 *)(lbl_803C0F78 + 0x64C) + 0x64);
+                    if (BTM_ReadRemoteDeviceName((u8 *)*(void **)(lbl_803C0B98 + 4) + 2, (tBTM_CMPL_CB *)bta_dm_remname_cback) != 1) {
+                        fn_8007148C((s32)(lbl_803C0B98 + 0x58));
+                        addr = (u8 *)*(void **)(lbl_803C0B98 + 4) + 2;
+                        buf = GKI_getbuf(0x110);
+                        if (buf != 0) {
+                            fn_80070FA4((u8 *)buf + 8, addr);
+                            *((u8 *)buf + 0xE) = 0;
+                            *(u16 *)buf = 0x204;
+                            fn_80071450(buf);
+                        }
+                    }
+                    done = 0;
+                    break;
+                }
+                *(void **)(lbl_803C0B98 + 4) = BTM_InqDbNext(*(tBTM_INQ_INFO **)(lbl_803C0B98 + 4));
+            check_entry:
+                entry = *(u8 **)(lbl_803C0B98 + 4);
+            } while (entry != 0);
+        }
+    }
+    if (done) {
+        *(u32 *)(lbl_803C0B98 + 8) = 0;
+        buf = GKI_getbuf(0x110);
+        if (buf != 0) {
+            *(u16 *)buf = 0x207;
+            fn_80071450(buf);
+        }
+    }
+    result[0] = *((u8 *)arg0 + 8);
+    ((void (*)(int, void *))*(u32 *)lbl_803C0B98)(1, result);
 }
 
 void bta_dm_rmt_name(s32 arg0) {
