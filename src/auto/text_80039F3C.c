@@ -17,7 +17,7 @@ extern const char lbl_80302848[];
 extern unsigned char lbl_8055D8ED;
 extern unsigned char lbl_8055D8EC;
 extern char *lbl_8055D8F8;
-extern const char lbl_80558E20[];
+extern const char lbl_80558E20[8];
 extern int IPCCltInit(void);
 extern void *IPCGetBufferLo(void);
 extern void *IPCGetBufferHi(void);
