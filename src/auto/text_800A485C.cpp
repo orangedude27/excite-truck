@@ -2,6 +2,11 @@
 #include <macros.h>
 #pragma push
 #pragma dont_inline on
+extern "C" s32 fn_800A9BB4(u8 *, u8 *, s32, s32, u32, s32, s32 *, s32);
+extern "C" s32 VFiPFENT_LoadLFNEntryFieldsFromBuf(void *, void *);
+extern "C" s32 fn_800B3A70(void *, void *, s32);
+extern "C" s32 VFiPFPATH_transformInUnicode(s16 *, s32, s32);
+extern "C" void VFiPFPATH_getLongNameformShortName(void *, void *, s32);
 extern "C" s32 fn_800A9DC0(void *, void *, s32, s32, s32, s32 *) { return 0; }
 #pragma pop
 extern "C" { typedef s32 Fn800A8D08C4(void *, s32, void **, s32 *); typedef s32 Fn800B05C8C(void *, s32, u32 *); }
@@ -16122,6 +16127,59 @@ int homebutton::Controller::isPlayingSoundId(int arg0) const {
 extern "C" void fn_800D1300(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x42) = 0;
     *(u8 *)((u8 *)arg0 + 0x43) = 0;
+}
+
+extern "C" u8 fn_8005EE80(s32);
+extern "C" void updateSound__Q210homebutton10ControllerFv(void *arg0) {
+    s32 sound = *(s32 *)arg0;
+    if (fn_800D1E5C(*(void **)((u8 *)arg0 + 0x24), sound) == 0) {
+        if (((u8 *)arg0)[0x42] != 0) {
+            if (((u8 *)arg0)[0x43] == 0) {
+                OSTime time = OSGetTime();
+                *(u32 *)((u8 *)arg0 + 0x3C) = (u32)time;
+                *(u32 *)((u8 *)arg0 + 0x38) = (u32)(time >> 32);
+                ((u8 *)arg0)[0x43] = 1;
+            } else if ((u32)((u32)OSGetTime() - *(u32 *)((u8 *)arg0 + 0x3C)) /
+                           ((*(volatile u32 *)0x800000F8 >> 2) / 1000U) >= 0x3E8U) {
+                ((u8 *)arg0)[0x42] = 0;
+                ((u8 *)arg0)[0x43] = 0;
+            }
+        }
+    } else if (((u8 *)arg0)[0x42] != 0) {
+        ((u8 *)arg0)[0x43] = 0;
+        if ((u32)((u32)OSGetTime() - *(u32 *)((u8 *)arg0 + 0x34)) /
+                ((*(volatile u32 *)0x800000F8 >> 2) / 1000U) >= 0x75300U) {
+            sound = *(s32 *)arg0;
+            ((u8 *)arg0)[0x42] = 0;
+            ((u8 *)arg0)[0x43] = 0;
+            if (fn_80060C7C((void *)sound) != 0) {
+                OSAlarm *alarm;
+                fn_80060CC0((void *)sound, 2, 0);
+                alarm = (OSAlarm *)((u8 *)lbl_804076C0 + sound * 0x30);
+                OSSetAlarmUserData(alarm, (void *)sound);
+                OSCancelAlarm(alarm);
+                ((void (*)(OSAlarm *, u32, u32, u32, OSAlarmHandler))OSSetAlarm)(
+                    alarm, 0x10624DD3, 0, ((*(volatile u32 *)0x800000F8 >> 2) / 1000U) * 1000U,
+                    soundOnCallback__Q210homebutton10ControllerFP7OSAlarmP9OSContext);
+                ((u8 *)arg0)[0x41] = 1;
+            }
+        }
+    } else if (((u8 *)arg0)[0x41] == 0 && fn_8005EE80(sound) <= 0x55) {
+        s32 id = *(s32 *)arg0;
+        if (fn_80060C7C((void *)id) != 0) {
+            OSAlarm *alarm;
+            u32 ticks;
+            fn_80060CC0((void *)id, 2, 0);
+            alarm = (OSAlarm *)((u8 *)lbl_804076C0 + id * 0x30);
+            OSSetAlarmUserData(alarm, (void *)id);
+            OSCancelAlarm(alarm);
+            ticks = *(volatile u32 *)0x800000F8;
+            ((void (*)(OSAlarm *, u32, u32, u32, OSAlarmHandler))OSSetAlarm)(
+                alarm, 0x10624DD3, 0, ((ticks >> 2) / 1000U) * 1000U,
+                soundOnCallback__Q210homebutton10ControllerFP7OSAlarmP9OSContext);
+            ((u8 *)arg0)[0x41] = 1;
+        }
+    }
 }
 
 extern "C" void fn_800D1548(void *arg0) {
