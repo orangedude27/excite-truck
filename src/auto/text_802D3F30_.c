@@ -708,6 +708,7 @@ void fn_802D5ACC(void *arg0) {
 
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
 void fn_802D5B8C(void *arg0) {
     s32 count = *(s32 *)((char *)arg0 + 0x1C);
     u32 *colors = (u32 *)fn_802CFF64(count * 4);
@@ -717,29 +718,31 @@ void fn_802D5B8C(void *arg0) {
         u32 *srcColor = *(u32 **)((char *)arg0 + 0x24);
         f32 d0 = lbl_804C56C0[9] - lbl_804C5690[9];
         f32 d1 = lbl_804C56C0[10] - lbl_804C5690[10];
-        f32 *srcUv = *(f32 **)((char *)arg0 + 0x28);
         f32 d2 = lbl_804C56C0[11] - lbl_804C5690[11];
-        f32 vec[3];
-        f32 offU = lbl_804DB068[3];
-        f32 offV = lbl_804DB068[4];
-        f32 scale = lbl_804DB068[5];
-        f32 one = lbl_8056500C;
+        f32 vec[5];
+        f32 *srcUv = *(f32 **)((char *)arg0 + 0x28);
+        f32 offU, offV, scale, one;
         u32 *outC = colors;
         f32 *outUv = uvs;
         s32 i;
-        vec[0] = d0 * lbl_804C5690[0] + d1 * lbl_804C5690[1] + d2 * lbl_804C5690[2];
-        vec[1] = d0 * lbl_804C5690[3] + d1 * lbl_804C5690[4] + d2 * lbl_804C5690[5];
-        vec[2] = d0 * lbl_804C5690[6] + d1 * lbl_804C5690[7] + d2 * lbl_804C5690[8];
+        vec[2] = d0 * lbl_804C5690[0] + d1 * lbl_804C5690[1] + d2 * lbl_804C5690[2];
+        vec[3] = d0 * lbl_804C5690[3] + d1 * lbl_804C5690[4] + d2 * lbl_804C5690[5];
+        vec[4] = d0 * lbl_804C5690[6] + d1 * lbl_804C5690[7] + d2 * lbl_804C5690[8];
+        vec[0] = lbl_804DB068[3];
+        vec[1] = lbl_804DB068[4];
+        offU = vec[0];
+        offV = vec[1];
+        scale = lbl_804DB068[5];
+        one = lbl_8056500C;
         for (i = 0; i < count; i++) {
             u32 c = *srcColor;
-            f32 factor = one - PSVECSquareDistance(pos, vec) * scale;
+            f32 factor = one - PSVECSquareDistance(pos, &vec[2]) * scale;
             s32 a = (s32)((f32)(u8)c * factor) > 0 ? (s32)((f32)(u8)c * factor) : 0;
             if (a > 0xFF) a = 0xFF;
             *outC = (c & ~0xFF) | (a & 0xFF);
             pos += 3;
             srcColor++;
             outC++;
-            i = i;
             outUv[0] = srcUv[0] + offU;
             outUv[1] = srcUv[1] + offV;
             srcUv += 2;
@@ -1037,13 +1040,13 @@ extern const char lbl_8034C3B4[];
 extern f32 lbl_80565010;
 extern f32 lbl_80565014;
 void fn_802D65F8(s32 arg0, s32 arg1) {
-    u8 *bytes = (u8 *)arg0;
+    volatile u8 *bytes = (volatile u8 *)arg0;
     u8 a, b, c, d, e, f, g, h;
     s32 count = *(s32 *)(bytes + 0x1C);
     u8 *entries;
     s32 i;
-
     extern void fn_802D63FC(void *, s32);
+
     fn_802D63FC((void *)arg0, arg1);
     a = bytes[0x2C];
     b = bytes[0x2F];
@@ -1061,9 +1064,8 @@ void fn_802D65F8(s32 arg0, s32 arg1) {
     bytes[0x33] = e;
     bytes[0x31] = h;
     bytes[0x32] = g;
-    fn_802D657C((s32 *)(bytes + 0x30), arg1);
-    if (bytes[8] == 0x1A) fn_802D6594(bytes);
-
+    fn_802D657C((s32 *)((u8 *)bytes + 0x30), arg1);
+    if (bytes[8] == 0x1A) fn_802D6594((void *)bytes);
     count = *(s32 *)(bytes + 0x1C);
     if (bytes[8] == 0x13) {
         entries = *(u8 **)(bytes + 0x20);
