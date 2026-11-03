@@ -16,6 +16,18 @@ extern "C" f32 lbl_8042FD08[];
 extern "C" f32 lbl_80558DC4[];
 extern "C" f32 PSVECDotProduct(const void *, const void *);
 extern "C" f32 lbl_80561750, lbl_80561754, lbl_8056177C, lbl_80561788, lbl_8056178C, lbl_80561790, lbl_80561794, lbl_80561798;
+class Fn8015B404Obj {
+public:
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+    virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+    virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+    virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+    virtual void v16(); virtual void v17(); virtual f32 v18(s32); virtual void v19();
+    virtual void v20(); virtual s32 v21(); virtual void v22(); virtual void v23();
+    virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
+    virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31();
+    virtual void v32(); virtual void v33(f32*);
+};
 extern "C" f32 lbl_80561760;
 extern "C" s32 lbl_8055A058[1];
 extern "C" f32 fn_80204CFC(const char*);
@@ -1313,6 +1325,67 @@ extern "C" void fn_801590A8(void* arg0) {
     f0 = lbl_8056177C;
     *(f32*)((char*)arg0 + 0x264) = f1;
     *(f32*)((char*)arg0 + 0x258) = f0;
+}
+
+extern "C" u8 fn_80159124(void* arg0, void* arg1) {
+    u8* self = (u8*)arg0;
+    u8* other = (u8*)arg1;
+    if (*(s32*)(other + 0x2620) == 0) {
+        *(f32*)(self + 0x270) = *(f32*)(self + 0x270) + lbl_8056177C;
+    } else {
+        *(f32*)(self + 0x270) = lbl_80561754;
+    }
+    f32 result = lbl_80561754;
+    u8 prev = *(u8*)(self + 0x274);
+    f32 limit = *(f32*)(other + 0x25D4);
+    u8 flag;
+    if ((f32)__fabs(*(f32*)(other + 0x2690)) <= lbl_80558DC4[0] && limit > lbl_80561788 && *(f32*)(self + 0x270) < lbl_80561760) {
+        f32 d = (f32)__fabs(PSVECDotProduct(other + 0x118, other + 0x3C));
+        f32 k = prev != 0 ? lbl_8056178C : lbl_80561790;
+        flag = d > limit * k;
+    } else {
+        flag = 0;
+    }
+    *(u8*)(self + 0x274) = flag;
+    if (flag != 0) {
+        f32 lim2 = *(f32*)(other + 0x25D4);
+        f32 d = (f32)__fabs(PSVECDotProduct(other + 0x118, other + 0x3C));
+        f32 k = prev != 0 ? lbl_8056178C : lbl_80561790;
+        f32 a = lbl_80561750 - lbl_80561794 * *(f32*)(self + 0x270);
+        if (a > lbl_80561754) {
+        } else {
+            a = lbl_80561754;
+        }
+        f32 b = lbl_80561750;
+        f32 t = lbl_80561788 * (d / (lim2 * k) - b);
+        if (b < t) {
+        } else {
+            b = t;
+        }
+        if (b > lbl_80561754) {
+        } else {
+            b = lbl_80561754;
+        }
+        result = b * a;
+    }
+    u8* w = *(u8**)(self + 0x278);
+    if (w != 0) {
+        if ((f32)__fabs(result) <= lbl_80558DC4[0]) {
+            w[0x4A] = 1;
+            w[0x4C] = 0;
+        } else {
+            f32 v = lbl_80561798 * result;
+            if (v != *(f32*)(w + 8)) {
+                w[0x4D] = 1;
+                *(f32*)(w + 8) = v;
+            }
+            w = *(u8**)(self + 0x278);
+            w[0x4A] = 0;
+            w[0x4B] = 1;
+            w[0x49] = 1;
+        }
+    }
+    return *(u8*)(self + 0x274);
 }
 
 extern "C" void fn_80159724(void) {
