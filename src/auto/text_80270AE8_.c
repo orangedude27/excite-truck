@@ -514,7 +514,6 @@ float fn_80272428(void *arg0, void *arg1, float a, float b, float radius) {
     fraction = resultB.fraction;
     next = *(void **)((u8 *)node + 0x14);
     x = *(float *)node + fraction * (*(float *)next - *(float *)node);
-    y = *(float *)((u8 *)node + 4) + fraction * (*(float *)((u8 *)node + 4));
     y = *(float *)((u8 *)node + 4) + fraction * (*(float *)((u8 *)next + 4) - *(float *)((u8 *)node + 4));
     dx = x - *(float *)arg1;
     pointB.x = x;
