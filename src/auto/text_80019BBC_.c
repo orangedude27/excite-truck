@@ -541,11 +541,14 @@ extern void fn_802C8E00(int, int, float, float, float, float, float, float, floa
 extern void fn_802C8E48(void);
 extern float fn_8002F234(float, float, float, float, float);
 extern float lbl_80560418, lbl_80560420, lbl_80560424, lbl_80560440;
+#pragma processor 750
+#pragma use_lmw_stmw off
 int fn_8001B478(float farg0) {
     unsigned char sp20[0x30];
     int i, count, result;
     float step, ratio, angle, x, y, z, w, nx, ny, norm, inv, dx, dy, t;
-    float a[4];
+    float a[4], texscale;
+    void *shape;
     void *node;
     void *head;
     fn_801352B8(sp20);
@@ -553,11 +556,13 @@ int fn_8001B478(float farg0) {
         fn_8013530C(sp20, -1);
         return 0;
     }
-    step = *(float *)(sp20 + 0x2c);
+    shape = *(void **)(sp20 + 0x2c);
+    step = *(float *)((char *)shape + 8);
     ratio = step / farg0;
     count = (int)ratio;
     if (ratio - count > lbl_80560420) count++;
-    head = *(void **)(sp20 + 0x1c);
+    texscale = (float)count / step;
+    head = *(void **)((char *)shape + 0x1c);
     node = *(void **)((char *)head + 0x14);
     i = 1;
     while (node != head) {
@@ -571,7 +576,7 @@ int fn_8001B478(float farg0) {
     result = 0;
     x = lbl_80560424;
     y = lbl_80560420;
-    count++;
+    count = i + 1;
     node = head;
     for (i = 0; i < count; i++, node = *(void **)((char *)node + 0x14)) {
         if ((i & 3) == 0) {
@@ -587,12 +592,12 @@ int fn_8001B478(float farg0) {
             a[0] = x1; a[1] = y1; a[2] = z1; a[3] = w1;
             norm = fn_8002F234(x1*x1 + y1*y1, 0, 0, 0, 0);
             inv = x / norm;
-            dx = -(x1 * inv);
-            dy = y1 * inv;
+            dx = y1 * inv;
+            dy = -(x1 * inv);
             a[0] = dx; a[1] = dy;
             if (*(float *)((char *)node + 0x1c) < angle)
-                ratio = (float)count * (*(float *)((char *)node + 0x1c) + step);
-            else ratio = *(float *)((char *)node + 0x1c) * (float)count;
+                ratio = texscale * (*(float *)((char *)node + 0x1c) + step);
+            else ratio = *(float *)((char *)node + 0x1c) * texscale;
             angle = *(float *)((char *)node + 0x1c);
             nx = -farg0 * y;
             x0 = z1 + dx * nx;
@@ -659,17 +664,16 @@ void fn_8001B7BC(void *arg0) {
         float sp78[4];
         float sp28[12];
     } frame;
-    int temp_padding[2];
-    float angle;
+    double angle;
     float ratio;
     float temp_f4;
     int temp_r31;
     fn_802CB274(*(int *)((char *)arg0 + 4));
     fn_802C9294(*(int *)((char *)arg0 + 4), 0);
     angle = lbl_80560458;
-    temp_f4 = (float)fn_8002EF30(angle * lbl_80560420);
+    temp_f4 = (float)fn_8002EF30((float)angle * lbl_80560420);
     ratio = (lbl_80560420 * *(float *)((char *)arg0 + 0x28)) / temp_f4;
-    fn_802C9694(frame.sp78, ratio - lbl_80560424, lbl_80560424 + ratio, angle, temp_f4);
+    fn_802C9694(frame.sp78, ratio - lbl_80560424, lbl_80560424 + ratio, (float)angle, temp_f4);
     temp_f4 = *(float *)((char *)arg0 + 0x1C);
     fn_802C86F0(frame.sp58, 0, 0, (int)temp_f4, (int)temp_f4);
     fn_802C88CC(0xFFFFFF);
