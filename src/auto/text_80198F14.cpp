@@ -1545,7 +1545,7 @@ extern "C" s32 fn_8019B4D8(void*, void*, void*, s32, f32);
 struct Fn8019E874Xf { f32 m[9]; Vec pos; };
 class Fn801A0F10Child {
 public:
-    virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03();
+    virtual void v00(); virtual void v01(); virtual void v02();
     virtual void Update();
 };
 extern "C" void fn_801BEAEC(s32, s32, void*);
@@ -2364,42 +2364,56 @@ extern "C" void fn_801A0F10(void* arg0) {
     Vec tmp;
     u8 buffer[0x300];
     s32 i;
+    u8* ent;
     fn_801A0160(arg0);
+    ent = (u8*)arg0;
     for (i = 0; i < *(s32*)((u8*)arg0 + 0x174); i++) {
-        ((Fn801A0F10Child*)*(void**)((u8*)arg0 + 0x24 + i * 4))->Update();
+        ((Fn801A0F10Child*)*(void**)(ent + 0x24))->Update();
+        ent += 4;
     }
     if (lbl_8055E5A0 != 0) {
         u8* obj = *(u8**)((u8*)arg0 + 4);
+        s32 ok = 0;
         if (obj != 0) {
-            s32 tag = *(s32*)(obj + 0x10);
-            if (tag == 0x4E434152 || tag == 0x43415220 || tag == 0x41434152 || tag == 0x50434152) {
-                s32 e = *(s32*)(obj + 0x1EC);
-                s32 k;
-                f32 one = lbl_805622E0;
-                f32 zero = lbl_805622D4;
-                for (k = 0; k < 4; k++) {
-                    fn_801BEAEC(e, k, &tmp);
-                    v = tmp;
-                    v.x += *(f32*)(obj + 0x48) * one;
-                    v.y += *(f32*)(obj + 0x4C) * one;
-                    v.z += *(f32*)(obj + 0x50) * one;
-                    count = 0x40;
-                    fn_801CF080(lbl_8055E5A0, &v, buffer, &count, 0, lbl_8056234C);
-                    Vec* cur = (Vec*)buffer;
-                    for (i = 0; i < count; i++) {
-                        d.x = v.x - cur->x;
-                        d.y = v.y - cur->y;
-                        d.z = v.z - cur->z;
-                        f32 mag = PSVECMag(&d);
-                        if (mag > zero) {
-                            f32 inv = one / mag;
-                            d.x *= inv;
-                            d.y *= inv;
-                            d.z *= inv;
-                            fn_801BEB44(e, k, (f32*)cur, (f32*)&d);
-                        }
-                        cur++;
+            switch (*(s32*)(obj + 0x10)) {
+            case 0x4E434152:
+            case 0x43415220:
+            case 0x41434152:
+            case 0x50434152:
+                ok = 1;
+                break;
+            default:
+                ok = 0;
+                break;
+            }
+        }
+        if (ok != 0) {
+            s32 e = *(s32*)(obj + 0x1EC);
+            s32 k;
+            f32 one = lbl_805622E0;
+            f32 zero = lbl_805622D4;
+            for (k = 0; k < 4; k++) {
+                fn_801BEAEC(e, k, &tmp);
+                v = tmp;
+                v.x += *(f32*)(obj + 0x48) * one;
+                v.y += *(f32*)(obj + 0x4C) * one;
+                v.z += *(f32*)(obj + 0x50) * one;
+                count = 0x40;
+                fn_801CF080(lbl_8055E5A0, &v, buffer, &count, 0, lbl_8056234C);
+                Vec* cur = (Vec*)buffer;
+                for (i = 0; i < count; i++) {
+                    d.x = v.x - cur->x;
+                    d.y = v.y - cur->y;
+                    d.z = v.z - cur->z;
+                    f32 mag = PSVECMag(&d);
+                    if (mag > zero) {
+                        f32 inv = one / mag;
+                        d.x *= inv;
+                        d.y *= inv;
+                        d.z *= inv;
+                        fn_801BEB44(e, k, (f32*)cur, (f32*)&d);
                     }
+                    cur++;
                 }
             }
         }
