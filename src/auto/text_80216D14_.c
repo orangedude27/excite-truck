@@ -836,15 +836,11 @@ extern "C" int fn_80218214(void *arg0, int arg1, int arg2) {
 #pragma dont_inline reset
 #pragma pop
 int fn_802182F0(void *arg0, void *arg1) {
-    int count;
     int i;
-    count = *(int *)((char *)arg0 + 0x430);
-    i = 0;
-    while (count > 0) {
-        if (*(void **)((char *)arg0 + 0x30 + i * 4) == arg1)
-            return i;
-        i++;
-        count--;
+    int count = *(int *)((char *)arg0 + 0x430);
+    for (i = 0; i < count; i++) {
+        if (*(void **)((char *)arg0 + 0x30) == arg1) return i;
+        arg0 = (char *)arg0 + 4;
     }
     return -1;
 }
