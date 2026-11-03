@@ -314,12 +314,8 @@ static inline void fn_802671CC_mul_vec(float *out, float *in, float *matrix, flo
 }
 #pragma push
 #pragma ppc_psq_save off
-#pragma paired_single off
 void fn_802671CC(void *arg0, int arg1) {
-    union IntDouble {
-        double value;
-        unsigned int word[2];
-    };
+    union IntDouble { double value; unsigned int word[2]; };
     struct Scratch {
         float output[3];
         float input[3];
