@@ -1,5 +1,6 @@
   #include <types.h>
 #include <macros.h>
+namespace nw4hbm { namespace snd { class SoundArchivePlayer { public: SoundArchivePlayer(); }; } }
 extern "C" { typedef s32 Fn800A8D08C4(void *, s32, void **, s32 *); typedef s32 Fn800B05C8C(void *, s32, u32 *); }
 #include <revolution/MEM/mem_allocator.h>
 extern "C" void *List_GetNext__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListPCv(const void *, const void *);
