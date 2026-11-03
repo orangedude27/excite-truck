@@ -158,6 +158,15 @@ struct StateNode_800D6CA0 { StateNode_800D6CA0* next; };
 extern "C" const char lbl_8031E908[];
 extern "C" const char lbl_8031E92C[];
 extern "C" s32 lbl_8055DE08;
+static inline u8 *PaneStateCast_800D6CA0(u8 *pane) {
+    StateNode_800D6CA0 *type = (StateNode_800D6CA0 *)((StateObject_800D6CA0 *)pane)->v1();
+    while (type) {
+        if (type == (StateNode_800D6CA0 *)&lbl_8055DE08)
+            return pane;
+        type = type->next;
+    }
+    return 0;
+}
 struct PaneAnimLink {
     PaneAnimLink* next;
     void* unk4;
@@ -629,36 +638,39 @@ extern "C" void fn_800D6CA0(s32 arg0, s32 arg1) {
     StateNode_800D6CA0 *n1, *n2, *n3;
     u8 *p1, *p2, *p3;
     bool found;
-    type = (StateNode_800D6CA0 *)((void *(**)(void *))(*(void ***)self))[3](self);
-    found = false;
+    type = (StateNode_800D6CA0 *)((StateObject_800D6CA0 *)self)->v1();
     while (type) {
-        if (type == (StateNode_800D6CA0 *)&lbl_8055DE08) { found = true; break; }
+        if (type == (StateNode_800D6CA0 *)&lbl_8055DE08) { found = true; goto found1; }
         type = type->next;
     }
+    found = false;
+    found1:
     { u8 *cast = found ? self : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
     n1 = *(StateNode_800D6CA0 **)(self + 0x14);
     while (n1 != (StateNode_800D6CA0 *)(self + 0x14)) {
         if (!n1) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
         p1 = (u8 *)n1 - 4;
         if (!p1) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
-        type = (StateNode_800D6CA0 *)((void *(**)(void *))(*(void ***)p1))[3](p1);
-        found = false;
+        type = (StateNode_800D6CA0 *)((StateObject_800D6CA0 *)p1)->v1();
         while (type) {
-            if (type == (StateNode_800D6CA0 *)&lbl_8055DE08) { found = true; break; }
+            if (type == (StateNode_800D6CA0 *)&lbl_8055DE08) { found = true; goto found2; }
             type = type->next;
         }
+        found = false;
+        found2:
         { u8 *cast = found ? p1 : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
         n2 = *(StateNode_800D6CA0 **)(p1 + 0x14);
         while (n2 != (StateNode_800D6CA0 *)(p1 + 0x14)) {
             if (!n2) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
             p2 = (u8 *)n2 - 4;
             if (!p2) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
-            type = (StateNode_800D6CA0 *)((void *(**)(void *))(*(void ***)p2))[3](p2);
-            found = false;
+            type = (StateNode_800D6CA0 *)((StateObject_800D6CA0 *)p2)->v1();
             while (type) {
-                if (type == (StateNode_800D6CA0 *)&lbl_8055DE08) { found = true; break; }
+                if (type == (StateNode_800D6CA0 *)&lbl_8055DE08) { found = true; goto found3; }
                 type = type->next;
             }
+            found = false;
+            found3:
             { u8 *cast = found ? p2 : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
             n3 = *(StateNode_800D6CA0 **)(p2 + 0x14);
             while (n3 != (StateNode_800D6CA0 *)(p2 + 0x14)) {
@@ -1003,42 +1015,53 @@ extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void* pOut, void* self) {
 
 extern "C" void fn_800D6CA0(s32, s32);
 extern "C" void fn_800D77DC(void* arg0, s32 arg1, void*) {
-    void* pane = *(void**)((u8*)arg0 + 0x10);
-    void* state = ((PaneAnimRet*)pane)->f3();
-    while (state != 0 && state != &lbl_8055DE08) state = *(void**)state;
-    if (state != 0) *(s32*)((u8*)pane + 0xF4) = arg1;
-    void* list = (u8*)pane + 0x14;
-    for (void* node = *(void**)list; node != list; node = *(void**)node) {
-        if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
-        void* child = (u8*)node - 4;
-        void* childState = ((PaneAnimRet*)child)->f3();
-        while (childState != 0 && childState != &lbl_8055DE08) childState = *(void**)childState;
-        if (childState != 0) *(s32*)((u8*)child + 0xF4) = arg1;
-        void* sublist = (u8*)child + 0x14;
-        for (void* subnode = *(void**)sublist; subnode != sublist; subnode = *(void**)subnode) {
-            if (subnode == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
-            void* subchild = (u8*)subnode - 4;
-            void* substate = ((PaneAnimRet*)subchild)->f3();
-            while (substate != 0 && substate != &lbl_8055DE08) substate = *(void**)substate;
-            if (substate != 0) *(s32*)((u8*)subchild + 0xF4) = arg1;
-            void* subsublist = (u8*)subchild + 0x14;
-            for (void* subsubnode = *(void**)subsublist; subsubnode != subsublist; subsubnode = *(void**)subsubnode) {
-                if (subsubnode == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
-                void* subsubchild = (u8*)subsubnode - 4;
-                void* subsubstate = ((PaneAnimRet*)subsubchild)->f3();
-                while (subsubstate != 0 && subsubstate != &lbl_8055DE08) subsubstate = *(void**)subsubstate;
-                if (subsubstate != 0) *(s32*)((u8*)subsubchild + 0xF4) = arg1;
-                void* finalList = (u8*)subsubchild + 0x14;
-                for (void* finalNode = *(void**)finalList; finalNode != finalList; finalNode = *(void**)finalNode) {
-                    if (finalNode == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
-                    void* item = (u8*)finalNode - 4;
-                    void* itemState = ((PaneAnimRet*)item)->f3();
-                    while (itemState != 0 && itemState != &lbl_8055DE08) itemState = *(void**)itemState;
-                    if (itemState != 0) *(s32*)((u8*)item + 0xF4) = arg1;
-                    fn_800D6CA0((s32)item, arg1);
-                }
-            }
+    u8 *self = *(u8 **)((u8 *)arg0 + 0x10);
+    StateNode_800D6CA0 *type;
+    StateNode_800D6CA0 *n1, *n2, *n3;
+    u8 *p1, *p2, *p3;
+    bool found;
+    type = (StateNode_800D6CA0 *)((StateObject_800D6CA0 *)self)->v1();
+    found = false;
+    while (type) {
+        if (type == (StateNode_800D6CA0 *)&lbl_8055DE08) { found = true; break; }
+        type = type->next;
+    }
+    { u8 *cast = found ? self : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
+    n1 = *(StateNode_800D6CA0 **)(self + 0x14);
+    while (n1 != (StateNode_800D6CA0 *)(self + 0x14)) {
+        if (!n1) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
+        p1 = (u8 *)n1 - 4;
+        if (!p1) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
+        type = (StateNode_800D6CA0 *)((StateObject_800D6CA0 *)p1)->v1();
+        found = false;
+        while (type) {
+            if (type == (StateNode_800D6CA0 *)&lbl_8055DE08) { found = true; break; }
+            type = type->next;
         }
+        { u8 *cast = found ? p1 : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
+        n2 = *(StateNode_800D6CA0 **)(p1 + 0x14);
+        while (n2 != (StateNode_800D6CA0 *)(p1 + 0x14)) {
+            if (!n2) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
+            p2 = (u8 *)n2 - 4;
+            if (!p2) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
+            type = (StateNode_800D6CA0 *)((StateObject_800D6CA0 *)p2)->v1();
+            found = false;
+            while (type) {
+                if (type == (StateNode_800D6CA0 *)&lbl_8055DE08) { found = true; break; }
+                type = type->next;
+            }
+            { u8 *cast = found ? p2 : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
+            n3 = *(StateNode_800D6CA0 **)(p2 + 0x14);
+            while (n3 != (StateNode_800D6CA0 *)(p2 + 0x14)) {
+                if (!n3) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
+                p3 = (u8 *)n3 - 4;
+                if (!p3) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
+                fn_800D6CA0((s32)p3, arg1);
+                n3 = n3->next;
+            }
+            n2 = n2->next;
+        }
+        n1 = n1->next;
     }
 }
 
