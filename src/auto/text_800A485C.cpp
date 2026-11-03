@@ -6628,8 +6628,8 @@ extern "C" s32 fn_800B1FF4(void *arg0, u32 arg1, s32 arg2) {
     v = arg0 == 0 ? 0 : *(u8 **)(*(u8 **)((u8 *)arg0 + 8) + 0x268);
     t = *(u32 *)((u8 *)arg0 + 0x1C);
     *(u32 *)((u8 *)arg0 + 0x24) = t >> v[0x20];
-    *(u32 *)((u8 *)arg0 + 0x1C) = pos;
     *(u16 *)((u8 *)arg0 + 0x28) = t & (*(u16 *)v - 1);
+    *(u32 *)((u8 *)arg0 + 0x1C) = pos;
     v = arg0 == 0 ? 0 : *(u8 **)(*(u8 **)((u8 *)arg0 + 8) + 0x268);
     pos = *(u32 *)((u8 *)arg0 + 0x1C);
     *(u32 *)((u8 *)arg0 + 0x24) = pos >> v[0x20];
