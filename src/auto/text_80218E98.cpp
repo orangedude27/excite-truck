@@ -21,7 +21,6 @@ extern "C" char lbl_8055B860;
 extern "C" double fabs(double);
 extern "C" f32 fabsf(f32);
 #define FN8021C18C_ABS(x) __fabs(x)
-static inline f32 constructor_abs(f32 value) { return (f32)__fabs((double)value); }
 extern "C" char lbl_8055B884;
 extern "C" void fn_802C4F58(s32, s32, const char *, s32);
 
