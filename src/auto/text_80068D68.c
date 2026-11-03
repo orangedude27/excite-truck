@@ -177,6 +177,13 @@ typedef struct {
 
 #define UUSB_CB_DEFINED_EARLY 1
 extern uusb_cb_t lbl_803BD1E0;
+extern char lbl_803142C8[];
+extern char lbl_803BE240[];
+__declspec(section ".sdata") extern char lbl_80558FF8[];
+__declspec(section ".sdata") extern char lbl_80559000[];
+extern void fn_80070844(void *);
+extern BT_HDR *l2cap_link_chk_pkt_start(BT_HDR *);
+extern BOOL l2cap_link_chk_pkt_end(void);
 extern u8 lbl_8055DC50;
 extern u8 lbl_8055DC51;
 extern void uusb_CloseDeviceCB(s8);
