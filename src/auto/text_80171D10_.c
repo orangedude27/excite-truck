@@ -330,6 +330,7 @@ float fn_801725C8(float arg0) {
     if (t > lbl_80561A44) { t = lbl_80561A44; } else { t = t; }
     return f3 + t * (f4 - f3);
 }
+#pragma dont_inline reset
 
 int fn_80172624(void *arg0, int arg1) {
       extern void *fn_8017960C();
