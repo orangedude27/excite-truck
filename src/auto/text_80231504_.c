@@ -27,6 +27,8 @@ typedef struct {
     s32 unk0, unk4, unk8, unkC;
     f32 *glyphs;
 } Fn80231AF0_Ctx;
+extern volatile u8 lbl_8055F074;
+extern f32 lbl_80563690;
 extern void fn_80231D84(char *, void *, f32, f32, f32, f32, f32, f32, f32);
 extern u8 lbl_8055F064;
 extern u8 *lbl_8055F068;
