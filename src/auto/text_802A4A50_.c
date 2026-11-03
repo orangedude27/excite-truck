@@ -116,6 +116,7 @@ extern void fn_802C8D74(void);
 extern f32 lbl_8055F880;
 extern f32 lbl_80564884;
 extern f32 lbl_80564890;
+extern double lbl_80564848;
 typedef struct { f32 *pts; s32 count; s32 pad8; s32 unkC; s32 unk10; f32 x14; f32 y18; char pad1C[0x28]; f32 vec[3]; } Obj802A5FE4;
 s32 fn_802C90F0(s32);
 void fn_802C9118(void);
@@ -746,22 +747,21 @@ void fn_802A5CA4(void *arg0) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_802A5FE4(void *arg0) {
+    Obj802A5FE4 *o = (Obj802A5FE4 *)arg0;
     f32 saved;
-    s32 scaled, alpha, t;
-    s32 i, j;
+    s32 scaled, t;
     f32 c884, c888, one;
-    if (*(s32 *)((char *)arg0 + 4) >= 1) {
+    s32 j, i;
+    if (o->count >= 1) {
         saved = fn_802C9A4C(lbl_8055F880);
-        fn_802C8B98(*(s32 *)((char *)arg0 + 0xC), fn_802C86DC());
-        scaled = (s32)(lbl_80564854 * (lbl_8056485C / (lbl_80564890 * PSVECMag((f32 *)((char *)arg0 + 0x44)))));
-        alpha = 0xff;
+        fn_802C8B98(o->unkC, fn_802C86DC());
+        scaled = (s32)(lbl_80564854 * (lbl_8056485C / (lbl_80564890 * PSVECMag(o->vec))));
         t = scaled & ~(scaled >> 31);
-        if (t < 0xff) alpha = t;
-        if (fn_801E501C(*(s32 *)((char *)arg0 + 4), (char *)arg0 + 0x44, lbl_80564844, (u8)alpha) != 0) {
-            s32 k = 0;
+        if (fn_801E501C(o->count, o->vec, lbl_80564844, (u8)(t < 0xff ? t : 0xff)) != 0) {
             s32 off = 0;
-            while (k < *(s32 *)((char *)arg0 + 4)) {
-                f32 *e = (f32 *)(*(s32 *)arg0 + off);
+            s32 k = 0;
+            while (k < o->count) {
+                f32 *e = (f32 *)((char *)o->pts + off);
                 fn_801E5174(e, e[0], e[1], e[2]);
                 off += 0xC;
                 k++;
@@ -770,26 +770,27 @@ void fn_802A5FE4(void *arg0) {
         }
         fn_802C8D74();
         fn_802C9A4C(saved);
-        fn_802C90F0(*(s32 *)((char *)arg0 + 0x10));
+        fn_802C90F0(o->unk10);
         c884 = lbl_80564884;
         c888 = lbl_80564888;
         one = lbl_8056485C;
-        for (i = 0; i < lbl_8055CFF0 / 64 + 1; i++) {
-            for (j = 0; j < lbl_8055CFF4 / 64 + 1; j++) {
+        i = 0;
+        while (i < lbl_8055CFF0 / 64 + 1) {
+            j = 0;
+            while (j < lbl_8055CFF4 / 64 + 1) {
                 s32 y1 = (j + 1) << 6;
                 s32 x1 = (i + 1) << 6;
-                f32 p14, p18;
                 if (lbl_8055CFF4 < y1) y1 = lbl_8055CFF4;
                 if (lbl_8055CFF0 < x1) x1 = lbl_8055CFF0;
-                p14 = *(f32 *)((char *)arg0 + 0x14);
-                p18 = *(f32 *)((char *)arg0 + 0x18);
                 ((void (*)(s32, s32, s32, s32, u32, f32, f32, f32, f32))fn_802C9124)(
                     i << 6, j << 6, x1, y1, 0x6EFFFFFF,
-                    p14 + (f32)(i * 7) / c884,
-                    p18 + (f32)(j * 7) / c888,
-                    (one + p14) + (f32)(i * 7) / c884,
-                    (one + p18) + (f32)(j * 7) / c888);
+                    o->x14 + (f32)(i * 7) / c884,
+                    o->y18 + (f32)(j * 7) / c888,
+                    (one + o->x14) + (f32)(i * 7) / c884,
+                    (one + o->y18) + (f32)(j * 7) / c888);
+                j++;
             }
+            i++;
         }
         fn_802C9118();
     }
