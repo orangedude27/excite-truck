@@ -485,22 +485,22 @@ extern "C" void fn_80298B48(void* arg0) {
 static inline void XformRot3(const float *m, const float *src, float *dst) {
     if (dst == src) {
         float x = src[0], y = src[1], z = src[2];
-        float r0 = x * m[0] + y * m[3] + z * m[6];
-        float r1 = x * m[1] + y * m[4] + z * m[7];
-        float r2 = x * m[2] + y * m[5] + z * m[8];
+        float r0 = z * m[6] + (x * m[0] + y * m[3]);
+        float r1 = z * m[7] + (x * m[1] + y * m[4]);
+        float r2 = z * m[8] + (x * m[2] + y * m[5]);
         dst[0] = r0;
         dst[1] = r1;
         dst[2] = r2;
     } else {
-        dst[0] = src[0] * m[0] + src[1] * m[3] + src[2] * m[6];
-        dst[1] = src[0] * m[1] + src[1] * m[4] + src[2] * m[7];
-        dst[2] = src[0] * m[2] + src[1] * m[5] + src[2] * m[8];
+        dst[0] = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
+        dst[1] = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
+        dst[2] = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
     }
 }
 extern "C" void fn_80298BBC(void *arg0) {
     float v[3];
-    float threshold;
     float now;
+    float threshold;
     float reset;
     int offset;
     int i;
