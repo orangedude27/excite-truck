@@ -287,20 +287,20 @@ void nw4hbm::snd::detail::WsdTrack::ChannelCallbackFunc(nw4hbm::snd::detail::Cha
 extern "C" int IsValidBinaryFile__Q26nw4hbm2utFPCQ36nw4hbm2ut16BinaryFileHeaderUlUsUs(const void *arg0, unsigned long arg1, unsigned short arg2, unsigned short arg3) {
     const char *base=lbl_80327EE0;
     const unsigned char *header=(const unsigned char *)arg0;
-    unsigned int top=(unsigned int)arg0&0xFF000000U;
     int r5=1,r6=1,r7=1,r8=1,r9=1,r10=1;
-    if((unsigned int)(top+0x80000000U)!=0U&&(unsigned int)(((unsigned int)arg0&0xFF800000U)+0x7F000000U)!=0U)r10=0;
-    if(r10==0&&(unsigned int)(((unsigned int)arg0&0xF8000000U)+0x70000000U)!=0U)r9=0;
-    if(r9==0&&(unsigned int)(top+0x40000000U)!=0U)r8=0;
-    if(r8==0&&(unsigned int)(((unsigned int)arg0&0xFF800000U)+0x3F000000U)!=0U)r7=0;
-    if(r7==0&&(unsigned int)(((unsigned int)arg0&0xF8000000U)+0x30000000U)!=0U)r6=0;
-    if(r6==0&&(unsigned int)(((unsigned int)arg0&0xFFFFC000U)+0x20000000U)!=0U)r5=0;
+    unsigned int top=(unsigned int)arg0&0xFF000000U;
+    if(top != 0x80000000U&&((unsigned int)arg0&0xFF800000U)!=0x81000000U)r10=0;
+    if(r10==0&&((unsigned int)arg0&0xF8000000U)!=0x90000000U)r9=0;
+    if(r9==0&&top!=0xC0000000U)r8=0;
+    if(r8==0&&((unsigned int)arg0&0xFF800000U)!=0xC1000000U)r7=0;
+    if(r7==0&&((unsigned int)arg0&0xF8000000U)!=0xD0000000U)r6=0;
+    if(r6==0&&((unsigned int)arg0&0xFFFFC000U)!=0xE0000000U)r5=0;
     if(r5==0)Panic__Q26nw4hbm2dbFPCciPCce(base,0x30,base+0x18,arg0);
     unsigned int magic=*(unsigned int *)header;
     if(magic!=(unsigned int)arg1) {
         Warning__Q26nw4hbm2dbFPCciPCce(base,0x3C,base+0x50,
-            (signed char)(magic>>24),(signed char)(magic>>16),(signed char)(magic>>8),(signed char)magic,
-            (signed char)((unsigned int)arg1>>24),(signed char)((unsigned int)arg1>>16),(signed char)((unsigned int)arg1>>8),(signed char)arg1);
+            (signed char)(magic>>24),(signed char)((magic >> 16) & 0xff),(signed char)((magic >> 8) & 0xff),(signed char)(magic & 0xff),
+            (signed char)((unsigned int)arg1>>24),(signed char)(((unsigned int)arg1 >> 16) & 0xff),(signed char)(((unsigned int)arg1 >> 8) & 0xff),(signed char)(arg1 & 0xff));
         return 0;
     }
     if(*(unsigned short *)(header+4)!=0xFEFF) {
@@ -310,15 +310,15 @@ extern "C" int IsValidBinaryFile__Q26nw4hbm2utFPCQ36nw4hbm2ut16BinaryFileHeaderU
     unsigned short version=*(unsigned short *)(header+6);
     if(version!=arg2) {
         Warning__Q26nw4hbm2dbFPCciPCce(base,0x4B,base+0xA0,
-            (signed char)(version>>8),(signed char)version,(signed char)(arg2>>8),(signed char)arg2);
+            ((unsigned int)version >> 8),(unsigned char)version,(unsigned char)(arg2>>8),(unsigned char)arg2);
         return 0;
     }
     if(*(unsigned int *)(header+8)<(((unsigned int)arg3<<3)+0x10)) {
-        Warning__Q26nw4hbm2dbFPCciPCce(base,0x50,base+0xD0);
+        Warning__Q26nw4hbm2dbFPCciPCce(base,0x50,base+0xD0, *(unsigned int *)(header+8));
         return 0;
     }
     if(*(unsigned short *)(header+0xE)<arg3) {
-        Warning__Q26nw4hbm2dbFPCciPCce(base,0x55,base+0xEC);
+        Warning__Q26nw4hbm2dbFPCciPCce(base,0x55,base+0xEC, *(unsigned short *)(header+0xE));
         return 0;
     }
     return 1;
@@ -422,6 +422,7 @@ static inline bool IsSJISLeadByte(unsigned char c) {
 
 extern "C" unsigned short ReadNextCharSJIS__Q36nw4hbm2ut14CharStrmReaderFv(void *arg0) {
     const char *file = lbl_80328030;
+    const char *name = file;
     int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
     unsigned int top = (unsigned int)arg0 & 0xFF000000U;
     if (top != 0x80000000U && ((unsigned int)arg0 & 0xFF800000U) != 0x81000000U) r10 = 0;
@@ -430,7 +431,7 @@ extern "C" unsigned short ReadNextCharSJIS__Q36nw4hbm2ut14CharStrmReaderFv(void 
     if (r8 == 0 && ((unsigned int)arg0 & 0xFF800000U) != 0xC1000000U) r7 = 0;
     if (r7 == 0 && ((unsigned int)arg0 & 0xF8000000U) != 0xD0000000U) r6 = 0;
     if (r6 == 0 && ((unsigned int)arg0 & 0xFFFFC000U) != 0xE0000000U) r5 = 0;
-    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0xB4, &file[0x18], arg0);
+    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(name, 0xB4, file + 0x18, arg0);
 
     int f4 = 1, f5 = 1;
     unsigned int value = *(unsigned int *)arg0;
@@ -442,13 +443,11 @@ extern "C" unsigned short ReadNextCharSJIS__Q36nw4hbm2ut14CharStrmReaderFv(void 
     if (f8 == 0 && (value & 0xFF800000U) != 0xC1000000U) f7 = 0;
     if (f7 == 0 && (value & 0xF8000000U) != 0xD0000000U) f5 = 0;
     if (f5 == 0 && (value & 0xFFFFC000U) != 0xE0000000U) f4 = 0;
-    if (f4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0xB5, file + 0x50);
+    if (f4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(name, 0xB5, file + 0x50);
 
     const unsigned char *s = *(const unsigned char **)arg0;
     unsigned char c = *s;
-    int two = 0;
-    if ((c >= 0x81 && c < 0xA0) || c >= 0xE0) two = 1;
-    if (two) {
+    if (IsSJISLeadByte(c)) {
         unsigned short r = s[1] | (c << 8);
         *(const unsigned char **)arg0 += 2;
         return r;
@@ -508,12 +507,12 @@ extern "C" int GetFont__Q36nw4hbm2ut10CharWriterCFv(int arg0) {
 #pragma push
 #pragma opt_propagation off
 extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
+    const char *base = lbl_80328178;
+    void *arg0_ptr = arg0;
     unsigned int arg0_int = (unsigned int)arg0;
-    char *base = (char *)lbl_80328178;
     unsigned char sp20[4], sp1C[4], sp18[4], sp14[4], sp10[4], spC[4], sp8[4];
     unsigned int temp_r30;
     unsigned int temp_r3;
-    int temp_r3_3;
     unsigned int temp_r4;
     int var_r5;
     int var_r6;
@@ -523,6 +522,7 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
     int var_r10;
     int var_r5_2;
     SetupGXFontType *temp_r3_2;
+    int type;
 
     var_r5 = 1;
     var_r6 = 1;
@@ -530,30 +530,36 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
     var_r8 = 1;
     var_r9 = 1;
     var_r10 = 1;
-    temp_r30 = arg0_int & 0xFF000000;
-    if (((unsigned int) (temp_r30 + 0x80000000) >= 1U) && ((unsigned int) ((arg0_int & 0xFF800000) + 0x7F000000) >= 1U)) {
+    temp_r30 = arg0_int & 0xFF000000U;
+    if (temp_r30 != 0x80000000U && (arg0_int & 0xFF800000U) != 0x81000000U) {
         var_r10 = 0;
     }
-    if ((var_r10 == 0) && ((unsigned int) ((arg0_int & 0xF8000000) + 0x70000000) >= 1U)) {
+    if (var_r10 == 0 && (arg0_int & 0xF8000000U) != 0x90000000U) {
         var_r9 = 0;
     }
-    if ((var_r9 == 0) && ((unsigned int) (temp_r30 + 0x40000000) >= 1U)) {
+    if (var_r9 == 0 && temp_r30 != 0xC0000000U) {
         var_r8 = 0;
     }
-    if ((var_r8 == 0) && ((unsigned int) ((arg0_int & 0xFF800000) + 0x3F000000) >= 1U)) {
+    if (var_r8 == 0 && (arg0_int & 0xFF800000U) != 0xC1000000U) {
         var_r7 = 0;
     }
-    if ((var_r7 == 0) && ((unsigned int) ((arg0_int & 0xF8000000) + 0x30000000) >= 1U)) {
+    if (var_r7 == 0 && (arg0_int & 0xF8000000U) != 0xD0000000U) {
         var_r6 = 0;
     }
-    if ((var_r6 == 0) && ((unsigned int) ((arg0_int & 0xFFFFC000) + 0x20000000) >= 1U)) {
+    if (var_r6 == 0 && (arg0_int & 0xFFFFC000U) != 0xE0000000U) {
         var_r5 = 0;
     }
     if (var_r5 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(base, 0xAD, base + 0x14, arg0_int);
     }
     var_r5_2 = 0;
-    if (((unsigned int) (temp_r30 + 0x80000000) < 1U) || (temp_r4 = arg0_int & 0xFF800000, (((unsigned int) (temp_r4 + 0x7F000000) < 1U) != 0)) || (temp_r3 = arg0_int & 0xF8000000, (((unsigned int) (temp_r3 + 0x70000000) < 1U) != 0)) || ((unsigned int) (temp_r30 + 0x40000000) < 1U) || ((unsigned int) (temp_r4 + 0x3F000000) < 1U) || ((unsigned int) (temp_r3 + 0x30000000) < 1U) || ((unsigned int) ((arg0_int & 0xFFFFC000) + 0x20000000) < 1U)) {
+    if (temp_r30 == 0x80000000U ||
+        (temp_r4 = arg0_int & 0xFF800000U) == 0x81000000U ||
+        (temp_r3 = arg0_int & 0xF8000000U) == 0x90000000U ||
+        temp_r30 == 0xC0000000U ||
+        temp_r4 == 0xC1000000U ||
+        temp_r3 == 0xD0000000U ||
+        (arg0_int & 0xFFFFC000U) == 0xE0000000U) {
         var_r5_2 = 1;
     }
     if (var_r5_2 == 0) {
@@ -561,22 +567,22 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
     }
     (*(int *)((signed char*)(&lbl_8041D4E0) + (0))) = 0xFF;
     (*(int *)((signed char*)(&lbl_8041D4E0) + (4))) = 0;
-    if (((int) (*(int *)((signed char*)(arg0) + (0))) != 0) || ((unsigned int) ((*(int *)((signed char*)(arg0) + (4))) + 0x10000) != -1U)) {
-        sp20[0] = (unsigned char) (*(int *)((signed char*)(arg0) + (0)));
-        sp20[1] = (*(unsigned char *)((signed char*)(arg0) + (1)));
-        sp20[2] = (*(unsigned char *)((signed char*)(arg0) + (2)));
-        sp20[3] = (*(unsigned char *)((signed char*)(arg0) + (3)));
-        sp1C[0] = (unsigned char) (*(int *)((signed char*)(arg0) + (4)));
-        sp1C[1] = (*(unsigned char *)((signed char*)(arg0) + (5)));
-        sp1C[2] = (*(unsigned char *)((signed char*)(arg0) + (6)));
-        sp1C[3] = (*(unsigned char *)((signed char*)(arg0) + (7)));
+    if (*(int*)((char*)arg0 + 0) != 0 || (unsigned int)(*(int*)((char*)arg0 + 4) + 0x10000) != 0xFFFF) {
+        sp20[0] = ((unsigned char*)arg0)[0];
+        sp20[1] = ((unsigned char*)arg0)[1];
+        sp20[2] = ((unsigned char*)arg0)[2];
+        sp20[3] = ((unsigned char*)arg0)[3];
+        sp1C[0] = ((unsigned char*)arg0)[4];
+        sp1C[1] = ((unsigned char*)arg0)[5];
+        sp1C[2] = ((unsigned char*)arg0)[6];
+        sp1C[3] = ((unsigned char*)arg0)[7];
         SetupGXWithColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color((unsigned int)&sp20[0], (unsigned int)&sp1C[0]);
         return;
     }
     temp_r3_2 = (SetupGXFontType *)(*(void ***)((signed char*)(arg0) + (0x48)));
     if (temp_r3_2 != 0) {
-        temp_r3_3 = temp_r3_2->GetType();
-        switch (temp_r3_3) {
+        type = temp_r3_2->GetType();
+        switch (type) {
         case 0:
         case 1:
             if ((signed char) lbl_8055DE90 == 0) {
@@ -588,7 +594,7 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
                 sp18[1] = lbl_8055DE95;
                 sp18[2] = lbl_8055DE96;
                 sp18[3] = lbl_8055DE97;
-                GXSetFog(0, &sp18[0], lbl_8055DE96, lbl_8055DE95, lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
+                ((void (*)(int, void*, float, float, float, float))GXSetFog)(0, &sp18[0], lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
                 GXSetTevSwapModeTable(0, 0, 1, 2, 3);
                 GXSetZTexture(0, 0x11, 0);
                 GXSetNumChans(1);
@@ -614,7 +620,6 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
                 GXSetVtxDesc(0xB, 1);
                 GXSetVtxDesc(0xD, 1);
                 return;
-            break;
         case 2:
         case 3:
             if ((signed char) lbl_8055DE90 == 0) {
@@ -626,7 +631,7 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
             sp14[1] = lbl_8055DE95;
             sp14[2] = lbl_8055DE96;
             sp14[3] = lbl_8055DE97;
-            GXSetFog(0, &sp14[0], lbl_8055DE96, lbl_8055DE95, lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
+            ((void (*)(int, void*, float, float, float, float))GXSetFog)(0, &sp14[0], lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
             GXSetTevSwapModeTable(0, 0, 1, 2, 3);
             GXSetZTexture(0, 0x11, 0);
             GXSetNumChans(1);
@@ -649,7 +654,6 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
             GXSetVtxDesc(0xB, 1);
             GXSetVtxDesc(0xD, 1);
             return;
-            break;
         case 4:
         case 5:
         case 6:
@@ -662,7 +666,7 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
             sp10[1] = lbl_8055DE95;
             sp10[2] = lbl_8055DE96;
             sp10[3] = lbl_8055DE97;
-            GXSetFog(0, &sp10[0], lbl_8055DE96, lbl_8055DE95, lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
+            ((void (*)(int, void*, float, float, float, float))GXSetFog)(0, &sp10[0], lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
             GXSetTevSwapModeTable(0, 0, 1, 2, 3);
             GXSetZTexture(0, 0x11, 0);
             GXSetNumChans(1);
@@ -685,44 +689,41 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
             GXSetVtxDesc(0xB, 1);
             GXSetVtxDesc(0xD, 1);
             return;
-            break;
         default:
-            goto block_49;
+            Warning__Q26nw4hbm2dbFPCciPCce(base, 0xCF, base + 0x84, type);
+            if ((signed char) lbl_8055DE90 == 0) {
+                *(int *)&lbl_8055DE94 = 0;
+                __register_global_object(&lbl_8055DE94, &fn_800D2DD4, &lbl_8041D4D0);
+                lbl_8055DE90 = 1;
+            }
+            spC[0] = (unsigned char) lbl_8055DE94;
+            spC[1] = lbl_8055DE95;
+            spC[2] = lbl_8055DE96;
+            spC[3] = lbl_8055DE97;
+            ((void (*)(int, void*, float, float, float, float))GXSetFog)(0, &spC[0], lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
+            GXSetTevSwapModeTable(0, 0, 1, 2, 3);
+            GXSetZTexture(0, 0x11, 0);
+            GXSetNumChans(1);
+            GXSetChanCtrl(4, 0, 0, 1, 0, 0, 2);
+            GXSetChanCtrl(5, 0, 0, 0, 0, 0, 2);
+            GXSetNumTexGens(1);
+            GXSetTexCoordGen2(0, 1, 4, 0x3C, 0, 0x7D);
+            GXSetNumIndStages(0);
+            GXSetBlendMode(1, 4, 5, 0xF);
+            GXSetNumTevStages(1);
+            GXSetTevDirect(0);
+            GXSetTevSwapMode(0, 0, 0);
+            GXSetTevOrder(0, 0, 0, 4);
+            GXSetTevOp(0, 0);
+            GXSetVtxAttrFmt(0, 9, 1, 4, 0);
+            GXSetVtxAttrFmt(0, 0xB, 1, 5, 0);
+            GXSetVtxAttrFmt(0, 0xD, 1, 2, 0xF);
+            GXClearVtxDesc();
+            GXSetVtxDesc(9, 1);
+            GXSetVtxDesc(0xB, 1);
+            GXSetVtxDesc(0xD, 1);
+            return;
         }
-        block_49:
-        Warning__Q26nw4hbm2dbFPCciPCce(base, 0xCF, base + 0x84, temp_r3_3);
-        if ((signed char) lbl_8055DE90 == 0) {
-            *(int *)&lbl_8055DE94 = 0;
-            __register_global_object(&lbl_8055DE94, &fn_800D2DD4, &lbl_8041D4D0);
-            lbl_8055DE90 = 1;
-        }
-        spC[0] = (unsigned char) lbl_8055DE94;
-        spC[1] = lbl_8055DE95;
-        spC[2] = lbl_8055DE96;
-        spC[3] = lbl_8055DE97;
-        GXSetFog(0, &spC[0], lbl_8055DE96, lbl_8055DE95, lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
-        GXSetTevSwapModeTable(0, 0, 1, 2, 3);
-        GXSetZTexture(0, 0x11, 0);
-        GXSetNumChans(1);
-        GXSetChanCtrl(4, 0, 0, 1, 0, 0, 2);
-        GXSetChanCtrl(5, 0, 0, 0, 0, 0, 2);
-        GXSetNumTexGens(1);
-        GXSetTexCoordGen2(0, 1, 4, 0x3C, 0, 0x7D);
-        GXSetNumIndStages(0);
-        GXSetBlendMode(1, 4, 5, 0xF);
-        GXSetNumTevStages(1);
-        GXSetTevDirect(0);
-        GXSetTevSwapMode(0, 0, 0);
-        GXSetTevOrder(0, 0, 0, 4);
-        GXSetTevOp(0, 0);
-        GXSetVtxAttrFmt(0, 9, 1, 4, 0);
-        GXSetVtxAttrFmt(0, 0xB, 1, 5, 0);
-        GXSetVtxAttrFmt(0, 0xD, 1, 2, 0xF);
-        GXClearVtxDesc();
-        GXSetVtxDesc(9, 1);
-        GXSetVtxDesc(0xB, 1);
-        GXSetVtxDesc(0xD, 1);
-        return;
     }
     if ((signed char) lbl_8055DE90 == 0) {
         *(int *)&lbl_8055DE94 = 0;
@@ -733,7 +734,7 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
     sp8[1] = lbl_8055DE95;
     sp8[2] = lbl_8055DE96;
     sp8[3] = lbl_8055DE97;
-    GXSetFog(0, &sp8[0], lbl_8055DE96, lbl_8055DE95, lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
+    ((void (*)(int, void*, float, float, float, float))GXSetFog)(0, &sp8[0], lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
     GXSetTevSwapModeTable(0, 0, 1, 2, 3);
     GXSetZTexture(0, 0x11, 0);
     GXSetNumChans(1);
@@ -768,22 +769,17 @@ extern "C" void SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36n
     int var_r10 = 1;
     unsigned int temp_r11 = (unsigned int)arg0 & 0xFF000000U;
     unsigned char c7, c6, c5, c4, c3, c2, c1, c0;
-    if ((temp_r11 + 0x80000000U) >= 1U &&
-        ((((unsigned int)arg0 & 0xFF800000U) + 0x7F000000U) >= 1U))
+    if (temp_r11 != 0x80000000U && (((unsigned int)arg0 & 0xFF800000U) != 0x81000000U))
         var_r10 = 0;
-    if (var_r10 == 0 &&
-        (((unsigned int)arg0 & 0xF8000000U) + 0x70000000U) >= 1U)
+    if (var_r10 == 0 && (((unsigned int)arg0 & 0xF8000000U) != 0x90000000U))
         var_r9 = 0;
-    if (var_r9 == 0 && (temp_r11 + 0x40000000U) >= 1U)
+    if (var_r9 == 0 && temp_r11 != 0xC0000000U)
         var_r8 = 0;
-    if (var_r8 == 0 &&
-        (((unsigned int)arg0 & 0xFF800000U) + 0x3F000000U) >= 1U)
+    if (var_r8 == 0 && (((unsigned int)arg0 & 0xFF800000U) != 0xC1000000U))
         var_r7 = 0;
-    if (var_r7 == 0 &&
-        (((unsigned int)arg0 & 0xF8000000U) + 0x30000000U) >= 1U)
+    if (var_r7 == 0 && (((unsigned int)arg0 & 0xF8000000U) != 0xD0000000U))
         var_r6 = 0;
-    if (var_r6 == 0 &&
-        (((unsigned int)arg0 & 0xFFFFC000U) + 0x20000000U) >= 1U)
+    if (var_r6 == 0 && (((unsigned int)arg0 & 0xFFFFC000U) != 0xE0000000U))
         var_r5 = 0;
     if (var_r5 == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0xEB, lbl_8032818C, arg0);
