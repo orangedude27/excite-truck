@@ -1506,7 +1506,16 @@ extern "C" s32 fn_8019E2D0(s32 arg0, s32 arg1, s32 arg2, void *arg3, f32 f0, f32
     origin.x = z * matrix[2] + (x * matrix[0] + y * matrix[1]);
     origin.y = z * matrix[5] + (x * matrix[3] + y * matrix[4]);
     origin.z = z * matrix[8] + (x * matrix[6] + y * matrix[7]);
-    fn801A1F98Transform((f32 *)&direction, v, matrix);
+    if ((f32 *)&direction == v) {
+        f32 vx = v[0], vy = v[1], vz = v[2];
+        direction.x = vz * matrix[2] + (vx * matrix[0] + vy * matrix[1]);
+        direction.y = vz * matrix[5] + (vx * matrix[3] + vy * matrix[4]);
+        direction.z = vz * matrix[8] + (vx * matrix[6] + vy * matrix[7]);
+    } else {
+        direction.x = v[2] * matrix[2] + (v[0] * matrix[0] + v[1] * matrix[1]);
+        direction.y = v[2] * matrix[5] + (v[0] * matrix[3] + v[1] * matrix[4]);
+        direction.z = v[2] * matrix[8] + (v[0] * matrix[6] + v[1] * matrix[7]);
+    }
     minimum = lbl_80562364;
     maximum = lbl_80562368;
     if (fn_8019E1F4(&minimum, &maximum, origin.x, direction.x, f0) &&
@@ -1526,6 +1535,11 @@ extern f32 lbl_8056236C;
 extern "C" s32 fn_8019B4D8(void*, void*, void*, s32, f32);
 struct Fn8019E874Xf { f32 m[9]; Vec pos; };
 struct Fn801A4548Hdr { s32 count; u8* list; s32 count2; u8* shorts; s32 unk10; void* fn; };
+static inline void Fn801A4548Swap4(u8* q) {
+    u8 t;
+    t=q[0]; q[0]=q[3]; q[3]=t;
+    t=q[1]; q[1]=q[2]; q[2]=t;
+}
 class Fn8019E874Obj {
 public:
     virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03(); virtual void v04();
@@ -3645,8 +3659,9 @@ extern "C" void fn_801A4538(void*);
 extern "C" void* fn_801A4548(s32 arg0) {
     s32 size;
     u8 ok = 0;
-    u8* p = (u8*)((s32 (*)(s32, s32, s32*, s32, s32, s32))fn_8012C370)(arg0, 0x534F424C, &size, 0, 0, (s32)&ok);
-    if (p && ok) {
+    Fn801A4548Hdr* h = (Fn801A4548Hdr*)((s32 (*)(s32, s32, s32*, s32, s32, s32))fn_8012C370)(arg0, 0x534F424C, &size, 0, 0, (s32)&ok);
+    if (h && ok) {
+        u8* p = (u8*)h;
         u8 t;
         t=p[0]; p[0]=p[3]; p[3]=t;
         t=p[1]; p[1]=p[2]; p[2]=t;
@@ -3658,27 +3673,27 @@ extern "C" void* fn_801A4548(s32 arg0) {
         t=p[13]; p[13]=p[14]; p[14]=t;
         t=p[16]; p[16]=p[19]; p[19]=t;
         t=p[17]; p[17]=p[18]; p[18]=t;
-        fn_801A4768((s32*)(p+4), (s32)p);
-        fn_801A4780((s32*)(p+16), (s32)p);
-        fn_801A4798((s32*)(p+12), (s32)p);
-        for (s32 i=0; i<*(s32*)p; i++) {
-            u8* q=*(u8**)(p+4)+i*4;
+        fn_801A4768((s32*)&h->list, (s32)h);
+        fn_801A4780((s32*)&h->unk10, (s32)h);
+        fn_801A4798((s32*)&h->shorts, (s32)h);
+        for (s32 i=0; i<h->count; i++) {
+            u8* q=h->list+i*4;
             t=q[0]; q[0]=q[3]; q[3]=t;
             t=q[1]; q[1]=q[2]; q[2]=t;
-            fn_801A47B0((s32*)(*(u8**)(p+4)+i*4), (s32)p);
+            fn_801A47B0((s32*)(h->list+i*4), (s32)h);
         }
-        for (s32 i=0; i<*(s32*)(p+8); i++) {
-            u8* q=*(u8**)(p+12)+i*2;
+        for (s32 i=0; i<h->count2; i++) {
+            u8* q=h->shorts+i*2;
             t=q[0]; q[0]=q[1]; q[1]=t;
         }
-        fn_8019EB14(*(s32*)(p+16), 0);
-        for (s32 i=0; i<*(s32*)p; i++) {
-            s32 q=*(s32*)(*(s32*)(p+4)+i*4);
+        fn_8019EB14(h->unk10, 0);
+        for (s32 i=0; i<h->count; i++) {
+            s32 q=*(s32*)(h->list+i*4);
             if (q) fn_801A4B5C(q+0x4c);
         }
-        *(void**)(p+20)=(void*)fn_801A4538;
+        h->fn=(void*)fn_801A4538;
     }
-    return p;
+    return h;
 }
 
 #pragma scheduling on
