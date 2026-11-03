@@ -1492,11 +1492,40 @@ ret1:
     return !(*arg1 < lbl_805622D0);
 }
 
+#pragma push
+#pragma processor 750
+extern "C" s32 fn_8019E2D0(s32 arg0, s32 arg1, s32 arg2, void *arg3, f32 f0, f32 f1, f32 f2) {
+    Vec origin, direction;
+    f32 minimum, maximum;
+    f32 *matrix = (f32 *)arg3;
+    f32 *p = (f32 *)arg0;
+    f32 *v = (f32 *)arg1;
+    f32 x = p[0] - matrix[9];
+    f32 y = p[1] - matrix[10];
+    f32 z = p[2] - matrix[11];
+    origin.x = z * matrix[2] + (x * matrix[0] + y * matrix[1]);
+    origin.y = z * matrix[5] + (x * matrix[3] + y * matrix[4]);
+    origin.z = z * matrix[8] + (x * matrix[6] + y * matrix[7]);
+    fn801A1F98Transform((f32 *)&direction, v, matrix);
+    minimum = lbl_80562364;
+    maximum = lbl_80562368;
+    if (fn_8019E1F4(&minimum, &maximum, origin.x, direction.x, f0) &&
+        fn_8019E1F4(&minimum, &maximum, origin.y, direction.y, f1) &&
+        fn_8019E1F4(&minimum, &maximum, origin.z, direction.z, f2) &&
+        minimum < *(f32 *)arg2) {
+        *(f32 *)arg2 = minimum;
+        return 1;
+    }
+    return 0;
+}
+#pragma pop
+
 extern "C" u8 lbl_80435020[];
 extern f32 lbl_8056236C;
 #pragma scheduling invalid_target
 extern "C" s32 fn_8019B4D8(void*, void*, void*, s32, f32);
 struct Fn8019E874Xf { f32 m[9]; Vec pos; };
+struct Fn801A4548Hdr { s32 count; u8* list; s32 count2; u8* shorts; s32 unk10; void* fn; };
 class Fn8019E874Obj {
 public:
     virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03(); virtual void v04();
@@ -3619,7 +3648,6 @@ extern "C" void* fn_801A4548(s32 arg0) {
     u8* p = (u8*)((s32 (*)(s32, s32, s32*, s32, s32, s32))fn_8012C370)(arg0, 0x534F424C, &size, 0, 0, (s32)&ok);
     if (p && ok) {
         u8 t;
-        s32* a4 = (s32*)(p+4);
         t=p[0]; p[0]=p[3]; p[3]=t;
         t=p[1]; p[1]=p[2]; p[2]=t;
         t=p[8]; p[8]=p[11]; p[11]=t;
@@ -3630,17 +3658,17 @@ extern "C" void* fn_801A4548(s32 arg0) {
         t=p[13]; p[13]=p[14]; p[14]=t;
         t=p[16]; p[16]=p[19]; p[19]=t;
         t=p[17]; p[17]=p[18]; p[18]=t;
-        fn_801A4768(a4, (s32)p);
+        fn_801A4768((s32*)(p+4), (s32)p);
         fn_801A4780((s32*)(p+16), (s32)p);
         fn_801A4798((s32*)(p+12), (s32)p);
         for (s32 i=0; i<*(s32*)p; i++) {
-            u8* q=(u8*)*(s32*)(p+4)+i*4;
+            u8* q=*(u8**)(p+4)+i*4;
             t=q[0]; q[0]=q[3]; q[3]=t;
             t=q[1]; q[1]=q[2]; q[2]=t;
-            fn_801A47B0((s32*)((u8*)*(s32*)(p+4)+i*4), (s32)p);
+            fn_801A47B0((s32*)(*(u8**)(p+4)+i*4), (s32)p);
         }
         for (s32 i=0; i<*(s32*)(p+8); i++) {
-            u8* q=(u8*)*(s32*)(p+12)+i*2;
+            u8* q=*(u8**)(p+12)+i*2;
             t=q[0]; q[0]=q[1]; q[1]=t;
         }
         fn_8019EB14(*(s32*)(p+16), 0);
