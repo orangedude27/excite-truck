@@ -55,6 +55,19 @@ extern void fn_802E317C(const char*, ...);
 extern void fn_802E30C8(const char *, ...);
 s32 fn_8001F41C(const char* arg);
 #define VFN(o, off, T) ((T)(*(void***)(o))[(off) / 4])
+typedef struct VObj VObj;
+typedef struct VTbl {
+    void* s0; void* s1;
+    char* (*getName)(VObj*);
+    VObj* (*getAt)(VObj*, s32);
+    void* s4;
+    s32 (*getAttr)(VObj*, char*);
+    void* s6;
+    s32 (*getAttr2)(VObj*, char*);
+    void* pad[0x18 - 8];
+    VObj* (*getChild)(VObj*, s32);
+} VTbl;
+struct VObj { VTbl* vt; };
 void fn_8001EF38(void* alarm) {
     fn_8001F528();
     fn_8001EFF0();
