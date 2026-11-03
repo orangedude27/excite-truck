@@ -8019,9 +8019,11 @@ void btm_event_filter_complete(UINT8 *p) {
         else { base[0x1844]=0; ((void (*)(UINT8))btm_process_inq_complete)(10); }
     } else {
         u8 old=base[0x1836];
+        u8 count;
         base[0x1847]=3;
         base[0x1844]=0;
-        base[0x1836]=old<=12 ? old : 12;
+        if(old>12) count=12; else count=old;
+        base[0x1836]=count;
         lap=lbl_80560D30;
         if(base[0x1848]&1) lap=lbl_80560D34;
         if(base[0x1848]&4) {
