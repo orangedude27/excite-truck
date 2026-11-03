@@ -1,3 +1,4 @@
+typedef struct { int id, category, flags; } Record8025;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -82,6 +83,100 @@ void* __dt__Q28PSSystem7SeqHeapFv_8025DA88(void* arg0, int arg1) {
     }
     return arg0;
 }
+
+extern void *fn_8000DA10(void);
+extern int fn_80012854(void);
+extern void *fn_8001285C(int);
+extern int fn_80012820(void *);
+extern void *fn_80016510(int);
+extern int fn_8001BA6C(void *);
+extern void fn_8001BC38(void *, void *, void *, int, int);
+extern int fn_8001BCF0(void *);
+extern int fn_8001BD6C(void *, void *);
+extern void fn_8001BD38(void *, void *, int);
+extern void fn_8001BD54(void *, void *);
+extern char *fn_80008188(void *);
+extern char *fn_801345D8(char *, int, const char *, ...);
+extern int stricmp(const char *, const char *);
+extern char lbl_8055C3E4, lbl_8055C3E8, lbl_8055C3EC, lbl_8055C3F8;
+extern char lbl_803456A4[];
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_8025DAEC(void *arg0, void *arg1) {
+    struct Source {
+        virtual void s2();
+        virtual int has(const char *);
+        virtual void s4();
+        virtual char *get(const char *);
+    };
+    char current[0x24], best[0x24], selected[0x24];
+    int record[3];
+    int i, j, best_i=-1, best_j=-1;
+    char *obj=(char *)arg0;
+    for (j=0;j<3;j++) {
+        for(i=0;i<fn_80012854();i++) {
+            fn_8001BC38(current,fn_8000DA10(),arg1,i,j);
+            if (fn_8001BCF0(current)) {
+                if(best_i<0) { best_i=i; best_j=j; }
+                else {
+                    fn_8001BC38(best,fn_8000DA10(),arg1,best_i,best_j);
+                    if(fn_8001BD6C(current,best)) { best_i=i; best_j=j; }
+                }
+            }
+        }
+    }
+    *(int *)obj=fn_8001BA6C(arg1);
+    if(best_i<0) {
+        char *dst=obj+4;
+        const char *src=&lbl_8055C3E4;
+        int n=0x14;
+        goto copy1;
+        do { if (--n <= 0) { dst[-1]=0; break; }
+copy1:      *dst++=*src++; } while(dst[-1]);
+        dst=obj+0x20; src=&lbl_8055C3E8; n=0x3e8;
+        goto copy2;
+        do { if (--n <= 0) { dst[-1]=0; break; }
+copy2:      *dst++=*src++; } while(dst[-1]);
+        *(char **)(obj+0x1c)=&lbl_8055C3E4;
+        best_j=0;
+        *(char **)(obj+0x18)=&lbl_8055C3E4;
+    } else {
+        char *entry;
+        Source *source;
+        char *value;
+        char *details;
+        char *table;
+        int index, offset;
+        fn_8001BC38(selected,fn_8000DA10(),arg1,best_i,best_j);
+        fn_8001BD38(selected,obj+4,0x14);
+        entry=(char *)fn_8001285C(best_i);
+        source=*(Source **)(entry+0x20);
+        if(source->has(&lbl_8055C3EC))
+            *(char **)(obj+0x18)=fn_80008188(source->get(&lbl_8055C3EC));
+        else
+            *(char **)(obj+0x18)=fn_80008188((void *)(fn_80012820(*(void **)(entry+4))+8));
+        source=*(Source **)(entry+0x20);
+        value=source->get(lbl_803456A4);
+        *(char **)(obj+0x1c)=value;
+        fn_801345D8(obj+0x20,0x3e8,&lbl_8055C3F8,*(char **)(obj+0x18),value+1);
+        fn_8001BD54(record,selected);
+        obj[0x438]=(char)record[2];
+        details=(char *)fn_80016510(record[0]);
+        table=*(char **)(obj+0x424);
+        offset=0;
+        for(index=0;index<*(int *)(table+4);index++,offset+=0x38) {
+            if(stricmp(*(char **)table+offset,details+0x2c)==0) break;
+        }
+        if(index>=*(int *)(table+4)) index=-1;
+        *(int *)(obj+0x428)=index;
+        *(int *)(obj+0x430)=*(int *)(details+record[1]*4+0x64);
+        obj[0x42c]=1;
+    }
+    *(int *)(obj+0x408)=best_j;
+}
+#pragma pop
 
 #pragma push
 #pragma use_lmw_stmw off
