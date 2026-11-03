@@ -460,7 +460,7 @@ extern double lbl_80564BF0;
 extern float lbl_804BE190[];
 extern unsigned short lbl_802FAAB0[];
 extern void fn_802C28C0(void);
-extern void fn_802C8BD0(void);
+extern void fn_802C8BD0();
 extern void fn_802C8D74(void);
 extern void fn_802DC3C0(int);
 extern void fn_802DC440(void);
