@@ -10,7 +10,7 @@ extern "C" void VFiPFENT_loadEntryNumericFieldsFromBuf(u8 *, u8 *);
 extern "C" s32 VFiPFPATH_transformInUnicode(s16 *, s32, s32);
 extern "C" void VFiPFPATH_getLongNameformShortName(void *, void *, s32);
 extern "C" s32 fn_800A9DC0(void *object, void *iterator, s32 arg2, s32 arg3, s32 arg4, s32 *arg5) {
- u8 *it=(u8 *)iterator;
+ register u8 *it=(u8 *)iterator;
  u8 flags=it[0x57];
  u8 name[16], buf[13];
  u32 sum,next,word;
@@ -42,7 +42,7 @@ extern "C" s32 fn_800A9DC0(void *object, void *iterator, s32 arg2, s32 arg3, s32
  word=*(u32 *)(it+0x68);
  *(u32 *)((u8 *)object+0x228)=(word>>24)|((word>>8)&0xff00)|((word&0xff00)<<8)|(word<<24);
  b=*(u16 *)(it+0x66); a=*(u16 *)(it+0x60);
- *(u32 *)((u8 *)object+0x234)=((u32)(u16)((a<<8)|(a>>8))<<16)|(u16)((b<<8)|(b>>8));
+ *(u32 *)((u8 *)object+0x234)=(b>>8)|((b&255)<<8)|((a>>8)<<16)|((a&255)<<24);
  *(u32 *)((u8 *)object+0x238)=*(u32 *)(it+0x44);
  *(u16 *)((u8 *)object+0x23c)=*(u16 *)(it+0x48);
  if ((((u8 *)object)[0x21c]&0x10) && !*(u32 *)((u8 *)object+0x234)) *(u32 *)((u8 *)object+0x234)=1;
@@ -2231,7 +2231,7 @@ extern "C" s32 fn_800A8EA0(void *arg0, u32 arg1, void **arg2) {
 #pragma dont_inline reset
 
 extern "C" s32 VFiPFCACHE_DoReadPage(void *, s32, s32, s32, s32);
-extern "C" s32 VFiPFCACHE_DoReadNumSector(void *, s32, u32, s32, s32);
+extern "C" s32 VFiPFCACHE_DoReadNumSector(void *, s32, s32, u32, s32, s32);
 extern "C" s32 fn_800A8EE0(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     s32 temp_r3 = VFiPFCACHE_DoReadPage(arg0, (s32)((u8 *)arg0 + 0x1634), arg1, arg2, arg3);
     return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
@@ -4946,12 +4946,12 @@ static inline s32 FatSetEndMark(void *ctx, s32 idx, u32 value) {
     return 0xF;
 }
 extern "C" s32 fn_800AED1C(void *arg0) {
-    s32 type;
-    u32 v;
     void *page;
     s32 sp8;
     s32 r;
     u32 i;
+    u32 v;
+    s32 type;
     r = fn_800A8C90(arg0, -1, &page, &sp8);
     if (r != 0) return r;
     fn_800A499C((const char *)*(void **)((u8 *)page + 8), 0, *(u16 *)arg0);
@@ -4970,7 +4970,7 @@ extern "C" s32 fn_800AED1C(void *arg0) {
     switch (type) {
     case 0:
         if (v > 0xFFF) r = 0x10;
-        else r = fn_800AF734(arg0, 0, (u16)v);
+        else r = ((s32 (*)(void *, s32, u16))fn_800AF734)(arg0, 0, v);
         break;
     case 1:
         if (v > 0xFFFF) r = 0x10;
@@ -4990,7 +4990,7 @@ extern "C" s32 fn_800AED1C(void *arg0) {
     switch (type) {
     case 0:
         if (v > 0xFFF) r = 0x10;
-        else r = fn_800AF734(arg0, 1, (u16)v);
+        else r = ((s32 (*)(void *, s32, u16))fn_800AF734)(arg0, 1, v);
         break;
     case 1:
         if (v > 0xFFFF) r = 0x10;
@@ -7185,24 +7185,30 @@ block_27:
 
 extern "C" void fn_800B3BEC(u8 *out, u8 *in, u8 flags) {
     s32 last = -1;
+    s32 ext;
     s32 i;
+    u8 *d = out;
+    u8 *s = in;
     for (i = 0; i < 8; i++) {
-        out[i] = in[i];
-        if (in[i] != ' ') last = i;
-    }
-    for (i = 8; i < 11; i++) {
-        if (in[i] != ' ') last = i;
+        s32 c = *s++;
+        *d++ = c;
+        if (c != ' ') last = i;
     }
     out += last + 1;
-    if (last <= 7) {
-        *out = 0;
-        return;
+    ext = 7;
+    if ((u32)in[8] != ' ') {
+        ext = 8;
+        if ((u32)in[9] != ' ') {
+            ext = 9;
+            if ((u32)in[10] != ' ') ext = 10;
+        }
     }
-    if ((flags & 8) == 0) {
-        *out++ = '.';
+    if (ext > 7) {
+        if ((flags & 8) == 0) {
+            *out++ = '.';
+        }
+        for (i = 8; i <= ext; i++) *out++ = in[i];
     }
-    i = 8;
-    while (i <= last) *out++ = in[i++];
     *out = 0;
 }
 
