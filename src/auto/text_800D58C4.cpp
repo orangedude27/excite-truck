@@ -148,7 +148,7 @@ struct PaneAnimVTable {
 };
 struct PaneAnimObject : PaneAnimVTable {};
 struct PaneAnimRet { virtual void f0(); virtual void f1(); virtual void f2(); virtual void* f3(); };
-struct StateObject_800D6CA0 { virtual void v0(); virtual void v1(); virtual void* v2(); };
+struct StateObject_800D6CA0 { virtual void v0(); virtual void* v1(); virtual void* v2(); };
 struct Dummy_800DB1E8 {
     virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
     virtual void d4(); virtual void d5();
@@ -621,6 +621,57 @@ extern "C" void* FindGroupByName__Q36nw4hbm3lyt14GroupContainerFPCc(void* arg0, 
         node = *(void**)node;
     }
     return 0;
+}
+
+extern "C" void fn_800D6CA0(s32 arg0, s32 arg1) {
+    u8 *self = (u8 *)arg0;
+    StateNode_800D6CA0 *type;
+    StateNode_800D6CA0 *n1, *n2, *n3;
+    u8 *p1, *p2, *p3;
+    bool found;
+    type = (StateNode_800D6CA0 *)((void *(**)(void *))(*(void ***)self))[3](self);
+    found = false;
+    while (type) {
+        if (type == (StateNode_800D6CA0 *)&lbl_8055DE08) { found = true; break; }
+        type = type->next;
+    }
+    { u8 *cast = found ? self : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
+    n1 = *(StateNode_800D6CA0 **)(self + 0x14);
+    while (n1 != (StateNode_800D6CA0 *)(self + 0x14)) {
+        if (!n1) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
+        p1 = (u8 *)n1 - 4;
+        if (!p1) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
+        type = (StateNode_800D6CA0 *)((void *(**)(void *))(*(void ***)p1))[3](p1);
+        found = false;
+        while (type) {
+            if (type == (StateNode_800D6CA0 *)&lbl_8055DE08) { found = true; break; }
+            type = type->next;
+        }
+        { u8 *cast = found ? p1 : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
+        n2 = *(StateNode_800D6CA0 **)(p1 + 0x14);
+        while (n2 != (StateNode_800D6CA0 *)(p1 + 0x14)) {
+            if (!n2) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
+            p2 = (u8 *)n2 - 4;
+            if (!p2) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
+            type = (StateNode_800D6CA0 *)((void *(**)(void *))(*(void ***)p2))[3](p2);
+            found = false;
+            while (type) {
+                if (type == (StateNode_800D6CA0 *)&lbl_8055DE08) { found = true; break; }
+                type = type->next;
+            }
+            { u8 *cast = found ? p2 : 0; if (cast) *(s32 *)(cast + 0xF4) = arg1; }
+            n3 = *(StateNode_800D6CA0 **)(p2 + 0x14);
+            while (n3 != (StateNode_800D6CA0 *)(p2 + 0x14)) {
+                if (!n3) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
+                p3 = (u8 *)n3 - 4;
+                if (!p3) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
+                fn_800D6CA0((s32)p3, arg1);
+                n3 = n3->next;
+            }
+            n2 = n2->next;
+        }
+        n1 = n1->next;
+    }
 }
 
 #pragma push
