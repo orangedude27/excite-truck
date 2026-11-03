@@ -1899,25 +1899,30 @@ extern "C" s32 fn_800A586C(void *, s32, s32, s32, s32);
 #pragma use_lmw_stmw off
 extern "C" s32 VFiPFCACHE_DoReadNumSector(void *object, s32 list, s32 dest, u32 start, s32 amount, s32 output) {
  u8 *volume=(u8 *)object;
- u8 *page=0;
- u32 count, remaining, end, end2, pos, length;
+ u32 end, count;
+ u8 *page;
+ u32 remaining, end2, pos, length;
  s32 result;
  u32 *read=(u32 *)output;
  *read=0;
  result=fn_800A586C(object,dest,start,amount,output);
  if (result) return result;
- count=*read; remaining=count; end=start+count;
+ count=*read; page=0; remaining=count; end=start+count;
  do {
   if (!page) page=*(u8 **)list;
   else { page=*(u8 **)(page+0x20); if (page==*(u8 **)list) { page=0; goto next; } }
-  while (*(u16 *)page&1) {
-   if (*(u32 *)(page+0x18)!=0xffffffff) { *(u32 *)(page+8)=*(u32 *)(page+4); break; }
-   page=*(u8 **)(page+0x20);
+  goto scan;
+valid:
+  if (*(u32 *)(page+0x18)!=0xffffffff) {
+   *(u32 *)(page+8)=*(u32 *)(page+4); goto next;
   }
-  if (!(*(u16 *)page&1)) page=0;
+  page=*(u8 **)(page+0x20);
+scan:
+  if (*(u16 *)page&1) goto valid;
+  page=0;
 next:
   if (page) {
-   pos=*(u32 *)(page+0x18);
+   pos=((u32 *)page)[6];
    if (pos!=0xffffffff) {
     if (pos<=start && pos+*(u32 *)(page+0x14)>=end) {
      VFipf_memcpy((void *)dest,*(u8 **)(page+4)+((start-pos)<<volume[0x20]),count<<volume[0x20]);
@@ -7254,8 +7259,13 @@ extern "C" void fn_800B3BEC(u8 *out, u8 *in, u8 flags) {
         if (c != ' ') last = i;
     }
     out += last + 1;
-    for (ext = 7; ext < 10; ext++) {
-        if ((u32)in[ext + 1] == ' ') break;
+    ext = 7;
+    if ((u32)in[8] != ' ') {
+        ext = 8;
+        if ((u32)in[9] != ' ') {
+            ext = 9;
+            if ((u32)in[10] != ' ') ext = 10;
+        }
     }
     if (ext > 7) {
         if ((flags & 8) == 0) {
@@ -8664,10 +8674,10 @@ extern "C" s32 fn_800B75C4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     return result;
 }
 
-extern "C" void* fn_800B1FF4(void*);
+extern "C" s32 fn_800B1FF4(void *, u32, s32);
 extern "C" void fn_800B75EC(OSAlarm *alarm, OSContext *ctx) {
 #pragma unused(ctx)
-    fn_800B73BC((s32)fn_800B1FF4(alarm));
+    fn_800B73BC((s32)((void *(*)(void *))fn_800B1FF4)(alarm));
 }
 
 extern "C" s32 fn_800A4E80(void *, s32, u32);
