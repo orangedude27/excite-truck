@@ -1774,6 +1774,77 @@ extern "C" s32 fn_800A7B34(void *arg0, void *arg1) {
     return 0;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" s32 fn_800A7C20(void *arg0, void **arg1, u32 arg2, void **arg3, s32 *arg4) {
+    u8 *page;
+    s32 r;
+    r = VFiPFCACHE_SearchForPage((s32)arg0, (s32)*arg1, (s32)arg2);
+    *arg3 = (void *)r;
+    if (r != 0) {
+        *arg4 = 1;
+    } else {
+        *arg4 = 0;
+        if (VFiPFCACHE_SearchForFreePage(*arg1, arg3) == 0) {
+            if (*arg3 == 0) {
+                *arg3 = 0;
+                return 0x1E;
+            }
+            r = fn_800A7B34(arg0, *arg3);
+            if (r != 0) {
+                *arg3 = 0;
+                return r;
+            }
+            *(u32 *)((u8 *)*arg3 + 0xC) = 0;
+            *(u32 *)((u8 *)*arg3 + 0x10) = 0;
+        }
+        if (arg2 + 0x10000 != 0xFFFF) {
+            page = (u8 *)*arg3;
+            if (*(u16 *)page & 4) {
+                *(u32 *)(page + 0x18) = arg2 - arg2 % *(u32 *)(page + 0x14);
+                page = (u8 *)*arg3;
+                *(u32 *)(page + 8) = *(u32 *)(page + 4) + ((arg2 % *(u32 *)(page + 0x14)) << *(u8 *)((u8 *)arg0 + 0x20));
+            } else {
+                if (*(s32 *)((u8 *)arg0 + 0x1C) == 2 &&
+                    (arg2 < *(u32 *)((u8 *)arg0 + 0x30) || arg2 >= *(u32 *)((u8 *)arg0 + 8)) &&
+                    arg2 == *(u16 *)((u8 *)arg0 + 0x14)) {
+                    *(u32 *)(page + 0x14) = 1;
+                }
+                page = (u8 *)*arg3;
+                *(u32 *)(page + 0x18) = arg2 - arg2 % *(u32 *)(page + 0x14);
+                page = (u8 *)*arg3;
+                *(u32 *)(page + 8) = *(u32 *)(page + 4) + ((arg2 % *(u32 *)(page + 0x14)) << *(u8 *)((u8 *)arg0 + 0x20));
+            }
+        } else {
+            page = (u8 *)*arg3;
+            *(u32 *)(page + 0x18) = arg2;
+            page = (u8 *)*arg3;
+            *(u32 *)(page + 8) = *(u32 *)(page + 4);
+        }
+        page = (u8 *)*arg3;
+        *(u16 *)page |= 1;
+    }
+    {
+        u8 *p = (u8 *)*arg3;
+        u8 *head = (u8 *)*arg1;
+        if (p != head) {
+            if (p == *(u8 **)(head + 0x24)) {
+                *arg1 = p;
+            } else {
+                *(u32 *)(*(u8 **)(p + 0x24) + 0x20) = *(u32 *)(p + 0x20);
+                *(u32 *)(*(u8 **)(p + 0x20) + 0x24) = *(u32 *)(p + 0x24);
+                head = (u8 *)*arg1;
+                *(u8 **)(p + 0x20) = head;
+                *(u32 *)(p + 0x24) = *(u32 *)((u8 *)*arg1 + 0x24);
+                *(u8 **)(head + 0x24) = p;
+                *(u8 **)(*(u8 **)(p + 0x24) + 0x20) = p;
+                *arg1 = p;
+            }
+        }
+    }
+    return 0;
+}
+#pragma pop
 extern "C" s32 fn_800A7B34(void *, void *);
 extern "C" s32 fn_800A8504(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     s32 temp_r0;
