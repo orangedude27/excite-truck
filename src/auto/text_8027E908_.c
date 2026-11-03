@@ -2314,6 +2314,24 @@ extern "C" int fn_802839D0(void) {
     return 0;
 }
 #pragma cplusplus reset
+static inline int find_item(void *value) {
+    int i;
+    int count;
+    void **base;
+    void **p;
+
+    count = (int)lbl_804B30D8[1];
+    i = 0;
+    base = (void **)lbl_804B30D8[0];
+    p = base;
+    for (; i < count; ++p, ++i) {
+        if (*p == value) {
+            return i;
+        }
+    }
+    return -1;
+}
+
 int fn_80283A50(void) {
     int i = 0;
     int count = (int)lbl_804B30D8[1];
@@ -2346,9 +2364,7 @@ int fn_80283AC8(void) {
     base = (void **)lbl_804B30D8[0];
     p = base;
     for (; i < count; ++i) {
-        if (*p != (void *)value) goto increment;
-        goto found;
-increment:
+        if (*p == (void *)value) goto found;
         ++p;
     }
     i = -1;
