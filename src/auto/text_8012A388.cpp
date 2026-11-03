@@ -274,6 +274,11 @@ extern "C" void fn_8012A7FC(void) {
     fn_802E2D74(0x32);
 }
 
+static inline void Swap4(u8 *q) {
+    u8 t = q[0]; q[0] = q[3]; q[3] = t;
+    t = q[1]; q[1] = q[2]; q[2] = t;
+}
+
 extern "C" void fn_8012A80C(s32 arg0) {
     u8 *p=(u8 *)arg0;
     u8 a0=p[0],a1=p[1],a2=p[2],a3=p[3],a4=p[4],a5=p[5],a6=p[6],a7=p[7];
@@ -665,15 +670,15 @@ extern "C" s32 fn_8012B85C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32
                 u32 second;
                 u8 third;
                 *(volatile u32 *)request = arg1;
-                first = request[0];
-                fourth = request[3];
-                second = request[1];
-                third = request[2];
-                request[0] = fourth;
-                request[3] = first;
-                request[1] = third;
-                request[2] = second;
-                request[4] = 0;
+                first = requestName[0];
+                fourth = requestName[3];
+                second = requestName[1];
+                third = requestName[2];
+                requestName[0] = fourth;
+                requestName[3] = first;
+                requestName[1] = third;
+                requestName[2] = second;
+                requestName[4] = 0;
                 *(volatile u32 *)entryName = *(u32 *)(entry + 0x20);
                 first = entryName[0];
                 fourth = entryName[3];
@@ -684,7 +689,7 @@ extern "C" s32 fn_8012B85C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32
                 entryName[1] = third;
                 entryName[2] = second;
                 entryName[4] = 0;
-                fn_802E30C8(strings + 0x414, arg0, (const char *)request, (const char *)entryName);
+                fn_802E30C8(&strings[0x414], arg0, (char *)&request[0], (char *)&entryName[0]);
             }
         } else {
             fn_802E30C8(strings + 0x450, arg0);
@@ -1656,7 +1661,7 @@ extern "C" void fn_8012D908(s32 arg0) {
     u8 *found;
     u8 *temp_r3_3;
     u32 var_r23;
-    s32 var_r24;
+    u32 var_r24;
     u8 *entry;
 
     if (lbl_8055E014 == 0) return;
@@ -1725,7 +1730,7 @@ names_loop:
         }
         var_r24 += 1; entry += 0x44;
 names_test:
-        if ((u32)var_r24 < *(u32 *)(temp_r3_3 + 0xC)) goto names_loop;
+        if (*(u32 *)(temp_r3_3 + 0xC) > var_r24) goto names_loop;
 names_done:
         if (var_r23 != 0) found = current;
         fn_8012C4D8(temp_r3_3);
