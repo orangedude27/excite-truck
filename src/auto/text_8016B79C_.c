@@ -776,21 +776,18 @@ extern void *fn_8023512C(void *);
 extern void *fn_802076A0(void *, s32, s32, s32);
 extern s32 fn_80204CF0(void);
 void *fn_8016D024(void *arg0) {
-    void *temp_r6;
-    void *temp_r3;
-
-    fn_802C2914();
+    char *base = lbl_803306D0;
+    ((void (*)(void *))fn_802C2914)(arg0);
     *(void **)((u8 *)arg0 + 4) = lbl_80330A90;
-    *(void **)((u8 *)arg0 + 0x14) = fn_80131808(lbl_803306D0 + 0x1E0);
-    *(void **)((u8 *)arg0 + 0x20) = fn_8023512C(lbl_803306D0 + 0x1F8);
-    *(void **)((u8 *)arg0 + 0x4C) = fn_802076A0(lbl_803306D0 + 0x204, 1, 0, 0);
-    *(void **)((u8 *)arg0 + 0x50) = fn_802076A0(lbl_803306D0 + 0x210, 1, 0, 0);
-    *(void **)((u8 *)arg0 + 0x58) = fn_802076A0(lbl_803306D0 + 0x220, 1, 0, 0);
-    *(void **)((u8 *)arg0 + 0x54) = fn_802076A0(lbl_803306D0 + 0x22C, 1, 0, 0);
-    *(void **)((u8 *)arg0 + 0x5C) = fn_802076A0(lbl_803306D0 + 0x23C, 1, 0, 0);
-    *(void **)((u8 *)arg0 + 0x60) = fn_802076A0(lbl_803306D0 + 0x24C, 1, 0, 0);
-    temp_r6 = *(void **)((u8 *)arg0 + 0x4C);
-    *(void **)((u8 *)arg0 + 0x64) = fn_802076A0(lbl_803306D0 + 0x258, 1, 0, 0);
+    *(void **)((u8 *)arg0 + 0x14) = fn_80131808(base + 0x1E0);
+    *(void **)((u8 *)arg0 + 0x20) = fn_8023512C(base + 0x1F8);
+    *(void **)((u8 *)arg0 + 0x4C) = fn_802076A0(base + 0x204, 1, 0, 0);
+    *(void **)((u8 *)arg0 + 0x50) = fn_802076A0(base + 0x210, 1, 0, 0);
+    *(void **)((u8 *)arg0 + 0x58) = fn_802076A0(base + 0x220, 1, 0, 0);
+    *(void **)((u8 *)arg0 + 0x54) = fn_802076A0(base + 0x22C, 1, 0, 0);
+    *(void **)((u8 *)arg0 + 0x5C) = fn_802076A0(base + 0x23C, 1, 0, 0);
+    *(void **)((u8 *)arg0 + 0x60) = fn_802076A0(base + 0x24C, 1, 0, 0);
+    *(void **)((u8 *)arg0 + 0x64) = fn_802076A0(base + 0x258, 1, 0, 0);
     *(s32 *)((u8 *)arg0 + 0x24) = -1;
     *(u8 *)((u8 *)arg0 + 0x48) = 0;
     *(u8 *)((u8 *)arg0 + 0x49) = 0;
@@ -798,44 +795,18 @@ void *fn_8016D024(void *arg0) {
     *(f32 *)((u8 *)arg0 + 0x28) = lbl_80561980;
     *(s32 *)((u8 *)arg0 + 0x38) = 0;
     *(s32 *)((u8 *)arg0 + 0x3C) = 0;
-    if (temp_r6 != 0 && lbl_80561984 != *(f32 *)((u8 *)temp_r6 + 8)) {
-        *(u8 *)((u8 *)temp_r6 + 0x4D) = 1;
-        *(f32 *)((u8 *)temp_r6 + 8) = lbl_80561984;
-    }
-    temp_r3 = *(void **)((u8 *)arg0 + 0x50);
-    if (temp_r3 != 0 && lbl_80561984 != *(f32 *)((u8 *)temp_r3 + 8)) {
-        *(u8 *)((u8 *)temp_r3 + 0x4D) = 1;
-        *(f32 *)((u8 *)temp_r3 + 8) = lbl_80561984;
-    }
-    temp_r3 = *(void **)((u8 *)arg0 + 0x58);
-    if (temp_r3 != 0 && lbl_80561984 != *(f32 *)((u8 *)temp_r3 + 8)) {
-        *(u8 *)((u8 *)temp_r3 + 0x4D) = 1;
-        *(f32 *)((u8 *)temp_r3 + 8) = lbl_80561984;
-    }
-    temp_r3 = *(void **)((u8 *)arg0 + 0x54);
-    if (temp_r3 != 0 && lbl_80561984 != *(f32 *)((u8 *)temp_r3 + 8)) {
-        *(u8 *)((u8 *)temp_r3 + 0x4D) = 1;
-        *(f32 *)((u8 *)temp_r3 + 8) = lbl_80561984;
-    }
-    temp_r3 = *(void **)((u8 *)arg0 + 0x5C);
-    if (temp_r3 != 0 && lbl_80561984 != *(f32 *)((u8 *)temp_r3 + 8)) {
-        *(u8 *)((u8 *)temp_r3 + 0x4D) = 1;
-        *(f32 *)((u8 *)temp_r3 + 8) = lbl_80561984;
-    }
-    temp_r3 = *(void **)((u8 *)arg0 + 0x60);
-    if (temp_r3 != 0 && lbl_80561984 != *(f32 *)((u8 *)temp_r3 + 8)) {
-        *(u8 *)((u8 *)temp_r3 + 0x4D) = 1;
-        *(f32 *)((u8 *)temp_r3 + 8) = lbl_80561984;
-    }
-    temp_r3 = *(void **)((u8 *)arg0 + 0x64);
-    if (temp_r3 != 0 && lbl_80561984 != *(f32 *)((u8 *)temp_r3 + 8)) {
-        *(u8 *)((u8 *)temp_r3 + 0x4D) = 1;
-        *(f32 *)((u8 *)temp_r3 + 8) = lbl_80561984;
-    }
+    SetNodeF8(*(void **)((u8 *)arg0 + 0x4C));
+    SetNodeF8(*(void **)((u8 *)arg0 + 0x50));
+    SetNodeF8(*(void **)((u8 *)arg0 + 0x58));
+    SetNodeF8(*(void **)((u8 *)arg0 + 0x54));
+    SetNodeF8(*(void **)((u8 *)arg0 + 0x5C));
+    SetNodeF8(*(void **)((u8 *)arg0 + 0x60));
+    SetNodeF8(*(void **)((u8 *)arg0 + 0x64));
     *(s32 *)((u8 *)arg0 + 0x40) = fn_80204CF0();
     return arg0;
 }
 
+#pragma scheduling on
 void fn_8016D278(void *arg0) { *(u32 *)arg0=(u32)arg0+0xC; *(u32 *)((u8 *)arg0+8)=8; *(u32 *)((u8 *)arg0+4)=0; }
 
 s32 fn_8016D544(void *arg0) {
