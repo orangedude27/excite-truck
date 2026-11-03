@@ -264,7 +264,7 @@ static inline DVDLowContext *newContext(void *callback, unsigned int arg2, const
     return &((DVDLowContext *)lbl_8037B820)[id];
 }
 
-static inline void *ddrAllocAligned32(unsigned int size) {
+static inline void *ddrAllocAligned32(unsigned int size, const char *msg) {
     unsigned char *lo = (unsigned char *)IPCGetBufferLo();
     unsigned char *hi = (unsigned char *)IPCGetBufferHi();
 
@@ -273,23 +273,23 @@ static inline void *ddrAllocAligned32(unsigned int size) {
     }
 
     if (lo + size > hi) {
-        OSReport(lbl_80302848 + 0x80, size);
+        OSReport(msg + 0x80, size);
     }
 
     IPCSetBufferLo(lo + size);
     return lo;
 }
 
-static inline int allocateStructures(void) {
-    lbl_8055D8FC = (unsigned char *)ddrAllocAligned32(128);
+static inline int allocateStructures(const char *msg) {
+    lbl_8055D8FC = (unsigned char *)ddrAllocAligned32(128, msg);
     if (lbl_8055D8FC == (void *)0) {
-        OSReport(lbl_80302848 + 0xBC);
+        OSReport(msg + 0xBC);
         return 0;
     }
 
-    lbl_8055D8F8 = (char *)ddrAllocAligned32(32);
+    lbl_8055D8F8 = (char *)ddrAllocAligned32(32, msg);
     if (lbl_8055D8F8 == (void *)0) {
-        OSReport(lbl_80302848 + 0xE4);
+        OSReport(msg + 0xE4);
         return 0;
     }
 
@@ -309,7 +309,50 @@ static inline void initDvdContexts(void) {
 }
 
 int DVDLowInit(void) {
-    return 0;
+    const char *msg = lbl_80302848;
+    int result;
+
+    if (!lbl_8055D8ED) {
+        lbl_8055D8ED = 1;
+
+        result = IPCCltInit();
+        if (result != 0) {
+            OSReport(msg + 0x60, result);
+            return 0;
+        }
+
+        if (!allocateStructures(msg)) {
+            return 0;
+        }
+
+        if (!lbl_8055D8EC) {
+            initDvdContexts();
+            lbl_8055D8EC = 1;
+        }
+    }
+
+    strncpy(lbl_8055D8F8, lbl_80558E20, 32);
+    result = IOS_Open(lbl_8055D8F8, 0);
+    lbl_80558E18 = result;
+
+    if (result >= 0) {
+        return 1;
+    }
+
+    switch (result) {
+    case -6:
+        OSReport(msg + 0x104);
+        return 0;
+    case -1:
+        OSReport(msg + 0x150);
+        return 0;
+    case -5:
+        OSReport(msg + 0x198);
+        return 0;
+    default:
+        OSReport(msg + 0x1E4, result);
+        return 0;
+    }
 }
 
 #pragma scheduling invalid_target
