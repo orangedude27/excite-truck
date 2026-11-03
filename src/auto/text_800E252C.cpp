@@ -1906,7 +1906,7 @@ extern "C" void SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif_800E58CC(voi
 }
 
 extern "C" void *Instance__15EmissionManagerFv(void);
-extern "C" void fn_800E3DDC(void *);
+extern "C" void fn_800E3DDC(void *, void *);
 void SetPriority__Q46nw4hbm3snd6detail7AxVoiceFi(void *arg0, int arg1) {
     int valid;
     valid = 0;
@@ -1915,8 +1915,7 @@ void SetPriority__Q46nw4hbm3snd6detail7AxVoiceFi(void *arg0, int arg1) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x306, lbl_803223BC, arg1, 0, 0xFF);
     }
     *(int *)((char *)arg0 + 0x124) = arg1;
-    Instance__15EmissionManagerFv();
-    fn_800E3DDC(arg0);
+    fn_800E3DDC(Instance__15EmissionManagerFv(), arg0);
 }
 
 extern "C" int GetCurrentPlayingDspAddress__Q46nw4hbm3snd6detail7AxVoiceCFv(void *self) {
