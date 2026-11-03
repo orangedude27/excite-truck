@@ -1232,7 +1232,7 @@ s32 fn_8000786C(void *arg0, void *arg1, s32 arg2, void *arg3) {
 extern f32 fn_80011E44(void);
 extern f32 fn_80011E60(void);
 extern void fn_8000FBE8(f32, f32, f32);
-extern void fn_8000FF88(s32, s32, void *, f32, f32, f32, ...);
+
 extern f32 lbl_805601A0, lbl_805601A4, lbl_805601A8, lbl_805601AC;
 extern u8 lbl_802FB6B4[];
 #pragma push
