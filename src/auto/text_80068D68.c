@@ -176,6 +176,15 @@ typedef struct {
 } tBTA_HH_CB_MATCH;
 
 #define UUSB_CB_DEFINED_EARLY 1
+extern u8 lbl_803C0F78[];
+static inline u8 *btm_bda_to_acl_inl(u8 *bda) {
+    u8 *q = lbl_803C0F78 + 0x34;
+    u32 j = 0;
+    for (; j < 4; j++, q += 0x11C) {
+        if (q[0x119] && memcmp(q + 8, bda, 6) == 0) return q;
+    }
+    return 0;
+}
 extern uusb_cb_t lbl_803BD1E0;
 extern char lbl_803142C8[];
 extern char lbl_803BE240[];
@@ -6157,6 +6166,60 @@ void btm_read_remote_version_complete(u8 *arg0) {
     }
 }
 
+void btm_read_remote_features_complete(UINT8 *p) {
+    extern u8 lbl_80315CE0[];
+    u8 *acl = lbl_803C0F78 + 0x34;
+    u16 handle;
+    u16 temp;
+    s32 i;
+    u8 *dev;
+    u32 j;
+    u8 *q;
+    u16 policy;
+
+    if (p[0] == 0) {
+        handle = p[1] + (p[2] << 8);
+        for (i = 0; i < 4; i++, acl += 0x11C) {
+            if (acl[0x119] && *(u16 *)acl == handle) {
+                acl[0x110] = p[3];
+                acl[0x111] = p[4];
+                acl[0x112] = p[5];
+                acl[0x113] = p[6];
+                acl[0x114] = p[7];
+                acl[0x115] = p[8];
+                acl[0x116] = p[9];
+                acl[0x117] = p[10];
+                dev = (u8 *)btm_find_dev_by_handle(handle);
+                if (dev) memcpy(dev + 0x77, acl + 0x110, 8);
+                temp = *(u16 *)(lbl_803C0F78 + 0x654) & 0xCC18;
+                if (lbl_803C0F78[0x636] >= 3) temp |= *(u16 *)(lbl_803C0F78 + 0x654) & 0x3306;
+                else temp &= ~0x3306;
+                if (lbl_803C0F78[0x27C0] >= 4) fn_80070954(0xD0003, lbl_80315CE0, temp);
+                if (btsnd_hcic_change_conn_type(*(u16 *)acl, temp)) *(u16 *)(acl + 2) = temp;
+                if (*(u16 *)(lbl_803C0F78 + 0x4C4)) BTM_SetLinkPolicy(acl + 8, (u16 *)(lbl_803C0F78 + 0x4C4));
+                j = 0;
+                policy = *(u16 *)(lbl_803C0F78 + 0x4C6);
+                q = lbl_803C0F78 + 0x34;
+                for (; j < 4; j++, q += 0x11C) {
+                    if (!q[0x119]) continue;
+                    if (memcmp(q + 8, acl + 8, 6) != 0) continue;
+                    goto found;
+                }
+                q = 0;
+found:
+                if (q) {
+                    *(u16 *)(q + 0x10E) = policy;
+                    if (!q[0x11A]) btsnd_hcic_write_policy_set_80085668(*(u16 *)q, policy);
+                }
+                if (*(void **)(lbl_803C0F78 + 0x4C8)) {
+                    (*(void (**)(u8 *, u8 *, u8 *, u8 *, s32))(lbl_803C0F78 + 0x4C8))(acl + 8, acl + 0xE, acl + 0x11, acl + 0x110, 1);
+                }
+                break;
+            }
+        }
+    }
+}
+
 void fn_80077C94(s16 arg0) {
     *(s16 *)(lbl_803C0F78 + 0x4C6) = arg0;
 }
@@ -8499,14 +8562,14 @@ void btm_pm_proc_mode_change(u8 status, u16 handle, u8 mode, u16 interval) {
             fn_8007096C(0xD0004, lbl_80316530, handle, *(u16 *)(acl + 0x36));
         btsnd_hcic_change_conn_type(*(u16 *)(acl + 0x34), *(u16 *)(acl + 0x36));
     }
-    pm = (u8 *)(index * 0x22 + (u32)lbl_803C0F78);
+    pm = lbl_803C0F78 + index * 0x22;
     pm[0x4ec] = mode;
     *(u16 *)(pm + 0x4ea) = interval;
     {
         tBTM_PM_PWR_MD *req = (tBTM_PM_PWR_MD *)(pm + 0x4cc);
         int n;
-        for (n = 0; n < 2; n++) {
-            if (mode == 0 && req[n].mode == 1) req[n].mode = 0;
+        for (n = 0; n <= 1; ++n, ++req) {
+            if (mode == 0 && req->mode == 1) req->mode = 0;
         }
     }
     if (pm[0x4ed] == 1) btm_pm_snd_md_req(0x80, index, 0);
