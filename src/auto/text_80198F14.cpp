@@ -1498,16 +1498,22 @@ extern "C" s32 fn_8019E2D0(s32 arg0, s32 arg1, s32 arg2, void *arg3, f32 f0, f32
     Vec origin, direction;
     f32 minimum, maximum;
     f32 *matrix = (f32 *)arg3;
-    f32 m0 = matrix[0], m1 = matrix[1], m2 = matrix[2];
-    f32 m3 = matrix[3], m4 = matrix[4], m5 = matrix[5];
-    f32 m6 = matrix[6], m7 = matrix[7], m8 = matrix[8];
+    register f32 m0 = matrix[0];
+    register f32 m1 = matrix[1];
+    register f32 m4 = matrix[4];
+    register f32 m3 = matrix[3];
+    register f32 m6 = matrix[6];
+    register f32 m7 = matrix[7];
+    register f32 m8 = matrix[8];
+    register f32 m2 = matrix[2];
+    register f32 m5 = matrix[5];
     f32 *p = (f32 *)arg0;
     f32 *v = (f32 *)arg1;
     f32 x = p[0] - matrix[9];
     f32 y = p[1] - matrix[10];
     f32 z = p[2] - matrix[11];
-    origin.x = z * m2 + (x * m0 + y * m1);
     origin.y = z * m5 + (x * m3 + y * m4);
+    origin.x = z * m2 + (x * m0 + y * m1);
     origin.z = z * m8 + (x * m6 + y * m7);
     if ((f32 *)&direction == v) {
         f32 vx = v[0], vy = v[1], vz = v[2];
@@ -1537,6 +1543,13 @@ extern f32 lbl_8056236C;
 #pragma scheduling invalid_target
 extern "C" s32 fn_8019B4D8(void*, void*, void*, s32, f32);
 struct Fn8019E874Xf { f32 m[9]; Vec pos; };
+class Fn801A0F10Child {
+public:
+    virtual void v00(); virtual void v01(); virtual void v02();
+    virtual void Update();
+};
+extern "C" void fn_801BEAEC(s32, s32, void*);
+extern "C" void fn_801BEB44(s32, s32, void*, f32*);
 struct Fn801A4548Hdr { s32 count; u8* list; s32 count2; u8* shorts; s32 unk10; void* fn; };
 static inline void Fn801A4548Swap2(u8* q) {
     u8 t = q[0]; q[0] = q[1]; q[1] = t;
@@ -3668,13 +3681,13 @@ extern "C" void* fn_801A4548(s32 arg0) {
     Fn801A4548Hdr* h = (Fn801A4548Hdr*)((s32 (*)(s32, s32, s32*, s32, s32, s32))fn_8012C370)(arg0, 0x534F424C, &size, 0, 0, (s32)&ok);
     if (h && ok) {
         u8* p = (u8*)h;
-        u8 t;
+        s32* lp = (s32*)&h->list;
         Fn801A4548Swap4(p);
         Fn801A4548Swap4(p+8);
         Fn801A4548Swap4(p+4);
         Fn801A4548Swap4(p+12);
         Fn801A4548Swap4(p+16);
-        fn_801A4768((s32*)&h->list, (s32)h);
+        fn_801A4768(lp, (s32)h);
         fn_801A4780((s32*)&h->unk10, (s32)h);
         fn_801A4798((s32*)&h->shorts, (s32)h);
         for (s32 i=0; i<h->count; i++) {
@@ -3682,13 +3695,14 @@ extern "C" void* fn_801A4548(s32 arg0) {
             fn_801A47B0((s32*)(h->list+i*4), (s32)h);
         }
         for (s32 i=0; i<h->count2; i++) {
-            u8* q=h->shorts+i*2;
-            t=q[0]; q[0]=q[1]; q[1]=t;
+            Fn801A4548Swap2(h->shorts+i*2);
         }
         fn_8019EB14(h->unk10, 0);
         for (s32 i=0; i<h->count; i++) {
             s32 q=*(s32*)(h->list+i*4);
-            if (q) fn_801A4B5C(q+0x4c);
+            s32 a2 = q+0x4c;
+            u8 okv = ok;
+            if (q) ((void (*)(s32, s32, s32))fn_801A4B5C)(q, okv, a2);
         }
         h->fn=(void*)fn_801A4538;
     }
