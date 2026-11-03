@@ -297,14 +297,15 @@ static inline int allocateStructures(const char *msg) {
     return 1;
 }
 
-static void initDvdContexts(void) {
+static inline void initDvdContexts(void) {
+    DVDLowContext *ctx = (DVDLowContext *)lbl_8037B820;
     int i;
-    for (i = 0; i < 4; i++) {
-        ((DVDLowContext *)lbl_8037B820)[i].callback = (void *)0;
-        ((DVDLowContext *)lbl_8037B820)[i].WORD_0x4 = 0;
-        ((DVDLowContext *)lbl_8037B820)[i].inUse = 0;
-        ((DVDLowContext *)lbl_8037B820)[i].magic = 0xFEEBDAED;
-        ((DVDLowContext *)lbl_8037B820)[i].id = i;
+    for (i = 0; i < 4; i++, ctx++) {
+        ctx->callback = (void *)0;
+        ctx->WORD_0x4 = 0;
+        ctx->inUse = 0;
+        ctx->magic = 0xFEEBDAED;
+        ctx->id = i;
     }
     lbl_8055D8E8 = 0;
 }
