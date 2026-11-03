@@ -45,7 +45,8 @@ void fn_8001F528(void);
 void fn_8001EFF0(void);
 extern char lbl_802FDE68[];
 extern char lbl_802FE0D4[], lbl_802FE0E0[], lbl_802FE0EC[], lbl_802FE0FC[];
-extern char lbl_80558D5C[], lbl_80558D64[], lbl_80558D6C[];
+extern char lbl_80558D5C[8], lbl_80558D64[8], lbl_80558D6C[8];
+#pragma use_lmw_stmw off
 extern s32 fn_80131234(s32);
 extern s32 fn_80131810(void*);
 extern void* fn_801284F8(int, void*);
@@ -125,6 +126,66 @@ void fn_8001EFC8(void) {
 
 void fn_8001EFCC(void* alarm) {
     fn_8001F578(fn_8001F2C8(alarm));
+}
+
+void fn_8001EFF0(void) {
+    SrcCoef* p;
+    u32 n;
+    s32 i;
+    s32 j;
+    s32 idx;
+    void* obj;
+    void* child;
+    s32* res;
+    char* name;
+    char* label;
+
+    p = (SrcCoef*)(lbl_802FDE68 + 0xC8);
+    n = 0;
+    do {
+        n++;
+        p->unk8 = fn_80131234(p->unk4);
+        p++;
+    } while (n < 8);
+    lbl_8055D610 = fn_80131810(lbl_802FDE68 + 0x148);
+    if (lbl_8055D610 != 0) {
+        for (i = 0; (obj = VFN(lbl_8055D610, 0xC, void* (*)(s32, s32))(lbl_8055D610, i)) != NULL; i++) {
+            if (stricmp(VFN(obj, 8, char* (*)(void*))(obj), lbl_802FDE68 + 0x15C) == 0) {
+                label = VFN(obj, 0x14, char* (*)(void*, char*))(obj, lbl_80558D5C);
+                idx = fn_8001F41C(label);
+                if (idx >= 0 && idx < 8) {
+                    if ((u32)idx < 8) {
+                        res = (s32*)fn_801284F8(8, lbl_802FDE68 + 0x174);
+                        if (res != NULL) {
+                            res[0] = 0;
+                            res[1] = 0;
+                            for (j = 0; (child = VFN(obj, 0x60, void* (*)(void*, s32))(obj, j)) != NULL; j++) {
+                                if (stricmp(VFN(child, 8, char* (*)(void*))(child), lbl_80558D6C) == 0) {
+                                    res[1]++;
+                                }
+                            }
+                            if (res[1] == 0) {
+                                fn_802E317C(lbl_802FE0FC, VFN(obj, 8, char* (*)(void*))(obj));
+                            }
+                            res[0] = (s32)fn_8012850C(res[1] * 8, lbl_802FE0EC);
+                            res[1] = 0;
+                            for (j = 0; (child = VFN(obj, 0x60, void* (*)(void*, s32))(obj, j)) != NULL; j++) {
+                                if (stricmp(VFN(child, 8, char* (*)(void*))(child), lbl_80558D64) == 0) {
+                                    *(s32*)(res[0] + res[1] * 8) = VFN(child, 0x1C, s32 (*)(void*, char*))(child, lbl_802FE0E0);
+                                    ((s32*)(res[0] + res[1] * 8))[1] = VFN(child, 0x14, s32 (*)(void*, char*))(child, lbl_802FE0D4);
+                                    res[1]++;
+                                }
+                            }
+                        }
+                        ((SrcCoef*)(lbl_802FDE68 + 0xC8))[idx].unkC = res;
+                    }
+                } else {
+                    name = VFN(obj, 0x14, char* (*)(void*, char*))(obj, lbl_80558D5C);
+                    fn_802E30C8(lbl_802FDE68 + 0x188, VFN(obj, 8, char* (*)(void*))(obj), name);
+                }
+            }
+        }
+    }
 }
 
 s32 fn_8001F2C8(void* alarm) {
