@@ -79,9 +79,19 @@ typedef struct {
 #define GX_BP_REG_FOGPARAM2 0xF0
 #define GX_BP_REG_FOGPARAM3 0xF1
 #define GX_BP_REG_FOGCOLOR  0xF2
+static volatile union {
+    char c;
+    short s;
+    int i;
+    unsigned char uc;
+    unsigned short us;
+    unsigned int ui;
+    float f;
+} WGPIPE : 0xCC008000;
+#define GX_FIFO_CMD_LOAD_BP_REG 0x61
 #define GX_BP_LOAD_REG(data) \
-    *(volatile u8 *)0xCC008000 = 0x61; \
-    *(volatile u32 *)0xCC008000 = (data)
+    WGPIPE.c = GX_FIFO_CMD_LOAD_BP_REG; \
+    WGPIPE.i = (data)
 
 typedef struct {
     unsigned short unused0 : 11;
@@ -4123,6 +4133,89 @@ void GXSetNumTevStages(s32 count) {
 
     fields->stages = count - 1;
     __GXData[0x5FC / 4] |= 4;
+}
+
+void GXSetFog(int type, GXColor color, f32 start, f32 end, f32 near, f32 far) {
+    f32 a, c;
+    u32 a_bits, c_bits;
+
+    u32 fogColorReg = 0;
+    u32 fogParamReg0 = 0;
+    u32 fogParamReg1 = 0;
+    u32 fogParamReg2 = 0;
+    u32 fogParamReg3 = 0;
+
+    u32 fsel = GX_FOG_GET_FSEL(type);
+    int ortho = GX_FOG_GET_PROJ(type);
+
+    if (ortho) {
+        if (far == near || end == start) {
+            a = 0.0f;
+            c = 0.0f;
+        } else {
+            a = (1.0f / (end - start)) * (far - near);
+            c = (1.0f / (end - start)) * (start - near);
+        }
+    } else {
+        f32 f28, f25, f24;
+        u32 expB, magB, shiftB;
+
+        if (far == near || end == start) {
+            f28 = 0.0f;
+            f25 = 0.5f;
+            f24 = 0.0f;
+        } else {
+            f28 = (far * near) / ((far - near) * (end - start));
+            f25 = far / (far - near);
+            f24 = start / (end - start);
+        }
+
+        expB = 0;
+        while (f25 > 1.0l) {
+            f25 /= 2.0f;
+            expB++;
+        }
+        while (f25 > 0.0f && f25 < 0.5l) {
+            f25 *= 2.0f;
+            expB--;
+        }
+
+        a = f28 / (1 << expB + 1);
+        magB = 8388638.0f * f25;
+        shiftB = expB + 1;
+        c = f24;
+
+        GX_BP_SET_FOGPARAM1_B_MAG(fogParamReg1, magB);
+        GX_BP_SET_OPCODE(fogParamReg1, GX_BP_REG_FOGPARAM1);
+        GX_BP_SET_FOGPARAM2_B_SHIFT(fogParamReg2, shiftB);
+        GX_BP_SET_OPCODE(fogParamReg2, GX_BP_REG_FOGPARAM2);
+    }
+
+    a_bits = *(u32*)&a;
+    c_bits = *(u32*)&c;
+
+    GX_BP_SET_FOGPARAM0_A_MANT(fogParamReg0, a_bits >> 12 & 0x7FF);
+    GX_BP_SET_FOGPARAM0_A_EXP(fogParamReg0, a_bits >> 23 & 0xFF);
+    GX_BP_SET_FOGPARAM0_A_SIGN(fogParamReg0, a_bits >> 31);
+    GX_BP_SET_OPCODE(fogParamReg0, GX_BP_REG_FOGPARAM0);
+
+    GX_BP_SET_FOGPARAM3_C_MANT(fogParamReg3, c_bits >> 12 & 0x7FF);
+    GX_BP_SET_FOGPARAM3_C_EXP(fogParamReg3, c_bits >> 23 & 0xFF);
+    GX_BP_SET_FOGPARAM3_C_SIGN(fogParamReg3, c_bits >> 31);
+    GX_BP_SET_FOGPARAM3_PROJ(fogParamReg3, ortho);
+    GX_BP_SET_FOGPARAM3_FSEL(fogParamReg3, fsel);
+    GX_BP_SET_OPCODE(fogParamReg3, GX_BP_REG_FOGPARAM3);
+
+    GX_BP_SET_FOGCOLOR_RGB(fogColorReg, *(u32*)&color >> 8);
+    GX_BP_SET_OPCODE(fogColorReg, GX_BP_REG_FOGCOLOR);
+
+    GX_BP_LOAD_REG(fogParamReg0);
+    GX_BP_LOAD_REG(fogParamReg1);
+    GX_BP_LOAD_REG(fogParamReg2);
+    GX_BP_LOAD_REG(fogParamReg3);
+    GX_BP_LOAD_REG(fogColorReg);
+
+    *(volatile u16 *)((u8 *)__GXData + 2) = 0;
 }
 
 void GXSetFogRangeAdj(int enable, u16 center, const u16 *table) {
