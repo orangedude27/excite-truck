@@ -8,41 +8,41 @@ extern "C" s32 fn_800B3A70(void *, void *, s32);
 extern "C" s32 VFiPFPATH_transformInUnicode(s16 *, s32, s32);
 extern "C" void VFiPFPATH_getLongNameformShortName(void *, void *, s32);
 extern "C" s32 fn_800A9DC0(void *object, void *iterator, s32 arg2, s32 arg3, s32 arg4, s32 *arg5) {
- u8 *p=(u8 *)object, *it=(u8 *)iterator;
+ u8 *it=(u8 *)iterator;
  u8 flags=it[0x57];
- u8 buf[13], name[16];
+ u8 name[16], buf[13];
  u32 sum,next,word;
  u16 i,a,b;
  s32 len;
- if (((s32 (*)(u8 *,u8 *,s32,s32,u32,s32,s32 *))fn_800A9BB4)(p,it+0x4c,arg2,flags,arg3,arg4,arg5)==1) {
+ if (((s32 (*)(u8 *,u8 *,s32,s32,u32,s32,s32 *))fn_800A9BB4)((u8 *)object,it+0x4c,arg2,flags,arg3,arg4,arg5)==1) {
   if ((flags&15)==15) {
-   if (VFiPFENT_LoadLFNEntryFieldsFromBuf(p,it+0x4c)) { p[0x20a]=0; *(u16 *)p=0; }
-  } else { p[0x20a]=0; *(u16 *)p=0; }
+   if (VFiPFENT_LoadLFNEntryFieldsFromBuf(object,it+0x4c)) { ((u8 *)object)[0x20a]=0; *(u16 *)object=0; }
+  } else { ((u8 *)object)[0x20a]=0; *(u16 *)object=0; }
   return -1;
  }
- if (!p[0x20a] && (it[0x58]&0x18)) {
-  VFiPFPATH_getLongNameformShortName(p+0x20e,name,it[0x58]);
-  len=((s32 (*)(s16 *,s32))VFiPFPATH_transformInUnicode)((s16 *)p,(s32)name);
-  p[0x20a]=len/13+(len%13!=0);
-  fn_800B3A70(buf,p+0x20e,0);
+ if (!((u8 *)object)[0x20a] && (it[0x58]&0x18)) {
+  VFiPFPATH_getLongNameformShortName((u8 *)object+0x20e,name,it[0x58]);
+  len=((s32 (*)(s16 *,s32))VFiPFPATH_transformInUnicode)((s16 *)object,(s32)name);
+  ((u8 *)object)[0x20a]=len/13+(len%13!=0);
+  fn_800B3A70(buf,(u8 *)object+0x20e,0);
   sum=0;
   for (i=0;i<11;i++) { next=((sum&0xfe)>>1)+((sum&1)?0x80:0)+buf[i]; sum=next&0xff; }
-  p[0x20c]=sum;
-  p[0x20b]=1;
+  ((u8 *)object)[0x20c]=sum;
+  ((u8 *)object)[0x20b]=1;
  }
- p[0x21c]=it[0x57]; p[0x21b]=it[0x58]; p[0x21d]=it[0x59];
- __sthbrx(*(u16 *)(it+0x5a),p+0x21e,0);
- __sthbrx(*(u16 *)(it+0x5c),p+0x220,0);
- __sthbrx(*(u16 *)(it+0x5e),p+0x222,0);
- __sthbrx(*(u16 *)(it+0x62),p+0x224,0);
- __sthbrx(*(u16 *)(it+0x64),p+0x226,0);
+ ((u8 *)object)[0x21c]=it[0x57]; ((u8 *)object)[0x21b]=it[0x58]; ((u8 *)object)[0x21d]=it[0x59];
+ __sthbrx(*(u16 *)(it+0x5a),(u8 *)object+0x21e,0);
+ __sthbrx(*(u16 *)(it+0x5c),(u8 *)object+0x220,0);
+ __sthbrx(*(u16 *)(it+0x5e),(u8 *)object+0x222,0);
+ __sthbrx(*(u16 *)(it+0x62),(u8 *)object+0x224,0);
+ __sthbrx(*(u16 *)(it+0x64),(u8 *)object+0x226,0);
  word=*(u32 *)(it+0x68);
- *(u32 *)(p+0x228)=(word<<24)|((word&0xff00)<<8)|((word>>8)&0xff00)|(word>>24);
+ *(u32 *)((u8 *)object+0x228)=(word>>24)|((word>>8)&0xff00)|((word&0xff00)<<8)|(word<<24);
  a=*(u16 *)(it+0x60); b=*(u16 *)(it+0x66);
- *(u32 *)(p+0x234)=((u32)(a&0xff)<<24)|((u32)(a&0xff00)<<8)|((u32)(b&0xff)<<8)|(b>>8);
- *(u32 *)(p+0x238)=*(u32 *)(it+0x44);
- *(u16 *)(p+0x23c)=*(u16 *)(it+0x48);
- if ((p[0x21c]&0x10) && !*(u32 *)(p+0x234)) *(u32 *)(p+0x234)=1;
+ *(u32 *)((u8 *)object+0x234)=((u32)(a&0xff)<<24)|((u32)(a&0xff00)<<8)|((u32)(b&0xff)<<8)|(b>>8);
+ *(u32 *)((u8 *)object+0x238)=*(u32 *)(it+0x44);
+ *(u16 *)((u8 *)object+0x23c)=*(u16 *)(it+0x48);
+ if ((((u8 *)object)[0x21c]&0x10) && !*(u32 *)((u8 *)object+0x234)) *(u32 *)((u8 *)object+0x234)=1;
  return 0;
 }
 #pragma pop
@@ -3766,6 +3766,95 @@ block_21:
     }
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" s32 fn_800ACBB0(void *arg0, s32 arg1, s32 arg2, s32 arg3, u32 *arg4, u32 *arg5) {
+    s32 flag;
+    s32 spC;
+    void *page;
+    s32 r;
+    u32 limit;
+    u32 run;
+    s32 bestStart;
+    u32 bestLen;
+    s32 wrapped;
+    u32 start;
+    *arg4 = -1;
+    *arg5 = -1;
+    limit = *(u32 *)((u8 *)arg0 + 0x34) + 2;
+    wrapped = 0;
+    run = 0;
+    bestStart = -1;
+    bestLen = 0;
+    if ((u32)arg1 < 2 || (u32)arg1 >= limit) arg1 = 2;
+    if ((u32)arg2 < 2 || (u32)arg2 >= limit) arg2 = limit - 1;
+    start = arg1;
+    r = ((s32 (*)(void *, s32, void **, s32 *))fn_800A8D08)(arg0, -1, &page, &spC);
+    if (r != 0) return r;
+    r = fn_800ACA5C(arg0, page, arg1);
+    if (r != 0) {
+        VFiPFCACHE_FreeFATPage_800A8E10(arg0, page);
+        return r;
+    }
+    *(s16 *)((u8 *)page + 2) = 0;
+    goto test;
+loop:
+    {
+    void *pg;
+    if (limit <= (u32)arg1) arg1 = 2;
+    pg = page;
+    switch (*(s32 *)((u8 *)arg0 + 0x1C)) {
+    case 0:
+        r = ((s32 (*)(void *, u16, s32 *, void *))fn_800AFBA8)(arg0, (u16)arg1, &flag, pg);
+        break;
+    case 1:
+        r = ((s32 (*)(void *, s32, s32 *, void *))fn_800B00E8)(arg0, arg1, &flag, pg);
+        break;
+    case 2:
+        r = ((s32 (*)(void *, s32, s32 *, void *))fn_800B05C8)(arg0, arg1, &flag, pg);
+        break;
+    default:
+        r = 0xF;
+        break;
+    }
+    }
+    if (r != 0) return r;
+    if (flag == 0) {
+        if ((u32)(*arg4 + 0x10000) == 0xFFFF) *arg4 = arg1;
+        run++;
+        if (run >= (u32)arg3) {
+            *arg5 = arg1;
+            VFiPFCACHE_FreeFATPage_800A8E10(arg0, page);
+            return 0;
+        }
+    } else {
+        if (bestLen < run) {
+            bestStart = *arg4;
+            bestLen = run;
+        }
+        *arg4 = -1;
+        run = 0;
+    }
+    arg1++;
+    if (wrapped == 0 && run == 0 && (u32)arg1 > 2 && (u32)arg1 == (u32)arg2) {
+        arg2 = start;
+        arg1 = 2;
+        wrapped = 1;
+    }
+test:
+    if ((u32)arg1 <= (u32)arg2) goto loop;
+    if (bestLen < run) {
+        bestStart = *arg4;
+        bestLen = run;
+    }
+    if (bestLen != 0) {
+        *arg4 = bestStart;
+        *arg5 = bestLen + bestStart - 1;
+    }
+    VFiPFCACHE_FreeFATPage_800A8E10(arg0, page);
+    return 0;
+}
+#pragma pop
 extern s32 fn_800A8D08(void *, s32, void **, s32 *);
 extern s32 fn_800B5324(void *, s32, s32, s32, u16, u32 *, s32);
 extern s32 fn_800B5700(void *, s32, s32, s32, u16, u32 *, s32);
