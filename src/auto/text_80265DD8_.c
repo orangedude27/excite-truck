@@ -314,7 +314,6 @@ static inline void fn_802671CC_mul_vec(float *out, float *in, float *matrix, flo
 }
 #pragma push
 #pragma ppc_psq_save off
-#pragma scheduling invalid_target
 void fn_802671CC(void *arg0, int arg1) {
     union IntDouble {
         double value;
@@ -371,7 +370,15 @@ void fn_802671CC(void *arg0, int arg1) {
         in[0] = x;
         in[1] = y;
         in[2] = z;
-        fn_802671CC_mul_vec(out, in, matrix, x, y, z);
+        if (out == in) {
+            out[0] = x * matrix[0] + y * matrix[3] + z * matrix[6];
+            out[1] = x * matrix[1] + y * matrix[4] + z * matrix[7];
+            out[2] = x * matrix[2] + y * matrix[5] + z * matrix[8];
+        } else {
+            out[0] = in[0] * matrix[0] + in[1] * matrix[3] + in[2] * matrix[6];
+            out[1] = in[0] * matrix[1] + in[1] * matrix[4] + in[2] * matrix[7];
+            out[2] = in[0] * matrix[2] + in[1] * matrix[5] + in[2] * matrix[8];
+        }
         out[0] += matrix[9];
         out[1] += matrix[10];
         out[2] += matrix[11];
