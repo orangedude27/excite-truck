@@ -389,6 +389,7 @@ extern "C" void fn_802BF600(void *arg0, void *dst, void *src) {
     *(float *)((char *)dst + 0x28) += lbl_80564DB0 * lbl_8055FAE0;
 }
 
+extern "C" void *fn_802BF780(void *);
 extern "C" int fn_802BF6AC(void) {
     struct Dummy {
         virtual void f0(int);
