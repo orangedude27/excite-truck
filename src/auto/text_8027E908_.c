@@ -102,6 +102,10 @@ typedef struct Fn8027F958Stack {
     Fn8027F958Widget widgets[5];
 } Fn8027F958Stack;
 
+struct Fn80283E28Vt { void *pad[3]; char *(*v3)(void *); void *pad2[3]; char *(*v7)(void *); int (*v8)(void *); int (*v9)(void *); };
+struct Fn80283E28Sub { struct Fn80283E28Vt *vt; };
+struct Fn80283E28Obj { char pad[0x60]; struct Fn80283E28Sub *sub; };
+struct Fn80283E28List { struct Fn80283E28Obj **items; int count; };
 extern int fn_80128668();
 extern void fn_8027E908(void);
 extern char lbl_80348798[];
