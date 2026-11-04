@@ -804,14 +804,6 @@ s32 DVDClose(void) {
     return 1;
 }
 
-static inline u32 myStrncpy(char *dst, const char *src, u32 maxlen) {
-    u32 i;
-    for (i = maxlen; i != 0 && *src != '\0'; --i) {
-        *dst++ = *src++;
-    }
-    return maxlen - i;
-}
-
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
