@@ -41,6 +41,9 @@ extern char lbl_8055D07D;
 extern float lbl_80564F30;
 #pragma scheduling invalid_target
 extern void fn_802CAC28(int, int);
+extern void *fn_801284F8(int, void *);
+extern void fn_801282EC(int);
+extern void fn_801282F4(void);
 void fn_802CA0E4(void) {
     char *strings = lbl_8034B538;
     int offset;
@@ -644,8 +647,8 @@ extern int lbl_8055D078;
 #pragma scheduling invalid_target
 #pragma dont_inline fn_802CB38C
 int fn_802CB38C(void *arg0, void *arg1, void *arg2) {
-    ((void (*)(void *, int, int, void *))fn_802CA57C)(arg0, (int)&lbl_8055D078, 0, arg2);
-    return ((int (*)(void *, int, int, void *, void *))fn_802CA4E0)(arg0, lbl_8055D058, 0, arg1, arg2);
+    fn_802CA57C(arg0, (int)&lbl_8055D078, 0, (int)arg2);
+    return fn_802CA4E0((int)arg0, lbl_8055D058, 0, (int)arg1, (int)arg2);
 }
 #pragma scheduling on
 void fn_802CB3F4(void) {
