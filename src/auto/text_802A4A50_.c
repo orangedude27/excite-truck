@@ -57,7 +57,7 @@ void fn_802C2C00(s32);
 s32 fn_802C990C(s32);
 s32 fn_802C2B78(f32, f32, f32);
 f32 fn_802A4A50(void);
-s32 fn_802A6A7C();
+void fn_802A6A7C();
 void fn_802A6E34(void *);
 void fn_802A6F70(void *, void *);
 void fn_802A71C4(void *);
