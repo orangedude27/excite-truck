@@ -100,6 +100,22 @@ f32 fn_80129DC4(s32, f32, f32);
 extern f32 lbl_80564894, lbl_80564898, lbl_805648AC, lbl_805648B0;
 extern void fn_801E8C84(f32 *);
 extern float fn_802C9A50(void);
+static inline void Mtx33MultVec_802A6470(const f32 *m, const f32 *src, f32 *dst) {
+    f32 x, y, z;
+    if (src == dst) {
+        x = src[0]; y = src[1]; z = src[2];
+        dst[0] = z * m[2] + (x * m[0] + y * m[1]);
+        dst[1] = z * m[5] + (x * m[3] + y * m[4]);
+        dst[2] = z * m[8] + (x * m[6] + y * m[7]);
+    } else {
+        x = src[0]; y = src[1]; z = src[2];
+        x = z * m[2] + (x * m[0] + y * m[1]);
+        dst[0] = x;
+        y = z * m[5] + (x * m[3] + y * m[4]);
+        dst[1] = y;
+        dst[2] = z * m[8] + (x * m[6] + y * m[7]);
+    }
+}
 extern f32 __fabsf(f32);
 extern char lbl_80558DC4[];
 extern f32 lbl_80564854;
@@ -892,6 +908,78 @@ void fn_802A6408(void *arg0) {
         *(f32 *)((u8 *)arg0 + 0x18) = fn_80287BC8(lbl_805648A4, lbl_805648A8);
     }
 }
+
+#pragma push
+#pragma processor 750
+#pragma dont_inline on
+#pragma scheduling invalid_target
+void fn_802A6470(void *arg0, f32 *arg1, f32 *arg2, f32 farg0) {
+    typedef struct { f32 x, y, z; } V3;
+    f32 ratioY = *(f32 *)((u8 *)arg0 + 0x20);
+    f32 ratioX = ratioY / fn_802C9A50();
+    f32 scale = fn_802A4AD4();
+    f32 v[3];
+    V3 p;
+    V3 *out;
+    V3 *base;
+    int i;
+
+    fn_801E8C84(v);
+    {
+        f32 t = lbl_80564898 * scale;
+        v[0] = v[0] * t;
+        v[2] = v[2] * t;
+        v[1] = v[1] * t - lbl_805648AC * scale;
+    }
+    {
+        f32 *src = v;
+        f32 *dst = v;
+        if (src == dst) {
+            f32 x = src[0], y = src[1], z = src[2];
+            dst[0] = z * arg1[2] + (x * arg1[0] + y * arg1[1]);
+            dst[1] = z * arg1[5] + (x * arg1[3] + y * arg1[4]);
+            dst[2] = z * arg1[8] + (x * arg1[6] + y * arg1[7]);
+        } else {
+            f32 x = src[0], y = src[1], z = src[2];
+            x = z * arg1[2] + (x * arg1[0] + y * arg1[1]);
+            dst[0] = x;
+            y = z * arg1[5] + (x * arg1[3] + y * arg1[4]);
+            dst[1] = y;
+            dst[2] = z * arg1[8] + (x * arg1[6] + y * arg1[7]);
+        }
+    }
+    v[0] += arg2[0] * lbl_805648B0;
+    v[1] += arg2[1] * lbl_805648B0;
+    v[2] += arg2[2] * lbl_805648B0;
+    base = *(V3 **)arg0;
+    out = base;
+    for (i = 0; i < *(s32 *)((u8 *)arg0 + 4); i++) {
+        V3 *in = (V3 *)((u8 *)(*(V3 **)arg0) + i * 0xC);
+        f32 *rec = (f32 *)((u8 *)arg0 + 0x5C + (i % 8) * 0xC);
+        f32 z = in->z + v[2] + rec[2] * scale;
+        f32 y = in->y + v[1] + rec[1] * scale;
+        f32 x = in->x + v[0] + rec[0] * scale + farg0 * z;
+        p.z = z;
+        p.y = y;
+        p.x = x;
+        if (z > *(f32 *)((u8 *)arg0 + 0x24) && z < *(f32 *)((u8 *)arg0 + 0x28)) {
+            f32 a = z * ratioX;
+            if (x * x < a * a) {
+                f32 b = z * ratioY;
+                if (y * y < b * b) {
+                    out->x = x;
+                    out->y = y;
+                    out->z = z;
+                    out++;
+                }
+            }
+        }
+    }
+    *(s32 *)((u8 *)arg0 + 4) = out - *(V3 **)arg0;
+}
+#pragma scheduling on
+#pragma dont_inline reset
+#pragma pop
 
 #pragma scheduling push
 #pragma scheduling on
