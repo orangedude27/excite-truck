@@ -2625,10 +2625,6 @@ extern "C" void fn_80284760(void *arg0) {
         virtual const char *getName(int); virtual int getValue(int);
     };
     unsigned char *p = (unsigned char *)arg0;
-    int sel, ok, active, i, n;
-    const char *name;
-    char *d;
-    char c;
     if (p[0x64] == 0) {
         p[0x18] = 1;
         *(int *)(p + 0x1c) = fn_80221EA8();
@@ -2641,6 +2637,7 @@ extern "C" void fn_80284760(void *arg0) {
         *(int *)(p + 0x6c) = *(int *)(p + 4);
         *(float *)(p + 0x68) = lbl_80564200;
         if (*(Widget **)(p + 0x60) != 0) {
+            int sel, ok;
             if ((*(Widget **)(p + 0x60))->isActive() != 0 && p[0xcc] == 0) {
                 fn_80236954(lbl_80348940);
                 fn_8027F204(lbl_80348940);
@@ -2654,6 +2651,7 @@ extern "C" void fn_80284760(void *arg0) {
             }
             p[0xcd] = ok;
             if (ok != 0) {
+                int i, active, n;
                 n = (*(Widget **)(p + 0x60))->count();
                 active = 0;
                 for (i = 0; i < n; i++) {
@@ -2665,20 +2663,27 @@ extern "C" void fn_80284760(void *arg0) {
                 p[0x74] = 0;
             }
         }
-        i = (*(Widget **)(p + 0x60))->getId();
-        name = ((Lookup *)fn_8027ED70())->getName(i);
-        if (name != 0) {
-            d = (char *)(p + 0x7e);
-            n = 0x32;
-            do {
-                c = *name++;
+        {
+            int i = (*(Widget **)(p + 0x60))->getId();
+            const char *name = ((Lookup *)((void *(*)(void))fn_8027ED70)())->getName(i);
+            if (name != 0) {
+                char *d = (char *)(p + 0x7e);
+                int n = 0x32;
+                unsigned char c;
+                goto copy;
+            check:
+                if (--n > 0) goto copy;
+                d[-1] = 0;
+                goto done;
+            copy:
+                c = *(unsigned char *)name++;
                 *d++ = c;
-                if (c == 0) break;
-                if (--n <= 0) { d[-1] = 0; break; }
-            } while (1);
+                if ((char)c != 0) goto check;
+            done:;
+            }
+            i = (*(Widget **)(p + 0x60))->getId();
+            *(int *)(p + 0xb0) = ((Lookup *)((void *(*)(void))fn_8027ED70)())->getValue(i);
         }
-        i = (*(Widget **)(p + 0x60))->getId();
-        *(int *)(p + 0xb0) = ((Lookup *)fn_8027ED70())->getValue(i);
     } else {
         *(int *)(p + 0x20) = 1;
     }
@@ -2692,6 +2697,7 @@ extern "C" void fn_80284760(void *arg0) {
 #pragma cplusplus on
 #pragma dont_inline on
 #pragma inline_depth(0)
+#pragma use_lmw_stmw off
 extern "C" void fn_802854E0(void *arg0) {
     class Item { public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -2711,8 +2717,9 @@ extern "C" void fn_802854E0(void *arg0) {
     extern void fn_80230C30(float *, float *, int, int);
     extern double cos(double), sin(double), fabs(double);
     extern float lbl_80564228, lbl_80564230, lbl_80564234, lbl_80564238;
-    extern float lbl_8056423C, lbl_80564240, lbl_805641FC, lbl_80558DC4;
-    extern int lbl_80347EF0, lbl_80347F10;
+    extern float lbl_8056423C, lbl_80564240, lbl_805641FC;
+    extern float lbl_80558DC4[];
+    extern int lbl_80347EF0[], lbl_80347F10[];
     float x, y, cx, cy, radius, step, angle;
     float base, one, zero, half;
     int i;
@@ -2732,14 +2739,14 @@ extern "C" void fn_802854E0(void *arg0) {
             x = cx + radius * (float)cos(angle);
             y = cy + radius * (float)sin(angle);
             if ((*(List **)(p+0x60))->get(i)->active()) {
-                if (!((float)fabs(*(float *)(q+0xb4)-zero) <= lbl_80558DC4)) {
-                    ((Draw *)fn_8027ED70())->draw(&lbl_80347EF0,20,-1,x,y);
-                    ((Draw *)fn_8027ED70())->blend(&lbl_80347F10,20,-1,x,y,one-*(float *)(q+0xb4));
+                if (!((float)fabs(*(float *)(q+0xb4)-zero) <= lbl_80558DC4[0])) {
+                    ((Draw *)((void *(*)(void))fn_8027ED70)())->draw(lbl_80347EF0,20,-1,x,y);
+                    ((Draw *)((void *(*)(void))fn_8027ED70)())->blend(lbl_80347F10,20,-1,x,y,one-*(float *)(q+0xb4));
                 } else {
-                    ((Draw *)fn_8027ED70())->draw(&lbl_80347F10,20,-1,x,y);
+                    ((Draw *)((void *(*)(void))fn_8027ED70)())->draw(lbl_80347F10,20,-1,x,y);
                 }
             } else {
-                ((Draw *)fn_8027ED70())->draw(&lbl_80347EF0,20,-1,x,y);
+                ((Draw *)((void *(*)(void))fn_8027ED70)())->draw(lbl_80347EF0,20,-1,x,y);
             }
         }
     }
