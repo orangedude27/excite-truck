@@ -57,6 +57,7 @@ extern void fn_8018A08C(void);
 extern f32 lbl_805625DC;
 extern f32 lbl_805625E0;
 M2C_UNK memmove(void *, void *, s32);
+#pragma dont_inline fn_801B08E8
 
 #pragma cplusplus on
 struct Dummy_801B08FC_Child {
@@ -180,6 +181,72 @@ u32 fn_801B08E8(u32 arg0, u32 arg1, s32 arg2) {
     if (var_r4 < arg0) var_r4 += arg2;
     return var_r4 - arg0;
 }
+
+#pragma dont_inline fn_801B08E8
+#pragma cplusplus on
+extern "C" void fn_801B08FC(void *arg0, void *arg1) {
+    typedef struct { s32 id; f32 key; } Ent;
+    Dummy_801B08FC *self = (Dummy_801B08FC *)arg0;
+    u8 *a;
+    u8 *b;
+    s32 cur;
+    s32 v0, v1, t0, t1;
+    u8 *n;
+    u8 *stop;
+    a = *(u8 **)((u8 *)self->get18() + 4);
+    self->get20()->d19((s32)arg1);
+    self->get20();
+    fn_8018A08C();
+    b = *(u8 **)((u8 *)self->get18() + 4);
+    cur = *(s32 *)((u8 *)self + 0x60);
+    t0 = *(s32 *)(*(u8 **)((u8 *)self->get18() + 0x2c) + 0x18);
+    t1 = *(s32 *)(*(u8 **)((u8 *)self->get18() + 0x2c) + 0x18);
+    v0 = fn_801B08E8(*(s32 *)(b + 0x10), *(s32 *)(a + 0x10), t0);
+    v1 = fn_801B08E8(*(s32 *)(a + 0x10), *(s32 *)(b + 0x10), t1);
+    if (((u32)(v1 << __cntlzw(v1 ^ v0)) >> 31) != 0) {
+        n = *(u8 **)(b + 0x14);
+        stop = *(u8 **)(a + 0x14);
+        for (; n != stop; n = *(u8 **)(n + 0x14)) {
+            if (*(s32 *)(n + 0x10) == 0) {
+                s32 c = *(s32 *)((u8 *)self + 0x14) - 1;
+                *(s32 *)((u8 *)self + 0x14) = c > 0 ? c : 0;
+                break;
+            }
+        }
+    } else {
+        n = *(u8 **)(a + 0x14);
+        stop = *(u8 **)(b + 0x14);
+        for (; n != stop; n = *(u8 **)(n + 0x14)) {
+            if (*(s32 *)(n + 0x10) == 0) {
+                Ent *tbl = (Ent *)lbl_80435BE8;
+                u32 cnt = (u32)lbl_80435BE8[0x10];
+                f32 key = lbl_8055E3C8 - lbl_805625DC * (f32)(cur + 1) * lbl_805625E0;
+                if (cnt < 8) {
+                    Ent tmp;
+                    s32 i;
+                    tmp.id = cur;
+                    tmp.key = key;
+                    for (i = 0; i < (s32)cnt; i++) {
+                        if (tbl[i].key > key)
+                            break;
+                    }
+                    memmove(&tbl[i + 1], &tbl[i], (cnt - i) * 8);
+                    tbl[i] = tmp;
+                    lbl_80435BE8[0x10]++;
+                }
+                break;
+            }
+        }
+    }
+    if ((*(s32 *)((u8 *)__AXFXGetLfoSinTable_801769CC() + 4) & 0x4000) == 0) {
+        self->get20();
+        fn_8018AF04(0);
+        self->call34();
+    }
+    *(s32 *)((u8 *)self + 0x64) = 0;
+    *(s32 *)((u8 *)self + 4) &= ~4;
+}
+#pragma cplusplus reset
 
 void fn_801B0B8C(void *arg0) {
     register f32 value = lbl_805625F0;
