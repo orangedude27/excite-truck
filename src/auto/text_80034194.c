@@ -648,6 +648,144 @@ BOOL DVDFastOpen(s32 entrynum, void *info) {
     return TRUE;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+extern s32 DVDConvertPathToEntrynum(const char *);
+extern u32 DVDConvertEntrynumToPath(s32, char *, u32);
+extern void OSReport(const char *, ...);
+extern char lbl_80302038[];
+#pragma push
+#pragma use_lmw_stmw off
+BOOL DVDGetCurrentDir(const char *path, void *info) {
+    char dir[128];
+    register s32 temp_r29;
+    register u8 *var_r30;
+    register u8 *var_r31;
+    register u8 *var_r27;
+    u8 *fst;
+    u8 *strings;
+    u8 *temp_r6;
+    s32 entry;
+    u32 var_r4;
+    u32 temp_r3_2;
+    u32 temp_r3_3;
+    u32 temp_r3_5;
+    u32 temp_r4;
+    u32 temp_r6_2;
+    u32 var_r3;
+    u8 *var_r5;
+    u32 temp_r5;
+    u32 temp_r6_3;
+    u32 var_r4_2;
+    u8 *var_r3_2;
+    u32 temp_r6_4;
+    u32 var_r4_3;
+    u8 *var_r3_3;
+    u32 temp_r6_5;
+    u8 *start;
+
+    entry = DVDConvertPathToEntrynum(path);
+    if (entry < 0) {
+        temp_r29 = lbl_8055D828;
+        if (temp_r29 == 0) {
+            var_r4 = 0;
+            goto skip3;
+        }
+
+        fst = FstStart_8055D840;
+        strings = FstStringStart_8055D83C;
+        temp_r6 = fst + 4;
+        temp_r3_2 = *(u32 *)(temp_r6 + temp_r29 * 12);
+        var_r30 = strings + (*(u32 *)(fst + temp_r29 * 12) & 0xFFFFFF);
+        if (temp_r3_2 == 0) {
+            var_r4 = 0;
+            goto skip2;
+        }
+
+        temp_r3_3 = *(u32 *)(temp_r6 + temp_r3_2 * 12);
+        var_r31 = strings + (*(u32 *)(fst + temp_r3_2 * 12) & 0xFFFFFF);
+        if (temp_r3_3 == 0) {
+            var_r4 = 0;
+            goto skip1;
+        }
+
+        var_r27 = strings + (*(u32 *)(fst + temp_r3_3 * 12) & 0xFFFFFF);
+        temp_r3_5 = DVDConvertEntrynumToPath(*(u32 *)(temp_r6 + temp_r3_3 * 12), dir, 0x80);
+        var_r4 = temp_r3_5;
+        if (var_r4 != 0x80) goto copy1;
+        goto skip1;
+copy1:
+        temp_r4 = var_r4 + 1;
+        dir[temp_r3_5] = '/';
+        temp_r6_2 = 0x80 - temp_r4;
+        var_r3 = temp_r6_2;
+        var_r5 = (u8 *)dir + temp_r4;
+        for (; var_r3 != 0 && (s8)*var_r27 != '\0'; --var_r3) {
+            *var_r5++ = *var_r27++;
+        }
+        var_r4 = temp_r4 + (temp_r6_2 - var_r3);
+
+skip1:
+        if (var_r4 != 0x80) goto copy2;
+        goto skip2;
+copy2:
+        temp_r5 = var_r4 + 1;
+        dir[var_r4] = '/';
+        temp_r6_3 = 0x80 - temp_r5;
+        var_r4_2 = temp_r6_3;
+        var_r3_2 = (u8 *)dir + temp_r5;
+        for (; var_r4_2 != 0 && (s8)*var_r31 != '\0'; --var_r4_2) {
+            *var_r3_2++ = *var_r31++;
+        }
+        var_r4 = temp_r5 + (temp_r6_3 - var_r4_2);
+
+skip2:
+        if (var_r4 != 0x80) goto copy3;
+        goto skip3;
+copy3:
+        temp_r5 = var_r4 + 1;
+        dir[var_r4] = '/';
+        temp_r6_4 = 0x80 - temp_r5;
+        var_r4_3 = temp_r6_4;
+        var_r3_3 = (u8 *)dir + temp_r5;
+        for (; var_r4_3 != 0 && (s8)*var_r30 != '\0'; --var_r4_3) {
+            *var_r3_3++ = *var_r30++;
+        }
+        var_r4 = temp_r5 + (temp_r6_4 - var_r4_3);
+
+skip3:
+        if (var_r4 == 0x80) {
+            dir[0x7F] = '\0';
+        } else {
+            if (*(u32 *)(FstStart_8055D840 + temp_r29 * 12) & 0xFF000000) {
+                if (var_r4 == 0x7F) {
+                    dir[var_r4] = '\0';
+                    goto report;
+                }
+                dir[var_r4++] = '/';
+            }
+            dir[var_r4] = '\0';
+        }
+report:
+        OSReport(lbl_80302038, path, dir);
+        return FALSE;
+    }
+
+    temp_r6_5 = entry * 12;
+    start = FstStart_8055D840;
+    if (*(u32 *)(start + temp_r6_5) & 0xFF000000) {
+        return FALSE;
+    }
+    start += temp_r6_5;
+    *(u32 *)((u8 *)info + 0x30) = *(u32 *)(start + 4) >> __DVDLayoutFormat;
+    *(u32 *)((u8 *)info + 0x34) = *(u32 *)(FstStart_8055D840 + temp_r6_5 + 8);
+    *(u32 *)((u8 *)info + 0x38) = 0;
+    *(u32 *)((u8 *)info + 0x0C) = 0;
+    return TRUE;
+}
+#pragma use_lmw_stmw reset
+#pragma pop
+
 #pragma use_lmw_stmw reset
 extern s32 DVDCancel();
 extern u32 MaxEntryNum_8055D838;
@@ -664,6 +802,14 @@ extern s32 OSGetTick(void);
 s32 DVDClose(void) {
     DVDCancel();
     return 1;
+}
+
+static inline u32 myStrncpy(char *dst, const char *src, u32 maxlen) {
+    u32 i;
+    for (i = maxlen; i != 0 && *src != '\0'; --i) {
+        *dst++ = *src++;
+    }
+    return maxlen - i;
 }
 
 #pragma push
@@ -1170,9 +1316,9 @@ void fn_80036624(s32 arg0) {
     if (*(volatile s32 *)&lbl_8055D858 != 0) {
         block = (void *)executing_8055D8C8;
         lbl_8055D85C = 2;
-        *(volatile s32 *)&lbl_8055D858 = 0;
+        lbl_8055D858 = 0;
         executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
-        *(s32 *)((u8 *)block + 0xC) = 0xA;
+        *(s32 *)((char *)block + 0xC) = 0xA;
         callback = *(void (**)(s32, void *))((u8 *)block + 0x28);
         if (callback != 0)
             callback(-3, block);
