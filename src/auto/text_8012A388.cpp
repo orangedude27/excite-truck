@@ -1021,7 +1021,6 @@ read_rest:
     } while (i < 3);
 }
 #pragma cplusplus on
-extern "C" s32 fn_8012B534(s32 *, s32);
 extern "C" s32 fn_8012C33C(void) {
     s32 sp8;
     return ((s32 (*)(s32, s32 *, s32))fn_8012B534)(0, &sp8, 0) != 0;
