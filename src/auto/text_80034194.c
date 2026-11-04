@@ -643,49 +643,58 @@ static inline u32 myStrncpy2(char *dst, const char *src, u32 maxlen) {
     return maxlen - i;
 }
 
-static inline u32 entryToPath_step3(s32 entry, char *string, u32 maxlen) {
+static inline u32 entryToPath_step3(s32 entry, char *string, u32 maxlen, u8 *parentTable, u8 *strings, u8 *fst) {
     const char *name;
     u32 written;
+    u32 offset;
 
     if (entry == 0) return 0;
-    name = (const char *)(FstStringStart_8055D83C + (*(u32 *)(FstStart_8055D840 + entry * 12) & 0xFFFFFF));
-    written = DVDConvertEntrynumToPath(*(u32 *)(FstStart_8055D840 + entry * 12 + 4), string, maxlen);
+    offset = entry * 12;
+    name = (const char *)(strings + (*(u32 *)(fst + offset) & 0xFFFFFF));
+    written = DVDConvertEntrynumToPath(*(u32 *)(parentTable + offset), string, maxlen);
     if (written == maxlen) return written;
     string[written++] = '/';
     return written + myStrncpy2(string + written, name, maxlen - written);
 }
 
-static inline u32 entryToPath_step2(s32 entry, char *string, u32 maxlen) {
-    const char *name;
+static inline u32 entryToPath_step2(s32 entry, char *string, u32 maxlen, u8 *parentTable, u8 *strings, u8 *fst) {
+    register const char *name;
     u32 written;
+    u32 offset;
 
     if (entry == 0) return 0;
-    name = (const char *)(FstStringStart_8055D83C + (*(u32 *)(FstStart_8055D840 + entry * 12) & 0xFFFFFF));
-    written = entryToPath_step3(*(u32 *)(FstStart_8055D840 + entry * 12 + 4), string, maxlen);
+    offset = entry * 12;
+    name = (const char *)(strings + (*(u32 *)(fst + offset) & 0xFFFFFF));
+    written = entryToPath_step3(*(u32 *)(parentTable + offset), string, maxlen, parentTable, strings, fst);
     if (written == maxlen) return written;
     string[written++] = '/';
     return written + myStrncpy2(string + written, name, maxlen - written);
 }
 
-static inline u32 entryToPath_step1(s32 entry, char *string, u32 maxlen) {
+static inline u32 entryToPath_step1(s32 entry, char *string, u32 maxlen, u8 *parentTable, u8 *strings, u8 *fst) {
     const char *name;
     u32 written;
+    u32 offset;
 
     if (entry == 0) return 0;
-    name = (const char *)(FstStringStart_8055D83C + (*(u32 *)(FstStart_8055D840 + entry * 12) & 0xFFFFFF));
-    written = entryToPath_step2(*(u32 *)(FstStart_8055D840 + entry * 12 + 4), string, maxlen);
+    offset = entry * 12;
+    name = (const char *)(strings + (*(u32 *)(fst + offset) & 0xFFFFFF));
+    written = entryToPath_step2(*(u32 *)(parentTable + offset), string, maxlen, parentTable, strings, fst);
     if (written == maxlen) return written;
     string[written++] = '/';
     return written + myStrncpy2(string + written, name, maxlen - written);
 }
 
 static inline BOOL DVDConvertEntrynumToPath_inlined(s32 entrynum, char *string, u32 maxlen) {
-    u32 written = entryToPath_step1(entrynum, string, maxlen);
+    u8 *fst = FstStart_8055D840;
+    u8 *strings = FstStringStart_8055D83C;
+    u8 *parentTable = fst + 4;
+    u32 written = entryToPath_step1(entrynum, string, maxlen, parentTable, strings, fst);
     if (written == maxlen) {
         string[maxlen - 1] = '\0';
         return FALSE;
     }
-    if (*(u32 *)(FstStart_8055D840 + entrynum * 12) & 0xFF000000) {
+    if (*(u32 *)(fst + entrynum * 12) & 0xFF000000) {
         if (written == maxlen - 1) {
             string[written] = '\0';
             return FALSE;
