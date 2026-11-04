@@ -99,6 +99,7 @@ void fn_802A70E4(void *, f32 *);
 f32 fn_80129DC4(s32, f32, f32);
 extern f32 lbl_80564894, lbl_80564898, lbl_805648AC, lbl_805648B0;
 extern void fn_801E8C84(f32 *);
+extern float fn_802C9A50(void);
 extern f32 __fabsf(f32);
 extern char lbl_80558DC4[];
 extern f32 lbl_80564854;
