@@ -57,7 +57,11 @@ void fn_802C2C00(s32);
 s32 fn_802C990C(s32);
 s32 fn_802C2B78(f32, f32, f32);
 f32 fn_802A4A50(void);
-s32 fn_802A6A7C(void);
+s32 fn_802A6A7C();
+void fn_802A6E34(void *);
+void fn_802A6F70(void *, void *);
+void fn_802A71C4(void *);
+s32 fn_802A711C(void *, f32, f32, f32);
 void fn_802A5CA4();
 void fn_802A5A38(void);
 void fn_802A6790(void *);
@@ -913,11 +917,10 @@ void fn_802A6408(void *arg0) {
 #pragma processor 750
 void fn_802A6470(void *arg0, f32 *arg1, f32 *arg2, f32 farg0) {
     typedef struct { f32 x, y, z; } V3;
-    f32 p[3];
     f32 v[3];
-    f32 ratioX, ratioY, scale, d;
+    f32 p[3];
+    f32 ratioY, ratioX, scale, d;
     V3 *out;
-    V3 *base;
     int i;
 
     d = fn_802C9A50();
@@ -935,8 +938,7 @@ void fn_802A6470(void *arg0, f32 *arg1, f32 *arg2, f32 farg0) {
     v[0] += arg2[0] * lbl_805648B0;
     v[1] += arg2[1] * lbl_805648B0;
     v[2] += arg2[2] * lbl_805648B0;
-    base = *(V3 **)arg0;
-    out = base;
+    out = *(V3 **)arg0;
     for (i = 0; i < *(s32 *)((u8 *)arg0 + 4); i++) {
         V3 *in = (V3 *)((u8 *)(*(V3 **)arg0) + i * 0xC);
         u8 *rec = (u8 *)arg0 + (i % 8) * 0xC;
