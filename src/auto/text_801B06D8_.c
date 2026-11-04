@@ -1484,9 +1484,9 @@ extern "C" void fn_801B265C(void) {
     if ((*(s32 *)((u8 *)__AXFXGetLfoSinTable_801769CC() + 0x10) & 1) || fn_80019B3C() != 0) {
         if (lbl_8055E6B0 == 0) {
             lbl_8055E6B0 = 1;
-            fn_802E30C8(lbl_80335BA8, lbl_8055A8C0);
+            fn_802E30C8((const char *)&lbl_8055A8C0, lbl_80335BA8);
         }
-        lbl_8055E6AC = lbl_8055E3C8 + lbl_80562614;
+        lbl_8055E6AC = lbl_80562614 + lbl_8055E3C8;
     } else {
         temp_f31 = lbl_8055E3C8;
         lbl_8055E6AC = temp_f31 + fn_801B88BC();
@@ -1498,19 +1498,18 @@ extern "C" void fn_801B265C(void) {
     lbl_8055E6A0 = 0;
     memset(lbl_80435C30, -1, 0x20);
     ((Mgr *)fn_80156A40())->v6();
-    for (i = 0, j = 0; i < (s32)lbl_8055E678; i++, j += 0x80) {
+    for (i = 0, j = 0; i < (s32)lbl_8055E678; j += 0x80, i++) {
         fn_801B1A5C((u8 *)lbl_8055E684 + j);
     }
-    for (i = 0, j = 0; i < (s32)lbl_8055E678; i++, j += 0x80) {
+    for (i = 0, j = 0; i < (s32)lbl_8055E678; j += 0x80, i++) {
         u8 *obj = (u8 *)lbl_8055E684 + j;
-        u8 *sub = *(u8 **)(obj + 0x5C);
         f32 value = lbl_805625F0;
         f32 other;
-        if (*(s32 *)(sub + 0x1F0) == 0x51) {
-            fn_8013B650(*(s32 *)(obj + 0x60));
+        if (*(s32 *)(*(u8 **)(obj + 0x5C) + 0x1F0) == 0x51) {
+            value = fn_8013B650(*(s32 *)(obj + 0x60));
         }
-        other = *(f32 *)(sub + 0x254);
-        if (!(__fabsf(other) <= lbl_80558DC4)) {
+        other = *(f32 *)(*(u8 **)(obj + 0x5C) + 0x254);
+        if (!((f32)(double)__fabsf(other) <= lbl_80558DC4)) {
             value = other;
         }
         *(f32 *)(obj + 0x24) = value;
