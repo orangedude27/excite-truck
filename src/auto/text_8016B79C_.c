@@ -65,6 +65,7 @@ typedef struct { f32 first; f32 second; } FloatPair8016A6B0;
 extern FloatPair8016A6B0 fn_8016A6B0(const char *, s32);
 extern s32 fn_8001B308(void *, s32, s32);
 extern void fn_8016A15C(char *);
+extern void fn_802BAF98(void *, s8);
 void *fn_80128668(void *);
 void fn_802C6CF8(int);
 extern s32 fn_8002F6AC(void *);
@@ -777,7 +778,7 @@ extern void *fn_802076A0(void *, s32, s32, s32);
 extern s32 fn_80204CF0(void);
 void *fn_8016D024(void *arg0) {
     char *base = lbl_803306D0;
-    ((void (*)(void *))fn_802C2914)(arg0);
+    fn_802C2914();
     *(void **)((u8 *)arg0 + 4) = lbl_80330A90;
     *(void **)((u8 *)arg0 + 0x14) = fn_80131808(base + 0x1E0);
     *(void **)((u8 *)arg0 + 0x20) = fn_8023512C(base + 0x1F8);
