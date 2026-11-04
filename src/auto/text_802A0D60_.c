@@ -4,6 +4,10 @@
 typedef signed int s32;
 typedef unsigned int u32;
 
+static inline float Vec2Dot_802A0F7C(const float *a, const float *b) {
+    return a[0] * b[0] + a[1] * b[1];
+}
+
 extern double fabs(double);
 extern float lbl_805646F0;
 extern double __fabs(double);
@@ -214,9 +218,9 @@ extern float lbl_8055F858[2];
 extern float lbl_8055F860[2];
 extern float lbl_80564704, lbl_80564708, lbl_80564718, lbl_8056471C;
 extern double lbl_80564710;
-#pragma dont_inline fn_802A0FBC
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
 void fn_802A1290(void) {
     float sp18[2];
     float sp10[2];
@@ -255,7 +259,7 @@ void fn_802A1290(void) {
                 t = ((float)fn_8002F234(sp10[0] * sp10[0] + sp10[1] * sp10[1]) - b) / d;
                 if (hi < t) t = hi;
                 if (!(t > lo)) t = lo;
-                fn_802A0D60((s32)sp8, sp18, lbl_8055F858, lbl_8055F860, (i + j) & 1, k, hi + t * scale);
+                fn_802A0D60((s32)sp8, sp18, lbl_8055F858, lbl_8055F860, (i + j) & 1, lbl_80564708, hi + t * scale);
             }
         }
     } else {
