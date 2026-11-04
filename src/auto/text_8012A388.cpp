@@ -47,7 +47,7 @@ extern "C" void *fn_8012A570(u32, void *);
 extern "C" s32 stricmp(const char *, const char *);
 extern "C" s32 fn_8012B85C(s32, s32, s32, s32, s32, s32);
 extern "C" const char lbl_805599A4[1];
-extern "C" s32 fn_8012B534(s32 *, s32);
+extern "C" void *fn_8012B534(char *arg0, s32 *arg1, u32 arg2);
 extern "C" void fn_80127464(void);
 extern "C" void fn_802E30C8(const char *, ...);
 extern "C" void fn_802E317C(const char *, ...);
