@@ -810,6 +810,100 @@ void *fn_8016D024(void *arg0) {
 #pragma scheduling on
 void fn_8016D278(void *arg0) { *(u32 *)arg0=(u32)arg0+0xC; *(u32 *)((u8 *)arg0+8)=8; *(u32 *)((u8 *)arg0+4)=0; }
 
+void fn_8016D294(s32 unused, s32 flag, s32 index) {
+    char sp40[0x20];
+    char sp20[0x20];
+    register u8 *object = (u8 *)lbl_8055E378;
+    register char *format = lbl_803306D0;
+    FloatPair8016A6B0 result2, result1, result0;
+    s32 mode;
+
+    if (object != 0) {
+        switch (flag) {
+        case 0:
+        *(s32 *)(object + 0x5C) = index;
+        if (index < *(s32 *)(object + 0x6C)) {
+            s32 i;
+            u8 *item;
+            s32 offset;
+            item = **(u8 ***)(object + 0x48) + index * 0x14;
+            item[9] = 1;
+            i = 0;
+            *(f32 *)(item + 0xC) = lbl_8055E3C8;
+            offset = 0;
+            *(volatile s32 *)(item + 0x10) = 0;
+            while (i < *(s32 *)(*(u8 **)item + 4)) {
+                u8 *entries = (u8 *)**(void ***)item;
+                void *handle = *(void **)(entries + offset + 4);
+                if (handle != 0) {
+                    fn_802BAF98(handle, 1);
+                }
+                offset += 0x44;
+                i += 1;
+            }
+        }
+        mode = *(s32 *)(object + 0x74);
+        switch (mode) {
+        case 0:
+            fn_801345D8(sp40, 0x1E, format + 0x264, *(s32 *)(object + 0x5C));
+            break;
+        case 1:
+            fn_801345D8(sp40, 0x1E, format + 0x270, *(s32 *)(object + 0x5C));
+            break;
+        case 2:
+            fn_801345D8(sp40, 0x1E, format + 0x27C, *(s32 *)(object + 0x5C));
+            break;
+        default:
+            fn_802E317C(format + 0x288);
+            break;
+        }
+        fn_8016A15C(sp40);
+        if (*(s32 *)(object + 0x54) != -1) {
+            if (*(s32 *)(object + 0x54) != -1) {
+                fn_8001B450(*(s32 *)(object + 0x54));
+                *(s32 *)(object + 0x54) = -1;
+            }
+        }
+        mode = *(s32 *)(object + 0x74);
+        switch (mode) {
+        case 0:
+            fn_801345D8(sp20, 0x1E, format + 0x264, *(s32 *)(object + 0x5C));
+            break;
+        case 1:
+            fn_801345D8(sp20, 0x1E, format + 0x270, *(s32 *)(object + 0x5C));
+            break;
+        case 2:
+            fn_801345D8(sp20, 0x1E, format + 0x27C, *(s32 *)(object + 0x5C));
+            break;
+        default:
+            fn_802E317C(format + 0x288);
+            break;
+        }
+        mode = *(s32 *)(object + 0x74);
+        switch (mode) {
+        case 0:
+            result0 = fn_8016A6B0(sp20, 0xC);
+            *(s32 *)(object + 0x54) = fn_8001B308(&result0, *(s32 *)(object + 0x50), 2);
+            break;
+        case 1:
+            result1 = fn_8016A6B0(sp20, 9);
+            *(s32 *)(object + 0x54) = fn_8001B308(&result1, *(s32 *)(object + 0x50), 2);
+            break;
+        case 2:
+            result2 = fn_8016A6B0(sp20, 6);
+            *(s32 *)(object + 0x54) = fn_8001B308(&result2, *(s32 *)(object + 0x50), 2);
+            break;
+        default:
+            fn_802E317C(format + 0x288);
+            break;
+        }
+        break;
+        default:
+            break;
+        }
+    }
+}
+
 s32 fn_8016D544(void *arg0) {
     s32 *list = *(s32 **)((u8 *)arg0 + 0x18);
     s32 total = 0;
