@@ -1395,7 +1395,7 @@ extern "C" void fn_801FA298(void) {
 
 #pragma push
 #pragma always_inline on
-static inline void fn_801FA2C4_setAnim(u8 *p, s32 mode) {
+inline void fn_801FA2C4_setAnim(u8 *p, s32 mode) {
     typedef s32 (*Fn3)(s32, s32, s32);
     if (mode == 1)
         fn_801E6CD0(*(void **)(p + 0x30), 0, lbl_80562FF0);
@@ -1461,6 +1461,7 @@ extern "C" void fn_801FA2C4(void) {
     }
     fn_80203FF8();
 }
+#pragma pop
 #pragma pop
 extern "C" void fn_801E75C8(s32, void *);
 extern "C" u32 fn_801F7A0C(void);
