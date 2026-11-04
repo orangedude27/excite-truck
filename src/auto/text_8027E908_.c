@@ -106,6 +106,10 @@ struct Fn80283E28Vt { void *pad[3]; char *(*v3)(void *); void *pad2[3]; char *(*
 struct Fn80283E28Sub { struct Fn80283E28Vt *vt; };
 struct Fn80283E28Obj { char pad[0x60]; struct Fn80283E28Sub *sub; };
 struct Fn80283E28List { struct Fn80283E28Obj **items; int count; };
+static struct Fn80283E28Obj *fn_80283E28_get(struct Fn80283E28List *l, int i) {
+    if (i >= 0 && i < l->count && l->items[i]->sub != 0) return l->items[i];
+    return 0;
+}
 extern char lbl_8034862C[];
 extern int lbl_8055C7E0;
 extern int fn_80128668();
@@ -2365,6 +2369,82 @@ found:
     fn_80216D28();
     return 0;
 }
+
+int fn_80283E28(void) {
+    char *base = (char *)&lbl_804B2FF8;
+    int i;
+    int idx;
+    int count;
+    unsigned int value;
+    struct Fn80283E28Obj **items;
+    struct Fn80283E28Obj **p;
+    struct Fn80283E28Obj *obj;
+    idx = 0;
+    count = ((struct Fn80283E28List *)(base + 0xE0))->count;
+    items = ((struct Fn80283E28List *)(base + 0xE0))->items;
+    value = (unsigned int)lbl_8055F698;
+    p = items;
+    for (; idx < count; ++idx) {
+        if ((unsigned int)*p != value) goto increment;
+        goto found;
+increment:
+        ++p;
+    }
+    idx = -1;
+found:
+    if (idx >= 0) {
+        i = idx;
+        do {
+            i--;
+            if (i < 0) i += count;
+        } while (items[i]->sub == 0 && i != idx);
+        if (i >= 0 && i < ((struct Fn80283E28List *)(base + 0xE0))->count && items[i]->sub != 0) {
+            lbl_8055F698 = (void *)items[i];
+        } else {
+            lbl_8055F698 = 0;
+        }
+        if (i >= 0 && i < ((struct Fn80283E28List *)(base + 0xE0))->count && items[i]->sub != 0) {
+            obj = items[i];
+            if (obj != 0) {
+                char *s;
+                char *d;
+                int c;
+                int a, b;
+                char tmp[0x20];
+                s = obj->sub->vt->v3(obj->sub);
+                d = base + 0x100;
+                for (c = 0x20;;) { char ch = *s++; *d++ = ch; if (ch == 0) break; if (--c <= 0) { d[-1] = 0; break; } }
+                s = obj->sub->vt->v7(obj->sub);
+                d = base + 0x120;
+                for (c = 0x20;;) { char ch = *s++; *d++ = ch; if (ch == 0) break; if (--c <= 0) { d[-1] = 0; break; } }
+                a = obj->sub->vt->v9(obj->sub);
+                b = obj->sub->vt->v8(obj->sub);
+                fn_8001BE94(tmp, fn_8000DA10(), 0x20507, b, a);
+                if (fn_8001BCF0(tmp) != 0) {
+                    fn_8001BEE8(tmp);
+                    fn_80130980(base + 0x140, 0x14, 3);
+                } else {
+                    s = (char *)fn_80131234((int)lbl_8034862C);
+                    d = base + 0x140;
+                    for (c = 0x14;;) { char ch = *s++; *d++ = ch; if (ch == 0) break; if (--c <= 0) { d[-1] = 0; break; } }
+                }
+                lbl_8055C7E0 = obj->sub->vt->v8(obj->sub);
+            } else {
+                base[0x120] = 0;
+                base[0x100] = 0;
+                lbl_8055C7E0 = -1;
+            }
+        } else {
+            base[0x120] = 0;
+            base[0x100] = 0;
+            lbl_8055C7E0 = -1;
+        }
+    } else {
+        fn_80216D28();
+    }
+    return 0;
+}
+
 #pragma scheduling on
 void fn_802840F4(void) {
     fn_8027E908();
