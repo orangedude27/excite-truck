@@ -3014,8 +3014,3 @@ struct Fn80284760Obj {
  virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15(); virtual void f16();
 };
 #pragma cplusplus reset
-struct Fn80283E28Vt { void *pad[3]; char *(*v3)(void *); void *pad2[3]; char *(*v7)(void *); int (*v8)(void *); int (*v9)(void *); };
-struct Fn80283E28Sub { struct Fn80283E28Vt *vt; };
-struct Fn80283E28Obj { char pad[0x60]; struct Fn80283E28Sub *sub; };
-struct Fn80283E28List { struct Fn80283E28Obj **items; int count; };
-#define F80283E28_LIST ((struct Fn80283E28List *)(lbl_804B2FF8 + 0xE0))
