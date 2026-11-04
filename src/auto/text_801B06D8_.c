@@ -1458,7 +1458,7 @@ extern u8 lbl_8055E698;
 extern s32 lbl_8055E69C;
 extern u8 lbl_8055E6B0;
 extern char lbl_80335BA8[];
-extern char lbl_8055A8C0[];
+extern char lbl_8055A8C0;
 extern f32 lbl_80562614;
 extern s32 fn_801B25B0(s32 *, s32 *);
 #pragma push
