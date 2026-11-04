@@ -54,6 +54,8 @@ extern void fn_801E89F4(s32);
 extern f32 lbl_805625B8;
 extern f32 lbl_80562618;
 extern void fn_8018A08C(void);
+extern f32 lbl_805625DC;
+extern f32 lbl_805625E0;
 
 #pragma cplusplus on
 struct Dummy_801B08FC_Child {
