@@ -633,6 +633,69 @@ descend:
     }
 }
 
+extern u32 DVDConvertEntrynumToPath(s32, char *, u32);
+
+static inline u32 myStrncpy2(char *dst, const char *src, u32 maxlen) {
+    u32 i;
+    for (i = maxlen; i != 0 && *src != '\0'; --i) {
+        *dst++ = *src++;
+    }
+    return maxlen - i;
+}
+
+static inline u32 entryToPath_step3(s32 entry, char *string, u32 maxlen) {
+    const char *name;
+    u32 written;
+
+    if (entry == 0) return 0;
+    name = (const char *)(FstStringStart_8055D83C + (*(u32 *)(FstStart_8055D840 + entry * 12) & 0xFFFFFF));
+    written = DVDConvertEntrynumToPath(*(u32 *)(FstStart_8055D840 + entry * 12 + 4), string, maxlen);
+    if (written == maxlen) return written;
+    string[written++] = '/';
+    return written + myStrncpy2(string + written, name, maxlen - written);
+}
+
+static inline u32 entryToPath_step2(s32 entry, char *string, u32 maxlen) {
+    const char *name;
+    u32 written;
+
+    if (entry == 0) return 0;
+    name = (const char *)(FstStringStart_8055D83C + (*(u32 *)(FstStart_8055D840 + entry * 12) & 0xFFFFFF));
+    written = entryToPath_step3(*(u32 *)(FstStart_8055D840 + entry * 12 + 4), string, maxlen);
+    if (written == maxlen) return written;
+    string[written++] = '/';
+    return written + myStrncpy2(string + written, name, maxlen - written);
+}
+
+static inline u32 entryToPath_step1(s32 entry, char *string, u32 maxlen) {
+    const char *name;
+    u32 written;
+
+    if (entry == 0) return 0;
+    name = (const char *)(FstStringStart_8055D83C + (*(u32 *)(FstStart_8055D840 + entry * 12) & 0xFFFFFF));
+    written = entryToPath_step2(*(u32 *)(FstStart_8055D840 + entry * 12 + 4), string, maxlen);
+    if (written == maxlen) return written;
+    string[written++] = '/';
+    return written + myStrncpy2(string + written, name, maxlen - written);
+}
+
+static inline BOOL DVDConvertEntrynumToPath_inlined(s32 entrynum, char *string, u32 maxlen) {
+    u32 written = entryToPath_step1(entrynum, string, maxlen);
+    if (written == maxlen) {
+        string[maxlen - 1] = '\0';
+        return FALSE;
+    }
+    if (*(u32 *)(FstStart_8055D840 + entrynum * 12) & 0xFF000000) {
+        if (written == maxlen - 1) {
+            string[written] = '\0';
+            return FALSE;
+        }
+        string[written++] = '/';
+    }
+    string[written] = '\0';
+    return TRUE;
+}
+
 BOOL DVDFastOpen(s32 entrynum, void *info) {
     u32 temp_r7;
 
