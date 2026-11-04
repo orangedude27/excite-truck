@@ -735,8 +735,7 @@ void fn_802A5CA4(void *arg0) {
             obj->scaled[2]+=w.transformed[2]*posScale;
         }
         PSVECCrossProduct((f32 *)&w.matrix[6],obj->axis,w.cross);
-        PSVECDotProduct((f32 *)&w.matrix[3],w.cross);
-        fn_802A6470(obj,m,w.transformed);
+        fn_802A6470(obj,m,w.transformed,PSVECDotProduct((f32 *)&w.matrix[3],w.cross));
         fn_802A6838(obj); fn_802A6408(obj);
     } else fn_802A6790(obj);
     obj->pos[0]=m[9]; obj->pos[1]=m[10]; obj->pos[2]=m[11];
