@@ -53,8 +53,26 @@ extern void fn_801B18B8();
 extern void fn_801E89F4(s32);
 extern f32 lbl_805625B8;
 extern f32 lbl_80562618;
+extern void fn_8018A08C(void);
 
 #pragma cplusplus on
+struct Dummy_801B08FC_Child {
+    virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+    virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+    virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
+    virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15();
+    virtual void d16(); virtual void d17(); virtual void d18(); virtual void d19(s32);
+};
+struct Dummy_801B08FC {
+    virtual void d0(); virtual void d1();
+    virtual void d2(); virtual void d3();
+    virtual void *get18();
+    virtual void d5();
+    virtual Dummy_801B08FC_Child *get20();
+    virtual void d7(); virtual void d8(); virtual void d9();
+    virtual void d10(); virtual void d11();
+    virtual void call34();
+};
 struct Dummy_801B30E0 {
     virtual void d0(); virtual void d1(); virtual void d2();
     virtual void d3(); virtual void d4(); virtual void *d5();
@@ -602,70 +620,105 @@ extern void fn_8000D7F8(s32, f32);
 extern void fn_8018B0D0(s32, s32);
 extern void fn_801CB55C(s32, s32);
 extern void fn_801CB360(s32);
+#pragma cplusplus off
+#pragma cplusplus on
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-void fn_801B15A8(s32 arg0, f32 farg0) {
+extern "C" void fn_801B15A8(s32 arg0, f32 farg0) {
+    struct Progress {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void update();
+    };
+    struct Manager {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
+        virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
+        virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31();
+        virtual void v32(); virtual void v33(); virtual void v34();
+        virtual void complete(s32, s32);
+    };
     u8 *state = (u8 *)arg0;
-    s32 count;
+    register s32 copied;
+    s32 one;
+    s32 resource;
 
     if (*(state + 0x78) == 0 && *(state + 0x79) == 0) {
-        count = *(s32 *)(state + 0x14);
-        if (count == *(s32 *)(state + 0x68) && count > 0) {
-            void *object = *(void **)(state + 0x5C);
-            f32 oldTime = *(f32 *)(state + 0x70);
-            f32 current = *(f32 *)(state + 0x1C);
-            f32 delta = farg0 - oldTime;
-            void **vtable;
+        s32 count = *(s32 *)(state + 0x14);
+        if (count == *(s32 *)(state + 0x68)) {
+            if (count > 0) {
+                register f32 threshold;
+                f32 oldTime = *(f32 *)(state + 0x70);
+                f32 current = *(f32 *)(state + 0x1C);
+                threshold = lbl_80562600;
+                f32 delta = farg0 - oldTime;
 
-            *(f32 *)(state + 0x20) = delta;
-            if (current > lbl_80562600 && current < delta)
-                delta = current;
-            *(f32 *)(state + 0x1C) = delta;
-            *(f32 *)(state + 0x70) = farg0;
+                *(f32 *)(state + 0x20) = delta;
+                if (current > threshold) {
+                    *(f32 *)(state + 0x1C) = current < delta ? current : delta;
+                } else {
+                    *(f32 *)(state + 0x1C) = delta;
+                }
+                *(f32 *)(state + 0x70) = farg0;
 
-            vtable = *(void ***)object;
-            ((void (*)(void *))vtable[22])(object);
-            fn_8000D7F8(*(s32 *)(state + 0x60), delta);
-        }
+                ((Progress *)*(void **)(state + 0x5C))->update();
+                fn_8000D7F8(*(s32 *)(state + 0x60), delta);
 
-        count += 1;
-        *(s32 *)(state + 0x14) = count;
-        if (count == (s32)lbl_8055E680 + 1) {
-            void *object;
-            void **vtable;
-            s32 resource;
+                count = *(s32 *)(state + 0x14) + 1;
+                *(s32 *)(state + 0x14) = count;
+                if (count > *(s32 *)&lbl_8055E694) {
+                    *(s32 *)&lbl_8055E694 = count;
+                    if (count == (s32)lbl_8055E680 + 1)
+                        lbl_8055E698 = 1;
+                }
+                {
+                    copied = *(s32 *)(state + 0x14);
+                    *(s32 *)(state + 0x68) = copied;
+                    if (copied == (s32)lbl_8055E680 + 1) {
 
-            fn_802E30C8(lbl_80335AD8, *(s32 *)(state + 0x60), farg0);
-            *(state + 0x79) = 1;
-            *(s32 *)(state + 0x28) = 3;
-            fn_8018B0D0(*(s32 *)(state + 0x5C), 3);
+                        fn_802E30C8(lbl_80335AD8, *(s32 *)(state + 0x60), farg0);
+                        one = 1;
+                        resource = *(s32 *)(state + 0x5C);
+                        *(state + 0x79) = one;
+                        *(s32 *)(state + 0x28) = 3;
+                        fn_8018B0D0(resource, 3);
 
-            object = fn_801B83A0();
-            vtable = *(void ***)object;
-            ((void (*)(void *, s32, s32))vtable[37])(
-                object, *(s32 *)(state + 0x5C), *(s32 *)(state + 8));
+                        ((Manager *)fn_801B83A0())->complete(
+                            *(s32 *)(state + 0x5C), *(s32 *)(state + 8));
 
-            fn_801CB55C(*(s32 *)(state + 0x60), *(s32 *)(state + 8));
-            fn_801CB360(*(s32 *)(state + 0x60));
+                        fn_801CB55C(*(s32 *)(state + 0x60), *(s32 *)(state + 8));
+                        fn_801CB360(*(s32 *)(state + 0x60));
 
-            resource = *(s32 *)((u8 *)*(void **)(state + 0x5C) + 0x10);
-            if (resource == 0x50434152) {
-                lbl_8055E69C += 1;
-                if (lbl_8055E69C == lbl_8055E67C) {
-                    s32 i = 0;
-                    fn_802E30C8(lbl_80335B04);
-                    while (i < (s32)lbl_8055E678) {
-                        *((u8 *)lbl_8055E684 + (i << 7) + 0x78) = 1;
-                        i += 1;
+                        if (*(s32 *)((u8 *)*(void **)(state + 0x5C) + 0x10) == 0x50434152) {
+                            lbl_8055E69C += 1;
+                            if (lbl_8055E69C == lbl_8055E67C) {
+                                s32 offset, i;
+                                fn_802E30C8(lbl_80335B04);
+                                for (i = 0, offset = 0; i < (s32)lbl_8055E678; i++, offset += 0x80) {
+                                    u8 *base = (u8 *)lbl_8055E684;
+                                    *(base + offset + 0x78) = one;
+                                }
+                            }
+                        }
                     }
                 }
+            } else {
+                *(s32 *)(state + 0x14) = count + 1;
             }
         }
     }
 }
 #pragma scheduling on
 #pragma pop
+#pragma cplusplus off
 
 #pragma cplusplus on
 #pragma use_lmw_stmw off
