@@ -103,10 +103,12 @@ extern float fn_802C9A50(void);
 static inline void Mtx33MultVec_802A6470(const f32 *m, const f32 *src, f32 *dst) {
     f32 x, y, z;
     if (src == dst) {
+        f32 o0, o1, o2;
         x = src[0]; y = src[1]; z = src[2];
-        dst[0] = z * m[2] + (x * m[0] + y * m[1]);
-        dst[1] = z * m[5] + (x * m[3] + y * m[4]);
-        dst[2] = z * m[8] + (x * m[6] + y * m[7]);
+        o0 = z * m[2] + (x * m[0] + y * m[1]);
+        o1 = z * m[5] + (x * m[3] + y * m[4]);
+        o2 = z * m[8] + (x * m[6] + y * m[7]);
+        dst[0] = o0; dst[1] = o1; dst[2] = o2;
     } else {
         x = src[0]; y = src[1]; z = src[2];
         x = z * m[2] + (x * m[0] + y * m[1]);
@@ -911,13 +913,11 @@ void fn_802A6408(void *arg0) {
 
 #pragma push
 #pragma processor 750
-#pragma dont_inline on
-#pragma scheduling invalid_target
 void fn_802A6470(void *arg0, f32 *arg1, f32 *arg2, f32 farg0) {
     typedef struct { f32 x, y, z; } V3;
     f32 ratioY = *(f32 *)((u8 *)arg0 + 0x20);
     f32 ratioX = ratioY / fn_802C9A50();
-    f32 scale = fn_802A4AD4();
+    f32 scale = ((f32 (*)(void))fn_802A4AD4)();
     f32 v[3];
     V3 p;
     V3 *out;
@@ -931,23 +931,7 @@ void fn_802A6470(void *arg0, f32 *arg1, f32 *arg2, f32 farg0) {
         v[2] = v[2] * t;
         v[1] = v[1] * t - lbl_805648AC * scale;
     }
-    {
-        f32 *src = v;
-        f32 *dst = v;
-        if (src == dst) {
-            f32 x = src[0], y = src[1], z = src[2];
-            dst[0] = z * arg1[2] + (x * arg1[0] + y * arg1[1]);
-            dst[1] = z * arg1[5] + (x * arg1[3] + y * arg1[4]);
-            dst[2] = z * arg1[8] + (x * arg1[6] + y * arg1[7]);
-        } else {
-            f32 x = src[0], y = src[1], z = src[2];
-            x = z * arg1[2] + (x * arg1[0] + y * arg1[1]);
-            dst[0] = x;
-            y = z * arg1[5] + (x * arg1[3] + y * arg1[4]);
-            dst[1] = y;
-            dst[2] = z * arg1[8] + (x * arg1[6] + y * arg1[7]);
-        }
-    }
+    Mtx33MultVec_802A6470(arg1, v, v);
     v[0] += arg2[0] * lbl_805648B0;
     v[1] += arg2[1] * lbl_805648B0;
     v[2] += arg2[2] * lbl_805648B0;
@@ -977,8 +961,6 @@ void fn_802A6470(void *arg0, f32 *arg1, f32 *arg2, f32 farg0) {
     }
     *(s32 *)((u8 *)arg0 + 4) = out - *(V3 **)arg0;
 }
-#pragma scheduling on
-#pragma dont_inline reset
 #pragma pop
 
 #pragma scheduling push
