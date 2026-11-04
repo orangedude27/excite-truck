@@ -101,16 +101,14 @@ extern f32 lbl_80564894, lbl_80564898, lbl_805648AC, lbl_805648B0;
 extern void fn_801E8C84(f32 *);
 extern float fn_802C9A50(void);
 static inline void Mtx33MultVec_802A6470(const f32 *m, const f32 *src, f32 *dst) {
-    f32 x, y, z;
     if (src == dst) {
-        f32 o0, o1, o2;
-        x = src[0]; y = src[1]; z = src[2];
-        o0 = z * m[2] + (x * m[0] + y * m[1]);
-        o1 = z * m[5] + (x * m[3] + y * m[4]);
-        o2 = z * m[8] + (x * m[6] + y * m[7]);
+        f32 x = src[0], y = src[1], z = src[2];
+        f32 o0 = z * m[2] + (x * m[0] + y * m[1]);
+        f32 o1 = z * m[5] + (x * m[3] + y * m[4]);
+        f32 o2 = z * m[8] + (x * m[6] + y * m[7]);
         dst[0] = o0; dst[1] = o1; dst[2] = o2;
     } else {
-        x = src[0]; y = src[1]; z = src[2];
+        f32 x = src[0], y = src[1], z = src[2];
         x = z * m[2] + (x * m[0] + y * m[1]);
         dst[0] = x;
         y = z * m[5] + (x * m[3] + y * m[4]);
@@ -915,15 +913,17 @@ void fn_802A6408(void *arg0) {
 #pragma processor 750
 void fn_802A6470(void *arg0, f32 *arg1, f32 *arg2, f32 farg0) {
     typedef struct { f32 x, y, z; } V3;
-    f32 ratioY = *(f32 *)((u8 *)arg0 + 0x20);
-    f32 ratioX = ratioY / fn_802C9A50();
-    f32 scale = ((f32 (*)(void))fn_802A4AD4)();
+    f32 p[3];
     f32 v[3];
-    V3 p;
+    f32 ratioX, ratioY, scale, d;
     V3 *out;
     V3 *base;
     int i;
 
+    d = fn_802C9A50();
+    ratioY = *(f32 *)((u8 *)arg0 + 0x20);
+    ratioX = ratioY / d;
+    scale = ((f32 (*)(void))fn_802A4AD4)();
     fn_801E8C84(v);
     {
         f32 t = lbl_80564898 * scale;
@@ -939,13 +939,13 @@ void fn_802A6470(void *arg0, f32 *arg1, f32 *arg2, f32 farg0) {
     out = base;
     for (i = 0; i < *(s32 *)((u8 *)arg0 + 4); i++) {
         V3 *in = (V3 *)((u8 *)(*(V3 **)arg0) + i * 0xC);
-        f32 *rec = (f32 *)((u8 *)arg0 + 0x5C + (i % 8) * 0xC);
-        f32 z = in->z + v[2] + rec[2] * scale;
-        f32 y = in->y + v[1] + rec[1] * scale;
-        f32 x = in->x + v[0] + rec[0] * scale + farg0 * z;
-        p.z = z;
-        p.y = y;
-        p.x = x;
+        u8 *rec = (u8 *)arg0 + (i % 8) * 0xC;
+        f32 z = in->z + v[2] + *(f32 *)(rec + 0x64) * scale;
+        f32 y = in->y + v[1] + *(f32 *)(rec + 0x60) * scale;
+        f32 x = in->x + v[0] + *(f32 *)(rec + 0x5C) * scale + farg0 * z;
+        p[2] = z;
+        p[1] = y;
+        p[0] = x;
         if (z > *(f32 *)((u8 *)arg0 + 0x24) && z < *(f32 *)((u8 *)arg0 + 0x28)) {
             f32 a = z * ratioX;
             if (x * x < a * a) {
