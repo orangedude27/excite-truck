@@ -107,6 +107,7 @@ struct Fn80283E28Sub { struct Fn80283E28Vt *vt; };
 struct Fn80283E28Obj { char pad[0x60]; struct Fn80283E28Sub *sub; };
 struct Fn80283E28List { struct Fn80283E28Obj **items; int count; };
 extern char lbl_8034862C[];
+extern int lbl_8055C7E0;
 extern int fn_80128668();
 extern void fn_8027E908(void);
 extern char lbl_80348798[];
