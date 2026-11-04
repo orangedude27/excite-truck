@@ -175,14 +175,15 @@ void fn_801B07B4(void *arg0, void *arg1) {
     *(f32 *)((u8 *)arg0 + 0x28) = finalPos;
 }
 #pragma scheduling on
+#pragma dont_inline on
 u32 fn_801B08E8(u32 arg0, u32 arg1, s32 arg2) {
     u32 var_r4;
     var_r4 = arg1;
     if (var_r4 < arg0) var_r4 += arg2;
     return var_r4 - arg0;
 }
+#pragma dont_inline reset
 
-#pragma dont_inline fn_801B08E8
 #pragma cplusplus on
 extern "C" void fn_801B08FC(void *arg0, void *arg1) {
     typedef struct { s32 id; f32 key; } Ent;
