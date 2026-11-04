@@ -42,6 +42,7 @@ extern float lbl_80564F30;
 #pragma scheduling invalid_target
 extern void fn_802CAC28(int, int);
 extern void *fn_801284F8(int, void *);
+extern int lbl_8055D080;
 extern void fn_801282EC(int);
 extern void fn_801282F4(void);
 void fn_802CA0E4(void) {
