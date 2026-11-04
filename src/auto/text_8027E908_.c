@@ -2346,7 +2346,9 @@ int fn_80283AC8(void) {
     base = (void **)lbl_804B30D8[0];
     p = base;
     for (; i < count; ++i) {
-        if (*p == (void *)value) goto found;
+        if (*p != (void *)value) goto increment;
+        goto found;
+increment:
         ++p;
     }
     i = -1;
@@ -2595,6 +2597,93 @@ extern "C" void fn_80284580(int arg0, int arg1, void *arg2, int arg3) {
     if (buffer != 0)
         buffer->destroy(1);
 }
+
+extern "C" int fn_80221EA8(void);
+extern "C" int fn_8023695C(char *);
+extern "C" char lbl_80348940[];
+extern "C" char lbl_8055C864[1];
+extern "C" unsigned int lbl_8055F688;
+extern "C" float lbl_80564200;
+extern "C" void fn_801345D8(char *, int, const char *, ...);
+extern "C" void fn_80236954(char *);
+extern "C" void fn_8027F204(char *);
+extern "C" void fn_80284760(void *arg0) {
+    class Item { public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual int active();
+    };
+    class Widget { public:
+        virtual void v0(); virtual void v1(); virtual int getId(); virtual void v3();
+        virtual int count(); virtual Item *get(int); virtual void v6();
+        virtual int ready(int); virtual int isActive();
+    };
+    class Lookup { public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual const char *getName(int); virtual int getValue(int);
+    };
+    unsigned char *p = (unsigned char *)arg0;
+    int sel, ok, active, i, n;
+    const char *name;
+    char *d;
+    char c;
+    if (p[0x64] == 0) {
+        p[0x18] = 1;
+        *(int *)(p + 0x1c) = fn_80221EA8();
+    }
+    if (*(Widget **)(p + 0x60) != 0) {
+        *(int *)(p + 0x20) = 0;
+        p[0x50] = 1;
+        *(int *)(p + 0x48) = *(int *)(p + 4);
+        *(int *)(p + 0x4c) = *(int *)(p + 8);
+        *(int *)(p + 0x6c) = *(int *)(p + 4);
+        *(float *)(p + 0x68) = lbl_80564200;
+        if (*(Widget **)(p + 0x60) != 0) {
+            if ((*(Widget **)(p + 0x60))->isActive() != 0 && p[0xcc] == 0) {
+                fn_80236954(lbl_80348940);
+                fn_8027F204(lbl_80348940);
+            }
+            ok = 0;
+            sel = -(arg0 == (void *)lbl_8055F688);
+            *(int *)(p + 0x70) = sel + 7;
+            if ((*(Widget **)(p + 0x60))->ready(sel) != 0) {
+                if ((*(Widget **)(p + 0x60))->isActive() == 0 || fn_8023695C(lbl_80348940) != 0)
+                    ok = 1;
+            }
+            p[0xcd] = ok;
+            if (ok != 0) {
+                n = (*(Widget **)(p + 0x60))->count();
+                active = 0;
+                for (i = 0; i < n; i++) {
+                    if ((*(Widget **)(p + 0x60))->get(i)->active() != 0)
+                        active++;
+                }
+                fn_801345D8((char *)(p + 0x74), 10, lbl_8055C864, active, n);
+            } else {
+                p[0x74] = 0;
+            }
+        }
+        i = (*(Widget **)(p + 0x60))->getId();
+        name = ((Lookup *)fn_8027ED70())->getName(i);
+        if (name != 0) {
+            d = (char *)(p + 0x7e);
+            n = 0x32;
+            do {
+                c = *name++;
+                *d++ = c;
+                if (c == 0) break;
+                if (--n <= 0) { d[-1] = 0; break; }
+            } while (1);
+        }
+        i = (*(Widget **)(p + 0x60))->getId();
+        *(int *)(p + 0xb0) = ((Lookup *)fn_8027ED70())->getValue(i);
+    } else {
+        *(int *)(p + 0x20) = 1;
+    }
+}
+
 #pragma scheduling reset
 #pragma pop
 
