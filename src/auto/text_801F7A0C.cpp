@@ -2233,10 +2233,3 @@ struct FC048Obj {
     u8 pad[3];
     f32 f50;
 };
-static inline void fn_801FA2C4_setAnim(u8 *p, s32 mode) {
-    typedef s32 (*Fn3)(s32, s32, s32);
-    if (mode == 1)
-        fn_801E6CD0(*(void **)(p + 0x30), 0, lbl_80562FF0);
-    else
-        fn_801E6CD0(*(void **)(p + 0x30), *(s32 *)(p + ((Fn3)fn_80129D90)(0, 0, *(s32 *)(p + 0x54)) * 4 + 0x34), lbl_80562FF0);
-}
