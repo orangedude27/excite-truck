@@ -184,6 +184,7 @@ u32 fn_801B08E8(u32 arg0, u32 arg1, s32 arg2) {
 }
 #pragma dont_inline reset
 
+#pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" void fn_801B08FC(void *arg0, void *arg1) {
     typedef struct { s32 id; f32 key; } Ent;
@@ -207,7 +208,7 @@ extern "C" void fn_801B08FC(void *arg0, void *arg1) {
     if (((u32)(v1 << __cntlzw(v1 ^ v0)) >> 31) != 0) {
         n = *(u8 **)(b + 0x14);
         stop = *(u8 **)(a + 0x14);
-        for (; n != stop; n = *(u8 **)(n + 0x14)) {
+        for (; stop != n; n = *(u8 **)(n + 0x14)) {
             if (*(s32 *)(n + 0x10) == 0) {
                 s32 c = *(s32 *)((u8 *)self + 0x14) - 1;
                 *(s32 *)((u8 *)self + 0x14) = c > 0 ? c : 0;
@@ -248,6 +249,7 @@ extern "C" void fn_801B08FC(void *arg0, void *arg1) {
     *(s32 *)((u8 *)self + 4) &= ~4;
 }
 #pragma cplusplus reset
+#pragma use_lmw_stmw reset
 
 void fn_801B0B8C(void *arg0) {
     register f32 value = lbl_805625F0;
@@ -1456,16 +1458,26 @@ extern u8 lbl_8055E698;
 extern s32 lbl_8055E69C;
 extern u8 lbl_8055E6B0;
 extern char lbl_80335BA8[];
-extern void *lbl_8055A8C0;
+extern char lbl_8055A8C0[];
 extern f32 lbl_80562614;
 extern s32 fn_801B25B0(s32 *, s32 *);
 #pragma push
 #pragma processor 750
-void fn_801B265C(void) {
-    s32 *stack;
-    s32 i, j, k;
-    s32 count = (s32)lbl_8055E678;
-    void *base = lbl_8055E684;
+#pragma dont_inline on
+#pragma cplusplus on
+extern "C" void fn_801B265C(void) {
+    struct Mgr {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+    };
+    s32 order[8];
+    s32 i, j;
+    s32 *p;
     register f32 temp_f31;
 
     lbl_8055E6A8 = 1;
@@ -1477,7 +1489,7 @@ void fn_801B265C(void) {
         lbl_8055E6AC = lbl_8055E3C8 + lbl_80562614;
     } else {
         temp_f31 = lbl_8055E3C8;
-        lbl_8055E6AC = fn_801B88BC() + temp_f31;
+        lbl_8055E6AC = temp_f31 + fn_801B88BC();
     }
     lbl_8055E698 = 0;
     lbl_8055E694 = 0;
@@ -1485,72 +1497,35 @@ void fn_801B265C(void) {
     lbl_8055E69C = 0;
     lbl_8055E6A0 = 0;
     memset(lbl_80435C30, -1, 0x20);
-    {
-        void *obj = fn_80156A40();
-        void **vtable = *(void ***)obj;
-        ((void (*)(void *))vtable[8])(obj);
+    ((Mgr *)fn_80156A40())->v6();
+    for (i = 0, j = 0; i < (s32)lbl_8055E678; i++, j += 0x80) {
+        fn_801B1A5C((u8 *)lbl_8055E684 + j);
     }
-    i = 0;
-    j = 0;
-    while (i < count) {
-        fn_801B1A5C((u8 *)base + j);
-        j += 0x80;
-        i++;
-    }
-    i = 0;
-    j = 0;
-    while (i < count) {
-        void *obj = (u8 *)base + j;
+    for (i = 0, j = 0; i < (s32)lbl_8055E678; i++, j += 0x80) {
+        u8 *obj = (u8 *)lbl_8055E684 + j;
+        u8 *sub = *(u8 **)(obj + 0x5C);
         f32 value = lbl_805625F0;
-        if (*(s32 *)((u8 *)obj + 0x5C + 0x1F0) == 0x51) {
-            value = fn_8013B650(*(s32 *)((u8 *)obj + 0x60));
+        f32 other;
+        if (*(s32 *)(sub + 0x1F0) == 0x51) {
+            fn_8013B650(*(s32 *)(obj + 0x60));
         }
-        if (__fabsf(*(f32 *)((u8 *)obj + 0x5C + 0x254)) > lbl_80558DC4) {
-            value = *(f32 *)((u8 *)obj + 0x5C + 0x254);
+        other = *(f32 *)(sub + 0x254);
+        if (!(__fabsf(other) <= lbl_80558DC4)) {
+            value = other;
         }
-        *(f32 *)((u8 *)obj + 0x24) = value;
-        j += 0x80;
-        i++;
+        *(f32 *)(obj + 0x24) = value;
     }
-    stack = (s32 *)0;
-    k = 0;
-    if (count > 0) {
-        s32 n = count - 8;
-        if (count > 8) {
-            if ((count & 7) == 0 && count <= 0x7FFFFFFE) {
-                s32 m = (n + 7) >> 3;
-                if (n > 0) {
-                    do {
-                        stack[k] = k;
-                        stack[k + 1] = k + 1;
-                        stack[k + 2] = k + 2;
-                        stack[k + 3] = k + 3;
-                        stack[k + 4] = k + 4;
-                        stack[k + 5] = k + 5;
-                        stack[k + 6] = k + 6;
-                        stack[k + 7] = k + 7;
-                        k += 8;
-                        m--;
-                    } while (m != 0);
-                }
-            }
-        }
-        if (k < count) {
-            do {
-                stack[k] = k;
-                k++;
-            } while (k < count);
-        }
+    for (i = 0; i < (s32)lbl_8055E678; i++) {
+        order[i] = i;
     }
-    qsort(stack, (unsigned long)count, 4, (s32 (*)(const void *, const void *))fn_801B25B0);
-    i = 0;
-    j = 0;
-    while (j < count) {
-        *(s32 *)((u8 *)base + (stack[i] << 7) + 0x6C) = j;
-        i++;
-        j++;
+    qsort(order, (unsigned long)lbl_8055E678, 4, (s32 (*)(const void *, const void *))fn_801B25B0);
+    p = order;
+    for (i = 0; i < (s32)lbl_8055E678; i++) {
+        *(s32 *)((u8 *)lbl_8055E684 + (*p++ << 7) + 0x6C) = i;
     }
 }
+#pragma cplusplus off
+#pragma dont_inline reset
 #pragma pop
 void fn_801B2910(void) {
     register s32 var_r30;
