@@ -2715,15 +2715,14 @@ extern "C" void fn_802854E0(void *arg0) {
         virtual void blend(void *, int, int, float, float, float);
     };
     extern void fn_80230C30(float *, float *, int, int);
-    extern double cos(double), sin(double), fabs(double);
+    extern double cos(double), sin(double), __fabs(double);
     extern float lbl_80564228, lbl_80564230, lbl_80564234, lbl_80564238;
     extern float lbl_8056423C, lbl_80564240, lbl_805641FC;
     extern float lbl_80558DC4[];
     extern int lbl_80347EF0[], lbl_80347F10[];
-    float x, y, cx, cy, radius, step, angle;
-    float base, one, zero, half;
-    int i;
+    float half, step, cx, cy, radius, base, one, zero, angle, x, y;
     char *q;
+    int i;
     char *p = (char *)arg0;
     if (*(List **)(p + 0x60) != 0) {
         if (*(unsigned char *)(p + 0xcd) == 0) return;
@@ -2734,12 +2733,12 @@ extern "C" void fn_802854E0(void *arg0) {
         if ((*(List **)(p+0x60))->count() == 4) step = lbl_80564234;
         else step = lbl_80564238;
         base=lbl_8056423C; one=lbl_80564240; zero=lbl_805641FC; half=lbl_80564228;
-        for (q=p, i=0; i<(*(List **)(p+0x60))->count(); i++, q+=4) {
-            angle = base + step * ((float)i - half * (float)((*(List **)(p+0x60))->count()-1));
+        for (q=p, i=0; i<(*(List **)(p+0x60))->count(); q+=4, i++) {
+            angle = base + step * ((float)i - (float)((*(List **)(p+0x60))->count()-1) * half);
             x = cx + radius * (float)cos(angle);
             y = cy + radius * (float)sin(angle);
             if ((*(List **)(p+0x60))->get(i)->active()) {
-                if (!((float)fabs(*(float *)(q+0xb4)-zero) <= lbl_80558DC4[0])) {
+                if (!((float)__fabs(*(float *)(q+0xb4)-zero) <= lbl_80558DC4[0])) {
                     ((Draw *)((void *(*)(void))fn_8027ED70)())->draw(lbl_80347EF0,20,-1,x,y);
                     ((Draw *)((void *(*)(void))fn_8027ED70)())->blend(lbl_80347F10,20,-1,x,y,one-*(float *)(q+0xb4));
                 } else {
@@ -3015,3 +3014,8 @@ struct Fn80284760Obj {
  virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15(); virtual void f16();
 };
 #pragma cplusplus reset
+struct Fn80283E28Vt { void *pad[3]; char *(*v3)(void *); void *pad2[3]; char *(*v7)(void *); int (*v8)(void *); int (*v9)(void *); };
+struct Fn80283E28Sub { struct Fn80283E28Vt *vt; };
+struct Fn80283E28Obj { char pad[0x60]; struct Fn80283E28Sub *sub; };
+struct Fn80283E28List { struct Fn80283E28Obj **items; int count; };
+#define F80283E28_LIST ((struct Fn80283E28List *)(lbl_804B2FF8 + 0xE0))
