@@ -673,7 +673,7 @@ extern void *fn_801E8718();
 extern void fn_802A62CC(void *, s32);
 extern s32 fn_801E8758(s32);
 extern f32 PSVECDotProduct(f32 *, f32 *);
-extern void fn_802A6470();
+extern void fn_802A6470(void *, f32 *, f32 *, f32);
 extern void fn_802A6838(void *);
 extern void fn_802A6408(void *);
 extern void fn_802A6790(void *);
