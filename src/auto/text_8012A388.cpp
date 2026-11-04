@@ -1661,9 +1661,11 @@ extern "C" void fn_8012D908(s32 arg0) {
     u8 *current;
     u8 *found;
     u8 *temp_r3_3;
-    u32 var_r23;
-    u32 var_r24;
-    u8 *entry;
+    u32 idx2;
+    u32 flag;
+    u32 idx1;
+    u8 *p2;
+    u8 *p1;
 
     if (lbl_8055E014 == 0) return;
     current = *(u8 **)((u8 *)lbl_8055E014 + 0xA18);
@@ -1717,25 +1719,25 @@ path_all_done:
         if (temp_r4_11 != 0 || *(u32 *)(temp_r3_3 + 4) != 0x14)
             fn_802E317C(lbl_8032AE60, temp_r4_11, 0, *(u32 *)(temp_r3_3 + 4), 0x14);
 
-        entry = temp_r3_3 + 0x14; var_r23 = 0;
+        p1 = temp_r3_3 + 0x14; idx1 = 0;
         goto entries_test;
 entries_loop:
-        fn_8012A388(entry); entry += 0x44; var_r23 += 1;
+        fn_8012A388(p1); p1 += 0x44; idx1 += 1;
 entries_test:
-        if (var_r23 < *(u32 *)(temp_r3_3 + 0xC)) goto entries_loop;
-        entry = temp_r3_3 + 0x14; var_r23 = 0; var_r24 = 0;
-        goto names_test;
-names_loop:
-        if (stricmp((const char *)entry, (const char *)arg0) == 0) {
-            var_r23 = 1; goto names_done;
-        }
-        var_r24 += 1; entry += 0x44;
-names_test:
-        if (*(u32 *)(temp_r3_3 + 0xC) > var_r24) goto names_loop;
-names_done:
-        if (var_r23 != 0) found = current;
-        fn_8012C4D8(temp_r3_3);
+        if (idx1 < *(u32 *)(temp_r3_3 + 0xC)) goto entries_loop;
     }
+    p2 = temp_r3_3 + 0x14; flag = 0; idx2 = 0;
+    goto names_test;
+names_loop:
+    if (stricmp((const char *)p2, (const char *)arg0) == 0) {
+        flag = 1; goto names_done;
+    }
+    p2 += 0x44; idx2 += 1;
+names_test:
+    if (idx2 < *(u32 *)(temp_r3_3 + 0xC)) goto names_loop;
+names_done:
+    if (flag != 0) found = current;
+    fn_8012C4D8(temp_r3_3);
     current = *(u8 **)(current + 4);
 outer_test:
     if (current != 0 && found == 0) goto outer_loop;
@@ -1964,6 +1966,87 @@ extern "C" void fn_8012DFE8(void *arg0, const char *arg1, s32 arg2) {
     }
     *(s32 *)((u8 *)arg0 + 0x4c) = fn_8012CAA0(arg2, (void *)arg1);
     *(s32 *)((u8 *)arg0 + 8) = 1;
+}
+
+extern "C" void *fn_8012E060(void *arg0, const char *arg1) {
+    u8 *data;
+    char sp10[0x80];
+    s32 spC;
+    u8 sp8;
+    char *var_r4;
+    s32 var_r5;
+    char *var_r6;
+    char *var_r4_2;
+    s32 var_r5_2;
+    char *var_r6_2;
+    u8 temp_r3;
+    u8 temp_r3_2;
+    u8 t;
+    u32 n;
+    u8 *entry;
+    void *ret;
+    char *dot;
+
+    var_r4 = (char *)arg1; var_r6 = sp10; var_r5 = 0x80;
+    goto path_copy;
+path_limit:
+    var_r5 -= 1;
+    if (var_r5 > 0) goto path_copy;
+    var_r6[-1] = 0;
+    goto path_done;
+path_copy:
+    temp_r3 = *var_r4++; *var_r6++ = temp_r3;
+    if ((s8)temp_r3 != 0) goto path_limit;
+path_done:
+    dot = fn_80029004(sp10, 0x2E);
+    if ((s8)*dot != 0) {
+        dot = fn_80029004(sp10, 0x2E);
+        *dot = 0;
+    }
+    var_r6_2 = sp10; var_r5_2 = 0x80;
+    goto scan_test;
+scan_step:
+    var_r5_2 -= 1; var_r6_2 += 1;
+scan_test:
+    if ((s8)*var_r6_2 != 0) goto scan_step;
+    if (var_r5_2 <= 0) goto path_all_done;
+    var_r4_2 = (char *)&lbl_805599E0;
+    goto suffix_copy;
+suffix_limit:
+    var_r5_2 -= 1;
+    if (var_r5_2 > 0) goto suffix_copy;
+    var_r6_2[-1] = 0;
+    goto path_all_done;
+suffix_copy:
+    temp_r3_2 = *var_r4_2++; *var_r6_2++ = temp_r3_2;
+    if ((s8)temp_r3_2 != 0) goto suffix_limit;
+path_all_done:
+    fn_8002B0D8(sp10);
+    data = (u8 *)fn_8012C370((s32)sp10, 0x45544F43, (s32)&spC, 0, 0, (s32)&sp8);
+    if (data != 0 && sp8 != 0) {
+        t = data[0]; data[0] = data[3]; data[3] = t;
+        t = data[1]; data[1] = data[2]; data[2] = t;
+        t = data[4]; data[4] = data[7]; data[7] = t;
+        t = data[5]; data[5] = data[6]; data[6] = t;
+        t = data[8]; data[8] = data[0xB]; data[0xB] = t;
+        t = data[9]; data[9] = data[0xA]; data[0xA] = t;
+        t = data[0xC]; data[0xC] = data[0xF]; data[0xF] = t;
+        t = data[0xD]; data[0xD] = data[0xE]; data[0xE] = t;
+        t = data[0x10]; data[0x10] = data[0x13]; data[0x13] = t;
+        t = data[0x11]; data[0x11] = data[0x12]; data[0x12] = t;
+        if (*(u32 *)data != 0 || *(u32 *)(data + 4) != 0x14)
+            fn_802E317C(lbl_8032AE60, *(u32 *)data, 0, *(u32 *)(data + 4), 0x14);
+        entry = data + 0x14; n = 0;
+        goto entries_test;
+entries_loop:
+        fn_8012A388(entry); entry += 0x44; n += 1;
+entries_test:
+        if (n < *(u32 *)(data + 0xC)) goto entries_loop;
+    }
+    if (data == 0) fn_802E317C(lbl_8032ADDC, arg1);
+    ret = (void *)(*(s32 *)(data + 0x10) + 0x80);
+    fn_8012C4D8(data);
+    return ret;
 }
 
 #pragma push
