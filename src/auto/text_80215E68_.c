@@ -59,6 +59,7 @@ extern char lbl_8033D7EC;
 extern s32 fn_80218464(void);
 extern u32 lbl_8055EF98;
 extern char lbl_8055EF99;
+__declspec(section ".data") extern f32 lbl_80558DC4;
 extern u32 lbl_8055EF80;
 extern u32 lbl_8055EF84;
 
@@ -457,6 +458,134 @@ void* fn_802168E4(void) {
 void fn_802168EC(void) {
     fn_80218C98();
 }
+
+extern s32 fn_8012742C(void);
+extern void fn_80214D50(s32);
+extern void fn_8023660C(void);
+extern void fn_802D3E9C(s32);
+extern void fn_80127A84(void *, void *, void *);
+extern void fn_801282E8(void);
+extern void fn_80236780(void);
+extern void fn_8021734C(void *);
+extern void fn_8021747C(void *, s32, f32 *, f32);
+extern void fn_80236674(void);
+extern void fn_80230E90(s32);
+extern f32 fn_80214D48(void);
+extern void fn_80236900(void);
+extern void fn_802368D0(void);
+extern void fn_802173F8(void *);
+extern void fn_80217478(void *);
+extern void fn_80236848(void);
+extern void fn_80236600(void);
+extern f32 lbl_80563484, lbl_80563488;
+extern f32 lbl_80558DC4;
+extern double __fabs(double);
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+s32 fn_802168F0(void *arg0) {
+    f32 sp14, sp10;
+    s32 sp8;
+    void *prev;
+    f32 f28, f29, f30, f31, f2;
+    s32 flag;
+    s32 old = lbl_8055EF78;
+    lbl_8055EF78 = old + 1;
+    if (fn_8012742C() != 0) return -1;
+    if (*(u8 *)((u8 *)arg0 + 0xDE4) != 0) fn_80214D50(5);
+    else fn_8023660C();
+    fn_802D3E9C(0);
+    *(u8 *)&lbl_8055EF98 = 1;
+    fn_80127A84(&lbl_8055EF80, &lbl_8055EF84, &sp8);
+    prev = lbl_8055EF88;
+    sp10 = lbl_80563458;
+    lbl_8055EF88 = arg0;
+    sp14 = lbl_80563458;
+    fn_80236780();
+    fn_8021734C(arg0);
+    fn_8021747C(arg0, 0, &sp10, lbl_80563458);
+    fn_801282E8();
+    lbl_8055EF70 = 0;
+    if (prev != 0) lbl_8055EF74 = 0;
+    fn_80217734(lbl_8055EF88, lbl_8055EF80, lbl_8055EF84);
+    fn_80211F64();
+    fn_80211F64();
+    f2 = sp10 > lbl_80563484 ? sp10 : lbl_80563484;
+    f28 = lbl_80563468;
+    f29 = f28 / f2;
+    if ((f32)__fabs(sp10) <= lbl_80558DC4) f28 = lbl_80563458;
+    f30 = lbl_80563468;
+    flag = 0;
+    lbl_8055EF94 = f28;
+    f31 = lbl_80563488;
+    while (lbl_8055EF70 == 0) {
+        fn_80236674();
+        if (lbl_8055EF88 != 0) {
+            void (*cb)(void *) = *(void (**)(void *))((u8 *)lbl_8055EF88 + 0x434);
+            if (cb != 0) cb(lbl_8055EF88);
+            if (f28 < f30) {
+                fn_8021747C(lbl_8055EF88, 1, &sp10, f28);
+            } else {
+                if (flag == 0) {
+                    flag = 1;
+                    fn_80230E90(0);
+                }
+                fn_8021747C(lbl_8055EF88, 2, &sp10, lbl_80563468);
+            }
+        }
+        if (f28 < f31) {
+            while (fn_802E47B8() != 0) fn_802E46F0();
+        }
+        fn_8021662C();
+        f28 += f29 * fn_80214D48();
+        lbl_8055EF94 = f28 < f30 ? f28 : f30;
+        if (fn_8012742C() != 0) {
+            lbl_8055EF74 = -1;
+            break;
+        }
+    }
+    fn_8012742C();
+    if (lbl_8055EF74 == -1) fn_80236900();
+    else fn_802368D0();
+    fn_8021747C(arg0, 0, &sp10, lbl_80563458);
+    f2 = sp14 > lbl_80563484 ? sp14 : lbl_80563484;
+    f30 = lbl_80563468;
+    f28 = f30 / f2;
+    if ((f32)__fabs(sp14) <= lbl_80558DC4) f30 = lbl_80563458;
+    lbl_8055EF94 = f30;
+    if (lbl_8055EF99 == 0) fn_80214D50(4);
+    else lbl_8055EF99 = 0;
+    f31 = lbl_80563458;
+    for (;;) {
+        if (f31 > f30) f30 = f31;
+        lbl_8055EF94 = f30;
+        if (fn_8012742C() != 0) {
+            lbl_8055EF74 = -1;
+            break;
+        }
+        if (sp14 > f31) {
+            fn_80236674();
+            if (lbl_8055EF88 != 0) fn_8021747C(lbl_8055EF88, 3, &sp10, f30);
+        }
+        fn_802161CC(1);
+        fn_802166B8();
+        if (f31 == f30) break;
+        f30 -= f28 * fn_80214D48();
+        fn_80211F64();
+    }
+    fn_80216194();
+    lbl_8055EF70 = 0;
+    fn_802173F8(arg0);
+    lbl_8055EF88 = prev;
+    if (prev != 0) {
+        fn_80217734(prev, lbl_8055EF80, lbl_8055EF84);
+        if (*(u8 *)((u8 *)arg0 + 0xDE4) == 0) fn_80217478(lbl_8055EF88);
+    }
+    fn_80236848();
+    if (*(u8 *)((u8 *)arg0 + 0xDE4) == 0) fn_80236600();
+    return lbl_8055EF74;
+}
+#pragma pop
 
 extern char lbl_8055EF99;
 void fn_80216CA8(void) {
