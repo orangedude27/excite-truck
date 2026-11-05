@@ -228,6 +228,8 @@ int fn_801D4CB8(int arg0, int arg1) {
     return arg0;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" int fn_801D4CF8(void *arg0, void *arg1) {
     struct Node {
@@ -242,7 +244,7 @@ extern "C" int fn_801D4CF8(void *arg0, void *arg1) {
         virtual void v5();
         virtual int getInt(char *, int);
         virtual void v7();
-        virtual float value(char *, float);
+        virtual float value(float, char *);
         virtual void v9();
         virtual unsigned char flag(char *, int);
         virtual void v11();
@@ -258,26 +260,41 @@ extern "C" int fn_801D4CF8(void *arg0, void *arg1) {
         virtual void v21();
         virtual Node *child(int);
     };
+    struct Out {
+        int pad0;
+        int state;
+        char name[0x14];
+        float f1c;
+        unsigned char b20;
+        unsigned char b21;
+        unsigned char b22;
+        int i24;
+        int i28;
+        int pad2c;
+        void **items;
+        int count;
+    };
     extern char lbl_8055AC80;
     extern char lbl_8055AC88;
     extern float lbl_80562B00;
     extern void *fn_801D7334(void *);
     extern void fn_802E30C8(const char *, const char *);
     extern int stricmp(const char *, const char *);
-    Dummy *obj = (Dummy *)arg1;
     char *base = &lbl_80338460;
-    char *src;
-    char *dst;
-    int remaining;
-    int i;
     Node *node;
+    int i;
+    Dummy *obj = (Dummy *)arg1;
+    Out *out = (Out *)arg0;
+    char *src;
+    int remaining;
+    char *dst;
 
     if (obj->has(&lbl_8055AC80) == 0) {
         ((void (*)(const char *, ...))fn_802E30C8)(base + 0x44);
         return 0;
     }
     src = obj->get(&lbl_8055AC80);
-    dst = (char *)arg0 + 8;
+    dst = out->name;
     remaining = 0x14;
     goto copy_body;
 copy_limit:
@@ -290,33 +307,34 @@ copy_body:
         goto copy_limit;
 copy_done:
     i = 0;
-    node = obj->child(i);
     goto loop_test;
 loop_body:
     if (stricmp(node->name(), &lbl_8055AC88) == 0) {
         void *r = fn_801D7334(node);
         if (r != 0) {
-            int n = *(int *)((char *)arg0 + 0x34);
-            *(int *)((char *)arg0 + 0x34) = n + 1;
-            ((void **)*(int *)((char *)arg0 + 0x30))[n] = r;
+            int n = out->count;
+            void **items = out->items;
+            out->count = n + 1;
+            items[n] = r;
         }
     } else {
-        ((void (*)(const char *, ...))fn_802E30C8)(base + 0x88, (char *)arg0 + 8, node->name());
+        ((void (*)(const char *, ...))fn_802E30C8)(base + 0x88, out->name, node->name());
     }
     i++;
-    node = obj->child(i);
 loop_test:
+    node = obj->child(i);
     if (node != 0) goto loop_body;
-    *(unsigned char *)((char *)arg0 + 0x20) = obj->flag(base + 0xC8, 0);
-    *(float *)((char *)arg0 + 0x1C) = obj->value(base + 0xD4, lbl_80562B00);
-    *(unsigned char *)((char *)arg0 + 0x21) = obj->flag(base + 0xE0, 1);
-    *(unsigned char *)((char *)arg0 + 0x22) = obj->flag(base + 0xF0, 1);
-    *(int *)((char *)arg0 + 0x24) = obj->getInt(base + 0xFC, -1);
-    *(int *)((char *)arg0 + 0x28) = obj->getInt(base + 0x110, -1);
-    *(int *)((char *)arg0 + 4) = 1;
+    out->b20 = obj->flag(base + 0xC8, 0);
+    out->f1c = obj->value(lbl_80562B00, base + 0xD4);
+    out->b21 = obj->flag(base + 0xE0, 1);
+    out->b22 = obj->flag(base + 0xF0, 1);
+    out->i24 = obj->getInt(base + 0xFC, -1);
+    out->i28 = obj->getInt(base + 0x110, -1);
+    out->state = 1;
     return 1;
 }
 #pragma cplusplus reset
+#pragma pop
 
 void fn_801D4F9C(void) {
 }
@@ -844,6 +862,110 @@ void *fn_801D5AF0(void *arg0, int arg1) {
     return arg0;
 }
 
+#pragma push
+#pragma scheduling invalid_target
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+extern "C" int fn_801D5BBC(void *out, void *object) {
+    extern char lbl_80338460;
+    extern char lbl_8055AC90;
+    extern char lbl_8055AC98;
+    extern char lbl_8055ACA0;
+    extern char lbl_8055ACA8;
+    extern float lbl_80562AEC;
+    extern float lbl_80562B0C;
+    extern void fn_801345D8(char *, int, char *, ...);
+    extern void fn_801D0800(void *);
+    extern void fn_802E30C8(const char *, const char *);
+    struct Vec3 {
+        float x;
+        float y;
+        float z;
+    };
+    struct Dummy {
+        virtual void v0();
+        virtual int has(char *);
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual int get(char *);
+        virtual int count(char *, int);
+        virtual void v7();
+        virtual float value(char *, float);
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual Vec3 vector2(char *, Vec3);
+    };
+    Dummy *obj = (Dummy *)object;
+    char *base = &lbl_80338460;
+    int result = 0;
+    int i;
+    char name[20];
+    float f;
+
+    ((int *)out)[3] = obj->count(base + 0x170, -1);
+    if (((int *)out)[3] >= 0) {
+        for (i = 0; i < 4; i++) {
+            int *entry;
+            fn_801345D8(name, 0x14, base + 0x17C, i);
+            if (obj->has(name) != 0) {
+                int n = ((int *)out)[5];
+                ((int *)out)[5] = n + 1;
+                entry = (int *)(((int *)out)[4] + n * 8);
+                entry[0] = obj->get(name);
+                fn_801345D8(name, 0x14, base + 0x190, i);
+                f = obj->value(name, lbl_80562ADC);
+                ((float *)entry)[1] = f * f;
+            }
+        }
+        f = obj->value(&lbl_8055AC90, lbl_80562ADC);
+        ((float *)out)[0x18] = f;
+        ((float *)out)[0x19] = obj->value(&lbl_8055AC98, f);
+        {
+            Vec3 def;
+            def.x = lbl_80562ADC;
+            def.y = lbl_80562ADC;
+            def.z = lbl_80562ADC;
+            const Vec3 &v = obj->vector2(&lbl_8055ACA0, def);
+            ((float *)out)[0xF] = v.x;
+            ((float *)out)[0x10] = v.y;
+            ((float *)out)[0x11] = v.z;
+        }
+        {
+            Vec3 arg;
+            arg.x = ((float *)out)[0xF];
+            arg.y = ((float *)out)[0x10];
+            arg.z = ((float *)out)[0x11];
+            const Vec3 &v = obj->vector2(&lbl_8055ACA8, arg);
+            ((float *)out)[0x12] = v.x;
+            ((float *)out)[0x13] = v.y;
+            ((float *)out)[0x14] = v.z;
+        }
+        {
+            Vec3 def;
+            def.x = lbl_80562ADC;
+            def.y = lbl_80562ADC;
+            def.z = lbl_80562ADC;
+            const Vec3 &v = obj->vector2(base + 0x1A0, def);
+            ((float *)out)[0x15] = v.x;
+            ((float *)out)[0x16] = v.y;
+            ((float *)out)[0x17] = v.z;
+        }
+        ((int *)out)[0x1A] = (int)(lbl_80562B0C * obj->value(base + 0x1AC, lbl_80562AEC));
+        fn_801D0800(out ? (char *)out + 4 : (char *)out);
+        ((int *)out)[2] = 1;
+        result = 1;
+    } else {
+        ((void (*)(const char *, ...))fn_802E30C8)(base + 0x1BC);
+    }
+    return result;
+}
+#pragma cplusplus reset
+#pragma scheduling reset
+#pragma pop
+
 #pragma dont_inline reset
 #pragma scheduling reset
 
@@ -1149,6 +1271,100 @@ int fn_801D6900(int arg0, int arg1) {
     }
     return arg0;
 }
+
+#pragma push
+#pragma scheduling invalid_target
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+extern "C" int fn_801D6948(void *out, void *object) {
+    extern char lbl_80338460;
+    extern char lbl_8055ACB0;
+    extern char lbl_8055ACB8;
+    extern char lbl_8055ACD0;
+    extern char lbl_8055ACD4;
+    extern char lbl_8055ACD8;
+    extern char lbl_8055ACE0;
+    extern float lbl_80562B0C;
+    extern float lbl_80562B10;
+    extern void *fn_802077A4(int, int, void *, void *);
+    extern int fn_80207848(char *, int);
+    extern void fn_802E30C8(char *);
+    struct Vec3 {
+        float x;
+        float y;
+        float z;
+    };
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual int find(char *, int);
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual float value(char *, float);
+        virtual void v9();
+        virtual int flag(char *, int);
+        virtual Vec3 vector(char *);
+        virtual Vec3 vector2(char *, Vec3);
+    };
+    char *base = &lbl_80338460;
+    int id;
+    Dummy *obj = (Dummy *)object;
+    float first;
+    float second;
+    float scale;
+
+    first = obj->value(&lbl_8055ACB0, lbl_80562ADC);
+    second = obj->value(&lbl_8055ACB8, lbl_80562ADC);
+    scale = lbl_80562B0C;
+    *(int *)((char *)out + 8) = (int)(scale * first);
+    *(int *)((char *)out + 0xC) = (int)(scale * second);
+    {
+        const Vec3 &v = obj->vector(&lbl_8055ACD0);
+        ((float *)out)[6] = v.x;
+        ((float *)out)[7] = v.y;
+        ((float *)out)[8] = v.z;
+    }
+    *(unsigned char *)((char *)out + 0x14) = obj->flag(base + 0x338, 0);
+    *(unsigned char *)((char *)out + 0x15) = obj->flag(&lbl_8055ACD8, 1);
+    *(unsigned char *)((char *)out + 0x16) = obj->flag(base + 0x378, 1);
+    id = obj->find(base + 0x388, 0);
+    if (id == 0) {
+        ((void (*)(const char *, ...))fn_802E30C8)(base + 0x394);
+        return 0;
+    }
+    {
+        Vec3 def;
+        def.x = lbl_80562ADC;
+        def.y = lbl_80562ADC;
+        def.z = lbl_80562ADC;
+        const Vec3 &v = obj->vector2(&lbl_8055ACD4, def);
+        ((float *)out)[9] = v.x;
+        ((float *)out)[10] = v.y;
+        ((float *)out)[11] = v.z;
+    }
+    if (obj->flag(&lbl_8055ACE0, 0) != 0) {
+        void *p = fn_802077A4(id, 5, &((float *)out)[9], &((float *)out)[6]);
+        ((void **)out)[12] = p;
+        if (p != 0) {
+            *(float *)((char *)p + 0x6C) = obj->value(base + 0x3C8, lbl_80562B10);
+        }
+    } else {
+        ((volatile int *)out)[12] = fn_80207848((char *)id, 1);
+    }
+    if (((volatile int *)out)[12] == 0) {
+        ((void (*)(const char *, ...))fn_802E30C8)(base + 0x3D8, id);
+        return 0;
+    }
+    *(int *)((char *)out + 4) = 1;
+    return 1;
+}
+#pragma cplusplus reset
+#pragma scheduling reset
+#pragma pop
 
 int fn_801D6C28(void) {
     extern char lbl_80338868[];
@@ -1496,55 +1712,60 @@ extern "C" void *fn_801D7334(void *arg0) {
     if (stricmp(name, strings + 0x484) == 0) {
         object = fn_801284F8(0x17C, strings + 0x490);
         if (object != 0) {
-            product = (Product *)((void *(*)(void *))fn_801D5AA8)(object);
-            goto done;
+            object = ((void *(*)(void *))fn_801D5AA8)(object);
         }
+        product = object;
+        goto done;
     }
     if (stricmp(name, strings + 0x4A0) == 0) {
         object = fn_801284F8(0x2C, strings + 0x4AC);
         if (object != 0) {
             ((Object28 *)object)->vtable = lbl_80338CE8;
             ((Object28 *)object)->value = 0;
-            product = (Product *)object;
-            goto done;
         }
+        product = object;
+        goto done;
     }
     if (stricmp(name, strings + 0x4BC) == 0) {
         object = fn_801284F8(0x44, strings + 0x4C8);
         if (object != 0) {
             ((Object40 *)object)->vtable = lbl_80338CB0;
             ((Object40 *)object)->value = 0;
-            product = (Product *)object;
-            goto done;
         }
+        product = object;
+        goto done;
     }
     if (stricmp(name, strings + 0x4D8) == 0) {
         object = fn_801284F8(0x20, strings + 0x348);
         if (object != 0) {
-            product = (Product *)((void *(*)(void *))fn_801D628C)(object);
-            goto done;
+            object = ((void *(*)(void *))fn_801D628C)(object);
         }
+        product = object;
+        goto done;
     }
     if (stricmp(name, strings + 0x4E8) == 0) {
         object = fn_801284F8(0x34, strings + 0x368);
         if (object != 0) {
-            product = (Product *)((void *(*)(void *))fn_801D6618)(object);
-            goto done;
+            object = ((void *(*)(void *))fn_801D6618)(object);
         }
+        product = object;
+        goto done;
     }
     if (stricmp(name, strings + 0x4F8) == 0) {
         object = fn_801284F8(0x34, strings + 0x408);
         if (object != 0) {
-            product = (Product *)((void *(*)(void *))fn_801D68E8)(object);
-            goto done;
+            object = ((void *(*)(void *))fn_801D68E8)(object);
         }
+        product = object;
+        goto done;
     }
     if (stricmp(name, (const char *)&lbl_8055ACF4) == 0) {
         object = fn_801284F8(0x8C, strings + 0x418);
         if (object != 0) {
-            product = (Product *)((void *(*)(void *))fn_801D6D68)(object);
-            goto done;
+            object = ((void *(*)(void *))fn_801D6D68)(object);
         }
+        product = object;
+        goto done;
     }
     if (stricmp(name, strings + 0x508) == 0) {
         object = fn_801284F8(0x1B0, strings + 0x514);
@@ -1554,48 +1775,49 @@ extern "C" void *fn_801D7334(void *arg0) {
             *(void **)((char *)object + 0x24) = (char *)object + 0x30;
             *(int *)((char *)object + 0x2C) = 0x20;
             *(int *)((char *)object + 0x28) = 0;
-            product = (Product *)object;
-            goto done;
         }
+        product = object;
+        goto done;
     }
     if (stricmp(name, strings + 0x528) == 0) {
         object = fn_801284F8(0x18, strings + 0x538);
         if (object != 0) {
             *(void **)object = lbl_80338C08;
             *(int *)((char *)object + 4) = 0;
-            product = (Product *)object;
-            goto done;
         }
+        product = object;
+        goto done;
     }
     if (stricmp(name, strings + 0x54C) == 0) {
         object = fn_801284F8(0x3C, strings + 0x474);
         if (object != 0) {
-            product = (Product *)((void *(*)(void *))fn_801D701C)(object);
-            goto done;
+            object = ((void *(*)(void *))fn_801D701C)(object);
         }
+        product = object;
+        goto done;
     }
     if (stricmp(name, (const char *)&lbl_8055AD08) == 0) {
         object = fn_801284F8(0x24, strings + 0x558);
         if (object != 0) {
             *(void **)object = lbl_80338A40;
             *(int *)((char *)object + 4) = 0;
-            product = (Product *)object;
-            goto done;
         }
+        product = object;
+        goto done;
     }
     if (stricmp(name, strings + 0x564) == 0) {
         object = fn_801284F8(0x1C, strings + 0x570);
         if (object != 0) {
             *(int *)((char *)object + 4) = 0;
             *(void **)object = lbl_80338A78;
-            product = (Product *)object;
         }
+        product = object;
     }
 done:
     if (product != 0) {
         if (((Product *)product)->accept(arg0) != 0) return product;
+        if (product != 0) ((Product *)product)->destroy(1);
     }
-    if (product != 0) ((Product *)product)->destroy(1);
     return 0;
 }
 #pragma cplusplus reset
@@ -1770,6 +1992,65 @@ int fn_801D796C(void *arg0, int *arg1, int arg2) {
     }
     return 0;
 }
+
+extern void *fn_801D9A54(const char *);
+extern char lbl_8055ACB0, lbl_8055ACB8, lbl_8055AD10, lbl_8055AD18;
+extern float lbl_80562AEC, lbl_80562B0C;
+#pragma cplusplus on
+extern "C" int fn_801D7A0C(void *arg0, void *arg1) {
+    extern void fn_802E30C8(char *);
+    struct Manager { virtual void v0(); virtual int has(char *); virtual void v2(); virtual const char *name(char *); virtual void v4(); virtual int number(char *); virtual void v6(); virtual void v7(); virtual float value(char *, float); };
+    struct ManagerAlt { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual float value(char *); };
+    struct Output { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void finish(); };
+    Manager *obj = (Manager *)arg1;
+    char *base = &lbl_80338460;
+    const char *name;
+    int index, initial = 0;
+    float value, zero;
+    *(int *)((char *)arg0 + 4) = initial;
+    *(int *)((char *)arg0 + 8) = -1;
+    if (obj->has(base + 0x994)) {
+        name = obj->name(base + 0x994);
+        *(void **)((char *)arg0 + 4) = fn_801D9A54(name);
+        if (*(void **)((char *)arg0 + 4) == 0) {
+            ((void (*)(const char *, ...))fn_802E30C8)(base + 0x9A0, name);
+            return 0;
+        }
+    } else {
+        if (!obj->has(base + 0x9E0)) {
+            ((void (*)(const char *, ...))fn_802E30C8)(base + 0x9EC);
+            return 0;
+        }
+        index = obj->number(base + 0x9E0);
+        *(int *)((char *)arg0 + 8) = index;
+        if (index < 0) {
+            ((void (*)(const char *, ...))fn_802E30C8)(base + 0xA40, index);
+            return 0;
+        }
+        if (index >= 0x4B) {
+            ((void (*)(const char *, ...))fn_802E30C8)(base + 0xA90, index, 0x4B);
+            return 0;
+        }
+    }
+    value = obj->value(&lbl_8055ACB0, lbl_80562AEC);
+    zero = lbl_80562ADC;
+    if (value < zero) return 0;
+    *(int *)((char *)arg0 + 0xC) = (int)(lbl_80562B0C * value);
+    value = obj->value(&lbl_8055ACB8, zero);
+    zero = lbl_80562ADC;
+    index = (int)(lbl_80562B0C * value);
+    *(int *)((char *)arg0 + 0x10) = index;
+    obj->value(base + 0xAD8, zero);
+    *(float *)((char *)arg0 + 0x14) = ((ManagerAlt *)arg1)->value(&lbl_8055AD10);
+    value = lbl_80562AE0;
+    obj->value(base + 0xAE4, value);
+    *(float *)((char *)arg0 + 0x18) = ((ManagerAlt *)arg1)->value(&lbl_8055AD18);
+    *(int *)((char *)arg0 + 0x28) = 1;
+    ((Output *)arg0)->finish();
+    return 1;
+}
+#pragma cplusplus reset
+
 #pragma pop
 
 void *fn_801D7C6C(void) {
@@ -1870,25 +2151,27 @@ void fn_801D7E54(void *arg0) {
 
 #pragma cplusplus on
 extern "C" void fn_80128658(int);
-void *fn_801D7EC0(void *arg0, int arg1) {
-    int value;
-    void **vtable;
-    register void *child;
+extern "C" void *fn_801D7EC0(void *arg0, s32 arg1) {
+    struct Entry_801D7EC0 {
+        virtual void destroy(s32);
+    };
+    void *child;
+    int val;
 
-    if (arg0 == 0) goto done;
-    child = *(void **)((unsigned char *)arg0 + 0x2C);
-    *(void **)arg0 = lbl_80338CB0;
-    *(int *)((unsigned char *)arg0 + 0x40) = 0;
-    if (child != 0) {
+    if (arg0 != 0) {
+        *(void **)arg0 = (void *)lbl_80338CB0;
+        child = *(void **)((u8 *)arg0 + 0x2C);
+        *(s32 *)((u8 *)arg0 + 0x40) = 0;
         if (child != 0) {
-            vtable = *(void ***)child;
-            ((void (*)(void *, int))vtable[2])(child, 1);
+            if (child != 0)
+                ((Entry_801D7EC0 *)child)->destroy(1);
         }
+        val = *(int *)((u8 *)arg0 + 0x3C);
+        if (val != 0)
+            fn_80128658(val);
+        if (arg1 > 0)
+            ((void (*)(void *))fn_80128668)(arg0);
     }
-    value = *(int *)((unsigned char *)arg0 + 0x3C);
-    if (value != 0) fn_80128658(value);
-    if (arg1 > 0) ((void (*)(void *))fn_80128668)(arg0);
-done:
     return arg0;
 }
 #pragma cplusplus reset
