@@ -3,6 +3,6 @@
 #include <types.h>
 
 extern void fn_8000D838(void *);
-extern char lbl_8055E7D0[];
+extern char lbl_8055E7D0;
 extern s32 lbl_8055E7D8;
 extern s32 lbl_8055E7DC;
