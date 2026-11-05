@@ -20,6 +20,18 @@ extern void *memset(void *, int, unsigned long);
 extern void *memcpy(void *, const void *, unsigned long);
 extern f32 fn_80287BC8(f32, f32);
 extern f32 lbl_80564944, lbl_80564948, lbl_80564950;
+extern void *fn_80131810(void *);
+extern void *fn_801284F8(int, void *);
+extern int fn_801345D8(char *, int, const char *, ...);
+extern int fn_802C6FC0(int, int, int);
+extern void fn_801E9DC4(void *);
+extern void fn_801E9E30(void *, void *);
+extern int fn_802E30C8(const char *, ...);
+extern void fn_80131818(void *);
+extern int stricmp(const char *, const char *);
+extern char lbl_80349D08[];
+extern char lbl_8055CC38[], lbl_8055CC40[], lbl_8055CC48[], lbl_8055CC50[], lbl_8055CC54[];
+extern f32 lbl_8056492C, lbl_80564930, lbl_80564934, lbl_80564938, lbl_8056493C, lbl_80564940;
 
 
 extern f32 lbl_8055E3C8;
