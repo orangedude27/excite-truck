@@ -111,6 +111,18 @@ static inline int DispatchList_Find2(void *obj) {
     return -1;
 }
 
+static inline void DispatchList_RemoveAt2(int index) {
+    int last;
+    if (index < 0) return;
+    if (index >= lbl_8043870C[0].count) return;
+    last = lbl_8043870C[0].count - 1;
+    if (index != last) {
+        void **items = lbl_8043870C[0].items;
+        items[index] = items[last];
+    }
+    lbl_8043870C[0].count = lbl_8043870C[0].count - 1;
+}
+
 #pragma scheduling invalid_target
 void fn_801D0800(s32 arg0) {
     DispatchList* list = lbl_8043870C;
