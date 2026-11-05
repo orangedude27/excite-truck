@@ -3328,7 +3328,7 @@ static inline void MtxMulVecInl(const f32 *m, const f32 *src, const f32 *srcCmp,
 }
 static inline void MtxMulVecRevInl(const f32 *m, const f32 *src, f32 *dst) {
     if (dst == src) {
-        f32 x = src[0], y = src[1], z = src[2];
+        f32 y = src[1], x = src[0], z = src[2];
         f32 rx = z * m[6] + (x * m[0] + y * m[3]);
         f32 ry = z * m[7] + (x * m[1] + y * m[4]);
         f32 rz = z * m[8] + (x * m[2] + y * m[5]);
