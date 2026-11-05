@@ -48,7 +48,7 @@ static inline void MatrixMul80151E60(f32 *dst, const f32 *left, const f32 *right
 typedef struct { s32 a, b, c, d; f32 e, f; s32 g; } Copy8014C6F0;
 typedef struct { f32 m[12]; } Matrix801533E8;
 typedef struct { f32 pos[3]; f32 velocity[3]; s16 angle; s32 value; } Event80155700;
-extern u8 lbl_80559FB8[];
+extern u8 lbl_80559FB8[1];
 extern f32 lbl_8056172C, lbl_80561730;
 extern s32 fn_80009C84(void);
 extern void fn_801796EC(s32, void *, s32);
@@ -2821,6 +2821,98 @@ void fn_801556F8(void) {
 void fn_801556FC(void) {
 
 }
+
+#pragma push
+#pragma use_lmw_stmw off
+void fn_80155700(void *arg0, void *arg1, s32 index) {
+    u8 *self = (u8 *)arg0;
+    u8 *player = fn_8017960C(index);
+    u8 *slot, *entry, *obj, *manager, *player2;
+    f32 mat1[12], mat2[12], rot1[3], pos1[3], rot2[3], pos2[3];
+    Event80155700 event;
+    f32 value, one, zero, height, duration, threshold;
+    s32 i, active, kind;
+    f32 *v;
+    if (player && (f32)__fabs(*(f32 *)(player+0x2690)) <= lbl_80558DC4[0] &&
+        ((s32 (*)(void *,s32))(*(void ***)arg0)[8])(arg0,index) &&
+        fn_80161BB8() == 0 && *(s32 *)(player+0x1F0) == 0x50) {
+        one=lbl_8056164C; zero=lbl_80561648; height=lbl_8056172C; duration=lbl_80561730; threshold=lbl_8056163C;
+        slot = self + index * 0xC0;
+        for (i = 0; i < *(s32 *)(self+0x330); i++) {
+            entry = (*(u8 ***)(self+0x32C))[i];
+            if (*(void **)entry == arg1 && entry[4]) {
+                entry[4]=0;
+                mat1[0]=one; mat1[1]=zero; mat1[2]=zero;
+                mat1[3]=zero; mat1[4]=one; mat1[5]=zero;
+                mat1[6]=zero; mat1[7]=zero; mat1[8]=one;
+                mat1[9]=zero; mat1[11]=zero; mat1[10]=height;
+                rot1[0]=zero; rot1[1]=zero; rot1[2]=zero;
+                pos1[0]=zero; pos1[1]=zero; pos1[2]=zero;
+                obj=*(u8 **)entry;
+                ((void (*)(void *,f32 *,f32 *,f32 *))(*(void ***)obj)[10])(obj,mat1,pos1,rot1);
+                obj=*(u8 **)entry;
+                ((void (*)(void *,s32))(*(void ***)obj)[8])(obj,0);
+                *(f32 *)(entry+0x14)=duration+lbl_8055E3C8;
+                obj=*(u8 **)entry;
+                obj=((u8 *(*)(void *))(*(void ***)obj)[2])(obj);
+                value=((f32 (*)(void *,void *,f32))(*(void ***)obj)[10])(obj,lbl_80559FB8,lbl_80561730);
+            } else value=lbl_80561648;
+            if (value > threshold) {
+                manager=*(u8 **)(self+0x444);
+                if (manager) {
+                    fn_80206750(manager,index,0);
+                    manager=*(u8 **)(self+0x444);
+                    manager[0x49]=1; manager[0x4B]=0; manager[0x4A]=0;
+                }
+                *(f32 *)(slot+0x9F8) += value;
+            }
+        }
+        {
+        f32 one2=lbl_8056164C, zero2=lbl_80561648, height2=lbl_8056172C, duration2=lbl_80561730;
+        for (i = 0; i < *(s32 *)(self+0x3BC); i++) {
+            entry=(*(u8 ***)(self+0x3B8))[i];
+            if (*(void **)entry == arg1 && entry[4]) {
+                player2=fn_8017960C(index);
+                if (player2) {
+                    v=((f32 *(*)(void *))(*(void ***)arg1)[4])(arg1);
+                    event.pos[0]=v[0]; event.pos[1]=v[1]; event.pos[2]=v[2];
+                    event.velocity[0]=*(f32 *)(player2+0x118);
+                    event.velocity[1]=*(f32 *)(player2+0x11C);
+                    event.velocity[2]=*(f32 *)(player2+0x120);
+                    event.angle=*(s16 *)(player2+0x6C); event.value=0x96;
+                    fn_801796EC(10,&event,0x20);
+                }
+                entry[4]=0;
+                mat2[0]=one2; mat2[1]=zero2; mat2[2]=zero2;
+                mat2[3]=zero2; mat2[4]=one2; mat2[5]=zero2;
+                mat2[6]=zero2; mat2[7]=zero2; mat2[8]=one2;
+                mat2[9]=zero2; mat2[11]=zero2; mat2[10]=height2;
+                rot2[0]=zero2; rot2[1]=zero2; rot2[2]=zero2;
+                pos2[0]=zero2; pos2[1]=zero2; pos2[2]=zero2;
+                obj=*(u8 **)entry;
+                ((void (*)(void *,f32 *,f32 *,f32 *))(*(void ***)obj)[10])(obj,mat2,pos2,rot2);
+                obj=*(u8 **)entry;
+                ((void (*)(void *,s32))(*(void ***)obj)[8])(obj,0);
+                *(f32 *)(entry+0x14)=duration2+lbl_8055E3C8;
+                active=1;
+            } else active=0;
+            if (active) {
+                manager=*(u8 **)(self+0x448);
+                if (manager) {
+                    kind=2;
+                    if (fn_80009C84()) kind=0;
+                    fn_80206750(*(u8 **)(self+0x448),index,kind);
+                    manager=*(u8 **)(self+0x448);
+                    manager[0x49]=1; manager[0x4B]=0; manager[0x4A]=0;
+                }
+                fn_8018A120(player);
+                fn_80161A38(3,index,0);
+            }
+        }
+        }
+    }
+}
+#pragma pop
 
 void fn_80155AEC(void) {
 
