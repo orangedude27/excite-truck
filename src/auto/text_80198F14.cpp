@@ -3329,9 +3329,12 @@ static inline void MtxMulVecInl(const f32 *m, const f32 *src, const f32 *srcCmp,
 static inline void MtxMulVecRevInl(const f32 *m, const f32 *src, f32 *dst) {
     if (dst == src) {
         f32 x = src[0], y = src[1], z = src[2];
-        dst[0] = z * m[6] + (x * m[0] + y * m[3]);
-        dst[1] = z * m[7] + (x * m[1] + y * m[4]);
-        dst[2] = z * m[8] + (x * m[2] + y * m[5]);
+        f32 rx = z * m[6] + (x * m[0] + y * m[3]);
+        f32 ry = z * m[7] + (x * m[1] + y * m[4]);
+        f32 rz = z * m[8] + (x * m[2] + y * m[5]);
+        dst[0] = rx;
+        dst[1] = ry;
+        dst[2] = rz;
     } else {
         dst[0] = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
         dst[1] = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
@@ -3620,6 +3623,7 @@ extern float lbl_805622D0, lbl_805622DC, lbl_805623C0;
 extern float PSVECDotProduct(float *, void *);
 extern "C" int fn_80198F64(void *, int, void *, float *, void *, float *, float);
 extern int fn_8019A788(void *, int, void *, void *, int, int, float, float, float);
+#pragma use_lmw_stmw off
 extern "C" void fn_801A38E4(int arg0, void *arg1) {
     u8 *base = (u8 *)arg1;
     f32 q[3];
@@ -3637,23 +3641,26 @@ extern "C" void fn_801A38E4(int arg0, void *arg1) {
         f32 dot;
         f32 a;
         f32 cur;
+        f32 hi;
         axis[0] = lbl_805622D0;
         axis[1] = lbl_805622DC;
         axis[2] = lbl_805622D0;
         dot = PSVECDotProduct(axis, (u8 *)*(void **)(base + 0xc) + 0xc);
         a = __fabs(dot);
+        hi = *(f32 *)(base + 0x58);
         cur = *(f32 *)(base + 0x54);
-        *(f32 *)(base + 0x24) = cur + a * (*(f32 *)(base + 0x58) - cur);
+        *(f32 *)(base + 0x24) = cur + a * (hi - cur);
     }
     case 0x53504852: {
         u8 *owner = *(u8 **)(base + 4);
         if (owner != 0) {
             u8 *node = *(u8 **)(owner + 0xd0);
             if (node != 0) {
-                f32 c = lbl_805623C0;
                 f32 z = lbl_805622D0;
+                f32 c = lbl_805623C0;
                 while (node != 0) {
-                    MtxMulVecInl((f32 *)(owner + 0x3c), (f32 *)(node + 4), q);
+                    f32 *v = (f32 *)(node + 4);
+                    MtxMulVecRevInl((f32 *)(owner + 0x3c), v, q);
                     q[0] = q[0] + *(f32 *)(owner + 0x60);
                     q[1] = q[1] + *(f32 *)(owner + 0x64);
                     q[1] = q[1] + c;
@@ -3674,7 +3681,6 @@ extern "C" void fn_801A38E4(int arg0, void *arg1) {
     }
     }
 }
-
 extern f32 lbl_80562314;
 extern "C" void fn_801E41D8(void*, void*, s32, f32);
 extern "C" void fn_801A3BE0(void* arg0, void* arg1) {
