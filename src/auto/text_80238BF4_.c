@@ -34,14 +34,13 @@ static inline s32 clampHigh_80238BF4(s32 v) {
     if (v < 0xFF) return v;
     return 0xFF;
 }
-#pragma scheduling invalid_target
 void fn_80238BF4(void *arg0, u8 *arg1) {
     struct LocalFrame {
         u16 indices3[3];
         u8 pad06[2];
         u16 indices6[6];
         u8 pad14[4];
-        f32 points[12];
+        volatile f32 points[12];
         u8 pad48[8];
         f32 outputs[24];
     } __attribute__((aligned(16))) frame;
@@ -55,18 +54,17 @@ void fn_80238BF4(void *arg0, u8 *arg1) {
     s32 count;
     s32 c0, c1, c2, c3;
     s32 state;
-    volatile f32 *points = (volatile f32 *)frame.points;
 
     record = *(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C) + entryIndex * 0x28;
     color = *(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x20) + colorIndex * 8;
     pointOffset = 0;
     recordOffset = 0;
     count = 0;
-    do {
+    while (count < record[2]) {
         u8 *vertex = record + recordOffset;
         f32 xScale = *(f32 *)(arg1 + 4);
         f32 x = *(f32 *)(vertex + 8);
-        volatile f32 *dest = (volatile f32 *)((u8 *)points + pointOffset);
+        volatile f32 *dest = (volatile f32 *)((u8 *)frame.points + pointOffset);
         f32 y = *(f32 *)(vertex + 0xC);
         f32 yScale;
         f32 xAdd;
@@ -91,13 +89,13 @@ void fn_80238BF4(void *arg0, u8 *arg1) {
         xOrigin = *(f32 *)(arg1 + 0x14);
         yy += yx;
         yOrigin = *(f32 *)(arg1 + 0x18);
-        points[pointOffset / 4] = xOrigin + xx;
+        frame.points[pointOffset / 4] = xOrigin + xx;
         dest[1] = yOrigin + yy;
         dest[2] = lbl_80563720;
-        points[pointOffset / 4] = points[pointOffset / 4] - lbl_80563724;
+        frame.points[pointOffset / 4] = frame.points[pointOffset / 4] - lbl_80563724;
         pointOffset += 0xC;
         dest[1] = -(dest[1] - lbl_80563728);
-    } while (count < record[2]);
+    }
 
     packed = *(u32 *)(record + 4);
     c0 = ((s8)color[7] * 2) + (((s8)color[3] * (s32)((((packed >> 24) & 0xFF) * 2))) / 255);
@@ -112,14 +110,14 @@ void fn_80238BF4(void *arg0, u8 *arg1) {
     c3 = ((s8)color[6] * 2) + (((s8)color[2] * (s32)((((packed) & 0xFF) * 2))) / 255);
     if (c3 > 0) { } else { c3 = 0; }
     if (c3 < 0xFF) { } else { c3 = 0xFF; }
-    packed = ((u32)c0 << 24) | ((u32)c1 << 16) | ((u32)c2 << 8) | (u32)c3;
+    packed = ((u32)c0 << 24) | ((u32)(u8)c1 << 16) | ((u32)(u8)c2 << 8) | (u32)(u8)c3;
 
     state = (s32)fn_8022EDC4();
-    fn_80231380(&frame.outputs[0], (s32)packed, points[0], points[1], lbl_80563720, lbl_80563720, lbl_80563720);
-    fn_80231380(&frame.outputs[6], (s32)packed, points[3], points[4], lbl_80563720, lbl_8056372C, lbl_80563720);
-    fn_80231380(&frame.outputs[12], (s32)packed, points[6], points[7], lbl_80563720, lbl_80563720, lbl_8056372C);
+    fn_80231380(&frame.outputs[0], (s32)packed, frame.points[0], frame.points[1], lbl_80563720, lbl_80563720, lbl_80563720);
+    fn_80231380(&frame.outputs[6], (s32)packed, frame.points[3], frame.points[4], lbl_80563720, lbl_8056372C, lbl_80563720);
+    fn_80231380(&frame.outputs[12], (s32)packed, frame.points[6], frame.points[7], lbl_80563720, lbl_80563720, lbl_8056372C);
     if (record[2] == 4) {
-        fn_80231380(&frame.outputs[18], (s32)packed, points[9], points[10], lbl_80563720, lbl_8056372C, lbl_8056372C);
+        fn_80231380(&frame.outputs[18], (s32)packed, frame.points[9], frame.points[10], lbl_80563720, lbl_8056372C, lbl_8056372C);
     }
     frame.indices3[0] = lbl_80563718;
     frame.indices3[1] = lbl_8056371A;
