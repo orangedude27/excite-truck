@@ -67,6 +67,7 @@ void fn_80171D94(void) {
     } while (i < 4);
 }
 
+#pragma dont_inline on
 int fn_80171DE4(void *arg0) {
     extern int fn_80139EC4(int, float, float);
     extern int lbl_8055E3A4;
@@ -1269,35 +1270,32 @@ void fn_8017431C(int arg0, int arg1) {
     extern void fn_801B7C8C(void *, void *, float *);
     extern void PSVECNormalize(float *, float *);
     extern float lbl_80561A44, lbl_80561A74, lbl_80561AB0, lbl_80561AC4, lbl_80561ACC, lbl_80561AD0, lbl_80561AD4;
-    Fn8017431CCam cam;
-    int zero;
-    short mark;
-    float *p;
-    float sp38[2];
+    Fn8017431CMark mk;
+    Fn8017431CFrame cam;
     float tgt[3];
-    float sp20[2];
-    float sp28[2];
+    float dir[3];
+    float sp38[2];
     float sp30[2];
-    float sp8[2];
+    float sp28[2];
+    float sp20[2];
     Fn8017431CPair pair;
+    float sp8[2];
     char *obj;
+    float *p;
     int inside;
-    float *m;
     float dx, dz, dist;
     if (*(unsigned char *)(arg0 + arg1 * 0x1C + 0x90) != 0) {
         obj = (char *)fn_8017960C(arg1);
         fn_8018AF04();
-        mark = -1;
-        fn_801E9DC4(&mark);
-        zero = 0;
+        mk.mark = -1;
+        fn_801E9DC4(&mk.mark);
+        mk.zero = 0;
         p = (float *)(obj + 0x60);
-        m = (float *)(obj + 0x3C);
-        cam.m[0] = m[0]; cam.m[1] = m[1]; cam.m[2] = m[2]; cam.m[3] = m[3];
-        cam.m[4] = m[4]; cam.m[5] = m[5]; cam.m[6] = m[6]; cam.m[7] = m[7];
-        cam.m[8] = m[8]; cam.m[9] = m[9]; cam.m[10] = m[10]; cam.m[11] = m[11];
-        cam.v[0] = lbl_80561A44;
-        cam.v[1] = lbl_80561A44;
-        cam.v[2] = lbl_80561A44;
+        cam.m = *(Fn8017431CM9 *)(obj + 0x3C);
+        cam.pos = *(Fn8017431CV3 *)(obj + 0x60);
+        cam.v.a[0] = lbl_80561A44;
+        cam.v.a[1] = lbl_80561A44;
+        cam.v.a[2] = lbl_80561A44;
         sp38[0] = p[0];
         sp38[1] = p[2];
         if (fn_802B04D4(p) != 0 || fn_80171E3C(sp38) == 0) {
@@ -1312,21 +1310,21 @@ void fn_8017431C(int arg0, int arg1) {
             if (fn_802B04D4(p) != 0 && fn_80171DE4(sp38) == 0) inside = 1;
             if (inside != 0) {
                 float k = lbl_80561A40 / lbl_80561A74;
-                float ax = (tgt[0] - p[0]) * k;
-                float ay = (tgt[1] - p[1]) * k;
-                float az = (tgt[2] - p[2]) * k;
-                cam.m[9] = p[0];
-                cam.m[10] = p[1];
-                cam.m[11] = p[2];
-                cam.m[4] = lbl_80561A44; cam.m[5] = lbl_80561A40; cam.m[6] = lbl_80561A44;
-                cam.m[7] = ax; cam.m[8] = lbl_80561A44; cam.m[9] = az;
-                PSVECNormalize(&cam.m[7], &cam.m[7]);
-                cam.m[0] = cam.m[9];
-                cam.m[1] = lbl_80561A44;
-                cam.m[2] = -cam.m[7];
-                cam.v[0] = ax;
-                cam.v[1] = ay + lbl_80561ACC * lbl_80561A74;
-                cam.v[2] = az;
+                dir[1] = (tgt[1] - p[1]) * k + lbl_80561ACC * lbl_80561A74;
+                dir[0] = (tgt[0] - p[0]) * k;
+                dir[2] = (tgt[2] - p[2]) * k;
+                cam.pos.a[0] = p[0];
+                cam.pos.a[1] = p[1];
+                cam.pos.a[2] = p[2];
+                cam.m.a[3] = lbl_80561A44; cam.m.a[4] = lbl_80561A40; cam.m.a[5] = lbl_80561A44;
+                cam.m.a[6] = dir[0]; cam.m.a[7] = lbl_80561A44; cam.m.a[8] = dir[2];
+                PSVECNormalize(&cam.m.a[6], &cam.m.a[6]);
+                cam.m.a[0] = cam.m.a[8];
+                cam.m.a[1] = lbl_80561A44;
+                cam.m.a[2] = -cam.m.a[6];
+                cam.v.a[0] = dir[0];
+                cam.v.a[1] = dir[1];
+                cam.v.a[2] = dir[2];
             } else {
                 dx = tgt[0] - sp38[0];
                 dz = tgt[2] - sp38[1];
@@ -1338,10 +1336,10 @@ void fn_8017431C(int arg0, int arg1) {
                 sp28[0] = sp28[0] * dist;
                 sp28[1] = sp28[1] * dist;
                 fn_801B7C8C(&cam, sp30, sp28);
-                cam.m[11] = cam.m[11] + lbl_80561A3C;
-                cam.v[0] = cam.m[7] * lbl_80561AD4;
-                cam.v[1] = cam.m[8] * lbl_80561AD4;
-                cam.v[2] = cam.m[9] * lbl_80561AD4;
+                cam.pos.a[2] = cam.pos.a[2] + lbl_80561A3C;
+                cam.v.a[0] = cam.m.a[6] * lbl_80561AD4;
+                cam.v.a[1] = cam.m.a[7] * lbl_80561AD4;
+                cam.v.a[2] = cam.m.a[8] * lbl_80561AD4;
             }
         } else if (*(float *)(obj + 0x4C) < lbl_80561AB0) {
             sp20[0] = *(float *)(obj + 0x54);
