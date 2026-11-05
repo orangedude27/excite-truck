@@ -83,16 +83,18 @@ char *fn_8022D3F8(void *arg0, int arg1, int *arg2) {
 }
 
 extern void fn_8022D76C(void *);
-#pragma scheduling off
+#pragma scheduling invalid_target
 void *fn_8022D458(void *arg0, int arg1, int arg2, int *arg3) {
     char *base;
+    int size;
     int i;
     base = lbl_80340108;
+    size = arg2 * 4;
     *(int *)((char *)arg0 + 0xC) = arg1;
     *(int *)((char *)arg0 + 8) = 0;
     *(int *)((char *)arg0 + 4) = arg2;
-    *(void **)((char *)arg0 + 0x18) = fn_8012850C(arg2 * 4, base + 0x38);
-    *(void **)((char *)arg0 + 0x1C) = fn_8012850C(arg2 * 4, base + 0x44);
+    *(void **)((char *)arg0 + 0x18) = fn_8012850C(size, base + 0x38);
+    *(void **)((char *)arg0 + 0x1C) = fn_8012850C(size, base + 0x44);
     *(int *)((char *)arg0 + 0x10) = arg1;
     *(int *)((char *)arg0 + 0x2C) = -1;
     *(int *)((char *)arg0 + 0x24) = 0;
@@ -107,7 +109,6 @@ void *fn_8022D458(void *arg0, int arg1, int arg2, int *arg3) {
     fn_8022D76C(arg0);
     return arg0;
 }
-#pragma scheduling reset
 void fn_8022D76C(void *arg0) {
     memset(*(void **)arg0, 0, *(int *)((char *)arg0 + 0xC) * *(int *)((char *)arg0 + 0x14));
     *(int *)((char *)arg0 + 8) = 0;
@@ -154,19 +155,23 @@ void fn_8022D894(void *arg0, int arg1, int arg2, const char *arg3, signed char a
     *(int *)((char *)arg0 + 0x24) += 1;
 }
 #pragma scheduling invalid_target
-void fn_8022D924(void *arg0, int arg1) {
-    int *p = (int *)arg0;
-    int value;
-    p[0x24 / 4] = p[0x24 / 4] + 1;
+void fn_8022D924(volatile int *p, int arg1) {
+    int cnt = p[0x24 / 4];
+    int v = p[0x2C / 4];
     p[0x10 / 4] = arg1;
-    value = p[0x2C / 4];
-    if (value < 0) return;
-    if (value == 0) return;
-    p[0x20 / 4] = value;
+    p[0x24 / 4] = cnt + 1;
+    if (v < 0) return;
+    arg1 = v;
+    goto divide;
+store:
+    p[0x20 / 4] = arg1;
     p[0x24 / 4] = p[0x24 / 4] + 1;
+    return;
+divide:
     p[0x2C / 4] = arg1;
-    p[0x20 / 4] = arg1 / p[0x10 / 4];
+    arg1 = arg1 / p[0x10 / 4];
     p[0x24 / 4] = p[0x24 / 4] + 1;
+    goto store;
 }
 #pragma scheduling on
 int fn_8022D97C(int *arg0, int arg1) {
@@ -386,24 +391,26 @@ int fn_8022DE88(void *arg0) {
     float *value_ptr = *(float **)((char *)arg0 + 0x18);
     float value = *value_ptr;
     float diff = current - value;
-    if ((float)__fabs(diff) <= *epsilon_ptr) return 0;
-    return 1;
+    int result = 0;
+    if (!((float)__fabs(diff) <= *epsilon_ptr)) {
+        result = 1;
+    }
+    return result;
 }
 #pragma pop
 extern double __fabs(double);
 #pragma push
-#pragma opt_propagation off
-#pragma scheduling invalid_target
+#pragma optimization_level 2
 int fn_8022DEC4(void *arg0) {
     float *valuePtr = *(float **)((char *)arg0 + 0x18);
     float current = *(float *)((char *)arg0 + 0xC);
     float value = *valuePtr;
     float diff = current;
     diff -= value;
-    if (!((float)__fabs(diff) <= lbl_80558DC4[0])) {
-        return 1;
+    if ((float)__fabs(diff) <= lbl_80558DC4[0]) {
+        return 0;
     }
-    return 0;
+    return 1;
 }
 #pragma pop
 void fn_8022DF00(void *arg0, int *arg1, int *arg2) {
@@ -469,10 +476,10 @@ int fn_8022DF9C(void *arg0) {
 #pragma scheduling invalid_target
 float fn_8022DFBC(void *arg0) {
     int offset = *(int *)((char *)arg0 + 8);
-    int numerator = **(int **)((char *)arg0 + 4) - offset;
     int denominator = *(int *)((char *)arg0 + 0xC) - offset;
-    float convertedDenominator = (float)denominator;
+    int numerator = **(int **)((char *)arg0 + 4) - offset;
     float convertedNumerator = (float)numerator;
+    float convertedDenominator = (float)denominator;
     return convertedNumerator / convertedDenominator;
 }
 #pragma scheduling on
