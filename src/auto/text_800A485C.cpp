@@ -14198,30 +14198,30 @@ extern "C" void fn_800C34B4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     fn_800C3574((void *)arg0, lbl_802F4108, arg2 + 1, arg1 + 2, arg3);
 }
 
-extern "C" void fn_800C3960_old(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
-    s32 *m = (s32 *)arg0;
-    u16 *out = (u16 *)arg1;
-    s32 x, y, k;
-    s32 v;
-
-    for (y = 0; y < 32; y++) {
-        v = 0;
-        for (x = 0; x < 32; x++)
-            v += m[x] * m[y + 32 + x];
-        m[y + 64] = (s16)((v << 7) | (v >> 25)) & 0x7FFF;
+extern "C" void fn_800C3960(s32 *tbl, s32 *coef, u32 idx, s16 *out, u32 mask, s32 flag) {
+    s32 *tbl2 = tbl + 0x10;
+    s64 sumA = 0;
+    s64 sumB = 0;
+    s32 k;
+    s32 a, b;
+    for (k = 0; k < 8; k++) {
+        u32 o0 = (idx + k * 0x80) & mask;
+        u32 o1 = (idx + k * 0x80 + 0x60) & mask;
+        sumA += (s64)tbl[o0] * coef[k * 2];
+        sumB += (s64)tbl2[o0] * coef[k * 2 + 0x10];
+        sumA += (s64)tbl[o1] * coef[k * 2 + 1];
+        sumB += (s64)tbl2[o1] * coef[k * 2 + 0x11];
     }
-    for (x = 0; x < 32; x++) {
-        v = 0;
-        for (y = 0; y < 32; y++)
-            v += m[x] * m[y + 32 + x];
-        m[x + 96] = (s16)((v << 7) | (v >> 25)) & 0x7FFF;
-    }
-    if (arg3 == 0) {
-        out[0] = m[64];
-        out[64] = m[96];
+    a = (s32)(sumA >> 25);
+    b = (s32)(sumB >> 25);
+    if (a != (s16)a) a = (a >> 31) ^ 0x7fff;
+    if (b != (s16)b) b = (b >> 31) ^ 0x7fff;
+    if (flag == 0) {
+        out[0] = a;
+        out[0x20] = b;
     } else {
-        out[0] = m[64];
-        out[32] = m[96];
+        out[0] = a;
+        out[0x10] = b;
     }
 }
 
