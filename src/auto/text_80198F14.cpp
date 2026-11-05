@@ -3606,7 +3606,7 @@ extern "C" f32 fn_801A3880(s32 arg0) {
 #pragma scheduling on
 extern float lbl_805622D0, lbl_805622DC, lbl_805623C0;
 extern float PSVECDotProduct(float *, void *);
-extern int fn_80198F64(void *, int, void *, float *, void *, float *, float);
+extern "C" int fn_80198F64(void *, int, void *, float *, void *, float *, float);
 extern int fn_8019A788(void *, int, void *, void *, int, int, float, float, float);
 void fn_801A38E4(int arg0, void *arg1) {
     int type = *(int *)((char *)arg1 + 0x18);
@@ -4143,41 +4143,20 @@ extern "C" void fn_801A4A8C(void* arg0, s32 arg1, s32 arg2, void* arg3, u32* arg
 extern "C" void* fn_801A4B5C(void* arg0, s32 arg1, void* arg2) {
     u8* p = (u8*)arg0;
     s32 magic;
+    s32 i;
     *(void**)arg0 = lbl_803336F8;
     if (arg1) {
-        u8 t;
-        u8* q = p + 4;
-        s32 i;
-        u8 a0 = p[0x34], a3 = p[0x37], a1 = p[0x35], a2 = p[0x36];
-        u8 b0 = p[0x38], b3 = p[0x3B], b1 = p[0x39], b2 = p[0x3A];
-        p[0x34] = a3; p[0x37] = a0;
-        p[0x35] = a2; p[0x36] = a1;
-        p[0x38] = b3; p[0x3B] = b0;
-        p[0x39] = b2; p[0x3A] = b1;
+        Swap4(p + 0x34);
+        Swap4(p + 0x38);
         for (i = 0; i < 2; i++) {
-            t = q[0]; q[0] = q[3]; q[3] = t;
-            t = q[1]; q[1] = q[2]; q[2] = t;
-            t = q[4]; q[4] = q[7]; q[7] = t;
-            t = q[5]; q[5] = q[6]; q[6] = t;
-            t = q[8]; q[8] = q[0xB]; q[0xB] = t;
-            t = q[9]; q[9] = q[0xA]; q[0xA] = t;
-            t = q[0xC]; q[0xC] = q[0xF]; q[0xF] = t;
-            t = q[0xD]; q[0xD] = q[0xE]; q[0xE] = t;
-            t = q[0x10]; q[0x10] = q[0x13]; q[0x13] = t;
-            t = q[0x11]; q[0x11] = q[0x12]; q[0x12] = t;
-            t = q[0x14]; q[0x14] = q[0x17]; q[0x17] = t;
-            t = q[0x15]; q[0x15] = q[0x16]; q[0x16] = t;
-            q += 0x18;
+            u8* q = p + 4 + i * 0x18;
+            Swap4(q); Swap4(q + 4); Swap4(q + 8);
+            Swap4(q + 0xC); Swap4(q + 0x10); Swap4(q + 0x14);
         }
     }
     *(s32*)(p + 0x48) = 0;
     magic = *(s32*)((u8*)arg2 + 0x18);
-    if (arg1) {
-        u8* m = (u8*)&magic;
-        u8 t;
-        t = m[0]; m[0] = m[3]; m[3] = t;
-        t = m[1]; m[1] = m[2]; m[2] = t;
-    }
+    if (arg1) Swap4((u8*)&magic);
     switch (magic) {
     case 0x424F5820:
         if (arg2) arg2 = ((void* (*)(void*, void*, s32))fn_801A1CE4)(arg2, arg0, arg1);
