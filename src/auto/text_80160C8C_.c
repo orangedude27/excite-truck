@@ -1148,7 +1148,7 @@ void fn_80162268(void *arg0) {
             self[0x88]=1;
         }
     } else {
-        if ((f32)__fabs(*(f32 *)(self+0x8C))<=lbl_80558DC4) {
+        if ((f32)__fabs(*(f32 *)(self+0x8C))<=*(f32 *)&lbl_80558DC4) {
             fn_80276DC8(0);
             for(i=0,cars=lbl_804348E8;i<fn_801B2F24();i++,cars++) {
                 void *manager=fn_801B83A0();
@@ -1761,7 +1761,7 @@ extern "C" void fn_801638A0(void *arg0) {
     u8 *entry;
     s32 offset;
     u8 *car,*flags,*ui;
-    f32 velocity[2],length,scale;
+    f32 velocity[2],length,scale,sqrtLen;
     f32 threshold,one,epsilon;
     if (((*(f32 *)(self+0x98)>*(f32 *)(self+0x84))&1)!=0) self[0x56D]=1;
     if (fn_801C5B60()==0) fn_801DF074(8,0);
@@ -1781,7 +1781,8 @@ extern "C" void fn_801638A0(void *arg0) {
                             velocity[1]=*(f32 *)(car+0x120);
                             length=velocity[0]*velocity[0]+velocity[1]*velocity[1];
                             if (length>epsilon) {
-                                scale=one/(f32)fn_8002F234(length);
+                                sqrtLen=(f32)fn_8002F234(length);
+                                scale=one/sqrtLen;
                                 velocity[0]*=scale;
                                 velocity[1]*=scale;
                                 if (velocity[1]**(f32 *)(entry+0x30)+velocity[0]**(f32 *)(entry+0x2C)>threshold) {
@@ -1813,7 +1814,7 @@ extern "C" void fn_801638A0(void *arg0) {
     } else {
         if ((f32)__fabs(*(f32 *)(self+0x8C))<=lbl_80558DC4) {
             fn_80276DC8(0);
-            for (cars2=lbl_804348E8,i=0;i<fn_801B2F24();cars2++,i++) {
+            for (i=0,cars2=lbl_804348E8;i<fn_801B2F24();cars2++,i++) {
                 Dummy_801638A0 *manager=(Dummy_801638A0 *)fn_801B83A0();
                 manager->f35((void *)*cars2,i);
             }
@@ -1826,11 +1827,8 @@ extern "C" void fn_801638A0(void *arg0) {
                 lbl_8055A0B4=old;
                 lbl_8055A0B8=old+1;
             } else lbl_8055E2DC=0;
-            {
-                s32 count=*(volatile s32 *)(lbl_8042FDEC+4);
-                *(volatile s32 *)&lbl_8055E304=0;
-                if (count>0) fn_80176734();
-            }
+            lbl_8055E304=0;
+            if (*(s32 *)(lbl_8042FDEC+4)>0) fn_80176734();
         }
     }
 }
