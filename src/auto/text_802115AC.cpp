@@ -1448,14 +1448,16 @@ extern "C" s32 fn_802168E4(void);
 extern "C" s32 fn_80218120(void);
 extern "C" s32 fn_802E317C(const char *);
 extern "C" char lbl_8033D3D4[];
+#pragma dont_inline on
 extern "C" s32 fn_80214D04(void) {
     if (fn_802168E4() != 0) {
         return fn_80218120();
+    } else {
+        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_8033D3D4);
     }
-    fn_802E317C(lbl_8033D3D4);
     return 0;
 }
-
+#pragma dont_inline reset
 extern "C" f32 fn_80214D48(void) {
     return lbl_8055EF10;
 }
@@ -1909,10 +1911,8 @@ extern "C" void fn_80215500(void) {
 #pragma scheduling off
 extern "C" void fn_80215504(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     f32 rate = lbl_80563450;
-    s32 value8 = *(s32 *)((u8 *)arg0 + 8);
-    s32 value4 = *(s32 *)((u8 *)arg0 + 4);
-    fn_8022BAD0(value8, arg1, arg2, 0, arg4, arg5,
-                value4, arg6, 0, rate);
+    fn_8022BAD0(*(s32 *)((u8 *)arg0 + 8), arg1, arg2, 0, arg4, arg5,
+                *(s32 *)((u8 *)arg0 + 4), arg6, 0, rate);
 }
 #pragma scheduling on
 extern "C" void fn_80215544(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
