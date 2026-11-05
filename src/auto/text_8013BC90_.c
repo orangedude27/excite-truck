@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 typedef struct { double a, b, c, d, e, f, g, h; } Key64;
+typedef struct CacheEntry { void *obj; unsigned char name[0x40]; int ref; } CacheEntry;
 extern int strcmp(const char *, const char *);
 extern void *fn_80131810(const char *);
 extern void fn_80131818(void *);
@@ -180,6 +181,7 @@ extern void fn_802E30C8(const char *, ...);
 extern const char lbl_8032C42C[];
 extern const char lbl_8032C43C[];
 #pragma cplusplus on
+#pragma scheduling invalid_target
 extern "C" void *fn_8013BFE8(char *arg0) {
     Key64 key;
     char buf[0x80];
@@ -238,10 +240,15 @@ copied:
             ((void (*)(void *))fn_8013BFE4)(res);
         }
         if (res != 0) {
-            Key64 tmp = key;
+            Key64 tmp;
             unsigned char *s = (unsigned char *)&tmp;
-            e = lbl_8042F8C8 + *(int *)(lbl_8042F8C8 + 0x240) * 0x48;
-            *(int *)(lbl_8042F8C8 + 0x240) += 1;
+            unsigned char *t = lbl_8042F8C8;
+            int idx;
+            tmp.a = key.a; tmp.b = key.b; tmp.c = key.c; tmp.d = key.d;
+            tmp.e = key.e; tmp.f = key.f; tmp.g = key.g; tmp.h = key.h;
+            idx = *(int *)(t + 0x240);
+            *(int *)(t + 0x240) = idx + 1;
+            e = t + idx * 0x48;
             *(void **)e = res;
             { unsigned char a = s[0]; unsigned char b = s[1]; e[4] = a; e[5] = b; }
             { unsigned char a = s[2]; unsigned char b = s[3]; e[6] = a; e[7] = b; }
@@ -284,6 +291,7 @@ copied:
     }
     return 0;
 }
+#pragma scheduling on
 #pragma cplusplus reset
 extern void fn_80128658(int);
 extern void fn_80128668(void *);
