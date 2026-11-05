@@ -157,6 +157,7 @@ static inline float PauseRamp(PauseFields *s) {
     if (elapsed >= total) return s->end;
     return s->start + (float)elapsed * (s->end - s->start) / (float)total;
 }
+#pragma always_inline reset
 // Vtable dispatcher class for indirect virtual calls (MWCC ABI: 2 leading dtor slots).
 class VfObj {
 public:
