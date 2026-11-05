@@ -434,25 +434,14 @@ void fn_8023C0EC(void *arg0, s32 arg1, s32 arg2) {
 
 void fn_8023C20C(void) {}
 
-void fn_8023C210(void *dst, void *src) {
-    register u32 *source;
-    register u32 *target;
-    int count;
-    *(s32 *)((u8 *)dst + 4) = *(s32 *)((u8 *)src + 0);
-    *(s32 *)((u8 *)dst + 8) = *(s32 *)((u8 *)src + 4);
-    *(s32 *)((u8 *)dst + 0xC) = *(s32 *)((u8 *)src + 8);
-    *(u8 *)((u8 *)dst + 0x10) = *((u8 *)src + 0xC);
-    *(u8 *)((u8 *)dst + 0x11) = *((u8 *)src + 0xD);
-    *(u8 *)((u8 *)dst + 0x12) = *((u8 *)src + 0xE);
-    source = (u32 *)((u8 *)src + 0xC);
-    target = (u32 *)((u8 *)dst + 0x10);
-    count = 0x14;
-    do {
-        target[1] = source[1];
-        target[2] = source[2];
-        source += 2;
-        target += 2;
-    } while (--count != 0);
+void fn_8023C210(Dst8023C210 *dst, Src8023C210 *src) {
+    dst->a = src->a;
+    dst->b = src->b;
+    dst->c = src->c;
+    dst->d = src->d;
+    dst->e = src->e;
+    dst->f = src->f;
+    dst->t = src->t;
 }
 
 void fn_8023C268(void) {}
