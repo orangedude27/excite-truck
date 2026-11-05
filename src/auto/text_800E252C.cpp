@@ -3178,51 +3178,6 @@ extern "C" void FadeIn__Q44nw4r3snd6detail10BasicSoundFi(void* self, int duratio
     }
 }
 
-class PauseVtObj;
-class PauseVt {
-public:
-    virtual ~PauseVt();
-    virtual void vf2();
-    virtual void vf3();
-    virtual void vf4();
-    virtual void vf5();
-    virtual void vf6(int);
-    virtual void vf7();
-    virtual void vf8();
-    virtual void vf9();
-    virtual void vf10();
-    virtual void vf11();
-    virtual void vf12();
-    virtual void vf13();
-    virtual void vf14();
-    virtual void vf15();
-    virtual void vf16();
-    virtual void vf17();
-    virtual void vf18();
-    virtual void vf19();
-    virtual void vf20();
-    virtual void vf21();
-    virtual PauseVt *vf22();   // vtable 0x5C
-};
-struct PauseFields {
-    PauseVt *vt;
-    unsigned char pad0[0x50];
-    float start;     // 0x54
-    float end;       // 0x58
-    int total;       // 0x5C
-    int elapsed;     // 0x60
-    unsigned char pad1[0x6];
-    unsigned char paused;   // 0x67
-    unsigned char fading;   // 0x68
-};
-
-static inline float PauseRamp(PauseFields *s) {
-    int total = s->total;
-    int elapsed = s->elapsed;
-    if (elapsed >= total) return s->end;
-    return s->start + (float)elapsed * (s->end - s->start) / (float)total;
-}
-
 typedef void (*vfn0_t)(void*);
 extern "C" void fn_800E9070(VfObj *this_) {
     VfObj *first = this_->vf23();
