@@ -45,23 +45,22 @@ typedef struct {
 char* long2str_80025854(signed long num, char* buff, print_format format);
 
 static char* double2hex_80025D1C(long double num, char* buff, print_format format) {
-    int offset, what_nibble = 0;
-    char* wrk_byte_ptr;
-    char *p, *q;
-    char working_byte;
-    long double ld;
-    signed short* sptr;
-    signed short snum;
-    signed long exp;
+    char* p;
+    unsigned char* q;
+    unsigned char working_byte;
+    int expbits, expmask;
+    unsigned snum;
+    long exp;
     print_format exp_format;
     int hex_precision;
+    int mantissa_bit;
     decform form;
     decimal dec;
+    int radix_marker;
+    double tempF;
     extern double lbl_805605C0;
 
-    p = buff;
-    ld = num;
-    sptr = (signed short*)&ld;
+    radix_marker = *(unsigned char*)__lconv.decimal_point;
 
     if (format.precision > 509) {
         return 0;
@@ -71,8 +70,15 @@ static char* double2hex_80025D1C(long double num, char* buff, print_format forma
     form.digits = 0x20;
     __num2dec(&form, num, &dec);
 
+    tempF = fabs(num);
+    if (lbl_805605C0 == tempF) {
+        p = buff - 6;
+        strcpy(p, "0x0p0");
+        return p;
+    }
+
     if (*dec.sig.text == 'I') {
-        if (*sptr & 0x8000) {
+        if (dec.sign) {
             p = buff - 5;
             if (format.conversion_char == 'A')
                 strcpy(p, "-INF");
@@ -88,7 +94,7 @@ static char* double2hex_80025D1C(long double num, char* buff, print_format forma
 
         return p;
     } else if (*dec.sig.text == 'N') {
-        if (*(char*)&num & 0x80) {
+        if (dec.sign) {
             p = buff - 5;
             if (format.conversion_char == 'A')
                 strcpy(p, "-NAN");
@@ -114,7 +120,13 @@ static char* double2hex_80025D1C(long double num, char* buff, print_format forma
     exp_format.precision = 1;
     exp_format.conversion_char = 'd';
 
-    snum = (*sptr & 0x7ff0) >> 4;
+    expbits = 11;
+    expmask = 0x7FF;
+
+    snum = ((unsigned char*)&num)[0] << 25;
+    snum |= ((unsigned char*)&num)[1] << 17;
+
+    snum = (snum >> (32 - expbits)) & expmask;
 
     exp = snum - 0x3FF;
 
@@ -123,33 +135,40 @@ static char* double2hex_80025D1C(long double num, char* buff, print_format forma
         *--p = 'p';
     else
         *--p = 'P';
+    q = (unsigned char*)&num;
 
-    q = (char*)&num;
+    mantissa_bit = (1 + expbits + format.precision * 4) - 1;
 
     for (hex_precision = format.precision; hex_precision >= 1; hex_precision--) {
-        working_byte = *(q + (hex_precision / 2) + 1);
-        if (hex_precision % 2)
-            working_byte = working_byte & 0x0f;
-        else
-            working_byte = (working_byte >> 4) & 0x0f;
+        if (mantissa_bit < 64) {
+            int mantissa_byte;
 
-        if (working_byte < 10) {
-            working_byte += '0';
-        } else {
-            working_byte -= 10;
+            mantissa_byte = mantissa_bit >> 3;
+            working_byte = (*(q + mantissa_byte)) >> (7 - (mantissa_bit & 7));
 
-            if (format.conversion_char == 'a') {
-                working_byte += 'a';
-            } else {
-                working_byte += 'A';
+            if ((mantissa_bit & ~7) != ((mantissa_bit - 4) & ~7)) {
+                working_byte |= ((*(q + (mantissa_byte - 1))) << 8) >> (7 - ((mantissa_bit) & 7));
             }
+
+            if ((working_byte &= 0xF) < 10) {
+                working_byte += '0';
+            } else {
+                if (format.conversion_char == 'a') {
+                    working_byte += 'a' - 10;
+                } else {
+                    working_byte += 'A' - 10;
+                }
+            }
+        } else {
+            working_byte = '0';
         }
 
         *--p = working_byte;
+        mantissa_bit -= 4;
     }
 
     if (format.precision || format.alternate_form) {
-        *--p = '.';
+        *--p = radix_marker;
     }
 
     *--p = '1';
@@ -162,7 +181,7 @@ static char* double2hex_80025D1C(long double num, char* buff, print_format forma
 
     *--p = '0';
 
-    if (*sptr & 0x8000) {
+    if (dec.sign) {
         *--p = '-';
     } else if (format.sign_options == sign_always) {
         *--p = '+';
