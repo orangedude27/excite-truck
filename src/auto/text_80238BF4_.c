@@ -34,6 +34,7 @@ static inline s32 clampHigh_80238BF4(s32 v) {
     if (v < 0xFF) return v;
     return 0xFF;
 }
+#pragma scheduling invalid_target
 void fn_80238BF4(void *arg0, u8 *arg1) {
     struct LocalFrame {
         u16 indices3[3];
