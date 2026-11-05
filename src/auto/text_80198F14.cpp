@@ -3326,6 +3326,18 @@ static inline void MtxMulVecInl(const f32 *m, const f32 *src, const f32 *srcCmp,
         dst[2] = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
     }
 }
+static inline void MtxMulVecRevInl(const f32 *m, const f32 *src, f32 *dst) {
+    if (dst == src) {
+        f32 x = src[0], y = src[1], z = src[2];
+        dst[0] = z * m[6] + (x * m[0] + y * m[3]);
+        dst[1] = z * m[7] + (x * m[1] + y * m[4]);
+        dst[2] = z * m[8] + (x * m[2] + y * m[5]);
+    } else {
+        dst[0] = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
+        dst[1] = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
+        dst[2] = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
+    }
+}
 #pragma always_inline reset
 extern "C" void fn_801A2EC8(void) {
 
@@ -3608,34 +3620,57 @@ extern float lbl_805622D0, lbl_805622DC, lbl_805623C0;
 extern float PSVECDotProduct(float *, void *);
 extern "C" int fn_80198F64(void *, int, void *, float *, void *, float *, float);
 extern int fn_8019A788(void *, int, void *, void *, int, int, float, float, float);
-void fn_801A38E4(int arg0, void *arg1) {
-    int type = *(int *)((char *)arg1 + 0x18);
-    switch (type) {
+extern "C" void fn_801A38E4(int arg0, void *arg1) {
+    u8 *base = (u8 *)arg1;
+    f32 q[3];
+    f32 n1[3];
+    f32 n0[3];
+    f32 n3[3];
+    f32 n2[3];
+    f32 zero0[3];
+    f32 zero1[3];
+    f32 axis[3];
+    f32 depth0;
+    f32 depth1;
+    switch (*(s32 *)(base + 0x18)) {
     case 0x464c5352: {
-        float axis[3] = {lbl_805622D0, lbl_805622DC, lbl_805622D0};
-        float dot = PSVECDotProduct(axis, *(void **)((char *)arg1 + 0xc));
-        float cur = *(float *)((char *)arg1 + 0x54);
-        *(float *)((char *)arg1 + 0x24) = cur + dot * (*(float *)((char *)arg1 + 0x58) - cur);
+        f32 dot;
+        f32 a;
+        f32 cur;
+        axis[0] = lbl_805622D0;
+        axis[1] = lbl_805622DC;
+        axis[2] = lbl_805622D0;
+        dot = PSVECDotProduct(axis, (u8 *)*(void **)(base + 0xc) + 0xc);
+        a = __fabs(dot);
+        cur = *(f32 *)(base + 0x54);
+        *(f32 *)(base + 0x24) = cur + a * (*(f32 *)(base + 0x58) - cur);
     }
     case 0x53504852: {
-        void *owner = *(void **)((char *)arg1 + 4);
+        u8 *owner = *(u8 **)(base + 4);
         if (owner != 0) {
-            void *node = *(void **)((char *)owner + 0xd0);
-            while (node != 0) {
-                float p[3], out1[3], out2[3], q[3] = {0.0f,0.0f,0.0f};
-                float *m = (float *)((char *)owner + 0x3c);
-                float *v = (float *)((char *)node + 4);
-                q[0] = v[0]*m[0] + v[1]*m[3] + v[2]*m[6] + m[9];
-                q[1] = v[0]*m[1] + v[1]*m[4] + v[2]*m[7] + m[10];
-                q[2] = v[0]*m[2] + v[1]*m[5] + v[2]*m[8] + m[11];
-                fn_80198F64(q,arg0,out1,p,out2,q,lbl_805623C0);
-                node = *(void **)node;
+            u8 *node = *(u8 **)(owner + 0xd0);
+            if (node != 0) {
+                f32 c = lbl_805623C0;
+                f32 z = lbl_805622D0;
+                while (node != 0) {
+                    MtxMulVecInl((f32 *)(owner + 0x3c), (f32 *)(node + 4), q);
+                    q[0] = q[0] + *(f32 *)(owner + 0x60);
+                    q[1] = q[1] + *(f32 *)(owner + 0x64);
+                    q[1] = q[1] + c;
+                    q[2] = q[2] + *(f32 *)(owner + 0x68);
+                    zero0[0] = z; zero0[1] = z; zero0[2] = z;
+                    if (fn_80198F64(q, arg0, n0, &depth0, n1, zero0, c)) {
+                        fn_8019A788(arg1, (void *)arg0, n0, (Vec *)n1, 0, 0, depth0, lbl_805622D0, lbl_805622D0);
+                    }
+                    node = *(u8 **)node;
+                }
             }
         }
-        float p[3] = {lbl_805622D0,lbl_805622D0,lbl_805622D0}, a[3], b[3], c[3];
-        if (fn_80198F64((char *)arg1+0x34,arg0,a,p,b,c,*(float *)((char *)arg1+0x24)))
-            fn_8019A788(arg1,arg0,a,b,0,0,p[0],lbl_805622D0,lbl_805622D0);
-        return;
+        zero1[0] = lbl_805622D0; zero1[1] = lbl_805622D0; zero1[2] = lbl_805622D0;
+        if (fn_80198F64(base + 0x34, arg0, n2, &depth1, n3, zero1, *(f32 *)(base + 0x24))) {
+            fn_8019A788(arg1, (void *)arg0, n2, (Vec *)n3, 0, 0, depth1, lbl_805622D0, lbl_805622D0);
+        }
+        break;
     }
     }
 }
