@@ -150,6 +150,7 @@ struct PauseFields {
     unsigned char paused;   // 0x67
     unsigned char fading;   // 0x68
 };
+#pragma always_inline on
 static inline float PauseRamp(PauseFields *s) {
     int total = s->total;
     int elapsed = s->elapsed;
