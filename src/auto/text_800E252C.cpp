@@ -162,6 +162,12 @@ static inline float PauseRamp(PauseFields *s) {
     }
     return r;
 }
+static inline void PauseSetRamp(PauseFields *s, float end, int n) {
+    s->start = PauseRamp(s);
+    s->end = end;
+    s->total = n;
+    s->elapsed = 0;
+}
 #pragma always_inline reset
 // Vtable dispatcher class for indirect virtual calls (MWCC ABI: 2 leading dtor slots).
 class VfObj {
@@ -3194,25 +3200,26 @@ extern "C" void Pause__Q46nw4hbm3snd6detail10BasicSoundFbi(void *self, bool paus
     PauseFields *s = (PauseFields *)self;
     PauseVt *player = ((PauseVt *)self)->vf22();
     int n;
+    float v;
     if (pause) {
-        float v = PauseRamp(s);
+        n = (int)((float)frames * PauseRamp(s));
         s->fading = 1;
-        n = (int)((float)frames * v);
         if (n <= 0) n = 1;
-        s->start = PauseRamp(s);
+        v = PauseRamp(s);
         s->end = lbl_80560FB0;
+        s->start = v;
         s->total = n;
         s->elapsed = 0;
     } else {
         if ((s->paused != 0) != pause) {
-            player->vf6(0);
+            player->vf4(0);
         }
-        float v = PauseRamp(s);
+        n = (int)((float)frames * (lbl_80560FB4 - PauseRamp(s)));
         s->fading = 1;
-        n = (int)((float)frames * (lbl_80560FB4 - v));
         if (n <= 0) n = 1;
-        s->start = PauseRamp(s);
+        v = PauseRamp(s);
         s->end = lbl_80560FB4;
+        s->start = v;
         s->total = n;
         s->elapsed = 0;
     }
