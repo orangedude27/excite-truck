@@ -119,7 +119,7 @@ public:
     virtual ~PauseVt();
     virtual void vf2();
     virtual void vf3();
-    virtual void vf4();
+    virtual void vf4(int);     // vtable 0x14
     virtual void vf5();
     virtual void vf6(int);
     virtual void vf7();
@@ -3188,6 +3188,37 @@ extern "C" void Stop__Q44nw4r3snd6detail10BasicSoundFi(void *self, int target) {
     fields->flags[0] = 0; fields->flags[1] = 0;
     fields->flags[2] = 0; fields->flags[3] = 1;
 }
+
+#pragma dont_inline off
+extern "C" void Pause__Q46nw4hbm3snd6detail10BasicSoundFbi(void *self, bool pause, int frames) {
+    PauseFields *s = (PauseFields *)self;
+    PauseVt *player = ((PauseVt *)self)->vf22();
+    int n;
+    if (pause) {
+        float v = PauseRamp(s);
+        s->fading = 1;
+        n = (int)((float)frames * v);
+        if (n <= 0) n = 1;
+        s->start = PauseRamp(s);
+        s->end = lbl_80560FB0;
+        s->total = n;
+        s->elapsed = 0;
+    } else {
+        if ((s->paused != 0) != pause) {
+            player->vf6(0);
+        }
+        float v = PauseRamp(s);
+        s->fading = 1;
+        n = (int)((float)frames * (lbl_80560FB4 - v));
+        if (n <= 0) n = 1;
+        s->start = PauseRamp(s);
+        s->end = lbl_80560FB4;
+        s->total = n;
+        s->elapsed = 0;
+    }
+    s->paused = pause;
+}
+#pragma dont_inline on
 
 extern "C" void fn_800E8F54(void *arg0, int arg1) {
     *(int *)((char *)arg0 + 0x6C) = arg1;
