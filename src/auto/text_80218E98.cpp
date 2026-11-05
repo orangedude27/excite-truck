@@ -1032,10 +1032,10 @@ extern char lbl_8033D8B8[];
 #pragma processor 750
 extern "C" void fn_80219AB4(void *arg0, s32 type, s32 name, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     u8 *obj = (u8 *)arg0;
+    *(s32 *)(obj + 0x24C) = arg4;
     const char *src = (const char *)name;
     char *dst = (char *)obj + 0x25C;
     s32 count = 32;
-    *(s32 *)(obj + 0x24C) = arg4;
     *(s32 *)(obj + 0x258) = name;
     *(s32 *)(obj + 0x254) = arg5;
     *(s32 *)(obj + 0x250) = arg3;
@@ -1043,10 +1043,11 @@ extern "C" void fn_80219AB4(void *arg0, s32 type, s32 name, s32 arg3, s32 arg4, 
     while ((*dst++ = *src++) != 0) {
         if (--count <= 0) { dst[-1] = 0; break; }
     }
-    *(f32 *)(obj + 0x27C) = lbl_805634A4;
+    f32 zero = lbl_805634A4;
     *(u8 *)(obj + 0x280) = arg6;
     *(s32 *)(obj + 0x248) = 0;
     s32 resource = 0;
+    *(f32 *)(obj + 0x27C) = zero;
     if (type != 6 && type != 3) resource = arg4;
     switch (type) {
     case 4:
@@ -6498,6 +6499,7 @@ extern "C" void fn_80227880(s32 unused, f32 x, f32 y, f32 width, f32 height) {
 #pragma pop
 extern "C" void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
 #pragma scheduling invalid_target
+#pragma processor 750
 extern "C" void fn_802278F0(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3) {
     if (arg0) {
         {
