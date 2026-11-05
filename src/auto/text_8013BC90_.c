@@ -12,9 +12,9 @@ extern const char lbl_8032C43C[];
 #pragma cplusplus on
 class CacheSrc {
 public:
-    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-    virtual int has(const char *);
     virtual void *open(const char *);
+    virtual void v1();
+    virtual int has(const char *);
 };
 #pragma cplusplus reset
 struct CacheVt;
@@ -179,14 +179,14 @@ extern void *fn_8013184C(void);
 extern void fn_802E30C8(const char *, ...);
 extern const char lbl_8032C42C[];
 extern const char lbl_8032C43C[];
-#pragma scheduling invalid_target
-void *fn_8013BFE8(char *arg0) {
+#pragma cplusplus on
+extern "C" void *fn_8013BFE8(char *arg0) {
     Key64 key;
     char buf[0x80];
     unsigned char *e;
     int i, count;
     unsigned char *p;
-    CacheObj *obj;
+    CacheSrc *obj;
     char *name;
     void *res, *h;
     int n;
@@ -220,11 +220,11 @@ copied:
     }
     if (e == 0) {
         res = 0;
-        obj = (CacheObj *)fn_80131810(lbl_8032C42C);
+        obj = (CacheSrc *)fn_80131810(lbl_8032C42C);
         if (obj != 0) {
             name = fn_8013BC90(buf, 0x80, (char *)&key);
-            if (obj->vt->m4(obj, name))
-                h = obj->vt->m2(obj, name);
+            if (obj->has(name))
+                h = obj->open(name);
             else
                 h = 0;
             if (h != 0) fn_802E30C8(lbl_8032C43C, name);
@@ -284,7 +284,7 @@ copied:
     }
     return 0;
 }
-#pragma scheduling on
+#pragma cplusplus reset
 extern void fn_80128658(int);
 extern void fn_80128668(void *);
 extern void fn_8013A598(void *, int);
