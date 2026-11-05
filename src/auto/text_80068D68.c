@@ -285,6 +285,8 @@ extern u8 lbl_803C3AF0[];
 extern char lbl_80317700[];
 extern void fn_80086468(void *);
 u8 btm_sec_start_authorization(u8 *p);
+extern void *l2cu_allocate_lcb(u8 *);
+extern BOOLEAN l2cu_create_conn(void *);
 extern u8 lbl_803C4040[];
 extern void l2c_init(void);
 extern char lbl_803181F0[];
