@@ -9,7 +9,7 @@ typedef signed long s32;
 typedef unsigned long u32;
 typedef float f32;
 typedef int BOOL;
-extern s32 fn_8023905C(void);
+extern void fn_8023905C();
 extern s32 fn_80128668(void);
 extern s32 fn_802E2C20(void);
 extern void fn_80238FCC(u32, u32);
