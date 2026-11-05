@@ -17,18 +17,43 @@ void fn_801D0590(void* arg0) {
     int count = list->count++;
     items[count] = arg0;
 }
+
+void fn_801D05B4(void *arg0) {
+    void **p = lbl_804386B4[0].items;
+    int index = 0;
+    int i;
+    int last;
+    for (i = 0; i < lbl_804386B4[0].count; i++) {
+        if (*p == arg0) goto found;
+        p++;
+        index++;
+    }
+    index = -1;
+found:
+    if (index == -1) return;
+    if (index < 0) return;
+    if (index >= lbl_804386B4[0].count) return;
+    last = lbl_804386B4[0].count - 1;
+    if (index != last) {
+        void **items = lbl_804386B4[0].items;
+        items[index] = items[last];
+    }
+    lbl_804386B4[0].count = lbl_804386B4[0].count - 1;
+}
+
 #pragma push
 #pragma use_lmw_stmw off
 void fn_801D0650(void *arg0) {
     int offset;
     int i;
+    struct Obj {
+        void (**vtable)(void *, void *);
+    };
     i = 0;
     offset = 0;
     while (i < lbl_804386B4[0].count) {
         void *obj = *(void **)((char *)lbl_804386B4[0].items + offset);
-        register void (*dispatch)(void *, void *);
-        dispatch = (void (*)(void *, void *))(*(void ***)obj)[2];
-        dispatch(obj, arg0);
+        ((struct Obj *)obj)->vtable[2](obj, arg0);
         offset += 4;
         i++;
     }
@@ -75,12 +100,45 @@ void fn_801D0738(void *arg0, void *arg1, void *arg2, void *arg3) {
     }
 }
 
+static inline int DispatchList_Find2(void *obj) {
+    void **p = lbl_8043870C[0].items;
+    int i;
+    for (i = 0; i < lbl_8043870C[0].count; i++) {
+        if (*p == obj) return i;
+        p++;
+    }
+    return -1;
+}
+
 #pragma scheduling invalid_target
 void fn_801D0800(s32 arg0) {
     DispatchList* list = lbl_8043870C;
     s32* items = (s32*)list->items;
     int count = list->count++;
     items[count] = arg0;
+}
+
+void fn_801D0824(void *arg0) {
+    void **p = lbl_8043870C[0].items;
+    int index = 0;
+    int i;
+    int last;
+    for (i = 0; i < lbl_8043870C[0].count; i++) {
+        if (*p == arg0) goto found;
+        p++;
+        index++;
+    }
+    index = -1;
+found:
+    if (index == -1) return;
+    if (index < 0) return;
+    if (index >= lbl_8043870C[0].count) return;
+    last = lbl_8043870C[0].count - 1;
+    if (index != last) {
+        void **items = lbl_8043870C[0].items;
+        items[index] = items[last];
+    }
+    lbl_8043870C[0].count = lbl_8043870C[0].count - 1;
 }
 
 #pragma cplusplus on
