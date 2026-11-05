@@ -7140,7 +7140,8 @@ extern "C" s32 VFiPFPATH_GetNextTokenOfPath(void *arg0, s32 arg1) {
     u32 mode;
     s32 var_r4;
     s32 var_r5;
-    u16 temp_r3_3;
+    s32 sum;
+    u32 ch;
     u8 *temp_r4;
     u8 temp_r0;
 
@@ -7151,14 +7152,14 @@ extern "C" s32 VFiPFPATH_GetNextTokenOfPath(void *arg0, s32 arg1) {
         *(u8 **)arg0 = 0;
         return 0;
     }
-          if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055921C, 1, 0, 1) == 0 ||
-          VFiPFSTR_StrNCmp((s32)arg0, lbl_80559220, 1, 0, 1) == 0) {
-          ((void (*)(void *, s16))VFiPFSTR_MoveStrPos)(arg0, 1);
-      }
-          if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055921C, 1, 0, 1) == 0 ||
-          VFiPFSTR_StrNCmp((s32)arg0, lbl_80559220, 1, 0, 1) == 0) {
-          return 2;
-      }
+    if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055921C, 1, 0, 1) == 0 ||
+        VFiPFSTR_StrNCmp((s32)arg0, lbl_80559220, 1, 0, 1) == 0) {
+        ((void (*)(void *, s16))VFiPFSTR_MoveStrPos)(arg0, 1);
+    }
+    if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055921C, 1, 0, 1) == 0 ||
+        VFiPFSTR_StrNCmp((s32)arg0, lbl_80559220, 1, 0, 1) == 0) {
+        return 2;
+    }
 
     mode = fn_800A4D44(arg0);
     *(u8 **)((u8 *)arg0 + 4) = *(u8 **)arg0;
@@ -7173,7 +7174,7 @@ extern "C" s32 VFiPFPATH_GetNextTokenOfPath(void *arg0, s32 arg1) {
     }
 
     if (var_r27 == 0) {
-        do {
+        while (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055920C, 2, 0, 1) != 0) {
             if (mode == 1U &&
                 ((s32 (**)(s8, s32))((u8 *)lbl_803D2140 + 0x54))[0]
                     ((s8)**(u8 **)((u8 *)arg0 + 4), 1) != 0) {
@@ -7198,11 +7199,12 @@ extern "C" s32 VFiPFPATH_GetNextTokenOfPath(void *arg0, s32 arg1) {
                     if (mode == 2U) {
                         temp_r4 = *(u8 **)((u8 *)arg0 + 4);
                         var_r5 = 1;
-                        temp_r3_3 = (temp_r4[0] << 8) + temp_r4[1];
-                        if (temp_r3_3 < 0x80U) {
+                        sum = (temp_r4[0] << 8) + temp_r4[1];
+                        if ((u16)sum < 0x80U) {
                             var_r4 = 0;
-                            if ((u8)temp_r3_3 >= 0x20U && (temp_r3_3 & 0xFF00) == 0 &&
-                                (lbl_802EEEE0[(u8)((u8)temp_r3_3 - 0x20)] & 1) != 0)
+                            ch = (u8)sum;
+                            if (ch >= 0x20U && (ch & 0xFF00) == 0 &&
+                                (lbl_802EEEE0[(u8)(ch - 0x20)] & 1) != 0)
                                 var_r4 = 1;
                             if (var_r4 == 0)
                                 var_r5 = 0;
@@ -7226,7 +7228,7 @@ extern "C" s32 VFiPFPATH_GetNextTokenOfPath(void *arg0, s32 arg1) {
                 *(u8 **)((u8 *)arg0 + 4) += 1;
             else
                 *(u8 **)((u8 *)arg0 + 4) += 2;
-        } while (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055920C, 2, 0, 1) != 0);
+        }
     }
 done:
     return 0;
