@@ -1,4 +1,8 @@
+#include <revolution/MTX/mtxtypes.h>
 #include "types.h"
+extern f32 lbl_805639DC, lbl_805639E4, lbl_80558DC4, lbl_805639E0;
+extern f32 fn_8002F234(f32);
+extern f32 PSVECDotProduct(void *, void *);
 typedef struct { f32 x, y, z, w; } Vec4_80252;
 extern f32 lbl_805639C8, lbl_805639D0, lbl_805639D4, lbl_805639D8;
 extern f32 fn_80129DC4(s32, f32, f32);
@@ -121,10 +125,10 @@ void fn_80252C90(void) {
     phase = lbl_805639D0;
     dst=lbl_80498D00;
     for(i=0;i<count;i++,dst+=0x78) {
-        float *src=(float *)(a+i*0xb0);
         float *angles=(float *)(b+i*0x1f0);
+        float *src=(float *)(a+i*0xb0);
         float *wheel=(float *)(c+i*0x190);
-        float previous[4];
+        Vec4_80252 previous; Vec4_80252 current;
         float *out=(float *)dst;
         { float z=src[2], y=src[1], x=src[0]; out[9]=x; out[10]=y; out[11]=z; }
         { float z=src[6], y=src[5], x=src[4]; out[0]=x; out[1]=y; out[2]=z; }
@@ -132,13 +136,14 @@ void fn_80252C90(void) {
         { float z=src[14], y=src[13], x=src[12]; out[6]=x; out[7]=y; out[8]=z; }
         { float z=src[22], y=src[21], x=src[20]; out[24]=x; out[25]=y; out[26]=z; }
         { float z=src[26], y=src[25], x=src[24]; out[27]=x; out[28]=y; out[29]=z; }
-        previous[0]=angles[0]; previous[1]=angles[1]; previous[2]=angles[2]; previous[3]=angles[3];
-        out[20]=angles[4]; out[21]=angles[5]; out[22]=angles[6]; out[23]=angles[7];
+        current=*(Vec4_80252 *)(angles+4);
+        previous=*(Vec4_80252 *)angles;
+        out[20]=current.x; out[21]=current.y; out[22]=current.z; out[23]=current.w;
         for (j=0;j<4;j++) {
             out[20+j]=(float)fn_8002EFB4(phase+out[20+j],lbl_805639F0);
-            out[16+j]=wheel[j*4+1]+previous[j];
+            out[16+j]=wheel[j*4+1]+((float *)&previous)[j];
         }
-        angles[4]=out[20]; angles[5]=out[21]; angles[6]=out[22]; angles[7]=out[23];
+        { float w=out[23], z=out[22], y=out[21], x=out[20]; angles[4]=x; angles[5]=y; angles[6]=z; angles[7]=w; }
         dst[0x30]=1;
     }
     fn_801BF1B4();
