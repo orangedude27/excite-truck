@@ -1851,6 +1851,7 @@ extern "C" f32 lbl_805617B4, lbl_805617B8, lbl_805617BC;
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling on
+#pragma opt_propagation off
 extern "C" f32 fn_8015A8D8(void* a, void* arg1) {
     u8* p = (u8*)a;
     s32 end;
@@ -1929,7 +1930,8 @@ extern "C" f32 fn_8015A8D8(void* a, void* arg1) {
     end = 0;
     if (((Fn8015889C*)a)->v39()) {
         s32 last = fn_80158D04(a)-1;
-        if (last == ((Fn8015889C*)a)->v23()) end = 1;
+        s32 current = ((Fn8015889C*)a)->v23();
+        if (current == last) end = 1;
     }
     if (fn_80141F7C(*(f32*)(p+0x254)) || end) {
         if (*(s32*)(p+0x264) > 0) result = ((f32 (*)(void*, void*))fn_8015A368)(a,arg1);
