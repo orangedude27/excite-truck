@@ -3334,20 +3334,6 @@ extern "C" void fn_801A3174(void *arg0) {
 }
 
 extern char lbl_80333778[];
-#pragma always_inline on
-static inline void MtxMulVecInl(const f32 *m, const f32 *src, f32 *dst) {
-    if (src == dst) {
-        f32 x = src[0], y = src[1], z = src[2];
-        dst[0] = z * m[6] + (x * m[0] + y * m[3]);
-        dst[1] = z * m[7] + (x * m[1] + y * m[4]);
-        dst[2] = z * m[8] + (x * m[2] + y * m[5]);
-    } else {
-        dst[0] = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
-        dst[1] = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
-        dst[2] = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
-    }
-}
-#pragma always_inline reset
 __declspec(section ".sdata") extern char lbl_8055A4C8[];
 __declspec(section ".sdata") extern char lbl_8055A4D0[];
 __declspec(section ".sdata") extern char lbl_8055A4D4[];
