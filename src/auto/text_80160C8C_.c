@@ -1090,7 +1090,7 @@ extern f32 PSVECSquareDistance(void *, void *);
 extern s32 fn_80139B5C(void *, s32);
 extern void *fn_801B83A0(void);
 extern f32 lbl_80561840, lbl_80561850, lbl_80561854, lbl_80561858;
-extern f32 lbl_80558DC4;
+extern f32 lbl_80558DC4[];
 #pragma push
 #pragma processor 750
 void fn_80162268(void *arg0) {
@@ -1761,7 +1761,7 @@ extern "C" void fn_801638A0(void *arg0) {
     u8 *entry;
     s32 offset;
     u8 *car,*flags,*ui;
-    f32 velocity[2],length,scale,sqrtLen;
+    f32 velocity[2],length,scale;
     f32 threshold,one,epsilon;
     if (((*(f32 *)(self+0x98)>*(f32 *)(self+0x84))&1)!=0) self[0x56D]=1;
     if (fn_801C5B60()==0) fn_801DF074(8,0);
@@ -1781,8 +1781,7 @@ extern "C" void fn_801638A0(void *arg0) {
                             velocity[1]=*(f32 *)(car+0x120);
                             length=velocity[0]*velocity[0]+velocity[1]*velocity[1];
                             if (length>epsilon) {
-                                sqrtLen=(f32)fn_8002F234(length);
-                                scale=one/sqrtLen;
+                                scale=one/(f32)fn_8002F234(length);
                                 velocity[0]*=scale;
                                 velocity[1]*=scale;
                                 if (velocity[1]**(f32 *)(entry+0x30)+velocity[0]**(f32 *)(entry+0x2C)>threshold) {
@@ -1812,7 +1811,7 @@ extern "C" void fn_801638A0(void *arg0) {
             self[0x88]=1;
         }
     } else {
-        if ((f32)__fabs(*(f32 *)(self+0x8C))<=lbl_80558DC4) {
+        if ((f32)__fabs(*(f32 *)(self+0x8C))<=*(f32 *)&lbl_80558DC4) {
             fn_80276DC8(0);
             for (i=0,cars2=lbl_804348E8;i<fn_801B2F24();cars2++,i++) {
                 Dummy_801638A0 *manager=(Dummy_801638A0 *)fn_801B83A0();
