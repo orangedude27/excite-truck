@@ -854,17 +854,13 @@ int fn_802182F0(void *arg0, void *arg1) {
 }
 
 int fn_8021832C(void *arg0) {
-    void *obj;
-    void **vtable;
-    obj = *(void **)((char *)arg0 + 0x44C);
+    struct Fn8021832CObj *obj = *(struct Fn8021832CObj **)((char *)arg0 + 0x44C);
     if (obj != 0) {
-        vtable = *(void ***)obj;
-        return ((int (*)(void *))vtable[24])(obj);
+        return obj->Query();
     }
-    obj = *(void **)((char *)arg0 + 0x448);
+    obj = *(struct Fn8021832CObj **)((char *)arg0 + 0x448);
     if (obj != 0) {
-        vtable = *(void ***)obj;
-        return ((int (*)(void *))vtable[24])(obj);
+        return obj->Query();
     }
     return 0;
 }
