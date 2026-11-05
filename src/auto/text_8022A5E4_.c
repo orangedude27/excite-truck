@@ -769,13 +769,13 @@ void fn_8022C520(void) {
 void fn_8022C9D0(void) {
     unsigned char *p = (unsigned char *)lbl_80490968;
     int i = 0;
-loop:
-    if (*p != 0) fn_8022A8E4(i);
-    i++;
-    if (i < 0x100) {
+    do {
+        if (*p != 0) {
+            fn_8022A8E4(i);
+        }
+        i++;
         p += 0x74;
-        goto loop;
-    }
+    } while (i < 0x100);
 }
 
 void *fn_8022CA2C(int arg0) {
