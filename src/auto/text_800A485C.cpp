@@ -1,4 +1,10 @@
   #include <types.h>
+struct Fn800D3C44Str {
+    char file[0x134];
+    char msg134[0x80];
+    char msg1b4[0x2c];
+    char msg1e0[0x20];
+};
 #pragma push
 #pragma dont_inline on
 #pragma scheduling on
@@ -3721,9 +3727,10 @@ extern "C" s32 fn_800B5324(void *, u8 *, u32, u32, u32, u32 *, s32);
 extern "C" s32 fn_800AC708(register void *arg0, register u8 *arg1, register u32 arg2, register s32 *arg3) {
     register u8 *iter;
     s32 status;
-    register s32 result;
+    s32 result;
     register s32 zero;
-    s32 callResult;
+    s32 code;
+    u32 old;
     u32 sp8;
     u8 spC[13];
     u8 flags;
@@ -3803,31 +3810,28 @@ process:
     }
     if (flags && *(u32 *)(arg1 + 0x234) == 0) {
         *(u32 *)(arg1 + 0x234) = 1;
-        *arg3 = 1;
     }
+    *arg3 = 1;
     return 0;
 advance:
-    {
-        u32 old = *(u32 *)iter;
-        *(u32 *)iter = old + 1;
-        result = fn_800AB378((void *)iter, 0);
-        if (result != 0) {
-            *(u32 *)iter = old;
-            fn_800AB378((void *)iter, 0);
-        } else if (*(u32 *)(iter + 0x44) + 0x10000 == 0xFFFF) {
-            result = 0x10;
+    old = *(u32 *)iter;
+    *(u32 *)iter = old + 1;
+    result = fn_800AB378((void *)iter, 0);
+    if (result != 0) {
+        *(u32 *)iter = old;
+        fn_800AB378((void *)iter, 0);
+    } else {
+        if (*(u32 *)(iter + 0x44) + 0x10000 == 0xFFFF) {
+            code = 0x10;
         } else {
-            callResult = fn_800B5324(*(void **)(iter + 4),
-                                     iter + 0x4C,
-                                     *(u32 *)(iter + 0x44),
-                                     *(u16 *)(iter + 0x48),
-                                     0x20, &sp8, 0);
-            if (sp8 != 0x20) result = 0x11;
-            else result = callResult;
+            result = fn_800B5324(*(void **)(iter + 4), iter + 0x4C, *(u32 *)(iter + 0x44),
+                                 *(u16 *)(iter + 0x48), 0x20, &sp8, 0);
+            if (sp8 != 0x20) code = 0x11;
+            else code = result;
         }
-        result = result & (s32)(-(u32)result | (u32)result) >> 31;
-        status = result & (s32)(-(u32)result | (u32)result) >> 31;
+        result = code & (s32)(-(u32)code | (u32)code) >> 31;
     }
+    status = result & (s32)(-(u32)result | (u32)result) >> 31;
 check_end:
     if (VFiPFENT_ITER_IsAtLogicalEnd((void *)iter) == 0) goto status_check;
     return 0;
@@ -17768,16 +17772,12 @@ extern "C" s32 fn_800D3C44(register char *var_r24, void *arg1, register u32 var_
     void *var_r30 = 0;
     s32 var_r29;
     s32 var_r23;
-    s32 var_r23_2;
-    s32 var_r23_3;
     u32 var_r28;
     u32 temp_r0;
     char *temp_r23;
     char *temp_r3_4;
     char *temp_r3_5;
-    u8 temp_r3;
-    u8 temp_r3_2;
-    u8 temp_r3_3;
+    u8 c;
 
     if (var_r26 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x25A, base + 0x1B4);
@@ -17801,18 +17801,19 @@ loop_8:
     if (lbl_8055DDD8 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x169, base + 0x134);
     }
-    temp_r3 = (u8)var_r24;
     if (var_r24 == 0) {
         var_r24 = 0;
     } else {
+        goto in1;
         for (;;) {
-            if (((s32)temp_r3 == 0xA) && ((var_r23 -= 1) <= 0)) {
+            if ((s32)c == 0xA && (var_r23 -= 1) <= 0) {
                 var_r24++;
                 break;
             }
+in1:
             var_r24++;
-            temp_r3 = lbl_8055DDD8(var_r24);
-            if (temp_r3 == 0) {
+            c = lbl_8055DDD8(var_r24);
+            if (c == 0) {
                 var_r24 = 0;
                 break;
             }
@@ -17824,22 +17825,23 @@ loop_8:
         goto loop_8;
     }
 
-    var_r23_2 = 3;
+    var_r23 = 3;
     if (lbl_8055DDD8 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x169, base + 0x134);
     }
-    temp_r3_2 = (u8)var_r24;
     if (var_r24 == 0) {
         var_r24 = 0;
     } else {
+        goto in2;
         for (;;) {
-            if (((s32)temp_r3_2 == 0xA) && ((var_r23_2 -= 1) <= 0)) {
+            if ((s32)c == 0xA && (var_r23 -= 1) <= 0) {
                 var_r24++;
                 break;
             }
+in2:
             var_r24++;
-            temp_r3_2 = lbl_8055DDD8(var_r24);
-            if (temp_r3_2 == 0) {
+            c = lbl_8055DDD8(var_r24);
+            if (c == 0) {
                 var_r24 = 0;
                 break;
             }
@@ -17850,22 +17852,23 @@ loop_8:
         ((var_r28 = *(u32 *)var_r30, var_r25 >= var_r28) &&
          (var_r25 < var_r28 + *(u32 *)((u8 *)var_r30 + 4)))) {
 loop_36:
-        var_r23_3 = 1;
+        var_r23 = 1;
         if (lbl_8055DDD8 == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x169, base + 0x134);
         }
-        temp_r3_3 = (u8)var_r24;
         if (var_r24 == 0) {
             var_r24 = 0;
         } else {
+            goto in3;
             for (;;) {
-                if (((s32)temp_r3_3 == 0xA) && ((var_r23_3 -= 1) <= 0)) {
+                if ((s32)c == 0xA && (var_r23 -= 1) <= 0) {
                     var_r24++;
                     break;
                 }
+in3:
                 var_r24++;
-                temp_r3_3 = lbl_8055DDD8(var_r24);
-                if (temp_r3_3 == 0) {
+                c = lbl_8055DDD8(var_r24);
+                if (c == 0) {
                     var_r24 = 0;
                     break;
                 }
