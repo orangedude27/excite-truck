@@ -3277,10 +3277,9 @@ static inline f32 fn8015DD9CSumFloat(Unk801577F0* arg0) {
  return total;
 }
 static inline s32 fn8015DD9CSumInt(Unk801577F0* arg0) {
- s32 n=arg0->mCount;
  s32 i=0;
  s32 sum=0;
- for(;i<n;i++) sum+=*(s32*)(arg0->mData+i*0x38+4);
+ for(;i<arg0->mCount;i++) sum+=*(s32*)(arg0->mData+i*0x38+4);
  return sum;
 }
 #pragma processor 750
