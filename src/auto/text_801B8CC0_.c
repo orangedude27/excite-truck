@@ -68,22 +68,22 @@ float m8 = m[8];
 float y = in[1];
 float x = in[0];
 float z = in[2];
-out[0] = z * m6 + (x * m0 + y * m3);
-out[1] = z * m7 + (x * m1 + y * m4);
-out[2] = z * m8 + (x * m2 + y * m5);
+float y0 = y * m3;
+float y1 = y * m4;
+float x0 = x * m0;
+float x1 = x * m1;
+float x2 = x * m2;
+float y2 = y * m5;
+float z0 = z * m6;
+float z1 = z * m7;
+float z2 = z * m8;
+out[0] = z0 + (x0 + y0);
+out[1] = z1 + (x1 + y1);
+out[2] = z2 + (x2 + y2);
 } else {
-float m3 = m[3];
-float m4 = m[4];
-float m5 = m[5];
-float m0 = m[0];
-float m1 = m[1];
-float m2 = m[2];
-float m6 = m[6];
-float m7 = m[7];
-float m8 = m[8];
-out[0] = in[2] * m6 + (in[1] * m3 + in[0] * m0);
-out[1] = in[2] * m7 + (in[1] * m4 + in[0] * m1);
-out[2] = in[2] * m8 + (in[1] * m5 + in[0] * m2);
+out[0] = in[2] * m[6] + (in[1] * m[3] + in[0] * m[0]);
+out[1] = in[2] * m[7] + (in[1] * m[4] + in[0] * m[1]);
+out[2] = in[2] * m[8] + (in[1] * m[5] + in[0] * m[2]);
 }
 
 }
