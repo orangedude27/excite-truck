@@ -3294,13 +3294,15 @@ extern "C" s32 fn_8021F06C(void *arg0, s32 arg1) {
         if(((u32)key&0x100)==0&&(u32)key>0x1F){
             text=*(char **)((u8 *)object+0xA54);
             if((u32)strlen(text)<(u32)(capacity-1)){
-                s32 insertIndex=strlen(text)+1;
                 char previous;
+                char *slot;
+                s32 insertIndex=strlen(text)+1;
                 goto insert_check;
 insert_copy:
-                previous=(*(char **)((u8 *)object+0xA54))[insertIndex-1];
+                slot=*(char **)((u8 *)object+0xA54)+insertIndex;
+                previous=slot[-1];
                 insertIndex--;
-                (*(char **)((u8 *)object+0xA54))[insertIndex+1]=previous;
+                *slot=previous;
 insert_check:
                 insertCursor=*(s32 *)((u8 *)object+0x250);
                 if(insertIndex>insertCursor)goto insert_copy;
@@ -5319,7 +5321,6 @@ extern "C" f32 lbl_80563538;
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void *fn_80223CF0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
-    register s32 zero = 0;
     f32 temp_f1;
     f32 temp_f1_2;
     f32 temp_f1_3;
@@ -5333,27 +5334,27 @@ extern "C" void *fn_80223CF0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     s32 temp_r4;
     s32 temp_r5;
     s32 temp_r6;
+    s32 temp_r3;
+    s32 temp_r0;
 
     fn_80218F80();
-    *(s32 *)((u8 *)arg0 + 0x258) = zero;
+    *(s32 *)((u8 *)arg0 + 0x258) = 0;
     *(void **)arg0 = lbl_8033E350;
-    *(u8 *)((u8 *)arg0 + 0x25C) = zero;
+    *(u8 *)((u8 *)arg0 + 0x25C) = (u8)0;
     *(s32 *)((u8 *)arg0 + 0x264) = -2;
-    *(s32 *)((u8 *)arg0 + 0x260) = zero;
-    if (fn_802C9A58(zero, lbl_8033E350) == 0) {
+    *(s32 *)((u8 *)arg0 + 0x260) = 0;
+    if (fn_802C9A58(0, lbl_8033E350) == 0) {
         if (((VfObj *)arg0)->vf28() > 0x258) {
             temp_r5 = *(s32 *)((u8 *)arg0 + 8);
             if (*(s32 *)((u8 *)arg0 + 0x10) - temp_r5 > 0x1CC) {
-                temp_r4 = ((u32)lbl_8055CFF0 >> 31) + lbl_8055CFF0;
-                temp_r4 = temp_r4 >> 1;
+                temp_r4 = (lbl_8055CFF0 / 2);
                 temp_f1 = lbl_80563538 * (f32)(*(s32 *)((u8 *)arg0 + 4) - temp_r4);
                 if (temp_f1 < lbl_805634A8) {
                     var_f0 = temp_f1 - lbl_805634C4;
                 } else {
                     var_f0 = lbl_805634C4 + temp_f1;
                 }
-                temp_r6 = ((u32)lbl_8055CFF4 >> 31) + lbl_8055CFF4;
-                temp_r6 = temp_r6 >> 1;
+                temp_r6 = (lbl_8055CFF4 / 2);
                 temp_r28 = temp_r4 + (s32)var_f0;
                 temp_f1_2 = (f32)(temp_r5 - temp_r6);
                 if (temp_f1_2 < lbl_805634A8) {
@@ -5363,21 +5364,14 @@ extern "C" void *fn_80223CF0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
                 }
                 temp_r27 = temp_r6 + (s32)var_f0_2;
                 temp_f1_3 = lbl_80563538 * (f32)((VfObj *)arg0)->vf28();
-                if (temp_f1_3 < lbl_805634A8) {
-                    var_f0_3 = temp_f1_3 - lbl_805634C4;
-                } else {
-                    var_f0_3 = lbl_805634C4 + temp_f1_3;
-                }
+                var_f0_3 = (temp_f1_3 < lbl_805634A8) ? temp_f1_3 - lbl_805634C4 : lbl_805634C4 + temp_f1_3;
+                temp_r3 = temp_r28 + (s32)var_f0_3;
                 temp_f1_4 = (f32)(*(s32 *)((u8 *)arg0 + 0x10) -
                                   *(s32 *)((u8 *)arg0 + 8));
-                if (temp_f1_4 < lbl_805634A8) {
-                    var_f0_4 = temp_f1_4 - lbl_805634C4;
-                } else {
-                    var_f0_4 = lbl_805634C4 + temp_f1_4;
-                }
+                var_f0_4 = (temp_f1_4 < lbl_805634A8) ? temp_f1_4 - lbl_805634C4 : lbl_805634C4 + temp_f1_4;
                 *(s32 *)((u8 *)arg0 + 4) = temp_r28;
                 *(s32 *)((u8 *)arg0 + 8) = temp_r27;
-                *(s32 *)((u8 *)arg0 + 0xC) = temp_r28 + (s32)var_f0_3;
+                *(s32 *)((u8 *)arg0 + 0xC) = temp_r3;
                 *(s32 *)((u8 *)arg0 + 0x10) = temp_r27 + (s32)var_f0_4;
             }
         }
@@ -5388,14 +5382,15 @@ extern "C" void *fn_80223CF0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     *(f32 *)((u8 *)arg0 + 0x24C) = (f32)((VfObj *)arg0)->vf28();
     *(f32 *)((u8 *)arg0 + 0x250) =
         (f32)(*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8));
-    if (arg2 != zero) {
+    if (arg2 != 0) {
         *(s32 *)((u8 *)arg0 + 0x258) = arg2;
     } else {
         *(s32 *)((u8 *)arg0 + 0x258) = (s32)((u8 *)arg1 + 0x40);
     }
-    temp_r4 = *(s32 *)((u8 *)arg1 + 0xA4);
-    temp_r5 = -temp_r4;
-    *(s32 *)((u8 *)arg0 + 0x254) = zero;
+    temp_r0 = *(s32 *)((u8 *)arg1 + 0xA4);
+    temp_r5 = temp_r0;
+    temp_r4 = -temp_r5;
+    *(s32 *)((u8 *)arg0 + 0x254) = 0;
     temp_r4 |= temp_r5;
     *(u8 *)((u8 *)arg0 + 0x25C) = (u8)((u32)temp_r4 >> 31);
     return arg0;
@@ -5838,16 +5833,16 @@ extern f32 lbl_805634E0;
 extern "C" void *fn_8022553C(void *arg0, void *arg1, void *arg2) {
 register u8 *obj = (u8 *)arg0;
 register u8 *ctx = (u8 *)arg2;
-register s32 count;
+s32 count;
 register s32 offset;
 register s32 row;
 register s32 frame;
 f32 half;
 f32 value;
-f32 temp_f1;
-f32 temp_f2;
-f32 temp_f3;
 f32 temp_f4;
+f32 temp_f3;
+f32 temp_f2;
+f32 temp_f1;
 
 ((void (*)(void *, void *))fn_80218F80)(arg0, ctx);
 *(s32 *)(obj + 0x244) = (s32)arg1;
@@ -5880,7 +5875,7 @@ count = *(s32 *)(*(s32 *)(obj + 0x244) + 0xC);
 offset = count * 0xC;
 row = count;
 frame = 0;
-for (; row < *(s32 *)(*(s32 *)(obj + 0x244) + 8); ) {
+while (row < *(s32 *)(*(s32 *)(obj + 0x244) + 8)) {
 *(f32 *)((u8 *)*(s32 *)(obj + 0x278) + offset) =
 *(f32 *)(obj + 0x258) - *(f32 *)(obj + 0x25C) * (f32)frame;
 if (*(f32 *)((u8 *)*(s32 *)(obj + 0x278) + offset) <
@@ -5898,7 +5893,7 @@ offset += 0xC;
 }
 row = 0;
 offset = 0;
-for (; row < *(s32 *)(*(s32 *)(obj + 0x244) + 0xC); ) {
+while (row < *(s32 *)(*(s32 *)(obj + 0x244) + 0xC)) {
 *(f32 *)((u8 *)*(s32 *)(obj + 0x278) + offset) =
 *(f32 *)(obj + 0x258) - *(f32 *)(obj + 0x25C) * (f32)frame;
 if (*(f32 *)((u8 *)*(s32 *)(obj + 0x278) + offset) <
@@ -5922,7 +5917,8 @@ offset += 0xC;
 *(s32 *)(obj + 0x280) = fn_80228F40(*(s32 *)(obj + 4), *(s32 *)(obj + 8));
 return arg0;
 }
-
+#pragma scheduling on
+#pragma pop
 extern "C" void *fn_80225828(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         s32 ptr = *(s32 *)((u8 *)arg0 + 0x278);
@@ -7003,9 +6999,9 @@ extern "C" void fn_80228A84(void *arg0) {
 }
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma processor 750
 extern "C" void fn_80228AEC(s32 arg0, f32 farg0) {
-    volatile f32 saved_arg = farg0;
+    f32 saved_arg = farg0;
     f32 temp_f0;
     f32 temp_f0_2;
     f32 temp_f1;
@@ -7044,12 +7040,13 @@ extern "C" void fn_80228AEC(s32 arg0, f32 farg0) {
     var_r0 = temp_r4 < var_r0 ? temp_r4 : var_r0;
     *(s32 *)(arg0 + 0x274) = var_r0;
 
-    temp_r30 = lbl_8055CFF0;
     got = ((Vf78 *)arg0)->get();
     temp_f1 = ((f32)temp_r30 * (f32)got) / lbl_8056357C;
-    var_f0 = temp_f1 < lbl_805634A8
-        ? temp_f1 - lbl_805634C4
-        : lbl_805634C4 + temp_f1;
+    if (temp_f1 < lbl_805634A8) {
+        var_f0 = temp_f1 - lbl_805634C4;
+    } else {
+        var_f0 = lbl_805634C4 + temp_f1;
+    }
     var_r0_2 = temp_r30 - *(s32 *)(arg0 + 0x270);
     temp_r3 = (s32)var_f0;
     if (temp_r3 < var_r0_2)
@@ -7057,9 +7054,11 @@ extern "C" void fn_80228AEC(s32 arg0, f32 farg0) {
     *(s32 *)(arg0 + 0x278) = var_r0_2;
 
     temp_f1_2 = ((f32)lbl_8055CFF4 * (f32)(*(s32 *)(arg0 + 0x10) - *(s32 *)(arg0 + 8))) / lbl_80563580;
-    var_f0_2 = temp_f1_2 < lbl_805634A8
-        ? temp_f1_2 - lbl_805634C4
-        : lbl_805634C4 + temp_f1_2;
+    if (temp_f1_2 < lbl_805634A8) {
+        var_f0_2 = temp_f1_2 - lbl_805634C4;
+    } else {
+        var_f0_2 = lbl_805634C4 + temp_f1_2;
+    }
     var_r7 = lbl_8055CFF4 - *(s32 *)(arg0 + 0x274);
     temp_r0_2 = (s32)var_f0_2;
     if (temp_r0_2 < var_r7)
