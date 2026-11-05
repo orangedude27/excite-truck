@@ -54,41 +54,27 @@ extern "C" static inline void transform_vec_struct(Vec *out, const float *m, vol
         out->z = in->y * m[5] + in->x * m[2] + in->z * m[8];
     }
 }
-struct Mtx33 {
-    Vec row[3];
-};
-
-static inline void transform_vec_scheduled(float *out, const void *m, float *in) {
-const struct Mtx33 *mtx = (const struct Mtx33 *)m;
+static inline void transform_vec_scheduled(float *out, const float *m, float *in) {
 if (out == in) {
 float y = in[1];
 float x = in[0];
 float z = in[2];
-float x_y = y * mtx->row[1].x;
-float y_y = y * mtx->row[1].y;
-float z_y = y * mtx->row[1].z;
-float x_x = x * mtx->row[0].x;
-float y_x = x * mtx->row[0].y;
-float z_x = x * mtx->row[0].z;
-float x_z = z * mtx->row[2].x;
-float y_z = z * mtx->row[2].y;
-float z_z = z * mtx->row[2].z;
-out[0] = x_z + (x_x + x_y);
-out[1] = y_z + (y_x + y_y);
-out[2] = z_z + (z_x + z_y);
+float x_y = y * m[3];
+float y_y = y * m[4];
+float z_y = y * m[5];
+float x_x = x * m[0];
+float y_x = x * m[1];
+float z_x = x * m[2];
+float x_z = z * m[6];
+float y_z = z * m[7];
+float z_z = z * m[8];
+out[0] = x_z + (x_y + x_x);
+out[1] = y_z + (y_y + y_x);
+out[2] = z_z + (z_y + z_x);
 } else {
-float y0 = in[1] * mtx->row[1].x;
-float x0 = in[0] * mtx->row[0].x;
-float z0 = in[2] * mtx->row[2].x;
-out[0] = z0 + (x0 + y0);
-float y1 = in[1] * mtx->row[1].y;
-float x1 = in[0] * mtx->row[0].y;
-float z1 = in[2] * mtx->row[2].y;
-out[1] = z1 + (x1 + y1);
-float y2 = in[1] * mtx->row[1].z;
-float x2 = in[0] * mtx->row[0].z;
-float z2 = in[2] * mtx->row[2].z;
-out[2] = z2 + (x2 + y2);
+out[0] = in[2] * m[6] + (in[1] * m[3] + in[0] * m[0]);
+out[1] = in[2] * m[7] + (in[1] * m[4] + in[0] * m[1]);
+out[2] = in[2] * m[8] + (in[1] * m[5] + in[0] * m[2]);
 }
 
 }
