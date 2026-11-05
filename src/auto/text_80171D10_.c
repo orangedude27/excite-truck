@@ -7,6 +7,7 @@ typedef struct { float a[3]; } Fn8017431CV3;
 typedef struct { Fn8017431CM9 m; Fn8017431CV3 pos; Fn8017431CV3 v; } Fn8017431CFrame;
 typedef struct { int zero; short mark; } Fn8017431CMark;
 typedef struct { float a, b; } Fn8017431CV2;
+typedef struct { Fn8017431CM9 m; Fn8017431CV3 pos; Fn8017431CV3 v; int zero; short mark; } Fn8017431CFrame2;
 extern float PSQUATMultiply(void *, void *);
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
@@ -1279,7 +1280,8 @@ void fn_8017431C(int arg0, int arg1) {
     float sp30[2];
     float sp28[2];
     float sp20[2];
-    Fn8017431CPair pair;
+    Fn8017431CV2 pv;
+    unsigned long long ret;
     float sp8[2];
     char *obj;
     float *p;
@@ -1302,10 +1304,11 @@ void fn_8017431C(int arg0, int arg1) {
         if (fn_802B04D4(p) != 0 || fn_80171E3C(sp38) == 0) {
             sp8[0] = p[0];
             sp8[1] = p[2];
-            pair.ull = fn_80171FF0(sp8, 99, lbl_80561AC4, lbl_80561AC8);
+            ret = fn_80171FF0(sp8, 99, lbl_80561AC4, lbl_80561AC8);
+            pv = *(Fn8017431CV2 *)&ret;
             tgt[1] = lbl_80561A44;
-            tgt[0] = pair.f[0];
-            tgt[2] = pair.f[1];
+            tgt[0] = pv.a;
+            tgt[2] = pv.b;
             tgt[1] = fn_801DCF48(0, tgt[0], tgt[2]);
             inside = 0;
             if (fn_802B04D4(p) != 0 && fn_80171DE4(sp38) == 0) inside = 1;
