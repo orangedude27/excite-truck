@@ -111,6 +111,50 @@ extern const char lbl_803222F0[];
 extern const char lbl_80322438[];
 extern const char lbl_80322010[];
 extern const char lbl_80322034[];
+// BasicSound::Pause: this object's vtable has the player accessor at 0x5C; its vf6(int) is at 0x14.
+class PauseVt {
+public:
+    virtual ~PauseVt();
+    virtual void vf2();
+    virtual void vf3();
+    virtual void vf4();
+    virtual void vf5();
+    virtual void vf6(int);
+    virtual void vf7();
+    virtual void vf8();
+    virtual void vf9();
+    virtual void vf10();
+    virtual void vf11();
+    virtual void vf12();
+    virtual void vf13();
+    virtual void vf14();
+    virtual void vf15();
+    virtual void vf16();
+    virtual void vf17();
+    virtual void vf18();
+    virtual void vf19();
+    virtual void vf20();
+    virtual void vf21();
+    virtual void vf22();
+    virtual PauseVt *vf23();   // vtable 0x5C
+};
+struct PauseFields {
+    PauseVt *vt;
+    unsigned char pad0[0x50];
+    float start;     // 0x54
+    float end;       // 0x58
+    int total;       // 0x5C
+    int elapsed;     // 0x60
+    unsigned char pad1[0x3];
+    unsigned char paused;   // 0x67
+    unsigned char fading;   // 0x68
+};
+static inline float PauseRamp(PauseFields *s) {
+    int total = s->total;
+    int elapsed = s->elapsed;
+    if (elapsed >= total) return s->end;
+    return s->start + (float)elapsed * (s->end - s->start) / (float)total;
+}
 // Vtable dispatcher class for indirect virtual calls (MWCC ABI: 2 leading dtor slots).
 class VfObj {
 public:
