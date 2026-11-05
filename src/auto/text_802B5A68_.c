@@ -34,6 +34,15 @@ typedef struct MenuRenderRecord {
     s32 unk18;
     s32 unk1C;
 } MenuRenderRecord;
+typedef struct MenuRenderCopy {
+    void *name;
+    f64 pair;
+    s32 unkC;
+    f32 unk10;
+    s32 unk14;
+    s32 unk18;
+    s32 unk1C;
+} MenuRenderCopy;
 extern char lbl_8034A598[];
 __declspec(section ".sdata") extern const char lbl_8055CEA8[];
 __declspec(section ".sdata") extern const char lbl_8055CE58[];
@@ -1437,7 +1446,77 @@ void fn_802B7D1C(void) {
     fn_802B7B08();
 }
 
-#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_802B7D4C(void) {
+    class Dummy {
+    public:
+        virtual void v0();
+        virtual void *call(const char *);
+        virtual void v2();
+        virtual void *get(const char *);
+    };
+    s32 workspace[51];
+    s32 selected[3];
+    u8 *state;
+    char name[32];
+    MenuRenderRecord first, second, line, line2;
+    register char *base = lbl_8034A598;
+    void *object;
+    void *(*lookup)(void *, const char *);
+    void *(*get)(void *, const char *);
+    const char *status;
+    f32 step;
+    s32 i;
+    s32 *entry;
+
+    if (lbl_8055FA40 == 6) {
+
+        fn_802B6568(((Dummy *)lbl_8055FA48)->call(lbl_8055CE68), base + 0x32C);
+        return;
+    }
+    object = ((void *(*)(void))fn_802B5B6C)();
+    workspace[0] = (s32)&workspace[3];
+    workspace[1] = 0;
+    workspace[2] = 16;
+    state = 0;
+    fn_802B321C((s32)workspace, (void **)&state, *(s32 *)((u8 *)object + 8), lbl_8055FA40);
+    status = base + 0x338;
+    if (*state != 0) status = lbl_8055CEB8;
+
+    fn_802B6568(((Dummy *)lbl_8055FA48)->call(base + 0x118), lbl_8055CE70, status);
+
+    first = *(MenuRenderRecord *)((Dummy *)lbl_8055FA48)->call(base + 0x344);
+
+    second = *(MenuRenderRecord *)((Dummy *)lbl_8055FA48)->call(base + 0x354);
+
+    step = *(f32 *)((u8 *)((Dummy *)lbl_8055FA48)->get(base + 0x238) + 0x14);
+    for (i = 0; i < workspace[1]; ++i) {
+        entry = (s32 *)workspace[0] + i * 3;
+        ((void (*)(void *, s32, const char *, ...))fn_801345D8)(name, 32, base + 0x360, i);
+        line = first;
+        line.name = name;
+        line.y += step * (f32)i;
+        fn_802B6568(&line, lbl_8055CE74, **(void ***)(entry + 1));
+        line2 = second;
+        line2.name = name;
+        line2.y += step * (f32)i;
+        fn_802B6568(&line2, lbl_8055CE70, (void *)entry[0]);
+    }
+    if (fn_802B5B74(selected)) {
+        fn_802B67C8((s32)(base + 0x36C));
+
+        fn_801476C4(((Dummy *)lbl_8055FA48)->call(base + 0x378));
+        fn_801473F8(lbl_8055FA48, base + 0x384, lbl_8055CE70, selected[0]);
+
+        fn_802B6568(((Dummy *)lbl_8055FA48)->call(base + 0x390), lbl_8055CEC0, ((f32 *)selected[2])[0]);
+
+        fn_802B6568(((Dummy *)lbl_8055FA48)->call(base + 0x3A0), lbl_8055CEC0, ((f32 *)selected[2])[1]);
+    }
+
+    fn_802B6568(((Dummy *)lbl_8055FA48)->call(lbl_8055CE68), base + 0x3B0, lbl_8055FA40 + 1);
+    workspace[0] = workspace[1] = workspace[2] = 0;
+}
+#pragma cplusplus reset
 s32 fn_802B8110(u32 arg0, s32 arg1) {
     struct Work {
         s32 *items;
