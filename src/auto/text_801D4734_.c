@@ -1814,10 +1814,10 @@ extern "C" void *fn_801D7334(void *arg0) {
         product = object;
     }
 done:
-    if (product != 0) {
-        if (((Product *)product)->accept(arg0) != 0) return product;
-        if (product != 0) ((Product *)product)->destroy(1);
-    }
+    if (!product) goto fail;
+    if (((Product *)product)->accept(arg0) != 0) return product;
+    if (product != 0) ((Product *)product)->destroy(1);
+fail:
     return 0;
 }
 #pragma cplusplus reset
