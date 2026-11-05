@@ -7913,6 +7913,8 @@ extern "C" s32 fn_800B5324(void *arg0, u8 *arg1, u32 arg2, u32 arg3, u32 arg4, u
     void *page;
     u32 count;
     s32 result;
+    u32 n;
+    u32 left;
     *arg5 = 0;
     if (!(M2C_FIELD(arg0, u16 *, 0x1F8C) & 1) || !fn_800A53B4(arg0)) return 9;
     if ((arg2 >= M2C_FIELD(arg0,u32 *,8) || arg3 >= M2C_FIELD(arg0,u16 *,0) || arg3 + arg4 > M2C_FIELD(arg0,u16 *,0)) && arg3 != 0) return 10;
@@ -7929,35 +7931,35 @@ extern "C" s32 fn_800B5324(void *arg0, u8 *arg1, u32 arg2, u32 arg3, u32 arg4, u
     } else if (arg3 == 0) {
         page = ((void *(*)(void *,u32))fn_800A90F8)(arg0,arg2);
         if (page) {
-            arg3 = M2C_FIELD(page,u32 *,0x18) + M2C_FIELD(page,u32 *,0x14) - arg2;
-            if (arg3 <= arg4 >> M2C_FIELD(arg0,u8 *,0x20)) {
-                VFipf_memcpy(arg1,M2C_FIELD(page,void **,8),arg3 << M2C_FIELD(arg0,u8 *,0x20));
-                arg2 += arg3;
-                *arg5 += arg3 << M2C_FIELD(arg0,u8 *,0x20);
-                arg4 -= arg3 << M2C_FIELD(arg0,u8 *,0x20);
-            } else if (arg3 > arg4 >> M2C_FIELD(arg0,u8 *,0x20)) {
+            n = M2C_FIELD(page,u32 *,0x18) + M2C_FIELD(page,u32 *,0x14) - arg2;
+            if (n <= arg4 >> M2C_FIELD(arg0,u8 *,0x20)) {
+                VFipf_memcpy(arg1,M2C_FIELD(page,void **,8),n << M2C_FIELD(arg0,u8 *,0x20));
+                arg2 += n;
+                *arg5 += n << M2C_FIELD(arg0,u8 *,0x20);
+                arg4 -= n << M2C_FIELD(arg0,u8 *,0x20);
+            } else if (n > arg4 >> M2C_FIELD(arg0,u8 *,0x20)) {
                 VFipf_memcpy(arg1,M2C_FIELD(page,void **,8),arg4);
                 *arg5 += arg4;
                 arg4 = 0;
             }
         }
         if (arg4 != 0) {
-            arg4 >>= M2C_FIELD(arg0,u8 *,0x20);
-            u32 remainder = (arg2 + arg4) % M2C_FIELD(arg0,u32 *,0x1640);
-            if (arg4 > remainder) {
-                arg3 = arg4 - remainder;
-                result = VFiPFCACHE_WriteDataNumSectorAndFreeIfNeeded(arg0,arg1+*arg5,arg2,arg3,(s32)&count);
+            left = arg4 >> M2C_FIELD(arg0,u8 *,0x20);
+            u32 remainder = (arg2 + left) % M2C_FIELD(arg0,u32 *,0x1640);
+            if (left > remainder) {
+                n = left - remainder;
+                result = VFiPFCACHE_WriteDataNumSectorAndFreeIfNeeded(arg0,arg1+*arg5,arg2,n,(s32)&count);
                 if (result) return result;
                 *arg5 += count << M2C_FIELD(arg0,u8 *,0x20);
-                if (count != arg3) return 17;
-                arg2 += arg3;
-                arg4 -= arg3;
+                if (count != n) return 17;
+                arg2 += n;
+                left -= n;
             }
-            if (arg4 != 0) {
+            if (left != 0) {
                 result = ((s32 (*)(void *,u32,void **,s32))fn_800A8EE0)(arg0,arg2,&page,arg6);
                 if (result) return result;
-                VFipf_memcpy(arg1+*arg5,M2C_FIELD(page,void **,8),arg4 << M2C_FIELD(arg0,u8 *,0x20));
-                *arg5 += arg4 << M2C_FIELD(arg0,u8 *,0x20);
+                VFipf_memcpy(arg1+*arg5,M2C_FIELD(page,void **,8),left << M2C_FIELD(arg0,u8 *,0x20));
+                *arg5 += left << M2C_FIELD(arg0,u8 *,0x20);
             }
         }
     } else return 10;
