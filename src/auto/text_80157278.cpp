@@ -30,6 +30,9 @@ public:
 };
 extern "C" f32 lbl_80561760;
 extern "C" s32 lbl_8055A058[1];
+extern "C" f32 lbl_8056179C;
+extern "C" f32 lbl_805617C4;
+extern "C" f32 fn_801E7E24(void);
 extern "C" f32 fn_80204CFC(const char*);
 extern "C" void* fn_8023139C(void*,s32,u32);
 extern "C" void* fn_8017960C(s32);
