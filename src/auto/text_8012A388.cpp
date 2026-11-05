@@ -12,6 +12,7 @@ extern "C" void fn_8012BEF0(s32);
 extern "C" void fn_8012DBD0(void);
 extern "C" s32 lbl_8055DFFC;
 extern "C" const char lbl_8032AE60[];
+extern "C" const char lbl_8032A8E8[];
 extern "C" const char lbl_8032ADF4[];
 extern "C" const char lbl_8032AE20[];
 extern "C" void fn_80128660(s32);
