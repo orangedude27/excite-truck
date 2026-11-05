@@ -3277,8 +3277,9 @@ static inline f32 fn8015DD9CSumFloat(Unk801577F0* arg0) {
  return total;
 }
 static inline s32 fn8015DD9CSumInt(Unk801577F0* arg0) {
+ s32 i=0;
  s32 sum=0;
- for(s32 i=0;i<arg0->mCount;i++) sum+=*(s32*)(arg0->mData+i*0x38+4);
+ for(;i<arg0->mCount;i++) sum+=*(s32*)(arg0->mData+i*0x38+4);
  return sum;
 }
 #pragma push
@@ -3301,9 +3302,7 @@ extern "C" void fn_8015DD9C(Unk801577F0* arg0, void* arg1) {
  a->v1((s32)lbl_8055A058,obj->v25());
  a->v2((s32)lbl_8055A06C,sum);
  a->v6(obj->v29());
- f32 total=lbl_80561754;
- for(s32 i=0;i<arg0->mCount;i++) total+=*(f32*)(arg0->mData+i*0x38+12);
- s32 value=(s32)total;
+ s32 value=(s32)fn8015DD9CSumFloat(arg0);
  char buf[16];
  a->v3((s32)lbl_8055A058,fn_8023139C(buf,16,value));
  a->v5(value);
