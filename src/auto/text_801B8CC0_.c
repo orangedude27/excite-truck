@@ -103,19 +103,14 @@ extern "C" void fn_802E30C8(const char *, ...);
 extern "C" char lbl_803369A0[];
 #pragma scheduling invalid_target
 extern "C" void fn_801B8CC0(float *arg0, int arg1, int *arg2, float *arg3, float arg4, float arg5) {
-    volatile unsigned int *src;
+    unsigned int a = ((unsigned int *)arg3)[0];
+    unsigned int b = ((unsigned int *)arg3)[1];
+    unsigned int c = ((unsigned int *)arg3)[2];
     unsigned int *dst;
-    unsigned int a;
-    unsigned int b;
-    unsigned int c;
     void *p;
     int result;
 
     dst = (unsigned int *)arg0;
-    src = (volatile unsigned int *)arg3;
-    a = src[0];
-    b = src[1];
-    c = src[2];
     dst[0] = a;
     dst[1] = b;
     dst[2] = c;
@@ -210,12 +205,13 @@ extern "C" void fn_801B8E28(int arg0) {
     temp_f1_2 = temp_f1 - *(float *)((char *)obj + 0x38);
     w.input[2] = temp_f1_2;
     if (*(unsigned char *)((char *)obj + 0x275d) != 0) {
-        w.input[2] = temp_f1_2 - lbl_80562754;
+        float v = temp_f1_2 - lbl_80562754;
+        w.input[2] = v;
         w.h = -1;
     }
     {
         char *matrix = *(char **)((char *)obj + 0x2754);
-        transform_vec_scheduled(w.output, (volatile float *)(matrix + 0x70), w.input);
+        transform_vec_scheduled(w.output, (const float *)(matrix + 0x70), w.input);
         w.output[0] += *(float *)(matrix + 0x94);
         w.output[1] += *(float *)(matrix + 0x98);
         w.output[2] += *(float *)(matrix + 0x9c);
@@ -253,31 +249,54 @@ extern "C" void fn_801B8E28(int arg0) {
     fn_8018A08C((void *)obj);
 }
 #pragma cplusplus reset
-void fn_801B916C(void* arg0) {
-    char* p = (char*)arg0 + 4;
-    int i = 0;
-    if (((int*)__AXFXGetLfoSinTable_801769CC())[1] & 0x400) {
-        do {
-            int index = *(int*)(p + 0x60);
-            void* obj = 0;
-            if (index >= 0 && index < lbl_8055E774) obj = lbl_80436D28[index];
+void fn_801B916C(void *arg0) {
+    void **table;
+    int *p;
+    int i;
+    int sentinel;
+    float frequency;
+    if (((int *)__AXFXGetLfoSinTable_801769CC())[1] & 0x400) {
+        table = lbl_80436D28;
+        frequency = lbl_80562764;
+        p = (int *)arg0 + 1;
+        i = 0;
+        sentinel = -1;
+        while (i < *(int *)((char *)arg0 + 0x394)) {
+            int index = p[0x60 / 4];
+            void *obj;
+            if (index < 0) goto no_object;
+            if (index >= lbl_8055E774) goto no_object;
+            obj = table[index];
+            goto have_object;
+        no_object:
+            obj = 0;
+        have_object:
             if (obj != 0) {
-                int id = *(int*)((char*)obj + 0x1EC);
-                int* slots = (int*)(p + 0x74);
-                if (slots[0] == id) slots[0] = -1;
-                if (slots[6] == id) slots[6] = -1;
-                if (slots[12] == id) slots[12] = -1;
-                if (slots[18] == id) slots[18] = -1;
-                slots[0] = id;
-                *(float*)(p + 0x78) = lbl_80562764;
-                *(float*)(p + 0x7C) = *(float*)((char*)obj + 0x2690);
-                *(float*)(p + 0x80) = *(float*)((char*)obj + 0x2694);
-                *(float*)(p + 0x84) = *(float*)((char*)obj + 0x2690) - *(float*)((char*)obj + 0x2694);
-                *(int*)(p + 0x88) = *(int*)((char*)obj + 0x268C);
+                int id = *(int *)((char *)obj + 0x1EC);
+                if (p[0x74 / 4] == id)
+                    p[0x74 / 4] = sentinel;
+                {
+                    volatile int *slots = p + 0x8C / 4;
+                    if (slots[0] == id) slots[0] = sentinel;
+                    if (slots[6] == id) slots[6] = sentinel;
+                    if (slots[12] == id) slots[12] = sentinel;
+                }
+                p[0x74 / 4] = id;
+                *(float *)(p + 0x78 / 4) = frequency;
+                {
+                    float value0;
+                    float value1;
+                    value0 = *(float *)((char *)obj + 0x2690);
+                    *(float *)(p + 0x7C / 4) = value0;
+                    value1 = *(float *)((char *)obj + 0x2694);
+                    *(float *)(p + 0x80 / 4) = value1;
+                    *(float *)(p + 0x84 / 4) = value0 - value1;
+                }
+                p[0x88 / 4] = *(int *)((char *)obj + 0x268C);
             }
-            p += 0xE0;
+            p += 0xE0 / 4;
             i++;
-        } while (i < *(int*)((char*)arg0 + 0x394));
+        }
     }
 }
 
@@ -307,38 +326,86 @@ extern int lbl_8055A918;
 extern void fn_80182074(void *, int);
 extern void fn_801B8CC0(float *, int, int *, float *, float, float);
 extern void fn_802C77F0(int, float *);
+#pragma scheduling invalid_target
 void fn_801B92F0(void *arg0, int arg1) {
-    float sp5c[3], sp50[3], sp90[6], sp78[6], sp8[3], sp14[3];
-    float v1[3], v2[3];
+    struct Work {
+        float sp8[3]; float sp14[3]; float sp20[3]; float sp2c[3];
+        float sp38[3]; float sp44[3]; float sp50[3]; float sp5c[3];
+        float sp68[3]; char pad74[4]; float sp78[6]; float sp90[6];
+    };
+    union { double align; struct Work work; } frame;
     unsigned int bits = ((unsigned int *)__AXFXGetLfoSinTable_801769CC())[1];
-    *((unsigned char *)arg0 + 0x275d) = (bits >> 12) & 1;
-    fn_80182074(arg0,arg1);
-    v1[0]=lbl_80562750; v1[1]=lbl_80562750; v1[2]=lbl_80562768;
-    fn_801B8CC0(sp5c, *(int *)((unsigned char *)arg0+0x59c), &lbl_8055A918, v1, lbl_80562750, lbl_80562750);
-    *(float *)((unsigned char *)arg0+0x273c)=sp5c[0];
-    *(float *)((unsigned char *)arg0+0x2740)=sp5c[1];
-    *(float *)((unsigned char *)arg0+0x2744)=sp5c[2];
-    fn_802C77F0(*(int *)((unsigned char *)arg0+0x59c),sp90);
-    if (*((unsigned char *)arg0+0x275d)) {
-        v2[0]=lbl_80562750; v2[1]=lbl_80562750; v2[2]=sp90[5]-lbl_8056276C;
-        *(float *)((unsigned char *)arg0+0x273c)=v2[0];
-        *(float *)((unsigned char *)arg0+0x2740)=v2[1];
-        *(float *)((unsigned char *)arg0+0x2744)=v2[2];
-    }
-    fn_802C77F0(*(int *)((unsigned char *)*(void **)((unsigned char *)arg0+0x2754)+0x59c),sp78);
-    if (*((unsigned char *)arg0+0x275d)) {
-        v1[0]=lbl_80562750; v1[1]=lbl_80562750; v1[2]=sp78[4]-lbl_80562770;
-    } else {
-        v1[0]=lbl_80562750; v1[1]=lbl_80562774; v1[2]=sp78[4]-lbl_8056276C;
-    }
-    sp8[0]=v1[0]; sp8[1]=v1[1]; sp8[2]=v1[2];
-    fn_801B8CC0(sp14, *(int *)((unsigned char *)*(void **)((unsigned char *)arg0+0x2754)+0x59c), &lbl_8055A918, sp8, v1[1], v1[2]);
-    *(float *)((unsigned char *)arg0+0x2748)=sp14[0];
-    *(float *)((unsigned char *)arg0+0x274c)=sp14[1];
-    *(float *)((unsigned char *)arg0+0x2750)=sp14[2];
-    *(float *)((unsigned char *)arg0+0x274c)=sp14[1]+lbl_80562778;
-}
+    float *copySrc;
+    unsigned int word2, word1, word0;
+    float result, top, zero, param1, out0, out1, out2;
 
+    *((unsigned char *)arg0 + 0x275d) = (bits >> 12) & 1;
+    fn_80182074(arg0, arg1);
+    frame.work.sp44[0] = lbl_80562750;
+    frame.work.sp44[1] = lbl_80562750;
+    frame.work.sp44[2] = lbl_80562768;
+    ((unsigned int *)frame.work.sp50)[0] = ((unsigned int *)frame.work.sp44)[0];
+    ((unsigned int *)frame.work.sp50)[1] = ((unsigned int *)frame.work.sp44)[1];
+    ((unsigned int *)frame.work.sp50)[2] = ((unsigned int *)frame.work.sp44)[2];
+    fn_801B8CC0(frame.work.sp5c, *(int *)((unsigned char *)arg0 + 0x59c),
+        &lbl_8055A918, frame.work.sp50, lbl_80562750, lbl_80562750);
+    *(float *)((unsigned char *)arg0 + 0x273c) = frame.work.sp5c[0];
+    *(float *)((unsigned char *)arg0 + 0x2740) = frame.work.sp5c[1];
+    *(float *)((unsigned char *)arg0 + 0x2744) = frame.work.sp5c[2];
+
+    fn_802C77F0(*(int *)((unsigned char *)arg0 + 0x59c), frame.work.sp90);
+    if (*((unsigned char *)arg0 + 0x275d)) {
+        top = frame.work.sp90[5];
+        result = top - lbl_8056276C;
+        zero = lbl_80562750;
+        frame.work.sp38[0] = zero;
+        frame.work.sp38[1] = zero;
+        frame.work.sp38[2] = result;
+        *(float *)((unsigned char *)arg0 + 0x273c) = zero;
+        *(float *)((unsigned char *)arg0 + 0x2740) = zero;
+        *(float *)((unsigned char *)arg0 + 0x2744) = result;
+    }
+
+    fn_802C77F0(*(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x2754) + 0x59c),
+        frame.work.sp78);
+    if (*((unsigned char *)arg0 + 0x275d)) {
+        top = frame.work.sp78[4];
+        param1 = lbl_80562750;
+        result = top - lbl_80562770;
+        frame.work.sp2c[0] = param1;
+        frame.work.sp2c[1] = param1;
+        frame.work.sp2c[2] = result;
+        copySrc = frame.work.sp2c;
+    } else {
+        top = frame.work.sp78[4];
+        param1 = lbl_80562774;
+        result = top - lbl_8056276C;
+        frame.work.sp20[0] = lbl_80562750;
+        frame.work.sp20[1] = param1;
+        frame.work.sp20[2] = result;
+        copySrc = frame.work.sp20;
+    }
+    word0 = ((unsigned int *)copySrc)[0];
+    word1 = ((unsigned int *)copySrc)[1];
+    word2 = ((unsigned int *)copySrc)[2];
+    ((unsigned int *)frame.work.sp68)[0] = word0;
+    ((unsigned int *)frame.work.sp8)[0] = word0;
+    ((unsigned int *)frame.work.sp68)[1] = word1;
+    ((unsigned int *)frame.work.sp8)[1] = word1;
+    ((unsigned int *)frame.work.sp68)[2] = word2;
+    ((unsigned int *)frame.work.sp8)[2] = word2;
+    fn_801B8CC0(frame.work.sp14,
+        *(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x2754) + 0x59c),
+        &lbl_8055A918, frame.work.sp8, param1, result);
+    out0 = frame.work.sp14[0];
+    out1 = frame.work.sp14[1];
+    out2 = frame.work.sp14[2];
+    *(float *)((unsigned char *)arg0 + 0x2748) = out0;
+    *(float *)((unsigned char *)arg0 + 0x274c) = out1;
+    *(float *)((unsigned char *)arg0 + 0x2750) = out2;
+    *(float *)((unsigned char *)arg0 + 0x274c) = out1 + lbl_80562778;
+}
+#pragma scheduling on
 void fn_801B949C(void *arg0) {
     short sp6c;
     int sp68;
