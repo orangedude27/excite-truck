@@ -40,7 +40,7 @@ extern const char lbl_8033C318[];
 extern s32 lbl_8055EDE4;
 extern s32 lbl_8055EDE8;
 
-#pragma scheduling off
+#pragma scheduling invalid_target
 void fn_8020A648(s32 arg0) {
     if (arg0 != lbl_8055EDE4) {
         fn_802E30C8(lbl_8033C318, arg0);
@@ -131,11 +131,12 @@ void fn_80209FFC(void) {
     fn_8020A5F8(value);
 }
 
+#pragma opt_propagation off
 void fn_8020A100(void) {
-    char buf[0x80];
+    char buf[0x40];
     u8 *obj;
     s32 *name;
-    s8 *flag;
+    u8 *flag;
     s32 *slot;
     s32 i;
     s32 diff;
@@ -150,21 +151,15 @@ void fn_8020A100(void) {
             if (diff >= 0x190 || diff < 0 || (s32)lbl_8055EDE0 == -1) {
                 lbl_8055EDE0 = (void *)lbl_8055EDE4;
             } else {
-                t = ((f32)diff / lbl_80563298 - lbl_8056329C) / lbl_80563290;
-                if (lbl_80563294 < t) {
-                } else {
-                    t = lbl_80563294;
-                }
-                if (t > lbl_8056329C) {
-                    t = lbl_8056329C;
-                }
+                t = lbl_80563294 < ((f32)diff / lbl_80563298 - lbl_8056329C) / lbl_80563290 ? lbl_80563294 : ((f32)diff / lbl_80563298 - lbl_8056329C) / lbl_80563290;
+                t = t > lbl_8056329C ? t : lbl_8056329C;
                 scale = lbl_80563294 + t * lbl_805632A0;
             }
         }
         one = lbl_8056329C;
         slot = lbl_804892C0;
         i = 0;
-        flag = &lbl_8055EDD4;
+        flag = (u8 *)&lbl_8055EDD4;
         name = &lbl_8055B560;
         zero = 0;
         do {
@@ -209,8 +204,7 @@ void fn_8020A100(void) {
         } while (i < 2);
     }
 }
-
-#pragma dont_inline off
+#pragma opt_propagation reset
 void fn_8020A368(void) {
     s32* var_r31;
     s32 var_r30;
