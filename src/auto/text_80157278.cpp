@@ -1646,7 +1646,6 @@ extern "C" f32 lbl_805617A0, lbl_805617A4, lbl_805617A8;
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma opt_propagation off
 extern "C" f32 fn_80159F2C(void* a, void* arg1, void* arg2) {
     u8* player = (u8*)arg1;
     u8* p = (u8*)a;
@@ -1666,7 +1665,8 @@ skip_reset:
         *(s32*)(p+0x2cc) = 0;
         p[0x2d0] = 1;
         bool running = *(f32*)(player+0x258c) > lbl_8056175C;
-        s32 flag = running || player[0x259c];
+        s32 flag = 1;
+        if (!running && !player[0x259c]) flag = 0;
         if (flag || *(s32*)(player+0x2620) == 0) *(s32*)(p+0x2cc) |= 2;
         else *(s32*)(p+0x2cc) &= ~2;
     } else if (*(s32*)(player+0x2620) > 0) {
@@ -1713,7 +1713,8 @@ skip_reset:
     }
     if (count > 0) {
         bool running = *(f32*)(player+0x258c) > lbl_8056175C;
-        s32 flag = running || player[0x259c];
+        s32 flag = 1;
+        if (!running && !player[0x259c]) flag = 0;
         if (!flag && *(s32*)(player+0x2620) > 0) *(s32*)(p+0x2cc) &= ~2;
     }
     if (*(s32*)(p+0x264) > 0 && ((Fn8015889C*)a)->v23() > 0)
