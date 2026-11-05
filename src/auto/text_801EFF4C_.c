@@ -1,4 +1,5 @@
 #include "revolution/MTX/mtxtypes.h"
+typedef struct { unsigned int words[9]; } Matrix3Words;
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_801345D8(void *, int, const char *, ...);
@@ -615,15 +616,16 @@ extern float lbl_80562F34;
 float fn_801F159C(void **);
 void fn_80015A20(void *, float *);
 void fn_80015B20(void *, void *, void *);
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_801F0F78(void *arg0, void *arg1, void *arg2, float scale) {
     int flags = *(int *)((char *)arg1 + 0x60);
-    float point[3];
-    float vec[3];
-    float matrix[12];
-    float sp14[3];
-    float sp8[3];
+    float matrix[9], matrix2[9];
+    Vec point, angles, angles2;
+    float *m = (float *)arg2;
+    float x,y,z, a,b,c,d,e,f,g,h,i;
     int mode;
-    int i;
     if (flags & 8) {
         *(int *)((char *)arg0 + 4) = 3;
         return;
@@ -633,42 +635,44 @@ void fn_801F0F78(void *arg0, void *arg1, void *arg2, float scale) {
     else *(int *)((char *)arg0 + 4) = 0;
     if (*(float *)((char *)arg1 + 0x30) > lbl_80562F30)
         *(int *)((char *)arg0 + 4) |= 0x10;
-
-    point[0] = *(float *)arg1;
-    point[1] = *(float *)((char *)arg1 + 4);
-    point[2] = *(float *)((char *)arg1 + 8);
-    point[1] += fn_801F159C((void **)arg0);
+    point = *(Vec *)arg1;
+    point.y += fn_801F159C((void **)arg0);
     *(float *)((char *)arg0 + 0x48) = *(float *)((char *)arg1 + 0x34);
-    mode = *(int *)((char *)arg0 + 0xC);
-    mode = (mode == 0 || mode == 2);
-
-    if ((char *)arg0 + 0x3C == (char *)&point[0]) {
-        /* unreachable alias case retained to mirror the source structure */
+    mode = *(int *)((char *)arg0 + 0xc);
+    mode = mode == 0 || mode == 2;
+    if ((float *)((char *)arg0 + 0x3c) == (float *)&point) {
+        x = point.x; y = point.y; z = point.z;
+        a=x*m[0]; b=x*m[1]; c=x*m[2];
+        d=y*m[3]; e=y*m[4]; f=y*m[5];
+        g=z*m[6]; h=z*m[7]; i=z*m[8];
+        (*(float *)((char *)arg0 + 0x3c))=g+(a+d); (*(float *)((char *)arg0 + 0x40))=h+(b+e); (*(float *)((char *)arg0 + 0x44))=i+(c+f);
+    } else {
+        (*(float *)((char *)arg0 + 0x3c))=point.z*m[6]+(point.x*m[0]+point.y*m[3]);
+        (*(float *)((char *)arg0 + 0x40))=point.z*m[7]+(point.x*m[1]+point.y*m[4]);
+        (*(float *)((char *)arg0 + 0x44))=point.z*m[8]+(point.x*m[2]+point.y*m[5]);
     }
-    vec[0] = point[0] * *(float *)arg2 + point[1] * *(float *)((char *)arg2 + 0xC) + point[2] * *(float *)((char *)arg2 + 0x18);
-    vec[1] = point[0] * *(float *)((char *)arg2 + 4) + point[1] * *(float *)((char *)arg2 + 0x10) + point[2] * *(float *)((char *)arg2 + 0x1C);
-    vec[2] = point[0] * *(float *)((char *)arg2 + 8) + point[1] * *(float *)((char *)arg2 + 0x14) + point[2] * *(float *)((char *)arg2 + 0x20);
-    *(float *)((char *)arg0 + 0x3C) = vec[0];
-    *(float *)((char *)arg0 + 0x40) = vec[1];
-    *(float *)((char *)arg0 + 0x44) = vec[2];
-    for (i = 0; i < 9; i++) matrix[i] = *(float *)((char *)arg2 + i * 4);
-    *(float *)((char *)arg0 + 0x3C) += *(float *)((char *)arg2 + 0x24);
-    *(float *)((char *)arg0 + 0x40) += *(float *)((char *)arg2 + 0x28);
-    *(float *)((char *)arg0 + 0x44) += *(float *)((char *)arg2 + 0x2C);
-    for (i = 0; i < 9; i++) *(float *)((char *)arg0 + 0x18 + i * 4) = matrix[i];
-    sp14[0] = lbl_80562F1C; sp14[1] = lbl_80562F1C; sp14[2] = *(float *)((char *)arg1 + 0x2C);
-    fn_80015A20(matrix, sp14);
+    (*(float *)((char *)arg0 + 0x3c)) += m[9]; (*(float *)((char *)arg0 + 0x40)) += m[10]; (*(float *)((char *)arg0 + 0x44)) += m[11];
+    ((Vec *)((char *)arg0 + 0x18))[0] = ((Vec *)m)[0];
+    ((Vec *)((char *)arg0 + 0x18))[1] = ((Vec *)m)[1];
+    ((Vec *)((char *)arg0 + 0x18))[2] = ((Vec *)m)[2];
+    angles.x = lbl_80562F1C; angles.y = lbl_80562F1C; angles.z = *(float *)((char *)arg1 + 0x2c);
+    fn_80015A20(matrix, (float *)&angles);
     fn_80015B20((char *)arg0 + 0x18, matrix, (char *)arg0 + 0x18);
-    sp8[0] = lbl_80562F1C;
-    sp8[1] = *(float *)((char *)arg1 + 0x28) + (mode ? lbl_80562F1C : lbl_80562F34);
-    sp8[2] = lbl_80562F1C;
-    fn_80015A20(vec, sp8);
-    fn_80015B20((char *)arg0 + 0x18, vec, (char *)arg0 + 0x18);
-    if (__builtin_fabsf(scale - lbl_80562F18) != lbl_80558DC4) {
-        for (i = 0; i < 9; i++) *(float *)((char *)arg0 + 0x18 + i * 4) *= scale;
+    angles2.x = lbl_80562F1C;
+    angles2.y = *(float *)((char *)arg1 + 0x28) + (mode ? lbl_80562F1C : lbl_80562F34);
+    angles2.z = lbl_80562F1C;
+    fn_80015A20(matrix2, (float *)&angles2);
+    fn_80015B20((char *)arg0 + 0x18, matrix2, (char *)arg0 + 0x18);
+    if (!((float)__fabs(scale - lbl_80562F18) <= lbl_80558DC4)) {
+        float *p = (float *)((char *)arg0 + 0x18);
+        a=p[0]*scale; b=p[1]*scale; c=p[2]*scale;
+        d=p[3]*scale; e=p[4]*scale; f=p[5]*scale;
+        g=p[6]*scale; h=p[7]*scale; i=p[8]*scale;
+        p[0]=a; p[1]=b; p[2]=c; p[3]=d; p[4]=e;
+        p[5]=f; p[6]=g; p[7]=h; p[8]=i;
     }
 }
-
+#pragma pop
 void fn_801F131C(int arg0, int arg1) {
     if (*(unsigned int *)(arg0 + 4) != 3) {
         int value;
