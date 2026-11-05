@@ -1850,9 +1850,9 @@ extern "C" f32 lbl_805617B4, lbl_805617B8, lbl_805617BC;
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma scheduling on
 extern "C" f32 fn_8015A8D8(void* a, void* arg1) {
     u8* p = (u8*)a;
-    f32 result;
     s32 end;
     if (p[0x2f0]) {
         s32 active = fn_801D48FC(*(s32*)(p+0x26c));
@@ -1895,6 +1895,8 @@ extern "C" f32 fn_8015A8D8(void* a, void* arg1) {
                             }
                         }
                         break;
+                    case 5:
+                        break;
                     case 4:
                         *(f32*)(slot+0x27c) -= step;
                         if (*(f32*)(slot+0x27c) < zero) *(s32*)(slot+0x270) = 5;
@@ -1923,11 +1925,11 @@ extern "C" f32 fn_8015A8D8(void* a, void* arg1) {
     *(f32*)(p+0x254) = fn_801429D0(lbl_80561754, *(f32*)(p+0x254)-lbl_8056177C);
     if (!fn_8015A404(arg1) && !((Fn8015889C*)a)->v37())
         *(f32*)(p+0x254) = fn_801429D0(*(f32*)(p+0x254), lbl_8056179C);
-    result = lbl_80561754;
+    f32 result = lbl_80561754;
     end = 0;
     if (((Fn8015889C*)a)->v39()) {
         s32 last = fn_80158D04(a)-1;
-        if (((Fn8015889C*)a)->v23() == last) end = 1;
+        if (last == ((Fn8015889C*)a)->v23()) end = 1;
     }
     if (fn_80141F7C(*(f32*)(p+0x254)) || end) {
         if (*(s32*)(p+0x264) > 0) result = ((f32 (*)(void*, void*))fn_8015A368)(a,arg1);
