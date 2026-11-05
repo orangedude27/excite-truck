@@ -262,13 +262,14 @@ void fn_80230924(void *arg0, f32 x, f32 y, f32 z, f32 w, f32 v) {
 #pragma cplusplus reset
 
 void fn_80230A68(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
-    u32 *p = (u32 *)arg0;
-    p[0] = *(u32 *)&farg0;
-    p[1] = *(u32 *)&farg1;
-    p[2] = *(u32 *)&farg2;
-    p[3] = arg1;
-    p[4] = *(u32 *)&farg3;
-    p[5] = *(u32 *)&farg4;
+    Pack6 s;
+    s.a = farg0;
+    s.b = farg1;
+    s.c = farg2;
+    s.d = arg1;
+    s.e = farg3;
+    s.f = farg4;
+    *(Pack6 *)arg0 = s;
 }
 
 #pragma dont_inline on
