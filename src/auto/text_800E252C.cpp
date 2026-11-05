@@ -169,6 +169,19 @@ static inline void PauseSetRamp(PauseFields *s, float end, int n) {
     s->elapsed = 0;
 }
 #pragma always_inline reset
+#pragma always_inline on
+static inline void AxVoiceSetAllStates(char *self, unsigned int state) {
+    char *row = self;
+    int i;
+    for (i = 0; i < *(int *)(self + 0x104); row += 0x10, i++) {
+        char *col = row;
+        int j;
+        for (j = 0; j < *(int *)(self + 0x108); col += 4, j++) {
+            if (*(void **)(col + 0xC) != 0) AXSetVoiceState(*(void **)(col + 0xC), state);
+        }
+    }
+}
+#pragma always_inline reset
 // Vtable dispatcher class for indirect virtual calls (MWCC ABI: 2 leading dtor slots).
 class VfObj {
 public:
@@ -1450,6 +1463,83 @@ extern "C" void InitParam__Q46nw4hbm3snd6detail7AxVoiceFiiPFPQ46nw4hbm3snd6detai
     *(float *)((char *)self + 0x184) = one;
 }
 
+extern "C" void UpdateAxSrc__Q46nw4hbm3snd6detail7AxVoiceFb(void *, int);
+extern "C" void UpdateAxMix__Q46nw4hbm3snd6detail7AxVoiceFv(void *);
+extern "C" void UpdateAxLpf__Q46nw4hbm3snd6detail7AxVoiceFv(char *);
+extern "C" int fn_800E6B24(void *);
+#pragma use_lmw_stmw off
+extern "C" void fn_800E4764(void *arg0) {
+#define B(off) (*(unsigned char *)((char *)arg0 + (off)))
+#define I(off) (*(int *)((char *)arg0 + (off)))
+    char *row;
+    char *col;
+    int i, j;
+    if (B(0x11C) != 0) {
+        if (B(0x11E) != 0 && IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(arg0) != 0) {
+            void (*cb)(void *, int, int) = *(void (**)(void *, int, int))((char *)arg0 + 0x10C);
+            if (cb != 0) {
+                cb(arg0, 0, I(0x110));
+            }
+            B(0x11E) = 0;
+            B(0x11D) = 0;
+        }
+        if ((B(0x123) & 1) && B(0x11D) != 0 && B(0x11E) == 0) {
+            UpdateAxSrc__Q46nw4hbm3snd6detail7AxVoiceFb(arg0, 1);
+            row = (char *)arg0;
+            for (i = 0; i < I(0x104); row += 0x10, i++) {
+                col = row;
+                for (j = 0; j < I(0x108); col += 4, j++) {
+                    if (*(void **)(col + 0xC) != 0) AXSetVoiceState(*(void **)(col + 0xC), 1);
+                }
+            }
+            B(0x11E) = 1;
+            B(0x123) = B(0x123) & 0xFE;
+            B(0x123) = B(0x123) & ~8;
+        }
+        if (B(0x11E) != 0) {
+            if ((B(0x123) & 2) && B(0x11D) != 0) {
+                if (B(0x11F) != 0 || B(0x122) != 0 || *(unsigned char *)((char *)Instance__15EmissionManagerFv() + 0x6C33) != 0) {
+                    row = (char *)arg0;
+                    for (i = 0; i < I(0x104); row += 0x10, i++) {
+                        col = row;
+                        for (j = 0; j < I(0x108); col += 4, j++) {
+                            if (*(void **)(col + 0xC) != 0) AXSetVoiceState(*(void **)(col + 0xC), 0);
+                        }
+                    }
+                    B(0x120) = 1;
+                } else {
+                    row = (char *)arg0;
+                    for (i = 0; i < I(0x104); row += 0x10, i++) {
+                        col = row;
+                        for (j = 0; j < I(0x108); col += 4, j++) {
+                            if (*(void **)(col + 0xC) != 0) AXSetVoiceState(*(void **)(col + 0xC), 1);
+                        }
+                    }
+                    B(0x120) = 0;
+                }
+                B(0x123) = B(0x123) & ~2;
+            }
+            if (B(0x123) & 8) {
+                UpdateAxSrc__Q46nw4hbm3snd6detail7AxVoiceFb(arg0, 0);
+                B(0x123) = B(0x123) & ~8;
+            }
+            if ((B(0x123) & 0x10) && fn_800E6B24(arg0) == 0) {
+                B(0x123) = B(0x123) & ~0x10;
+            }
+            if (B(0x123) & 0x20) {
+                UpdateAxMix__Q46nw4hbm3snd6detail7AxVoiceFv(arg0);
+                B(0x123) = B(0x123) & ~0x20;
+            }
+            if (B(0x123) & 0x40) {
+                UpdateAxLpf__Q46nw4hbm3snd6detail7AxVoiceFv((char *)arg0);
+                B(0x123) = B(0x123) & ~0x40;
+            }
+        }
+    }
+#undef B
+#undef I
+}
+#pragma use_lmw_stmw reset
 extern "C" int TRKInitializeMessageBuffers(unsigned int, void (*)(void *), void *);
 extern "C" void VoiceCallback__Q46nw4hbm3snd6detail7AxVoiceFPv(void *);
 extern "C" void RegisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(void *, void *);
