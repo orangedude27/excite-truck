@@ -400,7 +400,7 @@ extern "C" s32 fn_800AF5A0(void *, s32, s32 *);
 extern "C" s32 fn_800AFE14(void *, s32, s32 *);
 extern "C" s32 fn_800B0258(void *, s32, s32 *);
 extern "C" s32 fn_800BEE64(void *, s32, s32);
-extern "C" void fn_800C3960(void *, s32, s32, s32);
+extern "C" void fn_800C3960(s32 *, s32 *, u32, s16 *, u32, s32);
 extern "C" void fn_800C3574(void *, void *, s32, s32, s32);
 extern "C" u32 lbl_802F4088[];
 extern "C" u32 lbl_802F4108[];
