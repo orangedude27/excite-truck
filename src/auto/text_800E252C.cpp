@@ -137,8 +137,7 @@ public:
     virtual void vf19();
     virtual void vf20();
     virtual void vf21();
-    virtual void vf22();
-    virtual PauseVt *vf23();   // vtable 0x5C
+    virtual PauseVt *vf22();   // vtable 0x5C
 };
 struct PauseFields {
     PauseVt *vt;
