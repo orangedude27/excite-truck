@@ -633,7 +633,7 @@ extern "C" void fn_800D6CA0(s32 arg0, s32 arg1) {
     type = (StateNode_800D6CA0 *)((StateObject_800D6CA0 *)self)->v1();
     while (type) {
         if (type == needle) { found = true; goto found1; }
-        type = *(StateNode_800D6CA0 **)type;
+        type = type->next;
     }
     found = false;
     found1:
@@ -646,7 +646,7 @@ extern "C" void fn_800D6CA0(s32 arg0, s32 arg1) {
         type = (StateNode_800D6CA0 *)((StateObject_800D6CA0 *)p1)->v1();
         while (type) {
             if (type == needle) { found = true; goto found2; }
-            type = *(StateNode_800D6CA0 **)type;
+            type = type->next;
         }
         found = false;
         found2:
@@ -659,7 +659,7 @@ extern "C" void fn_800D6CA0(s32 arg0, s32 arg1) {
             type = (StateNode_800D6CA0 *)((StateObject_800D6CA0 *)p2)->v1();
             while (type) {
                 if (type == needle) { found = true; goto found3; }
-                type = *(StateNode_800D6CA0 **)type;
+                type = type->next;
             }
             found = false;
             found3:
@@ -670,11 +670,11 @@ extern "C" void fn_800D6CA0(s32 arg0, s32 arg1) {
                 p3 = (u8 *)n3 - 4;
                 if (!p3) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
                 fn_800D6CA0((s32)p3, arg1);
-                n3 = *(StateNode_800D6CA0 **)n3;
+                n3 = n3->next;
             }
-            n2 = *(StateNode_800D6CA0 **)n2;
+            n2 = n2->next;
         }
-        n1 = *(StateNode_800D6CA0 **)n1;
+        n1 = n1->next;
     }
 }
 
@@ -1645,6 +1645,15 @@ extern "C" void SetTexCoordGenNum__Q36nw4hbm3lyt8MaterialFUc(void *self, unsigne
     }
 }
 
+struct TevStageDefault {
+    u8 b[16];
+    TevStageDefault() {
+        b[0] = 0xFF; b[1] = 4; b[2] = 0xFF; b[3] = 0;
+        b[4] = 0xFF; b[5] = 0xAF; b[6] = 0; b[7] = 0x61;
+        b[8] = 0x77; b[9] = 0x57; b[10] = 0; b[11] = 0x81;
+        b[12] = 0; b[13] = 0; b[14] = 0; b[15] = 0;
+    }
+};
 extern "C" void fn_800D9844(void* arg0, u32 arg1, s32 arg2) {
     u32 format = *(u32*)((u8*)arg0 + 0x4C);
     if (arg1 > ((format >> 9) & 0x1F))
