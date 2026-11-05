@@ -583,7 +583,7 @@ extern "C" void fn_801A6088(void *arg0, int arg1) {
 extern float lbl_80562404;
 extern float lbl_80562408;
 extern float lbl_8056240C;
-extern void fn_8017B3A8(void *, float *, float *, float);
+extern void fn_8017B3A8(void *, float *, float *);
 #pragma scheduling invalid_target
 void fn_801A60E0(void *arg0, void *arg1) {
     float sp14[3];
@@ -596,7 +596,7 @@ void fn_801A60E0(void *arg0, void *arg1) {
     if (*(float *)(p + 0x124) > lbl_80562404) {
         f0 = lbl_80562408 * (lbl_8056240C - *(float *)(p + 0x58));
         f2 = lbl_805623C8;
-        if (f2 > f0) {
+        if (f0 < f2) {
             f2 = f0;
         } else {
             f2 = f2;
@@ -613,62 +613,49 @@ void fn_801A60E0(void *arg0, void *arg1) {
     sp8[0] = lbl_805623C8;
     sp8[1] = f1;
     sp8[2] = lbl_805623C8;
-    fn_8017B3A8(arg1, sp8, sp14, f1);
+    fn_8017B3A8(arg1, sp8, sp14);
 }
 #pragma scheduling on
 extern void fn_801A60E0(void *, void *);
 extern float lbl_8055E3C8, lbl_805623C8, lbl_805623CC, lbl_805623D4, lbl_80562410, lbl_80562414;
-#pragma cplusplus off
+#pragma scheduling invalid_target
 void fn_801A61B0(void *arg0, void *arg1, float arg2) {
     int active;
     int counter;
     float value, ratio, limit, bound;
-    if (*(int *)arg0) {
-        active = 1;
-        if (!*(unsigned char *)((char *)arg1 + 0x23CC) &&
-            !*(unsigned char *)((char *)arg1 + 0x2440) &&
-            *(unsigned char *)((char *)arg1 + 0x24B4) &&
-            *(unsigned char *)((char *)arg1 + 0x2528)) {
-            value = *(float *)((char *)arg1 + 0x25D4);
-            ratio = value / arg2;
-            if (ratio > lbl_80562410) {
-                limit = *(float *)((char *)arg1 + 0x11C);
-                if (limit > lbl_805623C8 && limit < lbl_805623D4 * value) {
-                    counter = *(int *)((char *)arg0 + 0xC) + 1;
-                    *(int *)((char *)arg0 + 0xC) = counter;
-                    if (counter > 4) {
-                        bound = lbl_805623CC;
-                        value = bound - ratio;
-                        *(float *)((char *)arg0 + 8) = lbl_8055E3C8;
-                        if (bound < value)
-                            bound = value;
-                        if (bound > lbl_805623C8)
-                            bound = lbl_805623C8;
-                        *(int *)arg0 = 0;
-                        *(float *)((char *)arg0 + 4) =
-                            lbl_80562414 * (bound * *(float *)((char *)arg1 + 0xD4));
+    if (*(int*)arg0) {
+        active=1;
+        if (!*(unsigned char*)((char*)arg1+0x23CC) && !*(unsigned char*)((char*)arg1+0x2440) &&
+            *(unsigned char*)((char*)arg1+0x24B4) && *(unsigned char*)((char*)arg1+0x2528)) {
+            value=*(float*)((char*)arg1+0x25D4); ratio=value/arg2;
+            if(ratio>lbl_80562410) {
+                limit=*(float*)((char*)arg1+0x11C);
+                if(limit>lbl_805623C8 && limit<lbl_805623D4*value) {
+                    counter=*(int*)((char*)arg0+0xC)+1; *(int*)((char*)arg0+0xC)=counter;
+                    if(counter>4) {
+                        bound=lbl_805623CC;
+                        value=bound-ratio;
+                        *(float*)((char*)arg0+8)=lbl_8055E3C8;
+                        if(bound<value) bound=value;
+                        if(bound>lbl_805623C8) bound=lbl_805623C8;
+                        *(int*)arg0=0;
+                        *(float*)((char*)arg0+4)=lbl_80562414*(bound**(float*)((char*)arg1+0xD4));
                         do {
-                            fn_801A60E0(arg0, arg1);
-                            counter = *(int *)((char *)arg0 + 0xC) - 1;
-                            *(int *)((char *)arg0 + 0xC) = counter;
-                        } while (counter != 0);
-                    } else {
-                        active = 0;
-                    }
+                            fn_801A60E0(arg0,arg1);
+                            counter=*(int*)((char*)arg0+0xC)-1;
+                            *(int*)((char*)arg0+0xC)=counter;
+                        } while(counter!=0);
+                    } else active=0;
                 }
             }
         }
-        if (active)
-            *(int *)((char *)arg0 + 0xC) = 0;
+        if(active) *(int*)((char*)arg0+0xC)=0;
     } else {
-        fn_801A60E0(arg0, arg1);
-        if (*(int *)((char *)arg1 + 0x2620) > 0 &&
-            lbl_8055E3C8 - *(float *)((char *)arg0 + 8) > lbl_805623CC) {
-            *(int *)arg0 = 1;
-            *(int *)((char *)arg0 + 0xC) = 0;
-            *(float *)((char *)arg0 + 8) = lbl_805623C8;
-            *(float *)((char *)arg0 + 4) = lbl_805623C8;
+        fn_801A60E0(arg0,arg1);
+        if(*(int*)((char*)arg1+0x2620)>0 && lbl_8055E3C8-*(float*)((char*)arg0+8)>lbl_805623CC) {
+            *(int*)arg0=1; *(int*)((char*)arg0+0xC)=0;
+            *(float*)((char*)arg0+8)=lbl_805623C8; *(float*)((char*)arg0+4)=lbl_805623C8;
         }
     }
 }
-#pragma cplusplus off
+#pragma scheduling on
