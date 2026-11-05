@@ -1,7 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-typedef struct { double d[8]; } Key64;
+typedef struct { double a, b, c, d, e, f, g, h; } Key64;
 extern unsigned char lbl_8042F8C8[];
 extern char *strchr(const char *, int);
 extern char *fn_80029004(char *, int);
@@ -152,6 +152,115 @@ void fn_8013BFE0(void) {
 
 void fn_8013BFE4(void) {
 
+}
+
+extern int strcmp(const char *, const char *);
+extern void *fn_80131810(const char *);
+extern void fn_80131818(void *);
+extern void *fn_8013184C(void);
+extern void fn_802E30C8(const char *, ...);
+extern const char lbl_8032C42C[];
+extern const char lbl_8032C43C[];
+void *fn_8013BFE8(char *arg0) {
+    char key[0x40];
+    char buf[0x80];
+    unsigned char *e;
+    unsigned char *p;
+    int i, count;
+    void *obj, *res, *h;
+    char *dst;
+    int n;
+    unsigned char c;
+    dst = key;
+    n = 0x40;
+    goto copy;
+count_check:
+    if (--n > 0)
+        goto copy;
+    dst[-1] = 0;
+    goto copied;
+copy:
+    c = (unsigned char)*arg0++;
+    *dst++ = c;
+    if ((signed char)c != 0)
+        goto count_check;
+copied:
+    p = lbl_8042F8C8;
+    count = *(int *)(lbl_8042F8C8 + 0x240);
+    e = 0;
+    for (i = 0; i < count; i++) {
+        int eq = strcmp(key, (char *)p + 4) == 0;
+        if (eq) {
+            e = lbl_8042F8C8 + i * 0x48;
+            break;
+        }
+        p += 0x48;
+    }
+    if (e == 0) {
+        res = 0;
+        obj = fn_80131810(lbl_8032C42C);
+        if (obj != 0) {
+            char *name = fn_8013BC90(buf, 0x80, key);
+            if (((int (*)(void *, char *))(*(void ***)obj)[4])(obj, name))
+                h = (void *)((int (*)(void *, char *))(*(void ***)obj)[2])(obj, name);
+            else
+                h = 0;
+            if (h != 0) fn_802E30C8(lbl_8032C43C, name);
+            else h = fn_8013184C();
+            res = fn_8013BE64(h, key);
+            fn_80131818(obj);
+        }
+        if (res == 0) res = fn_8013BF40(key);
+        if (res != 0) {
+            fn_8013BFE0();
+            fn_8013BFE4();
+        }
+        if (res != 0) {
+            Key64 tmp = *(Key64 *)key;
+            unsigned char *s = (unsigned char *)&tmp;
+            e = lbl_8042F8C8 + *(int *)(lbl_8042F8C8 + 0x240) * 0x48;
+            *(int *)(lbl_8042F8C8 + 0x240) += 1;
+            *(void **)e = res;
+            { unsigned char a = s[0]; unsigned char b = s[1]; e[4] = a; e[5] = b; }
+            { unsigned char a = s[2]; unsigned char b = s[3]; e[6] = a; e[7] = b; }
+            { unsigned char a = s[4]; unsigned char b = s[5]; e[8] = a; e[9] = b; }
+            { unsigned char a = s[6]; unsigned char b = s[7]; e[10] = a; e[11] = b; }
+            { unsigned char a = s[8]; unsigned char b = s[9]; e[12] = a; e[13] = b; }
+            { unsigned char a = s[10]; unsigned char b = s[11]; e[14] = a; e[15] = b; }
+            { unsigned char a = s[12]; unsigned char b = s[13]; e[16] = a; e[17] = b; }
+            { unsigned char a = s[14]; unsigned char b = s[15]; e[18] = a; e[19] = b; }
+            { unsigned char a = s[16]; unsigned char b = s[17]; e[20] = a; e[21] = b; }
+            { unsigned char a = s[18]; unsigned char b = s[19]; e[22] = a; e[23] = b; }
+            { unsigned char a = s[20]; unsigned char b = s[21]; e[24] = a; e[25] = b; }
+            { unsigned char a = s[22]; unsigned char b = s[23]; e[26] = a; e[27] = b; }
+            { unsigned char a = s[24]; unsigned char b = s[25]; e[28] = a; e[29] = b; }
+            { unsigned char a = s[26]; unsigned char b = s[27]; e[30] = a; e[31] = b; }
+            { unsigned char a = s[28]; unsigned char b = s[29]; e[32] = a; e[33] = b; }
+            { unsigned char a = s[30]; unsigned char b = s[31]; e[34] = a; e[35] = b; }
+            { unsigned char a = s[32]; unsigned char b = s[33]; e[36] = a; e[37] = b; }
+            { unsigned char a = s[34]; unsigned char b = s[35]; e[38] = a; e[39] = b; }
+            { unsigned char a = s[36]; unsigned char b = s[37]; e[40] = a; e[41] = b; }
+            { unsigned char a = s[38]; unsigned char b = s[39]; e[42] = a; e[43] = b; }
+            { unsigned char a = s[40]; unsigned char b = s[41]; e[44] = a; e[45] = b; }
+            { unsigned char a = s[42]; unsigned char b = s[43]; e[46] = a; e[47] = b; }
+            { unsigned char a = s[44]; unsigned char b = s[45]; e[48] = a; e[49] = b; }
+            { unsigned char a = s[46]; unsigned char b = s[47]; e[50] = a; e[51] = b; }
+            { unsigned char a = s[48]; unsigned char b = s[49]; e[52] = a; e[53] = b; }
+            { unsigned char a = s[50]; unsigned char b = s[51]; e[54] = a; e[55] = b; }
+            { unsigned char a = s[52]; unsigned char b = s[53]; e[56] = a; e[57] = b; }
+            { unsigned char a = s[54]; unsigned char b = s[55]; e[58] = a; e[59] = b; }
+            { unsigned char a = s[56]; unsigned char b = s[57]; e[60] = a; e[61] = b; }
+            { unsigned char a = s[58]; unsigned char b = s[59]; e[62] = a; e[63] = b; }
+            { unsigned char a = s[60]; unsigned char b = s[61]; e[64] = a; e[65] = b; }
+            { unsigned char a = s[62]; unsigned char b = s[63]; e[66] = a; e[67] = b; }
+            *(int *)(e + 0x44) = 0;
+        }
+    }
+    if (e != 0) {
+        *(int *)(e + 0x44) = *(int *)(e + 0x44) + 1;
+        return *(void **)e;
+    }
+    return 0;
 }
 
 extern void fn_80128658(int);
