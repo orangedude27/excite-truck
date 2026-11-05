@@ -1,5 +1,4 @@
   #include <types.h>
-#include <macros.h>
 #pragma push
 #pragma dont_inline on
 #pragma scheduling on
@@ -3154,17 +3153,19 @@ extern "C" s32 fn_800AA924(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4,
         if (result != 0) { *arg6 = 0xF423F; *arg7 = 0xF423F; return result; }
         result = fn_800A9DC0(arg1, iter, arg3, arg4, arg5, &outValue);
         if (result == 0) { *arg6 = 0xF423F; *arg7 = 0xF423F; return 3; }
-        if ((iter[0x4C] & 0x40) == 0) goto regular;
-        result = fn_800AC1B4(iter, name);
-        if (result != 0) { *arg6 = 0xF423F; *arg7 = 0xF423F; return result; }
-        result = fn_800A9DC0(arg1, iter, arg3, arg4, arg5, &outValue);
-        if (result != 0) goto regular;
-        *(s32 *)((u8 *)arg1 + 0x22C) = *(s32 *)((u8 *)arg0 + 0x34);
-        *arg6 = outValue; *arg7 = *(s32 *)iter;
-        return 0;
+        if ((iter[0x4C] & 0x40) != 0) {
+            result = fn_800AC1B4(iter, name);
+            if (result != 0) { *arg6 = 0xF423F; *arg7 = 0xF423F; return result; }
+            result = fn_800A9DC0(arg1, iter, arg3, arg4, arg5, &outValue);
+            if (result == 0) {
+                *(s32 *)((u8 *)arg1 + 0x22C) = *(s32 *)((u8 *)arg0 + 0x34);
+                *arg6 = outValue; *arg7 = *(s32 *)iter;
+                return 0;
+            }
+        }
     }
-regular:
     result = fn_800AC1B4(iter, name);
+    goto loop;
 loop:
     if (result != 0) { *arg6 = 0xF423F; *arg7 = 0xF423F; return result; }
     state = iter[0x4C];
@@ -5457,7 +5458,7 @@ extern "C" s32 fn_800AF8EC(void *arg0, s32 arg1, u32 arg2, void *arg3) {
     u32 value = (*(u32 *)((char *)arg0 + 0x28) + (r9 >> *(u8 *)((char *)arg0 + 0x20))) & 0xFFFF;
     u16 index = r9 & (*(u16 *)arg0 - 1);
     u32 nv;
-    s32 result = 0;
+    u32 result = 0;
     s32 oldResult = 0;
     u16 i;
 
@@ -5478,7 +5479,7 @@ extern "C" s32 fn_800AF8EC(void *arg0, s32 arg1, u32 arg2, void *arg3) {
         if ((u32)index == (u32)*(u16 *)arg0 - 1) {
             for (i = 0; (s32)i < *(u8 *)((char *)arg0 + 0x22); i++) {
                 s32 r = fn_800B5618(arg0, *(void **)((char *)arg3 + 8),
-                    *(u32 *)((char *)arg3 + 0x18) + (s32)i * *(s32 *)((char *)arg0 + 0xC),
+                    *(u32 *)((char *)arg3 + 0x18) + i * *(s32 *)((char *)arg0 + 0xC),
                     0, *(u16 *)arg0);
                 if (r != 0 && oldResult == 0) oldResult = r;
             }
@@ -5488,10 +5489,10 @@ extern "C" s32 fn_800AF8EC(void *arg0, s32 arg1, u32 arg2, void *arg3) {
             *(u32 *)((char *)arg3 + 0x18) = nv;
             *(u8 *)*(s32 *)((char *)arg3 + 8) = (u8)(arg2 >> 4);
         } else {
-            *(u8 *)((u8 *)*(s32 *)((char *)arg3 + 8) + index + 1) = (u8)(arg2 >> 4);
+            u8 *addr = (u8 *)(*(s32 *)((char *)arg3 + 8) + index + 1);
+            *addr = (u8)(arg2 >> 4);
         }
     } else {
-        *(u32 *)((char *)arg3 + 0x18) = index;
         *(u8 *)((u8 *)*(s32 *)((char *)arg3 + 8) + index) = (u8)arg2;
         if ((u32)index == (u32)*(u16 *)arg0 - 1) {
             for (i = 0; (s32)i < *(u8 *)((char *)arg0 + 0x22); i++) {
@@ -5502,7 +5503,7 @@ extern "C" s32 fn_800AF8EC(void *arg0, s32 arg1, u32 arg2, void *arg3) {
             }
             nv = value + 1;
             result = fn_800B5260(arg0, *(void **)((char *)arg3 + 8), nv, 0, *(u16 *)arg0);
-            if (result != 0) return result;
+            if (result) return result;
             *(u32 *)((char *)arg3 + 0x18) = nv;
             *(u8 *)*(s32 *)((char *)arg3 + 8) =
                 (*(u8 *)*(s32 *)((char *)arg3 + 8) & 0xF0) | (u8)(arg2 >> 8);
@@ -5513,6 +5514,58 @@ extern "C" s32 fn_800AF8EC(void *arg0, s32 arg1, u32 arg2, void *arg3) {
     }
     if (result != 0) oldResult = result;
     return oldResult;
+}
+
+extern "C" s32 fn_800AFBA8(void *arg0, u16 arg1, u32 *result, void *page) {
+    u8 *ctx=(u8*)arg0;
+    u8 *pg=(u8*)page;
+    s32 status;
+    u32 sector;
+    u32 copy;
+    u32 offset;
+    offset=(u16)(arg1+((u32)arg1>>1));
+    sector=(u16)(*(u32*)(ctx+0x28)+(offset>>*(u8*)(ctx+0x20)));
+    copy=1;
+    if(*(u16*)(ctx+0x18)&0x80) copy=*(u16*)(ctx+0x18)&7;
+    status=0;
+retry:
+    if(status==0x1000 && *(s32 (**)(s32))(ctx+0x1fc0)) {
+        s32 action=(*(s32 (**)(s32))(ctx+0x1fc0))(*(s32*)(ctx+0x1f84));
+        if(action==0) { status=0; goto retry; }
+        if(action==1 && *(u8*)(ctx+0x22)>=2 && copy<*(u8*)(ctx+0x22)) {
+            status=0; copy++; sector+=*(u32*)(ctx+0xc); goto retry;
+        }
+    } else {
+        if(*(u32*)(pg+0x18)!=sector) {
+            if(*(u16*)(pg+2)==1) {
+                for(status=0;(u16)status<*(u8*)(ctx+0x22);status++)
+                    fn_800B5618(arg0,*(void**)(pg+8),*(u32*)(pg+0x18)+(u16)status**(u32*)(ctx+0xc),0,*(u16*)ctx);
+            }
+            status=fn_800B5260(arg0,*(void**)(pg+8),sector,0,*(u16*)ctx);
+            if(status) goto retry;
+            *(u32*)(pg+0x18)=sector;
+        }
+        u32 mask=*(u16*)ctx-1;
+        offset &= mask;
+        if(offset==mask) {
+            *result=(*(u8**)(pg+8))[offset];
+            if(*(u16*)(pg+2)==1) {
+                u16 i;
+                for(i=0;i<*(u8*)(ctx+0x22);i++)
+                    fn_800B5618(arg0,*(void**)(pg+8),*(u32*)(pg+0x18)+i**(u32*)(ctx+0xc),0,*(u16*)ctx);
+            }
+            status=fn_800B5260(arg0,*(void**)(pg+8),sector+1,0,*(u16*)ctx);
+            if(status) goto retry;
+            *(u32*)(pg+0x18)=sector+1;
+            *result+=(*(u8**)(pg+8))[0]<<8;
+        } else {
+            u8 *buf=*(u8**)(pg+8);
+            *result=(buf[offset+1]<<8)+buf[offset];
+        }
+    }
+    if(status) { *result=-1; return status; }
+    if(arg1&1) *result>>=4; else *result&=0xfff;
+    return 0;
 }
 
 extern "C" s32 fn_800AFE14(void *arg0, s32 arg1, s32 *arg2) {
@@ -7937,6 +7990,55 @@ extern "C" s32 fn_800B5618(void *arg0, void *arg1, u32 arg2, u16 arg3, s32 arg4)
     return result & ((-result | result) >> 31);
 }
 
+extern "C" s32 fn_800B5700(s32 arg0, void *arg1, s32 arg2, u16 arg3, u32 arg4, u32 *arg5, u32 arg6) {
+    void *page;
+    u32 count;
+    s32 result;
+    u16 limit;
+    *arg5 = 0;
+    if (!(M2C_FIELD(arg0, u16 *, 0x1F8C) & 1) || fn_800A53B4((void *)arg0) == 0 || (M2C_FIELD(arg0, u16 *, 0x1F8C) & 2)) return 9;
+    if ((u32)arg2 >= M2C_FIELD(arg0, u32 *, 8) || arg3 >= (limit = M2C_FIELD(arg0, u16 *, 0)) || (s32)(arg3 + arg4) > (s32)limit) {
+        if (arg3 != 0) return 10;
+    }
+    if (arg3 != 0 || arg4 >= limit) {
+        result = fn_800A8F28((void *)arg0, arg2, (s32)&page, arg6, 0);
+        if (result != 0) return result;
+        VFipf_memcpy(M2C_FIELD(page, u8 **, 8) + arg3, arg1, arg4);
+        result = fn_800A900C((void *)arg0, (s32)page, arg6);
+        if (result != 0) return result;
+        *arg5 = arg4;
+    } else if ((arg4 & (limit - 1)) == 0) {
+        result = VFiPFCACHE_WriteDataNumSectorAndFreeIfNeeded_800A9098((void *)arg0, arg1, arg2, arg4 >> M2C_FIELD(arg0, u8 *, 0x20), (s32)&count);
+        if (result != 0) return result;
+        *arg5 = count << M2C_FIELD(arg0, u8 *, 0x20);
+        if (count != (arg4 >> M2C_FIELD(arg0, u8 *, 0x20))) return 17;
+    } else {
+        u32 toWrite;
+        u32 remainder;
+        if (arg3 != 0) return 10;
+        toWrite = arg4 >> M2C_FIELD(arg0, u8 *, 0x20);
+        remainder = (arg2 + toWrite) % M2C_FIELD(arg0, u32 *, 0x1640);
+        if (toWrite > remainder) {
+            u32 partial = toWrite - remainder;
+            result = VFiPFCACHE_WriteDataNumSectorAndFreeIfNeeded_800A9098((void *)arg0, arg1, arg2, partial, (s32)&count);
+            if (result != 0) return result;
+            *arg5 = count << M2C_FIELD(arg0, u8 *, 0x20);
+            if (count != partial) return 17;
+            arg2 += partial;
+            toWrite -= partial;
+        }
+        if (toWrite != 0) {
+            result = fn_800A8F28((void *)arg0, arg2, (s32)&page, arg6, 0);
+            if (result != 0) return result;
+            VFipf_memcpy(M2C_FIELD(page, u8 **, 8), (u8 *)arg1 + *arg5, toWrite << M2C_FIELD(arg0, u8 *, 0x20));
+            result = fn_800A900C((void *)arg0, (s32)page, arg6);
+            if (result != 0) return result;
+            *arg5 += toWrite << M2C_FIELD(arg0, u8 *, 0x20);
+        }
+    }
+    return 0;
+}
+
 extern "C" s32 fn_800A5530(void *);
 extern "C" s32 fn_800AED1C(void *);
 extern "C" s32 fn_800A5800(void *, s32);
@@ -9704,93 +9806,9 @@ block_11:
     return -0x16 & ((s32)~(((s32)(u16)i - 0x17) | (0x17 - (s32)(u16)i)) >> 31);
 }
 
-extern "C" s32 fn_800B960C(s32 a0, s32 a1, s32 a2, s32 a3, s32 *out, s32 key) {
-    NandEntry *base = (NandEntry *)lbl_80405D58;
-    NandEntry *e = 0;
-    s32 i;
-    s32 n, off, len, res;
-    u32 sp20;
-    u8 buf[0x200];
-
-    for (i = 0; i < 0x17; i++) {
-        if (base[i].key == key) {
-            e = &base[i];
-            break;
-        }
-    }
-    if (i == 0x17)
-        return -0x14;
-
-    n = a0 * a3;
-    len = e->length;
-    off = a2 * a3;
-    if (NANDGetLengthAsync(&e->nand[0], &sp20) != 0 || sp20 != (u32)off)
-        res = NANDSeek(&e->nand[0], off, 0);
-    else
-        res = 0;
-
-    if (res < 0) {
-        for (i = 0; i < 0x17; i++)
-            if (base[i].key == key) {
-                base[i].error = res;
-                break;
-            }
-        return res;
-    }
-
-    if ((u32)(off + n) > len) {
-        n = len - off;
-        off = 0;
-        while (n >= 0x200) {
-            res = NANDRead(&e->nand[0], buf, 0x200);
-            if (res < 0)
-                return -0x16;
-            VFipf_memcpy((u8 *)a1 + off, buf, res);
-            off += res;
-            n -= res;
-        }
-        if (n != 0) {
-            res = NANDRead(&e->nand[0], buf, n);
-            if (res < 0)
-                return -0x16;
-            VFipf_memcpy((u8 *)a1 + off, buf, res);
-        }
-        return -0x16;
-    } else {
-        off = 0;
-        while (n >= 0x200) {
-            res = NANDRead(&e->nand[0], buf, 0x200);
-            if (res < 0) {
-                for (i = 0; i < 0x17; i++)
-                    if (base[i].key == key) {
-                        base[i].error = res;
-                        break;
-                    }
-                return res;
-            }
-            VFipf_memcpy((u8 *)a1 + off, buf, res);
-            off += res;
-            n -= res;
-        }
-        if (n != 0) {
-            res = NANDRead(&e->nand[0], buf, n);
-            if (res < 0) {
-                for (i = 0; i < 0x17; i++)
-                    if (base[i].key == key) {
-                        base[i].error = res;
-                        break;
-                    }
-                return res;
-            }
-            VFipf_memcpy((u8 *)a1 + off, buf, res);
-        }
-        *out = a0;
-        return 0;
-    }
-}
-
-extern "C" s32 fn_800B98F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s32 arg5) {
+extern "C" s32 fn_800B960C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s32 arg5) {
     s32 status;
+    u16 i;
     u32 filelen;
     u32 pos;
     u32 length;
@@ -9799,7 +9817,106 @@ extern "C" s32 fn_800B98F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
     u32 remain;
     u32 done;
     unsigned char *entry;
+    unsigned char buf[0x200] __attribute__((aligned(32)));
+
+    entry = 0;
+    for (i = 0; i < 0x17; i++) {
+        if (*(u32 *)(lbl_80405D58 + (u32)(u16)i * 0xF0) == (u32)arg5) {
+            entry = lbl_80405D58 + (u32)(u16)i * 0xF0;
+            break;
+        }
+    }
+    if (i == 0x17) {
+        status = -0x16;
+    } else {
+        status = 0;
+    }
+    if (status != 0) {
+        return -0x14;
+    }
+
+    pos = arg2 * arg3;
+    length = arg0 * arg3;
+    filelen = *(u32 *)(entry + 0x54);
+
+    if (NANDGetLengthAsync(entry + 0x58, &cur) != 0 || cur != pos) {
+        r = NANDSeek(entry + 0x58, (s32)pos, 0);
+    } else {
+        r = 0;
+    }
+    if (r < 0) goto fail;
+
+    if (pos + length > filelen) {
+        remain = filelen - pos;
+        done = 0;
+        while (remain >= 0x200) {
+            r = NANDRead(entry + 0x58, buf, 0x200);
+            if (r < 0) return -0x16;
+            VFipf_memcpy((void *)(arg1 + done), buf, r);
+            done += r;
+            remain -= r;
+        }
+        if (remain != 0) {
+            r = NANDRead(entry + 0x58, buf, remain);
+            if (r < 0) return -0x16;
+            VFipf_memcpy((void *)(arg1 + done), buf, r);
+        }
+        return -0x16;
+    }
+
+    done = 0;
+    while (length >= 0x200) {
+        r = NANDRead(entry + 0x58, buf, 0x200);
+        if (r < 0) {
+            for (i = 0; i < 0x17; i++) {
+                if (*(u32 *)(lbl_80405D58 + (u32)(u16)i * 0xF0) == (u32)arg5) {
+                    *(s32 *)(lbl_80405D58 + (u32)(u16)i * 0xF0 + 0xEC) = r;
+                    break;
+                }
+            }
+            return r;
+        }
+        VFipf_memcpy((void *)(arg1 + done), buf, r);
+        done += r;
+        length -= r;
+    }
+    if (length != 0) {
+        r = NANDRead(entry + 0x58, buf, length);
+        if (r < 0) {
+            for (i = 0; i < 0x17; i++) {
+                if (*(u32 *)(lbl_80405D58 + (u32)(u16)i * 0xF0) == (u32)arg5) {
+                    *(s32 *)(lbl_80405D58 + (u32)(u16)i * 0xF0 + 0xEC) = r;
+                    break;
+                }
+            }
+            return r;
+        }
+        VFipf_memcpy((void *)(arg1 + done), buf, r);
+    }
+    *arg4 = arg0;
+    return 0;
+
+fail:
+    for (i = 0; i < 0x17; i++) {
+        if (*(u32 *)(lbl_80405D58 + (u32)(u16)i * 0xF0) == (u32)arg5) {
+            *(s32 *)(lbl_80405D58 + (u32)(u16)i * 0xF0 + 0xEC) = r;
+            break;
+        }
+    }
+    return r;
+}
+
+extern "C" s32 fn_800B98F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s32 arg5) {
+    s32 status;
     u16 i;
+    u32 filelen;
+    u32 pos;
+    u32 length;
+    u32 cur;
+    s32 r;
+    u32 remain;
+    u32 done;
+    unsigned char *entry;
     unsigned char buf[0x200] __attribute__((aligned(32)));
 
     entry = 0;
@@ -13313,7 +13430,7 @@ extern "C" void fn_800C08A8(void *arg0, s32 arg1, s32 arg2, s16 *arg3, s32 arg4,
     var_r12 = arg3 + var_r7;
     var_ctr = (u32)((arg1 + 3) - var_r7) >> 2U;
     
-        for (; var_ctr != 0; --var_ctr) {
+    for (; var_ctr != 0; --var_ctr) {
             if (var_r7 >= arg1) break;            temp_r26 = M2C_FIELD(arg0, u32 *, 0xC);
             temp_r28 = temp_r26 + 6;
             temp_r27 = 0x10 - (temp_r26 & 7);
@@ -13326,10 +13443,10 @@ extern "C" void fn_800C08A8(void *arg0, s32 arg1, s32 arg2, s16 *arg3, s32 arg4,
             temp_r0 = (temp_r26 >> (temp_r27 - 6)) & 0xFFFF;
             temp_r27_2 = lbl_8031C2E0[temp_r0];
             var_r0 = (temp_r27_2 >> 3U) & 1;
-            temp_r26 = temp_r28 - (temp_r27_2 >> 4);
             var_r31 = (temp_r27_2 >> 2U) & 1;
             var_r30 = (temp_r27_2 >> 1U) & 1;
             var_r29 = temp_r27_2 & 1;
+            temp_r26 = temp_r28 - (temp_r27_2 >> 4);
             M2C_FIELD(arg0, u32 *, 0xC) = temp_r26;
             if (var_r0 != 0) {
                 temp_r28 = temp_r26 + 1;
@@ -13375,28 +13492,31 @@ extern "C" void fn_800C08A8(void *arg0, s32 arg1, s32 arg2, s16 *arg3, s32 arg4,
                 temp_r3 -= var_r7;
                 var_r3_2 = (u32)temp_r3 >> 2;
                 if (var_r7 < arg1) {
-                arg1 = 0;
                     temp_r0 = var_r3_2 >> 3U;
                     var_ctr_2 = temp_r0;
+                    var_r5[0] = 0;
                     if (temp_r0 != 0) {
                         do {
-                            var_r5[0]=arg1; var_r5[1]=arg1; var_r5[2]=arg1; var_r5[3]=arg1;
-                            var_r5[4]=arg1; var_r5[5]=arg1; var_r5[6]=arg1; var_r5[7]=arg1;
-                            var_r5[8]=arg1; var_r5[9]=arg1; var_r5[10]=arg1; var_r5[11]=arg1;
-                            var_r5[12]=arg1; var_r5[13]=arg1; var_r5[14]=arg1; var_r5[15]=arg1;
-                            var_r5[16]=arg1; var_r5[17]=arg1; var_r5[18]=arg1; var_r5[19]=arg1;
-                            var_r5[20]=arg1; var_r5[21]=arg1; var_r5[22]=arg1; var_r5[23]=arg1;
-                            var_r5[24]=arg1; var_r5[25]=arg1; var_r5[26]=arg1; var_r5[27]=arg1;
-                            var_r5[28]=arg1; var_r5[29]=arg1; var_r5[30]=arg1; var_r5[31]=arg1;
+                            var_r5[0]=0; var_r5[1]=0; var_r5[2]=0; var_r5[3]=0;
+                            var_r5[4]=0; var_r5[5]=0; var_r5[6]=0; var_r5[7]=0;
+                            var_r5[8]=0; var_r5[9]=0; var_r5[10]=0; var_r5[11]=0;
+                            var_r5[12]=0; var_r5[13]=0; var_r5[14]=0; var_r5[15]=0;
+                            var_r5[16]=0; var_r5[17]=0; var_r5[18]=0; var_r5[19]=0;
+                            var_r5[20]=0; var_r5[21]=0; var_r5[22]=0; var_r5[23]=0;
+                            var_r5[24]=0; var_r5[25]=0; var_r5[26]=0; var_r5[27]=0;
+                            var_r5[28]=0; var_r5[29]=0; var_r5[30]=0; var_r5[31]=0;
                             var_r5 += 32; var_ctr_2 -= 1;
                         } while (var_ctr_2 != 0);
                         var_r3_2 &= 7;
-                        if (var_r3_2 != 0) goto block_21;
+                        if (var_r3_2 == 0) {
+                            return;
+                        }
+                        goto block_21;
                     } else {
 block_21:
                         var_ctr_2 = var_r3_2;
                         do {
-                            var_r5[0]=arg1; var_r5[1]=arg1; var_r5[2]=arg1; var_r5[3]=arg1;
+                            var_r5[0]=0; var_r5[1]=0; var_r5[2]=0; var_r5[3]=0;
                             var_r5 += 4; var_ctr_2 -= 1;
                         } while (var_ctr_2 != 0);
                     }
@@ -13414,7 +13534,9 @@ extern "C" s32 fn_800BDEB4(const u8 *, s32, u32 *);
 #pragma push
 #pragma use_lmw_stmw on
 extern "C" void fn_800C0B68(Fn800C0B68Context *arg0, s32 arg1, s32 arg2, s16 *arg3, s32 arg4, s32 arg5, s16 *arg6) {
-    s16 var_r0, var_r3, var_r4, var_r5;
+    s16 var_r0, var_r3;
+    s16 var_r4;
+    s16 var_r5;
     s32 temp_r3;
     u32 temp_r5, temp_r8, temp_r8_2, temp_r8_3, temp_r8_4;
     u32 temp_r0, var_ctr, var_ctr_2, var_r3_2;
@@ -13452,8 +13574,8 @@ block_21:
                 var_ctr_2 = var_r3_2;
                 do {
                     var_r5_2[0] = var_r4; var_r5_2[1] = var_r4; var_r5_2[2] = var_r4; var_r5_2[3] = var_r4;
-                    var_r5_2 += 4; var_ctr_2 -= 1;
-                } while (var_ctr_2 != 0);
+                    var_r5_2 += 4;
+                } while (--var_ctr_2 != 0);
             }
         }
         return;
@@ -13566,6 +13688,55 @@ extern "C" void fn_800C1A80(void *arg0, void *arg1, s32 *out) {
     out[16] = v[17] - d;
     v[8] -= v[7];
     out[17] = v[8] - out[16];
+}
+
+extern "C" void fn_800C1C1C(void *arg0, s32 *out) {
+    s32 *in = (s32 *)arg0;
+    s32 t1 = in[1];
+    s32 t7 = in[7];
+    s32 t0 = in[0];
+    s32 d17 = t1 - t7;
+    s32 t8 = in[8];
+    s32 t2 = in[2];
+    s32 t6 = in[6];
+    s32 t3 = in[3];
+    s32 s80 = t8 + t0;
+    s32 s62 = t6 + t2;
+    s32 t5 = in[5];
+    s32 e1 = s62 - s80;
+    s32 s35 = t3 + t5;
+    s32 e2 = s35 - s80;
+    s32 e3 = s35 - s62;
+    s32 d62 = t6 - t2;
+    s32 t4 = in[4];
+    s32 d80 = t8 - t0;
+    s32 s17 = t1 + t7;
+    s32 sum = s35 + (s62 + s80);
+    s32 d35 = t3 - t5;
+    s32 f1 = d62 + d80;
+    s32 s4 = t4 + s17;
+    s32 A = (s32)(((s64)d17 * -0x1BB67ALL) >> 20);
+    s32 B = (s32)(((s64)e1 * 0x1E11FBLL) >> 20);
+    s32 C = (s32)(((s64)e2 * -0x58E86LL) >> 20);
+    s32 D = (s32)(((s64)e3 * -0x188370LL) >> 20);
+    s32 E = (s32)(((s64)f1 * -0xAF1D3LL) >> 20);
+    s32 g1 = d35 - d80;
+    s32 g2 = d35 + d62;
+    s32 g3 = (d35 - d62) + d80;
+    s32 h = (t4 * 2) - s17;
+    s32 F;
+    s32 G;
+    out[0] = s4 + sum;
+    out[2] = D - (h + B);
+    out[6] = -(s4 * 2) + sum;
+    out[8] = h + (C + D);
+    out[4] = (h - B) - C;
+    F = (s32)(((s64)g1 * -0x1F8390LL) >> 20);
+    out[5] = (A - E) - F;
+    G = (s32)(((s64)g2 * -0x1491BCLL) >> 20);
+    out[7] = A + (E + G);
+    out[1] = G - (A + F);
+    out[3] = (s32)(((s64)g3 * -0x1BB67ALL) >> 20);
 }
 
 extern "C" void fn_800C1E88(const s32 *a, const s32 *b, s32 *out) {
@@ -16688,41 +16859,37 @@ extern "C" void fn_800D16A8(s32 *arg0) {
 }
 
 extern "C" void fn_800D16C4() {
+    register u8* p;
+    register s32 i = 0;
+    register s32 zero = 0;
+    register s32 neg1 = -1;
+    u16 buf[0x28];
+    u8 enc[8];
+    u16 pad_extra[16];
     if (lbl_8055DDB0 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E960, 0x3F, lbl_8031E974);
     }
-    s32 neg1 = -1;
-    s32 magic = 0x6666;
-    s32 zero = 0;
-    u8* p = (u8*)lbl_8055DDB0;
-    s32 i = 0;
+    p = (u8*)lbl_8055DDB0;
     do {
         if (*(u32*)(p + 0x50) != 0 && fn_80060C7C((void*)i) != 0) {
             s32 lr = OSDisableInterrupts();
             if (WPADCanSendStreamData(i) != 0) {
-                u16 buf[0x28];
-                u32 enc;
-                s32 count = 0x28;
+                u32 count = 0x28;
                 u32 avail = *(u32*)(p + 0x54) >> 1;
                 const s16* src = (const s16*)*(u32*)(p + 0x50);
                 s8 scale = (s8)p[0x5d];
                 u16* dst = buf;
                 if (avail <= 0x28) {
-                    count = (s32)avail;
+                    count = avail;
                 }
-                if (count > 0) {
-                    s32 q = count >> 2;
+                if (count != 0) {
+                    s32 q = (s32)(count >> 2);
                     if (q != 0) {
                         do {
-                            s32 v;
-                            v = (src[0] * scale) / 10;
-                            dst[0] = (u16)v;
-                            v = (src[1] * scale) / 10;
-                            dst[1] = (u16)v;
-                            v = (src[2] * scale) / 10;
-                            dst[2] = (u16)v;
-                            v = (src[3] * scale) / 10;
-                            dst[3] = (u16)v;
+                            dst[0] = (u16)((src[0] * scale) / 10);
+                            dst[1] = (u16)((src[1] * scale) / 10);
+                            dst[2] = (u16)((src[2] * scale) / 10);
+                            dst[3] = (u16)((src[3] * scale) / 10);
                             src += 4;
                             dst += 4;
                         } while (--q != 0);
@@ -16739,17 +16906,17 @@ extern "C" void fn_800D16C4() {
                 if (avail <= 0x28) {
                     s32 pad = 0x28 - (s32)avail;
                     if (pad > 0) {
-                        s32 q = pad >> 3;
+                        s32 q = (s32)((u32)pad >> 3);
                         if (q != 0) {
                             do {
-                                dst[0] = zero; dst[1] = zero; dst[2] = zero; dst[3] = zero;
-                                dst[4] = zero; dst[5] = zero; dst[6] = zero; dst[7] = zero;
+                                dst[0] = 0; dst[1] = 0; dst[2] = 0; dst[3] = 0;
+                                dst[4] = 0; dst[5] = 0; dst[6] = 0; dst[7] = 0;
                                 dst += 8;
                             } while (--q != 0);
                             s32 rem = pad & 7;
                             if (rem != 0) {
                                 do {
-                                    *dst = zero;
+                                    *dst = 0;
                                     dst += 1;
                                 } while (--rem != 0);
                             }
@@ -17974,12 +18141,18 @@ extern "C" s32 fn_800D9330(void *);
 extern "C" s32 GetIndTexSRTAry__Q36nw4hbm3lyt8MaterialFv(void *);
 extern "C" void SetColorElement__Q36nw4hbm3lyt8MaterialFUls(void *, s32, s16);
 extern "C" const char lbl_8031F274[], lbl_8031F23C[], lbl_8031F2B8[], lbl_8031F280[];
-void nw4hbm::lyt::AnimTransformBasic::Animate(unsigned long arg1, nw4hbm::lyt::Material *arg2) {
+void nw4hbm::lyt::AnimTransformBasic::Animate(unsigned long arg1, nw4hbm::lyt::Pane *arg2) {
+    struct PaneAnimationDispatch {
+        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+        virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
+        virtual void f8(); virtual void f9(); virtual void setVertexColor(u8, u8);
+    };
     const char *file = lbl_8031EE58;
     u8 *entries = (u8 *)*(void **)((u8 *)this + 0xC);
     u8 *animation = entries + *(s32 *)(entries + 0x10);
     u8 *block = animation + *(s32 *)(animation + arg1 * 4);
-    u8 *offsetEntry = block + 0x18;
+    u8 *blockOffsets = block + 0x18;
+    u8 *offsetEntry = blockOffsets;
     s32 blockIndex = 0;
     f32 half = lbl_80560E64;
     while (blockIndex < block[0x14]) {
@@ -17987,96 +18160,50 @@ void nw4hbm::lyt::AnimTransformBasic::Animate(unsigned long arg1, nw4hbm::lyt::M
         s32 type = *(s32 *)record;
         u8 *itemOffsets = record + 8;
         switch (type) {
-        case 0x524C4D43: {
-            s32 itemIndex = 0;
+        case 0x524C5041: {
             f32 frame = *(f32 *)((u8 *)this + 0x10);
+            s32 itemIndex = 0;
             while (itemIndex < record[4]) {
                 u8 *item = record + *(s32 *)itemOffsets;
-                if (item[1] >= 0x20)
-                    Panic__Q26nw4hbm2dbFPCciPCce(file, 0x106, file + 0x180);
-                if (item[2] != 2)
-                    Panic__Q26nw4hbm2dbFPCciPCce(file, 0x107, file + 0xB0);
-                s16 value = (s16)(fn_800D4220(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame) + half);
-                if (value < -0x400) value = -0x400;
-                if (value > 0x3FF) value = 0x3FF;
-                SetColorElement__Q36nw4hbm3lyt8MaterialFUls(arg2, item[1], value);
+                if (item[1] >= 0xA) Panic__Q26nw4hbm2dbFPCciPCce(file, 0xC5, file + 0x6C);
+                if (item[2] != 2) Panic__Q26nw4hbm2dbFPCciPCce(file, 0xC6, file + 0xB0);
+                f32 value = fn_800D4220(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame);
+                u32 index = item[1];
+                if (index >= 0xA) Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597F0, 0xFA, lbl_8031F208);
+                *(f32 *)((u8 *)arg2 + index * 4 + 0x2C) = value;
                 itemOffsets += 4;
                 itemIndex++;
             }
             break;
         }
-        case 0x524C5453: {
+        case 0x524C5649: {
             f32 frame = *(f32 *)((u8 *)this + 0x10);
             s32 itemIndex = 0;
             while (itemIndex < record[4]) {
                 u8 *item = record + *(s32 *)itemOffsets;
-                if (item[0] >= 0xA)
-                    Panic__Q26nw4hbm2dbFPCciPCce(file, 0x11F, file + 0x1C8);
-                u32 max = (*(u32 *)((u8 *)arg2 + 0x4C) >> 4) & 0xF;
-                if (item[0] < max) {
-                    if (item[1] >= 5)
-                        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x122, file + 0x1FC);
-                    if (item[2] != 2)
-                        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x123, file + 0xB0);
-                    f32 value = fn_800D4220(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame);
-                    u32 count = (*(u32 *)((u8 *)arg2 + 0x50) >> 4) & 0xF;
-                    if (item[0] >= count)
-                        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F274, 0x125, lbl_8031F23C);
-                    s32 base = fn_800D9330(arg2);
-                    *(f32 *)(base + item[0] * 0x14 + item[1] * 4) = value;
-                }
+                if (item[1] >= 0xA) Panic__Q26nw4hbm2dbFPCciPCce(file, 0xD9, file + 0x6C);
+                if (item[2] != 1) Panic__Q26nw4hbm2dbFPCciPCce(file, 0xDA, file + 0xF4);
+                u16 found = fn_800D4138(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame);
                 itemOffsets += 4;
                 itemIndex++;
+                u8 flags = *((u8 *)arg2 + 0xCF);
+                *((u8 *)arg2 + 0xCF) = (flags & 0xFE) | ((u32)(-(s32)found | found) >> 0x1F);
             }
             break;
         }
-        case 0x524C5450: {
-            void **palettes = *(void ***)((u8 *)this + 0x14);
-            if (palettes != 0) {
-                f32 frame = *(f32 *)((u8 *)this + 0x10);
-                s32 itemIndex = 0;
-                while (itemIndex < record[4]) {
-                    u8 *item = record + *(s32 *)itemOffsets;
-                    if (item[0] >= 8)
-                        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x137, file + 0x240);
-                    u32 count = *(u32 *)((u8 *)arg2 + 0x50) >> 28;
-                    if (item[0] < count) {
-                        if (item[2] != 1)
-                            Panic__Q26nw4hbm2dbFPCciPCce(file, 0x13A, file + 0xF4);
-                        if (item[1] == 0) {
-                            u16 paletteIndex = fn_800D4138(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame);
-                            SetTextureNoWrap__Q36nw4hbm3lyt8MaterialFUcP10TPLPalette(arg2, item[0], palettes[paletteIndex]);
-                        }
-                    }
-                    itemOffsets += 4;
-                    itemIndex++;
-                }
-            }
-            break;
-        }
-        case 0x524C494D: {
-            f32 frame = *(f32 *)((u8 *)this + 0x10);
+        case 0x524C5643: {
             s32 itemIndex = 0;
-            while (itemIndex < record[4]) {
+            f32 frame = *(f32 *)((u8 *)this + 0x10);
+            if (record[4] <= 0) break;
+            do {
                 u8 *item = record + *(s32 *)itemOffsets;
-                if (item[0] >= 3)
-                    Panic__Q26nw4hbm2dbFPCciPCce(file, 0x151, file + 0x278);
-                u32 max = (*(u32 *)((u8 *)arg2 + 0x4C) >> 12) & 3;
-                if (item[0] < max) {
-                    if (item[1] >= 5)
-                        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x154, file + 0x1FC);
-                    if (item[2] != 2)
-                        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x155, file + 0xB0);
-                    f32 value = fn_800D4220(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame);
-                    u32 count = (*(u32 *)((u8 *)arg2 + 0x50) >> 12) & 3;
-                    if (item[0] >= count)
-                        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2B8, 0x135, lbl_8031F280);
-                    s32 base = GetIndTexSRTAry__Q36nw4hbm3lyt8MaterialFv(arg2);
-                    *(f32 *)(base + item[0] * 0x14 + item[1] * 4) = value;
-                }
+                if (item[1] >= 0x11) Panic__Q26nw4hbm2dbFPCciPCce(file, 0xED, file + 0x138);
+                if (item[2] != 2) Panic__Q26nw4hbm2dbFPCciPCce(file, 0xEE, file + 0xB0);
+                u8 value = (u8)(fn_800D4220(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame) + half);
+                ((PaneAnimationDispatch *)arg2)->setVertexColor(item[1], value);
                 itemOffsets += 4;
                 itemIndex++;
-            }
+            } while (itemIndex < record[4]);
             break;
         }
         }
@@ -18457,8 +18584,8 @@ extern "C" void fn_800C7998(void *arg0) {
     f32 temp_f31;
     u8 *home = (u8 *)arg0;
     u8 *data = lbl_8031D840;
-    register s32 zero = 0;
-    register s32 one = 1;
+    s32 zero = 0;
+    s32 one = 1;
     s32 var_r30;
     u8 *child;
     s32 childCount;
