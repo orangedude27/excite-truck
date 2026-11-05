@@ -1,4 +1,5 @@
 #include <types.h>
+#include <string.h>
 extern f64 atof(const char *);
 extern f32 lbl_8055E85C;
 extern f32 lbl_8055E860;
