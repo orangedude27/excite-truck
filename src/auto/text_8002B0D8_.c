@@ -155,7 +155,7 @@ double x;
     ix = hx & 0x7fffffff;
     if (ix >= 0x3ff00000) {
         if (((ix - 0x3ff00000) | __LO(x)) == 0)
-            return x * lbl_80560688 + x * lbl_80560690;
+            return lbl_80560688 * x + lbl_80560690 * x;
         return *(float *)&lbl_80558DB0;
     } else if (ix < 0x3fe00000) {
         if (ix < 0x3e400000) {
@@ -163,25 +163,27 @@ double x;
                 return x;
         } else
             t = x * x;
-        p = t * (lbl_805606A8 + t * (lbl_805606B0 + t * (lbl_805606B8 + t * (lbl_805606C0 + t * (lbl_805606C8 + t * lbl_805606D0)))));
-        q = lbl_805606A0 + t * (lbl_805606D8 + t * (lbl_805606E0 + t * (lbl_805606E8 + t * lbl_805606F0)));
-        w = p / q;
-        return x + x * w;
+        p = t * (lbl_805606A8 + t * (lbl_805606B0 + t * (lbl_805606B8 + t * (lbl_805606C0 + t * (lbl_805606C8 + lbl_805606D0 * t)))));
+        q = lbl_805606A0 + t * (lbl_805606D8 + t * (lbl_805606E0 + t * (lbl_805606E8 + lbl_805606F0 * t)));
+        r = p / q;
+        *(volatile double *)&w = r;
+        return x + x * r;
     }
-    w = lbl_805606A0 - fabs(x);
-    t = w * lbl_805606F8;
-    p = t * (lbl_805606A8 + t * (lbl_805606B0 + t * (lbl_805606B8 + t * (lbl_805606C0 + t * (lbl_805606C8 + t * lbl_805606D0)))));
-    q = lbl_805606A0 + t * (lbl_805606D8 + t * (lbl_805606E0 + t * (lbl_805606E8 + t * lbl_805606F0)));
+    w = lbl_805606A0 - __fabs(x);
+    t = lbl_805606F8 * w;
+    p = t * (lbl_805606A8 + t * (lbl_805606B0 + t * (lbl_805606B8 + t * (lbl_805606C0 + t * (lbl_805606C8 + lbl_805606D0 * t)))));
+    q = lbl_805606A0 + t * (lbl_805606D8 + t * (lbl_805606E0 + t * (lbl_805606E8 + lbl_805606F0 * t)));
     s = fn_8002F234(t);
     if (ix >= 0x3FEF3333) {
-        w = p / q;
-        t = lbl_80560688 - (lbl_80560700 * (s + s * w) - lbl_80560690);
+        r = p / q;
+        *(volatile double *)&w = r;
+        t = lbl_80560688 - (lbl_80560700 * (s + s * r) - lbl_80560690);
     } else {
         w = s;
         __LO(w) = 0;
         c = (t - w * w) / (s + w);
         r = p / q;
-        p = lbl_80560700 * s * r - (lbl_80560690 - lbl_80560700 * c);
+        p = r * (lbl_80560700 * s) - (lbl_80560690 - lbl_80560700 * c);
         q = lbl_80560708 - lbl_80560700 * w;
         t = lbl_80560708 - (p - q);
     }
@@ -470,6 +472,99 @@ double x;
 	}
 }
 
+extern const double lbl_805608F8, lbl_80560900, lbl_80560908, lbl_80560910, lbl_80560918, lbl_80560920, lbl_80560928, lbl_80560930, lbl_80560938, lbl_80560940;
+extern const int lbl_802EE508[], lbl_802EE610[];
+#pragma push
+#pragma opt_common_subs off
+int __ieee754_rem_pio2(double x, double *y)
+{
+	double z,w,t,r,fn;
+	double tx[3];
+	int e0,i,j,nx,n,hx; register int ix;
+
+	hx = __HI(x);		/* high word of x */
+	ix = hx&0x7fffffff;
+	if(ix<=0x3fe921fb)   /* |x| ~<= pi/4 , no need for reduction */
+	    {y[0] = x; y[1] = lbl_805608F8; return 0;}
+	if(ix<0x4002d97c) {  /* |x| < 3pi/4, special case with n=+-1 */
+	    if(hx>0) { 
+		z = x - lbl_80560900;
+		if(ix!=0x3ff921fb) { 	/* 33+53 bit pi is good enough */
+		    y[0] = z - lbl_80560908;
+		    y[1] = (z-y[0])-lbl_80560908;
+		} else {		/* near pi/2, use 33+33+53 bit pi */
+		    z -= lbl_80560910;
+		    y[0] = z - lbl_80560918;
+		    y[1] = (z-y[0])-lbl_80560918;
+		}
+		return 1;
+	    } else {	/* negative x */
+		z = x + lbl_80560900;
+		if(ix!=0x3ff921fb) { 	/* 33+53 bit pi is good enough */
+		    y[0] = z + lbl_80560908;
+		    y[1] = (z-y[0])+lbl_80560908;
+		} else {		/* near pi/2, use 33+33+53 bit pi */
+		    z += lbl_80560910;
+		    y[0] = z + lbl_80560918;
+		    y[1] = (z-y[0])+lbl_80560918;
+		}
+		return -1;
+	    }
+	}
+	if(ix<=0x413921fb) { /* |x| ~<= 2^19*(pi/2), medium size */
+	    t  = fabs(x);
+	    n  = (int) (t*lbl_80560928+lbl_80560920);
+	    fn = (double)n;
+	    r  = t-fn*lbl_80560900;
+	    w  = fn*lbl_80560908;	/* 1st round good to 85 bit */
+	    if(n<32&&ix!=lbl_802EE610[n-1]) {	
+		y[0] = r-w;	/* quick check no cancellation */
+	    } else {
+	        j  = ix>>20;
+	        y[0] = r-w; 
+	        i = j-(((__HI(y[0]))>>20)&0x7ff);
+	        if(i>16) {  /* 2nd iteration needed, good to 118 */
+		    t  = r;
+		    w  = fn*lbl_80560910;	
+		    r  = t-w;
+		    w  = fn*lbl_80560918-((t-r)-w);	
+		    y[0] = r-w;
+		    i = j-(((__HI(y[0]))>>20)&0x7ff);
+		    if(i>49)  {	/* 3rd iteration need, 151 bits acc */
+		    	t  = r;	/* will cover all possible cases */
+		    	w  = fn*lbl_80560930;	
+		    	r  = t-w;
+		    	w  = fn*lbl_80560938-((t-r)-w);	
+		    	y[0] = r-w;
+		    }
+		}
+	    }
+	    y[1] = (r-y[0])-w;
+	    if(hx<0) 	{y[0] = -y[0]; y[1] = -y[1]; return -n;}
+	    else	 return n;
+	}
+    /* 
+     * all other (large) arguments
+     */
+	if(ix>=0x7ff00000) {		/* x is inf or NaN */
+	    y[0]=y[1]=x-x; return 0;
+	}
+    /* set z = scalbn(|x|,ilogb(x)-23) */
+	__LO(z) = __LO(x);
+	e0 	= (ix>>20)-1046;	/* e0 = ilogb(z)-23; */
+	__HI(z) = ix - (e0<<20);
+	for(i=0;i<2;i++) {
+		tx[i] = (double)((int)(z));
+		z     = (z-tx[i])*lbl_80560940;
+	}
+	tx[2] = z;
+	nx = 3;
+	while(tx[nx-1]==lbl_805608F8) nx--;	/* skip lbl_805608F8 term */
+	n  =  __kernel_rem_pio2(tx,y,e0,nx,2,lbl_802EE508);
+	if(hx<0) {y[0] = -y[0]; y[1] = -y[1]; return -n;}
+	return n;
+}
+#pragma pop
 extern double lbl_80560950, lbl_80560958, lbl_80560960, lbl_80560968, lbl_80560970, lbl_80560978, lbl_80560980, lbl_80560988, lbl_80560990;
 double __kernel_cos(double x, double y) {
     double a, hz, z, r, qx;
