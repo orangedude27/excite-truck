@@ -284,6 +284,7 @@ extern void rfc_check_mcb_active(void *);
 extern u8 lbl_803C3AF0[];
 extern char lbl_80317700[];
 extern void fn_80086468(void *);
+u8 btm_sec_start_authorization(u8 *p);
 extern u8 lbl_803C4040[];
 extern void l2c_init(void);
 extern char lbl_803181F0[];
@@ -15213,6 +15214,119 @@ void l2c_csm_w4_l2cap_connect_rsp(void *p_ccb, u16 event, void *p_msg) {
     case 26: l2cu_release_ccb(p_ccb); break;
     case 19:
     case 29: GKI_freebuf(p_msg); break;
+    }
+}
+
+void l2c_csm_config(void *p_ccb, u16 event, void *p_data)
+{
+    void *p_rcb = *(void **)((u8 *)p_ccb + 0x30);
+    void (*disconnect_ind)(u16, u16) = *(void (**)(u16, u16))((u8 *)p_rcb + 0x18);
+    u16 local_cid = *(u16 *)((u8 *)p_ccb + 0x14);
+    char *p_str = (char *)jumptable_803183B0;
+
+    if (lbl_803C4040[0] >= 4)
+        fn_80070954(0x80003, p_str + 0x494, event);
+
+    switch (event)
+    {
+    case 3:
+        if (lbl_803C4040[0] >= 3)
+            fn_80070954(0x80002, p_str + 0x40, *(u16 *)((u8 *)p_ccb + 0x14));
+        l2cu_release_ccb(p_ccb);
+        disconnect_ind(local_cid, 0);
+        break;
+
+    case 14:
+        if (((u8 (*)(void *, void *))l2cu_process_peer_cfg_req)(p_ccb, p_data))
+        {
+            if (lbl_803C4040[0] >= 3)
+                fn_80070954(0x80002, p_str + 0x4B0, *(u16 *)((u8 *)p_ccb + 0x14));
+            (*(void (**)(u16, void *))((u8 *)*(void **)((u8 *)p_ccb + 0x30) + 0x10))(*(u16 *)((u8 *)p_ccb + 0x14), p_data);
+        }
+        else
+        {
+            l2cu_send_peer_config_rsp(p_ccb, p_data);
+        }
+        break;
+
+    case 15:
+        fn_8008EE40(p_ccb, p_data);
+        *((u8 *)p_ccb + 0x34) |= 2;
+        if (*((u8 *)p_ccb + 0x34) & 1)
+        {
+            *(u32 *)((u8 *)p_ccb + 4) = 6;
+            fn_80070F90((u8 *)p_ccb + 0x18);
+            forward_peer_data(p_ccb, 0);
+        }
+        if (lbl_803C4040[0] >= 3)
+            fn_80070954(0x80002, p_str + 0x4E0, *(u16 *)((u8 *)p_ccb + 0x14));
+        (*(void (**)(u16, void *))((u8 *)*(void **)((u8 *)p_ccb + 0x30) + 0x14))(*(u16 *)((u8 *)p_ccb + 0x14), p_data);
+        break;
+
+    case 16:
+        fn_80070F90((u8 *)p_ccb + 0x18);
+        if (lbl_803C4040[0] >= 3)
+            fn_8007096C(0x80002, p_str + 0x510, *(u16 *)((u8 *)p_ccb + 0x14), *(u16 *)p_data);
+        (*(void (**)(u16, void *))((u8 *)*(void **)((u8 *)p_ccb + 0x30) + 0x14))(*(u16 *)((u8 *)p_ccb + 0x14), p_data);
+        break;
+
+    case 17:
+        btu_start_timer((TIMER_LIST_ENT *)((u8 *)p_ccb + 0x18), 3, 0x1E);
+        *(u32 *)((u8 *)p_ccb + 4) = 8;
+        if (lbl_803C4040[0] >= 3)
+            fn_80070954(0x80002, p_str + 0x54C, *(u16 *)((u8 *)p_ccb + 0x14));
+        (*(void (**)(u16, u16))((u8 *)*(void **)((u8 *)p_ccb + 0x30) + 0x18))(*(u16 *)((u8 *)p_ccb + 0x14), 1);
+        break;
+
+    case 23:
+        l2cu_process_our_cfg_req(p_ccb, p_data);
+        l2cu_send_peer_config_req(p_ccb, p_data);
+        btu_start_timer((TIMER_LIST_ENT *)((u8 *)p_ccb + 0x18), 3, 0x1E);
+        break;
+
+    case 24:
+        fn_8008EF90(p_ccb, p_data);
+        *((u8 *)p_ccb + 0x34) |= 1;
+        if (*((u8 *)p_ccb + 0x34) & 2)
+        {
+            *(u32 *)((u8 *)p_ccb + 4) = 6;
+            fn_80070F90((u8 *)p_ccb + 0x18);
+            forward_peer_data(p_ccb, 0);
+        }
+        l2cu_send_peer_config_rsp(p_ccb, p_data);
+        break;
+
+    case 25:
+        l2cu_send_peer_config_rsp(p_ccb, p_data);
+        btu_start_timer((TIMER_LIST_ENT *)((u8 *)p_ccb + 0x18), 3, 0x1E);
+        break;
+
+    case 26:
+        l2cu_send_peer_disc_req(p_ccb);
+        *(u32 *)((u8 *)p_ccb + 4) = 7;
+        btu_start_timer((TIMER_LIST_ENT *)((u8 *)p_ccb + 0x18), 3, 0x1E);
+        break;
+
+    case 19:
+        if (lbl_803C4040[0] >= 3)
+            fn_80070954(0x80002, p_str + 0x58C, *(u16 *)((u8 *)p_ccb + 0x14));
+        (*(void (**)(u16, void *))((u8 *)*(void **)((u8 *)p_ccb + 0x30) + 0x24))(*(u16 *)((u8 *)p_ccb + 0x14), p_data);
+        break;
+
+    case 29:
+        if (*((u8 *)p_ccb + 0x34) & 2)
+            GKI_enqueue((BUFFER_Q *)((u8 *)p_ccb + 0x70), p_data);
+        else
+            GKI_freebuf(p_data);
+        break;
+
+    case 30:
+        l2cu_send_peer_disc_req(p_ccb);
+        if (lbl_803C4040[0] >= 3)
+            fn_80070954(0x80002, p_str + 0x40, *(u16 *)((u8 *)p_ccb + 0x14));
+        l2cu_release_ccb(p_ccb);
+        disconnect_ind(local_cid, 0);
+        break;
     }
 }
 
