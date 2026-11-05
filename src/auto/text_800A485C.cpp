@@ -4544,27 +4544,29 @@ extern "C" s32 fn_800AF144(void *arg0) {
 }
 extern "C" s32 fn_800ADA24(void *arg0, s32 arg1, u32 arg2, u32 *arg3, u32 *arg4, s32 arg5, s32 arg6) {
     void *context = *(void **)((u8 *)arg0 + 0x34);
+    u32 *typeEntry;
     u32 first;
     u32 end;
     s32 pageIndex;
     void *page;
     u32 maxCluster;
     u32 cluster;
-    register u32 index;
+    s32 index;
     s32 result;
     s32 savedResult;
     void *buffer;
     u8 *bufferData;
 
-    maxCluster = lbl_802EEF40[*(s32 *)((u8 *)context + 0x1C) * 5 + 2];
+    typeEntry = lbl_802EEF40 + *(s32 *)((u8 *)context + 0x1C) * 5;
     *arg3 = -1;
     *arg4 = -1;
     end = -1;
+    maxCluster = typeEntry[2];
     result = fn_800ACBB0(context, *(s32 *)((u8 *)context + 0x3C), -1, arg1, &first, &end);
     if (result != 0) return result;
     if (first == -1) return 0;
     if (arg5 != 0) {
-        result = fn_800ACDF8(context, arg1);
+        result = fn_800ACDF8(context, first);
         if (result != 0) return result;
     }
     result = fn_800A8D08(context, -1, &page, &pageIndex);
@@ -4601,12 +4603,8 @@ extern "C" s32 fn_800ADA24(void *arg0, s32 arg1, u32 arg2, u32 *arg3, u32 *arg4,
             VFiPFCACHE_FreeFATPage_800A8E10(context, page);
             return result;
         }
-    }
-    if (*arg3 == -1) {
-        *arg3 = cluster;
+        if (*arg3 == -1) *arg3 = cluster;
         *arg4 = cluster;
-    }
-    {
         if (*(u32 *)((u8 *)context + 0x38) != -1 &&
             *(u32 *)((u8 *)context + 0x38) != 0 &&
             (*(s32 *)((u8 *)context + 0x1C) != 2 ||
@@ -4614,18 +4612,20 @@ extern "C" s32 fn_800ADA24(void *arg0, s32 arg1, u32 arg2, u32 *arg3, u32 *arg4,
             *(u32 *)((u8 *)context + 0x38) -= 1;
         }
     }
+    savedResult = 0;
+    index = 0;
     *(u32 *)((u8 *)context + 0x3C) = end + 1;
     *(u32 *)((u8 *)arg0 + 0xC) = end;
     *(u32 *)((u8 *)arg0 + 0x10) = arg2;
     *arg4 = end;
     buffer = page;
     bufferData = *(u8 **)((u8 *)buffer + 0x18);
-    savedResult = 0;
-    for (index = 0; (s32)(u16)index < (s32)*((u8 *)context + 0x22); index++) {
-        result = fn_800B5618(context, *(s32 *)((u8 *)buffer + 8),
-                             (s32)bufferData, 0, *(u16 *)context);
+    while ((u16)index < *(u8 *)((u8 *)context + 0x22)) {
+        result = fn_800B5618(context, *(void **)((u8 *)buffer + 8), (u32)bufferData, 0,
+                             *(u16 *)context);
         if (result != 0 && savedResult == 0) savedResult = result;
         bufferData += *(s32 *)((u8 *)context + 0xC);
+        index++;
     }
     if (savedResult != 0) {
         VFiPFCACHE_FreeFATPage_800A8E10(context, page);
@@ -6233,7 +6233,7 @@ extern "C" s32 fn_800B10E0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     s32 quotient;
     s32 remainder;
     u8 initialCount;
-    u8 loopCount;
+    u32 loopCount;
     u8 *nextCluster;
     s32 cluster;
     u16 next;
@@ -6267,29 +6267,29 @@ extern "C" s32 fn_800B10E0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
             ((void (*)(void *, void *))fn_800A4B78)(arg1, (void *)(u32)fn_800A4D74((void *)arg2, 1));
         }
     } else {
-        *(u16 *)arg1 = 0;
+        ent->first = 0;
     }
     if (*(s32 *)((u8 *)arg0 + 0x1C) == 2) {
-        *(u32 *)((u8 *)arg1 + 0x234) = 1;
+        ent->flag234 = 1;
     } else {
-        *(u32 *)((u8 *)arg1 + 0x234) = 0;
+        ent->flag234 = 0;
     }
-    *(s32 *)((u8 *)arg1 + 0x228) = 0;
-    *(void **)((u8 *)arg1 + 0x22C) = arg0;
-    *((u8 *)arg1 + 0x21B) = 0;
-    *((u8 *)arg1 + 0x21C) = 0x20;
-    *((u8 *)arg1 + 0x21D) = ((u8 (*)(void *, void *, s32))fn_800AB2F4)((u8 *)arg1 + 0x220, (u8 *)arg1 + 0x21E, 0);
-    *(u16 *)((u8 *)arg1 + 0x222) = *(u16 *)((u8 *)arg1 + 0x220);
-    *(u16 *)((u8 *)arg1 + 0x224) = *(u16 *)((u8 *)arg1 + 0x21E);
-    *(u16 *)((u8 *)arg1 + 0x226) = *(u16 *)((u8 *)arg1 + 0x220);
+    ent->f228 = 0;
+    ent->f22C = arg0;
+    ent->f21B = 0;
+    ent->f21C = 0x20;
+    ent->f21D = ((u8 (*)(void *, void *, s32))fn_800AB2F4)(&ent->f220, &ent->f21E, 0);
+    ent->f222 = ent->f220;
+    ent->f224 = ent->f21E;
+    ent->f226 = ent->f220;
 
-    if (*(u16 *)arg1 != 0 && (*((u8 *)arg1 + 0x21B) & 0x18) == 0) {
+    if (ent->first != 0 && (ent->f21B & 0x18) == 0) {
         quotient = (s32)charCount / 13;
         remainder = (s32)charCount % 13;
         initialCount = (u8)(quotient + (remainder != 0));
-        result = ((s32 (*)(void *, u8, void *, s32 *, s32, s32 *, u32, u32))fn_800AAC08)(
+        result = ((s32 (*)(void *, u8, void *, s32 *, s32, s32 *, s32))fn_800AAC08)(
             arg1, (u8)(initialCount + 1), frame.prefix + 0x40, (s32 *)(frame.prefix + 8), arg2,
-            (s32 *)frame.prefix, quotient, (u32)quotient >> 31);
+            (s32 *)frame.prefix, quotient);
         if (result != 0) {
             return result;
         }
@@ -6297,15 +6297,15 @@ extern "C" s32 fn_800B10E0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
         if ((flags[0x60 / 4] & 2) == 2) {
             fn_800B51FC(ent->name, *(s32 *)frame.prefix);
         }
-        *((u8 *)arg1 + 0x20A) = initialCount;
-        cluster = *(s32 *)((u8 *)arg1 + 0x238);
-        charCount = ((u8 (*)(u8 *))VFiPFENT_CalcCheckSum)((u8 *)arg1);
+        ent->count = initialCount;
+        cluster = ent->cluster238;
+        charCount = ((s32 (*)(u8 *))VFiPFENT_CalcCheckSum)((u8 *)arg1);
         nextCluster = frame.prefix + 8;
         loopCount = initialCount;
         while (loopCount >= 1) {
-            VFiPFENT_storeLFNEntryFieldsToBuf(frame.prefix + 0x20, (u8 *)arg1, loopCount, (u8)charCount, loopCount == initialCount);
+            VFiPFENT_storeLFNEntryFieldsToBuf(frame.prefix + 0x20, (u8 *)arg1, (u8)loopCount, (u8)charCount, loopCount == initialCount);
             result = ((s32 (*)(s32, void *, s32, u16, u32, u32 *, u32))fn_800B5700)(
-                (s32)arg0, frame.prefix + 0x20, cluster, *(u16 *)((u8 *)arg1 + 0x23C), 0x20,
+                (s32)arg0, frame.prefix + 0x20, cluster, ent->off23C, 0x20,
                 (u32 *)(frame.prefix + 4), 0);
             if (result != 0) {
                 return result;
@@ -6313,16 +6313,16 @@ extern "C" s32 fn_800B10E0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
             if (*(u32 *)(frame.prefix + 4) != 0x20U) {
                 return 0x11;
             }
-            next = *(u16 *)((u8 *)arg1 + 0x23C) + 0x20;
-            *(u16 *)((u8 *)arg1 + 0x23C) = next;
+            next = ent->off23C + 0x20;
+            ent->off23C = next;
             if (next >= *(u16 *)arg0) {
-                *(u16 *)((u8 *)arg1 + 0x23C) = 0;
+                ent->off23C = 0;
                 cluster = *(s32 *)nextCluster;
                 nextCluster += 4;
             }
             loopCount--;
         }
-        *(s32 *)((u8 *)arg1 + 0x238) = cluster;
+        ent->cluster238 = cluster;
     } else {
         result = ((s32 (*)(void *, u32, void *, s32 *, s32))fn_800AAED8)(
             arg1, 1, frame.prefix + 0x40, (s32 *)(frame.prefix + 8), arg2);
@@ -6330,8 +6330,8 @@ extern "C" s32 fn_800B10E0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
             return result;
         }
     }
-    if (*(u32 *)((u8 *)arg1 + 0x234) == 1) {
-        *(u32 *)((u8 *)arg1 + 0x234) = 0;
+    if (ent->flag234 == 1) {
+        ent->flag234 = 0;
     }
     return fn_800AB0C0((u8 *)arg1, 1);
 }
@@ -14198,7 +14198,7 @@ extern "C" void fn_800C34B4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     fn_800C3574((void *)arg0, lbl_802F4108, arg2 + 1, arg1 + 2, arg3);
 }
 
-extern "C" void fn_800C3960(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+extern "C" void fn_800C3960_old(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 *m = (s32 *)arg0;
     u16 *out = (u16 *)arg1;
     s32 x, y, k;
@@ -22921,30 +22921,35 @@ extern "C" s32 fn_800B3304(void *, void *);
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" s32 VFiPFENT_searchEmptyTailSFN(void *arg0, u32 firstIndex, void *templateArg, s32 *bitmap) {
+    struct Ctx { char pad[0x1F74]; u32 count; };
     u8 local[0x90];
-    register void *context = *(void **)((u8 *)arg0 + 0x34);
-    register void *state = arg0;
-    register u32 first = firstIndex;
-    register s32 *bits = bitmap;
-    register void *templateName = templateArg;
-    register u32 mask;
-    register u8 *shortName;
+    Ctx *context = *(Ctx **)((u8 *)arg0 + 0x34);
+    u32 *src = (u32 *)arg0;
+    u32 first = firstIndex;
+    s32 *bits = bitmap;
+    void *templateName = templateArg;
+    u32 mask;
+    u8 *shortName;
+    s32 state;
     u32 *dst = (u32 *)(local + 0x28);
-    u32 a, b, tilde, end, digits, i, index;
+    u32 a, b;
+    u32 tilde, end, digits, i, index;
     s8 ch, terminal;
-    fn_800A499C((const char *)bits, 0, *(u32 *)((u8 *)context + 0x1F74) * 4);
-    b = ((u32 *)state)[0]; a = ((u32 *)state)[1]; dst[0] = b; dst[1] = a;
-    a = ((u32 *)state)[2]; b = ((u32 *)state)[3]; dst[2] = a; dst[3] = b;
-    a = ((u32 *)state)[4]; b = ((u32 *)state)[5]; dst[4] = a; dst[5] = b;
-    a = ((u32 *)state)[6]; b = ((u32 *)state)[7]; dst[6] = a; dst[7] = b;
-    a = ((u32 *)state)[8]; b = ((u32 *)state)[9]; dst[8] = a; dst[9] = b;
-    a = ((volatile u32 *)state)[10]; b = ((volatile u32 *)state)[11]; dst[10] = a; dst[11] = b;
-    a = ((volatile u32 *)state)[12]; b = ((volatile u32 *)state)[13]; dst[12] = a; dst[13] = b;
-    state = (void *)fn_800AC1B4(local + 0x20, 0);
+
+    fn_800A499C((const char *)bits, 0, context->count * 4);
+    b = src[0]; a = src[1]; dst[0] = b; dst[1] = a;
+    a = src[2]; b = src[3]; dst[2] = a; dst[3] = b;
+    a = src[4]; b = src[5]; dst[4] = a; dst[5] = b;
+    a = src[6]; b = src[7]; dst[6] = a; dst[7] = b;
+    a = src[8]; b = src[9]; dst[8] = a; dst[9] = b;
+    a = ((volatile u32 *)src)[10]; b = ((volatile u32 *)src)[11]; dst[10] = a; dst[11] = b;
+    a = ((volatile u32 *)src)[12]; b = ((volatile u32 *)src)[13]; dst[12] = a; dst[13] = b;
+    state = fn_800AC1B4(local + 0x20, 0);
     shortName = local + 0x10;
     mask = 1;
-    do {
-        if ((s32)state != 0) return (s32)state;
+
+    while (VFiPFENT_ITER_IsAtLogicalEnd(local + 0x20) == 0) {
+        if (state != 0) return state;
         if (local[0x6C] != 0 && local[0x6C] != 0xE5 &&
             (local[0x77] & 0x0F) != 0x0F && (local[0x77] & 8) == 0) {
             fn_800B3BEC(local + 0x10, local + 0x6C, (u8)0);
@@ -22957,25 +22962,25 @@ extern "C" s32 VFiPFENT_searchEmptyTailSFN(void *arg0, u32 firstIndex, void *tem
                 terminal = *(volatile s8 *)(shortName + end);
                 if (terminal == '.' || terminal == 0) {
                     digits = end - tilde - 1;
-                    state = (void *)0;
+                    state = 0;
                     i = digits;
                     while (i != 0) {
-                        state = (void *)((s32)(s8)shortName[end - i] + (s32)(u32)state * 10 - 0x30);
+                        state = (s32)(s8)shortName[end - i] + state * 10 - 0x30;
                         i--;
                     }
                     fn_800A4AAC((char *)local, (char *)templateName);
                     VFiPFPATH_parseShortNameNumeric((char *)local, (u32)state);
                     if (fn_800B3304(local + 0x10, local) == 0 &&
                         (u32)state >= first &&
-                        (u32)state < first + *(u32 *)((u8 *)context + 0x1F74) * 32) {
+                        (u32)state < first + context->count * 32) {
                         index = (u32)state - first;
                         bits[index >> 5] |= mask << index;
                     }
                 }
             }
         }
-        state = (void *)VFiPFENT_ITER_Advance(local + 0x20, 0);
-    } while (VFiPFENT_ITER_IsAtLogicalEnd(local + 0x20) == 0);
+        state = VFiPFENT_ITER_Advance(local + 0x20, 0);
+    }
     return 0;
 }
 #pragma pop
