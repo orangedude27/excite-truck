@@ -216,7 +216,7 @@ void fn_80239784(void *arg0, s32 arg1) {
     s32 offset;
     u8 *data;
 
-    fn_8023905C();
+    fn_8023905C(arg0);
     fn_802390B4(arg0, arg1);
     data = *(u8 **)((u8 *)arg0 + 0x14);
     if (data == 0) {
