@@ -2264,11 +2264,11 @@ extern "C" s32 fn_8021C730(void *arg0, s32 arg1) {
 extern "C" s32 fn_8021C974(void) { return 0; }
 
 extern "C" void *fn_8021C97C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
-    ((void (*)(void *, s32, s32, s32, s32))fn_8021AC24)(arg0, arg1, arg2, arg3, arg5);
+    fn_8021AC24(arg0, arg1, arg2, arg3, arg4);
     *(s32 *)((u8 *)arg0 + 0x258) = arg4;
-    *(s32 *)((u8 *)arg0 + 0x254) = arg5;
     *(void **)arg0 = lbl_8033EDC8;
-    return arg0;
+    *(s32 *)((u8 *)arg0 + 0x254) = arg5;
+    return (void *)((char *)arg0 + 0);
 }
 
 extern "C" void fn_8021C9D8(void *arg0) {
@@ -6602,7 +6602,7 @@ extern "C" void fn_802278F0(s32 arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3
         {
             f32 offset = fn_80235F64(arg0, 2);
             f32 difference = farg1 - farg3;
-            f32 y = (difference - lbl_805634EC) + offset;
+            f32 y = offset + (difference - lbl_805634EC);
             fn_802353F4(arg0, 2, farg0 - lbl_805634EC, y, lbl_805634A8);
         }
         {
