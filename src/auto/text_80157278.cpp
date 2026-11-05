@@ -1847,6 +1847,8 @@ extern "C" f32 fn_801DDC8C(void*, f32, f32);
 extern "C" void fn_801E9DC4(void*);
 extern "C" void fn_80198EA0(s32);
 extern "C" f32 lbl_805617B4, lbl_805617B8, lbl_805617BC;
+#pragma push
+#pragma processor 750
 extern "C" f32 fn_8015A8D8(void* a, void* arg1) {
     u8* p = (u8*)a;
     f32 result;
@@ -1930,6 +1932,7 @@ extern "C" f32 fn_8015A8D8(void* a, void* arg1) {
     }
     return result;
 }
+#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
