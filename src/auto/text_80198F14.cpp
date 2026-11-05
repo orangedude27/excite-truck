@@ -3329,9 +3329,10 @@ static inline void MtxMulVecInl(const f32 *m, const f32 *src, const f32 *srcCmp,
 static inline void MtxMulVecRevInl(const f32 *m, const f32 *src, f32 *dst) {
     if (dst == src) {
         f32 y = src[1], x = src[0], z = src[2];
-        f32 rx = z * m[6] + (x * m[0] + y * m[3]);
-        f32 ry = z * m[7] + (x * m[1] + y * m[4]);
-        f32 rz = z * m[8] + (x * m[2] + y * m[5]);
+        f32 y3 = y * m[3], y4 = y * m[4], y5 = y * m[5];
+        f32 rx = z * m[6] + (x * m[0] + y3);
+        f32 ry = z * m[7] + (x * m[1] + y4);
+        f32 rz = z * m[8] + (x * m[2] + y5);
         dst[0] = rx;
         dst[1] = ry;
         dst[2] = rz;
@@ -3624,6 +3625,7 @@ extern float PSVECDotProduct(float *, void *);
 extern "C" int fn_80198F64(void *, int, void *, float *, void *, float *, float);
 extern int fn_8019A788(void *, int, void *, void *, int, int, float, float, float);
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 extern "C" void fn_801A38E4(int arg0, void *arg1) {
     u8 *base = (u8 *)arg1;
     f32 q[3];
@@ -3663,8 +3665,8 @@ extern "C" void fn_801A38E4(int arg0, void *arg1) {
                     MtxMulVecRevInl((f32 *)(owner + 0x3c), v, q);
                     q[0] = q[0] + *(f32 *)(owner + 0x60);
                     q[1] = q[1] + *(f32 *)(owner + 0x64);
-                    q[1] = q[1] + c;
                     q[2] = q[2] + *(f32 *)(owner + 0x68);
+                    q[1] = q[1] + c;
                     zero0[0] = z; zero0[1] = z; zero0[2] = z;
                     if (fn_80198F64(q, arg0, n0, &depth0, n1, zero0, c)) {
                         fn_8019A788(arg1, (void *)arg0, n0, (Vec *)n1, 0, 0, depth0, lbl_805622D0, lbl_805622D0);
