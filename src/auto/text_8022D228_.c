@@ -259,10 +259,12 @@ int fn_8022DB94(int arg0, int arg1) {
     return arg0;
 }
 
+#pragma dont_inline on
 int fn_8022DBD4(void *arg0) {
     int *array = *(int **)arg0;
     return array[*(int *)((char *)arg0 + 0xC)];
 }
+#pragma dont_inline off
 
 int fn_8022DBE8(void *arg0) {
     int *array = *(int **)((char *)arg0 + 4);
