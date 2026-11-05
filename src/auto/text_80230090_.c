@@ -72,6 +72,65 @@ void fn_80230114(void) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
+#pragma opt_common_subs off
+void fn_80230150(s32 arg0, u32 flags, f32 x, f32 y, f32 z, f32 w, f32 h, f32 speed, f32 time, f32 margin) {
+    extern void fn_802C8B98(s32, s32);
+    extern s32 fn_80230B9C(u32);
+    extern void fn_80230C9C(f32 *, f32 *, f32, f32, f32);
+    extern void fn_80231380(void *, s32, f32, f32, f32, f32, f32);
+    extern void fn_802C8DB8(void *, s32, u16 *, s32);
+    extern void fn_802C8D74(void);
+    extern f32 lbl_80563618, lbl_8056361C, lbl_80563620, lbl_80563624, lbl_80563628;
+    struct IndexList { u16 idx[6]; };
+    extern struct IndexList lbl_802F9FC0, lbl_802F9FCC;
+    struct Frame {
+        f32 bottom, right, top, left;
+        struct IndexList indices, wrapped;
+        u8 pad[8];
+        f32 vertex[4][6];
+        f32 extra[4][6];
+    } __attribute__((aligned(16))) frame;
+    f32 left, right, top, bottom;
+    f32 x0, x1, y0, y1;
+    
+    frame.left=x; frame.top=y; frame.right=(f32)(double)x+w; frame.bottom=(f32)(double)y+h;
+    
+    if (flags & 1) { frame.top=y+time*speed; frame.bottom=frame.top+h; }
+    if (flags & 2) { frame.left=x+time*speed; frame.right=frame.left+w; }
+    if (flags & 4) z=z+time*speed;
+    left=lbl_80563618; right=lbl_8056361C; top=lbl_80563620; bottom=lbl_80563624;
+    fn_802C8B98(-1,(s32)fn_8022EDC4());
+    arg0=fn_80230B9C(arg0);
+    if (flags & 8) { left-=margin; right+=margin; top-=margin; bottom+=margin; }
+    if ((flags & 8) || (flags & 0x10)) {
+        fn_80230C9C(&frame.left,&frame.right,left,right,-left+right);
+        fn_80230C9C(&frame.top,&frame.bottom,top,bottom,-top+bottom);
+        y1=y0=x1=x0=lbl_80563628;
+        if (frame.left<left) { y0=frame.top; x1=right; y1=frame.bottom; x0=frame.left+(-left+right); }
+        if (frame.right>right) { y0=frame.top; x0=left; y1=frame.bottom; x1=frame.right-(-left+right); }
+        if (frame.top<top) { y1=bottom; y0=frame.top+(-top+bottom); if (lbl_80563628==x0) { x0=frame.left; x1=frame.right; } }
+        if (frame.bottom>bottom) { y0=top; y1=frame.bottom-(-top+bottom); if (lbl_80563628==x0) { x0=frame.left; x1=frame.right; } }
+        fn_80231380(frame.extra[0],arg0,x0,y0,z,lbl_80563614,lbl_80563614);
+        fn_80231380(frame.extra[1],arg0,x1,y0,z,lbl_80563610,lbl_80563614);
+        fn_80231380(frame.extra[2],arg0,x0,y1,z,lbl_80563614,lbl_80563610);
+        fn_80231380(frame.extra[3],arg0,x1,y1,z,lbl_80563610,lbl_80563610);
+        frame.wrapped=lbl_802F9FC0;
+        fn_802C8DB8(frame.extra,4,frame.wrapped.idx,6);
+    }
+    fn_80231380(frame.vertex[0],arg0,frame.left,frame.top,z,lbl_80563614,lbl_80563614);
+    fn_80231380(frame.vertex[1],arg0,frame.right,frame.top,z,lbl_80563610,lbl_80563614);
+    fn_80231380(frame.vertex[2],arg0,frame.left,frame.bottom,z,lbl_80563614,lbl_80563610);
+    fn_80231380(frame.vertex[3],arg0,frame.right,frame.bottom,z,lbl_80563610,lbl_80563610);
+    frame.indices=lbl_802F9FCC;
+    fn_802C8DB8(frame.vertex,4,frame.indices.idx,6);
+    fn_802C8D74();
+}
+#pragma pop
+
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 #pragma paired off
 #pragma paired_single off
 void fn_802304EC(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
