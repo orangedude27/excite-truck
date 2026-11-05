@@ -1416,49 +1416,64 @@ void fn_8018A6F4(void *arg0) {
     if (*(int *)((unsigned char *)arg0 + 0x26c0) != 0) fn_801D21B4(*(int *)((unsigned char *)arg0 + 0x26c0));
 }
 
+extern void fn_801C1CBC(void *, int, void *, int, void *, int, void *);
 void fn_8018A750(void *arg0, int arg_sp0) {
-    int count;
-    int i;
-    int j;
-    int k;
-    int n;
-    int *indices;
-    void **entries;
-    float *vec;
-    float *pts;
-    float temp;
+    struct {
+        int entries[3][3];
+        unsigned char pad1[4];
+        float vectors[3][4];
+        unsigned char pad2[16];
+        unsigned int records[3][10];
+    } work;
     char *base = (char *)arg0;
-    count = *(int *)(base + 0x26C4);
-    if (count != 0) fn_801C2170(count, *(void **)(base + 0x26C0), base + 0x70);
+    int handle = *(int *)(base + 0x26C4);
+    int count;
+    void *object;
+
+    if (handle != 0) {
+        fn_801C2170(handle, *(void **)(base + 0x26C0), base + 0x70);
+    }
     if (*(int *)(base + 0x26C8) != 0) {
-        count = *(int *)(*(char **)(base + 0x26C0) + 0xC8);
+        object = *(void **)(base + 0x26C0);
+        count = *(int *)((char *)object + 0xC8);
         if (count > 0) {
-            vec = (float *)((char *)&arg_sp0 + 0x70);
-            pts = (float *)((char *)&arg_sp0 + 0x30);
-            indices = (int *)((char *)&arg_sp0 - 0x18);
-            entries = (void **)((char *)&arg_sp0 - 0x58);
-            for (i = 0, j = 0, k = 0; i < count; i++, j += 2, k += 8) {
-                float *p = (float *)((char *)&arg_sp0 + 0x70 + i * 0x28);
+            register int i = 0;
+            register int slot = 0;
+            register int k = 0;
+            register int *entry = work.entries[0];
+            register float *vec = work.vectors[0];
+            register unsigned int *record = work.records[0];
+            float cd0 = lbl_80561CD0;
+            float cdc = lbl_80561CDC;
+            do {
+                float *p = (float *)record;
                 p[0] = *(float *)(base + 0x94);
                 p[1] = *(float *)(base + 0x98);
                 p[2] = *(float *)(base + 0x9C);
-                p[3] = lbl_80561CD0;
-                p[4] = lbl_80561CDC;
-                p[5] = p[0];
-                p[6] = p[1];
-                p[7] = p[2];
-                p[8] = lbl_80561CD0;
-                p[9] = lbl_80561CDC;
-                *(int *)((char *)pts + i * 16) = j;
-                *(int *)((char *)pts + i * 16 + 4) = j + 1;
-                *(float *)((char *)pts + i * 16 + 8) = lbl_80561CAC;
-                *(float *)((char *)pts + i * 16 + 12) = lbl_80561CD0 - *(float *)((char *)*(void **)(base + 0x26C0) + 0xA8 + k);
-                *(int *)((char *)entries + i * 12) = j;
-                *(void **)((char *)entries + i * 12 + 4) = base + 0x70;
-                *(int *)((char *)entries + i * 12 + 8) = 0;
-            }
+                p[3] = cd0;
+                p[4] = cdc;
+                record[5] = record[0];
+                record[6] = record[1];
+                record[7] = record[2];
+                p[8] = cd0;
+                p[9] = cdc;
+                ((int *)vec)[0] = slot;
+                ((int *)vec)[1] = slot + 1;
+                vec[2] = lbl_80561CAC;
+                vec[3] = cd0 - *(float *)((char *)object + 0xA8 + k);
+                entry[0] = slot;
+                entry[1] = (int)(base + 0x70);
+                entry[2] = 0;
+                record += 10;
+                vec += 4;
+                entry += 3;
+                slot += 2;
+                k += 8;
+                i += 1;
+            } while (i < *(volatile int *)((char *)object + 0xC8));
         }
-        fn_801C1CBC(*(int *)(base + 0x26C8), count * 2, (void *)((char *)&arg_sp0 + 0x70), (void *)((char *)&arg_sp0 + 0x30), count, (void *)((char *)&arg_sp0 - 0x58));
+        count = *(int *)((char *)object + 0xC8);
+        fn_801C1CBC((void *)*(int *)(base + 0x26C8), count * 2, work.records, count, work.vectors, count, work.entries);
     }
 }
 
@@ -1730,35 +1745,93 @@ extern int fn_801CF064(void);
 extern void fn_801BEB30();
 extern int *fn_801E1F44(void);
 extern void fn_8018F6F8(void *);
+#pragma scheduling invalid_target
+extern void fn_801BEB30(int, int *);
 int fn_8018AF04(void *arg0) {
     unsigned char *p = (unsigned char *)arg0;
-    void *obj;
-    float x = *(float *)(p + 0x23E8);
-    float y = *(float *)(p + 0x245C);
-    float z = *(float *)(p + 0x24D0);
-    float w = *(float *)(p + 0x2544);
-    int a = *(int *)(p + 0x241C) & ~8;
-    int b = *(int *)(p + 0x2490) & ~8;
-    int c = *(int *)(p + 0x2504) & ~8;
-    int d = *(int *)(p + 0x2578) & ~8;
-    fn_8018F2C0(arg0, p + (fn_801CF064() == 0 ? 0x1E44 : 0x20F8));
+    void *path;
+    unsigned char *obj;
+    float zero;
+    struct {
+        void *obj;
+        unsigned char pad[4];
+        float matrix0[8];
+        float values[4];
+        float x;
+        float y;
+        float z;
+        float w;
+    } frame;
+    int a;
+    int b;
+    int c;
+    int d;
+    int index;
+    float x;
+    float y;
+    float z;
+    float w;
+
+    if (fn_801CF064() == 0)
+        path = p + 0x1E44;
+    else
+        path = p + 0x20F8;
+    fn_8018F2C0(arg0, path);
+
+    a = *(int *)(p + 0x241C);
+    b = *(int *)(p + 0x2490);
+    a &= ~8;
+    d = *(int *)(p + 0x2578);
+    x = *(float *)(p + 0x23E8);
+    b &= ~8;
+    c = *(int *)(p + 0x2504);
+    d &= ~8;
+    y = *(float *)(p + 0x245C);
+    c &= ~8;
+    z = *(float *)(p + 0x24D0);
+    w = *(float *)(p + 0x2544);
     *(int *)(p + 0x241C) = a;
+    index = *(int *)(p + 0x1EC);
+    frame.x = x;
     *(int *)(p + 0x2490) = b;
+    frame.y = y;
     *(int *)(p + 0x2504) = c;
+    frame.z = z;
     *(int *)(p + 0x2578) = d;
-    fn_801BEB30(*(int *)(p + 0x1EC), &obj, c, b, a, w, z, y);
-    *(float *)((unsigned char *)obj + 0x70) = x;
-    *(float *)((unsigned char *)obj + 0x74) = y;
-    *(float *)((unsigned char *)obj + 0x78) = z;
-    *(float *)((unsigned char *)obj + 0x7C) = w;
-    *(float *)((unsigned char *)obj + 0x130) = lbl_80561CAC;
-    *(float *)((unsigned char *)obj + 0x134) = lbl_80561CAC;
-    *(float *)((unsigned char *)obj + 0x138) = lbl_80561CAC;
-    *(float *)((unsigned char *)obj + 0x13C) = lbl_80561CAC;
-    *(float *)((unsigned char *)obj + 0x140) = lbl_80561CAC;
-    *(float *)((unsigned char *)obj + 0x144) = lbl_80561CAC;
-    *(float *)((unsigned char *)obj + 0x148) = lbl_80561CAC;
-    *(float *)((unsigned char *)obj + 0x14C) = lbl_80561CAC;
+    frame.w = w;
+
+    fn_801BEB30(index, (int *)&frame.obj);
+    x = frame.x;
+    obj = (unsigned char *)frame.obj;
+    y = frame.y;
+    *(float *)(obj + 0x70) = x;
+    z = frame.z;
+    *(float *)(obj + 0x74) = y;
+    w = frame.w;
+    *(float *)(obj + 0x78) = z;
+    *(float *)(obj + 0x7C) = w;
+    frame.values[0] = x;
+    zero = lbl_80561CAC;
+    *(float *)(obj + 0x130) = zero;
+    *(float *)(obj + 0x134) = zero;
+    *(float *)(obj + 0x138) = zero;
+    *(float *)(obj + 0x13C) = zero;
+    frame.values[1] = y;
+    obj = (unsigned char *)frame.obj;
+    *(float *)(obj + 0x140) = zero;
+    *(float *)(obj + 0x144) = zero;
+    *(float *)(obj + 0x148) = zero;
+    *(float *)(obj + 0x14C) = zero;
+    frame.values[2] = z;
+    frame.values[3] = w;
+    frame.matrix0[4] = zero;
+    frame.matrix0[5] = zero;
+    frame.matrix0[6] = zero;
+    frame.matrix0[7] = zero;
+    frame.matrix0[0] = zero;
+    frame.matrix0[1] = zero;
+    frame.matrix0[2] = zero;
+    frame.matrix0[3] = zero;
     if (*(int *)(p + 0x26B0) >= 0) {
         *(int *)(p + 0x26B0) = -1;
         *(int *)(p + 0x1E40) = 0;
@@ -1769,7 +1842,7 @@ int fn_8018AF04(void *arg0) {
         *(float *)(p + 0x25C4) = lbl_80561CAC;
     }
 }
-
+#pragma scheduling on
 int fn_8018B06C(void *arg0) {
     return *(int *)((unsigned char *)lbl_8055E918 +
                     *(int *)((unsigned char *)arg0 + 0x1EC) * 0x9C + 0x14);
@@ -1796,6 +1869,13 @@ extern float lbl_80561CD0, lbl_80561CDC, lbl_80561D28, lbl_80561D34;
 extern float lbl_80561E60, lbl_80561EE4;
 #pragma cplusplus on
 #pragma scheduling invalid_target
+static inline float BA54_Clamp(float lo, float x) {
+    float v = lo;
+    v = (v < x) ? v : x;
+    v = (v > lbl_80561CAC) ? lbl_80561CAC : v;
+    return v;
+}
+
 extern "C" int fn_8018BA54(void *arg0, void *arg1) {
     float temp_f0, temp_f0_2, temp_f0_3, temp_f0_4, temp_f3;
     float color, value3, second_offset, second_scale, scaled1, middle1, output1;
