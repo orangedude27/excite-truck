@@ -47,6 +47,7 @@ typedef struct {
     void *(*fn5C)(void *, u32);
 } Vt801D;
 struct UnkObj { const Vt801D *vt; };
+typedef struct { void *pad[0x12]; void (*fn48)(void *, f32 *, void *, s32, s32); } Vt801E;
 
 #pragma dont_inline on
 void fn_801D2B94(void) {
