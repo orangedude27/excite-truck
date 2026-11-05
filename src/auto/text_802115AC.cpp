@@ -141,7 +141,7 @@ extern "C" char lbl_8055B820;
 #pragma small_data off
 extern "C" s32 fn_80214FE0(s32, s32, s32, s32);
 extern "C" s32 fn_80206430(void);
-extern "C" s32 fn_8022BAD0(s32, s32, s32, s32, s32, s32, s32, s32, float, s32);
+extern "C" s32 fn_8022BAD0(float, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 extern "C" s32 fn_8022AC1C(s32, s32, s32, s32, s32, s32, s32, s32);
 extern float lbl_80563450;
 extern "C" float fn_80209028(void);
@@ -1910,9 +1910,10 @@ extern "C" void fn_80215500(void) {
 
 #pragma scheduling off
 extern "C" void fn_80215504(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+    u8 *p = (u8 *)arg0;
     f32 rate = lbl_80563450;
-    fn_8022BAD0(*(s32 *)((u8 *)arg0 + 8), arg1, arg2, 0, arg4, arg5,
-                *(s32 *)((u8 *)arg0 + 4), arg6, 0, rate);
+    fn_8022BAD0(*(s32 *)(p + 8), arg1, arg2, 0, arg4, arg5,
+               *(s32 *)(p + 4), arg6, rate, 0);
 }
 #pragma scheduling on
 extern "C" void fn_80215544(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
