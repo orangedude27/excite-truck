@@ -1467,6 +1467,49 @@ extern "C" s32 fn_8019DDFC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, void * __rest
     }
     return 0;
 }
+
+#pragma push
+#pragma processor 750
+extern "C" f32 fn_8019DF88(void *arg0, f32 *arg1, void *arg2, f32 *arg3, f32 *arg4, f32 farg0, f32 farg1) {
+    Vec velocity, delta, normalCopy, normal, cross, rotated, result;
+    f32 *m = (f32 *)arg2;
+    f32 *p = (f32 *)arg0;
+    u32 ny = ((u32 *)arg4)[1];
+    f32 dx = arg3[0] - p[0];
+    f32 dy = arg3[1] - p[1];
+    f32 dz = arg3[2] - p[2];
+    f32 vz = arg1[2], vy = arg1[1], vx = arg1[0];
+    u32 nz = ((u32 *)arg4)[2], nx = ((u32 *)arg4)[0];
+    velocity.x = vx; velocity.y = vy; velocity.z = vz;
+    delta.x = dx; delta.y = dy; delta.z = dz;
+    ((u32 *)&normalCopy)[0] = nx; ((u32 *)&normalCopy)[1] = ny; ((u32 *)&normalCopy)[2] = nz;
+    if (PSVECDotProduct(&velocity, (Vec *)arg4) < lbl_805622D0) {
+        ((u32 *)&normal)[0] = ((u32 *)&normalCopy)[0];
+        ((u32 *)&normal)[1] = ((u32 *)&normalCopy)[1];
+        ((u32 *)&normal)[2] = ((u32 *)&normalCopy)[2];
+        PSVECNormalize(&normal, &normal);
+        PSVECCrossProduct(&delta, &normal, &cross);
+        if (&rotated == &cross) {
+            rotated.x = cross.z*m[6] + (cross.y*m[3] + cross.x*m[0]);
+            rotated.y = cross.z*m[7] + (cross.x*m[1] + cross.y*m[4]);
+            rotated.z = cross.z*m[8] + (cross.x*m[2] + cross.y*m[5]);
+        } else {
+            rotated.x = cross.z*m[6] + (cross.y*m[3] + cross.x*m[0]);
+            rotated.y = cross.z*m[7] + (cross.x*m[1] + cross.y*m[4]);
+            rotated.z = cross.z*m[8] + (cross.x*m[2] + cross.y*m[5]);
+        }
+        PSVECCrossProduct(&rotated, &delta, &result);
+        f32 denominator = lbl_805622E0 / farg0 + PSVECDotProduct(&normal, &result);
+        if ((f32)__fabs((f64)denominator) > lbl_8056235C) {
+            f32 impulse = (-(lbl_805622E0 + farg1) * PSVECDotProduct(&velocity, &normal)) / denominator;
+            if (lbl_80562360 < impulse) impulse = lbl_80562360;
+            return impulse;
+        }
+    }
+    return lbl_805622D0;
+}
+#pragma pop
+
 extern "C" s32 fn_8019E1F4(f32* arg0, f32* arg1, f32 f0, f32 f1, f32 f2) {
     if ((f32)__fabs(f1) <= lbl_80558DC4) {
         if (f0 < -f2) goto ret0;
@@ -2357,18 +2400,20 @@ extern "C" void fn_801A0444(void* arg0, void* arg1) {
 
 #pragma push
 #pragma dont_inline on
+#pragma use_lmw_stmw off
 extern "C" void fn_801A0F10(void* arg0) {
     s32 count;
-    Vec d;
     Vec tmp;
     u8 buffer[0x300];
     s32 i;
     u8* ent;
     fn_801A0160(arg0);
     ent = (u8*)arg0;
-    for (i = 0; i < *(s32*)((u8*)arg0 + 0x174); i++) {
+    i = 0;
+    while (i < *(s32*)((u8*)arg0 + 0x174)) {
         ((Fn801A0F10Child*)*(void**)(ent + 0x24))->Update();
         ent += 4;
+        i++;
     }
     if (lbl_8055E5A0 != 0) {
         u8* obj = *(u8**)((u8*)arg0 + 4);
@@ -2390,10 +2435,10 @@ extern "C" void fn_801A0F10(void* arg0) {
         }
         if (ok != 0) {
             s32 e = *(s32*)(obj + 0x1EC);
-            s32 k;
+            s32 k = 0;
             f32 one = lbl_805622E0;
             f32 zero = lbl_805622D4;
-            for (k = 0; k < 4; k++) {
+            do {
                 fn_801BEAEC(e, k, &tmp);
                 Vec v = tmp;
                 v.x += *(f32*)(obj + 0x48) * one;
@@ -2403,6 +2448,7 @@ extern "C" void fn_801A0F10(void* arg0) {
                 fn_801CF080(lbl_8055E5A0, &v, buffer, &count, 0, lbl_8056234C);
                 Vec* cur = (Vec*)buffer;
                 for (i = 0; i < count; i++) {
+                    Vec d;
                     d.x = v.x - cur->x;
                     d.y = v.y - cur->y;
                     d.z = v.z - cur->z;
@@ -2416,7 +2462,8 @@ extern "C" void fn_801A0F10(void* arg0) {
                     }
                     cur++;
                 }
-            }
+                k++;
+            } while (k < 4);
         }
     }
 }
@@ -3287,6 +3334,26 @@ extern "C" void fn_801A3174(void *arg0) {
 }
 
 extern char lbl_80333778[];
+extern char lbl_8055A4C8[], lbl_8055A4D0[], lbl_8055A4D4[], lbl_8055A4D8[], lbl_8055A4E0[], lbl_8055A4E4[];
+extern char lbl_8055A4E8[], lbl_8055A4F0[], lbl_8055A4F8[], lbl_8055A500[];
+extern "C" int strcmp(const char *, const char *);
+struct TagVec3 { f32 x, y, z; };
+class TagNode {
+public:
+    virtual const char *GetName();            // 0x08
+    virtual void k1(); virtual void k2(); virtual void k3(); virtual void k4();
+    virtual void k5(); virtual void k6();
+    virtual f32 GetFloat(const char *);       // 0x24
+    virtual void k8(); virtual void k9(); virtual void k10();
+    virtual TagVec3 GetVec3(const char *);    // 0x34
+};
+class TagList {
+public:
+    virtual TagNode *GetChild(const char *);  // 0x08
+    virtual TagNode *GetNth(int);             // 0x0C
+};
+extern "C" TagList *fn_80131808(void *, void *);
+extern "C" void fn_80131818(TagList *);
 #pragma scheduling invalid_target
 extern "C" void fn_801A3190(void *arg0, s32 arg1, void *arg2, s32 arg3, void *arg4, void *arg5, f32 farg0, f32 farg1) {
     *(void**)arg0 = lbl_80333778;
