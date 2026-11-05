@@ -101,9 +101,10 @@ void fn_801D0738(void *arg0, void *arg1, void *arg2, void *arg3) {
 }
 
 static inline int DispatchList_Find2(void *obj) {
-    void **p = lbl_8043870C[0].items;
+    DispatchList *l = lbl_8043870C;
+    void **p = l->items;
     int i;
-    for (i = 0; i < lbl_8043870C[0].count; i++) {
+    for (i = 0; i < l->count; i++) {
         if (*p == obj) return i;
         p++;
     }
@@ -119,17 +120,8 @@ void fn_801D0800(s32 arg0) {
 }
 
 void fn_801D0824(void *arg0) {
-    void **p = lbl_8043870C[0].items;
-    int index = 0;
-    int i;
+    int index = DispatchList_Find2(arg0);
     int last;
-    for (i = 0; i < lbl_8043870C[0].count; i++) {
-        if (*p == arg0) goto found;
-        p++;
-        index++;
-    }
-    index = -1;
-found:
     if (index == -1) return;
     if (index < 0) return;
     if (index >= lbl_8043870C[0].count) return;
