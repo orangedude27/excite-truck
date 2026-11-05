@@ -7,6 +7,8 @@ typedef struct { float a[3]; } Fn8017431CV3;
 typedef struct { Fn8017431CM9 m; Fn8017431CV3 pos; Fn8017431CV3 v; } Fn8017431CFrame;
 typedef struct { int zero; short mark; } Fn8017431CMark;
 typedef struct { float a, b; } Fn8017431CV2;
+typedef struct { void *pad[8]; int (*m20)(void *, int); void *pad2[3]; void (*m30)(void *, int); } Fn80176040VT;
+typedef struct { Fn80176040VT *vt; } Fn80176040Obj;
 typedef struct { Fn8017431CM9 m; Fn8017431CV3 pos; Fn8017431CV3 v; int zero; short mark; } Fn8017431CFrame2;
 extern float PSQUATMultiply(void *, void *);
 
@@ -1801,13 +1803,11 @@ void fn_80176040(char *self, int a, int b) {
     int k;
     int i;
     int cnt;
-    int (*isOk)(int) = (int (*)(int))fn_80171EC0;
-    void (*resetSlot)(int) = (void (*)(int))fn_80171D94;
     if ((*(int (**)(void *, int))(**(char ***)(self + 0x128) + 0x20))(*(void **)(self + 0x128), a) == 0) return;
     if ((*(int (**)(void *, int))(**(char ***)(self + 0x128) + 0x20))(*(void **)(self + 0x128), b) == 0) return;
     c = -1;
-    if (isOk(a) != 0) c = b;
-    else if (isOk(b) != 0) c = a;
+    if (fn_80171EC0(a) != 0) c = b;
+    else if (fn_80171EC0(b) != 0) c = a;
     if (c == -1) return;
     if (a == c) a = b;
     n = fn_80172624((void *)a, c);
@@ -1818,7 +1818,7 @@ void fn_80176040(char *self, int a, int b) {
         *(float *)(o + 0x188) = lbl_80561AC0;
         p = (char *)fn_801B2EC0(c);
         (*(void (**)(void *, int))(**(char ***)p + 0x30))(p, a);
-        resetSlot(c);
+        fn_80171D94(c);
         f31 = lbl_8055E3C8;
         ent = o + c * 0x1C;
         *(unsigned char *)(ent + 0x90) = 0;
