@@ -434,7 +434,7 @@ extern s32 fn_80179630(s32);
 extern f32 fn_80144514(f32, f32, f32, f32, f32, f32);
 extern void fn_801BFD34(void *, void *, void *);
 extern void fn_8020655C(void *, s32);
-extern void fn_802E317C(void *);
+extern void fn_802E317C(void *, ...);
 extern struct Unk_80437D88 lbl_80437D88;
 #pragma push
 #pragma scheduling invalid_target
@@ -2433,6 +2433,85 @@ common:
   sprintf(lbl_80437FC0,base+0xD30,arg0);
  } else sprintf(lbl_80437FC0,base+0xD48,arg0);
 }
+
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_801CA1C4(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    char buf[256];
+    char *base = lbl_80336B00;
+    u8 *record = (u8 *)arg0;
+    if (lbl_8055E7F0 == 0 || lbl_8055E828 >= lbl_8055E7F0)
+        return;
+    switch (*(u32 *)(record + 8)) {
+    case 0:
+        sprintf(buf, lbl_8055AB00, record + 0xC);
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
+        break;
+    case 2:
+        sprintf(buf, base + 0xD70);
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
+        break;
+    case 3:
+        sprintf(buf, base + 0xD84, fn_801C98F4((char *)lbl_80562960, *(s32 *)(record + 0x10)));
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
+        break;
+    case 4:
+        sprintf(buf, base + 0xD94, fn_801C98F4((char *)lbl_80562954, *(s32 *)(record + 0x210)));
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
+        arg2 += arg3;
+        sprintf(buf, lbl_8055AB08, record + 0x10);
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
+        arg2 += arg3;
+        sprintf(buf, base + 0xDA8, record + 0x110);
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
+        arg2 += arg3;
+        sprintf(buf, base + 0xDB4, *(f32 *)(record + 0x214) / lbl_805629D4);
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
+        break;
+    case 5:
+        sprintf(buf, base + 0xDC0, fn_801C98F4((char *)lbl_80562958, *(s32 *)(record + 0x210)));
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
+        arg2 += arg3;
+        sprintf(buf, lbl_8055AB08, record + 0x10);
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
+        arg2 += arg3;
+        sprintf(buf, base + 0xDA8, record + 0x110);
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
+        arg2 += arg3;
+        sprintf(buf, base + 0xDB4, *(f32 *)(record + 0x218) / lbl_805629D4);
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
+        break;
+    case 6:
+        sprintf(buf, base + 0xDD0, fn_801C98F4((char *)lbl_8056295C, *(s32 *)(record + 0xC)));
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
+        arg2 += arg3;
+        sprintf(buf, lbl_8055AB08, record + 0x14);
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
+        arg2 += arg3;
+        sprintf(buf, base + 0xDA8, record + 0x114);
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
+        break;
+    case 7: {
+        char text[50] = {0};
+        strncpy(text, (char *)record + 0xC, 0x31);
+        sprintf(buf, base + 0xDE0, text);
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
+        arg2 += arg3;
+        strncpy(text, (char *)record + 0x10C, 0x31);
+        sprintf(buf, base + 0xDEC, text);
+        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(arg1, arg2, buf, -1);
+        break;
+    }
+    default:
+        fn_802E317C(base + 0xDF8);
+        break;
+    }
+}
+#pragma cplusplus reset
+#pragma pop
+
 #pragma cplusplus reset
 
 extern void fn_801CA1C4(void *, s32, s32, s32);
