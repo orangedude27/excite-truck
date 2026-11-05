@@ -450,6 +450,7 @@ float fn_80230DF4(float a, float b) {
     if (value < lbl_8056365C) value = lbl_80563610 - value;
     return value;
 }
+#pragma pop
 #pragma dont_inline reset
 
 float fn_80230E54(float a, float b) {
