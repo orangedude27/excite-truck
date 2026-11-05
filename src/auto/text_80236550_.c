@@ -7,7 +7,7 @@ extern int lbl_8055F094;
 extern int lbl_8055F09C;
 extern float lbl_805636D0;
 extern double lbl_805636D8;
-extern const char lbl_803408D8[];
+extern char lbl_803408D8[];
 int fn_802E2C20(void);
 void fn_80236674(void);
 void fn_802E30C8(const char *, ...);
