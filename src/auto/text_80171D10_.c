@@ -98,7 +98,7 @@ int fn_80171E3C(void *arg0) {
 }
 #pragma pop
 
-int fn_80171EC0(void) {
+int fn_80171EC0() {
     return *(int *)((char *)fn_8017960C() + 0x10) == 0x50434152;
 }
 
@@ -1272,16 +1272,15 @@ void fn_8017431C(int arg0, int arg1) {
     extern void fn_801B7C8C(void *, void *, float *);
     extern void PSVECNormalize(float *, float *);
     extern float lbl_80561A44, lbl_80561A74, lbl_80561AB0, lbl_80561AC4, lbl_80561ACC, lbl_80561AD0, lbl_80561AD4;
-    Fn8017431CMark mk;
-    Fn8017431CFrame cam;
+    Fn8017431CFrame2 cam;
     float tgt[3];
     float dir[3];
     float sp38[2];
     float sp30[2];
     float sp28[2];
     float sp20[2];
-    Fn8017431CV2 pv;
     unsigned long long ret;
+    Fn8017431CV2 pv;
     float sp8[2];
     char *obj;
     float *p;
@@ -1290,9 +1289,9 @@ void fn_8017431C(int arg0, int arg1) {
     if (*(unsigned char *)(arg0 + arg1 * 0x1C + 0x90) != 0) {
         obj = (char *)fn_8017960C(arg1);
         fn_8018AF04();
-        mk.mark = -1;
-        fn_801E9DC4(&mk.mark);
-        mk.zero = 0;
+        cam.mark = -1;
+        fn_801E9DC4(&cam.mark);
+        cam.zero = 0;
         p = (float *)(obj + 0x60);
         cam.m = *(Fn8017431CM9 *)(obj + 0x3C);
         cam.pos = *(Fn8017431CV3 *)(obj + 0x60);
@@ -1305,7 +1304,7 @@ void fn_8017431C(int arg0, int arg1) {
             sp8[0] = p[0];
             sp8[1] = p[2];
             ret = fn_80171FF0(sp8, 99, lbl_80561AC4, lbl_80561AC8);
-            pv = *(Fn8017431CV2 *)&ret;
+            *(double *)&pv = *(double *)&ret;
             tgt[1] = lbl_80561A44;
             tgt[0] = pv.a;
             tgt[2] = pv.b;
@@ -1313,8 +1312,9 @@ void fn_8017431C(int arg0, int arg1) {
             inside = 0;
             if (fn_802B04D4(p) != 0 && fn_80171DE4(sp38) == 0) inside = 1;
             if (inside != 0) {
-                float k = lbl_80561A40 / lbl_80561A74;
-                dir[1] = (tgt[1] - p[1]) * k + lbl_80561ACC * lbl_80561A74;
+                float s = lbl_80561A74;
+                float k = lbl_80561A40 / s;
+                dir[1] = (tgt[1] - p[1]) * k + lbl_80561ACC * s;
                 dir[0] = (tgt[0] - p[0]) * k;
                 dir[2] = (tgt[2] - p[2]) * k;
                 cam.pos.a[0] = p[0];
