@@ -13,6 +13,45 @@ extern char lbl_80339218[];
 #define SWAP2(q, a, b) do { u8 t = (q)[a]; (q)[a] = (q)[b]; (q)[b] = t; } while (0)
 #define SWAP4(q, o) do { SWAP2(q, (o), (o) + 3); SWAP2(q, (o) + 1, (o) + 2); } while (0)
 
+void *fn_801D9CC4(void *arg0) {
+    int type = 0;
+    u8 flag = 0;
+    volatile u8 *base;
+    volatile u8 *e;
+    volatile u8 *r;
+    int i, j;
+    base = (volatile u8 *)fn_8012C370(arg0, 0x50507468, &type, 0, 0, &flag);
+    if (base == 0) {
+        fn_802E317C(lbl_80339200, arg0);
+        return 0;
+    }
+    if (type != 0) {
+        fn_802E317C(lbl_80339218, arg0, 0);
+        return 0;
+    }
+    if (flag != 0) {
+        SWAP4(base, 0);
+        e = base + 4;
+        for (i = 0; i < *(s32 *)base; i++, e += 0x18) {
+            SWAP4(e, 0x10);
+            SWAP4(e, 0x14);
+            *(u32 *)(e + 0x14) = (u32)base + *(u32 *)(e + 0x14);
+            for (j = 0; j < *(s32 *)(e + 0x10); j++) {
+                r = (volatile u8 *)*(u32 *)(e + 0x14) + j * 0x20;
+                SWAP4(r, 0);
+                SWAP4(r, 4);
+                SWAP4(r, 8);
+                SWAP4(r, 0xC);
+                SWAP4(r, 0x10);
+                SWAP4(r, 0x14);
+                SWAP4(r, 0x18);
+                SWAP4(r, 0x1C);
+            }
+        }
+    }
+    return (void *)base;
+}
+
 void fn_801D9F24(void) {
     fn_8012C4D8();
 }
@@ -190,6 +229,7 @@ extern double sin(double);
 extern double __fabs(double);
 extern int fn_801DA1F8(void *, void **, void **, float *);
 extern float __fabsf(float);
+#pragma processor 750
 #pragma scheduling invalid_target
 int fn_801DA294(void *arg0, void *arg1, void *arg2, void *arg3) {
     volatile float sp6C;
