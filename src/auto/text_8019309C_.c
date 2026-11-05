@@ -1578,16 +1578,17 @@ extern "C" void fn_80195D80(void *arg0, float arg1) {
 
 extern "C" void fn_80135B9C(void *, int, int, void *, void *, float);
 extern "C" int fn_802E30C8(const char *, ...);
+#pragma scheduling invalid_target
 void fn_80195F6C(void *arg0, void *arg1) {
-    extern char lbl_8033332C;
     extern float lbl_8055A488, lbl_8055A48C, lbl_8056215C, lbl_805621DC, lbl_80562210, lbl_8056221C;
     extern double lbl_80562220;
     extern float lbl_80562228, lbl_8056222C;
+    extern char lbl_8033332C[];
     struct Trio { void *p; float f; int i; };
     char *self = (char *)arg0;
     Trio sp24;
     Trio sp18;
-    float u1, u2;
+    double u1, u2;
     float f2;
     float keep;
     float m, t;
@@ -1615,7 +1616,7 @@ void fn_80195F6C(void *arg0, void *arg1) {
             *(float *)(self + 0x274) = *(float *)(self + 0x274) - lbl_805621DC;
         }
         if (*(float *)(self + 0x274) <= lbl_80562144) {
-            fn_802E30C8((const char *)&lbl_8033332C, u1, u2, lbl_8055A488, lbl_80562220);
+            fn_802E30C8(lbl_8033332C, u1, u2, (double)lbl_8055A488, lbl_80562220);
         }
         obj = *(char **)(self + 0x164);
         *(float *)(self + 0x278) = *(float *)(obj + 0x40);
