@@ -2,6 +2,10 @@
 typedef struct { float pos[3]; int w; float a, b; } Elem_801720FC;
 typedef struct { float m[12]; float v[3]; } Fn8017431CCam;
 typedef union { unsigned long long ull; float f[2]; } Fn8017431CPair;
+typedef struct { float a[9]; } Fn8017431CM9;
+typedef struct { float a[3]; } Fn8017431CV3;
+typedef struct { Fn8017431CM9 m; Fn8017431CV3 pos; Fn8017431CV3 v; } Fn8017431CFrame;
+typedef struct { int zero; short mark; } Fn8017431CMark;
 extern float PSQUATMultiply(void *, void *);
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
