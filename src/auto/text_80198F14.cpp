@@ -3334,6 +3334,20 @@ extern "C" void fn_801A3174(void *arg0) {
 }
 
 extern char lbl_80333778[];
+#pragma always_inline on
+static inline void MtxMulVecInl(const f32 *m, const f32 *src, f32 *dst) {
+    if (src == dst) {
+        f32 x = src[0], y = src[1], z = src[2];
+        dst[0] = z * m[6] + (x * m[0] + y * m[3]);
+        dst[1] = z * m[7] + (x * m[1] + y * m[4]);
+        dst[2] = z * m[8] + (x * m[2] + y * m[5]);
+    } else {
+        dst[0] = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
+        dst[1] = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
+        dst[2] = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
+    }
+}
+#pragma always_inline reset
 __declspec(section ".sdata") extern char lbl_8055A4C8[];
 __declspec(section ".sdata") extern char lbl_8055A4D0[];
 __declspec(section ".sdata") extern char lbl_8055A4D4[];
@@ -3403,47 +3417,47 @@ extern "C" void fn_801A3190(void *arg0, s32 arg1, void *arg2, s32 arg3, void *ar
     *(f32*)((u8*)arg0 + 0x38) = b2;
 }
 
+#pragma use_lmw_stmw off
 extern "C" void *fn_801A324C(void *arg0, int arg1, void *arg2, f32 farg0, f32 farg1) {
-    u8 *self = (u8 *)arg0;
+    u8 *self;
     TagList *list;
     TagNode *node;
     TagNode *child;
     int i;
-    *(void **)self = lbl_80333778;
-    *(int *)(self + 4) = 0;
-    *(int *)(self + 8) = 0;
-    *(int *)(self + 0xC) = arg1;
+    *(int *)((u8 *)arg0 + 0xC) = arg1;
+    self = (u8 *)arg0;
     *(f32 *)(self + 0x10) = farg0;
-    *(f32 *)(self + 0x14) = farg1;
+    *(int *)((u8 *)arg0 + 4) = 0;
+    *(int *)((u8 *)arg0 + 8) = 0;
     *(int *)(self + 0x18) = 0x504F4C59;
-    *(int *)(self + 0x1C) = 0;
+    *(f32 *)(self + 0x14) = farg1;
     *(int *)(self + 0x20) = 100;
+    *(int *)(self + 0x1C) = 0;
+    *(void **)self = lbl_80333778;
     list = fn_80131808(arg2, lbl_80333778);
     *(int *)(self + 0xBC) = 0;
     *(int *)(self + 0xDC) = 0;
     node = list->GetChild(lbl_8055A4C8);
     {
-        TagVec3 v = node->GetVec3(lbl_8055A4D0);
+        const TagVec3 &v = node->GetVec3(lbl_8055A4D0);
         *(f32 *)(self + 0x24) = v.x;
         *(f32 *)(self + 0x28) = v.y;
         *(f32 *)(self + 0x2C) = v.z;
     }
     {
-        TagVec3 v = node->GetVec3(lbl_8055A4D4);
+        const TagVec3 &v = node->GetVec3(lbl_8055A4D4);
         *(f32 *)(self + 0x30) = v.x;
         *(f32 *)(self + 0x34) = v.y;
         *(f32 *)(self + 0x38) = v.z;
     }
-    i = 0;
-    child = list->GetNth(i);
-    for (; child != 0; child = list->GetNth(i)) {
+    for (i = 0; (child = list->GetNth(i)) != 0; i++) {
         if (strcmp(child->GetName(), lbl_8055A4D8) == 0) {
             int idx = *(int *)(self + 0xBC);
             u8 *rec;
             *(int *)(self + 0xBC) = idx + 1;
             rec = self + idx * 0x10;
             {
-                TagVec3 v = child->GetVec3(lbl_8055A4E0);
+                const TagVec3 &v = child->GetVec3(lbl_8055A4E0);
                 *(f32 *)(rec + 0x3C) = v.x;
                 *(f32 *)(rec + 0x40) = v.y;
                 *(f32 *)(rec + 0x44) = v.z;
@@ -3455,26 +3469,24 @@ extern "C" void *fn_801A324C(void *arg0, int arg1, void *arg2, f32 farg0, f32 fa
             *(int *)(self + 0xDC) = idx + 1;
             rec = self + idx * 0x1C;
             {
-                TagVec3 v = child->GetVec3(lbl_8055A4F0);
+                const TagVec3 &v = child->GetVec3(lbl_8055A4F0);
                 *(f32 *)(rec + 0xC0) = v.x;
                 *(f32 *)(rec + 0xC4) = v.y;
                 *(f32 *)(rec + 0xC8) = v.z;
             }
             {
-                TagVec3 v = child->GetVec3(lbl_8055A4F8);
+                const TagVec3 &v = child->GetVec3(lbl_8055A4F8);
                 *(f32 *)(rec + 0xCC) = v.x;
                 *(f32 *)(rec + 0xD0) = v.y;
                 *(f32 *)(rec + 0xD4) = v.z;
             }
             *(f32 *)(rec + 0xD8) = child->GetFloat(lbl_8055A500);
         }
-        i++;
     }
     fn_80131818(list);
     return arg0;
 }
-
-#pragma scheduling on
+#pragma use_lmw_stmw reset
 extern "C" void fn_801A34D0(void *arg0, Vec *arg1, Vec *arg2) {
     extern f32 lbl_80562380;
     struct Bounds { u8 pad0[0xC]; f32 *matrix; u8 pad1[0x14]; Vec min; Vec max; };
