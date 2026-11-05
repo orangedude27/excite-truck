@@ -294,6 +294,7 @@ check:
     step = *(int *)((char *)arg0 + 0x10);
     if (*(int *)((char *)arg0 + 0xC) >= step) goto loop;
 }
+#pragma dont_inline off
 
 int fn_8022DC68(void *arg0, int arg1) {
     int saved;
