@@ -253,6 +253,7 @@ int fn_802AE7AC(void) {
 #pragma cplusplus on
 #pragma push
 #pragma processor 750
+#pragma peephole off
 extern "C" void fn_802AE7F4(void) {
     float values[8];
     float total;
@@ -1334,12 +1335,13 @@ extern float lbl_80564B84;
 extern int __cntlzw(unsigned int);
 #pragma scheduling invalid_target
 s32 fn_802B02C8(void *arg0) {
-    f32 temp_f2_2;
-    f32 temp_f0;
-    f32 temp_f1;
-    f32 temp_f0_2;
-    f32 temp_f2;
+    f32 bound;
+    f32 x;
+    f32 neg_bound;
+    f32 z;
     s32 var_r0;
+    f32 fx;
+    f32 fz;
     s32 scaled_x;
     s32 scaled_z;
     s16 coord_x;
@@ -1348,25 +1350,24 @@ s32 fn_802B02C8(void *arg0) {
 
     if (fn_802AE7AC() != 0) {
         var_r0 = 0;
-        temp_f2_2 = lbl_80564B84 * lbl_80564AF0;
-        temp_f2_2 = temp_f2_2 * lbl_80564B6C;
-        temp_f0 = *(f32 *)arg0;
-        temp_f1 = -temp_f2_2;
-        if ((temp_f0 > temp_f1) && (temp_f2_2 > temp_f0)) {
-            temp_f0_2 = *(f32 *)((u8 *)arg0 + 8);
-            if ((temp_f0_2 > temp_f1) && (temp_f2_2 > temp_f0_2))
+        bound = lbl_80564B84;
+        bound *= lbl_80564AF0;
+        x = *(f32 *)arg0;
+        bound *= lbl_80564B6C;
+        neg_bound = -bound;
+        if (x > neg_bound && x < bound) {
+            z = *(f32 *)((u8 *)arg0 + 8);
+            if (z > neg_bound && z < bound)
                 var_r0 = 1;
         }
         if (var_r0 != 0) {
-            temp_f0 = *(f32 *)arg0;
-            temp_f2 = temp_f0 / lbl_80564AF0;
-            scaled_x = (s32)temp_f2;
-            coord_x = (s16)((s16)(scaled_x & 0xFFFFFFF8) + 4);
-            temp_f0_2 = *(f32 *)((u8 *)arg0 + 8);
-            temp_f2 = temp_f0_2 / lbl_80564AF0;
-            scaled_z = (s32)temp_f2;
-            coord_z = (s16)((s16)(scaled_z & 0xFFFFFFF8) + 4);
-            flags = *(u32 *)((u8 *)fn_802BE844(coord_x, coord_z, 4, temp_f0_2) + 8);
+            fx = *(f32 *)arg0;
+            fz = *(f32 *)((u8 *)arg0 + 8);
+            scaled_x = (s32)(fx / lbl_80564AF0);
+            scaled_z = (s32)(fz / lbl_80564AF0);
+            coord_x = (s16)((s16)(scaled_x & ~7) + 4);
+            coord_z = (s16)((s16)(scaled_z & ~7) + 4);
+            flags = *(u32 *)((u8 *)fn_802BE844(coord_x, coord_z, 4) + 8);
             return (u32)__cntlzw(flags & 0x01000000) >> 5;
         }
         return 1;
