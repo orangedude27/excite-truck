@@ -3277,14 +3277,13 @@ static inline f32 fn8015DD9CSumFloat(Unk801577F0* arg0) {
  return total;
 }
 static inline s32 fn8015DD9CSumInt(Unk801577F0* arg0) {
+ s32 n=arg0->mCount;
  s32 i=0;
  s32 sum=0;
- for(;i<arg0->mCount;i++) sum+=*(s32*)(arg0->mData+i*0x38+4);
+ for(;i<n;i++) sum+=*(s32*)(arg0->mData+i*0x38+4);
  return sum;
 }
-#pragma push
-#pragma use_lmw_stmw off
-#pragma processor 7400
+#pragma processor 750
 extern "C" void fn_8015DD9C(Unk801577F0* arg0, void* arg1) {
  struct Obj {
  virtual s32 v0(); virtual s32 v1(); virtual s32 v2(); virtual s32 v3(); virtual s32 v4(); virtual s32 v5(); virtual s32 v6(); virtual s32 v7(); virtual s32 v8(); virtual s32 v9(); virtual s32 v10(); virtual s32 v11(); virtual s32 v12(); virtual s32 v13(); virtual s32 v14(); virtual s32 v15(); virtual s32 v16(); virtual s32 v17(); virtual s32 v18(); virtual s32 v19(); virtual s32 v20(); virtual s32 v21(); virtual s32 v22(); virtual s32 v23(); virtual s32 v24(); virtual s32 v25(); virtual s32 v26(); virtual s32 v27(); virtual s32 v28(); virtual s32 v29();
@@ -3312,7 +3311,6 @@ extern "C" void fn_8015DD9C(Unk801577F0* arg0, void* arg1) {
  if(obj->v21()>=limit) a->v8(1);
  }
 }
-#pragma pop
 
 #pragma pop
 extern "C" void fn_8015E0FC(void) {
