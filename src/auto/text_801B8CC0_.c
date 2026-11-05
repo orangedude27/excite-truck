@@ -59,22 +59,31 @@ if (out == in) {
 float y = in[1];
 float x = in[0];
 float z = in[2];
-float x_y = y * m[3];
-float y_y = y * m[4];
-float z_y = y * m[5];
-float x_x = x * m[0];
-float y_x = x * m[1];
-float z_x = x * m[2];
-float x_z = z * m[6];
-float y_z = z * m[7];
-float z_z = z * m[8];
-out[0] = x_z + (x_y + x_x);
-out[1] = y_z + (y_y + y_x);
-out[2] = z_z + (z_y + z_x);
+float y0 = y * m[3];
+float y1 = y * m[4];
+float x0 = x * m[0];
+float x1 = x * m[1];
+float x2 = x * m[2];
+float y2 = y * m[5];
+float z0 = z * m[6];
+float z1 = z * m[7];
+float z2 = z * m[8];
+out[0] = z0 + (x0 + y0);
+out[1] = z1 + (x1 + y1);
+out[2] = z2 + (x2 + y2);
 } else {
-out[0] = in[2] * m[6] + (in[1] * m[3] + in[0] * m[0]);
-out[1] = in[2] * m[7] + (in[1] * m[4] + in[0] * m[1]);
-out[2] = in[2] * m[8] + (in[1] * m[5] + in[0] * m[2]);
+float y0 = in[1] * m[3];
+float x0 = in[0] * m[0];
+float z0 = in[2] * m[6];
+out[0] = z0 + (x0 + y0);
+float y1 = in[1] * m[4];
+float x1 = in[0] * m[1];
+float z1 = in[2] * m[7];
+out[1] = z1 + (x1 + y1);
+float y2 = in[1] * m[5];
+float x2 = in[0] * m[2];
+float z2 = in[2] * m[8];
+out[2] = z2 + (x2 + y2);
 }
 
 }
