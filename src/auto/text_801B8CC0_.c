@@ -54,7 +54,7 @@ extern "C" static inline void transform_vec_struct(Vec *out, const float *m, vol
         out->z = in->y * m[5] + in->x * m[2] + in->z * m[8];
     }
 }
-static inline void transform_vec_scheduled(float *out, const float *m, volatile float *in) {
+static inline void transform_vec_scheduled(float *out, const float *m, float *in) {
 if (out == in) {
 float y = in[1];
 float x = in[0];
