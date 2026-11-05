@@ -31,6 +31,19 @@ extern int btsnd_hcic_reject_esco_conn(void *, u8 *, u8);
 #include <revolution/OS.h>
 #include "revolution/BTE/stack/include/hiddefs.h"
 
+/* btm_bda_to_acl as inlined into btm_acl_created (return-in-loop => 'b end') */
+extern u8 lbl_803C0F78[];
+static inline u8 *btm_acl_created_find(const u8 *bda) {
+    u8 *p = lbl_803C0F78 + 0x34;
+    u32 xx;
+    for (xx = 0; xx < 4; xx++, p += 0x11C) {
+        if (p[0x119] != 0 && memcmp(p + 8, bda, 6) == 0) {
+            return p;
+        }
+    }
+    return NULL;
+}
+
 /* Forward declare tL2C_CONN_INFO for l2c_csm_w4_l2ca_connect_rsp */
 typedef struct {
     u8 bd_addr[6];
