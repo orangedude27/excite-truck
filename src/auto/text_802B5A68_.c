@@ -44,6 +44,7 @@ typedef struct MenuRenderCopy {
     s32 unk18;
     s32 unk1C;
 } MenuRenderCopy;
+#pragma pack(pop)
 extern char lbl_8034A598[];
 __declspec(section ".sdata") extern const char lbl_8055CEA8[];
 __declspec(section ".sdata") extern const char lbl_8055CE58[];
