@@ -2,6 +2,9 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 typedef struct { double a, b, c, d, e, f, g, h; } Key64;
+struct CacheVt;
+typedef struct CacheObj { struct CacheVt *vt; } CacheObj;
+struct CacheVt { void *pad[2]; void *(*m2)(CacheObj *, char *); void *pad3; int (*m4)(CacheObj *, char *); };
 extern unsigned char lbl_8042F8C8[];
 extern char *strchr(const char *, int);
 extern char *fn_80029004(char *, int);
@@ -165,11 +168,11 @@ void *fn_8013BFE8(char *arg0) {
     char key[0x40];
     char buf[0x80];
     unsigned char *e;
-    unsigned char *p;
     int i, count;
+    unsigned char *p;
     void *obj, *res, *h;
-    char *dst;
     int n;
+    char *dst;
     unsigned char c;
     dst = key;
     n = 0x40;
@@ -185,10 +188,11 @@ copy:
     if ((signed char)c != 0)
         goto count_check;
 copied:
+    e = 0;
     p = lbl_8042F8C8;
     count = *(int *)(lbl_8042F8C8 + 0x240);
-    e = 0;
-    for (i = 0; i < count; i++) {
+    i = 0;
+    for (; i < count; i++) {
         int eq = strcmp(key, (char *)p + 4) == 0;
         if (eq) {
             e = lbl_8042F8C8 + i * 0x48;
@@ -212,8 +216,8 @@ copied:
         }
         if (res == 0) res = fn_8013BF40(key);
         if (res != 0) {
-            fn_8013BFE0();
-            fn_8013BFE4();
+            ((void (*)(void *))fn_8013BFE0)(res);
+            ((void (*)(void *))fn_8013BFE4)(res);
         }
         if (res != 0) {
             Key64 tmp = *(Key64 *)key;
