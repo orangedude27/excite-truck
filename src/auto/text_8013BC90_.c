@@ -9,6 +9,14 @@ extern void *fn_8013184C(void);
 extern void fn_802E30C8(const char *, ...);
 extern const char lbl_8032C42C[];
 extern const char lbl_8032C43C[];
+#pragma cplusplus on
+class CacheSrc {
+public:
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+    virtual int has(const char *);
+    virtual void *open(const char *);
+};
+#pragma cplusplus reset
 struct CacheVt;
 typedef struct CacheObj { struct CacheVt *vt; } CacheObj;
 struct CacheVt { void *pad[2]; void *(*m2)(CacheObj *, char *); void *pad3; int (*m4)(CacheObj *, char *); };
