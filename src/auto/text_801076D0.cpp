@@ -985,12 +985,12 @@ void nw4hbm::ut::detail::ResFontBase::GetGlyph(nw4hbm::ut::Glyph* glyph, unsigne
     register u32 top = (u32)this & 0xFF000000U;
     {
         register int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
-        if ((u32)(top + 0x80000000U) >= 1U && (u32)(((u32)this & 0xFF800000U) + 0x7F000000U) >= 1U) r10 = 0;
-        if (r10 == 0 && (u32)(((u32)this & 0xF8000000U) + 0x70000000U) >= 1U) r9 = 0;
-        if (r9 == 0 && (u32)(top + 0x40000000U) >= 1U) r8 = 0;
-        if (r8 == 0 && (u32)(((u32)this & 0xFF800000U) + 0x3F000000U) >= 1U) r7 = 0;
-        if (r7 == 0 && (u32)(((u32)this & 0xF8000000U) + 0x30000000U) >= 1U) r6 = 0;
-        if (r6 == 0 && (u32)(((u32)this & 0xFFFFC000U) + 0x20000000U) >= 1U) r5 = 0;
+        if (top != 0x80000000U && ((u32)this & 0xFF800000U) != 0x81000000U) r10 = 0;
+        if (r10 == 0 && ((u32)this & 0xF8000000U) != 0x90000000U) r9 = 0;
+        if (r9 == 0 && top != 0xC0000000U) r8 = 0;
+        if (r8 == 0 && ((u32)this & 0xFF800000U) != 0xC1000000U) r7 = 0;
+        if (r7 == 0 && ((u32)this & 0xF8000000U) != 0xD0000000U) r6 = 0;
+        if (r6 == 0 && ((u32)this & 0xFFFFC000U) != 0xE0000000U) r5 = 0;
         if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x1E2, file + 0xF0, this);
     }
     {
@@ -999,23 +999,24 @@ void nw4hbm::ut::detail::ResFontBase::GetGlyph(nw4hbm::ut::Glyph* glyph, unsigne
         register int r7 = 1;
         register int r8 = 1, r9 = 1, r10 = 1;
         register u32 infoTop = (u32)info & 0xFF000000U;
-        if ((u32)(infoTop + 0x80000000U) >= 1U && (u32)(((u32)info & 0xFF800000U) + 0x7F000000U) >= 1U) r10 = 0;
-        if (r10 == 0 && (u32)(((u32)info & 0xF8000000U) + 0x70000000U) >= 1U) r9 = 0;
-        if (r9 == 0 && (u32)(infoTop + 0x40000000U) >= 1U) r8 = 0;
-        if (r8 == 0 && (u32)(((u32)info & 0xFF800000U) + 0x3F000000U) >= 1U) r7 = 0;
-        if (r7 == 0 && (u32)(((u32)info & 0xF8000000U) + 0x30000000U) >= 1U) r5 = 0;
-        if (r5 == 0 && (u32)(((u32)info & 0xFFFFC000U) + 0x20000000U) >= 1U) r4 = 0;
+        if (infoTop != 0x80000000U && ((u32)info & 0xFF800000U) != 0x81000000U) r10 = 0;
+        if (r10 == 0 && ((u32)info & 0xF8000000U) != 0x90000000U) r9 = 0;
+        if (r9 == 0 && infoTop != 0xC0000000U) r8 = 0;
+        if (r8 == 0 && ((u32)info & 0xFF800000U) != 0xC1000000U) r7 = 0;
+        if (r7 == 0 && ((u32)info & 0xF8000000U) != 0xD0000000U) r5 = 0;
+        if (r5 == 0 && ((u32)info & 0xFFFFC000U) != 0xE0000000U) r4 = 0;
         if (r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x1E3, file + 0x128);
     }
     {
+        register u32 b, a;
         register int valid = 0;
-        if ((u32)(top + 0x80000000U) < 1U ||
-            (u32)(((u32)this & 0xFF800000U) + 0x7F000000U) < 1U ||
-            (u32)(((u32)this & 0xF8000000U) + 0x70000000U) < 1U ||
-            (u32)(top + 0x40000000U) < 1U ||
-            (u32)(((u32)this & 0xFF800000U) + 0x3F000000U) < 1U ||
-            (u32)(((u32)this & 0xF8000000U) + 0x30000000U) < 1U ||
-            (u32)(((u32)this & 0xFFFFC000U) + 0x20000000U) < 1U)
+        if (top == 0x80000000U ||
+            (a = (u32)this & 0xFF800000U) == 0x81000000U ||
+            (b = (u32)this & 0xF8000000U) == 0x90000000U ||
+            top == 0xC0000000U ||
+            a == 0xC1000000U ||
+            b == 0xD0000000U ||
+            ((u32)this & 0xFFFFC000U) == 0xE0000000U)
             valid = 1;
         if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x1F6, file + 0xF0, this);
     }
@@ -1025,12 +1026,12 @@ void nw4hbm::ut::detail::ResFontBase::GetGlyph(nw4hbm::ut::Glyph* glyph, unsigne
         register int r7 = 1;
         register int r8 = 1, r9 = 1, r10 = 1;
         register u32 infoTop = (u32)info & 0xFF000000U;
-        if ((u32)(infoTop + 0x80000000U) >= 1U && (u32)(((u32)info & 0xFF800000U) + 0x7F000000U) >= 1U) r10 = 0;
-        if (r10 == 0 && (u32)(((u32)info & 0xF8000000U) + 0x70000000U) >= 1U) r9 = 0;
-        if (r9 == 0 && (u32)(infoTop + 0x40000000U) >= 1U) r8 = 0;
-        if (r8 == 0 && (u32)(((u32)info & 0xFF800000U) + 0x3F000000U) >= 1U) r7 = 0;
-        if (r7 == 0 && (u32)(((u32)info & 0xF8000000U) + 0x30000000U) >= 1U) r5 = 0;
-        if (r5 == 0 && (u32)(((u32)info & 0xFFFFC000U) + 0x20000000U) >= 1U) r4 = 0;
+        if (infoTop != 0x80000000U && ((u32)info & 0xFF800000U) != 0x81000000U) r10 = 0;
+        if (r10 == 0 && ((u32)info & 0xF8000000U) != 0x90000000U) r9 = 0;
+        if (r9 == 0 && infoTop != 0xC0000000U) r8 = 0;
+        if (r8 == 0 && ((u32)info & 0xFF800000U) != 0xC1000000U) r7 = 0;
+        if (r7 == 0 && ((u32)info & 0xF8000000U) != 0xD0000000U) r5 = 0;
+        if (r5 == 0 && ((u32)info & 0xFFFFC000U) != 0xE0000000U) r4 = 0;
         if (r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x1F7, file + 0x128);
     }
     u8* map = *(u8**)(*(u8**)((char*)this + 0x14) + 0x10);
