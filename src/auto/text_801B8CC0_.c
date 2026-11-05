@@ -72,9 +72,18 @@ out[0] = z * m6 + (x * m0 + y * m3);
 out[1] = z * m7 + (x * m1 + y * m4);
 out[2] = z * m8 + (x * m2 + y * m5);
 } else {
-out[0] = in[2] * m[6] + (in[1] * m[3] + in[0] * m[0]);
-out[1] = in[2] * m[7] + (in[1] * m[4] + in[0] * m[1]);
-out[2] = in[2] * m[8] + (in[1] * m[5] + in[0] * m[2]);
+float m3 = m[3];
+float m0 = m[0];
+float m6 = m[6];
+out[0] = in[2] * m6 + (in[1] * m3 + in[0] * m0);
+float m4 = m[4];
+float m1 = m[1];
+float m7 = m[7];
+out[1] = in[2] * m7 + (in[1] * m4 + in[0] * m1);
+float m5 = m[5];
+float m2 = m[2];
+float m8 = m[8];
+out[2] = in[2] * m8 + (in[1] * m5 + in[0] * m2);
 }
 
 }
@@ -172,7 +181,7 @@ extern "C" void fn_801B8E28(int arg0) {
         volatile float input[3];
         float sp14[3];
         float sp20[3];
-        unsigned int copy[9];
+        Vec copy[3];
         float output[3];
         volatile float fx, fy, fz;
         volatile int zero;
@@ -204,20 +213,20 @@ extern "C" void fn_801B8E28(int arg0) {
         w.output[2] += *(float *)(matrix + 0x9c);
     }
     {
-        unsigned int *matrix = (unsigned int *)*(void **)((char *)obj + 0x2754);
-        w.copy[0] = matrix[0x70/4]; w.copy[1] = matrix[0x74/4]; w.copy[2] = matrix[0x78/4];
-        w.copy[3] = matrix[0x7c/4]; w.copy[4] = matrix[0x80/4]; w.copy[5] = matrix[0x84/4];
-        w.copy[6] = matrix[0x88/4]; w.copy[7] = matrix[0x8c/4]; w.copy[8] = matrix[0x90/4];
+        Vec *matrix = (Vec *)((char *)*(void **)((char *)obj + 0x2754) + 0x70);
+        w.copy[0] = matrix[0];
+        w.copy[1] = matrix[1];
+        w.copy[2] = matrix[2];
     }
     dot = PSVECDotProduct((float *)((char *)*(void **)((char *)obj + 0x2754) + 0x118), (float *)((char *)obj + 0x54));
-    w.fx = ((float *)w.copy)[6] * dot;
+    w.fx = w.copy[2].x * dot;
     w.zero = 0;
-    w.fy = ((float *)w.copy)[7] * dot;
-    w.fz = ((float *)w.copy)[8] * dot;
+    w.fy = w.copy[2].y * dot;
+    w.fz = w.copy[2].z * dot;
     {
         void *matrix = *(void **)((char *)obj + 0x2754);
         w.h = *(short *)((char *)matrix + 0x6c);
-        ((struct Dummy *)obj)->v19(w.copy, matrix);
+        ((struct Dummy *)obj)->v19((unsigned int *)w.copy, matrix);
     }
     *(void **)((char *)obj + 0x2738) = obj;
     if (*(unsigned char *)((char *)obj + 0x275d) == 0) {
