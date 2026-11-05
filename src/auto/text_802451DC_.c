@@ -172,9 +172,9 @@ void fn_8024590C(int *a, int *b) {
     }
     f = ((float *)b)[2];
     if (!((float)__fabs(f) <= *(float *)&lbl_80558DC4)) {
-        strcpy(tail, &lbl_8055BE60[0]);
+        strcpy(tail, (char *)&lbl_8055BE60);
         n = (int)(lbl_80563888 * f);
-        for (i = 0; i < n; i++) fn_80028E00(tail, &lbl_8055BE64[0]);
+        for (i = 0; i < n; i++) fn_80028E00(tail, (char *)&lbl_8055BE64);
         fn_802335F0(tail, a[4], lbl_8056388C, lbl_80563890);
     }
     fn_802C9A70(1);
