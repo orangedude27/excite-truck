@@ -359,6 +359,8 @@ void fn_80166098(void) {
     fn_801B2EC0();
 }
 
+#pragma push
+#pragma dont_inline on
 #pragma cplusplus on
 float fn_801660C0(void) {
     void **object;
@@ -375,6 +377,7 @@ float fn_801660C0(void) {
     return value;
 }
 #pragma cplusplus reset
+#pragma pop
 
 int fn_8016616C(void) {
     return lbl_8055E320 > *(float *)((char *)&lbl_8042FE38 + 0x48);
@@ -465,6 +468,7 @@ void fn_801662FC(void) {
 #pragma push
 #pragma processor gekko
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_801663C8(int count, void *records, void *config) {
     typedef struct Entry { int id; unsigned char flag; char pad[0x83]; } Entry;
     typedef struct Holder { Entry *entries; int used; int count; Entry *base; } Holder;
@@ -502,9 +506,7 @@ void fn_801663C8(int count, void *records, void *config) {
     lbl_8055E32A = *(int *)((char *)config + 4) != 0x180304;
     *(int *)&lbl_8055E334 = 0;
 }
-
-#pragma push
-#pragma scheduling invalid_target
+#pragma pop
 void fn_80166754(void *arg0) {
     extern float lbl_805618D8, lbl_805618DC, lbl_805618E0;
     char *base = (char *)&lbl_8042FE38;
