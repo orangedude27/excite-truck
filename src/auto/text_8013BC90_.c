@@ -2,6 +2,13 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 typedef struct { double a, b, c, d, e, f, g, h; } Key64;
+extern int strcmp(const char *, const char *);
+extern void *fn_80131810(const char *);
+extern void fn_80131818(void *);
+extern void *fn_8013184C(void);
+extern void fn_802E30C8(const char *, ...);
+extern const char lbl_8032C42C[];
+extern const char lbl_8032C43C[];
 struct CacheVt;
 typedef struct CacheObj { struct CacheVt *vt; } CacheObj;
 struct CacheVt { void *pad[2]; void *(*m2)(CacheObj *, char *); void *pad3; int (*m4)(CacheObj *, char *); };
@@ -164,17 +171,20 @@ extern void *fn_8013184C(void);
 extern void fn_802E30C8(const char *, ...);
 extern const char lbl_8032C42C[];
 extern const char lbl_8032C43C[];
+#pragma scheduling invalid_target
 void *fn_8013BFE8(char *arg0) {
-    char key[0x40];
+    Key64 key;
     char buf[0x80];
     unsigned char *e;
     int i, count;
     unsigned char *p;
-    void *obj, *res, *h;
+    CacheObj *obj;
+    char *name;
+    void *res, *h;
     int n;
     char *dst;
     unsigned char c;
-    dst = key;
+    dst = (char *)&key;
     n = 0x40;
     goto copy;
 count_check:
@@ -193,7 +203,7 @@ copied:
     count = *(int *)(lbl_8042F8C8 + 0x240);
     i = 0;
     for (; i < count; i++) {
-        int eq = strcmp(key, (char *)p + 4) == 0;
+        int eq = strcmp((char *)&key, (char *)p + 4) == 0;
         if (eq) {
             e = lbl_8042F8C8 + i * 0x48;
             break;
@@ -202,25 +212,25 @@ copied:
     }
     if (e == 0) {
         res = 0;
-        obj = fn_80131810(lbl_8032C42C);
+        obj = (CacheObj *)fn_80131810(lbl_8032C42C);
         if (obj != 0) {
-            char *name = fn_8013BC90(buf, 0x80, key);
-            if (((int (*)(void *, char *))(*(void ***)obj)[4])(obj, name))
-                h = (void *)((int (*)(void *, char *))(*(void ***)obj)[2])(obj, name);
+            name = fn_8013BC90(buf, 0x80, (char *)&key);
+            if (obj->vt->m4(obj, name))
+                h = obj->vt->m2(obj, name);
             else
                 h = 0;
             if (h != 0) fn_802E30C8(lbl_8032C43C, name);
             else h = fn_8013184C();
-            res = fn_8013BE64(h, key);
+            res = fn_8013BE64(h, (char *)&key);
             fn_80131818(obj);
         }
-        if (res == 0) res = fn_8013BF40(key);
+        if (res == 0) res = fn_8013BF40((char *)&key);
         if (res != 0) {
             ((void (*)(void *))fn_8013BFE0)(res);
             ((void (*)(void *))fn_8013BFE4)(res);
         }
         if (res != 0) {
-            Key64 tmp = *(Key64 *)key;
+            Key64 tmp = key;
             unsigned char *s = (unsigned char *)&tmp;
             e = lbl_8042F8C8 + *(int *)(lbl_8042F8C8 + 0x240) * 0x48;
             *(int *)(lbl_8042F8C8 + 0x240) += 1;
@@ -266,7 +276,7 @@ copied:
     }
     return 0;
 }
-
+#pragma scheduling on
 extern void fn_80128658(int);
 extern void fn_80128668(void *);
 extern void fn_8013A598(void *, int);
