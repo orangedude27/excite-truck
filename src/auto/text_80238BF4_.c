@@ -159,7 +159,7 @@ void fn_80238FCC(u32 arg0, u32 arg1) {
 }
 #pragma scheduling on
 s32 fn_8023964C(s32 arg0) {
-    fn_8023905C();
+    fn_8023905C((void *)arg0);
     return arg0;
 }
 
