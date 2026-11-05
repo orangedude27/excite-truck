@@ -1,5 +1,4 @@
 #include "revolution/MTX/mtxtypes.h"
-typedef struct { unsigned int words[9]; } Matrix3Words;
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_801345D8(void *, int, const char *, ...);
@@ -625,6 +624,7 @@ void fn_801F0F78(void *arg0, void *arg1, void *arg2, float scale) {
     Vec point, angles, angles2;
     float *m = (float *)arg2;
     float x,y,z, a,b,c,d,e,f,g,h,i;
+    unsigned int w0,w1,w2,w3,w4,w5,w6,w7,w8;
     int mode;
     if (flags & 8) {
         *(int *)((char *)arg0 + 4) = 3;
@@ -651,10 +651,20 @@ void fn_801F0F78(void *arg0, void *arg1, void *arg2, float scale) {
         (*(float *)((char *)arg0 + 0x40))=point.z*m[7]+(point.x*m[1]+point.y*m[4]);
         (*(float *)((char *)arg0 + 0x44))=point.z*m[8]+(point.x*m[2]+point.y*m[5]);
     }
-    (*(float *)((char *)arg0 + 0x3c)) += m[9]; (*(float *)((char *)arg0 + 0x40)) += m[10]; (*(float *)((char *)arg0 + 0x44)) += m[11];
-    ((Vec *)((char *)arg0 + 0x18))[0] = ((Vec *)m)[0];
-    ((Vec *)((char *)arg0 + 0x18))[1] = ((Vec *)m)[1];
-    ((Vec *)((char *)arg0 + 0x18))[2] = ((Vec *)m)[2];
+    x = (*(float *)((char *)arg0 + 0x3c)) + m[9];
+    y = (*(float *)((char *)arg0 + 0x40)) + m[10];
+    w0=((unsigned int *)m)[0]; w1=((unsigned int *)m)[1]; w2=((unsigned int *)m)[2];
+    w3=((unsigned int *)m)[3]; w4=((unsigned int *)m)[4]; w5=((unsigned int *)m)[5];
+    w6=((unsigned int *)m)[6]; w7=((unsigned int *)m)[7]; w8=((unsigned int *)m)[8];
+    (*(float *)((char *)arg0 + 0x3c)) = x;
+    z = (*(float *)((char *)arg0 + 0x44)) + m[11];
+    (*(float *)((char *)arg0 + 0x40)) = y;
+    ((unsigned int *)((char *)arg0 + 0x18))[0]=w0;
+    (*(float *)((char *)arg0 + 0x44)) = z;
+    ((unsigned int *)((char *)arg0 + 0x18))[1]=w1; ((unsigned int *)((char *)arg0 + 0x18))[2]=w2;
+    ((unsigned int *)((char *)arg0 + 0x18))[3]=w3; ((unsigned int *)((char *)arg0 + 0x18))[4]=w4;
+    ((unsigned int *)((char *)arg0 + 0x18))[5]=w5; ((unsigned int *)((char *)arg0 + 0x18))[6]=w6;
+    ((unsigned int *)((char *)arg0 + 0x18))[7]=w7; ((unsigned int *)((char *)arg0 + 0x18))[8]=w8;
     angles.x = lbl_80562F1C; angles.y = lbl_80562F1C; angles.z = *(float *)((char *)arg1 + 0x2c);
     fn_80015A20(matrix, (float *)&angles);
     fn_80015B20((char *)arg0 + 0x18, matrix, (char *)arg0 + 0x18);
