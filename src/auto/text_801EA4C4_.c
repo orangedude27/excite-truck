@@ -4,13 +4,6 @@
 typedef int s32;
 typedef unsigned char u8;
 typedef float f32;
-#define COPY_BYTES2(dst, di, src, si) \
-    { \
-        u8 _b0 = (src)[si]; \
-        u8 _b1 = (src)[(si) + 1]; \
-        (dst)[di] = _b0; \
-        (dst)[(di) + 1] = _b1; \
-    }
 extern s32 lbl_8055EB78;
 extern s32 lbl_8055EB7C;
 extern char lbl_80339E08[];
