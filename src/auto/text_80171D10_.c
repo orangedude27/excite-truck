@@ -60,7 +60,7 @@ int fn_80171D38(int arg0) {
     return result;
 }
 
-void fn_80171D94(void) {
+void fn_80171D94(int unused) {
     void *r = fn_8017960C();
     int i = 0;
     do {
