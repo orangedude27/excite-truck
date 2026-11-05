@@ -73,6 +73,7 @@ int fn_80171DE4(void *arg0) {
 
 #pragma push
 #pragma processor 750
+#pragma dont_inline on
 int fn_80171E3C(void *arg0) {
     extern int fn_802B04D4(float *);
     extern int fn_80139EC4(int, float, float);
@@ -1254,6 +1255,102 @@ int fn_801742FC(void *arg0) {
 
 int fn_80174314(void) {
     return 8;
+}
+
+void fn_8017431C(int arg0, int arg1) {
+    extern int fn_802B04D4(float *);
+    extern float fn_801DCF48(void *, float, float);
+    extern void fn_8018AF04();
+    extern void fn_801E9DC4(short *);
+    extern void fn_801B7C8C(void *, void *, float *);
+    extern void PSVECNormalize(float *, float *);
+    extern float lbl_80561A44, lbl_80561A74, lbl_80561AB0, lbl_80561AC4, lbl_80561ACC, lbl_80561AD0, lbl_80561AD4;
+    Fn8017431CCam cam;
+    int zero;
+    short mark;
+    float *p;
+    float sp38[2];
+    float tgt[3];
+    float sp20[2];
+    float sp28[2];
+    float sp30[2];
+    float sp8[2];
+    Fn8017431CPair pair;
+    char *obj;
+    int inside;
+    float *m;
+    float dx, dz, dist;
+    if (*(unsigned char *)(arg0 + arg1 * 0x1C + 0x90) != 0) {
+        obj = (char *)fn_8017960C(arg1);
+        fn_8018AF04();
+        mark = -1;
+        fn_801E9DC4(&mark);
+        zero = 0;
+        p = (float *)(obj + 0x60);
+        m = (float *)(obj + 0x3C);
+        cam.m[0] = m[0]; cam.m[1] = m[1]; cam.m[2] = m[2]; cam.m[3] = m[3];
+        cam.m[4] = m[4]; cam.m[5] = m[5]; cam.m[6] = m[6]; cam.m[7] = m[7];
+        cam.m[8] = m[8]; cam.m[9] = m[9]; cam.m[10] = m[10]; cam.m[11] = m[11];
+        cam.v[0] = lbl_80561A44;
+        cam.v[1] = lbl_80561A44;
+        cam.v[2] = lbl_80561A44;
+        sp38[0] = p[0];
+        sp38[1] = p[2];
+        if (fn_802B04D4(p) != 0 || fn_80171E3C(sp38) == 0) {
+            sp8[0] = p[0];
+            sp8[1] = p[2];
+            pair.ull = fn_80171FF0(sp8, 99, lbl_80561AC4, lbl_80561AC8);
+            tgt[1] = lbl_80561A44;
+            tgt[0] = pair.f[0];
+            tgt[2] = pair.f[1];
+            tgt[1] = fn_801DCF48(0, tgt[0], tgt[2]);
+            inside = 0;
+            if (fn_802B04D4(p) != 0 && fn_80171DE4(sp38) == 0) inside = 1;
+            if (inside != 0) {
+                float k = lbl_80561A40 / lbl_80561A74;
+                float ax = (tgt[0] - p[0]) * k;
+                float ay = (tgt[1] - p[1]) * k;
+                float az = (tgt[2] - p[2]) * k;
+                cam.m[9] = p[0];
+                cam.m[10] = p[1];
+                cam.m[11] = p[2];
+                cam.m[4] = lbl_80561A44; cam.m[5] = lbl_80561A40; cam.m[6] = lbl_80561A44;
+                cam.m[7] = ax; cam.m[8] = lbl_80561A44; cam.m[9] = az;
+                PSVECNormalize(&cam.m[7], &cam.m[7]);
+                cam.m[0] = cam.m[9];
+                cam.m[1] = lbl_80561A44;
+                cam.m[2] = -cam.m[7];
+                cam.v[0] = ax;
+                cam.v[1] = ay + lbl_80561ACC * lbl_80561A74;
+                cam.v[2] = az;
+            } else {
+                dx = tgt[0] - sp38[0];
+                dz = tgt[2] - sp38[1];
+                sp30[0] = tgt[0]; sp30[1] = tgt[2];
+                sp28[0] = dx; sp28[1] = dz;
+                dist = (float)fn_8002F234(dx * dx + dz * dz);
+                if (lbl_80561AD0 > dist) dist = lbl_80561AD0;
+                dist = lbl_80561A40 / dist;
+                sp28[0] = sp28[0] * dist;
+                sp28[1] = sp28[1] * dist;
+                fn_801B7C8C(&cam, sp30, sp28);
+                cam.m[11] = cam.m[11] + lbl_80561A3C;
+                cam.v[0] = cam.m[7] * lbl_80561AD4;
+                cam.v[1] = cam.m[8] * lbl_80561AD4;
+                cam.v[2] = cam.m[9] * lbl_80561AD4;
+            }
+        } else if (*(float *)(obj + 0x4C) < lbl_80561AB0) {
+            sp20[0] = *(float *)(obj + 0x54);
+            sp20[1] = *(float *)(obj + 0x5C);
+            dist = (float)fn_8002F234(sp20[0] * sp20[0] + sp20[1] * sp20[1]);
+            if (lbl_80561AD0 > dist) dist = lbl_80561AD0;
+            dist = lbl_80561A40 / dist;
+            sp20[0] = sp20[0] * dist;
+            sp20[1] = sp20[1] * dist;
+            fn_801B7C8C(&cam, sp38, sp20);
+        }
+        (*(void (**)(void *, void *))(*(char **)obj + 0x54))(obj, &cam);
+    }
 }
 
 #pragma push
