@@ -235,6 +235,10 @@ check:
 }
 
 extern f32 lbl_80561B80, lbl_80561B84, lbl_80561B88, lbl_80561B8C;
+extern f32 lbl_80561B98, lbl_80561B9C;
+extern f32 lbl_80558DC4[];
+extern f64 fn_8002EFA8(f64);
+extern f32 fn_8002F234(void *, int, int, f32, f32, f32, f32, f32, f32, f32);
 extern f64 lbl_80561B90;
 extern f32 PSVECMag(f32 *);
 extern f64 sin(f64);
