@@ -426,25 +426,23 @@ void fn_80230C9C(float *arg0, float *arg1, float farg0, float farg1, float farg2
 
 void fn_80230DA0(void) {}
 
-#pragma paired off
-#pragma paired_single off
-#pragma dont_inline on
+#pragma push
+#pragma processor 750
 void fn_80230DA4(float a, float b) {
-    register float value;
-    register float end;
-
-    end = b;
+    float value;
+    float rounded;
     lbl_8055F030 = a;
     value = (float)fn_8002EFB4();
     if (value < lbl_80563614)
-        value = value + end;
-    lbl_8055F02C = end - value;
+        value = value + b;
+    rounded = (float)(double)value;
+    lbl_8055F02C = b - rounded;
 }
-#pragma dont_inline reset
-#pragma paired_single reset
-#pragma paired reset
+#pragma pop
 
 #pragma dont_inline on
+#pragma push
+#pragma processor 750
 float fn_80230DF4(float a, float b) {
     float value = (float)fn_8002EFB4(a + lbl_8055F02C);
     if (value < lbl_80563614) value += b;
