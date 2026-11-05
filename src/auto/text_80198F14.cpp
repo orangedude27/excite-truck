@@ -3925,6 +3925,11 @@ extern "C" void fn_801A4780(s32*, s32);
 extern "C" void fn_801A4798(s32*, s32);
 extern "C" void fn_801A47B0(s32*, s32);
 extern "C" void* fn_801A4B5C(void*, s32, void*);
+static inline void Swap4(u8* q) {
+    u8 t;
+    t = q[0]; q[0] = q[3]; q[3] = t;
+    t = q[1]; q[1] = q[2]; q[2] = t;
+}
 extern "C" void fn_801A4538(void*);
 extern "C" void* fn_801A4548(s32 arg0) {
     s32 size;
@@ -4133,6 +4138,73 @@ extern "C" void fn_801A4A8C(void* arg0, s32 arg1, s32 arg2, void* arg3, u32* arg
 
     ((VTable2C*)arg3)->Call(arg0, arg2, (s32)arg3);
     fn_801A48E4(arg0);
+}
+
+extern "C" void* fn_801A4B5C(void* arg0, s32 arg1, void* arg2) {
+    u8* p = (u8*)arg0;
+    s32 magic;
+    *(void**)arg0 = lbl_803336F8;
+    if (arg1) {
+        u8 t;
+        u8* q = p + 4;
+        s32 i;
+        u8 a0 = p[0x34], a3 = p[0x37], a1 = p[0x35], a2 = p[0x36];
+        u8 b0 = p[0x38], b3 = p[0x3B], b1 = p[0x39], b2 = p[0x3A];
+        p[0x34] = a3; p[0x37] = a0;
+        p[0x35] = a2; p[0x36] = a1;
+        p[0x38] = b3; p[0x3B] = b0;
+        p[0x39] = b2; p[0x3A] = b1;
+        for (i = 0; i < 2; i++) {
+            t = q[0]; q[0] = q[3]; q[3] = t;
+            t = q[1]; q[1] = q[2]; q[2] = t;
+            t = q[4]; q[4] = q[7]; q[7] = t;
+            t = q[5]; q[5] = q[6]; q[6] = t;
+            t = q[8]; q[8] = q[0xB]; q[0xB] = t;
+            t = q[9]; q[9] = q[0xA]; q[0xA] = t;
+            t = q[0xC]; q[0xC] = q[0xF]; q[0xF] = t;
+            t = q[0xD]; q[0xD] = q[0xE]; q[0xE] = t;
+            t = q[0x10]; q[0x10] = q[0x13]; q[0x13] = t;
+            t = q[0x11]; q[0x11] = q[0x12]; q[0x12] = t;
+            t = q[0x14]; q[0x14] = q[0x17]; q[0x17] = t;
+            t = q[0x15]; q[0x15] = q[0x16]; q[0x16] = t;
+            q += 0x18;
+        }
+    }
+    *(s32*)(p + 0x48) = 0;
+    magic = *(s32*)((u8*)arg2 + 0x18);
+    if (arg1) {
+        u8* m = (u8*)&magic;
+        u8 t;
+        t = m[0]; m[0] = m[3]; m[3] = t;
+        t = m[1]; m[1] = m[2]; m[2] = t;
+    }
+    switch (magic) {
+    case 0x424F5820:
+        if (arg2) arg2 = ((void* (*)(void*, void*, s32))fn_801A1CE4)(arg2, arg0, arg1);
+        *(void**)(p + 0x3C) = arg2;
+        break;
+    case 0x53504852:
+        if (arg2) arg2 = ((void* (*)(void*, void*, s32))fn_8019EDB8)(arg2, arg0, arg1);
+        *(void**)(p + 0x3C) = arg2;
+        break;
+    case 0x54554245:
+        if (arg2) arg2 = ((void* (*)(void*, void*, s32))fn_801A1898)(arg2, arg0, arg1);
+        *(void**)(p + 0x3C) = arg2;
+        break;
+    case 0x52494E47:
+        if (arg2) arg2 = ((void* (*)(void*, void*, s32))fn_801A2CC0)(arg2, arg0, arg1);
+        *(void**)(p + 0x3C) = arg2;
+        break;
+    case 0x504D5348:
+        if (arg2) arg2 = ((void* (*)(void*, void*, s32))fn_801A3F5C)(arg2, arg0, arg1);
+        *(void**)(p + 0x3C) = arg2;
+        break;
+    default:
+        *(void**)(p + 0x3C) = 0;
+        break;
+    }
+    fn_801A48E4(arg0);
+    return arg0;
 }
 
 #pragma push
