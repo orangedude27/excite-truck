@@ -3270,7 +3270,12 @@ extern "C" void fn_8015DC98(Unk801577F0* arg0) {
     fn_802E30C8(base + 0xF60, sumA, sumA - sumB, total);
 }
 #pragma pop
-extern "C" s32 lbl_8055A06C[];
+extern "C" s32 lbl_8055A06C[1];
+static inline f32 fn8015DD9CSumFloat(Unk801577F0* arg0) {
+ f32 total=lbl_80561754;
+ for(s32 i=0;i<arg0->mCount;i++) total+=*(f32*)(arg0->mData+i*0x38+12);
+ return total;
+}
 static inline s32 fn8015DD9CSumInt(Unk801577F0* arg0) {
  s32 sum=0;
  for(s32 i=0;i<arg0->mCount;i++) sum+=*(s32*)(arg0->mData+i*0x38+4);
@@ -3289,9 +3294,7 @@ extern "C" void fn_8015DD9C(Unk801577F0* arg0, void* arg1) {
  virtual void v6(s32); virtual void v7(); virtual void v8(s32);
  };
  struct Provider { virtual void v0(); virtual Adaptor* v1(); };
- s32 i;
- s32 sum=0;
- for(i=0;i<arg0->mCount;i++) sum+=*(s32*)(arg0->mData+i*0x38+4);
+ s32 sum=fn8015DD9CSumInt(arg0);
  Adaptor* a=((Provider*)arg1)->v1();
  Obj* obj=(Obj*)arg0;
  if(a) {
@@ -3299,7 +3302,7 @@ extern "C" void fn_8015DD9C(Unk801577F0* arg0, void* arg1) {
  a->v2((s32)lbl_8055A06C,sum);
  a->v6(obj->v29());
  f32 total=lbl_80561754;
- for(i=0;i<arg0->mCount;i++) total+=*(f32*)(arg0->mData+i*0x38+12);
+ for(s32 i=0;i<arg0->mCount;i++) total+=*(f32*)(arg0->mData+i*0x38+12);
  s32 value=(s32)total;
  char buf[16];
  a->v3((s32)lbl_8055A058,fn_8023139C(buf,16,value));
