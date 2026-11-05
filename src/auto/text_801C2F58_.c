@@ -5,6 +5,9 @@ extern f32 lbl_8055E860;
 extern f32 lbl_805629B4;
 extern char lbl_8055AA4C[6];
 extern char lbl_80336B00[];
+extern f32 lbl_805629D4;
+extern s32 lbl_80562954, lbl_80562958, lbl_8056295C, lbl_80562960;
+__declspec(section ".sdata") extern char lbl_8055AB00[], lbl_8055AB08[];
 extern void fn_801C8420(void);
 extern void fn_801C6D94(void);
 extern void fn_801C6E40(void);
@@ -1312,7 +1315,7 @@ void fn_801C7C04(void) {
     extern double fn_8002EFB0(f32, f32);
     char *base = (char *)&lbl_80437D88;
     char *obj;
-    f32 *start = (f32 *)(base + 0x6F8), *mid = (f32 *)(base + 0x704), *end = (f32 *)(base + 0x710);
+    Vec *start = (Vec *)(base + 0x6F8), *mid = (Vec *)(base + 0x704), *end = (Vec *)(base + 0x710);
     f32 a[2], b[2], c[2], d[2], e[2], f[2], g[2], h[2], i[2];
     f32 *p, *q;
     f32 x, y, len, scale;
@@ -1329,17 +1332,17 @@ void fn_801C7C04(void) {
     switch (*(s32 *)(obj + 0x210)) {
     case 2:
         *(f32 *)(obj + 0x220) = lbl_80562970;
-        b[1] = end[2]; b[0] = end[0];
+        b[1] = end->z; b[0] = end->x;
         *(f32 *)(obj + 0x218) = b[0]; *(f32 *)(obj + 0x21C) = b[1];
         break;
     case 0:
-        c[0] = start[0]; c[1] = start[2];
+        c[0] = start->x; c[1] = start->z;
         *(f32 *)(obj + 0x218) = c[0]; *(f32 *)(obj + 0x21C) = c[1];
-        d[0] = end[0]; d[1] = end[2];
+        d[0] = end->x; d[1] = end->z;
         *(f32 *)(obj + 0x224) = d[0] - *(f32 *)(obj + 0x218);
         *(f32 *)(obj + 0x228) = d[1] - *(f32 *)(obj + 0x21C);
-        f[1] = start[2]; e[1] = mid[2];
-        f[0] = start[0]; e[0] = mid[0];
+        f[1] = start->z; e[1] = mid->z;
+        f[0] = start->x; e[0] = mid->x;
         a[0] = e[0] - f[0]; a[1] = e[1] - f[1];
         g[0] = lbl_80562970; g[1] = lbl_8056296C;
         q = g; p = a;
@@ -1361,7 +1364,7 @@ void fn_801C7C04(void) {
         fn_802E317C(lbl_80336F4C);
         break;
     }
-    sprintf(base + 0x238, lbl_80336F88, start[0], start[2], *(f32 *)obj);
+    sprintf(base + 0x238, lbl_80336F88, *(f32 *)(base+0x6F8), *(f32 *)(base+0x700), *(f32 *)obj);
     fn_801C7BA0();
     qsort((void *)lbl_8055E7F8, lbl_8055E7F0, 0x30C, (int (*)(const void *, const void *))fn_801C3B7C);
 }
