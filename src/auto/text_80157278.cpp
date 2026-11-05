@@ -1851,7 +1851,6 @@ extern "C" f32 lbl_805617B4, lbl_805617B8, lbl_805617BC;
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling on
-#pragma opt_propagation off
 extern "C" f32 fn_8015A8D8(void* a, void* arg1) {
     u8* p = (u8*)a;
     s32 end;
