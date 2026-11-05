@@ -1,4 +1,5 @@
 #include <stdarg.h>
+typedef struct { float pos[3]; int w; float a, b; } Elem_801720FC;
 extern float PSQUATMultiply(void *, void *);
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
