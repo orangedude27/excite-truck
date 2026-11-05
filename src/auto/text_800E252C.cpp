@@ -154,8 +154,13 @@ struct PauseFields {
 static inline float PauseRamp(PauseFields *s) {
     int total = s->total;
     int elapsed = s->elapsed;
-    if (elapsed >= total) return s->end;
-    return s->start + (float)elapsed * (s->end - s->start) / (float)total;
+    float r;
+    if (elapsed >= total) {
+        r = s->end;
+    } else {
+        r = s->start + (float)elapsed * (s->end - s->start) / (float)total;
+    }
+    return r;
 }
 #pragma always_inline reset
 // Vtable dispatcher class for indirect virtual calls (MWCC ABI: 2 leading dtor slots).
