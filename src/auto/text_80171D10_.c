@@ -1,5 +1,7 @@
 #include <stdarg.h>
 typedef struct { float pos[3]; int w; float a, b; } Elem_801720FC;
+typedef struct { float m[12]; float v[3]; } Fn8017431CCam;
+typedef union { unsigned long long ull; float f[2]; } Fn8017431CPair;
 extern float PSQUATMultiply(void *, void *);
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
@@ -162,6 +164,8 @@ unsigned int fn_801720E0(unsigned int arg0) {
 }
 #pragma dont_inline reset
 
+#pragma push
+#pragma processor 750
 void fn_801720FC(float *arg0, int arg1, float arg2) {
     extern float PSVECMag(float *);
     extern float lbl_8055E3A8;
@@ -178,7 +182,7 @@ void fn_801720FC(float *arg0, int arg1, float arg2) {
         float v1[3];
         Elem_801720FC e[5];
     } L;
-    float scale = lbl_80561A4C * arg2;
+    float scale;
     float mag;
     float k;
     int r;
@@ -193,6 +197,7 @@ void fn_801720FC(float *arg0, int arg1, float arg2) {
     L.v3[0] = lbl_80561A44;
     L.v3[1] = lbl_80561A44;
     L.v3[2] = lbl_80561A40;
+    scale = lbl_80561A4C * arg2;
     mag = PSVECMag(L.v1);
     if (!((float)__fabs(mag) <= lbl_80558DC4[0])) {
         k = -arg2 / mag;
@@ -257,7 +262,7 @@ void fn_801720FC(float *arg0, int arg1, float arg2) {
     fn_802C8DB8(L.e, 5, L.s, 6);
     fn_802C8D74();
 }
-
+#pragma pop
 extern void *fn_802C86DC(void);
 extern double fn_8002EFB4(float, double);
 extern float lbl_80561A44, lbl_80561A68, lbl_80561A6C;
@@ -865,7 +870,7 @@ void fn_8017353C(unsigned char *arg0, void *arg_sp0) {
     int temp_r7_2;
     int temp_r8;
     int temp_r9;
-    register int var_ctr;
+    int var_ctr;
     int var_r24;
     int var_r6;
     int var_r6_2;
