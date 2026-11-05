@@ -1076,39 +1076,44 @@ extern "C" u8 GetWidth__Q46nw4hbm2ut6detail11ResFontBaseCFv_8010BD8C(void* self)
 
 #pragma pop
 
-u16 FindGlyphIndex__Q46nw4hbm2ut6detail11ResFontBaseCFPCQ36nw4hbm2ut11FontCodeMapUs(void *self, const void *mapArg, u16 code) {
-    const u16 *map=(const u16 *)mapArg;
+extern "C" u16 FindGlyphIndex__Q46nw4hbm2ut6detail11ResFontBaseCFPCQ36nw4hbm2ut11FontCodeMapUs(void *self, void *mapArg, u16 code) {
     const char *base=lbl_80329140;
-    unsigned int top=(unsigned int)self&0xFF000000U;
-    int r5=1,r6=1,r7=1,r8=1,r9=1,r10=1;
-    if((unsigned int)(top+0x80000000U)!=0U&&(unsigned int)(((unsigned int)self&0xFF800000U)+0x7F000000U)!=0U)r10=0;
-    if(r10==0&&(unsigned int)(((unsigned int)self&0xF8000000U)+0x70000000U)!=0U)r9=0;
-    if(r9==0&&(unsigned int)(top+0x40000000U)!=0U)r8=0;
-    if(r8==0&&(unsigned int)(((unsigned int)self&0xFF800000U)+0x3F000000U)!=0U)r7=0;
-    if(r7==0&&(unsigned int)(((unsigned int)self&0xF8000000U)+0x30000000U)!=0U)r6=0;
-    if(r6==0&&(unsigned int)(((unsigned int)self&0xFFFFC000U)+0x20000000U)!=0U)r5=0;
-    if(r5==0)Panic__Q26nw4hbm2dbFPCciPCce(base+0xC,0x21B,base+0xF0,self);
-    top=(unsigned int)map&0xFF000000U;
-    int r4=1;r5=1;r6=1;r7=1;r8=1;r9=1;
-    if((unsigned int)(top+0x80000000U)!=0U&&(unsigned int)(((unsigned int)map&0xFF800000U)+0x7F000000U)!=0U)r9=0;
-    if(r9==0&&(unsigned int)(((unsigned int)map&0xF8000000U)+0x70000000U)!=0U)r8=0;
-    if(r8==0&&(unsigned int)(top+0x40000000U)!=0U)r7=0;
-    if(r7==0&&(unsigned int)(((unsigned int)map&0xFF800000U)+0x3F000000U)!=0U)r6=0;
-    if(r6==0&&(unsigned int)(((unsigned int)map&0xF8000000U)+0x30000000U)!=0U)r5=0;
-    if(r5==0&&(unsigned int)(((unsigned int)map&0xFFFFC000U)+0x20000000U)!=0U)r4=0;
-    if(r4==0)Panic__Q26nw4hbm2dbFPCciPCce(base+0xC,0x21C,base+0x21C,map);
+    u32 value=(u32)self;
+    int a=1,b=1,c=1,d=1,e=1,f=1;
+    u32 t=value&0xFF000000U;
+    if(t!=0x80000000U&&(value&0xFF800000U)!=0x81000000U)f=0;
+    if(f==0&&(value&0xF8000000U)!=0x90000000U)e=0;
+    if(e==0&&t!=0xC0000000U)d=0;
+    if(d==0&&(value&0xFF800000U)!=0xC1000000U)c=0;
+    if(c==0&&(value&0xF8000000U)!=0xD0000000U)b=0;
+    if(b==0&&(value&0xFFFFC000U)!=0xE0000000U)a=0;
+    if(a==0)Panic__Q26nw4hbm2dbFPCciPCce(base+0xC,0x21B,base+0xF0,self);
+    u32 v=(u32)mapArg;
+    int g=1,h=1,i=1,j=1,k=1,l=1;
+    u32 t2=v&0xFF000000U;
+    if(t2!=0x80000000U&&(v&0xFF800000U)!=0x81000000U)l=0;
+    if(l==0&&(v&0xF8000000U)!=0x90000000U)k=0;
+    if(k==0&&t2!=0xC0000000U)j=0;
+    if(j==0&&(v&0xFF800000U)!=0xC1000000U)i=0;
+    if(i==0&&(v&0xF8000000U)!=0xD0000000U)h=0;
+    if(h==0&&(v&0xFFFFC000U)!=0xE0000000U)g=0;
+    if(g==0)Panic__Q26nw4hbm2dbFPCciPCce(base+0xC,0x21C,base+0x21C,mapArg);
+    const u16 *map=(const u16 *)mapArg;
     u16 result=0xFFFF;
     switch(map[2]) {
-    case 0: result=(u16)(map[6]+(u16)(code-map[0])); break;
-    case 1: result=map[6+(u16)(code-map[0])]; break;
+    case 0: result=(u16)(map[6]+(code-map[0])); break;
+    case 1: result=*(const u16 *)((const char *)(map+(code-map[0]))+0xC); break;
     case 2: {
-        const u16 *low=map+7;
-        const u16 *high=map+6+map[6]*2;
+        struct Ent { u16 key; u16 idx; };
+        struct Info { u16 n; Ent pairs[1]; };
+        const Info *mi=(const Info *)(map+6);
+        const Ent *low=&mi->pairs[0];
+        const Ent *high=&mi->pairs[mi->n-1];
         while(low<=high) {
-            const u16 *mid=low+(((high-low)/4+(((high-low)/4)>>31))&~1);
-            if(mid[0]<code) low=mid+2;
-            else if(code<mid[0]) high=mid-2;
-            else {result=mid[1];break;}
+            const Ent *mid=low+(high-low)/2;
+            if(mid->key<code) low=mid+1;
+            else if(code<mid->key) high=mid-1;
+            else {result=mid->idx;break;}
         }
         break;
     }
