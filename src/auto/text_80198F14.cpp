@@ -3314,32 +3314,58 @@ static inline void MtxMulVecInl(const f32 *m, const f32 *src, f32 *dst) {
         dst[2] = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
     }
 }
+static inline void MtxMulVecInl(const f32 *m, const f32 *src, const f32 *srcCmp, f32 *dst) {
+    if (srcCmp == dst) {
+        f32 x = src[0], y = src[1], z = src[2];
+        dst[0] = z * m[6] + (x * m[0] + y * m[3]);
+        dst[1] = z * m[7] + (x * m[1] + y * m[4]);
+        dst[2] = z * m[8] + (x * m[2] + y * m[5]);
+    } else {
+        dst[0] = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
+        dst[1] = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
+        dst[2] = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
+    }
+}
 #pragma always_inline reset
 extern "C" void fn_801A2EC8(void) {
 
 }
 
-void fn_801A2ECC(void *obj, void *min, void *max) {
-    float a = *(float *)((char *)obj + 0x24);
-    float b = *(float *)((char *)obj + 0x28);
-    float c = a + b;
-    float x[8] = {-c,-c,-c,-c,c,c,c,c};
-    float y[8] = {-c,-c,-c,c,c,c,-c,b};
-    float z[8] = {-b,-b,c,c,c,c,c,b};
-    float *m = *(float **)((char *)obj + 12);
-    float *lo = (float *)min;
-    float *hi = (float *)max;
-    lo[0]=hi[0]=m[9]; lo[1]=hi[1]=m[10]; lo[2]=hi[2]=m[11];
-    for (int i=0;i<8;i++) {
-        float px = x[i]*m[0] + y[i]*m[3] + z[i]*m[6] + m[9];
-        float py = x[i]*m[1] + y[i]*m[4] + z[i]*m[7] + m[10];
-        float pz = x[i]*m[2] + y[i]*m[5] + z[i]*m[8] + m[11];
-        if (lo[0] < px) lo[0]=px;
-        if (lo[1] < py) lo[1]=py;
-        if (lo[2] < pz) lo[2]=pz;
-        if (hi[0] > px) hi[0]=px;
-        if (hi[1] > py) hi[1]=py;
-        if (hi[2] > pz) hi[2]=pz;
+extern "C" void fn_801A2ECC(void *arg0, void *arg1, void *arg2) {
+    f32 corners[24];
+    f32 tmp[3];
+    f32 *lo = (f32 *)arg1;
+    f32 *hi = (f32 *)arg2;
+    f32 b = *(f32 *)((u8 *)arg0 + 0x28);
+    f32 c = *(f32 *)((u8 *)arg0 + 0x24) + b;
+    f32 nb = -b;
+    f32 nc = -c;
+    const f32 *m = *(const f32 **)((u8 *)arg0 + 0xC);
+    f32 *p;
+    int i;
+    corners[0] = nc; corners[1] = nc; corners[2] = nb;
+    corners[3] = nc; corners[4] = nc; corners[5] = b;
+    corners[6] = nc; corners[7] = c; corners[8] = nb;
+    corners[9] = nc; corners[10] = c; corners[11] = b;
+    corners[12] = c; corners[13] = nc; corners[14] = nb;
+    corners[15] = c; corners[16] = nc; corners[17] = b;
+    corners[18] = c; corners[19] = c; corners[20] = nb;
+    corners[21] = c; corners[22] = c; corners[23] = b;
+    lo[0] = m[9]; lo[1] = m[10]; lo[2] = m[11];
+    hi[0] = m[9]; hi[1] = m[10]; hi[2] = m[11];
+    p = corners;
+    for (i = 0; i < 8; i++, p += 3) {
+        m = *(const f32 **)((u8 *)arg0 + 0xC);
+        MtxMulVecInl(m, p, tmp);
+        tmp[0] = tmp[0] + m[9];
+        tmp[1] = tmp[1] + m[10];
+        tmp[2] = tmp[2] + m[11];
+        lo[0] = (lo[0] < tmp[0]) ? lo[0] : tmp[0];
+        lo[1] = (lo[1] < tmp[1]) ? lo[1] : tmp[1];
+        lo[2] = (lo[2] < tmp[2]) ? lo[2] : tmp[2];
+        hi[0] = (hi[0] > tmp[0]) ? hi[0] : tmp[0];
+        hi[1] = (hi[1] > tmp[1]) ? hi[1] : tmp[1];
+        hi[2] = (hi[2] > tmp[2]) ? hi[2] : tmp[2];
     }
 }
 
