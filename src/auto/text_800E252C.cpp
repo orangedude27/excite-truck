@@ -3216,6 +3216,13 @@ struct PauseFields {
     unsigned char fading;   // 0x68
 };
 
+static inline float PauseRamp(PauseFields *s) {
+    int total = s->total;
+    int elapsed = s->elapsed;
+    if (elapsed >= total) return s->end;
+    return s->start + (float)elapsed * (s->end - s->start) / (float)total;
+}
+
 typedef void (*vfn0_t)(void*);
 extern "C" void fn_800E9070(VfObj *this_) {
     VfObj *first = this_->vf23();
