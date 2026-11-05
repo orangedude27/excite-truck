@@ -297,9 +297,8 @@ check:
 #pragma dont_inline off
 
 int fn_8022DC68(void *arg0, int arg1) {
-    int saved;
+    int saved = *(int *)((char *)arg0 + 0xC);
     int value;
-    saved = *(int *)((char *)arg0 + 0xC);
     fn_8022DC40(arg0, arg1);
     value = fn_8022DBD4(arg0);
     fn_8022DC40(arg0, saved);
