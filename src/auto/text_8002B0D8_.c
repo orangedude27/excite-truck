@@ -488,35 +488,35 @@ int __ieee754_rem_pio2(double x, double *y)
 	    {y[0] = x; y[1] = lbl_805608F8; return 0;}
 	if(ix<0x4002d97c) {  /* |x| < 3pi/4, special case with n=+-1 */
 	    if(hx>0) { 
-		z = x - lbl_80560900;
+		z = x - lbl_80560900; *(volatile double *)&z = z;
 		if(ix!=0x3ff921fb) { 	/* 33+53 bit pi is good enough */
 		    y[0] = z - lbl_80560908;
 		    y[1] = (z-y[0])-lbl_80560908;
 		} else {		/* near pi/2, use 33+33+53 bit pi */
-		    z -= lbl_80560910;
+		    z -= lbl_80560910; *(volatile double *)&z = z;
 		    y[0] = z - lbl_80560918;
 		    y[1] = (z-y[0])-lbl_80560918;
 		}
 		return 1;
 	    } else {	/* negative x */
-		z = x + lbl_80560900;
+		z = lbl_80560900 + x; *(volatile double *)&z = z;
 		if(ix!=0x3ff921fb) { 	/* 33+53 bit pi is good enough */
-		    y[0] = z + lbl_80560908;
+		    y[0] = lbl_80560908 + z;
 		    y[1] = (z-y[0])+lbl_80560908;
 		} else {		/* near pi/2, use 33+33+53 bit pi */
-		    z += lbl_80560910;
-		    y[0] = z + lbl_80560918;
+		    z += lbl_80560910; *(volatile double *)&z = z;
+		    y[0] = lbl_80560918 + z;
 		    y[1] = (z-y[0])+lbl_80560918;
 		}
 		return -1;
 	    }
 	}
 	if(ix<=0x413921fb) { /* |x| ~<= 2^19*(pi/2), medium size */
-	    t  = fabs(x);
-	    n  = (int) (t*lbl_80560928+lbl_80560920);
+	    t  = __fabs(x);
+	    n  = (int) (lbl_80560920+lbl_80560928*t);
 	    fn = (double)n;
-	    r  = t-fn*lbl_80560900;
-	    w  = fn*lbl_80560908;	/* 1st round good to 85 bit */
+	    r  = t-lbl_80560900*fn;
+	    w  = lbl_80560908*fn;	/* 1st round good to 85 bit */
 	    if(n<32&&ix!=lbl_802EE610[n-1]) {	
 		y[0] = r-w;	/* quick check no cancellation */
 	    } else {
@@ -525,16 +525,16 @@ int __ieee754_rem_pio2(double x, double *y)
 	        i = j-(((__HI(y[0]))>>20)&0x7ff);
 	        if(i>16) {  /* 2nd iteration needed, good to 118 */
 		    t  = r;
-		    w  = fn*lbl_80560910;	
+		    w  = lbl_80560910*fn;	
 		    r  = t-w;
-		    w  = fn*lbl_80560918-((t-r)-w);	
+		    w  = lbl_80560918*fn-((t-r)-w);	
 		    y[0] = r-w;
 		    i = j-(((__HI(y[0]))>>20)&0x7ff);
 		    if(i>49)  {	/* 3rd iteration need, 151 bits acc */
 		    	t  = r;	/* will cover all possible cases */
-		    	w  = fn*lbl_80560930;	
+		    	w  = lbl_80560930*fn;	
 		    	r  = t-w;
-		    	w  = fn*lbl_80560938-((t-r)-w);	
+		    	w  = lbl_80560938*fn-((t-r)-w);	
 		    	y[0] = r-w;
 		    }
 		}
@@ -557,7 +557,7 @@ int __ieee754_rem_pio2(double x, double *y)
 		tx[i] = (double)((int)(z));
 		z     = (z-tx[i])*lbl_80560940;
 	}
-	tx[2] = z;
+	*(volatile double *)&z = z; tx[2] = z;
 	nx = 3;
 	while(tx[nx-1]==lbl_805608F8) nx--;	/* skip lbl_805608F8 term */
 	n  =  __kernel_rem_pio2(tx,y,e0,nx,2,lbl_802EE508);
