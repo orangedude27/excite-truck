@@ -3924,7 +3924,7 @@ extern "C" void fn_801A4768(s32*, s32);
 extern "C" void fn_801A4780(s32*, s32);
 extern "C" void fn_801A4798(s32*, s32);
 extern "C" void fn_801A47B0(s32*, s32);
-extern "C" void fn_801A4B5C(s32);
+extern "C" void* fn_801A4B5C(void*, s32, void*);
 extern "C" void fn_801A4538(void*);
 extern "C" void* fn_801A4548(s32 arg0) {
     s32 size;
