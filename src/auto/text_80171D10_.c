@@ -156,13 +156,14 @@ unsigned long long fn_80171FF0(void *arg0, int arg1, float angle, float step) {
     return *(unsigned long long *)pos;
 }
 
+#pragma dont_inline on
 unsigned int fn_801720E0(unsigned int arg0) {
     return (arg0 & 0xFF000000) | ((arg0 & 0xFEFEFE) >> 1);
 }
+#pragma dont_inline reset
 
 void fn_801720FC(float *arg0, int arg1, float arg2) {
     extern float PSVECMag(float *);
-    extern float lbl_80558DC4[];
     extern float lbl_8055E3A8;
     extern float lbl_80561A40, lbl_80561A44, lbl_80561A4C, lbl_80561A50, lbl_80561A54, lbl_80561A58;
     extern double lbl_80561A60;
@@ -170,96 +171,90 @@ void fn_801720FC(float *arg0, int arg1, float arg2) {
     extern void fn_802C8BD0(int);
     extern void fn_802C8DB8(void *, int, void *, int);
     extern void fn_802C8D74(void);
-    float sp2C, sp30, sp34;
-    float sp14, sp18, sp1C;
-    float sp20, sp24, sp28;
-    float sp38, sp3C, sp40;
-    float sp50, sp54, sp58;
-    float sp68, sp6C, sp70;
-    float sp80, sp84, sp88;
-    float sp98, sp9C, spA0;
-    int sp44, sp5C, sp74, sp8C, spA4;
-    unsigned short sp8, spA, spC, spE, sp10, sp12;
-    float f1, f2, f3, f4;
+    struct {
+        unsigned short s[6];
+        float v2[3];
+        float v3[3];
+        float v1[3];
+        Elem_801720FC e[5];
+    } L;
+    float scale = lbl_80561A4C * arg2;
+    float mag;
+    float k;
+    int r;
     int i;
 
-    sp2C = lbl_80561A44;
-    sp30 = lbl_80561A50;
-    sp34 = lbl_80561A44;
-    sp14 = lbl_80561A40;
-    sp18 = lbl_80561A44;
-    sp1C = lbl_80561A44;
-    sp20 = lbl_80561A44;
-    sp24 = lbl_80561A44;
-    sp28 = lbl_80561A40;
-    f1 = PSVECMag(&sp2C);
-    f2 = __fabs(f1);
-    f2 = __frsp(f2);
-    if (f2 > lbl_80558DC4[0]) {
-        f4 = -arg2 / f1;
-        sp2C *= f4;
-        sp30 *= f4;
-        sp34 *= f4;
+    L.v1[0] = lbl_80561A44;
+    L.v1[1] = lbl_80561A50;
+    L.v1[2] = lbl_80561A44;
+    L.v2[0] = lbl_80561A40;
+    L.v2[1] = lbl_80561A44;
+    L.v2[2] = lbl_80561A44;
+    L.v3[0] = lbl_80561A44;
+    L.v3[1] = lbl_80561A44;
+    L.v3[2] = lbl_80561A40;
+    mag = PSVECMag(L.v1);
+    if (!((float)__fabs(mag) <= lbl_80558DC4[0])) {
+        k = -arg2 / mag;
+        L.v1[0] *= k;
+        L.v1[1] *= k;
+        L.v1[2] *= k;
     }
-    f1 = PSVECMag(&sp14);
-    f2 = __fabs(f1);
-    f2 = __frsp(f2);
-    if (f2 > lbl_80558DC4[0]) {
-        f4 = (lbl_80561A4C * arg2) * lbl_80561A54 / f1;
-        sp14 *= f4;
-        sp18 *= f4;
-        sp1C *= f4;
+    mag = PSVECMag(L.v2);
+    if (!((float)__fabs(mag) <= lbl_80558DC4[0])) {
+        k = scale * lbl_80561A54 / mag;
+        L.v2[0] *= k;
+        L.v2[1] *= k;
+        L.v2[2] *= k;
     }
-    f1 = PSVECMag(&sp20);
-    f2 = __fabs(f1);
-    f2 = __frsp(f2);
-    if (f2 > lbl_80558DC4[0]) {
-        f4 = (lbl_80561A4C * arg2) * lbl_80561A54 / f1;
-        sp20 *= f4;
-        sp24 *= f4;
-        sp28 *= f4;
+    mag = PSVECMag(L.v3);
+    if (!((float)__fabs(mag) <= lbl_80558DC4[0])) {
+        k = scale * lbl_80561A54 / mag;
+        L.v3[0] *= k;
+        L.v3[1] *= k;
+        L.v3[2] *= k;
     }
-    sp38 = lbl_80561A44;
-    sp3C = lbl_80561A44;
-    sp40 = lbl_80561A44;
-    sp50 = sp2C + sp14 * lbl_80561A50;
-    sp54 = sp30 + sp18 * lbl_80561A50;
-    sp58 = sp34 + sp1C * lbl_80561A50;
-    sp68 = sp2C + sp14 * lbl_80561A40;
-    sp6C = sp30 + sp18 * lbl_80561A40;
-    sp70 = sp34 + sp1C * lbl_80561A40;
-    sp80 = sp2C + sp20 * lbl_80561A50;
-    sp84 = sp30 + sp24 * lbl_80561A50;
-    sp88 = sp34 + sp28 * lbl_80561A50;
-    sp98 = sp2C + sp20 * lbl_80561A40;
-    sp9C = sp30 + sp24 * lbl_80561A40;
-    spA0 = sp34 + sp28 * lbl_80561A40;
-    sp44 = fn_801720E0(arg1);
+    L.e[0].pos[0] = lbl_80561A44;
+    L.e[0].pos[1] = lbl_80561A44;
+    L.e[0].pos[2] = lbl_80561A44;
+    L.e[1].pos[0] = L.v1[0] + L.v2[0] * lbl_80561A50;
+    L.e[1].pos[1] = L.v1[1] + L.v2[1] * lbl_80561A50;
+    L.e[1].pos[2] = L.v1[2] + L.v2[2] * lbl_80561A50;
+    L.e[2].pos[0] = L.v1[0] + L.v2[0] * lbl_80561A40;
+    L.e[2].pos[1] = L.v1[1] + L.v2[1] * lbl_80561A40;
+    L.e[2].pos[2] = L.v1[2] + L.v2[2] * lbl_80561A40;
+    L.e[3].pos[0] = L.v1[0] + L.v3[0] * lbl_80561A50;
+    L.e[3].pos[1] = L.v1[1] + L.v3[1] * lbl_80561A50;
+    L.e[3].pos[2] = L.v1[2] + L.v3[2] * lbl_80561A50;
+    L.e[4].pos[0] = L.v1[0] + L.v3[0] * lbl_80561A40;
+    L.e[4].pos[1] = L.v1[1] + L.v3[1] * lbl_80561A40;
+    L.e[4].pos[2] = L.v1[2] + L.v3[2] * lbl_80561A40;
+    r = fn_801720E0(arg1);
     for (i = 0; i < 5; i++) {
-        sp38 += arg0[0];
-        sp3C += arg0[1];
-        sp40 += arg0[2];
-        arg0 += 3;
-        sp38 = sp38;
-        sp3C = sp3C;
-        sp40 = sp40;
+        L.e[i].w = arg1;
+        L.e[i].a = lbl_80561A58 * (float)i;
+        L.e[i].b = lbl_80561A58 * (float)i;
+        L.e[i].pos[0] += arg0[0];
+        L.e[i].pos[1] += arg0[1];
+        L.e[i].pos[2] += arg0[2];
     }
-    sp8 = lbl_802F9520[0];
-    spA = lbl_802F9520[1];
-    spC = lbl_802F9520[2];
-    spE = lbl_802F9520[3];
-    sp10 = lbl_802F9520[4];
-    sp12 = lbl_802F9520[5];
+    L.e[0].w = r;
+    L.s[0] = lbl_802F9520[0];
+    L.s[1] = lbl_802F9520[1];
+    L.s[2] = lbl_802F9520[2];
+    L.s[3] = lbl_802F9520[3];
+    L.s[4] = lbl_802F9520[4];
+    L.s[5] = lbl_802F9520[5];
     fn_802C8BD0(lbl_8055E3A8);
-    fn_802C8DB8(&sp38, 5, &sp8, 6);
+    fn_802C8DB8(L.e, 5, L.s, 6);
     fn_802C8D74();
-    sp44 &= 0x3FFFFFFF;
-    sp5C &= 0x3FFFFFFF;
-    sp74 &= 0x3FFFFFFF;
-    sp8C &= 0x3FFFFFFF;
-    spA4 &= 0x3FFFFFFF;
+    L.e[0].w &= 0x3FFFFFFF;
+    L.e[1].w &= 0x3FFFFFFF;
+    L.e[2].w &= 0x3FFFFFFF;
+    L.e[3].w &= 0x3FFFFFFF;
+    L.e[4].w &= 0x3FFFFFFF;
     fn_802C8BD0(-1);
-    fn_802C8DB8(&sp38, 5, &sp8, 6);
+    fn_802C8DB8(L.e, 5, L.s, 6);
     fn_802C8D74();
 }
 
