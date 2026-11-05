@@ -19325,81 +19325,67 @@ void rfc_process_pn(void *arg0, s32 arg1, void *arg2) {
 
 void rfc_set_port_state(void *, void *);
 void rfc_process_rpn(void *mcb, s32 a1, void *a2, void *rpn) {
-    u8 state[9];
+    struct S9 { u8 b[9]; };
+    struct S9 state;
     u8 *port;
     u8 *p2;
     u8 ctrl;
     u16 bits;
-    u8 t0, t1;
 
     port = (u8 *)port_find_mcb_dlci_port(mcb, *(u8 *)rpn);
     if (port == NULL) {
         if (a1 == 0) return;
-        memset(state, 0, 9);
-        rfc_set_port_state(state, rpn);
-        PORT_PortNegInd(mcb, *(u8 *)rpn, state, *(u16 *)((u8 *)rpn + 0x12));
+        memset(&state, 0, 9);
+        rfc_set_port_state((u8 *)&state, rpn);
+        PORT_PortNegInd(mcb, *(u8 *)rpn, (u8 *)&state, *(u16 *)((u8 *)rpn + 0x12));
         return;
     }
     if (a1 != 0 && a2 != 0) {
-        t1 = port[0x52]; t0 = port[0x51]; state[0] = t0; state[1] = t1;
-        t1 = port[0x54]; t0 = port[0x53]; state[2] = t0; state[3] = t1;
-        t1 = port[0x56]; t0 = port[0x55]; state[4] = t0; state[5] = t1;
-        t1 = port[0x58]; t0 = port[0x57]; state[6] = t0; state[7] = t1;
-        state[8] = port[0x59];
+        state = *(struct S9 *)(port + 0x51);
         rfc_send_rpn(mcb, *(u8 *)rpn, 0, port + 0x51, 0);
         return;
     }
-    t1 = port[0x52]; t0 = port[0x51]; state[0] = t0; state[1] = t1;
-    t1 = port[0x54]; t0 = port[0x53]; state[2] = t0; state[3] = t1;
-    t1 = port[0x56]; t0 = port[0x55]; state[4] = t0; state[5] = t1;
-    t1 = port[0x58]; t0 = port[0x57]; state[6] = t0; state[7] = t1;
-    state[8] = port[0x59];
-    rfc_set_port_state(state, rpn);
+    state = *(struct S9 *)(port + 0x51);
+    rfc_set_port_state((u8 *)&state, rpn);
     if (a1 != 0) {
-        PORT_PortNegInd(mcb, *(u8 *)rpn, state, *(u16 *)((u8 *)rpn + 0x12));
+        PORT_PortNegInd(mcb, *(u8 *)rpn, (u8 *)&state, *(u16 *)((u8 *)rpn + 0x12));
         return;
     }
     p2 = (u8 *)port_find_mcb_dlci_port(mcb, *(u8 *)rpn);
-    if (p2 == NULL) return;
-    if (p2[0x69] & 6) {
-        rfc_port_timer_stop(p2);
-        ctrl = p2[0x69];
-        if (ctrl & 2) {
-            p2[0x69] = ctrl & ~2;
-            t1 = state[1]; t0 = state[0]; p2[0x51] = t0; p2[0x52] = t1;
-            t1 = state[3]; t0 = state[2]; p2[0x53] = t0; p2[0x54] = t1;
-            t1 = state[5]; t0 = state[4]; p2[0x55] = t0; p2[0x56] = t1;
-            t1 = state[7]; t0 = state[6]; p2[0x57] = t0; p2[0x58] = t1;
-            p2[0x59] = state[8];
-            if (state[5] == 0xC || state[5] == 0x30) {
-                *(u16 *)((u8 *)rpn + 0x12) = 0x3F7F;
-            } else {
-                p2[0x56] = 0xC;
-                p2[0x69] |= 4;
-                rfc_send_rpn(mcb, *(u8 *)rpn, 1, p2 + 0x51, 0xC00);
-                rfc_port_timer_start(p2, 0x3C);
-                return;
-            }
+    if (p2 == NULL || (p2[0x69] & 6) == 0) return;
+    rfc_port_timer_stop(p2);
+    ctrl = p2[0x69];
+    if (ctrl & 2) {
+        p2[0x69] = ctrl & ~2;
+        *(struct S9 *)(p2 + 0x51) = state;
+        if (state.b[5] == 0xC || state.b[5] == 0x30) {
+            *(u16 *)((u8 *)rpn + 0x12) = 0x3F7F;
         } else {
-            p2[0x69] = ctrl & ~4;
-        }
-        bits = *(u16 *)((u8 *)rpn + 0x12);
-        if ((bits & 0xC00) == 0xC00 || (bits & 0x3000) == 0x3000) {
-            PORT_PortNegCnf(mcb, p2[0xD], state, 0);
-            return;
-        }
-        ctrl = p2[0x56];
-        if (ctrl == 0xC) {
-            p2[0x56] = 0x30;
+            p2[0x56] = 0xC;
             p2[0x69] |= 4;
-            rfc_send_rpn(mcb, *(u8 *)rpn, 1, p2 + 0x51, 0x3000);
+            rfc_send_rpn(mcb, *(u8 *)rpn, 1, p2 + 0x51, 0xC00);
             rfc_port_timer_start(p2, 0x3C);
             return;
         }
-        if (ctrl == 0x30) {
-            p2[0x56] = 0;
-            PORT_PortNegCnf(mcb, p2[0xD], state, 0);
-        }
+    } else {
+        p2[0x69] = ctrl & ~4;
+    }
+    bits = *(u16 *)((u8 *)rpn + 0x12);
+    if ((bits & 0xC00) == 0xC00 || (bits & 0x3000) == 0x3000) {
+        PORT_PortNegCnf(mcb, p2[0xD], (u8 *)&state, 0);
+        return;
+    }
+    ctrl = p2[0x56];
+    if (ctrl == 0xC) {
+        p2[0x56] = 0x30;
+        p2[0x69] |= 4;
+        rfc_send_rpn(mcb, *(u8 *)rpn, 1, p2 + 0x51, 0x3000);
+        rfc_port_timer_start(p2, 0x3C);
+        return;
+    }
+    if (ctrl == 0x30) {
+        p2[0x56] = 0;
+        PORT_PortNegCnf(mcb, p2[0xD], (u8 *)&state, 0);
     }
 }
 
