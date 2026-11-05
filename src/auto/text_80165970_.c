@@ -413,6 +413,8 @@ extern int fn_801B2EC0(void);
 extern void *fn_8017960C(void);
 extern float lbl_805618D0;
 extern float lbl_805618D4;
+#pragma push
+#pragma dont_inline on
 #pragma cplusplus on
 extern "C" float fn_80166274(void) {
     class Obj {
@@ -443,6 +445,7 @@ extern "C" float fn_80166274(void) {
     }
 }
 #pragma cplusplus reset
+#pragma pop
 extern void fn_802E30C8(char *, ...);
 extern int lbl_8055E330;
 extern signed char lbl_8055E329;
