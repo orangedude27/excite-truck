@@ -1,6 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern "C" float PSQUATMultiply(void *, void *, void *);
+extern float lbl_80562928;
 extern "C" {
 void GXInitLightAttnA_80144B44(void *, float, float, float);
 void fn_8001BA68(float *);
@@ -233,7 +235,7 @@ extern "C" void PSVECCrossProduct(const float *, const float *, float *);
 extern "C" void PSVECCrossProduct(const float *, const float *, float *);
 extern "C" void fn_801C256C(void *arg0, float *arg1, float *arg2, float *arg3) {
     char *base = (char *)arg0;
-    float cross[3];
+    volatile float cross[3];
     float delta[3];
     int index = 0;
     int offset = 0;
@@ -241,13 +243,20 @@ extern "C" void fn_801C256C(void *arg0, float *arg1, float *arg2, float *arg3) {
     goto check;
 loop:
     {
-        float dx = *(float *)(*(char **)(base + 0x24) + offset) - arg2[0];
-        float dy = *(float *)(*(char **)(base + 0x24) + offset + 4) - arg2[1];
-        float dz = *(float *)(*(char **)(base + 0x24) + offset + 8) - arg2[2];
+        char *sourceData = *(char **)(base + 0x24);
+        float centerX = arg2[0];
+        float sourceX = *(float *)(sourceData + offset);
+        float dx = sourceX - centerX;
+        float centerY = arg2[1];
+        float centerZ = arg2[2];
         delta[0] = dx;
+        float sourceY = *(float *)(sourceData + offset + 4);
+        float dy = sourceY - centerY;
         delta[1] = dy;
+        float sourceZ = *(float *)(sourceData + offset + 8);
+        float dz = sourceZ - centerZ;
         delta[2] = dz;
-        PSVECCrossProduct(arg3, delta, cross);
+        PSVECCrossProduct(arg3, delta, (float *)cross);
         index++;
         float x = cross[0] + arg1[0];
         float y = cross[1] + arg1[1];
@@ -255,13 +264,15 @@ loop:
         cross[0] = x;
         cross[1] = y;
         cross[2] = z;
-        *(float *)(*(char **)(base + 0x28) + offset) =
-            *(float *)(*(char **)(base + 0x24) + offset) + x * scale;
+        char *srcBase = *(char **)(base + 0x24);
+        char *dstBase = *(char **)(base + 0x28);
+        float sourceOutX = *(float *)(srcBase + offset);
+        char *src = srcBase + offset;
+        char *dst = dstBase + offset;
+        *(float *)dst = sourceOutX + x * scale;
         offset += 0xC;
-        *(float *)(*(char **)(base + 0x28) + offset - 8) =
-            *(float *)(*(char **)(base + 0x24) + offset - 8) + y * scale;
-        *(float *)(*(char **)(base + 0x28) + offset - 4) =
-            *(float *)(*(char **)(base + 0x24) + offset - 4) + z * scale;
+        *(float *)(dst + 4) = *(float *)(src + 4) + y * scale;
+        *(float *)(dst + 8) = *(float *)(src + 8) + z * scale;
     }
 check:
     if (index < *(int *)(base + 0x14))
@@ -271,56 +282,60 @@ check:
 extern "C" void fn_801C2694(void *arg0, float *arg1, int *arg2, float *arg3, float *arg4, float *arg5) {
     extern float lbl_80562930;
     float sp8, spC, sp10;
-    float f5 = arg5[0] * lbl_80562930;
-    float f4 = arg5[1] * lbl_80562930;
-    float f0 = arg5[2] * lbl_80562930;
+    register float f5 = arg5[0] * lbl_80562930;
+    register float f4 = arg5[2] * lbl_80562930;
+    register float f0 = arg5[1] * lbl_80562930;
+    float b2 = arg4[2];
+    float b1 = arg4[1];
+    float b0 = arg4[0];
+    float a2 = arg3[2];
+    float a1 = arg3[1];
+    float a0 = arg3[0];
+    float *p;
     int i = 0;
     int off = 0;
-    float *dst = arg1;
-    *(float *)((char *)arg0 + 0x58) = arg3[0];
-    *(float *)((char *)arg0 + 0x5C) = arg3[1];
-    *(float *)((char *)arg0 + 0x60) = arg3[2];
-    *(float *)((char *)arg0 + 0x64) = arg4[0];
-    *(float *)((char *)arg0 + 0x68) = arg4[1];
-    *(float *)((char *)arg0 + 0x6C) = arg4[2];
+    int i2;
+    int off2;
+
+    *(float *)((char *)arg0 + 0x58) = a0;
+    *(float *)((char *)arg0 + 0x5C) = a1;
+    *(float *)((char *)arg0 + 0x60) = a2;
+    *(float *)((char *)arg0 + 0x64) = b0;
+    *(float *)((char *)arg0 + 0x68) = b1;
+    *(float *)((char *)arg0 + 0x6C) = b2;
     sp8 = f5;
-    spC = f4;
-    sp10 = f0;
+    spC = f0;
+    sp10 = f4;
     goto check1;
 loop1:
-    {
-        float *p = (float *)(*(char **)((char *)arg0 + 0x2C) + off);
-        ++i;
-        p[0] += f5;
-        off += 0xC;
-        p[1] += f4;
-        p[2] += f0;
-    }
+    p = (float *)(*(char **)((char *)arg0 + 0x2C) + off);
+    ++i;
+    p[0] += f5;
+    off += 0xC;
+    p[1] += f0;
+    p[2] += f4;
 check1:
     if (i < *(int *)((char *)arg0 + 0x14))
         goto loop1;
+
     fn_801C1B60((int)arg0);
-    {
-        int count = *(int *)((char *)arg0 + 0x14);
-        float *src = *(float **)((char *)arg0 + 0x24);
-        i = 0;
-        off = 0;
-        goto check2;
+    i2 = 0;
+    off2 = 0;
+    goto check2;
 loop2:
-        {
-            float *p = (float *)((char *)src + off);
-            ++i;
-            off += 0xC;
-            dst[0] = p[0];
-            dst[1] = p[1];
-            dst[2] = p[2];
-            dst += 3;
-        }
-check2:
-        if (i < count)
-            goto loop2;
-        *arg2 = count;
+    {
+        float *q = (float *)(*(char **)((char *)arg0 + 0x24) + off2);
+        ++i2;
+        off2 += 0xC;
+        arg1[0] = q[0];
+        arg1[1] = q[1];
+        arg1[2] = q[2];
+        arg1 += 3;
     }
+check2:
+    if (i2 < *(int *)((char *)arg0 + 0x14))
+        goto loop2;
+    *arg2 = i2;
 }
 
 extern float lbl_80562930;
@@ -362,11 +377,12 @@ check:
 }
 
 #pragma push
-#pragma ppc_psq_save off
+#pragma processor 750
+#pragma use_lmw_stmw off
 extern "C" void fn_801C28A8(void *arg0, int arg1, float *arg2, void *arg3, int arg4, int arg5, int arg6, int arg7, int arg8) {
     float v5C[3], v50[3], v44[3], v38[3], v2C[3], v20[3], v14[3], v8[3];
-    float f22, f23, f24, f25, f26, f27, f28, f29, f30, f31;
-    int i, off, idx, limit;
+    int limit, idx, off, i;
+    float f31, f30, f29, f28, f27, f26, f25, f24, f23, f22;
 
     limit = arg6;
     if (arg6 < 0)
@@ -374,16 +390,16 @@ extern "C" void fn_801C28A8(void *arg0, int arg1, float *arg2, void *arg3, int a
     GXInitLightAttnA_80144B44(v8, lbl_80562904, lbl_80562904, lbl_80562904);
     GXInitLightAttnA_80144B44(v14, lbl_80562904, lbl_80562904, lbl_80562904);
     f30 = lbl_80562904;
+    off = arg5 * 0xC;
     f31 = lbl_80562934;
     f26 = f30;
     f25 = lbl_80562938;
     f27 = f30;
     f28 = f30;
     f29 = lbl_80562940;
-    i = arg5;
-    off = arg5 * 0xC;
     idx = arg5 * 4;
-    for (; i < limit; i++, off += 0xC, idx += 4) {
+    i = arg5;
+    for (; i < limit; idx += 4, off += 0xC, i++) {
         if (*(int *)(*(int *)((char *)arg0 + 0x38) + idx) == 0)
             continue;
         {
@@ -403,15 +419,19 @@ extern "C" void fn_801C28A8(void *arg0, int arg1, float *arg2, void *arg3, int a
             fn_80144D64((int *)v50, (int *)arg3);
             fn_801C2B9C(v44, (float *)(*(int *)((char *)arg0 + 0x28) + off), v50, lbl_80562900);
             fn_80144CD0(v38, v44, arg1);
-            if (fn_8017F70C(v2C[0]) >= f22)
+            if (!(fn_8017F70C(v2C[0]) < f22))
                 continue;
-            if (fn_8017F70C(v2C[1]) >= f23)
+            if (!(fn_8017F70C(v2C[1]) < f23))
                 continue;
-            if (fn_8017F70C(v2C[2]) >= f24)
+            if (!(fn_8017F70C(v2C[2]) < f24))
                 continue;
             if (fn_8017F70C(v38[0]) > f25 + f22) {
-                if (v2C[0] < f26)
-                    f22 = -f22;
+                do {
+                    if (v2C[0] >= f26) {
+                        f22 = -f22;
+                        break;
+                    }
+                } while (0);
                 v2C[0] = f22;
             }
             if (fn_8017F70C(v38[1]) >= f25 + f23) {
@@ -475,7 +495,6 @@ extern "C" void fn_801C2BF8(void *arg0, float *arg1) {
     register volatile float *pOutA = outA;
     register volatile float *pOutB = outB;
 
-    if (count <= 0) return;
     color = lbl_8055E7C8;
     goto check;
 loop:
@@ -490,7 +509,7 @@ loop:
         *(volatile unsigned int *)&pInB[0] = *(unsigned int *)(points + second * 12);
         *(volatile unsigned int *)&pInB[1] = *(unsigned int *)(points + second * 12 + 4);
         *(volatile unsigned int *)&pInB[2] = *(unsigned int *)(points + second * 12 + 8);
-        if (pOutA == pInA) {
+        if (pInA[2] == pInA[2]) {
             pOutA[0] = pInA[2] * matrix[6] + (pInA[0] * matrix[0] + pInA[1] * matrix[3]);
             pOutA[1] = pInA[2] * matrix[7] + (pInA[0] * matrix[1] + pInA[1] * matrix[4]);
             pOutA[2] = pInA[2] * matrix[8] + (pInA[0] * matrix[2] + pInA[1] * matrix[5]);
