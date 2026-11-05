@@ -15,6 +15,7 @@ extern "C" const char lbl_8032AE60[];
 extern "C" const char lbl_8032A8E8[];
 extern "C" void fn_8012C4D8(void *);
 extern "C" s32 fn_80128668(void *);
+struct Fn8012AFE0Ent { u8 pad[0x34]; u32 flags; u8 pad2[0xC]; };
 extern "C" const char lbl_8032ADF4[];
 extern "C" const char lbl_8032AE20[];
 extern "C" void fn_80128660(s32);
@@ -476,6 +477,120 @@ loop_37_done:
     *(void **)((u8 *)arg0 + 0x64) = temp_r3_3;
     return var_r25;
 }
+
+extern "C" void *fn_8012AFE0(void *arg0, void *arg1) {
+    u32 buf[13];
+    s32 handle;
+    u8 *p = 0;
+    u8 *name = (u8 *)arg0;
+    u8 c;
+    u8 *src;
+    s32 n;
+    u8 *dst;
+    u8 c2;
+    s32 n2;
+    u8 *dst2;
+    s32 size;
+    s32 data;
+    s32 var_r31;
+    s32 res;
+
+    handle = ((s32 (*)(void *, void *))fn_8012ABB0)(arg0, buf);
+    if (handle != -1) {
+        p = (u8 *)fn_801284F8(0xB0, (void *)lbl_8032A8E8);
+        if (p != 0) {
+            var_r31 = ((s32 (*)(void *))fn_8012AC98)(name);
+            p[0xAC] = 0;
+            src = (u8 *)arg1; dst = p; n = 0x20;
+            goto copy1;
+limit1:
+            n -= 1;
+            if (n > 0) goto copy1;
+            dst[-1] = 0;
+            goto done1;
+copy1:
+            c = *src++; *dst++ = c;
+            if ((s8)c != 0) goto limit1;
+done1:
+            dst2 = p + 0x20; n2 = 0x40;
+            goto copy2;
+limit2:
+            n2 -= 1;
+            if (n2 > 0) goto copy2;
+            dst2[-1] = 0;
+            goto done2;
+copy2:
+            c2 = *name++; *dst2++ = c2;
+            if ((s8)c2 != 0) goto limit2;
+done2:
+            *(s32 *)(p + 0xA8) = 0;
+            *(s32 *)(p + 0x60) = 0;
+            if (buf != 0) {
+                *(u32 *)(p + 0x68) = buf[0];
+                *(u32 *)(p + 0x6C) = buf[1];
+                *(u32 *)(p + 0x70) = buf[2];
+                *(u32 *)(p + 0x74) = buf[3];
+                *(u32 *)(p + 0x78) = buf[4];
+                *(u32 *)(p + 0x7C) = buf[5];
+                *(u32 *)(p + 0x80) = buf[6];
+                *(u32 *)(p + 0x84) = buf[7];
+                *(u32 *)(p + 0x88) = buf[8];
+                *(u32 *)(p + 0x8C) = buf[9];
+                *(u32 *)(p + 0x90) = buf[10];
+                *(u32 *)(p + 0x94) = buf[11];
+                *(u32 *)(p + 0x98) = buf[12];
+            } else {
+                memset(p + 0x68, 0, 0x34);
+            }
+            *(s32 *)(p + 0x9C) = 1;
+            *(s32 *)(p + 0xA0) = 0;
+            *(s32 *)(p + 0xA4) = var_r31;
+            p[0xAC] = 1;
+            *(s32 *)(p + 0x64) = 0;
+            p[0xAD] = 0;
+        }
+        size = buf[9];
+        fn_801282F4();
+        fn_801282EC(0x80);
+        data = (s32)((void *(*)(void *, s32))fn_801284F0)(arg1, size);
+        fn_802E3A14(handle, *(s32 *)(p + 0x80));
+        fn_802E3804(handle, (void *)data, size);
+        *(s32 *)(p + 0xA0) = data;
+        if (buf[3] & 1) {
+            *(s32 *)(p + 0x60) = 0;
+            res = fn_8012ACA0(p, (void *)data, size);
+        } else {
+            *(s32 *)(p + 0x60) = *(s32 *)(p + 0xA0);
+            res = ((s32 (*)(void *, s32))fn_8012AA60)(p, size);
+        }
+        if (res == 0) {
+            fn_8012A7FC();
+            if (p != 0) {
+                if (p[0xAC] != 0) {
+                    var_r31 = 0;
+                    n = 0;
+                    while (var_r31 < *(s32 *)(p + 0x88)) {
+                        u32 *fp = (u32 *)((u8 *)*(void **)(p + 0x60) + n + 0x34);
+                        if (*fp & 4) fn_802E317C(lbl_8032AE20);
+                        var_r31 += 1;
+                        fp = (u32 *)((u8 *)*(void **)(p + 0x60) + n + 0x34);
+                        u32 fl = *fp;
+                        n += 0x44;
+                        *fp = fl & ~0xF;
+                    }
+                    if (*(s32 *)(p + 0x64) != 0) fn_8012C4D8(*(void **)(p + 0x64));
+                    if (*(s32 *)(p + 0xA0) != 0) fn_80128660(*(s32 *)(p + 0xA0));
+                    p[0xAC] = 0;
+                }
+                fn_80128668(p);
+            }
+            p = 0;
+        }
+        fn_802E3734(&handle);
+    }
+    return p;
+}
+
 #pragma pop
 extern "C" s32 fn_8012B2C4(s32, s32, s32);
 extern "C" void *fn_8012B314(s32 arg0, s32 arg1, s32 arg2) {
