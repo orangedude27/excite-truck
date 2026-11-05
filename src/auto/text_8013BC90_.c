@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 typedef struct { double d[8]; } Key64;
+extern unsigned char lbl_8042F8C8[];
 extern char *strchr(const char *, int);
 extern char *fn_80029004(char *, int);
 extern void *fn_801284F8(int, const char *);
