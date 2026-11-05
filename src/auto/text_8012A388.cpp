@@ -575,6 +575,66 @@ extern "C" s32 fn_8012B50C(void *arg0, void *arg1) {
     return 0;
 }
 
+extern "C" const char lbl_8032A970[];
+extern "C" const char lbl_8032A99C[];
+extern "C" u8 lbl_805599B4;
+extern "C" void fn_8012D908(s32);
+#pragma push
+#pragma use_lmw_stmw off
+#pragma dont_inline on
+#pragma scheduling invalid_target
+extern "C" void *fn_8012B534(char *arg0, s32 *arg1, u32 arg2) {
+    u8 wildcard;
+    char name[0x100];
+    char dir[0x100];
+    s32 flag0;
+    s32 flag1;
+    u8 *result;
+    s32 *out;
+    u8 *path;
+    s32 offset;
+    u8 *manager;
+    s32 index;
+
+    out = arg1;
+    flag0 = arg2 & 1;
+    flag1 = (arg2 >> 1) & 1;
+    path = fn_8012B4E4((u8 *)arg0, (s8 *)&wildcard);
+    fn_8012B3D4(dir, 0x100, name, 0x100, (char *)path);
+    if (wildcard != 0 && (s8)dir[0] == 0) {
+        fn_802E30C8(lbl_8032A970, path);
+    }
+    *out = -1;
+    result = 0;
+    for (manager = (u8 *)lbl_8055E000; manager != 0; manager = *(u8 **)(manager + 0xA8)) {
+        if ((s8)dir[0] == 0 || stricmp((char *)manager, dir) == 0) {
+            for (index = 0, offset = 0; index < *(s32 *)(manager + 0x88); offset += 0x44, index++) {
+                if (stricmp((char *)(*(u8 **)(manager + 0x60) + offset), name) == 0) {
+                    if (*out != -1) {
+                        fn_8012B50C((char *)*(u8 **)(result + 0x60) + *out * 0x44,
+                                    (char *)*(u8 **)(manager + 0x60) + offset);
+                    } else {
+                        result = manager;
+                        *out = index;
+                    }
+                }
+            }
+        }
+    }
+    if (result != 0 && *(u8 *)(result + 0xAD) != 0 && flag1 == 0) {
+        fn_802E317C(lbl_8032A99C, result != 0 ? (char *)result : (char *)&lbl_805599B4, path);
+    }
+    if (flag0 == 0 && result != 0 && wildcard == 0 &&
+        (*(u32 *)(*(u8 **)(result + 0x60) + *out * 0x44 + 0x34) & 8) == 0) {
+        result = 0;
+    }
+    if (result == 0 && flag1 == 0) {
+        fn_8012D908((s32)path);
+    }
+    return result;
+}
+#pragma pop
+
 #pragma push
 #pragma use_lmw_stmw off
 #pragma dont_inline on
@@ -2363,6 +2423,105 @@ extern "C" void fn_8012E96C(s32 arg0) {
             fn_8012E67C((s32)entry, result);
         }
     }
+}
+
+extern "C" s32 fn_8012E9F0(s32 arg0, s32 arg1) {
+    char sp10[128];
+    s32 spC;
+    u8 sp8;
+    char *var_r4;
+    s32 var_r5;
+    char *var_r6;
+    char *var_r4_2;
+    s32 var_r5_2;
+    char *var_r6_2;
+    u8 temp_r3, temp_r3_2;
+    u8 temp_r4, temp_r4_2, temp_r4_3, temp_r4_4, temp_r4_5;
+    u8 temp_r4_6, temp_r4_7, temp_r4_8, temp_r4_9, temp_r4_10;
+    u32 temp_r4_11;
+    u8 *temp_r3_3;
+    u8 *found;
+    u8 *current;
+    u32 idx2;
+    u32 flag;
+    u32 idx1;
+    u8 *p2;
+    u8 *p1;
+
+    current = *(u8 **)((u8 *)arg0 + 0xA18);
+    found = 0;
+    goto outer_test;
+outer_loop:
+    var_r4 = (char *)(current + 0xC); var_r6 = sp10; var_r5 = 0x80;
+    goto path_copy;
+path_limit:
+    var_r5 -= 1;
+    if (var_r5 > 0) goto path_copy;
+    var_r6[-1] = 0;
+    goto path_done;
+path_copy:
+    temp_r3 = *var_r4++; *var_r6++ = temp_r3;
+    if ((s8)temp_r3 != 0) goto path_limit;
+path_done:
+    if ((s8)*fn_80029004(sp10, 0x2E) != 0) *fn_80029004(sp10, 0x2E) = 0;
+    var_r6_2 = sp10; var_r5_2 = 0x80;
+    goto scan_test;
+scan_step:
+    var_r5_2 -= 1; var_r6_2 += 1;
+scan_test:
+    if ((s8)*var_r6_2 != 0) goto scan_step;
+    if (var_r5_2 <= 0) goto path_all_done;
+    var_r4_2 = (char *)&lbl_805599E0;
+    goto suffix_copy;
+suffix_limit:
+    var_r5_2 -= 1;
+    if (var_r5_2 > 0) goto suffix_copy;
+    var_r6_2[-1] = 0;
+    goto path_all_done;
+suffix_copy:
+    temp_r3_2 = *var_r4_2++; *var_r6_2++ = temp_r3_2;
+    if ((s8)temp_r3_2 != 0) goto suffix_limit;
+path_all_done:
+    fn_8002B0D8(sp10);
+    temp_r3_3 = (u8 *)fn_8012C370((s32)sp10, 0x45544F43, (s32)&spC, 0, 0, (s32)&sp8);
+    if (temp_r3_3 != 0 && sp8 != 0) {
+        temp_r4 = temp_r3_3[0]; temp_r3_3[0] = temp_r3_3[3]; temp_r3_3[3] = temp_r4;
+        temp_r4_2 = temp_r3_3[1]; temp_r3_3[1] = temp_r3_3[2]; temp_r3_3[2] = temp_r4_2;
+        temp_r4_3 = temp_r3_3[4]; temp_r3_3[4] = temp_r3_3[7]; temp_r3_3[7] = temp_r4_3;
+        temp_r4_4 = temp_r3_3[5]; temp_r3_3[5] = temp_r3_3[6]; temp_r3_3[6] = temp_r4_4;
+        temp_r4_5 = temp_r3_3[8]; temp_r3_3[8] = temp_r3_3[0xB]; temp_r3_3[0xB] = temp_r4_5;
+        temp_r4_6 = temp_r3_3[9]; temp_r3_3[9] = temp_r3_3[0xA]; temp_r3_3[0xA] = temp_r4_6;
+        temp_r4_7 = temp_r3_3[0xC]; temp_r3_3[0xC] = temp_r3_3[0xF]; temp_r3_3[0xF] = temp_r4_7;
+        temp_r4_8 = temp_r3_3[0xD]; temp_r3_3[0xD] = temp_r3_3[0xE]; temp_r3_3[0xE] = temp_r4_8;
+        temp_r4_9 = temp_r3_3[0x10]; temp_r3_3[0x10] = temp_r3_3[0x13]; temp_r3_3[0x13] = temp_r4_9;
+        temp_r4_10 = temp_r3_3[0x11]; temp_r3_3[0x11] = temp_r3_3[0x12]; temp_r3_3[0x12] = temp_r4_10;
+        temp_r4_11 = *(u32 *)temp_r3_3;
+        if (temp_r4_11 != 0 || *(u32 *)(temp_r3_3 + 4) != 0x14)
+            fn_802E317C(lbl_8032AE60, temp_r4_11, 0, *(u32 *)(temp_r3_3 + 4), 0x14);
+
+        p1 = temp_r3_3 + 0x14; idx1 = 0;
+        goto entries_test;
+entries_loop:
+        fn_8012A388(p1); p1 += 0x44; idx1 += 1;
+entries_test:
+        if (idx1 < *(u32 *)(temp_r3_3 + 0xC)) goto entries_loop;
+    }
+    p2 = temp_r3_3 + 0x14; flag = 0; idx2 = 0;
+    goto names_test;
+names_loop:
+    if (stricmp((const char *)p2, (const char *)arg1) == 0) {
+        flag = 1; goto names_done;
+    }
+    p2 += 0x44; idx2 += 1;
+names_test:
+    if (idx2 < *(u32 *)(temp_r3_3 + 0xC)) goto names_loop;
+names_done:
+    if (flag != 0) found = current;
+    fn_8012C4D8(temp_r3_3);
+    current = *(u8 **)(current + 4);
+outer_test:
+    if (current != 0 && found == 0) goto outer_loop;
+    return (s32)found;
 }
 
 extern "C" void *fn_8012EC90(s32 arg0) {
