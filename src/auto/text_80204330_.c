@@ -38,20 +38,21 @@ extern int fn_80145E70(void*);
 extern char lbl_8033BB18[];
 extern int lbl_8055ED3C, lbl_8055ED40, lbl_8055ED44;
 struct Obj80204 { void (*dtor)(void *, int); };
+#pragma cplusplus on
+struct Gui80204 {
+    virtual void v0();
+    virtual void *v1(const char *);
+    virtual void v2();
+    virtual void *v3(const char *);
+    virtual void *v4(const char *);
+    virtual void v5();
+};
+#pragma cplusplus off
 #pragma dont_inline on
 unsigned int fn_8020437C(void) {
-    union Value {
-        int s;
-        unsigned int u;
-    } value;
-    int masked;
-    int shifted;
-
-    value.s = fn_80204354();
-    value.u ^= 0xDAC;
-    masked = value.u & 0xDAC;
-    shifted = ((int)value.u) >> 1;
-    return (unsigned int)(shifted - masked) >> 31;
+    int value = fn_80204354();
+    value ^= 0xDAC;
+    return (unsigned int)((value >> 1) - (value & 0xDAC)) >> 31;
 }
 #pragma push
 #pragma scheduling invalid_target
