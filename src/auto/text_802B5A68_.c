@@ -34,6 +34,7 @@ typedef struct MenuRenderRecord {
     s32 unk18;
     s32 unk1C;
 } MenuRenderRecord;
+#pragma pack(push, 4)
 typedef struct MenuRenderCopy {
     void *name;
     f64 pair;
