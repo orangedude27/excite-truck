@@ -43,6 +43,13 @@ s32 fn_802E321C(const char *arg0) {
     return strncmp(arg0, prefix, strlen(prefix)) == 0;
 }
 
+s32 fn_802E3270(s32 arg0) {
+    s32 p = (s32)lbl_8055D1A8;
+    s32 len = strlen((char *)p);
+    s32 r = strncmp((const char *)arg0, (char *)p, len);
+    return (unsigned int)__cntlzw(r) >> 5;
+}
+
 #pragma dont_inline on
 s32 fn_802E32C4(s32 arg0) {
     if (arg0 != 0 && fn_802E321C((const char *)arg0) != 0 && lbl_8055FF20 != 0) {
