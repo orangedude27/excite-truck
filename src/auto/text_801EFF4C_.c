@@ -516,13 +516,15 @@ int fn_801F0CC4(int unused) {
     int i, j, k;
     int offset;
     int base;
+    int *entry;
     i = 0;
     offset = 0;
     while (i < lbl_8055EBF0) {
         j = 0;
-        base = lbl_8055EBEC + offset + 0x28;
-        while (j < *(int *)(lbl_8055EBEC + offset + 0xE8)) {
-            int *entry = (int *)(base + j * 0x18);
+        base = lbl_8055EBEC + offset;
+        base += 0x28;
+        while (j < *(int *)(offset + lbl_8055EBEC + 0xE8)) {
+            entry = (int *)(base + j * 0x18);
             for (k = 0; k < 2; k++) {
                 if (entry[k] != -1) fn_802C6CF8(entry[k]);
                 if (entry[k + 2] != -1) fn_802C6CF8(entry[k + 2]);
@@ -530,8 +532,8 @@ int fn_801F0CC4(int unused) {
             j++;
         }
         k = 0;
-        while (k < *(int *)(lbl_8055EBEC + offset + 0x12C)) {
-            fn_802C6CF8(*(int *)(lbl_8055EBEC + offset + 0xEC + k * 8));
+        while (k < *(int *)(offset + lbl_8055EBEC + 0x12C)) {
+            fn_802C6CF8(*(int *)(offset + lbl_8055EBEC + 0xEC + k * 8));
             k++;
         }
         offset += 0x138;
@@ -541,8 +543,7 @@ int fn_801F0CC4(int unused) {
     lbl_8055EBEC = 0;
     lbl_8055EBF0 = 0;
 }
-
-#pragma dont_inline on
+#pragma pop
 int fn_801F09FC(const char *);
 void fn_801F1878(void *);
 #pragma dont_inline on
@@ -612,7 +613,7 @@ int fn_801F0F18(int arg0, int arg1) {
 extern float lbl_80562F30;
 extern float lbl_80562F34;
 float fn_801F159C(void **);
-void fn_80015A20(void *, float *, float, float, float, float);
+void fn_80015A20(void *, float *);
 void fn_80015B20(void *, void *, void *);
 void fn_801F0F78(void *arg0, void *arg1, void *arg2, float scale) {
     int flags = *(int *)((char *)arg1 + 0x60);
@@ -656,12 +657,12 @@ void fn_801F0F78(void *arg0, void *arg1, void *arg2, float scale) {
     *(float *)((char *)arg0 + 0x44) += *(float *)((char *)arg2 + 0x2C);
     for (i = 0; i < 9; i++) *(float *)((char *)arg0 + 0x18 + i * 4) = matrix[i];
     sp14[0] = lbl_80562F1C; sp14[1] = lbl_80562F1C; sp14[2] = *(float *)((char *)arg1 + 0x2C);
-    fn_80015A20(matrix, sp14, *(float *)((char *)arg2 + 0x1C), *(float *)((char *)arg2 + 0x18), *(float *)((char *)arg2 + 0x14), *(float *)((char *)arg2 + 0x20));
+    fn_80015A20(matrix, sp14);
     fn_80015B20((char *)arg0 + 0x18, matrix, (char *)arg0 + 0x18);
     sp8[0] = lbl_80562F1C;
     sp8[1] = *(float *)((char *)arg1 + 0x28) + (mode ? lbl_80562F1C : lbl_80562F34);
     sp8[2] = lbl_80562F1C;
-    fn_80015A20(vec, sp8, 0.0f, 0.0f, 0.0f, 0.0f);
+    fn_80015A20(vec, sp8);
     fn_80015B20((char *)arg0 + 0x18, vec, (char *)arg0 + 0x18);
     if (__builtin_fabsf(scale - lbl_80562F18) != lbl_80558DC4) {
         for (i = 0; i < 9; i++) *(float *)((char *)arg0 + 0x18 + i * 4) *= scale;
@@ -912,51 +913,50 @@ void fn_801F1AD0(void *arg0) {
 void fn_801EABA8(void);
 int fn_801F1848(void);
 #pragma scheduling invalid_target
-void fn_801F1B1C(void *arg0, void *arg1, int arg2) {
-    register void *dst = arg0;
-    register void *src = arg1;
-    short v16;
+void fn_801F1B1C(void *arg0, void *arg1) {
     float v17;
     unsigned char flag;
-    int v15, v14, v13, v12, v11, v10, v9, v8, v7, v6, v5, v4, v3, v2, v1;
+    int v13, v14;
+    short v16;
+    int v12, v11, v10, v9, v8, v7, v6;
+    register int v1, v2, v3, v4, v5;
     fn_801EABA8();
-    flag = *(volatile unsigned char *)((char *)src + 0x40);
-    v1 = *(volatile int *)((char *)src + 0x00);
-    v2 = *(volatile int *)((char *)src + 0x04);
-    v3 = *(volatile int *)((char *)src + 0x08);
-    v4 = *(volatile int *)((char *)src + 0x0C);
-    v5 = *(volatile int *)((char *)src + 0x10);
-    v6 = *(volatile int *)((char *)src + 0x14);
-    v7 = *(volatile int *)((char *)src + 0x18);
-    v8 = *(volatile int *)((char *)src + 0x1C);
-    v9 = *(volatile int *)((char *)src + 0x20);
-    v10 = *(volatile int *)((char *)src + 0x24);
-    v11 = *(volatile int *)((char *)src + 0x28);
-    v12 = *(volatile int *)((char *)src + 0x2C);
-    v16 = *(volatile short *)((char *)src + 0x30);
-    v13 = *(volatile int *)((char *)src + 0x34);
-    v14 = *(volatile int *)((char *)src + 0x38);
-    v17 = *(volatile float *)((char *)src + 0x3C);
-    *(volatile int *)((char *)dst + 0x3C) = v1;
-    *(volatile int *)((char *)dst + 0x40) = v2;
-    *(volatile int *)((char *)dst + 0x44) = v3;
-    *(volatile int *)((char *)dst + 0x48) = v4;
-    *(volatile int *)((char *)dst + 0x4C) = v5;
-    *(volatile int *)((char *)dst + 0x50) = v6;
-    *(volatile int *)((char *)dst + 0x54) = v7;
-    *(volatile int *)((char *)dst + 0x58) = v8;
-    *(volatile int *)((char *)dst + 0x5C) = v9;
-    *(volatile int *)((char *)dst + 0x60) = v10;
-    *(volatile int *)((char *)dst + 0x64) = v11;
-    *(volatile int *)((char *)dst + 0x68) = v12;
-    *(volatile short *)((char *)dst + 0x6C) = v16;
-    *(volatile int *)((char *)dst + 0x70) = v13;
-    *(volatile int *)((char *)dst + 0x74) = v14;
-    *(volatile float *)((char *)dst + 0x78) = v17;
-    *(volatile unsigned char *)((char *)dst + 0x7C) = flag;
+    flag = *(volatile unsigned char *)((char *)arg1 + 0x40);
+    v1 = *(volatile int *)((char *)arg1 + 0x00);
+    v2 = *(volatile int *)((char *)arg1 + 0x04);
+    v3 = *(volatile int *)((char *)arg1 + 0x08);
+    v4 = *(volatile int *)((char *)arg1 + 0x0C);
+    v5 = *(volatile int *)((char *)arg1 + 0x10);
+    v6 = *(volatile int *)((char *)arg1 + 0x14);
+    v7 = *(volatile int *)((char *)arg1 + 0x18);
+    v8 = *(volatile int *)((char *)arg1 + 0x1C);
+    v9 = *(volatile int *)((char *)arg1 + 0x20);
+    v10 = *(volatile int *)((char *)arg1 + 0x24);
+    v11 = *(volatile int *)((char *)arg1 + 0x28);
+    v12 = *(volatile int *)((char *)arg1 + 0x2C);
+    v16 = *(volatile short *)((char *)arg1 + 0x30);
+    v13 = *(volatile int *)((char *)arg1 + 0x34);
+    v14 = *(volatile int *)((char *)arg1 + 0x38);
+    v17 = *(volatile float *)((char *)arg1 + 0x3C);
+    *(volatile int *)((char *)arg0 + 0x3C) = v1;
+    *(volatile int *)((char *)arg0 + 0x40) = v2;
+    *(volatile int *)((char *)arg0 + 0x44) = v3;
+    *(volatile int *)((char *)arg0 + 0x48) = v4;
+    *(volatile int *)((char *)arg0 + 0x4C) = v5;
+    *(volatile int *)((char *)arg0 + 0x50) = v6;
+    *(volatile int *)((char *)arg0 + 0x54) = v7;
+    *(volatile int *)((char *)arg0 + 0x58) = v8;
+    *(volatile int *)((char *)arg0 + 0x5C) = v9;
+    *(volatile int *)((char *)arg0 + 0x60) = v10;
+    *(volatile int *)((char *)arg0 + 0x64) = v11;
+    *(volatile int *)((char *)arg0 + 0x68) = v12;
+    *(volatile short *)((char *)arg0 + 0x6C) = v16;
+    *(volatile int *)((char *)arg0 + 0x70) = v13;
+    *(volatile int *)((char *)arg0 + 0x74) = v14;
+    *(volatile float *)((char *)arg0 + 0x78) = v17;
+    *(volatile unsigned char *)((char *)arg0 + 0x7C) = flag;
     if (flag != 0)
-        *(volatile int *)((char *)dst + 0x80) = fn_801F1848();
+        *(volatile int *)((char *)arg0 + 0x80) = fn_801F1848();
     else
-        *(volatile int *)((char *)dst + 0x80) = 0;
+        *(volatile int *)((char *)arg0 + 0x80) = 0;
 }
-          #pragma scheduling on
