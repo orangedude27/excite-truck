@@ -2,7 +2,7 @@
 void fn_802A8A4C(s32, s32);
 static inline void transform_802A8A4C(f32 *m, f32 *src, f32 *dst) {
     if (src == dst) {
-        f32 x=src[0], y=src[1], z=src[2];
+        f32 x=dst[0], y=dst[1], z=dst[2];
         dst[0]=z*m[6]+(x*m[0]+y*m[3]);
         dst[1]=z*m[7]+(x*m[1]+y*m[4]);
         dst[2]=z*m[8]+(x*m[2]+y*m[5]);
@@ -197,7 +197,7 @@ s32 fn_802A8A3C(s32 *arg0, s32 arg1) {
 extern f64 fn_8002F234(f32), cos(f64), sin(f64);
 extern f32 lbl_80564958, lbl_80564968, lbl_8056496C;
 extern f64 lbl_80564960;
-#pragma push
+#pragma processor 750
 void fn_802A8A4C(s32 arg0, s32 arg1) {
     f32 m[9], v[2], d[2], p[2], q[2];
     f32 *a = (f32 *)arg0, *b = (f32 *)arg1;
@@ -227,19 +227,18 @@ void fn_802A8A4C(s32 arg0, s32 arg1) {
     m[0]=c; m[1]=lbl_80564928; m[2]=-s;
     m[3]=lbl_80564928; m[4]=lbl_8056494C; m[5]=lbl_80564928;
     m[6]=s; m[7]=lbl_80564928; m[8]=c;
-    transform_802A8A4C(m,a+3,a+3);
+    transform_802A8A4C(m,(f32 *)((u8 *)a+0xC),a+3);
     PSVECNormalize(a+3,a+3);
     scale=(length-lbl_80564928)/(a[6]*a[6]-lbl_80564928);
     scale=lbl_8056494C<scale?lbl_8056494C:scale;
     scale=scale>lbl_80564928?scale:lbl_80564928;
     t=a[8]+scale*(a[9]-a[8]);
-    a[3]*=t; a[4]*=t; a[5]*=t;
-    a[0]+=a[3]*lbl_8055F8D4;
-    a[1]+=a[4]*lbl_8055F8D4;
-    a[2]+=a[5]*lbl_8055F8D4;
+    x=a[3]*t; y=a[4]*t; z=a[5]*t;
+    a[3]=x; a[4]=y; a[5]=z;
+    a[0]+=x*lbl_8055F8D4;
+    a[1]+=y*lbl_8055F8D4;
+    a[2]+=z*lbl_8055F8D4;
 }
-#pragma pop
-
 extern f32 PSVECDotProduct(const void *, const void *);
 extern void PSVECNormalize(const void *, void *);
 extern void PSVECCrossProduct(const void *, const void *, void *);
