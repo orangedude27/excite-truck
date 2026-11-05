@@ -1027,8 +1027,7 @@ extern "C" __declspec(section ".sdata") char lbl_8055E220[];
 extern "C" __declspec(section ".sdata") f32 lbl_8056160C;
 extern "C" __declspec(section ".sdata") f32 lbl_80561610;
 extern "C" __declspec(section ".sdata") f32 lbl_805615D4;
-#pragma push
-#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 #pragma dont_inline on
 extern "C" void fn_80146824(void *arg0) {
     struct Block { s32 base; s32 count; };
@@ -1053,14 +1052,12 @@ extern "C" void fn_80146824(void *arg0) {
     register s32 n34 = b34->count;
     register s32 n30 = b30->count;
     register s32 size2C = n2C * 2;
-    register s32 size30 = n30 * 4 - n30;
+    register unsigned size30 = n30 * 4 - n30;
     register s32 size34 = n34 * 4 - n34;
     Data *data = (Data *)((AllocFn)fn_801284F8)(0x10, lbl_8032D114,
         n34, n30 * 4, n30, n2C);
     if (data != 0) {
-        s32 total = size34 + size2C;
-        total = total + size30;
-        total = total + 1;
+        s32 total = size34 + size2C + size30 + 1;
         data->records = (Record *)fn_8012850C(total * 0x18, lbl_80559E48);
         data->capacity = total;
         data->count = 0;
@@ -1142,7 +1139,8 @@ extern "C" void fn_80146824(void *arg0) {
     last->f8 = second;
     last->fC = third;
 }
-#pragma pop
+#pragma dont_inline reset
+#pragma use_lmw_stmw reset
 extern "C" f32 fn_800108C8(const char *, f32);
 extern "C" void fn_80235380();
 extern "C" void fn_80145B94(void *, u32);
