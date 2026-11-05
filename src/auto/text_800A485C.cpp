@@ -2105,16 +2105,15 @@ extern "C" s32 fn_800A8504(void *arg0, void *arg1, s32 arg2, s32 arg3) {
 
 extern "C" s32 fn_800A58E0(void *, s32, s32, s32, s32);
 extern "C" s32 fn_800A8730(void *arg0, u32 *arg1, void *arg2, u32 arg3, s32 arg4, s32 *arg5) {
-    register void *var_r30;
-    register s32 var_r29;
-    register u32 request_length;
+    register u32 temp_r7;
+    void *var_r30;
+    s32 var_r29;
+    u32 request_length;
     s32 temp_r0_2;
     s32 temp_r3;
     s32 temp_r3_2;
     s32 temp_r3_3;
     s32 temp_r3_4;
-    s32 temp_r3_5;
-    s32 temp_r3_6;
     s32 temp_r3_7;
     s32 temp_r3_8;
     s32 temp_r4_2;
@@ -2129,17 +2128,15 @@ extern "C" s32 fn_800A8730(void *arg0, u32 *arg1, void *arg2, u32 arg3, s32 arg4
     u32 temp_r3_5_u;
     u32 temp_r3_6_u;
     u32 temp_r4_u;
-    register s32 temp_r7;
-    register u8 temp_r5;
-    register u8 temp_r5_2;
-    register u8 temp_r5_3;
-    register u8 temp_r5_4;
-    register u8 temp_r6_2;
+    u8 temp_r5;
+    u8 temp_r5_2;
+    u8 temp_r5_3;
+    u8 temp_r5_4;
+    u8 temp_r6_2;
 
-    var_r30 = 0;
     var_r29 = arg4;
     request_length = arg4;
-    *(volatile s32 *)arg5 = 0;
+    *(volatile s32 *)arg5 = (s32)(var_r30 = 0);
     temp_r31 = arg3 + request_length;
 loop_1:
     if (var_r30 == 0) {
@@ -2152,21 +2149,19 @@ loop_1:
         goto loop_2;
     }
 loop_9:
-    temp_r7 = *(u32 *)((u8 *)var_r30 + 0x18);
-    if (temp_r7 == 0xFFFEFFFF) {
-        var_r30 = 0;
+    if ((u32)(*(u32 *)((u8 *)var_r30 + 0x18) + 0x10000) != 0xFFFF) {
+        *(u32 *)((u8 *)var_r30 + 8) = *(u32 *)((u8 *)var_r30 + 4);
         goto loop_2;
     }
-    *(u32 *)((u8 *)var_r30 + 8) = *(u32 *)((u8 *)var_r30 + 4);
     var_r30 = *(void **)((u8 *)var_r30 + 0x20);
     if ((*(u16 *)var_r30 & 1) == 0)
         var_r30 = 0;
     else
-        goto loop_1;
+        goto loop_9;
 loop_2:
     if (var_r30 != 0) {
         temp_r7 = *(u32 *)((u8 *)var_r30 + 0x18);
-        if ((u32)(temp_r7 + 0x10000) != 0xFFFFFFFF) {
+        if ((u32)(temp_r7 + 0x10000) != 0xFFFF) {
             if ((temp_r7 <= arg3) && ((u32)(temp_r7 + *(u32 *)((u8 *)var_r30 + 0x14)) >= temp_r31)) {
                 temp_r5 = *(u8 *)((u8 *)arg0 + 0x20);
                 VFipf_memcpy((u8 *)*(void **)((u8 *)var_r30 + 4) + ((arg3 - temp_r7) << temp_r5),
@@ -4650,7 +4645,6 @@ extern "C" s32 fn_800ADD84(void *arg0, s32 arg1, s32 arg2, s32 arg3, u32 *arg4, 
     s32 sp10;
     s32 spC;
     void *sp8;
-    s32 temp_cr0_eq;
     s32 temp_r0;
     s32 temp_r10;
     s32 temp_r3;
@@ -4698,10 +4692,12 @@ extern "C" s32 fn_800ADD84(void *arg0, s32 arg1, s32 arg2, s32 arg3, u32 *arg4, 
         temp_r9 = *(s32 *)((u8 *)arg0 + 0xC);
         var_r27 = var_r28;
         if (temp_r9 != 0) {
+            u32 *tbl = (u32 *)lbl_802EEF40;
+            s32 idx = *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x34) + 0x1C);
             var_r29 = temp_r9;
             var_r28 = 0U;
             var_r27 = (*(s32 *)((u8 *)arg0 + 0x10) + arg3) - arg1;
-            sp18 = *(s32 *)((u8 *)lbl_802EEF40 + *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x34) + 0x1C) * 0x14 + 8);
+            sp18 = *(s32 *)((u8 *)tbl + idx * 0x14 + 8);
             var_r26 = *(s32 *)((u8 *)arg0 + 0x10) + 1;
         }
     } else {
@@ -4723,39 +4719,31 @@ extern "C" s32 fn_800ADD84(void *arg0, s32 arg1, s32 arg2, s32 arg3, u32 *arg4, 
         }
         *(s16 *)((u8 *)sp8 + 2) = 0;
         spC = 1;
-loop_33:
-        if (var_r29 != 0) {
-            temp_r3_2 = VFiPFFAT_ReadClusterPage(arg0, (u32)var_r29, var_r26, &sp18, &spC, sp8);
-            if ((temp_r3_2 != 0) && ((u32)(sp18 + 0x10000) != 0xFFFFU)) {
-                VFiPFCACHE_FreeFATPage_800A8E10(*(void **)((u8 *)arg0 + 0x34), sp8);
-                return temp_r3_2;
+        while (var_r28-- != 0 && (u32)var_r29 < temp_r31) {
+            if (var_r29 != 0) {
+                temp_r3_2 = VFiPFFAT_ReadClusterPage(arg0, (u32)var_r29, var_r26, &sp18, &spC, sp8);
+                if ((temp_r3_2 != 0) && ((u32)(sp18 + 0x10000) != 0xFFFFU)) {
+                    VFiPFCACHE_FreeFATPage_800A8E10(*(void **)((u8 *)arg0 + 0x34), sp8);
+                    return temp_r3_2;
+                }
+            } else {
+                var_r26 -= 1;
+                sp18 = *(s32 *)((u8 *)lbl_802EEF40 + *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x34) + 0x1C) * 0x14 + 8);
             }
-            goto block_26;
-        }
-        var_r26 -= 1;
-        sp18 = *(s32 *)((u8 *)lbl_802EEF40 + *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x34) + 0x1C) * 0x14 + 8);
-block_26:
-        if ((((u32)sp18 < 2U) ||
-             ((u32)sp18 >= (u32)(*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x34) + 0x34) + 2))) &&
-            ((u32)sp18 < temp_r30)) {
-            VFiPFCACHE_FreeFATPage_800A8E10(*(void **)((u8 *)arg0 + 0x34), sp8);
-            return 0xE;
-        }
-        if (((s32)arg2 == 0) || ((u32)sp18 < temp_r30)) {
+            if ((((u32)sp18 < 2U) ||
+                 ((u32)sp18 >= (u32)(*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x34) + 0x34) + 2))) &&
+                ((u32)sp18 < temp_r30)) {
+                VFiPFCACHE_FreeFATPage_800A8E10(*(void **)((u8 *)arg0 + 0x34), sp8);
+                return 0xE;
+            }
+            if (!(((s32)arg2 == 0) || ((u32)sp18 < temp_r30)))
+                break;
             var_r29 = sp18;
             var_r26 += 1;
-            if (var_r28 == 0)
-                goto block_35;
-            var_r28 -= 1;
-            if ((u32)var_r29 < temp_r31)
-                goto loop_33;
         }
-block_35:
         var_r27 = var_r28;
         VFiPFCACHE_FreeFATPage_800A8E10(*(void **)((u8 *)arg0 + 0x34), sp8);
-        goto block_36;
     }
-block_36:
     if (((s32)arg2 != 0) && ((u32)sp18 >= temp_r30)) {
         *arg4 = 0;
         temp_r3_5 = ((s32 (*)(void *, s32, u32, u32 *, s32 *, s32))fn_800ADA24)(
@@ -4778,17 +4766,14 @@ block_36:
         }
         if ((s32)*var_r25 == 0) {
             *var_r25 = *arg4;
-            goto block_51;
+        } else {
+            temp_r3 = VFiPFFAT_WriteCluster(arg0, var_r29, var_r26 - 1, *arg4, 1);
+            if (temp_r3 != 0) {
+                return temp_r3;
+            }
         }
-        temp_r3 = VFiPFFAT_WriteCluster(arg0, var_r29, var_r26 - 1, *arg4, 1);
-        if (temp_r3 != 0) {
-            return temp_r3;
-        }
-block_51:
         var_r29 = sp18;
-        goto block_52;
     }
-block_52:
     *arg5 = var_r29;
     return 0;
 }
