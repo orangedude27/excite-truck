@@ -98,7 +98,7 @@ int fn_80171E3C(void *arg0) {
 }
 #pragma pop
 
-int fn_80171EC0(void) {
+int fn_80171EC0(int unused) {
     return *(int *)((char *)fn_8017960C() + 0x10) == 0x50434152;
 }
 
@@ -1777,6 +1777,106 @@ void fn_80175D40(void *arg0) {
 int fn_80176030(void) { return 0; }
 
 int fn_80176038(void) { return 0; }
+
+void fn_80176040(char *self, int a, int b) {
+    extern float fn_8001DAE8();
+    extern void *fn_801B2EC0();
+    extern void fn_8017B3A8(void *, float *, float *);
+    extern void fn_8018F9B4(void *);
+    extern float PSVECMag(float *);
+    extern float lbl_80561AC0, lbl_80561A44, lbl_80561A54, lbl_80561AF0, lbl_80561AD0, lbl_80561A40, lbl_80561B10;
+    Fn8017431CV3 sp20;
+    float sp14[3];
+    float sp8[3];
+    int c;
+    int n;
+    char *o;
+    char *ent;
+    char *ent2;
+    char *p;
+    char *q;
+    float f31;
+    float f;
+    float g;
+    int k;
+    int i;
+    int cnt;
+    int (*isOk)(int) = (int (*)(int))fn_80171EC0;
+    void (*resetSlot)(int) = (void (*)(int))fn_80171D94;
+    if ((*(int (**)(void *, int))(**(char ***)(self + 0x128) + 0x20))(*(void **)(self + 0x128), a) == 0) return;
+    if ((*(int (**)(void *, int))(**(char ***)(self + 0x128) + 0x20))(*(void **)(self + 0x128), b) == 0) return;
+    c = -1;
+    if (isOk(a) != 0) c = b;
+    else if (isOk(b) != 0) c = a;
+    if (c == -1) return;
+    if (a == c) a = b;
+    n = fn_80172624((void *)a, c);
+    o = *(char **)(self + 0x128);
+    *(float *)(o + 0x180) = lbl_80561AC0;
+    *(float *)(o + 0x190) = lbl_80561AC0;
+    if (n >= 1) {
+        *(float *)(o + 0x188) = lbl_80561AC0;
+        p = (char *)fn_801B2EC0(c);
+        (*(void (**)(void *, int))(**(char ***)p + 0x30))(p, a);
+        resetSlot(c);
+        f31 = lbl_8055E3C8;
+        ent = o + c * 0x1C;
+        *(unsigned char *)(ent + 0x90) = 0;
+        *(float *)(ent + 0xA8) = f31;
+        *(float *)(o + 0x180) = fn_8001DAE8(o + 0x17C, ent);
+        ent2 = o + a * 0x1C;
+        k = *(int *)(ent2 + 0x98);
+        *(unsigned char *)(ent2 + k + 0xA0) = (n == 2);
+        *(int *)(ent2 + 0x98) = k + 1;
+        if (n == 2) *(int *)(ent2 + 0x9C) = *(int *)(ent2 + 0x9C) + 1;
+        cnt = 0;
+        q = o;
+        for (i = 0; i < *(int *)(o + 0x170); i++) {
+            if (*(unsigned char *)(q + 0x91) == 0 && *(unsigned char *)(q + 0x90) != 0) cnt++;
+            q += 0x1C;
+        }
+        if (cnt == 0) {
+            f = lbl_80561A44;
+            g = *(float *)(o + 0x19C) - f31;
+            if (!(f > g)) f = g;
+            f = lbl_80561A54 + f;
+            if (f < lbl_80561A44) g = f - lbl_80561A54;
+            else g = lbl_80561A54 + f;
+            *(int *)(o + a * 0x1C + 0x94) = (int)g;
+        }
+        if (n == 2) {
+            *(float *)(o + 0x190) = fn_8001DAE8(o + 0x18C);
+            p = (char *)fn_8017960C(a);
+            sp8[0] = *(float *)(p + 0x60) + *(float *)(p + 0x54) * lbl_80561AF0;
+            sp8[1] = *(float *)(p + 0x64) + *(float *)(p + 0x58) * lbl_80561AF0;
+            sp8[2] = *(float *)(p + 0x68) + *(float *)(p + 0x5C) * lbl_80561AF0;
+            q = (char *)fn_8017960C(c);
+            sp14[0] = sp8[0] - *(float *)(q + 0x60);
+            sp14[1] = sp8[1] - *(float *)(q + 0x64);
+            sp14[2] = sp8[2] - *(float *)(q + 0x68);
+            f = PSVECMag(sp14);
+            if (lbl_80561AD0 > f) f = lbl_80561AD0;
+            f = lbl_80561A40 / f;
+            sp14[0] = sp14[0] * f;
+            sp14[1] = sp14[1] * f;
+            sp14[2] = sp14[2] * f;
+            f = (lbl_80561A78 * *(float *)(q + 0xD4)) / lbl_80561B10;
+            sp14[0] = sp14[0] * f;
+            sp14[1] = sp14[1] * f;
+            sp14[2] = sp14[2] * f;
+            sp14[1] = (lbl_80561B0C * *(float *)(q + 0xD4)) / lbl_80561B10;
+            sp20 = *(Fn8017431CV3 *)(q + 0x60);
+            sp20.a[1] = sp20.a[1] + lbl_80561A54;
+            fn_8017B3A8(q, sp14, sp20.a);
+            fn_8018F9B4(q);
+        }
+    } else {
+        f = fn_8001DAE8(o + 0x184) - *(float *)(o + 0x188);
+        i = 0;
+        if (f >= lbl_80561A44 && f < *(float *)(o + 0x184)) i = 1;
+        if (i == 0) *(float *)(o + 0x188) = fn_8001DAE8(o + 0x184);
+    }
+}
 
 void fn_80176400(void) {
 }
