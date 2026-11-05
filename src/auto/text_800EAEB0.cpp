@@ -3,6 +3,8 @@ extern "C" void Close__Q46nw4hbm3snd6detail8SeqTrackFv(void *);
 extern "C" void* __dt__Q46nw4hbm3snd6detail9FrameHeapFv(void*, s32);
 extern u8 lbl_80323058[], lbl_80323070[];
 extern "C" bool ParseNextTick__Q46nw4hbm3snd6detail9SeqPlayerFb(void *, bool);
+extern "C" void InitParam__Q46nw4hbm3snd6detail9SeqPlayerFiPQ46nw4hbm3snd6detail14NoteOnCallback(void *, s32, void *);
+extern "C" void SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi_800F0E9C(void *, s32);
 extern "C" void UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *);
 extern "C" void MEMFreeToFrmHeap(void *, u32);
 extern "C" void MEMDestroyFrmHeap(void *);
@@ -2304,6 +2306,85 @@ extern "C" s16* GetVariablePtr__Q46nw4hbm3snd6detail9SeqPlayerFi(void* this_, s3
     }
     return NULL;
 }
+
+#pragma push
+#pragma use_lmw_stmw off
+#pragma dont_inline GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv
+extern "C" void fn_800F0360(void *self) {
+    struct Manager {
+        virtual void unused0();
+        virtual void unused1();
+        virtual void RemoveTrack(void *);
+    };
+    register void *player = self;
+    register const char *file = (const char *)lbl_80323B28;
+    register s32 i;
+    if (*(u8 *)((u8 *)player + 0x15) == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x398, file + 0x2F0);
+    if (*(u8 *)((u8 *)player + 0x17) == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x399, file + 0x314);
+    if (*(u8 *)((u8 *)player + 0x15) != 0 && *(u8 *)((u8 *)player + 0x17) != 0) {
+        if (*(u8 *)((u8 *)player + 0x18) == 0 && *(u8 *)((u8 *)player + 0x19) == 0 &&
+            (*(u8 *)((u8 *)player + 0x14) != 0 || *((u8 *)Instance__15EmissionManagerFv() + 0x6C32) == 0)) {
+            s32 ticks = 0;
+            while (*(u16 *)((u8 *)player + 0x88) >= 0x1A0) {
+                ticks++;
+                *(u16 *)((u8 *)player + 0x88) -= 0x1A0;
+            }
+            *(u16 *)((u8 *)player + 0x88) += (s32)((f32)*(u16 *)((u8 *)player + 0x92) * *(f32 *)((u8 *)player + 0x84));
+            while (ticks > 0) {
+                if (ParseNextTick__Q46nw4hbm3snd6detail9SeqPlayerFb(player, true)) {
+                    register s32 state;
+                    register u32 temp = OSDisableInterrupts();
+                    if (*(u8 *)((u8 *)player + 0x17) != 0) {
+                        if (player == 0)
+                            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80324054, 0x233, (const char *)lbl_80324030);
+                        Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((void *)lbl_80412A6C, (u8 *)player + 0x100);
+                    }
+                    if (*(u8 *)((u8 *)player + 0x15) != 0) {
+                        state = (s32)player;
+                        if (player != 0) state += 8;
+                        void *manager = GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
+                        UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(manager, (void *)state);
+                    }
+                    OSRestoreInterrupts(temp);
+                    register u8 *entry = (u8 *)player;
+                    state = 0;
+                    temp = 0;
+                    s32 valid;
+                    void *seq;
+                    do {
+                        valid = 0;
+                        if (state >= 0 && state < 16) valid = 1;
+                        if (valid == 0)
+                            Panic__Q26nw4hbm2dbFPCciPCce(file, 0x2FD, file + 0x14, state, 0, 16);
+                        seq = state > 15 ? (void *)temp : *(void **)(entry + 0x9C);
+                        if (seq != 0) {
+                            Close__Q46nw4hbm3snd6detail8SeqTrackFv(seq);
+                            void *manager = *(void **)((u8 *)player + 0x98);
+                            ((Manager *)manager)->RemoveTrack(*(void **)(entry + 0x9C));
+                            *(void **)(entry + 0x9C) = (void *)temp;
+                        }
+                        ++state;
+                        entry += 4;
+                    } while (state < 16);
+                    *(u8 *)((u8 *)player + 0x15) = 0;
+                    break;
+                }
+                ticks--;
+                *(s32 *)((u8 *)player + 0xFC) += 1;
+            }
+        }
+        i = 0;
+        do {
+            void *seq = i > 15 ? (void *)0 : *(void **)((u8 *)player + 0x9C);
+            if (seq != 0) UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv(seq);
+            i++;
+            player = (u8 *)player + 4;
+        } while (i < 16);
+    }
+}
+#pragma pop
 
 #pragma push
 #pragma use_lmw_stmw off
