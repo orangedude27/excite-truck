@@ -30,7 +30,7 @@ extern int fn_802E30C8(const char *, ...);
 extern void fn_80131818(void *);
 extern int stricmp(const char *, const char *);
 extern char lbl_80349D08[];
-extern char lbl_8055CC38[], lbl_8055CC40[], lbl_8055CC48[], lbl_8055CC50[], lbl_8055CC54[];
+extern char lbl_8055CC38[8], lbl_8055CC40[8], lbl_8055CC48[8], lbl_8055CC50[4], lbl_8055CC54[4];
 extern f32 lbl_8056492C, lbl_80564930, lbl_80564934, lbl_80564938, lbl_8056493C, lbl_80564940;
 
 
@@ -49,6 +49,88 @@ void fn_802A81EC(void);
 void fn_802A81EC(void) {
 
 }
+
+#pragma push
+#pragma processor 750
+#pragma cplusplus on
+extern "C" void fn_802A81F0(void) {
+    struct Mgr {
+        virtual void m0(); virtual void *child(int);
+    };
+    struct Obj {
+        virtual char *name(); virtual int has(const char *); virtual void m2(); virtual void *get(const char *);
+        virtual void m4(); virtual int count(const char *); virtual void m6(); virtual float getf(const char *);
+        virtual float getd(const char *, float); virtual void m9(); virtual void m10(); virtual void m11();
+        virtual void m12(); virtual long long get2(const char *);
+    };
+    Mgr *mgr;
+    Obj *obj;
+    Obj *src;
+    char *entry;
+    int found, index, i, j, n, k;
+    int *tbl;
+    float base, ofs;
+    char name[0x40];
+    char tmp[8];
+    union { long long ll; float f[2]; } u;
+    mgr = (Mgr *)fn_80131810(lbl_80349D08);
+    lbl_804BD6C4[1] = 0;
+    if (!mgr) return;
+    found = 0;
+    index = 1;
+    base = lbl_80564928;
+    obj = (Obj *)mgr->child(0);
+    while (obj) {
+        if (stricmp(obj->name(), lbl_8055CC38) == 0) {
+            tbl = (int *)lbl_804BD6C4[0];
+            n = lbl_804BD6C4[1]++;
+            entry = (char *)fn_801284F8(0x578, lbl_8055CC38);
+            if (entry) {
+                *(char **)(entry + 0x28) = entry + 0x34;
+                *(int *)(entry + 0x30) = 4;
+                *(char **)(entry + 0x6c) = entry + 0x78;
+                *(int *)(entry + 0x74) = 0x20;
+                *(int *)(entry + 0x70) = 0;
+                *(int *)(entry + 0x2c) = 0;
+                for (i = 0; i < *(int *)(entry + 0x30); i++) {
+                    fn_801345D8(name, 0x40, lbl_8055CC40, i);
+                    if (obj->has(name)) {
+                        j = fn_802C6FC0((int)obj->get(name), 0, 0);
+                        k = *(int *)(entry + 0x2c);
+                        *(int *)(entry + 0x2c) = k + 1;
+                        (*(int **)(entry + 0x28))[k] = j;
+                    }
+                }
+                *(int *)(entry + 0x70) = 0;
+                k = obj->count(lbl_8055CC48);
+                for (i = 0; i < k; i++)
+                    *(int *)(entry + 0x70) += 1;
+                u.ll = obj->get2(lbl_8055CC50);
+                *(float *)(entry + 0x60) = u.f[0];
+                *(float *)(entry + 0x64) = base;
+                *(float *)(entry + 0x68) = u.f[1];
+                ofs = obj->getf(lbl_8055CC54);
+                fn_801E9DC4(tmp);
+                fn_801E9E30(tmp, entry + 0x60);
+                *(float *)(entry + 0x64) += ofs;
+                *(float *)(entry + 0x44) = obj->getd(lbl_80349D08 + 0xc, lbl_8056492C);
+                *(float *)(entry + 0x48) = obj->getd(lbl_80349D08 + 0x18, lbl_80564930);
+                *(float *)(entry + 0x4c) = obj->getd(lbl_80349D08 + 0x24, lbl_80564934);
+                *(float *)(entry + 0x50) = obj->getd(lbl_80349D08 + 0x30, lbl_80564930);
+                *(float *)(entry + 0x54) = obj->getd(lbl_80349D08 + 0x40, lbl_80564938);
+                *(float *)(entry + 0x58) = obj->getd(lbl_80349D08 + 0x50, lbl_8056493C);
+                *(float *)(entry + 0x5c) = obj->getd(lbl_80349D08 + 0x5c, lbl_80564940);
+            }
+            tbl[n] = (int)entry;
+            found++;
+        }
+        obj = (Obj *)mgr->child(index++);
+    }
+    fn_802E30C8(lbl_80349D08 + 0x68, found);
+    fn_80131818(mgr);
+}
+#pragma cplusplus reset
+#pragma pop
 
 extern void fn_80128668(void *);
 extern void fn_802C6CF8(s32);
