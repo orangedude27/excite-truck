@@ -1653,6 +1653,13 @@ struct TevStageDefault {
         b[8] = 0x77; b[9] = 0x57; b[10] = 0; b[11] = 0x81;
         b[12] = 0; b[13] = 0; b[14] = 0; b[15] = 0;
     }
+    TevStageDefault &operator=(const TevStageDefault &o) {
+        b[0] = o.b[0]; b[1] = o.b[1]; b[2] = o.b[2]; b[3] = o.b[3];
+        b[4] = o.b[4]; b[5] = o.b[5]; b[6] = o.b[6]; b[7] = o.b[7];
+        b[8] = o.b[8]; b[9] = o.b[9]; b[10] = o.b[10]; b[11] = o.b[11];
+        b[12] = o.b[12]; b[13] = o.b[13]; b[14] = o.b[14]; b[15] = o.b[15];
+        return *this;
+    }
 };
 extern "C" void fn_800D9844(void* arg0, u32 arg1, s32 arg2) {
     u32 format = *(u32*)((u8*)arg0 + 0x4C);
