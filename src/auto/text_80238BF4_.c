@@ -157,6 +157,19 @@ void fn_80238FCC(u32 arg0, u32 arg1) {
         num = *(u16 *)entry;
     } while (i < num);
 }
+
+#pragma dont_inline on
+void fn_8023905C(void *arg0) {
+    *(int *)((char *)arg0 + 0x14) = 0;
+    *(int *)((char *)arg0 + 8) = 0;
+    *(char *)((char *)arg0 + 4) = 1;
+    *(char *)((char *)arg0 + 5) = 1;
+    *(int *)arg0 = fn_802E2C20();
+    *(int *)((char *)arg0 + 0x10) = 0;
+    *(int *)((char *)arg0 + 0xC) = 0;
+}
+#pragma dont_inline off
+
 #pragma scheduling on
 s32 fn_8023964C(s32 arg0) {
     fn_8023905C((void *)arg0);
