@@ -1839,6 +1839,98 @@ extern "C" void fn_8015A81C(Unk801577F0* arg0) {
     *(s32*)((u8*)arg0 + 0x26c) = 0;
     *(u8*)((u8*)arg0 + 0x2f0) = 0;
 }
+
+extern "C" s32 fn_801D48FC(s32);
+extern "C" s32 fn_801D4908(s32, void*, s32);
+extern "C" s32 fn_801DDA84(void*, void*, s32, f32, f32, f32);
+extern "C" f32 fn_801DDC8C(void*, f32, f32);
+extern "C" void fn_801E9DC4(void*);
+extern "C" void fn_80198EA0(s32);
+extern "C" f32 lbl_805617B4, lbl_805617B8, lbl_805617BC;
+extern "C" f32 fn_8015A8D8(void* a, void* arg1) {
+    u8* p = (u8*)a;
+    f32 result;
+    s32 end;
+    if (p[0x2f0]) {
+        s32 active = fn_801D48FC(*(s32*)(p+0x26c));
+        p[0x2f0] = active;
+        u8* slot = p;
+        for (s32 i = 0; i < 8; i++, slot += 0x10) {
+            s32 owner = *(s32*)(p+0x26c);
+            s32 enabled;
+            *(s32*)(slot+0x274) = *(s32*)(slot+0x270);
+            if (!*(s32*)(slot+0x270)) { enabled = 0; } else {
+                u8* car = (u8*)fn_8017960C(*(s32*)(slot+0x278));
+                if (!car) { enabled = 0; } else {
+                    s32 running = *(s32*)(car+0x2620) > 0;
+                    switch (*(s32*)(slot+0x270)) {
+                    case 1:
+                        if (car) *(s32*)(slot+0x270) = running ? 3 : 2;
+                        else *(s32*)(slot+0x270) = 0;
+                        break;
+                    case 2:
+                        if (running) *(s32*)(slot+0x270) = 3;
+                        break;
+                    case 3:
+                        if (!running) {
+                            *(s32*)(slot+0x270) = 2;
+                            u8 query[8];
+                            u8 points[40];
+                            fn_801E9DC4(query);
+                            f32 dist = fn_801DDC8C(query, *(f32*)(car+0x60), *(f32*)(car+0x68));
+                            if (dist > lbl_805617B8 && *(f32*)(car+0x11c) - dist > lbl_805617B4) {
+                                fn_801E9DC4(query);
+                                s32 n = fn_801DDA84(query, points, 10, *(f32*)(car+0x60), *(f32*)(car+0x68), lbl_805617BC);
+                                if (fn_801D4908(owner, points, n)) {
+                                    *(s32*)(slot+0x270) = 4;
+                                    *(f32*)(slot+0x27c) = lbl_80561750;
+                                }
+                            }
+                        }
+                        break;
+                    case 4:
+                        *(f32*)(slot+0x27c) -= lbl_8056177C;
+                        if (*(f32*)(slot+0x27c) < lbl_80561754) *(s32*)(slot+0x270) = 5;
+                        else if (running) *(s32*)(slot+0x270) = 3;
+                        break;
+                    }
+                    enabled = (active || *(s32*)(slot+0x270) == 4);
+                }
+            }
+            p[0x2f0] = (p[0x2f0] | enabled) != 0;
+            s32 changed = 0;
+            if (*(s32*)(slot+0x270) == 5 && *(s32*)(slot+0x274) != 5) changed = 1;
+            if (changed) {
+                ++*(s32*)(p+0x264);
+                ++*(s32*)(p+0x260);
+                *(f32*)(p+0x254) = *(f32*)(p+0x250);
+                *(f32*)(p+0x25c) = lbl_80561750;
+                ((Fn8015889C*)a)->v32();
+                if (*(s32*)(p+0x248) && *(void**)(p+0x268))
+                    *(s32*)((u8*)*(void**)(p+0x268)+8) = 0;
+                fn_80198EA0(i);
+            }
+        }
+        if (!p[0x2f0]) *(s32*)(p+0x26c) = 0;
+    }
+    *(f32*)(p+0x254) = fn_801429D0(lbl_80561754, *(f32*)(p+0x254)-lbl_8056177C);
+    if (!fn_8015A404(arg1) && !((Fn8015889C*)a)->v37())
+        *(f32*)(p+0x254) = fn_801429D0(*(f32*)(p+0x254), lbl_8056179C);
+    result = lbl_80561754;
+    end = 0;
+    if (((Fn8015889C*)a)->v39()) {
+        s32 last = fn_80158D04(a)-1;
+        if (((Fn8015889C*)a)->v23() == last) end = 1;
+    }
+    if (fn_80141F7C(*(f32*)(p+0x254)) || end) {
+        if (*(s32*)(p+0x264) > 0) result = ((f32 (*)(void*, void*))fn_8015A368)(a,arg1);
+        if (!end) fn_8015A318((Unk8015A368C*)a);
+    } else if (*(s32*)(p+0x264) > 0) {
+        ((Fn8015889C*)a)->v34();
+    }
+    return result;
+}
+
 #pragma push
 #pragma scheduling invalid_target
 #pragma opt_propagation off
