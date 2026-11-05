@@ -249,22 +249,18 @@ extern "C" void *fn_8020E288(void *arg0, s32 arg1) {
 extern "C" s32 fn_80009C84();
 extern "C" void fn_80206750(s32, s32, s32);
 void fn_8020F15C(void *arg0) {
-    s32 value;
-    s32 mode;
+    int value;
+    int mode;
     void *p;
-    p = *(void **)((u8 *)arg0 + 4);
-    value = *(s32 *)((u8 *)p + 0x1EC);
-    if (fn_80009C84() == 0) {
-        mode = 2;
-    } else {
-        mode = 0;
-    }
-    if (*(s32 *)((u8 *)arg0 + 0x48) != 0)
-        fn_80206750(*(s32 *)((u8 *)arg0 + 0x48), value, mode);
-    if (*(s32 *)((u8 *)arg0 + 0x4C) != 0)
-        fn_80206750(*(s32 *)((u8 *)arg0 + 0x4C), value, mode);
-    if (*(s32 *)((u8 *)arg0 + 0x50) != 0)
-        fn_80206750(*(s32 *)((u8 *)arg0 + 0x50), value, mode);
+    p = *(void **)((char *)arg0 + 4);
+    value = *(int *)((char *)p + 0x1EC);
+    mode = fn_80009C84() == 0 ? 2 : 0;
+    if (*(int *)((char *)arg0 + 0x48) != 0)
+        fn_80206750(*(int *)((char *)arg0 + 0x48), value, mode);
+    if (*(int *)((char *)arg0 + 0x4C) != 0)
+        fn_80206750(*(int *)((char *)arg0 + 0x4C), value, mode);
+    if (*(int *)((char *)arg0 + 0x50) != 0)
+        fn_80206750(*(int *)((char *)arg0 + 0x50), value, mode);
 }
 
 #pragma scheduling on
@@ -291,9 +287,9 @@ void fn_8020F21C(void *arg0) {
     }
 }
 
-#pragma scheduling off
+#pragma scheduling on
 void fn_8020F240(void *arg0) {
-    register void *p;
+    void *p;
     float value;
     p = *(void **)((char *)arg0 + 8);
     if (p != 0) {
@@ -308,6 +304,7 @@ void fn_8020F240(void *arg0) {
         *(signed char *)((char *)p + 0x4A) = 0;
     }
 }
+#pragma scheduling off
 void fn_8020F284(void *arg0, float farg0) {
     float temp_f0;
     float temp_f1;
