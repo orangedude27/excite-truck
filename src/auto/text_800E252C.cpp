@@ -1061,6 +1061,61 @@ extern "C" void FreeVoice__Q46nw4hbm3snd6detail9AxManagerFPQ46nw4hbm3snd6detail7
     OSRestoreInterrupts(secondState);
     OSRestoreInterrupts(firstState);
 }
+
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" void fn_800E3DDC(void *arg0, void *arg1) {
+    struct Mgr { char pad0[0x14]; char activeList[0xC]; char freeList[0x4]; char pad1[8]; void *head; char pad2[0x6c31 - 0x1c]; unsigned char flag; };
+    Mgr *m = (Mgr *)arg0;
+    unsigned int outerLevel = OSDisableInterrupts();
+    unsigned int level = OSDisableInterrupts();
+    if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
+    void *link = (char *)arg1 + 0x1A8;
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(m->activeList, link);
+    if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
+    void *it1 = (char *)arg0 + 0x24;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)arg0 + 0x20, &it1, link);
+    OSRestoreInterrupts(level);
+    level = OSDisableInterrupts();
+    if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((char *)arg0 + 0x20, link);
+    void *node = *(void **)((char *)arg0 + 0x18);
+    while (node != (char *)arg0 + 0x18) {
+        if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
+        if (*(int *)((char *)node - 0x84) > *(int *)((char *)arg1 + 0x124)) break;
+        node = *(void **)node;
+    }
+    if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
+    void *it2 = node;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)arg0 + 0x14, &it2, link);
+    OSRestoreInterrupts(level);
+    if (*(unsigned char *)((char *)arg0 + 0x6C31) != 0) {
+        void *n = *(void **)((char *)arg0 + 0x18);
+        while (n != (char *)arg0 + 0x18) {
+            if (n == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
+            if (*(int *)((char *)n - 0x84) != 0xFF) {
+                if (n == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
+                char *base = (char *)n - 0x1A8;
+                char *row = base;
+                int a;
+                int b;
+                for (a = 0; a < *(int *)(base + 0x104); a++) {
+                    char *entry = row;
+                    for (b = 0; b < *(int *)(base + 0x108); b++) {
+                        void *input = *(void **)(entry + 0xC);
+                        if (input != 0) TRKProcessInput(input, 0x10);
+                        entry += 4;
+                    }
+                    row += 0x10;
+                }
+            }
+            n = *(void **)n;
+        }
+    }
+    OSRestoreInterrupts(outerLevel);
+}
+#pragma pop
+
 #pragma use_lmw_stmw reset
 
 #pragma pop
@@ -3122,6 +3177,44 @@ extern "C" void FadeIn__Q44nw4r3snd6detail10BasicSoundFi(void* self, int duratio
         sound->current = 0;
     }
 }
+
+class PauseVtObj;
+class PauseVt {
+public:
+    virtual ~PauseVt();
+    virtual void vf2();
+    virtual void vf3();
+    virtual void vf4();
+    virtual void vf5();
+    virtual void vf6(int);
+    virtual void vf7();
+    virtual void vf8();
+    virtual void vf9();
+    virtual void vf10();
+    virtual void vf11();
+    virtual void vf12();
+    virtual void vf13();
+    virtual void vf14();
+    virtual void vf15();
+    virtual void vf16();
+    virtual void vf17();
+    virtual void vf18();
+    virtual void vf19();
+    virtual void vf20();
+    virtual void vf21();
+    virtual PauseVt *vf22();   // vtable 0x5C
+};
+struct PauseFields {
+    PauseVt *vt;
+    unsigned char pad0[0x50];
+    float start;     // 0x54
+    float end;       // 0x58
+    int total;       // 0x5C
+    int elapsed;     // 0x60
+    unsigned char pad1[0x6];
+    unsigned char paused;   // 0x67
+    unsigned char fading;   // 0x68
+};
 
 typedef void (*vfn0_t)(void*);
 extern "C" void fn_800E9070(VfObj *this_) {
