@@ -2105,7 +2105,7 @@ extern "C" s32 fn_800A8504(void *arg0, void *arg1, s32 arg2, s32 arg3) {
 
 extern "C" s32 fn_800A58E0(void *, s32, s32, s32, s32);
 extern "C" s32 fn_800A8730(void *arg0, u32 *arg1, void *arg2, u32 arg3, s32 arg4, s32 *arg5) {
-    register u32 temp_r7;
+    u32 temp_r7;
     void *var_r30;
     s32 var_r29;
     u32 request_length;
@@ -4638,7 +4638,7 @@ extern "C" s32 fn_800ADA24(void *arg0, s32 arg1, u32 arg2, u32 *arg3, u32 *arg4,
 
 extern "C" s32 VFiPFFAT_ReadClusterPage(void *, u32, s32, s32 *, s32 *, void *);
 extern "C" s32 VFiPFFAT_WriteCluster(void *, s32, s32, s32, s32);
-extern "C" s32 fn_800AE7A8(void *, s32, s32);
+extern "C" s32 fn_800AE7A8(void *, s32, s32, s32);
 extern "C" s32 fn_800ADD84(void *arg0, s32 arg1, s32 arg2, s32 arg3, u32 *arg4, s32 *arg5) {
     s32 sp18;
     s32 sp14;
@@ -14185,6 +14185,49 @@ extern "C" void fn_800C34B4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     fn_800C3574((void *)arg0, lbl_802F4108, arg2 + 1, arg1 + 2, arg3);
 }
 
+extern "C" void fn_800C3574(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4) {
+    s32 *win = (s32 *)arg0;
+    s32 *c = (s32 *)arg1;
+    s16 *out = (s16 *)arg3;
+    s32 n = arg2;
+    s32 i;
+    for (i = 0; i < 15; i++) {
+        s64 a = (s64)win[n & 0x3FF] * c[0] + (s64)win[(n + 0x3E0) & 0x3FF] * c[8]
+              + (s64)win[(n + 0x60) & 0x3FF] * c[1] + (s64)win[(n + 0x380) & 0x3FF] * -c[9]
+              + (s64)win[(n + 0x80) & 0x3FF] * c[2] + (s64)win[(n + 0x360) & 0x3FF] * c[10]
+              + (s64)win[(n + 0xE0) & 0x3FF] * c[3] + (s64)win[(n + 0x300) & 0x3FF] * -c[11]
+              + (s64)win[(n + 0x100) & 0x3FF] * c[4] + (s64)win[(n + 0x2E0) & 0x3FF] * c[12]
+              + (s64)win[(n + 0x160) & 0x3FF] * c[5] + (s64)win[(n + 0x280) & 0x3FF] * -c[13]
+              + (s64)win[(n + 0x180) & 0x3FF] * c[6] + (s64)win[(n + 0x260) & 0x3FF] * c[14]
+              + (s64)win[(n + 0x1E0) & 0x3FF] * c[7] + (s64)win[(n + 0x200) & 0x3FF] * -c[15];
+        s64 b = (s64)win[n & 0x3FF] * c[8] + (s64)win[(n + 0x3E0) & 0x3FF] * -c[0]
+              + (s64)win[(n + 0x60) & 0x3FF] * c[9] + (s64)win[(n + 0x380) & 0x3FF] * c[1]
+              + (s64)win[(n + 0x80) & 0x3FF] * c[10] + (s64)win[(n + 0x360) & 0x3FF] * -c[2]
+              + (s64)win[(n + 0xE0) & 0x3FF] * c[11] + (s64)win[(n + 0x300) & 0x3FF] * c[3]
+              + (s64)win[(n + 0x100) & 0x3FF] * c[12] + (s64)win[(n + 0x2E0) & 0x3FF] * -c[4]
+              + (s64)win[(n + 0x160) & 0x3FF] * c[13] + (s64)win[(n + 0x280) & 0x3FF] * c[5]
+              + (s64)win[(n + 0x180) & 0x3FF] * c[14] + (s64)win[(n + 0x260) & 0x3FF] * -c[6]
+              + (s64)win[(n + 0x1E0) & 0x3FF] * c[15] + (s64)win[(n + 0x200) & 0x3FF] * c[7];
+        s32 r1 = (s32)(a >> 25);
+        s32 r2 = (s32)(b >> 25);
+        if ((r1 >> 31) != (r1 >> 15)) {
+            r1 = (r1 >> 31) ^ 0x7FFF;
+        }
+        if ((r2 >> 31) != (r2 >> 15)) {
+            r2 = (r2 >> 31) ^ 0x7FFF;
+        }
+        if (arg4 == 0) {
+            out[2 * i] = r1;
+            out[0x3C - 2 * i] = r2;
+        } else {
+            out[i] = r1;
+            out[0x1E - i] = r2;
+        }
+        n++;
+        c += 16;
+    }
+}
+
 extern "C" void fn_800C3960(s32 *tbl, s32 *coef, u32 idx, s16 *out, u32 mask, s32 flag) {
     s32 *tbl2 = tbl + 0x10;
     s64 sumA = 0;
@@ -16259,16 +16302,14 @@ extern "C" void fn_800D01AC(void *arg0, void *arg1) {
     };
     typedef void (*Method0)(void *);
     typedef void (*Method1)(void *, s32);
-    typedef void (*MethodPtr)(void *, void *);
-    u8 *end = (u8 *)arg1 + 4;
     u8 *node = *(u8 **)((u8 *)arg1 + 4);
+    u8 *end = (u8 *)arg1 + 4;
     void *object;
     void *entry;
     u8 *member;
     void *child;
-    s32 found;
 
-    while (node != end) {
+    for (; node != end; node = *(u8 **)node) {
         if (*(void **)((u8 *)arg0 + 0x14) != 0) {
             object = MEMAllocFromAllocator((MEMAllocator *)*(void **)((u8 *)arg0 + 0x14), (u32)0x30);
             entry = MEMAllocFromAllocator((MEMAllocator *)*(void **)((u8 *)arg0 + 0x14), (u32)0x10);
@@ -16340,16 +16381,17 @@ extern "C" void fn_800D01AC(void *arg0, void *arg1) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
         }
         child = ((Dispatch *)member)->d1();
-        found = 0;
-        while (child != 0) {
-            if (child == &lbl_8055DE00) {
-                found = 1;
-                break;
+        {
+            s32 found = 0;
+            for (; child != 0; child = *(void **)child) {
+                if (child == &lbl_8055DE00) {
+                    found = 1;
+                    break;
+                }
             }
-            child = *(void **)child;
-        }
-        if (found != 0) {
-            ((Dispatch *)object)->d18(1);
+            if (found != 0) {
+                ((Dispatch *)object)->d18(1);
+            }
         }
         if (node == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
@@ -16359,23 +16401,23 @@ extern "C" void fn_800D01AC(void *arg0, void *arg1) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
         }
         child = ((void *(*)(void *))(*(void ***)member)[3])(member);
-        found = 0;
-        while (child != 0) {
-            if (child == &lbl_8055DE10) {
-                found = 1;
-                break;
+        {
+            s32 found = 0;
+            for (; child != 0; child = *(void **)child) {
+                if (child == &lbl_8055DE10) {
+                    found = 1;
+                    break;
+                }
             }
-            child = *(void **)child;
-        }
-        if (found != 0) {
-            ((Method1)(*(void ***)object)[20])(object, 1);
+            if (found != 0) {
+                ((Method1)(*(void ***)object)[20])(object, 1);
+            }
         }
         ((Dispatch *)arg0)->d6(object);
         if (node == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
         }
         ((Dispatch *)arg0)->d18((s32)(node + 0xC));
-        node = *(u8 **)node;
     }
 }
 
@@ -22344,9 +22386,9 @@ extern "C" void fn_800D272C(void *arg0, void *arg1) {
     s32 var_r10;
     s32 var_r11;
     s32 var_r9;
-    s32 var_r5;
-    s32 var_r4;
     s32 var_r3;
+    s32 var_r4;
+    s32 var_r5;
     u16 temp_r10;
     u16 temp_r10_2;
     u16 temp_r11_2;
@@ -22370,11 +22412,11 @@ extern "C" void fn_800D272C(void *arg0, void *arg1) {
 
     var_r31 = (u8 *)arg1;
     var_r29 = (u8 *)lbl_8031EA80;
-    if (!arg0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)&var_r29[0], 0x2EB, (const char *)(var_r29 + 0x10));
+    if (arg0 == NULL) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)var_r29, 0x2EB, (const char *)(var_r29 + 0x10));
     }
-    if (!var_r31) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)&var_r29[0], 0x2EC, (const char *)(var_r29 + 0xF8));
+    if (var_r31 == NULL) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)var_r29, 0x2EC, (const char *)(var_r29 + 0xF8));
     }
     var_r4 = 2;
     var_r5 = 0x20;
@@ -22393,7 +22435,7 @@ loop_50:
                 var_r9 = 0;
                 if ((s32) temp_r11 == 0xA) {
                     var_r31 += 1;
-                    *((u8 *)M2C_FIELD(arg0, s32 *, 0) + M2C_FIELD(arg0, u16 *, 0xE) + ((M2C_FIELD(arg0, u16 *, 4) + 1) * M2C_FIELD(arg0, u16 *, 0xC))) = 0;
+                    *(((M2C_FIELD(arg0, u16 *, 4) + 1) * M2C_FIELD(arg0, u16 *, 0xC)) + ((u8 *)M2C_FIELD(arg0, s32 *, 0) + M2C_FIELD(arg0, u16 *, 0xE))) = 0;
                     temp_r9 = M2C_FIELD(arg0, u16 *, 0xC) + 1;
                     M2C_FIELD(arg0, u16 *, 0xE) = 0U;
                     M2C_FIELD(arg0, u16 *, 0xC) = temp_r9;
