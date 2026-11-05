@@ -189,18 +189,19 @@ void fn_80234EF4(void *arg0, const char *arg1) {
 void *fn_8023505C(void *arg0, int arg1) {
     void *node;
     int i;
-    if (arg1 == 0)
+
+    if (arg1 == 0) {
         return *(void **)((char *)arg0 + 0x88);
+    }
     node = *(void **)((char *)arg0 + 0x88);
     i = 0;
-    do {
-        if (i == arg1)
+    while (node != 0 && i <= arg1) {
+        if (i == arg1) {
             return node;
+        }
         node = *(void **)((char *)node + 0x18);
-        i += 1;
-        if (node == 0)
-            break;
-    } while (i <= arg1);
+        i++;
+    }
     return node;
 }
 #pragma dont_inline reset
@@ -331,6 +332,7 @@ void fn_802354A0(int arg0, int arg1, int arg2, float x, float y, float z, float 
     int handle;
     void *obj;
     int index;
+    float s;
 
     if (arg1 < 0)
         return;
@@ -353,8 +355,8 @@ void fn_802354A0(int arg0, int arg1, int arg2, float x, float y, float z, float 
     fn_802C8B98(handle, (int)obj);
     index = fn_80230B9C(arg2);
 
-    if (!((float)__fabs(*(float *)((char *)obj + 0x38) - lbl_805636B0) <= lbl_80558DC4 ? 1 : 0)) {
-        float s = *(float *)((char *)obj + 0x38);
+    s = *(float *)((char *)obj + 0x38);
+    if (!((float)__fabs(s - lbl_805636B0) <= lbl_80558DC4)) {
         sx = dx * s;
         sy = dy * s;
         x += lbl_805636B4 * (dx * (lbl_805636B0 - s));
