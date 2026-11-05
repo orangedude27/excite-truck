@@ -5556,7 +5556,7 @@ void bta_hh_cback(u8 arg0, u8 arg1, u32 arg2, BT_HDR *arg3) {
             case 5: event = 0x1710; fn_800716F0((void *)((u8 *)arg3 + 4)); break;
             case 6: {
                 u8 *base = lbl_803C0D48;
-                s32 i;
+                u32 i;
                 for (i = 0; i < 9; i++) {
                     u8 *e = base + i * 0x28;
                     if (e[0x26] == arg0) { e[0x27] = 1; break; }
@@ -5565,7 +5565,7 @@ void bta_hh_cback(u8 arg0, u8 arg1, u32 arg2, BT_HDR *arg3) {
             }
             case 7: {
                 u8 *base = lbl_803C0D48;
-                s32 i;
+                u32 i;
                 for (i = 0; i < 9; i++) {
                     u8 *e = base + i * 0x28;
                     if (e[0x26] == arg0) { e[0x27] = 1; break; }
@@ -5574,7 +5574,7 @@ void bta_hh_cback(u8 arg0, u8 arg1, u32 arg2, BT_HDR *arg3) {
             }
             case 8: {
                 u8 *base = lbl_803C0D48;
-                s32 i;
+                u32 i;
                 for (i = 0; i < 9; i++) {
                     u8 *e = base + i * 0x28;
                     if (e[0x26] == arg0) { e[0x27] = 1; break; }
@@ -10685,7 +10685,8 @@ tBTM_STATUS btm_sec_mx_access_request(BD_ADDR bd_addr, UINT16 psm, BOOLEAN is_or
         }
     }
 
-    for (index = 0, p_serv_rec = lbl_803C0F78 + 0x1990; index != 0x18; index++, p_serv_rec += 0x3C) {
+    p_serv_rec = lbl_803C0F78 + 0x1990;
+    for (index = 0; index < 0x18; index++, p_serv_rec += 0x3C) {
         if ((p_serv_rec[0xE] & 0x80) &&
             *(u16 *)(p_serv_rec + 0xC) == psm &&
             *(u32 *)(p_serv_rec + 0x0) == mx_proto_id &&
@@ -14551,12 +14552,12 @@ UINT8 hidh_conn_snd_data(UINT8 dhandle, s32 trans_type, UINT8 param,
     register u16 var_r25;
     register u32 var_r21;
     void *temp_r3_2;
-    register BT_HDR *var_r26;
+    u8 *temp_r27;
     void *temp_r3;
     register s32 var_r22;
     u8 *temp_r3_3;
     u8 *temp_r3_4;
-    register u8 *temp_r27;
+    BT_HDR *var_r26;
     register u8 var_r30;
     register u8 var_r29;
     register u8 var_r28;
@@ -15746,13 +15747,12 @@ void l2c_link_check_send_pkts(void *arg0, u8 arg1, void *arg2, u8 arg3) {
         u8 *global = lbl_803C4040;
         for (;;) {
             u8 *head = *(u8 **)(p_lcb + 0x44);
-            if (head == 0 || *(u16 *)(head + 6) != 0 || p_lcb[0x40] != 0)
-                break;
-            p_buf = (u8 *)GKI_dequeue((BUFFER_Q *)(p_lcb + 0x44));
-            if (p_buf == 0 || (u8)l2c_link_send_to_lower(arg0, p_buf) == 0)
-                break;
-            if (*(u16 *)(global + 4) == 0 || *(u16 *)(p_lcb + 0x36) == 0)
-                break;
+            if (head != 0 && *(u16 *)(head + 6) == 0 && p_lcb[0x40] == 0) {
+                p_buf = (u8 *)GKI_dequeue((BUFFER_Q *)(p_lcb + 0x44));
+                if (p_buf != 0 && (u8)l2c_link_send_to_lower(arg0, p_buf) != 0 && *(u16 *)(global + 4) != 0 && *(u16 *)(p_lcb + 0x36) != 0)
+                    continue;
+            }
+            break;
         }
     }
     if (p_lcb[0x40] != 0)
@@ -18393,13 +18393,14 @@ void RFCOMM_DisconnectInd(u16 arg0, s32 arg1) {
 
 extern s32 rfc_parse_data(void *, void *, u8 *);
 void RFCOMM_BufDataInd(u32 cid, BT_HDR *p_buf) {
-    s32 index = (s32)cid - 0x40;
+    s32 index;
     char *messages = lbl_803196B8;
     void *p_mcb;
     void *p_port;
     u16 connection_id;
     s32 result;
 
+    index = (s32)cid - 0x40;
     if (index >= 10) {
         if (lbl_803C4828[0x414] >= 1)
             ((void (*)(u32, void *, u32))fn_80070954)(0x90000, messages, cid);
@@ -23335,7 +23336,9 @@ void WUDStoredLinkKeyCallback(void *msg) {
                 if (new_dev == 0) {
                     for (i = 0; i < 6; i++) {
                         if (gbase[i * 0x60 + 0x47d] == 0) {
-                            new_dev = gbase + i * 0x60 + 0x424;
+                            dev = gbase;
+                            dev += i * 0x60;
+                            new_dev = dev + 0x424;
                             break;
                         }
                     }
