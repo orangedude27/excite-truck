@@ -1427,136 +1427,52 @@ void WaitMicroTime(s32 time) DECOMP_DONT_INLINE
 u32 sendSlaveAddr(u32 addr)
 {
     u32 gpio_out;
-    OSTime time1, time2;
-    s32 elapsed;
+    OSTime start;
     s32 i;
-    
-    // Initial SDA setup based on lbl_80558FB8
+
     if (lbl_80558FB8 == 0) {
-        gpio_out = IPC_HW_REGS[IPC_GPIO1BOUT];
-        gpio_out &= ~0x8000;
-        gpio_out |= 0x8000;
-        IPC_HW_REGS[IPC_GPIO1BOUT] = gpio_out;
+        gpio_out = IPC_HW_REGS[IPC_GPIO1BOUT] & ~0x8000;
+        IPC_HW_REGS[IPC_GPIO1BOUT] = gpio_out | 0x8000;
     } else {
-        gpio_out = IPC_HW_REGS[IPC_GPIO1BOUT];
-        gpio_out &= ~0x8000;
-        IPC_HW_REGS[IPC_GPIO1BOUT] = gpio_out;
+        IPC_HW_REGS[IPC_GPIO1BOUT] &= ~0x8000;
     }
-    
-    // Wait for setup
-    time1 = __OSGetSystemTime();
-    time2 = __OSGetSystemTime();
-    elapsed = __div2i(time1, time2);
-    if (elapsed > 1) {
-        goto timeout;
-    }
-    
-    // Clear SCL
-    gpio_out = IPC_HW_REGS[IPC_GPIO1BOUT];
-    gpio_out &= ~0x4000;
-    IPC_HW_REGS[IPC_GPIO1BOUT] = gpio_out;
-    
-    // Send 8 bits
+    start = __OSGetSystemTime();
+    while (OS_TICKS_TO_USEC(__OSGetSystemTime() - start) < 2) {}
+    IPC_HW_REGS[IPC_GPIO1BOUT] &= ~0x4000;
     for (i = 0; i < 8; i++) {
-        // Set SDA based on lbl_80558FB8
-        if (lbl_80558FB8 == 0) {
-            gpio_out = IPC_HW_REGS[IPC_GPIO1BOUT];
-            gpio_out &= ~0x8000;
-            IPC_HW_REGS[IPC_GPIO1BOUT] = gpio_out;
+        if (addr & 0x80) {
+            if (lbl_80558FB8 == 0)
+                IPC_HW_REGS[IPC_GPIO1BOUT] &= ~0x8000;
+            else
+                IPC_HW_REGS[IPC_GPIO1BOUT] = (IPC_HW_REGS[IPC_GPIO1BOUT] & ~0x8000) | 0x8000;
         } else {
-            gpio_out = IPC_HW_REGS[IPC_GPIO1BOUT];
-            gpio_out &= ~0x8000;
-            gpio_out |= 0x8000;
-            IPC_HW_REGS[IPC_GPIO1BOUT] = gpio_out;
+            if (lbl_80558FB8 == 0)
+                IPC_HW_REGS[IPC_GPIO1BOUT] = (IPC_HW_REGS[IPC_GPIO1BOUT] & ~0x8000) | 0x8000;
+            else
+                IPC_HW_REGS[IPC_GPIO1BOUT] &= ~0x8000;
         }
-        
-        // Wait
-        time1 = __OSGetSystemTime();
-        time2 = __OSGetSystemTime();
-        elapsed = __div2i(time1, time2);
-        if (elapsed > 1) {
-            goto timeout;
-        }
-        
-        // Clock high
-        gpio_out = IPC_HW_REGS[IPC_GPIO1BOUT];
-        gpio_out |= 0x4000;
-        IPC_HW_REGS[IPC_GPIO1BOUT] = gpio_out;
-        
-        // Wait
-        time1 = __OSGetSystemTime();
-        time2 = __OSGetSystemTime();
-        elapsed = __div2i(time1, time2);
-        if (elapsed > 1) {
-            goto timeout;
-        }
-        
-        // Clock low
-        gpio_out = IPC_HW_REGS[IPC_GPIO1BOUT];
-        gpio_out &= ~0x4000;
-        IPC_HW_REGS[IPC_GPIO1BOUT] = gpio_out;
-        
-        // Wait
-        time1 = __OSGetSystemTime();
-        time2 = __OSGetSystemTime();
-        elapsed = __div2i(time1, time2);
-        if (elapsed > 1) {
-            goto timeout;
-        }
-        
-        addr <<= 1;
+        start = __OSGetSystemTime();
+        while (OS_TICKS_TO_USEC(__OSGetSystemTime() - start) < 2) {}
+        IPC_HW_REGS[IPC_GPIO1BOUT] = (IPC_HW_REGS[IPC_GPIO1BOUT] & ~0x4000) | 0x4000;
+        start = __OSGetSystemTime();
+        while (OS_TICKS_TO_USEC(__OSGetSystemTime() - start) < 2) {}
+        IPC_HW_REGS[IPC_GPIO1BOUT] &= ~0x4000;
+        addr = (u8)(addr << 1);
     }
-    
-    // Set direction
-    gpio_out = IPC_HW_REGS[IPC_GPIO1BDIR];
-    gpio_out &= ~0x80000;
-    gpio_out |= 0x40000;
-    IPC_HW_REGS[IPC_GPIO1BDIR] = gpio_out;
-    
-    // Wait
-    time1 = __OSGetSystemTime();
-    time2 = __OSGetSystemTime();
-    elapsed = __div2i(time1, time2);
-    if (elapsed > 1) {
-        goto timeout;
-    }
-    
-    // Clock high
-    gpio_out = IPC_HW_REGS[IPC_GPIO1BOUT];
-    gpio_out |= 0x4000;
-    IPC_HW_REGS[IPC_GPIO1BOUT] = gpio_out;
-    
-    // Wait
-    time1 = __OSGetSystemTime();
-    time2 = __OSGetSystemTime();
-    elapsed = __div2i(time1, time2);
-    if (elapsed > 1) {
-        goto timeout;
-    }
-    
-    // Check ACK
-    if (lbl_80558FB8 == 1) {
-        gpio_out = IPC_HW_REGS[IPC_GPIO1BIN];
-        if ((gpio_out & 0x8000) == 0) {
-            return 0;
-        }
-    }
-    
-    return 1;
-    
-timeout:
-    if (lbl_80558FB8 == 0) {
-        gpio_out = IPC_HW_REGS[IPC_GPIO1BOUT];
-        gpio_out &= ~0x8000;
-        gpio_out |= 0x8000;
-        IPC_HW_REGS[IPC_GPIO1BOUT] = gpio_out;
-    } else {
-        gpio_out = IPC_HW_REGS[IPC_GPIO1BOUT];
-        gpio_out &= ~0x8000;
-        IPC_HW_REGS[IPC_GPIO1BOUT] = gpio_out;
-    }
-    IPC_HW_REGS[IPC_GPIO1BDIR] = (IPC_HW_REGS[IPC_GPIO1BDIR] & ~0x80000) | 0xC0000;
-    IPC_HW_REGS[IPC_GPIO1BOUT] = IPC_HW_REGS[IPC_GPIO1BOUT] & ~0x40000;
+    IPC_HW_REGS[IPC_GPIO1BDIR] = (IPC_HW_REGS[IPC_GPIO1BDIR] & ~0x8000) | 0x4000;
+    start = __OSGetSystemTime();
+    while (OS_TICKS_TO_USEC(__OSGetSystemTime() - start) < 2) {}
+    IPC_HW_REGS[IPC_GPIO1BOUT] = (IPC_HW_REGS[IPC_GPIO1BOUT] & ~0x4000) | 0x4000;
+    start = __OSGetSystemTime();
+    while (OS_TICKS_TO_USEC(__OSGetSystemTime() - start) < 2) {}
+    if (lbl_80558FB8 == 1 && ((IPC_HW_REGS[IPC_GPIO1BIN] >> 15) & 1))
+        return 0;
+    if (*(volatile u32 *)&lbl_80558FB8 == 0)
+        IPC_HW_REGS[IPC_GPIO1BOUT] = (IPC_HW_REGS[IPC_GPIO1BOUT] & ~0x8000) | 0x8000;
+    else
+        IPC_HW_REGS[IPC_GPIO1BOUT] &= ~0x8000;
+    IPC_HW_REGS[IPC_GPIO1BDIR] = (IPC_HW_REGS[IPC_GPIO1BDIR] & ~0x8000) | 0xC000;
+    IPC_HW_REGS[IPC_GPIO1BOUT] &= ~0x4000;
     return 1;
 }
 
