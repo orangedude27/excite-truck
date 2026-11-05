@@ -7,6 +7,7 @@ extern "C" void fn_800F27AC(void *);
 namespace nw4hbm { namespace snd { namespace detail {
 class FrameHeap {
 public:
+    bool Create(void *, unsigned long);
     void *Alloc(unsigned long, void (*)(void *, unsigned long, void *), void *);
     void Destroy();
 };
