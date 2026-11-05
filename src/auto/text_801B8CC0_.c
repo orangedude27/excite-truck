@@ -199,7 +199,7 @@ extern "C" void fn_801B8E28(int arg0) {
     }
     {
         char *matrix = *(char **)((char *)obj + 0x2754);
-        transform_vec_scheduled(w.output, (const float *)(matrix + 0x70), w.input);
+        transform_vec_scheduled(w.output, (const float *)(matrix + 0x70), (float *)w.input);
         w.output[0] += *(float *)(matrix + 0x94);
         w.output[1] += *(float *)(matrix + 0x98);
         w.output[2] += *(float *)(matrix + 0x9c);
