@@ -19,6 +19,7 @@ s32 fn_80179630(s32);
 s32 fn_801DDE78(void);
 void fn_801DDED0(s32, f32*, s32, f32, f32, f32);
 s32 fn_802E2C20(void);
+typedef struct DbgRec { s32 a; f32 b; f32 c; s32 d; f32 e; s32 f; s32 g; s32 h; } DbgRec;
 typedef s32 (*UnkFunc2)(void*, s32);
 typedef struct UnkObj { UnkFunc2 *vtable; } UnkObj;
 #pragma dont_inline on
@@ -173,71 +174,59 @@ s32 fn_801DE5C4(s32 arg0) {
 
     fn_801DDF0C();
     changed = 0;
-    if (arg0 == 0x126) goto decrement;
-    if (arg0 >= 0x126) goto high;
-    if (arg0 == 0x58) goto reset;
-    if (arg0 < 0x58) goto done;
-    if (arg0 >= 0x125) goto update;
-    goto done;
-
-high:
-    if (arg0 == 0x128) goto increment;
-    if (arg0 >= 0x128) goto done;
-    goto update;
-
-decrement:
-    changed = 1;
-    lbl_8055E9BC = (void *)(((s32)lbl_8055E9BC - 1 > -1) ? ((s32)lbl_8055E9BC - 1) : -1);
-    goto done;
-
-increment:
-    changed = 1;
-    index = (s32)lbl_8055E9BC;
-    index++;
-    i = lbl_8055E9C4 - 1;
-    if (index < i) i = index;
-    lbl_8055E9BC = (void *)i;
-    goto done;
-
-update:
-    changed = 1;
-    index = (s32)lbl_8055E9BC;
-    if (index >= 0 && index < lbl_8055E9C4) {
-        result = fn_801DDE78();
-        entry = (u8 *)lbl_80486F30 + ((s32)lbl_8055E9BC * 0x1C);
-        if ((u32)arg0 == 0x127U) {
-            value = *(f32 **)(entry + 8);
-            x = *value + *(f32 *)(entry + 0x18);
-            limit = *(f32 *)(entry + 0x14);
-            *value = (limit < x) ? limit : x;
-        } else {
-            value = *(f32 **)(entry + 8);
-            x = *value - *(f32 *)(entry + 0x18);
-            limit = *(f32 *)(entry + 0x10);
-            *value = (limit > x) ? limit : x;
-        }
-        fn_801DDFE8((void *)fn_801DDEAC());
-        fn_8018A180(result);
-    }
-    goto done;
-
-reset:
-    if ((s32)lbl_8055E9BC == -1) {
+    switch (arg0) {
+    case 0x126:
         changed = 1;
-        result = fn_801DDE78();
-        entry = (u8 *)lbl_80486F30;
-        i = 0;
-        while (i < lbl_8055E9C4) {
-            x = *(f32 *)(entry + 0xC);
-            i++;
-            value = *(f32 **)(entry + 8);
-            entry += 0x1C;
-            *value = x;
+        lbl_8055E9BC = (void *)(((s32)lbl_8055E9BC - 1 > -1) ? ((s32)lbl_8055E9BC - 1) : -1);
+        break;
+    case 0x128:
+        changed = 1;
+        index = (s32)lbl_8055E9BC;
+        index++;
+        i = lbl_8055E9C4 - 1;
+        if (index >= i) index = i;
+        lbl_8055E9BC = (void *)index;
+        break;
+    case 0x125:
+    case 0x127:
+        changed = 1;
+        index = (s32)lbl_8055E9BC;
+        if (index >= 0 && index < lbl_8055E9C4) {
+            result = fn_801DDE78();
+            entry = (u8 *)lbl_80486F30 + ((s32)lbl_8055E9BC * 0x1C);
+            if ((u32)arg0 == 0x127U) {
+                value = *(f32 **)(entry + 8);
+                x = *value + *(f32 *)(entry + 0x18);
+                limit = *(f32 *)(entry + 0x14);
+                *value = (limit < x) ? limit : x;
+            } else {
+                value = *(f32 **)(entry + 8);
+                x = *value - *(f32 *)(entry + 0x18);
+                limit = *(f32 *)(entry + 0x10);
+                *value = (limit > x) ? limit : x;
+            }
+            fn_801DDFE8((void *)fn_801DDEAC());
+            fn_8018A180(result);
         }
-        fn_8018A180(result);
-        lbl_8055E9BC = (void *)0;
+        break;
+    case 0x58:
+        if ((s32)lbl_8055E9BC == -1) {
+            changed = 1;
+            result = fn_801DDE78();
+            entry = (u8 *)lbl_80486F30;
+            i = 0;
+            while (i < lbl_8055E9C4) {
+                x = *(f32 *)(entry + 0xC);
+                i++;
+                value = *(f32 **)(entry + 8);
+                entry += 0x1C;
+                *value = x;
+            }
+            fn_8018A180(result);
+            lbl_8055E9BC = (void *)0;
+        }
+        break;
     }
-done:
     if (changed) lbl_8055E9CC = (void *)fn_802E2C20();
     return 0;
 }
