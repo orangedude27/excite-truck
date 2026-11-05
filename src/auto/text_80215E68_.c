@@ -134,6 +134,7 @@ u8 fn_80215FEC(void *arg0) { return *(u8 *)((u8 *)arg0 + 8); }
 
 u8 fn_80215FF4(u8 *arg0) { return *arg0; }
 
+#pragma peephole off
 #pragma scheduling invalid_target
 s32 fn_80215FFC(void *arg0) {
     s32 result = 0;
@@ -141,6 +142,7 @@ s32 fn_80215FFC(void *arg0) {
     return result;
 }
 #pragma scheduling on
+#pragma peephole on
 u32 fn_80216054(void) { return 1; }
 
 void fn_8021605C(void *arg0, s32 arg1) {
@@ -360,23 +362,11 @@ u32 *fn_80216708(void) {
 
 #pragma scheduling invalid_target
 void fn_80216710(void) {
-    u32 *p = lbl_804908C8;
+    int i;
     lbl_8055EF88 = 0;
-    *p++ = 0;
-    *p++ = 0;
-    *p++ = 0;
-    *p++ = 0;
-    *p++ = 0;
-    *p++ = 0;
-    *p++ = 0;
-    *p++ = 0;
-    *p++ = 0;
-    *p++ = 0;
-    *p++ = 0;
-    *p++ = 0;
-    *p++ = 0;
-    *p++ = 0;
-    *p++ = 0;
+    for (i = 0; i < 16; i++) {
+        lbl_804908C8[i] = 0;
+    }
     lbl_8055EF7C = 0;
     lbl_8055EF8C = 0;
     lbl_8055EF90 = 0;
@@ -483,12 +473,14 @@ extern double __fabs(double);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma dont_inline on
 s32 fn_802168F0(void *arg0) {
-    f32 sp14, sp10;
+    f32 sp[2];
     s32 sp8;
     void *prev;
-    f32 f28, f29, f30, f31, f2;
+    f32 f29, f30, f31, f28, f2;
     s32 flag;
+    s32 gt;
     s32 old = lbl_8055EF78;
     lbl_8055EF78 = old + 1;
     if (fn_8012742C() != 0) return -1;
@@ -498,22 +490,22 @@ s32 fn_802168F0(void *arg0) {
     *(u8 *)&lbl_8055EF98 = 1;
     fn_80127A84(&lbl_8055EF80, &lbl_8055EF84, &sp8);
     prev = lbl_8055EF88;
-    sp10 = lbl_80563458;
+    sp[0] = lbl_80563458;
     lbl_8055EF88 = arg0;
-    sp14 = lbl_80563458;
+    sp[1] = lbl_80563458;
     fn_80236780();
     fn_8021734C(arg0);
-    fn_8021747C(arg0, 0, &sp10, lbl_80563458);
+    fn_8021747C(arg0, 0, sp, lbl_80563458);
     fn_801282E8();
     lbl_8055EF70 = 0;
     if (prev != 0) lbl_8055EF74 = 0;
     fn_80217734(lbl_8055EF88, lbl_8055EF80, lbl_8055EF84);
     fn_80211F64();
     fn_80211F64();
-    f2 = sp10 > lbl_80563484 ? sp10 : lbl_80563484;
+    f2 = sp[0] > lbl_80563484 ? sp[0] : lbl_80563484;
     f28 = lbl_80563468;
     f29 = f28 / f2;
-    if ((f32)__fabs(sp10) <= lbl_80558DC4) f28 = lbl_80563458;
+    f28 = (f32)__fabs(sp[0]) <= lbl_80558DC4 ? f28 : lbl_80563458;
     f30 = lbl_80563468;
     flag = 0;
     lbl_8055EF94 = f28;
@@ -524,13 +516,13 @@ s32 fn_802168F0(void *arg0) {
             void (*cb)(void *) = *(void (**)(void *))((u8 *)lbl_8055EF88 + 0x434);
             if (cb != 0) cb(lbl_8055EF88);
             if (f28 < f30) {
-                fn_8021747C(lbl_8055EF88, 1, &sp10, f28);
+                fn_8021747C(lbl_8055EF88, 1, sp, f28);
             } else {
                 if (flag == 0) {
                     flag = 1;
                     fn_80230E90(0);
                 }
-                fn_8021747C(lbl_8055EF88, 2, &sp10, lbl_80563468);
+                fn_8021747C(lbl_8055EF88, 2, sp, lbl_80563468);
             }
         }
         if (f28 < f31) {
@@ -547,25 +539,26 @@ s32 fn_802168F0(void *arg0) {
     fn_8012742C();
     if (lbl_8055EF74 == -1) fn_80236900();
     else fn_802368D0();
-    fn_8021747C(arg0, 0, &sp10, lbl_80563458);
-    f2 = sp14 > lbl_80563484 ? sp14 : lbl_80563484;
+    fn_8021747C(arg0, 0, sp, lbl_80563458);
+    f2 = sp[1] > lbl_80563484 ? sp[1] : lbl_80563484;
     f30 = lbl_80563468;
     f28 = f30 / f2;
-    if ((f32)__fabs(sp14) <= lbl_80558DC4) f30 = lbl_80563458;
+    if ((f32)__fabs(sp[1]) <= lbl_80558DC4) f30 = lbl_80563458;
     lbl_8055EF94 = f30;
-    if (lbl_8055EF99 == 0) fn_80214D50(4);
-    else lbl_8055EF99 = 0;
+    if (*(u8 *)&lbl_8055EF99 == 0) fn_80214D50(4);
+    else *(u8 *)&lbl_8055EF99 = 0;
     f31 = lbl_80563458;
     for (;;) {
-        if (f31 > f30) f30 = f31;
+        gt = f31 > f30;
+        f30 = gt ? f31 : f30;
         lbl_8055EF94 = f30;
         if (fn_8012742C() != 0) {
             lbl_8055EF74 = -1;
             break;
         }
-        if (sp14 > f31) {
+        if (sp[1] > f31) {
             fn_80236674();
-            if (lbl_8055EF88 != 0) fn_8021747C(lbl_8055EF88, 3, &sp10, f30);
+            if (lbl_8055EF88 != 0) fn_8021747C(lbl_8055EF88, 3, sp, f30);
         }
         fn_802161CC(1);
         fn_802166B8();
