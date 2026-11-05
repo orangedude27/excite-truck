@@ -47,6 +47,18 @@ static inline void MatrixMul80151E60(f32 *dst, const f32 *left, const f32 *right
 
 typedef struct { s32 a, b, c, d; f32 e, f; s32 g; } Copy8014C6F0;
 typedef struct { f32 m[12]; } Matrix801533E8;
+static inline void Transform801533E8(f32 *dst, const f32 *src, const f32 *m) {
+    if (dst == src) {
+        f32 x = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
+        f32 y = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
+        f32 z = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
+        dst[0] = x; dst[1] = y; dst[2] = z;
+    } else {
+        dst[0] = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
+        dst[1] = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
+        dst[2] = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
+    }
+}
 
 extern s32 lbl_8032E1A0[];
 extern f32 lbl_80561648;
@@ -2251,31 +2263,42 @@ extern void *fn_801E87A8(void);
 extern s32 lbl_80559ED4, lbl_80559ED8;
 extern f32 lbl_8056163C, lbl_80561648, lbl_8056164C, lbl_805616B8;
 void fn_801533E8(void *arg0, f32 *arg1) {
-    f32 values[12];
-    f32 out[3];
-    f32 mat[12];
-    f32 x, y, z, a, b, c;
+    Matrix801533E8 values, mat;
+    f32 bounds[6], center[3], out[3];
+    f32 x, y, z;
     s32 i;
     fn_802C86DC();
-    for (i = 0; i < 12; i++) values[i] = ((f32 *)arg1)[i];
-    fn_802C77F0(*(void **)arg1, values);
-    x = values[0] + (values[1] - values[0]) * lbl_8056163C;
-    y = values[2] + (values[3] - values[2]) * lbl_8056163C;
-    z = values[4] + (values[5] - values[4]) * lbl_8056163C;
-    a = x * lbl_805616B8;
-    b = y * lbl_805616B8;
-    c = z * lbl_805616B8;
-    out[0] = a; out[1] = b; out[2] = c;
-    out[0] = a * values[8] + b * values[0] + c * values[4];
-    out[1] = a * values[9] + b * values[1] + c * values[5];
-    out[2] = a * values[10] + b * values[2] + c * values[6];
-    for (i = 0; i < 12; i++) mat[i] = values[i] * lbl_8056164C;
-    if ((*(u32 *)((u8 *)fn_801E87A8() + 0x10) & 2) != 0) {
-        values[0] = -values[0]; values[1] = -values[1]; values[2] = -values[2];
-        mat[0] = -mat[0]; mat[1] = -mat[1]; mat[2] = -mat[2];
+    values = *(Matrix801533E8 *)arg1;
+    mat = values;
+    fn_802C77F0((void *)lbl_80559ED8, bounds);
+    center[0] = bounds[0] + (bounds[1] - bounds[0]) * lbl_8056163C;
+    center[1] = bounds[2] + (bounds[3] - bounds[2]) * lbl_8056163C;
+    center[2] = bounds[4] + (bounds[5] - bounds[4]) * lbl_8056163C;
+    out[0] = center[0] * lbl_805616B8;
+    out[1] = center[1] * lbl_805616B8;
+    out[2] = center[2] * lbl_805616B8;
+    if (out == out) {
+        x = out[0] * mat.m[0] + out[1] * mat.m[3] + out[2] * mat.m[6];
+        y = out[0] * mat.m[1] + out[1] * mat.m[4] + out[2] * mat.m[7];
+        z = out[0] * mat.m[2] + out[1] * mat.m[5] + out[2] * mat.m[8];
+        out[0] = x; out[1] = y; out[2] = z;
+    } else {
+        out[0] = out[0] * mat.m[0] + out[1] * mat.m[3] + out[2] * mat.m[6];
+        out[1] = out[0] * mat.m[1] + out[1] * mat.m[4] + out[2] * mat.m[7];
+        out[2] = out[0] * mat.m[2] + out[1] * mat.m[5] + out[2] * mat.m[8];
     }
-    fn_802C744C(lbl_80559ED8, mat);
-    fn_802C744C(lbl_80559ED4, values);
+    mat.m[9] += out[0] + center[0];
+    mat.m[10] += out[1] + center[1] + lbl_80561648;
+    mat.m[11] += out[2] + center[2];
+    values.m[10] += lbl_80561648;
+    for (i = 0; i < 9; i++) mat.m[i] *= lbl_8056164C;
+    for (i = 0; i < 9; i++) values.m[i] *= lbl_8056164C;
+    if ((*(u32 *)((u8 *)fn_801E87A8() + 0x10) & 2) != 0) {
+        values.m[0] = -values.m[0]; values.m[1] = -values.m[1]; values.m[2] = -values.m[2];
+        mat.m[0] = -mat.m[0]; mat.m[1] = -mat.m[1]; mat.m[2] = -mat.m[2];
+    }
+    fn_802C744C(lbl_80559ED8, mat.m);
+    fn_802C744C(lbl_80559ED4, values.m);
 }
 
 #pragma pop
