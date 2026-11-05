@@ -286,13 +286,11 @@ s32 fn_80231718(s32 arg0) {
 extern s32 sprintf(char *, const char *, ...);
 extern s32 fn_8012C33C(const char *);
 extern s32 fn_80232578(const char *);
-extern char lbl_8055B9A0[];
-#pragma small_data on
-#pragma small_data off
+extern char lbl_8055B9A0;
 #pragma dont_inline on
 s32 fn_80231730(s32 arg0) {
     char buffer[0x18];
-    sprintf(buffer, lbl_8055B9A0, arg0);
+    sprintf(buffer, &lbl_8055B9A0, arg0);
     if (fn_8012C33C(buffer) != 0) return fn_80232578(buffer);
     return 0;
 }
@@ -398,21 +396,23 @@ void fn_80231ADC(void) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_80231AF0(char *text, void *ctx, f32 x, f32 y, f32 z, f32 w, f32 sx, f32 sy, f32 sp) {
+    register char *curText;
     f32 spC;
     f32 sp8;
     f32 half;
-    strlen(text);
+    curText = text;
+    strlen(curText);
     half = lbl_80563690;
-    while (*text != 0) {
+    while (*curText != 0) {
+        int ch = *(u8 *)curText;
         f64 adv = w;
         s32 skip;
-        u8 c;
         u16 code;
         char *next;
-        s32 off;
-        u8 *g;
+        u8 c;
+        unsigned long off;
 
-        if (*text == '\\') {
+        if (ch == '\\') {
             s32 eo;
             s32 i;
             i = 0;
@@ -420,7 +420,7 @@ void fn_80231AF0(char *text, void *ctx, f32 x, f32 y, f32 z, f32 w, f32 sx, f32 
             while (i < ((Fn80231AF0_Table *)lbl_80497F14)->count) {
                 Fn80231AF0_Entry *e;
                 const char *name = *(const char **)((u8 *)((Fn80231AF0_Table *)lbl_80497F14)->entries + eo);
-                if (fn_8002B1D8(text + 1, name, strlen(name)) == 0) {
+                if (fn_8002B1D8(curText + 1, name, strlen(name)) == 0) {
                     e = &((Fn80231AF0_Table *)lbl_80497F14)->entries[i];
                     if (e->unkC != 0) {
                         f32 r = w / fn_80235F64(e->unkC, e->unk10);
@@ -439,8 +439,100 @@ void fn_80231AF0(char *text, void *ctx, f32 x, f32 y, f32 z, f32 w, f32 sx, f32 
         skip = 0;
 have:
         if (skip > 0) {
-            text += skip;
+            curText += skip;
             x += (f32)adv;
+            continue;
+        }
+        c = *(u8 *)curText;
+        if ((c & 0xF0) == 0xE0) {
+            next = curText + 3;
+            code = ((c & 0xF) << 12) | ((((u8 *)curText)[1] & 0x3F) << 6) | (((u8 *)curText)[2] & 0x3F);
+        } else if ((c & 0xE0) == 0xC0) {
+            next = curText + 2;
+            code = ((u8 *)curText)[1] & ~0xC0;
+            code |= (c & 0x1F) << 6;
+        } else {
+            code = c & 0x7F;
+            next = curText + 1;
+        }
+        off = code * 0x1C;
+        curText += next - curText;
+        x += sy * (sx * *(f32 *)((u8 *)((Fn80231AF0_Ctx *)ctx)->glyphs + off));
+        if (lbl_8055F074) {
+            ((void (*)(f32 *, f32 *, f32, f32))lbl_8055F070)(&spC, &sp8, x - half, half + y);
+            spC += half;
+            sp8 -= half;
+        } else {
+            ((void (*)(f32 *, f32 *, f32, f32))lbl_8055F070)(&spC, &sp8, x, y);
+        }
+        fn_80233AA4(ctx, code, spC, sp8 + w, spC + sx * *(f32 *)((u8 *)((Fn80231AF0_Ctx *)ctx)->glyphs + off + 4), sp8, z);
+        x += sx * *(f32 *)((u8 *)((Fn80231AF0_Ctx *)ctx)->glyphs + off + 4);
+        x += sp + sy * (sx * *(f32 *)((u8 *)((Fn80231AF0_Ctx *)ctx)->glyphs + off + 8));
+    }
+}
+
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+void fn_80231D84(char *text, void *ctx, f32 x, f32 y, f32 z, f32 w, f32 sx, f32 sy, f32 sp) {
+    f32 sp8;
+    f32 half;
+    f32 *out = &sp8;
+    strlen(text);
+    half = lbl_80563688;
+    while (*text != 0) {
+        s32 skip;
+        s32 flag;
+        u8 c;
+        u16 code;
+        char *next;
+        s32 off;
+        u8 *g;
+
+        sp8 = w;
+        flag = lbl_8055F050;
+        if (*text == '\\') {
+            s32 eo;
+            s32 i;
+            i = 0;
+            eo = 0;
+            while (i < ((Fn80231AF0_Table *)lbl_80497F14)->count) {
+                Fn80231AF0_Entry *e = (Fn80231AF0_Entry *)((u8 *)((Fn80231AF0_Table *)lbl_80497F14)->entries + eo);
+                if (fn_8002B1D8(text + 1, e->name, strlen(*(const char **)((u8 *)((Fn80231AF0_Table *)lbl_80497F14)->entries + eo))) == 0) {
+                    Fn80231D84_Table *t = (Fn80231D84_Table *)lbl_8049846C;
+                    Fn80231D84_Rec *r;
+                    f32 extra = lbl_8056368C;
+                    r = &t->recs[t->count++];
+                    r->idx = i;
+                    if (e->unkC != 0) {
+                        f32 q = w / fn_80235F64(e->unkC, e->unk10);
+                        r->w = w * e->scale;
+                        r->w2 = q * e->scale * fn_80235EF0(e->unkC, e->unk10);
+                        extra = e->scale * (e->unk18 * q);
+                    } else {
+                        r->w2 = w * e->scale;
+                        r->w = w * e->scale;
+                    }
+                    r->x = x;
+                    r->y = y + w + half * (r->w - w);
+                    r->z = z;
+                    r->flag = flag;
+                    if (out != 0) {
+                        *out = r->w2 + extra;
+                    }
+                    skip = strlen(e->name) + 1;
+                    goto have;
+                }
+                eo += 0x1C;
+                i++;
+            }
+        }
+        skip = 0;
+have:
+        if (skip > 0) {
+            text += skip;
+            x += sp8;
             continue;
         }
         c = *(u8 *)text;
@@ -458,20 +550,14 @@ have:
         text += next - text;
         g = (u8 *)((Fn80231AF0_Ctx *)ctx)->glyphs;
         x += sy * (sx * *(f32 *)(g + off));
-        if (lbl_8055F074) {
-            ((void (*)(f32 *, f32 *, f32, f32))lbl_8055F070)(&spC, &sp8, x - half, half + y);
-            spC += half;
-            sp8 -= half;
-        } else {
-            ((void (*)(f32 *, f32 *, f32, f32))lbl_8055F070)(&spC, &sp8, x, y);
-        }
-        g = (u8 *)((Fn80231AF0_Ctx *)ctx)->glyphs + off;
-        fn_80233AA4(ctx, code, spC, sp8 + w, spC + sx * *(f32 *)(g + 4), sp8, z);
+        fn_80233AA4(ctx, code, x, y + w, x + sx * *(f32 *)(g + off + 4), y, z);
         g = (u8 *)((Fn80231AF0_Ctx *)ctx)->glyphs + off;
         x += sx * *(f32 *)(g + 4);
         x += sp + sy * (sx * *(f32 *)(g + 8));
     }
 }
+#pragma pop
+
 #pragma pop
 void fn_80232024(u8 **arg0) {
     u8 *p = *arg0;
