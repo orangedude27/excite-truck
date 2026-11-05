@@ -21,6 +21,19 @@ extern s32 fn_80204054(void *, s32, s32, void *, s32, s32);
 extern void *fn_802C86DC(void);
 __declspec(section ".data") extern s32 lbl_804BE7D8;
 extern void **lbl_8055FA48;
+__declspec(section ".sdata") extern const char lbl_8055CE68[], lbl_8055CEB8[], lbl_8055CEC0[];
+extern void fn_801473F8(void *, const char *, const char *, ...);
+extern void fn_801476C4(void *);
+typedef struct MenuRenderRecord {
+    void *name;
+    s32 value;
+    f32 y;
+    s32 unkC;
+    f32 unk10;
+    s32 unk14;
+    s32 unk18;
+    s32 unk1C;
+} MenuRenderRecord;
 extern char lbl_8034A598[];
 __declspec(section ".sdata") extern const char lbl_8055CEA8[];
 __declspec(section ".sdata") extern const char lbl_8055CE58[];
@@ -620,70 +633,85 @@ extern "C" void fn_802B6804(void) {
         void *current;
     } Item;
 
-    char *base = lbl_8034A598;
-    Dummy *obj = (Dummy *)lbl_8055FA48;
-    void *recordA;
+    register char *base = lbl_8034A598;
     void *recordB;
-    void *timing;
-    volatile const u8 *source;
+    void *recordA;
     f32 step;
-    s32 i;
-    s32 offset;
-    s32 count;
     Item *item;
+    s32 offset;
+    s32 i;
     void *best;
+    void *selected;
+    volatile const u8 *source;
     Record first;
     Record second;
 
-    fn_802B67C8((s32)(base + 0x208));
-    obj = (Dummy *)lbl_8055FA48;
-    recordA = obj->call(base + 0x218);
-    obj = (Dummy *)lbl_8055FA48;
-    recordB = obj->call(base + 0x228);
-    obj = (Dummy *)lbl_8055FA48;
-    timing = obj->get(base + 0x238);
-    step = *(f32 *)((u8 *)timing + 0x14);
+    {
+        Dummy *obj = (Dummy *)lbl_8055FA48;
+        void *timing;
 
+        fn_802B67C8((s32)(base + 0x208));
+        obj = (Dummy *)lbl_8055FA48;
+        recordA = obj->call(base + 0x218);
+        obj = (Dummy *)lbl_8055FA48;
+        recordB = obj->call(base + 0x228);
+        obj = (Dummy *)lbl_8055FA48;
+        timing = obj->get(base + 0x238);
+        step = *(f32 *)((u8 *)timing + 0x14);
+    }
+
+    base = (char *)&lbl_804BFA70;
     i = 0;
     offset = 0;
-    count = *(s32 *)((u8 *)&lbl_804BFA70 + 4);
-    while (i < count) {
-        item = (Item *)((u8 *)*(u32 *)&lbl_804BFA70 + offset);
-        best = *item->currentPtr;
-        if ((u32)item->current < (u32)best)
-            item->current = best;
+    goto loop_test;
+loop_body:
+    item = (Item *)((u8 *)*(u32 *)&lbl_804BFA70 + offset);
+    best = *item->currentPtr;
+    if ((u32)item->current < (u32)best)
+        item->current = best;
 
-        source = (volatile const u8 *)recordA;
-        first.name = *(void * volatile *)(source + 0);
-        first.value = *(volatile const s32 *)(source + 4);
-        first.timeBits = *(volatile const s32 *)(source + 8);
-        first.unkC = *(volatile const s32 *)(source + 0xC);
-        first.time10 = *(volatile const f32 *)(source + 0x10);
-        first.unk14 = *(volatile const s32 *)(source + 0x14);
-        first.unk18 = *(volatile const s32 *)(source + 0x18);
-        first.unk1C = *(volatile const s32 *)(source + 0x1C);
-        *(f32 *)((u8 *)&first + 8) += step * (f32)i;
+    source = (volatile const u8 *)recordA;
+    first.name = *(void * volatile *)(source + 0);
+    s32 valueA = *(volatile const s32 *)(source + 4);
+    s32 bitsA = *(volatile const s32 *)(source + 8);
+    first.value = valueA;
+    first.timeBits = bitsA;
+    f32 timeA = *(f32 *)((u8 *)&first + 8);
+    first.unkC = *(volatile const s32 *)(source + 0xC);
+    f32 time10A = *(volatile const f32 *)(source + 0x10);
+    first.time10 = time10A;
+    first.unk14 = *(volatile const s32 *)(source + 0x14);
+    first.unk18 = *(volatile const s32 *)(source + 0x18);
+    first.unk1C = *(volatile const s32 *)(source + 0x1C);
+    *(f32 *)((u8 *)&first + 8) = timeA + step * (f32)i;
 
-        if (lbl_8055FA30 != 0)
-            fn_80147230(&first, lbl_8055CE74, item->current);
-        else
-            fn_80147230(&first, lbl_8055CE74, *item->currentPtr);
+    if (lbl_8055FA30 != 0)
+        selected = item->current;
+    else
+        selected = *item->currentPtr;
+    fn_80147230(&first, lbl_8055CE74, selected);
 
-        source = (volatile const u8 *)recordB;
-        second.name = *(void * volatile *)(source + 0);
-        second.value = *(volatile const s32 *)(source + 4);
-        second.timeBits = *(volatile const s32 *)(source + 8);
-        second.unkC = *(volatile const s32 *)(source + 0xC);
-        second.time10 = *(volatile const f32 *)(source + 0x10);
-        second.unk14 = *(volatile const s32 *)(source + 0x14);
-        second.unk18 = *(volatile const s32 *)(source + 0x18);
-        second.unk1C = *(volatile const s32 *)(source + 0x1C);
-        *(f32 *)((u8 *)&second + 8) += step * (f32)i;
-        fn_80147230(&second, lbl_8055CE70, item);
+    source = (volatile const u8 *)recordB;
+    second.name = *(void * volatile *)(source + 0);
+    s32 valueB = *(volatile const s32 *)(source + 4);
+    s32 bitsB = *(volatile const s32 *)(source + 8);
+    second.value = valueB;
+    second.timeBits = bitsB;
+    f32 timeB = *(f32 *)((u8 *)&second + 8);
+    second.unkC = *(volatile const s32 *)(source + 0xC);
+    f32 time10B = *(volatile const f32 *)(source + 0x10);
+    second.time10 = time10B;
+    second.unk14 = *(volatile const s32 *)(source + 0x14);
+    second.unk18 = *(volatile const s32 *)(source + 0x18);
+    second.unk1C = *(volatile const s32 *)(source + 0x1C);
+    *(f32 *)((u8 *)&second + 8) = timeB + step * (f32)i;
+    fn_80147230(&second, lbl_8055CE70, item);
 
-        offset += 0x28;
-        i++;
-    }
+    offset += 0x28;
+    i++;
+loop_test:
+    if (i < ((s32 *)base)[1])
+        goto loop_body;
 }
 #pragma use_lmw_stmw reset
 #pragma cplusplus reset
@@ -740,6 +768,7 @@ __declspec(section ".sdata") extern const char lbl_8055CE98[];
 #pragma processor 750
 #pragma scheduling invalid_target
 #pragma small_data off
+#pragma use_lmw_stmw off
 void fn_802B6AC0(void) {
     struct Texture { s32 width; s32 height; u32 *pixels; };
     struct Entry { char name[0x20]; s32 width; s32 height; u8 pixels[1]; };
@@ -765,7 +794,7 @@ void fn_802B6AC0(void) {
 
     val = fn_802E2C20();
     seconds = (float)val / lbl_80564C70;
-    if (seconds - *(float *)((u8 *)&lbl_8055FA18 + 4) < lbl_8055FA18)
+    if (!(seconds - *(float *)((u8 *)&lbl_8055FA18 + 4) >= lbl_8055FA18))
         return;
     val = fn_802E2C20();
     state = (s32 *)&lbl_804BE7D8;
