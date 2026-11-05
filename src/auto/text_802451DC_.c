@@ -75,8 +75,9 @@ int fn_802452E4(void *arg0) {
 #pragma push
 #pragma processor 750
 extern int lbl_8055CFF0, lbl_8055CFF4, lbl_8055FB9C, lbl_8055FBA0;
-extern float lbl_80563834, lbl_80563838, lbl_8056383C, lbl_80563840, lbl_80563844, lbl_80563848, lbl_8056384C, lbl_80563850, lbl_80563854, lbl_80563858, lbl_8056385C, lbl_80563888, lbl_8056388C, lbl_80563890, lbl_80558DC4;
-extern char lbl_8055BE60[], lbl_8055BE64[];
+extern float lbl_80563834, lbl_80563838, lbl_8056383C, lbl_80563840, lbl_80563844, lbl_80563848, lbl_8056384C, lbl_80563850, lbl_80563854, lbl_80563858, lbl_8056385C, lbl_80563888, lbl_8056388C, lbl_80563890;
+extern float lbl_80558DC4[];
+extern char lbl_8055BE60, lbl_8055BE64;
 extern void fn_802C8530(void);
 extern void fn_802C87B4(int, int, int, int);
 extern void fn_802C88BC(int);
