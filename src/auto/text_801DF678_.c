@@ -316,14 +316,28 @@ extern float PSVECDotProduct(void *, void *);
 extern void *fn_801B83A0(void);
 extern float lbl_8055AE34, lbl_8055AE38, lbl_8055AE3C, lbl_8055E3C8;
 extern float lbl_80562C58, lbl_80562C5C, lbl_80562C60, lbl_80562C64, lbl_80562C68, lbl_80562C6C, lbl_80562C70, lbl_80562C74;
-void fn_801E0300(void *arg0) {
-    float f16, f17, f18, f19, f20, f21, f22, f23, f24, f25, f26, f27, f28, f29, f30, f31;
-    int *tbl;
-    char *e;
-    int i, j, n, redraw;
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+extern "C" void fn_801E0300(void *arg0) {
+    struct FxIface {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
+        virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9();
+        virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14();
+        virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23(); virtual void v24();
+        virtual void v25(); virtual void v26(); virtual void v27(); virtual void v28(); virtual void v29();
+        virtual void v30(); virtual void v31(); virtual void v32(); virtual void v33(); virtual void v34();
+        virtual void v35(); virtual void v36(); virtual void v37(); virtual void v38(); virtual void v39();
+        virtual void notify(int, int);
+    };
     char *obj;
     char *p;
-    f16 = 0;
+    int *tbl;
+    char *e;
+    int i, j, redraw, same;
+    float f31, f30, f29, f28, f27, f26, f25, f24, f23, f22, f21, f20, f19, f18, f17, f16;
     if ((((int *)__AXFXGetLfoSinTable_801769CC())[1] & 0x4000) != 0) return;
     tbl = lbl_804348E8;
     f25 = lbl_80562C1C; f26 = lbl_80562C4C; f27 = lbl_80562C68;
@@ -332,17 +346,19 @@ void fn_801E0300(void *arg0) {
     i = 0;
     f21 = lbl_80562C58; f22 = lbl_80562C60; f24 = lbl_80562C5C; f23 = lbl_80562C64;
     f31 = lbl_80562C70; f17 = lbl_80562C74; f16 = lbl_80562C18; f28 = lbl_80562C20;
-    for (; i < lbl_8055E4D0; i++, tbl++, e += 0x1C) {
+    for (; i < lbl_8055E4D0; tbl++, e += 0x1C, i++) {
         obj = (char *)*tbl;
-        if (__fabs(*(float *)(obj + 0x2690)) <= lbl_80558DC4) continue;
+        if ((float)__fabs((double)*(float *)(obj + 0x2690)) <= lbl_80558DC4) continue;
         *(float *)(e + 0xC) += f21;
         if (*(unsigned char *)(e + 0x14) == 0) {
-            f18 = PSVECMag(obj + 0x124);
-            *(float *)(e + 0x10) += f21 * (lbl_8055AE34 * PSVECMag(obj + 0x118) + lbl_8055AE38 * f18);
-            if (((int *)__AXFXGetLfoSinTable_801769CC())[1] != 0x180201 && *(float *)(e + 0xC) > lbl_8055AE3C) {
+            float mag = PSVECMag(obj + 0x124);
+            float mag2 = PSVECMag(obj + 0x118);
+            *(float *)(e + 0x10) += f21 * (lbl_8055AE34 * mag2 + lbl_8055AE38 * mag);
+            same = ((int *)__AXFXGetLfoSinTable_801769CC())[1] == 0x180201;
+            if (!same && *(float *)(e + 0xC) > lbl_8055AE3C) {
                 *(int *)(e + 0x18) = -1;
                 p = (char *)arg0;
-                for (j = 0; j < *(int *)((char *)arg0 + 0x1B0); j++, p += 0x28) {
+                for (j = 0; j < *(int *)((char *)arg0 + 0x1B0); p += 0x28, j++) {
                     if (*(float *)(e + 0x10) > *(float *)(p + 0x110)) *(int *)(e + 0x18) = j;
                 }
                 if (*(int *)(e + 0x18) >= 0)
@@ -350,11 +366,14 @@ void fn_801E0300(void *arg0) {
                 *(unsigned char *)(e + 0x14) = 1;
             }
         }
-        f20 = lbl_8055E3C8;
-        f18 = lbl_80562C5C;
-        f19 = f20 - *(float *)(obj + 0x26A0);
-        if (*(float *)(obj + 0x25D4) > f22 || PSVECDotProduct(obj + 0x124, obj + 0x124) > f23)
-            f18 *= f24;
+        {
+            float spd = *(float *)(obj + 0x25D4);
+            f20 = lbl_8055E3C8;
+            f19 = f20 - *(float *)(obj + 0x26A0);
+            f18 = lbl_80562C5C;
+            if (spd > f22 || PSVECDotProduct(obj + 0x124, obj + 0x124) > f23)
+                f18 *= f24;
+        }
         redraw = 0;
         if (*(float *)(e + 4) < f25 && *(unsigned char *)(e + 8) == 0) {
             if (*(unsigned char *)(obj + 0x260E) != 0 && f19 < f18 && fn_80179650() == 1) {
@@ -397,9 +416,10 @@ void fn_801E0300(void *arg0) {
             }
         }
         if (redraw != 0) {
-            void *o = fn_801B83A0();
-            (*(void (**)(void *, int, int))(*(char **)o + 0xA8))(o, i, *(int *)(obj + 0x26A4));
+            FxIface *o = (FxIface *)fn_801B83A0();
+            o->notify(i, *(int *)(obj + 0x26A4));
         }
     }
 }
-
+#pragma cplusplus reset
+#pragma pop
