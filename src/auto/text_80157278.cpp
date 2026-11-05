@@ -1646,17 +1646,27 @@ extern "C" f32 lbl_805617A0, lbl_805617A4, lbl_805617A8;
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma opt_propagation off
 extern "C" f32 fn_80159F2C(void* a, void* arg1, void* arg2) {
-    u8* p = (u8*)a;
     u8* player = (u8*)arg1;
-    f32 now = lbl_8055E3C8;
-    if (p[0x2d1] && (now - *(f32*)(p+0x2d4) > lbl_805617A0 || !(*(f32*)(player+0x25bc) > lbl_80558DC4[0])))
+    u8* p = (u8*)a;
+    s32 end, last;
+    f32 full, value, delay, now;
+    now = lbl_8055E3C8;
+    if (p[0x2d1]) {
+        f32 elapsed = now - *(f32*)(p+0x2d4);
+        if (!(elapsed > lbl_805617A0)) {
+            bool fast = *(f32*)(player+0x25bc) > lbl_80558DC4[0];
+            if (fast) goto skip_reset;
+        }
         p[0x2d1] = 0;
+    }
+skip_reset:
     if (*(s32*)(p+0x264) == 0) {
         *(s32*)(p+0x2cc) = 0;
         p[0x2d0] = 1;
-        s32 flag = 1;
-        if (!(*(f32*)(player+0x258c) > lbl_8056175C) && !player[0x259c]) flag = 0;
+        bool running = *(f32*)(player+0x258c) > lbl_8056175C;
+        s32 flag = running || player[0x259c];
         if (flag || *(s32*)(player+0x2620) == 0) *(s32*)(p+0x2cc) |= 2;
         else *(s32*)(p+0x2cc) &= ~2;
     } else if (*(s32*)(player+0x2620) > 0) {
@@ -1668,12 +1678,12 @@ extern "C" f32 fn_80159F2C(void* a, void* arg1, void* arg2) {
             }
         }
     }
-    f32 value = lbl_805617A8;
-    f32 full = lbl_80561750;
-    f32 delay = lbl_805617A4;
+    value = lbl_805617A8;
+    full = lbl_80561750;
+    delay = lbl_805617A4;
+    u8* slot = p+0x26c;
     s32 count = 0;
     s32 handled = 0;
-    u8* slot = p+0x26c;
     for (s32 i = 0; i < 8; i++, slot += 0xc) {
         if (!slot[8] && now - *(f32*)(slot+4) > delay) {
             slot[8] = 1;
@@ -1702,8 +1712,8 @@ extern "C" f32 fn_80159F2C(void* a, void* arg1, void* arg2) {
         }
     }
     if (count > 0) {
-        s32 flag = 1;
-        if (!(*(f32*)(player+0x258c) > lbl_8056175C) && !player[0x259c]) flag = 0;
+        bool running = *(f32*)(player+0x258c) > lbl_8056175C;
+        s32 flag = running || player[0x259c];
         if (!flag && *(s32*)(player+0x2620) > 0) *(s32*)(p+0x2cc) &= ~2;
     }
     if (*(s32*)(p+0x264) > 0 && ((Fn8015889C*)a)->v23() > 0)
@@ -1712,9 +1722,9 @@ extern "C" f32 fn_80159F2C(void* a, void* arg1, void* arg2) {
     if (!fn_8015A404(arg1) && !((Fn8015889C*)a)->v37())
         *(f32*)(p+0x254) = fn_801429D0(*(f32*)(p+0x254), lbl_8056179C);
     f32 result = lbl_80561754;
-    s32 end = 0;
+    end = 0;
     if (((Fn8015889C*)a)->v39()) {
-        s32 last = fn_80158D04(a)-1;
+        last = fn_80158D04(a)-1;
         s32 current = ((Fn8015889C*)a)->v23();
         if (current == last) end = 1;
     }
@@ -1724,8 +1734,9 @@ extern "C" f32 fn_80159F2C(void* a, void* arg1, void* arg2) {
     } else if (*(s32*)(p+0x264) > 0) {
         ((Fn8015889C*)a)->v34();
     }
-    s32 last = *(s32*)(p+0xc);
-    if (((Fn8015889C*)a)->v23() == last-1) *(s32*)(p+0x2cc) = 0;
+    last = *(s32*)(p+0xc);
+    s32 current = ((Fn8015889C*)a)->v23();
+    if (current == last-1) *(s32*)(p+0x2cc) = 0;
     return result;
 }
 #pragma pop
