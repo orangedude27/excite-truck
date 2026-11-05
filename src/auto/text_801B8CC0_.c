@@ -68,13 +68,13 @@ float z_x = x * m[2];
 float x_z = z * m[6];
 float y_z = z * m[7];
 float z_z = z * m[8];
-out[0] = x_z + (x_x + x_y);
-out[1] = y_z + (y_x + y_y);
-out[2] = z_z + (z_x + z_y);
+out[0] = x_z + (x_y + x_x);
+out[1] = y_z + (y_y + y_x);
+out[2] = z_z + (z_y + z_x);
 } else {
-out[0] = in[2] * m[6] + (in[0] * m[0] + in[1] * m[3]);
-out[1] = in[2] * m[7] + (in[0] * m[1] + in[1] * m[4]);
-out[2] = in[2] * m[8] + (in[0] * m[2] + in[1] * m[5]);
+out[0] = in[2] * m[6] + (in[1] * m[3] + in[0] * m[0]);
+out[1] = in[2] * m[7] + (in[1] * m[4] + in[0] * m[1]);
+out[2] = in[2] * m[8] + (in[1] * m[5] + in[0] * m[2]);
 }
 
 }
@@ -193,10 +193,9 @@ extern "C" void fn_801B8E28(int arg0) {
     temp_f1_2 = temp_f1 - *(float *)((char *)obj + 0x38);
     w.input[2] = temp_f1_2;
     if (*(unsigned char *)((char *)obj + 0x275d) != 0) {
-        float v = temp_f1_2 - lbl_80562754;
-        w.input[2] = v;
-        w.h = -1;
+        w.input[2] = temp_f1_2 - lbl_80562754;
     }
+    w.h = -1;
     {
         char *matrix = *(char **)((char *)obj + 0x2754);
         transform_vec_scheduled(w.output, (const float *)(matrix + 0x70), (float *)w.input);
