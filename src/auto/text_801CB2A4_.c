@@ -3,9 +3,9 @@
 #include <types.h>
 
 extern void fn_8000D838(void *);
-extern struct { char pad[8]; s32 a; s32 b; } lbl_8055E7D0;
-#define lbl_8055E7D8 lbl_8055E7D0.a
-#define lbl_8055E7DC lbl_8055E7D0.b
+extern char lbl_8055E7D0;
+extern s32 lbl_8055E7D8;
+extern s32 lbl_8055E7DC;
 
 void fn_801CB2A4(void) {
     fn_8000D838(&lbl_8055E7D0);
