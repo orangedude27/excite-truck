@@ -1849,6 +1849,7 @@ extern "C" void fn_80198EA0(s32);
 extern "C" f32 lbl_805617B4, lbl_805617B8, lbl_805617BC;
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
 extern "C" f32 fn_8015A8D8(void* a, void* arg1) {
     u8* p = (u8*)a;
     f32 result;
@@ -1856,9 +1857,13 @@ extern "C" f32 fn_8015A8D8(void* a, void* arg1) {
     if (p[0x2f0]) {
         s32 active = fn_801D48FC(*(s32*)(p+0x26c));
         p[0x2f0] = active;
-        u8* slot = p;
-        for (s32 i = 0; i < 8; i++, slot += 0x10) {
-            s32 owner = *(s32*)(p+0x26c);
+        f32 zero = lbl_80561754, step = lbl_8056177C, full = lbl_80561750;
+        f32 margin = lbl_805617B4, minimum = lbl_805617B8;
+        register s32 owner;
+        register u8* slot = p;
+        register s32 i = 0;
+        for (; i < 8; i++, slot += 0x10) {
+            owner = *(s32*)(p+0x26c);
             s32 enabled;
             *(s32*)(slot+0x274) = *(s32*)(slot+0x270);
             if (!*(s32*)(slot+0x270)) { enabled = 0; } else {
@@ -1867,7 +1872,7 @@ extern "C" f32 fn_8015A8D8(void* a, void* arg1) {
                     s32 running = *(s32*)(car+0x2620) > 0;
                     switch (*(s32*)(slot+0x270)) {
                     case 1:
-                        if (car) *(s32*)(slot+0x270) = running ? 3 : 2;
+                        if (car) { s32 next = 2; if (running) next = 3; *(s32*)(slot+0x270) = next; }
                         else *(s32*)(slot+0x270) = 0;
                         break;
                     case 2:
@@ -1880,19 +1885,19 @@ extern "C" f32 fn_8015A8D8(void* a, void* arg1) {
                             u8 points[40];
                             fn_801E9DC4(query);
                             f32 dist = fn_801DDC8C(query, *(f32*)(car+0x60), *(f32*)(car+0x68));
-                            if (dist > lbl_805617B8 && *(f32*)(car+0x11c) - dist > lbl_805617B4) {
+                            if (dist > minimum && *(f32*)(car+0x11c) - dist > margin) {
                                 fn_801E9DC4(query);
                                 s32 n = fn_801DDA84(query, points, 10, *(f32*)(car+0x60), *(f32*)(car+0x68), lbl_805617BC);
                                 if (fn_801D4908(owner, points, n)) {
                                     *(s32*)(slot+0x270) = 4;
-                                    *(f32*)(slot+0x27c) = lbl_80561750;
+                                    *(f32*)(slot+0x27c) = full;
                                 }
                             }
                         }
                         break;
                     case 4:
-                        *(f32*)(slot+0x27c) -= lbl_8056177C;
-                        if (*(f32*)(slot+0x27c) < lbl_80561754) *(s32*)(slot+0x270) = 5;
+                        *(f32*)(slot+0x27c) -= step;
+                        if (*(f32*)(slot+0x27c) < zero) *(s32*)(slot+0x270) = 5;
                         else if (running) *(s32*)(slot+0x270) = 3;
                         break;
                     }
@@ -1906,7 +1911,7 @@ extern "C" f32 fn_8015A8D8(void* a, void* arg1) {
                 ++*(s32*)(p+0x264);
                 ++*(s32*)(p+0x260);
                 *(f32*)(p+0x254) = *(f32*)(p+0x250);
-                *(f32*)(p+0x25c) = lbl_80561750;
+                *(f32*)(p+0x25c) = full;
                 ((Fn8015889C*)a)->v32();
                 if (*(s32*)(p+0x248) && *(void**)(p+0x268))
                     *(s32*)((u8*)*(void**)(p+0x268)+8) = 0;
