@@ -1,7 +1,24 @@
   #include <types.h>
 struct Fn800B10E0Ent {
-    u8 pad[0x20E];
-    s8 name[0x10];
+    u16 first;
+    u8 pad2[0x20A - 2];
+    u8 count;
+    u8 pad20B[3];
+    s8 name[13];
+    u8 f21B;
+    u8 f21C;
+    u8 f21D;
+    u16 f21E;
+    u16 f220;
+    u16 f222;
+    u16 f224;
+    u16 f226;
+    u32 f228;
+    void *f22C;
+    u32 f230;
+    u32 flag234;
+    u32 cluster238;
+    u16 off23C;
 };
 struct Fn800D3C44Str {
     char file[0x134];
@@ -6217,11 +6234,11 @@ extern "C" s32 fn_800B10E0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     s32 remainder;
     u8 initialCount;
     u8 loopCount;
-    u8 checksum;
     u8 *nextCluster;
     s32 cluster;
     u16 next;
     u32 *flags;
+    Fn800B10E0Ent *ent = (Fn800B10E0Ent *)arg1;
 
     frame.copied = *(VFiPFEntryCopy240 *)arg1;
     charCount = (u16)VFiPFSTR_StrNumChar(arg2, 1);
@@ -6235,12 +6252,12 @@ extern "C" s32 fn_800B10E0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     if (*(s32 *)((u8 *)arg0 + 0x161C) >= 5) {
         return 0x15;
     }
-    parsed = VFiPFPATH_parseShortName((u8 *)arg1 + 0x20E, (void *)arg2);
-    if (parsed != 0 && (s8)*((u8 *)arg1 + 0x20E) == 0) {
+    parsed = VFiPFPATH_parseShortName(ent->name, (void *)arg2);
+    if (parsed != 0 && ent->name[0] == 0) {
         return 1;
     }
     if (parsed != 0) {
-        result = VFiPFENT_AdjustSFN(&frame.copied, (s8 *)((u8 *)arg1 + 0x20E));
+        result = VFiPFENT_AdjustSFN(&frame.copied, ent->name);
         if (result != 0) {
             return result;
         }
@@ -6278,15 +6295,15 @@ extern "C" s32 fn_800B10E0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
         }
         flags = (u32 *)lbl_803D2140;
         if ((flags[0x60 / 4] & 2) == 2) {
-            fn_800B51FC((u8 *)arg1 + 0x20E, *(s32 *)frame.prefix);
+            fn_800B51FC(ent->name, *(s32 *)frame.prefix);
         }
         *((u8 *)arg1 + 0x20A) = initialCount;
         cluster = *(s32 *)((u8 *)arg1 + 0x238);
-        checksum = ((u8 (*)(u8 *))VFiPFENT_CalcCheckSum)((u8 *)arg1);
+        charCount = ((u8 (*)(u8 *))VFiPFENT_CalcCheckSum)((u8 *)arg1);
         nextCluster = frame.prefix + 8;
         loopCount = initialCount;
         while (loopCount >= 1) {
-            VFiPFENT_storeLFNEntryFieldsToBuf(frame.prefix + 0x20, (u8 *)arg1, loopCount, checksum, loopCount == initialCount);
+            VFiPFENT_storeLFNEntryFieldsToBuf(frame.prefix + 0x20, (u8 *)arg1, loopCount, (u8)charCount, loopCount == initialCount);
             result = ((s32 (*)(s32, void *, s32, u16, u32, u32 *, u32))fn_800B5700)(
                 (s32)arg0, frame.prefix + 0x20, cluster, *(u16 *)((u8 *)arg1 + 0x23C), 0x20,
                 (u32 *)(frame.prefix + 4), 0);
