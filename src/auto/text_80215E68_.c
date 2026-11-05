@@ -57,6 +57,10 @@ extern s32 fn_80217270(s32);
 extern s32 fn_802E317C(const char *, ...);
 extern char lbl_8033D7EC;
 extern s32 fn_80218464(void);
+extern u32 lbl_8055EF98;
+extern char lbl_8055EF99;
+extern u32 lbl_8055EF80;
+extern u32 lbl_8055EF84;
 
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
@@ -261,8 +265,8 @@ s32 fn_80216244(void) {
     p = lbl_804908C8;
     z = lbl_80563458;
     for (i = 0; i < 16; i++, p++) {
-        if (*p != 0) {
-            obj = (u8 *)*p;
+        obj = (u8 *)*p;
+        if (obj != 0) {
             fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
             fn_80230B5C(matrix);
             fn_802C974C(lbl_80563468, lbl_8056346C, lbl_80563470);
