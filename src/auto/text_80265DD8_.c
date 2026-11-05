@@ -1,4 +1,6 @@
 extern char lbl_80499080[];
+typedef struct { float x, y, z; } V3_80267EF8;
+typedef struct { V3_80267EF8 r[4]; } M34_80267EF8;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 extern int lbl_80499E50[];
