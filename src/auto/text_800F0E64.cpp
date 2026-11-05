@@ -695,11 +695,16 @@ extern "C" void Warning__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, 
 extern "C" f32 lbl_80561080;
 extern "C" f64 lbl_805610A0;
 extern "C" extern u32 OSDisableInterrupts(void);
+struct Fn800F2330Args { s32 values[9]; };
 extern "C" s32 lbl_802F4DB8[];
-extern "C" void fn_800F2330(void *a, s32 key, s32 vel, s32 arg3, s32 reuse) {
+extern "C" void *fn_800F2330(void *a, s32 key, s32 vel, s32 arg3, s32 reuse) {
+ const char *file=lbl_80324390;
  u8 *p=(u8*)a; void *c=0;
- if(key<0||key>127) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390,0x30a,lbl_80324390+0x268,key,0,127);
- if(vel<0||vel>127) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390,0x30b,lbl_80324390+0x2a0,vel,0,127);
+ s32 valid=0;
+ if(key>=0 && key<=127) valid=1;
+ if(!valid) Panic__Q26nw4hbm2dbFPCciPCce(file,0x30a,file+0x268,key,0,127);
+ valid=0; if(vel>=0 && vel<=127) valid=1;
+ if(!valid) Panic__Q26nw4hbm2dbFPCciPCce(file,0x30b,file+0x2a0,vel,0,127);
  if(reuse && (c=*(void**)(p+0xb8))) {
   *(u32*)((u8*)c+0xcc)=(u8)key;
   f32 x=((f32)vel)/lbl_80561080; *(f32*)((u8*)c+0xb4)=x*x;
@@ -709,7 +714,7 @@ extern "C" void fn_800F2330(void *a, s32 key, s32 vel, s32 arg3, s32 reuse) {
   args[0]=*(s32*)(p+0x64); args[1]=key; args[2]=vel; args[3]=reuse?-1:arg3;
   args[4]=(s8)p[0x85]; args[5]=*(u8*)(*(u8**)(p+0xb4)+0x91)+p[0x88];
   args[6]=*(s32*)(*(u8**)(p+0xb4)+0x8c); args[8]=(s32)p;
-  c=fn_800F0728(*(void**)(p+0xb4),*(s32*)(p+0x60),args); if(!c)return;
+  c=fn_800F0728(*(void**)(p+0xb4),*(s32*)(p+0x60),args); if(!c)return 0;
   u32 t=OSDisableInterrupts(); *(void**)((u8*)c+0xe4)=*(void**)(p+0xb8); *(void**)(p+0xb8)=c; OSRestoreInterrupts(t);
  }
  if(p[0x8b]!=255) SetAttack__Q46nw4hbm3snd6detail12EnvGeneratorFi((u8*)c+8,p[0x8b]);
@@ -717,12 +722,13 @@ extern "C" void fn_800F2330(void *a, s32 key, s32 vel, s32 arg3, s32 reuse) {
  if(p[0x8d]!=255) SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi((u8*)c+8,p[0x8d]);
  if(p[0x8e]!=255) SetRelease__Q46nw4hbm3snd6detail12EnvGeneratorFi((u8*)c+8,p[0x8e]);
  f32 pitch=*(f32*)(p+0x7c); if(p[0x5f]) pitch+=(f32)((s32)p[0x89]-key);
- if(!p[0x8a]) { if(!arg3) Warning__Q26nw4hbm2dbFPCciPCce(lbl_80324390,0x358,lbl_80324390+0x2e4); fn_800EA8A0(c,arg3,0,pitch); }
+ if(!p[0x8a]) { if(!arg3) Warning__Q26nw4hbm2dbFPCciPCce(file,0x358,file+0x2e4); fn_800EA8A0(c,arg3,0,pitch); }
  else { s32 n=p[0x8a]*p[0x8a]; f32 scale=pitch>lbl_8056107C?pitch:-pitch; fn_800EA8A0(c,(s32)((f32)n*scale)/32*5,1,pitch); }
  p[0x89]=(u8)key;
  u16 total=*(u16*)((u8*)c+0xc6), cur=*(u16*)((u8*)c+0xc8); u32 enabled=p[0x5d]!=0; u8 val;
  if(cur>=total) val=*((u8*)c+0xc5); else {u8 st=*((u8*)c+0xc4); val=st+(cur*(*((u8*)c+0xc5)-st))/total;}
  *((u8*)c+0xc4)=val; *((u8*)c+0xc5)=enabled?0:255; *(u16*)((u8*)c+0xc6)=0; *(u16*)((u8*)c+0xc8)=0;
+ return c;
 }
 
 extern "C" void fn_800F26D8(void *arg0) {
@@ -843,7 +849,7 @@ extern "C" s32 ReadGroupItemInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCF
 #pragma push
 #pragma use_lmw_stmw off
 #pragma opt_common_subs off
-#pragma opt_propagation off
+#pragma opt_dead_code off
 extern "C" void *detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(void *self, u32 file, void *buffer, int size) {
     struct FileInfo { u32 a, b; const char *path; u32 d; } info;
     struct FilePos { u32 group, item; } pos;
@@ -4125,7 +4131,7 @@ extern "C" s32 fn_800FAF10(void *arg0, void *arg1, u32 arg2, s32 arg3) {
         virtual void f14();
         virtual void f15(s32, s32, s32);
     };
-    s32 sp27;
+    u8 buf[0x5F];
     s32 *temp_r3_5;
     s32 *temp_r3_6;
     s32 temp_r30;
@@ -4139,12 +4145,10 @@ extern "C" s32 fn_800FAF10(void *arg0, void *arg1, u32 arg2, s32 arg3) {
     u32 var_r0_2;
     u8 *temp_r27;
     const char *file = lbl_80326518;
-    DummyStream *stream;
 
-    stream = (DummyStream *)M2C_FIELD(arg0, void **, 0);
-    stream->f15(0, 0, arg3);
-    temp_r30 = (s32)&sp27 & 0xFFFFFFE0;
-    if (stream->f3((void *)temp_r30, 0x40) != 0x40U) {
+    (*(DummyStream **)arg0)->f15(0, 0, arg3);
+    temp_r30 = (s32)(buf + 31) & 0xFFFFFFE0;
+    if ((*(DummyStream **)arg0)->f3((void *)temp_r30, 0x40) != 0x40U) {
         return 0;
     }
     if (temp_r30 == 0) {
@@ -4179,8 +4183,8 @@ extern "C" s32 fn_800FAF10(void *arg0, void *arg1, u32 arg2, s32 arg3) {
 
     temp_r6 = M2C_FIELD(temp_r30, s32 *, 0x10);
     temp_r29 = temp_r6 + M2C_FIELD(temp_r30, s32 *, 0x14);
-    stream->f15(0, 0, temp_r6);
-    if (stream->f3(arg1, temp_r29) != temp_r29) {
+    (*(DummyStream **)arg0)->f15(0, 0, temp_r6);
+    if ((*(DummyStream **)arg0)->f3(arg1, temp_r29) != temp_r29) {
         return 0;
     }
     if (arg1 == 0) {
@@ -4405,7 +4409,7 @@ void nw4hbm::snd::detail::StrmPlayer::Pause(bool arg1) {
 }
 
 extern "C" void UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
-    const u8 *label = (const u8 *)lbl_80326768;
+    const char *label = lbl_80326768;
     s32 temp_r29;
     s32 temp_r29_2;
     s32 temp_r29_3;
@@ -4431,7 +4435,7 @@ extern "C" void UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
             }
             if (var_r28 != (u8) M2C_FIELD(arg0, u8 *, 0x4D)) {
                 if (*(void * volatile *)((u8 *)arg0 + 0x438) == 0) {
-                    Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80326768, 0xD1, (const char *)(label + 0x44));
+                    Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80326768, 0xD1, label + 0x44);
                 }
                 Pause__Q46nw4hbm3snd6detail7AxVoiceFb(*(void * volatile *)((u8 *)arg0 + 0x438), var_r28);
                 M2C_FIELD(arg0, u8 *, 0x4D) = var_r28;
@@ -4450,7 +4454,7 @@ extern "C" void UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
             }
             if (var_r28_2 != (u8) M2C_FIELD(arg0, u8 *, 0x4D)) {
                 if (*(void * volatile *)((u8 *)arg0 + 0x438) == 0) {
-                    Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80326768, 0xD1, (const char *)(label + 0x44));
+                    Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80326768, 0xD1, label + 0x44);
                 }
                 Pause__Q46nw4hbm3snd6detail7AxVoiceFb(*(void * volatile *)((u8 *)arg0 + 0x438), var_r28_2);
                 M2C_FIELD(arg0, u8 *, 0x4D) = var_r28_2;
@@ -4459,7 +4463,7 @@ extern "C" void UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
         }
         if ((s32) M2C_FIELD(arg0, u8 *, 0x4E) == 0) {
             if ((u32) M2C_FIELD(arg0, u32 *, 0xA0) >= (u32) (M2C_FIELD(arg0, s32 *, 0x68) - 1)) {
-                Warning__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80326768, 0xFD, (const char *)(label + 0x70));
+                Warning__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80326768, 0xFD, label + 0x70);
                 M2C_FIELD(arg0, u8 *, 0x4E) = 1U;
                 temp_r29_3 = OSDisableInterrupts();
                 var_r28_3 = 0;
@@ -4471,7 +4475,7 @@ extern "C" void UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
                 }
                 if (var_r28_3 != (u8) M2C_FIELD(arg0, u8 *, 0x4D)) {
                     if (*(void * volatile *)((u8 *)arg0 + 0x438) == 0) {
-                        Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80326768, 0xD1, (const char *)(label + 0x44));
+                        Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80326768, 0xD1, label + 0x44);
                     }
                     Pause__Q46nw4hbm3snd6detail7AxVoiceFb(*(void * volatile *)((u8 *)arg0 + 0x438), var_r28_3);
                     M2C_FIELD(arg0, u8 *, 0x4D) = var_r28_3;
@@ -4490,7 +4494,7 @@ extern "C" void UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
             }
             if (var_r28_4 != (u8) M2C_FIELD(arg0, u8 *, 0x4D)) {
                 if (*(void * volatile *)((u8 *)arg0 + 0x438) == 0) {
-                    Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80326768, 0xD1, (const char *)(label + 0x44));
+                    Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80326768, 0xD1, label + 0x44);
                 }
                 Pause__Q46nw4hbm3snd6detail7AxVoiceFb(*(void * volatile *)((u8 *)arg0 + 0x438), var_r28_4);
                 M2C_FIELD(arg0, u8 *, 0x4D) = var_r28_4;
@@ -4499,7 +4503,7 @@ extern "C" void UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
         }
         if (((s32) M2C_FIELD(arg0, u8 *, 0x52) == 0) && ((s32) M2C_FIELD(arg0, u8 *, 0x4F) == 0)) {
             if (*(void * volatile *)((u8 *)arg0 + 0x438) == 0) {
-                Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80326768, 0x114, (const char *)(label + 0x44));
+                Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80326768, 0x114, label + 0x44);
             }
             s32 temp_r28 = GetCurrentPlayingSample__Q46nw4hbm3snd6detail7AxVoiceCFv(M2C_FIELD(arg0, s32 *, 0x438)) / (u32) M2C_FIELD(arg0, u32 *, 0x30);
             goto loop_check;
@@ -4507,7 +4511,7 @@ loop_body:
             UpdatePlayingBlockIndex__Q46nw4hbm3snd6detail10StrmPlayerFv(arg0);
             UpdateLoadingBlockIndex__Q46nw4hbm3snd6detail10StrmPlayerFQ66nw4hbm3snd6detail10StrmPlayer11LoadCommand6Status(arg0, 1);
 loop_check:
-            if (M2C_FIELD(arg0, s32 *, 0x7C) != temp_r28) {
+            if ((s32) M2C_FIELD(arg0, s32 *, 0x7C) != (s32) temp_r28) {
                 goto loop_body;
             }
         }
@@ -4530,16 +4534,16 @@ extern "C" void Update__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
     f32 temp_f5;
     f32 temp_f6;
     f32 temp_f7;
-    register f32 temp_f8;
+    f32 temp_f8;
     f32 temp_f9;
     f32 temp_f10;
-    register f32 temp_f25;
-    register f32 temp_f26;
-    register f32 temp_f27;
-    register f32 temp_f28;
-    register f32 temp_f29;
-    register f32 temp_f30;
-    register f32 temp_f31;
+    f32 temp_f25;
+    f32 temp_f26;
+    f32 temp_f27;
+    f32 temp_f28;
+    f32 temp_f29;
+    f32 temp_f30;
+    f32 temp_f31;
 
     if ((s32)M2C_FIELD(arg0, u8 *, 0x49) != 0) {
         if ((s32)M2C_FIELD(arg0, s32 *, 0x438) == 0) {
@@ -4579,6 +4583,7 @@ extern "C" void Update__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
         temp_f27 += M2C_FIELD(arg0, volatile f32 *, 0x44C);
         temp_f25 = temp_f8;
         temp_f25 += M2C_FIELD(arg0, volatile f32 *, 0x460);
+
         slots[8] = temp_f7;
         slots[9] = temp_f6;
         slots[10] = temp_f5;
