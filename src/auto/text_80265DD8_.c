@@ -1,6 +1,7 @@
 extern char lbl_80499080[];
 typedef struct { float x, y, z; } V3_80267EF8;
 typedef struct { V3_80267EF8 r[4]; } M34_80267EF8;
+typedef struct { float m[9]; V3_80267EF8 pos; } MP_80267EF8;
 extern float lbl_80563C80, lbl_80563C84, lbl_80563C88, lbl_80563C64;
 extern float lbl_8055F48C;
 extern int fn_802E2C20(void);
@@ -676,6 +677,72 @@ void *fn_80267EE4(int arg0) {
     return lbl_80499080 + arg0 * 0x228;
 }
 
+#pragma push
+#pragma processor 750
+void fn_80267EF8(void *arg0) {
+    char *p = (char *)arg0;
+    float t = lbl_80563C80 * (float)fn_802E2C20() - lbl_8055F48C;
+    if (t > lbl_80563C34) {
+        lbl_8055F488 = 0;
+        lbl_8055F48C = lbl_80563C64;
+        fn_80209190(lbl_8055F494, lbl_80563C2C);
+        if (fn_8000D75C() == 0) {
+            fn_801769EC();
+        }
+    } else {
+        float w = t / lbl_80563C34;
+        float f = lbl_80563C20;
+        float s;
+        M34_80267EF8 a, b, c;
+        V3_80267EF8 axis;
+        char tmp[0x24];
+        if (t < lbl_80563C6C) {
+            f = lbl_80563C2C + (t / lbl_80563C6C) * lbl_80563C28;
+        } else if (t > lbl_80563C84) {
+            f += ((t - lbl_80563C84) / lbl_80563C6C) * lbl_80563C2C;
+        }
+        fn_80209190(lbl_8055F494, f);
+        s = lbl_80563C2C - f;
+        if (s != *(float *)((char *)lbl_8055F490 + 8)) {
+            *(char *)((char *)lbl_8055F490 + 0x4d) = 1;
+            *(float *)((char *)lbl_8055F490 + 8) = s;
+        }
+        if (w < lbl_80563C28) {
+            w = lbl_80563C28;
+        } else if (w > lbl_80563C2C) {
+            w = lbl_80563C2C;
+        } else if (w > lbl_80563C20) {
+            w = w * (lbl_80563C30 * w * w) + lbl_80563C34 * w * w;
+        } else {
+            w = w * (lbl_80563C30 * w * w) - lbl_80563C34 * w * w;
+        }
+        a = *(M34_80267EF8 *)(p + 0x58);
+        w = lbl_80563C24 * (lbl_80563C20 + w * lbl_80563C88);
+        b = *(M34_80267EF8 *)(p + 0xc0);
+        f = PSQUATMultiply((float *)&b.r[3], (int)&a.r[3]);
+        ((double *)&c)[0] = ((double *)&a)[0];
+        ((double *)&c)[1] = ((double *)&a)[1];
+        ((double *)&c)[2] = ((double *)&a)[2];
+        ((double *)&c.r[2])[0] = ((double *)&a.r[2])[0];
+        c.r[2].z = a.r[2].z;
+        ((double *)&c.r[3])[0] = ((double *)&a.r[3])[0];
+        c.r[3].z = a.r[3].z;
+        c.r[3].x = c.r[3].x + c.r[2].x * f;
+        c.r[3].y = c.r[3].y + c.r[2].y * f;
+        c.r[3].z = c.r[3].z + c.r[2].z * f;
+        axis.x = lbl_80563C20;
+        axis.y = w;
+        axis.z = lbl_80563C20;
+        fn_8022FF10(tmp, &axis);
+        fn_80015B20(&c, &c, tmp);
+        f = -f;
+        c.r[3].x = c.r[3].x + c.r[2].x * f;
+        c.r[3].y = c.r[3].y + c.r[2].y * f;
+        c.r[3].z = c.r[3].z + c.r[2].z * f;
+        *(M34_80267EF8 *)(p + 0x58) = c;
+    }
+}
+#pragma pop
 void fn_802682B0(void *arg0) {
     char *p = (char *)arg0;
     float *base;
