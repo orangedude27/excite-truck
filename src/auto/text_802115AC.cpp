@@ -1425,10 +1425,11 @@ extern "C" void fn_80214BE4(s32 arg0, s32 arg1, s32 arg2) {
 }
 
 extern "C" void fn_80214C54(s32 arg0, s32 arg1) {
-    if (fn_802168E4() != 0) {
-        fn_80218C14(arg0, arg1);
+    s32 obj = fn_802168E4();
+    if (obj != 0) {
+        ((void (*)(s32, s32, s32))fn_80218C14)(obj, arg0, arg1);
     } else {
-        fn_802E317C(lbl_8033D388);
+        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_8033D388);
     }
 }
 
@@ -1910,10 +1911,9 @@ extern "C" void fn_80215500(void) {
 
 #pragma scheduling off
 extern "C" void fn_80215504(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
-    u8 *p = (u8 *)arg0;
     f32 rate = lbl_80563450;
-    fn_8022BAD0(*(s32 *)(p + 8), arg1, arg2, 0, arg4, arg5,
-               *(s32 *)(p + 4), arg6, rate, 0);
+    fn_8022BAD0(*(s32 *)((u8 *)arg0 + 8), arg1, arg2, 0, arg4, arg5,
+                *(s32 *)((u8 *)arg0 + 4), arg6, rate, 0);
 }
 #pragma scheduling on
 extern "C" void fn_80215544(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
@@ -2138,11 +2138,12 @@ extern "C" s32 fn_80215AA4(void *, s32);
 extern "C" s32 fn_80215A74(void *arg0, s32 arg1) {
     u8 *self = (u8 *)arg0;
     self[0x19] = 0;
-    if (self[0x1A] == 0) {
+    if (self[0x1A] != 0) {
+        self[0x234] = 1;
+        ((VfObj *)*(void **)(self + 0x244))->vf18();
+    } else {
         return fn_80215AA4(arg0, arg1);
     }
-    self[0x234] = 1;
-    ((VfObj *)*(void **)(self + 0x244))->vf18();
 }
 #pragma scheduling on
 extern "C" s32 fn_80215AA4(void *arg0, s32 arg1) {
