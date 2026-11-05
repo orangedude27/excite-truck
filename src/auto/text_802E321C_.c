@@ -37,6 +37,7 @@ extern void* lbl_8055FF24;
 s32 fn_802E98C8(void);
 #pragma small_data on
 __declspec(section ".sdata") extern char lbl_8055D1A0[];
+__declspec(section ".sdata") extern char lbl_8055D1A8[];
 s32 fn_802E321C(const char *arg0) {
     const char *prefix = lbl_8055D1A0;
     return strncmp(arg0, prefix, strlen(prefix)) == 0;
@@ -328,7 +329,26 @@ extern "C" s32 fn_802E3A64(s32 arg0, s32 arg1, s32 arg2) {
     return arg2 == result;
 }
 
-#pragma cplusplus on
+extern int vsprintf(char *, const char *, va_list);
+extern "C" int vsprintf(char *, const char *, va_list);
+#pragma scheduling invalid_target
+extern "C" void fn_802E3AD0(s32 arg0, const char *fmt, ...) {
+    char buf[0x10];
+    va_list args;
+    va_start(args, fmt);
+    vsprintf(buf, fmt, args);
+    va_end(args);
+    if (arg0 != -0x29A) {
+        fn_802E3A64(arg0, (s32)buf, strlen(buf));
+        return;
+    }
+    s32 *p = fn_802E333C();
+    if (p != 0) {
+        p = fn_802E333C();
+        ((void (*)(s32 *, char *))(*(s32 **)p)[8])(p, buf);
+    }
+}
+#pragma scheduling on
 extern "C" s32 fn_802E3BB4(s32 arg0, s32 arg1, s32 arg2) {
     class Obj {
     public:
