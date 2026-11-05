@@ -10643,6 +10643,50 @@ extern "C" s32 fn_800BB4D4(s32 a,s32 b,s32 c,s32 d) {
     return fn_800BB81C(a,b,c,d,0,0);
 }
 
+extern "C" s32 fn_800BAE98(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+extern "C" s32 fn_800BB4E0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
+const char *str=lbl_8031B838;
+u32 var_r30=0x200;
+if((u32)arg3<=0x200)var_r30=(u32)arg3;
+u32 var_r29=(u32)arg3>>9;
+s32 var_r20, sp28[4], sp18[4]; void* dev=(void*)arg0;
+if(lbl_80559248<0) var_r20=(s32)0xC1000000;
+else if((u32)arg3!=var_r30*var_r29){OSReport(str+0x3B0,str+0x398,(u32)arg3);var_r20=-4;}
+else if((u32)arg1!=((u32)arg1&0xFFFFFE00)){OSReport(str+0x3C8,str+0x398,arg1);var_r20=-4;}
+else if((*(u32*)((u8*)dev+0x20)!=0)&&((u32)arg1>*(u32*)((u8*)dev+0x20))){OSReport(str+0x3E0,str+0x398,arg1);var_r20=-4;}
+else if(*(s32*)((u8*)dev+0x24)==0){OSReport(str+0x3FC,str+0x398);var_r20=(s32)0xC1000000;}
+else {
+OSLockMutex(lbl_80407560);
+if(lbl_8055DD6C!=0){OSUnlockMutex(lbl_80407560);var_r20=(s32)0xC1000000;}
+else {
+lbl_8055DD6C=1; OSUnlockMutex(lbl_80407560);
+if(*(u32*)((u8*)dev+0x24)==2){
+var_r20=fn_800BB0A8(*(s32*)dev,7,3,2,*(s32*)((u8*)dev+0x10),0,0,0,0,(s32)sp18,0,0);
+if(var_r20!=0) OSReport(str+0x338,var_r20);
+else {
+*(s32*)((u8*)dev+0x24)=1;
+var_r20=fn_800BB0A8(*(s32*)dev,0x10,3,1,0x200,0,0,0,0,(s32)sp28,0,0);
+if(var_r20!=0) OSReport(str+0x358,str+0x234,var_r20);
+else {
+var_r20=((s32(*)(void*,s32))fn_800BC134)(dev,4);
+if(var_r20!=0) OSReport(str+0x358,str+0x234,var_r20);
+else {
+ s32 fd=*(volatile s32*)dev; *lbl_8055DD70=1; s32 temp_r3=IOS_Ioctl(fd,6,lbl_8055DD70,4,0,0); if(temp_r3!=0){OSReport(str+0x148);temp_r3=(s32)0xC1000000;} var_r20=temp_r3; if(temp_r3!=0){OSReport(str+0x358,str+0x234,temp_r3);}
+}
+}
+}
+if(var_r20!=0){lbl_8055DD6C=0;goto done;}
+}
+DCInvalidateRange((void*)arg2,(u32)arg3);
+var_r20=fn_800BAE98(*(s32*)dev,0x12,3,1,arg1,arg2,var_r29,var_r30,1,lbl_8055DD78,arg4,arg5);
+if(var_r20!=0){OSReport(str+0x418,str+0x398,var_r20);lbl_8055DD6C=0;}
+if(arg4==0)lbl_8055DD6C=0;
+}
+}
+done:
+return var_r20;
+}
+
 extern "C" s32 fn_800BB81C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
 const char *str=lbl_8031B838;
 u32 var_r30=0x200;
