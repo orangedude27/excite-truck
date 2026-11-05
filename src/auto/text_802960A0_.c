@@ -263,12 +263,14 @@ extern "C" int fn_802964EC(void *arg0, void *arg1, void *arg2) {
     } else
         dst[7] = src[7];
 
-    *(Vec3 *)(dst + 8) = ((Node *)node)->getVector(
+    const Vec3 &result = ((Node *)node)->getVector(
         lbl_8055CA24, *(Vec3 *)((char *)arg2 + 0x20));
+    dst[8] = result.x;
+    dst[9] = result.y;
+    dst[10] = result.z;
     *(int *)((char *)arg0 + 0x2C) = fn_802963F0(node, *(int *)((char *)arg2 + 0x2C));
     return 1;
 }
-#pragma scheduling on
 
 #pragma cplusplus reset
 #pragma pop
@@ -494,6 +496,7 @@ extern void fn_802960A0(float *, unsigned int, int, float, double, double, doubl
 extern int fn_80296A10(unsigned int, unsigned int, float);
 extern int fn_802969B4(unsigned int, unsigned int, float);
 extern float lbl_80564548, lbl_80564560, lbl_8056456C, lbl_80564570, lbl_80564574;
+struct KF { float dur; float a[4]; unsigned int col; int p18; float h; float v[3]; int flags; };
 #pragma push
 #pragma dont_inline on
 #pragma scheduling invalid_target
