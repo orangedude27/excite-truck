@@ -48,6 +48,13 @@ static inline void MatrixMul80151E60(f32 *dst, const f32 *left, const f32 *right
 typedef struct { s32 a, b, c, d; f32 e, f; s32 g; } Copy8014C6F0;
 typedef struct { f32 m[12]; } Matrix801533E8;
 typedef struct { f32 pos[3]; f32 velocity[3]; s16 angle; s32 value; } Event80155700;
+extern u8 lbl_80559FB8[];
+extern f32 lbl_8056172C, lbl_80561730;
+extern s32 fn_80009C84(void);
+extern void fn_801796EC(s32, void *, s32);
+extern void fn_8018A120(void *);
+extern void fn_80161A38(s32, s32, s32);
+extern void fn_80206750(void *, s32, s32);
 static inline void Transform801533E8(f32 *dst, const f32 *src, const f32 *m) {
     if (dst == src) {
         f32 x = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
