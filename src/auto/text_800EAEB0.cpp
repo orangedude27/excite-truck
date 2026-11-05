@@ -8,6 +8,7 @@ extern "C" void *MEMAllocFromFrmHeapEx(void *, u32, s32);
 extern "C" void *MEMCreateFrmHeapEx(void *, u32, u16);
 #pragma push
 #pragma small_data off
+extern u8 lbl_80322D74[];
 extern u8 lbl_80322D60[];
 #pragma pop
 extern u8 lbl_80322F38[], lbl_80322F5C[], lbl_80322F68[], lbl_80322F8C[];
@@ -581,6 +582,88 @@ extern "C" void fn_800EBB88(void *arg0) {
     p[2] = (s32)q;
     p[3] = (s32)q;
 }
+
+#pragma push
+#pragma use_lmw_stmw off
+bool nw4hbm::snd::detail::FrameHeap::Create(void *buffer, unsigned long size) {
+    FrameHeapDestroyView *state = (FrameHeapDestroyView *)this;
+    register const char *file = (const char *)lbl_80322D60;
+    if (buffer == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x4B, file + 0x14);
+    }
+    if (state->heap != 0) {
+        register FrameHeapDestroyListView *head;
+        if (state->count == 0) goto free_heap;
+        head = &state->list;
+        goto loop_test;
+    loop_body:
+        if (state->count == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_8032301C, 0x1FB, (const char *)lbl_80322FF8);
+        }
+        {
+            void *list = head->tail;
+            if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FBC, 0x23D, (const char *)lbl_80322F98);
+            if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FEC, 0x193, (const char *)lbl_80322FC8);
+            if (list != 0) {
+                register void *node = (u8 *)list + 0xC;
+                while (1) {
+                    void (*callback)(void *, void *, void *);
+                    node = *(void **)((u8 *)node + 4);
+                    if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F5C, 0x23D, (const char *)lbl_80322F38);
+                    if (node != 0) {
+                        callback = *(void (**)(void *, void *, void *))((u8 *)node + 0xC);
+                        if (callback != 0) callback((u8 *)node + 0x20,
+                                                     *(void **)((u8 *)node + 8),
+                                                     *(void **)((u8 *)node + 0x10));
+                    }
+                    if (node == *(void **)((u8 *)list + 0xC)) break;
+                }
+                if ((u8 *)list + 8 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)list + 8, 0);
+            }
+            if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F8C, 0x233, (const char *)lbl_80322F68);
+            Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((u8 *)head - 4, list);
+        }
+    loop_test:
+        if (state->count != 0) goto loop_body;
+    free_heap:
+        MEMFreeToFrmHeap(state->heap, 3);
+        MEMDestroyFrmHeap(state->heap);
+        state->heap = 0;
+    }
+    {
+        u32 start = ((u32)buffer + 3) & ~3UL;
+        u32 end = (u32)buffer + size;
+        if (start > end) return false;
+        state->heap = MEMCreateFrmHeapEx((void *)start, end - start, 0);
+        if (state->heap == 0) return false;
+    }
+    int ok;
+    void *node = MEMAllocFromFrmHeapEx(state->heap, 0x14, 4);
+    if (node == 0) {
+        ok = 0;
+    } else {
+        if (node != 0) {
+            void *t = (u8 *)node + 0xC;
+            *(u32 *)node = 0;
+            *((u32 *)node + 1) = 0;
+            *((void **)node + 3) = 0;
+            *((void **)node + 4) = 0;
+            *((u32 *)node + 2) = 0;
+            *((void **)node + 3) = t;
+            *((void **)node + 4) = t;
+        }
+        void *head2 = (u8 *)state + 8;
+        if (node == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322F8C, 0x233, (const char *)lbl_80322F68);
+        }
+        void *sp8 = head2;
+        Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((u8 *)state + 4, &sp8, node);
+        ok = 1;
+    }
+    if (ok == 0) return false;
+    return true;
+}
+#pragma pop
 
 extern "C" void MEMFreeToFrmHeap(void *, u32);
 extern "C" void MEMDestroyFrmHeap(void *);
