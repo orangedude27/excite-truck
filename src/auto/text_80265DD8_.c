@@ -1,6 +1,7 @@
 extern char lbl_80499080[];
 typedef struct { float x, y, z; } V3_80267EF8;
 typedef struct { V3_80267EF8 r[4]; } M34_80267EF8;
+typedef struct { float m[9]; } R9_80267EF8;
 typedef struct { float m[9]; V3_80267EF8 pos; } MP_80267EF8;
 extern float lbl_80563C80, lbl_80563C84, lbl_80563C88, lbl_80563C64;
 extern float lbl_8055F48C;
@@ -693,13 +694,13 @@ void fn_80267EF8(void *arg0) {
         float w = t / lbl_80563C34;
         float f = lbl_80563C20;
         float s;
-        M34_80267EF8 a, b, c;
+        MP_80267EF8 a, b, c;
         V3_80267EF8 axis;
         char tmp[0x24];
         if (t < lbl_80563C6C) {
-            f = lbl_80563C2C + (t / lbl_80563C6C) * lbl_80563C28;
+            f = lbl_80563C2C + lbl_80563C28 * (t / lbl_80563C6C);
         } else if (t > lbl_80563C84) {
-            f += ((t - lbl_80563C84) / lbl_80563C6C) * lbl_80563C2C;
+            f += lbl_80563C2C * ((t - lbl_80563C84) / lbl_80563C6C);
         }
         fn_80209190(lbl_8055F494, f);
         s = lbl_80563C2C - f;
@@ -716,30 +717,30 @@ void fn_80267EF8(void *arg0) {
         } else {
             w = w * (lbl_80563C30 * w * w) - lbl_80563C34 * w * w;
         }
-        a = *(M34_80267EF8 *)(p + 0x58);
+        a = *(MP_80267EF8 *)(p + 0x58);
         w = lbl_80563C24 * (lbl_80563C20 + w * lbl_80563C88);
-        b = *(M34_80267EF8 *)(p + 0xc0);
-        f = PSQUATMultiply((float *)&b.r[3], (int)&a.r[3]);
+        b = *(MP_80267EF8 *)(p + 0xc0);
+        f = PSQUATMultiply((float *)&b.pos, (int)&a.pos);
         ((double *)&c)[0] = ((double *)&a)[0];
         ((double *)&c)[1] = ((double *)&a)[1];
         ((double *)&c)[2] = ((double *)&a)[2];
-        ((double *)&c.r[2])[0] = ((double *)&a.r[2])[0];
-        c.r[2].z = a.r[2].z;
-        ((double *)&c.r[3])[0] = ((double *)&a.r[3])[0];
-        c.r[3].z = a.r[3].z;
-        c.r[3].x = c.r[3].x + c.r[2].x * f;
-        c.r[3].y = c.r[3].y + c.r[2].y * f;
-        c.r[3].z = c.r[3].z + c.r[2].z * f;
+        ((double *)&c.m[6])[0] = ((double *)&a.m[6])[0];
+        c.m[8] = a.m[8];
+        ((double *)&c.pos)[0] = ((double *)&a.pos)[0];
+        c.pos.z = a.pos.z;
+        c.pos.x = c.pos.x + c.m[6] * f;
+        c.pos.y = c.pos.y + c.m[7] * f;
+        c.pos.z = c.pos.z + c.m[8] * f;
         axis.x = lbl_80563C20;
         axis.y = w;
         axis.z = lbl_80563C20;
         fn_8022FF10(tmp, &axis);
         fn_80015B20(&c, &c, tmp);
         f = -f;
-        c.r[3].x = c.r[3].x + c.r[2].x * f;
-        c.r[3].y = c.r[3].y + c.r[2].y * f;
-        c.r[3].z = c.r[3].z + c.r[2].z * f;
-        *(M34_80267EF8 *)(p + 0x58) = c;
+        c.pos.x = c.pos.x + c.m[6] * f;
+        c.pos.y = c.pos.y + c.m[7] * f;
+        c.pos.z = c.pos.z + c.m[8] * f;
+        *(MP_80267EF8 *)(p + 0x58) = c;
     }
 }
 #pragma pop
