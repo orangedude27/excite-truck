@@ -58,10 +58,10 @@ static inline void transform_vec_scheduled(float *out, const float *m, float *in
 if (out == in) {
 float m3 = m[3];
 float m4 = m[4];
-float m5 = m[5];
 float m0 = m[0];
 float m1 = m[1];
 float m2 = m[2];
+float m5 = m[5];
 float m6 = m[6];
 float m7 = m[7];
 float m8 = m[8];
@@ -187,7 +187,7 @@ extern "C" void fn_801B8E28(int arg0) {
         volatile int zero;
         volatile short h;
     } w;
-    register float temp_f2, temp_f3, temp_f1, temp_f1_2;
+    float temp_f2, temp_f3, temp_f1, temp_f1_2;
     float dot;
 
     fn_80189C64(obj, lbl_80436D28);
