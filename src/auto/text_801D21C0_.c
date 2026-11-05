@@ -21,6 +21,18 @@ extern u32 lbl_8055ABE0;
 extern u32 lbl_8055AC18;
 extern u32 lbl_8055AC20;
 extern f32 lbl_80562A90;
+extern f32 lbl_80562A94;
+extern u8 lbl_803382A8[];
+extern u8 lbl_8055ABE8[];
+extern u8 lbl_8055ABF8[];
+extern u8 lbl_8055AC00[];
+extern u8 lbl_8055AC08[];
+extern u8 lbl_8055AC10[];
+extern u8 lbl_8055ABF0[];
+extern void fn_801D334C(void *, void *);
+extern void fn_801D3610(void *, void *);
+extern s32 fn_802C6FC0(void *, s32, s32);
+extern s32 fn_802C7830(void *);
 
 typedef struct UnkObj UnkObj;
 typedef struct {
@@ -77,55 +89,168 @@ s32 fn_801D2C20(s32 arg0) {
 extern u8 lbl_80438898[];
 extern f32 lbl_8055E3C8;
 extern void fn_801796CC(s32, f32 *, s32);
+#pragma scheduling invalid_target
 void fn_801D2C70(void *arg0, s32 arg1, void *arg2, s32 arg3) {
-    s32 i;
-    u8 *entry;
-    f32 *vec;
-    f32 x, y, z;
-    s32 index;
-
-    vec = (f32 *)arg1;
-    i = 0;
-    while (i < *(s32 *)((u8 *)arg0 + 0x28)) {
-        entry = (u8 *)arg0 + i * 8;
+    struct Temp {
+        f32 position[3];
+        f32 velocity[3];
+        s16 type;
+        s16 pad;
+        s32 id;
+    } temp;
+    register f32 *vec = (f32 *)arg1;
+    register volatile f32 *vecRead = (volatile f32 *)arg1;
+    register u8 *object = (u8 *)arg2;
+    register u8 *entry = (u8 *)arg0;
+    register s32 i = 0;
+    register s32 active;
+    register s32 index;
+    register f32 x, y, z;
+    f32 p2, p1, p0;
+    p0 = vec[0];
+    p1 = vec[1];
+    p2 = vec[2];
+    temp.position[0] = p0;
+    temp.position[1] = p1;
+    temp.position[2] = p2;
+    temp.velocity[0] = *(f32 *)(object + 0x118);
+    temp.velocity[1] = *(f32 *)(object + 0x11C);
+    temp.velocity[2] = *(f32 *)(object + 0x120);
+    temp.type = *(s16 *)(object + 0x6C);
+    active = 1;
+    for (; i < *(s32 *)((u8 *)arg0 + 0x28); entry += 8, i++) {
         if (*(s32 *)(entry + 8) < 0) {
-            f32 tmp[8];
-            s32 id = arg3;
-            tmp[0] = vec[0]; tmp[1] = vec[1]; tmp[2] = vec[2];
-            tmp[3] = *(f32 *)((u8 *)arg2 + 0x118);
-            tmp[4] = *(f32 *)((u8 *)arg2 + 0x11C);
-            tmp[5] = *(f32 *)((u8 *)arg2 + 0x120);
-            *(s16 *)(tmp + 6) = *(s16 *)((u8 *)arg2 + 0x6C);
-            fn_801796CC(10, tmp, 0x20);
-            if (*(u32 *)((u8 *)arg2 + 0x10) == 0x43415220 ||
-                *(u32 *)((u8 *)arg2 + 0x10) == 0x50434152 ||
-                *(u32 *)((u8 *)arg2 + 0x10) == 0x41434152 ||
-                *(u32 *)((u8 *)arg2 + 0x10) == 0x4E434152) {
-                index = *(s32 *)((u8 *)arg2 + 0x1EC) * 0x18;
-                *(u8 *)(lbl_80438898 + index) = 1;
-                *(s32 *)(lbl_80438898 + index + 4) = id;
-                *(f32 *)(lbl_80438898 + index + 8) = *(f32 *)(entry + 0xC) + lbl_8055E3C8;
-                x = vec[0] - *(f32 *)((u8 *)arg2 + 0x60);
-                y = vec[1] - *(f32 *)((u8 *)arg2 + 0x64);
-                z = vec[2] - *(f32 *)((u8 *)arg2 + 0x68);
-                *(f32 *)(lbl_80438898 + index + 0xC) = x;
-                *(f32 *)(lbl_80438898 + index + 0x10) = y;
-                *(f32 *)(lbl_80438898 + index + 0x14) = z;
-                *(f32 *)(lbl_80438898 + index + 0xC) = x * *(f32 *)((u8 *)arg2 + 0x3C) + y * *(f32 *)((u8 *)arg2 + 0x40) + z * *(f32 *)((u8 *)arg2 + 0x44);
-                *(f32 *)(lbl_80438898 + index + 0x10) = x * *(f32 *)((u8 *)arg2 + 0x48) + y * *(f32 *)((u8 *)arg2 + 0x4C) + z * *(f32 *)((u8 *)arg2 + 0x50);
-                *(f32 *)(lbl_80438898 + index + 0x14) = x * *(f32 *)((u8 *)arg2 + 0x54) + y * *(f32 *)((u8 *)arg2 + 0x58) + z * *(f32 *)((u8 *)arg2 + 0x5C);
+            temp.id = arg3;
+            fn_801796CC(10, (f32 *)&temp, 0x20);
+            {
+                s32 isType = 0;
+                u32 type = *(u32 *)(object + 0x10);
+                if (type == 0x43415220) goto valid_type;
+                if (type == 0x50434152) goto valid_type;
+                if (type == 0x41434152) goto valid_type;
+                if (type == 0x4E434152) goto valid_type;
+                goto done_type;
+            valid_type:
+                isType = 1;
+            done_type:
+                if (isType != 0) {
+                    u8 *record;
+                    s32 rawIndex;
+                    f32 bonus = lbl_8055E3C8;
+                    f32 v0, v1, v2;
+                    rawIndex = *(s32 *)(object + 0x1EC);
+                    index = rawIndex * 0x18;
+                    record = (u8 *)(lbl_80438898 + index);
+                    *record++ = (u8)active;
+                    *(s32 *)(record + 3) = temp.id;
+                    *(f32 *)(lbl_80438898 + index + 8) =
+                        *(f32 *)(entry + 0xC) + bonus;
+                    v0 = vecRead[0];
+                    v1 = vecRead[1];
+                    v2 = vecRead[2];
+                    x = v0 - *(f32 *)(object + 0x60);
+                    y = v1 - *(f32 *)(object + 0x64);
+                    z = v2 - *(f32 *)(object + 0x68);
+                    *(f32 *)(record + 0xB) = x;
+                    *(f32 *)(record + 0xF) = y;
+                    *(f32 *)(record + 0x13) = z;
+                    *(f32 *)(record + 0xB) =
+                        x * *(f32 *)(object + 0x3C) +
+                        y * *(f32 *)(object + 0x40) +
+                        z * *(f32 *)(object + 0x44);
+                    *(f32 *)(record + 0xF) =
+                        x * *(f32 *)(object + 0x48) +
+                        y * *(f32 *)(object + 0x4C) +
+                        z * *(f32 *)(object + 0x50);
+                    *(f32 *)(record + 0x13) =
+                        x * *(f32 *)(object + 0x54) +
+                        y * *(f32 *)(object + 0x58) +
+                        z * *(f32 *)(object + 0x5C);
+                }
             }
         }
-        i++;
     }
 }
-
 #pragma scheduling on
 
 void fn_801D2210(void) {
     fn_801D2B94();
 }
 
+extern s32 fn_801B2F24(void);
+extern void *lbl_804348E8[];
+#pragma scheduling invalid_target
+#pragma paired reset
+#pragma paired_single reset
+void fn_801D2214(void) {
+    struct Record { u8 active; u8 pad[3]; s32 id; f32 time; f32 position[3]; };
+    struct Temp { f32 position[3]; f32 velocity[3]; s16 type; s16 pad; s32 id; } temp;
+    f32 threshold;
+    s32 count;
+    struct Record *record;
+    void **objects;
+    s32 i;
+    s32 zero;
+    count = fn_801B2F24();
+    threshold = lbl_8055E3C8;
+    record = (struct Record *)lbl_80438898;
+    objects = lbl_804348E8;
+    i = 0;
+    zero = 0;
+    for (; i < count; record++, objects++, i++) {
+        if (record->active != 0) {
+            if (threshold > record->time) record->active = (u8)zero;
+            else {
+                u8 *object = (u8 *)*objects;
+                if (&temp.position[0] == &record->position[0]) {
+                    volatile f32 *matrix = (volatile f32 *)object;
+                    f32 x = record->position[0];
+                    f32 y = record->position[1];
+                    f32 z = record->position[2];
+                    f32 out0 = y * matrix[0x48 / 4] +
+                               z * matrix[0x54 / 4] +
+                               x * matrix[0x3C / 4];
+                    f32 out1 = y * matrix[0x4C / 4] +
+                               z * matrix[0x58 / 4] +
+                               x * matrix[0x40 / 4];
+                    f32 out2 = y * matrix[0x50 / 4] +
+                               z * matrix[0x5C / 4] +
+                               x * matrix[0x44 / 4];
+                    temp.position[0] = out0;
+                    temp.position[1] = out1;
+                    temp.position[2] = out2;
+                } else {
+                    volatile f32 *matrix = (volatile f32 *)object;
+                    f32 m48, x, m3c, y, m54, z, m4c, m40, m58, m50, m44, m5c;
+                    m48 = matrix[0x48 / 4];
+                    y = *(volatile f32 *)&record->position[1];
+                    m3c = matrix[0x3C / 4];
+                    x = *(volatile f32 *)&record->position[0];
+                    m54 = matrix[0x54 / 4];
+                    z = *(volatile f32 *)&record->position[2];
+                    temp.position[0] = x * m3c + y * m48 + z * m54;
+                    m4c = matrix[0x4C / 4];
+                    m40 = matrix[0x40 / 4];
+                    m58 = matrix[0x58 / 4];
+                    temp.position[1] = x * m40 + y * m4c + z * m58;
+                    m50 = matrix[0x50 / 4];
+                    m44 = matrix[0x44 / 4];
+                    m5c = matrix[0x5C / 4];
+                    temp.position[2] = x * m44 + y * m50 + z * m5c;
+                }
+                temp.position[0] += *(f32 *)(object + 0x60);
+                temp.position[1] += *(f32 *)(object + 0x64);
+                temp.position[2] += *(f32 *)(object + 0x68);
+                temp.velocity[0] = *(f32 *)(object + 0x118);
+                temp.velocity[1] = *(f32 *)(object + 0x11C);
+                temp.velocity[2] = *(f32 *)(object + 0x120);
+                temp.type = *(s16 *)(object + 0x6C);
+                temp.id = record->id;
+                fn_801796CC(10, (f32 *)&temp, 0x20);
+            }
+        }
+    }
+}
 extern f32 PSVECMag(void*);
 extern void fn_801A4868(void*, int);
 extern void fn_801D2C70(void*, s32, void*, s32);
@@ -136,30 +261,32 @@ extern const char lbl_803382DC[];
 void fn_801D2414(void *arg0, s32 arg1, void *arg2) {
     u32 type = *(u32 *)((char *)arg2 + 0x10);
     int match = 0;
-    void *entry;
+    u8 *entry;
 
     if (type == 0x43415220 || type == 0x50434152 ||
         type == 0x41434152 || type == 0x4E434152) {
         match = 1;
     }
     if (match != 0) {
-        entry = (void *)fn_801D2C20(*(s32 *)((char *)arg0 + 0x34));
+        entry = (u8 *)fn_801D2C20(*(s32 *)((char *)arg0 + 0x34));
         if (entry != 0) {
             register f32 magnitude = PSVECMag(&((f32 *)arg2)[70]);
-            if (*((u8 *)entry + 4) != 0 &&
-                magnitude > *(f32 *)((char *)entry + 8)) {
-                fn_801D2C70(&((u8 *)entry)[4], arg1, arg2,
+            if (entry[4] != 0 && magnitude > *(f32 *)(entry + 8)) {
+                fn_801D2C70(entry + 4, arg1, arg2,
                             *(s32 *)((char *)arg0 + 0x34));
             }
-            if (*((u8 *)entry + 0x30) != 0) {
-                if (magnitude > *(f32 *)((char *)entry + 0x34)) {
-                    fn_801D2E38(&((u8 *)entry)[0x30], arg0, arg1,
+            if (entry[0x30] != 0) {
+                if (magnitude > *(f32 *)(entry + 0x34)) {
+                    fn_801D2E38(entry + 0x30, arg0, arg1,
                                 (char *)arg2 + 0x118, *(f32 *)((char *)arg2 + 0xD4));
                     fn_801A4868(arg0, 0);
                 }
             }
-        } else if (*(s32 *)((char *)arg0 + 0x34) > 0) {
-            fn_802E317C(lbl_803382DC);
+        } else {
+            match = *(s32 *)((char *)arg0 + 0x34);
+            if (match > 0) {
+                fn_802E317C(lbl_803382DC);
+            }
         }
     }
 }
