@@ -6,6 +6,9 @@ typedef signed short s16;
 typedef unsigned short u16;
 typedef signed int s32;
 typedef unsigned int u32;
+typedef struct { s32 w[40]; } Tail8023C210;
+typedef struct { s32 pad; s32 a, b, c; u8 d, e, f, g; Tail8023C210 t; } Dst8023C210;
+typedef struct { s32 a, b, c; u8 d, e, f, g; Tail8023C210 t; } Src8023C210;
 extern s32 fn_80016464(s32);
 extern s32 fn_802E4A10(void);
 extern s32 fn_80137C84(s32, s32);
@@ -454,5 +457,49 @@ void fn_8023C210(void *dst, void *src) {
 
 void fn_8023C268(void) {}
 #pragma cplusplus on
-extern "C" void fn_8023BFBC(s32 arg0, s32 arg1) {}
+extern "C" s32 fn_80007FF0(s32);
+extern "C" s32 fn_80137C7C(s32, s32);
+extern "C" u32 lbl_8055BB34;
+extern const char lbl_8034137C[];
+extern "C" void fn_8023BFBC(s32 arg0, s32 arg1) {
+    struct Dummy {
+        virtual void f0();
+        virtual void f1(s32);
+        virtual void f2();
+        virtual void f3();
+        virtual s32 makeName(s32, s32);
+    };
+    s32 *temp_r30;
+    s32 *temp_r31;
+    s32 type;
+    s32 value;
+    s32 sign;
+    s32 count;
+    s32 i;
+    s32 result;
+
+    temp_r30 = (s32 *)fn_80012820(arg0);
+    temp_r31 = fn_80012870(arg0, arg1);
+    type = fn_80007FF0(*(s32 *)((u8 *)temp_r31 + 8));
+    result = ((Dummy *)*(void **)((u8 *)temp_r31 + 0x20))->makeName((s32)&lbl_8055BB34, type);
+    fn_802E30C8(lbl_8034137C, (u8 *)temp_r30 + 0x28, result, (u8 *)temp_r30 + 8);
+
+    value = lbl_8055BB30;
+    sign = value >> 31;
+    count = (sign ^ value) - sign;
+    fn_80137C78(count);
+    for (i = 0; i < count; i++) {
+        if (lbl_8055BB30 >= 0) {
+            fn_80137C84(fn_802E4A10(), i);
+        } else {
+            fn_80137C84(i, i);
+        }
+        fn_80137C7C(*(s32 *)((u8 *)fn_80016464(i) + 4), i);
+    }
+
+    fn_8023BEB8(arg0, arg1, 0);
+    for (i = 0; i < count; i++) {
+        fn_80137C80(i);
+    }
+}
 #pragma cplusplus reset
