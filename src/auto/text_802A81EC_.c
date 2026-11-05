@@ -1,7 +1,7 @@
 #include "types.h"
 void fn_802A8A4C(s32, s32);
 static inline void transform_802A8A4C(f32 *m, f32 *src, f32 *dst) {
-    if ((u32)src == (u32)dst) {
+    if (src == dst) {
         f32 x=src[0], y=src[1], z=src[2];
         dst[0]=z*m[6]+(x*m[0]+y*m[3]);
         dst[1]=z*m[7]+(x*m[1]+y*m[4]);
@@ -89,13 +89,16 @@ void fn_802A85C8(void) {
 #pragma use_lmw_stmw off
 void fn_802A86A4(void) {
     struct { f32 a[4]; f32 p[3]; f32 v[3]; } sp;
-    s32 i, offset, j, suboffset;
     u8 *entry;
+    s32 j;
     f32 *v;
-    f32 z, y, x, scale, speed;
-    f32 zero = lbl_80564928;
-    f32 one = lbl_8056494C;
+    s32 offset, suboffset, i;
+    f64 z, y, x;
+    f32 speed;
     f32 half = lbl_80564950;
+    f32 scale;
+    f32 one = lbl_8056494C;
+    f32 zero = lbl_80564928;
     i = 0; offset = 0;
     while (i < lbl_804BD6C4[1]) {
         entry = *(u8 **)((u32)lbl_804BD6C4[0] + offset);
