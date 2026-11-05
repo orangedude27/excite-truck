@@ -142,7 +142,6 @@ void fn_801EA59C(s32 arg0, s32 arg1, void *arg2) {
     *(s32 *)(entry + 0xa8) = *(s32 *)((u8 *)arg2 + 0x64);
     *(s32 *)(entry + 0xac) = *(s32 *)((u8 *)arg2 + 0x68);
     *(s32 *)(entry + 0xb0) = *(s32 *)((u8 *)arg2 + 0x6c);
-    *(s32 *)(entry + 0xb4) = *(s32 *)((u8 *)arg2 + 0x70);
     entry[0xB4] = ((u8 *)arg2)[0x70];
     *(s32 *)(entry + 0xB8) = *(s32 *)((u8 *)arg2 + 0x74);
 
@@ -185,36 +184,53 @@ s32 fn_801EA9CC(s32 arg0) {
     return lbl_8055EB78 + (arg0 * 0xBC);
 }
 
+#pragma scheduling invalid_target
 void fn_801EA9DC(s32 arg0, void *arg1) {
-    s32 base;
-    s32 value;
     s32 index;
+    s32 value;
+    s32 value0;
+    s32 word;
+    u8 byte;
+    f32 second;
+    f32 first;
     u8 *entry;
 
-    base = *(s32 *)&lbl_8055EB78;
+    value0 = *(s32 *)arg1;
     value = *(s32 *)((u8 *)arg1 + 4);
-    entry = (u8 *)base + arg0 * 0xBC;
-    *(s32 *)(entry + 0xC) = *(s32 *)arg1;
+    entry = (u8 *)*(s32 *)&lbl_8055EB78 + arg0 * 0xBC;
+    *(s32 *)(entry + 0x0C) = value0;
     index = value - 1;
+    word = *(s32 *)((u8 *)arg1 + 8);
     *(s32 *)(entry + 0x10) = value;
-    *(s32 *)(entry + 0x14) = *(s32 *)((u8 *)arg1 + 8);
-    *(f32 *)(entry + 0x18) = *(f32 *)((u8 *)arg1 + 0xC);
-    *(s32 *)(entry + 0x1C) = *(s32 *)((u8 *)arg1 + 0x10);
-    *(f32 *)(entry + 0x20) = *(f32 *)((u8 *)arg1 + 0x14);
-    *(f32 *)(entry + 0x24) = *(f32 *)((u8 *)arg1 + 0x18);
-    *(f32 *)(entry + 0x28) = *(f32 *)((u8 *)arg1 + 0x1C);
-    *(f32 *)(entry + 0x2C) = *(f32 *)((u8 *)arg1 + 0x20);
-    *(s32 *)(entry + 0x30) = *(s32 *)((u8 *)arg1 + 0x24);
-    *(u8 *)(entry + 0x34) = *(u8 *)((u8 *)arg1 + 0x28);
-    *(f32 *)(entry + 0x38) = *(f32 *)((u8 *)arg1 + 0x2C);
-    *(s32 *)(entry + 0x3C) = *(s32 *)((u8 *)arg1 + 0x30);
-    *(s32 *)(entry + 0x40) = *(s32 *)((u8 *)arg1 + 0x34);
-    if (index < 0) index = *(s32 *)((u8 *)base + 0x5E0) - 1;
-    value = *(s32 *)((u8 *)base + 0x5E0) - 1;
+    first = *(f32 *)((u8 *)arg1 + 0x0C);
+    *(s32 *)(entry + 0x14) = word;
+    word = *(s32 *)((u8 *)arg1 + 0x10);
+    *(f32 *)(entry + 0x18) = first;
+    first = *(f32 *)((u8 *)arg1 + 0x14);
+    *(s32 *)(entry + 0x1C) = word;
+    second = *(f32 *)((u8 *)arg1 + 0x18);
+    *(f32 *)(entry + 0x20) = first;
+    first = *(f32 *)((u8 *)arg1 + 0x1C);
+    *(f32 *)(entry + 0x24) = second;
+    second = *(f32 *)((u8 *)arg1 + 0x20);
+    *(f32 *)(entry + 0x28) = first;
+    word = *(s32 *)((u8 *)arg1 + 0x24);
+    *(f32 *)(entry + 0x2C) = second;
+    byte = *(u8 *)((u8 *)arg1 + 0x28);
+    *(s32 *)(entry + 0x30) = word;
+    first = *(f32 *)((u8 *)arg1 + 0x2C);
+    *(u8 *)(entry + 0x34) = byte;
+    word = *(s32 *)((u8 *)arg1 + 0x30);
+    *(f32 *)(entry + 0x38) = first;
+    value0 = *(s32 *)((u8 *)arg1 + 0x34);
+    *(s32 *)(entry + 0x3C) = word;
+    *(s32 *)(entry + 0x40) = value0;
+    if (index < 0) index = *(s32 *)((u8 *)(*(s32 *)&lbl_8055EB78) + 0x5E0) - 1;
+    value = *(s32 *)((u8 *)(*(s32 *)&lbl_8055EB78) + 0x5E0) - 1;
     if (value < index) index = value;
-    *(s32 *)((u8 *)base + (index << 2) + 0x5E8) = arg0;
+    *(s32 *)((u8 *)(*(s32 *)&lbl_8055EB78) + (index << 2) + 0x5E8) = arg0;
 }
-
+#pragma scheduling on
 void fn_801EAA94(s32 arg0, s32 arg1) {
     u8 flag;
     s32 result;
