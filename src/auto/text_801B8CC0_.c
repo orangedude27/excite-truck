@@ -56,25 +56,34 @@ extern "C" static inline void transform_vec_struct(Vec *out, const float *m, vol
 }
 static inline void transform_vec_scheduled(float *out, const float *m, float *in) {
 if (out == in) {
+float m3 = m[3];
+float m4 = m[4];
+float m5 = m[5];
+float m0 = m[0];
+float m1 = m[1];
+float m2 = m[2];
+float m6 = m[6];
+float m7 = m[7];
+float m8 = m[8];
 float y = in[1];
 float x = in[0];
 float z = in[2];
-float x_y = y * m[3];
-float y_y = y * m[4];
-float z_y = y * m[5];
-float x_x = x * m[0];
-float y_x = x * m[1];
-float z_x = x * m[2];
-float x_z = z * m[6];
-float y_z = z * m[7];
-float z_z = z * m[8];
-out[0] = x_z + (x_y + x_x);
-out[1] = y_z + (y_y + y_x);
-out[2] = z_z + (z_y + z_x);
+out[0] = z * m6 + (x * m0 + y * m3);
+out[1] = z * m7 + (x * m1 + y * m4);
+out[2] = z * m8 + (x * m2 + y * m5);
 } else {
-out[0] = in[2] * m[6] + (in[1] * m[3] + in[0] * m[0]);
-out[1] = in[2] * m[7] + (in[1] * m[4] + in[0] * m[1]);
-out[2] = in[2] * m[8] + (in[1] * m[5] + in[0] * m[2]);
+float m3 = m[3];
+float m4 = m[4];
+float m5 = m[5];
+float m0 = m[0];
+float m1 = m[1];
+float m2 = m[2];
+float m6 = m[6];
+float m7 = m[7];
+float m8 = m[8];
+out[0] = in[2] * m6 + (in[1] * m3 + in[0] * m0);
+out[1] = in[2] * m7 + (in[1] * m4 + in[0] * m1);
+out[2] = in[2] * m8 + (in[1] * m5 + in[0] * m2);
 }
 
 }
