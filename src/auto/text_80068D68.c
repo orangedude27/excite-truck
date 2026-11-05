@@ -1179,19 +1179,11 @@ void fn_8006A440(u32 r3, u32 r4)
 s32 fn_8006A460(s32 arg0) {
     register u8 *var_r6;
     register u32 temp_r10;
-    s32 temp_r26;
-    s32 temp_r3;
-    s32 var_ctr;
     register u32 var_r10;
-    u64 temp_ret;
-    void *temp_r7;
-    void *temp_r8;
-    void *temp_r9;
     void *var_r0;
     void *var_r0_2;
     void *var_r0_3;
     void *var_r0_4;
-    u32 ready;
     u8 *base;
     u8 *setup;
     u32 *words;
@@ -1201,13 +1193,14 @@ s32 fn_8006A460(s32 arg0) {
     register s32 old_state;
     register s32 lock_state;
     s32 i;
-    register s32 n;
     register u32 zero = 0;
     register u32 one = 1;
     OSTime now;
     u32 scale;
 
-    if ((ready = lbl_8055DC30, base = lbl_80392960, setup = base, ready != 0)) {
+    base = lbl_80392960;
+    setup = base + 0;
+    if (lbl_8055DC30 != 0) {
         return 0;
     }
     old_state = OSDisableInterrupts();
@@ -4610,8 +4603,9 @@ void bta_dm_pm_cback(u8 status, u8 id, u8 app_id, u8 *peer_addr) {
     u8 *conn;
     u8 i;
     u8 j;
-    u32 k;
+    u8 k;
     u32 offset;
+    u32 toff;
     u8 spec_idx;
 
     if (fn_8007A2C8((u16 *)version) == 0 && *(u16 *)(version + 6) == 0xF && version[0] < 3) {
@@ -4628,7 +4622,7 @@ void bta_dm_pm_cback(u8 status, u8 id, u8 app_id, u8 *peer_addr) {
     for (i = 1; i <= cfg[1]; i++) {
         offset = ((i * 4) & 0x3FC) - i;
         entry = cfg + offset;
-        if (entry[0] == id && (entry[1] == 0xFF || entry[1] == app_id))
+        if (id == entry[0] && (entry[1] == 0xFF || app_id == entry[1]))
             break;
     }
     if (i > cfg[1])
@@ -4636,7 +4630,8 @@ void bta_dm_pm_cback(u8 status, u8 id, u8 app_id, u8 *peer_addr) {
 
     conn = lbl_803C0C14;
     for (k = 0; k < 3; k++) {
-        entry = conn + ((k << 5) & 0x1FE0);
+        toff = k << 5;
+        entry = conn + toff;
         if (entry[0xB6] != 0 && bdcmp(entry + 0xB0, peer_addr) == 0) {
             fn_8007148C((s32)(entry + 0x98));
             entry[0xB6] = 0;
@@ -4652,7 +4647,7 @@ void bta_dm_pm_cback(u8 status, u8 id, u8 app_id, u8 *peer_addr) {
     list = lbl_803C0D18;
     for (j = 0; j < list[0]; j++) {
         entry = list + j * 9;
-        if (entry[7] == id && entry[8] == app_id && bdcmp(entry + 1, peer_addr) == 0)
+        if (id == entry[7] && app_id == entry[8] && bdcmp(entry + 1, peer_addr) == 0)
             break;
     }
 
@@ -4707,7 +4702,6 @@ void bta_dm_pm_set_mode(u8 *peer_addr, u8 timed_out) {
     u8 mode;
     u8 i;
     u8 j;
-    u32 off;
     tBTM_PM_MODE read_mode;
     tBTM_PM_PWR_MD pwr_md;
 
@@ -4720,10 +4714,9 @@ void bta_dm_pm_set_mode(u8 *peer_addr, u8 timed_out) {
     if (lbl_803C0C14[0x4D] == 0)
         return;
     for (i = 0; i < lbl_803C0C14[0x4D]; i++) {
-        off = i * 0xB;
-        if (bdcmp(lbl_803C0C14 + off, peer_addr) != 0)
+        if (bdcmp(((u8 (*)[0xB])lbl_803C0C14)[i], peer_addr) != 0)
             continue;
-        p_peer_device = lbl_803C0C14 + off;
+        p_peer_device = ((u8 (*)[0xB])lbl_803C0C14)[i];
         failed_pm = p_peer_device[0xA];
         break;
     }
@@ -4731,10 +4724,9 @@ void bta_dm_pm_set_mode(u8 *peer_addr, u8 timed_out) {
         return;
 
     for (j = 0; j < lbl_803C0D18[0]; j++) {
-        off = j * 9;
-        if (bdcmp(lbl_803C0D18 + off + 1, peer_addr) != 0)
+        if (bdcmp(((u8 (*)[9])lbl_803C0D18)[j] + 1, peer_addr) != 0)
             continue;
-        entry = lbl_803C0D18 + off;
+        entry = ((u8 (*)[9])lbl_803C0D18)[j];
         cfg = lbl_80559018;
         for (i = 1; i <= cfg[1]; i++) {
             if (cfg[i * 3] == entry[7] &&
@@ -5702,12 +5694,12 @@ void bta_hh_sm_execute(tBTA_HH_DEV_CB *p_cb, UINT16 event, void *p_data) {
     u8 callback_data[0x20];
     char *strings = lbl_80315700;
     UINT16 callback_event = 0;
-    u8 state;
+    u8 action;
     u8 new_state;
-    char *state_name;
+    register char *state_name;
     char *new_state_name;
     u8 *table;
-    u8 action;
+    u8 state;
     memset(callback_data, 0, 0x20);
     if (p_cb == NULL) {
         if (*(u32 *)(lbl_803C0D48 + 0x224) != 0) {
@@ -5776,7 +5768,7 @@ void bta_hh_sm_execute(tBTA_HH_DEV_CB *p_cb, UINT16 event, void *p_data) {
             case 0: state_name = strings + 0x1C; break;
             case 1: state_name = strings + 0x2C; break;
             case 2: state_name = strings + 0x3C; break;
-            case 3: state_name = strings + 0x50; break;
+            case 3: state_name = strings + (unsigned short)0x50; break;
             default: state_name = strings + 0x60; break;
             }
             switch (new_state) {
@@ -6005,15 +5997,15 @@ void btm_acl_created(BD_ADDR bda, DEV_CLASS dev_class, BD_NAME dev_name,
     u8 *temp_r3;
     u16 temp_r4;
     s32 var_ctr;
-    s32 var_ctr_2;
-    u16 temp_r28;
+    unsigned long var_ctr_2;
+    u8 *var_r30_2;
     u16 var_r30;
-    u32 var_r29_2;
+    u8 var_r6;
     u32 var_r31;
     u8 var_r4;
-    u8 var_r6;
+    u32 var_r29_2;
     u8 *var_r29;
-    u8 *var_r30_2;
+    u16 temp_r28;
     u8 *var_r31_2;
 
     var_r29 = lbl_803C0F78 + 0x34;
@@ -6094,7 +6086,7 @@ loop_27:
 loop_27_next:
                         var_r29_2 += 1;
                         var_r30_2 += 0x11C;
-                        if (var_r29_2 < 4) {
+                        if (4 > var_r29_2) {
                             goto loop_27;
                         }
                         var_r30_2 = NULL;
@@ -14999,6 +14991,14 @@ extern void *jumptable_803187D4[];
 extern void l2c_csm_config(void *, u16, void *);
 extern void l2c_csm_w4_l2cap_disconnect_rsp(void *, u16, void *);
 extern void *jumptable_803183B0[];
+extern void l2cu_process_peer_cfg_req();
+extern void l2cu_send_peer_config_rsp(void *, void *);
+extern void l2cu_send_peer_disc_req(void *);
+extern void forward_peer_data(void *, void *);
+extern void l2cu_process_our_cfg_req(void *, void *);
+extern void l2cu_send_peer_config_req(void *, void *);
+extern void fn_8008EE40(void *, void *);
+extern void fn_8008EF90(void *, void *);
 void fn_80089E40(void *p_ccb, u8 event, void *p_data) {
     u32 state = *(u32 *)((u8 *)p_ccb + 4);
     if (state > 8) return;
@@ -16031,17 +16031,17 @@ void l2c_rcv_acl_data(register BT_HDR *arg0) {
     extern void process_l2cap_cmd(void *, UINT8 *, UINT16);
     u8 *data;
     register char *trace;
-    register u32 temp_r26;
+    s32 temp_r26;
     s32 temp_r3;
     s32 temp_r3_2;
     s32 var_r28;
     register u32 temp_r0_3;
-    s32 temp_r0_4;
+    u32 temp_r0_4;
+    u32 temp_r24;
     register u16 temp_r25;
-    s32 temp_r24;
     s32 temp_r4;
     u32 temp_r0;
-    u8 temp_r28;
+    register u32 temp_r28;
 
     var_r28 = 0;
     data = (u8 *)arg0 + arg0->offset;
@@ -16084,7 +16084,7 @@ void l2c_rcv_acl_data(register BT_HDR *arg0) {
     arg0->offset = (u16)(temp_r4 + 4);
     temp_r24 = (u16)(data[14] + (data[15] << 8));
     temp_r25 = (u16)(data[12] + (data[13] << 8));
-    if ((u32)temp_r24 > 2) {
+    if (temp_r24 > 2) {
         temp_r3_2 = (s32)l2cu_find_ccb_by_cid((void *)temp_r3, temp_r24);
         var_r28 = temp_r3_2;
         if (temp_r3_2 == 0) {
@@ -16111,17 +16111,17 @@ void l2c_rcv_acl_data(register BT_HDR *arg0) {
         GKI_freebuf(arg0);
         return;
     }
-    if ((u32)temp_r24 == 1) {
+    if (temp_r24 == 1) {
         process_l2cap_cmd((void *)temp_r3, data + 16, temp_r25);
         GKI_freebuf(arg0);
         return;
     }
-    if ((u32)temp_r24 == 2) {
+    if (temp_r24 == 2) {
         arg0->offset = (u16)(temp_r0_4 + 2);
         arg0->len = temp_r4 - 2;
         if (lbl_803C4040[0] >= 5)
             fn_80070954(0x80004, trace + 0xE0,
-                (u16)(((u32)data[17] << 8) + data[16]));
+                (u16)(data[16] + (data[17] << 8)));
         GKI_freebuf(arg0);
         return;
     }
@@ -21838,22 +21838,23 @@ void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len,
 
 static void process_service_attr_req(tCONN_CB *arg0, UINT16 arg1, UINT16 arg2, UINT8 *arg3, UINT8 *arg4) {
     tSDP_ATTR_SEQ attr_seq;
-    register UINT32 record_handle;
-    register UINT16 max_list_len;
-    register UINT16 i;
+    UINT32 record_handle;
+    UINT16 max_list_len;
+    UINT16 i;
     UINT16 list_len;
     UINT16 send_len;
     UINT16 cont_offset;
-    register UINT8 *p;
+    UINT8 *p;
     UINT8 *out;
-    register UINT8 *list_base;
+    UINT8 *list_base;
     UINT8 *param_len_ptr;
-    register tSDP_RECORD *record;
-    register tSDP_ATTRIBUTE *attr;
+    tSDP_RECORD *record;
+    tSDP_ATTRIBUTE *attr;
     BT_HDR *buf;
 
     p = arg3;
-    BE_STREAM_TO_UINT32(record_handle, p);
+    record_handle = (((UINT32)p[0] << 24) + ((UINT32)p[1] << 16)) + (p[3] + ((UINT32)p[2] << 8));
+    p += 4;
     if (p > arg4) {
         sdpu_build_n_send_error(arg0, arg1, 2, NULL);
         return;
@@ -23479,11 +23480,11 @@ write_timeout:
 extern s32 StartSyncDevice(u8 syncType, s8 syncLoopNum, BOOL syncSkipChecks);
 #pragma push
 #pragma scheduling on
-void WUDVendorSpecificCallback(u8 len, register u8 *pData) {
+void WUDVendorSpecificCallback(u8 len, u8 *pData) {
     typedef void (*WUDSyncCallback)(s32, s32);
     typedef void (*WUDClearCallback)(s32);
-    register u8 *state = lbl_80392960;
-    register u8 *strings = lbl_803130C8;
+    u8 *state = lbl_80392960;
+    u8 *strings = lbl_803130C8;
     u8 event = pData[0];
     u32 enabled, busyEnabled;
     s32 busy, result, started, libStatus;
@@ -23522,8 +23523,7 @@ void WUDVendorSpecificCallback(u8 len, register u8 *pData) {
         }
         break;
 
-    case 9: {
-        register u8 *clearState = lbl_80392960;
+    case 9:
         DBPrintf_8006CFA8((const char *)strings + 0xA70);
         DBPrintf_8006CFA8((const char *)strings + 0x5BC);
         enabled = OSDisableInterrupts();
@@ -23543,14 +23543,16 @@ void WUDVendorSpecificCallback(u8 len, register u8 *pData) {
             clearCallback(result);
             break;
         }
+
         DBPrintf_8006CFA8((const char *)strings + 0x470);
         enabled = OSDisableInterrupts();
-        libStatus = (s8)clearState[0x688];
+        libStatus = (s8)state[0x688];
         OSRestoreInterrupts(enabled);
         if ((u32)libStatus != 3U) break;
+
         busyEnabled = OSDisableInterrupts();
-        if (clearState[0xC] == 0 && clearState[0xD] == 0 &&
-            clearState[0xF] == 4 && clearState[0x10] == 4) {
+        if (state[0xC] == 0 && state[0xD] == 0 &&
+            state[0xF] == 4 && state[0x10] == 4) {
             OSRestoreInterrupts(busyEnabled);
             busy = 0;
         } else {
@@ -23558,22 +23560,24 @@ void WUDVendorSpecificCallback(u8 len, register u8 *pData) {
             busy = 1;
         }
         if (busy != 0) break;
+
         enabled = OSDisableInterrupts();
-        clearState[0xD] = 1;
-        OSCreateAlarm((OSAlarm *)(clearState + 0x690));
-        OSSetPeriodicAlarm((OSAlarm *)(clearState + 0x690), __OSGetSystemTime(),
+        state[0xD] = 1;
+        OSCreateAlarm((OSAlarm *)(state + 0x690));
+        OSSetPeriodicAlarm((OSAlarm *)(state + 0x690), __OSGetSystemTime(),
                            OS_MSEC_TO_TICKS(20), (OSAlarmHandler)fn_80069EB4);
         OSRestoreInterrupts(enabled);
         break;
-    }
 
     case 10:
         DBPrintf_8006CFA8((const char *)strings + 0xA88, pData[1]);
         state[0x689] = pData[1];
         break;
+
     case 16:
         DBPrintf_8006CFA8((const char *)strings + 0xAAC, pData[1]);
-        OSPanic(&lbl_80558FE8, 0xD9C, (const char *)strings + 0xAD4);
+        OSPanic(&lbl_80558FE8, 0xD9C,
+                (const char *)strings + 0xAD4);
         break;
     }
 }
