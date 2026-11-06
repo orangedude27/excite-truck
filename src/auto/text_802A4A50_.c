@@ -144,9 +144,9 @@ static inline void VecMtxMult_802A53B0(const f32 *m, const f32 *src, f32 *dst) {
         f32 o2 = z * m[8] + s2;
         dst[0] = o0; dst[1] = o1; dst[2] = o2;
     } else {
-        dst[0] = src[2] * m[6] + (src[1] * m[3] + src[0] * m[0]);
-        dst[1] = src[2] * m[7] + (src[1] * m[4] + src[0] * m[1]);
-        dst[2] = src[2] * m[8] + (src[1] * m[5] + src[0] * m[2]);
+        dst[0] = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
+        dst[1] = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
+        dst[2] = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
     }
 }
 extern f32 __fabsf(f32);
