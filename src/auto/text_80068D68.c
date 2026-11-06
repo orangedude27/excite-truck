@@ -390,6 +390,7 @@ typedef struct AXFX_REVERBHI_EXP_VIEW {
     f32 *lastAllpassLine[3];       /* 0xC8 */
     u32 lastAllpassPos[3];         /* 0xD4 */
     u32 lastAllpassLength[3];      /* 0xE0 */
+    u32 lastAllpassMaxLength[3];   /* 0xEC */
     f32 allpassCoef;               /* 0xF8 */
     f32 lastLpfOut[3];             /* 0xFC */
     f32 lpfCoef;                   /* 0x108 */
@@ -23134,6 +23135,164 @@ void AXFXReverbHiExpShutdown(void* arg0) {
     __FreeDelayLine(arg0);
     OSRestoreInterrupts(enabled);
 }
+
+#pragma use_lmw_stmw off
+void AXFXReverbHiExpCallback(AXFX_BUFFERUPDATE_VIEW* bufferUpdate,
+                             AXFX_REVERBHI_EXP_VIEW* fx) {
+    u32 ch, i;
+    u32 samp;
+    s32* input[3];
+    f32 data;
+    f32 output[3];
+    f32* earlyLine;
+    f32 earlyOut;
+    f32* preDelayLine;
+    f32 preDelayOut;
+    f32 filterOut;
+    f32* combLine;
+    f32 combOutOne;
+    f32* allpass;
+    f32 outTmp;
+    f32 allpassIn;
+    f32 allpassCoef;
+    f32 lpfOut;
+    f32 lpfCoef1;
+    f32 lpfCoef2;
+    f32 fusedOut[3];
+    f32 fusedGain;
+    f32 crosstalkGain;
+    f32 crosstalkL;
+    f32 crosstalkR;
+    f32 crosstalkS;
+    s32* inBusData[3];
+    s32* outBusData[3];
+
+    if (fx->active != 0) {
+        fx->active &= ~2;
+        return;
+    }
+
+    input[0] = bufferUpdate->left;
+    input[1] = bufferUpdate->right;
+    input[2] = bufferUpdate->surround;
+
+    if (fx->busIn != NULL) {
+        inBusData[0] = fx->busIn->left;
+        inBusData[1] = fx->busIn->right;
+        inBusData[2] = fx->busIn->surround;
+    }
+
+    if (fx->busOut != NULL) {
+        outBusData[0] = fx->busOut->left;
+        outBusData[1] = fx->busOut->right;
+        outBusData[2] = fx->busOut->surround;
+    }
+
+    lpfCoef1 = 1.0f - fx->lpfCoef;
+    lpfCoef2 = fx->lpfCoef;
+    allpassCoef = fx->allpassCoef;
+    fusedGain = fx->fusedGain * 0.6f;
+    crosstalkGain = fx->crosstalk * 0.5f;
+
+    for (samp = 0; samp < 96; samp++) {
+        for (ch = 0; ch < 3; ch++) {
+            if (fx->busIn != NULL) {
+                data = (f32)(*input[ch] + *(inBusData[ch]++));
+            } else {
+                data = (f32)(*input[ch]);
+            }
+
+            earlyLine = fx->earlyLine[ch];
+            earlyOut = earlyLine[fx->earlyPos[0]] * fx->earlyCoef[0] +
+                       earlyLine[fx->earlyPos[1]] * fx->earlyCoef[1] +
+                       earlyLine[fx->earlyPos[2]] * fx->earlyCoef[2];
+
+            if (fx->preDelayLength != 0) {
+                preDelayLine = fx->preDelayLine[ch];
+                preDelayOut = preDelayLine[fx->preDelayPos];
+                preDelayLine[fx->preDelayPos] = data;
+            } else {
+                preDelayOut = data;
+            }
+
+            filterOut = 0.0f;
+            for (i = 0; i < 3; i++) {
+                combLine = fx->combLine[ch][i];
+                combOutOne = combLine[fx->combPos[i]];
+                combLine[fx->combPos[i]] =
+                    preDelayOut + combOutOne * fx->combCoef[i];
+                filterOut += combOutOne;
+            }
+
+            for (i = 0; i < 2; i++) {
+                allpass = fx->allpassLine[ch][i];
+                outTmp = allpass[fx->allpassPos[i]];
+                allpassIn = filterOut + outTmp * allpassCoef;
+                allpass[fx->allpassPos[i]] = allpassIn;
+                filterOut = outTmp - allpassIn * allpassCoef;
+            }
+
+            lpfOut = lpfCoef1 * filterOut + lpfCoef2 * fx->lastLpfOut[ch];
+            fx->lastLpfOut[ch] = lpfOut;
+
+            allpass = fx->lastAllpassLine[ch];
+            outTmp = allpass[fx->lastAllpassPos[ch]];
+            allpassIn = lpfOut + outTmp * allpassCoef;
+            allpass[fx->lastAllpassPos[ch]] = allpassIn;
+            fusedOut[ch] = outTmp - allpassIn * allpassCoef;
+
+            if (++fx->lastAllpassPos[ch] >= fx->lastAllpassLength[ch]) {
+                fx->lastAllpassPos[ch] = 0;
+            }
+
+            fusedOut[ch] *= fusedGain;
+            fusedOut[ch] += earlyOut;
+        }
+
+        crosstalkL = fusedOut[1] + fusedOut[2];
+        crosstalkR = fusedOut[0] + fusedOut[2];
+        crosstalkS = fusedOut[0] + fusedOut[1];
+
+        output[0] = fusedOut[0] + crosstalkL * crosstalkGain;
+        output[1] = fusedOut[1] + crosstalkR * crosstalkGain;
+        output[2] = fusedOut[2] + crosstalkS * crosstalkGain;
+
+        *(input[0]++) = (s32)(output[0] * fx->outGain);
+        *(input[1]++) = (s32)(output[1] * fx->outGain);
+        *(input[2]++) = (s32)(output[2] * fx->outGain);
+
+        if (fx->busOut != NULL) {
+            *(outBusData[0]++) = (s32)(output[0] * fx->sendGain);
+            *(outBusData[1]++) = (s32)(output[1] * fx->sendGain);
+            *(outBusData[2]++) = (s32)(output[2] * fx->sendGain);
+        }
+
+        for (i = 0; i < 3; i++) {
+            if (++fx->earlyPos[i] >= fx->earlyLength) {
+                fx->earlyPos[i] = 0;
+            }
+        }
+
+        if (fx->preDelayLength != 0) {
+            if (++fx->preDelayPos >= fx->preDelayLength) {
+                fx->preDelayPos = 0;
+            }
+        }
+
+        for (i = 0; i < 3; i++) {
+            if (++fx->combPos[i] >= fx->combLength[i]) {
+                fx->combPos[i] = 0;
+            }
+        }
+
+        for (i = 0; i < 2; i++) {
+            if (++fx->allpassPos[i] >= fx->allpassLength[i]) {
+                fx->allpassPos[i] = 0;
+            }
+        }
+    }
+}
+#pragma use_lmw_stmw reset
 
 BOOL __AllocDelayLine(AXFX_REVERBHI_EXP_FREE_VIEW *fx) {
     extern void *lbl_805590B0;
