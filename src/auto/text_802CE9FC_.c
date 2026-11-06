@@ -1926,23 +1926,21 @@ void fn_802D2684(void) {
     unsigned char texFlag;
     unsigned char tevFlag2;
     unsigned char indirectFlag;
-    int coordType;
     int tevStage;
     int texGen;
     int coordCount;
-    int coordMap[2];
+    int coordMap[4];
     int arg8;
     int argC;
 
-    tevFlag = ((unsigned long)lbl_8055FD1C >> 6) & 1;
     tevFlag2 = (unsigned char)lbl_804C5700[9];
+    tevFlag = ((unsigned long)lbl_8055FD1C >> 6) & 1;
     tevStage = 0;
     texFlag = (unsigned char)lbl_804C5700[8];
     texGen = 0;
     indirectFlag = (unsigned char)lbl_804C5700[10];
-    coordType = lbl_804C5700[12] != 0 ? 0x1E : 0x3C;
 
-    GXSetTexCoordGen2(0, 1, 4, coordType, 0, 0x7D);
+    GXSetTexCoordGen2(0, 1, 4, lbl_804C5700[12] != 0 ? 0x1E : 0x3C, 0, 0x7D);
     GXSetTevOrder(0, 0, 0, 4);
     if (tevFlag != 0) {
         GXSetTevOp(0, 3);
@@ -1969,11 +1967,8 @@ void fn_802D2684(void) {
             coordMap[coordCount] = 5;
             coordCount++;
         }
-        if (coordCount < 2) {
-            coordMap[coordCount] = 6;
-            if (coordCount == 0)
-                coordMap[coordCount + 1] = 6;
-        }
+        while (coordCount < 2)
+            coordMap[coordCount++] = 6;
         GXSetTevAlphaOp(0, 0, 0, 0, 1, 0);
         GXSetTevAlphaIn(0, 7, coordMap[0], coordMap[1], 7);
     }
