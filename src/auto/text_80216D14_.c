@@ -1,6 +1,7 @@
 #include "include/MSL/stddef.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 extern float lbl_80563490;
+struct Rec80216 { int w[12]; float f[3]; };
 extern int fn_802182F0(void *, void *);
 extern int fn_802368B4(int);
 #pragma cplusplus on
