@@ -25,7 +25,7 @@ extern f32 lbl_805635E0;
 extern f32 lbl_805635E4;
 extern void fn_80128668(void *);
 extern void *fn_8022EC7C(void);
-extern void *fn_8022ECC0();
+extern void *fn_8022ECC0(s32);
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -82,12 +82,10 @@ void fn_8022EB30(void *arg0) {
 }
 #pragma dont_inline off
 void fn_8022EB90(void) {
-    s32 *p;
     if (lbl_8055F004) fn_802E317C(lbl_803402A0);
-    p = (s32 *)fn_801284F8(8, lbl_803402F4);
-    lbl_8055F004 = (s32)p;
-    *p = 0;
-    p[1] = p[0];
+    lbl_8055F004 = (s32)((void *(*)(int, const char *))fn_801284F8)(8, lbl_803402F4);
+    *(s32 *)lbl_8055F004 = 0;
+    ((s32 *)lbl_8055F004)[1] = *(s32 *)lbl_8055F004;
 }
 
 #pragma push
@@ -178,25 +176,27 @@ extern f32 lbl_805635E0;
 extern f32 lbl_805635E4;
 extern void *fn_8022EDE4(f32 *, f32);
 void fn_8022EE9C(void) {
-    f32 a[12];
-    a[0] = lbl_805635E0;
+    volatile f32 a[12];
+    f32 one = lbl_805635E0;
+    a[0] = one;
     a[1] = lbl_805635E4;
     a[2] = lbl_805635E4;
     a[3] = lbl_805635E4;
-    a[4] = lbl_805635E0;
+    a[4] = one;
     a[5] = lbl_805635E4;
     a[6] = lbl_805635E4;
     a[7] = lbl_805635E4;
-    a[8] = lbl_805635E0;
+    a[8] = one;
     a[9] = lbl_805635E4;
     a[10] = lbl_805635E4;
     a[11] = lbl_805635E4;
-    fn_8022EDE4(a, lbl_805635E0);
+    fn_8022EDE4((f32 *)a, one);
 }
 
 extern f32 fn_80144514(f32, f32, f32, f32, f32, f32);
-#pragma dont_inline on
-void fn_8022EEF8(f32 *dst, const f32 *left, const f32 *right, s32 arg3) {
+#pragma push
+#pragma processor 750
+void fn_8022EEF8(f32 *dst, f32 *left, f32 *right, s32 arg3) {
     f32 temp_f1;
     f32 temp_f24, temp_f25, temp_f26, temp_f27, temp_f28, temp_f29, temp_f30, temp_f31;
 
@@ -231,4 +231,4 @@ void fn_8022EEF8(f32 *dst, const f32 *left, const f32 *right, s32 arg3) {
     dst[10] = left[10] + right[10];
     dst[11] = left[11] + right[11];
 }
-#pragma dont_inline off
+#pragma pop
