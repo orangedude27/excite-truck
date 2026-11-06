@@ -1,20 +1,6 @@
 #include <types.h>
 #include <string.h>
 extern f64 atof(const char *);
-extern char lbl_8055A95C[];
-extern char lbl_8055A964[];
-extern char lbl_8055A968[];
-extern char lbl_8055A970[];
-extern char lbl_8055A974[];
-extern char lbl_8055A97C[];
-extern char lbl_80336BC0[];
-extern char lbl_8055A984[];
-extern char lbl_8055A98C[];
-extern char lbl_80336BCC[];
-extern void fn_802E30C8(const char *, const char *);
-extern s32 fn_80179630(s32);
-extern s32 lbl_8055E804;
-extern s32 lbl_8055E808;
 extern f32 lbl_8055E85C;
 extern f32 lbl_8055E860;
 extern f32 lbl_805629B4;
