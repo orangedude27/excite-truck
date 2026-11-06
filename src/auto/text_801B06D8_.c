@@ -515,7 +515,7 @@ extern f32 lbl_805625F0;
 extern void *lbl_8055E68C;
 extern u8 lbl_8055E690;
 #pragma cplusplus on
-#pragma dont_inline fn_801B1130
+#pragma dont_inline on
 extern "C" s32 fn_801B1130(s32 arg0) {
     struct Dummy {
         virtual void f0();
@@ -980,7 +980,6 @@ extern f32 lbl_80562608;
 extern f32 lbl_8056260C;
 #pragma push
 #pragma use_lmw_stmw off
-#pragma auto_inline off
 #pragma scheduling invalid_target
 void fn_801B1B30(void *arg0) {
     struct Stack {
