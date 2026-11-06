@@ -1508,7 +1508,8 @@ extern "C" void fn_80175228(void *arg0) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 extern float lbl_80561A44, lbl_80561A50, lbl_80561A54, lbl_80561AB8, lbl_80561ADC, lbl_80561AE0, lbl_80561AE4, lbl_80561AE8;
-extern char lbl_8055A2E4[], lbl_80330F48[];
+extern char lbl_80330F48[];
+__declspec(section ".sdata") extern char lbl_8055A2E4[];
 extern void *fn_801E7E3C(void);
 extern int fn_80161C38(void), fn_80160998(void), fn_801E866C(int);
 extern float fn_801E7E18(void);
@@ -1518,75 +1519,76 @@ extern void fn_80130978(void *, int, float);
 extern float fn_80147204(void *, void *);
 extern void fn_8014784C(void *, const char *, const char *, int);
 extern void fn_801479A8(void *, void *, void *, ...);
-#pragma cplusplus reset
+#pragma cplusplus on
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-int fn_80175238(void *arg0, int arg1) {
+extern "C" int fn_80175238(void *arg0, int arg1) {
  struct Rect { int a; float b; int c,d; float e; int f,g,h; };
- struct Rect rect1, rect2;
- char text1[32], text2[32];
- void *mgr, *one, *two, *panel, *detail;
+ struct Manager { virtual void *unused(); virtual void *get(const char *); };
+ struct Frame { Rect rect2; char text2[24]; Rect rect1; char text1[20]; } frame;
+ struct Manager *mgr; void *one, *two, *panel, *detail;
  float time, limit, a,b,c,d,e, t, blend, value;
  char *base = lbl_80330F48;
  time = *(float *)((char *)fn_801E7E3C()+0x10);
  limit=lbl_80561AB8; a=limit-lbl_80561AE0; b=a-lbl_80561AE4;
  c=b-lbl_80561AE8; d=c-lbl_80561AE0; e=d-lbl_80561AE4;
- mgr=*(void **)((char *)arg0+0x1a8);
- one=(*(void *(**)(void *, const char *))(*(char **)mgr+0xc))(mgr,base+0x5d8);
- mgr=*(void **)((char *)arg0+0x1a8);
- two=(*(void *(**)(void *, const char *))(*(char **)mgr+0xc))(mgr,base+0x5e8);
+ mgr=*(struct Manager **)((char *)arg0+0x1a8);
+ one=mgr->get(base+0x5d8);
+ mgr=*(struct Manager **)((char *)arg0+0x1a8);
+ two=mgr->get(base+0x5e8);
  if (time < e) fn_8000FBE4();
  if (!fn_80161C38()) {
    if (time < limit) {
      t=(time-a)/(b-a); blend=lbl_80561A40;
-     if (blend < t) {} else blend=t;
-     if (blend > lbl_80561A44) {} else blend=lbl_80561A44;
+     if (t < blend) blend=t;
+     if (blend < lbl_80561A44) blend=lbl_80561A44;
      blend=lbl_80561A44+blend*lbl_80561A40;
-     mgr=*(void **)((char *)arg0+0x1a8);
-     panel=(*(void *(**)(void *, const char *))(*(char **)mgr+0xc))(mgr,base+0x5f8);
-     mgr=*(void **)((char *)arg0+0x1a8);
-     detail=(*(void *(**)(void *, const char *))(*(char **)mgr+0xc))(mgr,base+0x604);
-     fn_801E866C(arg1); fn_8001DF08(0);
+     mgr=*(struct Manager **)((char *)arg0+0x1a8);
+     panel=mgr->get(base+0x5f8);
+     mgr=*(struct Manager **)((char *)arg0+0x1a8);
+     detail=mgr->get(base+0x604);
+     ((void (*)(int, int))fn_8001DF08)(fn_801E866C(arg1),0);
      if (one && two && panel && detail) {
        value=lbl_80561A50;
-if (blend >= value) {
+if (blend < value) {} else {
  value=lbl_80561A40;
- if (blend <= value) {
+ if (blend > value) {} else {
   if (blend > lbl_80561A44) value=(blend*(lbl_80561ADC*blend*blend))+(lbl_80561A3C*blend*blend);
   else value=(blend*(lbl_80561ADC*blend*blend))-(lbl_80561A3C*blend*blend);
  }
 }
        fn_801479A8(one,two,fn_80131234(base+0x610),value);
-       fn_80160A74(); fn_801308F4(text1,0x14,fn_80160998());
-       rect1=*(struct Rect *)panel;
-       rect1.b-=lbl_80561A54*fn_80147204(&rect1,text1);
+       fn_80160A74(); fn_801308F4(frame.text1,0x14,fn_80160998());
+       frame.rect1.a=*(int *)panel;
+       frame.rect1.b=*(float *)((char *)panel+4); frame.rect1.c=*(int *)((char *)panel+8); frame.rect1.d=*(int *)((char *)panel+12); frame.rect1.e=*(float *)((char *)panel+16); frame.rect1.f=*(int *)((char *)panel+20); frame.rect1.g=*(int *)((char *)panel+24); frame.rect1.h=*(int *)((char *)panel+28);
+       frame.rect1.b-=lbl_80561A54*fn_80147204(&frame.rect1,frame.text1);
        value=lbl_80561A50;
-if (blend >= value) {
+if (blend < value) {} else {
  value=lbl_80561A40;
- if (blend <= value) {
+ if (blend > value) {} else {
   if (blend > lbl_80561A44) value=(blend*(lbl_80561ADC*blend*blend))+(lbl_80561A3C*blend*blend);
   else value=(blend*(lbl_80561ADC*blend*blend))-(lbl_80561A3C*blend*blend);
  }
 }
-       fn_801479A8(&rect1,detail,text1,value);
+       fn_801479A8(&frame.rect1,detail,frame.text1,value);
      }
    }
    if (time < c) {
      fn_8014784C(*(void **)((char *)arg0+0x1a8),base+0x500,base+0x510,0);
      t=(time-d)/(e-d); blend=lbl_80561A40;
-     if (blend < t) {} else blend=t;
-     if (blend > lbl_80561A44) {} else blend=lbl_80561A44;
+     if (t < blend) blend=t;
+     if (blend < lbl_80561A44) blend=lbl_80561A44;
      blend=lbl_80561A44+blend*lbl_80561A40;
-     mgr=*(void **)((char *)arg0+0x1a8);
-     panel=(*(void *(**)(void *, const char *))(*(char **)mgr+0xc))(mgr,base+0x62c);
-     mgr=*(void **)((char *)arg0+0x1a8);
-     detail=(*(void *(**)(void *, const char *))(*(char **)mgr+0xc))(mgr,lbl_8055A2E4);
+     mgr=*(struct Manager **)((char *)arg0+0x1a8);
+     panel=mgr->get(base+0x62c);
+     mgr=*(struct Manager **)((char *)arg0+0x1a8);
+     detail=mgr->get(lbl_8055A2E4);
      if (one && two && panel && detail) {
        value=lbl_80561A50;
-if (blend >= value) {
+if (blend < value) {} else {
  value=lbl_80561A40;
- if (blend <= value) {
+ if (blend > value) {} else {
   if (blend > lbl_80561A44) value=(blend*(lbl_80561ADC*blend*blend))+(lbl_80561A3C*blend*blend);
   else value=(blend*(lbl_80561ADC*blend*blend))-(lbl_80561A3C*blend*blend);
  }
@@ -1594,18 +1596,19 @@ if (blend >= value) {
        fn_801479A8(one,two,fn_80131234(base+0x638),value);
        t=*(float *)((char *)arg0+0x19c)-fn_801E7E18();
        value=lbl_80561A44; if (value > t) {} else value=t;
-       fn_80130978(text2,0x14,value);
-       rect2=*(struct Rect *)panel;
-       rect2.b+=lbl_80561A54*fn_80147204(&rect2,text2);
+       fn_80130978(frame.text2,0x14,value);
+       frame.rect2.a=*(int *)panel;
+       frame.rect2.b=*(float *)((char *)panel+4); frame.rect2.c=*(int *)((char *)panel+8); frame.rect2.d=*(int *)((char *)panel+12); frame.rect2.e=*(float *)((char *)panel+16); frame.rect2.f=*(int *)((char *)panel+20); frame.rect2.g=*(int *)((char *)panel+24); frame.rect2.h=*(int *)((char *)panel+28);
+       frame.rect2.b+=lbl_80561A54*fn_80147204(&frame.rect2,frame.text2);
        value=lbl_80561A50;
-if (blend >= value) {
+if (blend < value) {} else {
  value=lbl_80561A40;
- if (blend <= value) {
+ if (blend > value) {} else {
   if (blend > lbl_80561A44) value=(blend*(lbl_80561ADC*blend*blend))+(lbl_80561A3C*blend*blend);
   else value=(blend*(lbl_80561ADC*blend*blend))-(lbl_80561A3C*blend*blend);
  }
 }
-       fn_801479A8(&rect2,detail,text2,value);
+       fn_801479A8(&frame.rect2,detail,frame.text2,value);
      }
    }
  }
