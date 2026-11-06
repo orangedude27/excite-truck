@@ -21,6 +21,7 @@ extern void fn_802C9904(void);
 extern double cos(double), sin(double);
 extern double fn_8002F234(double);
 extern f32 lbl_80564858, lbl_8056485C, lbl_80564878;
+extern f32 lbl_8056487C, lbl_80564880, lbl_80564884, lbl_80564864;
 extern s32 lbl_8055F88C;
 extern char lbl_80349C88[];
 extern s32 fn_801284F8(s32, char *);
