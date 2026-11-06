@@ -35,10 +35,12 @@ static inline void matVecCopy_8018(Vec_8018 *dest, const float *m, Vec_8018 *src
 }
 static inline void matVecAlias_8018(Vec_8018 *dest, const float *m, const Vec_8018 *src) {
     if (dest == src) {
-        float x = src->x, y = src->y, z = src->z;
-        dest->x = m[0] * x + m[3] * y + m[6] * z;
-        dest->y = m[1] * x + m[4] * y + m[7] * z;
-        dest->z = m[2] * x + m[5] * y + m[8] * z;
+        float tx = m[0] * src->x + m[3] * src->y + m[6] * src->z;
+        float ty = m[1] * src->x + m[4] * src->y + m[7] * src->z;
+        float tz = m[2] * src->x + m[5] * src->y + m[8] * src->z;
+        dest->x = tx;
+        dest->y = ty;
+        dest->z = tz;
     } else {
         dest->x = m[0] * src->x + m[3] * src->y + m[6] * src->z;
         dest->y = m[1] * src->x + m[4] * src->y + m[7] * src->z;
@@ -55,7 +57,7 @@ void fn_8018BFA0(void *out0, float *a, int *b0, int arg3, float arg4, float arg5
     float *out = (float *)out0;
     float *b = (float *)b0;
     float x0, x1, x2, x3, x4, x5, x6, x7, x8;
-    float scratch[3];
+    Vec_8018 scratch;
     if (out == b || out == a) {
         x0 = fn_80144514(a[0], b[0], a[3], b[1], a[6], b[2]);
         x1 = fn_80144514(a[0], b[3], a[3], b[4], a[6], b[5]);
@@ -78,30 +80,14 @@ void fn_8018BFA0(void *out0, float *a, int *b0, int arg3, float arg4, float arg5
         out[5] = fn_80144514(a[2], b[3], a[5], b[4], a[8], b[5]);
         out[8] = fn_80144514(a[2], b[6], a[5], b[7], a[8], b[8]);
     }
-    if (scratch == b + 9) {
-        scratch[0] = a[0] * b[9] + a[3] * b[10] + a[6] * b[11];
-        scratch[1] = a[1] * b[9] + a[4] * b[10] + a[7] * b[11];
-        scratch[2] = a[2] * b[9] + a[5] * b[10] + a[8] * b[11];
-    } else {
-        scratch[0] = a[0] * b[9] + a[3] * b[10] + a[6] * b[11];
-        scratch[1] = a[1] * b[9] + a[4] * b[10] + a[7] * b[11];
-        scratch[2] = a[2] * b[9] + a[5] * b[10] + a[8] * b[11];
-    }
-    out[9] = a[9] + scratch[0];
-    out[10] = a[10] + scratch[1];
-    out[11] = a[11] + scratch[2];
-    if (scratch == b + 9) {
-        scratch[0] = out[0] * b[9] + out[3] * b[10] + out[6] * b[11];
-        scratch[1] = out[1] * b[9] + out[4] * b[10] + out[7] * b[11];
-        scratch[2] = out[2] * b[9] + out[5] * b[10] + out[8] * b[11];
-    } else {
-        scratch[0] = out[0] * b[9] + out[3] * b[10] + out[6] * b[11];
-        scratch[1] = out[1] * b[9] + out[4] * b[10] + out[7] * b[11];
-        scratch[2] = out[2] * b[9] + out[5] * b[10] + out[8] * b[11];
-    }
-    out[9] -= scratch[0];
-    out[10] -= scratch[1];
-    out[11] -= scratch[2];
+    matVecAlias_8018(&scratch, a, (Vec_8018 *)(b + 9));
+    out[9] = a[9] + scratch.x;
+    out[10] = a[10] + scratch.y;
+    out[11] = a[11] + scratch.z;
+    matVecAlias_8018(&scratch, out, (Vec_8018 *)(b + 9));
+    out[9] -= scratch.x;
+    out[10] -= scratch.y;
+    out[11] -= scratch.z;
 }
 #pragma pop
 
