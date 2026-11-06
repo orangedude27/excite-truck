@@ -406,6 +406,7 @@ void fn_8017DCB4(void *arg0) {
 
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
 #pragma scheduling on
 #pragma dont_inline on
 #pragma ppc_psq_save off
