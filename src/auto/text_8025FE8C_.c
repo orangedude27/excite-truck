@@ -6,6 +6,7 @@ typedef unsigned char u8;
 typedef unsigned int u32;
 extern float lbl_80563B88;
 extern void fn_80214A9C(s32);
+extern s32 fn_8025C204(s32);
 extern void fn_80214AF0(s32);
 extern void fn_80230E90(s32);
 extern void fn_80236914(void);
@@ -1177,7 +1178,7 @@ extern "C" void fn_802621F0(void *arg0) {
     };
     char text2[0x1E];
     char text1[0x1E];
-    u8 alpha;
+    union { u8 alpha; volatile u8 enabled; } scratch;
     float width;
     float height;
     s32 output;
@@ -1198,9 +1199,9 @@ extern "C" void fn_802621F0(void *arg0) {
     mode = 0;
     marker = -1;
     {
-        volatile u8 enabled = *(volatile u8 *)((u8 *)arg0 + 0x1C);
+        scratch.enabled = *(volatile u8 *)((u8 *)arg0 + 0x1C);
         color2 = -1;
-        if (enabled != 0) {
+        if (scratch.enabled != 0) {
             output = -1;
             mode = 1;
             marker = -1;
@@ -1216,7 +1217,7 @@ extern "C" void fn_802621F0(void *arg0) {
                 (float)*(s32 *)((u8 *)arg0 + 0xC),
                 (float)*(s32 *)((u8 *)arg0 + 0x10));
     if (*(u8 *)((u8 *)arg0 + 0x1C) != 0 && lbl_8055F3EA == 0) {
-        fn_80230F78(&alpha, &scale, (u32 *)&output, 0);
+        fn_80230F78(&scratch.alpha, &scale, (u32 *)&output, 0);
         {
             s32 xValue = *(volatile s32 *)((u8 *)arg0 + 0xC);
             s32 yValue = *(volatile s32 *)((u8 *)arg0 + 0x10);
@@ -1224,13 +1225,13 @@ extern "C" void fn_802621F0(void *arg0) {
             float yFloat = (float)yValue;
             float xUnit = lbl_80563B8C * xFloat;
             float yUnit = lbl_80563B8C * yFloat;
-            float xScaled = scale * xUnit;
             float yScaled = scale * yUnit;
+            float xScaled = scale * xUnit;
             float ratio = lbl_80563B88 + scale;
             float right = ratio * yFloat;
             float bottom = ratio * xFloat;
             u32 packedColor = (u32)color2 & 0x0000FF00;
-            packedColor |= (u32)alpha << 24;
+            packedColor |= (u32)scratch.alpha << 24;
             packedColor |= (u32)color2 & 0xFFFF;
             fn_802354A0(*(void **)((u8 *)arg0 + 0x20), mode,
                         packedColor, width - yScaled, height + xScaled,
