@@ -809,7 +809,7 @@ extern "C" s32 fn_8012B6FC(void *arg0, s32 arg1) {
 }
 
 #pragma push
-#pragma scheduling on
+#pragma scheduling invalid_target
 extern "C" s32 fn_8012B85C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     s32 sp8;
     volatile u8 requestName[5];
