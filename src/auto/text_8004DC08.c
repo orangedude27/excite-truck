@@ -293,6 +293,7 @@ void fn_8004DDFC(void) {
         __OSLaunchMenu();
     }
 }
+#pragma use_lmw_stmw on
 
 extern unsigned char lbl_80560C74, lbl_80560C75, lbl_80560C76, lbl_80560C77;
 void __OSLaunchMenu(void) {
