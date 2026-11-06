@@ -1,7 +1,9 @@
+#include "math.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #define M2C_FIELD(expr, T, offset) (*(T)((char *)(expr) + (offset)))
 typedef struct { float m[12]; } Matrix8018;
+typedef struct { float x, y, z; } Vec8018;
 extern void PSVECCrossProduct(float *, float *, int *);
 extern float PSVECDotProduct(int *, float *);
 extern void *__AXFXGetLfoSinTable_801769CC(int);
@@ -506,6 +508,80 @@ void fn_8018CB3C(char *arg0) {
         var_r19 += 0x40;
     } while (var_r18 < 0x11);
 }
+
+extern float lbl_80561FC8, lbl_80561FCC, lbl_80561FD8, lbl_80561FDC, lbl_80561FE0, lbl_80561FE4, lbl_80561FE8, lbl_8055E460;
+extern float lbl_80561FD0, lbl_80561FD4, lbl_80558DC4;
+void fn_8018DA5C(char *arg0, char *arg1) {
+    int n; float *v = (float *)(arg0 + 0xd94); char *out = arg1; char *p = arg0;
+    float smooth=lbl_80561FC8, inv=lbl_80561FCC;
+    for (n=0; n < M2C_FIELD(arg0,int*,0x5f8); n++) {
+        float x = M2C_FIELD(p,float*,0xd94) * smooth;
+        float y = M2C_FIELD(p,float*,0xd98) * smooth;
+        float z = M2C_FIELD(p,float*,0xd9c) * smooth;
+        M2C_FIELD(p,float*,0xd94) = x + M2C_FIELD(p,float*,0x5fc) * inv;
+        M2C_FIELD(p,float*,0xd98) = y + M2C_FIELD(p,float*,0x600) * inv;
+        M2C_FIELD(p,float*,0xd9c) = z + M2C_FIELD(p,float*,0x604) * inv;
+        p += 12;
+        M2C_FIELD(out,float*,0x2e0)=v[0]; M2C_FIELD(out,float*,0x2e4)=v[1]; M2C_FIELD(out,float*,0x2e8)=v[2];
+        v+=3; out+=12;
+    }
+    if (M2C_FIELD(arg0,unsigned char*,0x26e0)) {
+        float f = M2C_FIELD(arg0,float*,0x26e8);
+        float scale = lbl_80561FD4 * M2C_FIELD(arg0,float*,0x26ec);
+        float bias = lbl_80561FD0 * M2C_FIELD(arg0,float*,0x26e4);
+        float mult;
+        if (f <= lbl_80561FD8) f=lbl_80561FD8;
+        mult=lbl_80561F8C*f;
+        out=arg1+12;
+        for (n=1;n<M2C_FIELD(arg0,int*,0x5f8);n++,out+=12) {
+            float x,y,z,dist,t;
+            char *entry=M2C_FIELD(arg0,char**,0x26c)+n*0x34;
+            float ex=M2C_FIELD(entry,float*,0x20), ey=M2C_FIELD(entry,float*,0x24), ez=M2C_FIELD(entry,float*,0x28);
+            dist=(float)fabs(ez);
+            t=dist-lbl_80561FE0;
+            z=lbl_80561F74+lbl_80561FE4*ez*scale;
+            x=lbl_80561F74+scale*(lbl_80561FDC*(ex*t));
+            y=lbl_80561F74+scale*(lbl_80561FDC*(ey*t));
+            t=lbl_80561FE8-dist;
+            if (lbl_80561F74 > t) t=lbl_80561F74;
+            y += mult*(ey*t);
+            t=lbl_80561FE8-(float)fabs(ez);
+            if (lbl_80561F74 > t) t=lbl_80561F74;
+            x += bias*t;
+            M2C_FIELD(out,float*,0x2e0)=x; M2C_FIELD(out,float*,0x2e4)=y; M2C_FIELD(out,float*,0x2e8)=z;
+        }
+    }
+    M2C_FIELD(arg1,int*,0x29c) |= M2C_FIELD(arg0,int*,0x1e40);
+    M2C_FIELD(arg1,int*,0xa78)=0;
+    {
+        float blend=lbl_8055E460, one=lbl_80561F88;
+        char *entry=arg0+0x152c;
+        char *table=(char *)lbl_80332840;
+        for (n=0;n<17;n++,entry+=0x80,table+=0x40) {
+            int state;
+            if (!M2C_FIELD(entry,int*,0)) continue;
+            state=M2C_FIELD(entry,int*,0x7c);
+            if (!state || state==1) continue;
+            if (state==3) M2C_FIELD(arg1,int*,0x29c) &= ~(1 << M2C_FIELD(table,int*,8));
+            state=M2C_FIELD(entry,int*,0x7c);
+            if (state==2 || state==4) {
+                int index=M2C_FIELD(arg1,int*,0xa78)++;
+                char *dest=arg1+index*0x34+0xa7c;
+                if ((float)fabs(blend-one) <= lbl_80558DC4) {
+                    *(Matrix8018*)dest = M2C_FIELD(entry,Matrix8018*,0x18);
+                } else {
+                    Matrix8018 tmp;
+                    float *a=(float*)(entry+0x18), *b=(float*)(entry+0x48), *d=tmp.m;
+                    int k;
+                    for(k=0;k<12;k++) d[k]=b[k]+blend*(a[k]-b[k]);
+                    *(Matrix8018*)dest=tmp;
+                }
+                M2C_FIELD(dest,int*,0x30)=1<<M2C_FIELD(table,int*,8);
+            }
+        }
+    }
+}
+
 #pragma scheduling on
 extern float PSVECMag(void *);
 extern void PSVECNormalize(float *, float *);
