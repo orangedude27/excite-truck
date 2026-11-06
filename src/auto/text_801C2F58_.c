@@ -157,6 +157,44 @@ s32 fn_801C3508(s32 arg0, s32 arg1) {
 
 #pragma dont_inline on
 s32 fn_801C3524(char *arg0) {
+    extern char lbl_8055A95C[7];
+    extern char lbl_8055A964[7];
+    extern char lbl_8055A968[5];
+    extern char lbl_8055A970[2];
+    extern char lbl_8055A974[6];
+    extern char lbl_8055A97C[7];
+    extern char lbl_80336BC0[11];
+    extern char lbl_8055A984[5];
+    extern char lbl_8055A98C[4];
+    extern char lbl_80336BCC[];
+    extern void fn_802E30C8(const char *, ...);
+    extern s32 fn_80179630(s32);
+    extern s32 lbl_8055E804;
+    extern s32 lbl_8055E808;
+    if (strcmp(arg0, lbl_8055A95C) == 0) return 0;
+    if (strcmp(arg0, lbl_8055A964) == 0) return -1;
+    if (strcmp(arg0, lbl_8055A968) == 0) return 1 << (lbl_8055E804 - 1);
+    if (strcmp(arg0, lbl_8055A970) == 0 || strcmp(arg0, lbl_8055A974) == 0) return 1;
+    if (strcmp(arg0, lbl_8055A97C) == 0) return 1 << fn_80179630(0);
+    if (strcmp(arg0, lbl_80336BC0) == 0) return 1 << lbl_8055E808;
+    if (strcmp(arg0, lbl_8055A984) == 0) {
+        s32 mask = 0;
+        s32 i;
+        for (i = 0; i < lbl_8055E804; i += 2) mask |= 1 << i;
+        return mask;
+    }
+    if (strcmp(arg0, lbl_8055A98C) == 0) {
+        s32 mask = 0;
+        s32 i;
+        for (i = 1; i < lbl_8055E804; i += 2) mask |= 1 << i;
+        return mask;
+    }
+    {
+        s32 num = (s32) atoi(arg0);
+        if (num > 0) return 1 << num;
+        if (num < 0) return 1 << (lbl_8055E804 - num);
+    }
+    fn_802E30C8(lbl_80336BCC, arg0);
     return 0;
 }
 #pragma dont_inline reset
