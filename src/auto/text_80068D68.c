@@ -21879,7 +21879,7 @@ void sdp_conn_timeout(tCONN_CB *p_ccb) {
 
 extern void process_service_search(tCONN_CB *, UINT16, UINT16, UINT8 *);
 static void process_service_attr_req(tCONN_CB *, UINT16, UINT16, UINT8 *, UINT8 *);
-typedef struct { UINT8 pad[0x476]; volatile UINT16 cont_off; } tCCB_CONT_VIEW;
+typedef struct { UINT8 pad0[0x26]; UINT8 data[0x450]; volatile UINT16 cont_off; } tCCB_CONT_VIEW;
 static void process_service_search_attr_req(tCONN_CB *, UINT16, UINT16, UINT8 *, UINT8 *);
 void sdp_server_handle_client_req(tCONN_CB *p_ccb, BT_HDR *p_msg) {
     extern char lbl_8031A4E8[];
@@ -21922,20 +21922,21 @@ void sdp_server_handle_client_req(tCONN_CB *p_ccb, BT_HDR *p_msg) {
 }
 
 void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len, UINT8 *p) {
-    tSDP_UUID_SEQ seq;
-    tSDP_RECORD *p_rec;
-    u32 handles[20];
-    UINT16 total_handles;
-    UINT16 max_handles;
-    UINT16 num_uids;
     UINT16 start_offset;
+    tSDP_RECORD *p_rec;
+    UINT16 num_uids;
+    UINT16 total_handles;
+    u8 *uid;
+    tSDP_UUID_SEQ seq;
+    u32 handles[20];
+    UINT16 max_handles;
     UINT16 count;
     UINT8 sp17c;
     u8 *p_param_len;
     u8 *p_end;
+    u8 *p_cont;
     u32 param_len2;
     BT_HDR *buf;
-    u8 *uid;
     s32 total;
 
     sp17c = 0;
@@ -21959,12 +21960,12 @@ void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len,
         total_handles++;
     }
     if (uid[2] != 0) {
-        p = uid + 3;
         if (uid[2] != 2) {
             sdpu_build_n_send_error(p_ccb, trans_num, 5, 0);
             return;
         }
-        start_offset = ((UINT16) p[0] << 8) + p[1];
+        p_cont = uid + 3;
+        start_offset = ((UINT16) p_cont[0] << 8) + p_cont[1];
         if (start_offset != ((tSDP_CCB_CONT_VIEW *)p_ccb)->cont_offset) {
             sdpu_build_n_send_error(p_ccb, trans_num, 5, 0);
             return;
@@ -21974,7 +21975,7 @@ void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len,
         count = total_handles;
         start_offset = 0;
     }
-    max_handles = (UINT16)(((s32)((u16)p_ccb->rem_mtu_size - 0xc) + 3) >> 2);
+    max_handles = (UINT16)(((s32)p_ccb->rem_mtu_size - 12 + 3) / 4);
     if (count <= max_handles) {
         max_handles = count;
     } else {
@@ -22200,7 +22201,7 @@ static void process_service_search_attr_req(tCONN_CB *p_ccb, UINT16 trans_num,
                                                UINT16 param_len, UINT8 *p_req,
                                                UINT8 *p_req_end) {
     UINT16 max_list_len;
-    UINT16 len_to_send, cont_offset, req_offset;
+    UINT16 len_to_send, req_offset;
     UINT16 rsp_param_len, xx;
     tSDP_UUID_SEQ uid_seq;
     tSDP_ATTR_SEQ attr_seq, attr_seq_sav;
@@ -22314,16 +22315,14 @@ static void process_service_search_attr_req(tCONN_CB *p_ccb, UINT16 trans_num,
     p_rsp_param_len[2] = len_to_send >> 8;
     p_rsp_param_len[3] = len_to_send;
     p_rsp = p_rsp_param_len + 4;
-    cont_offset = ((tCCB_CONT_VIEW *)p_ccb)->cont_off;
-    memcpy(p_rsp, (UINT8 *)p_ccb + cont_offset + 0x26, len_to_send);
+    memcpy(p_rsp, (UINT8 *)p_ccb + ((tCCB_CONT_VIEW *)p_ccb)->cont_off + 0x26, len_to_send);
     p_rsp += len_to_send;
     p_ccb->list_len -= len_to_send;
-    cont_offset += len_to_send;
-    ((tCCB_CONT_VIEW *)p_ccb)->cont_off = cont_offset;
+    ((tCCB_CONT_VIEW *)p_ccb)->cont_off += len_to_send;
     if (p_ccb->list_len != 0) {
         p_rsp[0] = 2;
-        p_rsp[1] = cont_offset >> 8;
-        p_rsp[2] = cont_offset;
+        p_rsp[1] = ((tCCB_CONT_VIEW *)p_ccb)->cont_off >> 8;
+        p_rsp[2] = ((tCCB_CONT_VIEW *)p_ccb)->cont_off;
         p_rsp += 3;
     } else {
         p_rsp[0] = 0;
