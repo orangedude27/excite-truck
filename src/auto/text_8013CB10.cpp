@@ -218,6 +218,24 @@ extern "C" f32 lbl_805614F4;
 extern "C" f32 lbl_805614F8;
 extern "C" f64 lbl_805614D8;
 extern "C" f32 fn_80204CFC(const char *);
+extern "C" void fn_801345D8(void *, s32, const char *, ...);
+extern "C" void fn_801308F4(void *, s32, s32);
+extern "C" void fn_80130980(void *, s32, s32, f32);
+extern "C" void fn_801312EC(void *, void *);
+extern "C" void fn_80131318(void *);
+extern "C" int fn_801609C4(s32);
+extern "C" char *__AXGetStackHead(void);
+extern "C" void fn_802ADFF4(s32, s32);
+extern "C" void fn_802AE02C(s32, s32);
+extern "C" void fn_802AE0B8(s32, s32);
+extern "C" void fn_802AE168(s32);
+extern "C" unsigned int strlen(const char *);
+extern "C" char lbl_80559D6C, lbl_80559D84;
+extern "C" char lbl_80559D80[1];
+extern "C" u8 lbl_8055E1C8;
+extern "C" u32 lbl_8055E044;
+extern "C" u8 lbl_8042FB78[], lbl_8032CA74[];
+extern "C" f32 lbl_8055E3C8;
 extern "C" void *fn_8013E33C(void *, s32);
 extern "C" void fn_8013E338(void);
 
@@ -381,6 +399,104 @@ extern "C" s32 fn_8013D890(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
 }
+
+extern "C" s32 fn_8013DDD4(TObjC *, const char *);
+extern "C" s32 fn_8013DE7C(TObj60 *, const char *);
+extern "C" void fn_8013DF24(void *, void *, void *);
+extern "C" void fn_8013E054(void *, void *, f32);
+extern "C" void fn_8013E19C(void *, f32);
+extern "C" void fn_8013E2AC(void *, void *);
+extern "C" f32 fn_8013E300(void *);
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma dont_inline on
+extern "C" void *fn_8013D8D0(void *out, TPathDocument *document) {
+    char name[32];
+    PathData *data=(PathData *)out;
+    const char *base=(const char *)lbl_8032C530;
+    int n=fn_8013DDD4((TObjC *)document,base+0x1a8);
+    data->count=n;
+    data->groups=(PathGroup *)fn_8002F37C(fn_8012850C(n*0x14+0x10,base+0x1b4),0,(void (*)())fn_8013E33C,0x14,n);
+    f32 factor=lbl_805614C4;
+    int index=0, groupIndex=0;
+    while (document->child(index)) {
+        TPathElement *element=(TPathElement *)document->child(index);
+        if(fn_8013CB44(base+0x1a8,(TObj10 *)element)) {
+            PathGroup *previous=groupIndex>0 ? data->groups : 0;
+            PathGroup *group=&data->groups[groupIndex];
+            if(previous) {
+                int count=previous->count;
+                group->count=count;
+                group->nodes=(PathNode *)fn_8002F37C(fn_8012850C(count*0x24+0x10,&lbl_80559D30),fn_8013E338,0,0x24,count);
+                TPathValue *attr=(TPathValue *)element->attribute(&lbl_80559D38);
+                TVec2 tangent=attr->vector(lbl_80559D40);
+                float scale=fn_80204CFC(base+0x1c0);
+                f32 magnitude=fn_8013E300(&tangent);
+                scale=factor*magnitude*scale;
+                for(int i=0;i<group->count;i++) {
+                    fn_8013E2AC(&group->nodes[i],&previous->nodes[i]);
+                    fn_8013E19C(&group->nodes[i],scale);
+                }
+            } else {
+                int count=fn_8013DE7C((TObj60 *)element,&lbl_80559D38);
+                group->count=count;
+                group->nodes=(PathNode *)fn_8002F37C(fn_8012850C(count*0x24+0x10,&lbl_80559D44),fn_8013E338,0,0x24,count);
+                TPathValue *attr=(TPathValue *)element->attribute(&lbl_80559D28);
+                float scale=attr->number(base+0x1d0,lbl_805614AC);
+                scale=fn_80204CFC(base+0x1c0)*scale;
+                int used=0;
+                for(int j=0;element->child(j);j++) {
+                    TPathElement *node=(TPathElement *)element->child(j);
+                    if(fn_8013CB44(&lbl_80559D38,(TObj10 *)node)) {
+                        fn_8013E054(&group->nodes[used],node,scale);
+                        used++;
+                    }
+                }
+            }
+            for(int j=0;j<group->count;j++) {
+                PathNode *node=&group->nodes[j];
+                if(node->data[0x1e]) {
+                    PathNode *before=0,*after=0;
+                    for(unsigned int k=1;k<(unsigned int)group->count;k++) {
+                        before=&group->nodes[(group->count+(j-k))%group->count];
+                        if(!before->data[0x1e])break;
+                    }
+                    for(int k=1;k<group->count;k++) {
+                        after=&group->nodes[(group->count+j+k)%group->count];
+                        if(!after->data[0x1e])break;
+                    }
+                    fn_8013DF24(node,before,after);
+                }
+            }
+            *(f32 *)((char *)group+8)=fn_80204CFC(base+0x1e0);
+            group->pad[1]=1;
+            group->pad[2]=10;
+            sprintf(name,base+0x1f0,groupIndex+1);
+            if(document->has(name)) {
+                TDispatchStringInt20 *settings=(TDispatchStringInt20 *)document->find(name);
+                group=&data->groups[groupIndex];
+                if(settings) {
+                    group->pad[1]=settings->v20(&lbl_80559D4C,groupIndex+1);
+                    group->pad[2]=settings->v20(&lbl_80559D50,10);
+                } else {
+                    group->pad[1]=groupIndex+1;
+                    group->pad[2]=10;
+                }
+                group->pad[2]=(s32)((f32)group->pad[2]*fn_80204CFC(base+0x200));
+            } else {
+                group=&data->groups[groupIndex];
+                group->pad[1]=groupIndex+1;
+                group->pad[2]=10;
+                group->pad[2]=(s32)((f32)group->pad[2]*fn_80204CFC(base+0x200));
+            }
+            groupIndex++;
+        }
+        index++;
+    }
+    return out;
+}
+#pragma pop
 
 #pragma dont_inline off
 
