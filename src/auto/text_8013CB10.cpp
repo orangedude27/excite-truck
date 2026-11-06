@@ -1787,31 +1787,7 @@ extern "C" u8 *fn_801421C0(u8 *arg0) {
 
 extern "C" f32 fn_8013CB3C(void);
 extern "C" u8 lbl_8042FB3C[];
-static inline s32 fn_801421D8_time(u8 *b) {
-    f32 time = fn_8013CB3C() - *(f32 *)(b + 0x84);
-    time -= *(f32 *)(lbl_8042FB3C + 0x24);
-    f32 one = lbl_805614A4;
-    f32 span = *(f32 *)(lbl_8042FB3C + 0x20);
-    f32 value = lbl_805614AC;
-    f32 position = *(f32 *)(lbl_8042FB3C + 0x1C);
-    time -= one;
-    f32 ratio = time / (span - one);
-    value = value < ratio ? ratio : value;
-    value = value > lbl_805614A4 ? lbl_805614A4 : value;
-    f32 result = position + value * (lbl_805614A4 - position);
-    if (result > lbl_805614A4) {
-        f32 current = *(f32 *)(lbl_8042FB3C + 0x1C);
-        f32 rounded;
-        if (!(current < lbl_805614A4)) {
-            rounded = lbl_80561498 + current;
-        } else {
-            rounded = current - lbl_80561498;
-        }
-        return (s32)rounded;
-    } else {
-        return 0;
-    }
-}
+#pragma scheduling invalid_target
 extern "C" void fn_801421D8(void *arg0, void *arg1) {
     u8 *a = (u8 *)arg0;
     u8 *b = (u8 *)arg1;
@@ -1827,10 +1803,8 @@ extern "C" void fn_801421D8(void *arg0, void *arg1) {
     f32 position = *(f32 *)(lbl_8042FB3C + 0x1C);
     time -= one;
     f32 ratio = time / (span - one);
-    f32 c1 = value < ratio ? ratio : value;
-    value = c1;
-    f32 c2 = value > lbl_805614A4 ? lbl_805614A4 : value;
-    value = c2;
+    value = value < ratio ? ratio : value;
+    value = value > lbl_805614A4 ? lbl_805614A4 : value;
     f32 result = position + value * (lbl_805614A4 - position);
     if (result > lbl_805614A4) {
         f32 current = *(f32 *)(lbl_8042FB3C + 0x1C);
@@ -1877,10 +1851,8 @@ extern "C" void fn_801421D8(void *arg0, void *arg1) {
     position = *(f32 *)(lbl_8042FB3C + 0x1C);
     time -= one;
     ratio = time / (span - one);
-    c1 = value < ratio ? ratio : value;
-    value = c1;
-    c2 = value > lbl_805614A4 ? lbl_805614A4 : value;
-    value = c2;
+    value = value < ratio ? ratio : value;
+    value = value > lbl_805614A4 ? lbl_805614A4 : value;
     result = position + value * (lbl_805614A4 - position);
     if (result > lbl_805614A4) {
         f32 current = *(f32 *)(lbl_8042FB3C + 0x1C);
@@ -1921,7 +1893,8 @@ extern "C" void fn_801421D8(void *arg0, void *arg1) {
                         *(s32 *)(b + 0xE4) = 0;
                     }
                     if (*(s32 *)(b + 0x100) > 0) {
-                        *(f32 *)(b + 0xD4) = fn_8001DAE8(b + 0xD0);
+                        f32 d4 = fn_8001DAE8(b + 0xD0);
+                        *(f32 *)(b + 0xD4) = d4;
                         *(s32 *)(b + 0x100) = 0;
                     }
                     *(f32 *)(b + 0xAC) = fn_8001DAE8(b + 0xA8);
@@ -1932,6 +1905,7 @@ extern "C" void fn_801421D8(void *arg0, void *arg1) {
     }
     ++*(s32 *)(b + *(s32 *)(b + 0x54) * 4 + 0xC);
 }
+#pragma scheduling on
   extern "C" f32 __fabsf(f32);
 #pragma dont_inline on
 extern "C" void fn_80142650(void *arg0) {
