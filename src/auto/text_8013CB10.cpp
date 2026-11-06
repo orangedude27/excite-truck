@@ -1951,7 +1951,7 @@ extern "C" void fn_80142650(void *arg0) {
             } else {
                 f32 diff = rounded_f2 - temp_f1;
                 if (diff < 0.0f) diff = -diff;
-                if (diff > lbl_80558DC4) {
+                if (diff > *(f32 *)&lbl_80558DC4) {
                     if (*(s32 *)(base + 0xE4) > 0) {
                         *(s32 *)(base + 0xF4) = *(s32 *)(base + 0xE4);
                         fn_8013CB3C();
