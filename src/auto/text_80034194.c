@@ -87,6 +87,14 @@ static inline BOOL DVDPathSame(const char *lhs, const char *rhs) {
 
 extern void fn_80035C78(void);
 extern void fn_80035E6C();
+extern void fn_8003BCC0(void);
+extern void fn_80035DA8(s32);
+extern void fn_80036370(u32);
+extern void fn_8003773C(void);
+extern void fn_8003801C(void);
+extern void fn_800373E0(u32);
+extern s32 lbl_8055D870, lbl_8055D874;
+extern void fn_8003B9CC(u32, void *);
 extern void fn_8003A1A0(u32, void (*)(void));
 extern void fn_8003B218(void (*)(void));
 extern u32 lbl_8055D848;
