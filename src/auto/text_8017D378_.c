@@ -405,84 +405,73 @@ void fn_8017DCB4(void *arg0) {
 #pragma ppc_psq_save reset
 
 #pragma push
+#pragma processor 750
 #pragma scheduling on
 #pragma dont_inline on
 #pragma ppc_psq_save off
-void fn_8017DEE0(register void *arg0, register long arg1, register long arg2, short arg3, float farg0) {
+void fn_8017DEE0(void *arg0, long arg1, long arg2, short arg3, float farg0) {
     extern int lbl_8055D430;
     extern float lbl_80561BE0, lbl_80561BF4, lbl_80561C0C;
     extern float lbl_80561C18, lbl_80561C1C, lbl_80561C20;
     extern float lbl_80561C24, lbl_80561C28;
-    volatile float point[6];
-    volatile unsigned int m[12];
-    volatile float *mf;
-    register unsigned int *matrix = (unsigned int *)arg1;
-    register float *vector = (float *)arg2;
-    float x, y, z, scale, t0, t1, t2;
-    volatile unsigned int compare_a, compare_b;
+    float point[3];
+    float tmp[3];
+    int m[12];
+    float vx, vy, vz;
     int flags;
     int var_r3;
     int var_r3_2;
     int var_r3_3;
     void *sub;
-
     fn_8017D378();
     *(float *)((char *)arg0 + 0x124) = lbl_80561BE0;
     *(float *)((char *)arg0 + 0x128) = lbl_80561BE0;
     *(float *)((char *)arg0 + 0x12C) = lbl_80561BE0;
     *(short *)((char *)arg0 + 0x6C) = arg3;
     *((unsigned char *)arg0 + 0x1E9) = 1;
-    m[0] = matrix[0];
-    m[1] = matrix[1];
-    m[2] = matrix[2];
-    m[3] = matrix[3];
-    m[4] = matrix[4];
-    m[5] = matrix[5];
-    m[6] = matrix[6];
-    m[7] = matrix[7];
-    m[8] = matrix[8];
-    m[9] = matrix[9];
-    m[10] = matrix[10];
-    m[11] = matrix[11];
-    mf = (volatile float *)m;
-    if (&point[3] == (float *)((char *)arg0 + 0x224)) {
-        x = *(float *)((char *)arg0 + 0x224) * mf[0]
-          + *(float *)((char *)arg0 + 0x228) * mf[3]
-          + *(float *)((char *)arg0 + 0x22C) * mf[6];
-        y = *(float *)((char *)arg0 + 0x224) * mf[1]
-          + *(float *)((char *)arg0 + 0x228) * mf[4]
-          + *(float *)((char *)arg0 + 0x22C) * mf[7];
-        z = *(float *)((char *)arg0 + 0x224) * mf[2]
-          + *(float *)((char *)arg0 + 0x228) * mf[5]
-          + *(float *)((char *)arg0 + 0x22C) * mf[8];
+    m[0] = ((int *)arg1)[0];
+    m[1] = ((int *)arg1)[1];
+    m[2] = ((int *)arg1)[2];
+    m[3] = ((int *)arg1)[3];
+    m[4] = ((int *)arg1)[4];
+    m[5] = ((int *)arg1)[5];
+    m[6] = ((int *)arg1)[6];
+    m[7] = ((int *)arg1)[7];
+    m[8] = ((int *)arg1)[8];
+    m[9] = ((int *)arg1)[9];
+    m[10] = ((int *)arg1)[10];
+    m[11] = ((int *)arg1)[11];
+    if (point == (float *)((char *)arg0 + 0x224)) {
+        vx = *(float *)((char *)arg0 + 0x224);
+        vy = *(float *)((char *)arg0 + 0x228);
+        vz = *(float *)((char *)arg0 + 0x22C);
+        point[0] = vx * ((float *)m)[0] + vy * ((float *)m)[3] + vz * ((float *)m)[6];
+        point[1] = vx * ((float *)m)[1] + vy * ((float *)m)[4] + vz * ((float *)m)[7];
+        point[2] = vx * ((float *)m)[2] + vy * ((float *)m)[5] + vz * ((float *)m)[8];
     } else {
-        x = *(float *)((char *)arg0 + 0x22C) * mf[6]
-          + (*(float *)((char *)arg0 + 0x224) * mf[0]
-          + *(float *)((char *)arg0 + 0x228) * mf[3]);
-        y = *(float *)((char *)arg0 + 0x22C) * mf[7]
-          + (*(float *)((char *)arg0 + 0x224) * mf[1]
-          + *(float *)((char *)arg0 + 0x228) * mf[4]);
-        z = *(float *)((char *)arg0 + 0x22C) * mf[8]
-          + (*(float *)((char *)arg0 + 0x224) * mf[2]
-          + *(float *)((char *)arg0 + 0x228) * mf[5]);
+        point[0] = *(float *)((char *)arg0 + 0x224) * ((float *)m)[0] + *(float *)((char *)arg0 + 0x228) * ((float *)m)[3] + *(float *)((char *)arg0 + 0x22C) * ((float *)m)[6];
+        point[1] = *(float *)((char *)arg0 + 0x224) * ((float *)m)[1] + *(float *)((char *)arg0 + 0x228) * ((float *)m)[4] + *(float *)((char *)arg0 + 0x22C) * ((float *)m)[7];
+        point[2] = *(float *)((char *)arg0 + 0x224) * ((float *)m)[2] + *(float *)((char *)arg0 + 0x228) * ((float *)m)[5] + *(float *)((char *)arg0 + 0x22C) * ((float *)m)[8];
     }
-    point[3] = x + mf[9];
-    point[4] = y + mf[10];
-    point[5] = z + mf[11];
-    *(float *)((char *)arg0 + 0x3C) = mf[0];
-    *(float *)((char *)arg0 + 0x40) = mf[1];
-    *(float *)((char *)arg0 + 0x44) = mf[2];
-    *(float *)((char *)arg0 + 0x48) = mf[3];
-    *(float *)((char *)arg0 + 0x4C) = mf[4];
-    *(float *)((char *)arg0 + 0x50) = mf[5];
-    *(float *)((char *)arg0 + 0x54) = mf[6];
-    *(float *)((char *)arg0 + 0x58) = mf[7];
-    *(float *)((char *)arg0 + 0x5C) = mf[8];
-    *(float *)((char *)arg0 + 0x60) = point[3];
-    *(float *)((char *)arg0 + 0x64) = point[4];
-    *(float *)((char *)arg0 + 0x68) = point[5];
+    point[0] = point[0] + ((float *)m)[9];
+    point[1] = point[1] + ((float *)m)[10];
+    point[2] = point[2] + ((float *)m)[11];
+    ((float *)m)[9] = point[0];
+    ((float *)m)[10] = point[1];
+    ((float *)m)[11] = point[2];
+    *(int *)((char *)arg0 + 0x3C) = m[0];
+    *(int *)((char *)arg0 + 0x40) = m[1];
+    *(int *)((char *)arg0 + 0x44) = m[2];
+    *(int *)((char *)arg0 + 0x48) = m[3];
+    *(int *)((char *)arg0 + 0x4C) = m[4];
+    *(int *)((char *)arg0 + 0x50) = m[5];
+    *(int *)((char *)arg0 + 0x54) = m[6];
+    *(int *)((char *)arg0 + 0x58) = m[7];
+    *(int *)((char *)arg0 + 0x5C) = m[8];
+    *(int *)((char *)arg0 + 0x60) = m[9];
+    *(int *)((char *)arg0 + 0x64) = m[10];
+    *(int *)((char *)arg0 + 0x68) = m[11];
     fn_8017A580(arg0);
-
     flags = lbl_8055D430;
     var_r3 = 0;
     if ((flags & 1) && (flags & 0x80)) var_r3 = 1;
@@ -494,21 +483,19 @@ void fn_8017DEE0(register void *arg0, register long arg1, register long arg2, sh
         var_r3_2 = 0;
         if ((flags & 1) && (flags & 0x10)) var_r3_2 = 1;
         if (var_r3_2 != 0) {
-            t0 = mf[6] * lbl_80561C1C + mf[5] * lbl_80561C20;
-            t1 = mf[7] * lbl_80561C1C + mf[4] * lbl_80561C20;
-            t2 = mf[8] * lbl_80561C1C + mf[3] * lbl_80561C20;
-            scale = lbl_80561C24 * farg0;
-            *(float *)((char *)arg0 + 0x118) = t2 * scale;
-            *(float *)((char *)arg0 + 0x11C) = t1 * scale;
-            *(float *)((char *)arg0 + 0x120) = t0 * scale;
-            *(float *)((char *)arg0 + 0x118) += vector[0];
-            *(float *)((char *)arg0 + 0x11C) += vector[1];
-            *(float *)((char *)arg0 + 0x120) += vector[2];
+            tmp[0] = ((float *)m)[6] * lbl_80561C1C + ((float *)m)[3] * lbl_80561C20;
+            tmp[1] = ((float *)m)[7] * lbl_80561C1C + ((float *)m)[4] * lbl_80561C20;
+            tmp[2] = ((float *)m)[8] * lbl_80561C1C + ((float *)m)[5] * lbl_80561C20;
+            *(float *)((char *)arg0 + 0x118) = tmp[0] * (lbl_80561C24 * farg0);
+            *(float *)((char *)arg0 + 0x11C) = tmp[1] * (lbl_80561C24 * farg0);
+            *(float *)((char *)arg0 + 0x120) = tmp[2] * (lbl_80561C24 * farg0);
+            *(float *)((char *)arg0 + 0x118) += ((float *)arg2)[0];
+            *(float *)((char *)arg0 + 0x11C) += ((float *)arg2)[1];
+            *(float *)((char *)arg0 + 0x120) += ((float *)arg2)[2];
         } else {
-            scale = lbl_80561C28 * farg0;
-            *(float *)((char *)arg0 + 0x118) = vector[0] + *(float *)((char *)arg0 + 0x54) * scale;
-            *(float *)((char *)arg0 + 0x11C) = vector[1] + *(float *)((char *)arg0 + 0x58) * scale;
-            *(float *)((char *)arg0 + 0x120) = vector[2] + *(float *)((char *)arg0 + 0x5C) * scale;
+            *(float *)((char *)arg0 + 0x118) = ((float *)arg2)[0] + *(float *)((char *)arg0 + 0x54) * (lbl_80561C28 * farg0);
+            *(float *)((char *)arg0 + 0x11C) = ((float *)arg2)[1] + *(float *)((char *)arg0 + 0x58) * (lbl_80561C28 * farg0);
+            *(float *)((char *)arg0 + 0x120) = ((float *)arg2)[2] + *(float *)((char *)arg0 + 0x5C) * (lbl_80561C28 * farg0);
             var_r3_3 = 0;
             if ((flags & 1) && (flags & 8)) var_r3_3 = 1;
             if (var_r3_3 != 0) {
@@ -517,14 +504,13 @@ void fn_8017DEE0(register void *arg0, register long arg1, register long arg2, sh
             }
         }
     }
-
-    *(unsigned char *)((char *)arg0 + 0x1FE) = 1;
-    *(unsigned char *)((char *)arg0 + 0x1FC) = 0;
+    *((unsigned char *)arg0 + 0x1FE) = 1;
+    *((unsigned char *)arg0 + 0x1FC) = 0;
     sub = *(void **)((char *)arg0 + 0x218);
     if (sub != 0) {
-        *(float *)((char *)arg0 + 0x200) = point[3];
-        *(float *)((char *)arg0 + 0x204) = point[4];
-        *(float *)((char *)arg0 + 0x208) = point[5];
+        *(float *)((char *)arg0 + 0x200) = point[0];
+        *(float *)((char *)arg0 + 0x204) = point[1];
+        *(float *)((char *)arg0 + 0x208) = point[2];
         if (lbl_80561BF4 != *(float *)((char *)sub + 8)) {
             *((unsigned char *)sub + 0x4D) = 1;
             *(float *)((char *)sub + 8) = lbl_80561BF4;
