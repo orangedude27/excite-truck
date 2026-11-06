@@ -10,10 +10,10 @@ extern void fn_801E4F3C(int, int, float, float, float, float, float);
 extern void fn_801E4FF4(void);
 extern void fn_802C8BD0(int);
 extern void fn_802C8D74(void);
-extern float lbl_80564998, lbl_805649B4, lbl_805649B8, lbl_805649BC;
-extern float lbl_805649CC, lbl_805649D0, lbl_805649D4;
-extern float lbl_805649D8, lbl_805649DC;
-extern double lbl_805649E0;
+extern const float lbl_80564998, lbl_805649B4, lbl_805649B8, lbl_805649BC;
+extern const float lbl_805649CC, lbl_805649D0, lbl_805649D4;
+extern const float lbl_805649D8, lbl_805649DC;
+extern const double lbl_805649E0;
 #pragma scheduling invalid_target
 extern void fn_802C6CF8(int);
 extern void fn_80128668(void*);
