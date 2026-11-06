@@ -33,13 +33,10 @@ extern "C" void fn_802ADE60(int, int);
 extern "C" void fn_8001DAE0(void *, f32);
 extern "C" f32 lbl_805614FC;
 extern "C" f32 lbl_80561500;
-#pragma small_data off
-extern "C" f32 lbl_80558DC4;
-#pragma small_data on
+extern "C" f32 lbl_80558DC4[];
 extern "C" f32 lbl_805614A4;
 extern "C" f32 lbl_805614AC;
 extern "C" f32 lbl_805614BC;
-extern "C" f32 lbl_80558DC4_arr[2];
 extern "C" s32 fn_80128670(s32);
 extern "C" void fn_80128668(void);
 extern "C" f32 fn_8001DAE8(void *);
@@ -50,9 +47,7 @@ extern "C" void **fn_801284F8(s32, void *);
 extern "C" f32 lbl_80561498;
 extern "C" f32 lbl_805614A4;
 extern "C" f32 lbl_805614AC;
-#pragma small_data off
-extern "C" f32 lbl_80558DC4;
-#pragma small_data on
+extern "C" f32 lbl_80558DC4[];
 extern "C" u8 lbl_8055E1BC;
 extern "C" f32 fn_8001DAE8(void *);
 extern "C" f32 fn_8013CB3C(void);
