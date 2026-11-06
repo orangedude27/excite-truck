@@ -38,6 +38,8 @@ extern f32 lbl_80563238, lbl_8056323C, lbl_80563240, lbl_80563244;
 extern f32 lbl_80563248, lbl_8056324C, lbl_80563250, lbl_80563254;
 #pragma scheduling invalid_target
 #pragma cplusplus on
+#pragma push
+#pragma processor 750
 extern "C" void *fn_80209448(void *arg0, M2C_UNK arg_sp0) {
 struct M2CKeyObject {
 virtual void *f2(const char *);
@@ -206,17 +208,20 @@ extern "C" s32 fn_8026A344(s32);
 extern "C" void fn_80209A64(void *obj, s32 muted) {
     void *cfg = M2C_FIELD(obj, void **, 0x140);
     f32 old = M2C_FIELD(obj, f32 *, 0x154);
+    f32 rpm;
     f32 speed = M2C_FIELD(obj, f32 *, 0x14c) * M2C_FIELD(cfg, f32 *, 0x25d0);
-    f32 value, factor, weight, rpm;
-    s32 i, count, found = 0;
+    f32 value, factor, weight;
+    s32 i, found = 0, count;
     u8 *entry;
-    M2C_FIELD(obj, f32 *, 0x150) = speed;
     M2C_FIELD(obj, f32 *, 0x154) = old + lbl_8056325C * (lbl_8056323C - old);
+    M2C_FIELD(obj, f32 *, 0x150) = speed;
     rpm = M2C_FIELD(cfg, f32 *, 0x25fc);
     count = fn_80178CA4();
+    { s32 id;
     for (i = 0; i < count; i++) {
-        s32 id = M2C_FIELD(M2C_FIELD(obj, void **, 0x140), s32 *, 0x1ec);
+        id = M2C_FIELD(M2C_FIELD(obj, void **, 0x140), s32 *, 0x1ec);
         if (fn_8026A344(i) == id) { found = 1; break; }
+    }
     }
     factor = found ? M2C_FIELD(obj, f32 *, 0x144) : M2C_FIELD(obj, f32 *, 0x148);
     if (muted) factor = lbl_80563238;
@@ -224,11 +229,11 @@ extern "C" void fn_80209A64(void *obj, s32 muted) {
     {
     f32 one = lbl_8056323C, smooth = lbl_80563260, two = lbl_80563264, hi = lbl_80563268, lo = lbl_8056326C, gain = lbl_80563270;
     for (i = 0; i < M2C_FIELD(obj, s32 *, 0x13c); i++, entry += 0x34) {
-        f32 a = one, b = one, temp, x, out;
+        f32 a = lbl_8056323C, b = lbl_8056323C, temp, x, out;
         void *sound;
         if (speed < M2C_FIELD(entry, f32 *, 8)) {
             temp = M2C_FIELD(entry, f32 *, 0x10) * (M2C_FIELD(entry, f32 *, 8) - speed);
-            if (a >= temp) a = temp;
+            a = a < temp ? a : temp;
             a = one - a;
         } else if (speed > M2C_FIELD(entry, f32 *, 0xc)) {
             temp = M2C_FIELD(entry, f32 *, 0x14) * (speed - M2C_FIELD(entry, f32 *, 0xc));
@@ -238,7 +243,7 @@ extern "C" void fn_80209A64(void *obj, s32 muted) {
         x = (smooth - two * a) * (a * a) * M2C_FIELD(entry, f32 *, 0x18);
         if (rpm < M2C_FIELD(entry, f32 *, 0x1c)) {
             temp = M2C_FIELD(entry, f32 *, 0x24) * (M2C_FIELD(entry, f32 *, 0x1c) - rpm);
-            if (b >= temp) b = temp;
+            b = b < temp ? b : temp;
             b = one - b;
         } else if (rpm > M2C_FIELD(entry, f32 *, 0x20)) {
             temp = M2C_FIELD(entry, f32 *, 0x28) * (rpm - M2C_FIELD(entry, f32 *, 0x20));
