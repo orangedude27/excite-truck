@@ -252,8 +252,7 @@ int fn_802AE7AC(void) {
 #pragma dont_inline on
 #pragma cplusplus on
 #pragma push
-#pragma processor 750
-#pragma peephole off
+#pragma ppc_psq_save off
 extern "C" void fn_802AE7F4(void) {
     float values[8];
     float total;
