@@ -17,7 +17,7 @@ extern int lbl_8055FBA0;
 extern void fn_802C92D0(void);
 extern void fn_802C92D8(void);
 extern void fn_802C92DC(int, int, int, int, int);
-extern void fn_80235380();
+extern void fn_80235380(void *);
 extern void fn_80128668(void *);
 #pragma scheduling invalid_target
 void *fn_80012384(void *arg0, int arg1) {
