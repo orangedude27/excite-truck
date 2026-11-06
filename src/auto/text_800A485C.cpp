@@ -222,43 +222,6 @@ extern "C" s16 fn_800B4D5C(void *, u32, u32);
 extern "C" u8 lbl_80559210, lbl_80559214, lbl_80559230, lbl_80559231;
 extern "C" u16 fn_800B25CC(void *, s32);
 extern "C" u32 VFiPFPATH_DoMatchFileNameWithPattern(u16, s32 *, u16, s32 *, s32);
-extern "C" s32 lbl_803D2140[];
-static inline u16 VFGetChar(s32 *st) {
-    if (*(s32 *)((u8 *)st + 8) != 0) {
-        u16 idx = *(u16 *)((u8 *)st + 0xC);
-        if (idx > 0x20A) {
-            return 0;
-        }
-        u16 *buf = *(u16 **)((u8 *)st + 0);
-        u32 ch = *(u16 *)((u8 *)buf + idx);
-        *(u16 *)((u8 *)st + 0xC) = idx + 2;
-        if ((ch >= 0x61) && (ch <= 0x7A)) {
-            ch -= 0x20;
-        }
-        if ((ch >= 0xFF41) && (ch <= 0xFF5A)) {
-            ch -= 0x20;
-        }
-        return (u16)ch;
-    } else {
-        u16 idx = *(u16 *)((u8 *)st + 0xC);
-        if (idx >= 0xC) {
-            return 0;
-        }
-        u8 *buf = *(u8 **)((u8 *)st + 0);
-        *(u16 *)((u8 *)st + 0xC) = idx + 1;
-        s32 ch = (s8)buf[idx];
-        if (((s32 (**)(s8, s32))((u8 *)lbl_803D2140 + 0x54))[0]((s8)ch, 1) != 0) {
-            u16 idx2 = *(u16 *)((u8 *)st + 0xC);
-            *(u16 *)((u8 *)st + 0xC) = idx2 + 1;
-            ch = (ch << 8) + buf[idx2];
-        }
-        u32 uch = (u16)ch;
-        if ((uch >= 0x61) && (uch <= 0x7A)) {
-            uch -= 0x20;
-        }
-        return (u16)uch;
-    }
-}
 extern "C" s32 fn_800A4E80(void *, s32, u32);
 extern "C" void fn_800A4D4C(void *, void *);
 extern "C" s32 fn_800AF530(void *, void *, s32, s32);
@@ -7157,6 +7120,218 @@ block_27:
         }
     }
     return (*(u16 *)(work + 4));
+}
+
+extern "C" u32 VFiPFPATH_DoMatchFileNameWithPattern(u16 c0, s32 *arg1, u16 tok, s32 *arg3, s32 arg4) {
+main_loop:
+    if (tok == 0) {
+        return c0 == 0;
+    }
+    switch (tok) {
+    case 0x3F:
+        if (c0 == 0) {
+            return 0;
+        }
+        goto block_69;
+    case 0x2A:
+        tok = fn_800B25CC(arg3, arg4);
+        goto loop_9;
+    default:
+        if (c0 != tok) {
+            return 0;
+        }
+        goto block_69;
+    }
+block_69:
+    if (*(volatile s32 *)((u8 *)arg1 + 8) != 0) {
+        u32 idx = *(volatile u16 *)((u8 *)arg1 + 0xC);
+        if (idx > 0x20A) {
+            c0 = 0;
+        } else {
+            s32 f0 = 0;
+            s32 *data = (s32 *)(void *)(*(volatile void **)((u8 *)arg1 + 0));
+            u32 ch = *(u16 *)((u8 *)data + idx);
+            *(volatile u16 *)((u8 *)arg1 + 0xC) = idx + 2;
+            if ((ch >= 0x61) && (ch <= 0x7A)) {
+                f0 = 1;
+            }
+            if (f0 != 0) {
+                ch -= 0x20;
+            }
+            c0 = (u16)ch;
+            s32 f1 = 0;
+            u16 t = (u16)(c0 - 0x20);
+            if ((c0 >= 0xFF41) && (c0 <= 0xFF5A)) {
+                f1 = 1;
+            }
+            if (f1 != 0) {
+                c0 = t;
+            }
+        }
+    } else {
+        u32 idx = *(volatile u16 *)((u8 *)arg1 + 0xC);
+        if (idx >= 0xC) {
+            c0 = 0;
+        } else {
+            *(volatile u16 *)((u8 *)arg1 + 0xC) = idx + 1;
+            u8 *data = (u8 *)(void *)(*(volatile void **)((u8 *)arg1 + 0));
+            s32 ch = (s8)data[idx];
+            if (((s32 (**)(s8, s32))((u8 *)lbl_803D2140 + 0x54))[0]((s8)ch, 1) != 0) {
+                u32 idx2 = *(volatile u16 *)((u8 *)arg1 + 0xC);
+                *(volatile u16 *)((u8 *)arg1 + 0xC) = idx2 + 1;
+                u8 *data2 = (u8 *)(void *)(*(volatile void **)((u8 *)arg1 + 0));
+                ch = (ch << 8) + data2[idx2];
+            }
+            s32 f0 = 0;
+            if (((u16)ch >= 0x61) && ((u16)ch <= 0x7A)) {
+                f0 = 1;
+            }
+            if (f0 != 0) {
+                c0 = (u16)((u16)ch - 0x20);
+            } else {
+                c0 = (u16)ch;
+            }
+        }
+    }
+    tok = fn_800B25CC(arg3, arg4);
+    goto main_loop;
+loop_9:
+    if (tok == 0x2A) {
+        tok = fn_800B25CC(arg3, arg4);
+        goto loop_9;
+    }
+    if (tok == 0x3F) {
+        goto block_8;
+    }
+    if (tok == 0) {
+        return 1;
+    }
+    goto loop_65;
+block_8:
+    tok = fn_800B25CC(arg3, arg4);
+    goto loop_9;
+loop_65:
+    if (c0 == 0) {
+        return 0;
+    }
+    if (c0 == tok) {
+        volatile s32 pat_copy[4];
+        volatile s32 file_copy[4];
+        pat_copy[0] = arg1[0];
+        pat_copy[1] = arg1[1];
+        pat_copy[2] = arg1[2];
+        pat_copy[3] = arg1[3];
+        file_copy[0] = arg3[0];
+        file_copy[1] = arg3[1];
+        file_copy[2] = arg3[2];
+        file_copy[3] = arg3[3];
+        if (*(volatile s32 *)((u8 *)pat_copy + 8) != 0) {
+            u32 idx = *(volatile u16 *)((u8 *)pat_copy + 0xC);
+            if (idx > 0x20A) {
+                c0 = 0;
+            } else {
+                s32 f0 = 0;
+                s32 *data = (s32 *)(void *)(*(volatile void **)((u8 *)pat_copy + 0));
+                u32 ch = *(u16 *)((u8 *)data + idx);
+                *(volatile u16 *)((u8 *)pat_copy + 0xC) = idx + 2;
+                if ((ch >= 0x61) && (ch <= 0x7A)) {
+                    f0 = 1;
+                }
+                if (f0 != 0) {
+                    ch -= 0x20;
+                }
+                c0 = (u16)ch;
+                s32 f1 = 0;
+                u16 t = (u16)(c0 - 0x20);
+                if ((c0 >= 0xFF41) && (c0 <= 0xFF5A)) {
+                    f1 = 1;
+                }
+                if (f1 != 0) {
+                    c0 = t;
+                }
+            }
+        } else {
+            u32 idx = *(volatile u16 *)((u8 *)pat_copy + 0xC);
+            if (idx >= 0xC) {
+                c0 = 0;
+            } else {
+                *(volatile u16 *)((u8 *)pat_copy + 0xC) = idx + 1;
+                u8 *data = (u8 *)(void *)(*(volatile void **)((u8 *)pat_copy + 0));
+                s32 ch = (s8)data[idx];
+                if (((s32 (**)(s8, s32))((u8 *)lbl_803D2140 + 0x54))[0]((s8)ch, 1) != 0) {
+                    u32 idx2 = *(volatile u16 *)((u8 *)pat_copy + 0xC);
+                    *(volatile u16 *)((u8 *)pat_copy + 0xC) = idx2 + 1;
+                    u8 *data2 = (u8 *)(void *)(*(volatile void **)((u8 *)pat_copy + 0));
+                    ch = (ch << 8) + data2[idx2];
+                }
+                s32 f0 = 0;
+                if (((u16)ch >= 0x61) && ((u16)ch <= 0x7A)) {
+                    f0 = 1;
+                }
+                if (f0 != 0) {
+                    c0 = (u16)((u16)ch - 0x20);
+                } else {
+                    c0 = (u16)ch;
+                }
+            }
+        }
+        tok = fn_800B25CC((s32 *)file_copy, arg4);
+        if (VFiPFPATH_DoMatchFileNameWithPattern(c0, (s32 *)pat_copy, tok, (s32 *)file_copy, arg4) != 0) {
+            return 1;
+        }
+    }
+block_41:
+    if (*(volatile s32 *)((u8 *)arg1 + 8) != 0) {
+        u32 idx = *(volatile u16 *)((u8 *)arg1 + 0xC);
+        if (idx > 0x20A) {
+            c0 = 0;
+        } else {
+            s32 f0 = 0;
+            s32 *data = (s32 *)(void *)(*(volatile void **)((u8 *)arg1 + 0));
+            u32 ch = *(u16 *)((u8 *)data + idx);
+            *(volatile u16 *)((u8 *)arg1 + 0xC) = idx + 2;
+            if ((ch >= 0x61) && (ch <= 0x7A)) {
+                f0 = 1;
+            }
+            if (f0 != 0) {
+                ch -= 0x20;
+            }
+            c0 = (u16)ch;
+            s32 f1 = 0;
+            u16 t = (u16)(c0 - 0x20);
+            if ((c0 >= 0xFF41) && (c0 <= 0xFF5A)) {
+                f1 = 1;
+            }
+            if (f1 != 0) {
+                c0 = t;
+            }
+        }
+    } else {
+        u32 idx = *(volatile u16 *)((u8 *)arg1 + 0xC);
+        if (idx >= 0xC) {
+            c0 = 0;
+        } else {
+            *(volatile u16 *)((u8 *)arg1 + 0xC) = idx + 1;
+            u8 *data = (u8 *)(void *)(*(volatile void **)((u8 *)arg1 + 0));
+            s32 ch = (s8)data[idx];
+            if (((s32 (**)(s8, s32))((u8 *)lbl_803D2140 + 0x54))[0]((s8)ch, 1) != 0) {
+                u32 idx2 = *(volatile u16 *)((u8 *)arg1 + 0xC);
+                *(volatile u16 *)((u8 *)arg1 + 0xC) = idx2 + 1;
+                u8 *data2 = (u8 *)(void *)(*(volatile void **)((u8 *)arg1 + 0));
+                ch = (ch << 8) + data2[idx2];
+            }
+            s32 f0 = 0;
+            if (((u16)ch >= 0x61) && ((u16)ch <= 0x7A)) {
+                f0 = 1;
+            }
+            if (f0 != 0) {
+                c0 = (u16)((u16)ch - 0x20);
+            } else {
+                c0 = (u16)ch;
+            }
+        }
+    }
+    goto loop_65;
 }
 
 extern "C" s32 VFiPFPATH_cmpNameImpl(u8 *arg0, u8 *arg1, s32 *arg2) {
@@ -18441,12 +18616,10 @@ void nw4hbm::lyt::AnimTransformBasic::Animate(unsigned long arg1, nw4hbm::lyt::M
     u8 *offsetEntry = block + 0x18;
     s32 blockIndex = 0;
     f32 half = lbl_80560E64;
-    u8 *record;
-    u8 *itemOffsets;
     while (blockIndex < block[0x14]) {
-        record = block + *(s32 *)offsetEntry;
+        u8 *record = block + *(s32 *)offsetEntry;
         s32 type = *(s32 *)record;
-        itemOffsets = record + 8;
+        u8 *itemOffsets = record + 8;
         switch (type) {
         case 0x524C4D43: {
             s32 itemIndex = 0;
@@ -18455,10 +18628,12 @@ void nw4hbm::lyt::AnimTransformBasic::Animate(unsigned long arg1, nw4hbm::lyt::M
             while (itemIndex < record[4]) {
                 u8 *item = record + *(s32 *)itemOffsets;
                 if (item[1] >= 0x20)
-                    Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x106, file + 0x180);
+                    Panic__Q26nw4hbm2dbFPCciPCce((const char *)(file + 0), 0x106, file + 0x180);
                 if (item[2] != 2)
-                    Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x107, file + 0xB0);
-                s16 value = (s16)(fn_800D4220(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame) + half);
+                    Panic__Q26nw4hbm2dbFPCciPCce((const char *)(file + 0), 0x107, file + 0xB0);
+                f32 result = fn_800D4220(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame);
+                result += half;
+                s16 value = (s16)result;
                 value = (value < -0x400) ? -0x400 : value;
                 value = (value > 0x3FF) ? 0x3FF : value;
                 SetColorElement__Q36nw4hbm3lyt8MaterialFUls(arg2, item[1], value);
@@ -18471,14 +18646,14 @@ void nw4hbm::lyt::AnimTransformBasic::Animate(unsigned long arg1, nw4hbm::lyt::M
             f32 frame = *(f32 *)((u8 *)this + 0x10);
             s32 itemIndex = 0;
             while (itemIndex < record[4]) {
+                if (record[*(s32 *)itemOffsets] >= 0xA)
+                    Panic__Q26nw4hbm2dbFPCciPCce((const char *)(file + 0), 0x11F, file + 0x1C8);
                 u8 *item = record + *(s32 *)itemOffsets;
-                if (item[0] >= 0xA)
-                    Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x11F, file + 0x1C8);
                 if (item[0] < ((*(u32 *)((u8 *)arg2 + 0x4C) >> 24) & 0xF)) {
                     if (item[1] >= 5)
-                        Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x122, file + 0x1FC);
+                        Panic__Q26nw4hbm2dbFPCciPCce((const char *)(file + 0), 0x122, file + 0x1FC);
                     if (item[2] != 2)
-                        Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x123, file + 0xB0);
+                        Panic__Q26nw4hbm2dbFPCciPCce((const char *)(file + 0), 0x123, file + 0xB0);
                     f32 value = fn_800D4220(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame);
                     if (item[0] >= ((*(u32 *)((u8 *)arg2 + 0x50) >> 24) & 0xF))
                         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F274, 0x125, lbl_8031F23C);
@@ -18495,12 +18670,12 @@ void nw4hbm::lyt::AnimTransformBasic::Animate(unsigned long arg1, nw4hbm::lyt::M
                 f32 frame = *(f32 *)((u8 *)this + 0x10);
                 s32 itemIndex = 0;
                 while (itemIndex < record[4]) {
+                    if (record[*(s32 *)itemOffsets] >= 8)
+                        Panic__Q26nw4hbm2dbFPCciPCce((const char *)(file + 0), 0x137, file + 0x240);
                     u8 *item = record + *(s32 *)itemOffsets;
-                    if (item[0] >= 8)
-                        Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x137, file + 0x240);
                     if (item[0] < (*(u32 *)((u8 *)arg2 + 0x50) >> 28)) {
                         if (item[2] != 1)
-                            Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x13A, file + 0xF4);
+                            Panic__Q26nw4hbm2dbFPCciPCce((const char *)(file + 0), 0x13A, file + 0xF4);
                         if (item[1] == 0) {
                             u16 paletteIndex = fn_800D4138(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame);
                             SetTextureNoWrap__Q36nw4hbm3lyt8MaterialFUcP10TPLPalette(arg2, item[0], palettes[paletteIndex]);
@@ -18516,14 +18691,14 @@ void nw4hbm::lyt::AnimTransformBasic::Animate(unsigned long arg1, nw4hbm::lyt::M
             f32 frame = *(f32 *)((u8 *)this + 0x10);
             s32 itemIndex = 0;
             while (itemIndex < record[4]) {
+                if (record[*(s32 *)itemOffsets] >= 3)
+                    Panic__Q26nw4hbm2dbFPCciPCce((const char *)(file + 0), 0x151, file + 0x278);
                 u8 *item = record + *(s32 *)itemOffsets;
-                if (item[0] >= 3)
-                    Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x151, file + 0x278);
                 if (item[0] < ((*(u32 *)((u8 *)arg2 + 0x4C) >> 18) & 3)) {
                     if (item[1] >= 5)
-                        Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x154, file + 0x1FC);
+                        Panic__Q26nw4hbm2dbFPCciPCce((const char *)(file + 0), 0x154, file + 0x1FC);
                     if (item[2] != 2)
-                        Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x155, file + 0xB0);
+                        Panic__Q26nw4hbm2dbFPCciPCce((const char *)(file + 0), 0x155, file + 0xB0);
                     f32 value = fn_800D4220(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame);
                     if (item[0] >= ((*(u32 *)((u8 *)arg2 + 0x50) >> 18) & 3))
                         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2B8, 0x135, lbl_8031F280);
