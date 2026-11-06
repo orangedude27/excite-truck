@@ -27,6 +27,12 @@ static inline Vec_8018 matVecRet_8018(const float *m, const Vec_8018 *v) {
     r.z = m[2] * v->x + m[5] * v->y + m[8] * v->z;
     return r;
 }
+static inline void matVecCopy_8018(Vec_8018 *dest, const float *m, Vec_8018 *src) {
+    *dest = *src;
+    dest->x = m[0] * dest->x + m[3] * dest->y + m[6] * dest->z;
+    dest->y = m[1] * dest->x + m[4] * dest->y + m[7] * dest->z;
+    dest->z = m[2] * dest->x + m[5] * dest->y + m[8] * dest->z;
+}
 
 #pragma push
 #pragma processor 750
