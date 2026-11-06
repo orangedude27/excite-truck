@@ -13456,12 +13456,15 @@ BOOLEAN btsnd_hcic_read_rssi(UINT16 handle) {
 }
 
 extern u8 lbl_802EEC08[];
+typedef struct { u8 b[10]; } tAFH_MAP;
 BOOLEAN btsnd_hcic_set_afh_channels(u8 first, u8 last) {
     u8 map[10];
     u8 *buf;
-    s32 i;
-
-    for (i = 0; i < 10; i++) map[i] = lbl_802EEC08[i];
+    int i;
+    u8 a0 = lbl_802EEC08[0], a1 = lbl_802EEC08[1], a2 = lbl_802EEC08[2], a3 = lbl_802EEC08[3], a4 = lbl_802EEC08[4];
+    u8 a5 = lbl_802EEC08[5], a6 = lbl_802EEC08[6], a7 = lbl_802EEC08[7], a8 = lbl_802EEC08[8], a9 = lbl_802EEC08[9];
+    map[0] = a0; map[1] = a1; map[2] = a2; map[3] = a3; map[4] = a4;
+    map[5] = a5; map[6] = a6; map[7] = a7; map[8] = a8; map[9] = a9;
     buf = (u8 *)GKI_getpoolbuf(2);
     if (buf == 0) return 0;
 
@@ -13472,7 +13475,7 @@ BOOLEAN btsnd_hcic_set_afh_channels(u8 first, u8 last) {
     buf[10] = 0xA;
 
     if (first <= last && last <= 0x4E) {
-        for (i = first; i <= last; i++) map[i >> 3] &= ~(1 << (i & 7));
+        for (i = first; i <= last; i++) map[i / 8] &= ~(1 << (i % 8));
     }
     for (i = 0; i < 10; i++) buf[11 + i] = map[i];
     btu_hcif_send_cmd(buf);
