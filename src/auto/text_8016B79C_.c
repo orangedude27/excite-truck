@@ -39,6 +39,8 @@ extern s32 lbl_8055E378;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern s32 fn_80161C38(void);
+extern u8 *fn_80131234(const char *);
 extern s32 fn_801609C4(s32);
 int fn_8012850C(int, int);
 extern char lbl_80330B7C[];
@@ -993,14 +995,13 @@ extern "C" void fn_802ADE60(s32, s32);
 extern "C" void fn_8016D658(void *arg0, s32 arg1) {
  class VObj { public: virtual void destroy(int); };
  struct List { void *vtable; VObj **items; s32 count; };
- register VObj *old; register VObj *p; register s32 offset, i; List *list;
- if (arg0) {
-  list = (List *)arg0;
+ VObj *old; VObj *p; s32 offset, i;
+ if (arg0 != 0) {
   old = *(VObj **)((u8 *)arg0 + 0xA4); *(char **)arg0 = lbl_80330990;
   if (old != 0) { if (old != 0) old->destroy(1); }
   i = 0; offset = 0;
-  while (i < list->count) {
-   p = *(VObj **)((u8 *)list->items + offset);
+  while (i < ((List *)arg0)->count) {
+   p = *(VObj **)((u8 *)((List *)arg0)->items + offset);
    if (p != 0) { fn_8000DA10(); fn_80128668(p); }
    offset += 4; i += 1;
   }
@@ -1058,7 +1059,7 @@ extern char lbl_80330AA4[];
 extern void fn_8016E15C();
 #pragma scheduling invalid_target
 void fn_8016DA0C(void *arg0) {
-    s32 i, j1, j2, j3, n;
+    s32 i, j, n;
     f32 f, zero;
     void *p;
 
@@ -1085,10 +1086,10 @@ void fn_8016DA0C(void *arg0) {
     if (M2C_FIELD(arg0, s32 *, 0x6C) < M2C_FIELD(arg0, s32 *, 0x68))
         fn_802E30C8(lbl_80330AA4);
     fn_8016E314((u8 *) arg0 + 0x38);
-    for (j1 = 0; j1 < M2C_FIELD(arg0, s32 *, 0x68); j1++)
-        fn_8016E1B4((u8 *) arg0 + 0x30, j1);
-    for (j2 = 0; j2 < M2C_FIELD(arg0, s32 *, 0x6C); j2++)
-        fn_8016E15C((void *) fn_8016E1A4((s32 *) M2C_FIELD(arg0, s32 *, 0x48), j2));
+    for (j = 0; j < M2C_FIELD(arg0, s32 *, 0x68); j++)
+        fn_8016E1B4((u8 *) arg0 + 0x30, j);
+    for (j = 0; j < M2C_FIELD(arg0, s32 *, 0x6C); j++)
+        fn_8016E15C((void *) fn_8016E1A4((s32 *) M2C_FIELD(arg0, s32 *, 0x48), j));
     fn_8016E118((u8 *) arg0 + 0x30);
     i = M2C_FIELD(arg0, s32 *, 0x5C);
     if (i >= 0 && i < M2C_FIELD(arg0, s32 *, 0x68)) {
@@ -1097,11 +1098,11 @@ void fn_8016DA0C(void *arg0) {
         fn_8016DE20((u8 *) arg0 + 0x30);
     }
     f = lbl_80561998;
-    for (j3 = 0; j3 < fn_8016DE08(M2C_FIELD(arg0, void **, 0x4C)); j3++) {
-        *(s8 *) fn_8016DE10((s32 *) M2C_FIELD(arg0, void **, 0x4C), j3) = 0;
-        M2C_FIELD((void *) fn_8016DE10((s32 *) M2C_FIELD(arg0, void **, 0x4C), j3), s32 *, 4) = -1;
-        M2C_FIELD((void *) fn_8016DE10((s32 *) M2C_FIELD(arg0, void **, 0x4C), j3), f32 *, 8) = f;
-        M2C_FIELD((void *) fn_8016DE10((s32 *) M2C_FIELD(arg0, void **, 0x4C), j3), f32 *, 0xC) = f;
+    for (j = 0; j < fn_8016DE08(M2C_FIELD(arg0, void **, 0x4C)); j++) {
+        *(s8 *) fn_8016DE10((s32 *) M2C_FIELD(arg0, void **, 0x4C), j) = 0;
+        M2C_FIELD((void *) fn_8016DE10((s32 *) M2C_FIELD(arg0, void **, 0x4C), j), s32 *, 4) = -1;
+        M2C_FIELD((void *) fn_8016DE10((s32 *) M2C_FIELD(arg0, void **, 0x4C), j), f32 *, 8) = f;
+        M2C_FIELD((void *) fn_8016DE10((s32 *) M2C_FIELD(arg0, void **, 0x4C), j), f32 *, 0xC) = f;
     }
     n = fn_8016DD98((u8 *) arg0 + 0x30);
     M2C_FIELD((void *) fn_8016DE10((s32 *) M2C_FIELD(arg0, void **, 0x4C), M2C_FIELD(arg0, s32 *, 0x5C)), s32 *, 4) = n;
@@ -1845,6 +1846,31 @@ void fn_8016FF98(void *arg0) {
 
 s32 fn_8016FFE4(void) { return 0x1408; }
 
+extern void *fn_8000AC38(void);
+extern char lbl_80330DF4[];
+extern char lbl_8055A270[];
+extern float lbl_80561980;
+s32 fn_8016FFEC(void *arg0, void *arg1, s32 arg2) {
+char sp60[16];
+char sp40[16];
+float sp70[6];
+void *manager;
+void *obj;
+int i;
+manager = *(void **)((char *)fn_8000AC38() + 0x20);
+if (manager == 0) return 0;
+fn_801345D8(sp60, 0x10, lbl_80330DF4, arg2);
+obj = ((void *(*)(void *, void *))*(void **)((char *)*(void **)manager + 0x5C))(manager, sp60);
+if (obj == 0) return 0;
+i = 0;
+do {
+fn_801345D8(sp40, 0x10, lbl_8055A270, i);
+i += 1;
+} while (i < 3);
+sp70[0] = lbl_80561980;
+return 1;
+}
+
 #pragma cplusplus on
 extern "C" s32 fn_80009C84(void);
 extern "C" u8 *fn_80131234(const char *);
@@ -2575,16 +2601,16 @@ extern "C" s32 fn_8017133C(void *arg0, s32 arg1, s8 *arg2) {
         virtual void p0(); virtual void p1(); virtual void p2();
         virtual s32 m3();
     };
-    s32 result;
+    void *obj;
     s32 index;
     void *holder;
+    s32 result;
+    s32 r25;
     void *data;
     void *item;
-    s32 r25;
     s32 d;
     s32 r4v;
     s32 cond;
-    void *obj;
     volatile f32 sp1C, sp18, sp14, sp10, spC, sp8;
     f32 x, y, dx, dy;
     f32 v;
@@ -2646,20 +2672,18 @@ extern "C" s32 fn_8017133C(void *arg0, s32 arg1, s8 *arg2) {
             }
         }
         if (result == 0 &&
-            *(s32 *)((u8 *)(void *)fn_8017960C(*(s32 *)((u8 *)obj + 4)) + 0x10) == 0x50434152) {
-            data = (void *)fn_8017960C(*(s32 *)((u8 *)obj + 4));
+            *(s32 *)((u8 *)(void *)fn_8017960C(*(s32 *)((u8 *)(*(void **)((u8 *)*(void **)((u8 *)arg0 + 4) + index)) + 4)) + 0x10) == 0x50434152) {
+            data = (void *)fn_8017960C(*(s32 *)((u8 *)(*(void **)((u8 *)*(void **)((u8 *)arg0 + 4) + index)) + 4));
             if (((Pcr *)*(void **)((u8 *)data + 0x270C))->m3() & 0x10) {
-                obj = *(void **)((u8 *)*(void **)((u8 *)arg0 + 4) + index);
-                if (*(u8 *)((u8 *)obj + 8) == 0) {
-                    *(u8 *)((u8 *)obj + 8) = 1;
-                    *(f32 *)((u8 *)obj + 0xC) = lbl_80561980;
+                if (*(u8 *)((u8 *)(*(void **)((u8 *)*(void **)((u8 *)arg0 + 4) + index)) + 8) == 0) {
+                    *(u8 *)((u8 *)(*(void **)((u8 *)*(void **)((u8 *)arg0 + 4) + index)) + 8) = 1;
+                    *(f32 *)((u8 *)(*(void **)((u8 *)*(void **)((u8 *)arg0 + 4) + index)) + 0xC) = lbl_80561980;
                 }
             } else {
                 if (!(((Pcr *)*(void **)((u8 *)data + 0x270C))->m3() & 0x10)) {
-                    obj = *(void **)((u8 *)*(void **)((u8 *)arg0 + 4) + index);
-                    if (*(u8 *)((u8 *)obj + 8) != 0) {
-                        *(u8 *)((u8 *)obj + 8) = 0;
-                        *(f32 *)((u8 *)obj + 0xC) = lbl_80561980;
+                    if (*(u8 *)((u8 *)(*(void **)((u8 *)*(void **)((u8 *)arg0 + 4) + index)) + 8) != 0) {
+                        *(u8 *)((u8 *)(*(void **)((u8 *)*(void **)((u8 *)arg0 + 4) + index)) + 8) = 0;
+                        *(f32 *)((u8 *)(*(void **)((u8 *)*(void **)((u8 *)arg0 + 4) + index)) + 0xC) = lbl_80561980;
                     }
                 }
             }
@@ -2667,8 +2691,6 @@ extern "C" s32 fn_8017133C(void *arg0, s32 arg1, s8 *arg2) {
     }
     return result;
 }
-#pragma cplusplus reset
-#pragma pop
 extern char lbl_80330BC8[];
 extern char lbl_80330BD8[];
 extern void *fn_80145E70(const char *);
