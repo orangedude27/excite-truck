@@ -83,14 +83,16 @@ void *__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_801A973C(void *this_,
 
 extern void *fn_801AE180(void);
 extern f32 lbl_80562478, lbl_8056247C;
+#pragma push
+#pragma processor 750
 #pragma scheduling invalid_target
 void fn_801A9798(void *arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3) {
     struct Node_801A9798 { void *next; f32 values[9]; };
-    register struct Node_801A9798 *node;
+    struct Node_801A9798 *node;
     volatile f32 sp64, sp60, sp5c, sp58, sp54, sp50, sp4c, sp48, sp44;
     volatile f32 sp40, sp3c, sp38, sp34, sp30, sp2c, sp28, sp24, sp20;
     volatile f32 sp1c, sp18, sp14, sp10, spC, sp8;
-    register f32 constA, constB;
+    f32 constA, constB;
     sp60 = farg1; sp5c = -farg0; sp64 = -farg2;
     node = (struct Node_801A9798 *)fn_801AE180();
     node->values[0] = sp5c; node->values[1] = sp60; node->values[2] = sp64; node->values[3] = farg3;
@@ -140,8 +142,7 @@ void fn_801A9798(void *arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3) {
     constB = lbl_8056247C; node->values[6] = constB; node->values[7] = constB; node->values[8] = constB; node->values[5] = constB;
     node->next = *(void **)((u8 *)arg0 + 0xD0); *(void **)((u8 *)arg0 + 0xD0) = node;
 }
-
-#pragma scheduling invalid_target
+#pragma pop
 void fn_801A9AB0(void *self, void *cfg) {
     extern void fn_8017B0F8(void *, void *);
     extern void fn_8017A580(void *, int, int, int, int, int, int, int);
@@ -955,6 +956,7 @@ extern void fn_8017B81C(void *);
 extern void fn_8017C7C8(void *, float *, float *);
 extern float lbl_805624AC, lbl_805624DC, lbl_805624E0, lbl_805624E4;
 #pragma cplusplus on
+#pragma scheduling on
 extern "C" void fn_801ABC28(void *arg0) {
     extern void fn_8017A580(void *, int, int, int, int, int, int, int);
     extern void fn_801796CC(int, void *, int);
@@ -968,7 +970,7 @@ extern "C" void fn_801ABC28(void *arg0) {
     char *p = (char *)arg0;
     register int t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
     int flag;
-    float first, scale;
+    float scale, first;
 
     if (*(unsigned char *)(p + 0x222) != 0) {
         *(unsigned char *)(p + 0x1e9) = 0;
@@ -993,7 +995,6 @@ extern "C" void fn_801ABC28(void *arg0) {
             *(float *)(p + 0x120) = scale;
         } else if (*(unsigned char *)(p + 0x221) == 0) {
             fn_8017B81C(arg0);
-            #pragma scheduling off
             {
                 float a, b, c, d, e, f;
                 float r0, r1, r2, r3, r4, r5, check;
@@ -1020,7 +1021,6 @@ extern "C" void fn_801ABC28(void *arg0) {
                 if (check > lbl_8056247C)
                     fn_801ABB54(arg0);
             }
-            #pragma scheduling on
             flag = 0;
             if (*(unsigned char *)(p + 0x234) != 0 &&
                 *(float *)(p + 0x4c) > lbl_80562478)
@@ -1378,6 +1378,19 @@ void fn_801ACA48(void *arg0) {
 }
 
 extern float lbl_80558DC4, lbl_8055E460, lbl_805624AC;
+static inline void transform_801ACB30(const float *m, const float *src, volatile float *dst) {
+    if (src == dst) {
+        float x = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
+        float y = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
+        float z = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
+        dst[0] = x; dst[1] = y; dst[2] = z;
+    } else {
+        dst[0] = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
+        dst[1] = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
+        dst[2] = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
+    }
+    dst[0] += m[9]; dst[1] += m[10]; dst[2] += m[11];
+}
 void fn_801ACB30(void *arg0, int arg1) {
     char *p = (char *)arg0;
     char *out = (char *)(arg1 + *(int *)(p + 8));
@@ -1572,6 +1585,88 @@ void fn_801AD28C(void *arg0, void *arg1, void *arg2, Vec *arg3, f32 farg1, f32 f
     *(f32 *)((char *)arg0 + 0x28) = distance;
     fn_801AD0E0(arg0, arg3, arg2, arg1, farg1, farg0);
     *(f32 *)((char *)arg0 + 0x28) = distance;
+}
+
+#pragma scheduling invalid_target
+void fn_801AD394(void *arg0) {
+    extern double fn_8002F234(float);
+    extern float lbl_8056247C, lbl_805624A4, lbl_805624AC, lbl_80562518;
+    extern void fn_8017B6D4(void *, float *, float *);
+    extern void fn_8017B3A8(void *, float *, float *);
+    Vec transformed;
+    Vec position;
+    Vec delta;
+    Vec direction;
+    Vec output;
+    Vec pathPoint;
+    Vec otherPoint;
+    Vec residual;
+    float length;
+    float distance;
+    float factor;
+
+    fn_8017AB84(*(void **)((u8 *)arg0 + 0x34), &transformed, (u8 *)arg0 + 0x10);
+    if (*(void **)((u8 *)arg0 + 0x0C) != 0) {
+        fn_8017AB84(*(void **)((u8 *)arg0 + 0x0C), &position, arg0);
+    } else {
+        position.x = *(float *)arg0;
+        position.y = *(float *)((u8 *)arg0 + 4);
+        position.z = *(float *)((u8 *)arg0 + 8);
+    }
+
+    delta.x = position.x - transformed.x;
+    delta.y = position.y - transformed.y;
+    delta.z = position.z - transformed.z;
+    length = PSVECMag(&delta);
+    distance = (float)fn_8002F234(delta.x * delta.x + delta.z * delta.z);
+    *(float *)((u8 *)arg0 + 0x30) = distance;
+    *(float *)((u8 *)arg0 + 0x2C) = length - *(float *)((u8 *)arg0 + 0x28);
+
+    if (length > lbl_80562518 && length < *(float *)((u8 *)arg0 + 0x28) + *(float *)((u8 *)arg0 + 0x24)) {
+        register float temp_f3 = lbl_805624AC / length;
+        register float temp_f4 = lbl_8056247C;
+        register float temp_f2 = delta.x;
+        register float temp_f1 = delta.y;
+        register float temp_f0 = delta.z;
+        output.x = temp_f4;
+        output.y = temp_f4;
+        output.z = temp_f4;
+        direction.x = temp_f2 * temp_f3;
+        direction.y = temp_f1 * temp_f3;
+        direction.z = temp_f0 * temp_f3;
+        fn_8017B6D4(*(void **)((u8 *)arg0 + 0x34), (float *)&pathPoint, (float *)&transformed);
+
+        if (*(void **)((u8 *)arg0 + 0x0C) != 0) {
+            fn_8017B6D4(*(void **)((u8 *)arg0 + 0x0C), (float *)&otherPoint, (float *)&position);
+        } else {
+            otherPoint.x = lbl_8056247C;
+            otherPoint.y = lbl_8056247C;
+            otherPoint.z = lbl_8056247C;
+        }
+
+        residual.x = otherPoint.x - pathPoint.x;
+        residual.y = otherPoint.y - pathPoint.y;
+        residual.z = otherPoint.z - pathPoint.z;
+        temp_f4 = *(float *)((u8 *)arg0 + 0x20);
+        output.x = residual.x * temp_f4;
+        output.y = residual.y * temp_f4;
+        output.z = residual.z * temp_f4;
+
+        if (length > *(float *)((u8 *)arg0 + 0x28)) {
+            factor = *(float *)((u8 *)arg0 + 0x1C) * (length - *(float *)((u8 *)arg0 + 0x28));
+            output.x += direction.x * factor;
+            output.y += direction.y * factor;
+            output.z += direction.z * factor;
+        }
+
+        fn_8017B3A8(*(void **)((u8 *)arg0 + 0x34), (float *)&output, (float *)&transformed);
+        if (*(void **)((u8 *)arg0 + 0x0C) != 0) {
+            output.x *= lbl_805624A4;
+            output.y *= lbl_805624A4;
+            output.z *= lbl_805624A4;
+            fn_8017B3A8(*(void **)((u8 *)arg0 + 0x0C), (float *)&output, (float *)&transformed);
+        }
+    }
 }
 #pragma scheduling on
 void fn_801AD5EC(void) {
