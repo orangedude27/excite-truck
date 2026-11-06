@@ -924,8 +924,8 @@ void fn_8000C0E8(void *arg0) {
     struct Tail { int a, b, c, d; };
     struct Context { struct Header header; struct Payload payload; struct Tail tail; int last; } local;
     unsigned char *src = (unsigned char *)arg0;
-    unsigned char *rec;
     unsigned char *out;
+    unsigned char *rec;
     int i;
     unsigned char a, b;
 
