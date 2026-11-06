@@ -37,6 +37,7 @@ int fn_802B3340(int);
 extern int lbl_8055F9B4;
 extern int lbl_8055F9B0;
 extern float lbl_80564C00, lbl_80564C04, lbl_80564C08;
+typedef struct { float x, y, z; } ParticleVec3;
 extern float fn_80129DC4(float, float);
 extern double cos(float);
 extern double sin(float);
@@ -484,14 +485,12 @@ void fn_802B2504(int *dst, int count) {
 void fn_802B28BC(int *, int);
 void *memset(void *, int, unsigned int);
 void fn_802B257C(void *arg0) {
-    int count, i, total, index, *items, *item, *entry;
-    int remaining, share, used, rem, slot, k;
-    int *out;
+    int count;
+    int total = 0;
+    int i = 0;
     count = *(int *)((char *)arg0 + 0x40C);
-    items = *(int **)((char *)arg0 + 0x408);
-    total = 0;
-    for (i = 0; i < count; i++) {
-        entry = (int *)((char *)items + i * 0x20);
+    while (i < count) {
+        int *entry = (int *)((char *)*(int *)((char *)arg0 + 0x408) + i * 0x20);
         total += *(int *)entry[0];
         total += *(int *)entry[1];
         total += *(int *)entry[2];
@@ -500,29 +499,22 @@ void fn_802B257C(void *arg0) {
         total += *(int *)entry[5];
         total += *(int *)entry[6];
         total += *(int *)entry[7];
+        i++;
     }
-    index = 0;
-    while (total > 0x80) {
-        item = (int *)items[index];
-        if (*item > 0) { (*item)--; total--; }
-        index++;
-        if (index >= count) index = 0;
+    {
+        int index = 0;
+        while (total > 0x80) {
+            int *item = (int *)((int *)*(int **)((char *)arg0 + 0x408))[index];
+            if (*item > 0) { (*item)--; total--; }
+            index++;
+            if (index >= count) index = 0;
+        }
     }
-    out = (int *)((char *)arg0 + 0x208);
-    memset(out, 0, 0x200);
-    remaining = 0x80 - total;
-    slot = 0;
-    for (i = 0; i < count; i++) {
-        item = (int *)((char *)items[i]);
-        share = (remaining * 2) / count;
-        if (share > remaining) share = remaining;
-        used = *item;
-        rem = used % share;
-        for (k = 0; k < rem; k++) out[slot++] = 0;
-        remaining -= rem;
-        for (k = 0; k < used; k++) out[slot++] = (int)item;
+    {
+        int *out = (int *)((char *)arg0 + 0x208);
+        memset(out, 0, 0x200);
     }
-    if (*(unsigned char *)((char *)arg0 + 4) == 0) fn_802B28BC(out, 0x80);
+    if (*(unsigned char *)((char *)arg0 + 4) == 0) fn_802B28BC((int *)((char *)arg0 + 0x208), 0x80);
 }
 
 #pragma push
@@ -563,7 +555,7 @@ extern "C" void *fn_802B2958(void *arg0, void *arg1) {
     void *item, *child;
     int key, value, valid;
     float *entry;
-    float angle, c, sn, radius, zero, one;
+    float one, zero, radius, sn, c, angle;
     unsigned int i;
     if (p != 0) {
         name = ((ParticleConfig *)arg1)->getText(lbl_8055CDE0);
@@ -666,7 +658,8 @@ extern void fn_802DCAE4(int, float *, void *, void *, float);
 extern float lbl_80564C00, lbl_80564C04, lbl_80564C08;
 extern float lbl_80564C0C, lbl_80564C10, lbl_80564C20;
 extern double lbl_80564C18, lbl_80564C28;
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
 int fn_802B2E08(int arg0) {
     char *base, *obj, *transform;
     register float *entry;
@@ -795,7 +788,7 @@ outer_body:
             n = *(int *)(head + 4);
             row = 0;
             byteOffset = 0;
-            do {
+            while (row < n) {
                 data = *(unsigned char **)head;
                 record = data + byteOffset;
                 stack[21] = *(float *)(record + 4);
@@ -816,7 +809,7 @@ outer_body:
                             record, *(float *)(record + 0x10));
                 byteOffset += 0x14;
                 row++;
-            } while (row < n);
+            }
             head = *(char **)(head + 0xC);
         } while (head != 0);
         fn_802DC8B4();
@@ -828,7 +821,7 @@ outer_check:
     if (index < *(int *)(base + 0x40C))
         goto outer_body;
 }
-#pragma scheduling on
+#pragma pop
 int *fn_802B320C(int *arg0, int arg1) {
     return (int *)((char *)*arg0 + arg1 * 4);
 }
