@@ -39,6 +39,7 @@ extern "C" f32 lbl_80558DC4;
 extern "C" f32 lbl_805614A4;
 extern "C" f32 lbl_805614AC;
 extern "C" f32 lbl_805614BC;
+extern "C" f32 lbl_80558DC4_arr[2];
 extern "C" s32 fn_80128670(s32);
 extern "C" void fn_80128668(void);
 extern "C" f32 fn_8001DAE8(void *);
