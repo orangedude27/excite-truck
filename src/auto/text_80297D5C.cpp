@@ -931,17 +931,52 @@ extern "C" unsigned int fn_80299A04(void *arg0, unsigned int arg1, float farg0) 
 extern "C" double cos(double);
 extern "C" double sin(double);
 extern "C" float fn_80144514(float, float, float, float, float, float);
+static inline void MatrixMul801FD5E8(float* dst, const float* left, const float* right) {
+    if (dst == right || dst == left) {
+        float t0 = fn_80144514(left[0], right[0], left[3], right[1], left[6], right[2]);
+        float t3 = fn_80144514(left[0], right[3], left[3], right[4], left[6], right[5]);
+        float t6 = fn_80144514(left[0], right[6], left[3], right[7], left[6], right[8]);
+        float t1 = fn_80144514(left[1], right[0], left[4], right[1], left[7], right[2]);
+        float t4 = fn_80144514(left[1], right[3], left[4], right[4], left[7], right[5]);
+        float t7 = fn_80144514(left[1], right[6], left[4], right[7], left[7], right[8]);
+        float t2 = fn_80144514(left[2], right[0], left[5], right[1], left[8], right[2]);
+        float t5 = fn_80144514(left[2], right[3], left[5], right[4], left[8], right[5]);
+        float t8 = fn_80144514(left[2], right[6], left[5], right[7], left[8], right[8]);
+        dst[0] = t0;
+        dst[3] = t3;
+        dst[6] = t6;
+        dst[1] = t1;
+        dst[4] = t4;
+        dst[7] = t7;
+        dst[2] = t2;
+        dst[5] = t5;
+        dst[8] = t8;
+    } else {
+        dst[0] = fn_80144514(left[0], right[0], left[3], right[1], left[6], right[2]);
+        dst[3] = fn_80144514(left[0], right[3], left[3], right[4], left[6], right[5]);
+        dst[6] = fn_80144514(left[0], right[6], left[3], right[7], left[6], right[8]);
+        dst[1] = fn_80144514(left[1], right[0], left[4], right[1], left[7], right[2]);
+        dst[4] = fn_80144514(left[1], right[3], left[4], right[4], left[7], right[5]);
+        dst[7] = fn_80144514(left[1], right[6], left[4], right[7], left[7], right[8]);
+        dst[2] = fn_80144514(left[2], right[0], left[5], right[1], left[8], right[2]);
+        dst[5] = fn_80144514(left[2], right[3], left[5], right[4], left[8], right[5]);
+        dst[8] = fn_80144514(left[2], right[6], left[5], right[7], left[8], right[8]);
+    }
+}
 extern "C" char lbl_803494F0[];
 extern float lbl_805645E4, lbl_805645E8, lbl_805645EC, lbl_805645F0, lbl_805645F4;
+#pragma push
+#pragma processor 750
 void fn_80299A88(void *arg0, void *out, unsigned int unused, float scale) {
-    float init[0x100/4];
-    float rot[9];
-    float *q = rot;
-    int i, count;
+    Fn80299A88Frame frame;
+    float *q = frame.rotation.v;
+    float *m = frame.matrix.v;
+    float *init = (float *)((char *)&frame - 8);
+    int count;
     (void)arg0;
     fn_8028E61C(&init[0x68/4]);
-    init[0x6c/4] = 0xA0; init[0x70/4] = lbl_80564590; init[0x74/4] = lbl_80564590;
-    init[0x68/4] = 1.0f;
+    *(int *)&init[0x6c/4] = 0xA0; init[0x70/4] = lbl_80564590; init[0x74/4] = lbl_80564590;
+    *(int *)&init[0x68/4] = 1;
     init[0x14/4] = lbl_805645E4; init[0x18/4] = lbl_805645E4; init[0x1c/4] = lbl_805645E4;
     init[0x78/4] = lbl_805645E4; init[0x7c/4] = lbl_805645E4; init[0x80/4] = lbl_805645E4;
     init[8/4] = lbl_80564590; init[0xc/4] = lbl_80564590; init[0x10/4] = lbl_80564590;
@@ -951,11 +986,9 @@ void fn_80299A88(void *arg0, void *out, unsigned int unused, float scale) {
     init[0xc0/4] = lbl_805645A8; init[0xc4/4] = lbl_805645AC;
     init[0xd8/4] = lbl_805645B0; init[0xd0/4] = lbl_805645B0; init[0xc8/4] = lbl_805645B0;
     init[0xdc/4] = lbl_805645B4; init[0xd4/4] = lbl_805645B4; init[0xcc/4] = lbl_805645B4;
-    init[0xe8/4] = lbl_80564590; init[0xec/4] = 0x40; ((unsigned char*)init)[0xf0]=1;
-    init[0xac/4] = 2; ((unsigned char*)init)[0xf1]=1;
-    void *res = ((void *(*)(void*,void*,void*,int,int,float,float,float,float,float,float,float,float,float))fn_8028E2F8)
-      (&init[0x68/4], lbl_803494F0, lbl_8055CA80, 0x40, 1, lbl_805645B0,lbl_805645AC,
-       lbl_805645A8,lbl_805645EC,lbl_805645E8,lbl_805645A0,lbl_8056459C,lbl_805645E4,lbl_80564590);
+    init[0xe8/4] = lbl_80564590; *(int *)&init[0xec/4] = 0x40; ((unsigned char*)init)[0xf0]=1;
+    *(int *)&init[0xac/4] = 2; ((unsigned char*)init)[0xf1]=1;
+    void *res = fn_8028E2F8(&init[0x68/4], lbl_803494F0, lbl_8055CA80);
     *(void**)out = res;
     count = (int)(lbl_805645F0 * scale);
     if (count >= 12) count = 12;
@@ -965,16 +998,26 @@ void fn_80299A88(void *arg0, void *out, unsigned int unused, float scale) {
     q[0]=c; q[1]=s; q[2]=lbl_8056459C; q[3]=-s; q[4]=c;
     q[5]=lbl_8056459C; q[6]=lbl_8056459C; q[7]=lbl_8056459C; q[8]=lbl_80564590;
     float *p=(float*)unused;
-    if (count > 0) for (int n=0;n<count;n++) {
-       ((float*)out)[1+n*3]=p[9]+p[3]*scale;
-       ((float*)out)[2+n*3]=p[10]+p[4]*scale;
-       ((float*)out)[3+n*3]=p[11]+p[5]*scale;
-       for(i=0;i<9;i++) p[i]=fn_80144514(p[i],q[i],p[i],q[i],p[i],q[i]);
+    frame.matrix = *(Fn80299A88Matrix *)p;
+    for (int n=0; n<count; n++) {
+       ((float*)out)[1+n*3]=p[9]+m[3]*scale;
+       ((float*)out)[2+n*3]=p[10]+m[4]*scale;
+       ((float*)out)[3+n*3]=p[11]+m[5]*scale;
+       float a=fn_80144514(m[0],q[0],m[3],q[1],m[6],q[2]);
+       float b=fn_80144514(m[0],q[3],m[3],q[4],m[6],q[5]);
+       float c=fn_80144514(m[0],q[6],m[3],q[7],m[6],q[8]);
+       float d=fn_80144514(m[1],q[0],m[4],q[1],m[7],q[2]);
+       float e=fn_80144514(m[1],q[3],m[4],q[4],m[7],q[5]);
+       float f=fn_80144514(m[1],q[6],m[4],q[7],m[7],q[8]);
+       float g=fn_80144514(m[2],q[0],m[5],q[1],m[8],q[2]);
+       float h=fn_80144514(m[2],q[3],m[5],q[4],m[8],q[5]);
+       float j=fn_80144514(m[2],q[6],m[5],q[7],m[8],q[8]);
+       m[0]=a;m[3]=b;m[6]=c;m[1]=d;m[4]=e;m[7]=f;m[2]=g;m[5]=h;m[8]=j;
     }
     *(int*)((char*)out+0x94)=count;
     *(float*)((char*)out+0x98)=lbl_8056459C;
 }
-
+#pragma pop
 extern "C" void* fn_80299FA8(void* arg0, void* arg1) {
     fn_8028E398(*(void**)arg1);
     *(void**)arg1 = 0;
