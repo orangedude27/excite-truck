@@ -1887,7 +1887,7 @@ extern u32 lbl_8055D8A4;
 extern void OSSetAlarm(void *, u64, u32, void (*)(void));
 extern u64 __OSGetSystemTime(void);
 extern void fn_80037800(void);
-extern void fn_80035E6C(void);
+extern void fn_80035E6C();
 #pragma push
 #pragma dont_inline on
 void fn_800379A8(u32 arg0) {
