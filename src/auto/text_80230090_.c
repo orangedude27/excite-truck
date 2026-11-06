@@ -428,16 +428,7 @@ void fn_80230DA0(void) {}
 
 #pragma push
 #pragma processor 750
-void fn_80230DA4(float a, float b) {
-    float value;
-    float rounded;
-    lbl_8055F030 = a;
-    value = (float)fn_8002EFB4();
-    if (value < lbl_80563614)
-        value = value + b;
-    rounded = (float)(double)value;
-    lbl_8055F02C = b - rounded;
-}
+float fn_80230DA4(float a,float b) { float v; lbl_8055F030=a; v=(float)fn_8002EFB4(); if(v<lbl_80563614) v+=b; return lbl_8055F02C=b-(float)(double)v; }
 #pragma pop
 
 #pragma dont_inline on
