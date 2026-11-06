@@ -86,7 +86,7 @@ static inline BOOL DVDPathSame(const char *lhs, const char *rhs) {
 }
 
 extern void fn_80035C78(void);
-extern void fn_80035E6C(void);
+extern void fn_80035E6C();
 extern void fn_8003A1A0(u32, void (*)(void));
 extern void fn_8003B218(void (*)(void));
 extern u32 lbl_8055D848;
@@ -2186,6 +2186,118 @@ void fn_80038040(void) {
         return;
     }
 }
+
+#pragma push
+#pragma use_lmw_stmw off
+extern void fn_80038870(void);
+extern void fn_8003B9CC(u32, void *);
+extern void fn_8003B508(u32, u32, void *);
+extern void fn_8003B0B0(void *, void *);
+extern void fn_8003AC24(void *);
+extern void (*lbl_80558E08)(void *, void *);
+#pragma push
+#pragma use_lmw_stmw off
+void fn_80038368(void *arg0) {
+ u8 *p = arg0;
+ int command;
+ lbl_8055D8CC = (int)fn_80038368;
+ command = *(int *)(p+8);
+ switch (command) {
+ case 2: case 3: case 5: case 13: case 14: case 15: case 16: case 34: case 37: {
+   u32 length = *(u32 *)(p+0x14), offset = *(u32 *)(p+0x10);
+   {
+ int irq = OSDisableInterrupts(); int tick;
+ if (*(volatile u32 *)&lbl_8055D848 >= 5) *(volatile u32 *)&lbl_8055D848 = 0;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x1c) = command;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x20) = offset;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x24) = length;
+ tick = OSGetTick();
+ *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x2c) = tick;
+ *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
+ OSRestoreInterrupts(irq);
+}
+ } break;
+ default: break;
+ }
+ switch (*(u32 *)(p+8)) {
+ case 5:
+   fn_8003BCDC(0); *(int *)(p+0x1c) = 0x20;
+   fn_8003A834(*(void **)(p+0x18),fn_80038870); break;
+ case 1: case 4:
+   if (*(int *)(p+0x14) == 0) {
+     u8 *old = (u8 *)executing_8055D8C8;
+     executing_8055D8C8 = (int)DummyCommandBlock_80376AA0;
+     *(int *)(old+0xc) = 0;
+     if (*(void (**)(int))(old+0x28)) (*(void (**)(int))(old+0x28))(0);
+     fn_80038040(); break;
+   }
+   fn_8003BCDC(0);
+   {
+     u32 remaining = *(u32 *)(p+0x14) - *(u32 *)(p+0x20);
+     u32 n = 0x80000;
+     u32 offset; int cmd;
+     if (remaining <= n) n = remaining;
+     *(u32 *)(p+0x1c) = n;
+     cmd = *(int *)(p+8);
+     offset = *(u32 *)(p+0x10) + (*(u32 *)(p+0x20) >> 2);
+     {
+ int irq = OSDisableInterrupts(); int tick;
+ if (*(volatile u32 *)&lbl_8055D848 >= 5) *(volatile u32 *)&lbl_8055D848 = 0;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x1c) = cmd;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x20) = offset;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x24) = n;
+ tick = OSGetTick();
+ *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x2c) = tick;
+ *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
+ OSRestoreInterrupts(irq);
+}
+     ((int (*)(void *, u32, u32, void *))fn_8003B81C)(*(u8 **)(p+0x18)+*(u32 *)(p+0x20), *(u32 *)(p+0x1c), *(u32 *)(p+0x10)+(*(u32 *)(p+0x20)>>2), fn_80038870);
+   } break;
+ case 2: fn_8003BCDC(0); fn_8003B9CC(*(u32 *)(p+0x10),fn_80038870); break;
+ case 3: fn_8003AF1C(0,0,fn_80038870); break;
+ case 15: fn_8003AF1C(0,0,fn_80038870); break;
+ case 13: fn_8003BCDC(0); fn_8003B508(*(u32 *)(p+0x10),*(u32 *)(p+0x14),fn_80038870); break;
+ case 14: fn_8003BCDC(0); *(int *)(p+0x1c)=0x20; fn_8003B0B0(*(void **)(p+0x18),fn_80038870); break;
+ case 16: fn_8003BCDC(0); fn_8003AF1C(0,0,fn_80038870); break;
+ case 34: fn_8003B380(1); fn_8003B38C(fn_80038870); break;
+ case 37:
+   if (*(int *)(p+0x14) == 0) {
+     u8 *old = (u8 *)executing_8055D8C8;
+     executing_8055D8C8 = (int)DummyCommandBlock_80376AA0;
+     *(int *)(old+0xc) = 0;
+     if (*(void (**)(int))(old+0x28)) (*(void (**)(int))(old+0x28))(0);
+     fn_80038040(); break;
+   }
+   fn_8003BCDC(0);
+   {
+     u32 remaining = *(u32 *)(p+0x14) - *(u32 *)(p+0x20);
+     int cmd; u32 offset; u32 n = 0x80000;
+     if (remaining <= n) n = remaining;
+     *(u32 *)(p+0x1c) = n;
+     cmd = *(int *)(p+8);
+     offset = *(u32 *)(p+0x10) + (*(u32 *)(p+0x20) >> 2);
+     {
+ int irq = OSDisableInterrupts(); int tick;
+ if (*(volatile u32 *)&lbl_8055D848 >= 5) *(volatile u32 *)&lbl_8055D848 = 0;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x1c) = cmd;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x20) = offset;
+ *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x24) = n;
+ tick = OSGetTick();
+ *(int *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 20 + 0x2c) = tick;
+ *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
+ OSRestoreInterrupts(irq);
+}
+     ((void (*)(void *, u32, u32, void *))fn_8003AD88)(*(u8 **)(p+0x18)+*(u32 *)(p+0x20), *(u32 *)(p+0x1c), *(u32 *)(p+0x10)+(*(u32 *)(p+0x20)>>2), fn_80038870);
+   } break;
+ case 35: fn_8003BCDC(0); ((void (*)(u32, int, int, int, void *, void *))DVDLowOpenPartition)(*(u32 *)(p+0x10),0,0,0,*(void **)(p+0x18),fn_80038870); break;
+ case 36: fn_8003BCDC(0); fn_8003AC24(fn_80038870); break;
+ case 32: fn_8003BB58(fn_80038870); break;
+ case 33: fn_8003BB58(fn_80038870); break;
+ case 38: fn_8003BCDC(0); fn_8003B69C(0x20000,fn_80038870); break;
+ default: lbl_80558E08(arg0,fn_80038870); break;
+ }
+}
+#pragma pop
 
 s32 DVDReadAbsAsyncPrio(void *block, void *addr, s32 length, s32 offset, void *callback, s32 prio) {
     s32 result;
