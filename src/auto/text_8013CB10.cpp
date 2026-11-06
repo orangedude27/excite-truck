@@ -321,7 +321,7 @@ extern "C" s32 fn_8013D1F0(s32 arg0) {
 extern "C" s32 fn_8013D224(f32 farg0, f32 farg1) {
     f32 diff = farg0 - farg1;
     f32 result;
-    if ((f32)__fabs((f64)diff) <= lbl_80558DC4) {
+    if ((f32)__fabs((f64)diff) <= lbl_80558DC4_arr[0]) {
         return 0;
     }
     if (diff > lbl_805614A4) {
