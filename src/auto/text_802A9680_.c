@@ -15,7 +15,7 @@ extern float lbl_805649CC, lbl_805649D0, lbl_805649D4;
 extern float lbl_805649D8, lbl_805649DC;
 extern double lbl_805649E0;
 #pragma scheduling invalid_target
-extern void fn_802C6CF8();
+extern void fn_802C6CF8(int);
 extern void fn_80128668(void*);
 #pragma scheduling invalid_target
 void* fn_802A9680(void* arg0, s32 arg1) {
