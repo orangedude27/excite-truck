@@ -19,21 +19,21 @@ int fn_80276068(int arg0) {
     return result;
 }
 
-extern float lbl_80558DC4, lbl_80564048, lbl_8056404C, lbl_80564050;
+extern float lbl_80558DC4[], lbl_80564048, lbl_8056404C, lbl_80564050;
 extern float fn_8002F234(float);
 extern float PSVECSquareDistance(void *, void *);
-extern float lbl_80558DC4, lbl_80564048, lbl_8056404C, lbl_80564050, lbl_8055E3C8;
+extern float lbl_80558DC4[], lbl_80564048, lbl_8056404C, lbl_80564050, lbl_8055E3C8;
 extern float fn_8002F234(float), PSVECSquareDistance(void *, void *), fabsf(float);
 void fn_80276098(void *arg0, void *arg1, float arg2, float arg3, float arg4, int arg5, int arg6) {
     float *a=(float*)arg0, *b=(float*)arg1, *out;
     unsigned char *entry;
     float trace, root, inv;
     int i,j,k;
-    if ((float)fabsf(arg2-arg3) != lbl_80558DC4 ||
-        (float)fabsf(PSVECSquareDistance((char*)arg0+0x24,(char*)arg1+0x24)) != lbl_80558DC4 ||
-        (float)fabsf(PSVECSquareDistance(arg0,arg1)) != lbl_80558DC4 ||
-        (float)fabsf(PSVECSquareDistance((char*)arg0+0xC,(char*)arg1+0xC)) != lbl_80558DC4 ||
-        (float)fabsf(PSVECSquareDistance((char*)arg0+0x18,(char*)arg1+0x18)) != lbl_80558DC4) {
+    if ((float)fabsf(arg2-arg3) != lbl_80558DC4[0] ||
+        (float)fabsf(PSVECSquareDistance((char*)arg0+0x24,(char*)arg1+0x24)) != lbl_80558DC4[0] ||
+        (float)fabsf(PSVECSquareDistance(arg0,arg1)) != lbl_80558DC4[0] ||
+        (float)fabsf(PSVECSquareDistance((char*)arg0+0xC,(char*)arg1+0xC)) != lbl_80558DC4[0] ||
+        (float)fabsf(PSVECSquareDistance((char*)arg0+0x18,(char*)arg1+0x18)) != lbl_80558DC4[0]) {
     } else return;
     entry=(unsigned char *)&lbl_8049FD58+arg5*0x50; out=(float*)(entry+4);
     trace=a[0]+a[4]+a[8]; *(float*)(entry+0x44)=arg4; *(float*)(entry+0x48)=lbl_8055E3C8;
