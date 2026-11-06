@@ -279,12 +279,10 @@ while (DSPCheckMailToDSP() != 0) {}
 __DSP_exec_task(lbl_8055D824, lbl_8055D814);
 {
 void *currentTask = lbl_8055D824;
-s32 taskState = 2;
-s32 zero = 0;
-*(s32 *)currentTask = taskState;
-lbl_8055D810 = zero;
+*(s32 *)currentTask = 2;
 lbl_8055D824 = lbl_8055D814;
-lbl_8055D814 = (void *)zero;
+lbl_8055D810 = 0;
+lbl_8055D814 = 0;
 }
 }
 } else {
@@ -317,30 +315,24 @@ DSPSendMailToDSP(0xCDD10001);
 while (DSPCheckMailToDSP() != 0) {}
 __DSP_exec_task(0, lbl_8055D814);
 __DSP_remove_task(lbl_8055D824);
-{
-void *pendingTask = lbl_8055D814;
-s32 zero = 0;
-lbl_8055D810 = zero;
-lbl_8055D824 = pendingTask;
-lbl_8055D814 = (void *)zero;
-}
+lbl_8055D824 = lbl_8055D814;
+lbl_8055D810 = 0;
+lbl_8055D814 = 0;
+break;
 } else {
 lbl_8055D814 = 0;
 lbl_8055D810 = 0;
-goto case_done;
 }
 }
-case_done: {
-register void *task = lbl_8055D824;
-if (*(void **)((u8 *)task + 0x38) == 0) {
-if (task == lbl_8055D820) {
-if (*(void **)((u8 *)lbl_8055D824 + 0x30) != 0) ((void (*)(void *))*(void **)((u8 *)task + 0x30))(task);
+if (*(void **)((u8 *)lbl_8055D824 + 0x38) == 0) {
+if (lbl_8055D824 == lbl_8055D820) {
+if (*(void **)((u8 *)lbl_8055D824 + 0x30) != 0) ((void (*)(void *))*(void **)((u8 *)lbl_8055D824 + 0x30))(lbl_8055D824);
 DSPSendMailToDSP(0xCDD10002);
 while (DSPCheckMailToDSP() != 0) {}
 *(s32 *)lbl_8055D824 = 3;
 __DSP_remove_task(lbl_8055D824);
 } else {
-if (*(void **)((u8 *)lbl_8055D824 + 0x30) != 0) ((void (*)(void *))*(void **)((u8 *)task + 0x30))(task);
+if (*(void **)((u8 *)lbl_8055D824 + 0x30) != 0) ((void (*)(void *))*(void **)((u8 *)lbl_8055D824 + 0x30))(lbl_8055D824);
 DSPSendMailToDSP(0xCDD10001);
 while (DSPCheckMailToDSP() != 0) {}
 *(s32 *)lbl_8055D824 = 3;
@@ -349,7 +341,7 @@ lbl_8055D824 = lbl_8055D820;
 __DSP_remove_task(lbl_8055D81C);
 }
 } else {
-if (*(void **)((u8 *)lbl_8055D824 + 0x30) != 0) ((void (*)(void *))*(void **)((u8 *)task + 0x30))(task);
+if (*(void **)((u8 *)lbl_8055D824 + 0x30) != 0) ((void (*)(void *))*(void **)((u8 *)lbl_8055D824 + 0x30))(lbl_8055D824);
 DSPSendMailToDSP(0xCDD10001);
 while (DSPCheckMailToDSP() != 0) {}
 *(s32 *)lbl_8055D824 = 3;
@@ -361,7 +353,6 @@ __DSP_remove_task(*(void **)((u8 *)next + 0x3C));
 }
 }
 break;
-}
 case 0xDCD10004:
 if (*(void **)((u8 *)lbl_8055D824 + 0x34) != 0) ((void (*)(void *))*(void **)((u8 *)lbl_8055D824 + 0x34))(lbl_8055D824);
 break;
@@ -545,7 +536,7 @@ void __DVDFSInit(void) {
 
 #pragma use_lmw_stmw off
 s32 DVDConvertPathToEntrynum(const char *path) {
-    const DVDNode *new_var;
+    const DVDNode *nodes;
     const char *name_end;
     u32 it;
     u32 anchor;
@@ -577,24 +568,24 @@ s32 DVDConvertPathToEntrynum(const char *path) {
         }
 check_format:
         if (!__DVDLongFileNameFlag) {
-            has_extension = FALSE;
-            illegal_format = FALSE;
+            has_extension = 0;
+            illegal_format = 0;
             name_end = path;
             while (*name_end != '\0' && *name_end != '/') {
                 if (*name_end == '.') {
-                    if (name_end - path > 8 || has_extension == TRUE) {
-                        illegal_format = TRUE;
+                    if (name_end - path > 8 || has_extension != 0) {
+                        illegal_format = 1;
                         goto validate_format;
                     }
-                    has_extension = TRUE;
+                    has_extension = 1;
                     extension_start = name_end + 1;
-                } else if (*name_end == ' ') illegal_format = TRUE;
+                } else if (*name_end == ' ') illegal_format = 1;
                 name_end++;
             }
 validate_format:
-            if (has_extension == TRUE && name_end - extension_start > 3)
-                illegal_format = TRUE;
-            if (illegal_format == FALSE)
+            if (has_extension != 0 && name_end - extension_start > 3)
+                illegal_format = 1;
+            if (illegal_format == 0)
                 goto skip_panic;
             ((void (*)(const char *, s32, const char *, ...))OSPanic)(
                 lbl_80558DF8, 0x1B9, lbl_80301F70, backup_path);
@@ -603,21 +594,21 @@ skip_panic:;
             name_end = path;
             while (*name_end != '\0' && *name_end != '/') name_end++;
         }
-        name_delimited_by_slash = (*name_end == '\0') ? FALSE : TRUE;
+        name_delimited_by_slash = (*name_end == '\0') ? 0 : 1;
         name_length = name_end - path;
         anchor = it + 1;
-        new_var = (const DVDNode *)FstStart_8055D840;
-        while (anchor < new_var[it].folder.sibling_next) {
+        nodes = (const DVDNode *)FstStart_8055D840;
+        while (anchor < nodes[it].folder.sibling_next) {
             while (TRUE) {
-                if ((new_var[anchor].packed_type_name & 0xFF000000) ||
-                    name_delimited_by_slash != TRUE) {
+                if ((nodes[anchor].packed_type_name & 0xFF000000) ||
+                    name_delimited_by_slash == 0) {
                     item_name = (const char *)FstStringStart_8055D83C +
-                                (new_var[anchor].packed_type_name & 0xFFFFFF);
+                                (nodes[anchor].packed_type_name & 0xFFFFFF);
                     if (DVDPathSame(path, item_name) == TRUE)
                         goto descend;
                 }
-                if (new_var[anchor].packed_type_name & 0xFF000000) {
-                    anchor = new_var[anchor].sibling_or_size;
+                if (nodes[anchor].packed_type_name & 0xFF000000) {
+                    anchor = nodes[anchor].sibling_or_size;
                     break;
                 }
                 anchor++;
@@ -632,7 +623,6 @@ descend:
         continue;
     }
 }
-
 BOOL DVDFastOpen(s32 entrynum, void *info) {
     u32 temp_r7;
 
@@ -658,17 +648,17 @@ extern char lbl_80302038[];
 #pragma use_lmw_stmw off
 BOOL DVDGetCurrentDir(const char *path, void *info) {
     char dir[128];
-    register s32 temp_r29;
-    register u8 *var_r30;
-    register u8 *var_r31;
-    register u8 *var_r27;
-    u8 *fst;
-    u8 *strings;
-    u8 *temp_r6;
     s32 entry;
+    s32 temp_r29;
     u32 var_r4;
+    u8 *fst;
+    u8 *temp_r6;
+    u8 *strings;
     u32 temp_r3_2;
+    u8 *var_r30;
     u32 temp_r3_3;
+    u8 *var_r31;
+    u8 *var_r27;
     u32 temp_r3_5;
     u32 temp_r4;
     u32 temp_r6_2;
@@ -689,71 +679,62 @@ BOOL DVDGetCurrentDir(const char *path, void *info) {
         temp_r29 = lbl_8055D828;
         if (temp_r29 == 0) {
             var_r4 = 0;
-            goto skip3;
+        } else {
+            fst = FstStart_8055D840;
+            strings = FstStringStart_8055D83C;
+            temp_r6 = fst + 4;
+            temp_r3_2 = *(u32 *)(temp_r6 + temp_r29 * 12);
+            var_r30 = strings + (*(u32 *)(fst + temp_r29 * 12) & 0xFFFFFF);
+            if (temp_r3_2 == 0) {
+                var_r4 = 0;
+            } else {
+                temp_r3_3 = *(u32 *)(temp_r6 + temp_r3_2 * 12);
+                var_r31 = strings + (*(u32 *)(fst + temp_r3_2 * 12) & 0xFFFFFF);
+                if (temp_r3_3 == 0) {
+                    var_r4 = 0;
+                } else {
+                    var_r27 = strings + (*(u32 *)(fst + temp_r3_3 * 12) & 0xFFFFFF);
+                    temp_r3_5 = DVDConvertEntrynumToPath(*(u32 *)(temp_r6 + temp_r3_3 * 12), dir, 0x80);
+                    var_r4 = temp_r3_5;
+                    if (temp_r3_5 == 0x80) {
+                    } else {
+                        temp_r4 = temp_r3_5 + 1;
+                        dir[temp_r3_5] = '/';
+                        temp_r6_2 = 0x80 - temp_r4;
+                        var_r3 = temp_r6_2;
+                        var_r5 = (u8 *)dir + temp_r4;
+                        for (; var_r3 != 0 && (s8)*var_r27 != '\0'; --var_r3) {
+                            *var_r5++ = *var_r27++;
+                        }
+                        var_r4 = temp_r4 + (temp_r6_2 - var_r3);
+                    }
+                }
+                if (var_r4 == 0x80) {
+                } else {
+                    temp_r5 = var_r4 + 1;
+                    dir[var_r4] = '/';
+                    temp_r6_3 = 0x80 - temp_r5;
+                    var_r4_2 = temp_r6_3;
+                    var_r3_2 = (u8 *)dir + temp_r5;
+                    for (; var_r4_2 != 0 && (s8)*var_r31 != '\0'; --var_r4_2) {
+                        *var_r3_2++ = *var_r31++;
+                    }
+                    var_r4 = temp_r5 + (temp_r6_3 - var_r4_2);
+                }
+            }
+            if (var_r4 == 0x80) {
+            } else {
+                temp_r5 = var_r4 + 1;
+                dir[var_r4] = '/';
+                temp_r6_4 = 0x80 - temp_r5;
+                var_r4_3 = temp_r6_4;
+                var_r3_3 = (u8 *)dir + temp_r5;
+                for (; var_r4_3 != 0 && (s8)*var_r30 != '\0'; --var_r4_3) {
+                    *var_r3_3++ = *var_r30++;
+                }
+                var_r4 = temp_r5 + (temp_r6_4 - var_r4_3);
+            }
         }
-
-        fst = FstStart_8055D840;
-        strings = FstStringStart_8055D83C;
-        temp_r6 = fst + 4;
-        temp_r3_2 = *(u32 *)(temp_r6 + temp_r29 * 12);
-        var_r30 = strings + (*(u32 *)(fst + temp_r29 * 12) & 0xFFFFFF);
-        if (temp_r3_2 == 0) {
-            var_r4 = 0;
-            goto skip2;
-        }
-
-        temp_r3_3 = *(u32 *)(temp_r6 + temp_r3_2 * 12);
-        var_r31 = strings + (*(u32 *)(fst + temp_r3_2 * 12) & 0xFFFFFF);
-        if (temp_r3_3 == 0) {
-            var_r4 = 0;
-            goto skip1;
-        }
-
-        var_r27 = strings + (*(u32 *)(fst + temp_r3_3 * 12) & 0xFFFFFF);
-        temp_r3_5 = DVDConvertEntrynumToPath(*(u32 *)(temp_r6 + temp_r3_3 * 12), dir, 0x80);
-        var_r4 = temp_r3_5;
-        if (var_r4 != 0x80) goto copy1;
-        goto skip1;
-copy1:
-        temp_r4 = var_r4 + 1;
-        dir[temp_r3_5] = '/';
-        temp_r6_2 = 0x80 - temp_r4;
-        var_r3 = temp_r6_2;
-        var_r5 = (u8 *)dir + temp_r4;
-        for (; var_r3 != 0 && (s8)*var_r27 != '\0'; --var_r3) {
-            *var_r5++ = *var_r27++;
-        }
-        var_r4 = temp_r4 + (temp_r6_2 - var_r3);
-
-skip1:
-        if (var_r4 != 0x80) goto copy2;
-        goto skip2;
-copy2:
-        temp_r5 = var_r4 + 1;
-        dir[var_r4] = '/';
-        temp_r6_3 = 0x80 - temp_r5;
-        var_r4_2 = temp_r6_3;
-        var_r3_2 = (u8 *)dir + temp_r5;
-        for (; var_r4_2 != 0 && (s8)*var_r31 != '\0'; --var_r4_2) {
-            *var_r3_2++ = *var_r31++;
-        }
-        var_r4 = temp_r5 + (temp_r6_3 - var_r4_2);
-
-skip2:
-        if (var_r4 != 0x80) goto copy3;
-        goto skip3;
-copy3:
-        temp_r5 = var_r4 + 1;
-        dir[var_r4] = '/';
-        temp_r6_4 = 0x80 - temp_r5;
-        var_r4_3 = temp_r6_4;
-        var_r3_3 = (u8 *)dir + temp_r5;
-        for (; var_r4_3 != 0 && (s8)*var_r30 != '\0'; --var_r4_3) {
-            *var_r3_3++ = *var_r30++;
-        }
-        var_r4 = temp_r5 + (temp_r6_4 - var_r4_3);
-
-skip3:
         if (var_r4 == 0x80) {
             dir[0x7F] = '\0';
         } else {
@@ -1349,9 +1330,9 @@ extern void fn_80036D24(u32);
 extern void fn_800373E0(u32);
 extern int memcmp(const void *, const void *, u32);
 void fn_8003684C(void) {
-    register s32 zero = 0;
-    register u8 *idBase = lbl_80376A80;
     register s32 enabled;
+    register u8 *idBase = lbl_80376A80;
+    register s32 zero = 0;
     switch (lbl_8055D8BC) {
     case 3:
         lbl_8055D87C = zero;
@@ -1359,7 +1340,7 @@ void fn_8003684C(void) {
                 *(void **)(executing_8055D8C8 + 0x24)) != 0) {
             memcpy((void *)IDShouldBe_8055D8C4, idBase + 0x80, 0x20);
             *(s32 *)(executing_8055D8C8 + 0xC) = 1;
-            DCInvalidateRange((void *)&lbl_80376A80, 0x20);
+            DCInvalidateRange(idBase, 0x20);
             lbl_8055D860 = zero;
             fn_8003BCDC(0);
             {
@@ -2112,7 +2093,7 @@ extern void *__DVDPopWaitingQueue(void);
 extern s32 lbl_8055D8B4, lbl_8055D878;
 void fn_80038040(void) {
     void (*callback)(s32);
-    void *temp_r3, *temp_r4;
+    void *temp_r3, *temp_r4, *temp_r5;
     if (__DVDCheckWaitingQueue() == 0) {
         executing_8055D8C8 = 0;
         return;
@@ -2125,11 +2106,10 @@ void fn_80038040(void) {
     temp_r3 = __DVDPopWaitingQueue();
     executing_8055D8C8 = (s32)temp_r3;
     if (FatalErrorFlag_8055D854 != 0) {
-        void *dummy_command;
         *(s32 *)((u8 *)temp_r3 + 0xC) = -1;
+        temp_r5 = (void *)DummyCommandBlock_80376AA0;
         temp_r4 = (void *)executing_8055D8C8;
-        dummy_command = (void *)DummyCommandBlock_80376AA0;
-        executing_8055D8C8 = (s32)dummy_command;
+        executing_8055D8C8 = (s32)temp_r5;
         callback = *(void (**)(s32))((u8 *)temp_r4 + 0x28);
         if (callback != 0) callback(-1);
         fn_80038040();
@@ -2157,11 +2137,9 @@ void fn_80038040(void) {
             *(s32 *)((u8 *)temp_r3 + 0xC) = 4;
             MotorState_8055D8A8 = 1;
             if (lbl_8055D870 == 0 && lbl_8055D874 == 0) {
-                s32 tick;
                 lbl_8055D870 = 1;
                 OSCreateAlarm(lbl_80376AD0);
-                tick = OSGetTick();
-                OSSetPeriodicAlarm(lbl_80376AD0, 0x10624DD3, 0, tick, 0,
+                OSSetPeriodicAlarm(lbl_80376AD0, 0x10624DD3, 0, OSGetTick(), 0,
                     ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 0x64, fn_8003801C);
             }
             break;
@@ -2169,11 +2147,9 @@ void fn_80038040(void) {
             *(s32 *)((u8 *)temp_r3 + 0xC) = 5;
             MotorState_8055D8A8 = 1;
             if (lbl_8055D870 == 0 && lbl_8055D874 == 0) {
-                s32 tick;
                 lbl_8055D870 = 1;
                 OSCreateAlarm(lbl_80376AD0);
-                tick = OSGetTick();
-                OSSetPeriodicAlarm(lbl_80376AD0, 0x10624DD3, 0, tick, 0,
+                OSSetPeriodicAlarm(lbl_80376AD0, 0x10624DD3, 0, OSGetTick(), 0,
                     ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 0x64, fn_8003801C);
             }
             break;
