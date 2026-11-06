@@ -32,6 +32,70 @@ extern int lbl_8055C994;
 #pragma scheduling off
 void fn_8029496C(void) {}
 
+void fn_80294970(void) {
+    extern char lbl_803492D0[];
+    extern char lbl_804B42F0[];
+    extern int lbl_8055C990;
+    extern int lbl_8055C994;
+    extern float lbl_80564518, lbl_8056451C, lbl_80564520, lbl_80564524, lbl_80564528;
+    extern int fn_80287B14(void);
+    extern int fn_80288208(int);
+    extern int fn_802CAC28(void *, int);
+    extern void *fn_801E1F44(void);
+    extern void fn_801345D8(char *, int, const char *, int);
+    extern void fn_80295CC4(void *self, int a, int b, Vec80295 *input, int unused, float *pos, float size);
+
+    int i, j;
+    char *obj;
+
+    obj = lbl_804B42F0;
+    for (i = 0; i < fn_80287B14(); i++) {
+        *(int *)(obj + 0x180) = 0;
+        obj += 0x184;
+    }
+
+    lbl_8055C990 = fn_802CAC28(lbl_803492D0, 0);
+    lbl_8055C994 = fn_802CAC28(lbl_803492D0 + 0xC, 0);
+
+    if (*(char *)((char *)fn_801E1F44() + 4) != 0 || *(int *)fn_801E1F44() == 1) {
+        float f1_val = lbl_80564518;
+        float f0_val = lbl_8056451C;
+        float f2_val = lbl_80564520;
+        char *truck = lbl_804B42F0;
+
+        for (i = 0; i < fn_80287B14(); i++) {
+            Vec80295 c_head, p_head;
+            Vec80295 c_tail, p_tail;
+            Vec80295 c_acc, p_acc;
+            int truck_id;
+            char name[64];
+
+            c_head.x = f1_val; c_head.y = f1_val; c_head.z = f1_val;
+            p_head.x = f0_val; p_head.y = f0_val; p_head.z = f1_val;
+
+            c_tail.x = f1_val; c_tail.y = f0_val; c_tail.z = f0_val;
+            p_tail.x = f0_val; p_tail.y = f0_val; p_tail.z = f2_val;
+
+            c_acc.x = f1_val; c_acc.y = f1_val; c_acc.z = f1_val;
+            p_acc.x = f0_val; p_acc.y = f0_val; p_acc.z = f1_val;
+
+            truck_id = fn_80288208(i);
+
+            fn_80295CC4(truck, truck_id, (int)(lbl_803492D0 + 0x18), &c_head, 0, (float *)&p_head, lbl_80564524);
+            fn_80295CC4(truck, truck_id, (int)(lbl_803492D0 + 0x28), &c_head, 0, (float *)&p_head, lbl_80564524);
+            fn_80295CC4(truck, truck_id, (int)(lbl_803492D0 + 0x38), &c_tail, 0, (float *)&p_tail, lbl_80564528);
+            fn_80295CC4(truck, truck_id, (int)(lbl_803492D0 + 0x48), &c_tail, 0, (float *)&p_tail, lbl_80564528);
+
+            for (j = 0; j < 8; j++) {
+                fn_801345D8(name, 0x40, lbl_803492D0 + 0x58, j + 1);
+                fn_80295CC4(truck, truck_id, (int)name, &c_acc, 0, (float *)&p_acc, lbl_80564528);
+            }
+
+            truck += 0x184;
+        }
+    }
+}
+
 #pragma scheduling invalid_target
 void fn_80294C68(void) {
     int i;
@@ -409,17 +473,17 @@ void fn_80294ED4(void) {
         } while (var_r15_2 < fn_80287B14());
     fn_802C8D74();
 }
-#pragma pop
+#pragma optimization_level 4
 void fn_80295C70(void *arg0, int arg1, float *arg2, unsigned int arg3, int arg4, float farg0, float farg1) {
     struct Entry { int value; float a,b,c,d,e; unsigned char flags[3]; int tail; };
     struct Obj { unsigned char pad[0x180]; int count; };
     struct Obj *obj = arg0;
     unsigned char flag0 = arg3 >> 16;
     unsigned char flag1 = arg3 >> 8;
-    register float x = arg2[0];
+    float x = arg2[0];
     struct Entry *entry = (struct Entry *)((char *)obj + (obj->count << 5));
-    register float y;
-    register float z;
+    float y;
+    float z;
     entry->value = arg1;
     y = arg2[1];
     entry->a = x;
@@ -434,11 +498,6 @@ void fn_80295C70(void *arg0, int arg1, float *arg2, unsigned int arg3, int arg4,
     entry->tail = arg4;
     obj->count++;
 }
-
-#pragma push
-#pragma processor 750
-#pragma dont_inline on
-#pragma scheduling on
 void fn_80295CC4(void *self, int a, int b, Vec80295 *input, int unused, float *pos, float size) {
     Vec80295 col;
     int id;
@@ -446,7 +505,13 @@ void fn_80295CC4(void *self, int a, int b, Vec80295 *input, int unused, float *p
     int extra;
     float base, sx, sy;
     void *obj;
-    col = *input;
+    int t0, t1, t2;
+    t0 = *(int *)((char *)input + 0);
+    t1 = *(int *)((char *)input + 4);
+    t2 = *(int *)((char *)input + 8);
+    *(int *)((char *)&col + 0) = t0;
+    *(int *)((char *)&col + 4) = t1;
+    *(int *)((char *)&col + 8) = t2;
     if (fn_80288070(a,b,&id)) {
         if (fn_80287E20(a,b)) {
             Vec80295 result, def;
@@ -482,6 +547,6 @@ void fn_80295CC4(void *self, int a, int b, Vec80295 *input, int unused, float *p
         fn_80295C70(self,id,pos,packed,extra,sx,sy);
     }
 }
-#pragma pop
+#pragma scheduling reset
 
 #pragma scheduling on
