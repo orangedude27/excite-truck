@@ -10501,14 +10501,14 @@ tBTM_STATUS btm_sec_l2cap_access_req(BD_ADDR bd_addr, UINT16 psm, UINT16 handle,
                                        tBTM_SEC_CALLBACK *p_callback,
                                        void *p_ref_data) {
     tBTM_SEC_DEV_REC *p_dev_rec;
-    register u8 *p_serv;
-    register u8 *p_next;
+    u8 *p_serv;
+    u8 *p_next;
     u8 *dev;
-    register u8 *messages = (u8 *)lbl_80316870;
-    register UINT32 i;
-    register UINT32 j;
-    register UINT8 sec_flags;
-    register UINT8 found_current;
+    u8 *messages = (u8 *)lbl_80316870;
+    UINT32 i;
+    UINT32 j;
+    UINT8 sec_flags;
+    UINT8 found_current;
     UINT8 rc;
 
     p_dev_rec = btm_find_dev(bd_addr);
@@ -11126,24 +11126,23 @@ void btm_sec_connected(UINT8 *bda, UINT16 handle, UINT8 status, UINT8 enc_mode) 
     }
 
     if (status != 0) {
-        if (status == 5 || status == 6 || status == 0xE ||
+        if ((status == 5 || status == 6 || status == 0xE ||
             status == 0x18 || status == 0x26 || status == 0x29 ||
-            status == 0x25 || status == 0x17 || status == 0x22) {
-            if (dev[0x81] & 0x40) {
-                *(volatile UINT8 *)(dev + 0x81) &= ~0x50;
-                dev[0x76] &= ~0x10;
-                if (*(UINT32 *)(lbl_803C0F78 + 0x194C) != 0) {
-                    fn_80070F90(lbl_803C0F78 + 0x193C);
-                    status = 0xE;
-                    *(UINT32 *)(lbl_803C0F78 + 0x194C) = 0;
-                }
-                if (lbl_803C0F78[0x27BF] == 0xE)
-                    status = 0xE;
-                if (*(void (**)(void *, void *, void *, UINT32))(lbl_803C0F78 + 0x191C) != NULL)
-                    (*(void (**)(void *, void *, void *, UINT32))(lbl_803C0F78 + 0x191C))(
-                        dev + 0x1C, dev + 0x22, dev + 0x35, status);
-                return;
+            status == 0x25 || status == 0x17 || status == 0x22) ||
+            (dev[0x81] & 0x40)) {
+            *(volatile UINT8 *)(dev + 0x81) &= ~0x50;
+            dev[0x76] &= ~0x10;
+            if (*(UINT32 *)(lbl_803C0F78 + 0x194C) != 0) {
+                fn_80070F90(lbl_803C0F78 + 0x193C);
+                status = 0xE;
+                *(UINT32 *)(lbl_803C0F78 + 0x194C) = 0;
             }
+            if (lbl_803C0F78[0x27BF] == 0xE)
+                status = 0xE;
+            if (*(void (**)(void *, void *, void *, UINT32))(lbl_803C0F78 + 0x191C) != NULL)
+                (*(void (**)(void *, void *, void *, UINT32))(lbl_803C0F78 + 0x191C))(
+                    dev + 0x1C, dev + 0x22, dev + 0x35, status);
+            return;
         }
         if (*(void (**)(void *, UINT32, UINT8))(dev + 4) != NULL) {
             if (dev[0x80] != 0) {
