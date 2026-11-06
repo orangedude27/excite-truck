@@ -1885,7 +1885,7 @@ extern "C" void fn_801421D8(void *arg0, void *arg1) {
         if (x < (f32)r) {
             *(f32 *)(b + 0xEC) = (f32)r - x;
         } else {
-            s32 close = (f32)__fabs(r) <= lbl_80558DC4;
+            s32 close = (f32)__fabs(r) <= *(f32 *)&lbl_80558DC4;
             if (close != 0) {
                 if (!((f32)__fabs((f64)x) <= lbl_80558DC4)) {
                     if (*(s32 *)(b + 0xE4) > 0) {
