@@ -44,29 +44,17 @@ typedef struct Words12 { u32 w[12]; } Words12;
 void fn_8026B840(void) {}
 
 f32 fn_8026B844(f32 f) {
-    f32 c = lbl_80563D78;
-    if (f > c) {
-        f32 t = (f - lbl_80563D7C) / lbl_80563D80;
-        if (c > t) {
-            goto set_first;
-        }
-        goto done_first;
-set_first:
-        c = t;
-done_first:
-        return c;
-    }
-    {
-        f32 t = (lbl_80563D7C + f) / lbl_80563D84;
-        if (c < t) {
-            goto set_second;
-        }
-        goto done_second;
-set_second:
-        c = t;
-done_second:
-        return c;
-    }
+ f32 c = lbl_80563D78;
+ if (f > c) {
+  f32 t = (f - lbl_80563D7C) / lbl_80563D80;
+  c = c > t ? c : t;
+  return c;
+ }
+ {
+  f32 t = (lbl_80563D7C + f) / lbl_80563D84;
+  c = c < t ? c : t;
+ }
+ return c;
 }
 
 BOOL fn_8026BFF0(s32 x) {
@@ -1225,8 +1213,8 @@ void fn_8026DDD8(s32 arg0) {
     }
     if ((s32)lbl_8055F4E0 != arg0) {
         if (arg0 == 2) {
-            f32 *g = (f32 *)lbl_8049A168;
             f32 *p;
+            f32 *g = (f32 *)lbl_8049A168;
             g[9] = lbl_80563D78;
             g[10] = lbl_80563DA0;
             g[11] = lbl_80563E18;
@@ -1242,7 +1230,8 @@ void fn_8026DDD8(s32 arg0) {
             p = (f32 *)((void *(*)(void))fn_8017960C)();
             if (p != 0) {
                 f32 (*m)[3] = (f32 (*)[3])((char *)p + 0x3c);
-                f32 t = m[2][2] + (m[0][0] + m[1][1]);
+                f32 t = m[0][0] + m[1][1];
+                t = m[2][2] + t;
                 if (t > lbl_80563D78) {
                     f32 s = (f32)fn_8002F234(lbl_80563D94 + t);
                     f32 inv = lbl_80563D9C / s;
@@ -1251,6 +1240,7 @@ void fn_8026DDD8(s32 arg0) {
                     g[13] = inv * (m[2][0] - m[0][2]);
                     g[14] = inv * (m[0][1] - m[1][0]);
                 } else {
+                    f32 *q = g + 12;
                     s32 i = 0, j, k;
                     f32 s, inv;
                     if (m[1][1] > m[0][0]) i = 1;
@@ -1259,14 +1249,14 @@ void fn_8026DDD8(s32 arg0) {
                     k = (j + 1) % 3;
                     s = (f32)fn_8002F234(lbl_80563D94 + (m[i][i] - (m[j][j] + m[k][k])));
                     inv = lbl_80563D9C / s;
-                    g[12 + i] = lbl_80563D9C * s;
-                    g[15] = inv * (m[j][k] - m[k][j]);
-                    g[12 + j] = inv * (m[i][j] + m[j][i]);
-                    g[12 + k] = inv * (m[i][k] + m[k][i]);
+                    q[i] = lbl_80563D9C * s;
+                    q[3] = inv * (m[j][k] - m[k][j]);
+                    q[j] = inv * (m[i][j] + m[j][i]);
+                    q[k] = inv * (m[i][k] + m[k][i]);
                 }
-                g[16] = p[24];
-                g[17] = p[25];
-                g[18] = p[26];
+                *(f32 *)(lbl_8049A168 + 0x40) = p[24];
+                *(f32 *)(lbl_8049A168 + 0x44) = p[25];
+                *(f32 *)(lbl_8049A168 + 0x48) = p[26];
             } else {
                 g[12] = lbl_80563D78;
                 g[13] = lbl_80563D78;
@@ -1291,23 +1281,11 @@ void fn_8026DDD8(s32 arg0) {
             q[10] = lbl_80563D78;
             q[11] = lbl_80563D78;
         } else if (fn_8026BFF0(arg0) == 0 && fn_8026BFF0((s32)lbl_8055F4E0) != 0) {
-            u32 *p;
+            void *p;
             fn_8026A344(0);
-            p = (u32 *)((void *(*)(void))fn_8017960C)();
+            p = ((void *(*)(void))fn_8017960C)();
             if (p != 0) {
-                u32 *q = lbl_80499050;
-                q[0] = p[15];
-                q[1] = p[16];
-                q[2] = p[17];
-                q[3] = p[18];
-                q[4] = p[19];
-                q[5] = p[20];
-                q[6] = p[21];
-                q[7] = p[22];
-                q[8] = p[23];
-                q[9] = p[24];
-                q[10] = p[25];
-                q[11] = p[26];
+                *(Words12 *)lbl_80499050 = *(Words12 *)((char *)p + 0x3c);
             }
         }
         lbl_8055F4E0 = (void *)arg0;
