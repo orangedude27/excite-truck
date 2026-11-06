@@ -245,8 +245,8 @@ void fn_8002F6AC(int, void (*)(void));
 void *fn_802B1F68(void *, int);
 void fn_80128668(void *);
 void fn_802B2104(void **arg0);
-void fn_802CAC54(void);
-void fn_802C6C20(void);
+void fn_802CAC54(int);
+void fn_802C6C20(void *);
 int fn_80129D90(int, int, int);
 
 #pragma push
