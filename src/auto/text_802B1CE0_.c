@@ -288,13 +288,13 @@ void fn_802B21D4(void **arg0) {
         if (ptr != 0) {
             int handle = ((int *)ptr)[2];
             if (handle != -2) {
-                ((void (*)(int))fn_802CAC54)(handle);
+                fn_802CAC54(handle);
                 ((int *)ptr)[2] = -2;
             }
             {
                 void *resource = *(void **)ptr;
                 if (resource != 0) {
-                    ((void (*)(void *))fn_802C6C20)(resource);
+                    fn_802C6C20(resource);
                 }
             }
             fn_80128668(ptr);
