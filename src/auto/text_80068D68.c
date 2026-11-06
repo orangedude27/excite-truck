@@ -7566,7 +7566,7 @@ void btm_read_local_features_complete(u8 *arg0, u16 arg1) {
             flags = *(u8 *)(lbl_803C0F78 + 0x645);
             if (((flags & 8) || (*(u8 *)(lbl_803C0F78 + 0x644) & 0x10) || (flags & 0x10)) &&
                 (((*(u8 *)(lbl_803C0F78 + 0x27BD)) != temp_r27) || ((*(u8 *)(lbl_803C0F78 + 0x27BE)) != temp_r29)) &&
-                btsnd_hcic_set_afh_channels(temp_r27, temp_r29)) {
+                (btsnd_hcic_set_afh_channels)(temp_r27, temp_r29)) {
                 (*(u8 *)(lbl_803C0F78 + 0x27BD)) = temp_r27;
                 (*(u8 *)(lbl_803C0F78 + 0x27BE)) = temp_r29;
             }
@@ -21932,15 +21932,17 @@ void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len,
     UINT16 max_handles;
     UINT16 count;
     UINT8 sp17c;
-    u8 *p_param_len;
     u8 *p_end;
+    u8 *p_param_len;
     u8 *p_cont;
     u32 param_len2;
     BT_HDR *buf;
     s32 total;
+    tSDP_CCB_CONT_VIEW *ccb_view;
 
     sp17c = 0;
     p_rec = NULL;
+    ccb_view = (tSDP_CCB_CONT_VIEW *)p_ccb;
     uid = sdpu_extract_uid_seq(p, param_len, &seq);
     if ((uid == NULL) || (seq.num_uids == 0)) {
         sdpu_build_n_send_error(p_ccb, trans_num, 3, 0);
@@ -21966,7 +21968,7 @@ void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len,
         }
         p_cont = uid + 3;
         start_offset = ((UINT16) p_cont[0] << 8) + p_cont[1];
-        if (start_offset != ((tSDP_CCB_CONT_VIEW *)p_ccb)->cont_offset) {
+        if (start_offset != ccb_view->cont_offset) {
             sdpu_build_n_send_error(p_ccb, trans_num, 5, 0);
             return;
         }
@@ -21975,12 +21977,12 @@ void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len,
         count = total_handles;
         start_offset = 0;
     }
-    max_handles = (UINT16)(((s32)p_ccb->rem_mtu_size - 12 + 3) / 4);
+    max_handles = (UINT16)(((s32)p_ccb->rem_mtu_size - 12) / 4);
     if (count <= max_handles) {
         max_handles = count;
     } else {
         sp17c = 1;
-        ((tSDP_CCB_CONT_VIEW *)p_ccb)->cont_offset += max_handles;
+        ccb_view->cont_offset += max_handles;
     }
     buf = (BT_HDR *)GKI_getpoolbuf(2);
     if (buf == NULL) {
@@ -22052,8 +22054,8 @@ void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len,
     }
     if (sp17c != 0) {
         p_end[0] = 2;
-        p_end[1] = (UINT8)(((tSDP_CCB_CONT_VIEW *)p_ccb)->cont_offset >> 8);
-        p_end[2] = (UINT8)((tSDP_CCB_CONT_VIEW *)p_ccb)->cont_offset;
+        p_end[1] = (UINT8)(ccb_view->cont_offset >> 8);
+        p_end[2] = (UINT8)ccb_view->cont_offset;
         p_end += 3;
     } else {
         p_end[0] = 0;
@@ -22258,7 +22260,7 @@ static void process_service_search_attr_req(tCONN_CB *p_ccb, UINT16 trans_num,
                 p_attr = fn_80096904(p_rec, start, end);
                 if (p_attr != NULL) {
                     if ((UINT32)p_attr->len >
-                        (UINT32)((UINT16)(0x3E8 - (UINT16)(p_rsp - ((UINT8 *)p_ccb + 0x26))) - 6)) {
+                        (UINT32)((UINT16)(0x3E8 - (UINT16)(p_rsp - ((tCCB_CONT_VIEW *)p_ccb)->data)) - 6)) {
                         maxxed_out = TRUE;
                         break;
                     }
@@ -22281,17 +22283,17 @@ static void process_service_search_attr_req(tCONN_CB *p_ccb, UINT16 trans_num,
             }
             p_rec = sdp_db_service_search(p_rec, &uid_seq);
         }
-        len_to_send = (UINT16)(p_rsp - ((UINT8 *)p_ccb + 0x26));
+        len_to_send = (UINT16)(p_rsp - ((tCCB_CONT_VIEW *)p_ccb)->data);
         p_ccb->list_len = len_to_send;
         if (len_to_send > 0xFF) {
             UINT16 adjusted = len_to_send - 3;
-            *((UINT8 *)p_ccb + 0x26) = 0x36;
-            *((UINT8 *)p_ccb + 0x27) = adjusted >> 8;
-            *((UINT8 *)p_ccb + 0x28) = adjusted;
+            ((tCCB_CONT_VIEW *)p_ccb)->data[0] = 0x36;
+            ((tCCB_CONT_VIEW *)p_ccb)->data[1] = adjusted >> 8;
+            ((tCCB_CONT_VIEW *)p_ccb)->data[2] = adjusted;
         } else {
             ((tCCB_CONT_VIEW *)p_ccb)->cont_off = 1;
-            *((UINT8 *)p_ccb + 0x27) = 0x35;
-            *((UINT8 *)p_ccb + 0x28) = len_to_send - 3;
+            ((tCCB_CONT_VIEW *)p_ccb)->data[1] = 0x35;
+            ((tCCB_CONT_VIEW *)p_ccb)->data[2] = len_to_send - 3;
             p_ccb->list_len = len_to_send - 1;
         }
     }
@@ -22315,7 +22317,7 @@ static void process_service_search_attr_req(tCONN_CB *p_ccb, UINT16 trans_num,
     p_rsp_param_len[2] = len_to_send >> 8;
     p_rsp_param_len[3] = len_to_send;
     p_rsp = p_rsp_param_len + 4;
-    memcpy(p_rsp, (UINT8 *)p_ccb + ((tCCB_CONT_VIEW *)p_ccb)->cont_off + 0x26, len_to_send);
+    memcpy(p_rsp, ((tCCB_CONT_VIEW *)p_ccb)->data + ((tCCB_CONT_VIEW *)p_ccb)->cont_off, len_to_send);
     p_rsp += len_to_send;
     p_ccb->list_len -= len_to_send;
     ((tCCB_CONT_VIEW *)p_ccb)->cont_off += len_to_send;
