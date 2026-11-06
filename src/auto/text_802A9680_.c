@@ -8,7 +8,7 @@ extern float PSVECSquareDistance(float *, float *);
 extern void fn_801E4F20(int);
 extern void fn_801E4F3C(int, int, float, float, float, float, float);
 extern void fn_801E4FF4(void);
-extern void fn_802C8BD0(int, ...);
+extern void fn_802C8BD0(int);
 extern void fn_802C8D74(void);
 extern float lbl_80564998, lbl_805649B4, lbl_805649B8, lbl_805649BC;
 extern float lbl_805649CC, lbl_805649D0, lbl_805649D4;
