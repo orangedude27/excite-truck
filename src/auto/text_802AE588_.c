@@ -253,13 +253,13 @@ int fn_802AE7AC(void) {
 #pragma cplusplus on
 #pragma push
 #pragma processor 750
-void fn_802AE7F4(void) {
+extern "C" void fn_802AE7F4(void) {
     float values[8];
     float total;
-    register struct ETConfigPaths *base = (struct ETConfigPaths *)&lbl_8034A020;
+    register ETConfigPaths *base = (ETConfigPaths *)&lbl_8034A020;
     int i;
 
-    lbl_8055F980 = (char)fn_8012C33C((void *)base);
+    lbl_8055F980 = fn_8012C33C((void *)((char *)base->lookupKey - 0xC));
     fn_802AE5E0(0x400);
     fn_802BE7F8();
     fn_802B40F8();
@@ -277,14 +277,12 @@ void fn_802AE7F4(void) {
     fn_802B58E0();
 
     {
-        void *obj = fn_802B59CC();
-        void *(*lookup)(void *, char *, int) = *(void *(**)(void *, char *, int))(*(char **)obj + 0x20);
-        lbl_8055CD78 = lookup(obj, base->lookupKey, -1);
+        ETConfigAccess *obj = (ETConfigAccess *)fn_802B59CC();
+        lbl_8055CD78 = obj->lookup(base->lookupKey, -1);
     }
     {
-        void *obj = fn_802B59CC();
-        char (*status)(void *, char *, int) = *(char (**)(void *, char *, int))(*(char **)obj + 0x30);
-        lbl_8055F981 = status(obj, base->statusKey, 0);
+        ETConfigAccess *obj = (ETConfigAccess *)fn_802B59CC();
+        lbl_8055F981 = obj->status(base->statusKey, 0);
     }
 
     values[0] = lbl_80564B40 * (lbl_80564B44 * lbl_80564AF0);
