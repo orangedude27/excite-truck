@@ -60,6 +60,82 @@ void fn_8017D380(float *arg0, int arg1) {
     arg0[1] = lbl_80561BE4 + (float)scaled;
     arg0[2] = values[1];
 }
+
+extern void *fn_8017960C(int);
+extern void fn_801B619C(void *, int *, float *);
+extern float PSVECDotProduct(float *, float *);
+extern void PSVECNormalize(float *, float *);
+extern double fn_8002F234(float);
+extern float fn_80129DC4(int, float, float);
+extern void fn_8017B5D4(void *, int, int, float *, float *, int, int, void *, float);
+extern float lbl_80561BF0, lbl_80561BF4, lbl_80561BF8, lbl_80561BFC, lbl_80561C00;
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+extern "C" void fn_8017D404(float *pos, int target, float radius, float strength, int arg2) {
+    struct V { virtual int a0(); virtual int a1(); virtual int a2(); virtual int a3(); virtual int a4(); virtual int a5(); virtual int a6(); virtual int a7(); virtual int a8(); virtual int a9(); virtual int a10(); virtual int a11(); virtual int a12(); virtual int a13(); virtual int test(); };
+    void **lists[5];
+    float diff[3], contact[3], impulse[3];
+    int count;
+    register char *obj;
+    register void **node;
+    register void ***iter;
+    register void *result = fn_8017960C(arg2);
+    register int i;
+    float dist, rand, px, py, pz;
+    float zero;
+    float one;
+    register float offset;
+    float factor;
+    count = 5;
+    fn_801B619C(lists, &count, pos);
+    one = lbl_80561BF4;
+    offset = lbl_80561C00;
+    zero = lbl_80561BF0;
+    iter = lists;
+    for (i=0; i<count; ) {
+        node = (void **)**iter;
+        while (node) {
+            obj = (char *)node[0];
+            if (((V *)obj)->test()) obj = (char *)node[0];
+            else obj = 0;
+            if (obj) {
+                px = pos[0]; py = pos[1]; pz = pos[2];
+                diff[0] = px - *(float *)(obj+0x60);
+                diff[1] = py - *(float *)(obj+0x64);
+                diff[2] = pz - *(float *)(obj+0x68);
+                dist = PSVECDotProduct(diff, diff);
+                if (dist < radius*radius && dist > zero) {
+                    if ((unsigned int)obj == (unsigned int)target) factor = lbl_80561BF4;
+                    else factor = one - (float)fn_8002F234(dist)/radius;
+                    PSVECNormalize(diff, diff);
+                    contact[0] = *(float *)(obj+0x60) + diff[0];
+                    contact[1] = *(float *)(obj+0x64) + diff[1];
+                    contact[2] = *(float *)(obj+0x68) + diff[2];
+                    rand = fn_80129DC4(3, lbl_80561BF8, lbl_80561BFC);
+                    contact[0] += *(float *)(obj+0x3c)*rand;
+                    contact[1] += *(float *)(obj+0x40)*rand;
+                    contact[2] += *(float *)(obj+0x44)*rand;
+                    rand = fn_80129DC4(3, lbl_80561BF8, lbl_80561BFC);
+                    contact[0] += *(float *)(obj+0x54)*rand;
+                    contact[1] += *(float *)(obj+0x58)*rand;
+                    contact[2] += *(float *)(obj+0x5c)*rand;
+                    diff[1] -= offset;
+                    impulse[0] = diff[0]*(-factor * strength);
+                    impulse[1] = diff[1]*(-factor * strength);
+                    impulse[2] = diff[2]*(-factor * strength);
+                    fn_8017B5D4(obj, 0, 0, impulse, contact, 1001, 0, result, lbl_80561BF4);
+                }
+            }
+            node = (void **)node[1];
+        }
+        iter++;
+        i++;
+    }
+}
+#pragma pop
+
 #pragma scheduling on
 void *fn_8017D688(void) {
     extern void *fn_801284F8(int, void *);
@@ -74,6 +150,7 @@ void *fn_8017D688(void) {
     return p;
 }
 
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_8017D6E0(void *arg0, void *arg1) {
     char *a = (char *)arg0;
@@ -152,6 +229,7 @@ extern "C" void fn_8017D6E0(void *arg0, void *arg1) {
     *(int *)(a + 0x220) = fn_802077A4(lbl_80331D8C, 5, a + 0x118, a + 0x20C);
 }
 #pragma cplusplus reset
+#pragma scheduling on
 
 #pragma cplusplus on
 #pragma scheduling invalid_target
@@ -329,6 +407,7 @@ void fn_8017DCB4(void *arg0) {
 #pragma push
 #pragma scheduling on
 #pragma dont_inline on
+#pragma ppc_psq_save off
 void fn_8017DEE0(register void *arg0, register long arg1, register long arg2, short arg3, float farg0) {
     extern int lbl_8055D430;
     extern float lbl_80561BE0, lbl_80561BF4, lbl_80561C0C;
