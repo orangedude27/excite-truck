@@ -32,6 +32,7 @@ extern float lbl_80561CEC, lbl_80561CF0, lbl_80561CF4, lbl_80561CF8, lbl_80561CF
 extern float lbl_80561D04, lbl_80561D08, lbl_80561D0C, lbl_80561D10, lbl_80561D14;
 extern float lbl_80561D18, lbl_80561D1C, lbl_80561D20, lbl_80561D24, lbl_80561D28;
 extern float lbl_80561D2C, lbl_80561D30;
+extern int *fn_801E1F44(void);
 extern int fn_80019BA8(void);
 extern void fn_802049DC(int, int, float, float, float);
 extern int fn_8020503C(void *);
