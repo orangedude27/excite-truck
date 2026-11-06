@@ -1732,9 +1732,9 @@ extern "C" s32 fn_80141FA8(void *arg0, f32 arg1) {
         if (old < r) {
             *(f32 *)((u8 *)arg0 + 0xEC) = r - old;
         } else {
-            s32 close = (f32)__fabs((f64)r) <= (f32)lbl_80558DC4;
-            if (close != 0) {
-                if ((f32)__fabs((f64)old) <= (f32)lbl_80558DC4) {
+                    s32 close = (f32)__fabs((f64)r) <= *(f32 *)&lbl_80558DC4;
+        if (close != 0) {
+            if ((f32)__fabs((f64)old) <= *(f32 *)&lbl_80558DC4) {
                     s32 n = *(volatile s32 *)((u8 *)arg0 + 0xE4);
                     if (n > 0) {
                         *(s32 *)((u8 *)arg0 + 0xF4) = n;
