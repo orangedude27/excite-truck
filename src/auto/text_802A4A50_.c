@@ -86,7 +86,7 @@ s32 fn_802A5B8C();
 void *fn_802A69D8(void *, s32);
 s32 fn_800167F4(void);
 s32 fn_802A5384(s32);
-s32 fn_802A53B0(void);
+void fn_802A53B0(void *, s32);
 s32 fn_80287B38(void *);
 s32 fn_802A5878(void);
 s32 fn_802CAC28(void *, s32);
@@ -716,21 +716,26 @@ void fn_802A5CA4(void *arg0) {
     a=source[11]; w.matrix[11]=a;
     fn_802A62CC(obj, w.matrix[9]);
     {
-        f32 y=lbl_80564874, x=lbl_80564858, z=x;
-        f32 xy3,xx0,xx1,yy4,xx2,yy5,out0,out1,out2;
+        f32 x=lbl_80564858, y=lbl_80564874, z=lbl_80564858;
         w.input[0]=x; w.input[1]=y; w.input[2]=z;
-        if (obj->base==(f32 *)&w.input[0]) {
-            xy3=y*m[1]; xx0=x*m[0];
-            xx1=x*m[3]; yy4=y*m[4];
-            xx2=x*m[6]; yy5=y*m[7];
-            out0=(xx0+xy3)+z*m[2];
-            out1=(xx1+yy4)+z*m[5];
-            out2=(xx2+yy5)+z*m[8];
-            obj->base[0]=out0; obj->base[1]=out1; obj->base[2]=out2;
+        if (obj->base==&w.input[0]) {
+            f32 xy1=y*m[1];
+            f32 xx0=x*m[0];
+            f32 xx1=x*m[3];
+            f32 yy4=y*m[4];
+            f32 xx2=x*m[6];
+            f32 yy5=y*m[7];
+            f32 s0=xx0+xy1;
+            f32 s1=xx1+yy4;
+            f32 s2=xx2+yy5;
+            f32 o0=z*m[2]+s0;
+            f32 o1=z*m[5]+s1;
+            f32 o2=z*m[8]+s2;
+            obj->base[0]=o0; obj->base[1]=o1; obj->base[2]=o2;
         } else {
-            obj->base[0]=w.input[0]*m[0]+w.input[1]*m[1]+w.input[2]*m[2];
-            obj->base[1]=w.input[0]*m[3]+w.input[1]*m[4]+w.input[2]*m[5];
-            obj->base[2]=w.input[0]*m[6]+w.input[1]*m[7]+w.input[2]*m[8];
+            obj->base[0]=w.input[2]*m[2]+(w.input[0]*m[0]+w.input[1]*m[1]);
+            obj->base[1]=w.input[2]*m[5]+(w.input[0]*m[3]+w.input[1]*m[4]);
+            obj->base[2]=w.input[2]*m[8]+(w.input[0]*m[6]+w.input[1]*m[7]);
         }
     }
     {
@@ -1110,7 +1115,83 @@ s32 fn_802A6A44(s32 *arg0) {
     p[16] = d;
     return fn_802A711C(arg0, b, c, a);
 }
-#pragma scheduling on
+
+extern f32 lbl_805648A4;
+#pragma scheduling invalid_target
+void fn_802A6A7C(void *arg0) {
+    struct Obj { u8 pad0[0x10]; s32 model; u8 pad14[0xC]; f32 pos[3]; f32 vel[3]; f32 axis[3]; } *obj = (struct Obj *)arg0;
+    f32 *m = (f32 *)fn_801E8718(obj->model);
+    f32 disp[3];
+    f32 in[3];
+    fn_802A6E34(obj);
+    {
+        f32 x = lbl_80564858, y = lbl_8056485C, z = lbl_80564858;
+        in[0] = x; in[1] = y; in[2] = z;
+        if (obj->axis == &in[0]) {
+            f32 xy1 = y * m[1];
+            f32 xx0 = x * m[0];
+            f32 xx1 = x * m[3];
+            f32 yy4 = y * m[4];
+            f32 xx2 = x * m[6];
+            f32 yy5 = y * m[7];
+            f32 s0 = xx0 + xy1;
+            f32 s1 = xx1 + yy4;
+            f32 s2 = xx2 + yy5;
+            f32 o0 = z * m[2] + s0;
+            f32 o1 = z * m[5] + s1;
+            f32 o2 = z * m[8] + s2;
+            obj->axis[0] = o0; obj->axis[1] = o1; obj->axis[2] = o2;
+        } else {
+            obj->axis[0] = in[2] * m[2] + (in[0] * m[0] + in[1] * m[1]);
+            obj->axis[1] = in[2] * m[5] + (in[0] * m[3] + in[1] * m[4]);
+            obj->axis[2] = in[2] * m[8] + (in[0] * m[6] + in[1] * m[7]);
+        }
+    }
+    if (fn_801E8758(obj->model) == 0) {
+        f32 s;
+        f32 dx = obj->pos[0] - m[9];
+        f32 dy;
+        f32 dz;
+        disp[0] = dx;
+        dy = obj->pos[1] - m[10];
+        disp[1] = dy;
+        dz = obj->pos[2] - m[11];
+        disp[2] = dz;
+        {
+            f32 p1 = dy * m[1];
+            f32 p0 = dx * m[0];
+            f32 p4 = dy * m[4];
+            f32 p3 = dx * m[3];
+            f32 p7 = dy * m[7];
+            f32 p6 = dx * m[6];
+            f32 o0 = dz * m[2] + (p0 + p1);
+            f32 o1 = dz * m[5] + (p3 + p4);
+            f32 o2 = dz * m[8] + (p6 + p7);
+            disp[0] = o0; disp[1] = o1; disp[2] = o2;
+        }
+        s = lbl_805648A4;
+        obj->vel[0] = obj->axis[0] + disp[0] * s;
+        obj->vel[1] = obj->axis[1] + disp[1] * s;
+        obj->vel[2] = obj->axis[2] + disp[2] * s;
+        s = lbl_805648B0 * (lbl_8056485C / (f32)fn_8002F234(PSVECDotProduct(obj->vel, obj->vel)));
+        obj->vel[0] = obj->vel[0] * s;
+        obj->vel[1] = obj->vel[1] * s;
+        obj->vel[2] = obj->vel[2] * s;
+        fn_802A6F70(obj, disp);
+        fn_802A71C4(obj);
+    } else {
+        f32 s = lbl_805648B0;
+        f32 vx = obj->axis[0] * s;
+        f32 vy = obj->axis[1] * s;
+        obj->vel[0] = vx;
+        obj->vel[1] = vy;
+        obj->vel[2] = obj->axis[2] * s;
+        fn_802A711C(obj, vy, vx, s);
+    }
+    obj->pos[0] = m[9];
+    obj->pos[1] = m[10];
+    obj->pos[2] = m[11];
+}
 extern float lbl_8055F884;
 extern float lbl_805648B4;
 extern float fn_802C9A4C(float);
