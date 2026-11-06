@@ -1,6 +1,7 @@
 #include <types.h>
 
 extern void *fn_802C6C34(void);
+struct Rec14 { s32 v[14]; };
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -28,6 +29,28 @@ void fn_801E598C(void) {
 
 s32 fn_801E5990(void *arg0) {
     return ((s32 *)arg0)[2];
+}
+
+void fn_801E5998(void *src, void *dst, s32 *outCount) {
+    s32 count = ((s32 *)src)[2];
+    s32 i;
+    for (i = 0; i < count; i++) {
+        ((s32 *)dst)[i * 14] = ((s32 *)((u8 *)src + 0x10))[i * 14];
+        ((s32 *)dst)[i * 14 + 1] = ((s32 *)((u8 *)src + 0x10))[i * 14 + 1];
+        ((s32 *)dst)[i * 14 + 2] = ((s32 *)((u8 *)src + 0x10))[i * 14 + 2];
+        ((s32 *)dst)[i * 14 + 3] = ((s32 *)((u8 *)src + 0x10))[i * 14 + 3];
+        ((s32 *)dst)[i * 14 + 4] = ((s32 *)((u8 *)src + 0x10))[i * 14 + 4];
+        ((s32 *)dst)[i * 14 + 5] = ((s32 *)((u8 *)src + 0x10))[i * 14 + 5];
+        ((s32 *)dst)[i * 14 + 6] = ((s32 *)((u8 *)src + 0x10))[i * 14 + 6];
+        ((s32 *)dst)[i * 14 + 7] = ((s32 *)((u8 *)src + 0x10))[i * 14 + 7];
+        ((s32 *)dst)[i * 14 + 8] = ((s32 *)((u8 *)src + 0x10))[i * 14 + 8];
+        ((s32 *)dst)[i * 14 + 9] = ((s32 *)((u8 *)src + 0x10))[i * 14 + 9];
+        ((s32 *)dst)[i * 14 + 10] = ((s32 *)((u8 *)src + 0x10))[i * 14 + 10];
+        ((s32 *)dst)[i * 14 + 11] = ((s32 *)((u8 *)src + 0x10))[i * 14 + 11];
+        ((s32 *)dst)[i * 14 + 12] = ((s32 *)((u8 *)src + 0x10))[i * 14 + 12];
+        ((s32 *)dst)[i * 14 + 13] = ((s32 *)((u8 *)src + 0x10))[i * 14 + 13];
+    }
+    *outCount = count;
 }
 
 extern void fn_80015B20(void *, void *, void *);
@@ -143,4 +166,4 @@ void fn_801E67B4(void *arg0, void *arg1, void *arg2) {
         out[2] = in[2] * m8 + (in[0] * m2 + in[1] * m5);
     }
 }
-
+#pragma scheduling off
