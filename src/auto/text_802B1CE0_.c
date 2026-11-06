@@ -286,14 +286,16 @@ void fn_802B21D4(void **arg0) {
     void *ptr = *arg0;
     if (ptr != 0) {
         if (ptr != 0) {
-            if (((int *)ptr)[2] == -2) {
-            } else {
-                fn_802CAC54();
+            int handle = ((int *)ptr)[2];
+            if (handle != -2) {
+                ((void (*)(int))fn_802CAC54)(handle);
                 ((int *)ptr)[2] = -2;
             }
-            if (((int *)ptr)[0] == 0) {
-            } else {
-                fn_802C6C20();
+            {
+                void *resource = *(void **)ptr;
+                if (resource != 0) {
+                    ((void (*)(void *))fn_802C6C20)(resource);
+                }
             }
             fn_80128668(ptr);
         }
@@ -763,8 +765,8 @@ outer_body:
             }
         } else if (*(float *)(obj + 8) > normal) {
             phase = fn_801E7E18();
-            entry = (float *)(obj + 0x18);
             phase2 = scaleZ * phase;
+            entry = (float *)(obj + 0x18);
             j = 0;
             do {
                 angle = (float)fn_8002EFB4(
@@ -796,15 +798,9 @@ outer_body:
                 stack[23] = *(float *)(record + 0xC);
                 selector = *(unsigned short *)record;
                 transform = obj + ((selector & 0xF) * 0x28);
-                (*(unsigned int *)&stack[12]) = *(unsigned int *)(transform + 0x18);
-                (*(unsigned int *)&stack[13]) = *(unsigned int *)(transform + 0x1C);
-                (*(unsigned int *)&stack[14]) = *(unsigned int *)(transform + 0x20);
-                (*(unsigned int *)&stack[15]) = *(unsigned int *)(transform + 0x24);
-                (*(unsigned int *)&stack[16]) = *(unsigned int *)(transform + 0x28);
-                (*(unsigned int *)&stack[17]) = *(unsigned int *)(transform + 0x2C);
-                (*(unsigned int *)&stack[18]) = *(unsigned int *)(transform + 0x30);
-                (*(unsigned int *)&stack[19]) = *(unsigned int *)(transform + 0x34);
-                (*(unsigned int *)&stack[20]) = *(unsigned int *)(transform + 0x38);
+                ((ParticleVec3 *)(stack+12))[0] = ((ParticleVec3 *)(transform+0x18))[0];
+                ((ParticleVec3 *)(stack+12))[1] = ((ParticleVec3 *)(transform+0x18))[1];
+                ((ParticleVec3 *)(stack+12))[2] = ((ParticleVec3 *)(transform+0x18))[2];
                 fn_802DCAE4(*(int *)(*(char **)(obj + 0xC) + 4), stack + 12, transform,
                             record, *(float *)(record + 0x10));
                 byteOffset += 0x14;
