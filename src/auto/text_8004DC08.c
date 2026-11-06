@@ -22,30 +22,45 @@ extern void ICFlashInvalidate(void);
 extern void* memset(void*, int, unsigned int);
 extern unsigned int strlen(const char*);
 extern char* strcpy(char*, const char*);
-int PackArgs(void* arg0, int arg1, char** arg2, int arg3) {
-    int i, count = arg1, copied = 0;
-    char** p = arg2 + arg1;
-    char* strings = (char*)arg0 + 0x2000;
+int PackArgs(void* base, int count, char** args, int unused) {
+    register char** argv;
+    register void* heap;
+    char** argp;
+    char* str;
+    char* strings;
     char* table;
-    memset(arg0, 0, 0x2000);
-    if (count == 0) { *(int*)((char*)arg0 + 8) = 0; return 1; }
-    while (--count >= 0) {
-        char* str = *--p;
-        strings -= strlen(str) + 1;
-        strcpy(strings, str);
-        *p = (char*)arg0 + (strings - (char*)arg0);
-    }
-    table = (char*)arg0 + (((strings - (char*)arg0) & ~3) - (arg1 + 1) * 4);
-    i = arg1 + 1;
-    if (i != 0) {
-        for (copied = 0; i - copied >= 8; copied += 8) {
-            int j;
-            for (j = 0; j < 8; j++) ((int*)table)[copied+j] = ((int*)arg2)[copied+j];
+    int original;
+    unsigned int copied;
+
+    argv = args;
+    heap = base;
+    memset(base, 0, 0x2000);
+    if (count == 0) {
+        *(int*)((char*)heap + 8) = 0;
+    } else {
+        original = count;
+        strings = (char*)heap + 0x2000;
+        argp = argv + count;
+        while (count >= 0) {
+            str = *argp;
+            strings -= strlen(str) + 1;
+            strcpy(strings, str);
+            *argp = (char*)((char*)strings - (char*)heap);
+            count--;
+            argp--;
         }
-        for (; copied < i; copied++) ((int*)table)[copied] = ((int*)arg2)[copied];
+
+        copied = 0;
+        table = (char*)heap + ((strings - (char*)heap) & ~3);
+        table -= (unsigned int)(original + 1) * 4;
+        if ((unsigned int)(original + 1) != 0) {
+            for (; copied < (unsigned int)(original + 1); copied++) {
+                ((unsigned int*)table)[copied] = ((unsigned int*)argv)[copied];
+            }
+        }
+        ((int*)table)[-1] = original;
+        *(int*)((char*)heap + 8) = (int)(table - 4 - (char*)heap);
     }
-    ((int*)table)[-1] = arg1;
-    *(int*)((char*)arg0 + 8) = table - 4 - (char*)arg0;
     return 1;
 }
 
@@ -90,6 +105,7 @@ extern void OSReport(const char *format, ...);
 extern void __OSLaunchMenu(void);
 #pragma small_data on
 #pragma small_data reset
+#pragma use_lmw_stmw off
 void fn_8004DDFC(void) {
     unsigned char *base;
     unsigned char *mem;
