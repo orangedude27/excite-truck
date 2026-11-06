@@ -1887,7 +1887,7 @@ extern "C" void fn_801421D8(void *arg0, void *arg1) {
         } else {
             s32 close = (f32)__fabs(r) <= *(f32 *)&lbl_80558DC4;
             if (close != 0) {
-                if (!((f32)__fabs((f64)x) <= lbl_80558DC4)) {
+                if (!((f32)__fabs((f64)x) <= *(f32 *)&lbl_80558DC4)) {
                     if (*(s32 *)(b + 0xE4) > 0) {
                         *(s32 *)(b + 0xF4) = *(s32 *)(b + 0xE4);
                         *(f32 *)(b + 0xF0) = fn_8013CB3C();
