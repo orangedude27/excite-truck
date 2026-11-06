@@ -131,9 +131,9 @@ static inline void VecMtxMult_802A53B0(const f32 *m, const f32 *src, f32 *dst) {
     if (src == dst) {
         f32 x = src[0], y = src[1], z = src[2];
         f32 y3 = y * m[3];
+        f32 y4 = y * m[4];
         f32 x0 = x * m[0];
         f32 x1 = x * m[1];
-        f32 y4 = y * m[4];
         f32 x2 = x * m[2];
         f32 y5 = y * m[5];
         f32 s0 = x0 + y3;
@@ -554,6 +554,7 @@ special:
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_802A53B0(void *arg0, s32 arg1) {
     f32 sp38[3];
     f32 sp2C[3];
@@ -582,11 +583,10 @@ void fn_802A53B0(void *arg0, s32 arg1) {
     }
     base = (u8 *)lbl_8055F88C;
     f27 = lbl_8056487C;
-    PSVECDotProduct((f32 *)(base + 0x2C), (f32 *)(base + 0x2C));
-    f29 = lbl_80564880;
-    f30 = lbl_80564884;
-    f28 = lbl_80564864;
     f1 = -(lbl_8056485C / (f32)fn_8002F234(PSVECDotProduct((f32 *)(base + 0x2C), (f32 *)(base + 0x2C))));
+    f30 = lbl_80564880;
+    f29 = lbl_80564884;
+    f28 = lbl_80564864;
     sp38[0] = *(f32 *)(base + 0x2C) * f1;
     sp38[1] = *(f32 *)(base + 0x30) * f1;
     sp38[2] = *(f32 *)(base + 0x34) * f1;
@@ -616,7 +616,7 @@ void fn_802A53B0(void *arg0, s32 arg1) {
                 }
             }
             {
-                f32 t = f29 * dot;
+                f32 t = f30 * dot;
                 f32 a0 = sp38[0] + sp2C[0] * t;
                 f32 a1 = sp38[1] + sp2C[1] * t;
                 f32 a2 = sp38[2] + sp2C[2] * t;
@@ -624,9 +624,9 @@ void fn_802A53B0(void *arg0, s32 arg1) {
                 sp20[1] = a1;
                 sp20[2] = a2;
                 {
-                    f32 s0 = a0 * f30;
-                    f32 s1 = a1 * f30;
-                    f32 s2 = a2 * f30;
+                    f32 s0 = a0 * f29;
+                    f32 s1 = a1 * f29;
+                    f32 s2 = a2 * f29;
                     f32 *mp = (f32 *)mat;
                     sp20[0] = mp[13] + s0;
                     sp20[1] = mp[14] + s1;
@@ -657,6 +657,7 @@ void fn_802A53B0(void *arg0, s32 arg1) {
         }
     }
 }
+#pragma scheduling on
 #pragma pop
 extern void *fn_802AE4C8(s32);
 extern s32 fn_802A7370(s32, void *);
