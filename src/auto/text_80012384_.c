@@ -17,7 +17,7 @@ extern int lbl_8055FBA0;
 extern void fn_802C92D0(void);
 extern void fn_802C92D8(void);
 extern void fn_802C92DC(int, int, int, int, int);
-extern void fn_80235380(void);
+extern void fn_80235380();
 extern void fn_80128668(void *);
 #pragma scheduling invalid_target
 void *fn_80012384(void *arg0, int arg1) {
@@ -58,6 +58,21 @@ void fn_80012478(void) {
     *(float *)(p + 0x84) = lbl_8056034C;
     lbl_8055D4EC = 1;
 }
+
+extern char lbl_80558AD0;
+void fn_800124DC(const char *arg0, float farg0) {
+    register char *p = lbl_80351790;
+    register int one = 1;
+    register int zero = 0;
+    lbl_80558AD0 = one;
+    strncpy(p + 1, arg0, 0x7f);
+    p[0x80] = zero;
+    *(float *)(p + 0x88) = farg0;
+    *(float *)(p + 0x84) = lbl_8056034C;
+    *(int *)(p + 0x8c) = fn_802E2C20();
+    p[0] = one;
+}
+
 #pragma pop
 void fn_800125C4(void) {
     fn_8001255C(lbl_802FC600, lbl_80560350);
