@@ -882,7 +882,7 @@ extern "C" void fn_8013ED74(void *arg0) {
     }
     if (list.count > 0) {
         f32 v = fn_801E7E24();
-        if (!((f32)__fabs((f64)v) <= lbl_80558DC4)) {
+        if (!((f32)__fabs((f64)v) <= *(f32 *)&lbl_80558DC4)) {
             s32 k;
             s32 off;
             k = 0;
