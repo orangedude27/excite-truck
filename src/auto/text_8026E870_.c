@@ -13,6 +13,18 @@ typedef struct Transform {
     Vec a, b, c, d;
 } Transform;
 extern f32 lbl_80563E78;
+extern f32 lbl_80563E8C;
+extern f32 lbl_80563E90;
+extern f32 lbl_80563E94;
+extern f32 lbl_80563E98;
+extern f32 lbl_80563E9C;
+extern f32 lbl_80563EA0;
+extern double lbl_80563EB0;
+extern s32 lbl_8049A208[];
+extern s32 fn_8026F408(s32);
+extern f32 fn_801E9FDC(void *, f32, f32);
+extern s32 fn_801784DC(Vec *, f32 *, s32, s32, s32, f32, f32);
+extern f32 fn_8026A520(s32);
 extern f32 lbl_8049A218[];
 extern f32 lbl_8055F52C;
 extern f32 lbl_80563E68;
@@ -61,38 +73,72 @@ extern f32 fn_8026EA8C(s32, void *, f32);
 extern f32 lbl_80563E34;
 extern void PSVECCrossProduct(const Vec *, const Vec *, Vec *);
 extern void PSVECNormalize(const Vec *, Vec *);
+#pragma push
+#pragma dont_inline on
+#pragma scheduling invalid_target
 void fn_8026E870(Vec *arg0, Vec *arg1, void *arg2, Vec *arg3) {
+    struct Output {
+        unsigned char pad[0x58];
+        Vec side;
+        Vec up;
+        Vec forward;
+        Vec position;
+    };
+    struct Output *out = (struct Output *)arg2;
     Vec delta;
-    Vec axis;
-    Vec side;
     Vec up;
     Vec forward;
-    Vec other;
+    Vec side;
     f32 dot;
-    *(f32 *)((char *)arg2 + 0x7C) = arg0->x;
-    *(f32 *)((char *)arg2 + 0x80) = arg0->y;
-    *(f32 *)((char *)arg2 + 0x84) = arg0->z;
-    delta.x = arg1->x - arg0->x;
-    delta.y = arg1->y - arg0->y;
-    delta.z = arg1->z - arg0->z;
+    f32 x, y, z, dx;
+    f32 sideX, sideY, sideZ;
+    f32 upX, upY, upZ;
+
+    x = arg0->x;
+    dx = arg1->x - x;
+    out->position.x = x;
+    delta.x = dx;
+    y = arg0->y;
+    out->position.y = y;
+    delta.y = arg1->y - out->position.y;
+    z = arg0->z;
+    out->position.z = z;
+    delta.z = arg1->z - out->position.z;
     dot = PSVECDotProduct(&delta, &delta);
     if (dot < lbl_80563E30) return;
-    if (fabs(delta.x) >= lbl_80563E34 && fabs(delta.z) >= lbl_80563E34) return;
-    axis = delta;
-    PSVECCrossProduct(arg3, &axis, (Vec *)((char *)arg2 + 0x58));
-    PSVECCrossProduct(&axis, (Vec *)((char *)arg2 + 0x58), (Vec *)((char *)arg2 + 0x64));
-    side = *(Vec *)((char *)arg2 + 0x58);
-    up = axis;
+    if (lbl_80563E34 > (f32)__fabs((double)delta.x) &&
+        lbl_80563E34 > (f32)__fabs((double)delta.z)) return;
+    out->forward.x = delta.x;
+    out->forward.y = delta.y;
+    out->forward.z = delta.z;
+    PSVECCrossProduct(arg3, &out->forward, &out->side);
+    PSVECCrossProduct(&out->forward, &out->side, &out->up);
+    sideZ = out->side.z;
+    sideY = out->side.y;
+    sideX = out->side.x;
+    side.x = sideX;
+    side.y = sideY;
+    side.z = sideZ;
+    upZ = out->forward.z;
+    upY = out->forward.y;
+    upX = out->forward.x;
+    up.x = upX;
+    up.y = upY;
+    up.z = upZ;
     PSVECCrossProduct(&up, &side, &forward);
     PSVECNormalize(&side, &side);
     PSVECNormalize(&forward, &forward);
-    PSVECCrossProduct(&side, &forward, &other);
-    *(Vec *)((char *)arg2 + 0x58) = side;
-    *(Vec *)((char *)arg2 + 0x64) = forward;
-    *(Vec *)((char *)arg2 + 0x70) = other;
+    PSVECCrossProduct(&side, &forward, &up);
+    out->side.x = side.x;
+    out->side.y = side.y;
+    out->side.z = side.z;
+    out->up.x = forward.x;
+    out->up.y = forward.y;
+    out->up.z = forward.z;
+    out->forward.x = up.x;
+    out->forward.y = up.y;
+    out->forward.z = up.z;
 }
-
-#pragma scheduling invalid_target
 s32 fn_8026EA14(s32 arg0) {
     s32 shift = arg0 - 4;
     s32 result = 0;
@@ -261,32 +307,57 @@ extern f32 lbl_80563E80;
 void fn_8026ED64(s32 *arg0, Vec *arg1, Vec *arg2, f32 farg0) {
     f32 *entry = lbl_8049A218 + (*arg0 * 4);
     f32 curve;
+    f32 curve2;
     f32 t;
     f32 blend;
+    f32 factor;
     f32 dx;
     f32 dy;
     f32 dz;
+    volatile Vec delta;
+
     curve = entry[3];
-    if (curve < lbl_80563E6C) curve = lbl_80563E6C;
-    else if (curve > lbl_80563E30) curve = lbl_80563E30;
-    else if (curve > lbl_80563E78) curve = (lbl_80563E70 * curve * curve * curve) + (lbl_80563E74 * curve * curve);
-    else curve = (lbl_80563E70 * curve * curve * curve) - (lbl_80563E74 * curve * curve);
+    if (curve < lbl_80563E6C)
+        curve = lbl_80563E6C;
+    else if (curve > lbl_80563E30)
+        curve = lbl_80563E30;
+    else if (curve > lbl_80563E78)
+        curve = (lbl_80563E70 * curve * curve * curve) + (lbl_80563E74 * curve * curve);
+    else
+        curve = (lbl_80563E70 * curve * curve * curve) - (lbl_80563E74 * curve * curve);
+
     t = (entry[1] - lbl_80563E78) / lbl_80563E7C;
-    if (t < lbl_80563E30) t = lbl_80563E30;
-    if (t > lbl_80563E78) t = lbl_80563E78;
-    arg1->y += farg0 * lbl_80563E80 * (lbl_80563E78 + t * lbl_80563E30) * curve;
+    if (t < lbl_80563E30)
+        t = lbl_80563E30;
+    if (t > lbl_80563E78)
+        t = lbl_80563E78;
+    factor = lbl_80563E78 + t * lbl_80563E30;
+    factor = factor * curve;
+    factor = lbl_80563E80 * factor;
+    factor = farg0 * factor;
+    arg1->y = arg1->y + factor;
+
     dx = arg2->x - arg1->x;
+    curve2 = entry[3];
     dy = arg2->y - arg1->y;
     dz = arg2->z - arg1->z;
-    curve = entry[3];
-    if (curve < lbl_80563E6C) curve = lbl_80563E6C;
-    else if (curve > lbl_80563E30) curve = lbl_80563E30;
-    else if (curve > lbl_80563E78) curve = (lbl_80563E70 * curve * curve * curve) + (lbl_80563E74 * curve * curve);
-    else curve = (lbl_80563E70 * curve * curve * curve) - (lbl_80563E74 * curve * curve);
-    blend = lbl_80563E6C - lbl_80563E50 * curve;
-    arg1->x = arg2->x + dx * blend;
-    arg1->y = arg2->y + dy * blend;
-    arg1->z = arg2->z + dz * blend;
+    delta.x = dx;
+    delta.y = dy;
+    delta.z = dz;
+
+    if (curve2 < lbl_80563E6C)
+        curve2 = lbl_80563E6C;
+    else if (curve2 > lbl_80563E30)
+        curve2 = lbl_80563E30;
+    else if (curve2 > lbl_80563E78)
+        curve2 = (lbl_80563E70 * curve2 * curve2 * curve2) + (lbl_80563E74 * curve2 * curve2);
+    else
+        curve2 = (lbl_80563E70 * curve2 * curve2 * curve2) - (lbl_80563E74 * curve2 * curve2);
+
+    blend = lbl_80563E6C - lbl_80563E50 * curve2;
+    arg1->x = arg2->x + delta.x * blend;
+    arg1->y = arg2->y + delta.y * blend;
+    arg1->z = arg2->z + delta.z * blend;
 }
 
 #pragma pop
