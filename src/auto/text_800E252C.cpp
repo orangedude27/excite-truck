@@ -2,7 +2,7 @@ typedef int s32;
 struct LLTmp { int a; void* next; void* prev; };
 struct ElemTmp { float f1; float f2; int i1; int i2; };
 extern float lbl_80560F20;
-static inline void FillTmp(ElemTmp* end, ElemTmp* q, float f) { if (q < end) { do { q->f1 = f; q->f2 = f; q->i1 = 0; q->i2 = 0; q++; } while (q < end); } }
+static inline void FillTmp(ElemTmp* end, ElemTmp* q, float f) { float g = lbl_80560F20; if (q < end) { do { q->f1 = g; q->f2 = g; q->i1 = 0; q->i2 = 0; q++; } while (q < end); } }
 typedef unsigned int u32;
 typedef signed char s8;
 typedef int M2C_UNK;
