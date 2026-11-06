@@ -22,10 +22,11 @@ extern void fn_80128668(void *);
 #pragma scheduling invalid_target
 void *fn_80012384(void *arg0, int arg1) {
     if (arg0 != 0) {
-        if (*(volatile int *)((char *)arg0 + 0x50)) {
-            fn_80235380();
+        void *resource = *(void **)((char *)arg0 + 0x50);
+        if (resource != 0) {
+            fn_80235380(resource);
         }
-        *(int *)((char *)arg0 + 0x50) = 0;
+        *(void **)((char *)arg0 + 0x50) = 0;
         if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
