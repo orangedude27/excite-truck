@@ -543,6 +543,7 @@ extern "C" s32 fn_801B1130(s32 arg0) {
     }
     return var_r31;
 }
+#pragma dont_inline reset
 #pragma cplusplus on
 #pragma scheduling invalid_target
 #pragma push
