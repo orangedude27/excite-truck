@@ -66,6 +66,36 @@ extern "C" f32 __fabsf(f32);
 struct S28_80142118 { s32 v[7]; };
 
 struct TVec2 { f32 x; f32 y; };
+class TPathDocument {
+public:
+    virtual void *find(const char *);
+    virtual void *child(s32);
+    virtual s32 has(const char *);
+};
+class TPathElement {
+public:
+    virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+    virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+    virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
+    virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15();
+    virtual void d16(); virtual void d17(); virtual void d18(); virtual void d19();
+    virtual void d20();
+    virtual void *attribute(const char *);
+    virtual void *child(s32);
+};
+class TPathValue {
+public:
+    virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+    virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+    virtual f32 number(const char *, f32);
+    virtual void d9(); virtual void d10(); virtual void d11(); virtual void d12();
+    virtual TVec2 vector(const char *);
+};
+extern "C" void *fn_8012850C(s32, const char *);
+extern "C" void *fn_8002F37C(void *, void (*)(), void (*)(), s32, s32);
+extern "C" int sprintf(char *, const char *, ...);
+extern "C" char lbl_80559D28, lbl_80559D30, lbl_80559D38, lbl_80559D44, lbl_80559D4C, lbl_80559D50;
+extern "C" f32 lbl_805614C4;
 
 // Quaternion and Vec types for vector/quaternion math
 typedef struct Vec { f32 x, y, z; } Vec;
@@ -2051,21 +2081,23 @@ extern "C" void fn_801429F0(void *arg0) {
     if (lbl_8055E1BC != 0) goto done;
     if (lbl_8055E1BC == 0) goto done;
 
-    f32 temp_f0, temp_f1, var_f2;
+    f32 temp_f0, temp_f0_2, temp_f1, var_f2;
     temp_f1 = *(f32 *)(p + 0x94);
-    temp_f0 = temp_f1 + (lbl_8056149C / lbl_8056149C);
+    temp_f0 = lbl_8056149C / lbl_8056149C;
     var_f2 = lbl_805614AC;
+    temp_f0 = temp_f1 + temp_f0;
     var_f2 = var_f2 < temp_f0 ? temp_f0 : var_f2;
     var_f2 = var_f2 > lbl_805614A4 ? lbl_805614A4 : var_f2;
-    temp_f0 = (f32)(f64)var_f2;
+    temp_f0_2 = (f32)(f64)var_f2;
     *(volatile f32 *)(p + 0x94) = var_f2;
-    if (temp_f1 < temp_f0) {
-        *(f32 *)(p + 0xEC) = temp_f0 - temp_f1;
+    if (temp_f1 < temp_f0_2) {
+        *(f32 *)(p + 0xEC) = temp_f0_2 - temp_f1;
         goto done;
     }
-    s32 close = (f32)__fabs((f64)temp_f0) <= *(f32 *)&lbl_80558DC4;
+    s32 close = (f32)__fabs((f64)temp_f0_2) <= lbl_80558DC4[0];
     if (close == 0) goto done;
-    if ((f32)__fabs((f64)temp_f1) <= *(f32 *)&lbl_80558DC4) goto done;
+    if ((f32)__fabs((f64)temp_f1) <= lbl_80558DC4[0]) goto done;
+
     temp_r0 = *(s32 *)(p + 0xE4);
     if (temp_r0 > 0) {
         *(s32 *)(p + 0xF4) = temp_r0;
@@ -2077,7 +2109,7 @@ extern "C" void fn_801429F0(void *arg0) {
         *(f32 *)(p + 0xD4) = fn_8001DAE8(p + 0xD0);
     *(s32 *)(p + 0x100) = 0;
     *(f32 *)(p + 0xAC) = fn_8001DAE8(p + 0xA8);
-    if (!lbl_8055E1BC) *(u8 *)(p + 0xF8) = 1;
+    if (lbl_8055E1BC == 0) *(u8 *)(p + 0xF8) = 1;
 done:
     ;
 }
