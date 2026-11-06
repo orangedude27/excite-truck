@@ -20,9 +20,10 @@ extern void fn_80128668(void*);
 #pragma scheduling invalid_target
 void* fn_802A9680(void* arg0, s32 arg1) {
     if (arg0 != 0) {
-        if ((s32)*(void**)((u8*)arg0 + 4) != -1) {
-            fn_802C6CF8();
-            *(s32*)((u8*)arg0 + 4) = -1;
+        s32 handle = *(s32 *)((u8 *)arg0 + 4);
+        if (handle != -1) {
+            fn_802C6CF8(handle);
+            *(s32 *)((u8 *)arg0 + 4) = -1;
         }
         if (arg1 > 0) {
             fn_80128668(arg0);
