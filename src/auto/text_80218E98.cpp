@@ -619,27 +619,23 @@ extern "C" void *fn_80218F80(void *arg0, void *arg1) {
 #define fn_80218F80() ((void (*)(void))fn_80218F80)()
 
 extern "C" void fn_80218FEC(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
-    f32 b = lbl_805634A4;
-    f32 a = lbl_805634A0;
-    s32 one = 1;
-    s32 zero = 0;
-    *(u8 *)((u8 *)arg0 + 0x1A) = one;
-    *(u8 *)((u8 *)arg0 + 0x1B) = one;
-    *(f32 *)((u8 *)arg0 + 0x1C) = a;
-    *(f32 *)((u8 *)arg0 + 0x20) = a;
-    *(f32 *)((u8 *)arg0 + 0x24) = b;
-    *(f32 *)((u8 *)arg0 + 0x28) = b;
-    *(u8 *)((u8 *)arg0 + 0x234) = one;
-    *(s32 *)((u8 *)arg0 + 0x238) = zero;
-    *(u8 *)((u8 *)arg0 + 0x18) = zero;
-    *(s32 *)((u8 *)arg0 + 0x230) = zero;
+    *(u8 *)((u8 *)arg0 + 0x1A) = 1;
+    *(u8 *)((u8 *)arg0 + 0x1B) = 1;
+    *(f32 *)((u8 *)arg0 + 0x1C) = -1.0f;
+    *(f32 *)((u8 *)arg0 + 0x20) = -1.0f;
+    *(f32 *)((u8 *)arg0 + 0x24) = 1.0f;
+    *(f32 *)((u8 *)arg0 + 0x28) = 1.0f;
+    *(u8 *)((u8 *)arg0 + 0x234) = 1;
+    *(s32 *)((u8 *)arg0 + 0x238) = 0;
+    *(u8 *)((u8 *)arg0 + 0x18) = 0;
+    *(s32 *)((u8 *)arg0 + 0x230) = 0;
     *(s32 *)((u8 *)arg0 + 4) = arg1;
     *(s32 *)((u8 *)arg0 + 0xC) = arg3;
     *(s32 *)((u8 *)arg0 + 8) = arg2;
     *(s32 *)((u8 *)arg0 + 0x10) = arg4;
     *(s32 *)((u8 *)arg0 + 0x14) = arg5;
-    *(u8 *)((u8 *)arg0 + 0x19) = zero;
-    *(s32 *)((u8 *)arg0 + 0x2C) = zero;
+    *(u8 *)((u8 *)arg0 + 0x19) = 0;
+    *(s32 *)((u8 *)arg0 + 0x2C) = 0;
 }
 
 extern "C" void fn_80219044(void *arg0) {
