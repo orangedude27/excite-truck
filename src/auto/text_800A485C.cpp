@@ -1412,9 +1412,6 @@ extern "C" s32 fn_800A6A40(void *arg0) {
 
 extern "C" s32 fn_800A6520(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 *arg5);
 extern "C" s32 fn_800A68F0(void *arg0, u32 arg1, s32 *arg2);
-static inline u32 fn_800A6B74_rd(u8 *q) {
-    return q[0] + (q[1] << 8) + (q[2] << 16) + (q[3] << 24);
-}
 extern "C" s32 fn_800A6B74(void *arg0) {
     s32 outLen;
     s32 flag;
@@ -6525,7 +6522,7 @@ extern "C" s32 fn_800B143C(void *arg0, s32 arg1, s32 arg2, void **arg3) {
             register u16 compareName;
             register void *context;
             register u32 flags;
-            s32 option;
+            register s32 option;
             option = arg2 & 1;
             if (option) {
                 s32 found;
