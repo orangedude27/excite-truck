@@ -5,7 +5,7 @@ extern void *lbl_8055FE5C;
 extern void *fn_801284F8(int, void *);
 extern int fn_8012850C(int, void *);
 extern void fn_802D9C5C(int, void *, int);
-extern void fn_802D9DE4(void);
+extern void fn_802D9DE4(int, void *, int);
 extern char lbl_8034C8F8[];
 extern char lbl_8034C908[];
 __declspec(section ".sdata") extern char lbl_8055D128[];
