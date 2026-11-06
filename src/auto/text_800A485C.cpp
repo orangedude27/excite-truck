@@ -201,6 +201,9 @@ public:
 static inline s32 fixedMul20(s32 lhs, s32 rhs) {
     return (s32)(((s64)lhs * rhs) >> 20);
 }
+static inline s32 fixedMulAdd20(s32 lhs, s32 rhs, s32 lhs2, s32 rhs2) {
+    return fixedMul20(lhs, rhs) + fixedMul20(lhs2, rhs2);
+}
 struct Fn800C0440Context { u8 pad[0xC]; volatile u32 bitIndex; volatile s32 limit; };
 extern "C" { DECL_SECTION(".sdata") extern s32 lbl_80559270[]; }
 extern "C" s32 fn_800A485C(s32);
@@ -5004,6 +5007,142 @@ extern "C" s32 fn_800AE664(void *arg0, u32 arg1, u32 arg2, s32 *arg3, s32 *arg4)
             arg2, arg4);
         if (result != 0)
             return result;
+    }
+    return 0;
+}
+
+extern "C" s32 fn_800AE7A8(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    u8 *ctx = (u8 *)*(void **)((u8 *)arg0 + 0x34);
+    s32 next;
+    s32 idx;
+    void *page;
+    s32 cur;
+    s32 err;
+    u32 limit;
+    s32 remain;
+    s32 clusterSize;
+    if (arg1 == 0) {
+        return 0;
+    }
+    cur = arg1;
+    limit = ((u32 *)lbl_802EEF40)[*(s32 *)(ctx + 0x1C) * 5 + 1];
+    if (arg3 != 0) {
+        remain = arg3;
+        clusterSize = *(u16 *)ctx << *(u8 *)(ctx + 0x21);
+    } else {
+        return 0;
+    }
+    err = ((s32 (*)(void *, s32, void **, s32 *))fn_800A8D08)(ctx, -1, &page, &idx);
+    if (err != 0) {
+        return err;
+    }
+    err = fn_800ACA5C(ctx, page, cur);
+    if (err != 0) {
+        VFiPFCACHE_FreeFATPage_800A8E10(ctx, page);
+        return err;
+    }
+    *(s16 *)((u8 *)page + 2) = 1;
+    next = cur;
+    while ((u32)next < limit) {
+        s32 type;
+        void *pp;
+        if (arg3 != 0 && remain == 0) {
+            break;
+        }
+        type = *(s32 *)(ctx + 0x1C);
+        pp = page;
+        switch (type) {
+        case 0:
+            err = ((s32 (*)(void *, u16, s32 *, void *))fn_800AFBA8)(ctx, (u16)cur, &next, pp);
+            break;
+        case 1:
+            err = ((s32 (*)(void *, s32, s32 *, void *))fn_800B00E8)(ctx, cur, &next, pp);
+            break;
+        case 2:
+            err = ((s32 (*)(void *, s32, s32 *, void *))fn_800B05C8)(ctx, cur, &next, pp);
+            break;
+        default:
+            err = 0xF;
+            break;
+        }
+        if (err != 0) {
+            VFiPFCACHE_FreeFATPage_800A8E10(ctx, page);
+            return err;
+        }
+        if (next == 0) {
+            void *pg = page;
+            u16 i;
+            s32 pos = *(s32 *)((u8 *)pg + 0x18);
+            err = 0;
+            for (i = 0; i < *(u8 *)(ctx + 0x22); i++) {
+                s32 e = fn_800B5618(ctx, *(void **)((u8 *)pg + 8), pos, 0, *(u16 *)ctx);
+                if (e != 0 && err == 0) {
+                    err = e;
+                }
+                pos += *(s32 *)(ctx + 0xC);
+            }
+            if (err != 0) {
+                VFiPFCACHE_FreeFATPage_800A8E10(ctx, page);
+                return err;
+            }
+            VFiPFCACHE_FreeFATPage_800A8E10(ctx, page);
+            return 0;
+        }
+        if ((u32)(arg2 + 0x10000) != 0xFFFFU) {
+            err = VFiPFFAT_WriteClusterPage(arg0, cur, arg2, 0, 1, page);
+            arg2++;
+        } else {
+            s32 r;
+            type = *(s32 *)(ctx + 0x1C);
+            pp = page;
+            switch (type) {
+            case 0:
+                r = ((s32 (*)(void *, u16, s32, void *))fn_800AF8EC)(ctx, (u16)cur, 0, pp);
+                break;
+            case 1:
+                r = ((s32 (*)(void *, s32, s32, void *))fn_800AFFE0)(ctx, cur, 0, pp);
+                break;
+            case 2:
+                r = ((s32 (*)(void *, s32, s32, void *))fn_800B0488)(ctx, cur, 0, pp);
+                break;
+            default:
+                r = 0xF;
+                break;
+            }
+            err = r;
+        }
+        if (err != 0) {
+            VFiPFCACHE_FreeFATPage_800A8E10(ctx, page);
+            return err;
+        }
+        if (arg3 != 0 && remain != 0) {
+            remain = (u32)remain > (u32)clusterSize ? remain - clusterSize : 0;
+        }
+        if ((u32)(*(s32 *)(ctx + 0x38) + 0x10000) != 0xFFFFU) {
+            *(s32 *)(ctx + 0x38) = *(s32 *)(ctx + 0x38) + 1;
+        }
+        cur = next;
+    }
+    {
+        void *pg = page;
+        s32 pos = *(s32 *)((u8 *)pg + 0x18);
+        err = 0;
+        for (cur = 0; (u16)cur < *(u8 *)(ctx + 0x22); cur++) {
+            s32 e = fn_800B5618(ctx, *(void **)((u8 *)pg + 8), pos, 0, *(u16 *)ctx);
+            if (e != 0 && err == 0) {
+                err = e;
+            }
+            pos += *(s32 *)(ctx + 0xC);
+        }
+        if (err != 0) {
+            VFiPFCACHE_FreeFATPage_800A8E10(ctx, page);
+            return err;
+        }
+    }
+    VFiPFCACHE_FreeFATPage_800A8E10(ctx, page);
+    if (*(s32 *)(ctx + 0x1C) == 2 && (*(u16 *)(ctx + 0x1FAC) & 2) && fn_800AF144(ctx) != 0) {
+        *(s32 *)(ctx + 0x38) = -1;
+        *(u16 *)(ctx + 0x1FAC) = *(u16 *)(ctx + 0x1FAC) & ~4;
     }
     return 0;
 }
@@ -11755,6 +11894,8 @@ extern s16 lbl_802F3418[];
 extern s16 lbl_802F3478[];
 extern "C" s32 lbl_802F33C8[];
 extern "C" s32 lbl_802F33E8[];
+#pragma push
+#pragma use_lmw_stmw on
 extern "C" void fn_800BD970(s32 arg0, s32 arg1, s8 arg2, s32 arg3, s32 *arg4) {
     s32 row, i, n = arg0 * 0x12;
     if (arg3 & 7) {
@@ -11768,11 +11909,11 @@ extern "C" void fn_800BD970(s32 arg0, s32 arg1, s8 arg2, s32 arg3, s32 *arg4) {
                 s32 j;
                 for (j = 0; j < 4; ++j) {
                     s32 x = a[0], y = b[0], co = c[0], si = d[0];
-                    b[0] = (s64)y * co >> 24 - ((s64)x * si >> 24);
-                    a[0] = ((s64)y * si >> 24) + ((s64)x * co >> 24);
+                    b[0] = (s32)(((s64)y * co) >> 24) - (s32)(((s64)x * si) >> 24);
+                    a[0] = (s32)(((s64)y * si) >> 24) + (s32)(((s64)x * co) >> 24);
                     x = a[1]; y = b[-1]; co = c[1]; si = d[1];
-                    b[-1] = ((s64)y * co >> 24) - ((s64)x * si >> 24);
-                    a[1] = ((s64)y * si >> 24) + ((s64)x * co >> 24);
+                    b[-1] = (s32)(((s64)y * co) >> 24) - (s32)(((s64)x * si) >> 24);
+                    a[1] = (s32)(((s64)y * si) >> 24) + (s32)(((s64)x * co) >> 24);
                     a += 2; b -= 2; c += 2; d += 2;
                 }
             }
@@ -11788,17 +11929,17 @@ extern "C" void fn_800BD970(s32 arg0, s32 arg1, s8 arg2, s32 arg3, s32 *arg4) {
             s32 j;
             for (j = 0; j < 4; ++j) {
                 s32 x = a[0], y = b[0], co = c[0], si = d[0];
-                b[0] = ((s64)y * co >> 24) - ((s64)x * si >> 24);
-                a[0] = ((s64)x * co >> 24) + ((s64)y * si >> 24);
+                b[0] = (s32)(((s64)y * co) >> 24) - (s32)(((s64)x * si) >> 24);
+                a[0] = (s32)(((s64)x * co) >> 24) + (s32)(((s64)y * si) >> 24);
                 x = a[1]; y = b[-1]; co = c[1]; si = d[1];
-                b[-1] = ((s64)y * co >> 24) - ((s64)x * si >> 24);
-                a[1] = ((s64)x * co >> 24) + ((s64)y * si >> 24);
+                b[-1] = (s32)(((s64)y * co) >> 24) - (s32)(((s64)x * si) >> 24);
+                a[1] = (s32)(((s64)x * co) >> 24) + (s32)(((s64)y * si) >> 24);
                 a += 2; b -= 2; c += 2; d += 2;
             }
         }
     }
 }
-
+#pragma pop
 extern "C" s16 fn_800BDD7C(s32 arg0, s32 arg1, s32 *arg2) {
     u32 value = ((s32 (*)(s32, s32, s32, s32 *))fn_800BDE18)(arg0, arg1, 0xC, arg2);
     while ((value & 0xFFFFU) != 0xFFFU) {
@@ -13324,8 +13465,8 @@ register s16 y;
 if (sp14 != 0) {
 register s32 tile = *(s32*)((u8*)arg0 + 4);
 register s16 row = *(s16*)((u8*)arg0 + 0x1C);
-sp10 = ((s16*)(table + tile * 0x60 + row * 0x20))[arg5 + arg6];
-spE = ((s16*)(table + 0xC0 + tile * 0x78 + row * 0x28))[arg5];
+sp10 = *(s16*)(table + tile * 0x60 + row * 0x20 + (arg5 + arg6) * 2);
+spE = *(s16*)(table + 0xC0 + tile * 0x78 + row * 0x28 + arg5 * 2);
 } else if (arg4 & 0x10) {
 sp10 = 0x24;
 } else {
@@ -13333,8 +13474,8 @@ sp10 = (s16)lbl_80559270[*(s32*)((u8*)arg0 + 4)];
 }
 
 maxOutput = arg3 * 2;
+sp18 = ((u32)(-sp14 | sp14) >> 31) + 2;
   output = (s16*)sp8;
-  sp18 = ((u32)(-sp14 | sp14) >> 31) + 2;
 inputCursor = arg9;
 while (i < sp18) {
 type = *inputCursor;
@@ -13363,7 +13504,7 @@ maxForPass = maxOutput;
 }
 
 while (outputIndex < maxForPass) {
-raw = (u32)((u16 (*)(u8 *, s32, u32 *))fn_800C0DF8)((u8*)arg1, 0x10, (u32*)&ctx->bitIndex) << 16;
+raw = (u32)fn_800C0DF8((u8*)arg1, 0x10, (u32*)&ctx->bitIndex) << 16;
 if (type == 0xD || type == 0x10) {
 bits = ctx->bitIndex;
 ctx->bitIndex = bits + 4;
