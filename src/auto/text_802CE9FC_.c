@@ -1918,6 +1918,8 @@ void fn_802D2640(void) {
 }
 
 extern void (*lbl_8055FD80)(void);
+#pragma push
+#pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_802D2684(void) {
     unsigned int tevFlag;
