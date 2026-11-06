@@ -3,9 +3,9 @@
 extern char lbl_8034BF80[];
 extern void DCInvalidateRange(void *, unsigned long);
 extern void *memcpy(void *, const void *, unsigned long);
-extern unsigned long lbl_8055FD44_CF10C;
-extern int lbl_8055FD4C_CF10C;
-extern unsigned char lbl_8055FD50_CF10C;
+extern unsigned long lbl_8055FD44;
+extern int lbl_8055FD4C;
+extern unsigned char lbl_8055FD50;
 #pragma dont_inline fn_802D2ED8
 #pragma dont_inline fn_802CFD74
 extern int lbl_804C9760[];
