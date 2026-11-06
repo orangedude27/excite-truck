@@ -360,6 +360,47 @@ extern "C" int fn_801901F0(void *arg0) {
     }
     return result;
 }
+
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_801902A0(void *arg0) {
+    class VTable {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+        virtual void f10();
+        virtual void f11();
+        virtual void f12();
+        virtual void f13();
+        virtual void f14();
+        virtual void f15();
+        virtual void f16();
+        virtual void f17();
+        virtual void f18();
+        virtual void f19();
+        virtual void f20();
+        virtual void f21();
+        virtual void f22();
+        virtual void f23();
+        virtual void f24();
+        virtual void f25();
+        virtual void f26();
+        virtual void f27();
+        virtual void f28();
+    };
+    VTable *obj = *(VTable **)((char *)arg0 + 4);
+    obj->f28();
+}
+#pragma pop
+
 extern void fn_801B6650(int);
 extern void fn_802793B0(int);
 #pragma cplusplus on
@@ -716,6 +757,72 @@ void fn_801912B4(void *arg0) {
 }
 
 #pragma cplusplus on
+extern "C" void fn_801912D8(void *arg0) {
+    class Obj {
+    public:
+        virtual void m08(); virtual void m0C(); virtual void m10(); virtual void m14();
+        virtual void m18(); virtual void m1C(); virtual void m20();
+        virtual void setA(s32);
+        virtual void setB(void *, f32);
+        virtual void m2C(); virtual void m30(); virtual void m34(); virtual void m38(); virtual void m3C();
+        virtual void m40(); virtual void m44(); virtual void m48(); virtual void m4C(); virtual void m50();
+        virtual void m54(); virtual void m58(); virtual void m5C(); virtual void m60(); virtual void m64();
+        virtual u8 getFlag();
+        virtual void *getKey();
+    };
+    u8 *self = (u8 *)arg0;
+    char *base = lbl_80332E70;
+    u8 flagOn;
+    s32 enabled;
+    s32 mask;
+    u8 spA, sp9, sp8;
+    *(u8 *)(*(u8 **)(self + 0x34) + 0x2680) = (*(Obj **)(self + 0x38))->getFlag();
+    *(s32 *)(*(u8 **)(self + 0x34) + 0x267C) = 0;
+    *(f32 *)(*(u8 **)(self + 0x34) + 0x5F0) = lbl_80562090;
+    enabled = 1;
+    self[4] = 1;
+    fn_801333E8((*(Obj **)(self + 0x38))->getKey(), base + 0x7C, self + 4);
+    flagOn = 1;
+    self[5] = flagOn;
+    fn_801333E8((*(Obj **)(self + 0x38))->getKey(), base + 0x8C, self + 5);
+    if (self[4] != 0) {
+        self[5] = flagOn;
+    }
+    if (self[4] == 0) {
+        enabled = 0;
+    }
+    {
+        s32 v = 0;
+        if (enabled != 0) {
+            v = 4;
+        }
+        *(s32 *)(self + 0x30) = v;
+    }
+    spA = 1;
+    sp9 = 1;
+    sp8 = 0;
+    fn_801333E8((*(Obj **)(self + 0x38))->getKey(), base + 0x98, &spA);
+    fn_801333E8((*(Obj **)(self + 0x38))->getKey(), base + 0xAC, &sp9);
+    fn_801333E8((*(Obj **)(self + 0x38))->getKey(), base + 0xC0, &sp8);
+    mask = 0;
+    if ((lbl_8055D430 & 1) && (lbl_8055D430 & 4)) {
+        mask = 1;
+    }
+    if (mask != 0) {
+        sp8 = 1;
+    }
+    if (sp8 != 0) {
+        spA = 0;
+        sp9 = 0;
+    }
+    (*(Obj **)(self + 0x38))->setA(fn_8018B06C(*(void **)(self + 0x34)));
+    (*(Obj **)(self + 0x38))->setB(*(void **)(self + 0x34), *(f32 *)(*(u8 **)(self + 0x34) + 0x25F4));
+    *(s32 *)(self + 8) = *(s32 *)(*(u8 **)(self + 0x38) + 0x20);
+    *(f32 *)(self + 0x10) = lbl_8056208C;
+    *(f32 *)(self + 0x14) = lbl_8056208C;
+    *(f32 *)(self + 0x18) = lbl_8056208C;
+    memset(self + 0x20, 0, 0x10);
+}
 extern "C" void fn_801914F8(void *arg0) {
     class VTable {
     public:
