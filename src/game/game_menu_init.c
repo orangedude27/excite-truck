@@ -335,17 +335,13 @@ int fn_80005158(const char *name) {
     first = lbl_8034EC58[0];
     if (first == '$') goto dollar;
     if (first != '@') goto generic;
-    {
-        char *text = lbl_8034EC58;
-        result = fn_80004F00(&count, &found, text + 1);
-        if (!result) MenuLog(data + 0x150, text + 1);
-    }
+    result = fn_80004F00(&count, &found, &lbl_8034EC58[1]);
+    if (!result) MenuLog(data + 0x150, &lbl_8034EC58[1]);
     goto after_lookup;
 dollar:
-    if (first != '\0') {
-        result = fn_80005044(&count, &found, lbl_8034EC58);
-        if (!result) MenuLog(data + 0x180, lbl_8034EC58);
-    }
+    if (first == '\0') goto generic;
+    result = fn_80005044(&count, &found, lbl_8034EC58);
+    if (!result) MenuLog(data + 0x180, lbl_8034EC58);
     goto after_lookup;
 generic:
     result = fn_800050D0(&count, &found, name);
@@ -362,7 +358,6 @@ after_lookup:
     RestoreMenuFlag(&saved);
     return 0;
 }
-#pragma scheduling on
 void fn_80004CB4(void) {
     fn_8020A634();
     fn_802E9880(0);
@@ -458,7 +453,7 @@ void fn_80005364(void) {
     var4 = 0x7B;
     var5 = 0x7F000000;
     lbl_802FAFA0[1] = var1;
-    *(u32*)lbl_8055D328 = var2;
+    lbl_8055D328 = var2;
     lbl_8034EC40[0] = var3;
     lbl_8034EC40[1] = var4;
     lbl_8034EC40[2] = var3;
