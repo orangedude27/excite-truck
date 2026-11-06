@@ -1204,12 +1204,11 @@ extern "C" void fn_8021A6A8(void *arg0) {
 
 extern "C" void fn_8021A6EC(void *arg0) {
     u8 *p = (u8 *)arg0;
-    f32 f = lbl_805634E4;
     *(u8 *)(p + 0x250) = 1;
     *(u8 *)(p + 0x251) = 1;
-    *(f32 *)(p + 0x24C) = f;
+    *(f32 *)(p + 0x24C) = 30.0f;
     *(s32 *)(p + 0x254) = 1;
-    *(s32 *)(p + 0x244) = fn_8022F638(*(s32 *)(p + 0x248), 1, 1, 1, lbl_805634E4);
+    *(s32 *)(p + 0x244) = fn_8022F638(*(s32 *)(p + 0x248), 1, 1, 1, 30.0f);
 }
 
 extern "C" void fn_8022F824(s32);
@@ -4004,11 +4003,11 @@ extern "C" void fn_80220F90(void *arg0, s32 arg1, s32 arg2) {
         virtual void a24() = 0; virtual void a25() = 0; virtual void a26() = 0; virtual void a27() = 0;
         virtual s32 get(void *) = 0;
     };
+    f32 scale;
+    f32 scale2;
     f32 factor;
     f32 distance;
     f32 adjusted;
-    f32 scale;
-    f32 scale2;
     s32 width;
     s32 end;
     s32 end2;
@@ -4134,7 +4133,7 @@ extern "C" void fn_80228E80(s32, s32, s32, s32, s32, s32);
 extern "C" s32 lbl_8055FBE0;
 extern "C" s32 lbl_8055FBFC;
 #pragma push
-#pragma scheduling invalid_target
+#pragma processor 750
 extern "C" void fn_80221544(void *arg0, s32 arg1) {
     struct Child { s32 base; s32 length; s32 offset; };
     struct Object {
@@ -6691,16 +6690,8 @@ extern f32 lbl_80563578;
 #pragma ppc_psq_save off
 #pragma scheduling invalid_target
 extern "C" void fn_80228010(void* arg0) {
-union Conv { f64 d; u32 word[2]; } cvtVirtual, cvtSpan, cvtLastSpan;
-if (*(s32*)((u8*)arg0 + 0x250) == 0)
-return;
-if (*(s32*)((u8*)arg0 + 0x254) == 0)
-return;
-
-if (*(s32*)((u8*)arg0 + 0x258) != 0) goto active;
-goto finish;
-active: {
-
+union Conv { f64 d; u32 word[2]; } cvtVirtual;
+if (*(s32*)((u8*)arg0 + 0x250) != 0 && *(s32*)((u8*)arg0 + 0x254) != 0 && *(s32*)((u8*)arg0 + 0x258) != 0) {
 f32 duration, initial, radius;
 s32 lastIndex;
 duration = fn_80235EF0(*(s32*)((u8*)arg0 + 0x254), 0);
@@ -6794,9 +6785,7 @@ topAdjusted, lbl_805634A8);
 
 fn_802278F0(*(s32*)((u8*)arg0 + 0x258), endPos, negTop, virtualPos,
 (f32)span);
-
 }
-finish: ;
 }
 #pragma pop
 #pragma push
@@ -7492,9 +7481,9 @@ extern "C" void fn_80229998(void *arg0) {
 
 #pragma scheduling invalid_target
 extern "C" s32 fn_802299B0(void *arg0) {
-    s32 value;
-    s32 *p;
     s32 result = 0;
+    s32 *p;
+    s32 value;
 
     if (*(u8 *)((u8 *)arg0 + 0x18) != 0)
         result = 2;
@@ -7506,7 +7495,7 @@ extern "C" s32 fn_802299B0(void *arg0) {
     }
     return (((u32)(-value | value)) >> 31) | result;
 }
-#pragma scheduling on
+#pragma scheduling reset
 extern "C" void fn_802299FC(void *arg0) {
     class LocalObject {
     public:
