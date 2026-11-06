@@ -264,9 +264,9 @@ extern "C" s32 ExecuteSingle__Q46nw4hbm3snd6detail11TaskManagerFv(void *arg0) {
     typedef void (*EraseFn)(void *, struct Iterator);
     u32 level;
     u8 *self = (u8 *)arg0;
+    u8 *task;
     OSLockMutex(self);
     level = OSDisableInterrupts();
-    u8 *task;
     if (*(s32 *)(self + 0x38) == 0) {
         OSRestoreInterrupts(level);
         task = 0;
@@ -562,53 +562,31 @@ extern "C" f32 CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(f32 value) {
 #pragma push
 #pragma scheduling invalid_target
 extern "C" f32 CalcPanRatio__Q46nw4hbm3snd6detail4UtilFf(f32 pan) {
-    register f32 upper = lbl_805610C8;
-    register f32 v;
-    f32 t;
-
-    if (pan > upper) {
-        v = upper;
-    } else if (pan < lbl_805610E0) {
-        v = lbl_805610E0;
-    } else {
-        v = pan;
-    }
-
-    t = lbl_805610C8 + v;
-    return lbl_802F6124[(s32)(lbl_805610D0 +
-                              lbl_805610E4 * (t * lbl_805610D0))];
+    f32 v;
+    if (pan > lbl_805610C8) v = lbl_805610C8;
+    else if (pan < lbl_805610E0) v = lbl_805610E0;
+    else v = pan;
+    double t = lbl_805610C8 + v;
+    return lbl_802F6124[(s32)(lbl_805610D0 + lbl_805610E4 * ((f32)t * lbl_805610D0))];
 }
 #pragma pop
 extern "C" f32 CalcSurroundPanRatio__Q46nw4hbm3snd6detail4UtilFf(f32 pan) {
     f32 v;
-
-    if (pan > lbl_805610CC) {
-        v = lbl_805610CC;
-    } else if (pan < lbl_805610E8) {
-        v = lbl_805610E8;
-    } else {
-        v = pan;
-    }
-
-    return lbl_802F6124[(s32)(lbl_805610D0 +
-                              lbl_805610E4 * (v * lbl_805610D0))];
+    if (pan > lbl_805610CC) v = lbl_805610CC;
+    else v = (pan < lbl_805610E8) ? lbl_805610E8 : pan;
+    return lbl_802F6124[(s32)(lbl_805610D0 + lbl_805610E4 * (v * lbl_805610D0))];
 }
 
 extern "C" s32 CalcLpfFreq__Q46nw4hbm3snd6detail4UtilFf(f32 value) {
     f32 v;
-    double x;
-
-    if (value > lbl_805610C8) {
-        v = lbl_805610C8;
+    if (value > 1.0f) {
+        v = 1.0f;
     } else if (value < lbl_805610E8) {
         v = lbl_805610E8;
     } else {
         v = value;
     }
-
-    x = lbl_80561100 * ((double)v - lbl_80561108);
-    x = fn_8002EFBC(x, lbl_805610F8);
-    return (s32)(lbl_805610F0 * x);
+    return (s32)(lbl_805610F0 * fn_8002EFBC(lbl_805610F8, lbl_80561100 * ((double)v - lbl_80561108)));
 }
 
 u32 fn_800FEB9C(void) {
