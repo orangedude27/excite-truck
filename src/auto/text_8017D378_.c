@@ -405,7 +405,8 @@ void fn_8017DCB4(void *arg0) {
 #pragma ppc_psq_save reset
 
 #pragma push
-#pragma scheduling off
+#pragma processor 750
+#pragma scheduling on
 #pragma dont_inline on
 #pragma ppc_psq_save off
 void fn_8017DEE0(void *arg0, long arg1, long arg2, short arg3, float farg0) {
