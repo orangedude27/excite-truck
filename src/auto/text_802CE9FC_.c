@@ -383,6 +383,98 @@ void fn_802CF5F8(void) {}
 void fn_802CF5FC(void) {
 }
 
+#pragma push
+#pragma scheduling invalid_target
+#pragma dont_inline on
+void fn_802CF600(void) {
+    extern char lbl_8034BD18[], lbl_8055D104;
+    extern int lbl_8055FD7C, lbl_8055FD48, lbl_8055FD4C, lbl_8055FD2C, lbl_8055FD6C, lbl_8055FD40;
+    extern unsigned char lbl_8055FD50;
+    extern unsigned short lbl_8055FD0A;
+    extern void *lbl_8055FD68, *lbl_8055FD20;
+    extern unsigned long lbl_8055FDAC;
+    extern void fn_802CF830(void), fn_802CF10C(void), fn_802D9A50(void), fn_802CEC44(void);
+    extern void fn_80127468(void), fn_8005954C(void), fn_801282EC(int), fn_801282F4(void);
+    extern void fn_802D8D1C(void), fn_802D6810(void), fn_802CF850(void), fn_802D0BD8(void);
+    extern void fn_802CFF10(void), fn_802DACD4(void), fn_802D9C18(void), fn_802DA2F4(void);
+    extern void fn_802CFF5C(void *), fn_802CFFA4(unsigned short), fn_802D37E4(void), fn_802DD4FC(void), fn_802DB168(void);
+    extern void *fn_8002F37C(void *, void (*)(void), void *, int, int);
+    extern int GXInit(int, int), GXGetTexBufferSize(int, int, int, int, int);
+    extern void GXInitTexObj(void *, void *, int, int, int, int, int, int);
+    extern void fn_800591AC(int), fn_80127C90(void (*)(void), void *);
+    extern void GXGetLightDir(void (*)(unsigned int)), GXLoadLightObjIndx(void (*)(void));
+    extern int VIConfigure(void *), VISetBlack(int), VIFlush(void);
+    extern void fn_802E30C8(const char *, ...);
+    int zero = 0;
+    int negative;
+    void *buffer;
+    int size;
+    lbl_8055FD7C = 0;
+    lbl_8055FD48 = 3;
+    lbl_8055FD4C = 0;
+    lbl_8055FD50 = 0;
+    lbl_8055FD2C = -0x259;
+    lbl_8055FD30 = -0x258;
+    lbl_8055FD64 = 0;
+    lbl_8055FE24 = 0;
+    fn_80127468();
+    fn_8005954C();
+    fn_802CEAC4();
+    fn_80127468();
+    VIConfigure(lbl_8055FD64);
+    fn_802CEA34();
+    fn_80127468();
+    fn_801282EC(0x20);
+    fn_801282F4();
+    lbl_8055FDA0 = (unsigned long)fn_8012850C((void *)0x177000, lbl_8034BD18 + 0x2A4);
+    lbl_8055FD94 = 0;
+    buffer = fn_8012850C((void *)0x26010, lbl_8034BD18 + 0x2B0);
+    lbl_8055FDB0 = fn_8002F37C(buffer, fn_802CF830, 0, 0x4C, 0x800);
+    lbl_8055FDAC = 0;
+    fn_802D8D1C();
+    fn_80127468();
+    lbl_8055FD68 = fn_8012850C((void *)0x300000, lbl_8034BD18 + 0x2BC);
+    lbl_8055FD6C = GXInit((int)lbl_8055FD68, 0x300000);
+    fn_802D6810();
+    fn_802CF850();
+    fn_80127468();
+    fn_802E30C8(lbl_8034BD18 + 0x2C8);
+    fn_802D0BD8();
+    fn_802E30C8(lbl_8034BD18 + 0x2E0);
+    fn_80127468();
+    fn_802CFF10();
+    fn_802E30C8(lbl_8034BD18 + 0x2FC);
+    fn_80127468();
+    fn_802CF5A8();
+    fn_802DACD4();
+    fn_802D9C18();
+    fn_800591AC((int)fn_802CF10C);
+    fn_80127468();
+    fn_802DA2F4();
+    fn_802CFF5C((void *)0x17);
+    fn_802CFFA4(lbl_8055FD0A);
+    negative = -1;
+    lbl_8055FD20 = (void *)negative;
+    size = GXGetTexBufferSize(0x280, 0x1C0, 1, 0, 0);
+    fn_801282EC(0x20);
+    buffer = fn_8012850C((void *)size, lbl_8034BD18 + 0x30C);
+#pragma small_data off
+    lbl_804C9940 = (unsigned long)buffer;
+    GXInitTexObj(&lbl_804C9940 + 1, buffer, 0x280, 0x1C0, 1, 0, 0, 0);
+#pragma small_data on
+    GXGetLightDir(fn_802CECF4);
+    GXLoadLightObjIndx(fn_802CEC44);
+    fn_802D37E4();
+    fn_802DD4FC();
+    lbl_8055FD40 = negative;
+    fn_80127468();
+    fn_80127C90(fn_802D9A50, &lbl_8055D104);
+    fn_802DB168();
+    lbl_8055FD48 = zero;
+    VISetBlack(zero);
+    VIFlush();
+}
+#pragma pop
 void fn_802CF830(void) {
 }
 
@@ -1538,6 +1630,12 @@ typedef struct LightPos_802D18E8 {
     unsigned char pad[0x24];
     float x, y, z;
 } LightPos_802D18E8;
+typedef struct LightEntry_802D18E8 {
+    unsigned char r, g, b, a;
+    unsigned char pad[8];
+    float x, y, z;
+    float scale;
+} LightEntry_802D18E8;
 static inline void VecSub_802D18E8(float *dst, float *a, float *b) {
     dst[0] = a[9] - b[9];
     dst[1] = a[10] - b[10];
@@ -1550,6 +1648,8 @@ extern void GXLoadLightObjImm(void *, unsigned int);
 extern void GXSetChanCtrl(int, int, int, int, unsigned int, int, int);
 #pragma push
 #pragma scheduling reset
+#pragma paired off
+#pragma paired_single off
 void fn_802D18E8(void) {
     unsigned char *base = (unsigned char *)lbl_804C5650;
     float *from = (float *)(base + 0x40);
@@ -1649,10 +1749,7 @@ void fn_802D1B58(void) {
 extern float lbl_80564FCC;
 extern float lbl_80564FDC;
 #pragma push
-#pragma paired off
-#pragma paired_single off
-#pragma scheduling invalid_target
-#pragma dont_inline fn_802CFF50
+#pragma processor 750
 void fn_802D2218(void) {
     float sp90[12];
     float sp60[12];
@@ -1664,10 +1761,11 @@ void fn_802D2218(void) {
     unsigned char tevColor[4];
     float temp_f1;
     float temp_f1_2;
-    register float vertexZ;
+    float vertexZ;
     register volatile float *fifo;
-    register float temp_f30;
-    register float temp_f31;
+    float temp_f30;
+    float temp_f31;
+    int temp_r4;
     int screenWidth;
     int screenHeight;
     int var_ctr;
@@ -1706,8 +1804,8 @@ void fn_802D2218(void) {
         fn_802D0DD4(sp60, sp90);
         GXLoadPosMtxImm(sp60, 0);
         temp_r30 = (unsigned char *)lbl_804C5650 + 0x4128;
-        screenWidth = *(int *)((unsigned char *)temp_r30 + 0x24);
-        screenHeight = *(int *)((unsigned char *)temp_r30 + 0x28);
+        screenWidth = ((int *)temp_r30)[9];
+        screenHeight = ((int *)temp_r30)[10];
         temp_f31 = lbl_80564F94 * (float)screenWidth;
         temp_f30 = lbl_80564F94 * (float)screenHeight;
         C_MTXOrtho(sp20, temp_f30, -temp_f30, -temp_f31, temp_f31, lbl_80564F8C, lbl_80564FCC);
@@ -1717,11 +1815,11 @@ void fn_802D2218(void) {
         GXSetColorUpdate(temp_r30[0x2D]);
         GXSetAlphaUpdate(temp_r30[0x2D]);
         GXSetZMode(1, 7, temp_r30[0x2C]);
-        temp_r7 = (unsigned char *)temp_r30 + 0x38;
-        fogColor[0] = temp_r7[1];
+        temp_r7 = temp_r30 + 0x38;
         temp_r6 = temp_r7[2];
-        fogColor[1] = temp_r6;
         temp_r5 = temp_r7[3];
+        fogColor[0] = temp_r7[1];
+        fogColor[1] = temp_r6;
         fogColor[2] = temp_r5;
         fogColor[3] = temp_r7[4];
         GXSetFog(0, fogColor, temp_r5, temp_r6, temp_r7, lbl_80564F88, lbl_80564F88, lbl_80564F88, lbl_80564F88);
@@ -1745,9 +1843,9 @@ void fn_802D2218(void) {
         GXSetVtxDesc(9, 1);
         GXSetVtxAttrFmt(0, 9, 1, 4, 0);
         GXBegin(0x98, 0, 4);
+        vertexZ = lbl_80564FDC;
         fifo = (volatile float *)0xCC010000;
         var_r4 = 0;
-        vertexZ = lbl_80564FDC;
         for (var_ctr = 0; var_ctr != 2; var_ctr++) {
             var_r0 = 1;
             if (var_r4 & 1) {
@@ -1786,24 +1884,21 @@ void fn_802D2218(void) {
         GXSetTevOrder(0, 0, 0, 4);
         GXSetTevOp(0, 0);
         GXSetDstAlpha(1, lbl_8055FD60);
-        temp_r3_2 = (unsigned char *)temp_r30;
+        temp_r3_2 = temp_r30;
         temp_r3_2[0x2C] = 0;
         temp_r3_2[0x2D] = 0;
         fn_802CFF50();
         temp_r3_2[0] = 1;
         fn_802D14D8();
-        temp_r4_2 = (unsigned char *)temp_r30 + 0x58;
+        temp_r4_2 = temp_r30 + 0x58;
         ((unsigned char *)lbl_804C5650)[0xB0] = 1;
-        temp_r3_3 = (unsigned char *)temp_r30 + 0x38;
+        temp_r3_3 = temp_r30 + 0x38;
         lbl_8055FD70 = 1;
         temp_r4_2[0x5C] = 1;
         temp_r3_3[0x1C] = 1;
         fn_802D6C68();
     }
 }
-#pragma scheduling on
-#pragma paired_single reset
-#pragma paired reset
 #pragma pop
 void fn_802D2614(void) {
     fn_802D14D8();
