@@ -234,7 +234,7 @@ extern "C" void *fn_80240BA4(void *arg0, s32 arg1, void *arg2, void *arg3, void 
     register void *self = arg0;
     register void *desired = arg2;
     char *src, *dst, *entries, *output, *zeroBase, *textItem, *object;
-    signed char c;
+    char c;
     struct Collection {
         virtual s32 f0() = 0;
         virtual s32 f1() = 0;
@@ -274,8 +274,8 @@ extern "C" void *fn_80240BA4(void *arg0, s32 arg1, void *arg2, void *arg3, void 
     *(u8 *)((u8 *)self + 0x8) = 1;
     *(s32 *)((u8 *)self + 0x28) = 0;
 
-    count = ((Collection *)*(void **)((u8 *)self + 0x24))->getCount();
     j = 0;
+    count = ((Collection *)*(void **)((u8 *)self + 0x24))->getCount();
     while (j < count) {
         item = ((Collection *)*(void **)((u8 *)self + 0x24))->getItem(j);
         record = fn_8001668C(item, 0);
@@ -319,7 +319,7 @@ extern "C" void *fn_80240BA4(void *arg0, s32 arg1, void *arg2, void *arg3, void 
         *dst++ = c;
     } while (c != 0);
 
-    result = ((Collection *)*(void **)((u8 *)self + 0x24))->getResult(*(s32 *)((u8 *)self + 0x28));
+    result = ((Collection *)*(void **)((u8 *)arg0 + 0x24))->getResult(*(s32 *)((u8 *)self + 0x28));
     *(s32 *)((u8 *)self + 0x6C) = result;
     *(u8 *)((u8 *)*(void **)((u8 *)self + 0x20) + 0xDD) = (result == 0);
 
@@ -340,8 +340,8 @@ extern "C" void *fn_80240BA4(void *arg0, s32 arg1, void *arg2, void *arg3, void 
     index = *(s32 *)((u8 *)item + 4);
     *(s32 *)((u8 *)ctx + 0x2C) = index;
     *(u8 *)((u8 *)ctx + 0x5C) = 0;
-    if (index >= 0 && index < *(s32 *)((u8 *)record + 0x98)) {
-        item = *(void **)((u8 *)record + 0x64 + index * 4);
+    if (index >= 0 && index < *(s32 *)(*(u8 **)((u8 *)ctx + 0x28) + 0x98)) {
+        item = *(void **)((u8 *)*(void **)((u8 *)ctx + 0x28) + 0x64 + index * 4);
         *(void **)(*(void **)((u8 *)ctx + 0x34)) = item;
         fn_80255918(*(void **)((u8 *)ctx + 0x38), item);
         ((int (*)(void *, int, void *, ...))fn_801345D8)(
@@ -366,9 +366,7 @@ extern "C" void *fn_80240BA4(void *arg0, s32 arg1, void *arg2, void *arg3, void 
     *(float *)((u8 *)ctx + 0x50) = (float)*(s32 *)((u8 *)ctx + 0x2C);
 
     infoDst = *(void **)((u8 *)self + 0x1C);
-    info = fn_80018A8C((u8 *)self + 0x2C, *(s32 *)((u8 *)ctx + 0x2C),
-                       (s32 *)*(void **)((u8 *)ctx + 0x30),
-                       *(s32 *)((u8 *)ctx + 0x2C));
+    info = ((void *(*)(void *))fn_80018A8C)((u8 *)self + 0x2C);
     if (info != 0) {
         ((s32 *)infoDst)[0] = ((s32 *)info)[0];
         wordA = ((s32 *)info)[2];
@@ -1422,7 +1420,7 @@ extern "C" void fn_80242B1C(void *arg0) {
                     src = (u8 *)&lbl_8055BD60;
                     dst = widget + 0x39;
                     n = 0x20;
-                    goto copy_check_loop0;
+                    goto copy_check0;
 copy_check_loop0:
                     --n;
                     if (n > 0) goto copy_check0;
@@ -1437,7 +1435,7 @@ copy_done0:;
                     src = fn_802E85B8(selected);
                     dst = widget + 0x39;
                     n = 0x20;
-                    goto copy_check_loop1;
+                    goto copy_check1;
 copy_check_loop1:
                     --n;
                     if (n > 0) goto copy_check1;
@@ -1586,3 +1584,9 @@ off_child_check:
 #pragma scheduling on
 #pragma use_lmw_stmw reset
 #pragma optimize_for_size on
+#pragma cplusplus reset
+s32 fn_80242F68(void *arg0, s32 arg1) {
+    u8 *base = (u8 *)arg0;
+    s32 channel = fn_802E4A10();
+    return channel;
+}
