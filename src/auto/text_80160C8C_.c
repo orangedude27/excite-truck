@@ -2389,6 +2389,26 @@ s32 fn_80164894(s32 arg0, void *arg1, s32 arg2) {
     return 1;
 }
 
+#pragma cplusplus on
+struct Vec2_648 { float x; float y; };
+struct ObjInner_648 {
+    virtual void i0(); virtual void i1(); virtual void i2(); virtual void i3();
+    virtual void i4(); virtual void i5(); virtual void i6(); virtual void i7();
+    virtual void i8(); virtual void i9(); virtual void i10(); virtual void i11();
+    virtual void i12(); virtual void i13(); virtual void i14(); virtual void i15();
+    virtual void i16(); virtual void i17(); virtual void i18(); virtual void i19();
+    virtual void i20(); virtual void *i21(char *);
+};
+struct Obj2_648 {
+    virtual void o0(); virtual void o1(); virtual void o2(); virtual void o3();
+    virtual void o4(); virtual void o5(); virtual void o6(); virtual void o7();
+    virtual float o8(char *, float); virtual void o9(); virtual s32 o10(char *, s32);
+    virtual void o11(); virtual void o12(); virtual Vec2_648 o13(char *);
+};
+struct Mgr_648 {
+    virtual void m0(); virtual s32 m1(s32);
+};
+#pragma cplusplus off
 extern void *fn_801352B8(void *);
 extern void *fn_8013530C(void *, s32);
 extern void fn_801355C0(void *, void *, s32, void *, s32);
@@ -2432,6 +2452,7 @@ s32 fn_801648AC(void *arg0, void *arg1, s32 arg2) {
     void *scalePtr;
     void *obj2;
     s32 i;
+    struct Vec2 *p;
     s32 best;
     float bestLen;
     float len;
@@ -2453,20 +2474,22 @@ s32 fn_801648AC(void *arg0, void *arg1, s32 arg2) {
             pos.y = lbl_80561848;
             dir.x = lbl_80561848;
             dir.y = lbl_80561848;
+            p = pts;
             i = 0;
             do {
                 ((void (*)(char *, s32, const char *, ...))fn_801345D8)(bound, 0x10, (char *)&lbl_8055A120, i);
                 ret = ((struct Vec2(*)(void *, char *))(*(void ***)obj2)[0xF])(obj2, bound);
-                pts[i].x = ret.x;
-                pts[i].y = ret.y;
+                p->x = ret.x;
+                p->y = ret.y;
+                p++;
                 i++;
             } while (i < 3);
             best = 2;
             e2.y = pts[2].y - pts[0].y;
             e2.x = pts[2].x - pts[0].x;
+            bestLen = e2.x * e2.x + e2.y * e2.y;
             e1.y = pts[0].y - pts[1].y;
             e1.x = pts[0].x - pts[1].x;
-            bestLen = e2.x * e2.x + e2.y * e2.y;
             len01 = e1.x * e1.x + e1.y * e1.y;
             if (len01 > bestLen) {
                 bestLen = len01;
