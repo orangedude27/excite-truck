@@ -546,17 +546,17 @@ extern float lbl_8055E57C;
 extern char lbl_80333284[], lbl_80333294[];
 #pragma push
 #pragma processor 750
+#pragma scheduling invalid_target
 #pragma cplusplus off
 extern int fn_801769A8(void);
 void fn_80193D30(void *arg0) {
     char *p = (char *)arg0;
     int flag = 0;
-    int temp;
     int temp2;
     float limit;
 
-    limit = lbl_8055E3C8;
     lbl_8055E57C = lbl_80562144;
+    limit = lbl_8055E3C8;
     lbl_8055E574 = fn_801769B8() == 2;
 
     memset(p + 8, 0, 0x10);
@@ -699,13 +699,13 @@ void fn_80193D30(void *arg0) {
     if (*(int *)((char *)*(void **)(p + 0x294) + 0x1F0) == 0x50) {
         int index = *(int *)(p + 0x290);
         fn_801B30D0(index);
-        temp = 0;
+        flag = 0;
         if (fn_801B8570(index) == 0) {
             float threshold = lbl_8055E3C8;
             if (fn_801B306C() < threshold)
-                temp = 1;
+                flag = 1;
         }
-        if (temp != 0) {
+        if (flag != 0) {
             fn_802E30C8(lbl_80333294);
             fn_801B30E0(index);
         }
