@@ -452,7 +452,7 @@ void fn_802EBE2C(void) {
     extern void fn_802E2E0C();
     extern void OSResumeThread(void *);
     extern void fn_80127C90();
-    extern void fn_802EB7D4(void);
+    extern int fn_802EB7D4(void *, int, int, int);
     extern void fn_802EAB28(void);
     extern void fn_802E9EB8(void);
     int i, off, h;
