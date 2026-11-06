@@ -1504,9 +1504,6 @@ extern "C" void fn_80175228(void *arg0) {
 }
 
 #pragma cplusplus reset
-#pragma push
-#pragma processor 750
-#pragma use_lmw_stmw off
 extern float lbl_80561A44, lbl_80561A50, lbl_80561A54, lbl_80561AB8, lbl_80561ADC, lbl_80561AE0, lbl_80561AE4, lbl_80561AE8;
 extern char lbl_80330F48[];
 __declspec(section ".sdata") extern char lbl_8055A2E4[];
@@ -1523,6 +1520,7 @@ extern void fn_801479A8(void *, void *, void *, ...);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+extern char lbl_8055A2E4[], lbl_80330F48[];
 extern "C" int fn_80175238(void *arg0, int arg1) {
  struct Rect { int a; float b; int c,d; float e; int f,g,h; };
  struct Manager { virtual void *unused(); virtual void *get(const char *); };
@@ -1561,7 +1559,7 @@ if (blend < value) {} else {
        fn_801479A8(one,two,fn_80131234(base+0x610),value);
        fn_80160A74(); fn_801308F4(frame.text1,0x14,fn_80160998());
        frame.rect1.a=*(int *)panel;
-       frame.rect1.b=*(float *)((char *)panel+4); frame.rect1.c=*(int *)((char *)panel+8); frame.rect1.d=*(int *)((char *)panel+12); frame.rect1.e=*(float *)((char *)panel+16); frame.rect1.f=*(int *)((char *)panel+20); frame.rect1.g=*(int *)((char *)panel+24); frame.rect1.h=*(int *)((char *)panel+28);
+       *(int *)&frame.rect1.b=*(int *)((char *)panel+4); frame.rect1.c=*(int *)((char *)panel+8); frame.rect1.d=*(int *)((char *)panel+12); frame.rect1.e=*(float *)((char *)panel+16); frame.rect1.f=*(int *)((char *)panel+20); frame.rect1.g=*(int *)((char *)panel+24); frame.rect1.h=*(int *)((char *)panel+28);
        frame.rect1.b-=lbl_80561A54*fn_80147204(&frame.rect1,frame.text1);
        value=lbl_80561A50;
 if (blend < value) {} else {
@@ -1598,7 +1596,7 @@ if (blend < value) {} else {
        value=lbl_80561A44; if (value > t) {} else value=t;
        fn_80130978(frame.text2,0x14,value);
        frame.rect2.a=*(int *)panel;
-       frame.rect2.b=*(float *)((char *)panel+4); frame.rect2.c=*(int *)((char *)panel+8); frame.rect2.d=*(int *)((char *)panel+12); frame.rect2.e=*(float *)((char *)panel+16); frame.rect2.f=*(int *)((char *)panel+20); frame.rect2.g=*(int *)((char *)panel+24); frame.rect2.h=*(int *)((char *)panel+28);
+       *(int *)&frame.rect2.b=*(int *)((char *)panel+4); frame.rect2.c=*(int *)((char *)panel+8); frame.rect2.d=*(int *)((char *)panel+12); frame.rect2.e=*(float *)((char *)panel+16); frame.rect2.f=*(int *)((char *)panel+20); frame.rect2.g=*(int *)((char *)panel+24); frame.rect2.h=*(int *)((char *)panel+28);
        frame.rect2.b+=lbl_80561A54*fn_80147204(&frame.rect2,frame.text2);
        value=lbl_80561A50;
 if (blend < value) {} else {
