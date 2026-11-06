@@ -750,6 +750,13 @@ void fn_8019416C(void) {
 }
 
 #include "revolution/MTX/mtxtypes.h"
+static inline Vec2 VecLerp8019743C(Vec2 from, Vec2 to, float amount, int unused) {
+    Vec2 delta, scaled, result;
+    delta.x = to.x - from.x; delta.y = to.y - from.y;
+    scaled.x = amount * delta.x; scaled.y = amount * delta.y;
+    result.x = from.x + scaled.x; result.y = from.y + scaled.y;
+    return result;
+}
 extern float lbl_80562140, lbl_80562144;
   extern void fn_8018ADB4(int, float);
   extern void fn_8018ADBC(int, float);
@@ -2420,19 +2427,19 @@ extern void fn_80198488(void *);
 void fn_8019743C(void *p, void *arg1) {
     float *out = (float *)arg1;
     float diff=lbl_80562144, scale, limit, f, t, v, x, y;
-    int decay=1, active=0, selected, failed, mode, bits, index;
+    int decay=1, active=0, index,bits,mode,failed,selected;
     unsigned char *side;
     if(((u8 *)p)[0x9c] || ((u8 *)p)[0x74]) active=1;
     if(active) {
         fn_80198488(p);
         if(((u8 *)p)[0x74]) {
-            limit=(lbl_805621DC+lbl_8055A488)+(*(float *)((u8 *)p+0x278)+(*(float *)((u8 *)p+0x7c)+lbl_8056215C**(float *)((u8 *)p+0x84)));
+            { float a=*(float *)((u8 *)p+0x84); float m=lbl_8056215C*a; float pos=*(float *)((u8 *)p+0x7c)+m; float margin=lbl_805621DC+lbl_8055A488; limit=margin+(*(float *)((u8 *)p+0x278)+pos); }
             f=*(float *)((u8 *)p+0xc4);
             f = f>limit ? f : limit;
             *(float *)((u8 *)p+0xc4)=f;
         }
         if(((u8 *)p)[0x9c]) {
-            limit=(*(float *)((u8 *)p+0x278)+(*(float *)((u8 *)p+0xa4)+lbl_8056215C**(float *)((u8 *)p+0xac)))-(lbl_805621DC+lbl_8055A488);
+            { float a=*(float *)((u8 *)p+0xac); float m=lbl_8056215C*a; float pos=*(float *)((u8 *)p+0xa4)+m; float margin=lbl_805621DC+lbl_8055A488; limit=(*(float *)((u8 *)p+0x278)+pos)-margin; }
             f=*(float *)((u8 *)p+0xc8);
             f = f<limit ? f : limit;
             *(float *)((u8 *)p+0xc8)=f;
