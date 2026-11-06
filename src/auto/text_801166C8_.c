@@ -4711,6 +4711,64 @@ void fn_80120E14(register s32 count, register void *dst, register s32 mode, regi
     }
 }
 
+void fn_80120F84(s32 n, s32 arg1, void *arg2) {
+    s32 *ip = (s32 *)arg1;
+    float *a = (float *)arg2;
+    int j, j1, k, k1, l, m, m2;
+    float xr, xi, yr, yi;
+
+    ip[0] = 0;
+    l = n;
+    m = 1;
+    while ((m << 3) < l) {
+        l >>= 1;
+        for (j = 0; j < m; j++) {
+            ip[m + j] = ip[j] + l;
+        }
+        m <<= 1;
+    }
+    m2 = 2 * m;
+    if ((m << 3) == l) {
+        for (k = 0; k < m; k++) {
+            for (j = 0; j < k; j++) {
+                j1 = 2 * j + ip[k];
+                k1 = 2 * k + ip[j];
+                xr = a[j1]; xi = a[j1 + 1]; yr = a[k1]; yi = a[k1 + 1];
+                a[j1] = yr; a[j1 + 1] = yi; a[k1] = xr; a[k1 + 1] = xi;
+                j1 += m2;
+                k1 += 2 * m2;
+                xr = a[j1]; xi = a[j1 + 1]; yr = a[k1]; yi = a[k1 + 1];
+                a[j1] = yr; a[j1 + 1] = yi; a[k1] = xr; a[k1 + 1] = xi;
+                j1 += m2;
+                k1 -= m2;
+                xr = a[j1]; xi = a[j1 + 1]; yr = a[k1]; yi = a[k1 + 1];
+                a[j1] = yr; a[j1 + 1] = yi; a[k1] = xr; a[k1 + 1] = xi;
+                j1 += m2;
+                k1 += 2 * m2;
+                xr = a[j1]; xi = a[j1 + 1]; yr = a[k1]; yi = a[k1 + 1];
+                a[j1] = yr; a[j1 + 1] = yi; a[k1] = xr; a[k1 + 1] = xi;
+            }
+            j1 = 2 * k + m2 + ip[k];
+            k1 = j1 + m2;
+            xr = a[j1]; xi = a[j1 + 1]; yr = a[k1]; yi = a[k1 + 1];
+            a[j1] = yr; a[j1 + 1] = yi; a[k1] = xr; a[k1 + 1] = xi;
+        }
+    } else {
+        for (k = 1; k < m; k++) {
+            for (j = 0; j < k; j++) {
+                j1 = 2 * j + ip[k];
+                k1 = 2 * k + ip[j];
+                xr = a[j1]; xi = a[j1 + 1]; yr = a[k1]; yi = a[k1 + 1];
+                a[j1] = yr; a[j1 + 1] = yi; a[k1] = xr; a[k1 + 1] = xi;
+                j1 += m2;
+                k1 += m2;
+                xr = a[j1]; xi = a[j1 + 1]; yr = a[k1]; yi = a[k1 + 1];
+                a[j1] = yr; a[j1 + 1] = yi; a[k1] = xr; a[k1 + 1] = xi;
+            }
+        }
+    }
+}
+
 void fn_80121400(s32 n, s32 *map, f32 *data, s32 unused) {
     s32 size = 1;
     s32 i, j, k, half, span;
@@ -5519,7 +5577,8 @@ void fn_801231B8(s32 n, void *data, s32 index, void *table) {
 }
 
 #pragma scheduling off
-void fn_801233F8(s32 arg0, volatile f32 *arg1, f32 *arg2) {
+void fn_801233F8(s32 arg0, volatile f32 *input, f32 *arg2) {
+    f32 *arg1 = (f32 *)input;
     f32 temp_f0, temp_f0_2, temp_f0_3, temp_f1, temp_f1_2, temp_f1_3;
     f32 temp_f1_4, temp_f1_5, temp_f1_6, temp_f2, temp_f2_2, temp_f2_3;
     f32 temp_f2_4, temp_f3, temp_f3_2, temp_f3_3, temp_f3_4, temp_f3_5, temp_f3_6;
@@ -5546,7 +5605,7 @@ void fn_801233F8(s32 arg0, volatile f32 *arg1, f32 *arg2) {
     temp_r7 = arg0 >> 3;
     temp_r10 = arg0 & 0xFFFFFFF8;
     temp_r6 = temp_r7 * 2;
-    temp_r31 = (arg0 * 2) & 0xFFFFFFF0;
+    temp_r31 = (arg0 & ~7) * 2;
     temp_r11 = temp_r7 * 6;
     temp_r12 = ((temp_r7 * 4) + 1) * 4;
     temp_r11_2 = temp_r11 * 4;
