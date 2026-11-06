@@ -1529,6 +1529,7 @@ extern "C" void fn_80162BA8(void *arg0) {
         ((void (*)(void *, s32))(*(void ***)self)[24])(self, 4);
     }
 }
+#pragma pop
 
 #pragma cplusplus reset
 #pragma scheduling on
