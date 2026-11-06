@@ -551,8 +551,9 @@ extern char lbl_80333284[], lbl_80333294[];
 extern int fn_801769A8(void);
 void fn_80193D30(void *arg0) {
     char *p = (char *)arg0;
-    int flag = 0;
     int temp2;
+    int flag = 0;
+    int temp;
     float limit;
 
     lbl_8055E57C = lbl_80562144;
@@ -570,15 +571,18 @@ void fn_80193D30(void *arg0) {
     memset(p + 0x23C, 0, 0xC);
     memset(p + 0x2D4, 0, 0x28);
 
-    *(int *)(p + 0x260) = 0;
-    *(int *)(p + 0x2C4) = -1;
-    *(float *)(p + 0x2B8) = lbl_80562144;
-    *(float *)(p + 0x2C0) = lbl_80562144;
-    *(float *)(p + 0x264) = lbl_80562144;
-    *(int *)(p + 0x2D0) = 0;
-    *(unsigned char *)(p + 0x2A7) = 0;
-    memset(p + 0x218, 0, 4);
-    *(int *)(p + 0x210) = 0;
+    {
+        float zero = lbl_80562144;
+        *(int *)(p + 0x260) = 0;
+        *(int *)(p + 0x2C4) = -1;
+        *(float *)(p + 0x2B8) = zero;
+        *(float *)(p + 0x2C0) = zero;
+        *(float *)(p + 0x264) = zero;
+        *(int *)(p + 0x2D0) = 0;
+        *(unsigned char *)(p + 0x2A7) = 0;
+        memset(p + 0x218, 0, 4);
+        *(int *)(p + 0x210) = 0;
+    }
 
     {
         float unit = lbl_805621A0;
@@ -699,13 +703,13 @@ void fn_80193D30(void *arg0) {
     if (*(int *)((char *)*(void **)(p + 0x294) + 0x1F0) == 0x50) {
         int index = *(int *)(p + 0x290);
         fn_801B30D0(index);
-        flag = 0;
+        temp = 0;
         if (fn_801B8570(index) == 0) {
             float threshold = lbl_8055E3C8;
             if (fn_801B306C() < threshold)
-                flag = 1;
+                temp = 1;
         }
-        if (flag != 0) {
+        if (temp != 0) {
             fn_802E30C8(lbl_80333294);
             fn_801B30E0(index);
         }
@@ -745,7 +749,7 @@ void fn_8019416C(void) {
 
 }
 
-typedef unsigned int u32;
+#include "revolution/MTX/mtxtypes.h"
 extern float lbl_80562140, lbl_80562144;
   extern void fn_8018ADB4(int, float);
   extern void fn_8018ADBC(int, float);
@@ -2404,6 +2408,109 @@ float fn_801973FC(float *arg0, float *arg1, void *arg2) {
     spC = temp_f2;
     return (arg0[0] * temp_f3) + (arg0[1] * temp_f2);
 }
+
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+extern float lbl_80562270,lbl_80562274,lbl_80562278;
+extern void fn_80198488(void *);
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+void fn_8019743C(void *p, void *arg1) {
+    float *out = (float *)arg1;
+    float diff=lbl_80562144, scale, limit, f, t, v, x, y;
+    int decay=1, active=0, selected, failed, mode, bits, index;
+    unsigned char *side;
+    if(((u8 *)p)[0x9c] || ((u8 *)p)[0x74]) active=1;
+    if(active) {
+        fn_80198488(p);
+        if(((u8 *)p)[0x74]) {
+            limit=(lbl_805621DC+lbl_8055A488)+(*(float *)((u8 *)p+0x278)+(*(float *)((u8 *)p+0x7c)+lbl_8056215C**(float *)((u8 *)p+0x84)));
+            f=*(float *)((u8 *)p+0xc4);
+            f = f>limit ? f : limit;
+            *(float *)((u8 *)p+0xc4)=f;
+        }
+        if(((u8 *)p)[0x9c]) {
+            limit=(*(float *)((u8 *)p+0x278)+(*(float *)((u8 *)p+0xa4)+lbl_8056215C**(float *)((u8 *)p+0xac)))-(lbl_805621DC+lbl_8055A488);
+            f=*(float *)((u8 *)p+0xc8);
+            f = f<limit ? f : limit;
+            *(float *)((u8 *)p+0xc8)=f;
+        }
+        t=*(float *)((u8 *)p+0xe8);
+        if(t>lbl_80562144) {
+            limit=*(float *)((u8 *)p+0x278)+t; f=*(float *)((u8 *)p+0xc4);
+            f = f>limit ? f : limit;
+            *(float *)((u8 *)p+0xc4)=f;
+        } else if(t<lbl_80562144) {
+            limit=*(float *)((u8 *)p+0x278)+t; f=*(float *)((u8 *)p+0xc8);
+            f = f<limit ? f : limit;
+            *(float *)((u8 *)p+0xc8)=f;
+        }
+        failed=0; side=0;
+        scale=lbl_80562174;
+        if(*(float *)((u8 *)p+0xc8)<*(float *)((u8 *)p+0xc4)) {
+            if(((u8 *)p)[0x74] && ((u8 *)p)[0x9c]) {
+                index=*(int *)((u8 *)p+0x90);
+                bits=(unsigned char)fn_80193110(p,*(int *)((u8 *)p+0xb8));
+                bits|=((unsigned char)fn_80193110(p,index))<<1;
+                if(bits && bits!=3) {
+                    selected=(bits>>1)&1;
+                    if(selected) side=(u8 *)p+0xa0; else side=(u8 *)p+0x78;
+                    index=*(int *)(side+0x18);
+                    mode=((int (*)(void *, int))fn_801930DC)(p,index);
+                    failed=((int (*)(void *, int, int))fn_8019309C)(p,index,mode)==0;
+                } else {
+                    if((bits&2) && ((int (*)(void *, int))fn_801930DC)(p,*(int *)((u8 *)p+0x90))) { selected=1; mode=1; }
+                    else if((bits&1) && ((int (*)(void *, int))fn_801930DC)(p,*(int *)((u8 *)p+0xb8))) {selected=0; mode=1;}
+                    else {selected=1;mode=0;}
+                    if(selected) side=(u8 *)p+0xa0; else side=(u8 *)p+0x78;
+                    failed=((int (*)(void *, int, int))fn_8019309C)(p,*(int *)(side+0x18),mode)==0;
+                }
+            } else {
+                selected=!((u8 *)p)[0x74];
+                if(((u8 *)p)[0x74]) side=(u8 *)p+0x78; else side=(u8 *)p+0xa0;
+                failed=((int (*)(void *, int, int))fn_8019309C)(p,*(int *)(side+0x18),1)==0;
+            }
+            if(selected) *(float *)((u8 *)p+0xc8)=*(float *)((u8 *)p+0xc4);
+            else *(float *)((u8 *)p+0xc4)=*(float *)((u8 *)p+0xc8);
+        } else {
+            if(((u8 *)p)[0x74] && (unsigned char)fn_80193110(p,*(int *)((u8 *)p+0x90))) scale*=lbl_80562174;
+            if(((u8 *)p)[0x9c] && fn_80193110(p,*(int *)((u8 *)p+0xb8))) scale*=lbl_80562174;
+        }
+        if(failed && (((u8 *)p)[0x2fd] || *(float *)(side+8)<lbl_805621DC)) *(int *)((u8 *)p+0x2d0)|=0x40;
+        t=*(float *)((u8 *)p+0x278)+lbl_8056215C**(float *)((u8 *)p+0x27c);
+        f=*(float *)((u8 *)p+0xc4);
+        if(t<f) diff=f-t;
+        else { f=*(float *)((u8 *)p+0xc8); if(t>f) diff=f-t; }
+        if((float)__fabs(diff)>lbl_80562148) {
+            if(fn_8019700C(*(int *)((u8 *)p+0xdc))) {
+                *(int *)((u8 *)p+0x2d0)|=0x40;
+                out[2]-=lbl_80562170;
+            }
+            *(float *)((u8 *)p+0xe4)=*(float *)((u8 *)p+0x278)+diff;
+            *(float *)((u8 *)p+0xe8)=lbl_80562144;
+            t=(float)__fabs(diff)/lbl_805621DC;
+            f=lbl_80562140; f=f<t?f:t;
+            f=f>lbl_80562144?f:lbl_80562144;
+            v=*(float *)((u8 *)p+0xe0);
+            if(v<f) {t=lbl_80562140-lbl_80562148*scale; *(float *)((u8 *)p+0xe0)=f+t*t*(v-f);}
+            else *(float *)((u8 *)p+0xe0)=f+lbl_80562270*(v-f);
+            decay=0;
+        } else *(float *)((u8 *)p+0xe8)=lbl_80562144;
+    } else *(float *)((u8 *)p+0xe8)=lbl_80562144;
+    if(*(float *)((u8 *)p+0xe0)>lbl_80562274) {
+        f=*(float *)((u8 *)p+0xe4);
+        ((u8 *)p)[0x250]=1;
+        x=*(float *)((u8 *)p+0x48)+*(float *)((u8 *)p+0x58)*f;
+        y=*(float *)((u8 *)p+0x4c)+*(float *)((u8 *)p+0x5c)*f;
+        t=*(float *)((u8 *)p+0xe0);
+        out[0]+=t*(x-out[0]);
+        out[1]+=t*(y-out[1]);
+    }
+    if(decay) *(float *)((u8 *)p+0xe0)*=lbl_80562278;
+}
+#pragma pop
 
 #pragma processor reset
 int fn_8019799C(void *arg0, void *arg1) {
