@@ -933,7 +933,7 @@ extern "C" f32 fn_8013EFBC(f32 arg0) { return lbl_80561514 - arg0; }
 #pragma scheduling invalid_target
 extern "C" unsigned int fn_8013EFC8(void *arg0) {
     f32 magnitude = __fabsf(*(f32 *)((u8 *)arg0 + 0x250));
-    if (magnitude <= lbl_80558DC4) {
+    if (magnitude <= *(f32 *)&lbl_80558DC4) {
         if (*(u8 *)((u8 *)arg0 + 0x13C) != 0)
             ((TObj4C *)arg0)->v4C();
         s32 object = *(s32 *)((u8 *)arg0 + 0x140);
