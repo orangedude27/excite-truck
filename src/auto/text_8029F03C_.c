@@ -1,6 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+struct Fn8029Pair { float x, y; };
+struct Fn8029Vec { float x, y, z; };
 struct Vec3_8029FB00 { float x, y, z; };
 extern void fn_801E9DC4(void *);
 extern char lbl_80349890[];
