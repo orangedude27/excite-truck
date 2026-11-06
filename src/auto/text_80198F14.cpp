@@ -860,24 +860,25 @@ extern "C" s32 fn_8019AA34(void *obj, void *pos, void *other, void *otherPos, s3
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 extern "C" void fn_8019AC44(void* arg0, void* arg1, void* arg2, f32 farg0) {
-    Vec work[64]; s32 count, sp8, i; Vec *wp; Vec p70,p64,delta,p4c,p34,p28,p40,p1c,p10;
-    f32 dot,mag,limit,scale,varf1,f31,f30; void* body=*(void**)((u8*)arg0+4); Vec* out=(Vec*)arg2; f30=farg0;
-    if (lbl_8055E5A0!=0) { count=0x40; fn_801CF080((s32)lbl_8055E5A0,arg1,work,&count,0,f30); wp=work; for(i=0;i<count;++i,wp++) fn_8019A820(arg0,arg1,(s32)wp,0x6e,0,f30); }
-    if (fn_801E9F08((u8*)body+0x6c,arg1,&p70,(s32)&p64,(s32)&sp8,f30)!=0) {
-        delta.x=((Vec*)arg1)->x-p70.x; delta.y=((Vec*)arg1)->y-((f32*)&p70)[1]; delta.z=((Vec*)arg1)->z-((f32*)&p70)[2];
-        dot=PSVECDotProduct(&p64,&delta); f31=f30-dot; fn_8017B6D4((s32)body,&p4c,(s32)&p70);
-        f30=f31* *(f32*)((u8*)arg0+0x10); dot=-PSVECDotProduct(&p4c,&p64);
+    Vec work[64]; s32 count, sp8; Vec p70,p64,delta,p4c,p40,p34,p28,p1c,p10;
+    f32 dot,mag,limit,scale,varf1,f31; void* body=*(void**)((u8*)arg0+4);
+    if (lbl_8055E5A0!=0) { count=0x40; fn_801CF080((s32)lbl_8055E5A0,arg1,work,&count,0,farg0); Vec *wp = work; for(s32 i=0;i<count;++i,wp++) fn_8019A820(arg0,arg1,(s32)wp,0x6e,0,farg0); }
+    if (fn_801E9F08((u8*)body+0x6c,arg1,&p70,(s32)&p64,(s32)&sp8,farg0)!=0) {
+        delta.x=((Vec*)arg1)->x-p70.x; delta.y=((Vec*)arg1)->y-p70.y; delta.z=((Vec*)arg1)->z-p70.z;
+        dot=PSVECDotProduct(&p64,&delta); f31=farg0-dot; fn_8017B6D4((s32)body,&p4c,(s32)&p70);
+        farg0=f31* *(f32*)((u8*)arg0+0x10); dot=-PSVECDotProduct(&p4c,&p64);
+        p40.x=p64.x*farg0; p40.y=p64.y*farg0; p40.z=p64.z*farg0;
         p34.x=p4c.x+p64.x*dot; p34.y=p4c.y+p64.y*dot; p34.z=p4c.z+p64.z*dot;
-        p40.x=p64.x*f30; p40.y=p64.y*f30; p40.z=p64.z*f30;
-        out->x+=p34.x*lbl_8056231C; out->y+=p34.y*lbl_8056231C; out->z+=p34.z*lbl_8056231C;
-        mag=PSVECMag(out); if(mag>lbl_80562320){scale=lbl_80562320/mag;out->x*=scale;out->y*=scale;out->z*=scale;}
+        ((Vec*)arg2)->x+=p34.x*lbl_8056231C; ((Vec*)arg2)->y+=p34.y*lbl_8056231C; ((Vec*)arg2)->z+=p34.z*lbl_8056231C;
+        mag=PSVECMag((Vec*)arg2); if(mag>lbl_80562320){scale=lbl_80562320/mag;((Vec*)arg2)->x*=scale;((Vec*)arg2)->y*=scale;((Vec*)arg2)->z*=scale;}
         p28.x=p34.x*lbl_80562324; p28.y=p34.y*lbl_80562324; p28.z=p34.z*lbl_80562324;
-        limit=lbl_80562328* *(f32*)((u8*)body+0xd4); p28.x+=out->x*limit;p28.y+=out->y*limit;p28.z+=out->z*limit;
-        mag=PSVECMag(&p28); scale=f30* *(f32*)((u8*)arg0+0x14); if(scale>lbl_80562320)scale=lbl_80562320;
+        limit=lbl_80562328* *(f32*)((u8*)body+0xd4); p28.x+=((Vec*)arg2)->x*limit;p28.y+=((Vec*)arg2)->y*limit;p28.z+=((Vec*)arg2)->z*limit;
+        mag=PSVECMag(&p28); scale=farg0* *(f32*)((u8*)arg0+0x14); if(scale>lbl_80562320)scale=lbl_80562320;
         if(mag>scale){limit=scale/mag;p28.x*=limit;p28.y*=limit;p28.z*=limit;}
         p40.x+=p28.x;p40.y+=p28.y;p40.z+=p28.z;
-        dot=-PSVECDotProduct((Vec*)((u8*)body+0x124),&p64)*f30*lbl_8056232C;
+        dot=-PSVECDotProduct((Vec*)((u8*)body+0x124),&p64)*farg0*lbl_8056232C;
         p1c.x=p64.x*dot;p1c.y=p64.y*dot;p1c.z=p64.z*dot;
         fn_8017B4AC(body,&p1c);
         { typedef void(*Call)(void*,Vec*,Vec*,s32,s32); Call call=(Call)(*(u32*)(*(u32*)arg0+0x1c)); call(arg0,&p40,&p70,sp8,0); }
@@ -888,7 +889,7 @@ extern "C" void fn_8019AC44(void* arg0, void* arg1, void* arg2, f32 farg0) {
             typedef void(*Call2)(void*,s32,Vec*,Vec*,s32,s32,s32,f32);
             Call2 c=(Call2)(*(u32*)(*(u32*)arg0+0x20));c(arg0,0,&p10,&p70,sp8,0,0,varf1);
         } else fn_801B34DC(arg0,0,&p70,&p10,&p64,sp8);
-    } else {out->x=lbl_805622D0;out->y=lbl_805622D0;out->z=lbl_805622D0;}
+    } else {((Vec*)arg2)->x=lbl_805622D0;((Vec*)arg2)->y=lbl_805622D0;((Vec*)arg2)->z=lbl_805622D0;}
 }
 #pragma pop
 
@@ -899,35 +900,44 @@ void fn_8019B068(void* arg0, void* arg1, s32 arg2, s32 arg3) {
     ((Call9)fn_8019AA34)(arg0, (u8*)arg0 + 0x34, arg1, (u8*)arg1 + 0x34, arg2, arg3, arg1, *(f32*)((u8*)arg0 + 0x24), scale);
 }
 
-extern "C" s32 fn_8019B08C(void* arg0, Vec* arg1, void* arg2, f32 farg0) {
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+extern "C" s32 fn_8019B08C(void* arg0, void* arg1, void* arg2, f32 farg0) {
+    f32 f31 = farg0;
+    f32 ax = *(f32*)arg1;
+    f32 ay = *(f32*)((u8*)arg1 + 4);
+    f32 az = *(f32*)((u8*)arg1 + 8);
     Vec* m = *(Vec**)((u8*)arg2 + 0xC);
-    f32 x = arg1->x - *(f32*)((u8*)m + 0x24);
-    f32 y = arg1->y - *(f32*)((u8*)m + 0x28);
-    f32 z = arg1->z - *(f32*)((u8*)m + 0x2C);
-    f32 a = x * *(f32*)((u8*)m + 0x18) + y * *(f32*)((u8*)m + 0x1C) + z * *(f32*)((u8*)m + 0x20);
-    f32 b = x * *(f32*)m + y * *(f32*)((u8*)m + 4) + z * *(f32*)((u8*)m + 8);
-    f32 c = x * *(f32*)((u8*)m + 0xC) + y * *(f32*)((u8*)m + 0x10) + z * *(f32*)((u8*)m + 0x14);
-    if (a >= *(f32*)((u8*)arg2 + 0x28) || a <= -*(f32*)((u8*)arg2 + 0x28)) return 0;
-    f32 mag = (f32)fn_8002F234(b*b + c*c);
-    if (__fabsf(mag) == lbl_80558DC4) return 0;
-    f32 t = farg0 - mag + *(f32*)((u8*)arg2 + 0x24);
-    if (t <= lbl_805622D0) return 0;
-    f32 dt = (*(f32*)((u8*)arg2 + 0x24) - t) / mag;
-    Vec p, normal, out;
-    p.x = (b * dt) * *(f32*)m + (c * dt) * *(f32*)((u8*)m + 0xC) + a * *(f32*)((u8*)m + 0x18);
-    p.y = (b * dt) * *(f32*)((u8*)m + 4) + (c * dt) * *(f32*)((u8*)m + 0x10) + a * *(f32*)((u8*)m + 0x1C);
-    p.z = (b * dt) * *(f32*)((u8*)m + 8) + (c * dt) * *(f32*)((u8*)m + 0x14) + a * *(f32*)((u8*)m + 0x20);
+    Vec delta, abc, p, normal, out;
+    delta.x = ax - *(f32*)((u8*)m + 0x24);
+    delta.y = ay - *(f32*)((u8*)m + 0x28);
+    delta.z = az - *(f32*)((u8*)m + 0x2C);
+    abc.x = delta.x * *(f32*)((u8*)m + 0x18) + delta.y * *(f32*)((u8*)m + 0x1C) + delta.z * *(f32*)((u8*)m + 0x20);
+    abc.y = delta.x * *(f32*)m + delta.y * *(f32*)((u8*)m + 4) + delta.z * *(f32*)((u8*)m + 8);
+    abc.z = delta.x * *(f32*)((u8*)m + 0xC) + delta.y * *(f32*)((u8*)m + 0x10) + delta.z * *(f32*)((u8*)m + 0x14);
+    if (abc.x >= *(f32*)((u8*)arg2 + 0x28) || abc.x <= -*(f32*)((u8*)arg2 + 0x28)) return 0;
+    f32 mag = (f32)fn_8002F234(abc.y*abc.y + abc.z*abc.z);
+    if ((f32)__fabs((f64)mag) <= lbl_80558DC4) return 0;
+    f31 = f31 + (*(f32*)((u8*)arg2 + 0x24) - mag);
+    if (f31 <= lbl_805622D0) return 0;
+    f32 dt = (*(f32*)((u8*)arg2 + 0x24) - f31) / mag;
+    f32 bd = abc.y * dt;
+    f32 cd = abc.z * dt;
+    p.x = bd * *(f32*)m + cd * *(f32*)((u8*)m + 0xC) + abc.x * *(f32*)((u8*)m + 0x18);
+    p.y = bd * *(f32*)((u8*)m + 4) + cd * *(f32*)((u8*)m + 0x10) + abc.x * *(f32*)((u8*)m + 0x1C);
+    p.z = bd * *(f32*)((u8*)m + 8) + cd * *(f32*)((u8*)m + 0x14) + abc.x * *(f32*)((u8*)m + 0x20);
     p.x += *(f32*)((u8*)m + 0x24); p.y += *(f32*)((u8*)m + 0x28); p.z += *(f32*)((u8*)m + 0x2C);
-    normal.x=b; normal.y=c; normal.z=lbl_805622D0;
+    normal.x=abc.y; normal.y=abc.z; normal.z=lbl_805622D0;
     PSVECNormalize(&normal, &normal);
     out.x=normal.x * *(f32*)m + normal.y * *(f32*)((u8*)m + 0xC) + normal.z * *(f32*)((u8*)m + 0x18);
     out.y=normal.x * *(f32*)((u8*)m + 4) + normal.y * *(f32*)((u8*)m + 0x10) + normal.z * *(f32*)((u8*)m + 0x1C);
     out.z=normal.x * *(f32*)((u8*)m + 8) + normal.y * *(f32*)((u8*)m + 0x14) + normal.z * *(f32*)((u8*)m + 0x20);
     typedef void (*Call)(void*,void*,Vec*,Vec*,s32,s32,f32,f32,f32);
-    ((Call)fn_8019A788)(arg0,arg2,&p,&out,0,0,t,lbl_805622D0,lbl_805622D0);
+    ((Call)fn_8019A788)(arg0,arg2,&p,&out,0,0,f31,lbl_805622D0,lbl_805622D0);
     return 1;
 }
-
+#pragma pop
 extern "C" s32 fn_8019BD4C(void *arg0) {
     return ((s32 *)arg0)[0xC / 4];
 }
