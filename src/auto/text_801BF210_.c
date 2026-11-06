@@ -873,6 +873,7 @@ int fn_801C0454(void *arg0) {
     }
     return 0;
 }
+#pragma pop
 
 #pragma push
 #pragma processor 750
