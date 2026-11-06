@@ -795,14 +795,14 @@ s32 fn_80241EE8(s32 arg0) {
     return arg0 + 0x4C;
 }
 
-#pragma optimize_for_size off
 #pragma cplusplus on
+#pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 extern "C" void fn_80241EF0(void *arg0, s32 arg1) {
     s32 index, result, i, n, wordA, wordB;
     void *item, *record, *ctx, *info, *vtable, *infoDst;
     char *src, *dst, *entries, *output, *zeroBase, *textItem, *object;
-    signed char c;
+    char c;
     struct Collection {
         virtual s32 f0() = 0;
         virtual s32 f1() = 0;
@@ -869,7 +869,7 @@ extern "C" void fn_80241EF0(void *arg0, s32 arg1) {
 
     result = ((Collection *)*(void **)((u8 *)arg0 + 0x24))->getResult(*(s32 *)((u8 *)arg0 + 0x28));
     *(s32 *)((u8 *)arg0 + 0x6C) = result;
-    *(u8 *)((u8 *)*(void **)((u8 *)arg0 + 0x20) + 0xDD) = (result == 0);
+    *(u8 *)((u8 *)*(void **)((u8 *)arg0 + 0x20) + 0xDD) = (result ? 0 : 1);
 
     ctx = *(void **)((u8 *)arg0 + 0x18);
     if (*(void **)((u8 *)ctx + 0x28) != 0) {
@@ -888,7 +888,7 @@ extern "C" void fn_80241EF0(void *arg0, s32 arg1) {
     index = *(s32 *)((u8 *)item + 4);
     *(s32 *)((u8 *)ctx + 0x2C) = index;
     *(u8 *)((u8 *)ctx + 0x5C) = 0;
-    if (index >= 0 && index < *(s32 *)((u8 *)record + 0x98)) {
+    if (index >= 0 && index < *(s32 *)((u8 *)*(void **)((u8 *)ctx + 0x28) + 0x98)) {
         item = *(void **)((u8 *)record + 0x64 + index * 4);
         *(void **)(*(void **)((u8 *)ctx + 0x34)) = item;
         fn_80255918(*(void **)((u8 *)ctx + 0x38), item);
@@ -980,8 +980,8 @@ extern "C" void fn_80241EF0(void *arg0, s32 arg1) {
     }
 }
 #pragma scheduling on
+#pragma use_lmw_stmw reset
 #pragma cplusplus reset
-#pragma optimize_for_size on
 
 extern void *fn_8001668C(void *, s32);
 extern void *fn_80016BC8(void *, s32);
@@ -990,13 +990,14 @@ extern s32 fn_80255918(void *, void *);
 extern char lbl_8034287C[];
 extern float lbl_80563750;
 #pragma cplusplus on
+#pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 extern "C" void fn_802422DC(void *arg0, s32 arg1) {
     s32 index, result, i, n, wordA, wordB;
-    void *item, *ctx, *info, *vtable, *infoDst;
-    register void *record;
-    char *src, *dst, *entries, *output, *zeroBase, *textItem, *object;
-    signed char c;
+    void *item, *record, *ctx, *info, *vtable, *infoDst;
+    register char *src, *dst;
+    char *entries, *output, *zeroBase, *textItem, *object;
+    char c;
     struct Collection {
         virtual s32 f0() = 0;
         virtual s32 f1() = 0;
@@ -1082,7 +1083,7 @@ extern "C" void fn_802422DC(void *arg0, s32 arg1) {
     index = *(s32 *)((u8 *)item + 4);
     *(s32 *)((u8 *)ctx + 0x2C) = index;
     *(u8 *)((u8 *)ctx + 0x5C) = 0;
-    if (index >= 0 && index < *(s32 *)((u8 *)record + 0x98)) {
+    if (index >= 0 && index < *(s32 *)((u8 *)*(void **)((u8 *)ctx + 0x28) + 0x98)) {
         item = *(void **)((u8 *)record + 0x64 + index * 4);
         *(void **)(*(void **)((u8 *)ctx + 0x34)) = item;
         fn_80255918(*(void **)((u8 *)ctx + 0x38), item);
@@ -1174,6 +1175,7 @@ extern "C" void fn_802422DC(void *arg0, s32 arg1) {
     }
 }
 #pragma scheduling on
+#pragma use_lmw_stmw reset
 #pragma cplusplus reset
 s32 fn_802426C0(void *arg0) {
     s32 index = *(s32 *)((char *)arg0 + 0x28);
@@ -1199,15 +1201,17 @@ extern void fn_802E317C(char *, ...);
 extern u8 *fn_802E85B8(s32);
 extern char lbl_80342840[];
 extern char lbl_8055BD60;
-#pragma scheduling invalid_target
+#pragma push
+#pragma use_lmw_stmw off
 void fn_80242738(void *arg0, s32 arg1) {
     s32 outer, i, n, count, selected, current, previous;
     s32 modeA, modeB, mode;
     u8 *base, *widget, *entry, *child, *list;
     u8 *src, *dst;
     signed char c;
+    s32 active, value;
 
-    lbl_8055F1FC = 0;
+    *(volatile u8 *)&lbl_8055F1FC = 0;
     count = 2;
     base = (u8 *)arg0;
     outer = 0;
@@ -1243,20 +1247,22 @@ void fn_80242738(void *arg0, s32 arg1) {
             } while (c != 0);
         }
 
-        entry = base;
+        entry = widget;
         i = 0;
         goto init_child_check;
 init_child_body:
+        active = 0;
+        value = **(s32 **)(widget + 0x34);
+        if (*(u8 *)(widget + 0x38) != 0 && i == *(s32 *)(widget + 0x30)) active = 1;
         child = *(u8 **)(entry + 0x18);
-        *(u8 *)child = (*(u8 *)(widget + 0x38) != 0 &&
-                        i == *(s32 *)(widget + 0x30));
-        *(s32 *)(child + 4) = **(s32 **)(widget + 0x34);
+        *(u8 *)child = active;
+        *(s32 *)(child + 4) = value;
         entry += 4;
         i++;
 init_child_check:
         if (i < *(volatile s32 *)(widget + 0x2C)) goto init_child_body;
         outer++;
-        *(s32 *)(widget + 0x34) = 2;
+        *(s32 *)(base + 0x34) = 2;
         base += 0x20;
     } while (outer < count);
 
@@ -1265,23 +1271,28 @@ init_child_check:
     *(s32 *)((u8 *)arg0 + 0x50) = 0;
 
     modeA = *(s32 *)((u8 *)arg0 + 0x34);
-    modeB = *(s32 *)((u8 *)arg0 + 0x54);
     selected = 0;
-    mode = 0;
-    if (modeA <= 1 || modeA == 4) {
-        if (modeA == 4) selected = 1;
-        if (modeB <= 1 || modeB == 4) {
-            if (modeB == 4) selected++;
-            mode = (selected - 2) >= 0;
-        }
+    if (modeA > 1 && modeA != 4) {
+        mode = 0;
+        goto mode_done;
     }
-    if (*(u8 *)((u8 *)arg0 + 0x58) != mode) {
+    if (modeA == 4) selected = 1;
+    modeB = *(s32 *)((u8 *)arg0 + 0x54);
+    if (modeB > 1 && modeB != 4) {
+        mode = 0;
+        goto mode_done;
+    }
+    if (modeB == 4) selected++;
+    mode = selected >= 2;
+mode_done:
+    if ((unsigned int)*(u8 *)((u8 *)arg0 + 0x58) != (unsigned int)mode) {
         *(s32 *)((u8 *)arg0 + 0x30) = 0;
         *(s32 *)((u8 *)arg0 + 0x50) = 0;
     }
 
     base = (u8 *)arg0 + 0x18;
-    for (outer = 0; outer < 2; outer++, base += 0x20) {
+    outer = 0;
+    do {
         current = *(s32 *)(base + 0x1C);
         previous = *(s32 *)(base + 0x18);
         if (current != previous) {
@@ -1300,25 +1311,28 @@ init_child_check:
                 fn_80214A9C(*(s32 *)(base + 0x0C));
                 fn_80214AF0(*(s32 *)(base + 0x14));
 
-                list = *(u8 **)base;
-                *(u8 *)(list + 0x38) = 1;
-                entry = list;
-                selected = *(s32 *)(list + 0x30);
-                i = 0;
-                goto on_child_check;
-on_child_body:
-                child = *(u8 **)(entry + 0x18);
-                *(u8 *)child = (*(u8 *)(list + 0x38) != 0 && i == selected);
-                *(s32 *)(child + 4) = **(s32 **)(list + 0x34);
-                entry += 4;
-                i++;
-on_child_check:
-                if (i < *(volatile s32 *)(list + 0x2C)) goto on_child_body;
-                if (outer != 0 && current == 2) {
+                if (outer != 0 && *(volatile s32 *)(base + 0x1c) == 2) {
                     fn_80214A9C(*(s32 *)(base + 0x10));
                 } else {
                     fn_80214AF0(*(s32 *)(base + 0x10));
                 }
+                list = *(u8 **)base;
+                *(u8 *)(list + 0x38) = 1;
+                entry = list;
+                i = 0;
+                goto on_child_check;
+on_child_body:
+                active = 0;
+                value = **(s32 **)(list + 0x34);
+                if (*(u8 *)(list + 0x38) != 0 && i == *(s32 *)(list + 0x30)) active = 1;
+                child = *(u8 **)(entry + 0x18);
+                *(u8 *)child = active;
+                *(s32 *)(child + 4) = value;
+                entry += 4;
+                i++;
+on_child_check:
+                if (i < *(volatile s32 *)(list + 0x2C)) goto on_child_body;
+
                 break;
             case 4:
                 fn_80214A9C(*(s32 *)(base + 4));
@@ -1330,13 +1344,15 @@ on_child_check:
                 list = *(u8 **)base;
                 *(u8 *)(list + 0x38) = 0;
                 entry = list;
-                selected = *(s32 *)(list + 0x30);
                 i = 0;
                 goto off_child_check;
 off_child_body:
+                active = 0;
+                value = **(s32 **)(list + 0x34);
+                if (*(u8 *)(list + 0x38) != 0 && i == *(s32 *)(list + 0x30)) active = 1;
                 child = *(u8 **)(entry + 0x18);
-                *(u8 *)child = (*(u8 *)(list + 0x38) != 0 && i == selected);
-                *(s32 *)(child + 4) = **(s32 **)(list + 0x34);
+                *(u8 *)child = active;
+                *(s32 *)(child + 4) = value;
                 entry += 4;
                 i++;
 off_child_check:
@@ -1346,19 +1362,23 @@ off_child_check:
                 fn_802E317C(lbl_80342840, 0, outer);
                 break;
             }
-            *(s32 *)(base + 0x18) = current;
+            *(s32 *)(base + 0x18) = *(volatile s32 *)(base + 0x1c);
         }
-    }
+        outer++;
+        base += 0x20;
+    } while ((unsigned int)outer < 2);
 
     (mode != 0 ? fn_80214AF0 : fn_80214A9C)(0x1E);
     if (mode != 0) {
-        for (i = 7; i <= 0xA; i++) {
+        i = 7;
+        do {
             fn_80214A9C(i);
-        }
+            i++;
+        } while (i <= 0xA);
     }
     *(u8 *)((u8 *)arg0 + 0x58) = (u8)mode;
 }
-
+#pragma pop
 extern s32 lbl_8055F1F8;
 extern s32 fn_802E8504(s32);
 #pragma cplusplus on
@@ -1373,14 +1393,14 @@ extern "C" void fn_802E317C(char *, ...);
 #pragma scheduling invalid_target
 #pragma dont_inline on
 extern "C" void fn_80242B1C(void *arg0) {
-    s32 refreshIndex;
-    unsigned int outer;
+    register unsigned refreshIndex;
+    unsigned outer;
     s32 i, n, selected, selectedValue, current, previous;
     s32 modeA, modeB, mode;
     s32 tick, quotient;
     u8 *base, *widget, *slot, *entry, *child, *list;
+    signed char c;
     u8 *src, *dst;
-    char c;
 
     tick = lbl_8055F1F8 + 1;
     lbl_8055F1F8 = tick;
@@ -1398,30 +1418,36 @@ extern "C" void fn_80242B1C(void *arg0) {
 
 #pragma optimize_for_size on
                 selected = **(s32 **)(widget + 0x34);
-                if (selected < 0) {
+                if (0 > selected) {
                     src = (u8 *)&lbl_8055BD60;
                     dst = widget + 0x39;
                     n = 0x20;
-                    do {
-                        if (--n <= 0) {
-                            dst[-1] = 0;
-                            break;
-                        }
-                        c = *src++;
-                        *dst++ = (u8)c;
-                    } while (c != 0);
+                    goto copy_check_loop0;
+copy_check_loop0:
+                    --n;
+                    if (n > 0) goto copy_check0;
+                    dst[-1] = 0;
+                    goto copy_done0;
+copy_check0:
+                    c = *src++;
+                    *dst++ = (u8)c;
+                    if (c != 0) goto copy_check_loop0;
+copy_done0:;
                 } else {
                     src = fn_802E85B8(selected);
                     dst = widget + 0x39;
                     n = 0x20;
-                    do {
-                        if (--n <= 0) {
-                            dst[-1] = 0;
-                            break;
-                        }
-                        c = *src++;
-                        *dst++ = (u8)c;
-                    } while (c != 0);
+                    goto copy_check1;
+copy_check_loop1:
+                    --n;
+                    if (n > 0) goto copy_check1;
+                    dst[-1] = 0;
+                    goto copy_done1;
+copy_check1:
+                    c = *src++;
+                    *dst++ = (u8)c;
+                    if (c != 0) goto copy_check_loop1;
+copy_done1:;
                 }
 
 #pragma optimize_for_size off
@@ -1429,19 +1455,19 @@ extern "C" void fn_80242B1C(void *arg0) {
                 i = 0;
                 goto init_child_check;
 init_child_body:
-                selectedValue = **(s32 **)(widget + 0x34);
+                register selectedValue = **(s32 **)(widget + 0x34);
                 n = (*(u8 *)(widget + 0x38) != 0 &&
                      i == *(s32 *)(widget + 0x30));
                 child = *(u8 **)(entry + 0x18);
                 *(u8 *)child = (u8)n;
                 *(s32 *)(child + 4) = selectedValue;
                 entry += 4;
-                i++;
+                i += 1;
 init_child_check:
                 if (i < *(volatile s32 *)(widget + 0x2C)) goto init_child_body;
-                *(s32 *)(slot + 0x1C) = 1;
+                *(s32 *)(slot + (int)0x1C) = 1;
             }
-            outer++;
+            outer += 1;
             base += 0x20;
             slot += 0x20;
         } while (outer < 2U);
@@ -1467,13 +1493,13 @@ mode_b_ok:
     mode = selected >= 2;
 mode_done:
 #pragma optimize_for_size off
-    if (*(u8 *)((u8 *)arg0 + 0x58) != mode) {
+    if (*(u8 *)((u8 *)arg0 + 0x58) != (unsigned)mode) {
         *(s32 *)((u8 *)arg0 + 0x30) = 0;
         *(s32 *)((u8 *)arg0 + 0x50) = 0;
     }
 
     base = (u8 *)arg0 + 0x18;
-    for (refreshIndex = 0; (unsigned int)refreshIndex < 2U; refreshIndex++, base += 0x20) {
+    for (refreshIndex = 0; refreshIndex < 2U; refreshIndex++, base += 0x20) {
         current = *(s32 *)(base + 0x1C);
         previous = *(s32 *)(base + 0x18);
         if (current != previous) {
@@ -1491,7 +1517,7 @@ mode_done:
                 fn_80214AF0(*(s32 *)(base + 8));
                 fn_80214A9C(*(s32 *)(base + 0x0C));
                 fn_80214AF0(*(s32 *)(base + 0x14));
-                if (refreshIndex != 0 && *(s32 *)(base + 0x1C) == 2) {
+                if (refreshIndex != 0 && *(s32 *)(base + (s32)0x1C) == 2) {
                     fn_80214A9C(*(s32 *)(base + 0x10));
                 } else {
                     fn_80214AF0(*(s32 *)(base + 0x10));
