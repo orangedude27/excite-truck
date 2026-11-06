@@ -77,6 +77,8 @@ extern s32 lbl_8055E248;
 extern s32 lbl_8055E250;
 extern void *lbl_8055E268;
 extern u8 lbl_8032D970[];
+typedef struct { void *pad[2]; void (*destroy)(void *, int); } VTable8014E9C4;
+typedef struct { VTable8014E9C4 *vtable; } Object8014E9C4;
 
 extern s32 lbl_8055E238;
 extern s32 lbl_8055E23C;
@@ -2825,31 +2827,34 @@ void fn_801556FC(void) {
 #pragma push
 #pragma use_lmw_stmw off
 void fn_80155700(void *arg0, void *arg1, s32 index) {
+    register f32 *first, *second;
     u8 *self = (u8 *)arg0;
     u8 *player = fn_8017960C(index);
     u8 *slot, *entry, *obj, *manager, *player2;
     f32 mat1[12], mat2[12], rot1[3], pos1[3], rot2[3], pos2[3];
     Event80155700 event;
-    f32 value, one, zero, height, duration, threshold;
-    s32 i, active, kind;
+    f32 zero, height, duration, threshold, one, value;
+    s32 i, active;
+    register s32 kind;
     f32 *v;
     if (player && (f32)__fabs(*(f32 *)(player+0x2690)) <= lbl_80558DC4[0] &&
         ((s32 (*)(void *,s32))(*(void ***)arg0)[8])(arg0,index) &&
         fn_80161BB8() == 0 && *(s32 *)(player+0x1F0) == 0x50) {
         one=lbl_8056164C; zero=lbl_80561648; height=lbl_8056172C; duration=lbl_80561730; threshold=lbl_8056163C;
         slot = self + index * 0xC0;
+        first=mat1;
         for (i = 0; i < *(s32 *)(self+0x330); i++) {
             entry = (*(u8 ***)(self+0x32C))[i];
             if (*(void **)entry == arg1 && entry[4]) {
                 entry[4]=0;
-                mat1[0]=one; mat1[1]=zero; mat1[2]=zero;
-                mat1[3]=zero; mat1[4]=one; mat1[5]=zero;
-                mat1[6]=zero; mat1[7]=zero; mat1[8]=one;
-                mat1[9]=zero; mat1[11]=zero; mat1[10]=height;
+                first[0]=one; first[1]=zero; first[2]=zero;
+                first[3]=zero; first[4]=one; first[5]=zero;
+                first[6]=zero; first[7]=zero; first[8]=one;
+                first[9]=zero; first[11]=zero; first[10]=height;
                 rot1[0]=zero; rot1[1]=zero; rot1[2]=zero;
                 pos1[0]=zero; pos1[1]=zero; pos1[2]=zero;
                 obj=*(u8 **)entry;
-                ((void (*)(void *,f32 *,f32 *,f32 *))(*(void ***)obj)[10])(obj,mat1,pos1,rot1);
+                ((void (*)(void *,f32 *,f32 *,f32 *))(*(void ***)obj)[10])(obj,first,pos1,rot1);
                 obj=*(u8 **)entry;
                 ((void (*)(void *,s32))(*(void ***)obj)[8])(obj,0);
                 *(f32 *)(entry+0x14)=duration+lbl_8055E3C8;
@@ -2869,6 +2874,7 @@ void fn_80155700(void *arg0, void *arg1, s32 index) {
         }
         {
         f32 one2=lbl_8056164C, zero2=lbl_80561648, height2=lbl_8056172C, duration2=lbl_80561730;
+        second=mat2;
         for (i = 0; i < *(s32 *)(self+0x3BC); i++) {
             entry=(*(u8 ***)(self+0x3B8))[i];
             if (*(void **)entry == arg1 && entry[4]) {
@@ -2883,14 +2889,14 @@ void fn_80155700(void *arg0, void *arg1, s32 index) {
                     fn_801796EC(10,&event,0x20);
                 }
                 entry[4]=0;
-                mat2[0]=one2; mat2[1]=zero2; mat2[2]=zero2;
-                mat2[3]=zero2; mat2[4]=one2; mat2[5]=zero2;
-                mat2[6]=zero2; mat2[7]=zero2; mat2[8]=one2;
-                mat2[9]=zero2; mat2[11]=zero2; mat2[10]=height2;
+                second[0]=one2; second[1]=zero2; second[2]=zero2;
+                second[3]=zero2; second[4]=one2; second[5]=zero2;
+                second[6]=zero2; second[7]=zero2; second[8]=one2;
+                second[9]=zero2; second[11]=zero2; second[10]=height2;
                 rot2[0]=zero2; rot2[1]=zero2; rot2[2]=zero2;
                 pos2[0]=zero2; pos2[1]=zero2; pos2[2]=zero2;
                 obj=*(u8 **)entry;
-                ((void (*)(void *,f32 *,f32 *,f32 *))(*(void ***)obj)[10])(obj,mat2,pos2,rot2);
+                ((void (*)(void *,f32 *,f32 *,f32 *))(*(void ***)obj)[10])(obj,second,pos2,rot2);
                 obj=*(u8 **)entry;
                 ((void (*)(void *,s32))(*(void ***)obj)[8])(obj,0);
                 *(f32 *)(entry+0x14)=duration2+lbl_8055E3C8;
@@ -3121,6 +3127,168 @@ extern "C" void fn_8014FB7C(register u8 *arg0) {
         obj -= 0x240;
     } while (i >= 0);
 }
+
+extern "C" f32 lbl_8055E24C;
+extern "C" f32 lbl_805616D4, lbl_805616D8, lbl_805616DC;
+extern "C" s32 lbl_80559F88;
+extern "C" void *lbl_80559F80;
+extern "C" void *lbl_80559F90;
+extern "C" f32 lbl_80559EB4;
+extern "C" void fn_8013A0B0(void **, void *, void *);
+extern "C" void fn_8013A198(void **, s32);
+extern "C" void *fn_8015011C(void *);
+extern "C" void *fn_80204CF0(void);
+extern "C" void *fn_80204BB4(void);
+extern "C" f32 fn_801EA0E8(f32, f32);
+extern "C" f64 fn_8002F234(void);
+extern "C" int sprintf(void *, void *, s32);
+extern "C" void fn_8014FC8C(s32 arg0) {
+    class EvalObj { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7(); virtual f32 eval(void *, f32); };
+    class LfoObj { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void *lookup(void *, void *); virtual void d5(); virtual void d6(); virtual void d7(); virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11(); virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15(); virtual void d16(); virtual void d17(); virtual void d18(); virtual void d19(); virtual void d20(); virtual void d21(); virtual void *get(s32); };
+    class Manager { public: virtual void d0(); virtual void *get(s32); };
+    class Entry { public: virtual void d0(); virtual s32 has(void *); virtual void d2(); virtual void next(void *); virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7(); virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11(); virtual void d12(); virtual void *value(void *); };
+    u8 sp60[256];
+    u8 sp40[32];
+    f32 sp38, sp34, sp30, sp24, sp20, sp1C, sp18;
+    s32 sp2C, sp28, spC, sp8;
+    void *sp10p;
+    void *manager;
+    void *resource;
+    void *entry;
+    s32 i, j, k, size, handle;
+    f32 f29v, f31v, f1v;
+    u8 *strings = lbl_8032D358;
+    lbl_8055E24C = lbl_805616D4;
+    fn_8013A0B0(&sp10p, strings + 0xAB0, &lbl_80559F4C);
+    {
+        void *o = sp10p;
+        if (o != 0) {
+            lbl_8055E24C = lbl_805616D8 * ((EvalObj *)o)->eval(strings + 0xABC, lbl_805616DC);
+            {
+                f32 v = ((EvalObj *)o)->eval(strings + 0xACC, lbl_8056164C);
+                lbl_80559EB4 = v;
+                ((void (*)(char *, ...))fn_802E30C8)((char *)(strings + 0xADC), v);
+            }
+        }
+    }
+    fn_8013A198(&sp10p, -1);
+    manager = fn_80131810((const char *)((LfoObj *)(*(void **)((u8 *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20)))->lookup(strings + 0xAFC, strings + 0xB0C));
+    if (manager != 0) {
+        s32 idx = 0;
+        while (1) {
+            void *e = ((Manager *)manager)->get(idx);
+            if (e == 0) break;
+            void *r = fn_80204CF0();
+            void *check;
+            if (((Entry *)e)->has(strings + 0xA30) != 0) {
+                ((Entry *)e)->next(strings + 0xA30);
+                check = (void *)fn_80204BB4();
+            } else check = r;
+            if (check == r) {
+                void *alloc = (void *)fn_801284F8(0xD4, &lbl_80559F80);
+                if (alloc != 0) alloc = fn_8015011C(e);
+                spC = (s32)alloc;
+                fn_801500F8((void *)(arg0 + 0x14), &spC);
+            }
+            idx++;
+        }
+        fn_80131818(manager);
+    } else {
+        void *lfo = *(void **)((u8 *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20);
+        s32 idx = 0;
+        while (1) {
+            void *e = ((LfoObj *)lfo)->get(idx);
+            if (e == 0) break;
+            if (((Entry *)e)->has(&lbl_80559F88) != 0) {
+                void *alloc = (void *)fn_801284F8(0xD4, &lbl_80559F80);
+                if (alloc != 0) alloc = fn_8015011C(e);
+                sp8 = (s32)alloc;
+                fn_801500F8((void *)(arg0 + 0x14), &sp8);
+            }
+            idx++;
+        }
+    }
+    resource = fn_80131810((const char *)(strings + 0xB1C));
+    if (resource != 0) {
+        f29v = lbl_80561648;
+        f31v = lbl_8056164C;
+        s32 idx = 0;
+        while (1) {
+            entry = ((Manager *)resource)->get(idx);
+            if (entry == 0) break;
+            sp20 = f29v;
+            sp24 = f29v;
+            {
+                u8 *dst = sp60;
+                s32 n = 0;
+                while (1) {
+                    sprintf(sp40, &lbl_80559F90, n);
+                    if (((Entry *)entry)->has(sp40) == 0) break;
+                    void *tmp = ((Entry *)entry)->value(sp40);
+                    sp28 = (s32)tmp;
+                    sp2C = (s32)tmp;
+                    {
+                        f32 fy = *(f32 *)&sp28;
+                        f32 fx = *(f32 *)&sp2C;
+                        sp20 += fy;
+                        *(f32 *)dst = fy;
+                        *(f32 *)(dst + 4) = fx;
+                        sp24 += fx;
+                    }
+                    dst += 8;
+                    n++;
+                }
+                i = n;
+                {
+                    u8 *p = sp60;
+                    f32 avg1 = sp20 * (f31v / (f32)n);
+                    f32 avg2 = sp24 * (f31v / (f32)n);
+                    sp20 = avg1;
+                    sp24 = avg2;
+                    if (n > 0) {
+                        f32 maxv = lbl_80561648;
+                        s32 ctr = n;
+                        do {
+                            f32 dy = *(f32 *)(p + 4) - avg2;
+                            f32 dx = *(f32 *)p - avg1;
+                            sp1C = dy;
+                            sp18 = dx;
+                            f32 dist = dx * dx + dy * dy;
+                            if (!(maxv > dist)) maxv = dist;
+                            p += 8;
+                            ctr--;
+                        } while (ctr != 0);
+                        f1v = maxv;
+                    } else f1v = lbl_80561648;
+                }
+            }
+            {
+                f32 rad = (f32)fn_8002F234();
+                f32 diag = fn_801EA0E8(sp20, sp24);
+                sp34 = diag;
+                sp30 = sp20;
+                sp38 = sp24;
+                void *alloc = (void *)fn_801284F8(0x14, &lbl_80559F40);
+                if (alloc != 0) {
+                    *(f32 *)alloc = sp30;
+                    *(f32 *)((u8 *)alloc + 4) = sp34;
+                    *(f32 *)((u8 *)alloc + 8) = sp38;
+                    *(f32 *)((u8 *)alloc + 12) = rad;
+                    *((u8 *)alloc + 16) = 1;
+                }
+                {
+                    s32 *a = (s32 *)(arg0 + 0x220);
+                    s32 cnt = *(s32 *)(arg0 + 0x224);
+                    *(s32 *)(arg0 + 0x224) = cnt + 1;
+                    a[cnt] = (s32)alloc;
+                }
+            }
+            idx++;
+        }
+        fn_80131818(resource);
+    }
+}
+
 #pragma cplusplus reset
 
 extern unsigned long lbl_80559E94;
