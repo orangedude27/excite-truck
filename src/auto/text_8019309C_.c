@@ -749,14 +749,7 @@ void fn_8019416C(void) {
 
 }
 
-#include "revolution/MTX/mtxtypes.h"
-static inline Vec2 VecLerp8019743C(Vec2 from, Vec2 to, float amount, int unused) {
-    Vec2 delta, scaled, result;
-    delta.x = to.x - from.x; delta.y = to.y - from.y;
-    scaled.x = amount * delta.x; scaled.y = amount * delta.y;
-    result.x = from.x + scaled.x; result.y = from.y + scaled.y;
-    return result;
-}
+typedef unsigned int u32;
 extern float lbl_80562140, lbl_80562144;
   extern void fn_8018ADB4(int, float);
   extern void fn_8018ADBC(int, float);
