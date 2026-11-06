@@ -1,7 +1,7 @@
 typedef int s32;
 struct LLTmp { int a; void* next; void* prev; };
 struct ElemTmp { float f1; float f2; int i1; int i2; };
-static inline void FillTmp(ElemTmp* end, ElemTmp* q, float f) { while (q < end) { q->f1 = f; q->f2 = f; q->i1 = 0; q->i2 = 0; q++; } }
+static inline void FillTmp(ElemTmp* end, ElemTmp* q, float f) { if (q < end) { do { q->f1 = f; q->f2 = f; q->i1 = 0; q->i2 = 0; q++; } while (q < end); } }
 typedef unsigned int u32;
 typedef signed char s8;
 typedef int M2C_UNK;
@@ -367,9 +367,9 @@ extern f32 lbl_80560F24;
 #pragma processor 750
 void *fn_800E279C(void *arg0) {
     u8* p = (u8*)arg0;
-    LLTmp* l1 = (LLTmp*)(p + 8);
-    LLTmp* l2 = (LLTmp*)(p + 0x14);
-    LLTmp* l3 = (LLTmp*)(p + 0x20);
+    LLTmp& l1 = *(LLTmp*)(p + 8);
+    LLTmp& l2 = *(LLTmp*)(p + 0x14);
+    LLTmp& l3 = *(LLTmp*)(p + 0x20);
     *(volatile int*)(p + 0xC) = 0;
     *(volatile int*)(p + 0x10) = 0;
     *(volatile int*)(p + 0x18) = 0;
@@ -378,10 +378,10 @@ void *fn_800E279C(void *arg0) {
     *(volatile int*)(p + 0x28) = 0;
     *(int*)(p + 0) = 0;
     *(int*)(p + 4) = 0;
-    *(int*)(p + 8) = 0;
-    l1->a = 0; l1->next = &l1->next; l1->prev = &l1->next;
-    l2->a = 0; l2->next = &l2->next; l2->prev = &l2->next;
-    l3->a = 0; l3->next = &l3->next; l3->prev = &l3->next;
+    l1.a = 0;
+    l1.next = &l1.next; l1.prev = &l1.next;
+    l2.a = 0; l2.next = &l2.next; l2.prev = &l2.next;
+    l3.a = 0; l3.next = &l3.next; l3.prev = &l3.next;
     fn_8002F53C(p + 0x2C, &__ct__Q46nw4hbm3snd6detail7AxVoiceFv, &__dt__Q46nw4hbm3snd6detail7AxVoiceFv, 0x1B0, 0x40);
     float f = lbl_80560F20;
     p[0x6C30] = 0;
@@ -406,12 +406,12 @@ void *fn_800E279C(void *arg0) {
     *(float*)(p + 0x6C70) = f;
     *(int*)(p + 0x6C74) = 0;
     *(int*)(p + 0x6C78) = 0;
-    FillTmp((ElemTmp*)(p + 0x6C7C), (ElemTmp*)(p + 0x6C9C), f);
+    FillTmp((ElemTmp*)(p + 0x6C9C), (ElemTmp*)(p + 0x6C7C), f);
     *(float*)(p + 0x6C9C) = f;
     *(float*)(p + 0x6CA0) = f;
     *(int*)(p + 0x6CA4) = 0;
     *(int*)(p + 0x6CA8) = 0;
-    FillTmp((ElemTmp*)(p + 0x6CAC), (ElemTmp*)(p + 0x6CCC), f);
+    FillTmp((ElemTmp*)(p + 0x6CCC), (ElemTmp*)(p + 0x6CAC), f);
     fn_8002F53C(p + 0x6CCC, &fn_800E2C98, &__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800E2CB8, 0xC, 3);
     {
         float g = lbl_80560F24;
