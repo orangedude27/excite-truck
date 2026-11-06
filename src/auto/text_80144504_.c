@@ -27,10 +27,10 @@ void GXInitLightAttnA_80144B44(void *arg0, f32 farg0, f32 farg1, f32 farg2) {
 
 void fn_80144B54(void *dst, void *src) {
     s32 a, b, c, d, e, f, g, h, i, j, k, l;
-    a = ((s32 *)src)[0];
-    b = ((s32 *)src)[1];
-    c = ((s32 *)src)[2];
     d = ((s32 *)src)[3];
+    c = ((s32 *)src)[2];
+    b = ((s32 *)src)[1];
+    a = ((s32 *)src)[0];
     e = ((s32 *)src)[4];
     f = ((s32 *)src)[5];
     g = ((s32 *)src)[6];
@@ -83,42 +83,60 @@ void fn_80144C54(void *arg0) {
 }
 
 unsigned int fn_80144C68(unsigned int arg0, unsigned int arg1, unsigned int arg2, unsigned int arg3) {
-    unsigned int x = arg2;
     unsigned int y = arg1;
+    unsigned int x = arg2;
     x = (x << 8) & 0xFF00;
     y = (y << 16) & 0xFF0000;
     x |= arg3;
     y |= arg0 >> 24;
     return x | y;
 }
-
+#pragma scheduling invalid_target
+#pragma scheduling on
 float fn_80144C80(float farg0, float farg1, float farg2) {
     return farg0 + (farg2 * (farg1 - farg0));
 }
 
 extern f32 lbl_805615C0;
+#pragma push
+#pragma scheduling invalid_target
 s32 fn_80144C90(f32 farg0) {
     f32 x;
-    if (farg0 < lbl_805615BC) {
+    f32 t = lbl_805615BC;
+    if (farg0 < t) {
         x = farg0 - lbl_805615C0;
     } else {
         x = lbl_805615C0 + farg0;
     }
     return (s32)x;
 }
-
-#pragma scheduling off
+#pragma pop
 f32 fn_80144CC8(f32 farg0) {
     return farg0 * farg0;
 }
 
+#pragma push
+#pragma scheduling invalid_target
+void fn_80144CD0(f32 *out, f32 *vec, f32 (*m)[4]) {
+    f32 x = vec[0] - m[2][1];
+    f32 y = vec[1] - m[2][2];
+    f32 o0 = x * m[0][0] + y * m[0][1];
+    f32 o1 = x * m[0][3] + y * m[1][0];
+    f32 o2 = x * m[1][2] + y * m[1][3];
+    f32 z = vec[2] - m[2][3];
+    o1 += z * m[1][1];
+    o0 += z * m[0][2];
+    o2 += z * m[2][0];
+    out[1] = o1;
+    out[0] = o0;
+    out[2] = o2;
+}
+#pragma pop
 void fn_80144D64(s32 *dst, s32 *src) {
-    s32 a = src[0];
-    s32 b = src[1];
-    s32 c = src[2];
-    dst[0] = a;
-    dst[1] = b;
-    dst[2] = c;
+ s32 c, b, a;
+ volatile s32 *p = src;
+ a = p[0]; b = p[1]; c = p[2];
+ dst[0] = a; dst[1] = b; dst[2] = c;
 }
 
 void fn_80144D80(f32 *arg0, f32 farg0, f32 farg1, f32 farg2) {
