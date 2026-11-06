@@ -389,6 +389,7 @@ void fn_802671CC(void *arg0, int arg1) {
     (void)arg1;
 }
 #pragma pop
+#pragma dont_inline reset
 
 extern int fn_8026A554(int *);
 #pragma push
