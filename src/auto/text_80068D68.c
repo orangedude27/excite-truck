@@ -21879,7 +21879,7 @@ void sdp_conn_timeout(tCONN_CB *p_ccb) {
 
 extern void process_service_search(tCONN_CB *, UINT16, UINT16, UINT8 *);
 static void process_service_attr_req(tCONN_CB *, UINT16, UINT16, UINT8 *, UINT8 *);
-typedef struct { UINT8 pad[0x476]; UINT16 cont_off; } tCCB_CONT_VIEW;
+typedef struct { UINT8 pad[0x476]; volatile UINT16 cont_off; } tCCB_CONT_VIEW;
 static void process_service_search_attr_req(tCONN_CB *, UINT16, UINT16, UINT8 *, UINT8 *);
 void sdp_server_handle_client_req(tCONN_CB *p_ccb, BT_HDR *p_msg) {
     extern char lbl_8031A4E8[];
@@ -21933,7 +21933,6 @@ void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len,
     UINT8 sp17c;
     u8 *p_param_len;
     u8 *p_end;
-    u8 *p_cont;
     u32 param_len2;
     BT_HDR *buf;
     u8 *uid;
@@ -21960,12 +21959,12 @@ void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len,
         total_handles++;
     }
     if (uid[2] != 0) {
+        p = uid + 3;
         if (uid[2] != 2) {
             sdpu_build_n_send_error(p_ccb, trans_num, 5, 0);
             return;
         }
-        p_cont = uid + 3;
-        start_offset = ((UINT16) p_cont[0] << 8) + p_cont[1];
+        start_offset = ((UINT16) p[0] << 8) + p[1];
         if (start_offset != ((tSDP_CCB_CONT_VIEW *)p_ccb)->cont_offset) {
             sdpu_build_n_send_error(p_ccb, trans_num, 5, 0);
             return;
@@ -22221,28 +22220,31 @@ static void process_service_search_attr_req(tCONN_CB *p_ccb, UINT16 trans_num,
         sdpu_build_n_send_error(p_ccb, trans_num, 3, NULL);
         return;
     }
+
     max_list_len = ((UINT16)p_req[0] << 8) + p_req[1];
     if (max_list_len > p_ccb->rem_mtu_size - 0xA)
         max_list_len = p_ccb->rem_mtu_size - 0xA;
+
     p_req = sdpu_extract_attr_seq(p_req + 2, param_len, &attr_seq);
     if (p_req == NULL || attr_seq.num_attr == 0) {
         sdpu_build_n_send_error(p_ccb, trans_num, 3, NULL);
         return;
     }
     attr_seq_sav = attr_seq;
+
     if (*p_req != 0) {
         if (*p_req != 2) {
             sdpu_build_n_send_error(p_ccb, trans_num, 5, NULL);
             return;
         }
         req_offset = (UINT16)(((UINT16)p_req[1] << 8) + p_req[2]);
-        if (req_offset != *(UINT16 *)((UINT8 *)p_ccb + 0x476)) {
+        if (req_offset != ((tCCB_CONT_VIEW *)p_ccb)->cont_off) {
             sdpu_build_n_send_error(p_ccb, trans_num, 5, NULL);
             return;
         }
     } else {
         p_rsp = (UINT8 *)p_ccb + 0x29;
-        *(UINT16 *)((UINT8 *)p_ccb + 0x476) = 0;
+        ((tCCB_CONT_VIEW *)p_ccb)->cont_off = 0;
         p_rec = sdp_db_service_search(NULL, &uid_seq);
         while (p_rec != NULL) {
             attr_seq = attr_seq_sav;
@@ -22286,18 +22288,20 @@ static void process_service_search_attr_req(tCONN_CB *p_ccb, UINT16 trans_num,
             *((UINT8 *)p_ccb + 0x27) = adjusted >> 8;
             *((UINT8 *)p_ccb + 0x28) = adjusted;
         } else {
-            *(UINT16 *)((UINT8 *)p_ccb + 0x476) = 1;
+            ((tCCB_CONT_VIEW *)p_ccb)->cont_off = 1;
             *((UINT8 *)p_ccb + 0x27) = 0x35;
             *((UINT8 *)p_ccb + 0x28) = len_to_send - 3;
             p_ccb->list_len = len_to_send - 1;
         }
     }
+
     p_buf = (BT_HDR *)GKI_getpoolbuf(2);
     if (p_buf == NULL) {
         if (lbl_803C4C40[0x4630] >= 1)
             fn_8007093C(0xA0000, lbl_8031A50C);
         return;
     }
+
     p_buf->offset = 9;
     p_rsp = p_rsp_start = (UINT8 *)p_buf + 0x11;
     p_rsp[0] = 7;
@@ -22310,12 +22314,12 @@ static void process_service_search_attr_req(tCONN_CB *p_ccb, UINT16 trans_num,
     p_rsp_param_len[2] = len_to_send >> 8;
     p_rsp_param_len[3] = len_to_send;
     p_rsp = p_rsp_param_len + 4;
-    cont_offset = *(UINT16 *)((UINT8 *)p_ccb + 0x476);
+    cont_offset = ((tCCB_CONT_VIEW *)p_ccb)->cont_off;
     memcpy(p_rsp, (UINT8 *)p_ccb + cont_offset + 0x26, len_to_send);
     p_rsp += len_to_send;
     p_ccb->list_len -= len_to_send;
     cont_offset += len_to_send;
-    *(UINT16 *)((UINT8 *)p_ccb + 0x476) = cont_offset;
+    ((tCCB_CONT_VIEW *)p_ccb)->cont_off = cont_offset;
     if (p_ccb->list_len != 0) {
         p_rsp[0] = 2;
         p_rsp[1] = cont_offset >> 8;
