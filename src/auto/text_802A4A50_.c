@@ -127,6 +127,19 @@ static inline void Mtx33MultVec_802A6470(const f32 *m, const f32 *src, f32 *dst)
         dst[2] = z * m[8] + (x * m[6] + y * m[7]);
     }
 }
+static inline void VecMtxMult_802A53B0(const f32 *m, const f32 *src, f32 *dst) {
+    if (src == dst) {
+        f32 x = src[0], y = src[1], z = src[2];
+        f32 o0 = z * m[6] + (x * m[0] + y * m[3]);
+        f32 o1 = z * m[7] + (x * m[1] + y * m[4]);
+        f32 o2 = z * m[8] + (x * m[2] + y * m[5]);
+        dst[0] = o0; dst[1] = o1; dst[2] = o2;
+    } else {
+        dst[0] = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
+        dst[1] = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
+        dst[2] = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
+    }
+}
 extern f32 __fabsf(f32);
 extern char lbl_80558DC4[];
 extern f32 lbl_80564854;
@@ -527,6 +540,135 @@ s32 fn_802A5384(s32 arg0) {
     return ((s32 (*)(f32))fn_802A5270)(lbl_8056485C);
 special:
     return ((s32 (*)(f32))fn_802A52FC)(lbl_8056485C);
+}
+
+void fn_802A53B0(void *arg0, s32 arg1) {
+    f32 sp8[3];
+    f32 sp14[3];
+    f32 sp20[3];
+    f32 sp2C[3];
+    f32 sp38[3];
+    s32 i;
+    s32 j;
+    s32 k;
+    s32 cnt;
+    s32 cnt2;
+    f32 dot;
+    f32 mag;
+    f32 f27;
+    f32 f29;
+    f32 f30;
+    f32 f28;
+    f32 f1;
+    f32 r;
+    f32 r2;
+    u8 *base;
+    u8 *entry;
+    s32 *mat;
+    if (!((f32)__fabs((double)fn_802A4AD4()) <= *(f32 *)(void *)&lbl_80558DC4)) {
+        if (lbl_8055F894 == 0) {
+            return;
+        }
+        base = (u8 *)lbl_8055F88C;
+        f27 = lbl_8056487C;
+        f29 = lbl_80564880;
+        f30 = lbl_80564884;
+        f28 = lbl_80564864;
+        f1 = -(lbl_8056485C / (f32)fn_8002F234(PSVECDotProduct((f32 *)(base + 0x2C), (f32 *)(base + 0x2C))));
+        sp38[0] = *(f32 *)(base + 0x2C) * f1;
+        sp38[1] = *(f32 *)(base + 0x30) * f1;
+        sp38[2] = *(f32 *)(base + 0x34) * f1;
+        for (i = 0; i < arg1; i++) {
+            u8 *item = (u8 *)arg0 + i * 0x10;
+            if (*(f32 *)(item + 8) > f27) {
+                continue;
+            }
+            if (((u8 *)(item + 0xC))[0] == 0) {
+                continue;
+            }
+            entry = lbl_804BCFB8 + (*(s32 *)(item + 4) * 0xC4);
+            cnt = *(s32 *)(entry + 0xC0);
+            if (cnt < 1) {
+                continue;
+            }
+            mat = *(s32 **)item;
+            for (j = 0; j < cnt; j++) {
+                f32 *srcv = (f32 *)(entry + j * 0x30);
+                f32 *mv = (f32 *)mat;
+                if (sp2C == srcv) {
+                    f32 x = srcv[0];
+                    f32 y = srcv[1];
+                    f32 z = srcv[2];
+                    f32 o0 = x * mv[0] + y * mv[3] + z * mv[6];
+                    f32 o1 = x * mv[1] + y * mv[4] + z * mv[7];
+                    f32 o2 = x * mv[2] + y * mv[5] + z * mv[8];
+                    sp2C[0] = o0;
+                    sp2C[1] = o1;
+                    sp2C[2] = o2;
+                } else {
+                    sp2C[0] = srcv[0] * mv[0] + srcv[1] * mv[3] + srcv[2] * mv[6];
+                    sp2C[1] = srcv[0] * mv[1] + srcv[1] * mv[4] + srcv[2] * mv[7];
+                    sp2C[2] = srcv[0] * mv[2] + srcv[1] * mv[5] + srcv[2] * mv[8];
+                }
+                dot = PSVECDotProduct(sp38, sp2C);
+                PSVECCrossProduct(srcv + 6, srcv + 9, sp14);
+                mag = PSVECMag(sp14);
+                if ((s32)(-dot * (f28 * mag)) < 1) {
+                    continue;
+                }
+                {
+                    f32 t = f29 * dot;
+                    f32 a0 = sp38[0] + sp2C[0] * t;
+                    f32 a1 = sp38[1] + sp2C[1] * t;
+                    f32 a2 = sp38[2] + sp2C[2] * t;
+                    sp20[0] = a0;
+                    sp20[1] = a1;
+                    sp20[2] = a2;
+                    {
+                        f32 s0 = a0 * f30;
+                        f32 s1 = a1 * f30;
+                        f32 s2 = a2 * f30;
+                        f32 *mp = (f32 *)mat;
+                        sp20[0] = mp[13] + s0;
+                        sp20[1] = mp[14] + s1;
+                        sp20[2] = mp[15] + s2;
+                    }
+                }
+                cnt2 = fn_80287B5C((s32)(-dot * (f28 * mag))) + 1;
+                for (k = 0; k < cnt2; k++) {
+                    f32 v[3];
+                    r = fn_80287BC8(lbl_80564858, lbl_8056485C);
+                    r2 = fn_80287BC8(lbl_80564858, lbl_8056485C);
+                    v[0] = *(f32 *)(entry + j * 0x30 + 0xC) + *(f32 *)(entry + j * 0x30 + 0x18) * r + *(f32 *)(entry + j * 0x30 + 0x24) * r2;
+                    v[1] = *(f32 *)(entry + j * 0x30 + 0x10) + *(f32 *)(entry + j * 0x30 + 0x1C) * r + *(f32 *)(entry + j * 0x30 + 0x28) * r2;
+                    v[2] = *(f32 *)(entry + j * 0x30 + 0x14) + *(f32 *)(entry + j * 0x30 + 0x20) * r + *(f32 *)(entry + j * 0x30 + 0x2C) * r2;
+                    if (sp8 == v) {
+                        f32 x = v[0];
+                        f32 y = v[1];
+                        f32 z = v[2];
+                        f32 o0 = x * mv[0] + y * mv[3] + z * mv[6];
+                        f32 o1 = x * mv[1] + y * mv[4] + z * mv[7];
+                        f32 o2 = x * mv[2] + y * mv[5] + z * mv[8];
+                        sp8[0] = o0;
+                        sp8[1] = o1;
+                        sp8[2] = o2;
+                    } else {
+                        sp8[0] = v[0] * mv[0] + v[1] * mv[3] + v[2] * mv[6];
+                        sp8[1] = v[0] * mv[1] + v[1] * mv[4] + v[2] * mv[7];
+                        sp8[2] = v[0] * mv[2] + v[1] * mv[5] + v[2] * mv[8];
+                    }
+                    sp8[0] += mv[9];
+                    sp8[1] += mv[10];
+                    sp8[2] += mv[11];
+                    {
+                        f32 a1 = sp8[2];
+                        f32 a2 = sp8[1];
+                        fn_8028E584(lbl_8055F894, sp8, sp20, a1, a2);
+                    }
+                }
+            }
+        }
+    }
 }
 
 extern void *fn_802AE4C8(s32);
