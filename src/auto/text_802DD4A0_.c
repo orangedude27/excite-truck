@@ -383,7 +383,6 @@ void fn_802DD898(void *arg0,float farg0,float farg1) {
     GXPosition1x8(15);GXColor1x8(15);GXTexCoord1x8(15);
     i=16; do { GXPosition1x8((u8)i); GXColor1x8((u8)i); GXTexCoord1x8((u8)i); i++; } while (i<0x18);
 }
-#pragma processor gekko
 #pragma scheduling on
 void fn_802DE774(void) {
     *(int *)((char *)lbl_804DB6A0 + 0x90) = 0;
