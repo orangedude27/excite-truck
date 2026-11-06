@@ -31,6 +31,24 @@ extern "C" s32 lbl_8055EF2C;
 extern "C" s32 lbl_8055EF30;
 extern "C" s32 lbl_8055EF34;
 extern "C" void fn_80127A24(void);
+extern "C" void *fn_8022E4C0(void *);
+extern "C" void *fn_8022E0EC(const void *);
+extern "C" void fn_80276D3C(void *, s32);
+extern "C" void fn_802C8D74(void);
+extern "C" void fn_802C8E48(void);
+extern "C" s32 fn_802C5130(char *);
+extern "C" s32 fn_802C51C0(void *);
+extern "C" s32 fn_802C5220(void *);
+extern "C" void *fn_80216770(const char *, s32, s32, s32, s32, s32);
+extern "C" void *fn_80216D40(void *, const char *, s32, s32, s32, s32, s32);
+extern "C" int strcmp(const char *, const char *);
+extern "C" void fn_80236914(void);
+extern "C" char lbl_8033D590[];
+extern "C" char lbl_8055B7F8[];
+extern "C" char lbl_8055B7FC[];
+extern "C" s32 lbl_8055CFF0;
+extern "C" s32 lbl_8055CFF4;
+extern "C" void *lbl_8055EF44;
 extern "C" void fn_802141A0(void **, void *, s32, s32, s32, s32);
 extern "C" void fn_80218D54(void *, s32);
 extern "C" void fn_80212340(void *);
@@ -1911,7 +1929,7 @@ extern "C" void fn_80215500(void) {
 
 #pragma scheduling off
 extern "C" void fn_80215504(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
-    f32 rate = lbl_80563450;
+    f32 rate = (f32)(double)lbl_80563450;
     fn_8022BAD0(*(s32 *)((u8 *)arg0 + 8), arg1, arg2, 0, arg4, arg5,
                 *(s32 *)((u8 *)arg0 + 4), arg6, rate, 0);
 }
