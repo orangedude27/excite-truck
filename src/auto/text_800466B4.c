@@ -410,6 +410,85 @@ void calc_dpd_variable(void *arg0, s8 arg1) {
     VFIELD(p,0x84)=(u8)arg1;
 }
 
+void read_kpad_dpd(void *arg0, void *arg1, s32 mode) {
+    u8 *p = (u8 *)arg0;
+    register u8 *last, *first, *a, *b;
+    s32 probe, type;
+    s8 selected;
+    register f32 dy, dx; f32 scale, x, y, c, d; f64 mag;
+    if (*(s16 *)(p + 0x114) < 0) return;
+    probe = WPADProbe(*(s16 *)(p + 0x114), &type);
+    if ((u32)mode == 1) {
+        if (probe != 0) { if (probe == -1) { *(s16 *)(p+0x114) -= 4; reset_kpad(arg0); return; } }
+        else ((void (*)(void *, void *, int))select_1obj_continue_head)(arg0,arg1,1);
+    } else if ((u32)mode == 2) {
+        if (probe != 0) { if (probe == -1) { *(s16 *)(p+0x114) -= 4; reset_kpad(arg0); return; } }
+        else ((void (*)(void *, void *, int))select_1obj_continue_head)(arg0,arg1,2);
+    } else {
+        if (probe != 0) { if (probe == -1) { *(s16 *)(p+0x114) -= 4; reset_kpad(arg0); return; } }
+        else ((void (*)(void *, void *, int))select_1obj_continue_head)(arg0,arg1,0);
+    }
+    first = p + 0xc8; last = p + 0xec;
+    a = last;
+    do {
+        if (*(s8 *)(a+8) >= 0 && (*(f32 *)a <= lbl_8055D9A8[0] || *(f32 *)a >= lbl_8055D9A0[0] || *(f32 *)(a+4) <= lbl_8055D9A8[1] || *(f32 *)(a+4) >= lbl_8055D9A0[1]))
+            a[8] |= 1;
+        a -= 12;
+    } while (a >= first);
+    a = first;
+    do {
+        if (*(s8 *)(a+8) == 0) {
+            b = a + 12;
+            do {
+                if (*(s8 *)(b+8) == 0 && *(f32 *)a == *(f32 *)b && *(f32 *)(a+4) == *(f32 *)(b+4)) b[8] |= 2;
+                b += 12;
+            } while (b <= last);
+        }
+        a += 12;
+    } while (a < last);
+    *(s16 *)(p+0x110) = 0;
+    a = p + 0xec; first = p + 0xc8;
+    do {
+        if (*(s8 *)(a+8) == 0) ++*(s16 *)(p+0x110);
+        a -= 12;
+    } while (a >= first);
+    selected = 0;
+    if (!(*(f32 *)(p+0x54) <= lbl_80558ECC)) {
+        if (*(s8 *)(p+0x84) == 2 || *(s8 *)(p+0x84) == -2) {
+            if (*(s16 *)(p+0x110) >= 2) selected = select_2obj_continue(arg0);
+            if (!selected && *(s16 *)(p+0x110) >= 1) selected = select_1obj_continue(arg0);
+        } else if (*(s8 *)(p+0x84) == 1 || *(s8 *)(p+0x84) == -1) {
+            if (*(s16 *)(p+0x110) >= 2) selected = select_2obj_first(arg0);
+            if (!selected && *(s16 *)(p+0x110) >= 1) selected = select_1obj_continue(arg0);
+        } else {
+            if (*(s16 *)(p+0x110) >= 2) selected = select_2obj_first(arg0);
+            if (!selected && *(s16 *)(p+0x110) == 1) selected = select_1obj_first(arg0);
+        }
+    }
+    if (selected) {
+        dx = *(f32 *)(p+0x104) - *(f32 *)(p+0xf8);
+        dy = *(f32 *)(p+0x108) - *(f32 *)(p+0xfc);
+        mag = (f32)fn_8002F234(dx*dx+dy*dy);
+        scale = lbl_80560BE4 / mag;
+        *(f32 *)(p+0x3a0) = mag;
+        x = *(f32 *)(p+0xb4); y = *(f32 *)(p+0xb8);
+        dx *= scale; dy *= scale;
+        *(f32 *)(p+0x3a4) = dx;
+        *(f32 *)(p+0x3ac) = lbl_8055D990 * scale;
+        c = x*dx+y*dy; d = y*dx-x*dy;
+        *(f32 *)(p+0x3a8) = dy;
+        *(f32 *)(p+0x3c0) = c; *(f32 *)(p+0x3c4) = d;
+        if (*(u16 *)(p+0x3d8) == 0 && c * *(f32 *)(p+0x3c8) + d * *(f32 *)(p+0x3cc) <= lbl_80558EC8) {
+            selected = 0; p[0x10c] = 1; p[0x100] = 1;
+        }
+        if ((s32)p[0x84] == 2 && selected == 2) {
+            if (p[0x3da] == 0xc8) *(f32 *)(p+0x3b0) = *(f32 *)(p+0x3a0);
+            else ++p[0x3da];
+        } else p[0x3da] = 0;
+    } else p[0x3da] = 0;
+    calc_dpd_variable(arg0, selected);
+}
+
 static void clamp_stick_circle(Vec2* stick, s32 sx, s32 sy, s32 min, s32 max) {
     f32 length;
     f32 fx = (f32)sx;
@@ -551,17 +630,16 @@ s32 read_kpad_stick(s32 chan, void *arg1) {
     return 1;
 }
 
-#pragma scheduling invalid_target
+#pragma push
+#pragma fp_contract on
 s32 KPADRead(s32 arg0, KPADStatus *arg1, s32 arg2) {
     extern f32 lbl_80558EB8;
     extern f32 lbl_80560BE4;
-    extern f64 lbl_80560C28;
     extern u8 fn_80062458(void);
     extern void read_kpad_acc(void *, void *, s32, s32);
     extern void read_kpad_dpd(void *, void *, s32);
     extern void calc_acc_horizon(void *, void *, s32);
     extern s32 fn_800609E0(s32);
-    union { u32 word[2]; f64 value; } conversion;
     register s32 var_r21;
     register s32 var_r22=arg0;
     register KPADReadPrivate *temp_r29=(KPADReadPrivate *)(lbl_8037C808+(arg0<<10));
@@ -576,12 +654,10 @@ s32 KPADRead(s32 arg0, KPADStatus *arg1, s32 arg2) {
     s32 normalized;
     u32 devType;
     u8 *temp_r4;
+    f32 delta;
 
-    conversion.word[1]=fn_80062458(); conversion.word[0]=0x43300000;
-    {
-        f32 delta=(f32)conversion.value-(f32)lbl_80560C28;
-        lbl_80558EB8=lbl_80560BE4+delta;
-    }
+    delta=(f32)fn_80062458();
+    lbl_80558EB8=lbl_80560BE4+delta;
     var_r30=var_r26+(var_r23-1);
 init_samples:
     *(u32 *)&var_r30->status.dev_type=*(u32 *)&temp_r29->status.status.dev_type;
@@ -602,40 +678,34 @@ init_samples:
     devType=*(u32 *)&temp_r29->status.status.dev_type;
     var_r30=var_r26+var_r23;
     if(devType==0 || devType==0xFB || devType==0xFF || devType==0xFC) {
-        var_r31=var_r24-var_r23;
         do {
             var_r25++; if(var_r25==0xC) var_r25=0;
-            temp_r4=(u8 *)temp_r29+var_r25*0x2A;
+            temp_r4=(u8 *)temp_r29+var_r25*0x2A; var_r28=temp_r4+0x118;
             *((u8 *)temp_r29+0x85)=temp_r4[0x141];
-            var_r28=temp_r4+0x118;
             read_kpad_acc(temp_r29,var_r28,0,var_r22); read_kpad_dpd(temp_r29,var_r28,0);
-            if(temp_r29->repeat_count>=var_r31) {
+            if(temp_r29->repeat_count>=(s32)(var_r24-var_r23)) {
                 var_r30--;
                 *var_r30=temp_r29->status;
             }
         } while(++temp_r29->repeat_count<var_r24);
     } else if(devType==1) {
-        var_r31=var_r24-var_r23;
         do {
             var_r25++; if(var_r25==0xC) var_r25=0;
-            temp_r4=(u8 *)temp_r29+var_r25*0x32;
+            temp_r4=(u8 *)temp_r29+var_r25*0x32; var_r27=temp_r4+0x118;
             *((u8 *)temp_r29+0x85)=temp_r4[0x141];
-            var_r27=temp_r4+0x118;
             read_kpad_acc(temp_r29,var_r27,1,var_r22); read_kpad_dpd(temp_r29,var_r27,1); clamp_stick_cross(temp_r29,var_r27);
-            if(temp_r29->repeat_count>=var_r31) {
+            if(temp_r29->repeat_count>=(s32)(var_r24-var_r23)) {
                 var_r30--;
                 *var_r30=temp_r29->status;
             }
         } while(++temp_r29->repeat_count<var_r24);
     } else if(devType==2) {
-        var_r31=var_r24-var_r23;
         do {
             var_r25++; if(var_r25==0xC) var_r25=0;
-            temp_r4=(u8 *)temp_r29+var_r25*0x36;
+            temp_r4=(u8 *)temp_r29+var_r25*0x36; var_r26=(KPADReadStatus *)(temp_r4+0x118);
             *((u8 *)temp_r29+0x85)=temp_r4[0x141];
-            var_r26=(KPADReadStatus *)(temp_r4+0x118);
             read_kpad_acc(temp_r29,var_r26,2,var_r22); read_kpad_dpd(temp_r29,var_r26,2); clamp_stick_cross(temp_r29,var_r26);
-            if(temp_r29->repeat_count>=var_r31) {
+            if(temp_r29->repeat_count>=(s32)(var_r24-var_r23)) {
                 var_r30--;
                 *var_r30=temp_r29->status;
             }
@@ -660,9 +730,7 @@ init_samples:
     } while(var_r31!=0);
     return var_r23;
 }
-#pragma scheduling on
-#pragma push
-#pragma scheduling invalid_target
+#pragma pop
 extern void fn_8005EB44(void);
 extern s32 fn_8005EE7C(void);
 extern void KPADSetSensorHeight(void *, s32);
