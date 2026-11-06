@@ -66,6 +66,16 @@ extern "C" f32 __fabsf(f32);
 struct S28_80142118 { s32 v[7]; };
 
 struct TVec2 { f32 x; f32 y; };
+struct Fn801436E0TextStyle { u32 a, b, c, d; f32 size; u32 f, g, h; };
+extern "C" void *fn_801E7E3C(void);
+extern "C" void fn_8000FBE4(void);
+extern "C" s32 fn_80161C38(void);
+extern "C" void fn_80160A74(void);
+extern "C" s32 fn_80160998(void);
+extern "C" void fn_80130978(void *, s32, f32);
+extern "C" f32 fn_80147204(void *, const char *);
+extern "C" void fn_8014784C(void *, const char *, const char *, s32);
+extern "C" f32 lbl_805614C0, lbl_805614D0, lbl_8056150C, lbl_80561588, lbl_805615AC;
 class TPathDocument {
 public:
     virtual void *find(const char *);
@@ -1614,6 +1624,113 @@ extern "C" void fn_80140D1C(void *arg0, void *arg1, void *arg2) {
  if(idx>0){fn_80141558((u8 *)arg0+0x280,(s32)dst,idx,*(s32 *)((u8 *)arg0+0x288));idx=0;}
  i=0; do {cap=*(s32 *)((u8 *)arg0+0xC4);head=*(s32 *)((u8 *)arg0+0xCC);end=(cap+(*(s32 *)((u8 *)arg0+0xC8)-head))%cap;if(i>=end)break;item=*(u8 **)((u8 *)arg0+0xC0);fn_80140B98(arg0,*(void **)(item+((i+cap+head)%cap)*12+8),4);i++;}while(1);
 }
+
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" u32 fn_80140F10(void *arg0, void *arg1) {
+    u8 *p=(u8 *)arg0, *input=(u8 *)arg1;
+    if (*(s32 *)(p+0xc)==0) return 0;
+    s32 other=*(s32 *)(input+0x110);
+    s32 total=*(s32 *)(input+0x88);
+    s32 count=*(s32 *)(input+0x114);
+    s32 completed=0, remaining=count;
+    fn_801345D8(p+0x30,0x14,&lbl_80559D6C,*(s32 *)(input+0x18)+(*(s32 *)(input+0x10)+*(s32 *)(input+0x14)));
+    if(count && *(f32 *)(p+4)>lbl_805614A4) {
+        f32 fraction=((lbl_8055E3C8-*(f32 *)(p+4))-lbl_805614A4)/lbl_805614AC;
+        fraction=lbl_805614AC<fraction ? lbl_805614AC : fraction;
+        fraction=fraction>lbl_805614A4 ? fraction : lbl_805614A4;
+        completed=(s32)(lbl_805614A4+fraction*((lbl_80561498+(f32)count)-lbl_805614A4));
+        remaining=count-completed;
+    }
+    fn_801345D8(p+0x44,0x14,&lbl_80559D6C,completed);
+    if(p[0x10]) {
+        {const char *s=lbl_80559D80; char *d=(char*)p+0xb2; int count=0x14; char c;
+       goto check0;
+check0: if (--count>0) goto copy0; d[-1]=0; goto done0;
+copy0: c=*s++; *d++=c; if ((signed char)c != 0) goto check0;
+done0:;}
+        {const char *s=lbl_80559D80; char *d=(char*)p+0x58; int count=0x14; char c;
+       goto check1;
+check1: if (--count>0) goto copy1; d[-1]=0; goto done1;
+copy1: c=*s++; *d++=c; if ((signed char)c != 0) goto check1;
+done1:;}
+    } else {
+        if(!lbl_8055E1C8){fn_801312EC(lbl_8042FB78,lbl_8032CA74);lbl_8055E1C8=1;}
+        fn_80130980(p+0xb2,0x14,2,(f32)remaining);
+        if(*(u32 *)(lbl_8042FB78+8)!=lbl_8055E044)fn_80131318(lbl_8042FB78);
+        {const char *s=*(char **)(lbl_8042FB78+4); char *d=(char*)p+0x58; int count=0x14; char c;
+       goto check2;
+check2: if (--count>0) goto copy2; d[-1]=0; goto done2;
+copy2: c=*s++; *d++=c; if ((signed char)c != 0) goto check2;
+done2:;}
+    }
+    fn_801345D8(p+0x6c,0x14,&lbl_80559D6C,other);
+    fn_801308F4(p+0x80,0x14,total);
+    fn_801308F4(p+0x9e,0x14,total-count);
+    if(fn_801609C4(total)!=-1) {
+        {const char *s=__AXGetStackHead(); char *d=(char*)p+0x94; int count=10; char c;
+       goto check3;
+check3: if (--count>0) goto copy3; d[-1]=0; goto done3;
+copy3: c=*s++; *d++=c; if ((signed char)c != 0) goto check3;
+done3:;}
+    } else {
+        {const char *s=&lbl_80559D84; char *d=(char*)p+0x94; int count=10; char c;
+       goto check4;
+check4: if (--count>0) goto copy4; d[-1]=0; goto done4;
+copy4: c=*s++; *d++=c; if ((signed char)c != 0) goto check4;
+done4:;}
+    }
+    if(*(s32 *)(p+0x10c))p[8]=0;
+    switch(*(s32 *)p) {
+    case 0:
+        fn_802ADFF4(*(s32 *)(p+0xc),*(s32 *)(p+0x108));
+        if(strlen((char *)p+0xee)) {
+            u8 *widget=*(u8 **)(p+0x2c);
+                if(widget && !widget[0x19]){widget[0x49]=1;widget[0x4b]=0;widget[0x4a]=0;}
+        } else {
+            u8 *widget=*(u8 **)(p+0x28);
+            if(widget && !widget[0x19]){widget[0x49]=1;widget[0x4b]=0;widget[0x4a]=0;}
+        }
+        if(count>0) {
+            u8 *widget=*(u8 **)(p+0x14);
+            if(widget){widget[0x49]=1;widget[0x4b]=0;widget[0x4a]=0;}
+        } else {
+            u8 *widget=*(u8 **)(p+0x18);
+            if(widget){widget[0x49]=1;widget[0x4b]=0;widget[0x4a]=0;}
+        }
+        *(s32 *)p=1;
+        break;
+    case 1:
+        if(*(s32 *)(p+0x110) && *(f32 *)(p+4)<lbl_805614A4) *(f32 *)(p+4)=lbl_8055E3C8;
+        if(*(s32 *)(p+0x110)==2 && !p[0x20]) {
+            u8 *widget=*(u8 **)(p+0x1c);
+            p[0x20]=1;
+            if(widget){widget[0x49]=1;widget[0x4b]=0;widget[0x4a]=0;}
+        }
+        if(*(s32 *)(p+0x114)) {
+            fn_802AE02C(*(s32 *)(p+0xc),*(s32 *)(p+0x108));
+            *(s32 *)p=2;
+        }
+        break;
+    case 2:
+        if(p[9]) {
+            fn_802AE0B8(*(s32 *)(p+0xc),*(s32 *)(p+0x108));
+            u8 *widget=*(u8 **)(p+0x24);
+            if(widget){widget[0x49]=1;widget[0x4b]=0;widget[0x4a]=0;}
+            *(s32 *)p=3;
+        }
+        break;
+    case 3:
+        if(*(s32 *)(p+0x118)) {
+            fn_802AE02C(*(s32 *)(p+0xc),*(s32 *)(p+0x108));
+            *(s32 *)p=4;
+        }
+        break;
+    }
+    fn_802AE168(*(s32 *)(p+0xc));
+    return *(s32 *)p!=4;
+}
+#pragma pop
 
 extern "C" void fn_80141454(void) {
 
