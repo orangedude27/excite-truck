@@ -3,6 +3,23 @@
 
 struct Fn8029Pair { float x, y; };
 struct Fn8029Vec { float x, y, z; };
+extern float lbl_805646B8;
+extern float lbl_805646BC;
+extern float lbl_805646C0;
+extern int strlen(const char *);
+__declspec(section ".sdata") extern char lbl_8055CAF0[];
+__declspec(section ".sdata") extern char lbl_8055CAF4[];
+__declspec(section ".sdata") extern char lbl_8055CAFC[];
+__declspec(section ".sdata") extern char lbl_8055CB04[];
+__declspec(section ".sdata") extern char lbl_8055CB0C[];
+__declspec(section ".sdata") extern char lbl_8055CB14[];
+__declspec(section ".sdata") extern char lbl_8055CB18[];
+__declspec(section ".sdata") extern char lbl_8055CB1C[];
+__declspec(section ".sdata") extern char lbl_8055CB28[];
+__declspec(section ".sdata") extern char lbl_8055CB30[];
+__declspec(section ".sdata") extern char lbl_8055CB38[];
+__declspec(section ".sdata") extern char lbl_8055CB40[];
+__declspec(section ".sdata") extern char lbl_8055CB48[];
 struct Vec3_8029FB00 { float x, y, z; };
 extern void fn_801E9DC4(void *);
 extern char lbl_80349890[];
