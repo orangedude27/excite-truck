@@ -1432,6 +1432,104 @@ extern "C" void fn_80162A14(void *arg0) {
     *(s32 *)(self + 0x5AC) = 0;
     *(float *)(self + 0x5B4) = resetValue;
 }
+
+#pragma push
+#pragma processor 750
+extern "C" void fn_80162BA8(void *arg0) {
+    u8 *self = (u8 *)arg0;
+    s32 i, j, offset, flag, off;
+    int *cars;
+    u8 *car, *entry, *flags, *ui;
+    f32 velocity[2], length, scale;
+    f32 one, threshold, epsilon;
+    flag = 1;
+    off = 0;
+    for (s32 remaining = *(s32 *)(self + 0x574); remaining > 0; remaining--) {
+        if (*(u8 *)(*(u8 **)(self + 0x570) + off + 8) == 0) {
+            flag = 0;
+            break;
+        }
+        off += 0xC;
+    }
+    if (flag == 0) {
+        self[0x9C] = 0;
+    } else {
+        self[0x9C] = 1;
+        *(f32 *)(self + 0x5B4) += lbl_80561858;
+        if (self[0x5B0] != 0 && *(s32 *)(self + 0x574) > 0) {
+            ((void (*)(void *, s32))(*(void ***)self)[24])(self, 1);
+        }
+    }
+    if (fn_801C5B60() == 0) fn_801DF074(8, 0);
+    if (((s32 (*)(void *))(*(void ***)self)[9])(self) == 0) {
+        one = lbl_80561840; threshold = lbl_80561854; epsilon = lbl_80561850;
+        for (i = 0, cars = lbl_804348E8; i < fn_801B2F24(); i++, cars++) {
+            car = (u8 *)*cars;
+            if ((u32)(*(u32 *)(car + 0x10) - 0x50430000) > 0x4152) continue;
+            for (j = 0, offset = 0; j < *(s32 *)(self + 0xE4); j++, offset += 0x48) {
+                entry = *(u8 **)(self + 0xE0) + offset;
+                if (!entry[0x3C]) continue;
+                if (*(s32 *)(entry + 0x34)) {
+                    if (fn_80139B5C(car, *(s32 *)(entry + 0x34))) {
+                        flags = entry + i;
+                        if (!flags[0x3D]) {
+                            velocity[0] = *(f32 *)(car + 0x118);
+                            velocity[1] = *(f32 *)(car + 0x120);
+                            length = velocity[0] * velocity[0] + velocity[1] * velocity[1];
+                            if (length > epsilon) {
+                                scale = one / (f32)fn_8002F234(length);
+                                velocity[0] *= scale;
+                                velocity[1] *= scale;
+                                if (velocity[0] * *(f32 *)(entry + 0x2C) + velocity[1] * *(f32 *)(entry + 0x30) > threshold) {
+                                    ++*(s32 *)(self + 0x94);
+                                    entry[0x3C] = 0;
+                                    ui = *(u8 **)(self + 0xDC);
+                                    ui[0x49] = 1; ui[0x4B] = 0; ui[0x4A] = 0;
+                                }
+                            }
+                        }
+                        flags[0x3D] = 1;
+                        break;
+                    } else if (entry[0x3C]) (entry + i)[0x3D] = 0;
+                } else if (PSVECSquareDistance(entry, car + 0x60) < *(f32 *)(self + 0xCC) * *(f32 *)(self + 0xCC)) {
+                    ++*(s32 *)(self + 0x94);
+                    entry[0x3C] = 0;
+                    ui = *(u8 **)(self + 0xDC);
+                    ui[0x49] = 1; ui[0x4B] = 0; ui[0x4A] = 0;
+                    break;
+                }
+            }
+        }
+        *(f32 *)(self + 0x98) += lbl_80561858;
+        if (*(f32 *)(self + 0x98) >= *(f32 *)(self + 0x84))
+            ((void (*)(void *, s32))(*(void ***)self)[24])(self, 3);
+        if (*(s32 *)(self + 0x94) >= *(s32 *)(self + 0x80) && self[0x9C]) {
+            ((void (*)(void *, s32))(*(void ***)self)[24])(self, 1);
+            self[0x88] = 1;
+        }
+    } else {
+        if ((f32)__fabs(*(f32 *)(self + 0x8C)) <= *(f32 *)&lbl_80558DC4) {
+            fn_80276DC8(0);
+            for (i = 0, cars = lbl_804348E8; i < fn_801B2F24(); i++, cars++) {
+                void *manager = fn_801B83A0();
+                ((void (*)(void *, s32, s32))(*(void ***)manager)[37])(manager, *cars, i);
+            }
+        }
+        *(f32 *)(self + 0x8C) += lbl_80561858;
+        if (self[0x90]) {
+            if (((s32 (*)(void *))(*(void ***)self)[10])(self) && lbl_8055E304 == fn_80160CE4()) {
+                lbl_8055E2DC = 1;
+                lbl_8055A0B4 = lbl_8055A0B8++;
+            } else lbl_8055E2DC = 0;
+            lbl_8055E304 = 0;
+            if (*(s32 *)(lbl_8042FDEC + 4) > 0) fn_80176734();
+        }
+    }
+    if (flag == 0 && *(s32 *)(self + 0x94) >= *(s32 *)(self + 0x80)) {
+        ((void (*)(void *, s32))(*(void ***)self)[24])(self, 4);
+    }
+}
+
 #pragma cplusplus reset
 #pragma scheduling on
 
@@ -1756,13 +1854,15 @@ void fn_8016386C(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
 #pragma processor 750
 extern "C" void fn_801638A0(void *arg0) {
     s32 i,j;
-    int *cars, *cars2;
+    int *cars;
     u8 *self=(u8 *)arg0;
     u8 *entry;
+    int *cars2;
     s32 offset;
     u8 *car,*flags,*ui;
     f32 velocity[2],length,scale;
     f32 threshold,one,epsilon;
+    f32 vx,vy;
     if (((*(f32 *)(self+0x98)>*(f32 *)(self+0x84))&1)!=0) self[0x56D]=1;
     if (fn_801C5B60()==0) fn_801DF074(8,0);
     if (((Dummy_801638A0 *)self)->f7()==0) {
@@ -1781,10 +1881,13 @@ extern "C" void fn_801638A0(void *arg0) {
                             velocity[1]=*(f32 *)(car+0x120);
                             length=velocity[0]*velocity[0]+velocity[1]*velocity[1];
                             if (length>epsilon) {
-                                scale=one/(f32)fn_8002F234(length);
-                                velocity[0]*=scale;
-                                velocity[1]*=scale;
-                                if (velocity[1]**(f32 *)(entry+0x30)+velocity[0]**(f32 *)(entry+0x2C)>threshold) {
+                                scale=(f32)fn_8002F234(length);
+                                vx=velocity[0];
+                                vy=velocity[1];
+                                scale=one/scale;
+                                velocity[0]=vx*scale;
+                                velocity[1]=vy*scale;
+                                if (velocity[0]**(f32 *)(entry+0x2C)+velocity[1]**(f32 *)(entry+0x30)>threshold) {
                                     ++*(s32 *)(self+0x94);
                                     entry[0x3C]=0;
                                     ui=*(u8 **)(self+0xDC);
@@ -1811,7 +1914,7 @@ extern "C" void fn_801638A0(void *arg0) {
             self[0x88]=1;
         }
     } else {
-        if ((f32)__fabs(*(f32 *)(self+0x8C))<=*(f32 *)&lbl_80558DC4) {
+        if ((f32)__fabs(*(f32 *)(self+0x8C))<=lbl_80558DC4[0]) {
             fn_80276DC8(0);
             for (i=0,cars2=lbl_804348E8;i<fn_801B2F24();cars2++,i++) {
                 Dummy_801638A0 *manager=(Dummy_801638A0 *)fn_801B83A0();
