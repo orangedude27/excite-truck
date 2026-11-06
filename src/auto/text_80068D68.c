@@ -356,7 +356,61 @@ extern char lbl_80317A80[];
 extern void AXFXReverbHiExpShutdown(void*);
 BOOL AXFXReverbHiExpInit(void*);
 extern void __FreeDelayLine(void*);
-extern void AXFXReverbHiExpCallback(void);
+typedef struct AXFX_BUFFERUPDATE_VIEW {
+    s32 *left;
+    s32 *right;
+    s32 *surround;
+} AXFX_BUFFERUPDATE_VIEW;
+
+typedef struct AXFX_BUS_VIEW {
+    s32 *left;
+    s32 *right;
+    s32 *surround;
+} AXFX_BUS_VIEW;
+
+typedef struct AXFX_REVERBHI_EXP_VIEW {
+    f32 *earlyLine[3];             /* 0x00 */
+    u32 earlyPos[3];               /* 0x0C */
+    u32 earlyLength;               /* 0x18 */
+    u32 earlyMaxLength;            /* 0x1C */
+    f32 earlyCoef[3];              /* 0x20 */
+    f32 *preDelayLine[3];          /* 0x2C */
+    u32 preDelayPos;               /* 0x38 */
+    u32 preDelayLength;            /* 0x3C */
+    u32 preDelayMaxLength;         /* 0x40 */
+    f32 *combLine[3][3];           /* 0x44 */
+    u32 combPos[3];                /* 0x68 */
+    u32 combLength[3];             /* 0x74 */
+    u32 combMaxLength[3];          /* 0x80 */
+    f32 combCoef[3];               /* 0x8C */
+    f32 *allpassLine[3][2];        /* 0x98 */
+    u32 allpassPos[2];             /* 0xB0 */
+    u32 allpassLength[2];          /* 0xB8 */
+    u32 allpassMaxLength[2];       /* 0xC0 */
+    f32 *lastAllpassLine[3];       /* 0xC8 */
+    u32 lastAllpassPos[3];         /* 0xD4 */
+    u32 lastAllpassLength[3];      /* 0xE0 */
+    f32 allpassCoef;               /* 0xF8 */
+    f32 lastLpfOut[3];             /* 0xFC */
+    f32 lpfCoef;                   /* 0x108 */
+    u32 active;                    /* 0x10C */
+    u32 earlyMode;                 /* 0x110 */
+    f32 preDelayTimeMax;           /* 0x114 */
+    f32 preDelayTime;              /* 0x118 */
+    u32 fusedMode;                 /* 0x11C */
+    f32 fusedTime;                 /* 0x120 */
+    f32 coloration;                /* 0x124 */
+    f32 damping;                   /* 0x128 */
+    f32 crosstalk;                 /* 0x12C */
+    f32 earlyGain;                 /* 0x130 */
+    f32 fusedGain;                 /* 0x134 */
+    AXFX_BUS_VIEW *busIn;          /* 0x138 */
+    AXFX_BUS_VIEW *busOut;         /* 0x13C */
+    f32 outGain;                   /* 0x140 */
+    f32 sendGain;                  /* 0x144 */
+} AXFX_REVERBHI_EXP_VIEW;
+
+extern void AXFXReverbHiExpCallback();
 extern s32 __CtrlMsgInt(s32,s32,s32,s32,s32,u32,void*,void*,void*,s32);
 extern u8 lbl_8031ABD8[];
 extern f32 lbl_80560D58;
@@ -7486,7 +7540,6 @@ void btm_read_local_features_complete(u8 *arg0, u16 arg1) {
     register u8 temp_r27;
     register u8 temp_r0;
     u8 flags;
-
     cb = lbl_803C0F78;
     strings = (u8 (*)[1])lbl_803160C0;
     temp_r28 = *(void (**)(s32))(cb + 0x58C);
@@ -7502,11 +7555,9 @@ void btm_read_local_features_complete(u8 *arg0, u16 arg1) {
         cb[0x645] = arg0[6];
         cb[0x646] = arg0[7];
         cb[0x647] = arg0[8];
-
         *(u16 *)(lbl_803C0F78 + 0x654) = 0x18;
         if (temp_r0 & 1) *(u16 *)(lbl_803C0F78 + 0x654) |= 0xC00;
         if (cb[0x640] & 2) *(u16 *)(lbl_803C0F78 + 0x654) |= 0xC000;
-
         if ((*(u8 *)(lbl_803C0F78 + 0x636)) >= 3) {
             if (!(cb[0x643] & 2)) *(u16 *)(lbl_803C0F78 + 0x654) |= 0x1102;
             if (!(cb[0x643] & 4)) *(u16 *)(lbl_803C0F78 + 0x654) |= 0x2204;
@@ -7515,21 +7566,17 @@ void btm_read_local_features_complete(u8 *arg0, u16 arg1) {
                 if (!(cb[0x645] & 1)) *(u16 *)(lbl_803C0F78 + 0x654) |= 0x3000;
             }
         }
-
         if ((*(u8 *)(lbl_803C0F78 + 0x27C0)) >= 5) fn_80070954(0xD0004, strings + 0x44, *(u16 *)(lbl_803C0F78 + 0x654));
-
-        temp_r0 = cb[0x641];
         *(u16 *)(lbl_803C0F78 + 0x656) = 0;
-        (*(u8 *)(lbl_803C0F78 + 0x1908)) = 0;
-        if (temp_r0 & 8) {
+        *(u8 *)(lbl_803C0F78 + 0x1908) = 0;
+        if (cb[0x641] & 8) {
             *(u16 *)(lbl_803C0F78 + 0x656) = 1;
-            if (temp_r0 & 0x10) *(u16 *)(lbl_803C0F78 + 0x656) |= 2;
+            if (cb[0x641] & 0x10) *(u16 *)(lbl_803C0F78 + 0x656) |= 2;
             if (cb[0x641] & 0x20) *(u16 *)(lbl_803C0F78 + 0x656) |= 4;
         }
         if (cb[0x643] & 0x80) *(u16 *)(lbl_803C0F78 + 0x656) |= 8;
         if (cb[0x644] & 1) *(u16 *)(lbl_803C0F78 + 0x656) |= 0x10;
         if (cb[0x644] & 2) *(u16 *)(lbl_803C0F78 + 0x656) |= 0x20;
-
         if (*(u16 *)(lbl_803C0F78 + 0x656) & 0x38) {
             (*(u8 *)(lbl_803C0F78 + 0x1908)) = 1;
             temp_r0 = cb[0x645];
@@ -7545,9 +7592,7 @@ void btm_read_local_features_complete(u8 *arg0, u16 arg1) {
                 *(u16 *)(lbl_803C0F78 + 0x656) |= 0x280;
             }
         }
-
         if ((*(u8 *)(lbl_803C0F78 + 0x27C0)) >= 5) fn_80070954(0xD0004, strings + 0x70, *(u16 *)(lbl_803C0F78 + 0x656));
-
         if (cb[0x640] & 0x20) *(u16 *)(lbl_803C0F78 + 0x4C4) |= 1;
         else *(u16 *)(lbl_803C0F78 + 0x4C4) &= 0xFFFE;
         if (cb[0x640] & 0x40) *(u16 *)(lbl_803C0F78 + 0x4C4) |= 2;
@@ -7556,7 +7601,6 @@ void btm_read_local_features_complete(u8 *arg0, u16 arg1) {
         else *(u16 *)(lbl_803C0F78 + 0x4C4) &= 0xFFFFFFFB;
         if (cb[0x641] & 1) *(u16 *)(lbl_803C0F78 + 0x4C4) |= 8;
         else *(u16 *)(lbl_803C0F78 + 0x4C4) &= 0xFFFFFFF7;
-
         fn_8007F5A4();
         temp_r29 = (*(u8 *)(lbl_803C0F78 + 0x27BE));
         if (temp_r29 != 0xFF) {
@@ -7564,12 +7608,10 @@ void btm_read_local_features_complete(u8 *arg0, u16 arg1) {
             (*(u8 *)(lbl_803C0F78 + 0x27BE)) = 0xFF;
             (*(u8 *)(lbl_803C0F78 + 0x27BD)) = 0xFF;
             if ((*(u8 *)(lbl_803C0F78 + 0x27C0)) >= 3) {
-                ((void (*)(u32, void *, u8, u8, u8, u8))fn_8007099C)(0xD0002, strings, temp_r27, 0xFF, temp_r29, 0xFF);
+                ((void (*)(u32, void *, u8, u8, u8, u8))fn_8007099C)(0xD0002, strings + 0x40 - 0x40, temp_r27, 0xFF, temp_r29, 0xFF);
             }
             flags = *(u8 *)(lbl_803C0F78 + 0x645);
-            if (((flags & 8) || (*(u8 *)(lbl_803C0F78 + 0x644) & 0x10) || (flags & 0x10)) &&
-                (((*(u8 *)(lbl_803C0F78 + 0x27BD)) != temp_r27) || ((*(u8 *)(lbl_803C0F78 + 0x27BE)) != temp_r29)) &&
-                (btsnd_hcic_set_afh_channels)(temp_r27, temp_r29)) {
+            if (((flags & 8) || (*(u8 *)(lbl_803C0F78 + 0x644) & 0x10) || (flags & 0x10)) && (((*(u8 *)(lbl_803C0F78 + 0x27BD)) != temp_r27) || ((*(u8 *)(lbl_803C0F78 + 0x27BE)) != temp_r29)) && btsnd_hcic_set_afh_channels(temp_r27, temp_r29)) {
                 (*(u8 *)(lbl_803C0F78 + 0x27BD)) = temp_r27;
                 (*(u8 *)(lbl_803C0F78 + 0x27BE)) = temp_r29;
             }
@@ -20784,10 +20826,13 @@ UINT16 SDP_SetLocalDiRecord(tSDP_DI_RECORD *p_device_info, UINT32 *p_handle) {
 
 extern void *fn_80096904(void *, u32, u32);
 UINT16 SDP_GetLocalDiRecord(tSDP_DI_GET_RECORD *p_device_info, UINT32 *p_handle) {
+    UINT16 result = 9;
     tSDP_RECORD *record;
     void *attr;
-    u16 len;
-    UINT16 result = 9;
+    u32 len;
+    s32 i;
+    u8 *d;
+    u8 *s;
     if (*p_handle == 0) *p_handle = *(UINT32 *)(lbl_803C4C40 + 0x121C);
     record = sdp_db_find_record(*p_handle);
     if (record != NULL) {
@@ -20805,12 +20850,18 @@ UINT16 SDP_GetLocalDiRecord(tSDP_DI_GET_RECORD *p_device_info, UINT32 *p_handle)
         if (attr != NULL) p_device_info->rec.vendor_id_source = (*(u8 *)*(u8 **)((u8 *)attr + 4) << 8) + *(*(u8 **)((u8 *)attr + 4) + 1);
         attr = fn_80096904(record, 0x204, 0x204);
         if (attr != NULL) p_device_info->rec.primary_record = **(u8 **)((u8 *)attr + 4);
-        attr = fn_80096904(record, 0xB, 0xB);
-        if (attr != NULL) { len = *(u32 *)attr; if (len > 0x50) len = 0x50; memcpy(p_device_info->rec.client_executable_url, *(void **)((u8 *)attr + 4), len); }
-        attr = fn_80096904(record, 0x101, 0x101);
-        if (attr != NULL) { len = *(u32 *)attr; if (len > 0x50) len = 0x50; memcpy(p_device_info->rec.service_description, *(void **)((u8 *)attr + 4), len); }
-        attr = fn_80096904(record, 0xA, 0xA);
-        if (attr != NULL) { len = *(u32 *)attr; if (len > 0x50) len = 0x50; memcpy(p_device_info->rec.documentation_url, *(void **)((u8 *)attr + 4), len); }
+        {
+            void *a = fn_80096904(record, 0xB, 0xB);
+            if (a != NULL) { len = *(u32 *)a; len = (len >= 0x50) ? 0x50 : len; s = *(u8 **)((u8 *)a + 4); d = (u8 *)p_device_info->rec.client_executable_url; for (i = 0; i < (s32)len; i++) *d++ = *s++; }
+        }
+        {
+            void *a = fn_80096904(record, 0x101, 0x101);
+            if (a != NULL) { len = *(u32 *)a; len = (len >= 0x50) ? 0x50 : len; s = *(u8 **)((u8 *)a + 4); d = (u8 *)p_device_info->rec.service_description; for (i = 0; i < (s32)len; i++) *d++ = *s++; }
+        }
+        {
+            void *a = fn_80096904(record, 0xA, 0xA);
+            if (a != NULL) { len = *(u32 *)a; len = (len >= 0x50) ? 0x50 : len; s = *(u8 **)((u8 *)a + 4); d = (u8 *)p_device_info->rec.documentation_url; for (i = 0; i < (s32)len; i++) *d++ = *s++; }
+        }
     } else *p_handle = 0;
     return result;
 }
@@ -23497,6 +23548,134 @@ u8 fn_8006CA6C(void) {
     u8 val = lbl_80392960[0x665];
     OSRestoreInterrupts(saved);
     return val;
+}
+
+void fn_8006CAA8(u32 event, u8 *data) {
+    u8 *base = lbl_80392960;
+    register u8 *strings = lbl_80313E90;
+    u8 *pInfo;
+    switch (event) {
+    case 0:
+        DBPrintf_8006CFA8((char *)strings + 0);
+        *(u32 *)(base + 0x6C0) |= 1;
+        break;
+    case 1:
+        DBPrintf_8006CFA8((char *)strings + 0x14);
+        break;
+    case 2: {
+        DBPrintf_8006CFA8((char *)strings + 0x28);
+        DBPrintf_8006CFA8((char *)strings + 0x3C, data[7], data[0], data[1], data[2], data[3], data[4], data[5]);
+        if (data[6] == 0) {
+            pInfo = lbl_803935C8;
+            if (memcmp(lbl_803935C8 + 0x40, data, 6) != 0) {
+                pInfo = WUDiGetDevInfo(data);
+            }
+            switch (pInfo[0x59]) {
+            case 12:
+                base[0xC] = 0x12;
+                break;
+            case 2:
+                base[0xC] = 0x17;
+                break;
+            }
+            pInfo[0x59] = 8;
+            pInfo[0x56] = data[7];
+            base[0x664]++;
+            pInfo = WUDiGetDevInfo(data);
+            if (pInfo == 0) {
+                pInfo = lbl_803935C8;
+            }
+            ((u32 *)lbl_80393628)[data[7]] = (u32)(pInfo + 0x40);
+            lbl_80394680[data[7]] = 0;
+            lbl_803946A0[data[7]] = 0;
+            if (pInfo[0x5B] == 3 || pInfo[0x5B] == 1) {
+                ((void (*)(u8 *))WUDiMoveTopSmpDevInfoPtr)(pInfo);
+            }
+            ((void (*)(void *, s32))WUDSetSniffMode)(pInfo + 0x40, 8);
+            if (*(void (**)(u32, s32))(base + 0x670) != 0) {
+                (*(void (**)(u32, s32))(base + 0x670))(data[7], 1);
+            }
+        } else {
+            DBPrintf_8006CFA8((char *)strings + 0x70, data[6]);
+            if (memcmp(data, lbl_803935C8 + 0x40, 6) == 0 && base[0xC] != 0 && lbl_803935C8[0x59] == 2) {
+                if (WUDiGetDevInfo(data) != 0 && data[6] == 12) {
+                    fn_8006B598(data);
+                    base[0x665]--;
+                    base[0xC] = 0xFF;
+                }
+            }
+        }
+        break;
+    }
+    case 3: {
+        DBPrintf_8006CFA8((char *)strings + 0x80);
+        base[0x664]--;
+        DBPrintf_8006CFA8((char *)strings + 0x94, data[1], data[0]);
+        ((u32 *)lbl_80393628)[data[1]] = 0;
+        lbl_80394680[data[1]] = 0;
+        lbl_803946A0[data[1]] = 0;
+        if (*(void (**)(u32, s32))(base + 0x670) != 0) {
+            (*(void (**)(u32, s32))(base + 0x670))(data[1], 0);
+        }
+        break;
+    }
+    case 4:
+        DBPrintf_8006CFA8((char *)strings + 0xB8);
+        break;
+    case 5:
+        DBPrintf_8006CFA8((char *)strings + 0xCC);
+        break;
+    case 6:
+        DBPrintf_8006CFA8((char *)strings + 0xE0);
+        break;
+    case 7:
+        DBPrintf_8006CFA8((char *)strings + 0xF8);
+        break;
+    case 8:
+        DBPrintf_8006CFA8((char *)strings + 0x110);
+        break;
+    case 9:
+        DBPrintf_8006CFA8((char *)strings + 0x128);
+        break;
+    case 10:
+        DBPrintf_8006CFA8((char *)strings + 0x140);
+        break;
+    case 11: {
+        DBPrintf_8006CFA8((char *)strings + 0x158);
+        DBPrintf_8006CFA8((char *)strings + 0x16C, data[6], data[7], data[0], data[1], data[2], data[3], data[4], data[5]);
+        pInfo = WUDiGetDevInfo(data);
+        pInfo[0x56] = data[7];
+        break;
+    }
+    case 12: {
+        DBPrintf_8006CFA8((char *)strings + 0x1AC);
+        DBPrintf_8006CFA8((char *)strings + 0x16C, data[6], data[7], data[0], data[1], data[2], data[3], data[4], data[5]);
+        break;
+    }
+    case 13:
+        DBPrintf_8006CFA8((char *)strings + 0x1C0);
+        break;
+    case 15: {
+        *(u16 *)(base + 0x6C4) = *(u16 *)(data + 0);
+        *(u16 *)(base + 0x6C6) = *(u16 *)(data + 2);
+        if (base[0x665] < *(u16 *)(data + 4)) {
+            OSReport((char *)strings + 0x1D8);
+            base[0x665] = *(u16 *)(data + 4);
+        }
+        {
+            u8 *dev = data;
+            s32 i = 0;
+            for (i = 0; i < *(u16 *)(data + 4); i++) {
+                if (dev[6] < 0x10) {
+                    lbl_80394680[dev[6]] = *(u16 *)(dev + 8);
+                    lbl_803946A0[dev[6]] = *(u16 *)(dev + 0xA);
+                }
+                dev += 6;
+            }
+        }
+        break;
+    }
+    }
 }
 
 #pragma push
