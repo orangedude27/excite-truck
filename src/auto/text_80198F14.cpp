@@ -889,6 +889,7 @@ extern "C" void fn_8019AC44(void* arg0, void* arg1, void* arg2, f32 farg0) {
         } else fn_801B34DC(arg0,0,&p70,&p10,&p64,sp8);
     } else {out->x=lbl_805622D0;out->y=lbl_805622D0;out->z=lbl_805622D0;}
 }
+#pragma pop
 
 extern "C" s32 fn_8019AA34(void*, void*, void*, void*, s32, s32, f32, f32);
 void fn_8019B068(void* arg0, void* arg1, s32 arg2, s32 arg3) {
