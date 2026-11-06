@@ -96,7 +96,7 @@ extern void fn_800373E0(u32);
 extern s32 lbl_8055D870, lbl_8055D874;
 extern void fn_8003B9CC(u32, void *);
 extern void fn_8003A1A0(u32, void (*)(void));
-extern void fn_8003B218(void (*)(void));
+extern void fn_8003B218();
 extern u32 lbl_8055D848;
 extern s32 lbl_8055D860;
 extern char __ErrorInfo[];
@@ -1176,6 +1176,165 @@ void fn_80035DA8(s32 arg0) {
     fn_8003AF1C(0, 0, fn_80036624);
     #pragma unused(arg0)
 }
+
+#pragma push
+#pragma dont_inline on
+void fn_80035E6C(arg0)
+    u32 arg0;
+{
+    register u32 kind = arg0;
+    register s32 state;
+    s32 firstInterrupts;
+    s32 taskType;
+    u32 status;
+    s32 code;
+    s32 handled;
+    void *block;
+    void (*callback)(s32, void *);
+    u8 *info;
+    u32 value;
+    u32 tick;
+    u32 period;
+
+    firstInterrupts = OSDisableInterrupts();
+    if (*(volatile u32 *)&lbl_8055D848 == 0)
+        *(u32 *)(__ErrorInfo + 0x78) = kind;
+    else
+        *(u32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x14) = kind;
+    OSRestoreInterrupts(firstInterrupts);
+
+    if (kind == 0x10) {
+        fn_8003A1A0(0x1234568, fn_80035C78);
+        return;
+    }
+    if (kind == 0x20) {
+        fn_8003A1A0(0x1234569, fn_80035C78);
+        return;
+    }
+    if (kind & 2) {
+        fn_8003A1A0(0x1234567, fn_80035C64);
+        return;
+    }
+
+    taskType = ((s32 (*)(void))fn_8003BCC0)();
+    kind = taskType & 0xFF000000;
+    status = fn_80035CB4(taskType);
+    if (status == 1) {
+        fn_8003A1A0(taskType, fn_80035C64);
+        return;
+    }
+    if ((u32)(status - 2) <= 1) {
+        code = 0;
+    } else if (kind == 0x01000000) {
+        code = 4;
+    } else if (kind == 0x02000000) {
+        code = 6;
+    } else if (kind == 0x03000000) {
+        code = 3;
+    } else if (kind == 0) {
+        if ((u32)(taskType - 0x00050000) == 0x3000)
+            code = 1;
+        else
+            code = 5;
+    } else {
+        code = 5;
+    }
+
+    if (lbl_8055D858 != 0) {
+        block = (void *)executing_8055D8C8;
+        lbl_8055D85C = code;
+        lbl_8055D858 = 0;
+        executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
+        *(s32 *)((char *)block + 0xC) = 0xA;
+        callback = *(void (**)(s32, void *))((u8 *)block + 0x28);
+        if (callback != 0)
+            callback(-3, block);
+        if (lbl_8055D8B8 != 0)
+            lbl_8055D8B8(0, block);
+        fn_80038040();
+        handled = 1;
+    } else {
+        handled = 0;
+    }
+    if (handled != 0)
+        return;
+
+    if (status == 2) {
+        fn_8003A1A0(taskType, (void (*)(void))fn_80035DA8);
+        return;
+    }
+    if (status == 3) {
+        if ((u32)((taskType & 0x00FFFFFF) - 0x00030000) == 0x1100) {
+            value = *(u32 *)((char *)executing_8055D8C8 + 0x10);
+            state = OSDisableInterrupts();
+            if (*(volatile u32 *)&lbl_8055D848 >= 5)
+                *(volatile u32 *)&lbl_8055D848 = 0;
+            info = (u8 *)__ErrorInfo;
+            *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 2;
+            *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = value;
+            *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0;
+            *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
+            *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
+            OSRestoreInterrupts(state);
+            fn_8003B9CC(*(u32 *)((char *)executing_8055D8C8 + 0x10),
+                        (void *)fn_80036370);
+            return;
+        }
+        ((void (*)(void *))lbl_8055D8CC)((void *)executing_8055D8C8);
+        return;
+    }
+    if (kind == 0x01000000) {
+        *(s32 *)((char *)executing_8055D8C8 + 0xC) = 5;
+        MotorState_8055D8A8 = 1;
+        if (lbl_8055D870 == 0 && lbl_8055D874 == 0) {
+            lbl_8055D870 = 1;
+            OSCreateAlarm(&lbl_80376AD0);
+            tick = OSGetTick();
+            period = ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 100;
+            OSSetPeriodicAlarm(&lbl_80376AD0, 0x10624DD3, 0, tick, 0, period,
+                               fn_8003801C);
+        }
+        return;
+    }
+    if (kind == 0x02000000) {
+        *(s32 *)((char *)executing_8055D8C8 + 0xC) = 3;
+        fn_8003773C();
+        return;
+    }
+    if (kind == 0x03000000) {
+        *(s32 *)((char *)executing_8055D8C8 + 0xC) = 4;
+        MotorState_8055D8A8 = 1;
+        if (lbl_8055D870 == 0 && lbl_8055D874 == 0) {
+            lbl_8055D870 = 1;
+            OSCreateAlarm(&lbl_80376AD0);
+            tick = OSGetTick();
+            period = ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 100;
+            OSSetPeriodicAlarm(&lbl_80376AD0, 0x10624DD3, 0, tick, 0, period,
+                               fn_8003801C);
+        }
+        return;
+    }
+    if (kind == 0) {
+        if ((u32)(taskType - 0x00050000) == 0x3000) {
+            state = OSDisableInterrupts();
+            if (*(volatile u32 *)&lbl_8055D848 >= 5)
+                *(volatile u32 *)&lbl_8055D848 = 0;
+            info = (u8 *)__ErrorInfo;
+            *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x10;
+            *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0;
+            *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0;
+            *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
+            *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
+            OSRestoreInterrupts(state);
+            fn_8003AF1C(0, 0, (void *)fn_800373E0);
+            return;
+        }
+        fn_8003A1A0(0x1234567, fn_80035C64);
+        return;
+    }
+    fn_8003A1A0(0x1234567, fn_80035C64);
+}
+#pragma pop
 
 extern void fn_80036550(u32);
 void fn_80036370(u32 arg0) {
