@@ -49,10 +49,8 @@ struct Gui80204 {
 };
 #pragma cplusplus off
 #pragma dont_inline on
-unsigned int fn_8020437C(void) {
-    int value = fn_80204354();
-    value ^= 0xDAC;
-    return (unsigned int)((value >> 1) - (value & 0xDAC)) >> 31;
+int fn_8020437C(void) {
+    return fn_80204354() < 3500;
 }
 #pragma push
 #pragma scheduling invalid_target
@@ -112,11 +110,12 @@ extern "C" void fn_8020449C(void) {
     delete (Obj *)lbl_8055ED44;
     lbl_8055ED44 = 0;
 }
-#pragma cplusplus reset
-int fn_802044E8(void) {
+#pragma cplusplus on
+extern "C" int fn_802044E8(void) {
+ char *base = lbl_8033BB18;
  unsigned char input[0x64];
  float matrix[12];
- struct Text80204 value, label;
+ struct Text80204 label, value;
  int normal, selected;
  int result, count, start, end, i;
  struct Text80204 *a, *b, *c;
@@ -125,22 +124,22 @@ int fn_802044E8(void) {
  fn_80230B5C(matrix);
  fn_802C8638(matrix);
  fn_802C974C(lbl_80563168, lbl_80563170, lbl_80563188);
- (*(void (***)(int))lbl_8055ED44)[7](lbl_8055ED44);
+ ((Gui80204 *)lbl_8055ED44)->v5();
  result = fn_8020437C();
  if (result) {
   if (lbl_8055ED40 >= 0 && lbl_8055ED40 < lbl_8055ED3C) {
-   a = (*(struct Text80204 *(***)(int,const char *))lbl_8055ED44)[3](lbl_8055ED44,lbl_8055B428);
-   b = (*(struct Text80204 *(***)(int,const char *))lbl_8055ED44)[3](lbl_8055ED44,lbl_8055B430);
-   c = (*(struct Text80204 *(***)(int,const char *))lbl_8055ED44)[3](lbl_8055ED44,lbl_8055B438);
-   area = (*(char *(***)(int,const char *))lbl_8055ED44)[5](lbl_8055ED44,lbl_8055B440);
+   a = (struct Text80204 *)((Gui80204 *)lbl_8055ED44)->v1(lbl_8055B428);
+   b = (struct Text80204 *)((Gui80204 *)lbl_8055ED44)->v1(lbl_8055B430);
+   c = (struct Text80204 *)((Gui80204 *)lbl_8055ED44)->v1(lbl_8055B438);
+   area = (char *)((Gui80204 *)lbl_8055ED44)->v3(lbl_8055B440);
    if (a && b && c && area) {
     normal = a->color; selected = b->color;
     fn_802043B0(&normal); fn_802043B0(&selected);
     step = b->y - a->y;
     count = (int)(*(float *)(area+0x14)/step);
-    label.unk_0x0=a->unk_0x0; label.unk_0x4=a->unk_0x4; label.y=a->y; label.unk_0xc=a->unk_0xc; label.unk_0x10=a->unk_0x10; label.unk_0x14=a->unk_0x14; label.color=a->color; label.unk_0x1c=a->unk_0x1c;
+    label.unk_0x0=a->unk_0x0; label.unk_0x4=a->unk_0x4; *(int *)&label.y=*(int *)&a->y; label.unk_0xc=a->unk_0xc; label.unk_0x10=a->unk_0x10; label.unk_0x14=a->unk_0x14; label.color=a->color; label.unk_0x1c=a->unk_0x1c;
     start = lbl_8055ED40 - lbl_8055ED40 % count;
-    value.unk_0x0=c->unk_0x0; value.unk_0x4=c->unk_0x4; value.y=c->y; value.unk_0xc=c->unk_0xc; value.unk_0x10=c->unk_0x10; value.unk_0x14=c->unk_0x14; value.color=c->color; value.unk_0x1c=c->unk_0x1c;
+    value.unk_0x0=c->unk_0x0; value.unk_0x4=c->unk_0x4; *(int *)&value.y=*(int *)&c->y; value.unk_0xc=c->unk_0xc; value.unk_0x10=c->unk_0x10; value.unk_0x14=c->unk_0x14; value.color=c->color; value.unk_0x1c=c->unk_0x1c;
     entry = lbl_80488BD0 + start*0x18;
     end = start + count;
     for (i=start; i<end && i<lbl_8055ED3C; ++i,entry+=0x18) {
@@ -153,19 +152,19 @@ int fn_802044E8(void) {
      }
      label.y += step; value.y += step;
     }
-    if (start >= count) fn_801473F8(lbl_8055ED44,lbl_8033BB18+0x10,lbl_8055B45C);
-    if (end < lbl_8055ED3C) fn_801473F8(lbl_8055ED44,lbl_8033BB18+0x1c,lbl_8055B460);
+    if (start >= count) fn_801473F8(lbl_8055ED44,base+0x10,lbl_8055B45C);
+    if (end < lbl_8055ED3C) fn_801473F8(lbl_8055ED44,base+0x1c,lbl_8055B460);
    }
-  } else fn_801473F8(lbl_8055ED44,lbl_8055B428,lbl_8033BB18+0x28);
+  } else fn_801473F8(lbl_8055ED44,lbl_8055B428,base+0x28);
  } else {
-  (*(void *(***)(int,const char *))lbl_8055ED44)[3](lbl_8055ED44,lbl_8033BB18+0x38);
+  ((Gui80204 *)lbl_8055ED44)->v1(base+0x38);
   fn_801476C4();
   if (fn_801298E8(input,0) && input[0x25]) fn_80204330();
  }
  fn_80011A2C();
  return result;
 }
-
+#pragma cplusplus off
 extern int __cntlzw(unsigned int);
 int fn_80204870(int arg0) {
     register int index;
