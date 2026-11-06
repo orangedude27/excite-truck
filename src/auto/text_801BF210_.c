@@ -42,13 +42,234 @@ void *fn_801BF214(void) {
     }
     return p;
 }
-#pragma scheduling on
+
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+int fn_801BF2A4(int arg0, int arg1, float *arg2, float *arg3, float *arg4, int arg5, int *arg6) {
+    extern void fn_8001BA68(void *);
+    extern void fn_80144B54(void *, int);
+    extern void fn_80144DAC(float *, float *);
+    extern void fn_80144DC8(void *);
+    extern int fn_801602B4(int);
+    extern void fn_8017E388(void *, int, int);
+    extern int fn_8017EAFC(int);
+    extern int fn_8017EB04(int);
+    extern void fn_801C1CBC(int, int, void *, int, void *, int, void *);
+    extern void fn_801C256C(int, int, int, int);
+    extern void fn_801E9DC4(void);
+    extern void GXInitLightAttnA_80144B44(void *, float, float, float);
+    extern float fn_801C0178(void);
+    extern int fn_801C0170(void *);
+    extern int fn_801C0168(void *);
+    extern void fn_801C014C(void *, float *);
+    extern void fn_801C0124(float *, float *, float);
+    extern long fn_801C00F8(void *, long);
+    extern long fn_801C00F0(void *);
+    extern void fn_801C00B8(void *, float *);
+    extern void fn_801BFF64(float *, const float *);
+    extern void fn_801BFECC(void *, void *);
+    extern void GXInitLightAttnA_801BFEBC(void *, float, float, float);
+    extern long fn_801BFEB4(long);
+    extern void fn_801BFEB0(void);
+    extern void fn_801BFE7C(float *, float *, float *);
+    extern void fn_801BFD34(float *, float *, const float *);
+    extern void fn_801BFB2C(char *, float *, FV3 *);
+    extern void fn_801BF75C(float *, const float *, const float *, int);
+    extern int fn_801BF754(int);
+    extern float lbl_805628C0;
+    extern float lbl_805628C4;
+    extern float lbl_805628C8;
+    extern float lbl_805628B8;
+    extern char lbl_80558DC4[];
+    extern char lbl_802F98D0[];
+    extern char lbl_80437D48[];
+    extern int lbl_8055E7BC;
+    struct {
+        float sp8[3];
+        float sp14[3];
+        float sp20[3];
+        float sp2C[3];
+        int sp38[6];
+        float sp50[12];
+        float sp80[3];
+        float sp8C[3];
+        float sp98[3];
+        float spA4[3];
+        float spB0[12];
+        float spE0[20];
+        int sp130[24];
+    } frame;
+    void *found;
+    long cb;
+
+    if ((float)fabs(arg3[0] - arg4[0]) <= *(float *)lbl_80558DC4) {
+    if ((float)fabs(arg3[1] - arg4[1]) <= *(float *)lbl_80558DC4) {
+    if ((float)fabs(arg3[2] - arg4[2]) <= *(float *)lbl_80558DC4) {
+    found = 0;
+    {
+        int cnt;
+        void **ptr;
+        int i;
+        cnt = lbl_8055E7BC;
+        ptr = (void **)lbl_80437D48;
+        for (i = 0; i < cnt; i++) {
+            void *obj = *ptr;
+            if (*(int *)((char *)obj + 0x1EC) == 0) {
+                found = ((void **)lbl_80437D48)[i];
+                break;
+            }
+            ptr++;
+        }
+    }
+    if (found == 0) {
+        float f1val = *(float *)((char *)((void **)lbl_80437D48)[0] + 0x218);
+        found = ((void **)lbl_80437D48)[0];
+        {
+            int cnt;
+            void **ptr;
+            int j;
+            cnt = lbl_8055E7BC;
+            ptr = (void **)lbl_80437D48;
+            for (j = 0; j < cnt; j++) {
+                void *obj = *ptr;
+                float f0val = *(float *)((char *)obj + 0x218);
+                if (f0val <= f1val) {
+                    f1val = f0val;
+                    found = obj;
+                }
+                ptr++;
+            }
+        }
+    }
+    if (found != 0) {
+    *(float *)((char *)found + 0x218) = fn_801C0178();
+    *(int *)((char *)found + 0x1EC) = arg0;
+    *(int *)((char *)found + 0x1F0) = fn_801C0170((void *)arg0);
+    *(int *)((char *)found + 0x1F4) = arg1;
+    *(int *)((char *)found + 0x1F8) = fn_801C0168((void *)(long)*(int *)((char *)found + 0x1EC));
+    fn_801C014C(found, arg2);
+    fn_8001BA68(frame.sp8);
+    fn_801C0124(frame.sp8, arg2, lbl_805628C0);
+    cb = fn_801C00F8(found, 0);
+    if (cb != 0) {
+        if ((unsigned)((int)fn_801C00F0((void *)cb) - 0x53500000) == 0x4852U) {
+            fn_801C00B8((void *)cb, frame.sp8);
+        }
+    }
+    fn_80144B54(frame.sp50, fn_8017EB04(arg0));
+    fn_801BFF64(frame.sp50, frame.sp8);
+    fn_801BFECC(found, frame.sp50);
+    GXInitLightAttnA_801BFEBC((char *)found + 0x118, lbl_805628B8, lbl_805628B8, lbl_805628B8);
+    GXInitLightAttnA_801BFEBC((char *)found + 0x124, lbl_805628B8, lbl_805628B8, lbl_805628B8);
+    fn_801BFEB4((long)found);
+    fn_801E9DC4();
+    ((void (*)(void *))fn_801BFEB0)(frame.spE0);
+    ((void (*)(void *))fn_801BFEB0)(&frame.spE0[5]);
+    ((void (*)(void *))fn_801BFEB0)(&frame.spE0[10]);
+    ((void (*)(void *))fn_801BFEB0)(&frame.spE0[15]);
+    {
+        struct Big { long long v[12]; } *dst = (struct Big *)frame.sp130;
+        struct Big *src = (struct Big *)lbl_802F98D0;
+        *dst = *src;
+    }
+    fn_8001BA68(frame.sp14);
+    fn_8001BA68(frame.sp20);
+    fn_801BFE7C(frame.sp14, arg3, arg2);
+    fn_801BFE7C(frame.sp20, arg4, arg2);
+    *(int *)((char *)found + 0x21C) = 0;
+    *(int *)((char *)found + 0x220) = 0;
+    *(int *)((char *)found + 0x224) = 1;
+    *(int *)((char *)found + 0x228) = 0;
+    *(int *)((char *)found + 0x22C) = 2;
+    fn_8017E388((char *)found + 0x230, 1, 0);
+    {
+        int a;
+        int b;
+        int c;
+        float cond2;
+        float cond1;
+        a = 1;
+        b = 4;
+        cond2 = frame.sp20[1] - frame.sp14[1];
+        cond1 = frame.sp20[0] - frame.sp14[0];
+        c = 2;
+        if (cond2 > cond1) {
+            b = 1;
+            c = 2;
+            a = 4;
+        }
+        {
+            float f30v = lbl_805628C4;
+            float f31v = lbl_805628C8;
+            int idx = 0;
+            float *p = frame.spE0;
+            do {
+                float var_f3;
+                float var_f2;
+                float var_f1;
+                if (idx & c) var_f3 = frame.sp14[2]; else var_f3 = frame.sp20[2];
+                if (idx & b) var_f2 = frame.sp14[1]; else var_f2 = frame.sp20[1];
+                if (idx & a) var_f1 = frame.sp14[0]; else var_f1 = frame.sp20[0];
+                GXInitLightAttnA_80144B44(frame.sp2C, var_f1, var_f2, var_f3);
+                fn_801BFD34(p, frame.sp2C, frame.sp50);
+                p[3] = f30v;
+                idx++;
+                p[4] = f31v;
+                p += 5;
+            } while (idx < 4);
+        }
+    }
+    fn_8001BA68(frame.sp80);
+    fn_8001BA68(frame.sp8C);
+    fn_8001BA68(frame.sp98);
+    fn_8001BA68(frame.spA4);
+    {
+        float *srcp = frame.spE0;
+        float *dstp = frame.sp80;
+        int idx = 0;
+        do {
+            fn_80144DAC(dstp, srcp);
+            idx++;
+            srcp += 5;
+            dstp += 3;
+        } while (idx < 4);
+    }
+    fn_80144DC8(frame.spB0);
+    fn_801BFB2C(found, frame.spB0, (FV3 *)frame.sp80);
+    ((void (*)(float *, float *, float *))fn_801BF75C)((float *)((char *)found + 0x230), frame.sp50, frame.spB0);
+    {
+        int idx = 0;
+        int *dstp = frame.sp38;
+        int *srcp = arg6;
+        while (idx < arg5) {
+            dstp[0] = *srcp;
+            dstp[1] = fn_801602B4(arg0);
+            srcp++;
+            idx++;
+            dstp[2] = 0;
+            dstp += 3;
+        }
+    }
+    fn_801C1CBC(*(int *)((char *)found + 0x214), 4, frame.spE0, 6, frame.sp130, arg5, frame.sp38);
+    {
+        int r26v = fn_801BF754(arg0);
+        int r25v = fn_801602B4(arg0);
+        fn_801C256C(*(int *)((char *)found + 0x214), fn_8017EAFC(arg0), r25v + 0x24, r26v);
+    }
+    return 1;
+    }
+    }
+    }
+    }
+    return 0;
+}
+#pragma pop
 int fn_801BF754(int arg0) { return arg0 + 0x124; }
 
 extern float fn_80144514(float, float, float, float, float, float);
-#pragma scheduling invalid_target
-#pragma opt_propagation off
-#pragma dont_inline on
+#pragma push
+#pragma processor 750
 void fn_801BF75C(float *arg0, const float *arg1, const float *arg2, int arg3) {
     union { unsigned int bits[9]; float values[9]; } local;
     register float *localPtr = local.values;
@@ -56,17 +277,11 @@ void fn_801BF75C(float *arg0, const float *arg1, const float *arg2, int arg3) {
     float temp_f1;
     float temp_f24, temp_f25, temp_f26, temp_f27;
     float temp_f28, temp_f29, temp_f30, temp_f31;
-    float dx, dy, dz;
+    float dx, dy, dz, a0, a1, a2, b0, b1, b2, c0, c1, c2;
 
-    local.bits[1] = ((const unsigned int *)arg2)[1];
-    local.bits[2] = ((const unsigned int *)arg2)[2];
-    local.bits[3] = ((const unsigned int *)arg2)[3];
-    local.bits[5] = ((const unsigned int *)arg2)[5];
-    local.bits[6] = ((const unsigned int *)arg2)[6];
-    local.bits[7] = ((const unsigned int *)arg2)[7];
-    local.bits[0] = ((const unsigned int *)arg2)[0];
-    local.bits[4] = ((const unsigned int *)arg2)[4];
-    local.bits[8] = ((const unsigned int *)arg2)[8];
+    ((FV3 *)local.values)[0] = ((const FV3 *)arg2)[0];
+    ((FV3 *)local.values)[1] = ((const FV3 *)arg2)[1];
+    ((FV3 *)local.values)[2] = ((const FV3 *)arg2)[2];
     t3 = localPtr[1];
     t5 = localPtr[2];
     t4 = localPtr[5];
@@ -107,16 +322,21 @@ void fn_801BF75C(float *arg0, const float *arg1, const float *arg2, int arg3) {
         arg0[5] = fn_80144514(localPtr[2], arg1[3], localPtr[5], arg1[4], localPtr[8], arg1[5]);
         arg0[8] = fn_80144514(localPtr[2], arg1[6], localPtr[5], arg1[7], localPtr[8], arg1[8]);
     }
-    dx = arg1[9] - arg2[9];
+    a0 = arg1[9]; a1 = arg2[9]; b1 = arg2[10];
+    dx = a0 - a1;
     arg0[9] = dx;
-    dy = arg1[10] - arg2[10];
+    a2 = arg2[0]; b0 = arg2[3]; c0 = arg2[6];
+    dy = arg1[10] - b1;
     arg0[10] = dy;
+    b1 = arg2[4]; a1 = arg2[1]; c1 = arg2[7];
+    a0 = arg2[2]; b2 = arg2[5]; c2 = arg2[8];
     dz = arg1[11] - arg2[11];
-    arg0[9] = dz * arg2[2] + (dx * arg2[0] + dy * arg2[1]);
-    arg0[10] = dz * arg2[5] + (dx * arg2[3] + dy * arg2[4]);
-    arg0[11] = dz * arg2[8] + (dx * arg2[6] + dy * arg2[7]);
+    a0 = (dy * a1 + dx * a2) + dz * a0;
+    b2 = (dy * b1 + dx * b0) + dz * b2;
+    c2 = (dy * c1 + dx * c0) + dz * c2;
+    arg0[9] = a0; arg0[10] = b2; arg0[11] = c2;
 }
-
+#pragma pop
 void fn_801BFD34(float *, float *, const float *);
 void fn_801BFB2C(char *arg0, float *arg1, FV3 *arg2) {
     float n[3], q1[3], q0[3];
@@ -531,6 +751,132 @@ int fn_801C0440(void *arg0) {
     return *(int *)((char *)arg0 + 0x1EC) != 0;
 }
 
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+int fn_801C0454(void *arg0) {
+    extern void fn_80144DAC(float *, float *);
+    extern void fn_80144DC8(void *);
+    extern void fn_8017C7C8(void *, void *);
+    extern int fn_801E9E78(void *, float *, float *, void *, float);
+    extern void fn_801C2694(int, void *, int *, float *, float *, void *, void *);
+    extern float fn_80144CC8(float);
+    extern void fn_801C092C(void *, void *, void *, int);
+    extern void fn_801C0D3C(void *);
+    extern void fn_801C0D6C(void *);
+    extern void fn_801C0E44(void *);
+    extern void fn_801C0E4C(void *, void *, void *);
+    extern void fn_801C0E60(float *, float *, float *);
+    extern void fn_8017A580(int, int, int, int, int, int);
+    extern float lbl_805628C8;
+    extern float lbl_805628F0;
+    extern float lbl_805628F4;
+    extern float lbl_805628F8;
+    extern float lbl_805628FC;
+    float sp160[128];
+    int sp130[8];
+    float sp124[3];
+    float sp118[3];
+    float sp10C[3];
+    float sp100[3];
+    float spF4[3];
+    float spE8[3];
+    float spE4;
+    float spE0;
+    float spDC;
+    float spD8;
+    float spD4;
+    float spD0;
+    float sp8[2];
+    float tmp;
+    float f10;
+    float f8;
+    float f6;
+    float f9;
+    float f7;
+    float f4;
+    float f5;
+    float f3;
+    float f2;
+    float f31;
+    float f1;
+    int i;
+    int n;
+    float *p;
+    int spC;
+    if (*(int *)((char *)arg0 + 0x1EC) != 0 && *(int *)((char *)arg0 + 0x214) != 0) {
+        fn_8017C7C8(spF4, spE8);
+        spC = 8;
+        tmp = *(float *)((char *)arg0 + 0x60);
+        spDC = tmp;
+        spE0 = *(float *)((char *)arg0 + 0x64);
+        spE4 = *(float *)((char *)arg0 + 0x68);
+        if (fn_801E9E78((char *)arg0 + 0x6C, &spDC, &spD0, sp8, tmp) != 0) {
+            f10 = spD0;
+            f8 = spD4;
+            f6 = spD8;
+            f9 = spDC + (f10 * lbl_805628C8);
+            f7 = spE0 + (f8 * lbl_805628C8);
+            f4 = f10 * lbl_805628F0;
+            spDC = f9;
+            f5 = spE4 + (f6 * lbl_805628C8);
+            f3 = f8 * lbl_805628F0;
+            f2 = f6 * lbl_805628F0;
+            spE0 = f7;
+            spE4 = f5;
+            spD0 = f4;
+            spD4 = f3;
+            spD8 = f2;
+            spD0 = f4 + (*(float *)((char *)arg0 + 0x26C) * lbl_805628F4);
+            spD4 = f3 + (*(float *)((char *)arg0 + 0x270) * lbl_805628F4);
+            spD8 = f2 + (*(float *)((char *)arg0 + 0x274) * lbl_805628F4);
+            PSVECNormalize(&spD0, &spD0);
+            *(float *)((char *)arg0 + 0x260) = spDC;
+            *(float *)((char *)arg0 + 0x264) = spE0;
+            *(float *)((char *)arg0 + 0x268) = spE4;
+            *(float *)((char *)arg0 + 0x26C) = spD0;
+            *(float *)((char *)arg0 + 0x270) = spD4;
+            *(float *)((char *)arg0 + 0x274) = spD8;
+            fn_801C2694(*(int *)((char *)arg0 + 0x214), sp160, &spC, &spDC, &spD0, spF4, spE8);
+            n = spC;
+            p = sp160;
+            for (i = 0; i < n; i++) {
+                p[1] += lbl_805628F8;
+                p += 3;
+            }
+            fn_80144DC8(sp100);
+            fn_80144DAC(sp124, &sp160[*(int *)((char *)arg0 + 0x21C) * 3]);
+            fn_801C0E60(sp100, &sp160[*(int *)((char *)arg0 + 0x224) * 3], &sp160[*(int *)((char *)arg0 + 0x220) * 3]);
+            fn_801C0E60(sp10C, &sp160[*(int *)((char *)arg0 + 0x22C) * 3], &sp160[*(int *)((char *)arg0 + 0x228) * 3]);
+            fn_801C0E4C(sp118, sp100, sp10C);
+            f31 = fn_80144CC8(lbl_805628FC);
+            f1 = ((float (*)(void *))fn_801C0E44)(sp118);
+            if (f1 > f31) {
+                fn_801C0D6C(sp100);
+            } else {
+                fn_801C0D3C(sp100);
+            }
+            ((void (*)(void *, void *, void *))fn_801C092C)(sp130, (char *)arg0 + 0x230, sp100);
+            *(int *)((char *)arg0 + 0x3C) = sp130[0];
+            *(int *)((char *)arg0 + 0x40) = sp130[1];
+            *(int *)((char *)arg0 + 0x44) = sp130[2];
+            *(int *)((char *)arg0 + 0x48) = sp130[3];
+            *(int *)((char *)arg0 + 0x4C) = sp130[4];
+            *(int *)((char *)arg0 + 0x50) = sp130[5];
+            *(int *)((char *)arg0 + 0x54) = sp130[6];
+            *(int *)((char *)arg0 + 0x58) = sp130[7];
+            *(float *)((char *)arg0 + 0x60) = *(float *)((char *)sp130 + 0x20);
+            *(float *)((char *)arg0 + 0x64) = *(float *)((char *)sp130 + 0x24);
+            *(float *)((char *)arg0 + 0x68) = *(float *)((char *)sp130 + 0x28);
+            ((void (*)(void *))fn_8017A580)(arg0);
+        }
+    }
+    return 0;
+}
+
+#pragma push
+#pragma processor 750
+#pragma optimization_level 3
 void fn_801C092C(void *arg0, void *arg1, void *arg2, int arg3) {
     float *out = (float *)arg0;
     float *input = (float *)arg1;
@@ -573,9 +919,9 @@ void fn_801C092C(void *arg0, void *arg1, void *arg2, int arg3) {
         out[10] = f1;
         out[11] = f0;
     } else {
-        out[9] = input[11] * matrix[6] + (input[9] * matrix[0] + input[10] * matrix[3]);
-        out[10] = input[11] * matrix[7] + (input[9] * matrix[1] + input[10] * matrix[4]);
-        out[11] = input[11] * matrix[8] + (input[9] * matrix[2] + input[10] * matrix[5]);
+        out[9] = matrix[6] * input[11] + (matrix[0] * input[9] + matrix[3] * input[10]);
+        out[10] = matrix[7] * input[11] + (matrix[1] * input[9] + matrix[4] * input[10]);
+        out[11] = matrix[8] * input[11] + (matrix[2] * input[9] + matrix[5] * input[10]);
     }
 
     out[9] += matrix[9];
@@ -613,8 +959,7 @@ void fn_801C092C(void *arg0, void *arg1, void *arg2, int arg3) {
         out[8] = fn_80144514(matrix[2], input[6], matrix[5], input[7], matrix[8], input[8]);
     }
 }
-
-#pragma scheduling invalid_target
+#pragma pop
 /* Reverse-ordered scalar loads keep the vector copies and final register restore matching. */
 void fn_801C0D6C(void *arg0) {
     extern void PSVECNormalize(void *, void *);
