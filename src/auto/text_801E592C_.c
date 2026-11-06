@@ -50,8 +50,8 @@ void fn_801E65BC(void *arg0, void *arg1, s32 arg2, void *arg3, s32 arg4) {
     register s32 i;
     register s32 idx;
     register s32 count;
-    register s32 *dst;
-    register s32 *tail;
+    s32 *dst;
+    s32 *tail;
     s32 a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11;
     s32 b0, b1, b2, b3, b4, b5, b6, b7, b8;
 
@@ -106,32 +106,41 @@ void fn_801E65BC(void *arg0, void *arg1, s32 arg2, void *arg3, s32 arg4) {
     fn_802C7A38(0, sp68, temp);
 }
 #pragma use_lmw_stmw on
-#pragma scheduling on
+#pragma scheduling invalid_target
 
 void fn_801E67B4(void *arg0, void *arg1, void *arg2) {
     float *out = (float *)arg0;
-    float *v = (float *)arg1;
-    float *m = (float *)arg2;
-    if (arg0 == arg1) {
-        float yv = v[1];
-        float xv = v[0];
-        float zv = v[2];
-        float x_y = yv * m[3];
-        float y_y = yv * m[4];
-        float z_y = yv * m[5];
-        float x_x = xv * m[0];
-        float y_x = xv * m[1];
-        float z_x = xv * m[2];
-        float x_z = zv * m[6];
-        float y_z = zv * m[7];
-        float z_z = zv * m[8];
-        out[0] = (x_x + x_y) + x_z;
-        out[1] = (y_x + y_y) + y_z;
-        out[2] = (z_x + z_y) + z_z;
-        return;
+    float *in = (float *)arg1;
+    const float *m = (const float *)arg2;
+    if (out == in) {
+        float m3 = m[3];
+        float m4 = m[4];
+        float m5 = m[5];
+        float m0 = m[0];
+        float m1 = m[1];
+        float m2 = m[2];
+        float m6 = m[6];
+        float m7 = m[7];
+        float m8 = m[8];
+        float x = in[0];
+        float y = in[1];
+        float z = in[2];
+        out[0] = z * m6 + (x * m0 + y * m3);
+        out[1] = z * m7 + (x * m1 + y * m4);
+        out[2] = z * m8 + (x * m2 + y * m5);
+    } else {
+        float m3 = m[3];
+        float m0 = m[0];
+        float m6 = m[6];
+        float m4 = m[4];
+        float m1 = m[1];
+        float m7 = m[7];
+        float m5 = m[5];
+        float m2 = m[2];
+        float m8 = m[8];
+        out[0] = in[2] * m6 + (in[0] * m0 + in[1] * m3);
+        out[1] = in[2] * m7 + (in[0] * m1 + in[1] * m4);
+        out[2] = in[2] * m8 + (in[0] * m2 + in[1] * m5);
     }
-    out[0] = v[0] * m[0] + v[1] * m[3] + v[2] * m[6];
-    out[1] = v[0] * m[1] + v[1] * m[4] + v[2] * m[7];
-    out[2] = v[0] * m[2] + v[1] * m[5] + v[2] * m[8];
 }
 
