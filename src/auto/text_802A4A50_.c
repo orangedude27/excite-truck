@@ -136,9 +136,9 @@ static inline void VecMtxMult_802A53B0(const f32 *m, const f32 *src, f32 *dst) {
         f32 x1 = x * m[1];
         f32 x2 = x * m[2];
         f32 y5 = y * m[5];
-        f32 s0 = x0 + y3;
-        f32 s1 = x1 + y4;
-        f32 s2 = x2 + y5;
+        f32 s0 = y3 + x0;
+        f32 s1 = y4 + x1;
+        f32 s2 = y5 + x2;
         f32 o0 = z * m[6] + s0;
         f32 o1 = z * m[7] + s1;
         f32 o2 = z * m[8] + s2;
