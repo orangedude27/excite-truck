@@ -1520,7 +1520,6 @@ extern void fn_801479A8(void *, void *, void *, ...);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-extern char lbl_8055A2E4[], lbl_80330F48[];
 extern "C" int fn_80175238(void *arg0, int arg1) {
  struct Rect { int a; float b; int c,d; float e; int f,g,h; };
  struct Manager { virtual void *unused(); virtual void *get(const char *); };
