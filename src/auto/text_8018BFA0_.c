@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #define M2C_FIELD(expr, T, offset) (*(T)((char *)(expr) + (offset)))
+typedef struct { float m[12]; } Matrix8018;
 extern void PSVECCrossProduct(float *, float *, int *);
 extern float PSVECDotProduct(int *, float *);
 extern void *__AXFXGetLfoSinTable_801769CC(int);
@@ -1364,18 +1365,23 @@ void fn_8018F2C0(void *arg0, void *arg1) {
     unsigned char *p = (unsigned char *)arg1;
     char *s = (char *)arg1;
     int i;
+    float t;
     float f = *(float *)(s + 0x290);
     *(float *)(d + 0x2690) = f;
     *(float *)(d + 0x2694) = f;
     *(float *)(d + 0x2698) = *(float *)(s + 0x294);
     *(int *)(d + 0x268C) = *(int *)(s + 0x298);
     for (i = 0; i < *(int *)((char *)arg0 + 0x5F8); i++) {
-        float r, g, b;
-        r = Chan_8018F2C0(p[0]);
-        *(float *)(d + 0x5FC) = r;
-        g = Chan_8018F2C0(p[1]);
-        *(float *)(d + 0x600) = g;
-        b = Chan_8018F2C0(p[2]);
+        float b;
+        t = (lbl_80561F88 < (((float)p[0] - lbl_80561F74) / lbl_80562038)) ? lbl_80561F88 : (((float)p[0] - lbl_80561F74) / lbl_80562038);
+        t = (t > lbl_80561F74) ? t : lbl_80561F74;
+        *(float *)(d + 0x5FC) = lbl_8056203C + t * lbl_80562040;
+        t = (lbl_80561F88 < (((float)p[1] - lbl_80561F74) / lbl_80562038)) ? lbl_80561F88 : (((float)p[1] - lbl_80561F74) / lbl_80562038);
+        t = (t > lbl_80561F74) ? t : lbl_80561F74;
+        *(float *)(d + 0x600) = lbl_8056203C + t * lbl_80562040;
+        t = (lbl_80561F88 < (((float)p[2] - lbl_80561F74) / lbl_80562038)) ? lbl_80561F88 : (((float)p[2] - lbl_80561F74) / lbl_80562038);
+        t = (t > lbl_80561F74) ? t : lbl_80561F74;
+        b = lbl_8056203C + t * lbl_80562040;
         *(float *)(d + 0x604) = b;
         *(float *)(d + 0xD94) = *(float *)(d + 0x5FC);
         *(float *)(d + 0xD98) = *(float *)(d + 0x600);
