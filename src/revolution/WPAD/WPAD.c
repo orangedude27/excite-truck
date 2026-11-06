@@ -5041,6 +5041,94 @@ void getDevConfig(s32 chan, s32 result, WPADStatus* status, u8* data)
     }
 }
 
+void fn_80064278(s32 chan, s32 param_2) {
+    const char* strBase = (const char*)lbl_80312338;
+    WPADCB* cb = lbl_8038F4F0[chan];
+    u8* data = (u8*)cb->samplingBufSize;
+    s32 found = -1;
+    s32 i;
+    s32 offset;
+    s32 j;
+    s32 sum;
+    if (param_2 != 0) {
+        cb->UNK_0x801 = 0xfc;
+    } else if ((u8)(cb->UNK_0x801 + 0xFF) <= 1) {
+        WPADiDecode(chan, data, 0x20, 0x20);
+        for (i = 0; i < 2; i++) {
+            offset = i * 16;
+            sum = 0;
+            for (j = offset; j < offset + 14; j++) {
+                sum += data[j];
+            }
+            if ((u8)(sum + 0x55) == data[offset + 14] && (u8)(sum + 0xaa) == data[offset + 15]) {
+                found = offset;
+            }
+        }
+        switch (cb->UNK_0x801) {
+        case 1:
+            if (found < 0) {
+                DBPrintf_80068D68(strBase + 0x194);
+                *(u16*)((u8*)cb + 0x7ce) = 0x200;
+                *(u16*)((u8*)cb + 0x7d0) = 0x200;
+                *(u16*)((u8*)cb + 0x7d2) = 0x200;
+                *(u16*)((u8*)cb + 0x7d4) = 0x2cc;
+                *(u16*)((u8*)cb + 0x7d6) = 0x2cc;
+                *(u16*)((u8*)cb + 0x7d8) = 0x2cc;
+            } else {
+                u8* p = (u8*)(found + (s32)data);
+                u8 b0 = data[found];
+                *(u16*)((u8*)cb + 0x7ce) = (u16)((b0 << 2) | ((p[3] >> 4) & 3));
+                *(u16*)((u8*)cb + 0x7d0) = (u16)((p[1] << 2) | ((p[3] >> 2) & 3));
+                *(u16*)((u8*)cb + 0x7d2) = (u16)((p[2] << 2) | (p[3] & 3));
+                *(u16*)((u8*)cb + 0x7d4) = (u16)((p[4] << 2) | ((p[7] >> 4) & 3));
+                *(u16*)((u8*)cb + 0x7d6) = (u16)((p[5] << 2) | ((p[7] >> 2) & 3));
+                *(u16*)((u8*)cb + 0x7d8) = (u16)((p[6] << 2) | (p[7] & 3));
+                *(s16*)((u8*)cb + 0x7c6) = (s8)p[8];
+                *(s16*)((u8*)cb + 0x7c4) = (s8)p[9];
+                *(s16*)((u8*)cb + 0x7c2) = (s8)p[10];
+                *(s16*)((u8*)cb + 0x7cc) = (s8)p[11];
+                *(s16*)((u8*)cb + 0x7ca) = (s8)p[12];
+                *(s16*)((u8*)cb + 0x7c8) = (s8)p[13];
+                DBPrintf_80068D68(strBase + 0x1a8, *(s16*)((u8*)cb + 0x7ce), *(s16*)((u8*)cb + 0x7d0), *(s16*)((u8*)cb + 0x7d2));
+                DBPrintf_80068D68(strBase + 0x1d8, *(s16*)((u8*)cb + 0x7d4), *(s16*)((u8*)cb + 0x7d6), *(s16*)((u8*)cb + 0x7d8));
+                DBPrintf_80068D68(strBase + 0x208, *(s16*)((u8*)cb + 0x7c2), *(s16*)((u8*)cb + 0x7c6), *(s16*)((u8*)cb + 0x7c4));
+                DBPrintf_80068D68(strBase + 0x230, *(s16*)((u8*)cb + 0x7c8), *(s16*)((u8*)cb + 0x7cc), *(s16*)((u8*)cb + 0x7ca));
+            }
+            break;
+        case 2: {
+            u8* p = (u8*)(found + (s32)data);
+            *(s16*)((u8*)cb + 0x7c6) = (s8)data[found];
+            *(s16*)((u8*)cb + 0x7c4) = (s8)p[1];
+            *(s16*)((u8*)cb + 0x7c2) = (s8)p[2];
+            *(s16*)((u8*)cb + 0x7cc) = (s8)p[3];
+            *(s16*)((u8*)cb + 0x7ca) = (s8)p[4];
+            *(s16*)((u8*)cb + 0x7c8) = (s8)p[5];
+            *(s16*)((u8*)cb + 0x7d2) = (s8)p[6];
+            *(s16*)((u8*)cb + 0x7d0) = (s8)p[7];
+            *(s16*)((u8*)cb + 0x7ce) = (s8)p[8];
+            *(s16*)((u8*)cb + 0x7d8) = (s8)p[9];
+            *(s16*)((u8*)cb + 0x7d6) = (s8)p[10];
+            *(s16*)((u8*)cb + 0x7d4) = (s8)p[11];
+            *((u8*)cb + 0x7da) = p[12];
+            *((u8*)cb + 0x7db) = p[13];
+            DBPrintf_80068D68(strBase + 0x258, *(s16*)((u8*)cb + 0x7c2), *(s16*)((u8*)cb + 0x7c6), *(s16*)((u8*)cb + 0x7c4));
+            DBPrintf_80068D68(strBase + 0x280, *(s16*)((u8*)cb + 0x7c8), *(s16*)((u8*)cb + 0x7cc), *(s16*)((u8*)cb + 0x7ca));
+            DBPrintf_80068D68(strBase + 0x2a8, *(s16*)((u8*)cb + 0x7ce), *(s16*)((u8*)cb + 0x7d2), *(s16*)((u8*)cb + 0x7d0));
+            DBPrintf_80068D68(strBase + 0x2d0, *(s16*)((u8*)cb + 0x7d4), *(s16*)((u8*)cb + 0x7d8), *(s16*)((u8*)cb + 0x7d6));
+            DBPrintf_80068D68(strBase + 0x2f8, *((u8*)cb + 0x7da), *((u8*)cb + 0x7db));
+            break;
+        }
+        default:
+            break;
+        }
+        *((u8*)cb + 0x851) = 0;
+    }
+    if (*(WPADCallback*)((u8*)cb + 0x7dc) != NULL) {
+        (*(WPADCallback*)((u8*)cb + 0x7dc))(chan, cb->UNK_0x801);
+        *(WPADCallback*)((u8*)cb + 0x7dc) = NULL;
+    }
+}
+
 void fn_80064740(s32 chan, s32 param_2) {
     WPADCB* cb = lbl_8038F4F0[chan];
     u8* data = (u8*)cb->samplingBufSize;
@@ -5151,30 +5239,27 @@ void fn_80064A80(s32 chan, s32 param_2) {
 
 // fn_80064B1C: WPAD data processing
 void fn_80064B1C(s32 chan, void* data) {
-    WPADCB* cb;
-    u8* p;
-    u8* buf;
-    s32 enabled;
+    register const char* strBase asm("r31") = (const char*)lbl_80312338;
+    register WPADCB* cb asm("r30");
+    register u8* p asm("r30");
+    register s32 enabled asm("r29");
+    register u8* buf asm("r28");
     s32 old;
-    s32 i;
-    s32 v;
-
-    DBPrintf_80068D68((const char*)lbl_80312338 + 0x328);
+    u32 v;
+    register s32 i asm("r5");
+    register WPADCommandQueue* q asm("r24");
+    register WPADCallback cbk asm("r25");
+    DBPrintf_80068D68(strBase + 0x328);
     enabled = OSDisableInterrupts();
     cb = lbl_8038F4F0[(u8)chan];
-    old = *(s32*)((u8*)cb + 0x81C);
+    p = (u8*)cb;
+    old = *(s32*)(p + 0x81C);
     if (old == 0) {
         OSRestoreInterrupts(enabled);
-        return;
+        goto tail;
     }
-    p = (u8*)cb;
     buf = p + 0xA0 + p[0x806] * 0x60;
-    for (i = 0; i < 2; i++) {
-        s32 j;
-        for (j = 0; j < 48; j++) buf[i * 48 + j] = 0;
-    }
-    buf[0] = 0;
-    buf[1] = ((u8*)data)[1];
+    for (i = 0; i < 96; i++) buf[i] = 0;
     *(u16*)buf = (((u8*)data)[1] << 8) | ((u8*)data)[2];
     *(u16*)buf &= 0x9f1f;
     *(s32*)(p + 0x788) = ((u8*)data)[1] >> 7;
@@ -5182,7 +5267,7 @@ void fn_80064B1C(s32 chan, void* data) {
     *(s32*)(p + 0x77C) = (((u8*)data)[3] >> 2) & 1;
     *(s32*)(p + 0x780) = (((u8*)data)[3] >> 1) & 1;
     *(s32*)(p + 0x784) = ((u8*)data)[3] & 1;
-    p[0x78D] = ((u8*)data)[3] >> 4;
+    p[0x78D] = (u8)(((u32)((u8*)data)[3] >> 4) & 0xF);
     p[0x78E] = 0;
     p[0x78F] = ((u8*)data)[5] & 0xf0;
     v = ((u8*)data)[6];
@@ -5192,28 +5277,139 @@ void fn_80064B1C(s32 chan, void* data) {
     else if (v >= 3) p[0x78C] = 1;
     else p[0x78C] = 0;
     if (*(s32*)(p + 0x780) != 0) {
-        if (old == 0) DBPrintf_80068D68((const char*)lbl_80312338 + 0x33c);
-    } else {
-        p[0x801] = 0;
+        if (old != 0) {
+            DBPrintf_80068D68(strBase + 0x354);
+            return;
+        }
+        DBPrintf_80068D68(strBase + 0x33c);
+        q = (WPADCommandQueue*)(p + 0x5ec);
+        cbk = *(WPADCallback*)(p + 0x7e0);
+        fn_80063564(q, *(s32*)(p + 0x7f8), NULL);
+        fn_80063744(q, 0xaa, 0x4A400F0, fn_80064A80);
+        fn_800684D0(chan);
+        fn_800638C8((u8*)q, p + 0x854, 6, 0x4A40040, (u32)fn_80064A80);
+        fn_800638C8((u8*)q, p + 0x85a, 6, 0x4A40046, (u32)fn_80064A80);
+        fn_800638C8((u8*)q, p + 0x860, 4, 0x4A4004C, (u32)fn_80064A80);
+        fn_80063A50((u8*)q, 2, (u16)0x4A400FE, (u32)fn_80064A80, (u32)fn_80064A80);
+        fn_80063A50((u8*)q, 0x20, (u16)0x4A40020, (u32)fn_80064A80, (u32)cbk);
+        p[0x851] = 0;
+        p[0x801] = 0xff;
         p[0x802] = 0;
+        if (cbk != NULL) cbk(chan, 0xff);
+        return;
+    } else {
+        if (old != 0) {
+            p[0x801] = 0;
+            p[0x802] = 0;
+            WPADiClearQueue_80063BD4((WPADCommandQueue*)(p + 0x5ec));
+            fn_80063564((WPADCommandQueue*)(p + 0x160), *(s32*)(p + 0x7f8), NULL);
+            cbk = *(WPADCallback*)(p + 0x7e0);
+            if (cbk != NULL) cbk(chan, 0);
+            return;
+        }
+        DBPrintf_80068D68(strBase + 0x36c);
+        if (*(s32*)(p + 0x790) != 0) {
+            memcpy(p + 0x778, p + 0x790, 0x18);
+            *(s32*)(p + 0x790) = 0;
+        }
+        if (*(void**)(p + 0x7dc) && p[0x800]) {
+            ((WPADCallback)*(void**)(p + 0x7dc))(chan, 0);
+            *(s32*)(p + 0x7dc) = 0;
+        }
     }
-    if (*(s32*)(p + 0x790) != 0) {
-        memcpy(p + 0x778, p + 0x790, 0x18);
-        *(s32*)(p + 0x790) = 0;
-    }
-    if (*(void**)(p + 0x7dc) && p[0x800]) {
-        ((WPADCallback)*(void**)(p + 0x7dc))(chan, 0);
-        *(s32*)(p + 0x7dc) = 0;
-    }
+tail:
     buf[0x29] = 0xfe;
     buf[0x28] = p[0x801];
     p[0x800] = 0;
-    p[0x806] = __cntlzw(p[0x806]) >> 24;
+    p[0x806] = (u8)((u32)__cntlzw(p[0x806]) >> 24);
     OSRestoreInterrupts(enabled);
 }
 
 // fn_80064F64: WPAD data processing
-void fn_80064F64(s32 chan, void* data) { /* stub */ }
+void fn_80064F64(s32 chan, void* data) {
+    const char* strBase = (const char*)lbl_80312338;
+    register WPADCB* pCB asm("r29");
+    register volatile u8* pBuf asm("r27");
+    register u32 offset asm("r5");
+    register u8 type asm("r4");
+    register u8 ext asm("r3");
+    register s32 enabled asm("r28");
+    register u16 rptLen asm("r31");
+    register s32 sd asm("r23");
+    register s32 cb_8B8 asm("r26");
+    register WPADCallback callback asm("r12");
+    u8* p;
+    s32 len;
+    s32 total;
+
+    enabled = OSDisableInterrupts();
+    pCB = lbl_8038F4F0[(u8)chan];
+    pBuf = (volatile u8*)pCB + *(u8*)((u8*)pCB + 0x806) * 0x60 + 0xA0;
+    for (offset = 0; offset < 96; offset++) {
+        pBuf[offset] = 0;
+    }
+    p = (u8*)data;
+    *(u16*)pBuf = ((u16)p[1] | ((u16)p[2] << 8)) & 0x9F1F;
+    type = p[3];
+    ext = p[4];
+    rptLen = (u16)p[5] | ((u16)p[4] << 8);
+    if (((p[3] & 0x0F) == 0)) {
+        DBPrintf_80068D68(strBase + 0x384, type, ext);
+        *(s32*)((u8*)pCB + 0x8BC) = -1;
+        callback = *(WPADCallback*)((u8*)pCB + 0x7DC);
+        if (callback) {
+            callback(chan, -3);
+            *(WPADCallback*)((u8*)pCB + 0x7DC) = 0;
+            *(s32*)((u8*)pCB + 0x7FC) = 0;
+        }
+    }
+    p = (u8*)data;
+    cb_8B8 = *(s32*)((u8*)pCB + 0x8B8);
+    sd = (s16)((s16)rptLen - (s16)cb_8B8);
+    cb_8B8 = (u16)cb_8B8;
+    if ((sd >= 0)) {
+        len = *(u16*)((u8*)pCB + 0x8C0);
+        total = len + rptLen;
+        sd = cb_8B8 + len;
+        if (total != sd) {
+            DBPrintf_80068D68(strBase + 0x39C);
+            DBPrintf_80068D68(strBase + 0x3B0, len);
+        }
+        cb_8B8 = *(s32*)((u8*)pCB + 0x8B8);
+        sd = *(s32*)((u8*)pCB + 0x8BC);
+        if (cb_8B8 == 0) {
+            if (sd == 0 || (sd >> 31) != 0) {
+                if (*(s32*)((u8*)pCB + 0x820) != 0 && cb_8B8 == 6004 && *(s32*)((u8*)pCB + 0x820) == 1) {
+                    getDevConfig(chan, sd, (WPADStatus*)pBuf, p + 6);
+                }
+                if ((u32)(cb_8B8 - 0x4A400020) < 0x20) {
+                    fn_80064278(chan, sd);
+                }
+                if ((u32)(cb_8B8 - 0x4A4000FE) < 0xFE) {
+                    fn_80064740(chan, sd);
+                }
+                if (cb_8B8 == 0x2A) {
+                    getGameInfo(chan, sd, 0);
+                }
+                if (cb_8B8 == 0x62) {
+                    getGameInfo(chan, sd, 1);
+                }
+            }
+        }
+        callback = *(WPADCallback*)((u8*)pCB + 0x7DC);
+        if (callback) {
+            callback(chan, sd);
+            *(WPADCallback*)((u8*)pCB + 0x7DC) = 0;
+            *(s32*)((u8*)pCB + 0x7FC) = 0;
+        }
+    } else {
+        DBPrintf_80068D68(strBase + 0x3C0);
+    }
+    pBuf[0x29] = -2;
+    pBuf[0x28] = *((u8*)pCB + 0x801);
+    *((u8*)pCB + 0x806) = __cntlzw(*((u8*)pCB + 0x806)) >> 24;
+    OSRestoreInterrupts(enabled);
+}
 
 // fn_80065524: WPAD data processing
 void fn_80065524(s32 chan, WPADStatusEx* pStatus)
@@ -5482,18 +5678,11 @@ void fn_80066EB0(s32 arg0, u8 *arg1) {
     s16 temp_r4_5;
     s16 temp_r4_6;
     s16 temp_r5_8;
-    s32 temp_r6;
-    s32 temp_r6_2;
-    s32 temp_r6_3;
-    s32 temp_r6_4;
-    s32 temp_r6_5;
-    s32 var_ctr;
     WPADCB *temp_r31;
-    u8 *temp_r30;
-    u8 *base;
+    volatile s8 *temp_r30;
+    u8 *temp_r5;
     s32 var_r29;
-    register s32 var_r6 asm("r6");
-    volatile u8 *zeroPtr;
+    register s32 offset asm("r6");
     register s32 channel asm("r29") = arg0;
     u8 temp_r0_5;
     u8 temp_r0_6;
@@ -5502,83 +5691,15 @@ void fn_80066EB0(s32 arg0, u8 *arg1) {
     u8 *temp_r4;
     u8 *temp_r4_2;
     u8 *temp_r4_3;
-    u8 *temp_r5;
-    u8 *temp_r5_2;
-    u8 *temp_r5_3;
-    u8 *temp_r5_4;
-    u8 *temp_r5_5;
-    u8 *temp_r5_6;
-    u8 *temp_r5_7;
+    s16 s_val;
 
     temp_r31 = lbl_8038F4F0[(u8)channel];
     temp_r5 = (u8*)temp_r31 + ((*(u8 *)((s8*)(temp_r31) + (0x806))) * 0x60);
-    temp_r30 = temp_r5 + 0xA0;
-    base = temp_r30;
-    var_r6 = 0;
-    var_ctr = 0;
-    for (; var_ctr < 2; var_ctr++) {
-        base[var_r6] = 0;
-        zeroPtr = (volatile u8*)(base + var_r6);
-        zeroPtr[1] = 0;
-        zeroPtr[2] = 0;
-        zeroPtr[3] = 0;
-        zeroPtr[4] = 0;
-        zeroPtr[5] = 0;
-        zeroPtr[6] = 0;
-        zeroPtr[7] = 0;
-        var_r6 += 8;
-        base[var_r6] = 0;
-        zeroPtr = (volatile u8*)(base + var_r6);
-        zeroPtr[1] = 0;
-        zeroPtr[2] = 0;
-        zeroPtr[3] = 0;
-        zeroPtr[4] = 0;
-        zeroPtr[5] = 0;
-        zeroPtr[6] = 0;
-        zeroPtr[7] = 0;
-        var_r6 += 8;
-        base[var_r6] = 0;
-        zeroPtr = (volatile u8*)(base + var_r6);
-        zeroPtr[1] = 0;
-        zeroPtr[2] = 0;
-        zeroPtr[3] = 0;
-        zeroPtr[4] = 0;
-        zeroPtr[5] = 0;
-        zeroPtr[6] = 0;
-        zeroPtr[7] = 0;
-        var_r6 += 8;
-        base[var_r6] = 0;
-        zeroPtr = (volatile u8*)(base + var_r6);
-        zeroPtr[1] = 0;
-        zeroPtr[2] = 0;
-        zeroPtr[3] = 0;
-        zeroPtr[4] = 0;
-        zeroPtr[5] = 0;
-        zeroPtr[6] = 0;
-        zeroPtr[7] = 0;
-        var_r6 += 8;
-        base[var_r6] = 0;
-        zeroPtr = (volatile u8*)(base + var_r6);
-        zeroPtr[1] = 0;
-        zeroPtr[2] = 0;
-        zeroPtr[3] = 0;
-        zeroPtr[4] = 0;
-        zeroPtr[5] = 0;
-        zeroPtr[6] = 0;
-        zeroPtr[7] = 0;
-        var_r6 += 8;
-        base[var_r6] = 0;
-        zeroPtr = (volatile u8*)(base + var_r6);
-        zeroPtr[1] = 0;
-        zeroPtr[2] = 0;
-        zeroPtr[3] = 0;
-        zeroPtr[4] = 0;
-        zeroPtr[5] = 0;
-        zeroPtr[6] = 0;
-        zeroPtr[7] = 0;
-        var_r6 += 8;
+    temp_r30 = (volatile s8*)(temp_r5 + 0xA0);
+    for (offset = 0; offset < 96; offset++) {
+        temp_r30[offset] = 0;
     }
-    (*(s16 *)((s8*)(temp_r5) + (0xA0))) = (s16) ((((*(u8 *)((s8*)(arg1) + (1))) & ~0xFF00) | (((*(u8 *)((s8*)(arg1) + (2))) << 8) & 0xFF00)) & 0x9F1F);
+    *(s16*)temp_r30 = (s16) ((((*(u8 *)((s8*)(arg1) + (1))) & ~0xFF00) | (((*(u8 *)((s8*)(arg1) + (2))) << 8) & 0xFF00)) & 0x9F1F);
     if ((u32) (*(u32 *)((s8*)(temp_r31) + (0x7F8))) <= 8U) {
         (*(u8 *)((s8*)(temp_r30) + (0x29))) = (u8) (*(s32 *)((s8*)(temp_r31) + (0x7FC)));
     } else if ((s32) (*(s32 *)((s8*)(temp_r31) + (0x7FC))) == 0) {
@@ -5589,9 +5710,11 @@ void fn_80066EB0(s32 arg0, u8 *arg1) {
     (*(s16 *)((s8*)(temp_r30) + (2))) = (s16) ((s16) ((s16) ((s16) ((*(u8 *)((s8*)(arg1) + (3))) * 4) & 0xFFFFFFFC) | (((s8) (*(u8 *)((s8*)(arg1) + (1))) >> 5) & 3)) - (*(s16 *)((s8*)(temp_r31) + (0x7B4))));
     (*(s16 *)((s8*)(temp_r30) + (4))) = (s16) ((s16) ((s16) ((s16) ((*(u8 *)((s8*)(arg1) + (4))) * 4) & 0xFFFFFFFC) | (s16) (((s8) (*(u8 *)((s8*)(arg1) + (2))) >> 4) & 2)) - (*(s16 *)((s8*)(temp_r31) + (0x7B6))));
     (*(s16 *)((s8*)(temp_r30) + (6))) = (s16) ((s16) ((s16) ((s16) ((*(u8 *)((s8*)(arg1) + (5))) * 4) & 0xFFFFFFFC) | (s16) (((s8) (*(u8 *)((s8*)(arg1) + (2))) >> 5) & 2)) - (*(s16 *)((s8*)(temp_r31) + (0x7B8))));
-    temp_r0 = (s16) (*(u8 *)((s8*)(arg1) + (6))) | (((*(u8 *)((s8*)(arg1) + (8))) * 0x10) & 0x300);
+    
+    s_val = (s16)arg1[6];
+    temp_r0 = s_val | (s16)((arg1[8] << 4) & 0x300);
     (*(s16 *)((s8*)(temp_r30) + (8))) = temp_r0;
-    (*(s16 *)((s8*)(temp_r30) + (0xA))) = (s16) (0x2FF - (s16) ((s16) (*(u8 *)((s8*)(arg1) + (7))) | (((*(u8 *)((s8*)(arg1) + (8))) * 4) & 0x300)));
+    (*(s16 *)((s8*)(temp_r30) + (0xA))) = (s16) (0x2FF - (s16) ((s16)arg1[7] | (s16)((arg1[8] << 2) & 0x300)));
     if ((temp_r0 == 0x3FF) || ((s16) (*(s16 *)((s8*)(temp_r30) + (0xA))) == 0x2FF)) {
         (*(s16 *)((s8*)(temp_r30) + (8))) = 0;
         (*(s16 *)((s8*)(temp_r30) + (0xA))) = 0x2FF;
@@ -5600,9 +5723,10 @@ void fn_80066EB0(s32 arg0, u8 *arg1) {
         (*(u16 *)((s8*)(temp_r30) + (0xC))) = (u16) (*(u16 *)((s8*)(temp_r31) + (0x804)));
     }
     (*(s8 *)((s8*)(temp_r30) + (0xE))) = 0;
-    temp_r0_2 = (s16) (*(u8 *)((s8*)(arg1) + (9))) | (((*(u8 *)((s8*)(arg1) + (8))) << 8) & 0x300);
+
+    temp_r0_2 = (s16)arg1[9] | (s16)((arg1[8] & 3) << 8);
     (*(s16 *)((s8*)(temp_r30) + (0x10))) = temp_r0_2;
-    (*(s16 *)((s8*)(temp_r30) + (0x12))) = (s16) (0x2FF - (s16) ((s16) (*(u8 *)((s8*)(arg1) + (0xA))) | (((*(u8 *)((s8*)(arg1) + (8))) << 6) & 0x300)));
+    (*(s16 *)((s8*)(temp_r30) + (0x12))) = (s16) (0x2FF - (s16) ((s16)arg1[10] | (s16)((arg1[8] << 6) & 0x300)));
     if ((temp_r0_2 == 0x3FF) || ((s16) (*(s16 *)((s8*)(temp_r30) + (0x12))) == 0x2FF)) {
         (*(s16 *)((s8*)(temp_r30) + (0x10))) = 0;
         (*(s16 *)((s8*)(temp_r30) + (0x12))) = 0x2FF;
@@ -5611,9 +5735,10 @@ void fn_80066EB0(s32 arg0, u8 *arg1) {
         (*(u16 *)((s8*)(temp_r30) + (0x14))) = (u16) (*(u16 *)((s8*)(temp_r31) + (0x804)));
     }
     (*(s8 *)((s8*)(temp_r30) + (0x16))) = 1;
-    temp_r0_3 = (s16) (*(u8 *)((s8*)(arg1) + (0xB))) | (((*(u8 *)((s8*)(arg1) + (0xD))) * 0x10) & 0x300);
+
+    temp_r0_3 = (s16)arg1[11] | (s16)((arg1[13] << 4) & 0x300);
     (*(s16 *)((s8*)(temp_r30) + (0x18))) = temp_r0_3;
-    (*(s16 *)((s8*)(temp_r30) + (0x1A))) = (s16) (0x2FF - (s16) ((s16) (*(u8 *)((s8*)(arg1) + (0xC))) | (((*(u8 *)((s8*)(arg1) + (0xD))) * 4) & 0x300)));
+    (*(s16 *)((s8*)(temp_r30) + (0x1A))) = (s16) (0x2FF - (s16) ((s16)arg1[12] | (s16)((arg1[13] << 2) & 0x300)));
     if ((temp_r0_3 == 0x3FF) || ((s16) (*(s16 *)((s8*)(temp_r30) + (0x1A))) == 0x2FF)) {
         (*(s16 *)((s8*)(temp_r30) + (0x18))) = 0;
         (*(s16 *)((s8*)(temp_r30) + (0x1A))) = 0x2FF;
@@ -5622,9 +5747,10 @@ void fn_80066EB0(s32 arg0, u8 *arg1) {
         (*(u16 *)((s8*)(temp_r30) + (0x1C))) = (u16) (*(u16 *)((s8*)(temp_r31) + (0x804)));
     }
     (*(s8 *)((s8*)(temp_r30) + (0x1E))) = 2;
-    temp_r0_4 = (s16) (*(u8 *)((s8*)(arg1) + (0xE))) | (((*(u8 *)((s8*)(arg1) + (0xD))) << 8) & 0xC00);
+
+    temp_r0_4 = (s16)arg1[14] | (s16)((arg1[13] << 8) & 0xC00);
     (*(s16 *)((s8*)(temp_r30) + (0x20))) = temp_r0_4;
-    (*(s16 *)((s8*)(temp_r30) + (0x22))) = (s16) (0x2FF - (s16) ((s16) (*(u8 *)((s8*)(arg1) + (0xF))) | (((*(u8 *)((s8*)(arg1) + (0xD))) << 6) & 0x300)));
+    (*(s16 *)((s8*)(temp_r30) + (0x22))) = (s16) (0x2FF - (s16) ((s16)arg1[15] | (s16)((arg1[13] << 6) & 0x300)));
     if ((temp_r0_4 == 0x3FF) || ((s16) (*(s16 *)((s8*)(temp_r30) + (0x22))) == 0x2FF)) {
         (*(s16 *)((s8*)(temp_r30) + (0x20))) = 0;
         (*(s16 *)((s8*)(temp_r30) + (0x22))) = 0x2FF;
@@ -5633,6 +5759,7 @@ void fn_80066EB0(s32 arg0, u8 *arg1) {
         (*(u16 *)((s8*)(temp_r30) + (0x24))) = (u16) (*(u16 *)((s8*)(temp_r31) + (0x804)));
     }
     (*(s8 *)((s8*)(temp_r30) + (0x26))) = 3;
+
     memcpy(&lbl_803928E8, arg1 + 0x10, 6);
     WPADiDecode(channel, arg1 + 0x10, 6, 0);
     if ((s32) (*(s32 *)((s8*)(temp_r31) + (0x780))) != 0) {
@@ -5781,14 +5908,14 @@ void fn_800684CC(void) { /* stub */ }
 
 void WPADiDecode(s32 chan, u8* data, s32 len, s32 seed) {
     WPADCB* cb = lbl_8038F4F0[chan];
-    u32 i;
     u8* base = (u8*)cb;
+    u16 i;
 
-    for (i = 0; i < (u32)len; i++) {
-        u32 index = (seed + i) & 7;
-        u8 key = base[0x86C + index];
-        u8 value = base[0x864 + index];
-        data[i] = value + (data[i] ^ key);
+    if (len != 0) {
+        for (i = 0; i < len; i++) {
+            u8 idx = (seed + i) % 8;
+            data[i] = base[0x864 + idx] + (data[i] ^ base[0x86C + idx]);
+        }
     }
 }
 
