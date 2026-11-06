@@ -115,7 +115,17 @@ extern char lbl_8055C27C[];
 extern char lbl_8055C284[];
 extern char lbl_8055C28C[];
 #pragma cplusplus on
-#pragma dont_inline on
+#pragma scheduling invalid_target
+__declspec(section ".sdata") extern char lbl_8055BAB8[];
+__declspec(section ".sdata") extern char lbl_8055B860[];
+__declspec(section ".sdata") extern char lbl_8055C260[];
+__declspec(section ".sdata") extern char lbl_8055C264[];
+__declspec(section ".sdata") extern char lbl_8055C26C[];
+__declspec(section ".sdata") extern char lbl_8055C274[];
+__declspec(section ".sdata") extern char lbl_8055C27C[];
+__declspec(section ".sdata") extern char lbl_8055C284[];
+__declspec(section ".sdata") extern char lbl_8055C28C[];
+__declspec(section ".rodata") extern int lbl_80345158;
 extern "C" int fn_80259224(void **arg0) {
     extern float lbl_80563AE4;
     extern unsigned char *fn_8001EFAC(int, int);
@@ -126,35 +136,26 @@ extern "C" int fn_80259224(void **arg0) {
     extern char lbl_803450F8[];
     extern int lbl_80498E98[5];
     extern int lbl_802FA63C[5];
-    extern char lbl_8055BAB8[];
-    extern char lbl_8055B860[];
-    extern char lbl_8055C260[];
-    extern char lbl_8055C264[];
-    extern char lbl_8055C26C[];
-    extern char lbl_8055C274[];
-    extern char lbl_8055C27C[];
-    extern char lbl_8055C284[];
-    extern char lbl_8055C28C[];
     class Dialog_80259224 {
     public:
         virtual void destroy(int);
     };
-    unsigned int frame[0x9A];
+    unsigned int frame[0x9E];
     void *button;
     void *buttonA;
     void *buttonB;
     int size;
-    if (0) size = 105;
     int result;
-    int i;
+    unsigned int i;
     unsigned char *src;
     unsigned char *dst;
     unsigned char c;
-    int count;
+    long count;
     int n;
+    void *dialog = (char *)frame + 0xC0 - 8;
 
+    *(char **)(dialog) = (char *)&lbl_80345158;
     *(int *)(((char *)frame + 0x110 - 8)) = -1;
-    *(char **)(((char *)frame + 0xC0 - 8)) = (char *)&lbl_80345158;
     *(float *)(((char *)frame + 0x144 - 8)) = lbl_80563AE0;
     *(float *)(((char *)frame + 0x148 - 8)) = lbl_80563AE4;
     *(float *)(((char *)frame + 0x14C - 8)) = lbl_80563AE4;
@@ -173,10 +174,11 @@ extern "C" int fn_80259224(void **arg0) {
     if (fn_8025921C() != 0) {
         buttonA = fn_801284F8(0x78, (char *)lbl_80344DE0 + 0x114);
         if (buttonA != 0) {
+            int owner = *(int *)((char *)arg0 + 0x18);
             *(int *)((char *)buttonA + 0x14) = 0;
             *(void **)buttonA = lbl_803450F8;
-            *(void **)((char *)buttonA + 0x18) = ((char *)frame + 0xC0 - 8);
-            *(int *)((char *)buttonA + 0x70) = *(int *)((char *)arg0 + 0x18);
+            *(void **)((char *)buttonA + 0x18) = dialog;
+            *(int *)((char *)buttonA + 0x70) = owner;
             *(int *)((char *)buttonA + 0x1C) = 5;
             *(unsigned char *)((char *)buttonA + 0x20) = 0;
             *(int *)((char *)buttonA + 0x74) = 5;
@@ -185,11 +187,13 @@ extern "C" int fn_80259224(void **arg0) {
     } else {
         buttonB = fn_801284F8(0x78, (char *)lbl_80344DE0 + 0x114);
         if (buttonB != 0) {
+            int owner;
             size = *(int *)((char *)arg0 + 0xC8);
+            owner = *(int *)((char *)arg0 + 0x18);
             *(int *)((char *)buttonB + 0x14) = 0;
             *(void **)buttonB = lbl_803450F8;
-            *(void **)((char *)buttonB + 0x18) = ((char *)frame + 0xC0 - 8);
-            *(int *)((char *)buttonB + 0x70) = *(int *)((char *)arg0 + 0x18);
+            *(void **)((char *)buttonB + 0x18) = dialog;
+            *(int *)((char *)buttonB + 0x70) = owner;
             *(int *)((char *)buttonB + 0x1C) = size;
             *(unsigned char *)((char *)buttonB + 0x20) = 0;
             *(int *)((char *)buttonB + 0x74) = size;
@@ -198,6 +202,7 @@ extern "C" int fn_80259224(void **arg0) {
     }
 
     size = *(int *)((char *)arg0 + 0xC8);
+    *(volatile int *)(((char *)frame + 0x10C - 8)) = size;
     src = fn_8001EFAC(*(int *)((char *)arg0 + 0x18), size);
     if (src != 0) {
         dst = (unsigned char *)(((char *)frame + 0xC4 - 8));
@@ -217,13 +222,13 @@ extern "C" int fn_80259224(void **arg0) {
         *(unsigned char *)(((char *)frame + 0xC4 - 8)) = 0;
     }
     if (size > 0) {
-        fn_801345D8((char *)(((char *)frame + 0xF6 - 8)), 0x14, (char *)lbl_80344DE0 + 0x128, size);
+        ((int (*)(char *, int, const char *, ...))fn_801345D8)((char *)(((char *)frame + 0xF6 - 8)), 0x14, (char *)lbl_80344DE0 + 0x128, size);
     } else {
         *(unsigned char *)(((char *)frame + 0xF6 - 8)) = 0;
     }
     *(unsigned char *)(((char *)frame + 0x10A - 8)) = 1;
     for (i = 1; i <= 5; ++i) {
-        fn_801345D8(((char *)frame + 0x20 - 8) + (i - 1) * 5, 0x20, lbl_8055C260,
+        ((int (*)(char *, int, const char *, ...))fn_801345D8)(((char *)frame + 0x20 - 8) + ((i - 1) << 2) + (i - 1), 0x20, lbl_8055C260,
                     fn_8001EFA4(*(int *)((char *)arg0 + 0x18), i));
     }
 
@@ -239,11 +244,11 @@ extern "C" int fn_80259224(void **arg0) {
     *(int *)(((char *)frame + 0x190 - 8)) = 0;
     *(void **)(((char *)frame + 0x194 - 8)) = lbl_8055C264;
     *(int *)(((char *)frame + 0x198 - 8)) = 0x13;
-    *(void **)(((char *)frame + 0x19C - 8)) = ((char *)frame + 0xC0 - 8);
+    *(void **)(((char *)frame + 0x19C - 8)) = dialog;
     *(int *)(((char *)frame + 0x1A0 - 8)) = 0;
     *(int *)(((char *)frame + 0x1A4 - 8)) = 0;
-    *(void **)(((char *)frame + 0x1A8 - 8)) = lbl_8055C264;
     *(int *)(((char *)frame + 0x1AC - 8)) = 3;
+    *(void **)(((char *)frame + 0x1A8 - 8)) = lbl_8055C264;
     *(void **)(((char *)frame + 0x1B0 - 8)) = (char *)button + 0x20;
     *(int *)(((char *)frame + 0x1B4 - 8)) = 0;
     *(int *)(((char *)frame + 0x1B8 - 8)) = 0;
@@ -251,39 +256,39 @@ extern "C" int fn_80259224(void **arg0) {
     result = fn_8001EF9C(*(int *)((char *)arg0 + 0x18), 0x13, 5,
                          lbl_8055C264, lbl_8055C264);
 
-    *(void **)(((char *)frame + 0x1BC - 8)) = (char *)lbl_80344DE0 + 0x134;
     *(int *)(((char *)frame + 0x1C0 - 8)) = 3;
+    *(void **)(((char *)frame + 0x1BC - 8)) = (char *)lbl_80344DE0 + 0x134;
     *(int *)(((char *)frame + 0x1C4 - 8)) = result;
     *(int *)(((char *)frame + 0x1C8 - 8)) = 0;
     *(int *)(((char *)frame + 0x1CC - 8)) = 0;
-    *(void **)(((char *)frame + 0x1D0 - 8)) = (char *)lbl_80344DE0 + 0x148;
     *(int *)(((char *)frame + 0x1D4 - 8)) = 3;
+    *(void **)(((char *)frame + 0x1D0 - 8)) = (char *)lbl_80344DE0 + 0x148;
     *(int *)(((char *)frame + 0x1D8 - 8)) = *((int *)((char *)lbl_80344DE0 + 0xC0 +
                                     *(int *)((char *)arg0 + 0x24) * 8) + 1);
     *(int *)(((char *)frame + 0x1DC - 8)) = 0;
     *(int *)(((char *)frame + 0x1E0 - 8)) = 0;
-    *(void **)(((char *)frame + 0x1E4 - 8)) = lbl_8055C26C;
     *(int *)(((char *)frame + 0x1E8 - 8)) = 3;
+    *(void **)(((char *)frame + 0x1E4 - 8)) = lbl_8055C26C;
     *(void **)(((char *)frame + 0x1EC - 8)) = ((char *)frame + 0x20 - 8);
     *(int *)(((char *)frame + 0x1F0 - 8)) = 0;
     *(int *)(((char *)frame + 0x1F4 - 8)) = 0;
-    *(void **)(((char *)frame + 0x1F8 - 8)) = lbl_8055C274;
     *(int *)(((char *)frame + 0x1FC - 8)) = 3;
+    *(void **)(((char *)frame + 0x1F8 - 8)) = lbl_8055C274;
     *(void **)(((char *)frame + 0x200 - 8)) = ((char *)frame + 0x25 - 8);
     *(int *)(((char *)frame + 0x204 - 8)) = 0;
     *(int *)(((char *)frame + 0x208 - 8)) = 0;
-    *(void **)(((char *)frame + 0x20C - 8)) = lbl_8055C27C;
     *(int *)(((char *)frame + 0x210 - 8)) = 3;
+    *(void **)(((char *)frame + 0x20C - 8)) = lbl_8055C27C;
     *(void **)(((char *)frame + 0x214 - 8)) = ((char *)frame + 0x2A - 8);
     *(int *)(((char *)frame + 0x218 - 8)) = 0;
     *(int *)(((char *)frame + 0x21C - 8)) = 0;
-    *(void **)(((char *)frame + 0x220 - 8)) = lbl_8055C284;
     *(int *)(((char *)frame + 0x224 - 8)) = 3;
+    *(void **)(((char *)frame + 0x220 - 8)) = lbl_8055C284;
     *(void **)(((char *)frame + 0x228 - 8)) = ((char *)frame + 0x2F - 8);
     *(int *)(((char *)frame + 0x22C - 8)) = 0;
     *(int *)(((char *)frame + 0x230 - 8)) = 0;
-    *(void **)(((char *)frame + 0x234 - 8)) = lbl_8055C28C;
     *(int *)(((char *)frame + 0x238 - 8)) = 3;
+    *(void **)(((char *)frame + 0x234 - 8)) = lbl_8055C28C;
     *(void **)(((char *)frame + 0x23C - 8)) = ((char *)frame + 0x34 - 8);
     *(int *)(((char *)frame + 0x240 - 8)) = 0;
     *(int *)(((char *)frame + 0x244 - 8)) = 0;
@@ -310,7 +315,7 @@ extern "C" int fn_80259224(void **arg0) {
     if (button != 0)
         ((Dialog_80259224 *)button)->destroy(1);
 
-    *(char **)(((char *)frame + 0xC0 - 8)) = (char *)&lbl_80345158;
+    *(char **)(dialog) = (char *)&lbl_80345158;
     if (*(int *)(((char *)frame + 0x110 - 8)) != -1) {
         fn_802C6CF8(*(int *)(((char *)frame + 0x110 - 8)));
         *(int *)(((char *)frame + 0x110 - 8)) = -1;
@@ -318,7 +323,7 @@ extern "C" int fn_80259224(void **arg0) {
     fn_802CAC54(*(int *)(((char *)frame + 0x168 - 8)));
     return n;
 }
-#pragma dont_inline reset
+#pragma scheduling on
 #pragma cplusplus reset
 
 void *fn_80259680(void *arg0, int arg1) {
@@ -1264,6 +1269,150 @@ d_done:;
 #pragma cplusplus reset
 void fn_8025B784(void) {
 }
+
+extern int stricmp(const char *, const char *);
+extern float fn_80214D48(void);
+extern int fn_8001EFA8(int);
+extern void fn_80236954(void *);
+extern void fn_80236958(void *);
+extern void fn_802168BC(int);
+extern float lbl_80563B34;
+#pragma cplusplus on
+extern "C" void fn_8025B788(void *arg0) {
+    class Obj {
+    public:
+        virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
+        virtual void m4(); virtual void m5(); virtual void m6(); virtual void m7();
+        virtual void m8(); virtual void m9(); virtual void m10(); virtual void m11();
+        virtual void m12(char *); virtual void m13(char *); virtual void m14(char *, float);
+    };
+    char *base = (char *)lbl_80344DE0;
+    char *o = (char *)arg0;
+    float num, v;
+    int cur, flag, res;
+    unsigned char old;
+    unsigned char c1; unsigned char *src1; int count1; unsigned char *dst1;
+    unsigned char c2; unsigned char *src2; int count2; unsigned char *dst2;
+    unsigned char c3; unsigned char *src3; int count3; unsigned char *dst3;
+    unsigned char c4; unsigned char *src4; int count4; unsigned char *dst4;
+    if (stricmp(o + 0x92, o + 0x60) != 0 && o[0x60] != 0) {
+        fn_80236954(base + 0x464);
+        src4 = (unsigned char *)(o + 0x60);
+        dst4 = (unsigned char *)(o + 0x92);
+        count4 = 0x32;
+        goto d_copy;
+d_next:
+        count4--;
+        if (count4 > 0) goto d_copy;
+        dst4[-1] = 0;
+        goto d_done;
+d_copy:
+        c4 = *src4++;
+        *dst4++ = c4;
+        if ((signed char)c4 != 0) goto d_next;
+d_done:;
+    }
+    if (*(unsigned char *)&lbl_8055F3A0 && *(float *)(o + 0xCC) >= lbl_80563B34) {
+        v = *(float *)(o + 0x28) + *(float *)(o + 0x54) * fn_80214D48();
+        num = (float)*(int *)(o + 0x20);
+        num = num < v ? num : v;
+        *(float *)(o + 0x28) = num;
+    }
+    old = *(unsigned char *)(o + 0x58);
+    *(unsigned char *)(o + 0x58) = (int)(*(float *)(o + 0x28) + lbl_80558DC4) < *(int *)(o + 0x20);
+    *(float *)(o + 0xCC) += fn_80214D48();
+    if (*(unsigned char *)(o + 0x58)) {
+        float limit = lbl_8055F3A4;
+        num = lbl_80563AE0;
+        num = num < limit ? num : limit;
+        ((Obj *)lbl_8055F394)->m14(base + 0x40, num);
+    } else if (old) {
+        ((Obj *)lbl_8055F394)->m13(base + 0x40);
+        if (*(unsigned char *)(o + 0xC4) && *(unsigned char *)(o + 0xC5)) {
+            ((Obj *)lbl_8055F394)->m12(base + 0x20);
+            fn_80214AF0(0x10);
+            *(float *)(o + 0xCC) = lbl_80563AE4;
+        }
+    }
+    if (*(unsigned char *)(o + 0x59)) {
+        fn_80236958(base + 0x464);
+        fn_802168BC(*(int *)(o + 0x5C));
+    }
+    cur = (int)(*(float *)(o + 0x28) + lbl_80558DC4);
+    fn_80130FCC(o + 0x2C, 0x14, cur);
+    flag = 1;
+    if (*(unsigned char *)(o + 0xC4) != 0) {
+        if (*(unsigned char *)(o + 0x58) != 0 || *(unsigned char *)(o + 0xC5) == 0) {
+            flag = 0;
+        }
+    }
+    res = fn_8001EFA0(*(int *)(o + 0x18), cur);
+    *(int *)(o + 0xC8) = res;
+    res = fn_8001EFA4(*(int *)(o + 0x18), res + 1);
+    if (res >= 0) {
+        fn_80130FCC(o + 0x40, 0x14, res);
+    } else {
+        dst1 = (unsigned char *)(o + 0x40);
+        src1 = lbl_8055C380;
+        count1 = 0x14;
+        goto a_copy;
+a_next:
+        count1--;
+        if (count1 > 0) goto a_copy;
+        dst1[-1] = 0;
+        goto a_done;
+a_copy:
+        c1 = *src1++;
+        *dst1++ = c1;
+        if ((signed char)c1 != 0) goto a_next;
+a_done:;
+    }
+    src2 = fn_8001EFAC(*(int *)(o + 0x18), *(int *)(o + 0xC8));
+    if (src2 != 0 && flag != 0) {
+        dst2 = (unsigned char *)(o + 0x60);
+        count2 = 0x32;
+        goto b_copy;
+b_next:
+        count2--;
+        if (count2 > 0) goto b_copy;
+        dst2[-1] = 0;
+        goto b_done;
+b_copy:
+        c2 = *src2++;
+        *dst2++ = c2;
+        if ((signed char)c2 == 0) goto b_done;
+        goto b_next;
+    } else {
+        dst3 = (unsigned char *)(o + 0x60);
+        src3 = lbl_8055C380;
+        count3 = 0x32;
+        goto c_copy;
+c_next:
+        count3--;
+        if (count3 > 0) goto c_copy;
+        dst3[-1] = 0;
+        goto b_done;
+c_copy:
+        c3 = *src3++;
+        *dst3++ = c3;
+        if ((signed char)c3 != 0) goto c_next;
+    }
+b_done:
+    if (*(int *)(o + 0xC8) >= fn_8001EFA8(*(int *)(o + 0x18))) {
+        fn_80214AF0(0x15); fn_80214A9C(0x14);
+    } else {
+        fn_80214AF0(0x14); fn_80214A9C(0x15);
+    }
+    if (*(int *)(o + 0xC8) == 0 || *(unsigned char *)(o + 0xC4)) fn_80214A9C(0xF);
+    else fn_80214AF0(0xF);
+    if (*(unsigned char *)(o + 0xC4)) fn_80214A9C(0xE);
+    else fn_80214AF0(0xE);
+    if (*(int *)(o + 0xC8) < 2 || *(unsigned char *)(o + 0xC4)) fn_80214A9C(0x11);
+    else fn_80214AF0(0x11);
+    if (*(unsigned char *)(o + 0x58) || IsLowAndFlagged_(o)) fn_80214A9C(0xD);
+    else fn_80214AF0(0xD);
+}
+#pragma cplusplus reset
 
 int fn_8025BBFC(void *arg0, int arg1) {
     char *o = (char *)arg0;
