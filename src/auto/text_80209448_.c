@@ -196,6 +196,7 @@ M2C_FIELD(result, f32 *, 0x154) = lbl_80563238;
 }
 return result;
 }
+#pragma pop
 
 extern "C" s32 fn_80178CA4(void);
 extern "C" s32 fn_8026A344(s32);
