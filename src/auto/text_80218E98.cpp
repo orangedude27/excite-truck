@@ -28,6 +28,14 @@ extern "C" s32 fn_802CAC28(void *, s32);
 extern "C" char lbl_8033DC20[];
 extern f32 lbl_805634C8;
 
+extern "C" s32 fn_8022AB18(s32, s32, s32);
+extern "C" f32 fn_8022AAA8(void *, char *);
+extern "C" s32 fn_8022AA84(s32);
+extern "C" s32 fn_80211660(s32);
+extern "C" f32 lbl_80563508;
+extern "C" f32 lbl_8056350C;
+extern "C" void *lbl_8055E050;
+
 extern "C" void fn_8022375C(void);
 
 extern "C" u8 lbl_8033DA84[];
@@ -3691,6 +3699,110 @@ extern "C" void* __dt__Q34Game10MemoryCard8ResourceFv_8022003C(void* arg0, s32 a
     return arg0;
 }
 
+extern "C" s32 fn_80211660(s32);
+extern "C" f32 lbl_80563508;
+extern "C" f32 lbl_8056350C;
+#pragma push
+#pragma processor 750
+extern "C" void fn_802200AC(void *arg0) {
+    f32 *value = *(f32 **)((u8 *)arg0 + 0x244);
+    f32 scale;
+    if (value != 0) {
+        scale = (*value - *(f32 *)((u8 *)arg0 + 0x248)) / (*(f32 *)((u8 *)arg0 + 0x24C) - *(f32 *)((u8 *)arg0 + 0x248));
+    } else {
+        scale = lbl_805634A4;
+    }
+    f32 sp14 = lbl_805634A8;
+    f32 sp10 = lbl_805634A8;
+    f32 sp8 = lbl_805634A4;
+    fn_80230C30(&sp14, &sp10, *(s32 *)((u8 *)arg0 + 4), *(s32 *)((u8 *)arg0 + 8));
+    f32 step = (f32)((VfObj *)arg0)->vf28();
+    f32 range = (f32)(*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8));
+    f32 progress = scale * (f32)fn_802C51C0(*(s32 *)((u8 *)arg0 + 0x254));
+    f32 height = (f32)fn_802C5220(*(s32 *)((u8 *)arg0 + 0x254));
+    s32 enabled = 0;
+    s32 *mode = *(s32 **)((u8 *)arg0 + 0x258);
+    if (mode != 0 && *mode == *(s32 *)((u8 *)arg0 + 0x25C))
+        enabled = 1;
+    f32 adj = step - (f32)fn_802C51C0(*(s32 *)((u8 *)arg0 + 0x254));
+    f32 t = lbl_805634C4 * adj;
+    s32 stateB;
+    s32 a;
+    s32 b;
+    s32 colorA;
+    s32 colorB;
+    ((s32 (*)(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32))fn_802C5334)(
+        *(s32 *)((u8 *)arg0 + 0x254), enabled, sp14 + t, sp10 + (height - range) * lbl_805634C4, lbl_805634A8, progress, height, lbl_805634A8, lbl_805634A8, scale, sp14, t);
+    a = fn_80211660(0);
+    b = fn_80211660(1);
+    s32 check = 0;
+    s32 *mode2 = *(s32 **)((u8 *)arg0 + 0x258);
+    if (mode2 != 0 && *mode2 == *(s32 *)((u8 *)arg0 + 0x25C))
+        check = 1;
+    if (check != 0) {
+        if (lbl_805634E8 + *(f32 *)((u8 *)arg0 + 0x260) > fn_8023659C())
+            enabled = 2;
+        else
+            enabled = 1;
+    } else {
+        enabled = 0;
+    }
+    s32 check2 = 0;
+    s32 *mode3 = *(s32 **)((u8 *)arg0 + 0x258);
+    if (mode3 != 0 && *mode3 == *(s32 *)((u8 *)arg0 + 0x25C))
+        check2 = 1;
+    if (check2 != 0) {
+        if (lbl_805634E8 + *(f32 *)((u8 *)arg0 + 0x264) > fn_8023659C())
+            stateB = 2;
+        else
+            stateB = 1;
+    } else {
+        stateB = 0;
+    }
+    f32 timeA = fn_8023659C();
+    f32 cA = lbl_805634A4;
+    f32 tA = ((lbl_805634E8 + *(f32 *)((u8 *)arg0 + 0x260)) - timeA - lbl_805634A8) / lbl_805634E8;
+    cA = (cA < tA) ? cA : tA;
+    cA = (cA > lbl_805634A8) ? cA : lbl_805634A8;
+    height = lbl_805634A8 + cA * lbl_805634C8;
+    f32 timeB = fn_8023659C();
+    f32 cB = lbl_805634A4;
+    f32 tB = ((lbl_805634E8 + *(f32 *)((u8 *)arg0 + 0x264)) - timeB - lbl_805634A8) / lbl_805634E8;
+    cB = (cB < tB) ? cB : tB;
+    cB = (cB > lbl_805634A8) ? cB : lbl_805634A8;
+    progress = lbl_805634A8 + cB * lbl_805634C8;
+    height = (sp14 - fn_80235EF0(a, enabled)) - height;
+    step = progress + (sp14 + step);
+    colorA = -1;
+    colorB = -1;
+    if (scale <= *(f32 *)&lbl_80558DC4) {
+        f32 timeC = fn_8023659C();
+        f32 c = lbl_805634A4;
+        f32 t2 = ((timeC - *(f32 *)((u8 *)arg0 + 0x260)) - lbl_805634A8) / lbl_80563504;
+        c = (c < t2) ? c : t2;
+        c = (c > lbl_805634A8) ? c : lbl_805634A8;
+        colorA = ((s32)(lbl_80563508 + c * lbl_8056350C) << 24) | 0xFFFFFF;
+    }
+    if (scale >= lbl_805634A4 - *(f32 *)&lbl_80558DC4) {
+        f32 timeD = fn_8023659C();
+        f32 c = lbl_805634A4;
+        f32 t2 = ((timeD - *(f32 *)((u8 *)arg0 + 0x264)) - lbl_805634A8) / lbl_80563504;
+        c = (c < t2) ? c : t2;
+        c = (c > lbl_805634A8) ? c : lbl_805634A8;
+        colorB = ((s32)(lbl_80563508 + c * lbl_8056350C) << 24) | 0xFFFFFF;
+    }
+    if (a != 0) {
+        f32 e = fn_80235EF0(a, enabled);
+        f32 h = fn_80235F64(a, enabled);
+        fn_802354A0(a, enabled, colorA, height, sp10 + lbl_805634C4 * (h - range), lbl_805634A8, e, h);
+    }
+    if (b != 0) {
+        f32 e = fn_80235EF0(b, stateB);
+        f32 h = fn_80235F64(b, stateB);
+        fn_802354A0(b, stateB, colorB, step, sp10 + lbl_805634C4 * (h - range), lbl_805634A8, e, h);
+    }
+}
+#pragma pop
 extern "C" s32 fn_802205AC(void *arg0, s32 arg1) {
     s32 *p;
     f32 *value;
@@ -4204,6 +4316,98 @@ extern "C" void fn_80221544(void *arg0, s32 arg1) {
         }
     }
 }
+
+extern "C" char lbl_8033D9F8[];
+#pragma push
+#pragma use_lmw_stmw off
+#pragma processor 750
+extern "C" void fn_80221970(void *arg0) {
+    struct Child { s32 base; s32 length; s32 offset; };
+    struct Object {
+        u8 pad0[4]; s32 x; s32 y; u8 padC[4]; s32 end;
+        u8 pad14[0x230]; Child *child; s32 texture; s32 overlay; s32 state; s32 flag;
+    };
+    Object *self = (Object *)arg0;
+    Child *child;
+    s32 base;
+    s32 x;
+    s32 left;
+    s32 right;
+    s32 y0;
+    s32 y1;
+    s32 diff;
+    s32 color2;
+    s32 color3;
+    s32 scroll;
+    s32 bottom;
+    s32 top;
+    f32 scale;
+    f32 spC;
+    f32 sp8;
+
+    spC = (f32)(self->x - lbl_8055FB9C / 2);
+    sp8 = (f32)(lbl_8055FBA0 / 2 - self->y);
+    fn_802C5320(self->texture, 0, spC, sp8, lbl_805634A8,
+                (f32)((Vf78 *)arg0)->get(), (f32)(self->end - self->y));
+    child = self->child;
+    base = child->base;
+    if (child->length < base) {
+        if (self->flag == 0) {
+            x = self->x;
+            left = x + 1;
+            scale = (f32)(self->end - self->y) / (f32)base;
+            scroll = ((Vf78 *)arg0)->get();
+            right = x + scroll - 1;
+            child = self->child;
+            y0 = self->y + (s32)(scale * (f32)child->offset) + 5;
+            y1 = self->y + (s32)(scale * (f32)(child->offset + child->length)) - 5;
+            if (y1 - 1 > y0 + 1 && right - 1 > left + 1) {
+                if (self->overlay != 0) {
+                    diff = fn_802C51C0(self->texture) - fn_802C51C0(self->overlay);
+                    fn_80230C30(&spC, &sp8, left + diff / 2, y0);
+                    fn_802C5320(self->overlay, 0, spC, sp8, lbl_805634A8,
+                                (f32)fn_802C51C0(self->overlay), (f32)(y1 - y0));
+                } else {
+                    fn_802E30C8(lbl_8033D9F8);
+                    fn_802C3424(left, y0, right, y1, lbl_8055FBDC);
+                    color2 = lbl_8055FBE0;
+                    fn_802C3424(left, y1 - 1, right, y1, color2);
+                    fn_802C3424(right - 1, y0, right, y1, color2);
+                    color3 = lbl_8055FBFC;
+                    fn_802C3424(left, y0, right, y0 + 1, color3);
+                    fn_802C3424(left, y0, left + 1, y1, color3);
+                }
+            }
+        } else {
+            scroll = ((Vf78 *)arg0)->get();
+            child = self->child;
+            scale = (f32)scroll / (f32)base;
+            top = self->y + 1;
+            bottom = self->end - 1;
+            left = self->x + (s32)(scale * (f32)child->offset) + 5;
+            right = self->x + (s32)(scale * (f32)(child->offset + child->length)) - 5;
+            if (right - 1 > left + 1 && bottom - 1 > top + 1) {
+                if (self->overlay != 0) {
+                    diff = fn_802C5220(self->texture) - fn_802C5220(self->overlay);
+                    fn_80230C30(&spC, &sp8, left, top + diff / 2);
+                    fn_802C5320(self->overlay, 0, spC, sp8, lbl_805634A8,
+                                (f32)(right - left), (f32)fn_802C5220(self->overlay));
+                } else {
+                    fn_802E30C8(lbl_8033D9F8);
+                    fn_802C3424(left, top, right, bottom, lbl_8055FBDC);
+                    color2 = lbl_8055FBE0;
+                    fn_802C3424(left, bottom - 1, right, bottom, color2);
+                    fn_802C3424(right - 1, top, right, bottom, color2);
+                    color3 = lbl_8055FBFC;
+                    fn_802C3424(left, top, right, top + 1, color3);
+                    fn_802C3424(left, top, left + 1, bottom, color3);
+                }
+            }
+        }
+    }
+}
+#pragma pop
+
 #pragma pop
 extern "C" void fn_80221E7C(void *arg0) {
     void *temp = *(void **)((u8 *)arg0 + 0x14);
