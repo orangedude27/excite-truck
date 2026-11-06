@@ -2069,9 +2069,9 @@ extern "C" void fn_801429F0(void *arg0) {
         *(f32 *)(p + 0xEC) = temp_f0 - temp_f1;
         goto done;
     }
-    s32 close = (f32)__fabs((f64)temp_f0) <= (f32)lbl_80558DC4;
+    s32 close = (f32)__fabs((f64)temp_f0) <= *(f32 *)&lbl_80558DC4;
     if (close == 0) goto done;
-    if ((f32)__fabs((f64)temp_f1) <= (f32)lbl_80558DC4) goto done;
+    if ((f32)__fabs((f64)temp_f1) <= *(f32 *)&lbl_80558DC4) goto done;
     temp_r0 = *(s32 *)(p + 0xE4);
     if (temp_r0 > 0) {
         *(s32 *)(p + 0xF4) = temp_r0;
