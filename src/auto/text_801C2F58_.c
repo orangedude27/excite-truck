@@ -1,6 +1,20 @@
 #include <types.h>
 #include <string.h>
 extern f64 atof(const char *);
+extern char lbl_8055A95C[];
+extern char lbl_8055A964[];
+extern char lbl_8055A968[];
+extern char lbl_8055A970[];
+extern char lbl_8055A974[];
+extern char lbl_8055A97C[];
+extern char lbl_80336BC0[];
+extern char lbl_8055A984[];
+extern char lbl_8055A98C[];
+extern char lbl_80336BCC[];
+extern void fn_802E30C8(const char *, const char *);
+extern s32 fn_80179630(s32);
+extern s32 lbl_8055E804;
+extern s32 lbl_8055E808;
 extern f32 lbl_8055E85C;
 extern f32 lbl_8055E860;
 extern f32 lbl_805629B4;
@@ -2651,6 +2665,119 @@ void fn_801C6D94(void) {
     *(struct MtxCopy*)lbl_80438220 = *(struct MtxCopy*)lbl_80499050;
     fn_801C957C(1);
 }
+
+extern f32 lbl_8055E830;
+extern f32 lbl_805629D0;
+extern f32 lbl_805629BC;
+extern char lbl_80336EA8[];
+extern double fn_8002EFA8(double);
+extern void fn_80144CD0(f32 *, f32 *, f32 *);
+extern void fn_801C7254(void *);
+extern double fabs(double);
+void fn_801C6E40(void) {
+    char *base;
+    void *obj;
+    f32 *mat;
+    f32 quat[4];
+    s32 swz[9];
+    f32 rot[9];
+    f32 vec[3];
+    f32 trace;
+    f32 root;
+    s32 i;
+    s32 j;
+    s32 k;
+    f32 angle;
+    f32 sv;
+    f32 scale;
+    f32 inv;
+    base = (char *)&lbl_80437D88;
+    lbl_8055E830 = (f32) atof(base + 0x368);
+    obj = fn_801C3C80();
+    ((s32 *)obj)[2] = 1;
+    mat = (f32 *)(base + 0x468);
+    ((f32 *)obj)[21] = lbl_8055E834;
+    ((f32 *)obj)[3] = mat[9];
+    ((f32 *)obj)[4] = mat[10];
+    ((f32 *)obj)[5] = mat[11];
+    ((s32 *)obj)[6] = ((s32 *)mat)[0];
+    ((s32 *)obj)[7] = ((s32 *)mat)[1];
+    ((s32 *)obj)[8] = ((s32 *)mat)[2];
+    ((s32 *)obj)[9] = ((s32 *)mat)[3];
+    ((s32 *)obj)[10] = ((s32 *)mat)[4];
+    ((s32 *)obj)[11] = ((s32 *)mat)[5];
+    ((s32 *)obj)[12] = ((s32 *)mat)[6];
+    ((s32 *)obj)[13] = ((s32 *)mat)[7];
+    ((s32 *)obj)[14] = ((s32 *)mat)[8];
+    ((f32 *)obj)[22] = ((f32 *)obj)[0] + lbl_8055E830;
+    ((u8 *)obj)[0x5C] = 1;
+    if (lbl_8055E830 > lbl_805629D0) {
+        swz[0] = ((s32 *)mat)[0];
+        swz[1] = ((s32 *)mat)[1];
+        swz[2] = ((s32 *)mat)[2];
+        swz[3] = ((s32 *)mat)[3];
+        swz[4] = ((s32 *)mat)[4];
+        swz[5] = ((s32 *)mat)[5];
+        swz[6] = ((s32 *)mat)[6];
+        swz[7] = ((s32 *)mat)[7];
+        swz[8] = ((s32 *)mat)[8];
+        fn_801C7254(swz);
+        fn_80015B20((s32)rot, (void *)(base + 0x498), (s32)swz);
+        fn_80144CD0(vec, (f32 *)(base + 0x498 + 0x24), mat);
+        trace = rot[0] + rot[4] + rot[8];
+        if (trace > lbl_80562970) {
+            root = (f32) fn_8002F234(lbl_8056296C + trace);
+            quat[3] = lbl_80562974 * root;
+            root = lbl_80562974 / root;
+            quat[0] = root * (rot[5] - rot[7]);
+            quat[1] = root * (rot[6] - rot[2]);
+            quat[2] = root * (rot[1] - rot[3]);
+        } else {
+            i = 0;
+            if (rot[4] > rot[0]) i = 1;
+            if (rot[8] > rot[i * 3 + i]) i = 2;
+            j = (i + 1) % 3;
+            k = (j + 1) % 3;
+            root = (f32) fn_8002F234(lbl_8056296C + rot[i * 3 + i] - (rot[j * 3 + k] + rot[k * 3 + j]));
+            quat[i] = lbl_80562974 * root;
+            root = lbl_80562974 / root;
+            quat[3] = root * (rot[j * 3 + k] - rot[k * 3 + j]);
+            quat[j] = root * (rot[i * 3 + j] + rot[j * 3 + i]);
+            quat[k] = root * (rot[i * 3 + k] + rot[k * 3 + i]);
+        }
+        angle = (f32) fn_8002EFA8(quat[3]);
+        sv = sin(angle);
+        if ((f32) fabs(sv) > lbl_80558DC4[0]) {
+            scale = (lbl_805629BC * angle) / sv;
+            ((f32 *)obj)[18] = quat[0] * scale;
+            ((f32 *)obj)[19] = quat[1] * scale;
+            ((f32 *)obj)[20] = quat[2] * scale;
+        } else {
+            ((f32 *)obj)[18] = lbl_80562970;
+            ((f32 *)obj)[19] = lbl_80562970;
+            ((f32 *)obj)[20] = lbl_80562970;
+        }
+        inv = lbl_8056296C / lbl_8055E830;
+        ((f32 *)obj)[18] *= inv;
+        ((f32 *)obj)[19] *= inv;
+        ((f32 *)obj)[20] *= inv;
+        inv = lbl_8056296C / lbl_8055E830;
+        ((f32 *)obj)[15] = vec[0] * inv;
+        ((f32 *)obj)[16] = vec[1] * inv;
+        ((f32 *)obj)[17] = vec[2] * inv;
+    } else {
+        ((f32 *)obj)[18] = lbl_80562970;
+        ((f32 *)obj)[19] = lbl_80562970;
+        ((f32 *)obj)[20] = lbl_80562970;
+        ((f32 *)obj)[15] = lbl_80562970;
+        ((f32 *)obj)[16] = lbl_80562970;
+        ((f32 *)obj)[17] = lbl_80562970;
+    }
+    sprintf(base + 0x238, lbl_80336EA8, ((f32 *)obj)[0]);
+    qsort((void *)(s32)lbl_8055E7F8, (size_t)lbl_8055E7F0, 0x30C, (int (*)(const void *, const void *))fn_801C3B7C);
+    fn_801C957C(0);
+}
+
 void fn_801C7254(void *arg0) {
     f32 *p = (f32 *)arg0;
     f32 t;
