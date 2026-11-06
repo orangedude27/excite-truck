@@ -8,7 +8,7 @@ extern float PSVECSquareDistance(float *, float *);
 extern void fn_801E4F20(int);
 extern void fn_801E4F3C(int, int, float, float, float, float, float);
 extern void fn_801E4FF4(void);
-extern void fn_802C8BD0(int, float, float);
+extern void fn_802C8BD0(int, ...);
 extern void fn_802C8D74(void);
 extern float lbl_80564998, lbl_805649B4, lbl_805649B8, lbl_805649BC;
 extern float lbl_805649CC, lbl_805649D0, lbl_805649D4;
@@ -31,6 +31,171 @@ void* fn_802A9680(void* arg0, s32 arg1) {
     }
     return arg0;
 }
+
+extern void *fn_802C86DC(void);
+extern s32 fn_802C8DBC(s32);
+extern void fn_802C8E00(s32, s32, float, float, float, float, float);
+extern void fn_802C8E48(void);
+extern float fn_801E7E18(void);
+extern double fn_8002EFB4(double, double);
+extern double lbl_80564990;
+extern float lbl_8056499C, lbl_805649A0, lbl_805649A4, lbl_805649A8, lbl_805649AC, lbl_805649B0, lbl_805649C0, lbl_805649C4, lbl_805649C8;
+void fn_802A96E8(void *obj, s32 count, s32 colorArg, s32 arg3, s32 arg4) {
+    void *camA;
+    void *camB;
+    void *camC;
+    float e18;
+    float f31v;
+    float f30v;
+    float g1;
+    float g2;
+    camA = fn_802C86DC();
+    camB = fn_802C86DC();
+    camC = fn_802C86DC();
+    fn_802C8BD0(arg3, g1, g2);
+    e18 = fn_801E7E18();
+    f31v = lbl_80564998 - (float)fn_8002EFB4(e18, lbl_80564990);
+    f30v = lbl_8056499C + f31v;
+    if (fn_802C8DBC(count * 4) != 0) {
+        float p[3];
+        float w;
+        float cA0;
+        float cA4;
+        float c98;
+        float cA8;
+        float cB0;
+        float cAC;
+        float cB4;
+        float cB8;
+        float cC0;
+        float *walker;
+        s32 i;
+        float dist;
+        s32 n;
+        s32 nn;
+        s32 m;
+        s32 col;
+        w = 0.0f;
+        cA0 = lbl_805649A0;
+        cA4 = lbl_805649A4;
+        c98 = lbl_80564998;
+        walker = (float *)obj;
+        cA8 = lbl_805649A8;
+        cB0 = lbl_805649B0;
+        i = 0;
+        cAC = lbl_805649AC;
+        cB4 = lbl_805649B4;
+        cB8 = lbl_805649B8;
+        cC0 = lbl_805649C0;
+        for (; i < count; i++) {
+            dist = PSQUATMultiply(walker, (float *)((u8 *)camA + 0x24));
+            if (dist < cA0) {
+                n = 0x10;
+                nn = (s32)(cA8 * (c98 - (cA4 * dist / cA0 - c98) * (cA4 * dist / cA0 - c98)));
+                if (nn > 0x10)
+                    n = nn;
+                m = 0xC4;
+                if (n < 0xC4)
+                    m = n;
+                w = (cAC * (dist - cB0)) / cB4;
+                if (c98 > w)
+                    w = c98;
+                col = (s32)(((u32)m << 24) | ((u32)colorArg & 0xFFFFFF));
+                p[0] = walker[0] + ((float *)camB)[0] * (cB8 * -w);
+                p[1] = walker[1] + ((float *)camB)[1] * (cB8 * -w);
+                p[2] = walker[2] + ((float *)camB)[2] * (cB8 * -w);
+                fn_802C8E00(col, 0, p[0], p[1], p[2], lbl_805649BC, f31v);
+                p[0] += ((float *)camB)[0] * w;
+                p[1] += ((float *)camB)[1] * w;
+                p[2] += ((float *)camB)[2] * w;
+                fn_802C8E00(col, 0, p[0], p[1], p[2], lbl_80564998, f31v);
+                p[0] += ((float *)camB)[0] * -w;
+                p[1] = p[1] + cC0 + ((float *)camB)[1] * -w;
+                p[2] += ((float *)camB)[2] * -w;
+                fn_802C8E00((s32)(colorArg & 0xFFFFFF), 1, p[0], p[1], p[2], lbl_805649BC, f30v);
+                p[0] += ((float *)camB)[0] * w;
+                p[1] += ((float *)camB)[1] * w;
+                p[2] += ((float *)camB)[2] * w;
+                fn_802C8E00((s32)(colorArg & 0xFFFFFF), 1, p[0], p[1], p[2], lbl_80564998, f30v);
+            }
+            walker += 3;
+        }
+        fn_802C8E48();
+    }
+    fn_802C8D74();
+    if (arg4 != 0) {
+        float p[3];
+        float w;
+        float cA0b;
+        float cA4b;
+        float c98b;
+        float cA8b;
+        float cB0b;
+        float cACb;
+        float cB4b;
+        float cC4b;
+        float cC8b;
+        float cC0b;
+        float *walker2;
+        s32 j;
+        float dist;
+        s32 n;
+        s32 nn;
+        s32 m;
+        s32 col;
+        w = 0.0f;
+        fn_802C8BD0(arg4, g1, g2);
+        fn_802C8DBC(count * 4);
+        cA0b = lbl_805649A0;
+        c98b = lbl_80564998;
+        cA4b = lbl_805649A4;
+        j = 0;
+        cA8b = lbl_805649A8;
+        cB0b = lbl_805649B0;
+        cACb = lbl_805649AC;
+        cB4b = lbl_805649B4;
+        cC4b = lbl_805649C4;
+        cC8b = lbl_805649C8;
+        cC0b = lbl_805649C0;
+        walker2 = (float *)obj;
+        for (; j < count; j++) {
+            dist = PSQUATMultiply(walker2, (float *)((u8 *)camA + 0x24));
+            if (dist < cA0b) {
+                n = 0x10;
+                nn = (s32)(cA8b * (c98b - (cA4b * dist / cA0b - c98b) * (cA4b * dist / cA0b - c98b)));
+                if (nn > 0x10)
+                    n = nn;
+                m = 0xC4;
+                if (n < 0xC4)
+                    m = n;
+                w = (cACb * (dist - cB0b)) / cB4b;
+                if (c98b > w)
+                    w = c98b;
+                col = (s32)(((u32)m << 24) | ((u32)colorArg & 0xFFFFFF));
+                p[0] = walker2[0] + ((float *)camB)[0] * (cA4b * -w) + ((float *)camC)[6] * cC4b;
+                p[1] = walker2[1] + ((float *)camB)[1] * (cA4b * -w) + ((float *)camC)[7] * cC4b;
+                p[2] = walker2[2] + ((float *)camB)[2] * (cA4b * -w) + ((float *)camC)[8] * cC4b;
+                fn_802C8E00(col, 0, p[0], p[1], p[2], lbl_805649BC, f31v);
+                p[0] += ((float *)camB)[0] * (cC8b * w);
+                p[1] += ((float *)camB)[1] * (cC8b * w);
+                p[2] += ((float *)camB)[2] * (cC8b * w);
+                fn_802C8E00(col, 0, p[0], p[1], p[2], lbl_80564998, f31v);
+                p[0] += ((float *)camB)[0] * (cC8b * -w);
+                p[1] = p[1] + cC0b + ((float *)camB)[1] * (cC8b * -w);
+                p[2] += ((float *)camB)[2] * (cC8b * -w);
+                fn_802C8E00((s32)(colorArg & 0xFFFFFF), 1, p[0], p[1], p[2], lbl_805649BC, f30v);
+                p[0] += ((float *)camB)[0] * (cC8b * w);
+                p[1] += ((float *)camB)[1] * (cC8b * w);
+                p[2] += ((float *)camB)[2] * (cC8b * w);
+                fn_802C8E00((s32)(colorArg & 0xFFFFFF), 1, p[0], p[1], p[2], lbl_80564998, f30v);
+            }
+            walker2 += 3;
+        }
+        fn_802C8E48();
+        fn_802C8D74();
+    }
+}
+
 #pragma scheduling on
 void fn_802A9BFC(void *arg0, void *arg1, int arg2, int arg3, int arg4,
                  int arg5, int arg6, float farg0, int arg_sp0) {
