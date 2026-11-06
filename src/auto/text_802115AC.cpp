@@ -49,6 +49,7 @@ extern "C" char lbl_8055B7FC[];
 extern "C" s32 lbl_8055CFF0;
 extern "C" s32 lbl_8055CFF4;
 extern "C" void *lbl_8055EF44;
+extern "C" void *lbl_8055EF38;
 extern "C" void *fn_8022E4C0(void *);
 extern "C" void *fn_8022E0EC(const void *);
 extern "C" void fn_80276D3C(void *, s32);
