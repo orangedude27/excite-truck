@@ -1437,35 +1437,36 @@ extern "C" void fn_80162A14(void *arg0) {
 #pragma processor 750
 extern "C" void fn_80162BA8(void *arg0) {
     u8 *self = (u8 *)arg0;
-    s32 i, j, offset, flag, off;
+    s32 i, j, offset;
     int *cars;
-    u8 *car, *entry, *flags, *ui;
-    f32 velocity[2], length, scale;
-    f32 one, threshold, epsilon;
-    flag = 1;
+    u8 *entry, *car, *flags, *ui;
+    f32 threshold, one, epsilon;
+    s32 flag, off;
     off = 0;
     for (s32 remaining = *(s32 *)(self + 0x574); remaining > 0; remaining--) {
         if (*(u8 *)(*(u8 **)(self + 0x570) + off + 8) == 0) {
             flag = 0;
-            break;
+            goto done;
         }
         off += 0xC;
     }
-    if (flag == 0) {
-        self[0x9C] = 0;
-    } else {
-        self[0x9C] = 1;
+    flag = 1;
+done:
+    if (flag != 0) {
         *(f32 *)(self + 0x5B4) += lbl_80561858;
+        self[0x9C] = 1;
         if (self[0x5B0] != 0 && *(s32 *)(self + 0x574) > 0) {
             ((void (*)(void *, s32))(*(void ***)self)[24])(self, 1);
         }
+    } else {
+        self[0x9C] = 0;
     }
     if (fn_801C5B60() == 0) fn_801DF074(8, 0);
     if (((s32 (*)(void *))(*(void ***)self)[9])(self) == 0) {
         one = lbl_80561840; threshold = lbl_80561854; epsilon = lbl_80561850;
         for (i = 0, cars = lbl_804348E8; i < fn_801B2F24(); i++, cars++) {
             car = (u8 *)*cars;
-            if ((u32)(*(u32 *)(car + 0x10) - 0x50430000) > 0x4152) continue;
+            if (*(u32 *)(car + 0x10) != 0x50434152) continue;
             for (j = 0, offset = 0; j < *(s32 *)(self + 0xE4); j++, offset += 0x48) {
                 entry = *(u8 **)(self + 0xE0) + offset;
                 if (!entry[0x3C]) continue;
@@ -1473,6 +1474,7 @@ extern "C" void fn_80162BA8(void *arg0) {
                     if (fn_80139B5C(car, *(s32 *)(entry + 0x34))) {
                         flags = entry + i;
                         if (!flags[0x3D]) {
+                            f32 velocity[2], length, scale;
                             velocity[0] = *(f32 *)(car + 0x118);
                             velocity[1] = *(f32 *)(car + 0x120);
                             length = velocity[0] * velocity[0] + velocity[1] * velocity[1];
@@ -1518,8 +1520,10 @@ extern "C" void fn_80162BA8(void *arg0) {
         *(f32 *)(self + 0x8C) += lbl_80561858;
         if (self[0x90]) {
             if (((s32 (*)(void *))(*(void ***)self)[10])(self) && lbl_8055E304 == fn_80160CE4()) {
+                s32 tmp = lbl_8055A0B8;
                 lbl_8055E2DC = 1;
-                lbl_8055A0B4 = lbl_8055A0B8++;
+                lbl_8055A0B4 = tmp;
+                lbl_8055A0B8 = tmp + 1;
             } else lbl_8055E2DC = 0;
             lbl_8055E304 = 0;
             if (*(s32 *)(lbl_8042FDEC + 4) > 0) fn_80176734();
@@ -2106,7 +2110,7 @@ extern "C" void fn_80163F7C(void *arg0) {
                 f32 best = lbl_80561864;
                 f32 dx, dy, score;
                 bestIndex = -1;
-                for (i = 1; i <= count; ++i) {
+                for (i = 1; i <= count; i++) {
                         register s32 n = *(volatile s32 *)table;
                         s32 next = i % n;
                         s32 prev = (i - 1) % n;
@@ -2383,6 +2387,137 @@ void fn_80164870(void *arg0, s32 arg1) {
 s32 fn_80164894(s32 arg0, void *arg1, s32 arg2) {
     *(float *)arg1 = *(float *)(0x14 + arg0 + (arg2 << 2));
     return 1;
+}
+
+extern void *fn_801352B8(void *);
+extern void *fn_8013530C(void *, s32);
+extern void fn_801355C0(void *, void *, s32, void *, s32);
+extern s32 fn_80135D60(void *, s32);
+extern void *fn_80156A40(void);
+extern void fn_801B7C8C(void *, void *, void *);
+extern char lbl_8032FB9C[];
+extern char lbl_8032FBA8[];
+extern char lbl_8055A120;
+extern char lbl_8055A128;
+extern float lbl_80561840;
+extern float lbl_8056186C;
+extern void *fn_801352B8(void *);
+extern void *fn_8013530C(void *, s32);
+extern void fn_801355C0(void *, void *, s32, void *, s32);
+extern s32 fn_80135D60(void *, s32);
+extern void *fn_80156A40(void);
+extern void fn_801B7C8C(void *, void *, void *);
+extern char lbl_8032FB9C[];
+extern char lbl_8032FBA8[];
+extern char lbl_8055A120;
+extern char lbl_8055A128;
+extern float lbl_80561840;
+extern float lbl_8056186C;
+s32 fn_801648AC(void *arg0, void *arg1, s32 arg2) {
+    struct Vec2 { float x; float y; };
+    struct State { void *node; float frac; s32 id; };
+    char obj[0x40];
+    struct Vec2 pts[3];
+    char place[0x10];
+    struct State state;
+    char bound[0x10];
+    struct Vec2 pos;
+    struct Vec2 dir;
+    struct Vec2 copy;
+    struct Vec2 ret;
+    struct Vec2 e2;
+    struct Vec2 e1;
+    struct Vec2 mid;
+    void *self;
+    void *scalePtr;
+    void *obj2;
+    s32 i;
+    s32 best;
+    float bestLen;
+    float len;
+    float inv;
+    float len01;
+    void *node;
+    void *next;
+    float speed;
+    float scale;
+
+    self = arg0;
+    scalePtr = (char *)self + arg2 * 4;
+    *(float *)((char *)scalePtr + 0x14) = lbl_80561848;
+    if (*(void **)((char *)self + 4) != 0) {
+        ((void (*)(char *, s32, const char *, ...))fn_801345D8)(place, 0x10, lbl_8032FB9C, arg2);
+        obj2 = ((void *(*)(void *, char *))(*(void ***)(*(void **)((char *)self + 4)))[0x17])(*(void **)((char *)self + 4), place);
+        if (obj2 != 0) {
+            pos.x = lbl_80561848;
+            pos.y = lbl_80561848;
+            dir.x = lbl_80561848;
+            dir.y = lbl_80561848;
+            i = 0;
+            do {
+                ((void (*)(char *, s32, const char *, ...))fn_801345D8)(bound, 0x10, (char *)&lbl_8055A120, i);
+                ret = ((struct Vec2(*)(void *, char *))(*(void ***)obj2)[0xF])(obj2, bound);
+                pts[i].x = ret.x;
+                pts[i].y = ret.y;
+                i++;
+            } while (i < 3);
+            best = 2;
+            e2.y = pts[2].y - pts[0].y;
+            e2.x = pts[2].x - pts[0].x;
+            e1.y = pts[0].y - pts[1].y;
+            e1.x = pts[0].x - pts[1].x;
+            bestLen = e2.x * e2.x + e2.y * e2.y;
+            len01 = e1.x * e1.x + e1.y * e1.y;
+            if (len01 > bestLen) {
+                bestLen = len01;
+                best = 0;
+            }
+            e1.y = pts[1].y - pts[2].y;
+            e1.x = pts[1].x - pts[2].x;
+            if (e1.x * e1.x + e1.y * e1.y > bestLen) {
+                best = 1;
+            }
+            mid.y = pts[best].y + lbl_8056185C * (pts[(best + 1) % 3].y - pts[best].y);
+            mid.x = pts[best].x + lbl_8056185C * (pts[(best + 1) % 3].x - pts[best].x);
+            copy = mid;
+            pos.x = copy.x;
+            pos.y = copy.y;
+            dir.x = pts[(best + 2) % 3].x - copy.x;
+            dir.y = pts[(best + 2) % 3].y - copy.y;
+            len = (float)fn_8002F234(dir.x * dir.x + dir.y * dir.y);
+            inv = lbl_80561840 / len;
+            dir.x = dir.x * inv;
+            dir.y = dir.y * inv;
+            if (((s32 (*)(void *, char *, s32))(*(void ***)obj2)[0xC])(obj2, lbl_8032FBA8, 1) != 0) {
+                fn_801352B8(obj);
+                fn_80135D60(obj, ((s32 (*)(void *, s32))(*(void ***)fn_80156A40())[3])(fn_80156A40(), 0));
+                state.node = 0;
+                state.id = 0x2710;
+                state.frac = lbl_80561848;
+                fn_801355C0(obj, &pos, 0, &state, 0);
+                node = state.node;
+                next = *(void **)((char *)node + 0x14);
+                pos.x = *(float *)node + state.frac * (*(float *)next - *(float *)node);
+                pos.y = *(float *)((char *)node + 4) + state.frac * (*(float *)((char *)next + 4) - *(float *)((char *)node + 4));
+                dir.x = *(float *)((char *)node + 8) + state.frac * (*(float *)((char *)next + 8) - *(float *)((char *)node + 8));
+                dir.y = *(float *)((char *)node + 0xC) + state.frac * (*(float *)((char *)next + 0xC) - *(float *)((char *)node + 0xC));
+                len = (float)fn_8002F234(dir.x * dir.x + dir.y * dir.y);
+                inv = lbl_80561840 / len;
+                dir.x = dir.x * inv;
+                dir.y = dir.y * inv;
+                fn_8013530C(obj, -1);
+            }
+            fn_801B7C8C(arg1, &pos, &dir);
+            speed = ((float (*)(void *, char *, float))(*(void ***)obj2)[0xA])(obj2, (char *)&lbl_8055A128, lbl_80561848);
+            scale = lbl_8056186C * speed;
+            *(float *)((char *)arg1 + 0x30) = *(float *)((char *)arg1 + 0x18) * scale;
+            *(float *)((char *)arg1 + 0x34) = *(float *)((char *)arg1 + 0x1C) * scale;
+            *(float *)((char *)arg1 + 0x38) = *(float *)((char *)arg1 + 0x20) * scale;
+            *(float *)((char *)scalePtr + 0x14) = scale;
+            return 1;
+        }
+    }
+    return 0;
 }
 
 extern f32 lbl_80561870;
