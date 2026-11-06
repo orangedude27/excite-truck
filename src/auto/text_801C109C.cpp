@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern "C" float PSQUATMultiply(void *, void *, void *);
+extern "C" float lbl_80558DC4[];
 extern float lbl_80562928;
 extern "C" {
 void GXInitLightAttnA_80144B44(void *, float, float, float);
@@ -229,6 +230,103 @@ extern "C" void fn_801C1C7C(int arg0) {
         fn_80128668(arg0);
     }
 }
+
+extern "C" double __fabs(double);
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+extern "C" void fn_801C2170(void *arg0, void *arg1, float *m) {
+    char *a = (char *)arg0;
+    char *b = (char *)arg1;
+    char *p, *q;
+    register float bound;
+    float out[3], x, y, z, d, e, zero, x0,x1,x2,y0,y1,y2,z0,z1,z2;
+    float *v, *dst, *base;
+    int i, j, index, first, second;
+    int k;
+    int count = *(int *)(b + 0x10);
+    *(int *)(a + 0x14) = 0;
+    *(int *)(a + 0x18) = 0;
+    *(int *)(a + 0x1c) = 0;
+    *(int *)(a + 0x20) = 0;
+    if (count > 0) {
+    zero = lbl_80562904;
+    for (i = 0; i < *(int *)(b + 0x10); i++) {
+        p = *(char **)b + i * 0x14;
+        v = (float *)p;
+        if (out == v) {
+            y = v[1]; x = v[0]; z = v[2];
+            y0=y*m[3]; y1=y*m[4];
+            x0=x*m[0]; x1=x*m[1]; x2=x*m[2]; y2=y*m[5];
+            z0=z*m[6]; z1=z*m[7]; z2=z*m[8];
+            out[0] = z0 + (x0 + y0);
+            out[1] = z1 + (x1 + y1);
+            out[2] = z2 + (x2 + y2);
+        } else {
+            out[0] = v[2]*m[6] + (v[0]*m[0] + v[1]*m[3]);
+            out[1] = v[2]*m[7] + (v[0]*m[1] + v[1]*m[4]);
+            out[2] = v[2]*m[8] + (v[0]*m[2] + v[1]*m[5]);
+        }
+        x = out[0] + m[9]; y = out[1] + m[10]; z = out[2] + m[11];
+        out[0] = x; out[1] = y; out[2] = z;
+        e = v[3]; d = v[4];
+        index = (*(int *)(a + 0x14))++;
+        dst = (float *)((char *)*(float **)(a + 0x24) + index * 12);
+        dst[0] = out[0]; dst[1] = out[1]; dst[2] = out[2];
+        dst = (float *)((char *)*(float **)(a + 0x28) + index * 12);
+        dst[0] = out[0]; dst[1] = out[1]; dst[2] = out[2];
+        dst = (float *)((char *)*(float **)(a + 0x2c) + index * 12);
+        dst[0] = zero; dst[1] = zero; dst[2] = zero;
+        (*(float **)(a + 0x30))[index] = d;
+        (*(float **)(a + 0x34))[index] = e;
+        (*(int **)(a + 0x38))[index] = 1;
+    }
+    }
+    bound = lbl_80562928;
+    for (k = 0; k < *(int *)(b + 0x14); k++) {
+        p = *(char **)(b + 4) + k * 0x10;
+        index = *(int *)(a + 0x18);
+        q = *(char **)(a + 0x48) + index * 0x14;
+        e = *(float *)(p + 12); d = *(float *)(p + 8);
+        second = *(int *)(p + 4); first = *(int *)p;
+        *(int *)(a + 0x18) = index + 1;
+        *(int *)q = first; *(int *)(q + 4) = second;
+        base = *(float **)(a + 0x24);
+        x = PSQUATMultiply((float *)((char *)base + first*12), (float *)((char *)base + second*12), (void *)first);
+        y = (float)__fabs(e);
+        *(float *)(q + 8) = d + x;
+        *(float *)(q + 0x10) = y;
+        *(unsigned char *)(q + 0xc) = e < bound;
+    }
+    j = 0;
+    for (i = 0; i < *(int *)(b + 0x18); j += 0xc, i++) {
+        p = *(char **)(b + 8) + j;
+        index = *(int *)(a + 0x1c);
+        q = *(char **)(a + 0x4c) + index * 0x18;
+        first = *(int *)p;
+        v = *(float **)(p + 8);
+        *(int *)(a + 0x1c) = index + 1;
+        *(unsigned char *)(q + 0x14) = 1;
+        *(int *)q = first;
+        *(float **)(q + 4) = m;
+        *(float *)(q + 8) = v[0]; *(float *)(q + 0xc) = v[1]; *(float *)(q + 0x10) = v[2];
+        (*(int **)(a + 0x38))[first] = 0;
+    }
+    for (i = 0; i < *(int *)(b + 0x1c); i++) {
+        p = *(char **)(b + 0xc) + i * 0x1c;
+        index = *(int *)(a + 0x20);
+        q = *(char **)(a + 0x50) + (index * 7) * 4;
+        d = *(float *)(p + 8); second = *(int *)(p + 4); first = *(int *)p;
+        *(int *)(a + 0x20) = index + 1;
+        *(int *)(q + 4) = second; *(int *)q = first;
+        *(float *)(q + 8) = d;
+        *(float *)(q + 0xc) = *(float *)(p + 0xc);
+        *(float *)(q + 0x10) = *(float *)(p + 0x10);
+        *(float *)(q + 0x14) = *(float *)(p + 0x14);
+        *(float **)(q + 0x18) = m;
+    }
+}
+#pragma pop
 
 extern float lbl_8056292C;
 extern "C" void PSVECCrossProduct(const float *, const float *, float *);
