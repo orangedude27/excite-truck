@@ -180,11 +180,11 @@ void fn_802DD898(void *arg0,float farg0,float farg1) {
     alpha=(int)(*(float *)((char *)box+0x20) * scale * farg1);
     alpha=alpha & ((-alpha & ~alpha)>>31);
     if(alpha<0xff) tempColor=alpha;
-    color=(int)(tempColor | -0x100);
+    color=tempColor | -0x100;
     f31=((*(float *)((char *)box+0x14)-*(float *)((char *)box+0x10))*farg0*lbl_80565094*lbl_80565098)/lbl_805650AC;
     f30=((*(float *)((char *)box+0x1C)-*(float *)((char *)box+0x18))*farg0*lbl_80565094*lbl_80565098)/lbl_805650AC;
-    v=(float *)fn_802CFF64(0x240);
     i=0;
+    v=(float *)fn_802CFF64(0x240);
     t0=lbl_80565090; z=lbl_80565094;
     xh=*(float *)((char *)box+0x4); xl=*(float *)((char *)box+0x0); v[i*6+0]=xl+(xh-xl)*t0;
     yh=*(float *)((char *)box+0xC); yl=*(float *)((char *)box+0x8); v[i*6+1]=yl+(yh-yl)*t0;
@@ -381,15 +381,9 @@ void fn_802DD898(void *arg0,float farg0,float farg1) {
     GXPosition1x8(13);GXColor1x8(13);GXTexCoord1x8(13);
     GXPosition1x8(14);GXColor1x8(14);GXTexCoord1x8(14);
     GXPosition1x8(15);GXColor1x8(15);GXTexCoord1x8(15);
-    GXPosition1x8(16);GXColor1x8(16);GXTexCoord1x8(16);
-    GXPosition1x8(17);GXColor1x8(17);GXTexCoord1x8(17);
-    GXPosition1x8(18);GXColor1x8(18);GXTexCoord1x8(18);
-    GXPosition1x8(19);GXColor1x8(19);GXTexCoord1x8(19);
-    GXPosition1x8(20);GXColor1x8(20);GXTexCoord1x8(20);
-    GXPosition1x8(21);GXColor1x8(21);GXTexCoord1x8(21);
-    GXPosition1x8(22);GXColor1x8(22);GXTexCoord1x8(22);
-    GXPosition1x8(23);GXColor1x8(23);GXTexCoord1x8(23);
+    i=16; do { GXPosition1x8((u8)i); GXColor1x8((u8)i); GXTexCoord1x8((u8)i); i++; } while (i<0x18);
 }
+#pragma processor gekko
 #pragma scheduling on
 void fn_802DE774(void) {
     *(int *)((char *)lbl_804DB6A0 + 0x90) = 0;
@@ -412,27 +406,29 @@ extern void fn_802DEE88(void);
 extern void GXSetColorUpdate(int);
 extern void GXSetZMode(int, int, int);
 extern void GXSetAlphaCompare(int, int, int, int, int);
+#pragma push
+#pragma use_lmw_stmw off
 void fn_802DE788(void) {
-    int desc[8], fmt[16], proj[16], mtx[12];
-    int i;
-    for (i=0;i<8;i++) desc[i]=((int*)lbl_802FAD58)[i];
+    GXDescCopy desc;
+    GXMatrix4Copy fmt, proj;
+    GXMatrix3Copy mtx;
+    desc = *(GXDescCopy *)lbl_802FAD58;
     GXClearVtxDesc();
-    GXSetVtxDescv(desc);
-    for (i=0;i<16;i++) fmt[i]=((int*)(lbl_802FAD58+8))[i];
-    GXSetVtxAttrFmtv(0,fmt);
+    GXSetVtxDescv(&desc);
+    fmt = *(GXMatrix4Copy *)(lbl_802FAD58+8);
+    GXSetVtxAttrFmtv(0,&fmt);
     GXSetViewport(lbl_80565090,lbl_80565090,
-      (float)lbl_8055FED0,(float)lbl_8055FED4,lbl_80565090,lbl_8056508C);
-    for (i=0;i<16;i++) proj[i]=((int*)(lbl_802FAD58+24))[i];
-    GXSetProjection(proj,1);
-    for (i=0;i<12;i++) mtx[i]=((int*)(lbl_802FAD58+40))[i];
-    GXLoadPosMtxImm(mtx,0);
+        (float)lbl_8055FED0,(float)lbl_8055FED4,lbl_80565090,lbl_8056508C);
+    proj = *(GXMatrix4Copy *)(lbl_802FAD58+24);
+    GXSetProjection(&proj,1);
+    mtx = *(GXMatrix3Copy *)(lbl_802FAD58+40);
+    GXLoadPosMtxImm(&mtx,0);
     GXSetCurrentMtx(0); GXSetNumChans(1);
     GXSetChanCtrl(4,0,1,1,0,0,2); GXSetChanCtrl(5,0,1,1,0,0,2);
     fn_802DEE88();
     GXSetColorUpdate(1); GXSetZMode(0,7,0); GXSetAlphaCompare(4,0,0,7,255);
 }
-
-#pragma scheduling on
+#pragma pop
 void fn_802DEA6C(void* alarm) {
     fn_802D3360(fn_802DEF70(alarm));
 }
