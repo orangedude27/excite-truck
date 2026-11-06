@@ -20,6 +20,72 @@ static inline void matVec_8018(Vec_8018 *dest, const float *m, const Vec_8018 *v
     dest->y = m[1] * v->x + m[4] * v->y + m[7] * v->z;
     dest->z = m[2] * v->x + m[5] * v->y + m[8] * v->z;
 }
+static inline Vec_8018 matVecRet_8018(const float *m, const Vec_8018 *v) {
+    Vec_8018 r;
+    r.x = m[0] * v->x + m[3] * v->y + m[6] * v->z;
+    r.y = m[1] * v->x + m[4] * v->y + m[7] * v->z;
+    r.z = m[2] * v->x + m[5] * v->y + m[8] * v->z;
+    return r;
+}
+
+#pragma push
+#pragma processor 750
+extern float fn_80144514(float, float, float, float, float, float);
+#pragma push
+#pragma processor 750
+void fn_8018BFA0(void *out0, float *a, int *b0, int arg3, float arg4, float arg5) {
+    float *out = (float *)out0;
+    float *b = (float *)b0;
+    float x0, x1, x2, x3, x4, x5, x6, x7, x8;
+    float scratch[3];
+    if (out == b || out == a) {
+        x0 = fn_80144514(a[0], b[0], a[3], b[1], a[6], b[2]);
+        x1 = fn_80144514(a[0], b[3], a[3], b[4], a[6], b[5]);
+        x2 = fn_80144514(a[0], b[6], a[3], b[7], a[6], b[8]);
+        x3 = fn_80144514(a[1], b[0], a[4], b[1], a[7], b[2]);
+        x4 = fn_80144514(a[1], b[3], a[4], b[4], a[7], b[5]);
+        x5 = fn_80144514(a[1], b[6], a[4], b[7], a[7], b[8]);
+        x6 = fn_80144514(a[2], b[0], a[5], b[1], a[8], b[2]);
+        x7 = fn_80144514(a[2], b[3], a[5], b[4], a[8], b[5]);
+        x8 = fn_80144514(a[2], b[6], a[5], b[7], a[8], b[8]);
+        out[0] = x0; out[3] = x1; out[6] = x2; out[1] = x3; out[4] = x4; out[7] = x5; out[2] = x6; out[5] = x7; out[8] = x8;
+    } else {
+        out[0] = fn_80144514(a[0], b[0], a[3], b[1], a[6], b[2]);
+        out[3] = fn_80144514(a[0], b[3], a[3], b[4], a[6], b[5]);
+        out[6] = fn_80144514(a[0], b[6], a[3], b[7], a[6], b[8]);
+        out[1] = fn_80144514(a[1], b[0], a[4], b[1], a[7], b[2]);
+        out[4] = fn_80144514(a[1], b[3], a[4], b[4], a[7], b[5]);
+        out[7] = fn_80144514(a[1], b[6], a[4], b[7], a[7], b[8]);
+        out[2] = fn_80144514(a[2], b[0], a[5], b[1], a[8], b[2]);
+        out[5] = fn_80144514(a[2], b[3], a[5], b[4], a[8], b[5]);
+        out[8] = fn_80144514(a[2], b[6], a[5], b[7], a[8], b[8]);
+    }
+    if (scratch == b + 9) {
+        scratch[0] = a[0] * b[9] + a[3] * b[10] + a[6] * b[11];
+        scratch[1] = a[1] * b[9] + a[4] * b[10] + a[7] * b[11];
+        scratch[2] = a[2] * b[9] + a[5] * b[10] + a[8] * b[11];
+    } else {
+        scratch[0] = a[0] * b[9] + a[3] * b[10] + a[6] * b[11];
+        scratch[1] = a[1] * b[9] + a[4] * b[10] + a[7] * b[11];
+        scratch[2] = a[2] * b[9] + a[5] * b[10] + a[8] * b[11];
+    }
+    out[9] = a[9] + scratch[0];
+    out[10] = a[10] + scratch[1];
+    out[11] = a[11] + scratch[2];
+    if (scratch == b + 9) {
+        scratch[0] = out[0] * b[9] + out[3] * b[10] + out[6] * b[11];
+        scratch[1] = out[1] * b[9] + out[4] * b[10] + out[7] * b[11];
+        scratch[2] = out[2] * b[9] + out[5] * b[10] + out[8] * b[11];
+    } else {
+        scratch[0] = out[0] * b[9] + out[3] * b[10] + out[6] * b[11];
+        scratch[1] = out[1] * b[9] + out[4] * b[10] + out[7] * b[11];
+        scratch[2] = out[2] * b[9] + out[5] * b[10] + out[8] * b[11];
+    }
+    out[9] -= scratch[0];
+    out[10] -= scratch[1];
+    out[11] -= scratch[2];
+}
+#pragma pop
 
 void fn_8018C50C(void) {
 
