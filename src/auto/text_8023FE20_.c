@@ -1437,7 +1437,7 @@ copy_done0:;
                     src = fn_802E85B8(selected);
                     dst = widget + 0x39;
                     n = 0x20;
-                    goto copy_check1;
+                    goto copy_check_loop1;
 copy_check_loop1:
                     --n;
                     if (n > 0) goto copy_check1;
