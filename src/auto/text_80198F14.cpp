@@ -859,10 +859,11 @@ extern "C" s32 fn_8019AA34(void *obj, void *pos, void *other, void *otherPos, s3
 #pragma pop
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
 extern "C" void fn_8019AC44(void* arg0, void* arg1, void* arg2, f32 farg0) {
-    Vec work[64]; s32 count=0x40, sp8; Vec p70,p64,delta,p4c,p34,p28,p40,p1c,p10;
+    Vec work[64]; s32 count, sp8, i; Vec *wp; Vec p70,p64,delta,p4c,p34,p28,p40,p1c,p10;
     f32 dot,mag,limit,scale,varf1,f31,f30; void* body=*(void**)((u8*)arg0+4); Vec* out=(Vec*)arg2; f30=farg0;
-    if (lbl_8055E5A0!=0) { fn_801CF080((s32)lbl_8055E5A0,arg1,work,&count,0,f30); for(s32 i=0;i<count;++i) fn_8019A820(arg0,arg1,(s32)&work[i],0x6e,0,f30); }
+    if (lbl_8055E5A0!=0) { count=0x40; fn_801CF080((s32)lbl_8055E5A0,arg1,work,&count,0,f30); wp=work; for(i=0;i<count;++i,wp++) fn_8019A820(arg0,arg1,(s32)wp,0x6e,0,f30); }
     if (fn_801E9F08((u8*)body+0x6c,arg1,&p70,(s32)&p64,(s32)&sp8,f30)!=0) {
         delta.x=((Vec*)arg1)->x-p70.x; delta.y=((Vec*)arg1)->y-((f32*)&p70)[1]; delta.z=((Vec*)arg1)->z-((f32*)&p70)[2];
         dot=PSVECDotProduct(&p64,&delta); f31=f30-dot; fn_8017B6D4((s32)body,&p4c,(s32)&p70);
