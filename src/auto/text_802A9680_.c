@@ -38,8 +38,8 @@ extern void fn_802C8E00(s32, s32, float, float, float, float, float);
 extern void fn_802C8E48(void);
 extern float fn_801E7E18(void);
 extern double fn_8002EFB4(double, double);
-extern double lbl_80564990;
-extern float lbl_8056499C, lbl_805649A0, lbl_805649A4, lbl_805649A8, lbl_805649AC, lbl_805649B0, lbl_805649C0, lbl_805649C4, lbl_805649C8;
+extern const double lbl_80564990;
+extern const float lbl_8056499C, lbl_805649A0, lbl_805649A4, lbl_805649A8, lbl_805649AC, lbl_805649B0, lbl_805649C0, lbl_805649C4, lbl_805649C8;
 void fn_802A96E8(void *obj, s32 count, s32 colorArg, s32 arg3, s32 arg4) {
     void *camA;
     void *camB;
