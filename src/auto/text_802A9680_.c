@@ -47,12 +47,10 @@ void fn_802A96E8(void *obj, s32 count, s32 colorArg, s32 arg3, s32 arg4) {
     float e18;
     float f31v;
     float f30v;
-    float g1;
-    float g2;
     camA = fn_802C86DC();
     camB = fn_802C86DC();
     camC = fn_802C86DC();
-    fn_802C8BD0(arg3, g1, g2);
+    fn_802C8BD0(arg3);
     e18 = fn_801E7E18();
     f31v = lbl_80564998 - (float)fn_8002EFB4(e18, lbl_80564990);
     f30v = lbl_8056499C + f31v;
@@ -75,7 +73,6 @@ void fn_802A96E8(void *obj, s32 count, s32 colorArg, s32 arg3, s32 arg4) {
         s32 nn;
         s32 m;
         s32 col;
-        w = 0.0f;
         cA0 = lbl_805649A0;
         cA4 = lbl_805649A4;
         c98 = lbl_80564998;
@@ -143,8 +140,7 @@ void fn_802A96E8(void *obj, s32 count, s32 colorArg, s32 arg3, s32 arg4) {
         s32 nn;
         s32 m;
         s32 col;
-        w = 0.0f;
-        fn_802C8BD0(arg4, g1, g2);
+        fn_802C8BD0(arg4);
         fn_802C8DBC(count * 4);
         cA0b = lbl_805649A0;
         c98b = lbl_80564998;
@@ -258,7 +254,7 @@ void fn_802A9BFC(void *arg0, void *arg1, int arg2, int arg3, int arg4,
     fraction = PSQUATMultiply((float *)work.vecA, (float *)work.vecB) / lbl_805649D8;
     deltaInt = arg6 - arg4;
     fraction = ((float)deltaInt * fraction) / lbl_805649DC;
-    fn_802C8BD0(arg2, fraction, (float)deltaInt);
+    fn_802C8BD0(arg2);
 
     fn_801E4F20(4);
     fn_801E4F3C(color, 0, ((float *)work.vecA)[0], ((float *)work.vecA)[1], ((float *)work.vecA)[2], scaleA, scaleD);
