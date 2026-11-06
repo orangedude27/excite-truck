@@ -1412,11 +1412,15 @@ extern "C" s32 fn_800A6A40(void *arg0) {
 
 extern "C" s32 fn_800A6520(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 *arg5);
 extern "C" s32 fn_800A68F0(void *arg0, u32 arg1, s32 *arg2);
+static inline u32 fn_800A6B74_rd(u8 *q) {
+    return q[0] + (q[1] << 8) + (q[2] << 16) + (q[3] << 24);
+}
 extern "C" s32 fn_800A6B74(void *arg0) {
     s32 outLen;
     s32 flag;
-    u32 tbl[8];
-    u8 buf[0x200];
+    u32 B[4];
+    u32 A[4];
+    u8 buf[0x200] __attribute__((aligned(32)));
     s32 result;
     s32 count;
     s32 i;
@@ -1435,71 +1439,70 @@ extern "C" s32 fn_800A6B74(void *arg0) {
         return result;
     }
     fn_800A68F0(buf, *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 4) + 0x18), &flag);
-    if (flag == 0) {
+    if (flag != 0) {
+        p = buf;
+        A[0] = ((u32)p[0x1C9] << 24) + ((u32)p[0x1C8] << 16) + ((u32)p[0x1C7] << 8) + p[0x1C6];
+        B[0] = ((u32)p[0x1CD] << 24) + ((u32)p[0x1CC] << 16) + ((u32)p[0x1CB] << 8) + p[0x1CA];
+        A[1] = ((u32)p[0x1D9] << 24) + ((u32)p[0x1D8] << 16) + ((u32)p[0x1D7] << 8) + p[0x1D6];
+        B[1] = ((u32)p[0x1DD] << 24) + ((u32)p[0x1DC] << 16) + ((u32)p[0x1DB] << 8) + p[0x1DA];
+        A[2] = ((u32)p[0x1E9] << 24) + ((u32)p[0x1E8] << 16) + ((u32)p[0x1E7] << 8) + p[0x1E6];
+        B[2] = ((u32)p[0x1ED] << 24) + ((u32)p[0x1EC] << 16) + ((u32)p[0x1EB] << 8) + p[0x1EA];
+        A[3] = ((u32)p[0x1F9] << 24) + ((u32)p[0x1F8] << 16) + ((u32)p[0x1F7] << 8) + p[0x1F6];
+        B[3] = ((u32)p[0x1FD] << 24) + ((u32)p[0x1FC] << 16) + ((u32)p[0x1FB] << 8) + p[0x1FA];
+        i = 0;
+        do {
+            a = A[i];
+            b = B[i];
+            if (a != 0) {
+                if (b == 0) {
+                    return 7;
+                }
+            }
+            result = fn_800A6520(*(void **)((u8 *)arg0 + 4), (s32)buf, a, 1, 0x200, &outLen);
+            if (result != 0) {
+                return result;
+            }
+            fn_800A68F0(buf, *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 4) + 0x18), &flag);
+            if (flag == 0) {
+                if (mode == (u32)count) {
+                    *(u32 *)((u8 *)arg0 + 0xC) = a;
+                    *(u32 *)((u8 *)arg0 + 0x10) = b;
+                    return 0;
+                }
+                count++;
+            } else {
+                j = 0;
+                do {
+                    a = A[i] + A[j];
+                    b = B[j];
+                    if (a != 0) {
+                        result = fn_800A6520(*(void **)((u8 *)arg0 + 4), (s32)buf, a, 1, 0x200, &outLen);
+                        if (result != 0) {
+                            return result;
+                        }
+                        fn_800A68F0(buf, *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 4) + 0x18), &flag);
+                        if (flag == 0) {
+                            if (mode == (u32)count) {
+                                *(u32 *)((u8 *)arg0 + 0xC) = a;
+                                *(u32 *)((u8 *)arg0 + 0x10) = b;
+                                return 0;
+                            }
+                            count++;
+                            break;
+                        }
+                    }
+                    j++;
+                } while (j < 2);
+            }
+            i++;
+        } while (i < 4);
+    } else {
         if (mode >= 2) {
             return 7;
         }
-        *(u32 *)((u8 *)arg0 + 0xC) = 0;
+        *(u32 *)((u8 *)arg0 + 0xC) = count;
         *(u32 *)((u8 *)arg0 + 0x10) = *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 4) + 0x18);
-        return 0;
     }
-    p = buf;
-    tbl[4] = ((u32)p[0x1C9] << 24) + ((u32)p[0x1C8] << 16) + ((u32)p[0x1C7] << 8) + p[0x1C6];
-    tbl[0] = ((u32)p[0x1CD] << 24) + ((u32)p[0x1CC] << 16) + ((u32)p[0x1CB] << 8) + p[0x1CA];
-    tbl[5] = ((u32)p[0x1D9] << 24) + ((u32)p[0x1D8] << 16) + ((u32)p[0x1D7] << 8) + p[0x1D6];
-    tbl[1] = ((u32)p[0x1DD] << 24) + ((u32)p[0x1DC] << 16) + ((u32)p[0x1DB] << 8) + p[0x1DA];
-    tbl[6] = ((u32)p[0x1E9] << 24) + ((u32)p[0x1E8] << 16) + ((u32)p[0x1E7] << 8) + p[0x1E6];
-    tbl[2] = ((u32)p[0x1ED] << 24) + ((u32)p[0x1EC] << 16) + ((u32)p[0x1EB] << 8) + p[0x1EA];
-    tbl[7] = ((u32)p[0x1F9] << 24) + ((u32)p[0x1F8] << 16) + ((u32)p[0x1F7] << 8) + p[0x1F6];
-    tbl[3] = ((u32)p[0x1FD] << 24) + ((u32)p[0x1FC] << 16) + ((u32)p[0x1FB] << 8) + p[0x1FA];
-    i = 0;
-    do {
-        a = tbl[4 + i];
-        b = tbl[i];
-        if (a != 0) {
-            if (b == 0) {
-                return 7;
-            }
-        }
-        result = fn_800A6520(*(void **)((u8 *)arg0 + 4), (s32)buf, a, 1, 0x200, &outLen);
-        if (result != 0) {
-            return result;
-        }
-        fn_800A68F0(buf, *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 4) + 0x18), &flag);
-        if (flag == 0) {
-            if (mode == (u32)count) {
-                *(u32 *)((u8 *)arg0 + 0xC) = a;
-                *(u32 *)((u8 *)arg0 + 0x10) = b;
-                return 0;
-            }
-            count++;
-        } else {
-            a = tbl[4 + i];
-            j = 0;
-            do {
-                b = tbl[4 + i] + tbl[4 + j];
-                if (b != 0) {
-                    result = fn_800A6520(*(void **)((u8 *)arg0 + 4), (s32)buf, b, 1, 0x200, &outLen);
-                    if (result != 0) {
-                        return result;
-                    }
-                    fn_800A68F0(buf, *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 4) + 0x18), &flag);
-                    if (flag == 0) {
-                        b = tbl[j];
-                        if (mode == (u32)count) {
-                            *(u32 *)((u8 *)arg0 + 0xC) = tbl[4 + i] + tbl[4 + j];
-                            *(u32 *)((u8 *)arg0 + 0x10) = tbl[j];
-                            return 0;
-                        }
-                        count++;
-                        break;
-                    }
-                }
-                j++;
-            } while (j < 2);
-        }
-        i++;
-    } while (i < 4);
     return 0;
 }
 
