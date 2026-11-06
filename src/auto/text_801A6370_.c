@@ -370,10 +370,10 @@ extern "C" void fn_801A6C14(void *arg0) {
     temp_f8 = M2C_FIELD(temp_r4, float *, 0x2A);
     temp_f2 = M2C_FIELD(temp_r4, float *, 0x2E);
     temp_f1 = M2C_FIELD(temp_r4, float *, 0x32);
-    temp_f3 = 2.0f * temp_f8;
-    temp_f12 = 2.0f * temp_f2;
+    temp_f3 = temp_f8 + temp_f8;
+    temp_f12 = temp_f2 + temp_f2;
     temp_f7 = M2C_FIELD(temp_r4, float *, 0x36);
-    temp_f11 = 2.0f * temp_f1;
+    temp_f11 = temp_f1 + temp_f1;
     temp_f5 = temp_f8 * temp_f3;
     temp_f4 = temp_f2 * temp_f12;
     temp_f1_2 = temp_f1 * temp_f11;
@@ -577,6 +577,85 @@ float fn_801A70EC(int arg0, void *arg1, void *arg2, int arg3) {
     fn_8012F57C(arg0, (char *)arg1 + 0x2A, (char *)arg2 + 0x2A, ratio);
     return ratio;
 }
+
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma dont_inline on
+extern double fn_8002F234(double);
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma dont_inline on
+void fn_801A7178(void *arg0, float *arg1) {
+    float a[4], b[4], q[4], rot[4];
+    register float *rotp;
+    register float (*m)[3];
+    register char *p = arg0;
+    char *data;
+    register int time = lbl_8055E3C4;
+    float trace, t, scale, blend, tick, step;
+    int positive;
+    int i,j,k;
+    register float *mk,*mj,*mi;
+    float x,y,z,w,xy,wz,xz,wy,yz,wx,zz,yy,xx,one,x2,y2,z2;
+    float d0,d1,d2, a0,a1,a2,a3,a4,a5;
+    data = *(char **)(p + 0x2700);
+    fn_801A70EC((int)a, data+0x4d, data, time);
+    data = *(char **)(p + 0x2700);
+    fn_801A70EC((int)b, data+0x9a, data+0x4d, time);
+    fn_8012F57C((int)q,b,a,*(float *)(p+0x2738));
+    m = (float (*)[3])(p+0x3c);
+    trace = m[2][2] + (m[0][0] + m[1][1]);
+    tick = *(float *)(p+0x2738);
+    step = *(float *)(p+0x273c);
+    blend = *arg1;
+    positive = trace > lbl_80562430;
+    *(float *)(p+0x2738) = tick+step;
+    if (positive) {
+        t = (float)fn_8002F234(lbl_8056242C + trace);
+        scale = lbl_80562418 / t;
+        rot[3] = lbl_80562418 * t;
+        rot[0] = scale * (m[1][2] - m[2][1]);
+        rot[1] = scale * (m[2][0] - m[0][2]);
+        rot[2] = scale * (m[0][1] - m[1][0]);
+    } else {
+        rotp=rot;
+        i=0;
+        if (*(volatile float *)&m[1][1] > *(volatile float *)&m[0][0]) i=1;
+        if (m[2][2] > m[i][i]) i=2;
+        j=(i+1)%3;
+        k=(j+1)%3;
+        mk=m[k]; mj=m[j]; mi=m[i];
+        t=(float)fn_8002F234(lbl_8056242C + (mi[i] - (mj[j]+mk[k])));
+        scale=lbl_80562418/t;
+        rotp[i]=lbl_80562418*t;
+        rotp[3]=scale*(mj[k]-mk[j]);
+        rotp[j]=scale*(mi[j]+mj[i]);
+        rotp[k]=scale*(mi[k]+mk[i]);
+    }
+    fn_8012F57C((int)q,rot,q,blend);
+    x=q[0]; y=q[1]; z=q[2]; w=q[3];
+    x2=x+x; y2=y+y; z2=z+z;
+    xx=x*x2; yy=y*y2; zz=z*z2;
+    wx=w*x2; yz=y*z2;
+    one=lbl_8056242C;
+    d0=one-(yy+zz); d1=one-(xx+zz); d2=one-(xx+yy);
+    a0=yz-wx; a1=yz+wx;
+    wy=w*y2; xz=x*z2; wz=w*z2;
+    xy=x*y2;
+    a2=xz+wy; a3=xz-wy; a4=xy-wz; a5=xy+wz;
+    *(float *)(p+0x3c)=d0;
+    *(float *)(p+0x4c)=d1;
+    *(float *)(p+0x58)=a0;
+    *(float *)(p+0x54)=a2;
+    *(float *)(p+0x48)=a4;
+    *(float *)(p+0x40)=a5;
+    *(float *)(p+0x44)=a3;
+    *(float *)(p+0x50)=a1;
+    *(float *)(p+0x5c)=d2;
+}
+#pragma pop
 
 extern float lbl_8056242C, lbl_80562430, lbl_80562448;
 extern void fn_801A69F4(void *, float *);
