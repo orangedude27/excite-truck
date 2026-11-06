@@ -33,6 +33,18 @@ static inline void matVecCopy_8018(Vec_8018 *dest, const float *m, Vec_8018 *src
     dest->y = m[1] * dest->x + m[4] * dest->y + m[7] * dest->z;
     dest->z = m[2] * dest->x + m[5] * dest->y + m[8] * dest->z;
 }
+static inline void matVecAlias_8018(Vec_8018 *dest, const float *m, const Vec_8018 *src) {
+    if (dest == src) {
+        float x = src->x, y = src->y, z = src->z;
+        dest->x = m[0] * x + m[3] * y + m[6] * z;
+        dest->y = m[1] * x + m[4] * y + m[7] * z;
+        dest->z = m[2] * x + m[5] * y + m[8] * z;
+    } else {
+        dest->x = m[0] * src->x + m[3] * src->y + m[6] * src->z;
+        dest->y = m[1] * src->x + m[4] * src->y + m[7] * src->z;
+        dest->z = m[2] * src->x + m[5] * src->y + m[8] * src->z;
+    }
+}
 
 #pragma push
 #pragma processor 750
