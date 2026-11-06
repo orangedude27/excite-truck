@@ -26,32 +26,32 @@ s32 fn_802E8D7C(s32);
 void fn_80236900(void);
 
 s32 fn_80245080(void) {
-    register s32 r3 asm("r3");
+    volatile struct Unk_80245080_Sub *sub;
     UnkFn_80245080 fn;
     s32 ret;
 
-    (void)r3;
     ret = 0;
-    fn = lbl_8055F244->unk_20->unk_0C;
-    if ((fn != NULL) && (fn() == 1)) {
-        ret = 1;
+    sub = lbl_8055F244->unk_20;
+    fn = sub->unk_0C;
+    if (fn != NULL) {
+        if (fn() == 1) {
+            ret = 1;
+        }
     }
     return ret;
 }
 
+#pragma scheduling invalid_target
 s32 fn_802450D4(s32 status) {
-#pragma unused(status)
-    s32 temp_r3;
-
+    volatile struct Unk_80245080 *p;
+    s32 counter;
     fn_80236900();
-    temp_r3 = lbl_8055F244->unk_24;
-    if (temp_r3 > 7) {
-        return 1;
-    }
-    lbl_8055F244->unk_24 = temp_r3 + 1;
+    p = lbl_8055F244;
+    if ((counter = p->unk_24) > 7) return 1;
+    p->unk_24 = counter + 1;
     return 0;
 }
-
+#pragma scheduling on
 void fn_80245118(void) {
     fn_802E8D7C((s32)&lbl_804988B0);
 }
