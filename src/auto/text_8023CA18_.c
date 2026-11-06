@@ -69,6 +69,25 @@ s32 fn_8023CB80(void* arg0) {
 
 extern s32 lbl_804987A0[];
 extern s32 lbl_802FA090[];
+extern f32 lbl_8056373C;
+extern f32 lbl_80563740;
+extern s32 lbl_8055BB78;
+extern s32 lbl_8055BB80;
+extern s32 lbl_8055BB88;
+extern s32 lbl_8055BB90;
+extern s32 lbl_8055BAB8;
+extern s32 lbl_8055BABC;
+extern s32 lbl_8055BAC0;
+extern s32 fn_80208D70(void);
+extern void fn_8022D228(void *, s32, s32);
+extern void fn_8022D350(void *, void *, s32);
+extern void fn_8022D2BC(void *, s32);
+extern void fn_8013323C(s32, void *, f32);
+extern void fn_80133460(s32, void *, u8);
+extern void fn_80133348(s32, void *, s32);
+extern void fn_80236914(void);
+extern void fn_8023CA54(void);
+extern void fn_8023CBA4(void);
 extern s32 lbl_8055B860;
 extern void fn_802146BC(s32 *, s32, s32, s32, s32, s32, s32, s32);
 void fn_8023CBA4(void) {
