@@ -11548,12 +11548,14 @@ u8 btm_sec_execute_procedure(void *arg0) {
         u32 all;
         if (*(u32 *)(dev + 0x10) != 0xFFFFFFFF) {
             all = 0;
-        } else {
-            if (*(u32 *)(dev + 0x14) != 0xFFFFFFFF)
-                all = 0;
-            else
-                all = 1;
+            goto have_all;
         }
+        if (*(u32 *)(dev + 0x14) != 0xFFFFFFFF) {
+            all = 0;
+            goto have_all;
+        }
+        all = 1;
+have_all:
         if (all == 0) {
             sid = (*(u8 **)dev)[0xF];
             if (sid < 0x2E && !((1 << (sid & 0x1F)) & *(u32 *)(dev + ((sid >> 3) & 0x1C) + 0x10))) {
@@ -21877,6 +21879,7 @@ void sdp_conn_timeout(tCONN_CB *p_ccb) {
 
 extern void process_service_search(tCONN_CB *, UINT16, UINT16, UINT8 *);
 static void process_service_attr_req(tCONN_CB *, UINT16, UINT16, UINT8 *, UINT8 *);
+typedef struct { UINT8 pad[0x476]; UINT16 cont_off; } tCCB_CONT_VIEW;
 static void process_service_search_attr_req(tCONN_CB *, UINT16, UINT16, UINT8 *, UINT8 *);
 void sdp_server_handle_client_req(tCONN_CB *p_ccb, BT_HDR *p_msg) {
     extern char lbl_8031A4E8[];
