@@ -740,6 +740,7 @@ void fn_80193D30(void *arg0) {
     *(float *)(p + 0x2DC) = limit;
     *(int *)(p + 4) = *(int *)(p + 0x290) * 4;
 }
+#pragma pop
 void fn_8019416C(void) {
 
 }
