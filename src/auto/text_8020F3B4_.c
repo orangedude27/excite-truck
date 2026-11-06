@@ -60,9 +60,8 @@ extern long fn_802EC0FC(void);
 long fn_8020F3B4(void) { return -1; }
  
 int fn_8020F3BC(int arg0, int arg1, int arg2) {
-    int result = arg1;
-    ((void (*)(int, int, int *, int))fn_801345D8)(arg1, arg2, (int *)&lbl_8055B664, arg0);
-    return result;
+    ((void (*)())fn_801345D8)(arg1, arg2, &lbl_8055B664, arg0);
+    return arg1;
 }
 
 #pragma scheduling invalid_target
@@ -317,17 +316,17 @@ null_result:
 extern int fn_8020FB80(void *);
 #pragma scheduling invalid_target
 void fn_8020FC6C(void) {
-    volatile long *count;
     void *data;
-    count = &lbl_804900AC.m_count;
-    if (*count == 0) {
-        ((long (*)(long))fn_8020F3B4)(0);
+    long zero = 0;
+    long *base = (long *)((char *)&lbl_804900AC + 4);
+    if (*base == zero) {
+        ((long (*)(long))fn_8020F3B4)(zero);
     } else {
         data = fn_8020FC04();
         if (data != 0) {
             fn_8020FB80(data);
         } else {
-            ((long (*)(long))fn_8020F3B4)(0);
+            ((long (*)(long))fn_8020F3B4)(zero);
         }
     }
 }
@@ -662,6 +661,8 @@ void fn_80210510(void) {
     fn_802EC1C0();
 }
 
+void fn_80210514(int x){switch(x){case 0: fn_8020F608(0,fn_8000DA10()); break; case 1: fn_8020F608(1,fn_8000DA10()); break; case 2: break;}}
+
 long fn_80210570(void) {
     long val = 3;
     char *ptr = (char *)fn_8020F5F0(fn_8000DA10());
@@ -871,13 +872,15 @@ void fn_802113D8(void) {
 extern float lbl_80563404;
 extern void fn_80206454(void);
 extern void fn_801769EC(void);
-#pragma processor gekko
+#pragma scheduling on
+#pragma processor 750
 void fn_802114C4(void) {
     float value = lbl_80563404;
     fn_80209190(lbl_8055EEF0, value);
     fn_80206454();
     fn_801769EC();
 }
+#pragma processor gekko
 extern void fn_801345D8(void *, ...);
 extern long lbl_8055B664;
 extern signed char lbl_8055EEF4;
