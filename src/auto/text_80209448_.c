@@ -40,7 +40,8 @@ extern f32 lbl_80563248, lbl_8056324C, lbl_80563250, lbl_80563254;
 #pragma cplusplus on
 #pragma push
 #pragma processor 750
-extern "C" void *fn_80209448(void *arg0, M2C_UNK arg_sp0) {
+#pragma use_lmw_stmw off
+extern "C" void *fn_80209448(void *arg0) {
 struct M2CKeyObject {
 virtual void *f2(const char *);
 virtual void *f3();
