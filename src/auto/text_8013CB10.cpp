@@ -218,6 +218,8 @@ extern "C" f32 lbl_805614F4;
 extern "C" f32 lbl_805614F8;
 extern "C" f64 lbl_805614D8;
 extern "C" f32 fn_80204CFC(const char *);
+extern "C" void *fn_8013E33C(void *, s32);
+extern "C" void fn_8013E338(void);
 
 extern "C" s32 fn_8013D1F0(s32);
 
