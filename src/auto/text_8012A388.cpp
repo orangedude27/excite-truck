@@ -385,7 +385,6 @@ extern "C" void fn_8012AC98(s32 arg0) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 extern "C" s32 fn_8012ACA0(void *arg0, void *arg1, s32 arg2) {
-    u32 messages = (u32)lbl_8032A630;
     char sp10[128];
     s32 spC;
     u8 sp8;
@@ -397,7 +396,7 @@ extern "C" s32 fn_8012ACA0(void *arg0, void *arg1, s32 arg2) {
     u8 temp_r4_6, temp_r4_7, temp_r4_8, temp_r4_9, temp_r4_10;
     u32 temp_r4_11;
     u8 *temp_r3_3, *temp_r26, *var_r25_2, *var_r31;
-
+    u8 *messages = (u8 *)lbl_8032A630;
     if (lbl_8055DFFC == 0) fn_802E317C((const char *)(messages + 0x1D0), arg0);
     var_r4 = (char *)arg0; var_r6 = sp10; var_r5 = 0x80;
     goto loop_5_copy;
@@ -570,13 +569,13 @@ done2:
                     var_r31 = 0;
                     n = 0;
                     while (var_r31 < *(s32 *)(p + 0x88)) {
-                        u32 *fp = (u32 *)((u8 *)*(void **)(p + 0x60) + n + 0x34);
-                        if (*fp & 4) fn_802E317C(lbl_8032AE20);
+                        u8 *e = (u8 *)*(void **)(p + 0x60) + n;
+                        if (*(u32 *)(e + 0x34) & 4) fn_802E317C(lbl_8032AE20);
                         var_r31 += 1;
-                        fp = (u32 *)((u8 *)*(void **)(p + 0x60) + n + 0x34);
-                        u32 fl = *fp;
+                        e = (u8 *)*(void **)(p + 0x60) + n;
+                        u32 fl = *(u32 *)(e + 0x34);
                         n += 0x44;
-                        *fp = fl & ~0xF;
+                        *(u32 *)(e + 0x34) = fl & ~0xF;
                     }
                     if (*(s32 *)(p + 0x64) != 0) fn_8012C4D8(*(void **)(p + 0x64));
                     if (*(s32 *)(p + 0xA0) != 0) fn_80128660(*(s32 *)(p + 0xA0));
@@ -810,7 +809,7 @@ extern "C" s32 fn_8012B6FC(void *arg0, s32 arg1) {
 }
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" s32 fn_8012B85C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     s32 sp8;
     volatile u8 requestName[5];
@@ -868,7 +867,7 @@ extern "C" s32 fn_8012B85C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32
                 entryName[1] = third;
                 entryName[2] = second;
                 entryName[4] = 0;
-                fn_802E30C8(&strings[0x414], arg0, (char *)&request[0], (char *)&entryName[0]);
+                fn_802E30C8(strings + 0x414, arg0, (const char *)request, (const char *)entryName);
             }
         } else {
             fn_802E30C8(strings + 0x450, arg0);
@@ -1254,8 +1253,8 @@ extern "C" void fn_8012CC20(void) {
 extern "C" s32 fn_8012CC24(void *arg0, void *arg1) {
     u8 *self = (u8 *)arg0;
     s32 sum, count, value, result, temp, handle, size, done;
-    s32 *record;
-    u8 *source, *destination, byte;
+    u32 *record;
+    u8 *destination, *source, byte;
     void *parser;
     u8 parseBuffer[0x40];
 
@@ -1305,14 +1304,13 @@ extern "C" s32 fn_8012CC24(void *arg0, void *arg1) {
         index = 0;
         goto record_check_two;
     record_body_two:
-        record = (s32 *)(*(s32 *)(self + 0x64) + index);
+        record = (u32 *)(*(s32 *)(self + 0x64) + index);
         if (record[0x34 / 4] & 4)
             fn_802E317C(lbl_8032AE20);
         count++;
-        record = (s32 *)(*(s32 *)(self + 0x64) + index);
-        value = record[0x34 / 4];
+        record = (u32 *)(*(s32 *)(self + 0x64) + index);
         index += 0x44;
-        record[0x34 / 4] = value & ~0xF;
+        record[0x34 / 4] &= ~0xF;
     record_check_two:
         if (count < *(s32 *)(self + 0x8C))
             goto record_body_two;
@@ -1333,14 +1331,13 @@ extern "C" s32 fn_8012CC24(void *arg0, void *arg1) {
         index = 0;
         goto record_check_three;
     record_body_three:
-        record = (s32 *)(*(s32 *)(self + 0x64) + index);
+        record = (u32 *)(*(s32 *)(self + 0x64) + index);
         if (record[0x34 / 4] & 4)
             fn_802E317C(lbl_8032AE20);
         count++;
-        record = (s32 *)(*(s32 *)(self + 0x64) + index);
-        value = record[0x34 / 4];
+        record = (u32 *)(*(s32 *)(self + 0x64) + index);
         index += 0x44;
-        record[0x34 / 4] = value & ~0xF;
+        record[0x34 / 4] &= ~0xF;
     record_check_three:
         if (count < *(s32 *)(self + 0x8C))
             goto record_body_three;
