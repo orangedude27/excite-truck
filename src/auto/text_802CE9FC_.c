@@ -2010,6 +2010,7 @@ void fn_802D2684(void) {
         lbl_8055FD80 = fn_802D2640;
     }
 }
+#pragma pop
 #pragma scheduling on
 void fn_802D2AC4(void) {
     GXSetNumChans(1);
