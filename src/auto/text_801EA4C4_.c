@@ -235,18 +235,13 @@ void fn_801EAA94(s32 arg0, s32 arg1) {
     u8 flag;
     s32 result;
     u8 *entry;
-
     flag = 1;
     entry = (u8 *)lbl_8055EB78 + arg0 * 0xBC;
     *(s32 *)(entry + 0x44) = arg1;
     if (arg1 != 0x50) {
         result = 0;
-        if (arg1 == 0x52 && fn_80265D7C() != 0) {
-            result = 1;
-        }
-        if (result == 0) {
-            flag = 0;
-        }
+        if (arg1 == 0x52 && ((s32 (*)(s32))fn_80265D7C)(arg0) != 0) result = 1;
+        if (result == 0) flag = 0;
     }
     *entry = flag;
 }
