@@ -857,6 +857,8 @@ extern "C" s32 fn_8019AA34(void *obj, void *pos, void *other, void *otherPos, s3
     return result;
 }
 #pragma pop
+#pragma push
+#pragma processor 750
 extern "C" void fn_8019AC44(void* arg0, void* arg1, void* arg2, f32 farg0) {
     Vec work[64]; s32 count=0x40, sp8; Vec p70,p64,delta,p4c,p34,p28,p40,p1c,p10;
     f32 dot,mag,limit,scale,varf1,f31,f30; void* body=*(void**)((u8*)arg0+4); Vec* out=(Vec*)arg2; f30=farg0;
@@ -1610,6 +1612,8 @@ public:
     virtual void v15(); virtual void v16(); virtual void v17();
     virtual Fn8019E874Xf* GetXf();
 };
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" s32 fn_8019E500(void* arg0, void* arg1) {
     u32 copied[12];
     f32 rows[3][4];
@@ -1637,8 +1641,10 @@ extern "C" s32 fn_8019E500(void* arg0, void* arg1) {
             f32* current=rows[row];
             f32* arow=rows[next];
             f32* brow=rows[prev];
-            output[0]=arow[0]; output[1]=arow[1]; output[2]=arow[2];
-            output[3]=brow[0]; output[4]=brow[1]; output[5]=brow[2];
+            f32 a0=arow[0], a1=arow[1], a2=arow[2];
+            f32 b0=brow[0], b1=brow[1], b2=brow[2];
+            output[0]=a0; output[1]=a1; output[2]=a2;
+            output[3]=b0; output[4]=b1; output[5]=b2;
             output[6]=current[0]; output[7]=current[1]; output[8]=current[2];
             output[9]=*(f32*)&copied[9];
             output[10]=*(f32*)&copied[10];
@@ -1648,14 +1654,14 @@ extern "C" s32 fn_8019E500(void* arg0, void* arg1) {
             for (s32 i=0;i<4;i++) {
                 f32 a=(i&1) ? lbl_805622DC : lbl_805622E0;
                 f32 s0=d0*a;
-                output[9]+=arow[0]*s0;
-                output[10]+=arow[1]*s0;
-                output[11]+=arow[2]*s0;
+                output[9]+=a0*s0;
+                output[10]+=a1*s0;
+                output[11]+=a2*s0;
                 f32 b=(i&2) ? lbl_805622DC : lbl_805622E0;
                 f32 s1=d1*b;
-                output[9]+=brow[0]*s1;
-                output[10]+=brow[1]*s1;
-                output[11]+=brow[2]*s1;
+                output[9]+=b0*s1;
+                output[10]+=b1*s1;
+                output[11]+=b2*s1;
                 if (lbl_80435020 != 0) {
                     *(void**)(lbl_80435020+0xc)=output;
                     *(void**)(lbl_80435020+0x4)=*(void**)((u8*)arg1+4);
@@ -1675,7 +1681,7 @@ extern "C" s32 fn_8019E500(void* arg0, void* arg1) {
     }
     return result;
 }
-#pragma scheduling on
+#pragma pop
 extern "C" s32 fn_8019E834(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
@@ -2967,45 +2973,57 @@ extern "C" void fn_801A1F44(void* arg0, void* arg1) {
     *(u32*)((u8*)arg0 + 8) = *(u32*)((u8*)result + 0x2C);
 }
 
-#pragma scheduling on
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void fn_801A1F98(void *arg0, f32 *min, f32 *max) {
-    struct Work { volatile f32 point[3]; f32 gap; volatile f32 corners[24]; } workArea;
+    f32 point[3];
+    f32 corners[24];
     register f32 x, y, z;
-    z=*(f32 *)((char *)arg0+0x2C);
-    VTab1A1E7C *shape=(VTab1A1E7C *)arg0;
-    y=*(f32 *)((char *)arg0+0x28);
-    x=*(f32 *)((char *)arg0+0x24);
+    z = *(f32 *)((char *)arg0 + 0x2C);
+    y = *(f32 *)((char *)arg0 + 0x28);
+    x = *(f32 *)((char *)arg0 + 0x24);
     register f32 nx, ny, nz;
-    ny=-y; nx=-x; nz=-z;
-    workArea.corners[0]=x; workArea.corners[1]=y; workArea.corners[2]=z;
-    workArea.corners[3]=nx; workArea.corners[4]=y; workArea.corners[5]=z;
-    workArea.corners[6]=x; workArea.corners[7]=ny; workArea.corners[8]=z;
-    workArea.corners[9]=nx; workArea.corners[10]=ny; workArea.corners[11]=z;
-    workArea.corners[12]=x; workArea.corners[13]=y; workArea.corners[14]=nz;
-    workArea.corners[15]=nx; workArea.corners[16]=y; workArea.corners[17]=nz;
-    workArea.corners[18]=x; workArea.corners[19]=ny; workArea.corners[20]=nz;
-    workArea.corners[21]=nx; workArea.corners[22]=ny; workArea.corners[23]=nz;
-    volatile f32 *corner=workArea.corners;
-    volatile f32 * volatile sameCorner=workArea.corners;
-    volatile f32 *point=workArea.point;
-    f32 *matrix=(f32 *)shape->Call();
+    ny = -y; nx = -x; nz = -z;
+    corners[0]=x; corners[1]=y; corners[2]=z;
+    corners[3]=nx; corners[4]=y; corners[5]=z;
+    corners[6]=x; corners[7]=ny; corners[8]=z;
+    corners[9]=nx; corners[10]=ny; corners[11]=z;
+    corners[12]=x; corners[13]=y; corners[14]=nz;
+    corners[15]=nx; corners[16]=y; corners[17]=nz;
+    corners[18]=x; corners[19]=ny; corners[20]=nz;
+    corners[21]=nx; corners[22]=ny; corners[23]=nz;
+    f32 *matrix = (f32 *)((VTab1A1E7C *)arg0)->Call();
     min[0]=matrix[9]; min[1]=matrix[10]; min[2]=matrix[11];
-    matrix=(f32 *)shape->Call();
+    matrix = (f32 *)((VTab1A1E7C *)arg0)->Call();
     max[0]=matrix[9]; max[1]=matrix[10]; max[2]=matrix[11];
-    for (int i=0;i<8;i++) {
-        matrix=(f32 *)shape->Call();
-        fn801A1F98Transform(point,sameCorner,corner,matrix);
-        point[0]+=matrix[9]; point[1]+=matrix[10]; point[2]+=matrix[11];
-        if (min[0]<point[0]) min[0]=point[0];
-        if (min[1]<point[1]) min[1]=point[1];
-        if (min[2]<point[2]) min[2]=point[2];
-        if (max[0]>point[0]) max[0]=point[0];
-        if (max[1]>point[1]) max[1]=point[1];
-        if (max[2]>point[2]) max[2]=point[2];
-        corner+=3; sameCorner+=3;
+    f32 *dst = point;
+    f32 *cur = corners;
+    f32 *src = corners;
+    int i = 0;
+    for (; i < 8; i++) {
+        matrix = (f32 *)((VTab1A1E7C *)arg0)->Call();
+        if (dst == cur) {
+            f32 t0 = (src[0] * matrix[0] + src[1] * matrix[3]) + src[2] * matrix[6];
+            f32 t1 = (src[0] * matrix[1] + src[1] * matrix[4]) + src[2] * matrix[7];
+            f32 t2 = (src[0] * matrix[2] + src[1] * matrix[5]) + src[2] * matrix[8];
+            dst[0] = t0; dst[1] = t1; dst[2] = t2;
+        } else {
+            f32 sx = src[0], sy = src[1], sz = src[2];
+            dst[0] = (sx * matrix[0] + sy * matrix[3]) + sz * matrix[6];
+            dst[1] = (sx * matrix[1] + sy * matrix[4]) + sz * matrix[7];
+            dst[2] = (sx * matrix[2] + sy * matrix[5]) + sz * matrix[8];
+        }
+        point[0] += matrix[9]; point[1] += matrix[10]; point[2] += matrix[11];
+        if (min[0] < point[0]) min[0] = point[0];
+        if (min[1] < point[1]) min[1] = point[1];
+        if (min[2] < point[2]) min[2] = point[2];
+        if (max[0] > point[0]) max[0] = point[0];
+        if (max[1] > point[1]) max[1] = point[1];
+        if (max[2] > point[2]) max[2] = point[2];
+        cur += 3; src += 3;
     }
 }
-
+#pragma pop
 extern "C" void fn_801A22A4(void* arg0) {
     volatile u32* result = (volatile u32*)((VTab1A1E7C*)arg0)->Call();
     volatile u32 words[12];
@@ -3540,15 +3558,16 @@ extern "C" void fn_801A34D0(void *arg0, Vec *arg1, Vec *arg2) {
     f32 sp8[3];
     f32 *mat = box->matrix;
     if (&sp8[0] == &box->min.x) {
-        f32 y = box->min.y;
-        f32 x = *&box->min.x;
-        f32 z = box->min.z;
+        f32 y, x, z;
+        y = box->min.y;
+        x = box->min.x;
+        z = box->min.z;
         f32 y0 = y * mat[3];
         f32 y1 = y * mat[4];
-        f32 x0 = x * mat[0];
-        f32 x1 = x * mat[1];
+        f32 x0 = mat[0] * x;
+        f32 x1 = mat[1] * x;
         f32 y2 = y * mat[5];
-        f32 x2 = x * mat[2];
+        f32 x2 = mat[2] * x;
         f32 z0 = z * mat[6];
         f32 z1 = z * mat[7];
         f32 z2 = z * mat[8];
@@ -3586,22 +3605,22 @@ extern "C" void fn_801A34D0(void *arg0, Vec *arg1, Vec *arg2) {
     arg1->x = var_f4;
     arg1->y = arg2->y;
     arg1->z = arg2->z;
-    if (var_f4 < sp14[0]) var_f4 = sp14[0];
+    var_f4 = var_f4 < sp14[0] ? sp14[0] : var_f4;
     arg1->x = var_f4;
     f32 var_f1 = arg1->y;
-    if (var_f1 < sp14[1]) var_f1 = sp14[1];
+    var_f1 = var_f1 < sp14[1] ? sp14[1] : var_f1;
     arg1->y = var_f1;
     f32 var_f2 = arg1->z;
-    if (var_f2 < sp14[2]) var_f2 = sp14[2];
+    var_f2 = var_f2 < sp14[2] ? sp14[2] : var_f2;
     arg1->z = var_f2;
     var_f1 = arg2->x;
-    if (var_f1 > sp14[0]) var_f1 = sp14[0];
+    var_f1 = var_f1 > sp14[0] ? sp14[0] : var_f1;
     arg2->x = var_f1;
     var_f1 = arg2->y;
-    if (var_f1 > sp14[1]) var_f1 = sp14[1];
+    var_f1 = var_f1 > sp14[1] ? sp14[1] : var_f1;
     arg2->y = var_f1;
     var_f1 = arg2->z;
-    if (var_f1 > sp14[2]) var_f1 = sp14[2];
+    var_f1 = var_f1 > sp14[2] ? sp14[2] : var_f1;
     arg2->z = var_f1;
     f32 pad = lbl_80562380;
     arg2->x = arg2->x + pad;
@@ -3624,7 +3643,6 @@ extern float PSVECDotProduct(float *, void *);
 extern "C" int fn_80198F64(void *, int, void *, float *, void *, float *, float);
 extern int fn_8019A788(void *, int, void *, void *, int, int, float, float, float);
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
 extern "C" void fn_801A38E4(int arg0, void *arg1) {
     u8 *base = (u8 *)arg1;
     f32 q[3];
@@ -3652,6 +3670,8 @@ extern "C" void fn_801A38E4(int arg0, void *arg1) {
         cur = *(f32 *)(base + 0x54);
         *(f32 *)(base + 0x24) = cur + a * (hi - cur);
     }
+    default:
+        break;
     case 0x53504852: {
         u8 *owner = *(u8 **)(base + 4);
         if (owner != 0) {
@@ -3849,59 +3869,75 @@ extern "C" void fn_801A401C(void *arg0, void *arg1) {
 #pragma scheduling invalid_target
 extern "C" s32 fn_801A40F8(void *arg0, f32 *arg1, f32 *arg2, s32 arg3, f32 *arg4) {
     f32 stack[9];
-    const f32 *input = arg1;
-    register f32 dx = input[0];
-    register f32 dy = input[1];
-    f32 *matrix = (f32 *)*(void * volatile *)((u8 *)arg0 + 0xC);
-    dx -= matrix[9];
-    register f32 dz = input[2];
+    f32 ix = arg1[0];
+    f32 iy = arg1[1];
+    f32 *m = (f32 *)*(void * volatile *)((u8 *)arg0 + 0xC);
+    f32 dx = ix - m[9];
+    f32 iz = arg1[2];
     stack[6] = dx;
-    dy -= matrix[10];
+    f32 dy = iy - m[10];
     stack[7] = dy;
-    dz -= matrix[11];
+    f32 dz = iz - m[11];
     stack[8] = dz;
-    f32 vx = dx * matrix[0] + (dy * matrix[1] + dz * matrix[2]);
-    f32 vy = dx * matrix[3] + (dy * matrix[4] + dz * matrix[5]);
-    f32 vz = dx * matrix[6] + (dy * matrix[7] + dz * matrix[8]);
-    stack[6] = vx;
-    stack[7] = vy;
-    stack[8] = vz;
-    f32 *matrix2 = (f32 *)*(void * volatile *)((u8 *)arg0 + 0xC);
-    f32 ax;
-    f32 ay;
-    f32 az;
-    if (&stack[3] == arg2) {
-        register f32 a = arg2[0];
-        register f32 b = arg2[1];
-        register f32 c = arg2[2];
-        ax = a * matrix2[0] + (b * matrix2[1] + c * matrix2[2]);
-        ay = a * matrix2[3] + (b * matrix2[4] + c * matrix2[5]);
-        az = a * matrix2[6] + (b * matrix2[7] + c * matrix2[8]);
-    } else {
-        ax = arg2[0] * matrix2[0] + (arg2[1] * matrix2[1] + arg2[2] * matrix2[2]);
-        ay = arg2[0] * matrix2[3] + (arg2[1] * matrix2[4] + arg2[2] * matrix2[5]);
-        az = arg2[0] * matrix2[6] + (arg2[1] * matrix2[7] + arg2[2] * matrix2[8]);
+    {
+        f32 y0 = dy * m[1];
+        f32 x0 = dx * m[0];
+        f32 x1 = dx * m[3];
+        f32 y1 = dy * m[4];
+        f32 x2 = dx * m[6];
+        f32 y2 = dy * m[7];
+        f32 z0 = dz * m[2];
+        f32 z1 = dz * m[5];
+        f32 z2 = dz * m[8];
+        stack[6] = z0 + (x0 + y0);
+        stack[7] = z1 + (x1 + y1);
+        stack[8] = z2 + (x2 + y2);
     }
-    stack[3] = ax;
-    stack[4] = ay;
-    stack[5] = az;
+    f32 *m2 = (f32 *)*(void * volatile *)((u8 *)arg0 + 0xC);
+    if (&stack[3] == arg2) {
+        f32 y = arg2[1];
+        f32 x = arg2[0];
+        f32 z = arg2[2];
+        f32 y0 = y * m2[1];
+        f32 x0 = x * m2[0];
+        f32 x1 = x * m2[3];
+        f32 y1 = y * m2[4];
+        f32 x2 = x * m2[6];
+        f32 y2 = y * m2[7];
+        f32 z0 = z * m2[2];
+        f32 z1 = z * m2[5];
+        f32 z2 = z * m2[8];
+        stack[3] = z0 + (x0 + y0);
+        stack[4] = z1 + (x1 + y1);
+        stack[5] = z2 + (x2 + y2);
+    } else {
+        stack[3] = (arg2[2] * m2[2]) + ((arg2[0] * m2[0]) + (arg2[1] * m2[1]));
+        stack[4] = (arg2[2] * m2[5]) + ((arg2[0] * m2[3]) + (arg2[1] * m2[4]));
+        stack[5] = (arg2[2] * m2[8]) + ((arg2[0] * m2[6]) + (arg2[1] * m2[7]));
+    }
     typedef s32 (*Call)(s32, f32 *, f32 *, s32, f32 *);
     if (((Call)fn_801CF828)(*(s32 *)((u8 *)arg0 + 0x24), &stack[6], &stack[3], arg3, &stack[0]) != 0) {
-        f32 *outMatrix = (f32 *)*(void **)((u8 *)arg0 + 0xC);
+        f32 *m3 = (f32 *)*(void **)((u8 *)arg0 + 0xC);
         if (arg4 == &stack[0]) {
-            register f32 a = stack[0];
-            register f32 b = stack[1];
-            register f32 c = stack[2];
-            vx = a * outMatrix[0] + (b * outMatrix[3] + c * outMatrix[6]);
-            vy = a * outMatrix[1] + (b * outMatrix[4] + c * outMatrix[7]);
-            vz = a * outMatrix[2] + (b * outMatrix[5] + c * outMatrix[8]);
-            arg4[0] = vx;
-            arg4[1] = vy;
-            arg4[2] = vz;
+            f32 y = stack[1];
+            f32 x = stack[0];
+            f32 z = stack[2];
+            f32 y0 = y * m3[3];
+            f32 y1 = y * m3[4];
+            f32 x0 = x * m3[0];
+            f32 x1 = x * m3[1];
+            f32 x2 = x * m3[2];
+            f32 y2 = y * m3[5];
+            f32 z0 = z * m3[6];
+            f32 z1 = z * m3[7];
+            f32 z2 = z * m3[8];
+            arg4[0] = z0 + (x0 + y0);
+            arg4[1] = z1 + (x1 + y1);
+            arg4[2] = z2 + (x2 + y2);
         } else {
-            arg4[0] = stack[0] * outMatrix[0] + (stack[1] * outMatrix[3] + stack[2] * outMatrix[6]);
-            arg4[1] = stack[0] * outMatrix[1] + (stack[1] * outMatrix[4] + stack[2] * outMatrix[7]);
-            arg4[2] = stack[0] * outMatrix[2] + (stack[1] * outMatrix[5] + stack[2] * outMatrix[8]);
+            arg4[0] = (stack[2] * m3[6]) + ((stack[0] * m3[0]) + (stack[1] * m3[3]));
+            arg4[1] = (stack[2] * m3[7]) + ((stack[0] * m3[1]) + (stack[1] * m3[4]));
+            arg4[2] = (stack[2] * m3[8]) + ((stack[0] * m3[2]) + (stack[1] * m3[5]));
         }
         return 1;
     }
