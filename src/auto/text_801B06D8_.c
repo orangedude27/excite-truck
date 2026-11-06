@@ -515,6 +515,7 @@ extern f32 lbl_805625F0;
 extern void *lbl_8055E68C;
 extern u8 lbl_8055E690;
 #pragma cplusplus on
+#pragma dont_inline fn_801B1130
 extern "C" s32 fn_801B1130(s32 arg0) {
     struct Dummy {
         virtual void f0();
@@ -978,6 +979,8 @@ extern s32 lbl_8055E3C4;
 extern f32 lbl_80562608;
 extern f32 lbl_8056260C;
 #pragma push
+#pragma use_lmw_stmw off
+#pragma auto_inline off
 #pragma scheduling invalid_target
 void fn_801B1B30(void *arg0) {
     struct Stack {
@@ -1026,7 +1029,6 @@ void fn_801B1B30(void *arg0) {
     void *temp_r4_2;
     void *object;
     void **vtable;
-
     temp_f31 = lbl_8055E3C8;
     temp_r4 = M2C_FIELD(arg0, void **, 0x5C);
     M2C_FIELD(arg0, f32 *, 0x18) = (f32) (temp_f31 - M2C_FIELD(arg0, f32 *, 0x70));
@@ -1149,7 +1151,6 @@ loop_25:
             if ((s32) M2C_FIELD(M2C_FIELD(M2C_FIELD(arg0, void **, 0), void *(**)(void *), 0x10)(arg0), s32 *, 4) > temp_r31) {
                 temp_f1_3 = fn_801B2F90(var_r27, M2C_FIELD(arg0, s32 *, 0x60));
                 if (var_f31 > temp_f1_3) {
-
                 } else {
                     var_f31 = temp_f1_3;
                 }
@@ -1523,110 +1524,73 @@ extern "C" void fn_801B265C(void) {
         *(s32 *)((u8 *)lbl_8055E684 + (*p++ << 7) + 0x6C) = i;
     }
 }
-#pragma cplusplus off
-#pragma dont_inline reset
-#pragma pop
-void fn_801B2910(void) {
-    register s32 var_r30;
-    register s32 var_r31;
-    register s32 var_r4;
-    register s32 var_r6;
-    register s32 var_r27;
-    register s32 var_r28;
-    register s32 var_r29;
-    s32 i;
-    s32 n;
+#pragma dont_inline on
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+extern "C" void fn_801B2910(void) {
+    struct Obj {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual s32 v6();
+        virtual void v7();
+    };
+    s32 i, j;
+    s32 b, a, one;
+    f32 f31, f30;
     s32 *p;
-    f32 f30;
-    f32 f31;
-    void *obj;
-    void **vtable;
 
     lbl_8055E6A0 = 0;
     fn_801E89F4(0);
     *(s32 *)((u8 *)&lbl_80435BE8 + 0x40) = 0;
-    var_r30 = 0;
-    var_r31 = 0;
-    while (var_r30 < (s32)lbl_8055E678) {
-        obj = (u8 *)lbl_8055E684 + var_r31;
-        vtable = *(void ***)obj;
-        ((void (*)(void *))vtable[2])(obj);
-        var_r31 += 0x80;
-        var_r30++;
+    for (i = 0, j = 0; i < (s32)lbl_8055E678; j += 0x80, i++) {
+        ((Obj *)((u8 *)lbl_8055E684 + j))->v0();
     }
-    var_r4 = 0;
-    if ((s32)lbl_8055E678 > 0) {
-        n = (s32)lbl_8055E678 - 8;
-        if ((s32)lbl_8055E678 > 8) {
-            var_r6 = 0;
-            if (((s32)lbl_8055E678 & 7) == 0 && (s32)lbl_8055E678 <= 0x7FFFFFFE) var_r6 = 1;
-            if (var_r6 != 0) {
-                s32 *src = (s32 *)lbl_8055E684;
-                i = (n + 7) >> 3;
-                if (n > 0) {
-                    do {
-                        lbl_80435C30[*(s32 *)((u8 *)src + 8) - 1] = var_r4;
-                        lbl_80435C30[*(s32 *)((u8 *)src + 0x88) - 1] = var_r4 + 1;
-                        lbl_80435C30[*(s32 *)((u8 *)src + 0x108) - 1] = var_r4 + 2;
-                        lbl_80435C30[*(s32 *)((u8 *)src + 0x188) - 1] = var_r4 + 3;
-                        lbl_80435C30[*(s32 *)((u8 *)src + 0x208) - 1] = var_r4 + 4;
-                        lbl_80435C30[*(s32 *)((u8 *)src + 0x288) - 1] = var_r4 + 5;
-                        lbl_80435C30[*(s32 *)((u8 *)src + 0x308) - 1] = var_r4 + 6;
-                        lbl_80435C30[*(s32 *)((u8 *)src + 0x388) - 1] = var_r4 + 7;
-                        src = (s32 *)((u8 *)src + 0x400);
-                        var_r4 += 8;
-                        i--;
-                    } while (i != 0);
-                }
-            }
-        }
-        if (var_r4 < (s32)lbl_8055E678) {
-            i = (s32)lbl_8055E678 - var_r4;
-            do {
-                obj = (u8 *)lbl_8055E684 + (var_r4 << 7);
-                lbl_80435C30[*(s32 *)((u8 *)obj + 8) - 1] = var_r4;
-                var_r4++;
-                i--;
-            } while (i != 0);
+    {
+        s32 k;
+        for (k = 0; k < (s32)lbl_8055E678; k++) {
+            u32 idx = *(s32 *)((u8 *)lbl_8055E684 + (k << 7) + 8) - 1;
+            lbl_80435C30[idx] = k;
         }
     }
     if (lbl_8055E68C != 0) {
-        vtable = *(void ***)lbl_8055E68C;
-        ((void (*)(void *))vtable[8])(lbl_8055E68C);
+        ((Obj *)lbl_8055E68C)->v7();
     }
-    fn_801B234C(lbl_80562618 + lbl_8055E3C8);
-    if (__cntlzw(((s32)lbl_8055E678 - 1) << 27) != 31) {
+    fn_801B234C(lbl_8055E3C8 + lbl_80562618);
+    one = (s32)lbl_8055E678 == 1;
+    if (one) {
         f31 = lbl_805625BC;
-        f30 = lbl_805625BC;
     } else {
         f31 = -lbl_805625B8;
+    }
+    if (one) {
+        f30 = lbl_805625BC;
+    } else {
         f30 = lbl_805625B8;
     }
     p = lbl_80435C30;
-    var_r29 = 0;
-    var_r28 = 0;
-    var_r27 = 0;
-    while (var_r27 < (s32)lbl_8055E678) {
-        obj = (u8 *)lbl_8055E684 + (*p << 7);
-        vtable = *(void ***)obj;
-        if (var_r27 & 1) {
-            *(s32 *)((u8 *)obj + 0x34) = var_r29;
-            *(f32 *)((u8 *)obj + 0x38) = f30;
-            var_r29 = (s32)((void *(*)(void *))vtable[7])(obj);
+    a = 0;
+    b = 0;
+    for (i = 0; i < (s32)lbl_8055E678; p++, i++) {
+        u8 *o = (u8 *)lbl_8055E684 + (*p << 7);
+        if (!(i & 1) && one) {
+            *(s32 *)(o + 0x34) = a;
+            *(f32 *)(o + 0x38) = f30;
+            a = ((Obj *)o)->v6();
         } else {
-            *(s32 *)((u8 *)obj + 0x34) = var_r28;
-            *(f32 *)((u8 *)obj + 0x38) = f31;
-            var_r28 = (s32)((void *(*)(void *))vtable[7])(obj);
+            *(s32 *)(o + 0x34) = b;
+            *(f32 *)(o + 0x38) = f31;
+            b = ((Obj *)o)->v6();
         }
-        p++;
-        var_r27++;
     }
-    obj = fn_80156A40();
-    vtable = *(void ***)obj;
-    ((void (*)(void *))vtable[8])(obj);
+    ((Obj *)fn_80156A40())->v7();
 }
-
-#pragma scheduling invalid_target
+#pragma cplusplus off
+#pragma use_lmw_stmw reset
+#pragma dont_inline reset
 void fn_801B2BE8(void *arg0) {
     s32 increment;
     f32 initial;
