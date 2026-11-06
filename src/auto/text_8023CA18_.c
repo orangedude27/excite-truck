@@ -89,7 +89,7 @@ extern void fn_80236914(void);
 extern void fn_8023CA54(void);
 extern void fn_8023CBA4(void);
 extern s32 lbl_8055B860;
-extern void fn_802146BC(s32 *, s32, s32, s32, s32, s32, s32, s32);
+extern s32 fn_802146BC(s32 *, s32, s32, s32, s32, s32, s32, s32);
 void fn_8023CBA4(void) {
     s32 data[20];
     s32 *v = lbl_802FA090;
