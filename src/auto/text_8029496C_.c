@@ -473,7 +473,7 @@ void fn_80294ED4(void) {
         } while (var_r15_2 < fn_80287B14());
     fn_802C8D74();
 }
-#pragma optimization_level 4
+#pragma optimization_level 3
 void fn_80295C70(void *arg0, int arg1, float *arg2, unsigned int arg3, int arg4, float farg0, float farg1) {
     struct Entry { int value; float a,b,c,d,e; unsigned char flags[3]; int tail; };
     struct Obj { unsigned char pad[0x180]; int count; };
