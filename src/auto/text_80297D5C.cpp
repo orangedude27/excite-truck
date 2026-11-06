@@ -15,6 +15,7 @@ extern "C" char lbl_803494A4[];
 extern "C" char lbl_803494B8[];
 
 struct Fn80299A88Matrix { float v[9]; };
+struct Fn80299A88Frame { float temp[6]; Fn80299A88Matrix matrix, rotation; unsigned char config[0x90]; };
 
 struct Entry {
     float f0, f4, f8, f12, f16, f20;
