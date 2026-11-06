@@ -1,6 +1,20 @@
 #include <types.h>
 #include <string.h>
 extern f64 atof(const char *);
+extern char lbl_8055A95C[];
+extern char lbl_8055A964[];
+extern char lbl_8055A968[];
+extern char lbl_8055A970[];
+extern char lbl_8055A974[];
+extern char lbl_8055A97C[];
+extern char lbl_80336BC0[];
+extern char lbl_8055A984[];
+extern char lbl_8055A98C[];
+extern char lbl_80336BCC[];
+extern void fn_802E30C8(const char *, const char *);
+extern s32 fn_80179630(s32);
+extern s32 lbl_8055E804;
+extern s32 lbl_8055E808;
 extern f32 lbl_8055E85C;
 extern f32 lbl_8055E860;
 extern f32 lbl_805629B4;
@@ -154,6 +168,12 @@ f32 fn_801C34F4(f32 arg0) {
 s32 fn_801C3508(s32 arg0, s32 arg1) {
     return (arg0 & (1 << arg1)) != 0;
 }
+
+#pragma dont_inline on
+s32 fn_801C3524(char *arg0) {
+    return 0;
+}
+#pragma dont_inline reset
 
 #pragma auto_inline off
 s32 fn_801C3954(s32 arg0) {
