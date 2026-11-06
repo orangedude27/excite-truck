@@ -28,6 +28,9 @@ extern f64 lbl_80560C28;
 #define VFIELD(p, off) (*(u8 *)((u8 *)(p) + (off)))
 
 extern f64 fn_8002F234(f64);
+extern s32 WPADProbe(s32, s32 *);
+extern void reset_kpad(void *);
+extern f32 lbl_80558EC8, lbl_80558ECC;
 
 extern double lbl_80560C10;
 extern f32 lbl_80560C18;
@@ -144,61 +147,69 @@ extern f32 lbl_8055D998;
 extern f32 lbl_8055D99C;
 extern f32 lbl_80560BF0;
 s32 select_2obj_continue(void *arg0) {
-    register u8 *obj = (u8 *)arg0;
-    register u8 *a = obj + 0xC8;
-    register u8 *b;
-    register u8 *bestA;
-    register u8 *bestB;
-    register u8 *aEnd = obj + 0xEC;
-    register u8 *bEnd;
-    f32 best = lbl_80560BF0;
-    f32 threshold = lbl_80560BD8;
-    f32 length = lbl_80560BE4;
+    struct Pair { u32 x, y; };
+    u8 *obj = (u8 *)arg0;
+    u8 *aEnd;
+    u8 *bEnd;
+    u8 *a;
+    u8 *b;
+    u8 *bestA;
+    u8 *bestB;
+    f32 best;
+    f32 length;
+    f32 threshold;
+    volatile f32 temp[2];
+
+    best = lbl_80560BF0;
+    threshold = lbl_80560BD8;
+    a = obj + 0xC8;
+    length = lbl_80560BE4;
+    aEnd = obj + 0xEC;
     do {
         if (*(s8 *)(a + 8) == 0) {
             b = a + 0xC;
             bEnd = obj + 0xEC;
             do {
                 if (*(s8 *)(b + 8) == 0) {
-                    f32 dx = *(f32 *)(b + 0) - *(f32 *)(a + 0);
-                    f32 dy = *(f32 *)(b + 4) - *(f32 *)(a + 4);
-                    f32 mag = (f32)fn_8002F234((f64)(dx * dx + dy * dy));
-                    f32 scale = length / mag;
-                    f32 nx = dx * scale;
-                    f32 ny = dy * scale;
-                    f32 v = scale * lbl_8055D990;
-                    if (v > lbl_8055D9B0 && v < lbl_80558EB8) {
-                        f32 angle = v - *(f32 *)(obj + 0x3AC);
-                        f32 dot;
-                        s32 reverse;
-                        if (angle < threshold) angle *= lbl_8055D998;
-                        else angle *= lbl_8055D99C;
-                        if (angle < length) {
-                            dot = *(f32 *)(obj + 0x3A4) * nx + *(f32 *)(obj + 0x3A8) * ny;
-                            reverse = dot < threshold;
-                            if (reverse) dot = -dot;
-                            if (dot > lbl_80558EC4) {
-                                f32 candidate = angle + (length - dot) / (length - lbl_80558EC4);
-                                if (candidate < best) {
-                                    best = candidate;
-                                    if (reverse) { bestA = b; bestB = a; }
-                                    else { bestA = a; bestB = b; }
-                                }
-                            }
-                        }
+                    f32 dx, dy, mag, scale, angle, dot;
+                    s32 reverse;
+                    dx = *(f32 *)(b + 0) - *(f32 *)(a + 0);
+                    dy = *(f32 *)(b + 4) - *(f32 *)(a + 4);
+                    mag = (f32)fn_8002F234((f64)(dx * dx + dy * dy));
+                    scale = length / mag;
+                    temp[0] = dx * scale;
+                    temp[1] = dy * scale;
+                    angle = scale * lbl_8055D990;
+                    if (angle <= lbl_8055D9B0 || angle >= lbl_80558EB8) goto skip;
+                    angle = angle - *(f32 *)(obj + 0x3AC);
+                    if (angle < threshold) angle *= lbl_8055D998;
+                    else angle *= lbl_8055D99C;
+                    if (angle >= length) goto skip;
+                    dot = *(f32 *)(obj + 0x3A4) * temp[0] + *(f32 *)(obj + 0x3A8) * temp[1];
+                    if (dot < threshold) {
+                        dot = -dot;
+                        reverse = 1;
+                    } else {
+                        reverse = 0;
+                    }
+                    if (dot <= lbl_80558EC4) goto skip;
+                    angle += (length - dot) / (length - lbl_80558EC4);
+                    if (angle < best) {
+                        best = angle;
+                        if (reverse) { bestA = b; bestB = a; }
+                        else { bestA = a; bestB = b; }
                     }
                 }
+            skip:
                 b += 0xC;
             } while (b <= bEnd);
         }
         a += 0xC;
     } while (a < aEnd);
-    if (best == lbl_80560BF0) return 0;
-    *(u32 *)(obj + 0xF8) = *(u32 *)(bestA + 0);
-    *(u32 *)(obj + 0xFC) = *(u32 *)(bestA + 4);
+    if (lbl_80560BF0 == best) return 0;
+    *(struct Pair *)(obj + 0xF8) = *(struct Pair *)bestA;
     *(u32 *)(obj + 0x100) = *(u32 *)(bestA + 8);
-    *(u32 *)(obj + 0x104) = *(u32 *)(bestB + 0);
-    *(u32 *)(obj + 0x108) = *(u32 *)(bestB + 4);
+    *(struct Pair *)(obj + 0x104) = *(struct Pair *)bestB;
     *(u32 *)(obj + 0x10C) = *(u32 *)(bestB + 8);
     return 2;
 }
@@ -356,6 +367,49 @@ next_outer:
     return 1;
 }
 
+extern f32 lbl_8055D988, lbl_8055D98C, lbl_80560BDC;
+void calc_dpd_variable(void *arg0, s8 arg1) {
+    struct Pair { f32 x, y; }; u8 *p=(u8*)arg0; struct Pair pos, delta; f32 mag,scale,t,k;
+    if(arg1==0){VFIELD(p,0x84)=0;return;}
+    pos.x=FIELD(p,0xB4)*FIELD(p,0x3A4)+FIELD(p,0xB8)*FIELD(p,0x3A8);
+    pos.y=FIELD(p,0xB8)*FIELD(p,0x3A4)-FIELD(p,0xB4)*FIELD(p,0x3A8);
+    if((s8)VFIELD(p,0x84)==0){f32 zero=lbl_80560BD8;*(struct Pair *)(p+0x34)=pos;*(struct Pair *)(p+0x3C)=*(struct Pair *)&lbl_8055D988;FIELD(p,0x44)=zero;}
+    else {delta.x=pos.x-FIELD(p,0x34);delta.y=pos.y-FIELD(p,0x38);mag=(f32)fn_8002F234((f64)(delta.x*delta.x+delta.y*delta.y));if(mag>=FIELD(p,0x90)){scale=lbl_80560BE4;}else {scale=mag/FIELD(p,0x90);scale*=scale;scale*=scale;}scale*=FIELD(p,0x94);delta.x=FIELD(p,0x34)+scale*delta.x;delta.y=FIELD(p,0x38)+scale*delta.y;mag=(f32)fn_8002F234((f64)(delta.x*delta.x+delta.y*delta.y));delta.x/=mag;delta.y/=mag;FIELD(p,0x3C)=delta.x-FIELD(p,0x34);FIELD(p,0x40)=delta.y-FIELD(p,0x38);FIELD(p,0x44)=(f32)fn_8002F234((f64)(FIELD(p,0x3C)*FIELD(p,0x3C)+FIELD(p,0x40)*FIELD(p,0x40)));*(struct Pair *)(p+0x34)=delta;}
+    {
+        f32 value = lbl_8055D990/FIELD(p,0x3A0);
+        if ((s8)VFIELD(p,0x84)==0) {
+            f32 zero = lbl_80560BD8;
+            FIELD(p,0x48)=value; FIELD(p,0x4C)=zero; FIELD(p,0x50)=zero;
+        } else {
+            f32 zero = lbl_80560BD8; f32 diff = value-FIELD(p,0x48);
+            f32 absdiff = diff < zero ? -diff : diff;
+            f32 factor;
+            if (absdiff >= FIELD(p,0x98)) factor = lbl_80560BE4;
+            else { factor=absdiff/FIELD(p,0x98); factor*=factor; factor*=factor; }
+            value=factor*FIELD(p,0x9C)*diff;
+            FIELD(p,0x4C)=value;
+            if (value < zero) FIELD(p,0x50)=-value; else FIELD(p,0x50)=value;
+            FIELD(p,0x48)+=FIELD(p,0x4C);
+        }
+    }
+    {
+        f32 c = FIELD(p,0x3A4), sn = FIELD(p,0x3A8);
+        f32 bx = FIELD(p,0xB4), by = FIELD(p,0xB8);
+        f32 rx = c * bx + sn * by;
+        f32 ry = -sn * bx + c * by;
+        f32 mx = (FIELD(p,0xF8) + FIELD(p,0x104)) * lbl_80560BDC;
+        f32 my = (FIELD(p,0xFC) + FIELD(p,0x108)) * lbl_80560BDC;
+        f32 xx = rx * mx - ry * my;
+        f32 yy = ry * mx + rx * my;
+        delta.x = FIELD(p,0xC4) * (FIELD(p,0xBC) - xx);
+        delta.y = FIELD(p,0xC4) * (FIELD(p,0xC0) - yy);
+        pos.x = -FIELD(p,0xB0)*delta.x + FIELD(p,0xAC)*delta.y;
+        pos.y = -FIELD(p,0xAC)*delta.x - FIELD(p,0xB0)*delta.y;
+    }
+    if((s8)VFIELD(p,0x84)==0){f32 zero=lbl_80560BD8;*(struct Pair *)(p+0x20)=pos;*(struct Pair *)(p+0x28)=*(struct Pair *)&lbl_8055D988;FIELD(p,0x30)=zero;}else{delta.x=pos.x-FIELD(p,0x20);delta.y=pos.y-FIELD(p,0x24);mag=(f32)fn_8002F234((f64)(delta.x*delta.x+delta.y*delta.y));if(mag>=FIELD(p,0x88)){t=lbl_80560BE4;}else {t=mag/FIELD(p,0x88);t*=t;t*=t;}scale=t*FIELD(p,0x8C);FIELD(p,0x28)=scale*delta.x;FIELD(p,0x2C)=scale*delta.y;FIELD(p,0x30)=(f32)fn_8002F234((f64)(FIELD(p,0x28)*FIELD(p,0x28)+FIELD(p,0x2C)*FIELD(p,0x2C)));FIELD(p,0x20)+=FIELD(p,0x28);FIELD(p,0x24)+=FIELD(p,0x2C);}
+    VFIELD(p,0x84)=(u8)arg1;
+}
+
 static void clamp_stick_circle(Vec2* stick, s32 sx, s32 sy, s32 min, s32 max) {
     f32 length;
     f32 fx = (f32)sx;
@@ -439,12 +493,11 @@ void clamp_stick_cross(void *arg0, void *arg1) {
     }
 }
 
-void read_kpad_stick(s32 chan, void *arg1) {
+s32 read_kpad_stick(s32 chan, void *arg1) {
     u32 probe;
     s32 ret;
     s32 irq;
     u8 *obj = (u8 *)arg1;
-    u8 *state;
     extern s32 WPADProbe(s32, s32 *);
     extern void WPADSetAutoSamplingBuf(s32, void *, u32);
     extern s32 OSDisableInterrupts(void);
@@ -456,40 +509,46 @@ void read_kpad_stick(s32 chan, void *arg1) {
     extern u8 lbl_8037C808[];
     ret = WPADProbe(chan, (s32 *)&probe);
     if (ret == -1) {
-        if (*(s16 *)(obj + 0x114) < 0) return;
-        WPADSetAutoSamplingBuf(chan, 0, 0);
-        *(s16 *)(obj + 0x114) = chan - 4;
-        *(u32 *)(obj + 0x5C) = 0xFD;
-        state = lbl_8037C808 + (chan << 10);
-        irq = OSDisableInterrupts();
-        if (*(u32 *)(state + 0x3F0) != 0) {
-            *(u32 *)(state + 0x3F0) = 0;
-            if (*(u32 *)(state + 0x3F8) != 0) ((void (*)(s32, s32))(*(u32 *)(state + 0x3F8)))(chan, 1);
+        if (*(s16 *)(obj + 0x114) >= 0) {
+            WPADSetAutoSamplingBuf(chan, 0, 0);
+            *(s16 *)(obj + 0x114) = chan - 4;
+            *(u32 *)(obj + 0x5C) = 0xFD;
+            obj = lbl_8037C808 + (chan << 10);
+            irq = OSDisableInterrupts();
+            if (*(u32 *)(obj + 0x3F0) != 0) {
+                *(u32 *)(obj + 0x3F0) = 0;
+                if (*(u32 *)(obj + 0x3F8) != 0) {
+                    ((void (*)(s32, s32))(*(u32 *)(obj + 0x3F8)))(chan, 1);
+                }
+            }
+            OSRestoreInterrupts(irq);
         }
-        OSRestoreInterrupts(irq);
-        return;
+        return -1;
     }
-    if (ret != 0) return;
+    if (ret != 0) return 0;
     if (probe == *(u32 *)(obj + 0x5C)) {
-        if (*(u32 *)(obj + 0x3F4) != 0) { reset_kpad(obj); return; }
+        if (*(u32 *)(obj + 0x3F4) != 0) { reset_kpad(obj); return 1; }
         ret = fn_80062460(chan);
-        if (*(u32 *)(obj + 0x3EC) != 0 && ret == 0) { KPADiControlDpdCallback(chan, probe); reset_kpad(obj); return; }
-        if (*(u32 *)(obj + 0x3EC) == 0 && ret != 0) { KPADiSamplingCallback(chan, probe); reset_kpad(obj); return; }
+        if (*(u32 *)(obj + 0x3EC) != 0 && ret == 0) { KPADiControlDpdCallback(chan, probe); reset_kpad(obj); return 1; }
+        if (*(u32 *)(obj + 0x3EC) == 0 && ret != 0) { KPADiSamplingCallback(chan, probe); reset_kpad(obj); return 1; }
         if (*(u32 *)(obj + 0x3FC) != 0) {
             if (*(u32 *)(obj + 0x3EC) != 0) KPADiControlDpdCallback(chan, probe);
             else KPADiSamplingCallback(chan, probe);
-            reset_kpad(obj); return;
+            reset_kpad(obj); return 1;
         }
-        return;
+        return 0;
     }
-    if (probe != 0xFD) {
+    if (*(volatile u32 *)&probe != 0xFD) {
         if (*(u32 *)(obj + 0x3EC) != 0) KPADiControlDpdCallback(chan, probe);
         else KPADiSamplingCallback(chan, probe);
-        *(s16 *)(obj + 0x114) = chan;
-        *(u32 *)(obj + 0x5C) = probe;
-        reset_kpad(obj); return;
+    } else {
+        *(s16 *)(obj + 0x114) = chan - 4;
+        return -1;
     }
-    *(s16 *)(obj + 0x114) = chan - 4;
+    *(s16 *)(obj + 0x114) = chan;
+    *(u32 *)(obj + 0x5C) = probe;
+    reset_kpad(obj);
+    return 1;
 }
 
 #pragma scheduling invalid_target
@@ -546,8 +605,9 @@ init_samples:
         var_r31=var_r24-var_r23;
         do {
             var_r25++; if(var_r25==0xC) var_r25=0;
-            temp_r4=(u8 *)temp_r29+var_r25*0x2A; var_r28=temp_r4+0x118;
+            temp_r4=(u8 *)temp_r29+var_r25*0x2A;
             *((u8 *)temp_r29+0x85)=temp_r4[0x141];
+            var_r28=temp_r4+0x118;
             read_kpad_acc(temp_r29,var_r28,0,var_r22); read_kpad_dpd(temp_r29,var_r28,0);
             if(temp_r29->repeat_count>=var_r31) {
                 var_r30--;
@@ -558,8 +618,9 @@ init_samples:
         var_r31=var_r24-var_r23;
         do {
             var_r25++; if(var_r25==0xC) var_r25=0;
-            temp_r4=(u8 *)temp_r29+var_r25*0x32; var_r27=temp_r4+0x118;
+            temp_r4=(u8 *)temp_r29+var_r25*0x32;
             *((u8 *)temp_r29+0x85)=temp_r4[0x141];
+            var_r27=temp_r4+0x118;
             read_kpad_acc(temp_r29,var_r27,1,var_r22); read_kpad_dpd(temp_r29,var_r27,1); clamp_stick_cross(temp_r29,var_r27);
             if(temp_r29->repeat_count>=var_r31) {
                 var_r30--;
@@ -570,8 +631,9 @@ init_samples:
         var_r31=var_r24-var_r23;
         do {
             var_r25++; if(var_r25==0xC) var_r25=0;
-            temp_r4=(u8 *)temp_r29+var_r25*0x36; var_r26=(KPADReadStatus *)(temp_r4+0x118);
+            temp_r4=(u8 *)temp_r29+var_r25*0x36;
             *((u8 *)temp_r29+0x85)=temp_r4[0x141];
+            var_r26=(KPADReadStatus *)(temp_r4+0x118);
             read_kpad_acc(temp_r29,var_r26,2,var_r22); read_kpad_dpd(temp_r29,var_r26,2); clamp_stick_cross(temp_r29,var_r26);
             if(temp_r29->repeat_count>=var_r31) {
                 var_r30--;
