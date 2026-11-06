@@ -193,64 +193,67 @@ void fn_802E317C(char *, ...);
 #pragma dont_inline fn_80137FF0
 #pragma dont_inline fn_801380DC
 void fn_80138144(void *arg0) {
-    int mode;
     unsigned char a = *((unsigned char *)arg0);
     unsigned char b = *((unsigned char *)arg0 + 1);
     *((unsigned char *)arg0) = *((unsigned char *)arg0 + 3);
     *((unsigned char *)arg0 + 3) = a;
     *((unsigned char *)arg0 + 1) = *((unsigned char *)arg0 + 2);
     *((unsigned char *)arg0 + 2) = b;
-    mode = *(int *)arg0;
-    switch (mode) {
-    case 0: fn_80137F30(arg0); break;
-    case 1: fn_80137F74((char *)arg0 + 8); break;
-    case 2: fn_80137FF0(arg0); break;
-    case 3: fn_801380DC(arg0); break;
-    default: fn_802E317C(lbl_8032BF00); break;
+    {
+        int mode = *(int *)arg0;
+        switch (mode) {
+        case 0: ((void (*)(void *, int))fn_80137F30)(arg0, mode); break;
+        case 1: ((void (*)(void *, int))fn_80137F74)((char *)arg0 + 8, mode); break;
+        case 2: ((void (*)(void *, int))fn_80137FF0)(arg0, mode); break;
+        case 3: ((void (*)(void *, int))fn_801380DC)(arg0, mode); break;
+        default: fn_802E317C(lbl_8032BF00); break;
+        }
     }
 }
 
 extern void fn_80138434();
 void fn_801381B4(void *arg0) {
+    volatile unsigned char *v = (volatile unsigned char *)arg0;
     unsigned char *base = (unsigned char *)arg0;
     unsigned char *p = base + 0x30;
     unsigned char *r;
-    unsigned char a;
     unsigned char *node;
+    unsigned char t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11;
     int i, mode, found;
-    a = base[0]; base[0] = base[3]; base[3] = a;
-    a = base[1]; base[1] = base[2]; base[2] = a;
-    a = base[4]; base[4] = base[7]; base[7] = a;
-    a = base[5]; base[5] = base[6]; base[6] = a;
-    a = base[8]; base[8] = base[11]; base[11] = a;
-    a = base[9]; base[9] = base[10]; base[10] = a;
-    a = base[12]; base[12] = base[15]; base[15] = a;
-    a = base[13]; base[13] = base[14]; base[14] = a;
-    a = base[16]; base[16] = base[19]; base[19] = a;
-    a = base[17]; base[17] = base[18]; base[18] = a;
-    a = base[20]; base[20] = base[23]; base[23] = a;
-    a = base[21]; base[21] = base[22]; base[22] = a;
-    a = base[24]; base[24] = base[27]; base[27] = a;
-    a = base[25]; base[25] = base[26]; base[26] = a;
-    a = base[0x2c]; base[0x2c] = base[0x2f]; base[0x2f] = a;
-    a = base[0x2d]; base[0x2d] = base[0x2e]; base[0x2e] = a;
-    for (i = 0; i < *(int *)(base + 0x2c); i++) {
-        a = p[0]; p[0] = p[3]; p[3] = a;
-        a = p[1]; p[1] = p[2]; p[2] = a;
+    t0 = v[0]; t3 = v[3]; t1 = v[1]; t2 = v[2]; t4 = v[4]; t7 = v[7]; t5 = v[5]; t6 = v[6];
+    v[0] = t3; v[3] = t0; v[1] = t2; v[2] = t1; v[4] = t7; v[7] = t4; v[5] = t6; v[6] = t5;
+    t0 = v[8]; t1 = v[0xb]; v[8] = t1; v[0xb] = t0;
+    t0 = v[9]; t1 = v[0xa]; v[9] = t1; v[0xa] = t0;
+    t0 = v[0xc]; t1 = v[0xf]; v[0xc] = t1; v[0xf] = t0;
+    t0 = v[0xd]; t1 = v[0xe]; v[0xd] = t1; v[0xe] = t0;
+    t0 = v[0x10]; t1 = v[0x13]; v[0x10] = t1; v[0x13] = t0;
+    t0 = v[0x11]; t1 = v[0x12]; v[0x11] = t1; v[0x12] = t0;
+    t0 = v[0x14]; t1 = v[0x17]; t2 = v[0x15]; t3 = v[0x16];
+    t4 = v[0x18]; t5 = v[0x1b]; t6 = v[0x19]; t7 = v[0x1a];
+    t8 = v[0x2c]; t9 = v[0x2f]; t10 = v[0x2d]; t11 = v[0x2e];
+    v[0x14] = t1; v[0x17] = t0; v[0x15] = t3; v[0x16] = t2;
+    v[0x18] = t5; v[0x1b] = t4; v[0x19] = t7; v[0x1a] = t6;
+    v[0x2c] = t9; v[0x2f] = t8; v[0x2d] = t11; v[0x2e] = t10;
+    i = 0;
+    while (i < *(int *)(base + 0x2c)) {
+        t0 = p[0]; t1 = p[3]; p[0] = t1; p[3] = t0;
+        t0 = p[1]; t1 = p[2]; p[1] = t1; p[2] = t0;
         p += 4;
+        i++;
     }
     r = base;
     for (i = 0; i < *(int *)(base + 0x2c); i++) {
         unsigned char *t = base + *(int *)(r + 0x30);
         r += 4;
-        a = t[0]; t[0] = t[3]; t[3] = a;
-        a = t[1]; t[1] = t[2]; t[2] = a;
+        t0 = t[0]; t1 = t[3]; t[0] = t1; t[3] = t0;
+        t0 = t[1]; t1 = t[2]; t[1] = t1; t[2] = t0;
         *(int *)t = *(int *)t + (int)base;
     }
     fn_80138434(base + 0x1C);
     fn_80138434(base + 0x20);
     fn_80137D58(*(void **)(base + 0x1C), (int)base);
-    for (mode = 0; mode < 3; mode++) {
+    mode = 0;
+    do {
         found = 0;
         node = *(unsigned char **)(*(unsigned char **)(base + 0x1C) + 0x14);
         while (node != *(unsigned char **)(base + 0x1C)) {
@@ -262,7 +265,8 @@ void fn_801381B4(void *arg0) {
             }
             node = *(unsigned char **)(node + 0x14);
         }
-    }
+        mode++;
+    } while (mode < 3);
     node = *(unsigned char **)(base + 0x20);
     if (node != 0) {
         do {
@@ -365,23 +369,21 @@ extern float __fabsf(float);
 extern double __fabs(double);
 float fn_801385F0(float arg0, float arg1, float arg2, float arg3) {
     float diff = arg0 - arg2;
-    register float value;
+    float value;
     if ((float)__fabs((double)diff) > arg1 * lbl_80561398) {
         float adjust = diff > lbl_805613A4 ? lbl_8056139C : lbl_805613A0;
         diff -= arg1 * adjust;
     }
-    value = (float)__fabs((double)diff);
     arg1 = lbl_8056139C;
-    value = value / arg3;
-    value = arg1 - value;
-    value = (lbl_8056139C < value) ? lbl_8056139C : value;
-    value = (value > lbl_805613A4) ? lbl_805613A4 : value;
-    if (value < lbl_805613A0) return lbl_805613A0;
-    if (value > lbl_8056139C) return lbl_8056139C;
-    if (value > lbl_805613A4) {
-        return lbl_805613A8 * value * value * value + lbl_805613AC * value * value;
+    value = arg1 - (float)__fabs((double)diff) / arg3;
+    arg1 = (arg1 < value) ? arg1 : value;
+    arg1 = (arg1 > lbl_805613A4) ? arg1 : lbl_805613A4;
+    if (arg1 < lbl_805613A0) return lbl_805613A0;
+    if (arg1 > lbl_8056139C) return lbl_8056139C;
+    if (arg1 > lbl_805613A4) {
+        return arg1 * (lbl_805613A8 * arg1 * arg1) + (lbl_805613AC * arg1 * arg1);
     }
-    return lbl_805613A8 * value * value * value - lbl_805613AC * value * value;
+    return arg1 * (lbl_805613A8 * arg1 * arg1) - (lbl_805613AC * arg1 * arg1);
 }
 
 extern float lbl_805613B0, lbl_805613B4;
