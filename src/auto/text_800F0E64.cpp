@@ -28,13 +28,6 @@ typedef unsigned long long u64;
 typedef float f32;
 typedef double f64;
 typedef int BOOL;
-struct PlayOptions800F65F0 {
-    u32 startPosition;
-    s32 playerIndex;
-    u32 soundIndex;
-    s32 soundCount;
-    s32 startOffset;
-};
 struct StringTreeNodeLayout {
     u16 flags;
     u16 bitIndex;
