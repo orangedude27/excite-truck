@@ -653,6 +653,9 @@ extern char lbl_8055F480;
 extern float lbl_8055E460, lbl_80563C68, lbl_80563C70, lbl_80563C74, lbl_80563C78, lbl_80563C7C;
 #pragma push
 #pragma inline off
+extern double fn_8002EF30(float), __fabs(double);
+#pragma push
+#pragma unroll_loops off
 void fn_802678E8(void *arg0, int arg1) {
  struct Frame { unsigned char flag; char gap0[3]; float height; char gap1[4]; float y; char gap2[12]; float z; int object; void *matrix; void *extra; float x; char gap3[8]; MP_80267EF8 transform; } frame;
  char *p, *entity; int flags, i; float height, t;
@@ -662,7 +665,8 @@ void fn_802678E8(void *arg0, int arg1) {
  *(float *)(p+0x1a0) = lbl_80563C28;
  fn_8026B768(*(int *)(p+0x20), arg1);
  if (lbl_8055E3C4 != *(int *)(p+0xb8)) {
-   *(MP_80267EF8 *)(p+0x88) = *(MP_80267EF8 *)(p+0x58);
+   *(R9_80267EF8 *)(p+0x88) = *(R9_80267EF8 *)(p+0x58);
+   *(V3_80267EF8 *)(p+0xac) = *(V3_80267EF8 *)(p+0x7c);
    *(int *)(p+0xb8) = lbl_8055E3C4;
  }
  if (*(int *)(p+0x14) < 0 || *(int *)(p+0x14) >= 0x22) *(int *)(p+0x14) = 4;
@@ -672,8 +676,8 @@ void fn_802678E8(void *arg0, int arg1) {
  *(int *)(p+0x10) = *(int *)(p+0x14);
  *(float *)(p+0xbc) = lbl_80563C68;
  *(void **)(p+0x140) = fn_8017960C(*(int *)(p+0x20));
- frame.x = *(float *)(p+0x7c); frame.flag = 0; frame.y = *(float *)(p+0x80); frame.z = *(float *)(p+0x84);
- entity = *(char **)(p+0x140);
+ { float x = *(float *)(p+0x7c), y = *(float *)(p+0x80), z = *(float *)(p+0x84);
+ frame.x = x; frame.flag = 0; entity = *(char **)(p+0x140); frame.y = y; frame.z = z; }
  if (entity) {
    ((void (*)(void *, void *, int))fn_802693F4)(p, &frame.flag, arg1);
    flags = ((int (*)(int))fn_80267EE0)(*(int *)(p+0x10));
@@ -683,25 +687,31 @@ void fn_802678E8(void *arg0, int arg1) {
  frame.object = *(int *)(p+0x20); frame.matrix = p+0x58; frame.extra = p+0x120;
  fn_8020655C(&frame.object,arg1);
  if (*(int *)(p+0x10) != 0x11) {
+   float scale = lbl_8055E460;
+   float *cur = (float *)(p+0x58);
+   float *prev = (float *)(p+0x88);
    float *out = (float *)&frame.transform;
-   float *cur = (float *)(p+0x58), *prev = (float *)(p+0x88);
    for (i=0;i<2;i++) {
-     out[0]=prev[0]+lbl_8055E460*(cur[0]-prev[0]); out[1]=prev[1]+lbl_8055E460*(cur[1]-prev[1]);
-     out[2]=prev[2]+lbl_8055E460*(cur[2]-prev[2]); out[3]=prev[3]+lbl_8055E460*(cur[3]-prev[3]);
-     out[4]=prev[4]+lbl_8055E460*(cur[4]-prev[4]); out[5]=prev[5]+lbl_8055E460*(cur[5]-prev[5]);
+     out[0]=prev[0]+scale*(cur[0]-prev[0]); out[1]=prev[1]+scale*(cur[1]-prev[1]);
+     out[2]=prev[2]+scale*(cur[2]-prev[2]); out[3]=prev[3]+scale*(cur[3]-prev[3]);
+     out[4]=prev[4]+scale*(cur[4]-prev[4]); out[5]=prev[5]+scale*(cur[5]-prev[5]);
      out+=6; cur+=6; prev+=6;
    }
-   *(MP_80267EF8 *)arg0 = frame.transform;
- } else *(MP_80267EF8 *)arg0 = *(MP_80267EF8 *)(p+0x58);
+   *(R9_80267EF8 *)arg0 = *(R9_80267EF8 *)&frame.transform;
+   *(V3_80267EF8 *)((char *)arg0+0x24) = frame.transform.pos;
+ } else { *(R9_80267EF8 *)arg0 = *(R9_80267EF8 *)(p+0x58);
+   *(V3_80267EF8 *)((char *)arg0+0x24) = *(V3_80267EF8 *)(p+0x7c); }
  *(float *)((char *)arg0+0x30) = *(float *)(p+0xbc);
  *(float *)((char *)arg0+0x34) = fn_8002EF30(lbl_80563C6C * *(float *)(p+0xbc));
  if (fn_801769F8() == 0) {
    if (fn_8026B734(*(int *)(p+0x20), &frame.height)) height = frame.height;
    else {
      int mode = *(int *)(p+0x10);
-     if ((mode >= 0 && mode < 10) || mode == 14) {
+     int valid = 0;
+     if ((mode >= 0 && mode < 10) || mode == 14) valid = 1;
+     if (valid) {
        frame.height = fn_801B8950(*(int *)(p+0x20));
-       t = ((float)fabs(PSVECDotProduct(p+0x70,p+0xd8))-lbl_80563C70)/lbl_80563C74;
+       t = ((float)__fabs(PSVECDotProduct(p+0x70,p+0xd8))-lbl_80563C70)/lbl_80563C74;
        if (lbl_80563C2C < t) t = lbl_80563C2C;
        if (t < lbl_80563C20) t = lbl_80563C20;
        height = frame.height * (lbl_80563C2C + t*lbl_80563C78);
@@ -719,13 +729,13 @@ void fn_802678E8(void *arg0, int arg1) {
  else *(short *)((char *)arg0+0x64)=*(short *)(*(char **)(p+0x140)+0x6c);
  if (!fn_801769F8()) {
    float *q=lbl_80499980; float dec=lbl_80563C7C, zero=lbl_80563C20;
-   for (i=0;i<2;i++) {
-     t=q[0]-dec; if (t<zero) t=zero; q[0]=t;
-     t=q[1]-dec; if (t<zero) t=zero; q[1]=t;
-     t=q[2]-dec; if (t<zero) t=zero; q[2]=t;
-     t=q[3]-dec; if (t<zero) t=zero; q[3]=t;
-     q+=4;
-   }
+   i=0; do {
+     t=q[0]-dec; if (zero>t) t=zero; q[0]=t;
+     t=q[1]-dec; if (zero>t) t=zero; q[1]=t;
+     t=q[2]-dec; if (zero>t) t=zero; q[2]=t;
+     t=q[3]-dec; if (zero>t) t=zero; q[3]=t;
+     q+=4; i+=3;
+   } while (i<6);
  }
  fn_80267130(arg0); ((void (*)(void *))fn_802671CC)(arg0);
 }
@@ -1011,6 +1021,118 @@ void fn_80268E00(void) {
     object.resource = 0;
     fn_8013530C(&object, 0);
 }
+
+#pragma push
+#pragma processor 750
+extern int fn_8026B0C0(int);
+extern float lbl_80563C40, lbl_80563CA0, lbl_80563CA4, lbl_80563CA8, lbl_80563CAC, lbl_80563CB0, lbl_80563CB4, lbl_80563CB8;
+extern float fn_80144514(float,float,float,float,float,float);
+extern float fn_80144514(float,float,float,float,float,float);
+static inline void fn_80268E94_multiply(float *out, const float *a, const float *b) {
+ float t0,t1,t2,t3,t4,t5,t6,t7,t8;
+ if (out == a || out == b) {
+ t0 = fn_80144514(b[0], a[0], b[3], a[1], b[6], a[2]);
+ t3 = fn_80144514(b[0], a[3], b[3], a[4], b[6], a[5]);
+ t6 = fn_80144514(b[0], a[6], b[3], a[7], b[6], a[8]);
+ t1 = fn_80144514(b[1], a[0], b[4], a[1], b[7], a[2]);
+ t4 = fn_80144514(b[1], a[3], b[4], a[4], b[7], a[5]);
+ t7 = fn_80144514(b[1], a[6], b[4], a[7], b[7], a[8]);
+ t2 = fn_80144514(b[2], a[0], b[5], a[1], b[8], a[2]);
+ t5 = fn_80144514(b[2], a[3], b[5], a[4], b[8], a[5]);
+ t8 = fn_80144514(b[2], a[6], b[5], a[7], b[8], a[8]);
+ out[0] = t0;
+ out[3] = t3;
+ out[6] = t6;
+ out[1] = t1;
+ out[4] = t4;
+ out[7] = t7;
+ out[2] = t2;
+ out[5] = t5;
+ out[8] = t8;
+ } else {
+ out[0] = fn_80144514(b[0], a[0], b[3], a[1], b[6], a[2]);
+ out[3] = fn_80144514(b[0], a[3], b[3], a[4], b[6], a[5]);
+ out[6] = fn_80144514(b[0], a[6], b[3], a[7], b[6], a[8]);
+ out[1] = fn_80144514(b[1], a[0], b[4], a[1], b[7], a[2]);
+ out[4] = fn_80144514(b[1], a[3], b[4], a[4], b[7], a[5]);
+ out[7] = fn_80144514(b[1], a[6], b[4], a[7], b[7], a[8]);
+ out[2] = fn_80144514(b[2], a[0], b[5], a[1], b[8], a[2]);
+ out[5] = fn_80144514(b[2], a[3], b[5], a[4], b[8], a[5]);
+ out[8] = fn_80144514(b[2], a[6], b[5], a[7], b[8], a[8]);
+ }
+}
+void fn_80268E94(void *arg0, int arg1) {
+ float v[3], rot[9]; float *matrix;
+ float elapsed, weight, phase, mag, x,y,z, sn,cs,one;
+ float tmp0,tmp1,tmp2,tmp3,tmp4,tmp5,tmp6,tmp7,tmp8;
+ int mode, valid;
+ if (fn_8026B0C0(arg1) || fn_801769F8()) return;
+ mode = *(int *)((char *)arg0+0x10); valid = 0;
+ if ((mode >= 0 && mode < 10) || mode == 14) valid = 1;
+ if (!valid) return;
+ elapsed = lbl_8055E3C8 - *(float *)((char *)arg0+0x158);
+ if (elapsed >= lbl_80563C6C) return;
+ phase = (lbl_80563C6C - elapsed)/lbl_80563C6C;
+ if (phase < lbl_80563C28) weight = lbl_80563C28;
+ else if (phase > lbl_80563C2C) weight = lbl_80563C2C;
+ else if (phase > lbl_80563C20) weight = phase*(lbl_80563C30*phase*phase) + lbl_80563C34*phase*phase;
+ else weight = phase*(lbl_80563C30*phase*phase) - lbl_80563C34*phase*phase;
+ weight *= *(float *)((char *)arg0+0x154);
+ if (weight <= lbl_80563CA0) return;
+ one = lbl_80563CA4;
+ sn = sin(lbl_80563CA8 * (lbl_80563CAC * elapsed) * one);
+ z = weight * (fn_80129DC4(0,lbl_80563CB0,lbl_80563CB4) + sn*lbl_80563CB8);
+ sn = sin(lbl_80563C50 * (lbl_80563CAC * elapsed) * one);
+ y = weight * (fn_80129DC4(0,lbl_80563CB0,lbl_80563CB4) + sn*lbl_80563CB8);
+ sn = sin((lbl_80563CAC * elapsed) * one);
+ v[1] = y; v[2] = z;
+ v[0] = weight * (fn_80129DC4(0,lbl_80563CB0,lbl_80563CB4) + sn*lbl_80563CB8);
+ mag = PSVECMag(v);
+ if (mag > lbl_80563C40) {
+   float scale = lbl_80563C2C / mag;
+   x=scale*v[0]; y=scale*v[1]; z=scale*v[2];
+   sn=sin(mag); cs=cos(mag); one=lbl_80563C2C-cs;
+   rot[0]=cs+one*x*x; rot[1]=y*one*x+sn*z; rot[2]=z*one*x-sn*y;
+   rot[3]=y*one*x-sn*z; rot[4]=cs+one*y*y; rot[5]=z*one*y+sn*x;
+   rot[6]=z*one*x+sn*y; rot[7]=z*one*y-sn*x; rot[8]=cs+one*z*z;
+ } else {
+   rot[0]=lbl_80563C2C; rot[1]=lbl_80563C20; rot[2]=lbl_80563C20;
+   rot[3]=lbl_80563C20; rot[4]=lbl_80563C2C; rot[5]=lbl_80563C20;
+   rot[6]=lbl_80563C20; rot[7]=lbl_80563C20; rot[8]=lbl_80563C2C;
+ }
+ matrix=(float *)((char *)arg0+0x58);
+ if (matrix == matrix || matrix == rot) {
+  tmp0 = fn_80144514(rot[0], matrix[0], rot[3], matrix[1], rot[6], matrix[2]);
+  tmp3 = fn_80144514(rot[0], matrix[3], rot[3], matrix[4], rot[6], matrix[5]);
+  tmp6 = fn_80144514(rot[0], matrix[6], rot[3], matrix[7], rot[6], matrix[8]);
+  tmp1 = fn_80144514(rot[1], matrix[0], rot[4], matrix[1], rot[7], matrix[2]);
+  tmp4 = fn_80144514(rot[1], matrix[3], rot[4], matrix[4], rot[7], matrix[5]);
+  tmp7 = fn_80144514(rot[1], matrix[6], rot[4], matrix[7], rot[7], matrix[8]);
+  tmp2 = fn_80144514(rot[2], matrix[0], rot[5], matrix[1], rot[8], matrix[2]);
+  tmp5 = fn_80144514(rot[2], matrix[3], rot[5], matrix[4], rot[8], matrix[5]);
+  tmp8 = fn_80144514(rot[2], matrix[6], rot[5], matrix[7], rot[8], matrix[8]);
+  matrix[0] = tmp0;
+matrix[3] = tmp3;
+matrix[6] = tmp6;
+matrix[1] = tmp1;
+matrix[4] = tmp4;
+matrix[7] = tmp7;
+matrix[2] = tmp2;
+matrix[5] = tmp5;
+matrix[8] = tmp8;
+ } else {
+  matrix[0] = fn_80144514(rot[0], matrix[0], rot[3], matrix[1], rot[6], matrix[2]);
+  matrix[3] = fn_80144514(rot[0], matrix[3], rot[3], matrix[4], rot[6], matrix[5]);
+  matrix[6] = fn_80144514(rot[0], matrix[6], rot[3], matrix[7], rot[6], matrix[8]);
+  matrix[1] = fn_80144514(rot[1], matrix[0], rot[4], matrix[1], rot[7], matrix[2]);
+  matrix[4] = fn_80144514(rot[1], matrix[3], rot[4], matrix[4], rot[7], matrix[5]);
+  matrix[7] = fn_80144514(rot[1], matrix[6], rot[4], matrix[7], rot[7], matrix[8]);
+  matrix[2] = fn_80144514(rot[2], matrix[0], rot[5], matrix[1], rot[8], matrix[2]);
+  matrix[5] = fn_80144514(rot[2], matrix[3], rot[5], matrix[4], rot[8], matrix[5]);
+  matrix[8] = fn_80144514(rot[2], matrix[6], rot[5], matrix[7], rot[8], matrix[8]);
+ }
+}
+#pragma pop
 
 #pragma dont_inline on
 void fn_8026A248(int arg0, int arg1) {
