@@ -119,10 +119,10 @@ float *basis = (float *)arg4;
 float one, f1, f2, f3, zero, f5;
 
 zero = lbl_80564D14;
-f5 = ((float *)arg3)[0];
-f3 = ((float *)arg3)[1];
-f2 = ((float *)arg3)[2];
-f1 = ((float *)arg3)[3];
+f5 = in[0];
+f3 = in[1];
+f2 = in[2];
+f1 = in[3];
 one = lbl_80564D18;
 
 m0[9] = f5;
@@ -235,11 +235,7 @@ m0[7] *= scale;
 m0[8] *= scale;
 }
 }
-
-#pragma push
-#pragma processor 750
-#pragma scheduling 750
-#pragma use_lmw_stmw off
+#pragma pop
 void *fn_802BC9B0(void *arg0, int arg1, float scale) {
     extern void *fn_801284F8(int, int);
     extern float lbl_80564D1C, lbl_80564D20;
@@ -281,7 +277,7 @@ struct Arg2 {
     char pad31[3];
     struct CurveData curve;
 };
-extern void fn_802BC588(void *, void *, void *, void *, void *);
+extern void fn_802BC588();
 extern int fn_802C1500(void *, int);
 extern void *fn_801FA8E0(void *, void *, int);
 extern int lbl_8055FAB0;
@@ -543,6 +539,92 @@ void *fn_802BD194(void *arg0, const char *arg1) {
     }
     return 0;
 }
+
+#pragma push
+#pragma ppc_psq_save off
+#pragma scheduling invalid_target
+int fn_802BD210(void *arg0) {
+    #pragma unused(arg0)
+    extern void *fn_8012C370(void *, unsigned int, unsigned int *, int, int, unsigned char *);
+    extern void *fn_801284F8(int, int);
+    extern void fn_802BD414(int, volatile int *);
+    extern void fn_802BD478(int, volatile int *);
+    extern void fn_802BD4DC(void *, int);
+    extern void fn_80127464(void);
+    register char *strings = (char *)&lbl_8034AB38;
+    volatile unsigned int spC = 0;
+    unsigned char sp8;
+    void *object = fn_8012C370(strings + 0x8C, 0x544C5354, (unsigned int *)&spC, 0, 0, &sp8);
+    lbl_8055FAB8 = (int)object;
+    if (object != 0) {
+        if (spC == 2) {
+            if (sp8 != 0)
+                fn_802BD4DC(object, (int)((char *)object + 8));
+            {
+                register float normalization = lbl_80564D18;
+                register void *zero = 0;
+                register int offset = 0;
+                register int index = 0;
+                while (index < *(int *)((char *)&lbl_804C00D4 + 4)) {
+                    register char *entry = *(char **)&lbl_804C00D4 + offset;
+                    const char *name = *(const char **)entry;
+                    void *descriptor = fn_802BD194((void *)lbl_8055FAB8, name);
+                    if (descriptor != 0) {
+                        void *wrapper = fn_801284F8(0xC, (int)(strings + 0x9C));
+                        if (wrapper != 0) {
+                            *(void **)wrapper = ((void *(*)(int, volatile int *))fn_802BD414)((int)(strings + 0xA8), (volatile int *)((char *)descriptor + 0x20));
+                            *(void **)((char *)wrapper + 4) = ((void *(*)(int, volatile int *))fn_802BD478)((int)(strings + 0xB8), (volatile int *)((char *)descriptor + 0x28));
+                            *(void **)((char *)wrapper + 8) = ((void *(*)(int, volatile int *))fn_802BD478)((int)(strings + 0xB8), (volatile int *)((char *)descriptor + 0x30));
+                            {
+                                int pointCount = *(int *)((char *)*(void **)wrapper + 4);
+                                int pointIndex = 0;
+                                int pointOffset = 0;
+                                volatile float sp[5];
+                                while (pointIndex < pointCount) {
+                                    char *point = *(char **)*(void **)wrapper + pointOffset;
+                                    volatile float *pointValues = (volatile float *)point;
+                                    float x, xx, z, zz, xValue, zValue, scale;
+                                    double root;
+                                    sp[0] = *(float *)(point + 0x30);
+                                    sp[1] = *(float *)(point + 0x38);
+                                    sp[4] = PSVECMag((const Vec *)(point + 0x24));
+                                    x = pointValues[9];
+                                    sp[2] = x;
+                                    xx = x * x;
+                                    z = pointValues[11];
+                                    sp[3] = z;
+                                    zz = z * z;
+                                    root = fn_8002F234(xx + zz, z);
+                                    xValue = sp[2];
+                                    zValue = sp[3];
+                                    scale = normalization / (float)root;
+                                    sp[2] = xValue * scale;
+                                    sp[3] = zValue * scale;
+                                    fn_802BCA8C(*(char **)*(void **)wrapper + pointOffset, (void *)sp, (struct Arg2 *)entry);
+                                    if ((pointIndex & 0x3F) == 0)
+                                        fn_80127464();
+                                    pointOffset += 0x44;
+                                    pointIndex += 1;
+                                }
+                            }
+                            fn_802BC44C(*(void **)((char *)wrapper + 4));
+                            fn_802BC44C(*(void **)((char *)wrapper + 8));
+                        }
+                        *(void **)(entry + 0x58) = wrapper;
+                    } else {
+                        *(void **)(entry + 0x58) = zero;
+                    }
+                    offset += 0x60;
+                    index += 1;
+                }
+            }
+        } else {
+            ((void (*)(void *))fn_802E317C)(strings + 0xC8);
+        }
+    }
+}
+#pragma pop
+
 #pragma pop
 void *fn_801284F8(int, int);
 int strcmp(const char *, const char *);
