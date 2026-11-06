@@ -14,7 +14,7 @@ extern void fn_80232BA4(char *, s32, s32, s32, float, float, float, float, float
 extern double fn_8023659C(void);
 extern double fn_8002EFB4(double, double);
 extern float lbl_80563798, lbl_8056379C, lbl_805637A0, lbl_805637A4;
-extern float lbl_805637A8, lbl_805637B0, lbl_805637B4, lbl_805637B8;
+extern float lbl_805637A8, lbl_805637AC, lbl_805637B0, lbl_805637B4, lbl_805637B8;
 extern float lbl_805637BC, lbl_805637C0, lbl_805637C4, lbl_805637D0;
 extern float lbl_805637D4, lbl_805637D8, lbl_805637DC, lbl_805637E0;
 extern float lbl_805637E4;
