@@ -1,5 +1,11 @@
 #pragma dont_inline fn_802D1678
 #pragma dont_inline fn_802CFF50
+extern char lbl_8034BF80[];
+extern void DCInvalidateRange(void *, unsigned long);
+extern void *memcpy(void *, const void *, unsigned long);
+extern unsigned long lbl_8055FD44_CF10C;
+extern int lbl_8055FD4C_CF10C;
+extern unsigned char lbl_8055FD50_CF10C;
 #pragma dont_inline fn_802D2ED8
 #pragma dont_inline fn_802CFD74
 extern int lbl_804C9760[];
@@ -2387,14 +2393,13 @@ void fn_802D3BB4(float *arg0, float *arg1, float *arg2, float *arg3, unsigned in
     float b0 = arg3[0], b1 = arg3[1], b2 = arg3[2];
     unsigned int alpha = (arg4 & 0xFFFFFF) | ((unsigned int)(int)(arg0[5] * (float)(arg4 >> 24)) << 24);
     float neg = -scale;
-    const unsigned short *idx = lbl_802FACC8;
 
-    indices[0] = *idx;
-    indices[1] = idx[1];
-    indices[2] = idx[2];
-    indices[3] = idx[3];
-    indices[4] = idx[4];
-    indices[5] = idx[5];
+    indices[0] = lbl_802FACC8[0];
+    indices[1] = lbl_802FACC8[1];
+    indices[2] = lbl_802FACC8[2];
+    indices[3] = lbl_802FACC8[3];
+    indices[4] = lbl_802FACC8[4];
+    indices[5] = lbl_802FACC8[5];
 
     verts[0].pos.x = p0 + a0 * scale;
     verts[0].pos.y = p1 + a1 * scale;
