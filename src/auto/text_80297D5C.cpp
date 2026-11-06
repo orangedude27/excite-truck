@@ -14,6 +14,8 @@ extern "C" char lbl_80349408[];
 extern "C" char lbl_803494A4[];
 extern "C" char lbl_803494B8[];
 
+struct Fn80299A88Matrix { float v[9]; };
+
 struct Entry {
     float f0, f4, f8, f12, f16, f20;
     char f24, f25;
@@ -1706,6 +1708,61 @@ extern "C" void fn_8029B274(void *arg0, float *arg1, unsigned char arg2, void *a
     fn_802C8E00(0xC0FFFFFF, 1, sp3C, sp40, sp44, sp10, sp8);
 }
 
+#pragma push
+#pragma processor 750
+extern "C" void fn_8029B43C(void *arg0, void *entry, unsigned char arg2, float f, float, float, float, float) {
+    float *p = (float *)entry;
+    float v[12];
+    float sp14, sp10, spC, sp8;
+    float neg, h, a, b, c;
+    float neg2, h2, a2, b2, c2;
+
+    fn_8029B138(arg0, arg2, &sp14, &sp10, &spC, &sp8);
+    neg = -f;
+    a = p[6];
+    b = p[7];
+    c = p[8];
+    h = lbl_8056460C * f;
+    v[0] = p[9] + a * neg;
+    v[1] = p[10] + b * neg;
+    v[2] = p[11] + c * neg;
+    v[3] = v[0] + p[3] * h;
+    v[4] = v[1] + p[4] * h;
+    v[5] = v[2] + p[5] * h;
+    v[6] = v[0] + a * h;
+    v[7] = v[1] + b * h;
+    v[8] = v[2] + c * h;
+    v[9] = v[3] + a * h;
+    v[10] = v[4] + b * h;
+    v[11] = v[5] + c * h;
+    fn_802C8E00(0xC0FFFFFF, 0, v[0], v[1], v[2], sp14, spC);
+    fn_802C8E00(0xC0FFFFFF, 0, v[3], v[4], v[5], sp10, spC);
+    fn_802C8E00(0xC0FFFFFF, 1, v[6], v[7], v[8], sp14, sp8);
+    fn_802C8E00(0xC0FFFFFF, 1, v[9], v[10], v[11], sp10, sp8);
+
+    neg2 = -f;
+    a2 = p[0];
+    b2 = p[1];
+    c2 = p[2];
+    h2 = lbl_8056460C * f;
+    v[0] = p[9] + a2 * neg2;
+    v[1] = p[10] + b2 * neg2;
+    v[2] = p[11] + c2 * neg2;
+    v[3] = v[0] + p[3] * h2;
+    v[4] = v[1] + p[4] * h2;
+    v[5] = v[2] + p[5] * h2;
+    v[6] = v[0] + a2 * h2;
+    v[7] = v[1] + b2 * h2;
+    v[8] = v[2] + c2 * h2;
+    v[9] = v[3] + a2 * h2;
+    v[10] = v[4] + b2 * h2;
+    v[11] = v[5] + c2 * h2;
+    fn_802C8E00(0xC0FFFFFF, 0, v[0], v[1], v[2], sp14, spC);
+    fn_802C8E00(0xC0FFFFFF, 0, v[3], v[4], v[5], sp10, spC);
+    fn_802C8E00(0xC0FFFFFF, 1, v[6], v[7], v[8], sp14, sp8);
+    fn_802C8E00(0xC0FFFFFF, 1, v[9], v[10], v[11], sp10, sp8);
+}
+#pragma pop
 extern "C" void *fn_802C86DC(void);
 extern "C" void fn_8029B274(void *arg0, float *arg1, unsigned char arg2, void *arg3, void *arg4, float farg0, float arg6);
 #pragma paired_single off
