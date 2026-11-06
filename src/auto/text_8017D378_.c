@@ -546,6 +546,7 @@ void fn_8017DEE0(register void *arg0, register long arg1, register long arg2, sh
         *((unsigned char *)sub + 0x49) = 1;
     }
 }
+#pragma ppc_psq_save reset
 #pragma dont_inline reset
 #pragma scheduling on
 #pragma pop
