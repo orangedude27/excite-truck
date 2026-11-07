@@ -12,7 +12,7 @@ extern "C" void *fn_80131810(void);
 extern "C" s32 fn_8016C5F0(void);
 extern "C" void fn_8016C55C(void *, void *);
 extern "C" void *fn_8016C598(void *, int, int);
-extern "C" void fn_8016C768(void *, void *, void *);
+extern "C" s8 fn_8016C768(void *, void *, void *);
 extern "C" s32 fn_8016CD4C(void *);
 extern "C" void *fn_8016CD68(void *, s32, s32);
 extern "C" s32 fn_8016CDF8(void *, void *);
