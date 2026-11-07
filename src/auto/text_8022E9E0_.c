@@ -18,7 +18,7 @@ extern s32 lbl_8055F004;
 extern char lbl_803402A0[];
 extern char lbl_803402F4[];
 extern char lbl_80340308[];
-extern void fn_802E317C(char *, ...);
+extern void fn_802E317C(const char *);
 extern void fn_802E30C8(char *);
 extern void fn_8022ED50(s32);
 extern f32 lbl_805635E0;
@@ -30,21 +30,18 @@ extern void *fn_8022ECC0(s32);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#pragma scheduling invalid_target
 void fn_8022E9E0(void) {
     if (lbl_8055EFF4 == 0) {
-        void *p;
-        p = fn_801284F8(0x20, (void *)&lbl_80340280);
-        if (p != 0) {
-            p = fn_8012A13C(p, (void *)&lbl_80340280, 0x20, 8);
-        }
+        void *p = fn_801284F8(0x20, (void *)&lbl_80340280);
+        if (p) p = fn_8012A13C(p, lbl_80340280, 0x20, 8);
         lbl_8055EFF8 = (void **)p;
     }
-    if (fn_8012A2D8(lbl_8055EFF8) == 0) {
-        return;
+    if (((int (*)(void **))fn_8012A2D8)(lbl_8055EFF8) != 0) {
+        *(volatile s32 *)&lbl_8055EFF4 = *(volatile s32 *)&lbl_8055EFF4 + 1;
     }
-    ++lbl_8055EFF4;
 }
-
+#pragma scheduling reset
 #pragma cplusplus on
 extern "C" void fn_8022EA58(void *arg0) {
     class Unk8022EA58 { public: virtual ~Unk8022EA58(); };
@@ -56,12 +53,13 @@ extern "C" void fn_8022EA58(void *arg0) {
 }
 #pragma cplusplus reset
 void fn_8022EAB8(void) {
-    if (lbl_8055EFFC == 0) {
-        void *p = fn_801284F8(0x20, (void *)&lbl_80340290);
-        if (p) p = fn_8012A13C(p, lbl_80340290, 0x20, 0x3C);
-        lbl_8055F000 = (void **)p;
+    if (!lbl_8055EFFC) {
+        void *p;
+        p = fn_801284F8(0x20, (void *)&lbl_80340290[0]);
+        lbl_8055F000 = (void **)(p ? fn_8012A13C(p, lbl_80340290, 0x20, 0x3c) : p);
     }
-    if (fn_8012A2D8(lbl_8055F000)) ++lbl_8055EFFC;
+    if (!fn_8012A2D8(lbl_8055F000)) return;
+    lbl_8055EFFC = 1 + lbl_8055EFFC;
 }
 
 #pragma dont_inline on
@@ -82,8 +80,8 @@ void fn_8022EB30(void *arg0) {
 }
 #pragma dont_inline off
 void fn_8022EB90(void) {
-    if (lbl_8055F004) fn_802E317C(lbl_803402A0);
-    lbl_8055F004 = (s32)((void *(*)(int, const char *))fn_801284F8)(8, lbl_803402F4);
+    if (lbl_8055F004 != 0) ((void (*)(const char *, ...))fn_802E317C)(lbl_803402A0);
+    lbl_8055F004 = (s32)fn_801284F8(8, lbl_803402F4);
     *(s32 *)lbl_8055F004 = 0;
     ((s32 *)lbl_8055F004)[1] = *(s32 *)lbl_8055F004;
 }
