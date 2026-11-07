@@ -1726,7 +1726,6 @@ extern void GXLoadLightObjImm(void *, unsigned int);
 extern void GXSetChanCtrl(int, int, int, int, unsigned int, int, int);
 #pragma pop
 
-#pragma push
 #pragma scheduling reset
 #pragma paired off
 #pragma paired_single off
