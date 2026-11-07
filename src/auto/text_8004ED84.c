@@ -282,12 +282,14 @@ void Halt(void) {
     unsigned char *p;
     char *msg;
     int len;
-    FatalInfo *info = (FatalInfo *)lbl_8038E328;
-    GXColor *cols = (GXColor *)lbl_8038E328;
-    GXColor yuv, fgYUV;
+    FatalInfo *info;
+    GXColor *cols;
+    GXColor yuv;
     int t, x, y;
 
     OSEnableInterrupts();
+    info = (FatalInfo *)lbl_8038E328;
+    cols = (GXColor *)lbl_8038E328;
     msg = *(char **)&info->c;
     len = strlen(msg) + 1;
     info->c = (int)memmove(OSAllocFromMEM1ArenaLo(len, 0x20), msg, len);
@@ -295,15 +297,18 @@ void Halt(void) {
     OSLoadFont((int)font, (int)OSGetArenaLo());
     fb = OSAllocFromMEM1ArenaLo(0x96000, 0x20);
     yuv = RGBToYUV_8004(cols[1]);
+    p = fb;
+    y = 0;
     {
-        GXColor c = yuv;
-        p = fb;
-        for (y = 0; y < 0x1E0; y++) {
+        unsigned char g = yuv.g;
+        unsigned char b = yuv.b;
+        unsigned char r = yuv.r;
+        for (; y < 0x1E0; y++) {
             for (x = 0; x < 0x280; x += 2) {
-                p[0] = c.r;
-                p[1] = c.g;
-                p[2] = c.r;
-                p[3] = c.b;
+                p[0] = r;
+                p[1] = g;
+                p[2] = r;
+                p[3] = b;
                 p += 4;
             }
         }
@@ -314,8 +319,7 @@ void Halt(void) {
     t = fn_8005AC08();
     while (fn_8005AC08() - t < 2) {
     }
-    fgYUV = RGBToYUV_8004(cols[0]);
-    ScreenReport(fb, 0x280, 0x1E0, fgYUV, 0x30, 0x64, *(unsigned short *)((char *)font + 0xE), (char *)info->c);
+    ScreenReport(fb, 0x280, 0x1E0, RGBToYUV_8004(cols[0]), 0x30, 0x64, *(unsigned short *)((char *)font + 0xE), (char *)info->c);
     DCFlushRange(fb, 0x96000);
     VISetBlack(0);
     VIFlush();
