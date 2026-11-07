@@ -287,14 +287,15 @@ extern s32 sprintf(char *, const char *, ...);
 extern s32 fn_8012C33C(const char *);
 extern s32 fn_80232578(const char *);
 extern char lbl_8055B9A0;
-#pragma dont_inline on
+#pragma push
+#pragma scheduling invalid_target
 s32 fn_80231730(s32 arg0) {
     char buffer[0x18];
     sprintf(buffer, &lbl_8055B9A0, arg0);
     if (fn_8012C33C(buffer) != 0) return fn_80232578(buffer);
     return 0;
 }
-#pragma dont_inline off
+#pragma pop
 
 #pragma push
 #pragma processor 750
@@ -410,7 +411,7 @@ void fn_80231AF0(char *text, void *ctx, f32 x, f32 y, f32 z, f32 w, f32 sx, f32 
         u16 code;
         char *next;
         u8 c;
-        unsigned long off;
+        s32 off;
 
         if (ch == '\\') {
             s32 eo;
@@ -421,7 +422,7 @@ void fn_80231AF0(char *text, void *ctx, f32 x, f32 y, f32 z, f32 w, f32 sx, f32 
                 Fn80231AF0_Entry *e;
                 const char *name = *(const char **)((u8 *)((Fn80231AF0_Table *)lbl_80497F14)->entries + eo);
                 if (fn_8002B1D8(curText + 1, name, strlen(name)) == 0) {
-                    e = &((Fn80231AF0_Table *)lbl_80497F14)->entries[i];
+                    e = (Fn80231AF0_Entry *)((u8 *)((Fn80231AF0_Table *)lbl_80497F14)->entries + eo);
                     if (e->unkC != 0) {
                         f32 r = w / fn_80235F64(e->unkC, e->unk10);
                         f32 t = r * fn_80235EF0(e->unkC, e->unk10);
@@ -455,7 +456,7 @@ have:
             code = c & 0x7F;
             next = curText + 1;
         }
-        off = code * 0x1C;
+        off = (unsigned short)code * sizeof(Fn80231AF0_Entry);
         curText += next - curText;
         x += sy * (sx * *(f32 *)((u8 *)((Fn80231AF0_Ctx *)ctx)->glyphs + off));
         if (lbl_8055F074) {
@@ -1652,26 +1653,26 @@ extern void fn_802C8BD0(s32);
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_802346C8(void) {
-register f32 f30 = lbl_80563688;
-register f32 f31 = lbl_8056368C;
+f32 f30 = lbl_80563688;
+f32 f31 = lbl_8056368C;
 f32 f28;
 f32 f27;
 f32 f26;
 f32 f25;
 f32 f24;
 volatile f32 sp8;
-register s32 mode;
-register s32 i;
-register s32 textOffset;
-register s32 charIndex;
-register s32 nameIndex;
-register s32 glyphOffset;
-register u32 *colorPtr;
-register u8 *object;
-register u8 *record;
-register u8 *glyphDef;
-register u32 fontColor;
-register s8 *start;
+s32 mode;
+s32 i;
+s32 textOffset;
+s32 charIndex;
+s32 nameIndex;
+s32 glyphOffset;
+u32 *colorPtr;
+u8 *object;
+u8 *record;
+u8 *glyphDef;
+u32 fontColor;
+s8 *start;
 s32 totalChars;
 s32 charStep;
 s32 glyphIndex;
@@ -1800,7 +1801,7 @@ if ((s8)(((u8 *)lbl_8055F06C + textOffset)[charIndex]) != 0) goto char_body;
 textOffset += 0x58;
 i++;
 record_test:
-if (i < *(s32 *)((u8 *)lbl_8055F058 + 4)) goto record_body;
+if (i < *(s32 *)((u8 *)&lbl_8055F058 + 4)) goto record_body;
 fn_802C8E48();
 }
 fn_802C8D74();
@@ -1809,7 +1810,7 @@ else fn_80231780(0);
 mode--;
 outer_test:
 if (mode > 0) goto outer_body;
-*(s32 *)((u8 *)lbl_8055F058 + 4) = 0;
+*(s32 *)((u8 *)&lbl_8055F058 + 4) = 0;
 }
 #pragma dont_inline off
 #pragma scheduling on
