@@ -1244,6 +1244,186 @@ extern "C" void fn_802123B8(void *arg0, void *arg1, void *arg2) {
     *(s32 *)&lbl_8055EF38 = -1;
 }
 
+void fn_802141A0(void **arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
+    void *node;
+    void *top;
+    u8 *it;
+    s32 v28;
+    s32 v27;
+    s32 flag28;
+    void *out;
+    if (*(void **)arg1 != NULL) {
+        if (fn_80211678((u8 *)*(void **)arg1) != 0) {
+            node = fn_8022E4C0(arg1);
+        } else {
+            node = fn_8022E0EC(*(void **)arg1);
+        }
+        *(void **)((u8 *)arg1 + 0xC) = node;
+        lbl_8055EF44 = *(void **)arg1;
+    }
+    node = *(void **)((u8 *)arg1 + 0xC);
+    *(void **)((u8 *)arg1 + 0x10) = NULL;
+    if ((s8)((u8 *)node)[0x25] != 0) {
+        if (lbl_8055EF40 == 0) {
+            fn_80276D3C((u8 *)node + 0x28, 1);
+        } else {
+            fn_802E30C8((const char *)(lbl_8033CAE8 + 0x694), (const char *)((u8 *)node + 0x28));
+        }
+    }
+    v28 = lbl_8055CFF0;
+    v27 = lbl_8055CFF4;
+    {
+        char *msg = (char *)((u8 *)(*(void **)((u8 *)arg1 + 0xC)) + 4);
+        if (msg != NULL && strstr(msg, lbl_8055B788) != NULL && fn_8012C33C((s32)msg) != 0) {
+            s32 res = fn_802C5130((char *)msg);
+            if (fn_802C51C0((void *)res) > 0) {
+                if (fn_802C5220((void *)res) > 0) {
+                    v28 = fn_802C51C0((void *)res);
+                    v27 = fn_802C5220((void *)res);
+                }
+                fn_802C519C(res);
+            }
+        }
+    }
+    if (arg2 == -999) {
+        s32 diff = lbl_8055CFF0 - v28;
+        arg2 = diff / 2;
+    }
+    if (arg3 == -999) {
+        s32 diff2 = lbl_8055CFF4 - v27;
+        arg3 = diff2 / 2;
+    }
+    if (arg5 != 0) {
+        void *rec = fn_801284F8(0xDE8, (const char *)(lbl_8033CAE8 + 0x6c0));
+        if (rec != NULL) {
+            out = fn_80216D40(rec, lbl_8055B7F8, arg2, arg3, v28, v27, arg4);
+        } else {
+            out = fn_80216770((const char *)((u8 *)(*(void **)((u8 *)arg1 + 0xC)) + 4), arg2, arg3, v28, v27, arg4);
+        }
+    } else {
+        out = fn_80216770((const char *)((u8 *)(*(void **)((u8 *)arg1 + 0xC)) + 4), arg2, arg3, v28, v27, arg4);
+    }
+    *arg0 = out;
+    {
+        u8 *p = *(u8 **)((u8 *)node + 0x64);
+        while (*(s32 *)p != 0)
+            p = p + 0x134;
+    }
+    if ((s8)((u8 *)node)[0x24] != 0) {
+        top = fn_8022E0EC((const void *)(lbl_8033CAE8 + 0x6d0));
+        *(void **)((u8 *)arg1 + 0x10) = top;
+        {
+            u8 *p = *(u8 **)((u8 *)top + 0x64);
+            while (*(s32 *)p != 0)
+                p = p + 0x134;
+        }
+    }
+    {
+        void *head = *(void **)((u8 *)arg1 + 4);
+        u8 *q = (u8 *)head;
+        s32 z = 0;
+        s32 ng = -1;
+        do {
+            if (*(s32 *)(q + 4) == 5) {
+                char *sp = *(char **)q;
+                if (sp != NULL && strcmp(sp, &lbl_8055B6A8) == 0) {
+                    *(s32 *)&lbl_8055EF38 = z;
+                    void *rec = fn_801284F8(0x248, lbl_8055B7C8);
+                    if (rec != NULL) {
+                        void *in8 = *(void **)(q + 8);
+                        fn_80218F34(rec, 0, 0, 0, 0, 0);
+                        *(void **)rec = (void *)&lbl_8033D480;
+                        *(void **)((u8 *)rec + 0x244) = in8;
+                        *(void **)((u8 *)in8 + 0x14) = rec;
+                        *(s32 *)((u8 *)in8 + 4) = z;
+                        *(s32 *)((u8 *)in8 + 8) = z;
+                        *(s32 *)((u8 *)in8 + 0xC) = z;
+                        *(s32 *)((u8 *)in8 + 0x10) = z;
+                        fn_802168EC(out, rec, -1);
+                    }
+                    *(s32 *)&lbl_8055EF38 = ng;
+                }
+            }
+            q = q + 0x14;
+        } while (*(s32 *)(q + 4) != 0x7b);
+    }
+    if ((s8)((u8 *)node)[0x24] != 0) {
+        void *top2 = *(void **)((u8 *)arg1 + 0x10);
+        it = *(u8 **)((u8 *)top2 + 0x64);
+        do {
+            fn_802123B8(out, it, *(void **)((u8 *)arg1 + 4));
+            it = it + 0x134;
+        } while (*(s32 *)it != 0);
+    }
+    {
+        u8 *it2 = *(u8 **)((u8 *)node + 0x64);
+        do {
+            fn_802123B8(out, it2, *(void **)((u8 *)arg1 + 4));
+            it2 = it2 + 0x134;
+        } while (*(s32 *)it2 != 0);
+    }
+    {
+        void *head = *(void **)((u8 *)arg1 + 4);
+        u8 *q = (u8 *)head;
+        s32 z = 0;
+        s32 ng = -1;
+        flag28 = 0;
+        do {
+            s32 type = *(s32 *)(q + 4);
+            if (type == 5) {
+                if (*(void **)q != NULL) {
+                    *(s32 *)&lbl_8055EF38 = z;
+                    void *rec = fn_801284F8(0x248, lbl_8055B7C8);
+                    if (rec != NULL) {
+                        void *in8 = *(void **)(q + 8);
+                        fn_80218F34(rec, 0, 0, 0, 0, 0);
+                        *(void **)rec = (void *)&lbl_8033D480;
+                        *(void **)((u8 *)rec + 0x244) = in8;
+                        *(void **)((u8 *)in8 + 0x14) = rec;
+                        *(s32 *)((u8 *)in8 + 4) = z;
+                        *(s32 *)((u8 *)in8 + 8) = z;
+                        *(s32 *)((u8 *)in8 + 0xC) = z;
+                        *(s32 *)((u8 *)in8 + 0x10) = z;
+                        fn_802168EC(out, rec, -1);
+                    }
+                    *(s32 *)&lbl_8055EF38 = ng;
+                }
+            } else if (type == 6) {
+                void *rec = fn_801284F8(0x250, lbl_8055B7FC);
+                if (rec != NULL) {
+                    void *a8 = *(void **)(q + 8);
+                    s32 aC = *(s32 *)(q + 0xC);
+                    u16 a10 = *(u16 *)(q + 0x10);
+                    fn_80218F34(rec, 0, 0, 0, 0, 0);
+                    *(void **)rec = (void *)&lbl_8033D590;
+                    *(s32 *)((u8 *)rec + 0x24C) = aC;
+                    *(void **)((u8 *)rec + 0x248) = a8;
+                    *(u16 *)((u8 *)rec + 0x244) = a10;
+                    fn_802168EC(out, rec, -1);
+                }
+            } else if (type == 8) {
+                s32 v = *(s32 *)(q + 0xC);
+                if (v == 0) {
+                    *(void **)((u8 *)out + 0x438) = *(void **)(q + 8);
+                } else if (v == 1) {
+                    *(void **)((u8 *)out + 0x43C) = *(void **)(q + 8);
+                } else if (v == 2) {
+                    flag28 = 1;
+                    *(void **)((u8 *)out + 0x440) = *(void **)(q + 8);
+                } else if (v == 3) {
+                    *(void **)((u8 *)out + 0x444) = *(void **)(q + 8);
+                } else {
+                    fn_802E317C((const char *)(lbl_8033CAE8 + 0x6e0));
+                }
+            }
+            q = q + 0x14;
+        } while (*(s32 *)(q + 4) != 0x7b);
+    }
+    if (flag28 == 0) {
+        *(void **)((u8 *)out + 0x440) = (void *)&fn_80236914;
+    }
+}
+
 #pragma push
 #pragma dont_inline on
 #pragma use_lmw_stmw off
@@ -1947,13 +2127,13 @@ extern "C" void fn_80215500(void) {
 
 }
 
-#pragma scheduling off
 extern "C" void fn_80215504(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
-    f32 rate = (f32)(double)lbl_80563450;
-    fn_8022BAD0(*(s32 *)((u8 *)arg0 + 8), arg1, arg2, 0, arg4, arg5,
-                *(s32 *)((u8 *)arg0 + 4), arg6, rate, 0);
+    f32 rate = lbl_80563450;
+    ((s32 (*)(s32, s32, s32, s32, s32, s32, s32, s32, s32, float))fn_8022BAD0)(
+        *(s32 *)((u8 *)arg0 + 8), arg1, arg2, 0, arg4, arg5,
+        *(s32 *)((u8 *)arg0 + 4), arg6, 0, rate);
 }
-#pragma scheduling on
+
 extern "C" void fn_80215544(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     fn_8022AC1C(*(s32 *)((char *)arg0 + 8), *(s32 *)((char *)arg0 + 4), arg1, arg2, arg3, arg4, arg5, arg6);
 }
