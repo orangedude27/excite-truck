@@ -163,9 +163,11 @@ s32 fn_80008C5C(void) {
 #pragma optimization_level reset
 #pragma dont_inline off
 
+#pragma dont_inline on
 s32 fn_8000865C(void) {
     return (*(u32 *)((char *)fn_801E87A8() + 0x10) >> 1) & 1;
 }
+#pragma dont_inline reset
 
 #pragma push
 #pragma processor 750
