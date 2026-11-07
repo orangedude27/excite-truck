@@ -4769,9 +4769,11 @@ void fn_80120F84(s32 n, s32 arg1, void *arg2) {
     }
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 void fn_80121400(s32 n, s32 *map, f32 *data, s32 unused) {
+    s32 i, j, half, a, b;
     s32 size = 1;
-    s32 i, j, k, half, span;
     *map = 0;
     while ((size << 3) < n) {
         n >>= 1;
@@ -4782,28 +4784,62 @@ void fn_80121400(s32 n, s32 *map, f32 *data, s32 unused) {
     if ((size << 3) == n) {
         for (i = 0; i < size; i++) {
             for (j = 0; j < i; j++) {
-                s32 a = map[i] + j * 2;
-                s32 b = map[j] + i * 2;
-                f32 t0=data[b*2], t1=data[b*2+1];
-                data[b*2]=data[a*2]; data[b*2+1]=-data[a*2+1];
-                data[a*2]=t0; data[a*2+1]=-t1;
+                f32 t0, t1;
+                a = map[i] + j * 2;
+                b = map[j] + i * 2;
+                t0 = data[b]; t1 = data[b + 1];
+                data[b] = data[a]; data[b + 1] = -data[a + 1];
+                data[a] = t0; data[a + 1] = -t1;
+                a += half * 2; b += half * 4;
+                t0 = data[b]; t1 = data[b + 1];
+                data[b] = data[a]; data[b + 1] = -data[a + 1];
+                data[a] = t0; data[a + 1] = -t1;
+                a += half * 2; b -= half * 2;
+                t0 = data[b]; t1 = data[b + 1];
+                data[b] = data[a]; data[b + 1] = -data[a + 1];
+                data[a] = t0; data[a + 1] = -t1;
+                a += half * 2; b += half * 4;
+                t0 = data[b]; t1 = data[b + 1];
+                data[b] = data[a]; data[b + 1] = -data[a + 1];
+                data[a] = t0; data[a + 1] = -t1;
             }
-            data[(map[i]+i*2)*2+1] = -data[(map[i]+i*2)*2+1];
+            {
+                f32 t0, t1;
+                a = map[i] + i * 2;
+                data[a + 1] = -data[a + 1];
+                a += half * 2;
+                t0 = data[a + half * 2]; t1 = data[a + half * 2 + 1];
+                data[a + half * 2] = data[a]; data[a + half * 2 + 1] = -data[a + 1];
+                data[a] = t0; data[a + 1] = -t1;
+                a += half * 2;
+                data[a + half * 2 + 1] = -data[a + half * 2 + 1];
+            }
         }
         return;
     }
     data[1] = -data[1];
-    data[(half*2+1)*2] = -data[(half*2+1)*2];
-    for (i=1; i<size; i++) {
-        for (j=0; j<i; j++) {
-            s32 a=2+map[j]+i*2, b=map[i+1]+j*2;
-            f32 t0=data[b*2], t1=data[b*2+1];
-            data[b*2]=data[a*2]; data[b*2+1]=-data[a*2+1];
-            data[a*2]=t0; data[a*2+1]=-t1;
+    data[half * 2 + 1] = -data[half * 2 + 1];
+    for (i = 1; i < size; i++) {
+        for (j = 0; j < i; j++) {
+            f32 t0, t1;
+            a = map[i] + j * 2;
+            b = map[j] + i * 2;
+            t0 = data[b]; t1 = data[b + 1];
+            data[b] = data[a]; data[b + 1] = -data[a + 1];
+            data[a] = t0; data[a + 1] = -t1;
+            a += half * 2; b += half * 2;
+            t0 = data[b]; t1 = data[b + 1];
+            data[b] = data[a]; data[b + 1] = -data[a + 1];
+            data[a] = t0; data[a + 1] = -t1;
+        }
+        {
+            a = map[i + 1] + i * 2;
+            data[a + 1] = -data[a + 1];
+            data[a + half * 2 + 1] = -data[a + half * 2 + 1];
         }
     }
 }
-
+#pragma pop
 void fn_80121848(void *arg0) {
     f32 temp_f0;
     f32 temp_f10;
@@ -7048,13 +7084,12 @@ void fn_80125CC8(void *arg0, s32 arg1, void *arg2, s32 arg3, void *arg4, s32 arg
 #pragma push
 #pragma scheduling invalid_target
 void fn_80126A10(s8 *arg0, void *arg1, u32 arg2) {
-    struct Layout {
-        u32 scratch[16];
-        u8 gap[0x44];
-        u8 table[4];
-        u8 pad[0x30];
-    } layout;
-    u8 *bytes;
+    s8 sp8F;
+    s8 sp8E;
+    s8 sp8D;
+    u8 sp8C;
+    u32 scratch[16] = {0};
+    u8 *bytes = (u8 *)scratch;
     s32 temp_cr0_eq;
     s32 temp_cr0_eq_2;
     s32 temp_cr0_eq_3;
@@ -7064,7 +7099,7 @@ void fn_80126A10(s8 *arg0, void *arg1, u32 arg2) {
     s32 temp_r24;
     s32 var_ctr;
     s32 var_r24;
-    u32 var_r27;
+    s32 var_r27;
     s32 var_r31;
     s32 var_r8;
     s8 temp_r7_2;
@@ -7102,13 +7137,13 @@ void fn_80126A10(s8 *arg0, void *arg1, u32 arg2) {
     u8 temp_r25;
     u8 temp_r26;
     var_r30 = 0U;
-    temp_r27 = M2C_FIELD(arg1, u32 *, 8);
-    var_r29 = M2C_FIELD(arg1, u32 **, 4);
-    temp_r28 = M2C_FIELD(arg1, u32 *, 0);
+    temp_r27 = *(u32 *)((u8 *)arg1 + 8);
+    var_r29 = *(u32 **)((u8 *)arg1 + 4);
+    temp_r28 = *(u32 *)arg1;
     if (temp_r27 < 3U) {
         temp_r7 = *var_r29;
-        var_r29 += 1;
-        var_r27 = temp_r27 + 0x1D;
+        var_r29 += 4;
+        var_r27 = temp_r27 + 29;
         var_r28 = temp_r7 >> (3 - temp_r27);
         var_r24 = (temp_r28 | (temp_r7 << temp_r27)) & 7;
     } else {
@@ -7116,16 +7151,15 @@ void fn_80126A10(s8 *arg0, void *arg1, u32 arg2) {
         var_r28 = temp_r28 >> 3U;
         var_r27 = temp_r27 - 3;
     }
-    var_r9 = layout.table;
-    layout.table[0] = 0x10;
+    var_r9 = &sp8C;
+    sp8C = 0x10;
     var_r12 = 1 << var_r24;
     var_r10 = var_r9 + 4;
     var_r8 = var_r24 + 1;
-    layout.table[1] = 0x60;
+    sp8D = 0x60;
     var_r31 = 0;
-    layout.table[2] = 0xB0;
-    layout.table[3] = 2;
-    bytes = (u8 *)layout.scratch;
+    sp8E = 0xB0;
+    sp8F = 2;
 loop_84:
     if (var_r8 != 0) {
         temp_r7_2 = -var_r12;
@@ -7135,8 +7169,8 @@ loop_84:
 loop_5:
             if (var_r27 == 0) {
                 var_r11 = *var_r29;
-                var_r27 = 0x1F;
-                var_r29 += 1;
+                var_r27 = 31;
+                var_r29 += 4;
                 var_r28 = var_r11 >> 1U;
             } else {
                 var_r11 = var_r28;
@@ -7177,8 +7211,8 @@ loop_82:
             if ((s32) temp_r26 != 0) {
                 if (var_r27 == 0) {
                     var_r24_3 = *var_r29;
-                    var_r27 = 0x1F;
-                    var_r29 += 1;
+                    var_r27 = 31;
+                    var_r29 += 4;
                     var_r28 = var_r24_3 >> 1U;
                 } else {
                     var_r24_3 = var_r28;
@@ -7187,15 +7221,15 @@ loop_82:
                 }
                 if (var_r24_3 & 1) {
                     temp_r24 = temp_r26 & 3;
-                    switch (temp_r24) {             /* irregular */
+                    switch (temp_r24) {
                     case 0:
                         var_r26_2 = temp_r26 >> 2U;
                         *var_r11_2 = ((var_r26_2 + 4) * 4) + 1;
 block_29:
                         if (var_r27 == 0) {
                             var_r24_4 = *var_r29;
-                            var_r27 = 0x1F;
-                            var_r29 += 1;
+                            var_r27 = 31;
+                            var_r29 += 4;
                             var_r28 = var_r24_4 >> 1U;
                         } else {
                             var_r24_4 = var_r28;
@@ -7204,15 +7238,15 @@ block_29:
                         }
                         if (var_r24_4 & 1) {
                             var_r9 -= 1;
-                            M2C_FIELD(var_r9, s8 *, -1) = (s8) ((var_r26_2 * 4) + 3);
+                            *(var_r9 - 1) = (s8) ((var_r26_2 * 4) + 3);
                             goto block_40;
                         }
                         bytes[var_r31] = (u8) var_r26_2;
                         var_r31 += 1;
                         if (var_r27 == 0) {
                             var_r24_5 = *var_r29;
-                            var_r27 = 0x1F;
-                            var_r29 += 1;
+                            var_r27 = 31;
+                            var_r29 += 4;
                             var_r28 = var_r24_5 >> 1U;
                         } else {
                             var_r24_5 = var_r28;
@@ -7230,8 +7264,8 @@ block_29:
 block_40:
                             if (var_r27 == 0) {
                                 var_r24_7 = *var_r29;
-                                var_r27 = 0x1F;
-                                var_r29 += 1;
+                                var_r27 = 31;
+                                var_r29 += 4;
                                 var_r28 = var_r24_7 >> 1U;
                             } else {
                                 var_r24_7 = var_r28;
@@ -7240,15 +7274,15 @@ block_40:
                             }
                             if (var_r24_7 & 1) {
                                 var_r9 -= 1;
-                                M2C_FIELD(var_r9, s8 *, -1) = (s8) (((var_r26_2 + 1) * 4) + 3);
+                                *(var_r9 - 1) = (s8) (((var_r26_2 + 1) * 4) + 3);
                                 goto block_51;
                             }
                             bytes[var_r31] = var_r26_2 + 1;
                             var_r31 += 1;
                             if (var_r27 == 0) {
                                 var_r24_8 = *var_r29;
-                                var_r27 = 0x1F;
-                                var_r29 += 1;
+                                var_r27 = 31;
+                                var_r29 += 4;
                                 var_r28 = var_r24_8 >> 1U;
                             } else {
                                 var_r24_8 = var_r28;
@@ -7260,14 +7294,14 @@ block_40:
                                 var_r25 = temp_r7_2;
                             }
                             temp_cr0_eq_3 = var_r30 == arg2;
-                            M2C_FIELD((arg0 + var_r26_2), s8 *, 1) = var_r25;
+                            *(arg0 + var_r26_2 + 1) = var_r25;
                             var_r30 += 1;
                             if (temp_cr0_eq_3 == 0) {
 block_51:
                                 if (var_r27 == 0) {
                                     var_r24_9 = *var_r29;
-                                    var_r27 = 0x1F;
-                                    var_r29 += 1;
+                                    var_r27 = 31;
+                                    var_r29 += 4;
                                     var_r28 = var_r24_9 >> 1U;
                                 } else {
                                     var_r24_9 = var_r28;
@@ -7276,15 +7310,15 @@ block_51:
                                 }
                                 if (var_r24_9 & 1) {
                                     var_r9 -= 1;
-                                    M2C_FIELD(var_r9, s8 *, -1) = (s8) (((var_r26_2 + 2) * 4) + 3);
+                                    *(var_r9 - 1) = (s8) (((var_r26_2 + 2) * 4) + 3);
                                     goto block_62;
                                 }
                                 bytes[var_r31] = var_r26_2 + 2;
                                 var_r31 += 1;
                                 if (var_r27 == 0) {
                                     var_r24_10 = *var_r29;
-                                    var_r27 = 0x1F;
-                                    var_r29 += 1;
+                                    var_r27 = 31;
+                                    var_r29 += 4;
                                     var_r28 = var_r24_10 >> 1U;
                                 } else {
                                     var_r24_10 = var_r28;
@@ -7296,14 +7330,14 @@ block_51:
                                     var_r25_2 = temp_r7_2;
                                 }
                                 temp_cr0_eq_4 = var_r30 == arg2;
-                                M2C_FIELD((arg0 + var_r26_2), s8 *, 2) = var_r25_2;
+                                *(arg0 + var_r26_2 + 2) = var_r25_2;
                                 var_r30 += 1;
                                 if (temp_cr0_eq_4 == 0) {
 block_62:
                                     if (var_r27 == 0) {
                                         var_r24_11 = *var_r29;
-                                        var_r27 = 0x1F;
-                                        var_r29 += 1;
+                                        var_r27 = 31;
+                                        var_r29 += 4;
                                         var_r28 = var_r24_11 >> 1U;
                                     } else {
                                         var_r24_11 = var_r28;
@@ -7312,15 +7346,15 @@ block_62:
                                     }
                                     if (var_r24_11 & 1) {
                                         var_r9 -= 1;
-                                        M2C_FIELD(var_r9, s8 *, -1) = (s8) (((var_r26_2 + 3) * 4) + 3);
+                                        *(var_r9 - 1) = (s8) (((var_r26_2 + 3) * 4) + 3);
                                         goto loop_82;
                                     }
                                     bytes[var_r31] = var_r26_2 + 3;
                                     var_r31 += 1;
                                     if (var_r27 == 0) {
                                         var_r24_12 = *var_r29;
-                                        var_r27 = 0x1F;
-                                        var_r29 += 1;
+                                        var_r27 = 31;
+                                        var_r29 += 4;
                                         var_r28 = var_r24_12 >> 1U;
                                     } else {
                                         var_r24_12 = var_r28;
@@ -7332,7 +7366,7 @@ block_62:
                                         var_r24_13 = temp_r7_2;
                                     }
                                     temp_cr0_eq_5 = var_r30 == arg2;
-                                    M2C_FIELD((arg0 + var_r26_2), s8 *, 3) = var_r24_13;
+                                    *(arg0 + var_r26_2 + 3) = var_r24_13;
                                     var_r30 += 1;
                                     if (temp_cr0_eq_5 == 0) {
                                         goto loop_82;
@@ -7344,9 +7378,9 @@ block_62:
                     case 1:
                         temp_r26_2 = temp_r26 >> 2U;
                         *var_r11_2 = (temp_r26_2 * 4) + 2;
-                        M2C_FIELD(var_r10, u8 *, 0) = ((temp_r26_2 + 4) * 4) + 2;
-                        M2C_FIELD(var_r10, s8 *, 1) = (s8) (((temp_r26_2 + 8) * 4) + 2);
-                        M2C_FIELD(var_r10, s8 *, 2) = (s8) (((temp_r26_2 + 0xC) * 4) + 2);
+                        *var_r10 = ((temp_r26_2 + 4) * 4) + 2;
+                        *(var_r10 + 1) = (s8) (((temp_r26_2 + 8) * 4) + 2);
+                        *(var_r10 + 2) = (s8) (((temp_r26_2 + 12) * 4) + 2);
                         var_r10 += 3;
                         goto loop_82;
                     case 2:
@@ -7360,8 +7394,8 @@ block_62:
                         var_r31 += 1;
                         if (var_r27 == 0) {
                             var_r24_14 = *var_r29;
-                            var_r27 = 0x1F;
-                            var_r29 += 1;
+                            var_r27 = 31;
+                            var_r29 += 4;
                             var_r28 = var_r24_14 >> 1U;
                         } else {
                             var_r24_14 = var_r28;
@@ -7391,95 +7425,107 @@ block_81:
             }
         }
     }
-    M2C_FIELD(arg1, u32 **, 4) = var_r29;
-    M2C_FIELD(arg1, u32 *, 0) = var_r28;
-    M2C_FIELD(arg1, u32 *, 8) = (u32) var_r27;
+    *(u32 **)((u8 *)arg1 + 4) = var_r29;
+    *(u32 *)arg1 = var_r28;
+    *(u32 *)((u8 *)arg1 + 8) = var_r27;
 }
 #pragma pop
 extern void fn_80126A10(s8 *, void *, u32);
-void fn_80126EF0(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, u8 *arg4, s32 arg5) {
-    u32 temp[16] = {0};
-    u8 *dst = arg0;
-    u8 *src = arg4;
-    fn_80126A10((s8 *)temp, (void *)arg2, (u32)arg3);
-    dst[0] = ((u8 *)temp)[0] + src[0];
-    dst[1] = ((u8 *)temp)[1] + src[1];
-    dst[2] = ((u8 *)temp)[4] + src[2];
-    dst[3] = ((u8 *)temp)[5] + src[3];
-    dst[4] = ((u8 *)temp)[8] + src[4];
-    dst[5] = ((u8 *)temp)[9] + src[5];
-    dst[6] = ((u8 *)temp)[12] + src[6];
-    dst[7] = ((u8 *)temp)[13] + src[7];
-    dst += arg1;
-    src += arg5;
-    dst[0] = ((u8 *)temp)[2] + src[0];
-    dst[1] = ((u8 *)temp)[3] + src[1];
-    dst[2] = ((u8 *)temp)[6] + src[2];
-    dst[3] = ((u8 *)temp)[7] + src[3];
-    dst[4] = ((u8 *)temp)[10] + src[4];
-    dst[5] = ((u8 *)temp)[11] + src[5];
-    dst[6] = ((u8 *)temp)[14] + src[6];
-    dst[7] = ((u8 *)temp)[15] + src[7];
-    dst += arg1;
-    src += arg5;
-    dst[0] = ((u8 *)temp)[24] + src[0];
-    dst[1] = ((u8 *)temp)[25] + src[1];
-    dst[2] = ((u8 *)temp)[44] + src[2];
-    dst[3] = ((u8 *)temp)[45] + src[3];
-    dst[4] = ((u8 *)temp)[16] + src[4];
-    dst[5] = ((u8 *)temp)[17] + src[5];
-    dst[6] = ((u8 *)temp)[20] + src[6];
-    dst[7] = ((u8 *)temp)[21] + src[7];
-    dst += arg1;
-    src += arg5;
-    dst[0] = ((u8 *)temp)[26] + src[0];
-    dst[1] = ((u8 *)temp)[27] + src[1];
-    dst[2] = ((u8 *)temp)[46] + src[2];
-    dst[3] = ((u8 *)temp)[47] + src[3];
-    dst[4] = ((u8 *)temp)[18] + src[4];
-    dst[5] = ((u8 *)temp)[19] + src[5];
-    dst[6] = ((u8 *)temp)[22] + src[6];
-    dst[7] = ((u8 *)temp)[23] + src[7];
-    dst += arg1;
-    src += arg5;
-    dst[0] = ((u8 *)temp)[28] + src[0];
-    dst[1] = ((u8 *)temp)[29] + src[1];
-    dst[2] = ((u8 *)temp)[32] + src[2];
-    dst[3] = ((u8 *)temp)[33] + src[3];
-    dst[4] = ((u8 *)temp)[48] + src[4];
-    dst[5] = ((u8 *)temp)[49] + src[5];
-    dst[6] = ((u8 *)temp)[52] + src[6];
-    dst[7] = ((u8 *)temp)[53] + src[7];
-    dst += arg1;
-    src += arg5;
-    dst[0] = ((u8 *)temp)[30] + src[0];
-    dst[1] = ((u8 *)temp)[31] + src[1];
-    dst[2] = ((u8 *)temp)[34] + src[2];
-    dst[3] = ((u8 *)temp)[35] + src[3];
-    dst[4] = ((u8 *)temp)[50] + src[4];
-    dst[5] = ((u8 *)temp)[51] + src[5];
-    dst[6] = ((u8 *)temp)[54] + src[6];
-    dst[7] = ((u8 *)temp)[55] + src[7];
-    dst += arg1;
-    src += arg5;
-    dst[0] = ((u8 *)temp)[36] + src[0];
-    dst[1] = ((u8 *)temp)[37] + src[1];
-    dst[2] = ((u8 *)temp)[40] + src[2];
-    dst[3] = ((u8 *)temp)[41] + src[3];
-    dst[4] = ((u8 *)temp)[56] + src[4];
-    dst[5] = ((u8 *)temp)[57] + src[5];
-    dst[6] = ((u8 *)temp)[60] + src[6];
-    dst[7] = ((u8 *)temp)[61] + src[7];
-    dst += arg1;
-    src += arg5;
-    dst[0] = ((u8 *)temp)[38] + src[0];
-    dst[1] = ((u8 *)temp)[39] + src[1];
-    dst[2] = ((u8 *)temp)[42] + src[2];
-    dst[3] = ((u8 *)temp)[43] + src[3];
-    dst[4] = ((u8 *)temp)[58] + src[4];
-    dst[5] = ((u8 *)temp)[59] + src[5];
-    dst[6] = ((u8 *)temp)[62] + src[6];
-    dst[7] = ((u8 *)temp)[63] + src[7];
+void fn_80126EF0(u8 *dstBlock, s32 dstPitch, s32 reader, s32 maxCoeffs, u8 *srcBlock, s32 srcPitch) {
+    // Decodes one 8x8 block of signed 8-bit residuals from the bit stream at
+    // `reader` (fn_80126A10, at most `maxCoeffs` coefficients) into `coeffs`,
+    // then adds them to the 8x8 block at `srcBlock` and writes the result to
+    // `dstBlock`; both blocks are 8 bytes per row with the given pitch.
+    // The decoder fills the coefficient buffer four bytes at a time, and each
+    // 4-byte run becomes a 2x2 block of the output, so the rows below read the
+    // buffer back in that interleaved order.
+    u32 coeffs[16] = {0};
+    u8 *dst = dstBlock;
+    u8 *src = srcBlock;
+
+    fn_80126A10((s8 *)coeffs, (void *)reader, (u32)maxCoeffs);
+    // output rows 0-1 <- coefficient runs 0, 1, 2, 3
+    dst[0] = ((u8 *)coeffs)[0] + src[0];
+    dst[1] = ((u8 *)coeffs)[1] + src[1];
+    dst[2] = ((u8 *)coeffs)[4] + src[2];
+    dst[3] = ((u8 *)coeffs)[5] + src[3];
+    dst[4] = ((u8 *)coeffs)[8] + src[4];
+    dst[5] = ((u8 *)coeffs)[9] + src[5];
+    dst[6] = ((u8 *)coeffs)[12] + src[6];
+    dst[7] = ((u8 *)coeffs)[13] + src[7];
+    dst += dstPitch;
+    src += srcPitch;
+    dst[0] = ((u8 *)coeffs)[2] + src[0];
+    dst[1] = ((u8 *)coeffs)[3] + src[1];
+    dst[2] = ((u8 *)coeffs)[6] + src[2];
+    dst[3] = ((u8 *)coeffs)[7] + src[3];
+    dst[4] = ((u8 *)coeffs)[10] + src[4];
+    dst[5] = ((u8 *)coeffs)[11] + src[5];
+    dst[6] = ((u8 *)coeffs)[14] + src[6];
+    dst[7] = ((u8 *)coeffs)[15] + src[7];
+    dst += dstPitch;
+    src += srcPitch;
+    // output rows 2-3 <- coefficient runs 6, 11, 4, 5
+    dst[0] = ((u8 *)coeffs)[24] + src[0];
+    dst[1] = ((u8 *)coeffs)[25] + src[1];
+    dst[2] = ((u8 *)coeffs)[44] + src[2];
+    dst[3] = ((u8 *)coeffs)[45] + src[3];
+    dst[4] = ((u8 *)coeffs)[16] + src[4];
+    dst[5] = ((u8 *)coeffs)[17] + src[5];
+    dst[6] = ((u8 *)coeffs)[20] + src[6];
+    dst[7] = ((u8 *)coeffs)[21] + src[7];
+    dst += dstPitch;
+    src += srcPitch;
+    dst[0] = ((u8 *)coeffs)[26] + src[0];
+    dst[1] = ((u8 *)coeffs)[27] + src[1];
+    dst[2] = ((u8 *)coeffs)[46] + src[2];
+    dst[3] = ((u8 *)coeffs)[47] + src[3];
+    dst[4] = ((u8 *)coeffs)[18] + src[4];
+    dst[5] = ((u8 *)coeffs)[19] + src[5];
+    dst[6] = ((u8 *)coeffs)[22] + src[6];
+    dst[7] = ((u8 *)coeffs)[23] + src[7];
+    dst += dstPitch;
+    src += srcPitch;
+    // output rows 4-5 <- coefficient runs 7, 8, 12, 13
+    dst[0] = ((u8 *)coeffs)[28] + src[0];
+    dst[1] = ((u8 *)coeffs)[29] + src[1];
+    dst[2] = ((u8 *)coeffs)[32] + src[2];
+    dst[3] = ((u8 *)coeffs)[33] + src[3];
+    dst[4] = ((u8 *)coeffs)[48] + src[4];
+    dst[5] = ((u8 *)coeffs)[49] + src[5];
+    dst[6] = ((u8 *)coeffs)[52] + src[6];
+    dst[7] = ((u8 *)coeffs)[53] + src[7];
+    dst += dstPitch;
+    src += srcPitch;
+    dst[0] = ((u8 *)coeffs)[30] + src[0];
+    dst[1] = ((u8 *)coeffs)[31] + src[1];
+    dst[2] = ((u8 *)coeffs)[34] + src[2];
+    dst[3] = ((u8 *)coeffs)[35] + src[3];
+    dst[4] = ((u8 *)coeffs)[50] + src[4];
+    dst[5] = ((u8 *)coeffs)[51] + src[5];
+    dst[6] = ((u8 *)coeffs)[54] + src[6];
+    dst[7] = ((u8 *)coeffs)[55] + src[7];
+    dst += dstPitch;
+    src += srcPitch;
+    // output rows 6-7 <- coefficient runs 9, 10, 14, 15
+    dst[0] = ((u8 *)coeffs)[36] + src[0];
+    dst[1] = ((u8 *)coeffs)[37] + src[1];
+    dst[2] = ((u8 *)coeffs)[40] + src[2];
+    dst[3] = ((u8 *)coeffs)[41] + src[3];
+    dst[4] = ((u8 *)coeffs)[56] + src[4];
+    dst[5] = ((u8 *)coeffs)[57] + src[5];
+    dst[6] = ((u8 *)coeffs)[60] + src[6];
+    dst[7] = ((u8 *)coeffs)[61] + src[7];
+    dst += dstPitch;
+    src += srcPitch;
+    dst[0] = ((u8 *)coeffs)[38] + src[0];
+    dst[1] = ((u8 *)coeffs)[39] + src[1];
+    dst[2] = ((u8 *)coeffs)[42] + src[2];
+    dst[3] = ((u8 *)coeffs)[43] + src[3];
+    dst[4] = ((u8 *)coeffs)[58] + src[4];
+    dst[5] = ((u8 *)coeffs)[59] + src[5];
+    dst[6] = ((u8 *)coeffs)[62] + src[6];
+    dst[7] = ((u8 *)coeffs)[63] + src[7];
 }
 
 #pragma scheduling invalid_target
