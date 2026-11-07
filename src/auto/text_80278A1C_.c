@@ -146,11 +146,12 @@ extern "C" void fn_80278A28(void* arg0) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_80278A64(void* object_arg, void* file_arg, void* file2_arg, s32 name_arg) {
     LayoutStrings* base = (LayoutStrings*)lbl_80347690;
     File_80279004* file = (File_80279004*)file_arg;
-    u8* object = (u8*)object_arg;
+    CarObject* car = (CarObject*)object_arg;
     Res_80279004* res2;
     Res_80279004* res;
     Element_80278A64* elem;
@@ -165,17 +166,17 @@ extern "C" void fn_80278A64(void* object_arg, void* file_arg, void* file2_arg, s
     Vec3_80279004 v3;
     if (file != NULL) {
         f32 scale = lbl_805640CC;
-        *(s32*)(object + 0) = 0;
-        elem = (Element_80278A64*)(object + 0x38);
+        car->count = 0;
+        elem = car->elems;
         i = 1;
-        *(s32*)(object + 4) = 0;
+        car->unk4 = 0;
         elem->id = i;
 
         for (; i < 0xA2; i++, elem++) {
             sprintf(boneName, lbl_8055C678, i);
             if (file->hasRes(boneName)) {
                 res = file->getRes(boneName);
-                *(s32*)object = i + 1;
+                car->count = i + 1;
                 res2 = res;
                 if (file2 != NULL) {
                     if (file2->hasRes(boneName)) {
@@ -220,24 +221,24 @@ extern "C" void fn_80278A64(void* object_arg, void* file_arg, void* file2_arg, s
             }
         }
 
-        *(s32*)(object + 0x20F0) = 0;
+        car->count20F0 = 0;
         i = 0;
         while ((res = file->getChild(i++)) != NULL) {
             if (stricmp(res->getName(), lbl_8055C680) == 0) {
-                *(s32*)(object + 0x20F0) += 1;
+                car->count20F0 += 1;
             }
         }
 
-        *(void**)(object + 0x20EC) = fn_8012850C(*(s32*)(object + 0x20F0) * 0x14, base->bone_conn);
-        *(s32*)(object + 0x20F0) = 0;
+        car->items20EC = fn_8012850C(car->count20F0 * 0x14, base->bone_conn);
+        car->count20F0 = 0;
 
         i = 0;
         Res_80279004* child;
         while ((child = file->getChild(i++)) != NULL) {
             if (stricmp(child->getName(), lbl_8055C680) == 0) {
-                s32 idx = *(s32*)(object + 0x20F0);
-                *(s32*)(object + 0x20F0) = idx + 1;
-                Entry20EC* entry = (Entry20EC*)((u8*)(*(void**)(object + 0x20EC)) + idx * 0x14);
+                s32 idx = car->count20F0;
+                car->count20F0 = idx + 1;
+                Entry20EC* entry = (Entry20EC*)((u8*)car->items20EC + idx * 0x14);
                 entry->id1 = child->getInt(lbl_8055C688);
                 entry->id2 = child->getInt(lbl_8055C68C);
                 entry->f8 = child->getFloat(lbl_8055C690);
@@ -258,7 +259,7 @@ extern "C" void fn_80278A64(void* object_arg, void* file_arg, void* file2_arg, s
         keys.k[2] = tbl[2];
         keys.k[3] = tbl[3];
         const char** key_ptr = keys.k;
-        Entry20F4* entry20F4 = (Entry20F4*)(object + 0x20F4);
+        Entry20F4* entry20F4 = car->wheels;
         for (i = 0; i < 4; i++, key_ptr++, entry20F4++) {
             sprintf(wheelName, base->wheel, *key_ptr);
             Res_80279004* wres = file->hasRes(wheelName) ? file->getRes(wheelName) : NULL;
@@ -273,16 +274,15 @@ extern "C" void fn_80278A64(void* object_arg, void* file_arg, void* file2_arg, s
         return;
     }
     fn_802E30C8(base->warn_no_bone, name);
-    memset(object + 4, 0, 0x20E8);
-    *(s32*)(object + 0x20F0) = 0;
-    memset(object + 0x20F4, 0, 0x40);
+    memset((u8*)car + 4, 0, 0x20E8);
+    car->count20F0 = 0;
+    memset(car->wheels, 0, 0x40);
 }
 #pragma cplusplus reset
 #pragma pop
 
 #pragma cplusplus reset
 
-extern void fn_80278A64(void*, void*, void*, s32);
 #pragma cplusplus on
 extern "C" void* fn_80279004(s32 name, s32 arg1) {
     char path[0x80];
