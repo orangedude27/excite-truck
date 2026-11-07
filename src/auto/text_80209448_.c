@@ -23,7 +23,7 @@ extern void *fn_801284F8(s32, const char *);
 extern void *fn_80131808(void);
 extern void fn_80131818(void *);
 extern s32 fn_80137C74(void);
-extern void *fn_802077A4(s32, void *, void *);
+extern void *fn_802077A4(void *, s32, void *, void *);
 extern void *fn_80207848(s32);
 extern void fn_802E30C8(const char *, ...);
 extern void fn_80209904(void);
@@ -36,12 +36,41 @@ extern u8 lbl_8055B52C, lbl_8055B534, lbl_8055B53C;
 extern f32 lbl_8055EDB8;
 extern f32 lbl_80563238, lbl_8056323C, lbl_80563240, lbl_80563244;
 extern f32 lbl_80563248, lbl_8056324C, lbl_80563250, lbl_80563254;
-#pragma scheduling invalid_target
 #pragma cplusplus on
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma opt_loop_invariants off
+#pragma scheduling invalid_target
 extern "C" void *fn_80209448(void *arg0) {
+extern void *fn_802077A4(void *, s32, void *, void *);
+extern void *fn_80207848(void *, s32);
+struct Block {
+    void *entry;
+    f32 f04;
+    f32 f08;
+    f32 f0c;
+    f32 f10;
+    f32 f14;
+    f32 f18;
+    f32 f1c;
+    f32 f20;
+    f32 f24;
+    f32 f28;
+    f32 f2c;
+    f32 f30;
+};
+struct MyClass {
+    void *vtable;
+    Block blocks[6];
+    s32 count;
+    void *arg0;
+    f32 f144;
+    f32 f148;
+    f32 f14c;
+    f32 f150;
+    f32 f154;
+};
 struct M2CKeyObject {
 virtual void *f2(const char *);
 virtual void *f3();
@@ -88,75 +117,78 @@ virtual void *f8();
 virtual f64 f9(const char *);
 virtual f32 f10(const char *, f32);
 };
-void *result, *item, *manager, *object;
-void *block, *entry, *text;
+MyClass *result;
+s32 index;
+void *manager;
+void *item;
+void *text;
+void *block;
+void *object;
 f64 temp_f1;
-f32 width, scale, height, z, x, y, a, b, c, d, e;
-s32 index, count, flag;
-result = fn_801284F8(0x158, (const char *)&lbl_8055B500);
+f32 z, scale, height;
+f32 width, half, e, d, c, b, a, y, x;
+result = (MyClass *)fn_801284F8(0x158, (const char *)&lbl_8055B500);
 if (result != 0) {
-M2C_FIELD(result, void **, 0) = (void *)&lbl_8033C1E0;
+result->vtable = (void *)&lbl_8033C1E0;
 if (lbl_8055EDBC == 0) {
 lbl_8055EDB8 = lbl_80563238;
 fn_80127C90((void *)fn_80209904, (const char *)&lbl_8055B520);
 }
 lbl_8055EDBC++;
-M2C_FIELD(result, void **, 0x140) = arg0;
-M2C_FIELD(result, s32 *, 0x13C) = 0;
+result->arg0 = arg0;
+result->count = 0;
 object = M2C_FIELD(M2C_FIELD(arg0, void **, 0x26C), void **, 0x2134);
 object = ((M2CKeyObject *)object)->f2((const char *)&lbl_8033C248);
 ((M2CKeyObject *)object)->f6((const char *)&lbl_8033C238, lbl_8055B4F8);
 manager = fn_80131808();
 block = ((M2CManager *)manager)->f2((const char *)&lbl_8055B53C);
-M2C_FIELD(result, f32 *, 0x14C) =
-((M2CValues *)block)->f10((const char *)&lbl_8033C22C, lbl_8056323C);
+result->f14c = ((M2CValues *)block)->f10((const char *)&lbl_8033C22C, lbl_8056323C);
 temp_f1 = ((M2CValues *)block)->f9((const char *)&lbl_8033C21C);
-M2C_FIELD(result, volatile f32 *, 0x144) = temp_f1;
 width = (f32)temp_f1;
-M2C_FIELD(result, f32 *, 0x148) = lbl_80563240 * width;
+half = lbl_80563240;
+result->f144 = temp_f1;
+index = 0;
 scale = lbl_8056323C;
+result->f148 = half * width;
 height = lbl_80563244;
 z = lbl_80563238;
-index = 0;
-flag = 1;
 goto loop_test;
 loop_body:
 if (strcmp(((M2CItem *)item)->f2(), (const char *)&lbl_8055B534) == 0) {
-count = M2C_FIELD(result, s32 *, 0x13C);
-M2C_FIELD(result, s32 *, 0x13C) = count + 1;
-block = (u8 *)result + count * 0x34 + 4;
+block = (void *)&result->blocks[result->count++];
 memset(block, 0, 0x34);
 text = ((M2CItem *)item)->f5((const char *)&lbl_8055B52C);
-object = M2C_FIELD(result, void **, 0x140);
-if (M2C_FIELD(object, s32 *, 0x1F0) != 0x50) {
-entry = fn_802077A4(3, (u8 *)object + 0x118, (u8 *)arg0 + 0x60);
-M2C_FIELD(block, void **, 0) = entry;
+void *entry;
+void *obj = result->arg0;
+if (M2C_FIELD(obj, s32 *, 0x1F0) != 0x50) {
+entry = fn_802077A4(text, 3, (u8 *)obj + 0x118, (u8 *)arg0 + 0x60);
+((Block *)block)->entry = entry;
 } else {
-entry = fn_80207848(2);
+entry = fn_80207848(text, 2);
 if (entry != 0) {
 if (fn_80137C74() == 2) {
-if ((M2C_FIELD(M2C_FIELD(result, void **, 0x140), u8 *, 0x260) & 3) == 0) {
+if ((M2C_FIELD(result->arg0, u8 *, 0x260) & 3) == 0) {
 if (height != M2C_FIELD(entry, f32 *, 0x64)) {
-M2C_FIELD(entry, u8 *, 0x6C) = flag;
+M2C_FIELD(entry, u8 *, 0x6C) = 1;
 M2C_FIELD(entry, f32 *, 0x64) = height;
 }
 } else if (scale != M2C_FIELD(entry, f32 *, 0x64)) {
-M2C_FIELD(entry, u8 *, 0x6C) = flag;
+M2C_FIELD(entry, u8 *, 0x6C) = 1;
 M2C_FIELD(entry, f32 *, 0x64) = scale;
 }
 }
 if (z != M2C_FIELD(entry, f32 *, 0x68)) {
-M2C_FIELD(entry, u8 *, 0x6D) = flag;
+M2C_FIELD(entry, u8 *, 0x6D) = 1;
 M2C_FIELD(entry, f32 *, 0x68) = z;
 }
 }
-M2C_FIELD(block, void **, 0) = entry;
+((Block *)block)->entry = entry;
 }
-M2C_FIELD(block, f32 *, 0x30) = z;
-entry = M2C_FIELD(block, void **, 0);
+((Block *)block)->f30 = z;
+entry = ((Block *)block)->entry;
 if (entry == 0) {
 fn_802E30C8((const char *)&lbl_8033C208, text);
-M2C_FIELD(result, s32 *, 0x13C)--;
+result->count--;
 } else {
 M2C_FIELD(entry, s32 *, 0x10) = M2C_FIELD(arg0, s32 *, 0x1EC);
 text = ((M2CItem *)item)->f23((const char *)&lbl_8033C1FC);
@@ -165,26 +197,25 @@ x = ((M2CValues *)text)->f10((const char *)&lbl_8055B510, lbl_80563248);
 a = ((M2CValues *)text)->f10((const char *)&lbl_8055B514, lbl_8056324C);
 b = ((M2CValues *)text)->f10((const char *)&lbl_8055B518, lbl_80563250);
 c = ((M2CValues *)text)->f10((const char *)&lbl_8055B51C, lbl_80563254);
-M2C_FIELD(block, f32 *, 0x1C) = b;
-M2C_FIELD(block, f32 *, 0x20) = a;
+((Block *)block)->f1c = b;
+((Block *)block)->f20 = a;
 d = scale / (b - c);
-M2C_FIELD(block, f32 *, 0x24) = d;
-M2C_FIELD(block, f32 *, 0x28) = scale / (x - a);
-M2C_FIELD(block, f32 *, 0x2C) = y;
+((Block *)block)->f24 = d;
+((Block *)block)->f28 = scale / (x - a);
+((Block *)block)->f2c = y;
 text = M2C_VFUNC(item, 23, M2CPtr1)(item, (const char *)&lbl_8055B528);
 e = ((M2CValues *)text)->f10((const char *)&lbl_8055B508, lbl_8056323C);
 a = ((M2CValues *)text)->f10((const char *)&lbl_8055B510, lbl_80563248);
 x = ((M2CValues *)text)->f10((const char *)&lbl_8055B514, lbl_8056324C);
 b = ((M2CValues *)text)->f10((const char *)&lbl_8055B518, lbl_80563250);
 c = ((M2CValues *)text)->f10((const char *)&lbl_8055B51C, lbl_80563254);
-M2C_FIELD(block, f32 *, 8) = b;
-M2C_FIELD(block, f32 *, 0xC) = x;
+((Block *)block)->f08 = b;
+((Block *)block)->f0c = x;
 d = scale / (b - c);
-M2C_FIELD(block, f32 *, 0x10) = d;
-M2C_FIELD(block, f32 *, 0x14) = scale / (a - x);
-M2C_FIELD(block, f32 *, 0x18) = e;
-M2C_FIELD(block, f32 *, 4) =
-scale / ((M2CItem *)item)->f9((const char *)&lbl_8033C1F0);
+((Block *)block)->f10 = d;
+((Block *)block)->f14 = scale / (a - x);
+((Block *)block)->f18 = e;
+((Block *)block)->f04 = scale / ((M2CItem *)item)->f9((const char *)&lbl_8033C1F0);
 }
 }
 index++;
@@ -192,8 +223,8 @@ loop_test:
 item = ((M2CManager *)manager)->f3(index);
 if (item != 0) goto loop_body;
 fn_80131818(manager);
-M2C_FIELD(result, f32 *, 0x150) = lbl_80563238;
-M2C_FIELD(result, f32 *, 0x154) = lbl_80563238;
+result->f150 = lbl_80563238;
+result->f154 = lbl_80563238;
 }
 return result;
 }
