@@ -8704,8 +8704,7 @@ extern "C" s32 fn_800A53F8(void *);
 #pragma use_lmw_stmw off
 extern "C" s32 fn_800B6628(void *arg0, s32 arg1, s32 arg2) {
     u8 *base;
-    s32 var_r27 = arg2, var_r31, temp_r3_2, temp_r3_3, temp_r4_2, temp_r4_3, var_ctr, var_r0;
-    s8 temp_r0;
+    s32 var_r27 = arg2, var_r31, temp_r3_2, temp_r3_3, temp_r4_2, temp_r4_3, var_r0;
     void *temp_r4, *temp_r6, *temp_r7; u8 *var_r3;
     temp_r6 = M2C_FIELD(arg0, void **, 4);
     if ((s32)M2C_FIELD(temp_r6, s32 *, 0xC) == 0) M2C_FIELD(temp_r6, s32 *, 0xC) = 1;
@@ -8720,22 +8719,12 @@ extern "C" s32 fn_800B6628(void *arg0, s32 arg1, s32 arg2) {
         *(s32 *)(base + 0x40) = 0x11;
         return 0x11;
     }
-    var_r31 = 0;
     var_r3 = (u8 *)lbl_803D2140 + 0xA0;
-    for (var_ctr = 0xD; var_ctr != 0; var_ctr--) {
+    for (var_r31 = 0; var_r31 < 26; var_r3 += 0x1FC8, var_r31++) {
         arg1 = (s32)var_r3;
-        if ((*(u16 *)(var_r3 + 0x1F8C) & 1) != 0) {
-            u16 flags2 = *(u16 *)((u8 *)var_r3 + 0x3F54);
-            var_r3 += 0x1FC8;
-            arg1 = (s32)var_r3;
-            var_r31++;
-            if ((flags2 & 1) != 0) {
-                var_r3 = (u8 *)var_r3 + 0x1FC8;
-                var_r31++;
-                continue;
-            }
+        if ((*(u16 *)(var_r3 + 0x1F8C) & 1) == 0) {
+            break;
         }
-        break;
     }
     if (var_r31 < 0 || var_r31 >= 0x1A ||
         *(s32 *)((u8 *)lbl_803D2140 + 0x30) < 0 || *(s32 *)((u8 *)lbl_803D2140 + 0x30) >= 0x1A) {
@@ -8748,8 +8737,7 @@ extern "C" s32 fn_800B6628(void *arg0, s32 arg1, s32 arg2) {
     fn_800A499C((const char *)((void *)arg1), 0, 0x1FC8);
     temp_r4_2 = M2C_FIELD(arg0, s32 *, 0);
     *(s32 *)((u8 *)((void *)arg1) + 0x1FBC) = temp_r4_2;
-    temp_r0 = (s8)((s16)var_r31 + 0x41);
-    *(s8 *)((u8 *)((void *)arg1) + 0x1F8E) = temp_r0;
+    *(s8 *)((u8 *)((void *)arg1) + 0x1F8E) = (s16)var_r31 + 0x41;
     fn_800B7710((u8 *)((void *)arg1) + 0x1F90);
     *(s32 *)((u8 *)((void *)arg1) + 0x1F74) = 1;
     *(void **)((u8 *)((void *)arg1) + 0x1F7C) = (u8 *)((void *)arg1) + 0x1F78;
@@ -8769,13 +8757,13 @@ extern "C" s32 fn_800B6628(void *arg0, s32 arg1, s32 arg2) {
         *(s32 *)((u8 *)lbl_803D2140 + 0x40) = var_r27;
         return var_r27;
     }
-    temp_r0 = (s8)((s16)var_r31 + 0x41);
     *(u16 *)((u8 *)((void *)arg1) + 0x1F8C) |= 1;
+    base = (u8 *)lbl_803D2140;
     M2C_FIELD(arg0, u8 *, 9) |= 1;
-    *(s8 *)((u8 *)((void *)arg1) + 0x1F8E) = temp_r0;
-    M2C_FIELD(arg0, s8 *, 8) = temp_r0;
-    temp_r4_3 = *(s32 *)((u8 *)lbl_803D2140 + 0x30);
-    *(s32 *)((u8 *)lbl_803D2140 + 0x30) = temp_r4_3 + 1;
+    *(s8 *)((u8 *)((void *)arg1) + 0x1F8E) = var_r31 + 0x41;
+    M2C_FIELD(arg0, s8 *, 8) = var_r31 + 0x41;
+    temp_r4_3 = *(s32 *)(base + 0x30);
+    *(s32 *)(base + 0x30) = temp_r4_3 + 1;
     if (fn_800A53B4(((void *)arg1)) != 0) {
         M2C_FIELD(arg0, u8 *, 9) |= 0x10;
         if (!(*(u16 *)((u8 *)((void *)arg1) + 0x1F8C) & 8)) {
@@ -18609,17 +18597,26 @@ extern "C" s32 GetIndTexSRTAry__Q36nw4hbm3lyt8MaterialFv(void *);
 extern "C" void SetColorElement__Q36nw4hbm3lyt8MaterialFUls(void *, s32, s16);
 extern "C" const char lbl_8031F274[], lbl_8031F23C[], lbl_8031F2B8[], lbl_8031F280[];
 void nw4hbm::lyt::AnimTransformBasic::Animate(unsigned long arg1, nw4hbm::lyt::Material *arg2) {
-    const char *file = lbl_8031EE58;
-    u8 *entries = (u8 *)*(void **)((u8 *)this + 0xC);
-    u8 *animation = entries + *(s32 *)(entries + 0x10);
-    u8 *block = entries + *(s32 *)(animation + arg1 * 4);
-    u8 *offsetEntry = block + 0x18;
-    s32 blockIndex = 0;
-    f32 half = lbl_80560E64;
+    u8 *entries;
+    u8 *animation;
+    u8 *block;
+    u8 *record;
+    u8 *offsetEntry;
+    u8 *itemOffsets;
+    s32 blockIndex;
+    f32 half;
+    const char * const file = lbl_8031EE58;
+    u8 *entries_p = (u8 *)*(void **)((u8 *)this + 0xC);
+    entries = entries_p;
+    animation = entries + *(s32 *)(entries + 0x10);
+    block = entries + *(s32 *)(animation + arg1 * 4);
+    offsetEntry = block + 0x18;
+    blockIndex = 0;
+    half = lbl_80560E64;
     while (blockIndex < block[0x14]) {
-        u8 *record = block + *(s32 *)offsetEntry;
+        record = block + *(s32 *)offsetEntry;
         s32 type = *(s32 *)record;
-        u8 *itemOffsets = record + 8;
+        itemOffsets = record + 8;
         switch (type) {
         case 0x524C4D43: {
             s32 itemIndex = 0;
@@ -18628,9 +18625,9 @@ void nw4hbm::lyt::AnimTransformBasic::Animate(unsigned long arg1, nw4hbm::lyt::M
             while (itemIndex < record[4]) {
                 u8 *item = record + *(s32 *)itemOffsets;
                 if (item[1] >= 0x20)
-                    Panic__Q26nw4hbm2dbFPCciPCce((const char *)(file + 0), 0x106, file + 0x180);
+                    Panic__Q26nw4hbm2dbFPCciPCce(file, 0x106, file + 0x180);
                 if (item[2] != 2)
-                    Panic__Q26nw4hbm2dbFPCciPCce((const char *)(file + 0), 0x107, file + 0xB0);
+                    Panic__Q26nw4hbm2dbFPCciPCce(file, 0x107, file + 0xB0);
                 f32 result = fn_800D4220(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame);
                 result += half;
                 s16 value = (s16)result;
@@ -18646,18 +18643,21 @@ void nw4hbm::lyt::AnimTransformBasic::Animate(unsigned long arg1, nw4hbm::lyt::M
             f32 frame = *(f32 *)((u8 *)this + 0x10);
             s32 itemIndex = 0;
             while (itemIndex < record[4]) {
-                if (record[*(s32 *)itemOffsets] >= 0xA)
-                    Panic__Q26nw4hbm2dbFPCciPCce((const char *)(file + 0), 0x11F, file + 0x1C8);
-                u8 *item = record + *(s32 *)itemOffsets;
+                volatile u8 *item = record + *(s32 *)itemOffsets;
+                if (item[0] >= 0xA)
+                    Panic__Q26nw4hbm2dbFPCciPCce(file, 0x11F, file + 0x1C8);
                 if (item[0] < ((*(u32 *)((u8 *)arg2 + 0x4C) >> 24) & 0xF)) {
                     if (item[1] >= 5)
-                        Panic__Q26nw4hbm2dbFPCciPCce((const char *)(file + 0), 0x122, file + 0x1FC);
+                        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x122, file + 0x1FC);
                     if (item[2] != 2)
-                        Panic__Q26nw4hbm2dbFPCciPCce((const char *)(file + 0), 0x123, file + 0xB0);
-                    f32 value = fn_800D4220(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame);
-                    if (item[0] >= ((*(u32 *)((u8 *)arg2 + 0x50) >> 24) & 0xF))
+                        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x123, file + 0xB0);
+                    f32 value = fn_800D4220((const void *)(item + *(s32 *)(item + 8)), *(u16 *)(item + 4), frame);
+                    s32 index = item[0];
+                    s32 sub = item[1];
+                    if (index >= ((*(u32 *)((u8 *)arg2 + 0x50) >> 24) & 0xF))
                         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F274, 0x125, lbl_8031F23C);
-                    *(f32 *)(fn_800D9330(arg2) + item[0] * 0x14 + item[1] * 4) = value;
+                    s32 base = fn_800D9330(arg2);
+                    *(f32 *)(base + index * 0x14 + sub * 4) = value;
                 }
                 itemOffsets += 4;
                 itemIndex++;
@@ -18670,14 +18670,14 @@ void nw4hbm::lyt::AnimTransformBasic::Animate(unsigned long arg1, nw4hbm::lyt::M
                 f32 frame = *(f32 *)((u8 *)this + 0x10);
                 s32 itemIndex = 0;
                 while (itemIndex < record[4]) {
-                    if (record[*(s32 *)itemOffsets] >= 8)
-                        Panic__Q26nw4hbm2dbFPCciPCce((const char *)(file + 0), 0x137, file + 0x240);
-                    u8 *item = record + *(s32 *)itemOffsets;
+                    volatile u8 *item = record + *(s32 *)itemOffsets;
+                    if (item[0] >= 8)
+                        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x137, file + 0x240);
                     if (item[0] < (*(u32 *)((u8 *)arg2 + 0x50) >> 28)) {
                         if (item[2] != 1)
-                            Panic__Q26nw4hbm2dbFPCciPCce((const char *)(file + 0), 0x13A, file + 0xF4);
+                            Panic__Q26nw4hbm2dbFPCciPCce(file, 0x13A, file + 0xF4);
                         if (item[1] == 0) {
-                            u16 paletteIndex = fn_800D4138(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame);
+                            u16 paletteIndex = fn_800D4138((const void *)(item + *(s32 *)(item + 8)), *(u16 *)(item + 4), frame);
                             SetTextureNoWrap__Q36nw4hbm3lyt8MaterialFUcP10TPLPalette(arg2, item[0], palettes[paletteIndex]);
                         }
                     }
@@ -18691,18 +18691,21 @@ void nw4hbm::lyt::AnimTransformBasic::Animate(unsigned long arg1, nw4hbm::lyt::M
             f32 frame = *(f32 *)((u8 *)this + 0x10);
             s32 itemIndex = 0;
             while (itemIndex < record[4]) {
-                if (record[*(s32 *)itemOffsets] >= 3)
-                    Panic__Q26nw4hbm2dbFPCciPCce((const char *)(file + 0), 0x151, file + 0x278);
-                u8 *item = record + *(s32 *)itemOffsets;
+                volatile u8 *item = record + *(s32 *)itemOffsets;
+                if (item[0] >= 3)
+                    Panic__Q26nw4hbm2dbFPCciPCce(file, 0x151, file + 0x278);
                 if (item[0] < ((*(u32 *)((u8 *)arg2 + 0x4C) >> 18) & 3)) {
                     if (item[1] >= 5)
-                        Panic__Q26nw4hbm2dbFPCciPCce((const char *)(file + 0), 0x154, file + 0x1FC);
+                        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x154, file + 0x1FC);
                     if (item[2] != 2)
-                        Panic__Q26nw4hbm2dbFPCciPCce((const char *)(file + 0), 0x155, file + 0xB0);
-                    f32 value = fn_800D4220(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame);
-                    if (item[0] >= ((*(u32 *)((u8 *)arg2 + 0x50) >> 18) & 3))
+                        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x155, file + 0xB0);
+                    f32 value = fn_800D4220((const void *)(item + *(s32 *)(item + 8)), *(u16 *)(item + 4), frame);
+                    s32 index = item[0];
+                    s32 sub = item[1];
+                    if (index >= ((*(u32 *)((u8 *)arg2 + 0x50) >> 18) & 3))
                         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2B8, 0x135, lbl_8031F280);
-                    *(f32 *)(GetIndTexSRTAry__Q36nw4hbm3lyt8MaterialFv(arg2) + item[0] * 0x14 + item[1] * 4) = value;
+                    s32 base = GetIndTexSRTAry__Q36nw4hbm3lyt8MaterialFv(arg2);
+                    *(f32 *)(base + index * 0x14 + sub * 4) = value;
                 }
                 itemOffsets += 4;
                 itemIndex++;
