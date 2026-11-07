@@ -1094,30 +1094,30 @@ extern "C" int fn_80272C74(void *arg0, void *arg1, float *arg2, int arg3) {
 }
 
 #pragma cplusplus on
-extern "C" char lbl_8055C5BC[];
-extern "C" char lbl_8055C5C0[];
-extern "C" char lbl_8055C5C4[];
-extern "C" char lbl_8055C5C8[];
-extern "C" char lbl_8055C5D0[];
-extern "C" char lbl_8055C5D8[];
-extern "C" char lbl_8055C5E0[];
-extern "C" char lbl_8055C5E8[];
-extern "C" char lbl_8055C5F0[];
-extern "C" char lbl_8055C5F8[];
-extern "C" char lbl_8055C600[];
-extern "C" char lbl_8055C608[];
-extern "C" char lbl_8055C60C[];
-extern "C" char lbl_8055C610[];
-extern "C" char lbl_8055C614[];
-extern "C" char lbl_8055C61C[];
-extern "C" char lbl_8055C624[];
-extern "C" char lbl_8055C62C[];
+extern "C" char lbl_8055C5BC[4];
+extern "C" char lbl_8055C5C0[4];
+extern "C" char lbl_8055C5C4[4];
+extern "C" char lbl_8055C5C8[8];
+extern "C" char lbl_8055C5D0[8];
+extern "C" char lbl_8055C5D8[8];
+extern "C" char lbl_8055C5E0[8];
+extern "C" char lbl_8055C5E8[8];
+extern "C" char lbl_8055C5F0[8];
+extern "C" char lbl_8055C5F8[8];
+extern "C" char lbl_8055C600[8];
+extern "C" char lbl_8055C608[4];
+extern "C" char lbl_8055C60C[4];
+extern "C" char lbl_8055C610[4];
+extern "C" char lbl_8055C614[8];
+extern "C" char lbl_8055C61C[8];
+extern "C" char lbl_8055C624[8];
+extern "C" char lbl_8055C62C[8];
 extern "C" float lbl_80563F94;
 extern "C" float lbl_80563F98;
 extern "C" float lbl_80563F50;
-extern "C" int fn_80272DCC(void *arg0, Parser *arg1) {
+extern "C" int fn_80272DCC(void *arg0, Parser2 *arg1) {
     char *name = lbl_80346B00;
-    Parser *p = arg1;
+    Parser2 *p = arg1;
     char *o = (char *)arg0;
     int a, b, c, d;
     unsigned char flags;
