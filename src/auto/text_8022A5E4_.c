@@ -67,6 +67,8 @@ extern float lbl_80563598;
 extern int fn_802C4EFC(int);
 extern int fn_802C5220(int);
 extern int fn_802C4EE4(int);
+extern int fn_802C51C0();
+extern unsigned long strlen(const char *);
 extern void fn_802C4F2C(int, int *, int *);
 extern int fn_801E4AB0(int, char *, int);
 extern char *strchr(const char *, int);
