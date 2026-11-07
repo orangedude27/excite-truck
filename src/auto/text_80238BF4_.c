@@ -45,22 +45,18 @@ extern char lbl_80340B00[];
 } while (0)
 
 #define SWAP16_AT(ptr, off) do { \
-    u8 _t; \
-    u8 *_p = (u8 *)(ptr); \
-    _t = _p[(off) + 0]; \
-    _p[(off) + 0] = _p[(off) + 1]; \
-    _p[(off) + 1] = _t; \
+    u8 _t = ((u8 *)(ptr))[(off) + 0]; \
+    ((u8 *)(ptr))[(off) + 0] = ((u8 *)(ptr))[(off) + 1]; \
+    ((u8 *)(ptr))[(off) + 1] = _t; \
 } while (0)
 
 #define SWAP32_AT(ptr, off) do { \
-    u8 _t; \
-    u8 *_p = (u8 *)(ptr); \
-    _t = _p[(off) + 0]; \
-    _p[(off) + 0] = _p[(off) + 3]; \
-    _p[(off) + 3] = _t; \
-    _t = _p[(off) + 1]; \
-    _p[(off) + 1] = _p[(off) + 2]; \
-    _p[(off) + 2] = _t; \
+    u8 _t = ((u8 *)(ptr))[(off) + 0]; \
+    ((u8 *)(ptr))[(off) + 0] = ((u8 *)(ptr))[(off) + 3]; \
+    ((u8 *)(ptr))[(off) + 3] = _t; \
+    _t = ((u8 *)(ptr))[(off) + 1]; \
+    ((u8 *)(ptr))[(off) + 1] = ((u8 *)(ptr))[(off) + 2]; \
+    ((u8 *)(ptr))[(off) + 2] = _t; \
 } while (0)
 static inline s32 clampLow_80238BF4(s32 v) {
     if (v > 0) return v;
@@ -247,27 +243,36 @@ void fn_802390B4(void *arg0, s32 arg1) {
             s32 j;
 
             ptr = *(u8 **)((u8 *)arg0 + 0x14);
-            *(u32 *)(ptr + 0x18) = (u32)data + *(u32 *)(ptr + 0x18);
-            *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C) = (u32)data + *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C);
-            *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x20) = (u32)data + *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x20);
-            *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x24) = (u32)data + *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x24);
+            *(u32 *)(ptr + 0x18) = (u32)(data + *(u32 *)(ptr + 0x18));
+            *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C) = (u32)(data + *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C));
+            *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x20) = (u32)(data + *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x20));
+            *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x24) = (u32)(data + *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x24));
 
             for (offset = 0, i = 0; i < *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 4); offset += 0xC, i++) {
                 u8 *entry = *(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x24) + offset;
-                *(u32 *)(entry + 8) = (u32)data + *(u32 *)(entry + 8);
+                *(u32 *)(entry + 8) = (u32)(data + *(u32 *)(entry + 8));
                 if (*(u32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x24) + offset + 4) != 0) {
-                    *(u32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x24) + offset + 4) = (u32)data + *(u32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x24) + offset + 4);
+                    *(u32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x24) + offset + 4) = (u32)(data + *(u32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x24) + offset + 4));
                 }
             }
 
             for (offset = 0, i = 0; i < *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 8); offset += 0x14, i++) {
                 u8 *entry = *(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18) + offset;
-                SWAP32_AT(entry, 0);
+                u8 t = *(u8 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18) + offset);
+                entry[0] = entry[3];
+                entry[3] = t;
+                t = entry[1];
+                entry[1] = entry[2];
+                entry[2] = t;
             }
 
             if (*(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0xC) != 0) {
                 for (offset = 0, i = 0; i < *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0xC); offset += 0x28, i++) {
-                    SWAP16_AT(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C) + offset, 0);
+                    u8 *table = *(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C);
+                    u8 *entry = table + offset;
+                    u8 t = table[offset];
+                    entry[0] = entry[1];
+                    entry[1] = t;
                     SWAP32_AT(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C) + offset, 4);
                     for (j = 0; j < 0x20; j += 8) {
                         SWAP32_AT(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C) + offset + j, 8);
