@@ -114,7 +114,7 @@ extern float lbl_80562040;
 extern char lbl_80332758;
 #pragma pop
 typedef struct { char b[0x290]; } Blob290_8018;
-typedef struct { char b[0x22]; } Blob22_8018;
+typedef struct { float a, b; int c, d; unsigned char e[18]; } Blob22_8018;
 extern float lbl_80561F78, lbl_80561F7C, lbl_80561F80, lbl_80561F84;
 static inline float Chan_8018F2C0(unsigned char v) {
     float t = (lbl_80561F88 < (((float)v - lbl_80561F74) / lbl_80562038)) ? lbl_80561F88 : (((float)v - lbl_80561F74) / lbl_80562038);
