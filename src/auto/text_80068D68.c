@@ -13834,7 +13834,34 @@ s32 HID_HostGetSDPRecord(void *addr, void *p_db, u32 db_len, void *sdp_cback) {
     return 3;
 }
 
+/* fn_80095C64 is the stack's SDP_FindAttributeInRec(). */
 void *fn_80095C64(void **head, u32 attr);
+
+/* HID host SDP result codes and attribute mask bits, from
+   stack/include/hidh_api.h - that header can't be included here, its prototypes
+   clash with this unit's own declarations. */
+#define HID_SDP_NO_SERV_UUID      (SDP_ILLEGAL_PARAMETER + 1)
+#define HID_SDP_MANDATORY_MISSING (SDP_ILLEGAL_PARAMETER + 2)
+#define HID_VIRTUAL_CABLE         0x0001
+#define HID_RECONN_INIT           0x0004
+#define HID_NORMALLY_CONNECTABLE  0x0002
+#define HID_SDP_DISABLE           0x0008
+#define HID_BATTERY_POWER         0x0010
+#define HID_REMOTE_WAKE           0x0020
+#define HID_SUP_TOUT_AVLBL        0x0040
+
+/* The SDP search part of the HID host control block hh_cb (lbl_803C3C38); the
+   device table and the L2CAP config come in front of it. A cast rather than a
+   variable, so the block's address is materialised where it is used. */
+typedef struct {
+    /* 0x380 */ BOOLEAN                sdp_busy;
+    /* 0x384 */ void (*sdp_cback)(UINT16 result, UINT16 attr_mask,
+                                  tHID_DEV_SDP_INFO *p_sdp_rec);
+    /* 0x388 */ tSDP_DISCOVERY_DB     *p_sdp_db;
+    /* 0x38c */ tHID_DEV_SDP_INFO      sdp_rec;
+} tHID_HOST_SDP_CTB;
+#define hh_cb ((tHID_HOST_SDP_CTB *)lbl_803C3C38)
+
 void hidh_search_callback(UINT16 sdp_result) {
     tSDP_DISCOVERY_DB *p_db = *(tSDP_DISCOVERY_DB **)(lbl_803C3C38 + 0x388);
     tSDP_DISC_REC *p_rec;
