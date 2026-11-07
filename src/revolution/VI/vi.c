@@ -348,27 +348,44 @@ VIRetraceCallback AIRegisterDMACallback_800591F0(VIRetraceCallback cb)
 u32 fn_80059234(u32 index)
 {
     switch (index) {
-    default:
     case 0x0:
-    case 0x10: case 0x11: case 0x12: case 0x13: case 0x14:
-    case 0x15: case 0x16: case 0x17: case 0x18: case 0x19:
-    case 0x1A: case 0x1B: case 0x1C: case 0x1D: case 0x1E:
+    case 0x14:
         return (u32)lbl_80311738;
-    case 0x1: return (u32)lbl_80311738 + 0x26;
-    case 0x2: return (u32)lbl_80311738 + 0x4C;
-    case 0x3: return (u32)lbl_80311738 + 0x72;
-    case 0x4: return (u32)lbl_80311738;
-    case 0x5: return (u32)lbl_80311738 + 0x26;
-    case 0x6: return (u32)lbl_80311738 + 0x98;
-    case 0x7: return (u32)lbl_80311738 + 0xBE;
-    case 0x8: return (u32)lbl_80311738 + 0xE4;
-    case 0x9: return (u32)lbl_80311738 + 0x10A;
-    case 0xA: return (u32)lbl_80311738 + 0x4C;
-    case 0xB: return (u32)lbl_80311738 + 0x72;
-    case 0xC: return (u32)lbl_80311738 + 0x130;
-    case 0xD: return (u32)lbl_80311738 + 0x156;
-    case 0xE: return lbl_8055DB84;
-    case 0xF: return 0;
+    case 0x1:
+    case 0x15:
+        return (u32)lbl_80311738 + 0x26;
+    case 0x2:
+        return (u32)lbl_80311738 + 0x4C;
+    case 0x3:
+        return (u32)lbl_80311738 + 0x72;
+    case 0x4:
+        return (u32)lbl_80311738;
+    case 0x5:
+        return (u32)lbl_80311738 + 0x26;
+    case 0x6:
+        return (u32)lbl_80311738 + 0x98;
+    case 0x7:
+        return (u32)lbl_80311738 + 0xBE;
+    case 0x8:
+    case 0x16:
+        return (u32)lbl_80311738 + 0xE4;
+    case 0x9:
+        return (u32)lbl_80311738 + 0x10A;
+    case 0xA:
+    case 0x10:
+        return (u32)lbl_80311738 + 0x4C;
+    case 0xB:
+    case 0x11:
+        return (u32)lbl_80311738 + 0x72;
+    case 0xC:
+        return (u32)lbl_80311738 + 0x130;
+    case 0xD:
+        return (u32)lbl_80311738 + 0x156;
+    case 0xE:
+        return lbl_8055DB84;
+    case 0x1E:
+    default:
+        return 0;
     }
 }
 
@@ -1551,19 +1568,19 @@ extern s32 lbl_80558FCC;
 extern u8 lbl_8038F490[];
 void __VISetMacrovision(void) {
     u8 *base = (u8*)lbl_80311B50;
-    volatile u8 payload0[0x1C];
-    volatile u8 payload1[0x1C];
-    volatile u8 payload2[0x1C];
-    volatile u8 payload3[0x1C];
-    volatile u8 payload4[0x1C];
-    volatile u8 payload5[0x1C];
-    volatile u8 payload6[0x1C];
-    volatile u8 payload7[0x1C];
-    volatile u8 payload8[0x1C];
-    volatile u8 payload9[0x1C];
-    volatile u8 payload10[0x1C];
-    volatile u8 payload11[0x1C];
-    volatile u8 payload12[0x1C];
+    volatile u8 payload0[0x1B];
+    volatile u8 payload1[0x1B];
+    volatile u8 payload2[0x1B];
+    volatile u8 payload3[0x1B];
+    volatile u8 payload4[0x1B];
+    volatile u8 payload5[0x1B];
+    volatile u8 payload6[0x1B];
+    volatile u8 payload7[0x1B];
+    volatile u8 payload8[0x1B];
+    volatile u8 payload9[0x1B];
+    volatile u8 payload10[0x1B];
+    volatile u8 payload11[0x1B];
+    volatile u8 payload12[0x1B];
     switch ((s32)lbl_8055DBEC) {
     case 2:
         switch ((s32)lbl_80558FCC) {
@@ -2600,5 +2617,76 @@ void fn_8005CC68(void)
     __VISendI2CData(0xE0, data, 2);
     WaitMicroTime(2);
 }
+
+extern u32 lbl_8055DBE0;
+void __VISetRevolutionModeSimple(void)
+{
+    u8 a[2], b[2], c[2], d[3], e[2], f[3], g[3], h[5], j[2], k[2];
+    volatile u8 i[27];
+    register u32 value asm("r28") = 1;
+    a[0]=0x6a; a[1]=value; __VISendI2CData(0xe0,a,2); WaitMicroTime(2);
+    b[0]=0x65; b[1]=value; __VISendI2CData(0xe0,b,2); WaitMicroTime(2);
+    __VISetYUVSEL((u8)fn_8005AD9C());
+    value=0; c[0]=value; c[1]=value; __VISendI2CData(0xe0,c,2); WaitMicroTime(2);
+    d[0]=0x71; d[1]=0x8e; d[2]=0x8e; __VISendI2CData(0xe0,d,3); WaitMicroTime(2);
+    e[0]=2; e[1]=7; __VISendI2CData(0xe0,e,2); WaitMicroTime(2);
+    lbl_80558FC0=value; lbl_80558FC1=value; lbl_80558FC2=value;
+    f[0]=5; f[1]=value; f[2]=value; __VISendI2CData(0xe0,f,3); WaitMicroTime(2);
+    if (lbl_80558FC3 || lbl_80558FC4 || lbl_80558FC5 || lbl_80558FC6) {
+      lbl_80558FC3=0; lbl_80558FC4=0; lbl_80558FC5=0; lbl_80558FC6=0; lbl_8055DBE0 |= 2;
+    }
+    g[0]=8; g[1]=((lbl_80558FC4 & 15)<<4)|(lbl_80558FC3 & 15);
+    g[2]=((lbl_80558FC6 & 7)<<3)|(lbl_80558FC5 & 7);
+    __VISendI2CData(0xe0,g,3); WaitMicroTime(2);
+    if (lbl_80558FC7 || lbl_80558FC8 || lbl_80558FC9 || lbl_80558FCA) {
+      lbl_80558FC7=0; lbl_80558FC8=0; lbl_80558FC9=0; lbl_80558FCA=0; lbl_8055DBE0 |= 4;
+    }
+    h[0]=0x7a; h[1]=lbl_80558FC7&127; h[2]=lbl_80558FC8&127; h[3]=lbl_80558FC9&127; h[4]=lbl_80558FCA&127;
+    __VISendI2CData(0xe0,h,5); WaitMicroTime(2);
+    { volatile u8 *src = lbl_8038F490; u8 t7,t6,t5,t4,t3,t2,t1,t0; u8 t8,t9;
+t0=src[0];
+t1=src[1];
+t2=src[2];
+t3=src[3];
+t4=src[4];
+t5=src[5];
+t6=src[6];
+t7=src[7];
+i[1]=t0; t0=src[8];
+i[2]=t1; t1=src[9];
+i[3]=t2; t2=src[10];
+i[4]=t3; t3=src[11];
+i[5]=t4; t4=src[12];
+i[6]=t5; t5=src[13];
+i[7]=t6; t6=src[14];
+i[8]=t7; t7=src[15];
+i[9]=t0; t0=src[16];
+i[10]=t1; t1=src[17];
+i[11]=t2; t2=src[18];
+i[12]=t3; t3=src[19];
+i[13]=t4; t4=src[20];
+i[14]=t5; t5=src[21];
+i[15]=t6; t6=src[22];
+i[16]=t7; t7=src[23];
+t8=src[24]; t9=src[25]; value=0x40; i[0]=value;
+i[17]=t0;
+i[18]=t1;
+i[19]=t2;
+i[20]=t3;
+i[21]=t4;
+i[22]=t5;
+i[23]=t6;
+i[24]=t7;
+i[25]=t8;
+i[26]=t9;
+    }
+    __VISendI2CData(0xe0,(u8*)i,27); WaitMicroTime(2);
+    if ((s32)lbl_8055DBE4 != 1) { lbl_8055DBE4=1; lbl_8055DBE0 |= 0x40; }
+    if ((s32)lbl_8055DBF0 == 3) { j[0]=10; j[1]=(lbl_8055DBE4<<1)|1; __VISendI2CData(0xe0,j,2); WaitMicroTime(2); }
+    else { j[0]=10; j[1]=0; __VISendI2CData(0xe0,j,2); WaitMicroTime(2); }
+    k[0]=3; k[1]=1; __VISendI2CData(0xe0,k,2); WaitMicroTime(2);
+    __VISetGammaImm(lbl_80311B50+0x154);
+}
+
 #pragma dont_inline reset
 typedef unsigned short undefined2;
