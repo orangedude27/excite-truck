@@ -79,7 +79,7 @@ extern "C" f32 lbl_805614C0;
 extern "C" f32 lbl_805614AC;
 extern "C" f32 lbl_805614C4;
 struct Timer8013D2C4 {
-    u64 t;
+    u32 t[2];
     inline void init(f32 v) { fn_8001DAE0(this, v); }
 };
 struct Perc8013D2C4 {
