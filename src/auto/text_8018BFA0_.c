@@ -123,8 +123,6 @@ static inline float Chan_8018F2C0(unsigned char v) {
 }
 #pragma dont_inline on
 #pragma scheduling invalid_target
-int fn_8018C514(void *arg0, void *arg1);
-#pragma dont_inline reset
 int fn_8018C514(void *arg0, void *arg1) {
     float min = lbl_80561F70;
     int best = 0;
