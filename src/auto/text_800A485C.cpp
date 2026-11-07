@@ -4548,12 +4548,9 @@ extern "C" s32 fn_800ADA24(void *arg0, s32 arg1, u32 arg2, u32 *arg3, u32 *arg4,
     s32 pageIndex;
     void *page;
     u32 maxCluster;
-    u32 cluster;
-    s32 index;
-    s32 result;
+    s32 cluster;
     s32 savedResult;
-    void *buffer;
-    u8 *bufferData;
+    s32 result;
 
     typeEntry = lbl_802EEF40 + *(s32 *)((u8 *)context + 0x1C) * 5;
     *arg3 = -1;
@@ -4610,14 +4607,14 @@ extern "C" s32 fn_800ADA24(void *arg0, s32 arg1, u32 arg2, u32 *arg3, u32 *arg4,
             *(u32 *)((u8 *)context + 0x38) -= 1;
         }
     }
+    savedResult = 0;
+    cluster = 0;
     *(u32 *)((u8 *)context + 0x3C) = end + 1;
     *(u32 *)((u8 *)arg0 + 0xC) = end;
     *(u32 *)((u8 *)arg0 + 0x10) = arg2;
     *arg4 = end;
     arg2 = (u32)page;
     arg0 = *(void **)((u8 *)arg2 + 0x18);
-    savedResult = 0;
-    cluster = 0;
     while ((u16)cluster < *(u8 *)((u8 *)context + 0x22)) {
         result = fn_800B5618(context, *(void **)((u8 *)arg2 + 8),
                              (u32)arg0, 0, *(u16 *)context);
@@ -22249,23 +22246,22 @@ done:
 }
 
 #pragma scheduling off
-extern "C" s32 fn_800A4B08(u8 *arg0, u8 *arg1, s32 arg2) {
-    u8 a;
-    u8 b;
-    while (arg2 != 0) {
-        a = *arg0;
-        if (a == 0)
-            goto zero;
-        b = *arg1;
-        if (b == 0)
-            goto zero;
-        if (a != b)
-            return a - *(volatile u8 *)arg1;
+extern "C" s32 fn_800A4B08(u8 *arg0, u8 *arg1, s32 count) {
+    while (count != 0) {
+        u8 right;
+        u8 left = *arg0;
+        if (left == 0) goto differ;
+        right = *arg1;
+        if (right == 0) goto differ;
+        if (left == right) goto equal;
+    differ:
+        right = *(volatile u8 *)arg1;
+        return left - right;
+    equal:
         arg0++;
         arg1++;
-        arg2--;
+        count--;
     }
-zero:
     return 0;
 }
 #pragma scheduling on
