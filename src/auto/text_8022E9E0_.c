@@ -175,21 +175,20 @@ extern f32 lbl_805635E0;
 extern f32 lbl_805635E4;
 extern void *fn_8022EDE4(f32 *, f32);
 void fn_8022EE9C(void) {
-    volatile f32 a[12];
-    f32 one = lbl_805635E0;
-    a[0] = one;
-    a[1] = lbl_805635E4;
-    a[2] = lbl_805635E4;
-    a[3] = lbl_805635E4;
-    a[4] = one;
-    a[5] = lbl_805635E4;
-    a[6] = lbl_805635E4;
-    a[7] = lbl_805635E4;
-    a[8] = one;
-    a[9] = lbl_805635E4;
-    a[10] = lbl_805635E4;
-    a[11] = lbl_805635E4;
-    fn_8022EDE4((f32 *)a, one);
+    f32 a[12];
+    a[0] = 1.0f;
+    a[1] = 0.0f;
+    a[2] = 0.0f;
+    a[3] = 0.0f;
+    a[4] = 1.0f;
+    a[5] = 0.0f;
+    a[6] = 0.0f;
+    a[7] = 0.0f;
+    a[8] = 1.0f;
+    a[9] = 0.0f;
+    a[10] = 0.0f;
+    a[11] = 0.0f;
+    fn_8022EDE4(a, 1.0f);
 }
 
 extern f32 fn_80144514(f32, f32, f32, f32, f32, f32);
