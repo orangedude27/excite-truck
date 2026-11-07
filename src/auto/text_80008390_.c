@@ -193,12 +193,13 @@ s32 fn_80009C8C(void) {
     return result;
 }
 
+#pragma optimization_level 2
 s32 fn_80009CB8(void) {
     s32 result = 0;
-    if ((u8)lbl_8055D36D == 0 && *((u8 *)&lbl_8055D378 + 1) != 0) {
+
+    if ((u8)lbl_8055D36D == 0 && ((u8 *)&lbl_8055D378)[1] != 0)
         result = 1;
-        *((u8 *)&lbl_8055D378 + 1) = 0;
-    }
+    ((u8 *)&lbl_8055D378)[1] = 0;
     return result;
 }
-
+#pragma optimization_level reset
