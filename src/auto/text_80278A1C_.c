@@ -53,7 +53,6 @@ extern void* fn_801284F8(s32, const char*);
 extern s32 fn_8012C33C(char*);
 extern void* fn_80131808(char*);
 extern void fn_80131818(void*);
-extern void fn_80278A64(void*, void*, void*, s32);
 extern void fn_802E30C8(const char*, ...);
 extern void fn_802E317C(const char*, ...);
 extern void* fn_8012850C(s32, const char*);
