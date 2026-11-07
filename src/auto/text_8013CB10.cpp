@@ -33,7 +33,7 @@ struct RingBuf8013D2C4 {
 extern "C" s32 fn_80207848(void *, s32);
 extern "C" void fn_802E317C(const char *, ...);
 struct Sub134_8013D2C4 {
-    u8 pad0[0xC];
+    u8 pad0[0x8];
     void *p140;
     u8 pad1[4];
     void *p148;
