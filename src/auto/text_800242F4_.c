@@ -25,7 +25,8 @@ int __flush_buffer(FILE* file, size_t* bytes_flushed) {
     }
 
     file->buffer_ptr = file->buffer;
-    file->buffer_length = file->buffer_size - (file->position & file->buffer_alignment);
+    file->buffer_length = file->buffer_size;
+    file->buffer_length -= file->position & file->buffer_alignment;
     file->buffer_position = file->position;
 
     return 0;
