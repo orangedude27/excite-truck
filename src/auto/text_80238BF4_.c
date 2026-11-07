@@ -26,6 +26,26 @@ extern f32 lbl_80563720;
 extern f32 lbl_80563724;
 extern f32 lbl_80563728;
 extern f32 lbl_8056372C;
+extern void *fn_8012C370(s32, s32, u32 *, s32 *, u8 *, u8 *);
+extern void fn_802E30C8(const char *, ...);
+extern void fn_802E317C(const char *, ...);
+extern char lbl_80340AD0[];
+extern char lbl_80340B00[];
+
+#define SWAP16(p) do { \
+    u8 _t = (p)[0]; \
+    (p)[0] = (p)[1]; \
+    (p)[1] = _t; \
+} while (0)
+
+#define SWAP32(p) do { \
+    u8 _t = (p)[0]; \
+    (p)[0] = (p)[3]; \
+    (p)[3] = _t; \
+    _t = (p)[1]; \
+    (p)[1] = (p)[2]; \
+    (p)[2] = _t; \
+} while (0)
 static inline s32 clampLow_80238BF4(s32 v) {
     if (v > 0) return v;
     return 0;
