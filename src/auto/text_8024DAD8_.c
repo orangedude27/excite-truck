@@ -279,6 +279,7 @@ extern "C" s32 fn_80129D18(s32, s32);
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 /*
+ * UpdateEntryInfo (proposed name; game symbols can't be renamed yet).
  * Refreshes the info panel of the entry list (lbl_8055F2EC) for the entry the
  * cursor is on.  Asks the list (base + 0xD0) which entry that is, looks its name
  * up in the entry records, copies the name (base + 0x60, 32 bytes) and the asset
