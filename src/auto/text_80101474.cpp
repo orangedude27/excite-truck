@@ -1424,7 +1424,6 @@ void nw4hbm::ut::CharWriter::PrintGlyph(float x, float y, float z, const Glyph &
     *fifo = x1; *fifo = y1; *fifo = z; *fifoi = *(int *)(self + 0x14); *fifos = u1; *fifos = v1;
     *fifo = x; *fifo = y1; *fifo = z; *fifoi = *(int *)(self + 0x10); *fifos = u0; *fifos = v1;
 }
-#pragma pop
 
 extern "C" void GXSetFog(int, void *, unsigned char, unsigned char, float, float, float, float);
 extern "C" void GXSetTevSwapModeTable(int, int, int, int, int);
