@@ -32,6 +32,8 @@ extern void fn_802E317C(const char *, ...);
 extern char lbl_80340AD0[];
 extern char lbl_80340B00[];
 
+#define SWF_DATA(obj) (*(u8 **)((u8 *)(obj) + 0x14))
+
 #define SWAP32_FIELD(base, off) do { \
     ptr = (u8 *)(base); \
     temp2 = ptr[(off) + 0]; \
@@ -225,24 +227,27 @@ void fn_802390B4(void *arg0, s32 arg1) {
     }
     if (swap != 0) {
         u8 *data = *(u8 **)((u8 *)arg0 + 0x14);
+        u8 *ptr;
+        u8 temp2;
 
-        SWAP32_AT(*(u8 **)((u8 *)arg0 + 0x14), 0x00);
-        SWAP32_AT(*(u8 **)((u8 *)arg0 + 0x14), 0x04);
-        SWAP32_AT(*(u8 **)((u8 *)arg0 + 0x14), 0x08);
-        SWAP32_AT(*(u8 **)((u8 *)arg0 + 0x14), 0x0C);
-        SWAP32_AT(*(u8 **)((u8 *)arg0 + 0x14), 0x10);
-        SWAP32_AT(*(u8 **)((u8 *)arg0 + 0x14), 0x14);
-        SWAP32_AT(*(u8 **)((u8 *)arg0 + 0x14), 0x18);
-        SWAP32_AT(*(u8 **)((u8 *)arg0 + 0x14), 0x1C);
-        SWAP32_AT(*(u8 **)((u8 *)arg0 + 0x14), 0x20);
-        SWAP32_AT(*(u8 **)((u8 *)arg0 + 0x14), 0x24);
+        SWAP32_FIELD(*(u8 **)((u8 *)arg0 + 0x14), 0x00);
+        SWAP32_FIELD(*(u8 **)((u8 *)arg0 + 0x14), 0x04);
+        SWAP32_FIELD(*(u8 **)((u8 *)arg0 + 0x14), 0x08);
+        SWAP32_FIELD(*(u8 **)((u8 *)arg0 + 0x14), 0x0C);
+        SWAP32_FIELD(*(u8 **)((u8 *)arg0 + 0x14), 0x10);
+        SWAP32_FIELD(*(u8 **)((u8 *)arg0 + 0x14), 0x14);
+        SWAP32_FIELD(*(u8 **)((u8 *)arg0 + 0x14), 0x18);
+        SWAP32_FIELD(*(u8 **)((u8 *)arg0 + 0x14), 0x1C);
+        SWAP32_FIELD(*(u8 **)((u8 *)arg0 + 0x14), 0x20);
+        SWAP32_FIELD(*(u8 **)((u8 *)arg0 + 0x14), 0x24);
 
         {
             u32 offset;
             u32 i;
             s32 j;
 
-            *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18) = (u32)data + *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18);
+            ptr = *(u8 **)((u8 *)arg0 + 0x14);
+            *(u32 *)(ptr + 0x18) = (u32)data + *(u32 *)(ptr + 0x18);
             *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C) = (u32)data + *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C);
             *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x20) = (u32)data + *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x20);
             *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x24) = (u32)data + *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x24);
