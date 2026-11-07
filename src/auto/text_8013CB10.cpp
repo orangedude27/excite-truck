@@ -405,6 +405,30 @@ extern "C" void fn_8013D288(void) {
 #pragma scheduling on
 #pragma dont_inline off
 
+extern "C" u8 lbl_8032CAF0[];
+extern "C" u8 lbl_8032CBB8[];
+extern "C" u8 lbl_8032CC04[];
+extern "C" f32 lbl_805614C0;
+extern "C" f32 lbl_805614C4;
+extern "C" f32 lbl_805614C8;
+extern "C" f32 lbl_805614CC;
+extern "C" f32 lbl_805614D0;
+extern "C" f32 lbl_805614D4;
+extern "C" void *fn_8007DF60(void *);
+extern "C" void fn_8001DA84(void *);
+extern "C" s32 fn_80207848(void *, s32);
+extern "C" void *fn_801414A4(void *);
+extern "C" void fn_80141748(void *);
+extern "C" void fn_80141890(void *, void *, const char *, const char *, const char *, s32);
+extern "C" void *fn_802CAC28(const char *, s32);
+extern "C" void *fn_802AE340(s32);
+extern "C" s32 fn_802ADBA8(void *, const char *, void *, void *);
+extern "C" void *fn_802AE0A4(s32, const char *);
+extern "C" void *fn_801686B0(void *, const char *, f32, f32);
+extern "C" void fn_80168734(void *, f32, f32, f32, f32);
+extern "C" void *fn_80178A9C(void);
+extern "C" void *fn_80178AA4(void);
+
 extern "C" s32 fn_8013D890(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
