@@ -17,6 +17,19 @@ extern f32 lbl_80564340, lbl_80564344, lbl_80564348, lbl_80564350, lbl_80564354;
 extern f32 lbl_80564358, lbl_8056435C, lbl_80564360;
 #define FLD(p, off) (*(f32 *)((u8 *)(p) + (off)))
 
+struct V3 { f32 x, y, z; };
+static inline void XfmV3(f32 *m, struct V3 *src, struct V3 *dst) {
+    if (src == dst) {
+        f32 x = src->x, y = src->y, z = src->z;
+        dst->x = z * m[6] + (x * m[0] + y * m[3]);
+        dst->y = z * m[7] + (x * m[1] + y * m[4]);
+        dst->z = z * m[8] + (x * m[2] + y * m[5]);
+    } else {
+        dst->x = src->z * m[6] + (src->x * m[0] + src->y * m[3]);
+        dst->y = src->z * m[7] + (src->x * m[1] + src->y * m[4]);
+        dst->z = src->z * m[8] + (src->x * m[2] + src->y * m[5]);
+    }
+}
 static inline void XfmVec(f32 *m, f32 *src, f32 *dst) {
     if (src == dst) {
         f32 x = src[0], y = src[1], z = src[2];
@@ -345,7 +358,9 @@ next:
 void fn_8028ADF4(void *arg0, s32 arg1) {
     u8 *ent = (u8 *)arg0;
     u8 *tbl = (u8 *)lbl_804B3238;
-    f32 k28, k31, k30, k29, k27, k26, k25, k24, k23;
+    f32 b2[3], a2[3], c1[3], b1[3], a1[3];
+    f32 *pa = a2;
+    f32 k31, k30, k29, k28, k27, k26, k25, k24, k23;
     s32 i;
     if ((f32)__fabs(fn_801E7E24()) <= lbl_80558DC4[0]) return;
     k23 = lbl_80564334;
@@ -368,8 +383,6 @@ void fn_8028ADF4(void *arg0, s32 arg1) {
                 s32 roll;
                 f32 f4;
                 f32 f22;
-                f32 a[3];
-                f32 b[3];
                 if (e[0x30] == 0) continue;
                 type = *(s32 *)(e + 0x38);
                 if (type < 0 || type >= 8) continue;
@@ -379,71 +392,68 @@ void fn_8028ADF4(void *arg0, s32 arg1) {
                 roll = fn_80287B5C(0x64);
                 if (FLD(e, 0x28) > FLD(t, 4) && roll < *(s32 *)(t + 8)) {
                     f32 r;
-                    ((struct Vec3i *)a)[0] = *(struct Vec3i *)(e + 0xC);
+                    *(struct Vec3i *)a1 = *(struct Vec3i *)(e + 0xC);
                     r = fn_80287BC8(lbl_80564338, lbl_8056432C);
-                    b[0] = FLD(m, 0xC) * r;
-                    b[1] = FLD(m, 0x10) * r;
-                    b[2] = FLD(m, 0x14) * r;
+                    b1[0] = FLD(m, 0xC) * r;
+                    b1[1] = FLD(m, 0x10) * r;
+                    b1[2] = FLD(m, 0x14) * r;
                     r = fn_80287BC8(lbl_8056433C, lbl_80564340);
-                    b[0] += FLD(m, 0x18) * r;
-                    b[1] += FLD(m, 0x1C) * r;
-                    b[2] += FLD(m, 0x20) * r;
-                    PSVECNormalize(b, b);
+                    b1[0] += FLD(m, 0x18) * r;
+                    b1[1] += FLD(m, 0x1C) * r;
+                    b1[2] += FLD(m, 0x20) * r;
+                    PSVECNormalize(b1, b1);
                     r = FLD(e, 0x34);
-                    b[0] *= r;
-                    b[1] *= r;
-                    b[2] *= r;
-                    a[0] += b[0];
-                    a[1] += b[1];
-                    a[2] += b[2];
-                    {
-                        f32 c[3];
-                        c[0] = FLD(m, 0x34) * k24;
-                        c[1] = FLD(m, 0x38) * k24;
-                        c[1] += k25;
-                        c[2] = FLD(m, 0x3C) * k24;
-                        f4 = (FLD(e, 0) > k26) ? lbl_8056432C : lbl_80564340;
-                        c[0] += FLD(m, 0) * f4;
-                        c[1] += FLD(m, 4) * f4;
-                        c[2] += FLD(m, 8) * f4;
-                        f22 = k27 * FLD(e, 0x24);
-                        c[0] += fn_80287BC8(-f22, f22);
-                        c[2] += fn_80287BC8(-f22, f22);
-                        ((void (*)(void *, f32 *, f32 *, s16, s32))(*(void ***)*(void **)t)[6])(
-                            *(void **)t, a, c, *(s16 *)(m + 0x30), i);
-                    }
+                    b1[0] *= r;
+                    b1[1] *= r;
+                    b1[2] *= r;
+                    a1[0] += b1[0];
+                    a1[1] += b1[1];
+                    a1[2] += b1[2];
+                    c1[0] = FLD(m, 0x34) * k24;
+                    c1[1] = FLD(m, 0x38) * k24;
+                    c1[1] += k25;
+                    c1[2] = FLD(m, 0x3C) * k24;
+                    f4 = (FLD(e, 0) > k26) ? lbl_8056432C : lbl_80564340;
+                    c1[0] += FLD(m, 0) * f4;
+                    c1[1] += FLD(m, 4) * f4;
+                    c1[2] += FLD(m, 8) * f4;
+                    f22 = k27 * FLD(e, 0x24);
+                    c1[0] += fn_80287BC8(-f22, f22);
+                    c1[2] += fn_80287BC8(-f22, f22);
+                    ((void (*)(void *, f32 *, f32 *, s16, s32))(*(void ***)*(void **)t)[6])(
+                        *(void **)t, a1, c1, *(s16 *)(m + 0x30), i);
                 } else if (FLD(e, 0x24) > k28 && roll < *(s32 *)(t + 0xC)) {
                     f32 r;
-                    a[0] = FLD(e, 0);
-                    a[1] = FLD(e, 4);
-                    a[2] = FLD(e, 8) - k29;
-                    XfmVec((f32 *)m, a, a);
-                    a[0] += FLD(m, 0x24);
-                    a[1] += FLD(m, 0x28);
-                    a[2] += FLD(m, 0x2C);
-                    b[0] = FLD(m, 0x18) * k30;
-                    b[1] = FLD(m, 0x1C) * k30;
-                    b[2] = FLD(m, 0x20) * k30;
+                    pa[0] = FLD(e, 0);
+                    pa[1] = FLD(e, 4);
+                    pa[2] = FLD(e, 8) - k29;
+                    XfmVec((f32 *)m, pa, pa);
+                    a2[0] += FLD(m, 0x24);
+                    a2[1] += FLD(m, 0x28);
+                    a2[2] += FLD(m, 0x2C);
+                    b2[0] = FLD(m, 0x18) * k30;
+                    b2[1] = FLD(m, 0x1C) * k30;
+                    b2[2] = FLD(m, 0x20) * k30;
                     r = fn_80287BC8(lbl_80564328, lbl_8056432C);
-                    b[0] += FLD(m, 0xC) * r;
-                    b[1] += FLD(m, 0x10) * r;
-                    b[2] += FLD(m, 0x14) * r;
+                    b2[0] += FLD(m, 0xC) * r;
+                    b2[1] += FLD(m, 0x10) * r;
+                    b2[2] += FLD(m, 0x14) * r;
                     r = FLD(e, 0x24) * fn_80287BC8(lbl_80564358, lbl_8056435C);
-                    b[0] *= r;
-                    b[1] *= r;
-                    b[2] *= r;
-                    b[0] += FLD(m, 0x34) * k31;
-                    b[1] += FLD(m, 0x38) * k31;
-                    b[2] += FLD(m, 0x3C) * k31;
+                    b2[0] *= r;
+                    b2[1] *= r;
+                    b2[2] *= r;
+                    b2[0] += FLD(m, 0x34) * k31;
+                    b2[1] += FLD(m, 0x38) * k31;
+                    b2[2] += FLD(m, 0x3C) * k31;
                     f4 = (FLD(e, 0) > k26) ? lbl_8056432C : lbl_80564340;
-                    b[0] += FLD(m, 0) * f4;
-                    b[1] += FLD(m, 4) * f4;
-                    b[2] += FLD(m, 8) * f4;
+                    b2[0] += FLD(m, 0) * f4;
+                    b2[1] += FLD(m, 4) * f4;
+                    b2[2] += FLD(m, 8) * f4;
                     f22 = k27 * FLD(e, 0x24);
-                    b[0] += fn_80287BC8(-f22, f22);
-                    b[2] += fn_80287BC8(-f22, f22);
+                    b2[0] += fn_80287BC8(-f22, f22);
+                    b2[2] += fn_80287BC8(-f22, f22);
                     ((void (*)(void *, f32 *, f32 *, s16, s32))(*(void ***)*(void **)t)[6])(
-                        *(void **)t, a, b, *(s16 *)(m + 0x30), i);
+                        *(void **)t, a2, b2, *(s16 *)(m + 0x30), i);
                 }
             }
         }
