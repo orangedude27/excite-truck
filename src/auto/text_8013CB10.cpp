@@ -102,10 +102,28 @@ struct MainObj8013D2C4 {
     Timer8013D2C4 t7C;
     Timer8013D2C4 t84;
     Timer8013D2C4 t8C;
-    u8 pad94[0x2C];
+    u8 pad94[0xC];
+    void *a0;
+    void *a4;
+    void *a8;
+    void *ac;
+    void *b0;
+    void *b4;
+    void *b8;
+    s32 bc;
     RingBuf8013D2C4 rb;
     Sub134_8013D2C4 sub;
-    u8 pad250[0x30];
+    u8 pad23C[0x18];
+    s32 f254;
+    u8 f258;
+    u8 pad259[0xF];
+    f32 f268;
+    u8 f26C;
+    u8 pad26D[3];
+    s32 f270;
+    s32 f274;
+    s32 f278;
+    s32 f27C;
     Perc8013D2C4 perc;
     s32 f288;
 };
@@ -576,91 +594,35 @@ extern "C" void *fn_8013D2C4(void *arg0, void *arg1) {
         virtual void d1();
         virtual s32 v10(const char *);
     };
-    struct Table {
-        u8 pad;
-        char str[1];
-    };
 
+    MainObj8013D2C4 *obj = (MainObj8013D2C4 *)arg0;
     u8 *self = (u8 *)arg0;
     u8 *src = (u8 *)arg1;
     const char *base = (const char *)lbl_8032C530;
 
     f32 fc0 = lbl_805614C0;
-    *(void **)self = lbl_8032CAF0;
-    *(void **)(self + 8) = self + 0x14;
-    *(s32 *)(self + 0x10) = 0x10;
-    *(s32 *)(self + 0xC) = 0;
+    obj->vt = lbl_8032CAF0;
+    obj->sa.init();
+    obj->t6C.init(fc0);
+    obj->t74.init(lbl_805614C0);
+    obj->t7C.init(lbl_805614AC);
+    obj->t84.init(lbl_805614AC);
+    obj->t8C.init(lbl_805614C4);
+    obj->rb.init();
+    obj->sub.init();
+    obj->perc.init();
 
-    fn_8001DAE0(self + 0x6C, fc0);
-    fn_8001DAE0(self + 0x74, lbl_805614C0);
-    fn_8001DAE0(self + 0x7C, lbl_805614AC);
-    fn_8001DAE0(self + 0x84, lbl_805614AC);
-    fn_8001DAE0(self + 0x8C, lbl_805614C4);
-
-    *(s32 *)(self + 0xC8) = 0;
-    *(s32 *)(self + 0xC4) = 8;
-    *(void **)(self + 0xC0) = self + 0xD0;
-    *(s32 *)(self + 0xCC) = 0;
-
-    *(s32 *)(self + 0x140) = 0;
-    *(s32 *)(self + 0x148) = 0;
-    *(s32 *)(self + 0x14C) = 0;
-    *(s32 *)(self + 0x150) = 0;
-    *(s32 *)(self + 0x158) = 0;
-    *(s32 *)(self + 0x15C) = 0;
-    *(s32 *)(self + 0x160) = 0;
-
-    memset(self + 0x164, 0x7A, 3);
-    self[0x167] = 0;
-    memset(self + 0x178, 0x7A, 3);
-    self[0x17B] = 0;
-    memset(self + 0x18C, 0x7A, 3);
-    self[0x18F] = 0;
-    memset(self + 0x1A0, 0x7A, 3);
-    self[0x1A3] = 0;
-    memset(self + 0x1B4, 0x7A, 3);
-    self[0x1B7] = 0;
-    memset(self + 0x1C8, 0x7A, 3);
-    self[0x1CB] = 0;
-    memset(self + 0x1D2, 0x7A, 3);
-    self[0x1D5] = 0;
-    memset(self + 0x1E6, 0x7A, 3);
-    self[0x1E9] = 0;
-    memset(self + 0x1FA, 0x7A, 3);
-    self[0x1FD] = 0;
-    memset(self + 0x20E, 0x7A, 3);
-    self[0x211] = 0;
-    memset(self + 0x222, 0x7A, 3);
-    self[0x225] = 0;
-
-    fn_801414A4(self + 0x280);
-
-    void *w0 = fn_80145E70(((const Table *)(base - 1))->str);
-    *(void **)(self + 0x54) = w0;
-    {
-        s32 idx = *(s32 *)(self + 0xC);
-        void **arr = *(void ***)(self + 8);
-        *(s32 *)(self + 0xC) = idx + 1;
-        arr[idx] = w0;
-    }
+    void *w0 = fn_80145E70(base + 0x0);
+    obj->w54 = w0;
+    obj->sa.push(w0);
 
     void *w1 = fn_80145E70(base + 0xC);
-    *(void **)(self + 0x58) = w1;
-    {
-        s32 idx = *(s32 *)(self + 0xC);
-        void **arr = *(void ***)(self + 8);
-        *(s32 *)(self + 0xC) = idx + 1;
-        arr[idx] = w1;
-    }
+    obj->w58 = w1;
+    obj->sa.push(w1);
 
     void *w2 = fn_80145E70(base + 0x1C);
-    *(void **)(self + 0x5C) = w2;
-    {
-        s32 idx = *(s32 *)(self + 0xC);
-        void **arr = *(void ***)(self + 8);
-        *(s32 *)(self + 0xC) = idx + 1;
-        arr[idx] = w2;
-    }
+    obj->w5C = w2;
+    obj->sa.push(w2);
 
     *(void **)(self + 0xA0) = fn_802CAC28(base + 0x2C, 0);
     *(void **)(self + 0xA4) = fn_802CAC28(base + 0x38, 0);
