@@ -140,7 +140,7 @@ typedef struct {
     UINT32  dev_rec_count;               /* 0x1974 counter stamped into dev records */
     UINT8   security_mode;               /* 0x1978 BTM_SEC_MODE_* */
     u8      pad_1979[0x02];              /* 0x1979 pairing_disabled, connect_only_paired */
-    UINT8   pairing_state;               /* 0x197B tBTM_PAIRING_STATE, IDLE when not pairing */
+    UINT8   security_mode_changed;       /* 0x197C security_mode raised for pairing */
     UINT8   pin_type_changed;            /* 0x197C PIN type changed for pairing */
     u8      pad_197D[0x0E42];
     UINT8   acl_disc_reason;             /* 0x27BF reason to report when the ACL drops */
