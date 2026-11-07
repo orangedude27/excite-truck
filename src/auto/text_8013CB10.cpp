@@ -69,25 +69,25 @@ struct Sub134_8013D2C4 {
         memset(s20E, 0x7A, 3); s20E[3] = 0;
         memset(s222, 0x7A, 3); s222[3] = 0;
     }
-    inline void init() {
-        p140 = 0;
-        p148 = 0;
-        p14C = 0;
-        p150 = 0;
-        p158 = 0;
-        p15C = 0;
-        p160 = 0;
-        memset(s164, 0x7A, 3); s164[3] = 0;
-        memset(s178, 0x7A, 3); s178[3] = 0;
-        memset(s18C, 0x7A, 3); s18C[3] = 0;
-        memset(s1A0, 0x7A, 3); s1A0[3] = 0;
-        memset(s1B4, 0x7A, 3); s1B4[3] = 0;
-        memset(s1C8, 0x7A, 3); s1C8[3] = 0;
-        memset(s1D2, 0x7A, 3); s1D2[3] = 0;
-        memset(s1E6, 0x7A, 3); s1E6[3] = 0;
-        memset(s1FA, 0x7A, 3); s1FA[3] = 0;
-        memset(s20E, 0x7A, 3); s20E[3] = 0;
-        memset(s222, 0x7A, 3); s222[3] = 0;
+    inline void init(s32 z = 0) {
+        p140 = (void *)z;
+        p148 = (void *)z;
+        p14C = (void *)z;
+        p150 = (void *)z;
+        p158 = (void *)z;
+        p15C = (void *)z;
+        p160 = (void *)z;
+        memset(s164, 0x7A, 3); s164[3] = z;
+        memset(s178, 0x7A, 3); s178[3] = z;
+        memset(s18C, 0x7A, 3); s18C[3] = z;
+        memset(s1A0, 0x7A, 3); s1A0[3] = z;
+        memset(s1B4, 0x7A, 3); s1B4[3] = z;
+        memset(s1C8, 0x7A, 3); s1C8[3] = z;
+        memset(s1D2, 0x7A, 3); s1D2[3] = z;
+        memset(s1E6, 0x7A, 3); s1E6[3] = z;
+        memset(s1FA, 0x7A, 3); s1FA[3] = z;
+        memset(s20E, 0x7A, 3); s20E[3] = z;
+        memset(s222, 0x7A, 3); s222[3] = z;
     }
 };
 extern "C" void fn_8001DAE0(void *, f32);
@@ -663,18 +663,25 @@ extern "C" void *fn_8013D2C4(void *arg0, void *arg1) {
     u8 *src = (u8 *)arg1;
     const char *base = (const char *)lbl_8032C530;
 
-    f32 fc0 = lbl_805614C0;
-    obj->vt = lbl_8032CAF0;
-    obj->sa.init();
-    obj->t6C.init(fc0);
-    obj->t74.init(lbl_805614C0);
-    obj->t7C.init(lbl_805614AC);
-    obj->t84.init(lbl_805614AC);
-    obj->t8C.init(lbl_805614C4);
-    obj->rb.init();
-    obj->sub.init();
-    obj->perc.init();
-    obj->initWidgets(base);
+    obj->init();
+
+    void *w0 = fn_80145E70(base + 0x0);
+    obj->w54 = w0;
+    obj->sa.push(w0);
+
+    void *w1 = fn_80145E70(base + 0xC);
+    obj->w58 = w1;
+    obj->sa.push(w1);
+
+    void *w2 = fn_80145E70(base + 0x1C);
+    obj->w5C = w2;
+    obj->sa.push(w2);
+
+    obj->a0 = fn_802CAC28(base + 0x2C, 0);
+    obj->a4 = fn_802CAC28(base + 0x38, 0);
+    obj->a8 = fn_802CAC28(base + 0x48, 0);
+    obj->ac = fn_802CAC28(base + 0x58, 0);
+    obj->b0 = fn_802CAC28(base + 0x68, 0);
 
     s32 n = *(s32 *)(src + 0x3E0);
     lbl_8055E1C0 = (s32)self;
