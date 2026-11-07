@@ -173,15 +173,20 @@ typedef struct WPADCB {
     WPADCommandQueue stdCmdQueue;      // at 0x160
     WPADCommand stdCmdQueueList[24];   // at 0x16C
     WPADCommandQueue extCmdQueue;      // at 0x5EC
-    union {
-        WPADCommand extCmdQueueList[12]; // at 0x5F8
-        struct {
-            u8 UNK_0x5F8[0x209];
-            u8 UNK_0x801;
-            u8 UNK_0x802;
-            u8 UNK_0x803[0x35];
-        };
-    };
+          union {
+          WPADCommand extCmdQueueList[12]; // at 0x5F8
+          struct {
+              u8 UNK_0x5F8[0x1CA];
+              // Extension calibration read out of WM_REG_EXTENSION_CONFIG,
+              // same layout as extConfig below but filled in by getExtConfig().
+              WPADExtConfig extCalib;   // at 0x7C2
+              WPADCallback readCB;       // at 0x7DC callback of a register read
+              u8 UNK_0x7E0[0x21];
+              u8 UNK_0x801; // extension kind: 1 = FS, 2 = CL, 0xfb/0xfc/0xfd = none
+              u8 UNK_0x802;
+              u8 UNK_0x803[0x35];
+          };
+      };
     WPADInfo wpInfo;                   // at 0x838
     WPADInfo* wpInfoOut;               // at 0x850
     WPADDevConfig devConfig;           // at 0x854
