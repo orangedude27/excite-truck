@@ -56,7 +56,7 @@ extern float fn_80144514(float, float, float, float, float, float);
 void fn_8018BFA0(void *out0, float *a, int *b0, int arg3, float arg4, float arg5) {
     float *out = (float *)out0;
     float *b = (float *)b0;
-    float x0, x1, x2, x3, x4, x5, x6, x7, x8;
+    float x0, x1, x2, x3, x4, x5, x7, x6, x8;
     Vec_8018 scratch;
     if (out == b || out == a) {
         x0 = fn_80144514(a[0], b[0], a[3], b[1], a[6], b[2]);
@@ -65,10 +65,10 @@ void fn_8018BFA0(void *out0, float *a, int *b0, int arg3, float arg4, float arg5
         x3 = fn_80144514(a[1], b[0], a[4], b[1], a[7], b[2]);
         x4 = fn_80144514(a[1], b[3], a[4], b[4], a[7], b[5]);
         x5 = fn_80144514(a[1], b[6], a[4], b[7], a[7], b[8]);
-        x6 = fn_80144514(a[2], b[0], a[5], b[1], a[8], b[2]);
-        x7 = fn_80144514(a[2], b[3], a[5], b[4], a[8], b[5]);
+        x7 = fn_80144514(a[2], b[0], a[5], b[1], a[8], b[2]);
+        x6 = fn_80144514(a[2], b[3], a[5], b[4], a[8], b[5]);
         x8 = fn_80144514(a[2], b[6], a[5], b[7], a[8], b[8]);
-        out[0] = x0; out[3] = x1; out[6] = x2; out[1] = x3; out[4] = x4; out[7] = x5; out[2] = x6; out[5] = x7; out[8] = x8;
+        out[0] = x0; out[3] = x1; out[6] = x2; out[1] = x3; out[4] = x4; out[7] = x5; out[2] = x7; out[5] = x6; out[8] = x8;
     } else {
         out[0] = fn_80144514(a[0], b[0], a[3], b[1], a[6], b[2]);
         out[3] = fn_80144514(a[0], b[3], a[3], b[4], a[6], b[5]);
@@ -109,6 +109,8 @@ extern float PSQUATMultiply(void *, void *);
 extern float lbl_80562038;
 extern float lbl_8056203C;
 extern float lbl_80562040;
+extern char lbl_80332758;
+extern float lbl_80561F78, lbl_80561F7C, lbl_80561F80, lbl_80561F84;
 static inline float Chan_8018F2C0(unsigned char v) {
     float t = (lbl_80561F88 < (((float)v - lbl_80561F74) / lbl_80562038)) ? lbl_80561F88 : (((float)v - lbl_80561F74) / lbl_80562038);
     t = (t > lbl_80561F74) ? t : lbl_80561F74;
