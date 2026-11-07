@@ -129,6 +129,14 @@ struct MainObj8013D2C4 {
     Perc8013D2C4 perc;
     s32 f288;
 };
+static inline void LoadWidget8013D2C4(s32 *dst, const char *base, s32 off) {
+    const char *s = base + off;
+    s32 r = fn_80207848((void *)s, 1);
+    *dst = r;
+    if (r == 0) {
+        fn_802E317C(base + 0x148, s);
+    }
+}
 extern "C" s32 lbl_8055E1C0;
 extern "C" void *fn_80145E70(const char *);
 extern "C" void **__AXFXGetLfoSinTable_801769CC(void);
