@@ -152,12 +152,12 @@ extern "C" void fn_80278A64(void* object_arg, void* file_arg, void* file2_arg, s
     LayoutStrings* base = (LayoutStrings*)lbl_80347690;
     File_80279004* file = (File_80279004*)file_arg;
     CarObject* car = (CarObject*)object_arg;
+    File_80279004* file2 = (File_80279004*)file2_arg;
+    s32 name = name_arg;
     Res_80279004* res2;
     Res_80279004* res;
     Element_80278A64* elem;
     s32 i;
-    s32 name = name_arg;
-    File_80279004* file2 = (File_80279004*)file2_arg;
     char boneName[0x20];
     char wheelName[0x20];
     struct Keys { const char* k[4]; } keys;
@@ -174,47 +174,45 @@ extern "C" void fn_80278A64(void* object_arg, void* file_arg, void* file2_arg, s
 
         for (; i < 0xA2; i++, elem++) {
             sprintf(boneName, lbl_8055C678, i);
-            if (file->hasRes(boneName)) {
-                res = file->getRes(boneName);
-                car->count = i + 1;
-                res2 = res;
-                if (file2 != NULL) {
-                    if (file2->hasRes(boneName)) {
-                        res2 = file2->getRes(boneName);
-                    }
+            if (!file->hasRes(boneName)) {
+                break;
+            }
+            res = file->getRes(boneName);
+            car->count = i + 1;
+            res2 = res;
+            if (file2 != NULL) {
+                if (file2->hasRes(boneName)) {
+                    res2 = file2->getRes(boneName);
                 }
-                if (res != NULL) {
-                    v1 = res2->getVec(base->travel_min);
-                    elem->v1.x = v1.x;
-                    elem->v1.y = v1.y;
-                    elem->v1.z = v1.z;
-                    elem->v1.x *= scale;
-                    elem->v1.y *= scale;
-                    elem->v1.z *= scale;
+            }
+            if (res != NULL) {
+                v1 = res2->getVec(base->travel_min);
+                elem->v1.x = v1.x;
+                elem->v1.y = v1.y;
+                elem->v1.z = v1.z;
+                elem->v1.x *= scale;
+                elem->v1.y *= scale;
+                elem->v1.z *= scale;
 
-                    v2 = res2->getVec(base->travel_max);
-                    elem->v2.x = v2.x;
-                    elem->v2.y = v2.y;
-                    elem->v2.z = v2.z;
-                    elem->v2.x *= scale;
-                    elem->v2.y *= scale;
-                    elem->v2.z *= scale;
+                v2 = res2->getVec(base->travel_max);
+                elem->v2.x = v2.x;
+                elem->v2.y = v2.y;
+                elem->v2.z = v2.z;
+                elem->v2.x *= scale;
+                elem->v2.y *= scale;
+                elem->v2.z *= scale;
 
-                    v3 = res2->getVec(base->link_center);
-                    elem->v3.x = v3.x;
-                    elem->v3.y = v3.y;
-                    elem->v3.z = v3.z;
-                    elem->v3.x *= scale;
-                    elem->v3.y *= scale;
-                    elem->v3.z *= scale;
+                v3 = res2->getVec(base->link_center);
+                elem->v3.x = v3.x;
+                elem->v3.y = v3.y;
+                elem->v3.z = v3.z;
+                elem->v3.x *= scale;
+                elem->v3.y *= scale;
+                elem->v3.z *= scale;
 
-                    elem->b30 = res->getByte(base->is_welded, 0);
-                    elem->f2C = res->getFloat(base->weakness);
-                    elem->f28 = res->getFloatDefault(base->dmg_dist, lbl_805640D0);
-                } else {
-                    fn_802E30C8(base->warn_bad_bone, name, i);
-                    fn_80278A28(elem);
-                }
+                elem->b30 = res->getByte(base->is_welded, 0);
+                elem->f2C = res->getFloat(base->weakness);
+                elem->f28 = res->getFloatDefault(base->dmg_dist, lbl_805640D0);
             } else {
                 fn_802E30C8(base->warn_bad_bone, name, i);
                 fn_80278A28(elem);
@@ -313,7 +311,7 @@ extern "C" void* fn_80279004(s32 name, s32 arg1) {
     } else {
         file2 = NULL;
     }
-    fn_80278A64(object, file, file2, (s32)arg0);
+    fn_80278A64((CarObject*)object, (File_80279004*)file, (File_80279004*)file2, (s32)arg0);
     memset(object + 0x2138, 0, 0x300);
     if (((s32 (**)(void*, const char*))(*(void**)file))[4](file, lbl_8055C6D0) != 0) {
         resource = ((void* (**)(void*, const char*))(*(void**)file))[2](file, lbl_8055C6D0);
