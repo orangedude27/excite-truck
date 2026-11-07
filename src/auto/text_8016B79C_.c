@@ -86,7 +86,7 @@ typedef struct { s32 data; s32 index; s32 count; s32 data2; } List8016C768;
 #define VFN(obj, off, ret, args) ((ret (*) args)VT(obj, off))
 extern int stricmp(const char *, const char *);
 extern int strcmp(const char *, const char *);
-extern char lbl_8055A220[], lbl_8055A228[], lbl_8055A230[], lbl_8055A238[], lbl_8055A240[];
+extern char lbl_8055A228, lbl_8055A230, lbl_8055A238, lbl_8055A240;
 extern s32 fn_802C6FC0(s32, s32);
 static inline void SetNodeF8(void *node) {
     if (node != 0) {
@@ -670,6 +670,104 @@ extern "C" s32 fn_8016C5F0(void) {
 #pragma cplusplus reset
 
 int fn_8016C760(void *arg0) { return ((int *)arg0)[1]; }
+
+void fn_8016CD10(void *);
+void fn_8016CD28(void *);
+s8 fn_8016C768(void *arg0, void *arg1, void *arg2) {
+    char *str = lbl_803306D0;
+    List8016C768 *list;
+    void *obj;
+    s32 count, i, ok, idx;
+    List8016C768 **out = (List8016C768 **)arg0;
+
+    list = (List8016C768 *)fn_801284F8(0x10, str + 0x114);
+    if (list != 0) {
+        count = 0;
+        i = 0;
+        while ((obj = VFN(arg1, 0x60, void *, (void *, s32))(arg1, i)) != 0) {
+            if (stricmp(VFN(obj, 8, char *, (void *))(obj), (char *)&lbl_8055A228) == 0) {
+                if (stricmp(VFN(obj, 0x14, char *, (void *, char *))(obj, (char *)&lbl_8055A230), str + 0x120) != 0) count++;
+            }
+            i++;
+        }
+        {
+            s32 mem = ((s32 (*)(s32, char *))fn_8012850C)(count * 0x44 + 0x10, str + 0x12C);
+            s32 r = ((s32 (*)(s32, void *, void *, s32, s32))fn_8002F37C)(mem, (void *)fn_8016CD28, (void *)fn_8016C29C, 0x44, count);
+            list->data = r;
+            list->count = count;
+            list->index = 0;
+            list->data2 = r;
+        }
+    }
+    out[0] = list;
+    list = (List8016C768 *)fn_801284F8(0x10, str + 0x13C);
+    if (list != 0) {
+        count = 0;
+        i = 0;
+        while ((obj = VFN(arg1, 0x60, void *, (void *, s32))(arg1, i)) != 0) {
+            if (stricmp(VFN(obj, 8, char *, (void *))(obj), (char *)&lbl_8055A228) == 0) {
+                if (stricmp(VFN(obj, 0x14, char *, (void *, char *))(obj, (char *)&lbl_8055A230), str + 0x120) == 0) count++;
+            }
+            i++;
+        }
+        {
+            s32 mem = ((s32 (*)(s32, char *))fn_8012850C)(count * 0x38 + 0x10, str + 0x14C);
+            s32 r = ((s32 (*)(s32, void *, void *, s32, s32))fn_8002F37C)(mem, (void *)fn_8016CD10, (void *)fn_8016C25C, 0x38, count);
+            list->data = r;
+            list->count = count;
+            list->index = 0;
+            list->data2 = r;
+        }
+    }
+    out[1] = list;
+    ok = 1;
+    idx = 0;
+    while ((obj = VFN(arg1, 0x60, void *, (void *, s32))(arg1, idx)) != 0) {
+        if (strcmp(VFN(obj, 8, char *, (void *))(obj), (char *)&lbl_8055A228) == 0) {
+            if (strcmp(VFN(obj, 0x14, char *, (void *, char *))(obj, (char *)&lbl_8055A230), str + 0x120) != 0) {
+                List8016C768 *l = out[0];
+                u8 *e = (u8 *)l->data + l->index++ * 0x44;
+                char *name = VFN(obj, 0x14, char *, (void *, char *))(obj, (char *)&lbl_8055A230);
+                void *c;
+                s32 j = 0;
+                Blk8016C768 tmp;
+                while ((c = VFN(*(void **)arg2, 0xC, void *, (void *, s32))(*(void **)arg2, j)) != 0) {
+                    if (strcmp(VFN(c, 8, char *, (void *))(c), (char *)&lbl_8055A230) == 0 &&
+                        strcmp(VFN(c, 0x14, char *, (void *, char *))(c, (char *)&lbl_8055A220), name) == 0) break;
+                    j++;
+                }
+                if (c == 0) fn_802E317C(str + 0x160, name);
+                if (VFN(c, 0x5C, s32, (void *, char *))(c, str + 0x180) != 0) {
+                    *(s32 *)(e + 0xC) = 0;
+                    *(s32 *)(e + 8) = VFN(c, 0x5C, s32, (void *, char *))(c, str + 0x180);
+                } else if (strcmp(name, str + 0x120) == 0) {
+                    *(s32 *)(e + 0xC) = 2;
+                } else {
+                    *(s32 *)(e + 0xC) = 1;
+                    *(s32 *)e = fn_802C6FC0((s32)VFN(c, 0x14, char *, (void *, char *))(c, (char *)&lbl_8055A238), 0);
+                }
+                tmp = VFN(obj, 0x44, Blk8016C768, (void *, char *))(obj, str + 0x190);
+                *(Blk8016C768 *)(e + 0x14) = tmp;
+                *(u8 *)(e + 0x10) = 1;
+                if (1 == 0) ok = 0;
+            } else {
+                List8016C768 *l = out[1];
+                u8 *e = (u8 *)l->data + l->index++ * 0x38;
+                Blk8016C768 tmp;
+                if (strcmp(VFN(obj, 0x14, char *, (void *, char *))(obj, (char *)&lbl_8055A230), str + 0x120) != 0)
+                    fn_802E317C(str + 0x1A0);
+                tmp = VFN(obj, 0x44, Blk8016C768, (void *, char *))(obj, str + 0x190);
+                *(Blk8016C768 *)e = tmp;
+                *(f32 *)(e + 0x34) = VFN(obj, 0x28, f32, (void *, char *, f32))(obj, (char *)&lbl_8055A240, lbl_805619A0);
+                *(u8 *)(e + 0x31) = 1;
+                if (1 == 0) ok = 0;
+            }
+        }
+        idx++;
+    }
+    *((u8 *)arg0 + 8) = ok;
+    return ok;
+}
 
 extern f32 lbl_805619A0;
 #pragma scheduling invalid_target
