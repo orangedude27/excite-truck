@@ -112,16 +112,16 @@ extern float lbl_80562040;
 extern char lbl_80332758[];
 static inline void matVecAliasV_8018(Vec_8018 *dest, const float *m, const Vec_8018 *src) {
     if (dest == src) {
-        float tx = src->x * m[0] + src->y * m[3] + src->z * m[6];
-        float ty = src->x * m[1] + src->y * m[4] + src->z * m[7];
-        float tz = src->x * m[2] + src->y * m[5] + src->z * m[8];
+        float tx = src->y * m[3] + src->x * m[0] + src->z * m[6];
+        float ty = src->y * m[4] + src->x * m[1] + src->z * m[7];
+        float tz = src->y * m[5] + src->x * m[2] + src->z * m[8];
         dest->x = tx;
         dest->y = ty;
         dest->z = tz;
     } else {
-        dest->x = src->x * m[0] + src->y * m[3] + src->z * m[6];
-        dest->y = src->x * m[1] + src->y * m[4] + src->z * m[7];
-        dest->z = src->x * m[2] + src->y * m[5] + src->z * m[8];
+        dest->x = src->y * m[3] + src->x * m[0] + src->z * m[6];
+        dest->y = src->y * m[4] + src->x * m[1] + src->z * m[7];
+        dest->z = src->y * m[5] + src->x * m[2] + src->z * m[8];
     }
 }
 typedef struct { char b[0x290]; } Blob290_8018;
@@ -222,7 +222,19 @@ void fn_8018C5A0(char *arg0, char *arg1) {
         fn_80279CD8(arg0 + 0x1E44);
     }
     *(Blob290_8018 *)(arg0 + 0x20F8) = *(Blob290_8018 *)(arg0 + 0x1E44);
-    *(Blob22_8018 *)(arg0 + 0x2388) = *(Blob22_8018 *)(arg0 + 0x20D4);
+    {
+        Blob22_8018 *d = (Blob22_8018 *)(arg0 + 0x2388);
+        Blob22_8018 *s = (Blob22_8018 *)(arg0 + 0x20D4);
+        d->a = s->a;
+        d->b = s->b;
+        d->c = s->c;
+        d->d = s->d;
+        d->e0 = s->e0; d->e1 = s->e1; d->e2 = s->e2; d->e3 = s->e3;
+        d->e4 = s->e4; d->e5 = s->e5; d->e6 = s->e6; d->e7 = s->e7;
+        d->e8 = s->e8; d->e9 = s->e9; d->e10 = s->e10; d->e11 = s->e11;
+        d->e12 = s->e12; d->e13 = s->e13; d->e14 = s->e14; d->e15 = s->e15;
+        d->e16 = s->e16; d->e17 = s->e17;
+    }
     for (j = 0; j < 16; j++) {
         M2C_FIELD(arg0, unsigned char *, 0x1E2C + j) = 0xFF;
     }
