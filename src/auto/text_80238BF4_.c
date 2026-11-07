@@ -32,21 +32,21 @@ extern void fn_802E317C(const char *, ...);
 extern char lbl_80340AD0[];
 extern char lbl_80340B00[];
 
-#define SWAP16_WITH(ptr, off, p, t) do { \
-    p = (u8 *)(ptr); \
-    t = p[(off) + 0]; \
-    p[(off) + 0] = p[(off) + 1]; \
-    p[(off) + 1] = t; \
+#define SWAP16_AT(ptr, off) do { \
+    u8 *_p = (u8 *)(ptr); \
+    u8 _t = _p[(off) + 0]; \
+    _p[(off) + 0] = _p[(off) + 1]; \
+    _p[(off) + 1] = _t; \
 } while (0)
 
-#define SWAP32_WITH(ptr, off, p, t) do { \
-    p = (u8 *)(ptr); \
-    t = p[(off) + 0]; \
-    p[(off) + 0] = p[(off) + 3]; \
-    p[(off) + 3] = t; \
-    t = p[(off) + 1]; \
-    p[(off) + 1] = p[(off) + 2]; \
-    p[(off) + 2] = t; \
+#define SWAP32_AT(ptr, off) do { \
+    u8 *_p = (u8 *)(ptr); \
+    u8 _t = _p[(off) + 0]; \
+    _p[(off) + 0] = _p[(off) + 3]; \
+    _p[(off) + 3] = _t; \
+    _t = _p[(off) + 1]; \
+    _p[(off) + 1] = _p[(off) + 2]; \
+    _p[(off) + 2] = _t; \
 } while (0)
 static inline s32 clampLow_80238BF4(s32 v) {
     if (v > 0) return v;
