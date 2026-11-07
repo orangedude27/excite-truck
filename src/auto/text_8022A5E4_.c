@@ -318,9 +318,9 @@ void fn_8022ABC8(void *arg0, const char *arg1, int arg2) {
     fn_8023293C(arg0, buffer, lbl_80563588);
 }
 #pragma scheduling on
-extern void fn_8022ACFC(int, int, float *, float *, float *, float *, float, float);
+extern void fn_8022ACFC(int, char *, float *, float *, float *, float *, float, float);
 __declspec(section ".sdata2") extern double lbl_80563590;
-void fn_8022AC1C(int unused0, int unused1, int arg2, int arg3, int *arg4, int *arg5, int *arg6, int *arg7) {
+void fn_8022AC1C(int unused0, char *unused1, int arg2, int arg3, int *arg4, int *arg5, int *arg6, int *arg7) {
     float a, b, c, d;
     float x = (float)((double)(arg2 ^ 0x80000000) - lbl_80563590);
     float y = (float)((double)(arg3 ^ 0x80000000) - lbl_80563590);
@@ -651,70 +651,66 @@ unsigned int fn_8022BC30(unsigned int arg0, unsigned int arg1, float farg0) {
 }
 
 void fn_8022C520(void) {
+    register char* base;
     Cfg58 tmpl;
     Cfg58 work;
-    int i;
-    void* list;
-    void* entry;
-    int value;
-    int flag1;
-    int flag2;
-    char* s;
     void** v;
-    unsigned int c1;
-    unsigned int c2;
-    unsigned int c3;
+    void* list;
+    int flag2;
+    int value;
+    register unsigned flag1;
+    void* entry;
+    char* s;
+    int i;
 
+    base = lbl_8033FBE8;
     tmpl = *(Cfg58*)&lbl_802F9F58;
-    c1 = 0xffd6003c;
-    c2 = 0xff2dc82d;
-    c3 = 0xff2d2dc8;
-    tmpl.w[3] = c1;
-    tmpl.w[4] = c1;
-    tmpl.w[5] = c2;
-    tmpl.w[6] = c2;
-    tmpl.w[10] = c3;
-    tmpl.w[11] = c3;
-    tmpl.w[12] = c1;
-    tmpl.w[13] = c1;
-    list = fn_80131810(lbl_8033FBE8 + 0x64, 0xff2dc82d, 0xffd6003c);
-    if (list != 0) {
+    tmpl.w[3] = 0xffd6003c;
+    tmpl.w[4] = 0xffd6003c;
+    tmpl.w[5] = 0xff2dc82d;
+    tmpl.w[6] = 0xff2dc82d;
+    tmpl.w[10] = 0xff2d2dc8;
+    tmpl.w[11] = 0xff2d2dc8;
+    tmpl.w[12] = 0xffd6003c;
+    tmpl.w[13] = 0xffd6003c;
+    list = fn_80131810(base + 0x64, 0xff2dc82d, 0xffd6003c);
+    if (list) {
         for (i = 0; (entry = (v = *(void***)list, ((void* (*)(void*, int))v[3])(list, i))) != 0; i++) {
             v = *(void***)entry;
             if (stricmp(((char* (*)(void*))v[2])(entry), lbl_8055B8C4) != 0) {
                 continue;
             }
             v = *(void***)entry;
-            if (((int (*)(void*, const char*))v[3])(entry, lbl_8033FBE8 + 0x70) != 0) {
+            if (((int (*)(void*, const char*))v[3])(entry, base + 0x70) != 0) {
                 v = *(void***)entry;
-                value = ((int (*)(void*, const char*))v[7])(entry, lbl_8033FBE8 + 0x70);
+                value = ((int (*)(void*, const char*))v[7])(entry, base + 0x70);
             } else {
                 v = *(void***)entry;
-                if (((int (*)(void*, const char*))v[3])(entry, lbl_8033FBE8 + 0x7c) == 0) {
-                    fn_802E30C8(lbl_8033FBE8 + 0x88);
+                if (((int (*)(void*, const char*))v[3])(entry, base + 0x7c) == 0) {
+                    fn_802E30C8(base + 0x88);
                     continue;
                 } else {
                     v = *(void***)entry;
-                    s = ((char* (*)(void*, const char*))v[5])(entry, lbl_8033FBE8 + 0x7c);
+                    s = ((char* (*)(void*, const char*))v[5])(entry, base + 0x7c);
                     value = fn_8022CC8C(s);
                 }
             }
             if (value < 0 || value >= 0x100) {
                 v = *(void***)entry;
-                fn_802E30C8(lbl_8033FBE8 + 0xb4,
-                    ((int (*)(void*, const char*, int))v[6])(entry, lbl_8033FBE8 + 0x7c, (int)(lbl_8033FBE8 + 0xe4)));
+                fn_802E30C8(base + 0xb4,
+                    ((int (*)(void*, const char*, int))v[6])(entry, base + 0x7c, (int)(base + 0xe4)));
                 continue;
             }
             work = tmpl;
             v = *(void***)entry;
-            work.w[0] = ((int (*)(void*, const char*, int))v[6])(entry, lbl_8033FBE8 + 0xf0, work.w[0]);
+            work.w[0] = ((int (*)(void*, const char*, int))v[6])(entry, base + 0xf0, work.w[0]);
             v = *(void***)entry;
-            *(float*)&work.w[1] = ((float (*)(void*, const char*, float))v[10])(entry, lbl_8033FBE8 + 0xfc, *(float*)&work.w[1]);
+            *(float*)&work.w[1] = ((float (*)(void*, const char*, float))v[10])(entry, base + 0xfc, *(float*)&work.w[1]);
             flag1 = 1;
             v = *(void***)entry;
-            if (((int (*)(void*, const char*))v[3])(entry, lbl_8033FBE8 + 0x108) != 0) {
+            if (((int (*)(void*, const char*))v[3])(entry, base + 0x108) != 0) {
                 v = *(void***)entry;
-                s = ((char* (*)(void*, const char*))v[5])(entry, lbl_8033FBE8 + 0x108);
+                s = ((char* (*)(void*, const char*))v[5])(entry, base + 0x108);
                 if (stricmp(s, lbl_8055B8CC) == 0) {
                     flag1 = 1;
                 } else if (stricmp(s, lbl_8055B8D4) == 0) {
@@ -722,24 +718,24 @@ void fn_8022C520(void) {
                 } else if (stricmp(s, lbl_8055B8DC) == 0) {
                     flag1 = 4;
                 } else {
-                    fn_802E30C8(lbl_8033FBE8 + 0x120, s);
+                    fn_802E30C8(base + 0x120, s);
                 }
             }
             flag2 = 8;
             v = *(void***)entry;
-            if (((int (*)(void*, const char*))v[3])(entry, lbl_8033FBE8 + 0x154) != 0) {
+            if (((int (*)(void*, const char*))v[3])(entry, base + 0x154) != 0) {
                 v = *(void***)entry;
-                s = ((char* (*)(void*, const char*))v[5])(entry, lbl_8033FBE8 + 0x154);
+                s = ((char* (*)(void*, const char*))v[5])(entry, base + 0x154);
                 if (stricmp(s, lbl_8055B8E4) == 0) {
                     flag2 = 8;
                 } else if (stricmp(s, lbl_8055B8E8) == 0) {
                     flag2 = 0x10;
-                } else if (stricmp(s, lbl_8033FBE8 + 0x168) == 0) {
+                } else if (stricmp(s, base + 0x168) == 0) {
                     flag2 = 0x20;
                 } else if (stricmp(s, lbl_8055B8F0) == 0) {
                     flag2 = 0x40;
                 } else {
-                    fn_802E30C8(lbl_8033FBE8 + 0x174, s);
+                    fn_802E30C8(base + 0x174, s);
                 }
             }
             work.w[2] = flag1 | flag2;
@@ -757,9 +753,9 @@ void fn_8022C520(void) {
             v = *(void***)entry;
             work.w[18] = ((int (*)(void*, const char*, int))v[8])(entry, lbl_8055B910, work.w[18]);
             v = *(void***)entry;
-            *(float*)&work.w[19] = ((float (*)(void*, const char*, float))v[10])(entry, lbl_8033FBE8 + 0x1a8, *(float*)&work.w[19]);
+            *(float*)&work.w[19] = ((float (*)(void*, const char*, float))v[10])(entry, base + 0x1a8, *(float*)&work.w[19]);
             v = *(void***)entry;
-            *(float*)&work.w[20] = ((float (*)(void*, const char*, float))v[10])(entry, lbl_8033FBE8 + 0x1b4, *(float*)&work.w[20]);
+            *(float*)&work.w[20] = ((float (*)(void*, const char*, float))v[10])(entry, base + 0x1b4, *(float*)&work.w[20]);
             ((void (*)(int, void*))fn_8022A858)(value, &work);
         }
         fn_80131818(list);
