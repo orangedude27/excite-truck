@@ -1352,6 +1352,80 @@ extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(int arg0) {
  return *(float*)((char*)arg0+0x30);
 }
 
+extern "C" void GXBegin(int, int, int);
+extern "C" void GXInitTexObj(void *, void *, unsigned short, unsigned short, int, int, int, int);
+extern "C" void GXInitTexObjLOD(void *, int, int, float, float, float, int, int, int);
+extern "C" void GXLoadTexObj(void *, int);
+void nw4hbm::ut::CharWriter::PrintGlyph(float x, float y, float z, const Glyph &glyph) {
+    const char *base = lbl_80328178;
+    unsigned char *self = (unsigned char *)this;
+    unsigned char *g = (unsigned char *)&glyph;
+    unsigned int a0 = (unsigned int)this;
+    unsigned int top0 = a0 & 0xFF000000U;
+    int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
+    if (top0 != 0x80000000U && (a0 & 0xFF800000U) != 0x81000000U) r10 = 0;
+    if (r10 == 0 && (a0 & 0xF8000000U) != 0x90000000U) r9 = 0;
+    if (r9 == 0 && top0 != 0xC0000000U) r8 = 0;
+    if (r8 == 0 && (a0 & 0xFF800000U) != 0xC1000000U) r7 = 0;
+    if (r7 == 0 && (a0 & 0xF8000000U) != 0xD0000000U) r6 = 0;
+    if (r6 == 0 && (a0 & 0xFFFFC000U) != 0xE0000000U) r5 = 0;
+    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x467, base + 0x14, self);
+    unsigned int a1 = (unsigned int)g;
+    unsigned int top1 = a1 & 0xFF000000U;
+    int s4 = 1, s5 = 1, s6 = 1, s7 = 1, s8 = 1, s9 = 1;
+    if (top1 != 0x80000000U && (a1 & 0xFF800000U) != 0x81000000U) s9 = 0;
+    if (s9 == 0 && (a1 & 0xF8000000U) != 0x90000000U) s8 = 0;
+    if (s8 == 0 && top1 != 0xC0000000U) s7 = 0;
+    if (s7 == 0 && (a1 & 0xFF800000U) != 0xC1000000U) s6 = 0;
+    if (s6 == 0 && (a1 & 0xF8000000U) != 0xD0000000U) s5 = 0;
+    if (s5 == 0 && (a1 & 0xFFFFC000U) != 0xE0000000U) s4 = 0;
+    if (s4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x468, base + 0x210, g);
+    if (*(unsigned short *)(g + 0xC) < 1) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x469, base + 0x248, *(unsigned short *)(g + 0xC), 1);
+    if (*(unsigned short *)(g + 0xE) < 1) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x46A, base + 0x290, *(unsigned short *)(g + 0xE), 1);
+    unsigned char gu = g[5];
+    unsigned short gx = *(unsigned short *)(g + 0x10);
+    unsigned char gv = g[7];
+    unsigned short gy = *(unsigned short *)(g + 0x12);
+    unsigned short gw = *(unsigned short *)(g + 0xC);
+    unsigned short gh = *(unsigned short *)(g + 0xE);
+    unsigned short u0 = (gx << 15) / gw;
+    unsigned short v0 = (gy << 15) / gh;
+    float x1 = x + (float)gu * *(float *)(self + 0x24);
+    unsigned short u1 = ((gx + gu) << 15) / gw;
+    float y1 = y + (float)gv * *(float *)(self + 0x28);
+    unsigned short v1 = ((gy + gv) << 15) / gh;
+    int ok0 = 0;
+    if (top0 == 0x80000000U || (a0 & 0xFF800000U) == 0x81000000U || (a0 & 0xF8000000U) == 0x90000000U || top0 == 0xC0000000U || (a0 & 0xFF800000U) == 0xC1000000U || (a0 & 0xF8000000U) == 0xD0000000U || (a0 & 0xFFFFC000U) == 0xE0000000U) ok0 = 1;
+    if (ok0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x4A8, base + 0x14, self);
+    int ok1 = 0;
+    if (top1 == 0x80000000U || (a1 & 0xFF800000U) == 0x81000000U || (a1 & 0xF8000000U) == 0x90000000U || top1 == 0xC0000000U || (a1 & 0xFF800000U) == 0xC1000000U || (a1 & 0xF8000000U) == 0xD0000000U || (a1 & 0xFFFFC000U) == 0xE0000000U) ok1 = 1;
+    if (ok1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x4A9, base + 0x210, g);
+    int tex[4];
+    int *cache = (int *)lbl_8041D4E0;
+    int c1 = *(int *)g;
+    int c2 = *(int *)(self + 0x38);
+    int c3 = *(int *)(self + 0x3C);
+    tex[0] = 0; tex[1] = c1; tex[2] = c2; tex[3] = c3;
+    int diff = 0;
+    if (0 != cache[0] || c1 != cache[1] || c2 != cache[2] || c3 != cache[3]) diff = 1;
+    if (diff != 0) {
+        unsigned char obj[0x20];
+        GXInitTexObj(obj, *(void **)(g + 8), *(unsigned short *)(g + 0xC), *(unsigned short *)(g + 0xE), 0, 0, 0, 0);
+        GXInitTexObjLOD(obj, *(int *)(self + 0x38), *(int *)(self + 0x3C), lbl_80561150, lbl_80561150, lbl_80561150, 0, 0, 0);
+        GXLoadTexObj(obj, 0);
+        cache[0] = tex[0]; cache[1] = tex[1]; cache[2] = tex[2]; cache[3] = tex[3];
+    }
+    GXBegin(0x80, 0, 4);
+    volatile float *fifo = (volatile float *)0xCC008000;
+    volatile int *fifoi = (volatile int *)0xCC008000;
+    volatile unsigned short *fifos = (volatile unsigned short *)0xCC008000;
+    *fifo = x; *fifo = y; *fifo = z; *fifoi = *(int *)(self + 8); *fifos = u0; *fifos = v0;
+    *fifo = x1; *fifo = y; *fifo = z; *fifoi = *(int *)(self + 0xC); *fifos = u1; *fifos = v0;
+    *fifo = x1; *fifo = y1; *fifo = z; *fifoi = *(int *)(self + 0x14); *fifos = u1; *fifos = v1;
+    *fifo = x; *fifo = y1; *fifo = z; *fifoi = *(int *)(self + 0x10); *fifos = u0; *fifos = v1;
+}
+#pragma pop
+
 extern "C" void GXSetFog(int, void *, unsigned char, unsigned char, float, float, float, float);
 extern "C" void GXSetTevSwapModeTable(int, int, int, int, int);
 extern "C" void GXSetZTexture(int, int, int);
