@@ -143,8 +143,9 @@ typedef struct sdp_info
     char prov_name[HID_MAX_PROV_NAME_LEN]; /*Provider Name.*/
     UINT16    rel_num;    /*Release Number */
     UINT16    hpars_ver;  /*HID Parser Version.*/
-    UINT16    ssr_max_latency; /* HIDSSRHostMaxLatency value, if HID_SSR_PARAM_INVALID not used*/
-    UINT16    ssr_min_tout; /* HIDSSRHostMinTimeout value, if HID_SSR_PARAM_INVALID not used* */
+    /* This build never reads the HIDSSRHostMaxLatency / HIDSSRHostMinTimeout
+       attributes, so it has no ssr_max_latency / ssr_min_tout fields here:
+       sub_class follows hpars_ver at 0x64 (see hidh_search_callback). */
     UINT8     sub_class;    /*Device Subclass.*/
     UINT8     ctry_code;     /*Country Code.*/
     UINT16    sup_timeout;/* Supervisory Timeout */
