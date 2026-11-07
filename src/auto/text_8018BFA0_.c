@@ -137,6 +137,7 @@ int fn_8018C514(void *arg0, void *arg1) {
     }
     return best;
 }
+#pragma dont_inline reset
 
 extern void *memset(void *, int, unsigned long);
 extern int fn_801E2CCC(int, void *, void *);
