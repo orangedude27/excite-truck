@@ -44,9 +44,8 @@ extern void fn_8014819C(void *, f32, f32);
 extern void fn_801481C8(void *, s32);
 extern s32 fn_801769F8(void);
 static inline void check_entry(void *ptr) {
-    register void *p asm("r3") = ptr;
-    if (*(u32 *)((char *)p + 8) != lbl_8055E044) {
-        fn_80131318(p);
+    if (*(u32 *)((char *)ptr + 8) != lbl_8055E044) {
+        fn_80131318(ptr);
     }
 }
 static inline s32 get_diff_4(void *ptr) {
