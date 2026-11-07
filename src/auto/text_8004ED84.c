@@ -290,58 +290,65 @@ extern void DCFlushRange(void *, unsigned long);
 extern void OSReport(const char *, ...);
 extern void PPCHalt(void);
 extern char lbl_80558F50;
+// Fiber entry that OSFatal() switches to once the game has been torn down:
+// allocates a font and its own 640x480 framebuffer from the bottom of the MEM1
+// arena, clears the screen to the background colour, writes the fatal message
+// on top of it, then reports it over the debug link and halts the CPU.
 void Halt(void) {
     void *font;
     unsigned char *fb;
-    unsigned char *p;
-    char *msg;
-    int len;
-    FatalInfo *info;
-    GXColor *cols;
+    unsigned char *px;
+    const char *msg;
+    int msgLen;
+    OSFatalParam *params;
     GXColor yuv;
-    int t, x, y;
+    int retraceCount, x, y;
 
     OSEnableInterrupts();
-    info = (FatalInfo *)lbl_8038E328;
-    cols = (GXColor *)lbl_8038E328;
-    msg = *(char **)&info->c;
-    len = strlen(msg) + 1;
-    info->c = (int)memmove(OSAllocFromMEM1ArenaLo(len, 0x20), msg, len);
-    font = OSAllocFromMEM1ArenaLo(0xA1004, 0x20);
+    params = (OSFatalParam *)lbl_8038E328;
+    msg = params->msg;
+    msgLen = strlen(msg) + 1;
+    // The caller's frame is gone by the time this fiber runs, so keep our own
+    // copy of the message.
+    params->msg = memmove(OSAllocFromMEM1ArenaLo(msgLen, FATAL_ALIGN), msg, msgLen);
+    font = OSAllocFromMEM1ArenaLo(FATAL_FONT_SIZE, FATAL_ALIGN);
     OSLoadFont((int)font, (int)OSGetArenaLo());
-    fb = OSAllocFromMEM1ArenaLo(0x96000, 0x20);
-    yuv = RGBToYUV_8004(cols[1]);
-    p = fb;
+    fb = OSAllocFromMEM1ArenaLo(FATAL_FB_SIZE, FATAL_ALIGN);
+    // ScreenClear(): flood the frame with the background colour, two pixels at
+    // a time as Y0/U/Y1/V.
+    yuv = RGBToYUV_8004(params->bgColor);
+    px = fb;
     y = 0;
     {
-        unsigned char g = yuv.g;
-        unsigned char b = yuv.b;
-        unsigned char r = yuv.r;
-        for (; y < 0x1E0; y++) {
-            for (x = 0; x < 0x280; x += 2) {
-                p[0] = r;
-                p[1] = g;
-                p[2] = r;
-                p[3] = b;
-                p += 4;
+        unsigned char u = yuv.g;
+        unsigned char v = yuv.b;
+        unsigned char bright = yuv.r;
+        for (; y < FATAL_FB_H; y++) {
+            for (x = 0; x < FATAL_FB_W; x += 2) {
+                px[0] = bright;
+                px[1] = u;
+                px[2] = bright;
+                px[3] = v;
+                px += 4;
             }
         }
     }
     VISetNextFrameBuffer(fb);
-    ConfigureVideo(0x280, 0x1E0);
+    ConfigureVideo(FATAL_FB_W, FATAL_FB_H);
     VIFlush();
-    t = fn_8005AC08();
-    while (fn_8005AC08() - t < 2) {
+    retraceCount = fn_8005AC08(); // VIGetRetraceCount()
+    while (fn_8005AC08() - retraceCount < 2) {
     }
-    ScreenReport(fb, 0x280, 0x1E0, RGBToYUV_8004(cols[0]), 0x30, 0x64, *(unsigned short *)((char *)font + 0xE), (char *)info->c);
-    DCFlushRange(fb, 0x96000);
+    // ScreenReport(): 0xE is OSFontHeader::leading, the line spacing in pixels.
+    ScreenReport(fb, FATAL_FB_W, FATAL_FB_H, RGBToYUV_8004(params->textColor), 48, 100, *(unsigned short *)((char *)font + 0xE), params->msg);
+    DCFlushRange(fb, FATAL_FB_SIZE);
     VISetBlack(0);
     VIFlush();
-    t = fn_8005AC08();
-    while (fn_8005AC08() - t < 1) {
+    retraceCount = fn_8005AC08(); // VIGetRetraceCount()
+    while (fn_8005AC08() - retraceCount < 1) {
     }
     OSDisableInterrupts();
-    OSReport(&lbl_80558F50, info->c);
+    OSReport(&lbl_80558F50, params->msg); // "%s\n"
     PPCHalt();
 }
 
