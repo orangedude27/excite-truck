@@ -4711,12 +4711,28 @@ void fn_80120E14(register s32 count, register void *dst, register s32 mode, regi
     }
 }
 
-void fn_80120F84(s32 n, s32 arg1, void *arg2) {
-    s32 *ip = (s32 *)arg1;
-    float *a = (float *)arg2;
+/*
+ * fft_bit_reverse - put the complex samples of a in bit-reversed order, the
+ * in-place reordering the radix-4/split-radix FFT stages around it expect.
+ *
+ * `n` is the number of floats in `a` (so n/2 complex samples, stored as
+ * re/im pairs), and `ip` is the caller's scratch table of at least n/2
+ * entries: this fills it with the bit-reversal offsets (ip[0] = 0, then each
+ * level copies the level above with the current half-width added) and then
+ * swaps a[j] with a[bitrev(j)] through it.  The two loops are the two shapes
+ * of n: n == 4^k leaves four blocks of samples per index, so a swap at index j
+ * has three partners (j + m2, j + 2*m2, j + 3*m2), while n == 2 * 4^k leaves
+ * only two blocks and one partner.  Samples at 2*k and 2*k+m2 are swapped with
+ * their own partner and need no ip lookup.
+ */
+void fn_80120F84(s32 n, s32 ip_arg, void *a_arg) {
+    s32 *ip = (s32 *)ip_arg; /* bit-reversal offsets, one per complex sample */
+    float *a = (float *)a_arg; /* the samples, as re/im pairs */
     int j, j1, k, k1, l, m, m2;
-    float xr, xi, yr, yi;
+    float xr, xi, yr, yi; /* the sample at j1 and the one at k1 */
 
+    /* Bit-reversal table: level m holds the offsets of the samples whose
+       reversed index has log2(m) bits, each level adding the next half width. */
     ip[0] = 0;
     l = n;
     m = 1;
@@ -4727,8 +4743,9 @@ void fn_80120F84(s32 n, s32 arg1, void *arg2) {
         }
         m <<= 1;
     }
-    m2 = 2 * m;
+    m2 = 2 * m; /* stride between the blocks of samples, in floats */
     if ((m << 3) == l) {
+        /* n is a power of four: four blocks of samples per index. */
         for (k = 0; k < m; k++) {
             for (j = 0; j < k; j++) {
                 j1 = 2 * j + ip[k];
@@ -4748,12 +4765,14 @@ void fn_80120F84(s32 n, s32 arg1, void *arg2) {
                 xr = a[j1]; xi = a[j1 + 1]; yr = a[k1]; yi = a[k1 + 1];
                 a[j1] = yr; a[j1 + 1] = yi; a[k1] = xr; a[k1 + 1] = xi;
             }
+            /* The diagonal sample and the one a block over are each other's. */
             j1 = 2 * k + m2 + ip[k];
             k1 = j1 + m2;
             xr = a[j1]; xi = a[j1 + 1]; yr = a[k1]; yi = a[k1 + 1];
             a[j1] = yr; a[j1 + 1] = yi; a[k1] = xr; a[k1 + 1] = xi;
         }
     } else {
+        /* n is twice a power of four: two blocks of samples per index. */
         for (k = 1; k < m; k++) {
             for (j = 0; j < k; j++) {
                 j1 = 2 * j + ip[k];
