@@ -134,6 +134,7 @@ typedef struct {
     u8      pad_192C[0x10];              /* 0x192C remote name callbacks */
     u8      pin_code_tle[0x10];          /* 0x193C timer waiting for a local PIN */
     void    *pin_code_tle_cback;         /* 0x194C non-NULL while that timer runs */
+    u8      pad_1950[0x04];
     BD_ADDR pin_code_bda;                /* 0x1954 device the PIN was asked for */
     u8      pad_195A[0x001A];
     UINT32  dev_rec_count;               /* 0x1974 counter stamped into dev records */
