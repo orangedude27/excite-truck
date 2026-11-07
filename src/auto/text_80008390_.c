@@ -67,8 +67,6 @@ void fn_80008618(s32 arg0) {
 }
 
 extern s32 fn_8000865C(void);
-typedef unsigned char u8;
-typedef float f32;
 extern s32 fn_801298E8(void *, s32);
 extern s32 fn_802ECC10(void);
 extern s32 lbl_805589EC;
