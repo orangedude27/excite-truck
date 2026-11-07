@@ -66,6 +66,7 @@ extern double lbl_80563590;
 extern float lbl_80563598;
 extern int fn_802C4EFC(int);
 extern int fn_802C5220(int);
+#define I2F(x) ((float)((double)((x) ^ 0x80000000) - lbl_80563590))
 extern int fn_802C4EE4(int);
 extern int fn_802C51C0();
 extern unsigned long strlen(const char *);
@@ -336,6 +337,114 @@ void fn_8022AC1C(int unused0, char *unused1, int arg2, int arg3, int *arg4, int 
     *arg5 = (int)b;
     *arg6 = (int)c;
     *arg7 = (int)d;
+}
+
+void fn_8022ACFC(int unused, char *str, float *outMinX, float *outMinY, float *outMaxX, float *outMaxY, float x0, float y0) {
+    char *p = fn_8022CA2C();
+    float minX = x0, minY = y0, maxX = x0, maxY = y0;
+    int h = *(int *)(p + 0x64);
+    if (h != 0) {
+        int a, b, w, hh;
+        float t;
+        fn_802C4F2C(h, &a, &b);
+        w = fn_802C4EE4(*(int *)(p + 0x64));
+        hh = fn_802C4EFC(*(int *)(p + 0x64));
+        minX = x0 - (float)a;
+        if (x0 < minX) minX = x0;
+        t = (float)w + (x0 - (float)a);
+        maxX = (x0 > t) ? maxX : t;
+        t = y0 - (float)b;
+        minY = (y0 < t) ? minY : t;
+        t = (float)hh + (y0 - (float)b);
+        maxY = (y0 > t) ? maxY : t;
+    } else if (*(int *)(p + 0x68) != 0) {
+        float t;
+        maxX = x0 + (float)fn_802C51C0(*(int *)(p + 0x68));
+        if (x0 > maxX) maxX = x0;
+        t = y0 + (float)fn_802C5220(*(int *)(p + 0x68));
+        maxY = (y0 > t) ? maxY : t;
+    }
+    if (str != 0) {
+        float w = lbl_8056358C, wid, hgt, ax, ay;
+        int n = fn_8022AB94(str, 10) + 1;
+        int i;
+        if (*(int *)(p + 4) != 0) {
+            w = (float)n * (float)fn_801E4BA8(*(int **)(p + 4));
+        }
+        if (*(int *)(p + 8) != 0) {
+            if (*(float *)(p + 0x34) < lbl_80563588) {
+                w = (float)n * (float)fn_80232B70(*(int *)(p + 8));
+            } else {
+                float d = (float)fn_80232B70(*(int *)(p + 8));
+                w = (*(float *)(p + 0x34) * (float)(n * fn_80232B70(*(int *)(p + 8)))) / d;
+            }
+        }
+        hgt = w;
+        wid = lbl_8056358C;
+        for (i = 0; i < n; i++) {
+            char *nl = strchr(str, 10);
+            int len;
+            float v;
+            if (nl != 0) len = nl - str; else len = strlen(str);
+            if (*(int *)(p + 4) != 0) {
+                v = (float)fn_801E4AB0(*(int *)(p + 4), str, len);
+                wid = (wid > v) ? wid : v;
+            }
+            if (*(int *)(p + 8) != 0) {
+                if (*(float *)(p + 0x34) < lbl_80563588) {
+                    v = ((float (*)(void *, char *, int))fn_8022ABC8)(*(void **)(p + 8), str, len);
+                    wid = (wid > v) ? wid : v;
+                } else {
+                    float d = (float)fn_80232B70(*(int *)(p + 8));
+                    v = (*(float *)(p + 0x34) * ((float (*)(void *, char *, int))fn_8022ABC8)(*(void **)(p + 8), str, len)) / d;
+                    wid = (wid > v) ? wid : v;
+                }
+            }
+            str = strchr(str, 10);
+            if (str != 0) str = str + 1;
+        }
+        {
+            int fl = *(int *)(p + 0x38);
+            ax = lbl_8056358C;
+            ay = ax;
+            if (fl & 2) ax = -wid;
+            else if (fl & 4) ax = -wid * lbl_80563598;
+            if (fl & 0x40) ay = -hgt;
+            else if (fl & 0x10) ay = -hgt * lbl_80563598;
+            else if (fl & 0x20) {
+                ay = lbl_8056358C;
+                if (*(int *)(p + 4) != 0) ay = -(float)fn_801E4B00(*(int **)(p + 4));
+                if (*(int *)(p + 8) != 0) ay = -(float)fn_80232B78(*(int *)(p + 8));
+            }
+        }
+        {
+            int lo = *(int *)(p + 0x44), hi = *(int *)(p + 0x4c);
+            int mn = lo, mx = lo;
+            float t;
+            wid += lbl_80563598 * (float)(fn_801E4A6C(*(int **)(p + 4), lbl_8055B8C0) + 1);
+            if (hi < lo) mn = hi;
+            t = x0 + ax + (float)mn;
+            minX = (minX < t) ? minX : t;
+            t = wid + (x0 + ax);
+            if (hi > lo) mx = hi;
+            t = t + (float)mx;
+            maxX = (maxX > t) ? maxX : t;
+            lo = *(int *)(p + 0x48);
+            hi = *(int *)(p + 0x50);
+            mn = lo; mx = lo;
+            if (hi < lo) mn = hi;
+            t = y0 + ay + (float)mn;
+            minY = (minY < t) ? minY : t;
+            t = hgt + (y0 + ay);
+            if (hi > lo) mx = hi;
+            t = t + (float)mx;
+            maxY = (maxY > t) ? maxY : t;
+        }
+    }
+    *outMinX = minX;
+    *outMaxX = maxX;
+    *outMinY = minY;
+    *outMaxY = maxY;
 }
 
 extern float lbl_80563588;
