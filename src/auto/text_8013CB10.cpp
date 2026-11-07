@@ -1741,7 +1741,7 @@ extern "C" void fn_80141458(void) {
 }
 
 extern "C" char lbl_8032CA94[];
-extern "C" void fn_8013D2C4(void *, void *);
+extern "C" void *fn_8013D2C4(void *, void *);
 extern "C" void fn_8014145C(void *arg0) {
     void **object = fn_801284F8(0x298, lbl_8032CA94);
     if (object != 0) {
@@ -2321,11 +2321,12 @@ extern "C" void fn_801429F0(void *arg0) {
     var_f2 = var_f2 < (old + lbl_8056149C / lbl_8056149C) ? (old + lbl_8056149C / lbl_8056149C) : var_f2;
     var_f2 = var_f2 > lbl_805614A4 ? lbl_805614A4 : var_f2;
     *(f32 *)(p + 0x94) = var_f2;
-    if (old < (f32)(f64)var_f2) {
-        *(f32 *)(p + 0xEC) = (f32)(f64)var_f2 - old;
+    f32 rounded = (f32)(f64)var_f2;
+    if (old < rounded) {
+        *(f32 *)(p + 0xEC) = rounded - old;
         goto done;
     }
-    var_f2 = (f32)__fabs((f64)(f32)(f64)var_f2);
+    var_f2 = (f32)__fabs((f64)rounded);
     s32 close = var_f2 <= lbl_80558DC4[0];
     if (close == 0) goto done;
     old = (f32)__fabs((f64)old);
