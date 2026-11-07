@@ -449,6 +449,7 @@ void fn_8028ADF4(void *arg0, s32 arg1) {
         }
     }
 }
+#pragma pop
 
 #pragma push
 #pragma processor gekko
