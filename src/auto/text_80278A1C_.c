@@ -54,7 +54,23 @@ extern s32 fn_8012C33C(char*);
 extern void* fn_80131808(char*);
 extern void fn_80131818(void*);
 extern void fn_80278A64(void*, void*, void*, s32);
-extern void fn_802E30C8(char*, s32);
+extern void fn_802E30C8(const char*, ...);
+extern void fn_802E317C(const char*, ...);
+extern void* fn_8012850C(s32, const char*);
+extern f32 lbl_805640CC;
+extern f32 lbl_805640D0;
+extern const char* lbl_802FA838[4];
+extern const char lbl_8055C678[];
+extern const char lbl_8055C680[];
+extern const char lbl_8055C688[];
+extern const char lbl_8055C68C[];
+extern const char lbl_8055C690[];
+extern const char lbl_8055C698[];
+extern const char lbl_8055C6A0[];
+extern const char lbl_8055C6A8[];
+extern const char lbl_8055C6B0[];
+extern const char lbl_8055C6B8[];
+extern const char lbl_8055C6C0[];
 extern char lbl_80347690[];
 extern const char lbl_8055C6C8[4];
 extern const char lbl_8055C6D0[4];
@@ -63,23 +79,46 @@ extern const char lbl_8055C6E0[4];
 typedef struct Vec3_80279004 { f32 x, y, z; } Vec3_80279004;
 #pragma cplusplus on
 struct Res_80279004 {
-    virtual void slot0();
+    virtual const char* getName();
     virtual void slot1();
     virtual void slot2();
     virtual void slot3();
     virtual void slot4();
-    virtual void slot5();
+    virtual s32 getInt(const char*);
     virtual void slot6();
-    virtual void slot7();
-    virtual void slot8();
+    virtual f32 getFloat(const char*);
+    virtual f32 getFloatDefault(const char*, f32);
     virtual void slot9();
-    virtual void slot10();
+    virtual u8 getByte(const char*, s32);
     virtual Vec3_80279004 getVec(const char*);
 };
 struct File_80279004 {
     virtual Res_80279004* getRes(const char*);
-    virtual void slot1();
+    virtual Res_80279004* getChild(s32);
     virtual int hasRes(const char*);
+};
+struct Element_80278A64 {
+    s32 id;
+    Vec3_80279004 v1;
+    Vec3_80279004 v2;
+    Vec3_80279004 v3;
+    f32 f28;
+    f32 f2C;
+    u8 b30;
+    u8 pad[3];
+};
+struct Entry20EC {
+    s32 id1;
+    s32 id2;
+    f32 f8;
+    f32 fC;
+    f32 f10;
+};
+struct Entry20F4 {
+    s32 id;
+    f32 f4;
+    f32 f8;
+    f32 fC;
 };
 #pragma cplusplus reset
 #pragma cplusplus on
