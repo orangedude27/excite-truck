@@ -108,8 +108,7 @@ void fn_802D768C(void *arg0) {
 }
 #pragma dont_inline reset
 
-#pragma push
-#pragma dont_inline on
+#pragma scheduling invalid_target
 int fn_802D76DC(int arg0) {
     switch (arg0) {
     case 3:
@@ -133,7 +132,6 @@ int fn_802D76DC(int arg0) {
     fn_802E317C(lbl_8034C4B0, arg0);
     return 1;
 }
-#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
@@ -535,6 +533,45 @@ void fn_802D81C4(void *arg0, int arg1) {
     }
     fn_80128670(tmp);
 }
+
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+extern char lbl_8034C5AC[];
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+void fn_802D86BC(void *arg0, int arg1) {
+    void **data = *(void ***)((char *)arg0 + 0x2c);
+    int width = *(int *)((char *)arg0 + 0x24);
+    int height = *(int *)((char *)arg0 + 0x28);
+    unsigned char *palette = (unsigned char *)data[0];
+    unsigned char *image = (unsigned char *)data[1];
+    unsigned char *copy;
+    unsigned char c;
+    int i, x, y, offset;
+    for (i = 0; i < 64; i++) {
+        c = palette[0]; palette[0] = palette[3]; palette[3] = c;
+        c = palette[1]; palette[1] = palette[2]; palette[2] = c;
+        c = palette[4]; palette[4] = palette[7]; palette[7] = c;
+        c = palette[5]; palette[5] = palette[6]; palette[6] = c;
+        c = palette[8]; palette[8] = palette[11]; palette[11] = c;
+        c = palette[9]; palette[9] = palette[10]; palette[10] = c;
+        c = palette[12]; palette[12] = palette[15]; palette[15] = c;
+        c = palette[13]; palette[13] = palette[14]; palette[14] = c;
+        palette += 16;
+    }
+    fn_801282EC(0x20);
+    copy = (unsigned char *)fn_8012850C((void *)(width * height), lbl_8034C5AC);
+    memcpy(copy, image, width * height);
+    for (y = 0, offset = 0; y < height; y++, offset += width) {
+        for (x = 0; x < width; x++) {
+            image[((y / 4) * (width / 8) + x / 8) * 32 + (y % 4) * 8 + x % 8] = copy[offset + x];
+        }
+    }
+    fn_80128670(copy);
+}
+#pragma pop
 
 #pragma push
 #pragma use_lmw_stmw off
