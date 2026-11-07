@@ -7408,41 +7408,44 @@ void btm_reset_complete(void) {
     extern char lbl_803160F0[];
     extern void fn_8007093C(u32, void *);
     extern void fn_80085828();
-    u8 *btm;
     void (*callback)(void *);
     void *buf;
+    u8 *p;
+    u32 two;
 
     if (lbl_803C0F78[0x27C0] >= 4)
         fn_8007093C(0xD0003, lbl_803160F0);
 
-    btm = lbl_803C0F78;
-    callback = *(void (**)(void *))(btm + 0x620);
+    callback = *(void (**)(void *))(lbl_803C0F78 + 0x620);
     if (callback != 0) {
-        *(void (**)(void *))(btm + 0x620) = 0;
+        *(void (**)(void *))(lbl_803C0F78 + 0x620) = 0;
         callback(0);
         return;
     }
-    if (btm[0x64E] != 0)
+    if (lbl_803C0F78[0x64E] != 0)
         return;
 
     l2cu_device_reset();
-    *(u16 *)(btm + 0x16A0) = 0x12;
-    *(u16 *)(btm + 0x16A2) = 0x800;
-    *(u16 *)(btm + 0x16A4) = 0;
-    *(u16 *)(btm + 0x169C) = 0x12;
-    *(u16 *)(btm + 0x169E) = 0x800;
-    *(u16 *)(btm + 0x16A6) = 0;
-    btm[0x64E] = 2;
-    btm[0x64F] = 4;
-    btm[0x64E] = 0;
-    btm[0x64F] = 4;
-    btu_start_timer((void *)2, 0, 0x800);
-    btsnd_hcic_reset(2);
-    btu_start_timer(btm + 0x574, 1, 1);
-
-    buf = GKI_getpoolbuf(2);
-    if (buf != 0)
-        ((void (*)(void *))fn_80085828)(buf);
+    *(u16 *)(lbl_803C0F78 + 0x16A0) = 0x12;
+    *(u16 *)(lbl_803C0F78 + 0x16A2) = 0x800;
+    *(u16 *)(lbl_803C0F78 + 0x16A4) = 0;
+    *(u16 *)(lbl_803C0F78 + 0x169C) = 0x12;
+    *(u16 *)(lbl_803C0F78 + 0x169E) = 0x800;
+    *(u16 *)(lbl_803C0F78 + 0x16A6) = 0;
+    two = 2;
+    lbl_803C0F78[0x64F] = 4;
+    lbl_803C0F78[0x64E] = two;
+    if (lbl_803C0F78[0x64E] == 0) {
+        lbl_803C0F78[0x64E] = 0;
+        lbl_803C0F78[0x64F] = 4;
+        btu_start_timer(0, 0, 0);
+        ((void (*)(void))btsnd_hcic_reset)();
+    } else {
+        btu_start_timer(lbl_803C0F78 + 0x574, 1, 1);
+        buf = GKI_getpoolbuf(2);
+        if (buf != 0)
+            ((void (*)(void *))fn_80085828)(buf);
+    }
 
     memcpy(lbl_803C0F78 + 0x648, lbl_803C0F78 + 0x648, 3);
 
@@ -7452,14 +7455,17 @@ void btm_reset_complete(void) {
             fn_80085524(buf, lbl_803C0F78 + 0x648);
     }
 
-    if (lbl_803C0F78 != 0 && lbl_803C0F78[0x64E] != 0 && lbl_803C0F78[0x64E] != 1) {
-        buf = GKI_getpoolbuf(2);
-        if (buf != 0) {
-            if (btm != lbl_803C0F78) {
-                memset(lbl_803C0F78, 0, 0x20);
-                strncpy((char *)lbl_803C0F78, (char *)lbl_803C0F78, 0x1F);
+    p = lbl_803C0F78;
+    if (p != 0 && p[0x64E] != 0 && p[0x64E] != 1) {
+        void *buf2;
+        buf2 = GKI_getpoolbuf(2);
+        if (buf2 != 0) {
+            void *dst = p;
+            if (p != dst) {
+                memset(p, 0, 0x20);
+                strncpy((char *)p, (char *)p, 0x1F);
             }
-            ((void (*)(void *, void *))btsnd_hcic_change_name)(buf, lbl_803C0F78);
+            ((BOOLEAN (*)(void *, BD_NAME))btsnd_hcic_change_name)(buf2, p);
         }
     }
     ((void (*)(u8, void *, u8))BTM_SetPinType)(lbl_803C0F78[0x20], lbl_803C0F78 + 0x22, lbl_803C0F78[0x21]);
@@ -23137,7 +23143,11 @@ void AXFXReverbHiExpShutdown(void* arg0) {
 }
 
 #pragma use_lmw_stmw off
-void AXFXReverbHiExpCallback(AXFX_BUFFERUPDATE_VIEW* bufferUpdate,
+/* Process one 96-sample block of the exponential reverb: read the input
+   channels (mixed with the aux bus when one is set), filter them through the
+   early-reflection taps, pre-delay, comb and all-pass sections, then the fused
+   stage and crosstalk, and write the wet mix to the output and send buses. */
+void AXFXReverbHiExpCallback(AXFX_BUFFERUPDATE_VIEW* update,
                              AXFX_REVERBHI_EXP_VIEW* fx) {
     u32 ch, i;
     u32 samp;
@@ -23172,9 +23182,9 @@ void AXFXReverbHiExpCallback(AXFX_BUFFERUPDATE_VIEW* bufferUpdate,
         return;
     }
 
-    input[0] = bufferUpdate->left;
-    input[1] = bufferUpdate->right;
-    input[2] = bufferUpdate->surround;
+    input[0] = update->left;
+    input[1] = update->right;
+    input[2] = update->surround;
 
     if (fx->busIn != NULL) {
         inBusData[0] = fx->busIn->left;
@@ -23197,7 +23207,7 @@ void AXFXReverbHiExpCallback(AXFX_BUFFERUPDATE_VIEW* bufferUpdate,
     for (samp = 0; samp < 96; samp++) {
         for (ch = 0; ch < 3; ch++) {
             if (fx->busIn != NULL) {
-                data = (f32)(*input[ch] + *(inBusData[ch]++));
+                data = (f32)(*(input[ch]) + *(inBusData[ch]++));
             } else {
                 data = (f32)(*input[ch]);
             }
@@ -23220,7 +23230,7 @@ void AXFXReverbHiExpCallback(AXFX_BUFFERUPDATE_VIEW* bufferUpdate,
                 combLine = fx->combLine[ch][i];
                 combOutOne = combLine[fx->combPos[i]];
                 combLine[fx->combPos[i]] =
-                    preDelayOut + combOutOne * fx->combCoef[i];
+                    preDelayOut + (combOutOne * fx->combCoef[i]);
                 filterOut += combOutOne;
             }
 
@@ -23234,13 +23244,11 @@ void AXFXReverbHiExpCallback(AXFX_BUFFERUPDATE_VIEW* bufferUpdate,
 
             lpfOut = lpfCoef1 * filterOut + lpfCoef2 * fx->lastLpfOut[ch];
             fx->lastLpfOut[ch] = lpfOut;
-
             allpass = fx->lastAllpassLine[ch];
             outTmp = allpass[fx->lastAllpassPos[ch]];
             allpassIn = lpfOut + outTmp * allpassCoef;
             allpass[fx->lastAllpassPos[ch]] = allpassIn;
             fusedOut[ch] = outTmp - allpassIn * allpassCoef;
-
             if (++fx->lastAllpassPos[ch] >= fx->lastAllpassLength[ch]) {
                 fx->lastAllpassPos[ch] = 0;
             }
