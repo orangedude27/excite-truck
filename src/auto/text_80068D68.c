@@ -13850,6 +13850,10 @@ void *fn_80095C64(void **head, u32 attr);
 #define HID_REMOTE_WAKE           0x0020
 #define HID_SUP_TOUT_AVLBL        0x0040
 
+/* tHID_HOST_SDP_CALLBACK, from the header we can't include either. */
+typedef void tHID_HOST_SDP_CALLBACK(UINT16 result, UINT16 attr_mask,
+                                    tHID_DEV_SDP_INFO *p_sdp_rec);
+
 /* lbl_803C3C38 is the HID host control block hh_cb (tHID_HOST_CTB); the device
    table and the L2CAP config come in front of the part used here:
      0x380  BOOLEAN            sdp_busy
