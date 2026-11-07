@@ -1,4 +1,5 @@
 #include "types.h"
+extern "C" void *fn_8013E6E4(void *arg0);
 extern "C" void fn_8002F30C(void *, s32, s32, void (*)(), void (*)());
 extern "C" void *fn_801F181C(void *, const char *, void *, void *);
 extern "C" void fn_8013E3A8(void *, void *);
