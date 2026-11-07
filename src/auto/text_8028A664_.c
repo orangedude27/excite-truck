@@ -341,6 +341,116 @@ next:
 }
 
 #pragma push
+#pragma use_lmw_stmw off
+void fn_8028ADF4(void *arg0, s32 arg1) {
+    u8 *ent = (u8 *)arg0;
+    u8 *tbl = (u8 *)lbl_804B3238;
+    f32 k28, k31, k30, k29, k27, k26, k25, k24, k23;
+    s32 i;
+    if ((f32)__fabs(fn_801E7E24()) <= lbl_80558DC4[0]) return;
+    k23 = lbl_80564334;
+    k24 = lbl_80564344;
+    k25 = lbl_80564348;
+    k26 = lbl_8056434C;
+    k27 = lbl_80564350;
+    k29 = lbl_80564338;
+    k30 = lbl_80564340;
+    k31 = lbl_80564360;
+    k28 = lbl_80564354;
+    for (i = 0; i < arg1; i++, ent += 0x10) {
+        u8 *m = *(u8 **)ent;
+        if (ent[0xC] != 0 && !(FLD(ent, 8) > k23)) {
+            u8 *e = m + 0x70;
+            s32 j;
+            for (j = 0; j < 4; j++, e += 0x3C) {
+                s32 type;
+                u8 *t;
+                s32 roll;
+                f32 f4;
+                f32 f22;
+                f32 a[3];
+                f32 b[3];
+                if (e[0x30] == 0) continue;
+                type = *(s32 *)(e + 0x38);
+                if (type < 0 || type >= 8) continue;
+                t = tbl + type * 16;
+                if (*(s32 *)t == 0) continue;
+                if (*(s32 *)(e + 0x2C) & 8) continue;
+                roll = fn_80287B5C(0x64);
+                if (FLD(e, 0x28) > FLD(t, 4) && roll < *(s32 *)(t + 8)) {
+                    f32 r;
+                    ((struct Vec3i *)a)[0] = *(struct Vec3i *)(e + 0xC);
+                    r = fn_80287BC8(lbl_80564338, lbl_8056432C);
+                    b[0] = FLD(m, 0xC) * r;
+                    b[1] = FLD(m, 0x10) * r;
+                    b[2] = FLD(m, 0x14) * r;
+                    r = fn_80287BC8(lbl_8056433C, lbl_80564340);
+                    b[0] += FLD(m, 0x18) * r;
+                    b[1] += FLD(m, 0x1C) * r;
+                    b[2] += FLD(m, 0x20) * r;
+                    PSVECNormalize(b, b);
+                    r = FLD(e, 0x34);
+                    b[0] *= r;
+                    b[1] *= r;
+                    b[2] *= r;
+                    a[0] += b[0];
+                    a[1] += b[1];
+                    a[2] += b[2];
+                    {
+                        f32 c[3];
+                        c[0] = FLD(m, 0x34) * k24;
+                        c[1] = FLD(m, 0x38) * k24;
+                        c[1] += k25;
+                        c[2] = FLD(m, 0x3C) * k24;
+                        f4 = (FLD(e, 0) > k26) ? lbl_8056432C : lbl_80564340;
+                        c[0] += FLD(m, 0) * f4;
+                        c[1] += FLD(m, 4) * f4;
+                        c[2] += FLD(m, 8) * f4;
+                        f22 = k27 * FLD(e, 0x24);
+                        c[0] += fn_80287BC8(-f22, f22);
+                        c[2] += fn_80287BC8(-f22, f22);
+                        ((void (*)(void *, f32 *, f32 *, s16, s32))(*(void ***)*(void **)t)[6])(
+                            *(void **)t, a, c, *(s16 *)(m + 0x30), i);
+                    }
+                } else if (FLD(e, 0x24) > k28 && roll < *(s32 *)(t + 0xC)) {
+                    f32 r;
+                    a[0] = FLD(e, 0);
+                    a[1] = FLD(e, 4);
+                    a[2] = FLD(e, 8) - k29;
+                    XfmVec((f32 *)m, a, a);
+                    a[0] += FLD(m, 0x24);
+                    a[1] += FLD(m, 0x28);
+                    a[2] += FLD(m, 0x2C);
+                    b[0] = FLD(m, 0x18) * k30;
+                    b[1] = FLD(m, 0x1C) * k30;
+                    b[2] = FLD(m, 0x20) * k30;
+                    r = fn_80287BC8(lbl_80564328, lbl_8056432C);
+                    b[0] += FLD(m, 0xC) * r;
+                    b[1] += FLD(m, 0x10) * r;
+                    b[2] += FLD(m, 0x14) * r;
+                    r = FLD(e, 0x24) * fn_80287BC8(lbl_80564358, lbl_8056435C);
+                    b[0] *= r;
+                    b[1] *= r;
+                    b[2] *= r;
+                    b[0] += FLD(m, 0x34) * k31;
+                    b[1] += FLD(m, 0x38) * k31;
+                    b[2] += FLD(m, 0x3C) * k31;
+                    f4 = (FLD(e, 0) > k26) ? lbl_8056432C : lbl_80564340;
+                    b[0] += FLD(m, 0) * f4;
+                    b[1] += FLD(m, 4) * f4;
+                    b[2] += FLD(m, 8) * f4;
+                    f22 = k27 * FLD(e, 0x24);
+                    b[0] += fn_80287BC8(-f22, f22);
+                    b[2] += fn_80287BC8(-f22, f22);
+                    ((void (*)(void *, f32 *, f32 *, s16, s32))(*(void ***)*(void **)t)[6])(
+                        *(void **)t, a, b, *(s16 *)(m + 0x30), i);
+                }
+            }
+        }
+    }
+}
+
+#pragma push
 #pragma processor gekko
 void fn_8028B3CC(void) {
     extern s32 lbl_8055D430, lbl_8055F704;
