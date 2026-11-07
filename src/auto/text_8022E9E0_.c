@@ -78,14 +78,15 @@ void fn_8022EB30(void *arg0) {
         lbl_8055F000 = 0;
     }
 }
-#pragma dont_inline off
+#pragma push
+#pragma scheduling invalid_target
 void fn_8022EB90(void) {
     if (lbl_8055F004 != 0) ((void (*)(const char *, ...))fn_802E317C)(lbl_803402A0);
     lbl_8055F004 = (s32)fn_801284F8(8, lbl_803402F4);
     *(s32 *)lbl_8055F004 = 0;
     ((s32 *)lbl_8055F004)[1] = *(s32 *)lbl_8055F004;
 }
-
+#pragma pop
 #pragma push
 #pragma scheduling invalid_target
 #pragma dont_inline on
