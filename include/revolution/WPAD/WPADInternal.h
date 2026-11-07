@@ -129,11 +129,11 @@ typedef struct WPADExtConfig {
     union {
         struct WPADFSConfig {
             s16 stickXCenter; // at 0x0
-            s16 at_0x02;      // at 0x2
-            s16 at_0x04;      // at 0x4
+            s16 stickXMin;    // at 0x2
+            s16 stickXMax;    // at 0x4
             s16 stickYCenter; // at 0x6
-            s16 at_0x08;      // at 0x8
-            s16 at_0x0a;      // at 0xA
+            s16 stickYMin;    // at 0x8
+            s16 stickYMax;    // at 0xA
 
             s16 accX0g; // at 0xC
             s16 accY0g; // at 0xE
