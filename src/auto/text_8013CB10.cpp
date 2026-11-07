@@ -56,6 +56,19 @@ struct Sub134_8013D2C4 {
     char s1FA[0x14];
     char s20E[0x14];
     char s222[0x1A];
+    inline Sub134_8013D2C4() : p140(0), p148(0), p14C(0), p150(0), p158(0), p15C(0), p160(0) {
+        memset(s164, 0x7A, 3); s164[3] = 0;
+        memset(s178, 0x7A, 3); s178[3] = 0;
+        memset(s18C, 0x7A, 3); s18C[3] = 0;
+        memset(s1A0, 0x7A, 3); s1A0[3] = 0;
+        memset(s1B4, 0x7A, 3); s1B4[3] = 0;
+        memset(s1C8, 0x7A, 3); s1C8[3] = 0;
+        memset(s1D2, 0x7A, 3); s1D2[3] = 0;
+        memset(s1E6, 0x7A, 3); s1E6[3] = 0;
+        memset(s1FA, 0x7A, 3); s1FA[3] = 0;
+        memset(s20E, 0x7A, 3); s20E[3] = 0;
+        memset(s222, 0x7A, 3); s222[3] = 0;
+    }
     inline void init() {
         p140 = 0;
         p148 = 0;
