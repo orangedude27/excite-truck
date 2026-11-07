@@ -129,7 +129,26 @@ struct MainObj8013D2C4 {
     s32 f27C;
     Perc8013D2C4 perc;
     s32 f288;
+    inline void initWidgets(const char *base);
 };
+extern "C" void *fn_80145E70(const char *);
+extern "C" void *fn_802CAC28(const char *, s32);
+inline void MainObj8013D2C4::initWidgets(const char *base) {
+    void *w0 = fn_80145E70(base + 0x0);
+    w54 = w0;
+    sa.push(w0);
+    void *w1 = fn_80145E70(base + 0xC);
+    w58 = w1;
+    sa.push(w1);
+    void *w2 = fn_80145E70(base + 0x1C);
+    w5C = w2;
+    sa.push(w2);
+    a0 = fn_802CAC28(base + 0x2C, 0);
+    a4 = fn_802CAC28(base + 0x38, 0);
+    a8 = fn_802CAC28(base + 0x48, 0);
+    ac = fn_802CAC28(base + 0x58, 0);
+    b0 = fn_802CAC28(base + 0x68, 0);
+}
 static inline void LoadWidget8013D2C4(s32 *dst, const char *base, s32 off) {
     const char *s = base + off;
     s32 r = fn_80207848((void *)s, 1);
