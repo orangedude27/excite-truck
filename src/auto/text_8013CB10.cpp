@@ -1,4 +1,12 @@
 #include "types.h"
+extern "C" void fn_8002F30C(void *, s32, s32, void (*)(), void (*)());
+extern "C" void *fn_801F181C(void *, const char *, void *, void *);
+extern "C" void fn_8013E3A8(void *, void *);
+extern "C" void fn_8013CC20(void *, s32);
+extern "C" void fn_801331C4(void *, void *, const char *);
+extern "C" void fn_802E317C(const char *, ...);
+extern "C" void *fn_802C6FC0(const char *, s32, s32);
+extern "C" f32 lbl_805614C4;
 class TPathDocument;
 extern "C" void *fn_8013D8D0(void *out, TPathDocument *document);
 extern "C" void fn_80141B58(void *);
@@ -431,6 +439,171 @@ extern "C" void fn_8013D288(void) {
         *slot = (void *)lbl_8032CAC0_vt;
     }
 }
+
+extern "C" void *fn_8013D2C4(void *arg0, void *arg1) {
+    struct V10StrFloat { virtual void d0(); virtual void d1(); virtual void d2(); virtual f32 *v10(const char *, f32); };
+    struct V14Void { virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void *v14(); };
+    struct V34Void {
+        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+        virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+        virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
+        virtual void v34();
+    };
+    struct V10Void { virtual void d0(); virtual void d1(); virtual void d2(); virtual void *v10(); };
+    struct V1CInt {
+        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+        virtual void d4(); virtual void d5(); virtual void v1C(s32);
+    };
+
+    u8 *self = (u8 *)arg0;
+    const char *base = (const char *)lbl_8032C530;
+
+    fn_8007DF60(self);
+    *(void **)self = lbl_8032CAF0;
+    fn_8001DA84(self + 0x70);
+    fn_8001DA84(self + 0x78);
+    fn_8001DA84(self + 0x80);
+    fn_8001DA84(self + 0x88);
+    fn_8001DA84(self + 0x90);
+
+    *(f32 *)(self + 0x98) = lbl_80561494;
+    *(f32 *)(self + 0x9C) = lbl_80561494;
+    *(f32 *)(self + 0xA0) = lbl_80561498;
+    *(f32 *)(self + 0xA4) = lbl_8056149C;
+    *(f32 *)(self + 0xA8) = lbl_805614A0;
+
+    *(s32 *)(self + 0xC0) = 0;
+    *(s32 *)(self + 0xC4) = 0;
+    *(s32 *)(self + 0xC8) = 0;
+    *(s32 *)(self + 0xCC) = 0;
+
+    *(s32 *)(self + 0x134) = 0;
+    *(f32 *)(self + 0x138) = lbl_805614BC;
+    self[0x13C] = 1;
+    self[0x13D] = 0;
+    *(s32 *)(self + 0x140) = 0;
+    self[0x144] = 0;
+    *(s32 *)(self + 0x148) = 0;
+    *(s32 *)(self + 0x14C) = 0;
+    *(s32 *)(self + 0x150) = 0;
+    *(s32 *)(self + 0x154) = 0;
+    *(s32 *)(self + 0x158) = 0;
+    *(s32 *)(self + 0x15C) = 0;
+    *(s32 *)(self + 0x160) = 0;
+
+    memset(self + 0x164, 0, 0x14);
+    memset(self + 0x178, 0, 0x14);
+    memset(self + 0x18C, 0, 0x14);
+    memset(self + 0x1A0, 0, 0x14);
+    memset(self + 0x1B4, 0, 0x14);
+    memset(self + 0x1C8, 0, 0xA);
+    memset(self + 0x1D2, 0, 0x14);
+    memset(self + 0x1E6, 0, 0x14);
+    memset(self + 0x1FA, 0, 0x14);
+    memset(self + 0x20E, 0, 0x14);
+    memset(self + 0x222, 0, 0x1A);
+
+    *(s32 *)(self + 0x240) = 0;
+    *(s32 *)(self + 0x244) = 0;
+    *(s32 *)(self + 0x248) = 0;
+    *(s32 *)(self + 0x24C) = 0;
+    *(void **)(self + 0x254) = lbl_8032CBB8;
+
+    fn_801414A4(self + 0x280);
+    *(void **)(self + 0x28C) = lbl_8032CC04;
+    *(s32 *)(self + 0x290) = 0;
+    self[0x294] = 0;
+
+    *(void **)(self + 0x54) = fn_802CAC28(base + 0x50, 0);
+    *(void **)(self + 0x58) = fn_802CAC28(base + 0x60, 0);
+    *(void **)(self + 0x5C) = fn_802CAC28(base + 0x70, 0);
+
+    *(void **)(self + 0xB0) = fn_802AE340(0);
+    void **p64 = fn_801284F8(8, (void *)(base + 0x80));
+    if (p64 != 0) {
+        p64[0] = 0;
+        p64[1] = 0;
+    }
+    *(void ***)(self + 0x64) = p64;
+
+    void *v14Res = ((V14Void *)arg1)->v14();
+    s32 adbaRes = fn_802ADBA8(v14Res, base + 0x8C, self + 0xB4, self + 0x60);
+    void *ae0Res = fn_802AE0A4(adbaRes, base + 0x9C);
+    fn_8013D8D0(self + 0x64, (TPathDocument *)ae0Res);
+    ((V34Void *)ae0Res)->v34();
+
+    *(f32 *)(self + 0xAC) = lbl_80561494;
+    s32 count = *(s32 *)(*(u8 **)(self + 0x64));
+    for (s32 i = 0, off = 0; i < count; i++, off += 0x14) {
+        u8 *grp = *(u8 **)(*(u8 **)(self + 0x64) + 4) + off;
+        f32 v = *(f32 *)(grp + 0xC) - *(f32 *)(grp + 8);
+        if (v > *(f32 *)(self + 0xAC)) {
+            *(f32 *)(self + 0xAC) = v;
+        }
+    }
+
+    s32 n = **(s32 **)(self + 0xB4);
+    *(s32 *)(self + 0xBC) = n;
+    *(void **)(self + 0xB8) = fn_8002F37C(fn_8012850C(n * 0x12C + 0x10, base + 0x80), 0, (void (*)())fn_80141748, 0x12C, n);
+    for (s32 i = 0; i < *(s32 *)(self + 0xBC); i++) {
+        fn_80141890((u8 *)(*(void **)(self + 0xB8)) + i * 0x12C, self, base + 0xAC, base + 0xBC, base + 0xCC, i);
+    }
+
+    f32 fzero = lbl_805614AC;
+    f32 *r1 = ((V10StrFloat *)*(void **)(self + 0x54))->v10(base + 0xDC, fzero);
+    *(f32 *)(self + 0x98) = r1[0];
+    *(f32 *)(self + 0x9C) = r1[1];
+    *(f32 *)(self + 0xA0) = ((V10StrFloat *)*(void **)(self + 0x54))->v10(base + 0xEC, fzero)[0];
+    *(f32 *)(self + 0xA4) = ((V10StrFloat *)*(void **)(self + 0x54))->v10(base + 0xFC, fzero)[0];
+    *(f32 *)(self + 0xA8) = ((V10StrFloat *)*(void **)(self + 0x54))->v10(base + 0x108, fzero)[0];
+
+    *(void **)(self + 0xC0) = fn_8002F37C(fn_8012850C(0x130, base + 0x114), 0, (void (*)())fn_80141B58, 0xC, 0x18);
+    *(s32 *)(self + 0xC4) = 0x18;
+    *(s32 *)(self + 0xC8) = 0;
+    *(s32 *)(self + 0xCC) = 0;
+
+    *(s32 *)(self + 0xD0) = fn_80207848((void *)(base + 0x120), 0);
+    *(s32 *)(self + 0xD4) = fn_80207848((void *)(base + 0x134), 1);
+    *(s32 *)(self + 0xDC) = fn_80207848((void *)(base + 0x148), 1);
+    *(s32 *)(self + 0xD8) = fn_80207848((void *)(base + 0x15C), 1);
+
+    void *w0 = fn_801686B0(fn_80178A9C(), base + 0x170, lbl_805614C0, lbl_805614C4);
+    *(void **)(self + 0xE0) = w0;
+    f32 fc8 = lbl_805614C8;
+    fn_80168734(w0, fc8, fc8, fc8, lbl_805614A4);
+    ((V1CInt *)*(void **)(self + 0xE0))->v1C(1);
+
+    void *w1 = fn_801686B0(fn_80178A9C(), base + 0x17C, lbl_805614C0, lbl_805614C4);
+    *(void **)(self + 0xE4) = w1;
+    f32 fcc = lbl_805614CC;
+    f32 fd0 = lbl_805614D0;
+    fn_80168734(w1, fcc, fd0, fd0, lbl_805614A4);
+    ((V1CInt *)*(void **)(self + 0xE4))->v1C(1);
+
+    void *w2 = fn_801686B0(fn_80178A9C(), base + 0x188, lbl_805614C0, lbl_805614C4);
+    *(void **)(self + 0xE8) = w2;
+    fn_80168734(w2, fd0, fcc, fd0, lbl_805614A4);
+    ((V1CInt *)*(void **)(self + 0xE8))->v1C(1);
+
+    void *w3 = fn_801686B0(fn_80178AA4(), base + 0x198, lbl_805614D4, lbl_805614C4);
+    *(void **)(self + 0xEC) = w3;
+    fn_80168734(w3, fc8, fc8, fc8, lbl_805614A4);
+
+    for (s32 i = 0; i < 8; i++) {
+        s32 idx = i * 2;
+        void *sub0 = ((V10Void *)*(void **)(self + 0xE4))->v10();
+        *(void **)(self + idx * 4 + 0xF0) = sub0;
+        ((V1CInt *)sub0)->v1C(1);
+        void *sub1 = ((V10Void *)*(void **)(self + 0xE8))->v10();
+        *(void **)((u8 *)(self + idx * 4) + 0xF4) = sub1;
+        ((V1CInt *)sub1)->v1C(1);
+    }
+
+    *(f32 *)(self + 0x250) = lbl_805614BC;
+    self[0x294] = 0;
+    return self;
+}
+
 #pragma scheduling on
 #pragma dont_inline off
 
