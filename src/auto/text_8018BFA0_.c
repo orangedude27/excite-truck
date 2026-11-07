@@ -110,6 +110,20 @@ extern float lbl_80562038;
 extern float lbl_8056203C;
 extern float lbl_80562040;
 extern char lbl_80332758[];
+static inline void matVecAliasV_8018(Vec_8018 *dest, const float *m, const Vec_8018 *src) {
+    if (dest == src) {
+        float tx = src->x * m[0] + src->y * m[3] + src->z * m[6];
+        float ty = src->x * m[1] + src->y * m[4] + src->z * m[7];
+        float tz = src->x * m[2] + src->y * m[5] + src->z * m[8];
+        dest->x = tx;
+        dest->y = ty;
+        dest->z = tz;
+    } else {
+        dest->x = src->x * m[0] + src->y * m[3] + src->z * m[6];
+        dest->y = src->x * m[1] + src->y * m[4] + src->z * m[7];
+        dest->z = src->x * m[2] + src->y * m[5] + src->z * m[8];
+    }
+}
 typedef struct { char b[0x290]; } Blob290_8018;
 typedef struct { float a, b; int c, d; unsigned char e[18]; } Blob22_8018;
 extern float lbl_80561F78, lbl_80561F7C, lbl_80561F80, lbl_80561F84;
@@ -147,7 +161,6 @@ extern void fn_802E317C(void *, ...);
 extern void *fn_8001285C(int);
 #pragma push
 #pragma processor 750
-#pragma auto_inline off
 #pragma use_lmw_stmw off
 void fn_8018C5A0(char *arg0, char *arg1) {
     char *p19;
@@ -162,7 +175,7 @@ void fn_8018C5A0(char *arg0, char *arg1) {
 
     memset(arg0 + 0x152C, 0, 0x900);
     f31 = lbl_80561F74;
-    p19 = (char *)&lbl_80332758 + 0xE8;
+    p19 = lbl_80332758 + 0xE8;
     f30 = lbl_80561F78;
     p20 = arg0 + 0x152C;
     for (i = 0; i < 0x11; i++, p19 += 0x40, p20 += 0x80) {
@@ -198,7 +211,7 @@ void fn_8018C5A0(char *arg0, char *arg1) {
     }
     if (M2C_FIELD(arg0, int *, 0x1F0) == 0x50) {
         void *o = M2C_FIELD(fn_8001285C(*(int *)__AXFXGetLfoSinTable_801769CC(0)), void **, 0x20);
-        float t = (*(float (**)(void *, void *, float))(*(char **)o + 0x28))(o, (char *)&lbl_80332758 + 0x680, lbl_80561F88);
+        float t = (*(float (**)(void *, void *, float))(*(char **)o + 0x28))(o, lbl_80332758 + 0x680, lbl_80561F88);
         M2C_FIELD(arg0, float *, 0x5F4) = M2C_FIELD(arg0, float *, 0x5F4) * t;
     }
     M2C_FIELD(arg0, float *, 0x5F4) = M2C_FIELD(arg0, float *, 0x5F4) * lbl_80561F8C;
@@ -208,11 +221,21 @@ void fn_8018C5A0(char *arg0, char *arg1) {
         fn_80279CD8(arg0 + 0x1E44);
     }
     *(Blob290_8018 *)(arg0 + 0x20F8) = *(Blob290_8018 *)(arg0 + 0x1E44);
-    *(Blob22_8018 *)(arg0 + 0x2388) = *(Blob22_8018 *)(arg0 + 0x20D4);
+    {
+        Blob22_8018 *d = (Blob22_8018 *)(arg0 + 0x2388);
+        Blob22_8018 *s = (Blob22_8018 *)(arg0 + 0x20D4);
+        d->a = s->a;
+        d->b = s->b;
+        d->c = s->c;
+        d->d = s->d;
+        for (j = 0; j < 18; j++) {
+            d->e[j] = s->e[j];
+        }
+    }
     for (j = 0; j < 16; j++) {
         M2C_FIELD(arg0, unsigned char *, 0x1E2C + j) = 0xFF;
     }
-    p30 = (char *)&lbl_80332758 + 0x5B0;
+    p30 = lbl_80332758 + 0x5B0;
     for (j = 0; j < 0xD; j++, p30 += 0x10) {
         char *s4;
         char *t26;
@@ -223,7 +246,7 @@ void fn_8018C5A0(char *arg0, char *arg1) {
             if (s4[1] == 0x57) {
                 M2C_FIELD(t26, char *, 0x1E2C) = fn_8018C514(arg0, arg0 + (s4[2] - 0x30) * 0x74 + 0x23DC);
             } else {
-                fn_802E317C((char *)&lbl_80332758 + 0x694);
+                fn_802E317C(lbl_80332758 + 0x694);
             }
         }
         if (fn_801E2CCC(M2C_FIELD(arg0, int *, 0x59C), M2C_FIELD(p30, void **, 0), &sp8) != 0) {
