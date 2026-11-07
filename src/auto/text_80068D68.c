@@ -11210,125 +11210,165 @@ s32 fn_8007FEFC(u16 handle) {
 
 extern UINT8 btm_sec_execute_procedure(void *);
 extern UINT8 lbl_80316F14[];
+/*
+ * btm_sec_connected - the security manager heard that the ACL link to bda came
+ * up or failed (HCI Connection Complete, and a connection the host rejected).
+ * It finds or allocates the device record and stamps it, puts back the
+ * authentication-enable and PIN type that pairing changed (btm_restore_mode),
+ * reports the new link key and "pairing done" when dedicated bonding finished -
+ * dropping the bonding-only link again - and otherwise starts the security
+ * procedure the service asked for.  status is the HCI error code (HCI_SUCCESS
+ * for a link that came up) and enc_mode the encryption mode it came up in.
+ *
+ * btm_cb (lbl_803C0F78) is read at its byte offsets here: taking it through the
+ * tBTM_CB_SEC_VIEW struct makes the compiler keep its base address in a
+ * callee-saved register over the whole function instead of reloading it.
+ */
 void btm_sec_connected(UINT8 *bda, UINT16 handle, UINT8 status, UINT8 enc_mode) {
-    extern char lbl_80316B6C[];
-    UINT8 *dev;
+    extern char lbl_80316B6C[]; /* "btm_restore_mode: Authen Enable -> %d" */
+    tBTM_SEC_DEV_REC_FULL_VIEW *p_dev_rec;
     UINT8 rc;
     UINT8 *entry;
     INT32 count;
     UINT32 timestamp;
 
-    dev = (UINT8 *)btm_find_dev(bda);
-    if (lbl_803C0F78[0x27C0] >= 4)
+    p_dev_rec = (tBTM_SEC_DEV_REC_FULL_VIEW *)btm_find_dev(bda);
+    if (lbl_803C0F78[0x27C0] >= BT_TRACE_LEVEL_EVENT) /* "Security Manager: btm_sec_connected handle:%d status:%d enc_mode:%d" */
         ((void (*)(UINT32, void *, UINT16, UINT8, UINT8))fn_80070984)(
-            0xD0003, lbl_80316F14, handle, status, enc_mode);
-    if (dev == NULL) {
-        if (status == 0) {
-            dev = (UINT8 *)btm_sec_alloc_dev(bda);
-            if (dev == NULL)
+            TRACE_LAYER_BTM | TRACE_TYPE_EVENT, lbl_80316F14, handle, status, enc_mode);
+    if (p_dev_rec == NULL) {
+        /* Unknown device: take a record for it, but a failure of a device we
+           never heard of is nothing to report. */
+        if (status == HCI_SUCCESS) {
+            p_dev_rec = (tBTM_SEC_DEV_REC_FULL_VIEW *)btm_sec_alloc_dev(bda);
+            if (p_dev_rec == NULL)
                 return;
         } else {
             return;
         }
     } else {
+        /* Known device: it becomes the most recently used one. */
+        /* btm_cb.dev_rec_count: a stamp ordering the device records */
         timestamp = *(UINT32 *)(lbl_803C0F78 + 0x1974);
-        *(UINT32 *)(dev + 0x0C) = timestamp;
+        p_dev_rec->timestamp = timestamp;
         *(UINT32 *)(lbl_803C0F78 + 0x1974) = timestamp + 1;
-        dev[0x85] = 1;
+        p_dev_rec->conn_up = 1;
     }
 
-    if (dev[0x81] & 0x40) {
-        if (lbl_803C0F78[0x197B] != 0) {
+    /* btm_restore_mode(): undo what raising the security level for bonding set. */
+    if (p_dev_rec->sec_req & BTM_SEC_BOND) {
+        if (lbl_803C0F78[0x197B] != 0) { /* security_mode_changed */
             lbl_803C0F78[0x197B] = 0;
-            if (lbl_803C0F78[0x27C0] >= 5)
+            if (lbl_803C0F78[0x27C0] >= BT_TRACE_LEVEL_DEBUG)
                 ((void (*)(UINT32, void *, UINT32))fn_80070954)(
-                    0xD0004, lbl_80316B6C,
-                    (lbl_803C0F78[0x1978] - 3) == 0);
-            btsnd_hcic_write_pin_type_8008543C(
-                (UINT8)((lbl_803C0F78[0x1978] - 3) == 0));
+                    TRACE_LAYER_BTM | TRACE_TYPE_DEBUG, lbl_80316B6C,
+                    (lbl_803C0F78[0x1978] - BTM_SEC_MODE_LINK) == 0); /* security_mode */
+            btsnd_hcic_write_pin_type_8008543C(/* = btsnd_hcic_write_auth_enable */
+                (UINT8)((lbl_803C0F78[0x1978] - BTM_SEC_MODE_LINK) == 0));
         }
-        if (lbl_803C0F78[0x197C] != 0) {
+        if (lbl_803C0F78[0x197C] != 0) { /* pin_type_changed */
             lbl_803C0F78[0x197C] = 0;
-            btsnd_hcic_write_pin_type(lbl_803C0F78[0x20]);
+            btsnd_hcic_write_pin_type(lbl_803C0F78[0x20]); /* cfg_pin_type */
         }
     }
 
-    if (status != 0) {
-        if ((status == 5 || status == 6 || status == 0xE ||
-            status == 0x18 || status == 0x26 || status == 0x29 ||
-            status == 0x25 || status == 0x17 || status == 0x22) ||
-            (dev[0x81] & 0x40)) {
-            *(volatile UINT8 *)(dev + 0x81) &= ~0x50;
-            dev[0x76] &= ~0x10;
-            if (*(UINT32 *)(lbl_803C0F78 + 0x194C) != 0) {
-                fn_80070F90(lbl_803C0F78 + 0x193C);
-                status = 0xE;
+    if (status != HCI_SUCCESS) {
+        /* These failures mean the link key is no longer usable (or pairing was
+           refused), so forget it; any other failure only ends this attempt. */
+        if ((status == HCI_ERR_AUTH_FAILURE || status == HCI_ERR_KEY_MISSING ||
+            status == HCI_ERR_HOST_REJECT_SECURITY ||
+            status == HCI_ERR_PAIRING_NOT_ALLOWED || status == HCI_ERR_UNIT_KEY_USED ||
+            status == HCI_ERR_PAIRING_WITH_UNIT_KEY_NOT_SUPPORTED ||
+            status == HCI_ERR_ENCRY_MODE_NOT_ACCEPTABLE ||
+            status == HCI_ERR_REPEATED_ATTEMPTS ||
+            status == HCI_ERR_LMP_RESPONSE_TIMEOUT) ||
+            (p_dev_rec->sec_req & BTM_SEC_BOND)) {
+            *(volatile UINT8 *)&p_dev_rec->sec_req &= ~(BTM_SEC_BOND | BTM_SEC_OUT_AUTHENTICATE);
+            p_dev_rec->sec_flags &= ~BTM_SEC_FLAG_LKEY_KNOWN;
+            if (*(UINT32 *)(lbl_803C0F78 + 0x194C) != 0) { /* pin_code_tle_cback: a PIN wanted */
+                fn_80070F90(lbl_803C0F78 + 0x193C); /* cancel the pin_code_tle timer */
+                status = HCI_ERR_HOST_REJECT_SECURITY;
                 *(UINT32 *)(lbl_803C0F78 + 0x194C) = 0;
             }
-            if (lbl_803C0F78[0x27BF] == 0xE)
-                status = 0xE;
-            if (*(void (**)(void *, void *, void *, UINT32))(lbl_803C0F78 + 0x191C) != NULL)
-                (*(void (**)(void *, void *, void *, UINT32))(lbl_803C0F78 + 0x191C))(
-                    dev + 0x1C, dev + 0x22, dev + 0x35, status);
+            if (lbl_803C0F78[0x27BF] == HCI_ERR_HOST_REJECT_SECURITY) /* acl_disc_reason */
+                status = HCI_ERR_HOST_REJECT_SECURITY;
+            /* p_auth_complete_callback: tell the app pairing ended */
+            if (*(tBTM_AUTH_COMPLETE_CB **)(lbl_803C0F78 + 0x191C) != NULL)
+                (*(tBTM_AUTH_COMPLETE_CB **)(lbl_803C0F78 + 0x191C))(
+                    p_dev_rec->bd_addr, p_dev_rec->dev_class, p_dev_rec->sec_bd_name, status);
             return;
         }
-        if (*(void (**)(void *, UINT32, UINT8))(dev + 4) != NULL) {
-            if (dev[0x80] != 0) {
-                void *p = *(void **)dev;
-                if (p != NULL && *(UINT32 *)p == 3)
-                    *(UINT32 *)((UINT8 *)p + 4) = 0;
+        if (p_dev_rec->p_callback != NULL) { /* btm_sec_dev_rec_cback_event() */
+            if (p_dev_rec->is_originator != 0) {
+                /* An RFCOMM service we called: its server channel is free again. */
+                tBTM_SEC_SERV_REC *p_serv_rec = p_dev_rec->p_cur_service;
+                if (p_serv_rec != NULL && p_serv_rec->mx_proto_id == 3)
+                    p_serv_rec->orig_mx_chan_id = 0;
             }
-            if (status == 8 || status == 0x1F || status == 4)
-                ((void (*)(void *, UINT32, UINT8))(*(void **)(dev + 4)))(
-                    dev + 0x1C, *(UINT32 *)(dev + 8), 8);
+            if (status == HCI_ERR_CONNECTION_TOUT || status == HCI_ERR_UNSPECIFIED ||
+                status == HCI_ERR_PAGE_TIMEOUT)
+                ((void (*)(void *, void *, UINT8))p_dev_rec->p_callback)(
+                    p_dev_rec->bd_addr, p_dev_rec->p_ref_data, BTM_DEVICE_TIMEOUT);
             else
-                ((void (*)(void *, UINT32, UINT8))(*(void **)(dev + 4)))(
-                    dev + 0x1C, *(UINT32 *)(dev + 8), 0xA);
+                ((void (*)(void *, void *, UINT8))p_dev_rec->p_callback)(
+                    p_dev_rec->bd_addr, p_dev_rec->p_ref_data, BTM_ERR_PROCESSING);
         }
         return;
     }
 
-    if ((dev[0x81] & 0x40) && dev[0x82] != 0) {
-        dev[0x82] = 0;
-        if (*(void (**)(void *, void *, void *, void *, UINT8))(lbl_803C0F78 + 0x1914) != NULL)
-            (*(void (**)(void *, void *, void *, void *, UINT8))(lbl_803C0F78 + 0x1914))(
-                dev + 0x1C, dev + 0x22, dev + 0x35, dev + 0x25, dev[0x83]);
+    /* Dedicated bonding over a link that came up: hand out the new link key,
+       say pairing is done and drop the link that was only opened to pair. */
+    if ((p_dev_rec->sec_req & BTM_SEC_BOND) && p_dev_rec->link_key_not_sent != 0) {
+        p_dev_rec->link_key_not_sent = 0;
+        /* p_link_key_callback: the app's new-link-key handler */
+        if (*(tBTM_LINK_KEY_NOTIFY_CB **)(lbl_803C0F78 + 0x1914) != NULL)
+            (*(tBTM_LINK_KEY_NOTIFY_CB **)(lbl_803C0F78 + 0x1914))(
+                p_dev_rec->bd_addr, p_dev_rec->dev_class, p_dev_rec->sec_bd_name,
+                p_dev_rec->link_key, p_dev_rec->link_key_type);
+        /* p_link_key_notify_callback[]: the extra notifiers registered on top */
         entry = lbl_803C0F78;
-        for (count = 0; count < 2; count++, entry += 4) {
-            if (*(void (**)(void *, void *, void *, void *, UINT8))(entry + 0x1924) != NULL)
-                (*(void (**)(void *, void *, void *, void *, UINT8))(entry + 0x1924))(
-                    dev + 0x1C, dev + 0x22, dev + 0x35, dev + 0x25, dev[0x83]);
+        for (count = 0; count < BTM_SEC_MAX_LINK_KEY_NOTIFY_CALLBACKS; count++, entry += 4) {
+            if (*(tBTM_LINK_KEY_NOTIFY_CB **)(entry + 0x1924) != NULL)
+                (*(tBTM_LINK_KEY_NOTIFY_CB **)(entry + 0x1924))(
+                    p_dev_rec->bd_addr, p_dev_rec->dev_class, p_dev_rec->sec_bd_name,
+                    p_dev_rec->link_key, p_dev_rec->link_key_type);
         }
-        if (*(void (**)(void *, void *, void *, UINT32))(lbl_803C0F78 + 0x191C) != NULL)
-            (*(void (**)(void *, void *, void *, UINT32))(lbl_803C0F78 + 0x191C))(
-                dev + 0x1C, dev + 0x22, dev + 0x35, 0);
-        rc = dev[0x81];
-        dev[0x81] &= ~0x50;
-        btsnd_hcic_disconnect(handle, 0x13);
+        if (*(tBTM_AUTH_COMPLETE_CB **)(lbl_803C0F78 + 0x191C) != NULL)
+            (*(tBTM_AUTH_COMPLETE_CB **)(lbl_803C0F78 + 0x191C))(
+                p_dev_rec->bd_addr, p_dev_rec->dev_class, p_dev_rec->sec_bd_name,
+                HCI_SUCCESS);
+        rc = p_dev_rec->sec_req;
+        p_dev_rec->sec_req &= ~(BTM_SEC_BOND | BTM_SEC_OUT_AUTHENTICATE);
+        btsnd_hcic_disconnect(handle, HCI_ERR_PEER_USER);
         return;
     }
 
-    *(UINT16 *)(dev + 0x18) = handle;
-    dev[0x76] &= 0xF8;
-    if (enc_mode != 0)
-        dev[0x76] |= 6;
-    if (lbl_803C0F78[0x1978] == 3)
-        dev[0x76] |= 2;
-    dev[0x84] = 0;
-    if ((dev[0x76] & 8) != 0 && dev[0x80] == 0)
+    p_dev_rec->hci_handle = handle;
+    p_dev_rec->sec_flags &= ~(BTM_SEC_FLAG_AUTHORIZED | BTM_SEC_FLAG_ENCRYPTED |
+                              BTM_SEC_FLAG_AUTHENTICATED);
+    if (enc_mode != HCI_ENCRYPT_MODE_DISABLED)
+        p_dev_rec->sec_flags |= (BTM_SEC_FLAG_AUTHENTICATED | BTM_SEC_FLAG_ENCRYPTED);
+    if (lbl_803C0F78[0x1978] == BTM_SEC_MODE_LINK) /* security_mode */
+        p_dev_rec->sec_flags |= BTM_SEC_FLAG_AUTHENTICATED;
+    p_dev_rec->link_key_changed = 0;
+
+    /* Only run security for a device we still have to learn about, or one we
+       called ourselves: an authorized service may have been registered while
+       the link was down. */
+    if ((p_dev_rec->sec_flags & BTM_SEC_NAME_KNOWN) != 0 && p_dev_rec->is_originator == 0)
         return;
-    rc = btm_sec_execute_procedure(dev);
-    if (rc == 1)
+    rc = btm_sec_execute_procedure(p_dev_rec);
+    if (rc == BTM_CMD_STARTED)
         return;
-    if (*(void **)(dev + 4) != NULL) {
-        if (dev[0x80] != 0) {
-            void *p = *(void **)dev;
-            if (p != NULL && *(UINT32 *)p == 3)
-                *(UINT32 *)((UINT8 *)p + 4) = 0;
+    if (p_dev_rec->p_callback != NULL) { /* btm_sec_dev_rec_cback_event(p_dev_rec, rc) */
+        if (p_dev_rec->is_originator != 0) {
+            tBTM_SEC_SERV_REC *p_serv_rec = p_dev_rec->p_cur_service;
+            if (p_serv_rec != NULL && p_serv_rec->mx_proto_id == 3)
+                p_serv_rec->orig_mx_chan_id = 0;
         }
-        ((void (*)(void *, UINT32, UINT8))(*(void **)(dev + 4)))(
-            dev + 0x1C, *(UINT32 *)(dev + 8), rc);
-        *(void **)(dev + 4) = NULL;
+        ((void (*)(void *, void *, UINT8))p_dev_rec->p_callback)(
+            p_dev_rec->bd_addr, p_dev_rec->p_ref_data, rc);
+        p_dev_rec->p_callback = NULL;
     }
 }
 
