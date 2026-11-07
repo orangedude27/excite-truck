@@ -1,4 +1,5 @@
 #include "types.h"
+extern "C" s32 lbl_8055E1C0;
 extern "C" void *fn_80145E70(const char *);
 extern "C" void **__AXFXGetLfoSinTable_801769CC(void);
 extern "C" u8 *fn_8001285C(void *);
