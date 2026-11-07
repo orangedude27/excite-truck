@@ -1804,7 +1804,9 @@ light_test:
     GXSetChanCtrl(1, 1, 0, 0, var_r28, 0, 0);
     GXSetChanCtrl(3, 0, 0, 0, 0, 0, 2);
 }
-#pragma pop
+#pragma scheduling on
+#pragma paired on
+#pragma paired_single on
 
 #pragma push
 #pragma scheduling invalid_target
