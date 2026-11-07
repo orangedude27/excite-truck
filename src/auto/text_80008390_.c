@@ -48,6 +48,12 @@ static inline void check_entry(void *ptr) {
         fn_80131318();
     }
 }
+static inline s32 get_diff_4(void *ptr) {
+    return lbl_8055D380[1] - *(s32 *)((char *)ptr + 4);
+}
+static inline s32 get_diff_8(void *ptr) {
+    return lbl_8055D380[1] - *(s32 *)((char *)ptr + 8);
+}
 extern s32 fn_800167F4(void);
 extern s32 lbl_802ED6D8[];
 extern s32 lbl_8055D370;
