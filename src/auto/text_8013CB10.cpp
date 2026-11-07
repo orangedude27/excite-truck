@@ -1,4 +1,10 @@
 #include "types.h"
+class TPathDocument;
+extern "C" void *fn_8013D8D0(void *out, TPathDocument *document);
+extern "C" void fn_80141B58(void *);
+extern "C" f32 lbl_80561494;
+extern "C" f32 lbl_8056149C;
+extern "C" f32 lbl_805614A0;
 extern "C" u8 lbl_8032CAF0[];
 extern "C" u8 lbl_8032CBB8[];
 extern "C" u8 lbl_8032CC04[];
