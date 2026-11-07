@@ -114,6 +114,7 @@ struct MainObj8013D2C4 {
     void *b8;
     s32 bc;
     RingBuf8013D2C4 rb;
+    s32 f130;
     Sub134_8013D2C4 sub;
     u8 pad23C[0x18];
     s32 f254;
@@ -641,9 +642,9 @@ extern "C" void *fn_8013D2C4(void *arg0, void *arg1) {
     obj->b0 = fn_802CAC28(base + 0x68, 0);
 
     s32 n = *(s32 *)(src + 0x3E0);
-    lbl_8055E1C0 = (s32)self;
-    *(s32 *)(self + 0xBC) = n;
-    *(void **)(self + 0xB8) = fn_8002F37C(fn_8012850C(n * 0x12C + 0x10, base + 0x78), (void (*)())fn_8013E6E4, 0, 0x12C, n);
+    lbl_8055E1C0 = (s32)obj;
+    obj->bc = n;
+    obj->b8 = fn_8002F37C(fn_8012850C(n * 0x12C + 0x10, base + 0x78), (void (*)())fn_8013E6E4, 0, 0x12C, n);
 
     *(s32 *)(self + 0x130) = 0;
     for (s32 off = 0, i = 0; i < *(s32 *)(self + 0xBC); src += 0x78, off += 0x12C, i++) {
