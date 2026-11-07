@@ -57,6 +57,40 @@ int fn_80245264(void *arg0) {
 }
 #pragma scheduling on
 #pragma pop
+
+extern int lbl_8055CFF0, lbl_8055CFF4, lbl_8055FB9C, lbl_8055FBA0;
+extern float lbl_80563834, lbl_80563838, lbl_8056383C, lbl_80563840, lbl_80563844, lbl_80563848, lbl_8056384C, lbl_80563850, lbl_80563854, lbl_80563858, lbl_8056385C, lbl_80563860, lbl_80563864, lbl_80563868, lbl_8056386C, lbl_80563870, lbl_80563874, lbl_80563878, lbl_8056387C, lbl_80563888, lbl_8056388C, lbl_80563890;
+extern char lbl_80343080[];
+extern char lbl_8055BE50, lbl_8055BE58, lbl_8055BE5C;
+extern int fn_80129AFC(void);
+extern int fn_802E47B8(void);
+extern int fn_802E46F0(void);
+extern int fn_802E2D74(int);
+extern int fn_802E2C20(void);
+extern double sin(double);
+extern void fn_802C5310(int, int, float, float, float);
+extern void fn_802337A0(int, int, int, void *, void *, ...);
+extern float lbl_80558DC4[];
+extern char lbl_8055BE60, lbl_8055BE64;
+extern void fn_802C8530(void);
+extern void fn_802C87B4(int, int, int, int);
+extern void fn_802C88BC(int);
+extern void fn_80230B5C(void *);
+extern void fn_802C8638(void *);
+extern void fn_802C974C(float, float, float);
+extern void fn_802C5320(int, float, float, float, float, float, int);
+extern void fn_802C92D0(void);
+extern void fn_802C92DC(int, int, int, int, int);
+extern void fn_802C92D8(void);
+extern void fn_80232BA4(char *, int, int, int, float, float, float, float, float);
+extern float fn_8023293C(int, char *, float);
+extern void fn_80028E00(char *, char *);
+extern void fn_802335F0(char *, int, float, float);
+extern void fn_802C9A70(int);
+extern void fn_802C855C(void);
+extern void fn_802C2B48(void);
+extern char *strcpy(char *, const char *);
+
 int fn_802452E4(void *arg0) {
     void *value;
     value = *(void **)((char *)arg0 + 4);
