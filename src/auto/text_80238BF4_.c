@@ -32,6 +32,16 @@ extern void fn_802E317C(const char *, ...);
 extern char lbl_80340AD0[];
 extern char lbl_80340B00[];
 
+#define SWAP32_FIELD(base, off) do { \
+    ptr = (u8 *)(base); \
+    temp2 = ptr[(off) + 0]; \
+    ptr[(off) + 0] = ptr[(off) + 3]; \
+    ptr[(off) + 3] = temp2; \
+    temp2 = ptr[(off) + 1]; \
+    ptr[(off) + 1] = ptr[(off) + 2]; \
+    ptr[(off) + 2] = temp2; \
+} while (0)
+
 #define SWAP16_AT(ptr, off) do { \
     u8 _t; \
     u8 *_p = (u8 *)(ptr); \
