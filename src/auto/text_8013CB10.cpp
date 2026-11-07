@@ -2301,32 +2301,6 @@ extern "C" f32 fn_801429E0(f32 arg0, f32 arg1) {
 
 extern "C" f32 fabs(f32);
 #pragma dont_inline fn_8013CB3C
-static inline void helper_801429F0(u8 *p, f32 old) {
-    f32 var_f2 = lbl_805614AC;
-    var_f2 = var_f2 < (old + lbl_8056149C / lbl_8056149C) ? (old + lbl_8056149C / lbl_8056149C) : var_f2;
-    var_f2 = var_f2 > lbl_805614A4 ? lbl_805614A4 : var_f2;
-    *(f32 *)(p + 0x94) = var_f2;
-    if (old < (f32)(f64)var_f2) {
-        *(f32 *)(p + 0xEC) = (f32)(f64)var_f2 - old;
-        return;
-    }
-    var_f2 = (f32)__fabs((f64)(f32)(f64)var_f2);
-    if (var_f2 > lbl_80558DC4[0]) return;
-    old = (f32)__fabs((f64)old);
-    if (old > lbl_80558DC4[0]) return;
-    s32 temp_r0 = *(s32 *)(p + 0xE4);
-    if (temp_r0 > 0) {
-        *(s32 *)(p + 0xF4) = temp_r0;
-        *(f32 *)(p + 0xF0) = fn_8013CB3C();
-        *(s32 *)(p + 0xE4) = 0;
-    }
-    temp_r0 = *(s32 *)(p + 0x100);
-    if (temp_r0 > 0)
-        *(f32 *)(p + 0xD4) = fn_8001DAE8(p + 0xD0);
-    *(s32 *)(p + 0x100) = 0;
-    *(f32 *)(p + 0xAC) = fn_8001DAE8(p + 0xA8);
-    if (lbl_8055E1BC == 0) *(u8 *)(p + 0xF8) = 1;
-}
 extern "C" void fn_801429F0(void *arg0) {
     u8 *p = (u8 *)arg0;
     *(f32 *)(p + 0xA4) = fn_8001DAE8(p + 0xA0);
