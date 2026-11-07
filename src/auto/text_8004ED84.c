@@ -111,9 +111,7 @@ int _ES_LaunchTitle(int *fd, int unused, int tidHigh, int tidLow, void *views)
 extern void OSGetFontTexel(char *, unsigned char *, int, int, int *);
 extern float lbl_80560C78, lbl_80560C7C, lbl_80560C80, lbl_80560C84, lbl_80560C88, lbl_80560C8C, lbl_80560C90, lbl_80560C94, lbl_80560C98, lbl_80560C9C, lbl_80560CA0, lbl_80560CA4, lbl_80560CA8;
 static inline float ClampYUV_8004(float v, float hi) {
-    if (v > hi) return hi;
-    if (v < lbl_80560C7C) return lbl_80560C7C;
-    return v;
+    return (v > hi) ? hi : ((v < lbl_80560C7C) ? lbl_80560C7C : v);
 }
 static inline GXColor RGBToYUV_8004(GXColor c) {
     GXColor o;
@@ -268,6 +266,67 @@ void OSFatal(unsigned char *arg0, unsigned char *arg1, int arg2) {
     *(int *)(lbl_8038E328 + 8) = arg2;
     ((void (*)(void *, void *))OSSwitchFiber)(Halt, OSGetArenaHi());
 }
+
+extern int strlen(const char *);
+extern void *OSAllocFromMEM1ArenaLo(unsigned long, int);
+extern void *memmove(void *, const void *, unsigned long);
+extern void *OSGetArenaLo(void);
+extern void VISetNextFrameBuffer(void *);
+extern void DCFlushRange(void *, unsigned long);
+extern void OSReport(const char *, ...);
+extern void PPCHalt(void);
+extern char lbl_80558F50;
+void Halt(void) {
+    void *font;
+    unsigned char *fb;
+    unsigned char *p;
+    char *msg;
+    int len;
+    FatalInfo *info = (FatalInfo *)lbl_8038E328;
+    GXColor *cols = (GXColor *)lbl_8038E328;
+    GXColor yuv, fgYUV;
+    int t, x, y;
+
+    OSEnableInterrupts();
+    msg = *(char **)&info->c;
+    len = strlen(msg) + 1;
+    info->c = (int)memmove(OSAllocFromMEM1ArenaLo(len, 0x20), msg, len);
+    font = OSAllocFromMEM1ArenaLo(0xA1004, 0x20);
+    OSLoadFont((int)font, (int)OSGetArenaLo());
+    fb = OSAllocFromMEM1ArenaLo(0x96000, 0x20);
+    yuv = RGBToYUV_8004(cols[1]);
+    {
+        GXColor c = yuv;
+        p = fb;
+        for (y = 0; y < 0x1E0; y++) {
+            for (x = 0; x < 0x280; x += 2) {
+                p[0] = c.r;
+                p[1] = c.g;
+                p[2] = c.r;
+                p[3] = c.b;
+                p += 4;
+            }
+        }
+    }
+    VISetNextFrameBuffer(fb);
+    ConfigureVideo(0x280, 0x1E0);
+    VIFlush();
+    t = fn_8005AC08();
+    while (fn_8005AC08() - t < 2) {
+    }
+    fgYUV = RGBToYUV_8004(cols[0]);
+    ScreenReport(fb, 0x280, 0x1E0, fgYUV, 0x30, 0x64, *(unsigned short *)((char *)font + 0xE), (char *)info->c);
+    DCFlushRange(fb, 0x96000);
+    VISetBlack(0);
+    VIFlush();
+    t = fn_8005AC08();
+    while (fn_8005AC08() - t < 1) {
+    }
+    OSDisableInterrupts();
+    OSReport(&lbl_80558F50, info->c);
+    PPCHalt();
+}
+
 #pragma pop
 static inline BOOL IsSjisTrailByte(u8 ch) {
     return (0x40 <= ch && ch <= 0xFC) && (ch != 0x7F);
