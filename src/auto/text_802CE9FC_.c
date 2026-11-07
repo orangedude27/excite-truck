@@ -1735,7 +1735,7 @@ typedef struct Entry_802D18E8 {
     float pos[3];
     float strength;
 } Entry_802D18E8;
-#pragma scheduling invalid_target
+#pragma scheduling off
 #pragma paired off
 #pragma paired_single off
 void fn_802D18E8(void) {
