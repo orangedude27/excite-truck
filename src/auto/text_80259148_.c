@@ -809,45 +809,26 @@ void fn_8025AA90(void *arg0, float farg0) {
 void fn_8025AD3C(float *out, float *a, float *b, float t) {
     float bz, az, by, dz, ay, bx, dy, ax, dx;
     float pz, py, rz, px, ry, rx;
-    bz = b[2];
-    az = a[2];
-    by = b[1];
-    dz = bz - az;
-    ay = a[1];
-    bx = b[0];
-    dy = by - ay;
-    ax = a[0];
-    dx = bx - ax;
-    pz = t * dz;
-    py = t * dy;
-    rz = az + pz;
-    px = t * dx;
-    ry = ay + py;
-    out[2] = rz;
-    rx = ax + px;
-    out[1] = ry;
-    out[0] = rx;
+    bz = b[2]; az = a[2]; by = b[1]; dz = bz - az;
+    ay = a[1]; bx = b[0]; dy = by - ay; ax = a[0]; dx = bx - ax;
+    pz = t * dz; py = t * dy; rz = pz + az; px = t * dx;
+    ry = py + ay; out[2] = rz; rx = px + ax; out[1] = ry; out[0] = rx;
 }
 
 void fn_8025AD88(void) { PSVECDotProduct(); }
 
 #pragma scheduling invalid_target
 void fn_8025AD8C(void *unused, float *out, float *a, float *b, float t) {
-    float dx, dy, dz;
-    float x, y, z;
+    float bx, ax, by, dx, ay, bz, dy, az, dz;
+    float px, py, rx, pz, ry, rz;
     float max, scale;
-    scale = lbl_80563B14 * t;
-    max = lbl_80563AE0;
-    max = (max < scale) ? scale : max;
-    dx = b[0] - a[0];
-    dy = b[1] - a[1];
-    dz = b[2] - a[2];
-    x = a[0] + max * dx;
-    y = a[1] + max * dy;
-    z = a[2] + max * dz;
-    out[0] = x;
-    out[1] = y;
-    out[2] = z;
+    scale = lbl_80563B14 * t; max = lbl_80563AE0;
+    max = (max < scale) ? max : scale;
+    bx = b[0]; by = b[1]; bz = b[2];
+    ax = a[0]; ay = a[1]; az = a[2];
+    dx = bx - ax; dy = by - ay; dz = bz - az;
+    px = max * dx; py = max * dy; rx = ax + px; pz = max * dz;
+    ry = ay + py; out[0] = rx; rz = az + pz; out[1] = ry; out[2] = rz;
 }
 #pragma scheduling on
 float fn_8025ADF4(float arg0) { return (float)fn_8002F234(arg0); }
@@ -1271,13 +1252,41 @@ void fn_8025B784(void) {
 }
 
 extern int stricmp(const char *, const char *);
-extern float fn_80214D48(void);
-extern int fn_8001EFA8(int);
-extern void fn_80236954(void *);
-extern void fn_80236958(void *);
-extern void fn_802168BC(int);
-extern float lbl_80563B34;
+extern float fn_80214D48(void);           // seconds since the last frame
+extern int fn_8001EFA8(int achievement);  // how many thresholds an achievement has
+extern void fn_80236954(void *);          // marks the achievement of this name as reached
+extern void fn_80236958(void *);          // clears the "reached" flag of this achievement name
+extern void fn_802168BC(int);             // asks for a result sound to be played
+extern float lbl_80563B34;                // 0.8f: seconds the value waits before it starts climbing
+
+// One row of the achievements display: a value counting up to a goal, graded
+// against the thresholds of one achievement (lbl_802FDF30, "score", "win",
+// "AAA", "air", "tree_run", "drift", "rings", ...).
+typedef struct AchievementRow {
+    /* 0x00 */ char pad00[0x18];
+    /* 0x18 */ int achievement;           // which achievement this row shows
+    /* 0x1C */ int startValue;            // value the row starts counting from
+    /* 0x20 */ int goal;                  // value the row counts up to
+    /* 0x24 */ int pad24;
+    /* 0x28 */ float progress;            // value shown, eased towards the goal
+    /* 0x2C */ char progressText[0x14];   // progress as text
+    /* 0x40 */ char goalText[0x14];       // next threshold as text, empty at the last one
+    /* 0x54 */ float rate;                // progress added per second
+    /* 0x58 */ unsigned char done;        // the progress reached the goal
+    /* 0x59 */ unsigned char soundPending; // play soundId once, then clear
+    /* 0x5C */ int soundId;               // result sound to play
+    /* 0x60 */ char rankName[0x32];       // name of the threshold reached
+    /* 0x92 */ char shownRankName[0x32];  // rankName as last handed to the achievement list
+    /* 0xC4 */ unsigned char flagC4;      // row belongs to the results screen
+    /* 0xC5 */ unsigned char flagC5;      // row is live
+    /* 0xC8 */ int rank;                  // how many thresholds the value passed
+    /* 0xCC */ float timer;               // seconds since the row started
+} AchievementRow;
+
 #pragma cplusplus on
+// One row of the achievements display: eases the shown value towards the goal,
+// refreshes the value and next-threshold text and the name of the threshold
+// reached, and fades the HUD elements that go with them in and out.
 extern "C" void fn_8025B788(void *arg0) {
     class Obj {
     public:
