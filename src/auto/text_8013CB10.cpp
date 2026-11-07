@@ -30,6 +30,8 @@ struct RingBuf8013D2C4 {
         tail = 0;
     }
 };
+extern "C" s32 fn_80207848(void *, s32);
+extern "C" void fn_802E317C(const char *, ...);
 struct Sub134_8013D2C4 {
     u8 pad0[0xC];
     void *p140;
@@ -624,11 +626,11 @@ extern "C" void *fn_8013D2C4(void *arg0, void *arg1) {
     obj->w5C = w2;
     obj->sa.push(w2);
 
-    *(void **)(self + 0xA0) = fn_802CAC28(base + 0x2C, 0);
-    *(void **)(self + 0xA4) = fn_802CAC28(base + 0x38, 0);
-    *(void **)(self + 0xA8) = fn_802CAC28(base + 0x48, 0);
-    *(void **)(self + 0xAC) = fn_802CAC28(base + 0x58, 0);
-    *(void **)(self + 0xB0) = fn_802CAC28(base + 0x68, 0);
+    obj->a0 = fn_802CAC28(base + 0x2C, 0);
+    obj->a4 = fn_802CAC28(base + 0x38, 0);
+    obj->a8 = fn_802CAC28(base + 0x48, 0);
+    obj->ac = fn_802CAC28(base + 0x58, 0);
+    obj->b0 = fn_802CAC28(base + 0x68, 0);
 
     s32 n = *(s32 *)(src + 0x3E0);
     lbl_8055E1C0 = (s32)self;
