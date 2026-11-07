@@ -178,7 +178,7 @@ typedef struct WPADCB {
           struct {
               u8 UNK_0x5F8[0x1CA];
               // Extension calibration read out of WM_REG_EXTENSION_CONFIG,
-              // same layout as extConfig below but filled in by getExtConfig().
+              // same layout as extConfig below, filled in by the read callback.
               WPADExtConfig extCalib;   // at 0x7C2
               WPADCallback readCB;       // at 0x7DC callback of a register read
               u8 UNK_0x7E0[0x21];
