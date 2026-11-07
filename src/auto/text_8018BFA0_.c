@@ -214,7 +214,7 @@ void fn_8018C5A0(char *arg0, char *arg1) {
     for (j = 0; j < 16; j++) {
         M2C_FIELD(arg0, unsigned char *, 0x1E2C + j) = 0xFF;
     }
-    p30 = &lbl_80332758 + 0x5B0;
+    p30 = (char *)&lbl_80332758 + 0x5B0;
     for (j = 0; j < 0xD; j++, p30 += 0x10) {
         char *s4;
         char *t26;
