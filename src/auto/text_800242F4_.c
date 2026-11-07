@@ -1,14 +1,32 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
-typedef int s32;
-typedef struct Buffer {
-    void *data;
-    unsigned char pad04[0x14];
-    s32 pos, read, end, capacity, count, mask;
-    unsigned char pad30[4];
-    s32 write_pos;
-    unsigned char pad38[8];
-    s32 (*flush)(void *, s32, void *, s32);
-    unsigned char pad44[4];
-    s32 size;
-} Buffer;
+#include <ansi_files.h>
+#include <buffer_io.h>
+
+int __flush_buffer(FILE* file, size_t* bytes_flushed) {
+    size_t buffer_len;
+    int ioresult;
+
+    buffer_len = file->buffer_ptr - file->buffer;
+
+    if (buffer_len) {
+        file->buffer_length = buffer_len;
+
+        ioresult = (*file->write_fn)(file->handle, file->buffer, (size_t*)&file->buffer_length,
+                                     file->idle_fn);
+
+        if (bytes_flushed)
+            *bytes_flushed = file->buffer_length;
+
+        if (ioresult)
+            return ioresult;
+
+        file->position += file->buffer_length;
+    }
+
+    file->buffer_ptr = file->buffer;
+    file->buffer_length = file->buffer_size - (file->position & file->buffer_alignment);
+    file->buffer_position = file->position;
+
+    return 0;
+}
