@@ -4653,7 +4653,7 @@ extern "C" void fn_80222120(void *arg0) {
 }
 
 extern "C" void fn_80222178(void *arg0) {
-    register s32 secondary;
+    s32 secondary;
     s32 idx;
     void *obj;
     s32 (*callback)(void *);
@@ -4665,7 +4665,7 @@ extern "C" void fn_80222178(void *arg0) {
     secondary = *(s32 *)((u8 *)arg0 + 0x250);
     if (secondary < 0)
         goto done;
-    obj = fn_8022D97C(*(s32 *)(*(s32 *)((u8 *)arg0 + 0x244) + idx * 0x24));
+    obj = ((void *(*)(void *, s32))fn_8022D97C)(*(void **)(*(s32 *)((u8 *)arg0 + 0x244) + idx * 0x24), secondary);
     callback = *(s32 (**)(void *))((u8 *)obj + 0x24);
     if (callback == 0 || callback(*(void **)((u8 *)obj + 0x20)) != 0)
         fn_802168BC(*(void **)((u8 *)obj + 0x20));
