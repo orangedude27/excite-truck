@@ -72,15 +72,17 @@ typedef struct QueueNode_80236848 {
 } QueueNode_80236848;
 extern void fn_802E317C(const char *);
 extern char lbl_80340910[];
+#pragma push
+#pragma scheduling invalid_target
 void fn_80236728(void) {
-    if (lbl_8055F0C4 != 0) {
-        fn_802E317C(lbl_80340910);
+    if ((unsigned char)lbl_8055F0C4 != 0) {
+        ((void (*)(const char *, ...))fn_802E317C)(lbl_80340910);
     }
     lbl_8055F0BC = 0;
     lbl_8055F0C0 = 0;
     lbl_8055F0C4 = 1;
 }
-
+#pragma pop
 void fn_80236774(void) {
     lbl_8055F0C4 = 0;
 }
@@ -889,56 +891,72 @@ extern void fn_8022EE98(void *);
 extern void fn_80214C54(void *, void *);
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
 void fn_8023808C(void *arg0, float value) {
     struct Pos {float x,y;};
+    union Pair { double d; struct Pos p; };
     struct Key { float time, scale, z; struct Pos pos; };
     struct Track {void *object; struct Key *keys; int count;};
     struct Anim {void *vtable; struct Track *tracks; int count; float duration;};
-    struct Anim *anim = arg0;
+    register struct Track *track;
+    register float *ap, *bp, *cp;
+    register int offset;
+    register int i;
+    register struct Anim *anim = arg0;
+    register void *result;
     float a[12], b[12], c[12];
-    float time;
-    float zero=lbl_805636E0, one=lbl_805636E4, epsilon=lbl_805636E8;
-    int i;
+    union Pair ipos;
+    struct Pos pos2, pos1;
+    union Pair interpolated;
+    register float one, zero, time, epsilon;
     value = lbl_805636E4 < value ? lbl_805636E4 : value;
     value = value > lbl_805636E0 ? value : lbl_805636E0;
     time = anim->duration * value;
-    for(i=0;i<anim->count;i++) {
-        struct Track *track=&anim->tracks[i];
-        void *result;
-        if(track->count>0) {
-            int j, index=-1;
-            for(j=0;j<track->count;j++) if(time >= track->keys[j].time) index=j;
+    ap=a; bp=b; cp=c;
+    zero=lbl_805636E0; one=lbl_805636E4; epsilon=lbl_805636E8;
+    i=0; offset=0;
+    for(;i<anim->count;i++) {
+        int index, j, keyoffset, n;
+        track=(struct Track *)((char *)anim->tracks + offset);
+        n=track->count;
+        if(n>0) {
+            index=-1; j=0; keyoffset=0;
+            for(;j<n;keyoffset+=20,j++) if(time >= ((struct Key *)((char *)track->keys+keyoffset))->time) index=j;
             if(index==-1) {
                 struct Key *key=track->keys;
-                struct Pos pos;
                 float scale=key->scale, z=key->z;
-                pos=key->pos;
-                a[9]=pos.x; a[10]=pos.y; a[11]=zero; a[0]=one; a[1]=zero; a[2]=zero; a[3]=zero; a[4]=one; a[5]=zero; a[6]=zero; a[7]=zero; a[8]=one;
-                result=fn_8022EDE4(a,scale); ((float*)result)[14]=z;
-            } else if(index==track->count-1) {
-                struct Key *key=&track->keys[track->count-1];
-                struct Pos pos;
-                float scale=key->scale, z=key->z;
-                pos=key->pos;
-                b[9]=pos.x; b[10]=pos.y; b[11]=zero; b[0]=one; b[1]=zero; b[2]=zero; b[3]=zero; b[4]=one; b[5]=zero; b[6]=zero; b[7]=zero; b[8]=one;
-                result=fn_8022EDE4(b,scale); ((float*)result)[14]=z;
+                pos1=key->pos;
+                ap[10]=pos1.y; ap[9]=pos1.x; ap[11]=zero; ap[0]=one; ap[1]=zero; ap[2]=zero; ap[3]=zero; ap[4]=one; ap[5]=zero; ap[6]=zero; ap[7]=zero; ap[8]=one;
+                result=fn_8022EDE4(ap,scale); ((float*)result)[14]=z;
+            } else if(index==n-1) {
+                struct Key *key=&track->keys[n];
+                float scale=key[-1].scale, z=key[-1].z;
+                pos2=key[-1].pos;
+                bp[10]=pos2.y; bp[9]=pos2.x; bp[11]=zero; bp[0]=one; bp[1]=zero; bp[2]=zero; bp[3]=zero; bp[4]=one; bp[5]=zero; bp[6]=zero; bp[7]=zero; bp[8]=one;
+                result=fn_8022EDE4(bp,scale); ((float*)result)[14]=z;
             } else {
                 struct Key *first=&track->keys[index], *next=&track->keys[index+1];
                 float delta=next->time-first->time;
-                float t,scale,z;
-                struct Pos pos;
+                float z0,z1,s1,s0,x0,x1,y1,y0,z,scale,t;
+
                 delta=delta>epsilon?delta:epsilon;
                 t=(time-first->time)/delta;
-                pos.y=first->pos.y+t*(next->pos.y-first->pos.y);
-                scale=first->scale+t*(next->scale-first->scale);
-                pos.x=first->pos.x+t*(next->pos.x-first->pos.x);
-                z=first->z+t*(next->z-first->z);
-                c[9]=pos.x; c[10]=pos.y; c[11]=zero; c[0]=one; c[1]=zero; c[2]=zero; c[3]=zero; c[4]=one; c[5]=zero; c[6]=zero; c[7]=zero; c[8]=one;
-                result=fn_8022EDE4(c,scale); ((float*)result)[14]=z;
+                y1=next->pos.y; y0=first->pos.y;
+                x1=next->pos.x; x0=first->pos.x;
+                s1=next->scale; s0=first->scale;
+                z1=next->z; z0=first->z;
+                interpolated.p.y=y0+t*(y1-y0);
+                scale=(s1-s0)*t+s0;
+                interpolated.p.x=x0+t*(x1-x0);
+                ipos.d=interpolated.d;
+                z=z0+t*(z1-z0);
+                cp[10]=ipos.p.y; cp[9]=ipos.p.x; cp[11]=zero; cp[0]=one; cp[1]=zero; cp[2]=zero; cp[3]=zero; cp[4]=one; cp[5]=zero; cp[6]=zero; cp[7]=zero; cp[8]=one;
+                result=fn_8022EDE4(cp,scale); ((float*)result)[14]=z;
             }
         } else result=fn_8022EE9C();
         fn_80214C54(track->object,result);
         fn_8022EE98(result);
+        offset += 12;
     }
 }
 #pragma pop
@@ -960,6 +978,7 @@ float fn_802383F4(void) { return lbl_805636E0; }
 
 #pragma push
 #pragma processor 750
+#pragma scheduling invalid_target
 void fn_802383FC(TrailMgr *mgr) {
     extern float fn_8023659C(void);
     extern void *fn_8022EDE4(float *, float);
@@ -967,10 +986,10 @@ void fn_802383FC(TrailMgr *mgr) {
     extern void fn_8022EE98(void *);
     extern void fn_80214C54(void *, void *);
     extern float lbl_805636E0, lbl_805636E4, lbl_805636E8;
-    float f29 = fn_8023659C();
-    float f30 = lbl_805636E0;
-    float f31 = lbl_805636E4;
-    float f27 = lbl_805636E8;
+    register float f29 = fn_8023659C();
+    register float f30 = lbl_805636E0;
+    register float f31 = lbl_805636E4;
+    register float f27 = lbl_805636E8;
     int i;
     int off;
     for (i = 0, off = 0; i < mgr->count; i++, off += 0x34) {
