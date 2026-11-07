@@ -109,6 +109,146 @@ int fn_802452E4(void *arg0) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+int fn_80245360(int *a, int *b) {
+    int value;
+    char obj[0x30];
+    char text[0x200];
+    struct { int a, b; } buf[64];
+    char *s, *split, *p;
+    int selected, i, j, save, color;
+    float w, h, x0, x1, y, alpha, wave;
+    int (*callback)(int *);
+
+    char *prompt = &lbl_8055BE50;
+    float f19 = lbl_80563854;
+    float f20 = lbl_8056384C;
+    float f21 = lbl_8056385C;
+    float f23 = lbl_80563864;
+    float f24 = lbl_80563838;
+    float f25 = lbl_80563870;
+    float f26 = lbl_8056386C;
+    float f27 = lbl_80563868;
+    float f28 = lbl_80563844;
+    float f29 = lbl_8056387C;
+    float f16 = lbl_80563840;
+    float f17 = lbl_80563834;
+    float f18 = lbl_80563850;
+    float f31 = lbl_80563874;
+    float f30 = lbl_80563878;
+
+    selected = b[4];
+    for (;;) {
+        fn_802C8530();
+        fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
+        fn_802C88BC(2);
+        fn_80230B5C(obj);
+        fn_802C8638(obj);
+        fn_802C974C(f17, f24, lbl_8056383C);
+        w = (float)(lbl_8055FB9C + 1);
+        h = (float)(lbl_8055FBA0 + 1);
+        x0 = f16 * (float)lbl_8055FB9C * f28 - f17;
+        x1 = f17 + (float)lbl_8055FBA0 * f28;
+        if (a[1] != 0) {
+            fn_802C5320(a[1], x0, x1, lbl_80563830, w, h, 0);
+        } else {
+            fn_802C92D0();
+            fn_802C92DC(0, 0, (int)w, (int)h, 0xFF000000);
+            fn_802C92D8();
+        }
+        s = (char *)b[0];
+        split = (char *)b[1];
+        y = lbl_80563848;
+        if (strlen(s) != 0) {
+            fn_80232BA4(s, a[3], 0xFF000000, 12, f20 + ((float *)a)[5], y - f20, f17, lbl_80563830, f17);
+            fn_80232BA4(s, a[3], -1, 12, ((float *)a)[5], y, f17, lbl_80563830, f17);
+        }
+        y -= f18;
+        strcpy(text, split);
+        s = text;
+        while (strlen(s) != 0) {
+            for (i = 0; i < 64; i++) { buf[i].a = 0; buf[i].b = 0; }
+            split = 0;
+            j = 0;
+            while ((unsigned)j < strlen(s) && fn_8023293C(a[3], (char *)buf, f17) < f19) {
+                p = s + j;
+                if (*p == 32) split = p;
+                else if (*p == 94) *p = 32;
+                ((char *)buf)[j] = *p;
+                j++;
+                ((char *)buf)[j] = 0;
+            }
+            save = 0;
+            if ((unsigned)j != strlen(s)) {
+                if (split == 0) {
+                    split = s + j;
+                    save = *split;
+                }
+                *split = 0;
+            } else {
+                split = s + j - 1;
+            }
+            fn_80232BA4(s, a[3], 0xFF000000, 12, f20 + ((float *)a)[5], y - f20, lbl_80563858, lbl_80563830, f17);
+            fn_80232BA4(s, a[3], -1, 12, ((float *)a)[5], y, lbl_80563858, lbl_80563830, f17);
+            if (save == 0) s = split + 1;
+            else { *split = save; s = split; }
+            y -= f21;
+        }
+        y = lbl_80563860;
+        for (i = 0; i < b[5]; i++) {
+            char *item = *(char **)((char *)b + 0x18 + i * 8);
+            wave = (float)sin(f23 * (float)fn_802E2C20() / f24);
+            alpha = f27 * (f26 + f25 * wave);
+            fn_80232BA4(item, a[3], 0xFF000000, 12, f20 + ((float *)a)[5], y - f20, f17, lbl_80563830, f17);
+            if (selected == i) {
+                color = ((int)alpha << 24) | 0x00FFD03F;
+            } else {
+                color = 0xC8646464;
+            }
+            fn_80232BA4(item, a[3], color, 12, ((float *)a)[5], y, f17, lbl_80563830, f17);
+            y -= f21;
+        }
+        if (a[2] != 0) {
+            fn_802C5310(a[2], 0, f29 + (f30 + f28 * fn_8023293C(a[4], prompt, f17)), f23 + f31, lbl_80563830);
+            fn_802337A0(a[4], -1, 9, &lbl_8055BE58, prompt, f30, f31, lbl_80563830, f28, f17);
+        } else {
+            fn_802337A0(a[4], -1, 12, lbl_80343080, &lbl_8055BE5C, f30, f31, lbl_80563830, f28, f17);
+        }
+        fn_802C9A70(1);
+        fn_802C855C();
+        fn_802C2B48();
+        fn_80129AFC();
+        if (fn_802E47B8()) {
+            switch ((unsigned short)fn_802E46F0()) {
+            case 0x126:
+                if (selected > 0) {
+                    fn_80214D50(0);
+                    selected--;
+                }
+                break;
+            case 0x128:
+                if (selected + 1 < b[5]) {
+                    fn_80214D50(0);
+                    selected++;
+                }
+                break;
+            case 0xd:
+                fn_80214D50(2);
+                return *(int *)((char *)b + 0x1C + selected * 8);
+            }
+        }
+        callback = *(int (**)(int *))((char *)b + 0xC);
+        if (callback != 0) {
+            value = -1;
+            if (callback(&value) == 1) return value;
+        }
+        fn_802E2D74(5);
+    }
+}
+#pragma pop
+
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 extern double fabs(double);
 #pragma push
 #pragma processor 750
@@ -409,8 +549,6 @@ extern float fn_80235F64(int, int);
 extern void fn_802353F4(int, int, float, float, float);
 extern void fn_802354A0(int, int, int, float, float, float, float, float);
 extern void fn_80235758(int, int, int, float, float, float, float, float, float, float, float);
-extern float lbl_80563834;
-extern float lbl_80563844;
 #pragma push
 #pragma processor 750
 void fn_802465A4(void *arg0) {
