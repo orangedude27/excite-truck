@@ -1,3 +1,4 @@
+#pragma ipa file
 #include <types.h>
 
 extern void *fn_802C6C34(void);
@@ -35,9 +36,10 @@ s32 fn_801E5990(void *arg0) {
 #pragma scheduling invalid_target
 void fn_801E5998(struct SrcHdr *src, void *dst, s32 *outCount) {
     s32 count = src->count;
+    struct Rec14 *d = (struct Rec14 *)dst;
     s32 i;
     for (i = 0; i < count; i++) {
-        ((struct Rec14 *)dst)[i] = src->data[i];
+        d[i] = src->data[i];
     }
     *outCount = count;
 }
@@ -119,39 +121,24 @@ void fn_801E65BC(void *arg0, void *arg1, s32 arg2, void *arg3, s32 arg4) {
 #pragma use_lmw_stmw on
 #pragma scheduling on
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_801E67B4(void *arg0, void *arg1, void *arg2) {
     float *out = (float *)arg0;
     float *in = (float *)arg1;
     const float *m = (const float *)arg2;
+
     if (out == in) {
-        float m3 = m[3];
-        float m4 = m[4];
-        float m5 = m[5];
-        float m0 = m[0];
-        float m1 = m[1];
-        float m2 = m[2];
-        float m6 = m[6];
-        float m7 = m[7];
-        float m8 = m[8];
-        float x = in[0];
-        float y = in[1];
-        float z = in[2];
-        out[0] = z * m6 + (x * m0 + y * m3);
-        out[1] = z * m7 + (x * m1 + y * m4);
-        out[2] = z * m8 + (x * m2 + y * m5);
+        float m3 = m[3], m4 = m[4], m5 = m[5], m0 = m[0], m1 = m[1], m2 = m[2], m6 = m[6], m7 = m[7], m8 = m[8];
+        float x = in[0], y = in[1], z = in[2];
+        out[0] = y * m3 + x * m0 + z * m6;
+        out[1] = y * m4 + x * m1 + z * m7;
+        out[2] = y * m5 + x * m2 + z * m8;
     } else {
-        float m3 = m[3];
-        float m0 = m[0];
-        float m6 = m[6];
-        float m4 = m[4];
-        float m1 = m[1];
-        float m7 = m[7];
-        float m5 = m[5];
-        float m2 = m[2];
-        float m8 = m[8];
+        float m3 = m[3], m0 = m[0], m6 = m[6], m4 = m[4], m1 = m[1], m7 = m[7], m5 = m[5], m2 = m[2], m8 = m[8];
         out[0] = in[2] * m6 + (in[0] * m0 + in[1] * m3);
         out[1] = in[2] * m7 + (in[0] * m1 + in[1] * m4);
         out[2] = in[2] * m8 + (in[0] * m2 + in[1] * m5);
     }
 }
-#pragma scheduling off
+#pragma pop
