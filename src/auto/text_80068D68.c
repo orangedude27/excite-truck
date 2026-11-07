@@ -13850,18 +13850,14 @@ void *fn_80095C64(void **head, u32 attr);
 #define HID_REMOTE_WAKE           0x0020
 #define HID_SUP_TOUT_AVLBL        0x0040
 
-/* The SDP search part of the HID host control block hh_cb (lbl_803C3C38); the
-   device table and the L2CAP config come in front of it. A cast rather than a
-   variable, so the block's address is materialised where it is used. */
-typedef struct {
-    /* 0x380 */ BOOLEAN                sdp_busy;
-    /* 0x384 */ void (*sdp_cback)(UINT16 result, UINT16 attr_mask,
-                                  tHID_DEV_SDP_INFO *p_sdp_rec);
-    /* 0x388 */ tSDP_DISCOVERY_DB     *p_sdp_db;
-    /* 0x38c */ tHID_DEV_SDP_INFO      sdp_rec;
-} tHID_HOST_SDP_CTB;
-#define hh_cb ((tHID_HOST_SDP_CTB *)lbl_803C3C38)
-
+/* lbl_803C3C38 is the HID host control block hh_cb (tHID_HOST_CTB); the device
+   table and the L2CAP config come in front of the part used here:
+     0x380  BOOLEAN            sdp_busy
+     0x384  tHID_HOST_SDP_CALLBACK *sdp_cback
+     0x388  tSDP_DISCOVERY_DB  *p_sdp_db
+     0x38c  tHID_DEV_SDP_INFO  sdp_rec
+   It is addressed by raw offsets: a typed base pointer makes the compiler fold
+   0x380 into the address setup instead of the load/store offsets. */
 void hidh_search_callback(UINT16 sdp_result) {
     tSDP_DISCOVERY_DB *p_db = *(tSDP_DISCOVERY_DB **)(lbl_803C3C38 + 0x388);
     tSDP_DISC_REC *p_rec;
