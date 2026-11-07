@@ -57,6 +57,54 @@ struct Sub134_8013D2C4 {
         memset(s222, 0x7A, 3); s222[3] = 0;
     }
 };
+extern "C" void fn_8001DAE0(void *, f32);
+extern "C" void *fn_801414A4(void *);
+extern "C" f32 lbl_805614C0;
+extern "C" f32 lbl_805614AC;
+extern "C" f32 lbl_805614C4;
+struct Timer8013D2C4 {
+    u64 t;
+    Timer8013D2C4(f32 v) { fn_8001DAE0(this, v); }
+};
+struct Perc8013D2C4 {
+    void *a;
+    void *b;
+    Perc8013D2C4() { fn_801414A4(this); }
+};
+struct MainObj8013D2C4 {
+    void *vt;
+    u32 unk4;
+    SubArray8013D2C4 sa;
+    void *w54;
+    void *w58;
+    void *w5C;
+    s32 f60;
+    void **p64;
+    s32 f68;
+    Timer8013D2C4 t6C;
+    Timer8013D2C4 t74;
+    Timer8013D2C4 t7C;
+    Timer8013D2C4 t84;
+    Timer8013D2C4 t8C;
+    u8 pad94[0x2C];
+    RingBuf8013D2C4 rb;
+    Sub134_8013D2C4 sub;
+    u8 pad250[0x30];
+    Perc8013D2C4 perc;
+    s32 f288;
+
+    inline void initMembers() {
+        new (&sa) SubArray8013D2C4();
+        new (&t6C) Timer8013D2C4(lbl_805614C0);
+        new (&t74) Timer8013D2C4(lbl_805614C0);
+        new (&t7C) Timer8013D2C4(lbl_805614AC);
+        new (&t84) Timer8013D2C4(lbl_805614AC);
+        new (&t8C) Timer8013D2C4(lbl_805614C4);
+        new (&rb) RingBuf8013D2C4();
+        new (&sub) Sub134_8013D2C4();
+        new (&perc) Perc8013D2C4();
+    }
+};
 extern "C" s32 lbl_8055E1C0;
 extern "C" void *fn_80145E70(const char *);
 extern "C" void **__AXFXGetLfoSinTable_801769CC(void);
