@@ -652,7 +652,7 @@ extern "C" s32 fn_8016C5F0(void) {
                 for (i = 0; list->at(i) != 0; i++) {
                     Entry *entry = (Entry *)list->at(i);
                     if (strcmp(entry->name(), lbl_803307D8) == 0 &&
-                        strstr(entry->search(lbl_8055A220), buffer) != 0) {
+                        strstr(entry->search((const char *)&lbl_8055A220), buffer) != 0) {
                         found = 1;
                         count++;
                         break;
@@ -673,20 +673,48 @@ int fn_8016C760(void *arg0) { return ((int *)arg0)[1]; }
 
 void fn_8016CD10(void *);
 void fn_8016CD28(void *);
-s8 fn_8016C768(void *arg0, void *arg1, void *arg2) {
+#pragma cplusplus on
+extern "C" void fn_8016CD10(void *);
+extern "C" void fn_8016CD28(void *);
+extern "C" s8 fn_8016C768(void *arg0, void *arg1, void *arg2) {
+    struct Blk { s32 w[12]; };
+    struct Item {
+        virtual const char *name();
+        virtual void m1();
+        virtual void m2();
+        virtual const char *search(const char *);
+        virtual void m4(); virtual void m5(); virtual void m6(); virtual void m7();
+        virtual f32 getf(const char *, f32);
+        virtual void m9(); virtual void m10(); virtual void m11(); virtual void m12(); virtual void m13(); virtual void m14();
+        virtual Blk getblk(Item *, const char *);
+        virtual void m16(); virtual void m17(); virtual void m18(); virtual void m19(); virtual void m20();
+        virtual s32 check(const char *);
+    };
+    struct Doc {
+        virtual const char *name();
+        virtual Item *byIndex(s32);
+        virtual void m2(); virtual void m3(); virtual void m4(); virtual void m5(); virtual void m6(); virtual void m7();
+        virtual void m8(); virtual void m9(); virtual void m10(); virtual void m11(); virtual void m12(); virtual void m13();
+        virtual void m14(); virtual void m15(); virtual void m16(); virtual void m17(); virtual void m18(); virtual void m19();
+        virtual void m20(); virtual void m21();
+        virtual Item *at(s32);
+    };
     char *str = lbl_803306D0;
     List8016C768 *list;
-    void *obj;
-    s32 count, i, ok, idx;
+    Item *obj;
+    s32 count, i, idx;
+    s32 ok;
     List8016C768 **out = (List8016C768 **)arg0;
+    Doc *doc = (Doc *)arg1;
+    Doc **coll = (Doc **)arg2;
 
     list = (List8016C768 *)fn_801284F8(0x10, str + 0x114);
     if (list != 0) {
         count = 0;
         i = 0;
-        while ((obj = VFN(arg1, 0x60, void *, (void *, s32))(arg1, i)) != 0) {
-            if (stricmp(VFN(obj, 8, char *, (void *))(obj), (char *)&lbl_8055A228) == 0) {
-                if (stricmp(VFN(obj, 0x14, char *, (void *, char *))(obj, (char *)&lbl_8055A230), str + 0x120) != 0) count++;
+        while ((obj = doc->at(i)) != 0) {
+            if (stricmp(obj->name(), &lbl_8055A228) == 0) {
+                if (stricmp(obj->search(&lbl_8055A230), str + 0x120) != 0) count++;
             }
             i++;
         }
@@ -704,9 +732,9 @@ s8 fn_8016C768(void *arg0, void *arg1, void *arg2) {
     if (list != 0) {
         count = 0;
         i = 0;
-        while ((obj = VFN(arg1, 0x60, void *, (void *, s32))(arg1, i)) != 0) {
-            if (stricmp(VFN(obj, 8, char *, (void *))(obj), (char *)&lbl_8055A228) == 0) {
-                if (stricmp(VFN(obj, 0x14, char *, (void *, char *))(obj, (char *)&lbl_8055A230), str + 0x120) == 0) count++;
+        while ((obj = doc->at(i)) != 0) {
+            if (stricmp(obj->name(), &lbl_8055A228) == 0) {
+                if (stricmp(obj->search(&lbl_8055A230), str + 0x120) == 0) count++;
             }
             i++;
         }
@@ -722,45 +750,43 @@ s8 fn_8016C768(void *arg0, void *arg1, void *arg2) {
     out[1] = list;
     ok = 1;
     idx = 0;
-    while ((obj = VFN(arg1, 0x60, void *, (void *, s32))(arg1, idx)) != 0) {
-        if (strcmp(VFN(obj, 8, char *, (void *))(obj), (char *)&lbl_8055A228) == 0) {
-            if (strcmp(VFN(obj, 0x14, char *, (void *, char *))(obj, (char *)&lbl_8055A230), str + 0x120) != 0) {
+    while ((obj = doc->at(idx)) != 0) {
+        if (strcmp(obj->name(), &lbl_8055A228) == 0) {
+            if (strcmp(obj->search(&lbl_8055A230), str + 0x120) != 0) {
                 List8016C768 *l = out[0];
                 u8 *e = (u8 *)l->data + l->index++ * 0x44;
-                char *name = VFN(obj, 0x14, char *, (void *, char *))(obj, (char *)&lbl_8055A230);
-                void *c;
+                const char *nm = obj->search(&lbl_8055A230);
+                Item *c;
                 s32 j = 0;
-                Blk8016C768 tmp;
-                while ((c = VFN(*(void **)arg2, 0xC, void *, (void *, s32))(*(void **)arg2, j)) != 0) {
-                    if (strcmp(VFN(c, 8, char *, (void *))(c), (char *)&lbl_8055A230) == 0 &&
-                        strcmp(VFN(c, 0x14, char *, (void *, char *))(c, (char *)&lbl_8055A220), name) == 0) break;
+                while ((c = (*coll)->byIndex(j)) != 0) {
+                    if (strcmp(c->name(), &lbl_8055A230) == 0 &&
+                        strcmp(c->search(lbl_8055A220), nm) == 0) break;
                     j++;
                 }
-                if (c == 0) fn_802E317C(str + 0x160, name);
-                if (VFN(c, 0x5C, s32, (void *, char *))(c, str + 0x180) != 0) {
+                if (c == 0) fn_802E317C(str + 0x160, nm);
+                if (c->check(str + 0x180) != 0) {
                     *(s32 *)(e + 0xC) = 0;
-                    *(s32 *)(e + 8) = VFN(c, 0x5C, s32, (void *, char *))(c, str + 0x180);
-                } else if (strcmp(name, str + 0x120) == 0) {
+                    *(s32 *)(e + 8) = c->check(str + 0x180);
+                } else if (strcmp(nm, str + 0x120) == 0) {
                     *(s32 *)(e + 0xC) = 2;
                 } else {
                     *(s32 *)(e + 0xC) = 1;
-                    *(s32 *)e = fn_802C6FC0((s32)VFN(c, 0x14, char *, (void *, char *))(c, (char *)&lbl_8055A238), 0);
+                    *(s32 *)e = fn_802C6FC0((s32)c->search(&lbl_8055A238), 0);
                 }
-                tmp = VFN(obj, 0x44, Blk8016C768, (void *, char *))(obj, str + 0x190);
-                *(Blk8016C768 *)(e + 0x14) = tmp;
+                *(Blk *)(e + 0x14) = obj->getblk(obj, str + 0x190);
                 *(u8 *)(e + 0x10) = 1;
                 if (1 == 0) ok = 0;
             } else {
-                List8016C768 *l = out[1];
-                u8 *e = (u8 *)l->data + l->index++ * 0x38;
-                Blk8016C768 tmp;
-                if (strcmp(VFN(obj, 0x14, char *, (void *, char *))(obj, (char *)&lbl_8055A230), str + 0x120) != 0)
-                    fn_802E317C(str + 0x1A0);
-                tmp = VFN(obj, 0x44, Blk8016C768, (void *, char *))(obj, str + 0x190);
-                *(Blk8016C768 *)e = tmp;
-                *(f32 *)(e + 0x34) = VFN(obj, 0x28, f32, (void *, char *, f32))(obj, (char *)&lbl_8055A240, lbl_805619A0);
-                *(u8 *)(e + 0x31) = 1;
-                if (1 == 0) ok = 0;
+                if (strcmp(obj->search(&lbl_8055A230), str + 0x120) == 0) {
+                    List8016C768 *l = out[1];
+                    u8 *e = (u8 *)l->data + l->index++ * 0x38;
+                    if (strcmp(obj->search(&lbl_8055A230), str + 0x120) != 0)
+                        fn_802E317C(str + 0x1A0);
+                    *(Blk *)e = obj->getblk(obj, str + 0x190);
+                    *(f32 *)(e + 0x34) = obj->getf(&lbl_8055A240, lbl_805619A0);
+                    *(u8 *)(e + 0x31) = 1;
+                    if (1 == 0) ok = 0;
+                }
             }
         }
         idx++;
@@ -768,7 +794,7 @@ s8 fn_8016C768(void *arg0, void *arg1, void *arg2) {
     *((u8 *)arg0 + 8) = ok;
     return ok;
 }
-
+#pragma cplusplus reset
 extern f32 lbl_805619A0;
 #pragma scheduling invalid_target
 void fn_8016CD10(void *arg0) {
