@@ -32,6 +32,20 @@ extern void Halt(void);
 extern char OSDefaultExceptionHandler[], lbl_8038E060[], lbl_8038E328[];
 typedef struct FatalBytes4 { unsigned char b[4]; } FatalBytes4;
 typedef struct FatalInfo { FatalBytes4 a; FatalBytes4 b; int c; } FatalInfo;
+// OSFatal()'s three parameters, parked in .sdata and read back by the Halt fiber.
+typedef struct OSFatalParam {
+    GXColor textColor;   // at 0x0
+    GXColor bgColor;     // at 0x4
+    const char *msg;     // at 0x8
+} OSFatalParam;
+
+// The fatal-message screen: 640x480, two bytes per pixel written as
+// brightness/chroma pairs (YUY2), so one frame is W*H*2 bytes.
+#define FATAL_FB_W 640
+#define FATAL_FB_H 480
+#define FATAL_FB_SIZE (FATAL_FB_W * FATAL_FB_H * 2)
+#define FATAL_FONT_SIZE 0xA1004  // OSFontHeader plus its glyph sheet
+#define FATAL_ALIGN 32           // MEM1 arena allocations must be 32-byte aligned
 extern unsigned short lbl_80558F58;
 extern void *lbl_8055DA48;
 extern int *lbl_8055DA50;
