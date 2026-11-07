@@ -1,4 +1,3 @@
-#pragma ipa file
 #include <types.h>
 
 extern void *fn_802C6C34(void);
