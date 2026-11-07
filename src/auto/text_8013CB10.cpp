@@ -1,4 +1,62 @@
 #include "types.h"
+extern "C" void *memset(void *, s32, u32);
+struct SubArray8013D2C4 {
+    void **ptr;
+    s32 count;
+    s32 cap;
+    void *storage[16];
+    SubArray8013D2C4() : ptr(storage), count(0), cap(0x10) {}
+    void push(void *w) {
+        s32 idx = count;
+        void **arr = ptr;
+        count = idx + 1;
+        arr[idx] = w;
+    }
+};
+struct RingBuf8013D2C4 {
+    void *ptr;
+    s32 cap;
+    s32 head;
+    s32 tail;
+    u8 storage[0x64];
+    RingBuf8013D2C4() : ptr(storage), cap(8), head(0), tail(0) {}
+};
+struct Sub134_8013D2C4 {
+    u8 pad0[0xC];
+    void *p140;
+    u8 pad1[4];
+    void *p148;
+    void *p14C;
+    void *p150;
+    u8 pad2[4];
+    void *p158;
+    void *p15C;
+    void *p160;
+    char s164[0x14];
+    char s178[0x14];
+    char s18C[0x14];
+    char s1A0[0x14];
+    char s1B4[0x14];
+    char s1C8[0xA];
+    char s1D2[0x14];
+    char s1E6[0x14];
+    char s1FA[0x14];
+    char s20E[0x14];
+    char s222[0x1A];
+    Sub134_8013D2C4() : p140(0), p148(0), p14C(0), p150(0), p158(0), p15C(0), p160(0) {
+        memset(s164, 0x7A, 3); s164[3] = 0;
+        memset(s178, 0x7A, 3); s178[3] = 0;
+        memset(s18C, 0x7A, 3); s18C[3] = 0;
+        memset(s1A0, 0x7A, 3); s1A0[3] = 0;
+        memset(s1B4, 0x7A, 3); s1B4[3] = 0;
+        memset(s1C8, 0x7A, 3); s1C8[3] = 0;
+        memset(s1D2, 0x7A, 3); s1D2[3] = 0;
+        memset(s1E6, 0x7A, 3); s1E6[3] = 0;
+        memset(s1FA, 0x7A, 3); s1FA[3] = 0;
+        memset(s20E, 0x7A, 3); s20E[3] = 0;
+        memset(s222, 0x7A, 3); s222[3] = 0;
+    }
+};
 extern "C" s32 lbl_8055E1C0;
 extern "C" void *fn_80145E70(const char *);
 extern "C" void **__AXFXGetLfoSinTable_801769CC(void);
@@ -455,37 +513,41 @@ extern "C" void fn_8013D288(void) {
 #pragma scheduling invalid_target
 #pragma dont_inline off
 extern "C" void *fn_8013D2C4(void *arg0, void *arg1) {
-    struct V14Void { virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void *v14(); };
-    struct V34Void {
+    struct V18 { virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual s32 v18(const char *, const char *); };
+    struct V30 {
         virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
         virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
-        virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
-        virtual void v34();
+        virtual void d8(); virtual void d9(); virtual s32 v30(const char *, s32);
     };
-    struct V10Index { virtual void d0(); virtual void d1(); virtual void d2(); virtual void *v10(s32); };
-    struct V14Name { virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void *v14(const char *); };
-    struct V20Int {
-        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
-        virtual void d4(); virtual void d5(); virtual void d6(); virtual s32 v20(const char *, s32);
+    struct V08_10 {
+        virtual void *v08(const char *);
+        virtual void d1();
+        virtual s32 v10(const char *);
+    };
+    struct Table {
+        u8 pad;
+        char str[1];
     };
 
     u8 *self = (u8 *)arg0;
+    u8 *src = (u8 *)arg1;
     const char *base = (const char *)lbl_8032C530;
 
+    f32 fc0 = lbl_805614C0;
     *(void **)self = lbl_8032CAF0;
     *(void **)(self + 8) = self + 0x14;
-    *(s32 *)(self + 0xC) = 0;
     *(s32 *)(self + 0x10) = 0x10;
+    *(s32 *)(self + 0xC) = 0;
 
-    fn_8001DAE0(self + 0x6C, lbl_805614C0);
+    fn_8001DAE0(self + 0x6C, fc0);
     fn_8001DAE0(self + 0x74, lbl_805614C0);
     fn_8001DAE0(self + 0x7C, lbl_805614AC);
     fn_8001DAE0(self + 0x84, lbl_805614AC);
     fn_8001DAE0(self + 0x8C, lbl_805614C4);
 
-    *(void **)(self + 0xC0) = self + 0xD0;
-    *(s32 *)(self + 0xC4) = 8;
     *(s32 *)(self + 0xC8) = 0;
+    *(s32 *)(self + 0xC4) = 8;
+    *(void **)(self + 0xC0) = self + 0xD0;
     *(s32 *)(self + 0xCC) = 0;
 
     *(s32 *)(self + 0x140) = 0;
@@ -519,83 +581,96 @@ extern "C" void *fn_8013D2C4(void *arg0, void *arg1) {
     memset(self + 0x222, 0x7A, 3);
     self[0x225] = 0;
 
-    *(s32 *)(self + 0x23C) = 0;
     fn_801414A4(self + 0x280);
 
-    *(void **)(self + 0xA0) = fn_802CAC28(base + 0x38, 0);
-    *(void **)(self + 0xA4) = fn_802CAC28(base + 0x48, 0);
-    *(void **)(self + 0xA8) = fn_802CAC28(base + 0x60, 0);
-    *(void **)(self + 0xAC) = fn_802CAC28(base + 0x70, 0);
-    *(void **)(self + 0xB0) = fn_802CAC28(base + 0x80, 0);
-
-    void **p64 = fn_801284F8(8, (void *)(base + 0x90));
-    if (p64 != 0) {
-        p64[0] = 0;
-        p64[1] = 0;
+    void *w0 = fn_80145E70(((const Table *)(base - 1))->str);
+    *(void **)(self + 0x54) = w0;
+    {
+        s32 idx = *(s32 *)(self + 0xC);
+        void **arr = *(void ***)(self + 8);
+        *(s32 *)(self + 0xC) = idx + 1;
+        arr[idx] = w0;
     }
-    *(void ***)(self + 0x64) = p64;
 
-    u8 spC[256];
-    spC[0] = 0;
-    fn_8002F30C(spC + 0xC, 0x20, 4, 0, 0);
-    *(s32 *)(spC + 0x8C) = 0;
-    *(s32 *)(spC + 0x90) = 0x10;
-    *(void **)(spC + 0x94) = spC + 0x98;
+    void *w1 = fn_80145E70(base + 0xC);
+    *(void **)(self + 0x58) = w1;
+    {
+        s32 idx = *(s32 *)(self + 0xC);
+        void **arr = *(void ***)(self + 8);
+        *(s32 *)(self + 0xC) = idx + 1;
+        arr[idx] = w1;
+    }
 
-    void *v14Res = ((V14Void *)arg1)->v14();
-    void *f18Res = fn_801F181C(v14Res, base + 0xA4, spC, self + 0x60);
-    fn_8013D8D0(self + 0x64, (TPathDocument *)f18Res);
-    ((V34Void *)f18Res)->v34();
+    void *w2 = fn_80145E70(base + 0x1C);
+    *(void **)(self + 0x5C) = w2;
+    {
+        s32 idx = *(s32 *)(self + 0xC);
+        void **arr = *(void ***)(self + 8);
+        *(s32 *)(self + 0xC) = idx + 1;
+        arr[idx] = w2;
+    }
 
-    *(f32 *)(self + 0x94) = lbl_805614A4;
-    for (s32 i = 0, off = 0; i < *(s32 *)(*(u8 **)(self + 0x64)); i++, off += 0x14) {
-        u8 *grp = *(u8 **)(*(u8 **)(self + 0x64) + 4) + off;
-        f32 v = *(f32 *)(grp + 0x10) - *(f32 *)(grp + 0xC);
-        if (v > *(f32 *)(self + 0x94)) {
-            *(f32 *)(self + 0x94) = v;
+    *(void **)(self + 0xA0) = fn_802CAC28(base + 0x2C, 0);
+    *(void **)(self + 0xA4) = fn_802CAC28(base + 0x38, 0);
+    *(void **)(self + 0xA8) = fn_802CAC28(base + 0x48, 0);
+    *(void **)(self + 0xAC) = fn_802CAC28(base + 0x58, 0);
+    *(void **)(self + 0xB0) = fn_802CAC28(base + 0x68, 0);
+
+    s32 n = *(s32 *)(src + 0x3E0);
+    lbl_8055E1C0 = (s32)self;
+    *(s32 *)(self + 0xBC) = n;
+    *(void **)(self + 0xB8) = fn_8002F37C(fn_8012850C(n * 0x12C + 0x10, base + 0x78), (void (*)())fn_8013E6E4, 0, 0x12C, n);
+
+    *(s32 *)(self + 0x130) = 0;
+    for (s32 off = 0, i = 0; i < *(s32 *)(self + 0xBC); src += 0x78, off += 0x12C, i++) {
+        *(bool *)((u8 *)(*(void **)(self + 0xB8)) + off + 0x118) = (*(s32 *)(src + 0x20) == 0x50);
+        if (((u8 *)(*(void **)(self + 0xB8)) + off)[0x118] != 0) {
+            *(s32 *)(self + 0x130) += 1;
         }
     }
 
-    *(s32 *)(self + 0xBC) = *(s32 *)(spC + 0x8C);
-    s32 n = *(s32 *)(spC + 0x8C);
-    *(void **)(self + 0xB8) = fn_8002F37C(fn_8012850C(n * 0x12C + 0x10, base + 0xB4), (void (*)())fn_8013E6E4, 0, 0x12C, n);
-
-    void *v14Res2 = ((V14Void *)arg1)->v14();
-    void *f18Res2 = fn_801F181C(v14Res2, base + 0xDC, spC, 0);
-    for (s32 i = 0, off = 0; i < *(s32 *)(self + 0xBC); i++, off += 0x12C) {
-        u8 *elem = (u8 *)(*(void **)(self + 0xB8)) + off;
-        if (f18Res2 != 0) {
-            void *sub0 = ((V10Index *)f18Res2)->v10(0);
-            if (sub0 != 0) {
-                void *sub1 = ((V10Index *)sub0)->v10(i);
-                if (sub1 != 0) {
-                    void *sub2 = ((V14Name *)sub1)->v14(base + 0xEC);
-                    if (sub2 != 0) {
-                        fn_8013E3A8(elem + 0x48, sub2);
-                    }
-                    void *sub3 = ((V14Name *)sub1)->v14(base + 0xFC);
-                    if (sub3 != 0) {
-                        *(s32 *)(elem + 0x10C) = ((V20Int *)sub3)->v20(base + 0x10C, 0xC8);
-                        *(s32 *)(elem + 0x110) = ((V20Int *)sub3)->v20(base + 0x118, 0xFA);
-                        *(s32 *)(elem + 0x114) = ((V20Int *)sub3)->v20(base + 0x124, 0x12C);
-                        elem[0x118] = ((V20Int *)sub3)->v20(base + 0x130, 0);
-                    }
-                }
-            }
-        }
-        if (*(s32 *)(self + 0xC) + 1 <= *(s32 *)(self + 0x10)) {
-            s32 idx = *(s32 *)(self + 0xC);
-            *(s32 *)(self + 0xC) = idx + 1;
-            *(void **)((u8 *)(*(void **)(self + 8)) + idx * 4) = 0;
-        }
-        fn_8013CC20(self, i);
+    *(s32 *)(self + 0x60) = 0;
+    u8 *mgr = fn_8001285C(*__AXFXGetLfoSinTable_801769CC());
+    if (((V30 *)*(void **)(mgr + 0x20))->v30(base + 0x88, 1) != 0) {
+        *(s32 *)(self + 0x60) = fn_80171698();
     }
 
-    if (f18Res2 != 0) {
-        ((V34Void *)f18Res2)->v34();
+    mgr = fn_8001285C(*__AXFXGetLfoSinTable_801769CC());
+    s32 res18 = ((V18 *)*(void **)(mgr + 0x20))->v18(base + 0x98, &lbl_80559D20);
+    s32 studio = __AXGetStudio_8000AC2C();
+
+    char buf[256];
+    fn_801345D8(buf, 0x100, base + 0xA4, studio, res18);
+    void *docA = fn_80131810(buf);
+    void *docB = fn_80131810(base + 0xB0);
+
+    if (docA != 0) {
+        void *attr = 0;
+        if (docB != 0 && ((V08_10 *)docB)->v10(&lbl_80559D28) != 0) {
+            attr = ((V08_10 *)docB)->v08(&lbl_80559D28);
+        }
+        fn_8013E3A8(lbl_8042FB3C, attr);
+        void **p64 = fn_801284F8(8, (void *)(base + 0xC0));
+        if (p64 != 0) {
+            p64 = (void **)fn_8013D8D0(p64, (TPathDocument *)docA);
+        }
+        *(void ***)(self + 0x64) = p64;
+        if (docB != 0) {
+            fn_80131818(docB);
+        }
+        fn_80131818(docA);
+    } else {
+        fn_802E317C(base + 0xCC, buf);
+        *(s32 *)(self + 0x64) = 0;
     }
 
-    fn_801331C4(self + 0x25C, self, base + 0x90);
+    fn_802049DC(base + 0xE8, lbl_8042FB3C + 0x24, lbl_80561498, lbl_805614C8, lbl_805614CC);
+    fn_802049DC(base + 0xFC, lbl_8042FB3C + 0x20, lbl_805614CC, lbl_805614C4, lbl_805614CC);
+    fn_802049DC(base + 0x110, lbl_8042FB3C + 0x1C, lbl_805614CC, lbl_805614D0, lbl_805614CC);
+    fn_802049DC(base + 0x120, lbl_8042FB3C + 0x18, lbl_805614C4, lbl_805614D4, lbl_805614C4);
+
+    *(f32 *)(self + 0x268) = lbl_805614AC;
+    ((void (*)(s32, const char *, void *))fn_801331C4)(4, base + 0x12C, self + 0x268);
 
     const char *s1 = base + 0x13C;
     s32 r1 = fn_80207848((void *)s1, 1);
