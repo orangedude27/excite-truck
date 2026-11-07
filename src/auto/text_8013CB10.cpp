@@ -5,6 +5,7 @@ struct SubArray8013D2C4 {
     s32 count;
     s32 cap;
     void *storage[16];
+    inline SubArray8013D2C4() : ptr(storage), count(0), cap(0x10) {}
     inline void init() {
         ptr = storage;
         cap = 0x10;
@@ -23,6 +24,7 @@ struct RingBuf8013D2C4 {
     s32 head;
     s32 tail;
     u8 storage[0x64];
+    inline RingBuf8013D2C4() : ptr(storage), cap(8), head(0), tail(0) {}
     inline void init() {
         head = 0;
         cap = 8;
@@ -641,29 +643,12 @@ extern "C" void *fn_8013D2C4(void *arg0, void *arg1) {
     obj->rb.init();
     obj->sub.init();
     obj->perc.init();
-
-    void *w0 = fn_80145E70(base + 0x0);
-    obj->w54 = w0;
-    obj->sa.push(w0);
-
-    void *w1 = fn_80145E70(base + 0xC);
-    obj->w58 = w1;
-    obj->sa.push(w1);
-
-    void *w2 = fn_80145E70(base + 0x1C);
-    obj->w5C = w2;
-    obj->sa.push(w2);
-
-    obj->a0 = fn_802CAC28(base + 0x2C, 0);
-    obj->a4 = fn_802CAC28(base + 0x38, 0);
-    obj->a8 = fn_802CAC28(base + 0x48, 0);
-    obj->ac = fn_802CAC28(base + 0x58, 0);
-    obj->b0 = fn_802CAC28(base + 0x68, 0);
+    obj->initWidgets(base);
 
     s32 n = *(s32 *)(src + 0x3E0);
-    lbl_8055E1C0 = (s32)obj;
-    obj->bc = n;
-    obj->b8 = fn_8002F37C(fn_8012850C(n * 0x12C + 0x10, base + 0x78), (void (*)())fn_8013E6E4, 0, 0x12C, n);
+    lbl_8055E1C0 = (s32)self;
+    *(s32 *)(self + 0xBC) = n;
+    *(void **)(self + 0xB8) = fn_8002F37C(fn_8012850C(n * 0x12C + 0x10, base + 0x78), (void (*)())fn_8013E6E4, 0, 0x12C, n);
 
     *(s32 *)(self + 0x130) = 0;
     for (s32 off = 0, i = 0; i < *(s32 *)(self + 0xBC); src += 0x78, off += 0x12C, i++) {
