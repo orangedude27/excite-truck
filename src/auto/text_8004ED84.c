@@ -30,8 +30,6 @@ extern void *OSGetArenaHi(void);
 extern void OSSwitchFiber(void *,void *,void *);
 extern void Halt(void);
 extern char OSDefaultExceptionHandler[], lbl_8038E060[], lbl_8038E328[];
-typedef struct FatalBytes4 { unsigned char b[4]; } FatalBytes4;
-typedef struct FatalInfo { FatalBytes4 a; FatalBytes4 b; int c; } FatalInfo;
 // OSFatal()'s three parameters, parked in .sdata and read back by the Halt fiber.
 typedef struct OSFatalParam {
     GXColor textColor;   // at 0x0
