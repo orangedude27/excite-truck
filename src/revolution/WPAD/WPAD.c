@@ -5084,7 +5084,7 @@ void fn_80064278(s32 chan, s32 result) {
         case 1: // force sensor: 0G/1G accelerometer (10 bit) and stick limits
             if (found < 0) {
                 DBPrintf_80068D68(messages + 0x194);
-                cb->extCalib.fs.accX0g = 0x200;
+                cb->extCalib.fs.accX0g = 0x200;  // 1 g at the SDK's neutral reading
                 cb->extCalib.fs.accY0g = 0x200;
                 cb->extCalib.fs.accZ0g = 0x200;
                 cb->extCalib.fs.accX1g = 0x2cc;
@@ -5093,6 +5093,7 @@ void fn_80064278(s32 chan, s32 result) {
             } else {
                 u8* p = (u8*)(found + (s32)data);
                 u8 byte0 = data[found];
+                // the six 10 bit readings: bytes 0-2 hold the low bits, spread over byte 3
                 cb->extCalib.fs.accX0g = (u16)((byte0 << 2) | ((p[3] >> 4) & 3));
                 cb->extCalib.fs.accY0g = (u16)((p[1] << 2) | ((p[3] >> 2) & 3));
                 cb->extCalib.fs.accZ0g = (u16)((p[2] << 2) | (p[3] & 3));
@@ -5111,7 +5112,7 @@ void fn_80064278(s32 chan, s32 result) {
                 DBPrintf_80068D68(messages + 0x230, cb->extCalib.fs.stickYCenter, cb->extCalib.fs.stickYMax, cb->extCalib.fs.stickYMin);
             }
             break;
-        case 2: { // classic controller: four axes as centre/max/min, plus the triggers
+        case 2: { // classic controller: four axes as max/min/centre, plus the triggers
             u8* p = (u8*)(found + (s32)data);
             cb->extCalib.cl.lStickXMax = (s8)data[found];
             cb->extCalib.cl.lStickXMin = (s8)p[1];
