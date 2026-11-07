@@ -460,12 +460,12 @@ extern int lbl_8055F194;
 extern void fn_8023E16C(void *, int);
 extern void fn_8023E0DC(void *, int, int);
 extern int lbl_80563748;
-extern int fn_8022D458(int, int, int *);
+extern void *fn_8022D458(void *, int, int, int *);
 extern int fn_80137C98(int);
 extern int fn_8018108C(void);
 extern void fn_8023E1FC(void *);
 void *fn_8023E078(void *arg0, int arg1) {
-    fn_8022D458(0x12, 2, &lbl_80563748);
+    fn_8022D458(arg0, 0x12, 2, &lbl_80563748);
     *(int *)((char *)arg0 + 0x30) = arg1;
     fn_80137C98(arg1);
     *(int *)((char *)arg0 + 0x34) = fn_8018108C();
