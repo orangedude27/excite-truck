@@ -4,6 +4,7 @@
 typedef unsigned int u32;
 typedef int s32;
 typedef unsigned char u8;
+typedef signed char s8;
 typedef float f32;
 extern void *fn_801E87A8(void);
 extern s32 fn_8026E20C(void);
