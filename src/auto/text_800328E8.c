@@ -14,12 +14,97 @@ extern void DCFlushRange(void *, unsigned int);
 extern int fn_80031248(void);
 extern void *TRKReadBuffer_ui8(int);
 extern void __AXDepopVoice(void *);
+extern void *memcpy(void *, const void *, unsigned int);
 extern void fn_800328F0(void *);
 extern void TRKAppendBuffer(void *);
 void* fn_800328E8(void) {
     return lbl_8055D7E0;
 }
 
+#pragma use_lmw_stmw off
+void fn_80032EAC(int arg0) {
+    unsigned int r29;
+    int i;
+    unsigned char *p;
+
+    lbl_8055D7E0 = 0;
+    DCInvalidateRange(lbl_80363C60, 0x4800);
+    DCInvalidateRange(lbl_8036C460, 0x1000);
+    r29 = (fn_80031248() + 0x10000 + arg0) - 0x55F0;
+    i = 0x1F;
+
+    do {
+        p = (unsigned char *)TRKReadBuffer_ui8(i);
+        while (p != 0) {
+            if (*(int *)(p + 0x20) != 0) {
+                __AXDepopVoice(lbl_80363C60 + *(int *)(p + 0x18) * 0x120);
+            }
+            if (*(unsigned short *)(p + 0x148) == 1 || *(int *)(p + 0x28) != 0) {
+                if (*(unsigned short *)(p + 0x140) != 2) {
+                    unsigned int v = __rlwimi(*(unsigned short *)(p + 0x1EA), *(unsigned short *)(p + 0x1E8), 16, 0, 15);
+                    r29 += ((((v * 0x84) + 0x8000) >> 16) + 0x2D8) * 6;
+                }
+                if (*(unsigned short *)(p + 0x1FC) != 0) {
+                    r29 += 0x22B;
+                }
+                if (*(unsigned short *)(p + 0x204) != 0) {
+                    r29 += 0x22B;
+                }
+                {
+                    unsigned int t = *(unsigned int *)(p + 0x144);
+                    unsigned int sum = lbl_802FED20[(t >> 21) & 0x1F] + lbl_802FED20[t & 0x1F];
+                    r29 = sum
+                        + lbl_802FED20[(t >> 16) & 0x1F]
+                        + (lbl_802FED20[(t >> 26) & 0x1F] + r29)
+                        + 0x8C;
+                }
+                if (lbl_8055D7E8 > r29) {
+                    fn_800328F0(p);
+                } else {
+                    unsigned char *vpb = lbl_80363C60 + *(int *)(p + 0x18) * 0x120;
+                    if (*(unsigned short *)(vpb + 0x10) == 1) {
+                        __AXDepopVoice(vpb);
+                    }
+                    *(short *)(vpb + 0x56) = 0;
+                    *(short *)(vpb + 0x54) = 0;
+                    *(short *)(vpb + 0x52) = 0;
+                    *(short *)(vpb + 0x10) = 0;
+                    *(unsigned short *)(p + 0x148) = 0;
+                    TRKAppendBuffer(p);
+                }
+            } else {
+                fn_800328F0(p);
+            }
+            *(int *)(p + 0x1C) = 0;
+            *(int *)(p + 0x20) = 0;
+            *(int *)(p + 0x28) = 0;
+            *(int *)(p + 0x24) = 0;
+            *(void **)(p + 0x30) = (void *)(p + 0x34);
+            p = *(unsigned char **)p;
+        }
+    } while (--i != 0);
+
+    lbl_8055D7E4 = r29;
+    {
+        unsigned char *p2 = (unsigned char *)TRKReadBuffer_ui8(0);
+        while (p2 != 0) {
+            if (*(int *)(p2 + 0x20) != 0) {
+                __AXDepopVoice(lbl_80363C60 + *(int *)(p2 + 0x18) * 0x120);
+            }
+            *(int *)(p2 + 0x20) = 0;
+            *(short *)(lbl_80363C60 + *(int *)(p2 + 0x18) * 0x120 + 0x56) = 0;
+            *(short *)(lbl_80363C60 + *(int *)(p2 + 0x18) * 0x120 + 0x54) = 0;
+            *(short *)(lbl_80363C60 + *(int *)(p2 + 0x18) * 0x120 + 0x52) = 0;
+            *(short *)(lbl_80363C60 + *(int *)(p2 + 0x18) * 0x120 + 0x10) = 0;
+            p2 = *(unsigned char **)p2;
+        }
+    }
+
+    DCFlushRange(lbl_80363C60, 0x4800);
+    DCFlushRange(lbl_8036C460, 0x1000);
+    DCFlushRange(lbl_80368460, 0x4000);
+}
+#pragma use_lmw_stmw reset
 void *__AXFXGetLfoSinTable_8003313C(void) { return lbl_80363C60; }
 
 void fn_80033148(void *arg0) {
