@@ -5,6 +5,31 @@
 #include <types.h>
 extern void fn_8028C8BC(void);
 
+struct Vec3i { s32 a, b, c; };
+extern f32 fn_801E7E24(void);
+extern s32 fn_80287B5C(s32);
+extern f32 fn_80287BC8(f32, f32);
+extern void PSVECNormalize(f32 *, f32 *);
+extern f64 fabs(f64);
+extern f32 lbl_80558DC4[];
+extern f32 lbl_80564328, lbl_8056432C, lbl_80564334, lbl_80564338, lbl_8056433C;
+extern f32 lbl_80564340, lbl_80564344, lbl_80564348, lbl_80564350, lbl_80564354;
+extern f32 lbl_80564358, lbl_8056435C, lbl_80564360;
+#define FLD(p, off) (*(f32 *)((u8 *)(p) + (off)))
+
+static inline void XfmVec(f32 *m, f32 *src, f32 *dst) {
+    if (src == dst) {
+        f32 x = src[0], y = src[1], z = src[2];
+        dst[0] = z * m[6] + (x * m[0] + y * m[3]);
+        dst[1] = z * m[7] + (x * m[1] + y * m[4]);
+        dst[2] = z * m[8] + (x * m[2] + y * m[5]);
+    } else {
+        dst[0] = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
+        dst[1] = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
+        dst[2] = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
+    }
+}
+
 extern s32 fn_8012850C(s32, void *, s32);
 extern s32 fn_8002F37C(void *, s32, s32, s32);
 extern s32 fn_802CAC28(void *, s32);
@@ -375,9 +400,101 @@ extern "C" f32 fn_80287BC8(f32, f32);
 extern "C" void fn_8028BED4(void *, s32, void *, void *, f32);
 extern void *fn_80287B24(s32);
 extern f32 lbl_8056432C, lbl_80564330, lbl_80564348, lbl_8056434C, lbl_80564364, lbl_8056436C, lbl_80564370, lbl_80564374, lbl_80564378, lbl_8056437C, lbl_80564380, lbl_80564384, lbl_80564388, lbl_8056438C, lbl_80564390, lbl_80564394, lbl_80564398;
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 #pragma cplusplus on
-s32 fn_8028B500(void *arg0) { return arg0 ? 0x38 : 0; }
-#pragma cplusplus off
+extern "C" s32 fn_8028B500(void *arg0) {
+    class Emitter {
+    public:
+        virtual void m0();
+        virtual void m1();
+        virtual void m2();
+        virtual void m3();
+        virtual void emit(void *, f32 *, s32, s32);
+    };
+    register f32 *a = (f32 *)arg0;
+    s32 kind;
+    f32 magnitude = PSVECMag(a + 6);
+    f32 raw = lbl_80564374 * magnitude;
+    register s32 count;
+    s32 clipped;
+    s16 param;
+        f32 up, amount, spread, limit, dot, factor, scale, zero, x, y, z, p, q, r;
+    f32 v[3], dir[3], w[3];
+    Emitter *emitter;
+    clipped = (s32)raw;
+    if (clipped < 0) clipped = 0;
+    count = clipped < 0x60 ? clipped : 0x60;
+    param = *(s16 *)((u8 *)fn_80287B24(*(s32 *)((u8 *)arg0 + 0x30)) + 0x30);
+    if (count > 0) {
+        s32 i, n;
+        amount = lbl_80564378 * magnitude;
+        up = lbl_8056437C;
+        up = up < amount ? up : amount;
+        up = up > lbl_80564348 ? up : lbl_80564348;
+        spread = lbl_80564364;
+        if (amount < spread) spread = amount;
+        kind = *(s32 *)((u8 *)arg0 + 0x34);
+        limit = lbl_8056434C;
+        if (kind == 0x6e || kind < 8) limit = lbl_80564380;
+        zero = lbl_8056434C;
+        for (i = 0; i < count; i++) {
+            scale = fn_80287BC8(lbl_80564384, lbl_8056432C);
+            x = a[0] * scale; y = a[1] * scale; z = a[2] * scale;
+            v[0] = x; v[1] = y; v[2] = z;
+            v[0] += fn_80287BC8(-spread, spread);
+            v[1] += up + fn_80287BC8(lbl_80564388, lbl_80564330);
+            v[2] += fn_80287BC8(-spread, spread);
+            dot = PSVECDotProduct(a + 9, v);
+            factor = -dot + fn_80287BC8(lbl_8056436C, lbl_80564348);
+            if (limit < factor) factor = limit;
+            factor = factor > zero ? factor : zero;
+            p = a[9] * factor; x = v[0]; q = a[10] * factor; r = a[11] * factor; y = v[1]; z = v[2];
+            x += p; y += q; z += r;
+            v[0] = x; v[1] = y; v[2] = z;
+            ((Emitter *)lbl_8055F6FC)->emit(a + 3, v, param, *(s32 *)((u8 *)arg0 + 0x30));
+        }
+        n = (s32)(lbl_80564370 * (f32)count);
+        amount = amount < lbl_8056438C ? amount : lbl_8056438C;
+        x = a[0] * lbl_80564390;
+        y = a[1] * lbl_80564390;
+        z = a[2] * lbl_80564390;
+        dir[0] = x;
+        dir[2] = z;
+        dir[1] = y + lbl_80564390 * amount;
+        fn_8028BED4((void *)lbl_8055F6F0, n, a + 3, dir, amount);
+        fn_8028BED4((void *)lbl_8055F6F4, n, a + 3, dir, amount);
+    }
+    kind = *(s32 *)((u8 *)arg0 + 0x34);
+    if (kind >= 0 && kind < 8) {
+        emitter = *(Emitter **)((u8 *)lbl_804B3238 + kind * 0x10);
+        if (emitter) {
+            s32 i, n;
+            f32 zero2, spread2;
+            spread2 = lbl_80564378 * magnitude;
+            n = count / 3;
+            spread2 = spread2 < lbl_80564394 ? spread2 : lbl_80564394;
+            zero2 = lbl_8056434C;
+            for (i = 0; i < n; i++) {
+                scale = fn_80287BC8(lbl_80564384, lbl_8056432C);
+                x = a[0] * scale; y = a[1] * scale; z = a[2] * scale;
+                w[0] = x; w[1] = y; w[2] = z;
+                w[0] += fn_80287BC8(-spread2, spread2);
+                w[1] += fn_80287BC8(lbl_80564388, lbl_80564330);
+                w[2] += fn_80287BC8(-spread2, spread2);
+                factor = -PSVECDotProduct(a + 9, w);
+                if (zero2 > factor) factor = zero2;
+                p = a[9] * factor; x = w[0]; q = a[10] * factor; r = a[11] * factor; y = w[1]; z = w[2];
+                x += p; y += q; z += r;
+                w[0] = x; w[1] = y; w[2] = z;
+                emitter->emit(a + 3, w, param, *(s32 *)((u8 *)arg0 + 0x30));
+            }
+        }
+    }
+    return 0x38;
+}
+#pragma pop
 
 extern f32 PSVECMag(f32 *);
 extern f32 fn_80287BC8(f32, f32);
