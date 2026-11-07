@@ -24,7 +24,7 @@ extern void *fn_80131808(void);
 extern void fn_80131818(void *);
 extern s32 fn_80137C74(void);
 extern void *fn_802077A4(void *, s32, void *, void *);
-extern void *fn_80207848(s32);
+extern void *fn_80207848(void *, s32);
 extern void fn_802E30C8(const char *, ...);
 extern void fn_80209904(void);
 extern u8 lbl_8033C1E0[], lbl_8033C1F0[], lbl_8033C1FC[], lbl_8033C208[];
