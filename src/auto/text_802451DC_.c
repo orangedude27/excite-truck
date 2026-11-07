@@ -75,7 +75,17 @@ int fn_802452E4(void *arg0) {
 #pragma push
 #pragma processor 750
 extern int lbl_8055CFF0, lbl_8055CFF4, lbl_8055FB9C, lbl_8055FBA0;
-extern float lbl_80563834, lbl_80563838, lbl_8056383C, lbl_80563840, lbl_80563844, lbl_80563848, lbl_8056384C, lbl_80563850, lbl_80563854, lbl_80563858, lbl_8056385C, lbl_80563888, lbl_8056388C, lbl_80563890;
+extern float lbl_80563834, lbl_80563838, lbl_8056383C, lbl_80563840, lbl_80563844, lbl_80563848, lbl_8056384C, lbl_80563850, lbl_80563854, lbl_80563858, lbl_8056385C, lbl_80563860, lbl_80563864, lbl_80563868, lbl_8056386C, lbl_80563870, lbl_80563874, lbl_80563878, lbl_8056387C, lbl_80563888, lbl_8056388C, lbl_80563890;
+extern char lbl_80343080[];
+extern char lbl_8055BE50, lbl_8055BE58, lbl_8055BE5C;
+extern int fn_80129AFC(void);
+extern int fn_802E47B8(void);
+extern int fn_802E46F0(void);
+extern int fn_802E2D74(int);
+extern int fn_802E2C20(void);
+extern double sin(double);
+extern void fn_802C5310(int, int, float, float, float);
+extern void fn_802337A0(int, int, int, void *, void *, ...);
 extern float lbl_80558DC4[];
 extern char lbl_8055BE60, lbl_8055BE64;
 extern void fn_802C8530(void);
@@ -112,7 +122,7 @@ void fn_8024590C(int *a, int *b) {
     char text[0x200];
     char *s, *split, *p;
     int i, j, n, save;
-    float y, w, h, f, x0, x1, limit, shadow, step;
+    float step, shadow, limit, y, h, w, f, x1, x0;
     fn_802C8530();
     fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
     fn_802C88BC(2);
@@ -172,10 +182,10 @@ void fn_8024590C(int *a, int *b) {
         y -= step;
     }
     f = ((float *)b)[2];
-    if (!((float)__fabs(f) <= *(float *)&lbl_80558DC4)) {
-        strcpy(tail, (char *)&lbl_8055BE60);
+    if (!((float)__fabs(f) <= lbl_80558DC4[0])) {
+        strcpy(tail, &lbl_8055BE60);
         n = (int)(lbl_80563888 * f);
-        for (i = 0; i < n; i++) fn_80028E00(tail, (char *)&lbl_8055BE64);
+        for (i = 0; i < n; i++) fn_80028E00(tail, &lbl_8055BE64);
         fn_802335F0(tail, a[4], lbl_8056388C, lbl_80563890);
     }
     fn_802C9A70(1);
