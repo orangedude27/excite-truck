@@ -16,6 +16,20 @@ struct Parser {
     virtual void slot11();
     virtual int getFlag(const char *, int);
 };
+// Same object seen through a vtable without the two leading destructor slots.
+struct Parser2 {
+    virtual void m0();
+    virtual int has(const char *);
+    virtual void m2();
+    virtual const char *getString(const char *);
+    virtual void m4();
+    virtual void m5();
+    virtual void m6();
+    virtual float getFloat(const char *);
+    virtual float getFloatDef(const char *, float);
+    virtual void m9();
+    virtual int getFlag(const char *, int);
+};
 struct Manager {
     virtual void v0() = 0;
     virtual void v1() = 0;
@@ -1078,6 +1092,107 @@ extern "C" int fn_80272C74(void *arg0, void *arg1, float *arg2, int arg3) {
     }
     return result;
 }
+
+#pragma cplusplus on
+extern "C" char lbl_8055C5BC[];
+extern "C" char lbl_8055C5C0[];
+extern "C" char lbl_8055C5C4[];
+extern "C" char lbl_8055C5C8[];
+extern "C" char lbl_8055C5D0[];
+extern "C" char lbl_8055C5D8[];
+extern "C" char lbl_8055C5E0[];
+extern "C" char lbl_8055C5E8[];
+extern "C" char lbl_8055C5F0[];
+extern "C" char lbl_8055C5F8[];
+extern "C" char lbl_8055C600[];
+extern "C" char lbl_8055C608[];
+extern "C" char lbl_8055C60C[];
+extern "C" char lbl_8055C610[];
+extern "C" char lbl_8055C614[];
+extern "C" char lbl_8055C61C[];
+extern "C" char lbl_8055C624[];
+extern "C" char lbl_8055C62C[];
+extern "C" float lbl_80563F94;
+extern "C" float lbl_80563F98;
+extern "C" float lbl_80563F50;
+extern "C" int fn_80272DCC(void *arg0, Parser *arg1) {
+    char *name = lbl_80346B00;
+    Parser *p = arg1;
+    char *o = (char *)arg0;
+    int a, b, c, d;
+    unsigned char flags;
+
+    if (p->has(lbl_8055C5BC) == 0) return 0;
+    if (p->has(lbl_8055C5C0) == 0) return 0;
+    if (p->has(lbl_8055C5C4) == 0) return 0;
+    if (p->has(lbl_8055C5C8) == 0 && p->has(lbl_8055C5D0) == 0) return 0;
+    if (p->has(lbl_8055C5D8) == 0) return 0;
+
+    *(float *)o = p->getFloat(lbl_8055C5BC);
+    *(float *)(o + 4) = p->getFloat(lbl_8055C5C0);
+    *(float *)(o + 8) = p->getFloat(lbl_8055C5C4);
+    if (p->has(lbl_8055C5D0) != 0) {
+        *(float *)(o + 0x18) = p->getFloat(lbl_8055C5D0);
+    } else {
+        *(float *)(o + 0x18) = lbl_80563F94 * p->getFloat(lbl_8055C5C8);
+    }
+    *(int *)(o + 0x58) = fn_80271FAC(p->getString(lbl_8055C5D8));
+    *(float *)(o + 0xC) = p->getFloatDef(lbl_8055C5E0, lbl_80563F48);
+    *(float *)(o + 0x10) = p->getFloatDef(lbl_8055C5E8, lbl_80563F48);
+    *(float *)(o + 0x14) = p->getFloatDef(lbl_8055C5F0, lbl_80563F50);
+    a = p->getFlag(name + 0x690, 0);
+    b = p->getFlag(lbl_8055C5F8, 0);
+    c = p->getFlag(lbl_8055C600, 0);
+    d = p->getFlag(name + 0x69C, 0);
+    flags = a | (((-b | b) >> 31) & 2) | (((-c | c) >> 31) & 4) | (((-d | d) >> 31) & 8);
+    *(unsigned char *)(o + 0x1D) = flags;
+    switch (*(int *)(o + 0x58)) {
+    case 13:
+        *(unsigned char *)(o + 0x1D) = flags | 2;
+        *(int *)(o + 0x58) = 1;
+        break;
+    case 14:
+        *(int *)(o + 0x58) = 2;
+        *(unsigned char *)(o + 0x1D) = flags | 2;
+        break;
+    case 15:
+        *(unsigned char *)(o + 0x1D) = flags | 2;
+        *(int *)(o + 0x58) = 3;
+        break;
+    case 12:
+        *(unsigned char *)(o + 0x1D) = flags | 4;
+        *(int *)(o + 0x58) = 0;
+        break;
+    }
+    if (p->has(lbl_8055C608) != 0 && p->has(lbl_8055C60C) != 0 && p->has(lbl_8055C610) != 0) {
+        *(unsigned char *)(o + 0x1C) = 1;
+        *(float *)(o + 0x20) = *(float *)o;
+        *(float *)(o + 0x24) = *(float *)(o + 4);
+        *(float *)(o + 0x28) = *(float *)(o + 8);
+        *(float *)(o + 0x38) = *(float *)(o + 0xC);
+        *(float *)(o + 0x3C) = *(float *)(o + 0x10);
+        *(float *)(o + 0x40) = *(float *)(o + 0x14);
+        *(float *)(o + 0x50) = *(float *)(o + 0x18);
+        *(float *)(o + 0x2C) = p->getFloatDef(lbl_8055C608, *(float *)o);
+        *(float *)(o + 0x30) = p->getFloatDef(lbl_8055C60C, lbl_80563F98 + *(float *)(o + 4));
+        *(float *)(o + 0x34) = p->getFloatDef(lbl_8055C610, *(float *)(o + 8));
+        if (p->has(name + 0x6A8) != 0) {
+            *(float *)(o + 0x54) = p->getFloat(name + 0x6A8);
+        } else if (p->has(lbl_8055C614) != 0) {
+            *(float *)(o + 0x54) = lbl_80563F94 * p->getFloat(lbl_8055C614);
+        } else {
+            *(float *)(o + 0x54) = *(float *)(o + 0x50);
+        }
+        *(float *)(o + 0x44) = p->getFloatDef(lbl_8055C61C, *(float *)(o + 0x38));
+        *(float *)(o + 0x48) = p->getFloatDef(lbl_8055C624, *(float *)(o + 0x3C));
+        *(float *)(o + 0x4C) = p->getFloatDef(lbl_8055C62C, *(float *)(o + 0x40));
+    } else {
+        *(unsigned char *)(o + 0x1C) = 0;
+    }
+    return 1;
+}
+#pragma cplusplus reset
+
 #pragma pop
 #pragma cplusplus reset
 
