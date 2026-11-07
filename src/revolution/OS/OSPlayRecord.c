@@ -69,6 +69,9 @@ static void PlayRecordAlarmCallback(OSAlarm* alarm, OSContext* ctx) {
     PlayRecordCallback(NAND_RESULT_OK, NULL);
 }
 
+/* NAND async completion handler for the play-record log: advances the
+   open/read/seek/write/close state machine, retries busy NAND operations via
+   PlayRecordAlarmCallback, and records the last NAND status. */
 static void PlayRecordCallback(s32 result, NANDCommandBlock* block) {
 #pragma unused(block)
     s32 error = NAND_RESULT_OK;
