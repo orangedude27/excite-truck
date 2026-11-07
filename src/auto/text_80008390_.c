@@ -44,20 +44,18 @@ void fn_80008390(void) {
     }
 }
 
+#pragma scheduling invalid_target
 s32 fn_800085D8(s32 arg0) {
-    s32 *entry = *(s32 **)&lbl_8034F3D0;
-    s32 count = *(s32 *)((char *)&lbl_8034F3D0 + 4);
     s32 i;
-
-    if (count > 0) {
-        for (i = 0; i < count; i++, entry++) {
-            if (arg0 == *entry)
-                return 1;
-        }
+    s32 *data = lbl_8034F3D0.data;
+    s32 count = lbl_8034F3D0.count;
+    for (i = 0; i < count; i++) {
+        if (arg0 == data[i])
+            return 1;
     }
     return 0;
 }
-
+#pragma scheduling on
 void fn_80008618(s32 arg0) {
     s32 value = fn_8026E20C();
     s32 result = value | arg0;
