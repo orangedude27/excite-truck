@@ -164,7 +164,7 @@ void fn_8018C5A0(char *arg0, char *arg1) {
 
     memset(arg0 + 0x152C, 0, 0x900);
     f31 = lbl_80561F74;
-    p19 = &lbl_80332758 + 0xE8;
+    p19 = (char *)&lbl_80332758 + 0xE8;
     f30 = lbl_80561F78;
     p20 = arg0 + 0x152C;
     for (i = 0; i < 0x11; i++, p19 += 0x40, p20 += 0x80) {
