@@ -90,6 +90,19 @@ struct Entry20F4 {
     f32 f8;
     f32 fC;
 };
+struct LayoutStrings {
+    char travel_min[0xC];
+    char travel_max[0xC];
+    char link_center[0xC];
+    char is_welded[0xC];
+    char weakness[0xC];
+    char dmg_dist[0xC];
+    char warn_bad_bone[0x3C];
+    char bone_conn[0x14];
+    char link_out_of_range[0x24];
+    char wheel[0xC];
+    char warn_no_bone[0x2C];
+};
 #pragma cplusplus reset
 
 s32 fn_80278A1C(void) {
@@ -127,38 +140,60 @@ extern "C" void fn_80278A28(void* arg0) {
 #pragma cplusplus on
 extern "C" void fn_80278A64(void* object_arg, void* file_arg, void* file2_arg, s32 name_arg) {
     char* base = lbl_80347690;
-    u8* object = (u8*)object_arg;
     File_80279004* file = (File_80279004*)file_arg;
+    u8* object = (u8*)object_arg;
+    Res_80279004* res2;
+    Res_80279004* res;
+    Element_80278A64* elem;
+    s32 i;
+    s32 name = name_arg;
     File_80279004* file2 = (File_80279004*)file2_arg;
+    char boneName[0x20];
+    char wheelName[0x20];
+    struct Keys { const char* k[4]; } keys;
+    Vec3_80279004 v1;
+    Vec3_80279004 v2;
+    Vec3_80279004 v3;
     if (file != NULL) {
         f32 scale = lbl_805640CC;
         *(s32*)(object + 0) = 0;
+        elem = (Element_80278A64*)(object + 0x38);
+        i = 1;
         *(s32*)(object + 4) = 0;
-        Element_80278A64* elem = (Element_80278A64*)(object + 0x38);
-        elem->id = 1;
+        elem->id = i;
 
-        for (s32 i = 1; i < 0xA2; i++, elem++) {
-            char boneName[0x20];
+        for (; i < 0xA2; i++, elem++) {
             sprintf(boneName, lbl_8055C678, i);
             if (file->hasRes(boneName)) {
-                Res_80279004* res = file->getRes(boneName);
+                res = file->getRes(boneName);
                 *(s32*)object = i + 1;
-                Res_80279004* res2 = res;
-                if (file2 != NULL && file2->hasRes(boneName)) {
-                    res2 = file2->getRes(boneName);
+                res2 = res;
+                if (file2 != NULL) {
+                    if (file2->hasRes(boneName)) {
+                        res2 = file2->getRes(boneName);
+                    }
                 }
                 if (res != NULL) {
-                    elem->v1 = res2->getVec(base + 0x0);
+                    v1 = res2->getVec(base + 0x0);
+                    elem->v1.x = v1.x;
+                    elem->v1.y = v1.y;
+                    elem->v1.z = v1.z;
                     elem->v1.x *= scale;
                     elem->v1.y *= scale;
                     elem->v1.z *= scale;
 
-                    elem->v2 = res2->getVec(base + 0xC);
+                    v2 = res2->getVec(base + 0xC);
+                    elem->v2.x = v2.x;
+                    elem->v2.y = v2.y;
+                    elem->v2.z = v2.z;
                     elem->v2.x *= scale;
                     elem->v2.y *= scale;
                     elem->v2.z *= scale;
 
-                    elem->v3 = res2->getVec(base + 0x18);
+                    v3 = res2->getVec(base + 0x18);
+                    elem->v3.x = v3.x;
+                    elem->v3.y = v3.y;
+                    elem->v3.z = v3.z;
                     elem->v3.x *= scale;
                     elem->v3.y *= scale;
                     elem->v3.z *= scale;
@@ -167,20 +202,19 @@ extern "C" void fn_80278A64(void* object_arg, void* file_arg, void* file2_arg, s
                     elem->f2C = res->getFloat(base + 0x30);
                     elem->f28 = res->getFloatDefault(base + 0x3C, lbl_805640D0);
                 } else {
-                    fn_802E30C8(base + 0x48, name_arg, i);
+                    fn_802E30C8(base + 0x48, name, i);
                     fn_80278A28(elem);
                 }
             } else {
-                fn_802E30C8(base + 0x48, name_arg, i);
+                fn_802E30C8(base + 0x48, name, i);
                 fn_80278A28(elem);
             }
         }
 
         *(s32*)(object + 0x20F0) = 0;
-        s32 j = 0;
-        Res_80279004* child;
-        while ((child = file->getChild(j++)) != NULL) {
-            if (stricmp(child->getName(), lbl_8055C680) == 0) {
+        i = 0;
+        while ((res = file->getChild(i++)) != NULL) {
+            if (stricmp(res->getName(), lbl_8055C680) == 0) {
                 *(s32*)(object + 0x20F0) += 1;
             }
         }
@@ -188,8 +222,9 @@ extern "C" void fn_80278A64(void* object_arg, void* file_arg, void* file2_arg, s
         *(void**)(object + 0x20EC) = fn_8012850C(*(s32*)(object + 0x20F0) * 0x14, base + 0x84);
         *(s32*)(object + 0x20F0) = 0;
 
-        j = 0;
-        while ((child = file->getChild(j++)) != NULL) {
+        i = 0;
+        Res_80279004* child;
+        while ((child = file->getChild(i++)) != NULL) {
             if (stricmp(child->getName(), lbl_8055C680) == 0) {
                 s32 idx = *(s32*)(object + 0x20F0);
                 *(s32*)(object + 0x20F0) = idx + 1;
@@ -208,15 +243,17 @@ extern "C" void fn_80278A64(void* object_arg, void* file_arg, void* file2_arg, s
             }
         }
 
-        struct Keys { const char* k[4]; };
-        Keys keys = *(Keys*)lbl_802FA838;
+        const char* const* tbl = lbl_802FA838;
+        keys.k[0] = tbl[0];
+        keys.k[1] = tbl[1];
+        keys.k[2] = tbl[2];
+        keys.k[3] = tbl[3];
         const char** key_ptr = keys.k;
         Entry20F4* entry20F4 = (Entry20F4*)(object + 0x20F4);
-        for (s32 k = 0; k < 4; k++, key_ptr++, entry20F4++) {
-            char wheelName[0x20];
+        for (i = 0; i < 4; i++, key_ptr++, entry20F4++) {
             sprintf(wheelName, base + 0xBC, *key_ptr);
             Res_80279004* wres = file->hasRes(wheelName) ? file->getRes(wheelName) : NULL;
-            memset(entry20F4, 0, 0x10);
+            memset(entry20F4, 0, sizeof(Entry20F4));
             if (wres != NULL) {
                 entry20F4->id = wres->getInt(lbl_8055C6A8);
                 entry20F4->f4 = wres->getFloatDefault(lbl_8055C6B0, lbl_805640C4);
@@ -226,7 +263,7 @@ extern "C" void fn_80278A64(void* object_arg, void* file_arg, void* file2_arg, s
         }
         return;
     }
-    fn_802E30C8(base + 0xC8, name_arg);
+    fn_802E30C8(base + 0xC8, name);
     memset(object + 4, 0, 0x20E8);
     *(s32*)(object + 0x20F0) = 0;
     memset(object + 0x20F4, 0, 0x40);
