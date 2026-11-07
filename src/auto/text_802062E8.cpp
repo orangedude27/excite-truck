@@ -324,85 +324,83 @@ extern "C" void fn_80206750(void *arg0, int arg1, int arg2) {
 }
 
 #pragma scheduling invalid_target
-extern "C" void fn_802067C8(void *arg0) {
-    struct Obj { virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); };
+extern "C" void fn_802067C8(void *arg0, void *arg1, int arg2) {
+    struct Obj { virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(void *, int); };
     int fieldEmpty = !*(int *)((u8 *)arg0 + 0x44);
-    u8 result = (u8)(*(u8 *)((u8 *)arg0 + 0x19) != 0 &&
-        (*(float *)((u8 *)arg0 + 8) > lbl_80563200 || fieldEmpty));
-    *(u8 *)((u8 *)arg0 + 0x18) = result;
-    if (result)
-        ((Obj *)arg0)->f3();
+    if ((*(u8 *)((u8 *)arg0 + 0x18) = (*(u8 *)((u8 *)arg0 + 0x19) != 0 &&
+        (*(float *)((u8 *)arg0 + 8) > lbl_80563200 || fieldEmpty)))) {
+        ((Obj *)arg0)->f3(arg1, arg2);
+    }
 }
 #pragma scheduling on
 extern "C" void fn_80206820(void) {
 }
 
 extern "C" void fn_80206824(void *arg0, int arg1, int arg2) {
-    struct Obj {
-        virtual int f0(); virtual int f1(); virtual int f2(); virtual int f3();
-        virtual int f4(); virtual int f5(); virtual int f6(); virtual int f7();
-        virtual int f8(); virtual int f9(); virtual int f10(); virtual int f11();
-        virtual int f12(); virtual int f13(); virtual int f14();
-    };
     struct Callback {
         virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
-        virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
+        virtual void f4(); virtual void f5(); virtual void f6(); virtual int f7();
         virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
         virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15();
         virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19();
-        virtual void f20(); virtual void f21(); virtual void f22(); virtual void f23();
-        virtual void f24(); virtual void f25(); virtual void f26(void *);
+        virtual void f20(); virtual void f21(void *);
     };
+    struct Parent { virtual void f0(); virtual void f1(int, int); };
     extern int lbl_8055D430;
-    int state = ((Obj *)*(void **)((char *)arg0 + 0xC))->f8();
-    *(u8 *)((char *)arg0 + 0x19) = 1;
-    if (state == 2) {
-        if (!*((u8 *)arg0 + 0x48)) {
-            if (*((u8 *)arg0 + 0x4A))
-                ((Callback *)*(void **)((char *)arg0 + 0xC))->f10();
-            else
-                ((Callback *)*(void **)((char *)arg0 + 0xC))->f15();
+    u8 *self = (u8 *)arg0;
+#define CB (*(Callback **)(self + 0xC))
+    int state = CB->f7();
+    self[0x19] = 1;
+    switch (state) {
+    case 1:
+        if (self[0x4A]) {
+            CB->f6();
+        } else if (self[0x48]) {
+            CB->f8();
+        } else if (self[0x4C]) {
+            self[0x4C] = 0;
+            CB->f6();
         }
-    } else if (state < 2) {
-        if (state >= 1) {
-            if (*((u8 *)arg0 + 0x4A))
-                ((Callback *)*(void **)((char *)arg0 + 0xC))->f10();
-            else if (*((u8 *)arg0 + 0x48))
-                ((Callback *)*(void **)((char *)arg0 + 0xC))->f14();
-            else if (*((u8 *)arg0 + 0x4C)) {
-                *((u8 *)arg0 + 0x4C) = 0;
-                ((Callback *)*(void **)((char *)arg0 + 0xC))->f10();
-            }
-        }
-    } else if (state < 4) {
-        if (*((u8 *)arg0 + 0x49)) {
-            int ok = 0;
+        break;
+    case 3:
+        if (self[0x49]) {
+            bool ok = false;
             if ((lbl_8055D430 & 1) && (lbl_8055D430 & 0x200))
-                ok = 1;
-            if (ok && *(int *)((char *)arg0 + 0x44) != 0)
+                ok = true;
+            if (ok && *(int *)(self + 0x44) != 0)
                 goto skip;
-            *((u8 *)arg0 + 0x49) = 0;
-            if (*((u8 *)arg0 + 0x4B))
-                ((Callback *)*(void **)((char *)arg0 + 0xC))->f9();
-            else
-                ((Callback *)*(void **)((char *)arg0 + 0xC))->f8();
+            {
+                u8 flag = self[0x4B];
+                self[0x49] = 0;
+                if (flag)
+                    CB->f5();
+                else
+                    CB->f4();
+            }
         } else {
 skip:
-            *((u8 *)arg0 + 0x19) = 0;
+            self[0x19] = 0;
         }
-        if (*((u8 *)arg0 + 0x48))
-            ((Callback *)*(void **)((char *)arg0 + 0xC))->f14();
+        if (self[0x48])
+            CB->f8();
+        break;
+    case 2:
+        if (!self[0x48]) {
+            if (self[0x4A])
+                CB->f6();
+            else
+                CB->f9();
+        }
+        break;
     }
-    if (state == 2 && !*((u8 *)arg0 + 0x48) && !*((u8 *)arg0 + 0x4A))
-        ((Callback *)*(void **)((char *)arg0 + 0xC))->f15();
-    if (*(int *)((char *)arg0 + 0x50)) {
-        ((Callback *)*(void **)((char *)arg0 + 0xC))->f26((char *)arg0 + 0x50);
-        *(int *)((char *)arg0 + 0x50) = 0;
+    if (*(int *)(self + 0x50)) {
+        CB->f21(self + 0x50);
+        *(int *)(self + 0x50) = 0;
     }
-    if (!*((u8 *)arg0 + 0x48)) {
-        struct Parent { virtual void f0(); virtual void f1(); virtual void f2(int, int); };
-        ((Parent *)arg0)->f2(arg1, arg2);
+    if (!self[0x48]) {
+        ((Parent *)arg0)->f1(arg1, arg2);
     }
+#undef CB
 }
 
 extern "C" void fn_80206A5C(void* arg0) {
