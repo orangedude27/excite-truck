@@ -2142,11 +2142,8 @@ extern "C" s32 GetSoundPlayer__Q36nw4hbm3snd18SoundArchivePlayerFUl(void *arg0, 
         void *players;
     };
     SoundArchivePlayer *self = (SoundArchivePlayer *)arg0;
-    register u32 playerCount;
-
-    playerCount = self->playerCount;
-    if (arg1 >= playerCount) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x2B2, lbl_803250C8, arg1, 0);
+    if (arg1 >= self->playerCount) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x2B2, lbl_803250C8, arg1, 0, self->playerCount);
     }
     return (s32)((u8 *)self->players + arg1 * 0x48);
 }
