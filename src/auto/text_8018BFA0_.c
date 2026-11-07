@@ -109,10 +109,7 @@ extern float PSQUATMultiply(void *, void *);
 extern float lbl_80562038;
 extern float lbl_8056203C;
 extern float lbl_80562040;
-#pragma push
-#pragma small_data off
-extern char lbl_80332758;
-#pragma pop
+extern char lbl_80332758[];
 typedef struct { char b[0x290]; } Blob290_8018;
 typedef struct { float a, b; int c, d; unsigned char e[18]; } Blob22_8018;
 extern float lbl_80561F78, lbl_80561F7C, lbl_80561F80, lbl_80561F84;
