@@ -934,7 +934,7 @@ s16 fn_802B6ED8(s32 arg0, s32 arg1, u32 arg2) {
 extern void fn_80204048();
 extern void fn_8020404C(void);
 #pragma push
-#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_802B6F34(void *arg0, void *arg1, void (*arg2)(s16, s16, u8)) {
     f32 sp[4];
     f32 x, y, adjusted;
@@ -950,8 +950,8 @@ void fn_802B6F34(void *arg0, void *arg1, void (*arg2)(s16, s16, u8)) {
         else
             adjusted = lbl_80564C78 + x;
         rounded = (s32)adjusted;
-        scale = fn_802B6E30();
-        xBase = (s16)rounded & ~(scale - 1);
+        scale = fn_802B6E30() - 1;
+        xBase = (s16)rounded & ~scale;
 
         y = *(f32 *)((u8 *)arg0 + 8) / lbl_80564C58;
         if (y < lbl_80564C74)
@@ -959,10 +959,10 @@ void fn_802B6F34(void *arg0, void *arg1, void (*arg2)(s16, s16, u8)) {
         else
             adjusted = lbl_80564C78 + y;
         rounded = (s32)adjusted;
-        scale = fn_802B6E30();
+        scale = fn_802B6E30() - 1;
+        yBase = (s16)rounded & ~scale;
         width = lbl_8055CEA0 * *(u32 *)((u8 *)arg1 + 0x20);
         height = lbl_8055CEA0 * *(u32 *)((u8 *)arg1 + 0x24);
-        yBase = (s16)rounded & ~(scale - 1);
         if (lbl_8055FA38 == 5) {
             f32 temp = lbl_80564C58 * (f32)fn_802B6ED8(yBase, 0, height);
             f32 raw = (f32)fn_802B6E7C(xBase, 0, width);
@@ -980,21 +980,22 @@ void fn_802B6F34(void *arg0, void *arg1, void (*arg2)(s16, s16, u8)) {
                 s16 xCoord = fn_802B6E7C(xBase, row, width);
                 s16 yCoord = fn_802B6E7C(yBase, column, height);
                 if (fn_802B6E00(xCoord, yCoord) == 0) {
-                    register u32 scale = lbl_8055CEA0;
-                    u32 blockX = row / scale;
-                    u32 blockY = column / scale;
-                    u32 remX = row - blockX * scale;
-                    u32 remY = column - blockY * scale;
-                    u8 pixel;
+                    u32 remX, remY, blockX, blockY;
+                    s32 pixel;
+                    u32 scale = lbl_8055CEA0;
+                    blockX = row / scale;
+                    blockY = column / scale;
+                    remY = column - blockY * scale;
+                    remX = row - blockX * scale;
 
                     if ((remX != 0) || (remY != 0)) {
                         u32 imageWidth = *(u32 *)((u8 *)arg1 + 0x20);
-                        u32 nextX = imageWidth - 1;
                         u32 x1 = blockX + 1;
+                        u32 nextX = imageWidth - 1;
                         u32 nextY;
                         u32 y1;
-                        u32 rowOffset;
                         u32 nextRowOffset;
+                        u32 rowOffset;
 
                         if (x1 < nextX)
                             nextX = x1;
@@ -1007,19 +1008,19 @@ void fn_802B6F34(void *arg0, void *arg1, void (*arg2)(s16, s16, u8)) {
 
                         {
                             f32 fx = (f32)remX / (f32)scale;
-                            f32 c00 = (f32)*((u8 *)arg1 + 0x28 + blockX + rowOffset);
-                            f32 c10 = (f32)*((u8 *)arg1 + 0x28 + nextX + rowOffset);
-                            f32 c01 = (f32)*((u8 *)arg1 + 0x28 + blockX + nextRowOffset);
-                            f32 c11 = (f32)*((u8 *)arg1 + 0x28 + nextX + nextRowOffset);
-                            f32 top = c00 + fx * (c10 - c00);
-                            f32 bottom = c01 + fx * (c11 - c01);
-                            pixel = (u8)(s32)(top + ((f32)remY / (f32)scale) * (bottom - top));
+                            u32 c00 = *((u8 *)arg1 + 0x28 + blockX + rowOffset);
+                            u32 c10 = *((u8 *)arg1 + 0x28 + nextX + rowOffset);
+                            u32 c01 = *((u8 *)arg1 + 0x28 + blockX + nextRowOffset);
+                            u32 c11 = *((u8 *)arg1 + 0x28 + nextX + nextRowOffset);
+                            f32 top = (f32)c00 + fx * ((f32)c10 - (f32)c00);
+                            f32 bottom = (f32)c01 + fx * ((f32)c11 - (f32)c01);
+                            pixel = (s32)(top + ((f32)remY / (f32)scale) * (bottom - top));
                         }
                     } else {
                         u32 imageWidth = *(u32 *)((u8 *)arg1 + 0x20);
                         pixel = *((u8 *)arg1 + 0x28 + blockX + blockY * imageWidth);
                     }
-                    arg2(xCoord, yCoord, pixel);
+                    arg2(xCoord, yCoord, (u8)pixel);
                 }
             }
         }
@@ -1460,15 +1461,16 @@ extern "C" void fn_802B7D4C(void) {
     s32 workspace[51];
     s32 selected[3];
     u8 *state;
+    MenuRenderCopy first, second;
     char name[32];
-    MenuRenderRecord first, second, line, line2;
+    MenuRenderCopy line, line2;
     register char *base = lbl_8034A598;
     void *object;
     void *(*lookup)(void *, const char *);
     void *(*get)(void *, const char *);
     const char *status;
     f32 step;
-    s32 i;
+    s32 offset, i;
     s32 *entry;
 
     if (lbl_8055FA40 == 6) {
@@ -1477,32 +1479,61 @@ extern "C" void fn_802B7D4C(void) {
         return;
     }
     object = ((void *(*)(void))fn_802B5B6C)();
-    workspace[0] = (s32)&workspace[3];
     workspace[1] = 0;
     workspace[2] = 16;
     state = 0;
+    workspace[0] = (s32)&workspace[3];
     fn_802B321C((s32)workspace, (void **)&state, *(s32 *)((u8 *)object + 8), lbl_8055FA40);
     status = base + 0x338;
     if (*state != 0) status = lbl_8055CEB8;
 
     fn_802B6568(((Dummy *)lbl_8055FA48)->call(base + 0x118), lbl_8055CE70, status);
 
-    first = *(MenuRenderRecord *)((Dummy *)lbl_8055FA48)->call(base + 0x344);
+    object = ((Dummy *)lbl_8055FA48)->call(base + 0x344);
+    first.name = *(void **)object;
+    ((s32 *)&first)[1] = ((s32 *)object)[1];
+    ((s32 *)&first)[2] = ((s32 *)object)[2];
+    first.unkC = ((s32 *)object)[3];
+    first.unk10 = ((f32 *)object)[4];
+    first.unk14 = ((s32 *)object)[5];
+    first.unk18 = ((s32 *)object)[6];
+    first.unk1C = ((s32 *)object)[7];
 
-    second = *(MenuRenderRecord *)((Dummy *)lbl_8055FA48)->call(base + 0x354);
+    object = ((Dummy *)lbl_8055FA48)->call(base + 0x354);
+    second.name = *(void **)object;
+    ((s32 *)&second)[1] = ((s32 *)object)[1];
+    ((s32 *)&second)[2] = ((s32 *)object)[2];
+    second.unkC = ((s32 *)object)[3];
+    second.unk10 = ((f32 *)object)[4];
+    second.unk14 = ((s32 *)object)[5];
+    second.unk18 = ((s32 *)object)[6];
+    second.unk1C = ((s32 *)object)[7];
 
     step = *(f32 *)((u8 *)((Dummy *)lbl_8055FA48)->get(base + 0x238) + 0x14);
-    for (i = 0; i < workspace[1]; ++i) {
-        entry = (s32 *)workspace[0] + i * 3;
-        ((void (*)(void *, s32, const char *, ...))fn_801345D8)(name, 32, base + 0x360, i);
-        line = first;
+    i = 0;
+    offset = 0;
+    for (; i < workspace[1]; ++i) {
+        entry = (s32 *)((u8 *)workspace[0] + offset);
+        ((void (*)(char *, s32, const char *, ...))(s32 (*)(char *, s32, const char *, s32))fn_801345D8)(name, 32, base + 0x360, i);
+        line.pair = first.pair;
+        line.unkC = first.unkC;
+        line.unk10 = first.unk10;
+        line.unk14 = first.unk14;
+        line.unk18 = first.unk18;
+        line.unk1C = first.unk1C;
         line.name = name;
-        line.y += step * (f32)i;
+        *(f32 *)((u8 *)&line + 8) += step * (f32)i;
         fn_802B6568(&line, lbl_8055CE74, **(void ***)(entry + 1));
-        line2 = second;
+        line2.pair = second.pair;
+        line2.unkC = second.unkC;
+        line2.unk10 = second.unk10;
+        line2.unk14 = second.unk14;
+        line2.unk18 = second.unk18;
+        line2.unk1C = second.unk1C;
         line2.name = name;
-        line2.y += step * (f32)i;
+        *(f32 *)((u8 *)&line2 + 8) += step * (f32)i;
         fn_802B6568(&line2, lbl_8055CE70, (void *)entry[0]);
+        offset += 12;
     }
     if (fn_802B5B74(selected)) {
         fn_802B67C8((s32)(base + 0x36C));
@@ -1516,7 +1547,9 @@ extern "C" void fn_802B7D4C(void) {
     }
 
     fn_802B6568(((Dummy *)lbl_8055FA48)->call(lbl_8055CE68), base + 0x3B0, lbl_8055FA40 + 1);
-    workspace[0] = workspace[1] = workspace[2] = 0;
+    workspace[0] = 0;
+    workspace[1] = 0;
+    workspace[2] = 0;
 }
 #pragma cplusplus reset
 s32 fn_802B8110(u32 arg0, s32 arg1) {
@@ -1814,24 +1847,21 @@ void fn_802B87A0(void) {
     }
     *(s32 *)((u8 *)&lbl_804BFA70 + 4) = 0;
 }
-#pragma pop
+#pragma push
+#pragma dont_inline on
 void fn_802B87F4(void) {
     if (lbl_8055FA48 != 0) {
         fn_802B869C();
         fn_802B59A4(lbl_8055FA3C);
         fn_802B0288();
         if (lbl_8055FA38 != 1) {
-            switch (lbl_8055FA40) {
-            case 6:
-                break;
-            default:
-                fn_802B4E3C();
-                break;
+            if (lbl_8055FA40 != 6) {
+                fn_802B4E3C(lbl_8055FA40);
             }
         }
     }
 }
-
+#pragma pop
 extern char lbl_8055FA32;
 extern float lbl_80564CA0, lbl_80564CA4;
 extern char lbl_8034A6C0[];
