@@ -5046,6 +5046,16 @@ void getDevConfig(s32 chan, s32 result, WPADStatus* status, u8* data)
     }
 }
 
+/*
+ * WPADiReadExtensionCalibCallback (proposed name; game symbols can't be renamed yet).
+ * Callback of the WM_REG_EXTENSION_CONFIG (0xA4000020) register read: decrypts the
+ * 32 bytes the extension sent back, keeps whichever of its two 16-byte blocks passes
+ * its checksum and stores the calibration values that block holds in the CB.
+ * cb->UNK_0x801 is the extension kind the ID read worked out and picks the layout:
+ * 1 = force sensor (Wii Balance Board), 2 = classic controller.  A failed read, or
+ * two bad blocks, leaves the defaults in place.  The pending register-read callback
+ * is then run with the extension kind and cleared.
+ */
 void fn_80064278(s32 chan, s32 result) {
     const char* messages = (const char*)lbl_80312338;
     WPADCB* cb = lbl_8038F4F0[chan];
