@@ -104,6 +104,81 @@ typedef struct {
     u8 sm4;
 } tBTM_SEC_DEV_REC_DISCONNECT_VIEW;
 
+/* Number of extra link key notifiers registered in btm_cb (btm_cb+0x1924). */
+#define BTM_SEC_MAX_LINK_KEY_NOTIFY_CALLBACKS 2
+
+/* The security-manager callbacks as btm_cb holds them.  The app installs the
+   first six with BTM_SecRegister(); the header's typedefs for them use the
+   248-byte name buffer this stack does not carry, so the name is a plain
+   string here (tBTM_SEC_DEV_REC_FULL_VIEW.sec_bd_name). */
+typedef UINT8 (tBTM_LINK_KEY_NOTIFY_CB) (BD_ADDR bd_addr, DEV_CLASS dev_class,
+                                         u8 *bd_name, LINK_KEY link_key,
+                                         UINT8 key_type);
+typedef UINT8 (tBTM_AUTH_COMPLETE_CB) (BD_ADDR bd_addr, DEV_CLASS dev_class,
+                                       u8 *bd_name, UINT32 result);
+
+/*
+ * btm_cb - the BTM module's control block (lbl_803C0F78) - as this stack lays
+ * it out, with the members the security manager uses named.
+ */
+typedef struct {
+    u8      pad_0000[0x0020];
+    u8      cfg_pin_type;                /* 0x0020 PIN type from BTM_SetPinType() */
+    u8      pad_0021[0x18F3];
+    tBTM_LINK_KEY_NOTIFY_CB *p_link_key_callback;    /* 0x1914 new link key */
+    u8      pad_1918[0x04];              /* 0x1918 link key request callback */
+    tBTM_AUTH_COMPLETE_CB *p_auth_complete_callback; /* 0x191C pairing done */
+    u8      pad_1920[0x04];              /* 0x1920 abort callback */
+    tBTM_LINK_KEY_NOTIFY_CB *p_link_key_notify_callback
+        [BTM_SEC_MAX_LINK_KEY_NOTIFY_CALLBACKS];     /* 0x1924 extra notifiers */
+    u8      pad_192C[0x10];              /* 0x192C remote name callbacks */
+    u8      pin_code_tle[0x10];          /* 0x193C timer waiting for a local PIN */
+    void    *pin_code_tle_cback;         /* 0x194C non-NULL while that timer runs */
+    BD_ADDR pin_code_bda;                /* 0x1954 device the PIN was asked for */
+    u8      pad_195A[0x001A];
+    UINT32  dev_rec_count;               /* 0x1974 counter stamped into dev records */
+    UINT8   security_mode;               /* 0x1978 BTM_SEC_MODE_* */
+    u8      pad_1979[0x02];              /* 0x1979 pairing_disabled, connect_only_paired */
+    UINT8   pairing_state;               /* 0x197B tBTM_PAIRING_STATE, IDLE when not pairing */
+    UINT8   pin_type_changed;            /* 0x197C PIN type changed for pairing */
+    u8      pad_197D[0x0E42];
+    UINT8   acl_disc_reason;             /* 0x27BF reason to report when the ACL drops */
+    UINT8   trace_level;                 /* 0x27C0 BTM trace level */
+} tBTM_CB_SEC_VIEW;
+
+#define btm_cb_sec (*(tBTM_CB_SEC_VIEW *)lbl_803C0F78)
+
+/*
+ * tBTM_SEC_DEV_REC as this stack lays it out: 0x88 bytes, and
+ * BTM_SEC_MAX_DEVICE_RECORDS (8 here) of them in btm_cb at 0x1F30.  The
+ * header's struct agrees up to is_originator and then describes a newer
+ * stack, so the security-manager bytes at the end are named from the code.
+ */
+typedef struct {
+    tBTM_SEC_SERV_REC *p_cur_service;    /* 0x00 service this connection is for */
+    tBTM_SEC_CBACK    *p_callback;       /* 0x04 who asked for security */
+    void              *p_ref_data;       /* 0x08 its reference value */
+    UINT32             timestamp;        /* 0x0C when the link last came up */
+    UINT32             trusted_mask[2];  /* 0x10 bitwise OR of trusted services */
+    UINT16             hci_handle;       /* 0x18 */
+    UINT16             clock_offset;     /* 0x1A */
+    BD_ADDR            bd_addr;          /* 0x1C */
+    DEV_CLASS          dev_class;        /* 0x22 */
+    LINK_KEY           link_key;         /* 0x25 */
+    u8                 sec_bd_name[0x41];/* 0x35 name of the device */
+    UINT8              sec_flags;        /* 0x76 BTM_SEC_* flags of what is done */
+    u8                 features[8];      /* 0x77 LMP features of the device */
+    UINT8              sec_state;        /* 0x7F BTM_SEC_STATE_* */
+    UINT8              is_originator;    /* 0x80 we opened the connection */
+    UINT8              sec_req;          /* 0x81 BTM_SEC_* requirements of p_cur_service */
+    UINT8              link_key_not_sent;/* 0x82 link key notification still owed */
+    UINT8              link_key_type;    /* 0x83 */
+    UINT8              link_key_changed; /* 0x84 */
+    UINT8              conn_up;          /* 0x85 set when a link to a known record comes up */
+    UINT8              sm4;              /* 0x86 */
+    UINT8              rmt_io_caps;      /* 0x87 */
+} tBTM_SEC_DEV_REC_FULL_VIEW;
+
 typedef struct {
     char first;
 } tRFCOMM_TRACE_TEXT_VIEW;
