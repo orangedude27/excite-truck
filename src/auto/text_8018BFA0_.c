@@ -121,6 +121,7 @@ static inline float Chan_8018F2C0(unsigned char v) {
     t = (t > lbl_80561F74) ? t : lbl_80561F74;
     return lbl_8056203C + t * lbl_80562040;
 }
+#pragma dont_inline on
 #pragma scheduling invalid_target
 int fn_8018C514(void *arg0, void *arg1) {
     float min = lbl_80561F70;
@@ -146,6 +147,10 @@ extern void fn_80279B28(void *);
 extern void fn_80279CD8(void *);
 extern void fn_802E317C(void *, ...);
 extern void *fn_8001285C(int);
+#pragma push
+#pragma processor 750
+#pragma auto_inline off
+#pragma use_lmw_stmw off
 void fn_8018C5A0(char *arg0, char *arg1) {
     char *p19;
     char *p20;
@@ -204,25 +209,10 @@ void fn_8018C5A0(char *arg0, char *arg1) {
     } else {
         fn_80279CD8(arg0 + 0x1E44);
     }
-    {
-        char *s = arg0 + 0x1E43;
-        char *d = arg0 + 0x20F7;
-        for (j = 0; j < 0x148; j++) {
-            d[1] = s[1];
-            d[2] = s[2];
-            s += 2;
-            d += 2;
-        }
-    }
-    M2C_FIELD(arg0, float *, 0x2388) = M2C_FIELD(arg0, float *, 0x20D4);
-    M2C_FIELD(arg0, float *, 0x238C) = M2C_FIELD(arg0, float *, 0x20D8);
-    M2C_FIELD(arg0, int *, 0x2390) = M2C_FIELD(arg0, int *, 0x20DC);
-    M2C_FIELD(arg0, int *, 0x2394) = M2C_FIELD(arg0, int *, 0x20E0);
-    for (j = 0; j < 18; j++) {
-        M2C_FIELD(arg0, char *, 0x2398 + j) = M2C_FIELD(arg0, char *, 0x20E4 + j);
-    }
+    *(Blob290_8018 *)(arg0 + 0x20F8) = *(Blob290_8018 *)(arg0 + 0x1E44);
+    *(Blob22_8018 *)(arg0 + 0x2388) = *(Blob22_8018 *)(arg0 + 0x20D4);
     for (j = 0; j < 16; j++) {
-        M2C_FIELD(arg0, char *, 0x1E2C + j) = 0xFF;
+        M2C_FIELD(arg0, unsigned char *, 0x1E2C + j) = 0xFF;
     }
     p30 = &lbl_80332758 + 0x5B0;
     for (j = 0; j < 0xD; j++, p30 += 0x10) {
@@ -243,8 +233,7 @@ void fn_8018C5A0(char *arg0, char *arg1) {
         }
     }
 }
-
-#pragma scheduling invalid_target
+#pragma pop
 void fn_8018CB3C(char *arg0) {
     float force[3];
     float rotation[12];
