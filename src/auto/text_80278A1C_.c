@@ -30,17 +30,17 @@ extern void* fn_8012850C(s32, const char*);
 extern f32 lbl_805640CC;
 extern f32 lbl_805640D0;
 extern const char* lbl_802FA838[4];
-extern const char lbl_8055C678[];
-extern const char lbl_8055C680[];
-extern const char lbl_8055C688[];
-extern const char lbl_8055C68C[];
-extern const char lbl_8055C690[];
-extern const char lbl_8055C698[];
-extern const char lbl_8055C6A0[];
-extern const char lbl_8055C6A8[];
-extern const char lbl_8055C6B0[];
-extern const char lbl_8055C6B8[];
-extern const char lbl_8055C6C0[];
+__declspec(section ".sdata") extern const char lbl_8055C678[];
+__declspec(section ".sdata") extern const char lbl_8055C680[];
+__declspec(section ".sdata") extern const char lbl_8055C688[];
+__declspec(section ".sdata") extern const char lbl_8055C68C[];
+__declspec(section ".sdata") extern const char lbl_8055C690[];
+__declspec(section ".sdata") extern const char lbl_8055C698[];
+__declspec(section ".sdata") extern const char lbl_8055C6A0[];
+__declspec(section ".sdata") extern const char lbl_8055C6A8[];
+__declspec(section ".sdata") extern const char lbl_8055C6B0[];
+__declspec(section ".sdata") extern const char lbl_8055C6B8[];
+__declspec(section ".sdata") extern const char lbl_8055C6C0[];
 extern char lbl_80347690[];
 extern const char lbl_8055C6C8[4];
 extern const char lbl_8055C6D0[4];
@@ -120,6 +120,120 @@ extern "C" void fn_80278A28(void* arg0) {
     p[9] = b;
     p[11] = d;
 }
+
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+extern "C" void fn_80278A64(void* object_arg, void* file_arg, void* file2_arg, s32 name_arg) {
+    char* base = lbl_80347690;
+    u8* object = (u8*)object_arg;
+    File_80279004* file = (File_80279004*)file_arg;
+    File_80279004* file2 = (File_80279004*)file2_arg;
+    if (file != NULL) {
+        f32 scale = lbl_805640CC;
+        *(s32*)(object + 0) = 0;
+        *(s32*)(object + 4) = 0;
+        Element_80278A64* elem = (Element_80278A64*)(object + 0x38);
+        elem->id = 1;
+
+        for (s32 i = 1; i < 0xA2; i++, elem++) {
+            char boneName[0x20];
+            sprintf(boneName, lbl_8055C678, i);
+            if (file->hasRes(boneName)) {
+                Res_80279004* res = file->getRes(boneName);
+                *(s32*)object = i + 1;
+                Res_80279004* res2 = res;
+                if (file2 != NULL && file2->hasRes(boneName)) {
+                    res2 = file2->getRes(boneName);
+                }
+                if (res != NULL) {
+                    elem->v1 = res2->getVec(base + 0x0);
+                    elem->v1.x *= scale;
+                    elem->v1.y *= scale;
+                    elem->v1.z *= scale;
+
+                    elem->v2 = res2->getVec(base + 0xC);
+                    elem->v2.x *= scale;
+                    elem->v2.y *= scale;
+                    elem->v2.z *= scale;
+
+                    elem->v3 = res2->getVec(base + 0x18);
+                    elem->v3.x *= scale;
+                    elem->v3.y *= scale;
+                    elem->v3.z *= scale;
+
+                    elem->b30 = res->getByte(base + 0x24, 0);
+                    elem->f2C = res->getFloat(base + 0x30);
+                    elem->f28 = res->getFloatDefault(base + 0x3C, lbl_805640D0);
+                } else {
+                    fn_802E30C8(base + 0x48, name_arg, i);
+                    fn_80278A28(elem);
+                }
+            } else {
+                fn_802E30C8(base + 0x48, name_arg, i);
+                fn_80278A28(elem);
+            }
+        }
+
+        *(s32*)(object + 0x20F0) = 0;
+        s32 j = 0;
+        Res_80279004* child;
+        while ((child = file->getChild(j++)) != NULL) {
+            if (stricmp(child->getName(), lbl_8055C680) == 0) {
+                *(s32*)(object + 0x20F0) += 1;
+            }
+        }
+
+        *(void**)(object + 0x20EC) = fn_8012850C(*(s32*)(object + 0x20F0) * 0x14, base + 0x84);
+        *(s32*)(object + 0x20F0) = 0;
+
+        j = 0;
+        while ((child = file->getChild(j++)) != NULL) {
+            if (stricmp(child->getName(), lbl_8055C680) == 0) {
+                s32 idx = *(s32*)(object + 0x20F0);
+                *(s32*)(object + 0x20F0) = idx + 1;
+                Entry20EC* entry = (Entry20EC*)((u8*)(*(void**)(object + 0x20EC)) + idx * 0x14);
+                entry->id1 = child->getInt(lbl_8055C688);
+                entry->id2 = child->getInt(lbl_8055C68C);
+                entry->f8 = child->getFloat(lbl_8055C690);
+                entry->fC = child->getFloat(lbl_8055C698);
+                entry->f10 = child->getFloatDefault(lbl_8055C6A0, lbl_805640C4);
+                if (entry->id1 < 1 || entry->id1 >= 0xA2) {
+                    fn_802E317C(base + 0x98, entry->id1);
+                }
+                if (entry->id2 < 1 || entry->id2 >= 0xA2) {
+                    fn_802E317C(base + 0x98, entry->id2);
+                }
+            }
+        }
+
+        struct Keys { const char* k[4]; };
+        Keys keys = *(Keys*)lbl_802FA838;
+        const char** key_ptr = keys.k;
+        Entry20F4* entry20F4 = (Entry20F4*)(object + 0x20F4);
+        for (s32 k = 0; k < 4; k++, key_ptr++, entry20F4++) {
+            char wheelName[0x20];
+            sprintf(wheelName, base + 0xBC, *key_ptr);
+            Res_80279004* wres = file->hasRes(wheelName) ? file->getRes(wheelName) : NULL;
+            memset(entry20F4, 0, 0x10);
+            if (wres != NULL) {
+                entry20F4->id = wres->getInt(lbl_8055C6A8);
+                entry20F4->f4 = wres->getFloatDefault(lbl_8055C6B0, lbl_805640C4);
+                entry20F4->f8 = wres->getFloatDefault(lbl_8055C6B8, lbl_805640C4);
+                entry20F4->fC = wres->getFloatDefault(lbl_8055C6C0, lbl_805640C4);
+            }
+        }
+        return;
+    }
+    fn_802E30C8(base + 0xC8, name_arg);
+    memset(object + 4, 0, 0x20E8);
+    *(s32*)(object + 0x20F0) = 0;
+    memset(object + 0x20F4, 0, 0x40);
+}
+#pragma cplusplus reset
+#pragma pop
+
 #pragma cplusplus reset
 
 extern void fn_80278A64(void*, void*, void*, s32);
