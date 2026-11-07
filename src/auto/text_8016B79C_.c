@@ -653,7 +653,7 @@ extern "C" s32 fn_8016C5F0(void) {
                 for (i = 0; list->at(i) != 0; i++) {
                     Entry *entry = (Entry *)list->at(i);
                     if (strcmp(entry->name(), lbl_803307D8) == 0 &&
-                        strstr(entry->search((const char *)&lbl_8055A220), buffer) != 0) {
+                        strstr(entry->search(lbl_8055A220), buffer) != 0) {
                         found = 1;
                         count++;
                         break;
