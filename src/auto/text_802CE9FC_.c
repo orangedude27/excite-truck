@@ -366,6 +366,78 @@ void fn_802CF048(int arg0) {
 void fn_802CF104(void) {
     fn_802CF048(1);
 }
+
+void fn_802CF10C(void) {
+    unsigned char* st = lbl_804C5710;
+    int* fb = lbl_804C9760;
+    int i;
+    int j;
+    fn_802CEF90();
+    if ((int)lbl_8055FD44 == 0xFA0) {
+        OSReport(lbl_8034BF80);
+    }
+    lbl_8055FD4C++;
+    lbl_8055FD44++;
+    if (lbl_8055FD4C < 5) {
+        return;
+    }
+    if (lbl_8055FD50 == 0 && st[1] == 0) {
+        return;
+    }
+    if (st[0] != 0) {
+        int* sti = (int*)st;
+        st[0] = 0;
+        DCInvalidateRange((void*)fb[1], fb[2] * fb[3] * 2);
+        for (i = 0; i < sti[4]; i++) {
+            memcpy(st + 0x14 + i * sti[3] * 2, (unsigned char*)fb[1] + (sti[1] + fb[2] * (i + sti[2])) * 2, sti[3] * 2);
+        }
+    }
+    if (st[1] != 0) {
+        if (lbl_8055FD4C % 60 != 0 && lbl_8055FD4C % 60 != 45) {
+            return;
+        }
+    } else if (lbl_8055FD4C != 0) {
+        return;
+    }
+    DCInvalidateRange((void*)fb[1], fb[2] * fb[3] * 2);
+    if (lbl_8055FD50 != 0) {
+        int r5 = ((unsigned)lbl_8055FD4C >> 2) & 1;
+        for (; r5 < fb[3]; r5 += 2) {
+            int r6;
+            for (r6 = 0; r6 < fb[2]; r6++) {
+                unsigned short* ptr = (unsigned short*)((unsigned char*)fb[1] + (r6 + r5 * fb[2]) * 2);
+                unsigned short v = *ptr;
+                if ((v & 0xFF) > (v - 0x400)) {
+                    *ptr = v & 0xFF;
+                }
+            }
+        }
+    }
+    if (st[1] != 0) {
+        int* sti = (int*)st;
+        if (lbl_8055FD4C % 60 < 30) {
+            int off = 0;
+            for (i = 0; i < sti[4]; i++) {
+                unsigned short* src = (unsigned short*)(st + 0x14 + off * 2);
+                unsigned short* dst = (unsigned short*)((unsigned char*)fb[1] + (sti[1] + fb[2] * (sti[2] + i)) * 2);
+                for (j = 0; j < sti[3]; j++) {
+                    dst[j] = src[j];
+                }
+                off += sti[3];
+            }
+        } else {
+            unsigned short fill = *(unsigned short*)(st + 0x14);
+            for (i = 0; i < sti[4]; i++) {
+                unsigned short* dst = (unsigned short*)((unsigned char*)fb[1] + (sti[1] + fb[2] * (sti[2] + i)) * 2);
+                for (j = 0; j < sti[3]; j++) {
+                    dst[j] = fill;
+                }
+            }
+        }
+    }
+    DCFlushRange((void*)fb[1], fb[4] * (fb[2] * fb[3]));
+}
+
 #pragma dont_inline reset
 
 void fn_802CF5A8(void) {
@@ -1652,6 +1724,8 @@ extern int lbl_8055FDCC;
 extern float lbl_80564FD4;
 extern void GXLoadLightObjImm(void *, unsigned int);
 extern void GXSetChanCtrl(int, int, int, int, unsigned int, int, int);
+#pragma pop
+
 #pragma push
 #pragma scheduling reset
 #pragma paired off
