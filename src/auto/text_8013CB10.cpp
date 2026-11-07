@@ -97,13 +97,16 @@ extern "C" f32 lbl_805614AC;
 extern "C" f32 lbl_805614C4;
 struct Timer8013D2C4 {
     u32 t[2];
+    inline Timer8013D2C4(f32 v) { fn_8001DAE0(this, v); }
     inline void init(f32 v) { fn_8001DAE0(this, v); }
 };
 struct Perc8013D2C4 {
     void *a;
     void *b;
+    inline Perc8013D2C4() { fn_801414A4(this); }
     inline void init() { fn_801414A4(this); }
 };
+extern "C" u8 lbl_8032CAF0[];
 struct MainObj8013D2C4 {
     void *vt;
     u32 unk4;
@@ -144,6 +147,7 @@ struct MainObj8013D2C4 {
     s32 f27C;
     Perc8013D2C4 perc;
     s32 f288;
+    inline MainObj8013D2C4() : vt(lbl_8032CAF0), sa(), t6C(lbl_805614C0), t74(lbl_805614C0), t7C(lbl_805614AC), t84(lbl_805614AC), t8C(lbl_805614C4), rb(), sub(), perc() {}
     inline void initWidgets(const char *base);
 };
 extern "C" void *fn_80145E70(const char *);
