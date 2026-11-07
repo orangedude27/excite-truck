@@ -92,6 +92,21 @@ extern void fn_802C855C(void);
 extern void fn_802C2B48(void);
 extern char *strcpy(char *, const char *);
 
+struct MenuItem {
+    char *name;
+    int value;
+};
+
+struct Menu {
+    char *title;
+    char *desc;
+    void *unk8;
+    int (*callback)(int *);
+    int selected;
+    int count;
+    struct MenuItem items[1];
+};
+
 int fn_802452E4(void *arg0) {
     void *value;
     value = *(void **)((char *)arg0 + 4);
@@ -110,17 +125,22 @@ int fn_802452E4(void *arg0) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma opt_unroll_loops off
 int fn_80245360(int *a, int *b) {
     int value;
     char obj[0x30];
-    char text[0x200];
+    int text[0x80];
     struct { int a, b; } buf[64];
     char *s, *split, *p;
-    int selected, i, j, save, color;
-    float w, h, x0, x1, y, alpha, wave;
+    char *item_ptr;
+    int i, j, save, color;
+    float w, h, x0, x1, y, alpha, wave, temp;
+    char *prompt;
+    int selected;
     int (*callback)(int *);
 
     selected = b[4];
+    prompt = &lbl_8055BE50;
     for (;;) {
         fn_802C8530();
         fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
@@ -147,8 +167,8 @@ int fn_80245360(int *a, int *b) {
             fn_80232BA4(s, a[3], -1, 12, ((float *)a)[5], y, lbl_80563834, lbl_80563830, lbl_80563834);
         }
         y -= lbl_80563850;
-        strcpy(text, split);
-        s = text;
+        strcpy((char *)text, split);
+        s = (char *)text;
         while (strlen(s) != 0) {
             for (i = 0; i < 64; i++) { buf[i].a = 0; buf[i].b = 0; }
             split = 0;
@@ -178,8 +198,9 @@ int fn_80245360(int *a, int *b) {
             y -= lbl_8056385C;
         }
         y = lbl_80563860;
-        for (i = 0; i < b[5]; i++) {
-            char *item = *(char **)((char *)b + 0x18 + i * 8);
+        item_ptr = (char *)b;
+        for (i = 0; i < b[5]; i++, item_ptr += 8) {
+            char *item = *(char **)(item_ptr + 0x18);
             wave = (float)sin(lbl_80563864 * (float)fn_802E2C20() / lbl_80563838);
             alpha = lbl_80563868 * (lbl_8056386C + lbl_80563870 * wave);
             fn_80232BA4(item, a[3], 0xFF000000, 12, lbl_8056384C + ((float *)a)[5], y - lbl_8056384C, lbl_80563834, lbl_80563830, lbl_80563834);
@@ -192,8 +213,9 @@ int fn_80245360(int *a, int *b) {
             y -= lbl_8056385C;
         }
         if (a[2] != 0) {
-            fn_802C5310(a[2], 0, lbl_8056387C + (lbl_80563878 + lbl_80563844 * fn_8023293C(a[4], &lbl_8055BE50, lbl_80563834)), lbl_80563864 + lbl_80563874, lbl_80563830);
-            fn_802337A0(a[4], -1, 9, &lbl_8055BE58, &lbl_8055BE50, lbl_80563878, lbl_80563874, lbl_80563830, lbl_80563844, lbl_80563834);
+            temp = lbl_80563878 + lbl_80563844 * fn_8023293C(a[4], prompt, lbl_80563834);
+            fn_802C5310(a[2], 0, lbl_8056387C + temp, lbl_80563864 + lbl_80563874, lbl_80563830);
+            fn_802337A0(a[4], -1, 9, &lbl_8055BE58, prompt, lbl_80563878, lbl_80563874, lbl_80563830, lbl_80563844, lbl_80563834);
         } else {
             fn_802337A0(a[4], -1, 12, lbl_80343080, &lbl_8055BE5C, lbl_80563878, lbl_80563874, lbl_80563830, lbl_80563844, lbl_80563834);
         }
@@ -222,8 +244,9 @@ int fn_80245360(int *a, int *b) {
         }
         callback = *(int (**)(int *))((char *)b + 0xC);
         if (callback != 0) {
+            int (*fn)(int *) = callback;
             value = -1;
-            if (callback(&value) == 1) return value;
+            if (fn(&value) == 1) return value;
         }
         fn_802E2D74(5);
     }
