@@ -120,6 +120,7 @@ struct Entry20F4 {
     f32 f8;
     f32 fC;
 };
+extern void fn_80278A64(void*, void*, void*, s32);
 #pragma cplusplus reset
 #pragma cplusplus on
 extern "C" void* fn_80279004(s32 name, s32 arg1) {
