@@ -280,7 +280,7 @@ extern "C" void fn_8028ABE8(void *arg0) {
     extern void *fn_802AE414(void *);
     extern void *fn_802929D8(s32, void *, s32, s32);
     extern void fn_80287B38(void (*)(void));
-    extern void fn_8028ADF4();
+    extern void fn_8028ADF4(void *, s32);
     u8 sp8[0x20];
     char *data = lbl_80348B98;
     s32 *entry = (s32 *)lbl_804B3238;
@@ -314,7 +314,7 @@ extern "C" void fn_8028ABE8(void *arg0) {
         i++;
         entry += 4;
     } while (i < 8);
-    fn_80287B38(fn_8028ADF4);
+    fn_80287B38((void (*)(void))fn_8028ADF4);
 }
 #pragma cplusplus off
 #pragma pop
