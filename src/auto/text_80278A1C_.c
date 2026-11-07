@@ -20,35 +20,6 @@ typedef struct Node_80279254 {
     struct Node_80279254* next;
 } Node_80279254;
 
-s32 fn_80278A1C(void) {
-    return 0;
-}
-
-void fn_80278A24(void) {
-}
-
-#pragma cplusplus on
-extern "C" void fn_80278A28(void* arg0) {
-    f32 d;
-    f32 b = lbl_805640C4;
-    f32 c;
-    f32 a = lbl_805640C0;
-    f32 *p = (f32*)arg0;
-
-    c = -a;
-    d = lbl_805640C8;
-    p[4] = a;
-    p[1] = c;
-    p[2] = c;
-    p[3] = c;
-    p[5] = a;
-    p[6] = a;
-    p[7] = b;
-    p[8] = b;
-    p[9] = b;
-    p[11] = d;
-}
-#pragma cplusplus reset
 extern void* fn_801284F8(s32, const char*);
 extern s32 fn_8012C33C(char*);
 extern void* fn_80131808(char*);
@@ -119,8 +90,39 @@ struct Entry20F4 {
     f32 f8;
     f32 fC;
 };
-extern void fn_80278A64(void*, void*, void*, s32);
 #pragma cplusplus reset
+
+s32 fn_80278A1C(void) {
+    return 0;
+}
+
+void fn_80278A24(void) {
+}
+
+#pragma cplusplus on
+extern "C" void fn_80278A28(void* arg0) {
+    f32 d;
+    f32 b = lbl_805640C4;
+    f32 c;
+    f32 a = lbl_805640C0;
+    f32 *p = (f32*)arg0;
+
+    c = -a;
+    d = lbl_805640C8;
+    p[4] = a;
+    p[1] = c;
+    p[2] = c;
+    p[3] = c;
+    p[5] = a;
+    p[6] = a;
+    p[7] = b;
+    p[8] = b;
+    p[9] = b;
+    p[11] = d;
+}
+#pragma cplusplus reset
+
+extern void fn_80278A64(void*, void*, void*, s32);
 #pragma cplusplus on
 extern "C" void* fn_80279004(s32 name, s32 arg1) {
     char path[0x80];
