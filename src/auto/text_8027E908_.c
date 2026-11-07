@@ -50,6 +50,20 @@ public:
 }
 }
 #pragma cplusplus reset
+#pragma cplusplus on
+struct Fn8027F288Obj {
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual const char *getName();
+    virtual void v5();
+    virtual void v6();
+    virtual void v7();
+    virtual void v8();
+    virtual void v9();
+};
+#pragma cplusplus reset
 typedef struct Fn8027F958Widget {
     void *vtable;
     char pad04[0x10];
