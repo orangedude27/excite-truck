@@ -1288,137 +1288,147 @@ typedef struct AchievementRow {
 // refreshes the value and next-threshold text and the name of the threshold
 // reached, and fades the HUD elements that go with them in and out.
 extern "C" void fn_8025B788(void *arg0) {
-    class Obj {
+    class AchievementBanner {
     public:
         virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
         virtual void m4(); virtual void m5(); virtual void m6(); virtual void m7();
         virtual void m8(); virtual void m9(); virtual void m10(); virtual void m11();
-        virtual void m12(char *); virtual void m13(char *); virtual void m14(char *, float);
+        virtual void show(char *name);
+        virtual void finish(char *name);
+        virtual void setProgress(char *name, float amount);
     };
-    char *base = (char *)lbl_80344DE0;
-    char *o = (char *)arg0;
-    float num, v;
-    int cur, flag, res;
-    unsigned char old;
-    unsigned char c1; unsigned char *src1; int count1; unsigned char *dst1;
-    unsigned char c2; unsigned char *src2; int count2; unsigned char *dst2;
-    unsigned char c3; unsigned char *src3; int count3; unsigned char *dst3;
-    unsigned char c4; unsigned char *src4; int count4; unsigned char *dst4;
-    if (stricmp(o + 0x92, o + 0x60) != 0 && o[0x60] != 0) {
-        fn_80236954(base + 0x464);
-        src4 = (unsigned char *)(o + 0x60);
-        dst4 = (unsigned char *)(o + 0x92);
-        count4 = 0x32;
-        goto d_copy;
-d_next:
-        count4--;
-        if (count4 > 0) goto d_copy;
-        dst4[-1] = 0;
-        goto d_done;
-d_copy:
-        c4 = *src4++;
-        *dst4++ = c4;
-        if ((signed char)c4 != 0) goto d_next;
-d_done:;
+    char *ctx = (char *)lbl_80344DE0;  // +0x20/+0x40 banner names, +0x464 achievement name
+    AchievementRow *row = (AchievementRow *)arg0;
+    float amount, capped;
+    int value, showName, result;
+    unsigned char wasDone;
+    unsigned char goalC; unsigned char *goalSrc; int goalLeft; unsigned char *goalDst;
+    unsigned char rankC; unsigned char *rankSrc; int rankLeft; unsigned char *rankDst;
+    unsigned char blankC; unsigned char *blankSrc; int blankLeft; unsigned char *blankDst;
+    unsigned char shownC; unsigned char *shownSrc; int shownLeft; unsigned char *shownDst;
+
+    // A new threshold name that has not been handed to the achievement list yet:
+    // report the achievement as reached and remember the name.
+    if (stricmp(row->shownRankName, row->rankName) != 0 && row->rankName[0] != 0) {
+        fn_80236954(ctx + 0x464);
+        shownSrc = (unsigned char *)(row->rankName);
+        shownDst = (unsigned char *)(row->shownRankName);
+        shownLeft = 0x32;
+        goto shown_copy;
+shown_next:
+        shownLeft--;
+        if (shownLeft > 0) goto shown_copy;
+        shownDst[-1] = 0;
+        goto shown_done;
+shown_copy:
+        shownC = *shownSrc++;
+        *shownDst++ = shownC;
+        if ((signed char)shownC != 0) goto shown_next;
+shown_done:;
     }
-    if (*(unsigned char *)&lbl_8055F3A0 && *(float *)(o + 0xCC) >= lbl_80563B34) {
-        v = *(float *)(o + 0x28) + *(float *)(o + 0x54) * fn_80214D48();
-        num = (float)*(int *)(o + 0x20);
-        num = num < v ? num : v;
-        *(float *)(o + 0x28) = num;
+    // Once the pause is over, ease the shown value up by rate * dt, up to the goal.
+    if (*(unsigned char *)&lbl_8055F3A0 && row->timer >= lbl_80563B34) {
+        capped = row->progress + row->rate * fn_80214D48();
+        amount = (float)row->goal;
+        amount = amount < capped ? amount : capped;
+        row->progress = amount;
     }
-    old = *(unsigned char *)(o + 0x58);
-    *(unsigned char *)(o + 0x58) = (int)(*(float *)(o + 0x28) + lbl_80558DC4) < *(int *)(o + 0x20);
-    *(float *)(o + 0xCC) += fn_80214D48();
-    if (*(unsigned char *)(o + 0x58)) {
+    wasDone = row->done;
+    row->done = (int)(row->progress + lbl_80558DC4) < row->goal;
+    row->timer += fn_80214D48();
+    if (row->done) {
+        // Still counting: keep the banner filled to the shared progress.
         float limit = lbl_8055F3A4;
-        num = lbl_80563AE0;
-        num = num < limit ? num : limit;
-        ((Obj *)lbl_8055F394)->m14(base + 0x40, num);
-    } else if (old) {
-        ((Obj *)lbl_8055F394)->m13(base + 0x40);
-        if (*(unsigned char *)(o + 0xC4) && *(unsigned char *)(o + 0xC5)) {
-            ((Obj *)lbl_8055F394)->m12(base + 0x20);
+        amount = lbl_80563AE0;
+        amount = amount < limit ? amount : limit;
+        ((AchievementBanner *)lbl_8055F394)->setProgress(ctx + 0x40, amount);
+    } else if (wasDone) {
+        // Just reached the goal: close the banner and play the result jingle.
+        ((AchievementBanner *)lbl_8055F394)->finish(ctx + 0x40);
+        if (row->flagC4 && row->flagC5) {
+            ((AchievementBanner *)lbl_8055F394)->show(ctx + 0x20);
             fn_80214AF0(0x10);
-            *(float *)(o + 0xCC) = lbl_80563AE4;
+            row->timer = lbl_80563AE4;
         }
     }
-    if (*(unsigned char *)(o + 0x59)) {
-        fn_80236958(base + 0x464);
-        fn_802168BC(*(int *)(o + 0x5C));
+    if (row->soundPending) {
+        fn_80236958(ctx + 0x464);
+        fn_802168BC(row->soundId);
     }
-    cur = (int)(*(float *)(o + 0x28) + lbl_80558DC4);
-    fn_80130FCC(o + 0x2C, 0x14, cur);
-    flag = 1;
-    if (*(unsigned char *)(o + 0xC4) != 0) {
-        if (*(unsigned char *)(o + 0x58) != 0 || *(unsigned char *)(o + 0xC5) == 0) {
-            flag = 0;
+    value = (int)(row->progress + lbl_80558DC4);
+    fn_80130FCC(row->progressText, 0x14, value);
+    // A results-screen row only shows its threshold name once it is finished.
+    showName = 1;
+    if (row->flagC4 != 0) {
+        if (row->done != 0 || row->flagC5 == 0) {
+            showName = 0;
         }
     }
-    res = fn_8001EFA0(*(int *)(o + 0x18), cur);
-    *(int *)(o + 0xC8) = res;
-    res = fn_8001EFA4(*(int *)(o + 0x18), res + 1);
-    if (res >= 0) {
-        fn_80130FCC(o + 0x40, 0x14, res);
+    result = fn_8001EFA0(row->achievement, value);
+    row->rank = result;
+    result = fn_8001EFA4(row->achievement, result + 1);
+    if (result >= 0) {
+        fn_80130FCC(row->goalText, 0x14, result);
     } else {
-        dst1 = (unsigned char *)(o + 0x40);
-        src1 = lbl_8055C380;
-        count1 = 0x14;
-        goto a_copy;
-a_next:
-        count1--;
-        if (count1 > 0) goto a_copy;
-        dst1[-1] = 0;
-        goto a_done;
-a_copy:
-        c1 = *src1++;
-        *dst1++ = c1;
-        if ((signed char)c1 != 0) goto a_next;
-a_done:;
+        goalDst = (unsigned char *)(row->goalText);  // no threshold left: blank the text
+        goalSrc = lbl_8055C380;
+        goalLeft = 0x14;
+        goto goal_copy;
+goal_next:
+        goalLeft--;
+        if (goalLeft > 0) goto goal_copy;
+        goalDst[-1] = 0;
+        goto goal_done;
+goal_copy:
+        goalC = *goalSrc++;
+        *goalDst++ = goalC;
+        if ((signed char)goalC != 0) goto goal_next;
+goal_done:;
     }
-    src2 = fn_8001EFAC(*(int *)(o + 0x18), *(int *)(o + 0xC8));
-    if (src2 != 0 && flag != 0) {
-        dst2 = (unsigned char *)(o + 0x60);
-        count2 = 0x32;
-        goto b_copy;
-b_next:
-        count2--;
-        if (count2 > 0) goto b_copy;
-        dst2[-1] = 0;
-        goto b_done;
-b_copy:
-        c2 = *src2++;
-        *dst2++ = c2;
-        if ((signed char)c2 == 0) goto b_done;
-        goto b_next;
+    rankSrc = fn_8001EFAC(row->achievement, row->rank);
+    if (rankSrc != 0 && showName != 0) {
+        rankDst = (unsigned char *)(row->rankName);
+        rankLeft = 0x32;
+        goto rank_copy;
+rank_next:
+        rankLeft--;
+        if (rankLeft > 0) goto rank_copy;
+        rankDst[-1] = 0;
+        goto rank_done;
+rank_copy:
+        rankC = *rankSrc++;
+        *rankDst++ = rankC;
+        if ((signed char)rankC == 0) goto rank_done;
+        goto rank_next;
     } else {
-        dst3 = (unsigned char *)(o + 0x60);
-        src3 = lbl_8055C380;
-        count3 = 0x32;
-        goto c_copy;
-c_next:
-        count3--;
-        if (count3 > 0) goto c_copy;
-        dst3[-1] = 0;
-        goto b_done;
-c_copy:
-        c3 = *src3++;
-        *dst3++ = c3;
-        if ((signed char)c3 != 0) goto c_next;
+        blankDst = (unsigned char *)(row->rankName);  // nothing to name: blank it
+        blankSrc = lbl_8055C380;
+        blankLeft = 0x32;
+        goto blank_copy;
+blank_next:
+        blankLeft--;
+        if (blankLeft > 0) goto blank_copy;
+        blankDst[-1] = 0;
+        goto rank_done;
+blank_copy:
+        blankC = *blankSrc++;
+        *blankDst++ = blankC;
+        if ((signed char)blankC != 0) goto blank_next;
     }
-b_done:
-    if (*(int *)(o + 0xC8) >= fn_8001EFA8(*(int *)(o + 0x18))) {
+rank_done:
+    // The last threshold has a name of its own instead of a "next goal" line.
+    if (row->rank >= fn_8001EFA8(row->achievement)) {
         fn_80214AF0(0x15); fn_80214A9C(0x14);
     } else {
         fn_80214AF0(0x14); fn_80214A9C(0x15);
     }
-    if (*(int *)(o + 0xC8) == 0 || *(unsigned char *)(o + 0xC4)) fn_80214A9C(0xF);
+    if (row->rank == 0 || row->flagC4) fn_80214A9C(0xF);
     else fn_80214AF0(0xF);
-    if (*(unsigned char *)(o + 0xC4)) fn_80214A9C(0xE);
+    if (row->flagC4) fn_80214A9C(0xE);
     else fn_80214AF0(0xE);
-    if (*(int *)(o + 0xC8) < 2 || *(unsigned char *)(o + 0xC4)) fn_80214A9C(0x11);
+    if (row->rank < 2 || row->flagC4) fn_80214A9C(0x11);
     else fn_80214AF0(0x11);
-    if (*(unsigned char *)(o + 0x58) || IsLowAndFlagged_(o)) fn_80214A9C(0xD);
+    if (row->done || IsLowAndFlagged_(row)) fn_80214A9C(0xD);
     else fn_80214AF0(0xD);
 }
 #pragma cplusplus reset
