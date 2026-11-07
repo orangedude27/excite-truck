@@ -2807,124 +2807,128 @@ extern "C" s32 fn_8021D97C(void *arg0, s32 arg1) {
 #pragma optimization_level 2
 #pragma processor 750
 #pragma use_lmw_stmw off
-extern "C" void fn_8021DB58(u8 *arg0) {
-    struct SubClass {
+extern "C" void fn_8021DB58(u8 *self) {
+    /* Draws the two value rows of a memory card entry: each row asks its
+       ValueSource for a formatted string and texture, positions a sprite panel
+       over the screen-centred rect, and fades/slides the row in over its
+       0.3 s lifetime. */
+    struct ValueSource {
         int a, b, c;
-        virtual s32 v0();
-        virtual s32 v1();
+        virtual s32 isActive();
+        virtual s32 getSelection();
         virtual void v2();
         virtual void v3();
         virtual void v4();
-        virtual char *v5(f32);
+        virtual char *getText(f32);
         virtual void v6();
         virtual void v7();
-        virtual s32 v8();
-        virtual s32 v9();
+        virtual s32 isRow0Hidden();
+        virtual s32 isRow1Hidden();
     };
-    s32 flag;
-    s32 stateB;
-    f32 v1;
-    f32 v2;
-    f32 height;
-    f32 dec;
-    f32 base;
+    s32 isSelected;
+    s32 state1;
+    f32 slide0;
+    f32 slide1;
+    f32 rowHeight;
+    f32 x0;
+    f32 x1;
 
-    SubClass *sub = *(SubClass **)(arg0 + 0x254);
-    if (sub->v0() != 0) {
-        flag = (*(SubClass **)(arg0 + 0x254))->v1();
+    ValueSource *source = *(ValueSource **)(self + 0x254);
+    if (source->isActive() != 0) {
+        isSelected = (*(ValueSource **)(self + 0x254))->getSelection();
     } else {
-        flag = 0;
-        s32 *mode = *(s32 **)(arg0 + 0x258);
-        if (mode != 0 && *(s32 *)(arg0 + 0x25C) == *mode)
-            flag = 1;
+        isSelected = 0;
+        s32 *selection = *(s32 **)(self + 0x258);
+        if (selection != 0 && *(s32 *)(self + 0x25C) == *selection)
+            isSelected = 1;
     }
-    f32 spC = lbl_805634A8;
-    f32 sp8 = lbl_805634A8;
-    fn_80230C30(&spC, &sp8, *(s32 *)(arg0 + 4), *(s32 *)(arg0 + 8));
-    f32 step = (f32)((VfObj *)arg0)->vf28();
-    height = *(f32 *)((u8 *)lbl_8055E050 + 0x70) + step;
-    f32 range = (f32)(*(s32 *)(arg0 + 0x10) - *(s32 *)(arg0 + 8));
-    fn_80219660(arg0);
-    s32 stateA;
-    if (flag != 0) {
-        if (lbl_805634E8 + *(f32 *)(arg0 + 0x260) >= fn_8023659C())
-            stateA = 2;
+    f32 originX = lbl_805634A8;
+    f32 originY = lbl_805634A8;
+    fn_80230C30(&originX, &originY, *(s32 *)(self + 4), *(s32 *)(self + 8));
+    f32 frameIndex = (f32)((VfObj *)self)->vf28();
+    rowHeight = *(f32 *)((u8 *)lbl_8055E050 + 0x70) + frameIndex;
+    f32 rectHeight = (f32)(*(s32 *)(self + 0x10) - *(s32 *)(self + 8));
+    fn_80219660(self);
+    s32 state0;
+    if (isSelected != 0) {
+        if (lbl_805634E8 + *(f32 *)(self + 0x260) >= fn_8023659C())
+            state0 = 2;
         else
-            stateA = 1;
+            state0 = 1;
     } else {
-        stateA = 0;
+        state0 = 0;
     }
-    if (flag != 0) {
-        if (lbl_805634E8 + *(f32 *)(arg0 + 0x264) >= fn_8023659C())
-            stateB = 2;
+    if (isSelected != 0) {
+        if (lbl_805634E8 + *(f32 *)(self + 0x264) >= fn_8023659C())
+            state1 = 2;
         else
-            stateB = 1;
+            state1 = 1;
     } else {
-        stateB = 0;
+        state1 = 0;
     }
-    s32 a = fn_80211660(0);
-    s32 b = fn_80211660(1);
-    f32 timeA = fn_8023659C();
-    f32 cA = lbl_805634A4;
-    f32 tA = ((lbl_805634E8 + *(f32 *)(arg0 + 0x260)) - timeA - lbl_805634A8) / lbl_805634E8;
-    cA = (cA < tA) ? cA : tA;
-    cA = (cA > lbl_805634A8) ? cA : lbl_805634A8;
-    v1 = lbl_805634A8 + cA * lbl_805634C8;
-    f32 timeB = fn_8023659C();
-    f32 cB = lbl_805634A4;
-    f32 tB = ((lbl_805634E8 + *(f32 *)(arg0 + 0x264)) - timeB - lbl_805634A8) / lbl_805634E8;
-    cB = (cB < tB) ? cB : tB;
-    cB = (cB > lbl_805634A8) ? cB : lbl_805634A8;
-    v2 = lbl_805634A8 + cB * lbl_805634C8;
-    s32 res = fn_8022AB18(*(s32 *)(arg0 + 0x268), 0, 3);
-    f32 resf = (f32)res;
-    base = spC + resf;
-    fn_8022AAA8(*(void **)(arg0 + 0x268), (*(SubClass **)(arg0 + 0x254))->v5(resf));
-    res = fn_8022AB18(*(s32 *)(arg0 + 0x268), 1, 3);
-    sp8 = sp8 - (f32)res;
-    dec = (base - fn_80235EF0(a, stateA)) - v1;
-    base += v2;
-    s32 bits = fn_8022AA84(*(s32 *)(arg0 + 0x268));
-    if (bits & 4) {
-        f32 adj = height * lbl_805634C4;
-        dec -= adj;
-        base += adj;
+    s32 id0 = fn_80211660(0);
+    s32 id1 = fn_80211660(1);
+    f32 now0 = fn_8023659C();
+    f32 fade0 = lbl_805634A4;
+    f32 raw0 = ((lbl_805634E8 + *(f32 *)(self + 0x260)) - now0 - lbl_805634A8) / lbl_805634E8;
+    fade0 = (fade0 < raw0) ? fade0 : raw0;
+    fade0 = (fade0 > lbl_805634A8) ? fade0 : lbl_805634A8;
+    slide0 = lbl_805634A8 + fade0 * lbl_805634C8;
+    f32 now1 = fn_8023659C();
+    f32 fade1 = lbl_805634A4;
+    f32 raw1 = ((lbl_805634E8 + *(f32 *)(self + 0x264)) - now1 - lbl_805634A8) / lbl_805634E8;
+    fade1 = (fade1 < raw1) ? fade1 : raw1;
+    fade1 = (fade1 > lbl_805634A8) ? fade1 : lbl_805634A8;
+    slide1 = lbl_805634A8 + fade1 * lbl_805634C8;
+    s32 textWidth = fn_8022AB18(*(s32 *)(self + 0x268), 0, 3);
+    f32 textWidthF = (f32)textWidth;
+    x1 = originX + textWidthF;
+    fn_8022AAA8(*(void **)(self + 0x268), (*(ValueSource **)(self + 0x254))->getText(textWidthF));
+    textWidth = fn_8022AB18(*(s32 *)(self + 0x268), 1, 3);
+    originY = originY - (f32)textWidth;
+    x0 = (x1 - fn_80235EF0(id0, state0)) - slide0;
+    x1 += slide1;
+    s32 alignFlags = fn_8022AA84(*(s32 *)(self + 0x268));
+    if (alignFlags & 4) {
+        f32 halfHeight = rowHeight * lbl_805634C4;
+        x0 -= halfHeight;
+        x1 += halfHeight;
     } else {
-        s32 dir = bits & 2;
-        if (dir)
-            dec -= height;
-        if (!dir)
-            base += height;
+        s32 downward = alignFlags & 2;
+        if (downward)
+            x0 -= rowHeight;
+        if (!downward)
+            x1 += rowHeight;
     }
-    s32 colorA = -1;
-    s32 colorB = -1;
-    SubClass *sub2 = *(SubClass **)(arg0 + 0x254);
-    if (sub2 == 0 || sub2->v8() == 0) {
-        f32 timeC = fn_8023659C();
-        f32 c = lbl_805634A4;
-        f32 t = ((timeC - *(f32 *)(arg0 + 0x260)) - lbl_805634A8) / lbl_80563504;
-        c = (c < t) ? c : t;
-        c = (c > lbl_805634A8) ? c : lbl_805634A8;
-        colorA = ((s32)(lbl_80563508 + c * lbl_8056350C) << 24) | 0xFFFFFF;
+    s32 color0 = -1;
+    s32 color1 = -1;
+    ValueSource *source0 = *(ValueSource **)(self + 0x254);
+    if (source0 == 0 || source0->isRow0Hidden() == 0) {
+        f32 nowC = fn_8023659C();
+        f32 fade = lbl_805634A4;
+        f32 raw = ((nowC - *(f32 *)(self + 0x260)) - lbl_805634A8) / lbl_80563504;
+        fade = (fade < raw) ? fade : raw;
+        fade = (fade > lbl_805634A8) ? fade : lbl_805634A8;
+        color0 = ((s32)(lbl_80563508 + fade * lbl_8056350C) << 24) | 0xFFFFFF;
     }
-    SubClass *sub3 = *(SubClass **)(arg0 + 0x254);
-    if (sub3 == 0 || sub3->v9() == 0) {
-        f32 timeD = fn_8023659C();
-        f32 c = lbl_805634A4;
-        f32 t = ((timeD - *(f32 *)(arg0 + 0x264)) - lbl_805634A8) / lbl_80563504;
-        c = (c < t) ? c : t;
-        c = (c > lbl_805634A8) ? c : lbl_805634A8;
-        colorB = ((s32)(lbl_80563508 + c * lbl_8056350C) << 24) | 0xFFFFFF;
+    ValueSource *source1 = *(ValueSource **)(self + 0x254);
+    if (source1 == 0 || source1->isRow1Hidden() == 0) {
+        f32 nowC = fn_8023659C();
+        f32 fade = lbl_805634A4;
+        f32 raw = ((nowC - *(f32 *)(self + 0x264)) - lbl_805634A8) / lbl_80563504;
+        fade = (fade < raw) ? fade : raw;
+        fade = (fade > lbl_805634A8) ? fade : lbl_805634A8;
+        color1 = ((s32)(lbl_80563508 + fade * lbl_8056350C) << 24) | 0xFFFFFF;
     }
-    if ((*(SubClass **)(arg0 + 0x254) == 0 || (*(SubClass **)(arg0 + 0x254))->v8() != 0 || (f32)__fabs((double)v1) > *(f32 *)&lbl_80558DC4) && a != 0) {
-        f32 e = fn_80235EF0(a, stateA);
-        f32 h = fn_80235F64(a, stateA);
-        fn_802354A0(a, stateA, colorA, dec, sp8 + h * lbl_805634C4, lbl_805634A8, e, h);
+    if ((*(ValueSource **)(self + 0x254) == 0 || (*(ValueSource **)(self + 0x254))->isRow0Hidden() != 0 || (f32)__fabs((double)slide0) > *(f32 *)&lbl_80558DC4) && id0 != 0) {
+        f32 glyphWidth = fn_80235EF0(id0, state0);
+        f32 glyphHeight = fn_80235F64(id0, state0);
+        fn_802354A0(id0, state0, color0, x0, originY + glyphHeight * lbl_805634C4, lbl_805634A8, glyphWidth, glyphHeight);
     }
-    if ((*(SubClass **)(arg0 + 0x254) == 0 || (*(SubClass **)(arg0 + 0x254))->v9() != 0 || (f32)__fabs((double)v2) > *(f32 *)&lbl_80558DC4) && b != 0) {
-        f32 e = fn_80235EF0(b, stateB);
-        f32 h = fn_80235F64(b, stateB);
-        fn_802354A0(b, stateB, colorB, base, sp8 + h * lbl_805634C4, lbl_805634A8, e, h);
+    if ((*(ValueSource **)(self + 0x254) == 0 || (*(ValueSource **)(self + 0x254))->isRow1Hidden() != 0 || (f32)__fabs((double)slide1) > *(f32 *)&lbl_80558DC4) && id1 != 0) {
+        f32 glyphWidth = fn_80235EF0(id1, state1);
+        f32 glyphHeight = fn_80235F64(id1, state1);
+        fn_802354A0(id1, state1, color1, x1, originY + glyphHeight * lbl_805634C4, lbl_805634A8, glyphWidth, glyphHeight);
     }
 }
 #pragma pop
