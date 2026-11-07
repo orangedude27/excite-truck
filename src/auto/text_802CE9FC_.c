@@ -1726,6 +1726,15 @@ extern void GXLoadLightObjImm(void *, unsigned int);
 extern void GXSetChanCtrl(int, int, int, int, unsigned int, int, int);
 #pragma pop
 
+typedef struct Row3_802D18E8 {
+    float v[3][4];
+} Row3_802D18E8;
+typedef struct Entry_802D18E8 {
+    unsigned char c[4];
+    unsigned char pad[8];
+    float pos[3];
+    float strength;
+} Entry_802D18E8;
 #pragma scheduling reset
 #pragma paired off
 #pragma paired_single off
