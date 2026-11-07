@@ -1115,6 +1115,7 @@ extern "C" char lbl_8055C62C[8];
 extern "C" float lbl_80563F94;
 extern "C" float lbl_80563F98;
 extern "C" float lbl_80563F50;
+#pragma processor gekko
 extern "C" int fn_80272DCC(void *arg0, Parser2 *arg1) {
     Parser2 *p = arg1;
     char *o = (char *)arg0;
