@@ -5068,7 +5068,8 @@ void fn_80064278(s32 chan, s32 result) {
     if (result != 0) {
         cb->UNK_0x801 = 0xfc; // nothing usable came back
     } else if ((u8)(cb->UNK_0x801 + 0xFF) <= 1) { // force sensor or classic
-        WPADiDecode(chan, data, WM_EXTENSION_CONFIG_SIZE, 0x20);
+        WPADiDecode(chan, data, WM_EXTENSION_CONFIG_SIZE, (u8)WM_REG_EXTENSION_CONFIG);
+        // each 16-byte block ends with sum+0x55 and sum+0xAA over its first 14 bytes
         for (i = 0; i < 2; i++) {
             offset = i * 16;
             sum = 0;
