@@ -80,6 +80,7 @@ extern void *fn_8016C168(void *, s32);
 extern void *fn_8016C29C(void *, int);
 extern int fn_8016C25C(int, int);
 extern f32 lbl_80561984;
+extern int fn_8000DA10();
 typedef struct { s32 w[12]; } Blk8016C768;
 typedef struct { s32 data; s32 index; s32 count; s32 data2; } List8016C768;
 #define VT(obj, off) (*(void ***)(obj))[(off) / 4]
