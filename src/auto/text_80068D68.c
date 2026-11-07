@@ -13854,120 +13854,122 @@ void *fn_80095C64(void **head, u32 attr);
 typedef void (*tHID_HOST_SDP_CALLBACK)(UINT16 result, UINT16 attr_mask,
                                        void *p_sdp_rec /* tHID_DEV_SDP_INFO * */);
 
-/* lbl_803C3C38 is the HID host control block hh_cb (tHID_HOST_CTB); the device
-   table and the L2CAP config come in front of the part used here:
-     0x380  BOOLEAN            sdp_busy
-     0x384  tHID_HOST_SDP_CALLBACK *sdp_cback
-     0x388  tSDP_DISCOVERY_DB  *p_sdp_db
-     0x38c  tHID_DEV_SDP_INFO  sdp_rec
-   It is addressed by raw offsets: a typed base pointer makes the compiler fold
-   0x380 into the address setup instead of the load/store offsets. */
+/* SDP search callback of HID_HostGetSDPRecord: pulls the device's Human Interface
+   Service record out of the discovery database into hh_cb.sdp_rec, collects the
+   optional attributes into an attribute mask and reports both to the
+   application's callback. */
 void hidh_search_callback(UINT16 sdp_result) {
-    tSDP_DISCOVERY_DB *p_db = *(tSDP_DISCOVERY_DB **)(lbl_803C3C38 + 0x388);
+    tSDP_DISCOVERY_DB *p_db = *(tSDP_DISCOVERY_DB **)(lbl_803C3C38 + 0x388);  // hh_cb.p_sdp_db
     tSDP_DISC_REC *p_rec;
     tSDP_DISC_ATTR *p_attr;
     tSDP_DISC_ATTR *p_subattr1;
     tSDP_DISC_ATTR *p_subattr2;
     tSDP_DISC_ATTR *p_repdesc;
     tBT_UUID hid_uuid;
-    u8 *p_nvi = lbl_803C3C38 + 0x38c;
+    tHID_DEV_SDP_INFO *p_nvi = (tHID_DEV_SDP_INFO *)(lbl_803C3C38 + 0x38c);  // &hh_cb.sdp_rec
     UINT16 attr_mask = 0;
     UINT16 len;
 
     hid_uuid.len = LEN_UUID_16;
     hid_uuid.uu.uuid16 = UUID_SERVCLASS_HUMAN_INTERFACE;
-    lbl_803C3C38[0x380] = FALSE;
+
+    lbl_803C3C38[0x380] = FALSE;  // hh_cb.sdp_busy
     if (sdp_result != SDP_SUCCESS) {
-        (*(void (**)(UINT16, UINT16, void *))(lbl_803C3C38 + 0x384))(sdp_result, 0, NULL);
+        (*(tHID_HOST_SDP_CALLBACK *)(lbl_803C3C38 + 0x384))(sdp_result, 0, NULL);
         return;
     }
     if ((p_rec = SDP_FindServiceUUIDInDb(p_db, &hid_uuid, NULL)) == NULL) {
-        (*(void (**)(UINT16, UINT16, void *))(lbl_803C3C38 + 0x384))(0xC, 0, NULL);
+        (*(tHID_HOST_SDP_CALLBACK *)(lbl_803C3C38 + 0x384))(HID_SDP_NO_SERV_UUID, 0, NULL);
         return;
     }
-    memset(p_nvi, 0, 0x74);
-    if (((p_attr = fn_80095C64((void **)p_rec, 0x206)) == NULL)
-        || ((*(UINT16 *)((u8 *)p_attr + 6) >> 12) != 6)
-        || ((p_subattr1 = *(tSDP_DISC_ATTR **)((u8 *)p_attr + 8)) == NULL)
-        || ((*(UINT16 *)((u8 *)p_subattr1 + 6) >> 12) != 6)
-        || ((p_subattr2 = *(tSDP_DISC_ATTR **)((u8 *)p_subattr1 + 8)) == NULL)
-        || ((p_repdesc = *(tSDP_DISC_ATTR **)p_subattr2) == NULL)
-        || ((*(UINT16 *)((u8 *)p_repdesc + 6) >> 12) != 4)) {
-        (*(void (**)(UINT16, UINT16, void *))(lbl_803C3C38 + 0x384))(0xD, 0, NULL);
+    memset(p_nvi, 0, sizeof(tHID_DEV_SDP_INFO));
+    /* First, verify the mandatory fields we care about: the first report
+       descriptor of the HID descriptor list has to be a text string. */
+    if (((p_attr = fn_80095C64((void **)p_rec, ATTR_ID_HID_DESCRIPTOR_LIST)) == NULL)
+        || (SDP_DISC_ATTR_TYPE(p_attr->attr_len_type) != DATA_ELE_SEQ_DESC_TYPE)
+        || ((p_subattr1 = p_attr->attr_value.v.p_sub_attr) == NULL)
+        || (SDP_DISC_ATTR_TYPE(p_subattr1->attr_len_type) != DATA_ELE_SEQ_DESC_TYPE)
+        || ((p_subattr2 = p_subattr1->attr_value.v.p_sub_attr) == NULL)
+        || ((p_repdesc = p_subattr2->p_next_attr) == NULL)
+        || (SDP_DISC_ATTR_TYPE(p_repdesc->attr_len_type) != TEXT_STR_DESC_TYPE)) {
+        (*(tHID_HOST_SDP_CALLBACK *)(lbl_803C3C38 + 0x384))(HID_SDP_MANDATORY_MISSING, 0, NULL);
         return;
     }
-    len = *(UINT16 *)((u8 *)p_repdesc + 6) & 0xFFF;
-    *(UINT16 *)(p_nvi + 0x68) = len;
+    len = SDP_DISC_ATTR_LEN(p_repdesc->attr_len_type);
+    p_nvi->dscp_info.dl_len = len;
     if (len != 0)
-        *(u8 **)(p_nvi + 0x6C) = (u8 *)p_repdesc + 8;
+        p_nvi->dscp_info.dsc_list = (UINT8 *)&p_repdesc->attr_value;
 
-    p_attr = fn_80095C64((void **)p_rec, 0x204);
-    if (p_attr != NULL && *((u8 *)p_attr + 8)) attr_mask |= 1;
-    p_attr = fn_80095C64((void **)p_rec, 0x205);
-    if (p_attr != NULL && *((u8 *)p_attr + 8)) attr_mask |= 4;
-    p_attr = fn_80095C64((void **)p_rec, 0x20D);
-    if (p_attr != NULL && *((u8 *)p_attr + 8)) attr_mask |= 2;
-    p_attr = fn_80095C64((void **)p_rec, 0x208);
-    if (p_attr != NULL && *((u8 *)p_attr + 8)) attr_mask |= 8;
-    p_attr = fn_80095C64((void **)p_rec, 0x209);
-    if (p_attr != NULL && *((u8 *)p_attr + 8)) attr_mask |= 0x10;
-    p_attr = fn_80095C64((void **)p_rec, 0x20A);
-    if (p_attr != NULL && *((u8 *)p_attr + 8)) attr_mask |= 0x20;
+    /* The optional boolean attributes, each with its bit in the mask. */
+    p_attr = fn_80095C64((void **)p_rec, ATTR_ID_HID_VIRTUAL_CABLE);
+    if (p_attr != NULL && p_attr->attr_value.v.u8) attr_mask |= HID_VIRTUAL_CABLE;
+    p_attr = fn_80095C64((void **)p_rec, ATTR_ID_HID_RECONNECT_INITIATE);
+    if (p_attr != NULL && p_attr->attr_value.v.u8) attr_mask |= HID_RECONN_INIT;
+    p_attr = fn_80095C64((void **)p_rec, ATTR_ID_HID_NORMALLY_CONNECTABLE);
+    if (p_attr != NULL && p_attr->attr_value.v.u8) attr_mask |= HID_NORMALLY_CONNECTABLE;
+    p_attr = fn_80095C64((void **)p_rec, ATTR_ID_HID_SDP_DISABLE);
+    if (p_attr != NULL && p_attr->attr_value.v.u8) attr_mask |= HID_SDP_DISABLE;
+    p_attr = fn_80095C64((void **)p_rec, ATTR_ID_HID_BATTERY_POWER);
+    if (p_attr != NULL && p_attr->attr_value.v.u8) attr_mask |= HID_BATTERY_POWER;
+    p_attr = fn_80095C64((void **)p_rec, ATTR_ID_HID_REMOTE_WAKE);
+    if (p_attr != NULL && p_attr->attr_value.v.u8) attr_mask |= HID_REMOTE_WAKE;
 
-    p_attr = fn_80095C64((void **)p_rec, 0x100);
+    /* The three display strings, truncated to their buffer with a NUL. */
+    p_attr = fn_80095C64((void **)p_rec, ATTR_ID_SERVICE_NAME);
     if (p_attr != NULL) {
-        len = *(UINT16 *)((u8 *)p_attr + 6) & 0xFFF;
-        if (len < 0x20) {
-            memcpy(p_nvi, (u8 *)p_attr + 8, len);
-            p_nvi[len] = 0;
+        len = SDP_DISC_ATTR_LEN(p_attr->attr_len_type);
+        if (len < HID_MAX_SVC_NAME_LEN) {
+            memcpy(p_nvi->svc_name, p_attr->attr_value.v.array, len);
+            p_nvi->svc_name[len] = 0;
         } else {
-            memcpy(p_nvi, (u8 *)p_attr + 8, 0x1F);
-            p_nvi[0x20] = 0;
+            memcpy(p_nvi->svc_name, p_attr->attr_value.v.array, HID_MAX_SVC_NAME_LEN - 1);
+            p_nvi->svc_name[HID_MAX_SVC_NAME_LEN] = 0;
         }
     } else
-        p_nvi[0] = 0;
+        p_nvi->svc_name[0] = 0;
 
-    p_attr = fn_80095C64((void **)p_rec, 0x101);
+    p_attr = fn_80095C64((void **)p_rec, ATTR_ID_SERVICE_DESCRIPTION);
     if (p_attr != NULL) {
-        len = *(UINT16 *)((u8 *)p_attr + 6) & 0xFFF;
-        if (len < 0x20) {
-            memcpy(p_nvi + 0x20, (u8 *)p_attr + 8, len);
-            *(p_nvi + len + 0x20) = 0;
+        len = SDP_DISC_ATTR_LEN(p_attr->attr_len_type);
+        if (len < HID_MAX_SVC_DESCR_LEN) {
+            memcpy(p_nvi->svc_descr, p_attr->attr_value.v.array, len);
+            p_nvi->svc_descr[len] = 0;
         } else {
-            memcpy(p_nvi + 0x20, (u8 *)p_attr + 8, 0x1F);
-            p_nvi[0x40] = 0;
+            memcpy(p_nvi->svc_descr, p_attr->attr_value.v.array, HID_MAX_SVC_DESCR_LEN - 1);
+            p_nvi->svc_descr[HID_MAX_SVC_DESCR_LEN] = 0;
         }
     } else
-        p_nvi[0x20] = 0;
+        p_nvi->svc_descr[0] = 0;
 
-    p_attr = fn_80095C64((void **)p_rec, 0x102);
+    p_attr = fn_80095C64((void **)p_rec, ATTR_ID_PROVIDER_NAME);
     if (p_attr != NULL) {
-        len = *(UINT16 *)((u8 *)p_attr + 6) & 0xFFF;
-        if (len < 0x20) {
-            memcpy(p_nvi + 0x40, (u8 *)p_attr + 8, len);
-            *(p_nvi + len + 0x40) = 0;
+        len = SDP_DISC_ATTR_LEN(p_attr->attr_len_type);
+        if (len < HID_MAX_PROV_NAME_LEN) {
+            memcpy(p_nvi->prov_name, p_attr->attr_value.v.array, len);
+            p_nvi->prov_name[len] = 0;
         } else {
-            memcpy(p_nvi + 0x40, (u8 *)p_attr + 8, 0x1F);
-            p_nvi[0x60] = 0;
+            memcpy(p_nvi->prov_name, p_attr->attr_value.v.array, HID_MAX_PROV_NAME_LEN - 1);
+            p_nvi->prov_name[HID_MAX_PROV_NAME_LEN] = 0;
         }
     } else
-        p_nvi[0x40] = 0;
+        p_nvi->prov_name[0] = 0;
 
-    p_attr = fn_80095C64((void **)p_rec, 0x200);
-    if (p_attr != NULL) *(UINT16 *)(p_nvi + 0x60) = *(UINT16 *)((u8 *)p_attr + 8);
-    p_attr = fn_80095C64((void **)p_rec, 0x203);
-    if (p_attr != NULL) p_nvi[0x65] = *((u8 *)p_attr + 8);
-    p_attr = fn_80095C64((void **)p_rec, 0x202);
-    if (p_attr != NULL) p_nvi[0x64] = *((u8 *)p_attr + 8);
-    p_attr = fn_80095C64((void **)p_rec, 0x201);
-    if (p_attr != NULL) *(UINT16 *)(p_nvi + 0x62) = *(UINT16 *)((u8 *)p_attr + 8);
-    p_attr = fn_80095C64((void **)p_rec, 0x20C);
+    p_attr = fn_80095C64((void **)p_rec, ATTR_ID_HID_DEVICE_RELNUM);
+    if (p_attr != NULL) p_nvi->rel_num = p_attr->attr_value.v.u16;
+    p_attr = fn_80095C64((void **)p_rec, ATTR_ID_HID_COUNTRY_CODE);
+    if (p_attr != NULL) p_nvi->ctry_code = p_attr->attr_value.v.u8;
+    p_attr = fn_80095C64((void **)p_rec, ATTR_ID_HID_DEVICE_SUBCLASS);
+    if (p_attr != NULL) p_nvi->sub_class = p_attr->attr_value.v.u8;
+    p_attr = fn_80095C64((void **)p_rec, ATTR_ID_HID_PARSER_VERSION);
+    if (p_attr != NULL) p_nvi->hpars_ver = p_attr->attr_value.v.u16;
+    p_attr = fn_80095C64((void **)p_rec, ATTR_ID_HID_LINK_SUPERVISION_TO);
     if (p_attr != NULL) {
-        attr_mask |= 0x40;
-        *(UINT16 *)(p_nvi + 0x66) = *(UINT16 *)((u8 *)p_attr + 8);
+        attr_mask |= HID_SUP_TOUT_AVLBL;
+        p_nvi->sup_timeout = p_attr->attr_value.v.u16;
     }
-    *(tSDP_DISC_REC **)(lbl_803C3C38 + 0x3FC) = p_rec;
-    (*(void (**)(UINT16, UINT16, void *))(lbl_803C3C38 + 0x384))(0, attr_mask, lbl_803C3C38 + 0x38c);
+    *(tSDP_DISC_REC **)(lbl_803C3C38 + 0x3FC) = p_rec;  // hh_cb.sdp_rec.p_sdp_layer_rec
+    (*(tHID_HOST_SDP_CALLBACK *)(lbl_803C3C38 + 0x384))(SDP_SUCCESS, attr_mask,
+                                                       lbl_803C3C38 + 0x38c);
 }
 
 void fn_800869CC(void) {
