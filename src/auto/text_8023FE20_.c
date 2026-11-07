@@ -23,6 +23,8 @@ extern s32 fn_80232578(char *, char *, s32);
 extern char lbl_80498828[];
 extern void *fn_80241098(void *);
 extern void fn_802E317C(char *, ...);
+typedef struct Fn241820VT { int pad[3]; int (*isActive)(void *); } Fn241820VT;
+typedef struct Fn241820Obj { char pad[0xc]; Fn241820VT *vt; } Fn241820Obj;
 void fn_8023FE20(void) {
     register int *p = (int *)lbl_80498828;
     *p++ = -1;
@@ -593,15 +595,16 @@ s32 fn_80241354(void *arg0, s32 arg1) {
     s32 direction = arg1;
     s32 active = 0;
     void *child;
-    volatile unsigned char *dst;
-    unsigned char *src;
-    int i, n, count, index, frame, boundary;
+    char c;
+    char *dst, *src;
+    int n, count, index, frame, boundary;
     int *animation;
-    unsigned char c;
-    float t, curveValue;
-    float start, end, diff, temp;
+    float curve, t;
+    float temp, diff, start, end;
+    register void *vtable = *(void **)(base + 0x0C);
+    register void *method = *(void **)((char *)vtable + 0x10);
     int result;
-    result = ((int (*)(void *))((void **)*(void **)(base + 0x0C))[4])(arg0);
+    result = ((int (*)(void *))method)(arg0);
     if (result != 0) {
         active = 1;
         switch (direction) {
@@ -631,8 +634,8 @@ s32 fn_80241354(void *arg0, s32 arg1) {
             **(void ***)(base + 0x34) = child;
             fn_80255918(*(void **)(base + 0x38), child);
             ((int (*)(void *, int, char *, ...))fn_801345D8)(base + 0x5C, 0x40, lbl_8034287C, *(int *)(base + 0x2C) + 1);
-            src = (unsigned char *)fn_80131234(base + 0x5C);
-            dst = (unsigned char *)(base + 0x5C);
+            src = (char *)fn_80131234(base + 0x5C);
+            dst = base + 0x5C;
             n = 0x40;
             goto copy_body_forward;
 copy_check_forward:
@@ -647,22 +650,21 @@ copy_body_forward:
 copy_done_forward:
             ;
         }
-        index = *(int *)(base + 0x2C);
         animation = *(int **)(base + 0x30);
-        *animation = index;
+        *animation = *(int *)(base + 0x2C);
         frame = (int)(fn_8023659C(animation) * lbl_80563768);
         temp = (float)(frame - *(int *)(base + 0x48)) / lbl_8056376C;
-        t = lbl_80563764;
-        if (t < temp) t = temp;
-        if (t > lbl_80563758) t = lbl_80563758;
-        curveValue = lbl_80563770;
+        if (temp < lbl_80563764) t = lbl_80563764;
+        else if (temp > lbl_80563758) t = lbl_80563758;
+        else t = temp;
+        curve = lbl_80563770;
         if (t >= lbl_80563770) {
             if (t > lbl_80563764) {
-                curveValue = lbl_80563764;
+                curve = lbl_80563764;
             } else if (t > lbl_80563758) {
-                curveValue = t * (lbl_80563774 * t * t) + lbl_80563778 * t * t;
+                curve = t * (lbl_80563774 * t * t) + lbl_80563778 * t * t;
             } else {
-                curveValue = t * (lbl_80563774 * t * t) - lbl_80563778 * t * t;
+                curve = t * (lbl_80563774 * t * t) - lbl_80563778 * t * t;
             }
         }
         start = *(float *)(base + 0x4C);
@@ -670,7 +672,7 @@ copy_done_forward:
         diff = end - start;
         *(int *)(base + 0x48) = frame;
         *(float *)(base + 0x58) = lbl_8056377C;
-        *(float *)(base + 0x4C) = start + curveValue * diff;
+        *(float *)(base + 0x4C) = start + curve * diff;
         *(float *)(base + 0x50) = (float)*(int *)(base + 0x2C);
         break;
         case 0x125:
@@ -698,8 +700,8 @@ copy_done_forward:
             **(void ***)(base + 0x34) = child;
             fn_80255918(*(void **)(base + 0x38), child);
             ((int (*)(void *, int, char *, ...))fn_801345D8)(base + 0x5C, 0x40, lbl_8034287C, *(int *)(base + 0x2C) + 1);
-            src = (unsigned char *)fn_80131234(base + 0x5C);
-            dst = (unsigned char *)(base + 0x5C);
+            src = (char *)fn_80131234(base + 0x5C);
+            dst = base + 0x5C;
             n = 0x40;
             goto copy_body_backward;
 copy_check_backward:
@@ -714,22 +716,21 @@ copy_body_backward:
 copy_done_backward:
             ;
         }
-        index = *(int *)(base + 0x2C);
         animation = *(int **)(base + 0x30);
-        *animation = index;
+        *animation = *(int *)(base + 0x2C);
         frame = (int)(fn_8023659C(animation) * lbl_80563768);
         temp = (float)(frame - *(int *)(base + 0x48)) / lbl_8056376C;
-        t = lbl_80563764;
-        if (t < temp) t = temp;
-        if (t > lbl_80563758) t = lbl_80563758;
-        curveValue = lbl_80563770;
+        if (temp < lbl_80563764) t = lbl_80563764;
+        else if (temp > lbl_80563758) t = lbl_80563758;
+        else t = temp;
+        curve = lbl_80563770;
         if (t >= lbl_80563770) {
             if (t > lbl_80563764) {
-                curveValue = lbl_80563764;
+                curve = lbl_80563764;
             } else if (t > lbl_80563758) {
-                curveValue = t * (lbl_80563774 * t * t) + lbl_80563778 * t * t;
+                curve = t * (lbl_80563774 * t * t) + lbl_80563778 * t * t;
             } else {
-                curveValue = t * (lbl_80563774 * t * t) - lbl_80563778 * t * t;
+                curve = t * (lbl_80563774 * t * t) - lbl_80563778 * t * t;
             }
         }
         start = *(float *)(base + 0x4C);
@@ -737,7 +738,7 @@ copy_done_backward:
         diff = end - start;
         *(int *)(base + 0x48) = frame;
         *(float *)(base + 0x54) = lbl_8056377C;
-        *(float *)(base + 0x4C) = start + curveValue * diff;
+        *(float *)(base + 0x4C) = start + curve * diff;
         *(float *)(base + 0x50) = (float)*(int *)(base + 0x2C);
         break;
         default:
@@ -749,6 +750,104 @@ copy_done_backward:
 done:
     return active;
 }
+
+extern float lbl_80563780, lbl_80563784, lbl_80563788, lbl_8056378C, lbl_80563790, lbl_80563794;
+extern float fn_8023659C();
+extern void fn_802354A0(int, int, unsigned, float, float, float, float, float);
+extern void fn_80235758(int, int, unsigned, float, float, float, float, float, float, float, float);
+extern s32 fn_80211660(s32);
+extern float fn_80235F64(s32, s32);
+extern float fn_80235EF0(s32, s32);
+extern void fn_802353F4(s32, s32, float, float, float);
+extern void fn_8022BD40(int, void *, int, int, float, float, float, float, float, float, float, float);
+#pragma push
+#pragma processor 750
+void fn_80241820(void *arg0) {
+    char *self = (char *)arg0;
+    float sy, sx;
+    if (*(int *)(self + 0x28) != 0 && ((int (*)(void *))(*(void ***)(self + 0xc))[3])(self) != 0) {
+        float w, h, cw, t, c, v;
+        float base;
+        int i;
+        fn_80230C30(&sx, &sy, *(int *)(self + 0x14), *(int *)(self + 0x18));
+        w = (float)*(int *)(self + 0x1c);
+        cw = w / lbl_80563780;
+        h = (float)*(int *)(self + 0x20);
+        t = (float)((int)(lbl_80563768 * fn_8023659C()) - *(int *)(self + 0x48)) / lbl_8056376C;
+        t = (lbl_80563764 < t) ? lbl_80563764 : t;
+        t = (t > lbl_80563758) ? t : lbl_80563758;
+        c = lbl_80563770;
+        if (t < c) {
+        } else {
+            c = lbl_80563764;
+            if (t > c) {
+            } else if (t > lbl_80563758) {
+                c = t * (lbl_80563774 * t * t) + lbl_80563778 * t * t;
+            } else {
+                c = t * (lbl_80563774 * t * t) - lbl_80563778 * t * t;
+            }
+        }
+        base = ((sx + w * lbl_80563784) - cw * lbl_80563784) - cw * (*(float *)(self + 0x4c) + c * (*(float *)(self + 0x50) - *(float *)(self + 0x4c)));
+        for (i = 0; i < *(int *)(*(char **)(self + 0x28) + 0x98); i++) {
+            float x = base + (float)i * cw;
+            if (x + cw > sx && x < sx + w) {
+                unsigned col, white;
+                int a;
+                v = (x + cw * lbl_80563784) - sx;
+                if (v > w * lbl_80563784) v = w - v;
+                v = (v - lbl_80563758) / (w * lbl_80563784 - lbl_80563758);
+                if (lbl_80563764 < v) v = lbl_80563764;
+                v = (v > lbl_80563758) ? v : lbl_80563758;
+                a = (int)(lbl_80563790 * (lbl_80563788 + v * lbl_8056378C));
+                col = *(unsigned *)(*(char **)(self + 0x28) + i * 4 + 0x64);
+                white = (a << 24) | 0xFFFFFF;
+                col = (col & 0xFFFFFF) | (a << 24);
+                if (x > sx && x + cw < sx + w) {
+                    fn_802354A0(*(int *)(self + 0x44), 3, col, x, sy, lbl_80563758, cw, h);
+                    fn_802354A0(*(int *)(self + 0x44), 6, white, x, sy, lbl_80563758, cw, h);
+                } else if (x > sx) {
+                    float p = cw - ((x + cw) - (sx + w));
+                    float q = p / cw;
+                    fn_80235758(*(int *)(self + 0x44), 3, col, x, sy, p, h, lbl_80563758, lbl_80563758, q, lbl_80563764);
+                    fn_80235758(*(int *)(self + 0x44), 6, white, x, sy, p, h, lbl_80563758, lbl_80563758, q, lbl_80563764);
+                } else {
+                    float p = cw - (sx - x);
+                    float q = (cw - p) / cw;
+                    fn_80235758(*(int *)(self + 0x44), 3, col, sx, sy, p, h, q, lbl_80563758, lbl_80563764, lbl_80563764);
+                    fn_80235758(*(int *)(self + 0x44), 6, white, sx, sy, p, h, q, lbl_80563758, lbl_80563764, lbl_80563764);
+                }
+            }
+        }
+        if (((int (*)(void *))(*(void ***)(self + 0xc))[3])(self) != 0) {
+            if (*(int *)(self + 0x2c) > 0) {
+                s32 o = fn_80211660(0);
+                float k = (h - fn_80235F64(o, 1)) * lbl_80563784;
+                float m = lbl_80563794 + *(float *)(self + 0x54);
+                fn_802353F4(o, 1, (sx - fn_80235EF0(o, 1)) - m, sy - k, lbl_80563758);
+            }
+            if (*(int *)(self + 0x2c) < *(int *)(*(char **)(self + 0x28) + 0x98) - 1) {
+                s32 o = fn_80211660(1);
+                float k = (h - fn_80235F64(o, 1)) * lbl_80563784;
+                fn_802353F4(o, 1, (lbl_80563794 + *(float *)(self + 0x58)) + (sx + w), sy - k, lbl_80563758);
+            }
+            {
+                float a = *(float *)(self + 0x54) - lbl_80563764;
+                float b;
+                *(float *)(self + 0x54) = (lbl_80563758 > a) ? lbl_80563758 : a;
+                b = *(float *)(self + 0x58) - lbl_80563764;
+                *(float *)(self + 0x58) = (lbl_80563758 > b) ? lbl_80563758 : b;
+            }
+        }
+    } else {
+        float x = (float)*(int *)(self + 0x14);
+        float y = (float)*(int *)(self + 0x18);
+        float w = (float)*(int *)(self + 0x1c);
+        float h = (float)*(int *)(self + 0x20);
+        fn_8022BD40(0xCC, self + 0x5C, 0, 0, x + lbl_80563784 * w, y + lbl_80563784 * h, lbl_80563758, w, h, lbl_80563764, x, y);
+    }
+}
+#pragma pop
+
 #pragma scheduling on
 #pragma optimize_for_size on
 void fn_80241DE8(void *arg0) {
