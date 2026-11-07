@@ -103,6 +103,15 @@ struct LayoutStrings {
     char wheel[0xC];
     char warn_no_bone[0x2C];
 };
+struct CarObject {
+    s32 count;
+    s32 unk4;
+    u8 pad8[0x30];
+    Element_80278A64 elems[0xA1];
+    void* items20EC;
+    s32 count20F0;
+    Entry20F4 wheels[4];
+};
 #pragma cplusplus reset
 
 s32 fn_80278A1C(void) {
@@ -139,7 +148,7 @@ extern "C" void fn_80278A28(void* arg0) {
 #pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" void fn_80278A64(void* object_arg, void* file_arg, void* file2_arg, s32 name_arg) {
-    char* base = lbl_80347690;
+    LayoutStrings* base = (LayoutStrings*)lbl_80347690;
     File_80279004* file = (File_80279004*)file_arg;
     u8* object = (u8*)object_arg;
     Res_80279004* res2;
@@ -174,7 +183,7 @@ extern "C" void fn_80278A64(void* object_arg, void* file_arg, void* file2_arg, s
                     }
                 }
                 if (res != NULL) {
-                    v1 = res2->getVec(base + 0x0);
+                    v1 = res2->getVec(base->travel_min);
                     elem->v1.x = v1.x;
                     elem->v1.y = v1.y;
                     elem->v1.z = v1.z;
@@ -182,7 +191,7 @@ extern "C" void fn_80278A64(void* object_arg, void* file_arg, void* file2_arg, s
                     elem->v1.y *= scale;
                     elem->v1.z *= scale;
 
-                    v2 = res2->getVec(base + 0xC);
+                    v2 = res2->getVec(base->travel_max);
                     elem->v2.x = v2.x;
                     elem->v2.y = v2.y;
                     elem->v2.z = v2.z;
@@ -190,7 +199,7 @@ extern "C" void fn_80278A64(void* object_arg, void* file_arg, void* file2_arg, s
                     elem->v2.y *= scale;
                     elem->v2.z *= scale;
 
-                    v3 = res2->getVec(base + 0x18);
+                    v3 = res2->getVec(base->link_center);
                     elem->v3.x = v3.x;
                     elem->v3.y = v3.y;
                     elem->v3.z = v3.z;
@@ -198,15 +207,15 @@ extern "C" void fn_80278A64(void* object_arg, void* file_arg, void* file2_arg, s
                     elem->v3.y *= scale;
                     elem->v3.z *= scale;
 
-                    elem->b30 = res->getByte(base + 0x24, 0);
-                    elem->f2C = res->getFloat(base + 0x30);
-                    elem->f28 = res->getFloatDefault(base + 0x3C, lbl_805640D0);
+                    elem->b30 = res->getByte(base->is_welded, 0);
+                    elem->f2C = res->getFloat(base->weakness);
+                    elem->f28 = res->getFloatDefault(base->dmg_dist, lbl_805640D0);
                 } else {
-                    fn_802E30C8(base + 0x48, name, i);
+                    fn_802E30C8(base->warn_bad_bone, name, i);
                     fn_80278A28(elem);
                 }
             } else {
-                fn_802E30C8(base + 0x48, name, i);
+                fn_802E30C8(base->warn_bad_bone, name, i);
                 fn_80278A28(elem);
             }
         }
@@ -219,7 +228,7 @@ extern "C" void fn_80278A64(void* object_arg, void* file_arg, void* file2_arg, s
             }
         }
 
-        *(void**)(object + 0x20EC) = fn_8012850C(*(s32*)(object + 0x20F0) * 0x14, base + 0x84);
+        *(void**)(object + 0x20EC) = fn_8012850C(*(s32*)(object + 0x20F0) * 0x14, base->bone_conn);
         *(s32*)(object + 0x20F0) = 0;
 
         i = 0;
@@ -235,10 +244,10 @@ extern "C" void fn_80278A64(void* object_arg, void* file_arg, void* file2_arg, s
                 entry->fC = child->getFloat(lbl_8055C698);
                 entry->f10 = child->getFloatDefault(lbl_8055C6A0, lbl_805640C4);
                 if (entry->id1 < 1 || entry->id1 >= 0xA2) {
-                    fn_802E317C(base + 0x98, entry->id1);
+                    fn_802E317C(base->link_out_of_range, entry->id1);
                 }
                 if (entry->id2 < 1 || entry->id2 >= 0xA2) {
-                    fn_802E317C(base + 0x98, entry->id2);
+                    fn_802E317C(base->link_out_of_range, entry->id2);
                 }
             }
         }
@@ -251,7 +260,7 @@ extern "C" void fn_80278A64(void* object_arg, void* file_arg, void* file2_arg, s
         const char** key_ptr = keys.k;
         Entry20F4* entry20F4 = (Entry20F4*)(object + 0x20F4);
         for (i = 0; i < 4; i++, key_ptr++, entry20F4++) {
-            sprintf(wheelName, base + 0xBC, *key_ptr);
+            sprintf(wheelName, base->wheel, *key_ptr);
             Res_80279004* wres = file->hasRes(wheelName) ? file->getRes(wheelName) : NULL;
             memset(entry20F4, 0, sizeof(Entry20F4));
             if (wres != NULL) {
@@ -263,7 +272,7 @@ extern "C" void fn_80278A64(void* object_arg, void* file_arg, void* file2_arg, s
         }
         return;
     }
-    fn_802E30C8(base + 0xC8, name);
+    fn_802E30C8(base->warn_no_bone, name);
     memset(object + 4, 0, 0x20E8);
     *(s32*)(object + 0x20F0) = 0;
     memset(object + 0x20F4, 0, 0x40);
