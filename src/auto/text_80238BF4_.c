@@ -33,15 +33,17 @@ extern char lbl_80340AD0[];
 extern char lbl_80340B00[];
 
 #define SWAP16_AT(ptr, off) do { \
+    u8 _t; \
     u8 *_p = (u8 *)(ptr); \
-    u8 _t = _p[(off) + 0]; \
+    _t = _p[(off) + 0]; \
     _p[(off) + 0] = _p[(off) + 1]; \
     _p[(off) + 1] = _t; \
 } while (0)
 
 #define SWAP32_AT(ptr, off) do { \
+    u8 _t; \
     u8 *_p = (u8 *)(ptr); \
-    u8 _t = _p[(off) + 0]; \
+    _t = _p[(off) + 0]; \
     _p[(off) + 0] = _p[(off) + 3]; \
     _p[(off) + 3] = _t; \
     _t = _p[(off) + 1]; \
@@ -213,11 +215,8 @@ void fn_802390B4(void *arg0, s32 arg1) {
     }
     if (swap != 0) {
         u8 *data = *(u8 **)((u8 *)arg0 + 0x14);
-        u32 i;
-        u32 offset;
-        s32 j;
 
-        SWAP32_AT(data, 0x00);
+        SWAP32_AT(*(u8 **)((u8 *)arg0 + 0x14), 0x00);
         SWAP32_AT(*(u8 **)((u8 *)arg0 + 0x14), 0x04);
         SWAP32_AT(*(u8 **)((u8 *)arg0 + 0x14), 0x08);
         SWAP32_AT(*(u8 **)((u8 *)arg0 + 0x14), 0x0C);
@@ -228,50 +227,55 @@ void fn_802390B4(void *arg0, s32 arg1) {
         SWAP32_AT(*(u8 **)((u8 *)arg0 + 0x14), 0x20);
         SWAP32_AT(*(u8 **)((u8 *)arg0 + 0x14), 0x24);
 
-        *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18) += (u32)data;
-        *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C) += (u32)data;
-        *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x20) += (u32)data;
-        *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x24) += (u32)data;
+        {
+            u32 offset;
+            u32 i;
+            s32 j;
 
-        for (i = 0, offset = 0; i < *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 4); i++, offset += 0xC) {
-            u8 *entry = *(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x24) + offset;
-            *(u32 *)(entry + 8) += (u32)data;
-            if (*(u32 *)(entry + 4) != 0) {
-                *(u32 *)(entry + 4) += (u32)data;
-            }
-        }
+            *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18) = (u32)data + *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18);
+            *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C) = (u32)data + *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C);
+            *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x20) = (u32)data + *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x20);
+            *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x24) = (u32)data + *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0x24);
 
-        for (i = 0, offset = 0; i < *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 8); i++, offset += 0x14) {
-            u8 *entry = *(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18) + offset;
-            SWAP32_AT(entry, 0);
-        }
-
-        if (*(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0xC) != 0) {
-            for (i = 0, offset = 0; i < *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0xC); i++, offset += 0x28) {
-                u8 *entry = *(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C) + offset;
-                SWAP16_AT(entry, 0);
-                SWAP32_AT(entry, 4);
-                for (j = 0; j < 4; j++) {
-                    SWAP32_AT(entry + j * 8, 8);
-                    SWAP32_AT(entry + j * 8, 12);
+            for (offset = 0, i = 0; i < *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 4); offset += 0xC, i++) {
+                u8 *entry = *(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x24) + offset;
+                *(u32 *)(entry + 8) = (u32)data + *(u32 *)(entry + 8);
+                if (*(u32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x24) + offset + 4) != 0) {
+                    *(u32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x24) + offset + 4) = (u32)data + *(u32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x24) + offset + 4);
                 }
             }
-        }
 
-        for (i = 0, offset = 0; i < *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 4); i++, offset += 0xC) {
-            u8 *entry = *(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x24) + offset;
-            s32 subOffset;
-            SWAP16_AT(entry, 0);
-            for (j = 0, subOffset = 0; j < *(u16 *)entry; j++, subOffset += 0x1C) {
-                u8 *sub = *(u8 **)(entry + 8) + subOffset;
-                SWAP16_AT(sub, 0);
-                SWAP16_AT(sub, 2);
-                SWAP32_AT(sub, 4);
-                SWAP32_AT(sub, 8);
-                SWAP32_AT(sub, 0xC);
-                SWAP32_AT(sub, 0x10);
-                SWAP32_AT(sub, 0x14);
-                SWAP32_AT(sub, 0x18);
+            for (offset = 0, i = 0; i < *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 8); offset += 0x14, i++) {
+                u8 *entry = *(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18) + offset;
+                SWAP32_AT(entry, 0);
+            }
+
+            if (*(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0xC) != 0) {
+                for (offset = 0, i = 0; i < *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 0xC); offset += 0x28, i++) {
+                    SWAP16_AT(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C) + offset, 0);
+                    SWAP32_AT(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C) + offset, 4);
+                    for (j = 0; j < 0x20; j += 8) {
+                        SWAP32_AT(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C) + offset + j, 8);
+                        SWAP32_AT(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x1C) + offset + j, 12);
+                    }
+                }
+            }
+
+            for (offset = 0, i = 0; i < *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 4); offset += 0xC, i++) {
+                u8 *entry = *(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x24) + offset;
+                s32 subOffset;
+                SWAP16_AT(entry, 0);
+                for (j = 0, subOffset = 0; j < *(u16 *)entry; j++, subOffset += 0x1C) {
+                    u8 *sub = *(u8 **)(entry + 8) + subOffset;
+                    SWAP16_AT(sub, 0);
+                    SWAP16_AT(sub, 2);
+                    SWAP32_AT(sub, 4);
+                    SWAP32_AT(sub, 8);
+                    SWAP32_AT(sub, 0xC);
+                    SWAP32_AT(sub, 0x10);
+                    SWAP32_AT(sub, 0x14);
+                    SWAP32_AT(sub, 0x18);
+                }
             }
         }
     }
