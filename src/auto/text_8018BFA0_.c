@@ -109,7 +109,10 @@ extern float PSQUATMultiply(void *, void *);
 extern float lbl_80562038;
 extern float lbl_8056203C;
 extern float lbl_80562040;
+#pragma push
+#pragma small_data off
 extern char lbl_80332758;
+#pragma pop
 extern float lbl_80561F78, lbl_80561F7C, lbl_80561F80, lbl_80561F84;
 static inline float Chan_8018F2C0(unsigned char v) {
     float t = (lbl_80561F88 < (((float)v - lbl_80561F74) / lbl_80562038)) ? lbl_80561F88 : (((float)v - lbl_80561F74) / lbl_80562038);
@@ -133,6 +136,110 @@ int fn_8018C514(void *arg0, void *arg1) {
         i++;
     }
     return best;
+}
+
+extern void *memset(void *, int, unsigned long);
+extern int fn_801E2CCC(int, void *, void *);
+extern void fn_80279B28(void *);
+extern void fn_80279CD8(void *);
+extern void fn_802E317C(void *, ...);
+extern void *fn_8001285C(int);
+void fn_8018C5A0(char *arg0, char *arg1) {
+    char *p19;
+    char *p20;
+    int i;
+    int j;
+    char *p30;
+    Vec_8018 v;
+    Vec_8018 zero;
+    void *sp8;
+    float f31, f30;
+
+    memset(arg0 + 0x152C, 0, 0x900);
+    f31 = lbl_80561F74;
+    p19 = &lbl_80332758 + 0xE8;
+    f30 = lbl_80561F78;
+    p20 = arg0 + 0x152C;
+    for (i = 0; i < 0x11; i++, p19 += 0x40, p20 += 0x80) {
+        if (fn_801E2CCC(M2C_FIELD(arg0, int *, 0x59C), M2C_FIELD(p19, void **, 4), p20) != 0) {
+            float *m = M2C_FIELD(p20, float **, 0);
+            matVecAlias_8018(&v, m, (Vec_8018 *)(p19 + 0x24));
+            v.x += m[9];
+            v.y += m[10];
+            v.z += m[11];
+            M2C_FIELD(p20, int *, 4) = fn_8018C514(arg0, &v);
+            zero.x = f31;
+            zero.y = f31;
+            zero.z = f31;
+            m = M2C_FIELD(p20, float **, 0);
+            matVecAlias_8018(&v, m, &zero);
+            v.x += m[9];
+            v.y += m[10];
+            v.z += m[11];
+            M2C_FIELD(p20, int *, 8) = fn_8018C514(arg0, &v);
+            M2C_FIELD(p20, float *, 0x14) = f30;
+        }
+    }
+    M2C_FIELD(arg0, int *, 0x5F8) = *M2C_FIELD(arg0, int **, 0x26C);
+    {
+        float a = M2C_FIELD(arg0, float *, 0x314);
+        float r = lbl_80561F7C / (lbl_80561F80 * M2C_FIELD(arg1, float *, 8));
+        M2C_FIELD(arg0, float *, 0x5F4) = r;
+        if (a >= lbl_80561F84) {
+            M2C_FIELD(arg0, float *, 0x5F4) = r * a;
+        } else {
+            M2C_FIELD(arg0, float *, 0x5F4) = fabs(a);
+        }
+    }
+    if (M2C_FIELD(arg0, int *, 0x1F0) == 0x50) {
+        void *o = M2C_FIELD(fn_8001285C(*(int *)__AXFXGetLfoSinTable_801769CC(0)), void **, 0x20);
+        float t = (*(float (**)(void *, void *, float))(*(char **)o + 0x28))(o, &lbl_80332758 + 0x680, lbl_80561F88);
+        M2C_FIELD(arg0, float *, 0x5F4) = M2C_FIELD(arg0, float *, 0x5F4) * t;
+    }
+    M2C_FIELD(arg0, float *, 0x5F4) = M2C_FIELD(arg0, float *, 0x5F4) * lbl_80561F8C;
+    if (M2C_FIELD(arg0, int *, 0x328) != 0) {
+        fn_80279B28(arg0 + 0x1E44);
+    } else {
+        fn_80279CD8(arg0 + 0x1E44);
+    }
+    {
+        char *s = arg0 + 0x1E43;
+        char *d = arg0 + 0x20F7;
+        for (j = 0; j < 0x148; j++) {
+            d[1] = s[1];
+            d[2] = s[2];
+            s += 2;
+            d += 2;
+        }
+    }
+    M2C_FIELD(arg0, float *, 0x2388) = M2C_FIELD(arg0, float *, 0x20D4);
+    M2C_FIELD(arg0, float *, 0x238C) = M2C_FIELD(arg0, float *, 0x20D8);
+    M2C_FIELD(arg0, int *, 0x2390) = M2C_FIELD(arg0, int *, 0x20DC);
+    M2C_FIELD(arg0, int *, 0x2394) = M2C_FIELD(arg0, int *, 0x20E0);
+    for (j = 0; j < 18; j++) {
+        M2C_FIELD(arg0, char *, 0x2398 + j) = M2C_FIELD(arg0, char *, 0x20E4 + j);
+    }
+    for (j = 0; j < 16; j++) {
+        M2C_FIELD(arg0, char *, 0x1E2C + j) = 0xFF;
+    }
+    p30 = &lbl_80332758 + 0x5B0;
+    for (j = 0; j < 0xD; j++, p30 += 0x10) {
+        char *s4;
+        char *t26;
+        sp8 = 0;
+        s4 = M2C_FIELD(p30, char **, 0);
+        t26 = arg0 + M2C_FIELD(p30, int *, 4);
+        if (s4[0] == 0x24) {
+            if (s4[1] == 0x57) {
+                M2C_FIELD(t26, char *, 0x1E2C) = fn_8018C514(arg0, arg0 + (s4[2] - 0x30) * 0x74 + 0x23DC);
+            } else {
+                fn_802E317C(&lbl_80332758 + 0x694);
+            }
+        }
+        if (fn_801E2CCC(M2C_FIELD(arg0, int *, 0x59C), M2C_FIELD(p30, void **, 0), &sp8) != 0) {
+            M2C_FIELD(t26, char *, 0x1E2C) = fn_8018C514(arg0, (char *)sp8 + 0x24);
+        }
+    }
 }
 
 #pragma scheduling invalid_target
