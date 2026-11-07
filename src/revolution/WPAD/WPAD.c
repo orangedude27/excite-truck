@@ -2166,11 +2166,10 @@ void WPADSetSpeakerVolume(u8 volume) {
 #pragma scheduling invalid_target
 static BOOL IsBusyStream(s32 chan) {
     BOOL enabled;
-    WPADCB* p = lbl_8038F4F0[chan];
+    WPADCB* const p = lbl_8038F4F0[chan];
     u8 radioQuality;
     u32 devType;
     u8 bufferStatus;
-    u16 bteBufferStatus;
     u16 btmBufferStatus;
     u8 audioFrames;
     s8 queueSize;
@@ -2183,7 +2182,9 @@ static BOOL IsBusyStream(s32 chan) {
     {
         BOOL enabled = OSDisableInterrupts();
         queueSize = p->stdCmdQueue.back - p->stdCmdQueue.front;
-        if (queueSize < 0) queueSize += p->stdCmdQueue.capacity;
+        if (queueSize < 0) {
+            queueSize += p->stdCmdQueue.capacity;
+        }
         OSRestoreInterrupts(enabled);
     }
     {
@@ -2195,8 +2196,9 @@ static BOOL IsBusyStream(s32 chan) {
         status = *(s32*)((u8*)p + 0x7FC);
         handle = *(s8*)((u8*)p + 0x803);
         OSRestoreInterrupts(enabled);
-        if (status == WPAD_ERR_NO_CONTROLLER) bteBufferStatus = 0;
-        else bteBufferStatus = _WUDGetQueuedSize(handle);
+        if (status != WPAD_ERR_NO_CONTROLLER) {
+            _WUDGetQueuedSize(handle);
+        }
     }
     {
         WPADCB* p = lbl_8038F4F0[chan];
@@ -2207,8 +2209,11 @@ static BOOL IsBusyStream(s32 chan) {
         status = *(s32*)((u8*)p + 0x7FC);
         handle = *(s8*)((u8*)p + 0x803);
         OSRestoreInterrupts(enabled);
-        if (status == WPAD_ERR_NO_CONTROLLER) btmBufferStatus = 0;
-        else btmBufferStatus = _WUDGetNotAckedSize(handle);
+        if (status == WPAD_ERR_NO_CONTROLLER) {
+            btmBufferStatus = 0;
+        } else {
+            btmBufferStatus = _WUDGetNotAckedSize(handle);
+        }
     }
     audioFrames = ((u8*)p)[0x80E];
     linkNumber = _WUDGetLinkNumber();
@@ -5041,19 +5046,19 @@ void getDevConfig(s32 chan, s32 result, WPADStatus* status, u8* data)
     }
 }
 
-void fn_80064278(s32 chan, s32 param_2) {
-    const char* strBase = (const char*)lbl_80312338;
+void fn_80064278(s32 chan, s32 result) {
+    const char* messages = (const char*)lbl_80312338;
     WPADCB* cb = lbl_8038F4F0[chan];
-    u8* data = (u8*)cb->samplingBufSize;
-    s32 found = -1;
+    u8* data = *(u8**)((u8*)cb + 0x8B4); // where a register read lands
+    s32 found = -1; // start of the block with the good checksum, -1 for none
     s32 i;
     s32 offset;
     s32 j;
     s32 sum;
-    if (param_2 != 0) {
-        cb->UNK_0x801 = 0xfc;
-    } else if ((u8)(cb->UNK_0x801 + 0xFF) <= 1) {
-        WPADiDecode(chan, data, 0x20, 0x20);
+    if (result != 0) {
+        cb->UNK_0x801 = 0xfc; // nothing usable came back
+    } else if ((u8)(cb->UNK_0x801 + 0xFF) <= 1) { // force sensor or classic
+        WPADiDecode(chan, data, WM_EXTENSION_CONFIG_SIZE, 0x20);
         for (i = 0; i < 2; i++) {
             offset = i * 16;
             sum = 0;
@@ -5065,67 +5070,67 @@ void fn_80064278(s32 chan, s32 param_2) {
             }
         }
         switch (cb->UNK_0x801) {
-        case 1:
+        case 1: // force sensor: 0G/1G accelerometer (10 bit) and stick limits
             if (found < 0) {
-                DBPrintf_80068D68(strBase + 0x194);
-                *(u16*)((u8*)cb + 0x7ce) = 0x200;
-                *(u16*)((u8*)cb + 0x7d0) = 0x200;
-                *(u16*)((u8*)cb + 0x7d2) = 0x200;
-                *(u16*)((u8*)cb + 0x7d4) = 0x2cc;
-                *(u16*)((u8*)cb + 0x7d6) = 0x2cc;
-                *(u16*)((u8*)cb + 0x7d8) = 0x2cc;
+                DBPrintf_80068D68(messages + 0x194);
+                cb->extCalib.fs.accX0g = 0x200;
+                cb->extCalib.fs.accY0g = 0x200;
+                cb->extCalib.fs.accZ0g = 0x200;
+                cb->extCalib.fs.accX1g = 0x2cc;
+                cb->extCalib.fs.accY1g = 0x2cc;
+                cb->extCalib.fs.accZ1g = 0x2cc;
             } else {
                 u8* p = (u8*)(found + (s32)data);
-                u8 b0 = data[found];
-                *(u16*)((u8*)cb + 0x7ce) = (u16)((b0 << 2) | ((p[3] >> 4) & 3));
-                *(u16*)((u8*)cb + 0x7d0) = (u16)((p[1] << 2) | ((p[3] >> 2) & 3));
-                *(u16*)((u8*)cb + 0x7d2) = (u16)((p[2] << 2) | (p[3] & 3));
-                *(u16*)((u8*)cb + 0x7d4) = (u16)((p[4] << 2) | ((p[7] >> 4) & 3));
-                *(u16*)((u8*)cb + 0x7d6) = (u16)((p[5] << 2) | ((p[7] >> 2) & 3));
-                *(u16*)((u8*)cb + 0x7d8) = (u16)((p[6] << 2) | (p[7] & 3));
-                *(s16*)((u8*)cb + 0x7c6) = (s8)p[8];
-                *(s16*)((u8*)cb + 0x7c4) = (s8)p[9];
-                *(s16*)((u8*)cb + 0x7c2) = (s8)p[10];
-                *(s16*)((u8*)cb + 0x7cc) = (s8)p[11];
-                *(s16*)((u8*)cb + 0x7ca) = (s8)p[12];
-                *(s16*)((u8*)cb + 0x7c8) = (s8)p[13];
-                DBPrintf_80068D68(strBase + 0x1a8, *(s16*)((u8*)cb + 0x7ce), *(s16*)((u8*)cb + 0x7d0), *(s16*)((u8*)cb + 0x7d2));
-                DBPrintf_80068D68(strBase + 0x1d8, *(s16*)((u8*)cb + 0x7d4), *(s16*)((u8*)cb + 0x7d6), *(s16*)((u8*)cb + 0x7d8));
-                DBPrintf_80068D68(strBase + 0x208, *(s16*)((u8*)cb + 0x7c2), *(s16*)((u8*)cb + 0x7c6), *(s16*)((u8*)cb + 0x7c4));
-                DBPrintf_80068D68(strBase + 0x230, *(s16*)((u8*)cb + 0x7c8), *(s16*)((u8*)cb + 0x7cc), *(s16*)((u8*)cb + 0x7ca));
+                u8 byte0 = data[found];
+                cb->extCalib.fs.accX0g = (u16)((byte0 << 2) | ((p[3] >> 4) & 3));
+                cb->extCalib.fs.accY0g = (u16)((p[1] << 2) | ((p[3] >> 2) & 3));
+                cb->extCalib.fs.accZ0g = (u16)((p[2] << 2) | (p[3] & 3));
+                cb->extCalib.fs.accX1g = (u16)((p[4] << 2) | ((p[7] >> 4) & 3));
+                cb->extCalib.fs.accY1g = (u16)((p[5] << 2) | ((p[7] >> 2) & 3));
+                cb->extCalib.fs.accZ1g = (u16)((p[6] << 2) | (p[7] & 3));
+                cb->extCalib.fs.stickXMax = (s8)p[8];
+                cb->extCalib.fs.stickXMin = (s8)p[9];
+                cb->extCalib.fs.stickXCenter = (s8)p[10];
+                cb->extCalib.fs.stickYMax = (s8)p[11];
+                cb->extCalib.fs.stickYMin = (s8)p[12];
+                cb->extCalib.fs.stickYCenter = (s8)p[13];
+                DBPrintf_80068D68(messages + 0x1a8, cb->extCalib.fs.accX0g, cb->extCalib.fs.accY0g, cb->extCalib.fs.accZ0g);
+                DBPrintf_80068D68(messages + 0x1d8, cb->extCalib.fs.accX1g, cb->extCalib.fs.accY1g, cb->extCalib.fs.accZ1g);
+                DBPrintf_80068D68(messages + 0x208, cb->extCalib.fs.stickXCenter, cb->extCalib.fs.stickXMax, cb->extCalib.fs.stickXMin);
+                DBPrintf_80068D68(messages + 0x230, cb->extCalib.fs.stickYCenter, cb->extCalib.fs.stickYMax, cb->extCalib.fs.stickYMin);
             }
             break;
-        case 2: {
+        case 2: { // classic controller: four axes as centre/max/min, plus the triggers
             u8* p = (u8*)(found + (s32)data);
-            *(s16*)((u8*)cb + 0x7c6) = (s8)data[found];
-            *(s16*)((u8*)cb + 0x7c4) = (s8)p[1];
-            *(s16*)((u8*)cb + 0x7c2) = (s8)p[2];
-            *(s16*)((u8*)cb + 0x7cc) = (s8)p[3];
-            *(s16*)((u8*)cb + 0x7ca) = (s8)p[4];
-            *(s16*)((u8*)cb + 0x7c8) = (s8)p[5];
-            *(s16*)((u8*)cb + 0x7d2) = (s8)p[6];
-            *(s16*)((u8*)cb + 0x7d0) = (s8)p[7];
-            *(s16*)((u8*)cb + 0x7ce) = (s8)p[8];
-            *(s16*)((u8*)cb + 0x7d8) = (s8)p[9];
-            *(s16*)((u8*)cb + 0x7d6) = (s8)p[10];
-            *(s16*)((u8*)cb + 0x7d4) = (s8)p[11];
-            *((u8*)cb + 0x7da) = p[12];
-            *((u8*)cb + 0x7db) = p[13];
-            DBPrintf_80068D68(strBase + 0x258, *(s16*)((u8*)cb + 0x7c2), *(s16*)((u8*)cb + 0x7c6), *(s16*)((u8*)cb + 0x7c4));
-            DBPrintf_80068D68(strBase + 0x280, *(s16*)((u8*)cb + 0x7c8), *(s16*)((u8*)cb + 0x7cc), *(s16*)((u8*)cb + 0x7ca));
-            DBPrintf_80068D68(strBase + 0x2a8, *(s16*)((u8*)cb + 0x7ce), *(s16*)((u8*)cb + 0x7d2), *(s16*)((u8*)cb + 0x7d0));
-            DBPrintf_80068D68(strBase + 0x2d0, *(s16*)((u8*)cb + 0x7d4), *(s16*)((u8*)cb + 0x7d8), *(s16*)((u8*)cb + 0x7d6));
-            DBPrintf_80068D68(strBase + 0x2f8, *((u8*)cb + 0x7da), *((u8*)cb + 0x7db));
+            cb->extCalib.cl.lStickXMax = (s8)data[found];
+            cb->extCalib.cl.lStickXMin = (s8)p[1];
+            cb->extCalib.cl.lStickXCenter = (s8)p[2];
+            cb->extCalib.cl.lStickYMax = (s8)p[3];
+            cb->extCalib.cl.lStickYMin = (s8)p[4];
+            cb->extCalib.cl.lStickYCenter = (s8)p[5];
+            cb->extCalib.cl.rStickXMax = (s8)p[6];
+            cb->extCalib.cl.rStickXMin = (s8)p[7];
+            cb->extCalib.cl.rStickXCenter = (s8)p[8];
+            cb->extCalib.cl.rStickYMax = (s8)p[9];
+            cb->extCalib.cl.rStickYMin = (s8)p[10];
+            cb->extCalib.cl.rStickYCenter = (s8)p[11];
+            cb->extCalib.cl.triggerLZero = p[12];
+            cb->extCalib.cl.triggerRZero = p[13];
+            DBPrintf_80068D68(messages + 0x258, cb->extCalib.cl.lStickXCenter, cb->extCalib.cl.lStickXMax, cb->extCalib.cl.lStickXMin);
+            DBPrintf_80068D68(messages + 0x280, cb->extCalib.cl.lStickYCenter, cb->extCalib.cl.lStickYMax, cb->extCalib.cl.lStickYMin);
+            DBPrintf_80068D68(messages + 0x2a8, cb->extCalib.cl.rStickXCenter, cb->extCalib.cl.rStickXMax, cb->extCalib.cl.rStickXMin);
+            DBPrintf_80068D68(messages + 0x2d0, cb->extCalib.cl.rStickYCenter, cb->extCalib.cl.rStickYMax, cb->extCalib.cl.rStickYMin);
+            DBPrintf_80068D68(messages + 0x2f8, cb->extCalib.cl.triggerLZero, cb->extCalib.cl.triggerRZero);
             break;
         }
         default:
             break;
         }
-        *((u8*)cb + 0x851) = 0;
+        *((u8*)cb + 0x851) = 0; // let the next report re-capture the neutral stick
     }
-    if (*(WPADCallback*)((u8*)cb + 0x7dc) != NULL) {
-        (*(WPADCallback*)((u8*)cb + 0x7dc))(chan, cb->UNK_0x801);
-        *(WPADCallback*)((u8*)cb + 0x7dc) = NULL;
+    if (cb->readCB != NULL) {
+        cb->readCB(chan, cb->UNK_0x801);
+        cb->readCB = NULL;
     }
 }
 
