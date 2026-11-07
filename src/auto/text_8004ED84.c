@@ -109,6 +109,23 @@ int _ES_LaunchTitle(int *fd, int unused, int tidHigh, int tidLow, void *views)
 }
 
 extern void OSGetFontTexel(char *, unsigned char *, int, int, int *);
+extern float lbl_80560C78, lbl_80560C7C, lbl_80560C80, lbl_80560C84, lbl_80560C88, lbl_80560C8C, lbl_80560C90, lbl_80560C94, lbl_80560C98, lbl_80560C9C, lbl_80560CA0, lbl_80560CA4, lbl_80560CA8;
+static inline float ClampYUV_8004(float v, float hi) {
+    if (v > hi) return hi;
+    if (v < lbl_80560C7C) return lbl_80560C7C;
+    return v;
+}
+static inline GXColor RGBToYUV_8004(GXColor c) {
+    GXColor o;
+    float y = lbl_80560C78 + (lbl_80560C7C + (lbl_80560C80 * (float)c.b + (lbl_80560C84 * (float)c.r + lbl_80560C88 * (float)c.g)));
+    float u = lbl_80560C78 + (lbl_80560C8C + (lbl_80560C90 * (float)c.b + (lbl_80560C94 * (float)c.r - lbl_80560C98 * (float)c.g)));
+    float v = lbl_80560C78 + (lbl_80560C8C + ((lbl_80560C90 * (float)c.r - lbl_80560C9C * (float)c.g) - lbl_80560CA0 * (float)c.b));
+    o.r = (u8)ClampYUV_8004(y, lbl_80560CA4);
+    o.g = (u8)ClampYUV_8004(u, lbl_80560CA8);
+    o.b = (u8)ClampYUV_8004(v, lbl_80560CA8);
+    o.a = 0;
+    return o;
+}
 #pragma push
 #pragma use_lmw_stmw off
 void ScreenReport(void* fb, u16 width, u16 height, GXColor msgYUV, s32 x,
