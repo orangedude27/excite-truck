@@ -45,18 +45,22 @@ extern char lbl_80340B00[];
 } while (0)
 
 #define SWAP16_AT(ptr, off) do { \
-    u8 _t = ((u8 *)(ptr))[(off) + 0]; \
-    ((u8 *)(ptr))[(off) + 0] = ((u8 *)(ptr))[(off) + 1]; \
-    ((u8 *)(ptr))[(off) + 1] = _t; \
+    u8 _t; \
+    u8 *_p = (u8 *)(ptr); \
+    _t = _p[(off) + 0]; \
+    _p[(off) + 0] = _p[(off) + 1]; \
+    _p[(off) + 1] = _t; \
 } while (0)
 
 #define SWAP32_AT(ptr, off) do { \
-    u8 _t = ((u8 *)(ptr))[(off) + 0]; \
-    ((u8 *)(ptr))[(off) + 0] = ((u8 *)(ptr))[(off) + 3]; \
-    ((u8 *)(ptr))[(off) + 3] = _t; \
-    _t = ((u8 *)(ptr))[(off) + 1]; \
-    ((u8 *)(ptr))[(off) + 1] = ((u8 *)(ptr))[(off) + 2]; \
-    ((u8 *)(ptr))[(off) + 2] = _t; \
+    u8 _t; \
+    u8 *_p = (u8 *)(ptr); \
+    _t = _p[(off) + 0]; \
+    _p[(off) + 0] = _p[(off) + 3]; \
+    _p[(off) + 3] = _t; \
+    _t = _p[(off) + 1]; \
+    _p[(off) + 1] = _p[(off) + 2]; \
+    _p[(off) + 2] = _t; \
 } while (0)
 static inline s32 clampLow_80238BF4(s32 v) {
     if (v > 0) return v;
