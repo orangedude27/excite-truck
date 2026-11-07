@@ -5,8 +5,12 @@ struct SubArray8013D2C4 {
     s32 count;
     s32 cap;
     void *storage[16];
-    SubArray8013D2C4() : ptr(storage), count(0), cap(0x10) {}
-    void push(void *w) {
+    inline void init() {
+        ptr = storage;
+        cap = 0x10;
+        count = 0;
+    }
+    inline void push(void *w) {
         s32 idx = count;
         void **arr = ptr;
         count = idx + 1;
@@ -19,7 +23,12 @@ struct RingBuf8013D2C4 {
     s32 head;
     s32 tail;
     u8 storage[0x64];
-    RingBuf8013D2C4() : ptr(storage), cap(8), head(0), tail(0) {}
+    inline void init() {
+        head = 0;
+        cap = 8;
+        ptr = storage;
+        tail = 0;
+    }
 };
 struct Sub134_8013D2C4 {
     u8 pad0[0xC];
@@ -43,7 +52,14 @@ struct Sub134_8013D2C4 {
     char s1FA[0x14];
     char s20E[0x14];
     char s222[0x1A];
-    Sub134_8013D2C4() : p140(0), p148(0), p14C(0), p150(0), p158(0), p15C(0), p160(0) {
+    inline void init() {
+        p140 = 0;
+        p148 = 0;
+        p14C = 0;
+        p150 = 0;
+        p158 = 0;
+        p15C = 0;
+        p160 = 0;
         memset(s164, 0x7A, 3); s164[3] = 0;
         memset(s178, 0x7A, 3); s178[3] = 0;
         memset(s18C, 0x7A, 3); s18C[3] = 0;
@@ -64,12 +80,12 @@ extern "C" f32 lbl_805614AC;
 extern "C" f32 lbl_805614C4;
 struct Timer8013D2C4 {
     u64 t;
-    Timer8013D2C4(f32 v) { fn_8001DAE0(this, v); }
+    inline void init(f32 v) { fn_8001DAE0(this, v); }
 };
 struct Perc8013D2C4 {
     void *a;
     void *b;
-    Perc8013D2C4() { fn_801414A4(this); }
+    inline void init() { fn_801414A4(this); }
 };
 struct MainObj8013D2C4 {
     void *vt;
@@ -92,18 +108,6 @@ struct MainObj8013D2C4 {
     u8 pad250[0x30];
     Perc8013D2C4 perc;
     s32 f288;
-
-    inline void initMembers() {
-        new (&sa) SubArray8013D2C4();
-        new (&t6C) Timer8013D2C4(lbl_805614C0);
-        new (&t74) Timer8013D2C4(lbl_805614C0);
-        new (&t7C) Timer8013D2C4(lbl_805614AC);
-        new (&t84) Timer8013D2C4(lbl_805614AC);
-        new (&t8C) Timer8013D2C4(lbl_805614C4);
-        new (&rb) RingBuf8013D2C4();
-        new (&sub) Sub134_8013D2C4();
-        new (&perc) Perc8013D2C4();
-    }
 };
 extern "C" s32 lbl_8055E1C0;
 extern "C" void *fn_80145E70(const char *);
