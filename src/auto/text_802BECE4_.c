@@ -436,6 +436,143 @@ int fn_802BF740(int arg0, int arg1) {
     return arg0;
 }
 
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+void *fn_802BF780(void *arg0) {
+    float zero, neg, one;
+    float temp_f30;
+    float temp_f31;
+    char *temp_r3;
+    char *var_r26;
+    char *var_r27;
+    int *var_r28;
+    int var_r30;
+    void *temp_r26;
+    void *temp_r26_2;
+    void *temp_r30;
+    char *strings = lbl_8034ACA0;
+
+    (*(char **)((char *)(arg0) + (0))) = lbl_8034AE40;
+    (*(int *)((char *)(arg0) + (8))) = fn_802CB128(0x100, 0x100, 0, 0);
+    temp_r26 = strings + 0xFC;
+    if (fn_8012C33C(temp_r26) != 0) {
+        (*(int *)((char *)(arg0) + (0xC))) = fn_802C6FC0((int)temp_r26, 0, 0);
+    } else {
+        (*(int *)((char *)(arg0) + (0xC))) = -1;
+    }
+    temp_r26_2 = strings + 0x10C;
+    if (fn_8012C33C(temp_r26_2) != 0) {
+        (*(int *)((char *)(arg0) + (0x10))) = fn_802C6FC0((int)temp_r26_2, 0, 0);
+    } else {
+        (*(int *)((char *)(arg0) + (0x10))) = -1;
+    }
+    if ((int) lbl_8055FAFC == 0) {
+        temp_r3 = (char *)fn_801284F8(0x1B8, lbl_8055CF84);
+        if (temp_r3 != 0) {
+            temp_r30 = strings + 0x11C;
+            if (fn_8012C33C(temp_r30) != 0) {
+                (*(int *)((char *)(temp_r3) + (0x18))) = fn_802CAC28(temp_r30, 0);
+            } else {
+                (*(int *)((char *)(temp_r3) + (0x18))) = -2;
+            }
+            temp_f30 = lbl_80564D80;
+            var_r28 = (int *)temp_r3;
+            temp_f31 = lbl_80564D90;
+            var_r26 = temp_r3;
+            var_r27 = temp_r3 + 0x1C;
+            var_r30 = 0;
+            do {
+                *var_r28 = fn_802CB128(0x100, 0x100, 0, 0x60);
+                var_r30 += 1;
+                (*(float *)((char *)(var_r27) + (0))) = temp_f30;
+                var_r28 += 1;
+                (*(float *)((char *)(var_r27) + (4))) = temp_f31;
+                (*(float *)((char *)(var_r27) + (8))) = temp_f31;
+                (*(float *)((char *)(var_r27) + (0xC))) = temp_f31;
+                (*(float *)((char *)(var_r27) + (0x10))) = temp_f30;
+                (*(float *)((char *)(var_r27) + (0x14))) = temp_f31;
+                (*(float *)((char *)(var_r27) + (0x18))) = temp_f31;
+                (*(float *)((char *)(var_r27) + (0x1C))) = temp_f31;
+                (*(float *)((char *)(var_r27) + (0x20))) = temp_f30;
+                var_r27 += 0x30;
+                (*(float *)((char *)(var_r26) + (0x40))) = temp_f31;
+                (*(float *)((char *)(var_r26) + (0x44))) = temp_f31;
+                (*(float *)((char *)(var_r26) + (0x48))) = temp_f31;
+                var_r26 += 0x30;
+            } while (var_r30 < 6);
+            one = lbl_80564D80; neg = lbl_80564DA8; zero = (float)lbl_80564D90;
+            (*(float *)((char *)(temp_r3) + (0x64))) = zero;
+            (*(float *)((char *)(temp_r3) + (0x68))) = zero;
+            (*(float *)((char *)(temp_r3) + (0x6C))) = neg;
+            (*(float *)((char *)(temp_r3) + (0x4C))) = neg;
+            (*(float *)((char *)(temp_r3) + (0x50))) = zero;
+            (*(float *)((char *)(temp_r3) + (0x54))) = zero;
+            (*(float *)((char *)(temp_r3) + (0x7C))) = zero;
+            (*(float *)((char *)(temp_r3) + (0x80))) = zero;
+            (*(float *)((char *)(temp_r3) + (0x84))) = neg;
+            (*(float *)((char *)(temp_r3) + (0x94))) = one;
+            (*(float *)((char *)(temp_r3) + (0x98))) = zero;
+            (*(float *)((char *)(temp_r3) + (0x9C))) = zero;
+            (*(float *)((char *)(temp_r3) + (0xAC))) = zero;
+            (*(float *)((char *)(temp_r3) + (0xB0))) = zero;
+            (*(float *)((char *)(temp_r3) + (0xB4))) = one;
+            (*(float *)((char *)(temp_r3) + (0xC4))) = neg;
+            (*(float *)((char *)(temp_r3) + (0xC8))) = zero;
+            (*(float *)((char *)(temp_r3) + (0xCC))) = zero;
+            (*(float *)((char *)(temp_r3) + (0xE8))) = zero;
+            (*(float *)((char *)(temp_r3) + (0xEC))) = zero;
+            (*(float *)((char *)(temp_r3) + (0xF0))) = neg;
+            (*(float *)((char *)(temp_r3) + (0xF4))) = zero;
+            (*(float *)((char *)(temp_r3) + (0xF8))) = one;
+            (*(float *)((char *)(temp_r3) + (0xFC))) = zero;
+            (*(float *)((char *)(temp_r3) + (0x118))) = zero;
+            (*(float *)((char *)(temp_r3) + (0x11C))) = zero;
+            (*(float *)((char *)(temp_r3) + (0x120))) = one;
+            (*(float *)((char *)(temp_r3) + (0x124))) = zero;
+            (*(float *)((char *)(temp_r3) + (0x128))) = neg;
+            (*(float *)((char *)(temp_r3) + (0x12C))) = zero;
+            (*(float *)((char *)(temp_r3) + (0x13C))) = neg;
+            (*(float *)((char *)(temp_r3) + (0x140))) = one;
+            (*(float *)((char *)(temp_r3) + (0x144))) = one;
+            (*(int *)((char *)(temp_r3) + (0x148))) = -1;
+            (*(float *)((char *)(temp_r3) + (0x14C))) = zero;
+            (*(float *)((char *)(temp_r3) + (0x150))) = zero;
+            (*(float *)((char *)(temp_r3) + (0x154))) = one;
+            (*(float *)((char *)(temp_r3) + (0x158))) = one;
+            (*(float *)((char *)(temp_r3) + (0x15C))) = one;
+            (*(int *)((char *)(temp_r3) + (0x160))) = -1;
+            (*(float *)((char *)(temp_r3) + (0x164))) = one;
+            (*(float *)((char *)(temp_r3) + (0x168))) = zero;
+            (*(float *)((char *)(temp_r3) + (0x16C))) = neg;
+            (*(float *)((char *)(temp_r3) + (0x170))) = neg;
+            (*(float *)((char *)(temp_r3) + (0x174))) = one;
+            (*(int *)((char *)(temp_r3) + (0x178))) = -1;
+            (*(float *)((char *)(temp_r3) + (0x17C))) = zero;
+            (*(float *)((char *)(temp_r3) + (0x180))) = one;
+            (*(float *)((char *)(temp_r3) + (0x184))) = one;
+            (*(float *)((char *)(temp_r3) + (0x188))) = neg;
+            (*(float *)((char *)(temp_r3) + (0x18C))) = one;
+            (*(int *)((char *)(temp_r3) + (0x190))) = -1;
+            (*(float *)((char *)(temp_r3) + (0x194))) = one;
+            (*(float *)((char *)(temp_r3) + (0x198))) = one;
+            (*(short *)((char *)(temp_r3) + (0x19C))) = 0;
+            (*(short *)((char *)(temp_r3) + (0x19E))) = 1;
+            (*(short *)((char *)(temp_r3) + (0x1A0))) = 2;
+            (*(short *)((char *)(temp_r3) + (0x1A2))) = 1;
+            (*(short *)((char *)(temp_r3) + (0x1A4))) = 2;
+            (*(short *)((char *)(temp_r3) + (0x1A6))) = 3;
+            (*(signed char *)((char *)(temp_r3) + (0x1A8))) = 0;
+        }
+        lbl_8055FB00 = temp_r3;
+    }
+    lbl_8055FAFC += 1;
+    (*(int **)((char *)(arg0) + (4))) = lbl_8055FB00;
+    (*(float *)((char *)(arg0) + (0x14))) = one;
+    return arg0;
+}
+#pragma pop
+
 extern void fn_802CB228(void *);
 extern int lbl_8055FAFC;
 extern void *lbl_8055FB00;
@@ -759,12 +896,14 @@ void fn_802C03B4(void *arg0) {
     fn(obj);
 }
 
-int fn_802C03E0(u32 arg0) {
-    register u32 a = (arg0 & 0xFFFF) << 8;
-    register u32 b = (arg0 << 8) & 0xFF0000FF;
+#pragma push
+#pragma peephole off
+int fn_802C03E0(unsigned int arg0) {
+    unsigned int a = __rlwinm(arg0, 8, 8, 23);
+    unsigned int b = (arg0 << 8) & 0xFF0000FF;
     return a | b;
 }
-
+#pragma pop
 int fn_802C0C98(void *arg0) { return *(int *)((char *)arg0 + 8); }
 
 float fn_802C0CA0(void *arg0) { return *(float *)((char *)arg0 + 0x14); }
