@@ -200,7 +200,8 @@ void fn_8020DABC(void) {
     if (lbl_8055EE78 == 2 && ((int (*)(void))fn_8020CF68)() == 0)
         fn_8020D0CC(-1);
 }
-#pragma dont_inline reset
+#pragma push
+#pragma processor 750
 int fn_8020DB0C(int arg0) {
     int var_r31 = 1;
 
@@ -287,7 +288,7 @@ int fn_8020DB0C(int arg0) {
     }
     return 1;
 }
-#pragma dont_inline reset
+#pragma pop
 extern void *lbl_8055EE7C;
 extern void *lbl_8055EE80;
 void AXFXSetHooks_8020DE10(void *arg0, void *arg1) {
@@ -299,4 +300,49 @@ extern char lbl_8055EE94;
 char fn_8020DE1C(void) {
     return lbl_8055EE94;
 }
+typedef struct Item8020D2D4Head {
+    int a;
+    float b;
+    float c;
+    int d;
+} Item8020D2D4Head;
 
+typedef struct Item8020D2D4 {
+    Item8020D2D4Head h;
+    float e;
+    float f;
+    unsigned int color;
+} Item8020D2D4;
+
+typedef struct Names8020D2D4 {
+    char *s[3];
+} Names8020D2D4;
+
+#pragma cplusplus on
+class Dummy_8020D2D4 {
+public:
+    virtual void m0(const char *);
+    virtual void m1(const char *);
+    virtual void m2(const char *);
+    virtual Item8020D2D4 *m3(const char *);
+};
+#pragma cplusplus off
+
+extern Names8020D2D4 lbl_802F9E58;
+extern char lbl_8055B630[], lbl_8055B638[], lbl_8055B63C[];
+extern float lbl_80563324, lbl_80563328, lbl_80563330, lbl_80563334, lbl_80563338, lbl_8056333C;
+extern float lbl_80563340, lbl_80563344, lbl_80563348, lbl_8056334C, lbl_80563350, lbl_80563354, lbl_80563358, lbl_8056335C;
+extern void fn_80230B5C(void *);
+extern void fn_802C8638(void *);
+extern void fn_802C974C(float, float, float);
+extern void fn_800109E4(int, float, float, float, float);
+extern char *fn_80131234(const char *);
+extern void fn_801473F8(int, const char *, const char *, const char *);
+extern void fn_801345D8(char *, int, const char *, ...);
+extern char *fn_8000C69C(void);
+extern void fn_80230F78(unsigned char *, float *, unsigned int *, int);
+extern void fn_80147940(int, Item8020D2D4 *, const char *, int, ...);
+extern void fn_80147230(Item8020D2D4 *, const char *, const char *);
+extern void fn_801476C4(void);
+extern void fn_80011A2C(void);
+extern void fn_802C9904(void);
