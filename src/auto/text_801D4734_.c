@@ -1685,6 +1685,44 @@ extern char lbl_80338CB0[];
 extern char lbl_80338CE8[];
 extern char lbl_8055ACFC;
 extern char lbl_8055AD08;
+/* The factory below is driven entirely by strings.  The request's "type"
+ * field is matched against a type name and the product is allocated under
+ * its class name; both are entries of the action-sequence string pool at
+ * lbl_80338460 (.data), which cannot be given real symbols yet, so they are
+ * reached as offsets and aliased here (and #undef'd after the function). */
+#define type_obstacle        (strings + 0x484) /* "obstacle" */
+#define alloc_Obstacle_ASE   (strings + 0x490) /* "Obstacle_ASE" */
+#define type_world_morph     (strings + 0x4A0) /* "world_morph" */
+#define alloc_WorldMorph_ASE (strings + 0x4AC) /* "WorldMorph_ASE" */
+#define type_phys_path       (strings + 0x4BC) /* "phys_path" */
+#define alloc_PhysPath_ASE   (strings + 0x4C8) /* "PhysPath_ASE" */
+#define type_camera_shake    (strings + 0x4D8) /* "camera_shake" */
+#define alloc_CameraShake_ASE (strings + 0x348) /* "CameraShake_ASE" */
+#define type_track_effect    (strings + 0x4E8) /* "track_effect" */
+#define alloc_TrackEffect_ASE (strings + 0x368) /* "TrackEffect_ASE" */
+#define type_sound_effect    (strings + 0x4F8) /* "sound_effect" */
+#define alloc_SoundEffect_ASE (strings + 0x408) /* "SoundEffect_ASE" */
+#define alloc_Text_ASE       (strings + 0x418) /* "Text_ASE" */
+#define type_surfchange      (strings + 0x508) /* "surfchange" */
+#define alloc_SurfChange_ASE (strings + 0x514) /* "SurfChange_ASE" */
+#define type_embedded_effect (strings + 0x528) /* "embedded_effect" */
+#define alloc_EmbeddedEffect_ASE (strings + 0x538) /* "EmbeddedEffect_ASE" */
+#define type_ring_set        (strings + 0x54C) /* "ring_set" */
+#define alloc_RingMaster_ASE (strings + 0x474) /* "RingMaster_ASE" */
+#define alloc_Trigger_ASE    (strings + 0x558) /* "Trigger_ASE" */
+#define type_lightning       (strings + 0x564) /* "lightning" */
+#define alloc_Lightning_ASE  (strings + 0x570) /* "Lightning_ASE" */
+/* the three names the linker pooled in .sdata instead */
+#define field_type           ((const char *)&lbl_8055ACFC) /* "type" */
+#define type_text            ((const char *)&lbl_8055ACF4) /* "text" */
+#define type_trigger         ((const char *)&lbl_8055AD08) /* "trigger" */
+/* vtables of the elements whose constructor is open-coded here */
+#define vtable_WorldMorph_ASE     lbl_80338CE8
+#define vtable_PhysPath_ASE       lbl_80338CB0
+#define vtable_SurfChange_ASE     lbl_80338B40 /* +0x38: vtable of the 2nd base */
+#define vtable_EmbeddedEffect_ASE lbl_80338C08
+#define vtable_Trigger_ASE        lbl_80338A40
+#define vtable_Lightning_ASE      lbl_80338A78
 #pragma dont_inline on
 #pragma scheduling invalid_target
 #pragma cplusplus on
