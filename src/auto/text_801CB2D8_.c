@@ -54,6 +54,10 @@ typedef struct {
     s32 field8;
 } Struct_801CE670;
 void fn_801CDE00(s32);
+void fn_801CE6CC(void);
+void fn_801CE6A0(void);
+void fn_801CE69C(void);
+void fn_801CE698(void);
 extern void fn_801CB3F8(void);
 extern void fn_801CC470(void);
 extern void fn_801CC918(void);
