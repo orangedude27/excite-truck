@@ -30,6 +30,7 @@ extern const char lbl_803359CC[];
 extern int fn_8012850C(int, const char *);
 extern int fn_802794AC(int, void *);
 extern float lbl_80562574;
+extern void fn_801AFA20(void);
 typedef struct {
     int id;
     unsigned char b[0x60];
