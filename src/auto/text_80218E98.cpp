@@ -360,6 +360,22 @@ extern "C" s32 fn_8022EDC4(void);
 extern "C" void fn_8022EEF8(void *, s32, s32);
 extern "C" void fn_8022ED00(void *);
 extern "C" void fn_8022EDB8(void);
+extern "C" void fn_80231220(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32);
+
+static inline void Rot3Vec(f32 *m, f32 *src, f32 *dst) {
+    if (dst == src) {
+        f32 x = src[0] * m[0] + src[1] * m[3] + src[2] * m[6];
+        f32 y = src[0] * m[1] + src[1] * m[4] + src[2] * m[7];
+        f32 z = src[0] * m[2] + src[1] * m[5] + src[2] * m[8];
+        dst[0] = x;
+        dst[1] = y;
+        dst[2] = z;
+    } else {
+        dst[0] = src[0] * m[0] + src[1] * m[3] + src[2] * m[6];
+        dst[1] = src[0] * m[1] + src[1] * m[4] + src[2] * m[7];
+        dst[2] = src[0] * m[2] + src[1] * m[5] + src[2] * m[8];
+    }
+}
 
 
 class ObjBF { public: virtual void a(); virtual void b(); virtual void c(); virtual void d(); virtual void e(); virtual void f(); virtual void g(); virtual void h(); virtual s32 i(); virtual s32 j(); };
