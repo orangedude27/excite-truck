@@ -3,6 +3,7 @@
 
 extern void *lbl_8055FCD8;
 extern int fn_802CAFC8(int);
+extern char lbl_8034BBE0[];
 extern void *fn_802C86DC(int);
 extern int fn_802C94A0(void *, void *, void *, float, float, float, float, float, float);
 extern void fn_802C98DC(void *, void *, void *, void *, float, float, float);
