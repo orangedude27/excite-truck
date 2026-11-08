@@ -187,6 +187,7 @@ void fn_801CF080(u8 *mesh, f32 *pos, f32 *out, s32 *count, f32 *mtx, f32 radius)
     *count = n;
 }
 
+#pragma dont_inline on
 f32 fn_801CF778(const float *arg0, const float *arg1, const float *arg2) {
     float delta[3];
     float dot;
