@@ -1611,10 +1611,42 @@ void fn_802569DC(void *arg0, int arg1, float scale) {
     fn_802C8D74();
 }
 #pragma pop
-/* Per-frame update and draw of an audio/visual effect instance (effect):
-   copies the current 3x4 matrix to the stack, updates its clamped position,
-   configures the DSP/rendering state, sets the listener and screen matrices,
-   and runs the effect's geometry pass. */
+
+/* Light colours (packed RGB, alpha ignored) fn_80256DD8 gives the car
+ * preview's light: the diffuse colour depends on the view mode (field
+ * mode), the ambient colour is always the same warm white. */
+#define UI_LIGHT_DIFFUSE_MODE1 0x00AAAAC8
+#define UI_LIGHT_DIFFUSE_MODE0 0x00555766
+#define UI_LIGHT_AMBIENT 0x00FFF5D9
+
+/* The car shown in the UI ("caruimod"; fn_802556BC builds it, its methods
+ * run from the two tables below lbl_80344B98 and lbl_80344BC0). */
+struct CarUIModel {
+    void *vtable;          /* 0x00: lbl_80344B98 */
+    s32 cameraIndex;       /* 0x04: entry of the camera table (stride 0x78) */
+    void *vehicle;         /* 0x08: vehicle object; its byte 0 says "ready" */
+    s32 unkC;              /* 0x0C */
+    u8 pad10[0x48];        /* 0x10 */
+    char name[1];          /* 0x58: resource name, compared case-insensitively */
+    u8 pad59[0x4F];        /* 0x59 */
+    float modelMtx[4][3];  /* 0xA8: world matrix; row 3 is the position */
+    u8 padD8;              /* 0xD8 */
+    u8 stretch;            /* 0xDC: draw stretched (1,1.01,1) and un-tinted */
+    s32 unkE0;             /* 0xE0 */
+    s32 modelIndex;        /* 0xE4: "cc_back.mod" handle, -1 while unloaded */
+    s32 resId;             /* 0xE8 */
+    u8 padEC[0x10];        /* 0xEC */
+    void *vtable2;         /* 0xFC: lbl_80344BC0 */
+    u8 pad100[0x10];       /* 0x100 */
+    s32 unk110;            /* 0x110 */
+    u8 unk114;             /* 0x114 */
+    u8 pad115[3];          /* 0x115 */
+    s8 tinted;             /* 0x118: draw in the level's colour and scale */
+    u8 pad119[3];          /* 0x119 */
+    float level;           /* 0x11C: grows with time; drives that scale/colour */
+    s32 mode;              /* 0x120: 0 = to the screen, 1 = fn_802569DC path */
+};
+
 void fn_80256DD8(void *effect) {
 
 extern void *fn_802C86DC(void);
