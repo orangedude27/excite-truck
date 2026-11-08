@@ -435,6 +435,28 @@ typedef struct {
     tSDP_ATTRIBUTE attribute[0x36];
     UINT8 attr_pad[4];
 } tSDP_RECORD_VIEW;
+
+/* tSDP_RECORD as this build lays it out: SDP_MAX_PAD_LEN is 350 here, not the 600
+   bt_target.h gives the header's tSDP_RECORD, so a record is 0x298 bytes - 0x10 of
+   header, SDP_MAX_REC_ATTR attributes and the value pool at 0x138. */
+#define SDP_BUILD_MAX_PAD_LEN   350
+
+typedef struct {
+    UINT32          record_handle;
+    UINT32          free_pad_ptr;
+    UINT16          num_attributes;
+    tSDP_ATTRIBUTE  attribute[SDP_MAX_REC_ATTR];
+    UINT8           attr_pad[SDP_BUILD_MAX_PAD_LEN];
+} tSDP_RECORD_BUILD_VIEW;                 /* 0x298 */
+
+/* lbl_803C4C40 is the SDP control block (tSDP_CB of stack/sdp/sdpint.h).  Its
+   server database starts at 0x121C - di_primary_handle, brcm_di_registered at
+   0x1220, num_records at 0x1222 and record[] at 0x1224 - and sdp_cb.trace_level
+   is at 0x4630.  The header's tSDP_DB only serves for the first three fields;
+   its record[] is followed by the wrong-sized records. */
+#define sdp_cb_server_db        ((tSDP_DB *)(lbl_803C4C40 + 0x121C))
+#define sdp_cb_record_db        ((tSDP_RECORD_BUILD_VIEW *)(lbl_803C4C40 + 0x1224))
+#define sdp_cb_trace_level      (lbl_803C4C40[0x4630])
 typedef struct { UINT8 pad[0x476]; UINT16 cont_offset; } tSDP_CCB_CONT_VIEW;
 static void process_service_attr_rsp(tCONN_CB *, UINT8 *, UINT16);
 typedef struct { UINT8 pad[0x418]; UINT32 handles[0x15]; } tSDP_CCB_HANDLE_VIEW;
