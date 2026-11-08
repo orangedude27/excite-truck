@@ -17994,89 +17994,78 @@ void l2cu_send_peer_config_req(void *arg0, void *arg1)
     }
 }
 
-void l2cu_send_peer_config_rsp(void *arg0, void *arg1)
+/* Build and send an L2CAP "configuration response" message to the peer: the
+   answer to its configuration request, echoing back with our own values the
+   options p_cfg says we accept. */
+void l2cu_send_peer_config_rsp(tL2C_CCB_VIEW *p_ccb, tL2CAP_CFG_INFO *p_cfg)
 {
-    extern char lbl_80319174[];
-    extern void fn_8007093C(u32, void *);
-    u8 *ccb = (u8 *)arg0;
-    u8 *cfg = (u8 *)arg1;
-    u8 *packet;
-    u8 *dst;
-    u16 length;
+    extern char lbl_80319174[];           /* "L2CAP - no buffer for conn_req" */
+    extern void fn_8007093C(u32, void *); /* the stack's LogMsg_0() */
+    void *p_buf;
+    u8 *p;
+    u16 cfg_len;
 
-    length = 0;
-    if (cfg[2] != 0) length = 4;
-    if (cfg[0x20] != 0) length += 4;
-    if (cfg[6] != 0) length += 0x18;
-    if (cfg[0x24] != 0) length += 0xB;
-    packet = ((void *(*)(u16, u16, u8, u8))l2cu_build_header)(
-        *(u16 *)(*(u8 **)(ccb + 0x10) + 0x28), length + 6, 5, ccb[0x36]);
-    if (packet == NULL) {
-        if (lbl_803C4040[0] >= 2) fn_8007093C(0x80001, lbl_80319174);
+    /* How much option data the response carries. */
+    cfg_len = 0;
+    if (p_cfg->mtu_present)
+        cfg_len = L2CAP_CFG_MTU_OPTION_LEN + L2CAP_CFG_OPTION_OVERHEAD;
+    if (p_cfg->flush_to_present)
+        cfg_len += L2CAP_CFG_FLUSH_OPTION_LEN + L2CAP_CFG_OPTION_OVERHEAD;
+    if (p_cfg->qos_present)
+        cfg_len += L2CAP_CFG_QOS_OPTION_LEN + L2CAP_CFG_OPTION_OVERHEAD;
+    if (p_cfg->fcr_present)
+        cfg_len += L2CAP_CFG_FCR_OPTION_LEN + L2CAP_CFG_OPTION_OVERHEAD;
+
+    /* l2cu_build_header() takes the option data's length as a UINT16. */
+    p_buf = ((void *(*)(u16, u16, u8, u8))l2cu_build_header)(
+        p_ccb->p_lcb->handle, cfg_len + L2CAP_CONFIG_RSP_LEN, L2CAP_CMD_CONFIG_RSP,
+        p_ccb->remote_id);
+    if (p_buf == NULL) {
+        /* L2CAP_TRACE_WARNING0 ("L2CAP - no buffer for conn_req") */
+        if (lbl_803C4040[0] >= BT_TRACE_LEVEL_WARNING)
+            fn_8007093C(TRACE_LAYER_L2CAP | TRACE_TYPE_WARNING, lbl_80319174);
     } else {
-        *(u8 *)(packet + 0x14) = *(u16 *)(ccb + 0x16);
-        *(u8 *)(packet + 0x15) = ((s32)*(u16 *)(ccb + 0x16)) >> 8;
-        packet[0x16] = 0;
-        packet[0x17] = 0;
-        *(u8 *)(packet + 0x18) = *(u16 *)cfg;
-        *(u8 *)(packet + 0x19) = ((s32)*(u16 *)cfg) >> 8;
-        dst = packet + 0x1A;
-        if (cfg[2] != 0) {
-            dst[0] = 1;
-            dst[1] = 2;
-            dst[2] = *(u16 *)(cfg + 4);
-            dst[3] = ((s32)*(u16 *)(cfg + 4)) >> 8;
-            dst += 4;
+        /* the command's parameters, past the HCI, L2CAP and command headers */
+        p = (u8 *)p_buf + 0x14;
+        UINT16_TO_STREAM(p, p_ccb->remote_cid);
+        UINT16_TO_STREAM(p, 0);       /* Flags: no continuation */
+        UINT16_TO_STREAM(p, p_cfg->result);
+
+        /* Now, put the options */
+        if (p_cfg->mtu_present) {
+            UINT8_TO_STREAM(p, L2CAP_CFG_TYPE_MTU);
+            UINT8_TO_STREAM(p, L2CAP_CFG_MTU_OPTION_LEN);
+            UINT16_TO_STREAM(p, p_cfg->mtu);
         }
-        if (cfg[0x20] != 0) {
-            dst[0] = 2;
-            dst[1] = 2;
-            dst[2] = *(u16 *)(cfg + 0x22);
-            dst[3] = ((s32)*(u16 *)(cfg + 0x22)) >> 8;
-            dst += 4;
+        if (p_cfg->flush_to_present) {
+            UINT8_TO_STREAM(p, L2CAP_CFG_TYPE_FLUSH_TOUT);
+            UINT8_TO_STREAM(p, L2CAP_CFG_FLUSH_OPTION_LEN);
+            UINT16_TO_STREAM(p, p_cfg->flush_to);
         }
-        if (cfg[6] != 0) {
-            dst[0] = 3;
-            dst[1] = 0x16;
-            dst[2] = cfg[8];
-            dst[3] = cfg[9];
-            dst[4] = *(u32 *)(cfg + 0xC);
-            dst[5] = *(u32 *)(cfg + 0xC) >> 8;
-            dst[6] = *(u32 *)(cfg + 0xC) >> 16;
-            dst[7] = *(u32 *)(cfg + 0xC) >> 24;
-            dst[8] = *(u32 *)(cfg + 0x10);
-            dst[9] = *(u32 *)(cfg + 0x10) >> 8;
-            dst[10] = *(u32 *)(cfg + 0x10) >> 16;
-            dst[11] = *(u32 *)(cfg + 0x10) >> 24;
-            dst[12] = *(u32 *)(cfg + 0x14);
-            dst[13] = *(u32 *)(cfg + 0x14) >> 8;
-            dst[14] = *(u32 *)(cfg + 0x14) >> 16;
-            dst[15] = *(u32 *)(cfg + 0x14) >> 24;
-            dst[16] = *(u32 *)(cfg + 0x18);
-            dst[17] = *(u32 *)(cfg + 0x18) >> 8;
-            dst[18] = *(u32 *)(cfg + 0x18) >> 16;
-            dst[19] = *(u32 *)(cfg + 0x18) >> 24;
-            dst[20] = *(u32 *)(cfg + 0x1C);
-            dst[21] = *(u32 *)(cfg + 0x1C) >> 8;
-            dst[22] = *(u32 *)(cfg + 0x1C) >> 16;
-            dst[23] = *(u32 *)(cfg + 0x1C) >> 24;
-            dst += 0x18;
+        if (p_cfg->qos_present) {
+            UINT8_TO_STREAM(p, L2CAP_CFG_TYPE_QOS);
+            UINT8_TO_STREAM(p, L2CAP_CFG_QOS_OPTION_LEN);
+            UINT8_TO_STREAM(p, p_cfg->qos.qos_flags);
+            UINT8_TO_STREAM(p, p_cfg->qos.service_type);
+            UINT32_TO_STREAM(p, p_cfg->qos.token_rate);
+            UINT32_TO_STREAM(p, p_cfg->qos.token_bucket_size);
+            UINT32_TO_STREAM(p, p_cfg->qos.peak_bandwidth);
+            UINT32_TO_STREAM(p, p_cfg->qos.latency);
+            UINT32_TO_STREAM(p, p_cfg->qos.delay_variation);
         }
-        if (cfg[0x24] != 0) {
-            dst[0] = 4;
-            dst[1] = 9;
-            dst[2] = cfg[0x26];
-            dst[3] = cfg[0x27];
-            dst[4] = cfg[0x28];
-            dst[5] = *(u16 *)(cfg + 0x2A);
-            dst[6] = ((s32)*(u16 *)(cfg + 0x2A)) >> 8;
-            dst[7] = *(u16 *)(cfg + 0x2C);
-            dst[8] = ((s32)*(u16 *)(cfg + 0x2C)) >> 8;
-            dst[9] = *(u16 *)(cfg + 0x2E);
-            dst[10] = ((s32)*(u16 *)(cfg + 0x2E)) >> 8;
+        if (p_cfg->fcr_present) {
+            UINT8_TO_STREAM(p, L2CAP_CFG_TYPE_FCR);
+            UINT8_TO_STREAM(p, L2CAP_CFG_FCR_OPTION_LEN);
+            UINT8_TO_STREAM(p, p_cfg->fcr.mode);
+            UINT8_TO_STREAM(p, p_cfg->fcr.tx_win_sz);
+            UINT8_TO_STREAM(p, p_cfg->fcr.max_transmit);
+            UINT16_TO_STREAM(p, p_cfg->fcr.rtrans_tout);
+            UINT16_TO_STREAM(p, p_cfg->fcr.mon_tout);
+            UINT16_TO_STREAM(p, p_cfg->fcr.mps);
         }
-        ((void (*)(void *, u8, void *))l2c_link_check_send_pkts)(
-            *(void **)(ccb + 0x10), 0, packet);
+
+        ((void (*)(void *, u8, void *))l2c_link_check_send_pkts)(p_ccb->p_lcb, 0,
+                                                                 p_buf);
     }
 }
 
