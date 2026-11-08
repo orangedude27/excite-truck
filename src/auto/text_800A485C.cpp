@@ -6731,7 +6731,7 @@ extern "C" s32 fn_800B1AFC(s32 arg0, s32 arg1, s32 *arg2, s32 arg3) {
 /* A file handle (volume + 0xD4C + index * 0x30). */
 #define VF_HANDLE_FLAGS(f)     (*(u32 *)((u8 *)(f)))        /* 0x00 VF_HANDLE_* */
 #define VF_HANDLE_MODE(f)      (*(s32 *)((u8 *)(f) + 4))    /* 0x04 how it was opened */
-#define VF_HANDLE_STREAM(f)    (*(void **)((u8 *)(f) + 8))  /* 0x08 the stream it is on */
+#define VF_HANDLE_STREAM(f)    (*(u8 **)((u8 *)(f) + 8))   /* 0x08 the stream it is on */
 #define VF_HANDLE_ERROR(f)     (*(s32 *)((u8 *)(f) + 0x18)) /* 0x18 last error on it */
 #define VF_HANDLE_PENDING(f)   (*(u16 *)((u8 *)(f) + 0x2C)) /* 0x2C of its bytes queued for writing */
 #define VF_HANDLE_OPEN         1U    /* the handle is open */
