@@ -88,8 +88,8 @@ typedef enum {
     GPIO_EEP_CLK = (1 << 11),
     GPIO_EEP_MOSI = (1 << 12),
     GPIO_EEP_MISO = (1 << 13),
-    GPIO_AVE_SCL = (1 << 14),
-    GPIO_AVE_SDA = (1 << 15),
+    GPIO_AVE_SCL = (1 << 14), // I2C clock to the AVE video encoder
+    GPIO_AVE_SDA = (1 << 15), // I2C data to the AVE video encoder
     GPIO_DEBUG0 = (1 << 16),
     GPIO_DEBUG1 = (1 << 17),
     GPIO_DEBUG2 = (1 << 18),
