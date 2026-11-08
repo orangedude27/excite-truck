@@ -779,7 +779,7 @@ s32 fn_80232578(const char *name) {
     s32 offset;
     u8 *data;         /* the cache slot while it is looked up, the block afterwards */
     u8 *record;
-    u8 *record2;
+    u8 *recordWords;
     s32 swapWide;
     u8 swapByte2;
     s32 dataSize;     /* block size from the archive manager, unused here */
@@ -790,7 +790,7 @@ s32 fn_80232578(const char *name) {
     struct { char name[0xC]; s32 pad; } nameBuffer;
     s32 i;
     u8 swapByte;
-    u32 value;
+    u32 value;        /* the slot's use count, then the "_ol_" block it points at */
 
     index = fn_8023150C(name);
     if (index >= 0) {
@@ -834,6 +834,8 @@ s32 fn_80232578(const char *name) {
         ((GTexBlock *)data)->records += (u32)data;
         ((GTexBlock *)data)->texture += (u32)data;
 
+        /* Every record is 0x1C bytes of seven 32-bit words; the last three words
+         * are re-read from the record's start, so they swap in their own step. */
         i = 0;
         offset = 0;
         for (; i < ((GTexBlock *)data)->recordCount; i++, offset += 0x1C) {
@@ -847,17 +849,17 @@ s32 fn_80232578(const char *name) {
             swapByte = record[0x18]; record[0x18] = record[0x1B]; record[0x1B] = swapByte;
             swapByte = record[0x19]; record[0x19] = record[0x1A]; record[0x1A] = swapByte;
 
-            record2 = (u8 *)((GTexBlock *)data)->records + offset;
-            swapWide = record2[0]; record2[0] = record2[3]; record2[3] = (u8)swapWide;
-            swapByte2 = record2[1]; record2[1] = record2[2]; record2[2] = swapByte2;
+            recordWords = (u8 *)((GTexBlock *)data)->records + offset;
+            swapWide = recordWords[0]; recordWords[0] = recordWords[3]; recordWords[3] = (u8)swapWide;
+            swapByte2 = recordWords[1]; recordWords[1] = recordWords[2]; recordWords[2] = swapByte2;
 
-            record2 = (u8 *)((GTexBlock *)data)->records + offset;
-            swapByte2 = record2[8]; record2[8] = record2[0xB]; record2[0xB] = swapByte2;
-            swapByte2 = record2[9]; record2[9] = record2[0xA]; record2[0xA] = swapByte2;
+            recordWords = (u8 *)((GTexBlock *)data)->records + offset;
+            swapByte2 = recordWords[8]; recordWords[8] = recordWords[0xB]; recordWords[0xB] = swapByte2;
+            swapByte2 = recordWords[9]; recordWords[9] = recordWords[0xA]; recordWords[0xA] = swapByte2;
 
-            record2 = (u8 *)((GTexBlock *)data)->records + offset;
-            swapByte2 = record2[4]; record2[4] = record2[7]; record2[7] = swapByte2;
-            swapByte2 = record2[5]; record2[5] = record2[6]; record2[6] = swapByte2;
+            recordWords = (u8 *)((GTexBlock *)data)->records + offset;
+            swapByte2 = recordWords[4]; recordWords[4] = recordWords[7]; recordWords[7] = swapByte2;
+            swapByte2 = recordWords[5]; recordWords[5] = recordWords[6]; recordWords[6] = swapByte2;
         }
     }
 
