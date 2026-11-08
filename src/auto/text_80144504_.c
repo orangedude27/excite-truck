@@ -40,6 +40,10 @@ extern float fn_80144514(float, float, float, float, float, float);
         (ab)[8] = D6((ab)[2], (b)[6], (ab)[5], (b)[7], (a)[8], (b)[8]);    \
     }
 
+static inline void M33Cat(f32 *a, f32 *b, f32 *ab) {
+    M33CAT(a, b, ab)
+}
+
 extern void lbl_80336890(void);
 void fn_80144504(void **arg0) {
     *arg0 = (void *)&lbl_80336890;
@@ -50,6 +54,7 @@ float fn_80144514(float farg0, float farg1, float farg2, float farg3, float farg
 }
 
 #pragma push
+#pragma processor 750
 #pragma dont_inline on
 void fn_8014452C(f32 *m, f32 ax, f32 ay, f32 az) {
     f32 b[9];
