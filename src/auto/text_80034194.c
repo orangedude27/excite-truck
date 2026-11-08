@@ -4,6 +4,15 @@
 #include <types.h>
 extern s32 lbl_8055D864;
 extern void cbForCancel(void);
+extern s32 lbl_8055D8BC;
+extern s32 lbl_8055D858;
+extern s32 lbl_8055D86C;
+extern s32 lbl_8055D8A0;
+extern u32 lbl_8055D8A4;
+extern u64 __OSGetSystemTime(void);
+extern s32 fn_8003BB48(void);
+extern char lbl_8030228C[];
+extern s32 lbl_80558E14;
 #include <revolution/OS/OSContext.h>
 #include <revolution/DSP/dsp_task_types.h>
 extern s32 lbl_8055D810;
