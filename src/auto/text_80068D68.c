@@ -23489,6 +23489,18 @@ void sdpu_build_n_send_error(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 error_cod
     L2CA_DataWrite(p_ccb->connection_id, (BT_HDR *)p_buf);
 }
 
+/*******************************************************************************
+**
+** Function         sdpu_extract_uid_seq
+**
+** Description      Extracts a UUID sequence (an SDP data element sequence whose
+**                  elements are UUIDs) from the input buffer and puts it into
+**                  the given list.  Original stack/sdp/sdp_utils.c.
+**
+** Returns          Pointer to the next byte in the input buffer after the
+**                  sequence, or NULL if it is malformed.
+**
+*******************************************************************************/
 UINT8 *sdpu_extract_uid_seq (UINT8 *p, UINT16 param_len, tSDP_UUID_SEQ *p_seq)
 {
     UINT8   *p_seq_end;
@@ -23500,6 +23512,7 @@ UINT8 *sdpu_extract_uid_seq (UINT8 *p, UINT16 param_len, tSDP_UUID_SEQ *p_seq)
 
     /* A UID sequence is composed of a bunch of UIDs. */
 
+    /* The descriptor byte is a 5-bit type and a 3-bit length code. */
     BE_STREAM_TO_UINT8 (descr, p);
     type = descr >> 3;
     size = descr & 7;
@@ -23507,6 +23520,7 @@ UINT8 *sdpu_extract_uid_seq (UINT8 *p, UINT16 param_len, tSDP_UUID_SEQ *p_seq)
     if (type != DATA_ELE_SEQ_DESC_TYPE)
         return (NULL);
 
+    /* The length code says how many bytes follow the descriptor. */
     switch (size)
     {
     case SIZE_TWO_BYTES:
@@ -23570,7 +23584,7 @@ UINT8 *sdpu_extract_uid_seq (UINT8 *p, UINT16 param_len, tSDP_UUID_SEQ *p_seq)
             return (NULL);
         }
 
-        /* If UUID length is valid, copy it across */
+        /* If UUID length is valid, copy it across into the next tSDP_UUID_ENTRY */
         if ((uuid_len == 2) || (uuid_len == 4) || (uuid_len == 16))
         {
             p_seq->uuid_entry[p_seq->num_uids].len = (UINT16) uuid_len;
@@ -23585,6 +23599,7 @@ UINT8 *sdpu_extract_uid_seq (UINT8 *p, UINT16 param_len, tSDP_UUID_SEQ *p_seq)
             return (NULL);
     }
 
+    /* Only good if the elements filled the sequence exactly. */
     if (p != p_seq_end)
         return (NULL);
 
