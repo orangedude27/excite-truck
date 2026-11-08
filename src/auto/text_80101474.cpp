@@ -70,7 +70,7 @@ struct Color4 { unsigned char r, g, b, a; };
 #pragma cplusplus on
 struct FontForWidth { virtual int v0(); virtual int v1(); virtual int v2(); virtual int v3(); };
 struct SetupGXFontType { virtual int f0(); virtual int f1(); virtual int f2(); virtual int f3(); virtual int f4(); virtual int f5(); virtual int f6(); virtual int f7(); virtual int f8(); virtual int f9(); virtual int GetType(); };
-namespace nw4hbm { namespace ut { struct Color { unsigned char r, g, b, a; }; struct Glyph; struct PrintFont { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void GetGlyph(void*, unsigned short); }; class CharWriter { public: enum GradationMode { GRADATION_SOLID, GRADATION_VERTICAL, GRADATION_HORIZONTAL }; void PrintGlyph(float, float, float, const Glyph&); void SetTextColor(Color); void SetTextColor(Color, Color); float Print(unsigned short); void SetGradationMode(GradationMode); void SetFontSize(float, float); void SetupGX(); }; }}
+namespace nw4hbm { namespace ut { struct Color { unsigned char r, g, b, a; }; struct Glyph; struct PrintFont { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void GetGlyph(void*, unsigned short); }; class CharWriter { public: CharWriter(); enum GradationMode { GRADATION_SOLID, GRADATION_VERTICAL, GRADATION_HORIZONTAL }; void PrintGlyph(float, float, float, const Glyph&); void SetTextColor(Color); void SetTextColor(Color, Color); float Print(unsigned short); void SetGradationMode(GradationMode); void SetFontSize(float, float); void SetupGX(); }; }}
 #pragma cplusplus reset
 namespace nw4hbm { namespace snd { namespace detail {
 class Channel { public: enum ChannelCallbackStatus { Status }; };
@@ -235,6 +235,112 @@ void PauseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFb(void *arg0, unsigned char 
     } while (channel != 0);
 }
 
+#pragma processor gekko
+extern "C" void UpdateChannel__Q46nw4hbm3snd6detail8WsdTrackFv(void *arg0) {
+    unsigned char *self = (unsigned char *)arg0;
+    float f31 = lbl_80561128;
+    f31 *= (*(WsdPlayerIface **)(self + 0x2C))->m44();
+    float f30 = lbl_80561128;
+    f30 *= (*(WsdPlayerIface **)(self + 0x2C))->m48();
+    f30 *= *(float *)(self + 0x20);
+    unsigned char b = self[0x24];
+    float f29 = lbl_8056112C;
+    if (b <= 1) f29 += (float)((int)b - 0x3F) / lbl_80561130;
+    else f29 += (float)((int)b - 0x40) / lbl_80561130;
+    WsdPlayerIface *pl = *(WsdPlayerIface **)(self + 0x2C);
+    f29 *= *(float *)((unsigned char *)pl + 0x30);
+    f29 += pl->m4C();
+    unsigned char b2 = self[0x25];
+    float f28 = lbl_8056112C;
+    if (b2 <= 1) f28 += (float)((int)b2 + 1) / lbl_80561130;
+    else f28 += (float)b2 / lbl_80561130;
+    f28 += (float)b2 * lbl_80561134;
+    f28 += (*(WsdPlayerIface **)(self + 0x2C))->m50();
+    float f27 = lbl_8056112C;
+    f27 += (*(WsdPlayerIface **)(self + 0x2C))->m54();
+    float f26 = lbl_8056112C;
+    f26 += (*(WsdPlayerIface **)(self + 0x2C))->m58();
+    float f25 = lbl_8056112C;
+    f25 += (*(WsdPlayerIface **)(self + 0x2C))->m5C();
+    unsigned char b3 = self[0x29];
+    pl = *(WsdPlayerIface **)(self + 0x2C);
+    float f24 = lbl_80561128;
+    f24 += ((float)b3 / lbl_80561138) - f24;
+    f24 += pl->m84();
+    unsigned char col[3];
+    float acc[3];
+    float lo[4];
+    float hi[4];
+    col[0] = self[0x26]; col[1] = self[0x27]; col[2] = self[0x28];
+    float zero1 = lbl_8056112C;
+    float k255 = lbl_80561138;
+    unsigned char *cp = col;
+    float *ap = acc;
+    for (int i = 0; i < 3; i++) {
+        *ap = zero1;
+        *ap += (float)*cp / k255;
+        *ap += (*(WsdPlayerIface **)(self + 0x2C))->m88(i);
+        cp++; ap++;
+    }
+    float zero2 = lbl_8056112C;
+    float *lp = lo;
+    float *hp = hi;
+    for (int i = 0; i < 4; i++) {
+        *lp = zero2;
+        *lp += (*(WsdPlayerIface **)(self + 0x2C))->m90(i);
+        *hp = zero2;
+        *hp += (*(WsdPlayerIface **)(self + 0x2C))->m94(i);
+        lp++; hp++;
+    }
+    int interrupts = OSDisableInterrupts();
+    unsigned char *ch = *(unsigned char **)(self + 0x30);
+    float a0 = acc[0], a1 = acc[1], a2 = acc[2];
+    while (ch != 0) {
+        *(float *)(ch + 0x40) = f31;
+        *(float *)(ch + 0x44) = f30;
+        *(float *)(ch + 0x48) = f29;
+        *(float *)(ch + 0x4C) = f28;
+        *(float *)(ch + 0x50) = f27;
+        *(float *)(ch + 0x54) = f26;
+        *(float *)(ch + 0x58) = f25;
+        *(int *)(ch + 0x5C) = (*(WsdPlayerIface **)(self + 0x2C))->m7C();
+        *(float *)(ch + 0x60) = (*(WsdPlayerIface **)(self + 0x2C))->m80();
+        *(float *)(ch + 0x64) = f24;
+        *(float *)(ch + 0x68) = a0;
+        *(float *)(ch + 0x6C) = a1;
+        *(float *)(ch + 0x70) = a2;
+        unsigned char *p = ch;
+        float *lq = lo;
+        float *hq = hi;
+        for (int i = 0; i < 4; i++) {
+            float v = (*(WsdPlayerIface **)(self + 0x2C))->m8C(i);
+            int ok = 0;
+            if (i >= 0 && i < 4) ok = 1;
+            if (ok == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324728, 0xA5, lbl_803246E0, i, 0, 4);
+            *(float *)(p + 0x74) = v;
+            float w = *lq;
+            ok = 0;
+            if (i >= 0 && i < 4) ok = 1;
+            if (ok == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8032477C, 0xAA, lbl_80324734, i, 0, 4);
+            *(float *)(p + 0x84) = w;
+            w = *hq;
+            ok = 0;
+            if (i >= 0 && i < 4) ok = 1;
+            if (ok == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803247D0, 0xAF, lbl_80324788, i, 0, 4);
+            *(float *)(p + 0x94) = w;
+            p += 4; lq++; hq++;
+        }
+        *(float *)(ch + 0x20) = *(float *)(self + 0xC);
+        *(float *)(ch + 0x24) = *(float *)(self + 0x10);
+        *(int *)(ch + 0x28) = *(int *)(self + 0x14);
+        ch[0x2C] = self[0x18];
+        ch[0x2D] = self[0x19];
+        ch[0x2E] = self[0x1A];
+        ch[0x2F] = self[0x1B];
+        ch = *(unsigned char **)(ch + 0xE4);
+    }
+    OSRestoreInterrupts(interrupts);
+}
 extern "C" void *AllocChannel__Q46nw4hbm3snd6detail7ChannelFiiiPFPQ46nw4hbm3snd6detail7ChannelQ56nw4hbm3snd6detail7Channel21ChannelCallbackStatusUl_vUl(int, int, int, void (*)(void *, int, unsigned long), void *);
 extern "C" void ChannelCallbackFunc__Q46nw4hbm3snd6detail8WsdTrackFPQ46nw4hbm3snd6detail7ChannelQ56nw4hbm3snd6detail7Channel21ChannelCallbackStatusUl(void *, int, unsigned long);
 extern "C" void SetAttack__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
