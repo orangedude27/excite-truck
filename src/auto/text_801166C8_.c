@@ -4142,24 +4142,34 @@ typedef struct {
     /* 0x2C */ s16 *output;        /* where the next block is decoded to */
 } BandState8011;
 
-void fn_8011DC5C(void *arg0, void *arg1) {
-    s32 n;
+/* Decodes one block of 16-bit samples of a band from the bit stream.  Nothing is
+   done while the block of the previous call is still published ([start, end)).
+   The block opens with its sample count (countBits wide); a count of zero only
+   marks the band as empty.  The first sample is absolute: sampleBits bits, or
+   one bit less plus a sign bit for the signed bands.  The rest comes in groups
+   of up to eight samples, each group preceded by its 4-bit delta width: deltas
+   of that many bits (again with a sign bit when non-zero) accumulate into the
+   previous sample, while a width of zero repeats the current sample for the
+   whole group. */
+void fn_8011DC5C(BandState8011 *band, BitReader8011 *reader) {
+    s32 group;
     u32 count;
-    u32 *bits;
+    u32 *in;
     u32 value;
     u32 bitCount;
-    s16 *dst;
+    s16 *out;
     s32 val;
-    u32 width, mask, code, order, tmp, tmp2;
+    u32 width, mask, code, deltaBits, sign, signOfCode;
     s32 run;
 
-    if (*(u32 *)arg0 != *(u32 *)((u8 *)arg0 + 4)) return;
-    bitCount = *(u32 *)((u8 *)arg1 + 8);
-    width = *(u32 *)((u8 *)arg0 + 0x28);
-    bits = *(u32 **)((u8 *)arg1 + 4);
-    value = *(u32 *)arg1;
+    if (band->start != band->end) return;
+    bitCount = reader->count;
+    width = band->countBits;
+    in = reader->next;
+    value = reader->value;
+    /* How many samples this block holds. */
     if (bitCount < width) {
-        u32 next = *bits++;
+        u32 next = *in++;
         count = (value | (next << bitCount)) & (0xFFFFFFFFU >> (32 - width));
         value = next >> (width - bitCount);
         bitCount = bitCount + 32 - width;
@@ -4169,11 +4179,13 @@ void fn_8011DC5C(void *arg0, void *arg1) {
         bitCount -= width;
     }
     if (count != 0) {
-        dst = *(s16 **)((u8 *)arg0 + 0x2C);
-        if (*(s32 *)((u8 *)arg0 + 0xC) != 0) {
-            width = *(u32 *)((u8 *)arg0 + 8) - 1;
+        out = band->output;
+        /* The first sample, absolute; signed bands store its magnitude one bit
+           narrower and follow it with the sign. */
+        if (band->signMask != 0) {
+            width = band->sampleBits - 1;
             if (bitCount < width) {
-                u32 next = *bits++;
+                u32 next = *in++;
                 val = (value | (next << bitCount)) & (0xFFFFFFFFU >> (32 - width));
                 value = next >> (width - bitCount);
                 bitCount = bitCount + 32 - width;
@@ -4183,14 +4195,14 @@ void fn_8011DC5C(void *arg0, void *arg1) {
                 bitCount -= width;
             }
             if (val != 0) {
-                if (bitCount == 0) { tmp = *bits++; bitCount = 31; value = tmp >> 1; }
-                else { tmp = value; value >>= 1; bitCount--; }
-                if (tmp & 1) val = -val;
+                if (bitCount == 0) { sign = *in++; bitCount = 31; value = sign >> 1; }
+                else { sign = value; value >>= 1; bitCount--; }
+                if (sign & 1) val = -val;
             }
         } else {
-            width = *(u32 *)((u8 *)arg0 + 8);
+            width = band->sampleBits;
             if (bitCount < width) {
-                u32 next = *bits++;
+                u32 next = *in++;
                 val = (value | (next << bitCount)) & (0xFFFFFFFFU >> (32 - width));
                 value = next >> (width - bitCount);
                 bitCount = bitCount + 32 - width;
@@ -4200,62 +4212,67 @@ void fn_8011DC5C(void *arg0, void *arg1) {
                 bitCount -= width;
             }
         }
-        *dst = val;
-        *(s16 **)arg0 = *(s16 **)((u8 *)arg0 + 0x2C);
-        *(s16 **)((u8 *)arg0 + 4) = *(s16 **)((u8 *)arg0 + 0x2C) + count;
+        *out = val;
+        band->start = band->output;
+        band->end = band->output + count;
         count--;
-        dst++;
+        out++;
+        /* The remaining samples, in groups of at most eight. */
         while (count != 0) {
-            n = 8;
-            if (count <= 8) n = (s32)count;
+            group = 8;
+            if (count <= 8) group = (s32)count;
+            /* Bits per delta in this group; zero means "repeat this sample". */
             if (bitCount < 4) {
-                u32 next = *bits++;
-                order = (value | (next << bitCount)) & 15;
+                u32 next = *in++;
+                deltaBits = (value | (next << bitCount)) & 15;
                 value = next >> (4 - bitCount);
                 bitCount = bitCount + 32 - 4;
             } else {
-                order = value & 15;
+                deltaBits = value & 15;
                 value >>= 4;
                 bitCount -= 4;
             }
-            if (order != 0) {
-                mask = 0xFFFFFFFFU >> (32 - order);
-                run = n;
+            if (deltaBits != 0) {
+                mask = 0xFFFFFFFFU >> (32 - deltaBits);
+                run = group;
                 while (run != 0) {
                     run--;
-                    if (bitCount < order) {
-                        u32 next = *bits++;
+                    if (bitCount < deltaBits) {
+                        u32 next = *in++;
                         code = (value | (next << bitCount)) & mask;
-                        value = next >> (order - bitCount);
-                        bitCount = bitCount + 32 - order;
+                        value = next >> (deltaBits - bitCount);
+                        bitCount = bitCount + 32 - deltaBits;
                     } else {
                         code = value & mask;
-                        value >>= order;
-                        bitCount -= order;
+                        value >>= deltaBits;
+                        bitCount -= deltaBits;
                     }
+                    /* A non-zero delta carries its sign in the next bit. */
                     if (code != 0) {
-                        if (bitCount == 0) { u32 w = *bits++; bitCount = 31; value = w >> 1; tmp2 = w; }
-                        else { tmp2 = value; value >>= 1; bitCount--; }
-                        if (tmp2 & 1) code = -code;
+                        if (bitCount == 0) { u32 w = *in++; bitCount = 31; value = w >> 1; signOfCode = w; }
+                        else { signOfCode = value; value >>= 1; bitCount--; }
+                        if (signOfCode & 1) code = -code;
                     }
                     val += code;
-                    *dst = val;
-                    dst++;
+                    *out = val;
+                    out++;
                 }
             } else {
-                fn_80116CC4((s32 *)dst, (u16)val, (n + n));
-                dst = (s16 *)((u8 *)dst + (n << 1));
+                /* n samples of the unchanged value. */
+                fn_80116CC4((s32 *)out, (u16)val, (group + group));
+                out = (s16 *)((u8 *)out + (group << 1));
             }
-            count -= n;
+            count -= group;
         }
     } else {
-        dst = *(s16 **)((u8 *)arg0 + 0x2C);
-        *(s16 **)((u8 *)arg0 + 4) = dst;
-        *(s16 **)((u8 *)arg0) = dst + 2;
+        /* Empty block: nothing for the consumer to take. */
+        out = band->output;
+        band->end = out;
+        band->start = out + 2;
     }
-    *(u32 **)((u8 *)arg1 + 4) = bits;
-    *(u32 *)arg1 = value;
-    *(u32 *)((u8 *)arg1 + 8) = bitCount;
+    reader->next = in;
+    reader->value = value;
+    reader->count = bitCount;
 }
 
 s32 fn_8011DF68(s32 arg0, u32 arg1, u32 arg2, u32 arg3) {
