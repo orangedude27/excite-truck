@@ -7466,6 +7466,41 @@ extern "C" const u8 lbl_8055921C[];
 extern "C" const u8 lbl_80559220[];
 extern "C" const u8 lbl_80559224[];
 extern "C" const u8 lbl_80559228[];
+
+/*
+ * A NAND path read one token at a time.  VFiPFSTR_StrNCmp() is told which of
+ * the three positions to compare from: 1 = pos, 2 = read, 3 = end.
+ */
+struct VFiPFStrPos {
+    u8 *pos;        /* 0x00 first character of the token; MoveStrPos() walks it */
+    u8 *read;       /* 0x04 the character GetNextTokenOfPath() is reading */
+    u8 *end;        /* 0x08 the third position */
+    u32 code;       /* 0x0C character code: 1 = one byte per character, 2 = Unicode */
+};
+
+/* the strings a path is compared against */
+#define PF_PATH_END         lbl_8055920C  /* ""  nothing left of the path */
+#define PF_SEP              lbl_8055921C  /* "\\" separates two tokens */
+#define PF_ALT_SEP          lbl_80559220  /* "/"  the same separator */
+#define PF_WILDCARD_ANY     lbl_80559224  /* "*"  stands for any name */
+#define PF_WILDCARD_ONE     lbl_80559228  /* "?"  stands for any character */
+
+/*
+ * The VFiPF file system manager at lbl_803D2140.
+ *   0x38  bit 0x10000: take any character at all in a name
+ *   0x54  s32 isJisByte(s8 ch, s32 which): is ch a lead (1) or trail (2) byte
+ *         of a two byte JIS character
+ *   0x60  bit 2: Unicode names are enabled
+ */
+#define PF_CHECK_NAME_CHARS   ((lbl_803D2140[0x38 / 4] & 0x10000) == 0)
+#define PF_UNICODE_NAMES      ((u32)(lbl_803D2140[0x60 / 4] & 2) == 2U)
+#define PF_IS_JIS_BYTE(ch, which) \
+    (((s32 (**)(s8, s32))((u8 *)lbl_803D2140 + 0x54))[0]((s8) (ch), (which)))
+
+/* lbl_802EEEE0[c - 0x20] is the class of the ASCII character c; bit 0 marks
+   the characters allowed in a name. */
+#define PF_NAME_CHAR_TABLE    lbl_802EEEE0
+
 #pragma push
 #pragma scheduling on
 extern "C" s32 VFiPFPATH_GetNextTokenOfPath(void *arg0, s32 arg1) {
