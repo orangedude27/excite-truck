@@ -44,6 +44,9 @@ typedef enum {
     EXI_ID_USB_ADAPTER = 0x01010000,
     EXI_ID_IS_DOL_VIEWER = 0x05070000,
     EXI_ID_BROADBAND_ADAPTER = 0x04020200,
+    // The barnacle debug interface of dev boards; EXIInit() enables it on the
+    // internal port of the other channel when it finds one attached.
+    EXI_ID_BARNACLE = 0x07010000,
     EXI_ID_INVALID = 0xFFFFFFFF
 } EXIDeviceID;
 
