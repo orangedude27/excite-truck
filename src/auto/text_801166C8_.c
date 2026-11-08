@@ -4126,6 +4126,22 @@ void fn_8011D9E4(void *arg0, void *arg1) {
     *(u32 *)arg1 = value; *(u32 *)((u8 *)arg1 + 8) = bitCount;
 }
 
+/* One band of the compressed stream that fn_8011C3A8 sets up (see the table of
+   bands fn_8011E0B4 builds): [start, end) is the range of samples the last call
+   published, output is where the next block is decoded to, and the tables at
+   0x10..0x27 turn coded symbols back into values.  0x30 bytes. */
+typedef struct {
+    /* 0x00 */ s16 *start;         /* first sample of the decoded block */
+             s16 *end;             /* one past its last sample */
+             u32 sampleBits;       /* 0x08: bits of one sample */
+             u32 signMask;         /* 0x0C: 1 << (sampleBits - 1) when the samples carry a sign bit, else 0 */
+    /* 0x10 */ u8 symbol[16];      /* value of each 4-bit symbol */
+             u32 indexBits;        /* 0x20: bits of a table index */
+             u8 *lookup;           /* 0x24: index -> symbol table entry */
+             u32 countBits;        /* 0x28: bits of a block's sample count */
+    /* 0x2C */ s16 *output;        /* where the next block is decoded to */
+} BandState8011;
+
 void fn_8011DC5C(void *arg0, void *arg1) {
     s32 n;
     u32 count;
