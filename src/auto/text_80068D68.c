@@ -15352,6 +15352,10 @@ static void hidh_l2cif_config_cfm(u32 l2cap_cid, tL2CAP_CFG_INFO *p_cfg) {
 
 extern char lbl_80317AD8[];
 extern char lbl_80317B04[];
+/* fn_80077DD8 is btm_get_acl_disc_reason_code() of stack/btm/btm_acl.c; this unit
+   defines it as u8, so the UINT16 the stack wants needs the cast. */
+#define btm_get_acl_disc_reason_code() ((UINT16 (*)(void))fn_80077DD8)()
+
 static void hidh_l2cif_disconnect_ind(UINT16 l2cap_cid, BOOLEAN ack_needed)
 {
     UINT8 dhandle;
