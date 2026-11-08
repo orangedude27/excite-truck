@@ -26,6 +26,39 @@ extern "C" const char lbl_803290E8[];
 extern "C" const char lbl_803293A8[];
 extern "C" const char lbl_80329400[];
 extern "C" const char lbl_80329140[];
+
+/* nw4hbm::ut: one code range of a font's code-map list (ut_ResFontBase.cpp).
+ * A map covers start_code..end_code; FindGlyphIndex turns a code inside that
+ * range into a glyph index in one of the three ways named below.  Callers walk
+ * the list through `next` (see ResFontBase::GetGlyph / SetAlternateChar). */
+namespace nw4hbm { namespace ut {
+struct FontCodePair { /* binary-search entry, sorted by code */
+    /* 0x00 */ u16 code;
+    /* 0x02 */ u16 index;
+};
+struct FontCodeBinaryMap {
+    /* 0x00 */ u16 count;
+    /* 0x02 */ FontCodePair pairs[1];
+};
+struct FontCodeMap {
+    /* 0x00 */ u16 start_code;
+    /* 0x02 */ u16 end_code;
+    /* 0x04 */ u16 map_type; /* FontCodeMapType */
+    /* 0x06 */ u16 pad_06;
+    /* 0x08 */ const FontCodeMap* next;
+    union {
+        /* 0x0C */ u16 offset;                    /* OFFSET: start_code's index */
+        /* 0x0C */ u16 indices[1];                /* INDEX:  one entry per code */
+        /* 0x0C */ FontCodeBinaryMap binary;      /* BINARY: sorted (code, index) pairs */
+    } map;
+};
+enum FontCodeMapType {
+    FONT_CODE_MAP_TYPE_OFFSET = 0, /* index = offset + (code - start_code) */
+    FONT_CODE_MAP_TYPE_INDEX = 1,  /* index = indices[code - start_code] */
+    FONT_CODE_MAP_TYPE_BINARY = 2  /* index = binary search of the pairs */
+};
+} }
+
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void* __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void* self, int doFree) {
