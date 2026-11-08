@@ -64,11 +64,13 @@ int PackArgs(void* base, int count, char** args, int unused) {
     return 1;
 }
 
+#pragma dont_inline on
 void fn_8004DD88(void (*target)(void)) {
     ICFlashInvalidate();
     __asm_sync_placeholder();
     target();
 }
+#pragma dont_inline reset
 
 void __AXDSPInitCallback_8004DDC4(void) {
     lbl_8055DA44 = 1;
@@ -488,7 +490,7 @@ void fn_8004E538(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
     fn_8004DDFC();
     hdr = OSAllocFromMEM1ArenaLo(0x20, 0x20);
     off = BootGetPartOffset();
-    BootReadAbs(hdr, 0x20, 0);
+    BootReadAbs(hdr, 0x20, off);
     off = BootGetPartOffset();
     BootReadAbs((void *)0x81200000, (hdr[5] + 0x1F) & ~0x1F, off + 8);
     ICInvalidateRange((void *)0x81200000, (hdr[5] + 0x1F) & ~0x1F);
