@@ -99,6 +99,49 @@ extern void fn_801A7974(void *, const char *, int);
 extern void fn_801A7DFC(int, int, int);
 extern void fn_801A9110(void *, const char *);
 extern int sprintf(char *, const char *, ...);
+struct Di718Slot {
+    void *handler;
+    s32 value;
+    u8 pad08[4];
+    u8 inUse;
+    u8 pad0D[3];
+};
+struct Di718 {
+    void *vtable;
+    s32 index;
+    s32 axStackHead;
+    f32 pad0C[8];
+    f32 level2C[9];
+    s32 pad50[2];
+    u8 flag58;
+    u8 flag59;
+    u8 flag5A;
+    u8 flag5B;
+    u8 flag5C;
+    u8 flag5D;
+    u8 flag5E;
+    u8 pad5F;
+    f32 pad60;
+    f32 pad64;
+    u8 flag68;
+    u8 pad69[3];
+    struct Di718Slot slot[42];
+    f32 pad30C[9];
+    u8 pad330[8];
+    u8 flag338;
+    u8 pad339[3];
+    f32 pad33C;
+    u8 flag340;
+    u8 flag341;
+    u8 flag342;
+    u8 flag343;
+    u8 flag344;
+    u8 pad345[3];
+    s32 mode348;
+    s32 soundId;
+    u8 flag350;
+    u8 pad351[3];
+};
 extern void fn_8017E930(void *);
 extern s32 __AXGetStackHead_80137CFC(s32);
 extern s32 fn_801298E8(void *, s32);
@@ -258,6 +301,185 @@ void fn_8017F628(void *arg0) {
 #pragma pop
 float fn_8017F70C(float arg0) { double temp = __fabs(arg0); return temp; }
 
+#pragma scheduling invalid_target
+void fn_8017F718(void *arg0) {
+    char name[64];
+    unsigned char flag;
+    int keys1[4];
+    int keys2[4];
+    int *slot;
+    int i;
+    float value;
+    *(int *)((char *)arg0 + 8) = __AXGetStackHead_80137CFC(*(int *)((char *)arg0 + 4));
+    *(float *)((char *)arg0 + 0x2C) = lbl_80561C7C;
+    *(float *)((char *)arg0 + 0x38) = lbl_80561C7C;
+    *(float *)((char *)arg0 + 0x44) = lbl_80561C80;
+    *(float *)((char *)arg0 + 0x34) = lbl_80561C48;
+    *(float *)((char *)arg0 + 0x40) = lbl_80561C84;
+    *(float *)((char *)arg0 + 0x4C) = lbl_80561C88;
+    *(float *)((char *)arg0 + 0x30) = lbl_80561C8C;
+    *(float *)((char *)arg0 + 0x3C) = lbl_80561C90;
+    *(float *)((char *)arg0 + 0x48) = lbl_80561C8C;
+    *(unsigned char *)((char *)arg0 + 0x340) = 0;
+    *(unsigned char *)((char *)arg0 + 0x341) = 0;
+    fn_801331C4(*(int *)((char *)arg0 + 0x34C), lbl_80332270, (char *)arg0 + 0x2C);
+    fn_801331C4(*(int *)((char *)arg0 + 0x34C), lbl_80332258, (char *)arg0 + 0x38);
+    fn_801331C4(*(int *)((char *)arg0 + 0x34C), lbl_80332248, (char *)arg0 + 0x44);
+    fn_801331C4(*(int *)((char *)arg0 + 0x34C), lbl_80332238, (char *)arg0 + 0x30);
+    fn_801331C4(*(int *)((char *)arg0 + 0x34C), lbl_80332220, (char *)arg0 + 0x3C);
+    fn_801331C4(*(int *)((char *)arg0 + 0x34C), lbl_80332210, (char *)arg0 + 0x48);
+    fn_801331C4(*(int *)((char *)arg0 + 0x34C), lbl_80332200, (char *)arg0 + 0x34);
+    fn_801331C4(*(int *)((char *)arg0 + 0x34C), lbl_803321F0, (char *)arg0 + 0x40);
+    fn_801331C4(*(int *)((char *)arg0 + 0x34C), lbl_803321E4, (char *)arg0 + 0x4C);
+    fn_801331C4(*(int *)((char *)arg0 + 0x34C), lbl_803321D0, (char *)arg0 + 0x60);
+    *(unsigned char *)((char *)arg0 + 0x5C) = 1;
+    fn_801333E8(*(int *)((char *)arg0 + 0x34C), lbl_803321C4, (char *)arg0 + 0x340);
+    fn_801333E8(*(int *)((char *)arg0 + 0x34C), lbl_803321B8, (char *)arg0 + 0x341);
+    *(unsigned char *)((char *)arg0 + 0x5E) = 1;
+    value = lbl_80561C48;
+    value = value < (*(float *)((char *)arg0 + 0x60) - lbl_80561C48) ? value : (*(float *)((char *)arg0 + 0x60) - lbl_80561C48);
+    value = value > lbl_80561C4C ? value : lbl_80561C4C;
+    *(float *)((char *)arg0 + 0x64) = value;
+    value = lbl_80561C48;
+    value = value < *(float *)((char *)arg0 + 0x60) ? value : *(float *)((char *)arg0 + 0x60);
+    value = value > lbl_80561C4C ? value : lbl_80561C4C;
+    *(float *)((char *)arg0 + 0x60) = value;
+    value = *(float *)((char *)arg0 + 0x34);
+    value = value > lbl_80561C94 ? value : lbl_80561C94;
+    *(float *)((char *)arg0 + 0x34) = value;
+    value = *(float *)((char *)arg0 + 0x40);
+    value = value > lbl_80561C94 ? value : lbl_80561C94;
+    *(float *)((char *)arg0 + 0x40) = value;
+    value = *(float *)((char *)arg0 + 0x4C);
+    value = value > lbl_80561C94 ? value : lbl_80561C94;
+    *(float *)((char *)arg0 + 0x4C) = value;
+    if (((int (*)(void *))(*(void ***)arg0)[23])(arg0) != 0) {
+        *(float *)((char *)arg0 + 0x60) = lbl_80561C4C;
+    }
+    fn_802E8524(*(unsigned char *)((char *)arg0 + 0x5C), *(int *)((char *)arg0 + 8));
+    keys1[0] = lbl_802F9530[0];
+    keys1[1] = lbl_802F9530[1];
+    keys1[2] = lbl_802F9530[2];
+    keys1[3] = lbl_802F9530[3];
+    keys2[0] = lbl_802F9540[0];
+    keys2[1] = lbl_802F9540[1];
+    keys2[2] = lbl_802F9540[2];
+    keys2[3] = lbl_802F9540[3];
+    slot = (int *)((char *)arg0 + 0x2CC);
+    for (i = 0; i < 4; i++, slot += 4) {
+        fn_801A7DFC(keys1[i], keys2[i], *(int *)((char *)arg0 + 0x34C));
+        fn_801A7974((char *)slot, (const char *)keys1[i], *(int *)((char *)arg0 + 0x34C));
+    }
+    fn_801A7974((char *)arg0 + 0x6C, lbl_803321AC, *(int *)((char *)arg0 + 0x34C));
+    fn_801A7974((char *)arg0 + 0x7C, lbl_803321A0, *(int *)((char *)arg0 + 0x34C));
+    fn_801A7974((char *)arg0 + 0x18C, lbl_80332194, *(int *)((char *)arg0 + 0x34C));
+    fn_801A7974((char *)arg0 + 0x19C, lbl_80332184, *(int *)((char *)arg0 + 0x34C));
+    fn_801A7974((char *)arg0 + 0x8C, lbl_80332178, *(int *)((char *)arg0 + 0x34C));
+    fn_801A7974((char *)arg0 + 0x9C, lbl_8055A398, *(int *)((char *)arg0 + 0x34C));
+    fn_801A7974((char *)arg0 + 0xBC, lbl_80332168, *(int *)((char *)arg0 + 0x34C));
+    fn_801A7974((char *)arg0 + 0xCC, lbl_8033215C, *(int *)((char *)arg0 + 0x34C));
+    fn_801A7974((char *)arg0 + 0xDC, lbl_80332150, *(int *)((char *)arg0 + 0x34C));
+    fn_801A7974((char *)arg0 + 0xEC, lbl_80332144, *(int *)((char *)arg0 + 0x34C));
+    fn_801A7974((char *)arg0 + 0x24C, lbl_8055A390, *(int *)((char *)arg0 + 0x34C));
+    fn_801A7974((char *)arg0 + 0x25C, lbl_80332138, *(int *)((char *)arg0 + 0x34C));
+    fn_801A7974((char *)arg0 + 0x26C, lbl_8033212C, *(int *)((char *)arg0 + 0x34C));
+    fn_801A7974((char *)arg0 + 0x27C, lbl_8033211C, *(int *)((char *)arg0 + 0x34C));
+    fn_801A7974((char *)arg0 + 0xAC, lbl_8055A388, *(int *)((char *)arg0 + 0x34C));
+    fn_801A7974((char *)arg0 + 0xFC, lbl_8055A380, *(int *)((char *)arg0 + 0x34C));
+    fn_801A7974((char *)arg0 + 0x10C, lbl_80332110, *(int *)((char *)arg0 + 0x34C));
+    fn_801A7974((char *)arg0 + 0x15C, lbl_8055A378, *(int *)((char *)arg0 + 0x34C));
+    fn_801A7974((char *)arg0 + 0x13C, lbl_8055A370, *(int *)((char *)arg0 + 0x34C));
+    fn_801A7974((char *)arg0 + 0x14C, lbl_80332104, *(int *)((char *)arg0 + 0x34C));
+    fn_801A7974((char *)arg0 + 0x16C, lbl_8055A368, *(int *)((char *)arg0 + 0x34C));
+    fn_801A7974((char *)arg0 + 0x17C, lbl_8055A360, *(int *)((char *)arg0 + 0x34C));
+    fn_801A7974((char *)arg0 + 0x11C, lbl_8055A358, *(int *)((char *)arg0 + 0x34C));
+    fn_801A7974((char *)arg0 + 0x12C, lbl_8055A350, *(int *)((char *)arg0 + 0x34C));
+    fn_801A7974((char *)arg0 + 0x1AC, lbl_803320F8, *(int *)((char *)arg0 + 0x34C));
+    fn_801A7974((char *)arg0 + 0x1BC, lbl_803320EC, *(int *)((char *)arg0 + 0x34C));
+    fn_801A7974((char *)arg0 + 0x1CC, lbl_803320E0, *(int *)((char *)arg0 + 0x34C));
+    fn_801A7974((char *)arg0 + 0x28C, lbl_803320D4, *(int *)((char *)arg0 + 0x34C));
+    fn_801A7974((char *)arg0 + 0x29C, lbl_803320C8, *(int *)((char *)arg0 + 0x34C));
+    fn_801A7974((char *)arg0 + 0x2AC, lbl_803320BC, *(int *)((char *)arg0 + 0x34C));
+    fn_801A7974((char *)arg0 + 0x2BC, lbl_803320B0, *(int *)((char *)arg0 + 0x34C));
+    fn_801331C4(*(int *)((char *)arg0 + 0x34C), lbl_8033209C, &lbl_8055A330);
+    fn_801331C4(*(int *)((char *)arg0 + 0x34C), lbl_8033208C, &lbl_8055A334);
+    fn_801331C4(*(int *)((char *)arg0 + 0x34C), lbl_80332078, &lbl_8055A338);
+    fn_801331C4(*(int *)((char *)arg0 + 0x34C), lbl_80332064, &lbl_8055A33C);
+    fn_801331C4(*(int *)((char *)arg0 + 0x34C), lbl_80332050, &lbl_8055A340);
+    fn_801331C4(*(int *)((char *)arg0 + 0x34C), lbl_8033203C, &lbl_8055A344);
+    *(unsigned char *)((char *)arg0 + 0x341) = 0;
+    fn_801333E8(*(int *)((char *)arg0 + 0x34C), lbl_80332030, (char *)arg0 + 0x341);
+    *(unsigned char *)((char *)arg0 + 0x346) = 0;
+    *(unsigned char *)((char *)arg0 + 0x345) = 1;
+    fn_801333E8(*(int *)((char *)arg0 + 0x34C), lbl_80332020, (char *)arg0 + 0x346);
+    fn_801333E8(*(int *)((char *)arg0 + 0x34C), lbl_80332008, (char *)arg0 + 0x345);
+    flag = 0;
+    fn_801333E8(*(int *)((char *)arg0 + 0x34C), lbl_80331FFC, &flag);
+    if (flag != 0) {
+        fn_802E30C8(lbl_80331FF0);
+        *(unsigned char *)((char *)arg0 + 0x346) = 0;
+        *(unsigned char *)((char *)arg0 + 0x345) = 0;
+    }
+    fn_801A9110((char *)arg0 + 0x1DC, lbl_80331FE4);
+    fn_801A9110((char *)arg0 + 0x1EC, lbl_80331FD8);
+    fn_801A9110((char *)arg0 + 0x1FC, lbl_80331FCC);
+    fn_801A9110((char *)arg0 + 0x20C, lbl_80331FC0);
+    fn_801A9110((char *)arg0 + 0x21C, lbl_80331FB4);
+    fn_801A9110((char *)arg0 + 0x22C, lbl_80331FA8);
+    fn_801A9110((char *)arg0 + 0x23C, lbl_80331F9C);
+    slot = (int *)((char *)arg0 + 0x1DC);
+    for (i = 0; i < 6; i++, slot += 4) {
+        sprintf(name, lbl_80331F90, i + 1);
+        fn_801A7974((char *)slot, name, *(int *)((char *)arg0 + 0x34C));
+    }
+    fn_801A7974((char *)arg0 + 0x23C, lbl_80331F80, *(int *)((char *)arg0 + 0x34C));
+    {
+        int head = *(int *)((char *)arg0 + 8);
+        *(unsigned char *)((char *)arg0 + 0x344) = 0;
+        *(int *)((char *)arg0 + 0x70) = head;
+        *(int *)((char *)arg0 + 0x80) = head;
+        *(int *)((char *)arg0 + 0x190) = head;
+        *(int *)((char *)arg0 + 0x1A0) = head;
+        *(int *)((char *)arg0 + 0x90) = head;
+        *(int *)((char *)arg0 + 0xA0) = head;
+        *(int *)((char *)arg0 + 0xB0) = head;
+        *(int *)((char *)arg0 + 0xE0) = head;
+        *(int *)((char *)arg0 + 0xF0) = head;
+        *(int *)((char *)arg0 + 0xC0) = head;
+        *(int *)((char *)arg0 + 0xD0) = head;
+        *(int *)((char *)arg0 + 0x100) = head;
+        *(int *)((char *)arg0 + 0x110) = head;
+        *(int *)((char *)arg0 + 0x140) = head;
+        *(int *)((char *)arg0 + 0x150) = head;
+        *(int *)((char *)arg0 + 0x160) = head;
+        *(int *)((char *)arg0 + 0x120) = head;
+        *(int *)((char *)arg0 + 0x130) = head;
+        *(int *)((char *)arg0 + 0x180) = head;
+        *(int *)((char *)arg0 + 0x250) = head;
+        *(int *)((char *)arg0 + 0x260) = head;
+        *(int *)((char *)arg0 + 0x270) = head;
+        *(int *)((char *)arg0 + 0x280) = head;
+        *(int *)((char *)arg0 + 0x170) = head;
+        *(int *)((char *)arg0 + 0x1B0) = head;
+        *(int *)((char *)arg0 + 0x1C0) = head;
+        *(int *)((char *)arg0 + 0x1D0) = head;
+        *(int *)((char *)arg0 + 0x290) = head;
+        *(int *)((char *)arg0 + 0x2A0) = head;
+        *(int *)((char *)arg0 + 0x2B0) = head;
+        *(int *)((char *)arg0 + 0x2C0) = head;
+        *(int *)((char *)arg0 + 0x2D0) = head;
+        *(int *)((char *)arg0 + 0x2E0) = head;
+        *(int *)((char *)arg0 + 0x2F0) = head;
+        *(int *)((char *)arg0 + 0x300) = head;
+        {
+            char buf[96];
+            if (fn_801298E8(buf, head) != 0 && ((*(int *)(buf + 0x50) & 0x10) != 0)) {
+                *(unsigned char *)((char *)arg0 + 0x344) = 1;
+                *(unsigned char *)((char *)arg0 + 0x344) = 1;
+            }
+        }
+    }
+}
 extern int fn_80128668(void);
 extern int fn_801A8EE4(void *);
 int fn_8017FEE4(void *arg0) {
