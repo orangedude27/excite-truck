@@ -588,6 +588,14 @@ class HomeButtonEventHandler { public: char pad[4]; EventDispatchA *dispatch; co
   };
   class HomeButton {
   public:
+      /* Which view of the overlay is shown; updateTrigPane switches the
+       * trigger panes on it. */
+      s32 state;                            /* 0x000 */
+      u8 pad4[0x1E0 - 0x4];
+      HomeButtonPaneAccessor *paneAccessor; /* 0x1E0 looks panes up by name */
+      u8 pad1E4[0x1F8 - 0x1E4];
+      PaneSearch *paneSearch;               /* 0x1F8 the pane set to switch */
+
       s32 getPaneNo(const char *name);
               void updateTrigPane();
         void calc_battery(int);
