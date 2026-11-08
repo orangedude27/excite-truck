@@ -15,7 +15,7 @@ extern double sin(double);
 extern float fn_80144514(float, float, float, float, float, float);
 #define D6(a, b, c, d, e, f) fn_80144514(a, b, c, d, e, f)
 #define M33CAT(a, b, ab)                                                   \
-    if ((ab) == (a) || (ab) == (b)) {                                      \
+    if ((ab) == (b) || (ab) == (a)) {                                      \
         f32 t0 = D6((a)[0], (b)[0], (a)[3], (b)[1], (a)[6], (b)[2]);       \
         f32 t3 = D6((a)[0], (b)[3], (a)[3], (b)[4], (a)[6], (b)[5]);       \
         f32 t6 = D6((a)[0], (b)[6], (a)[3], (b)[7], (a)[6], (b)[8]);       \
@@ -48,6 +48,49 @@ void fn_80144504(void **arg0) {
 float fn_80144514(float farg0, float farg1, float farg2, float farg3, float farg4, float farg5) {
     return (farg4 * farg5) + ((farg0 * farg1) + (farg2 * farg3));
 }
+
+#pragma push
+#pragma dont_inline on
+void fn_8014452C(f32 *m, f32 ax, f32 ay, f32 az) {
+    f32 b[9];
+    f32 c, s;
+    c = cos(ax);
+    s = sin(ax);
+    m[0] = c;
+    m[1] = lbl_805615BC;
+    m[3] = lbl_805615BC;
+    m[2] = -s;
+    m[4] = lbl_805615B8;
+    m[5] = lbl_805615BC;
+    m[6] = s;
+    m[7] = lbl_805615BC;
+    m[8] = c;
+    c = cos(ay);
+    s = sin(ay);
+    b[1] = lbl_805615BC;
+    b[0] = lbl_805615B8;
+    b[2] = lbl_805615BC;
+    b[3] = lbl_805615BC;
+    b[4] = c;
+    b[5] = s;
+    b[6] = lbl_805615BC;
+    b[7] = -s;
+    b[8] = c;
+    M33CAT(m, b, m)
+    c = cos(az);
+    s = sin(az);
+    b[0] = c;
+    b[1] = s;
+    b[2] = lbl_805615BC;
+    b[3] = -s;
+    b[4] = c;
+    b[5] = lbl_805615BC;
+    b[6] = lbl_805615BC;
+    b[7] = lbl_805615BC;
+    b[8] = lbl_805615B8;
+    M33CAT(m, b, m)
+}
+#pragma pop
 
 void GXInitLightAttnA_80144B44(void *arg0, f32 farg0, f32 farg1, f32 farg2) {
     ((f32 *)arg0)[0] = farg0;
