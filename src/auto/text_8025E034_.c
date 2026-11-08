@@ -1,6 +1,20 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern int fn_80214A9C(int);
+extern int fn_80214AF0(int);
+extern void *lbl_8055F3D4;
+extern float lbl_80558DC0[];
+extern void *memset(void *, int, int);
+extern char *fn_8000DA10(void *);
+extern void fn_8001BC38(void *, void *, void *, void *, int);
+extern int fn_8001BD6C(void *, void *);
+extern int fn_8001BCF0(void *);
+extern void fn_8001BD38(void *, void *, int);
+extern void fn_80130978(void *, int, float);
+extern void fn_8001BD54(void *, void *);
+extern void *fn_80016510(int);
+extern int stricmp(const char *, const char *);
 extern char lbl_80345A30[];
 extern char lbl_80345A1C[];
 extern void* fn_8023512C(const char*);
@@ -154,11 +168,20 @@ void fn_8025F46C(void *arg0) {
         unsigned char *p17 = base;
         int i18 = 0;
         for (;;) {
+            char *p;
+            char *q;
+            int k;
             obj = *(void **)base;
             str = ((char *(*)(void *, int))(*(void ***)obj)[4])(obj, i18);
             src = ((char *(*)(void *))(*(void ***)str)[3])(str);
-            for (n = 0; n < 0x20; n++) { p16[n] = src[n]; if (src[n] == 0) break; }
-            if (n == 0x20) p16[0x1F] = 0;
+            p = (char *)p16;
+            q = src;
+            for (k = 0; k < 0x20; k++) {
+                char c = *q++;
+                *p++ = c;
+                if (c == 0) break;
+            }
+            if (k == 0x20) p[-1] = 0;
             *(int *)(p17 + 0x38) = (i18 == *(int *)(base + 0x10)) ? 7 : 6;
             p16 += 0x24;
             p17 += 0x24;
@@ -199,13 +222,28 @@ void fn_8025F46C(void *arg0) {
     dest3 = base + 0x130;
     for (i = 0;; i++) {
         void *o1 = ((void *(*)(void *, int))(*(void ***)item)[7])(item, i);
+        char *p;
+        char *q;
+        int k;
         src = ((char *(*)(void *))(*(void ***)o1)[3])(o1);
-        for (n = 0; n < 0x20; n++) { dest1[n] = src[n]; if (src[n] == 0) break; }
-        if (n == 0x20) dest1[0x1F] = 0;
+        p = (char *)dest1;
+        q = src;
+        for (k = 0; k < 0x20; k++) {
+            char c = *q++;
+            *p++ = c;
+            if (c == 0) break;
+        }
+        if (k == 0x20) p[-1] = 0;
         obj2 = ((void *(*)(void *, int))(*(void ***)o1)[7])(o1, i);
         src = ((char *(*)(void *))(*(void ***)obj2)[3])(obj2);
-        for (n = 0; n < 0x20; n++) { dest2[n] = src[n]; if (src[n] == 0) break; }
-        if (n == 0x20) dest2[0x1F] = 0;
+        p = (char *)dest2;
+        q = src;
+        for (k = 0; k < 0x20; k++) {
+            char c = *q++;
+            *p++ = c;
+            if (c == 0) break;
+        }
+        if (k == 0x20) p[-1] = 0;
         {
             void *tmp = ((void *(*)(void *))(*(void ***)o1)[8])(o1);
             void *conv = fn_8000DA10(tmp);
