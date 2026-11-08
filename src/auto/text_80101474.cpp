@@ -40,15 +40,15 @@ extern "C" unsigned char lbl_8041D4E0[];
 #define CW_CHECK_THIS(self, line) \
     { \
         unsigned int cw_addr = (unsigned int)(self); \
+        int cw_r4 = 1, cw_r5 = 1, cw_r6 = 1, cw_r7 = 1, cw_r8 = 1, cw_r9 = 1; \
         unsigned int cw_top = cw_addr & 0xFF000000U; \
-        int cw_r5 = 1, cw_r6 = 1, cw_r7 = 1, cw_r8 = 1, cw_r9 = 1, cw_r10 = 1; \
-        if (cw_top != 0x80000000U && (cw_addr & 0xFF800000U) != 0x81000000U) cw_r10 = 0; \
-        if (cw_r10 == 0 && (cw_addr & 0xF8000000U) != 0x90000000U) cw_r9 = 0; \
-        if (cw_r9 == 0 && cw_top != 0xC0000000U) cw_r8 = 0; \
-        if (cw_r8 == 0 && (cw_addr & 0xFF800000U) != 0xC1000000U) cw_r7 = 0; \
-        if (cw_r7 == 0 && (cw_addr & 0xF8000000U) != 0xD0000000U) cw_r6 = 0; \
-        if (cw_r6 == 0 && (cw_addr & 0xFFFFC000U) != 0xE0000000U) cw_r5 = 0; \
-        if (cw_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, line, lbl_8032818C, self); \
+        if (cw_top != 0x80000000U && (cw_addr & 0xFF800000U) != 0x81000000U) cw_r9 = 0; \
+        if (cw_r9 == 0 && (cw_addr & 0xF8000000U) != 0x90000000U) cw_r8 = 0; \
+        if (cw_r8 == 0 && cw_top != 0xC0000000U) cw_r7 = 0; \
+        if (cw_r7 == 0 && (cw_addr & 0xFF800000U) != 0xC1000000U) cw_r6 = 0; \
+        if (cw_r6 == 0 && (cw_addr & 0xF8000000U) != 0xD0000000U) cw_r5 = 0; \
+        if (cw_r5 == 0 && (cw_addr & 0xFFFFC000U) != 0xE0000000U) cw_r4 = 0; \
+        if (cw_r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, line, lbl_8032818C, self); \
     }
 extern "C" void __register_global_object(void *, void *, void *);
 extern "C" void fn_800D2DD4(void);
@@ -603,6 +603,73 @@ extern "C" unsigned short ReadNextCharSJIS__Q36nw4hbm2ut14CharStrmReaderFv(void 
     }
     *(const unsigned char **)arg0 += 1;
     return c;
+}
+
+extern "C" float lbl_80561154;
+extern "C" void SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color(void *arg0, void *arg1, void *arg2);
+nw4hbm::ut::CharWriter::CharWriter() {
+    unsigned char *self = (unsigned char *)this;
+    unsigned char *source1, *source2, *source3;
+    nw4hbm::ut::Color colorA, colorB;
+    unsigned int addr = (unsigned int)this;
+    int r9 = 1, r10 = 1, r11 = 1, r12 = 1, r30 = 1, r29 = 1;
+    unsigned int top = addr & 0xFF000000U;
+    *(int *)(self + 0) = -1;
+    *(int *)(self + 4) = -1;
+    *(int *)(self + 8) = -1;
+    *(int *)(self + 0xC) = -1;
+    *(int *)(self + 0x10) = -1;
+    *(int *)(self + 0x14) = -1;
+    *(int *)(self + 0x18) = -1;
+    *(int *)(self + 0x1C) = -1;
+    *(self + 0x42) = 0xFF;
+    *(self + 0x43) = 0;
+    *(float *)(self + 0x44) = lbl_80561150;
+    *(int *)(self + 0x48) = 0;
+    (*(int *)((signed char *)(&lbl_8041D4E0) + (0))) = 0xFF;
+    (*(int *)((signed char *)(&lbl_8041D4E0) + (4))) = 0;
+    if (top != 0x80000000U && (addr & 0xFF800000U) != 0x81000000U) r29 = 0;
+    if (r29 == 0 && (addr & 0xF8000000U) != 0x90000000U) r30 = 0;
+    if (r30 == 0 && top != 0xC0000000U) r12 = 0;
+    if (r12 == 0 && (addr & 0xFF800000U) != 0xC1000000U) r11 = 0;
+    if (r11 == 0 && (addr & 0xF8000000U) != 0xD0000000U) r10 = 0;
+    if (r10 == 0 && (addr & 0xFFFFC000U) != 0xE0000000U) r9 = 0;
+    if (r9 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x11C, lbl_8032818C, this);
+    *(int *)&colorA = 0;
+    *(int *)&colorB = -1;
+    SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color(this, &colorA, &colorB);
+    CW_CHECK_THIS(this, 0x163);
+    *(int *)(self + 0x20) = 0;
+    CW_CHECK_THIS(this, 0x4DA);
+    self[8] = self[0x18]; self[9] = self[0x19]; self[0xA] = self[0x1A]; self[0xB] = self[0x1B];
+    if (*(int *)(self + 0x20) != 1) source1 = self + 0x18; else source1 = self + 0x1C;
+    self[0xC] = source1[0]; self[0xD] = source1[1]; self[0xE] = source1[2]; self[0xF] = source1[3];
+    if (*(int *)(self + 0x20) != 2) source2 = self + 0x18; else source2 = self + 0x1C;
+    self[0x10] = source2[0]; self[0x11] = source2[1]; self[0x12] = source2[2]; self[0x13] = source2[3];
+    if (*(int *)(self + 0x20) == 0) source3 = self + 0x18; else source3 = self + 0x1C;
+    self[0x14] = source3[0]; self[0x15] = source3[1]; self[0x16] = source3[2];
+    {
+        int alpha = *(volatile unsigned char *)(self + 0x42);
+        int product_b = self[0xB] * alpha, product_f = self[0xF] * alpha;
+        int product_13 = self[0x13] * alpha, product_17 = source3[3] * alpha;
+        self[0xB] = product_b / 255; self[0xF] = product_f / 255;
+        self[0x13] = product_13 / 255; self[0x17] = product_17 / 255;
+    }
+    {
+        nw4hbm::ut::Color white;
+        *(int *)&white = -1;
+        SetTextColor(white);
+    }
+    CW_CHECK_THIS(this, 0x1E7);
+    *(float *)(self + 0x24) = lbl_80561154;
+    *(float *)(self + 0x28) = lbl_80561154;
+    CW_CHECK_THIS(this, 0x386);
+    *(float *)(self + 0x2C) = lbl_80561150;
+    *(float *)(self + 0x30) = lbl_80561150;
+    *(float *)(self + 0x34) = lbl_80561150;
+    CW_CHECK_THIS(this, 0x2A9);
+    *(int *)(self + 0x38) = 1;
+    *(int *)(self + 0x3C) = 1;
 }
 
 extern "C" s32 fn_801033F0(s32 arg0, s32 arg1) {
