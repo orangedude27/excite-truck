@@ -325,7 +325,7 @@ extern "C" void fn_80211D24(int arg0) {
     fn_802E1058();
 }
 #pragma use_lmw_stmw reset
-extern "C" int fn_80211690(int);
+extern "C" void fn_80211690(s32);
 extern "C" void fn_80211D24(int);
 extern "C" int fn_802E2C20(void);
 extern "C" int fn_802ECC10(void);
