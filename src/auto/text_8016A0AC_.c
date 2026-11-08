@@ -35,6 +35,17 @@ extern s32 fn_802C6FC0(void*, s32, s32);
 extern void fn_802E30C8(void*, ...);
 extern s32 fn_8016A8F8(void*);
 extern void fn_8016AC18(u8*);
+extern void fn_8016B4F0(u8*);
+extern u8 *fn_8016B4FC(u8*, s32);
+extern void fn_8016B544(u8*);
+extern void *fn_8016B550(void*, s32);
+extern char lbl_804302E0[];
+extern float lbl_8056195C;
+extern void *fn_8000AC38(void);
+extern void *fn_80204EA0(void*);
+extern void *fn_80131810(void);
+extern void fn_80131818(void*);
+extern float PSVECDotProduct(float*, float*, void*, void*, float);
 extern void* fn_8016AC24(void*, s32);
 extern char lbl_80330460[];
 extern char lbl_80330528[];
@@ -110,22 +121,25 @@ extern f32 lbl_8055E3C8;
 #pragma push
 #pragma small_data off
 void fn_8016A240(const char *arg0) {
-    register Unk8016A0AC *table = &lbl_80430340;
-    register s32 *state = &table->unk_0x4;
-    register volatile s32 *recordSlot = (s32 *)lbl_80430318;
-    register s32 i = 0;
-    register s32 offset = 0;
-    register s32 zero = 0;
+    s32 *state;
+    s32 offset;
+    s32 i;
+    s32 zero;
+
+    state = &lbl_80430340.unk_0x4;
+    i = 0;
+    offset = 0;
+    zero = 0;
 
     while (i < *state) {
-        if (stricmp(table->unk_0x0 + offset + 1, arg0) == 0) {
-            register s32 j = 0;
-            register u8 *entry = (u8 *)table->unk_0x0 + offset;
+        if (stricmp(lbl_80430340.unk_0x0 + offset + 1, arg0) == 0) {
+            s32 j = 0;
+            char *entry = lbl_80430340.unk_0x0 + offset;
             entry[0x28] = zero;
             while (j < *(s32 *)(entry + 0x24)) {
-                register u8 *record = (u8 *)(*recordSlot) + ((*(s32 *)(entry + 0x20) + j) * 0x48);
-                if (record[0x3c] != 0) {
-                    record[0x3c] = zero;
+                char *record = *(char **)lbl_80430318 + (*(s32 *)(entry + 0x20) + j) * 0x48;
+                if (*(u8 *)(record + 0x3c) != 0) {
+                    *(u8 *)(record + 0x3c) = zero;
                     *(f32 *)(record + 0x44) = lbl_8055E3C8;
                 }
                 j++;
