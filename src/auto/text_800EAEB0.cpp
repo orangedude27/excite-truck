@@ -69,7 +69,7 @@ extern f32 lbl_8056106C;
 extern u8 lbl_80323268[];
 extern u8 lbl_80323B28[];
 extern u8 lbl_80323B94[];
-extern "C" u16 fn_800FEB9C(u8, u8 *, u8, s16);
+extern "C" u32 fn_800FEB9C(void);
 extern u8 lbl_80323BEC[];
 extern u8 lbl_80323C14[];
 extern u8 lbl_80323C3C[];
@@ -1270,14 +1270,13 @@ using namespace nw4hbm::snd::detail;
 int MmlParser::Parse(MmlSeqTrack *track, bool doNoteOn) const {
     const char *str = (const char *)lbl_80323268;
     SeqPlayer *player;
-    u8 cmd;
+    SeqArgType argType;
     bool enabled;
     bool useArg;
-    SeqArgType argType;
-    s32 len;
-    s32 v;
+    u8 cmd;
     s32 a;
     s32 b;
+    s32 v;
 
     if (track == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(str, 0x31, str + 0x18);
@@ -1306,18 +1305,18 @@ int MmlParser::Parse(MmlSeqTrack *track, bool doNoteOn) const {
     if (!(cmd & 0x80)) {
         u8 vel = *track->cur++;
         s32 key;
-        len = ReadArg(&track->cur, player, (SeqTrack *)track, useArg ? argType : ARG_VLQ);
+        a = ReadArg(&track->cur, player, (SeqTrack *)track, useArg ? argType : ARG_VLQ);
         key = cmd + track->transpose;
         if (!enabled) {
             return 0;
         }
         key = key > 127 ? 127 : (key < 0 ? 0 : key);
         if (track->field_0x5c == 0 && doNoteOn) {
-            NoteOnCommandProc(track, key, vel, len > 0 ? len : -1, track->field_0xc2);
+            NoteOnCommandProc(track, key, vel, a > 0 ? a : -1, track->field_0xc2);
         }
         if (track->field_0xc1 != 0) {
-            track->field_0x58 = len;
-            if (len == 0) {
+            track->field_0x58 = a;
+            if (a == 0) {
                 track->field_0x5e = 1;
             }
         }
@@ -1341,8 +1340,8 @@ int MmlParser::Parse(MmlSeqTrack *track, bool doNoteOn) const {
                 break;
             case 0x88: {
                 u32 b0 = *track->cur++;
-                u16 w = *track->cur++;
-                w = (w << 8) | *track->cur++;
+                u32 w = *track->cur++ << 8;
+                w |= *track->cur++;
                 u32 b3 = *track->cur++;
                 if (enabled) {
                     CommandProc(track, cmd, b0, (w << 8) | b3);
@@ -1350,8 +1349,8 @@ int MmlParser::Parse(MmlSeqTrack *track, bool doNoteOn) const {
                 break;
             }
             case 0x89: {
-                u16 w = *track->cur++;
-                w = (w << 8) | *track->cur++;
+                u32 w = *track->cur++ << 8;
+                w |= *track->cur++;
                 u32 b2 = *track->cur++;
                 if (enabled) {
                     CommandProc(track, cmd, (w << 8) | b2, 0);
@@ -1359,8 +1358,8 @@ int MmlParser::Parse(MmlSeqTrack *track, bool doNoteOn) const {
                 break;
             }
             case 0x8a: {
-                u16 w = *track->cur++;
-                w = (w << 8) | *track->cur++;
+                u32 w = *track->cur++ << 8;
+                w |= *track->cur++;
                 u32 b2 = *track->cur++;
                 if (enabled) {
                     CommandProc(track, cmd, (w << 8) | b2, 0);
@@ -1374,7 +1373,9 @@ int MmlParser::Parse(MmlSeqTrack *track, bool doNoteOn) const {
             v = ReadArg(&track->cur, player, (SeqTrack *)track, useArg ? argType : ARG_BYTE);
             if (enabled) {
                 s32 w;
-                if ((s32)cmd < 0xc5 && (s32)cmd >= 0xc3) {
+                if ((s32)cmd >= 0xc5) {
+                    w = (u8)v;
+                } else if ((s32)cmd >= 0xc3) {
                     w = (s8)(u8)v;
                 } else {
                     w = (u8)v;
