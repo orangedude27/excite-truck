@@ -306,6 +306,7 @@ typedef struct CacheTable {
     CacheEntry entry[CACHE_ENTRY_MAX];
     int count; // at 0x240
 } CacheTable;
+#define CACHE_TABLE ((CacheTable*)lbl_8042F8C8)
 
 // A cached resource, as fn_8013BF40 builds it.
 typedef struct CacheResource {
