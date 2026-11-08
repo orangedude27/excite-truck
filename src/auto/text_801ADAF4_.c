@@ -33,6 +33,21 @@ typedef struct {
     f32 acc[3];
 } Ent801ADB44;
 
+typedef struct Obj801ADB44 {
+    void **vtbl;
+    u8 pad4[0xC];
+    s32 id;
+    s32 unk_0x14;
+    u8 pad18[0xC];
+    s32 unk_0x24;
+    u8 pad28[0x38];
+    f32 org[3];
+    u8 unk_0x6C[0x68];
+    f32 unk_0xD4;
+    u8 padD8[0x70];
+    u8 unk_0x148[1];
+} Obj801ADB44;
+
 static inline void xf(f32 *out, f32 *in, u8 *m) {
     if (out == in) {
         f32 y = in[1], x = in[0], z = in[2];
