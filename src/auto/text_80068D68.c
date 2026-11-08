@@ -13622,28 +13622,38 @@ BOOLEAN btsnd_hcic_read_rssi(UINT16 handle) {
     return TRUE;
 }
 
+/* .rodata image of the default AFH channel map: all 79 Bluetooth channels
+   (0-78) enabled. A set bit means the channel is in use, so disabling a
+   channel clears its bit; the compiler pools the local initialiser here. */
 extern u8 lbl_802EEC08[];
-typedef struct { u8 b[10]; } tAFH_MAP;
-BOOLEAN btsnd_hcic_set_afh_channels(u8 first, u8 last) {
-    tAFH_MAP map;
-    u8 *buf;
+typedef struct { u8 channels[HCI_AFH_CHANNEL_MAP_LEN]; } tAFH_CHANNEL_MAP;
+
+/* Disable Bluetooth channels first..last by clearing their bits in the
+   default AFH map, then send HCI_Set_AFH_Channel_Classification. */
+BOOLEAN btsnd_hcic_set_afh_channels(u8 first_disabled, u8 last_disabled) {
+    tAFH_CHANNEL_MAP map;
+    u8 *p;
     int i;
-    map = *(tAFH_MAP *)lbl_802EEC08;
-    buf = (u8 *)GKI_getpoolbuf(2);
-    if (buf == 0) return 0;
 
-    *(u16 *)(buf + 2) = 0xD;
-    *(u16 *)(buf + 4) = 0;
-    buf[8] = 0x3F;
-    buf[9] = 0xC;
-    buf[10] = 0xA;
+    /* Begin with every channel enabled. */
+    map = *(tAFH_CHANNEL_MAP *)lbl_802EEC08;
 
-    if (first <= last && last <= 0x4E) {
-        for (i = first; i <= last; i++) map.b[i / 8] &= ~(1 << (i % 8));
+    p = (u8 *)GKI_getpoolbuf(2);
+    if (p == NULL) return FALSE;
+
+    *(u16 *)(p + 2) = HCIC_PREAMBLE_SIZE + HCIC_PARAM_SIZE_SET_AFH_CHANNELS;
+    *(u16 *)(p + 4) = 0;
+    p[8] = (u8)HCI_SET_AFH_CHANNELS;
+    p[9] = (u8)(HCI_SET_AFH_CHANNELS >> 8);
+    p[10] = HCIC_PARAM_SIZE_SET_AFH_CHANNELS;
+
+    if (first_disabled <= last_disabled && last_disabled <= 78) {
+        for (i = first_disabled; i <= last_disabled; i++) map.channels[i / 8] &= ~(1 << (i % 8));
     }
-    for (i = 0; i < 10; i++) buf[11 + i] = map.b[i];
-    btu_hcif_send_cmd(buf);
-    return 1;
+    for (i = 0; i < HCI_AFH_CHANNEL_MAP_LEN; i++) p[11 + i] = map.channels[i];
+
+    btu_hcif_send_cmd(p);
+    return TRUE;
 }
 
 void btsnd_hcic_vendor_spec_cmd(void *buffer, u16 opcode, u8 len, u8 *p_data, void *p_cmd_cplt_cback) {
