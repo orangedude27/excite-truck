@@ -527,6 +527,22 @@ typedef struct {
     UINT8 pad_0x46E[6];
     UINT8 disc_state;
 } tCONN_CB_SEARCH_VIEW;
+/* tCONN_CB as this build lays it out: the response list is stored inline at 0x26
+   (its SDP_MAX_LIST_BYTE_COUNT is 1000 here, not the 4096 of bt_target.h) where
+   sdpint.h declares "UINT8 *rsp_list", so every field after it moves: p_db at
+   0x410, transaction_id at 0x470.  Fields before 0x26 are still the header's. */
+#define SDP_BUILD_MAX_LIST_BYTE_COUNT 1000
+#define SDP_CCB_RSP_LIST_OFFSET       0x26
+typedef struct {
+    UINT8               pad_0x000[0x22];
+    UINT16              connection_id;                            /* 0x22 */
+    UINT16              list_len;                                 /* 0x24 */
+    UINT8               rsp_list[SDP_BUILD_MAX_LIST_BYTE_COUNT];  /* 0x26 */
+    UINT8               pad_0x40E[2];
+    tSDP_DISCOVERY_DB  *p_db;                                     /* 0x410 */
+    UINT8               pad_0x414[0x5C];
+    UINT16              transaction_id;                           /* 0x470 */
+} tCONN_CB_ATTR_VIEW;
 typedef struct { UINT8 pad[0x24]; UINT16 list_len; UINT8 list_data[1]; } tSDP_CCB_RAW_LIST_VIEW;
 extern char lbl_80317A54[];
 extern char lbl_80317A80[];
