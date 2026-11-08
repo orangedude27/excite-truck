@@ -677,6 +677,7 @@ void fn_8016CD28(void *);
 #pragma cplusplus on
 extern "C" void fn_8016CD10(void *);
 extern "C" void fn_8016CD28(void *);
+#pragma cplusplus on
 extern "C" s8 fn_8016C768(void *arg0, void *arg1, void *arg2) {
     struct Blk { s32 w[12]; };
     struct Item {
@@ -687,7 +688,7 @@ extern "C" s8 fn_8016C768(void *arg0, void *arg1, void *arg2) {
         virtual void m4(); virtual void m5(); virtual void m6(); virtual void m7();
         virtual f32 getf(const char *, f32);
         virtual void m9(); virtual void m10(); virtual void m11(); virtual void m12(); virtual void m13(); virtual void m14();
-        virtual Blk getblk(Item *, const char *);
+        virtual Blk getblk(const char *);
         virtual void m16(); virtual void m17(); virtual void m18(); virtual void m19(); virtual void m20();
         virtual s32 check(const char *);
     };
@@ -759,13 +760,15 @@ extern "C" s8 fn_8016C768(void *arg0, void *arg1, void *arg2) {
                 const char *nm = obj->search(&lbl_8055A230);
                 Item *c;
                 s32 j = 0;
+                s32 t;
                 while ((c = (*coll)->byIndex(j)) != 0) {
                     if (strcmp(c->name(), &lbl_8055A230) == 0 &&
                         strcmp(c->search(lbl_8055A220), nm) == 0) break;
                     j++;
                 }
                 if (c == 0) fn_802E317C(str + 0x160, nm);
-                if (c->check(str + 0x180) != 0) {
+                t = c->check(str + 0x180);
+                if ((u32)(-t | t) >> 31) {
                     *(s32 *)(e + 0xC) = 0;
                     *(s32 *)(e + 8) = c->check(str + 0x180);
                 } else if (strcmp(nm, str + 0x120) == 0) {
@@ -774,19 +777,17 @@ extern "C" s8 fn_8016C768(void *arg0, void *arg1, void *arg2) {
                     *(s32 *)(e + 0xC) = 1;
                     *(s32 *)e = fn_802C6FC0((s32)c->search(&lbl_8055A238), 0);
                 }
-                *(Blk *)(e + 0x14) = obj->getblk(obj, str + 0x190);
+                *(Blk *)(e + 0x14) = obj->getblk(str + 0x190);
                 *(u8 *)(e + 0x10) = 1;
-                if (1 == 0) ok = 0;
             } else {
                 if (strcmp(obj->search(&lbl_8055A230), str + 0x120) == 0) {
                     List8016C768 *l = out[1];
                     u8 *e = (u8 *)l->data + l->index++ * 0x38;
                     if (strcmp(obj->search(&lbl_8055A230), str + 0x120) != 0)
                         fn_802E317C(str + 0x1A0);
-                    *(Blk *)e = obj->getblk(obj, str + 0x190);
+                    *(Blk *)e = obj->getblk(str + 0x190);
                     *(f32 *)(e + 0x34) = obj->getf(&lbl_8055A240, lbl_805619A0);
                     *(u8 *)(e + 0x31) = 1;
-                    if (1 == 0) ok = 0;
                 }
             }
         }
@@ -795,7 +796,7 @@ extern "C" s8 fn_8016C768(void *arg0, void *arg1, void *arg2) {
     *((u8 *)arg0 + 8) = ok;
     return ok;
 }
-#pragma cplusplus reset
+#pragma cplusplus off
 extern f32 lbl_805619A0;
 #pragma scheduling invalid_target
 void fn_8016CD10(void *arg0) {
@@ -944,6 +945,35 @@ void *fn_8016D024(void *arg0) {
 
 #pragma scheduling on
 void fn_8016D278(void *arg0) { *(u32 *)arg0=(u32)arg0+0xC; *(u32 *)((u8 *)arg0+8)=8; *(u32 *)((u8 *)arg0+4)=0; }
+
+/* --- RingChallengeMaster (lbl_8055E378) -------------------------------------
+ * 0x1B4-byte singleton built by fn_8016BE60 under the heap name "ringchalmaster"
+ * (lbl_803306D0 + 0x20).  Its ring-set controller sub-object starts at +0x30
+ * (constructed by fn_8016D024), so the fields below are that sub-object's
+ * +0x18 .. +0x44; the same sub-object is what fn_8016DE20 / fn_8016DFB8 /
+ * fn_8016E06C / fn_8016E1B4 are handed directly.
+ *   +0x48  ring-set list: pointer to the array of 0x14-byte ring-set entries
+ *   +0x50  map "mapgems.art" object the marker is drawn on
+ *   +0x54  queue slot of the pending map marker, -1 when none (fn_8001B308 /
+ *          fn_8001B450 reserve and release it)
+ *   +0x5C  index of the selected ring set
+ *   +0x6C  number of ring sets
+ *   +0x74  difficulty selector: 0 = 5 rings, 1 = 10 rings, 2 = 15 rings
+ * A ring-set entry (0x14 bytes) is { list of its 0x44-byte gems (+0), active
+ * flag (+9), timer (+0xC, lbl_8055E3C8 == 0.0f), counter (+0x10, volatile) }.
+ * The three name formats build the set's name, e.g. "set_3_10"; the last
+ * string is the error for an out-of-range difficulty.
+ */
+#define RCM_SET_LIST(o)   (**(u8 ***)((u8 *)(o) + 0x48))
+#define RCM_MAP_ART(o)    (*(s32 *)((u8 *)(o) + 0x50))
+#define RCM_MAP_MARKER(o) (*(s32 *)((u8 *)(o) + 0x54))
+#define RCM_SET_INDEX(o)  (*(s32 *)((u8 *)(o) + 0x5C))
+#define RCM_SET_COUNT(o)  (*(s32 *)((u8 *)(o) + 0x6C))
+#define RCM_DIFFICULTY(o) (*(s32 *)((u8 *)(o) + 0x74))
+#define SET_FMT_5         (strings + 0x264) /* "set_%i_5" */
+#define SET_FMT_10        (strings + 0x270) /* "set_%i_10" */
+#define SET_FMT_15        (strings + 0x27C) /* "set_%i_15" */
+#define SET_BAD_DIFFICULTY (strings + 0x288) /* "Unknown difficulty specification in Ring Challenge mode." */
 
 void fn_8016D294(s32 unused, s32 flag, s32 index) {
     char sp40[0x20];
