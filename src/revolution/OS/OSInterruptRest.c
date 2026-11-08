@@ -285,173 +285,187 @@ u32 __OSUnmaskInterrupts(u32 userMask) {
     return prevMask;
 }
 
+/**
+ * @brief Second half of the external interrupt entry: work out which sources
+ *        fired, run the highest-priority installed handler and resume the game
+ *        through a CPU context.  Never returns.
+ *
+ * ExternalInterruptHandler saves the interrupted state into @p ctx and tail
+ * jumps here.  @p intr is the interrupt vector number, which is not needed:
+ * the causes are re-read from the peripheral registers themselves.
+ */
 void __OSDispatchInterrupt(u8 intr, OSContext* ctx) {
-    u32 intsr;
-    u32 mask, newMask;
+    u32 piStatus;
+    u32 causeMask, activeMask;
     u32 miCause;
     u32 dspCause;
     u32 exi0Cause, exi1Cause, exi2Cause;
     u32 piMask;
 
-    intsr = PI_HW_REGS[PI_INTSR];
-    intsr &= ~PI_INTSR_RSWST;
+    /* Sources waiting in the PI interrupt status register.  RSWST is the
+     * RSW's own status edge rather than a source, so drop it. */
+    piStatus = PI_HW_REGS[PI_INTSR];
+    piStatus &= ~PI_INTSR_RSWST;
 
+    /* Nothing pending, or everything pending is masked out: resume at once. */
     piMask = PI_HW_REGS[PI_INTMR];
-    if (intsr == 0 || !(intsr & piMask)) {
+    if (piStatus == 0 || !(piStatus & piMask)) {
         OSLoadContext(ctx);
     }
 
-    mask = 0;
-    newMask = 0;
+    /* Translate the per-processor status bits into one OSInterruptType mask. */
+    causeMask = 0;
+    activeMask = 0;
 
-    /**
-     * MEM interrupts
-     */
-    if (intsr & PI_INTMR_MEM) {
+    /* MEM interrupts: the MI tells us which of its five sources fired. */
+    if (piStatus & PI_INTMR_MEM) {
         miCause = MI_HW_REGS[MI_INTSR];
         if (miCause & MI_INTSR_MEM0) {
-            mask |= OS_INTR_MASK(OS_INTR_MEM_0);
+            causeMask |= OS_INTR_MASK(OS_INTR_MEM_0);
         }
         if (miCause & MI_INTSR_MEM1) {
-            mask |= OS_INTR_MASK(OS_INTR_MEM_1);
+            causeMask |= OS_INTR_MASK(OS_INTR_MEM_1);
         }
         if (miCause & MI_INTSR_MEM2) {
-            mask |= OS_INTR_MASK(OS_INTR_MEM_2);
+            causeMask |= OS_INTR_MASK(OS_INTR_MEM_2);
         }
         if (miCause & MI_INTSR_MEM3) {
-            mask |= OS_INTR_MASK(OS_INTR_MEM_3);
+            causeMask |= OS_INTR_MASK(OS_INTR_MEM_3);
         }
         if (miCause & MI_INTSR_ADDR) {
-            mask |= OS_INTR_MASK(OS_INTR_MEM_ADDRESS);
+            causeMask |= OS_INTR_MASK(OS_INTR_MEM_ADDRESS);
         }
     }
 
-    /**
-     * DSP interrupts
-     */
-    if (intsr & PI_INTSR_DSP) {
+    /* DSP interrupts */
+    if (piStatus & PI_INTSR_DSP) {
         dspCause = DSP_HW_REGS[DSP_CSR];
         if (dspCause & DSP_CSR_AIDINT) {
-            mask |= OS_INTR_MASK(OS_INTR_DSP_AI);
+            causeMask |= OS_INTR_MASK(OS_INTR_DSP_AI);
         }
         if (dspCause & DSP_CSR_ARINT) {
-            mask |= OS_INTR_MASK(OS_INTR_DSP_ARAM);
+            causeMask |= OS_INTR_MASK(OS_INTR_DSP_ARAM);
         }
         if (dspCause & DSP_CSR_DSPINT) {
-            mask |= OS_INTR_MASK(OS_INTR_DSP_DSP);
+            causeMask |= OS_INTR_MASK(OS_INTR_DSP_DSP);
         }
     }
 
-    /**
-     * AI interrupts
-     */
-    if ((intsr & PI_INTSR_AI) && (AI_HW_REGS[AI_AICR] & AI_AICR_AIINT)) {
-        mask |= OS_INTR_MASK(OS_INTR_AI_AI);
+    /* AI interrupts */
+    if ((piStatus & PI_INTSR_AI) && (AI_HW_REGS[AI_AICR] & AI_AICR_AIINT)) {
+        causeMask |= OS_INTR_MASK(OS_INTR_AI_AI);
     }
 
-    /**
-     * EXI interrupts
-     */
-    if (intsr & PI_INTSR_EXI) {
+    /* EXI interrupts: each channel reports its own three sources.  Channel 2
+     * has no external interrupt line. */
+    if (piStatus & PI_INTSR_EXI) {
         exi0Cause = EXI_CHAN_PARAMS[EXI_CHAN_0].cpr;
         if (exi0Cause & EXI_CPR_EXIINT) {
-            mask |= OS_INTR_MASK(OS_INTR_EXI_0_EXI);
+            causeMask |= OS_INTR_MASK(OS_INTR_EXI_0_EXI);
         }
         if (exi0Cause & EXI_CPR_TCINT) {
-            mask |= OS_INTR_MASK(OS_INTR_EXI_0_TC);
+            causeMask |= OS_INTR_MASK(OS_INTR_EXI_0_TC);
         }
         if (exi0Cause & EXI_CPR_EXTINT) {
-            mask |= OS_INTR_MASK(OS_INTR_EXI_0_EXT);
+            causeMask |= OS_INTR_MASK(OS_INTR_EXI_0_EXT);
         }
 
         exi1Cause = EXI_CHAN_PARAMS[EXI_CHAN_1].cpr;
         if (exi1Cause & EXI_CPR_EXIINT) {
-            mask |= OS_INTR_MASK(OS_INTR_EXI_1_EXI);
+            causeMask |= OS_INTR_MASK(OS_INTR_EXI_1_EXI);
         }
         if (exi1Cause & EXI_CPR_TCINT) {
-            mask |= OS_INTR_MASK(OS_INTR_EXI_1_TC);
+            causeMask |= OS_INTR_MASK(OS_INTR_EXI_1_TC);
         }
         if (exi1Cause & EXI_CPR_EXTINT) {
-            mask |= OS_INTR_MASK(OS_INTR_EXI_1_EXT);
+            causeMask |= OS_INTR_MASK(OS_INTR_EXI_1_EXT);
         }
 
         exi2Cause = EXI_CHAN_PARAMS[EXI_CHAN_2].cpr;
         if (exi2Cause & EXI_CPR_EXIINT) {
-            mask |= OS_INTR_MASK(OS_INTR_EXI_2_EXI);
+            causeMask |= OS_INTR_MASK(OS_INTR_EXI_2_EXI);
         }
         if (exi2Cause & EXI_CPR_TCINT) {
-            mask |= OS_INTR_MASK(OS_INTR_EXI_2_TC);
+            causeMask |= OS_INTR_MASK(OS_INTR_EXI_2_TC);
         }
     }
 
-    /**
-     * PI interrupts
-     */
-    if (intsr & PI_INTSR_HSP) {
-        mask |= OS_INTR_MASK(OS_INTR_PI_HSP);
+    /* PI interrupts: these report themselves, no second register to read. */
+    if (piStatus & PI_INTSR_HSP) {
+        causeMask |= OS_INTR_MASK(OS_INTR_PI_HSP);
     }
-    if (intsr & PI_INTSR_DEBUG) {
-        mask |= OS_INTR_MASK(OS_INTR_PI_DEBUG);
+    if (piStatus & PI_INTSR_DEBUG) {
+        causeMask |= OS_INTR_MASK(OS_INTR_PI_DEBUG);
     }
-    if (intsr & PI_INTSR_PE_FINISH) {
-        mask |= OS_INTR_MASK(OS_INTR_PI_PE_FINISH);
+    if (piStatus & PI_INTSR_PE_FINISH) {
+        causeMask |= OS_INTR_MASK(OS_INTR_PI_PE_FINISH);
     }
-    if (intsr & PI_INTSR_PE_TOKEN) {
-        mask |= OS_INTR_MASK(OS_INTR_PI_PE_TOKEN);
+    if (piStatus & PI_INTSR_PE_TOKEN) {
+        causeMask |= OS_INTR_MASK(OS_INTR_PI_PE_TOKEN);
     }
-    if (intsr & PI_INTSR_VI) {
-        mask |= OS_INTR_MASK(OS_INTR_PI_VI);
+    if (piStatus & PI_INTSR_VI) {
+        causeMask |= OS_INTR_MASK(OS_INTR_PI_VI);
     }
-    if (intsr & PI_INTSR_SI) {
-        mask |= OS_INTR_MASK(OS_INTR_PI_SI);
+    if (piStatus & PI_INTSR_SI) {
+        causeMask |= OS_INTR_MASK(OS_INTR_PI_SI);
     }
-    if (intsr & PI_INTSR_DI) {
-        mask |= OS_INTR_MASK(OS_INTR_PI_DI);
+    if (piStatus & PI_INTSR_DI) {
+        causeMask |= OS_INTR_MASK(OS_INTR_PI_DI);
     }
-    if (intsr & PI_INTSR_RSW) {
-        mask |= OS_INTR_MASK(OS_INTR_PI_RSW);
+    if (piStatus & PI_INTSR_RSW) {
+        causeMask |= OS_INTR_MASK(OS_INTR_PI_RSW);
     }
-    if (intsr & PI_INTSR_CP) {
-        mask |= OS_INTR_MASK(OS_INTR_PI_CP);
+    if (piStatus & PI_INTSR_CP) {
+        causeMask |= OS_INTR_MASK(OS_INTR_PI_CP);
     }
-    if (intsr & PI_INTSR_ERROR) {
-        mask |= OS_INTR_MASK(OS_INTR_PI_ERROR);
+    if (piStatus & PI_INTSR_ERROR) {
+        causeMask |= OS_INTR_MASK(OS_INTR_PI_ERROR);
     }
-    if (intsr & PI_INTSR_ACR) {
-        mask |= OS_INTR_MASK(OS_INTR_PI_ACR);
+    if (piStatus & PI_INTSR_ACR) {
+        causeMask |= OS_INTR_MASK(OS_INTR_PI_ACR);
     }
 
-    newMask = mask & ~(*(u32*)OSPhysicalToCached(OS_PHYS_PREV_INTR_MASK) |
-                       *(u32*)OSPhysicalToCached(OS_PHYS_CURRENT_INTR_MASK));
+    /* Keep only the sources the application has not masked off with
+     * __OSMaskInterrupts(); those are the ones we have handlers to run. */
+    activeMask = causeMask &
+                 ~(*(u32*)OSPhysicalToCached(OS_PHYS_PREV_INTR_MASK) |
+                   *(u32*)OSPhysicalToCached(OS_PHYS_CURRENT_INTR_MASK));
 
-    if (newMask != 0) {
+    if (activeMask != 0) {
         OSInterruptHandler handler;
-        u32* pPrio;
-        s16 type;
+        u32* pPrioMask;
+        s16 intrType;
 
-        for (pPrio = InterruptPrioTable; TRUE; pPrio++) {
-            if (newMask & *pPrio) {
-                type = __cntlzw(newMask & *pPrio);
+        /* Walk the priority table; the first level that overlaps wins, and
+         * its leading zero count is that source's OSInterruptType. */
+        for (pPrioMask = InterruptPrioTable; TRUE; pPrioMask++) {
+            if (activeMask & *pPrioMask) {
+                intrType = __cntlzw(activeMask & *pPrioMask);
                 break;
             }
         }
 
-        handler = InterruptHandlerTable[type];
+        handler = InterruptHandlerTable[intrType];
         if (handler != NULL) {
-            if (type > OS_INTR_MEM_ADDRESS) {
-                __OSLastInterrupt = type;
+            /* Note the interrupt for the panic report in OSError.c (the MEM
+             * sources are errors, not real interrupts, so skip those). */
+            if (intrType > OS_INTR_MEM_ADDRESS) {
+                __OSLastInterrupt = intrType;
                 __OSLastInterruptTime = OSGetTime();
                 __OSLastInterruptSrr0 = ctx->srr0;
             }
 
+            /* The handler may make another thread runnable: hold the
+             * scheduler around it, then let it choose the thread to resume. */
             OSDisableScheduler();
-            handler(type, ctx);
+            handler(intrType, ctx);
             OSEnableScheduler();
             __OSReschedule();
             OSLoadContext(ctx);
         }
     }
 
+    /* No handler for it: go straight back to the interrupted code. */
     OSLoadContext(ctx);
 }
 
