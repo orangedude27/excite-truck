@@ -90,28 +90,30 @@ extern char lbl_8055AEF8;
 extern float lbl_80562D78;
 extern float lbl_80562D7C;
 void *fn_801E6A3C(s32 arg0, s32 arg1, s32 arg2) {
-    s32 handle;
     s32 *entry;
     void *result;
-    s32 i;
-    float f1;
-    float f0;
+    s32 handle;
     float *dst;
     float *src;
-    float *tail;
+    u8 *base;
+    s32 i;
+    float zero;
+    float one;
+    float initial;
 
-    handle = fn_802C6FC0(arg2, 0, 0);
+    result = (void *)arg0;
+    handle = fn_802C6FC0(arg0, arg2, 0);
     entry = fn_801E592C();
     if (entry == 0) {
-        fn_802E317C(lbl_80339A48, arg0);
+        fn_802E317C(lbl_80339A48, result);
     }
     result = fn_801284F8(0x73C, (const char *)&lbl_8055AEF8);
     memset(result, 0, 0x73C);
     *(s32 *)((u8 *)result + 8) = fn_801E5990(entry);
+    initial = *(volatile float *)&lbl_80562D78;
     *(s32 **)((u8 *)result + 4) = entry;
     *(s32 *)result = handle;
-    f1 = lbl_80562D78;
-    *(float *)((u8 *)result + 0x38) = f1;
+    *(float *)((u8 *)result + 0x38) = initial;
     *(s32 *)((u8 *)result + 0x10) = 0;
     *(s32 *)((u8 *)result + 0x18) = 0;
     *(s32 *)((u8 *)result + 0x1C) = -1;
@@ -119,32 +121,33 @@ void *fn_801E6A3C(s32 arg0, s32 arg1, s32 arg2) {
     if (arg1 == 1) {
         *((u8 *)result + 0xD) = 1;
     }
+    one = *(volatile float *)&lbl_80562D78;
     *(s32 *)((u8 *)result + 0x14) = 0;
+    base = (u8 *)result;
+    zero = *(volatile float *)&lbl_80562D7C;
+    dst = (float *)(base + 0x3C);
     *((u8 *)result + 0xC) = 0;
-    f0 = lbl_80562D7C;
-    dst = (float *)((u8 *)result + 0x3C);
-    src = (float *)((u8 *)result + 0x53C);
-    tail = (float *)((u8 *)result + 0x548);
+    src = (float *)(base + 0x53C);
     i = 0;
     while (i < *(s32 *)((u8 *)result + 8) + 1) {
-        dst[0] = f1;
+        dst[0] = one;
         i++;
-        dst[1] = f1;
-        dst[2] = f1;
-        dst[3] = f0;
-        dst[4] = f1;
-        dst[5] = f1;
-        dst[6] = f1;
-        dst[7] = f0;
-        dst[9] = f1;
-        dst[8] = f1;
+        dst[1] = one;
+        dst[2] = one;
+        dst[3] = zero;
+        dst[4] = one;
+        dst[5] = one;
+        dst[6] = one;
+        dst[7] = zero;
+        dst[9] = one;
+        dst[8] = one;
         dst += 10;
-        src[0] = f1;
-        src[1] = f1;
-        src[2] = f1;
+        src[0] = one;
+        src[1] = one;
+        src[2] = one;
         src += 4;
-        tail[0] = f0;
-        tail += 4;
+        *(float *)(base + 0x548) = zero;
+        base += 0x10;
     }
     return result;
 }
@@ -204,44 +207,120 @@ void fn_801E6CC8(void* arg0, s8 arg1) {
 typedef unsigned int u32;
 extern int fn_8012EDA8(void *, int, u32 *);
 extern void fn_802E317C(const char *, ...);
+#pragma dont_inline on
 void fn_801E6CD0(void *arg0, void *arg1, float farg0) {
     u32 sp8;
-    float temp_f0 = -farg0;
+    const char *messages = lbl_80339A20;
+    float *dst;
+    float *src;
+    s32 i;
+    float a, b, c, d;
+
     *(void **)((u8 *)arg0 + 0x10) = arg1;
     *(s32 *)((u8 *)arg0 + 0x18) = 0;
     *(s32 *)((u8 *)arg0 + 0x1C) = -1;
-    *(float *)((u8 *)arg0 + 0x38) = temp_f0;
+    *(float *)((u8 *)arg0 + 0x38) = -farg0;
     if (arg1 != 0 && *(s32 *)((u8 *)arg0 + 8) < *(s32 *)((u8 *)arg1 + 8))
-        fn_802E317C(lbl_80339A20 + 0x80);
-    {
-        u8 *src = (u8 *)arg0;
-        u8 *dst = (u8 *)arg0 + 0x3C;
-        s32 i = 0;
-        do {
-            float a = *(float *)(src + 0x53C), b = *(float *)(src + 0x540);
-            float c = *(float *)(src + 0x544), d = *(float *)(src + 0x548);
-            *(float *)(dst + 0x10)=a; *(float *)(dst + 0x14)=b;
-            *(float *)(dst + 0x18)=c; *(float *)(dst + 0x1C)=d;
-            *(float *)(dst + 0)=a; *(float *)(dst + 4)=b;
-            *(float *)(dst + 8)=c; *(float *)(dst + 0xC)=d;
-            *(float *)(dst + 0x24)=temp_f0; *(float *)(dst + 0x20)=temp_f0;
-            src += 0x10; dst += 0x28; i++;
-        } while (i < *(s32 *)((u8 *)arg0 + 8) + 1);
+        fn_802E317C(messages + 0x80);
+
+    dst = (float *)((u8 *)arg0 + 0x3C);
+    src = (float *)arg0;
+    i = 0;
+    while (i < *(s32 *)((u8 *)arg0 + 8) + 1) {
+        a = src[0x53C / 4];
+        i++;
+        dst[4] = a;
+        b = src[0x540 / 4];
+        dst[5] = b;
+        c = src[0x544 / 4];
+        dst[6] = c;
+        d = src[0x548 / 4];
+        src += 4;
+        dst[7] = d;
+        dst[0] = a;
+        dst[1] = b;
+        dst[2] = c;
+        dst[3] = d;
+        dst[9] = -farg0;
+        dst[8] = -farg0;
+        dst += 10;
     }
+
     if (arg1 != 0 && *(s32 *)arg1 > *(s32 *)((u8 *)arg1 + 4)) {
-        if (*((u8 *)arg0 + 0xD) == 0) fn_802E317C(lbl_80339A20 + 0xB8);
-        if (*(s32 *)((u8 *)arg0 + 0x14) == 0) *(s32 *)((u8 *)arg0 + 0x14)=fn_801E68D4();
-        if (*(s32 *)((u8 *)arg0 + 0x14) == 0) { *(void **)((u8 *)arg0 + 0x10)=0; return; }
+        if (*((u8 *)arg0 + 0xD) == 0)
+            fn_802E317C(messages + 0xB8);
+        if (*(s32 *)((u8 *)arg0 + 0x14) == 0)
+            *(s32 *)((u8 *)arg0 + 0x14) = fn_801E68D4();
+        if (*(s32 *)((u8 *)arg0 + 0x14) == 0) {
+            *(void **)((u8 *)arg0 + 0x10) = 0;
+            return;
+        }
         if (fn_8012EDA8((u8 *)arg1 + 0x10, 0x416E6D30, &sp8) == 0)
-            fn_802E317C(lbl_80339A20 + 0x100, (u8 *)arg1 + 0x10);
-        if (sp8 != 2) fn_802E317C(lbl_80339A20 + 0x58, (u8 *)arg1 + 0x10, 2);
+            fn_802E317C(messages + 0x100, (u8 *)arg1 + 0x10);
+        if (sp8 != 2) fn_802E317C(messages + 0x58, (u8 *)arg1 + 0x10, 2);
     } else if (*(s32 *)((u8 *)arg0 + 0x14) != 0) {
         fn_801E6924(*(s32 *)((u8 *)arg0 + 0x14));
-        *(s32 *)((u8 *)arg0 + 0x14)=0;
+        *(s32 *)((u8 *)arg0 + 0x14) = 0;
     }
 }
+#pragma dont_inline reset
 
-#pragma scheduling invalid_target
+typedef unsigned long long u64;
+typedef struct AnimTrack {
+    float a[4];
+    float b[4];
+    float t0;
+    float t1;
+} AnimTrack;
+typedef struct AnimKey {
+    s32 n;
+    float t;
+    float v[4];
+} AnimKey;
+typedef struct AnimData {
+    s32 count;
+    s32 inlineCount;
+    s32 trackCount;
+    float endTime;
+    char name[16];
+    u64 keys[1];
+} AnimData;
+typedef struct AnimPlayer {
+    s32 handle;
+    void *res;
+    s32 trackCount;
+    u8 flagC;
+    u8 flagD;
+    u8 padE[2];
+    AnimData *data;
+    s32 stream;
+    s32 frame;
+    s32 cached;
+    AnimKey cache;
+    float time;
+    AnimTrack tr[32];
+    float out[32][4];
+} AnimPlayer;
+
+extern float lbl_80562D80;
+extern float lbl_80562D84;
+extern float lbl_80562D88;
+extern float lbl_80562D8C;
+extern float lbl_80562D90;
+extern float lbl_80562D94;
+extern s32 lbl_8055EAD0;
+extern char lbl_80339B48[];
+extern void fn_8012EE80(s32);
+extern s32 fn_8012EE78(s32);
+extern s32 fn_8012EFB0(s32, void *, s32);
+extern void fn_802E30C8(const char *, ...);
+extern double fn_8002F234(double);
+
+#define NORM(v) (((float)(u32)(v) - lbl_80562D78) / lbl_80562D80)
+#define CLAMP(v) \
+    t = (lbl_80562D7C < NORM(v)) ? lbl_80562D7C : NORM(v); \
+    t = (t > lbl_80562D78) ? t : lbl_80562D78;
+
 void fn_801E75C8(void* arg0, s32 arg1) {
     u8 sp[0x5c];
     s32 temp_r31;
