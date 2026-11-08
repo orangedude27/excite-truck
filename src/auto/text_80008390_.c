@@ -177,6 +177,7 @@ void fn_80008618(s32 arg0) {
         result = value & ~arg0;
     fn_8026E204(result);
 }
+#pragma dont_inline reset
 
 extern s32 fn_8000865C(void);
 extern s32 fn_801298E8(void *, s32);
