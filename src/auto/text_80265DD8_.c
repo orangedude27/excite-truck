@@ -1200,6 +1200,7 @@ int fn_80268BA4(int arg0) {
 done:
     return result;
 }
+#pragma dont_inline reset
 
 extern float lbl_80563C20, lbl_80563C2C, lbl_80563C8C, lbl_80563C90, lbl_80563C94;
 extern float fn_8002F234(void*, float, float, float, float, float, float, float, float);
