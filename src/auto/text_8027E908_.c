@@ -2980,6 +2980,11 @@ extern "C" void fn_802869B8(void* arg0) {
     ((ebi::title::TPlaneObj*)arg0)->m_sub->v17();
 }
 #pragma cplusplus off
+extern float lbl_80558DC4[];
+extern float fn_80214D48(void);
+extern void fn_802168BC(int);
+extern char lbl_8055C874[];
+static inline void fn_80286A34_select(int idx);
 int fn_802869CC(void *arg0, int arg1) {
     void *p;
     int d;
