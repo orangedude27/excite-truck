@@ -537,7 +537,7 @@ extern f32 fn_80176A2C(void);
 extern f32 lbl_8056164C;
 extern f32 lbl_80561650;
 extern void fn_8001DFF0(void);
-extern void fn_80149658(s32, void *, void *, s32);
+extern u32 fn_80149658(s32, void *, void *, s32);
 extern unsigned long lbl_80559E94;
 void fn_8014AD74(void *arg0) {
     f32 step;
