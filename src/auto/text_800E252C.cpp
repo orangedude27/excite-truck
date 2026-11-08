@@ -261,6 +261,80 @@ public:
 }
 typedef unsigned char u8;
 typedef unsigned short u16;
+// BasicSound::Update helpers
+class UpdPlayerVt {
+public:
+    virtual ~UpdPlayerVt();
+    virtual int p0C();
+    virtual void p10();
+    virtual void p14(int);
+    virtual int p18();
+    virtual void p1C();
+    virtual int p20();
+    virtual int p24();
+    virtual void p28(float);
+    virtual void p2C(float);
+    virtual void p30(float);
+    virtual void p34(float);
+    virtual void p38(float);
+    virtual void p3C(float);
+    virtual void p40();
+    virtual void p44();
+    virtual void p48();
+    virtual void p4C();
+    virtual void p50();
+    virtual void p54();
+    virtual void p58();
+    virtual void p5C();
+    virtual void p60(int);
+    virtual void p64(float);
+    virtual void p68();
+    virtual void p6C();
+    virtual void p70(int, float);
+};
+class UpdSelfVt {
+public:
+    virtual ~UpdSelfVt();
+    virtual void s0C();
+    virtual void s10();
+    virtual void s14();
+    virtual void s18(int);
+    virtual void s1C();
+    virtual void s20();
+    virtual void s24();
+    virtual void s28();
+    virtual void s2C();
+    virtual void s30();
+    virtual void s34();
+    virtual void s38();
+    virtual void s3C();
+    virtual void s40();
+    virtual void s44();
+    virtual void s48();
+    virtual void s4C();
+    virtual void s50();
+    virtual void s54();
+    virtual void s58();
+    virtual UpdPlayerVt *s5C();
+};
+class UpdCbA { public: virtual void a08(int, void *); };
+class UpdCbB { public: virtual void b08(void *, int, void *, int, int); };
+extern const char lbl_803227A4[];
+extern "C" float GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_800F87F8(void *, int);
+extern "C" int fn_800F87F0();
+extern "C" int fn_800F87E8(void *);
+#pragma always_inline on
+static inline float UpdRamp(float start, float end, int total, int elapsed) {
+    float r;
+    if (elapsed >= total) {
+        r = end;
+    } else {
+        r = start + (float)elapsed * (end - start) / (float)total;
+    }
+    return r;
+}
+#pragma always_inline reset
+#define UF(T, off) (*(T *)((char *)self + (off)))
 extern "C" void *__dt__Q46nw4hbm2ut6detail12LinkListImplFv(void *, unsigned int);
 extern "C" void *fn_80128668(void *);
 extern "C" void *__register_global_object(void *, void *, void *);
