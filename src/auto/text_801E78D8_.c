@@ -1,3 +1,6 @@
+struct Rec78 { long tag; unsigned char b[0x60]; long a64, a68, a6c; unsigned char c70; long a74; };
+struct Loc78 { struct Rec78 r; long idx; };
+struct Ctx68 { long w0, w1; unsigned char pad[0x60]; };
 extern char lbl_80339BA0[], lbl_8055AF14[4], lbl_8055AF18[4];
 extern unsigned long lbl_80487CE0[];
 extern char lbl_8055EB08, lbl_8055EB10, lbl_8055EB12, lbl_8055EB20;
@@ -120,7 +123,7 @@ void fn_801E7984(long arg0) {
     strings = lbl_80339BA0; base = (char *)lbl_80487CE0;
     fn_801E78D8(arg0);
     start = fn_802E2C20();
-    fn_8012E81C((void *)((long)strings + 0));
+    fn_8012E81C(strings);
     memcpy(base + 0x100, (void *)arg0, 0x3f8);
     lbl_8055EB12 = 1;
     lbl_8055EB30 = (void *)fn_800167F4();
@@ -128,7 +131,7 @@ void fn_801E7984(long arg0) {
     fn_8001255C(lbl_8055AF14, lbl_80562DA0);
     fn_80204460(); fn_80127464();
     lbl_8055EB0C = -1; lbl_8055EB04 = 0; lbl_8055EB1C = 0; lbl_8055EB20 = 0;
-    memset((void *)((long)base + 0), 0, 0x10);
+    memset(base, 0, 0x10);
     p = (long *)(base + 0x10);
     p[0] = 0; p[1] = 0; p[2] = 0; p[3] = 0;
     fn_801E89FC(); lbl_8055EB10 = 1;
