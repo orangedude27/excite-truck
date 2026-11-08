@@ -4136,18 +4136,30 @@ typedef void (*tBTU_EVENT_CALLBACK)(BT_HDR *p_hdr);
 #pragma push
 #pragma dont_inline on
 #pragma use_lmw_stmw off
+/*
+ * The body of the Bluetooth Upper Layers (BTU) task.
+ *
+ * The periodic alarm the BTE task installs switches into a fiber running this
+ * function 500 times a second.  Every call drains the HCI receive mailbox
+ * (ACL data to L2CAP, HCI events and commands to the transport, and anything
+ * else into the event ranges layers registered in btu_cb) and the BTA
+ * mailbox; every 500 ticks - one second - it also advances the BTU timer
+ * queue by a tick and dispatches the timers that expired, then updates the
+ * BTA protocol timers.  The work to do is kept in GKI event mask bits, and
+ * APPL_EVT_7 stops the loop when the stack is shut down.
+ */
 void btu_task_msg_handler(void) {
-    extern unsigned char lbl_803C0A50[];
+    extern unsigned char btu_cb[];
     UINT32 event;
-    TIMER_LIST_ENT *timer;
-    BT_HDR *msg;
+    TIMER_LIST_ENT *p_tle;
+    BT_HDR *p_msg;
     UINT16 events;
     UINT8 j;
     UINT8 i;
     int done = 0;
     int handled;
-    void (*timer_callback)(TIMER_LIST_ENT *);
-    unsigned char *timer_reg;
+    tBTU_TIMER_CALLBACK timer_cb;
+    unsigned char *p_timer_reg;
     int timer_handled;
     extern void l2c_rcv_acl_data(BT_HDR *);
     extern void l2c_link_segments_xmitted(BT_HDR *);
@@ -4157,80 +4169,125 @@ void btu_task_msg_handler(void) {
     extern void btu_hcif_cmd_timeout(void);
     extern void hidh_proc_repage_timeout(TIMER_LIST_ENT *);
     extern void bta_sys_event(BT_HDR *);
-    extern void fn_8007DEF4(void *);
-    extern void fn_8007C794(void);
-    extern void fn_8007AD38(void);
-    extern void fn_80095518(void *);
-    extern void fn_8007141C(void);
+    extern void fn_8007DEF4(void *);       /* SCO data: freed straight away */
+    extern void fn_8007C794(void);         /* remote name request timed out */
+    extern void fn_8007AD38(void);         /* timer type 8: nothing to do */
+    extern void fn_80095518(void *);       /* RFCOMM MFC / port timeout */
+    extern void fn_8007141C(void);         /* bta_sys_timer_update() */
     extern void sdp_conn_timeout(tCONN_CB *);
+
     OSGetTime();
-    lbl_8055DC78++;
-    fn_8006EBAC();
-    if (lbl_80559054) {
-        lbl_80559054 = 0;
-        lbl_80559050 = 1;
+    btu_task_ticks++;
+    fn_8006EBAC();                         /* GKI_disable() */
+    if (btu_task_is_idle) {
+        btu_task_is_idle = 0;              /* the fiber is running now */
+        btu_task_dropped_ticks = 1;
     } else {
-        lbl_80559050++;
-        fn_8006EB88();
+        btu_task_dropped_ticks++;          /* the alarm outran the task */
+        fn_8006EB88();                     /* GKI_enable() */
         return;
     }
-    fn_8006EB88();
-    events = 5;
-    if ((UINT32)lbl_8055DC78 > (UINT32)(lbl_8055DC7C + 500)) {
-        lbl_8055DC7C = lbl_8055DC78;
-        events |= 0x30;
+    fn_8006EB88();                         /* GKI_enable() */
+
+    events = TASK_MBOX_0_EVT_MASK | TASK_MBOX_2_EVT_MASK;
+    if ((UINT32)btu_task_ticks > (UINT32)(btu_task_second_tick + 500)) {
+        btu_task_second_tick = btu_task_ticks;
+        events |= TIMER_0_EVT_MASK | TIMER_1_EVT_MASK;    /* a second went by */
     }
+
     while (!done) {
         done = 1;
-        if (events & 1) {
-            while ((msg = GKI_read_mbox(0)) != 0) {
+
+        /* buffers sent to the BTU task by the HCI layer */
+        if (events & TASK_MBOX_0_EVT_MASK) {
+            while ((p_msg = GKI_read_mbox(TASK_MBOX_0)) != 0) {
                 done = 0;
-                event = msg->event & 0xFF00;
+                event = p_msg->event & BT_EVT_MASK;
                 switch (event) {
-                case 0x1100: l2c_rcv_acl_data(msg); break;
-                case 0x1900: l2c_link_segments_xmitted(msg); break;
-                case 0x1200: fn_8007DEF4(msg); break;
-                case 0x1000: btu_hcif_process_event(msg); GKI_freebuf(msg); break;
-                case 0x1600: btu_hcif_send_cmd(msg); break;
+                case BT_EVT_TO_BTU_HCI_ACL:
+                    l2c_rcv_acl_data(p_msg);
+                    break;
+                case BT_EVT_TO_BTU_L2C_SEG_XMIT:
+                    l2c_link_segments_xmitted(p_msg);
+                    break;
+                case BT_EVT_TO_BTU_HCI_SCO:
+                    fn_8007DEF4(p_msg);
+                    break;
+                case BT_EVT_TO_BTU_HCI_EVT:
+                    btu_hcif_process_event(p_msg);
+                    GKI_freebuf(p_msg);
+                    break;
+                case BT_EVT_TO_BTU_HCI_CMD:
+                    btu_hcif_send_cmd(p_msg);
+                    break;
                 default:
-                    for (i = 0, handled = 0; !handled && i < 6; i++) {
-                        unsigned char *reg = lbl_803C0A50 + 0x10 + i * 8;
-                        void (*callback)(BT_HDR *) = *(void (**)(BT_HDR *))(reg + 4);
-                        if (callback && event == *(UINT16 *)reg) {
-                            if (callback) {
-                                callback(msg);
+                    /* anything else goes to the registered event ranges */
+                    for (i = 0, handled = 0; !handled && i < BTU_MAX_REG_EVENT; i++) {
+                        unsigned char *p_event_reg = btu_cb_event_reg(i);
+                        tBTU_EVENT_CALLBACK event_cb = *(tBTU_EVENT_CALLBACK *)(p_event_reg + 4);
+                        if (event_cb && event == *(UINT16 *)p_event_reg) {
+                            if (event_cb) {
+                                event_cb(p_msg);
                                 handled = 1;
                             }
                         }
                     }
-                    if (!handled) GKI_freebuf(msg);
+                    if (!handled) {
+                        GKI_freebuf(p_msg);
+                    }
                     break;
                 }
             }
         }
-        if (events & 0x10) {
-            GKI_update_timer_list((TIMER_LIST_Q *)(lbl_803C0A50 + 0x40), 1);
-            events &= ~0x10;
-            while ((timer = *(TIMER_LIST_ENT **)(lbl_803C0A50 + 0x40)) != 0 && timer->ticks == 0) {
+
+        /* the timers of the transport and of the layers above it */
+        if (events & TIMER_0_EVT_MASK) {
+            GKI_update_timer_list(btu_cb_timer_queue, 1);
+            events &= ~TIMER_0_EVT_MASK;
+            while ((p_tle = btu_cb_timer_queue->p_first) != 0 && p_tle->ticks == 0) {
                 done = 0;
-                GKI_remove_from_timer_list((TIMER_LIST_Q *)(lbl_803C0A50 + 0x40), timer);
-                switch (timer->event) {
-                case 1: btm_dev_timeout(timer); break;
-                case 9: btm_acl_timeout(timer); break;
-                case 2: case 3: case 4: l2c_process_timeout(timer); break;
-                case 5: sdp_conn_timeout((tCONN_CB *)timer->param); break;
-                case 10: fn_8007C794(); break;
-                case 8: fn_8007AD38(); break;
-                case 11: case 12: fn_80095518(timer); break;
-                case 60: btu_hcif_cmd_timeout(); break;
-                case 66: hidh_proc_repage_timeout(timer); break;
-                case 22: ((void (*)(TIMER_LIST_ENT *))timer->param)(timer); break;
+                GKI_remove_from_timer_list(btu_cb_timer_queue, p_tle);
+                switch (p_tle->event) {
+                case BTU_TTYPE_BTM_DEV_CTL:
+                    btm_dev_timeout(p_tle);
+                    break;
+                case BTU_TTYPE_BTM_ACL:
+                    btm_acl_timeout(p_tle);
+                    break;
+                case BTU_TTYPE_L2CAP_LINK:
+                case BTU_TTYPE_L2CAP_CHNL:
+                case BTU_TTYPE_L2CAP_HOLD:
+                    l2c_process_timeout(p_tle);
+                    break;
+                case BTU_TTYPE_SDP:
+                    sdp_conn_timeout((tCONN_CB *)p_tle->param);
+                    break;
+                case BTU_TTYPE_BTM_RMT_NAME:
+                    fn_8007C794();
+                    break;
+                case 8:
+                    fn_8007AD38();
+                    break;
+                case BTU_TTYPE_RFCOMM_MFC:
+                case BTU_TTYPE_RFCOMM_PORT:
+                    fn_80095518(p_tle);
+                    break;
+                case BTU_TTYPE_BTU_CMD_CMPL:
+                    btu_hcif_cmd_timeout();
+                    break;
+                case BTU_TTYPE_HID_HOST_REPAGE_TO:
+                    hidh_proc_repage_timeout(p_tle);
+                    break;
+                case BTU_TTYPE_USER_FUNC:
+                    ((tBTU_TIMER_CALLBACK)p_tle->param)(p_tle);
+                    break;
                 default:
-                    for (j = 0, timer_handled = 0; !timer_handled && j < 2; j++) {
-                        timer_reg = lbl_803C0A50 + j * 8;
-                        timer_callback = *(void (**)(TIMER_LIST_ENT *))(timer_reg + 4);
-                        if (timer_callback && *(TIMER_LIST_ENT **)timer_reg == timer) {
-                            timer_callback(timer);
+                    /* or to a timer another layer registered in btu_cb */
+                    for (j = 0, timer_handled = 0; !timer_handled && j < BTU_MAX_REG_TIMER; j++) {
+                        p_timer_reg = btu_cb_timer_reg(j);
+                        timer_cb = *(tBTU_TIMER_CALLBACK *)(p_timer_reg + 4);
+                        if (timer_cb && *(TIMER_LIST_ENT **)p_timer_reg == p_tle) {
+                            timer_cb(p_tle);
                             timer_handled = 1;
                         }
                     }
@@ -4238,19 +4295,26 @@ void btu_task_msg_handler(void) {
                 }
             }
         }
-        if (events & 4) {
-            while ((msg = GKI_read_mbox(2)) != 0) {
+
+        /* events of the application (BTA) layer */
+        if (events & TASK_MBOX_2_EVT_MASK) {
+            while ((p_msg = GKI_read_mbox(TASK_MBOX_2)) != 0) {
                 done = 0;
-                bta_sys_event(msg);
+                bta_sys_event(p_msg);
             }
         }
-        if (events & 0x20) {
-            events &= ~0x20;
-            fn_8007141C();
+
+        if (events & TIMER_1_EVT_MASK) {
+            events &= ~TIMER_1_EVT_MASK;
+            fn_8007141C();                 /* bta_sys_timer_update() */
         }
-        if (events & 0x8000) break;
+
+        if (events & EVENT_MASK(APPL_EVT_7)) {
+            break;                         /* the stack is being shut down */
+        }
     }
-    lbl_80559054 = 1;
+
+    btu_task_is_idle = 1;
 }
 #pragma pop
 
