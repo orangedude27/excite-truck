@@ -7,17 +7,21 @@ void *memset(void *, int, unsigned int);
 void fn_801EEFC8(void) {
     memset(lbl_80488678, 0, 0x120);
 }
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_801EEFDC(int arg0, unsigned int arg1) {
+    unsigned int *p;
+    unsigned int *base;
     int i;
-    unsigned int *base = (unsigned int *)(lbl_80488678 + ((arg1 & 0xFF) << 4));
-    for (i = 0; i < 4; i++) {
-        if (base[i] == 0) {
+    base = (unsigned int *)(lbl_80488678 + ((arg1 & 0xFF) << 4));
+    p = base;
+    for (i = 0; i < 4; p++, i++) {
+        if (*p == 0) {
             base[i] = arg0;
             return;
         }
     }
 }
+#pragma scheduling reset
 void fn_802E317C(const char *, ...);
 extern char lbl_8033A328[];
 #pragma scheduling invalid_target
