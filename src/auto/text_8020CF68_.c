@@ -84,8 +84,8 @@ public:
 };
 #pragma cplusplus off
 
-void fn_8020CF68(void) {
-    fn_802104D0();
+int fn_8020CF68(void) {
+    return fn_802104D0();
 }
 
 #pragma push
