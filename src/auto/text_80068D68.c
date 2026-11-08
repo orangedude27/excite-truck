@@ -4089,6 +4089,50 @@ void fn_80070B54(void) {
     bta_sys_init();
 }
 
+/*
+ * The BTU (Bluetooth Upper Layers) control block, a tBTU_CB as described by
+ * revolution/BTE/stack/include/btu.h:
+ *
+ *   0x00  tBTU_TIMER_REG  timer_reg[BTU_MAX_REG_TIMER]  { p_tle, timer_cb }
+ *   0x10  tBTU_EVENT_REG  event_reg[BTU_MAX_REG_EVENT]  { event_range, event_cb }
+ *   0x40  TIMER_LIST_Q    timer_queue                   (1 second per tick)
+ *
+ * The rest of the block (HCI buffer sizes, command queue) is used by
+ * btu_hcif_send_cmd() and btm_read_hci_buf_size_complete().
+ */
+#define btu_cb                  lbl_803C0A50
+#define btu_cb_timer_reg(i)     (btu_cb + (i) * 8)          /* tBTU_TIMER_REG  */
+#define btu_cb_event_reg(i)     (btu_cb + 0x10 + (i) * 8)   /* tBTU_EVENT_REG  */
+#define btu_cb_timer_queue      ((TIMER_LIST_Q *)(btu_cb + 0x40))
+
+/* callback types of btu.h */
+typedef void (*tBTU_TIMER_CALLBACK)(TIMER_LIST_ENT *p_tle);
+typedef void (*tBTU_EVENT_CALLBACK)(BT_HDR *p_hdr);
+
+#define BTU_MAX_REG_TIMER       2   /* max # timer callbacks which may register */
+#define BTU_MAX_REG_EVENT       6   /* max # event callbacks which may register */
+
+/* The BTU task's own state, kept next to the fiber it runs in. */
+#define btu_task_dropped_ticks  lbl_80559050 /* alarm ticks lost while the fiber ran */
+#define btu_task_is_idle        lbl_80559054 /* TRUE while the fiber is not running */
+#define btu_task_ticks          lbl_8055DC78 /* alarm ticks; 500 of them are a second */
+#define btu_task_second_tick    lbl_8055DC7C /* tick the last second of work ran on */
+
+/* Timer types held in btu_cb.timer_queue, named as in btu.h. This stack still
+   numbers the HCI command complete timeout 60, and has no handler for type 8. */
+#define BTU_TTYPE_BTM_DEV_CTL       1
+#define BTU_TTYPE_L2CAP_LINK        2
+#define BTU_TTYPE_L2CAP_CHNL        3
+#define BTU_TTYPE_L2CAP_HOLD        4
+#define BTU_TTYPE_SDP               5
+#define BTU_TTYPE_BTM_ACL           9
+#define BTU_TTYPE_BTM_RMT_NAME      10
+#define BTU_TTYPE_RFCOMM_MFC        11
+#define BTU_TTYPE_RFCOMM_PORT       12
+#define BTU_TTYPE_USER_FUNC         22
+#define BTU_TTYPE_BTU_CMD_CMPL      60
+#define BTU_TTYPE_HID_HOST_REPAGE_TO 66
+
 #pragma push
 #pragma dont_inline on
 #pragma use_lmw_stmw off
