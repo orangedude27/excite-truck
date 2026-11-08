@@ -107,13 +107,18 @@ struct Perc8013D2C4 {
     inline void init() { fn_801414A4(this); }
 };
 extern "C" u8 lbl_8032CAF0[];
-struct MainObj8013D2C4 {
+/* ZoneMaster - the zone system's owner object (vtable lbl_8032CAF0).
+ * It loads zlmain/zlclosure/zlresult, the zone textures and the zone table
+ * it allocates from the heap it names "ZoneMaster::tab" (lbl_8032C530+0x78);
+ * the game keeps its single instance in lbl_8055E1C0. */
+struct ZoneMaster {
     void *vt;
     u32 unk4;
     SubArray8013D2C4 sa;
     void *w54;
     void *w58;
     void *w5C;
+    void *w5C_;
     s32 f60;
     void **p64;
     s32 f68;
@@ -161,9 +166,10 @@ struct MainObj8013D2C4 {
         sub.init();
         perc.init();
     }
-    inline MainObj8013D2C4() : vt(lbl_8032CAF0), sa(), t6C(lbl_805614C0), t74(lbl_805614C0), t7C(lbl_805614AC), t84(lbl_805614AC), t8C(lbl_805614C4), rb(), sub(), perc() {}
+    inline ZoneMaster() : vt(lbl_8032CAF0), sa(), t6C(lbl_805614C0), t74(lbl_805614C0), t7C(lbl_805614AC), t84(lbl_805614AC), t8C(lbl_805614C4), rb(), sub(), perc() {}
     inline void initWidgets(const char *base);
 };
+typedef ZoneMaster MainObj8013D2C4;  /* old placeholder name, being renamed */
 extern "C" void *fn_80145E70(const char *);
 extern "C" void *fn_802CAC28(const char *, s32);
 inline void MainObj8013D2C4::initWidgets(const char *base) {
@@ -663,7 +669,17 @@ extern "C" void *fn_8013D2C4(void *arg0, void *arg1) {
     u8 *src = (u8 *)arg1;
     const char *base = (const char *)lbl_8032C530;
 
-    obj->init();
+    f32 fc0 = lbl_805614C0;
+    obj->vt = lbl_8032CAF0;
+    obj->sa.init();
+    obj->t6C.init(fc0);
+    obj->t74.init(lbl_805614C0);
+    obj->t7C.init(lbl_805614AC);
+    obj->t84.init(lbl_805614AC);
+    obj->t8C.init(lbl_805614C4);
+    obj->rb.init();
+    obj->sub.init();
+    obj->perc.init();
 
     void *w0 = fn_80145E70(base + 0x0);
     obj->w54 = w0;
