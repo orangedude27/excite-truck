@@ -140,6 +140,26 @@ struct VFiPFENTIterLayout {
     u8 data[0x20];
     u8 shift;
 };
+
+/* The directory-entry iterator the VFiPFENT code builds on its own stack, with
+ * the fields as its readers use them (the VF_ITER_* macros in front of
+ * fn_800AAC08 name the same offsets).  The directory being walked is copied
+ * into `dir`; it keeps the volume its entries are read through at 0x34, which
+ * lands at +0x3C and is what fn_800AC1B4 reads.  fn_800AC1B4 puts an iterator
+ * on an entry and VFiPFENT_ITER_Advance moves it on; both read the entry
+ * through fn_800B5324(volume, entry, sector, sectorOff, 0x20, ...). */
+struct VFiPFEntIter {
+    volatile u32 position;       /* 0x00 byte position in the directory */
+    void *volume;                /* 0x04 volume the entries are read through */
+    u8 dir[0x38];                /* 0x08 the directory being walked */
+    volatile u32 index;          /* 0x40 entry number */
+    u32 sector;                  /* 0x44 sector the entry was read from */
+    u16 sectorOff;               /* 0x48 offset of the entry in that sector */
+    u16 entriesPerSectorMask;    /* 0x4A entries in a sector, less one */
+    u8 entry[0x20];              /* 0x4C the entry last read */
+    u8 shift;                    /* 0x6C log2 of the entries in a sector */
+};
+
 extern "C" u8 lbl_80407C00[];
 extern "C" u8 lbl_80407E00[];
 extern "C" { DECL_SECTION(".sdata") extern s32 lbl_805597E8; }
