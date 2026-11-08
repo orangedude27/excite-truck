@@ -4,6 +4,21 @@
 #include "revolution/BTE/gki/platform/gki_int.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+extern void fn_801602B0(void *);
+extern float fn_80141C9C(float);
+extern float lbl_80564CB0;
+extern float lbl_80564CC8;
+extern double lbl_80564CB8;
+extern char lbl_8034AA74[];
+extern char lbl_8034AA84[];
+extern char lbl_8034AA90[];
+extern char lbl_8055CF00[];
+void fn_802B9B40(void *);
+void fn_802B9B2C(void *);
+void *fn_802B9AD4(void *, s32);
+void fn_802B9964(void *, s32, s32, s32);
+float fn_802B9A80(float);
+void *fn_802BE844(s32, s32, s32);
 
 typedef struct RenderBatch { u16 **items; int count; int unused; struct RenderBatch *next; } RenderBatch;
 typedef struct RenderNode { RenderBatch *batches; int count; int type; u8 enabled; char pad[3]; struct RenderNode *next; char data[0x40]; } RenderNode;
@@ -607,6 +622,8 @@ extern char lbl_8034A9C0[];
 extern int lbl_8034A064;
 extern double lbl_80564CD0;
 extern float lbl_80564CCC, lbl_80564CC4, lbl_80564CD8;
+#pragma push
+#pragma processor 750
 extern "C" void fn_802BA010(void *arg0, int arg1) {
     struct Dummy { virtual void v0(); virtual void *v1(int); };
     volatile char scratch[0x40];
@@ -614,12 +631,11 @@ extern "C" void fn_802BA010(void *arg0, int arg1) {
     int index, count;
     int state = 2;
     short radius, item;
-    void *buffer, *current, *next, *entry, *record, *pool, *base;
     void *object = arg0;
+    void *buffer, *current, *next, *entry, *record, *pool, *base;
     void *interp, *end;
     float f30, f31, f29;
     float f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10;
-
     *(void *volatile *)(sp + 0x10) = lbl_8034A9C0;
     *(volatile int *)(sp + 0x14) = fn_802E2C20(arg0);
     if (object == 0) object = ((Dummy *)fn_80156A40())->v1(0);
@@ -668,8 +684,7 @@ extern "C" void fn_802BA010(void *arg0, int arg1) {
                     *(float *)((char *)record + 0x28) = f2;
                     f0 = *(float *)((char *)record + 0x24);
                     f1 = *(float *)((char *)record + 0x28);
-                    f0 = (float)fn_8002F234(end, interp, radius,
-                                             f0 * f0 + f1 * f1, f1, f3);
+                    f0 = (float)fn_8002F234(end, interp, radius, f0 * f0 + f1 * f1, f1, f3);
                     f0 = f31 / f0;
                     f1 = *(float *)((char *)record + 0x24) * f0;
                     *(float *)((char *)record + 0x24) = f1;
@@ -731,7 +746,7 @@ extern "C" void fn_802BA010(void *arg0, int arg1) {
         fn_802E30C8(&lbl_8034A064, *(void *volatile *)(sp + 0x10));
     }
 }
-
+#pragma pop
 extern "C" void fn_802BA560(void *);
 extern "C" char lbl_8034A9D0[];
 extern "C" char lbl_8034A9E4[];
