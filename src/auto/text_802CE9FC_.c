@@ -1,3 +1,5 @@
+#include <revolution/GX/GXTypes.h>
+
 #pragma dont_inline fn_802D1678
 #pragma dont_inline fn_802CFF50
 extern char lbl_8034BF80[];
@@ -1735,9 +1737,8 @@ typedef struct Entry_802D18E8 {
     float pos[3];
     float strength;
 } Entry_802D18E8;
-#pragma scheduling reset
-#pragma paired off
-#pragma paired_single off
+#pragma push
+#pragma optimization_level 3
 void fn_802D18E8(void) {
     unsigned char *base = (unsigned char *)lbl_804C5650;
     float *from = (float *)(base + 0x40);
@@ -1812,9 +1813,7 @@ light_test:
     GXSetChanCtrl(1, 1, 0, 0, var_r28, 0, 0);
     GXSetChanCtrl(3, 0, 0, 0, 0, 0, 2);
 }
-#pragma scheduling on
-#pragma paired on
-#pragma paired_single on
+#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
