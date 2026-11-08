@@ -18,6 +18,7 @@ extern s32 DSPCheckMailToDSP(void);
 extern s32 DSPReadMailFromDSP(void);
 extern void DSPSendMailToDSP(u32);
 #include <ctype.h>
+#include "revolution/DSP/dsp_task_types.h"
 extern void fn_80038368(void *);
 extern void fn_80035A04(u32);
 extern s32 fn_8003B81C(void *, s32, s32, s32);
@@ -255,119 +256,132 @@ void DBPrintf_800343C8(const char *fmt, ...) {
 }
 
 void __DSPHandler_80034418(s16 interrupt, OSContext *oldContext) {
-OSContext context;
-u16 dspControl;
-u32 mail;
-dspControl = *(volatile u16 *)0xCC00500A;
-*(volatile u16 *)0xCC00500A = (dspControl & ~0x28) | 0x80;
-OSClearContext(&context);
-OSSetCurrentContext(&context);
-while (DSPCheckMailFromDSP() == 0) {}
-mail = DSPReadMailFromDSP();
-if ((*(u32 *)((u8 *)lbl_8055D824 + 8) & 2) != 0 && mail == 0xDCD10002) mail = 0xDCD10003;
-switch (mail) {
-case 0xDCD10000:
-*(s32 *)lbl_8055D824 = 1;
-if (*(void **)((u8 *)lbl_8055D824 + 0x28) != 0) ((void (*)(void))*(void **)((u8 *)lbl_8055D824 + 0x28))();
-break;
-case 0xDCD10001:
-*(s32 *)lbl_8055D824 = 1;
-if (*(void **)((u8 *)lbl_8055D824 + 0x2C) != 0) ((void (*)(void))*(void **)((u8 *)lbl_8055D824 + 0x2C))();
-break;
-case 0xDCD10002:
-if (lbl_8055D810 != 0) {
-if (lbl_8055D824 == lbl_8055D814) {
-DSPSendMailToDSP(0xCDD10003);
-while (DSPCheckMailToDSP() != 0) {}
-lbl_8055D814 = 0;
-lbl_8055D810 = 0;
-if (*(void **)((u8 *)lbl_8055D824 + 0x2C) != 0) ((void (*)(void))*(void **)((u8 *)lbl_8055D824 + 0x2C))();
-} else {
-DSPSendMailToDSP(0xCDD10001);
-while (DSPCheckMailToDSP() != 0) {}
-__DSP_exec_task(lbl_8055D824, lbl_8055D814);
-{
-void *currentTask = lbl_8055D824;
-*(s32 *)currentTask = 2;
-lbl_8055D824 = lbl_8055D814;
-lbl_8055D810 = 0;
-lbl_8055D814 = 0;
-}
-}
-} else {
-if (*(void **)((u8 *)lbl_8055D824 + 0x38) == 0) {
-if (lbl_8055D824 == lbl_8055D820) {
-DSPSendMailToDSP(0xCDD10003);
-while (DSPCheckMailToDSP() != 0) {}
-if (*(void **)((u8 *)lbl_8055D824 + 0x2C) != 0) ((void (*)(void))*(void **)((u8 *)lbl_8055D824 + 0x2C))();
-} else {
-DSPSendMailToDSP(0xCDD10001);
-while (DSPCheckMailToDSP() != 0) {}
-__DSP_exec_task(lbl_8055D824, lbl_8055D820);
-*(s32 *)lbl_8055D824 = 2;
-lbl_8055D824 = lbl_8055D820;
-}
-} else {
-DSPSendMailToDSP(0xCDD10001);
-while (DSPCheckMailToDSP() != 0) {}
-__DSP_exec_task(lbl_8055D824, *(void **)((u8 *)lbl_8055D824 + 0x38));
-*(s32 *)lbl_8055D824 = 2;
-lbl_8055D824 = *(void **)((u8 *)lbl_8055D824 + 0x38);
-}
-}
-break;
-case 0xDCD10003:
-if (lbl_8055D810 != 0) {
-if (lbl_8055D824 != lbl_8055D814) {
-if (*(void **)((u8 *)lbl_8055D824 + 0x30) != 0) ((void (*)(void *))*(void **)((u8 *)lbl_8055D824 + 0x30))(lbl_8055D824);
-DSPSendMailToDSP(0xCDD10001);
-while (DSPCheckMailToDSP() != 0) {}
-__DSP_exec_task(0, lbl_8055D814);
-__DSP_remove_task(lbl_8055D824);
-lbl_8055D824 = lbl_8055D814;
-lbl_8055D810 = 0;
-lbl_8055D814 = 0;
-break;
-} else {
-lbl_8055D814 = 0;
-lbl_8055D810 = 0;
-}
-}
-if (*(void **)((u8 *)lbl_8055D824 + 0x38) == 0) {
-if (lbl_8055D824 == lbl_8055D820) {
-if (*(void **)((u8 *)lbl_8055D824 + 0x30) != 0) ((void (*)(void *))*(void **)((u8 *)lbl_8055D824 + 0x30))(lbl_8055D824);
-DSPSendMailToDSP(0xCDD10002);
-while (DSPCheckMailToDSP() != 0) {}
-*(s32 *)lbl_8055D824 = 3;
-__DSP_remove_task(lbl_8055D824);
-} else {
-if (*(void **)((u8 *)lbl_8055D824 + 0x30) != 0) ((void (*)(void *))*(void **)((u8 *)lbl_8055D824 + 0x30))(lbl_8055D824);
-DSPSendMailToDSP(0xCDD10001);
-while (DSPCheckMailToDSP() != 0) {}
-*(s32 *)lbl_8055D824 = 3;
-__DSP_exec_task(0, lbl_8055D820);
-lbl_8055D824 = lbl_8055D820;
-__DSP_remove_task(lbl_8055D81C);
-}
-} else {
-if (*(void **)((u8 *)lbl_8055D824 + 0x30) != 0) ((void (*)(void *))*(void **)((u8 *)lbl_8055D824 + 0x30))(lbl_8055D824);
-DSPSendMailToDSP(0xCDD10001);
-while (DSPCheckMailToDSP() != 0) {}
-*(s32 *)lbl_8055D824 = 3;
-__DSP_exec_task(0, *(void **)((u8 *)lbl_8055D824 + 0x38));
-{
-void *next = *(void **)((u8 *)lbl_8055D824 + 0x38);
-lbl_8055D824 = next;
-__DSP_remove_task(*(void **)((u8 *)next + 0x3C));
-}
-}
-break;
-case 0xDCD10004:
-if (*(void **)((u8 *)lbl_8055D824 + 0x34) != 0) ((void (*)(void *))*(void **)((u8 *)lbl_8055D824 + 0x34))(lbl_8055D824);
-break;
-}
-OSClearContext(&context);
-OSSetCurrentContext(oldContext);
+    OSContext context;
+    u16 dspControl;
+    u32 mail;
+
+    dspControl = *(volatile u16 *)0xCC00500A;
+    *(volatile u16 *)0xCC00500A = (dspControl & ~0x28) | 0x80;
+    OSClearContext(&context);
+    OSSetCurrentContext(&context);
+    while (DSPCheckMailFromDSP() == 0) {}
+    mail = DSPReadMailFromDSP();
+
+    if ((((DSPTask *)lbl_8055D824)->flags & DSP_TASK_CANCELED) != 0 && mail == 0xDCD10002)
+        mail = 0xDCD10003;
+
+    switch (mail) {
+    case 0xDCD10000: /* DSP_INIT */
+        ((DSPTask *)lbl_8055D824)->state = DSP_TASK_STATE_1;
+        if (((DSPTask *)lbl_8055D824)->initCallback != NULL)
+            ((DSPTask *)lbl_8055D824)->initCallback((DSPTask *)lbl_8055D824);
+        break;
+    case 0xDCD10001: /* DSP_RESUME */
+        ((DSPTask *)lbl_8055D824)->state = DSP_TASK_STATE_1;
+        if (((DSPTask *)lbl_8055D824)->resumeCallback != NULL)
+            ((DSPTask *)lbl_8055D824)->resumeCallback((DSPTask *)lbl_8055D824);
+        break;
+    case 0xDCD10002: /* DSP_YIELD */
+        if (lbl_8055D810 != 0) {
+            if (lbl_8055D824 == lbl_8055D814) {
+                DSPSendMailToDSP(0xCDD10003);
+                while (DSPCheckMailToDSP() != 0) {}
+                lbl_8055D814 = 0;
+                lbl_8055D810 = 0;
+                if (((DSPTask *)lbl_8055D824)->resumeCallback != NULL)
+                    ((DSPTask *)lbl_8055D824)->resumeCallback((DSPTask *)lbl_8055D824);
+            } else {
+                DSPSendMailToDSP(0xCDD10001);
+                while (DSPCheckMailToDSP() != 0) {}
+                __DSP_exec_task(lbl_8055D824, lbl_8055D814);
+                {
+                    DSPTask *currentTask = (DSPTask *)lbl_8055D824;
+                    currentTask->state = DSP_TASK_STATE_2;
+                    lbl_8055D824 = lbl_8055D814;
+                    lbl_8055D810 = 0;
+                    lbl_8055D814 = 0;
+                }
+            }
+        } else {
+            if (((DSPTask *)lbl_8055D824)->next == NULL) {
+                if (lbl_8055D824 == lbl_8055D820) {
+                    DSPSendMailToDSP(0xCDD10003);
+                    while (DSPCheckMailToDSP() != 0) {}
+                    if (((DSPTask *)lbl_8055D824)->resumeCallback != NULL)
+                        ((DSPTask *)lbl_8055D824)->resumeCallback((DSPTask *)lbl_8055D824);
+                } else {
+                    DSPSendMailToDSP(0xCDD10001);
+                    while (DSPCheckMailToDSP() != 0) {}
+                    __DSP_exec_task(lbl_8055D824, lbl_8055D820);
+                    ((DSPTask *)lbl_8055D824)->state = DSP_TASK_STATE_2;
+                    lbl_8055D824 = lbl_8055D820;
+                }
+            } else {
+                DSPSendMailToDSP(0xCDD10001);
+                while (DSPCheckMailToDSP() != 0) {}
+                __DSP_exec_task(lbl_8055D824, ((DSPTask *)lbl_8055D824)->next);
+                ((DSPTask *)lbl_8055D824)->state = DSP_TASK_STATE_2;
+                lbl_8055D824 = ((DSPTask *)lbl_8055D824)->next;
+            }
+        }
+        break;
+    case 0xDCD10003: /* DSP_DONE */
+        if (lbl_8055D810 != 0) {
+            if (lbl_8055D824 != lbl_8055D814) {
+                if (((DSPTask *)lbl_8055D824)->doneCallback != NULL)
+                    ((DSPTask *)lbl_8055D824)->doneCallback((DSPTask *)lbl_8055D824);
+                DSPSendMailToDSP(0xCDD10001);
+                while (DSPCheckMailToDSP() != 0) {}
+                __DSP_exec_task(0, lbl_8055D814);
+                __DSP_remove_task(lbl_8055D824);
+                lbl_8055D824 = lbl_8055D814;
+                lbl_8055D810 = 0;
+                lbl_8055D814 = 0;
+                break;
+            } else {
+                lbl_8055D814 = 0;
+                lbl_8055D810 = 0;
+            }
+        }
+        if (((DSPTask *)lbl_8055D824)->next == NULL) {
+            if (lbl_8055D824 == lbl_8055D820) {
+                if (((DSPTask *)lbl_8055D824)->doneCallback != NULL)
+                    ((DSPTask *)lbl_8055D824)->doneCallback((DSPTask *)lbl_8055D824);
+                DSPSendMailToDSP(0xCDD10002);
+                while (DSPCheckMailToDSP() != 0) {}
+                ((DSPTask *)lbl_8055D824)->state = DSP_TASK_STATE_3;
+                __DSP_remove_task(lbl_8055D824);
+            } else {
+                if (((DSPTask *)lbl_8055D824)->doneCallback != NULL)
+                    ((DSPTask *)lbl_8055D824)->doneCallback((DSPTask *)lbl_8055D824);
+                DSPSendMailToDSP(0xCDD10001);
+                while (DSPCheckMailToDSP() != 0) {}
+                ((DSPTask *)lbl_8055D824)->state = DSP_TASK_STATE_3;
+                __DSP_exec_task(0, lbl_8055D820);
+                lbl_8055D824 = lbl_8055D820;
+                __DSP_remove_task(lbl_8055D81C);
+            }
+        } else {
+            if (((DSPTask *)lbl_8055D824)->doneCallback != NULL)
+                ((DSPTask *)lbl_8055D824)->doneCallback((DSPTask *)lbl_8055D824);
+            DSPSendMailToDSP(0xCDD10001);
+            while (DSPCheckMailToDSP() != 0) {}
+            ((DSPTask *)lbl_8055D824)->state = DSP_TASK_STATE_3;
+            __DSP_exec_task(0, ((DSPTask *)lbl_8055D824)->next);
+            {
+                DSPTask *next = ((DSPTask *)lbl_8055D824)->next;
+                lbl_8055D824 = next;
+                __DSP_remove_task(next->prev);
+            }
+        }
+        break;
+    case 0xDCD10004: /* DSP_SYNC */
+        if (((DSPTask *)lbl_8055D824)->requestCallback != NULL)
+            ((DSPTask *)lbl_8055D824)->requestCallback((DSPTask *)lbl_8055D824);
+        break;
+    }
+    OSClearContext(&context);
+    OSSetCurrentContext(oldContext);
 }
 
 void __DSP_exec_task(void *arg0, void *arg1) {
