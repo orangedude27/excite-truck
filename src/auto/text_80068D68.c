@@ -10613,124 +10613,138 @@ void BTM_DeviceAuthorized(u8 *bd_addr, u8 res, u32 *trusted_mask) {
     }
 }
 
+/* Pair bd_addr with us: authenticate (and then encrypt) a link that is already
+   up, or page the device to bring one up.  The PIN the caller passes, if any,
+   is kept in btm_cb for the controller to ask for.  Returns BTM_SUCCESS when
+   the device is paired already, BTM_CMD_STARTED once the controller is working
+   on it, or why bonding could not be started. */
 tBTM_STATUS BTM_SecBond(BD_ADDR bd_addr, UINT8 pin_len, UINT8 *p_pin, UINT32 trusted_mask[]) {
     tBTM_SEC_DEV_REC *p_dev_rec;
     tBTM_INQ_INFO *p_inq_info;
-    UINT8 pin_type;
-    UINT8 allow_switch;
-    register char *message_table = lbl_80316870;
-    register UINT8 *dev;
-    register UINT8 *p_pin_copy = p_pin;
-    register UINT32 *trusted_mask_copy = trusted_mask;
+    UINT8 value;              /* btm_cb.devcb.local_features[0], then the HCI command status */
+    UINT8 allow_role_switch;
+    register char *messages = lbl_80316870;
+    register tBTM_SEC_DEV_REC_FULL_VIEW *dev;
+    register UINT8 *pin = p_pin;
+    register UINT32 *mask = trusted_mask;
 
-    if (lbl_803C0F78[0x27C0] >= 3) {
-        fn_800709CC(0xD0002, message_table + 0x230,
+    if (btm_cb_trace_level >= BTM_TRACE_LEVEL_API) {
+        fn_800709CC(TRACE_LAYER_BTM | TRACE_TYPE_API, messages + 0x230, /* "BTM_SecBond BDA: %02x:%02x:%02x:%02x:%02x:%02x" */
                     bd_addr[0], bd_addr[1], bd_addr[2],
                     bd_addr[3], bd_addr[4], bd_addr[5]);
     }
 
-    if (pin_len > 0x10) {
-        if (lbl_803C0F78[0x27C0] >= 1) {
-            fn_80070954(0xD0000, message_table + 0x260, pin_len);
+    if (pin_len > PIN_CODE_LEN) {
+        if (btm_cb_trace_level >= BTM_TRACE_LEVEL_ERROR) {
+            fn_80070954(TRACE_LAYER_BTM | TRACE_TYPE_ERROR, messages + 0x260, pin_len); /* "BTM_SecBond: Illegal Pin len:%d" */
         }
         return BTM_ILLEGAL_VALUE;
     }
 
     p_dev_rec = btm_find_dev(bd_addr);
-    dev = (UINT8 *)p_dev_rec;
+    dev = (tBTM_SEC_DEV_REC_FULL_VIEW *)p_dev_rec;
     if (dev == NULL) {
         p_dev_rec = btm_sec_alloc_dev(bd_addr);
-        dev = (UINT8 *)p_dev_rec;
+        dev = (tBTM_SEC_DEV_REC_FULL_VIEW *)p_dev_rec;
         if (dev == NULL) {
-            if (lbl_803C0F78[0x27C0] >= 1) {
-                fn_8007093C(0xD0000, message_table + 0x280);
+            if (btm_cb_trace_level >= BTM_TRACE_LEVEL_ERROR) {
+                fn_8007093C(TRACE_LAYER_BTM | TRACE_TYPE_ERROR, messages + 0x280); /* "BTM_SecBond: no device block" */
             }
             return BTM_NO_RESOURCES;
         }
     }
 
-    if (*(UINT16 *)(dev + 0x18) != 0xFFFF && (dev[0x76] & 2)) {
-        if (lbl_803C0F78[0x27C0] >= 2) {
-            fn_8007093C(0xD0001, message_table + 0x2A0);
+    /* The link is up and the device is authenticated: it is paired already. */
+    if (dev->hci_handle != BTM_SEC_INVALID_HANDLE && (dev->sec_flags & BTM_SEC_AUTHENTICATED)) {
+        if (btm_cb_trace_level >= BTM_TRACE_LEVEL_WARNING) {
+            fn_8007093C(TRACE_LAYER_BTM | TRACE_TYPE_WARNING, messages + 0x2A0); /* "BTM_SecBond -> Already Paired" */
         }
         return BTM_SUCCESS;
     }
 
+    /* Make the controller forget any link key it still holds for this device. */
     if (BTM_DeleteStoredLinkKey(bd_addr, NULL) != BTM_SUCCESS) {
         return BTM_NO_RESOURCES;
     }
 
-    dev[0x81] = 0x50;
-    dev[0x80] = 1;
-    *(UINT32 *)(dev + 0x10) = trusted_mask_copy[0];
-    *(UINT32 *)(dev + 0x14) = trusted_mask_copy[1];
-    lbl_803C0F78[0x197F] = pin_len;
+    dev->sec_req = 0x50;      /* authenticate and encrypt: this stack's BTM_SEC_OUT_* pair */
+    dev->is_originator = 1;
+    dev->trusted_mask[0] = mask[0];
+    dev->trusted_mask[1] = mask[1];
+    btm_cb_pin_code_len = pin_len;
     if (pin_len != 0) {
-        memcpy(lbl_803C0F78 + 0x1980, p_pin_copy, pin_len);
+        memcpy(btm_cb_pin_code, pin, pin_len);
     }
 
-    dev[0x76] &= ~0x16;
-    if ((dev[0x23] & 0x1F) == 5 &&
-        (dev[0x24] & 0x40) &&
-        lbl_803C0F78[0x20] != 1) {
-        lbl_803C0F78[0x197C] = 1;
-        btsnd_hcic_write_pin_type(1);
+    dev->sec_flags &= ~(BTM_SEC_LINK_KEY_KNOWN | BTM_SEC_AUTHENTICATED | BTM_SEC_ENCRYPTED);
+    /* A keyboard is paired by typing its PIN twice, so it needs the fixed
+       PIN type - the controller would otherwise ask for a variable one. */
+    if ((dev->dev_class[1] & BTM_COD_MAJOR_CLASS_MASK) == BTM_COD_MAJOR_PERIPHERAL &&
+        (dev->dev_class[2] & BTM_COD_MINOR_KEYBOARD) &&
+        btm_cb_cfg_pin_type != HCI_PIN_TYPE_FIXED) {
+        btm_cb_pin_type_changed = 1;
+        btsnd_hcic_write_pin_type(HCI_PIN_TYPE_FIXED);
     }
 
-    lbl_803C0F78[0x197E] = 0;
-    if (*(UINT16 *)(dev + 0x18) != 0xFFFF) {
-        dev[0x76] &= ~0x10;
-        dev[0x7F] = 1;
-        if (!btsnd_hcic_auth_request(*(UINT16 *)(dev + 0x18))) {
+    btm_cb_disc_reason = 0;
+    if (dev->hci_handle != BTM_SEC_INVALID_HANDLE) {
+        /* Link already up: authenticate it instead of paging. */
+        dev->sec_flags &= ~BTM_SEC_LINK_KEY_KNOWN;
+        dev->sec_state = BTM_SEC_STATE_AUTHENTICATING;
+        if (!btsnd_hcic_auth_request(dev->hci_handle)) {
             return BTM_NO_RESOURCES;
         }
-        lbl_803C0F78[0x197D] = 0;
+        btm_cb_bonding = 0;
         return BTM_CMD_STARTED;
     }
 
-    if (lbl_803C0F78[0x1978] != 3) {
-        if (lbl_803C0F78[0x27C0] >= 5) {
-            fn_8007093C(0xD0004, message_table + 0x2C0);
+    if (btm_cb_security_mode != 3) { /* less than secure simple pairing */
+        if (btm_cb_trace_level >= BTM_TRACE_LEVEL_DEBUG) {
+            fn_8007093C(TRACE_LAYER_BTM | TRACE_TYPE_DEBUG, messages + 0x2C0); /* "BTM_SecBond: Authen Enable -> TRUE" */
         }
-        if ((UINT8)btsnd_hcic_write_pin_type_8008543C(1) == 0) {
-            if (lbl_803C0F78[0x27C0] >= 1) {
-                fn_8007093C(0xD0000, message_table + 0x2E4);
+        if ((UINT8)btsnd_hcic_write_auth_enable(1) == 0) {
+            if (btm_cb_trace_level >= BTM_TRACE_LEVEL_ERROR) {
+                fn_8007093C(TRACE_LAYER_BTM | TRACE_TYPE_ERROR, messages + 0x2E4); /* "BTM_SecBond: no buffer" */
             }
             return BTM_NO_RESOURCES;
         }
-        lbl_803C0F78[0x197B] = 1;
+        btm_cb_mode_changed = 1;
     }
 
-    lbl_803C0F78[0x197D] = 1;
-    pin_type = *(UINT8 *)fn_8007A3A4();
-    dev[0x85] = 0;
-    allow_switch = (pin_type >> 5) & 1;
+    /* Page the device; the PIN request and what follows run from the events. */
+    btm_cb_bonding = 1;
+    value = *(UINT8 *)fn_8007A3A4();      /* btm_cb.devcb.local_features[0] */
+    dev->conn_up = 0;
+    allow_role_switch = (value >> 5) & 1; /* HCI_LM_ACCEPT */
     p_inq_info = BTM_InqDbRead(bd_addr);
     if (p_inq_info != NULL) {
-        pin_type = btsnd_hcic_create_conn(
-            bd_addr, 0x18, p_inq_info->results.page_scan_rep_mode,
+        value = btsnd_hcic_create_conn(
+            bd_addr, 0x18, /* packet types: DH1 */
+            p_inq_info->results.page_scan_rep_mode,
             p_inq_info->results.page_scan_mode,
-            p_inq_info->results.clock_offset | 0x8000, allow_switch);
+            p_inq_info->results.clock_offset | BTM_CLOCK_OFFSET_VALID,
+            allow_role_switch);
     } else {
-        pin_type = btsnd_hcic_create_conn(
-            bd_addr, 0x18, 1, 0, *(UINT16 *)(dev + 0x1A), allow_switch);
+        value = btsnd_hcic_create_conn(
+            bd_addr, 0x18, 1, 0, dev->clock_offset, allow_role_switch);
     }
-    if (pin_type != 0) {
+    if (value != 0) {
         return BTM_CMD_STARTED;
     }
 
-    if (lbl_803C0F78[0x27C0] >= 1) {
-        fn_8007093C(0xD0000, message_table + 0x2E4);
+    if (btm_cb_trace_level >= BTM_TRACE_LEVEL_ERROR) {
+        fn_8007093C(TRACE_LAYER_BTM | TRACE_TYPE_ERROR, messages + 0x2E4); /* "BTM_SecBond: no buffer" */
     }
-    if (lbl_803C0F78[0x197B] != 0) {
-        lbl_803C0F78[0x197B] = 0;
-        if (lbl_803C0F78[0x27C0] >= 5) {
+    if (btm_cb_mode_changed != 0) {
+        /* btm_restore_mode(): put the authentication enable back as the
+           security mode wants it. */
+        btm_cb_mode_changed = 0;
+        if (btm_cb_trace_level >= BTM_TRACE_LEVEL_DEBUG) {
             ((void (*)(u32, void *, u32))fn_80070954)(
-                0xD0004, message_table + 0x2FC,
-                ((lbl_803C0F78[0x1978] - 3) == 0));
+                TRACE_LAYER_BTM | TRACE_TYPE_DEBUG, messages + 0x2FC, /* "btm_restore_mode: Authen Enable -> %d" */
+                ((btm_cb_security_mode - 3) == 0));
         }
-        btsnd_hcic_write_pin_type_8008543C(
-            (UINT8)((lbl_803C0F78[0x1978] - 3) == 0));
+        btsnd_hcic_write_auth_enable((UINT8)((btm_cb_security_mode - 3) == 0));
     }
     return BTM_NO_RESOURCES;
 }
