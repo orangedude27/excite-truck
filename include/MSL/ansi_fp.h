@@ -14,10 +14,17 @@ typedef struct decimal {
 	} sig;
 } decimal;
 
+/* how many significant digits __num2dec is to produce, and in what style */
+enum decform_style {
+	decform_style_normal,      /* fixed point */
+	decform_style_scientific,  /* one digit before the radix point */
+	decform_style_engineering  /* exponent is a multiple of 3 */
+};
+
 typedef struct decform {
-	char style;
+	char style;   /* enum decform_style */
 	char unk1;
-	short digits;
+	short digits; /* significant digits */
 } decform;
 
 void __ull2dec(decimal*, unsigned long long);
