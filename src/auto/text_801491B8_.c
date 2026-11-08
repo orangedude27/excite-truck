@@ -28,6 +28,7 @@ extern u8 lbl_80559F0C;
 #define lbl_80559F08 (&lbl_80559F08)
 #define lbl_80559F0C (&lbl_80559F0C)
 static inline void StrCopyN80149658(u8 *dst, const u8 *src, int n) {
+    // copy at most n chars, always terminated
     while ((s8)(*dst++ = *src++) != 0) {
         if (--n <= 0) {
             dst[-1] = 0;
@@ -392,6 +393,7 @@ f32 fn_801495D4(s32 arg0) {
 void fn_80149650(void) { fn_801495D4(0x40); }
 
 u32 fn_80149658(s32 selfAddr, void *aArg, void *listArg, s32 unused) {
+    u8 *tbl = lbl_8032D358;
     u8 *self = (u8 *)selfAddr;
     u8 *a = (u8 *)aArg;
     u8 *list = (u8 *)listArg;
@@ -406,10 +408,10 @@ u32 fn_80149658(s32 selfAddr, void *aArg, void *listArg, s32 unused) {
     fn_801345D8(self + 0x2C, 0x14, lbl_80559F04, s30);
     StrCopyN80149658(self + 0x40, fn_80130FE0(s30), 5);
     if (fn_80179650() == 1) {
-        fn_801345D8(buf, 0x32, lbl_8032D358 + 0x30, *(s32 *)(a + 4));
+        fn_801345D8(buf, 0x32, tbl + 0x30, *(s32 *)(a + 4));
         StrCopyN80149658(self + 0x1FD, fn_80131234(buf), 0x28);
     } else {
-        StrCopyN80149658(self + 0x1FD, fn_80131234(lbl_8032D358 + 0x50), 0x28);
+        StrCopyN80149658(self + 0x1FD, fn_80131234(tbl + 0x50), 0x28);
     }
     s30 = *(s32 *)(a + 0x20);
     i = 0;
@@ -448,7 +450,7 @@ u32 fn_80149658(s32 selfAddr, void *aArg, void *listArg, s32 unused) {
     fn_802AE168(*(s32 *)(self + 8));
     switch (*(s32 *)self) {
     case 0:
-        fn_802E30C8(lbl_8032D358 + 0x70, lbl_8032D358 + 0xA0, lbl_8055E3C4, *(s32 *)(self + 0x20), *(s32 *)(self + 0x24), *(s32 *)(self + 0x28));
+        fn_802E30C8(tbl + 0x70, tbl + 0xA0, lbl_8055E3C4, *(s32 *)(self + 0x20), *(s32 *)(self + 0x24), *(s32 *)(self + 0x28));
         fn_802ADFF4(*(s32 *)(self + 8), *(s32 *)(self + 0x1C));
         if (s30 > 0) p = *(u8 **)(self + 0x10);
         else p = *(u8 **)(self + 0x14);
@@ -457,18 +459,18 @@ u32 fn_80149658(s32 selfAddr, void *aArg, void *listArg, s32 unused) {
         break;
     case 1:
         if (*(s32 *)(self + 0x20) != 0 && *(f32 *)(self + 4) < lbl_80561648) {
-            fn_802E30C8(lbl_8032D358 + 0x70, lbl_8032D358 + 0xC4, lbl_8055E3C4, *(s32 *)(self + 0x24), *(s32 *)(self + 0x28));
+            fn_802E30C8(tbl + 0x70, tbl + 0xC4, lbl_8055E3C4, *(s32 *)(self + 0x24), *(s32 *)(self + 0x28));
             *(f32 *)(self + 4) = lbl_8055E3C8;
         }
         if (*(s32 *)(self + 0x24) != 0) {
-            fn_802E30C8(lbl_8032D358 + 0x70, lbl_8032D358 + 0xE8, lbl_8055E3C4, *(s32 *)(self + 0x20), *(s32 *)(self + 0x28));
+            fn_802E30C8(tbl + 0x70, tbl + 0xE8, lbl_8055E3C4, *(s32 *)(self + 0x20), *(s32 *)(self + 0x28));
             fn_802AE02C(*(s32 *)(self + 8), *(s32 *)(self + 0x1C));
             *(s32 *)self = 2;
         }
         break;
     case 2:
         if (self[0xC] != 0) {
-            fn_802E30C8(lbl_8032D358 + 0x70, lbl_8032D358 + 0x10C, lbl_8055E3C4, *(s32 *)(self + 0x20), *(s32 *)(self + 0x24), *(s32 *)(self + 0x28));
+            fn_802E30C8(tbl + 0x70, tbl + 0x10C, lbl_8055E3C4, *(s32 *)(self + 0x20), *(s32 *)(self + 0x24), *(s32 *)(self + 0x28));
             fn_802AE0B8(*(s32 *)(self + 8), *(s32 *)(self + 0x1C));
             p = *(u8 **)(self + 0x18);
             if (p != 0) { p[0x49] = 1; p[0x4B] = 0; p[0x4A] = 0; }
@@ -477,7 +479,7 @@ u32 fn_80149658(s32 selfAddr, void *aArg, void *listArg, s32 unused) {
         break;
     case 3:
         if (*(s32 *)(self + 0x28) != 0) {
-            fn_802E30C8(lbl_8032D358 + 0x70, lbl_8032D358 + 0x130, lbl_8055E3C4, *(s32 *)(self + 0x20), *(s32 *)(self + 0x24));
+            fn_802E30C8(tbl + 0x70, tbl + 0x130, lbl_8055E3C4, *(s32 *)(self + 0x20), *(s32 *)(self + 0x24));
             fn_802AE0E0((void *)*(s32 *)(self + 8));
             *(s32 *)self = 4;
         }
