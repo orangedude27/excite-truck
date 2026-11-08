@@ -32,40 +32,44 @@
 #define pow2_digit_strings lbl_802ED878
 extern const char pow2_digit_strings[];
 
+/* out = 2^exponent as an exact decimal.  Exponents the table covers are read
+ * straight out of it; any other one is halved (truncating), turned into a
+ * square, and multiplied by one more 2 - or by 0.5 - to make up the remainder.
+ */
 void __two_exp(decimal *out, long exponent) {
- extern const char lbl_802ED878[];
- decimal power, copy;
- switch(exponent) {
- case -64: __str2dec(out,lbl_802ED878+0,-20); break;
- case -53: __str2dec(out,lbl_802ED878+46,-16); break;
- case -32: __str2dec(out,lbl_802ED878+85,-10); break;
- case -16: __str2dec(out,lbl_802ED878+109,-5); break;
- case -8: __str2dec(out,lbl_802ED878+122,-3); break;
- case -7: __str2dec(out,lbl_802ED878+129,-3); break;
- case -6: __str2dec(out,lbl_802ED878+135,-2); break;
- case -5: __str2dec(out,lbl_802ED878+141,-2); break;
- case -4: __str2dec(out,lbl_802ED878+146,-2); break;
- case -3: __str2dec(out,lbl_802ED878+150,-1); break;
- case -2: __str2dec(out,lbl_802ED878+154,-1); break;
- case -1: __str2dec(out,lbl_802ED878+157,-1); break;
- case 0: __str2dec(out,lbl_802ED878+159,0); break;
- case 1: __str2dec(out,lbl_802ED878+161,0); break;
- case 2: __str2dec(out,lbl_802ED878+163,0); break;
- case 3: __str2dec(out,lbl_802ED878+165,0); break;
- case 4: __str2dec(out,lbl_802ED878+167,1); break;
- case 5: __str2dec(out,lbl_802ED878+170,1); break;
- case 6: __str2dec(out,lbl_802ED878+173,1); break;
- case 7: __str2dec(out,lbl_802ED878+176,2); break;
- case 8: __str2dec(out,lbl_802ED878+180,2); break;
- default:
-   __two_exp(&power,exponent/2);
-   __timesdec(out,&power,&power);
-   if(exponent & 1) {
-     copy=*out;
-     if(exponent>0) __str2dec(&power,lbl_802ED878+0xa1,0);
-     else __str2dec(&power,lbl_802ED878+0x9d,-1);
-     __timesdec(out,&copy,&power);
-   }
-   break;
- }
+    decimal power, squared;
+
+    switch (exponent) {
+    case -64: __str2dec(out, pow2_digit_strings + 0,   -20); break; /* 2^-64 */
+    case -53: __str2dec(out, pow2_digit_strings + 46,  -16); break; /* 2^-53 */
+    case -32: __str2dec(out, pow2_digit_strings + 85,  -10); break; /* 2^-32 */
+    case -16: __str2dec(out, pow2_digit_strings + 109,  -5); break; /* 2^-16 */
+    case -8:  __str2dec(out, pow2_digit_strings + 122,  -3); break; /* 2^-8  */
+    case -7:  __str2dec(out, pow2_digit_strings + 129,  -3); break; /* 2^-7  */
+    case -6:  __str2dec(out, pow2_digit_strings + 135,  -2); break; /* 2^-6  */
+    case -5:  __str2dec(out, pow2_digit_strings + 141,  -2); break; /* 2^-5  */
+    case -4:  __str2dec(out, pow2_digit_strings + 146,  -2); break; /* 2^-4  */
+    case -3:  __str2dec(out, pow2_digit_strings + 150,  -1); break; /* 2^-3  */
+    case -2:  __str2dec(out, pow2_digit_strings + 154,  -1); break; /* 2^-2  */
+    case -1:  __str2dec(out, pow2_digit_strings + 157,  -1); break; /* 2^-1  */
+    case 0:   __str2dec(out, pow2_digit_strings + 159,   0); break; /* 2^0   */
+    case 1:   __str2dec(out, pow2_digit_strings + 161,   0); break; /* 2^1   */
+    case 2:   __str2dec(out, pow2_digit_strings + 163,   0); break; /* 2^2   */
+    case 3:   __str2dec(out, pow2_digit_strings + 165,   0); break; /* 2^3   */
+    case 4:   __str2dec(out, pow2_digit_strings + 167,   1); break; /* 2^4   */
+    case 5:   __str2dec(out, pow2_digit_strings + 170,   1); break; /* 2^5   */
+    case 6:   __str2dec(out, pow2_digit_strings + 173,   1); break; /* 2^6   */
+    case 7:   __str2dec(out, pow2_digit_strings + 176,   2); break; /* 2^7   */
+    case 8:   __str2dec(out, pow2_digit_strings + 180,   2); break; /* 2^8   */
+    default:
+        __two_exp(&power, exponent / 2);
+        __timesdec(out, &power, &power);
+        if (exponent & 1) {
+            squared = *out; /* the odd exponent still wants one factor of 2 */
+            if (exponent > 0) __str2dec(&power, pow2_digit_strings + 161, 0);  /* 2   */
+            else              __str2dec(&power, pow2_digit_strings + 157, -1); /* 0.5 */
+            __timesdec(out, &squared, &power);
+        }
+        break;
+    }
 }
