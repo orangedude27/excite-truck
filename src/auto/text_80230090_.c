@@ -102,56 +102,55 @@ struct Quad {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma opt_common_subs off
-void fn_80230150(s32 arg0, u32 flags, f32 x, f32 y, f32 z, f32 w, f32 h, f32 speed, f32 time, f32 margin) {
-    extern void fn_802C8B98(s32, s32);
-    extern s32 fn_80230B9C(u32);
-    extern void fn_80230C9C(f32 *, f32 *, f32, f32, f32);
-    extern void fn_80231380(void *, s32, f32, f32, f32, f32, f32);
-    extern void fn_802C8DB8(void *, s32, u16 *, s32);
-    extern void fn_802C8D74(void);
+// Draws one textured quad of the scrolling 2D overlay into the current display
+// list.  The quad sits at (x,y), is w*h big, at depth z with colour colorId;
+// flags 1/2 scroll it down/right and 4 sinks it, all by speed*time.  Flag 8
+// grows the screen box it is wrapped in by `margin`, and flags 8/0x10 also
+// draw a copy one box-width/height away whenever the quad has left that box,
+// so the scroll tiles seamlessly.
+void fn_80230150(s32 colorId, u32 flags, f32 x, f32 y, f32 z, f32 w, f32 h, f32 speed, f32 time, f32 margin) {
+    extern void fn_802C8B98(s32, s32);                            // start a draw: colour, display list
+    extern s32 fn_80230B9C(u32);                                  // colour id -> packed RGBA
+    extern void fn_80230C9C(f32 *, f32 *, f32, f32, f32);         // wrap a span into the screen box
+    extern void fn_80231380(void *, s32, f32, f32, f32, f32, f32);// fill one vertex
+    extern void fn_802C8DB8(void *, s32, u16 *, s32);             // draw indexed quads
+    extern void fn_802C8D74(void);                                // flush the draw
     extern f32 lbl_80563618, lbl_8056361C, lbl_80563620, lbl_80563624, lbl_80563628;
-    struct IndexList { u16 idx[6]; };
-    extern struct IndexList lbl_802F9FC0, lbl_802F9FCC;
-    struct Frame {
-        f32 bottom, right, top, left;
-        struct IndexList indices, wrapped;
-        u8 pad[8];
-        f32 vertex[4][6];
-        f32 extra[4][6];
-    } __attribute__((aligned(16))) frame;
-    f32 left, right, top, bottom;
-    f32 x0, x1, y0, y1;
-    
-    frame.left=x; frame.top=y; frame.right=(f32)(double)x+w; frame.bottom=(f32)(double)y+h;
-    
-    if (flags & 1) { frame.top=y+time*speed; frame.bottom=frame.top+h; }
-    if (flags & 2) { frame.left=x+time*speed; frame.right=frame.left+w; }
-    if (flags & 4) z=z+time*speed;
-    left=lbl_80563618; right=lbl_8056361C; top=lbl_80563620; bottom=lbl_80563624;
+    extern struct QuadIndices lbl_802F9FC0, lbl_802F9FCC;
+    struct Quad quad;
+    f32 screenLeft, screenRight, screenTop, screenBottom;
+    f32 copyLeft, copyRight, copyTop, copyBottom;
+
+    quad.left=x; quad.top=y; quad.right=(f32)(double)x+w; quad.bottom=(f32)(double)y+h;
+
+    if (flags & 1) { quad.top=y+time*speed; quad.bottom=quad.top+h; }         // scroll down
+    if (flags & 2) { quad.left=x+time*speed; quad.right=quad.left+w; }        // scroll right
+    if (flags & 4) z=z+time*speed;                                            // sink away from the screen
+    screenLeft=QUAD_SCREEN_L; screenRight=QUAD_SCREEN_R; screenTop=QUAD_SCREEN_T; screenBottom=QUAD_SCREEN_B;
     fn_802C8B98(-1,(s32)fn_8022EDC4());
-    arg0=fn_80230B9C(arg0);
-    if (flags & 8) { left-=margin; right+=margin; top-=margin; bottom+=margin; }
+    colorId=fn_80230B9C(colorId);
+    if (flags & 8) { screenLeft-=margin; screenRight+=margin; screenTop-=margin; screenBottom+=margin; }
     if ((flags & 8) || (flags & 0x10)) {
-        fn_80230C9C(&frame.left,&frame.right,left,right,-left+right);
-        fn_80230C9C(&frame.top,&frame.bottom,top,bottom,-top+bottom);
-        y1=y0=x1=x0=lbl_80563628;
-        if (frame.left<left) { y0=frame.top; x1=right; y1=frame.bottom; x0=frame.left+(-left+right); }
-        if (frame.right>right) { y0=frame.top; x0=left; y1=frame.bottom; x1=frame.right-(-left+right); }
-        if (frame.top<top) { y1=bottom; y0=frame.top+(-top+bottom); if (lbl_80563628==x0) { x0=frame.left; x1=frame.right; } }
-        if (frame.bottom>bottom) { y0=top; y1=frame.bottom-(-top+bottom); if (lbl_80563628==x0) { x0=frame.left; x1=frame.right; } }
-        fn_80231380(frame.extra[0],arg0,x0,y0,z,lbl_80563614,lbl_80563614);
-        fn_80231380(frame.extra[1],arg0,x1,y0,z,lbl_80563610,lbl_80563614);
-        fn_80231380(frame.extra[2],arg0,x0,y1,z,lbl_80563614,lbl_80563610);
-        fn_80231380(frame.extra[3],arg0,x1,y1,z,lbl_80563610,lbl_80563610);
-        frame.wrapped=lbl_802F9FC0;
-        fn_802C8DB8(frame.extra,4,frame.wrapped.idx,6);
+        fn_80230C9C(&quad.left,&quad.right,screenLeft,screenRight,-screenLeft+screenRight);
+        fn_80230C9C(&quad.top,&quad.bottom,screenTop,screenBottom,-screenTop+screenBottom);
+        copyBottom=copyTop=copyRight=copyLeft=QUAD_UNSET_EDGE;
+        if (quad.left<screenLeft) { copyTop=quad.top; copyRight=screenRight; copyBottom=quad.bottom; copyLeft=quad.left+(-screenLeft+screenRight); }
+        if (quad.right>screenRight) { copyTop=quad.top; copyLeft=screenLeft; copyBottom=quad.bottom; copyRight=quad.right-(-screenLeft+screenRight); }
+        if (quad.top<screenTop) { copyBottom=screenBottom; copyTop=quad.top+(-screenTop+screenBottom); if (QUAD_UNSET_EDGE==copyLeft) { copyLeft=quad.left; copyRight=quad.right; } }
+        if (quad.bottom>screenBottom) { copyTop=screenTop; copyBottom=quad.bottom-(-screenTop+screenBottom); if (QUAD_UNSET_EDGE==copyLeft) { copyLeft=quad.left; copyRight=quad.right; } }
+        fn_80231380(quad.wrappedVertex[0],colorId,copyLeft,copyTop,z,QUAD_TEX_EMPTY,QUAD_TEX_EMPTY);
+        fn_80231380(quad.wrappedVertex[1],colorId,copyRight,copyTop,z,QUAD_TEX_FULL,QUAD_TEX_EMPTY);
+        fn_80231380(quad.wrappedVertex[2],colorId,copyLeft,copyBottom,z,QUAD_TEX_EMPTY,QUAD_TEX_FULL);
+        fn_80231380(quad.wrappedVertex[3],colorId,copyRight,copyBottom,z,QUAD_TEX_FULL,QUAD_TEX_FULL);
+        quad.wrappedIndices=QUAD_INDICES_WRAPPED;
+        fn_802C8DB8(quad.wrappedVertex,4,quad.wrappedIndices.index,6);
     }
-    fn_80231380(frame.vertex[0],arg0,frame.left,frame.top,z,lbl_80563614,lbl_80563614);
-    fn_80231380(frame.vertex[1],arg0,frame.right,frame.top,z,lbl_80563610,lbl_80563614);
-    fn_80231380(frame.vertex[2],arg0,frame.left,frame.bottom,z,lbl_80563614,lbl_80563610);
-    fn_80231380(frame.vertex[3],arg0,frame.right,frame.bottom,z,lbl_80563610,lbl_80563610);
-    frame.indices=lbl_802F9FCC;
-    fn_802C8DB8(frame.vertex,4,frame.indices.idx,6);
+    fn_80231380(quad.vertex[0],colorId,quad.left,quad.top,z,QUAD_TEX_EMPTY,QUAD_TEX_EMPTY);
+    fn_80231380(quad.vertex[1],colorId,quad.right,quad.top,z,QUAD_TEX_FULL,QUAD_TEX_EMPTY);
+    fn_80231380(quad.vertex[2],colorId,quad.left,quad.bottom,z,QUAD_TEX_EMPTY,QUAD_TEX_FULL);
+    fn_80231380(quad.vertex[3],colorId,quad.right,quad.bottom,z,QUAD_TEX_FULL,QUAD_TEX_FULL);
+    quad.indices=QUAD_INDICES;
+    fn_802C8DB8(quad.vertex,4,quad.indices.index,6);
     fn_802C8D74();
 }
 #pragma pop
