@@ -40,6 +40,7 @@ extern "C" void fn_800DF81C(f32 *arg0, void *arg1, const u16 *arg2, s32 arg3, f3
     if ((!c1) && (((u32)(p) & 0xFFFFC000) != 0xE0000000U)) c0 = 0; \
     if (!c0) ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, line, msg + off, p); }
 struct Vec2f { f32 x, y; };
+struct CWBuf { u8 b[0x60]; };
 struct SoundEntry60 {
     u8 b[32];
     s32 w[8];
@@ -1025,7 +1026,8 @@ extern "C" void fn_800DF208(f32 *arg0, u8 *arg1, void *arg2) {
     u16 *buf;
     u16 len;
     SoundEntry60 tmp;
-    union { u64 u; f32 f[2]; } v;
+    u64 raw;
+    Vec2f p;
     f32 fa, fb;
     f32 z = lbl_80560ED0;
 
@@ -1046,22 +1048,23 @@ extern "C" void fn_800DF208(f32 *arg0, u8 *arg1, void *arg2) {
     tmp = *(SoundEntry60 *)arg2;
     fn_800DF81C(arg0, &tmp, buf, len, savedY);
     __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80111BB8(&tmp, -1);
-    v.u = GetVtxPos__Q34nw4r3lyt4PaneCFv(arg1);
+    raw = GetVtxPos__Q34nw4r3lyt4PaneCFv(arg1);
+    p = *(Vec2f *)&raw;
     switch ((u8)(arg1[0xFC] % 3)) {
-    default: fa = lbl_80560ED0; break;
+    case 0: default: fa = lbl_80560ED0; break;
     case 1: fa = lbl_80560EE0; break;
     case 2: fa = lbl_80560EE4; break;
     }
     switch ((u8)(arg1[0xFC] / 3)) {
-    default: fb = lbl_80560ED0; break;
+    case 0: default: fb = lbl_80560ED0; break;
     case 1: fb = lbl_80560EE0; break;
     case 2: fb = lbl_80560EE4; break;
     }
     {
         f32 h = arg0[3] - arg0[1];
         f32 w = arg0[2] - arg0[0];
-        f32 ny = v.f[1] + (*(f32 *)(arg1 + 0x50) - h) * fb;
-        f32 nx = v.f[0] + (*(f32 *)(arg1 + 0x4C) - w) * fa;
+        f32 ny = p.y + (*(f32 *)(arg1 + 0x50) - h) * fb;
+        f32 nx = p.x + (*(f32 *)(arg1 + 0x4C) - w) * fa;
         arg0[1] = ny;
         arg0[0] = nx;
         arg0[3] = ny + h;
