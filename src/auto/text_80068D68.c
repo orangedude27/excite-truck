@@ -516,6 +516,7 @@ typedef struct {
 #define sdp_cb_server_db        ((tSDP_DB *)(lbl_803C4C40 + 0x121C))
 #define sdp_cb_record_db        ((tSDP_RECORD_BUILD_VIEW *)(lbl_803C4C40 + 0x1224))
 #define sdp_cb_trace_level      (lbl_803C4C40[0x4630])
+#define sdp_cb_max_attr_list_size   (*(UINT16 *)(lbl_803C4C40 + 0x462C))
 typedef struct { UINT8 pad[0x476]; UINT16 cont_offset; } tSDP_CCB_CONT_VIEW;
 static void process_service_attr_rsp(tCONN_CB *, UINT8 *, UINT16);
 typedef struct { UINT8 pad[0x418]; UINT32 handles[0x15]; } tSDP_CCB_HANDLE_VIEW;
