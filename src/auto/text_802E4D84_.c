@@ -49,6 +49,11 @@ extern char lbl_8034D528[];
 extern void fn_80128670(int);
 extern void fn_8012C4D8(void);
 extern void fn_8012BF24(void *);
+#define VU8(o) (*(unsigned char *)(v + (o)))
+#define VF(o) (*(float *)(v + (o)))
+#define VI(o) (*(int *)(v + (o)))
+#define SI(o) (*(int *)(s + (o)))
+#define SU(o) (*(unsigned int *)(s + (o)))
 void fn_802E4D84(void *dst, void *src, int size) {
     void *saved_dst = dst;
     int saved_size = size;
@@ -281,6 +286,91 @@ int fn_802E540C(int arg0) {
     return 0;
 }
 
+void fn_802E5478(void) {
+    extern char lbl_8034D210[];
+    extern int lbl_8055FF7C, lbl_8055FF80, lbl_8055FF84, lbl_8055FF88;
+    extern void *lbl_8055FFB0;
+    extern unsigned char lbl_804FC690[];
+    extern char lbl_8055D1E0;
+    extern char lbl_8055FFA5;
+    extern void fn_801282F4(void);
+    extern void fn_801282EC(int);
+    extern int fn_801284E8(char *, int);
+    extern void *fn_8012850C(void *, char *);
+    extern void DCInvalidateRange(void *, unsigned int);
+    extern void TRKPostEvent(int);
+    extern void TRKMessageSend(void);
+    extern void fn_80031C6C(int);
+    extern int TRKInitializeMessageBuffers(int, int, int);
+    extern void AXSetVoiceState(int, int);
+    extern void fn_80033538(int, int);
+    extern void AIRegisterDMACallback(void *);
+    extern void fn_802E6B04(void);
+    extern void OSCreateAlarm(void *);
+    extern long long OSGetTime(void);
+    extern void OSSetPeriodicAlarm(void *, long long, long long, void *);
+    extern void fn_802E5438(void);
+    char *msg = lbl_8034D210;
+    int off, i;
+    int voice, tmp;
+    char *buf;
+    long long now;
+    float *p;
+    float one;
+
+    ((void (*)(char *, ...))fn_802E30C8)(msg + 0x1BC);
+    lbl_8055FF8C = (void *)1;
+    lbl_8055FF84 = 0x20000;
+    fn_801282F4();
+    tmp = fn_801284E8(msg + 0x1C8, lbl_8055FF84);
+    lbl_8055FFB0 = (void *)tmp;
+    lbl_8055FF7C = tmp;
+    lbl_8055FF80 = tmp;
+    DCInvalidateRange((void *)lbl_8055FF80, lbl_8055FF84);
+    ((void (*)(char *, ...))fn_802E30C8)(msg + 0x1D4, lbl_8055FF80, lbl_8055FF84, (unsigned int)lbl_8055FF84 >> 10);
+    TRKPostEvent(0);
+    TRKMessageSend();
+    fn_80031C6C(0);
+    lbl_8055FF90 = fn_8012850C((void *)0xB000, msg + 0x1F4);
+    lbl_8055FF94 = (unsigned char *)fn_8012850C((void *)0x580, msg + 0x200);
+    lbl_8055FF9C = (int *)fn_8012850C((void *)0x400, msg + 0x20C);
+    lbl_8055FFA0 = 0;
+    memset(lbl_8055FF90, 0, 0xB000);
+    memset(lbl_8055FF94, 0, 0x580);
+    i = 0;
+    off = 0;
+    do {
+        voice = TRKInitializeMessageBuffers(0x1F, 0, 0);
+        if (voice == 0) fn_802E317C(msg + 0x218, i);
+        AXSetVoiceState(voice, 0);
+        fn_80033538(voice, 0);
+        *(int *)(lbl_8055FF94 + off) = i;
+        i++;
+        *(int *)(lbl_8055FF94 + off + 4) = voice;
+        off += 0x2C;
+    } while (i < 0x20);
+    lbl_8055FF88 = lbl_8055FF7C + (lbl_8055FF84 - 0x20000);
+    fn_801282EC(0x20);
+    buf = (char *)fn_8012850C((void *)0x20000, msg + 0x234);
+    memset(buf, 0, 0x20000);
+    ((void (*)(void *, void *, int, int))fn_802E4D84)((void *)lbl_8055FF88, buf, 0x20000, 1);
+    fn_80128670((int)buf);
+    AIRegisterDMACallback((void *)fn_802E4F98);
+    fn_802E6B04();
+    OSCreateAlarm(lbl_804FC690);
+    now = OSGetTime();
+    OSSetPeriodicAlarm(lbl_804FC690, now, (unsigned int)(((*(unsigned int *)0x800000F8 >> 2) / 125000 * 0x65B9AB) / 8000), (void *)fn_802E52EC);
+    one = lbl_80565128;
+    p = lbl_804FC680;
+    *p = one;
+    *++p = one;
+    *++p = one;
+    *++p = one;
+    fn_802E2E0C((void *)fn_802E540C, &lbl_8055D1E0);
+    lbl_8055FFA5 = 1;
+    fn_802E5438();
+}
+
 void fn_802E56F0(void) {
     extern void OSCancelAlarm(void *);
     extern void fn_802E6B34(void);
@@ -442,6 +532,83 @@ void fn_802E5A54(void) {
     lbl_8055FF78 = 0;
 }
 
+#pragma ppc_psq_save off
+void *fn_802E5AE8(char *arg0) {
+    extern char lbl_8034D210[];
+    extern float lbl_80565138, lbl_8056513C;
+    extern char *fn_80029004(char *, int);
+    extern int stricmp(const char *, const char *);
+    extern char *strcpy(char *, const char *);
+    struct Res {
+        unsigned int size;
+        unsigned int unk4;
+        unsigned char unk8;
+        unsigned char unk9;
+        short unkA;
+        unsigned short unkC;
+        short unkE;
+        unsigned int unk10;
+        unsigned char pad14[0xC];
+        unsigned char data[0x60];
+    };
+    char *msg = lbl_8034D210;
+    char *name;
+    char *found;
+    int off, i, freeIdx;
+    unsigned int unk4, aligned;
+    float f31, f30;
+    struct Res *res;
+    unsigned char *slot;
+    unsigned char flag;
+
+    found = fn_80029004(arg0, 0x2F);
+    if (found != 0) name = found + 1;
+    else name = arg0;
+    freeIdx = -1;
+    i = 0;
+    off = 0;
+    for (; i < 0x100; i++, off += 0xB0) {
+        slot = (unsigned char *)lbl_8055FF90 + off;
+        if (*(int *)(slot + 0x94) != 0) {
+            if (stricmp(name, (char *)slot) == 0 && *(int *)((unsigned char *)lbl_8055FF90 + off + 0x20) == 0) {
+                slot = (unsigned char *)lbl_8055FF90 + i * 0xB0;
+                *(int *)(slot + 0x94) = *(int *)(slot + 0x94) + 1;
+                return (unsigned char *)lbl_8055FF90 + i * 0xB0;
+            }
+        } else if (freeIdx < 0) {
+            freeIdx = i;
+        }
+    }
+    if (freeIdx < 0) fn_802E317C(msg + 0x2A8, arg0);
+    res = (struct Res *)fn_802E4DC8(arg0);
+    if (res == 0) return 0;
+    res->unkC = 0xCFFE;
+    if (res->unkC != 0xCFFE) fn_802E317C(msg + 0x2C4, arg0);
+    f31 = (float)(res->size >> 1) / lbl_80565138;
+    aligned = (res->size + 0x3F) & ~0x3F;
+    if (res->unk9 == 1) f31 = f31 * lbl_8056513C;
+    slot = (unsigned char *)lbl_8055FF90 + freeIdx * 0xB0;
+    f30 = (float)res->unk10 / lbl_80565138;
+    memset(slot, 0, 0xB0);
+    unk4 = res->unk4;
+    if (unk4 & 0x1F) fn_802E317C(msg + 0x2FC, name, unk4);
+    *(unsigned int *)(slot + 0xA0) = aligned;
+    *(int *)(slot + 0x94) = 1;
+    *(int *)(slot + 0x20) = 0;
+    flag = (res->unk9 == 1);
+    slot[0x24] = flag;
+    slot[0x25] = (res->unk8 != 0);
+    if (flag) memcpy(slot + 0x28, res->data, 0x60);
+    else memset(slot + 0x28, 0, 0x60);
+    *(int *)(slot + 0x98) = 0;
+    *(float *)(slot + 0xA8) = f30;
+    *(float *)(slot + 0xA4) = f31 / f30;
+    strcpy((char *)slot, name);
+    *(unsigned int *)(slot + 0x9C) = unk4;
+    *(void **)(slot + 0xAC) = res;
+    return slot;
+}
+#pragma ppc_psq_save reset
 extern void *lbl_8055FF90;
 extern float lbl_80565128, lbl_80565148;
 extern char lbl_8034D554[], lbl_8034D578[];
