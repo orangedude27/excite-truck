@@ -171,7 +171,7 @@ struct ZoneMaster {
 typedef ZoneMaster MainObj8013D2C4;  /* old placeholder name, being renamed */
 extern "C" void *fn_80145E70(const char *);
 extern "C" void *fn_802CAC28(const char *, s32);
-inline void MainObj8013D2C4::initWidgets(const char *base) {
+inline void ZoneMaster::initWidgets(const char *base) {
     void *w0 = fn_80145E70(base + 0x0);
     w54 = w0;
     sa.push(w0);
