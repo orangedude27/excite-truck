@@ -99,6 +99,28 @@ void fn_8002B1D8(void) {
 }
 
 extern double fn_8002F234(double);
+
+/* MSL e_acos.c constants (see src/MSL/e_acos.c); the game's .sdata2 keeps
+ * them unnamed, so alias them to the reference names. */
+#define acos_zero      lbl_80560600 /*  0.0: acos(1) */
+#define acos_pi        lbl_80560608 /*  pi + 2.0*pio2_lo: acos(-1) */
+#define acos_pio2_hi   lbl_80560610 /*  1.57079632679489655800e+00 */
+#define acos_pS0       lbl_80560618 /*  1.66666666666666657415e-01 */
+#define acos_pS1       lbl_80560620 /* -3.25565818622400915405e-01 */
+#define acos_pS2       lbl_80560628 /*  2.01212532134862925881e-01 */
+#define acos_pS3       lbl_80560630 /* -4.00555345006794114027e-02 */
+#define acos_pS4       lbl_80560638 /*  7.91534994289814532176e-04 */
+#define acos_pS5       lbl_80560640 /*  3.47933107596021167570e-05 */
+#define acos_one       lbl_80560648 /*  1.0 */
+#define acos_qS1       lbl_80560650 /* -2.40339491173441421878e+00 */
+#define acos_qS2       lbl_80560658 /*  2.02094576023350569471e+00 */
+#define acos_qS3       lbl_80560660 /* -6.88283971605453293030e-01 */
+#define acos_qS4       lbl_80560668 /*  7.70381505559019352791e-02 */
+#define acos_pio2_lo   lbl_80560670 /*  6.12323399573676603587e-17 */
+#define acos_half      lbl_80560678 /*  0.5 */
+#define acos_nan       (*(float *)&lbl_80558DB0) /* MSL NAN: a float quiet NaN */
+#define acos_sqrt      fn_8002F234               /* sqrt(): b __ieee754_sqrt */
+
 double __ieee754_acos(double x) {
     double z, p, q, r, w, s, c, df;
     int hx, ix;
