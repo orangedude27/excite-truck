@@ -390,9 +390,25 @@ void nandCallback(s32 result, void* arg) {
     block->callback(nandConvertErrorCode(result), block);
 }
 
+/**
+ * Work out whether @p path names a file or a directory and store a
+ * NAND_FILE_TYPE_* in @p type (or, asynchronously, in the caller's block for
+ * nandGetTypeCallback() to store).
+ *
+ * The trick is ISFS_ReadDir(): it succeeds on directories and returns
+ * IPC_RESULT_INVALID on anything else, so a readable directory (or one we are
+ * denied access to) is a directory and an invalid path is a file. Any other
+ * error is passed straight back.
+ *
+ * @param async  TRUE: build the request in @p block and hand it to
+ *               ISFS_ReadDirAsync(); FALSE: do it here with local storage.
+ * @param priv   TRUE skips the check that rejects paths under another title's
+ *               private "/shared2/" tree, for the NANDPrivate* entry points.
+ * @return an IPC_RESULT_* code that callers pass to nandConvertErrorCode().
+ */
 static s32 nandGetType(const char* path, u8* type, NANDCommandBlock* block,
                        BOOL async, BOOL priv) {
-    char absPath[64];
+    char absPath[FS_MAX_PATH];
     u32 numFiles;
     s32 result;
 
