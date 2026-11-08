@@ -22,6 +22,31 @@ extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *);
 extern "C" void Warning__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...);
 extern const char lbl_80320560[];
 
+extern "C" u64 GetVtxPos__Q34nw4r3lyt4PaneCFv(void *);
+extern "C" void __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80111BB8(void *, s32);
+extern f32 lbl_80560EE0;
+extern f32 lbl_80560EE4;
+#define PTRCHECK(p, line, off) { \
+    s16 c0 = 1, c1 = 1, c2 = 1, c3 = 1, c4 = 1, c5 = 1; \
+    u32 hi = (u32)(p) & 0xFF000000; \
+    if (((u32)(hi + 0x80000000) != 0U) && ((u32)(((u32)(p) & 0xFF800000) + 0x7F000000) != 0U)) c5 = 0; \
+    if ((!c5) && ((u32)(((u32)(p) & 0xF8000000) + 0x70000000) != 0U)) c4 = 0; \
+    if ((!c4) && ((u32)(hi + 0x40000000) != 0U)) c3 = 0; \
+    if ((!c3) && ((u32)(((u32)(p) & 0xFF800000) + 0x3F000000) != 0U)) c2 = 0; \
+    if ((!c2) && ((u32)(((u32)(p) & 0xF8000000) + 0x30000000) != 0U)) c1 = 0; \
+    if ((!c1) && ((u32)(((u32)(p) & 0xFFFFC000) + 0x20000000) != 0U)) c0 = 0; \
+    if (!c0) ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2db FPCciPCce)(msg + 0x10, line, msg + off, p); }
+struct SoundEntry60 {
+    u8 b[32];
+    s32 w[8];
+    u8 c[4];
+    f32 f0;
+    s32 i0;
+    f32 f1;
+    f32 f2;
+    s32 i1, i2, i3;
+};
+
 extern "C" s32 fn_800DCE10(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
@@ -92,7 +117,7 @@ extern "C" void *__ct__Q36nw4hbm3lyt7TextBoxFPCQ46nw4hbm3lyt3res7TextBoxRCQ36nw4
     volatile f32 sp8;
     volatile f32 spc;
     u16 count;
-    s8 quotient;
+    s8 q;
     u8 rem;
     s32 value;
     void *resource;
@@ -112,12 +137,12 @@ extern "C" void *__ct__Q36nw4hbm3lyt7TextBoxFPCQ46nw4hbm3lyt3res7TextBoxRCQ36nw4
     }
     if (count != 0) {
         count = (u16)(count - 1);
-        quotient = self[0xFC] / 3;
+        q = self[0xFC] / 3;
         *(u32 *)(self + 0xD4) = 0;
         *(u16 *)(self + 0xF8) = 0;
         *(u16 *)(self + 0xFA) = 0;
         *(u32 *)(self + 0xE0) = 0;
-        value = quotient * 3 + 1;
+        value = q * 3 + 1;
         rem = value % 3;
         {
             f32 zero = lbl_80560ED0;
@@ -161,21 +186,23 @@ extern "C" void *__ct__Q36nw4hbm3lyt7TextBoxFPCQ46nw4hbm3lyt3res7TextBoxRCQ36nw4
         const u8 *table = *(const u8 **)(blockSetBytes + 4) + 0xC;
         u32 entryOffset = *(const u32 *)(table + *(const u16 *)(textBoxRes + 0x52) * 8);
         entry = table + entryOffset;
-        resource = ((ResAccessor *)*(void **)(blockSetBytes + 0xC))->find((void *)entry);
-    }
-    if (resource != 0) {
-        *(void **)(self + 0xE0) = resource;
-    } else {
-        resource = ((ResAccessor *)*(void **)(blockSetBytes + 0xC))->findByName(0x666F6E74, (void *)entry, 0);
-        if (resource != 0) {
-            font = MEMAllocFromAllocator(lbl_8055DDF0, 0x18);
-            if (font != 0) {
-                font = fn_80107FE4(font);
-                if (SetResource__Q36nw4hbm2ut7ResFontFPv(font, resource) == 0) {
-                    ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0x19A, msg + 0xD4);
+        {
+            void *ret = ((ResAccessor *)*(void **)(blockSetBytes + 0xC))->find((void *)entry);
+            if (ret != 0) {
+                *(void **)(self + 0xE0) = ret;
+            } else {
+                resource = ((ResAccessor *)*(void **)(blockSetBytes + 0xC))->findByName(0x666F6E74, (void *)entry, 0);
+                if (resource != 0) {
+                    font = MEMAllocFromAllocator(lbl_8055DDF0, 0x18);
+                    if (font != 0) {
+                        font = fn_80107FE4(font);
+                        if (SetResource__Q36nw4hbm2ut7ResFontFPv(font, resource) == 0) {
+                            ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0x19A, msg + 0xD4);
+                        }
+                        *(void **)(self + 0xE0) = font;
+                        self[0xFD] |= 0x80;
+                    }
                 }
-                *(void **)(self + 0xE0) = font;
-                self[0xFD] |= 0x80;
             }
         }
     }
@@ -217,16 +244,18 @@ extern "C" void *__dt__Q36nw4hbm3lyt7TextBoxFv(void *arg0, s32 arg1) {
         virtual void m20(); virtual void m21(); virtual void m22(); virtual void m23();
         virtual void m24();
     };
+    struct FontFlags { u8 ownsFont : 1; u8 otherFlags : 7; };
     if (arg0 != 0) {
         u8 *self = (u8 *)arg0;
         *(void **)self = lbl_803208D4;
-        if ((((u32)self[0xFD] & 0x80) >> 7) != 0) {
+        FontFlags *flags = (FontFlags *)(self + 0xFD);
+        if (flags->ownsFont) {
             if (*(void **)(self + 0xE0) == 0)
                 ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(lbl_80320570, 0x307, lbl_80320580);
             ((OwnedFont *)*(void **)(self + 0xE0))->destroy(-1);
             MEMFreeToAllocator(lbl_8055DDF0, *(void **)(self + 0xE0));
-            *(volatile u8 *)(self + 0xFD) = *(volatile u8 *)(self + 0xFD) & 0x7F;
-            *(volatile void **)(self + 0xE0) = 0;
+            flags->ownsFont = 0;
+            *(void **)(self + 0xE0) = 0;
             goto set_default_font;
         }
         {
