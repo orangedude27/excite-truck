@@ -19,7 +19,7 @@ extern void fn_801933FC(void *, void *);
     extern int lbl_8055E550;
     extern float lbl_8055E3C8, lbl_80562144, lbl_80562140, lbl_80562148, lbl_80562204, lbl_805621E4;
 
-      extern void fn_80194FD0();
+      extern void fn_80194FD0(unsigned char *, float *, float);
 typedef struct { int a; float b; int c; } Samp80194FD0;
 extern void fn_80135B9C(void *, void *, void *, void *, void *, float);
 #define F80194FD0(p, o) (*(float *)((unsigned char *)(p) + (o)))
