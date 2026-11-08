@@ -35,7 +35,7 @@ extern f32 lbl_80560EE4;
     if ((!c3) && ((u32)(((u32)(p) & 0xFF800000) + 0x3F000000) != 0U)) c2 = 0; \
     if ((!c2) && ((u32)(((u32)(p) & 0xF8000000) + 0x30000000) != 0U)) c1 = 0; \
     if ((!c1) && ((u32)(((u32)(p) & 0xFFFFC000) + 0x20000000) != 0U)) c0 = 0; \
-    if (!c0) ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2db FPCciPCce)(msg + 0x10, line, msg + off, p); }
+    if (!c0) ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, line, msg + off, p); }
 struct SoundEntry60 {
     u8 b[32];
     s32 w[8];
