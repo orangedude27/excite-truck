@@ -1072,120 +1072,127 @@ void SCFlushAsync(SCFlushCallback callback) {
     }
 }
 
+// NAND completion callback for the whole SYSCONF write started by SCFlushAsync().
+// Every time one of the queued NAND operations finishes, this runs the step for
+// the operation Control.nandCbState was waiting on: it checks the result, then
+// queues the next operation (or finishes/errors out through FinishFromFlush()
+// and ErrorFromFlush()). The file is recreated from scratch when it is missing
+// or not readable/writable by everyone, creating /shared2/sys as needed.
 static void MyNandCallback(s32 result, NANDCommandBlock* block) {
 #pragma unused(block)
 
     SCControl* ctrl = &Control;
 
     switch (ctrl->nandCbState) {
-    case NAND_CB_STATE_0:
+    case SC_FLUSH_STATE_FILE_TYPE: // SYSCONF's type is known
         if (result == NAND_RESULT_OK && ctrl->fileType == NAND_FILE_TYPE_FILE) {
-            ctrl->nandCbState = NAND_CB_STATE_1;
+            ctrl->nandCbState = SC_FLUSH_STATE_FILE_STATUS;
 
             if (NANDPrivateGetStatusAsync(
                     ConfFileName, &ctrl->fileAttr, MyNandCallback,
                     (NANDCommandBlock*)&ctrl->commandBlock) != NAND_RESULT_OK) {
-                goto _error;
+                goto error;
             }
         } else {
-            goto _case_1_lbl;
+            goto delete_conf_file;
         }
         return;
 
-    case NAND_CB_STATE_1:
+    case SC_FLUSH_STATE_FILE_STATUS: // SYSCONF's permissions are known
         if (result == NAND_RESULT_OK &&
             ctrl->fileAttr.perm == NAND_PERM_RWALL) {
-            goto _case_5_lbl;
+            goto open_conf_file; // usable as is
         }
-    _case_1_lbl:
-        ctrl->nandCbState = NAND_CB_STATE_2;
+        // wrong permissions: delete it and create a new one
+    delete_conf_file:
+        ctrl->nandCbState = SC_FLUSH_STATE_DELETE_FILE;
 
         if (NANDPrivateDeleteAsync(ConfFileName, MyNandCallback,
                                    (NANDCommandBlock*)&ctrl->commandBlock) != NAND_RESULT_OK) {
-            goto _error;
+            goto error;
         }
         return;
 
-    case NAND_CB_STATE_2:
-        ctrl->nandCbState = NAND_CB_STATE_3;
+    case SC_FLUSH_STATE_DELETE_FILE: // SYSCONF is gone
+        ctrl->nandCbState = SC_FLUSH_STATE_DIR_TYPE;
 
         if (NANDPrivateGetTypeAsync(s_SC_ConfDir, &ctrl->fileType,
                                     MyNandCallback,
                                     (NANDCommandBlock*)&ctrl->commandBlock) != NAND_RESULT_OK) {
-            goto _error;
+            goto error;
         }
         return;
 
-    case NAND_CB_STATE_3:
+    case SC_FLUSH_STATE_DIR_TYPE: // the config directory's type is known
         if (result == NAND_RESULT_OK && ctrl->fileType == NAND_FILE_TYPE_DIR) {
-            goto _case_4_lbl;
+            goto create_conf_file;
         }
 
-        ctrl->nandCbState = NAND_CB_STATE_4;
+        ctrl->nandCbState = SC_FLUSH_STATE_CREATE_DIR;
 
         if (NANDPrivateCreateDirAsync(s_SC_ConfDir, NAND_PERM_RWALL, 0,
                                       MyNandCallback,
                                       (NANDCommandBlock*)&ctrl->commandBlock) != NAND_RESULT_OK) {
-            goto _error;
+            goto error;
         }
         return;
 
-    case NAND_CB_STATE_4:
-    _case_4_lbl:
-        ctrl->nandCbState = NAND_CB_STATE_5;
+    case SC_FLUSH_STATE_CREATE_DIR: // the config directory exists now
+    create_conf_file:
+        ctrl->nandCbState = SC_FLUSH_STATE_CREATE_FILE;
         if (NANDPrivateCreateAsync(ConfFileName, NAND_PERM_RWALL, 0,
                                    MyNandCallback,
                                    (NANDCommandBlock*)&ctrl->commandBlock) != NAND_RESULT_OK) {
-            goto _error;
+            goto error;
         }
         return;
 
-    case NAND_CB_STATE_5:
-    _case_5_lbl:
-        ctrl->nandCbState = NAND_CB_STATE_6;
+    case SC_FLUSH_STATE_CREATE_FILE: // SYSCONF exists now
+    open_conf_file:
+        ctrl->nandCbState = SC_FLUSH_STATE_OPEN_FILE;
         if (NANDPrivateOpenAsync(ConfFileName, &ctrl->fileInfo,
                                  NAND_ACCESS_WRITE, MyNandCallback,
                                  (NANDCommandBlock*)&ctrl->commandBlock) != NAND_RESULT_OK) {
-            goto _error;
+            goto error;
         }
         return;
 
-    case NAND_CB_STATE_6:
+    case SC_FLUSH_STATE_OPEN_FILE: // SYSCONF is open for writing
         if (result != NAND_RESULT_OK) {
-            goto _error;
+            goto error;
         }
 
         ctrl->isFileOpen = TRUE;
-        ctrl->nandCbState = NAND_CB_STATE_7;
+        ctrl->nandCbState = SC_FLUSH_STATE_WRITE_FILE;
 
         if (NANDWriteAsync(&ctrl->fileInfo, ConfBufForFlush, ctrl->flushSize,
                            MyNandCallback,
                            (NANDCommandBlock*)&ctrl->commandBlock) != NAND_RESULT_OK) {
-            goto _error;
+            goto error;
         }
         return;
 
-    case NAND_CB_STATE_7:
+    case SC_FLUSH_STATE_WRITE_FILE: // the whole buffer is written
         if (result != ctrl->flushSize) {
-            goto _error;
+            goto error;
         }
 
         ctrl->isFileOpen = FALSE;
-        ctrl->nandCbState = NAND_CB_STATE_8;
+        ctrl->nandCbState = SC_FLUSH_STATE_CLOSE_FILE;
 
         if (NANDCloseAsync(&ctrl->fileInfo, MyNandCallback,
                            (NANDCommandBlock*)&ctrl->commandBlock) != NAND_RESULT_OK) {
-            goto _error;
+            goto error;
         }
         return;
 
-    case NAND_CB_STATE_8:
+    case SC_FLUSH_STATE_CLOSE_FILE: // SYSCONF is closed
         if (result != NAND_RESULT_OK) {
-            goto _error;
+            goto error;
         }
         // FALLTHROUGH
 
-    case NAND_CB_STATE_9:
+    case SC_FLUSH_STATE_CLOSED: // closed after an error
         FinishFromFlush();
         // FALLTHROUGH
 
@@ -1193,7 +1200,7 @@ static void MyNandCallback(s32 result, NANDCommandBlock* block) {
         return;
     }
 
-_error:
+error:
     ErrorFromFlush();
 }
 
