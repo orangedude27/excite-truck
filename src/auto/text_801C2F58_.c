@@ -1,9 +1,8 @@
 #include <types.h>
 #include <string.h>
-extern char lbl_8055AAF0[], lbl_8055AAF4[], lbl_8055AAF8[];
+__declspec(section ".sdata") extern char lbl_8055AAF0[], lbl_8055AAF4[], lbl_8055AAF8[];
 extern void fn_802E3AD0(s32, const char *, ...);
 extern double fn_8002EFA8(double);
-extern double fabs(double);
 extern f32 lbl_805629BC;
 extern f64 atof(const char *);
 extern f32 lbl_8055E85C;
