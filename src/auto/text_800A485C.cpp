@@ -7503,81 +7503,95 @@ struct VFiPFStrPos {
 
 #pragma push
 #pragma scheduling on
-extern "C" s32 VFiPFPATH_GetNextTokenOfPath(void *arg0, s32 arg1) {
-    s32 var_r27;
-    u32 mode;
-    s32 var_r4;
-    s32 var_r5;
-    s32 sum;
-    u32 ch;
-    u8 *temp_r4;
-    u8 temp_r0;
+/*
+ * Read the next token - one path component - of a NAND path.
+ *
+ * On return "pos" is on the first character of the token and "read" on the
+ * character that ended it: the end of the path or a "\\" or "/" separator.
+ * A token may not be empty, and every character it holds has to be one the
+ * file system allows in a name (PF_NAME_CHAR_TABLE), with "*" and "?" taken
+ * as wildcards when allowWildcards is set.  A run of digits in front of a
+ * wildcard is matched by fn_800B4D5C() instead, one character at a time.
+ * Returns 0 when the token is good, 2 when it is malformed.
+ */
+extern "C" s32 VFiPFPATH_GetNextTokenOfPath(void *pPath, s32 allowWildcards) {
+    s32 wildcardLen;
+    u32 code;
+    s32 asciiIsOk;
+    s32 charIsOk;
+    s32 unicodeChar;
+    u32 asciiChar;
+    u8 *pChars;
+    u8 byte;
 
-    var_r27 = 0;
-    *(u8 **)arg0 = *(u8 **)((u8 *)arg0 + 4);
-    if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055920C, 1, 0, 1) == 0) {
-        *(u8 **)((u8 *)arg0 + 4) = 0;
-        *(u8 **)arg0 = 0;
+    wildcardLen = 0;
+    ((VFiPFStrPos *)pPath)->pos = ((VFiPFStrPos *)pPath)->read;
+    if (VFiPFSTR_StrNCmp((s32)pPath, PF_PATH_END, 1, 0, 1) == 0) {
+        /* the end of the path: no more tokens */
+        ((VFiPFStrPos *)pPath)->read = 0;
+        ((VFiPFStrPos *)pPath)->pos = 0;
         return 0;
     }
-    if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055921C, 1, 0, 1) == 0 ||
-        VFiPFSTR_StrNCmp((s32)arg0, lbl_80559220, 1, 0, 1) == 0) {
-        ((void (*)(void *, s16))VFiPFSTR_MoveStrPos)(arg0, 1);
+    /* a separator here would leave the token empty */
+    if (VFiPFSTR_StrNCmp((s32)pPath, PF_SEP, 1, 0, 1) == 0 ||
+        VFiPFSTR_StrNCmp((s32)pPath, PF_ALT_SEP, 1, 0, 1) == 0) {
+        ((void (*)(void *, s16))VFiPFSTR_MoveStrPos)(pPath, 1);
     }
-    if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055921C, 1, 0, 1) == 0 ||
-        VFiPFSTR_StrNCmp((s32)arg0, lbl_80559220, 1, 0, 1) == 0) {
+    if (VFiPFSTR_StrNCmp((s32)pPath, PF_SEP, 1, 0, 1) == 0 ||
+        VFiPFSTR_StrNCmp((s32)pPath, PF_ALT_SEP, 1, 0, 1) == 0) {
         return 2;
     }
 
-    mode = fn_800A4D44(arg0);
-    *(u8 **)((u8 *)arg0 + 4) = *(u8 **)arg0;
-    if ((u32)(lbl_803D2140[0x60 / 4] & 2) == 2U) {
-        var_r27 = ((s32 (*)(void *, u32, u32))fn_800B4D5C)(arg0, 2, arg1);
-        if (var_r27 != 0) {
-            if (mode == 1U)
-                *(u8 **)((u8 *)arg0 + 4) += var_r27;
+    code = fn_800A4D44(pPath);
+    ((VFiPFStrPos *)pPath)->read = ((VFiPFStrPos *)pPath)->pos;
+    if (PF_UNICODE_NAMES) {
+        /* a name with a wildcard in it is matched as a whole instead */
+        wildcardLen = ((s32 (*)(void *, u32, u32))fn_800B4D5C)(pPath, 2, allowWildcards);
+        if (wildcardLen != 0) {
+            if (code == 1U)
+                ((VFiPFStrPos *)pPath)->read += wildcardLen;
             else
-                *(u8 **)((u8 *)arg0 + 4) += var_r27 * 2;
+                ((VFiPFStrPos *)pPath)->read += wildcardLen * 2;
         }
     }
 
-    if (var_r27 == 0) {
-        while (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055920C, 2, 0, 1) != 0) {
-            if (mode == 1U &&
-                ((s32 (**)(s8, s32))((u8 *)lbl_803D2140 + 0x54))[0]
-                    ((s8)**(u8 **)((u8 *)arg0 + 4), 1) != 0) {
-                *(u8 **)((u8 *)arg0 + 4) += 1;
-                if (((s32 (**)(s8, s32))((u8 *)lbl_803D2140 + 0x54))[0]
-                        ((s8)**(u8 **)((u8 *)arg0 + 4), 2) == 0 ||
-                    (s8)**(u8 **)((u8 *)arg0 + 4) == 0)
+    if (wildcardLen == 0) {
+        while (VFiPFSTR_StrNCmp((s32)pPath, PF_PATH_END, 2, 0, 1) != 0) {
+            if (code == 1U &&
+                PF_IS_JIS_BYTE(*((VFiPFStrPos *)pPath)->read, 1) != 0) {
+                /* a two byte JIS character: the byte has to follow it */
+                ((VFiPFStrPos *)pPath)->read += 1;
+                if (PF_IS_JIS_BYTE(*((VFiPFStrPos *)pPath)->read, 2) == 0 ||
+                    (s8)*((VFiPFStrPos *)pPath)->read == 0)
                     return 2;
                 goto advance;
             }
 
-            if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055921C, 2, 0, 1) == 0)
+            if (VFiPFSTR_StrNCmp((s32)pPath, PF_SEP, 2, 0, 1) == 0)
                 goto done;
-            if (VFiPFSTR_StrNCmp((s32)arg0, lbl_80559220, 2, 0, 1) == 0)
+            if (VFiPFSTR_StrNCmp((s32)pPath, PF_ALT_SEP, 2, 0, 1) == 0)
                 goto done;
 
-            if ((lbl_803D2140[0x38 / 4] & 0x10000) == 0) {
-                if (mode != 1U ||
-                    ((temp_r0 = **(u8 **)((u8 *)arg0 + 4)) >= 0x80U) ||
-                    (temp_r0 >= 0x20U &&
-                     (*((u8 *)((u32)lbl_802EEEE0 + temp_r0) - 0x20) & 1) != 0)) {
-                    if (mode == 2U) {
-                        temp_r4 = *(u8 **)((u8 *)arg0 + 4);
-                        var_r5 = 1;
-                        sum = (temp_r4[0] << 8) + temp_r4[1];
-                        if ((u16)sum < 0x80U) {
-                            var_r4 = 0;
-                            ch = (u8)sum;
-                            if (ch >= 0x20U && (ch & 0xFF00) == 0 &&
-                                (lbl_802EEEE0[(u8)(ch - 0x20)] & 1) != 0)
-                                var_r4 = 1;
-                            if (var_r4 == 0)
-                                var_r5 = 0;
+            if (PF_CHECK_NAME_CHARS) {
+                if (code != 1U ||
+                    ((byte = *((VFiPFStrPos *)pPath)->read) >= 0x80U) ||
+                    (byte >= 0x20U &&
+                     (*((u8 *)((u32)PF_NAME_CHAR_TABLE + byte) - 0x20) & 1) != 0)) {
+                    if (code == 2U) {
+                        /* Unicode: only the characters below 0x80 are checked */
+                        pChars = ((VFiPFStrPos *)pPath)->read;
+                        charIsOk = 1;
+                        unicodeChar = (pChars[0] << 8) + pChars[1];
+                        if ((u16)unicodeChar < 0x80U) {
+                            asciiIsOk = 0;
+                            asciiChar = (u8)unicodeChar;
+                            if (asciiChar >= 0x20U && (asciiChar & 0xFF00) == 0 &&
+                                (PF_NAME_CHAR_TABLE[(u8)(asciiChar - 0x20)] & 1) != 0)
+                                asciiIsOk = 1;
+                            if (asciiIsOk == 0)
+                                charIsOk = 0;
                         }
-                        if (var_r5 == 0)
+                        if (charIsOk == 0)
                             goto invalid;
                         goto advance;
                     }
@@ -7587,15 +7601,16 @@ extern "C" s32 VFiPFPATH_GetNextTokenOfPath(void *arg0, s32 arg1) {
             }
             goto advance;
         invalid:
-            if (arg1 == 0 ||
-                (VFiPFSTR_StrNCmp((s32)arg0, lbl_80559224, 2, 0, 1) != 0 &&
-                 VFiPFSTR_StrNCmp((s32)arg0, lbl_80559228, 2, 0, 1) != 0))
+            /* "*" and "?" are only good where a wildcard was asked for */
+            if (allowWildcards == 0 ||
+                (VFiPFSTR_StrNCmp((s32)pPath, PF_WILDCARD_ANY, 2, 0, 1) != 0 &&
+                 VFiPFSTR_StrNCmp((s32)pPath, PF_WILDCARD_ONE, 2, 0, 1) != 0))
                 return 2;
         advance:
-            if (mode == 1U)
-                *(u8 **)((u8 *)arg0 + 4) += 1;
+            if (code == 1U)
+                ((VFiPFStrPos *)pPath)->read += 1;
             else
-                *(u8 **)((u8 *)arg0 + 4) += 2;
+                ((VFiPFStrPos *)pPath)->read += 2;
         }
     }
 done:
