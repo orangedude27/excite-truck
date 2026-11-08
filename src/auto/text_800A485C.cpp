@@ -8744,6 +8744,8 @@ extern "C" void *fn_800B65A0(s8 arg0) {
     return (u8 *)lbl_803D2140 + index * 0x1FC8 + 0xA0;
 }
 
+#ifndef VF_TYPES_MOVED
+#define VF_TYPES_MOVED
 #define VF_VOLUME_TYPES_DEFINED
 /* One of the 26 volume slots of the VF instance (lbl_803D2140): a slot is
  * 0x1FC8 bytes and its volume object starts 0xA0 into it.  Only the fields the
@@ -8798,6 +8800,7 @@ struct VFiPFVolume {
 #define VF_VOLUME_SIZE 0x1FC8
 #define VF_MAX_VOLUMES 26
 #define VF_FIRST_LETTER 'A'
+#endif
 
 /* The device description a drive is attached with (fn_800B6628); the mount
  * copies its params into the volume and writes back the drive letter. */
