@@ -8313,6 +8313,101 @@ extern "C" s32 fn_800B5260(void *arg0, void *arg1, u32 arg2, u32 arg3, s32 arg4)
     return 0;
 }
 
+#define VF_TYPES_MOVED
+#define VF_VOLUME_TYPES_DEFINED
+/* ---------------------------------------------------------------------
+ * VFiPFCACHE: a volume's cache of disk sectors.
+ *
+ * A volume (VFiPFVolume, one per drive letter) keeps sectors in pages of
+ * 0x200 bytes held on two LRU lists: the FAT list at 0x1630 and the file data
+ * list at 0x1634.  fn_800A8EA0 and fn_800A8EE0 hand out one page of either
+ * list, reading it in when it is not cached yet, fn_800A90F8 only looks a
+ * sector up, and VFiPFCACHE_DoReadNumSector copies a run of whole sectors out
+ * of a list into a buffer.
+ * ------------------------------------------------------------------- */
+
+struct CacheSlotData { u8 b[0x240]; };
+struct CacheSlot { u32 flag; s32 key; CacheSlotData data; };
+
+/* One cached page: the run of `sectors` sectors starting at `first`, read
+ * through `data` (buffer is the same run from its first byte).  Dropping a
+ * page clears its run (first = 0xFFFFFFFF) and moves it to the tail of the
+ * list it sits on; a page claimed for a file records it in owner. */
+struct VFiPFCACHEPage {
+    u16 flags;                        /* 0x00 bit 0 run valid, bit 1 changed */
+    u16 pad02;
+    u8 *buffer;                       /* 0x04 first byte of the page's buffer */
+    u8 *data;                         /* 0x08 the cached bytes themselves */
+    u32 pad0C;                        /* 0x0C cleared with the run */
+    u32 pad10;                        /* 0x10 likewise */
+    u32 sectors;                      /* 0x14 how many sectors the run holds */
+    u32 first;                        /* 0x18 first sector, 0xFFFFFFFF when free */
+    u32 owner;                        /* 0x1C file the page is claimed for */
+    VFiPFCACHEPage *next;             /* 0x20 */
+    VFiPFCACHEPage *prev;             /* 0x24 */
+};
+
+/* One of the 26 volume slots of the VF instance (lbl_803D2140): a slot is
+ * 0x1FC8 bytes and its volume object starts 0xA0 into it. */
+struct VFiPFVolume {
+    u16 bytesPerSector;               /* 0x0000 size of a sector */
+    u8 pad02[2];
+    u8 pad04[4];
+    u32 totalSectors;                 /* 0x0008 sectors on the volume */
+    u8 pad0C[0x20 - 0x0C];
+    u8 sectorShift;                   /* 0x0020 log2 of bytesPerSector */
+    u8 pad21[0x38 - 0x21];
+    s32 unk38;                        /* 0x0038 -1 on a slot being taken */
+    s32 unk3C;                        /* 0x003C likewise */
+    u8 pad40[0x161C - 0x40];
+    s32 openFiles;                    /* 0x161C files open on the volume */
+    s32 openDirs;                     /* 0x1620 directories open on it */
+    u32 cacheFlags;                   /* 0x1624 state of the page cache */
+    u16 cachePages;                   /* 0x1628 pages the cache may hold */
+    u16 cacheExtra;                   /* 0x162A extra pages held back */
+    void *cacheObject;                /* 0x162C the page cache itself */
+    VFiPFCACHEPage *fatPages;         /* 0x1630 LRU list of FAT sector pages */
+    VFiPFCACHEPage *dataPages;        /* 0x1634 LRU list of data sector pages */
+    void *cacheBuffer;                /* 0x1638 its pages, 0x200 bytes each */
+    s32 cacheSectors;                 /* 0x163C sectors read at a time */
+    u32 sectorsPerCluster;            /* 0x1640 read/write granularity */
+    s32 pageOwner;                    /* 0x1644 id a page claimed for a file gets */
+    u8 pad1648[0x1654 - 0x1648];
+    CacheSlot cache[4];               /* 0x1654 the four cached pages */
+    u32 fatBlocks;                    /* 0x1F74 words of the FAT bitmap per block */
+    void *fatList;                    /* 0x1F78 the FAT bitmap blocks */
+    void **fatLink;                   /* 0x1F7C end of that list, &fatList when empty */
+    s32 error;                        /* 0x1F80 last error of this volume */
+    u8 pad1F84[8];
+    u16 flags;                        /* 0x1F8C VF_VOL_* */
+    s8 letter;                        /* 0x1F8E drive letter, 'A' + slot */
+    u8 pad1F8F;
+    u8 lock[0x10];                    /* 0x1F90 recursive lock of the volume */
+    u8 pad1FA0[0x1FAC - 0x1FA0];
+    u16 state;                        /* 0x1FAC reset by a mount */
+    u8 pad1FAE[0x1FBC - 0x1FAE];
+    void *device;                     /* 0x1FBC the device the volume is read through */
+    u8 pad1FC0[0x1FC8 - 0x1FC0];
+};
+
+/* A volume slot is reached as a byte pointer in most of this file; cast it
+ * with VF_VOLUME() to name its fields. */
+#define VF_VOLUME(v) ((VFiPFVolume *)(v))
+
+/* VFiPFVolume.flags; the last four are driven by the media-change callbacks
+ * fn_800A535C (media present: sets 0x4|0x10) and fn_800A52DC (media gone:
+ * sets 0x20 when mounted, clears 0x4|0x8). */
+#define VF_VOL_IN_USE          0x0001 /* the slot holds an attached device */
+#define VF_VOL_MEDIA_PRESENT   0x0004 /* media is in the drive */
+#define VF_VOL_MOUNTED         0x0008 /* the file system is mounted */
+#define VF_VOL_MOUNT_PENDING   0x0010 /* a mount is waiting to be done */
+#define VF_VOL_UNMOUNT_PENDING 0x0020 /* an unmount is waiting to be done */
+
+/* One drive slot, and the drive letters 'A'..'Z' they are named by. */
+#define VF_VOLUME_SIZE 0x1FC8
+#define VF_MAX_VOLUMES 26
+#define VF_FIRST_LETTER 'A'
+
 #pragma push
 #pragma use_lmw_stmw off
 #pragma dont_inline on
