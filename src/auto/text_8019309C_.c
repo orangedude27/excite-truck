@@ -1191,7 +1191,6 @@ void fn_80194C4C(void *arg0, float *arg1) {
 extern float lbl_8055A488, lbl_8056215C;
 extern float PSVECDotProduct(const void *, const void *);
 extern void fn_8013B744(int);
-extern void fn_80194FD0();
 void fn_80194F70(void * __restrict arg0, float * __restrict a, float * __restrict b) {
     float diff[3];
     diff[0] = a[0] - b[0];
