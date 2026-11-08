@@ -273,7 +273,7 @@ s32 fn_80131BD0(void* arg0, const char* name) {
 #pragma push
 #pragma scheduling invalid_target
 // Search a chain of value tables for the entry whose name matches (case-insensitive).
-// Each table holds {name, value} pairs (8 bytes each) and links to a child table at +0x14.
+// Each table holds {name, value} pairs (8 bytes each) and links to a parent/child table.
 // Returns a pointer to the matching entry, or NULL if no table in the chain has it.
 s32 fn_80131C88(void *table, const char *name) {
     char *found;
