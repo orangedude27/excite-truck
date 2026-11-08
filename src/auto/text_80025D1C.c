@@ -52,71 +52,79 @@ typedef struct {
 
 char* long2str_80025854(signed long num, char* buff, print_format format);
 
+// MSL printf's "%a"/"%A" conversion: write num as a hexadecimal float,
+//   [-]0x1.<precision hex digits>p<exponent>
+// into the buffer that ends at buff.  The number is built backwards, so the
+// return value is the first character written (0 when the precision is too
+// large for the buffer).  long2str writes the exponent; everything else is
+// stored one character at a time.
 static char* double2hex_80025D1C(long double num, char* buff, print_format format) {
-    char* p;
-    unsigned char* q;
-    unsigned char working_byte;
+    char* out;                  // write cursor, walks down from buff
+    const unsigned char* num_bytes;
+    unsigned char working_byte; // one hex digit, as the character for it
     int expbits, expmask;
-    unsigned snum;
-    long exp;
-    print_format exp_format;
-    int hex_precision;
-    int mantissa_bit;
+    unsigned exp_field;         // biased exponent, as read out of the double
+    long exponent;              // ... with the bias removed
+    print_format exp_format;    // how the exponent itself is printed: "%+d"
+    int hex_precision;          // hex digits still to write
+    int mantissa_bit;           // bit of the double the next digit starts at
     decform form;
     decimal dec;
-    int radix_marker;
-    double tempF;
+    int radix_marker;           // the locale's decimal point
+    double magnitude;
     extern double lbl_805605C0;
 
     radix_marker = *(unsigned char*)__lconv.decimal_point;
 
-    if (format.precision > 509) {
+    if (format.precision > MAX_HEX_PRECISION) {
         return 0;
     }
 
-    form.style = (char)0;
-    form.digits = 0x20;
+    // Ask MSL's float->decimal conversion about the value; it names the
+    // specials for us, its significand text starting with 'I' or 'N'.
+    form.style = (char)decform_style_normal;
+    form.digits = 0x20; // 32 significant digits
     __num2dec(&form, num, &dec);
 
-    tempF = fabs(num);
-    if (lbl_805605C0 == tempF) {
-        p = buff - 6;
-        strcpy(p, "0x0p0");
-        return p;
+    magnitude = fabs(num);
+    if (dbl_zero == magnitude) { // +-0 has no mantissa bits to walk over
+        out = buff - 6;
+        strcpy(out, "0x0p0");
+        return out;
     }
 
     if (*dec.sig.text == 'I') {
         if (dec.sign) {
-            p = buff - 5;
+            out = buff - 5;
             if (format.conversion_char == 'A')
-                strcpy(p, "-INF");
+                strcpy(out, "-INF");
             else
-                strcpy(p, "-inf");
+                strcpy(out, "-inf");
         } else {
-            p = buff - 4;
+            out = buff - 4;
             if (format.conversion_char == 'A')
-                strcpy(p, "INF");
+                strcpy(out, "INF");
             else
-                strcpy(p, "inf");
+                strcpy(out, "inf");
         }
 
-        return p;
+        return out;
     } else if (*dec.sig.text == 'N') {
         if (dec.sign) {
-            p = buff - 5;
+            out = buff - 5;
             if (format.conversion_char == 'A')
-                strcpy(p, "-NAN");
+                strcpy(out, "-NAN");
             else
-                strcpy(p, "-nan");
+                strcpy(out, "-nan");
         } else {
-            p = buff - 4;
+            out = buff - 4;
             if (format.conversion_char == 'A')
-                strcpy(p, "NAN");
+                strcpy(out, "NAN");
             else
-                strcpy(p, "nan");
+                strcpy(out, "nan");
         }
 
-        return p;
+        return out;
     }
 
     exp_format.justification_options = right_justification;
@@ -128,34 +136,39 @@ static char* double2hex_80025D1C(long double num, char* buff, print_format forma
     exp_format.precision = 1;
     exp_format.conversion_char = 'd';
 
-    expbits = 11;
-    expmask = 0x7FF;
+    // Big endian IEEE 754: the exponent is the 11 bits under the sign bit,
+    // gathered into the top of a word and shifted back down.
+    expbits = TARGET_FLOAT_EXP_BITS;
+    expmask = (1 << TARGET_FLOAT_EXP_BITS) - 1;
 
-    snum = ((unsigned char*)&num)[0] << 25;
-    snum |= ((unsigned char*)&num)[1] << 17;
+    exp_field = ((unsigned char*)&num)[0] << 25;
+    exp_field |= ((unsigned char*)&num)[1] << 17;
 
-    snum = (snum >> (32 - expbits)) & expmask;
+    exp_field = (exp_field >> (32 - expbits)) & expmask;
 
-    exp = snum - 0x3FF;
+    exponent = exp_field - 0x3FF;
 
-    p = long2str_80025854(exp, buff, exp_format);
+    out = long2str_80025854(exponent, buff, exp_format);
     if (format.conversion_char == 'a')
-        *--p = 'p';
+        *--out = 'p';
     else
-        *--p = 'P';
-    q = (unsigned char*)&num;
+        *--out = 'P';
+    num_bytes = (const unsigned char*)&num;
 
+    // The last digit asked for ends this far down from the sign bit; the
+    // mantissa itself starts at bit 1 + expbits, behind the implicit 1.
     mantissa_bit = (1 + expbits + format.precision * 4) - 1;
 
     for (hex_precision = format.precision; hex_precision >= 1; hex_precision--) {
-        if (mantissa_bit < 64) {
+        if (mantissa_bit < TARGET_FLOAT_BITS) {
             int mantissa_byte;
 
             mantissa_byte = mantissa_bit >> 3;
-            working_byte = (*(q + mantissa_byte)) >> (7 - (mantissa_bit & 7));
+            working_byte = (*(num_bytes + mantissa_byte)) >> (7 - (mantissa_bit & 7));
 
             if ((mantissa_bit & ~7) != ((mantissa_bit - 4) & ~7)) {
-                working_byte |= ((*(q + (mantissa_byte - 1))) << 8) >> (7 - ((mantissa_bit) & 7));
+                // the four bits run over into the byte before this one
+                working_byte |= ((*(num_bytes + (mantissa_byte - 1))) << 8) >> (7 - ((mantissa_bit) & 7));
             }
 
             if ((working_byte &= 0xF) < 10) {
@@ -168,34 +181,35 @@ static char* double2hex_80025D1C(long double num, char* buff, print_format forma
                 }
             }
         } else {
+            // past the bottom of the stored mantissa: the digits are zeros
             working_byte = '0';
         }
 
-        *--p = working_byte;
+        *--out = working_byte;
         mantissa_bit -= 4;
     }
 
     if (format.precision || format.alternate_form) {
-        *--p = radix_marker;
+        *--out = radix_marker;
     }
 
-    *--p = '1';
+    *--out = '1'; // the implicit leading bit of a normalised double
 
     if (format.conversion_char == 'a') {
-        *--p = 'x';
+        *--out = 'x';
     } else {
-        *--p = 'X';
+        *--out = 'X';
     }
 
-    *--p = '0';
+    *--out = '0';
 
     if (dec.sign) {
-        *--p = '-';
+        *--out = '-';
     } else if (format.sign_options == sign_always) {
-        *--p = '+';
+        *--out = '+';
     } else if (format.sign_options == space_holder) {
-        *--p = ' ';
+        *--out = ' ';
     }
 
-    return p;
+    return out;
 }
