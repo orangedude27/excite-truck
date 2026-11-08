@@ -44,6 +44,17 @@ typedef struct OSFatalParam {
 #define FATAL_FB_SIZE (FATAL_FB_W * FATAL_FB_H * 2)
 #define FATAL_FONT_SIZE 0xA1004  // OSFontHeader plus its glyph sheet
 #define FATAL_ALIGN 32           // MEM1 arena allocations must be 32-byte aligned
+
+// The OS font draws into a 24x24 cell. OSGetFontTexel() packs its 4-bit texels
+// in tiles of 8 rows x 8 columns, so one band of 8 rows of a 24 px wide cell is
+// 24 words (96 bytes) and one band of 8 columns is 8 words (32 bytes).
+#define FATAL_CELL_W 24
+#define FATAL_CELL_H 24
+#define FATAL_TEXEL_BAND 24
+#define FATAL_TEXEL_COL 8
+#define FATAL_MARGIN 48     // wrap before this far from the right edge
+#define TEXEL_NIBBLE 0x0F   // one 4-bit texel
+#define YUV_MIN_LUMA 16     // black in the video-range Y channel
 extern unsigned short lbl_80558F58;
 extern void *lbl_8055DA48;
 extern int *lbl_8055DA50;
