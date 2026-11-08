@@ -494,65 +494,76 @@ extern const int lbl_802EE508[], lbl_802EE610[];
 #define pio2_npio2_hw  lbl_802EE610 /* high words of n*pi/2, n = 1..32: exact halfway cases */
 #pragma push
 #pragma opt_common_subs off
+/*
+ * __ieee754_rem_pio2(x, y) -- fdlibm argument reduction for sin/cos/tan.
+ *
+ * Reduces x modulo pi/2 and returns the remainder as an unevaluated sum
+ * y[0] + y[1]; the return value is the number n of quarter turns, signed like
+ * x, with x ~= n*pi/2 + y[0] + y[1].  |x| below pi/4 needs nothing, below
+ * 3pi/4 it is one subtraction of pi/2, up to 2^19*pi/2 the 33+33+33-bit
+ * pieces of pi/2 are subtracted one round at a time until no bits cancel, and
+ * anything larger is split into 24-bit chunks for __kernel_rem_pio2() and the
+ * 2/pi table.  See the reference source in src/MSL/e_rem_pio2.c.
+ */
 int __ieee754_rem_pio2(double x, double *y)
 {
-	double z,w,t,r,fn;
-	double tx[3];
-	int e0,i,j,nx,n,hx; register int ix;
+	double z,w,t,r,fn;	/* z: x shifted / reduced, r-w: the remainder, fn: n as a double */
+	double tx[3];		/* |x| split into three 24-bit chunks for the kernel */
+	int e0,i,j,nx,n,hx; register int ix;	/* hx: high word of x, ix: |x| without its sign */
 
 	hx = __HI(x);		/* high word of x */
 	ix = hx&0x7fffffff;
 	if(ix<=0x3fe921fb)   /* |x| ~<= pi/4 , no need for reduction */
-	    {y[0] = x; y[1] = lbl_805608F8; return 0;}
+	    {y[0] = x; y[1] = pio2_zero; return 0;}
 	if(ix<0x4002d97c) {  /* |x| < 3pi/4, special case with n=+-1 */
 	    if(hx>0) { 
-		z = x - lbl_80560900; *(volatile double *)&z = z;
+		z = x - pio2_1; *(volatile double *)&z = z;	/* keep z rounded to memory */
 		if(ix!=0x3ff921fb) { 	/* 33+53 bit pi is good enough */
-		    y[0] = z - lbl_80560908;
-		    y[1] = (z-y[0])-lbl_80560908;
+		    y[0] = z - pio2_1t;
+		    y[1] = (z-y[0])-pio2_1t;
 		} else {		/* near pi/2, use 33+33+53 bit pi */
-		    z -= lbl_80560910; *(volatile double *)&z = z;
-		    y[0] = z - lbl_80560918;
-		    y[1] = (z-y[0])-lbl_80560918;
+		    z -= pio2_2; *(volatile double *)&z = z;
+		    y[0] = z - pio2_2t;
+		    y[1] = (z-y[0])-pio2_2t;
 		}
 		return 1;
 	    } else {	/* negative x */
-		z = lbl_80560900 + x; *(volatile double *)&z = z;
+		z = pio2_1 + x; *(volatile double *)&z = z;
 		if(ix!=0x3ff921fb) { 	/* 33+53 bit pi is good enough */
-		    y[0] = lbl_80560908 + z;
-		    y[1] = (z-y[0])+lbl_80560908;
+		    y[0] = pio2_1t + z;
+		    y[1] = (z-y[0])+pio2_1t;
 		} else {		/* near pi/2, use 33+33+53 bit pi */
-		    z += lbl_80560910; *(volatile double *)&z = z;
-		    y[0] = lbl_80560918 + z;
-		    y[1] = (z-y[0])+lbl_80560918;
+		    z += pio2_2; *(volatile double *)&z = z;
+		    y[0] = pio2_2t + z;
+		    y[1] = (z-y[0])+pio2_2t;
 		}
 		return -1;
 	    }
 	}
 	if(ix<=0x413921fb) { /* |x| ~<= 2^19*(pi/2), medium size */
 	    t  = __fabs(x);
-	    n  = (int) (lbl_80560920+lbl_80560928*t);
+	    n  = (int) (pio2_half+pio2_invpio2*t);	/* nearest number of quarter turns */
 	    fn = (double)n;
-	    r  = t-lbl_80560900*fn;
-	    w  = lbl_80560908*fn;	/* 1st round good to 85 bit */
-	    if(n<32&&ix!=lbl_802EE610[n-1]) {	
+	    r  = t-pio2_1*fn;
+	    w  = pio2_1t*fn;	/* 1st round good to 85 bit */
+	    if(n<32&&ix!=pio2_npio2_hw[n-1]) {	/* not an exact n*pi/2 high word */
 		y[0] = r-w;	/* quick check no cancellation */
 	    } else {
-	        j  = ix>>20;
+	        j  = ix>>20;	/* exponent of x */
 	        y[0] = r-w; 
-	        i = j-(((__HI(y[0]))>>20)&0x7ff);
+	        i = j-(((__HI(y[0]))>>20)&0x7ff);	/* bits lost to cancellation */
 	        if(i>16) {  /* 2nd iteration needed, good to 118 */
 		    t  = r;
-		    w  = lbl_80560910*fn;	
+		    w  = pio2_2*fn;	
 		    r  = t-w;
-		    w  = lbl_80560918*fn-((t-r)-w);	
+		    w  = pio2_2t*fn-((t-r)-w);	
 		    y[0] = r-w;
 		    i = j-(((__HI(y[0]))>>20)&0x7ff);
 		    if(i>49)  {	/* 3rd iteration need, 151 bits acc */
 		    	t  = r;	/* will cover all possible cases */
-		    	w  = lbl_80560930*fn;	
+		    	w  = pio2_3*fn;	
 		    	r  = t-w;
-		    	w  = lbl_80560938*fn-((t-r)-w);	
+		    	w  = pio2_3t*fn-((t-r)-w);	
 		    	y[0] = r-w;
 		    }
 		}
@@ -571,14 +582,14 @@ int __ieee754_rem_pio2(double x, double *y)
 	__LO(z) = __LO(x);
 	e0 	= (ix>>20)-1046;	/* e0 = ilogb(z)-23; */
 	__HI(z) = ix - (e0<<20);
-	for(i=0;i<2;i++) {
+	for(i=0;i<2;i++) {		/* peel two 24-bit integer chunks off z */
 		tx[i] = (double)((int)(z));
-		z     = (z-tx[i])*lbl_80560940;
+		z     = (z-tx[i])*pio2_two24;
 	}
-	*(volatile double *)&z = z; tx[2] = z;
+	*(volatile double *)&z = z; tx[2] = z;	/* last chunk, through memory */
 	nx = 3;
-	while(tx[nx-1]==lbl_805608F8) nx--;	/* skip lbl_805608F8 term */
-	n  =  __kernel_rem_pio2(tx,y,e0,nx,2,lbl_802EE508);
+	while(tx[nx-1]==pio2_zero) nx--;	/* skip zero term */
+	n  =  __kernel_rem_pio2(tx,y,e0,nx,2,pio2_two_over_pi);
 	if(hx<0) {y[0] = -y[0]; y[1] = -y[1]; return -n;}
 	return n;
 }
