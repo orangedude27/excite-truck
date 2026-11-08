@@ -16335,7 +16335,7 @@ extern void l2cu_send_peer_config_rsp(tL2C_CCB_VIEW *, tL2CAP_CFG_INFO *);
 extern void l2cu_send_peer_disc_req(void *);
 extern void forward_peer_data(void *, void *);
 extern void l2cu_process_our_cfg_req(void *, void *);
-extern void l2cu_send_peer_config_req(void *, void *);
+extern void l2cu_send_peer_config_req();
 void l2c_csm_open(void *p_ccb, u16 event, void *p_data)
 {
     char *p_str = lbl_803183B0;
