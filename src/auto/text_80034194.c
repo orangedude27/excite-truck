@@ -256,22 +256,31 @@ void DBPrintf_800343C8(const char *fmt, ...) {
 #pragma unused(fmt)
 }
 
-void __DSPHandler_80034418(s16 interrupt, OSContext *oldContext) {
-    OSContext context;
-    u16 dspControl;
-    u32 mail;
+/*
+ * DSP interrupt handler. Acknowledges the DSP interrupt, reads the microcode
+ * mailbox message and runs the DSP task state machine (init/resume/yield/done/
+ * sync), calling into the current task's callbacks.
+ *
+ * lbl_8055D810 = __DSP_rude_task_pending  lbl_8055D814 = __DSP_rude_task
+ * lbl_8055D81C = __DSP_last_task         lbl_8055D820 = __DSP_first_task
+ * lbl_8055D824 = __DSP_curr_task
+ */
+void __DSPHandler_80034418(s16 intr, OSContext *ctx) {
+    OSContext tmpCtx;
+    u16 csr;
+    u32 ucode;
 
-    dspControl = *(volatile u16 *)0xCC00500A;
-    *(volatile u16 *)0xCC00500A = (dspControl & ~0x28) | 0x80;
-    OSClearContext(&context);
-    OSSetCurrentContext(&context);
+    csr = *(volatile u16 *)0xCC00500A;
+    *(volatile u16 *)0xCC00500A = (csr & ~0x28) | 0x80;
+    OSClearContext(&tmpCtx);
+    OSSetCurrentContext(&tmpCtx);
     while (DSPCheckMailFromDSP() == 0) {}
-    mail = DSPReadMailFromDSP();
+    ucode = DSPReadMailFromDSP();
 
-    if ((((DSPTask *)lbl_8055D824)->flags & DSP_TASK_CANCELED) != 0 && mail == 0xDCD10002)
-        mail = 0xDCD10003;
+    if ((((DSPTask *)lbl_8055D824)->flags & DSP_TASK_CANCELED) != 0 && ucode == 0xDCD10002)
+        ucode = 0xDCD10003;
 
-    switch (mail) {
+    switch (ucode) {
     case 0xDCD10000: /* DSP_INIT */
         ((DSPTask *)lbl_8055D824)->state = DSP_TASK_STATE_1;
         if (((DSPTask *)lbl_8055D824)->initCallback != NULL)
@@ -381,8 +390,8 @@ void __DSPHandler_80034418(s16 interrupt, OSContext *oldContext) {
             ((DSPTask *)lbl_8055D824)->requestCallback((DSPTask *)lbl_8055D824);
         break;
     }
-    OSClearContext(&context);
-    OSSetCurrentContext(oldContext);
+    OSClearContext(&tmpCtx);
+    OSSetCurrentContext(ctx);
 }
 
 void __DSP_exec_task(void *arg0, void *arg1) {
