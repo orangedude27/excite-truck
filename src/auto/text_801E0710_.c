@@ -202,6 +202,20 @@ typedef struct Obj_801E0890 {
     Rec_801E0890 *recs;
     s32 count;
 } Obj_801E0890;
+typedef struct List_801E0890 {
+    Rec_801E0890 *data;
+    s32 count;
+    s32 cap;
+} List_801E0890;
+
+static inline void List_801E0890_Remove(List_801E0890 *l, s32 idx) {
+    if (idx >= 0 && idx < l->count) {
+        s32 last = l->count - 1;
+        if (idx != last)
+            l->data[idx] = l->data[last];
+        l->count--;
+    }
+}
 
 extern void *fn_8001285C(s32);
 extern void *fn_80131810();
@@ -289,6 +303,118 @@ void fn_801E0864(void *arg0) {
     *(float *)((char *)arg0 + 0xC) = y;
 }
 
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+void fn_801E0890(void *arg0) {
+    Obj_801E0890 *obj = (Obj_801E0890 *)arg0;
+    u8 *ref = lbl_80339780;
+    s32 best, j, i;
+    void *item;
+    Poly_801E0890 *poly;
+    Rec_801E0890 *rec;
+    Vec2_801E0890 *a;
+    s32 ok;
+    void *it;
+    s32 idx;
+    f32 k2, w1, d, k1, k3, v, w;
+    Vec2_801E0890 sp8, sp10, sp18, sp20;
+    Vec2_801E0890 sp28, sp30, sp38, sp40;
+    Vec2_801E0890 t1, t2, t3, t4;
+    void *p;
+    Cell_801E0890 *cell;
+    s32 n;
+
+    p = *(void **)((u8 *)fn_8001285C(*(s32 *)__AXFXGetLfoSinTable_801769CC()) + 0x20);
+    ((void (*)(void *, void *, void *))(*(void ***)p)[6])(p, ref + 0x2C, ref + 0x3C);
+    it = fn_80131810();
+    if (it != 0) {
+        k1 = lbl_80562C8C;
+        k2 = lbl_80562C84;
+        k3 = lbl_80562C88;
+        for (idx = 0; (item = ((void *(*)(void *, s32))(*(void ***)it)[3])(it, idx)) != 0; idx++) {
+            rec = &obj->recs[obj->count++];
+            poly = fn_801399FC(item);
+            ok = 0;
+            if (poly->n == 3) {
+                best = -1;
+                a = &poly->p[0];
+                for (i = 0; i < poly->n; i++, a++) {
+                    if (best < 0 || (d = fn_80160BE0(a, &poly->p[i % poly->n]), fn_80160BE0(&poly->p[best], &poly->p[best % poly->n]) > d))
+                        best = i;
+                }
+                fn_80160288(&sp8, &poly->p[(best + 2) % poly->n]);
+                fn_801602B0(&sp10);
+                a = &poly->p[best];
+                fn_80160BBC(&sp10, a, &poly->p[(best + 1) % poly->n]);
+                fn_80160BA0(&sp10, &sp10, lbl_80562C80);
+                fn_801602B0(&sp18);
+                fn_80160B7C(&sp18, &sp8, &sp10);
+                fn_80160B18(&sp18);
+                fn_801602B0(&sp20);
+                fn_80160B7C(&sp20, a, &sp10);
+                fn_801E0F78((f32 *)&sp20, (f32 *)&sp20, (f32 *)&sp18, -fn_801E0FA4((f32 *)&sp18, (f32 *)&sp20));
+                rec->quad = fn_801E0F34(4);
+                fn_80160BBC(&rec->quad->p[0], &sp10, &sp20);
+                fn_801E0F78((f32 *)&rec->quad->p[1], (f32 *)&sp10, (f32 *)&sp20, lbl_80562C78);
+                fn_801E0F78((f32 *)&rec->quad->p[2], (f32 *)&sp8, (f32 *)&sp20, lbl_80562C78);
+                fn_80160BBC(&rec->quad->p[3], &sp8, &sp20);
+                rec->quad->n = 4;
+                rec->nu = fn_801E0ED4(2, (s32)((k2 + fn_801E0EE4(&rec->quad->p[0], &rec->quad->p[1])) / k3));
+                rec->nv = fn_801E0ED4(2, (s32)((k2 + fn_801E0EE4(&rec->quad->p[1], &rec->quad->p[2])) / k3));
+                rec->cells = fn_8012850C(rec->nu * rec->nv * 0x18, ref + 0x4C);
+                for (i = 0; i < rec->nv; i++) {
+                    v = (f32)i / (f32)(rec->nv - 1);
+                    t1 = fn_8014C770(&rec->quad->p[1], &rec->quad->p[2], v);
+                    fn_80160288(&sp28, &t1);
+                    t2 = fn_8014C770(&rec->quad->p[0], &rec->quad->p[3], v);
+                    fn_80160288(&sp30, &t2);
+                    w1 = k1 - v;
+                    for (j = 0; j < rec->nu; j++) {
+                        w = (f32)j / (f32)(rec->nu - 1);
+                        t3 = fn_8014C770(&sp28, &sp30, w);
+                        fn_80160288(&sp38, &t3);
+                        cell = &rec->cells[i * rec->nu + j];
+                        fn_80160230(cell, &sp38);
+                        cell->y = fn_801DD88C(cell->x, cell->z);
+                        fn_801EA1E0(&cell->y, 0, cell->x, cell->z);
+                        cell->id = -1;
+                        cell->u = w;
+                        cell->v = w1;
+                    }
+                }
+                fn_80160B18(&sp20);
+                fn_801E0F78((f32 *)&rec->quad->p[0], (f32 *)&rec->quad->p[0], (f32 *)&sp20, lbl_80562C8C);
+                fn_801E0F78((f32 *)&rec->quad->p[0], (f32 *)&rec->quad->p[0], (f32 *)&sp18, lbl_80562C90);
+                fn_801E0F78((f32 *)&rec->quad->p[1], (f32 *)&rec->quad->p[1], (f32 *)&sp20, lbl_80562C78);
+                fn_801E0F78((f32 *)&rec->quad->p[1], (f32 *)&rec->quad->p[1], (f32 *)&sp18, lbl_80562C90);
+                fn_801E0F78((f32 *)&rec->quad->p[2], (f32 *)&rec->quad->p[2], (f32 *)&sp20, lbl_80562C78);
+                fn_801E0F78((f32 *)&rec->quad->p[2], (f32 *)&rec->quad->p[2], (f32 *)&sp18, lbl_80562C94);
+                fn_801E0F78((f32 *)&rec->quad->p[3], (f32 *)&rec->quad->p[3], (f32 *)&sp20, lbl_80562C8C);
+                fn_801E0F78((f32 *)&rec->quad->p[3], (f32 *)&rec->quad->p[3], (f32 *)&sp18, lbl_80562C94);
+                t4 = fn_80139C5C(rec->quad);
+                fn_80160288(&sp40, &t4);
+                fn_80160230(&rec->cx, &sp40);
+                rec->cy = fn_801DD88C(rec->cx, rec->cz);
+                ok = 1;
+            } else {
+                fn_802E30C8((const char *)(ref + 0x58), ((s32 (*)(void *))(*(void ***)item)[2])(item));
+            }
+            fn_80160B14(poly);
+            if (ok == 0) {
+                n = obj->count - 1;
+                if (n >= 0 && n < obj->count) {
+                    s32 last = obj->count - 1;
+                    if (n != last)
+                        obj->recs[n] = obj->recs[last];
+                    obj->count--;
+                }
+            }
+        }
+        fn_80131818(it);
+    }
+}
+#pragma pop
 int fn_801E0ED4(int arg0, int arg1) {
     return arg1 > arg0 ? arg1 : arg0;
 }
