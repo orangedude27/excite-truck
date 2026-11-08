@@ -68,6 +68,35 @@ void fn_80230114(void) {
     fn_802324D8(); fn_8022EBF0();
 }
 
+// ---------------------------------------------------------------------------
+// Textured overlay quads (the scrolling 2D banners drawn over the race).
+// A quad is four vertices of six words - x, y, z, packed colour, s, t - filled
+// in by fn_80231380 and submitted with the two-triangle index list below.
+#define QUAD_TEX_FULL   lbl_80563610  // .sdata2: 1.0f, texture coordinate at the right/bottom edge
+#define QUAD_TEX_EMPTY  lbl_80563614  // .sdata2: 0.0f, texture coordinate at the left/top edge
+#define QUAD_SCREEN_L   lbl_80563618  // .sdata2: -320.0f, left edge of the 640x480 screen box
+#define QUAD_SCREEN_R   lbl_8056361C  // .sdata2: 320.0f
+#define QUAD_SCREEN_T   lbl_80563620  // .sdata2: -240.0f
+#define QUAD_SCREEN_B   lbl_80563624  // .sdata2: 240.0f
+#define QUAD_UNSET_EDGE lbl_80563628  // .sdata2: -1.0f, "this edge of the wrapped copy is unused"
+#define QUAD_INDICES    lbl_802F9FCC  // .rodata: {0,3,1,0,2,3}, the quad as two triangles
+#define QUAD_INDICES_WRAPPED lbl_802F9FC0  // .rodata: the same list for the wrapped copy
+
+struct QuadIndices {
+    u16 index[6];
+};
+
+// One quad: its box plus the two vertex arrays.  The box fields are in this
+// order in memory (bottom first), which the original code relies on when it
+// passes &left and &right to the wrap helper.
+struct Quad {
+    f32 bottom, right, top, left;
+    struct QuadIndices indices, wrappedIndices;
+    u8 pad[8];
+    f32 vertex[4][6];        // the quad itself
+    f32 wrappedVertex[4][6]; // the copy drawn when the quad leaves the screen box
+} __attribute__((aligned(16)));
+
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
