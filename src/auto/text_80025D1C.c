@@ -35,6 +35,14 @@ typedef struct {
   extern struct lconv lbl_802FE6A0;
   #define __lconv lbl_802FE6A0
 
+  extern double lbl_805605C0;
+  #define dbl_zero lbl_805605C0 // the double 0.0, pooled by the compiler in .sdata2
+
+  #define MAX_HEX_PRECISION 509 // most %a digits the printf float buffer can hold
+
+  // MSL printf.c's picture of this target's floating point: on Gekko a long
+  // double is an ordinary IEEE 754 double, so 64 bits, 52 stored mantissa bits
+  // behind the implicit 1, and an 11 bit biased exponent.
   #define LDBL_MANT_DIG 53
   #define TARGET_FLOAT_BITS 64
   #define TARGET_FLOAT_BYTES (TARGET_FLOAT_BITS / 8)
