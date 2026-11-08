@@ -339,19 +339,24 @@ void fn_8022AC1C(int unused0, char *unused1, int arg2, int arg3, int *arg4, int 
     *arg7 = (int)d;
 }
 
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_8022ACFC(int unused, char *str, float *outMinX, float *outMinY, float *outMaxX, float *outMaxY, float x0, float y0) {
     char *p = fn_8022CA2C();
+    int n, i, g, len;
+    float wid, hgt, one;
     float minX = x0, minY = y0, maxX = x0, maxY = y0;
     int h = *(int *)(p + 0x64);
     if (h != 0) {
-        int a, b, w, hh;
+        int a, b, hh;
         float t;
         fn_802C4F2C(h, &a, &b);
-        w = fn_802C4EE4(*(int *)(p + 0x64));
+        n = fn_802C4EE4(*(int *)(p + 0x64));
         hh = fn_802C4EFC(*(int *)(p + 0x64));
         minX = x0 - (float)a;
         if (x0 < minX) minX = x0;
-        t = (float)w + (x0 - (float)a);
+        t = (float)n + (x0 - (float)a);
         maxX = (x0 > t) ? maxX : t;
         t = y0 - (float)b;
         minY = (y0 < t) ? minY : t;
@@ -365,25 +370,25 @@ void fn_8022ACFC(int unused, char *str, float *outMinX, float *outMinY, float *o
         maxY = (y0 > t) ? maxY : t;
     }
     if (str != 0) {
-        float w = lbl_8056358C, wid, hgt, ax, ay;
-        int n = fn_8022AB94(str, 10) + 1;
-        int i;
+        float w = lbl_8056358C, ax, ay;
+        n = fn_8022AB94(str, 10) + 1;
         if (*(int *)(p + 4) != 0) {
             w = (float)n * (float)fn_801E4BA8(*(int **)(p + 4));
         }
-        if (*(int *)(p + 8) != 0) {
+        g = *(int *)(p + 8);
+        if (g != 0) {
             if (*(float *)(p + 0x34) < lbl_80563588) {
-                w = (float)n * (float)fn_80232B70(*(int *)(p + 8));
+                w = (float)n * (float)fn_80232B70(g);
             } else {
-                float d = (float)fn_80232B70(*(int *)(p + 8));
-                w = (*(float *)(p + 0x34) * (float)(n * fn_80232B70(*(int *)(p + 8)))) / d;
+                float d = (float)fn_80232B70(g);
+                w = (*(float *)(p + 0x34) * (float)(n * fn_80232B70(g))) / d;
             }
         }
         hgt = w;
         wid = lbl_8056358C;
+        one = lbl_80563588;
         for (i = 0; i < n; i++) {
             char *nl = strchr(str, 10);
-            int len;
             float v;
             if (nl != 0) len = nl - str; else len = strlen(str);
             if (*(int *)(p + 4) != 0) {
@@ -391,7 +396,7 @@ void fn_8022ACFC(int unused, char *str, float *outMinX, float *outMinY, float *o
                 wid = (wid > v) ? wid : v;
             }
             if (*(int *)(p + 8) != 0) {
-                if (*(float *)(p + 0x34) < lbl_80563588) {
+                if (*(float *)(p + 0x34) < one) {
                     v = ((float (*)(void *, char *, int))fn_8022ABC8)(*(void **)(p + 8), str, len);
                     wid = (wid > v) ? wid : v;
                 } else {
@@ -418,10 +423,12 @@ void fn_8022ACFC(int unused, char *str, float *outMinX, float *outMinY, float *o
             }
         }
         {
-            int lo = *(int *)(p + 0x44), hi = *(int *)(p + 0x4c);
-            int mn = lo, mx = lo;
+            int lo, hi, mn, mx;
             float t;
             wid += lbl_80563598 * (float)(fn_801E4A6C(*(int **)(p + 4), lbl_8055B8C0) + 1);
+            lo = *(int *)(p + 0x44);
+            hi = *(int *)(p + 0x4c);
+            mn = lo; mx = lo;
             if (hi < lo) mn = hi;
             t = x0 + ax + (float)mn;
             minX = (minX < t) ? minX : t;
@@ -446,7 +453,7 @@ void fn_8022ACFC(int unused, char *str, float *outMinX, float *outMinY, float *o
     *outMinY = minY;
     *outMaxY = maxY;
 }
-
+#pragma pop
 extern float lbl_80563588;
 extern char *strncpy(char *, const char *, unsigned int);
 extern void fn_8023293C(void *, char *, float);
@@ -567,6 +574,41 @@ int fn_8022B498(int unused, const char *arg1) {
     }
     return max;
 }
+
+/* One of the 0x100 UI text styles of lbl_80490968, read from styles.val;
+ * fn_8022CA2C(index) is the address of one.  Only the fields the text
+ * measuring code uses are named here. */
+struct UIStyle {
+    unsigned char inUse;              /* 0x00 the style is loaded */
+    unsigned char pad1[3];
+    int *bitmapFont;                  /* 0x04 bitmap font, or 0 */
+    int vectorFont;                   /* 0x08 outline font, or 0 */
+    unsigned char padC[0x34 - 0xC];
+    float fontSize;                   /* 0x34 font_size; under 1.0 the font's own height */
+    int align;                        /* 0x38 UI_HALIGN_* | UI_VALIGN_* */
+    unsigned char pad3C[0x44 - 0x3C];
+    int padLeft;                      /* 0x44 text box padding, */
+    int padTop;                       /* 0x48  the text is drawn inside */
+    int padRight;                     /* 0x4C */
+    int padBottom;                    /* 0x50 */
+    unsigned char pad54[0x64 - 0x54];
+    int picture;                      /* 0x64 texture drawn with the text, or 0 */
+    int picture2;                     /* 0x68 animation drawn with it, or 0 */
+};
+
+/* UIStyle.align: the horizontal_alignment and vertical_alignment properties
+ * of styles.val ("left", "right", "center" and "top", "middle", "baseline",
+ * "bottom"). */
+#define UI_HALIGN_LEFT     1
+#define UI_HALIGN_RIGHT    2
+#define UI_HALIGN_CENTER   4
+#define UI_VALIGN_TOP      8
+#define UI_VALIGN_MIDDLE   0x10
+#define UI_VALIGN_BASELINE 0x20
+#define UI_VALIGN_BOTTOM   0x40
+
+#define UI_FONT_SIZE_MIN lbl_80563588 /* 1.0f: under it the font's own height is used */
+#define UI_HALF          lbl_80563598 /* 0.5f */
 
 #pragma push
 #pragma processor 750
