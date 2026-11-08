@@ -14206,6 +14206,62 @@ void *fn_80095C64(void **head, u32 attr);
 typedef void (*tHID_HOST_SDP_CALLBACK)(UINT16 result, UINT16 attr_mask,
                                        void *p_sdp_rec /* tHID_DEV_SDP_INFO * */);
 
+/* Events the HID host reports to the application, and the callback's type
+   (tHID_HOST_DEV_CALLBACK), both from that same hidh_api.h. */
+enum {
+    HID_HDEV_EVT_OPEN,
+    HID_HDEV_EVT_CLOSE,
+    HID_HDEV_EVT_RETRYING,
+    HID_HDEV_EVT_INTR_DATA,
+    HID_HDEV_EVT_INTR_DATC,
+    HID_HDEV_EVT_CTRL_DATA,
+    HID_HDEV_EVT_CTRL_DATC,
+    HID_HDEV_EVT_HANDSHAKE,
+    HID_HDEV_EVT_VC_UNPLUG
+};
+typedef void (tHID_HOST_DEV_CALLBACK)(UINT8 dev_handle, UINT8 event, UINT32 data,
+                                      BT_HDR *p_buf);
+
+/* tHID_CONN (stack/hid/hid_conn.h) as the device record holds it at 0x10, and the
+   record itself (tHID_HOST_DEV_CTB of stack/hid/hidh_int.h). */
+#define HID_CONN_STATE_UNUSED         (0)
+#define HID_CONN_STATE_DISCONNECTING  (5)
+
+typedef struct {
+    /* 0x10 */ u8 conn_state;        /* HID_CONN_STATE_* */
+               u8 conn_flags;        /* HID_CONN_FLAGS_* */
+               u8 ctrl_id;
+               u8 pad_0x13;
+               u16 ctrl_cid;
+               u16 intr_cid;
+               u16 rem_mtu_size;
+               u16 disc_reason;
+               u8 timer_entry[0x18];
+} tHID_CONN_VIEW;                    /* 0x24 */
+
+typedef struct {
+    /* 0x00 */ u8 in_use;
+               u8 addr[6];           /* BD_ADDR of the host device */
+               u8 pad_0x07;
+               u16 attr_mask;        /* HID_VIRTUAL_CABLE .. HID_SUP_TOUT_AVLBL */
+    /* 0x0A */ u8 state;
+               u8 conn_substate;
+               u8 conn_tries;
+               u8 pad_0x0D[3];
+    /* 0x10 */ tHID_CONN_VIEW conn;
+} tHID_HOST_DEV_CTB_VIEW;            /* 0x34 */
+
+/* The HID host control block hh_cb (tHID_HOST_CTB).  This build compiles with
+   HID_HOST_MAX_DEVICES = 16 rather than bt_target.h's 7, so devices[] runs to
+   0x340, where the application callback follows; then l2cap_cfg at 0x344,
+   sdp_busy 0x380, sdp_cback 0x384, p_sdp_db 0x388, sdp_rec 0x38c, reg_flag 0x400
+   and trace_level 0x401. */
+#define HIDH_MAX_DEVICES        16
+#define hh_cb_devices           (lbl_803C3C38)
+#define hh_cb_dev(d)            ((tHID_HOST_DEV_CTB_VIEW *)(hh_cb_devices + (d) * sizeof(tHID_HOST_DEV_CTB_VIEW)))
+#define hh_cb_callback          (*(tHID_HOST_DEV_CALLBACK *)(lbl_803C3C38 + 0x340))
+#define hh_cb_trace_level       (lbl_803C3C38[0x401])
+
 /* SDP search callback of HID_HostGetSDPRecord: pulls the device's Human Interface
    Service record out of the discovery database into hh_cb.sdp_rec, collects the
    optional attributes into an attribute mask and reports both to the
