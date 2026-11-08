@@ -1739,6 +1739,12 @@ typedef struct Entry_802D18E8 {
 } Entry_802D18E8;
 #pragma push
 #pragma optimization_level 3
+static inline void fn_802D18E8_sub(float *d, float *a, float *b) {
+    d[0] = a[9] - b[9];
+    d[1] = a[10] - b[10];
+    d[2] = a[11] - b[11];
+}
+
 void fn_802D18E8(void) {
     unsigned char *base = (unsigned char *)lbl_804C5650;
     float *from = (float *)(base + 0x40);
