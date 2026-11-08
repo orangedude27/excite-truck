@@ -2943,74 +2943,40 @@ struct BonusDisplay {
 #pragma processor 750
 #pragma use_lmw_stmw off
 extern "C" void fn_8015C820(Unk801577F0* arg0, f32* arg1) {
- struct Obj {
- virtual void v0();
-virtual void v1();
-virtual void v2();
-virtual void v3();
-virtual void v4();
-virtual void v5();
-virtual void v6();
-virtual void v7();
-virtual void v8();
-virtual void v9();
-virtual void v10();
-virtual void v11();
-virtual void v12();
-virtual void v13();
-virtual void v14();
-virtual void v15();
-virtual void v16();
-virtual s32 v17();
-virtual void v18();
-virtual void v19();
-virtual void v20();
-virtual s32 v21();
-virtual void v22();
-virtual s32 v23();
-virtual s32 v24();
-virtual s32 v25();
-virtual s32 v26();
-virtual void v27();
-virtual void v28();
-virtual s32 v29();
- };
- struct Adaptor {
- virtual void v0(); virtual void v1(s32,...); virtual void v2(s32,...);
- virtual void v3(s32,...); virtual void v4(); virtual void v5(s32);
- virtual void v6(s32); virtual void v7(); virtual void v8(s32);
- };
- char buf[16];
- f32 scale = fn_80204CFC(lbl_8032F39C);
- Obj* obj=(Obj*)arg0;
- *arg1 *= scale;
- *arg1 *= lbl_8042FD08[arg0->m4];
- if (*(Adaptor**)((u8*)arg0+0x248) && !((f32)__fabs(*arg1)<=lbl_80558DC4[0])) {
-  (*(Adaptor**)((u8*)arg0+0x248))->v3((s32)lbl_8055A058, fn_8023139C(buf,16,(u32)*arg1));
-  (*(Adaptor**)((u8*)arg0+0x248))->v6(obj->v29());
-  (*(Adaptor**)((u8*)arg0+0x248))->v5((s32)*arg1);
-  (*(Adaptor**)((u8*)arg0+0x248))->v2((s32)lbl_8055A058,obj->v23());
-  (*(Adaptor**)((u8*)arg0+0x248))->v1((s32)lbl_8055A058,obj->v24());
-  obj->v22();
-  (*(Adaptor**)((u8*)arg0+0x248))->v4();
-  s32 limit=obj->v17();
-  if(obj->v21()>=limit) (*(Adaptor**)((u8*)arg0+0x248))->v8(1);
- }
- f32 value=*arg1;
- s32 offset=obj->v21()*0x38;
- ++*(s32*)(arg0->mData+offset);
- if (!((f32)__fabs(value)<=lbl_80558DC4[0])) {
- ++*(s32*)(arg0->mData+offset+4);
- if ((f32)__fabs(value-*(f32*)(arg0->mData+offset+16))<=lbl_80558DC4[0])
- ++*(s32*)(arg0->mData+offset+8);
- }
- *(f32*)(arg0->mData+offset+12)+=value;
- s32 index=obj->v21();
- ((void(*)(s32,s32,s32))fn_801584D4)(obj->v29(),arg0->m4,index);
- if (*(Adaptor**)((u8*)arg0+0x248) && !((f32)__fabs(*arg1)<=lbl_80558DC4[0]))
-  (*(Adaptor**)((u8*)arg0+0x248))->v2((s32)lbl_8055A058,obj->v23());
- if (*(Adaptor**)((u8*)arg0+0x248) && !((f32)__fabs(*arg1)<=lbl_80558DC4[0]))
-  (*(Adaptor**)((u8*)arg0+0x248))->v2((s32)lbl_8055A058,obj->v23());
+    // Scores one bonus value: scale it by the "score_scale" config value and by
+    // this category's multiplier, show the result on the bonus popup when one is
+    // up, add it to the current record and tell the bonus listeners about it.
+    char text[16];
+    f32 scale = fn_80204CFC(CFG_SCORE_SCALE);
+    BonusTracker* tracker = (BonusTracker*)arg0;
+    *arg1 *= scale;
+    *arg1 *= BONUS_TYPE_SCALE[arg0->m4];
+    if (*(BonusDisplay**)((u8*)arg0+0x248) && !((f32)__fabs(*arg1)<=BONUS_EPSILON[0])) {
+        (*(BonusDisplay**)((u8*)arg0+0x248))->printScore((s32)BONUS_TEXT_FMT, fn_8023139C(text,16,(u32)*arg1));
+        (*(BonusDisplay**)((u8*)arg0+0x248))->setProgress(tracker->GetType());
+        (*(BonusDisplay**)((u8*)arg0+0x248))->setScore((s32)*arg1);
+        (*(BonusDisplay**)((u8*)arg0+0x248))->printCount((s32)BONUS_TEXT_FMT,tracker->getCount());
+        (*(BonusDisplay**)((u8*)arg0+0x248))->printExtra((s32)BONUS_TEXT_FMT,tracker->getExtra());
+        tracker->refresh();
+        (*(BonusDisplay**)((u8*)arg0+0x248))->update();
+        s32 recordCount=tracker->getRecordCount();
+        if(tracker->getIndex()>=recordCount) (*(BonusDisplay**)((u8*)arg0+0x248))->setState(1);
+    }
+    f32 value=*arg1;
+    s32 offset=tracker->getIndex()*0x38;
+    ++*(s32*)(arg0->mData+offset);                                  // record.count
+    if (!((f32)__fabs(value)<=BONUS_EPSILON[0])) {
+        ++*(s32*)(arg0->mData+offset+4);                            // record.scoredCount
+        if ((f32)__fabs(value-*(f32*)(arg0->mData+offset+16))<=BONUS_EPSILON[0])
+            ++*(s32*)(arg0->mData+offset+8);                        // record.sameCount
+    }
+    *(f32*)(arg0->mData+offset+12)+=value;                          // record.total
+    s32 index=tracker->getIndex();
+    ((void(*)(s32,s32,s32))fn_801584D4)(tracker->GetType(),arg0->m4,index);
+    if (*(BonusDisplay**)((u8*)arg0+0x248) && !((f32)__fabs(*arg1)<=BONUS_EPSILON[0]))
+        (*(BonusDisplay**)((u8*)arg0+0x248))->printCount((s32)BONUS_TEXT_FMT,tracker->getCount());
+    if (*(BonusDisplay**)((u8*)arg0+0x248) && !((f32)__fabs(*arg1)<=BONUS_EPSILON[0]))
+        (*(BonusDisplay**)((u8*)arg0+0x248))->printCount((s32)BONUS_TEXT_FMT,tracker->getCount());
 }
 #pragma pop
 extern "C" void* fn_8015CBBC(void* arg0, s32 arg1) {
