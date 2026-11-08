@@ -168,6 +168,8 @@ s32 fn_800085D8(s32 arg0) {
     return 0;
 }
 #pragma scheduling on
+#pragma dont_inline reset
+#pragma dont_inline on
 void fn_80008618(s32 arg0) {
     s32 value = fn_8026E20C();
     s32 result = value | arg0;
