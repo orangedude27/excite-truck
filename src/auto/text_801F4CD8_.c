@@ -130,6 +130,38 @@ typedef struct Vertex_801F4F9C {
     Vec2_801F4F9C uv;
 } Vertex_801F4F9C;
 
+static inline float lerp_f32(float a, float b, float t) {
+    return a + t * (b - a);
+}
+
+static inline unsigned int lerp_color(unsigned int a, unsigned int b, float t) {
+    unsigned int out;
+    unsigned char *pa = (unsigned char *)&a;
+    unsigned char *pb = (unsigned char *)&b;
+    unsigned char *po = (unsigned char *)&out;
+    po[0] = (unsigned char)lerp_f32(pa[0], pb[0], t);
+    po[1] = (unsigned char)lerp_f32(pa[1], pb[1], t);
+    po[2] = (unsigned char)lerp_f32(pa[2], pb[2], t);
+    po[3] = (unsigned char)lerp_f32(pa[3], pb[3], t);
+    return out;
+}
+
+static inline Vertex_801F4F9C lerp_vertex(const Vertex_801F4F9C *a, const Vertex_801F4F9C *b, float t) {
+    Vertex_801F4F9C v;
+    v.pos.x = lerp_f32(a->pos.x, b->pos.x, t);
+    v.pos.y = lerp_f32(a->pos.y, b->pos.y, t);
+    v.pos.z = lerp_f32(a->pos.z, b->pos.z, t);
+    v.color = lerp_color(a->color, b->color, t);
+    v.uv.x = lerp_f32(a->uv.x, b->uv.x, t);
+    v.uv.y = lerp_f32(a->uv.y, b->uv.y, t);
+    return v;
+}
+
+extern void *fn_8002F37C();
+extern void fn_8001BA68();
+extern char lbl_8033ADD4[];
+extern char lbl_8033ADE8[];
+
 #pragma cplusplus on
 class DummyObj_801F4F9C {
 public:
@@ -363,6 +395,7 @@ extern void *fn_8012850C();
 extern char lbl_8033ADA4[];
 extern char lbl_8033ADC4[];
 extern void fn_801F596C(void);
+#pragma push
 #pragma scheduling invalid_target
 void fn_801F5664(void *arg0, int arg1) {
     int var_r31;
@@ -516,7 +549,7 @@ void fn_801F5664(void *arg0, int arg1) {
     *(void **)((char *)arg0 + 0x1C) = temp_r3;
     *(int *)((char *)arg0 + 0x20) = var_r31;
 }
-#pragma scheduling on
+#pragma pop
 void fn_801F596C(void) {
 
 }
@@ -530,76 +563,78 @@ extern int fn_802CAC28(int, int);
 __declspec(section ".sdata") extern float lbl_80562FD0;
 extern float __fabsf(float);
 extern double __fabs(double);
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
 void fn_801F602C(void *arg0, int arg1, int arg2, int arg3, int arg4) {
-float var_f31, var_f30, temp_f1, temp_f1_2;
-float temp_f0, temp_f0_2, temp_f0_3, temp_f0_4;
-float var_f1, var_f1_2, var_f1_3, var_f1_4;
-float var_f0, var_f0_2, var_f0_3, var_f0_4;
-float var_f29, var_f28, var_f27, var_f26, temp_f0_5, var_f1_5, productY;
-int temp_r0, temp_r0_2, temp_r0_3, temp_r0_4;
-int var_r0, var_r0_2, var_r0_3, var_r0_4, var_r3, var_r3_2, var_r3_3, var_r3_4;
-var_f31 = PSQUATMultiply((void *)(arg1 + 0x30), (void *)(arg1 + 0x48));
-temp_f1 = PSQUATMultiply((void *)arg1, (void *)(arg1 + 0x18));
-if (temp_f1 > var_f31) var_f31 = temp_f1;
-var_f30 = PSQUATMultiply((void *)(arg1 + 0x18), (void *)(arg1 + 0x48));
-temp_f1_2 = PSQUATMultiply((void *)arg1, (void *)(arg1 + 0x30));
-if (temp_f1_2 > var_f30) var_f30 = temp_f1_2;
-if (arg4 & 4) {
-*(int *)((char *)arg0 + 0x2C) = 2;
-*(int *)((char *)arg0 + 0x30) = 2;
-} else if (!(arg4 & 1)) {
-var_r3 = 2;
-temp_r0 = (int)(var_f31 * *(float *)(arg1 + 0x60));
-if (temp_r0 > 2) var_r3 = temp_r0;
-var_r0 = 8;
-if (var_r3 < 8) var_r0 = var_r3;
-var_r3_2 = 2;
-temp_r0_2 = (int)(var_f30 * *(float *)(arg1 + 0x64));
-if (temp_r0_2 > 2) var_r3_2 = temp_r0_2;
-var_r0_2 = 4;
-if (var_r3_2 < 4) var_r0_2 = var_r3_2;
-*(int *)((char *)arg0 + 0x2C) = var_r0;
-*(int *)((char *)arg0 + 0x30) = var_r0_2;
-} else {
-var_r3_3 = 2;
-temp_r0_3 = (int)(lbl_80562FD0 * (var_f31 * *(float *)(arg1 + 0x60)));
-if (temp_r0_3 > 2) var_r3_3 = temp_r0_3;
-var_r0_3 = 8;
-if (var_r3_3 < 8) var_r0_3 = var_r3_3;
-var_r3_4 = 2;
-temp_r0_4 = (int)(lbl_80562FD0 * (var_f30 * *(float *)(arg1 + 0x64)));
-if (temp_r0_4 > 2) var_r3_4 = temp_r0_4;
-var_r0_4 = 4;
-if (var_r3_4 < 4) var_r0_4 = var_r3_4;
-*(int *)((char *)arg0 + 0x2C) = var_r0_3;
-*(int *)((char *)arg0 + 0x30) = var_r0_4;
+    float var_f31, var_f30, temp_f1, temp_f1_2;
+    float temp_f0, temp_f0_2, temp_f0_3, temp_f0_4;
+    float var_f1, var_f1_2, var_f1_3, var_f1_4;
+    float var_f0, var_f0_2, var_f0_3, var_f0_4;
+    float var_f29, var_f28, var_f27, var_f26, temp_f0_5, var_f1_5;
+    int temp_r0, temp_r0_2, temp_r0_3, temp_r0_4;
+    int var_r0, var_r0_2, var_r0_3, var_r0_4, var_r3, var_r3_2, var_r3_3, var_r3_4;
+    var_f31 = PSQUATMultiply((void *)(arg1 + 0x30), (void *)(arg1 + 0x48));
+    temp_f1 = PSQUATMultiply((void *)arg1, (void *)(arg1 + 0x18));
+    if (temp_f1 > var_f31) var_f31 = temp_f1;
+    var_f30 = PSQUATMultiply((void *)(arg1 + 0x18), (void *)(arg1 + 0x48));
+    temp_f1_2 = PSQUATMultiply((void *)arg1, (void *)(arg1 + 0x30));
+    if (temp_f1_2 > var_f30) var_f30 = temp_f1_2;
+    if (arg4 & 4) {
+        *(int *)((char *)arg0 + 0x2C) = 2;
+        *(int *)((char *)arg0 + 0x30) = 2;
+    } else if (!(arg4 & 1)) {
+        var_r3 = 2;
+        temp_r0 = (int)(var_f31 * *(float *)(arg1 + 0x60));
+        if (temp_r0 > 2) var_r3 = temp_r0;
+        var_r0 = 8;
+        if (var_r3 < 8) var_r0 = var_r3;
+        var_r3_2 = 2;
+        temp_r0_2 = (int)(var_f30 * *(float *)(arg1 + 0x64));
+        if (temp_r0_2 > 2) var_r3_2 = temp_r0_2;
+        var_r0_2 = 4;
+        if (var_r3_2 < 4) var_r0_2 = var_r3_2;
+        *(int *)((char *)arg0 + 0x2C) = var_r0;
+        *(int *)((char *)arg0 + 0x30) = var_r0_2;
+    } else {
+        var_r3_3 = 2;
+        temp_r0_3 = (int)(lbl_80562FD0 * (var_f31 * *(float *)(arg1 + 0x60)));
+        if (temp_r0_3 > 2) var_r3_3 = temp_r0_3;
+        var_r0_3 = 8;
+        if (var_r3_3 < 8) var_r0_3 = var_r3_3;
+        var_r3_4 = 2;
+        temp_r0_4 = (int)(lbl_80562FD0 * (var_f30 * *(float *)(arg1 + 0x64)));
+        if (temp_r0_4 > 2) var_r3_4 = temp_r0_4;
+        var_r0_4 = 4;
+        if (var_r3_4 < 4) var_r0_4 = var_r3_4;
+        *(int *)((char *)arg0 + 0x2C) = var_r0_3;
+        *(int *)((char *)arg0 + 0x30) = var_r0_4;
+    }
+    temp_f0 = *(float *)(arg1 + 0x58); var_f1 = *(float *)(arg1 + 0x40);
+    var_f1 = (var_f1 < temp_f0) ? var_f1 : temp_f0;
+    var_f0 = *(float *)(arg1 + 0x28); var_f0 = (var_f0 < var_f1) ? var_f0 : var_f1;
+    var_f29 = *(float *)(arg1 + 0x10); var_f29 = (var_f29 < var_f0) ? var_f29 : var_f0;
+    temp_f0_2 = *(float *)(arg1 + 0x58); var_f1_2 = *(float *)(arg1 + 0x40);
+    var_f1_2 = (var_f1_2 > temp_f0_2) ? var_f1_2 : temp_f0_2;
+    var_f0_2 = *(float *)(arg1 + 0x28); var_f0_2 = (var_f0_2 > var_f1_2) ? var_f0_2 : var_f1_2;
+    var_f28 = *(float *)(arg1 + 0x10); var_f28 = (var_f28 > var_f0_2) ? var_f28 : var_f0_2;
+    temp_f0_3 = *(float *)(arg1 + 0x5C); var_f1_3 = *(float *)(arg1 + 0x44);
+    var_f1_3 = (var_f1_3 < temp_f0_3) ? var_f1_3 : temp_f0_3;
+    var_f0_3 = *(float *)(arg1 + 0x2C); var_f0_3 = (var_f0_3 < var_f1_3) ? var_f0_3 : var_f1_3;
+    var_f27 = *(float *)(arg1 + 0x14); var_f27 = (var_f27 < var_f0_3) ? var_f27 : var_f0_3;
+    temp_f0_4 = *(float *)(arg1 + 0x5C); var_f1_4 = *(float *)(arg1 + 0x44);
+    var_f1_4 = (var_f1_4 > temp_f0_4) ? var_f1_4 : temp_f0_4;
+    var_f0_4 = *(float *)(arg1 + 0x2C); var_f0_4 = (var_f0_4 > var_f1_4) ? var_f0_4 : var_f1_4;
+    var_f26 = *(float *)(arg1 + 0x14); var_f26 = (var_f26 > var_f0_4) ? var_f26 : var_f0_4;
+    *(int *)((char *)arg0 + 0x24) = fn_802CAC28(arg2, 0);
+    var_f1_5 = (float)__fabs((double)(var_f26 - var_f27));
+    temp_f0_5 = (float)__fabs((double)(var_f28 - var_f29));
+    var_f1_5 = (var_f1_5 > temp_f0_5) ? var_f1_5 : temp_f0_5;
+    temp_f0_5 = var_f1_5;
+    var_f31 = (var_f31 > var_f30) ? var_f31 : var_f30;
+    *(float *)((char *)arg0 + 0x28) = (float)fn_8002F208(temp_f0_5 / var_f31);
+    fn_801F5970(arg0, (void *)arg1); fn_801F5508(arg0); fn_801F5664(arg0, arg3);
 }
-temp_f0 = *(float *)(arg1 + 0x58); var_f1 = *(float *)(arg1 + 0x40);
-var_f1 = (var_f1 < temp_f0) ? var_f1 : temp_f0;
-var_f0 = *(float *)(arg1 + 0x28); var_f0 = (var_f0 < var_f1) ? var_f0 : var_f1;
-var_f29 = *(float *)(arg1 + 0x10); var_f29 = (var_f29 < var_f0) ? var_f29 : var_f0;
-temp_f0_2 = *(float *)(arg1 + 0x58); var_f1_2 = *(float *)(arg1 + 0x40);
-var_f1_2 = (var_f1_2 > temp_f0_2) ? var_f1_2 : temp_f0_2;
-var_f0_2 = *(float *)(arg1 + 0x28); var_f0_2 = (var_f0_2 > var_f1_2) ? var_f0_2 : var_f1_2;
-var_f28 = *(float *)(arg1 + 0x10); var_f28 = (var_f28 > var_f0_2) ? var_f28 : var_f0_2;
-temp_f0_3 = *(float *)(arg1 + 0x5C); var_f1_3 = *(float *)(arg1 + 0x44);
-var_f1_3 = (var_f1_3 < temp_f0_3) ? var_f1_3 : temp_f0_3;
-var_f0_3 = *(float *)(arg1 + 0x2C); var_f0_3 = (var_f0_3 < var_f1_3) ? var_f0_3 : var_f1_3;
-var_f27 = *(float *)(arg1 + 0x14); var_f27 = (var_f27 < var_f0_3) ? var_f27 : var_f0_3;
-temp_f0_4 = *(float *)(arg1 + 0x5C); var_f1_4 = *(float *)(arg1 + 0x44);
-var_f1_4 = (var_f1_4 > temp_f0_4) ? var_f1_4 : temp_f0_4;
-var_f0_4 = *(float *)(arg1 + 0x2C); var_f0_4 = (var_f0_4 > var_f1_4) ? var_f0_4 : var_f1_4;
-var_f26 = *(float *)(arg1 + 0x14); var_f26 = (var_f26 > var_f0_4) ? var_f26 : var_f0_4;
-*(int *)((char *)arg0 + 0x24) = fn_802CAC28(arg2, 0);
-var_f1_5 = (float)__fabs((double)(var_f26 - var_f27));
-temp_f0_5 = (float)__fabs((double)(var_f28 - var_f29));
-temp_f0_5 = (temp_f0_5 > var_f1_5) ? temp_f0_5 : var_f1_5;
-var_f31 = ((var_f31) > (var_f30)) ? var_f31 : var_f30;
-*(float *)((char *)arg0 + 0x28) = (float)fn_8002F208(temp_f0_5 / var_f31);
-fn_801F5970(arg0, (void *)arg1); fn_801F5508(arg0); fn_801F5664(arg0, arg3);
-}
-#pragma scheduling on
+#pragma pop
 void fn_801F6358(void *arg0) {
     int temp;
     fn_80128670(*(int *)((char *)arg0 + 0xC));
@@ -1335,17 +1370,20 @@ void fn_801F75A4(void *arg0, void *arg1, void *arg2, int arg3) {
 }
 #pragma pop
 
+#pragma scheduling invalid_target
 void fn_801F76F8(void *arg0, unsigned char *p) {
     unsigned char a,b,c,d,e,f,g,h;
     int i;
+    unsigned char *q;
+
     a=p[0x2c]; b=p[0x2d]; c=p[0x2e]; d=p[0x2f];
     e=p[0x30]; f=p[0x31]; g=p[0x32]; h=p[0x33];
     p[0x2c]=p[0x3b]; p[0x3b]=a; p[0x2d]=p[0x3a]; p[0x3a]=b;
     p[0x2e]=p[0x39]; p[0x39]=c; p[0x2f]=p[0x38]; p[0x38]=d;
     p[0x30]=p[0x37]; p[0x37]=e; p[0x31]=p[0x36]; p[0x36]=f;
     p[0x32]=p[0x35]; p[0x35]=g; p[0x33]=p[0x34]; p[0x34]=h;
-    for (i=0;i<3;i++) {
-        unsigned char *q=p+0x3c+i*0x18;
+    q = p + 0x3c;
+    for (i = 0; i < 3; i++, q += 0x18) {
         a=q[0]; q[0]=q[3]; q[3]=a; a=q[1]; q[1]=q[2]; q[2]=a;
         a=q[4]; q[4]=q[7]; q[7]=a; a=q[5]; q[5]=q[6]; q[6]=a;
         a=q[8]; q[8]=q[0xb]; q[0xb]=a; a=q[9]; q[9]=q[0xa]; q[0xa]=a;
@@ -1358,7 +1396,7 @@ void fn_801F76F8(void *arg0, unsigned char *p) {
     p[0x86]=p[0x8d]; p[0x8d]=c; p[0x87]=p[0x8c]; p[0x8c]=d;
     p[0x88]=p[0x8b]; p[0x8b]=e; p[0x89]=p[0x8a]; p[0x8a]=f;
 }
-
+#pragma scheduling on
 void fn_801F78D8(void) {
 
 }
