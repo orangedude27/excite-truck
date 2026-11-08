@@ -29,6 +29,7 @@ extern double lbl_80560878, lbl_80560880, lbl_80560888, lbl_80560890, lbl_805608
 extern double lbl_805608A8, lbl_805608B0, lbl_805608B8, lbl_805608C0, lbl_805608C8, lbl_805608D0;
 extern double lbl_805608D8, lbl_805608E0, lbl_805608E8;
 extern int lbl_8055D680;
+extern double fn_8002B060(int, double);
 #define pow_one      lbl_805607E8
 #define pow_zero     lbl_805607F0
 #define pow_inf      lbl_805607F8 /* huge*huge, folded */
