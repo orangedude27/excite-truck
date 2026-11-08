@@ -1034,48 +1034,68 @@ extern "C" u8 GetWidth__Q46nw4hbm2ut6detail11ResFontBaseCFv_8010BD8C(void* self)
 
 #pragma pop
 
-extern "C" u16 FindGlyphIndex__Q46nw4hbm2ut6detail11ResFontBaseCFPCQ36nw4hbm2ut11FontCodeMapUs(void *self, void *mapArg, u16 code) {
-    const char *base=lbl_80329140;
-    u32 value=(u32)self;
-    int a=1,b=1,c=1,d=1,e=1,f=1;
-    u32 t=value&0xFF000000U;
-    if(t!=0x80000000U&&(value&0xFF800000U)!=0x81000000U)f=0;
-    if(f==0&&(value&0xF8000000U)!=0x90000000U)e=0;
-    if(e==0&&t!=0xC0000000U)d=0;
-    if(d==0&&(value&0xFF800000U)!=0xC1000000U)c=0;
-    if(c==0&&(value&0xF8000000U)!=0xD0000000U)b=0;
-    if(b==0&&(value&0xFFFFC000U)!=0xE0000000U)a=0;
-    if(a==0)Panic__Q26nw4hbm2dbFPCciPCce(base+0xC,0x21B,base+0xF0,self);
-    u32 v=(u32)mapArg;
-    int g=1,h=1,i=1,j=1,k=1,l=1;
-    u32 t2=v&0xFF000000U;
-    if(t2!=0x80000000U&&(v&0xFF800000U)!=0x81000000U)l=0;
-    if(l==0&&(v&0xF8000000U)!=0x90000000U)k=0;
-    if(k==0&&t2!=0xC0000000U)j=0;
-    if(j==0&&(v&0xFF800000U)!=0xC1000000U)i=0;
-    if(i==0&&(v&0xF8000000U)!=0xD0000000U)h=0;
-    if(h==0&&(v&0xFFFFC000U)!=0xE0000000U)g=0;
-    if(g==0)Panic__Q26nw4hbm2dbFPCciPCce(base+0xC,0x21C,base+0x21C,mapArg);
-    const u16 *map=(const u16 *)mapArg;
-    u16 result=0xFFFF;
-    switch(map[2]) {
-    case 0: result=(u16)(map[6]+(code-map[0])); break;
-    case 1: result=*(const u16 *)((const char *)(map+(code-map[0]))+0xC); break;
-    case 2: {
-        struct Ent { u16 key; u16 idx; };
-        struct Info { u16 n; Ent pairs[1]; };
-        const Info *mi=(const Info *)(map+6);
-        const Ent *low=&mi->pairs[0];
-        const Ent *high=&mi->pairs[mi->n-1];
-        while(low<=high) {
-            const Ent *mid=low+(high-low)/2;
-            if(mid->key<code) low=mid+1;
-            else if(code<mid->key) high=mid-1;
-            else {result=mid->idx;break;}
+/*
+ * nw4hbm::ut::detail::ResFontBase::FindGlyphIndex(const FontCodeMap*, u16) const
+ * Turns a character code into an index into the font's glyph table using one of
+ * the font's code maps -- the caller has already picked the map whose
+ * start_code..end_code covers the code.  Returns 0xFFFF when the map holds no
+ * entry for it.  (self and code_map stay void*: the callers in this file walk
+ * the map list with u8*.)
+ */
+extern "C" u16 FindGlyphIndex__Q46nw4hbm2ut6detail11ResFontBaseCFPCQ36nw4hbm2ut11FontCodeMapUs(void *self, void *code_map, u16 code) {
+    typedef nw4hbm::ut::FontCodePair CodePair;
+    typedef nw4hbm::ut::FontCodeBinaryMap BinaryMap;
+    const char* file = lbl_80329140; /* "ut_ResFontBase.cpp" and this file's panic messages */
+    u32 value = (u32)self;
+    /* nw4hbm::db pointer check: matched_<range> says the address fell in one of
+     * the ranges accepted up to that range (MEM1 0x80000000/0x81000000, MEM2
+     * 0x90000000, 0xC0000000, 0xC1000000, 0xD0000000, the ROM mirror at
+     * 0xE0000000), so `valid` is the verdict.  They are declared innermost
+     * check last: the compiler gives them r5..r10 in declaration order. */
+    int valid = 1, matched_d0 = 1, matched_c1 = 1, matched_c0 = 1, matched_mem2 = 1, matched_mem1 = 1;
+    u32 top = value & 0xFF000000U;
+    if (top != 0x80000000U && (value & 0xFF800000U) != 0x81000000U) matched_mem1 = 0;
+    if (matched_mem1 == 0 && (value & 0xF8000000U) != 0x90000000U) matched_mem2 = 0;
+    if (matched_mem2 == 0 && top != 0xC0000000U) matched_c0 = 0;
+    if (matched_c0 == 0 && (value & 0xFF800000U) != 0xC1000000U) matched_c1 = 0;
+    if (matched_c1 == 0 && (value & 0xF8000000U) != 0xD0000000U) matched_d0 = 0;
+    if (matched_d0 == 0 && (value & 0xFFFFC000U) != 0xE0000000U) valid = 0;
+    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x21B, file + 0xF0, self);
+    /* the same check on the code map, panicking with its address */
+    u32 map_value = (u32)code_map;
+    int map_valid = 1, map_matched_d0 = 1, map_matched_c1 = 1, map_matched_c0 = 1, map_matched_mem2 = 1, map_matched_mem1 = 1;
+    u32 map_top = map_value & 0xFF000000U;
+    if (map_top != 0x80000000U && (map_value & 0xFF800000U) != 0x81000000U) map_matched_mem1 = 0;
+    if (map_matched_mem1 == 0 && (map_value & 0xF8000000U) != 0x90000000U) map_matched_mem2 = 0;
+    if (map_matched_mem2 == 0 && map_top != 0xC0000000U) map_matched_c0 = 0;
+    if (map_matched_c0 == 0 && (map_value & 0xFF800000U) != 0xC1000000U) map_matched_c1 = 0;
+    if (map_matched_c1 == 0 && (map_value & 0xF8000000U) != 0xD0000000U) map_matched_d0 = 0;
+    if (map_matched_d0 == 0 && (map_value & 0xFFFFC000U) != 0xE0000000U) map_valid = 0;
+    if (map_valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x21C, file + 0x21C, code_map);
+    const nw4hbm::ut::FontCodeMap* map = (const nw4hbm::ut::FontCodeMap*)code_map;
+    u16 result = 0xFFFF; /* no entry for this code */
+    switch (map->map_type) {
+    case FONT_CODE_MAP_TYPE_OFFSET: /* a block of codes sits consecutively in the glyph table */
+        result = (u16)(map->map.offset + (code - map->start_code));
+        break;
+    case FONT_CODE_MAP_TYPE_INDEX: /* one glyph index per code */
+        result = map->map.indices[code - map->start_code];
+        break;
+    case FONT_CODE_MAP_TYPE_BINARY: { /* (code, index) pairs sorted by code */
+        const BinaryMap* binary = &map->map.binary;
+        const CodePair* low = &binary->pairs[0];
+        const CodePair* high = &binary->pairs[binary->count - 1];
+        while (low <= high) {
+            const CodePair* mid = low + (high - low) / 2;
+            if (mid->code < code) low = mid + 1;
+            else if (code < mid->code) high = mid - 1;
+            else { result = mid->index; break; }
         }
         break;
     }
-    default: Panic__Q26nw4hbm2dbFPCciPCce(base+0xC,0x255,base+0x254); break;
+    default: /* none of the three map types */
+        Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x255, file + 0x254);
+        break;
     }
     return result;
 }
