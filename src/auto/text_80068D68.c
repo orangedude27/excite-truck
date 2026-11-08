@@ -11911,6 +11911,7 @@ extern BOOLEAN l2c_link_hci_disc_comp(UINT16, UINT8);
 
 #pragma push
 #pragma inline_max_size(2000)
+#define static static inline
 static void btu_hcif_disconnection_comp_evt(UINT8 *p) {
     UINT8 status;
     UINT16 handle;
