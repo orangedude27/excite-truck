@@ -12,10 +12,33 @@ s64 __OSLastInterruptTime;
 s16 __OSLastInterrupt;
 u32 __OSLastInterruptSrr0;
 
-/* Priority order used by __OSDispatchInterrupt(); one mask per level. */
+/*
+ * Order in which __OSDispatchInterrupt() services the sources that fired: the
+ * first entry sharing a bit with the pending mask wins, and the last entry
+ * catches everything else.  Each bit is one OSInterruptType, as numbered by
+ * OS_INTR_MASK().
+ */
 static u32 InterruptPrioTable[] = {
-    0x00000100, 0x00000040, 0xF8000000, 0x00000200, 0x00000080, 0x00000010,
-    0x00003000, 0x00000020, 0x03FF8C00, 0x04000000, 0x00004000, 0xFFFFFFFF};
+    OS_INTR_MASK(OS_INTR_PI_ERROR), OS_INTR_MASK(OS_INTR_PI_DEBUG),
+    /* the memory-interface errors all share one level */
+    OS_INTR_MASK(OS_INTR_MEM_0) | OS_INTR_MASK(OS_INTR_MEM_1) |
+        OS_INTR_MASK(OS_INTR_MEM_2) | OS_INTR_MASK(OS_INTR_MEM_3) |
+        OS_INTR_MASK(OS_INTR_MEM_ADDRESS),
+    OS_INTR_MASK(OS_INTR_PI_RSW), OS_INTR_MASK(OS_INTR_PI_VI),
+    OS_INTR_MASK(OS_INTR_PI_ACR),
+    OS_INTR_MASK(OS_INTR_PI_PE_TOKEN) | OS_INTR_MASK(OS_INTR_PI_PE_FINISH),
+    OS_INTR_MASK(OS_INTR_PI_HSP),
+    /* streaming audio, the EXI channels and the other PI slow sources */
+    OS_INTR_MASK(OS_INTR_DSP_ARAM) | OS_INTR_MASK(OS_INTR_DSP_DSP) |
+        OS_INTR_MASK(OS_INTR_AI_AI) | OS_INTR_MASK(OS_INTR_EXI_0_EXI) |
+        OS_INTR_MASK(OS_INTR_EXI_0_TC) | OS_INTR_MASK(OS_INTR_EXI_0_EXT) |
+        OS_INTR_MASK(OS_INTR_EXI_1_EXI) | OS_INTR_MASK(OS_INTR_EXI_1_TC) |
+        OS_INTR_MASK(OS_INTR_EXI_1_EXT) | OS_INTR_MASK(OS_INTR_EXI_2_EXI) |
+        OS_INTR_MASK(OS_INTR_EXI_2_TC) | OS_INTR_MASK(OS_INTR_PI_SI) |
+        OS_INTR_MASK(OS_INTR_PI_DI),
+    OS_INTR_MASK(OS_INTR_DSP_AI), OS_INTR_MASK(OS_INTR_PI_CP),
+    0xFFFFFFFF /* anything left over */
+};
 
 void ExternalInterruptHandler(u8 type, OSContext* ctx);
 u32 SetInterruptMask(u32 type, u32 mask);
