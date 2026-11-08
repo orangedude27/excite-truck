@@ -18,6 +18,11 @@ extern float PSQUATMultiply(void *, void *);
 extern void *fn_8017960C();
 extern void fn_802AE0E0();
 extern float lbl_80561A50;
+typedef struct { char pad[0x4A]; unsigned char f4A; char pad4B; unsigned char f4C; } Fn80173424Child;
+typedef struct {
+    int f0; float f4; unsigned char f8; unsigned char f9; char padA[2];
+    int fC; Fn80173424Child *f10; char pad14[0]; 
+} Fn80173424Obj;
 extern double fn_8002F234(float), cos(double), sin(double);
 extern float fn_80129DC4(int,float,float);
 extern unsigned long long fn_80171FF0(void *,int,float,float);
@@ -758,6 +763,55 @@ extern "C" void *fn_80172E64(void *arg0, int arg1) {
         }
     }
 }
+
+extern "C" void fn_80173424(void *arg0) {
+    char *p = (char *)arg0;
+    char *q;
+    float one = lbl_80561A50;
+    *(int *)p = 0;
+    *(float *)(p + 4) = one;
+    p[8] = 1;
+    p[9] = 0;
+    p[0x10] = 0;
+    *(int *)(p + 0xF8) = 0;
+    *(int *)(p + 0xFC) = 0;
+    *(int *)(p + 0x100) = 0;
+    *(int *)(p + 0x104) = 0;
+    if (*(int *)(p + 0xC) != 0)
+        ((void (*)(int))fn_802AE0E0)(*(int *)(p + 0xC));
+    q = *(char **)(p + 0x14);
+    if (q != 0) {
+        q[0x4A] = 1;
+        q[0x4C] = 0;
+    }
+    q = *(char **)(p + 0x18);
+    if (q != 0) {
+        q[0x4A] = 1;
+        q[0x4C] = 0;
+    }
+    q = *(char **)(p + 0x1C);
+    if (q != 0) {
+        q[0x4A] = 1;
+        q[0x4C] = 0;
+    }
+    q = *(char **)(p + 0x24);
+    p[0x20] = 0;
+    if (q != 0) {
+        q[0x4A] = 1;
+        q[0x4C] = 0;
+    }
+    q = *(char **)(p + 0x28);
+    if (q != 0) {
+        q[0x4A] = 1;
+        q[0x4C] = 0;
+    }
+    q = *(char **)(p + 0x2C);
+    if (q != 0) {
+        q[0x4A] = 1;
+        q[0x4C] = 0;
+    }
+}
+
 #pragma cplusplus reset
 
 extern void fn_80130980(void *, int, int, float);    /* extern */
