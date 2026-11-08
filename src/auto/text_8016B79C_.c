@@ -975,91 +975,100 @@ void fn_8016D278(void *arg0) { *(u32 *)arg0=(u32)arg0+0xC; *(u32 *)((u8 *)arg0+8
 #define SET_FMT_15        (strings + 0x27C) /* "set_%i_15" */
 #define SET_BAD_DIFFICULTY (strings + 0x288) /* "Unknown difficulty specification in Ring Challenge mode." */
 
-void fn_8016D294(s32 unused, s32 flag, s32 index) {
-    char sp40[0x20];
-    char sp20[0x20];
-    register u8 *object = (u8 *)lbl_8055E378;
-    register char *format = lbl_803306D0;
-    FloatPair8016A6B0 result2, result1, result0;
-    s32 mode;
+/*
+ * Select ring set `setIndex` for the Ring Challenge master (lbl_8055E378).
+ * Marks the set active, zeroes its timer and releases every gem object it still
+ * holds, resets the gems of its "set_<index>_<5|10|15>" set (fn_8016A15C), then
+ * drops the pending map marker and queues a new one for the set: fn_8001B308
+ * reserves a slot in the shared 16-entry marker queue and that slot is kept at
+ * +0x54 so it can be released again.  Kind 0 is the only request the master
+ * handles; any other kind does nothing.
+ */
+void fn_8016D294(s32 unused, s32 kind, s32 setIndex) {
+    char setName[0x20];   /* "set_%i_5" &c., for the gem-set reset */
+    char markerName[0x20]; /* the same name, for the marker position lookup */
+    register u8 *master = (u8 *)lbl_8055E378;
+    register char *strings = lbl_803306D0;
+    FloatPair8016A6B0 pos15, pos10, pos5;
+    s32 difficulty;
 
-    if (object != 0) {
-        switch (flag) {
+    if (master != 0) {
+        switch (kind) {
         case 0:
-        *(s32 *)(object + 0x5C) = index;
-        if (index < *(s32 *)(object + 0x6C)) {
-            s32 i;
-            u8 *item;
-            s32 offset;
-            item = **(u8 ***)(object + 0x48) + index * 0x14;
-            item[9] = 1;
-            i = 0;
-            *(f32 *)(item + 0xC) = lbl_8055E3C8;
-            offset = 0;
-            *(volatile s32 *)(item + 0x10) = 0;
-            while (i < *(s32 *)(*(u8 **)item + 4)) {
-                u8 *entries = (u8 *)**(void ***)item;
-                void *handle = *(void **)(entries + offset + 4);
-                if (handle != 0) {
-                    fn_802BAF98(handle, 1);
+        RCM_SET_INDEX(master) = setIndex;
+        if (setIndex < RCM_SET_COUNT(master)) {
+            s32 gemIndex;
+            u8 *ringSet;
+            s32 gemOffset;
+            ringSet = RCM_SET_LIST(master) + setIndex * 0x14; /* 0x14-byte set entry */
+            ringSet[9] = 1;                    /* set is active */
+            gemIndex = 0;
+            *(f32 *)(ringSet + 0xC) = lbl_8055E3C8; /* its timer back to 0.0f */
+            gemOffset = 0;
+            *(volatile s32 *)(ringSet + 0x10) = 0;  /* and its counter to 0 */
+            while (gemIndex < *(s32 *)(*(u8 **)ringSet + 4)) { /* its gems */
+                u8 *gems = (u8 *)**(void ***)ringSet;
+                void *gem = *(void **)(gems + gemOffset + 4);
+                if (gem != 0) {
+                    fn_802BAF98(gem, 1);       /* release the gem object */
                 }
-                offset += 0x44;
-                i += 1;
+                gemOffset += 0x44;             /* 0x44 bytes per gem */
+                gemIndex += 1;
             }
         }
-        mode = *(s32 *)(object + 0x74);
-        switch (mode) {
+        difficulty = RCM_DIFFICULTY(master);
+        switch (difficulty) {
         case 0:
-            fn_801345D8(sp40, 0x1E, format + 0x264, *(s32 *)(object + 0x5C));
+            fn_801345D8(setName, 0x1E, SET_FMT_5, RCM_SET_INDEX(master));
             break;
         case 1:
-            fn_801345D8(sp40, 0x1E, format + 0x270, *(s32 *)(object + 0x5C));
+            fn_801345D8(setName, 0x1E, SET_FMT_10, RCM_SET_INDEX(master));
             break;
         case 2:
-            fn_801345D8(sp40, 0x1E, format + 0x27C, *(s32 *)(object + 0x5C));
+            fn_801345D8(setName, 0x1E, SET_FMT_15, RCM_SET_INDEX(master));
             break;
         default:
-            fn_802E317C(format + 0x288);
+            fn_802E317C(SET_BAD_DIFFICULTY);
             break;
         }
-        fn_8016A15C(sp40);
-        if (*(s32 *)(object + 0x54) != -1) {
-            if (*(s32 *)(object + 0x54) != -1) {
-                fn_8001B450(*(s32 *)(object + 0x54));
-                *(s32 *)(object + 0x54) = -1;
+        fn_8016A15C(setName);                  /* reset that set's gems */
+        if (RCM_MAP_MARKER(master) != -1) {
+            if (RCM_MAP_MARKER(master) != -1) {
+                fn_8001B450(RCM_MAP_MARKER(master)); /* release the old marker */
+                RCM_MAP_MARKER(master) = -1;
             }
         }
-        mode = *(s32 *)(object + 0x74);
-        switch (mode) {
+        difficulty = RCM_DIFFICULTY(master);
+        switch (difficulty) {
         case 0:
-            fn_801345D8(sp20, 0x1E, format + 0x264, *(s32 *)(object + 0x5C));
+            fn_801345D8(markerName, 0x1E, SET_FMT_5, RCM_SET_INDEX(master));
             break;
         case 1:
-            fn_801345D8(sp20, 0x1E, format + 0x270, *(s32 *)(object + 0x5C));
+            fn_801345D8(markerName, 0x1E, SET_FMT_10, RCM_SET_INDEX(master));
             break;
         case 2:
-            fn_801345D8(sp20, 0x1E, format + 0x27C, *(s32 *)(object + 0x5C));
+            fn_801345D8(markerName, 0x1E, SET_FMT_15, RCM_SET_INDEX(master));
             break;
         default:
-            fn_802E317C(format + 0x288);
+            fn_802E317C(SET_BAD_DIFFICULTY);
             break;
         }
-        mode = *(s32 *)(object + 0x74);
-        switch (mode) {
+        difficulty = RCM_DIFFICULTY(master);
+        switch (difficulty) {
         case 0:
-            result0 = fn_8016A6B0(sp20, 0xC);
-            *(s32 *)(object + 0x54) = fn_8001B308(&result0, *(s32 *)(object + 0x50), 2);
+            pos5 = fn_8016A6B0(markerName, 0xC); /* marker position, 5-ring set */
+            RCM_MAP_MARKER(master) = fn_8001B308(&pos5, RCM_MAP_ART(master), 2);
             break;
         case 1:
-            result1 = fn_8016A6B0(sp20, 9);
-            *(s32 *)(object + 0x54) = fn_8001B308(&result1, *(s32 *)(object + 0x50), 2);
+            pos10 = fn_8016A6B0(markerName, 9);  /* 10-ring set */
+            RCM_MAP_MARKER(master) = fn_8001B308(&pos10, RCM_MAP_ART(master), 2);
             break;
         case 2:
-            result2 = fn_8016A6B0(sp20, 6);
-            *(s32 *)(object + 0x54) = fn_8001B308(&result2, *(s32 *)(object + 0x50), 2);
+            pos15 = fn_8016A6B0(markerName, 6);  /* 15-ring set */
+            RCM_MAP_MARKER(master) = fn_8001B308(&pos15, RCM_MAP_ART(master), 2);
             break;
         default:
-            fn_802E317C(format + 0x288);
+            fn_802E317C(SET_BAD_DIFFICULTY);
             break;
         }
         break;
