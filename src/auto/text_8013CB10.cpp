@@ -118,7 +118,6 @@ struct ZoneMaster {
     void *w54;
     void *w58;
     void *w5C;
-    void *w5C_;
     s32 f60;
     void **p64;
     s32 f68;
