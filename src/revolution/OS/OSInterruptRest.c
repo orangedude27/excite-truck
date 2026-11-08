@@ -12,6 +12,7 @@ s64 __OSLastInterruptTime;
 s16 __OSLastInterrupt;
 u32 __OSLastInterruptSrr0;
 
+/* Priority order used by __OSDispatchInterrupt(); one mask per level. */
 static u32 InterruptPrioTable[] = {
     0x00000100, 0x00000040, 0xF8000000, 0x00000200, 0x00000080, 0x00000010,
     0x00003000, 0x00000020, 0x03FF8C00, 0x04000000, 0x00004000, 0xFFFFFFFF};
