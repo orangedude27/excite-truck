@@ -95,6 +95,7 @@ extern "C" void fn_802304EC(s32, s32, s32, s32, f32, f32, f32, f32, f32, f32, f3
 extern "C" void fn_80230650(s32, s32, s32, s32, f32, f32, f32, f32, f32, f32, f32);
 extern "C" void fn_802307AC(s32, s32, s32, s32, f32, f32, f32, f32, f32, f32, f32);
 extern "C" double fn_8002EFB4(double, double);
+extern "C" double sin(double);
 extern "C" f32 lbl_805634C0;
 extern "C" f64 lbl_805634D0;
 extern "C" f32 lbl_805634DC;
