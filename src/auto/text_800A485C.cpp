@@ -8908,6 +8908,8 @@ clear_flags:
     return 0;
 }
 
+#ifndef VF_VOLUME_TYPES_DEFINED
+#define VF_VOLUME_TYPES_DEFINED
 /* One of the 26 volume slots of the VF instance (lbl_803D2140): a slot is
  * 0x1FC8 bytes and its volume object starts 0xA0 into it.  Only the fields the
  * mount/unmount code uses are named here. */
@@ -8946,6 +8948,7 @@ struct VFiPFVolume {
 #define VF_LAST_ERROR      (*(s32 *)((u8 *)lbl_803D2140 + 0x40))
 #define VF_ERR_NO_DEVICE   0xA /* nothing mounted at that drive letter */
 #define VF_ERR_IN_USE      0x13 /* files or directories are still open */
+#endif /* VF_VOLUME_TYPES_DEFINED */
 
 extern "C" s32 fn_800B5B94(void *, s32);
 /* Unmount the drive whose letter is arg0 ('A'..'Z').
