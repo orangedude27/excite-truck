@@ -235,11 +235,11 @@ done:
 }
 
 extern void fn_801345D8(void *, ...);
-extern char lbl_80559A9C[];
-extern char lbl_80559AE4[];
-extern char lbl_80559AEC[];
-extern char lbl_80559AF0[];
-extern char lbl_80559AF4[];
+__declspec(section ".sdata") extern char lbl_80559A9C[];
+__declspec(section ".sdata") extern char lbl_80559AE4[];
+__declspec(section ".sdata") extern char lbl_80559AEC[];
+__declspec(section ".sdata") extern char lbl_80559AF0[];
+__declspec(section ".sdata") extern char lbl_80559AF4[];
 extern char lbl_8032B240[];
 typedef struct {
     char c;
