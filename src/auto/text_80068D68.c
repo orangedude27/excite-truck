@@ -15053,70 +15053,86 @@ void hidh_sec_check_complete_orig(BD_ADDR bd_addr, void *p_ref_data, UINT8 res) 
     }
 }
 
+/* L2CAP connect confirmation for a channel we opened (hidh_l2cif_connect_cfm of
+   stack/hid/hidh_api.c).  Finds the device that owns the control or interrupt
+   channel that just came up: on a failure it drops the channel and, if nothing
+   is left, tears the device down and reports HID_HDEV_EVT_CLOSE; on success it
+   runs the BTM security check for the control channel (or marks the interrupt
+   channel as waiting for its configuration) and asks for the L2CAP config. */
 static void hidh_l2cif_connect_cfm(u32 l2cap_cid, s32 result) {
     char *strings = lbl_80317838;
     UINT8 dhandle;
-    UINT8 *p_hcon = NULL;
-    UINT8 *p_dev = NULL;
-    UINT8 *entry;
+    tHID_CONN_VIEW *p_hcon = NULL;
+    tHID_HOST_DEV_CTB_VIEW *p_dev = NULL;
+    tHID_HOST_DEV_CTB_VIEW *entry;
 
-    for (dhandle = 0; dhandle < 0x10; dhandle++) {
-        entry = lbl_803C3C38 + dhandle * 0x34;
-        if (entry[0] != 0 && entry[0x10] != 0 &&
-            (l2cap_cid == *(UINT16 *)(entry + 0x14) ||
-             l2cap_cid == *(UINT16 *)(entry + 0x16))) break;
+    /* Which device does this channel belong to? */
+    for (dhandle = 0; dhandle < HIDH_MAX_DEVICES; dhandle++) {
+        entry = hh_cb_dev(dhandle);
+        if (entry->in_use != 0 && entry->conn.conn_state != 0 &&
+            (l2cap_cid == entry->conn.ctrl_cid ||
+             l2cap_cid == entry->conn.intr_cid)) break;
     }
-    if (dhandle != 0x10) {
-        p_dev = lbl_803C3C38 + dhandle * 0x34;
-        p_hcon = p_dev + 0x10;
+    if (dhandle != HIDH_MAX_DEVICES) {
+        p_dev = hh_cb_dev(dhandle);
+        p_hcon = &p_dev->conn;
     }
-    if (p_hcon == NULL || (p_hcon[1] & 1) == 0 ||
-        (l2cap_cid == *(UINT16 *)(p_hcon + 4) && p_hcon[0] != 1) ||
-        (l2cap_cid == *(UINT16 *)(p_hcon + 6) && p_hcon[0] != 2)) {
-        if (lbl_803C3C38[0x401] >= 2)
+
+    /* Not ours, we did not open it, or the channel already answered. */
+    if (p_hcon == NULL || (p_hcon->conn_flags & HID_CONN_FLAGS_IS_ORIG) == 0 ||
+        (l2cap_cid == p_hcon->ctrl_cid && p_hcon->conn_state != HID_CONN_STATE_CONNECTING) ||
+        (l2cap_cid == p_hcon->intr_cid && p_hcon->conn_state != HID_CONN_STATE_INTR_CONNECTING)) {
+        if (hh_cb_trace_level >= BT_TRACE_LEVEL_WARNING)
             ((void (*)(u32, void *, u32))fn_80070954)(
-                0x1E0001, strings + 0x1BC, l2cap_cid);
+                TRACE_LAYER_HID | TRACE_TYPE_WARNING, strings + 0x1BC, l2cap_cid); /* "HID - Rcvd unexpected conn cnf, CID 0x%x " */
         return;
     }
+
     if (result != 0) {
-        if (l2cap_cid == *(UINT16 *)(p_hcon + 4))
-            *(UINT16 *)(p_hcon + 4) = 0;
+        /* The channel is gone; forget its CID. */
+        if (l2cap_cid == p_hcon->ctrl_cid)
+            p_hcon->ctrl_cid = 0;
         else
-            *(UINT16 *)(p_hcon + 6) = 0;
-        p_dev = lbl_803C3C38 + dhandle * 0x34;
-        if (lbl_803C3C38[0x401] >= 4)
-            fn_8007093C(0x1E0003, strings + 0x44);
-        if (*(UINT16 *)(p_dev + 0x14) != 0 || *(UINT16 *)(p_dev + 0x16) != 0) {
-            p_dev[0x10] = 5;
-            if (*(UINT16 *)(p_dev + 0x16) != 0)
-                L2CA_DisconnectReq(*(UINT16 *)(p_dev + 0x16));
-            if (*(UINT16 *)(p_dev + 0x14) != 0)
-                L2CA_DisconnectReq(*(UINT16 *)(p_dev + 0x14));
+            p_hcon->intr_cid = 0;
+        p_dev = hh_cb_dev(dhandle);
+        if (hh_cb_trace_level >= BT_TRACE_LEVEL_EVENT)
+            fn_8007093C(TRACE_LAYER_HID | TRACE_TYPE_EVENT, strings + 0x44); /* "HID - disconnect" */
+        if (p_dev->conn.ctrl_cid != 0 || p_dev->conn.intr_cid != 0) {
+            /* The other channel is still up, so take the device down with it. */
+            p_dev->conn.conn_state = HID_CONN_STATE_DISCONNECTING;
+            if (p_dev->conn.intr_cid != 0)
+                L2CA_DisconnectReq(p_dev->conn.intr_cid);
+            if (p_dev->conn.ctrl_cid != 0)
+                L2CA_DisconnectReq(p_dev->conn.ctrl_cid);
         } else {
-            p_dev[0x10] = 0;
+            p_dev->conn.conn_state = HID_CONN_STATE_UNUSED;
         }
-        ((void (*)(UINT8, UINT32, UINT32, void *))(*(void **)(lbl_803C3C38 + 0x340)))(
-            dhandle, 1, result | 0x100, 0);
+        hh_cb_callback(dhandle, HID_HDEV_EVT_CLOSE, result | 0x100, NULL);
         return;
     }
-    if (l2cap_cid == *(UINT16 *)(p_hcon + 4)) {
-        p_hcon[0] = 6;
-        *(UINT16 *)(p_hcon + 0xA) = 0x100;
+
+    if (l2cap_cid == p_hcon->ctrl_cid) {
+        /* Control channel: the interrupt one may only be opened once the device
+           passed the security check for this connection. */
+        p_hcon->conn_state = HID_CONN_STATE_SECURITY;
+        p_hcon->disc_reason = 0x100;
         {
-            u16 attr = *(UINT16 *)(p_dev + 8);
-            s32 secLevel = (attr & 0x8000) ? 1 : 2;
+            u16 attr = p_dev->attr_mask;
+            s32 sec_level = (attr & 0x8000) ? 1 : 2;
             btm_sec_mx_access_request(
-                p_dev + 1, 0x11, 1, 6, secLevel,
+                p_dev->addr, 0x11 /* PSM_HID_CONTROL */, 1 /* we are the originator */,
+                6, sec_level,
                 &hidh_sec_check_complete_orig, p_dev);
         }
     } else {
-        p_hcon[0] = 3;
+        p_hcon->conn_state = HID_CONN_STATE_CONFIG;
     }
-    ((void (*)(u32, void *))L2CA_ConfigReq)(
-        l2cap_cid, (void *)(lbl_803C3C38 + 0x344));
-    if (lbl_803C3C38[0x401] >= 4)
+
+    /* Widened cast: the CID is passed as a full word, not truncated to u16. */
+    ((void (*)(u32, void *))L2CA_ConfigReq)(l2cap_cid, (void *)hh_cb_l2cap_cfg);
+    if (hh_cb_trace_level >= BT_TRACE_LEVEL_EVENT)
         ((void (*)(u32, void *, u32))fn_80070954)(
-            0x1E0003, strings + 0x1E8, l2cap_cid);
+            TRACE_LAYER_HID | TRACE_TYPE_EVENT, strings + 0x1E8, l2cap_cid); /* "HID - got CTRL conn cnf, sent cfg req, CID: 0x%x" */
 }
 
 static void hidh_l2cif_config_ind(UINT16 l2cap_cid, tL2CAP_CFG_INFO *p_cfg)
