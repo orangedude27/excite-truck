@@ -13,6 +13,20 @@ static inline void MultVecSR_inl(const float *m, const float *src, float *dst) {
         dst[2] = src[0] * m[2] + src[1] * m[5] + src[2] * m[8];
     }
 }
+typedef struct V3 { float x, y, z; } V3;
+static inline void MultVecT_inl(const float *m, const float *src, float *dst) {
+    float x, y, z;
+    if (src == dst) {
+        x = src[0] * m[0] + src[1] * m[1] + src[2] * m[2];
+        y = src[0] * m[3] + src[1] * m[4] + src[2] * m[5];
+        z = src[0] * m[6] + src[1] * m[7] + src[2] * m[8];
+        dst[0] = x; dst[1] = y; dst[2] = z;
+    } else {
+        dst[0] = src[0] * m[0] + src[1] * m[1] + src[2] * m[2];
+        dst[1] = src[0] * m[3] + src[1] * m[4] + src[2] * m[5];
+        dst[2] = src[0] * m[6] + src[1] * m[7] + src[2] * m[8];
+    }
+}
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 extern void fn_801BEB30();
 // split_file divides it into the game's real files (file_status shows its range).
