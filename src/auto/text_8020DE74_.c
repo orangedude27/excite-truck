@@ -51,6 +51,10 @@ extern float lbl_805633FC;
 
 #pragma scheduling invalid_target
 #pragma cplusplus on
+// A sound the car owns: fn_802077A4() makes the "Sound3D" ones and
+// fn_802076A0() the "SoundDash" ones; deleting one through its vtable
+// releases the sample.
+struct Sound { virtual ~Sound(); };
 extern void *lbl_8033C8C4[];
 extern "C" void fn_80128668(void *);
 extern "C" void *fn_801284F8(int, const char *);
