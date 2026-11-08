@@ -1709,7 +1709,7 @@ __declspec(section ".sdata") extern char lbl_8055A2E4[];
 extern void *fn_801E7E3C(void);
 extern int fn_80161C38(void), fn_80160998(void), fn_801E866C(int);
 extern float fn_801E7E18(void);
-extern void fn_8000FBE4(void), fn_80160A74(void), fn_8001DF08(int, int, int);
+extern void fn_8000FBE4(void), fn_80160A74(void), fn_8001DF08(int, int);
 extern void *fn_80131234(const char *);
 extern void fn_80130978(void *, int, float);
 extern float fn_80147204(void *, void *);
