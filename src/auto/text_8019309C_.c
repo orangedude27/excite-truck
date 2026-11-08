@@ -1586,7 +1586,7 @@ extern "C" void fn_80195D80(void *arg0, float arg1) {
     }
 }
 
-extern "C" void fn_80135B9C(void *, int, int, void *, void *, float);
+extern "C" void fn_80135B9C(void *, void *, void *, void *, void *, float);
 extern "C" int fn_802E30C8(const char *, ...);
 void fn_80195F6C(void *arg0, void *arg1) {
     extern float lbl_8055A488, lbl_8055A48C, lbl_8056215C, lbl_805621DC, lbl_80562210, lbl_8056221C;
