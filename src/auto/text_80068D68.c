@@ -20479,68 +20479,86 @@ typedef struct {
 #define RFC_PORT_T1_TIMEOUT         60  /* seconds to wait for a port reply */
 
 void rfc_set_port_state(void *, void *);
-void rfc_process_rpn(void *mcb, s32 a1, void *a2, void *rpn) {
-    struct S9 { u8 b[9]; };
-    struct S9 state;
-    u8 *port;
-    u8 *p2;
-    u8 ctrl;
-    u16 bits;
+/* RFCOMM Remote Port Negotiation (RPN) command/response.  A command is passed
+ * up to the user as PORT_PortNegInd(); a response to a request we sent is
+ * checked and, when the peer will not take the flow control we proposed, we
+ * retry with RTC and then fall back to no flow control at all.
+ * (rfc_int.h: rfc_process_rpn(tRFC_MCB *p_mcb, BOOLEAN is_command,
+ *                             BOOLEAN is_request, MX_FRAME *p_frame)) */
+void rfc_process_rpn(struct tRFC_MCB *p_mcb, BOOLEAN is_command, void *is_request, MX_FRAME *p_frame) {
+    tPORT_STATE port_pars;
+    tPORT_VIEW *p_port;
+    tPORT_VIEW *p_rsp_port;
+    UINT8 ctrl;         /* tRFC_PORT.expected_rsp, then tPORT_STATE.fc_type */
+    UINT16 param_mask;
 
-    port = (u8 *)port_find_mcb_dlci_port(mcb, *(u8 *)rpn);
-    if (port == NULL) {
-        if (a1 == 0) return;
-        memset(&state, 0, 9);
-        rfc_set_port_state((u8 *)&state, rpn);
-        PORT_PortNegInd(mcb, *(u8 *)rpn, (u8 *)&state, *(u16 *)((u8 *)rpn + 0x12));
+    p_port = (tPORT_VIEW *)port_find_mcb_dlci_port(p_mcb, p_frame->dlci);
+    if (p_port == NULL) {
+        /* first command on this port: hand the parameters straight to the user */
+        if (is_command == 0) return;
+        memset(&port_pars, 0, sizeof(tPORT_STATE));
+        rfc_set_port_state((u8 *)&port_pars, p_frame);
+        PORT_PortNegInd(p_mcb, p_frame->dlci, (u8 *)&port_pars, p_frame->u.rpn.param_mask);
         return;
     }
-    if (a1 != 0 && a2 != 0) {
-        state = *(struct S9 *)(port + 0x51);
-        rfc_send_rpn(mcb, *(u8 *)rpn, 0, port + 0x51, 0);
+    if (is_command != 0 && is_request != 0) {
+        /* the peer only wants to know our parameters: send them back as a reply */
+        port_pars = p_port->peer_port_pars;
+        rfc_send_rpn(p_mcb, p_frame->dlci, 0, &p_port->peer_port_pars, 0);
         return;
     }
-    state = *(struct S9 *)(port + 0x51);
-    rfc_set_port_state((u8 *)&state, rpn);
-    if (a1 != 0) {
-        PORT_PortNegInd(mcb, *(u8 *)rpn, (u8 *)&state, *(u16 *)((u8 *)rpn + 0x12));
+    port_pars = p_port->peer_port_pars;
+    rfc_set_port_state((u8 *)&port_pars, p_frame);
+    if (is_command != 0) {
+        PORT_PortNegInd(p_mcb, p_frame->dlci, (u8 *)&port_pars, p_frame->u.rpn.param_mask);
         return;
     }
-    p2 = (u8 *)port_find_mcb_dlci_port(mcb, *(u8 *)rpn);
-    if (p2 == NULL || (p2[0x69] & 6) == 0) return;
-    rfc_port_timer_stop(p2);
-    ctrl = p2[0x69];
-    if (ctrl & 2) {
-        p2[0x69] = ctrl & ~2;
-        *(struct S9 *)(p2 + 0x51) = state;
-        if (state.b[5] == 0xC || state.b[5] == 0x30) {
-            *(u16 *)((u8 *)rpn + 0x12) = 0x3F7F;
+    /* response: ignore it unless we are still waiting for an RPN answer */
+    p_rsp_port = (tPORT_VIEW *)port_find_mcb_dlci_port(p_mcb, p_frame->dlci);
+    if (p_rsp_port == NULL || (p_rsp_port->expected_rsp & (RFC_RSP_RPN | RFC_RSP_RPN_REPLY)) == 0) return;
+    rfc_port_timer_stop(p_rsp_port);
+    ctrl = p_rsp_port->expected_rsp;
+    if (ctrl & RFC_RSP_RPN_REPLY) {
+        /* the peer answered the request we sent with mask 0 */
+        p_rsp_port->expected_rsp = ctrl & ~RFC_RSP_RPN_REPLY;
+        p_rsp_port->peer_port_pars = port_pars;
+        if (port_pars.fc_type == (RFCOMM_FC_RTR_ON_INPUT | RFCOMM_FC_RTR_ON_OUTPUT) ||
+            port_pars.fc_type == (RFCOMM_FC_RTC_ON_INPUT | RFCOMM_FC_RTC_ON_OUTPUT)) {
+            /* satisfactory parameters: mark every one of them as accepted */
+            p_frame->u.rpn.param_mask = RFCOMM_RPN_PM_MASK;
         } else {
-            p2[0x56] = 0xC;
-            p2[0x69] |= 4;
-            rfc_send_rpn(mcb, *(u8 *)rpn, 1, p2 + 0x51, 0xC00);
-            rfc_port_timer_start(p2, 0x3C);
+            /* not good, try to fix them */
+            p_rsp_port->peer_port_pars.fc_type = (RFCOMM_FC_RTR_ON_INPUT | RFCOMM_FC_RTR_ON_OUTPUT);
+            p_rsp_port->expected_rsp |= RFC_RSP_RPN;
+            rfc_send_rpn(p_mcb, p_frame->dlci, TRUE, &p_rsp_port->peer_port_pars,
+                         RFCOMM_RPN_PM_RTR_ON_INPUT | RFCOMM_RPN_PM_RTR_ON_OUTPUT);
+            rfc_port_timer_start(p_rsp_port, RFC_PORT_T1_TIMEOUT);
             return;
         }
     } else {
-        p2[0x69] = ctrl & ~4;
+        p_rsp_port->expected_rsp = ctrl & ~RFC_RSP_RPN;
     }
-    bits = *(u16 *)((u8 *)rpn + 0x12);
-    if ((bits & 0xC00) == 0xC00 || (bits & 0x3000) == 0x3000) {
-        PORT_PortNegCnf(mcb, p2[0xD], (u8 *)&state, 0);
+    /* check whether all the parameters we suggested were accepted */
+    param_mask = p_frame->u.rpn.param_mask;
+    if ((param_mask & (RFCOMM_RPN_PM_RTR_ON_INPUT | RFCOMM_RPN_PM_RTR_ON_OUTPUT)) == (RFCOMM_RPN_PM_RTR_ON_INPUT | RFCOMM_RPN_PM_RTR_ON_OUTPUT) ||
+        (param_mask & (RFCOMM_RPN_PM_RTC_ON_INPUT | RFCOMM_RPN_PM_RTC_ON_OUTPUT)) == (RFCOMM_RPN_PM_RTC_ON_INPUT | RFCOMM_RPN_PM_RTC_ON_OUTPUT)) {
+        PORT_PortNegCnf(p_mcb, p_rsp_port->dlci, (u8 *)&port_pars, RFCOMM_SUCCESS);
         return;
     }
-    ctrl = p2[0x56];
-    if (ctrl == 0xC) {
-        p2[0x56] = 0x30;
-        p2[0x69] |= 4;
-        rfc_send_rpn(mcb, *(u8 *)rpn, 1, p2 + 0x51, 0x3000);
-        rfc_port_timer_start(p2, 0x3C);
+    ctrl = p_rsp_port->peer_port_pars.fc_type;
+    /* we were proposing RTR: try RTC instead */
+    if (ctrl == (RFCOMM_FC_RTR_ON_INPUT | RFCOMM_FC_RTR_ON_OUTPUT)) {
+        p_rsp_port->peer_port_pars.fc_type = (RFCOMM_FC_RTC_ON_INPUT | RFCOMM_FC_RTC_ON_OUTPUT);
+        p_rsp_port->expected_rsp |= RFC_RSP_RPN;
+        rfc_send_rpn(p_mcb, p_frame->dlci, TRUE, &p_rsp_port->peer_port_pars,
+                     RFCOMM_RPN_PM_RTC_ON_INPUT | RFCOMM_RPN_PM_RTC_ON_OUTPUT);
+        rfc_port_timer_start(p_rsp_port, RFC_PORT_T1_TIMEOUT);
         return;
     }
-    if (ctrl == 0x30) {
-        p2[0x56] = 0;
-        PORT_PortNegCnf(mcb, p2[0xD], (u8 *)&state, 0);
+    /* we were proposing RTC: the other side does not support flow control */
+    if (ctrl == (RFCOMM_FC_RTC_ON_INPUT | RFCOMM_FC_RTC_ON_OUTPUT)) {
+        p_rsp_port->peer_port_pars.fc_type = RFCOMM_FC_OFF;
+        PORT_PortNegCnf(p_mcb, p_rsp_port->dlci, (u8 *)&port_pars, RFCOMM_SUCCESS);
     }
 }
 
