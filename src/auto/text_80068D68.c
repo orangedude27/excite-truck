@@ -14391,8 +14391,21 @@ typedef void (*tHID_HOST_DEV_CALLBACK)(UINT8 dev_handle, UINT8 event, UINT32 dat
 
 /* tHID_CONN (stack/hid/hid_conn.h) as the device record holds it at 0x10, and the
    record itself (tHID_HOST_DEV_CTB of stack/hid/hidh_int.h). */
-#define HID_CONN_STATE_UNUSED         (0)
-#define HID_CONN_STATE_DISCONNECTING  (5)
+#define HID_CONN_STATE_UNUSED         (0)  /* record free */
+#define HID_CONN_STATE_CONNECTING     (1)  /* control channel connect pending */
+#define HID_CONN_STATE_INTR_CONNECTING (2) /* interrupt channel connect pending */
+#define HID_CONN_STATE_CONFIG         (3)  /* both channels up, L2CAP config pending */
+#define HID_CONN_STATE_OPENED         (4)  /* reports may flow */
+#define HID_CONN_STATE_DISCONNECTING  (5)  /* tearing the channels down */
+#define HID_CONN_STATE_SECURITY       (6)  /* control up, BTM security check running */
+
+/* conn_flags. Bit 0 says we opened the channels (the originator); the four
+   L2CAP config events masked by 0x1E are what hidh_l2cif_config_cfm waits for
+   before it reports HID_CONN_STATE_OPENED. */
+#define HID_CONN_FLAGS_IS_ORIG        0x01
+
+/* hh_cb.l2cap_cfg: the L2CAP config options every HID channel is opened with. */
+#define hh_cb_l2cap_cfg               (lbl_803C3C38 + 0x344)
 
 typedef struct {
     /* 0x10 */ u8 conn_state;        /* HID_CONN_STATE_* */
@@ -21133,6 +21146,188 @@ s32 rfc_parse_data(void *arg0, void *arg1, u8 *arg2) {
         return 4;
     default:
         return 0x32;
+    }
+}
+
+void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
+{
+    MX_FRAME *p_rx_frame = (MX_FRAME *)lbl_803C4828;
+    UINT8 *p_data;
+    s32 len;
+    UINT8 length;
+    UINT8 ll;
+    UINT8 b;
+    BOOLEAN is_command;
+    char *msgs = lbl_80319DD8;
+
+    len = p_buf->len;
+    p_data = (UINT8 *)(p_buf + 1) + p_buf->offset;
+    p_rx_frame->ea = p_data[0] & 1;
+    is_command = (p_data[0] >> 1) & 1;
+    p_rx_frame->cr = is_command;
+    p_rx_frame->type = p_data[0] & 0xFC;
+
+    if (!p_rx_frame->ea || !(UINT16)len) {
+        if (lbl_803C4828[0x414] >= 1)
+            ((void (*)(u32, void *, u32))fn_8007096C)(0x90000, msgs + 0x78, p_rx_frame->ea);
+        GKI_freebuf(p_buf);
+        return;
+    }
+
+    ll = p_data[1];
+    p_data += 2;
+    length = ll >> 1;
+    len = (UINT16)len - 2;
+    if (!(ll & 1)) {
+        len--;
+        length = length + (*p_data++ << 7);
+    }
+
+    if (length != (UINT16)len) {
+        if (lbl_803C4828[0x414] >= 1)
+            fn_8007093C(0x90000, msgs + 0x98);
+        GKI_freebuf(p_buf);
+        return;
+    }
+
+    switch (p_rx_frame->type) {
+    case 0x80:
+        if ((UINT16)len == 8) {
+            p_rx_frame->dlci = p_data[0] & 0x3F;
+            p_rx_frame->u.pn.frame_type = p_data[1] & 0xF;
+            p_rx_frame->u.pn.conv_layer = p_data[1] & 0xF0;
+            p_rx_frame->u.pn.priority = p_data[2] & 0x3F;
+            p_rx_frame->u.pn.t1 = p_data[3];
+            p_rx_frame->u.pn.mtu = p_data[4] + (p_data[5] << 8);
+            p_rx_frame->u.pn.n2 = p_data[6];
+            p_rx_frame->u.pn.k = p_data[7] & 7;
+            if (!p_rx_frame->dlci || p_rx_frame->dlci < 2 || p_rx_frame->dlci > 0x3D ||
+                p_rx_frame->u.pn.mtu < 0x17 || p_rx_frame->u.pn.mtu > 0x7FFF) {
+                if (lbl_803C4828[0x414] >= 1)
+                    fn_8007093C(0x90000, msgs + 0xA8);
+                break;
+            }
+            GKI_freebuf(p_buf);
+            rfc_process_pn(p_rfc_mcb, is_command, p_rx_frame);
+            return;
+        }
+        break;
+    case 0x20:
+        if ((UINT16)len) {
+            p_rx_frame->u.test.p_data = p_data;
+            p_rx_frame->u.test.data_len = len;
+            p_buf->offset += 2;
+            p_buf->len -= 2;
+            if (is_command) {
+                rfc_send_test((s32)p_rfc_mcb, 0, p_buf);
+            } else {
+                ((void (*)(void *, BT_HDR *))fn_800932DC)(p_rfc_mcb, p_buf);
+            }
+            return;
+        }
+        break;
+    case 0xA0:
+        if (!(UINT16)len) {
+            GKI_freebuf(p_buf);
+            rfc_process_fcon(p_rfc_mcb, is_command);
+            return;
+        }
+        break;
+    case 0x60:
+        if (!(UINT16)len) {
+            GKI_freebuf(p_buf);
+            rfc_process_fcoff(p_rfc_mcb, is_command);
+            return;
+        }
+        break;
+    case 0xE0:
+        b = p_data[0];
+        p_rx_frame->dlci = b >> 2;
+        if (!(b & 1) || !((b & 2) >> 1) || !p_rx_frame->dlci ||
+            p_rx_frame->dlci < 2 || p_rx_frame->dlci > 0x3D) {
+            if (lbl_803C4828[0x414] >= 1)
+                fn_8007093C(0x90000, msgs + 0xB8);
+            break;
+        }
+        p_rx_frame->u.msc.signals = p_data[1];
+        if (length == 3) {
+            p_rx_frame->u.msc.break_present = p_data[2] & 2;
+            p_rx_frame->u.msc.break_duration = (p_data[2] >> 4) & 0xF;
+        } else {
+            p_rx_frame->u.msc.break_present = 0;
+            p_rx_frame->u.msc.break_duration = 0;
+        }
+        GKI_freebuf(p_buf);
+        rfc_process_msc(p_rfc_mcb, is_command, p_rx_frame);
+        return;
+    case 0x10:
+        if ((UINT16)len == 1 && is_command) {
+            p_rx_frame->u.nsc.ea = p_data[0] & 1;
+            p_rx_frame->u.nsc.cr = (p_data[0] & 2) >> 1;
+            p_rx_frame->u.nsc.type = p_data[0] >> 2;
+            GKI_freebuf(p_buf);
+            ((void (*)(void *, MX_FRAME *))fn_800932D8)(p_rfc_mcb, p_rx_frame);
+            return;
+        }
+        break;
+    case 0x90:
+        if ((UINT16)len == 1 || (UINT16)len == 8) {
+            b = p_data[0];
+            p_rx_frame->dlci = b >> 2;
+            if (!(b & 1) || !((b & 2) >> 1) || !p_rx_frame->dlci ||
+                p_rx_frame->dlci < 2 || p_rx_frame->dlci > 0x3D) {
+                if (lbl_803C4828[0x414] >= 1)
+                    fn_8007093C(0x90000, msgs + 0xC8);
+                break;
+            }
+            p_rx_frame->u.rpn.is_request = ((UINT16)len == 1);
+            if (!p_rx_frame->u.rpn.is_request) {
+                p_rx_frame->u.rpn.baud_rate = p_data[1];
+                p_rx_frame->u.rpn.byte_size = p_data[2] & 3;
+                p_rx_frame->u.rpn.stop_bits = (p_data[2] >> 2) & 1;
+                p_rx_frame->u.rpn.parity = (p_data[2] >> 3) & 1;
+                p_rx_frame->u.rpn.parity_type = (p_data[2] >> 4) & 3;
+                p_rx_frame->u.rpn.fc_type = p_data[3] & 0x3F;
+                p_rx_frame->u.rpn.xon_char = p_data[4];
+                p_rx_frame->u.rpn.xoff_char = p_data[5];
+                p_rx_frame->u.rpn.param_mask = (p_data[6] + (p_data[7] << 8)) & 0x3F7F;
+            }
+            GKI_freebuf(p_buf);
+            rfc_process_rpn(p_rfc_mcb, is_command, (void *)(u32)p_rx_frame->u.rpn.is_request, p_rx_frame);
+            return;
+        }
+        break;
+    case 0x50:
+        if ((UINT16)len == 2) {
+            b = p_data[0];
+            p_rx_frame->dlci = b >> 2;
+            p_rx_frame->u.rls.line_status = p_data[1] & 0xFE;
+            if (!(b & 1) || !((b & 2) >> 1) || !p_rx_frame->dlci ||
+                p_rx_frame->dlci < 2 || p_rx_frame->dlci > 0x3D) {
+                if (lbl_803C4828[0x414] >= 1)
+                    fn_8007093C(0x90000, msgs + 0xC8);
+                break;
+            }
+            GKI_freebuf(p_buf);
+            rfc_process_rls(p_rfc_mcb, is_command, p_rx_frame);
+            return;
+        }
+        break;
+    }
+
+    GKI_freebuf(p_buf);
+    if (is_command) {
+        p_buf = GKI_getpoolbuf(2);
+        if (p_buf) {
+            UINT8 *p;
+            p_buf->offset = 12;
+            p = (UINT8 *)(p_buf + 1) + 12;
+            *p++ = 0x11;
+            *p++ = 3;
+            *p = p_rx_frame->type | (p_rx_frame->ea | (p_rx_frame->cr << 1));
+            p_buf->len = 3;
+            rfc_send_buf_uih(p_rfc_mcb, 0, p_buf);
+        }
     }
 }
 
