@@ -15225,61 +15225,73 @@ static void hidh_l2cif_config_ind(UINT16 l2cap_cid, tL2CAP_CFG_INFO *p_cfg)
     }
 }
 
-static void hidh_l2cif_config_cfm(u32 l2cap_cid, UINT16 *p_result) {
+/* L2CAP configuration confirmation for one of our HID channels
+   (hidh_l2cif_config_cfm of stack/hid/hidh_conn.c).  Finds the device that owns
+   the control or interrupt channel whose configuration was just confirmed.  A
+   configuration the peer rejected tears the channels down (the work of
+   hidh_conn_disconnect) and reports HID_HDEV_EVT_CLOSE with HID_L2CAP_CFG_FAIL;
+   otherwise this side's "config done" flag for that channel is set, and once all
+   four configurations are done on a device still waiting in
+   HID_CONN_STATE_CONFIG, the device is marked connected and the application is
+   told HID_HDEV_EVT_OPEN. */
+static void hidh_l2cif_config_cfm(u32 l2cap_cid, tL2CAP_CFG_INFO *p_cfg) {
     char *strings = lbl_80317838;
     UINT8 dhandle;
-    UINT8 *p_dev;
-    UINT8 *p_hcon = NULL;
+    tHID_HOST_DEV_CTB_VIEW *p_dev;
+    tHID_CONN_VIEW *p_hcon = NULL;
 
-    if (lbl_803C3C38[0x401] >= 4)
-        ((void (*)(u32, void *, u32, u16))fn_8007096C)(0x1E0003, strings + 0x274, l2cap_cid, *p_result);
+    if (hh_cb_trace_level >= BT_TRACE_LEVEL_EVENT)
+        ((void (*)(u32, void *, u32, u16))fn_8007096C)(TRACE_LAYER_HID | TRACE_TYPE_EVENT, strings + 0x274, l2cap_cid, p_cfg->result); /* "HID - Rcvd cfg cfm, CID: 0x%x  Result: %d" */
 
-    for (dhandle = 0; dhandle < 0x10; dhandle++) {
-        p_dev = lbl_803C3C38 + dhandle * 0x34;
-        if (p_dev[0] != 0 && p_dev[0x10] != 0 &&
-            (l2cap_cid == *(UINT16 *)(p_dev + 0x14) ||
-             l2cap_cid == *(UINT16 *)(p_dev + 0x16)))
+    /* Find the device this channel belongs to */
+    for (dhandle = 0; dhandle < HIDH_MAX_DEVICES; dhandle++) {
+        p_dev = hh_cb_dev(dhandle);
+        if (p_dev->in_use != 0 && p_dev->conn.conn_state != 0 &&
+            (l2cap_cid == p_dev->conn.ctrl_cid ||
+             l2cap_cid == p_dev->conn.intr_cid))
             break;
     }
 
-    if (dhandle != 0x10)
-        p_hcon = lbl_803C3C38 + dhandle * 0x34 + 0x10;
+    if (dhandle != HIDH_MAX_DEVICES)
+        p_hcon = &hh_cb_dev(dhandle)->conn;
 
     if (p_hcon == NULL) {
-        if (lbl_803C3C38[0x401] >= 2)
-            ((void (*)(u32, void *, u32))fn_80070954)(0x1E0001, strings + 0x21C, l2cap_cid);
+        if (hh_cb_trace_level >= BT_TRACE_LEVEL_WARNING)
+            ((void (*)(u32, void *, u32))fn_80070954)(TRACE_LAYER_HID | TRACE_TYPE_WARNING, strings + 0x21C, l2cap_cid); /* "HID - Rcvd L2CAP cfg ind, unknown CID: 0x%x" */
         return;
     }
 
-    if (*p_result != 0) {
-        p_dev = lbl_803C3C38 + dhandle * 0x34;
-        if (lbl_803C3C38[0x401] >= 4)
-            fn_8007093C(0x1E0003, strings + 0x44);
-        if (*(UINT16 *)(p_dev + 0x14) != 0 || *(UINT16 *)(p_dev + 0x16) != 0) {
-            p_dev[0x10] = 5;
-            if (*(UINT16 *)(p_dev + 0x16) != 0)
-                L2CA_DisconnectReq(*(UINT16 *)(p_dev + 0x16));
-            if (*(UINT16 *)(p_dev + 0x14) != 0)
-                L2CA_DisconnectReq(*(UINT16 *)(p_dev + 0x14));
+    /* If configuration failed, disconnect the channel(s) */
+    if (p_cfg->result != L2CAP_CFG_OK) {
+        p_dev = hh_cb_dev(dhandle);
+        if (hh_cb_trace_level >= BT_TRACE_LEVEL_EVENT)
+            fn_8007093C(TRACE_LAYER_HID | TRACE_TYPE_EVENT, strings + 0x44); /* "HID - disconnect" */
+        if (p_dev->conn.ctrl_cid != 0 || p_dev->conn.intr_cid != 0) {
+            /* The other channel is still up, so take the device down with it. */
+            p_dev->conn.conn_state = HID_CONN_STATE_DISCONNECTING;
+            if (p_dev->conn.intr_cid != 0)
+                L2CA_DisconnectReq(p_dev->conn.intr_cid);
+            if (p_dev->conn.ctrl_cid != 0)
+                L2CA_DisconnectReq(p_dev->conn.ctrl_cid);
         } else {
-            p_dev[0x10] = 0;
+            p_dev->conn.conn_state = HID_CONN_STATE_UNUSED;
         }
-        ((void (*)(UINT8, UINT32, UINT32, void *))(*(void **)(lbl_803C3C38 + 0x340)))(
-            dhandle, 1, *p_result | 0x400, 0);
+        hh_cb_callback(dhandle, HID_HDEV_EVT_CLOSE, p_cfg->result | HID_L2CAP_CFG_FAIL, NULL);
         return;
     }
 
-    if (l2cap_cid == *(UINT16 *)(p_hcon + 4))
-        p_hcon[1] |= 4;
+    if (l2cap_cid == p_hcon->ctrl_cid)
+        p_hcon->conn_flags |= HID_CONN_FLAGS_MY_CTRL_CFG_DONE;
     else
-        p_hcon[1] |= 0x10;
+        p_hcon->conn_flags |= HID_CONN_FLAGS_MY_INTR_CFG_DONE;
 
-    if ((p_hcon[1] & 0x1E) == 0x1E && p_hcon[0] == 3) {
-        p_hcon[0] = 4;
-        p_dev = lbl_803C3C38 + dhandle * 0x34;
-        p_dev[0xA] = 1;
-        ((void (*)(UINT8, UINT32, UINT32, void *))(*(void **)(lbl_803C3C38 + 0x340)))(
-            dhandle, 0, 0, 0);
+    /* If all configuration is complete, change state and tell management we are up */
+    if ((p_hcon->conn_flags & HID_CONN_FLAGS_ALL_CONFIGURED) == HID_CONN_FLAGS_ALL_CONFIGURED &&
+        p_hcon->conn_state == HID_CONN_STATE_CONFIG) {
+        p_hcon->conn_state = HID_CONN_STATE_OPENED;
+        p_dev = hh_cb_dev(dhandle);
+        p_dev->state = HID_DEV_CONNECTED;
+        hh_cb_callback(dhandle, HID_HDEV_EVT_OPEN, 0, NULL);
     }
 }
 
