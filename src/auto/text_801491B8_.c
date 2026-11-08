@@ -21,9 +21,12 @@ extern s32 fn_80179650(void);
 extern u8 lbl_8032D358[];
 extern s32 lbl_8055E3C4;
 extern f32 lbl_8055E3C8, lbl_8056163C, lbl_8056164C;
-extern u8 lbl_80559F04[];
-extern u8 lbl_80559F08[];
-extern u8 lbl_80559F0C[];
+extern u8 lbl_80559F04;
+extern u8 lbl_80559F08;
+extern u8 lbl_80559F0C;
+#define lbl_80559F04 (&lbl_80559F04)
+#define lbl_80559F08 (&lbl_80559F08)
+#define lbl_80559F0C (&lbl_80559F0C)
 static inline void StrCopyN80149658(u8 *dst, const u8 *src, int n) {
     while ((s8)(*dst++ = *src++) != 0) {
         if (--n <= 0) {
