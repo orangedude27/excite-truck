@@ -11,6 +11,15 @@ extern unsigned short lbl_8055F9CC;
 extern int fn_802B3FC4(void *);
 extern int lbl_8055CE00;
 extern int lbl_804BE248[128];
+extern char lbl_8034A408[];
+extern void *fn_80131810(void *);
+extern void fn_80131818(void *);
+extern void *fn_801284F8(int, void *);
+extern float fn_80129DC4(int, float, float);
+extern void *memset(void *, int, unsigned int);
+extern float lbl_80564C48;
+typedef int (*VFn)(void *, void *);
+#define VT(o, i) ((VFn)(*(void ***)(o))[i])
 void *fn_802B3F6C(void *arg0, int arg1) {
     if (arg0 != NULL) {
         if (arg0 != NULL) {
@@ -120,6 +129,101 @@ int fn_802B475C(void* arg0) {
     int index = fn_80129D90(0, 0, *(int*)((char*)arg0 + 4));
     return ((int*)*(void**)arg0)[index];
 }
+
+extern void fn_802B4BD8(void);
+extern void *memcpy(void *, const void *, unsigned int);
+extern int fn_80129D90(int, int, int);
+extern void *fn_8012850C(int, void *);
+extern void *fn_8002F37C(void (*)(void), int, int, int);
+extern char lbl_8034A4A0[];
+extern char lbl_8034A4AC[];
+extern char lbl_8055CE08[];
+extern float lbl_80564C30;
+extern float lbl_80564C40;
+extern float lbl_80564C44;
+extern unsigned short lbl_80564C38, lbl_80564C3A, lbl_80564C3C, lbl_80564C3E;
+extern float lbl_802FAAD0[];
+void *fn_802B47A0(void *arg0, int *arg1, void *arg2, int arg3, int **arg4) {
+    int sp[4];
+    unsigned short sel[4];
+    float quad[4];
+    float st[2];
+    int *out = (int *)arg0;
+    int a, b, cnt, n, lane, tries, k;
+    float f28, f27, f29, f30, f25, f26;
+    int (**vt)(void *, void *) = *(int (***)(void *, void *))arg2;
+
+    a = vt[7](arg2, lbl_8034A4A0);
+    n = arg3 * (arg3 * a) / 10;
+    b = (*(int (***)(void *, void *))arg2)[7](arg2, lbl_8034A4AC);
+    cnt = fn_80129D90(0, n, arg3 * (arg3 * b) / 10 + 1);
+    fn_8012850C(cnt * 0x24 + 0x10, lbl_8055CE08);
+    out[0] = (int)fn_8002F37C(fn_802B4BD8, 0, 0x24, cnt);
+    out[3] = out[0];
+    out[2] = cnt;
+    out[1] = 0;
+    f28 = (float)(arg3 / 2) * lbl_80564C30;
+    f27 = (float)arg3 * lbl_80564C30;
+    sp[0] = sp[1] = sp[2] = sp[3] = 0;
+    lane = fn_80129D90(0, 0, 4);
+    f29 = lbl_80564C40;
+    f30 = f28 * f29;
+    f25 = f27 * f29;
+    f26 = lbl_80564C44;
+    for (k = 0; k < out[2]; k++) {
+        char *src;
+        char *dst;
+        float x, y, nx, ny, ex, ey, u, v, d0, d1;
+        unsigned short code, s;
+        int *lanep;
+        tries = 0;
+        do {
+            lane = (lane + 1) & 3;
+            tries++;
+        } while (tries < 100 && sp[lane] >= ((int *)arg1[lane])[1]);
+        lanep = (int *)arg1[lane];
+        src = (char *)lanep[0] + sp[lane] * 0x24;
+        dst = (char *)out[0] + out[1] * 0x24;
+        out[1]++;
+        *(unsigned short *)(dst + 8) = *(unsigned short *)(src + 8);
+        memcpy(dst + 0xc, src + 0xc, 0x18);
+        s = *(unsigned short *)(src + 0xa);
+        x = *(float *)src * f28 * f29;
+        y = *(float *)(src + 4) * f28 * f29;
+        nx = f30 + ((float *)lbl_802FAAD0)[8 + s * 2] * x + ((float *)lbl_802FAAD0)[8 + ((s + 1) & 3) * 2] * y;
+        ny = f30 + ((float *)lbl_802FAAD0)[9 + s * 2] * x + ((float *)lbl_802FAAD0)[9 + ((s + 1) & 3) * 2] * y;
+        quad[0] = nx;
+        quad[1] = ny;
+        ex = nx + f28 * (float)((int *)lbl_802FAAD0)[lane];
+        ey = ny + f28 * (float)((int *)lbl_802FAAD0)[4 + lane];
+        quad[2] = ex;
+        quad[3] = ey;
+        d0 = ex - f25;
+        d1 = ey - f25;
+        code = 0;
+        if (d0 + d1 >= f26) code |= 1;
+        if (-d0 + d1 >= f26) code |= 2;
+        sel[0] = lbl_80564C38;
+        sel[1] = lbl_80564C3A;
+        sel[2] = lbl_80564C3C;
+        sel[3] = lbl_80564C3E;
+        u = (quad[2] - f25) / f27;
+        v = (quad[3] - f25) / f27;
+        st[0] = u;
+        st[1] = v;
+        s = sel[code];
+        *(unsigned short *)(dst + 0xa) = s;
+        sp[lane] += 1;
+        *(float *)dst = ((float *)lbl_802FAAD0)[8 + s * 2] * u + ((float *)lbl_802FAAD0)[9 + s * 2] * v;
+        *(float *)(dst + 4) = ((float *)lbl_802FAAD0)[8 + ((s + 1) & 3) * 2] * u + ((float *)lbl_802FAAD0)[9 + ((s + 1) & 3) * 2] * v;
+    }
+    *arg4[0] = sp[0];
+    *arg4[1] = sp[1];
+    *arg4[2] = sp[2];
+    *arg4[3] = sp[3];
+    return arg0;
+}
+
 #pragma scheduling on
 int fn_802B4BC0(int arg0, int arg1, int arg2) {
     return arg0 + (((arg1 & 0x1F) + ((arg2 << 5) & 0x3E0)) << 3);
