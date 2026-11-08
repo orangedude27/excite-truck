@@ -3,6 +3,17 @@
 
 #define OS_SRAM_SIZE (sizeof(OSSram) + sizeof(OSSramEx))
 
+/* Bits 0-1 of OSSram.flags are reserved; when both are set they are cleared
+ * before the base SRAM is checksummed and written back. */
+#define SRAM_FLAGS_RESERVED 0x3
+
+/* Reserved OSSramEx.gbs patterns: a write-back that covers the base SRAM
+ * resets the field to 0 when it holds either of them. */
+#define SRAM_GBS_RESERVED_MASK_0 0x7C00
+#define SRAM_GBS_RESERVED_0 0x5000
+#define SRAM_GBS_RESERVED_MASK_1 0xC0
+#define SRAM_GBS_RESERVED_1 0xC0
+
 typedef struct OSScb {
     union {
         struct {
@@ -10,11 +21,11 @@ typedef struct OSScb {
             OSSramEx sramEx;
         };
         u8 block[OS_SRAM_SIZE];
-    };            // at 0x0
-    u32 pos;      // at 0x40
-    BOOL enabled; // at 0x44
-    BOOL locked;  // at 0x48
-    BOOL sync;    // at 0x4C
+    };            // at 0x0  cached copy of the SRAM
+    u32 pos;      // at 0x40  first byte of the block still to be written back
+    BOOL enabled; // at 0x44  interrupts LockSram() disabled, for its restore
+    BOOL locked;  // at 0x48  the cache is handed out to a caller
+    BOOL sync;    // at 0x4C  the cache is in the SRAM (__OSSyncSram)
     UNKWORD WORD_0x50;
 } OSScb;
 
