@@ -228,6 +228,9 @@ struct DriverInterface {
     u8 pad351[3];
 };
 
+/* The object is handled as a void * here; cast it to name its fields. */
+#define DRIVER(p) ((struct DriverInterface *)(p))
+
 /* The float literals this unit keeps in .sdata2. */
 #define F_ZERO lbl_80561C4C  /* 0.0f */
 #define F_ONE lbl_80561C48   /* 1.0f */
