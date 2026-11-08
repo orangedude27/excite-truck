@@ -111,16 +111,16 @@ void *fn_8020DE74(void *arg0) {
     is_race = *(u32 *)((u8 *)arg0 + 0x10) == 0x50434152;
 
     if (is_race != 0) {
-        obj->child28 = fn_802077A4(labels, 5, left, right);
-        obj->child30 = fn_802077A4(labels + 0x10, 8, left, right);
+        obj->waterBounce = fn_802077A4(labels, 5, left, right);
+        obj->airtime = fn_802077A4(labels + 0x10, 8, left, right);
     } else {
-        obj->child28 = 0;
-        obj->child30 = 0;
+        obj->waterBounce = 0;
+        obj->airtime = 0;
     }
-    obj->child8 = fn_802077A4(labels + 0x1c, 5, left, right);
-    obj->child_count = 0;
-    memset(obj->children, 0, 8);
-    obj->last_child = 0;
+    obj->backfire = fn_802077A4(labels + 0x1c, 5, left, right);
+    obj->boostCount = 0;
+    memset(obj->boosts, 0, 8);
+    obj->lastBoost = 0;
 
     initial = lbl_80563368;
     i = 0;
