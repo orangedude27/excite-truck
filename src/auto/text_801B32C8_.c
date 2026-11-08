@@ -58,6 +58,9 @@ extern void fn_801B5360(s32, void *, s32);
 extern void fn_801B85E0(void *, void *, void *, void *);
 extern void fn_801B3084(void *, void *, void *, void *);
 extern f32 lbl_80562620, lbl_80562628, lbl_8056262C, lbl_80562634, lbl_80562638, lbl_8056263C, lbl_80562640, lbl_80562644, lbl_80562648;
+#pragma pack(push, 1)
+typedef struct Cp38_801B34DC { f64 d0; s32 w0; f64 d1; s32 w1; f64 d2; s32 w2; f64 d3; s32 w3; s32 w4; s32 w5; } Cp38_801B34DC;
+#pragma pack(pop)
 extern void* fn_801B3338(void*);
 extern s32 fn_801B32C8(void*, s32);
 extern s32 fn_801B3DC0(void*, u32, u32);
@@ -176,7 +179,107 @@ void fn_801B34A4(void) {
     fn_801B3DBC((void*)lbl_8055E6C0);
     memset(lbl_80435C50, 0, 0x20);
 }
-#pragma scheduling reset
+
+#pragma push
+#pragma processor 750
+void fn_801B34DC(void *arg0, void *arg1, void *arg2, V3_801B34DC *arg3, V3_801B34DC *arg4, s32 arg5) {
+    Ev38_801B34DC ev;
+    Ev38_801B34DC cp1;
+    Ev38_801B34DC cp2;
+    Ev30_801B34DC e30;
+    Ev20_801B34DC e20;
+    Ev14_801B34DC e14;
+    V3_801B34DC a = *arg3;
+    V3_801B34DC b = *arg4;
+    V3_801B34DC p1, diff, p2, sc;
+    V3_801B34DC *pos = (V3_801B34DC *)arg2;
+    void *o1 = arg0;
+    void *o2 = arg1;
+    s32 type = arg5;
+    f32 d, f;
+    void *r31;
+    void *r26;
+    s32 ok, in;
+    if (*(s32 *)((u8 *)o1 + 4) == 0) {
+        o1 = o2;
+        a.x *= lbl_80562620; a.y *= lbl_80562620; a.z *= lbl_80562620;
+        b.x *= lbl_80562620; b.y *= lbl_80562620; b.z *= lbl_80562620;
+        o2 = arg0;
+        if (arg0 != 0) type = *(s32 *)((u8 *)arg0 + 0x20);
+    }
+    fn_8017B6D4(*(void **)((u8 *)o1 + 4), &p1, arg2);
+    if (o2 != 0 && *(void **)((u8 *)o2 + 4) != 0) {
+        fn_8017B6D4(*(void **)((u8 *)o2 + 4), &p2, arg2);
+    } else {
+        p2.x = lbl_80562624; p2.y = lbl_80562624; p2.z = lbl_80562624;
+    }
+    diff.x = p1.x - p2.x; diff.y = p1.y - p2.y; diff.z = p1.z - p2.z;
+    d = PSVECDotProduct(&b, &a);
+    ok = 1;
+    in = 0;
+    if ((u32)(type - 0x6B) <= 3 && ((1 << (type - 0x6B)) & 0xD)) in = 1;
+    if (in == 0 && type >= 8) ok = 0;
+    r31 = fn_801B3338(o1);
+    if (r31 != 0 && ok != 0 && d * d > lbl_80562628 && PSVECDotProduct(&diff, &diff) > lbl_8056262C) {
+        if (o2 != 0) r26 = fn_801B3338(o2); else r26 = 0;
+        ev.a.x = p1.x * lbl_80562630 + p2.x * lbl_80562630;
+        ev.a.y = p1.y * lbl_80562630 + p2.y * lbl_80562630;
+        ev.a.z = p1.z * lbl_80562630 + p2.z * lbl_80562630;
+        ev.b = *pos;
+        ev.c = a;
+        ev.d = b;
+        ev.kind = type;
+        ev.id = *(s32 *)((u8 *)r31 + 0x1EC);
+        fn_801796CC(1, &ev, 0x38);
+        cp1 = ev;
+        fn_801B5360(0xF, &cp1, 0x38);
+        if (r26 != 0) {
+            ev.a.x *= lbl_80562620; ev.a.y *= lbl_80562620; ev.a.z *= lbl_80562620;
+            ev.id = *(s32 *)((u8 *)r26 + 0x1EC);
+            fn_801796CC(1, &ev, 0x38);
+            cp2 = ev;
+            fn_801B5360(0xF, &cp2, 0x38);
+        }
+    }
+    if (PSVECDotProduct(&p1, &p1) > lbl_80562634 && fn_801B32C8(o1, type) != 0) {
+        e20.q = *pos;
+        e20.p = p1;
+        e20.s = *(s16 *)(*(u8 **)((u8 *)o1 + 4) + 0x6C);
+        e20.id = r31 != 0 ? *(s32 *)((u8 *)r31 + 0x1EC) : -1;
+        fn_801796CC(0, &e20, 0x20);
+    }
+    if (r31 != 0 && type < 8 && ((s32 *)lbl_80435C50)[*(s32 *)((u8 *)r31 + 0x1EC)] < lbl_8055E3C4) {
+        e30.p = *pos;
+        e30.q = p1;
+        e30.r = b;
+        e30.dot = d;
+        e30.id = *(s32 *)((u8 *)r31 + 0x1EC);
+        e30.kind = type;
+        fn_801796CC(5, &e30, 0x30);
+        ((s32 *)lbl_80435C50)[*(s32 *)((u8 *)r31 + 0x1EC)] = lbl_8055E3C4;
+    }
+    if (r31 != 0 && type == 0x6D) {
+        r26 = fn_801B3338(o2);
+        fn_801B85E0(r31, r26, pos, &a);
+        fn_801B3084(r31, r26, pos, &a);
+    }
+    if (type == 0x6E) {
+        sc.x = a.x * lbl_80562638; sc.y = a.y * lbl_80562638; sc.z = a.z * lbl_80562638;
+    } else {
+        sc = a;
+    }
+    if (fn_801B3DC0((void *)lbl_8055E6C0, (u32)o1, (u32)o2) == 0 && PSVECDotProduct(&sc, &sc) > lbl_8056263C) {
+        f = PSVECMag(&sc);
+        if (lbl_80562640 < f) f = lbl_80562640;
+        f = lbl_80562644 + lbl_80562648 * (f / lbl_80562640);
+        e14.id = 0x4D2;
+        e14.p = *pos;
+        e14.w = f;
+        fn_801B5360(1, &e14, 0x14);
+        fn_801B3E24((void *)lbl_8055E6C0, pos, o1, (s32)o2, type, f);
+    }
+}
+#pragma pop
 void fn_801B3B24(void) {
 
 }
