@@ -22,7 +22,7 @@ extern void fn_8017B5D4(void *, s32, s32, f32 *, f32 *, s32, s32, s32, f32);
 extern void fn_802E30C8(void *, s32, ...);
 extern char lbl_80335950[];
 extern s32 lbl_8055E3C4;
-extern const f32 lbl_80558DC4;
+extern const f32 lbl_80558DC4[];
 extern const f32 lbl_80562524, lbl_80562528, lbl_8056252C, lbl_80562530, lbl_80562534, lbl_80562538, lbl_8056253C, lbl_80562540, lbl_80562544, lbl_80562548;
 #define F(p, o) (*(f32 *)((u8 *)(p) + (o)))
 
