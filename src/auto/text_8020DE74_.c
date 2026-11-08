@@ -138,13 +138,13 @@ void *fn_8020DE74(void *arg0) {
             *(float *)((u8 *)child + 4) = initial;
         }
         i++;
-        obj->last_child = slot[4];
+        obj->lastBoost = slot[4];
         offset += 4;
-        obj->child_count += 1;
+        obj->boostCount += 1;
     } while (i < 2);
 
-    if (is_race != 0) obj->child18 = fn_802077A4(labels + 0x38, 5, left, right);
-    else obj->child18 = 0;
+    if (is_race != 0) obj->boostManual = fn_802077A4(labels + 0x38, 5, left, right);
+    else obj->boostManual = 0;
     child = *(void * volatile *)((u8 *)obj + 8);
     if (child != 0) {
         *(void **)((u8 *)child + 0x10) = group;
