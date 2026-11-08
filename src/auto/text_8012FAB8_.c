@@ -1,5 +1,46 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+extern char lbl_80423040[];
+extern char lbl_8032B028[];
+__declspec(section ".sdata") extern char lbl_80559A5C[];
+__declspec(section ".sdata") extern char lbl_80559A64[];
+__declspec(section ".sdata") extern char lbl_80559A6C[];
+__declspec(section ".sdata") extern char lbl_80559A74[];
+__declspec(section ".sdata") extern char lbl_80559A7C[];
+__declspec(section ".sdata") extern char lbl_80559A84[];
+__declspec(section ".sdata") extern char lbl_80559A8C[];
+__declspec(section ".sdata") extern char lbl_80559A94[];
+extern int lbl_8055E044;
+typedef struct {
+    char *key;
+    char *value;
+    int tick;
+} CacheEntry;
+typedef struct {
+    char *f0;
+    char *f1;
+    float f2;
+    int f3;
+} Rec10;
+typedef struct ObjVTable ObjVTable;
+struct ObjVTable {
+    void *slot0;
+    void *slot1;
+    char *(*getName)(void *self);
+    void *(*getChild)(void *self, int index);
+    void *slot4;
+    void *slot5;
+    char *(*getString)(void *self, const char *key, char *def);
+    void *slot7;
+    int (*getInt)(void *self, const char *key, int def);
+    void *slot9;
+    float (*getFloat)(void *self, const char *key, float def);
+};
+typedef struct {
+    ObjVTable *vt;
+} Obj;
+extern Obj *fn_80131808(void *arg);
+extern void fn_80131818(Obj *arg);
 extern void *fn_80131234();
 extern void fn_8013072C(char *, int, int);
 #pragma inline off(fn_801302E0)
@@ -321,8 +362,8 @@ void fn_80130980(char *out, int size, int level, float t) {
     int mins, hundredths, tenths, secs, hours;
     int hasPrev;
     char *src;
-    char c;
     char *p;
+    char c;
     unsigned int i;
     int found;
 
@@ -387,23 +428,20 @@ void fn_80130980(char *out, int size, int level, float t) {
     }
     fn_801345D8(out, size, lbl_80559AF0, 1);
     tbl = lbl_802F8E78;
-    p = buf;
-    while (*p != 0) {
+    for (p = buf; *p != 0; p++) {
         found = 0;
-        i = 0;
-        while (found == 0 && i < 13) {
+        for (i = 0; found == 0 && i < 13; i++) {
             if (*p == tbl.e[i].c) {
                 time_append(out, size, tbl.e[i].s);
                 found = 1;
             }
-            i++;
         }
-        if (found == 0) {
+        if (!found) {
+            tmp[0] = tmp[1] = 0;
             *(short *)tmp = 0;
             tmp[0] = *p;
             time_append(out, size, tmp);
         }
-        p++;
     }
 }
 
