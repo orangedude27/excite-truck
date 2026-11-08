@@ -399,6 +399,16 @@ void fn_802AE02C(void *, void *);                      /* extern */
 void fn_802AE0B8(void *, void *);                      /* extern */
 void fn_802AE168(void *);                           /* extern */
 unsigned int strlen(const char *); /* extern */
+#define COPY_STR20(dst, src) do { \
+    unsigned char *d_ = (unsigned char *)(dst); \
+    const unsigned char *s_ = (const unsigned char *)(src); \
+    int n_ = 0x14; int c_; \
+    for (;;) { \
+        if (--n_ <= 0) { *(signed char *)(d_ - 1) = 0; } \
+        c_ = *s_++; \
+        *d_++ = c_; \
+        if ((signed char)c_ == 0) break; \
+    } } while (0)
 #pragma scheduling invalid_target
 void fn_8017272C(void *arg0, int arg1, int arg2, int arg3, int arg4) {
 extern int lbl_8055A2A0;
@@ -769,51 +779,50 @@ extern "C" void *fn_80172E64(void *arg0, int arg1) {
     }
 }
 
-extern "C" void fn_80173424(void *arg0) {
-    char *p = (char *)arg0;
-    char *q;
+extern "C" void fn_80173424(Fn80173424Obj *o) {
+    Fn80173424Child *q;
     float one = lbl_80561A50;
-    *(int *)p = 0;
-    *(float *)(p + 4) = one;
-    p[8] = 1;
-    p[9] = 0;
-    p[0x10] = 0;
-    *(int *)(p + 0xF8) = 0;
-    *(int *)(p + 0xFC) = 0;
-    *(int *)(p + 0x100) = 0;
-    *(int *)(p + 0x104) = 0;
-    if (*(int *)(p + 0xC) != 0)
-        ((void (*)(int))fn_802AE0E0)(*(int *)(p + 0xC));
-    q = *(char **)(p + 0x14);
+    o->f0 = 0;
+    o->f4 = one;
+    o->f8 = 1;
+    o->f9 = 0;
+    o->f10 = 0;
+    o->fF8 = 0;
+    o->fFC = 0;
+    o->f100 = 0;
+    o->f104 = 0;
+    if (o->fC != 0)
+        ((void (*)(int))fn_802AE0E0)(o->fC);
+    q = o->f14;
     if (q != 0) {
-        q[0x4A] = 1;
-        q[0x4C] = 0;
+        q->f4A = 1;
+        q->f4C = 0;
     }
-    q = *(char **)(p + 0x18);
+    q = o->f18;
     if (q != 0) {
-        q[0x4A] = 1;
-        q[0x4C] = 0;
+        q->f4A = 1;
+        q->f4C = 0;
     }
-    q = *(char **)(p + 0x1C);
+    q = o->f1C;
     if (q != 0) {
-        q[0x4A] = 1;
-        q[0x4C] = 0;
+        q->f4A = 1;
+        q->f4C = 0;
     }
-    q = *(char **)(p + 0x24);
-    p[0x20] = 0;
+    q = o->f24;
+    o->f20 = 0;
     if (q != 0) {
-        q[0x4A] = 1;
-        q[0x4C] = 0;
+        q->f4A = 1;
+        q->f4C = 0;
     }
-    q = *(char **)(p + 0x28);
+    q = o->f28;
     if (q != 0) {
-        q[0x4A] = 1;
-        q[0x4C] = 0;
+        q->f4A = 1;
+        q->f4C = 0;
     }
-    q = *(char **)(p + 0x2C);
+    q = o->f2C;
     if (q != 0) {
-        q[0x4A] = 1;
-        q[0x4C] = 0;
+        q->f4A = 1;
+        q->f4C = 0;
     }
 }
 
