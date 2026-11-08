@@ -3293,6 +3293,19 @@ extern "C" s32 fn_800B4D00(void);
 
 #pragma push
 #pragma use_lmw_stmw off
+/* Look for room to create a directory entry for `name` in the directory `dir`.
+ *
+ * The iterator walks the directory from its first entry.  `neededEntries` free
+ * entries (never used, or deleted) in a row are room for the new file's long
+ * name entries plus its short-name one: the first and last sector the run
+ * touches go to freeSectors, the byte position the run ends at to outPosition,
+ * and the first free entry's sector and its offset in it into outEntry.  Every
+ * entry held along the way is compared with the name; one that matches is
+ * copied into outEntry and answers VF_ERR_NAME_EXISTS.  A directory that runs
+ * out of sectors while it is walked is grown by fn_800AE620, and a name the
+ * volume will not create (fn_800B4D00) is refused before anything is read.
+ * Nothing left long enough is VF_ERR_NO_FREE_ENTRIES; 0 is room found.
+ */
 extern "C" s32 fn_800AAC08(void *outEntry, u32 neededEntries, void *dir, void *freeSectors, s32 name, s32 *outPosition) {
     struct DirCopy { u32 word[14]; };
     u8 iter[0x70];
