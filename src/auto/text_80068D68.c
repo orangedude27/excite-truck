@@ -11909,6 +11909,8 @@ extern s32 l2c_link_hci_qos_violation(u16);
 extern void l2c_link_process_num_completed_pkts(u8 *, u16);
 extern BOOLEAN l2c_link_hci_disc_comp(UINT16, UINT8);
 
+#pragma push
+#pragma inline_max_size(2000)
 static void btu_hcif_disconnection_comp_evt(UINT8 *p) {
     UINT8 status;
     UINT16 handle;
