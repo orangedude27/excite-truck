@@ -24019,6 +24019,64 @@ void sdpu_sort_attr_list(UINT16 num_attr, tSDP_DISCOVERY_DB *p_db) {
     }
 }
 
+/* ---------------------------------------------------------------------------
+ * Revolution SDK USB library (usb.c) internals.
+ *
+ * lbl_805590A0 is the library's IOS heap handle (its static "hId"):
+ * IUSB_OpenLib() creates the heap and every work buffer/control block below
+ * is allocated from it.  lbl_8031A620 is the pool holding this library's
+ * debug format strings; USB_LOG()/USB_ERR() print "USB: "/"USB ERR: " and
+ * then the string found at an offset in that pool.
+ * ------------------------------------------------------------------------- */
+#define usbHeapId lbl_805590A0
+#define usbDebugStrings lbl_8031A620
+
+/* Offsets of the format strings inside the USB debug string pool. */
+enum {
+    USB_MSG_IOS_FREE_FAILED = 0x108,      /* "iosFree(%d, 0x%x) failed: %d\n" */
+    USB_MSG_IOS_ALLOC_FAILED = 0x13C,     /* "iosAllocAligned(%d, %u) failed: %d\n" */
+    USB_MSG_INTRBLK_NO_MEM = 0x294,       /* "__IntrBlkMsgInt: Not enough memory\n" */
+    USB_MSG_INTRBLK_RESULT = 0x2B8,       /* "intr/blk ioctl returned: %d\n" */
+    USB_MSG_INTRBLK_ASYNC_NO_MEM = 0x2D8, /* "IntBlkMsgInt (async): Not enough memory\n" */
+    USB_MSG_INTRBLK_CALLBACK = 0x304      /* "intrblkmsg: cb = 0x%x cbArg = 0x%x\n" */
+};
+
+/* IOS work buffers are one cache line, allocated 32 bytes aligned. */
+#define USB_WORK_SIZE 0x20
+
+/* IPC's IPCIOVector (revolution/IPC/ipcclt.h); this unit cannot include it
+   without pulling in IOS_* prototypes that clash with its own. */
+typedef struct IPCIOVector {
+    void *base; /* 0x0 */
+    u32 length; /* 0x4 */
+} IPCIOVector;
+
+/* How many entries of USBCommandBlock::clean the async callback frees. */
+typedef enum {
+    USB_NCLEAN_CLOSEDEVICE = 0,
+    USB_NCLEAN_BULKMSG = 3,
+    USB_NCLEAN_CTRLMSG = 7,
+    USB_NCLEAN_MAX = 8
+} USBNClean;
+
+/* One /dev/usb request, allocated from usbHeapId.  For an async request it is
+   passed to _intBlkCtrlCb, which frees clean[] and then the block itself. */
+typedef struct USBCommandBlock {
+    void (*callback)(void);      /* 0x00 completion callback, called (result, arg) */
+    void *callbackArg;           /* 0x04 */
+    u8 pad08[0x0C - 0x08];
+    void *clean[USB_NCLEAN_MAX]; /* 0x0C buffers to free when the request ends */
+    s32 nclean;                  /* 0x2C how many of clean[] are in use */
+    u8 pad30[0x40 - 0x30];
+    union {
+        char path[0x40];         /* 0x40 device path (IUSB_OpenDeviceIds) */
+        struct {
+            void *buffer;        /* 0x40 transfer buffer */
+            u16 length;          /* 0x44 transfer length */
+        } msg;
+    };
+} USBCommandBlock;
+
 static void USB_LOG(const char *fmt, ...) {
     va_list list;
     if (lbl_8055DC90) {
