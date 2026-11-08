@@ -24,6 +24,7 @@ extern unsigned short lbl_80442708[];
 extern float lbl_804424B0[];
 extern int fn_801DB348(int, int, float *, int *);
 extern float fn_801DB398(float grid[4][4], float, float);
+extern void *memset(void *, int, unsigned int);
 extern char lbl_803393B8[];
 extern char lbl_803393E0[];
 extern void fn_802E317C(const char *, ...);
