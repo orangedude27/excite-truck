@@ -253,7 +253,9 @@ __declspec(section ".data") extern float lbl_80558DC0;
 extern float lbl_805612C8;
 extern float lbl_805612CC;
 
-static inline void time_append(char *dst, int size, char *str) {
+static inline void time_append(char *dstp, int sizep, char *str) {
+    char *dst = dstp;
+    int size = sizep;
     char *src;
     char c;
     while (*dst != 0) {
