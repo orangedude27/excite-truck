@@ -20414,6 +20414,70 @@ void rfc_process_pn(void *arg0, s32 arg1, void *arg2) {
     }
 }
 
+/* ---- RFCOMM Remote Port Negotiation (RPN) names ----------------------------
+ * These live in include/revolution/BTE/stack/rfcomm/port_int.h,
+ * .../stack/include/port_api.h and .../stack/include/rfcdefs.h.  This auto unit
+ * carries its own MX_FRAME / tRFC_MCB declarations and cannot include them, so
+ * the names rfc_process_rpn() needs are spelled out here (same names, same
+ * values, same offsets).
+ */
+struct tRFC_MCB;
+#ifndef PORT_API_H
+/* tPORT_STATE (port_api.h): the RFCOMM line parameters of a port */
+typedef struct {
+    UINT8 baud_rate;    /* 0x00 PORT_BAUD_RATE_* */
+    UINT8 byte_size;    /* 0x01 PORT_*_BITS */
+    UINT8 stop_bits;    /* 0x02 */
+    UINT8 parity;       /* 0x03 */
+    UINT8 parity_type;  /* 0x04 */
+    UINT8 fc_type;      /* 0x05 flow control, RFCOMM_FC_* */
+    UINT8 rx_char1;     /* 0x06 */
+    UINT8 xon_char;     /* 0x07 */
+    UINT8 xoff_char;    /* 0x08 */
+} tPORT_STATE;
+#endif
+#ifndef PORT_INT_H
+/* tPORT (port_int.h) as far as the RFCOMM port FSM reaches into it; the tx/rx
+ * queues (tPORT_DATA) and the modem control blocks are left as raw padding. */
+typedef struct {
+    UINT8   inx;                  /* 0x00 index in the port_info array */
+    UINT8   in_use;               /* 0x01 */
+    UINT8   state;                /* 0x02 PORT_STATE_* */
+    UINT8   scn;                  /* 0x03 service channel number */
+    UINT16  uuid;                 /* 0x04 */
+    UINT8   bd_addr[6];           /* 0x06 BD ADDR of the multiplexer channel */
+    UINT8   is_server;            /* 0x0C */
+    UINT8   dlci;                 /* 0x0D DLCI of the connection */
+    UINT8   error;                /* 0x0E last error detected */
+    UINT8   line_status;          /* 0x0F line status as reported by the peer */
+    UINT8   default_signal_state; /* 0x10 */
+    UINT8   pad11;                /* 0x11 */
+    UINT16  mtu;                  /* 0x12 max MTU this port can receive */
+    UINT16  peer_mtu;             /* 0x14 max MTU this port can send */
+    UINT8   queues[0x51 - 0x16];  /* 0x16 tPORT_DATA tx and rx */
+    tPORT_STATE peer_port_pars;   /* 0x51 peer's port parameters */
+    UINT8   pad5A[0x69 - 0x5A];   /* 0x5A user/peer ctrl, port_ctrl, rx flag */
+    UINT8   expected_rsp;         /* 0x69 tRFC_PORT.rfc.expected_rsp, RFC_RSP_* */
+} tPORT_VIEW;
+#endif
+#define RFC_RSP_RPN_REPLY       0x02  /* peer answers our RPN request */
+#define RFC_RSP_RPN             0x04  /* peer answers our RPN command */
+
+#define RFCOMM_FC_OFF               0x00
+#define RFCOMM_FC_RTR_ON_INPUT      0x04
+#define RFCOMM_FC_RTR_ON_OUTPUT     0x08
+#define RFCOMM_FC_RTC_ON_INPUT      0x10
+#define RFCOMM_FC_RTC_ON_OUTPUT     0x20
+
+#define RFCOMM_RPN_PM_RTR_ON_INPUT  0x0400
+#define RFCOMM_RPN_PM_RTR_ON_OUTPUT 0x0800
+#define RFCOMM_RPN_PM_RTC_ON_INPUT  0x1000
+#define RFCOMM_RPN_PM_RTC_ON_OUTPUT 0x2000
+#define RFCOMM_RPN_PM_MASK          0x3F7F
+
+#define RFCOMM_SUCCESS              0
+#define RFC_PORT_T1_TIMEOUT         60  /* seconds to wait for a port reply */
+
 void rfc_set_port_state(void *, void *);
 void rfc_process_rpn(void *mcb, s32 a1, void *a2, void *rpn) {
     struct S9 { u8 b[9]; };
