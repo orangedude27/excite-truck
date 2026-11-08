@@ -267,11 +267,11 @@ void DBPrintf_800343C8(const char *fmt, ...) {
  */
 void __DSPHandler_80034418(s16 interrupt, OSContext *oldContext) {
     OSContext context;
-    u16 dspControl;
+    u16 csr;
     u32 mail;
 
-    dspControl = *(volatile u16 *)0xCC00500A;
-    *(volatile u16 *)0xCC00500A = (dspControl & ~0x28) | 0x80;
+    csr = *(volatile u16 *)0xCC00500A;
+    *(volatile u16 *)0xCC00500A = (csr & ~0x28) | 0x80;
     OSClearContext(&context);
     OSSetCurrentContext(&context);
     while (DSPCheckMailFromDSP() == 0) {}
