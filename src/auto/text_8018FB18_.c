@@ -61,6 +61,7 @@ extern s32 fn_801796C4(void);
 extern void fn_801B86A4(s32);
 extern u8 lbl_8055E522;
 extern f32 lbl_80558DC4;
+extern char lbl_80332EC4[];
 extern double fabs(double);
 void fn_80191084(int, int);
 int fn_801B89E0(void);
