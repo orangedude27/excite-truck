@@ -6706,6 +6706,97 @@ extern "C" s32 fn_800B1AFC(s32 arg0, s32 arg1, s32 *arg2, s32 arg3) {
     return result;
 }
 
+#ifndef VF_FILE_HANDLES_DEFINED
+#define VF_FILE_HANDLES_DEFINED
+/* ---------------------------------------------------------------------
+ * A volume's file handles and its open streams.
+ *
+ * Inside every VFiPFVolume (the struct is described further down this file)
+ * sit two small tables: five open streams at 0x40, 0x29C bytes apiece, and
+ * the five file handles the application is handed at 0xD4C, 0x30 bytes
+ * apiece.  A handle says how the file was opened and points at the stream it
+ * was opened on; several handles may share one stream, which counts the
+ * handles open on it.  A stream carries the file's loaded directory entry at
+ * 0x3C (0x240 bytes: short name at +0x20E, FAT attributes at +0x21C, size at
+ * +0x228 and, at +0x22C, the volume its sectors are read and written
+ * through), the bytes a write has queued for the write thread at 0x27E and
+ * the handle that queued them at 0x284.
+ *
+ * A volume, stream or handle is a plain byte pointer through most of this
+ * file, so their fields are named with macros rather than structs: a typed
+ * access makes CodeWarrior hoist &stream->field into a register and the
+ * whole function's allocation shifts.
+ * ------------------------------------------------------------------- */
+
+/* A file handle (volume + 0xD4C + index * 0x30). */
+#define VF_HANDLE_FLAGS(f)     (*(u32 *)((u8 *)(f)))        /* 0x00 VF_HANDLE_* */
+#define VF_HANDLE_MODE(f)      (*(s32 *)((u8 *)(f) + 4))    /* 0x04 how it was opened */
+#define VF_HANDLE_STREAM(f)    (*(void **)((u8 *)(f) + 8))  /* 0x08 the stream it is on */
+#define VF_HANDLE_ERROR(f)     (*(s32 *)((u8 *)(f) + 0x18)) /* 0x18 last error on it */
+#define VF_HANDLE_PENDING(f)   (*(u16 *)((u8 *)(f) + 0x2C)) /* 0x2C of its bytes queued for writing */
+#define VF_HANDLE_OPEN         1U    /* the handle is open */
+
+/* How a handle was opened (VF_HANDLE_MODE); bit 1 is what close() compares
+ * against a write-protected volume, and bit 0 makes the stream read-only. */
+#define VF_MODE_READ_ONLY      1
+#define VF_MODE_WRITE          2
+#define VF_MODE_APPEND         4
+
+/* A stream (volume + 0x40 + index * 0x29C). */
+#define VF_STREAM_FLAGS(s)          (*(u32 *)((u8 *)(s)))            /* 0x00 VF_STREAM_* */
+#define VF_STREAM_BUFFER(s)         (*(s32 *)((u8 *)(s) + 0x20))     /* 0x20 its read buffer */
+#define VF_STREAM_ENTRY_VOLUME(s)   (*(u8 **)((u8 *)(s) + 0x38))     /* 0x38 volume the entry is read through */
+#define VF_STREAM_ENTRY(s)          ((u8 *)(s) + 0x3C)               /* 0x3C the loaded directory entry */
+#define VF_STREAM_ATTRS(s)          (*(u8 *)((u8 *)(s) + 0x258))     /* 0x258 entry+0x21C, FAT attributes */
+#define VF_STREAM_SIZE(s)           (*(u32 *)((u8 *)(s) + 0x264))    /* 0x264 entry+0x228, file size */
+#define VF_STREAM_VOLUME(s)         (*(u8 **)((u8 *)(s) + 0x268))    /* 0x268 entry+0x22C, the volume */
+#define VF_STREAM_WRITE_STATE(s)    (*(u16 *)((u8 *)(s) + 0x27C))    /* 0x27C VF_WRITE_* */
+#define VF_STREAM_WRITE_BYTES(s)    (*(u16 *)((u8 *)(s) + 0x27E))    /* 0x27E bytes queued for writing */
+#define VF_STREAM_WRITE_FILE(s)     (*(void **)((u8 *)(s) + 0x284))  /* 0x284 the handle that queued them */
+#define VF_STREAM_OPEN_COUNT(s)     (*(u16 *)((u8 *)(s) + 0x298))    /* 0x298 handles open on it */
+#define VF_STREAM_IN_USE            1U  /* the slot holds a stream */
+#define VF_STREAM_OPEN              2U  /* and is still open */
+#define VF_STREAM_READ_ONLY         4U  /* opened read-only */
+
+/* VF_STREAM_WRITE_STATE: a write goes to a thread of its own, which the
+ * handle wakes up once its bytes are queued (fn_800B786C). */
+#define VF_WRITE_RUNNING            0x0001 /* the thread is writing now */
+#define VF_WRITE_QUEUED             0x0002 /* a write is waiting for it */
+#define VF_WRITE_STATE_CLEAR        0xFFFC /* both write bits of a u16 cleared */
+
+/* VF_STREAM_ATTRS, the FAT attribute byte of the file. */
+#define VF_ATTR_READ_ONLY           0x01
+#define VF_ATTR_VOLUME_ID           0x08
+#define VF_ATTR_DIRECTORY           0x10
+
+/* The volume fields a file operation needs (see VFiPFVolume below). */
+#define VF_VOL_OPEN_FILES(v)        (*(s32 *)((u8 *)(v) + 0x161C))  /* files open on the volume */
+#define VF_VOL_CACHE_FLAGS(v)       (*(u32 *)((u8 *)(v) + 0x1624))  /* state of the page cache */
+#define VF_VOL_PAGE_OWNER(v)        (*(void **)((u8 *)(v) + 0x1644)) /* pages read now belong to this file */
+#define VF_VOL_ERROR(v)             (*(s32 *)((u8 *)(v) + 0x1F80))  /* last error of the volume */
+#define VF_VOL_LOCK(v)              ((u8 *)(v) + 0x1F90)            /* the volume's recursive lock */
+#define VF_CACHE_ACTIVE             2U    /* the page cache has been set up */
+
+#ifndef VF_LAST_ERROR
+#define VF_LAST_ERROR               (*(s32 *)((u8 *)lbl_803D2140 + 0x40))
+#endif
+
+/* What fn_800B6004 reports for a volume, and what a file operation answers
+ * with.  The mount code calls the same 0xA VF_ERR_NO_DEVICE. */
+#define VF_ERR_NOT_MOUNTED          9  /* no media, or nothing mounted */
+#define VF_ERR_BAD_REQUEST          10 /* the request does not fit the file */
+#define VF_ERR_WRITE_PROTECTED      11 /* the media cannot be written to */
+#define VF_ERR_WRITE_BUSY           25 /* another handle owns the queued write */
+
+/* A failed operation on a handle is recorded three times over: as the VF
+ * instance's last error, as the error of the volume the stream reads through
+ * and as the error of the handle itself. */
+#define VF_SET_FILE_ERROR(f, e)                                                        \
+    VF_LAST_ERROR = (e);                                                               \
+    VF_VOL_ERROR(VF_STREAM_ENTRY_VOLUME(VF_HANDLE_STREAM(f))) = (e);                   \
+    VF_HANDLE_ERROR(f) = (e)
+#endif /* VF_FILE_HANDLES_DEFINED */
+
 extern "C" s32 fn_800B6004(void *);
 extern "C" void fn_800B786C(void *);
 extern "C" void *fn_800B1BDC(void *arg0) {
