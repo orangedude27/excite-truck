@@ -150,25 +150,39 @@ void fn_801BDA70(void) {
 
 extern float lbl_80562838, lbl_8056283C, lbl_80562854;
 extern double fn_8002F234(float);
-void fn_801BE168(int index, float *v, float *a, float *b, float w) {
+extern signed char lbl_8055E7A8;
+void fn_801BE168(int index, float (*m)[3], float *a, float *b) {
     extern int lbl_8055E794;
-    float out[4], t = v[0] + v[4] + v[8], q;
+    struct V4 { float x, y, z, w; };
+    float out[4], t, q;
+    struct V4 pos, quat, la, lb;
     int i, j, k;
     float *dst = (float *)(lbl_8055E794 + index * 0xB0);
-    dst[0]=v[9]; dst[1]=v[10]; dst[2]=v[11]; dst[3]=w;
+    float *v = (float *)m;
+    t = m[0][0] + m[1][1] + m[2][2];
+    pos.x = v[9]; pos.y = v[10]; pos.z = v[11];
+    dst[0] = pos.x; dst[1] = pos.y; dst[2] = pos.z; dst[3] = pos.w;
     if (t > lbl_80562838) {
-        q=fn_8002F234(lbl_8056283C+t); out[3]=lbl_80562854*q;
-        out[0]=lbl_80562854/q*(v[5]-v[7]); out[1]=lbl_80562854/q*(v[6]-v[2]); out[2]=lbl_80562854/q*(v[1]-v[3]);
+        q = fn_8002F234(lbl_8056283C + t);
+        out[3] = lbl_80562854 * q;
+        out[0] = lbl_80562854 / q * (m[1][2] - m[2][1]);
+        out[1] = lbl_80562854 / q * (m[2][0] - m[0][2]);
+        out[2] = lbl_80562854 / q * (m[0][1] - m[1][0]);
     } else {
-        i=0; if(v[4]>v[0]) i=1; if(v[8]>v[i*3]) i=2;
-        j=(i+1)%3; k=(j+1)%3;
-        q=fn_8002F234(lbl_8056283C+v[i*3+i]-(v[j*3+j]+v[k*3+k]));
-        out[i]=lbl_80562854*q; out[3]=lbl_80562854/q*(v[j*3+k]-v[k*3+j]);
-        out[j]=lbl_80562854/q*(v[i*3+j]+v[j*3+i]); out[k]=lbl_80562854/q*(v[i*3+k]+v[k*3+i]);
+        i = 0; if (m[1][1] > m[0][0]) i = 1; if (m[2][2] > m[i][i]) i = 2;
+        j = (i + 1) % 3; k = (j + 1) % 3;
+        q = fn_8002F234(lbl_8056283C + m[i][i] - (m[j][j] + m[k][k]));
+        out[i] = lbl_80562854 * q;
+        out[3] = lbl_80562854 / q * (m[j][k] - m[k][j]);
+        out[j] = lbl_80562854 / q * (m[i][j] + m[j][i]);
+        out[k] = lbl_80562854 / q * (m[i][k] + m[k][i]);
     }
-    dst[16]=-out[0]; dst[17]=-out[1]; dst[18]=-out[2]; dst[19]=out[3];
-    dst[20]=a[0]; dst[21]=a[1]; dst[22]=a[2]; dst[23]=0.0f;
-    dst[24]=b[0]; dst[25]=b[1]; dst[26]=b[2]; dst[27]=0.0f;
+    quat.x = -out[0]; quat.y = -out[1]; quat.z = -out[2]; quat.w = out[3];
+    la.x = a[0]; la.y = a[1]; la.z = a[2];
+    lb.x = b[0]; lb.y = b[1]; lb.z = b[2];
+    dst[16] = quat.x; dst[17] = quat.y; dst[18] = quat.z; dst[19] = quat.w;
+    dst[20] = la.x; dst[21] = la.y; dst[22] = la.z; dst[23] = la.w;
+    dst[24] = lb.x; dst[25] = lb.y; dst[26] = lb.z; dst[27] = lb.w;
 }
 
 #pragma push
@@ -253,6 +267,75 @@ void fn_801BEDA8(int *arg0, int *arg1, int *arg2, int *arg3, int *arg4) {
     *arg2 = lbl_8055E79C;
     *arg3 = lbl_8055E7A4;
     *arg4 = lbl_8055E78C;
+}
+
+extern char lbl_80436D48[];
+extern char lbl_80336A60[];
+extern int lbl_8055A920;
+extern float lbl_805628B4;
+extern void *memcpy(void *, const void *, unsigned long);
+extern void fn_8001BA68(void *);
+extern void fn_801BA088(void *, int, int, int);
+extern void fn_802E30C8(const char *, ...);
+extern void GXInitLightAttnA_80144B44(void *, float, float, float);
+void fn_801BF12C(float *arg0, float *arg1);
+void fn_801BF150(void *arg0, float farg0, float farg1, float farg2, float farg3);
+void fn_801BF164(float *arg0, float *arg1);
+void GXInitLightAttnA_801BF188(void *arg0, float farg0, float farg1, float farg2);
+void fn_801BF198(void *arg0, void *arg1);
+void fn_801BF0C4(void *arg0, void *arg1, int arg2);
+void fn_801BEDD4(void) {
+    int i = 0;
+    char tmp90[16], tmp80[16], tmp70[16], tmp60[16], tmp50[16], tmp40[16];
+    float v30[3], v24[3], m2[3], m1[3];
+    int sp8;
+    while (i < lbl_8055E78C) {
+        char *p3, *p4, *p5;
+        memcpy(lbl_80436D48, (char *)lbl_8055E794 + i * 0xB0, 0xB0);
+        memcpy(lbl_80436D48 + 0xB0, (char *)lbl_8055E798 + i * 0x1F0, 0x1F0);
+        memcpy(lbl_80436D48 + 0x2A0, (char *)lbl_8055E79C + i * 0x190, 0x190);
+        lbl_8055A920 = i;
+        fn_801BA088(lbl_80436D48, 0, 0xB, 0x2A);
+        lbl_8055A920 = -1;
+        if (((unsigned char *)lbl_8055E7A0)[i] == 0) {
+            memcpy((char *)lbl_8055E794 + i * 0xB0, lbl_80436D48, 0xB0);
+            memcpy((char *)lbl_8055E798 + i * 0x1F0, lbl_80436D48 + 0xB0, 0x1F0);
+        }
+        p5 = (char *)lbl_8055E7A4 + i * 0x14;
+        p4 = (char *)lbl_8055E798 + i * 0x1F0;
+        p3 = (char *)lbl_8055E794 + i * 0xB0;
+        fn_8001BA68(m1);
+        fn_801BF198(m1, p3);
+        if (((int (*)(float *))fn_801BD628)(m1) == 0) {
+            fn_802E30C8(lbl_80336A60, m1[0], m1[1], m1[2]);
+            ((void *(*)(void *, void *))fn_801BF164)(p3, ((void *(*)(void *, float, float, float))GXInitLightAttnA_801BF188)(tmp40, lbl_80562838, lbl_805628B4, lbl_80562838));
+            ((void *(*)(void *, void *))fn_801BF12C)(p3 + 0x40, ((void *(*)(void *, float, float, float, float))fn_801BF150)(tmp50, lbl_80562838, lbl_80562838, lbl_80562838, lbl_8056283C));
+            ((void *(*)(void *, void *))fn_801BF164)(p3 + 0x50, ((void *(*)(void *, void *))fn_801BF164)(p3 + 0x60, ((void *(*)(void *, float, float, float))GXInitLightAttnA_801BF188)(tmp60, lbl_80562838, lbl_80562838, lbl_80562838)));
+            ((void *(*)(void *, void *))fn_801BF12C)(p4, ((void *(*)(void *, void *))fn_801BF12C)(p4 + 0x10, ((void *(*)(void *, void *))fn_801BF12C)(p4 + 0x20, ((void *(*)(void *, void *))fn_801BF12C)(p4 + 0x30, ((void *(*)(void *, float, float, float, float))fn_801BF150)(tmp70, lbl_80562838, lbl_80562838, lbl_80562838, lbl_80562838)))));
+            fn_801BF198(m1, p3);
+        }
+        fn_8001BA68(m2);
+        fn_801BF198(m2, p3 + 0x30);
+        {
+            char *a = p4 + 0x40;
+            char *pq = p5;
+            char *b = p4 + 0x110;
+            int j = 0;
+            char *c = p4 + 0x150;
+            do {
+                fn_8001BA68(v24);
+                fn_801BF198(v24, a);
+                sp8 = 0xFF;
+                GXInitLightAttnA_80144B44(v30, lbl_80562838, lbl_8056283C, lbl_80562838);
+                ((void (*)(void *, void *, void *, void *))fn_801BF0C4)(v24, v30, p5, &sp8);
+                ((int *)pq)[1] = sp8;
+                ((void *(*)(void *, void *))fn_801BF12C)(b, ((void *(*)(void *, float, float, float, float))fn_801BF150)(tmp80, v30[0], v30[1], v30[2], v24[1]));
+                ((void *(*)(void *, void *))fn_801BF164)(c, ((void *(*)(void *, float, float, float))GXInitLightAttnA_801BF188)(tmp90, v24[0], v24[1], v24[2]));
+                j++; a += 0x10; pq += 4; b += 0x10; c += 0x10;
+            } while (j < 4);
+        }
+        i++;
+    }
 }
 
 #pragma push
