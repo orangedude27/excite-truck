@@ -19,7 +19,10 @@ extern void fn_801933FC(void *, void *);
     extern int lbl_8055E550;
     extern float lbl_8055E3C8, lbl_80562144, lbl_80562140, lbl_80562148, lbl_80562204, lbl_805621E4;
 
-      extern void fn_80194FD0(void);
+      extern void fn_80194FD0();
+typedef struct { int a; float b; int c; } Samp80194FD0;
+#define F80194FD0(p, o) (*(float *)((unsigned char *)(p) + (o)))
+#define P80194FD0(p, o) (*(void **)((unsigned char *)(p) + (o)))
 #pragma cplusplus on
 class Vt_80194C4C {
 public:
@@ -2420,7 +2423,7 @@ extern void fn_80198488(void *);
 void fn_8019743C(void *p, void *arg1) {
     float *out = (float *)arg1;
     float diff=lbl_80562144, scale, limit, f, t, v, x, y;
-    int decay=1, active=0, index,bits,mode,failed,selected;
+    int decay=1, index,bits,mode,failed,selected,active=0;
     unsigned char *side;
     if(((u8 *)p)[0x9c] || ((u8 *)p)[0x74]) active=1;
     if(active) {
@@ -2478,7 +2481,7 @@ void fn_8019743C(void *p, void *arg1) {
             if(((u8 *)p)[0x74] && (unsigned char)fn_80193110(p,*(int *)((u8 *)p+0x90))) scale*=lbl_80562174;
             if(((u8 *)p)[0x9c] && fn_80193110(p,*(int *)((u8 *)p+0xb8))) scale*=lbl_80562174;
         }
-        if(failed && (((u8 *)p)[0x2fd] || *(float *)(side+8)<lbl_805621DC)) *(int *)((u8 *)p+0x2d0)|=0x40;
+        if(failed) { t=*(float *)(side+8); if(((u8 *)p)[0x2fd] || t<lbl_805621DC) *(int *)((u8 *)p+0x2d0)|=0x40; }
         t=*(float *)((u8 *)p+0x278)+lbl_8056215C**(float *)((u8 *)p+0x27c);
         f=*(float *)((u8 *)p+0xc4);
         if(t<f) diff=f-t;
