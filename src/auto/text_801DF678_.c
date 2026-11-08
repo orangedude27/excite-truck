@@ -337,7 +337,18 @@ extern float lbl_80562C58, lbl_80562C5C, lbl_80562C60, lbl_80562C64, lbl_80562C6
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" void fn_801E0300(void *arg0) {
+/* One frame of the slip/skid effects the manager built by fn_801DF6FC holds.
+ *
+ * For every running instance (one per vehicle in lbl_804348E8) it adds a
+ * frame to the instance's timers and, while its sound has not started yet,
+ * builds up slip from the vehicle's speed and spin; once that slip passes a
+ * named zone's threshold the zone's sound is started.  A waiting instance
+ * charges up while the vehicle is slipping, and reaching full charge - or
+ * the slip stopping - raises the effect and pokes one of the manager's three
+ * cycling effect objects to play it; a raised or never-started instance then
+ * fades back down and tells the sound manager about the change.
+ */
+extern "C" void fn_801E0300(void *manager) {
     struct FxIface {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
         virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9();
@@ -347,94 +358,96 @@ extern "C" void fn_801E0300(void *arg0) {
         virtual void v25(); virtual void v26(); virtual void v27(); virtual void v28(); virtual void v29();
         virtual void v30(); virtual void v31(); virtual void v32(); virtual void v33(); virtual void v34();
         virtual void v35(); virtual void v36(); virtual void v37(); virtual void v38(); virtual void v39();
-        virtual void notify(int, int);
+        virtual void notify(int, int);   /* slot 0xA0: instance, vehicle field 0x26A4 */
     };
-    char *obj;
-    char *p;
-    int *tbl;
-    char *e;
-    int i, j, redraw, same;
-    float f31, f30, f29, f28, f27, f26, f25, f24, f23, f22, f21, f20, f19, f18, f17, f16;
-    if ((((int *)__AXFXGetLfoSinTable_801769CC())[1] & 0x4000) != 0) return;
-    tbl = lbl_804348E8;
-    f25 = lbl_80562C1C; f26 = lbl_80562C4C; f27 = lbl_80562C68;
-    e = (char *)arg0 + 4;
-    f29 = lbl_80562C6C; f30 = lbl_80562C3C;
+    char *vehicle;
+    char *zone;
+    int *vehicles;
+    struct SlipEntry *entry;
+    int i, j, changed, muted;
+    float fadeStep, chargeMin, chargeDecay, fullCharge, chargeMax, chargeStep, zero,
+          slipScale, spinLimit, speedLimit, frameTime, time, sinceSlip, slipLimit,
+          fadeTo, timeDiv;
+    if ((((int *)__AXFXGetLfoSinTable_801769CC())[1] & 0x4000) != 0) return;   /* session flags */
+    vehicles = lbl_804348E8;
+    zero = lbl_80562C1C; chargeStep = lbl_80562C4C; chargeMax = lbl_80562C68;
+    entry = (struct SlipEntry *)((char *)manager + 4);
+    chargeDecay = lbl_80562C6C; chargeMin = lbl_80562C3C;
     i = 0;
-    f21 = lbl_80562C58; f22 = lbl_80562C60; f24 = lbl_80562C5C; f23 = lbl_80562C64;
-    f31 = lbl_80562C70; f17 = lbl_80562C74; f16 = lbl_80562C18; f28 = lbl_80562C20;
-    for (; i < lbl_8055E4D0; tbl++, e += 0x1C, i++) {
-        obj = (char *)*tbl;
-        if ((float)__fabs((double)*(float *)(obj + 0x2690)) <= lbl_80558DC4) continue;
-        *(float *)(e + 0xC) += f21;
-        if (*(unsigned char *)(e + 0x14) == 0) {
-            float mag = PSVECMag(obj + 0x124);
-            float mag2 = PSVECMag(obj + 0x118);
-            *(float *)(e + 0x10) += f21 * (lbl_8055AE34 * mag2 + lbl_8055AE38 * mag);
-            same = ((int *)__AXFXGetLfoSinTable_801769CC())[1] == 0x180201;
-            if (!same && *(float *)(e + 0xC) > lbl_8055AE3C) {
-                *(int *)(e + 0x18) = -1;
-                p = (char *)arg0;
-                for (j = 0; j < *(int *)((char *)arg0 + 0x1B0); p += 0x28, j++) {
-                    if (*(float *)(e + 0x10) > *(float *)(p + 0x110)) *(int *)(e + 0x18) = j;
+    frameTime = lbl_80562C58; speedLimit = lbl_80562C60; slipScale = lbl_80562C5C; spinLimit = lbl_80562C64;
+    fadeStep = lbl_80562C70; fadeTo = lbl_80562C74; timeDiv = lbl_80562C18; fullCharge = lbl_80562C20;
+    for (; i < lbl_8055E4D0; vehicles++, entry++, i++) {
+        vehicle = (char *)*vehicles;
+        if ((float)__fabs((double)*(float *)(vehicle + 0x2690)) <= lbl_80558DC4) continue;
+        entry->elapsed += frameTime;
+        if (entry->started == 0) {
+            float spin = PSVECMag(vehicle + 0x124);
+            float speed = PSVECMag(vehicle + 0x118);
+            entry->slip += frameTime * (lbl_8055AE34 * speed + lbl_8055AE38 * spin);
+            muted = ((int *)__AXFXGetLfoSinTable_801769CC())[1] == 0x180201;
+            if (!muted && entry->elapsed > lbl_8055AE3C) {
+                entry->zone = -1;
+                zone = (char *)manager;
+                for (j = 0; j < *(int *)((char *)manager + 0x1B0); zone += 0x28, j++) {
+                    if (entry->slip > *(float *)(zone + 0x110)) entry->zone = j;
                 }
-                if (*(int *)(e + 0x18) >= 0)
-                    fn_8014E61C(i, 4, *(float *)((char *)arg0 + *(int *)(e + 0x18) * 0x28 + 0x134));
-                *(unsigned char *)(e + 0x14) = 1;
+                if (entry->zone >= 0)
+                    fn_8014E61C(i, 4, *(float *)((char *)manager + entry->zone * 0x28 + 0x134));
+                entry->started = 1;
             }
         }
         {
-            float spd = *(float *)(obj + 0x25D4);
-            f20 = lbl_8055E3C8;
-            f19 = f20 - *(float *)(obj + 0x26A0);
-            f18 = lbl_80562C5C;
-            if (spd > f22 || PSVECDotProduct(obj + 0x124, obj + 0x124) > f23)
-                f18 *= f24;
+            float wheelSpin = *(float *)(vehicle + 0x25D4);
+            time = lbl_8055E3C8;
+            sinceSlip = time - *(float *)(vehicle + 0x26A0);
+            slipLimit = lbl_80562C5C;
+            if (wheelSpin > speedLimit || PSVECDotProduct(vehicle + 0x124, vehicle + 0x124) > spinLimit)
+                slipLimit *= slipScale;
         }
-        redraw = 0;
-        if (*(float *)(e + 4) < f25 && *(unsigned char *)(e + 8) == 0) {
-            if (*(unsigned char *)(obj + 0x260E) != 0 && f19 < f18 && fn_80179650() == 1) {
-                *(float *)e += f26;
-                if (*(int *)((char *)arg0 + *(int *)((char *)arg0 + 0x108) * 4 + 0xFC) != 0 && *(int *)(obj + 0x1F0) == 0x50 && fn_80009C84() == 0) {
-                    char *q = (char *)*(int *)((char *)arg0 + *(int *)((char *)arg0 + 0x108) * 4 + 0xFC);
-                    q[0x49] = 1; q[0x4B] = 0; q[0x4A] = 0;
-                    *(int *)((char *)arg0 + 0x108) = (*(int *)((char *)arg0 + 0x108) + 1) % 3;
+        changed = 0;
+        if (entry->timer < zero && entry->active == 0) {
+            if (*(unsigned char *)(vehicle + 0x260E) != 0 && sinceSlip < slipLimit && fn_80179650() == 1) {
+                entry->charge += chargeStep;
+                if (*(int *)((char *)manager + *(int *)((char *)manager + 0x108) * 4 + 0xFC) != 0 && *(int *)(vehicle + 0x1F0) == 0x50 && fn_80009C84() == 0) {
+                    char *effect = (char *)*(int *)((char *)manager + *(int *)((char *)manager + 0x108) * 4 + 0xFC);
+                    effect[0x49] = 1; effect[0x4B] = 0; effect[0x4A] = 0;
+                    *(int *)((char *)manager + 0x108) = (*(int *)((char *)manager + 0x108) + 1) % 3;
                 }
             }
-            if (*(float *)e >= f27) {
-                *(float *)e = f28;
-                *(unsigned char *)(e + 8) = 1;
-                *(float *)(e + 4) = f20;
-                if (*(int *)((char *)arg0 + 0xF8) != 0 && *(int *)(obj + 0x1F0) == 0x50 && fn_80009C84() == 0) {
-                    char *q = (char *)*(int *)((char *)arg0 + 0xF8);
-                    q[0x49] = 1; q[0x4B] = 0; q[0x4A] = 0;
+            if (entry->charge >= chargeMax) {
+                entry->charge = fullCharge;
+                entry->active = 1;
+                entry->timer = time;
+                if (*(int *)((char *)manager + 0xF8) != 0 && *(int *)(vehicle + 0x1F0) == 0x50 && fn_80009C84() == 0) {
+                    char *effect = (char *)*(int *)((char *)manager + 0xF8);
+                    effect[0x49] = 1; effect[0x4B] = 0; effect[0x4A] = 0;
                 }
-            } else if (f19 >= f18) {
-                *(float *)(e + 4) = f20;
-                if (*(int *)((char *)arg0 + 0x10C) != 0 && *(int *)(obj + 0x1F0) == 0x50 && fn_80009C84() == 0) {
-                    char *q = (char *)*(int *)((char *)arg0 + 0x10C);
-                    q[0x49] = 1; q[0x4B] = 0; q[0x4A] = 0;
+            } else if (sinceSlip >= slipLimit) {
+                entry->timer = time;
+                if (*(int *)((char *)manager + 0x10C) != 0 && *(int *)(vehicle + 0x1F0) == 0x50 && fn_80009C84() == 0) {
+                    char *effect = (char *)*(int *)((char *)manager + 0x10C);
+                    effect[0x49] = 1; effect[0x4B] = 0; effect[0x4A] = 0;
                 }
             } else {
-                float v = *(float *)e - f29;
-                *(float *)e = v > f30 ? v : f30;
+                float down = entry->charge - chargeDecay;
+                entry->charge = down > chargeMin ? down : chargeMin;
             }
         } else {
-            if (*(unsigned char *)(e + 8) == 0) {
-                float v = *(float *)e - f31;
-                *(float *)e = v > f25 ? v : f25;
+            if (entry->active == 0) {
+                float down = entry->charge - fadeStep;
+                entry->charge = down > zero ? down : zero;
             }
-            if (f20 - *(float *)(e + 4) > lbl_8055AE40 / f16) {
-                redraw = 1;
-                if (*(unsigned char *)(e + 8) != 0) {
-                    *(float *)(obj + 0x258C) = f17;
-                    *(unsigned char *)(obj + 0x259D) = 0;
+            if (time - entry->timer > lbl_8055AE40 / timeDiv) {
+                changed = 1;
+                if (entry->active != 0) {
+                    *(float *)(vehicle + 0x258C) = fadeTo;
+                    *(unsigned char *)(vehicle + 0x259D) = 0;
                 }
             }
         }
-        if (redraw != 0) {
+        if (changed != 0) {
             FxIface *o = (FxIface *)fn_801B83A0();
-            o->notify(i, *(int *)(obj + 0x26A4));
+            o->notify(i, *(int *)(vehicle + 0x26A4));
         }
     }
 }
