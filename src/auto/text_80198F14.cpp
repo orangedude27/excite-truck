@@ -3236,7 +3236,7 @@ extern "C" void fn_801A2684(void* arg0, f32* arg1, f32* arg2) {
     arg2[2] = *(f32*)((u8*)temp_r3 + 0x2C) + temp_f1;
 }
 
-struct Fn801A26FCMtx { f32 m[12]; };
+struct Fn801A26FCMtx { f32 m[9]; Vec t; };
 struct Fn801A26FCObj {
     virtual void v08(); virtual void v0C(); virtual void v10(); virtual void v14();
     virtual void v18(); virtual void v1C(); virtual void v20(); virtual void v24();
@@ -3287,6 +3287,7 @@ extern "C" void fn_801A26FC(void* arg0, void* arg1) {
     f32* list;
     s32 pad;
     f32 depth;
+    Fn801A26FCObj* other = (Fn801A26FCObj*)arg1;
     u32 type = *(u32*)((u8*)arg1 + 0x18);
     if ((type - 0x47525500U) == 0x5550U) {
         f32* a = *(f32**)((u8*)arg0 + 0xC);
@@ -3295,12 +3296,11 @@ extern "C" void fn_801A26FC(void* arg0, void* arg1) {
         delta.y = a[10] - b[10];
         delta.z = a[11] - b[11];
         f32 d = PSVECDotProduct(&delta, &delta);
-        f32 radius = *(f32*)((u8*)arg0 + 0x24) +
-            ((f32 (*)(void*))(*(u32*)(*(u32*)arg1 + 0x3C)))(arg1);
+        f32 radius = *(f32*)((u8*)arg0 + 0x24) + other->getRadius();
         if (d < radius * radius) {
-            u8* obj = *(u8**)((u8*)arg1 + 0x17C);
+            Fn801A26FCObj* obj = *(Fn801A26FCObj**)((u8*)arg1 + 0x17C);
             u8* owner;
-            pos = *(Vec*)(obj + 0x38);
+            pos = *(Vec*)((u8*)obj + 0x38);
             vecA[0] = lbl_805622D0; vecA[1] = lbl_805622D0; vecA[2] = lbl_805622D0;
             vecB[0] = lbl_805622D0; vecB[1] = lbl_805622D0; vecB[2] = lbl_805622D0;
             owner = *(u8**)((u8*)arg1 + 4);
@@ -3315,15 +3315,15 @@ extern "C" void fn_801A26FC(void* arg0, void* arg1) {
                 pos.y = pos.y + *(f32*)(owner + 0x34);
                 pos.z = pos.z + *(f32*)(owner + 0x38);
             }
-            mtx = *((Fn801A26FCMtx* (*)(void*))(*(u32*)(*(u32*)obj + 0x54)))(obj);
+            mtx = *obj->getMtx();
             f32* m = mtx.m;
             MtxMulVecPosInl(m, &pos.x, tmp);
             m[9] = m[9] + tmp[0];
             m[10] = m[10] + tmp[1];
             m[11] = m[11] + tmp[2];
-            pos68[0] = *(f32*)(obj + 0x24);
-            pos68[1] = *(f32*)(obj + 0x28);
-            pos68[2] = *(f32*)(obj + 0x2C);
+            pos68[0] = *(f32*)((u8*)obj + 0x24);
+            pos68[1] = *(f32*)((u8*)obj + 0x28);
+            pos68[2] = *(f32*)((u8*)obj + 0x2C);
             fn_801C28A8(*(void**)((u8*)arg0 + 0x30), m, pos68, vecA, vecB,
                         *(s32*)((u8*)arg0 + 0x28), *(s32*)((u8*)arg0 + 0x2C), outHit, outN);
             if (PSVECDotProduct((Vec*)outN, (Vec*)outN) > lbl_805623AC) {
@@ -3332,7 +3332,7 @@ extern "C" void fn_801A26FC(void* arg0, void* arg1) {
             }
         }
     } else if ((type - 0x424F5800U) == 0x5820U) {
-        f32* o = ((f32* (*)(void*))(*(u32*)(*(u32*)arg1 + 0x50)))(arg1);
+        f32* o = other->getPos();
         f32* p = *(f32**)((u8*)arg0 + 0xC);
         delta2.x = p[9] - o[9];
         delta2.y = p[10] - o[10];
@@ -3355,7 +3355,7 @@ extern "C" void fn_801A26FC(void* arg0, void* arg1) {
             pos50[0] = *(f32*)((u8*)arg1 + 0x24);
             pos50[1] = *(f32*)((u8*)arg1 + 0x28);
             pos50[2] = *(f32*)((u8*)arg1 + 0x2C);
-            void* r4 = ((void* (*)(void*))(*(u32*)(*(u32*)arg1 + 0x50)))(arg1);
+            void* r4 = other->getPos();
             fn_801C28A8(*(void**)((u8*)arg0 + 0x30), r4, pos50, vecA2, vecB2, 0, -1, 0, 0);
         }
     } else if ((type - 0x504F4C00U) == 0x4C59U) {
