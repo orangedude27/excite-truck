@@ -27,15 +27,18 @@ extern u8 lbl_80559F0C;
 #define lbl_80559F04 (&lbl_80559F04)
 #define lbl_80559F08 (&lbl_80559F08)
 #define lbl_80559F0C (&lbl_80559F0C)
-static inline void StrCopyN80149658(u8 *dst, const u8 *src, int n) {
-    // copy at most n chars, always terminated
-    while ((s8)(*dst++ = *src++) != 0) {
-        if (--n <= 0) {
-            dst[-1] = 0;
-            break;
-        }
-    }
-}
+/* copy at most n chars, always terminated; macro keeps source-first evaluation order */
+#define StrCopyN80149658(d, s, cnt) do { \
+    const u8 *sp_ = (s); \
+    u8 *dp_ = (d); \
+    int n_ = (cnt); \
+    while ((s8)(*dp_++ = *sp_++) != 0) { \
+        if (--n_ <= 0) { \
+            dp_[-1] = 0; \
+            break; \
+        } \
+    } \
+} while (0)
 #include "revolution/MTX/mtxtypes.h"
 typedef struct { void *pad[3]; void *(*get)(void *, int); } IterFC;
 typedef struct { void *pad[3]; int (*has)(void *, void *); void *(*next)(void *, void *); } IterFD;
