@@ -35,9 +35,7 @@ typedef struct {
 
 /* MSL <cctype>: the C locale table reached through the global locale object. */
 static inline int msl_isdigit(int c) {
-    int locale = *(int *)((char *)&lbl_802FE850 + 0x38);
-    return (c < 0 || c >= 0x100) ? 0
-                                 : (*(unsigned short *)(*(int *)(locale + 8) + c * 2) & 8);
+    return (c < 0 || c >= 256) ? 0 : (*(const unsigned short **)((char *)lbl_802FE850.cmap + 8))[c] & 8;
 }
 
 const char* parse_format_80109DEC(const char* format_string, scan_format *format) {
