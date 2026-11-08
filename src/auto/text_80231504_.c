@@ -767,61 +767,63 @@ typedef struct GTexBlock {
 
 #pragma push
 #pragma small_data on
-s32 fn_80232578(const char *arg0) {
-    register char *stringBase = lbl_80340440;
+s32 fn_80232578(const char *name) {
+    /* gText: load a font texture ("GETX" block) by name.
+     * Returns the block, already cached under the same name, or 0 on failure. */
+    register char *stringBase = gTexMessages;
     s32 index;
     s32 offset;
     u8 *data;
     u8 *record;
     u8 *record2;
-    s32 tempWide;
-    u8 temp2;
-    s32 unused;
-    u32 size;
-    u8 valid;
+    s32 swapWide;
+    u8 swapByte2;
+    s32 dataSize;
+    u32 version;
+    u8 firstLoad;
     u8 swap;
-    void *parsed;
+    void *rawBlock;
     struct { char name[0xC]; s32 pad; } nameBuffer;
     s32 i;
-    u8 temp;
+    u8 swapByte;
     u32 value;
 
-    index = fn_8023150C(arg0);
+    index = fn_8023150C(name);
     if (index >= 0) {
         offset = index * 0xC;
-        data = lbl_8055F068 + offset;
+        data = gTexBlockTable + offset;
         value = *(u32 *)(data + 8);
         *(u32 *)(data + 8) = value + 1;
-        value = (u32)fn_80231730((s32)arg0);
+        value = (u32)fn_80231730((s32)name);
         *(u32 *)((u8 *)*(u32 *)data + 8) = value;
         return *(s32 *)data;
     }
 
-    valid = 0;
+    firstLoad = 0;
     swap = 0;
-    unused = 0;
-    parsed = fn_8012C370(arg0, 0x47544558, &size, &unused, &valid, &swap);
-    data = (u8 *)parsed;
-    if (parsed != 0) {
-        if (size != 8) {
-            ((void (*)(const char *, ...))fn_802E317C)(stringBase + 0xE4, arg0, size);
+    dataSize = 0;
+    rawBlock = fn_8012C370(name, GETX_FOURCC, &version, &dataSize, &firstLoad, &swap);
+    data = (u8 *)rawBlock;
+    if (rawBlock != 0) {
+        if (version != 8) {
+            ((void (*)(const char *, ...))fn_802E317C)(stringBase + GTEX_MSG_BAD_VERSION, name, version);
         }
-        if (valid == 0) {
-            ((void (*)(const char *, ...))fn_802E317C)(stringBase + 0x108, arg0);
+        if (firstLoad == 0) {
+            ((void (*)(const char *, ...))fn_802E317C)(stringBase + GTEX_MSG_NULL_FONT, name);
         }
     } else {
-        ((void (*)(const char *, ...))fn_802E30C8)(stringBase + 0x144, arg0);
+        ((void (*)(const char *, ...))fn_802E30C8)(stringBase + GTEX_MSG_NO_BLOCK, name);
         return 0;
     }
 
     if (swap != 0) {
-        temp = data[0xC]; data[0xC] = data[0xD]; data[0xD] = temp;
-        temp = data[0x14]; data[0x14] = data[0x17]; data[0x17] = temp;
-        temp = data[0x15]; data[0x15] = data[0x16]; data[0x16] = temp;
-        temp = data[0x10]; data[0x10] = data[0x13]; data[0x13] = temp;
-        temp = data[0x11]; data[0x11] = data[0x12]; data[0x12] = temp;
-        temp = data[0x18]; data[0x18] = data[0x1B]; data[0x1B] = temp;
-        temp = data[0x19]; data[0x19] = data[0x1A]; data[0x1A] = temp;
+        swapByte = data[0xC]; data[0xC] = data[0xD]; data[0xD] = swapByte;
+        swapByte = data[0x14]; data[0x14] = data[0x17]; data[0x17] = swapByte;
+        swapByte = data[0x15]; data[0x15] = data[0x16]; data[0x16] = swapByte;
+        swapByte = data[0x10]; data[0x10] = data[0x13]; data[0x13] = swapByte;
+        swapByte = data[0x11]; data[0x11] = data[0x12]; data[0x12] = swapByte;
+        swapByte = data[0x18]; data[0x18] = data[0x1B]; data[0x1B] = swapByte;
+        swapByte = data[0x19]; data[0x19] = data[0x1A]; data[0x1A] = swapByte;
         *(u32 *)(data + 0x10) += (u32)data;
         *(u32 *)(data + 0x18) += (u32)data;
 
@@ -829,43 +831,43 @@ s32 fn_80232578(const char *arg0) {
         offset = 0;
         for (; i < *(u16 *)(data + 0xC); i++, offset += 0x1C) {
             record = (u8 *)*(u32 *)(data + 0x10) + offset;
-            temp = record[0xC]; record[0xC] = record[0xF]; record[0xF] = temp;
-            temp = record[0xD]; record[0xD] = record[0xE]; record[0xE] = temp;
-            temp = record[0x10]; record[0x10] = record[0x13]; record[0x13] = temp;
-            temp = record[0x11]; record[0x11] = record[0x12]; record[0x12] = temp;
-            temp = record[0x14]; record[0x14] = record[0x17]; record[0x17] = temp;
-            temp = record[0x15]; record[0x15] = record[0x16]; record[0x16] = temp;
-            temp = record[0x18]; record[0x18] = record[0x1B]; record[0x1B] = temp;
-            temp = record[0x19]; record[0x19] = record[0x1A]; record[0x1A] = temp;
+            swapByte = record[0xC]; record[0xC] = record[0xF]; record[0xF] = swapByte;
+            swapByte = record[0xD]; record[0xD] = record[0xE]; record[0xE] = swapByte;
+            swapByte = record[0x10]; record[0x10] = record[0x13]; record[0x13] = swapByte;
+            swapByte = record[0x11]; record[0x11] = record[0x12]; record[0x12] = swapByte;
+            swapByte = record[0x14]; record[0x14] = record[0x17]; record[0x17] = swapByte;
+            swapByte = record[0x15]; record[0x15] = record[0x16]; record[0x16] = swapByte;
+            swapByte = record[0x18]; record[0x18] = record[0x1B]; record[0x1B] = swapByte;
+            swapByte = record[0x19]; record[0x19] = record[0x1A]; record[0x1A] = swapByte;
 
             record2 = (u8 *)*(u32 *)(data + 0x10) + offset;
-            tempWide = record2[0]; record2[0] = record2[3]; record2[3] = (u8)tempWide;
-            temp2 = record2[1]; record2[1] = record2[2]; record2[2] = temp2;
+            swapWide = record2[0]; record2[0] = record2[3]; record2[3] = (u8)swapWide;
+            swapByte2 = record2[1]; record2[1] = record2[2]; record2[2] = swapByte2;
 
             record2 = (u8 *)*(u32 *)(data + 0x10) + offset;
-            temp2 = record2[8]; record2[8] = record2[0xB]; record2[0xB] = temp2;
-            temp2 = record2[9]; record2[9] = record2[0xA]; record2[0xA] = temp2;
+            swapByte2 = record2[8]; record2[8] = record2[0xB]; record2[0xB] = swapByte2;
+            swapByte2 = record2[9]; record2[9] = record2[0xA]; record2[0xA] = swapByte2;
 
             record2 = (u8 *)*(u32 *)(data + 0x10) + offset;
-            temp2 = record2[4]; record2[4] = record2[7]; record2[7] = temp2;
-            temp2 = record2[5]; record2[5] = record2[6]; record2[6] = temp2;
+            swapByte2 = record2[4]; record2[4] = record2[7]; record2[7] = swapByte2;
+            swapByte2 = record2[5]; record2[5] = record2[6]; record2[6] = swapByte2;
         }
     }
 
-    strncpy(nameBuffer.name, arg0, 0xB);
+    strncpy(nameBuffer.name, name, 0xB);
     nameBuffer.name[0xB] = 0;
-    fn_80028E00(nameBuffer.name, (const char *)&lbl_8055B9D4);
+    fn_80028E00(nameBuffer.name, (const char *)&gTexExtension);
     if (strlen(nameBuffer.name) > 0x10) {
-        ((void (*)(const char *, ...))fn_802E317C)(stringBase + 0x15C, nameBuffer.name, 0x10, strlen(nameBuffer.name));
+        ((void (*)(const char *, ...))fn_802E317C)(stringBase + GTEX_MSG_NAME_TOO_LONG, nameBuffer.name, 0x10, strlen(nameBuffer.name));
     }
     index = fn_802CAC34(nameBuffer.name, *(s32 *)(data + 0x18));
     if (index == -1) {
-        ((void (*)(const char *, ...))fn_802E30C8)(stringBase + 0x190);
+        ((void (*)(const char *, ...))fn_802E30C8)(stringBase + GTEX_MSG_NO_RESOURCE);
         return 0;
     }
     *(s32 *)data = index;
-    *(s32 *)(data + 8) = fn_80231730((s32)arg0);
-    fn_8023158C(data, arg0);
+    *(s32 *)(data + 8) = fn_80231730((s32)name);
+    fn_8023158C(data, name);
     return (s32)data;
 }
 
