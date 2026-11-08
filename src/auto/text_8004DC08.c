@@ -373,6 +373,7 @@ static inline void BootReadAbs(void *buf, s32 len, s32 off) {
 static inline s32 BootGetPartOffset(void) {
     s32 v = lbl_8055DA28;
     if (v != 0) {
+        return v;
     } else if (*(s32 *)0x800030F4 != 0) {
         u8 *buf = OSAllocFromMEM1ArenaLo(0x40, 0x20);
         BootReadAbs(buf, 0x40, *(s32 *)0x800030F4 >> 2);
@@ -470,6 +471,7 @@ void fn_8004E538(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
     u32 sp1C;
     s32 target;
     void *copy;
+    s32 cmp;
 
     OSDisableInterrupts();
     params = OSAllocFromMEM1ArenaLo(0x1C, 1);
@@ -499,7 +501,8 @@ void fn_8004E538(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
     off = BootGetPartOffset();
     BootReadAbs((void *)0x81200000, (hdr[5] + 0x1F) & ~0x1F, off + 8);
     ICInvalidateRange((void *)0x81200000, (hdr[5] + 0x1F) & ~0x1F);
-    if (strncmp((char *)hdr, lbl_803049E4, 10) > 0) {
+    cmp = strncmp((char *)hdr, lbl_803049E4, 10) > 0;
+    if (cmp != 0) {
         if ((u32)(arg0 + 0x10000) == 0xFFFF) {
             arg0 = ((u32)(hdr[5] + 0x20) >> 2) + BootGetPartOffset();
         }
