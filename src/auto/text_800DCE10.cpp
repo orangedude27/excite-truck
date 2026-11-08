@@ -26,6 +26,9 @@ extern "C" u64 GetVtxPos__Q34nw4r3lyt4PaneCFv(void *);
 extern "C" void __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80111BB8(void *, s32);
 extern f32 lbl_80560EE0;
 extern f32 lbl_80560EE4;
+extern f32 lbl_80560ED0;
+extern "C" void SetCursor__Q36nw4hbm2ut10CharWriterFff(void *, f32, f32);
+extern "C" void fn_800DF81C(f32 *arg0, void *arg1, const u16 *arg2, s32 arg3, f32 arg4);
 #define PTRCHECK(p, line, off) { \
     s16 c0 = 1, c1 = 1, c2 = 1, c3 = 1, c4 = 1, c5 = 1; \
     u32 hi = (u32)(p) & 0xFF000000; \
