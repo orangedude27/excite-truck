@@ -438,21 +438,68 @@ void fn_802E050C(void) {
     GXSetNumTevStages(2);
 }
 
+/* Second of the two five-stage TEV pipelines fn_802DBA1C() picks between: three
+ * position-driven texture coordinate generators feed five combiner stages that
+ * modulate texture maps 0..4 together into the previous-colour register, build
+ * their alpha through TEV register 0, and leave the result to standard
+ * source-alpha blending.
+ */
 void fn_802E0684(void) {
-    register u32 mode = 1;
-    GXSetTexCoordGen2(0, mode, 0, 0x21, 0, 0x7D);
-    GXSetTexCoordGen2(1, mode, 0, 0x1E, 0, 0x7D);
-    GXSetTexCoordGen2(2, mode, 0, 0x27, 0, 0x7D);
+    register GXTexGenType texGenType = GX_TG_MTX2x4;
+
+    /* texcoord0..2 = vertex position through texture matrices 0, 1 and 3 */
+    GXSetTexCoordGen2(GX_TEXCOORD0, texGenType, GX_TG_POS, GX_TEXMTX1, GX_FALSE, GX_PTIDENTITY);
+    GXSetTexCoordGen2(GX_TEXCOORD1, texGenType, GX_TG_POS, GX_TEXMTX0, GX_FALSE, GX_PTIDENTITY);
+    GXSetTexCoordGen2(GX_TEXCOORD2, texGenType, GX_TG_POS, GX_TEXMTX3, GX_FALSE, GX_PTIDENTITY);
     GXSetNumTexGens(3);
-    GXSetTevOrder(0, 1, 1, 0xFF); GXSetTevOrder(1, 0, 3, 0xFF); GXSetTevOrder(2, 0, 4, 0xFF); GXSetTevOrder(3, 2, 0, 0xFF); GXSetTevOrder(4, 1, 2, 0xFF);
-    GXSetTevSwapModeTable(1, 3, 3, 3, 3);
-    GXSetTevSwapMode(0, 0, 0); GXSetTevSwapMode(1, 0, 0); GXSetTevSwapMode(2, 0, 1); GXSetTevSwapMode(3, 0, 0); GXSetTevSwapMode(4, 0, 0);
-    GXSetTevColorIn(0, 8, 0xF, 0xF, 0xF); GXSetTevColorOp(0, 0, 0, 0, 1, 0); GXSetTevAlphaIn(0, 7, 7, 7, 7); GXSetTevAlphaOp(0, 0, 0, 0, 1, 0);
-    GXSetTevColorIn(1, 8, 0xF, 0xF, 0xF); GXSetTevColorOp(1, 0, 0, 0, 1, 1); GXSetTevAlphaIn(1, 7, 7, 7, 0); GXSetTevAlphaOp(1, 0, 0, 0, 1, 0);
-    GXSetTevColorIn(2, 0, 2, 8, 0xF); GXSetTevColorOp(2, 0, 0, 0, 1, 0); GXSetTevAlphaIn(2, 4, 7, 7, 7); GXSetTevAlphaOp(2, 0, 0, 0, 1, 1);
-    GXSetTevColorIn(3, 0xF, 0, 8, 0xF); GXSetTevColorOp(3, 0, 0, 0, 1, 0); GXSetTevAlphaIn(3, 7, 7, 7, 0); GXSetTevAlphaOp(3, 0, 0, 0, 1, 0);
-    GXSetTevColorIn(4, 0xF, 0xF, 0xF, 0); GXSetTevColorOp(4, 0, 0, 0, 1, 0); GXSetTevAlphaIn(4, 7, 4, 1, 7); GXSetTevAlphaOp(4, 0, 0, 0, 1, 0);
-    GXSetNumTevStages(5); GXSetBlendMode(1, 4, 5, 0);
+
+    /* stage: texture coordinates / texture map / raster colour channel */
+    GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD1, GX_TEXMAP1, GX_COLOR_NULL);
+    GXSetTevOrder(GX_TEVSTAGE1, GX_TEXCOORD0, GX_TEXMAP3, GX_COLOR_NULL);
+    GXSetTevOrder(GX_TEVSTAGE2, GX_TEXCOORD0, GX_TEXMAP4, GX_COLOR_NULL);
+    GXSetTevOrder(GX_TEVSTAGE3, GX_TEXCOORD2, GX_TEXMAP0, GX_COLOR_NULL);
+    GXSetTevOrder(GX_TEVSTAGE4, GX_TEXCOORD1, GX_TEXMAP2, GX_COLOR_NULL);
+
+    /* swap table 1: every output channel takes the input's alpha */
+    GXSetTevSwapModeTable(GX_TEV_SWAP1, GX_CH_ALPHA, GX_CH_ALPHA, GX_CH_ALPHA, GX_CH_ALPHA);
+    GXSetTevSwapMode(GX_TEVSTAGE0, GX_TEV_SWAP0, GX_TEV_SWAP0);
+    GXSetTevSwapMode(GX_TEVSTAGE1, GX_TEV_SWAP0, GX_TEV_SWAP0);
+    GXSetTevSwapMode(GX_TEVSTAGE2, GX_TEV_SWAP0, GX_TEV_SWAP1);
+    GXSetTevSwapMode(GX_TEVSTAGE3, GX_TEV_SWAP0, GX_TEV_SWAP0);
+    GXSetTevSwapMode(GX_TEVSTAGE4, GX_TEV_SWAP0, GX_TEV_SWAP0);
+
+    /* 0: rgb = map1, alpha = 0 */
+    GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_TEXC, GX_CC_ZERO, GX_CC_ZERO, GX_CC_ZERO);
+    GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+    GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO);
+    GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+
+    /* 1: rgb = map3 into TEV register 0, alpha carried through */
+    GXSetTevColorIn(GX_TEVSTAGE1, GX_CC_TEXC, GX_CC_ZERO, GX_CC_ZERO, GX_CC_ZERO);
+    GXSetTevColorOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVREG0);
+    GXSetTevAlphaIn(GX_TEVSTAGE1, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_APREV);
+    GXSetTevAlphaOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+
+    /* 2: rgb = previous + map4, alpha = map4's into TEV register 0 */
+    GXSetTevColorIn(GX_TEVSTAGE2, GX_CC_CPREV, GX_CC_C0, GX_CC_TEXC, GX_CC_ZERO);
+    GXSetTevColorOp(GX_TEVSTAGE2, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+    GXSetTevAlphaIn(GX_TEVSTAGE2, GX_CA_TEXA, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO);
+    GXSetTevAlphaOp(GX_TEVSTAGE2, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVREG0);
+
+    /* 3: rgb = previous + map0, alpha carried through */
+    GXSetTevColorIn(GX_TEVSTAGE3, GX_CC_ZERO, GX_CC_CPREV, GX_CC_TEXC, GX_CC_ZERO);
+    GXSetTevColorOp(GX_TEVSTAGE3, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+    GXSetTevAlphaIn(GX_TEVSTAGE3, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_APREV);
+    GXSetTevAlphaOp(GX_TEVSTAGE3, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+
+    /* 4: rgb = previous, alpha = map2's + the raster's alpha0 */
+    GXSetTevColorIn(GX_TEVSTAGE4, GX_CC_ZERO, GX_CC_ZERO, GX_CC_ZERO, GX_CC_CPREV);
+    GXSetTevColorOp(GX_TEVSTAGE4, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+    GXSetTevAlphaIn(GX_TEVSTAGE4, GX_CA_ZERO, GX_CA_TEXA, GX_CA_A0, GX_CA_ZERO);
+    GXSetTevAlphaOp(GX_TEVSTAGE4, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+
+    GXSetNumTevStages(5);
+    GXSetBlendMode(GX_BM_BLEND, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_CLEAR);
 }
 
 void fn_802E09EC(void) {
