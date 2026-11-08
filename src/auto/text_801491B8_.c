@@ -13,6 +13,7 @@ extern void fn_802ADFF4(s32, s32);
 extern void fn_802AE02C(s32, s32);
 extern void fn_802AE0B8(s32, s32);
 extern void fn_802AE168(s32);
+extern s32 fn_801609C4(s32);
 extern u8 lbl_80559F04[];
 extern u8 lbl_80559F08[];
 extern u8 lbl_80559F0C[];
