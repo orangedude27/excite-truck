@@ -16141,9 +16141,25 @@ void fn_800C57B0(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
     }
 }
 
+/* Encode a block of PCM samples into 4-bit Nintendo ADPCM.
+ *
+ * Every sample is described by the sign of its difference from the predicted
+ * value plus the three steps - a whole step size, half of it and a quarter of
+ * it - that difference still fills; those four bits go into the caller's
+ * buffer two samples to a byte, the even sample in the high nibble.  The step
+ * size itself then stretches by the factor of the step the sample fell in and
+ * stays within 127 and 0x6000, which is what lets the encoder follow a
+ * signal that grows or fades.  The state of that follow-up - predicted value,
+ * step size and the difference left over - is taken from the caller's
+ * WENCInfo when flag carries WENC_FLAG_USER_INFO and is written back to it at
+ * the end, so a stream is encoded block after block; without it encoding
+ * starts again from a silent sample and the smallest step.  The number of
+ * samples encoded is returned.
+ */
 extern "C" s32 WENCGetEncodeData(void *infoArg, u32 flag, const s16 *pcmData, s32 samples, void *adpcmArg) {
-    const f64 table[] = {0.89843750, 0.89843750, 0.89843750, 0.89843750,
-                         1.19921875, 1.59765625, 2.00000000, 2.39843750};
+    /* step size factor of the eighth the sample's difference fell in */
+    const f64 stepSize[] = {0.89843750, 0.89843750, 0.89843750, 0.89843750,
+                            1.19921875, 1.59765625, 2.00000000, 2.39843750};
 
     u8 *dst;
     const s16 *src;
@@ -16162,6 +16178,7 @@ extern "C" s32 WENCGetEncodeData(void *infoArg, u32 flag, const s16 *pcmData, s3
     s32 dlh;
     s32 dlq;
     u8 by;
+    WENCInfo *info = (WENCInfo *)infoArg;
 
     encodeSize = (samples + 1) / 2;
     memset(adpcmArg, 0, encodeSize);
@@ -16169,7 +16186,7 @@ extern "C" s32 WENCGetEncodeData(void *infoArg, u32 flag, const s16 *pcmData, s3
     src = pcmData;
     dst = (u8 *)adpcmArg;
 
-    if ((flag & 1) == 0) {
+    if ((flag & WENC_FLAG_USER_INFO) == 0) {
         xn = 0;
         dl = 127;
         qn = 0;
@@ -16177,12 +16194,12 @@ extern "C" s32 WENCGetEncodeData(void *infoArg, u32 flag, const s16 *pcmData, s3
         dlh = 0;
         dlq = 0;
     } else {
-        xn = ((s32 *)infoArg)[0];
-        dl = ((s32 *)infoArg)[1];
-        qn = ((s32 *)infoArg)[2];
-        dn = ((s32 *)infoArg)[3];
-        dlh = ((s32 *)infoArg)[4];
-        dlq = ((s32 *)infoArg)[5];
+        xn = info->xn;
+        dl = info->dl;
+        qn = info->qn;
+        dn = info->dn;
+        dlh = info->dlh;
+        dlq = info->dlq;
     }
 
     for (i = 0; i < samples; i++) {
@@ -16239,7 +16256,7 @@ extern "C" s32 WENCGetEncodeData(void *infoArg, u32 flag, const s16 *pcmData, s3
         dst[i / 2] |= by << offset;
 
         index = l2 * 4 + l1 * 2 + l0;
-        dl *= table[index];
+        dl *= stepSize[index];
 
         if (dl <= 127) {
             dl = 127;
@@ -16249,12 +16266,12 @@ extern "C" s32 WENCGetEncodeData(void *infoArg, u32 flag, const s16 *pcmData, s3
         }
     }
 
-    ((s32 *)infoArg)[0] = xn;
-    ((s32 *)infoArg)[1] = dl;
-    ((s32 *)infoArg)[2] = qn;
-    ((s32 *)infoArg)[3] = dn;
-    ((s32 *)infoArg)[4] = dlh;
-    ((s32 *)infoArg)[5] = dlq;
+    info->xn = xn;
+    info->dl = dl;
+    info->qn = qn;
+    info->dn = dn;
+    info->dlh = dlh;
+    info->dlq = dlq;
 
     return samples;
 }
