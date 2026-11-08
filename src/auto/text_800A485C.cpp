@@ -8921,6 +8921,8 @@ struct VFiPFVolume {
     s32 error;                        /* 0x1F80 last error of this volume */
     u8 pad1F84[8];
     u16 flags;                        /* 0x1F8C VF_VOL_* */
+    s8 letter;                        /* 0x1F8E drive letter, 'A' + slot */
+    u8 pad1F8F;
     u8 lock[0x10];                    /* 0x1F90 recursive lock of the volume */
     u8 pad1FA0[0x1FAC - 0x1FA0];
     u16 state;                        /* 0x1FAC reset by a mount */
