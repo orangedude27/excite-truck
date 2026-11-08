@@ -2287,40 +2287,61 @@ void gki_init_free_queue(UINT8 id, UINT16 size, UINT16 total, void *p_mem) {
 }
 #pragma pop
 extern void gki_init_free_queue(UINT8, UINT16, UINT16, void *);
+/*******************************************************************************
+**
+** Function         gki_buffer_init
+**
+** Description      Called once at startup by GKI_init() to set up GKI's buffer
+**                  allocator: empties every task mailbox, clears all of the
+**                  buffer pool descriptors and their free queues, then links
+**                  the buffers of the fixed pools compiled into gki_cb into
+**                  their free lists.  Original gki/common/gki_buffer.c.
+**
+** Returns          void
+**
+*******************************************************************************/
 void gki_buffer_init(void)
 {
-    UINT8 i, tt, mb;
+    UINT8   pool, task, mbox;
     tGKI_COM_CB *p_cb = &gki_cb.com;
 
-    for (tt = 0; tt < GKI_MAX_TASKS; tt++) {
-        for (mb = 0; mb < NUM_TASK_MBOX; mb++) {
-            p_cb->OSTaskQFirst[tt][mb] = NULL;
-            p_cb->OSTaskQLast[tt][mb] = NULL;
+    /* Initialize mailboxes */
+    for (task = 0; task < GKI_MAX_TASKS; task++) {
+        for (mbox = 0; mbox < NUM_TASK_MBOX; mbox++) {
+            p_cb->OSTaskQFirst[task][mbox] = NULL;
+            p_cb->OSTaskQLast[task][mbox] = NULL;
         }
     }
 
-    for (tt = 0; tt < GKI_NUM_TOTAL_BUF_POOLS; tt++) {
-        p_cb->pool_start[tt] = NULL;
-        p_cb->pool_end[tt] = NULL;
-        p_cb->pool_size[tt] = 0;
-        p_cb->freeq[tt].p_first = 0;
-        p_cb->freeq[tt].p_last = 0;
-        p_cb->freeq[tt].size = 0;
-        p_cb->freeq[tt].total = 0;
-        p_cb->freeq[tt].cur_cnt = 0;
-        p_cb->freeq[tt].max_cnt = 0;
+    /* No pool is set up yet: no memory, no buffers on the free queue */
+    for (pool = 0; pool < GKI_NUM_TOTAL_BUF_POOLS; pool++) {
+        p_cb->pool_start[pool] = NULL;
+        p_cb->pool_end[pool] = NULL;
+        p_cb->pool_size[pool] = 0;
+        p_cb->freeq[pool].p_first = 0;
+        p_cb->freeq[pool].p_last = 0;
+        p_cb->freeq[pool].size = 0;
+        p_cb->freeq[pool].total = 0;
+        p_cb->freeq[pool].cur_cnt = 0;
+        p_cb->freeq[pool].max_cnt = 0;
     }
 
+    /* Use default from target.h (GKI_DEF_BUFPOOL_PERM_MASK): the pools above the
+       fixed ones are reserved for restricted use */
     p_cb->pool_access_mask = GKI_DEF_BUFPOOL_PERM_MASK;
 
+    /* The fixed pools are static arrays inside gki_cb; each becomes a free list
+       of GKI_BUFn_MAX buffers of GKI_BUFn_SIZE bytes */
     gki_init_free_queue(0, GKI_BUF0_SIZE, GKI_BUF0_MAX, p_cb->bufpool0);
     gki_init_free_queue(1, GKI_BUF1_SIZE, GKI_BUF1_MAX, p_cb->bufpool1);
     gki_init_free_queue(2, GKI_BUF2_SIZE, GKI_BUF2_MAX, p_cb->bufpool2);
     gki_init_free_queue(3, GKI_BUF3_SIZE, GKI_BUF3_MAX, p_cb->bufpool3);
     gki_init_free_queue(4, GKI_BUF4_SIZE, GKI_BUF4_MAX, p_cb->bufpool4);
 
-    for (i = 0; i < GKI_NUM_FIXED_BUF_POOLS; i++)
-        p_cb->pool_list[i] = i;
+    /* Pools are ordered smallest to largest; GKI_getbuf() takes the first pool
+       whose buffers are big enough.  Only the fixed pools exist so far. */
+    for (pool = 0; pool < GKI_NUM_FIXED_BUF_POOLS; pool++)
+        p_cb->pool_list[pool] = pool;
     p_cb->curr_total_no_of_pools = GKI_NUM_FIXED_BUF_POOLS;
 }
 
