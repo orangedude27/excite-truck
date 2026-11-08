@@ -612,109 +612,122 @@ struct UIStyle {
 
 #pragma push
 #pragma processor 750
-int fn_8022B620(int unused, int arg1) {
-    void *ctx;
+/* Height the text of a UI style takes up, for the style index and the text.
+ *
+ * The style (fn_8022CA2C) draws with a bitmap font, an outline font, or a
+ * picture instead.  The height of one line is split by the style's vertical
+ * alignment into the part above the baseline (top: the whole line, middle:
+ * half of it, baseline: the ascent, bottom: nothing) and the part below it
+ * (middle: half, baseline: the descent, bottom: the whole line); an outline
+ * font of font_size under 1.0 keeps its own height, and is scaled by
+ * font_size / that height otherwise.  The two parts, added to the larger of
+ * the style's top and bottom padding, are the height of the text; the picture
+ * the style draws is the floor of the result, and is all there is for a text
+ * of 0.
+ */
+int fn_8022B620(int styleIndex, const char *text) {
+    struct UIStyle *style;
     int max;
-    int w;
-    int h;
+    int above;
+    int below;
     int value;
-    int flags;
+    int align;
     float scale;
-    float cur;
+    float size;
     float prod;
 
-    ctx = fn_8022CA2C();
+    style = fn_8022CA2C(styleIndex);
     max = 0;
-    value = *(int *)((char *)ctx + 0x64);
+    value = style->picture;
     if (value != 0) {
         max = fn_802C4EFC(value);
-    } else if ((value = *(int *)((char *)ctx + 0x68)) != 0) {
+    } else if ((value = style->picture2) != 0) {
         max = ((int (*)(int))fn_802C5220)(value);
     }
-    if (arg1 != 0) {
-        w = 0;
-        if (*(int *)((char *)ctx + 4) != 0) {
-            flags = *(int *)((char *)ctx + 0x38);
-            if (flags & 8) {
-                w = fn_801E4BA8(*(int **)((char *)ctx + 4));
-            } else if (flags & 0x10) {
-                int t = fn_801E4BA8(*(int **)((char *)ctx + 4));
-                w = ((int)((unsigned int)t >> 31) + t) >> 1;
+    if (text != 0) {
+        above = 0;
+        if (style->bitmapFont != 0) {
+            align = style->align;
+            if (align & UI_VALIGN_TOP) {
+                above = fn_801E4BA8(style->bitmapFont);
+            } else if (align & UI_VALIGN_MIDDLE) {
+                int t = fn_801E4BA8(style->bitmapFont);
+                above = ((int)((unsigned int)t >> 31) + t) >> 1;
             } else {
                 int t;
-                if (flags & 0x20) {
-                    t = fn_801E4B48(*(int **)((char *)ctx + 4));
+                if (align & UI_VALIGN_BASELINE) {
+                    t = fn_801E4B48(style->bitmapFont);
                 } else {
                     t = 0;
                 }
-                w = t;
+                above = t;
             }
         }
-        if (*(int *)((char *)ctx + 8) != 0) {
-            flags = *(int *)((char *)ctx + 0x38);
-            if (flags & 8) {
-                float f = *(float *)((char *)ctx + 0x34);
-                if (f < lbl_80563588) {
-                    w = fn_80232B70(*(int *)((char *)ctx + 8));
+        if (style->vectorFont != 0) {
+            align = style->align;
+            if (align & UI_VALIGN_TOP) {
+                float f = style->fontSize;
+                if (f < UI_FONT_SIZE_MIN) {
+                    above = fn_80232B70(style->vectorFont);
                 } else {
-                    w = (int)f;
+                    above = (int)f;
                 }
-            } else if (flags & 0x10) {
-                float f = *(float *)((char *)ctx + 0x34);
-                if (f < lbl_80563588) {
-                    int t = fn_80232B70(*(int *)((char *)ctx + 8));
-                    w = ((int)((unsigned int)t >> 31) + t) >> 1;
+            } else if (align & UI_VALIGN_MIDDLE) {
+                float f = style->fontSize;
+                if (f < UI_FONT_SIZE_MIN) {
+                    int t = fn_80232B70(style->vectorFont);
+                    above = ((int)((unsigned int)t >> 31) + t) >> 1;
                 } else {
-                    w = (int)(lbl_80563598 * f);
+                    above = (int)(UI_HALF * f);
                 }
             } else {
-                w = 0;
+                above = 0;
             }
         }
-        h = 0;
-        if (*(int *)((char *)ctx + 4) != 0) {
-            flags = *(int *)((char *)ctx + 0x38);
-            if (flags & 0x10) {
-                int t = fn_801E4BA8(*(int **)((char *)ctx + 4));
-                h = ((int)((unsigned int)t >> 31) + t) >> 1;
-            } else if (flags & 0x20) {
-                h = fn_801E4B00(*(int **)((char *)ctx + 4));
+        below = 0;
+        if (style->bitmapFont != 0) {
+            align = style->align;
+            if (align & UI_VALIGN_MIDDLE) {
+                int t = fn_801E4BA8(style->bitmapFont);
+                below = ((int)((unsigned int)t >> 31) + t) >> 1;
+            } else if (align & UI_VALIGN_BASELINE) {
+                below = fn_801E4B00(style->bitmapFont);
             } else {
                 int t;
-                if (flags & 0x40) {
-                    t = fn_801E4BA8(*(int **)((char *)ctx + 4));
+                if (align & UI_VALIGN_BOTTOM) {
+                    t = fn_801E4BA8(style->bitmapFont);
                 } else {
                     t = 0;
                 }
-                h = t;
+                below = t;
             }
         }
-        if (*(int *)((char *)ctx + 8) != 0) {
-            cur = *(float *)((char *)ctx + 0x34);
-            scale = lbl_80563588;
-            if (cur < scale) {
-                scale = lbl_80563588;
+        if (style->vectorFont != 0) {
+            size = style->fontSize;
+            scale = UI_FONT_SIZE_MIN;
+            if (size < scale) {
+                scale = UI_FONT_SIZE_MIN;
             } else {
-                scale = *(float *)((char *)ctx + 0x34) /
-                    (float)fn_80232B70(*(int *)((char *)ctx + 8));
+                scale = style->fontSize /
+                    (float)fn_80232B70(style->vectorFont);
             }
-            flags = *(int *)((char *)ctx + 0x38);
-            if (flags & 0x10) {
-                prod = scale * (float)fn_80232B70(*(int *)((char *)ctx + 8));
-                h = (int)(prod * lbl_80563598);
-            } else if (flags & 0x20) {
-                h = (int)(scale * (float)fn_80232B78(*(int *)((char *)ctx + 8)));
-            } else if (flags & 0x40) {
-                h = (int)(scale * (float)fn_80232B70(*(int *)((char *)ctx + 8)));
+            align = style->align;
+            if (align & UI_VALIGN_MIDDLE) {
+                prod = scale * (float)fn_80232B70(style->vectorFont);
+                below = (int)(prod * UI_HALF);
+            } else if (align & UI_VALIGN_BASELINE) {
+                below = (int)(scale * (float)fn_80232B78(style->vectorFont));
+            } else if (align & UI_VALIGN_BOTTOM) {
+                below = (int)(scale * (float)fn_80232B70(style->vectorFont));
             } else {
-                h = 0;
+                below = 0;
             }
         }
-        value = *(int *)((char *)ctx + 0x50);
-        if (*(int *)((char *)ctx + 0x48) > value) {
-            value = *(int *)((char *)ctx + 0x48);
+        value = style->padBottom;
+        if (style->padTop > value) {
+            value = style->padTop;
         }
-        value = h + (value + w);
+        value = below + (value + above);
         return max > value ? max : value;
     }
     return max;
