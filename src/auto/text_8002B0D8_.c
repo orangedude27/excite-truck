@@ -286,7 +286,9 @@ double y, x;
     }
 }
 
-extern double lbl_802EE4C8[];
+// fdlibm's Zero[] = {0.0, -0.0}; Zero[(unsigned)sx >> 31] is sign(x)*0
+#define Zero lbl_802EE4C8
+extern double Zero[];
 double __ieee754_fmod(double x, double y) {
     int n, hx, hy, hz, ix, iy, sx, i;
     unsigned int lx, ly, lz;
