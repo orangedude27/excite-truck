@@ -3237,6 +3237,7 @@ extern "C" void fn_801A2684(void* arg0, f32* arg1, f32* arg2) {
 }
 
 struct Fn801A26FCMtx { f32 m[12]; };
+extern "C" int fn_80198F64(void *, int, void *, float *, void *, float *, float);
 extern "C" void fn_801C28A8(void*, void*, void*, void*, void*, s32, s32, void* = 0, void* = 0);
 extern "C" void fn_801C2BDC(void*, s32*, f32**, s32*);
 void fn_801A26FC(void* arg0, void* arg1) {
