@@ -297,6 +297,51 @@ extern void fn_80128658(int);
 extern void fn_80128668(void *);
 extern void fn_8013A598(void *, int);
 extern unsigned char lbl_8042F8C8[];
+
+// The resource cache: CACHE_ENTRY_MAX entries with the number in use right
+// behind them. fn_8013BFE8 files a resource under its name here and fn_8013C428
+// takes it back out; an entry lives until its reference count reaches zero.
+#define CACHE_ENTRY_MAX 8
+typedef struct CacheTable {
+    CacheEntry entry[CACHE_ENTRY_MAX];
+    int count; // at 0x240
+} CacheTable;
+
+// A cached resource, as fn_8013BF40 builds it.
+typedef struct CacheResource {
+    unsigned char name[0x40];   // at 0x00: the name the entry is filed under
+    unsigned char blocks[0x20]; // at 0x40: loaded blocks, freed by fn_8013A598
+    unsigned char unk60[0x14];  // at 0x60: set up by fn_8013BF3C
+    int buffer;                 // at 0x74: buffer released with the resource
+} CacheResource;
+
+// The game's compiler copies an entry's 64-byte name two bytes at a time, one
+// register per byte, both loaded before either is stored. Written out that way
+// so the entry copy below comes out byte for byte.
+#define CACHE_COPY2(dst, src, n)                                               \
+    {                                                                          \
+        unsigned char a = (src)->name[n];                                      \
+        unsigned char b = (src)->name[(n) + 1];                                \
+        (dst)->name[n] = a;                                                    \
+        (dst)->name[(n) + 1] = b;                                              \
+    }
+#define CACHE_COPY_NAME(dst, src)                                              \
+    CACHE_COPY2(dst, src, 0) CACHE_COPY2(dst, src, 2)                          \
+    CACHE_COPY2(dst, src, 4) CACHE_COPY2(dst, src, 6)                          \
+    CACHE_COPY2(dst, src, 8) CACHE_COPY2(dst, src, 10)                         \
+    CACHE_COPY2(dst, src, 12) CACHE_COPY2(dst, src, 14)                        \
+    CACHE_COPY2(dst, src, 16) CACHE_COPY2(dst, src, 18)                        \
+    CACHE_COPY2(dst, src, 20) CACHE_COPY2(dst, src, 22)                        \
+    CACHE_COPY2(dst, src, 24) CACHE_COPY2(dst, src, 26)                        \
+    CACHE_COPY2(dst, src, 28) CACHE_COPY2(dst, src, 30)                        \
+    CACHE_COPY2(dst, src, 32) CACHE_COPY2(dst, src, 34)                        \
+    CACHE_COPY2(dst, src, 36) CACHE_COPY2(dst, src, 38)                        \
+    CACHE_COPY2(dst, src, 40) CACHE_COPY2(dst, src, 42)                        \
+    CACHE_COPY2(dst, src, 44) CACHE_COPY2(dst, src, 46)                        \
+    CACHE_COPY2(dst, src, 48) CACHE_COPY2(dst, src, 50)                        \
+    CACHE_COPY2(dst, src, 52) CACHE_COPY2(dst, src, 54)                        \
+    CACHE_COPY2(dst, src, 56) CACHE_COPY2(dst, src, 58)                        \
+    CACHE_COPY2(dst, src, 60) CACHE_COPY2(dst, src, 62)
 #pragma scheduling invalid_target
 void fn_8013C428(void *arg0) {
     int i;
