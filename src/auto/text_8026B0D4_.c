@@ -3,6 +3,8 @@
 
 #include <types.h>
 #include <macros.h>
+#include <types.h>
+#include <macros.h>
 extern void fn_8000D838(void *);
 extern void fn_8002F53C(void *, void *, int, int, int);
 extern unsigned char lbl_8055F4B0[1];
