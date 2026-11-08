@@ -13628,14 +13628,15 @@ BOOLEAN btsnd_hcic_read_rssi(UINT16 handle) {
 extern u8 lbl_802EEC08[];
 typedef struct { u8 channels[HCI_AFH_CHANNEL_MAP_LEN]; } tAFH_CHANNEL_MAP;
 
-/* Disable Bluetooth channels first..last by clearing their bits in the
-   default AFH map, then send HCI_Set_AFH_Channel_Classification. */
+/* Clears the bits of the channels in [first_disabled, last_disabled] in the
+   default AFH map (all channels enabled to start with), then sends
+   HCI_Set_AFH_Channel_Classification with the resulting map. */
 BOOLEAN btsnd_hcic_set_afh_channels(u8 first_disabled, u8 last_disabled) {
     tAFH_CHANNEL_MAP map;
     u8 *p;
     int i;
 
-    /* Begin with every channel enabled. */
+    /* Copy the all-channels-enabled map out of the rodata pool. */
     map = *(tAFH_CHANNEL_MAP *)lbl_802EEC08;
 
     p = (u8 *)GKI_getpoolbuf(2);
