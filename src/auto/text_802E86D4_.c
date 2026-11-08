@@ -472,6 +472,29 @@ extern char lbl_8034E218[];
 extern char lbl_8034E114[], lbl_8034E158[], lbl_8034E168[], lbl_8034E184[];
 extern char lbl_8034E194[], lbl_8034E1B4[], lbl_8034E1C4[], lbl_8034E1E8[];
 extern char lbl_8034E1F8[], lbl_8034E218[], lbl_80560034;
+
+/* Steps of the async NAND file-write machine in fn_802E9254.  The context block
+ * it walks (arg0) holds, at these offsets:
+ *   0x000 state        - current step (values below)
+ *   0x004 length       - byte count to write
+ *   0x008 buffer       - source data
+ *   0x00C filename     - NAND path (e.g. "banner.bin"), set by fn_802E91D8
+ *   0x10C nand_info    - NANDInfo handle of the open file
+ *   0x198 cb_ctx       - points back to this block; handed to the async calls
+ *   0x250 async_done   - set to 1 by the completion callback fn_802E95CC
+ *   0x254 async_result - result the callback left behind
+ *   0x258 error        - result reported back to the caller
+ */
+enum {
+    RMEMCARD_WRITE_IDLE     = 0,   /* stopped / failed */
+    RMEMCARD_WRITE_DONE     = 1,   /* finished */
+    RMEMCARD_WRITE_CREATE   = 2,   /* NANDCreateAsync */
+    RMEMCARD_WRITE_OPEN     = 3,   /* NANDOpenAsync   */
+    RMEMCARD_WRITE_WRITE    = 4,   /* NANDWriteAsync  */
+    RMEMCARD_WRITE_CLOSE    = 5,   /* NANDCloseAsync  */
+    RMEMCARD_WRITE_FINISHED = 6    /* report success  */
+};
+
 #pragma scheduling invalid_target
 void fn_802E9254(void *arg0) {
     char *data = (char *)arg0;
