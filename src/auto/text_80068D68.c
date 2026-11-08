@@ -14219,8 +14219,8 @@ enum {
     HID_HDEV_EVT_HANDSHAKE,
     HID_HDEV_EVT_VC_UNPLUG
 };
-typedef void (tHID_HOST_DEV_CALLBACK)(UINT8 dev_handle, UINT8 event, UINT32 data,
-                                      BT_HDR *p_buf);
+typedef void (*tHID_HOST_DEV_CALLBACK)(UINT8 dev_handle, UINT8 event, UINT32 data,
+                                       BT_HDR *p_buf);
 
 /* tHID_CONN (stack/hid/hid_conn.h) as the device record holds it at 0x10, and the
    record itself (tHID_HOST_DEV_CTB of stack/hid/hidh_int.h). */
