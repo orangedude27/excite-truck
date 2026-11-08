@@ -118,18 +118,27 @@ OSErrorHandler OSSetErrorHandler(u16 error, OSErrorHandler handler) {
 }
 
 void __OSUnhandledException(u8 error, OSContext* ctx, u32 dsisr, u32 dar) {
+    // Last resort for an exception: reached from OSDefaultExceptionHandler with
+    // the exception's OSErrorType number, the context saved at the exception
+    // and the DSISR/DAR that describe it. Runs the installed error handler with
+    // the scheduler locked and resumes from the context, or reports everything
+    // known about the exception and halts.
     s64 tb = OSGetTime();
 
-    if (!(ctx->srr1 & 0x2)) {
+    // Without MSR[RI] the interrupted state is not restartable.
+    if (!(ctx->srr1 & MSR_RI)) {
         OSReport("Non-recoverable Exception %d", error);
     } else {
-        if (error == OS_ERR_PROGRAM && ctx->srr1 & 0x100000 &&
+        // A program exception raised by a floating-point instruction this
+        // thread may not execute belongs to the FP exception handler.
+        if (error == OS_ERR_PROGRAM && ctx->srr1 & SRR1_FP_UNAVAILABLE &&
             __OSErrorTable[OS_ERR_FP_EXCEPTION] != NULL) {
             u32 msr;
             u32 fpscr;
 
             error = OS_ERR_FP_EXCEPTION;
 
+            // Enable the FPU so FPSCR itself can be read and cleaned.
             msr = PPCMfmsr();
             PPCMtmsr(msr | MSR_FP);
 
@@ -138,29 +147,29 @@ void __OSUnhandledException(u8 error, OSContext* ctx, u32 dsisr, u32 dar) {
             }
 
             fpscr = PPCMffpscr();
-            PPCMtfpscr(fpscr & (FPSCR_FEX | FPSCR_VX | FPSCR_FR | FPSCR_FPRF |
-                                FPSCR_UNK20 | FPSCR_VE | FPSCR_OE | FPSCR_UE |
-                                FPSCR_ZE | FPSCR_XE | FPSCR_NI | FPSCR_RN));
+            PPCMtfpscr(fpscr & FPSCR_KEEP);
             PPCMtmsr(msr);
 
             if (OS_CURRENT_FPU_CONTEXT == ctx) {
+                // The faulting thread owns the FPU: report it, then take the
+                // FPU away again (MSR[FP] cleared) so its next floating-point
+                // instruction traps and the FPU is handed over cleanly.
                 OSDisableScheduler();
                 __OSErrorTable[error](error, ctx, dsisr, dar);
-                ctx->srr1 &= ~0x2000;
+                ctx->srr1 &= ~MSR_FP;
                 OS_CURRENT_FPU_CONTEXT = NULL;
-                ctx->fpscr &= (FPSCR_FEX | FPSCR_VX | FPSCR_FR | FPSCR_FPRF |
-                               FPSCR_UNK20 | FPSCR_VE | FPSCR_OE | FPSCR_UE |
-                               FPSCR_ZE | FPSCR_XE | FPSCR_NI | FPSCR_RN);
+                ctx->fpscr &= FPSCR_KEEP;
                 OSEnableScheduler();
                 __OSReschedule();
             } else {
-                ctx->srr1 &= ~0x2000;
+                ctx->srr1 &= ~MSR_FP;
                 OS_CURRENT_FPU_CONTEXT = NULL;
             }
 
             OSLoadContext(ctx);
         }
 
+        // A handler for the exception takes over the thread when it returns.
         if (__OSErrorTable[error] != NULL) {
             OSDisableScheduler();
             __OSErrorTable[error](error, ctx, dsisr, dar);
@@ -169,6 +178,8 @@ void __OSUnhandledException(u8 error, OSContext* ctx, u32 dsisr, u32 dar) {
             OSLoadContext(ctx);
         }
 
+        // The decrementer exception has a handler of its own; the thread just
+        // continues if we ever get here with it.
         if (error == OS_ERR_DECREMENTER) {
             OSLoadContext(ctx);
         }
@@ -180,6 +191,7 @@ void __OSUnhandledException(u8 error, OSContext* ctx, u32 dsisr, u32 dar) {
     OSDumpContext(ctx);
     OSReport("\nDSISR = 0x%08x                   DAR  = 0x%08x\n", dsisr, dar);
     OSReport("TB = 0x%016llx\n", tb);
+    // Say what the faulting address was, as far as the exception tells us.
     switch (error) {
     case OS_ERR_DSI:
         OSReport("\nInstruction at 0x%x (read from SRR0) attempted to access "
@@ -202,6 +214,8 @@ void __OSUnhandledException(u8 error, OSContext* ctx, u32 dsisr, u32 dar) {
                  ctx->srr0, dar);
         break;
     case OS_ERR_PROTECTION:
+        // A DSP/DMA protection fault: show the addresses each DMA engine was
+        // working on.
         OSReport("\n");
         OSReport("AI DMA Address =   0x%04x%04x\n",
                  DSP_HW_REGS[DSP_AI_DMA_START_H],
@@ -213,6 +227,7 @@ void __OSUnhandledException(u8 error, OSContext* ctx, u32 dsisr, u32 dar) {
         break;
     }
 
+    // The last interrupt may well be what went wrong.
     OSReport("\nLast interrupt (%d): SRR0 = 0x%08x  TB = 0x%016llx\n",
              __OSLastInterrupt, __OSLastInterruptSrr0, __OSLastInterruptTime);
     PPCHalt();
