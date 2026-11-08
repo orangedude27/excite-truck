@@ -198,8 +198,9 @@ typedef struct {
 #define btsnd_hcic_write_auth_enable btsnd_hcic_write_pin_type_8008543C
 
 /*
- * tBTM_SEC_DEV_REC as this stack lays it out: 0x88 bytes, and
- * BTM_SEC_MAX_DEVICE_RECORDS (8 here) of them in btm_cb at 0x1F30.  The
+ * tBTM_SEC_DEV_REC as this stack lays it out: 0x88 bytes, and 0x10 of them
+ * (this build's BTM_SEC_MAX_DEVICE_RECORDS; the header's 100 is a newer
+ * config) in btm_cb at 0x1F30, ending where connecting_bda starts at 0x27B0.  The
  * header's struct agrees up to is_originator and then describes a newer
  * stack, so the security-manager bytes at the end are named from the code.
  */
