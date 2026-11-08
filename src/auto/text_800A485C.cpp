@@ -8948,6 +8948,18 @@ struct VFiPFVolume {
 #define VF_ERR_IN_USE      0x13 /* files or directories are still open */
 
 extern "C" s32 fn_800B5B94(void *, s32);
+/* Unmount the drive whose letter is arg0 ('A'..'Z').
+ *
+ * The volume is the 0x1FC8-byte slot of the VF instance (lbl_803D2140) that
+ * belongs to that letter.  Whatever the media-change callbacks left pending on
+ * it is carried out first: a pending unmount (VF_VOL_UNMOUNT_PENDING) closes
+ * every file and directory and the device itself, and a pending mount
+ * (VF_VOL_MOUNT_PENDING) is then either done (fn_800B5988) or, with no media
+ * in the drive, dropped.  A mounted file system is finally closed by
+ * fn_800B5B94, which open files or directories hold off unless arg1 bit 0
+ * forces them away.  Returns 0, the error, or 1 when an error happened while
+ * forcing; the instance and the volume both keep the last error.
+ */
 extern "C" s32 fn_800B6A8C(s8 arg0, s32 arg1) {
     u8 *vol;
     u32 slot_address;
@@ -8968,33 +8980,33 @@ extern "C" s32 fn_800B6A8C(s8 arg0, s32 arg1) {
         slot_address = (u32)vol + (index * 0x1FC8);
         vol = (u8 *)(slot_address + 0xA0);
     }
-    if (!(((VFiPFVolume *)vol)->flags & VF_VOL_IN_USE)) {
+    if (!(VF_VOLUME(vol)->flags & VF_VOL_IN_USE)) {
         VF_LAST_ERROR = VF_ERR_NO_DEVICE;
         return VF_ERR_NO_DEVICE;
     }
     fn_800B77C0(vol + 0x1F90);
     if (fn_800A53B4(vol) != 0) {
-        if ((fn_800A53DC(vol) != 0) && !(((VFiPFVolume *)vol)->flags & VF_VOL_MOUNTED)) {
+        if ((fn_800A53DC(vol) != 0) && !(VF_VOLUME(vol)->flags & VF_VOL_MOUNTED)) {
             VFiPFFILE_FinalizeAllFiles(vol);
             VFiPFDIR_FinalizeAllDirs(vol);
             if (fn_800A5788(vol, 1) == 0) {
-                if (((VFiPFVolume *)vol)->flags & VF_VOL_MOUNTED) {
-                    ((VFiPFVolume *)vol)->cache[0].flag = 0;
-                    ((VFiPFVolume *)vol)->cache[1].flag = 0;
-                    ((VFiPFVolume *)vol)->cache[2].flag = 0;
-                    ((VFiPFVolume *)vol)->cache[3].flag = 0;
+                if (VF_VOLUME(vol)->flags & VF_VOL_MOUNTED) {
+                    VF_VOLUME(vol)->cache[0].flag = 0;
+                    VF_VOLUME(vol)->cache[1].flag = 0;
+                    VF_VOLUME(vol)->cache[2].flag = 0;
+                    VF_VOLUME(vol)->cache[3].flag = 0;
                 }
-                ((VFiPFVolume *)vol)->flags &= ~VF_VOL_MOUNTED;
+                VF_VOLUME(vol)->flags &= ~VF_VOL_MOUNTED;
             }
             fn_800A53E8(vol);
             VF_MOUNTED_VOLUMES--;
         }
         if (fn_800A53C0(vol) != 0) {
-            if (!(((VFiPFVolume *)vol)->flags & VF_VOL_MOUNTED)) {
+            if (!(VF_VOLUME(vol)->flags & VF_VOL_MOUNTED)) {
                 mount_result = fn_800B5988(vol);
                 switch (mount_result) {
                 case 0:
-                    ((VFiPFVolume *)vol)->state &= ~7;
+                    VF_VOLUME(vol)->state &= ~7;
                     fn_800A53E8(vol);
                     VF_MOUNTED_VOLUMES++;
                     goto mounted;
@@ -9015,17 +9027,17 @@ check_error:
             goto done;
         }
     } else {
-        if ((fn_800A53DC(vol) != 0) && !(((VFiPFVolume *)vol)->flags & VF_VOL_MOUNTED)) {
+        if ((fn_800A53DC(vol) != 0) && !(VF_VOLUME(vol)->flags & VF_VOL_MOUNTED)) {
             VFiPFFILE_FinalizeAllFiles(vol);
             VFiPFDIR_FinalizeAllDirs(vol);
             if (fn_800A5788(vol, 1) == 0) {
-                if (((VFiPFVolume *)vol)->flags & VF_VOL_MOUNTED) {
-                    ((VFiPFVolume *)vol)->cache[0].flag = 0;
-                    ((VFiPFVolume *)vol)->cache[1].flag = 0;
-                    ((VFiPFVolume *)vol)->cache[2].flag = 0;
-                    ((VFiPFVolume *)vol)->cache[3].flag = 0;
+                if (VF_VOLUME(vol)->flags & VF_VOL_MOUNTED) {
+                    VF_VOLUME(vol)->cache[0].flag = 0;
+                    VF_VOLUME(vol)->cache[1].flag = 0;
+                    VF_VOLUME(vol)->cache[2].flag = 0;
+                    VF_VOLUME(vol)->cache[3].flag = 0;
                 }
-                ((VFiPFVolume *)vol)->flags &= ~VF_VOL_MOUNTED;
+                VF_VOLUME(vol)->flags &= ~VF_VOL_MOUNTED;
             }
             fn_800A53E8(vol);
             VF_MOUNTED_VOLUMES--;
@@ -9038,17 +9050,17 @@ done:
     if (error != 0) {
         fn_800B783C(vol + 0x1F90);
         VF_LAST_ERROR = error;
-        ((VFiPFVolume *)vol)->error = error;
+        VF_VOLUME(vol)->error = error;
         return error;
     }
-    if (!(((VFiPFVolume *)vol)->flags & VF_VOL_MOUNTED)) {
+    if (!(VF_VOLUME(vol)->flags & VF_VOL_MOUNTED)) {
         fn_800B783C(vol + 0x1F90);
         return 0;
     }
-    if ((((VFiPFVolume *)vol)->openFiles != 0) || (((VFiPFVolume *)vol)->openDirs != 0)) {
+    if ((VF_VOLUME(vol)->openFiles != 0) || (VF_VOLUME(vol)->openDirs != 0)) {
         result = 1;
         VF_LAST_ERROR = VF_ERR_IN_USE;
-        ((VFiPFVolume *)vol)->error = VF_ERR_IN_USE;
+        VF_VOLUME(vol)->error = VF_ERR_IN_USE;
         if (!(arg1 & 1)) {
             fn_800B783C(vol + 0x1F90);
             return VF_ERR_IN_USE;
@@ -9058,7 +9070,7 @@ done:
     if ((unmount_result != 0) && (result == 0)) {
         result = 1;
         VF_LAST_ERROR = unmount_result;
-        ((VFiPFVolume *)vol)->error = unmount_result;
+        VF_VOLUME(vol)->error = unmount_result;
         if (!(arg1 & 1))
             result = unmount_result;
     }
