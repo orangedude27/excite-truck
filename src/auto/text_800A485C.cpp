@@ -11112,47 +11112,47 @@ struct IosDevice {
 #define SD_CMD_READ         0x12  /* MMC READ_MULTIPLE_BLOCK */
 
 extern "C" s32 fn_800BAE98(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
-extern "C" s32 fn_800BB4E0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
-const char *str=lbl_8031B838;
-u32 var_r30=0x200;
-if((u32)arg3<=0x200)var_r30=(u32)arg3;
-u32 var_r29=(u32)arg3>>9;
-s32 var_r20, sp28[4], sp18[4]; void* dev=(void*)arg0;
-if(lbl_80559248<0) var_r20=(s32)0xC1000000;
-else if((u32)arg3!=var_r30*var_r29){OSReport(str+0x3B0,str+0x398,(u32)arg3);var_r20=-4;}
-else if((u32)arg1!=((u32)arg1&0xFFFFFE00)){OSReport(str+0x3C8,str+0x398,arg1);var_r20=-4;}
-else if((*(u32*)((u8*)dev+0x20)!=0)&&((u32)arg1>*(u32*)((u8*)dev+0x20))){OSReport(str+0x3E0,str+0x398,arg1);var_r20=-4;}
-else if(*(s32*)((u8*)dev+0x24)==0){OSReport(str+0x3FC,str+0x398);var_r20=(s32)0xC1000000;}
+extern "C" s32 fn_800BB4E0(s32 device, s32 offset, s32 buffer, s32 length, s32 callback, s32 callbackArg) {
+const char *messages=lbl_8031B838;
+u32 blockSize=0x200;
+if((u32)length<=0x200)blockSize=(u32)length;
+u32 blocks=(u32)length>>9;
+s32 result, blockLenOut[4], csdOut[4]; void* dev=(void*)device;
+if(lbl_80559248<0) result=(s32)0xC1000000;
+else if((u32)length!=blockSize*blocks){OSReport(messages+0x3B0,messages+0x398,(u32)length);result=-4;}
+else if((u32)offset!=((u32)offset&0xFFFFFE00)){OSReport(messages+0x3C8,messages+0x398,offset);result=-4;}
+else if((*(u32*)((u8*)dev+0x20)!=0)&&((u32)offset>*(u32*)((u8*)dev+0x20))){OSReport(messages+0x3E0,messages+0x398,offset);result=-4;}
+else if(*(s32*)((u8*)dev+0x24)==0){OSReport(messages+0x3FC,messages+0x398);result=(s32)0xC1000000;}
 else {
 OSLockMutex(lbl_80407560);
-if(lbl_8055DD6C!=0){OSUnlockMutex(lbl_80407560);var_r20=(s32)0xC1000000;}
+if(lbl_8055DD6C!=0){OSUnlockMutex(lbl_80407560);result=(s32)0xC1000000;}
 else {
 lbl_8055DD6C=1; OSUnlockMutex(lbl_80407560);
 if(*(u32*)((u8*)dev+0x24)==2){
-var_r20=fn_800BB0A8(*(s32*)dev,7,3,2,*(s32*)((u8*)dev+0x10),0,0,0,0,(s32)sp18,0,0);
-if(var_r20!=0) OSReport(str+0x338,var_r20);
+result=fn_800BB0A8(*(s32*)dev,7,3,2,*(s32*)((u8*)dev+0x10),0,0,0,0,(s32)csdOut,0,0);
+if(result!=0) OSReport(messages+0x338,result);
 else {
 *(s32*)((u8*)dev+0x24)=1;
-var_r20=fn_800BB0A8(*(s32*)dev,0x10,3,1,0x200,0,0,0,0,(s32)sp28,0,0);
-if(var_r20!=0) OSReport(str+0x358,str+0x234,var_r20);
+result=fn_800BB0A8(*(s32*)dev,0x10,3,1,0x200,0,0,0,0,(s32)blockLenOut,0,0);
+if(result!=0) OSReport(messages+0x358,messages+0x234,result);
 else {
-var_r20=((s32(*)(void*,s32))fn_800BC134)(dev,4);
-if(var_r20!=0) OSReport(str+0x358,str+0x234,var_r20);
+result=((s32(*)(void*,s32))fn_800BC134)(dev,4);
+if(result!=0) OSReport(messages+0x358,messages+0x234,result);
 else {
- s32 fd=*(volatile s32*)dev; *lbl_8055DD70=1; s32 temp_r3=IOS_Ioctl(fd,6,lbl_8055DD70,4,0,0); if(temp_r3!=0){OSReport(str+0x148);temp_r3=(s32)0xC1000000;} var_r20=temp_r3; if(temp_r3!=0){OSReport(str+0x358,str+0x234,temp_r3);}
+ s32 fd=*(volatile s32*)dev; *lbl_8055DD70=1; s32 ioctlRes=IOS_Ioctl(fd,6,lbl_8055DD70,4,0,0); if(ioctlRes!=0){OSReport(messages+0x148);ioctlRes=(s32)0xC1000000;} result=ioctlRes; if(ioctlRes!=0){OSReport(messages+0x358,messages+0x234,ioctlRes);}
 }
 }
 }
-if(var_r20!=0){lbl_8055DD6C=0;goto done;}
+if(result!=0){lbl_8055DD6C=0;goto done;}
 }
-DCInvalidateRange((void*)arg2,(u32)arg3);
-var_r20=fn_800BAE98(*(s32*)dev,0x12,3,1,arg1,arg2,var_r29,var_r30,1,lbl_8055DD78,arg4,arg5);
-if(var_r20!=0){OSReport(str+0x418,str+0x398,var_r20);lbl_8055DD6C=0;}
-if(arg4==0)lbl_8055DD6C=0;
+DCInvalidateRange((void*)buffer,(u32)length);
+result=fn_800BAE98(*(s32*)dev,0x12,3,1,offset,buffer,blocks,blockSize,1,lbl_8055DD78,callback,callbackArg);
+if(result!=0){OSReport(messages+0x418,messages+0x398,result);lbl_8055DD6C=0;}
+if(callback==0)lbl_8055DD6C=0;
 }
 }
 done:
-return var_r20;
+return result;
 }
 
 extern "C" s32 fn_800BB81C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
