@@ -369,16 +369,18 @@ static inline void BootReadAbs(void *buf, s32 len, s32 off) {
 }
 
 static inline s32 BootGetPartOffset(void) {
-    if (lbl_8055DA28 == 0) {
+    s32 v = lbl_8055DA28;
+    if (v == 0) {
         if (*(s32 *)0x800030F4 != 0) {
             u8 *buf = OSAllocFromMEM1ArenaLo(0x40, 0x20);
             BootReadAbs(buf, 0x40, *(s32 *)0x800030F4 >> 2);
-            lbl_8055DA28 = (*(s32 *)0x800030F4 + *(s32 *)(buf + 0x38)) >> 2;
+            v = (*(s32 *)0x800030F4 + *(s32 *)(buf + 0x38)) >> 2;
         } else {
-            lbl_8055DA28 = 0x910;
+            v = 0x910;
         }
+        lbl_8055DA28 = v;
     }
-    return lbl_8055DA28;
+    return v;
 }
 
 extern int IOS_Open(const char *, int);
@@ -448,3 +450,78 @@ void fn_8004E3F0(void) {
     }
 }
 
+#pragma use_lmw_stmw off
+void fn_8004E538(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+    s32 *hdr;
+    s32 *params;
+    s32 off;
+    void (*sp8)(void *);
+    s32 (*spC)(void **, s32 *, u32 *);
+    s32 (*sp10)(void);
+    void *sp14;
+    s32 sp18;
+    u32 sp1C;
+    s32 target;
+    void *copy;
+
+    OSDisableInterrupts();
+    params = OSAllocFromMEM1ArenaLo(0x1C, 1);
+    params[0] = 1;
+    params[1] = arg1;
+    params[3] = arg2;
+    params[4] = arg3;
+    params[5] = arg4;
+    if (arg4 == 0) {
+        params[6] = (s32)OSAllocFromMEM1ArenaLo(0x2000, 1);
+        ((void (*)(void *, s32, s32))PackArgs)((void *)params[6], arg5, arg6);
+    }
+    DVDInit();
+    fn_800393C4(1);
+    fn_800393D4();
+    lbl_8055DA44 = 0;
+    fn_80039A5C((void *)__AXDSPInitCallback_8004DDC4);
+    __OSMaskInterrupts(-0x10);
+    __OSUnmaskInterrupts(0x10);
+    OSEnableInterrupts();
+    while (lbl_8055DA44 != 1) {
+    }
+    fn_8004DDFC();
+    hdr = OSAllocFromMEM1ArenaLo(0x20, 0x20);
+    off = BootGetPartOffset();
+    BootReadAbs(hdr, 0x20, 0);
+    off = BootGetPartOffset();
+    BootReadAbs((void *)0x81200000, (hdr[5] + 0x1F) & ~0x1F, off + 8);
+    ICInvalidateRange((void *)0x81200000, (hdr[5] + 0x1F) & ~0x1F);
+    if (strncmp((char *)hdr, lbl_803049E4, 10) > 0) {
+        if ((u32)(arg0 + 0x10000) == 0xFFFF) {
+            arg0 = ((u32)(hdr[5] + 0x20) >> 2) + BootGetPartOffset();
+        }
+        params[2] = arg0;
+        ((void (*)(void *, void *, void *))hdr[4])(&sp8, &spC, &sp10);
+        copy = OSAllocFromMEM1ArenaLo(0x1C, 1);
+        memcpy(copy, params, 0x1C);
+        *(void **)0x800030F0 = copy;
+        sp8((void *)OSReport);
+        OSSetArenaLo(copy);
+        while (spC(&sp14, &sp18, &sp1C) != 0) {
+            BootReadAbs(sp14, sp18, sp1C >> __DVDLayoutFormat);
+        }
+        target = sp10();
+        copy = OSAllocFromMEM1ArenaLo(0x1C, 1);
+        memcpy(copy, params, 0x1C);
+        *(void **)0x800030F0 = copy;
+        *(volatile s32 *)0xCC003024 = 7;
+        OSDisableInterrupts();
+        fn_8004DD88((void (*)(void))target);
+        return;
+    }
+    *(s32 *)0x812FDFF0 = arg2;
+    *(s32 *)0x812FDFEC = arg3;
+    *(u8 *)0x800030E2 = 1;
+    off = BootGetPartOffset();
+    BootReadAbs((void *)0x81330000, (hdr[6] + 0x1F) & ~0x1F, ((u32)(hdr[5] + 0x20) >> 2) + off);
+    ICInvalidateRange((void *)0x81330000, (hdr[6] + 0x1F) & ~0x1F);
+    OSDisableInterrupts();
+    ICFlashInvalidate();
+    fn_8004DD88((void (*)(void))0x81330000);
+}
