@@ -807,6 +807,7 @@ extern "C" s32 fn_8012B6FC(void *arg0, s32 arg1) {
 
 #pragma push
 #pragma scheduling invalid_target
+#pragma optimization_level 3
 extern "C" s32 fn_8012B85C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     s32 sp8;
     volatile u8 requestName[5];
@@ -820,12 +821,14 @@ extern "C" s32 fn_8012B85C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32
             u8 *entry = *(u8 **)(manager + 0x60) + sp8 * 0x44;
             if ((u32)arg1 == *(u32 *)(entry + 0x20)) {
                 u32 flags;
+                u32 oldFlags;
                 s32 count;
                 *(u32 *)(entry + 0x34) |= 2;
                 if ((s8 *)arg5 != 0) {
-                    flags = *(u32 *)(entry + 0x34);
-                    *(u32 *)(entry + 0x34) = flags | 1;
-                    *(s8 *)arg5 = !(flags & 1);
+                    oldFlags = *(u32 *)(entry + 0x34);
+                    flags = oldFlags | 1;
+                    *(u32 *)(entry + 0x34) = flags;
+                    *(s8 *)arg5 = (bool)!(oldFlags & 1);
                 }
                 if ((s32 *)arg3 != 0) *(s32 *)arg3 = *(s32 *)(entry + 0x28);
                 if ((s8 *)arg4 != 0) *(s8 *)arg4 = *(s32 *)(entry + 0x38) == 0;
@@ -839,12 +842,12 @@ extern "C" s32 fn_8012B85C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32
                 result = *(u8 **)(entry + 0x3C) + 8;
                 ((void (*)(void *, const char *))fn_8012A46C)(result, strings + 0x408);
             } else {
-                volatile u32 *request = (volatile u32 *)requestName;
+                u8 *request = (u8 *)requestName;
                 u32 first;
                 u8 fourth;
                 u32 second;
                 u8 third;
-                *request = arg1;
+                *(volatile u32 *)request = arg1;
                 first = requestName[0];
                 fourth = requestName[3];
                 second = requestName[1];
@@ -1831,6 +1834,43 @@ extern "C" void fn_8012D8A8(s32 arg0) {
     }
 }
 
+// --- res: mounted resource sets and their on-disc "ETOC" tables -------------
+//
+// lbl_8055E014 is the external-TOC manager built by fn_8012DBD0 (0xA24 bytes):
+// a pool of 0x20 mount nodes at +0x8 and the list of mounted sets at +0xA18.
+// Every mounted set has a "<set>.toc" resource whose data is an ETOC block: a
+// ResTocHeader followed by entryCount ResTocEntry records (fn_8012A388 knows an
+// entry's fields).  The block is written little-endian, so its words are
+// byte-reversed in place the first time it is read in.
+
+#define RES_TOC_MANAGER ((ResTocManager *)lbl_8055E014)
+#define RES_TOC_FOURCC 0x45544F43            // 'ETOC'
+#define RES_TOC_HEADER_SIZE 0x14             // ResTocHeader must be this size
+#define RES_TOC_ENTRY_SIZE 0x44              // one ETOC entry
+#define RES_TOC_EXT_PATH ((char *)&lbl_805599E0)  // ".toc"
+
+struct ResTocMount {  // one mounted resource set, 0x50 bytes
+    void *unk_0x0;    // filled in by fn_8012DFE8
+    ResTocMount *next;
+    s32 uses;         // times this set has been asked for (fn_8012DDA8)
+    char name[0x44];  // resource set name, e.g. "tracks"
+};
+
+struct ResTocMountList {
+    ResTocMount *head;
+    ResTocMount **tail;
+};
+
+struct ResTocManager {
+    u8 unk_0x0[0xA18];
+    ResTocMountList mounts;  // the mounted sets, in mount order
+    u8 unk_0xA20;
+};
+
+// fn_8012B534 could not find NAME (arg0) in any loaded resource table.  Ask
+// every mounted set's on-disc ETOC table whether it lists NAME; if one does,
+// the set is mounted but its resources have not been set yet, which is the
+// "Get-Before-Wait" error the res-CRIP() message reports with the set's name.
 extern "C" void fn_8012D908(s32 arg0) {
     char sp10[128];
     s32 spC;
