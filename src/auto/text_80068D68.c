@@ -16329,7 +16329,7 @@ void l2c_csm_config(void *p_ccb, u16 event, void *p_data)
 }
 
 extern void l2cu_process_peer_cfg_req();
-extern void l2cu_send_peer_config_rsp(void *, void *);
+extern void l2cu_send_peer_config_rsp();
 extern void l2cu_send_peer_disc_req(void *);
 extern void forward_peer_data(void *, void *);
 extern void l2cu_process_our_cfg_req(void *, void *);
