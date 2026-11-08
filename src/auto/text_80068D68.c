@@ -11237,94 +11237,107 @@ done:
 }
 
 extern char lbl_80316E44[];
+/* Called when the remote name request for a device ends, with p_bd_name and
+ * status from the HCI Remote_Name_Request_Complete event (a failed request
+ * carries no address).  The name goes into the device record, everyone waiting
+ * for a name is told, then whatever security work was parked behind the name
+ * (the owed link key notification, a bonding link that can drop now, or the
+ * security procedure the upper layer asked for) is carried on.
+ *
+ * btm_cb (lbl_803C0F78) is read at its byte offsets here: taking it through
+ * tBTM_CB_SEC_VIEW makes the compiler keep its base in a callee-saved register.
+ */
 void btm_sec_rmt_name_request_complete(UINT8 *p_bd_addr, UINT8 *p_bd_name, UINT8 status)
 {
-    UINT8 *p_dev_rec;
+    tBTM_SEC_DEV_REC_FULL_VIEW *p_dev_rec;
     int i;
     int j;
     UINT8 *p;
     UINT8 state;
     UINT8 result;
-    void (*name_cb)(void *, void *, void *);
-    void (*security_cb)(void *, void *, void *, void *, UINT8);
-    void (*complete_cb)(void *, void *, UINT8);
+    tBTM_RMT_NAME_CALLBACK *name_cb;
+    tBTM_LINK_KEY_NOTIFY_CB *security_cb;
+    tBTM_SEC_CBACK *complete_cb;
 
     if (p_bd_addr) {
-        p_dev_rec = (UINT8 *)btm_find_dev(p_bd_addr);
+        p_dev_rec = (tBTM_SEC_DEV_REC_FULL_VIEW *)btm_find_dev(p_bd_addr);
     } else {
-        p_dev_rec = (UINT8 *)lbl_803C0F78 + 0x1F30;
-        for (i = 0; i < 0x10; i++, p_dev_rec += 0x88) {
-            if (!(p_dev_rec[0x76] & 0x80))
+        /* No address with a failed request: only one name is asked for at a
+           time, so find the record that is still waiting for its name. */
+        p_dev_rec = (tBTM_SEC_DEV_REC_FULL_VIEW *)(lbl_803C0F78 + 0x1F30); /* btm_cb.sec_dev_rec */
+        for (i = 0; i < 0x10; i++, p_dev_rec++) { /* BTM_SEC_MAX_DEVICE_RECORDS here */
+            if (!(p_dev_rec->sec_flags & BTM_SEC_IN_USE))
                 continue;
-            if (p_dev_rec[0x7F] == 3)
+            if (p_dev_rec->sec_state == BTM_SEC_STATE_GETTING_NAME)
                 break;
         }
         if (i == 0x10)
             p_dev_rec = NULL;
     }
 
-    if (lbl_803C0F78[0x27C0] >= 4)
-        fn_8007096C(0xD0003, lbl_80316E44, status,
-                    p_dev_rec ? p_dev_rec[0x7F] : 0);
+    if (lbl_803C0F78[0x27C0] >= BT_TRACE_LEVEL_EVENT) /* "Security Manager: rmt_name_complete status:%d State:%d" */
+        fn_8007096C(TRACE_LAYER_BTM | TRACE_TYPE_EVENT, lbl_80316E44, status,
+                    p_dev_rec ? p_dev_rec->sec_state : 0);
 
     if (!p_dev_rec)
         return;
 
-    if (status == 0) {
-        memcpy(p_dev_rec + 0x35, p_bd_name, 0x40);
-        p_dev_rec[0x76] |= 8;
+    if (status == HCI_SUCCESS) {
+        memcpy(p_dev_rec->sec_bd_name, p_bd_name, 0x40);
+        p_dev_rec->sec_flags |= BTM_SEC_NAME_KNOWN;
+        /* Tell every client waiting for this name. */
         p = (UINT8 *)lbl_803C0F78;
-        for (j = 0; j < 2; j++, p += 4) {
-            name_cb = *(void (**)(void *, void *, void *))(p + 0x192C);
+        for (j = 0; j < BTM_SEC_MAX_RMT_NAME_CALLBACKS; j++, p += 4) {
+            name_cb = *(tBTM_RMT_NAME_CALLBACK **)(p + 0x192C); /* btm_cb.p_rmt_name_callback[j] */
             if (name_cb)
-                name_cb(p_bd_addr, p_dev_rec + 0x22, p_dev_rec + 0x35);
+                name_cb(p_bd_addr, p_dev_rec->dev_class, p_dev_rec->sec_bd_name);
         }
     }
 
-    if (p_dev_rec[0x82]) {
-        if ((p_dev_rec[0x81] & 0x40) && !p_dev_rec[0x85])
+    if (p_dev_rec->link_key_not_sent) {
+        /* A bonding link whose connection has not come up yet still owes it. */
+        if ((p_dev_rec->sec_req & BTM_SEC_BOND) && !p_dev_rec->conn_up)
             return;
-        p_dev_rec[0x82] = 0;
-        security_cb = *(void (**)(void *, void *, void *, void *, UINT8))
-                          ((UINT8 *)lbl_803C0F78 + 0x1914);
+        p_dev_rec->link_key_not_sent = 0;
+        security_cb = *(tBTM_LINK_KEY_NOTIFY_CB **)(lbl_803C0F78 + 0x1914); /* btm_cb.api.p_link_key_callback */
         if (security_cb)
-            security_cb(p_dev_rec + 0x1C, p_dev_rec + 0x22,
-                        p_dev_rec + 0x35, p_dev_rec + 0x25,
-                        p_dev_rec[0x83]);
+            security_cb(p_dev_rec->bd_addr, p_dev_rec->dev_class, p_dev_rec->sec_bd_name,
+                        p_dev_rec->link_key, p_dev_rec->link_key_type);
         p = (UINT8 *)lbl_803C0F78;
-        for (j = 0; j < 2; j++, p += 4) {
-            security_cb = *(void (**)(void *, void *, void *, void *, UINT8))(p + 0x1924);
+        for (j = 0; j < BTM_SEC_MAX_LINK_KEY_NOTIFY_CALLBACKS; j++, p += 4) {
+            security_cb = *(tBTM_LINK_KEY_NOTIFY_CB **)(p + 0x1924); /* btm_cb.p_link_key_notify_callback[j] */
             if (security_cb)
-                security_cb(p_dev_rec + 0x1C, p_dev_rec + 0x22,
-                            p_dev_rec + 0x35, p_dev_rec + 0x25,
-                            p_dev_rec[0x83]);
+                security_cb(p_dev_rec->bd_addr, p_dev_rec->dev_class, p_dev_rec->sec_bd_name,
+                            p_dev_rec->link_key, p_dev_rec->link_key_type);
         }
     }
 
-    state = p_dev_rec[0x81];
-    if ((state & 0x40) && (p_dev_rec[0x76] & 2)) {
-        p_dev_rec[0x81] = state & ~0x50;
-        btsnd_hcic_disconnect(*(UINT16 *)(p_dev_rec + 0x18), 0x13);
+    /* A link brought up only for bonding is done with once the name is known. */
+    state = p_dev_rec->sec_req;
+    if ((state & BTM_SEC_BOND) && (p_dev_rec->sec_flags & BTM_SEC_AUTHENTICATED)) {
+        p_dev_rec->sec_req = state & ~(BTM_SEC_BOND | BTM_SEC_OUT_AUTHENTICATE);
+        btsnd_hcic_disconnect(p_dev_rec->hci_handle, HCI_ERR_PEER_USER);
         return;
     }
 
-    if (p_dev_rec[0x7F] == 3) {
-        p_dev_rec[0x7F] = 0;
-        if (status != 0) {
-            if (*(void **)(p_dev_rec + 4)) {
-                ((void (*)(void *, void *, UINT8))*(void **)(p_dev_rec + 4))(
-                    p_dev_rec + 0x1C, *(void **)(p_dev_rec + 8), 0xA);
-                *(void **)(p_dev_rec + 4) = NULL;
+    if (p_dev_rec->sec_state == BTM_SEC_STATE_GETTING_NAME) {
+        p_dev_rec->sec_state = BTM_SEC_STATE_IDLE;
+        if (status != HCI_SUCCESS) {
+            /* No name: end the security request that was waiting for it. */
+            if (p_dev_rec->p_callback) {
+                p_dev_rec->p_callback(p_dev_rec->bd_addr, p_dev_rec->p_ref_data,
+                                      BTM_ERR_PROCESSING);
+                p_dev_rec->p_callback = NULL;
             }
             return;
         }
 
         result = btm_sec_execute_procedure(p_dev_rec);
-        if (result != 1) {
-            if (*(void **)(p_dev_rec + 4)) {
-                complete_cb = (void (*)(void *, void *, UINT8))*(void **)(p_dev_rec + 4);
-                complete_cb(p_dev_rec + 0x1C, *(void **)(p_dev_rec + 8), result);
-                *(void **)(p_dev_rec + 4) = NULL;
+        if (result != BTM_CMD_STARTED) { /* not still working on it: report */
+            if (p_dev_rec->p_callback) {
+                complete_cb = p_dev_rec->p_callback;
+                complete_cb(p_dev_rec->bd_addr, p_dev_rec->p_ref_data, result);
+                p_dev_rec->p_callback = NULL;
             }
         }
     }
