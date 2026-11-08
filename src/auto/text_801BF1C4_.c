@@ -7,10 +7,10 @@ extern unsigned char fn_801BF210[];
 extern int lbl_80436D48[4];
 extern int lbl_8055E780;
 extern int lbl_8055E788;
+#pragma scheduling invalid_target
 void fn_801BF1C4(void) {
-    void* storage;
     fn_8000D838(&lbl_8055E780);
-    storage = lbl_80436D48;
     lbl_8055E788 = 0xFFFF0000;
-    fn_8002F53C(storage, fn_801BF210, 0, 0x10, 0x100);
+    fn_8002F53C(lbl_80436D48, fn_801BF210, 0, 0x10, 0x100);
 }
+#pragma scheduling on
