@@ -258,7 +258,7 @@ void DBPrintf_800343C8(const char *fmt, ...) {
 
 /*
  * DSP interrupt handler. Acknowledges the DSP interrupt, reads the microcode
- * mailbox message and runs the DSP task state machine (init/resume/yield/done/
+ * mailbox message and runs the task state machine (init/resume/yield/done/
  * sync), calling into the current task's callbacks.
  *
  * lbl_8055D810 = __DSP_rude_task_pending  lbl_8055D814 = __DSP_rude_task
