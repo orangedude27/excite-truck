@@ -14,3 +14,6 @@ void fn_8026B0D4(void) {
     fn_8002F53C(lbl_80499E60, fn_8026B118, 0, 0x6C, 4);
 }
 #pragma scheduling on
+#include <types.h>
+#include <macros.h>
+DECL_SECTION(".ctors") funcptr_t D_802ED488 = fn_8026B0D4;
