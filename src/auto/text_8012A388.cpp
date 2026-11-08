@@ -1872,103 +1872,108 @@ struct ResTocManager {
 // the set is mounted but its resources have not been set yet, which is the
 // "Get-Before-Wait" error the res-CRIP() message reports with the set's name.
 extern "C" void fn_8012D908(s32 arg0) {
-    char sp10[128];
-    s32 spC;
-    u8 sp8;
-    char *var_r4;
-    s32 var_r5;
-    char *var_r6;
-    char *var_r4_2;
-    s32 var_r5_2;
-    char *var_r6_2;
-    u8 temp_r3, temp_r3_2;
-    u8 temp_r4, temp_r4_2, temp_r4_3, temp_r4_4, temp_r4_5;
-    u8 temp_r4_6, temp_r4_7, temp_r4_8, temp_r4_9, temp_r4_10;
-    u32 temp_r4_11;
-    u8 *current;
-    u8 *found;
-    u8 *temp_r3_3;
-    u32 idx2;
-    u32 flag;
-    u32 idx1;
-    u8 *p2;
-    u8 *p1;
+    char tocPath[128];
+    s32 tocOffset;
+    u8 startedLoad;
+    char *nameSrc;
+    s32 nameLeft;
+    char *pathDst;
+    char *extSrc;
+    s32 extLeft;
+    char *extDst;
+    u8 c, c2;
+    u8 swap0, swap1, swap2, swap3, swap4;
+    u8 swap5, swap6, swap7, swap8, swap9;
+    u32 tocVersion;
+    ResTocMount *mount;
+    ResTocMount *matched;
+    u8 *toc;
+    u32 nameIndex;
+    u32 hasName;
+    u32 entryIndex;
+    u8 *nameEntry;
+    u8 *entry;
 
-    if (lbl_8055E014 == 0) return;
-    current = *(u8 **)((u8 *)lbl_8055E014 + 0xA18);
-    found = 0;
-    goto outer_test;
-outer_loop:
-    var_r4 = (char *)(current + 0xC); var_r6 = sp10; var_r5 = 0x80;
-    goto path_copy;
-path_limit:
-    var_r5 -= 1;
-    if (var_r5 > 0) goto path_copy;
-    var_r6[-1] = 0;
-    goto path_done;
-path_copy:
-    temp_r3 = *var_r4++; *var_r6++ = temp_r3;
-    if ((s8)temp_r3 != 0) goto path_limit;
-path_done:
-    if ((s8)*fn_80029004(sp10, 0x2E) != 0) *fn_80029004(sp10, 0x2E) = 0;
-    var_r6_2 = sp10; var_r5_2 = 0x80;
-    goto scan_test;
-scan_step:
-    var_r5_2 -= 1; var_r6_2 += 1;
-scan_test:
-    if ((s8)*var_r6_2 != 0) goto scan_step;
-    if (var_r5_2 <= 0) goto path_all_done;
-    var_r4_2 = (char *)&lbl_805599E0;
-    goto suffix_copy;
-suffix_limit:
-    var_r5_2 -= 1;
-    if (var_r5_2 > 0) goto suffix_copy;
-    var_r6_2[-1] = 0;
-    goto path_all_done;
-suffix_copy:
-    temp_r3_2 = *var_r4_2++; *var_r6_2++ = temp_r3_2;
-    if ((s8)temp_r3_2 != 0) goto suffix_limit;
-path_all_done:
-    fn_8002B0D8(sp10);
-    temp_r3_3 = (u8 *)fn_8012C370((s32)sp10, 0x45544F43, (s32)&spC, 0, 0, (s32)&sp8);
-    if (temp_r3_3 != 0 && sp8 != 0) {
-        temp_r4 = temp_r3_3[0]; temp_r3_3[0] = temp_r3_3[3]; temp_r3_3[3] = temp_r4;
-        temp_r4_2 = temp_r3_3[1]; temp_r3_3[1] = temp_r3_3[2]; temp_r3_3[2] = temp_r4_2;
-        temp_r4_3 = temp_r3_3[4]; temp_r3_3[4] = temp_r3_3[7]; temp_r3_3[7] = temp_r4_3;
-        temp_r4_4 = temp_r3_3[5]; temp_r3_3[5] = temp_r3_3[6]; temp_r3_3[6] = temp_r4_4;
-        temp_r4_5 = temp_r3_3[8]; temp_r3_3[8] = temp_r3_3[0xB]; temp_r3_3[0xB] = temp_r4_5;
-        temp_r4_6 = temp_r3_3[9]; temp_r3_3[9] = temp_r3_3[0xA]; temp_r3_3[0xA] = temp_r4_6;
-        temp_r4_7 = temp_r3_3[0xC]; temp_r3_3[0xC] = temp_r3_3[0xF]; temp_r3_3[0xF] = temp_r4_7;
-        temp_r4_8 = temp_r3_3[0xD]; temp_r3_3[0xD] = temp_r3_3[0xE]; temp_r3_3[0xE] = temp_r4_8;
-        temp_r4_9 = temp_r3_3[0x10]; temp_r3_3[0x10] = temp_r3_3[0x13]; temp_r3_3[0x13] = temp_r4_9;
-        temp_r4_10 = temp_r3_3[0x11]; temp_r3_3[0x11] = temp_r3_3[0x12]; temp_r3_3[0x12] = temp_r4_10;
-        temp_r4_11 = *(u32 *)temp_r3_3;
-        if (temp_r4_11 != 0 || *(u32 *)(temp_r3_3 + 4) != 0x14)
-            fn_802E317C(lbl_8032AE60, temp_r4_11, 0, *(u32 *)(temp_r3_3 + 4), 0x14);
+    if (lbl_8055E014 == 0) return;  // no external-TOC manager yet
+    mount = RES_TOC_MANAGER->mounts.head;
+    matched = 0;
+    goto mount_test;
+mount_loop:
+    // tocPath = "<set name>.toc", the resource holding this set's ETOC block
+    nameSrc = mount->name; pathDst = tocPath; nameLeft = sizeof(tocPath);
+    goto name_copy;
+name_limit:
+    nameLeft -= 1;
+    if (nameLeft > 0) goto name_copy;
+    pathDst[-1] = 0;
+    goto name_done;
+name_copy:
+    c = *nameSrc++; *pathDst++ = c;
+    if ((s8)c != 0) goto name_limit;
+name_done:
+    if ((s8)*fn_80029004(tocPath, '.') != 0) *fn_80029004(tocPath, '.') = 0;  // cut the set name's own extension
+    extDst = tocPath; extLeft = sizeof(tocPath);
+    goto ext_scan_test;
+ext_scan_step:
+    extLeft -= 1; extDst += 1;
+ext_scan_test:
+    if ((s8)*extDst != 0) goto ext_scan_step;  // walk to the end of the name
+    if (extLeft <= 0) goto path_ready;
+    extSrc = RES_TOC_EXT_PATH;
+    goto ext_copy;
+ext_limit:
+    extLeft -= 1;
+    if (extLeft > 0) goto ext_copy;
+    extDst[-1] = 0;
+    goto path_ready;
+ext_copy:
+    c2 = *extSrc++; *extDst++ = c2;
+    if ((s8)c2 != 0) goto ext_limit;
+path_ready:
+    fn_8002B0D8(tocPath);  // map the path through the current character table
+    // Read the set's ETOC resource; startedLoad is set when this call had to
+    // start the read, so the block that came in is still little-endian.
+    toc = (u8 *)fn_8012C370((s32)tocPath, RES_TOC_FOURCC, (s32)&tocOffset, 0, 0, (s32)&startedLoad);
+    if (toc != 0 && startedLoad != 0) {
+        // byte-reverse the ETOC header's five words
+        swap0 = toc[0]; toc[0] = toc[3]; toc[3] = swap0;
+        swap1 = toc[1]; toc[1] = toc[2]; toc[2] = swap1;
+        swap2 = toc[4]; toc[4] = toc[7]; toc[7] = swap2;
+        swap3 = toc[5]; toc[5] = toc[6]; toc[6] = swap3;
+        swap4 = toc[8]; toc[8] = toc[0xB]; toc[0xB] = swap4;
+        swap5 = toc[9]; toc[9] = toc[0xA]; toc[0xA] = swap5;
+        swap6 = toc[0xC]; toc[0xC] = toc[0xF]; toc[0xF] = swap6;
+        swap7 = toc[0xD]; toc[0xD] = toc[0xE]; toc[0xE] = swap7;
+        swap8 = toc[0x10]; toc[0x10] = toc[0x13]; toc[0x13] = swap8;
+        swap9 = toc[0x11]; toc[0x11] = toc[0x12]; toc[0x12] = swap9;
+        tocVersion = *(u32 *)toc;
+        if (tocVersion != 0 || *(u32 *)(toc + 4) != RES_TOC_HEADER_SIZE)
+            fn_802E317C(lbl_8032AE60, tocVersion, 0, *(u32 *)(toc + 4), RES_TOC_HEADER_SIZE);
 
-        p1 = temp_r3_3 + 0x14; idx1 = 0;
-        goto entries_test;
-entries_loop:
-        fn_8012A388(p1); p1 += 0x44; idx1 += 1;
-entries_test:
-        if (idx1 < *(u32 *)(temp_r3_3 + 0xC)) goto entries_loop;
+        entry = toc + RES_TOC_HEADER_SIZE; entryIndex = 0;
+        goto entry_test;
+entry_loop:
+        fn_8012A388(entry);  // byte-reverse one entry
+        entry += RES_TOC_ENTRY_SIZE; entryIndex += 1;
+entry_test:
+        if (entryIndex < *(u32 *)(toc + 0xC)) goto entry_loop;  // entryCount
     }
-    p2 = temp_r3_3 + 0x14; flag = 0; idx2 = 0;
-    goto names_test;
-names_loop:
-    if (stricmp((const char *)p2, (const char *)arg0) == 0) {
-        flag = 1; goto names_done;
+    nameEntry = toc + RES_TOC_HEADER_SIZE; hasName = 0; nameIndex = 0;
+    goto name_test;
+name_loop:
+    if (stricmp((const char *)nameEntry, (const char *)arg0) == 0) {
+        hasName = 1; goto name_found;
     }
-    p2 += 0x44; idx2 += 1;
-names_test:
-    if (idx2 < *(u32 *)(temp_r3_3 + 0xC)) goto names_loop;
-names_done:
-    if (flag != 0) found = current;
-    fn_8012C4D8(temp_r3_3);
-    current = *(u8 **)(current + 4);
-outer_test:
-    if (current != 0 && found == 0) goto outer_loop;
-    if (found != 0) fn_802E317C(lbl_8032ADA0, (char *)(found + 0xC), (const char *)arg0);
+    nameEntry += RES_TOC_ENTRY_SIZE; nameIndex += 1;
+name_test:
+    if (nameIndex < *(u32 *)(toc + 0xC)) goto name_loop;
+name_found:
+    if (hasName != 0) matched = mount;
+    fn_8012C4D8(toc);  // release the ETOC resource again
+    mount = mount->next;
+mount_test:
+    if (mount != 0 && matched == 0) goto mount_loop;
+    if (matched != 0) fn_802E317C(lbl_8032ADA0, matched->name, (const char *)arg0);
 }
 
 #pragma push
