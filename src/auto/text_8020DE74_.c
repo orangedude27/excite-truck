@@ -38,28 +38,7 @@ typedef struct CarSound {
     u8 flag72;
     u8 pad73;
 } CarSound;
-// Old names, until every function here uses the new ones.
-typedef CarSound UiObj;
-#define child8 backfire
-#define last_child lastBoost
-#define children boosts
-#define child18 boostManual
-#define child1c carGnd1
-#define child20 badland
-#define child24 niceLand
-#define child28 waterBounce
-#define child2c boostTurboTap
-#define child30 airtime
-#define child34 waterDrive
-#define child38 waterIn
-#define child3c waterOut
-#define child40 dirtSkid
-#define child44 waterSink
-#define child48 heatBeep
-#define child4c overheat
-#define child50 overheatStart
-#define child54 invulnerable
-#define child_count boostCount
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
