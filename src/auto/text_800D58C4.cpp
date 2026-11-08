@@ -1209,7 +1209,7 @@ extern "C" void fn_800D7F78(void *arg0) {
     *(s32 *)((u8 *)arg0 + 8) = (s32)p;
 }
 
-#pragma inline off
+#pragma dont_inline on
 extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36nw4hbm3lyt11ResBlockSet(void* this_, const void* res, const void* blockSet) {
     extern void fn_800D7F78(void*);
     extern void* fn_8002F53C(void*, void (*)(s32*), s32 (*)(s32, s32), s32, s32);
