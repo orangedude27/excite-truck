@@ -11093,7 +11093,6 @@ extern "C" s32 fn_800BB4D4(s32 a,s32 b,s32 c,s32 d) {
 
 extern "C" s32 fn_800BAE98(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 
-#define SD_TYPES_DEFINED
 struct IosDevice {
     s32 fd;             /* 0x00 the IOS handle of the opened card */
     u8 pad[0xC];
