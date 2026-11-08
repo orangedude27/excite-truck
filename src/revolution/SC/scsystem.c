@@ -1055,7 +1055,7 @@ void SCFlushAsync(SCFlushCallback callback) {
             memcpy(ConfBufForFlush, __SCGetConfBuf(), __SCGetConfBufSize());
 
             OSRestoreInterrupts(enabled);
-            ctrl->nandCbState = NAND_CB_STATE_0;
+            ctrl->nandCbState = SC_FLUSH_STATE_FILE_TYPE;
 
             if (NANDPrivateGetTypeAsync(ConfFileName, &ctrl->fileType,
                                         MyNandCallback, (NANDCommandBlock*)&ctrl->commandBlock) !=
