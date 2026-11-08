@@ -123,7 +123,19 @@ extern "C" s32 fn_8025FECC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     delete handle;
     return ret;
 }
-#pragma pop
+
+extern void *fn_80016464(int);
+extern void *fn_80016510(int);
+extern void *fn_8001285C(void);
+#pragma cplusplus reset
+void fn_8026003C(void) {
+    int temp;
+    temp = *(int *)((char *)fn_80016464(0) + 4);
+    (void)temp;
+    (void)fn_80016510(0);
+    (void)fn_80016464(0);
+    (void)fn_8001285C();
+}
 void fn_802607C4(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x1D) = 1;
 }
@@ -245,6 +257,9 @@ extern s32 table[];
 #pragma pop
 #pragma cplusplus on
 extern "C" s32 fn_80260DC4(s32, s32);
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 extern "C" void fn_80260954(s32 arg0) {
     struct Dummy { virtual void destroy(s32); };
           typedef struct {
@@ -270,7 +285,7 @@ extern "C" void fn_80260954(s32 arg0) {
           u8 *stringBase = (u8 *)&lbl_80345B40;
           void *object;
           
-          header = frame.header;
+          
         initialMode = fn_80012810();
           if (initialMode != 0x130) {
               if (initialMode != 0x134) {
@@ -279,6 +294,7 @@ extern "C" void fn_80260954(s32 arg0) {
               fn_80012790(0x130);
           }
           lbl_8055F3E4 = fn_8027B878(arg0);
+          header = frame.header;
           fn_8026213C(frame.bufA);
           fn_80262120(frame.bufB);
           *(void **)&lbl_8055F420 = &header[0];
@@ -413,8 +429,7 @@ extern "C" void fn_80260954(s32 arg0) {
               }
           }
       }
-#pragma cplusplus reset
-#pragma cplusplus reset
+#pragma pop
 s32 fn_80260DC4(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
@@ -581,6 +596,48 @@ extern "C" s32 fn_80261178(void *arg0) {
     return 0;
 }
 #pragma cplusplus on
+/* --- the two-level selector of the challenge-difficulty screen --------- */
+/* lbl_8055F420 points at the frame header the screen loop (fn_80260954)
+   builds on its stack, which carries the state of its cursor: a list of
+   groups (the difficulties, from the data source lbl_8055F3E4) and, inside
+   each group, its items.  fn_80261C68 creates the two widget arrays and
+   stores them at 0x18 and 0x3C; the input callbacks fn_802616A8 (up) and
+   fn_802613E0 (down) move the cursor and repaint both lists, and
+   lbl_8055F3EB says which list the cursor is in. */
+typedef struct {
+    s32 cursor;                 /* 0x00 item the cursor is on */
+    s32 group;                  /* 0x04 group the cursor is on */
+    s32 item_count;             /* 0x08 widgets in the item array */
+    s32 group_count;            /* 0x0C widgets in the group array */
+    u8  pad_0x10[8];
+    u8 *item_widgets;           /* 0x18 SelectorWidget *[item_count] */
+    u8  pad_0x1C[0x20];
+    u8 *group_widgets;          /* 0x3C SelectorWidget *[group_count] */
+} SelectorView;
+#define SELECTOR          ((SelectorView *)lbl_8055F420)
+#define SELECTOR_IN_ITEMS (lbl_8055F3EB) /* 0: cursor on a group, 1: in its items */
+
+/* --- a group or item widget of that selector --------------------------- */
+/* Slots 0x08-0x5C belong to the widget base class (its Draw is the slot the
+   .data vtables fill at 0x28, fn_802621F0 for items).  The selector only
+   uses the five state setters below, which set the flags Draw reads: 0x1C
+   = the cursor is on this widget, 0x1D = dim it.  0x60 and 0x64 are the
+   slots the two vtables (lbl_80345E28 groups, lbl_80345EA0 items) point at
+   fn_802607C4/fn_802607EC and fn_80260848/fn_80260814, which set and clear
+   byte 0x1D; the last three are named from how the selector calls them. */
+struct SelectorWidget {
+    virtual void v08(); virtual void v0C(); virtual void v10(); virtual void v14();
+    virtual void v18(); virtual void v1C(); virtual void v20(); virtual void v24();
+    virtual void v28(); virtual void v2C(); virtual void v30(); virtual void v34();
+    virtual void v38(); virtual void v3C(); virtual void v40(); virtual void v44();
+    virtual void v48(); virtual void v4C(); virtual void v50(); virtual void v54();
+    virtual void v58(); virtual void v5C();
+    virtual void setDim();      /* 0x60 */
+    virtual void clearDim();    /* 0x64 */
+    virtual void setCursor();   /* 0x68 */
+    virtual void clearCursor(); /* 0x6C */
+    virtual void setExpanded(); /* 0x70 */
+};
 extern "C" s32 fn_802613E0(void) {
     struct Obj {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -946,7 +1003,7 @@ extern "C" void fn_80261C68(s32 *arg0) {
     s32 outer;
     s32 inner;
     s32 i;
-    u32 j;
+    s32 j;
     s32 count;
     s32 max;
     void *object;
@@ -1065,36 +1122,36 @@ firstCheck:
     base = (u32 *)lbl_8055F420;
     if (i < (s32)base[2]) goto firstBody;
 
-    i = 0;
-    j = 0;
+    count = 0;
+    max = 0;
     goto secondCheck;
 secondBody:
     if (lbl_8055F3EB == 0) {
-        if (i == (s32)base[1]) {
-            object = *(void **)((u8 *)base[0xF] + j);
+        if (count == (s32)base[1]) {
+            object = *(void **)((u8 *)base[0xF] + max);
             ((Dummy *)object)->slot24();
         } else {
-            object = *(void **)((u8 *)base[0xF] + j);
+            object = *(void **)((u8 *)base[0xF] + max);
             ((Dummy *)object)->slot23();
-            object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[0xF] + j);
+            object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[0xF] + max);
             ((Dummy *)object)->slot25();
         }
-    } else if (i == (s32)base[1]) {
-        object = *(void **)((u8 *)base[0xF] + j);
+    } else if (count == (s32)base[1]) {
+        object = *(void **)((u8 *)base[0xF] + max);
         ((Dummy *)object)->slot24();
         object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[0xF] + *(s32 *)(lbl_8055F420 + 4) * 4);
         ((Dummy *)object)->slot26();
     } else {
-        object = *(void **)((u8 *)base[0xF] + j);
+        object = *(void **)((u8 *)base[0xF] + max);
         ((Dummy *)object)->slot22();
-        object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[0xF] + j);
+        object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[0xF] + max);
         ((Dummy *)object)->slot25();
     }
-    j += 4;
-    i++;
+    max += 4;
+    count++;
 secondCheck:
     base = (u32 *)lbl_8055F420;
-    if (i < (s32)base[3]) goto secondBody;
+    if (count < (s32)base[3]) goto secondBody;
 }
 #pragma scheduling on
 #pragma cplusplus reset
