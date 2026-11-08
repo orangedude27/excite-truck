@@ -338,7 +338,7 @@ extern void port_select_mtu(void *);
 extern void fn_800936BC(void *, u16, u16, u16, u16, u16, u16);
 extern void rfc_send_dm(void *, u8, u8);
 extern unsigned char lbl_803C0A50[];
-extern void UUSB_Write(u8, u8 *, u16, BT_HDR *);
+extern u16 UUSB_Write(u8, u8 *, u16, BT_HDR *);
 extern void sdp_connect_ind(u8 *, u16, u16, u8);
 extern void sdp_connect_cfm(u16, u16);
 extern void sdp_config_ind(u16, void *);
