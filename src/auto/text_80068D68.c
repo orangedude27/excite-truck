@@ -15991,7 +15991,7 @@ extern void l2c_csm_config(void *, u16, void *);
 extern void l2c_csm_w4_l2cap_disconnect_rsp(void *, u16, void *);
 extern void *jumptable_803183B0[];
 extern void l2cu_process_peer_cfg_req();
-extern void l2cu_send_peer_config_rsp();
+extern void l2cu_send_peer_config_rsp(tL2C_CCB_VIEW *, tL2CAP_CFG_INFO *);
 extern void l2cu_send_peer_disc_req(void *);
 extern void forward_peer_data(void *, void *);
 extern void l2cu_process_our_cfg_req(void *, void *);
