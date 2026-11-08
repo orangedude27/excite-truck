@@ -43,6 +43,15 @@ extern void fn_801E4F3C(s32, s32, f32, f32, f32, f32, f32);
 extern void fn_801E4FF4(void);
 extern void fn_802C8D74(void);
 extern f32 lbl_805603E8, lbl_805603EC, lbl_805603F0, lbl_805603F4;
+typedef struct { s32 a; f32 x; f32 y; s32 d; f32 e; f32 f; s32 g; } Rec7;
+typedef struct { s32 a; f32 x; f32 y; s32 d; f32 e; s32 f; s32 g; s32 h; } Rec8;
+#define VCALL(slot, ofs) ((void *(*)(void *, void *))(*(void ***)obj)[slot])(obj, lbl_802FCB98 + (ofs))
+extern f32 fn_80011EB0(s32);
+extern f32 lbl_80560378, lbl_8056037C, lbl_80560380, lbl_80560384, lbl_80560388;
+extern void fn_802E317C(void *, ...);
+extern void fn_80147230(void *, void *, ...);
+extern void fn_80130978(void *, s32, f32);
+f32 fn_80013D60(f32);
 void fn_80014B9C(void *);
 s32 fn_800151DC(void *);
 void fn_800154B8(void);
