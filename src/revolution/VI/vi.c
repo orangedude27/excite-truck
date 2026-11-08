@@ -18,6 +18,12 @@ extern u32 lbl_8055DBCC;
 extern u32 CurrTvMode_8055DB9C;
 extern u8 lbl_80311B50[0x570];
 extern u32 lbl_80558FB8;
+// Polarity of the bit-banged I2C data line to the AVE video encoder.  1 (what
+// __VISendI2CData stores the first time it touches the bus) drives
+// GPIO_AVE_SDA with the data bit itself, so the slave's acknowledge can be
+// read back from GPIO1BIN; 0 leaves the line inverted, and the acknowledge is
+// not checked then.
+#define viI2cSdaNonInverted lbl_80558FB8
 extern u8 lbl_80558FC0;
 extern u8 lbl_80558FC1;
 extern u8 lbl_80558FC2;
@@ -1567,7 +1573,7 @@ extern s32 lbl_8055DBEC;
 extern s32 lbl_80558FCC;
 extern u8 lbl_8038F490[];
 void __VISetMacrovision(void) {
-    u8 *base = (u8*)lbl_80311B50;
+    register u8 *base asm("r3") = (u8*)lbl_80311B50;
     volatile u8 payload0[0x1B];
     volatile u8 payload1[0x1B];
     volatile u8 payload2[0x1B];
@@ -1585,15 +1591,16 @@ void __VISetMacrovision(void) {
     case 2:
         switch ((s32)lbl_80558FCC) {
         case 0: {
-            volatile u8 *src = (volatile u8 *)(base + 0x420);
-            u32 t7;
-            u32 t6;
-            u32 t5;
-            u32 t4;
-            u32 t3;
-            u32 t2;
-            u32 t1;
+            register volatile u8 *src asm("r30") = (volatile u8 *)(base + 0x420);
+            register u32 header asm("r31") = 0x40;
             u32 t0;
+            u32 t1;
+            u32 t2;
+            u32 t3;
+            u32 t4;
+            u32 t5;
+            u32 t6;
+            u32 t7;
             u8 t8;
             u8 t9;
             t0 = src[0];
@@ -1638,7 +1645,7 @@ void __VISetMacrovision(void) {
             t7 = src[23];
             t8 = src[24];
             t9 = src[25];
-            payload0[0] = 0x40;
+            payload0[0] = header;
             payload0[17] = t0;
             payload0[18] = t1;
             payload0[19] = t2;
@@ -1866,7 +1873,7 @@ void __VISetMacrovision(void) {
     case 3:
         switch ((s32)lbl_80558FCC) {
         case 0: {
-            volatile u8 *src = (volatile u8 *)(base + 0x43C);
+            volatile u8 *src = (volatile u8 *)(base + 0x3CC);
             u32 t7;
             u32 t6;
             u32 t5;
@@ -1935,7 +1942,7 @@ void __VISetMacrovision(void) {
             return;
         }
         case 1: {
-            volatile u8 *src = (volatile u8 *)(base + 0x490);
+            volatile u8 *src = (volatile u8 *)(base + 0x474);
             u32 t7;
             u32 t6;
             u32 t5;
@@ -2004,7 +2011,7 @@ void __VISetMacrovision(void) {
             return;
         }
         case 2: {
-            volatile u8 *src = (volatile u8 *)(base + 0x538);
+            volatile u8 *src = (volatile u8 *)(base + 0x51C);
             u32 t7;
             u32 t6;
             u32 t5;
@@ -2073,7 +2080,7 @@ void __VISetMacrovision(void) {
             return;
         }
         case 5: {
-            volatile u8 *src = (volatile u8 *)(base + 0x4E4);
+            volatile u8 *src = (volatile u8 *)(base + 0x4C8);
             u32 t7;
             u32 t6;
             u32 t5;
@@ -2147,7 +2154,7 @@ void __VISetMacrovision(void) {
     case 4:
         switch ((s32)lbl_80558FCC) {
         case 0: {
-            volatile u8 *src = (volatile u8 *)(base + 0x458);
+            volatile u8 *src = (volatile u8 *)(base + 0x420);
             u32 t7;
             u32 t6;
             u32 t5;
@@ -2427,71 +2434,71 @@ void __VISetMacrovision(void) {
         }
     case 1: {
         volatile u8 *src = (volatile u8 *)lbl_8038F490;
-            u32 t7;
-            u32 t6;
-            u32 t5;
-            u32 t4;
-            u32 t3;
-            u32 t2;
-            u32 t1;
-            u32 t0;
-            u8 t8;
-            u8 t9;
-            t0 = src[0];
-            t1 = src[1];
-            t2 = src[2];
-            t3 = src[3];
-            t4 = src[4];
-            t5 = src[5];
-            t6 = src[6];
-            t7 = src[7];
-            payload12[1] = t0;
-            t0 = src[8];
-            payload12[2] = t1;
-            t1 = src[9];
-            payload12[3] = t2;
-            t2 = src[10];
-            payload12[4] = t3;
-            t3 = src[11];
-            payload12[5] = t4;
-            t4 = src[12];
-            payload12[6] = t5;
-            t5 = src[13];
-            payload12[7] = t6;
-            t6 = src[14];
-            payload12[8] = t7;
-            t7 = src[15];
-            payload12[9] = t0;
-            t0 = src[16];
-            payload12[10] = t1;
-            t1 = src[17];
-            payload12[11] = t2;
-            t2 = src[18];
-            payload12[12] = t3;
-            t3 = src[19];
-            payload12[13] = t4;
-            t4 = src[20];
-            payload12[14] = t5;
-            t5 = src[21];
-            payload12[15] = t6;
-            t6 = src[22];
-            payload12[16] = t7;
-            t7 = src[23];
-            t8 = src[24];
-            t9 = src[25];
-            payload12[0] = 0x40;
-            payload12[17] = t0;
-            payload12[18] = t1;
-            payload12[19] = t2;
-            payload12[20] = t3;
-            payload12[21] = t4;
-            payload12[22] = t5;
-            payload12[23] = t6;
-            payload12[24] = t7;
-            payload12[25] = t8;
-            payload12[26] = t9;
-            __VISendI2CData(0xE0, (u8*)payload12, 0x1B);
-            WaitMicroTime(2);
+        u32 t7;
+        u32 t6;
+        u32 t5;
+        u32 t4;
+        u32 t3;
+        u32 t2;
+        u32 t1;
+        u32 t0;
+        u8 t8;
+        u8 t9;
+        t0 = src[0];
+        t1 = src[1];
+        t2 = src[2];
+        t3 = src[3];
+        t4 = src[4];
+        t5 = src[5];
+        t6 = src[6];
+        t7 = src[7];
+        payload12[1] = t0;
+        t0 = src[8];
+        payload12[2] = t1;
+        t1 = src[9];
+        payload12[3] = t2;
+        t2 = src[10];
+        payload12[4] = t3;
+        t3 = src[11];
+        payload12[5] = t4;
+        t4 = src[12];
+        payload12[6] = t5;
+        t5 = src[13];
+        payload12[7] = t6;
+        t6 = src[14];
+        payload12[8] = t7;
+        t7 = src[15];
+        payload12[9] = t0;
+        t0 = src[16];
+        payload12[10] = t1;
+        t1 = src[17];
+        payload12[11] = t2;
+        t2 = src[18];
+        payload12[12] = t3;
+        t3 = src[19];
+        payload12[13] = t4;
+        t4 = src[20];
+        payload12[14] = t5;
+        t5 = src[21];
+        payload12[15] = t6;
+        t6 = src[22];
+        payload12[16] = t7;
+        t7 = src[23];
+        t8 = src[24];
+        t9 = src[25];
+        payload12[0] = 0x40;
+        payload12[17] = t0;
+        payload12[18] = t1;
+        payload12[19] = t2;
+        payload12[20] = t3;
+        payload12[21] = t4;
+        payload12[22] = t5;
+        payload12[23] = t6;
+        payload12[24] = t7;
+        payload12[25] = t8;
+        payload12[26] = t9;
+        __VISendI2CData(0xE0, (u8*)payload12, 0x1B);
+        WaitMicroTime(2);
         return;
     }
     default:
