@@ -2463,6 +2463,92 @@ extern "C" void fn_8015B864(void *arg0) {
     }
 }
 
+// ---------------------------------------------------------------------------
+// Bonus (trick) scoring.  One tracker object exists per bonus category; the
+// category names ("air", "nice_landing", "offroad", "drift", "close_call",
+// "turbo_close_call", "high_speed", "360", "roll", "car_throw", "jump_combo",
+// "car_hit_car", "crash", "ring") are in the table at lbl_8032E540, indexed by
+// the tracker's GetType().  A tracker owns mCount (tracker+0xC) records of
+// 0x38 bytes at tracker+0x8, filled in by fn_801572A4 from the bonus config
+// ("rank", "adj", "thresh" and a value):
+//
+//     s32 count;        // 0x00 times a value was scored here
+//     s32 scoredCount;  // 0x04 ... with a value that was not zero
+//     s32 sameCount;    // 0x08 ... with the value expected at +0x10
+//     f32 total;        // 0x0C sum of the scored values
+//     f32 expected;     // 0x10 the value the config table asked for
+//     s32 thresh;       // 0x14 the config table's "thresh"
+//     char name[0x20];  // 0x18 label built from the config key
+//
+// The layout is documented here only: the matched code below keeps the raw
+// byte offsets, which is what the original compiler emitted.
+struct BonusRecord {
+    s32 count;
+    s32 scoredCount;
+    s32 sameCount;
+    f32 total;
+    f32 expected;
+    s32 thresh;
+    char name[0x20];
+};
+
+// The tracker's virtual interface, as far as this file's methods use it.
+// GetType() is Unk801577F0::GetType(), the index into the category names.
+// These game vtables start with two destructor slots, so v0 is the slot at 0x8.
+struct BonusTracker {
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void v4();
+    virtual void v5();
+    virtual void v6();
+    virtual void v7();
+    virtual void v8();
+    virtual void v9();
+    virtual void v10();
+    virtual void v11();
+    virtual void v12();
+    virtual void v13();
+    virtual void v14();
+    virtual void v15();
+    virtual void v16();
+    virtual s32 getRecordCount();  // 0x4C records this tracker holds
+    virtual void v18();
+    virtual void v19();
+    virtual void v20();
+    virtual s32 getIndex();        // 0x5C record being scored
+    virtual void refresh();        // 0x60 hook while the popup is being filled
+    virtual s32 getCount();        // 0x64 shown by BonusDisplay::printCount
+    virtual s32 getExtra();        // 0x68 shown by BonusDisplay::printExtra
+    virtual void v25();
+    virtual void v26();
+    virtual void v27();
+    virtual void v28();
+    virtual s32 GetType();         // 0x7C bonus category
+};
+
+// The bonus popup a tracker drives (tracker+0x248; NULL while none is up).
+// Each print* takes a printf-style format ("%s") plus the value to show;
+// update() commits what was printed.
+struct BonusDisplay {
+    virtual void v0();
+    virtual void printExtra(s32 fmt, ...);  // 0x0C
+    virtual void printCount(s32 fmt, ...);  // 0x10
+    virtual void printScore(s32 fmt, ...);  // 0x14
+    virtual void update();                  // 0x18
+    virtual void setScore(s32 score);       // 0x1C
+    virtual void setProgress(s32 type);     // 0x20
+    virtual void v7();                      // 0x24
+    virtual void setState(s32 state);       // 0x28
+};
+
+// Globals the bonus trackers share.
+#define CFG_SCORE_SCALE  lbl_8032F39C  // .data: "score_scale", config key of the global score multiplier
+#define BONUS_TYPE_SCALE lbl_8042FD08  // .bss: score multiplier per bonus category, indexed by tracker+0x4
+#define BONUS_EPSILON    lbl_80558DC4  // .sdata: 2^-23; |value| <= this means nothing was scored
+#define BONUS_TEXT_FMT   lbl_8055A058  // .sdata: "%s", format of the popup's print* setters
+
 #pragma push
 #pragma processor 750
 extern "C" void fn_8015B9B0(Unk801577F0* arg0, f32* arg1) {
