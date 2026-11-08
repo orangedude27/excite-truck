@@ -31,14 +31,17 @@ typedef struct ListEntry_80009DC8 {
 
 static inline void CopyStr_80009DC8(char *dst, const char *src, s32 n) {
     u8 c;
-    do {
+    for (;;) {
         c = *src++;
         *dst++ = c;
-        if ((s8)c == 0) {
-            return;
+        if ((s8)c != 0) {
+            if (--n > 0) {
+                continue;
+            }
+            dst[-1] = 0;
         }
-    } while (--n > 0);
-    dst[-1] = 0;
+        break;
+    }
 }
 extern void fn_801345D8(void*, s32, void*, s32);
 extern u8 lbl_80558A14;
@@ -80,6 +83,62 @@ void* fn_80009D70(void* arg0, s32 arg1) {
             fn_80128668(arg0);
     }
     return arg0;
+}
+
+void fn_80009DC8(void *arg0) {
+    ListEntry_80009DC8 *list = (ListEntry_80009DC8 *)((u8 *)arg0 + 0x20);
+    s32 *countp = (s32 *)((u8 *)arg0 + 0x3E0);
+    s32 count = *countp;
+    f32 zero = lbl_805601F0;
+    ListEntry_80009DC8 *p = list;
+    s32 i;
+    for (i = 0; i < count; i++, p++) {
+        char *a = fn_80016474(p->key);
+        char *b = fn_80016544(p->key2);
+        s32 n;
+        p->bits.hi = 0;
+        p->bits.lo = 0;
+        p->f74 = *(s32 *)(b + 0xA4);
+        p->f64 = zero;
+        CopyStr_80009DC8(p->label, b + 0x2C, 0x20);
+        p->kind = 0x51;
+        for (n = 0; n < fn_80137C74(); n++) {
+            if (fn_80016804(p->key, n) != 0) {
+                p->kind = 0x50;
+                p->bits.lo = n;
+            }
+        }
+        CopyStr_80009DC8(p->name, a + 8, 0x40);
+    }
+    if (*(u32 *)((u8 *)arg0 + 0x3E8) & 0x1000) {
+        s32 k = *countp / 2;
+        ListEntry_80009DC8 *q = list + k;
+        for (; k < *countp; k++, q++) {
+            q->kind = 0x54;
+        }
+    }
+    if (*(u32 *)((u8 *)arg0 + 0x3E8) & 0x400) {
+        ListEntry_80009DC8 tmp;
+        s32 j;
+        tmp.kind = 0x54;
+        CopyStr_80009DC8(tmp.name, lbl_80558A08, 0x40);
+        CopyStr_80009DC8(tmp.label, lbl_80558A10, 0x20);
+        tmp.key = -0x1F;
+        tmp.key2 = -0x1F;
+        tmp.bits.hi = 0;
+        tmp.bits.lo = 0;
+        tmp.f74 = 0;
+        for (j = 0; j < count; j++) {
+            ListEntry_80009DC8 *e = list + (*countp)++;
+            s32 r = fn_8001675C(1, j)[1];
+            *e = tmp;
+            e->key = -0x1F;
+            e->bits.hi = 0;
+            e->f74 = 0;
+            e->key2 = r;
+            CopyStr_80009DC8(e->label, fn_80016544(r) + 0x2C, 0x20);
+        }
+    }
 }
 
 #pragma push
