@@ -306,7 +306,8 @@ typedef struct CacheTable {
     CacheEntry entry[CACHE_ENTRY_MAX];
     int count; // at 0x240
 } CacheTable;
-#define CACHE_TABLE ((CacheTable*)lbl_8042F8C8)
+#define CACHE_ENTRY_SIZE sizeof(CacheEntry)
+#define CACHE_COUNT (*(int *)(lbl_8042F8C8 + 0x240))
 
 // A cached resource, as fn_8013BF40 builds it.
 typedef struct CacheResource {
@@ -316,18 +317,17 @@ typedef struct CacheResource {
     int buffer;                 // at 0x74: buffer released with the resource
 } CacheResource;
 
-// The game's compiler copies an entry's 64-byte name two bytes at a time, one
-// register per byte, both loaded before either is stored. Written out that way
-// so the entry copy below comes out byte for byte.
+// The game's compiler copies an entry's 64-byte name (bytes 4..0x43 of the
+// entry) two bytes at a time, one register per byte and both loads before
+// either store. Written out that way so the entry copy comes out byte for byte.
 #define CACHE_COPY2(dst, src, n)                                               \
     {                                                                          \
-        unsigned char a = (src)->name[n];                                      \
-        unsigned char b = (src)->name[(n) + 1];                                \
-        (dst)->name[n] = a;                                                    \
-        (dst)->name[(n) + 1] = b;                                              \
+        unsigned char a = (src)[n];                                            \
+        unsigned char b = (src)[(n) + 1];                                      \
+        (dst)[n] = a;                                                          \
+        (dst)[(n) + 1] = b;                                                    \
     }
 #define CACHE_COPY_NAME(dst, src)                                              \
-    CACHE_COPY2(dst, src, 0) CACHE_COPY2(dst, src, 2)                          \
     CACHE_COPY2(dst, src, 4) CACHE_COPY2(dst, src, 6)                          \
     CACHE_COPY2(dst, src, 8) CACHE_COPY2(dst, src, 10)                         \
     CACHE_COPY2(dst, src, 12) CACHE_COPY2(dst, src, 14)                        \
@@ -342,7 +342,8 @@ typedef struct CacheResource {
     CACHE_COPY2(dst, src, 48) CACHE_COPY2(dst, src, 50)                        \
     CACHE_COPY2(dst, src, 52) CACHE_COPY2(dst, src, 54)                        \
     CACHE_COPY2(dst, src, 56) CACHE_COPY2(dst, src, 58)                        \
-    CACHE_COPY2(dst, src, 60) CACHE_COPY2(dst, src, 62)
+    CACHE_COPY2(dst, src, 60) CACHE_COPY2(dst, src, 62)                        \
+    CACHE_COPY2(dst, src, 64) CACHE_COPY2(dst, src, 66)
 #pragma scheduling invalid_target
 void fn_8013C428(void *arg0) {
     int i;
