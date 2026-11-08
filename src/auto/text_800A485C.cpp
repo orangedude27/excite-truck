@@ -356,6 +356,26 @@ extern "C" const char lbl_8031E974[];
 extern "C" s32 OSDisableInterrupts(void);
 extern "C" void OSRestoreInterrupts(s32);
 extern "C" s32 WPADCanSendStreamData(s32);
+/* The ADPCM encoder state of WENCGetEncodeData below, field for field as
+ * include/revolution/WENC/wenc.h declares it.  That header is not included:
+ * its prototype types this function's first and last arguments, and this
+ * unit's copy keeps them void *.  The guard is the header's, so including it
+ * here later still works. */
+#ifndef RVL_SDK_WENC_H
+#define RVL_SDK_WENC_H
+typedef enum {
+    WENC_FLAG_USER_INFO = (1 << 0), /* keep the caller's state instead of starting over */
+} WENCFlag;
+typedef struct WENCInfo {
+    s32 xn;        /* 0x00 predicted sample value */
+    s32 dl;        /* 0x04 step size */
+    s32 qn;        /* 0x08 last quantized difference */
+    s32 dn;        /* 0x0C difference still to quantize */
+    s32 dlh;       /* 0x10 half step */
+    s32 dlq;       /* 0x14 quarter step */
+    u8 padding[8]; /* 0x18 */
+} WENCInfo;
+#endif
 extern "C" s32 WENCGetEncodeData(void *, u32, const s16 *, s32, void *);
 extern "C" void fn_80062278(s32, void *, s32);
 extern "C" void *iosAlloc(s32, s32);
