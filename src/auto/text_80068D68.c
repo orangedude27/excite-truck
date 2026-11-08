@@ -15255,48 +15255,62 @@ static void hidh_l2cif_connect_cfm(u32 l2cap_cid, s32 result) {
             TRACE_LAYER_HID | TRACE_TYPE_EVENT, strings + 0x1E8, l2cap_cid); /* "HID - got CTRL conn cnf, sent cfg req, CID: 0x%x" */
 }
 
+/* L2CAP configuration indication for one of this device's HID channels
+   (hidh_l2cif_config_ind of stack/hid/hidh_conn.c).  Finds which host device
+   owns the control or interrupt channel being configured, remembers the peer's
+   MTU (capped at HID_HOST_MTU) and always accepts its configuration with
+   L2CA_ConfigRsp.  The peer's "config done" flag for that channel is set; when
+   all four configuration events are in and the channels are still in
+   HID_CONN_STATE_CONFIG, the device is marked connected and the application is
+   told HID_HDEV_EVT_OPEN. */
 static void hidh_l2cif_config_ind(UINT16 l2cap_cid, tL2CAP_CFG_INFO *p_cfg)
 {
     UINT8 dhandle;
-    UINT8 *p_hcon = NULL;
+    tHID_CONN_VIEW *p_hcon = NULL;
 
-    for (dhandle = 0; dhandle < 0x10; dhandle++) {
-        UINT8 *p_dev = lbl_803C3C38 + dhandle * 0x34;
-        if (p_dev[0] != 0 && p_dev[0x10] != 0 &&
-            (l2cap_cid == *(UINT16 *)(p_dev + 0x14) ||
-             l2cap_cid == *(UINT16 *)(p_dev + 0x16)))
+    /* Find the device this channel belongs to */
+    for (dhandle = 0; dhandle < HIDH_MAX_DEVICES; dhandle++) {
+        tHID_HOST_DEV_CTB_VIEW *p_dev = hh_cb_dev(dhandle);
+        if (p_dev->in_use != 0 && p_dev->conn.conn_state != 0 &&
+            (l2cap_cid == p_dev->conn.ctrl_cid ||
+             l2cap_cid == p_dev->conn.intr_cid))
             break;
     }
 
-    if (dhandle != 0x10)
-        p_hcon = lbl_803C3C38 + dhandle * 0x34 + 0x10;
+    if (dhandle != HIDH_MAX_DEVICES)
+        p_hcon = &hh_cb_dev(dhandle)->conn;
 
     if (p_hcon == NULL) {
-        if (lbl_803C3C38[0x401] >= 2)
-            fn_80070954(0x1E0001, lbl_80317A54, l2cap_cid);
+        if (hh_cb_trace_level >= BT_TRACE_LEVEL_WARNING)
+            fn_80070954(TRACE_LAYER_HID | TRACE_TYPE_WARNING, lbl_80317A54, l2cap_cid); /* "HID - Rcvd L2CAP cfg ind, unknown CID: 0x%x" */
     } else {
-        if (lbl_803C3C38[0x401] >= 4)
-            fn_80070954(0x1E0003, lbl_80317A80, l2cap_cid);
+        if (hh_cb_trace_level >= BT_TRACE_LEVEL_EVENT)
+            fn_80070954(TRACE_LAYER_HID | TRACE_TYPE_EVENT, lbl_80317A80, l2cap_cid); /* "HID - Rcvd cfg ind, sent cfg cfm, CID: 0x%x" */
 
-        if (!p_cfg->mtu_present || p_cfg->mtu > 0x280)
-            *(UINT16 *)(p_hcon + 8) = 0x280;
+        /* Remember the remote MTU size, never trusting the peer to send more
+           than we can take */
+        if (!p_cfg->mtu_present || p_cfg->mtu > HID_HOST_MTU)
+            p_hcon->rem_mtu_size = HID_HOST_MTU;
         else
-            *(UINT16 *)(p_hcon + 8) = p_cfg->mtu;
+            p_hcon->rem_mtu_size = p_cfg->mtu;
 
-        p_cfg->flush_to_present = 0;
-        p_cfg->mtu_present = 0;
-        p_cfg->result = 0;
+        /* For now, always accept configuration from the other side */
+        p_cfg->flush_to_present = FALSE;
+        p_cfg->mtu_present = FALSE;
+        p_cfg->result = L2CAP_CFG_OK;
         L2CA_ConfigRsp(l2cap_cid, p_cfg);
 
-        if (l2cap_cid == *(UINT16 *)(p_hcon + 4))
-            p_hcon[1] |= 2;
+        if (l2cap_cid == p_hcon->ctrl_cid)
+            p_hcon->conn_flags |= HID_CONN_FLAGS_HIS_CTRL_CFG_DONE;
         else
-            p_hcon[1] |= 8;
+            p_hcon->conn_flags |= HID_CONN_FLAGS_HIS_INTR_CFG_DONE;
 
-        if ((p_hcon[1] & 0x1E) == 0x1E && p_hcon[0] == 3) {
-            p_hcon[0] = 4;
-            *(UINT8 *)(lbl_803C3C38 + dhandle * 0x34 + 0xA) = 1;
-            ((void (*)(UINT8, UINT32, UINT32, void *))(*(void **)(lbl_803C3C38 + 0x340)))(dhandle, 0, 0, 0);
+        /* If all configuration is complete, change state and tell management we are up */
+        if ((p_hcon->conn_flags & HID_CONN_FLAGS_ALL_CONFIGURED) == HID_CONN_FLAGS_ALL_CONFIGURED &&
+            p_hcon->conn_state == HID_CONN_STATE_CONFIG) {
+            p_hcon->conn_state = HID_CONN_STATE_OPENED;
+            hh_cb_dev(dhandle)->state = HID_DEV_CONNECTED;
+            hh_cb_callback(dhandle, HID_HDEV_EVT_OPEN, 0, NULL);
         }
     }
 }
