@@ -121,46 +121,50 @@ extern double fn_8002F234(double);
 #define acos_nan       (*(float *)&lbl_80558DB0) /* MSL NAN: a float quiet NaN */
 #define acos_sqrt      fn_8002F234               /* sqrt(): b __ieee754_sqrt */
 
+/* acos(x), from MSL's e_acos.c: pi/2 - asin(x), evaluated with e_asin.c's
+ * rational R(z) = pS(z)/qS(z).  |x| <= 0.5 uses it on x*x directly; past 0.5
+ * the argument is folded to z = (1 -+ x)/2 and s = sqrt(z) so the result stays
+ * accurate against the endpoints.  |x| > 1 gives NaN, |x| == 1 gives 0 or pi. */
 double __ieee754_acos(double x) {
     double z, p, q, r, w, s, c, df;
     int hx, ix;
 
-    hx = *(int *)&x;
+    hx = __HI(x);
     ix = hx & 0x7fffffff;
-    if (ix >= 0x3ff00000) {
-        if (((ix - 0x3ff00000) | *(1 + (int *)&x)) == 0) {
+    if (ix >= 0x3ff00000) { /* |x| >= 1 */
+        if (((ix - 0x3ff00000) | __LO(x)) == 0) {
             /* |x|==1 */
             if (hx > 0)
-                return lbl_80560600; /* acos(1) = 0 */
+                return acos_zero; /* acos(1) = 0 */
             else
-                return lbl_80560608; /* acos(-1) = pi */
+                return acos_pi; /* acos(-1) = pi */
         }
-        return *(float *)&lbl_80558DB0; /* acos(|x|>1) is NaN */
+        return acos_nan; /* acos(|x|>1) is NaN */
     }
     if (ix < 0x3fe00000) { /* |x| < 0.5 */
         if (ix <= 0x3c600000)
-            return lbl_80560610;
+            return acos_pio2_hi; /* |x| < 2**-57: pi/2 (the + pio2_lo rounds away) */
         z = x * x;
-        p = z * (lbl_80560618 + z * (lbl_80560620 + z * (lbl_80560628 + z * (lbl_80560630 + z * (lbl_80560638 + lbl_80560640 * z)))));
-        q = lbl_80560648 + z * (lbl_80560650 + z * (lbl_80560658 + z * (lbl_80560660 + lbl_80560668 * z)));
+        p = z * (acos_pS0 + z * (acos_pS1 + z * (acos_pS2 + z * (acos_pS3 + z * (acos_pS4 + acos_pS5 * z)))));
+        q = acos_one + z * (acos_qS1 + z * (acos_qS2 + z * (acos_qS3 + acos_qS4 * z)));
         r = p / q;
-        return lbl_80560610 - (x - (lbl_80560670 - x * r));
+        return acos_pio2_hi - (x - (acos_pio2_lo - x * r));
     } else if (hx < 0) { /* x < -0.5 */
-        z = (lbl_80560648 + x) * lbl_80560678;
-        p = z * (lbl_80560618 + z * (lbl_80560620 + z * (lbl_80560628 + z * (lbl_80560630 + z * (lbl_80560638 + lbl_80560640 * z)))));
-        q = lbl_80560648 + z * (lbl_80560650 + z * (lbl_80560658 + z * (lbl_80560660 + lbl_80560668 * z)));
-        s = fn_8002F234(z);
+        z = (acos_one + x) * acos_half;
+        p = z * (acos_pS0 + z * (acos_pS1 + z * (acos_pS2 + z * (acos_pS3 + z * (acos_pS4 + acos_pS5 * z)))));
+        q = acos_one + z * (acos_qS1 + z * (acos_qS2 + z * (acos_qS3 + acos_qS4 * z)));
+        s = acos_sqrt(z);
         r = p / q;
-        w = r * s - lbl_80560670;
-        return lbl_80560608 - 2.0 * (s + w);
+        w = r * s - acos_pio2_lo;
+        return acos_pi - 2.0 * (s + w);
     } else { /* x > 0.5 */
-        z = (lbl_80560648 - x) * lbl_80560678;
-        s = fn_8002F234(z);
+        z = (acos_one - x) * acos_half;
+        s = acos_sqrt(z);
         df = s;
-        *(1 + (int *)&df) = 0;
-        c = (z - df * df) / (s + df);
-        p = z * (lbl_80560618 + z * (lbl_80560620 + z * (lbl_80560628 + z * (lbl_80560630 + z * (lbl_80560638 + lbl_80560640 * z)))));
-        q = lbl_80560648 + z * (lbl_80560650 + z * (lbl_80560658 + z * (lbl_80560660 + lbl_80560668 * z)));
+        __LO(df) = 0; /* df = high part of sqrt(z) */
+        c = (z - df * df) / (s + df); /* correction so df + c ~ sqrt(z) */
+        p = z * (acos_pS0 + z * (acos_pS1 + z * (acos_pS2 + z * (acos_pS3 + z * (acos_pS4 + acos_pS5 * z)))));
+        q = acos_one + z * (acos_qS1 + z * (acos_qS2 + z * (acos_qS3 + acos_qS4 * z)));
         r = p / q;
         w = r * s + c;
         return 2.0 * (df + w);
