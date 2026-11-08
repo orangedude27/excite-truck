@@ -83,6 +83,34 @@ extern int lbl_804999A0[];
 extern float fn_80129DC4(int, float, float);
 extern int fn_80129D90(int, int, int);
 extern float PSVECMag(void*);
+extern float fn_80144514(float,float,float,float,float,float);
+static inline void fn_80266388_multiply(float *out, const float *a, const float *b) {
+ float t0,t1,t2,t3,t4,t5,t6,t7,t8;
+ if (out == a || out == b) {
+ t0 = fn_80144514(b[0], a[0], b[3], a[1], b[6], a[2]);
+ t3 = fn_80144514(b[0], a[3], b[3], a[4], b[6], a[5]);
+ t6 = fn_80144514(b[0], a[6], b[3], a[7], b[6], a[8]);
+ t1 = fn_80144514(b[1], a[0], b[4], a[1], b[7], a[2]);
+ t4 = fn_80144514(b[1], a[3], b[4], a[4], b[7], a[5]);
+ t7 = fn_80144514(b[1], a[6], b[4], a[7], b[7], a[8]);
+ t2 = fn_80144514(b[2], a[0], b[5], a[1], b[8], a[2]);
+ t5 = fn_80144514(b[2], a[3], b[5], a[4], b[8], a[5]);
+ t8 = fn_80144514(b[2], a[6], b[5], a[7], b[8], a[8]);
+ out[0] = t0; out[3] = t3; out[6] = t6;
+ out[1] = t1; out[4] = t4; out[7] = t7;
+ out[2] = t2; out[5] = t5; out[8] = t8;
+ } else {
+ out[0] = fn_80144514(b[0], a[0], b[3], a[1], b[6], a[2]);
+ out[3] = fn_80144514(b[0], a[3], b[3], a[4], b[6], a[5]);
+ out[6] = fn_80144514(b[0], a[6], b[3], a[7], b[6], a[8]);
+ out[1] = fn_80144514(b[1], a[0], b[4], a[1], b[7], a[2]);
+ out[4] = fn_80144514(b[1], a[3], b[4], a[4], b[7], a[5]);
+ out[7] = fn_80144514(b[1], a[6], b[4], a[7], b[7], a[8]);
+ out[2] = fn_80144514(b[2], a[0], b[5], a[1], b[8], a[2]);
+ out[5] = fn_80144514(b[2], a[3], b[5], a[4], b[8], a[5]);
+ out[8] = fn_80144514(b[2], a[6], b[5], a[7], b[8], a[8]);
+ }
+}
 void* fn_80265DD8(void* arg0) {
     fn_80265E08(arg0);
     return arg0;
@@ -1138,10 +1166,13 @@ void fn_80268E94(void *arg0, int arg1) {
 }
 
 void fn_80269BB0(int idx, unsigned int sel, int *out, float *outf) {
-    Rec_80269BB0 r = ((Rec_80269BB0 *)lbl_80499080)[idx];
-    ((int *)&r)[1] = 0x15;
-    ((int *)&r)[4] = sel;
-    ((char *)&r)[0x138] = 1;
+    Rec2_80269BB0 r;
+    Rec2_80269BB0 *p = (Rec2_80269BB0 *)lbl_80499080 + idx;
+    r.w0 = p->w0; r.w4 = p->w4; r.f8 = p->f8; r.fc = p->fc;
+    r = *p;
+    r.w4 = 0x15;
+    r.w10 = sel;
+    r.b138 = 1;
     switch (sel) {
     case 0: fn_80273BD0(&r); break;
     case 1: fn_8027445C(&r); break;
@@ -1152,11 +1183,11 @@ void fn_80269BB0(int idx, unsigned int sel, int *out, float *outf) {
     case 17: fn_802E30C8(lbl_803468F8); break;
     default: break;
     }
-    out[0] = r.w[0x58 / 4]; out[1] = r.w[0x5c / 4]; out[2] = r.w[0x60 / 4];
-    out[3] = r.w[0x64 / 4]; out[4] = r.w[0x68 / 4]; out[5] = r.w[0x6c / 4];
-    out[6] = r.w[0x70 / 4]; out[7] = r.w[0x74 / 4]; out[8] = r.w[0x78 / 4];
-    out[9] = r.w[0x7c / 4]; out[10] = r.w[0x80 / 4]; out[11] = r.w[0x84 / 4];
-    *outf = *(float *)&r.w[0xbc / 4];
+    out[0] = r.w58; out[1] = r.w5c; out[2] = r.w60;
+    out[3] = r.w64; out[4] = r.w68; out[5] = r.w6c;
+    out[6] = r.w70; out[7] = r.w74; out[8] = r.w78;
+    out[9] = r.w7c; out[10] = r.w80; out[11] = r.w84;
+    *outf = r.fbc;
 }
 
 #pragma pop
