@@ -3248,7 +3248,7 @@ struct Fn801A26FCObj {
 };
 #pragma always_inline on
 static inline void MtxMulVecPosInl(const f32 *m, const f32 *src, f32 *dst) {
-    if (src == dst) {
+    if (dst == src) {
         f32 x = src[0], y = src[1], z = src[2];
         dst[0] = z * m[6] + (x * m[0] + y * m[3]);
         dst[1] = z * m[7] + (x * m[1] + y * m[4]);
