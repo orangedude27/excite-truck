@@ -49,6 +49,24 @@ extern u8 fn_8006EB80(void);
   extern char lbl_803187B0[];
   void rfc_send_buf_uih();
 void rfc_process_mx_message();
+
+/* logical struct used for decoding RFCOMM MX frames (see rfc_int.h) */
+typedef struct {
+    UINT8 dlci;
+    UINT8 type;
+    UINT8 cr;
+    UINT8 ea;
+    UINT8 pf;
+    UINT8 credit;
+    union {
+        struct { UINT8 dlci; UINT8 frame_type; UINT8 conv_layer; UINT8 priority; UINT8 t1; UINT16 mtu; UINT8 n2; UINT8 k; } pn;
+        struct { UINT8 *p_data; UINT16 data_len; } test;
+        struct { UINT8 dlci; UINT8 signals; UINT8 break_present; UINT8 break_duration; } msc;
+        struct { UINT8 ea; UINT8 cr; UINT8 type; } nsc;
+        struct { UINT8 dlci; UINT8 is_request; UINT8 baud_rate; UINT8 byte_size; UINT8 stop_bits; UINT8 parity; UINT8 parity_type; UINT8 fc_type; UINT8 xon_char; UINT8 xoff_char; UINT16 param_mask; } rpn;
+        struct { UINT8 dlci; UINT8 line_status; } rls;
+    } u;
+} MX_FRAME;
 extern s32 lbl_805590A0;
 extern void fn_8006B330(void);
 extern void l2cu_release_ccb(void *);
