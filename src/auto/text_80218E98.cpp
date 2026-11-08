@@ -362,6 +362,7 @@ extern "C" void fn_8022ED00(void *);
 extern "C" void fn_8022EDB8(void);
 extern "C" void fn_80231220(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32);
 
+#pragma always_inline on
 static inline void Rot3Vec(f32 *m, f32 *src, f32 *dst) {
     if (dst == src) {
         f32 x = src[0] * m[0] + src[1] * m[3] + src[2] * m[6];
@@ -6831,9 +6832,88 @@ extern "C" void fn_80227244(void *arg0, s32 arg1) {
         fn_80128668(obj);
 }
 
+extern "C" f32 lbl_805634C4;
+extern "C" f32 lbl_805634E8;
+extern "C" f32 lbl_805634FC;
+extern "C" f32 lbl_80563560;
 #pragma push
-#pragma ppc_psq_save off
-#pragma scheduling invalid_target
+#pragma processor 750
+extern "C" void fn_802272D4(void *arg0) {
+    u8 *p = (u8 *)arg0;
+    f32 t[3];
+    f32 r[3];
+    f32 v[3];
+    f32 sp2C[9];
+    f32 now = fn_8023659C();
+    s32 id = *(s32 *)(p + 0x254);
+    if (id != -2 && id != -1) {
+        f32 d = (now - *(f32 *)(p + 0x25C)) / *(f32 *)(p + 0x258);
+        if (*(u8 *)(p + 0x264) != 0) {
+            *(f32 *)(p + 0x268) += d;
+            if (*(f32 *)(p + 0x268) > lbl_805634A4) {
+                *(f32 *)(p + 0x268) = lbl_805634A4;
+                *(u8 *)(p + 0x264) = 0;
+            }
+        } else {
+            *(f32 *)(p + 0x268) -= d;
+            if (*(f32 *)(p + 0x268) < lbl_805634A8) {
+                *(f32 *)(p + 0x268) = lbl_805634A8;
+                *(u8 *)(p + 0x264) = 1;
+            }
+        }
+        f32 *m = *(f32 **)(p + 0x260);
+        f32 one = lbl_805634A4;
+        f32 zero = lbl_805634A8;
+        m[0] = one;
+        m[1] = zero;
+        m[2] = zero;
+        m[3] = zero;
+        m[4] = one;
+        m[5] = zero;
+        m[6] = zero;
+        m[7] = zero;
+        m[8] = one;
+        m[9] = zero;
+        m[10] = zero;
+        m[11] = zero;
+        v[2] = zero;
+        v[0] = (f32)-lbl_8055FB9C * lbl_805634C4;
+        v[1] = (f32)-lbl_8055FBA0 * lbl_805634C4;
+        m = *(f32 **)(p + 0x260);
+        Rot3Vec(m, v, r);
+        m[9] += r[0];
+        m[10] += r[1];
+        m[11] += r[2];
+        if (*(u8 *)(p + 0x270) != 0) {
+            *(f32 *)(p + 0x26C) = *(f32 *)(p + 0x26C) - (now - *(f32 *)(p + 0x25C)) / lbl_805634E4;
+        } else {
+            *(f32 *)(p + 0x26C) = *(f32 *)(p + 0x26C) + (now - *(f32 *)(p + 0x25C)) / lbl_805634FC;
+        }
+        v[0] = lbl_805634A8;
+        v[1] = lbl_805634A8;
+        v[2] = *(f32 *)(p + 0x26C);
+        void *h = *(void **)(p + 0x260);
+        ((void (*)(void *, f32 *))fn_80015A20)(sp2C, v);
+        fn_80015B20(h, sp2C, h);
+        v[2] = lbl_805634A8;
+        v[0] = (f32)lbl_8055FB9C * lbl_805634C4;
+        v[1] = (f32)lbl_8055FBA0 * lbl_805634C4;
+        m = *(f32 **)(p + 0x260);
+        Rot3Vec(m, v, t);
+        m[9] += t[0];
+        m[10] += t[1];
+        m[11] += t[2];
+        *(f32 *)(*(u8 **)(p + 0x260) + 0x30) = lbl_805634E8 + lbl_80563560 * *(f32 *)(p + 0x268);
+        fn_8022ED00(*(void **)(p + 0x260));
+        fn_80231220(*(s32 *)(p + 0x254), -1, *(f32 *)(p + 0x244), *(f32 *)(p + 0x248), *(f32 *)(p + 0x24C), *(f32 *)(p + 0x250), lbl_805634A8, lbl_805634A8, lbl_805634A4, lbl_805634A4);
+        fn_80231220(*(s32 *)(p + 0x254), -1, *(f32 *)(p + 0x244) - (f32)lbl_8055FB9C, *(f32 *)(p + 0x248), *(f32 *)(p + 0x24C), *(f32 *)(p + 0x250), lbl_805634A8, lbl_805634A8, lbl_805634A4, lbl_805634A4);
+        fn_80231220(*(s32 *)(p + 0x254), -1, *(f32 *)(p + 0x244), *(f32 *)(p + 0x248) - (lbl_805634E4 + (f32)lbl_8055FBA0), *(f32 *)(p + 0x24C), *(f32 *)(p + 0x250), lbl_805634A8, lbl_805634A8, lbl_805634A4, lbl_805634A4);
+        fn_80231220(*(s32 *)(p + 0x254), -1, *(f32 *)(p + 0x244) - (f32)lbl_8055FB9C, *(f32 *)(p + 0x248) - (lbl_805634E4 + (f32)lbl_8055FBA0), *(f32 *)(p + 0x24C), *(f32 *)(p + 0x250), lbl_805634A8, lbl_805634A8, lbl_805634A4, lbl_805634A4);
+        fn_8022EDB8();
+    }
+    *(f32 *)(p + 0x25C) = now;
+}
+#pragma pop
 extern "C" void fn_80227880(s32 unused, f32 x, f32 y, f32 width, f32 height) {
     ((void (*)(s32, f32, f32, f32, f32, f32))fn_80230924)(
         0x40FFFFFF, x, y, x + width, y - height, lbl_805634A8);
