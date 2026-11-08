@@ -6808,73 +6808,73 @@ extern "C" void *fn_800B1BDC(void *file) {
     if (file == 0) {
         volume = 0;
     } else {
-        volume = *(u8 **)((*(u8 **)((u8 *)file + 8)) + 0x268);
+        volume = VF_STREAM_VOLUME(VF_HANDLE_STREAM(file));
     }
 
     fn_800B77C0(volume + 0x1F90);
     status = fn_800B6004(volume);
-    if (status != 0 && (status != 0xB || *(s32 *)((u8 *)file + 4) != 2)) {
+    if (status != 0 && (status != VF_ERR_WRITE_PROTECTED || VF_HANDLE_MODE(file) != VF_MODE_WRITE)) {
         fn_800B783C(volume + 0x1F90);
-        *(s32 *)((u8 *)lbl_803D2140 + 0x40) = status;
-        *(s32 *)(volume + 0x1F80) = status;
+        VF_LAST_ERROR = status;
+        VF_VOL_ERROR(volume) = status;
         return (void *)status;
     }
 
-    if ((*(u32 *)(*(u8 **)((u8 *)file + 8)) & 1) == 0 ||
-        (*(u32 *)(*(u8 **)((u8 *)file + 8)) & 2) == 0) {
+    if ((VF_STREAM_FLAGS(VF_HANDLE_STREAM(file)) & VF_STREAM_IN_USE) == 0 ||
+        (VF_STREAM_FLAGS(VF_HANDLE_STREAM(file)) & VF_STREAM_OPEN) == 0) {
         fn_800B783C(volume + 0x1F90);
-        *(s32 *)((u8 *)lbl_803D2140 + 0x40) = 0xA;
-        *(s32 *)(volume + 0x1F80) = 0xA;
-        return (void *)0xA;
+        VF_LAST_ERROR = VF_ERR_BAD_REQUEST;
+        VF_VOL_ERROR(volume) = VF_ERR_BAD_REQUEST;
+        return (void *)VF_ERR_BAD_REQUEST;
     }
 
-    *(void **)(volume + 0x1644) = file;
-    if (((s32)*(u16 *)(*(u8 **)((u8 *)file + 8) + 0x298) - 1) > 0) goto queued_write;
-    if (*(u8 *)(*(u8 **)((u8 *)file + 8) + 0x258) & 0x19) goto queued_write;
-    if (status & 0xB) goto queued_write;
-    if ((*(u32 *)(*(u8 **)((u8 *)file + 8)) & 4) == 0 &&
+    VF_VOL_PAGE_OWNER(volume) = file;
+    if (((s32)VF_STREAM_OPEN_COUNT(VF_HANDLE_STREAM(file)) - 1) > 0) goto queued_write;
+    if (VF_STREAM_ATTRS(VF_HANDLE_STREAM(file)) & (VF_ATTR_READ_ONLY | VF_ATTR_VOLUME_ID | VF_ATTR_DIRECTORY)) goto queued_write;
+    if (status & (VF_ERR_NOT_MOUNTED | VF_ERR_WRITE_PROTECTED)) goto queued_write;
+    if ((VF_STREAM_FLAGS(VF_HANDLE_STREAM(file)) & VF_STREAM_READ_ONLY) == 0 &&
         (*(u32 *)(volume + 0x1F88) & 1) == 1) goto queued_write;
-    result = fn_800AB0C0(*(u8 **)((u8 *)file + 8) + 0x3C, 1);
+    result = fn_800AB0C0(VF_STREAM_ENTRY(VF_HANDLE_STREAM(file)), 1);
 
 queued_write:
-    count = *(u16 *)((u8 *)file + 0x2C);
+    count = VF_HANDLE_PENDING(file);
     if (count != 0) {
-        u8 *stream = *(u8 **)((u8 *)file + 8);
-        if ((*(u16 *)(stream + 0x27C) & 1) != 0) {
-            *(u16 *)(stream + 0x27E) = *(u16 *)(stream + 0x27E) - count;
-            *(u16 *)((u8 *)file + 0x2C) = 0;
-            if (*(u16 *)(*(u8 **)((u8 *)file + 8) + 0x27E) == 0) {
+        u8 *stream = VF_HANDLE_STREAM(file);
+        if ((VF_STREAM_WRITE_STATE(stream) & VF_WRITE_RUNNING) != 0) {
+            VF_STREAM_WRITE_BYTES(stream) = VF_STREAM_WRITE_BYTES(stream) - count;
+            VF_HANDLE_PENDING(file) = 0;
+            if (VF_STREAM_WRITE_BYTES(VF_HANDLE_STREAM(file)) == 0) {
                 fn_800B786C(file);
             }
-            *(u16 *)(*(u8 **)((u8 *)file + 8) + 0x27C) &= 0xFFFC;
-        } else if (*(void **)(stream + 0x284) != file) {
-            result = 0x19;
+            VF_STREAM_WRITE_STATE(VF_HANDLE_STREAM(file)) &= VF_WRITE_STATE_CLEAR;
+        } else if (VF_STREAM_WRITE_FILE(stream) != file) {
+            result = VF_ERR_WRITE_BUSY;
         } else {
-            *(u16 *)(stream + 0x27E) = 0;
-            *(u16 *)((u8 *)file + 0x2C) = 0;
-            *(void **)(*(u8 **)((u8 *)file + 8) + 0x284) = 0;
+            VF_STREAM_WRITE_BYTES(stream) = 0;
+            VF_HANDLE_PENDING(file) = 0;
+            VF_STREAM_WRITE_FILE(VF_HANDLE_STREAM(file)) = 0;
             fn_800B786C(file);
-            *(u16 *)(*(u8 **)((u8 *)file + 8) + 0x27C) &= 0xFFFC;
+            VF_STREAM_WRITE_STATE(VF_HANDLE_STREAM(file)) &= VF_WRITE_STATE_CLEAR;
         }
     }
 
     if (result != 0) {
-        *(s32 *)((u8 *)lbl_803D2140 + 0x40) = result;
-        *(s32 *)(*(u8 **)(*(u8 **)((u8 *)file + 8) + 0x38) + 0x1F80) = result;
-        *(s32 *)((u8 *)file + 0x18) = result;
+        VF_LAST_ERROR = result;
+        VF_VOL_ERROR(VF_STREAM_ENTRY_VOLUME(VF_HANDLE_STREAM(file))) = result;
+        VF_HANDLE_ERROR(file) = result;
     } else {
-        if (*(u32 *)(volume + 0x1624) & 2) {
+        if (VF_VOL_CACHE_FLAGS(volume) & VF_CACHE_ACTIVE) {
             result = ((s32 (*)(void *))fn_800A9104)(volume);
             if (result != 0) {
-                *(s32 *)((u8 *)lbl_803D2140 + 0x40) = result;
-                *(s32 *)(*(u8 **)(*(u8 **)((u8 *)file + 8) + 0x38) + 0x1F80) = result;
-                *(s32 *)((u8 *)file + 0x18) = result;
+                VF_LAST_ERROR = result;
+                VF_VOL_ERROR(VF_STREAM_ENTRY_VOLUME(VF_HANDLE_STREAM(file))) = result;
+                VF_HANDLE_ERROR(file) = result;
             } else {
                 result = ((s32 (*)(void *, u32))fn_800A9138)(volume, (u32)file);
                 if (result != 0) {
-                    *(s32 *)((u8 *)lbl_803D2140 + 0x40) = result;
-                    *(s32 *)(*(u8 **)(*(u8 **)((u8 *)file + 8) + 0x38) + 0x1F80) = result;
-                    *(s32 *)((u8 *)file + 0x18) = result;
+                    VF_LAST_ERROR = result;
+                    VF_VOL_ERROR(VF_STREAM_ENTRY_VOLUME(VF_HANDLE_STREAM(file))) = result;
+                    VF_HANDLE_ERROR(file) = result;
                 }
             }
         }
@@ -6894,7 +6894,7 @@ queued_write:
 
     {
         u8 *lock = volume + 0x1F90;
-        *(s32 *)(volume + 0x1644) = 0;
+        VF_VOL_PAGE_OWNER(volume) = 0;
         fn_800B783C(lock);
     }
     return (void *)result;
