@@ -106,6 +106,8 @@ void fn_801DF6FC(void) {
     }
 }
 
+int fn_801DF93C(int arg0) { (void)arg0; return 1; }
+
 void fn_801476D8(int, int);
 void fn_801DFE44(int a1, int a2) { ((void (*)(int, int, int))fn_801476D8)(a1, -1, a2); }
 
@@ -298,6 +300,21 @@ void fn_801E02B0(void* arg0) {
         entry += 0x1C;
     }
 }
+
+/* One slip/skid instance of the manager built by fn_801DF6FC: its entry
+ * array starts at +4 and holds lbl_8055E4D0 records, one per vehicle in
+ * lbl_804348E8.  fn_801DFF1C and fn_801E02B0 set the fields up. */
+struct SlipEntry {
+    float charge;           /* 0x00: 0.15..1.0, how strong the effect is */
+    float timer;            /* 0x04: when it was raised; < 0 while waiting */
+    unsigned char active;   /* 0x08: it has been raised */
+    char pad09[3];          /* 0x09 */
+    float elapsed;          /* 0x0C: seconds it has been running */
+    float slip;             /* 0x10: slip built up since it started */
+    unsigned char started;  /* 0x14: its sound has been started */
+    char pad15[3];          /* 0x15 */
+    int zone;               /* 0x18: sound zone that slip reached, -1 none */
+};
 
 extern void *__AXFXGetLfoSinTable_801769CC(void);
 extern void fn_8014E61C(int, int, float);
