@@ -488,7 +488,6 @@ typedef struct AXFX_REVERBHI_EXP_VIEW {
 } AXFX_REVERBHI_EXP_VIEW;
 
 extern void AXFXReverbHiExpCallback();
-extern s32 __CtrlMsgInt(s32,s32,s32,s32,s32,u32,void*,void*,void*,u8);
 extern u8 lbl_8031ABD8[];
 extern f32 lbl_80560D58;
 extern f32 lbl_80560D5C;
@@ -23338,6 +23337,139 @@ s32 IUSB_WriteBlkMsgAsync(s32 fd, u32 endpoint, u32 length, void* buffer,
     DCFlushRange(buffer, length);
     return __IntrBlkMsgInt(fd, endpoint, length, buffer, USB_IOCTLV_BLKMSG,
                            callback, callbackArg, TRUE);
+}
+
+s32 __CtrlMsgInt(s32 fd, s32 reqType, s32 req, s32 value, s32 index, u32 length, void *buffer, void *callback, void *callbackArg, u8 async) {
+    register char *base = lbl_8031A620;
+    s32 ret;
+    s32 fr;
+    char *blk;
+    char *a;
+    char *b;
+    char *c;
+    char *d;
+    char *e;
+    char *f;
+    char *msg;
+
+    if ((buffer == 0 && length != 0) || ((u32)buffer & 0x1F)) {
+        USB_ERR(base + 0x328);
+        return -4;
+    }
+    blk = iosAllocAligned(lbl_805590A0, 0xE0, 0x20);
+    if (blk == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0xE0, blk);
+    a = iosAllocAligned(lbl_805590A0, 0x20, 0x20);
+    if (a == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x20, a);
+    b = iosAllocAligned(lbl_805590A0, 0x20, 0x20);
+    if (b == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x20, b);
+    c = iosAllocAligned(lbl_805590A0, 0x20, 0x20);
+    if (c == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x20, c);
+    d = iosAllocAligned(lbl_805590A0, 0x20, 0x20);
+    if (d == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x20, d);
+    e = iosAllocAligned(lbl_805590A0, 0x20, 0x20);
+    if (e == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x20, e);
+    f = iosAllocAligned(lbl_805590A0, 0x20, 0x20);
+    if (f == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x20, f);
+
+    if (a == 0 || b == 0 || c == 0 || d == 0 || e == 0 || f == 0 || blk == 0) {
+        USB_ERR(base + 0x344);
+        ret = -0x16;
+        goto free_all;
+    }
+
+    *(u8 *)a = reqType;
+    *(u8 *)b = req;
+    __sthbrx(value, d, 0);
+    __sthbrx(index, e, 0);
+    __sthbrx(length, f, 0);
+    *(u8 *)c = 0;
+    *(void **)(blk + 0) = a;
+    *(s32 *)(blk + 4) = 1;
+    *(void **)(blk + 8) = b;
+    *(s32 *)(blk + 0xC) = 1;
+    *(void **)(blk + 0x10) = d;
+    *(s32 *)(blk + 0x14) = 2;
+    *(void **)(blk + 0x18) = e;
+    *(s32 *)(blk + 0x1C) = 2;
+    *(void **)(blk + 0x20) = f;
+    *(s32 *)(blk + 0x24) = 2;
+    *(void **)(blk + 0x28) = c;
+    *(s32 *)(blk + 0x2C) = 1;
+    *(void **)(blk + 0x30) = buffer;
+    *(s32 *)(blk + 0x34) = length;
+    DCFlushRange(a, 0x20);
+    DCFlushRange(b, 0x20);
+    DCFlushRange(c, 0x20);
+    DCFlushRange(d, 0x20);
+    DCFlushRange(e, 0x20);
+    DCFlushRange(f, 0x20);
+    DCFlushRange(blk, 0xE0);
+
+    if (async == 0) {
+        ret = IOS_Ioctlv(fd, 0, 6, 1, blk);
+        goto free_all;
+    }
+
+    msg = iosAllocAligned(lbl_805590A0, 0x80, 0x20);
+    if (msg == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x80, msg);
+    if (msg == 0) {
+        USB_ERR(base + 0x364);
+        ret = -0x16;
+        goto free_all;
+    }
+
+    *(s32 *)(msg + 0) = (s32)callback;
+    *(s32 *)(msg + 4) = (s32)callbackArg;
+    USB_LOG(base + 0x38C, (s32)callback, (s32)callbackArg);
+    *(s32 *)(msg + 0x2C) = 7;
+    *(void **)(msg + 0xC) = a;
+    *(void **)(msg + 0x10) = b;
+    *(void **)(msg + 0x14) = d;
+    *(void **)(msg + 0x18) = e;
+    *(void **)(msg + 0x1C) = f;
+    *(void **)(msg + 0x20) = c;
+    *(void **)(msg + 0x24) = blk;
+    *(s32 *)(msg + 0x40) = (s32)buffer;
+    *(u16 *)(msg + 0x44) = length;
+    ret = IOS_IoctlvAsync(fd, 0, 6, 1, blk, _intBlkCtrlCb, msg);
+    USB_LOG(base + 0x3B0, ret);
+    if (ret >= 0) goto done;
+    if (msg != 0) {
+        fr = iosFree(lbl_805590A0, msg);
+        if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, msg, fr);
+    }
+
+free_all:
+    if (a != 0) {
+        fr = iosFree(lbl_805590A0, a);
+        if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, a, fr);
+    }
+    if (b != 0) {
+        fr = iosFree(lbl_805590A0, b);
+        if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, b, fr);
+    }
+    if (d != 0) {
+        fr = iosFree(lbl_805590A0, d);
+        if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, d, fr);
+    }
+    if (e != 0) {
+        fr = iosFree(lbl_805590A0, e);
+        if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, e, fr);
+    }
+    if (f != 0) {
+        fr = iosFree(lbl_805590A0, f);
+        if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, f, fr);
+    }
+    if (c != 0) {
+        fr = iosFree(lbl_805590A0, c);
+        if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, c, fr);
+    }
+    if (blk != 0) {
+        fr = iosFree(lbl_805590A0, blk);
+        if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, blk, fr);
+    }
+done:
+    return ret;
 }
 
 #pragma use_lmw_stmw off
