@@ -47,9 +47,11 @@ typedef struct {
 } Src;
 
 int fn_801AE618(int arg0);
+#pragma dont_inline on
 int fn_801AE600(int arg0) {
     return arg0 == 0x50;
 }
+#pragma dont_inline reset
 
 short fn_801AE610(int arg0, short arg1) {
     return 0;
