@@ -39,6 +39,38 @@ extern f32 lbl_80563D84;
 extern f32 lbl_8055F47C;
 extern u32 lbl_80499050[];
 extern void fn_80015B20(void *, void *, void *);
+extern f32 lbl_80563D90;
+extern f32 lbl_80563DA4;
+extern f32 lbl_80563DA8;
+extern f32 lbl_80563DAC;
+extern f32 lbl_80563DB4;
+extern f32 lbl_80563DB8;
+extern f32 lbl_80563DBC;
+extern f32 lbl_80563DC0;
+extern f32 lbl_80563DC4;
+extern f32 lbl_80563DC8;
+extern f32 lbl_80563DCC;
+extern f32 lbl_8055F4F4;
+extern f32 lbl_8055F4F8;
+extern s32 lbl_8055F4FC;
+extern s32 lbl_8055CFF0;
+extern s32 lbl_8055CFF4;
+extern f32 fn_801EA0E8(f32, f32);
+extern void fn_80127A84(s32 *, s32 *, s32 *);
+
+/* v * 3x3 matrix m (rows of 3 floats); out may alias v */
+static inline void Mtx3MultVec(f32 *m, f32 *v, f32 *out) {
+    f32 x = v[0], y = v[1], z = v[2];
+    if (out == v) {
+        out[0] = z * m[6] + (x * m[0] + y * m[3]);
+        out[1] = z * m[7] + (x * m[1] + y * m[4]);
+        out[2] = z * m[8] + (x * m[2] + y * m[5]);
+    } else {
+        out[0] = z * m[6] + (x * m[0] + y * m[3]);
+        out[1] = z * m[7] + (x * m[1] + y * m[4]);
+        out[2] = z * m[8] + (x * m[2] + y * m[5]);
+    }
+}
 
 typedef struct Words12 { u32 w[12]; } Words12;
 void fn_8026B840(void) {}
