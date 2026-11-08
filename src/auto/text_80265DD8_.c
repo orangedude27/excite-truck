@@ -94,6 +94,7 @@ typedef struct { float *p; float f; } Res_80266388;
 extern void fn_80136594(Res_80266388 *, void *, void *);
 extern void *fn_801B2EC0(int);
 typedef double (*DblFn_80266388)(int, float, float);
+void fn_8026A2C8(void);
 static inline void fn_80266388_multiply(float *out, const float *a, const float *b) {
  float t0,t1,t2,t3,t4,t5,t6,t7,t8;
  if (out == a || out == b) {
