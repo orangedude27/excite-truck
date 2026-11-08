@@ -555,6 +555,8 @@ void EXIInit(void) {
             __OSEnableBarnacle(EXI_CHAN_1, EXI_DEV_EXT);
         } else if (EXIGetID(EXI_CHAN_1, EXI_DEV_EXT, &id) &&
                    id == 0x07010000) {
+            // A dev board with the debug interface on channel 1's internal
+            // port: enable the barnacle there.
             __OSEnableBarnacle(EXI_CHAN_0, EXI_DEV_NET);
         }
     }
