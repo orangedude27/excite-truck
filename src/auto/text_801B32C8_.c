@@ -44,6 +44,25 @@ void* fn_801B3B70(void*);
 extern void* memset(void*, s32, u32);
 extern u8 lbl_80435C50[0x20];
 
+typedef struct V3_801B34DC { f32 x, y, z; } V3_801B34DC;
+typedef struct Ev38_801B34DC { V3_801B34DC a, b, c, d; s32 id; s32 kind; } Ev38_801B34DC;
+typedef struct Ev14_801B34DC { s32 id; V3_801B34DC p; f32 w; } Ev14_801B34DC;
+typedef struct Ev20_801B34DC { V3_801B34DC p; V3_801B34DC q; s16 s; s32 id; } Ev20_801B34DC;
+typedef struct Ev30_801B34DC { V3_801B34DC p; V3_801B34DC q; V3_801B34DC r; f32 dot; s32 id; s32 kind; } Ev30_801B34DC;
+extern f32 PSVECDotProduct(void *, void *);
+extern f32 PSVECMag(void *);
+extern s32 lbl_8055E3C4;
+extern void fn_8017B6D4(void *, void *, void *);
+extern void fn_801796CC(s32, void *, s32);
+extern void fn_801B5360(s32, void *, s32);
+extern void fn_801B85E0(void *, void *, void *, void *);
+extern void fn_801B3084(void *, void *, void *, void *);
+extern f32 lbl_80562620, lbl_80562628, lbl_8056262C, lbl_80562634, lbl_80562638, lbl_8056263C, lbl_80562640, lbl_80562644, lbl_80562648;
+extern void* fn_801B3338(void*);
+extern s32 fn_801B32C8(void*, s32);
+extern s32 fn_801B3DC0(void*, u32, u32);
+extern void fn_801B3E24(void *, void *, void *, s32, s32, f32);
+
 typedef struct Ent801B3FD8 { s32 a; s32 group; f32 c; } Ent801B3FD8;
 typedef struct Out801B3FD8 { Ent801B3FD8* p; s32 n; s32 z; } Out801B3FD8;
 
@@ -351,6 +370,32 @@ s32 fn_801B3FD0(void) {
     return 0;
 }
 
+extern char lbl_80335D50[];
+extern u8 lbl_80335D74[];
+extern void fn_802E317C(const char*, ...);
+extern void* fn_8012850C(s32, void*);
+void fn_801B3FD8(void* arg0) {
+    Out801B3FD8* out = (Out801B3FD8*)arg0;
+    Ent801B3FD8* tbl = (Ent801B3FD8*)lbl_802F9630;
+    Ent801B3FD8* p = tbl;
+    s32 g = 0, start, i;
+    u32 pos = 0;
+    s32 n;
+    for (; g < 6; g++, out++) {
+        start = pos;
+        while (pos < 13 && g == p->group) { p++; pos++; }
+        n = pos - start;
+        if (n < 1) fn_802E317C(lbl_80335D50, g);
+        out->p = fn_8012850C(n * 8, lbl_80335D74);
+        out->n = n;
+        out->z = 0;
+        for (i = 0; i < n; i++) {
+            ((s32*)out->p)[i * 2] = tbl[start + i].a;
+            ((f32*)out->p)[i * 2 + 1] = tbl[start + i].c;
+        }
+    }
+}
+
 extern s32 lbl_802F96CC[];
 extern s32 fn_801B4428(u32 *, u32 *);
 extern void *fn_801B447C(void *, void *, s32);
@@ -407,11 +452,13 @@ void fn_801B42D0(void* arg0) {
  *(s32*)((u8*)arg0+0x5bc)=0;
 }
 
-#pragma scheduling off
+#pragma scheduling on
 void fn_801B435C(void *arg0) {
     register u32 zero = 0;
-    f32 value = lbl_80562650;
+    f32 value;
     register u32 *p = (u32 *)arg0;
+
+    value = lbl_80562650;
     p[0x31C / 4] = zero; p[0x320 / 4] = zero; *(f32 *)((u8 *)arg0 + 0x324) = value;
     p[0x348 / 4] = zero; p[0x34C / 4] = zero; *(f32 *)((u8 *)arg0 + 0x350) = value;
     p[0x374 / 4] = zero; p[0x378 / 4] = zero; *(f32 *)((u8 *)arg0 + 0x37C) = value;
@@ -429,7 +476,6 @@ void fn_801B435C(void *arg0) {
     p[0x584 / 4] = zero; p[0x588 / 4] = zero; *(f32 *)((u8 *)arg0 + 0x58C) = value;
     p[0x5B0 / 4] = zero; p[0x5B4 / 4] = zero; *(f32 *)((u8 *)arg0 + 0x5B8) = value;
 }
-#pragma scheduling on
 
 extern void fn_802E317C(const char *, ...);
 extern u8 lbl_80335D80[];
