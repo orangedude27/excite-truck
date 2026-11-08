@@ -45,6 +45,7 @@ extern void fn_802C8D74(void);
 extern f32 lbl_805603E8, lbl_805603EC, lbl_805603F0, lbl_805603F4;
 typedef struct { s32 a; f32 x; f32 y; s32 d; f32 e; f32 f; s32 g; } Rec7;
 typedef struct { s32 a; f32 x; f32 y; s32 d; f32 e; s32 f; s32 g; s32 h; } Rec8;
+extern f64 lbl_80560390;
 #define VCALL(slot, ofs) ((void *(*)(void *, void *))(*(void ***)obj)[slot])(obj, lbl_802FCB98 + (ofs))
 #define VC(slot, ofs) ((void *(*)(void *, void *))(*(void ***)obj)[slot])(obj, base + (ofs))
 #define CP8(R, q) do { (R).a = (q)->a; *(s32 *)&(R).x = *(s32 *)&(q)->x; *(s32 *)&(R).y = *(s32 *)&(q)->y; (R).d = (q)->d; (R).e = (q)->e; (R).f = (q)->f; (R).g = (q)->g; (R).h = (q)->h; } while (0)
