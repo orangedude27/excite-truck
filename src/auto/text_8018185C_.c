@@ -15,6 +15,7 @@ static inline void MultVecSR_inl(const float *m, const float *src, float *dst) {
 }
 typedef struct V3 { float x, y, z; } V3;
 typedef struct W3 { int a, b, c; } W3;
+typedef struct M9 { V3 r[3]; } M9;
 static inline void MultVecT_inl(const float *m, const float *src, float *dst) {
     float x, y, z;
     if (src == dst) {
