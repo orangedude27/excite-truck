@@ -65,6 +65,8 @@ extern s32 lbl_8055CFF4;
 extern f32 fn_801EA0E8(f32, f32);
 extern void fn_80127A84(s32 *, s32 *, s32 *);
 
+typedef struct V3 { f32 x, y, z; } V3;
+
 /* v * 3x3 matrix m (rows of 3 floats); out may alias v */
 static inline void Mtx3MultVec(f32 *m, f32 *v, f32 *out) {
     f32 x = v[0], y = v[1], z = v[2];
@@ -95,6 +97,147 @@ f32 fn_8026B844(f32 f) {
  }
  return c;
 }
+
+#pragma push
+#pragma processor 750
+void fn_8026B8A0(void) {
+    f32 *cam = (f32 *)lbl_80499050;
+    s32 a, b, c;
+    s32 ok;
+    f32 dt;
+    f32 right[3];
+    f32 fwd[3];
+    f32 in[8];
+    f32 groundY;
+    f32 move[3];
+    f32 mv[3];
+    f32 push[3];
+    f32 fv[3];
+    f32 ang[3];
+    f32 m1[9];
+    f32 m2[9];
+
+    fn_80127A84(&a, &b, &c);
+    ok = 1;
+    if (lbl_8055F4E8 != 0 && ((s32 (*)(s32, s32))lbl_8055F4E8)(a, b) == 0) {
+        ok = 0;
+    }
+    dt = (f32)(fn_802E2C20() - lbl_8055F4FC) / lbl_80563D88;
+    if (dt >= lbl_80563D8C) {
+        dt = lbl_80563D8C;
+    }
+    lbl_8055F4FC = fn_802E2C20();
+    right[0] = cam[0];
+    right[1] = cam[1];
+    right[2] = cam[2];
+    right[1] = lbl_80563D78;
+    fwd[0] = cam[6];
+    fwd[1] = cam[7];
+    fwd[2] = cam[8];
+    fwd[1] = lbl_80563D78;
+    if (fn_801298E8(in, 0) != 0) {
+        f32 t, s, k, u;
+        k = lbl_80563D90;
+        t = (in[7] - lbl_80563D98) * lbl_80563D9C;
+        s = lbl_80563D94;
+        if (s >= t) s = t;
+        if (s <= lbl_80563D78) s = lbl_80563D78;
+        s = lbl_80563D94 + s * lbl_80563DA0;
+        u = lbl_80563D94 * (lbl_80563DA4 * s);
+        s = lbl_8055F4F4 + k * (dt * fn_8026B844(in[0]));
+        lbl_8055F4F4 = s;
+        if (s > lbl_80563DA8) {
+            lbl_8055F4F4 = s - lbl_80563DA8;
+        } else if (s < lbl_80563DAC) {
+            lbl_8055F4F4 = s + lbl_80563DA8;
+        }
+        s = lbl_80563DB0;
+        t = lbl_8055F4F8 + k * (dt * fn_8026B844(in[1]));
+        if (s >= t) s = t;
+        if (s <= lbl_80563DB4) s = lbl_80563DB4;
+        lbl_8055F4F8 = s;
+        move[2] = u * (dt * -fn_8026B844(in[2]));
+        move[0] = u * (dt * fn_8026B844(in[3]));
+        move[1] = lbl_80563D78;
+        Mtx3MultVec(cam, move, mv);
+        cam[9] = cam[9] + mv[0];
+        cam[10] = cam[10] + mv[1];
+        cam[11] = cam[11] + mv[2];
+    }
+    {
+        f32 z = lbl_80563D78;
+        f32 sc = lbl_80563DA4;
+        f32 dir = z;
+        if (fn_802E4A1C(0x1e) != 0) {
+            dir = lbl_80563D94;
+        } else if (fn_802E4A1C(0x2c) != 0) {
+            dir = lbl_80563D98;
+        }
+        push[0] = dt * (z * sc);
+        push[1] = lbl_80563D78;
+        push[2] = dt * (dir * sc);
+        Mtx3MultVec(cam, push, fv);
+        cam[9] = cam[9] + fv[0];
+        cam[10] = cam[10] + fv[1];
+        cam[11] = cam[11] + fv[2];
+    }
+    groundY = cam[10] - fn_801EA0E8(cam[9], cam[11]);
+    if (ok != 0) {
+        f32 t, s, p, q, f4, f5;
+        s = lbl_80563D94;
+        t = (groundY - lbl_80563DB8) / lbl_80563DBC;
+        if (s >= t) s = t;
+        if (s <= lbl_80563D78) s = lbl_80563D78;
+        f4 = lbl_80563D78;
+        f5 = f4;
+        p = lbl_80563DC4 * (lbl_80563D94 + s * lbl_80563DC0);
+        if (a < 0x50) {
+            f4 = lbl_80563D98 + (f32)a / lbl_80563DC8;
+        } else {
+            s32 lim = lbl_8055CFF0 - 0x50;
+            if (a > lim) {
+                f4 = (f32)(a - lim) / lbl_80563DC8;
+            }
+        }
+        if (b < 0x3c) {
+            f5 = lbl_80563D98 + (f32)b / lbl_80563DCC;
+        } else {
+            s32 lim = lbl_8055CFF4 - 0x3c;
+            if (b > lim) {
+                f5 = (f32)(b - lim) / lbl_80563DCC;
+            }
+        }
+        q = dt * (f4 * p);
+        p = dt * (-f5 * p);
+        cam[9] = cam[9] + right[0] * q + fwd[0] * p;
+        cam[10] = cam[10] + right[1] * q + fwd[1] * p;
+        cam[11] = cam[11] + right[2] * q + fwd[2] * p;
+    }
+    {
+        f32 y = cam[10];
+        cam[10] = y + (groundY - (y - fn_801EA0E8(cam[9], cam[11])));
+    }
+    cam[0] = lbl_80563D94;
+    cam[1] = lbl_80563D78;
+    cam[2] = lbl_80563D78;
+    cam[3] = lbl_80563D78;
+    cam[4] = lbl_80563D94;
+    cam[5] = lbl_80563D78;
+    cam[6] = lbl_80563D78;
+    cam[7] = lbl_80563D78;
+    cam[8] = lbl_80563D94;
+    ang[0] = lbl_80563D78;
+    ang[1] = lbl_8055F4F4;
+    ang[2] = lbl_80563D78;
+    fn_80015A20(m1, ang);
+    fn_80015B20(cam, m1, cam);
+    ang[0] = -lbl_8055F4F8;
+    ang[1] = lbl_80563D78;
+    ang[2] = lbl_80563D78;
+    fn_80015A20(m2, ang);
+    fn_80015B20(cam, m2, cam);
+}
+#pragma pop
 
 BOOL fn_8026BFF0(s32 x) {
     switch (x) { case 3: case 4: return TRUE; default: return FALSE; }
