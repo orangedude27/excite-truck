@@ -17806,7 +17806,7 @@ extern "C" void fn_800D16C4() {
                         }
                     }
                 }
-                                    WENCGetEncodeData((void *)(p + 0x30), p[0x5c] == 0, (const s16*)buf, 0x28, (void *)&enc);
+                                    WENCGetEncodeData(p + 0x30, p[0x5c] == 0, (const s16*)buf, 0x28, &enc);
                 fn_80062278(i, &enc, 0x14);
                 p[0x5c] = 0;
                 p[0x5e] = 0;
