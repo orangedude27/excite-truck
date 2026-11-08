@@ -558,6 +558,27 @@ extern "C" void fn_8027F204(char *src) {
     }
     fn_802E30C8(lbl_80348270, count);
 }
+
+extern "C" void fn_8027F288(Fn8027F288Obj *arg0, Fn8027F288Obj *arg1) {
+    extern void fn_801345D8(char *, int, const char *, ...);
+    extern int fn_802168E4(void);
+    extern int fn_80214A9C(int);
+    extern int fn_80214AF0(int);
+    extern char lbl_80347E50[];
+    char buf[0x64];
+    int frame[60];
+    int r = fn_802168E4();
+    if (arg1 != 0) {
+        fn_801345D8(buf, 0x64, lbl_80347E50 + 0x46C, arg1->getName());
+    } else {
+        fn_801345D8(buf, 0x64, lbl_80347E50 + 0x4B0, arg0->getName());
+    }
+    if (r != 0) fn_80214A9C(0x1F);
+    frame[0] = 0;
+    fn_802146BC(frame, -999, -999, 1, 0, 0, 0, 0);
+    if (r != 0) fn_80214AF0(0x1F);
+}
+
 #pragma scheduling reset
 #pragma cplusplus off
 void *fn_8027F834(void *arg0, int arg1) {
@@ -2973,6 +2994,44 @@ int fn_802869CC(void *arg0, int arg1) {
         break;
     }
     return 0;
+}
+
+static inline void fn_80286A34_select(int idx) {
+    char *base = (char *)&lbl_804B2FF8;
+    struct Fn80283E28Obj **items = *(struct Fn80283E28Obj ***)(base + 0xE0);
+    struct Fn80283E28Obj *obj;
+    if (idx >= 0 && idx < ((struct Fn80283E28List *)(base + 0xE0))->count && items[idx]->sub != 0)
+        lbl_8055F698 = (void *)items[idx];
+    else
+        lbl_8055F698 = 0;
+    if (idx >= 0 && idx < ((struct Fn80283E28List *)(base + 0xE0))->count && items[idx]->sub != 0) {
+        obj = items[idx];
+        if (obj != 0) {
+            char *s; char *d; int c; int a, b; char tmp[0x20];
+            s = obj->sub->vt->v3(obj->sub);
+            d = base + 0x100;
+            for (c = 0x20;;) { char ch = *s++; *d++ = ch; if (ch == 0) break; if (--c <= 0) { d[-1] = 0; break; } }
+            s = obj->sub->vt->v7(obj->sub);
+            d = base + 0x120;
+            for (c = 0x20;;) { char ch = *s++; *d++ = ch; if (ch == 0) break; if (--c <= 0) { d[-1] = 0; break; } }
+            a = obj->sub->vt->v9(obj->sub);
+            b = obj->sub->vt->v8(obj->sub);
+            fn_8001BE94(tmp, fn_8000DA10(), 0x20507, b, a);
+            if (fn_8001BCF0(tmp) != 0) {
+                fn_8001BEE8(tmp);
+                fn_80130980(base + 0x140, 0x14, 3);
+            } else {
+                s = (char *)fn_80131234((int)lbl_8034862C);
+                d = base + 0x140;
+                for (c = 0x14;;) { char ch = *s++; *d++ = ch; if (ch == 0) break; if (--c <= 0) { d[-1] = 0; break; } }
+            }
+            lbl_8055C7E0 = obj->sub->vt->v8(obj->sub);
+        } else {
+            base[0x120] = 0; base[0x100] = 0; lbl_8055C7E0 = -1;
+        }
+    } else {
+        base[0x120] = 0; base[0x100] = 0; lbl_8055C7E0 = -1;
+    }
 }
 
 #pragma dont_inline on
