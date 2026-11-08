@@ -7,7 +7,10 @@
 const char* __EXIVersion =
     "<< RVL_SDK - EXI \trelease build: Sep  7 2006 07:16:20 (0x4200_60422) >>";
 
+// One state block per EXI channel.
 static EXIData Ecb[EXI_MAX_CHAN];
+// ID of the serial port 1 device, cached by EXIInit() before anything else can
+// claim the channel; EXIGetID() answers channel 0's internal device with it.
 static u32 IDSerialPort1;
 
 static BOOL __EXIProbe(EXIChannel chan);
