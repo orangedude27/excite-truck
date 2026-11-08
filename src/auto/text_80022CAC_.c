@@ -73,3 +73,5 @@ void __two_exp(decimal *out, long exponent) {
         break;
     }
 }
+
+#undef pow2_digit_strings
