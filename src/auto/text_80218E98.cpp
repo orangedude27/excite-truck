@@ -1213,6 +1213,114 @@ extern "C" void fn_80219F14(void *arg0) {
     }
 }
 
+extern "C" void fn_80219FE0(void *arg0) {
+    u8 *self = (u8 *)arg0;
+    f32 time = fn_8023659C();
+    f32 zero = lbl_805634A8;
+    f32 x = zero;
+    f32 y = zero;
+    fn_80230C30(&x, &y, *(s32 *)(self + 4), *(s32 *)(self + 8));
+    switch (*(u32 *)(self + 0x244)) {
+    case 0:
+    case 1: {
+        s32 flag = 2;
+        if (*(s32 *)(self + 0x244) == 0)
+            flag = 1;
+        s32 h = *(s32 *)(self + 0x10) - *(s32 *)(self + 8);
+        f32 wf = (f32)((VfObj *)self)->vf28();
+        fn_80230150(*(s32 *)(self + 0x254), flag | 8, x, y - (f32)h, zero, wf, (f32)h,
+                    (f32)*(s32 *)(self + 0x250), time, lbl_805634C0);
+        break;
+    }
+    case 9: {
+        s32 obj = *(s32 *)(self + 0x248);
+        if (obj != 0) {
+            s32 w = ((VfObj *)self)->vf28();
+            f32 base = *(f32 *)((u8 *)lbl_8055E050 + 0x70) + (f32)w;
+            x = x - base * lbl_805634C4;
+            f32 hf = (f32)(*(s32 *)(self + 0x10) - *(s32 *)(self + 8));
+            fn_802354A0(obj, 0, -1, x, y, zero, base, hf);
+            s32 n = fn_80235FD8(obj);
+            if (n >= 2) {
+                f32 g = fn_80235EF0(obj, 1);
+                fn_802354A0(obj, 1, -1, x - g, y, zero, g, hf);
+            }
+            if (n >= 3) {
+                f32 g2 = fn_80235EF0(obj, 2);
+                fn_802354A0(obj, 2, -1, x + base, y, zero, g2, hf);
+            }
+        }
+        break;
+    }
+    case 8: {
+        s32 obj = *(s32 *)(self + 0x248);
+        if (obj != 0) {
+            s32 sel;
+            if (*(s32 **)(self + 0x24C) != 0)
+                sel = **(s32 **)(self + 0x24C);
+            else
+                sel = *(s32 *)(self + 0x250);
+            if (sel % 2 == 0) {
+                f32 size = lbl_805634C8;
+                f32 t = (f32)fn_8002EFB4(fn_8023659C(), lbl_805634D0);
+                f32 s = (f32)sin(lbl_805634D8 * t);
+                f32 amp = size * (lbl_805634C4 + lbl_805634C4 * s) - size * lbl_805634C4;
+                s32 w = ((VfObj *)self)->vf28();
+                s32 h = *(s32 *)(self + 0x10) - *(s32 *)(self + 8);
+                fn_802354A0(obj, sel, -1, x - lbl_805634C4 * amp, y + lbl_805634C4 * amp, lbl_805634A8, amp + (f32)w, amp + (f32)h);
+            } else {
+                s32 w = ((VfObj *)self)->vf28();
+                s32 h = *(s32 *)(self + 0x10) - *(s32 *)(self + 8);
+                fn_802354A0(obj, sel, -1, x, y, lbl_805634A8, (f32)w, (f32)h);
+            }
+        }
+        break;
+    }
+    case 3:
+    case 6: {
+        s32 obj = *(s32 *)(self + 0x248);
+        if (obj != 0) {
+            s32 sel;
+            if (*(s32 **)(self + 0x24C) != 0)
+                sel = **(s32 **)(self + 0x24C);
+            else
+                sel = *(s32 *)(self + 0x250);
+            if (self[0x280] != 0) {
+                f32 hh = fn_80235F64(obj, sel);
+                f32 ww = fn_80235EF0(obj, sel);
+                fn_802354A0(obj, sel, -1, x, y, lbl_805634A8, ww, hh);
+            } else {
+                s32 w = ((VfObj *)self)->vf28();
+                s32 h = *(s32 *)(self + 0x10) - *(s32 *)(self + 8);
+                fn_802354A0(obj, sel, -1, x, y, lbl_805634A8, (f32)w, (f32)h);
+            }
+        }
+        break;
+    }
+    case 2:
+        if (*(s32 *)(self + 0x248) != 0)
+            fn_802304EC(*(s32 *)(self + 0x258), *(s32 *)(self + 0x248), *(s32 *)(self + 0x254), 9, x, y,
+                        zero, *(f32 *)(self + 0x27C), (f32)*(s32 *)(self + 0x250), time, lbl_805634C0);
+        break;
+    case 4:
+        if (*(s32 *)(self + 0x248) != 0)
+            fn_80230650(*(s32 *)(self + 0x258), *(s32 *)(self + 0x248), *(s32 *)(self + 0x254), 0x41, x, y,
+                        zero, *(f32 *)(self + 0x27C), (f32)*(s32 *)(self + 0x250), time, lbl_805634DC);
+        break;
+    case 5:
+        if (*(s32 *)(self + 0x248) != 0)
+            fn_802307AC(*(s32 *)(self + 0x258), *(s32 *)(self + 0x248), *(s32 *)(self + 0x254), 9, x, y,
+                        zero, *(f32 *)(self + 0x27C), (f32)*(s32 *)(self + 0x250), time, lbl_805634E0);
+        break;
+    case 7: {
+        s32 w = ((VfObj *)self)->vf28();
+        s32 h = *(s32 *)(self + 0x10) - *(s32 *)(self + 8);
+        ((void (*)(s32, f32, f32, f32, f32, f32))fn_80230924)(*(s32 *)(self + 0x254), x, y, x + (f32)w, y - (f32)h, zero);
+        break;
+    }
+    }
+}
+
 #pragma pop
 extern "C" void fn_80219AB4(void *, s32, s32, s32, s32, s32, s32);
 extern "C" u8 lbl_8033F3B0[];
@@ -3442,6 +3550,39 @@ extern "C" void fn_8021F044(void *arg0) {
     };
     ((Dispatch *)arg0)->DispatchCall(0);
 }
+
+/* The text-edit widget this unit's key handlers work on (its members sit in
+   the object's own tail; the widget base class ends around 0x234).  Only the
+   fields the key handler touches are named. */
+typedef struct TextField {
+    char pad000[0x019];
+    u8 editing;   /* 0x19 caret shown, the field takes keys only when set */
+    u8 active;    /* 0x1A a change marks the widget dirty when set */
+    char pad01B[0x234 - 0x01B];
+    u8 dirty;     /* 0x234 redraw needed */
+    char pad235[0x248 - 0x235];
+    s32 columns;  /* 0x248 width in characters */
+    s32 rows;     /* 0x24C number of lines; columns * rows is the capacity */
+    s32 cursor;   /* 0x250 caret position in text */
+    char pad254[0xA54 - 0x254];
+    char *text;   /* 0xA54 the editable string (0xA58 font, 0xA5C ibeam.img) */
+} TextField;
+
+/* Virtual key codes the text field handles.  The ten codes from 0x160 on are
+   the digit keys and stand for '0'..'9'; the rest are the UI's navigation
+   keys, which each kind of widget interprets for itself. */
+enum {
+    TEXT_KEY_BACKSPACE = 0x8,
+    TEXT_KEY_TAB = 0x9,
+    TEXT_KEY_END = 0x123,
+    TEXT_KEY_HOME = 0x124,
+    TEXT_KEY_LEFT = 0x125,
+    TEXT_KEY_RIGHT = 0x127,
+    TEXT_KEY_DELETE = 0x12E,
+    TEXT_KEY_DIGIT_0 = 0x160,
+    TEXT_KEY_DIGIT_9 = 0x169,
+    TEXT_KEY_DIGIT_BASE = 0x130 /* digit key - this = its ASCII code */
+};
 
 extern "C" s32 strlen(const char *);
 extern "C" s32 fn_802E4A1C(s32);
