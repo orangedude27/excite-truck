@@ -39,6 +39,7 @@ extern "C" void fn_800DF81C(f32 *arg0, void *arg1, const u16 *arg2, s32 arg3, f3
     if ((!c2) && (((u32)(p) & 0xF8000000) != 0xD0000000U)) c1 = 0; \
     if ((!c1) && (((u32)(p) & 0xFFFFC000) != 0xE0000000U)) c0 = 0; \
     if (!c0) ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, line, msg + off, p); }
+struct Vec2f { f32 x, y; };
 struct SoundEntry60 {
     u8 b[32];
     s32 w[8];
@@ -1021,17 +1022,18 @@ extern "C" s32 fn_800DF1C8(s32 arg0, s32 arg1) {
 extern "C" void fn_800DF208(f32 *arg0, u8 *arg1, void *arg2) {
     const char *msg = lbl_80320560;
     f32 savedY;
-    u16 len;
     u16 *buf;
+    u16 len;
     SoundEntry60 tmp;
     union { u64 u; f32 f[2]; } v;
     f32 fa, fb;
+    f32 z = lbl_80560ED0;
 
-    arg0[0] = lbl_80560ED0;
-    arg0[1] = lbl_80560ED0;
-    arg0[2] = lbl_80560ED0;
-    arg0[3] = lbl_80560ED0;
-    SetCursor__Q36nw4hbm2ut10CharWriterFff(arg2, lbl_80560ED0, lbl_80560ED0);
+    arg0[0] = z;
+    arg0[1] = z;
+    arg0[2] = z;
+    arg0[3] = z;
+    SetCursor__Q36nw4hbm2ut10CharWriterFff(arg2, z, z);
     savedY = *(f32 *)(arg1 + 0x4C);
     len = *(u16 *)(arg1 + 0xFA);
     buf = *(u16 **)(arg1 + 0xD4);
