@@ -513,6 +513,22 @@ double __ieee754_fmod(double x, double y) {
 }
 #undef Zero
 
+/*
+ * __ieee754_log(x)  (fdlibm e_log.c)
+ * Natural logarithm of x.
+ * Method:
+ *  1. Argument reduction: split the IEEE bits so that x = 2^k * (1+f) with
+ *     sqrt(2)/2 <= 1+f < sqrt(2) (hx = high word of x; k is its exponent, and
+ *     the mantissa is halved when it is already at or above sqrt(2)).
+ *  2. log(1+f) = 2*(s + s^3/3 + s^5/5 + ...) for s = f/(2+f), summed as
+ *     R = t1 + t2, a polynomial in z = s*s and w = z*z with the Lg1..Lg7
+ *     coefficients; the result is f - s*(f - R), or f - (hfsq - s*(hfsq+R))
+ *     with hfsq = f*f/2 when f is large (f outside about [-0.34, 0.29]).
+ *  3. k*ln2 is added back as dk*ln2_hi + dk*ln2_lo (split constant) so the
+ *     low bits of the exponent term are not lost.
+ * Special cases: x = 1 -> 0, x = 0 -> -inf, x < 0 -> NaN with errno = EDOM,
+ * subnormals are scaled up by two54 first, and x >= inf returns x+x.
+ */
 double __ieee754_log(x)
 double x;
 {
@@ -520,43 +536,43 @@ double x;
 	int k,hx,i,j;
 	unsigned lx;
 
-	hx = __HI(x);
-	lx = __LO(x);
+	hx = __HI(x);		/* high word of x */
+	lx = __LO(x);		/* low  word of x */
 
 	k=0;
-	if (hx < 0x00100000) {
+	if (hx < 0x00100000) {			/* x < 2**-1022  */
 	    if (((hx&0x7fffffff)|lx)==0)
-		return -two54/zero;
-	    if (hx<0) { errno = EDOM; return (x-x)/zero; }
-	    k -= 54; x *= two54;
-	    hx = __HI(x);
+		return -two54/zero;		/* log(+-0)=-inf */
+	    if (hx<0) { errno = EDOM; return (x-x)/zero; }	/* log(-#) = NaN */
+	    k -= 54; x *= two54; /* subnormal number, scale up x */
+	    hx = __HI(x);		/* high word of x */
 	}
-	if (hx >= 0x7ff00000) return x+x;
-	k += (hx>>20)-1023;
-	hx &= 0x000fffff;
-	i = (hx+0x95f64)&0x100000;
-	__HI(x) = hx|(i^0x3ff00000);
-	k += (i>>20);
-	f = x-1.0;
-	if((0x000fffff&(2+hx))<3) {
+	if (hx >= 0x7ff00000) return x+x;	/* NaN or +inf */
+	k += (hx>>20)-1023;		/* exponent of x */
+	hx &= 0x000fffff;		/* mantissa of x */
+	i = (hx+0x95f64)&0x100000;	/* is 1+f >= sqrt(2)/2 ? */
+	__HI(x) = hx|(i^0x3ff00000);	/* normalize x or x/2 */
+	k += (i>>20);			/* k += 1 if x was halved */
+	f = x-1.0;			/* f = (1+f) - 1 */
+	if((0x000fffff&(2+hx))<3) {	/* |f| < 2**-20 */
 	    if(f==zero) { if(k==0) return zero;  else {dk=(double)k;
 				 return dk*ln2_hi+dk*ln2_lo;}
 	    }
-	    R = f*f*(0.5-0.33333333333333333*f);
+	    R = f*f*(0.5-0.33333333333333333*f);	/* f tiny: R = f^2/2 - f^3/3 */
 	    if(k==0) return f-R; else {dk=(double)k;
 	    	     return dk*ln2_hi-((R-dk*ln2_lo)-f);}
 	}
- 	s = f/(2.0+f);
+ 	s = f/(2.0+f);		/* s = f/(2+f); |s| < 1/2 */
 	dk = (double)k;
 	z = s*s;
-	i = hx-0x6147a;
+	i = hx-0x6147a;		/* check if  f <= -.34 (base) less than 1 */
 	w = z*z;
-	j = 0x6b851-hx;
-	t1= w*(Lg2+w*(Lg4+w*Lg6));
-	t2= z*(Lg1+w*(Lg3+w*(Lg5+w*Lg7)));
+	j = 0x6b851-hx;		/* check if  f >=  .29 (base) more than 1 */
+	t1= w*(Lg2+w*(Lg4+w*Lg6));	/* even powers of s */
+	t2= z*(Lg1+w*(Lg3+w*(Lg5+w*Lg7)));	/* odd powers of s */
 	i |= j;
 	R = t2+t1;
-	if(i>0) {
+	if(i>0) {			/* f large: keep hfsq for accuracy */
 	    hfsq=0.5*f*f;
 	    if(k==0) return f-(hfsq-s*(hfsq+R)); else
 		     return dk*ln2_hi-((hfsq-(s*(hfsq+R)+dk*ln2_lo))-f);
