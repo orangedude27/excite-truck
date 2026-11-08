@@ -1165,16 +1165,16 @@ extern void PSVECNormalize(void *, void *);
 extern void PSVECCrossProduct(void *, void *, void *);
 static inline void fn_80268358_vecmat(float *out, float *v, float *m) {
     if (out == v) {
-        float t0 = v[0] * m[0] + v[1] * m[3] + v[2] * m[6];
-        float t1 = v[0] * m[1] + v[1] * m[4] + v[2] * m[7];
-        float t2 = v[0] * m[2] + v[1] * m[5] + v[2] * m[8];
+        float t0 = m[3] * v[1] + m[0] * v[0] + m[6] * v[2];
+        float t1 = m[4] * v[1] + m[1] * v[0] + m[7] * v[2];
+        float t2 = m[5] * v[1] + m[2] * v[0] + m[8] * v[2];
         out[0] = t0;
         out[1] = t1;
         out[2] = t2;
     } else {
-        out[0] = v[0] * m[0] + v[1] * m[3] + v[2] * m[6];
-        out[1] = v[0] * m[1] + v[1] * m[4] + v[2] * m[7];
-        out[2] = v[0] * m[2] + v[1] * m[5] + v[2] * m[8];
+        out[0] = m[3] * v[1] + m[0] * v[0] + m[6] * v[2];
+        out[1] = m[4] * v[1] + m[1] * v[0] + m[7] * v[2];
+        out[2] = m[5] * v[1] + m[2] * v[0] + m[8] * v[2];
     }
 }
 void fn_802682B0(void *arg0) {
@@ -1198,6 +1198,204 @@ void fn_802682B0(void *arg0) {
     fn_801BFD34(p + 0x7c, base + 9, p + 0xc0);
     fn_80015B20(p + 0x58, base, p + 0xc0);
     *(float *)(p + 0xbc) = lbl_8055F47C;
+}
+
+void fn_80268358(void *arg0) {
+    struct Obj {
+        int w0;
+        void *ptr;
+        float frac;
+        int wC;
+        float f10;
+        float f14;
+        char pad[0x38];
+        int resource;
+        char pad2[0x14];
+    };
+    struct Sp8 {
+        int zero;
+        int pad;
+        float x;
+        float y;
+    };
+    struct Frame {
+        struct Sp8 sp8;
+        float v18[3];
+        float v24[3];
+        float v30[3];
+        float v3C[3];
+        float v48[3];
+        float v54[3];
+        float v60[3];
+        float v6C[3];
+        float pos[3];
+        char gap[4];
+        float entries[12];
+        struct Obj obj;
+        float mats[24];
+        float acc[18];
+    } frame;
+    float *matPtr;
+    void *p;
+    void *b;
+    float x;
+    float y;
+    float *e0;
+    float *e1;
+    float t;
+    float ratio;
+    unsigned char flag;
+    float a;
+    float b2;
+    int outer;
+    int inner;
+    int i;
+    int k;
+    float w;
+    float w2;
+    float zeroF;
+    float halfF;
+    float *accPtr;
+    float *entryPtr;
+    zeroF = lbl_80563C20;
+    halfF = lbl_80563C6C;
+    e0 = (float *)(lbl_803467E8 + (lbl_8055F4A0 << 5));
+    e1 = (float *)(lbl_803467E8 + (lbl_8055F4A4 << 5));
+    frame.entries[0] = e0[0];
+    frame.entries[1] = e0[1];
+    frame.entries[2] = e0[2];
+    frame.entries[3] = e0[3];
+    frame.entries[4] = e0[4];
+    frame.entries[5] = e0[5];
+    frame.entries[6] = e1[0];
+    frame.entries[7] = e1[1];
+    frame.entries[8] = e1[2];
+    frame.entries[9] = e1[3];
+    frame.entries[10] = e1[4];
+    frame.entries[11] = e1[5];
+    accPtr = frame.acc;
+    entryPtr = frame.entries;
+    outer = 0;
+    do {
+        matPtr = frame.mats;
+        for (k = 0; k < 9; k++) {
+            accPtr[k] = zeroF;
+        }
+        inner = 0;
+        do {
+            fn_80135DC4(&frame.obj, 0, 0);
+            p = frame.obj.ptr;
+            b = *(void **)((char *)p + 0x14);
+            x = *(float *)p + frame.obj.frac * (*(float *)b - *(float *)p);
+            y = *(float *)((char *)p + 4) + frame.obj.frac * (*(float *)((char *)b + 4) - *(float *)((char *)p + 4));
+            frame.pos[0] = x;
+            frame.pos[1] = zeroF;
+            frame.pos[2] = y;
+            frame.sp8.zero = 0;
+            frame.sp8.x = x;
+            frame.sp8.y = y;
+            fn_801E9E78(&lbl_8055F4A8, frame.pos, frame.v6C, &frame.sp8);
+            matPtr[6] = frame.obj.f10;
+            matPtr[7] = zeroF;
+            matPtr[8] = frame.obj.f14;
+            PSVECNormalize(matPtr + 6, matPtr + 6);
+            PSVECCrossProduct(frame.v6C, matPtr + 6, matPtr);
+            PSVECNormalize(matPtr, matPtr);
+            PSVECCrossProduct(matPtr + 6, matPtr, matPtr + 3);
+            PSVECNormalize(matPtr + 3, matPtr + 3);
+            matPtr[9] = frame.pos[0];
+            matPtr[10] = frame.pos[1];
+            matPtr[11] = frame.pos[2];
+            if (frame.obj.resource != 0) {
+                fn_80128670();
+            }
+            frame.obj.resource = 0;
+            fn_8013530C(&frame.obj, 0);
+            inner++;
+            matPtr += 12;
+        } while (inner < 2);
+        matPtr = frame.mats;
+        for (i = 0; i < 2; i++) {
+            frame.v60[0] = entryPtr[0];
+            frame.v60[1] = entryPtr[1];
+            frame.v60[2] = entryPtr[2];
+            fn_80268358_vecmat(frame.v54, frame.v60, matPtr);
+            frame.v54[0] += matPtr[9];
+            frame.v54[1] += matPtr[10];
+            frame.v54[2] += matPtr[11];
+            accPtr[0] += frame.v54[0] * halfF;
+            accPtr[1] += frame.v54[1] * halfF;
+            accPtr[2] += frame.v54[2] * halfF;
+            matPtr += 12;
+        }
+        matPtr = frame.mats;
+        for (i = 0; i < 2; i++) {
+            frame.v48[0] = entryPtr[3];
+            frame.v48[1] = entryPtr[4];
+            frame.v48[2] = entryPtr[5];
+            fn_80268358_vecmat(frame.v3C, frame.v48, matPtr);
+            frame.v3C[0] += matPtr[9];
+            frame.v3C[1] += matPtr[10];
+            frame.v3C[2] += matPtr[11];
+            accPtr[3] += frame.v3C[0] * halfF;
+            accPtr[4] += frame.v3C[1] * halfF;
+            accPtr[5] += frame.v3C[2] * halfF;
+            matPtr += 12;
+        }
+        accPtr[6] += frame.mats[3] * halfF;
+        accPtr[7] += frame.mats[4] * halfF;
+        accPtr[8] += frame.mats[5] * halfF;
+        accPtr[6] += frame.mats[15] * halfF;
+        accPtr[7] += frame.mats[16] * halfF;
+        accPtr[8] += frame.mats[17] * halfF;
+        outer++;
+        entryPtr += 6;
+        accPtr += 9;
+    } while (outer < 2);
+    t = lbl_8055E3C8 - *(float *)((char *)arg0 + 0x1E8);
+    flag = *(unsigned char *)(lbl_803467E8 + (lbl_8055F4A0 << 5) + 0x1C);
+    if (flag != 0) {
+        ratio = t / lbl_8055C4F0;
+        if (ratio < lbl_80563C28) {
+            w = lbl_80563C28;
+        } else if (ratio > lbl_80563C2C) {
+            w = lbl_80563C2C;
+        } else if (ratio > lbl_80563C20) {
+            w = ratio * ((lbl_80563C30 * ratio) * ratio) + (lbl_80563C34 * ratio) * ratio;
+        } else {
+            w = ratio * ((lbl_80563C30 * ratio) * ratio) - (lbl_80563C34 * ratio) * ratio;
+        }
+    } else {
+        w = t / lbl_8055C4F0;
+    }
+    if (flag != 0) {
+        ratio = t / lbl_8055C4F4;
+        if (ratio < lbl_80563C28) {
+            w2 = lbl_80563C28;
+        } else if (ratio > lbl_80563C2C) {
+            w2 = lbl_80563C2C;
+        } else if (ratio > lbl_80563C20) {
+            w2 = ratio * ((lbl_80563C30 * ratio) * ratio) + (lbl_80563C34 * ratio) * ratio;
+        } else {
+            w2 = ratio * ((lbl_80563C30 * ratio) * ratio) - (lbl_80563C34 * ratio) * ratio;
+        }
+    } else {
+        w2 = t / lbl_8055C4F4;
+    }
+    frame.v30[0] = frame.acc[3] + w * (frame.acc[12] - frame.acc[3]);
+    frame.v30[1] = frame.acc[4] + w * (frame.acc[13] - frame.acc[4]);
+    frame.v30[2] = frame.acc[5] + w * (frame.acc[14] - frame.acc[5]);
+    frame.v24[0] = frame.acc[0] + w2 * (frame.acc[9] - frame.acc[0]);
+    frame.v24[1] = frame.acc[1] + w2 * (frame.acc[10] - frame.acc[1]);
+    frame.v24[2] = frame.acc[2] + w2 * (frame.acc[11] - frame.acc[2]);
+    frame.v18[0] = frame.acc[6] + w * (frame.acc[15] - frame.acc[6]);
+    frame.v18[1] = frame.acc[7] + w * (frame.acc[16] - frame.acc[7]);
+    frame.v18[2] = frame.acc[8] + w * (frame.acc[17] - frame.acc[8]);
+    PSVECNormalize(frame.v18, frame.v18);
+    a = *(float *)(lbl_803467E8 + (lbl_8055F4A0 << 5) + 0x18);
+    b2 = *(float *)(lbl_803467E8 + (lbl_8055F4A4 << 5) + 0x18);
+    *(float *)((char *)arg0 + 0xBC) = a + w * (b2 - a);
+    fn_8026E850(frame.v30, frame.v24, arg0, frame.v18);
 }
 
 void fn_80268B94(int arg0) {
