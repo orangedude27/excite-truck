@@ -72,7 +72,6 @@ static char* double2hex_80025D1C(long double num, char* buff, print_format forma
     decimal dec;
     int radix_marker;           // the locale's decimal point
     double magnitude;
-    extern double lbl_805605C0;
 
     radix_marker = *(unsigned char*)__lconv.decimal_point;
 
