@@ -377,7 +377,7 @@ static inline void Rot3Vec(f32 *m, f32 *src, f32 *dst) {
         dst[2] = src[0] * m[2] + src[1] * m[5] + src[2] * m[8];
     }
 }
-
+#pragma always_inline reset
 
 class ObjBF { public: virtual void a(); virtual void b(); virtual void c(); virtual void d(); virtual void e(); virtual void f(); virtual void g(); virtual void h(); virtual s32 i(); virtual s32 j(); };
 
