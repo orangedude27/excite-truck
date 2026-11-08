@@ -300,6 +300,7 @@ extern "C" void fn_80199894(void *arg0, void *arg1, void *arg2_raw, void *arg3_r
     void *temp_r31;
     void *temp_r30;
     void *temp_r29;
+    volatile f32 underflow;
     void *temp_r28;
     f32 temp_f0;
     f32 temp_f0_2;
@@ -345,15 +346,15 @@ extern "C" void fn_80199894(void *arg0, void *arg1, void *arg2_raw, void *arg3_r
     f32 temp_f4_4;
     f32 temp_f5;
     volatile f32 temp_f5_2;
-    volatile f32 temp_f7;
+    f32 temp_f7;
     f32 temp_f7_2;
     volatile f32 temp_f8;
     f32 temp_f8_2;
-    volatile f32 temp_f9;
+    f32 temp_f9;
     f32 temp_f9_2;
     f32 var_f1;
     f32 var_f1_2;
-    volatile f32 var_f28;
+    f32 var_f28;
     f32 var_f29;
     f32 var_f2;
     f32 var_f30;
@@ -904,42 +905,56 @@ void fn_8019B068(void* arg0, void* arg1, s32 arg2, s32 arg3) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-extern "C" s32 fn_8019B08C(void* arg0, void* arg1, void* arg2, f32 farg0) {
+extern "C" s32 fn_8019B08C(void* arg0, const Vec* arg1, void* arg2, f32 farg0) {
     f32 f31 = farg0;
-    f32 ax = *(f32*)arg1;
-    f32 ay = *(f32*)((u8*)arg1 + 4);
-    f32 az = *(f32*)((u8*)arg1 + 8);
-    f32 azc = *(f32*)((u8*)arg2 + 0x28);
-    Vec* m = *(Vec**)((u8*)arg2 + 0xC);
-    Vec delta, abc, p, normal, out;
-    delta.x = ax - *(f32*)((u8*)m + 0x24);
-    delta.y = ay - *(f32*)((u8*)m + 0x28);
-    delta.z = az - *(f32*)((u8*)m + 0x2C);
-    abc.x = delta.x * *(f32*)((u8*)m + 0x18) + delta.y * *(f32*)((u8*)m + 0x1C) + delta.z * *(f32*)((u8*)m + 0x20);
-    abc.y = delta.x * *(f32*)m + delta.y * *(f32*)((u8*)m + 4) + delta.z * *(f32*)((u8*)m + 8);
-    abc.z = delta.x * *(f32*)((u8*)m + 0xC) + delta.y * *(f32*)((u8*)m + 0x10) + delta.z * *(f32*)((u8*)m + 0x14);
-    if (abc.x >= azc || abc.x <= -azc) return 0;
-    f32 mag = (f32)fn_8002F234(abc.y*abc.y + abc.z*abc.z);
+    f32 ax = arg1->x;
+    f32 az = arg1->z;
+    f32 ay = arg1->y;
+    f32* m = *(f32**)((u8*)arg2 + 0xC);
+    f32 x = ax - m[9];
+    f32 y = ay - m[10];
+    f32 z = az - m[11];
+    Vec local;
+    local.x = x * m[0] + y * m[1] + z * m[2];
+    local.y = x * m[3] + y * m[4] + z * m[5];
+    local.z = x * m[6] + y * m[7] + z * m[8];
+    f32 halfHeight = *(f32*)((u8*)arg2 + 0x28);
+    if (local.z >= halfHeight || local.z <= -halfHeight) return 0;
+    f32 mag = (f32)fn_8002F234(local.y * local.y + local.x * local.x);
     if ((f32)__fabs((f64)mag) <= lbl_80558DC4) return 0;
-    f31 = f31 + (*(f32*)((u8*)arg2 + 0x24) - mag);
+    f32 radius = *(f32*)((u8*)arg2 + 0x24);
+    f31 += radius - mag;
     if (f31 <= lbl_805622D0) return 0;
-    f32 dt = (*(f32*)((u8*)arg2 + 0x24) - f31) / mag;
-    f32 bd = abc.y * dt;
-    f32 cd = abc.z * dt;
-    p.x = bd * *(f32*)m + cd * *(f32*)((u8*)m + 0xC) + abc.x * *(f32*)((u8*)m + 0x18);
-    p.y = bd * *(f32*)((u8*)m + 4) + cd * *(f32*)((u8*)m + 0x10) + abc.x * *(f32*)((u8*)m + 0x1C);
-    p.z = bd * *(f32*)((u8*)m + 8) + cd * *(f32*)((u8*)m + 0x14) + abc.x * *(f32*)((u8*)m + 0x20);
-    p.x += *(f32*)((u8*)m + 0x24); p.y += *(f32*)((u8*)m + 0x28); p.z += *(f32*)((u8*)m + 0x2C);
-    normal.x=abc.y; normal.y=abc.z; normal.z=lbl_805622D0;
+    volatile f32 px = arg1->x, py = arg1->y, pz = arg1->z;
+    f32 dt = (radius - f31) / mag;
+    Vec tmp;
+    tmp.x = local.x * dt;
+    tmp.y = local.y * dt;
+    tmp.z = local.z;
+    Vec point;
+    {
+        Vec prod;
+        prod.x = tmp.x * m[0] + tmp.y * m[3] + tmp.z * m[6];
+        prod.y = tmp.x * m[1] + tmp.y * m[4] + tmp.z * m[7];
+        prod.z = tmp.x * m[2] + tmp.y * m[5] + tmp.z * m[8];
+        point = prod;
+    }
+    point.x += m[9]; point.y += m[10]; point.z += m[11];
+    Vec normal;
+    normal.x = local.x; normal.y = local.y; normal.z = lbl_805622D0;
     PSVECNormalize(&normal, &normal);
-    out.x=normal.x * *(f32*)m + normal.y * *(f32*)((u8*)m + 0xC) + normal.z * *(f32*)((u8*)m + 0x18);
-    out.y=normal.x * *(f32*)((u8*)m + 4) + normal.y * *(f32*)((u8*)m + 0x10) + normal.z * *(f32*)((u8*)m + 0x1C);
-    out.z=normal.x * *(f32*)((u8*)m + 8) + normal.y * *(f32*)((u8*)m + 0x14) + normal.z * *(f32*)((u8*)m + 0x20);
-    typedef void (*Call)(void*,void*,Vec*,Vec*,s32,s32,f32,f32,f32);
-    ((Call)fn_8019A788)(arg0,arg2,&p,&out,0,0,f31,lbl_805622D0,lbl_805622D0);
+    Vec out;
+    {
+        Vec prod;
+        prod.x = normal.x * m[0] + normal.y * m[3] + normal.z * m[6];
+        prod.y = normal.x * m[1] + normal.y * m[4] + normal.z * m[7];
+        prod.z = normal.x * m[2] + normal.y * m[5] + normal.z * m[8];
+        out = prod;
+    }
+    Vec copy = out;
+    fn_8019A788(arg0, arg2, &point, &copy, 0, 0, f31, lbl_805622D0, lbl_805622D0);
     return 1;
 }
-#pragma pop
 extern "C" s32 fn_8019BD4C(void *arg0) {
     return ((s32 *)arg0)[0xC / 4];
 }
@@ -3221,7 +3236,9 @@ extern "C" void fn_801A2684(void* arg0, f32* arg1, f32* arg2) {
     arg2[2] = *(f32*)((u8*)temp_r3 + 0x2C) + temp_f1;
 }
 
-extern void fn_801C28A8(void*, void*, void*, void*, void*, s32, s32, void*);
+struct Fn801A26FCMtx { f32 m[12]; };
+extern "C" void fn_801C28A8(void*, void*, void*, void*, void*, s32, s32, void* = 0, void* = 0);
+extern "C" void fn_801C2BDC(void*, s32*, f32**, s32*);
 void fn_801A26FC(void* arg0, void* arg1) {
     u32 type = *(u32*)((u8*)arg1 + 0x18);
     if ((type - 0x47525500U) == 0x5550U) {
