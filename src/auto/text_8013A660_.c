@@ -213,15 +213,17 @@ extern "C" int fn_80016508(void *);
 extern "C" int fn_80129D90(int, int, int);
 extern "C" void qsort(void *, int, int, int (*)(void *, void *));
 #pragma push
-#pragma processor 750
+#pragma processor 7400
 extern "C" void fn_8013AC78(int arg0, int *arg1) {
+    char *base = lbl_8032C1A0;
     struct Entry { int idx; int key; int score; } es[8];
     int pr[100];
     float sp8[2];
     float f31, t;
     int *a;
     int count, n, i, j;
-    char *tbl = lbl_8042F858;
+    struct Entry *e;
+    int *q;
 
     a = fn_801E87A8();
     count = fn_80135108();
@@ -229,64 +231,79 @@ extern "C" void fn_8013AC78(int arg0, int *arg1) {
     if (arg0 == 0) {
         fn_8013AB08(sp8, a);
     } else {
-        fn_802E30C8(lbl_8032C1A0 + 0xD8, ((float *)arg0)[1], ((float *)arg0)[0]);
+        fn_802E30C8(base + 0xD8, ((float *)arg0)[1], ((float *)arg0)[0]);
         sp8[0] = ((float *)arg0)[0];
         sp8[1] = ((float *)arg0)[1];
     }
-    *(float *)(tbl + 0x48) = ((float (*)(int *))fn_8013AC2C)(a);
-    *(float *)tbl = sp8[1];
-    n = fn_80016508(tbl);
+    *(float *)(lbl_8042F858 + 0x48) = ((float (*)(int *))fn_8013AC2C)(a);
+    *(float *)lbl_8042F858 = sp8[1];
+    n = fn_80016508(lbl_8042F858);
+    q = pr;
     for (i = 0; i < n; i++) {
         int *p = (int *)fn_80016464(i);
-        pr[i * 2] = p[1];
-        pr[i * 2 + 1] = p[0x12];
+        q[0] = p[1];
+        q[1] = p[0x12];
+        q += 2;
     }
+    e = es;
     for (i = 0; i < count; i++) {
-        es[i].idx = i;
-        es[i].key = arg1[i];
-        es[i].score = fn_80129D90(3, -2, 2);
+        int *pp;
+        e->idx = i;
+        e->key = *arg1;
+        e->score = fn_80129D90(3, -2, 2);
+        pp = pr;
         for (j = 0; j < n; j++) {
-            if (es[i].key == pr[j * 2]) {
-                es[i].score += pr[j * 2 + 1];
+            if (e->key == *pp) {
+                e->score += pr[j * 2 + 1];
                 break;
             }
+            pp += 2;
         }
+        e++;
+        arg1++;
     }
     qsort(es, count, 12, fn_8013A6C4);
     f31 = lbl_80561440;
     t = (float)(count - 1);
     if (t > f31) f31 = t;
     for (i = 0; i < count; i++)
-        *(float *)(tbl + es[i].idx * 8 + 8) = *(float *)tbl - ((float)i / f31) * sp8[0];
-    for (i = 0; i < count; i++)
-        es[i].score += fn_80129D90(3, -2, 2);
+        *(float *)(lbl_8042F858 + es[i].idx * 8 + 8) = *(float *)lbl_8042F858 - ((float)i / f31) * sp8[0];
+    e = es;
+    for (i = 0; i < count; i++) {
+        e->score += fn_80129D90(3, -2, 2);
+        e++;
+    }
     qsort(es, count, 12, fn_8013A6C4);
     for (i = 0; i < count; i++)
-        *(float *)(tbl + es[i].idx * 8 + 0xC) = *(float *)tbl - ((float)i / f31) * sp8[0];
+        *(float *)(lbl_8042F858 + es[i].idx * 8 + 0xC) = *(float *)lbl_8042F858 - ((float)i / f31) * sp8[0];
+    e = es;
     for (i = 0; i < count; i++) {
         void *vobj, *obj;
         int idx, has;
+        int *pp = pr;
         obj = 0;
         for (j = 0; j < n; j++) {
-            if (pr[j * 2] == es[i].key)
+            if (*pp == e->key)
                 obj = fn_80016464(j);
+            pp += 2;
         }
         vobj = *(void **)((char *)obj + 0x58);
-        idx = es[i].idx;
-        has = ((int (*)(void *, char *))(*(void ***)vobj)[3])(vobj, lbl_8032C1A0 + 0xF4);
+        idx = e->idx;
+        has = ((int (*)(void *, char *))(*(void ***)vobj)[3])(vobj, base + 0xF4);
         if (has != 0) {
             vobj = *(void **)((char *)obj + 0x58);
-            *(float *)(tbl + idx * 8 + 8) = sp8[1] * ((float (*)(void *, char *))(*(void ***)vobj)[9])(vobj, lbl_8032C1A0 + 0xF4);
+            *(float *)(lbl_8042F858 + idx * 8 + 8) = sp8[1] * ((float (*)(void *, char *))(*(void ***)vobj)[9])(vobj, base + 0xF4);
         }
         vobj = *(void **)((char *)obj + 0x58);
-        if (((int (*)(void *, char *))(*(void ***)vobj)[3])(vobj, lbl_8032C1A0 + 0x10C) != 0) {
-            char *q;
+        if (((int (*)(void *, char *))(*(void ***)vobj)[3])(vobj, base + 0x10C) != 0) {
+            char *r;
             vobj = *(void **)((char *)obj + 0x58);
-            q = tbl + idx * 8;
-            *(float *)(q + 0xC) = sp8[1] * ((float (*)(void *, char *))(*(void ***)vobj)[9])(vobj, lbl_8032C1A0 + 0x10C);
+            r = lbl_8042F858 + idx * 8;
+            *(float *)(r + 0xC) = sp8[1] * ((float (*)(void *, char *))(*(void ***)vobj)[9])(vobj, base + 0x10C);
             if (has == 0)
-                *(float *)(q + 8) = *(float *)(q + 0xC);
+                *(float *)(r + 8) = *(float *)(r + 0xC);
         }
+        e++;
     }
 }
 
