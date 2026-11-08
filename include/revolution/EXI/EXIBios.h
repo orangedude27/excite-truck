@@ -42,7 +42,10 @@ BOOL EXIDeselect(EXIChannel chan);
 void EXIInit(void);
 BOOL EXILock(EXIChannel chan, u32 dev, EXICallback callback);
 BOOL EXIUnlock(EXIChannel chan);
-s32 EXIGetID(EXIChannel chan, u32 dev, u32* out);
+// Reads a device's peripheral ID. For an external device on channel 0 or 1
+// returns the channel's insertion time (0 when there is no device), otherwise
+// 1 on success and 0 on failure.
+s32 EXIGetID(EXIChannel chan, u32 dev, u32* id);
 
 #ifdef __cplusplus
 }
