@@ -113,6 +113,7 @@ struct DummyStrmLoadTaskCallback {
     virtual void f0();
     virtual void f1();
 };
+struct DummySeqPlayerIface { u8 pad[0x24]; f32 volume; u8 pad2[0x90 - 0x2C]; u8 b90; virtual void g0(); virtual void g1(); virtual void g2(); virtual void g3(); virtual void g4(); virtual void g5(); virtual void g6(); virtual void g7(); virtual void g8(); virtual void g9(); virtual void g10(); virtual void g11(); virtual void g12(); virtual void g13(); virtual void g14(); virtual f32 g15(); virtual f32 g16(); virtual f32 g17(); virtual f32 g18(); virtual f32 g19(); virtual f32 g20(); virtual f32 g21(); virtual void g22(); virtual void g23(); virtual void g24(); virtual void g25(); virtual void g26(); virtual void g27(); virtual void g28(); virtual s32 g29(); virtual f32 g30(); virtual f32 g31(); virtual f32 g32(s32); virtual f32 g33(s32); virtual f32 g34(s32); virtual f32 g35(s32); };
 struct DummyWorkerLink { void *next; void *prev; };
 struct DummyWorkerCallbackC : DummyWorkerLink { virtual void f0(); virtual void Call(); };
 struct DummyWorkerCallback10 : DummyWorkerLink { virtual void f0(); virtual void f1(); virtual void Call(); };
@@ -1612,6 +1613,8 @@ extern "C" s32 fn_800F420C(s32 arg0, s32 arg1) {
 
 extern "C" const char lbl_80324E40[];
 extern "C" const char lbl_80324E5C[];
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void *LoadGroup__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hbm3snd22SoundMemoryAllocatablePPvUl(void *self, u32 groupId, void *allocator, void **outWave, u32 blockSize) {
     class Stream {
     public:
@@ -1640,21 +1643,13 @@ extern "C" void *LoadGroup__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hb
         virtual void v0();
         virtual void *Alloc(u32);
     };
-    Stream *stream;
-    Stream *stream2;
-    void *buf;
-    void *buf2;
-    u32 remain;
-    void *p;
-    u32 n;
-    struct { u32 pad[5]; s32 hasWave; u32 pad2[4]; } info;
-    Allocator *alloc = (Allocator *)allocator;
+    struct { u32 pad[5]; s32 hasWave; } info;
 
-    if (alloc == 0) {
+    if (allocator == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E40, 0x53, lbl_80324E5C);
     }
     OSLockMutex(self);
-    stream = (Stream *)detail_OpenGroupStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(*(void **)((char *)self + 0x18), groupId, (char *)self + 0x1c, 0x200);
+    Stream *stream = (Stream *)detail_OpenGroupStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(*(void **)((char *)self + 0x18), groupId, (char *)self + 0x1c, 0x200);
     if (stream == 0) {
         if (stream != 0)
             stream->Close();
@@ -1667,7 +1662,7 @@ extern "C" void *LoadGroup__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hb
         OSUnlockMutex(self);
         return 0;
     }
-    buf = alloc->Alloc(stream->GetSize());
+    char *buf = (char *)((Allocator *)allocator)->Alloc(stream->GetSize());
     if (buf == 0) {
         if (stream != 0)
             stream->Close();
@@ -1684,13 +1679,10 @@ extern "C" void *LoadGroup__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hb
             return 0;
         }
     } else {
-        p = buf;
-        remain = stream->GetSize();
+        char *p = buf;
+        u32 remain = stream->GetSize();
         while (remain != 0) {
-            n = blockSize;
-            if (blockSize > remain)
-                n = remain;
-            if (stream->Read(p, n) == 0) {
+            if (stream->Read(p, blockSize > remain ? remain : blockSize) == 0) {
                 *(void **)((char *)self + 0x21c) = 0;
                 if (stream != 0)
                     stream->Close();
@@ -1699,7 +1691,7 @@ extern "C" void *LoadGroup__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hb
             }
             if (remain > blockSize) {
                 remain -= blockSize;
-                p = (char *)p + blockSize;
+                p += blockSize;
             } else {
                 remain = 0;
             }
@@ -1713,7 +1705,7 @@ extern "C" void *LoadGroup__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hb
         return 0;
     }
     if (info.hasWave != 0) {
-        stream2 = (Stream *)detail_OpenGroupWaveDataStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi_800F2BEC(*(void **)((char *)self + 0x18), groupId, (char *)self + 0x1c, 0x200);
+        Stream *stream2 = (Stream *)detail_OpenGroupWaveDataStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi_800F2BEC(*(void **)((char *)self + 0x18), groupId, (void *)((u32)self + 0x1c), 0x200);
         if (stream2 == 0) {
             if (stream2 != 0)
                 stream2->Close();
@@ -1730,7 +1722,7 @@ extern "C" void *LoadGroup__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hb
             OSUnlockMutex(self);
             return 0;
         }
-        buf2 = alloc->Alloc(stream2->GetSize());
+        char *buf2 = (char *)((Allocator *)allocator)->Alloc(stream2->GetSize());
         if (buf2 == 0) {
             if (stream2 != 0)
                 stream2->Close();
@@ -1751,13 +1743,10 @@ extern "C" void *LoadGroup__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hb
                 return 0;
             }
         } else {
-            p = buf2;
-            remain = stream2->GetSize();
+            char *p = buf2;
+            u32 remain = stream2->GetSize();
             while (remain != 0) {
-                n = blockSize;
-                if (blockSize > remain)
-                    n = remain;
-                if (stream2->Read(p, n) == 0) {
+                if (stream2->Read(p, blockSize > remain ? remain : blockSize) == 0) {
                     *(void **)((char *)self + 0x21c) = 0;
                     if (stream2 != 0)
                         stream2->Close();
@@ -1768,7 +1757,7 @@ extern "C" void *LoadGroup__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hb
                 }
                 if (remain > blockSize) {
                     remain -= blockSize;
-                    p = (char *)p + blockSize;
+                    p += blockSize;
                 } else {
                     remain = 0;
                 }
@@ -1788,7 +1777,7 @@ extern "C" void *LoadGroup__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hb
     OSUnlockMutex(self);
     return buf;
 }
-
+#pragma pop
 extern "C" void OSLockMutex(void *);
 extern "C" void OSUnlockMutex(void *);
 extern "C" void *detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(void *, unsigned long, void *, int);
