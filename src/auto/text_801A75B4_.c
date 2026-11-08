@@ -343,7 +343,102 @@ void fn_801A7F8C(void) {
     lbl_8055E5C8 = 0;
 }
 
+#pragma push
 #pragma scheduling invalid_target
+float fn_801A7F98(arg0)
+int *arg0;
+{
+    unsigned char *rec;
+    float *f;
+    float v;
+    if (fn_801A8F10(arg0) == 0)
+        return lbl_80562458;
+    rec = (unsigned char *)lbl_80435050 + arg0[1] * 0x64;
+    f = (float *)rec;
+    switch (arg0[0]) {
+    case 2:
+        switch (arg0[2]) {
+        case 0: v = -f[0]; if (lbl_80562458 > v) return lbl_80562458; return v;
+        case 1: v = f[0]; if (lbl_80562458 > v) return lbl_80562458; return v;
+        case 2: v = -f[1]; if (lbl_80562458 > v) return lbl_80562458; return v;
+        case 3: v = f[1]; if (lbl_80562458 > v) return lbl_80562458; return v;
+        case 4: v = -f[3]; if (lbl_80562458 > v) return lbl_80562458; return v;
+        case 5: v = f[3]; if (lbl_80562458 > v) return lbl_80562458; return v;
+        case 6: v = -f[2]; if (lbl_80562458 > v) return lbl_80562458; return v;
+        case 7: v = f[2]; if (lbl_80562458 > v) return lbl_80562458; return v;
+        case 8: v = -f[4]; if (lbl_80562458 > v) return lbl_80562458; return v;
+        case 9: v = f[4]; if (lbl_80562458 > v) return lbl_80562458; return v;
+        case 10: v = -f[5]; if (lbl_80562458 > v) return lbl_80562458; return v;
+        case 11: v = f[5]; if (lbl_80562458 > v) return lbl_80562458; return v;
+        case 12: v = -f[6]; if (lbl_80562458 > v) return lbl_80562458; return v;
+        case 13: v = f[6]; if (lbl_80562458 > v) return lbl_80562458; return v;
+        case 14: v = -f[7]; if (lbl_80562458 > v) return lbl_80562458; return v;
+        case 15: v = f[7]; if (lbl_80562458 > v) return lbl_80562458; return v;
+        case 16: return lbl_80562468 * (lbl_8056246C - f[0]);
+        case 17: return lbl_80562468 * (lbl_8056246C - f[1]);
+        case 18: return lbl_80562468 * (lbl_8056246C - f[3]);
+        case 19: return lbl_80562468 * (lbl_8056246C - f[2]);
+        case 20: return lbl_80562468 * (lbl_8056246C - f[4]);
+        case 21: return lbl_80562468 * (lbl_8056246C - f[5]);
+        case 22: return lbl_80562468 * (lbl_8056246C - f[6]);
+        case 23: return lbl_80562468 * (lbl_8056246C - f[7]);
+        case 24: return lbl_80562468 * (lbl_8056246C + f[0]);
+        case 25: return lbl_80562468 * (lbl_8056246C + f[1]);
+        case 26: return lbl_80562468 * (lbl_8056246C + f[3]);
+        case 27: return lbl_80562468 * (lbl_8056246C + f[2]);
+        case 28: return lbl_80562468 * (lbl_8056246C + f[4]);
+        case 29: return lbl_80562468 * (lbl_8056246C + f[5]);
+        case 30: return lbl_80562468 * (lbl_8056246C + f[6]);
+        case 31: return lbl_80562468 * (lbl_8056246C + f[7]);
+        }
+        break;
+    case 3:
+        if (arg0[2] >= 0 && (unsigned int)arg0[2] < 0x20) {
+            if ((rec + arg0[2])[0x20] != 0)
+                return lbl_8056246C;
+            return lbl_80562458;
+        }
+        break;
+    case 4:
+        if (*(int *)(rec + 0x40) & arg0[2])
+            return lbl_8056246C;
+        return lbl_80562458;
+    case 5:
+        switch (arg0[2]) {
+        case 0: v = -*(float *)&lbl_80435370[0]; if (lbl_80562458 > v) return lbl_80562458; return v;
+        case 1: v = *(float *)&lbl_80435370[0]; if (lbl_80562458 > v) return lbl_80562458; return v;
+        case 2: v = -*(float *)&lbl_80435370[4]; if (lbl_80562458 > v) return lbl_80562458; return v;
+        case 3: v = *(float *)&lbl_80435370[4]; if (lbl_80562458 > v) return lbl_80562458; return v;
+        case 4: return lbl_80562468 * (lbl_8056246C - *(float *)&lbl_80435370[0]);
+        case 5: return lbl_80562468 * (lbl_8056246C - *(float *)&lbl_80435370[4]);
+        case 6: return lbl_80562468 * (lbl_8056246C + *(float *)&lbl_80435370[0]);
+        case 7: return lbl_80562468 * (lbl_8056246C + *(float *)&lbl_80435370[4]);
+        }
+        break;
+    case 6:
+        switch (arg0[2]) {
+        case 0:
+            if (lbl_80435370[8] != 0) return lbl_8056246C;
+            return lbl_80562458;
+        case 2:
+            if (lbl_80435370[9] != 0) return lbl_8056246C;
+            return lbl_80562458;
+        case 1:
+            if (lbl_80435370[10] != 0) return lbl_8056246C;
+            return lbl_80562458;
+        }
+        break;
+    case 1:
+        if (*(unsigned char *)&lbl_8055E5C8 == 0) {
+            if (fn_802E4A1C(*(unsigned char *)(arg0 + 2)) != 0)
+                return lbl_8056246C;
+            return lbl_80562458;
+        }
+        break;
+    }
+    return lbl_80562458;
+}
+#pragma pop
 float fn_801A85E8(void *arg0) {
     struct Row {
         float floats[8];
