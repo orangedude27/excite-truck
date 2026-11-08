@@ -8750,10 +8750,6 @@ done:
     return -((flags >> 1) & 1) & 0xB;
 }
 
-#ifndef VF_TYPES_MOVED
-struct CacheSlotData { u8 b[0x240]; };
-struct CacheSlot { u32 flag; s32 key; CacheSlotData data; };
-#endif
 struct CacheKey { u32 flag; s32 key; };
 static inline s32 CacheKeyMatch(CacheKey *e, s32 key) {
     e->flag &= 1;
