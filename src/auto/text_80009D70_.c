@@ -29,6 +29,10 @@ typedef struct ListEntry_80009DC8 {
     s32 f74;
 } ListEntry_80009DC8;
 
+static inline void StoreEntry_80009DC8(ListEntry_80009DC8 *dst, ListEntry_80009DC8 src) {
+    *dst = src;
+}
+
 static inline void CopyStr_80009DC8(char *dst, const char *src, s32 n) {
     u8 c;
     for (;;) {
