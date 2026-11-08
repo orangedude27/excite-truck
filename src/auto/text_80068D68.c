@@ -228,6 +228,12 @@ typedef struct {
     UINT8              rmt_io_caps;      /* 0x87 */
 } tBTM_SEC_DEV_REC_FULL_VIEW;
 
+/* This stack has no role-switch security state, so the "disconnecting" state
+   the security manager parks a record in while it drops the link is the
+   header's BTM_SEC_STATE_SWITCHING_ROLE (5); its BTM_SEC_STATE_DISCONNECTING
+   (6) belongs to a newer stack. */
+#define BTM_SEC_STATE_DISCONNECTING_HERE 5
+
 typedef struct {
     char first;
 } tRFCOMM_TRACE_TEXT_VIEW;
