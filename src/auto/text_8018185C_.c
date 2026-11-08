@@ -42,6 +42,12 @@ extern float lbl_80561CF4, lbl_80561CF8, lbl_80561CFC, lbl_80561D00, lbl_80561D0
 extern float lbl_80561D08, lbl_80561D0C, lbl_80561D10, lbl_80561D14, lbl_80561D18;
 extern float lbl_80561D1C, lbl_80561D20, lbl_80561D24, lbl_80561D28, lbl_80561D2C;
 extern float lbl_80561D30, lbl_80561D34;
+extern float lbl_8055E460, lbl_80561CCC, lbl_80561D9C, lbl_80561EF8;
+extern int lbl_8055E3C4;
+extern unsigned char lbl_8055E4F5;
+extern double fn_8002F234(float);
+extern void fn_8018DA5C(void *, void *);
+extern void fn_8018A9F0(void *, void *);
 extern char lbl_803322B0[];
 extern float lbl_80561CD4, lbl_80561CE0, lbl_80561CE4, lbl_80561CE8;
 extern float lbl_80561CEC, lbl_80561CF0, lbl_80561CF4, lbl_80561CF8, lbl_80561CFC;
