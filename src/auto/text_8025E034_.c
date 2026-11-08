@@ -15,6 +15,30 @@ extern void fn_80130978(void *, int, float);
 extern void fn_8001BD54(void *, void *);
 extern void *fn_80016510(int);
 extern int stricmp(const char *, const char *);
+#pragma cplusplus on
+struct SeqObj {
+    virtual int v8();
+    virtual int vC();
+    virtual SeqObj *get(int);
+    virtual int v14();
+    virtual int cnt2();
+    virtual SeqObj *get2(int);
+    virtual int v20();
+    virtual int test();
+};
+static inline int SeqNextHasItem(void) {
+    int i, off, n;
+    n = *(int *)((char *)lbl_8055F3D4 + 0x10) + 1;
+    for (i = 0, off = 0; i < 3; i++, off += 4) {
+        SeqObj *o = *(SeqObj **)((char *)lbl_8055F3D4 + off + 4);
+        if (n < o->vC()) {
+            o = *(SeqObj **)((char *)lbl_8055F3D4 + off + 4);
+            if (o->get(n)->test() != 0) return 1;
+        }
+    }
+    return 0;
+}
+#pragma cplusplus reset
 extern char lbl_80345A30[];
 extern char lbl_80345A1C[];
 extern void* fn_8023512C(const char*);
@@ -29,6 +53,195 @@ void* __dt__Q28PSSystem7SeqHeapFv_8025E614(void* arg0, int arg1) {
         }
     }
     return arg0;
+}
+
+int fn_8025E678(void) {
+    struct Key { int a; int b; unsigned char c; } out, tmp;
+    char buf0[0x24], buf1[0x24], buf2[0x24];
+    char *base, *recPtr, *dest1, *dest2, *dest3, *p, *q, *src, *chosen, *arr;
+    void *obj, *item, *o1, *obj300, *table, *key;
+    int i, ii, found, cnt, n, sel, foundIdx, byteOff;
+    char c;
+
+    found = 0;
+    n = *(int *)((char *)lbl_8055F3D4 + 0x10) + 1;
+    i = 0;
+    ii = 0;
+    for (;;) {
+        obj = *(void **)((char *)lbl_8055F3D4 + ii + 4);
+        if (n < ((int (*)(void *))(*(void ***)obj)[3])(obj)) {
+            obj = *(void **)((char *)lbl_8055F3D4 + ii + 4);
+            item = ((void *(*)(void *, int))(*(void ***)obj)[4])(obj, n);
+            if (((int (*)(void *))(*(void ***)item)[9])(item) != 0) {
+                found = 1;
+                break;
+            }
+        }
+        i++;
+        ii += 4;
+        if (i >= 3) break;
+    }
+    if (found) {
+        *(int *)((char *)lbl_8055F3D4 + 0x10) = *(int *)((char *)lbl_8055F3D4 + 0x10) + 1;
+        base = (char *)lbl_8055F3D4;
+        memset(base + 0x18, 0, 0xD8);
+        memset(base + 0xF0, 0, 0x210);
+        p = base;
+        dest1 = base + 0x18;
+        i = 0;
+        for (;;) {
+            cnt = ((int (*)(void *))(*(void ***)(*(void **)base))[3])(*(void **)base);
+            if (i >= (cnt >= 6 ? 6 : cnt)) break;
+            obj = *(void **)base;
+            item = ((void *(*)(void *, int))(*(void ***)obj)[4])(obj, i);
+            src = ((char *(*)(void *))(*(void ***)item)[3])(item);
+            q = dest1;
+            n = 0x20;
+            for (;;) {
+                c = *src++;
+                *q++ = c;
+                if (c == 0) break;
+                if (--n <= 0) {
+                    q[-1] = 0;
+                    break;
+                }
+            }
+            *(int *)(p + 0x38) = (i == *(int *)(base + 0x10)) ? 6 : 7;
+            dest1 += 0x24;
+            p += 0x24;
+            i++;
+        }
+        recPtr = base;
+        ii = 0;
+        found = 0;
+        do {
+            obj = *(void **)(recPtr + 4);
+            n = *(int *)(base + 0x10);
+            if (((int (*)(void *))(*(void ***)obj)[3])(obj) > n) {
+                obj = *(void **)(recPtr + 4);
+                item = ((void *(*)(void *, int))(*(void ***)obj)[4])(obj, n);
+                if (((int (*)(void *))(*(void ***)item)[9])(item) != 0) found = 1;
+            }
+            ii++;
+            recPtr += 4;
+        } while (ii < 3);
+        *(unsigned char *)(*(char **)(base + 0x300) + 0x25) = 0;
+        *(unsigned char *)(*(char **)(base + 0x304) + 0x25) = 0;
+        *(unsigned char *)(*(char **)(base + 0x308) + 0x25) = 0;
+        *(unsigned char *)(*(char **)(base + 0x30C) + 0x25) = 0;
+        *(unsigned char *)(*(char **)(base + 0x310) + 0x25) = 0;
+        *(unsigned char *)(*(char **)(base + 0x314) + 0x25) = 0;
+        if (found) {
+            obj = *(void **)base;
+            item = ((void *(*)(void *, int))(*(void ***)obj)[4])(obj, *(int *)(base + 0x10));
+            recPtr = base;
+            dest1 = base + 0xF0;
+            dest2 = base + 0x110;
+            dest3 = base + 0x130;
+            for (i = 0;; i++) {
+                cnt = ((int (*)(void *))(*(void ***)item)[6])(item);
+                if (i >= (cnt >= 6 ? 6 : cnt)) break;
+                o1 = ((void *(*)(void *, int))(*(void ***)item)[7])(item, i);
+                src = ((char *(*)(void *))(*(void ***)o1)[3])(o1);
+                q = dest1;
+                n = 0x20;
+                for (;;) {
+                    c = *src++;
+                    *q++ = c;
+                    if (c == 0) break;
+                    if (--n <= 0) {
+                        q[-1] = 0;
+                        break;
+                    }
+                }
+                src = ((char *(*)(void *))(*(void ***)o1)[7])(o1);
+                q = dest2;
+                n = 0x20;
+                for (;;) {
+                    c = *src++;
+                    *q++ = c;
+                    if (c == 0) break;
+                    if (--n <= 0) {
+                        q[-1] = 0;
+                        break;
+                    }
+                }
+                n = ((int (*)(void *))(*(void ***)o1)[8])(o1);
+                fn_8001BC38(buf0, fn_8000DA10(0), (void *)0x20507, (void *)n, 0);
+                n = ((int (*)(void *))(*(void ***)o1)[8])(o1);
+                fn_8001BC38(buf1, fn_8000DA10(0), (void *)0x20507, (void *)n, 1);
+                n = ((int (*)(void *))(*(void ***)o1)[8])(o1);
+                fn_8001BC38(buf2, fn_8000DA10(0), (void *)0x20507, (void *)n, 2);
+                *(unsigned char *)(*(char **)(base + 0x300) + 0x25) = 1;
+                if (fn_8001BD6C(buf0, buf1) != 0) {
+                    if (fn_8001BD6C(buf0, buf2) != 0) {
+                        fn_8001BD38(buf0, dest3, 0x14);
+                        *(int *)(recPtr + 0x144) = 0;
+                    } else if (fn_8001BCF0(buf2) != 0) {
+                        fn_8001BD38(buf2, dest3, 0x14);
+                        *(int *)(recPtr + 0x144) = 2;
+                    }
+                } else if (fn_8001BD6C(buf1, buf2) != 0) {
+                    fn_8001BD38(buf1, dest3, 0x14);
+                    *(int *)(recPtr + 0x144) = 1;
+                } else if (fn_8001BCF0(buf2) != 0) {
+                    fn_8001BD38(buf2, dest3, 0x14);
+                    *(int *)(recPtr + 0x144) = 2;
+                } else {
+                    fn_80130978(dest3, 0x14, -lbl_80558DC0[0]);
+                    *(int *)(recPtr + 0x144) = 0;
+                    *(unsigned char *)(*(char **)(base + 0x300) + 0x25) = 0;
+                }
+                if (*(unsigned char *)(*(char **)(base + 0x300) + 0x25) != 0) {
+                    chosen = 0;
+                    sel = *(int *)(recPtr + 0x144);
+                    if (sel == 0) chosen = buf0;
+                    else if (sel == 1) chosen = buf1;
+                    else if (sel == 2) chosen = buf2;
+                    fn_8001BD54(&out, chosen);
+                    tmp = out;
+                    obj300 = *(void **)(base + 0x300);
+                    *(int *)((char *)obj300 + 0x20) = out.b;
+                    *(unsigned char *)((char *)obj300 + 0x24) = tmp.c;
+                    key = fn_80016510(out.a);
+                    table = *(void **)((char *)obj300 + 0x18);
+                    arr = *(char **)table;
+                    foundIdx = 0;
+                    byteOff = 0;
+                    for (;;) {
+                        if (foundIdx >= *(int *)((char *)table + 4)) {
+                            foundIdx = -1;
+                            break;
+                        }
+                        if (stricmp(arr + byteOff, (char *)key + 0x2C) == 0) break;
+                        byteOff += 0x38;
+                        foundIdx++;
+                    }
+                    *(int *)((char *)obj300 + 0x1C) = foundIdx;
+                    *(int *)((char *)obj300 + 0x28) = *(int *)((char *)key + *(int *)((char *)obj300 + 0x20) * 4 + 0x64);
+                }
+                dest1 += 0x58;
+                dest2 += 0x58;
+                base += 4;
+                dest3 += 0x58;
+                recPtr += 0x58;
+            }
+        }
+        {
+            char *r17 = (char *)lbl_8055F3D4;
+            int g, e, a;
+            for (g = 0; g < 5; g++) {
+                a = g + 1;
+                for (e = 0; e < 3; e++) {
+                    if (e == *(int *)(r17 + 0x144)) fn_80214AF0(a);
+                    else fn_80214A9C(a);
+                    a += 0xA;
+                }
+                r17 += 0x58;
+            }
+        }
+    }
+    return 0;
 }
 
 extern int fn_80214A9C(int);
