@@ -2745,7 +2745,6 @@ s32 fn_80039424(void *block, void (*callback)(s32, void *)) {
     return 1;
 }
 
-extern s32 fn_80039424(void *, void (*)(s32, void *));
 extern void OSSleepThread(void *);
 extern void fn_80039838(void);
 
