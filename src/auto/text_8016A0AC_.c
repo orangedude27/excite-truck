@@ -45,7 +45,7 @@ extern void *fn_8000AC38(void);
 extern void *fn_80204EA0(void*);
 extern void *fn_80131810(void);
 extern void fn_80131818(void*);
-extern float PSVECDotProduct(float*, float*, void*, void*, float);
+extern float PSVECDotProduct(float*, float*, float);
 extern void* fn_8016AC24(void*, s32);
 extern char lbl_80330460[];
 extern char lbl_80330528[];
