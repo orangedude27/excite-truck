@@ -254,8 +254,8 @@ extern float lbl_805612C8;
 extern float lbl_805612CC;
 
 static inline void time_append(char *dst, int size, char *str) {
-    char c;
     char *src;
+    char c;
     while (*dst != 0) {
         size--;
         dst++;
