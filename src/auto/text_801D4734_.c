@@ -1726,135 +1726,144 @@ extern char lbl_8055AD08;
 #pragma dont_inline on
 #pragma scheduling invalid_target
 #pragma cplusplus on
+/*
+ * The *_ASE element factory.  Reads the request's "type" string and builds
+ * the action-sequence element it names -- obstacle, world_morph, phys_path,
+ * camera_shake, track_effect, sound_effect, text, surfchange,
+ * embedded_effect, ring_set, trigger or lightning -- allocating it under its
+ * class name and either calling its constructor or setting its vtable here.
+ * The element is then handed the request with accept(); an element that
+ * refuses the request is destroyed and nothing is returned.
+ */
 extern "C" void *fn_801D7334(void *arg0) {
     extern char lbl_80338460;
     extern char lbl_8055ACF4;
     struct Request {
-        virtual void f0();
-        virtual void f1();
-        virtual void f2();
-        virtual const char *getName(const char *);
+        virtual void v0();
+        virtual int has(const char *);
+        virtual void v2();
+        virtual const char *getString(const char *); /* slot 3: a named string field */
     };
-    struct Object28 { void *vtable; char pad[0x24]; int value; };
-    struct Object40 { void *vtable; char pad[0x3C]; int value; };
-    struct Product {
+    struct WorldMorph_ASE { void *vtable; char pad[0x24]; int value; }; /* 0x2C bytes */
+    struct PhysPath_ASE { void *vtable; char pad[0x3C]; int value; };   /* 0x44 bytes */
+    struct Element {
         virtual void destroy(int);
         virtual int accept(void *);
     };
     char *strings = (char *)&lbl_80338460;
     Request *request = (Request *)arg0;
-    const char *name = request->getName((const char *)&lbl_8055ACFC);
-    void *product = 0;
+    const char *name = request->getString(field_type);
+    void *element = 0;
     register void *object;
 
-    if (stricmp(name, strings + 0x484) == 0) {
-        object = fn_801284F8(0x17C, strings + 0x490);
+    if (stricmp(name, type_obstacle) == 0) {
+        object = fn_801284F8(0x17C, alloc_Obstacle_ASE);
         if (object != 0) {
-            object = ((void *(*)(void *))fn_801D5AA8)(object);
+            object = ((void *(*)(void *))fn_801D5AA8)(object); /* Obstacle_ASE ctor */
         }
-        product = object;
+        element = object;
         goto done;
     }
-    if (stricmp(name, strings + 0x4A0) == 0) {
-        object = fn_801284F8(0x2C, strings + 0x4AC);
+    if (stricmp(name, type_world_morph) == 0) {
+        object = fn_801284F8(0x2C, alloc_WorldMorph_ASE);
         if (object != 0) {
-            ((Object28 *)object)->vtable = lbl_80338CE8;
-            ((Object28 *)object)->value = 0;
+            ((WorldMorph_ASE *)object)->vtable = vtable_WorldMorph_ASE;
+            ((WorldMorph_ASE *)object)->value = 0;
         }
-        product = object;
+        element = object;
         goto done;
     }
-    if (stricmp(name, strings + 0x4BC) == 0) {
-        object = fn_801284F8(0x44, strings + 0x4C8);
+    if (stricmp(name, type_phys_path) == 0) {
+        object = fn_801284F8(0x44, alloc_PhysPath_ASE);
         if (object != 0) {
-            ((Object40 *)object)->vtable = lbl_80338CB0;
-            ((Object40 *)object)->value = 0;
+            ((PhysPath_ASE *)object)->vtable = vtable_PhysPath_ASE;
+            ((PhysPath_ASE *)object)->value = 0;
         }
-        product = object;
+        element = object;
         goto done;
     }
-    if (stricmp(name, strings + 0x4D8) == 0) {
-        object = fn_801284F8(0x20, strings + 0x348);
+    if (stricmp(name, type_camera_shake) == 0) {
+        object = fn_801284F8(0x20, alloc_CameraShake_ASE);
         if (object != 0) {
-            object = ((void *(*)(void *))fn_801D628C)(object);
+            object = ((void *(*)(void *))fn_801D628C)(object); /* CameraShake_ASE ctor */
         }
-        product = object;
+        element = object;
         goto done;
     }
-    if (stricmp(name, strings + 0x4E8) == 0) {
-        object = fn_801284F8(0x34, strings + 0x368);
+    if (stricmp(name, type_track_effect) == 0) {
+        object = fn_801284F8(0x34, alloc_TrackEffect_ASE);
         if (object != 0) {
-            object = ((void *(*)(void *))fn_801D6618)(object);
+            object = ((void *(*)(void *))fn_801D6618)(object); /* TrackEffect_ASE ctor */
         }
-        product = object;
+        element = object;
         goto done;
     }
-    if (stricmp(name, strings + 0x4F8) == 0) {
-        object = fn_801284F8(0x34, strings + 0x408);
+    if (stricmp(name, type_sound_effect) == 0) {
+        object = fn_801284F8(0x34, alloc_SoundEffect_ASE);
         if (object != 0) {
-            object = ((void *(*)(void *))fn_801D68E8)(object);
+            object = ((void *(*)(void *))fn_801D68E8)(object); /* SoundEffect_ASE ctor */
         }
-        product = object;
+        element = object;
         goto done;
     }
-    if (stricmp(name, (const char *)&lbl_8055ACF4) == 0) {
-        object = fn_801284F8(0x8C, strings + 0x418);
+    if (stricmp(name, type_text) == 0) {
+        object = fn_801284F8(0x8C, alloc_Text_ASE);
         if (object != 0) {
-            object = ((void *(*)(void *))fn_801D6D68)(object);
+            object = ((void *(*)(void *))fn_801D6D68)(object); /* Text_ASE ctor */
         }
-        product = object;
+        element = object;
         goto done;
     }
-    if (stricmp(name, strings + 0x508) == 0) {
-        object = fn_801284F8(0x1B0, strings + 0x514);
+    if (stricmp(name, type_surfchange) == 0) {
+        object = fn_801284F8(0x1B0, alloc_SurfChange_ASE);
         if (object != 0) {
-            *(void **)object = lbl_80338B40;
-            *(void **)((char *)object + 4) = (char *)lbl_80338B40 + 0x38;
-            *(void **)((char *)object + 0x24) = (char *)object + 0x30;
-            *(int *)((char *)object + 0x2C) = 0x20;
-            *(int *)((char *)object + 0x28) = 0;
+            *(void **)object = vtable_SurfChange_ASE;
+            *(void **)((char *)object + 4) = (char *)vtable_SurfChange_ASE + 0x38; /* 2nd base */
+            *(void **)((char *)object + 0x24) = (char *)object + 0x30; /* empty list: end = head */
+            *(int *)((char *)object + 0x2C) = 0x20;  /* capacity */
+            *(int *)((char *)object + 0x28) = 0;     /* count */
         }
-        product = object;
+        element = object;
         goto done;
     }
-    if (stricmp(name, strings + 0x528) == 0) {
-        object = fn_801284F8(0x18, strings + 0x538);
+    if (stricmp(name, type_embedded_effect) == 0) {
+        object = fn_801284F8(0x18, alloc_EmbeddedEffect_ASE);
         if (object != 0) {
-            *(void **)object = lbl_80338C08;
+            *(void **)object = vtable_EmbeddedEffect_ASE;
             *(int *)((char *)object + 4) = 0;
         }
-        product = object;
+        element = object;
         goto done;
     }
-    if (stricmp(name, strings + 0x54C) == 0) {
-        object = fn_801284F8(0x3C, strings + 0x474);
+    if (stricmp(name, type_ring_set) == 0) {
+        object = fn_801284F8(0x3C, alloc_RingMaster_ASE);
         if (object != 0) {
-            object = ((void *(*)(void *))fn_801D701C)(object);
+            object = ((void *(*)(void *))fn_801D701C)(object); /* RingMaster_ASE ctor */
         }
-        product = object;
+        element = object;
         goto done;
     }
-    if (stricmp(name, (const char *)&lbl_8055AD08) == 0) {
-        object = fn_801284F8(0x24, strings + 0x558);
+    if (stricmp(name, type_trigger) == 0) {
+        object = fn_801284F8(0x24, alloc_Trigger_ASE);
         if (object != 0) {
-            *(void **)object = lbl_80338A40;
+            *(void **)object = vtable_Trigger_ASE;
             *(int *)((char *)object + 4) = 0;
         }
-        product = object;
+        element = object;
         goto done;
     }
-    if (stricmp(name, strings + 0x564) == 0) {
-        object = fn_801284F8(0x1C, strings + 0x570);
+    if (stricmp(name, type_lightning) == 0) {
+        object = fn_801284F8(0x1C, alloc_Lightning_ASE);
         if (object != 0) {
             *(int *)((char *)object + 4) = 0;
-            *(void **)object = lbl_80338A78;
+            *(void **)object = vtable_Lightning_ASE;
         }
-        product = object;
+        element = object;
     }
 done:
-    if (!product) goto fail;
-    if (((Product *)product)->accept(arg0) != 0) return product;
-    if (product != 0) ((Product *)product)->destroy(1);
+    if (!element) goto fail;
+    if (((Element *)element)->accept(arg0) != 0) return element;
+    if (element != 0) ((Element *)element)->destroy(1);
 fail:
     return 0;
 }
