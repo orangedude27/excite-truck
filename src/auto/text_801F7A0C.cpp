@@ -28,7 +28,8 @@ extern f32 lbl_80563010, lbl_80562FFC;
 void fn_801A324C(void*, s32, void*, f32, f32);
 }
 struct FAAVec { f32 x; f32 y; f32 z; };
-struct FAANames { char *n[24]; u32 w[24]; };
+struct FAANames { char *n[24]; };
+struct FAANames2 { u32 w[24]; };
 class FAAMgr {
 public:
     virtual void a8();
