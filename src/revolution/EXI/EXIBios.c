@@ -551,12 +551,12 @@ void EXIInit(void) {
     if (__OSInIPL) {
         EXIProbeReset();
     } else {
-        if ((EXIGetID(EXI_CHAN_0, EXI_DEV_EXT, &id) && id == 0x07010000)) {
+        // A dev board's barnacle is attached to the external port of one
+        // channel and reached through the other channel's internal port.
+        if ((EXIGetID(EXI_CHAN_0, EXI_DEV_EXT, &id) && id == EXI_ID_BARNACLE)) {
             __OSEnableBarnacle(EXI_CHAN_1, EXI_DEV_EXT);
         } else if (EXIGetID(EXI_CHAN_1, EXI_DEV_EXT, &id) &&
-                   id == 0x07010000) {
-            // A dev board with the debug interface on channel 1's internal
-            // port: enable the barnacle there.
+                   id == EXI_ID_BARNACLE) {
             __OSEnableBarnacle(EXI_CHAN_0, EXI_DEV_NET);
         }
     }
