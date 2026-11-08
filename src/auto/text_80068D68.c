@@ -164,6 +164,15 @@ typedef struct {
 #define btm_cb_pin_code_len     (lbl_803C0F78[0x197F]) /* length of the PIN below */
 #define btm_cb_pin_code         (lbl_803C0F78 + 0x1980) /* PIN kept for the controller to ask for */
 #define btm_cb_trace_level      (lbl_803C0F78[0x27C0]) /* BTM_TRACE_LEVEL_* */
+#define btm_cb_cfg_pin_code_len (lbl_803C0F78[0x0021]) /* fixed PIN length from BTM_SetPinType() */
+#define btm_cb_cfg_pin_code     (lbl_803C0F78 + 0x0022) /* fixed PIN from BTM_SetPinType() */
+#define btm_cb_p_pin_callback   (lbl_803C0F78 + 0x1910) /* upper-layer PIN request callback slot */
+#define btm_cb_pin_timer        (lbl_803C0F78 + 0x193C) /* PIN request timeout timer */
+#define btm_cb_pin_timer_cback  (lbl_803C0F78 + 0x194C) /* its timeout function */
+#define btm_cb_pairing_bda      (lbl_803C0F78 + 0x1954) /* BDA of the device being paired */
+#define btm_cb_pairing_disabled (lbl_803C0F78[0x1979]) /* upper layer disabled pairing */
+#define btm_cb_connecting_bda   (lbl_803C0F78 + 0x27B4) /* BDA of the device being connected */
+#define btm_cb_connecting_dc    (lbl_803C0F78 + 0x27BA) /* its class of device */
 
 /* The HCI Write_Authentication_Enable command (opcode 0x0C20); the game's
    symbol for it still carries the name of the PIN-type helper next to it. */
