@@ -1275,9 +1275,9 @@ void fn_8026A394(void *arg0) {
  }
 }
 #pragma scheduling on
-  extern void fn_80269BB0(void);
-  void fn_8026A49C(void) {
-    fn_80269BB0();
+    extern void fn_80269BB0(int, unsigned int, int *, float *);
+    void fn_8026A49C(int a, unsigned int b, int *c, float *d) {
+      fn_80269BB0(a, b, c, d);
 }
 
 #pragma push
