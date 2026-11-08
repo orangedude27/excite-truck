@@ -41,10 +41,14 @@ extern int fn_801E592C(void);
 extern void fn_801E3488(float *, int);
 extern void *fn_801FFB74(int, int, int);
 extern char lbl_8055B3E0, lbl_8055B3E8, lbl_8055B3F0, lbl_8055B3F8, lbl_8055B400, lbl_8055B408;
-extern float lbl_80563050, lbl_80563060;
+extern float lbl_80563050, lbl_80563060, lbl_80563054, lbl_80563064;
+extern void fn_801E33E4(float *, int);
+extern int fn_801C1BA4(int, int, int, void *, void *, void *, void *, void *);
+extern void fn_801C1CBC(int, void *, int, void *, int, void *);
+extern char lbl_802F9C60[], lbl_802F9CC0[];
 void *fn_802002D4(int arg0, int arg1, int arg2) {
     float *o;
-    float v60[3], v54[3], v48[3];
+    float v60[3], v54[3], v48[3], v3C[3], v30[3], v24[3];
     char *p;
     lbl_8055ECA8 = arg0;
     if (fn_801E320C(arg1, &lbl_8055B3E0)) return fn_801FFB74(arg0, arg1, arg2);
@@ -63,6 +67,9 @@ void *fn_802002D4(int arg0, int arg1, int arg2) {
     v48[0] = v54[0] * lbl_80563050 + v60[0] * lbl_80563050;
     v48[2] = v54[2] * lbl_80563050 + v60[2] * lbl_80563050;
     v48[1] = v54[1] * lbl_80563050 + v60[1] * lbl_80563050 - lbl_80563060;
+    p = fn_801FFB08(arg1, (int)(lbl_8033B938 + 0x90));
+    v3C[0] = ((float *)p)[0]; v3C[1] = ((float *)p)[1]; v3C[2] = ((float *)p)[2];
+    fn_801E3488(v30, ((int *)o)[9]);
     return o;
 }
 
