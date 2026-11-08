@@ -20,6 +20,52 @@ static const double huge = 1.0e300;
 #define __HI(x) (*(int*)&x)
 #define __LO(x) (*(1+(int*)&x))
 
+/* e_pow.c constants (see src/MSL/e_pow.c); unnamed in the game's .sdata2. */
+extern double lbl_802EE4D8[];
+extern double lbl_805607E8, lbl_805607F0, lbl_805607F8, lbl_80560800, lbl_80560808, lbl_80560810;
+extern double lbl_80560818, lbl_80560820, lbl_80560828, lbl_80560830, lbl_80560838, lbl_80560840;
+extern double lbl_80560848, lbl_80560850, lbl_80560858, lbl_80560860, lbl_80560868, lbl_80560870;
+extern double lbl_80560878, lbl_80560880, lbl_80560888, lbl_80560890, lbl_80560898, lbl_805608A0;
+extern double lbl_805608A8, lbl_805608B0, lbl_805608B8, lbl_805608C0, lbl_805608C8, lbl_805608D0;
+extern double lbl_805608D8, lbl_805608E0, lbl_805608E8;
+extern int lbl_8055D680;
+#define pow_one      lbl_805607E8
+#define pow_zero     lbl_805607F0
+#define pow_inf      lbl_805607F8 /* huge*huge, folded */
+#define pow_half     lbl_80560800
+#define pow_third    lbl_80560808
+#define pow_quarter  lbl_80560810
+#define pow_ivln2_h  lbl_80560818
+#define pow_ivln2_l  lbl_80560820
+#define pow_ivln2    lbl_80560828
+#define pow_two53    lbl_80560830
+#define pow_L1       lbl_80560838
+#define pow_L2       lbl_80560840
+#define pow_L3       lbl_80560848
+#define pow_L4       lbl_80560850
+#define pow_L5       lbl_80560858
+#define pow_L6       lbl_80560860
+#define pow_three    lbl_80560868
+#define pow_cp_h     lbl_80560870
+#define pow_cp_l     lbl_80560878
+#define pow_cp       lbl_80560880
+#define pow_negone   lbl_80560888
+#define pow_huge     lbl_80560890
+#define pow_ovt      lbl_80560898
+#define pow_tiny     lbl_805608A0
+#define pow_lg2_h    lbl_805608A8
+#define pow_lg2      lbl_805608B0
+#define pow_lg2_l    lbl_805608B8
+#define pow_P1       lbl_805608C0
+#define pow_P2       lbl_805608C8
+#define pow_P3       lbl_805608D0
+#define pow_P4       lbl_805608D8
+#define pow_P5       lbl_805608E0
+#define pow_two      lbl_805608E8
+#define pow_bp(k)    lbl_802EE4D8[k]
+#define pow_dp_h(k)  lbl_802EE4D8[2 + (k)]
+#define pow_dp_l(k)  lbl_802EE4D8[4 + (k)]
+
 static const double
     ln2_hi = 6.93147180369123816490e-01,
     ln2_lo = 1.90821492927058770002e-10,
