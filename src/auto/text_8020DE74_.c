@@ -1,30 +1,34 @@
 #include "types.h"
 
-typedef struct UiObj {
-    void *vtable;
-    void *owner;
-    void *child8;
-    void *last_child;
-    void *children[2];
-    void *child18;
-    void *child1c;
-    void *child20;
-    void *child24;
-    void *child28;
-    void *child2c;
-    void *child30;
-    void *child34;
-    void *child38;
-    void *child3c;
-    void *child40;
-    void *child44;
-    void *child48;
-    void *child4c;
-    void *child50;
-    void *child54;
+// One truck's sound effects. fn_8020DE74() creates the sounds named below --
+// fn_802077A4() makes the 3D ones, fn_802076A0() the dashboard ones -- and
+// CarSound_destroy() releases them again. The race-only sounds stay null in
+// the other modes.
+typedef struct CarSound {
+    void *vtable;         // at 0x0, CarSound_vtable
+    void *owner;          // at 0x4, the object this sound set was made for
+    void *backfire;       // at 0x8, "backfire.sfx"
+    void *lastBoost;      // at 0xC, the boost sound created last
+    void *boosts[2];      // at 0x10, "boost1.sfx" and "boost2.sfx"
+    void *boostManual;    // at 0x18, "boost_manual.sfx"
+    void *carGnd1;        // at 0x1C, "car_gnd1.sfx"
+    void *badland;        // at 0x20, "badland.sfx"
+    void *niceLand;       // at 0x24, "niceland.sfx"
+    void *waterBounce;    // at 0x28, "waterbounce.sfx"
+    void *boostTurboTap;  // at 0x2C, "boost_turbotap.sfx"
+    void *airtime;        // at 0x30, "airtime.sfx"
+    void *waterDrive;     // at 0x34, "waterdrive.sfx"
+    void *waterIn;        // at 0x38, "water_in.sfx"
+    void *waterOut;       // at 0x3C, "water_out.sfx"
+    void *dirtSkid;       // at 0x40, "dirtskid.sfx"
+    void *waterSink;      // at 0x44, "watersink.sfx"
+    void *heatBeep;       // at 0x48, "heatbeep.sfx"
+    void *overheat;       // at 0x4C, "overheat.sfx"
+    void *overheatStart;  // at 0x50, "overheat_start.sfx"
+    void *invulnerable;   // at 0x54, "invulnerable.sfx"
     u8 flags58;
     u8 pad59[3];
-    u32 child_count;
+    u32 boostCount;       // at 0x5C, how many of boosts[] were created
     float value60;
     float value64;
     float value68;
@@ -33,7 +37,29 @@ typedef struct UiObj {
     u8 flag71;
     u8 flag72;
     u8 pad73;
-} UiObj;
+} CarSound;
+// Old names, until every function here uses the new ones.
+typedef CarSound UiObj;
+#define child8 backfire
+#define last_child lastBoost
+#define children boosts
+#define child18 boostManual
+#define child1c carGnd1
+#define child20 badland
+#define child24 niceLand
+#define child28 waterBounce
+#define child2c boostTurboTap
+#define child30 airtime
+#define child34 waterDrive
+#define child38 waterIn
+#define child3c waterOut
+#define child40 dirtSkid
+#define child44 waterSink
+#define child48 heatBeep
+#define child4c overheat
+#define child50 overheatStart
+#define child54 invulnerable
+#define child_count boostCount
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -57,20 +83,22 @@ extern "C" void *memset(void *, int, unsigned int);
 extern const char lbl_8033C7A0[];
 extern const char lbl_8055B648;
 extern float lbl_8056336C;
-#pragma cplusplus reset
+#pragma push
+#pragma processor 750
 void *fn_8020DE74(void *arg0) {
     char name[0x20];
-    register const char *labels asm("r31") = lbl_8033C7A0;
-    register UiObj *obj asm("r30");
-    register void *right asm("r29");
-    register s32 is_race asm("r28");
-    register void *left asm("r27");
-    register void *group asm("r26");
-    register u32 one asm("r24") = 1;
-    register u32 offset asm("r23");
-    register u32 i asm("r22");
-    register u8 *slot asm("r21");
+    register const char *labels __asm("r31") = lbl_8033C7A0;
+    register UiObj *obj __asm("r30");
+    register void *right __asm("r29");
+    register s32 is_race __asm("r28");
+    register void *left __asm("r27");
+    register void *group __asm("r26");
+    register u32 one __asm("r24") = 1;
+    register u32 i __asm("r23");
+    register u32 offset __asm("r22");
+    register void **slot __asm("r21");
     void *child;
+    register float initial asm("f31");
     u32 bit;
 
     obj = (UiObj *)fn_801284F8(0x74, (const char *)&lbl_8055B648);
@@ -83,7 +111,7 @@ void *fn_8020DE74(void *arg0) {
     is_race = *(u32 *)((u8 *)arg0 + 0x10) == 0x50434152;
 
     if (is_race != 0) {
-        obj->child28 = fn_802077A4(lbl_8033C7A0, 5, left, right);
+        obj->child28 = fn_802077A4(labels, 5, left, right);
         obj->child30 = fn_802077A4(labels + 0x10, 8, left, right);
     } else {
         obj->child28 = 0;
@@ -94,29 +122,26 @@ void *fn_8020DE74(void *arg0) {
     memset(obj->children, 0, 8);
     obj->last_child = 0;
 
-    {
-    register float initial asm("f31");
     initial = lbl_80563368;
-    offset = 0;
     i = 0;
+    offset = 0;
     do {
         fn_801345D8(name, 0x20, labels + 0x2c, i + 1);
-        slot = (u8 *)obj + offset;
+        slot = (void **)((u8 *)obj + offset);
         child = fn_802077A4(name, 5, left, right);
-        *(void **)(slot + 0x10) = child;
+        slot[4] = child;
         if (child == 0) break;
         *(void **)((u8 *)child + 0x10) = group;
-        child = *(void **)(slot + 0x10);
+        child = slot[4];
         if (initial != *(float *)((u8 *)child + 4)) {
             *(u8 *)((u8 *)child + 0x4e) = one;
             *(float *)((u8 *)child + 4) = initial;
         }
         i++;
-        obj->last_child = *(void **)(slot + 0x10);
+        obj->last_child = slot[4];
         offset += 4;
         obj->child_count += 1;
     } while (i < 2);
-    }
 
     if (is_race != 0) obj->child18 = fn_802077A4(labels + 0x38, 5, left, right);
     else obj->child18 = 0;
@@ -191,7 +216,7 @@ void *fn_8020DE74(void *arg0) {
     }
     return obj;
 }
-#pragma cplusplus on
+#pragma pop
 extern "C" void *fn_8020E288(void *arg0, s32 arg1) {
     struct Dummy { virtual void release(s32); virtual void v1(); virtual void v2(); };
     void *child;
