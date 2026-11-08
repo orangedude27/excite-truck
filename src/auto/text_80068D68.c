@@ -24244,81 +24244,85 @@ s32 IUSB_CloseDeviceAsync(s32 device, void (*callback)(void), void *callbackArg)
 extern s32 IOS_Ioctlv(s32, s32, s32, s32, void *);
 extern s32 IOS_IoctlvAsync(s32, s32, s32, s32, void *, void *, void *);
 s32 __IntrBlkMsgInt(s32 fd, u32 endpoint, u32 length, void *buffer, s32 ioctl, void (*callback)(void), void *callbackArg, s32 async) {
-    register char *base = lbl_8031A620;
-    char *msg;
+    register char *base = usbDebugStrings;
+    USBCommandBlock *block;
     s32 ret;
-    s32 fr;
-    char *blk;
-    char *a;
-    char *b;
+    s32 freeResult;
+    IPCIOVector *vectors;
+    u8 *endpointWork;
+    u16 *lengthWork;
 
-    blk = iosAllocAligned(lbl_805590A0, 0x60, 0x20);
-    if (blk == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x60, blk);
-    a = iosAllocAligned(lbl_805590A0, 0x20, 0x20);
-    if (a == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x20, a);
-    b = iosAllocAligned(lbl_805590A0, 0x20, 0x20);
-    if (b == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x20, b);
+    /* One interrupt or bulk USB transfer: the endpoint number and the length go
+       to the IOS as the two input vectors, the buffer as the one output vector.
+       A synchronous call frees the work buffers itself; an async one lets
+       _intBlkCtrlCb free them through the command block's clean[] list. */
+    vectors = iosAllocAligned(usbHeapId, 0x60, USB_WORK_SIZE);
+    if (vectors == 0) USB_ERR(base + USB_MSG_IOS_ALLOC_FAILED, usbHeapId, 0x60, vectors);
+    endpointWork = iosAllocAligned(usbHeapId, USB_WORK_SIZE, USB_WORK_SIZE);
+    if (endpointWork == 0) USB_ERR(base + USB_MSG_IOS_ALLOC_FAILED, usbHeapId, USB_WORK_SIZE, endpointWork);
+    lengthWork = iosAllocAligned(usbHeapId, USB_WORK_SIZE, USB_WORK_SIZE);
+    if (lengthWork == 0) USB_ERR(base + USB_MSG_IOS_ALLOC_FAILED, usbHeapId, USB_WORK_SIZE, lengthWork);
 
-    if (blk == 0 || a == 0 || b == 0) {
-        USB_ERR(base + 0x294);
-        ret = -0x16;
+    if (vectors == 0 || endpointWork == 0 || lengthWork == 0) {
+        USB_ERR(base + USB_MSG_INTRBLK_NO_MEM);
+        ret = -0x16; /* IPC_RESULT_ALLOC_FAILED */
         goto free_all;
     }
 
-    *(u8 *)a = endpoint;
-    *(u16 *)b = length;
-    *(void **)(blk + 0) = a;
-    *(s32 *)(blk + 4) = 1;
-    *(void **)(blk + 8) = b;
-    *(s32 *)(blk + 0xC) = 2;
-    *(s32 *)(blk + 0x10) = (s32)buffer;
-    *(s32 *)(blk + 0x14) = length;
-    DCFlushRange(a, 0x20);
-    DCFlushRange(b, 0x20);
-    DCFlushRange(blk, 0x60);
+    *endpointWork = (u8)endpoint;
+    *lengthWork = (u16)length;
+    vectors[0].base = endpointWork;
+    vectors[0].length = sizeof(u8);
+    vectors[1].base = lengthWork;
+    vectors[1].length = sizeof(u16);
+    vectors[2].base = buffer;
+    vectors[2].length = length;
+    DCFlushRange(endpointWork, USB_WORK_SIZE);
+    DCFlushRange(lengthWork, USB_WORK_SIZE);
+    DCFlushRange(vectors, 0x60);
 
     if (async == 0) {
-        ret = IOS_Ioctlv(fd, ioctl, 2, 1, blk);
-        USB_LOG(base + 0x2B8, ret);
+        ret = IOS_Ioctlv(fd, ioctl, 2, 1, vectors);
+        USB_LOG(base + USB_MSG_INTRBLK_RESULT, ret);
         goto free_all;
     }
 
-    msg = iosAllocAligned(lbl_805590A0, 0x80, 0x20);
-    if (msg == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x80, msg);
-    if (msg == 0) {
-        USB_ERR(base + 0x2D8);
-        ret = -0x16;
+    block = iosAllocAligned(usbHeapId, sizeof(USBCommandBlock), USB_WORK_SIZE);
+    if (block == 0) USB_ERR(base + USB_MSG_IOS_ALLOC_FAILED, usbHeapId, sizeof(USBCommandBlock), block);
+    if (block == 0) {
+        USB_ERR(base + USB_MSG_INTRBLK_ASYNC_NO_MEM);
+        ret = -0x16; /* IPC_RESULT_ALLOC_FAILED */
         goto free_all;
     }
 
-    *(s32 *)(msg + 0) = (s32)callback;
-    *(s32 *)(msg + 4) = (s32)callbackArg;
-    USB_LOG(base + 0x304, (s32)callback, (s32)callbackArg);
-    *(s32 *)(msg + 0x2C) = 3;
-    *(void **)(msg + 0xC) = a;
-    *(void **)(msg + 0x10) = b;
-    *(void **)(msg + 0x14) = blk;
-    *(s32 *)(msg + 0x40) = (s32)buffer;
-    *(u16 *)(msg + 0x44) = length;
-    ret = IOS_IoctlvAsync(fd, ioctl, 2, 1, blk, _intBlkCtrlCb, msg);
+    block->callback = callback;
+    block->callbackArg = callbackArg;
+    USB_LOG(base + USB_MSG_INTRBLK_CALLBACK, (s32)callback, (s32)callbackArg);
+    block->nclean = USB_NCLEAN_BULKMSG;
+    block->clean[0] = endpointWork;
+    block->clean[1] = lengthWork;
+    block->clean[2] = vectors;
+    block->msg.buffer = buffer;
+    block->msg.length = length;
+    ret = IOS_IoctlvAsync(fd, ioctl, 2, 1, vectors, _intBlkCtrlCb, block);
     if (ret >= 0) goto done;
-    if (msg != 0) {
-        fr = iosFree(lbl_805590A0, msg);
-        if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, msg, fr);
+    if (block != 0) {
+        freeResult = iosFree(usbHeapId, block);
+        if (freeResult < 0) USB_ERR(base + USB_MSG_IOS_FREE_FAILED, usbHeapId, block, freeResult);
     }
 
 free_all:
-    if (a != 0) {
-        fr = iosFree(lbl_805590A0, a);
-        if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, a, fr);
+    if (endpointWork != 0) {
+        freeResult = iosFree(usbHeapId, endpointWork);
+        if (freeResult < 0) USB_ERR(base + USB_MSG_IOS_FREE_FAILED, usbHeapId, endpointWork, freeResult);
     }
-    if (b != 0) {
-        fr = iosFree(lbl_805590A0, b);
-        if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, b, fr);
+    if (lengthWork != 0) {
+        freeResult = iosFree(usbHeapId, lengthWork);
+        if (freeResult < 0) USB_ERR(base + USB_MSG_IOS_FREE_FAILED, usbHeapId, lengthWork, freeResult);
     }
-    if (blk != 0) {
-        fr = iosFree(lbl_805590A0, blk);
-        if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, blk, fr);
+    if (vectors != 0) {
+        freeResult = iosFree(usbHeapId, vectors);
+        if (freeResult < 0) USB_ERR(base + USB_MSG_IOS_FREE_FAILED, usbHeapId, vectors, freeResult);
     }
 done:
     return ret;
