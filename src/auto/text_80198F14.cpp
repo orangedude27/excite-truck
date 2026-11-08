@@ -78,7 +78,7 @@ extern f32 lbl_805622DC;
 extern f32 lbl_805622E8;
 extern f32 lbl_805622E0;
 extern f32 lbl_805622D0;
-extern f32 lbl_8056231C, lbl_80562320, lbl_80562324, lbl_80562328, lbl_80562330, lbl_805622D4, lbl_8056232C;
+extern f32 lbl_8056231C, lbl_80562320, lbl_80562324, lbl_80562328, lbl_80562330, lbl_805622D4, lbl_8056232C, lbl_805622D8;
 extern s32 lbl_8055E5A0;
 extern "C" s32 fn_801CF080(s32, void*, void*, s32*, s32, f32);
 extern "C" s32 fn_8019A820(void*, void*, s32, s32, s32, f32);
@@ -252,6 +252,10 @@ extern "C" void* __dt__Q36PSGame10SoundTable11CategoryMgrFv(void* arg0, s32 arg1
         }
     }
     return arg0;
+}
+
+s32 fn_80198F64(Vec *arg0, void *arg1, Vec *arg2, f32 *arg3, Vec *arg4, Vec *arg5, f32 farg0) {
+    return 0;
 }
 
 extern "C" void fn_801996BC(Vec* arg0, s32 arg1, Vec* arg2, void* arg3, void* arg4, f32 farg0) {
@@ -3316,15 +3320,14 @@ extern "C" void fn_801A26FC(void* arg0, void* arg1) {
                 pos.z = pos.z + *(f32*)(owner + 0x38);
             }
             mtx = *obj->getMtx();
-            f32* m = mtx.m;
-            MtxMulVecPosInl(m, &pos.x, tmp);
-            m[9] = m[9] + tmp[0];
-            m[10] = m[10] + tmp[1];
-            m[11] = m[11] + tmp[2];
+            MtxMulVecPosInl(mtx.m, (f32*)&pos, tmp);
+            mtx.t.x = mtx.t.x + tmp[0];
+            mtx.t.y = mtx.t.y + tmp[1];
+            mtx.t.z = mtx.t.z + tmp[2];
             pos68[0] = *(f32*)((u8*)obj + 0x24);
             pos68[1] = *(f32*)((u8*)obj + 0x28);
             pos68[2] = *(f32*)((u8*)obj + 0x2C);
-            fn_801C28A8(*(void**)((u8*)arg0 + 0x30), m, pos68, vecA, vecB,
+            fn_801C28A8(*(void**)((u8*)arg0 + 0x30), &mtx, pos68, vecA, vecB,
                         *(s32*)((u8*)arg0 + 0x28), *(s32*)((u8*)arg0 + 0x2C), outHit, outN);
             if (PSVECDotProduct((Vec*)outN, (Vec*)outN) > lbl_805623AC) {
                 up[0] = lbl_805622D0; up[1] = lbl_805622E0; up[2] = lbl_805622D0;
