@@ -735,6 +735,36 @@ extern void *fn_8012C370(const char *, s32, u32 *, s32 *, u8 *, u8 *);
 extern void fn_80028E00(char *, const char *);
 extern s32 fn_802CAC34(char *, s32);
 extern u32 lbl_8055B9D4;
+
+/* Readable aliases; the game's own symbols keep their placeholder names. */
+#define gTexBlockTable lbl_8055F068 /* cache of loaded GETX blocks: 0xC-byte { block, name, useCount } slots, count at +0x168 */
+#define gTexMessages lbl_80340440   /* gText's block of message strings */
+#define gTexExtension lbl_8055B9D4  /* ".tex" */
+#define GETX_FOURCC 0x47544558      /* 'GETX': the fourcc of a font texture block */
+
+/* Messages inside the string block at lbl_80340440. */
+enum {
+    GTEX_MSG_BAD_VERSION = 0xE4,    /* gText: Font "%s" has bad version %d */
+    GTEX_MSG_NULL_FONT = 0x108,     /* gText: Null font %s! */
+    GTEX_MSG_NO_BLOCK = 0x144,      /* gText: Failed to extract texture with font- returning NULL font. */
+    GTEX_MSG_NAME_TOO_LONG = 0x15C, /* gText: Texture name %s is longer than %d, it's %d */
+    GTEX_MSG_NO_RESOURCE = 0x190    /* the texture could not be registered */
+};
+
+/* A loaded 'GETX' font block, as handed back by the archive manager.
+ * records and texture are stored in the file as offsets from the block and are
+ * turned into pointers the first time the block is loaded (see swap below). */
+typedef struct GTexBlock {
+    /* 0x00 */ s32 resourceIndex;          /* texture index in the gTex resource table */
+    /* 0x04 */ s32 unk04;
+    /* 0x08 */ struct GTexBlock *outline;  /* the "_ol_<name>" variant, 0 when there is none */
+    /* 0x0C */ u16 recordCount;            /* 0x1C-byte records at records[] */
+    /* 0x0E */ u16 unk0E;
+    /* 0x10 */ s32 records;
+    /* 0x14 */ s32 unk14;
+    /* 0x18 */ s32 texture;                /* the pixels registered as the resource */
+} GTexBlock;
+
 #pragma push
 #pragma small_data on
 s32 fn_80232578(const char *arg0) {
@@ -1554,12 +1584,18 @@ void fn_8023423C(s32 arg0, s32 arg1) {
 }
 #pragma pop
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_8023441C(const char *arg0) {
+    s32 res;
+    s32 *p;
     lbl_8055F06C = (s32)((void *(*)(s32, const char *))fn_8012850C)(0x2100, lbl_80340614);
-    lbl_8055F058 = fn_80232578(arg0);
-    *(s32 *)((u8 *)&lbl_8055F058 + 4) = 0;
+    res = fn_80232578(arg0);
+    p = (s32 *)&lbl_8055F058;
+    lbl_8055F058 = res;
+    p[1] = 0;
 }
-
+#pragma pop
 void fn_80234470(void) {
     fn_802328D4(lbl_8055F058);
     lbl_8055F058 = 0;
