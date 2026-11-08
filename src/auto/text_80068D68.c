@@ -22608,8 +22608,19 @@ static void process_service_attr_rsp(tCONN_CB *p_ccb, UINT8 *p_reply, UINT16 len
 }
 
 extern char lbl_8031A078[];
+/* Handle a Service Search Attribute response from the SDP server.
+ *
+ * The attribute list of a search comes back in pieces: each response carries
+ * part of it followed by a continuation state.  Every piece is appended to the
+ * connection's own rsp_list, and while a continuation is pending another
+ * ServiceSearchAttr request goes out (the very first request is sent here with
+ * p_reply == NULL).  Once the last piece has arrived the list is a
+ * data-element sequence of service records, which save_attr_seq() stores one
+ * by one into the caller's discovery DB, and the connection is closed.
+ */
 static void process_service_search_attr_rsp(tCONN_CB *p_ccb, UINT8 *p_reply, UINT16 len)
 {
+    tCONN_CB_ATTR_VIEW *ccb = (tCONN_CB_ATTR_VIEW *)p_ccb;
     UINT8 *p, *p_start, *p_end, *p_param_len;
     UINT8 type;
     UINT32 seq_len;
@@ -22618,93 +22629,100 @@ static void process_service_search_attr_rsp(tCONN_CB *p_ccb, UINT8 *p_reply, UIN
     BOOLEAN cont_request_needed = FALSE;
     #pragma unused(len)
     if (p_reply) {
+        /* skip the transaction ID and the PDU length, then read the list length */
         p_reply += 4;
-        lists_byte_count = (p_reply[0] << 8) + p_reply[1];
-        p_reply += 2;
-        if (*(UINT16 *)((UINT8 *)p_ccb + 0x24) + lists_byte_count > 0x3E8) {
-            sdp_disconnect(p_ccb, 4);
+        BE_STREAM_TO_UINT16(lists_byte_count, p_reply);
+
+        /* still room left in our response buffer? */
+        if (ccb->list_len + lists_byte_count > SDP_BUILD_MAX_LIST_BYTE_COUNT) {
+            sdp_disconnect(p_ccb, SDP_INVALID_PDU_SIZE);
             return;
         }
-        memcpy((UINT8 *)p_ccb + *(UINT16 *)((UINT8 *)p_ccb + 0x24) + 0x26,
-               p_reply, lists_byte_count);
-        *(UINT16 *)((UINT8 *)p_ccb + 0x24) =
-            *(UINT16 *)((UINT8 *)p_ccb + 0x24) + lists_byte_count;
+
+        memcpy(&ccb->rsp_list[ccb->list_len], p_reply, lists_byte_count);
+        ccb->list_len += lists_byte_count;
         p_reply += lists_byte_count;
+
+        /* a continuation state means the list is not complete yet */
         if (*p_reply) {
-            if (*p_reply > 0x10) {
-                sdp_disconnect(p_ccb, 5);
+            if (*p_reply > SDP_MAX_CONTINUATION_LEN) {
+                sdp_disconnect(p_ccb, SDP_INVALID_CONT_STATE);
                 return;
             }
             cont_request_needed = TRUE;
         }
     }
+    /* first request of the search, or the next one for the continuation */
     if (cont_request_needed || !p_reply) {
-        BT_HDR *p_msg = (BT_HDR *)GKI_getpoolbuf(2);
+        BT_HDR *p_msg = (BT_HDR *)GKI_getpoolbuf(2);  /* pool of the SDP layer */
         UINT8 *p;
         if (!p_msg) {
-            sdp_disconnect(p_ccb, 6);
+            sdp_disconnect(p_ccb, SDP_NO_RESOURCES);
             return;
         }
-        p_msg->offset = 9;
-        p = p_start = (UINT8 *)p_msg + 0x11;
-        *p++ = 6;
-        *p++ = *(UINT16 *)((UINT8 *)p_ccb + 0x470) >> 8;
-        *p++ = *(UINT16 *)((UINT8 *)p_ccb + 0x470);
-        *(UINT16 *)((UINT8 *)p_ccb + 0x470) += 1;
-        p_param_len = p;
+        p_msg->offset = 9;                    /* L2CAP_MIN_OFFSET of this build */
+        p = p_start = (UINT8 *)(p_msg + 1) + 9;
+
+        /* Build a service search attribute request packet */
+        UINT8_TO_BE_STREAM(p, SDP_PDU_SERVICE_SEARCH_ATTR_REQ);
+        UINT16_TO_BE_STREAM(p, ccb->transaction_id);
+        ccb->transaction_id++;
+
+        p_param_len = p;                      /* its length is filled in at the end */
         p += 2;
-        p = sdpu_build_uuid_seq(
-            p,
-            *(UINT16 *)(*(UINT8 **)((UINT8 *)p_ccb + 0x410) + 0x0C),
-            *(UINT8 **)((UINT8 *)p_ccb + 0x410) + 0x10);
-        *p++ = *(UINT16 *)(lbl_803C4C40 + 0x462C) >> 8;
-        *p++ = *(UINT16 *)(lbl_803C4C40 + 0x462C);
-        if (*(UINT16 *)(*(UINT8 **)((UINT8 *)p_ccb + 0x410) + 0x4C))
-            p = sdpu_build_attrib_seq(
-                p,
-                (UINT16 *)(*(UINT8 **)((UINT8 *)p_ccb + 0x410) + 0x4E),
-                *(UINT16 *)(*(UINT8 **)((UINT8 *)p_ccb + 0x410) + 0x4C));
+
+        p = sdpu_build_uuid_seq(p, ccb->p_db->num_uuid_filters,
+                                (UINT8 *)ccb->p_db->uuid_filters);
+        UINT16_TO_BE_STREAM(p, sdp_cb_max_attr_list_size);
+
+        /* without attribute filters this is a wildcard attribute sequence */
+        if (ccb->p_db->num_attr_filters)
+            p = sdpu_build_attrib_seq(p, ccb->p_db->attr_filters,
+                                      ccb->p_db->num_attr_filters);
         else
             p = sdpu_build_attrib_seq(p, NULL, 0);
-        if (p_reply) {
+
+        if (p_reply) {                        /* ask for where the last reply left off */
             memcpy(p, p_reply, *p_reply + 1);
             p += *p_reply + 1;
-        } else {
-            *p++ = 0;
+        } else {                              /* no continuation for the first request */
+            UINT8_TO_BE_STREAM(p, 0);
         }
+
         param_len = p - p_param_len - 2;
-        p_param_len[0] = param_len >> 8;
-        p_param_len[1] = param_len;
+        UINT16_TO_BE_STREAM(p_param_len, param_len);
         p_msg->len = p - p_start;
-        L2CA_DataWrite(*(UINT16 *)((UINT8 *)p_ccb + 0x22), p_msg);
-        btu_start_timer(&p_ccb->timer_entry, 5, 0x1E);
+
+        L2CA_DataWrite(ccb->connection_id, p_msg);
+        btu_start_timer(&p_ccb->timer_entry, BTU_TTYPE_SDP, SDP_INACT_TIMEOUT);
         return;
     }
-    p = (UINT8 *)p_ccb + 0x26;
+    /* the complete response is now in the connection's list: a sequence of records */
+    p = ccb->rsp_list;
     type = *p++;
-    if ((type >> 3) != 6) {
-        if (lbl_803C4C40[0x4630] >= 2)
-            fn_80070954(0xA0001, lbl_8031A078, type);
+    if ((type >> 3) != DATA_ELE_SEQ_DESC_TYPE) {
+        if (sdp_cb_trace_level >= BT_TRACE_LEVEL_WARNING)
+            fn_80070954(TRACE_LAYER_SDP | TRACE_TYPE_WARNING, lbl_8031A078, type); /* "SDP - Wrong type: 0x%02x in attr_rsp" */
         return;
     }
     p = sdpu_get_len_from_type(p, type, &seq_len);
-    list_end = (UINT8 *)(u32)*(UINT16 *)((UINT8 *)p_ccb + 0x24);
-    list_end = (UINT8 *)p_ccb + (u32)list_end;
-    p_end = list_end + 0x26;
+    list_end = (UINT8 *)(UINT32)ccb->list_len;
+    list_end = (UINT8 *)ccb + (UINT32)list_end;
+    p_end = list_end + SDP_CCB_RSP_LIST_OFFSET;
     if (p + seq_len != p_end) {
-        sdp_disconnect(p_ccb, 5);
+        sdp_disconnect(p_ccb, SDP_INVALID_CONT_STATE);
         return;
     }
     while (p < p_end) {
-        p = (UINT8 *)save_attr_seq(
-            p_ccb, p,
-            (UINT8 *)p_ccb + *(UINT16 *)((UINT8 *)p_ccb + 0x24) + 0x26);
+        p = (UINT8 *)save_attr_seq(p_ccb, p,
+                                   (UINT8 *)ccb + ccb->list_len + SDP_CCB_RSP_LIST_OFFSET);
         if (!p) {
-            sdp_disconnect(p_ccb, 0xFFF4);
+            sdp_disconnect(p_ccb, SDP_DB_FULL);
             return;
         }
     }
-    sdp_disconnect(p_ccb, 0);
+    /* we have everything we asked for, so drop the connection */
+    sdp_disconnect(p_ccb, SDP_SUCCESS);
 }
 
 extern void *add_record(void *, void *);
