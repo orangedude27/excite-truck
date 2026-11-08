@@ -95,6 +95,14 @@ extern void fn_80136594(Res_80266388 *, void *, void *);
 extern void *fn_801B2EC0(int);
 typedef double (*DblFn_80266388)(int, float, float);
 void fn_8026A2C8(void);
+struct VObj_80266388;
+typedef struct VTab_80266388 {
+    void *pad[6];
+    void *(*m18)(struct VObj_80266388 *);
+    void *pad2[5];
+    void *(*m20)(struct VObj_80266388 *);
+} VTab_80266388;
+typedef struct VObj_80266388 { VTab_80266388 *vt; } VObj_80266388;
 static inline void fn_80266388_multiply(float *out, const float *a, const float *b) {
  float t0,t1,t2,t3,t4,t5,t6,t7,t8;
  if (out == a || out == b) {
@@ -341,6 +349,97 @@ void fn_802662D8(float *arg0, float *arg1, float *arg2, float *arg3, int arg4) {
     arg1[1] = y;
     arg1[2] = z;
 }
+
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+void fn_80266388(int unused, int mode, float *matrix, void *pos, void *owner) {
+    void *cam;
+    float base, best, d, t, u, a, b, s1, s2, zero;
+    int count, i;
+    char *sel;
+    float p2[2];
+    Res_80266388 r;
+    if (mode == 0) {
+        void *camobj = *(void **)((char *)owner + 0x270);
+        cam = (*(void *(***)(void *))camobj)[6](camobj);
+        p2[0] = matrix[9];
+        p2[1] = matrix[11];
+        fn_80136594(&r, cam, p2);
+        base = lbl_8055C4CC + (r.p[7] + r.p[6] * r.f);
+        count = ((int (*)(void))fn_8026A2C8)();
+        best = lbl_8055F49C;
+        zero = lbl_80563C20;
+        sel = 0;
+        for (i = 0; i < count; i++) {
+            void *ob = fn_801B2EC0(i);
+            char *o = (char *)(*(void *(***)(void *))ob)[8](ob);
+            float *opos = (float *)(o + 0x60);
+            float q[2];
+            q[0] = opos[0];
+            q[1] = opos[2];
+            fn_80136594(&r, cam, q);
+            d = (r.p[7] + r.p[6] * r.f) - base;
+            if (d < zero) {
+                void *c4 = *(void **)((char *)cam + 4);
+                unsigned char idx = c4 ? *((unsigned char *)c4 + 0x34) : 3;
+                d += *(float *)(*(char **)((char *)cam + 0x2C) + idx * 4 + 8);
+            }
+            if (d * d < lbl_8055F49C) {
+                float sq = PSVECSquareDistance(pos, opos);
+                if (sq < best) {
+                    best = sq;
+                    sel = o;
+                }
+            }
+        }
+        if (sel != 0) {
+            float v[3], rot[9];
+            t = (*(float *)(sel + 0x25CC) - lbl_8055C4D0) / (lbl_8055C4D4 - lbl_8055C4D0);
+            a = lbl_80563C2C;
+            if (!(a < t)) a = t;
+            if (!(a > lbl_80563C20)) a = lbl_80563C20;
+            u = (best - lbl_8055F49C) / (lbl_80563C20 - lbl_8055F49C);
+            b = lbl_80563C2C;
+            if (!(b < u)) b = u;
+            if (!(b > lbl_80563C20)) b = lbl_80563C20;
+            t = (lbl_80563C20 + a * lbl_80563C2C) * (lbl_80563C20 + b * lbl_80563C2C);
+            s1 = lbl_8055C4D8 * t;
+            s2 = lbl_8055C4DC * t;
+            if (lbl_8055F498 != 0) {
+                float w[3];
+                float c1 = ((DblFn_80266388)fn_80129DC4)(6, -s1, s1);
+                float c2 = ((DblFn_80266388)fn_80129DC4)(6, -s1, s1);
+                float c3 = ((DblFn_80266388)fn_80129DC4)(6, -s1, s1);
+                w[0] = c3; w[1] = c2; w[2] = c1;
+                matrix[9] += c3;
+                matrix[10] += c2;
+                matrix[11] += c1;
+            }
+            if (lbl_8055C4C8 != 0) {
+                float mag, x, y, z, sn, cs, one, scale;
+                v[2] = ((DblFn_80266388)fn_80129DC4)(6, -s2, s2);
+                v[1] = ((DblFn_80266388)fn_80129DC4)(6, -s2, s2);
+                v[0] = ((DblFn_80266388)fn_80129DC4)(6, -s2, s2);
+                mag = PSVECMag(&v[0]);
+                if (mag > lbl_80563C40) {
+                    scale = lbl_80563C2C / mag;
+                    x = scale * v[0]; y = scale * v[1]; z = scale * v[2];
+                    sn = sin(mag); cs = cos(mag); one = lbl_80563C2C - cs;
+                    rot[0] = cs + one * (x * x); rot[1] = y * (one * x) + sn * z; rot[2] = z * (one * x) - sn * y;
+                    rot[3] = y * (one * x) - sn * z; rot[4] = cs + one * (y * y); rot[5] = z * (one * y) + sn * x;
+                    rot[6] = z * (one * x) + sn * y; rot[7] = z * (one * y) - sn * x; rot[8] = cs + one * (z * z);
+                } else {
+                    rot[0] = lbl_80563C2C; rot[1] = lbl_80563C20; rot[2] = lbl_80563C20;
+                    rot[3] = lbl_80563C20; rot[4] = lbl_80563C2C; rot[5] = lbl_80563C20;
+                    rot[6] = lbl_80563C20; rot[7] = lbl_80563C20; rot[8] = lbl_80563C2C;
+                }
+                fn_80266388_multiply(matrix, matrix, rot);
+            }
+        }
+    }
+}
+#pragma pop
 
 #pragma dont_inline on
 void fn_802670A0(int *arg0, int arg1) {
