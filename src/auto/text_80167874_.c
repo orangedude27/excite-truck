@@ -109,6 +109,7 @@ extern char lbl_8055A1CC[4];
 extern f32 lbl_80561924;
 extern f32 lbl_80561938;
 extern f32 lbl_80561950;
+extern double lbl_80561930;
 extern char lbl_80330000[];
 extern s32 *fn_801399FC(DummyArg1 *);
 extern s32 fn_80128658(s32 *);
@@ -813,6 +814,42 @@ s32 fn_80168944(s32 arg0, s32 arg1) {
     return (u32)__cntlzw(r) >> 5;
 }
 
+#pragma push
+#pragma processor 750
+#pragma cplusplus on
+extern char lbl_802F94B8[];
+extern "C" s32 fn_8016899C(void *arg0, DummyArg1 *arg1, DummyManager *arg2, f32 *arg3) {
+    class DummyCheck {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual s32 check(const char *name);
+    };
+
+    s32 *values;
+
+    if (((DummyCheck *)arg0)->check(arg1->getName()) == 0) {
+        fn_802E30C8(lbl_80330000 + 0x298, arg1->getName());
+        return 0;
+    }
+
+    values = fn_801399FC(arg1);
+    if (*values < 2) {
+        fn_802E30C8(lbl_80330000 + 0x2D0, arg1->getName());
+        fn_80128658(values);
+        return 0;
+    }
+
+    /* TODO: reconstruct full path/record generation from target asm */
+    (void)arg2;
+    (void)arg3;
+    (void)lbl_802F94B8;
+    fn_80128658(values);
+    return 1;
+}
+#pragma cplusplus reset
+#pragma pop
+
 extern char lbl_80330364[];
 s32 fn_80169108(s32 arg0, s32 arg1) {
     s32 addr = (s32)lbl_80330364;
@@ -820,6 +857,168 @@ s32 fn_80169108(s32 arg0, s32 arg1) {
     s32 r = fn_8002B1D8(arg1, (s32 *)addr, len);
     return (u32)__cntlzw(r) >> 5;
 }
+
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" s32 fn_80169160(void *arg0, DummyArg1 *arg1, DummyManager *arg2, f32 *arg3) {
+    class DummyCheck {
+    public:
+        virtual void v0();
+        virtual s32 check(const char *name);
+    };
+
+    s32 *values;
+    DummyEntry *entry;
+    f32 *cursor;
+    f32 diffs[8];
+    f32 dist[4];
+    s32 off;
+    f32 total;
+    s32 outerCount;
+    s32 (*selector)(s32, s32, s32, s32);
+    f32 outerRem;
+    f32 outerStart;
+    DummyVec2 a;
+    DummyVec2 b;
+    DummyVec2 p;
+    s32 i;
+    s32 j;
+
+    if (((DummyCheck *)arg0)->check(arg1->getName()) == 0) {
+        fn_802E30C8(lbl_80330000 + 0x370, arg1->getName());
+        return 0;
+    }
+
+    values = fn_801399FC(arg1);
+    if (*values < 4 || *values > 4) {
+        fn_802E30C8(lbl_80330000 + 0x3A4, arg1->getName(), *values);
+        fn_80128658(values);
+        return 0;
+    }
+
+    cursor = (f32 *)values;
+    diffs[0] = cursor[2] - cursor[4];
+    diffs[1] = cursor[3] - cursor[5];
+    dist[0] = (f32)fn_8002F234(diffs[0] * diffs[0] + diffs[1] * diffs[1]);
+    diffs[2] = cursor[6] - cursor[4];
+    diffs[3] = cursor[7] - cursor[5];
+    dist[1] = (f32)fn_8002F234(diffs[2] * diffs[2] + diffs[3] * diffs[3]);
+    diffs[4] = cursor[6] - cursor[8];
+    diffs[5] = cursor[7] - cursor[9];
+    dist[2] = (f32)fn_8002F234(diffs[4] * diffs[4] + diffs[5] * diffs[5]);
+    diffs[6] = cursor[2] - cursor[8];
+    diffs[7] = cursor[3] - cursor[9];
+    dist[3] = (f32)fn_8002F234(diffs[6] * diffs[6] + diffs[7] * diffs[7]);
+
+    off = (dist[0] + dist[2] <= dist[1] + dist[3]);
+    total = lbl_80561938 * (dist[off] + dist[(off + 2) % 4]);
+    outerCount = 1;
+    {
+        s32 tmp = (s32)(total / *arg3);
+        if (tmp > 1)
+            outerCount = tmp;
+    }
+    outerRem = total - (f32)outerCount * *arg3;
+    selector = fn_80169928;
+    if (stricmp(arg1->getName(), lbl_80330000 + 0x3E0) == 0)
+        selector = fn_801698B8;
+    entry = &arg2->entries[arg2->entryCount++];
+    entry->byte1C = 1;
+    if (values != 0) {
+        union { unsigned long long u; f32 f[2]; } center;
+        center.u = fn_80139C5C(values);
+        entry->f8 = center.f[0];
+        entry->fC = center.f[1];
+        entry->f10 = lbl_80561924;
+        {
+            u8 *cur = (u8 *)values;
+            s32 k = 0;
+            do {
+                f32 dx = entry->f8 - *(f32 *)(cur + 8);
+                f32 dy = entry->fC - *(f32 *)(cur + 12);
+                f32 d2 = dx * dx + dy * dy;
+                if (entry->f10 < d2)
+                    entry->f10 = d2;
+                cur += 8;
+                k++;
+            } while (k < *values);
+        }
+        entry->f10 = lbl_80561950 * (f32)fn_8002F234(entry->f10);
+    } else {
+        entry->byte1C = 0;
+        entry->f8 = lbl_80561924;
+        entry->fC = lbl_80561924;
+        entry->f10 = lbl_80561924;
+    }
+    entry->recordStart = arg2->recordCount;
+    entry->recordCount = 0;
+    entry->byte1D = 0;
+    entry->id = -1;
+    entry->active = 1;
+    arg2->flag1E158 = 1;
+
+    outerStart = lbl_80561938 * outerRem;
+    {
+        f32 *pA0 = (f32 *)((u8 *)values + off * 8);
+        f32 *pA1 = (f32 *)((u8 *)values + ((off + 1) % 4) * 8);
+        f32 *pB0 = (f32 *)((u8 *)values + ((off + 3) % 4) * 8);
+        f32 *pB1 = (f32 *)((u8 *)values + ((off + 2) % 4) * 8);
+
+        for (i = 0; i <= outerCount; i++) {
+            f32 u = (outerStart + (f32)i * *arg3) / total;
+            a.x = pA0[2] + u * (pA1[2] - pA0[2]);
+            a.y = pA0[3] + u * (pA1[3] - pA0[3]);
+            b.x = pB0[2] + u * (pB1[2] - pB0[2]);
+            b.y = pB0[3] + u * (pB1[3] - pB0[3]);
+            f32 segLen = (f32)fn_8002F234((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
+            s32 innerCount = 1;
+            {
+                s32 tmp = (s32)(segLen / *arg3);
+                if (tmp > 1)
+                    innerCount = tmp;
+            }
+            f32 innerStart = lbl_80561938 * (segLen - (f32)innerCount * *arg3);
+            for (j = 0; j <= innerCount; j++) {
+                f32 v = (innerStart + (f32)j * *arg3) / segLen;
+                p.x = a.x + v * (b.x - a.x);
+                p.y = a.y + v * (b.y - a.y);
+                s32 selVal = selector(j, i, innerCount, outerCount);
+                DummyRecord *rec = &arg2->records[arg2->recordCount++];
+                rec->obj = 0;
+                rec->obj = (DummyRecordObj *)fn_80167874(selVal);
+                rec->x = p.x;
+                rec->y = lbl_80561924;
+                rec->z = p.y;
+                rec->hit = lbl_80561924;
+                fn_801E9E30(0, &rec->x);
+                rec->y = rec->y + rec->obj->f18 + rec->hit;
+                rec->flag = 0;
+                fn_801EA1E0(&rec->y, 1, rec->x, rec->z);
+                (*(s32 *)((u8 *)fn_80167874(selVal) + 0x1C))++;
+                if (arg2->flag1E158 != 0) {
+                    arg2->entries[arg2->entryCount - 1].recordCount++;
+                } else {
+                    if (arg2->entryCount == 0 || arg2->entries[arg2->entryCount - 1].byte1C != 0) {
+                        DummyEntry *newEntry = &arg2->entries[arg2->entryCount++];
+                        newEntry->byte1C = 0;
+                        newEntry->recordStart = arg2->recordCount - 1;
+                        newEntry->recordCount = 0;
+                        newEntry->byte1D = 0;
+                    }
+                    arg2->entries[arg2->entryCount - 1].recordCount++;
+                }
+            }
+        }
+    }
+    arg2->flag1E158 = 0;
+    fn_80128658(values);
+    return 1;
+}
+#pragma cplusplus reset
+#pragma pop
 
 s32 fn_801698B8(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 temp_r0, temp_r0_2, temp_r0_3, var_r3, var_r4, var_r5;
