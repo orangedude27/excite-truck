@@ -6,6 +6,11 @@ extern void fn_8002F53C(void *, void (*)(void), int, int, int);
 extern void fn_80296058(void);
 extern int lbl_8055F768;
 extern char lbl_804B42F0[];
+extern void fn_8000D838(void *);
+extern void fn_8002F53C(void *, void (*)(void), int, int, int);
+extern void fn_80296058(void);
+extern int lbl_8055F768;
+extern char lbl_804B42F0[];
 #pragma scheduling invalid_target
 void fn_80296014(void) {
     fn_8000D838(&lbl_8055F768);
