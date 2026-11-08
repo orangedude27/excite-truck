@@ -84,6 +84,16 @@ extern float fn_80129DC4(int, float, float);
 extern int fn_80129D90(int, int, int);
 extern float PSVECMag(void*);
 extern float fn_80144514(float,float,float,float,float,float);
+extern float lbl_8055C4CC, lbl_8055C4D0, lbl_8055C4D4, lbl_8055C4D8, lbl_8055C4DC, lbl_8055F49C;
+extern unsigned char lbl_8055C4C8, lbl_8055F498;
+extern float lbl_80563C40;
+extern double cos(float);
+extern double sin(float);
+extern float PSVECSquareDistance(void *, void *);
+typedef struct { float *p; float f; } Res_80266388;
+extern void fn_80136594(Res_80266388 *, void *, void *);
+extern void *fn_801B2EC0(int);
+typedef double (*DblFn_80266388)(int, float, float);
 static inline void fn_80266388_multiply(float *out, const float *a, const float *b) {
  float t0,t1,t2,t3,t4,t5,t6,t7,t8;
  if (out == a || out == b) {
