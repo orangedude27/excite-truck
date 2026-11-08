@@ -63,9 +63,10 @@ extern double fn_8002B060(int, double);
 #define pow_P4       lbl_805608D8
 #define pow_P5       lbl_805608E0
 #define pow_two      lbl_805608E8
-#define pow_bp(k)    lbl_802EE4D8[k]
-#define pow_dp_h(k)  lbl_802EE4D8[2 + (k)]
-#define pow_dp_l(k)  lbl_802EE4D8[4 + (k)]
+extern double *pow_tbl; /* temporary: shadowed by __ieee754_pow's local */
+#define pow_bp(k)    pow_tbl[k]
+#define pow_dp_h(k)  pow_tbl[2 + (k)]
+#define pow_dp_l(k)  pow_tbl[4 + (k)]
 
 static const double
     ln2_hi = 6.93147180369123816490e-01,
@@ -564,6 +565,186 @@ double x;
 	    if(k==0) return f-s*(f-R); else
 		     return dk*ln2_hi-((s*(f-R)-dk*ln2_lo)-f);
 	}
+}
+
+double __ieee754_pow(x, y)
+double x, y;
+{
+    double z, ax, z_h, z_l, p_h, p_l;
+    double y1, t1, t2, r, s, t, u, v, w;
+    int i, j, k, yisint, n;
+    int hx, hy, ix, iy;
+    unsigned lx, ly;
+
+    hx = __HI(x); lx = __LO(x);
+    hy = __HI(y); ly = __LO(y);
+    ix = hx & 0x7fffffff; iy = hy & 0x7fffffff;
+
+    if ((iy | ly) == 0) return pow_one;
+
+    if (ix > 0x7ff00000 || ((ix == 0x7ff00000) && (lx != 0)) ||
+        iy > 0x7ff00000 || ((iy == 0x7ff00000) && (ly != 0)))
+        return x + y;
+
+    yisint = 0;
+    if (hx < 0) {
+        if (iy >= 0x43400000) yisint = 2;
+        else if (iy >= 0x3ff00000) {
+            k = (iy >> 20) - 0x3ff;
+            if (k > 20) {
+                j = ly >> (52 - k);
+                if ((j << (52 - k)) == ly) yisint = 2 - (j & 1);
+            } else if (ly == 0) {
+                j = iy >> (20 - k);
+                if ((j << (20 - k)) == iy) yisint = 2 - (j & 1);
+            }
+        }
+    }
+
+    if (ly == 0) {
+        if (iy == 0x7ff00000) {
+            if (((ix - 0x3ff00000) | lx) == 0)
+                return y - y;
+            else if (ix >= 0x3ff00000)
+                return (hy >= 0) ? y : pow_zero;
+            else
+                return (hy < 0) ? -y : pow_zero;
+        }
+        if (iy == 0x3ff00000) {
+            if (hy < 0) return pow_one / x; else return x;
+        }
+        if (hy == 0x40000000) return x * x;
+        if (hy == 0x3fe00000) {
+            if (hx >= 0)
+                return fn_8002F234(x);
+        }
+    }
+
+    ax = __fabs(x);
+    if (lx == 0) {
+        if (ix == 0x7ff00000 || ix == 0 || ix == 0x3ff00000) {
+            z = ax;
+            if (hy < 0) z = pow_one / z;
+            if (hx < 0) {
+                if (((ix - 0x3ff00000) | yisint) == 0) {
+                    z = (z - z) / (z - z);
+                } else if (yisint == 1)
+                    z = -z;
+            }
+            return z;
+        }
+    }
+
+    if ((((hx >> 31) + 1) | yisint) == 0) {
+        lbl_8055D680 = 0x21;
+        return *(float *)lbl_80558DB0;
+    }
+
+    if (iy > 0x41e00000) {
+        if (iy > 0x43f00000) {
+            if (ix <= 0x3fefffff) return (hy < 0) ? pow_inf : pow_zero;
+            if (ix >= 0x3ff00000) return (hy > 0) ? pow_inf : pow_zero;
+        }
+        if (ix < 0x3fefffff) return (hy < 0) ? pow_inf : pow_zero;
+        if (ix > 0x3ff00000) return (hy > 0) ? pow_inf : pow_zero;
+        t = x - pow_one;
+        w = (t * t) * (pow_half - t * (pow_third - t * pow_quarter));
+        u = pow_ivln2_h * t;
+        v = t * pow_ivln2_l - w * pow_ivln2;
+        t1 = u + v;
+        __LO(t1) = 0;
+        t2 = v - (t1 - u);
+    } else {
+        double ss, s2, s_h, s_l, t_h, t_l;
+        n = 0;
+        if (ix < 0x00100000) { ax *= pow_two53; n -= 53; ix = __HI(ax); }
+        n += ((ix) >> 20) - 0x3ff;
+        j = ix & 0x000fffff;
+        ix = j | 0x3ff00000;
+        if (j <= 0x3988E) k = 0;
+        else if (j < 0xBB67A) k = 1;
+        else { k = 0; n += 1; ix -= 0x00100000; }
+        __HI(ax) = ix;
+
+        u = ax - pow_bp(k);
+        v = pow_one / (ax + pow_bp(k));
+        ss = u * v;
+        s_h = ss;
+        __LO(s_h) = 0;
+        t_h = pow_zero;
+        __HI(t_h) = ((ix >> 1) | 0x20000000) + 0x00080000 + (k << 18);
+        t_l = ax - (t_h - pow_bp(k));
+        s_l = v * ((u - s_h * t_h) - s_h * t_l);
+        s2 = ss * ss;
+        r = s2 * s2 * (pow_L1 + s2 * (pow_L2 + s2 * (pow_L3 + s2 * (pow_L4 + s2 * (pow_L5 + s2 * pow_L6)))));
+        r += s_l * (s_h + ss);
+        s2 = s_h * s_h;
+        t_h = pow_three + s2 + r;
+        __LO(t_h) = 0;
+        t_l = r - ((t_h - pow_three) - s2);
+        u = s_h * t_h;
+        v = s_l * t_h + t_l * ss;
+        p_h = u + v;
+        __LO(p_h) = 0;
+        p_l = v - (p_h - u);
+        z_h = pow_cp_h * p_h;
+        z_l = pow_cp_l * p_h + p_l * pow_cp + pow_dp_l(k);
+        t = (double)n;
+        t1 = (((z_h + z_l) + pow_dp_h(k)) + t);
+        __LO(t1) = 0;
+        t2 = z_l - (((t1 - t) - pow_dp_h(k)) - z_h);
+    }
+
+    s = pow_one;
+    if ((((hx >> 31) + 1) | (yisint - 1)) == 0) s = pow_negone;
+
+    y1 = y;
+    __LO(y1) = 0;
+    p_l = (y - y1) * t1 + y * t2;
+    p_h = y1 * t1;
+    z = p_l + p_h;
+    j = __HI(z);
+    i = __LO(z);
+    if (j >= 0x40900000) {
+        if (((j - 0x40900000) | i) != 0)
+            return pow_huge * (pow_huge * s);
+        else {
+            if (p_l + pow_ovt > z - p_h) return pow_huge * (pow_huge * s);
+        }
+    } else if ((j & 0x7fffffff) >= 0x4090cc00) {
+        if (((j - 0xc090cc00) | i) != 0)
+            return pow_tiny * (pow_tiny * s);
+        else {
+            if (p_l <= z - p_h) return pow_tiny * (pow_tiny * s);
+        }
+    }
+    i = j & 0x7fffffff;
+    k = (i >> 20) - 0x3ff;
+    n = 0;
+    if (i > 0x3fe00000) {
+        n = j + (0x00100000 >> (k + 1));
+        k = ((n & 0x7fffffff) >> 20) - 0x3ff;
+        t = pow_zero;
+        __HI(t) = (n & ~(0x000fffff >> k));
+        n = ((n & 0x000fffff) | 0x00100000) >> (20 - k);
+        if (j < 0) n = -n;
+        p_h -= t;
+    }
+    t = p_l + p_h;
+    __LO(t) = 0;
+    u = t * pow_lg2_h;
+    v = (p_l - (t - p_h)) * pow_lg2 + t * pow_lg2_l;
+    z = u + v;
+    w = v - (z - u);
+    t = z * z;
+    t1 = z - t * (pow_P1 + t * (pow_P2 + t * (pow_P3 + t * (pow_P4 + t * pow_P5))));
+    r = (z * t1) / (t1 - pow_two) - (w + z * w);
+    z = pow_one - (r - z);
+    j = __HI(z);
+    j += (n << 20);
+    if ((j >> 20) <= 0) z = fn_8002B060(n, z);
+    else __HI(z) += (n << 20);
+    return s * z;
 }
 
 /* Constants of fdlibm's e_rem_pio2.c (see the reference copy in
