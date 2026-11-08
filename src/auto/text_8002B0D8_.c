@@ -289,31 +289,43 @@ double y, x;
 // fdlibm's Zero[] = {0.0, -0.0}; Zero[(unsigned)sx >> 31] is sign(x)*0
 #define Zero lbl_802EE4C8
 extern double Zero[];
+/*
+ * __ieee754_fmod(x,y)  (fdlibm e_fmod.c)
+ * Return x mod y in exact arithmetic: the remainder of x/y with the sign of x,
+ * computed on the IEEE-754 bits of x and y as integer words (hx/lx = high/low
+ * word of |x|, hy/ly = of |y|, sx = sign bit of x, ix/iy = their exponents).
+ * Method: shift and subtract - scale |x| and |y| up to 1.52 fixed point,
+ * subtract y from x repeatedly, then renormalise the result.
+ */
 double __ieee754_fmod(double x, double y) {
     int n, hx, hy, hz, ix, iy, sx, i;
     unsigned int lx, ly, lz;
 
-    hx = __HI(x);
-    lx = __LO(x);
-    hy = __HI(y);
-    ly = __LO(y);
-    sx = hx & 0x80000000;
-    hx ^= sx;
-    hy &= 0x7FFFFFFF;
+    hx = __HI(x);   /* high word of x */
+    lx = __LO(x);   /* low  word of x */
+    hy = __HI(y);   /* high word of y */
+    ly = __LO(y);   /* low  word of y */
+    sx = hx & 0x80000000; /* sign of x */
+    hx ^= sx;       /* |x| */
+    hy &= 0x7FFFFFFF; /* |y| */
 
-    if (((hy | ly) == 0) || (hx >= 0x7FF00000) ||
-        ((hy | ((ly | -ly) >> 31)) > 0x7FF00000U)) {
-        return (x * y) / (x * y);
+    /* purge off exception values */
+    if (((hy | ly) == 0) ||        /* y = 0, or */
+        (hx >= 0x7FF00000) ||      /* x not finite, or */
+        ((hy | ((ly | -ly) >> 31)) > 0x7FF00000U)) { /* y is NaN */
+        return (x * y) / (x * y);  /* NaN */
     }
     if (hx <= hy) {
         if ((hx < hy) || (lx < ly)) {
-            return x;
+            return x;              /* |x| < |y|: return x */
         }
         if (lx == ly) {
-            return lbl_802EE4C8[(unsigned int)sx >> 31];
+            return Zero[(unsigned int)sx >> 31]; /* |x| = |y|: return sign(x)*0 */
         }
     }
-    if (hx < 0x00100000) {
+
+    /* determine ix = ilogb(x) */
+    if (hx < 0x00100000) { /* subnormal x */
         if (hx == 0) {
             for (ix = -1043, i = lx; i > 0; i <<= 1) {
                 ix -= 1;
@@ -326,7 +338,8 @@ double __ieee754_fmod(double x, double y) {
     } else {
         ix = (hx >> 20) - 1023;
     }
-    if (hy < 0x00100000) {
+    /* determine iy = ilogb(y) */
+    if (hy < 0x00100000) { /* subnormal y */
         if (hy == 0) {
             for (iy = -1043, i = ly; i > 0; i <<= 1) {
                 iy -= 1;
@@ -339,9 +352,11 @@ double __ieee754_fmod(double x, double y) {
     } else {
         iy = (hy >> 20) - 1023;
     }
+
+    /* set up {hx,lx}, {hy,ly} and align y to x */
     if (ix >= -1022) {
-        hx = 0x00100000 | (0x000FFFFF & hx);
-    } else {
+        hx = 0x00100000 | (0x000FFFFF & hx); /* 1.52 fixed point */
+    } else { /* subnormal x, shift x to normal */
         n = -1022 - ix;
         if (n <= 31) {
             hx = (hx << n) | (lx >> (32 - n));
@@ -353,7 +368,7 @@ double __ieee754_fmod(double x, double y) {
     }
     if (iy >= -1022) {
         hy = 0x00100000 | (0x000FFFFF & hy);
-    } else {
+    } else { /* subnormal y, shift y to normal */
         n = -1022 - iy;
         if (n <= 31) {
             hy = (hy << n) | (ly >> (32 - n));
@@ -364,21 +379,22 @@ double __ieee754_fmod(double x, double y) {
         }
     }
 
-    n = ix - iy;
+    /* fix point fmod */
+    n = ix - iy; /* number of subtract-and-shift steps */
     while (n--) {
-        hz = hx - hy;
+        hz = hx - hy; /* x - y, 64 bits */
         lz = lx - ly;
         if (lx < ly) {
-            hz -= 1;
+            hz -= 1; /* borrow */
         }
-        if (hz < 0) {
+        if (hz < 0) { /* x < y: shift x up and try again */
             hx = hx + hx + (lx >> 31);
             lx = lx + lx;
         } else {
             if ((hz | lz) == 0) {
-                return lbl_802EE4C8[(unsigned int)sx >> 31];
+                return Zero[(unsigned int)sx >> 31]; /* exact: sign(x)*0 */
             }
-            hx = hz + hz + (lz >> 31);
+            hx = hz + hz + (lz >> 31); /* x = (x - y) shifted up */
             lx = lz + lz;
         }
     }
@@ -387,23 +403,25 @@ double __ieee754_fmod(double x, double y) {
     if (lx < ly) {
         hz -= 1;
     }
-    if (hz >= 0) {
+    if (hz >= 0) { /* one last subtraction fits */
         hx = hz;
         lx = lz;
     }
+
+    /* convert back to floating value and restore the sign */
     if ((hx | lx) == 0) {
-        return lbl_802EE4C8[(unsigned int)sx >> 31];
+        return Zero[(unsigned int)sx >> 31]; /* sign(x)*0 */
     }
-    while (hx < 0x00100000) {
+    while (hx < 0x00100000) { /* normalize x */
         hx = hx + hx + (lx >> 31);
         lx = lx + lx;
         iy -= 1;
     }
-    if (iy >= -1022) {
+    if (iy >= -1022) { /* normal output */
         hx = (hx - 0x00100000) | ((iy + 1023) << 20);
         __HI(x) = hx | sx;
         __LO(x) = lx;
-    } else {
+    } else { /* subnormal output */
         n = -1022 - iy;
         if (n <= 20) {
             lx = (lx >> n) | ((unsigned int)hx << (32 - n));
@@ -418,7 +436,7 @@ double __ieee754_fmod(double x, double y) {
         __HI(x) = hx | sx;
         __LO(x) = lx;
     }
-    return x;
+    return x; /* exact output */
 }
 
 double __ieee754_log(x)
