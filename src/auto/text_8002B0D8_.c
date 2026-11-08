@@ -472,8 +472,26 @@ double x;
 	}
 }
 
+/* Constants of fdlibm's e_rem_pio2.c (see the reference copy in
+ * src/MSL/e_rem_pio2.c); the game keeps them in .sdata2 / .rodata, so they
+ * are only reachable through these labels. Aliased with macros -- the game's
+ * data symbols cannot be renamed yet -- and #undef'd after the function that
+ * uses them so the rest of the file is untouched. */
 extern const double lbl_805608F8, lbl_80560900, lbl_80560908, lbl_80560910, lbl_80560918, lbl_80560920, lbl_80560928, lbl_80560930, lbl_80560938, lbl_80560940;
 extern const int lbl_802EE508[], lbl_802EE610[];
+
+#define pio2_zero      lbl_805608F8 /*  0.0 */
+#define pio2_1         lbl_80560900 /*  0x3FF921FB, 0x54400000: first 33 bits of pi/2 */
+#define pio2_1t        lbl_80560908 /*  pi/2 - pio2_1 */
+#define pio2_2         lbl_80560910 /*  next 33 bits of pi/2 */
+#define pio2_2t        lbl_80560918 /*  pi/2 - (pio2_1+pio2_2) */
+#define pio2_half      lbl_80560920 /*  0.5, for rounding t*2/pi to the nearest int */
+#define pio2_invpio2   lbl_80560928 /*  53 bits of 2/pi */
+#define pio2_3         lbl_80560930 /*  third 33 bits of pi/2 */
+#define pio2_3t        lbl_80560938 /*  pi/2 - (pio2_1+pio2_2+pio2_3) */
+#define pio2_two24     lbl_80560940 /*  2^24, scales the chunks of x apart */
+#define pio2_two_over_pi lbl_802EE508 /* 396 hex digits of 2/pi, 24 bits per int */
+#define pio2_npio2_hw  lbl_802EE610 /* high words of n*pi/2, n = 1..32: exact halfway cases */
 #pragma push
 #pragma opt_common_subs off
 int __ieee754_rem_pio2(double x, double *y)
