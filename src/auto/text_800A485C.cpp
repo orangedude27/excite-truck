@@ -8928,6 +8928,10 @@ struct VFiPFVolume {
     u16 state;                        /* 0x1FAC reset by a mount */
 };
 
+/* A volume slot is reached as a byte pointer in most of this file; cast it
+ * with VF_VOLUME() to name its fields. */
+#define VF_VOLUME(v) ((VFiPFVolume *)(v))
+
 /* VFiPFVolume.flags; the last four are driven by the media-change callbacks
  * fn_800A535C (media present: sets 0x4|0x10) and fn_800A52DC (media gone:
  * sets 0x20 when mounted, clears 0x4|0x8). */
