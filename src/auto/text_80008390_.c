@@ -432,6 +432,7 @@ s32 fn_80008DBC(s32 arg0) {
     default: return 0;
     }
 }
+#pragma dont_inline reset
 
 #pragma dont_inline on
 s32 fn_80008F68(s32 arg0) {
