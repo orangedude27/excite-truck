@@ -212,6 +212,8 @@ extern "C" void *fn_80016464(int);
 extern "C" int fn_80016508(void *);
 extern "C" int fn_80129D90(int, int, int);
 extern "C" void qsort(void *, int, int, int (*)(void *, void *));
+#pragma push
+#pragma processor 750
 extern "C" void fn_8013AC78(int arg0, int *arg1) {
     struct Entry { int idx; int key; int score; } es[8];
     int pr[100];
