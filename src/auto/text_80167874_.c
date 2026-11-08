@@ -107,6 +107,17 @@ extern char lbl_8055A1C0[8];
 extern char lbl_8055A1C8[4];
 extern char lbl_8055A1CC[4];
 extern f32 lbl_80561924;
+extern f32 lbl_80561938;
+extern f32 lbl_80561950;
+extern char lbl_80330000[];
+extern s32 *fn_801399FC(DummyArg1 *);
+extern s32 fn_80128658(s32 *);
+extern void fn_802E30C8(const char *, ...);
+extern int stricmp(const char *, const char *);
+extern unsigned long long fn_80139C5C(s32 *);
+extern s32 fn_801698B8(s32, s32, s32, s32);
+extern s32 fn_80169928(s32, s32, s32, s32);
+extern double fn_8002F234(f32);
 
 int sscanf(const char *, const char *, ...);
 void fn_801E9E30(void *, f32 *);
@@ -148,10 +159,19 @@ extern int lbl_8055E3C4;
 extern float lbl_8055E460;
 extern float lbl_80561918, lbl_8056191C, lbl_80561920, lbl_80561924, lbl_80561928;
 extern double lbl_80561930;
+#pragma cplusplus reset
+#pragma use_lmw_stmw off
+#pragma optimize_for_size on
 void fn_801678D8(void) {
     extern unsigned char lbl_8042FF60[];
     float *out;
-    float temp_f1, temp_f25, temp_f26, temp_f28, temp_f29, temp_f30, temp_f31;
+    float temp_f1;
+    float temp_f26;
+    float temp_f25;
+    float temp_f31;
+    float temp_f30;
+    float temp_f29;
+    float temp_f28;
     int index;
     out = (float *)lbl_8042FF60;
     index = 0;
@@ -176,7 +196,8 @@ void fn_801678D8(void) {
         out += 12;
     } while (index < 0x10);
 }
-
+#pragma use_lmw_stmw reset
+#pragma optimize_for_size reset
 extern s32 *__AXFXGetLfoSinTable_801769CC(void);
 extern void *fn_8001285C(s32);
 extern void *fn_801284F8(s32, void *, void *, void *);
@@ -196,8 +217,8 @@ extern int *fn_80167E98(int *, int);
 extern "C" void fn_801679F0(void) {
     class DummyShortItem {
     public:
-        virtual void v0();
         virtual s32 v1(const char *name);
+        virtual void v0();
         virtual void v2();
         virtual void v3(const char *name);
         virtual void v4();
@@ -238,16 +259,16 @@ extern "C" void fn_801679F0(void) {
     struct Local {
         DummyParamLocal *sp8;
         DummyParamLocal *spC;
-        DummyParamLocal *sp10;
         DummyParamLocal *sp14;
+        DummyParamLocal *sp10;
         s32 sp18[3];
         s32 pad24;
         f32 sp28[6];
         DummyParamLocal **sp40[5];
     } local;
-    u8 *base;
-    register u32 zero;
-    register s32 manager;
+    register u8 *base;
+    register s32 zero;
+    register void *manager;
     s32 i;
     u8 *entry;
     DummyItem *object;
@@ -262,28 +283,26 @@ extern "C" void fn_801679F0(void) {
     f32 f0;
     f32 f1;
     f32 scale;
-
     base = (u8 *)lbl_80330000;
     object = (DummyItem *)*(void **)((u8 *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20);
-    local.sp14 = (DummyParamLocal *)lbl_80330270;
     local.sp10 = (DummyParamLocal *)lbl_8033025C;
+    local.sp14 = (DummyParamLocal *)lbl_80330270;
+    local.sp40[0] = &local.sp8;
     local.spC = (DummyParamLocal *)lbl_80330248;
     local.sp8 = (DummyParamLocal *)lbl_80330234;
-    local.sp40[0] = &local.sp8;
     zero = 0;
     local.sp40[4] = (DummyParamLocal **)zero;
     local.sp40[1] = &local.sp14;
     local.sp40[2] = &local.sp10;
     local.sp40[3] = &local.spC;
-
-    manager = (s32)fn_801284F8(0x1E15C, base + 0x1D8, &local.sp10, &local.sp14);
-    if (manager != 0) {
-        *(void **)(u32)manager = (u8 *)manager + 0xC;
-        *(s32 *)((u8 *)(u32)manager + 8) = 0x1388;
+    manager = fn_801284F8(0x1E15C, base + 0x1D8, &local.sp10, &local.sp14);
+    if (manager) {
+        *(void **)manager = (u8 *)manager + 0xC;
+        *(s32 *)((u8 *)manager + 8) = 0x1388;
         *(s32 *)((u8 *)manager + 4) = zero;
-        fn_8002F53C((u8 *)(u32)manager + 0xC, fn_80167EE0, fn_80167E98, 0x18, 0x1388);
+        fn_8002F53C((u8 *)manager + 0xC, fn_80167EE0, fn_80167E98, 0x18, 0x1388);
         scale = lbl_80561938;
-        *(u8 **)((u8 *)(u32)manager + 0x1D4CC) = (u8 *)manager + 0x1D4D8;
+        *(u8 **)((u8 *)manager + 0x1D4CC) = (u8 *)manager + 0x1D4D8;
         *(s32 *)((u8 *)manager + 0x1D4D4) = 0x64;
         *(s32 *)((u8 *)manager + 0x1D4D0) = zero;
         entry = base + 0x20;
@@ -310,12 +329,12 @@ extern "C" void fn_801679F0(void) {
                 *(f32 *)(entry + 0x14) = scale * f0;
                 *(f32 *)(entry + 0x18) = -local.sp28[2];
             }
-            i += 1;
+            i++;
             entry += 0x20;
-        } while (i < 5);
-        *((u8 *)(u32)manager + 0x1E158) = zero;
+        } while (5 > i);
+        *((u8 *)manager + 0x1E158) = (u8)zero;
     }
-    lbl_8055E354 = manager;
+    lbl_8055E354 = (s32)manager;
     if (object->v1((const char *)base + 0x1E8) != 0) {
         local.sp18[0] = ((s32 *)lbl_802F9514)[0];
         local.sp18[1] = ((s32 *)lbl_802F9514)[1];
@@ -332,14 +351,14 @@ extern "C" void fn_801679F0(void) {
         }
         ((void (*)(void *, void *))(*(void ***)object)[5])(object, base + 0x1E8);
         container = (DummyContainerLocal *)fn_80131810();
-        if (container != 0) {
+        if (container) {
             i = 0;
             goto item_check;
         item_body:
             slot = local.sp40;
             do {
-                value = (s32)((DummyArg1 *)item)->getName();
-                if (((DummyParamLocal *)*slot)->check(value) != 0) {
+                s32 value2 = (s32)((DummyArg1 *)item)->getName();
+                if (((DummyParamLocal *)*slot)->check(value2) != 0) {
                     ((DummyParamLocal *)*slot)->apply(
                         item, (void *)lbl_8055E354, local.sp18);
                     break;
@@ -349,7 +368,7 @@ extern "C" void fn_801679F0(void) {
             i += 1;
         item_check:
             item = container->getItem(i);
-            if (item != 0)
+            if (item)
                 goto item_body;
             fn_80131818(container);
         }
@@ -407,6 +426,130 @@ void fn_80167EE0(s32 *arg0) {
     *arg0 = 0;
 }
 
+extern void fn_8002F634(void *, void *, s32, s32);
+extern void fn_802C6CF8(s32);
+#pragma cplusplus on
+void fn_8002F634(void *, void *, s32, s32);
+void fn_802C6CF8(s32);
+void fn_80167EEC(void) {
+    u8 *manager = (u8 *)(u32)lbl_8055E354;
+    s32 i;
+    s32 offset;
+    s32 *global;
+    u8 *entry;
+
+    if (manager != 0) {
+        global = (s32 *)lbl_80330020;
+        global[7] = 0;
+        global[15] = 0;
+        global[23] = 0;
+        global[31] = 0;
+        global[39] = 0;
+
+        i = *(s32 *)(manager + 4);
+        offset = i * 0x18;
+        do {
+            *(s32 *)(*(u32 *)manager + offset) = 0;
+            offset -= 0x18;
+        } while (i-- > 0);
+
+        *(s32 *)(manager + 4) = 0;
+        *(s32 *)(manager + 0x1D4D0) = 0;
+        *(u8 *)(manager + 0x1E158) = 0;
+
+        entry = (u8 *)lbl_80330020;
+        i = 0;
+        for (; i < 5; i++, entry += 0x20) {
+            if (*(s32 *)(entry + 0x10) != -1) {
+                fn_802C6CF8(*(s32 *)(entry + 0x10));
+                *(s32 *)(entry + 0x10) = -1;
+            }
+        }
+
+        if ((manager + 0x1D4CC) != 0 && (manager + 0x1D4CC) != 0) {
+            *(s32 *)(manager + 0x1D4CC) = 0;
+            *(s32 *)(manager + 0x1D4D0) = 0;
+            *(s32 *)(manager + 0x1D4D4) = 0;
+        }
+        if (manager != 0) {
+            fn_8002F634(manager + 0xC, (void *)fn_80167E98, 0x18, 0x1388);
+            if (manager != 0) {
+                *(s32 *)(manager + 0) = 0;
+                *(s32 *)(manager + 4) = 0;
+                *(s32 *)(manager + 8) = 0;
+            }
+            ((s32 (*)(void *))fn_80128668)(manager);
+        }
+    }
+}
+#pragma cplusplus reset
+void fn_80168020(void) {
+    register u8 *manager;
+    register s32 i;
+    register u8 *record;
+    register s32 offset;
+    register s32 zero;
+
+    manager = (u8 *)(u32)lbl_8055E354;
+    i = 0;
+    offset = 0;
+    zero = 0;
+    goto first_check;
+first_body:
+    {
+        register u8 *object;
+        register f32 z;
+        register f32 h;
+        register f32 y;
+
+        record = (u8 *)(u32)*(u32 *)manager + offset;
+        fn_801E9E30(0, (f32 *)(record + 4));
+        object = (u8 *)(u32)*(u32 *)record;
+        i += 1;
+        y = *(f32 *)(record + 8);
+        offset += 0x18;
+        h = *(f32 *)(object + 0x18);
+        z = *(f32 *)(record + 0x10);
+        *(f32 *)(record + 8) = y + h + z;
+        *(u8 *)(record + 0x14) = zero;
+    }
+first_check:
+    if (i < *(s32 *)(manager + 4))
+        goto first_body;
+
+    {
+        register s32 count = 0;
+        register s32 byteOffset = 0;
+        register s32 byteValue = 0;
+        goto second_check;
+second_body:
+        {
+            register u8 *entry = (u8 *)(u32)*(u32 *)(manager + 0x1D4CC) + byteOffset;
+            count += 1;
+            *(u8 *)(entry + 0x1D) = byteValue;
+            byteOffset += 0x20;
+        }
+second_check:
+        if (count < *(s32 *)(manager + 0x1D4D0))
+            goto second_body;
+    }
+
+    {
+        register s32 value = -1;
+        register s32 *table = lbl_80430260 + 1;
+        *--table = value;
+        table[4] = value;
+        table[8] = value;
+        table[12] = value;
+        table[16] = value;
+        table[20] = value;
+        table[24] = value;
+        table[28] = value;
+    }
+}
+
+#pragma push
+#pragma processor 750
 void fn_80168104(void) {
     extern void *fn_802C86DC(void);
     extern f64 fn_8002F234(f32);
@@ -415,37 +558,33 @@ void fn_80168104(void) {
     extern void fn_802C9900(f32);
     extern void fn_802C9904(void);
     extern void fn_802C744C(void *, void *);
-    extern s32 lbl_8055E354;
     extern u8 lbl_8042FF60[];
     extern f32 lbl_8056193C;
     extern f32 lbl_80561940;
     extern f64 lbl_80561948;
-    u8 *root = (u8 *)&lbl_8055E354;
+    struct { f32 x, y; } pos, d;
     u8 *data = (u8 *)fn_802C86DC();
-    f32 x = *(f32 *)(data + 0x24);
-    f32 y = *(f32 *)(data + 0x2C);
-    s32 i = 0;
-    s32 offset = 0;
-    while (i < *(s32 *)(root + 0x1D4D0)) {
-        u8 *entry = (u8 *)*(u32 *)(root + 0x1D4CC) + offset;
-        if (entry[4] != 0 && (entry[0x1C] == 0 ||
-            (f32)fn_8002F234((y - *(f32 *)(entry + 0xC)) * (y - *(f32 *)(entry + 0xC)) +
-             (x - *(f32 *)(entry + 8)) * (x - *(f32 *)(entry + 8))) -
-             *(f32 *)(entry + 0x10) < lbl_8056193C)) {
-            s32 j = 0;
-            while (j < *(s32 *)(entry + 0x18)) {
-                u8 *records = (u8 *)*(u32 *)root;
-                u8 *record = records + (*(s32 *)(entry + 0x14) + j) * 0x18;
-                void *obj = *(void **)record;
-                if (obj != 0 && *(s32 *)((u8 *)obj + 0x10) != 0 && record[0x14] == 0) {
-                    u32 token = *(u32 *)((u8 *)obj + 8);
+    s32 i, offset;
+    f32 scale = lbl_80561940;
+    f32 limit = lbl_8056193C;
+    pos.x = *(f32 *)(data + 0x24);
+    pos.y = *(f32 *)(data + 0x2C);
+    offset = 0;
+    for (i = 0; i < *(s32 *)((u8 *)lbl_8055E354 + 0x1D4D0); i++, offset += 0x20) {
+        u8 *entry = *(u8 **)((u8 *)lbl_8055E354 + 0x1D4CC) + offset;
+        s32 j;
+        if (entry[4] == 0) continue;
+        if (entry[0x1C] == 0 || (d.y = pos.y - *(f32 *)(entry + 0xC), d.x = pos.x - *(f32 *)(entry + 8), (f32)fn_8002F234(d.x * d.x + d.y * d.y) - *(f32 *)(entry + 0x10) < limit)) {
+            for (j = 0; j < *(s32 *)(*(u8 **)((u8 *)lbl_8055E354 + 0x1D4CC) + offset + 0x18); j++) {
+                u8 *record = *(u8 **)lbl_8055E354 + (*(s32 *)(*(u8 **)((u8 *)lbl_8055E354 + 0x1D4CC) + offset + 0x14) + j) * 0x18;
+                u8 *obj = *(u8 **)record;
+                if (obj != 0 && *(s32 *)(obj + 0x10) != 0 && record[0x14] == 0) {
+                    u32 token = obj ? *(u32 *)(obj + 8) : (u32)-1;
                     u32 a = fn_802C9994(token);
-                    u32 b = fn_802C9950(((token >> 1) & 0x7F00) | ((token >> 1) & 0x7F) |
-                        ((token >> 1) & 0x7F0000) | ((token >> 1) & 0x7F000000));
-                    fn_802C9900(((f32)(token >> 24) - (f32)lbl_80561948) / lbl_80561940);
+                    u32 b = fn_802C9950((((token >> 25) & 0x7F) << 24) | (((token >> 17) & 0x7F) << 16) | (((token >> 9) & 0x7F) << 8) | ((token >> 1) & 0x7F));
+                    fn_802C9900(((f32)(token >> 24) - (f32)lbl_80561948) / scale);
                     {
-                        s32 index = ((*(s32 *)record / 12) & 0xF) * 0x30;
-                        u8 *out = lbl_8042FF60 + index;
+                        u8 *out = lbl_8042FF60 + ((*(s32 *)record / 12) & 0xF) * 0x30;
                         *(f32 *)(out + 0x24) = *(f32 *)(record + 4);
                         *(f32 *)(out + 0x28) = *(f32 *)(record + 8);
                         *(f32 *)(out + 0x2C) = *(f32 *)(record + 0xC);
@@ -455,14 +594,11 @@ void fn_80168104(void) {
                     fn_802C9950(b);
                     fn_802C9904();
                 }
-                j++;
             }
         }
-        offset += 0x20;
-        i++;
     }
 }
-
+#pragma pop
 void fn_80168328(void) {
     extern s32 lbl_8055E354;
     extern void fn_801678D8(void);
@@ -518,23 +654,21 @@ void fn_801683F4(void *arg0, s32 arg1) {
     void *object;
     void *bounds;
     void *resource;
-    void *manager;
-    void *entries;
-    void *records;
     void *entry;
     void *record;
     void *recordObject;
     volatile f32 x;
     volatile f32 z;
+    volatile f32 minX;
+    volatile f32 maxX;
+    volatile f32 minZ;
+    volatile f32 maxZ;
+    volatile f32 ty;
     f32 dx;
     f32 dy;
     f32 dz;
     f32 tx;
     f32 tz;
-    volatile f32 minX;
-    volatile f32 maxX;
-    volatile f32 minZ;
-    volatile f32 maxZ;
     f32 radius;
 
     memset(counts, 0, 0x18);
@@ -549,10 +683,9 @@ void fn_801683F4(void *arg0, s32 arg1) {
         maxX = lbl_80561924;
         minZ = lbl_80561924;
         maxZ = lbl_80561924;
+        ty = lbl_80561924;
         radius = lbl_80561924;
-        bounds = 0;
-        if (*(s32 *)((u8 *)object + 0x24) > 0)
-            bounds = *(void **)((u8 *)object + 0x14);
+        bounds = *(s32 *)((u8 *)object + 0x24) > 0 ? *(void **)((u8 *)object + 0x14) : 0;
         if (bounds != 0) {
             dx = *(f32 *)((u8 *)indexEntry + 4) - x;
             dy = *(f32 *)((u8 *)indexEntry + 8) - *(f32 *)((u8 *)object + 0x64);
@@ -563,6 +696,9 @@ void fn_801683F4(void *arg0, s32 arg1) {
             tz = dz * *(f32 *)((u8 *)object + 0x5C)
                + (dx * *(f32 *)((u8 *)object + 0x54)
                + dy * *(f32 *)((u8 *)object + 0x58));
+            ty = dz * *(f32 *)((u8 *)object + 0x50)
+               + (dx * *(f32 *)((u8 *)object + 0x48)
+               + dy * *(f32 *)((u8 *)object + 0x4C));
             resource = *(void **)((u8 *)bounds + 0x17C);
             minX = tx < lbl_80561924 ? lbl_80561924 : tx;
             minX -= lbl_80561950 * *(f32 *)((u8 *)resource + 0x24);
@@ -577,12 +713,10 @@ void fn_801683F4(void *arg0, s32 arg1) {
               + *(f32 *)((u8 *)resource + 0x2C) * *(f32 *)((u8 *)resource + 0x2C));
         }
 
-        manager = (void *)(u32)lbl_8055E354;
-        entries = *(void **)((u8 *)manager + 0x1D4CC);
-        records = *(void **)manager;
+        i = 0;
         offset = 0;
-        for (i = 0; i < *(s32 *)((u8 *)manager + 0x1D4D0); i++) {
-            entry = (u8 *)entries + offset;
+        while (i < *(s32 *)((u8 *)(u32)lbl_8055E354 + 0x1D4D0)) {
+            entry = (u8 *)*(void **)((u8 *)(u32)lbl_8055E354 + 0x1D4CC) + offset;
             if (*(u8 *)((u8 *)entry + 0x1D) != 0) {
                 num++;
             } else if (*(u8 *)((u8 *)entry + 4) != 0 &&
@@ -591,8 +725,9 @@ void fn_801683F4(void *arg0, s32 arg1) {
                     (z - *(f32 *)((u8 *)entry + 0xC)) * (z - *(f32 *)((u8 *)entry + 0xC))
                   + (x - *(f32 *)((u8 *)entry + 8)) * (x - *(f32 *)((u8 *)entry + 8))
                  ) < radius + *(f32 *)((u8 *)entry + 0x10))) {
-                for (j = 0; j < *(s32 *)((u8 *)entry + 0x18); j++) {
-                    record = (u8 *)records +
+                j = 0;
+                while (j < *(s32 *)((u8 *)entry + 0x18)) {
+                    record = (u8 *)(void *)*(void **)(u32)lbl_8055E354 +
                         (*(s32 *)((u8 *)entry + 0x14) + j) * 0x18;
                     recordObject = *(void **)record;
                     if (recordObject != 0 &&
@@ -607,6 +742,9 @@ void fn_801683F4(void *arg0, s32 arg1) {
                         tz = dz * *(f32 *)((u8 *)object + 0x5C)
                            + (dx * *(f32 *)((u8 *)object + 0x54)
                            + dy * *(f32 *)((u8 *)object + 0x58));
+                        ty = dz * *(f32 *)((u8 *)object + 0x50)
+                           + (dx * *(f32 *)((u8 *)object + 0x48)
+                           + dy * *(f32 *)((u8 *)object + 0x4C));
                         radius = *(f32 *)((u8 *)recordObject + 0x14);
                         if (tx + radius > minX && tx - radius < maxX &&
                             tz + radius > minZ && tz - radius < maxZ) {
@@ -615,9 +753,11 @@ void fn_801683F4(void *arg0, s32 arg1) {
                             counts[index]++;
                         }
                     }
+                    j++;
                 }
             }
             offset += 0x20;
+            i++;
         }
     }
 
