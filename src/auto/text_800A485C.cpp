@@ -6799,6 +6799,29 @@ extern "C" s32 fn_800B1AFC(s32 arg0, s32 arg1, s32 *arg2, s32 arg3) {
 
 extern "C" s32 fn_800B6004(void *);
 extern "C" void fn_800B786C(void *);
+/* Close one of a volume's file handles - the work behind the public close,
+ * which runs here on the file thread (fn_800B74E0) and answers 0 or -1.
+ *
+ * The volume is taken from the handle's stream and locked for the whole
+ * operation; fn_800B6004 first carries out any mount or unmount waiting on it
+ * and says whether it can be used at all.  A write-protected volume still
+ * lets a file opened for writing get this far, so that the write it queued is
+ * dropped rather than left hanging.  The stream has to be one that is open,
+ * or nothing is closed at all.
+ *
+ * Pages the volume reads from here on are claimed for this file.  Its
+ * directory entry - size, dates, archive bit - goes back to disk only with
+ * the last handle of a plain data file on a volume that can be written to.
+ * What the handle still had queued for the write thread then leaves the
+ * stream's count and the thread is woken; it ends itself once nothing is left
+ * to write, and a queued write belonging to another handle is refused rather
+ * than thrown away.  Finally the volume's changed FAT pages and the pages
+ * this file owns are written out.  Only when all of that worked does the
+ * handle stop being open and the stream's handle count and the volume's
+ * open-file count drop, the stream slot itself going with the last handle.
+ * Any failure is left in the VF instance's last error, in the volume's and in
+ * the handle's, and is the return value.
+ */
 extern "C" void *fn_800B1BDC(void *file) {
     u8 *volume;
     s32 result = 0;
@@ -6828,15 +6851,22 @@ extern "C" void *fn_800B1BDC(void *file) {
         return (void *)VF_ERR_BAD_REQUEST;
     }
 
+    /* from here the pages the volume reads are claimed for this file */
     VF_VOL_PAGE_OWNER(volume) = file;
+    /* its directory entry only goes back to disk with the last handle of a
+     * plain data file on a volume that can be written to at all */
     if (((s32)VF_STREAM_OPEN_COUNT(VF_HANDLE_STREAM(file)) - 1) > 0) goto queued_write;
     if (VF_STREAM_ATTRS(VF_HANDLE_STREAM(file)) & (VF_ATTR_READ_ONLY | VF_ATTR_VOLUME_ID | VF_ATTR_DIRECTORY)) goto queued_write;
     if (status & (VF_ERR_NOT_MOUNTED | VF_ERR_WRITE_PROTECTED)) goto queued_write;
+    /* 0x1F88 bit 0 is set on the volume by the driver, never in this unit */
     if ((VF_STREAM_FLAGS(VF_HANDLE_STREAM(file)) & VF_STREAM_READ_ONLY) == 0 &&
         (*(u32 *)(volume + 0x1F88) & 1) == 1) goto queued_write;
     result = fn_800AB0C0(VF_STREAM_ENTRY(VF_HANDLE_STREAM(file)), 1);
 
 queued_write:
+    /* whatever this handle still had queued for the write thread leaves the
+     * stream's count, and the thread is woken - it ends itself once nothing
+     * is left to write */
     count = VF_HANDLE_PENDING(file);
     if (count != 0) {
         u8 *stream = VF_HANDLE_STREAM(file);
