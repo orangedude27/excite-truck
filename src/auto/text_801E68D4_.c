@@ -207,6 +207,62 @@ void fn_801E6CC8(void* arg0, s8 arg1) {
 typedef unsigned int u32;
 extern int fn_8012EDA8(void *, int, u32 *);
 extern void fn_802E317C(const char *, ...);
+typedef unsigned long long u64;
+typedef struct AnimTrack {
+    float a[4];
+    float b[4];
+    float t0;
+    float t1;
+} AnimTrack;
+typedef struct AnimKey {
+    s32 n;
+    float t;
+    float v[4];
+} AnimKey;
+typedef struct AnimData {
+    s32 count;
+    s32 inlineCount;
+    s32 trackCount;
+    float endTime;
+    char name[16];
+    u64 keys[1];
+} AnimData;
+typedef struct AnimPlayer {
+    s32 handle;
+    void *res;
+    s32 trackCount;
+    u8 flagC;
+    u8 flagD;
+    u8 padE[2];
+    AnimData *data;
+    s32 stream;
+    s32 frame;
+    s32 cached;
+    AnimKey cache;
+    float time;
+    AnimTrack tr[32];
+    float out[32][4];
+} AnimPlayer;
+
+extern float lbl_80562D80;
+extern float lbl_80562D84;
+extern float lbl_80562D88;
+extern float lbl_80562D8C;
+extern float lbl_80562D90;
+extern float lbl_80562D94;
+extern s32 lbl_8055EAD0;
+extern char lbl_80339B48[];
+extern void fn_8012EE80(s32);
+extern s32 fn_8012EE78(s32);
+extern s32 fn_8012EFB0(s32, void *, s32);
+extern void fn_802E30C8(const char *, ...);
+extern double fn_8002F234(double);
+
+#define NORM(v) (((float)(u32)(v) - lbl_80562D78) / lbl_80562D80)
+#define CLAMP(v) \
+    t = (lbl_80562D7C < NORM(v)) ? lbl_80562D7C : NORM(v); \
+    t = (t > lbl_80562D78) ? t : lbl_80562D78;
+
 #pragma dont_inline on
 void fn_801E6CD0(void *arg0, void *arg1, float farg0) {
     u32 sp8;
