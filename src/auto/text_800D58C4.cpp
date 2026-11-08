@@ -158,6 +158,7 @@ struct ResAccess_800D58C4 {
     virtual void v0();
     virtual void *getRes(u32 type, void *ptr, u32 unk);
 };
+struct ResFlagView_800D58C4 { u8 pad[0x3C]; u32 flags; };
 struct StateNode_800D6CA0 { StateNode_800D6CA0* next; };
 extern "C" const char lbl_8031E908[];
 extern "C" const char lbl_8031E92C[];
@@ -1281,8 +1282,8 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
     extern const char lbl_8031F990[];
     const char* strBase = lbl_8031F990;
     u8* self = (u8*)this_;
-    u8* dst;
     const u8* src;
+    u8* dst;
     int i;
     s32 texBase;
     s32 off;
@@ -1323,8 +1324,8 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
     fn_8002F53C(self + 0x3C, fn_800D7F6C, fn_800D2DD4, 4, 4);
     Init__Q34nw4r3lyt8MaterialFv(self);
     fn_800D9584(self, res);
-    dst = self + 0x24;
     src = (const u8*)res + 0x14;
+    dst = self + 0x24;
     i = 0;
     do {
         fn_800D86F0(dst, (void*)src);
@@ -1332,8 +1333,8 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
         dst += 8;
         src += 8;
     } while (i < 3);
-    dst = self + 0x3C;
     src = (const u8*)res + 0x2C;
+    dst = self + 0x3C;
     i = 0;
     do {
         GXInitLightColor_800D8714(dst, (void*)src);
@@ -1342,24 +1343,24 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
         src += 4;
     } while (i < 4);
     texBase = fn_800D8A04((s32)res, 0x40);
-    off = (s32)((u8)fn_800D8720((s32*)((const u8*)res + 0x3C)) << 2) + 0x40;
+    off = (s32)((u8)fn_800D8720((s32*)((u32)res + 0x3C)) << 2) + 0x40;
     texCoordSrc = (void*)fn_800D89FC((s32)res, off);
-    off += (u8)fn_800D872C((s32*)((const u8*)res + 0x3C)) * 0x14;
+    off += (u8)fn_800D872C((s32*)((u32)res + 0x3C)) * 0x14;
     texCoordGenAry = fn_800D89F4((s32)res, off);
-    off += (s32)((u8)fn_800D8738((s32*)((const u8*)res + 0x3C)) << 2);
-    texNum = fn_800D89E4((u8)fn_800D8720((s32*)((const u8*)res + 0x3C)), 8);
-    texCoordNum = fn_800D89E4((u8)fn_800D872C((s32*)((const u8*)res + 0x3C)), 0xA);
-    texCoordGenNum = fn_800D89E4((u8)fn_800D8738((s32*)((const u8*)res + 0x3C)), 8);
-    v0 = fn_800D8744((s32*)((const u8*)res + 0x3C));
+    off += (s32)((u8)fn_800D8738((s32*)((u32)res + 0x3C)) << 2);
+    texNum = fn_800D89E4((u8)fn_800D8720((s32*)((u32)res + 0x3C)), 8);
+    texCoordNum = fn_800D89E4((u8)fn_800D872C((s32*)((u32)res + 0x3C)), 0xA);
+    texCoordGenNum = fn_800D89E4((u8)fn_800D8738((s32*)((u32)res + 0x3C)), 8);
+    v0 = fn_800D8744((s32*)((u32)res + 0x3C));
     hasA = (u8)((u8)v0 != 0);
-    v1 = fn_800D8750((s32*)((const u8*)res + 0x3C), (u8)v0);
+    v1 = fn_800D8750((s32*)((u32)res + 0x3C), (u8)v0);
     hasB = (u8)((u8)v1 != 0);
-    chanA = fn_800D875C((s32*)((const u8*)res + 0x3C), (u8)v1);
-    chanB = fn_800D8768((s32*)((const u8*)res + 0x3C));
-    v0 = fn_800D8774((s32*)((const u8*)res + 0x3C));
-    indNum = fn_800D89E4((u8)fn_800D8780((s32*)((const u8*)res + 0x3C)), 3);
-    indTexStageNum = fn_800D89E4((u8)fn_800D878C((s32*)((const u8*)res + 0x3C)), 4);
-    tevStageNum = fn_800D89E4((u8)fn_800D8798((s32*)((const u8*)res + 0x3C)), 0x10);
+    chanA = fn_800D875C((s32*)((u32)res + 0x3C), (u8)v1);
+    chanB = fn_800D8768((s32*)((u32)res + 0x3C));
+    v0 = fn_800D8774((s32*)((u32)res + 0x3C));
+    indNum = fn_800D89E4((u8)fn_800D8780((s32*)((u32)res + 0x3C)), 3);
+    indTexStageNum = fn_800D89E4((u8)fn_800D878C((s32*)((u32)res + 0x3C)), 4);
+    tevStageNum = fn_800D89E4((u8)fn_800D8798((s32*)((u32)res + 0x3C)), 0x10);
     fn_800D8B28(self, (u8)texNum, (u8)texCoordNum, (u8)texCoordGenNum, (u8)tevStageNum, chanA, (u8)indTexStageNum, (u8)indNum, hasA, hasB, chanB, v0);
     if (*(s32*)(self + 0x58) != 0) {
         SetTextureNum__Q36nw4hbm3lyt8MaterialFUc(self, (u8)texNum);
@@ -1450,7 +1451,7 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
                 j += 1;
             } while (j < (u8)indNum);
         }
-        off += (u8)fn_800D8780((s32*)((const u8*)res + 0x3C)) * 0x14;
+        off += (u8)fn_800D8780((s32*)((u32)res + 0x3C)) * 0x14;
         if ((u8)indTexStageNum != 0) {
             fn_800D9ACC(self);
             texStageDst = (void*)fn_800D947C(self);
@@ -1463,7 +1464,7 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
                 j += 1;
             } while (j < (u8)indTexStageNum);
         }
-        off += (u8)fn_800D878C((s32*)((const u8*)res + 0x3C)) << 2;
+        off += (u8)fn_800D878C((s32*)((u32)res + 0x3C)) << 2;
         if ((u8)tevStageNum != 0) {
             fn_800D9844(self);
             tevDst = (void*)fn_800D9524(self);
@@ -1476,7 +1477,7 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
                 j += 1;
             } while (j < (u8)tevStageNum);
         }
-        off += (u8)fn_800D8798((s32*)((const u8*)res + 0x3C)) << 4;
+        off += (u8)fn_800D8798((s32*)((u32)res + 0x3C)) << 4;
         if (chanB != 0) {
             if (fn_800D893C(self) == 0) {
                 Panic__Q26nw4hbm2dbFPCciPCce(strBase, 0x238, strBase + 0x18C);
