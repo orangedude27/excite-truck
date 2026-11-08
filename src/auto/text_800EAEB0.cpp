@@ -1431,6 +1431,7 @@ int MmlParser::Parse(MmlSeqTrack *track, bool doNoteOn) const {
     }
     return 0;
 }
+#pragma use_lmw_stmw reset
 
 #pragma push
 #pragma small_data off
