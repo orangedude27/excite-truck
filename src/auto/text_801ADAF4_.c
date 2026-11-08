@@ -26,6 +26,13 @@ extern const f32 lbl_80558DC4;
 extern const f32 lbl_80562524, lbl_80562528, lbl_8056252C, lbl_80562530, lbl_80562534, lbl_80562538, lbl_8056253C, lbl_80562540, lbl_80562544, lbl_80562548;
 #define F(p, o) (*(f32 *)((u8 *)(p) + (o)))
 
+typedef struct {
+    s32 unk_0x0;
+    f32 v[3];
+    f32 unk_0x10, unk_0x14, unk_0x18;
+    f32 acc[3];
+} Ent801ADB44;
+
 static inline void xf(f32 *out, f32 *in, u8 *m) {
     if (out == in) {
         f32 y = in[1], x = in[0], z = in[2];
@@ -89,6 +96,105 @@ void fn_801ADB3C(void *arg0) {
     fn_801ADAB8((void **)((u8 *)arg0 - 0x23C));
 }
 
+#pragma push
+#pragma processor 750
+void fn_801ADB44(void *a, void *b) {
+    f32 flagpad;
+    s32 flag;
+    f32 r[3], e[3], v[3], w[3], t[3], d[3], pos[3], n[3], hit[3];
+    s32 found;
+    f32 dist, dot, k, m, lim;
+    if (F(a, 0xC) * F(b, 0x58) + (F(a, 4) * F(b, 0x40) + F(a, 8) * F(b, 0x4C)) > lbl_80562520) {
+        return;
+    }
+    xf(pos, (f32 *)((u8 *)a + 4), b);
+    pos[0] += F(b, 0x60);
+    pos[1] += F(b, 0x64);
+    pos[2] += F(b, 0x68);
+    dist = lbl_80562520;
+    flag = 0;
+    found = fn_801E9EC4((u8 *)b + 0x6C, hit, n, &flag);
+    if (found) {
+        d[0] = hit[0] - pos[0];
+        d[1] = hit[1] - pos[1];
+        d[2] = hit[2] - pos[2];
+        dist = PSVECDotProduct(d, n);
+    }
+    if (!found || dist > lbl_80562524) {
+        n[0] = pos[0] - F(b, 0x60);
+        n[1] = pos[1] - F(b, 0x64);
+        n[2] = pos[2] - F(b, 0x68);
+        PSVECNormalize(n, n);
+        n[0] *= lbl_80562528;
+        n[1] *= lbl_80562528;
+        n[2] *= lbl_80562528;
+        dist = lbl_8056252C;
+    }
+    if (dist > lbl_80562520) {
+        fn_8017B6D4(b, t, pos);
+        dot = PSVECDotProduct(t, n);
+        w[0] = t[0] + n[0] * -dot;
+        w[1] = t[1] + n[1] * -dot;
+        w[2] = t[2] + n[2] * -dot;
+        F(a, 0x1C) = F(a, 0x1C) + w[0] * lbl_80562530;
+        F(a, 0x20) = F(a, 0x20) + w[1] * lbl_80562530;
+        F(a, 0x24) = F(a, 0x24) + w[2] * lbl_80562530;
+        m = PSVECMag((f32 *)((u8 *)a + 0x1C));
+        if (m > lbl_80562534) {
+            k = lbl_80562534 / m;
+            F(a, 0x1C) *= k;
+            F(a, 0x20) *= k;
+            F(a, 0x24) *= k;
+        }
+        if (__fabs(F(a, 0x18)) <= lbl_80558DC4) {
+            f32 s = (dot < lbl_80562520) ? lbl_80562538 : lbl_8056252C;
+            m = dist * F(a, 0x10) * s;
+        } else {
+            f32 q = dist * F(a, 0x10) - dot * F(a, 0x18);
+            m = lbl_80562520;
+            if (!(m > q)) m = q;
+        }
+        v[0] = n[0] * m;
+        v[1] = n[1] * m;
+        v[2] = n[2] * m;
+        e[0] = w[0] * (lbl_8056253C * F(b, 0xD4));
+        e[1] = w[1] * (lbl_8056253C * F(b, 0xD4));
+        e[2] = w[2] * (lbl_8056253C * F(b, 0xD4));
+        k = lbl_80562540 * F(b, 0xD4);
+        e[0] += F(a, 0x1C) * k;
+        e[1] += F(a, 0x20) * k;
+        e[2] += F(a, 0x24) * k;
+        k = PSVECMag(e);
+        lim = m * F(a, 0x14);
+        if (!(lim > lbl_80562544)) lim = lbl_80562544;
+        if (k > lim) {
+            k = lim / k;
+            e[0] *= k;
+            e[1] *= k;
+            e[2] *= k;
+        }
+        v[0] += e[0];
+        v[1] += e[1];
+        v[2] += e[2];
+        (*(void (**)(void *, f32 *, f32 *, s32, s32))(*(u8 **)b + 0x48))(b, v, pos, flag, 0);
+        k = fn_8019DF88((u8 *)b + 0x60, t, (u8 *)b + 0x148, pos, n, F(b, 0xD4), lbl_80562520);
+        if (k > lbl_80562520) {
+            r[0] = n[0] * k;
+            r[1] = n[1] * k;
+            r[2] = n[2] * k;
+            fn_8017B5D4(b, *(s32 *)((u8 *)b + 0x24) > 0 ? *(s32 *)((u8 *)b + 0x14) : 0, 0, r, pos, flag, 0, 0,
+                        lbl_80562548 > dist ? dist : lbl_80562548);
+            if (*(s32 *)((u8 *)b + 0x10) == 0x50434152) {
+                fn_802E30C8(lbl_80335950, lbl_8055E3C4, pos[0], pos[1], pos[2]);
+            }
+        }
+    } else {
+        F(a, 0x1C) = lbl_80562520;
+        F(a, 0x20) = lbl_80562520;
+        F(a, 0x24) = lbl_80562520;
+    }
+}
+#pragma pop
 void fn_801AE158(void *arg0) {
     struct { f32 field1; f32 field2; f32 field3; } locals;
     locals.field1 = lbl_80562520;
