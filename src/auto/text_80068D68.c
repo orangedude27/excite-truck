@@ -13628,15 +13628,16 @@ BOOLEAN btsnd_hcic_read_rssi(UINT16 handle) {
 extern u8 lbl_802EEC08[];
 typedef struct { u8 channels[HCI_AFH_CHANNEL_MAP_LEN]; } tAFH_CHANNEL_MAP;
 
-/* Disable Bluetooth channels first..last by clearing their bits in the
-   default AFH map, then send HCI_Set_AFH_Channel_Classification. */
+/* Clear the bits of channels first..last in the default AFH channel map
+   (which starts with all 79 channels enabled), then send the resulting map
+   in an HCI_Set_AFH_Channel_Classification command. */
 BOOLEAN btsnd_hcic_set_afh_channels(u8 first_disabled, u8 last_disabled) {
-    tAFH_CHANNEL_MAP afh_map;
+    tAFH_CHANNEL_MAP map;
     u8 *p;
     int i;
 
     /* Begin with every channel enabled. */
-    afh_map = *(tAFH_CHANNEL_MAP *)lbl_802EEC08;
+    map = *(tAFH_CHANNEL_MAP *)lbl_802EEC08;
 
     p = (u8 *)GKI_getpoolbuf(2);
     if (p == NULL) return FALSE;
@@ -13648,9 +13649,9 @@ BOOLEAN btsnd_hcic_set_afh_channels(u8 first_disabled, u8 last_disabled) {
     p[10] = HCIC_PARAM_SIZE_SET_AFH_CHANNELS;
 
     if (first_disabled <= last_disabled && last_disabled <= 78) {
-        for (i = first_disabled; i <= last_disabled; i++) afh_map.channels[i / 8] &= ~(1 << (i % 8));
+        for (i = first_disabled; i <= last_disabled; i++) map.channels[i / 8] &= ~(1 << (i % 8));
     }
-    for (i = 0; i < HCI_AFH_CHANNEL_MAP_LEN; i++) p[11 + i] = afh_map.channels[i];
+    for (i = 0; i < HCI_AFH_CHANNEL_MAP_LEN; i++) p[11 + i] = map.channels[i];
 
     btu_hcif_send_cmd(p);
     return TRUE;
