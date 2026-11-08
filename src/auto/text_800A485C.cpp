@@ -3682,10 +3682,10 @@ extern "C" s32 VFiPFENT_ITER_IsAtLogicalEnd(void *arg0) {
     u32 old;
     s32 result;
     s32 status;
-    VFiPFENTIterLayout *iter = (VFiPFENTIterLayout *)arg0;
+    VFiPFEntIter *iter = (VFiPFEntIter *)arg0;
 
-    if (iter->sentinel == 0xFFFFFFFFu ||
-        iter->data[0] == 0 ||
+    if (iter->sector == 0xFFFFFFFFu ||
+        iter->entry[0] == 0 ||
         iter->position < 0xF423Fu) {
         goto return_zero;
     }
@@ -3698,10 +3698,10 @@ extern "C" s32 VFiPFENT_ITER_IsAtLogicalEnd(void *arg0) {
         goto return_one;
     }
 
-    if (iter->sentinel == 0xFFFFFFFFu) {
+    if (iter->sector == 0xFFFFFFFFu) {
         goto use_short_error;
     }
-    if (iter->sentinel != 0xFFFFFFFFu) {
+    if (iter->sector != 0xFFFFFFFFu) {
         goto read_entry;
     }
 use_short_error:
@@ -3709,8 +3709,8 @@ use_short_error:
     goto finish_status;
 
 read_entry:
-    result = fn_800B5324(iter->stream, iter->data, iter->sentinel,
-                         iter->length, 0x20, &sp8, 0);
+    result = fn_800B5324(iter->volume, iter->entry, iter->sector,
+                         iter->sectorOff, 0x20, &sp8, 0);
     status = 0x11;
     if (sp8 == 0x20) {
         status = result;
