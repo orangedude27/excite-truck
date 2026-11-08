@@ -184,21 +184,21 @@ void *fn_8020DE74(void *arg0) {
     if (child != 0) *(void **)((u8 *)child + 0x10) = group;
 
     if (is_race != 0) {
-        obj->child24 = fn_802077A4(labels + 0xa8, 5, left, right);
-        obj->child2c = fn_802077A4(labels + 0xb8, 5, left, right);
-        obj->child48 = fn_802076A0(labels + 0xcc, 1, group, 2);
-        obj->child4c = fn_802076A0(labels + 0xdc, 1, group, 2);
-        obj->child50 = fn_802076A0(labels + 0xec, 1, group, 2);
-        obj->child44 = fn_802076A0(labels + 0x100, 1, group, 0);
-        obj->child54 = fn_802076A0(labels + 0x110, 1, group, 0);
+        obj->niceLand = fn_802077A4(labels + 0xa8, 5, left, right);
+        obj->boostTurboTap = fn_802077A4(labels + 0xb8, 5, left, right);
+        obj->heatBeep = fn_802076A0(labels + 0xcc, 1, group, 2);
+        obj->overheat = fn_802076A0(labels + 0xdc, 1, group, 2);
+        obj->overheatStart = fn_802076A0(labels + 0xec, 1, group, 2);
+        obj->waterSink = fn_802076A0(labels + 0x100, 1, group, 0);
+        obj->invulnerable = fn_802076A0(labels + 0x110, 1, group, 0);
     } else {
-        obj->child24 = 0;
-        obj->child2c = 0;
-        obj->child48 = 0;
-        obj->child4c = 0;
-        obj->child50 = 0;
-        obj->child44 = 0;
-        obj->child54 = 0;
+        obj->niceLand = 0;
+        obj->boostTurboTap = 0;
+        obj->heatBeep = 0;
+        obj->overheat = 0;
+        obj->overheatStart = 0;
+        obj->waterSink = 0;
+        obj->invulnerable = 0;
     }
     {
         float reset = lbl_80563370;
