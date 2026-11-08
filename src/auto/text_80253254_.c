@@ -1647,90 +1647,100 @@ struct CarUIModel {
     s32 mode;              /* 0x120: 0 = to the screen, 1 = fn_802569DC path */
 };
 
-void fn_80256DD8(void *effect) {
+/* Draw the car preview (caruimod) for one frame.
+ *
+ * Keeps the renderer's current 4x3 model matrix, picks up the view setup for
+ * this model (the camera record of cameraIndex, or one built from the
+ * vehicle), sets the projection, the light direction, intensity and colours
+ * and a camera-relative basis, then places the loaded model (modelIndex,
+ * "cc_back.mod") at the position of modelMtx.  It is drawn tinted and scaled
+ * from level, or stretched 1% in Y, and every piece of renderer state is put
+ * back before returning.
+ */
+void fn_80256DD8(void *model) {
 
-extern void *fn_802C86DC(void);
-extern void fn_80253004(s32, void *);
-extern void fn_802545C4(void *, s32, s32);
-extern float fn_802C9744(void);
-extern void fn_802C974C(float, float, float);
-extern void fn_802C8638(void *);
-extern void fn_802C99E8(float);
-extern void fn_802C9950(s32);
-extern void fn_802C9994(s32);
-extern void fn_801F1C24(void *);
+extern void *fn_802C86DC(void);          /* the current 4x3 model matrix */
+extern void fn_80253004(s32, void *);    /* copy a camera record by index */
+extern void fn_802545C4(void *, s32, s32); /* build the view setup instead */
+extern float fn_802C9744(void);          /* current field of view */
+extern void fn_802C974C(float, float, float); /* projection: near, far, fov */
+extern void fn_802C8638(void *);         /* make a 4x3 matrix the current one */
+extern void fn_802C99E8(float);          /* light intensity */
+extern void fn_802C9950(s32);            /* light diffuse colour */
+extern void fn_802C9994(s32);            /* light ambient colour */
+extern void fn_801F1C24(void *);         /* camera-relative orthonormal basis */
 extern void fn_802C7730(void *);
-extern void fn_802ABE58(void *, float *, s32 *, float);
-extern void fn_80253CA4(void *, void *, float *, void *);
+extern void fn_802ABE58(void *, float *, s32 *, float); /* level -> scale + colour */
+extern void fn_80253CA4(void *, void *, float *, void *); /* the four wheels */
 extern void fn_802569DC(void *, s32, float);
-extern void fn_802C744C(s32, void *);
-extern void fn_802C70AC(s32, void *, s32, s32);
+extern void fn_802C744C(s32, void *);    /* set a model's transform */
+extern void fn_802C70AC(s32, void *, s32, s32); /* set a model's transform */
 extern void fn_802AEB3C(void *);
 extern void fn_802B016C(void);
-extern s32 fn_802C9C8C(s32);
-extern void fn_802C9CE0(void);
-extern u8 fn_802C2C00(u8);
-extern s32 fn_802C990C(s32);
-extern void fn_802C2BB8(float *, float *, float *);
-extern void fn_802C2B78(float, float, float);
-extern void fn_802ABFF8(s32, float);
-extern void fn_802AC070(void);
+extern s32 fn_802C9C8C(s32);             /* start drawing to the screen */
+extern void fn_802C9CE0(void);           /* and show it */
+extern u8 fn_802C2C00(u8);               /* global scale on/off, returns old */
+extern s32 fn_802C990C(s32);             /* model colour, returns old */
+extern void fn_802C2BB8(float *, float *, float *); /* get global scale */
+extern void fn_802C2B78(float, float, float);       /* set global scale */
+extern void fn_802ABFF8(s32, float);     /* draw tinted and scaled */
+extern void fn_802AC070(void);           /* undo fn_802ABFF8 */
 extern void fn_802ABE50(void);
 extern void *memset(void *, int, unsigned long);
-extern u8 lbl_8055F330;
-extern float lbl_80563AA0;
+extern u8 lbl_8055F330;      /* which view is being drawn (0 = plain UI) */
+extern float lbl_80563AA0;   /* -0.3048f: how far a wheel offset may sink */
 extern float lbl_80563A00, lbl_80563A04, lbl_80563A14, lbl_80563AA4, lbl_8055F334;
     u8 frame[0x160];
-    s32 *srcMatrix;
-    s32 axis;
-    float time;
-    float level;
-    void *basis;
+    s32 *currentMtx;
+    s32 wheel;
+    float fov;
+    float scale;
+    void *mtx;
 
-    struct MatWord9 { s32 v[9]; };
-    struct MatWord3 { s32 v[3]; };
-    struct Effect { u8 pad[0xA8]; u8 aux; };
-    srcMatrix = (s32 *)fn_802C86DC();
-    *(struct MatWord9 *)(frame + 0xB0) = *(struct MatWord9 *)srcMatrix;
-    *(struct MatWord3 *)(frame + 0xD4) = *(struct MatWord3 *)(srcMatrix + 9);
+    struct MtxWords9 { s32 v[9]; };
+    struct MtxWords3 { s32 v[3]; };
+    struct Model { u8 pad[0xA8]; u8 modelMtx; };
+    currentMtx = (s32 *)fn_802C86DC();
+    *(struct MtxWords9 *)(frame + 0xB0) = *(struct MtxWords9 *)currentMtx;
+    *(struct MtxWords3 *)(frame + 0xD4) = *(struct MtxWords3 *)(currentMtx + 9);
 
     if (lbl_8055F330 != 0) {
-        float *coords = (float *)(frame + 0x120);
-        fn_80253004(*(s32 *)((u8 *)effect + 4), frame + 0xe0);
-        for (axis = 0; axis < 4; axis++) {
-            coords[axis] = coords[axis] < lbl_80563AA0 ? coords[axis] : lbl_80563AA0;
+        float *wheelOffsets = (float *)(frame + 0x120);
+        fn_80253004(*(s32 *)((u8 *)model + 4), frame + 0xe0);
+        for (wheel = 0; wheel < 4; wheel++) {
+            wheelOffsets[wheel] = wheelOffsets[wheel] < lbl_80563AA0 ? wheelOffsets[wheel] : lbl_80563AA0;
         }
     } else {
-        fn_802545C4(frame + 0xe0, *(s32 *)((u8 *)effect + 0xE4),
-                    *(s32 *)((u8 *)effect + 8));
+        fn_802545C4(frame + 0xe0, *(s32 *)((u8 *)model + 0xE4),
+                    *(s32 *)((u8 *)model + 8));
     }
 
-    time = fn_802C9744();
-    fn_802C974C(lbl_80563A14, lbl_80563A00, time);
-    fn_802C8638((u8 *)effect + 0xA8);
+    fov = fn_802C9744();
+    fn_802C974C(lbl_80563A14 /* 1.0f */, lbl_80563A00 /* 2250.0f */, fov);
+    fn_802C8638((u8 *)model + 0xA8);
     fn_80253258();
     fn_802C99E8(lbl_80563A14);
-    if (*(s32 *)((u8 *)effect + 0x120) == 1)
-        fn_802C9950(0x00AAAAC8);
+    if (*(s32 *)((u8 *)model + 0x120) == 1)
+        fn_802C9950(UI_LIGHT_DIFFUSE_MODE1);
     else
-        fn_802C9950(0x00555766);
-    fn_802C9994(0x00FFF5D9);
+        fn_802C9950(UI_LIGHT_DIFFUSE_MODE0);
+    fn_802C9994(UI_LIGHT_AMBIENT);
     fn_801F1C24(frame + 0x80);
     fn_802C7730(frame + 0x80);
-    fn_802ABE58((u8 *)effect + 0x11C, (float *)(frame + 0x4),
+    fn_802ABE58((u8 *)model + 0x11C, (float *)(frame + 0x4),
                 (s32 *)frame, lbl_8055F334);
 
-    if (*(u8 *)*(void **)((u8 *)effect + 8) != 0)
-        fn_80253CA4(*(void **)((u8 *)effect + 8), frame + 0xe0,
+    if (*(u8 *)*(void **)((u8 *)model + 8) != 0)
+        fn_80253CA4(*(void **)((u8 *)model + 8), frame + 0xe0,
                     (float *)(frame + 0x120), frame + 0x130);
 
-    if (*(s32 *)((u8 *)effect + 0x120) == 1) {
-        level = *(float *)(frame + 0x4);
-        fn_802569DC(effect, *(s32 *)frame, level);
+    if (*(s32 *)((u8 *)model + 0x120) == 1) {
+        scale = *(float *)(frame + 0x4);
+        fn_802569DC(model, *(s32 *)frame, scale);
     }
 
-    if (*(s32 *)((u8 *)effect + 0xE4) != -1) {
-        basis = frame + 0x50;
+    if (*(s32 *)((u8 *)model + 0xE4) != -1) {
+        mtx = frame + 0x50;
         *(float *)(frame + 0x50) = lbl_80563A14;
         *(float *)(frame + 0x54) = lbl_80563A04;
         *(float *)(frame + 0x58) = lbl_80563A04;
@@ -1744,63 +1754,63 @@ extern float lbl_80563A00, lbl_80563A04, lbl_80563A14, lbl_80563AA4, lbl_8055F33
         *(float *)(frame + 0x78) = lbl_80563A04;
         *(float *)(frame + 0x7c) = lbl_80563A04;
         if (lbl_8055F330 != 0) {
-            *(float *)(frame + 0x74) = *(float *)((u8 *)effect + 0xCC);
-            *(float *)(frame + 0x78) = *(float *)((u8 *)effect + 0xD0);
-            *(float *)(frame + 0x7c) = *(float *)((u8 *)effect + 0xD4);
-            fn_802C744C(*(s32 *)((u8 *)effect + 0xE4), basis);
+            *(float *)(frame + 0x74) = *(float *)((u8 *)model + 0xCC);
+            *(float *)(frame + 0x78) = *(float *)((u8 *)model + 0xD0);
+            *(float *)(frame + 0x7c) = *(float *)((u8 *)model + 0xD4);
+            fn_802C744C(*(s32 *)((u8 *)model + 0xE4), mtx);
         } else {
-            fn_802C70AC(*(s32 *)((u8 *)effect + 0xE4), basis, 0, 1);
+            fn_802C70AC(*(s32 *)((u8 *)model + 0xE4), mtx, 0, 1);
         }
     }
 
     if (lbl_8055F330 != 0) {
-        fn_802AEB3C(&((struct Effect *)effect)->aux);
+        fn_802AEB3C(&((struct Model *)model)->modelMtx);
         fn_802B016C();
     }
 
-    if (*(s32 *)((u8 *)effect + 0x120) == 0 &&
+    if (*(s32 *)((u8 *)model + 0x120) == 0 &&
         fn_802C9C8C(0x50000000) != 0) {
-        void *soundObj = *(void **)((u8 *)effect + 8);
-        if (*(u8 *)soundObj != 0) fn_80254354(soundObj);
+        void *vehicle = *(void **)((u8 *)model + 8);
+        if (*(u8 *)vehicle != 0) fn_80254354(vehicle);
         fn_802C9CE0();
     }
 
-    if (*(s32 *)((u8 *)effect + 0x120) == 1)
-        fn_802566A4(effect);
+    if (*(s32 *)((u8 *)model + 0x120) == 1)
+        fn_802566A4(model);
 
-    if (*(u8 *)((u8 *)effect + 0xDC) != 0) {
+    if (*(u8 *)((u8 *)model + 0xDC) != 0) {
         *(u8 *)(frame + 0x18) = fn_802C2C00(1);
         *(s32 *)(frame + 0x8) = fn_802C990C(0xFF000000);
         fn_802C2BB8((float *)(frame + 0xc), (float *)(frame + 0x10),
                     (float *)(frame + 0x14));
-        fn_802C2B78(lbl_80563A14, lbl_80563AA4, lbl_80563A14);
+        fn_802C2B78(lbl_80563A14, lbl_80563AA4 /* 1.01f */, lbl_80563A14);
     } else {
         memset(frame + 0x8, 0, 0x14);
     }
 
-    if (*(u8 *)((u8 *)effect + 0x118) != 0 &&
-        *(u8 *)((u8 *)effect + 0xDC) == 0) {
-        level = *(float *)(frame + 0x4);
-        fn_802ABFF8(*(s32 *)frame, level);
+    if (*(u8 *)((u8 *)model + 0x118) != 0 &&
+        *(u8 *)((u8 *)model + 0xDC) == 0) {
+        scale = *(float *)(frame + 0x4);
+        fn_802ABFF8(*(s32 *)frame, scale);
     }
 
     {
-        void *soundObj = *(void **)((u8 *)effect + 8);
-        if (*(u8 *)soundObj != 0) fn_8025419C(soundObj);
+        void *vehicle = *(void **)((u8 *)model + 8);
+        if (*(u8 *)vehicle != 0) fn_8025419C(vehicle);
     }
 
-    if (*(u8 *)((u8 *)effect + 0x118) != 0 &&
-        *(u8 *)((u8 *)effect + 0xDC) == 0)
+    if (*(u8 *)((u8 *)model + 0x118) != 0 &&
+        *(u8 *)((u8 *)model + 0xDC) == 0)
         fn_802AC070();
 
-    if (*(u8 *)((u8 *)effect + 0xDC) != 0) {
+    if (*(u8 *)((u8 *)model + 0xDC) != 0) {
         fn_802C990C(*(s32 *)(frame + 0x8));
         fn_802C2B78(*(float *)(frame + 0xc), *(float *)(frame + 0x10),
                     *(float *)(frame + 0x14));
         fn_802C2C00(*(u8 *)(frame + 0x18));
     }
 
-    if (*(s32 *)((u8 *)effect + 0xE4) != -1) {
+    if (*(s32 *)((u8 *)model + 0xE4) != -1) {
         *(float *)(frame + 0x20) = lbl_80563A14;
         *(float *)(frame + 0x24) = lbl_80563A04;
         *(float *)(frame + 0x28) = lbl_80563A04;
@@ -1813,10 +1823,10 @@ extern float lbl_80563A00, lbl_80563A04, lbl_80563A14, lbl_80563AA4, lbl_8055F33
         *(float *)(frame + 0x44) = lbl_80563A04;
         *(float *)(frame + 0x48) = lbl_80563A04;
         *(float *)(frame + 0x4c) = lbl_80563A04;
-        fn_802C70AC(*(s32 *)((u8 *)effect + 0xE4), frame + 0x20, 0, 2);
+        fn_802C70AC(*(s32 *)((u8 *)model + 0xE4), frame + 0x20, 0, 2);
     }
 
-    if (*(u8 *)((u8 *)effect + 0x118) != 0)
+    if (*(u8 *)((u8 *)model + 0x118) != 0)
         fn_802ABE50();
     fn_802C8638(frame + 0xb0);
 }
