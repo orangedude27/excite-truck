@@ -1,4 +1,4 @@
-struct Rec78 { long tag; unsigned char b[0x60]; long a64, a68, a6c; unsigned char c70; long a74; };
+struct Rec78 { long tag; unsigned char b04, b05, b06, b07, b08, b09, b0a, b0b, b0c, b0d, b0e, b0f, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b1a, b1b, b1c, b1d, b1e, b1f, b20, b21, b22, b23, b24, b25, b26, b27, b28, b29, b2a, b2b, b2c, b2d, b2e, b2f, b30, b31, b32, b33, b34, b35, b36, b37, b38, b39, b3a, b3b, b3c, b3d, b3e, b3f, b40, b41, b42, b43, b44, b45, b46, b47, b48, b49, b4a, b4b, b4c, b4d, b4e, b4f, b50, b51, b52, b53, b54, b55, b56, b57, b58, b59, b5a, b5b, b5c, b5d, b5e, b5f, b60, b61, b62, b63; long a64, a68, a6c; unsigned char c70; long a74; };
 struct Loc78 { struct Rec78 r; long idx; };
 struct Ctx68 { long w0, w1; unsigned char pad[0x60]; };
 extern char lbl_80339BA0[], lbl_8055AF14[4], lbl_8055AF18[4];
@@ -896,6 +896,44 @@ done:
     }
     return entry;
 }
+
+extern int sprintf(char *, const char *, ...);
+extern char lbl_804881E8[];
+extern void fn_801E9DC4(void *);
+extern void fn_801EEEB0(void *, void *);
+extern void fn_801EC750(void *, void *);
+void fn_801E8F10(long arg0) {
+    long *e;
+    struct Ctx68 ctx;
+    struct Loc78 loc;
+    struct Rec78 *p;
+    long i;
+    long cnt;
+    fn_8012E81C(lbl_80339BA0 + 0x178);
+    fn_8012E81C(lbl_80339BA0 + 0x188);
+    cnt = arg0 + 0x20;
+    fn_802E30C8(lbl_80339BA0 + 0x194, *(long *)(cnt + 0x3C0));
+    p = (struct Rec78 *)cnt;
+    for (i = 0; i < *(long *)(cnt + 0x3C0); i++, p++) {
+        sprintf(lbl_804881E8, lbl_80339BA0 + 0x1B0, i);
+        fn_80127464();
+        fn_8001255C(lbl_804881E8, lbl_80562DA0);
+        loc.r = *p;
+        loc.idx = i;
+        e = (long *)fn_801E8EA4(loc.r.tag);
+        ctx.w0 = e[0];
+        ctx.w1 = e[2];
+        memset(ctx.pad, 0, 0x50);
+        fn_801E9DC4((char *)&ctx + 0x58);
+        if (p->tag == 0x53) {
+            if (((int (*)(int, void *))fn_801284F8)(0x4E4, lbl_80339BA0 + 0x1C0)) fn_801EEEB0(&ctx, p);
+        } else {
+            if (((int (*)(int, void *))fn_801284F8)(0x4E4, lbl_80339BA0 + 0x1D0)) fn_801EC750(&ctx, p);
+        }
+        ((void (*)(void))fn_801E87D4)();
+    }
+}
+
 #pragma scheduling on
 long fn_801E952C(long arg0) {
     memset((void *)arg0, 0, 0x3F8);
