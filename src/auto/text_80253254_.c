@@ -1642,7 +1642,7 @@ struct CarUIModel {
     s32 unk110;            /* 0x110 */
     u8 unk114;             /* 0x114 */
     u8 pad115[3];          /* 0x115 */
-    s8 tinted;             /* 0x118: draw in the level's colour and scale */
+    u8 tinted;             /* 0x118: draw in the level's colour and scale */
     u8 pad119[3];          /* 0x119 */
     float level;           /* 0x11C: grows with time; drives that scale/colour */
     s32 mode;              /* 0x120: 0 = to the screen, 1 = fn_802569DC path */
