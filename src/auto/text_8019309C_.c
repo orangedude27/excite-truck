@@ -23,6 +23,12 @@ extern void fn_801933FC(void *, void *);
 typedef struct { void *a; float b; int c; } Samp80194FD0;
 extern void *fn_8017960C(int);
 extern int fn_80137788(void *, int, float *);
+extern float lbl_805621C0, lbl_805621F0, lbl_805621F4, lbl_805621F8, lbl_805621FC, lbl_80562200, lbl_80562160, lbl_8056216C;
+extern unsigned int lbl_8055D430;
+extern int lbl_8055E0D0;
+typedef float (*Fn931AC)(void *, void *, void *, float, float, float, float);
+typedef float (*Fn948B0)(void *, int, float);
+typedef float (*Fn94FC8)(void *);
 extern void fn_80135B9C(void *, void *, void *, void *, void *, float);
 #define F80194FD0(p, o) (*(float *)((unsigned char *)(p) + (o)))
 #define P80194FD0(p, o) (*(void **)((unsigned char *)(p) + (o)))
