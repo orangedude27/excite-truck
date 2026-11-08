@@ -15997,7 +15997,7 @@ extern void l2cu_send_peer_config_rsp(tL2C_CCB_VIEW *, tL2CAP_CFG_INFO *);
 extern void l2cu_send_peer_disc_req(void *);
 extern void forward_peer_data(void *, void *);
 extern void l2cu_process_our_cfg_req(void *, void *);
-extern void l2cu_send_peer_config_req();
+extern void l2cu_send_peer_config_req(tL2C_CCB_VIEW *, tL2CAP_CFG_INFO *);
 extern void fn_8008EE40(void *, void *);
 extern void fn_8008EF90(void *, void *);
 void fn_80089E40(void *p_ccb, u8 event, void *p_data) {
