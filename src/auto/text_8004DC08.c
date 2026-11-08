@@ -370,15 +370,15 @@ static inline void BootReadAbs(void *buf, s32 len, s32 off) {
 
 static inline s32 BootGetPartOffset(void) {
     s32 v = lbl_8055DA28;
-    if (v == 0) {
-        if (*(s32 *)0x800030F4 != 0) {
-            u8 *buf = OSAllocFromMEM1ArenaLo(0x40, 0x20);
-            BootReadAbs(buf, 0x40, *(s32 *)0x800030F4 >> 2);
-            v = (*(s32 *)0x800030F4 + *(s32 *)(buf + 0x38)) >> 2;
-        } else {
-            v = 0x910;
-        }
+    if (v != 0) {
+    } else if (*(s32 *)0x800030F4 != 0) {
+        u8 *buf = OSAllocFromMEM1ArenaLo(0x40, 0x20);
+        BootReadAbs(buf, 0x40, *(s32 *)0x800030F4 >> 2);
+        v = (*(s32 *)0x800030F4 + *(s32 *)(buf + 0x38)) >> 2;
         lbl_8055DA28 = v;
+    } else {
+        v = 0x910;
+        lbl_8055DA28 = 0x910;
     }
     return v;
 }
