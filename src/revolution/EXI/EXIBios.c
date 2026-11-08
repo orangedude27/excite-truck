@@ -553,7 +553,8 @@ void EXIInit(void) {
     } else {
         if ((EXIGetID(EXI_CHAN_0, EXI_DEV_EXT, &id) && id == 0x07010000)) {
             __OSEnableBarnacle(EXI_CHAN_1, EXI_DEV_EXT);
-        } else if (EXIGetID(EXI_CHAN_1, EXI_DEV_EXT, &id) && id == 0x07010000) {
+        } else if (EXIGetID(EXI_CHAN_1, EXI_DEV_EXT, &id) &&
+                   id == 0x07010000) {
             __OSEnableBarnacle(EXI_CHAN_0, EXI_DEV_NET);
         }
     }
