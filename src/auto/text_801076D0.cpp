@@ -687,50 +687,64 @@ s32 nw4hbm::ut::detail::ResFontBase::GetDefaultCharWidths() const {
     return (((u32)*(u16*)(p+4)<<8)|p[6])<<8;
 }
 
+/*
+ * nw4hbm::ut::detail::ResFontBase::SetDefaultCharWidths (ut_ResFontBase.cpp).
+ * Checks its three pointers the way nw4hbm::db does, then copies the caller's
+ * CharWidths over the font information's default character widths
+ * (mFontInfo (@0x14) -> +4 left, +5 glyph width, +6 character width), which is
+ * what GetDefaultCharWidths() reads back.
+ * The file string is lbl_80329140: +0xC "ut_ResFontBase.cpp", +0xF0
+ * "this(=%p) is not valid pointer.", +0x128 "mFontInfo(=%p) ...", +0x164
+ * "& widths(=%p) ..."; a pointer is valid only inside one of the Wii's mapped
+ * areas (0x80000000, 0x81000000, 0x90000000, 0xC0000000, 0xC1000000,
+ * 0xD0000000 or 0xE0000000).
+ */
 void nw4hbm::ut::detail::ResFontBase::SetDefaultCharWidths(const CharWidths& widths) {
-    const char* base = lbl_80329140;
+    const char* file = lbl_80329140;
     register int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
-    register u32 address = (u32)this;
-    register u32 top = address & 0xFF000000U;
-    if (top != 0x80000000U && (address & 0xFF800000U) != 0x81000000U) r10 = 0;
-    if (r10 == 0 && (address & 0xF8000000U) != 0x90000000U) r9 = 0;
-    if (r9 == 0 && top != 0xC0000000U) r8 = 0;
-    if (r8 == 0 && (address & 0xFF800000U) != 0xC1000000U) r7 = 0;
-    if (r7 == 0 && (address & 0xF8000000U) != 0xD0000000U) r6 = 0;
-    if (r6 == 0 && (address & 0xFFFFC000U) != 0xE0000000U) r5 = 0;
-    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base + 0xC, 0x14A, base + 0xF0, this);
+    register u32 selfAddr = (u32)this;
+    register u32 selfTop = selfAddr & 0xFF000000U;
+    if (selfTop != 0x80000000U && (selfAddr & 0xFF800000U) != 0x81000000U) r10 = 0;
+    if (r10 == 0 && (selfAddr & 0xF8000000U) != 0x90000000U) r9 = 0;
+    if (r9 == 0 && selfTop != 0xC0000000U) r8 = 0;
+    if (r8 == 0 && (selfAddr & 0xFF800000U) != 0xC1000000U) r7 = 0;
+    if (r7 == 0 && (selfAddr & 0xF8000000U) != 0xD0000000U) r6 = 0;
+    if (r6 == 0 && (selfAddr & 0xFFFFC000U) != 0xE0000000U) r5 = 0;
+    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x14A, file + 0xF0, this);
 
     {
+        /* nw4hbm asserts mFontInfo (@0x14) is a valid pointer (line 0x14B) */
         register int v4 = 1, v5 = 1;
-        register u32 data = *(u32*)((char*)this + 0x14);
+        register u32 fontInfoPtr = *(u32*)((char*)this + 0x14);
         register int v7 = 1, v8 = 1, v9 = 1, v10 = 1;
-        register u32 top2 = data & 0xFF000000U;
-        if (top2 != 0x80000000U && (data & 0xFF800000U) != 0x81000000U) v10 = 0;
-        if (v10 == 0 && (data & 0xF8000000U) != 0x90000000U) v9 = 0;
-        if (v9 == 0 && top2 != 0xC0000000U) v8 = 0;
-        if (v8 == 0 && (data & 0xFF800000U) != 0xC1000000U) v7 = 0;
-        if (v7 == 0 && (data & 0xF8000000U) != 0xD0000000U) v5 = 0;
-        if (v5 == 0 && (data & 0xFFFFC000U) != 0xE0000000U) v4 = 0;
-        if (v4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base + 0xC, 0x14B, base + 0x128);
+        register u32 fontInfoTop = fontInfoPtr & 0xFF000000U;
+        if (fontInfoTop != 0x80000000U && (fontInfoPtr & 0xFF800000U) != 0x81000000U) v10 = 0;
+        if (v10 == 0 && (fontInfoPtr & 0xF8000000U) != 0x90000000U) v9 = 0;
+        if (v9 == 0 && fontInfoTop != 0xC0000000U) v8 = 0;
+        if (v8 == 0 && (fontInfoPtr & 0xFF800000U) != 0xC1000000U) v7 = 0;
+        if (v7 == 0 && (fontInfoPtr & 0xF8000000U) != 0xD0000000U) v5 = 0;
+        if (v5 == 0 && (fontInfoPtr & 0xFFFFC000U) != 0xE0000000U) v4 = 0;
+        if (v4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x14B, file + 0x128);
     }
 
     {
+        /* ... and that the caller's CharWidths really lives somewhere (0x14C) */
         register int w4 = 1, w5 = 1, w6 = 1, w7 = 1, w8 = 1, w9 = 1;
-        register u32 address3 = (u32)&widths;
-        register u32 top3 = address3 & 0xFF000000U;
-        if (top3 != 0x80000000U && (address3 & 0xFF800000U) != 0x81000000U) w9 = 0;
-        if (w9 == 0 && (address3 & 0xF8000000U) != 0x90000000U) w8 = 0;
-        if (w8 == 0 && top3 != 0xC0000000U) w7 = 0;
-        if (w7 == 0 && (address3 & 0xFF800000U) != 0xC1000000U) w6 = 0;
-        if (w6 == 0 && (address3 & 0xF8000000U) != 0xD0000000U) w5 = 0;
-        if (w5 == 0 && (address3 & 0xFFFFC000U) != 0xE0000000U) w4 = 0;
-        if (w4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base + 0xC, 0x14C, base + 0x164, &widths);
+        register u32 widthsAddr = (u32)&widths;
+        register u32 widthsTop = widthsAddr & 0xFF000000U;
+        if (widthsTop != 0x80000000U && (widthsAddr & 0xFF800000U) != 0x81000000U) w9 = 0;
+        if (w9 == 0 && (widthsAddr & 0xF8000000U) != 0x90000000U) w8 = 0;
+        if (w8 == 0 && widthsTop != 0xC0000000U) w7 = 0;
+        if (w7 == 0 && (widthsAddr & 0xFF800000U) != 0xC1000000U) w6 = 0;
+        if (w6 == 0 && (widthsAddr & 0xF8000000U) != 0xD0000000U) w5 = 0;
+        if (w5 == 0 && (widthsAddr & 0xFFFFC000U) != 0xE0000000U) w4 = 0;
+        if (w4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x14C, file + 0x164, &widths);
     }
 
-    u32 data = *(u32*)((char*)this + 0x14);
-    ((u8*)data)[4] = ((const u8*)&widths)[0];
-    ((u8*)data)[5] = ((const u8*)&widths)[1];
-    ((u8*)data)[6] = ((const u8*)&widths)[2];
+    u8* fontInfo = *(u8**)((char*)this + 0x14);
+    fontInfo[4] = widths.left;
+    fontInfo[5] = widths.glyphWidth;
+    fontInfo[6] = widths.charWidth;
 }
 
 extern "C" u16 FindGlyphIndex__Q46nw4hbm2ut6detail11ResFontBaseCFPCQ36nw4hbm2ut11FontCodeMapUs(void *, void *, u16);
