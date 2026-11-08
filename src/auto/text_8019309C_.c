@@ -1099,7 +1099,7 @@ void fn_80194C4C(void *arg0, float *arg1) {
     float value;
     int i;
 
-    fn_80194FD0();
+    ((void (*)(void *, float *))fn_80194FD0)(arg0, arg1);
     work = *(void **)((char *)arg0 + 0x288);
     value = *(float *)((char *)work + 0x34);
     arg1[0] += *(float *)((char *)arg0 + 0x58) * value;
