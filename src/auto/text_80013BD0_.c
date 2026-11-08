@@ -46,6 +46,8 @@ extern f32 lbl_805603E8, lbl_805603EC, lbl_805603F0, lbl_805603F4;
 typedef struct { s32 a; f32 x; f32 y; s32 d; f32 e; f32 f; s32 g; } Rec7;
 typedef struct { s32 a; f32 x; f32 y; s32 d; f32 e; s32 f; s32 g; s32 h; } Rec8;
 #define VCALL(slot, ofs) ((void *(*)(void *, void *))(*(void ***)obj)[slot])(obj, lbl_802FCB98 + (ofs))
+#define VC(slot, ofs) ((void *(*)(void *, void *))(*(void ***)obj)[slot])(obj, base + (ofs))
+#define CP8(R, q) do { (R).a = (q)->a; *(s32 *)&(R).x = *(s32 *)&(q)->x; *(s32 *)&(R).y = *(s32 *)&(q)->y; (R).d = (q)->d; (R).e = (q)->e; (R).f = (q)->f; (R).g = (q)->g; (R).h = (q)->h; } while (0)
 extern f32 fn_80011EB0(s32);
 extern f32 lbl_80560378, lbl_8056037C, lbl_80560380, lbl_80560384, lbl_80560388;
 extern void fn_802E317C(void *, ...);
@@ -157,7 +159,115 @@ void fn_80013EAC(s32 arg0, s32 arg1, s32 arg2) {
     }
     fn_80013BD0(obj, value, arg2, 0);
 }
-#pragma scheduling on
+
+#pragma push
+#pragma processor 750
+#pragma dont_inline on
+#pragma use_lmw_stmw off
+void fn_80013EDC(void *arg0, void *name, s32 mode, char *first, char *second, f32 farg0, f32 farg1, f32 farg2) {
+    Rec7 L;
+    Rec8 R1, R2, R3, R4, R5, R6, R7, R8;
+    char b1[20], b2[20], b3[20];
+    f32 t;
+    s32 n;
+    void *obj = *(void **)((u8 *)arg0 + 0x50);
+    Rec7 *p = (Rec7 *)VCALL(5, 0x70);
+    if (p) {
+        L.a = p->a;
+        *(s32 *)&L.x = *(s32 *)&p->x;
+        *(s32 *)&L.y = *(s32 *)&p->y;
+        L.d = p->d;
+        L.e = p->e;
+        L.f = p->f;
+        L.g = p->g;
+    } else {
+        fn_802E317C(lbl_802FCB98 + 0x80);
+        L.x = lbl_80560378;
+        L.y = lbl_8056037C;
+        L.e = lbl_80560380;
+        L.f = lbl_80560384;
+        L.d = 1;
+        L.g = -1;
+    }
+    t = fn_80013D60(farg0);
+    L.x = L.x + t * ((lbl_80560388 + (L.x + L.e) + fn_80011EB0(*(s32 *)((u8 *)lbl_8055D350 + 0x1C))) - L.x);
+    n = 0;
+    if (*(u8 *)((u8 *)lbl_8055D350 + 1) != 0) {
+        if (mode != 0) {
+            Rec8 *q;
+            obj = *(void **)((u8 *)arg0 + 0x50);
+            q = (Rec8 *)VCALL(3, 0xC0);
+            if (q) {
+                R1 = *q;
+                R1.x = L.x;
+                R1.y = L.y + L.f * (f32)n;
+                ((void (*)(void *))fn_801476C4)(&R1);
+            }
+            obj = *(void **)((u8 *)arg0 + 0x50);
+            q = (Rec8 *)VCALL(3, 0xD4);
+            if (q) {
+                R2 = *q;
+                R2.x = L.x + L.e;
+                R2.y = L.y + L.f * (f32)n;
+                fn_80130FCC(b1, 20, *(s32 *)((u8 *)*(void **)((u8 *)lbl_8055D350 + 0xC) + 8) - *(s32 *)((u8 *)*(void **)((u8 *)lbl_8055D350 + 0x30) + 0x10) + 1);
+                fn_80147230(&R2, b1);
+            }
+        } else {
+            Rec8 *q;
+            obj = *(void **)((u8 *)arg0 + 0x50);
+            q = (Rec8 *)VCALL(3, 0xE0);
+            if (q) {
+                R3 = *q;
+                R3.x = L.x;
+                R3.y = L.y + L.f * (f32)n;
+                ((void (*)(void *))fn_801476C4)(&R3);
+            }
+        }
+        n = 1;
+    }
+    if (first != 0 && *first != 0) {
+        Rec8 *q;
+        obj = *(void **)((u8 *)arg0 + 0x50);
+        q = (Rec8 *)VCALL(3, 0xF4);
+        if (q) {
+            R4 = *q;
+            R4.x = L.x;
+            R4.y = L.y + L.f * (f32)n;
+            ((void (*)(void *))fn_801476C4)(&R4);
+        }
+        obj = *(void **)((u8 *)arg0 + 0x50);
+        q = (Rec8 *)VCALL(3, 0x104);
+        if (q) {
+            R5 = *q;
+            R5.x = L.x + L.e;
+            R5.y = L.y + L.f * (f32)n;
+            fn_80130978(b2, 20, farg1);
+            fn_80147230(&R5, b2);
+        }
+        n++;
+    }
+    if (second != 0 && *second != 0) {
+        Rec8 *q;
+        obj = *(void **)((u8 *)arg0 + 0x50);
+        q = (Rec8 *)VCALL(3, 0x110);
+        if (q) {
+            R6 = *q;
+            R6.x = L.x;
+            R6.y = L.y + L.f * (f32)n;
+            ((void (*)(void *))fn_801476C4)(&R6);
+        }
+        obj = *(void **)((u8 *)arg0 + 0x50);
+        q = (Rec8 *)VCALL(3, 0x124);
+        if (q) {
+            R7 = *q;
+            R7.x = L.x + L.e;
+            R7.y = L.y + L.f * (f32)n;
+            fn_80130978(b3, 20, farg2);
+            fn_80147230(&R7, b3);
+        }
+    }
+}
+#pragma pop
 extern u8 lbl_80558B80;
 extern void *fn_8023512C(void *);
 extern void *fn_802CAC28(void *, s32);
