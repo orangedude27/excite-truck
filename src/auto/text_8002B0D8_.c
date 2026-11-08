@@ -63,7 +63,6 @@ extern double fn_8002B060(int, double);
 #define pow_P4       lbl_805608D8
 #define pow_P5       lbl_805608E0
 #define pow_two      lbl_805608E8
-extern double *pow_tbl; /* temporary: shadowed by __ieee754_pow's local */
 #define pow_bp(k)    pow_tbl[k]
 #define pow_dp_h(k)  pow_tbl[2 + (k)]
 #define pow_dp_l(k)  pow_tbl[4 + (k)]
@@ -570,6 +569,7 @@ double x;
 double __ieee754_pow(x, y)
 double x, y;
 {
+    double *pow_tbl = lbl_802EE4D8;
     double z, ax, z_h, z_l, p_h, p_l;
     double y1, t1, t2, r, s, t, u, v, w;
     int i, j, k, yisint, n;
@@ -648,9 +648,9 @@ double x, y;
         if (ix < 0x3fefffff) return (hy < 0) ? pow_inf : pow_zero;
         if (ix > 0x3ff00000) return (hy > 0) ? pow_inf : pow_zero;
         t = x - pow_one;
-        w = (t * t) * (pow_half - t * (pow_third - t * pow_quarter));
+        w = (t * t) * (pow_half - t * (pow_third - pow_quarter * t));
         u = pow_ivln2_h * t;
-        v = t * pow_ivln2_l - w * pow_ivln2;
+        v = pow_ivln2_l * t - pow_ivln2 * w;
         t1 = u + v;
         __LO(t1) = 0;
         t2 = v - (t1 - u);
@@ -676,7 +676,7 @@ double x, y;
         t_l = ax - (t_h - pow_bp(k));
         s_l = v * ((u - s_h * t_h) - s_h * t_l);
         s2 = ss * ss;
-        r = s2 * s2 * (pow_L1 + s2 * (pow_L2 + s2 * (pow_L3 + s2 * (pow_L4 + s2 * (pow_L5 + s2 * pow_L6)))));
+        r = s2 * s2 * (pow_L1 + s2 * (pow_L2 + s2 * (pow_L3 + s2 * (pow_L4 + s2 * (pow_L5 + pow_L6 * s2)))));
         r += s_l * (s_h + ss);
         s2 = s_h * s_h;
         t_h = pow_three + s2 + r;
@@ -688,7 +688,7 @@ double x, y;
         __LO(p_h) = 0;
         p_l = v - (p_h - u);
         z_h = pow_cp_h * p_h;
-        z_l = pow_cp_l * p_h + p_l * pow_cp + pow_dp_l(k);
+        z_l = pow_cp_l * p_h + pow_cp * p_l + pow_dp_l(k);
         t = (double)n;
         t1 = (((z_h + z_l) + pow_dp_h(k)) + t);
         __LO(t1) = 0;
@@ -709,7 +709,7 @@ double x, y;
         if (((j - 0x40900000) | i) != 0)
             return pow_huge * (pow_huge * s);
         else {
-            if (p_l + pow_ovt > z - p_h) return pow_huge * (pow_huge * s);
+            if (pow_ovt + p_l > z - p_h) return pow_huge * (pow_huge * s);
         }
     } else if ((j & 0x7fffffff) >= 0x4090cc00) {
         if (((j - 0xc090cc00) | i) != 0)
@@ -732,12 +732,12 @@ double x, y;
     }
     t = p_l + p_h;
     __LO(t) = 0;
-    u = t * pow_lg2_h;
-    v = (p_l - (t - p_h)) * pow_lg2 + t * pow_lg2_l;
+    u = pow_lg2_h * t;
+    v = pow_lg2 * (p_l - (t - p_h)) + pow_lg2_l * t;
     z = u + v;
     w = v - (z - u);
     t = z * z;
-    t1 = z - t * (pow_P1 + t * (pow_P2 + t * (pow_P3 + t * (pow_P4 + t * pow_P5))));
+    t1 = z - t * (pow_P1 + t * (pow_P2 + t * (pow_P3 + t * (pow_P4 + pow_P5 * t))));
     r = (z * t1) / (t1 - pow_two) - (w + z * w);
     z = pow_one - (r - z);
     j = __HI(z);
