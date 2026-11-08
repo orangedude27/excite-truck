@@ -96,7 +96,7 @@ void fn_8000A644(void* arg0, void* arg1) {
         src++;
         count++;
     }
-    fn_80009DC8();
+    ((void (*)(void))fn_80009DC8)();
 }
 #pragma pop
 void fn_8000A688(void (*arg0)(void*), s32 arg1) DECOMP_DONT_INLINE {
