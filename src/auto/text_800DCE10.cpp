@@ -32,12 +32,12 @@ extern "C" void fn_800DF81C(f32 *arg0, void *arg1, const u16 *arg2, s32 arg3, f3
 #define PTRCHECK(p, line, off) { \
     s16 c0 = 1, c1 = 1, c2 = 1, c3 = 1, c4 = 1, c5 = 1; \
     u32 hi = (u32)(p) & 0xFF000000; \
-    if (((u32)(hi + 0x80000000) != 0U) && ((u32)(((u32)(p) & 0xFF800000) + 0x7F000000) != 0U)) c5 = 0; \
-    if ((!c5) && ((u32)(((u32)(p) & 0xF8000000) + 0x70000000) != 0U)) c4 = 0; \
-    if ((!c4) && ((u32)(hi + 0x40000000) != 0U)) c3 = 0; \
-    if ((!c3) && ((u32)(((u32)(p) & 0xFF800000) + 0x3F000000) != 0U)) c2 = 0; \
-    if ((!c2) && ((u32)(((u32)(p) & 0xF8000000) + 0x30000000) != 0U)) c1 = 0; \
-    if ((!c1) && ((u32)(((u32)(p) & 0xFFFFC000) + 0x20000000) != 0U)) c0 = 0; \
+    if ((hi != 0x80000000U) && (((u32)(p) & 0xFF800000) != 0x81000000U)) c5 = 0; \
+    if ((!c5) && (((u32)(p) & 0xF8000000) != 0x90000000U)) c4 = 0; \
+    if ((!c4) && (hi != 0xC0000000U)) c3 = 0; \
+    if ((!c3) && (((u32)(p) & 0xFF800000) != 0xC1000000U)) c2 = 0; \
+    if ((!c2) && (((u32)(p) & 0xF8000000) != 0xD0000000U)) c1 = 0; \
+    if ((!c1) && (((u32)(p) & 0xFFFFC000) != 0xE0000000U)) c0 = 0; \
     if (!c0) ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, line, msg + off, p); }
 struct SoundEntry60 {
     u8 b[32];
@@ -1016,6 +1016,55 @@ extern "C" s32 fn_800DF1C8(s32 arg0, s32 arg1) {
         fn_80128668();
     }
     return arg0;
+}
+
+extern "C" void fn_800DF208(f32 *arg0, u8 *arg1, void *arg2) {
+    const char *msg = lbl_80320560;
+    f32 savedY;
+    u16 len;
+    u16 *buf;
+    SoundEntry60 tmp;
+    union { u64 u; f32 f[2]; } v;
+    f32 fa, fb;
+
+    arg0[0] = lbl_80560ED0;
+    arg0[1] = lbl_80560ED0;
+    arg0[2] = lbl_80560ED0;
+    arg0[3] = lbl_80560ED0;
+    SetCursor__Q36nw4hbm2ut10CharWriterFff(arg2, lbl_80560ED0, lbl_80560ED0);
+    savedY = *(f32 *)(arg1 + 0x4C);
+    len = *(u16 *)(arg1 + 0xFA);
+    buf = *(u16 **)(arg1 + 0xD4);
+    PTRCHECK(arg2, 0x137, 0x194)
+    PTRCHECK(arg0, 0x138, 0x240)
+    PTRCHECK(buf, 0x139, 0x1D0)
+    if ((s32)len < 0) {
+        ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0x13A, msg + 0x208, (s32)len, 0);
+    }
+    tmp = *(SoundEntry60 *)arg2;
+    fn_800DF81C(arg0, &tmp, buf, len, savedY);
+    __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80111BB8(&tmp, -1);
+    v.u = GetVtxPos__Q34nw4r3lyt4PaneCFv(arg1);
+    switch ((u8)(arg1[0xFC] % 3)) {
+    default: fa = lbl_80560ED0; break;
+    case 1: fa = lbl_80560EE0; break;
+    case 2: fa = lbl_80560EE4; break;
+    }
+    switch ((u8)(arg1[0xFC] / 3)) {
+    default: fb = lbl_80560ED0; break;
+    case 1: fb = lbl_80560EE0; break;
+    case 2: fb = lbl_80560EE4; break;
+    }
+    {
+        f32 h = arg0[3] - arg0[1];
+        f32 w = arg0[2] - arg0[0];
+        f32 ny = v.f[1] + (*(f32 *)(arg1 + 0x50) - h) * fb;
+        f32 nx = v.f[0] + (*(f32 *)(arg1 + 0x4C) - w) * fa;
+        arg0[1] = ny;
+        arg0[0] = nx;
+        arg0[3] = ny + h;
+        arg0[2] = nx + w;
+    }
 }
 
 extern "C" void SetCursor__Q36nw4hbm2ut10CharWriterFff(void *, f32, f32);
