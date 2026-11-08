@@ -1,5 +1,9 @@
 #include <types.h>
 #define M2C_FIELD(p, T, o) (*(T*)((u8*)(p) + (o)))
+extern "C" void GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(f32 *, void *, u8);
+extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
+extern "C" const char lbl_80320BD8[];
+extern "C" f32 lbl_80560EE8;
 extern "C" s32 IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(void *, u8);
 extern "C" void SetVertexFormat__Q34nw4r3lyt6detailFbUc(s32, u8);
 extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(f32 *, f32 *, u8, f32 (*)[], s32, u8);
@@ -66,9 +70,9 @@ extern "C" void *MEMAllocFromAllocator(int, int);
 extern "C" void *__ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36nw4hbm3lyt11ResBlockSet(void *, void *, void *);
 extern "C" const char lbl_80320C24[];
 extern "C" void *__ct__Q36nw4hbm3lyt6WindowFPCQ46nw4hbm3lyt3res6WindowRCQ36nw4hbm3lyt11ResBlockSet(u8 *self, u8 *res, u8 *set) {
-    u8 *table;
-    u8 *data;
     u8 *arr;
+    u8 *data;
+    u8 *table;
     u8 *m;
     u8 n;
     u8 cnt;
