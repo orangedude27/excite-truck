@@ -94,6 +94,16 @@ extern void *lbl_8055FE1C;
 extern unsigned char lbl_804C9984[];
 extern char lbl_8034C1C4[];
 extern void fn_802D2ED8(int, int);
+// Render request block (0x804C5700, 16 bytes). The scene sets a field and marks
+// the request pending; fn_802D2B0C compares it with the applied copy at
+// 0x804C9930 and rebuilds the GX pipeline for the new mode.
+//   +0x00 u8  request pending (cleared once applied)
+//   +0x04 s32 pipeline mode (0 = scene default, see fn_802D2B0C)
+//   +0x08 u8  add a second, modulated texture stage (GX_TEXMAP1)
+//   +0x09 u8  detail pass: base texture * texture 3, raster color ignored
+//   +0x0A u8  add the indirect (bump) texture stage
+//   +0x0C u8  texcoord0 through GX_TEXMTX0 instead of GX_IDENTITY
+//   +0x0D u8  alpha blend + indirect stage (fn_802D2684's bump pass)
 extern unsigned char lbl_804C5700[12];
 extern int fn_802E317C(const char *, ...);
 extern int GXInitLightDir(unsigned short, unsigned short, unsigned long *);
