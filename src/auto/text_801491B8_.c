@@ -25,12 +25,12 @@ extern u8 lbl_80559F04[];
 extern u8 lbl_80559F08[];
 extern u8 lbl_80559F0C[];
 static inline void StrCopyN80149658(u8 *dst, const u8 *src, int n) {
-    do {
-        u8 c = *src++;
-        *dst++ = c;
-        if ((s8)c == 0) return;
-    } while (--n > 0);
-    dst[-1] = 0;
+    while ((s8)(*dst++ = *src++) != 0) {
+        if (--n <= 0) {
+            dst[-1] = 0;
+            break;
+        }
+    }
 }
 #include "revolution/MTX/mtxtypes.h"
 typedef struct { void *pad[3]; void *(*get)(void *, int); } IterFC;
@@ -389,6 +389,95 @@ f32 fn_801495D4(s32 arg0) {
 #pragma scheduling on
 
 void fn_80149650(void) { fn_801495D4(0x40); }
+
+u32 fn_80149658(s32 selfAddr, void *aArg, void *listArg, s32 unused) {
+    u8 *self = (u8 *)selfAddr;
+    u8 *a = (u8 *)aArg;
+    u8 *list = (u8 *)listArg;
+    u8 buf[0x32];
+    s32 s30, s25, s26;
+    f32 f4, t;
+    int i;
+    u8 *p;
+
+    if (*(s32 *)(self + 8) == 0) return 0;
+    s30 = *(s32 *)(a + 4);
+    fn_801345D8(self + 0x2C, 0x14, lbl_80559F04, s30);
+    StrCopyN80149658(self + 0x40, fn_80130FE0(s30), 5);
+    if (fn_80179650() == 1) {
+        fn_801345D8(buf, 0x32, lbl_8032D358 + 0x30, *(s32 *)(a + 4));
+        StrCopyN80149658(self + 0x1FD, fn_80131234(buf), 0x28);
+    } else {
+        StrCopyN80149658(self + 0x1FD, fn_80131234(lbl_8032D358 + 0x50), 0x28);
+    }
+    s30 = *(s32 *)(a + 0x20);
+    i = 0;
+    if (s30 != 0 && *(f32 *)(self + 4) > 0.0f) {
+        t = (lbl_8055E3C8 - *(f32 *)(self + 4) - 0.0f) / lbl_8056164C;
+        f4 = lbl_8056164C;
+        if (!(f4 < t)) f4 = t;
+        if (!(f4 > 0.0f)) f4 = 0.0f;
+        i = (s32)(0.0f + f4 * ((lbl_8056163C + (f32)s30) - 0.0f));
+    }
+    fn_801308F4(self + 0x45, 0x14, i);
+    s26 = *(s32 *)(a + 0x24);
+    s25 = s26 - s30;
+    fn_801308F4(self + 0x59, 0x14, s25);
+    fn_801308F8(self + 0x6D, 0x14, s26);
+    fn_801345D8(self + 0x225, 0x14, *(s32 *)(a + 0x1C) != 0 ? lbl_80559F04 : lbl_80559F08);
+    if (fn_801609C4(s25) != -1) StrCopyN80149658(self + 0x81, __AXGetStackHead(), 10);
+    else StrCopyN80149658(self + 0x81, lbl_80559F0C, 10);
+    if (*(s32 *)(a + 0x30) != -1) StrCopyN80149658(self + 0x8B, __AXGetStackHead(), 10);
+    else StrCopyN80149658(self + 0x8B, lbl_80559F0C, 10);
+    for (i = 0; i < *(s32 *)(list + 8); i++) {
+        p = *(u8 **)(list + 4) + i * 0xF8;
+        StrCopyN80149658(self + 0x95 + i * 0x14, p + 4, 0x14);
+        StrCopyN80149658(self + 0x149 + i * 0x14, p + 0xA4, 0x14);
+    }
+    for (; i < 9; i++) {
+        StrCopyN80149658(self + 0x95 + i * 0x14, lbl_80559F0C, 0x14);
+        StrCopyN80149658(self + 0x149 + i * 0x14, lbl_80559F0C, 0x14);
+    }
+    fn_802AE168(*(s32 *)(self + 8));
+    switch (*(s32 *)self) {
+    case 0:
+        fn_802E30C8(lbl_8032D358 + 0x70, lbl_8032D358 + 0xA0, lbl_8055E3C4, *(s32 *)(self + 0x20), *(s32 *)(self + 0x24), *(s32 *)(self + 0x28));
+        fn_802ADFF4(*(s32 *)(self + 8), *(s32 *)(self + 0x1C));
+        if (s30 > 0) p = *(u8 **)(self + 0x10);
+        else p = *(u8 **)(self + 0x14);
+        if (p != 0) { p[0x49] = 1; p[0x4B] = 0; p[0x4A] = 0; }
+        *(s32 *)self = 1;
+        break;
+    case 1:
+        if (*(s32 *)(self + 0x20) != 0 && *(f32 *)(self + 4) < 0.0f) {
+            fn_802E30C8(lbl_8032D358 + 0x70, lbl_8032D358 + 0xC4, lbl_8055E3C4, *(s32 *)(self + 0x24), *(s32 *)(self + 0x28));
+            *(f32 *)(self + 4) = lbl_8055E3C8;
+        }
+        if (*(s32 *)(self + 0x24) != 0) {
+            fn_802E30C8(lbl_8032D358 + 0x70, lbl_8032D358 + 0xE8, lbl_8055E3C4, *(s32 *)(self + 0x20), *(s32 *)(self + 0x28));
+            fn_802AE02C(*(s32 *)(self + 8), *(s32 *)(self + 0x1C));
+            *(s32 *)self = 2;
+        }
+        break;
+    case 2:
+        if (self[0xC] != 0) {
+            fn_802E30C8(lbl_8032D358 + 0x70, lbl_8032D358 + 0x10C, lbl_8055E3C4, *(s32 *)(self + 0x20), *(s32 *)(self + 0x24), *(s32 *)(self + 0x28));
+            fn_802AE0B8(*(s32 *)(self + 8), *(s32 *)(self + 0x1C));
+            p = *(u8 **)(self + 0x18);
+            if (p != 0) { p[0x49] = 1; p[0x4B] = 0; p[0x4A] = 0; }
+            *(s32 *)self = 3;
+        }
+        break;
+    case 3:
+        if (*(s32 *)(self + 0x28) != 0) {
+            fn_802E30C8(lbl_8032D358 + 0x70, lbl_8032D358 + 0x130, lbl_8055E3C4, *(s32 *)(self + 0x20), *(s32 *)(self + 0x24));
+            fn_802AE0E0((void *)*(s32 *)(self + 8));
+            *(s32 *)self = 4;
+        }
+        break;
+    }
+    return *(s32 *)self != 4;
+}
 
 #pragma dont_inline on
 #pragma push
