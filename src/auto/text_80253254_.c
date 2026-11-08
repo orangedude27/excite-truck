@@ -1658,7 +1658,7 @@ struct CarUIModel {
  * from level, or stretched 1% in Y, and every piece of renderer state is put
  * back before returning.
  */
-void fn_80256DD8(void *model) {
+void fn_80256DD8(struct CarUIModel *model) {
 
 extern void *fn_802C86DC(void);          /* the current 4x3 model matrix */
 extern void fn_80253004(s32, void *);    /* copy a camera record by index */
@@ -1700,47 +1700,45 @@ extern float lbl_80563A00, lbl_80563A04, lbl_80563A14, lbl_80563AA4, lbl_8055F33
 
     struct MtxWords9 { s32 v[9]; };
     struct MtxWords3 { s32 v[3]; };
-    struct Model { u8 pad[0xA8]; u8 modelMtx; };
     currentMtx = (s32 *)fn_802C86DC();
     *(struct MtxWords9 *)(frame + 0xB0) = *(struct MtxWords9 *)currentMtx;
     *(struct MtxWords3 *)(frame + 0xD4) = *(struct MtxWords3 *)(currentMtx + 9);
 
     if (lbl_8055F330 != 0) {
         float *wheelOffsets = (float *)(frame + 0x120);
-        fn_80253004(*(s32 *)((u8 *)model + 4), frame + 0xe0);
+        fn_80253004(model->cameraIndex, frame + 0xe0);
         for (wheel = 0; wheel < 4; wheel++) {
             wheelOffsets[wheel] = wheelOffsets[wheel] < lbl_80563AA0 ? wheelOffsets[wheel] : lbl_80563AA0;
         }
     } else {
-        fn_802545C4(frame + 0xe0, *(s32 *)((u8 *)model + 0xE4),
-                    *(s32 *)((u8 *)model + 8));
+        fn_802545C4(frame + 0xe0, model->modelIndex, (s32)model->vehicle);
     }
 
     fov = fn_802C9744();
     fn_802C974C(lbl_80563A14 /* 1.0f */, lbl_80563A00 /* 2250.0f */, fov);
-    fn_802C8638((u8 *)model + 0xA8);
+    fn_802C8638(model->modelMtx);
     fn_80253258();
     fn_802C99E8(lbl_80563A14);
-    if (*(s32 *)((u8 *)model + 0x120) == 1)
+    if (model->mode == 1)
         fn_802C9950(UI_LIGHT_DIFFUSE_MODE1);
     else
         fn_802C9950(UI_LIGHT_DIFFUSE_MODE0);
     fn_802C9994(UI_LIGHT_AMBIENT);
     fn_801F1C24(frame + 0x80);
     fn_802C7730(frame + 0x80);
-    fn_802ABE58((u8 *)model + 0x11C, (float *)(frame + 0x4),
+    fn_802ABE58(&model->level, (float *)(frame + 0x4),
                 (s32 *)frame, lbl_8055F334);
 
-    if (*(u8 *)*(void **)((u8 *)model + 8) != 0)
-        fn_80253CA4(*(void **)((u8 *)model + 8), frame + 0xe0,
+    if (*(u8 *)model->vehicle != 0)
+        fn_80253CA4(model->vehicle, frame + 0xe0,
                     (float *)(frame + 0x120), frame + 0x130);
 
-    if (*(s32 *)((u8 *)model + 0x120) == 1) {
+    if (model->mode == 1) {
         scale = *(float *)(frame + 0x4);
         fn_802569DC(model, *(s32 *)frame, scale);
     }
 
-    if (*(s32 *)((u8 *)model + 0xE4) != -1) {
+    if (model->modelIndex != -1) {
         mtx = frame + 0x50;
         *(float *)(frame + 0x50) = lbl_80563A14;
         *(float *)(frame + 0x54) = lbl_80563A04;
@@ -1755,31 +1753,31 @@ extern float lbl_80563A00, lbl_80563A04, lbl_80563A14, lbl_80563AA4, lbl_8055F33
         *(float *)(frame + 0x78) = lbl_80563A04;
         *(float *)(frame + 0x7c) = lbl_80563A04;
         if (lbl_8055F330 != 0) {
-            *(float *)(frame + 0x74) = *(float *)((u8 *)model + 0xCC);
-            *(float *)(frame + 0x78) = *(float *)((u8 *)model + 0xD0);
-            *(float *)(frame + 0x7c) = *(float *)((u8 *)model + 0xD4);
-            fn_802C744C(*(s32 *)((u8 *)model + 0xE4), mtx);
+            *(float *)(frame + 0x74) = model->modelMtx[3][0];
+            *(float *)(frame + 0x78) = model->modelMtx[3][1];
+            *(float *)(frame + 0x7c) = model->modelMtx[3][2];
+            fn_802C744C(model->modelIndex, mtx);
         } else {
-            fn_802C70AC(*(s32 *)((u8 *)model + 0xE4), mtx, 0, 1);
+            fn_802C70AC(model->modelIndex, mtx, 0, 1);
         }
     }
 
     if (lbl_8055F330 != 0) {
-        fn_802AEB3C(&((struct Model *)model)->modelMtx);
+        fn_802AEB3C(model->modelMtx);
         fn_802B016C();
     }
 
-    if (*(s32 *)((u8 *)model + 0x120) == 0 &&
+    if (model->mode == 0 &&
         fn_802C9C8C(0x50000000) != 0) {
-        void *vehicle = *(void **)((u8 *)model + 8);
+        void *vehicle = model->vehicle;
         if (*(u8 *)vehicle != 0) fn_80254354(vehicle);
         fn_802C9CE0();
     }
 
-    if (*(s32 *)((u8 *)model + 0x120) == 1)
+    if (model->mode == 1)
         fn_802566A4(model);
 
-    if (*(u8 *)((u8 *)model + 0xDC) != 0) {
+    if (model->stretch != 0) {
         *(u8 *)(frame + 0x18) = fn_802C2C00(1);
         *(s32 *)(frame + 0x8) = fn_802C990C(0xFF000000);
         fn_802C2BB8((float *)(frame + 0xc), (float *)(frame + 0x10),
@@ -1789,29 +1787,29 @@ extern float lbl_80563A00, lbl_80563A04, lbl_80563A14, lbl_80563AA4, lbl_8055F33
         memset(frame + 0x8, 0, 0x14);
     }
 
-    if (*(u8 *)((u8 *)model + 0x118) != 0 &&
-        *(u8 *)((u8 *)model + 0xDC) == 0) {
+    if (model->tinted != 0 &&
+        model->stretch == 0) {
         scale = *(float *)(frame + 0x4);
         fn_802ABFF8(*(s32 *)frame, scale);
     }
 
     {
-        void *vehicle = *(void **)((u8 *)model + 8);
+        void *vehicle = model->vehicle;
         if (*(u8 *)vehicle != 0) fn_8025419C(vehicle);
     }
 
-    if (*(u8 *)((u8 *)model + 0x118) != 0 &&
-        *(u8 *)((u8 *)model + 0xDC) == 0)
+    if (model->tinted != 0 &&
+        model->stretch == 0)
         fn_802AC070();
 
-    if (*(u8 *)((u8 *)model + 0xDC) != 0) {
+    if (model->stretch != 0) {
         fn_802C990C(*(s32 *)(frame + 0x8));
         fn_802C2B78(*(float *)(frame + 0xc), *(float *)(frame + 0x10),
                     *(float *)(frame + 0x14));
         fn_802C2C00(*(u8 *)(frame + 0x18));
     }
 
-    if (*(s32 *)((u8 *)model + 0xE4) != -1) {
+    if (model->modelIndex != -1) {
         *(float *)(frame + 0x20) = lbl_80563A14;
         *(float *)(frame + 0x24) = lbl_80563A04;
         *(float *)(frame + 0x28) = lbl_80563A04;
@@ -1824,10 +1822,10 @@ extern float lbl_80563A00, lbl_80563A04, lbl_80563A14, lbl_80563AA4, lbl_8055F33
         *(float *)(frame + 0x44) = lbl_80563A04;
         *(float *)(frame + 0x48) = lbl_80563A04;
         *(float *)(frame + 0x4c) = lbl_80563A04;
-        fn_802C70AC(*(s32 *)((u8 *)model + 0xE4), frame + 0x20, 0, 2);
+        fn_802C70AC(model->modelIndex, frame + 0x20, 0, 2);
     }
 
-    if (*(u8 *)((u8 *)model + 0x118) != 0)
+    if (model->tinted != 0)
         fn_802ABE50();
     fn_802C8638(frame + 0xb0);
 }
