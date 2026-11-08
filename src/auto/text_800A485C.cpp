@@ -11247,8 +11247,6 @@ extern "C" s32 fn_800BBB58(s32 arg0, void **arg1) {
     return returnValue;
 }
 
-#ifndef SD_DEVICE_DECLARED
-#define SD_DEVICE_DECLARED
 struct IosDevice {
     s32 fd;             /* 0x00 the IOS handle of the opened card */
     u8 pad[0xC];
@@ -11258,14 +11256,14 @@ struct IosDevice {
     u32 state;          /* 0x24 0 closed, 1 card set up, 2 a raw command ran: set up again */
 };
 
-/* The SD module takes one MMC/SD command per request through ioctl 7
-   (fn_800BB0A8/fn_800BAE98 build its request block).  The ones the read path
-   sends; fn_800BB81C, the write twin of fn_800BB4E0, sends 0x19. */
+/* The SD module takes one MMC/SD command per request through its ioctl 7
+   (fn_800BB0A8 and fn_800BAE98 build that request block).  The read path
+   fn_800BB4E0 sends 7, 0x10 and 0x12; its write twin fn_800BB81C sends 0x19. */
 #define SD_BLOCK_SIZE       0x200 /* one card block, and the alignment of a transfer */
-#define SD_CMD_SEND_CSD     7     /* read the card's CSD */
-#define SD_CMD_SET_BLOCKLEN 0x10  /* switch the card to SD_BLOCK_SIZE byte blocks */
+#define SD_CMD_SEND_CSD     7     /* MMC SEND_CSD */
+#define SD_CMD_SET_BLOCKLEN 0x10  /* MMC SET_BLOCKLEN: SD_BLOCK_SIZE byte blocks */
 #define SD_CMD_READ         0x12  /* MMC READ_MULTIPLE_BLOCK */
-#endif
+#define SD_CMD_WRITE        0x19  /* MMC WRITE_MULTIPLE_BLOCK */
 
 extern "C" s32 fn_800BB0A8(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 extern "C" s32 lbl_8055DD6C;
