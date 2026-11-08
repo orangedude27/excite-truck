@@ -263,6 +263,11 @@ extern double fn_8002F234(double);
     t = (lbl_80562D7C < NORM(v)) ? lbl_80562D7C : NORM(v); \
     t = (t > lbl_80562D78) ? t : lbl_80562D78;
 
+#define NORMC(v) (((float)(u32)(v) - cZero) / cDiv)
+#define CLAMPC(v) \
+    t = (cOne < NORMC(v)) ? cOne : NORMC(v); \
+    t = (t > cZero) ? t : cZero;
+
 #pragma dont_inline on
 void fn_801E6CD0(void *arg0, void *arg1, float farg0) {
     u32 sp8;
@@ -319,6 +324,113 @@ void fn_801E6CD0(void *arg0, void *arg1, float farg0) {
         *(s32 *)((u8 *)arg0 + 0x14) = 0;
     }
 }
+
+void fn_801E6E9C(AnimPlayer *obj, float dt) {
+    AnimData *data = obj->data;
+    float time = obj->time;
+    float t;
+    AnimKey key;
+    u64 raw;
+    AnimTrack *e;
+    s32 i;
+
+    if (data != 0) {
+        if (obj->stream != 0) {
+            fn_8012EE80(obj->stream);
+        }
+        while (obj->frame < data->count) {
+            if (obj->cached != obj->frame) {
+                if (obj->frame < data->inlineCount) {
+                    raw = data->keys[obj->frame];
+                } else if (fn_8012EFB0(obj->stream, &raw, 8) == 0) {
+                    if (lbl_8055EAD0 == 0) {
+                        fn_802E30C8(lbl_80339B48, obj->frame, fn_8012EE78(obj->stream));
+                    }
+                    lbl_8055EAD0 = lbl_8055EAD0 + 1;
+                    if (lbl_8055EAD0 > 200) {
+                        lbl_8055EAD0 = 0;
+                    }
+                    break;
+                }
+                key.n = (s32)(raw & 0x3f) - 1;
+                CLAMP((u32)((raw >> 6) & 0x3ff) << 6);
+                key.t = lbl_80562D78 + t * lbl_80562D84;
+                if ((raw & 0x3f) != 0) {
+                    CLAMP((u32)((raw >> 16) & 0xfff) << 4);
+                    key.v[0] = lbl_80562D88 + t * lbl_80562D8C;
+                    CLAMP((u32)((raw >> 28) & 0xfff) << 4);
+                    key.v[1] = lbl_80562D88 + t * lbl_80562D8C;
+                    CLAMP((u32)((raw >> 40) & 0xfff) << 4);
+                    key.v[2] = lbl_80562D88 + t * lbl_80562D8C;
+                    CLAMP((u32)((raw >> 52) & 0xfff) << 4);
+                    key.v[3] = lbl_80562D88 + t * lbl_80562D8C;
+                } else {
+                    CLAMP((unsigned short)(raw >> 16));
+                    key.v[0] = lbl_80562D90 * (lbl_80562D88 + t * lbl_80562D8C);
+                    CLAMP((unsigned short)(raw >> 32));
+                    key.v[1] = lbl_80562D90 * (lbl_80562D88 + t * lbl_80562D8C);
+                    CLAMP((u32)(raw >> 48));
+                    key.v[2] = lbl_80562D90 * (lbl_80562D88 + t * lbl_80562D8C);
+                }
+                obj->cache = key;
+                obj->cached = obj->frame;
+            } else {
+                key = obj->cache;
+            }
+            e = &obj->tr[key.n + 1];
+            if (!(time >= e->t1)) {
+                break;
+            }
+            e->a[0] = e->b[0];
+            e->a[1] = e->b[1];
+            e->a[2] = e->b[2];
+            e->a[3] = e->b[3];
+            e->b[0] = key.v[0];
+            e->b[1] = key.v[1];
+            e->b[2] = key.v[2];
+            e->b[3] = key.v[3];
+            e->t0 = e->t1;
+            e->t1 = key.t + ((e->t1 > lbl_80562D78) ? e->t1 : lbl_80562D78);
+            obj->frame++;
+        }
+        time = time + dt;
+        obj->time = time;
+        if (obj->flagC != 0 && obj->frame >= data->count && time >= data->endTime) {
+            fn_801E6CD0(obj, data, lbl_80562D78);
+        }
+    }
+    for (i = 0; i < obj->trackCount + 1; i++) {
+        AnimTrack *k = &obj->tr[i];
+        float *o = obj->out[i];
+        float t0 = k->t0;
+        float lim = k->t1 - lbl_80562D94;
+        float s, r;
+        t0 = (t0 < lim) ? t0 : lim;
+        s = (time - t0) / (k->t1 - t0);
+        if (lbl_80562D7C < s) s = lbl_80562D7C;
+        if (!(s > lbl_80562D78)) s = lbl_80562D78;
+        r = lbl_80562D7C - s;
+        if (i > 0) {
+            float len;
+            o[0] = k->a[0] * r + k->b[0] * s;
+            o[1] = k->a[1] * r + k->b[1] * s;
+            o[2] = k->a[2] * r + k->b[2] * s;
+            o[3] = k->a[3] * r + k->b[3] * s;
+            len = (float)fn_8002F234(o[0] * o[0] + (o[1] * o[1] + (o[3] * o[3] + o[2] * o[2])));
+            len = lbl_80562D7C / len;
+            o[0] = o[0] * len;
+            o[1] = o[1] * len;
+            o[2] = o[2] * len;
+            o[3] = o[3] * len;
+        } else {
+            o[0] = k->a[0] * r + k->b[0] * s;
+            o[1] = k->a[1] * r + k->b[1] * s;
+            o[2] = k->a[2] * r + k->b[2] * s;
+            o[3] = lbl_80562D78;
+        }
+    }
+}
+
 #pragma dont_inline reset
 
 void fn_801E75C8(void* arg0, s32 arg1) {
