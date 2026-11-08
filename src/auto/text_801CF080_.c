@@ -29,9 +29,10 @@ static inline void fn_801CF080_xform(f32 *dst, f32 *src, f32 *m) {
 #pragma scheduling reset
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
 void fn_801CF080(u8 *mesh, f32 *pos, f32 *out, s32 *count, f32 *mtx, f32 radius) {
-    f32 local[3];
-    f32 cp[3];
+    Vec801CF local;
+    Vec801CF cp;
     f32 zero;
     s32 n;
     s32 maxCount;
@@ -42,28 +43,27 @@ void fn_801CF080(u8 *mesh, f32 *pos, f32 *out, s32 *count, f32 *mtx, f32 radius)
         f32 dx = pos[0] - mtx[9];
         f32 dy = pos[1] - mtx[10];
         f32 dz = pos[2] - mtx[11];
-        local[0] = dx;
-        local[1] = dy;
-        local[2] = dz;
-        local[0] = dx * mtx[0] + dy * mtx[1] + dz * mtx[2];
-        local[1] = dx * mtx[3] + dy * mtx[4] + dz * mtx[5];
-        local[2] = dx * mtx[6] + dy * mtx[7] + dz * mtx[8];
+        local.x = dx;
+        local.y = dy;
+        local.z = dz;
+        local.x = dx * mtx[0] + dy * mtx[1] + dz * mtx[2];
+        local.y = dx * mtx[3] + dy * mtx[4] + dz * mtx[5];
+        local.z = dx * mtx[6] + dy * mtx[7] + dz * mtx[8];
     } else {
-        local[0] = pos[0];
-        local[1] = pos[1];
-        local[2] = pos[2];
+        local.x = pos[0];
+        local.y = pos[1];
+        local.z = pos[2];
     }
+    maxCount = *count;
     zero = lbl_80562A38;
     n = 0;
-    maxCount = *count;
     for (node = 0, nodeOff = 0; node < *(s32 *)(mesh + 4); node++, nodeOff += 0x18) {
         u8 *nd = *(u8 **)mesh + nodeOff;
         f32 rr;
         s32 t;
         s32 outOff;
         s32 triOff;
-        rr = *(f32 *)(nd + 0xC) + radius;
-        if (PSVECSquareDistance((f32 *)nd, local) > rr * rr) {
+        if (PSVECSquareDistance((f32 *)nd, (f32 *)&local) > (rr = *(f32 *)(nd + 0xC) + radius, rr * rr)) {
             continue;
         }
         t = *(s32 *)(nd + 0x10);
@@ -71,36 +71,47 @@ void fn_801CF080(u8 *mesh, f32 *pos, f32 *out, s32 *count, f32 *mtx, f32 radius)
         triOff = t * 0x3C;
         for (; t < *(s32 *)(nd + 0x14); t++, triOff += 0x3C) {
             u8 *tri = *(u8 **)(mesh + 0x10) + triOff;
-            f32 dist = *(f32 *)(tri + 0x14) - PSVECDotProduct(local, (f32 *)(tri + 8));
+            f32 dist = *(f32 *)(tri + 0x14) - PSVECDotProduct((f32 *)&local, (f32 *)(tri + 8));
             f32 ad = -dist;
             f32 *edge;
-            f32 proj[3];
-            Vec801CF p[3];
+            Vec801CF proj;
+            f32 p[3][3];
             f32 d[3];
             s32 outs[3];
             s32 k;
             s32 nout;
             s32 last;
             u16 flags;
+            f32 *pp;
+            f32 *pe;
+            f32 *dp;
             if (ad > radius || ad < zero) {
                 continue;
             }
             edge = (f32 *)(tri + 0x18);
-            proj[0] = local[0] + *(f32 *)(tri + 8) * dist;
-            proj[1] = local[1] + *(f32 *)(tri + 0xC) * dist;
-            proj[2] = local[2] + *(f32 *)(tri + 0x10) * dist;
-            p[0] = *(Vec801CF *)(*(u8 **)(mesh + 8) + *(s16 *)(tri + 2) * 0xC);
-            p[1] = *(Vec801CF *)(*(u8 **)(mesh + 8) + *(s16 *)(tri + 4) * 0xC);
-            p[2] = *(Vec801CF *)(*(u8 **)(mesh + 8) + *(s16 *)(tri + 6) * 0xC);
+            proj.x = local.x + *(f32 *)(tri + 8) * dist;
+            proj.y = local.y + *(f32 *)(tri + 0xC) * dist;
+            proj.z = local.z + *(f32 *)(tri + 0x10) * dist;
+            {
+                f32 *v0 = (f32 *)(*(u8 **)(mesh + 8) + *(s16 *)(tri + 2) * 0xC);
+                f32 *v1 = (f32 *)(*(u8 **)(mesh + 8) + *(s16 *)(tri + 4) * 0xC);
+                f32 *v2 = (f32 *)(*(u8 **)(mesh + 8) + *(s16 *)(tri + 6) * 0xC);
+                p[0][0] = v0[0]; p[0][1] = v0[1]; p[0][2] = v0[2];
+                p[1][0] = v1[0]; p[1][1] = v1[1]; p[1][2] = v1[2];
+                p[2][0] = v2[0]; p[2][1] = v2[1]; p[2][2] = v2[2];
+            }
             nout = 0;
             last = -1;
+            pp = p[0];
+            pe = edge;
+            dp = d;
             for (k = 0; k < 3; k++) {
                 f32 e[3];
                 f32 dd;
-                e[0] = proj[0] - p[k].x;
-                e[1] = proj[1] - p[k].y;
-                e[2] = proj[2] - p[k].z;
-                dd = PSVECDotProduct(e, edge + k * 3);
+                e[0] = (f32)proj.x - pp[0];
+                e[1] = (f32)proj.y - pp[1];
+                e[2] = (f32)proj.z - pp[2];
+                dd = PSVECDotProduct(e, pe);
                 if (dd > radius) {
                     goto next;
                 }
@@ -110,30 +121,31 @@ void fn_801CF080(u8 *mesh, f32 *pos, f32 *out, s32 *count, f32 *mtx, f32 radius)
                 } else {
                     last = k;
                 }
-                d[k] = dd;
+                *dp = dd;
+                pp += 3;
+                pe += 3;
+                dp++;
             }
             if (nout == 3) {
-                continue;
+                goto next;
             }
             flags = *(u16 *)tri;
-            cp[0] = proj[0];
-            cp[1] = proj[1];
-            cp[2] = proj[2];
+            cp = proj;
             if (nout == 1) {
                 s32 o = outs[0];
                 s32 nx;
                 Vec801CF a, b;
                 f32 s = -d[o];
                 f32 dAB, dA, dB;
-                cp[0] = proj[0] + edge[o * 3] * s;
+                cp.x = proj.x + edge[o * 3] * s;
                 nx = (o + 1) % 3;
-                cp[1] = proj[1] + edge[o * 3 + 1] * s;
-                a = p[o];
-                b = p[nx];
-                cp[2] = proj[2] + edge[o * 3 + 2] * s;
+                cp.y = proj.y + edge[o * 3 + 1] * s;
+                a = *(Vec801CF *)p[o];
+                b = *(Vec801CF *)p[nx];
+                cp.z = proj.z + edge[o * 3 + 2] * s;
                 dAB = PSVECSquareDistance((f32 *)&a, (f32 *)&b);
-                dA = PSVECSquareDistance(cp, (f32 *)&a);
-                dB = PSVECSquareDistance(cp, (f32 *)&b);
+                dA = PSVECSquareDistance((f32 *)&cp, (f32 *)&a);
+                dB = PSVECSquareDistance((f32 *)&cp, (f32 *)&b);
                 if (dA > dAB) {
                     last = nx - 2;
                     nout = 2;
@@ -143,17 +155,17 @@ void fn_801CF080(u8 *mesh, f32 *pos, f32 *out, s32 *count, f32 *mtx, f32 radius)
                 }
             }
             if (nout == 0) {
-                cp[0] = proj[0];
-                cp[1] = proj[1];
-                cp[2] = proj[2];
+                cp.x = proj.x;
+                cp.y = proj.y;
+                cp.z = proj.z;
             } else if (nout == 2) {
                 s32 m = (last + 2) % 3;
                 if (!(flags & (1 << m))) {
                     goto next;
                 }
-                cp[0] = p[m].x;
-                cp[1] = p[m].y;
-                cp[2] = p[m].z;
+                cp.x = p[m][0];
+                cp.y = p[m][1];
+                cp.z = p[m][2];
             } else if (nout == 1) {
                 s32 o = outs[0];
                 f32 s;
@@ -161,25 +173,25 @@ void fn_801CF080(u8 *mesh, f32 *pos, f32 *out, s32 *count, f32 *mtx, f32 radius)
                     goto next;
                 }
                 s = -d[o];
-                cp[0] = proj[0] + edge[o * 3] * s;
-                cp[1] = proj[1] + edge[o * 3 + 1] * s;
-                cp[2] = proj[2] + edge[o * 3 + 2] * s;
+                cp.x = proj.x + edge[o * 3] * s;
+                cp.y = proj.y + edge[o * 3 + 1] * s;
+                cp.z = proj.z + edge[o * 3 + 2] * s;
             }
-            if (PSVECSquareDistance(cp, local) < radius * radius && n < maxCount) {
-                f32 res[3];
+            if (PSVECSquareDistance((f32 *)&cp, (f32 *)&local) < radius * radius && n < maxCount) {
+                Vec801CF res;
                 if (mtx != 0) {
-                    fn_801CF080_xform(res, cp, mtx);
-                    res[0] += mtx[9];
-                    res[1] += mtx[10];
-                    res[2] += mtx[11];
+                    fn_801CF080_xform((f32 *)&res, (f32 *)&cp, mtx);
+                    res.x += mtx[9];
+                    res.y += mtx[10];
+                    res.z += mtx[11];
                 } else {
-                    res[0] = cp[0];
-                    res[1] = cp[1];
-                    res[2] = cp[2];
+                    res.x = cp.x;
+                    res.y = cp.y;
+                    res.z = cp.z;
                 }
-                out[outOff / 4] = res[0];
-                out[outOff / 4 + 1] = res[1];
-                out[outOff / 4 + 2] = res[2];
+                out[outOff / 4] = res.x;
+                out[outOff / 4 + 1] = res.y;
+                out[outOff / 4 + 2] = res.z;
                 n++;
                 outOff += 0xC;
             }
