@@ -233,50 +233,56 @@ extern float lbl_80563800, lbl_80563804, lbl_80563808, lbl_8056380C, lbl_8056381
 #pragma use_lmw_stmw off
 #pragma processor 750
 #pragma scheduling invalid_target
+/* Draws the visible rows of the unlockable list: for the UNLOCK_ROWS entries
+ * from the top row down, the unlockable's name, its description, the Game
+ * Reputation Rating it costs and the lock icon, unlocked once the player's
+ * rating reaches the entry's.  Positions and sizes are the unl_* constants
+ * above; the window's own fields are the unl_* accessors. */
 void fn_80244D6C(void *arg0) {
-    char *p = (char *)arg0;
+    char *win = (char *)arg0;
     float x, y;
-    float xpos, mid, step, h3, h2, h1, width, xicon, xcount, scale1, scale2, row;
-    int progress, i;
-    fn_80230C30(&x, &y, *(int *)(p+4), *(int *)(p+8));
-    width = (float)*(int *)(p+0xc);
+    float xpos, mid, step, dy_icon, dy_desc, dy_name, width, xicon, xrating, name_scale, desc_scale, row;
+    int rating, i;
+    fn_80230C30(&x, &y, unl_screen_x(win), unl_screen_y(win)); /* origin, from the screen's centre */
+    width = (float)unl_width(win);
     {
-    float icon_width = (float)fn_802C51C0(*(int *)(p+0xb4));
+    float icon_width = (float)fn_802C51C0(unl_icon_img(win));
     xpos = x;
-    xicon = xpos + width - icon_width;
+    xicon = xpos + width - icon_width; /* icon flush with the row's right edge */
     }
-    xcount = xicon - lbl_80563800;
-    mid = xpos + width / lbl_80563804;
-    scale1 = lbl_80563808 / (float)fn_80232B70(*(int *)(p+0xb0));
-    scale2 = lbl_8056380C / (float)fn_80232B70(*(int *)(p+0xb0));
-    progress = fn_80019888();
+    xrating = xicon - unl_rating_inset;
+    mid = xpos + width / unl_desc_div;
+    name_scale = unl_name_size / (float)fn_80232B70(unl_font(win));
+    desc_scale = unl_desc_size / (float)fn_80232B70(unl_font(win));
+    rating = fn_80019888(); /* the player's Game Reputation Rating */
     row = y;
-    h1 = lbl_80563810; h2 = lbl_80563814; h3 = lbl_80563818; step = lbl_80563824;
-    for (i=0; i<3; i++, row -= step) {
+    dy_name = unl_name_dy; dy_desc = unl_desc_dy; dy_icon = unl_icon_dy; step = unl_row_step;
+    for (i=0; i<UNLOCK_ROWS; i++, row -= step) {
         int *entry;
         float y1, y2, y3;
         int icon;
-        if (*(int *)(p+0x1c) + i >= *(int *)(p+0x18)) break;
-        entry = fn_80019054(*(int *)(p+0x1c) + i);
+        if (unl_top(win) + i >= unl_count(win)) break;
+        entry = fn_80019054(unl_top(win) + i);
         {
-        char buf[64] = {0};
-        y2 = row - h2;
-        y1 = row - h1;
-        y3 = h3 + row;
-        if (stricmp((char *)entry[0], &lbl_8055BE28) == 0) {
+        char desc[64] = {0};
+        y2 = row - dy_desc;
+        y1 = row - dy_name;
+        y3 = dy_icon + row;
+        if (stricmp((char *)entry[0], &unl_type_car) == 0) {
+            /* the car's display name, through the object tables */
             fn_8013C8E8(entry[1]);
-            sprintf(buf, &lbl_8055BE2C, fn_8013C9C8());
-        } else if (stricmp((char *)entry[0], &lbl_8055BE34) == 0) {
-            strcpy(buf, &lbl_8055BE3C);
+            sprintf(desc, &unl_desc_car, fn_8013C9C8());
+        } else if (stricmp((char *)entry[0], &unl_type_track) == 0) {
+            strcpy(desc, &unl_desc_track);
         } else {
-            fn_802E30C8(lbl_80342F98, entry[0], entry[1]);
+            fn_802E30C8(unl_err_type, entry[0], entry[1]);
         }
-        fn_80232BA4((char *)entry[1], *(int *)(p+0xb0), 0xffdfdf20, 9, xpos, y1, scale1, lbl_8056381C, lbl_80563820);
-        icon = 2;
-        if (entry[2] <= progress || *((u8 *)entry + 0xc)) icon = 3;
-        fn_802C5310(*(int *)(p+0xb4), icon, xicon, y3, lbl_8056381C);
-        fn_802337A0(*(int *)(p+0xb0), -1, 10, &lbl_8055BE44, xcount, y2, lbl_8056381C, scale2, lbl_80563820, entry[2]);
-        fn_80232BA4(buf, *(int *)(p+0xb0), -1, 9, mid, y2, scale2, lbl_8056381C, lbl_80563820);
+        fn_80232BA4((char *)entry[1], unl_font(win), unl_name_color, unl_style_row, xpos, y1, name_scale, unl_angle, unl_unit);
+        icon = unl_icon_locked;
+        if (entry[2] <= rating || *((u8 *)entry + 0xc)) icon = unl_icon_open;
+        fn_802C5310(unl_icon_img(win), icon, xicon, y3, unl_angle);
+        fn_802337A0(unl_font(win), unl_color_auto, unl_style_rating, &unl_fmt_rating, xrating, y2, unl_angle, desc_scale, unl_unit, entry[2]);
+        fn_80232BA4(desc, unl_font(win), unl_color_auto, unl_style_row, mid, y2, desc_scale, unl_angle, unl_unit);
         }
     }
 }
