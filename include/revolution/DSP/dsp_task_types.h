@@ -22,6 +22,38 @@ typedef enum {
 
 typedef void (*DSPTaskCallback)(DSPTask* task);
 
+/**
+ * Commands to the DSP sent via the mailbox.
+ */
+typedef enum {
+    MAIL_SET_IRAM_MMEM_ADDR = 0x80F3A001,
+    MAIL_SET_IRAM_DSP_ADDR = 0x80F3C002,
+    MAIL_SET_IRAM_LENGTH = 0x80F3A002,
+    MAIL_SET_ARAM_MMEM_ADDR = 0x80F3B002,
+    MAIL_SET_START_VECTOR = 0x80F3D001
+} DSPMailCmd;
+
+/**
+ * DSP microcode (from Dolphin Emulator).
+ */
+typedef enum {
+    TASK_MAIL_MASK = 0xFFFF0000,
+    TASK_MAIL_TO_CPU = 0xDCD10000,
+    TASK_MAIL_TO_DSP = 0xCDD10000,
+
+    DSP_INIT = (TASK_MAIL_TO_CPU | 0x0000),
+    DSP_RESUME = (TASK_MAIL_TO_CPU | 0x0001),
+    DSP_YIELD = (TASK_MAIL_TO_CPU | 0x0002),
+    DSP_DONE = (TASK_MAIL_TO_CPU | 0x0003),
+    DSP_SYNC = (TASK_MAIL_TO_CPU | 0x0004),
+    DSP_FRAME_END = (TASK_MAIL_TO_CPU | 0x0005),
+
+    MAIL_RESUME = (TASK_MAIL_TO_DSP | 0x0000),
+    MAIL_NEW_UCODE = (TASK_MAIL_TO_DSP | 0x0001),
+    MAIL_RESET = (TASK_MAIL_TO_DSP | 0x0002),
+    MAIL_CONTINUE = (TASK_MAIL_TO_DSP | 0x0003)
+} DSPUCode;
+
 typedef struct DSPTask {
     u32 state;                       // at 0x0
     volatile u32 prio;               // at 0x4
