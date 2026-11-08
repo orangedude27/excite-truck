@@ -5,6 +5,7 @@
 extern s32 lbl_8055D864;
 extern void cbForCancel(void);
 #include <revolution/OS/OSContext.h>
+#include <revolution/DSP/dsp_task_types.h>
 extern s32 lbl_8055D810;
 extern void *lbl_8055D814;
 extern void *lbl_8055D81C;
@@ -1179,10 +1180,7 @@ void fn_80035DA8(s32 arg0) {
 
 #pragma push
 #pragma dont_inline on
-void fn_80035E6C(arg0)
-    u32 arg0;
-{
-    register u32 kind = arg0;
+void fn_80035E6C(u32 arg0) {
     register s32 state;
     s32 firstInterrupts;
     s32 taskType;
@@ -1191,6 +1189,7 @@ void fn_80035E6C(arg0)
     s32 handled;
     void *block;
     void (*callback)(s32, void *);
+    register u32 kind = arg0;
     u8 *info;
     u32 value;
     u32 tick;
