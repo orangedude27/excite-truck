@@ -253,13 +253,15 @@ __declspec(section ".data") extern float lbl_80558DC0;
 extern float lbl_805612C8;
 extern float lbl_805612CC;
 
-static inline void time_append(char *dst, int size, char *src) {
+static inline void time_append(char *dst, int size, char *str) {
     char c;
+    char *src;
     while (*dst != 0) {
         size--;
         dst++;
     }
     if (size > 0) {
+        src = str;
         goto copy;
     count_check:
         if (--size > 0)
@@ -288,12 +290,13 @@ void fn_80130980(char *out, int size, int level, float t) {
     char s10[8];
     TimeSepTab tbl;
     char tmp[2];
+    int mins, secs, tenths, hundredths, hours;
     int hasPrev;
-    int hours, mins, secs, tenths, hundredths;
     char *src;
     char *p;
     char c;
-    int i, found;
+    unsigned int i;
+    int found;
 
     if (t == -lbl_80558DC0) {
         src = fn_80131234(lbl_8032B240);
