@@ -1761,11 +1761,6 @@ typedef struct Entry_802D18E8 {
     float pos[3];
     float strength;
 } Entry_802D18E8;
-static inline void subVec_802D18E8(float *out, float *b, float *a) {
-    out[0] = a[9] - b[9];
-    out[1] = a[10] - b[10];
-    out[2] = a[11] - b[11];
-}
 #pragma push
 #pragma optimization_level 3
 void fn_802D18E8(void) {
