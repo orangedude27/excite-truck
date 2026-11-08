@@ -26,6 +26,22 @@ struct Color { u8 r, g, b, a; };
 }
 }
 struct Data_800D8840 { s32 a; s32 b; f32 c; s32 d; s32 e; };
+// Material capacity (0x4C) / count (0x50) words share this bit layout.
+struct MatGXBits_800D8B28 {
+    u32 tex : 4;
+    u32 srt : 4;
+    u32 gen : 4;
+    u32 ind : 2;
+    u32 e : 3;
+    u32 f : 1;
+    u32 g : 5;
+    u32 h : 1;
+    u32 i : 1;
+    u32 j : 1;
+    u32 k : 1;
+    u32 pad : 5;
+};
+struct MatSRT_800D8B28 { f32 tx, ty, r, sx, sy; };
 struct GetTextureSizeStringBase_800D58C4 { char text[0x500]; };
 namespace nw4hbm { namespace lyt {
 class ResourceAccessor;
@@ -1343,24 +1359,24 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
         src += 4;
     } while (i < 4);
     texBase = fn_800D8A04((s32)res, 0x40);
-    off = (s32)((u8)fn_800D8720((s32*)((u32)res + 0x3C)) << 2) + 0x40;
+    off = (s32)((u8)fn_800D8720((s32*)((const u8*)res + 0x3C)) << 2) + 0x40;
     texCoordSrc = (void*)fn_800D89FC((s32)res, off);
-    off += (u8)fn_800D872C((s32*)((u32)res + 0x3C)) * 0x14;
+    off += (u8)fn_800D872C((s32*)((const u8*)res + 0x3C)) * 0x14;
     texCoordGenAry = fn_800D89F4((s32)res, off);
-    off += (s32)((u8)fn_800D8738((s32*)((u32)res + 0x3C)) << 2);
-    texNum = fn_800D89E4((u8)fn_800D8720((s32*)((u32)res + 0x3C)), 8);
-    texCoordNum = fn_800D89E4((u8)fn_800D872C((s32*)((u32)res + 0x3C)), 0xA);
-    texCoordGenNum = fn_800D89E4((u8)fn_800D8738((s32*)((u32)res + 0x3C)), 8);
-    v0 = fn_800D8744((s32*)((u32)res + 0x3C));
+    off += (s32)((u8)fn_800D8738((s32*)((const u8*)res + 0x3C)) << 2);
+    texNum = fn_800D89E4((u8)fn_800D8720((s32*)((const u8*)res + 0x3C)), 8);
+    texCoordNum = fn_800D89E4((u8)fn_800D872C((s32*)((const u8*)res + 0x3C)), 0xA);
+    texCoordGenNum = fn_800D89E4((u8)fn_800D8738((s32*)((const u8*)res + 0x3C)), 8);
+    v0 = fn_800D8744((s32*)((const u8*)res + 0x3C));
     hasA = (u8)((u8)v0 != 0);
-    v1 = fn_800D8750((s32*)((u32)res + 0x3C), (u8)v0);
+    v1 = fn_800D8750((s32*)((const u8*)res + 0x3C), (u8)v0);
     hasB = (u8)((u8)v1 != 0);
-    chanA = fn_800D875C((s32*)((u32)res + 0x3C), (u8)v1);
-    chanB = fn_800D8768((s32*)((u32)res + 0x3C));
-    v0 = fn_800D8774((s32*)((u32)res + 0x3C));
-    indNum = fn_800D89E4((u8)fn_800D8780((s32*)((u32)res + 0x3C)), 3);
-    indTexStageNum = fn_800D89E4((u8)fn_800D878C((s32*)((u32)res + 0x3C)), 4);
-    tevStageNum = fn_800D89E4((u8)fn_800D8798((s32*)((u32)res + 0x3C)), 0x10);
+    chanA = fn_800D875C((s32*)((const u8*)res + 0x3C), (u8)v1);
+    chanB = fn_800D8768((s32*)((const u8*)res + 0x3C));
+    v0 = fn_800D8774((s32*)((const u8*)res + 0x3C));
+    indNum = fn_800D89E4((u8)fn_800D8780((s32*)((const u8*)res + 0x3C)), 3);
+    indTexStageNum = fn_800D89E4((u8)fn_800D878C((s32*)((const u8*)res + 0x3C)), 4);
+    tevStageNum = fn_800D89E4((u8)fn_800D8798((s32*)((const u8*)res + 0x3C)), 0x10);
     fn_800D8B28(self, (u8)texNum, (u8)texCoordNum, (u8)texCoordGenNum, (u8)tevStageNum, chanA, (u8)indTexStageNum, (u8)indNum, hasA, hasB, chanB, v0);
     if (*(s32*)(self + 0x58) != 0) {
         SetTextureNum__Q36nw4hbm3lyt8MaterialFUc(self, (u8)texNum);
@@ -1451,7 +1467,7 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
                 j += 1;
             } while (j < (u8)indNum);
         }
-        off += (u8)fn_800D8780((s32*)((u32)res + 0x3C)) * 0x14;
+        off += (u8)fn_800D8780((s32*)((const u8*)res + 0x3C)) * 0x14;
         if ((u8)indTexStageNum != 0) {
             fn_800D9ACC(self);
             texStageDst = (void*)fn_800D947C(self);
@@ -1464,7 +1480,7 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
                 j += 1;
             } while (j < (u8)indTexStageNum);
         }
-        off += (u8)fn_800D878C((s32*)((u32)res + 0x3C)) << 2;
+        off += (u8)fn_800D878C((s32*)((const u8*)res + 0x3C)) << 2;
         if ((u8)tevStageNum != 0) {
             fn_800D9844(self);
             tevDst = (void*)fn_800D9524(self);
@@ -1477,7 +1493,7 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
                 j += 1;
             } while (j < (u8)tevStageNum);
         }
-        off += (u8)fn_800D8798((s32*)((u32)res + 0x3C)) << 4;
+        off += (u8)fn_800D8798((s32*)((const u8*)res + 0x3C)) << 4;
         if (chanB != 0) {
             if (fn_800D893C(self) == 0) {
                 Panic__Q26nw4hbm2dbFPCciPCce(strBase, 0x238, strBase + 0x18C);
