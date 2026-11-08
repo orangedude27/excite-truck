@@ -139,6 +139,69 @@ void fn_80130568(char *arg0) {
     }
 }
 
+void fn_8013072C(char *arg0, int arg1, int arg2) {
+    int sign = arg2 >> 31;
+    int magnitude = (sign ^ arg2) - sign;
+    unsigned int negative = (unsigned int)arg2 >> 31;
+    register int digits;
+    int groups;
+    int high;
+    int quotient;
+    char *p;
+    int current;
+
+    high = magnitude;
+    quotient = magnitude / 1000;
+    groups = 0;
+    while (quotient > 0) {
+        high = quotient;
+        quotient /= 1000;
+        groups++;
+    }
+    if (high < 10)
+        digits = 1;
+    else if (high < 100)
+        digits = 2;
+    else
+        digits = 3;
+    p = arg0 + groups * 4 + digits + negative;
+    p[1] = 0;
+    if (arg2 == 0) {
+        p[0] = '0';
+        p--;
+    } else {
+        current = arg2 < 0 ? -arg2 : arg2;
+        while (current > 0) {
+            if (current >= 1000) {
+                int d1, d3;
+                register int d2;
+                d1 = current % 10;
+                current /= 10;
+                d2 = current % 10;
+                current /= 10;
+                d3 = current % 10;
+                p[0] = (char)(d1 + '0');
+                p[-1] = (char)(d2 + '0');
+                p[-2] = (char)(d3 + '0');
+                p[-3] = ',';
+                current /= 10;
+                p -= 4;
+            } else {
+                int q;
+                q = current / 10;
+                p[0] = (char)(current % 10 + '0');
+                current = q;
+                p--;
+            }
+        }
+        if (negative != 0) {
+            p[0] = '-';
+            p--;
+        }
+    }
+    *p = 1;
+}
+
 void fn_801308E4(void *arg0, void *arg1, int arg2, int arg3) {
     fn_801305C4(arg0, arg1, (char *)lbl_8055E050 + 8, arg2);
 }
@@ -171,9 +234,47 @@ done:
     ;
 }
 
-void fn_80130978(int arg0, int arg1) { fn_80130980(arg0, arg1, 3); }
-
 extern void fn_801345D8(void *, ...);
+extern char lbl_80559A9C[];
+extern char lbl_80559AE4[];
+extern char lbl_80559AEC[];
+extern char lbl_80559AF0[];
+extern char lbl_80559AF4[];
+extern char lbl_8032B240[];
+typedef struct {
+    char c;
+    char *s;
+} TimeSepEnt;
+typedef struct {
+    TimeSepEnt e[13];
+} TimeSepTab;
+extern TimeSepTab lbl_802F8E78;
+extern float lbl_80558DC0;
+extern float lbl_805612C8;
+extern float lbl_805612CC;
+
+static inline void time_append(char *dst, int size, char *src) {
+    char c;
+    while (*dst != 0) {
+        size--;
+        dst++;
+    }
+    if (size > 0) {
+        do {
+            c = *src++;
+            *dst++ = c;
+            if (c == 0)
+                break;
+            if (--size <= 0) {
+                dst[-1] = 0;
+                break;
+            }
+        } while (1);
+    }
+}
+
+void fn_80130980(char *out, int size, int level, float t);
+void fn_80130978(char *arg0, int arg1, float t) { fn_80130980(arg0, arg1, 3, t); }
 extern void *lbl_80559AA0;
 #pragma scheduling invalid_target
 void fn_80130FCC(void *arg0, int arg1, void *arg2) {
