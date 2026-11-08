@@ -220,14 +220,26 @@ static void SIClearTCInterrupt(void) {
     SI_HW_REGS[SI_SICOMSCR] = csr;
 }
 
+/* Finish the SI transfer the hardware has just completed.
+ *
+ * Copies the response out of the SI communication RAM into the transfer's
+ * input buffer - whole words first, then the 1-3 valid bytes of the last word
+ * (the hardware always returns a full word, most significant byte first) -
+ * and stamps XferTime so the next transfer to this channel can be scheduled
+ * from it. On a communication error the channel's flag byte in SISR is
+ * reduced to a single SI error code (SI_COLL when COMERR was raised without
+ * any specific flag); otherwise TypeTime is refreshed and 0 is returned.
+ * The main context is left idle. Called by SIInterruptHandler on a
+ * transfer-complete interrupt, which passes the result to the callback.
+ */
 static u32 CompleteTransfer(void) {
     u32 i;
-    u32 sr;
+    u32 status;
     u8* dst;
     u32 size;
-    u32 imm;
+    u32 word;
 
-    sr = SI_HW_REGS[SI_SISR];
+    status = SI_HW_REGS[SI_SISR];
     SIClearTCInterrupt();
 
     if (Si_80311630.chan != SI_CHAN_NONE) {
@@ -235,41 +247,44 @@ static u32 CompleteTransfer(void) {
 
         dst = (u8*)Si_80311630.inAddr;
 
+        /* whole words straight out of the communication RAM */
         size = Si_80311630.inSize / sizeof(u32);
         for (i = 0; i < size; dst += sizeof(u32), i++) {
             *(u32*)dst = SI_HW_REGS[SI_RAM_BASE + i];
         }
 
+        /* the tail: the last word's remaining bytes */
         size = Si_80311630.inSize % sizeof(u32);
         if (size > 0) {
-            imm = SI_HW_REGS[SI_RAM_BASE + i];
+            word = SI_HW_REGS[SI_RAM_BASE + i];
 
             for (i = 0; i < size; dst++, i++) {
-                *dst = imm >> (3 - i) * 8;
+                *dst = word >> (3 - i) * 8;
             }
         }
 
         if (SI_HW_REGS[SI_SICOMSCR] & SI_SICOMCSR_COMERR) {
-            // Flags relative to channel ID
-            sr >>= ((SI_MAX_CHAN - 1) - Si_80311630.chan) * 8;
-            sr &= (SI_UNRUN | SI_OVRUN | SI_COLL | SI_NOREP);
+            // SISR holds one flag byte per channel: bring ours down
+            status >>= ((SI_MAX_CHAN - 1) - Si_80311630.chan) * 8;
+            status &= (SI_UNRUN | SI_OVRUN | SI_COLL | SI_NOREP);
 
-            if ((sr & SI_NOREP) && (Type[Si_80311630.chan] & SI_ERROR_BUSY) == 0) {
+            if ((status & SI_NOREP) && (Type[Si_80311630.chan] & SI_ERROR_BUSY) == 0) {
                 Type[Si_80311630.chan] = SI_ERROR_NOREP;
             }
 
-            if (sr == 0) {
-                sr = SI_COLL;
+            /* a communication error with no flag of its own is a collision */
+            if (status == 0) {
+                status = SI_COLL;
             }
         } else {
             TypeTime[Si_80311630.chan] = __OSGetSystemTime();
-            sr = 0;
+            status = 0;
         }
 
         Si_80311630.chan = SI_CHAN_NONE;
     }
 
-    return sr;
+    return status;
 }
 
 static void SITransferNext(s32 chan) {
