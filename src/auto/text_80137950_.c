@@ -164,6 +164,10 @@ void fn_80137C80(void) {
     fn_80016A44();
 }
 
+void fn_80137C84(int arg0, int arg1) {
+    lbl_8042F798[arg1] = arg1;
+}
+
 int fn_80137C98(int value) {
     int count = fn_800167F4();
     int i = 0;
