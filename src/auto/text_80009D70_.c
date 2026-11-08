@@ -72,6 +72,8 @@ void fn_8000AB48(void* arg0, s32 arg1);
 void fn_8000ABE0(void* arg0);
 u32 fn_8000AC38(void);
 
+#pragma push
+#pragma processor 750
 void* fn_80009D70(void* arg0, s32 arg1) {
     if (arg0 != 0) {
         if (arg0 != 0) {
