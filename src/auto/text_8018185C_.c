@@ -14,6 +14,7 @@ static inline void MultVecSR_inl(const float *m, const float *src, float *dst) {
     }
 }
 typedef struct V3 { float x, y, z; } V3;
+typedef struct W3 { int a, b, c; } W3;
 static inline void MultVecT_inl(const float *m, const float *src, float *dst) {
     float x, y, z;
     if (src == dst) {
@@ -1222,6 +1223,125 @@ vel[5] = (c < d) ? c : d;
 
 int fn_80188E24(void) { return 0; }
 
+extern double fabs(double);
+extern float lbl_80561E00, lbl_80561EFC, lbl_80561DC0, lbl_80561D40, lbl_80561F00, lbl_80561F04, lbl_80561F08;
+extern void fn_8018E3EC(void *, float *, float *, int, int, int, void *, int);
+#pragma push
+#pragma processor 750
+extern double __fabs(double);
+void fn_8018956C(void *arg0, float *arg1, float *arg2, int mode, void *obj, int arg5) {
+    float *o = (float *)arg0;
+    char *ob = (char *)obj;
+    float mag, f28, f30, scale;
+    int flag, r30;
+    float dir[3];
+    float d[3];
+    int dir2[3];
+    float dd[3];
+    int v[3];
+    V3 m[3];
+    float pos[3];
+    V3 *msrc;
+    int *src = (int *)arg1;
+
+    fn_80189C64(arg0);
+    mag = PSVECMag(arg1);
+    flag = 0;
+    if (obj != 0 && mode == 0x6d) {
+        flag = 1;
+    }
+    f30 = lbl_80561CD0;
+    r30 = -1;
+    if (mode == 0x6d && obj != 0) {
+        int t = *(int *)(ob + 0x10);
+        if (t == 0x43415220 || t == 0x50434152 || t == 0x41434152 || t == 0x4e434152 || t == 0x54524c52) {
+            float b, diff;
+            int s0, s1, s2;
+            r30 = *(int *)(ob + 0x1ec);
+            s0 = src[0]; s1 = src[1]; s2 = src[2];
+            v[0] = s0; v[1] = s1; v[2] = s2;
+            if (mag > lbl_80561D00) {
+                PSVECNormalize(v, v);
+            }
+            f28 = (float)__fabs(PSVECDotProduct(v, o + 70));
+            b = (float)__fabs(PSVECDotProduct(v, ob + 0x118));
+            diff = b - f28;
+            if (diff > lbl_80561E00 && b > lbl_80561CF0 * f28) {
+                if (f28 > lbl_80561DC0) {
+                } else {
+                    f28 = lbl_80561DC0;
+                }
+                f30 = b / f28;
+                if (f30 < lbl_80561CF8) {
+                } else {
+                    f30 = lbl_80561CF8;
+                }
+            } else if (diff < lbl_80561EFC && f28 > lbl_80561CF0 * b) {
+                if (f28 > lbl_80561DC0) {
+                } else {
+                    f28 = lbl_80561DC0;
+                }
+                f30 = b / f28;
+                if (f30 > lbl_80561D40) {
+                } else {
+                    f30 = lbl_80561D40;
+                }
+                {
+                    float x = arg2[0] - o[37];
+                    float y = arg2[1] - o[38];
+                    float z = arg2[2] - o[39];
+                    dd[2] = z * o[36] + (x * o[34] + y * o[35]);
+                    dd[0] = z * o[30] + (x * o[28] + y * o[29]);
+                    dd[1] = z * o[33] + (x * o[31] + y * o[32]);
+                }
+                if (dd[2] < lbl_80561F00 && PSVECDotProduct(arg1, o + 34) > lbl_80561CAC) {
+                    f30 = lbl_80561CAC;
+                }
+            }
+        }
+    } else if (mode == 0x70 && obj != 0) {
+        int t = *(int *)(ob + 0x10);
+        if (t == 0x43415220 || t == 0x50434152 || t == 0x41434152 || t == 0x4e434152) {
+            r30 = *(int *)(ob + 0x1ec);
+        }
+    }
+    {
+        int s0 = src[0], s1 = src[1], s2 = src[2];
+        dir2[0] = s0; dir2[1] = s1; dir2[2] = s2;
+    }
+    f28 = o[381];
+    if (flag != 0) {
+        f28 = f28 * f30;
+    } else if (mode != 0x70) {
+        f28 = f28 * (lbl_80561D08 * o[198]);
+    } else {
+        f28 = f28 * lbl_80561F04;
+    }
+    if (!(*(int *)((char *)__AXFXGetLfoSinTable_801769CC() + 4) & 0x4000)) {
+        f28 = f28 * lbl_80561D34;
+    }
+    ((float *)dir2)[0] = ((float *)dir2)[0] * f28;
+    ((float *)dir2)[1] = ((float *)dir2)[1] * f28;
+    ((float *)dir2)[2] = ((float *)dir2)[2] * f28;
+    if (mag * f28 > lbl_80561F08) {
+        msrc = (V3 *)(o + 15);
+        m[0] = msrc[0]; m[1] = msrc[1]; m[2] = msrc[2];
+        MultVecSR_inl(o + 15, o + 12, pos);
+        pos[0] = pos[0] + o[24];
+        pos[1] = pos[1] + o[25];
+        pos[2] = pos[2] + o[26];
+        {
+            float t[3];
+            t[0] = arg2[0] - pos[0];
+            t[1] = arg2[1] - pos[1];
+            t[2] = arg2[2] - pos[2];
+            MultVecT_inl((float *)m, t, d);
+        }
+        MultVecT_inl((float *)m, (float *)dir2, dir);
+        fn_8018E3EC(arg0, dir, d, 0, r30, mode, obj, arg5);
+    }
+}
+#pragma pop
 typedef unsigned char u8;
 typedef unsigned int u32;
 typedef float f32;
