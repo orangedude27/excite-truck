@@ -19,6 +19,7 @@ extern s32 DSPReadMailFromDSP(void);
 extern void DSPSendMailToDSP(u32);
 #include <ctype.h>
 #include "revolution/DSP/dsp_task_types.h"
+#include "revolution/DSP/dsp_task_types.h"
 extern void fn_80038368(void *);
 extern void fn_80035A04(u32);
 extern s32 fn_8003B81C(void *, s32, s32, s32);
