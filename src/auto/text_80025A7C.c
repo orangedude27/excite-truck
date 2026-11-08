@@ -28,7 +28,19 @@ typedef struct {
     int precision;
 } print_format;
 
-char* longlong2str_80025A7C(signed long long num, char* buff, print_format format) {
+/**
+ * @brief MSL printf's 64-bit integer conversion: write @p num to the end of the
+ *        caller's 512-byte scratch buffer, backwards, and return a pointer to
+ *        the resulting NUL-terminated string (0 if it would not fit).
+ *
+ * Same routine as the static longlong2str() in src/MSL/printf.c; the game links
+ * a second copy of MSL's printf.  @p pBuf is the *end* of the buffer (buff +
+ * 512 in __dopr), so digits are prepended with --p.  Only the fields
+ * parse_format() filled in matter: conversion_char, precision, field_width,
+ * alternate_form, justification_options and sign_options.
+ */
+char* longlong2str_80025A7C(signed long long num, char* pBuf,
+                            print_format fmt) {
     unsigned long long unsigned_num, base;
     char* p;
     int n, digits;
@@ -36,20 +48,24 @@ char* longlong2str_80025A7C(signed long long num, char* buff, print_format forma
     unsigned_num = num;
     minus = 0;
 
-    p = buff;
+    /* Start with the terminator; an empty conversion returns just it. */
+    p = pBuf;
     *--p = 0;
     digits = 0;
 
-    if (!num && !format.precision && !(format.alternate_form && format.conversion_char == 'o')) {
+    if (!num && !fmt.precision &&
+        !(fmt.alternate_form && fmt.conversion_char == 'o')) {
         return p;
     }
 
-    switch (format.conversion_char) {
+    /* Radix from the conversion character; only %d/%i are signed. */
+    switch (fmt.conversion_char) {
     case 'd':
     case 'i':
         base = 10;
 
         if (num < 0) {
+            /* -LLONG_MIN would wrap back onto itself, so leave it alone */
             if (num != 0x8000000000000000LL)
                 unsigned_num = -unsigned_num;
 
@@ -59,21 +75,23 @@ char* longlong2str_80025A7C(signed long long num, char* buff, print_format forma
 
     case 'o':
         base = 8;
-        format.sign_options = only_minus;
+        fmt.sign_options = only_minus;
         break;
 
     case 'u':
         base = 10;
-        format.sign_options = only_minus;
+        fmt.sign_options = only_minus;
         break;
 
     case 'x':
     case 'X':
         base = 16;
-        format.sign_options = only_minus;
+        fmt.sign_options = only_minus;
         break;
     }
 
+    /* Least significant digit first, so the string grows down towards pBuf's
+     * start: n is the remainder, turned into its digit character. */
     do {
         n = unsigned_num % base;
         unsigned_num /= base;
@@ -83,7 +101,7 @@ char* longlong2str_80025A7C(signed long long num, char* buff, print_format forma
         } else {
             n -= 10;
 
-            if (format.conversion_char == 'x') {
+            if (fmt.conversion_char == 'x') {
                 n += 'a';
             } else {
                 n += 'A';
@@ -94,39 +112,43 @@ char* longlong2str_80025A7C(signed long long num, char* buff, print_format forma
         ++digits;
     } while (unsigned_num != 0);
 
-    if (base == 8 && format.alternate_form && *p != '0') {
+    /* %#o prefixes a 0 unless the value already starts with one. */
+    if (base == 8 && fmt.alternate_form && *p != '0') {
         *--p = '0';
         ++digits;
     }
 
-    if (format.justification_options == zero_fill) {
-        format.precision = format.field_width;
+    /* Zero padding: the field width takes the place of the precision, less
+     * whatever the sign and the 0x prefix will use. */
+    if (fmt.justification_options == zero_fill) {
+        fmt.precision = fmt.field_width;
 
-        if (minus || format.sign_options != only_minus)
-            --format.precision;
+        if (minus || fmt.sign_options != only_minus)
+            --fmt.precision;
 
-        if (base == 16 && format.alternate_form)
-            format.precision -= 2;
+        if (base == 16 && fmt.alternate_form)
+            fmt.precision -= 2;
     }
 
-    if (buff - p + format.precision > 509)
+    /* 509 = the 512-byte buffer less the terminator and the caller's room. */
+    if (pBuf - p + fmt.precision > 509)
         return (0);
 
-    while (digits < format.precision) {
+    while (digits < fmt.precision) {
         *--p = '0';
         ++digits;
     }
 
-    if (base == 16 && format.alternate_form) {
-        *--p = format.conversion_char;
+    if (base == 16 && fmt.alternate_form) {
+        *--p = fmt.conversion_char;
         *--p = '0';
     }
 
     if (minus) {
         *--p = '-';
-    } else if (format.sign_options == sign_always) {
+    } else if (fmt.sign_options == sign_always) {
         *--p = '+';
-    } else if (format.sign_options == space_holder) {
+    } else if (fmt.sign_options == space_holder) {
         *--p = ' ';
     }
 
