@@ -1233,7 +1233,7 @@ static void ErrorFromFlush(void) {
     ctrl->flushStatus = SC_STATUS_FATAL;
 
     if (ctrl->isFileOpen) {
-        ctrl->nandCbState = NAND_CB_STATE_9;
+        ctrl->nandCbState = SC_FLUSH_STATE_CLOSED;
 
         if (NANDCloseAsync(&ctrl->fileInfo, MyNandCallback,
                            (NANDCommandBlock*)&ctrl->commandBlock) == NAND_RESULT_OK) {
