@@ -15356,55 +15356,67 @@ extern char lbl_80317B04[];
    defines it as u8, so the UINT16 the stack wants needs the cast. */
 #define btm_get_acl_disc_reason_code() ((UINT16 (*)(void))fn_80077DD8)()
 
+/* L2CAP disconnect indication for one of a HID device's channels
+   (hidh_l2cif_disconnect_ind of stack/hid/hidh_conn.c).  Finds the device that
+   owns the channel that just went down, answers the disconnect first when L2CAP
+   asked for it, and clears that channel's CID.  Once the control and the
+   interrupt channel are both gone the device is closed: the application gets
+   HID_HDEV_EVT_CLOSE, with its reason changed to HID_ERR_AUTH_FAILED when the
+   baseband dropped the link for one of the security errors below. */
 static void hidh_l2cif_disconnect_ind(UINT16 l2cap_cid, BOOLEAN ack_needed)
 {
     UINT8 dhandle;
-    UINT8 *p_hcon = NULL;
-    UINT16 disc_res = 0;
+    tHID_CONN_VIEW *p_hcon = NULL;
+    UINT16 disc_res = HCI_SUCCESS;
     UINT16 hid_close_evt_reason;
 
-    for (dhandle = 0; dhandle < 0x10; dhandle++) {
-        UINT8 *p_dev = lbl_803C3C38 + dhandle * 0x34;
-        if (p_dev[0] != 0 && p_dev[0x10] != 0 &&
-            (l2cap_cid == *(UINT16 *)(p_dev + 0x14) ||
-             l2cap_cid == *(UINT16 *)(p_dev + 0x16)))
+    /* Find the device this channel belongs to */
+    for (dhandle = 0; dhandle < HIDH_MAX_DEVICES; dhandle++) {
+        tHID_HOST_DEV_CTB_VIEW *p_dev = hh_cb_dev(dhandle);
+        if (p_dev->in_use != 0 && p_dev->conn.conn_state != 0 &&
+            (l2cap_cid == p_dev->conn.ctrl_cid ||
+             l2cap_cid == p_dev->conn.intr_cid))
             break;
     }
 
-    if (dhandle != 0x10)
-        p_hcon = lbl_803C3C38 + dhandle * 0x34 + 0x10;
+    if (dhandle != HIDH_MAX_DEVICES)
+        p_hcon = &hh_cb_dev(dhandle)->conn;
 
     if (p_hcon == NULL) {
-        if (lbl_803C3C38[0x401] >= 2)
-            fn_80070954(0x1E0001, lbl_80317AD8, l2cap_cid);
+        if (hh_cb_trace_level >= BT_TRACE_LEVEL_WARNING)
+            fn_80070954(TRACE_LAYER_HID | TRACE_TYPE_WARNING, lbl_80317AD8, l2cap_cid); /* "HID - Rcvd L2CAP disc, unknown CID: 0x%x" */
     } else {
         if (ack_needed)
             L2CA_DisconnectRsp(l2cap_cid);
 
-        if (lbl_803C3C38[0x401] >= 4)
-            fn_80070954(0x1E0003, lbl_80317B04, l2cap_cid);
+        if (hh_cb_trace_level >= BT_TRACE_LEVEL_EVENT)
+            fn_80070954(TRACE_LAYER_HID | TRACE_TYPE_EVENT, lbl_80317B04, l2cap_cid); /* "HID - Rcvd L2CAP disc, CID: 0x%x" */
 
-        p_hcon[0] = 5;
-        if (l2cap_cid == *(UINT16 *)(p_hcon + 4))
-            *(UINT16 *)(p_hcon + 4) = 0;
+        p_hcon->conn_state = HID_CONN_STATE_DISCONNECTING;
+        if (l2cap_cid == p_hcon->ctrl_cid)
+            p_hcon->ctrl_cid = 0;
         else
-            *(UINT16 *)(p_hcon + 6) = 0;
+            p_hcon->intr_cid = 0;
 
-        if (*(UINT16 *)(p_hcon + 4) == 0 && *(UINT16 *)(p_hcon + 6) == 0) {
-            *(UINT8 *)(lbl_803C3C38 + dhandle * 0x34 + 0xA) = 0;
-            p_hcon[0] = 0;
+        /* Both channels down: the device is closed. */
+        if (p_hcon->ctrl_cid == 0 && p_hcon->intr_cid == 0) {
+            hh_cb_dev(dhandle)->state = HID_DEV_NO_CONN;
+            p_hcon->conn_state = HID_CONN_STATE_UNUSED;
 
             if (!ack_needed)
-                disc_res = ((UINT16 (*)(void))fn_80077DD8)();
+                disc_res = btm_get_acl_disc_reason_code();
 
-            hid_close_evt_reason = *(UINT16 *)(p_hcon + 0xA);
-            if (disc_res == 5 || disc_res == 6 || disc_res == 0xE ||
-                disc_res == 0x18 || disc_res == 0x26 || disc_res == 0x29 ||
-                disc_res == 0x25 || disc_res == 0x17)
-                hid_close_evt_reason = 0xF;
+            hid_close_evt_reason = p_hcon->disc_reason;
+            if (disc_res == HCI_ERR_AUTH_FAILURE || disc_res == HCI_ERR_KEY_MISSING ||
+                disc_res == HCI_ERR_HOST_REJECT_SECURITY ||
+                disc_res == HCI_ERR_PAIRING_NOT_ALLOWED ||
+                disc_res == HCI_ERR_UNIT_KEY_USED ||
+                disc_res == HCI_ERR_PAIRING_WITH_UNIT_KEY_NOT_SUPPORTED ||
+                disc_res == HCI_ERR_ENCRY_MODE_NOT_ACCEPTABLE ||
+                disc_res == HCI_ERR_REPEATED_ATTEMPTS)
+                hid_close_evt_reason = HID_ERR_AUTH_FAILED;
 
-            ((void (*)(UINT8, UINT32, UINT16, void *))(*(void **)(lbl_803C3C38 + 0x340)))(
-                dhandle, 1, hid_close_evt_reason, 0);
+            hh_cb_callback(dhandle, HID_HDEV_EVT_CLOSE, hid_close_evt_reason, NULL);
         }
     }
 }
