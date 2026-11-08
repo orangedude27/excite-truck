@@ -1,5 +1,6 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+extern void fn_801F2570(int);
 
 struct BillboardIndices { unsigned short a[6]; };
 extern void *fn_802C86DC(void);
@@ -449,13 +450,13 @@ void fn_801F2E88(void *arg0, void *arg1) {
     float t4[3],t3[3],t2[3],t1[3],t0[3];
     unsigned short indices[6];
     float vec[3];
-    float scale0 = lbl_80562F50, scale1 = lbl_80562F54, scale2 = lbl_80562F58, scale3 = lbl_80562F5C;
+    float scale2 = lbl_80562F58, scale3 = lbl_80562F5C, scale0 = lbl_80562F50, scale1 = lbl_80562F54;
     void *p = arg1;
     while (p != 0) {
         void *camera = fn_802C86DC();
-        void *pos;
+        register void *pos;
         int frame;
-        float u,v,u1,v1;
+        float v1,v,u1,u;
         fn_8001BA68(vec);
         pos = (char *)p + 0x20;
         fn_801C0E60(vec,pos,(char *)camera + 0x24);
@@ -474,7 +475,7 @@ void fn_801F2E88(void *arg0, void *arg1) {
         fn_801F3124(vertices[1],base);
         fn_801F3124(vertices[2],base);
         fn_801F3124(vertices[3],base);
-        { struct IndexSet { unsigned short a[6]; }; *(struct IndexSet *)indices = *(struct IndexSet *)lbl_802F9B20; }
+        *(struct BillboardIndices *)indices = *(struct BillboardIndices *)lbl_802F9B20;
         ((float *)vertices[3])[4]=u1;
         ((float *)vertices[1])[4]=u1;
         ((float *)vertices[3])[5]=v1;
@@ -1291,59 +1292,64 @@ void *fn_801F4614(void *arg0, int arg1) {
 extern double sin(double);
 extern float fn_80144514(float, float, float, float, float, float);
 extern void fn_802CDAB4(int, int, float *);
-void fn_801F4684(void *arg0, int arg1) {
-    int count = *(int *)((char *)arg0 + 8);
-    int i = 0;
-    int offset = 0;
-    if (count > 0) {
-        float zero = lbl_80562F40;
-        float one = lbl_80562F44;
+#pragma scheduling invalid_target
+void fn_801F4684(register void *r25, register int r26) {
+    register int r28 = 0;
+    register int r29 = 0;
+    int count;
+    if (*(int *)((char *)r25 + 8) > 0) {
+        register float f22;
+        register float f23;
+        f22 = lbl_80562F40;
+        f23 = lbl_80562F44;
         do {
-            char *entry = *(char **)((char *)arg0 + 4) + offset;
-            float angle = *(float *)(entry + 0x14) * fn_801E7E18();
-            float c = (float)cos(angle);
-            float s = (float)sin(angle);
-            float transform[12];
-            float *matrix;
-            transform[0] = c; transform[1] = zero; transform[2] = -s;
-            transform[3] = zero; transform[4] = one; transform[5] = zero;
-            transform[6] = s; transform[7] = zero; transform[8] = c;
-            matrix = *(float **)(entry + 0x10);
-            if (&transform[0] == &transform[0] || &transform[0] == matrix) {
-                float v0 = fn_80144514(matrix[0], transform[0], matrix[3], transform[1], matrix[6], transform[2]);
-                float v1 = fn_80144514(matrix[0], transform[3], matrix[3], transform[4], matrix[6], transform[5]);
-                float v2 = fn_80144514(matrix[0], transform[6], matrix[3], transform[7], matrix[6], transform[8]);
-                float v3 = fn_80144514(matrix[1], transform[0], matrix[4], transform[1], matrix[7], transform[2]);
-                float v4 = fn_80144514(matrix[1], transform[3], matrix[4], transform[4], matrix[7], transform[5]);
-                float v5 = fn_80144514(matrix[1], transform[6], matrix[4], transform[7], matrix[7], transform[8]);
-                float v6 = fn_80144514(matrix[2], transform[0], matrix[5], transform[1], matrix[8], transform[2]);
-                float v7 = fn_80144514(matrix[2], transform[3], matrix[5], transform[4], matrix[8], transform[5]);
-                float v8 = fn_80144514(matrix[2], transform[6], matrix[5], transform[7], matrix[8], transform[8]);
-                transform[0]=v0; transform[3]=v1; transform[6]=v2;
-                transform[1]=v3; transform[4]=v4; transform[7]=v5;
-                transform[2]=v6; transform[5]=v7; transform[8]=v8;
-            } else {
-                transform[0] = fn_80144514(matrix[0], transform[0], matrix[3], transform[1], matrix[6], transform[2]);
-                transform[3] = fn_80144514(matrix[0], transform[3], matrix[3], transform[4], matrix[6], transform[5]);
-                transform[6] = fn_80144514(matrix[0], transform[6], matrix[3], transform[7], matrix[6], transform[8]);
-                transform[1] = fn_80144514(matrix[1], transform[0], matrix[4], transform[1], matrix[7], transform[2]);
-                transform[4] = fn_80144514(matrix[1], transform[3], matrix[4], transform[4], matrix[7], transform[5]);
-                transform[7] = fn_80144514(matrix[1], transform[6], matrix[4], transform[7], matrix[7], transform[8]);
-                transform[2] = fn_80144514(matrix[2], transform[0], matrix[5], transform[1], matrix[8], transform[2]);
-                transform[5] = fn_80144514(matrix[2], transform[3], matrix[5], transform[4], matrix[8], transform[5]);
-                transform[8] = fn_80144514(matrix[2], transform[6], matrix[5], transform[7], matrix[8], transform[8]);
+            register char *entry;
+            entry = *(char **)((char *)r25 + 4) + r29;
+            {
+                register float angle = *(float *)(entry + 0x14) * fn_801E7E18();
+                register float c = (float)cos(angle);
+                register float s = (float)sin(angle);
+                float transform[12];
+                register float *matrix;
+                transform[0] = c; transform[1] = f22; transform[2] = -s;
+                transform[3] = f22; transform[4] = f23; transform[5] = f22;
+                transform[6] = s; transform[7] = f22; transform[8] = c;
+                matrix = *(float **)(entry + 0x10);
+                if (matrix == &transform[0] || matrix == transform) {
+                    float v0 = fn_80144514(matrix[0], transform[0], matrix[3], transform[1], matrix[6], transform[2]);
+                    float v1 = fn_80144514(matrix[0], transform[3], matrix[3], transform[4], matrix[6], transform[5]);
+                    float v2 = fn_80144514(matrix[0], transform[6], matrix[3], transform[7], matrix[6], transform[8]);
+                    float v3 = fn_80144514(matrix[1], transform[0], matrix[4], transform[1], matrix[7], transform[2]);
+                    float v4 = fn_80144514(matrix[1], transform[3], matrix[4], transform[4], matrix[7], transform[5]);
+                    float v5 = fn_80144514(matrix[1], transform[6], matrix[4], transform[7], matrix[7], transform[8]);
+                    float v6 = fn_80144514(matrix[2], transform[0], matrix[5], transform[1], matrix[8], transform[2]);
+                    float v7 = fn_80144514(matrix[2], transform[3], matrix[5], transform[4], matrix[8], transform[5]);
+                    float v8 = fn_80144514(matrix[2], transform[6], matrix[5], transform[7], matrix[8], transform[8]);
+                    transform[0]=v0; transform[3]=v1; transform[6]=v2;
+                    transform[1]=v3; transform[4]=v4; transform[7]=v5;
+                    transform[2]=v6; transform[5]=v7; transform[8]=v8;
+                } else {
+                    transform[0] = fn_80144514(matrix[0], transform[0], matrix[3], transform[1], matrix[6], transform[2]);
+                    transform[3] = fn_80144514(matrix[0], transform[3], matrix[3], transform[4], matrix[6], transform[5]);
+                    transform[6] = fn_80144514(matrix[0], transform[6], matrix[3], transform[7], matrix[6], transform[8]);
+                    transform[1] = fn_80144514(matrix[1], transform[0], matrix[4], transform[1], matrix[7], transform[2]);
+                    transform[4] = fn_80144514(matrix[1], transform[3], matrix[4], transform[4], matrix[7], transform[5]);
+                    transform[7] = fn_80144514(matrix[1], transform[6], matrix[4], transform[7], matrix[7], transform[8]);
+                    transform[2] = fn_80144514(matrix[2], transform[0], matrix[5], transform[1], matrix[8], transform[2]);
+                    transform[5] = fn_80144514(matrix[2], transform[3], matrix[5], transform[4], matrix[8], transform[5]);
+                    transform[8] = fn_80144514(matrix[2], transform[6], matrix[5], transform[7], matrix[8], transform[8]);
+                }
+                transform[9] = *(float *)(entry + 4);
+                transform[10] = *(float *)(entry + 8);
+                transform[11] = *(float *)(entry + 0xC);
+                fn_802CDAB4(r26, *(int *)entry, transform);
             }
-            transform[9] = *(float *)(entry + 4);
-            transform[10] = *(float *)(entry + 8);
-            transform[11] = *(float *)(entry + 0xC);
-            fn_802CDAB4(arg1, *(int *)entry, transform);
-            offset += 0x18;
-            i++;
-        } while (i < count);
+            r29 += 0x18;
+            r28 += 1;
+        } while (r28 < *(int *)((char *)r25 + 8));
     }
 }
-
-#pragma pop
+#pragma scheduling on
 void fn_801F49F4(void) {
 
 }
