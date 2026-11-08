@@ -2240,3 +2240,24 @@ struct FC048Obj {
     u8 pad[3];
     f32 f50;
 };
+struct FAAVec { f32 x; f32 y; f32 z; };
+class FAAMgr {
+public:
+    virtual void a8();
+    virtual void aC();
+    virtual void a10();
+    virtual void *get(const char *);
+    virtual const char *getD(const char *, const char *);
+    virtual void a1C();
+    virtual void a20();
+    virtual f32 getF(const char *);
+    virtual f32 getFD(const char *, f32);
+    virtual void a2C();
+    virtual void a30();
+    virtual FAAVec getV(const char *);
+};
+extern "C" void *memcpy(void *, const void *, unsigned int);
+extern char lbl_802F9B40[];
+__declspec(section ".sdata") extern const char lbl_8055B328[], lbl_8055B32C[], lbl_8055B330[], lbl_8055B334[], lbl_8055B338[], lbl_8055B340[], lbl_8055B344[], lbl_8055B348[], lbl_8055B34C[], lbl_8055B354[], lbl_8055B35C[], lbl_8055B364[];
+extern const f32 lbl_8056300C;
+extern "C" char *fn_80029004(char *, s32);
