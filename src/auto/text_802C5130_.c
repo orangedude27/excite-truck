@@ -84,8 +84,8 @@ void fn_802C5310(void* arg0) { if (arg0 != 0) fn_802353F4(); }
 
 void fn_802C5320(void* arg0, void* arg1) { if (arg0 != 0) fn_802354A0(arg0, arg1, -1); }
 
-void fn_802C5334(void* arg0, float arg1, float arg2, float arg3, float arg4, float arg5, float arg6) {
+void fn_802C5334(void* arg0, int arg1, float arg2, float arg3, float arg4, float arg5, float arg6, float arg7, float arg8, float arg9, float arg10) {
     if (arg0 != 0)
-        fn_80235758(arg0, arg1, arg2, arg3, arg4, arg5, arg6, -1);
+        ((void (*)(void*, int, int, float, float, float, float, float, float, float, float))fn_80235758)(arg0, arg1, -1, arg2, arg3, arg5, arg6, arg7, arg8, arg9, arg10);
 }
 
