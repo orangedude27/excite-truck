@@ -8,6 +8,10 @@ typedef struct F801A9050Zero {
     int words[8];
 } F801A9050Zero;
 extern float fn_801A7F98();
+extern float lbl_80562458;
+extern const float lbl_80562468;
+extern float lbl_8056246C;
+extern int fn_802E4A1C(unsigned char);
 extern float lbl_80562470;
 extern char lbl_8055A850;
 extern void *fn_801A9234(const char *);
@@ -171,6 +175,8 @@ void fn_801A7A08(const char *arg0, int arg1, int arg2) {
 extern float lbl_80562458;
 void fn_801A7A5C(void) {
     int i, j;
+    Rec_801A7A5C* src;
+    Rec_801A7A5C* dst;
     {
         Tail_801A7A5C* t = (Tail_801A7A5C*)(lbl_80435050 + 0xC8);
         t->x = lbl_80562458;
@@ -181,18 +187,18 @@ void fn_801A7A5C(void) {
         ((void (*)(int, void *))fn_801A7844)(1, t);
     }
     fn_801A7844(1);
-    {
-        Rec_801A7A5C* src = (Rec_801A7A5C*)lbl_80435050;
-        Rec_801A7A5C* dst = src + 4;
-        for (i = 0; i < 4; i++, src++, dst++) {
-            for (j = 0; j < 8; j++) dst->f[j] = src->f[j];
-            for (j = 0; j < 8; j++) dst->b[j] = src->b[j];
-            for (j = 0; j < 8; j++) dst->b[8 + j] = src->b[8 + j];
-            for (j = 0; j < 8; j++) dst->b[16 + j] = src->b[16 + j];
-            for (j = 0; j < 8; j++) dst->b[24 + j] = src->b[24 + j];
-            for (j = 0; j < 8; j++) dst->w[j] = src->w[j];
-            dst->c = src->c;
-        }
+    src = (Rec_801A7A5C*)lbl_80435050;
+    dst = (Rec_801A7A5C*)(lbl_80435050 + 100);
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 8; j++) dst->f[j] = src->f[j];
+        for (j = 0; j < 8; j++) dst->b[j] = src->b[j];
+        for (j = 0; j < 8; j++) dst->b[8 + j] = src->b[8 + j];
+        for (j = 0; j < 8; j++) dst->b[16 + j] = src->b[16 + j];
+        for (j = 0; j < 8; j++) dst->b[24 + j] = src->b[24 + j];
+        for (j = 0; j < 8; j++) dst->w[j] = src->w[j];
+        dst->c = src->c;
+        src++;
+        dst++;
     }
     {
         Tail_801A7A5C* u = (Tail_801A7A5C*)(lbl_80435050 + 0xC8);
@@ -359,7 +365,7 @@ float fn_801A85E8(void *arg0) {
     struct Config *active;
     struct Row snapshot;
     union { unsigned int words[3]; float values[2]; unsigned char bytes[12]; } saved;
-    unsigned int index;
+    int index;
     float result;
     float copyF0, copyF1;
     unsigned char copyB0, copyB1;
@@ -477,9 +483,7 @@ float fn_801A85E8(void *arg0) {
 
     config = (struct Config *)(base + 0x320);
     active = (struct Config *)(base + 0x32C);
-    saved.words[0] = *(unsigned int *)config;
-    saved.words[1] = *((unsigned int *)config + 1);
-    saved.words[2] = *((unsigned int *)config + 2);
+    *(struct Config *)&saved = *config;
     config->value0 = active->value0;
     config->value1 = active->value1;
     config->flags[0] = active->flags[0];
@@ -593,7 +597,7 @@ float fn_801A85E8(void *arg0) {
     config->flags[2] = saved.bytes[10];
     return result;
 }
-#pragma scheduling on
+#pragma push
 int fn_801A8A10(void *arg0) {
 struct Row {
 float floats[8];
@@ -746,7 +750,7 @@ config->flags[1] = saved.bytes[9];
 config->flags[2] = saved.bytes[10];
 return result;
 }
-#pragma scheduling on
+#pragma pop
 
 #pragma scheduling on
 int fn_801A8E38(void) {
