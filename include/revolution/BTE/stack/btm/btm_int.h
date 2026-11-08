@@ -309,6 +309,17 @@ typedef struct
 /* The MSB of the clock offset field indicates that the offset is valid if TRUE */
 #define BTM_CLOCK_OFFSET_VALID      0x8000
 
+/* Trace levels compared against btm_cb.trace_level.  A newer stack has
+   BTM_TRACE_ERROR0() & co. doing this comparison in btm_int.h; this one has it
+   written out at every call. */
+#define BTM_TRACE_LEVEL_NONE        0
+#define BTM_TRACE_LEVEL_ERROR       1
+#define BTM_TRACE_LEVEL_WARNING     2
+#define BTM_TRACE_LEVEL_API         3
+#define BTM_TRACE_LEVEL_EVENT       4
+#define BTM_TRACE_LEVEL_DEBUG       5
+#define BTM_TRACE_LEVEL_VERBOSE     6
+
 /* Define the structures needed by security management
 */
 
