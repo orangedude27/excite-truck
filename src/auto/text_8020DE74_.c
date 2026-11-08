@@ -204,58 +204,61 @@ void *fn_8020DE74(void *arg0) {
     return obj;
 }
 #pragma pop
-extern "C" void *fn_8020E288(void *arg0, s32 arg1) {
-    struct Dummy { virtual void release(s32); virtual void v1(); virtual void v2(); };
-    void *child;
+// The "carsnd" object's deleting destructor: releases every sound
+// fn_8020DE74() created for the truck and, when deleteMemory is positive,
+// frees the object itself. The vtable goes back first, so a sound torn down
+// from here sees the object as dead.
+extern "C" void *fn_8020E288(CarSound *snd, s32 deleteMemory) {
+    void *sound;
     u8 *p;
     u32 i;
-    if (arg0 != 0) {
-        child = *(void **)((u8 *)arg0 + 8);
-        *(void **)arg0 = lbl_8033C8C4;
-        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
-        p = (u8 *)arg0;
+    if (snd != 0) {
+        sound = snd->backfire;
+        snd->vtable = lbl_8033C8C4;
+        if (sound != 0) { if (sound != 0) ((Sound *)sound)->release(1); }
+        p = (u8 *)snd;
         i = 0;
-        do {
-            child = *(void **)(p + 0x10);
-            if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
+        do {                        // the two boost sounds
+            sound = *(void **)(p + 0x10);
+            if (sound != 0) { if (sound != 0) ((Sound *)sound)->release(1); }
             p += 4;
             i++;
         } while (i < 2);
-        child = *(void **)((u8 *)arg0 + 0x18);
-        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
-        child = *(void **)((u8 *)arg0 + 0x28);
-        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
-        child = *(void **)((u8 *)arg0 + 0x30);
-        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
-        child = *(void **)((u8 *)arg0 + 0x1C);
-        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
-        child = *(void **)((u8 *)arg0 + 0x20);
-        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
-        child = *(void **)((u8 *)arg0 + 0x24);
-        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
-        child = *(void **)((u8 *)arg0 + 0x2C);
-        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
-        child = *(void **)((u8 *)arg0 + 0x48);
-        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
-        child = *(void **)((u8 *)arg0 + 0x4C);
-        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
-        child = *(void **)((u8 *)arg0 + 0x50);
-        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
-        child = *(void **)((u8 *)arg0 + 0x44);
-        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
-        child = *(void **)((u8 *)arg0 + 0x34);
-        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
-        child = *(void **)((u8 *)arg0 + 0x38);
-        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
-        child = *(void **)((u8 *)arg0 + 0x3C);
-        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
-        child = *(void **)((u8 *)arg0 + 0x40);
-        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
-        child = *(void **)((u8 *)arg0 + 0x54);
-        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
-        if (arg1 > 0) fn_80128668(arg0);
+        sound = snd->boostManual;
+        if (sound != 0) { if (sound != 0) ((Sound *)sound)->release(1); }
+        sound = snd->waterBounce;
+        if (sound != 0) { if (sound != 0) ((Sound *)sound)->release(1); }
+        sound = snd->airtime;
+        if (sound != 0) { if (sound != 0) ((Sound *)sound)->release(1); }
+        sound = snd->carGnd1;
+        if (sound != 0) { if (sound != 0) ((Sound *)sound)->release(1); }
+        sound = snd->badland;
+        if (sound != 0) { if (sound != 0) ((Sound *)sound)->release(1); }
+        sound = snd->niceLand;
+        if (sound != 0) { if (sound != 0) ((Sound *)sound)->release(1); }
+        sound = snd->boostTurboTap;
+        if (sound != 0) { if (sound != 0) ((Sound *)sound)->release(1); }
+        sound = snd->heatBeep;
+        if (sound != 0) { if (sound != 0) ((Sound *)sound)->release(1); }
+        sound = snd->overheat;
+        if (sound != 0) { if (sound != 0) ((Sound *)sound)->release(1); }
+        sound = snd->overheatStart;
+        if (sound != 0) { if (sound != 0) ((Sound *)sound)->release(1); }
+        sound = snd->waterSink;
+        if (sound != 0) { if (sound != 0) ((Sound *)sound)->release(1); }
+        sound = snd->waterDrive;
+        if (sound != 0) { if (sound != 0) ((Sound *)sound)->release(1); }
+        sound = snd->waterIn;
+        if (sound != 0) { if (sound != 0) ((Sound *)sound)->release(1); }
+        sound = snd->waterOut;
+        if (sound != 0) { if (sound != 0) ((Sound *)sound)->release(1); }
+        sound = snd->dirtSkid;
+        if (sound != 0) { if (sound != 0) ((Sound *)sound)->release(1); }
+        sound = snd->invulnerable;
+        if (sound != 0) { if (sound != 0) ((Sound *)sound)->release(1); }
+        if (deleteMemory > 0) fn_80128668(snd);
     }
-    return arg0;
+    return snd;
 }
 
 extern "C" s32 fn_80009C84();
