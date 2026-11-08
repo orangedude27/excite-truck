@@ -428,6 +428,28 @@ static __inline BOOLEAN btm_sec_are_all_trusted_inl(u32 *p_mask) {
 extern void *l2cu_allocate_lcb(u8 *);
 extern BOOLEAN l2cu_create_conn(void *);
 extern u8 lbl_803C4040[];
+
+/* The L2CAP link control block, as far as this unit reaches into it (the game
+   runs an older stack than l2c_int.h, so only the fields it uses are named). */
+typedef struct {
+    u8      pad_00[0x28];
+    u16     handle;         /* +0x28  ACL connection handle, used with the LM */
+} tL2C_LCB_VIEW;
+
+/* The L2CAP channel control block (l2c_int.h's tL2C_CCB); the game lays it out
+   the same way, so the names below are the header's. */
+typedef struct t_l2c_ccb_view {
+    u8              pad_00[0x10];
+    tL2C_LCB_VIEW  *p_lcb;      /* +0x10  the link this channel is assigned to */
+    u16             local_cid;  /* +0x14  our CID on that link */
+    u16             remote_cid; /* +0x16  the peer's CID */
+    u8              pad_18[0x18];
+    void           *p_rcb;      /* +0x30  registration control block of the PSM */
+    u8              config_done;/* +0x34  IB_CFG_DONE / OB_CFG_DONE flags */
+    u8              local_id;   /* +0x35  identifier of the last command we sent */
+    u8              remote_id;  /* +0x36  identifier of the peer's last command */
+} tL2C_CCB_VIEW;
+
 extern void l2c_init(void);
 extern char lbl_803181F0[];
 extern void fn_80089E40(void *, u8, void *);
