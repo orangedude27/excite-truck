@@ -5,6 +5,8 @@
 #include <macros.h>
 #include <types.h>
 #include <macros.h>
+#include <types.h>
+#include <macros.h>
 extern void fn_8000D838(void *);
 extern void __register_global_object(void *, void *, void *);
 extern int lbl_8055F640;
