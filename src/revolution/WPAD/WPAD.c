@@ -5046,103 +5046,96 @@ void getDevConfig(s32 chan, s32 result, WPADStatus* status, u8* data)
     }
 }
 
-/*
- * WPADiReadExtensionCalibCallback (proposed name; game symbols can't be renamed yet).
- * Callback of the WM_REG_EXTENSION_CONFIG (0xA4000020) register read: decrypts the
- * 32 bytes the extension sent back, keeps whichever of its two 16-byte blocks passes
- * its checksum and stores the calibration values that block holds in the CB.
- * cb->UNK_0x801 is the extension kind the ID read worked out and picks the layout:
- * 1 = force sensor (Wii Balance Board), 2 = classic controller.  A failed read, or
- * two bad blocks, leaves the defaults in place.  The pending register-read callback
- * is then run with the extension kind and cleared.
- */
+/* Parse the 0x20-byte extension-controller config block read back from the
+   extension register: check the two 16-byte blocksums and store the stick and
+   accelerometer calibration in the channel's extension config. On failure the
+   channel is marked as an unsupported extension. */
 void fn_80064278(s32 chan, s32 result) {
     const char* messages = (const char*)lbl_80312338;
     WPADCB* cb = lbl_8038F4F0[chan];
-    u8* data = *(u8**)((u8*)cb + 0x8B4); // where a register read lands
-    s32 found = -1; // start of the block with the good checksum, -1 for none
+    WPADExtConfig* ext = (WPADExtConfig*)((u8*)cb + 0x7C2);
+    u8* data = (u8*)cb->samplingBufSize;
+    s32 found = -1;
     s32 i;
     s32 offset;
     s32 j;
     s32 sum;
     if (result != 0) {
-        cb->UNK_0x801 = 0xfc; // nothing usable came back
-    } else if ((u8)(cb->UNK_0x801 + 0xFF) <= 1) { // force sensor or classic
-        WPADiDecode(chan, data, WM_EXTENSION_CONFIG_SIZE, (u8)WM_REG_EXTENSION_CONFIG);
-        // each 16-byte block ends with sum+0x55 and sum+0xAA over its first 14 bytes
+        cb->UNK_0x801 = WPAD_DEV_NOT_SUPPORTED;
+    } else if ((u8)(cb->UNK_0x801 + 0xFF) <= 1) {
+        WPADiDecode(chan, data, 0x20, 0x20);
         for (i = 0; i < 2; i++) {
             offset = i * 16;
             sum = 0;
             for (j = offset; j < offset + 14; j++) {
                 sum += data[j];
             }
-            if ((u8)(sum + 0x55) == data[offset + 14] && (u8)(sum + 0xaa) == data[offset + 15]) {
+            if ((u8)(sum + WPAD_CONFIG_BLOCK_CHECKSUM_BIAS) == data[offset + 14] && (u8)(sum + 0xAA) == data[offset + 15]) {
                 found = offset;
             }
         }
         switch (cb->UNK_0x801) {
-        case 1: // force sensor: 0G/1G accelerometer (10 bit) and stick limits
+        case WPAD_DEV_FREESTYLE:
             if (found < 0) {
                 DBPrintf_80068D68(messages + 0x194);
-                cb->extCalib.fs.accX0g = 0x200;  // 1 g at the SDK's neutral reading
-                cb->extCalib.fs.accY0g = 0x200;
-                cb->extCalib.fs.accZ0g = 0x200;
-                cb->extCalib.fs.accX1g = 0x2cc;
-                cb->extCalib.fs.accY1g = 0x2cc;
-                cb->extCalib.fs.accZ1g = 0x2cc;
+                ext->fs.accX0g = 0x200;
+                ext->fs.accY0g = 0x200;
+                ext->fs.accZ0g = 0x200;
+                ext->fs.accX1g = 0x2CC;
+                ext->fs.accY1g = 0x2CC;
+                ext->fs.accZ1g = 0x2CC;
             } else {
                 u8* p = (u8*)(found + (s32)data);
-                u8 byte0 = data[found];
-                // the six 10 bit readings: bytes 0-2 hold the low bits, spread over byte 3
-                cb->extCalib.fs.accX0g = (u16)((byte0 << 2) | ((p[3] >> 4) & 3));
-                cb->extCalib.fs.accY0g = (u16)((p[1] << 2) | ((p[3] >> 2) & 3));
-                cb->extCalib.fs.accZ0g = (u16)((p[2] << 2) | (p[3] & 3));
-                cb->extCalib.fs.accX1g = (u16)((p[4] << 2) | ((p[7] >> 4) & 3));
-                cb->extCalib.fs.accY1g = (u16)((p[5] << 2) | ((p[7] >> 2) & 3));
-                cb->extCalib.fs.accZ1g = (u16)((p[6] << 2) | (p[7] & 3));
-                cb->extCalib.fs.stickXMax = (s8)p[8];
-                cb->extCalib.fs.stickXMin = (s8)p[9];
-                cb->extCalib.fs.stickXCenter = (s8)p[10];
-                cb->extCalib.fs.stickYMax = (s8)p[11];
-                cb->extCalib.fs.stickYMin = (s8)p[12];
-                cb->extCalib.fs.stickYCenter = (s8)p[13];
-                DBPrintf_80068D68(messages + 0x1a8, cb->extCalib.fs.accX0g, cb->extCalib.fs.accY0g, cb->extCalib.fs.accZ0g);
-                DBPrintf_80068D68(messages + 0x1d8, cb->extCalib.fs.accX1g, cb->extCalib.fs.accY1g, cb->extCalib.fs.accZ1g);
-                DBPrintf_80068D68(messages + 0x208, cb->extCalib.fs.stickXCenter, cb->extCalib.fs.stickXMax, cb->extCalib.fs.stickXMin);
-                DBPrintf_80068D68(messages + 0x230, cb->extCalib.fs.stickYCenter, cb->extCalib.fs.stickYMax, cb->extCalib.fs.stickYMin);
+                u8 b0 = data[found];
+                ext->fs.accX0g = (u16)((b0 << 2) | ((p[3] >> 4) & 3));
+                ext->fs.accY0g = (u16)((p[1] << 2) | ((p[3] >> 2) & 3));
+                ext->fs.accZ0g = (u16)((p[2] << 2) | (p[3] & 3));
+                ext->fs.accX1g = (u16)((p[4] << 2) | ((p[7] >> 4) & 3));
+                ext->fs.accY1g = (u16)((p[5] << 2) | ((p[7] >> 2) & 3));
+                ext->fs.accZ1g = (u16)((p[6] << 2) | (p[7] & 3));
+                ext->fs.stickXMax = (s8)p[8];
+                ext->fs.stickXMin = (s8)p[9];
+                ext->fs.stickXCenter = (s8)p[10];
+                ext->fs.stickYMax = (s8)p[11];
+                ext->fs.stickYMin = (s8)p[12];
+                ext->fs.stickYCenter = (s8)p[13];
+                DBPrintf_80068D68(messages + 0x1a8, ext->fs.accX0g, ext->fs.accY0g, ext->fs.accZ0g);
+                DBPrintf_80068D68(messages + 0x1d8, ext->fs.accX1g, ext->fs.accY1g, ext->fs.accZ1g);
+                DBPrintf_80068D68(messages + 0x208, ext->fs.stickXCenter, ext->fs.stickXMax, ext->fs.stickXMin);
+                DBPrintf_80068D68(messages + 0x230, ext->fs.stickYCenter, ext->fs.stickYMax, ext->fs.stickYMin);
             }
             break;
-        case 2: { // classic controller: four axes as max/min/centre, plus the triggers
+        case WPAD_DEV_CLASSIC: {
             u8* p = (u8*)(found + (s32)data);
-            cb->extCalib.cl.lStickXMax = (s8)data[found];
-            cb->extCalib.cl.lStickXMin = (s8)p[1];
-            cb->extCalib.cl.lStickXCenter = (s8)p[2];
-            cb->extCalib.cl.lStickYMax = (s8)p[3];
-            cb->extCalib.cl.lStickYMin = (s8)p[4];
-            cb->extCalib.cl.lStickYCenter = (s8)p[5];
-            cb->extCalib.cl.rStickXMax = (s8)p[6];
-            cb->extCalib.cl.rStickXMin = (s8)p[7];
-            cb->extCalib.cl.rStickXCenter = (s8)p[8];
-            cb->extCalib.cl.rStickYMax = (s8)p[9];
-            cb->extCalib.cl.rStickYMin = (s8)p[10];
-            cb->extCalib.cl.rStickYCenter = (s8)p[11];
-            cb->extCalib.cl.triggerLZero = p[12];
-            cb->extCalib.cl.triggerRZero = p[13];
-            DBPrintf_80068D68(messages + 0x258, cb->extCalib.cl.lStickXCenter, cb->extCalib.cl.lStickXMax, cb->extCalib.cl.lStickXMin);
-            DBPrintf_80068D68(messages + 0x280, cb->extCalib.cl.lStickYCenter, cb->extCalib.cl.lStickYMax, cb->extCalib.cl.lStickYMin);
-            DBPrintf_80068D68(messages + 0x2a8, cb->extCalib.cl.rStickXCenter, cb->extCalib.cl.rStickXMax, cb->extCalib.cl.rStickXMin);
-            DBPrintf_80068D68(messages + 0x2d0, cb->extCalib.cl.rStickYCenter, cb->extCalib.cl.rStickYMax, cb->extCalib.cl.rStickYMin);
-            DBPrintf_80068D68(messages + 0x2f8, cb->extCalib.cl.triggerLZero, cb->extCalib.cl.triggerRZero);
+            ext->cl.lStickXMax = (s8)data[found];
+            ext->cl.lStickXMin = (s8)p[1];
+            ext->cl.lStickXCenter = (s8)p[2];
+            ext->cl.lStickYMax = (s8)p[3];
+            ext->cl.lStickYMin = (s8)p[4];
+            ext->cl.lStickYCenter = (s8)p[5];
+            ext->cl.rStickXMax = (s8)p[6];
+            ext->cl.rStickXMin = (s8)p[7];
+            ext->cl.rStickXCenter = (s8)p[8];
+            ext->cl.rStickYMax = (s8)p[9];
+            ext->cl.rStickYMin = (s8)p[10];
+            ext->cl.rStickYCenter = (s8)p[11];
+            ext->cl.triggerLZero = p[12];
+            ext->cl.triggerRZero = p[13];
+            DBPrintf_80068D68(messages + 0x258, ext->cl.lStickXCenter, ext->cl.lStickXMax, ext->cl.lStickXMin);
+            DBPrintf_80068D68(messages + 0x280, ext->cl.lStickYCenter, ext->cl.lStickYMax, ext->cl.lStickYMin);
+            DBPrintf_80068D68(messages + 0x2a8, ext->cl.rStickXCenter, ext->cl.rStickXMax, ext->cl.rStickXMin);
+            DBPrintf_80068D68(messages + 0x2d0, ext->cl.rStickYCenter, ext->cl.rStickYMax, ext->cl.rStickYMin);
+            DBPrintf_80068D68(messages + 0x2f8, ext->cl.triggerLZero, ext->cl.triggerRZero);
             break;
         }
         default:
             break;
         }
-        *((u8*)cb + 0x851) = 0; // let the next report re-capture the neutral stick
+        *((u8*)cb + 0x851) = 0;
     }
-    if (cb->readCB != NULL) {
-        cb->readCB(chan, cb->UNK_0x801);
-        cb->readCB = NULL;
+    if (*(WPADCallback*)((u8*)cb + 0x7dc) != NULL) {
+        (*(WPADCallback*)((u8*)cb + 0x7dc))(chan, cb->UNK_0x801);
+        *(WPADCallback*)((u8*)cb + 0x7dc) = NULL;
     }
 }
 
