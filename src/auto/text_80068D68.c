@@ -15165,69 +15165,74 @@ void hidh_l2cif_cong_ind(u32 arg0, s32 arg1) {
 
 extern u8 lbl_80317BF0[];
 static void hidh_l2cif_data_ind(UINT16 l2cap_cid, BT_HDR *p_msg) {
+    /* HID header byte: transaction type in the high nibble, parameter in the low. */
     UINT8 *p_data = (UINT8 *)(p_msg + 1) + p_msg->offset;
     UINT8 ttype, param, rep_type, evt;
     UINT8 dhandle;
-    UINT8 *entry;
-    UINT8 *p_hcon = NULL;
-    UINT8 *p_dev = NULL;
+    tHID_HOST_DEV_CTB_VIEW *dev;
+    tHID_CONN_VIEW *p_hcon = NULL;
+    tHID_HOST_DEV_CTB_VIEW *p_dev = NULL;
 
-    for (dhandle = 0; dhandle < 0x10; dhandle++) {
-        entry = lbl_803C3C38 + dhandle * 0x34;
-        if (entry[0] != 0 && entry[0x10] != 0 &&
-            (l2cap_cid == *(UINT16 *)(entry + 0x14) ||
-             l2cap_cid == *(UINT16 *)(entry + 0x16))) {
+    /* Find the device that owns this control or interrupt channel. */
+    for (dhandle = 0; dhandle < HIDH_MAX_DEVICES; dhandle++) {
+        dev = hh_cb_dev(dhandle);
+        if (dev->in_use != 0 && dev->conn.conn_state != 0 &&
+            (l2cap_cid == dev->conn.ctrl_cid ||
+             l2cap_cid == dev->conn.intr_cid)) {
             break;
         }
     }
 
-    if (dhandle != 0x10) {
-        p_hcon = lbl_803C3C38 + dhandle * 0x34 + 0x10;
+    if (dhandle != HIDH_MAX_DEVICES) {
+        p_hcon = &hh_cb_dev(dhandle)->conn;
     }
 
     if (p_hcon == NULL) {
-        if (lbl_803C3C38[0x401] >= 2) {
-            fn_80070954(0x1E0001, lbl_80317BF0, l2cap_cid);
+        if (hh_cb_trace_level >= BT_TRACE_LEVEL_WARNING) {
+            fn_80070954(TRACE_LAYER_HID | TRACE_TYPE_WARNING, lbl_80317BF0, l2cap_cid); /* "HID - Rcvd L2CAP data, unknown CID: 0x%x" */
         }
         GKI_freebuf(p_msg);
         return;
     }
 
-    ttype = (*p_data >> 4) & 0xF;
-    param = *p_data & 0xF;
-    rep_type = param & 3;
+    ttype = HID_GET_TRANS_FROM_HDR(*p_data);
+    param = HID_GET_PARAM_FROM_HDR(*p_data);
+    rep_type = param & HID_PAR_REP_TYPE_MASK;
     p_data++;
+
+    /* Get rid of the data type */
     p_msg->len--;
     p_msg->offset++;
 
     switch (ttype) {
-    case 0:
-        ((void (*)(UINT8, UINT32, UINT32, void *))(*(void **)(lbl_803C3C38 + 0x340)))(
-            dhandle, 7, param, NULL);
+    case HID_TRANS_HANDSHAKE:
+        /* The device answered one of our requests with a handshake. */
+        hh_cb_callback(dhandle, HID_HDEV_EVT_HANDSHAKE, param, NULL);
         GKI_freebuf(p_msg);
         break;
 
-    case 1:
+    case HID_TRANS_CONTROL:
         switch (param) {
-        case 5:
-            p_dev = lbl_803C3C38 + dhandle * 0x34;
-            if (lbl_803C3C38[0x401] >= 4) {
-                fn_8007093C(0x1E0003, lbl_8031787C);
+        case HID_PAR_CONTROL_VIRTUAL_CABLE_UNPLUG:
+            /* hidh_conn_disconnect(dhandle): the device is unplugging from us. */
+            p_dev = hh_cb_dev(dhandle);
+            if (hh_cb_trace_level >= BT_TRACE_LEVEL_EVENT) {
+                fn_8007093C(TRACE_LAYER_HID | TRACE_TYPE_EVENT, lbl_8031787C); /* "HID - disconnect" */
             }
-            if (*(UINT16 *)(p_dev + 0x14) != 0 ||
-                *(UINT16 *)(p_dev + 0x16) != 0) {
-                p_dev[0x10] = 5;
-                if (*(UINT16 *)(p_dev + 0x16) != 0) {
-                    L2CA_DisconnectReq(*(UINT16 *)(p_dev + 0x16));
+            if (p_dev->conn.ctrl_cid != 0 ||
+                p_dev->conn.intr_cid != 0) {
+                p_dev->conn.conn_state = HID_CONN_STATE_DISCONNECTING;
+                if (p_dev->conn.intr_cid != 0) {
+                    L2CA_DisconnectReq(p_dev->conn.intr_cid);
                 }
-                if (*(UINT16 *)(p_dev + 0x14) != 0) {
-                    L2CA_DisconnectReq(*(UINT16 *)(p_dev + 0x14));
+                if (p_dev->conn.ctrl_cid != 0) {
+                    L2CA_DisconnectReq(p_dev->conn.ctrl_cid);
                 }
             } else {
-                p_dev[0x10] = 0;
+                p_dev->conn.conn_state = HID_CONN_STATE_UNUSED;
             }
-            ((void (*)(UINT8, UINT32, UINT32, void *))(*(void **)(lbl_803C3C38 + 0x340)))(
-                dhandle, 8, 0, NULL);
+            /* Tell the application. */
+            hh_cb_callback(dhandle, HID_HDEV_EVT_VC_UNPLUG, 0, NULL);
             break;
         default:
             break;
@@ -15235,16 +15240,16 @@ static void hidh_l2cif_data_ind(UINT16 l2cap_cid, BT_HDR *p_msg) {
         GKI_freebuf(p_msg);
         break;
 
-    case 0xA:
-        evt = (*(UINT16 *)(lbl_803C3C38 + dhandle * 0x34 + 0x16) == l2cap_cid) ? 3 : 5;
-        ((void (*)(UINT8, UINT32, UINT32, void *))(*(void **)(lbl_803C3C38 + 0x340)))(
-            dhandle, evt, rep_type, p_msg);
+    case HID_TRANS_DATA:
+        evt = (hh_cb_dev(dhandle)->conn.intr_cid == l2cap_cid) ?
+                    HID_HDEV_EVT_INTR_DATA : HID_HDEV_EVT_CTRL_DATA;
+        hh_cb_callback(dhandle, evt, rep_type, p_msg);
         break;
 
-    case 0xB:
-        evt = (*(UINT16 *)(lbl_803C3C38 + dhandle * 0x34 + 0x16) == l2cap_cid) ? 4 : 6;
-        ((void (*)(UINT8, UINT32, UINT32, void *))(*(void **)(lbl_803C3C38 + 0x340)))(
-            dhandle, evt, rep_type, p_msg);
+    case HID_TRANS_DATAC:
+        evt = (hh_cb_dev(dhandle)->conn.intr_cid == l2cap_cid) ?
+                    HID_HDEV_EVT_INTR_DATC : HID_HDEV_EVT_CTRL_DATC;
+        hh_cb_callback(dhandle, evt, rep_type, p_msg);
         break;
 
     default:
