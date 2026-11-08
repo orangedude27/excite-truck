@@ -880,73 +880,80 @@ u32 GetCharWidths__Q46nw4hbm2ut6detail11ResFontBaseCFUs(void *self, u16 code) {
 
 #pragma push
 #pragma use_lmw_stmw off
+/* Resolves character `code` to a glyph: finds its index in the font's
+ * code-map list (falling back to the font's default glyph index) and fills in
+ * `glyph` from that index. The repeated blocks are NW4R's debug pointer-range
+ * checks, which panic unless `this` / mFontInfo lie in a known address range. */
 void nw4hbm::ut::detail::ResFontBase::GetGlyph(nw4hbm::ut::Glyph* glyph, unsigned short code) const {
     const char* file = lbl_80329140;
-    register u32 top = (u32)this & 0xFF000000U;
+    register u32 thisPage = (u32)this & 0xFF000000U;
     {
-        register int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
-        if (top != 0x80000000U && ((u32)this & 0xFF800000U) != 0x81000000U) r10 = 0;
-        if (r10 == 0 && ((u32)this & 0xF8000000U) != 0x90000000U) r9 = 0;
-        if (r9 == 0 && top != 0xC0000000U) r8 = 0;
-        if (r8 == 0 && ((u32)this & 0xFF800000U) != 0xC1000000U) r7 = 0;
-        if (r7 == 0 && ((u32)this & 0xF8000000U) != 0xD0000000U) r6 = 0;
-        if (r6 == 0 && ((u32)this & 0xFFFFC000U) != 0xE0000000U) r5 = 0;
-        if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x1E2, file + 0xF0, this);
+        /* Each flag keeps the OR of the address-range tests done so far. */
+        register int ok1 = 1, ok2 = 1, ok3 = 1, ok4 = 1, ok5 = 1, ok6 = 1;
+        if (thisPage != 0x80000000U && ((u32)this & 0xFF800000U) != 0x81000000U) ok6 = 0;
+        if (ok6 == 0 && ((u32)this & 0xF8000000U) != 0x90000000U) ok5 = 0;
+        if (ok5 == 0 && thisPage != 0xC0000000U) ok4 = 0;
+        if (ok4 == 0 && ((u32)this & 0xFF800000U) != 0xC1000000U) ok3 = 0;
+        if (ok3 == 0 && ((u32)this & 0xF8000000U) != 0xD0000000U) ok2 = 0;
+        if (ok2 == 0 && ((u32)this & 0xFFFFC000U) != 0xE0000000U) ok1 = 0;
+        if (ok1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x1E2, file + 0xF0, this);
     }
     {
-        register int r4 = 1, r5 = 1;
-        u8* info = *(u8**)((char*)this + 0x14);
-        register int r7 = 1;
-        register int r8 = 1, r9 = 1, r10 = 1;
-        register u32 infoTop = (u32)info & 0xFF000000U;
-        if (infoTop != 0x80000000U && ((u32)info & 0xFF800000U) != 0x81000000U) r10 = 0;
-        if (r10 == 0 && ((u32)info & 0xF8000000U) != 0x90000000U) r9 = 0;
-        if (r9 == 0 && infoTop != 0xC0000000U) r8 = 0;
-        if (r8 == 0 && ((u32)info & 0xFF800000U) != 0xC1000000U) r7 = 0;
-        if (r7 == 0 && ((u32)info & 0xF8000000U) != 0xD0000000U) r5 = 0;
-        if (r5 == 0 && ((u32)info & 0xFFFFC000U) != 0xE0000000U) r4 = 0;
-        if (r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x1E3, file + 0x128);
+        register int ok1 = 1, ok2 = 1;
+        u8* fontInfo = *(u8**)((char*)this + 0x14);
+        register int ok3 = 1;
+        register int ok4 = 1, ok5 = 1, ok6 = 1;
+        register u32 fontInfoPage = (u32)fontInfo & 0xFF000000U;
+        if (fontInfoPage != 0x80000000U && ((u32)fontInfo & 0xFF800000U) != 0x81000000U) ok6 = 0;
+        if (ok6 == 0 && ((u32)fontInfo & 0xF8000000U) != 0x90000000U) ok5 = 0;
+        if (ok5 == 0 && fontInfoPage != 0xC0000000U) ok4 = 0;
+        if (ok4 == 0 && ((u32)fontInfo & 0xFF800000U) != 0xC1000000U) ok3 = 0;
+        if (ok3 == 0 && ((u32)fontInfo & 0xF8000000U) != 0xD0000000U) ok2 = 0;
+        if (ok2 == 0 && ((u32)fontInfo & 0xFFFFC000U) != 0xE0000000U) ok1 = 0;
+        if (ok1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x1E3, file + 0x128);
     }
     {
-        register u32 b, a;
-        register int valid = 0;
-        if (top == 0x80000000U ||
-            (a = (u32)this & 0xFF800000U) == 0x81000000U ||
-            (b = (u32)this & 0xF8000000U) == 0x90000000U ||
-            top == 0xC0000000U ||
-            a == 0xC1000000U ||
-            b == 0xD0000000U ||
+        register u32 maskedRange, maskedPage;
+        register int isValid = 0;
+        if (thisPage == 0x80000000U ||
+            (maskedPage = (u32)this & 0xFF800000U) == 0x81000000U ||
+            (maskedRange = (u32)this & 0xF8000000U) == 0x90000000U ||
+            thisPage == 0xC0000000U ||
+            maskedPage == 0xC1000000U ||
+            maskedRange == 0xD0000000U ||
             ((u32)this & 0xFFFFC000U) == 0xE0000000U)
-            valid = 1;
-        if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x1F6, file + 0xF0, this);
+            isValid = 1;
+        if (isValid == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x1F6, file + 0xF0, this);
     }
     {
-        register int r4 = 1, r5 = 1;
-        u8* info = *(u8**)((char*)this + 0x14);
-        register int r7 = 1;
-        register int r8 = 1, r9 = 1, r10 = 1;
-        register u32 infoTop = (u32)info & 0xFF000000U;
-        if (infoTop != 0x80000000U && ((u32)info & 0xFF800000U) != 0x81000000U) r10 = 0;
-        if (r10 == 0 && ((u32)info & 0xF8000000U) != 0x90000000U) r9 = 0;
-        if (r9 == 0 && infoTop != 0xC0000000U) r8 = 0;
-        if (r8 == 0 && ((u32)info & 0xFF800000U) != 0xC1000000U) r7 = 0;
-        if (r7 == 0 && ((u32)info & 0xF8000000U) != 0xD0000000U) r5 = 0;
-        if (r5 == 0 && ((u32)info & 0xFFFFC000U) != 0xE0000000U) r4 = 0;
-        if (r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x1F7, file + 0x128);
+        register int ok1 = 1, ok2 = 1;
+        u8* fontInfo = *(u8**)((char*)this + 0x14);
+        register int ok3 = 1;
+        register int ok4 = 1, ok5 = 1, ok6 = 1;
+        register u32 fontInfoPage = (u32)fontInfo & 0xFF000000U;
+        if (fontInfoPage != 0x80000000U && ((u32)fontInfo & 0xFF800000U) != 0x81000000U) ok6 = 0;
+        if (ok6 == 0 && ((u32)fontInfo & 0xF8000000U) != 0x90000000U) ok5 = 0;
+        if (ok5 == 0 && fontInfoPage != 0xC0000000U) ok4 = 0;
+        if (ok4 == 0 && ((u32)fontInfo & 0xFF800000U) != 0xC1000000U) ok3 = 0;
+        if (ok3 == 0 && ((u32)fontInfo & 0xF8000000U) != 0xD0000000U) ok2 = 0;
+        if (ok2 == 0 && ((u32)fontInfo & 0xFFFFC000U) != 0xE0000000U) ok1 = 0;
+        if (ok1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x1F7, file + 0x128);
     }
-    u8* map = *(u8**)(*(u8**)((char*)this + 0x14) + 0x10);
-    u16 index;
-    while (map != 0) {
-        if (*(u16*)map <= code && code <= *(u16*)(map + 2)) {
-            index = ::FindGlyphIndex__Q46nw4hbm2ut6detail11ResFontBaseCFPCQ36nw4hbm2ut11FontCodeMapUs((void*)this, map, code);
+    /* mFontInfo (@0x14) -> mCodeMap (@0x10); each map is
+     * { u16 start; u16 end; u16 method; u16 pad; Map* next (@8); ... }. */
+    u8* codeMap = *(u8**)(*(u8**)((char*)this + 0x14) + 0x10);
+    u16 glyphIndex;
+    while (codeMap != 0) {
+        if (*(u16*)codeMap <= code && code <= *(u16*)(codeMap + 2)) {
+            glyphIndex = ::FindGlyphIndex__Q46nw4hbm2ut6detail11ResFontBaseCFPCQ36nw4hbm2ut11FontCodeMapUs((void*)this, codeMap, code);
             goto check_index;
         }
-        map = *(u8**)(map + 8);
+        codeMap = *(u8**)(codeMap + 8);
     }
-    index = 0xFFFF;
+    glyphIndex = 0xFFFF;
 check_index:
-    index = index != 0xFFFF ? index : *(u16*)(*(u8**)((char*)this + 0x14) + 2);
-    GetGlyphFromIndex(glyph, index);
+    glyphIndex = glyphIndex != 0xFFFF ? glyphIndex : *(u16*)(*(u8**)((char*)this + 0x14) + 2);
+    GetGlyphFromIndex(glyph, glyphIndex);
 }
 
 extern "C" u8 GetWidth__Q46nw4hbm2ut6detail11ResFontBaseCFv_8010BD8C(void* self) {
