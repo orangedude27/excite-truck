@@ -129,18 +129,6 @@ struct VFiPFVol { u16 sectorSize; u8 pad[0x1e]; u8 shift; };
 struct VFiPFFile { u8 pad0[4]; u8 fat[0x260]; u32 size; VFiPFVol *vol; };
 struct VFiPFCursor { u8 pad0[8]; VFiPFFile *file; u8 pad1[0x10]; u32 pos; u32 cluster; u32 sector; u16 off; };
 
-struct VFiPFENTIterLayout {
-    volatile u32 position;
-    void *stream;
-    u8 pad8[0x38];
-    volatile u32 index;
-    u32 sentinel;
-    u16 length;
-    u8 pad4A[2];
-    u8 data[0x20];
-    u8 shift;
-};
-
 /* The directory-entry iterator the VFiPFENT code builds on its own stack, with
  * the fields as its readers use them (the VF_ITER_* macros in front of
  * fn_800AAC08 name the same offsets).  The directory being walked is copied
