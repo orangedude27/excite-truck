@@ -31,6 +31,11 @@ extern char lbl_802F9C60[], lbl_802F9CC0[];
 extern int fn_802E317C(const char *, ...);
 extern double fn_8002EFB0(float, float);
 extern char lbl_802F9BC0[], lbl_802F9C20[];
+typedef struct { float x, y, z; } Vec74;
+typedef struct { Vec74 v; float p0, p1; } VecPad74;
+typedef struct { float f[12]; } Blk12_74;
+typedef struct { int w[24]; } Blk24_74;
+typedef struct { int *p[15]; } Ptr15_74;
 static inline void xformv(float *v, float *m, float *out) {
     if (out == v) {
         float x = v[0], y = v[1], z = v[2];
@@ -62,11 +67,13 @@ void fn_801FFB70(void) {
 
 }
 
+#pragma push
+#pragma processor 750
 void *fn_801FFB74(int arg0, int arg1, int arg2) {
     float *o;
     float *sp8;
     int spC;
-    float out[0x80];
+    float out[464];
     float vE[3], vD[3], vA[3], vB[3], vC[3], vF[3], vG[3], vH[3];
     float v94[3], v7C[3];
     float sp10[3];
@@ -101,7 +108,7 @@ void *fn_801FFB74(int arg0, int arg1, int arg2) {
         fn_802E317C(lbl_8033B938 + 0x5C, arg0);
     }
     o[4] = sp8[9]; o[5] = sp8[10]; o[6] = sp8[11];
-    o[12] = fn_8002EFB0(sp8[4], sp8[5]);
+    o[12] = fn_8002EFB0(sp8[5], sp8[4]);
     o[4] = o[4] - out[9];
     o[5] = o[5] - out[10];
     o[6] = o[6] - out[11];
@@ -130,7 +137,7 @@ void *fn_801FFB74(int arg0, int arg1, int arg2) {
     o[22] += sp10[0];
     o[23] += sp10[1];
     o[24] += sp10[2];
-    for (i = 0; i < 12; i++) o[37 + i] = o[13 + i];
+    for (i = 0; i < 12; i++) ((int *)o)[37 + i] = ((int *)o)[13 + i];
     fn_801E33E4(o + 25, ((int *)o)[7]);
     for (i = 0; i < 3; i++) {
         bufA[0].v[i] = vA[i]; bufA[1].v[i] = vC[i]; bufA[2].v[i] = vE[i];
@@ -138,8 +145,8 @@ void *fn_801FFB74(int arg0, int arg1, int arg2) {
         bufA[6].v[i] = vH[i];
     }
     for (i = 0; i < 7; i++) { bufA[i].pad[0] = lbl_80563058; bufA[i].pad[1] = lbl_80563058; }
-    for (i = 0; i < 24; i++) bufB[i] = ((int *)lbl_802F9C60)[i];
-    tc = (int *)lbl_802F9CC0;
+    for (i = 0; i < 24; i++) bufB[i] = ((int *)lbl_802F9BC0)[i];
+    tc = (int *)lbl_802F9C20;
     for (i = 0; i < 15; i++) bufC_[i] = (int *)tc[i];
     bufC_[1] = (int *)(o + 37);
     bufC_[4] = (int *)(o + 25);
@@ -156,7 +163,7 @@ void *fn_801FFB74(int arg0, int arg1, int arg2) {
     o[50] = lbl_8056305C;
     return o;
 }
-
+#pragma pop
 extern int fn_801E320C(int, void *);
 extern void *fn_801284F8(int, void *);
 extern void *memset(void *, int, unsigned long);
