@@ -31,6 +31,41 @@ void fn_801FFB70(void) {
 
 }
 
+extern int fn_801E320C(int, void *);
+extern void *fn_801284F8(int, void *);
+extern void *memset(void *, int, unsigned long);
+extern int fn_801E3004(int, void *, int);
+extern int fn_801E31D8(int, void *, int);
+extern int fn_802C6FC0(void *, int, int);
+extern int fn_801E592C(void);
+extern void fn_801E3488(float *, int);
+extern void *fn_801FFB74(int, int, int);
+extern char lbl_8055B3E0, lbl_8055B3E8, lbl_8055B3F0, lbl_8055B3F8, lbl_8055B400, lbl_8055B408;
+extern float lbl_80563050, lbl_80563060;
+void *fn_802002D4(int arg0, int arg1, int arg2) {
+    float *o;
+    float v60[3], v54[3], v48[3];
+    char *p;
+    lbl_8055ECA8 = arg0;
+    if (fn_801E320C(arg1, &lbl_8055B3E0)) return fn_801FFB74(arg0, arg1, arg2);
+    if (!fn_801E320C(arg1, &lbl_8055B408)) return 0;
+    o = fn_801284F8(0xD0, lbl_8033B938 + 0x40);
+    memset(o, 0, 0xD0);
+    ((int *)o)[7] = fn_801E3004(arg1, &lbl_8055B3E8, -1);
+    ((int *)o)[8] = fn_801E31D8(arg1, &lbl_8055B3F0, -1);
+    ((int *)o)[9] = fn_801E31D8(((int *)o)[7], &lbl_8055B3F8, -1);
+    ((int *)o)[10] = fn_801E3004(arg1, &lbl_8055B400, -1);
+    ((int *)o)[2] = fn_802C6FC0(lbl_8033B938 + 0x4C, 0, 0);
+    ((int *)o)[3] = fn_801E592C();
+    p = fn_801FFB08(arg1, (int)(lbl_8033B938 + 0x84));
+    v60[0] = ((float *)p)[0]; v60[1] = ((float *)p)[1]; v60[2] = ((float *)p)[2];
+    fn_801E3488(v54, ((int *)o)[8]);
+    v48[0] = v54[0] * lbl_80563050 + v60[0] * lbl_80563050;
+    v48[2] = v54[2] * lbl_80563050 + v60[2] * lbl_80563050;
+    v48[1] = v54[1] * lbl_80563050 + v60[1] * lbl_80563050 - lbl_80563060;
+    return o;
+}
+
 extern int fn_801E323C(int);
 extern int fn_801C1C7C(int);
 extern int fn_801E598C(int);
@@ -49,6 +84,110 @@ void fn_8020095C(int *arg0) {
     }
 }
 
+#pragma push
+#pragma processor 750
+void fn_802009CC(M802009CC *out, float *verts, int *tri, int count, unsigned char *arr, float *M) {
+    struct { float axis[3]; float d[3]; float w[3]; float p[3]; float R[9]; float res[9]; } s;
+    int i;
+    for (i = 0; i < count; i++, tri += 3) {
+        int i0 = tri[0], i2 = tri[2];
+        float *vp = (float *)((unsigned char *)verts + tri[1] * 12);
+        float vx = vp[0] - M[9], vy = vp[1] - M[10], vz = vp[2] - M[11];
+        M802009CC *o = (M802009CC *)((unsigned char *)out + i0 * 0x30);
+        float *B = (float *)(arr + i0 * 0x38);
+        float px, py, pz;
+        px = vz * M[2] + (vx * M[0] + vy * M[1]);
+        py = vz * M[5] + (vx * M[3] + vy * M[4]);
+        pz = vz * M[8] + (vx * M[6] + vy * M[7]);
+        o->p[0] = px;
+        o->p[1] = py;
+        s.p[0] = px; s.p[1] = py; s.p[2] = pz;
+        o->p[2] = pz;
+        if (i2 >= 0) {
+            float *wp = (float *)((unsigned char *)verts + i2 * 12);
+            float wx = wp[0] - M[9], wy = wp[1] - M[10], wz = wp[2] - M[11];
+            float mag;
+            s.w[0] = wz * M[2] + (wx * M[0] + wy * M[1]);
+            s.w[1] = wz * M[5] + (wx * M[3] + wy * M[4]);
+            s.w[2] = wz * M[8] + (wx * M[6] + wy * M[7]);
+            s.d[0] = s.w[0] - s.p[0];
+            s.d[1] = s.w[1] - s.p[1];
+            s.d[2] = s.w[2] - s.p[2];
+            mag = PSVECMag(s.d);
+            if (mag > lbl_80563068) {
+                float k = lbl_8056306C / mag;
+                s.res[0] = s.d[0] * k;
+                s.res[1] = s.d[1] * k;
+                s.res[2] = s.d[2] * k;
+                PSVECCrossProduct(B, s.res, s.axis);
+                mag = PSVECMag(s.axis);
+                if (mag > lbl_80563070) {
+                    float inv = lbl_80563058 / mag;
+                    float ax = inv * s.axis[0], ay = inv * s.axis[1], az = inv * s.axis[2];
+                    float sn = (float)sin(mag);
+                    float cs = (float)cos(mag);
+                    float t = lbl_80563058 - cs;
+                    float txy = t * ax;
+                    float a = ay * txy;
+                    float b = sn * az;
+                    float c = az * txy;
+                    float e = sn * ay;
+                    float g = az * (t * ay);
+                    float h = sn * ax;
+                    s.R[0] = cs + t * (ax * ax);
+                    s.R[1] = a + b;
+                    s.R[2] = c - e;
+                    s.R[3] = a - b;
+                    s.R[4] = cs + t * (ay * ay);
+                    s.R[5] = g + h;
+                    s.R[6] = c + e;
+                    s.R[7] = g - h;
+                    s.R[8] = cs + t * (az * az);
+                } else {
+                    s.R[0] = lbl_80563058; s.R[1] = lbl_8056305C; s.R[2] = lbl_8056305C;
+                    s.R[3] = lbl_8056305C; s.R[4] = lbl_80563058; s.R[5] = lbl_8056305C;
+                    s.R[6] = lbl_8056305C; s.R[7] = lbl_8056305C; s.R[8] = lbl_80563058;
+                }
+                if (s.res == s.R || s.res == B) {
+                    float r0 = fn_80144514(B[0], s.R[0], B[3], s.R[1], B[6], s.R[2]);
+                    float r3 = fn_80144514(B[0], s.R[3], B[3], s.R[4], B[6], s.R[5]);
+                    float r6 = fn_80144514(B[0], s.R[6], B[3], s.R[7], B[6], s.R[8]);
+                    float r1 = fn_80144514(B[1], s.R[0], B[4], s.R[1], B[7], s.R[2]);
+                    float r4 = fn_80144514(B[1], s.R[3], B[4], s.R[4], B[7], s.R[5]);
+                    float r7 = fn_80144514(B[1], s.R[6], B[4], s.R[7], B[7], s.R[8]);
+                    float r2 = fn_80144514(B[2], s.R[0], B[5], s.R[1], B[8], s.R[2]);
+                    float r5 = fn_80144514(B[2], s.R[3], B[5], s.R[4], B[8], s.R[5]);
+                    float r8 = fn_80144514(B[2], s.R[6], B[5], s.R[7], B[8], s.R[8]);
+                    s.res[0] = r0; s.res[3] = r3; s.res[6] = r6;
+                    s.res[1] = r1; s.res[4] = r4; s.res[7] = r7;
+                    s.res[2] = r2; s.res[5] = r5; s.res[8] = r8;
+                } else {
+                    s.res[0] = fn_80144514(B[0], s.R[0], B[3], s.R[1], B[6], s.R[2]);
+                    s.res[3] = fn_80144514(B[0], s.R[3], B[3], s.R[4], B[6], s.R[5]);
+                    s.res[6] = fn_80144514(B[0], s.R[6], B[3], s.R[7], B[6], s.R[8]);
+                    s.res[1] = fn_80144514(B[1], s.R[0], B[4], s.R[1], B[7], s.R[2]);
+                    s.res[4] = fn_80144514(B[1], s.R[3], B[4], s.R[4], B[7], s.R[5]);
+                    s.res[7] = fn_80144514(B[1], s.R[6], B[4], s.R[7], B[7], s.R[8]);
+                    s.res[2] = fn_80144514(B[2], s.R[0], B[5], s.R[1], B[8], s.R[2]);
+                    s.res[5] = fn_80144514(B[2], s.R[3], B[5], s.R[4], B[8], s.R[5]);
+                    s.res[8] = fn_80144514(B[2], s.R[6], B[5], s.R[7], B[8], s.R[8]);
+                }
+            } else {
+                s.res[0] = lbl_80563058; s.res[1] = lbl_8056305C; s.res[2] = lbl_8056305C;
+                s.res[3] = lbl_8056305C; s.res[4] = lbl_80563058; s.res[5] = lbl_8056305C;
+                s.res[6] = lbl_8056305C; s.res[7] = lbl_8056305C; s.res[8] = lbl_80563058;
+            }
+            ((V802009CC *)o)[0] = ((V802009CC *)s.res)[0];
+            ((V802009CC *)o)[1] = ((V802009CC *)s.res)[1];
+            ((V802009CC *)o)[2] = ((V802009CC *)s.res)[2];
+        } else {
+            ((V802009CC *)o)[0] = ((V802009CC *)B)[0];
+            ((V802009CC *)o)[1] = ((V802009CC *)B)[1];
+            ((V802009CC *)o)[2] = ((V802009CC *)B)[2];
+        }
+    }
+}
+#pragma pop
 extern float lbl_80563050, lbl_80563058, lbl_8056305C, lbl_8056306C;
 extern float lbl_8056307C;
 extern void fn_801E353C(int, float);
