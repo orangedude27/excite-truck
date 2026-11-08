@@ -663,7 +663,7 @@ extern "C" void *fn_8013D2C4(void *arg0, void *arg1) {
         virtual s32 v10(const char *);
     };
 
-    MainObj8013D2C4 *obj = (MainObj8013D2C4 *)arg0;
+    ZoneMaster *obj = (ZoneMaster *)arg0;
     u8 *self = (u8 *)arg0;
     u8 *src = (u8 *)arg1;
     const char *base = (const char *)lbl_8032C530;
