@@ -149,59 +149,71 @@ static inline GXColor RGBToYUV_8004(GXColor c) {
 }
 #pragma push
 #pragma use_lmw_stmw off
+/**
+ * Write the fatal message onto the framebuffer, one character at a time.
+ *
+ * The frame holds two bytes per pixel, laid out Y0 U Y1 V, so each pixel
+ * written takes its chroma from the pixel pair it lands in: an even pixel is
+ * followed by U and preceded by V, an odd one the other way round. Every
+ * character is rendered by OSGetFontTexel() into a 24x24 cell of 4-bit texels;
+ * a lit texel becomes the text colour's Y scaled by the texel's brightness,
+ * while an empty one leaves the background alone. A newline, or a character
+ * that would pass the right margin, starts a new line leading pixels lower.
+ */
 void ScreenReport(void* fb, u16 width, u16 height, GXColor msgYUV, s32 x,
-                  s32 y, u32 lf, const char* msg) {
+                  s32 y, u32 leading, const char* msg) {
     u32 texel[70];
     u32 charWidth;
-    u8* tmp;
+    u8* px;
     u8 bright;
     s32 xPos;
-    u32 idx;
-    u32 idx2;
-    u32 idx3;
-    u32 i;
-    u32 j;
+    u32 rowOfs;
+    u32 texelOfs;
+    u32 pxOfs;
+    u32 row;
+    u32 col;
 new_line:
-    if (height - 24 < y) return;
-    tmp = (u8*)fb + ((x + (y * width)) * 2);
+    if (height - FATAL_CELL_H < y) return;  // no room left for another line
+    px = (u8*)fb + ((x + (y * width)) * 2);
     xPos = x;
     while (*msg != '\0') {
         if (*msg == '\n') {
             msg++;
-            y += lf;
+            y += leading;
             goto new_line;
-        } else if (width - 48 < xPos) {
-            y += lf;
+        } else if (width - FATAL_MARGIN < xPos) {
+            y += leading;
             goto new_line;
         }
-        for (i = 0; i < 24; i++) {
-            idx = (i & 7) + ((i / 8) * 24);
-            texel[idx] = 0;
-            texel[idx + 8] = 0;
-            texel[idx + 16] = 0;
+        for (row = 0; row < FATAL_CELL_H; row++) {  // clear the glyph cell
+            rowOfs = (row & 7) + ((row / 8) * FATAL_TEXEL_BAND);
+            texel[rowOfs] = 0;
+            texel[rowOfs + FATAL_TEXEL_COL] = 0;
+            texel[rowOfs + FATAL_TEXEL_COL * 2] = 0;
         }
         msg = ((const char *(*)(const char *, u32 *, s32, s32, u32 *))OSGetFontTexel)(
-            msg, texel, 0, 6, &charWidth);
-        for (i = 0; i < 24; i++) {
-            idx = (i & 7) + ((i / 8) * 24);
-            for (j = 0; j < 24; j++) {
-                idx2 = idx + ((j / 8) * 8);
-                bright = (texel[idx2] >> ((7 - (j & 7)) * 4)) & 0x0F;
+            msg, texel, 0, 6 /* texel width in 4-pixel units */, &charWidth);
+        for (row = 0; row < FATAL_CELL_H; row++) {
+            rowOfs = (row & 7) + ((row / 8) * FATAL_TEXEL_BAND);
+            for (col = 0; col < FATAL_CELL_W; col++) {
+                texelOfs = rowOfs + ((col / 8) * FATAL_TEXEL_COL);
+                bright = (texel[texelOfs] >> ((7 - (col & 7)) * 4)) & TEXEL_NIBBLE;
                 if (bright != 0) {
-                    bright = (((msgYUV.r * (bright * 0xEF)) / 255) / 15) + 16;
-                    idx3 = (j + (width * i));
-                    tmp[idx3 * 2] = bright;
-                    if ((xPos + j) % 2 != 0) {
-                        tmp[(idx3 * 2) - 1] = msgYUV.g;
-                        tmp[(idx3 * 2) + 1] = msgYUV.b;
+                    // scale the text luma by the texel's brightness (0-15)
+                    bright = (((msgYUV.r * (bright * 0xEF)) / 255) / 15) + YUV_MIN_LUMA;
+                    pxOfs = (col + (width * row));
+                    px[pxOfs * 2] = bright;
+                    if ((xPos + col) % 2 != 0) {
+                        px[(pxOfs * 2) - 1] = msgYUV.g;
+                        px[(pxOfs * 2) + 1] = msgYUV.b;
                     } else {
-                        tmp[(idx3 * 2) - 1] = msgYUV.b;
-                        tmp[(idx3 * 2) + 1] = msgYUV.g;
+                        px[(pxOfs * 2) - 1] = msgYUV.b;
+                        px[(pxOfs * 2) + 1] = msgYUV.g;
                     }
                 }
             }
         }
-        tmp += charWidth * 2;
+        px += charWidth * 2;
         xPos += charWidth;
     }
 }
