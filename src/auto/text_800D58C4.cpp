@@ -1186,6 +1186,7 @@ extern "C" void fn_800D7D5C(void* arg0, f32* m) {
     }
 }
 
+#pragma dont_inline fn_800D7F58
 extern "C" f32 fn_800D7F58(f32 *arg0, const f32 *arg1) {
     f32 v0 = arg1[0];
     f32 v1 = arg1[1];
@@ -1205,6 +1206,295 @@ extern "C" void fn_800D7F78(void *arg0) {
     *(s32 *)arg0 = 0;
     *(s32 *)((u8 *)arg0 + 4) = (s32)p;
     *(s32 *)((u8 *)arg0 + 8) = (s32)p;
+}
+
+extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36nw4hbm3lyt11ResBlockSet(void* this_, const void* res, const void* blockSet) {
+    extern void fn_800D7F78(void*);
+    extern void* fn_8002F53C(void*, void (*)(s32*), s32 (*)(s32, s32), s32, s32);
+    extern void fn_800D7F6C(s32*);
+    extern s32 fn_800D2DD4(s32, s32);
+    extern void Init__Q34nw4r3lyt8MaterialFv(void*);
+    extern void* fn_800D9584(void*, const void*);
+    extern void fn_800D86F0(void*, void*);
+    extern void GXInitLightColor_800D8714(void*, void*);
+    extern s32 fn_800D8A04(s32, s32);
+    extern s32 fn_800D8720(s32*);
+    extern s32 fn_800D89FC(s32, s32);
+    extern s32 fn_800D872C(s32*);
+    extern s32 fn_800D89F4(s32, s32);
+    extern s32 fn_800D8738(s32*);
+    extern u32 fn_800D89E4(u32, u32);
+    extern s32 fn_800D8744(s32*);
+    extern s32 fn_800D8750(s32*, u32);
+    extern s32 fn_800D875C(s32*, u32);
+    extern s32 fn_800D8768(s32*);
+    extern s32 fn_800D8774(s32*);
+    extern s32 fn_800D8780(s32*);
+    extern s32 fn_800D878C(s32*);
+    extern s32 fn_800D8798(s32*);
+    extern void fn_800D8B28(void*, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32);
+    extern void SetTextureNum__Q36nw4hbm3lyt8MaterialFUc(void*, u8);
+    extern s32 fn_800D89DC(s32, s32);
+    extern s32 fn_800D9328(void*);
+    extern s32 fn_800D89D4(s32, s32);
+    extern void fn_800D9CBC(void*, u32, void*);
+    extern void GXInitTexObjWrapMode(s32*, u32, u32);
+    extern s32 fn_800D9330(void*);
+    extern void fn_800D7F58(void*, void*);
+    extern s32 fn_800D9344(void*);
+    extern void SetTexCoordGenNum__Q36nw4hbm3lyt8MaterialFUc(void*, u8);
+    extern void fn_800D87A4(void*, void*);
+    extern int fn_800D87C8(void*);
+    extern s32 fn_800D89CC(s32, s32);
+    extern s32 fn_800D9364(void*);
+    extern void fn_800D87D4(void*);
+    extern int fn_800D87F8(void*);
+    extern s32 fn_800D89C4(s32, s32);
+    extern s32 fn_800D938C(void*);
+    extern void fn_800D8804(void*);
+    extern s32 fn_800D8828(void*);
+    extern s32 fn_800D89BC(s32, s32);
+    extern s32 fn_800D93BC(void*);
+    extern void fn_800D8834(void*, void*);
+    extern s32 GetIndTexSRTAry__Q36nw4hbm3lyt8MaterialFv(void*);
+    extern void fn_800D8840(void*, void*);
+    extern void fn_800D9ACC(void*);
+    extern s32 fn_800D947C(void*);
+    extern s32 fn_800D89B4(s32, s32);
+    extern void fn_800D886C(void*, void*);
+    extern void fn_800D9844(void*);
+    extern s32 fn_800D9524(void*);
+    extern s32 fn_800D89AC(s32, s32);
+    extern void __as__Q34nw4r3lyt8TevStageFRCQ34nw4r3lyt8TevStage(void*, void*);
+    extern s32 fn_800D893C(void*);
+    extern s32 fn_800D89A4(s32, s32);
+    extern s32 fn_800D93F4(void*);
+    extern void fn_800D8948(void*);
+    extern s32 fn_800D896C(void*);
+    extern s32 fn_800D899C(s32, s32);
+    extern s32 fn_800D9434(void*);
+    extern void fn_800D8978(void*);
+    extern void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
+    extern char lbl_8031FF08[];
+    extern const char lbl_8031F990[];
+    u8* self = (u8*)this_;
+    const u8* materialRes = (const u8*)res;
+    const u8* block = (const u8*)blockSet;
+    u8* dst;
+    const u8* src;
+    u32 i;
+    s32 texBase;
+    s32 off;
+    void* texCoordAry;
+    void* texCoordSrc;
+    s32 texCoordGenAry;
+    u32 texNum;
+    u32 texCoordNum;
+    u32 texCoordGenNum;
+    u8 hasA;
+    u8 hasB;
+    s32 chanA;
+    s32 chanB;
+    u32 indNum;
+    u32 indTexStageNum;
+    u32 tevStageNum;
+    u32 v0;
+    u32 v1;
+    s32 texObjAry;
+    s32 tableBase;
+    u8* entry;
+    void* palette;
+    void* texCoordDst;
+    u8* texCoordCur;
+    void* genDst;
+    s32 miscDst;
+    void* indDst;
+    u8* indCur;
+    void* texStageDst;
+    u8* texStageCur;
+    void* tevDst;
+    u8* tevCur;
+    void* colorDst;
+    u32 j;
+
+    *(void**)self = lbl_8031FF08;
+    fn_800D7F78(self + 0x18);
+    fn_8002F53C(self + 0x3C, fn_800D7F6C, fn_800D2DD4, 4, 4);
+    Init__Q34nw4r3lyt8MaterialFv(self);
+    fn_800D9584(self, materialRes);
+    dst = self + 0x24;
+    src = materialRes + 0x14;
+    i = 0;
+    do {
+        fn_800D86F0(dst, (void*)src);
+        i += 1;
+        dst += 8;
+        src += 8;
+    } while (i < 3);
+    dst = self + 0x3C;
+    src = materialRes + 0x2C;
+    i = 0;
+    do {
+        GXInitLightColor_800D8714(dst, (void*)src);
+        i += 1;
+        dst += 4;
+        src += 4;
+    } while (i < 4);
+    texBase = fn_800D8A04((s32)materialRes, 0x40);
+    off = (s32)((u8)fn_800D8720((s32*)(materialRes + 0x3C)) << 2) + 0x40;
+    texCoordSrc = (void*)fn_800D89FC((s32)materialRes, off);
+    off += (u8)fn_800D872C((s32*)(materialRes + 0x3C)) * 0x14;
+    texCoordGenAry = fn_800D89F4((s32)materialRes, off);
+    off += (s32)((u8)fn_800D8738((s32*)(materialRes + 0x3C)) << 2);
+    texNum = fn_800D89E4((u8)fn_800D8720((s32*)(materialRes + 0x3C)), 8);
+    texCoordNum = fn_800D89E4((u8)fn_800D872C((s32*)(materialRes + 0x3C)), 0xA);
+    texCoordGenNum = fn_800D89E4((u8)fn_800D8738((s32*)(materialRes + 0x3C)), 8);
+    v0 = fn_800D8744((s32*)(materialRes + 0x3C));
+    hasA = (u8)((u8)v0 != 0);
+    v1 = fn_800D8750((s32*)(materialRes + 0x3C), (u8)v0);
+    hasB = (u8)((u8)v1 != 0);
+    chanA = fn_800D875C((s32*)(materialRes + 0x3C), (u8)v1);
+    chanB = fn_800D8768((s32*)(materialRes + 0x3C));
+    v0 = fn_800D8774((s32*)(materialRes + 0x3C));
+    indNum = fn_800D89E4((u8)fn_800D8780((s32*)(materialRes + 0x3C)), 3);
+    indTexStageNum = fn_800D89E4((u8)fn_800D878C((s32*)(materialRes + 0x3C)), 4);
+    tevStageNum = fn_800D89E4((u8)fn_800D8798((s32*)(materialRes + 0x3C)), 0x10);
+    fn_800D8B28(self, (u8)texNum, (u8)texCoordNum, (u8)texCoordGenNum, (u8)tevStageNum, chanA, (u8)indTexStageNum, (u8)indNum, hasA, hasB, chanB, v0);
+    if (*(s32*)(self + 0x58) != 0) {
+        SetTextureNum__Q36nw4hbm3lyt8MaterialFUc(self, (u8)texNum);
+        if ((u8)texNum != 0) {
+            if (*(void**)block == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x1D5, lbl_8031F990 + 0x14);
+            }
+            tableBase = fn_800D89DC(*(s32*)block, 0xC);
+            texObjAry = fn_800D9328(self);
+            i = 0;
+            do {
+                entry = (u8*)texBase + (i * 4);
+                if (*(u16*)entry >= *(u16*)((u8*)*(void**)block + 8)) {
+                    Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x1DB, lbl_8031F990 + 0x50);
+                }
+                palette = ((ResAccess_800D58C4*)*(void**)(block + 0xC))->getRes(0x74696D67, (void*)fn_800D89D4(tableBase, *(s32*)(tableBase + *(u16*)entry * 8)), 0);
+                fn_800D9CBC(self, (u8)i, palette);
+                GXInitTexObjWrapMode((s32*)(texObjAry + (i << 5)), entry[2], entry[3]);
+                i += 1;
+            } while ((u8)i < (*(u32*)(self + 0x50) >> 28));
+        }
+        texCoordDst = (void*)fn_800D9330(self);
+        if ((u8)texCoordNum > ((*(u32*)(self + 0x50) >> 24) & 0xF)) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x1E6, lbl_8031F990 + 0xA0);
+        }
+        texCoordCur = (u8*)texCoordSrc;
+        i = 0;
+        do {
+            fn_800D7F58(texCoordDst, texCoordSrc);
+            *(f32*)((u8*)texCoordDst + 8) = *(f32*)(texCoordCur + 8);
+            fn_800D7F58((u8*)texCoordDst + 0xC, (u8*)texCoordSrc + 0xC);
+            texCoordSrc = (u8*)texCoordSrc + 0x14;
+            texCoordDst = (u8*)texCoordDst + 0x14;
+            texCoordCur += 0x14;
+            i += 1;
+        } while (i < (u8)texCoordNum);
+        genDst = (void*)fn_800D9344(self);
+        SetTexCoordGenNum__Q36nw4hbm3lyt8MaterialFUc(self, (u8)texCoordGenNum);
+        i = 0;
+        do {
+            fn_800D87A4(genDst, (void*)texCoordGenAry);
+            texCoordGenAry += 4;
+            genDst = (u8*)genDst + 4;
+            i += 1;
+        } while (i < ((*(u32*)(self + 0x50) >> 8) & 0xF));
+        if (hasA != 0) {
+            if (fn_800D87C8(self) == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x1F8, lbl_8031F990 + 0xD8);
+            }
+            miscDst = fn_800D89CC((s32)materialRes, off);
+            fn_800D9364(self);
+            fn_800D87D4((void*)miscDst);
+            off += 4;
+        }
+        if (hasB != 0) {
+            if (fn_800D87F8(self) == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x200, lbl_8031F990 + 0x100);
+            }
+            miscDst = fn_800D89C4((s32)materialRes, off);
+            fn_800D938C(self);
+            fn_800D8804((void*)miscDst);
+            off += 4;
+        }
+        if (chanA != 0) {
+            if (fn_800D8828(self) == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x208, lbl_8031F990 + 0x128);
+            }
+            miscDst = fn_800D89BC((s32)materialRes, off);
+            colorDst = (void*)fn_800D93BC(self);
+            i = 0;
+            do {
+                fn_800D8834((u8*)colorDst + i, (u8*)miscDst + i);
+                i += 1;
+            } while (i < 4);
+            off += 4;
+        }
+        if ((u8)indNum != 0) {
+            if ((u8)indNum > ((*(u32*)(self + 0x50) >> 18) & 3)) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x214, lbl_8031F990 + 0x150);
+            }
+            indDst = (void*)GetIndTexSRTAry__Q36nw4hbm3lyt8MaterialFv(self);
+            indCur = (u8*)(void*)fn_800D89FC((s32)materialRes, off);
+            j = 0;
+            do {
+                fn_800D8840(indDst, indCur);
+                indCur += 0x14;
+                indDst = (u8*)indDst + 0x14;
+                j += 1;
+            } while (j < (u8)indNum);
+        }
+        off += (u8)fn_800D8780((s32*)(materialRes + 0x3C)) * 0x14;
+        if ((u8)indTexStageNum != 0) {
+            fn_800D9ACC(self);
+            texStageDst = (void*)fn_800D947C(self);
+            texStageCur = (u8*)(void*)fn_800D89B4((s32)materialRes, off);
+            j = 0;
+            do {
+                fn_800D886C(texStageDst, texStageCur);
+                texStageCur += 4;
+                texStageDst = (u8*)texStageDst + 4;
+                j += 1;
+            } while (j < (u8)indTexStageNum);
+        }
+        off += (u8)fn_800D878C((s32*)(materialRes + 0x3C)) << 2;
+        if ((u8)tevStageNum != 0) {
+            fn_800D9844(self);
+            tevDst = (void*)fn_800D9524(self);
+            tevCur = (u8*)(void*)fn_800D89AC((s32)materialRes, off);
+            j = 0;
+            do {
+                __as__Q34nw4r3lyt8TevStageFRCQ34nw4r3lyt8TevStage(tevDst, tevCur);
+                tevCur += 0x10;
+                tevDst = (u8*)tevDst + 0x10;
+                j += 1;
+            } while (j < (u8)tevStageNum);
+        }
+        off += (u8)fn_800D8798((s32*)(materialRes + 0x3C)) << 4;
+        if (chanB != 0) {
+            if (fn_800D893C(self) == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x238, lbl_8031F990 + 0x18C);
+            }
+            miscDst = fn_800D89A4((s32)materialRes, off);
+            fn_800D93F4(self);
+            fn_800D8948((void*)miscDst);
+            off += 4;
+        }
+        if (v0 != 0) {
+            if (fn_800D896C(self) == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x240, lbl_8031F990 + 0x1B8);
+            }
+            miscDst = fn_800D899C((s32)materialRes, off);
+            fn_800D9434(self);
+            fn_800D8978((void*)miscDst);
+        }
+    }
+    return this_;
 }
 
 extern "C" void fn_800D86F0(void *arg0, void *arg1) {
