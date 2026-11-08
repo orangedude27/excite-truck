@@ -253,132 +253,135 @@ extern f32 lbl_80561C8C;
 #pragma dont_inline fn_80181418
 #pragma dont_inline fn_80181428
 #pragma scheduling invalid_target
+/* Create the DriverInterface of driver index arg0 - once; the four of them
+ * live in lbl_804348D8[] - and return it, or 0 when the heap has no room.
+ * The object itself only gets its identity, its sound id and zeroed player
+ * slots here; fn_8017F718 is what names the slots and registers the sounds. */
 s32 fn_8018108C(s32 arg0) {
     Unk8017Object **table;
-    s32 temp_r29 = arg0 * 4;
-    void *temp_r31;
-    void *temp_r3;
-    void *var_r27;
-    void *var_r27_2;
+    s32 entry_offset = arg0 * 4;
+    void *slot_end;
+    void *driver;
+    void *slot;
+    void *slot2;
     s32 zero;
-    f32 f2, f1, f0;
-    struct InitObjectPrefix { u8 pad[0x30c]; f32 field; };
+    f32 zero_f, one_f, tenth_f;
 
     if ((table = lbl_804348D8,
-         *(Unk8017Object **)((u8 *)table + temp_r29)) == 0) {
-        temp_r3 = fn_801284F8(0x354, (const char *)lbl_80331E68);
-        if (temp_r3 != 0) {
-            fn_80181428((void **)temp_r3);
-            *(void **)temp_r3 = lbl_80331E78;
-            fn_80181418((u8 *)temp_r3 + 0x6c, 0);
-            fn_80181418((u8 *)temp_r3 + 0x7c, 0);
-            fn_80181418((u8 *)temp_r3 + 0x8c, 0);
-            fn_80181418((u8 *)temp_r3 + 0x9c, 0);
-            fn_80181418((u8 *)temp_r3 + 0xac, 0);
-            fn_80181418((u8 *)temp_r3 + 0xbc, 0);
-            fn_80181418((u8 *)temp_r3 + 0xcc, 0);
-            fn_80181418((u8 *)temp_r3 + 0xdc, 0);
-            fn_80181418((u8 *)temp_r3 + 0xec, 0);
-            fn_80181418((u8 *)temp_r3 + 0xfc, 0);
-            fn_80181418((u8 *)temp_r3 + 0x10c, 0);
-            fn_80181418((u8 *)temp_r3 + 0x11c, 0);
-            fn_80181418((u8 *)temp_r3 + 0x12c, 0);
-            fn_80181418((u8 *)temp_r3 + 0x13c, 0);
-            fn_80181418((u8 *)temp_r3 + 0x14c, 0);
-            fn_80181418((u8 *)temp_r3 + 0x15c, 0);
-            fn_80181418((u8 *)temp_r3 + 0x16c, 0);
-            fn_80181418((u8 *)temp_r3 + 0x17c, 0);
-            fn_80181418((u8 *)temp_r3 + 0x18c, 0);
-            fn_80181418((u8 *)temp_r3 + 0x19c, 0);
-            fn_80181418((u8 *)temp_r3 + 0x1ac, 0);
-            fn_80181418((u8 *)temp_r3 + 0x1bc, 0);
-            fn_80181418((u8 *)temp_r3 + 0x1cc, 0);
-            var_r27 = (u8 *)temp_r3 + 0x1dc;
-            temp_r31 = (u8 *)temp_r3 + 0x23c;
+         *(Unk8017Object **)((u8 *)table + entry_offset)) == 0) {
+        driver = fn_801284F8(sizeof(struct DriverInterface), (const char *)lbl_80331E68);
+        if (driver != 0) {
+            fn_80181428(&DRIVER(driver)->vtable);
+            DRIVER(driver)->vtable = lbl_80331E78;
+            fn_80181418(&DRIVER(driver)->slot[0], 0);
+            fn_80181418(&DRIVER(driver)->slot[1], 0);
+            fn_80181418(&DRIVER(driver)->slot[2], 0);
+            fn_80181418(&DRIVER(driver)->slot[3], 0);
+            fn_80181418(&DRIVER(driver)->slot[4], 0);
+            fn_80181418(&DRIVER(driver)->slot[5], 0);
+            fn_80181418(&DRIVER(driver)->slot[6], 0);
+            fn_80181418(&DRIVER(driver)->slot[7], 0);
+            fn_80181418(&DRIVER(driver)->slot[8], 0);
+            fn_80181418(&DRIVER(driver)->slot[9], 0);
+            fn_80181418(&DRIVER(driver)->slot[10], 0);
+            fn_80181418(&DRIVER(driver)->slot[11], 0);
+            fn_80181418(&DRIVER(driver)->slot[12], 0);
+            fn_80181418(&DRIVER(driver)->slot[13], 0);
+            fn_80181418(&DRIVER(driver)->slot[14], 0);
+            fn_80181418(&DRIVER(driver)->slot[15], 0);
+            fn_80181418(&DRIVER(driver)->slot[16], 0);
+            fn_80181418(&DRIVER(driver)->slot[17], 0);
+            fn_80181418(&DRIVER(driver)->slot[18], 0);
+            fn_80181418(&DRIVER(driver)->slot[19], 0);
+            fn_80181418(&DRIVER(driver)->slot[20], 0);
+            fn_80181418(&DRIVER(driver)->slot[21], 0);
+            fn_80181418(&DRIVER(driver)->slot[22], 0);
+            slot = (u8 *)driver + 0x1DC; /* slot[23] .. slot[28] */
+            slot_end = (u8 *)driver + 0x23C;
             do {
-                fn_80181418(var_r27, 0);
-                var_r27 = (u8 *)var_r27 + 0x10;
-            } while (var_r27 < temp_r31);
-            fn_80181418(temp_r31, 0);
-            fn_80181418((u8 *)temp_r3 + 0x24c, 0);
-            fn_80181418((u8 *)temp_r3 + 0x25c, 0);
-            fn_80181418((u8 *)temp_r3 + 0x26c, 0);
-            fn_80181418((u8 *)temp_r3 + 0x27c, 0);
-            fn_80181418((u8 *)temp_r3 + 0x28c, 0);
-            fn_80181418((u8 *)temp_r3 + 0x29c, 0);
-            fn_80181418((u8 *)temp_r3 + 0x2ac, 0);
-            fn_80181418((u8 *)temp_r3 + 0x2bc, 0);
-            var_r27_2 = (u8 *)temp_r3 + 0x2cc;
-            temp_r31 = (u8 *)temp_r3 + 0x30c;
+                fn_80181418(slot, 0);
+                slot = (u8 *)slot + 0x10;
+            } while (slot < slot_end);
+            fn_80181418(slot_end, 0);
+            fn_80181418(&DRIVER(driver)->slot[30], 0);
+            fn_80181418(&DRIVER(driver)->slot[31], 0);
+            fn_80181418(&DRIVER(driver)->slot[32], 0);
+            fn_80181418(&DRIVER(driver)->slot[33], 0);
+            fn_80181418(&DRIVER(driver)->slot[34], 0);
+            fn_80181418(&DRIVER(driver)->slot[35], 0);
+            fn_80181418(&DRIVER(driver)->slot[36], 0);
+            fn_80181418(&DRIVER(driver)->slot[37], 0);
+            slot2 = (u8 *)driver + 0x2CC; /* slot[38] .. slot[41] */
+            slot_end = (u8 *)driver + 0x30C;
             do {
-                fn_80181418(var_r27_2, 0);
-                var_r27_2 = (u8 *)var_r27_2 + 0x10;
-            } while (var_r27_2 < temp_r31);
+                fn_80181418(slot2, 0);
+                slot2 = (u8 *)slot2 + 0x10;
+            } while (slot2 < slot_end);
 
-            *(s32 *)((u8 *)temp_r3 + 4) = arg0;
-            *(s32 *)((u8 *)temp_r3 + 8) = __AXGetStackHead_80137CFC(arg0);
-            *(u8 *)((u8 *)temp_r3 + 0x350) = 0;
+            DRIVER(driver)->index = arg0;
+            DRIVER(driver)->axStackHead = __AXGetStackHead_80137CFC(arg0);
+            DRIVER(driver)->flag350 = 0;
             if (fn_8027AA48() != 0)
-                *(s32 *)((u8 *)temp_r3 + 0x348) = 0x10;
+                DRIVER(driver)->mode348 = 0x10;
             else
-                *(s32 *)((u8 *)temp_r3 + 0x348) = arg0 + 0xc;
+                DRIVER(driver)->mode348 = arg0 + 0xC;
             zero = 0;
-            f2 = lbl_80561C4C;
-            *(s32 *)((u8 *)temp_r3 + 0x34c) =
-                *(s32 *)((u8 *)temp_r3 + 8) + 8;
-            f1 = lbl_80561C48;
+            zero_f = F_ZERO;
+            DRIVER(driver)->soundId =
+                DRIVER(driver)->axStackHead + 8;
+            one_f = F_ONE;
             {
-                *(f32 *)((u8 *)temp_r3 + 0x33c) = f2;
-                f0 = lbl_80561C8C;
-                *(u8 *)((u8 *)temp_r3 + 0x5b) = zero;
-                *(u8 *)((u8 *)temp_r3 + 0x5c) = zero;
-                *(u8 *)((u8 *)temp_r3 + 0x5e) = 1;
-                *(f32 *)((u8 *)temp_r3 + 0x60) = f1;
-                *(f32 *)((u8 *)temp_r3 + 0x2c) = f2;
-                *(f32 *)((u8 *)temp_r3 + 0x34) = f1;
-                *(f32 *)((u8 *)temp_r3 + 0x30) = f0;
-                *(f32 *)((u8 *)temp_r3 + 0x38) = f0;
-                *(f32 *)((u8 *)temp_r3 + 0x40) = f1;
-                *(f32 *)((u8 *)temp_r3 + 0x3c) = f0;
-                *(f32 *)((u8 *)temp_r3 + 0x44) = f0;
-                *(f32 *)((u8 *)temp_r3 + 0x4c) = f1;
-                *(f32 *)((u8 *)temp_r3 + 0x48) = f0;
-                *(s32 *)((u8 *)temp_r3 + 0x50) = zero;
-                *(s32 *)((u8 *)temp_r3 + 0x54) = zero;
-                *(f32 *)((u8 *)temp_r3 + 0x0c) = f2;
-                *(f32 *)((u8 *)temp_r3 + 0x10) = f2;
-                *(f32 *)((u8 *)temp_r3 + 0x14) = f2;
-                *(f32 *)((u8 *)temp_r3 + 0x20) = f2;
-                *(f32 *)((u8 *)temp_r3 + 0x18) = f2;
-                *(f32 *)((u8 *)temp_r3 + 0x24) = f2;
-                *(f32 *)((u8 *)temp_r3 + 0x1c) = f2;
-                *(f32 *)((u8 *)temp_r3 + 0x28) = f2;
-                *(u8 *)((u8 *)temp_r3 + 0x58) = zero;
-                *(u8 *)((u8 *)temp_r3 + 0x5d) = zero;
-                *(u8 *)((u8 *)temp_r3 + 0x68) = zero;
-                *(u8 *)((u8 *)temp_r3 + 0x59) = zero;
-                *(u8 *)((u8 *)temp_r3 + 0x5a) = zero;
-                *(f32 *)((u8 *)temp_r3 + 0x314) = f2;
-                *(f32 *)((u8 *)temp_r3 + 0x310) = f2;
-                ((struct InitObjectPrefix *)temp_r3)->field = f2;
-                *(f32 *)((u8 *)temp_r3 + 0x320) = f2;
-                *(f32 *)((u8 *)temp_r3 + 0x31c) = f2;
-                *(f32 *)((u8 *)temp_r3 + 0x318) = f2;
-                *(f32 *)((u8 *)temp_r3 + 0x328) = f2;
-                *(f32 *)((u8 *)temp_r3 + 0x324) = f2;
-                *(f32 *)((u8 *)temp_r3 + 0x32c) = f2;
-                *(u8 *)((u8 *)temp_r3 + 0x338) = zero;
-                *(u8 *)((u8 *)temp_r3 + 0x340) = zero;
-                *(u8 *)((u8 *)temp_r3 + 0x341) = zero;
-                *(u8 *)((u8 *)temp_r3 + 0x342) = zero;
-                *(u8 *)((u8 *)temp_r3 + 0x343) = zero;
-                *(u8 *)((u8 *)temp_r3 + 0x344) = zero;
-                ((void (*)(void *, f32, f32))fn_8017F718)(temp_r3, f1, f2);
+                DRIVER(driver)->pad33C = zero_f;
+                tenth_f = F_TENTH;
+                DRIVER(driver)->flag5B = zero;
+                DRIVER(driver)->flag5C = zero;
+                DRIVER(driver)->flag5E = 1;
+                DRIVER(driver)->pad60 = one_f;
+                DRIVER(driver)->level2C[0] = zero_f;
+                DRIVER(driver)->level2C[2] = one_f;
+                DRIVER(driver)->level2C[1] = tenth_f;
+                DRIVER(driver)->level2C[3] = tenth_f;
+                DRIVER(driver)->level2C[5] = one_f;
+                DRIVER(driver)->level2C[4] = tenth_f;
+                DRIVER(driver)->level2C[6] = tenth_f;
+                DRIVER(driver)->level2C[8] = one_f;
+                DRIVER(driver)->level2C[7] = tenth_f;
+                DRIVER(driver)->pad50[0] = zero;
+                DRIVER(driver)->pad50[1] = zero;
+                DRIVER(driver)->pad0C[0] = zero_f;
+                DRIVER(driver)->pad0C[1] = zero_f;
+                DRIVER(driver)->pad0C[2] = zero_f;
+                DRIVER(driver)->pad0C[5] = zero_f;
+                DRIVER(driver)->pad0C[3] = zero_f;
+                DRIVER(driver)->pad0C[6] = zero_f;
+                DRIVER(driver)->pad0C[4] = zero_f;
+                DRIVER(driver)->pad0C[7] = zero_f;
+                DRIVER(driver)->flag58 = zero;
+                DRIVER(driver)->flag5D = zero;
+                DRIVER(driver)->flag68 = zero;
+                DRIVER(driver)->flag59 = zero;
+                DRIVER(driver)->flag5A = zero;
+                DRIVER(driver)->pad30C[2] = zero_f;
+                DRIVER(driver)->pad30C[1] = zero_f;
+                ((struct DriverInterface30C *)driver)->field = zero_f;
+                DRIVER(driver)->pad30C[5] = zero_f;
+                DRIVER(driver)->pad30C[4] = zero_f;
+                DRIVER(driver)->pad30C[3] = zero_f;
+                DRIVER(driver)->pad30C[7] = zero_f;
+                DRIVER(driver)->pad30C[6] = zero_f;
+                DRIVER(driver)->pad30C[8] = zero_f;
+                DRIVER(driver)->flag338 = zero;
+                DRIVER(driver)->flag340 = zero;
+                DRIVER(driver)->flag341 = zero;
+                DRIVER(driver)->flag342 = zero;
+                DRIVER(driver)->flag343 = zero;
+                DRIVER(driver)->flag344 = zero;
+                ((void (*)(void *, f32, f32))fn_8017F718)(driver, one_f, zero_f);
             }
         }
-        *(Unk8017Object **)((u8 *)table + temp_r29) = temp_r3;
+        *(Unk8017Object **)((u8 *)table + entry_offset) = driver;
     }
-    return (s32)*(Unk8017Object **)((u8 *)table + temp_r29);
+    return (s32)*(Unk8017Object **)((u8 *)table + entry_offset);
 }
 int fn_801813D8(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
