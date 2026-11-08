@@ -2990,7 +2990,7 @@ class Fn86A34Draw { public:
     virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
     virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
     virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
-    virtual void v12(); virtual void v13(); virtual void use(char *);
+    virtual void v12(); virtual void use(char *);
 };
 extern "C" int fn_80214AF0(int);
 extern "C" int fn_80131234(int);
@@ -3011,7 +3011,8 @@ int fn_802869CC(void *arg0, int arg1) {
     return 0;
 }
 
-void fn_80286A34(void *arg0) {
+#pragma cplusplus on
+extern "C" void fn_80286A34(void *arg0) {
     char *self = (char *)arg0;
     char *st = *(char **)(self + 0x20);
     char *strs = lbl_80347E50;
@@ -3021,10 +3022,8 @@ void fn_80286A34(void *arg0) {
             int v = (int)((float)*(int *)st + *(float *)(st + 0x10));
             if (v < lim) lim = v;
             if (lim == *(int *)(st + 4)) {
-                void **obj;
                 *(unsigned char *)(self + 0x29) = 1;
-                obj = (void **)((void *(*)(void))fn_8027ED70)();
-                ((void (*)(void *, char *))(*(void ***)obj)[15])(obj, strs + 0x164);
+                ((Fn86A34Draw *)((void *(*)(void))fn_8027ED70)())->use(strs + 0x164);
             }
         } else if (*(unsigned char *)(self + 0x2A) == 0) {
             int i = 0, off = 0, flag;
@@ -3099,7 +3098,7 @@ void fn_80286A34(void *arg0) {
         }
     }
 }
-
+#pragma cplusplus off
 extern float lbl_80558DC4[];
 extern float fn_80214D48(void);
 extern void fn_802168BC(int);
