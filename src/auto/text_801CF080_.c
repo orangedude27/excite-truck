@@ -8,6 +8,21 @@ extern float PSVECDotProduct(const float *, const float *);
 typedef struct { f32 x, y, z; } Vec801CF;
 extern f32 lbl_80558DC4[];
 extern f32 lbl_80562A38, lbl_80562A3C;
+extern float PSVECSquareDistance(const float *, const float *);
+
+static inline void fn_801CF080_xform(f32 *dst, f32 *src, f32 *m) {
+    if (dst == src) {
+        f32 x = src[0], y = src[1], z = src[2];
+        dst[0] = x * m[0] + y * m[3] + z * m[6];
+        dst[1] = x * m[1] + y * m[4] + z * m[7];
+        dst[2] = x * m[2] + y * m[5] + z * m[8];
+    } else {
+        dst[0] = src[0] * m[0] + src[1] * m[3] + src[2] * m[6];
+        dst[1] = src[0] * m[1] + src[1] * m[4] + src[2] * m[7];
+        dst[2] = src[0] * m[2] + src[1] * m[5] + src[2] * m[8];
+    }
+}
+
 #pragma dont_inline on
 #pragma scheduling invalid_target
 f32 fn_801CF778(const float *arg0, const float *arg1, const float *arg2) {
@@ -65,7 +80,8 @@ s32 fn_801CF828(u8 *arg0, f32 *origin, f32 *dir, f32 *dist, f32 *out) {
             u = (d - PSVECDotProduct(origin, nrm)) / den;
             if (u >= zero && u < *dist) {
                 f32 pt[3];
-                f32 diff[3];
+                Vec801CF v;
+                Vec801CF diff;
                 s16 *ip = (s16 *)tri;
                 edge = (f32 *)(tri + 0x18);
                 inside = 1;
@@ -73,11 +89,11 @@ s32 fn_801CF828(u8 *arg0, f32 *origin, f32 *dir, f32 *dist, f32 *out) {
                 pt[1] = origin[1] + dir[1] * u;
                 pt[2] = origin[2] + dir[2] * u;
                 for (k = 0; k < 3; k++) {
-                    f32 *v = (f32 *)(*(u8 **)(arg0 + 8) + ip[1] * 0xC);
-                    diff[0] = pt[0] - v[0];
-                    diff[1] = pt[1] - v[1];
-                    diff[2] = pt[2] - v[2];
-                    if (PSVECDotProduct(diff, edge) > lbl_80558DC4[0]) {
+                    v = *(Vec801CF *)(*(u8 **)(arg0 + 8) + ip[1] * 0xC);
+                    diff.x = pt[0] - v.x;
+                    diff.y = pt[1] - v.y;
+                    diff.z = pt[2] - v.z;
+                    if (PSVECDotProduct((f32 *)&diff, edge) > lbl_80558DC4[0]) {
                         inside = 0;
                     }
                     ip++;
@@ -97,83 +113,82 @@ s32 fn_801CF828(u8 *arg0, f32 *origin, f32 *dir, f32 *dist, f32 *out) {
 }
 void fn_801CFA48(void *arg0) {
  typedef struct { unsigned char *ptr1; int count1; unsigned char *ptr2; int count2; unsigned char *ptr3; int count3; } tFA48View;
- volatile tFA48View *p=(volatile tFA48View *)arg0;
  volatile unsigned char *b=(volatile unsigned char *)arg0;
- unsigned char temp,temp2;
+ unsigned char temp;
  volatile unsigned char *base,*item;
- int offset,i1,count1,i2,count2,i3;
- temp=b[0]; item=(volatile unsigned char *)arg0+0x18; temp2=b[3]; i1=0; offset=0; b[0]=temp2; b[3]=temp;
-        temp=b[1]; temp2=b[2]; b[1]=temp2; b[2]=temp;
-        temp=b[4]; temp2=b[7]; b[4]=temp2; b[7]=temp;
-        temp=b[5]; temp2=b[6]; b[5]=temp2; b[6]=temp;
-        temp=b[8]; temp2=b[11]; b[8]=temp2; b[11]=temp;
-        temp=b[9]; temp2=b[10]; b[9]=temp2; b[10]=temp;
-        temp=b[12]; temp2=b[15]; b[12]=temp2; b[15]=temp;
-        temp=b[13]; temp2=b[14]; b[13]=temp2; b[14]=temp;
-        temp=b[16]; temp2=b[19]; b[16]=temp2; b[19]=temp;
-        temp=b[17]; temp2=b[18]; b[17]=temp2; b[18]=temp;
-        temp=b[20]; temp2=b[23]; b[20]=temp2; b[23]=temp;
-        temp=b[21]; temp2=b[22]; b[21]=temp2; b[22]=temp;
- count1=p->count1; count2=p->count2; count1*=0x18; p->ptr1=(unsigned char *)item; item+=count1; p->ptr2=(unsigned char *)item; count2*=0xC; item+=count2; p->ptr3=(unsigned char *)item;
+ int offset,i1,i2,i3,count1,count2;
+ temp=b[0]; item=b+0x18; i1=0; offset=0; b[0]=b[3]; b[3]=temp;
+        temp=b[1]; b[1]=b[2]; b[2]=temp;
+        temp=b[4]; b[4]=b[7]; b[7]=temp;
+        temp=b[5]; b[5]=b[6]; b[6]=temp;
+        temp=b[8]; b[8]=b[11]; b[11]=temp;
+        temp=b[9]; b[9]=b[10]; b[10]=temp;
+        temp=b[12]; b[12]=b[15]; b[15]=temp;
+        temp=b[13]; b[13]=b[14]; b[14]=temp;
+        temp=b[16]; b[16]=b[19]; b[19]=temp;
+        temp=b[17]; b[17]=b[18]; b[18]=temp;
+        temp=b[20]; b[20]=b[23]; b[23]=temp;
+        temp=b[21]; b[21]=b[22]; b[22]=temp;
+ count1=((volatile tFA48View *)b)->count1; count2=((volatile tFA48View *)b)->count2; count1*=0x18; ((volatile tFA48View *)b)->ptr1=(unsigned char *)item; item+=count1; ((volatile tFA48View *)b)->ptr2=(unsigned char *)item; count2*=0xC; item+=count2; ((volatile tFA48View *)b)->ptr3=(unsigned char *)item;
  goto check1;
 loop1:
- base=p->ptr1; i1++; item=base+offset; temp=base[offset]; temp2=item[3]; offset+=0x18; item[0]=temp2; item[3]=temp;
-        temp=item[1]; temp2=item[2]; item[1]=temp2; item[2]=temp;
-        temp=item[4]; temp2=item[7]; item[4]=temp2; item[7]=temp;
-        temp=item[5]; temp2=item[6]; item[5]=temp2; item[6]=temp;
-        temp=item[8]; temp2=item[11]; item[8]=temp2; item[11]=temp;
-        temp=item[9]; temp2=item[10]; item[9]=temp2; item[10]=temp;
-        temp=item[12]; temp2=item[15]; item[12]=temp2; item[15]=temp;
-        temp=item[13]; temp2=item[14]; item[13]=temp2; item[14]=temp;
-        temp=item[16]; temp2=item[19]; item[16]=temp2; item[19]=temp;
-        temp=item[17]; temp2=item[18]; item[17]=temp2; item[18]=temp;
-        temp=item[20]; temp2=item[23]; item[20]=temp2; item[23]=temp;
-        temp=item[21]; temp2=item[22]; item[21]=temp2; item[22]=temp;
+ base=((volatile tFA48View *)b)->ptr1; i1++; item=base+offset; temp=base[offset]; offset+=0x18; item[0]=item[3]; item[3]=temp;
+        temp=item[1]; item[1]=item[2]; item[2]=temp;
+        temp=item[4]; item[4]=item[7]; item[7]=temp;
+        temp=item[5]; item[5]=item[6]; item[6]=temp;
+        temp=item[8]; item[8]=item[11]; item[11]=temp;
+        temp=item[9]; item[9]=item[10]; item[10]=temp;
+        temp=item[12]; item[12]=item[15]; item[15]=temp;
+        temp=item[13]; item[13]=item[14]; item[14]=temp;
+        temp=item[16]; item[16]=item[19]; item[19]=temp;
+        temp=item[17]; item[17]=item[18]; item[18]=temp;
+        temp=item[20]; item[20]=item[23]; item[23]=temp;
+        temp=item[21]; item[21]=item[22]; item[22]=temp;
 check1:
- if(i1<p->count1) goto loop1;
+ if(i1<((volatile tFA48View *)b)->count1) goto loop1;
  i2=0; offset=0; goto check2;
 loop2:
- base=p->ptr2; i2++; item=base+offset; temp=base[offset]; temp2=item[3]; offset+=0xC; item[0]=temp2; item[3]=temp;
-        temp=item[1]; temp2=item[2]; item[1]=temp2; item[2]=temp;
-        temp=item[4]; temp2=item[7]; item[4]=temp2; item[7]=temp;
-        temp=item[5]; temp2=item[6]; item[5]=temp2; item[6]=temp;
-        temp=item[8]; temp2=item[11]; item[8]=temp2; item[11]=temp;
-        temp=item[9]; temp2=item[10]; item[9]=temp2; item[10]=temp;
+ base=((volatile tFA48View *)b)->ptr2; i2++; item=base+offset; temp=base[offset]; offset+=0xC; item[0]=item[3]; item[3]=temp;
+        temp=item[1]; item[1]=item[2]; item[2]=temp;
+        temp=item[4]; item[4]=item[7]; item[7]=temp;
+        temp=item[5]; item[5]=item[6]; item[6]=temp;
+        temp=item[8]; item[8]=item[11]; item[11]=temp;
+        temp=item[9]; item[9]=item[10]; item[10]=temp;
 check2:
- if(i2<p->count2) goto loop2;
+ if(i2<((volatile tFA48View *)b)->count2) goto loop2;
  i3=0; offset=0; goto check3;
 loop3:
- base=p->ptr3; item=base+offset; temp=base[offset]; temp2=item[1]; item[0]=temp2; item[1]=temp; temp=item[2]; temp2=item[3]; item[2]=temp2; item[3]=temp;
-        temp=item[24]; temp2=item[27]; item[24]=temp2; item[27]=temp;
-        temp=item[25]; temp2=item[26]; item[25]=temp2; item[26]=temp;
-        temp=item[28]; temp2=item[31]; item[28]=temp2; item[31]=temp;
-        temp=item[29]; temp2=item[30]; item[29]=temp2; item[30]=temp;
-        temp=item[32]; temp2=item[35]; item[32]=temp2; item[35]=temp;
-        temp=item[33]; temp2=item[34]; item[33]=temp2; item[34]=temp;
-        temp=item[4]; temp2=item[5]; item[4]=temp2; item[5]=temp;
-        temp=item[36]; temp2=item[39]; item[36]=temp2; item[39]=temp;
-        temp=item[37]; temp2=item[38]; item[37]=temp2; item[38]=temp;
-        temp=item[40]; temp2=item[43]; item[40]=temp2; item[43]=temp;
-        temp=item[41]; temp2=item[42]; item[41]=temp2; item[42]=temp;
-        temp=item[44]; temp2=item[47]; item[44]=temp2; item[47]=temp;
-        temp=item[45]; temp2=item[46]; item[45]=temp2; item[46]=temp;
-        temp=item[6]; temp2=item[7]; item[6]=temp2; item[7]=temp;
-        temp=item[48]; temp2=item[51]; item[48]=temp2; item[51]=temp;
-        temp=item[49]; temp2=item[50]; item[49]=temp2; item[50]=temp;
-        temp=item[52]; temp2=item[55]; item[52]=temp2; item[55]=temp;
-        temp=item[53]; temp2=item[54]; item[53]=temp2; item[54]=temp;
-        temp=item[56]; temp2=item[59]; item[56]=temp2; item[59]=temp;
-        temp=item[57]; temp2=item[58]; item[57]=temp2; item[58]=temp;
- temp=item[8]; offset+=0x3C; i3++; temp2=item[0xB]; item[8]=temp2; item[0xB]=temp;
-        temp=item[9]; temp2=item[10]; item[9]=temp2; item[10]=temp;
-        temp=item[12]; temp2=item[15]; item[12]=temp2; item[15]=temp;
-        temp=item[13]; temp2=item[14]; item[13]=temp2; item[14]=temp;
-        temp=item[16]; temp2=item[19]; item[16]=temp2; item[19]=temp;
-        temp=item[17]; temp2=item[18]; item[17]=temp2; item[18]=temp;
-        temp=item[20]; temp2=item[23]; item[20]=temp2; item[23]=temp;
-        temp=item[21]; temp2=item[22]; item[21]=temp2; item[22]=temp;
+ base=((volatile tFA48View *)b)->ptr3; item=base+offset; temp=base[offset]; item[0]=item[1]; item[1]=temp; temp=item[2]; item[2]=item[3]; item[3]=temp;
+        temp=item[24]; item[24]=item[27]; item[27]=temp;
+        temp=item[25]; item[25]=item[26]; item[26]=temp;
+        temp=item[28]; item[28]=item[31]; item[31]=temp;
+        temp=item[29]; item[29]=item[30]; item[30]=temp;
+        temp=item[32]; item[32]=item[35]; item[35]=temp;
+        temp=item[33]; item[33]=item[34]; item[34]=temp;
+        temp=item[4]; item[4]=item[5]; item[5]=temp;
+        temp=item[36]; item[36]=item[39]; item[39]=temp;
+        temp=item[37]; item[37]=item[38]; item[38]=temp;
+        temp=item[40]; item[40]=item[43]; item[43]=temp;
+        temp=item[41]; item[41]=item[42]; item[42]=temp;
+        temp=item[44]; item[44]=item[47]; item[47]=temp;
+        temp=item[45]; item[45]=item[46]; item[46]=temp;
+        temp=item[6]; item[6]=item[7]; item[7]=temp;
+        temp=item[48]; item[48]=item[51]; item[51]=temp;
+        temp=item[49]; item[49]=item[50]; item[50]=temp;
+        temp=item[52]; item[52]=item[55]; item[55]=temp;
+        temp=item[53]; item[53]=item[54]; item[54]=temp;
+        temp=item[56]; item[56]=item[59]; item[59]=temp;
+        temp=item[57]; item[57]=item[58]; item[58]=temp;
+ temp=item[8]; offset+=0x3C; i3++; item[8]=item[0xB]; item[0xB]=temp;
+        temp=item[9]; item[9]=item[10]; item[10]=temp;
+        temp=item[12]; item[12]=item[15]; item[15]=temp;
+        temp=item[13]; item[13]=item[14]; item[14]=temp;
+        temp=item[16]; item[16]=item[19]; item[19]=temp;
+        temp=item[17]; item[17]=item[18]; item[18]=temp;
+        temp=item[20]; item[20]=item[23]; item[23]=temp;
+        temp=item[21]; item[21]=item[22]; item[22]=temp;
 check3:
- if(i3<p->count3) goto loop3;
+ if(i3<((volatile tFA48View *)b)->count3) goto loop3;
 }
 
 extern s32 fn_8012C370(s32, s32 *, s32, s32, u8 *);
@@ -203,7 +218,6 @@ extern void fn_801E41D8(void *, void *, int, float);
 extern float lbl_80562A38;
 extern float lbl_80562A40;
 extern float lbl_80562A44;
-#pragma ppc_psq_save off
 #pragma scheduling invalid_target
 void fn_801CFF18(void *arg0, float *arg1) {
     unsigned int m[12];
@@ -286,5 +300,3 @@ void fn_801CFF18(void *arg0, float *arg1) {
         }
     }
 }
-#pragma scheduling on
-#pragma ppc_psq_save reset
