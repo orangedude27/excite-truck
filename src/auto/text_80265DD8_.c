@@ -1825,25 +1825,4 @@ int fn_8026A554(int *arg0) {
 }
 extern float lbl_80563C20;
 extern int lbl_80499E50[];
-extern char lbl_803467E8[];
-extern float lbl_8055E3C8;
-extern float lbl_8055C4F0;
-extern float lbl_8055C4F4;
-extern void fn_801E9E78(void *, void *, void *, void *);
-extern void fn_8026E850(void *, void *, void *, void *);
-extern void PSVECNormalize(void *, void *);
-extern void PSVECCrossProduct(void *, void *, void *);
-static inline void fn_80268358_vecmat(float *out, float *v, float *m) {
-    if (out == v) {
-        float t0 = v[0] * m[0] + v[1] * m[3] + v[2] * m[6];
-        float t1 = v[0] * m[1] + v[1] * m[4] + v[2] * m[7];
-        float t2 = v[0] * m[2] + v[1] * m[5] + v[2] * m[8];
-        out[0] = t0;
-        out[1] = t1;
-        out[2] = t2;
-    } else {
-        out[0] = v[0] * m[0] + v[1] * m[3] + v[2] * m[6];
-        out[1] = v[0] * m[1] + v[1] * m[4] + v[2] * m[7];
-        out[2] = v[0] * m[2] + v[1] * m[5] + v[2] * m[8];
-    }
-}
+
