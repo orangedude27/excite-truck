@@ -295,45 +295,79 @@ static void SITransferNext(s32 chan) {
     }
 }
 
+/* SI interrupt handler. On a transfer-complete interrupt it finishes the
+ * pending transfer, starts the next queued one, calls the completed channel's
+ * callback and clears its error status; on a poll interrupt it discards stale
+ * input buffers and dispatches the registered polling handlers. */
 static void SIInterruptHandler(s16 intr, OSContext* ctx) {
-    u32 comcsr = SI_HW_REGS[SI_SICOMSCR];
-    if ((comcsr & (SI_SICOMCSR_TCINT | SI_SICOMCSR_TCINTMSK)) == (SI_SICOMCSR_TCINT | SI_SICOMCSR_TCINTMSK)) {
+    u32 csr = SI_HW_REGS[SI_SICOMSCR];
+
+    if ((csr & (SI_SICOMCSR_TCINT | SI_SICOMCSR_TCINTMSK)) ==
+        (SI_SICOMCSR_TCINT | SI_SICOMCSR_TCINTMSK)) {
         s32 chan = Si_80311630.chan;
         u32 status = CompleteTransfer();
         SICallback callback = Si_80311630.callback;
         u32 sr;
+
         Si_80311630.callback = NULL;
         SITransferNext(chan);
-        if (callback != NULL) ((SIContextCallback)callback)(chan, status, ctx);
+        if (callback != NULL) {
+            ((SIContextCallback)callback)(chan, status, ctx);
+        }
+
         sr = SI_HW_REGS[SI_SISR];
-        sr &= 0x0F000000 >> (chan * 8);
+        sr &= (SI_SISR_UNRUN0 | SI_SISR_OVRUN0 | SI_SISR_COLL0 |
+               SI_SISR_NOREP0) >> (chan * 8);
         SI_HW_REGS[SI_SISR] = sr;
+
         if (Type[chan] == SI_ERROR_BUSY && !SIIsChanBusy(chan)) {
             static u32 cmdTypeAndStatus;
-            SITransfer(chan, &cmdTypeAndStatus, 1, &Type[chan], 3, GetTypeCallback, OS_USEC_TO_TICKS(65));
+            SITransfer(chan, &cmdTypeAndStatus, 1, &Type[chan], 3,
+                       GetTypeCallback, OS_USEC_TO_TICKS(65));
         }
     }
-    if ((comcsr & (SI_SICOMCSR_RDSTINT | SI_SICOMCSR_RDSTINTMSK)) == (SI_SICOMCSR_RDSTINT | SI_SICOMCSR_RDSTINTMSK)) {
+
+    if ((csr & (SI_SICOMCSR_RDSTINT | SI_SICOMCSR_RDSTINTMSK)) ==
+        (SI_SICOMCSR_RDSTINT | SI_SICOMCSR_RDSTINTMSK)) {
         s32 chan;
         u32 vcount = VIGetCurrentLine() + 1;
-        u32 x = (Si_80311630.poll & SI_SIPOLL_X) >> 16;
-        for (chan = 0; chan < SI_MAX_CHAN; chan++) if (SIGetResponseRaw(chan)) InputBufferVcount[chan] = vcount;
+        u32 pollX = (Si_80311630.poll & SI_SIPOLL_X) >> 16;
+
         for (chan = 0; chan < SI_MAX_CHAN; chan++) {
-            u32 mask = 0x80000000 >> (chan + 24);
-            u32 v;
-            if (!(Si_80311630.poll & mask)) continue;
-            v = *(volatile u32*)&InputBufferVcount[chan];
-            if (v == 0 || *(volatile u32*)&InputBufferVcount[chan] + x / 2 < vcount) return;
+            if (SIGetResponseRaw(chan)) {
+                InputBufferVcount[chan] = vcount;
+            }
         }
+
+        for (chan = 0; chan < SI_MAX_CHAN; chan++) {
+            u32 pollMask = 0x80000000 >> (chan + 24);
+            u32 lastVcount;
+
+            if (!(Si_80311630.poll & pollMask)) {
+                continue;
+            }
+            lastVcount = *(volatile u32*)&InputBufferVcount[chan];
+            if (lastVcount == 0 ||
+                *(volatile u32*)&InputBufferVcount[chan] + pollX / 2 < vcount) {
+                return;
+            }
+        }
+
         {
             u32 zero = 0;
             volatile u32* clear = (volatile u32*)(u32)InputBufferVcount;
+
             clear[0] = zero;
             clear[1] = zero;
             clear[2] = zero;
             clear[3] = zero;
         }
-        for (chan = 0; chan < SI_MAX_CHAN; chan++) if (RDSTHandler[chan] != NULL) RDSTHandler[chan](intr, ctx);
+
+        for (chan = 0; chan < SI_MAX_CHAN; chan++) {
+            if (RDSTHandler[chan] != NULL) {
+                RDSTHandler[chan](intr, ctx);
+            }
+        }
     }
 }
 
