@@ -13,6 +13,24 @@ extern char lbl_8033B938[];
 extern char lbl_804888A8[];
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern int fn_801E320C(int, void *);
+extern void *fn_801284F8(int, void *);
+extern void *memset(void *, int, unsigned long);
+extern int fn_801E3004(int, void *, int);
+extern int fn_801E31D8(int, void *, int);
+extern int fn_802C6FC0(void *, int, int);
+extern int fn_801E592C(void);
+extern void fn_801E3488(float *, int);
+extern char lbl_8055B3E0, lbl_8055B3E8, lbl_8055B3F0, lbl_8055B3F8, lbl_8055B400;
+extern float lbl_80563050, lbl_80563054;
+extern void fn_801E33E4(float *, int);
+extern void fn_801E5998(void *, void *, void *);
+extern int fn_801C1BA4();
+extern void fn_801C1CBC();
+extern char lbl_802F9C60[], lbl_802F9CC0[];
+extern int fn_802E317C(const char *, ...);
+extern double fn_8002EFB0(float, float);
+
 #pragma scheduling invalid_target
 char *fn_801FFB08(int arg0, int arg1) {
     char *sp8;
