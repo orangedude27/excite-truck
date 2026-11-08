@@ -1870,6 +1870,37 @@ fail:
 #pragma cplusplus reset
 #pragma scheduling reset
 #pragma dont_inline reset
+#undef type_obstacle
+#undef alloc_Obstacle_ASE
+#undef type_world_morph
+#undef alloc_WorldMorph_ASE
+#undef type_phys_path
+#undef alloc_PhysPath_ASE
+#undef type_camera_shake
+#undef alloc_CameraShake_ASE
+#undef type_track_effect
+#undef alloc_TrackEffect_ASE
+#undef type_sound_effect
+#undef alloc_SoundEffect_ASE
+#undef alloc_Text_ASE
+#undef type_surfchange
+#undef alloc_SurfChange_ASE
+#undef type_embedded_effect
+#undef alloc_EmbeddedEffect_ASE
+#undef type_ring_set
+#undef alloc_RingMaster_ASE
+#undef alloc_Trigger_ASE
+#undef type_lightning
+#undef alloc_Lightning_ASE
+#undef field_type
+#undef type_text
+#undef type_trigger
+#undef vtable_WorldMorph_ASE
+#undef vtable_PhysPath_ASE
+#undef vtable_SurfChange_ASE
+#undef vtable_EmbeddedEffect_ASE
+#undef vtable_Trigger_ASE
+#undef vtable_Lightning_ASE
 
 int fn_801D76CC(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
