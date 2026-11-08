@@ -21612,22 +21612,28 @@ BOOLEAN SDP_DeleteRecord(UINT32 handle) {
 }
 
 extern char lbl_80319F90[];
+/* Add an attribute to a record of the SDP server database (stack/sdp/sdp_db.c):
+   an attribute with this id is replaced, otherwise the new one is inserted where
+   the record's sorted attribute list wants it and its big-endian value is copied
+   into the record's value pool.  Returns TRUE when the attribute was added. */
 BOOLEAN SDP_AddAttribute(UINT32 handle, UINT16 attr_id, UINT8 attr_type,
                           UINT32 attr_len, UINT8 *p_val) {
     UINT16 attr_index;
-    tSDP_RECORD *p_rec;
+    tSDP_RECORD_BUILD_VIEW *p_rec;
     tSDP_ATTRIBUTE *p_attr;
     UINT16 record_index;
     UINT16 num_attr;
     UINT16 move_index;
 
-    p_rec = (tSDP_RECORD *)(lbl_803C4C40 + 0x1224);
-    for (record_index = 0; record_index < *(UINT16 *)(lbl_803C4C40 + 0x1222);
-         record_index++, p_rec = (tSDP_RECORD *)((UINT8 *)p_rec + 0x298)) {
+    /* Find the record in the database. */
+    p_rec = sdp_cb_record_db;
+    for (record_index = 0; record_index < sdp_cb_server_db->num_records;
+         record_index++, p_rec++) {
         if (p_rec->record_handle != handle) {
             continue;
         }
 
+        /* See if the attribute already exists, or where it sorts in. */
         p_attr = p_rec->attribute;
         for (attr_index = 0; attr_index < p_rec->num_attributes;
              attr_index++, p_attr++) {
@@ -21640,13 +21646,14 @@ BOOLEAN SDP_AddAttribute(UINT32 handle, UINT16 attr_id, UINT8 attr_type,
         }
 
         num_attr = p_rec->num_attributes;
-        if (num_attr == 0x19) {
+        if (num_attr == SDP_MAX_REC_ATTR) {
             return FALSE;
         }
 
         if (attr_index == num_attr) {
             p_attr = &p_rec->attribute[num_attr];
         } else {
+            /* Attributes stay in id order: make room at attr_index. */
             for (move_index = num_attr; move_index > attr_index; move_index--) {
                 p_rec->attribute[move_index] = p_rec->attribute[move_index - 1];
             }
@@ -21657,27 +21664,28 @@ BOOLEAN SDP_AddAttribute(UINT32 handle, UINT16 attr_id, UINT8 attr_type,
         p_attr->len = attr_len;
         p_attr->type = attr_type;
 
-        if (p_rec->free_pad_ptr + attr_len >= 0x15E) {
-            if (lbl_803C4C40[0x4630] >= 2) {
+        if (p_rec->free_pad_ptr + attr_len >= SDP_BUILD_MAX_PAD_LEN) {
+            /* No room left in the pad: truncate the value to what fits. */
+            if (sdp_cb_trace_level >= BT_TRACE_LEVEL_WARNING) {
                 ((void (*)(u32, void *, u32, u32))fn_8007096C)(
-                    0xA0001, lbl_80319F90, attr_len,
-                    0x15E - p_rec->free_pad_ptr);
+                    TRACE_LAYER_SDP | TRACE_TYPE_WARNING, lbl_80319F90, attr_len,
+                    SDP_BUILD_MAX_PAD_LEN - p_rec->free_pad_ptr); /* "SDP_AddAttribute: attr_len:%d too long. truncate to (%d)" */
             }
-            attr_len = 0x15E - p_rec->free_pad_ptr;
+            attr_len = SDP_BUILD_MAX_PAD_LEN - p_rec->free_pad_ptr;
             p_val[attr_len] = 0;
-            p_val[0x15F - p_rec->free_pad_ptr] = 0;
+            p_val[SDP_BUILD_MAX_PAD_LEN + 1 - p_rec->free_pad_ptr] = 0;
         }
 
         if (attr_len != 0 && p_val != NULL) {
-            memcpy((UINT8 *)p_rec + p_rec->free_pad_ptr + 0x138,
-                   p_val, attr_len);
-            p_attr->value_ptr = (UINT8 *)p_rec + p_rec->free_pad_ptr + 0x138;
+            memcpy(&p_rec->attr_pad[p_rec->free_pad_ptr], p_val, attr_len);
+            p_attr->value_ptr = &p_rec->attr_pad[p_rec->free_pad_ptr];
             p_rec->free_pad_ptr += attr_len;
         }
 
-        if (handle == *(UINT32 *)(lbl_803C4C40 + 0x121C) &&
-            attr_id == 0x8001) {
-            lbl_803C4C40[0x1220] = 1;
+        /* The record holding the BRCM version attribute is the Broadcom one. */
+        if (handle == sdp_cb_server_db->di_primary_handle &&
+            attr_id == ATTR_ID_EXT_BRCM_VERSION) {
+            sdp_cb_server_db->brcm_di_registered = TRUE;
         }
         return TRUE;
     }
