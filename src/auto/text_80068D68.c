@@ -11894,6 +11894,359 @@ s32 fn_8008128C(void *arg0) {
     return 0;
 }
 
+extern char lbl_80317280[];
+extern void l2c_link_role_changed(u8 *, u8);
+extern void hidd_pm_proc_mode_change(s32, u8, s32);
+extern void fn_8008C464(u8 *);
+extern void btu_hcif_connection_comp_evt(u8 *);
+extern void btu_hcif_connection_request_evt(u8 *);
+extern void btu_hcif_qos_setup_comp_evt(void *);
+extern void btu_hcif_command_complete_evt(UINT8 *, UINT16);
+extern void btu_hcif_command_status_evt(UINT8 *, UINT16);
+extern void btu_hcif_link_key_notification_evt(u8 *, u16);
+extern void btu_hcif_esco_connection_comp_evt(u8 *);
+extern s32 l2c_link_hci_qos_violation(u16);
+extern void l2c_link_process_num_completed_pkts(u8 *, u16);
+extern BOOLEAN l2c_link_hci_disc_comp(UINT16, UINT8);
+
+static void btu_hcif_disconnection_comp_evt(UINT8 *p) {
+    UINT8 status;
+    UINT16 handle;
+    UINT8 reason;
+
+    p++;
+    STREAM_TO_UINT16(handle, p);
+    handle = HCID_GET_HANDLE(handle);
+    STREAM_TO_UINT8(reason, p);
+    if (!l2c_link_hci_disc_comp(handle, reason))
+        btm_sco_removed(handle, reason);
+    btm_sec_disconnected(handle, reason);
+}
+
+static void btu_hcif_authentication_comp_evt(UINT8 *p) {
+    UINT8 status;
+    UINT16 handle;
+
+    STREAM_TO_UINT8(status, p);
+    STREAM_TO_UINT16(handle, p);
+    btm_sec_auth_complete(handle, status);
+}
+
+static void btu_hcif_rmt_name_request_comp_evt(UINT8 *p, UINT16 evt_len) {
+    BD_ADDR bd_addr;
+    UINT8 status;
+
+    STREAM_TO_UINT8(status, p);
+    STREAM_TO_BDADDR(bd_addr, p);
+    btm_process_remote_name(bd_addr, p, evt_len - 7, status);
+    btm_sec_rmt_name_request_complete(bd_addr, p, status);
+}
+
+static void btu_hcif_encryption_change_evt(UINT8 *p) {
+    UINT8 status;
+    UINT16 handle;
+    UINT8 encr_enable;
+
+    STREAM_TO_UINT8(status, p);
+    STREAM_TO_UINT16(handle, p);
+    STREAM_TO_UINT8(encr_enable, p);
+    btm_acl_encrypt_change(handle, status, encr_enable);
+    btm_sec_encrypt_change(handle, status, encr_enable);
+}
+
+static void btu_hcif_master_link_key_comp_evt(UINT8 *p) {
+    UINT8 status;
+    UINT16 handle;
+    UINT8 key_flg;
+
+    STREAM_TO_UINT8(status, p);
+    STREAM_TO_UINT16(handle, p);
+    STREAM_TO_UINT8(key_flg, p);
+    btm_sec_mkey_comp_event(handle, status, key_flg);
+}
+
+static void btu_hcif_role_change_evt(UINT8 *p) {
+    UINT8 status;
+    BD_ADDR bd_addr;
+    UINT8 role;
+
+    STREAM_TO_UINT8(status, p);
+    STREAM_TO_BDADDR(bd_addr, p);
+    STREAM_TO_UINT8(role, p);
+    if (status == 0)
+        l2c_link_role_changed(bd_addr, role);
+    btm_acl_role_changed(status, bd_addr, role);
+}
+
+static void btu_hcif_mode_change_evt(UINT8 *p) {
+    UINT8 status;
+    UINT16 handle;
+    UINT8 current_mode;
+    UINT16 interval;
+
+    STREAM_TO_UINT8(status, p);
+    STREAM_TO_UINT16(handle, p);
+    STREAM_TO_UINT8(current_mode, p);
+    STREAM_TO_UINT16(interval, p);
+    ((void (*)(UINT8, UINT16, UINT8))btm_sco_chk_pend_unpark)(status, handle, current_mode);
+    btm_pm_proc_mode_change(status, handle, current_mode, interval);
+    hidd_pm_proc_mode_change(status, current_mode, interval);
+}
+
+static void btu_hcif_pin_code_request_evt(UINT8 *p) {
+    BD_ADDR bda;
+
+    STREAM_TO_BDADDR(bda, p);
+    fn_8008C464(bda);
+    btm_sec_pin_code_request(bda);
+}
+
+static void btu_hcif_link_key_request_evt(UINT8 *p) {
+    BD_ADDR bda;
+
+    STREAM_TO_BDADDR(bda, p);
+    btm_sec_link_key_request(bda);
+}
+
+static void btu_hcif_read_clock_off_comp_evt(UINT8 *p) {
+    UINT8 status;
+    UINT16 handle;
+    UINT16 clock_offset;
+
+    STREAM_TO_UINT8(status, p);
+    if (status == 0) {
+        STREAM_TO_UINT16(handle, p);
+        handle = HCID_GET_HANDLE(handle);
+        STREAM_TO_UINT16(clock_offset, p);
+        btm_process_clk_off_comp_evt(handle, clock_offset);
+        btm_sec_update_clock_offset(handle, clock_offset);
+    }
+}
+
+static void btu_hcif_qos_violation_evt(UINT8 *p) {
+    UINT16 handle;
+
+    STREAM_TO_UINT16(handle, p);
+    handle = HCID_GET_HANDLE(handle);
+    l2c_link_hci_qos_violation(handle);
+}
+
+static void btu_hcif_esco_connection_chg_evt(UINT8 *p) {
+    UINT8 status;
+    UINT16 handle;
+    UINT8 tx_interval;
+    UINT8 retrans_window;
+    UINT16 rx_pkt_len;
+    UINT16 tx_pkt_len;
+
+    STREAM_TO_UINT8(status, p);
+    STREAM_TO_UINT16(handle, p);
+    STREAM_TO_UINT8(tx_interval, p);
+    STREAM_TO_UINT8(retrans_window, p);
+    STREAM_TO_UINT16(rx_pkt_len, p);
+    STREAM_TO_UINT16(tx_pkt_len, p);
+    btm_esco_proc_conn_chg(status, handle, tx_interval, retrans_window, rx_pkt_len, tx_pkt_len);
+}
+
+void btu_hcif_process_event(BT_HDR *p_msg) {
+    UINT8 *p = (UINT8 *)(p_msg + 1) + p_msg->offset;
+    UINT8 hci_evt_code, hci_evt_len;
+
+    hci_evt_code = p[0];
+    hci_evt_len = p[1];
+
+    if (lbl_803C0F78[0x64E] == 0 && hci_evt_code != 0xE && hci_evt_code != 0xF)
+        return;
+
+    switch (hci_evt_code) {
+    case 0x01:
+        ((void (*)(UINT8))btm_process_inq_complete)(p[2]);
+        break;
+    case 0x02:
+        btm_process_inq_results(p + 2, 0);
+        break;
+    case 0x22:
+        btm_process_inq_results(p + 2, 1);
+        break;
+    case 0x03:
+        btu_hcif_connection_comp_evt(p + 2);
+        break;
+    case 0x04:
+        btu_hcif_connection_request_evt(p + 2);
+        break;
+    case 0x05: {
+        UINT16 handle;
+        UINT8 reason;
+        UINT8 *d = p + 3;
+        STREAM_TO_UINT16(handle, d);
+        handle = HCID_GET_HANDLE(handle);
+        STREAM_TO_UINT8(reason, d);
+        if (!l2c_link_hci_disc_comp(handle, reason))
+            btm_sco_removed(handle, reason);
+        btm_sec_disconnected(handle, reason);
+        break;
+    }
+    case 0x06: {
+        UINT16 handle;
+        UINT8 status;
+        UINT8 *d = p + 2;
+        STREAM_TO_UINT8(status, d);
+        STREAM_TO_UINT16(handle, d);
+        btm_sec_auth_complete(handle, status);
+        break;
+    }
+    case 0x07: {
+        BD_ADDR bd_addr;
+        UINT8 status;
+        UINT8 *d = p + 2;
+        UINT8 *p_name;
+        STREAM_TO_UINT8(status, d);
+        STREAM_TO_BDADDR(bd_addr, d);
+        p_name = d;
+        btm_process_remote_name(bd_addr, p_name, hci_evt_len - 7, status);
+        btm_sec_rmt_name_request_complete(bd_addr, p_name, status);
+        break;
+    }
+    case 0x08: {
+        UINT16 handle;
+        UINT8 status, enable;
+        UINT8 *d = p + 2;
+        STREAM_TO_UINT8(status, d);
+        STREAM_TO_UINT16(handle, d);
+        STREAM_TO_UINT8(enable, d);
+        btm_acl_encrypt_change(handle, status, enable);
+        btm_sec_encrypt_change(handle, status, enable);
+        break;
+    }
+    case 0x0A: {
+        UINT16 handle;
+        UINT8 status, key_flg;
+        UINT8 *d = p + 2;
+        STREAM_TO_UINT8(status, d);
+        STREAM_TO_UINT16(handle, d);
+        STREAM_TO_UINT8(key_flg, d);
+        btm_sec_mkey_comp_event(handle, status, key_flg);
+        break;
+    }
+    case 0x0B:
+        btm_read_remote_features_complete(p + 2);
+        break;
+    case 0x0C:
+        btm_read_remote_version_complete(p + 2);
+        break;
+    case 0x0D:
+        btu_hcif_qos_setup_comp_evt(p + 2);
+        break;
+    case 0x0E:
+        ((void (*)(UINT8 *))btu_hcif_command_complete_evt)(p + 2);
+        break;
+    case 0x0F:
+        ((void (*)(UINT8 *))btu_hcif_command_status_evt)(p + 2);
+        break;
+    case 0x10:
+        fn_8007093C(0x70000, lbl_80317280);
+        if (fn_80079514())
+            BTM_DeviceReset(0);
+        break;
+    case 0x12: {
+        BD_ADDR bd_addr;
+        UINT8 status, role;
+        UINT8 *d = p + 2;
+        STREAM_TO_UINT8(status, d);
+        STREAM_TO_BDADDR(bd_addr, d);
+        STREAM_TO_UINT8(role, d);
+        if (status == 0)
+            l2c_link_role_changed(bd_addr, role);
+        btm_acl_role_changed(status, bd_addr, role);
+        break;
+    }
+    case 0x13:
+        ((void (*)(UINT8 *))l2c_link_process_num_completed_pkts)(p + 2);
+        break;
+    case 0x14: {
+        UINT16 handle, interval;
+        UINT8 status, mode;
+        UINT8 *d = p + 2;
+        STREAM_TO_UINT8(status, d);
+        STREAM_TO_UINT16(handle, d);
+        STREAM_TO_UINT8(mode, d);
+        STREAM_TO_UINT16(interval, d);
+        ((void (*)(UINT8, UINT16, UINT8))btm_sco_chk_pend_unpark)(status, handle, mode);
+        btm_pm_proc_mode_change(status, handle, mode, interval);
+        hidd_pm_proc_mode_change(status, mode, interval);
+        break;
+    }
+    case 0x15:
+        if (p[2] != 0) {
+            p[1] = 1;
+            btm_return_link_keys_evt((tBTM_RETURN_LINK_KEYS_EVT *)(p + 1));
+        }
+        break;
+    case 0x16: {
+        BD_ADDR bd_addr;
+        UINT8 *d = p + 2;
+        STREAM_TO_BDADDR(bd_addr, d);
+        fn_8008C464(bd_addr);
+        btm_sec_pin_code_request(bd_addr);
+        break;
+    }
+    case 0x17: {
+        BD_ADDR bd_addr;
+        UINT8 *d = p + 2;
+        STREAM_TO_BDADDR(bd_addr, d);
+        btm_sec_link_key_request(bd_addr);
+        break;
+    }
+    case 0x18:
+        ((void (*)(u8 *))btu_hcif_link_key_notification_evt)(p + 2);
+        break;
+    case 0x1C: {
+        UINT16 handle, clock_offset;
+        UINT8 status;
+        UINT8 *d = p + 2;
+        STREAM_TO_UINT8(status, d);
+        if (status == 0) {
+            STREAM_TO_UINT16(handle, d);
+            handle = HCID_GET_HANDLE(handle);
+            STREAM_TO_UINT16(clock_offset, d);
+            btm_process_clk_off_comp_evt(handle, clock_offset);
+            btm_sec_update_clock_offset(handle, clock_offset);
+        }
+        break;
+    }
+    case 0x1E: {
+        UINT16 handle;
+        UINT8 *d = p + 2;
+        STREAM_TO_UINT16(handle, d);
+        handle = HCID_GET_HANDLE(handle);
+        l2c_link_hci_qos_violation(handle);
+        break;
+    }
+    case 0x21:
+        break;
+    case 0x2C:
+        btu_hcif_esco_connection_comp_evt(p + 2);
+        break;
+    case 0x2D: {
+        UINT8 status, tx_interval, retrans_window;
+        UINT16 handle, rx_pkt_len, tx_pkt_len;
+        UINT8 *d = p + 2;
+        STREAM_TO_UINT8(status, d);
+        STREAM_TO_UINT16(handle, d);
+        STREAM_TO_UINT8(tx_interval, d);
+        STREAM_TO_UINT8(retrans_window, d);
+        STREAM_TO_UINT16(rx_pkt_len, d);
+        STREAM_TO_UINT16(tx_pkt_len, d);
+        btm_esco_proc_conn_chg(status, handle, tx_interval, retrans_window, rx_pkt_len, tx_pkt_len);
+        break;
+    }
+    case 0xEF:
+    case 0xFF:
+        ((void (*)(UINT8 *))btm_vendor_specific_evt)(p + 2);
+        break;
+    }
+}
+
 int btu_hcif_send_cmd(arg0)
 void *arg0;
 {
@@ -21886,6 +22239,180 @@ void *add_record(void *ctx, void *data) {
     return record;
 }
 
+UINT8 *add_attr(UINT8 *p, tSDP_DISCOVERY_DB *p_db, tSDP_DISC_REC *p_rec, UINT16 attr_id, tSDP_DISC_ATTR *p_parent_attr, UINT8 nest_level) {
+    char *log = lbl_8031A028;
+    UINT32 total_len;
+    UINT32 size;
+    tSDP_DISC_ATTR *p_attr;
+    tSDP_DISC_ATTR *p_last;
+    UINT32 attr_len;
+    UINT16 attr_type;
+    UINT32 type_bits;
+    UINT16 id;
+    UINT8 type;
+    UINT8 *p_end;
+    UINT8 is_additional_list = nest_level & 0x80;
+#define FREE_MEM(db) (*(UINT8 **)((UINT8 *)(db) + 0x68))
+#define COPY_ARRAY(p, a, len) {register int ijk; for (ijk = 0; ijk < (int)(len); ijk++) ((UINT8 *) a)[ijk] = *p++;}
+
+    nest_level &= ~0x80;
+
+    type = *p++;
+    p = sdpu_get_len_from_type(p, type, &attr_len);
+    attr_len &= 0x0FFF;
+    attr_type = (type >> 3) & 0x0f;
+
+    if (attr_len > 4)
+        size = attr_len - 4 + 12;
+    else
+        size = 12;
+    total_len = (size + 3) & ~3;
+
+    if (p_db->mem_free < total_len)
+        return NULL;
+
+    p_attr = (tSDP_DISC_ATTR *)FREE_MEM(p_db);
+    p_attr->attr_id = attr_id;
+    type_bits = attr_type << 12;
+    p_attr->attr_len_type = (UINT16)attr_len | type_bits;
+    p_attr->p_next_attr = NULL;
+
+    switch (attr_type) {
+    case 1:
+        if (is_additional_list != 0 && attr_len == 2) {
+            id = (p[0] << 8) + p[1];
+            if (id == 4) {
+                FREE_MEM(p_db) += 12;
+                p_db->mem_free -= 12;
+                total_len = 0;
+                p += 2;
+                p_end = p + attr_len;
+                if (nest_level >= 5) {
+                    if (lbl_803C4C40[0x4630] >= 1)
+                        fn_8007093C(0xA0000, log + 0xD8);
+                    return p_end;
+                }
+                p = add_attr(p, p_db, p_rec, 4, p_attr, nest_level + 1);
+                break;
+            }
+            p = p;
+        }
+    case 2:
+        switch (attr_len) {
+        case 1:
+            p_attr->attr_value.v.u8 = *p++;
+            break;
+        case 2:
+            BE_STREAM_TO_UINT16(p_attr->attr_value.v.u16, p);
+            break;
+        case 4:
+            BE_STREAM_TO_UINT32(p_attr->attr_value.v.u32, p);
+            break;
+        default:
+            COPY_ARRAY(p, p_attr->attr_value.v.array, attr_len);
+            break;
+        }
+        break;
+    case 3: {
+        int len = attr_len;
+        switch (len) {
+        case 2:
+            BE_STREAM_TO_UINT16(p_attr->attr_value.v.u16, p);
+            break;
+        case 4:
+            BE_STREAM_TO_UINT32(p_attr->attr_value.v.u32, p);
+            if (p_attr->attr_value.v.u32 < 0x10000) {
+                attr_len = 2;
+                p_attr->attr_len_type = 2 | type_bits;
+                p_attr->attr_value.v.u16 = (UINT16)p_attr->attr_value.v.u32;
+            }
+            break;
+        case 16:
+            if (sdpu_is_base_uuid(p)) {
+                if (p[0] == 0 && p[1] == 0) {
+                    p_attr->attr_len_type = (p_attr->attr_len_type & ~0xFFF) | 2;
+                    p += 2;
+                    BE_STREAM_TO_UINT16(p_attr->attr_value.v.u16, p);
+                    p += 12;
+                } else {
+                    p_attr->attr_len_type = (p_attr->attr_len_type & ~0xFFF) | 4;
+                    BE_STREAM_TO_UINT32(p_attr->attr_value.v.u32, p);
+                    p += 12;
+                }
+            } else {
+                COPY_ARRAY(p, p_attr->attr_value.v.array, attr_len);
+            }
+            break;
+        default:
+            if (lbl_803C4C40[0x4630] >= 2)
+                ((void (*)(u32, void *))fn_80070954)(0xA0001, log + 0xF4);
+            return p + attr_len;
+        }
+        break;
+    }
+    case 6:
+    case 7:
+        FREE_MEM(p_db) += 12;
+        p_db->mem_free -= 12;
+        total_len = 0;
+        p_end = p + attr_len;
+        if (nest_level >= 5) {
+            if (lbl_803C4C40[0x4630] >= 1)
+                fn_8007093C(0xA0000, log + 0xD8);
+            return p_end;
+        }
+        if (is_additional_list != 0 || attr_id == 0xD)
+            nest_level |= 0x80;
+        while (p < p_end) {
+            p = add_attr(p, p_db, p_rec, 0, p_attr, nest_level + 1);
+            if (p == NULL)
+                return NULL;
+        }
+        break;
+    case 4:
+    case 8:
+        COPY_ARRAY(p, p_attr->attr_value.v.array, attr_len);
+        break;
+    case 5: {
+        int len = attr_len;
+        switch (len) {
+        case 1:
+            p_attr->attr_value.v.u8 = *p++;
+            break;
+        default:
+            if (lbl_803C4C40[0x4630] >= 2)
+                ((void (*)(u32, void *))fn_80070954)(0xA0001, log + 0x114);
+            return p + attr_len;
+        }
+        break;
+    }
+    }
+
+    FREE_MEM(p_db) += total_len;
+    p_db->mem_free -= total_len;
+
+    if (p_parent_attr == NULL) {
+        p_last = p_rec->p_first_attr;
+        if (p_last == NULL) {
+            p_rec->p_first_attr = p_attr;
+        } else {
+            while (p_last->p_next_attr != NULL)
+                p_last = p_last->p_next_attr;
+            p_last->p_next_attr = p_attr;
+        }
+    } else {
+        p_last = p_parent_attr->attr_value.v.p_sub_attr;
+        if (p_last == NULL) {
+            p_parent_attr->attr_value.v.p_sub_attr = p_attr;
+        } else {
+            while (p_last->p_next_attr != NULL)
+                p_last = p_last->p_next_attr;
+            p_last->p_next_attr = p_attr;
+        }
+    }
+    return p;
+}
+
 void sdp_init(void) {
     u8 *cb;
     u8 *reg_info;
@@ -23341,7 +23868,6 @@ s32 IUSB_WriteBlkMsgAsync(s32 fd, u32 endpoint, u32 length, void* buffer,
 
 s32 __CtrlMsgInt(s32 fd, s32 reqType, s32 req, s32 value, s32 index, u32 length, void *buffer, void *callback, void *callbackArg, u8 async) {
     register char *base = lbl_8031A620;
-    s32 ret;
     s32 fr;
     char *blk;
     char *a;
@@ -23353,8 +23879,9 @@ s32 __CtrlMsgInt(s32 fd, s32 reqType, s32 req, s32 value, s32 index, u32 length,
     char *msg;
 
     if ((buffer == 0 && length != 0) || ((u32)buffer & 0x1F)) {
+        fd = -4;
         USB_ERR(base + 0x328);
-        return -4;
+        goto done;
     }
     blk = iosAllocAligned(lbl_805590A0, 0xE0, 0x20);
     if (blk == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0xE0, blk);
@@ -23373,7 +23900,7 @@ s32 __CtrlMsgInt(s32 fd, s32 reqType, s32 req, s32 value, s32 index, u32 length,
 
     if (a == 0 || b == 0 || c == 0 || d == 0 || e == 0 || f == 0 || blk == 0) {
         USB_ERR(base + 0x344);
-        ret = -0x16;
+        fd = -0x16;
         goto free_all;
     }
 
@@ -23406,7 +23933,7 @@ s32 __CtrlMsgInt(s32 fd, s32 reqType, s32 req, s32 value, s32 index, u32 length,
     DCFlushRange(blk, 0xE0);
 
     if (async == 0) {
-        ret = IOS_Ioctlv(fd, 0, 6, 1, blk);
+        fd = IOS_Ioctlv(fd, 0, 6, 1, blk);
         goto free_all;
     }
 
@@ -23414,7 +23941,7 @@ s32 __CtrlMsgInt(s32 fd, s32 reqType, s32 req, s32 value, s32 index, u32 length,
     if (msg == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x80, msg);
     if (msg == 0) {
         USB_ERR(base + 0x364);
-        ret = -0x16;
+        fd = -0x16;
         goto free_all;
     }
 
@@ -23431,9 +23958,9 @@ s32 __CtrlMsgInt(s32 fd, s32 reqType, s32 req, s32 value, s32 index, u32 length,
     *(void **)(msg + 0x24) = blk;
     *(s32 *)(msg + 0x40) = (s32)buffer;
     *(u16 *)(msg + 0x44) = length;
-    ret = IOS_IoctlvAsync(fd, 0, 6, 1, blk, _intBlkCtrlCb, msg);
-    USB_LOG(base + 0x3B0, ret);
-    if (ret >= 0) goto done;
+    fd = IOS_IoctlvAsync(fd, 0, 6, 1, blk, _intBlkCtrlCb, msg);
+    USB_LOG(base + 0x3B0, fd);
+    if (fd >= 0) goto done;
     if (msg != 0) {
         fr = iosFree(lbl_805590A0, msg);
         if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, msg, fr);
@@ -23469,7 +23996,7 @@ free_all:
         if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, blk, fr);
     }
 done:
-    return ret;
+    return fd;
 }
 
 #pragma use_lmw_stmw off
