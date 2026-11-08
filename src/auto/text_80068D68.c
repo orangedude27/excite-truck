@@ -11306,56 +11306,76 @@ void btm_sec_rmt_name_request_complete(UINT8 *p_bd_addr, UINT8 *p_bd_name, UINT8
     }
 }
 
+/*
+ * btm_sec_auth_complete - the link manager finished authenticating the
+ * connection whose HCI handle is `handle`; status is the HCI error code
+ * (HCI_SUCCESS when the link is authenticated).  It puts back the
+ * authentication-enable and the PIN type that pairing raised
+ * (btm_restore_mode), drops a link that was only opened to bond, tells the
+ * app's authentication callback how it went and then runs the security
+ * procedure the service asked for - reporting that to whoever asked for
+ * security, unless the controller is still working on it.
+ *
+ * btm_cb (lbl_803C0F78) is read at its byte offsets here (the btm_cb_*
+ * macros): taking it through tBTM_CB_SEC_VIEW makes the compiler keep its
+ * base address in a callee-saved register instead of reloading it.
+ */
 void btm_sec_auth_complete(register UINT16 handle, register UINT8 status) {
-    extern char lbl_80316E7C[];
-    extern char lbl_80316B6C[];
-    extern BOOLEAN btsnd_hcic_disconnect(UINT16, UINT8);
-    extern BOOLEAN btsnd_hcic_write_pin_type(UINT8);
-    extern BOOL btsnd_hcic_write_pin_type_8008543C(u32);
+    extern char lbl_80316E7C[]; /* "Security Manager: auth_complete status:%d State:%d" */
+    extern char lbl_80316B6C[]; /* "btm_restore_mode: Authen Enable -> %d" */
+    extern BOOL btsnd_hcic_write_pin_type_8008543C(u32); /* = btsnd_hcic_write_auth_enable */
     extern u8 btm_sec_execute_procedure(void *);
-    register u8 *dev = (u8 *)btm_find_dev_by_handle(handle);
-    register u8 *dev2;
-    void (*auth_cb)(u8 *, u8 *, u8 *, u8);
-    register void *request;
-    register u8 old_state;
-    register u8 reason;
-    register u8 flags;
-    u32 pin;
+    register tBTM_SEC_DEV_REC_FULL_VIEW *dev =
+        (tBTM_SEC_DEV_REC_FULL_VIEW *)btm_find_dev_by_handle(handle);
+    register tBTM_SEC_DEV_REC_FULL_VIEW *disc_rec;
+    tBTM_AUTH_COMPLETE_CB *auth_cb;   /* btm_cb.p_auth_complete_callback */
+    register tBTM_SEC_SERV_REC *service;
+    register UINT8 old_state;
+    register UINT8 reason;
+    register UINT8 sec_req;
+    UINT32 authen_enable;
 
-    if (lbl_803C0F78[0x27C0] >= 4) {
-        fn_8007096C(0xD0003, lbl_80316E7C, status, dev ? dev[0x7F] : 0);
+    if (btm_cb_trace_level >= BTM_TRACE_LEVEL_EVENT) {
+        fn_8007096C(TRACE_LAYER_BTM | TRACE_TYPE_EVENT, lbl_80316E7C, status,
+                    dev ? dev->sec_state : 0);
     }
 
-    if (lbl_803C0F78[0x197B] != 0) {
-        lbl_803C0F78[0x197B] = 0;
-        if (lbl_803C0F78[0x27C0] >= 5) {
-            pin = (lbl_803C0F78[0x1978] == 3);
-            ((void (*)(u32, void *, u32))fn_80070954)(0xD0004, lbl_80316B6C, pin);
+    /* btm_restore_mode(): put back what raising the security level for
+       pairing changed in the controller. */
+    if (btm_cb_mode_changed != 0) {
+        btm_cb_mode_changed = 0;
+        if (btm_cb_trace_level >= BTM_TRACE_LEVEL_DEBUG) {
+            authen_enable = (btm_cb_security_mode == BTM_SEC_MODE_LINK);
+            ((void (*)(u32, void *, u32))fn_80070954)(TRACE_LAYER_BTM | TRACE_TYPE_DEBUG,
+                                                      lbl_80316B6C, authen_enable);
         }
-        btsnd_hcic_write_pin_type_8008543C((u8)(lbl_803C0F78[0x1978] == 3));
+        btsnd_hcic_write_pin_type_8008543C(
+            (u8)(btm_cb_security_mode == BTM_SEC_MODE_LINK));
     }
 
-    if (lbl_803C0F78[0x197C] != 0) {
-        lbl_803C0F78[0x197C] = 0;
-        btsnd_hcic_write_pin_type(lbl_803C0F78[0x20]);
+    if (btm_cb_pin_type_changed != 0) {
+        btm_cb_pin_type_changed = 0;
+        btsnd_hcic_write_pin_type(btm_cb_cfg_pin_type);
     }
 
+    /* A link opened just for bonding is done with once it is authenticated:
+       clear what bonding asked for and drop it (btm_sec_disconnect). */
     if (dev != 0) {
-        flags = dev[0x81];
-        if ((flags & 0x40) != 0 && lbl_803C0F78[0x197D] == 0) {
-            dev[0x81] = flags & ~0x50;
-            reason = lbl_803C0F78[0x197E];
+        sec_req = dev->sec_req;
+        if ((sec_req & BTM_SEC_BOND) != 0 && btm_cb_bonding == 0) {
+            dev->sec_req = sec_req & ~(BTM_SEC_BOND | BTM_SEC_OUT_AUTHENTICATE);
+            reason = btm_cb_disc_reason;
             if (reason != 0) {
-                dev2 = (u8 *)btm_find_dev_by_handle(handle);
-                if (dev2 != 0) {
-                    if ((dev2[0x81] & 0x40) != 0) {
-                        lbl_803C0F78[0x197E] = reason;
+                disc_rec = (tBTM_SEC_DEV_REC_FULL_VIEW *)btm_find_dev_by_handle(handle);
+                if (disc_rec != 0) {
+                    if ((disc_rec->sec_req & BTM_SEC_BOND) != 0) {
+                        btm_cb_disc_reason = reason; /* still bonding: drop it later */
                     } else {
-                        old_state = dev2[0x7F];
-                        if (old_state != 5) {
-                            dev2[0x7F] = 5;
+                        old_state = disc_rec->sec_state;
+                        if (old_state != BTM_SEC_STATE_DISCONNECTING_HERE) {
+                            disc_rec->sec_state = BTM_SEC_STATE_DISCONNECTING_HERE;
                             if (!btsnd_hcic_disconnect(handle, reason))
-                                dev2[0x7F] = old_state;
+                                disc_rec->sec_state = old_state;
                         }
                     }
                 }
@@ -11364,46 +11384,53 @@ void btm_sec_auth_complete(register UINT16 handle, register UINT8 status) {
     }
 
     if (dev != 0) {
-        if (dev[0x7F] != 1) {
-            auth_cb = *(void (**)(u8 *, u8 *, u8 *, u8))(lbl_803C0F78 + 0x191C);
-            if (auth_cb != 0 && status != 0)
-                auth_cb(dev + 0x1C, dev + 0x22, dev + 0x35, status);
+        if (dev->sec_state != BTM_SEC_STATE_AUTHENTICATING) {
+            /* Not the authentication we were waiting for: only a failure is
+               worth telling the app about. */
+            auth_cb = *(tBTM_AUTH_COMPLETE_CB **)(lbl_803C0F78 + 0x191C);
+            if (auth_cb != 0 && status != HCI_SUCCESS)
+                auth_cb(dev->bd_addr, dev->dev_class, dev->sec_bd_name, status);
         } else {
-            if (status == 0x0C && (dev[0x76] & 6) == 6)
-                status = 0;
-            auth_cb = *(void (**)(u8 *, u8 *, u8 *, u8))(lbl_803C0F78 + 0x191C);
+            /* The peer encrypted the link before authenticating it, which the
+               spec allows: what we wanted is there anyway. */
+            if (status == HCI_ERR_COMMAND_DISALLOWED &&
+                (dev->sec_flags & (BTM_SEC_AUTHENTICATED | BTM_SEC_ENCRYPTED)) ==
+                    (BTM_SEC_AUTHENTICATED | BTM_SEC_ENCRYPTED))
+                status = HCI_SUCCESS;
+            auth_cb = *(tBTM_AUTH_COMPLETE_CB **)(lbl_803C0F78 + 0x191C);
             if (auth_cb != 0)
-                auth_cb(dev + 0x1C, dev + 0x22, dev + 0x35, status);
+                auth_cb(dev->bd_addr, dev->dev_class, dev->sec_bd_name, status);
             handle = 0;
-            dev[0x7F] = (u8)handle;
-            flags = dev[0x81];
-            if ((flags & 0x40) != 0) {
-                dev[0x81] = flags & ~0x50;
-                btsnd_hcic_disconnect(*(UINT16 *)(dev + 0x18), 0x13);
-            } else if (status != 0) {
-                if (*(void **)(dev + 4) != 0) {
-                    if (dev[0x80] != 0) {
-                        request = *(void **)dev;
-                        if (request != 0 && *(u32 *)request == 3)
-                            *(u32 *)((u8 *)request + 4) = handle;
+            dev->sec_state = (u8)handle; /* BTM_SEC_STATE_IDLE */
+            sec_req = dev->sec_req;
+            if ((sec_req & BTM_SEC_BOND) != 0) {
+                dev->sec_req = sec_req & ~(BTM_SEC_BOND | BTM_SEC_OUT_AUTHENTICATE);
+                btsnd_hcic_disconnect(dev->hci_handle, HCI_ERR_PEER_USER);
+            } else if (status != HCI_SUCCESS) {
+                if (dev->p_callback != 0) {
+                    if (dev->is_originator != 0) {
+                        /* An RFCOMM service we called: its channel is free again. */
+                        service = dev->p_cur_service;
+                        if (service != 0 && service->mx_proto_id == 3)
+                            service->orig_mx_chan_id = handle;
                     }
-                    ((void (*)(u8 *, u32, u8))*(void **)(dev + 4))(
-                        dev + 0x1C, *(u32 *)(dev + 8), 0xA);
-                    *(void **)(dev + 4) = 0;
+                    ((void (*)(void *, void *, UINT8))dev->p_callback)(
+                        dev->bd_addr, dev->p_ref_data, BTM_ERR_PROCESSING);
+                    dev->p_callback = 0;
                 }
-                btsnd_hcic_disconnect(*(UINT16 *)(dev + 0x18), 5);
+                btsnd_hcic_disconnect(dev->hci_handle, HCI_ERR_AUTH_FAILURE);
             } else {
-                dev[0x76] |= 2;
+                dev->sec_flags |= BTM_SEC_AUTHENTICATED;
                 status = btm_sec_execute_procedure(dev);
-                if (status != 1 && *(void **)(dev + 4) != 0) {
-                    if (dev[0x80] != 0) {
-                        request = *(void **)dev;
-                        if (request != 0 && *(u32 *)request == 3)
-                            *(u32 *)((u8 *)request + 4) = handle;
+                if (status != BTM_CMD_STARTED && dev->p_callback != 0) {
+                    if (dev->is_originator != 0) {
+                        service = dev->p_cur_service;
+                        if (service != 0 && service->mx_proto_id == 3)
+                            service->orig_mx_chan_id = handle;
                     }
-                    ((void (*)(u8 *, u32, u8))*(void **)(dev + 4))(
-                        dev + 0x1C, *(u32 *)(dev + 8), status);
-                    *(void **)(dev + 4) = 0;
+                    ((void (*)(void *, void *, UINT8))dev->p_callback)(
+                        dev->bd_addr, dev->p_ref_data, status);
+                    dev->p_callback = 0;
                 }
             }
         }
