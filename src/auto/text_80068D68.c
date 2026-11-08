@@ -48,6 +48,7 @@ extern u8 fn_8006EB80(void);
   extern char lbl_80314128[];
   extern char lbl_803187B0[];
   void rfc_send_buf_uih();
+void rfc_process_mx_message();
 extern s32 lbl_805590A0;
 extern void fn_8006B330(void);
 extern void l2cu_release_ccb(void *);
