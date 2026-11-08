@@ -2996,6 +2996,10 @@ int fn_802869CC(void *arg0, int arg1) {
     return 0;
 }
 
+extern float lbl_80558DC4[];
+extern float fn_80214D48(void);
+extern void fn_802168BC(int);
+extern char lbl_8055C874[];
 static inline void fn_80286A34_select(int idx) {
     char *base = (char *)&lbl_804B2FF8;
     struct Fn80283E28Obj **items = *(struct Fn80283E28Obj ***)(base + 0xE0);
