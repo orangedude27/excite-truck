@@ -26,6 +26,7 @@ static inline void fn_801CF080_xform(f32 *dst, f32 *src, f32 *m) {
 #pragma dont_inline on
 #pragma scheduling invalid_target
 #pragma dont_inline reset
+#pragma scheduling reset
 #pragma push
 #pragma processor 750
 void fn_801CF080(u8 *mesh, f32 *pos, f32 *out, s32 *count, f32 *mtx, f32 radius) {
