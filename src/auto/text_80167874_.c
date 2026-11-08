@@ -823,27 +823,22 @@ extern "C" s32 fn_8016899C(void *arg0, DummyArg1 *arg1, DummyManager *arg2, f32 
     public:
         virtual void v0();
         virtual void v1();
+        virtual void v2();
         virtual s32 check(const char *name);
     };
-
     s32 *values;
-
-    if (((DummyCheck *)arg0)->check(arg1->getName()) == 0) {
-        fn_802E30C8(lbl_80330000 + 0x298, arg1->getName());
+    const char *name;
+    name = arg1->getName();
+    if (((DummyCheck *)arg0)->check(name) == 0) {
+        fn_802E30C8(lbl_80330000 + 0x298, name);
         return 0;
     }
-
     values = fn_801399FC(arg1);
     if (*values < 2) {
-        fn_802E30C8(lbl_80330000 + 0x2D0, arg1->getName());
+        fn_802E30C8(lbl_80330000 + 0x2D0, name);
         fn_80128658(values);
         return 0;
     }
-
-    /* TODO: reconstruct full path/record generation from target asm */
-    (void)arg2;
-    (void)arg3;
-    (void)lbl_802F94B8;
     fn_80128658(values);
     return 1;
 }
