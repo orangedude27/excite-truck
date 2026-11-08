@@ -19,6 +19,15 @@ void *fn_802B9AD4(void *, s32);
 void fn_802B9964(void *, s32, s32, s32);
 float fn_802B9A80(float);
 void *fn_802BE844(s32, s32, s32);
+void fn_802B9960(void);
+void fn_802B9AC8(void);
+int fn_802B9100(void);
+void fn_802B98D0(void *);
+s32 fn_802B9ACC(void *);
+void fn_802B9AA4(void *, float *, float *);
+int fn_802B9920(int);
+short fn_802B9954(void *);
+int fn_802B9914(void *);
 
 typedef struct RenderBatch { u16 **items; int count; int unused; struct RenderBatch *next; } RenderBatch;
 typedef struct RenderNode { RenderBatch *batches; int count; int type; u8 enabled; char pad[3]; struct RenderNode *next; char data[0x40]; } RenderNode;
