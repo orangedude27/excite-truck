@@ -540,7 +540,10 @@ typedef struct {
     UINT8               rsp_list[SDP_BUILD_MAX_LIST_BYTE_COUNT];  /* 0x26 */
     UINT8               pad_0x40E[2];
     tSDP_DISCOVERY_DB  *p_db;                                     /* 0x410 */
-    UINT8               pad_0x414[0x5C];
+    UINT8               pad_0x414[4];
+    UINT32              handles[SDP_MAX_DISC_SERVER_RECS];        /* 0x418 */
+    UINT16              num_handles;                              /* 0x46C */
+    UINT16              cur_handle;                               /* 0x46E */
     UINT16              transaction_id;                           /* 0x470 */
 } tCONN_CB_ATTR_VIEW;
 typedef struct { UINT8 pad[0x24]; UINT16 list_len; UINT8 list_data[1]; } tSDP_CCB_RAW_LIST_VIEW;
