@@ -161,7 +161,7 @@ void fn_801ADB44(void *a, void *b) {
             F(a, 0x20) *= k;
             F(a, 0x24) *= k;
         }
-        if (__fabs(F(a, 0x18)) <= lbl_80558DC4) {
+        if (__fabs(F(a, 0x18)) <= *(const f32 *)&lbl_80558DC4) {
             f32 s = (dot < lbl_80562520) ? lbl_80562538 : lbl_8056252C;
             m = dist * F(a, 0x10) * s;
         } else {
