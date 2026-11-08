@@ -30,8 +30,9 @@ extern u8 lbl_80559F0C;
 /* copy at most n chars, always terminated; macro keeps source-first evaluation order */
 #define StrCopyN80149658(d, s, cnt) do { \
     const u8 *sp_ = (s); \
+    int n_; \
     u8 *dp_ = (d); \
-    int n_ = (cnt); \
+    n_ = (cnt); \
     while ((s8)(*dp_++ = *sp_++) != 0) { \
         if (--n_ <= 0) { \
             dp_[-1] = 0; \
