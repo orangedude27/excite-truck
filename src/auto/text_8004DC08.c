@@ -376,7 +376,13 @@ static inline s32 BootGetPartOffset(void) {
         return v;
     } else if (*(s32 *)0x800030F4 != 0) {
         u8 *buf = OSAllocFromMEM1ArenaLo(0x40, 0x20);
-        BootReadAbs(buf, 0x40, *(s32 *)0x800030F4 >> 2);
+        BootCmdBlock cb;
+        DVDReadAbsAsyncPrio(&cb, buf, 0x40, *(s32 *)0x800030F4 >> 2, 0, 0);
+        while (DVDGetCommandBlockStatus(&cb) != 0) {
+            if (DVDGetCommandBlockStatus(&cb) > 2 || DVDGetCommandBlockStatus(&cb) < 0) {
+                __OSLaunchMenu();
+            }
+        }
         v = (*(s32 *)0x800030F4 + *(s32 *)(buf + 0x38)) >> 2;
         lbl_8055DA28 = v;
     } else {
@@ -463,12 +469,12 @@ void fn_8004E538(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
     s32 *hdr;
     s32 *params;
     s32 off;
-    void (*sp8)(void *);
-    s32 (*spC)(void **, s32 *, u32 *);
-    s32 (*sp10)(void);
-    void *sp14;
-    s32 sp18;
     u32 sp1C;
+    s32 sp18;
+    void *sp14;
+    s32 (*sp10)(void);
+    s32 (*spC)(void **, s32 *, u32 *);
+    void (*sp8)(void *);
     s32 target;
     void *copy;
     s32 cmp;
