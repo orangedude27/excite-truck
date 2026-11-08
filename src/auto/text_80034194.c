@@ -2678,6 +2678,9 @@ typedef enum {
 extern s32 lbl_8055D858, lbl_8055D86C;
 extern void (*lbl_8055D8B8)(s32, void *);
 extern s32 __DVDDequeueWaitingQueue(void *);
+// This is __DVDCancelAsync(block, callback) of the Revolution DVD driver
+// (source/os/dvd/dvdcancel.c); DVDCancel, DVDCancelAll and __DVDPrepareReset*
+// are built on it.
 // Cancel a DVD command without waiting for it. A block that is idle, already
 // finished or still only queued is completed here with DVD_RESULT_CANCELED; a
 // block the drive is working on makes the state machine stop and re-enter a
