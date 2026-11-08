@@ -41,6 +41,7 @@ typedef struct {
 } Obj;
 extern Obj *fn_80131808(void *arg);
 extern void fn_80131818(Obj *arg);
+extern void fn_80131318(int *arg);
 extern void *fn_80131234();
 extern void fn_8013072C(char *, int, int);
 #pragma inline off(fn_801302E0)
