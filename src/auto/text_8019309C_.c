@@ -1209,7 +1209,7 @@ void fn_80194FC8(void *arg0) {
 
 void fn_801955F0(void *arg0, float *arg1) {
     float scale;
-    fn_80194FD0();
+    ((void (*)(void *, float *))fn_80194FD0)(arg0, arg1);
     scale = *(float *)((unsigned char *)arg0 + 0x2B8);
     arg1[0] += *(float *)((unsigned char *)arg0 + 0x58) * scale;
     arg1[1] += *(float *)((unsigned char *)arg0 + 0x5C) * scale;
