@@ -249,7 +249,7 @@ typedef struct {
     TimeSepEnt e[13];
 } TimeSepTab;
 extern TimeSepTab lbl_802F8E78;
-extern float lbl_80558DC0;
+__declspec(section ".data") extern float lbl_80558DC0;
 extern float lbl_805612C8;
 extern float lbl_805612CC;
 
