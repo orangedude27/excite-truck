@@ -5,6 +5,8 @@ extern "C" s32 fn_80009C84(void);
 extern "C" s32 fn_80179630(s32);
 extern "C" void fn_801CB5DC(s32, s32, s32);
 extern "C" void fn_801CB648(s32, s32, f32);
+extern "C" f32 lbl_8056158C, lbl_80561590;
+extern "C" u8 lbl_802F93B0[];
 struct SubArray8013D2C4 {
     void **ptr;
     s32 count;
