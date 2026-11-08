@@ -8945,121 +8945,121 @@ struct VFiPFVolume {
 
 extern "C" s32 fn_800B5B94(void *, s32);
 extern "C" s32 fn_800B6A8C(s8 arg0, s32 arg1) {
-    u8 *var_r31;
-    u32 base_address;
-    s32 var_r30;
-    s16 temp_r28;
-    s32 var_r28;
-    s32 var_r3;
-    s32 temp_r3;
-    var_r30 = 0;
-    temp_r28 = fn_800A485C((s32)arg0) - 0x41;
-    var_r31 = (u8 *)lbl_803D2140;
-    fn_800B77C0(var_r31 + 0x64);
-    if ((temp_r28 < 0) || (temp_r28 >= 0x1A)) {
+    u8 *vol;
+    u32 slot_address;
+    s32 result;
+    s16 index;
+    s32 error;
+    s32 mount_result;
+    s32 unmount_result;
+    result = 0;
+    index = fn_800A485C((s32)arg0) - 0x41;
+    vol = (u8 *)lbl_803D2140;
+    fn_800B77C0(vol + 0x64);
+    if ((index < 0) || (index >= 0x1A)) {
         fn_800B783C((u8 *)lbl_803D2140 + 0x64);
-        var_r31 = 0;
+        vol = 0;
     } else {
-        fn_800B783C(var_r31 + 0x64);
-        base_address = (u32)var_r31 + (temp_r28 * 0x1FC8);
-        var_r31 = (u8 *)(base_address + 0xA0);
+        fn_800B783C(vol + 0x64);
+        slot_address = (u32)vol + (index * 0x1FC8);
+        vol = (u8 *)(slot_address + 0xA0);
     }
-    if (!(M2C_FIELD(var_r31, u16 *, 0x1F8C) & 1)) {
-        M2C_FIELD((u8 *)lbl_803D2140, s32 *, 0x40) = 0xA;
-        return 0xA;
+    if (!(((VFiPFVolume *)vol)->flags & VF_VOL_IN_USE)) {
+        VF_LAST_ERROR = VF_ERR_NO_DEVICE;
+        return VF_ERR_NO_DEVICE;
     }
-    fn_800B77C0(var_r31 + 0x1F90);
-    if (fn_800A53B4(var_r31) != 0) {
-        if ((fn_800A53DC(var_r31) != 0) && !(M2C_FIELD(var_r31, u16 *, 0x1F8C) & 8)) {
-            VFiPFFILE_FinalizeAllFiles(var_r31);
-            VFiPFDIR_FinalizeAllDirs(var_r31);
-            if (fn_800A5788(var_r31, 1) == 0) {
-                if (M2C_FIELD(var_r31, u16 *, 0x1F8C) & 8) {
-                    M2C_FIELD(var_r31, s32 *, 0x1654) = 0;
-                    M2C_FIELD(var_r31, s32 *, 0x189C) = 0;
-                    M2C_FIELD(var_r31, s32 *, 0x1AE4) = 0;
-                    M2C_FIELD(var_r31, s32 *, 0x1D2C) = 0;
+    fn_800B77C0(vol + 0x1F90);
+    if (fn_800A53B4(vol) != 0) {
+        if ((fn_800A53DC(vol) != 0) && !(((VFiPFVolume *)vol)->flags & VF_VOL_MOUNTED)) {
+            VFiPFFILE_FinalizeAllFiles(vol);
+            VFiPFDIR_FinalizeAllDirs(vol);
+            if (fn_800A5788(vol, 1) == 0) {
+                if (((VFiPFVolume *)vol)->flags & VF_VOL_MOUNTED) {
+                    ((VFiPFVolume *)vol)->cache[0].flag = 0;
+                    ((VFiPFVolume *)vol)->cache[1].flag = 0;
+                    ((VFiPFVolume *)vol)->cache[2].flag = 0;
+                    ((VFiPFVolume *)vol)->cache[3].flag = 0;
                 }
-                M2C_FIELD(var_r31, u16 *, 0x1F8C) &= ~8;
+                ((VFiPFVolume *)vol)->flags &= ~VF_VOL_MOUNTED;
             }
-            fn_800A53E8(var_r31);
-            M2C_FIELD((u8 *)lbl_803D2140, s32 *, 0x34)--;
+            fn_800A53E8(vol);
+            VF_MOUNTED_VOLUMES--;
         }
-        if (fn_800A53C0(var_r31) != 0) {
-            if (!(M2C_FIELD(var_r31, u16 *, 0x1F8C) & 8)) {
-                var_r3 = fn_800B5988(var_r31);
-                switch (var_r3) {
+        if (fn_800A53C0(vol) != 0) {
+            if (!(((VFiPFVolume *)vol)->flags & VF_VOL_MOUNTED)) {
+                mount_result = fn_800B5988(vol);
+                switch (mount_result) {
                 case 0:
-                    M2C_FIELD(var_r31, u16 *, 0x1FAC) &= ~7;
-                    fn_800A53E8(var_r31);
-                    M2C_FIELD((u8 *)lbl_803D2140, s32 *, 0x34)++;
-                    goto block_19;
+                    ((VFiPFVolume *)vol)->state &= ~7;
+                    fn_800A53E8(vol);
+                    VF_MOUNTED_VOLUMES++;
+                    goto mounted;
                 default:
-                    goto block_result;
+                    goto check_error;
                 }
             } else {
-block_19:
-                fn_800A53CC(var_r31);
-                var_r3 = 0;
+mounted:
+                fn_800A53CC(vol);
+                mount_result = 0;
             }
-block_result:
-            if (var_r3 != 0)
-                var_r28 = var_r3;
+check_error:
+            if (mount_result != 0)
+                error = mount_result;
             else
-                goto block_31;
+                goto done;
         } else {
-            goto block_31;
+            goto done;
         }
     } else {
-        if ((fn_800A53DC(var_r31) != 0) && !(M2C_FIELD(var_r31, u16 *, 0x1F8C) & 8)) {
-            VFiPFFILE_FinalizeAllFiles(var_r31);
-            VFiPFDIR_FinalizeAllDirs(var_r31);
-            if (fn_800A5788(var_r31, 1) == 0) {
-                if (M2C_FIELD(var_r31, u16 *, 0x1F8C) & 8) {
-                    M2C_FIELD(var_r31, s32 *, 0x1654) = 0;
-                    M2C_FIELD(var_r31, s32 *, 0x189C) = 0;
-                    M2C_FIELD(var_r31, s32 *, 0x1AE4) = 0;
-                    M2C_FIELD(var_r31, s32 *, 0x1D2C) = 0;
+        if ((fn_800A53DC(vol) != 0) && !(((VFiPFVolume *)vol)->flags & VF_VOL_MOUNTED)) {
+            VFiPFFILE_FinalizeAllFiles(vol);
+            VFiPFDIR_FinalizeAllDirs(vol);
+            if (fn_800A5788(vol, 1) == 0) {
+                if (((VFiPFVolume *)vol)->flags & VF_VOL_MOUNTED) {
+                    ((VFiPFVolume *)vol)->cache[0].flag = 0;
+                    ((VFiPFVolume *)vol)->cache[1].flag = 0;
+                    ((VFiPFVolume *)vol)->cache[2].flag = 0;
+                    ((VFiPFVolume *)vol)->cache[3].flag = 0;
                 }
-                M2C_FIELD(var_r31, u16 *, 0x1F8C) &= ~8;
+                ((VFiPFVolume *)vol)->flags &= ~VF_VOL_MOUNTED;
             }
-            fn_800A53E8(var_r31);
-            M2C_FIELD((u8 *)lbl_803D2140, s32 *, 0x34)--;
+            fn_800A53E8(vol);
+            VF_MOUNTED_VOLUMES--;
         }
-        if (fn_800A53C0(var_r31) != 0)
-            fn_800A53CC(var_r31);
-block_31:
-        var_r28 = 0;
+        if (fn_800A53C0(vol) != 0)
+            fn_800A53CC(vol);
+done:
+        error = 0;
     }
-    if (var_r28 != 0) {
-        fn_800B783C(var_r31 + 0x1F90);
-        M2C_FIELD((u8 *)lbl_803D2140, s32 *, 0x40) = var_r28;
-        M2C_FIELD(var_r31, s32 *, 0x1F80) = var_r28;
-        return var_r28;
+    if (error != 0) {
+        fn_800B783C(vol + 0x1F90);
+        VF_LAST_ERROR = error;
+        ((VFiPFVolume *)vol)->error = error;
+        return error;
     }
-    if (!(M2C_FIELD(var_r31, u16 *, 0x1F8C) & 8)) {
-        fn_800B783C(var_r31 + 0x1F90);
+    if (!(((VFiPFVolume *)vol)->flags & VF_VOL_MOUNTED)) {
+        fn_800B783C(vol + 0x1F90);
         return 0;
     }
-    if ((M2C_FIELD(var_r31, s32 *, 0x161C) != 0) || (M2C_FIELD(var_r31, s32 *, 0x1620) != 0)) {
-        var_r30 = 1;
-        M2C_FIELD((u8 *)lbl_803D2140, s32 *, 0x40) = 0x13;
-        M2C_FIELD(var_r31, s32 *, 0x1F80) = 0x13;
+    if ((((VFiPFVolume *)vol)->openFiles != 0) || (((VFiPFVolume *)vol)->openDirs != 0)) {
+        result = 1;
+        VF_LAST_ERROR = VF_ERR_IN_USE;
+        ((VFiPFVolume *)vol)->error = VF_ERR_IN_USE;
         if (!(arg1 & 1)) {
-            fn_800B783C(var_r31 + 0x1F90);
-            return 0x13;
+            fn_800B783C(vol + 0x1F90);
+            return VF_ERR_IN_USE;
         }
     }
-    temp_r3 = fn_800B5B94(var_r31, arg1);
-    if ((temp_r3 != 0) && (var_r30 == 0)) {
-        var_r30 = 1;
-        M2C_FIELD((u8 *)lbl_803D2140, s32 *, 0x40) = temp_r3;
-        M2C_FIELD(var_r31, s32 *, 0x1F80) = temp_r3;
+    unmount_result = fn_800B5B94(vol, arg1);
+    if ((unmount_result != 0) && (result == 0)) {
+        result = 1;
+        VF_LAST_ERROR = unmount_result;
+        ((VFiPFVolume *)vol)->error = unmount_result;
         if (!(arg1 & 1))
-            var_r30 = temp_r3;
+            result = unmount_result;
     }
-    fn_800B783C(var_r31 + 0x1F90);
-    return var_r30;
+    fn_800B783C(vol + 0x1F90);
+    return result;
 }
 
 extern "C" s32 fn_800A4BE8(s32, s32);
