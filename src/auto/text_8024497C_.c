@@ -171,6 +171,64 @@ extern void fn_802337A0(int, int, int, const char *, ...);
 extern char lbl_80342F98[];
 extern char lbl_8055BE28, lbl_8055BE2C, lbl_8055BE34, lbl_8055BE3C, lbl_8055BE44;
 extern float lbl_80563800, lbl_80563804, lbl_80563808, lbl_8056380C, lbl_80563810, lbl_80563814, lbl_80563818, lbl_8056381C, lbl_80563820, lbl_80563824;
+
+/* ---------------------------------------------------------------------
+ * The unlockable-list window.  fn_802449A0 opens it from the strings at
+ * lbl_80342E38: the layout "unlock.lyt", the font "uifnt.gtx" (handle at
+ * 0xB0) and the lock icon "chcklock.img" (handle at 0xB4), with the
+ * player's Game Reputation Rating (fn_80019888) in its header.
+ * fn_80244C58 scrolls the top row (0x1C) through the list and fn_80244D6C
+ * draws UNLOCK_ROWS of them: the unlockable's name on the left, a
+ * description under it, the rating it costs and the lock icon, which
+ * shows unlocked once the rating reaches the entry's requirement.
+ *
+ * A list entry is 0x14 bytes, fn_80019054 by index and fn_80019088 of
+ * them:
+ *   0x00 char *type;   "car" or "track"; anything else logs the error
+ *   0x04 char *name;   the object's own name, drawn as the row's label
+ *   0x08 int   rating; Game Reputation Rating needed to unlock it
+ *   0x0C u8    flag;   shows the icon unlocked whatever the rating is
+ *
+ * The window's fields are read through these offsets; the game's symbols
+ * cannot be named, so the accessors below are what the code uses.
+ * ------------------------------------------------------------------- */
+#define unl_screen_x(w)   (*(int *)((char *)(w) + 0x04)) /* window origin, screen pixels */
+#define unl_screen_y(w)   (*(int *)((char *)(w) + 0x08))
+#define unl_width(w)      (*(int *)((char *)(w) + 0x0C)) /* width of a row */
+#define unl_count(w)      (*(int *)((char *)(w) + 0x18)) /* entries in the list */
+#define unl_top(w)        (*(int *)((char *)(w) + 0x1C)) /* index of the top row */
+#define unl_font(w)       (*(int *)((char *)(w) + 0xB0)) /* "uifnt.gtx" */
+#define unl_icon_img(w)   (*(int *)((char *)(w) + 0xB4)) /* "chcklock.img" */
+
+/* The two entry types the window can describe, and what it says. */
+#define unl_type_car      lbl_8055BE28 /* "car" */
+#define unl_desc_car      lbl_8055BE2C /* "%s Car", with the car's display name */
+#define unl_type_track    lbl_8055BE34 /* "track" */
+#define unl_desc_track    lbl_8055BE3C /* "Track" */
+#define unl_fmt_rating    lbl_8055BE44 /* "%d Pts" */
+#define unl_err_type      lbl_80342F98 /* "Unknown unlockable type %s for %s" */
+
+/* Row layout in pixels.  The text sizes are divided by the font's own
+ * height (byte 4 of the font object) to get the drawer's scale. */
+#define UNLOCK_ROWS       3            /* rows drawn per frame */
+#define unl_row_step      lbl_80563824 /* 33.0 from one row to the next */
+#define unl_name_dy       lbl_80563810 /* 3.0: label above the row anchor */
+#define unl_desc_dy       lbl_80563814 /* 4.0: description below it */
+#define unl_icon_dy       lbl_80563818 /* 2.0: icon below it */
+#define unl_name_size     lbl_80563808 /* 22.0 tall label */
+#define unl_desc_size     lbl_8056380C /* 20.0 tall description and rating */
+#define unl_desc_div      lbl_80563804 /* 2.8: description at x + width/2.8 */
+#define unl_rating_inset  lbl_80563800 /* 15.0 left of the icon */
+#define unl_angle         lbl_8056381C /* 0.0: nothing is rotated */
+#define unl_unit          lbl_80563820 /* 1.0: the drawers' last transform */
+
+#define unl_name_color    0xffdfdf20   /* colour of the label */
+#define unl_color_auto    (-1)         /* the drawer's default colour */
+#define unl_style_row     9            /* text style of label and description */
+#define unl_style_rating  10           /* text style of the "%d Pts" */
+#define unl_icon_locked   2            /* "chcklock.img" frame: still locked */
+#define unl_icon_open     3            /* frame: unlocked */
+
 #pragma push
 #pragma use_lmw_stmw off
 #pragma processor 750
