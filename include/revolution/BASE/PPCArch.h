@@ -235,6 +235,11 @@ void PPCMthid4(u32 val);
 #define FPSCR_NI (1 << (31 - 29))
 // Floating-point rounding control
 #define FPSCR_RN (0b11 << (31 - 31))
+// Bits kept when masking FPSCR: exception summary and flags, result flags,
+// the exception enables, non-IEEE mode and rounding control.
+#define FPSCR_KEEP                                                             \
+    (FPSCR_FEX | FPSCR_VX | FPSCR_FR | FPSCR_FPRF | FPSCR_UNK20 | FPSCR_VE |   \
+     FPSCR_OE | FPSCR_UE | FPSCR_ZE | FPSCR_XE | FPSCR_NI | FPSCR_RN)
 
 /**
  * HID2
