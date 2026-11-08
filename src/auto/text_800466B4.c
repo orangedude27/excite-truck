@@ -632,103 +632,107 @@ s32 read_kpad_stick(s32 chan, void *arg1) {
 
 #pragma push
 #pragma fp_contract on
-s32 KPADRead(s32 arg0, KPADStatus *arg1, s32 arg2) {
-    extern f32 lbl_80558EB8;
-    extern f32 lbl_80560BE4;
-    extern u8 fn_80062458(void);
+// Read up to numSamples controller status samples for chan from the KPAD ring buffer,
+// replaying the new entries and repeating the last one to fill the requested count.
+s32 KPADRead(s32 chan, KPADStatus *pSamples, s32 numSamples) {
+    extern f32 lbl_80558EB8;                  /* kp_err_dist_max */
+    extern f32 lbl_80560BE4;                  /* 1.0f */
+    extern u8 fn_80062458(void);              /* WPADGetDpdSensitivity */
     extern void read_kpad_acc(void *, void *, s32, s32);
     extern void read_kpad_dpd(void *, void *, s32);
     extern void calc_acc_horizon(void *, void *, s32);
-    extern s32 fn_800609E0(s32);
-    register s32 var_r21;
-    register s32 var_r22=arg0;
-    register KPADReadPrivate *temp_r29=(KPADReadPrivate *)(lbl_8037C808+(arg0<<10));
-    register u8 *var_r28;
-    register u8 *var_r27;
-    register KPADReadStatus *var_r26=(KPADReadStatus *)arg1;
-    register s32 var_r25;
-    register s32 var_r24;
-    register u32 var_r23=arg2;
-    register s32 var_r31;
-    register KPADReadStatus *var_r30;
-    s32 normalized;
+    extern s32 fn_800609E0(s32);              /* WPADGetLatestIndexInBuf */
+    register s32 chanCopy=chan;
+    register KPADReadPrivate *kp=(KPADReadPrivate *)(lbl_8037C808+(chan<<10));
+    register u8 *coreStatus;
+    register u8 *fsStatus;
+    register KPADReadStatus *sampleBuf=(KPADReadStatus *)pSamples;
+    register s32 ringIndex;
+    register s32 available;
+    register u32 count=numSamples;
+    register s32 remaining;
+    register KPADReadStatus *out;
+    s32 latestIndex;
     u32 devType;
-    u8 *temp_r4;
-    f32 delta;
+    u8 *ringEntry;
+    f32 sensitivity;
 
-    delta=(f32)fn_80062458();
-    lbl_80558EB8=lbl_80560BE4+delta;
-    var_r30=var_r26+(var_r23-1);
+    sensitivity=(f32)fn_80062458();
+    lbl_80558EB8=lbl_80560BE4+sensitivity;
+    out=sampleBuf+(count-1);
 init_samples:
-    *(u32 *)&var_r30->status.dev_type=*(u32 *)&temp_r29->status.status.dev_type;
-    var_r30--;
-    if(var_r30>=var_r26) goto init_samples;
-    if (((s32 (*)(s32,void *))read_kpad_stick)(var_r22,temp_r29)!=0) return 0;
-    if(*(u32 *)&temp_r29->status.status.dev_type==0xFD) return 0;
-    if(temp_r29->active_chan>=0) normalized=fn_800609E0(temp_r29->active_chan);
-    else normalized=fn_800609E0(temp_r29->active_chan+4);
-    var_r25=temp_r29->last_index;
-    if(var_r25<0) { var_r25=normalized-1; if(var_r25<0) var_r25=0xB; }
-    var_r24=normalized-var_r25;
-    temp_r29->last_index=normalized;
-    if(var_r24==0) return 0;
-    if(var_r24<0) var_r24+=0xC;
-    if(var_r24<var_r23) var_r23=var_r24;
-    temp_r29->repeat_count=0;
-    devType=*(u32 *)&temp_r29->status.status.dev_type;
-    var_r30=var_r26+var_r23;
+    *(u32 *)&out->status.dev_type=*(u32 *)&kp->status.status.dev_type;
+    out--;
+    if(out>=sampleBuf) goto init_samples;
+    if (((s32 (*)(s32,void *))read_kpad_stick)(chanCopy,kp)!=0) return 0;
+    if(*(u32 *)&kp->status.status.dev_type==0xFD) return 0;  /* WPAD_DEV_NOT_FOUND */
+    if(kp->active_chan>=0) latestIndex=fn_800609E0(kp->active_chan);
+    else latestIndex=fn_800609E0(kp->active_chan+4);
+    ringIndex=kp->last_index;
+    if(ringIndex<0) { ringIndex=latestIndex-1; if(ringIndex<0) ringIndex=0xB; }
+    available=latestIndex-ringIndex;
+    kp->last_index=latestIndex;
+    if(available==0) return 0;
+    if(available<0) available+=0xC;
+    if(available<count) count=available;
+    kp->repeat_count=0;
+    devType=*(u32 *)&kp->status.status.dev_type;
+    out=sampleBuf+count;
     if(devType==0 || devType==0xFB || devType==0xFF || devType==0xFC) {
+        /* WPAD_DEV_CORE / WPAD_DEV_FUTURE / WPAD_DEV_UNKNOWN / WPAD_DEV_NOT_SUPPORTED */
         do {
-            var_r25++; if(var_r25==0xC) var_r25=0;
-            temp_r4=(u8 *)temp_r29+var_r25*0x2A; var_r28=temp_r4+0x118;
-            *((u8 *)temp_r29+0x85)=temp_r4[0x141];
-            read_kpad_acc(temp_r29,var_r28,0,var_r22); read_kpad_dpd(temp_r29,var_r28,0);
-            if(temp_r29->repeat_count>=(s32)(var_r24-var_r23)) {
-                var_r30--;
-                *var_r30=temp_r29->status;
+            ringIndex++; if(ringIndex==0xC) ringIndex=0;
+            ringEntry=(u8 *)kp+ringIndex*0x2A; coreStatus=ringEntry+0x118;
+            *((u8 *)kp+0x85)=ringEntry[0x141];
+            read_kpad_acc(kp,coreStatus,0,chanCopy); read_kpad_dpd(kp,coreStatus,0);
+            if(kp->repeat_count>=(s32)(available-count)) {
+                out--;
+                *out=kp->status;
             }
-        } while(++temp_r29->repeat_count<var_r24);
+        } while(++kp->repeat_count<available);
     } else if(devType==1) {
+        /* WPAD_DEV_FREESTYLE */
         do {
-            var_r25++; if(var_r25==0xC) var_r25=0;
-            temp_r4=(u8 *)temp_r29+var_r25*0x32; var_r27=temp_r4+0x118;
-            *((u8 *)temp_r29+0x85)=temp_r4[0x141];
-            read_kpad_acc(temp_r29,var_r27,1,var_r22); read_kpad_dpd(temp_r29,var_r27,1); clamp_stick_cross(temp_r29,var_r27);
-            if(temp_r29->repeat_count>=(s32)(var_r24-var_r23)) {
-                var_r30--;
-                *var_r30=temp_r29->status;
+            ringIndex++; if(ringIndex==0xC) ringIndex=0;
+            ringEntry=(u8 *)kp+ringIndex*0x32; fsStatus=ringEntry+0x118;
+            *((u8 *)kp+0x85)=ringEntry[0x141];
+            read_kpad_acc(kp,fsStatus,1,chanCopy); read_kpad_dpd(kp,fsStatus,1); clamp_stick_cross(kp,fsStatus);
+            if(kp->repeat_count>=(s32)(available-count)) {
+                out--;
+                *out=kp->status;
             }
-        } while(++temp_r29->repeat_count<var_r24);
+        } while(++kp->repeat_count<available);
     } else if(devType==2) {
+        /* WPAD_DEV_CLASSIC: sampleBuf is reused as the classic ring entry */
         do {
-            var_r25++; if(var_r25==0xC) var_r25=0;
-            temp_r4=(u8 *)temp_r29+var_r25*0x36; var_r26=(KPADReadStatus *)(temp_r4+0x118);
-            *((u8 *)temp_r29+0x85)=temp_r4[0x141];
-            read_kpad_acc(temp_r29,var_r26,2,var_r22); read_kpad_dpd(temp_r29,var_r26,2); clamp_stick_cross(temp_r29,var_r26);
-            if(temp_r29->repeat_count>=(s32)(var_r24-var_r23)) {
-                var_r30--;
-                *var_r30=temp_r29->status;
+            ringIndex++; if(ringIndex==0xC) ringIndex=0;
+            ringEntry=(u8 *)kp+ringIndex*0x36; sampleBuf=(KPADReadStatus *)(ringEntry+0x118);
+            *((u8 *)kp+0x85)=ringEntry[0x141];
+            read_kpad_acc(kp,sampleBuf,2,chanCopy); read_kpad_dpd(kp,sampleBuf,2); clamp_stick_cross(kp,sampleBuf);
+            if(kp->repeat_count>=(s32)(available-count)) {
+                out--;
+                *out=kp->status;
             }
-        } while(++temp_r29->repeat_count<var_r24);
+        } while(++kp->repeat_count<available);
     }
-    devType=*(u32 *)&temp_r29->status.status.dev_type;
-    if(devType==0 || devType==0xFB || devType==0xFC || devType==0xFF) calc_acc_horizon(temp_r29,var_r28,0);
-    else if(devType==1) calc_acc_horizon(temp_r29,var_r27,1);
-    else if(devType==2) calc_acc_horizon(temp_r29,var_r26,2);
-    var_r31=var_r23;
+    devType=*(u32 *)&kp->status.status.dev_type;
+    if(devType==0 || devType==0xFB || devType==0xFC || devType==0xFF) calc_acc_horizon(kp,coreStatus,0);
+    else if(devType==1) calc_acc_horizon(kp,fsStatus,1);
+    else if(devType==2) calc_acc_horizon(kp,sampleBuf,2);
+    remaining=count;
     do {
-        var_r30->status.hold=temp_r29->status.status.hold;
-        var_r30->status.trig=temp_r29->status.status.trig;
-        var_r30->status.release=temp_r29->status.status.release;
-        var_r30++;
-        if(*(u32 *)&temp_r29->status.status.dev_type==2) {
-            var_r30->status.ex_status.cl.hold=temp_r29->status.status.ex_status.cl.hold;
-            var_r30->status.ex_status.cl.trig=temp_r29->status.status.ex_status.cl.trig;
-            var_r30->status.ex_status.cl.release=temp_r29->status.status.ex_status.cl.release;
+        out->status.hold=kp->status.status.hold;
+        out->status.trig=kp->status.status.trig;
+        out->status.release=kp->status.status.release;
+        out++;
+        if(*(u32 *)&kp->status.status.dev_type==2) {
+            out->status.ex_status.cl.hold=kp->status.status.ex_status.cl.hold;
+            out->status.ex_status.cl.trig=kp->status.status.ex_status.cl.trig;
+            out->status.ex_status.cl.release=kp->status.status.ex_status.cl.release;
         }
-        var_r31--;
-    } while(var_r31!=0);
-    return var_r23;
+        remaining--;
+    } while(remaining!=0);
+    return count;
 }
 #pragma pop
 extern void fn_8005EB44(void);
