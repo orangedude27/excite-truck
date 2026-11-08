@@ -1,4 +1,11 @@
 extern char lbl_80499080[];
+typedef struct { int w[0x8A]; } Rec_80269BB0;
+extern void fn_8027445C(void *);
+extern void fn_80273BD0(void *);
+extern void fn_802704D4(int, void *);
+extern void fn_80274268(void *);
+extern void fn_802E30C8(const char *, ...);
+extern char lbl_803468F8[];
 typedef struct { float x, y, z; } V3_80267EF8;
 typedef struct { V3_80267EF8 r[4]; } M34_80267EF8;
 typedef struct { float m[9]; } R9_80267EF8;
@@ -1061,76 +1068,49 @@ static inline void fn_80268E94_multiply(float *out, const float *a, const float 
  out[8] = fn_80144514(b[2], a[6], b[5], a[7], b[8], a[8]);
  }
 }
+#pragma push
+#pragma processor 750
 void fn_80268E94(void *arg0, int arg1) {
- float v[3], rot[9]; float *matrix;
- float elapsed, weight, phase, mag, x,y,z, sn,cs,one;
- float tmp0,tmp1,tmp2,tmp3,tmp4,tmp5,tmp6,tmp7,tmp8;
- int mode, valid;
- if (fn_8026B0C0(arg1) || fn_801769F8()) return;
+ float *matrix; float v[3], rot[9];
+ float strength, elapsed, weight, phase, mag, x,y,z, sn,cs,one;
+ int valid, mode;
+ if (fn_8026B0C0(arg1) == 0 && fn_801769F8() == 0) {
  mode = *(int *)((char *)arg0+0x10); valid = 0;
  if ((mode >= 0 && mode < 10) || mode == 14) valid = 1;
- if (!valid) return;
+ if (valid) {
  elapsed = lbl_8055E3C8 - *(float *)((char *)arg0+0x158);
- if (elapsed >= lbl_80563C6C) return;
+ if (elapsed < lbl_80563C6C) {
  phase = (lbl_80563C6C - elapsed)/lbl_80563C6C;
  if (phase < lbl_80563C28) weight = lbl_80563C28;
  else if (phase > lbl_80563C2C) weight = lbl_80563C2C;
  else if (phase > lbl_80563C20) weight = phase*(lbl_80563C30*phase*phase) + lbl_80563C34*phase*phase;
  else weight = phase*(lbl_80563C30*phase*phase) - lbl_80563C34*phase*phase;
- weight *= *(float *)((char *)arg0+0x154);
- if (weight <= lbl_80563CA0) return;
+ strength = *(float *)((char *)arg0+0x154) * weight;
+ if (strength > lbl_80563CA0) {
  one = lbl_80563CA4;
  sn = sin(lbl_80563CA8 * (lbl_80563CAC * elapsed) * one);
- z = weight * (fn_80129DC4(0,lbl_80563CB0,lbl_80563CB4) + sn*lbl_80563CB8);
+ z = strength * (fn_80129DC4(0,lbl_80563CB0,lbl_80563CB4) + sn*lbl_80563CB8);
  sn = sin(lbl_80563C50 * (lbl_80563CAC * elapsed) * one);
- y = weight * (fn_80129DC4(0,lbl_80563CB0,lbl_80563CB4) + sn*lbl_80563CB8);
- sn = sin((lbl_80563CAC * elapsed) * one);
+ y = strength * (fn_80129DC4(0,lbl_80563CB0,lbl_80563CB4) + sn*lbl_80563CB8);
  v[1] = y; v[2] = z;
- v[0] = weight * (fn_80129DC4(0,lbl_80563CB0,lbl_80563CB4) + sn*lbl_80563CB8);
- mag = PSVECMag(v);
+ sn = sin((lbl_80563CAC * elapsed) * one);
+ v[0] = strength * (fn_80129DC4(0,lbl_80563CB0,lbl_80563CB4) + sn*lbl_80563CB8);
+ mag = PSVECMag(&v[0]);
  if (mag > lbl_80563C40) {
    float scale = lbl_80563C2C / mag;
    x=scale*v[0]; y=scale*v[1]; z=scale*v[2];
    sn=sin(mag); cs=cos(mag); one=lbl_80563C2C-cs;
-   rot[0]=cs+one*x*x; rot[1]=y*one*x+sn*z; rot[2]=z*one*x-sn*y;
-   rot[3]=y*one*x-sn*z; rot[4]=cs+one*y*y; rot[5]=z*one*y+sn*x;
-   rot[6]=z*one*x+sn*y; rot[7]=z*one*y-sn*x; rot[8]=cs+one*z*z;
+   rot[0]=cs+one*(x*x); rot[1]=y*(one*x)+sn*z; rot[2]=z*(one*x)-sn*y;
+   rot[3]=y*(one*x)-sn*z; rot[4]=cs+one*(y*y); rot[5]=z*(one*y)+sn*x;
+   rot[6]=z*(one*x)+sn*y; rot[7]=z*(one*y)-sn*x; rot[8]=cs+one*(z*z);
  } else {
    rot[0]=lbl_80563C2C; rot[1]=lbl_80563C20; rot[2]=lbl_80563C20;
    rot[3]=lbl_80563C20; rot[4]=lbl_80563C2C; rot[5]=lbl_80563C20;
    rot[6]=lbl_80563C20; rot[7]=lbl_80563C20; rot[8]=lbl_80563C2C;
  }
  matrix=(float *)((char *)arg0+0x58);
- if (matrix == matrix || matrix == rot) {
-  tmp0 = fn_80144514(rot[0], matrix[0], rot[3], matrix[1], rot[6], matrix[2]);
-  tmp3 = fn_80144514(rot[0], matrix[3], rot[3], matrix[4], rot[6], matrix[5]);
-  tmp6 = fn_80144514(rot[0], matrix[6], rot[3], matrix[7], rot[6], matrix[8]);
-  tmp1 = fn_80144514(rot[1], matrix[0], rot[4], matrix[1], rot[7], matrix[2]);
-  tmp4 = fn_80144514(rot[1], matrix[3], rot[4], matrix[4], rot[7], matrix[5]);
-  tmp7 = fn_80144514(rot[1], matrix[6], rot[4], matrix[7], rot[7], matrix[8]);
-  tmp2 = fn_80144514(rot[2], matrix[0], rot[5], matrix[1], rot[8], matrix[2]);
-  tmp5 = fn_80144514(rot[2], matrix[3], rot[5], matrix[4], rot[8], matrix[5]);
-  tmp8 = fn_80144514(rot[2], matrix[6], rot[5], matrix[7], rot[8], matrix[8]);
-  matrix[0] = tmp0;
-matrix[3] = tmp3;
-matrix[6] = tmp6;
-matrix[1] = tmp1;
-matrix[4] = tmp4;
-matrix[7] = tmp7;
-matrix[2] = tmp2;
-matrix[5] = tmp5;
-matrix[8] = tmp8;
- } else {
-  matrix[0] = fn_80144514(rot[0], matrix[0], rot[3], matrix[1], rot[6], matrix[2]);
-  matrix[3] = fn_80144514(rot[0], matrix[3], rot[3], matrix[4], rot[6], matrix[5]);
-  matrix[6] = fn_80144514(rot[0], matrix[6], rot[3], matrix[7], rot[6], matrix[8]);
-  matrix[1] = fn_80144514(rot[1], matrix[0], rot[4], matrix[1], rot[7], matrix[2]);
-  matrix[4] = fn_80144514(rot[1], matrix[3], rot[4], matrix[4], rot[7], matrix[5]);
-  matrix[7] = fn_80144514(rot[1], matrix[6], rot[4], matrix[7], rot[7], matrix[8]);
-  matrix[2] = fn_80144514(rot[2], matrix[0], rot[5], matrix[1], rot[8], matrix[2]);
-  matrix[5] = fn_80144514(rot[2], matrix[3], rot[5], matrix[4], rot[8], matrix[5]);
-  matrix[8] = fn_80144514(rot[2], matrix[6], rot[5], matrix[7], rot[8], matrix[8]);
- }
+ fn_80268E94_multiply(matrix, matrix, rot);
+ } } } }
 }
 #pragma pop
 
