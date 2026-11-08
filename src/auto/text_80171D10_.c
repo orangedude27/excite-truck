@@ -409,6 +409,15 @@ unsigned int strlen(const char *); /* extern */
         *d_++ = c_; \
         if ((signed char)c_ == 0) break; \
     } } while (0)
+extern void *fn_80131234(const char *);
+extern float fn_8001DAE8(void *);
+extern float fn_801B306C(void);
+extern int fn_80161C38(void);
+extern int fn_80179630(int);
+extern int fn_80179650(void);
+extern int fn_80009C84(void);
+extern void fn_801CB5DC(int, int, int);
+extern void fn_801CB648(int, int, float);
 #pragma scheduling invalid_target
 void fn_8017272C(void *arg0, int arg1, int arg2, int arg3, int arg4) {
 extern int lbl_8055A2A0;
