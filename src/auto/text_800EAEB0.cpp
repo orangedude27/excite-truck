@@ -138,7 +138,7 @@ class MmlParser {
 public:
     enum SeqArgType { ARG_BYTE = 0, ARG_WORD = 1, ARG_VLQ = 2, ARG_EXPR = 3, ARG_VAR = 4 };
     virtual void CommandProc(MmlSeqTrack *, u32, s32, s32) const;
-    virtual void NoteOnCommandProc(MmlSeqTrack *, int, int, s32, bool) const;
+    virtual void NoteOnCommandProc(MmlSeqTrack *, int, int, s32, u8) const;
     s32 ReadArg(const u8 **, SeqPlayer *, SeqTrack *, SeqArgType) const;
     int Parse(MmlSeqTrack *, bool) const;
 };
@@ -1263,6 +1263,172 @@ extern "C" void fn_800ED0EC(void* player, const void* arg1, const void* arg2) {
 extern "C" s32 fn_800ED0F4(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668_noarg();
     return arg0;
+}
+
+using namespace nw4hbm::snd::detail;
+int MmlParser::Parse(MmlSeqTrack *track, bool doNoteOn) const {
+    SeqPlayer *player;
+    u8 cmd;
+    bool enabled;
+    bool useArg;
+    SeqArgType argType;
+    s32 len;
+    s32 v;
+    s16 a;
+    s16 b;
+
+    if (track == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80323268, 0x31, (const char *)lbl_80323268 + 0x18);
+    }
+    player = track->player;
+    if (player == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80323268, 0x33, (const char *)lbl_80323268 + 0x40);
+    }
+    useArg = false;
+    enabled = true;
+    cmd = *track->cur++;
+    if (cmd == 0xa2) {
+        cmd = *track->cur++;
+        enabled = track->field_0xc0 != 0;
+    }
+    if (cmd == 0xa0) {
+        argType = ARG_EXPR;
+        useArg = true;
+        cmd = *track->cur++;
+    }
+    if (cmd == 0xa1) {
+        argType = ARG_VAR;
+        useArg = true;
+        cmd = *track->cur++;
+    }
+    if (!(cmd & 0x80)) {
+        u8 vel = *track->cur++;
+        s32 key;
+        len = ReadArg(&track->cur, player, (SeqTrack *)track, useArg ? argType : ARG_VLQ);
+        key = cmd + track->transpose;
+        if (!enabled) {
+            return 0;
+        }
+        key = key > 127 ? 127 : (key < 0 ? 0 : key);
+        if (track->field_0x5c == 0 && doNoteOn) {
+            NoteOnCommandProc(track, key, vel, len > 0 ? len : -1, track->field_0xc2);
+        }
+        if (track->field_0xc1 != 0) {
+            track->field_0x58 = len;
+            if (len == 0) {
+                track->field_0x5e = 1;
+            }
+        }
+        return 0;
+    }
+    a = 0;
+    b = 0;
+    switch (cmd & 0xf0) {
+    case 0x80:
+        switch (cmd) {
+        case 0x80:
+            v = ReadArg(&track->cur, player, (SeqTrack *)track, useArg ? argType : ARG_VLQ);
+            if (enabled) {
+                track->field_0x58 = v;
+            }
+            break;
+        case 0x81:
+            v = ReadArg(&track->cur, player, (SeqTrack *)track, useArg ? argType : ARG_VLQ);
+            if (enabled) {
+                CommandProc(track, cmd, v, 0);
+            }
+            break;
+        case 0x88: {
+            u32 b0 = *track->cur++;
+            u32 b1 = *track->cur++;
+            u32 b2 = *track->cur++;
+            u32 b3 = *track->cur++;
+            if (enabled) {
+                CommandProc(track, cmd, b0, (((b1 << 8) | b2) << 8) | b3);
+            }
+            break;
+        }
+        case 0x89: {
+            u32 b0 = *track->cur++;
+            u32 b1 = *track->cur++;
+            u32 b2 = *track->cur++;
+            if (enabled) {
+                CommandProc(track, cmd, (((b0 << 8) | b1) << 8) | b2, 0);
+            }
+            break;
+        }
+        case 0x8a: {
+            u32 b0 = *track->cur++;
+            u32 b1 = *track->cur++;
+            u32 b2 = *track->cur++;
+            if (enabled) {
+                CommandProc(track, cmd, (((b0 << 8) | b1) << 8) | b2, 0);
+            }
+            break;
+        }
+        }
+        return 0;
+    case 0xc0:
+    case 0xd0:
+        v = ReadArg(&track->cur, player, (SeqTrack *)track, useArg ? argType : ARG_BYTE);
+        if (enabled) {
+            s32 w;
+            if (cmd >= 0xc5) {
+                w = (u8)v;
+            } else if (cmd >= 0xc3) {
+                w = (s8)(u8)v;
+            } else {
+                w = (u8)v;
+            }
+            CommandProc(track, cmd, w, 0);
+        }
+        return 0;
+    case 0x90:
+    case 0xb0:
+        if (enabled) {
+            CommandProc(track, cmd, 0, 0);
+        }
+        return 0;
+    case 0xe0:
+        a = (s16)ReadArg(&track->cur, player, (SeqTrack *)track, useArg ? argType : ARG_WORD);
+        if (enabled) {
+            CommandProc(track, cmd, a, 0);
+        }
+        return 0;
+    case 0xf0:
+        switch (cmd) {
+        case 0xfe:
+            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80323268, 0x105, (const char *)lbl_80323268 + 0x6c);
+            return 0;
+        case 0xff:
+            return 1;
+        case 0xf0: {
+            u8 sub = *track->cur++;
+            switch (sub & 0xf0) {
+            case 0xe0:
+                a = (s16)ReadArg(&track->cur, player, (SeqTrack *)track, useArg ? argType : ARG_WORD);
+                if (enabled) {
+                    CommandProc(track, (cmd << 8) + sub, a, 0);
+                }
+                break;
+            case 0x80:
+            case 0x90:
+                a = *track->cur++;
+                b = (s16)ReadArg(&track->cur, player, (SeqTrack *)track, useArg ? argType : ARG_WORD);
+                if (enabled) {
+                    CommandProc(track, (cmd << 8) + sub, a, b);
+                }
+                break;
+            }
+        }
+        default:
+            if (enabled) {
+                CommandProc(track, cmd, a, b);
+            }
+            return 0;
+        }
+    }
+    return 0;
 }
 
 #pragma push
