@@ -110,8 +110,8 @@ void fn_8004DDFC(void) {
     unsigned char *base;
     unsigned char *mem;
     unsigned char *partition;
-    register unsigned int *entry;
-    register unsigned int *selected;
+    unsigned int *selected;
+    unsigned int *entry;
     struct local_state {
         unsigned char b0;
         unsigned char b1;
@@ -124,15 +124,14 @@ void fn_8004DDFC(void) {
     unsigned int i;
     unsigned long long title;
     int result;
-
+    state.count = 1;
+    state.fd = -1;
     state.b0 = lbl_80560C70;
     state.b1 = lbl_80560C71;
     state.b2 = lbl_80560C72;
     state.b3 = lbl_80560C73;
     base = lbl_8037D900 + 0x10000;
     mem = lbl_8037D900;
-    state.fd = -1;
-    state.count = 1;
     lbl_8055DA2C = 0;
     ((int (*)(void *, int, int, int, int, int, int, void *))fn_8003AC24)((void *)fn_8004DDF4, state.b2, state.b1, state.b0, 0, -1, 1, mem);
     if (lbl_8055DA2C != 0) {
@@ -143,7 +142,6 @@ void fn_8004DDFC(void) {
             __OSLaunchMenu();
         }
     }
-
     entry = (unsigned int *)(base - 0x4300);
     lbl_8055DA40 = (unsigned int *)entry;
     lbl_8055DA2C = 0;
@@ -156,7 +154,6 @@ void fn_8004DDFC(void) {
             __OSLaunchMenu();
         }
     }
-
     entry = (unsigned int *)(base - 0x42E0);
     lbl_8055DA3C = (unsigned int *)entry;
     lbl_8055DA2C = 0;
@@ -169,7 +166,6 @@ void fn_8004DDFC(void) {
             __OSLaunchMenu();
         }
     }
-
     selected = 0;
     entry = (unsigned int *)lbl_8055DA3C;
     lbl_8055DA38 = 0;
@@ -192,7 +188,6 @@ void fn_8004DDFC(void) {
             __OSLaunchMenu();
         }
     }
-
     lbl_8055DA2C = 0;
     fn_8003AC24((void *)fn_8004DDF4);
     if (lbl_8055DA2C != 0) {
@@ -203,7 +198,6 @@ void fn_8004DDFC(void) {
             __OSLaunchMenu();
         }
     }
-
     partition = base - 0x42C0;
     lbl_8055DA34 = partition;
     error = 0;
@@ -216,7 +210,6 @@ void fn_8004DDFC(void) {
         OSReport(lbl_803049C0, error);
         __OSLaunchMenu();
     }
-
     result = ((int (*)(int *, unsigned long long, void *, unsigned int *))_ES_GetTicketViews)(&state.fd, title, 0, &state.count);
     if (state.count == 1 && result != 0) {
         OSReport(lbl_803049C0, result);
@@ -234,7 +227,6 @@ void fn_8004DDFC(void) {
     }
     if (state.fd >= 0 && IOS_Close() == 0)
         state.fd = -1;
-
     DVDLowInit();
     lbl_8055DA2C = 0;
     fn_8003A834(base + 0x740, (void *)fn_8004DDF4);
@@ -246,7 +238,6 @@ void fn_8004DDFC(void) {
             __OSLaunchMenu();
         }
     }
-
     entry = (unsigned int *)(base - 0x4300);
     lbl_8055DA40 = (unsigned int *)entry;
     lbl_8055DA2C = 0;
@@ -259,7 +250,6 @@ void fn_8004DDFC(void) {
             __OSLaunchMenu();
         }
     }
-
     entry = (unsigned int *)(base - 0x42E0);
     lbl_8055DA3C = (unsigned int *)entry;
     lbl_8055DA2C = 0;
@@ -272,7 +262,6 @@ void fn_8004DDFC(void) {
             __OSLaunchMenu();
         }
     }
-
     selected = 0;
     entry = (unsigned int *)lbl_8055DA3C;
     lbl_8055DA38 = 0;
@@ -348,6 +337,48 @@ void __OSLaunchMenu(void) {
         ((int *)&state.fd, title, titlePtr);
     if (result != 0)
         return;
+}
+
+typedef struct BootCmdBlock { u8 pad[0x30]; } BootCmdBlock;
+extern s32 DVDGetCommandBlockStatus(BootCmdBlock *);
+extern int DVDReadAbsAsyncPrio(BootCmdBlock *, void *, s32, s32, s32, s32);
+extern void DVDInit(void);
+extern void ICInvalidateRange(void *, u32);
+extern void *OSAllocFromMEM1ArenaLo(u32, u32);
+extern int OSDisableInterrupts(void);
+extern int OSEnableInterrupts(void);
+extern void OSSetArenaLo(void *);
+extern void __OSMaskInterrupts(u32);
+extern void __OSUnmaskInterrupts(u32);
+extern void fn_800393C4(s32);
+extern void fn_800393D4(void);
+extern void fn_80039A5C(void *);
+extern int strncmp(const char *, const char *, unsigned int);
+extern s32 lbl_8055DA28;
+extern s32 __DVDLayoutFormat;
+extern char lbl_803049E4[];
+
+static inline void BootReadAbs(void *buf, s32 len, s32 off) {
+    BootCmdBlock cb;
+    DVDReadAbsAsyncPrio(&cb, buf, len, off, 0, 0);
+    while (DVDGetCommandBlockStatus(&cb) != 0) {
+        if (DVDGetCommandBlockStatus(&cb) > 2 || DVDGetCommandBlockStatus(&cb) < 0) {
+            __OSLaunchMenu();
+        }
+    }
+}
+
+static inline s32 BootGetPartOffset(void) {
+    if (lbl_8055DA28 == 0) {
+        if (*(s32 *)0x800030F4 != 0) {
+            u8 *buf = OSAllocFromMEM1ArenaLo(0x40, 0x20);
+            BootReadAbs(buf, 0x40, *(s32 *)0x800030F4 >> 2);
+            lbl_8055DA28 = (*(s32 *)0x800030F4 + *(s32 *)(buf + 0x38)) >> 2;
+        } else {
+            lbl_8055DA28 = 0x910;
+        }
+    }
+    return lbl_8055DA28;
 }
 
 extern int IOS_Open(const char *, int);
