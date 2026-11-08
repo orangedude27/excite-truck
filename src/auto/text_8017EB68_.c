@@ -231,6 +231,11 @@ struct DriverInterface {
 /* The object is handled as a void * here; cast it to name its fields. */
 #define DRIVER(p) ((struct DriverInterface *)(p))
 
+/* The float at 0x30C on its own.  Reaching it as a member (rather than as an
+ * array element of the whole object) is what lets the compiler reuse the
+ * address the slot loops leave in a register. */
+struct DriverInterface30C { u8 pad[0x30c]; f32 field; };
+
 /* The float literals this unit keeps in .sdata2. */
 #define F_ZERO lbl_80561C4C  /* 0.0f */
 #define F_ONE lbl_80561C48   /* 1.0f */
