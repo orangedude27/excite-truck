@@ -14,18 +14,33 @@
 #define SC_SMALLARRAY_MAX 0xFF
 #define SC_BIGARRAY_MAX 0xFFFF
 
+// Steps of the asynchronous SYSCONF write started by SCFlushAsync(). Each step
+// names the NAND operation that is in flight; MyNandCallback() handles the
+// result of that operation and queues the next one.
 typedef enum {
-    NAND_CB_STATE_0,
-    NAND_CB_STATE_1,
-    NAND_CB_STATE_2,
-    NAND_CB_STATE_3,
-    NAND_CB_STATE_4,
-    NAND_CB_STATE_5,
-    NAND_CB_STATE_6,
-    NAND_CB_STATE_7,
-    NAND_CB_STATE_8,
-    NAND_CB_STATE_9
-} NandCallbackState;
+    SC_FLUSH_STATE_FILE_TYPE,   // NANDPrivateGetTypeAsync() on SYSCONF
+    SC_FLUSH_STATE_FILE_STATUS, // NANDPrivateGetStatusAsync() on SYSCONF
+    SC_FLUSH_STATE_DELETE_FILE, // NANDPrivateDeleteAsync()
+    SC_FLUSH_STATE_DIR_TYPE,    // NANDPrivateGetTypeAsync() on the config dir
+    SC_FLUSH_STATE_CREATE_DIR,  // NANDPrivateCreateDirAsync()
+    SC_FLUSH_STATE_CREATE_FILE, // NANDPrivateCreateAsync()
+    SC_FLUSH_STATE_OPEN_FILE,   // NANDPrivateOpenAsync()
+    SC_FLUSH_STATE_WRITE_FILE,  // NANDWriteAsync()
+    SC_FLUSH_STATE_CLOSE_FILE,  // NANDCloseAsync()
+    SC_FLUSH_STATE_CLOSED,      // NANDCloseAsync() after an error
+
+    // old placeholder names, kept while the users get renamed
+    NAND_CB_STATE_0 = SC_FLUSH_STATE_FILE_TYPE,
+    NAND_CB_STATE_1 = SC_FLUSH_STATE_FILE_STATUS,
+    NAND_CB_STATE_2 = SC_FLUSH_STATE_DELETE_FILE,
+    NAND_CB_STATE_3 = SC_FLUSH_STATE_DIR_TYPE,
+    NAND_CB_STATE_4 = SC_FLUSH_STATE_CREATE_DIR,
+    NAND_CB_STATE_5 = SC_FLUSH_STATE_CREATE_FILE,
+    NAND_CB_STATE_6 = SC_FLUSH_STATE_OPEN_FILE,
+    NAND_CB_STATE_7 = SC_FLUSH_STATE_WRITE_FILE,
+    NAND_CB_STATE_8 = SC_FLUSH_STATE_CLOSE_FILE,
+    NAND_CB_STATE_9 = SC_FLUSH_STATE_CLOSED
+} SCFlushState;
 
 typedef enum {
     SC_CONF_FILE_SYSTEM,  // SYSCONF
