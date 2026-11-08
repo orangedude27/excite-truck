@@ -157,30 +157,30 @@ void *fn_8020DE74(void *arg0) {
             }
         }
     }
-    child = obj->child28;
+    child = obj->waterBounce;
     if (child != 0) *(void **)((u8 *)child + 0x10) = group;
-    child = obj->child30;
+    child = obj->airtime;
     if (child != 0) *(void **)((u8 *)child + 0x10) = group;
 
-    if (is_race != 0) obj->child1c = fn_802077A4(labels + 0x4c, 5, left, right);
-    else obj->child1c = 0;
-    obj->child20 = fn_802077A4(labels + 0x5c, 5, left, right);
-    obj->child34 = fn_802077A4(labels + 0x68, 5, left, right);
+    if (is_race != 0) obj->carGnd1 = fn_802077A4(labels + 0x4c, 5, left, right);
+    else obj->carGnd1 = 0;
+    obj->badland = fn_802077A4(labels + 0x5c, 5, left, right);
+    obj->waterDrive = fn_802077A4(labels + 0x68, 5, left, right);
     if (is_race != 0) {
-        obj->child38 = fn_802077A4(labels + 0x78, 5, left, right);
-        obj->child3c = fn_802077A4(labels + 0x88, 5, left, right);
+        obj->waterIn = fn_802077A4(labels + 0x78, 5, left, right);
+        obj->waterOut = fn_802077A4(labels + 0x88, 5, left, right);
     } else {
-        obj->child38 = 0;
-        obj->child3c = 0;
+        obj->waterIn = 0;
+        obj->waterOut = 0;
     }
-    child = obj->child34;
+    child = obj->waterDrive;
     if (child != 0) *(void **)((u8 *)child + 0x10) = group;
-    child = obj->child38;
+    child = obj->waterIn;
     if (child != 0) *(void **)((u8 *)child + 0x10) = group;
-    child = obj->child3c;
+    child = obj->waterOut;
     if (child != 0) *(void **)((u8 *)child + 0x10) = group;
     child = fn_802077A4(labels + 0x98, 5, left, right);
-    obj->child40 = child;
+    obj->dirtSkid = child;
     if (child != 0) *(void **)((u8 *)child + 0x10) = group;
 
     if (is_race != 0) {
