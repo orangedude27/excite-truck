@@ -21,6 +21,7 @@ extern void fn_801933FC(void *, void *);
 
       extern void fn_80194FD0();
 typedef struct { int a; float b; int c; } Samp80194FD0;
+extern void fn_80135B9C(void *, void *, void *, void *, void *, float);
 #define F80194FD0(p, o) (*(float *)((unsigned char *)(p) + (o)))
 #define P80194FD0(p, o) (*(void **)((unsigned char *)(p) + (o)))
 #pragma cplusplus on
