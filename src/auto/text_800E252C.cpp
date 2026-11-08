@@ -333,6 +333,18 @@ static inline float UpdRamp(float start, float end, int total, int elapsed) {
     }
     return r;
 }
+struct UpdRampFields { float start; float end; int total; int elapsed; };
+static inline float UpdRamp(UpdRampFields *s) {
+    int total = s->total;
+    int elapsed = s->elapsed;
+    float r;
+    if (elapsed >= total) {
+        r = s->end;
+    } else {
+        r = s->start + (float)elapsed * (s->end - s->start) / (float)total;
+    }
+    return r;
+}
 #pragma always_inline reset
 #define UF(T, off) (*(T *)((char *)self + (off)))
 extern "C" void *__dt__Q46nw4hbm2ut6detail12LinkListImplFv(void *, unsigned int);
@@ -3337,6 +3349,103 @@ extern "C" int fn_800E90AC(void *arg0) {
     return *(unsigned char *)((char *)arg0 + 0x67) != 0;
 }
 
+#pragma dont_inline off
+extern "C" void Update__Q46nw4hbm3snd6detail10BasicSoundFv(void *self) {
+    UpdSelfVt *sv = (UpdSelfVt *)self;
+    UpdPlayerVt *p = sv->s5C();
+    int f30flag;
+    float sends[4];
+    float f31, f30, f28, f27, f26, f25, f24, f29;
+    int voice, i, valid;
+    float *aux;
+    if (UF(unsigned char, 0x66) != 0 && p->p18() != 0) {
+        int c = UF(int, 0x6C);
+        if (c == 0) {
+            sv->s18(0);
+            return;
+        }
+        UF(int, 0x6C) = c - 1;
+    }
+    f30flag = 0;
+    if (UF(unsigned char, 0x65) == 0) {
+        if (UF(unsigned char, 0x64) == 0) return;
+        f30flag = 1;
+    }
+    if (p->p20() != 0) {
+        unsigned int c = UF(unsigned int, 0x70);
+        if (c < 0xFFFFFFFF) UF(unsigned int, 0x70) = c + 1;
+    }
+    if (p->p18() == 0) {
+        sv->s28();
+        return;
+    }
+    if (p->p24() != 0) return;
+    if (UF(unsigned char, 0x68) != 0) {
+        int c = UF(int, 0x60);
+        if (c < UF(int, 0x5C)) UF(int, 0x60) = c + 1;
+    } else {
+        int c = UF(int, 0x50);
+        if (c < UF(int, 0x4C)) UF(int, 0x50) = c + 1;
+        c = UF(int, 0x88);
+        if (c < UF(int, 0x84)) UF(int, 0x88) = c + 1;
+    }
+    if (UF(UpdCbA *, 0x1C) != 0) UF(UpdCbA *, 0x1C)->a08(UF(int, 0x24), self);
+    if (UF(UpdCbB *, 0x18) != 0) UF(UpdCbB *, 0x18)->b08((char *)self + 0x28, UF(int, 0x78), self, UF(int, 0x24), -1);
+    f31 = lbl_80560FB4 * UF(float, 0x8C) * *(float *)(UF(char *, 0x10) + 0x28);
+    if (UF(char *, 0x14) != 0) f31 *= *(float *)(UF(char *, 0x14) + 0x10);
+    f31 *= UpdRamp(UF(float, 0x7C), UF(float, 0x80), UF(int, 0x84), UF(int, 0x88));
+    f31 *= UpdRamp(UF(float, 0x44), UF(float, 0x48), UF(int, 0x4C), UF(int, 0x50));
+    f31 *= UpdRamp(UF(float, 0x54), UF(float, 0x58), UF(int, 0x5C), UF(int, 0x60));
+    f31 *= UF(float, 0x28);
+    f28 = lbl_80560FB0;
+    voice = 1;
+    f27 = f28;
+    f30 = lbl_80560FB4 * *(float *)(UF(char *, 0x10) + 0x34) * UF(float, 0xA4);
+    f28 = f28 + UF(float, 0x90);
+    f26 = f27;
+    f25 = f26;
+    f24 = lbl_80560FB4;
+    f26 = f26 + UF(float, 0x30);
+    f27 = f27 + UF(float, 0x94);
+    f25 = f25 + UF(float, 0x34);
+    f24 = f24 * UF(float, 0x98);
+    if (fn_800F87F0() != 0) voice = fn_800F87E8(UF(void *, 0x10));
+    if (UF(unsigned char, 0x9C) != 0) voice = UF(int, 0xA0);
+    f29 = lbl_80560FB4;
+    aux = (float *)((char *)self + 0xA8);
+    for (i = 0; i < 4; i++) {
+        sends[i] = f29;
+        sends[i] *= GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_800F87F8(UF(void *, 0x10), i);
+        valid = 0;
+        if (i >= 0 && i < 4) valid = 1;
+        if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x377, lbl_803227A4, i, 0, 4);
+        sends[i] *= aux[i];
+    }
+    p->p28(f31);
+    p->p30(f28);
+    p->p34(f27);
+    p->p38(f26);
+    p->p3C(f25);
+    p->p2C(f24);
+    p->p60(voice);
+    p->p64(f30);
+    for (i = 0; i < 4; i++) p->p70(i, sends[i]);
+    if (UF(unsigned char, 0x69) != 0 && UF(int, 0x50) >= UF(int, 0x4C)) {
+        UF(unsigned char, 0x69) = 0;
+        sv->s28();
+        return;
+    }
+    if (UF(unsigned char, 0x68) != 0 && UF(int, 0x60) >= UF(int, 0x5C)) {
+        unsigned char t = UF(unsigned char, 0x67);
+        UF(unsigned char, 0x68) = 0;
+        if (t != 0) p->p14(t != 0);
+    }
+    if (f30flag != 0 && p->p0C() != 0) {
+        UF(unsigned char, 0x65) = 1;
+        UF(unsigned char, 0x64) = 0;
+    }
+}
+#pragma dont_inline on
 extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(void *this_, int priority) {
     int valid = 0;
     if (priority >= 0) {
