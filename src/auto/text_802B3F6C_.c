@@ -10,6 +10,7 @@ extern int fn_802B40B0(int, int);
 extern unsigned short lbl_8055F9CC;
 extern int fn_802B3FC4(void *);
 extern int lbl_8055CE00;
+__declspec(section ".sdata") extern int lbl_8055CE00;
 extern int lbl_804BE248[128];
 extern char lbl_8034A408[];
 extern void *fn_80131810(void *);
@@ -137,6 +138,150 @@ int fn_802B40B0(int arg0, int arg1) {
         }
     }
     return 0;
+}
+
+void fn_802B40F8(void) {
+    void *obj;
+    void *list;
+    int *grid;
+    void *sub;
+    int n, i, k, a, b, q;
+    float f29, f30, f31, f28;
+    int *blk;
+    int *arr2;
+    int sz;
+    void *m;
+    char *rec;
+    int tries, hit;
+
+    obj = fn_80131810(lbl_8034A408 + 0x4C);
+    list = (void *)VT(obj, 2)(obj, lbl_8034A408 + 0x58);
+    if (list != NULL) {
+        n = VT(list, 7)(list, lbl_8034A408 + 0x68);
+        grid = (int *)fn_801284F8(0x10, lbl_8034A408 + 0x78);
+        if (grid != NULL) {
+            void *p = fn_8012850C(n * 4, lbl_8055CE08);
+            grid[0] = (int)p;
+            grid[2] = n;
+            grid[1] = 0;
+            grid[3] = (int)p;
+        }
+        GRID = grid;
+        f29 = lbl_80564C30;
+        sub = fn_802B4014(list);
+        f30 = lbl_80564C40;
+        f31 = lbl_80564C44;
+        f28 = lbl_80564C48;
+        for (i = 0; i < GRID[2]; i++) {
+            blk = (int *)fn_801284F8(0x10, lbl_8034A408 + 0x88);
+            if (blk != NULL) {
+                int w, h, cnt;
+                w = VT(sub, 7)(sub, lbl_8034A408 + 0x98);
+                h = VT(sub, 7)(sub, lbl_8034A408 + 0xA4);
+                cnt = fn_80129D90(0, (w * 2 - w) / 10, (h * 2 - h) / 10 + 1);
+                fn_8012850C(cnt * 0x24 + 0x10, lbl_8055CE08);
+                blk[0] = (int)fn_8002F37C(fn_802B4BD8, 0, 0x24, cnt);
+                blk[2] = cnt;
+                blk[1] = 0;
+                blk[3] = blk[0];
+                for (k = 0; k < cnt; k++) {
+                    rec = (char *)blk[0] + blk[1] * 0x24;
+                    blk[1]++;
+                    tries = 0;
+                    do {
+                        int j;
+                        *(float *)rec = fn_80129DC4(0, f31, f29);
+                        *(float *)(rec + 4) = fn_80129DC4(0, f31, f29);
+                        hit = 0;
+                        for (j = 0; !hit && j < blk[1] - 1; j++) {
+                            float dx = *(float *)((char *)blk[0] + j * 0x24) - *(float *)rec;
+                            float dy = *(float *)((char *)blk[0] + j * 0x24 + 4) - *(float *)(rec + 4);
+                            hit = dx * dx + dy * dy > f28;
+                        }
+                    } while (hit && tries++ < 500);
+                    *(short *)(rec + 8) = ((short (*)(void))fn_802B4004)();
+                    memset(rec + 0xC, 0, 0x18);
+                }
+                {
+                    float f4 = f29 * f30;
+                    for (k = 0; k < blk[1]; k++) {
+                        unsigned short sel[4];
+                        unsigned short code = 0;
+                        float u, v, ax, ay;
+                        char *t = (char *)blk[0] + k * 0x24;
+                        float *mx = (float *)lbl_802FAAD0 + 8;
+                        unsigned short s;
+                        ax = *(float *)t - f4;
+                        ay = *(float *)(t + 4) - f4;
+                        if (ax + ay > f31) code |= 1;
+                        if (-ax + ay > f31) code |= 2;
+                        sel[0] = lbl_80564C38;
+                        sel[1] = lbl_80564C3A;
+                        sel[2] = lbl_80564C3C;
+                        sel[3] = lbl_80564C3E;
+                        s = sel[code];
+                        *(unsigned short *)(t + 0xA) = s;
+                        u = (*(float *)t - f4) / f29;
+                        v = (*(float *)(t + 4) - f4) / f29;
+                        *(float *)t = mx[s * 2] * u + mx[s * 2 + 1] * v;
+                        *(float *)(t + 4) = mx[((s + 1) & 3) * 2] * u + mx[((s + 1) & 3) * 2 + 1] * v;
+                    }
+                }
+            }
+            ((int *)GRID[0])[GRID[1]++] = (int)blk;
+        }
+        arr2 = (int *)fn_801284F8(0x2004, lbl_8034A408 + 0xB0);
+        if (arr2 != NULL) {
+            void *g = GRID;
+            for (a = 0; a < 0x20; a++) {
+                for (b = 0; b < 0x20; b++) {
+                    int *e = (int *)((char *)arr2 + ((a * 8) & 0xF8) + ((b << 8) & 0x1F00));
+                    e[0] = fn_802B475C(g);
+                    e[1] = 0;
+                }
+            }
+            *((char *)arr2 + 0x2000) = 0;
+        }
+        lbl_804BE248[1] = (int)arr2;
+        k = 0;
+        while ((m = (void *)VT(list, 24)(list, (void *)k)) != NULL) {
+            if (fn_802B3FC4(m) != 0) {
+                sz = VT(m, 7)(m, &lbl_8055CE00);
+                if (sz >= 0 && (unsigned)sz < 0x80 && sz != 1) {
+                    int *t = (int *)fn_801284F8(0x2004, lbl_8034A408 + 0xBC);
+                    if (t != NULL) {
+                        int base = lbl_804BE248[sz / 2];
+                        short x, y;
+                        memset(t, 0, 0x2000);
+                        for (x = 0; x < 0x20; x += sz) {
+                            for (y = 0; y < 0x20; y += sz) {
+                                int sp20[4];
+                                int *sp30[4];
+                                void *res;
+                                for (q = 0; q < 4; q++) {
+                                    int *c = (int *)fn_802B4BC0(base,
+                                        x + sz * ((int *)lbl_802FAAD0)[q] / 2,
+                                        y + sz * ((int *)lbl_802FAAD0)[q + 4] / 2);
+                                    sp20[q] = c[0];
+                                    sp30[q] = c + 1;
+                                }
+                                res = fn_801284F8(0x10, lbl_8034A408 + 0xC8);
+                                if (res != NULL)
+                                    res = fn_802B47A0(res, sp20, m, sz, sp30);
+                                *(int *)fn_802B4BC0((int)t, x, y) = (int)res;
+                                ((int *)fn_802B4BC0((int)t, x, y))[1] = 0;
+                            }
+                        }
+                        *((char *)t + 0x2000) = 1;
+                    }
+                    lbl_804BE248[sz] = (int)t;
+                }
+            }
+            k++;
+        }
+    }
+    fn_80131818(obj);
+    lbl_8055F9C8 = (void *)-1;
 }
 
 int fn_80129D90(int, int, int);
