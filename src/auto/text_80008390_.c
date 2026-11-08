@@ -432,6 +432,7 @@ s32 fn_80008DBC(s32 arg0) {
     }
 }
 
+#pragma dont_inline on
 s32 fn_80008F68(s32 arg0) {
     switch (arg0) {
     case 0x15:
@@ -444,6 +445,7 @@ s32 fn_80008F68(s32 arg0) {
         return 0;
     }
 }
+#pragma dont_inline reset
 
 void fn_80009534(void) {
     char sp8[8];
