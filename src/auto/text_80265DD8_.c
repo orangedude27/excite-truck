@@ -99,7 +99,7 @@ struct VObj_80266388;
 typedef struct VTab_80266388 {
     void *pad[6];
     void *(*m18)(struct VObj_80266388 *);
-    void *pad2[5];
+    void *pad2[1];
     void *(*m20)(struct VObj_80266388 *);
 } VTab_80266388;
 typedef struct VObj_80266388 { VTab_80266388 *vt; } VObj_80266388;
