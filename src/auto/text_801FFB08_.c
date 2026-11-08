@@ -30,6 +30,7 @@ extern void fn_801C1CBC();
 extern char lbl_802F9C60[], lbl_802F9CC0[];
 extern int fn_802E317C(const char *, ...);
 extern double fn_8002EFB0(float, float);
+extern char lbl_802F9BC0[], lbl_802F9C20[];
 static inline void xformv(float *v, float *m, float *out) {
     if (out == v) {
         float x = v[0], y = v[1], z = v[2];
@@ -59,6 +60,101 @@ void fn_801FFB6C(void) {
 
 void fn_801FFB70(void) {
 
+}
+
+void *fn_801FFB74(int arg0, int arg1, int arg2) {
+    float *o;
+    float *sp8;
+    int spC;
+    float out[0x80];
+    float vE[3], vD[3], vA[3], vB[3], vC[3], vF[3], vG[3], vH[3];
+    float v94[3], v7C[3];
+    float sp10[3];
+    struct { float v[3]; float pad[2]; } bufA[7];
+    int bufB[24];
+    int *bufC_[15];
+    int *tc;
+    int i;
+    int h;
+    float a, b, c;
+    lbl_8055ECA8 = arg0;
+    if (fn_801E320C(arg1, &lbl_8055B3E0) == 0) {
+        fn_802E30C8(lbl_8033B938 + 0x24, arg0);
+        return 0;
+    }
+    o = fn_801284F8(0xD0, lbl_8033B938 + 0x40);
+    memset(o, 0, 0xD0);
+    *(char *)((char *)o + 4) = 1;
+    ((int *)o)[7] = fn_801E3004(arg1, &lbl_8055B3E8, -1);
+    ((int *)o)[8] = fn_801E31D8(((int *)o)[7], &lbl_8055B3F0, -1);
+    ((int *)o)[9] = fn_801E31D8(((int *)o)[7], &lbl_8055B3F8, -1);
+    ((int *)o)[10] = fn_801E3004(arg1, &lbl_8055B400, -1);
+    ((int *)o)[2] = fn_802C6FC0(lbl_8033B938 + 0x4C, 0, 0);
+    ((int *)o)[3] = fn_801E592C();
+    fn_801E3488(v94, ((int *)o)[8]);
+    vE[0] = v94[0]; vE[1] = v94[1]; vE[2] = v94[2];
+    fn_801E3488(v7C, ((int *)o)[9]);
+    vG[0] = v7C[0]; vG[1] = v7C[1]; vG[2] = v7C[2];
+    spC = 0x20;
+    fn_801E5998((void *)((int *)o)[3], out, &spC);
+    if (fn_801E2CCC(arg1, &lbl_8055B3E0, &sp8) == 0) {
+        fn_802E317C(lbl_8033B938 + 0x5C, arg0);
+    }
+    o[4] = sp8[9]; o[5] = sp8[10]; o[6] = sp8[11];
+    o[12] = fn_8002EFB0(sp8[4], sp8[5]);
+    o[4] = o[4] - out[9];
+    o[5] = o[5] - out[10];
+    o[6] = o[6] - out[11];
+    a = o[4]; b = o[5]; c = o[6];
+    vA[0] = out[107] + a; vA[1] = out[108] + b; vA[2] = out[109] + c;
+    vB[0] = out[65] + a; vB[1] = out[66] + b; vB[2] = out[67] + c;
+    vC[0] = out[121] + a; vC[1] = out[122] + b; vC[2] = out[123] + c;
+    vD[0] = out[79] + a; vD[1] = out[80] + b; vD[2] = out[81] + c;
+    vE[0] = out[135]; vE[1] = out[136]; vE[2] = out[137];
+    o[13] = lbl_80563058; o[14] = lbl_8056305C; o[15] = lbl_8056305C;
+    o[16] = lbl_8056305C; o[17] = lbl_80563058; o[18] = lbl_8056305C;
+    o[19] = lbl_8056305C; o[20] = lbl_8056305C; o[21] = lbl_80563058;
+    o[22] = lbl_8056305C; o[23] = lbl_8056305C;
+    vF[0] = vE[0] + lbl_80563050 * (vC[0] - vE[0]);
+    vF[1] = vE[1] + lbl_80563050 * (vC[1] - vE[1]);
+    vF[2] = vE[2] + lbl_80563050 * (vC[2] - vE[2]);
+    vE[0] = vF[0]; vE[1] = vF[1]; vE[2] = vF[2];
+    vG[0] = out[93] + lbl_80563050 * (vD[0] - out[93]);
+    vG[1] = out[94] + lbl_80563050 * (vD[1] - out[94]);
+    vG[2] = out[95] + lbl_80563050 * (vD[2] - out[95]);
+    vH[0] = vA[0] * lbl_80563050 + vB[0] * lbl_80563050;
+    vH[2] = vA[2] * lbl_80563050 + vB[2] * lbl_80563050;
+    vH[1] = vA[1] * lbl_80563050 + vB[1] * lbl_80563050 - lbl_80563054;
+    o[24] = lbl_8056305C;
+    xformv(o + 4, o + 13, sp10);
+    o[22] += sp10[0];
+    o[23] += sp10[1];
+    o[24] += sp10[2];
+    for (i = 0; i < 12; i++) o[37 + i] = o[13 + i];
+    fn_801E33E4(o + 25, ((int *)o)[7]);
+    for (i = 0; i < 3; i++) {
+        bufA[0].v[i] = vA[i]; bufA[1].v[i] = vC[i]; bufA[2].v[i] = vE[i];
+        bufA[3].v[i] = vB[i]; bufA[4].v[i] = vD[i]; bufA[5].v[i] = vG[i];
+        bufA[6].v[i] = vH[i];
+    }
+    for (i = 0; i < 7; i++) { bufA[i].pad[0] = lbl_80563058; bufA[i].pad[1] = lbl_80563058; }
+    for (i = 0; i < 24; i++) bufB[i] = ((int *)lbl_802F9C60)[i];
+    tc = (int *)lbl_802F9CC0;
+    for (i = 0; i < 15; i++) bufC_[i] = (int *)tc[i];
+    bufC_[1] = (int *)(o + 37);
+    bufC_[4] = (int *)(o + 25);
+    bufC_[5] = (int *)v94;
+    bufC_[7] = (int *)(o + 37);
+    bufC_[10] = (int *)(o + 25);
+    bufC_[11] = (int *)v7C;
+    bufC_[13] = (int *)(o + 13);
+    h = fn_801C1BA4(7, 6, 5);
+    fn_801C1CBC(h, 7, bufA, 6, bufB, 5, bufC_);
+    ((int *)o)[0] = h;
+    o[49] = lbl_8056305C;
+    o[51] = lbl_8056305C;
+    o[50] = lbl_8056305C;
+    return o;
 }
 
 extern int fn_801E320C(int, void *);
