@@ -18,6 +18,21 @@ extern void *fn_801284F8(int, void *);
 extern float fn_80129DC4(int, float, float);
 extern void *memset(void *, int, unsigned int);
 extern float lbl_80564C48;
+extern void *fn_8012850C(int, void *);
+extern char lbl_8055CE08[];
+extern float lbl_80564C30;
+extern float lbl_80564C40;
+extern float lbl_80564C44;
+extern unsigned short lbl_80564C38, lbl_80564C3A, lbl_80564C3C, lbl_80564C3E;
+extern int fn_80129D90(int, int, int);
+extern void *fn_8002F37C(void (*)(void), int, int, int);
+extern void fn_802B4BD8(void);
+extern float lbl_802FAAD0[];
+extern int lbl_8055F9D0[];
+extern int fn_802B475C(void *);
+extern void *fn_802B47A0(void *, int *, void *, int, int **);
+extern int fn_802B4BC0(int, int, int);
+extern void *fn_802B4014(void *);
 typedef int (*VFn)(void *, void *);
 #define VT(o, i) ((VFn)(*(void ***)(o))[i])
 void *fn_802B3F6C(void *arg0, int arg1) {
