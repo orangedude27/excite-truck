@@ -434,6 +434,8 @@ extern u8 lbl_803C4040[];
 typedef struct {
     u8      pad_00[0x28];
     u16     handle;         /* +0x28  ACL connection handle, used with the LM */
+    u8      pad_2A[7];
+    u8      id;             /* +0x31  identifier of the next command we send */
 } tL2C_LCB_VIEW;
 
 /* The L2CAP channel control block (l2c_int.h's tL2C_CCB); the game lays it out
