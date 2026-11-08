@@ -275,165 +275,165 @@ s32 fn_80131BD0(void* arg0, const char* name) {
 // Search a chain of value tables for the entry whose name matches (case-insensitive).
 // Each table holds {name, value} pairs (8 bytes each) and links to a parent/child table.
 // Returns a pointer to the matching entry, or NULL if no table in the chain has it.
-s32 fn_80131C88(void *table, const char *name) {
+s32 fn_80131C88(void *arg0, const char *arg1) {
     char *found;
     s32 index;
     s32 offset;
-    void *child;
-    volatile struct { const char *name; s32 value; } key;
-        key.name = name;
-        key.value = 0;
+    void *node;
+    volatile struct { const char *name; s32 value; } key0;
+        key0.name = arg1;
+        key0.value = 0;
         found = 0;
         index = 0;
         offset = 0;
-        while (index < *(s32 *)((char *)table + 0xC)) {
-            if (stricmp(name, *(char **)(*(char **)((char *)table + 0x10) + offset)) == 0) {
-                found = (char *)*(char **)((char *)table + 0x10) + index * 8;
+        while (index < *(s32 *)((char *)arg0 + 0xC)) {
+            if (stricmp(arg1, *(char **)(*(char **)((char *)arg0 + 0x10) + offset)) == 0) {
+                found = (char *)*(char **)((char *)arg0 + 0x10) + index * 8;
                 break;
             }
             offset += 8;
             index++;
         }
     if (found == 0) {
-        child = *(void **)((char *)table + 0x14);
-        if (child != 0) {
-            volatile struct { const char *name; s32 value; } key;
-        key.name = name;
+        node = *(void **)((char *)arg0 + 0x14);
+        if (node != 0) {
+            volatile struct { const char *name; s32 value; } key1;
+        key1.name = arg1;
         found = 0;
-        key.value = 0;
+        key1.value = 0;
         index = 0;
         offset = 0;
-        while (index < *(s32 *)((char *)child + 0xC)) {
-            if (stricmp(name, *(char **)(*(char **)((char *)child + 0x10) + offset)) == 0) {
-                found = (char *)*(char **)((char *)child + 0x10) + index * 8;
+        while (index < *(s32 *)((char *)node + 0xC)) {
+            if (stricmp(arg1, *(char **)(*(char **)((char *)node + 0x10) + offset)) == 0) {
+                found = (char *)*(char **)((char *)node + 0x10) + index * 8;
                 break;
             }
             offset += 8;
             index++;
         }
             if (found == 0) {
-                child = *(void **)((char *)child + 0x14);
-                if (child != 0) {
-                    volatile struct { const char *name; s32 value; } key;
-        key.name = name;
+                node = *(void **)((char *)node + 0x14);
+                if (node != 0) {
+                    volatile struct { const char *name; s32 value; } key2;
+        key2.name = arg1;
         found = 0;
-        key.value = 0;
+        key2.value = 0;
         index = 0;
         offset = 0;
-        while (index < *(s32 *)((char *)child + 0xC)) {
-            if (stricmp(name, *(char **)(*(char **)((char *)child + 0x10) + offset)) == 0) {
-                found = (char *)*(char **)((char *)child + 0x10) + index * 8;
+        while (index < *(s32 *)((char *)node + 0xC)) {
+            if (stricmp(arg1, *(char **)(*(char **)((char *)node + 0x10) + offset)) == 0) {
+                found = (char *)*(char **)((char *)node + 0x10) + index * 8;
                 break;
             }
             offset += 8;
             index++;
         }
             if (found == 0) {
-                child = *(void **)((char *)child + 0x14);
-                if (child != 0) {
-                    volatile struct { const char *name; s32 value; } key;
-        key.name = name;
+                node = *(void **)((char *)node + 0x14);
+                if (node != 0) {
+                    volatile struct { const char *name; s32 value; } key3;
+        key3.name = arg1;
         found = 0;
-        key.value = 0;
+        key3.value = 0;
         index = 0;
         offset = 0;
-        while (index < *(s32 *)((char *)child + 0xC)) {
-            if (stricmp(name, *(char **)(*(char **)((char *)child + 0x10) + offset)) == 0) {
-                found = (char *)*(char **)((char *)child + 0x10) + index * 8;
+        while (index < *(s32 *)((char *)node + 0xC)) {
+            if (stricmp(arg1, *(char **)(*(char **)((char *)node + 0x10) + offset)) == 0) {
+                found = (char *)*(char **)((char *)node + 0x10) + index * 8;
                 break;
             }
             offset += 8;
             index++;
         }
             if (found == 0) {
-                child = *(void **)((char *)child + 0x14);
-                if (child != 0) {
-                    volatile struct { const char *name; s32 value; } key;
-        key.name = name;
+                node = *(void **)((char *)node + 0x14);
+                if (node != 0) {
+                    volatile struct { const char *name; s32 value; } key4;
+        key4.name = arg1;
         found = 0;
-        key.value = 0;
+        key4.value = 0;
         index = 0;
         offset = 0;
-        while (index < *(s32 *)((char *)child + 0xC)) {
-            if (stricmp(name, *(char **)(*(char **)((char *)child + 0x10) + offset)) == 0) {
-                found = (char *)*(char **)((char *)child + 0x10) + index * 8;
+        while (index < *(s32 *)((char *)node + 0xC)) {
+            if (stricmp(arg1, *(char **)(*(char **)((char *)node + 0x10) + offset)) == 0) {
+                found = (char *)*(char **)((char *)node + 0x10) + index * 8;
                 break;
             }
             offset += 8;
             index++;
         }
             if (found == 0) {
-                child = *(void **)((char *)child + 0x14);
-                if (child != 0) {
-                    volatile struct { const char *name; s32 value; } key;
-        key.name = name;
+                node = *(void **)((char *)node + 0x14);
+                if (node != 0) {
+                    volatile struct { const char *name; s32 value; } key5;
+        key5.name = arg1;
         found = 0;
-        key.value = 0;
+        key5.value = 0;
         index = 0;
         offset = 0;
-        while (index < *(s32 *)((char *)child + 0xC)) {
-            if (stricmp(name, *(char **)(*(char **)((char *)child + 0x10) + offset)) == 0) {
-                found = (char *)*(char **)((char *)child + 0x10) + index * 8;
+        while (index < *(s32 *)((char *)node + 0xC)) {
+            if (stricmp(arg1, *(char **)(*(char **)((char *)node + 0x10) + offset)) == 0) {
+                found = (char *)*(char **)((char *)node + 0x10) + index * 8;
                 break;
             }
             offset += 8;
             index++;
         }
             if (found == 0) {
-                child = *(void **)((char *)child + 0x14);
-                if (child != 0) {
-                    volatile struct { const char *name; s32 value; } key;
-        key.name = name;
+                node = *(void **)((char *)node + 0x14);
+                if (node != 0) {
+                    volatile struct { const char *name; s32 value; } key6;
+        key6.name = arg1;
         found = 0;
-        key.value = 0;
+        key6.value = 0;
         index = 0;
         offset = 0;
-        while (index < *(s32 *)((char *)child + 0xC)) {
-            if (stricmp(name, *(char **)(*(char **)((char *)child + 0x10) + offset)) == 0) {
-                found = (char *)*(char **)((char *)child + 0x10) + index * 8;
+        while (index < *(s32 *)((char *)node + 0xC)) {
+            if (stricmp(arg1, *(char **)(*(char **)((char *)node + 0x10) + offset)) == 0) {
+                found = (char *)*(char **)((char *)node + 0x10) + index * 8;
                 break;
             }
             offset += 8;
             index++;
         }
             if (found == 0) {
-                child = *(void **)((char *)child + 0x14);
-                if (child != 0) {
-                    volatile struct { const char *name; s32 value; } key;
-        key.name = name;
+                node = *(void **)((char *)node + 0x14);
+                if (node != 0) {
+                    volatile struct { const char *name; s32 value; } key7;
+        key7.name = arg1;
         found = 0;
-        key.value = 0;
+        key7.value = 0;
         index = 0;
         offset = 0;
-        while (index < *(s32 *)((char *)child + 0xC)) {
-            if (stricmp(name, *(char **)(*(char **)((char *)child + 0x10) + offset)) == 0) {
-                found = (char *)*(char **)((char *)child + 0x10) + index * 8;
+        while (index < *(s32 *)((char *)node + 0xC)) {
+            if (stricmp(arg1, *(char **)(*(char **)((char *)node + 0x10) + offset)) == 0) {
+                found = (char *)*(char **)((char *)node + 0x10) + index * 8;
                 break;
             }
             offset += 8;
             index++;
         }
             if (found == 0) {
-                child = *(void **)((char *)child + 0x14);
-                if (child != 0) {
-                    volatile struct { const char *name; s32 value; } key;
-        key.name = name;
+                node = *(void **)((char *)node + 0x14);
+                if (node != 0) {
+                    volatile struct { const char *name; s32 value; } key8;
+        key8.name = arg1;
         found = 0;
-        key.value = 0;
+        key8.value = 0;
         index = 0;
         offset = 0;
-        while (index < *(s32 *)((char *)child + 0xC)) {
-            if (stricmp(name, *(char **)(*(char **)((char *)child + 0x10) + offset)) == 0) {
-                found = (char *)*(char **)((char *)child + 0x10) + index * 8;
+        while (index < *(s32 *)((char *)node + 0xC)) {
+            if (stricmp(arg1, *(char **)(*(char **)((char *)node + 0x10) + offset)) == 0) {
+                found = (char *)*(char **)((char *)node + 0x10) + index * 8;
                 break;
             }
             offset += 8;
             index++;
         }
             if (found == 0) {
-                child = *(void **)((char *)child + 0x14);
-                if (child != 0)
-                    found = (char *)fn_80131C88(child, name);
+                node = *(void **)((char *)node + 0x14);
+                if (node != 0)
+                    found = (char *)fn_80131C88(node, arg1);
             }
                 }
             }
