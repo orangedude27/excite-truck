@@ -168,7 +168,7 @@ extern u8 lbl_8032D358[];
 extern void *fn_80131808(void *, s32, s32);
 extern void fn_80131818(void *);
 extern void *fn_8012850C(s32, void *);
-extern s32 fn_801345D8(char *, s32, char *, s32);
+extern s32 fn_801345D8();
 extern f32 lbl_8056163C, lbl_8056164C, lbl_80561670, lbl_805616C8;
 extern f64 lbl_805616A0;
 extern f64 fn_8002EFB4(f64, f64);
