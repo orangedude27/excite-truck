@@ -1,6 +1,7 @@
 #include "revolution/BTE/stack/include/btm_api.h"
 #include "revolution/BTE/stack/btm/btm_int.h"
 #include "revolution/BTE/gki/common/gki.h"
+#include <stdarg.h>
 extern "C" const char lbl_80329530[];
 extern f32 lbl_80561178, lbl_80561188;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
@@ -907,25 +908,112 @@ extern "C" s8 fn_8010B2BC(void *arg0) {
 
 extern "C" const char lbl_80329140[];
 extern "C" u16 FindGlyphIndex__Q46nw4hbm2ut6detail11ResFontBaseCFPCQ36nw4hbm2ut11FontCodeMapUs(void*, void*, u16);
-u32 GetCharWidths__Q46nw4hbm2ut6detail11ResFontBaseCFUs(void *self, u16 code) {
+extern "C" u32 GetCharWidths__Q46nw4hbm2ut6detail11ResFontBaseCFUs(void *self, u16 code) {
+    const char *file = lbl_80329140;
+    u32 value = (u32)self;
+    u32 t;
+    int a, b, c, d, e, f, ok;
     u8 *info, *map, *width, *entry;
-    u16 glyph;
-    if (!self) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329140+0xC,0x1E2,lbl_80329140+0xF0,self);
-    info=*(u8**)((char*)self+0x14);
-    if (!info) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329140+0xC,0x1E3,lbl_80329140+0x128);
-    if (!self) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329140+0xC,0x1F6,lbl_80329140+0xF0,self);
-    if (!info) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329140+0xC,0x1F7,lbl_80329140+0x128);
-    map=*(u8**)(info+0x10);
-    while(map && (code<*(u16*)map || code>*(u16*)(map+2))) map=*(u8**)(map+8);
-    glyph=map ? FindGlyphIndex__Q46nw4hbm2ut6detail11ResFontBaseCFPCQ36nw4hbm2ut11FontCodeMapUs(self,map,code) : 0xFFFF;
-    if(glyph==0xFFFF) glyph=*(u16*)(info+2);
-    if (!self) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329140+0xC,0x267,lbl_80329140+0xF0,self);
-    if (!info) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329140+0xC,0x268,lbl_80329140+0x128);
-    width=*(u8**)(info+0xC);
-    while(width && (glyph<*(u16*)width || glyph>*(u16*)(width+2))) width=*(u8**)(width+4);
-    if(width) entry=width+8+5*(glyph-*(u16*)width);
-    else entry=info+4;
-    return ((u32)*(u16*)(entry+4)<<16) | ((u32)entry[6]<<8);
+    register u16 glyph;
+
+    a = 1; b = 1; c = 1; d = 1; e = 1; f = 1;
+    t = value & 0xFF000000U;
+    if (t != 0x80000000U && (value & 0xFF800000U) != 0x81000000U) f = 0;
+    if (f == 0 && (value & 0xF8000000U) != 0x90000000U) e = 0;
+    if (e == 0 && t != 0xC0000000U) d = 0;
+    if (d == 0 && (value & 0xFF800000U) != 0xC1000000U) c = 0;
+    if (c == 0 && (value & 0xF8000000U) != 0xD0000000U) b = 0;
+    if (b == 0 && (value & 0xFFFFC000U) != 0xE0000000U) a = 0;
+    if (a == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x1E2, file + 0xF0, self);
+
+    {
+        int g = 1, h = 1;
+        u32 v = *(u32 *)((char *)self + 0x14);
+        int i = 1, j = 1, k = 1, l = 1;
+        u32 t2 = v & 0xFF000000U;
+        if (t2 != 0x80000000U && (v & 0xFF800000U) != 0x81000000U) l = 0;
+        if (l == 0 && (v & 0xF8000000U) != 0x90000000U) k = 0;
+        if (k == 0 && t2 != 0xC0000000U) j = 0;
+        if (j == 0 && (v & 0xFF800000U) != 0xC1000000U) i = 0;
+        if (i == 0 && (v & 0xF8000000U) != 0xD0000000U) h = 0;
+        if (h == 0 && (v & 0xFFFFC000U) != 0xE0000000U) g = 0;
+        if (g == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x1E3, file + 0x128);
+    }
+
+    ok = 0;
+    if (t == 0x80000000U || (value & 0xFF800000U) == 0x81000000U || (value & 0xF8000000U) == 0x90000000U
+        || t == 0xC0000000U || (value & 0xFF800000U) == 0xC1000000U || (value & 0xF8000000U) == 0xD0000000U
+        || (value & 0xFFFFC000U) == 0xE0000000U) ok = 1;
+    if (ok == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x1F6, file + 0xF0, self);
+
+    {
+        int g = 1, h = 1;
+        u32 v = *(u32 *)((char *)self + 0x14);
+        int i = 1, j = 1, k = 1, l = 1;
+        u32 t2 = v & 0xFF000000U;
+        if (t2 != 0x80000000U && (v & 0xFF800000U) != 0x81000000U) l = 0;
+        if (l == 0 && (v & 0xF8000000U) != 0x90000000U) k = 0;
+        if (k == 0 && t2 != 0xC0000000U) j = 0;
+        if (j == 0 && (v & 0xFF800000U) != 0xC1000000U) i = 0;
+        if (i == 0 && (v & 0xF8000000U) != 0xD0000000U) h = 0;
+        if (h == 0 && (v & 0xFFFFC000U) != 0xE0000000U) g = 0;
+        if (g == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x1F7, file + 0x128);
+    }
+
+    map = *(u8 **)(*(u8 **)((char *)self + 0x14) + 0x10);
+    while (map != 0) {
+        if (*(u16 *)map <= code && code <= *(u16 *)(map + 2)) {
+            glyph = FindGlyphIndex__Q46nw4hbm2ut6detail11ResFontBaseCFPCQ36nw4hbm2ut11FontCodeMapUs(self, map, code);
+            goto checkGlyph;
+        }
+        map = *(u8 **)(map + 8);
+    }
+    glyph = 0xFFFF;
+checkGlyph:
+    if (glyph == 0xFFFF) glyph = *(u16 *)(*(u8 **)((char *)self + 0x14) + 2);
+
+    ok = 0;
+    if (t == 0x80000000U || (value & 0xFF800000U) == 0x81000000U || (value & 0xF8000000U) == 0x90000000U
+        || t == 0xC0000000U || (value & 0xFF800000U) == 0xC1000000U || (value & 0xF8000000U) == 0xD0000000U
+        || (value & 0xFFFFC000U) == 0xE0000000U) ok = 1;
+    if (ok == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x267, file + 0xF0, self);
+
+    {
+        int g = 1, h = 1;
+        u32 v = *(u32 *)((char *)self + 0x14);
+        int i = 1, j = 1, k = 1, l = 1;
+        u32 t2 = v & 0xFF000000U;
+        if (t2 != 0x80000000U && (v & 0xFF800000U) != 0x81000000U) l = 0;
+        if (l == 0 && (v & 0xF8000000U) != 0x90000000U) k = 0;
+        if (k == 0 && t2 != 0xC0000000U) j = 0;
+        if (j == 0 && (v & 0xFF800000U) != 0xC1000000U) i = 0;
+        if (i == 0 && (v & 0xF8000000U) != 0xD0000000U) h = 0;
+        if (h == 0 && (v & 0xFFFFC000U) != 0xE0000000U) g = 0;
+        if (g == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x268, file + 0x128);
+    }
+
+    info = *(u8 **)((char *)self + 0x14);
+    width = *(u8 **)(info + 0xC);
+    while (width) {
+        if (*(u16 *)width <= glyph && glyph <= *(u16 *)(width + 2)) {
+            int g = 1, h = 1;
+            u32 w = (u32)width;
+            int i = 1, j = 1, k = 1, l = 1;
+            u32 tw = w & 0xFF000000U;
+            if (tw != 0x80000000U && (w & 0xFF800000U) != 0x81000000U) l = 0;
+            if (l == 0 && (w & 0xF8000000U) != 0x90000000U) k = 0;
+            if (k == 0 && tw != 0xC0000000U) j = 0;
+            if (j == 0 && (w & 0xFF800000U) != 0xC1000000U) i = 0;
+            if (i == 0 && (w & 0xF8000000U) != 0xD0000000U) h = 0;
+            if (h == 0 && (w & 0xFFFFC000U) != 0xE0000000U) g = 0;
+            if (g == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x28B, file + 0x1E4, width);
+            entry = width + 8 + 3 * (glyph - *(u16 *)width);
+            return ((u32)*(u16 *)entry << 16) | ((u32)entry[2] << 8);
+        }
+        width = *(u8 **)(width + 4);
+    }
+    entry = info + 4;
+    return ((u32)*(u16 *)entry << 16) | ((u32)entry[2] << 8);
 }
 
 #pragma push
