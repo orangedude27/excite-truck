@@ -248,7 +248,7 @@ float fn_801E0EE4(void *arg0, void *arg1) {
     return (float)fn_8002F234(delta[0] * delta[0] + delta[1] * delta[1]);
 }
 #pragma scheduling on
-void fn_801E0F34(int arg0) {
+void *fn_801E0F34(int arg0) {
     void *ptr;
     int value;
     value = arg0;
@@ -256,6 +256,7 @@ void fn_801E0F34(int arg0) {
     ptr = fn_801284E8((void *)&lbl_8032C108, arg0);
     *(int *)((char *)ptr + 4) = value;
     *(int *)ptr = value;
+    return ptr;
 }
 
 void fn_801E0F78(f32 *arg0, f32 *arg1, f32 *arg2, f32 arg3) {
