@@ -1227,81 +1227,91 @@ extern "C" void *fn_8013E33C(void *, s32);
 extern "C" void *__dt__Q210JASDrumSet5TPercFv(void *, s32);
 extern "C" u8 lbl_8032CAF0[];
 extern "C" s32 lbl_8055E1C0;
-extern "C" void *fn_8013E77C(void *arg0, s32 arg1) {
-    class VObj { public: virtual void destroy(int); };
-    u8 *self=(u8 *)arg0;
-    VObj *p;
+/* ZoneMaster::~ZoneMaster() - the deleting destructor of the zone master
+ * object (vtable lbl_8032CAF0, layout at the top of this file).  Everything
+ * the master owns goes with it: the child at +0x254, the objects it loaded
+ * into its +8 array (zlmain/zlclosure/zlresult), the five zone texture
+ * handles at +0xA0..+0xB0, the path data at +0x64, the zone table heap
+ * "ZoneMaster::tab" at +0xB8, the JASDrumSet::TPerc member at +0x280 and the
+ * sub-objects at +0x134, +0xC0 and +8.  The instance pointer lbl_8055E1C0 is
+ * cleared on the way, and delete_flag > 0 (the object was allocated) frees
+ * the ZoneMaster itself at the end. */
+extern "C" void *fn_8013E77C(void *instance, s32 delete_flag) {
+    class VObj { public: virtual void destroy(int); };  /* owned object: slot +8 is its destructor */
+    u8 *self=(u8 *)instance;
+    VObj *obj;
     VObj *child;
     s32 i,offset;
     if (self != 0) {
         child=*(VObj **)(self+0x254);
-        *(void **)self=lbl_8032CAF0;
+        *(void **)self=lbl_8032CAF0;  /* destroy from this class down */
         if (child != 0) { if (child != 0) child->destroy(1); }
-        fn_802C6CF8(*(s32 *)(self+0xB4));
+        fn_802C6CF8(*(s32 *)(self+0xB4));  /* release the stream/handle at +0xB4 */
         i=0; offset=0;
-        while (i<*(s32 *)(self+0xC)) {
-            p=*(VObj **)(*(u8 **)(self+8)+offset);
-            if (p != 0) p->destroy(1);
+        while (i<*(s32 *)(self+0xC)) {  /* every object loaded into the +8 array */
+            obj=*(VObj **)(*(u8 **)(self+8)+offset);
+            if (obj != 0) obj->destroy(1);
             offset+=4; i++;
         }
-        fn_802CAC54(*(s32 *)(self+0xA0));
+        fn_802CAC54(*(s32 *)(self+0xA0));  /* the five zone textures */
         fn_802CAC54(*(s32 *)(self+0xA4));
         fn_802CAC54(*(s32 *)(self+0xA8));
         fn_802CAC54(*(s32 *)(self+0xAC));
         fn_802CAC54(*(s32 *)(self+0xB0));
-        p=*(VObj **)(self+0x64);
-        if (p != 0) {
-            fn_8002F6AC(*(s32 *)((u8 *)p+4),(void *)fn_8013E33C);
-            *(s32 *)((u8 *)p+4)=0;
-            ((void (*)(void *))fn_80128668)(p);
+        obj=*(VObj **)(self+0x64);  /* the path data ... */
+        if (obj != 0) {
+            fn_8002F6AC(*(s32 *)((u8 *)obj+4),(void *)fn_8013E33C);  /* ... whose groups were allocated with fn_8013E33C as their destructor */
+            *(s32 *)((u8 *)obj+4)=0;
+            ((void (*)(void *))fn_80128668)(obj);
         }
-        p=*(VObj **)(self+0x27C);
+        /* the owned objects, each cleared as the next one is taken over */
+        obj=*(VObj **)(self+0x27C);
         *(VObj **)(self+0x64)=0;
-        if (p != 0) p->destroy(1);
-        p=*(VObj **)(self+0x278);
+        if (obj != 0) obj->destroy(1);
+        obj=*(VObj **)(self+0x278);
         *(VObj **)(self+0x27C)=0;
-        if (p != 0) p->destroy(1);
-        p=*(VObj **)(self+0x270);
+        if (obj != 0) obj->destroy(1);
+        obj=*(VObj **)(self+0x270);
         *(VObj **)(self+0x278)=0;
-        if (p != 0) p->destroy(1);
-        p=*(VObj **)(self+0x274);
+        if (obj != 0) obj->destroy(1);
+        obj=*(VObj **)(self+0x274);
         *(VObj **)(self+0x270)=0;
-        if (p != 0) p->destroy(1);
-        p=*(VObj **)(self+0x60);
+        if (obj != 0) obj->destroy(1);
+        obj=*(VObj **)(self+0x60);
         *(VObj **)(self+0x274)=0;
-        if (p != 0) { if (p != 0) p->destroy(1); *(VObj **)(self+0x60)=0; }
-        p=*(VObj **)(self+0xB8);
-        if (p != 0) fn_80128670((s32)p-0x10);
+        if (obj != 0) { if (obj != 0) obj->destroy(1); *(VObj **)(self+0x60)=0; }
+        obj=*(VObj **)(self+0xB8);
+        if (obj != 0) fn_80128670((s32)obj-0x10);  /* destroy the "ZoneMaster::tab" heap */
         *(VObj **)(self+0xB8)=0;
-        lbl_8055E1C0=0;
-        __dt__Q210JASDrumSet5TPercFv(self+0x280,-1);
-        if ((u32)self+0x134 != 0) {
-            p=*(VObj **)(self+0x140);
-            if (p != 0) { fn_802ADE60((s32)p,1); *(VObj **)(self+0x140)=0; }
-            p=*(VObj **)(self+0x148);
-            if (p != 0) { if (p != 0) p->destroy(1); *(VObj **)(self+0x148)=0; }
-            p=*(VObj **)(self+0x14C);
-            if (p != 0) { if (p != 0) p->destroy(1); *(VObj **)(self+0x14C)=0; }
-            p=*(VObj **)(self+0x150);
-            if (p != 0) { if (p != 0) p->destroy(1); *(VObj **)(self+0x150)=0; }
-            p=*(VObj **)(self+0x158);
-            if (p != 0) { if (p != 0) p->destroy(1); *(VObj **)(self+0x158)=0; }
-            p=*(VObj **)(self+0x15C);
-            if (p != 0) { if (p != 0) p->destroy(1); *(VObj **)(self+0x15C)=0; }
-            p=*(VObj **)(self+0x160);
-            if (p != 0) { if (p != 0) p->destroy(1); *(VObj **)(self+0x160)=0; }
+        lbl_8055E1C0=0;  /* the instance is gone */
+        __dt__Q210JASDrumSet5TPercFv(self+0x280,-1);  /* the drum set member */
+        if ((u32)self+0x134 != 0) {  /* ~Sub134_8013D2C4(), "if (this)" guard and all */
+            obj=*(VObj **)(self+0x140);
+            if (obj != 0) { fn_802ADE60((s32)obj,1); *(VObj **)(self+0x140)=0; }
+            obj=*(VObj **)(self+0x148);
+            if (obj != 0) { if (obj != 0) obj->destroy(1); *(VObj **)(self+0x148)=0; }
+            obj=*(VObj **)(self+0x14C);
+            if (obj != 0) { if (obj != 0) obj->destroy(1); *(VObj **)(self+0x14C)=0; }
+            obj=*(VObj **)(self+0x150);
+            if (obj != 0) { if (obj != 0) obj->destroy(1); *(VObj **)(self+0x150)=0; }
+            obj=*(VObj **)(self+0x158);
+            if (obj != 0) { if (obj != 0) obj->destroy(1); *(VObj **)(self+0x158)=0; }
+            obj=*(VObj **)(self+0x15C);
+            if (obj != 0) { if (obj != 0) obj->destroy(1); *(VObj **)(self+0x15C)=0; }
+            obj=*(VObj **)(self+0x160);
+            if (obj != 0) { if (obj != 0) obj->destroy(1); *(VObj **)(self+0x160)=0; }
         }
-        if ((u32)self+0xC0 != 0) { if ((u32)self+0xC0 != 0) *(s32 *)(self+0xC0)=0; }
-        if ((u32)self+8 != 0) {
+        if ((u32)self+0xC0 != 0) { if ((u32)self+0xC0 != 0) *(s32 *)(self+0xC0)=0; }  /* ~RingBuf8013D2C4() */
+        if ((u32)self+8 != 0) {  /* ~SubArray8013D2C4(): the loaded-object array */
             if ((u32)self+8 != 0) {
                 if ((u32)self+8 != 0) {
                     *(s32 *)(self+8)=0; *(s32 *)(self+0xC)=0; *(s32 *)(self+0x10)=0;
                 }
             }
         }
-        if (arg1>0) ((void (*)(void *))fn_80128668)(arg0);
+        if (delete_flag>0) ((void (*)(void *))fn_80128668)(instance);  /* operator delete, deleting destructor */
     }
-    return arg0;
+    return instance;
 }
 
 extern "C" void fn_8013EB0C(void *arg0, s32 arg1) {
