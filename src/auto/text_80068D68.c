@@ -25380,79 +25380,86 @@ void WUDStoredLinkKeyCallback(void *msg);
 extern void *WUDiGetNewDevInfo(void);
 extern const char lbl_80558FE8;
 void WUDStoredLinkKeyCallback(void *msg) {
-    u8 *base = (u8 *)msg;
     char *fmt;
-    u8 *dev_info;
-    u8 *dev;
-    u8 *new_dev;
-    u8 *gbase;
+    tBTM_BD_ADDR_LINK_KEY_PAIR *pPair;
+    u8 *pInfo;
+    u8 *pNewInfo;
+    u8 *wcb;
     s32 i;
 
-    fmt = (char *)lbl_803130C8;
-    gbase = lbl_80392960;
-    switch (base[0]) {
-    case 1:
-        DBPrintf_8006CFA8(fmt + 0xb2c);
-        dev_info = base + 2;
+    fmt = (char *)lbl_803130C8; /* WUD's DEBUGPrint() format strings */
+    wcb = lbl_80392960;         /* _wcb, the WUD control block */
+    switch (((tBTM_STORED_LINK_KEYS_EVT *)msg)->event) {
+    case BTM_CB_EVT_RETURN_LINK_KEYS: /* the controller returned its stored link keys */
+        DBPrintf_8006CFA8(fmt + 0xb2c); /* "BTM_CB_EVT_RETURN_LINK_KEYS\n" */
+        pPair = (tBTM_BD_ADDR_LINK_KEY_PAIR *)((tBTM_RETURN_LINK_KEYS_EVT *)msg + 1);
         i = 0;
-        while (i < base[1]) {
-            dev = WUDiGetDevInfo(dev_info);
-            DBPrintf_8006CFA8(fmt + 0xb4c, dev_info[0], dev_info[1], dev_info[2], dev_info[3], dev_info[4], dev_info[5]);
-            DBPrintf_8006CFA8(fmt + 0xb78, dev_info[6], dev_info[7], dev_info[8], dev_info[9],
-                              dev_info[10], dev_info[11], dev_info[12], dev_info[0xD], dev_info[0xE], dev_info[0xF],
-                              dev_info[0x10], dev_info[0x11], dev_info[0x12], dev_info[0x13], dev_info[0x14], dev_info[0x15]);
-            if (dev == 0) {
-                DBPrintf_8006CFA8(fmt + 0xbd4);
-                new_dev = WUDiGetNewDevInfo();
-                if (new_dev == 0) {
+        while (i < ((tBTM_RETURN_LINK_KEYS_EVT *)msg)->num_keys) {
+            pInfo = (u8 *)WUDiGetDevInfo(pPair->bd_addr);
+            DBPrintf_8006CFA8(fmt + 0xb4c, pPair->bd_addr[0], pPair->bd_addr[1], pPair->bd_addr[2],
+                              pPair->bd_addr[3], pPair->bd_addr[4], pPair->bd_addr[5]);
+            DBPrintf_8006CFA8(fmt + 0xb78, pPair->link_key[0],  pPair->link_key[1],  pPair->link_key[2],
+                              pPair->link_key[3],  pPair->link_key[4],  pPair->link_key[5],
+                              pPair->link_key[6],  pPair->link_key[7],  pPair->link_key[8],
+                              pPair->link_key[9],  pPair->link_key[10], pPair->link_key[11],
+                              pPair->link_key[12], pPair->link_key[13], pPair->link_key[14],
+                              pPair->link_key[15]);
+            if (pInfo == 0) {
+                DBPrintf_8006CFA8(fmt + 0xbd4); /* "this device is not stored in NAND\n" */
+                pNewInfo = (u8 *)WUDiGetNewDevInfo();
+                if (pNewInfo == 0) { /* none free: borrow a simple-mode entry nobody uses */
                     for (i = 0; i < 6; i++) {
-                        if (gbase[i * 0x60 + 0x47d] == 0) {
-                            dev = gbase;
-                            dev += i * 0x60;
-                            new_dev = dev + 0x424;
+                        if (wcb[i * 0x60 + 0x47d] == 0) { /* _wcb.smpDevs[i].status */
+                            pInfo = wcb;
+                            pInfo += i * 0x60;
+                            pNewInfo = pInfo + 0x424; /* &_wcb.smpDevs[i] */
                             break;
                         }
                     }
                 }
-                if (new_dev != 0) {
-                    new_dev[0x5c] = 1;
-                    new_dev[0x59] = 1;
-                    memcpy(new_dev + 0x40, dev_info, 6);
-                    memcpy(new_dev + 0x46, dev_info + 6, 0x10);
+                if (pNewInfo != 0) {
+                    pNewInfo[0x5c] = 1;
+                    pNewInfo[0x59] = 1; /* status = 1 */
+                    memcpy(pNewInfo + 0x40, pPair->bd_addr, BD_ADDR_LEN);
+                    memcpy(pNewInfo + 0x46, pPair->link_key, LINK_KEY_LEN);
                 }
             } else {
-                memcpy(dev + 0x40, dev_info, 6);
-                memcpy(dev + 0x46, dev_info + 6, 0x10);
-                if (dev[0x5c] == 2) {
-                    dev[0x5c] = 3;
+                memcpy(pInfo + 0x40, pPair->bd_addr, BD_ADDR_LEN);
+                memcpy(pInfo + 0x46, pPair->link_key, LINK_KEY_LEN);
+                if (pInfo[0x5c] == 2) {
+                    pInfo[0x5c] = 3;
                 }
-                memcpy(gbase + 0x67c, dev_info, 6);
-                DBPrintf_8006CFA8(fmt + 0xbf8, gbase[0x67c], gbase[0x67d], gbase[0x67e],
-                                  gbase[0x67f], gbase[0x680], gbase[0x681]);
+                memcpy(wcb + 0x67c, pPair->bd_addr, BD_ADDR_LEN); /* _wcb.pairAddr */
+                DBPrintf_8006CFA8(fmt + 0xbf8, wcb[0x67c], wcb[0x67d], wcb[0x67e],
+                                  wcb[0x67f], wcb[0x680], wcb[0x681]);
             }
-            dev_info += 0x16;
+            pPair++;
             i++;
         }
         break;
-    case 2:
-        DBPrintf_8006CFA8(fmt + 0xc20);
-        DBPrintf_8006CFA8(fmt + 0xc44, base[1], *(u16 *)(base + 2), *(u16 *)(base + 4));
-        gbase[0xe] = 0;
+    case BTM_CB_EVT_READ_STORED_LINK_KEYS:
+        DBPrintf_8006CFA8(fmt + 0xc20); /* "BTM_CB_EVT_READ_STORED_LINK_KEYS\n" */
+        DBPrintf_8006CFA8(fmt + 0xc44, ((tBTM_READ_STORED_LINK_KEY_COMPLETE *)msg)->status,
+                          ((tBTM_READ_STORED_LINK_KEY_COMPLETE *)msg)->max_keys,
+                          ((tBTM_READ_STORED_LINK_KEY_COMPLETE *)msg)->read_keys);
+        wcb[0xe] = 0; /* _wcb.linkKeyState = WUD_STATE_START */
         break;
-    case 3:
-        DBPrintf_8006CFA8(fmt + 0xc70);
-        DBPrintf_8006CFA8(fmt + 0xc94, base[1], base[2]);
-        gbase[0xe] = 0;
+    case BTM_CB_EVT_WRITE_STORED_LINK_KEYS:
+        DBPrintf_8006CFA8(fmt + 0xc70); /* "BTM_CB_EVT_WRITE_STORED_LINK_KEYS\n" */
+        DBPrintf_8006CFA8(fmt + 0xc94, ((tBTM_WRITE_STORED_LINK_KEY_COMPLETE *)msg)->status,
+                          ((tBTM_WRITE_STORED_LINK_KEY_COMPLETE *)msg)->num_keys);
+        wcb[0xe] = 0;
         break;
-    case 4:
-        DBPrintf_8006CFA8(fmt + 0xcb0);
-        DBPrintf_8006CFA8(fmt + 0xc94, base[1], *(u16 *)(base + 2));
-        if (*(u16 *)(base + 2) == 0) {
-            DBPrintf_8006CFA8(fmt + 0xcd4);
+    case BTM_CB_EVT_DELETE_STORED_LINK_KEYS:
+        DBPrintf_8006CFA8(fmt + 0xcb0); /* "BTM_CB_EVT_DELETE_STORED_LINK_KEYS\n" */
+        DBPrintf_8006CFA8(fmt + 0xc94, ((tBTM_DELETE_STORED_LINK_KEY_COMPLETE *)msg)->status,
+                          ((tBTM_DELETE_STORED_LINK_KEY_COMPLETE *)msg)->num_keys);
+        if (((tBTM_DELETE_STORED_LINK_KEY_COMPLETE *)msg)->num_keys == 0) {
+            DBPrintf_8006CFA8(fmt + 0xcd4); /* "WARNING: no entry is deleted\n" */
         }
-        gbase[0xe] = 0;
+        wcb[0xe] = 0;
         break;
-    default:
+    default: /* OS_ERROR("Unknown event\n") */
         OSPanic((char *)&lbl_80558FE8, 0xe34, fmt + 0xcf4);
         break;
     }
