@@ -32,8 +32,11 @@ extern int fn_802794AC(int, void *);
 extern float lbl_80562574;
 extern void fn_801AFA20(void);
 typedef struct {
-    int id;
     unsigned char b[0x60];
+} Blob60;
+typedef struct {
+    int id;
+    Blob60 b;
     int f64, f68, f6c;
     unsigned char f70;
     int f74;
@@ -370,6 +373,69 @@ void fn_801AED74(void) {
     }
     lbl_8055E62C = fn_801B2ED4();
 }
+
+void fn_801AEF28(Src *arg0) {
+    int *p;
+    int *q;
+    int i, off;
+    Ent78 *dst = (Ent78 *)&lbl_80435780[0];
+    int *dcount = &lbl_80435780[0x3C0 / 4];
+    lbl_8055E635 = 1;
+    p = (int *)fn_801284F8(0x24, lbl_80335980);
+    if (p != 0) {
+        memset(p, 0, 0x20);
+        p[8] = 8;
+    }
+    lbl_8055E620 = p;
+    q = (int *)fn_801284F8(8, lbl_80335990);
+    if (q != 0) {
+        q[1] = 8;
+        q[0] = fn_8012850C(8 * 0x1C, lbl_803359CC);
+        for (i = 0, off = 0; i < q[1]; i++, off += 0x1C) {
+            char *d = (char *)q[0] + off;
+            memset(d, 0, 0x1C);
+            *(float *)(d + 8) = lbl_80562558;
+            *(short *)(d + 0xC) = -100;
+            if (i < fn_801B2F24())
+                *(short *)(d + 0x1A) = fn_801B3050(i);
+            else
+                *(short *)(d + 0x1A) = -1;
+        }
+    }
+    lbl_8055E624 = q;
+    lbl_8055E628 = ((int (*)(void *))fn_801AFA20)(arg0);
+    *dcount = 0;
+    for (i = 0; i < *(int *)((char *)arg0 + 0x3E0); i++) {
+        int id = arg0->e[i].id;
+        if (fn_802794AC(id, (char *)arg0 + 0x3E4) == 0)
+            break;
+        dst[*dcount] = arg0->e[i];
+        ((int *)&lbl_80435740[0x408 / 4])[i] = i;
+        (*dcount)++;
+        if (fn_801AE600(id) != 0) {
+            int *r = (int *)lbl_8055E620;
+            int *t = (int *)fn_801284F8(8, lbl_803359AC);
+            if (t != 0) {
+                int k;
+                t[1] = 0x1F5;
+                t[0] = fn_8012850C(0xFA8, lbl_803359BC);
+                for (k = 0; k < t[1]; k++)
+                    *(short *)((char *)t[0] + k * 8 + 6) = 0;
+            }
+            r[i] = (int)t;
+        }
+    }
+    for (i = 0; i < *dcount; i++) {
+        lbl_80435740[i * 2] = lbl_80562560;
+        lbl_80435740[i * 2 + 1] = lbl_8056255C;
+    }
+    lbl_8055E634 = 0;
+    lbl_8055E630 = lbl_80562574;
+    lbl_8055E62C = -1;
+    for (i = 0; i < 4; i++)
+        memset((char *)lbl_80435740 + 0x428 + i * 0x10, 0, 0x10);
+}
+
 #pragma paired_single reset
 #pragma paired reset
 extern void fn_801AFA5C(int);
