@@ -3586,52 +3586,57 @@ enum {
 
 extern "C" s32 strlen(const char *);
 extern "C" s32 fn_802E4A1C(s32);
-extern "C" s32 fn_8021F06C(void *arg0, s32 arg1) {
+/* Key handler of a text-edit field: moves the caret (home/end/left/right),
+   erases with backspace/delete, inserts a typed character at the caret and
+   hands tab to the widget group to move the focus.  Returns whether the key
+   was used. */
+extern "C" s32 fn_8021F06C(void *widget, s32 keyCode) {
     s32 insertCursor;
     char *text;
     s32 capacity;
-    void *object;
+    TextField *field;
     s32 key;
-    key=arg1; object=arg0;
-    text=*(char **)((u8 *)object+0xA54);
-    if(*(s32 *)((u8 *)object+0x250)>strlen(text))*(s32 *)((u8 *)object+0x250)=strlen(text);
-    capacity=*(s32 *)((u8 *)object+0x248)* *(s32 *)((u8 *)object+0x24C);
-    if(*(u8 *)((u8 *)object+0x19)==0)return 0;
-    if(*(u8 *)((u8 *)object+0x1A)!=0)*(u8 *)((u8 *)object+0x234)=1;
-    if((u32)key>=0x160&&(u32)key<=0x169)key=(key+0xFED0)&0xFFFF;
+    key=keyCode; field=(TextField *)widget;
+    text=field->text;
+    if(field->cursor>strlen(text))field->cursor=strlen(text);
+    capacity=field->columns * field->rows;
+    if(field->editing==0)return 0;
+    if(field->active!=0)field->dirty=1;
+    /* the digit keys stand for their ASCII code: key + 0xFED0 == key - 0x130 */
+    if((u32)key>=TEXT_KEY_DIGIT_0&&(u32)key<=TEXT_KEY_DIGIT_9)key=(key+0xFED0)&0xFFFF;
     switch(key) {
-    case 0x124: *(s32 *)((u8 *)object+0x250)=0;if(*(u8 *)((u8 *)object+0x1A)!=0)*(u8 *)((u8 *)object+0x234)=1;goto handled;
-    case 0x123: *(s32 *)((u8 *)object+0x250)=strlen(*(char **)((u8 *)object+0xA54));if(*(u8 *)((u8 *)object+0x1A)!=0)*(u8 *)((u8 *)object+0x234)=1;goto handled;
-    case 0x125: { s32 cursor=*(s32 *)((u8 *)object+0x250);if(cursor>0){cursor--;*(s32 *)((u8 *)object+0x250)=cursor;if(*(u8 *)((u8 *)object+0x1A)!=0)*(u8 *)((u8 *)object+0x234)=1;}goto handled; }
-    case 0x127: { s32 length=strlen(*(char **)((u8 *)object+0xA54));s32 cursor=*(s32 *)((u8 *)object+0x250);if((u32)cursor<(u32)length){cursor++;*(s32 *)((u8 *)object+0x250)=cursor;if(*(u8 *)((u8 *)object+0x1A)!=0)*(u8 *)((u8 *)object+0x234)=1;}goto handled; }
-    case 0x12E: { s32 index;char *base;char *current;char next;char *deleteText=*(char **)((u8 *)object+0xA54);if(strlen(deleteText)!=0){index=*(s32 *)((u8 *)object+0x250);if((u32)index<(u32)strlen(deleteText)){goto delete_check;delete_copy:next=current[1];index++;*current=next;delete_check:base=*(char **)((u8 *)object+0xA54);current=base+index;if((s8)base[index]!=0)goto delete_copy;}}if(*(u8 *)((u8 *)object+0x1A)!=0)*(u8 *)((u8 *)object+0x234)=1;goto handled; }
-    case 0x8: { s32 index;char *base;char *current;char next;if(strlen(*(char **)((u8 *)object+0xA54))!=0){index=*(s32 *)((u8 *)object+0x250);if(index>0){index--;*(s32 *)((u8 *)object+0x250)=index;goto backspace_check;backspace_copy:next=current[1];index++;*current=next;backspace_check:base=*(char **)((u8 *)object+0xA54);current=base+index;if((s8)base[index]!=0)goto backspace_copy;}}if(*(u8 *)((u8 *)object+0x1A)!=0)*(u8 *)((u8 *)object+0x234)=1;goto handled; }
-    case 0x9: if(fn_802E4A1C(0xFD)==0)fn_802194F4(object);else fn_80219508(object);goto handled;
+    case TEXT_KEY_HOME: field->cursor=0;if(field->active!=0)field->dirty=1;goto handled;
+    case TEXT_KEY_END: field->cursor=strlen(field->text);if(field->active!=0)field->dirty=1;goto handled;
+    case TEXT_KEY_LEFT: { s32 cursor=field->cursor;if(cursor>0){cursor--;field->cursor=cursor;if(field->active!=0)field->dirty=1;}goto handled; }
+    case TEXT_KEY_RIGHT: { s32 length=strlen(field->text);s32 cursor=field->cursor;if((u32)cursor<(u32)length){cursor++;field->cursor=cursor;if(field->active!=0)field->dirty=1;}goto handled; }
+    case TEXT_KEY_DELETE: { s32 index;char *base;char *current;char next;char *deleteText=field->text;if(strlen(deleteText)!=0){index=field->cursor;if((u32)index<(u32)strlen(deleteText)){goto delete_check;delete_copy:next=current[1];index++;*current=next;delete_check:base=field->text;current=base+index;if((s8)base[index]!=0)goto delete_copy;}}if(field->active!=0)field->dirty=1;goto handled; }
+    case TEXT_KEY_BACKSPACE: { s32 index;char *base;char *current;char next;if(strlen(field->text)!=0){index=field->cursor;if(index>0){index--;field->cursor=index;goto backspace_check;backspace_copy:next=current[1];index++;*current=next;backspace_check:base=field->text;current=base+index;if((s8)base[index]!=0)goto backspace_copy;}}if(field->active!=0)field->dirty=1;goto handled; }
+    case TEXT_KEY_TAB: if(fn_802E4A1C(0xFD)==0)fn_802194F4(widget);else fn_80219508(widget);goto handled;
     default:
         if(((u32)key&0x100)==0&&(u32)key>0x1F){
-            text=*(char **)((u8 *)object+0xA54);
+            text=field->text;
             if((u32)strlen(text)<(u32)(capacity-1)){
                 char previous;
                 char *slot;
                 s32 insertIndex=strlen(text)+1;
                 goto insert_check;
 insert_copy:
-                slot=*(char **)((u8 *)object+0xA54)+insertIndex;
+                slot=field->text+insertIndex;
                 previous=slot[-1];
                 insertIndex--;
                 *slot=previous;
 insert_check:
-                insertCursor=*(s32 *)((u8 *)object+0x250);
+                insertCursor=field->cursor;
                 if(insertIndex>insertCursor)goto insert_copy;
-                text=*(char **)((u8 *)object+0xA54);
+                text=field->text;
                 text[insertCursor]=key;
                 insertCursor++;
-                *(s32 *)((u8 *)object+0x250)=insertCursor;
+                field->cursor=insertCursor;
             }
-            if(*(u8 *)((u8 *)object+0x1A)!=0)*(u8 *)((u8 *)object+0x234)=1;
+            if(field->active!=0)field->dirty=1;
             goto handled;
         }
-        return fn_802192A4(object,key);
+        return fn_802192A4(widget,key);
     }
 handled:
 #pragma scheduling off
