@@ -438,6 +438,7 @@ double __ieee754_fmod(double x, double y) {
     }
     return x; /* exact output */
 }
+#undef Zero
 
 double __ieee754_log(x)
 double x;
