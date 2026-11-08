@@ -150,6 +150,26 @@ typedef struct {
 #define btm_cb_sec (*(tBTM_CB_SEC_VIEW *)lbl_803C0F78)
 
 /*
+ * The btm_cb (lbl_803C0F78) members the security manager uses, named from the
+ * code that reads them.  Reading them through tBTM_CB_SEC_VIEW instead changes
+ * how the compiler allocates registers, so the code keeps the byte offsets and
+ * these macros.
+ */
+#define btm_cb_cfg_pin_type     (lbl_803C0F78[0x0020]) /* PIN type from BTM_SetPinType() */
+#define btm_cb_security_mode    (lbl_803C0F78[0x1978]) /* BTM_SEC_MODE_*; 3 is secure pairing here */
+#define btm_cb_mode_changed     (lbl_803C0F78[0x197B]) /* security mode was raised for this pairing */
+#define btm_cb_pin_type_changed (lbl_803C0F78[0x197C]) /* PIN type was changed for this pairing */
+#define btm_cb_bonding          (lbl_803C0F78[0x197D]) /* pairing is bringing a link up */
+#define btm_cb_disc_reason      (lbl_803C0F78[0x197E]) /* reason to report when that link drops */
+#define btm_cb_pin_code_len     (lbl_803C0F78[0x197F]) /* length of the PIN below */
+#define btm_cb_pin_code         (lbl_803C0F78 + 0x1980) /* PIN kept for the controller to ask for */
+#define btm_cb_trace_level      (lbl_803C0F78[0x27C0]) /* BTM_TRACE_LEVEL_* */
+
+/* The HCI Write_Authentication_Enable command (opcode 0x0C20); the game's
+   symbol for it still carries the name of the PIN-type helper next to it. */
+#define btsnd_hcic_write_auth_enable btsnd_hcic_write_pin_type_8008543C
+
+/*
  * tBTM_SEC_DEV_REC as this stack lays it out: 0x88 bytes, and
  * BTM_SEC_MAX_DEVICE_RECORDS (8 here) of them in btm_cb at 0x1F30.  The
  * header's struct agrees up to is_originator and then describes a newer
@@ -11936,9 +11956,11 @@ void btu_hcif_process_event(BT_HDR *p_msg) {
         btu_hcif_connection_request_evt(p + 2);
         break;
     case 0x05: {
+        UINT8 status;
         UINT16 handle;
         UINT8 reason;
-        UINT8 *d = p + 3;
+        UINT8 *d = p + 2;
+        STREAM_TO_UINT8(status, d);
         STREAM_TO_UINT16(handle, d);
         handle = HCID_GET_HANDLE(handle);
         STREAM_TO_UINT8(reason, d);
@@ -11969,8 +11991,9 @@ void btu_hcif_process_event(BT_HDR *p_msg) {
         break;
     }
     case 0x08: {
+        UINT8 enable;
         UINT16 handle;
-        UINT8 status, enable;
+        UINT8 status;
         UINT8 *d = p + 2;
         STREAM_TO_UINT8(status, d);
         STREAM_TO_UINT16(handle, d);
@@ -12025,8 +12048,10 @@ void btu_hcif_process_event(BT_HDR *p_msg) {
         ((void (*)(UINT8 *))l2c_link_process_num_completed_pkts)(p + 2);
         break;
     case 0x14: {
-        UINT16 handle, interval;
-        UINT8 status, mode;
+        UINT16 interval;
+        UINT8 mode;
+        UINT16 handle;
+        UINT8 status;
         UINT8 *d = p + 2;
         STREAM_TO_UINT8(status, d);
         STREAM_TO_UINT16(handle, d);
@@ -12061,12 +12086,10 @@ void btu_hcif_process_event(BT_HDR *p_msg) {
     case 0x18:
         ((void (*)(u8 *))btu_hcif_link_key_notification_evt)(p + 2);
         break;
-    case 0x1C: {
-        UINT16 handle, clock_offset;
-        UINT8 status;
-        UINT8 *d = p + 2;
-        STREAM_TO_UINT8(status, d);
-        if (status == 0) {
+    case 0x1C:
+        if (p[2] == 0) {
+            UINT16 handle, clock_offset;
+            UINT8 *d = p + 3;
             STREAM_TO_UINT16(handle, d);
             handle = HCID_GET_HANDLE(handle);
             STREAM_TO_UINT16(clock_offset, d);
@@ -12074,7 +12097,6 @@ void btu_hcif_process_event(BT_HDR *p_msg) {
             btm_sec_update_clock_offset(handle, clock_offset);
         }
         break;
-    }
     case 0x1E: {
         UINT16 handle;
         UINT8 *d = p + 2;
