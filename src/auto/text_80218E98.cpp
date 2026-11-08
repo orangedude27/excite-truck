@@ -377,6 +377,21 @@ static inline void Rot3Vec(f32 *m, f32 *src, f32 *dst) {
         dst[2] = src[0] * m[2] + src[1] * m[5] + src[2] * m[8];
     }
 }
+struct RotV3 { f32 x, y, z; };
+static inline void Rot3Vec(f32 *m, RotV3 *src, RotV3 *dst) {
+    if (dst == src) {
+        f32 x = src->x * m[0] + src->y * m[3] + src->z * m[6];
+        f32 y = src->x * m[1] + src->y * m[4] + src->z * m[7];
+        f32 z = src->x * m[2] + src->y * m[5] + src->z * m[8];
+        dst->x = x;
+        dst->y = y;
+        dst->z = z;
+    } else {
+        dst->x = src->x * m[0] + src->y * m[3] + src->z * m[6];
+        dst->y = src->x * m[1] + src->y * m[4] + src->z * m[7];
+        dst->z = src->x * m[2] + src->y * m[5] + src->z * m[8];
+    }
+}
 #pragma always_inline reset
 
 class ObjBF { public: virtual void a(); virtual void b(); virtual void c(); virtual void d(); virtual void e(); virtual void f(); virtual void g(); virtual void h(); virtual s32 i(); virtual s32 j(); };
