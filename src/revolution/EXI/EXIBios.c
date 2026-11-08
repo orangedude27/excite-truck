@@ -633,15 +633,25 @@ static void UnlockedHandler(EXIChannel chan, OSContext* ctx) {
     EXIGetID(chan, EXI_DEV_EXT, &id);
 }
 
-s32 EXIGetID(EXIChannel chan, u32 dev, u32* out) {
+// Reads the peripheral ID of the device attached to a channel.
+//
+// An external device on channel 0 or 1 is answered from the channel block while
+// the OS's insertion time (OS_EXI_LAST_INSERT) has not changed since the ID was
+// read; otherwise the device is probed and attached, its ID is read off the bus
+// and cached with that insertion time. Channel 0's internal device is answered
+// with the ID EXIInit() cached in IDSerialPort1.
+//
+// @return the channel's insertion time for an external device (0 when there is
+//         no device), 1 on success and 0 on failure for the internal ones.
+s32 EXIGetID(EXIChannel chan, u32 dev, u32* id) {
     EXIData* exi = &Ecb[chan];
-    u32 imm;
+    u32 idCmd;
     s32 ret;
-    s32 time;
+    s32 insertTime;
     BOOL enabled;
 
     if (chan == EXI_CHAN_0 && dev == EXI_DEV_NET && IDSerialPort1 != 0) {
-        *out = IDSerialPort1;
+        *id = IDSerialPort1;
         return 1;
     }
 
@@ -650,29 +660,35 @@ s32 EXIGetID(EXIChannel chan, u32 dev, u32* out) {
             return 0;
         }
 
+        // Same insertion as the last read: hand back the cached ID.
         if (exi->lastInsert == OS_EXI_LAST_INSERT[chan]) {
-            *out = exi->id;
+            *id = exi->id;
             return exi->lastInsert;
         }
 
+        // Newly inserted device: attach it (with no callback of ours) so its ID
+        // can be read, and remember the insertion time to cache that ID under.
         if (!__EXIAttach(chan, NULL)) {
             return 0;
         }
 
-        time = OS_EXI_LAST_INSERT[chan];
+        insertTime = OS_EXI_LAST_INSERT[chan];
     }
 
     enabled = OSDisableInterrupts();
+    // A newly inserted external device hands the channel back through
+    // UnlockedHandler(), which reads its ID once the channel is free again.
     ret = !EXILock(chan, dev,
                    (chan < EXI_CHAN_2 && dev == EXI_DEV_EXT) ? UnlockedHandler
                                                              : NULL);
     if (ret == 0) {
         ret = !EXISelect(chan, dev, EXI_FREQ_1MHZ);
         if (ret == 0) {
-            imm = 0x00000000;
-            ret |= !EXIImm(chan, &imm, sizeof(u16), EXI_WRITE, NULL);
+            // A peripheral answers a two-byte 0x0000 command with its 4-byte ID.
+            idCmd = 0x00000000;
+            ret |= !EXIImm(chan, &idCmd, sizeof(u16), EXI_WRITE, NULL);
             ret |= !EXISync(chan);
-            ret |= !EXIImm(chan, out, sizeof(u32), EXI_READ, NULL);
+            ret |= !EXIImm(chan, id, sizeof(u32), EXI_READ, NULL);
             ret |= !EXISync(chan);
             ret |= !EXIDeselect(chan);
         }
@@ -684,11 +700,12 @@ s32 EXIGetID(EXIChannel chan, u32 dev, u32* out) {
     if (chan < EXI_CHAN_2 && dev == EXI_DEV_EXT) {
         EXIDetach(chan);
 
+        // Cache the ID only while the device stayed inserted throughout.
         enabled = OSDisableInterrupts();
-        ret |= time != OS_EXI_LAST_INSERT[chan];
+        ret |= insertTime != OS_EXI_LAST_INSERT[chan];
         if (ret == 0) {
-            exi->id = *out;
-            exi->lastInsert = time;
+            exi->id = *id;
+            exi->lastInsert = insertTime;
         }
 
         OSRestoreInterrupts(enabled);
