@@ -213,7 +213,8 @@ extern "C" int fn_80016508(void *);
 extern "C" int fn_80129D90(int, int, int);
 extern "C" void qsort(void *, int, int, int (*)(void *, void *));
 #pragma push
-#pragma processor 7400
+#pragma processor 750
+#pragma use_lmw_stmw off
 extern "C" void fn_8013AC78(int arg0, int *arg1) {
     char *base = lbl_8032C1A0;
     struct Entry { int idx; int key; int score; } es[8];
