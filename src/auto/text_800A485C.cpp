@@ -11112,23 +11112,42 @@ struct IosDevice {
 #define SD_CMD_READ         0x12  /* MMC READ_MULTIPLE_BLOCK */
 
 extern "C" s32 fn_800BAE98(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+/*
+ * fn_800BB4E0 - read "length" bytes of the SD card opened in "device" starting
+ * at the byte "offset".  Both have to be whole numbers of the card's 0x200 byte
+ * blocks.  With no "callback" IOS runs the read and this waits for it; with a
+ * callback the request is left running and the callback (given "callbackArg")
+ * reports the result.  A card a raw command left unconfigured (state 2) is set
+ * up first: its CSD is read (command 7), it is switched to 0x200 byte blocks
+ * (command 0x10) and to a 4 bit bus (fn_800BC134).
+ *
+ * "dev" is an IosDevice: the IOS handle at 0x00, the argument its commands
+ * carry at 0x10, an offset limit at 0x20 (0: none) and the state at 0x24.
+ * lbl_80559248 is the SD library's heap (>= 0 once it was initialised),
+ * lbl_80407560 its mutex and lbl_8055DD6C the "one request at a time" flag -
+ * cleared when the request ends, which for a callback request is when the
+ * callback runs.  lbl_8055DD70 and lbl_8055DD78 are its ioctl scratch buffers.
+ * lbl_8031B838 is the base of the library's message strings; the second
+ * argument of the "%s: ..." reports is the reporting function's name, here at
+ * +0x398 (its write twin fn_800BB81C uses the one at +0x438).
+ */
 extern "C" s32 fn_800BB4E0(s32 device, s32 offset, s32 buffer, s32 length, s32 callback, s32 callbackArg) {
 const char *messages=lbl_8031B838;
-u32 blockSize=0x200;
+u32 blockSize=0x200; /* size of one block of the transfer */
 if((u32)length<=0x200)blockSize=(u32)length;
 u32 blocks=(u32)length>>9;
 s32 result, blockLenOut[4], csdOut[4]; void* dev=(void*)device;
-if(lbl_80559248<0) result=(s32)0xC1000000;
-else if((u32)length!=blockSize*blocks){OSReport(messages+0x3B0,messages+0x398,(u32)length);result=-4;}
-else if((u32)offset!=((u32)offset&0xFFFFFE00)){OSReport(messages+0x3C8,messages+0x398,offset);result=-4;}
-else if((*(u32*)((u8*)dev+0x20)!=0)&&((u32)offset>*(u32*)((u8*)dev+0x20))){OSReport(messages+0x3E0,messages+0x398,offset);result=-4;}
-else if(*(s32*)((u8*)dev+0x24)==0){OSReport(messages+0x3FC,messages+0x398);result=(s32)0xC1000000;}
+if(lbl_80559248<0) result=(s32)0xC1000000; /* the SD library was not initialised */
+else if((u32)length!=blockSize*blocks){OSReport(messages+0x3B0,messages+0x398,(u32)length);result=-4;} /* not whole blocks */
+else if((u32)offset!=((u32)offset&0xFFFFFE00)){OSReport(messages+0x3C8,messages+0x398,offset);result=-4;} /* not block aligned */
+else if((*(u32*)((u8*)dev+0x20)!=0)&&((u32)offset>*(u32*)((u8*)dev+0x20))){OSReport(messages+0x3E0,messages+0x398,offset);result=-4;} /* past the card */
+else if(*(s32*)((u8*)dev+0x24)==0){OSReport(messages+0x3FC,messages+0x398);result=(s32)0xC1000000;} /* the card is closed */
 else {
 OSLockMutex(lbl_80407560);
-if(lbl_8055DD6C!=0){OSUnlockMutex(lbl_80407560);result=(s32)0xC1000000;}
+if(lbl_8055DD6C!=0){OSUnlockMutex(lbl_80407560);result=(s32)0xC1000000;} /* another request is on the card */
 else {
 lbl_8055DD6C=1; OSUnlockMutex(lbl_80407560);
-if(*(u32*)((u8*)dev+0x24)==2){
+if(*(u32*)((u8*)dev+0x24)==2){ /* set the card up before reading */
 result=fn_800BB0A8(*(s32*)dev,7,3,2,*(s32*)((u8*)dev+0x10),0,0,0,0,(s32)csdOut,0,0);
 if(result!=0) OSReport(messages+0x338,result);
 else {
@@ -11136,19 +11155,19 @@ else {
 result=fn_800BB0A8(*(s32*)dev,0x10,3,1,0x200,0,0,0,0,(s32)blockLenOut,0,0);
 if(result!=0) OSReport(messages+0x358,messages+0x234,result);
 else {
-result=((s32(*)(void*,s32))fn_800BC134)(dev,4);
+result=((s32(*)(void*,s32))fn_800BC134)(dev,4); /* 4 bit bus */
 if(result!=0) OSReport(messages+0x358,messages+0x234,result);
 else {
- s32 fd=*(volatile s32*)dev; *lbl_8055DD70=1; s32 ioctlRes=IOS_Ioctl(fd,6,lbl_8055DD70,4,0,0); if(ioctlRes!=0){OSReport(messages+0x148);ioctlRes=(s32)0xC1000000;} result=ioctlRes; if(ioctlRes!=0){OSReport(messages+0x358,messages+0x234,ioctlRes);}
+ s32 fd=*(volatile s32*)dev; *lbl_8055DD70=1; s32 ioctlRes=IOS_Ioctl(fd,6,lbl_8055DD70,4,0,0); if(ioctlRes!=0){OSReport(messages+0x148);ioctlRes=(s32)0xC1000000;} result=ioctlRes; if(ioctlRes!=0){OSReport(messages+0x358,messages+0x234,ioctlRes);} /* tell the SD module (ioctl 6) the card setup changed */
 }
 }
 }
 if(result!=0){lbl_8055DD6C=0;goto done;}
 }
 DCInvalidateRange((void*)buffer,(u32)length);
-result=fn_800BAE98(*(s32*)dev,0x12,3,1,offset,buffer,blocks,blockSize,1,lbl_8055DD78,callback,callbackArg);
+result=fn_800BAE98(*(s32*)dev,0x12,3,1,offset,buffer,blocks,blockSize,1,lbl_8055DD78,callback,callbackArg); /* MMC READ_MULTIPLE_BLOCK */
 if(result!=0){OSReport(messages+0x418,messages+0x398,result);lbl_8055DD6C=0;}
-if(callback==0)lbl_8055DD6C=0;
+if(callback==0)lbl_8055DD6C=0; /* waited for it: the card is free again */
 }
 }
 done:
