@@ -5,7 +5,7 @@
 // CarSound_destroy() releases them again. The race-only sounds stay null in
 // the other modes.
 typedef struct CarSound {
-    void *vtable;         // at 0x0, CarSound_vtable
+    void *vtable;         // at 0x0, this class's vtable
     void *owner;          // at 0x4, the object this sound set was made for
     void *backfire;       // at 0x8, "backfire.sfx"
     void *lastBoost;      // at 0xC, the boost sound created last
