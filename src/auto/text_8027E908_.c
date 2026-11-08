@@ -2985,6 +2985,14 @@ extern float fn_80214D48(void);
 extern void fn_802168BC(int);
 extern char lbl_8055C874[];
 static inline void fn_80286A34_select(int idx);
+#pragma cplusplus on
+class Fn86A34Draw { public:
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+    virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+    virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+    virtual void v12(); virtual void v13(); virtual void use(char *);
+};
+#pragma cplusplus off
 int fn_802869CC(void *arg0, int arg1) {
     void *p;
     int d;
@@ -2999,6 +3007,95 @@ int fn_802869CC(void *arg0, int arg1) {
         break;
     }
     return 0;
+}
+
+void fn_80286A34(void *arg0) {
+    char *self = (char *)arg0;
+    char *st = *(char **)(self + 0x20);
+    char *strs = lbl_80347E50;
+    if (st != 0) {
+        if (*(unsigned char *)(self + 0x29) == 0) {
+            int lim = *(int *)(st + 4);
+            int v = (int)((float)*(int *)st + *(float *)(st + 0x10));
+            if (v < lim) lim = v;
+            if (lim == *(int *)(st + 4)) {
+                void **obj;
+                *(unsigned char *)(self + 0x29) = 1;
+                obj = (void **)((void *(*)(void))fn_8027ED70)();
+                ((void (*)(void *, char *))(*(void ***)obj)[15])(obj, strs + 0x164);
+            }
+        } else if (*(unsigned char *)(self + 0x2A) == 0) {
+            int i = 0, off = 0, flag;
+            for (; i < *(int *)(self + 0x44); i++, off += 0x1e) {
+                if (fn_8023695C((char *)(*(int *)(self + 0x40) + off)) != 0)
+                    break;
+            }
+            if (i < *(int *)(self + 0x44)) {
+                flag = 1;
+                *(float *)(self + 0x178) = lbl_805641FC;
+            } else {
+                float t = *(float *)(self + 0x178) - fn_80214D48();
+                float m = lbl_80564200;
+                if (!(m > t)) m = t;
+                *(float *)(self + 0x178) = m;
+                flag = ((float)m > lbl_80558DC4[0]);
+            }
+            if (flag == 0) {
+                int idx;
+                fn_80214AF0(0x1F);
+                idx = *(int *)(self + 0x17C);
+                if (idx >= 0)
+                    fn_80286A34_select(idx);
+                else
+                    fn_80286A34_select(*(int *)(self + 0x24));
+                *(unsigned char *)(self + 0x2A) = 1;
+                if (*(unsigned char *)(self + 0x2B) != 0)
+                    ((void (*)(int, int))fn_8027F288)(*(int *)(self + 0x2C), *(int *)(self + 0x30));
+                if (*(unsigned char *)(self + 0x34) != 0)
+                    fn_8027F09C(*(int *)(self + 0x38));
+                if (*(unsigned char *)(self + 0x3C) != 0)
+                    fn_802168BC(-1);
+            }
+        }
+        if (lbl_8055F684 != 0) {
+            float dt = fn_80214D48();
+            char *p = *(char **)(self + 0x20);
+            int lo = *(int *)(p + 4);
+            int hi, i;
+            int v = (int)((float)*(int *)p + *(float *)(p + 0x10));
+            if (v < lo) lo = v;
+            if (lo < *(int *)(p + 4)) {
+                float f = *(float *)(p + 0x10) + *(float *)(p + 8) * dt;
+                *(float *)(p + 0x10) = f;
+                hi = *(int *)(p + 4);
+                v = (int)((float)*(int *)p + (float)f);
+                if (v < hi) hi = v;
+                if (*(unsigned char *)(p + 0xC) != 0) {
+                    for (i = 0; i < fn_80019088(); i++) {
+                        int *e = (int *)fn_80019054(i);
+                        char name[0x14];
+                        char text[0xc8];
+                        if (lo < e[2] && hi >= e[2]) {
+                            if (((int (*)(char *, char *))stricmp)((char *)e[0], (char *)&lbl_8055C860) == 0) {
+                                char *s = (char *)fn_80131234((int)(strs + 0xB3C));
+                                char *d = name; int c;
+                                for (c = 0x14;;) { char ch = *s++; *d++ = ch; if (ch == 0) break; if (--c <= 0) { d[-1] = 0; break; } }
+                                s = (char *)e[1]; d = text;
+                                for (c = 0xc8;;) { char ch = *s++; *d++ = ch; if (ch == 0) break; if (--c <= 0) { d[-1] = 0; break; } }
+                            } else if (((int (*)(char *, char *))stricmp)((char *)e[0], lbl_8055C874) == 0) {
+                                char *s = (char *)fn_80131234((int)(strs + 0xB58));
+                                char *d = name; int c;
+                                for (c = 0x14;;) { char ch = *s++; *d++ = ch; if (ch == 0) break; if (--c <= 0) { d[-1] = 0; break; } }
+                                s = (char *)e[1]; d = text;
+                                for (c = 0xc8;;) { char ch = *s++; *d++ = ch; if (ch == 0) break; if (--c <= 0) { d[-1] = 0; break; } }
+                            }
+                            ((void (*)(char *, char *))fn_8027ED78)(name, text);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 extern float lbl_80558DC4[];
