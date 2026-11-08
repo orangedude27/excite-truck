@@ -177,6 +177,58 @@ extern s32 fn_802CAC28(void *, s32);
 extern void fn_801777CC(void *);
 extern u8 lbl_80339780[];
 extern u8 lbl_80339818[];
+typedef struct Vec2_801E0890 {
+    f32 x, y;
+} Vec2_801E0890;
+typedef struct Poly_801E0890 {
+    s32 n;
+    s32 pad;
+    Vec2_801E0890 p[4];
+} Poly_801E0890;
+typedef struct Cell_801E0890 {
+    f32 x, y, z;
+    s32 id;
+    f32 u, v;
+} Cell_801E0890;
+typedef struct Rec_801E0890 {
+    Poly_801E0890 *quad;
+    Cell_801E0890 *cells;
+    s32 nv;
+    s32 nu;
+    f32 cx, cy, cz;
+} Rec_801E0890;
+typedef struct Obj_801E0890 {
+    u8 pad[0x7C];
+    Rec_801E0890 *recs;
+    s32 count;
+} Obj_801E0890;
+
+extern void *fn_8001285C(s32);
+extern void *fn_80131810();
+extern void fn_80131818(void *);
+extern Poly_801E0890 *fn_801399FC(void *);
+extern Vec2_801E0890 fn_80139C5C(void *);
+extern Vec2_801E0890 fn_8014C770(Vec2_801E0890 *, Vec2_801E0890 *, f32);
+extern f32 fn_80160BE0(Vec2_801E0890 *, Vec2_801E0890 *);
+extern void fn_80160288(Vec2_801E0890 *, Vec2_801E0890 *);
+extern void fn_801602B0(Vec2_801E0890 *);
+extern void fn_80160BBC(Vec2_801E0890 *, Vec2_801E0890 *, Vec2_801E0890 *);
+extern void fn_80160BA0(Vec2_801E0890 *, Vec2_801E0890 *, f32);
+extern void fn_80160B7C(Vec2_801E0890 *, Vec2_801E0890 *, Vec2_801E0890 *);
+extern void fn_80160B18(Vec2_801E0890 *);
+extern void fn_80160B14(void *);
+extern void fn_80160230(void *, Vec2_801E0890 *);
+extern f32 fn_801DD88C(f32, f32);
+extern void fn_801EA1E0(f32 *, s32, f32, f32);
+extern void *fn_8012850C(s32, void *);
+extern void fn_802E30C8(const char *, ...);
+extern void *fn_801E0F34(int);
+extern void fn_801E0F78(f32 *, f32 *, f32 *, f32);
+extern f32 fn_801E0FA4(f32 *, f32 *);
+extern float fn_801E0EE4(void *, void *);
+extern int fn_801E0ED4(int, int);
+extern f32 lbl_80562C80, lbl_80562C84, lbl_80562C88, lbl_80562C90, lbl_80562C94;
+
 #pragma scheduling invalid_target
 void fn_801E0710(void) {
     void *obj;
