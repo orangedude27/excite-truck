@@ -4,6 +4,26 @@
 #include <stdarg.h>
 extern void fn_802C744C(s32, f32 *);
 extern int fn_801476C4();
+extern u8 *__AXGetStackHead();
+extern void fn_801308F4(void *, s32, s32);
+extern void fn_801308F8(void *, s32, s32);
+extern u8 *fn_80130FE0(s32);
+extern u8 *fn_80131234(void *);
+extern void fn_802ADFF4(s32, s32);
+extern void fn_802AE02C(s32, s32);
+extern void fn_802AE0B8(s32, s32);
+extern void fn_802AE168(s32);
+extern u8 lbl_80559F04[];
+extern u8 lbl_80559F08[];
+extern u8 lbl_80559F0C[];
+static inline void StrCopyN80149658(u8 *dst, const u8 *src, int n) {
+    do {
+        u8 c = *src++;
+        *dst++ = c;
+        if ((s8)c == 0) return;
+    } while (--n > 0);
+    dst[-1] = 0;
+}
 #include "revolution/MTX/mtxtypes.h"
 typedef struct { void *pad[3]; void *(*get)(void *, int); } IterFC;
 typedef struct { void *pad[3]; int (*has)(void *, void *); void *(*next)(void *, void *); } IterFD;
