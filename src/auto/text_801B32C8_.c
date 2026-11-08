@@ -131,6 +131,7 @@ s32 fn_801B32C8(void* arg0, s32 arg1) {
     return result;
 }
 #pragma scheduling on
+#pragma dont_inline on
 void* fn_801B3338(void* arg0) {
  s32* obj=*(s32**)((char*)arg0+4);
  if(obj!=NULL) {
@@ -144,6 +145,7 @@ void* fn_801B3338(void* arg0) {
  }
  return NULL;
 }
+#pragma dont_inline off
 
 int fn_801B3390(void) {
     return 0x14;
@@ -182,6 +184,7 @@ void fn_801B34A4(void) {
 
 #pragma push
 #pragma processor 750
+#pragma auto_inline off
 void fn_801B34DC(void *arg0, void *arg1, void *arg2, V3_801B34DC *arg3, V3_801B34DC *arg4, s32 arg5) {
     Ev38_801B34DC ev;
     Ev38_801B34DC cp1;
@@ -225,33 +228,33 @@ void fn_801B34DC(void *arg0, void *arg1, void *arg2, V3_801B34DC *arg3, V3_801B3
         ev.a.x = p1.x * lbl_80562630 + p2.x * lbl_80562630;
         ev.a.y = p1.y * lbl_80562630 + p2.y * lbl_80562630;
         ev.a.z = p1.z * lbl_80562630 + p2.z * lbl_80562630;
-        ev.b = *pos;
-        ev.c = a;
-        ev.d = b;
+        ev.b.x = pos->x; ev.b.y = pos->y; ev.b.z = pos->z;
+        ev.c.x = a.x; ev.c.y = a.y; ev.c.z = a.z;
+        ev.d.x = b.x; ev.d.y = b.y; ev.d.z = b.z;
         ev.kind = type;
         ev.id = *(s32 *)((u8 *)r31 + 0x1EC);
         fn_801796CC(1, &ev, 0x38);
-        cp1 = ev;
+        *(Cp38_801B34DC *)&cp1 = *(Cp38_801B34DC *)&ev;
         fn_801B5360(0xF, &cp1, 0x38);
         if (r26 != 0) {
             ev.a.x *= lbl_80562620; ev.a.y *= lbl_80562620; ev.a.z *= lbl_80562620;
             ev.id = *(s32 *)((u8 *)r26 + 0x1EC);
             fn_801796CC(1, &ev, 0x38);
-            cp2 = ev;
+            *(Cp38_801B34DC *)&cp2 = *(Cp38_801B34DC *)&ev;
             fn_801B5360(0xF, &cp2, 0x38);
         }
     }
     if (PSVECDotProduct(&p1, &p1) > lbl_80562634 && fn_801B32C8(o1, type) != 0) {
-        e20.q = *pos;
-        e20.p = p1;
+        e20.q.x = pos->x; e20.q.y = pos->y; e20.q.z = pos->z;
+        e20.p.x = p1.x; e20.p.y = p1.y; e20.p.z = p1.z;
         e20.s = *(s16 *)(*(u8 **)((u8 *)o1 + 4) + 0x6C);
         e20.id = r31 != 0 ? *(s32 *)((u8 *)r31 + 0x1EC) : -1;
         fn_801796CC(0, &e20, 0x20);
     }
     if (r31 != 0 && type < 8 && ((s32 *)lbl_80435C50)[*(s32 *)((u8 *)r31 + 0x1EC)] < lbl_8055E3C4) {
-        e30.p = *pos;
-        e30.q = p1;
-        e30.r = b;
+        e30.p.x = pos->x; e30.p.y = pos->y; e30.p.z = pos->z;
+        e30.q.x = p1.x; e30.q.y = p1.y; e30.q.z = p1.z;
+        e30.r.x = b.x; e30.r.y = b.y; e30.r.z = b.z;
         e30.dot = d;
         e30.id = *(s32 *)((u8 *)r31 + 0x1EC);
         e30.kind = type;
@@ -266,14 +269,14 @@ void fn_801B34DC(void *arg0, void *arg1, void *arg2, V3_801B34DC *arg3, V3_801B3
     if (type == 0x6E) {
         sc.x = a.x * lbl_80562638; sc.y = a.y * lbl_80562638; sc.z = a.z * lbl_80562638;
     } else {
-        sc = a;
+        sc.x = a.x; sc.y = a.y; sc.z = a.z;
     }
     if (fn_801B3DC0((void *)lbl_8055E6C0, (u32)o1, (u32)o2) == 0 && PSVECDotProduct(&sc, &sc) > lbl_8056263C) {
         f = PSVECMag(&sc);
         if (lbl_80562640 < f) f = lbl_80562640;
         f = lbl_80562644 + lbl_80562648 * (f / lbl_80562640);
         e14.id = 0x4D2;
-        e14.p = *pos;
+        e14.p.x = pos->x; e14.p.y = pos->y; e14.p.z = pos->z;
         e14.w = f;
         fn_801B5360(1, &e14, 0x14);
         fn_801B3E24((void *)lbl_8055E6C0, pos, o1, (s32)o2, type, f);
