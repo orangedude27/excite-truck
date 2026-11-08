@@ -1790,13 +1790,6 @@ extern float lbl_80563A00, lbl_80563A04, lbl_80563A14, lbl_80563AA4, lbl_8055F33
 }
 #pragma scheduling on
 
-/* Light colours (packed RGB, alpha ignored) fn_80256DD8 gives the car
- * preview's light: the diffuse colour depends on the view mode (field
- * 0x120), the ambient colour is always the warm white. */
-#define UI_LIGHT_DIFFUSE_MODE1 0x00AAAAC8
-#define UI_LIGHT_DIFFUSE_MODE0 0x00555766
-#define UI_LIGHT_AMBIENT 0x00FFF5D9
-
 
 #pragma scheduling on
 s32 fn_802571F0(void) { return 0; }
