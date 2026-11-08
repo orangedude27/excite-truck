@@ -4,6 +4,11 @@
 
 extern int vprintf(const char*, va_list);
 
+// SRR1 bit 11 of a program exception: the instruction that trapped uses the
+// floating-point unit, which the faulting thread does not currently own. The
+// floating-point exception handler is the one that can deal with it.
+#define SRR1_FP_UNAVAILABLE (1 << (31 - 11))
+
 OSErrorHandler __OSErrorTable[OS_ERR_MAX];
 u32 __OSFpscrEnableBits = FPSCR_VE | FPSCR_OE | FPSCR_UE | FPSCR_ZE | FPSCR_XE;
 
