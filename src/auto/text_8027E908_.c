@@ -2992,6 +2992,7 @@ class Fn86A34Draw { public:
     virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
     virtual void v12(); virtual void v13(); virtual void use(char *);
 };
+extern "C" int fn_80214AF0(int);
 #pragma cplusplus off
 int fn_802869CC(void *arg0, int arg1) {
     void *p;
