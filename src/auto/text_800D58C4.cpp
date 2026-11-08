@@ -154,6 +154,10 @@ struct Dummy_800DB1E8 {
     virtual void d4(); virtual void d5();
     virtual void *call();
 };
+struct ResAccess_800D58C4 {
+    virtual void v0();
+    virtual void *getRes(u32 type, void *ptr, u32 unk);
+};
 struct StateNode_800D6CA0 { StateNode_800D6CA0* next; };
 extern "C" const char lbl_8031E908[];
 extern "C" const char lbl_8031E92C[];
@@ -765,11 +769,11 @@ extern "C" void *__ct__Q36nw4hbm3lyt5GroupFPCQ46nw4hbm3lyt3res5GroupPQ36nw4hbm3l
 #pragma dont_inline on
 s32 nw4hbm::lyt::Layout::Build(const void *arg1, nw4hbm::lyt::ResourceAccessor *arg2) {
     ResBlockSetTmp blockSet;
-    const char *msg = lbl_8031F728;
-    s32 count;
+    unsigned int count;
     s32 depth;
     s32 groupCreated;
     void *currentParent, *lastPane, *pane, *container, *rootPane, *groupResult;
+    const char *msg = lbl_8031F728;
     const u8 *block;
     u16 size;
     u32 tag;
@@ -793,7 +797,7 @@ s32 nw4hbm::lyt::Layout::Build(const void *arg1, nw4hbm::lyt::ResourceAccessor *
     currentParent = 0;
     lastPane = 0;
     block = (const u8 *)arg1 + *(const u16 *)((const u8 *)arg1 + 0xC);
-    while (count < *(const u16 *)((const u8 *)arg1 + 0xE)) {
+    while ((s32)count < *(const u16 *)((const u8 *)arg1 + 0xE)) {
         tag = *(const u32 *)block;
         switch (tag) {
         case 0x6C797431:
@@ -1662,29 +1666,33 @@ struct TevStageDefault {
     }
 };
 extern "C" void fn_800D9844(void* arg0, u32 arg1, s32 arg2) {
-    u32 format = *(u32*)((u8*)arg0 + 0x4C);
-    if (arg1 > ((format >> 9) & 0x1F))
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x3AD, lbl_8031F990 + 0x3C4);
+    u8* p = (u8*)arg0;
+    const char *msg = lbl_8031F990;
+    if (arg1 > ((*(u32*)(p + 0x4C) >> 9) & 0x1F))
+        Panic__Q26nw4hbm2dbFPCciPCce(msg, 0x3AD, msg + 0x3C4);
     if (arg1 != 0) {
-        if (*(void**)((u8*)arg0 + 0x58) == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x3B0, lbl_8031F990 + 0x360);
-        u32 pitch = ((((format >> 18) & 3) + ((format >> 4) & 0xF)) * 0x14)
-            + ((format >> 6) & 4) + ((format >> 22) & 0x3C)
-            + ((format >> 20) & 4) + ((format >> 27) & 4)
-            + ((format >> 29) & 4) + ((format >> 28) & 4)
-            + ((format >> 26) & 4) + ((format >> 25) & 4)
-            + ((format >> 3) & 4) + ((format >> 12) & 4);
-        u32 count = (*(u32*)((u8*)arg0 + 0x50) >> 9) & 0x1F;
-        u8* dst = (u8*)*(u8**)((u8*)arg0 + 0x58) + pitch + count * 0x10;
+        if (*(void**)(p + 0x58) == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(msg, 0x3B0, msg + 0x360);
+        u32 fmt = *(u32*)(p + 0x4C);
+        u32 count = (*(u32*)(p + 0x50) >> 9) & 0x1F;
+        TevStageDefault *stage = (TevStageDefault *)(*(u8**)(p + 0x58)
+            + ((fmt >> 18) & 3) * 0x14 + ((fmt >> 4) & 0xF) * 0x14
+            + ((fmt >> 6) & 4) + ((fmt >> 22) & 0x3C)
+            + ((fmt >> 20) & 4) + ((fmt >> 27) & 4)
+            + ((fmt >> 29) & 4) + ((fmt >> 28) & 4)
+            + ((fmt >> 26) & 4) + ((fmt >> 25) & 4)
+            + ((fmt >> 3) & 4) + ((fmt >> 12) & 4));
         if (count < arg1) {
-            u8 pattern[16] = {0xFF,4,0xFF,0, 0xFF,0xAF,0,0x61,0x77,0x57,0,0x81,0,0,0,0};
-            u32 remaining = arg1 - count;
-            while (remaining--) {
-                for (u32 i=0;i<16;i++) dst[i]=pattern[i];
-                dst += 0x10;
+            TevStageDefault def;
+            TevStageDefault copy = def;
+            u32 n = arg1 - count;
+            stage += count;
+            while (n--) {
+                *stage = copy;
+                stage++;
             }
         }
-        *(u32*)((u8*)arg0 + 0x50) = (*(u32*)((u8*)arg0 + 0x50) & ~0x3E00) | ((arg1 << 9) & 0x3E00);
+        *(u32*)(p + 0x50) = (*(u32*)(p + 0x50) & ~0x3E00) | (arg1 << 9);
     }
 }
 
@@ -2805,12 +2813,12 @@ void nw4hbm::lyt::Pane::CalculateMtx(const nw4hbm::lyt::DrawInfo &arg1) {
     u8 *pane = (u8 *)this;
     u8 *info = (u8 *)&arg1;
     volatile const u8 *flagInfo = (volatile const u8 *)info;
-    u32 scaleX;
     u32 scaleY;
+    u32 scaleX;
     f32 *sx = (f32 *)&scaleX;
     f32 *sy = (f32 *)&scaleY;
-    register s32 flags = pane[0xCF];
-    u32 scaleFlag;
+    s32 flags = pane[0xCF];
+    int scaleFlag;
     u32 bitsX;
     u32 bitsY;
     u8 scaleByte;
@@ -2827,7 +2835,7 @@ void nw4hbm::lyt::Pane::CalculateMtx(const nw4hbm::lyt::DrawInfo &arg1) {
         bitsY = *(volatile u32 *)(pane + 0x48);
         scaleX = bitsX;
         scaleY = bitsY;
-        if (scaleFlag != 0) {
+        if (scaleFlag) {
             if ((flags & 4) != 0) {
                 *sx *= *(const f32 *)(info + 0x44);
                 *sy *= *(const f32 *)(info + 0x48);
@@ -2862,8 +2870,8 @@ void nw4hbm::lyt::Pane::CalculateMtx(const nw4hbm::lyt::DrawInfo &arg1) {
         }
 
         if (((flagInfo[0x50] >> 6) & 1) != 0 && *(u8 **)(pane + 0xC) != 0) {
-            alphaBits.words.hi = 0x43300000;
             alphaBits.words.lo = pane[0xCD];
+            alphaBits.words.hi = 0x43300000;
             pane[0xCE] = (u8)((f32)(alphaBits.number - lbl_80560EB8) * *(const f32 *)(info + 0x4C));
         } else {
             pane[0xCE] = pane[0xCD];
@@ -2890,7 +2898,7 @@ void nw4hbm::lyt::Pane::CalculateMtx(const nw4hbm::lyt::DrawInfo &arg1) {
             ((nw4hbm::lyt::PaneMtxDispatch *)(node - 4))->Apply(arg1);
             node = *(u8 **)node;
         }
-        if (changeOpacity != 0) {
+        if (changeOpacity) {
             *(f32 *)(info + 0x4C) = opacity;
             info[0x50] = (u8)((info[0x50] & ~0x40) | ((saveBit << 6) & 0x40));
         }
