@@ -8313,7 +8313,6 @@ extern "C" s32 fn_800B5260(void *arg0, void *arg1, u32 arg2, u32 arg3, s32 arg4)
     return 0;
 }
 
-#define VF_TYPES_MOVED
 #define VF_VOLUME_TYPES_DEFINED
 /* ---------------------------------------------------------------------
  * VFiPFCACHE: a volume's cache of disk sectors.
