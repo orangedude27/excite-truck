@@ -22,6 +22,25 @@ extern signed char lbl_8055E635;
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern float lbl_80435740[];
+extern const char lbl_80335980[];
+extern const char lbl_80335990[];
+extern const char lbl_803359AC[];
+extern const char lbl_803359BC[];
+extern const char lbl_803359CC[];
+extern int fn_8012850C(int, const char *);
+extern int fn_802794AC(int, void *);
+extern float lbl_80562574;
+typedef struct {
+    int id;
+    unsigned char b[0x60];
+    int f64, f68, f6c;
+    unsigned char f70;
+    int f74;
+} Ent78;
+typedef struct {
+    char pad[0x20];
+    Ent78 e[8];
+} Src;
 
 int fn_801AE618(int arg0);
 int fn_801AE600(int arg0) {
@@ -42,9 +61,51 @@ int fn_801AE618(int arg0) {
 int fn_801AE620(void *arg0) {
     return fn_801AE618(*(unsigned short *)((char *)arg0 + 0xE));
 }
-#pragma dont_inline reset
 
-#pragma dont_inline on
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+void fn_801AE628(int arg0) {
+    struct {
+        int count;
+        int indices[8];
+        int max_val;
+    } data;
+    register int i;
+    register int offset;
+    register char *entry;
+
+    data.max_val = -1;
+    data.count = 0;
+    for (i = 0, offset = 0; i < lbl_80435780[0x3C0 / 4]; offset += 0x1C, i++) {
+        entry = (char *)*lbl_8055E624 + offset;
+        if (fn_801AE620(entry) != 0) {
+            if (*(short *)(entry + 0x14) >= data.max_val) {
+                if (*(short *)(entry + 0x14) > data.max_val) {
+                    data.count = 0;
+                }
+                data.indices[data.count++] = i;
+                data.max_val = *(short *)(entry + 0x14);
+            }
+        }
+    }
+
+    for (offset = 0, i = 0; i < lbl_80435780[0x3C0 / 4]; i++, offset += 0x1C) {
+        entry = (char *)*lbl_8055E624 + offset;
+        if (fn_801AE620(entry) != 0) {
+            int k;
+            *(short *)(entry + 0x10) = fn_801AE610(arg0, *(short *)(entry + 0xC));
+            *(short *)(entry + 0x12) = 0;
+            if (*(short *)(entry + 0x14) != 0) {
+                *(short *)(entry + 0x12) += 5;
+            }
+            for (k = 0; k < data.count; k++) {
+                if (i == data.indices[k]) {
+                    *(short *)(entry + 0x12) += 5;
+                }
+            }
+        }
+    }
+}
 int fn_801AE790(void *arg0) {
     return *((unsigned char *)arg0 + 0x70) & 3;
 }
@@ -166,7 +227,40 @@ int fn_801AEA64(float arg0, float arg1) {
     if (arg1 < arg0) return 1;
     return -1;
 }
-#pragma small_data on
+
+#pragma scheduling invalid_target
+void fn_801AEBD0(void) {
+    int value = lbl_8055E62C;
+    int count = lbl_80435780[0x3C0 / 4];
+    int i;
+    int share;
+    int remainder;
+
+    for (i = 0; i < count; i++) {
+        short *item = (short *)(*lbl_8055E624 + i * 0x1C);
+        value -= item[0x14 / 2];
+    }
+
+    share = value / 3;
+    remainder = value % 3;
+
+    {
+        register int *global = lbl_80435780;
+        int offset;
+        for (offset = 0, i = 0;
+             i < *(volatile int *)((char *)global + 0x3C0);
+             offset += 0x1C, i++) {
+            char *entry = (char *)*(volatile int *)lbl_8055E624 + offset;
+            short type = *(short *)(entry + 0xC);
+            if (type < 4) {
+                *(short *)(entry + 0x14) += share;
+                if (type == 1)
+                    *(short *)(entry + 0x14) += remainder;
+            }
+        }
+    }
+}
+#pragma scheduling on
 void fn_801AED54(void) {
 
 }
@@ -196,39 +290,78 @@ extern int fn_801B2F24(void);
 extern int fn_801B3050(int);
 extern int fn_801B2ED4(void);
 extern void *memset(void *, int, unsigned int);
+#pragma paired off
+#pragma paired_single off
 void fn_801AED74(void) {
-    int i;
-    int offset;
-    float value;
-    void *base;
-    void **table;
-    int j;
-    int k;
-    void *entry;
-    void *data;
+    register int *base;
+    register void *data;
+    register int i;
+    register int offset;
+    register int **table;
+    register int j;
+    register int *entry;
+    register int count;
+    register int byteOffset;
+    register float value;
 
-    if (lbl_8055E634 == 0) {
-        base = (void *)lbl_8055E624[0];
+    if (*(unsigned char *)&lbl_8055E634 == 0) {
+        base = lbl_8055E624;
+        i = 0;
         value = lbl_80562558;
         offset = 0;
-        for (i = 0; i < lbl_8055E624[1]; i++) {
-            data = (char *)base + offset;
+        for (; i < base[1]; i++) {
+            int selected;
+            data = (char *)base[0] + offset;
             memset(data, 0, 0x1C);
             *(float *)((char *)data + 8) = value;
             *(short *)((char *)data + 0xC) = -100;
             if (i < fn_801B2F24())
-                *(short *)((char *)data + 0x1A) = fn_801B3050(i);
+                selected = fn_801B3050(i);
             else
-                *(short *)((char *)data + 0x1A) = -1;
+                selected = -1;
+            *(short *)((char *)data + 0x1A) = selected;
             offset += 0x1C;
         }
-        table = (void **)lbl_8055E620;
-        for (j = 0; j < 2; j++) {
-            for (k = 0; k < 4; k++) {
-                entry = table[k];
-                if (entry != 0) {
-                    for (i = 0; i < *(int *)((char *)entry + 4); i++)
-                        *(short *)((char *)*(int *)entry + i * 8 + 6) = 0;
+        table = (int **)lbl_8055E620;
+        for (j = 0; j != 6; j += 3) {
+            entry = table[0];
+            if (entry != 0) {
+                count = 0;
+                byteOffset = 0;
+                while (count < entry[1]) {
+                    *(short *)((char *)entry[0] + byteOffset + 6) = 0;
+                    count++;
+                    byteOffset += 8;
+                }
+            }
+            entry = table[1];
+            if (entry != 0) {
+                count = 0;
+                byteOffset = 0;
+                while (count < entry[1]) {
+                    *(short *)((char *)entry[0] + byteOffset + 6) = 0;
+                    count++;
+                    byteOffset += 8;
+                }
+            }
+            entry = table[2];
+            if (entry != 0) {
+                count = 0;
+                byteOffset = 0;
+                while (count < entry[1]) {
+                    *(short *)((char *)entry[0] + byteOffset + 6) = 0;
+                    count++;
+                    byteOffset += 8;
+                }
+            }
+            entry = table[3];
+            if (entry != 0) {
+                count = 0;
+                byteOffset = 0;
+                while (count < entry[1]) {
+                    *(short *)((char *)entry[0] + byteOffset + 6) = 0;
+                    count++;
+                    byteOffset += 8;
                 }
             }
             table += 4;
@@ -236,7 +369,8 @@ void fn_801AED74(void) {
     }
     lbl_8055E62C = fn_801B2ED4();
 }
-
+#pragma paired_single reset
+#pragma paired reset
 extern void fn_801AFA5C(int);
 extern void fn_80128670(void *);
 extern void fn_80128668();
@@ -299,6 +433,99 @@ void fn_801AF65C(void) {
         i++;
     }
 }
+
+#pragma scheduling invalid_target
+extern int fn_801769B8(void);
+extern void fn_801AE928(void);
+extern void fn_801AF65C(void);
+extern void fn_801AFAB0(void);
+extern void fn_801AFAB4(void);
+extern void fn_801AFAB8(void);
+extern int fn_80137C4C(void);
+extern int fn_801AEAA4(const void *, const void *);
+extern int fn_801AEB58(const void *, const void *);
+extern void qsort(void *, unsigned int, unsigned int, int (*)(const void *, const void *));
+extern void fn_801B3208(int, int, float);
+#pragma small_data off
+#pragma dont_inline on
+#pragma scheduling invalid_target
+void fn_801AF6FC(void) {
+    register float *base = lbl_80435740;
+    register int mode;
+    register unsigned int notTwo;
+    register float *value;
+    register int dataIndex;
+    register int entryCount;
+    register int entryOffset;
+    register int rank;
+    register int *sorted;
+    register int *finalSorted;
+    register int finalIndex;
+    register volatile int *area = (volatile int *)((char *)base + 0x40);
+    register int (*compare)(const void *, const void *);
+
+    mode = fn_801769B8();
+    notTwo = (unsigned int)((2 - mode) | (mode - 2)) >> 31;
+    if (notTwo == 0) {
+        fn_801AE928();
+    }
+    fn_801AF65C();
+
+    for (entryCount = 0, entryOffset = 0; entryCount < ((int *)lbl_8055E620)[8]; entryCount++, entryOffset += 4) {
+        int *entry = (int *)*(void **)((char *)lbl_8055E620 + entryOffset);
+        if (entry != 0) {
+            ((void (*)(int, int, int))fn_801AFAB0)(lbl_8055E628, entry[0], entry[1]);
+        }
+    }
+
+    if (notTwo == 0) {
+        ((void (*)(int, int, int))fn_801AFAB4)(lbl_8055E628, lbl_8055E624[0], lbl_8055E624[1]);
+    }
+
+    if (mode == 1) {
+        value = base;
+        for (dataIndex = 0; dataIndex < area[0x3c0 / 4]; dataIndex++, value += 2) {
+            value[0] = fn_801AE9E0(dataIndex, value + 1);
+        }
+    }
+
+    sorted = (int *)((char *)base + 0x408);
+    compare = fn_801AEAA4;
+    if (mode == 1) {
+        compare = fn_801AEB58;
+    }
+    qsort(sorted, area[0x3c0 / 4], 4, compare);
+
+    rank = 0;
+    sorted = (int *)((char *)base + 0x408);
+    for (; rank < area[0x3c0 / 4]; rank++, sorted++) {
+        int index = *sorted;
+        short rankValue = rank + 1;
+        *(short *)((char *)lbl_8055E624[0] + index * 0x1C + 0xC) = rankValue;
+    }
+
+    fn_801AEBD0();
+    fn_801AE628((int)fn_80137C4C());
+
+    if (notTwo == 0) {
+        ((void (*)(int, int, int))fn_801AFAB8)(lbl_8055E628, lbl_8055E624[0], lbl_8055E624[1]);
+    }
+
+    fn_801AE79C(mode);
+
+    if (mode == 1) {
+        finalSorted = (int *)((char *)base + 0x408);
+        for (finalIndex = 0; finalIndex < area[0x3c0 / 4]; finalIndex++, finalSorted++) {
+            int index = *finalSorted;
+            float itemValue = fn_801AF9EC(index, 0);
+            fn_801B3208(index, finalIndex, itemValue);
+        }
+    }
+}
+#pragma scheduling on
+#pragma dont_inline reset
+#pragma small_data on
+
 #pragma scheduling on
 void *fn_801AF8D0(int arg0) {
     void *result = 0;
