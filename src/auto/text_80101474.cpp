@@ -1600,3 +1600,17 @@ extern "C" void SetupGXWithColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5C
     GXClearVtxDesc(); GXSetVtxDesc(9,1); GXSetVtxDesc(0xb,1); GXSetVtxDesc(0xd,1);
 }
 namespace nw4hbm { namespace ut { struct Glyph { unsigned char pad[0x14]; unsigned short x; unsigned char pad16[2]; unsigned char y; unsigned char pad19[7]; unsigned short width; unsigned short height; unsigned char pad20[0x20]; }; }}
+// NW4HBM_ASSERT_VALID_PTR(this) as expanded in CharWriter.cpp
+#define CW_CHECK_THIS(self, line) \
+    { \
+        unsigned int cw_addr = (unsigned int)(self); \
+        unsigned int cw_top = cw_addr & 0xFF000000U; \
+        int cw_r5 = 1, cw_r6 = 1, cw_r7 = 1, cw_r8 = 1, cw_r9 = 1, cw_r10 = 1; \
+        if (cw_top != 0x80000000U && (cw_addr & 0xFF800000U) != 0x81000000U) cw_r10 = 0; \
+        if (cw_r10 == 0 && (cw_addr & 0xF8000000U) != 0x90000000U) cw_r9 = 0; \
+        if (cw_r9 == 0 && cw_top != 0xC0000000U) cw_r8 = 0; \
+        if (cw_r8 == 0 && (cw_addr & 0xFF800000U) != 0xC1000000U) cw_r7 = 0; \
+        if (cw_r7 == 0 && (cw_addr & 0xF8000000U) != 0xD0000000U) cw_r6 = 0; \
+        if (cw_r6 == 0 && (cw_addr & 0xFFFFC000U) != 0xE0000000U) cw_r5 = 0; \
+        if (cw_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, line, lbl_8032818C, self); \
+    }
