@@ -44,24 +44,49 @@ extern int sprintf(char *, const char *, ...);
 extern int stricmp(const char *, const char *);
 extern char lbl_80559C18, lbl_80559C20, lbl_80559C28, lbl_80559C30;
 #pragma inline_depth(0)
+#pragma scheduling invalid_target
 void fn_80137A18(void) {
+    struct ItemListVTable {
+        void *reserved[3];
+        void *(*get_item)(void *, int);
+    };
+    struct ItemVTable {
+        void *reserved0;
+        void *reserved1;
+        const char *(*get_name)(void *);
+        void *reserved3[6];
+        float (*get_float)(void *, const char *);
+    };
+    struct ItemList {
+        struct ItemListVTable *vtable;
+    };
+    struct Item {
+        struct ItemVTable *vtable;
+    };
     char name[0x100];
     char *result = (char *)fn_801379CC();
-    void *list;
-    void *item;
-    int index = 0;
+    struct ItemList *list;
+    int index;
+    struct Item *item;
+    const char *item_name;
 
     sprintf(name, (const char *)(void *)&lbl_80559C18, result + 8);
-    list = fn_80131808(name);
-    while ((item = ((void *(*)(void *, int))(*(void ***)list)[3])(list, index++)) != 0) {
-        const char *item_name = ((const char *(*)(void *))(*(void ***)item)[2])(item);
+    list = (struct ItemList *)fn_80131808(name);
+    index = 0;
+    for (;;) {
+        item = (struct Item *)list->vtable->get_item(list, index++);
+        if (item == 0) {
+            break;
+        }
+        item_name = item->vtable->get_name(item);
         if (stricmp(item_name, (const char *)(void *)&lbl_80559C20) == 0) {
-            *(float *)result = ((float (*)(void *, const char *))(*(void ***)item)[9])(item, (const char *)(void *)&lbl_80559C28);
-            *(float *)(result + 4) = ((float (*)(void *, const char *))(*(void ***)item)[9])(item, (const char *)(void *)&lbl_80559C30);
+            *(float *)result = item->vtable->get_float(item, (const char *)(void *)&lbl_80559C28);
+            *(float *)(result + 4) = item->vtable->get_float(item, (const char *)(void *)&lbl_80559C30);
         }
     }
     fn_80131818(list);
 }
+#pragma scheduling on
 void fn_80137B0C(void* hi) {
     lbl_80559C00 = hi;
 }
@@ -154,6 +179,7 @@ int fn_80137C98(int value) {
 
 int __AXGetStackHead_80137CFC(int index) { return lbl_8042F798[index]; }
 
+#pragma dont_inline fn_80137C84
 void fn_80137D10(void) {
     int i = 0;
     do {
