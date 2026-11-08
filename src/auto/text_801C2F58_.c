@@ -1,5 +1,10 @@
 #include <types.h>
 #include <string.h>
+extern char lbl_8055AAF0[], lbl_8055AAF4[], lbl_8055AAF8[];
+extern void fn_802E3AD0(s32, const char *, ...);
+extern double fn_8002EFA8(double);
+extern double fabs(double);
+extern f32 lbl_805629BC;
 extern f64 atof(const char *);
 extern f32 lbl_8055E85C;
 extern f32 lbl_8055E860;
@@ -2628,6 +2633,11 @@ char *fn_801C98F4(char *p, s32 n) {
     }
     return p;
 }
+
+s32 fn_801C9920(s32 arg0, s32 arg1) {
+    return 0;
+}
+
 extern char lbl_80336B00[];
 extern s32 lbl_8055E814;
 extern s32 fn_802E367C(void);
