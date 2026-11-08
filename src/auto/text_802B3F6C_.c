@@ -21,6 +21,8 @@ extern void *memset(void *, int, unsigned int);
 extern float lbl_80564C48;
 extern void *fn_8012850C(int, void *);
 extern char lbl_8055CE08[];
+__declspec(section ".sdata") extern char lbl_8055CE08[];
+__declspec(section ".sdata") extern int lbl_8055F9D0[];
 extern float lbl_80564C30;
 extern float lbl_80564C40;
 extern float lbl_80564C44;
