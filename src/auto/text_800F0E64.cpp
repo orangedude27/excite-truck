@@ -114,6 +114,8 @@ struct DummyStrmLoadTaskCallback {
     virtual void f1();
 };
 struct DummySeqPlayerIface { u8 pad[0x24]; f32 volume; u8 pad2[0x90 - 0x2C]; u8 b90; virtual void g0(); virtual void g1(); virtual void g2(); virtual void g3(); virtual void g4(); virtual void g5(); virtual void g6(); virtual void g7(); virtual void g8(); virtual void g9(); virtual void g10(); virtual void g11(); virtual void g12(); virtual void g13(); virtual void g14(); virtual f32 g15(); virtual f32 g16(); virtual f32 g17(); virtual f32 g18(); virtual f32 g19(); virtual f32 g20(); virtual f32 g21(); virtual void g22(); virtual void g23(); virtual void g24(); virtual void g25(); virtual void g26(); virtual void g27(); virtual void g28(); virtual s32 g29(); virtual f32 g30(); virtual f32 g31(); virtual f32 g32(s32); virtual f32 g33(s32); virtual f32 g34(s32); virtual f32 g35(s32); };
+struct DummySeqPlayerV { virtual void g0(); virtual void g1(); virtual void g2(); virtual void g3(); virtual void g4(); virtual void g5(); virtual void g6(); virtual void g7(); virtual void g8(); virtual void g9(); virtual void g10(); virtual void g11(); virtual void g12(); virtual void g13(); virtual void g14(); virtual f32 g15(); virtual f32 g16(); virtual f32 g17(); virtual f32 g18(); virtual f32 g19(); virtual f32 g20(); virtual f32 g21(); virtual void g22(); virtual void g23(); virtual void g24(); virtual void g25(); virtual void g26(); virtual void g27(); virtual void g28(); virtual s32 g29(); virtual f32 g30(); virtual f32 g31(); virtual f32 g32(s32); virtual f32 g33(s32); virtual f32 g34(s32); virtual f32 g35(s32); };
+static inline DummySeqPlayerV *SeqTrackPlayer(void *t) { return *(DummySeqPlayerV **)((s8 *)t + 0xB4); }
 struct DummyWorkerLink { void *next; void *prev; };
 struct DummyWorkerCallbackC : DummyWorkerLink { virtual void f0(); virtual void Call(); };
 struct DummyWorkerCallback10 : DummyWorkerLink { virtual void f0(); virtual void f1(); virtual void Call(); };
@@ -437,6 +439,106 @@ extern "C" void PauseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFb(void *arg0, u8 
         channel = *(void **)(p + 0xE4);
     }
     OSRestoreInterrupts(token);
+}
+
+extern "C" const char lbl_80324728[];
+extern "C" const char lbl_803246E0[];
+extern "C" const char lbl_8032477C[];
+extern "C" const char lbl_80324734[];
+extern "C" const char lbl_803247D0[];
+extern "C" const char lbl_80324788[];
+extern "C" void UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *self) {
+    DummySeqPlayerIface *p = M2C_FIELD(self, DummySeqPlayerIface **, 0xB4);
+    f32 a = (f32)M2C_FIELD(self, u8 *, 0x80) / 127.0f;
+    f32 b = (f32)M2C_FIELD(self, u8 *, 0x81) / 127.0f;
+    f32 c = (f32)p->b90 / 127.0f;
+    f32 vol = 1.0f * (a * a) * (b * b) * (c * c) * M2C_FIELD(self, f32 *, 8);
+    vol *= p->g15();
+    f32 pan = (f32)(s8)M2C_FIELD(self, u8 *, 0x82) * 0.0078125f;
+    f32 pan2 = pan * (f32)M2C_FIELD(self, u8 *, 0x83);
+    f32 pitch = 1.0f * p->g16() * M2C_FIELD(self, f32 *, 0xC);
+    f32 t = (f32)(s8)M2C_FIELD(self, u8 *, 0x84) / 63.0f;
+    f32 tc;
+    if (t > 1.0f) tc = 1.0f;
+    else if (t < -1.0f) tc = -1.0f;
+    else tc = t;
+    f32 f25 = 0.0f + tc;
+    f25 = f25 * M2C_FIELD(self, f32 *, 0x18) * p->volume + M2C_FIELD(self, f32 *, 0x10);
+    f25 += p->g17();
+    f32 t2 = (f32)(s8)M2C_FIELD(self, u8 *, 0x86) / 63.0f;
+    f32 tc2;
+    if (t2 > 2.0f) tc2 = 2.0f;
+    else {
+        if (t2 < 0.0f) t2 = 0.0f;
+        tc2 = t2;
+    }
+    f32 f24 = 0.0f + tc2;
+    f24 += M2C_FIELD(self, f32 *, 0x14);
+    f24 += p->g18();
+    f32 f23 = 0.0f;
+    f23 += p->g19();
+    f32 f22 = 0.0f;
+    f22 += p->g20();
+    f32 f21 = 0.0f + ((f32)((s32)M2C_FIELD(self, u8 *, 0x93) - 0x40)) * 0.015625f;
+    f21 += M2C_FIELD(self, f32 *, 0x1C);
+    f21 += p->g21();
+    f32 f20 = 0.0f + ((f32)M2C_FIELD(self, u8 *, 0x8F) / 127.0f - 1.0f);
+    f20 += M2C_FIELD(self, f32 *, 0x20);
+    f20 += p->g31();
+    f32 sa[3];
+    f32 sb[4];
+    f32 sc[4];
+    int i;
+    for (i = 0; i < 3; i++) {
+        sa[i] = 0.0f;
+        sa[i] = sa[i] + (f32)M2C_FIELD(self, u8 *, 0x90 + i) / 127.0f + M2C_FIELD(self, f32 *, 0x24 + i * 4);
+        sa[i] += p->g32(i);
+    }
+    for (i = 0; i < 4; i++) {
+        sb[i] = 0.0f;
+        sb[i] = sb[i] + p->g34(i);
+        sc[i] = 0.0f;
+        sc[i] += p->g35(i);
+    }
+    u32 irq = OSDisableInterrupts();
+    void *ch = M2C_FIELD(self, void **, 0xB8);
+    while (ch != 0) {
+        M2C_FIELD(ch, f32 *, 0x40) = vol;
+        M2C_FIELD(ch, f32 *, 0xA4) = pan2;
+        M2C_FIELD(ch, f32 *, 0x44) = pitch;
+        M2C_FIELD(ch, f32 *, 0x48) = f25;
+        M2C_FIELD(ch, f32 *, 0x4C) = f24;
+        M2C_FIELD(ch, f32 *, 0x50) = f23;
+        M2C_FIELD(ch, f32 *, 0x54) = f22;
+        M2C_FIELD(ch, f32 *, 0x58) = f21;
+        M2C_FIELD(ch, s32 *, 0x5C) = p->g29();
+        M2C_FIELD(ch, f32 *, 0x60) = p->g30();
+        M2C_FIELD(ch, f32 *, 0x64) = f20;
+        M2C_FIELD(ch, f32 *, 0x68) = sa[0];
+        M2C_FIELD(ch, f32 *, 0x6C) = sa[1];
+        M2C_FIELD(ch, f32 *, 0x70) = sa[2];
+        for (i = 0; i < 4; i++) {
+            f32 v = p->g33(i);
+            if (!(i >= 0 && i < 4)) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324728, 0xA5, lbl_803246E0, i, 0, 4);
+            M2C_FIELD(ch, f32 *, 0x74 + i * 4) = v;
+            v = sb[i];
+            if (!(i >= 0 && i < 4)) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8032477C, 0xAA, lbl_80324734, i, 0, 4);
+            M2C_FIELD(ch, f32 *, 0x84 + i * 4) = v;
+            v = sc[i];
+            if (!(i >= 0 && i < 4)) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803247D0, 0xAF, lbl_80324788, i, 0, 4);
+            M2C_FIELD(ch, f32 *, 0x94 + i * 4) = v;
+        }
+        M2C_FIELD(ch, f32 *, 0x20) = M2C_FIELD(self, f32 *, 0x68);
+        M2C_FIELD(ch, f32 *, 0x24) = M2C_FIELD(self, f32 *, 0x6C);
+        M2C_FIELD(ch, s32 *, 0x28) = M2C_FIELD(self, s32 *, 0x70);
+        M2C_FIELD(ch, u8 *, 0x2C) = M2C_FIELD(self, u8 *, 0x74);
+        M2C_FIELD(ch, u8 *, 0x2D) = M2C_FIELD(self, u8 *, 0x75);
+        M2C_FIELD(ch, u8 *, 0x2E) = M2C_FIELD(self, u8 *, 0x76);
+        M2C_FIELD(ch, u8 *, 0x2F) = M2C_FIELD(self, u8 *, 0x77);
+        M2C_FIELD(ch, u8 *, 0x38) = M2C_FIELD(self, u8 *, 0x78);
+        ch = M2C_FIELD(ch, void **, 0xE4);
+    }
+    OSRestoreInterrupts(irq);
 }
 
 extern "C" void Pause__Q46nw4hbm3snd6detail7AxVoiceFb(void *, u8);
