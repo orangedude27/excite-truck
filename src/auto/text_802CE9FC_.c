@@ -121,6 +121,20 @@ extern char lbl_804C97D8;
 #pragma small_data on
 extern void GXSetTevColor(int, ...);
 extern unsigned long fn_802CE9FC(int, int, int, int);
+typedef struct { float x, y, z; } Vec_802D1C04;
+// 3x3 matrix times vector (MTXMultVecSR shape); src/dst may alias.
+static inline void mulVecSR_802D1C04(const float *m, const float *src, float *dst) {
+    float x = src[0], y = src[1], z = src[2];
+    if (dst == src) {
+        dst[0] = z * m[2] + (x * m[0] + y * m[1]);
+        dst[1] = z * m[5] + (x * m[3] + y * m[4]);
+        dst[2] = z * m[8] + (x * m[6] + y * m[7]);
+    } else {
+        dst[0] = z * m[2] + (x * m[0] + y * m[1]);
+        dst[1] = z * m[5] + (x * m[3] + y * m[4]);
+        dst[2] = z * m[8] + (x * m[6] + y * m[7]);
+    }
+}
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -1840,6 +1854,64 @@ void fn_802D1B58(void) {
     *(float *)&m[2] = 0.5f * -t[7];
     GXLoadTexMtxImm((float *)m, 0x21, 1);
 }
+
+extern int PSMTXTranspose(void *, void *);
+extern int PSMTXScale(void *, float, float, float);
+extern int PSMTXRotRad(void *, float, float);
+extern int PSMTXConcat(void *, void *, void *);
+extern int GXSetCurrentMtx(int);
+extern int GXLoadNrmMtxImm(void *, int);
+extern int fn_802C8588(void *, void *, void *);
+extern float lbl_80564F90, lbl_80564FD8;
+extern unsigned char lbl_8055FD19;
+extern unsigned char lbl_802FAC90[];
+void fn_802D1C04(void) {
+    unsigned char *base = (unsigned char *)lbl_804C5650;
+    if (lbl_8055FD70 != 0) {
+        float rot[9];
+        float vec[3];
+        float tmp[12];
+        float sp[12];
+        float *a = (float *)(base + 0x70);
+        float *b = (float *)(base + 0x40);
+        float t;
+        int i;
+        for (i = 0; i < 9; i++) rot[i] = a[i];
+        lbl_8055FD70 = 0;
+        t = rot[1]; rot[1] = rot[3]; rot[3] = t;
+        t = rot[2]; rot[2] = rot[6]; rot[6] = t;
+        t = rot[5]; rot[5] = rot[7]; rot[7] = t;
+        vec[0] = a[9] * a[0] + a[10] * a[1] + a[11] * a[2];
+        vec[1] = a[9] * a[3] + a[10] * a[4] + a[11] * a[5];
+        vec[2] = a[9] * a[6] + a[10] * a[7] + a[11] * a[8];
+        vec[0] *= lbl_80564F90;
+        vec[1] *= lbl_80564F90;
+        vec[2] *= lbl_80564F90;
+        fn_801BFD34(tmp, b + 9, rot);
+        fn_80015B20(sp, b, rot);
+        fn_802D0DD4(base, sp);
+        GXLoadPosMtxImm(base, 0);
+        if (lbl_8055FD19 != 0) {
+            lbl_8055FD19 = 0;
+            GXSetCurrentMtx(0);
+        }
+        switch (*(int *)(base + 0xB4)) {
+        case 4:
+            fn_802D18E8();
+            break;
+        default:
+            break;
+        }
+        {
+            float nrm[12];
+            fn_802D0DD4(nrm, base + 0x40);
+            nrm[3] = nrm[7] = nrm[11] = lbl_80564F88;
+            GXLoadNrmMtxImm(nrm, 0);
+        }
+        if (*(int *)(base + 0xB4) == 2) fn_802D1B58();
+    }
+}
+
 #pragma pop
 extern float lbl_80564FCC;
 extern float lbl_80564FDC;
