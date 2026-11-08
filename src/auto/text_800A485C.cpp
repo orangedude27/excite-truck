@@ -8744,6 +8744,91 @@ extern "C" void *fn_800B65A0(s8 arg0) {
     return (u8 *)lbl_803D2140 + index * 0x1FC8 + 0xA0;
 }
 
+#define VF_VOLUME_TYPES_DEFINED
+/* One of the 26 volume slots of the VF instance (lbl_803D2140): a slot is
+ * 0x1FC8 bytes and its volume object starts 0xA0 into it.  Only the fields the
+ * mount/unmount code uses are named here. */
+struct VFiPFVolume {
+    u8 pad0[0x38];
+    s32 unk38;                        /* 0x38 -1 on a slot being taken */
+    s32 unk3C;                        /* 0x3C likewise */
+    u8 pad40[0x161C - 0x40];
+    s32 openFiles;                    /* 0x161C files open on the volume */
+    s32 openDirs;                     /* 0x1620 directories open on it */
+    u32 cacheFlags;                   /* 0x1624 state of the page cache */
+    u16 cachePages;                   /* 0x1628 pages the cache may hold */
+    u16 cacheExtra;                   /* 0x162A extra pages held back */
+    void *cacheObject;                /* 0x162C the page cache itself */
+    u8 pad1630[0x1638 - 0x1630];
+    void *cacheBuffer;                /* 0x1638 its pages, 0x200 bytes each */
+    s32 cacheSectors;                 /* 0x163C sectors read at a time */
+    s32 sectorsPerCluster;            /* 0x1640 read/write granularity */
+    u8 pad1644[0x1654 - 0x1644];
+    CacheSlot cache[4];               /* 0x1654 the four cached pages */
+    u32 fatBlocks;                    /* 0x1F74 words of the FAT bitmap per block */
+    void *fatList;                    /* 0x1F78 the FAT bitmap blocks */
+    void **fatLink;                   /* 0x1F7C end of that list, &fatList when empty */
+    s32 error;                        /* 0x1F80 last error of this volume */
+    u8 pad1F84[8];
+    u16 flags;                        /* 0x1F8C VF_VOL_* */
+    s8 letter;                        /* 0x1F8E drive letter, 'A' + slot */
+    u8 pad1F8F;
+    u8 lock[0x10];                    /* 0x1F90 recursive lock of the volume */
+    u8 pad1FA0[0x1FAC - 0x1FA0];
+    u16 state;                        /* 0x1FAC reset by a mount */
+    u8 pad1FAE[0x1FBC - 0x1FAE];
+    void *device;                     /* 0x1FBC the device the volume is read through */
+    u8 pad1FC0[0x1FC8 - 0x1FC0];
+};
+
+/* A volume slot is reached as a byte pointer in most of this file; cast it
+ * with VF_VOLUME() to name its fields. */
+#define VF_VOLUME(v) ((VFiPFVolume *)(v))
+
+/* VFiPFVolume.flags; the last four are driven by the media-change callbacks
+ * fn_800A535C (media present: sets 0x4|0x10) and fn_800A52DC (media gone:
+ * sets 0x20 when mounted, clears 0x4|0x8). */
+#define VF_VOL_IN_USE          0x0001 /* the slot holds an attached device */
+#define VF_VOL_MEDIA_PRESENT   0x0004 /* media is in the drive */
+#define VF_VOL_MOUNTED         0x0008 /* the file system is mounted */
+#define VF_VOL_MOUNT_PENDING   0x0010 /* a mount is waiting to be done */
+#define VF_VOL_UNMOUNT_PENDING 0x0020 /* an unmount is waiting to be done */
+
+/* One drive slot, and the drive letters 'A'..'Z' they are named by. */
+#define VF_VOLUME_SIZE 0x1FC8
+#define VF_MAX_VOLUMES 26
+#define VF_FIRST_LETTER 'A'
+
+/* The device description a drive is attached with (fn_800B6628); the mount
+ * copies its params into the volume and writes back the drive letter. */
+struct VFiPFDriver {
+    void *device;                     /* 0x00 device the volume is read through */
+    struct VFiPFDriverParams *params; /* 0x04 page cache of the volume */
+    s8 letter;                        /* 0x08 drive letter, set by the mount */
+    u8 flags;                         /* 0x09 1 device attached, 2 file system
+                                       * mounted, 0x10 media in the drive */
+};
+
+/* Page cache the volume gets, from the driver; the last two default to 1. */
+struct VFiPFDriverParams {
+    void *cacheObject;                /* 0x00 -> volume cacheObject */
+    void *cacheBuffer;                /* 0x04 -> volume cacheBuffer */
+    u16 cachePages;                   /* 0x08 -> volume cachePages */
+    u16 cacheExtra;                   /* 0x0A -> volume cacheExtra */
+    s32 cacheSectors;                 /* 0x0C -> volume cacheSectors */
+    s32 sectorsPerCluster;            /* 0x10 -> volume sectorsPerCluster */
+};
+
+/* The VF instance (lbl_803D2140). */
+#define VF_ATTACHED_DEVICES (*(s32 *)((u8 *)lbl_803D2140 + 0x30))
+#define VF_MOUNTED_VOLUMES (*(s32 *)((u8 *)lbl_803D2140 + 0x34))
+#define VF_LAST_ERROR      (*(s32 *)((u8 *)lbl_803D2140 + 0x40))
+#define VF_LOCK            ((u8 *)lbl_803D2140 + 0x64)
+#define VF_ERR_NO_SLOT     0x4  /* no volume slot, or too many drives attached */
+#define VF_ERR_NO_DEVICE   0xA /* nothing mounted at that drive letter */
+#define VF_ERR_NAME        0x11 /* the drive name could not be registered */
+#define VF_ERR_IN_USE      0x13 /* files or directories are still open */
+
 extern "C" s32 fn_800B94EC(s32, s32);
 extern "C" void fn_800B7710(void *);
 extern "C" s32 fn_800A53F8(void *);
