@@ -1497,7 +1497,7 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
     }
     return this_;
 }
-#pragma inline reset
+#pragma dont_inline reset
 
 extern "C" void fn_800D86F0(void *arg0, void *arg1) {
     s16 v0, v1, v2, v3;
