@@ -2678,66 +2678,76 @@ typedef enum {
 extern s32 lbl_8055D858, lbl_8055D86C;
 extern void (*lbl_8055D8B8)(s32, void *);
 extern s32 __DVDDequeueWaitingQueue(void *);
-s32 fn_80039424(void *block, void (*callback)(s32, void *)) {
+// Cancel a DVD command without waiting for it. A block that is idle, already
+// finished or still only queued is completed here with DVD_RESULT_CANCELED; a
+// block the drive is working on makes the state machine stop and re-enter a
+// clean state first, and @p callback is then called when that has finished.
+// Returns FALSE when a cancel is already in flight (only one at a time).
+// (callback is a DVDCommandCallback; the driver's callers all keep it as a
+// plain (s32, void *) function pointer, so the parameter does too.)
+s32 fn_80039424(DVDCommandBlock *block, void (*callback)(s32, void *)) {
     s32 enabled = OSDisableInterrupts();
-    switch (*(volatile s32 *)((u8 *)block + 0xC)) {
-    case -1: case 0: case 10:
-        if (callback) callback(0, block);
+    switch (block->state) {
+    case DVD_STATE_FATAL: case DVD_STATE_IDLE: case DVD_STATE_CANCELED:
+        if (callback) callback(DVD_RESULT_GOOD, block);
         break;
-    case 1:
-        if (lbl_8055D858) { OSRestoreInterrupts(enabled); return 0; }
-        lbl_8055D858 = 1;
-        lbl_8055D8B8 = callback;
-        if (*(u32 *)((u8 *)block + 8) == 4 || *(u32 *)((u8 *)block + 8) == 33 || *(u32 *)((u8 *)block + 8) == 34 || *(u32 *)((u8 *)block + 8) == 1)
-            lbl_8055D86C = 1;
+    case DVD_STATE_BUSY:
+        if (Canceling) { OSRestoreInterrupts(enabled); return 0; }
+        Canceling = 1;
+        CancelCallback = callback;
+        // A seek or a read leaves the drive mid-transfer: it has to be reset.
+        if (block->command == 4 || block->command == 0x21 || block->command == 0x22 || block->command == 1)
+            ResetFlag = 1;
         break;
-    case 2:
+    case DVD_STATE_WAITING:
         __DVDDequeueWaitingQueue(block);
-        *(volatile s32 *)((u8 *)block + 0xC) = 10;
-        if (*(void (**)(s32, void *))((u8 *)block + 0x28)) (*(void (**)(s32, void *))((u8 *)block + 0x28))(-3, block);
-        if (callback) callback(0, block);
+        block->state = DVD_STATE_CANCELED;
+        if (block->callback) block->callback(DVD_RESULT_CANCELED, block);
+        if (callback) callback(DVD_RESULT_GOOD, block);
         break;
-    case 3:
-        switch (*(u32 *)((u8 *)block + 8)) {
-        case 4: case 5: case 13: case 15: case 33: case 34: case 37:
-            if (callback) callback(0, block);
+    case DVD_STATE_COVER_CLOSED:
+        switch (block->command) {
+        case 4: case 5: case 0xD: case 0xF: case 0x21: case 0x22: case 0x25:
+            if (callback) callback(DVD_RESULT_GOOD, block);
             break;
         case 1: case 2:
             if (__OSInIPL) {
-                executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
-                *(volatile s32 *)((u8 *)block + 0xC) = 10;
-                if (*(void (**)(s32, void *))((u8 *)block + 0x28)) (*(void (**)(s32, void *))((u8 *)block + 0x28))(-3, block);
-                if (callback) callback(0, block);
+                ExecutingBlock = (s32)DummyBlock;
+                block->state = DVD_STATE_CANCELED;
+                if (block->callback) block->callback(DVD_RESULT_CANCELED, block);
+                if (callback) callback(DVD_RESULT_GOOD, block);
                 fn_80038040();
                 break;
             }
+            // Otherwise the drive has to stop first, like the states below.
         default:
-            if (lbl_8055D858) { OSRestoreInterrupts(enabled); return 0; }
-            lbl_8055D858 = 1;
-            lbl_8055D8B8 = callback;
+            if (Canceling) { OSRestoreInterrupts(enabled); return 0; }
+            Canceling = 1;
+            CancelCallback = callback;
             break;
         }
         break;
-    case 4: case 5: case 6: case 7: case 11:
-        if (!lbl_8055D874 && !lbl_8055D870) { OSRestoreInterrupts(enabled); return 0; }
-        OSCancelAlarm(&lbl_80376AD0);
-        lbl_8055D870 = 0;
-        if (*(volatile s32 *)((u8 *)block + 0xC) == 4) lbl_8055D85C = 3;
-        if (*(volatile s32 *)((u8 *)block + 0xC) == 5) lbl_8055D85C = 4;
-        if (*(volatile s32 *)((u8 *)block + 0xC) == 6) lbl_8055D85C = 1;
-        if (*(volatile s32 *)((u8 *)block + 0xC) == 11) lbl_8055D85C = 2;
-        if (*(volatile s32 *)((u8 *)block + 0xC) == 7) lbl_8055D85C = 7;
-        executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
-        *(volatile s32 *)((u8 *)block + 0xC) = 10;
-        if (*(void (**)(s32, void *))((u8 *)block + 0x28)) (*(void (**)(s32, void *))((u8 *)block + 0x28))(-3, block);
-        if (callback) callback(0, block);
+    case DVD_STATE_NO_DISK: case DVD_STATE_COVER_OPENED: case DVD_STATE_WRONG_DISK_ID: case DVD_STATE_7: case DVD_STATE_DISK_ERROR:
+        if (!AlarmInfo && !Transferring) { OSRestoreInterrupts(enabled); return 0; }
+        OSCancelAlarm(&StateAlarm);
+        Transferring = 0;
+        // The drive state the state machine has to move on to first.
+        if (block->state == DVD_STATE_NO_DISK) StateToChange = 3;
+        if (block->state == DVD_STATE_COVER_OPENED) StateToChange = 4;
+        if (block->state == DVD_STATE_WRONG_DISK_ID) StateToChange = 1;
+        if (block->state == DVD_STATE_DISK_ERROR) StateToChange = 2;
+        if (block->state == DVD_STATE_7) StateToChange = 7;
+        ExecutingBlock = (s32)DummyBlock;
+        block->state = DVD_STATE_CANCELED;
+        if (block->callback) block->callback(DVD_RESULT_CANCELED, block);
+        if (callback) callback(DVD_RESULT_GOOD, block);
         fn_80038040();
         break;
-    case 12:
-        executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
-        *(volatile s32 *)((u8 *)block + 0xC) = 10;
-        if (*(void (**)(s32, void *))((u8 *)block + 0x28)) (*(void (**)(s32, void *))((u8 *)block + 0x28))(-3, block);
-        if (callback) callback(0, block);
+    case DVD_STATE_MOTOR_STOPPED:
+        ExecutingBlock = (s32)DummyBlock;
+        block->state = DVD_STATE_CANCELED;
+        if (block->callback) block->callback(DVD_RESULT_CANCELED, block);
+        if (callback) callback(DVD_RESULT_GOOD, block);
         fn_80038040();
         break;
     }
