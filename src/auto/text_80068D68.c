@@ -488,7 +488,7 @@ typedef struct AXFX_REVERBHI_EXP_VIEW {
 } AXFX_REVERBHI_EXP_VIEW;
 
 extern void AXFXReverbHiExpCallback();
-extern s32 __CtrlMsgInt(s32,s32,s32,s32,s32,u32,void*,void*,void*,s32);
+extern s32 __CtrlMsgInt(s32,s32,s32,s32,s32,u32,void*,void*,void*,u8);
 extern u8 lbl_8031ABD8[];
 extern f32 lbl_80560D58;
 extern f32 lbl_80560D5C;
@@ -3725,6 +3725,98 @@ done:
 }
 
 s32 fn_8007011C(void) { return 0; }
+
+u16 UUSB_Write(u8 arg0, u8 *arg1, u16 arg2, BT_HDR *arg3) {
+    extern u16 fn_8006D8D0(u32);
+    extern s32 IUSB_WriteCtrlMsgAsync(s32, s32, s32, s32, s32, u32, void *, void *, void *);
+    extern s32 IUSB_WriteBlkMsgAsync(s32, u32, u32, void *, void (*)(void), void *);
+    s32 ret = 0;
+    char *report = lbl_803142C8;
+    u16 i;
+    BT_HDR *buf;
+    u8 *data;
+    uusb_cb_t *cb;
+    if (((u8 *)&lbl_803BD1E0)[0x29] != 2) {
+        if (lbl_803BD1E0.at_0x28) OSReport(report + 0x8d0);
+        return 0;
+    }
+    if (lbl_803BD1E0.at_0x28) OSReport(report + 0x908, fn_8006D8D0((u32)arg3) - 8);
+    if (lbl_803BD1E0.at_0x28) OSReport(report + 0x928, arg0, arg2);
+    cb = &lbl_803BD1E0;
+    for (i = 0; i < arg2; i++) {
+        if (cb->at_0x28) OSReport(lbl_80558FF8, arg1[i]);
+    }
+    if (lbl_803BD1E0.at_0x28) OSReport(lbl_80559000);
+    switch (arg0) {
+    case 0:
+        cb = &lbl_803BD1E0;
+        buf = GKI_getpoolbuf(((u8 *)cb)[0x1c]);
+        if (buf == 0) {
+            if (cb->at_0x28) OSReport(report + 0x958);
+            return 0;
+        }
+        buf->len = arg2;
+        data = (u8 *)(((u32)buf + 0x27) & ~0x1F);
+        buf->offset = data - ((u8 *)buf + 8);
+        memcpy(data, arg1, arg2);
+        if (((u8 *)cb)[0x48] < 5 && *(u16 *)((u8 *)cb + 0x44) == 0) {
+            ret = IUSB_WriteCtrlMsgAsync(cb->fd, 0x20, 0, 0, 0, arg2, data, (void *)uusb_WriteCtrlDataCB, buf);
+        } else {
+            GKI_enqueue((BUFFER_Q *)((u8 *)&lbl_803BD1E0 + 0x3c), buf);
+            if (lbl_803BD1E0.at_0x28) OSReport(report + 0x99c, *(u16 *)((u8 *)&lbl_803BD1E0 + 0x44));
+            return 0;
+        }
+        if (ret != 0) {
+            if (cb->at_0x28) OSReport(report + 0x9d0);
+            if (lbl_803BD1E0.at_0x28) OSReport(report + 0x9d0);
+            if (lbl_803BD1E0.at_0x28) OSReport(report + 0xa34, ret, ((u8 *)&lbl_803BD1E0)[0x48]);
+            if (ret != -0x16 && lbl_803BD1E0.at_0x28) OSReport(report + 0xa90, ret, ((u8 *)&lbl_803BD1E0)[0x38]);
+            if (ret == -8 && lbl_803BD1E0.at_0x28) OSReport(report + 0xb00, ret, ((u8 *)&lbl_803BD1E0)[0x38]);
+            if (lbl_803BD1E0.at_0x28) OSReport(report + 0x9d0);
+            if (lbl_803BD1E0.at_0x28) OSReport(report + 0x9d0);
+            GKI_freebuf(buf);
+        } else {
+            fn_8006EBAC();
+            ((u8 *)cb)[0x48]++;
+            fn_8006EB88();
+        }
+        break;
+    case 2:
+        buf = GKI_getpoolbuf(((u8 *)&lbl_803BD1E0)[0x1d]);
+        if (buf == 0) {
+            if (lbl_803BD1E0.at_0x28) OSReport(report + 0xb6c);
+            return 0;
+        }
+        buf->len = arg2;
+        data = (u8 *)(((u32)buf + 0x27) & ~0x1F);
+        buf->offset = data - ((u8 *)buf + 8);
+        memcpy(data, arg1, arg2);
+        if (arg2 > 0xbe && lbl_803BD1E0.at_0x28) OSReport(report + 0xbb0);
+        if (((u8 *)&lbl_803BD1E0)[0x38] < 5 && *(u16 *)((u8 *)&lbl_803BD1E0 + 0x34) == 0) {
+            ret = IUSB_WriteBlkMsgAsync(lbl_803BD1E0.fd, ((u8 *)&lbl_803BD1E0)[0x10], arg2, data, (void (*)(void))uusb_WriteBulkDataCB, buf);
+        } else {
+            GKI_enqueue((BUFFER_Q *)((u8 *)&lbl_803BD1E0 + 0x2c), buf);
+            if (lbl_803BD1E0.at_0x28) OSReport(report + 0xbdc, *(u16 *)((u8 *)&lbl_803BD1E0 + 0x34));
+            return 0;
+        }
+        if (ret != 0) {
+            if (lbl_803BD1E0.at_0x28) OSReport(report + 0x9d0);
+            if (lbl_803BD1E0.at_0x28) OSReport(report + 0x9d0);
+            if (lbl_803BD1E0.at_0x28) OSReport(report + 0xc10, ret, ((u8 *)&lbl_803BD1E0)[0x38]);
+            if (ret != -0x16 && lbl_803BD1E0.at_0x28) OSReport(report + 0xc6c, ret, ((u8 *)&lbl_803BD1E0)[0x38]);
+            if (ret == -8 && lbl_803BD1E0.at_0x28) OSReport(report + 0xcdc, ret, ((u8 *)&lbl_803BD1E0)[0x38]);
+            if (lbl_803BD1E0.at_0x28) OSReport(report + 0x9d0);
+            if (lbl_803BD1E0.at_0x28) OSReport(report + 0x9d0);
+            GKI_freebuf(buf);
+        } else {
+            fn_8006EBAC();
+            ((u8 *)&lbl_803BD1E0)[0x38]++;
+            fn_8006EB88();
+        }
+        break;
+    }
+    return ret;
+}
 
 void UUSB_Close(void *arg0) {
     extern s32 IUSB_CloseDeviceAsync(s32, void (*)(void), void *);
