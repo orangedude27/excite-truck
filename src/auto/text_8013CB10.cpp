@@ -168,7 +168,6 @@ struct ZoneMaster {
     inline ZoneMaster() : vt(lbl_8032CAF0), sa(), t6C(lbl_805614C0), t74(lbl_805614C0), t7C(lbl_805614AC), t84(lbl_805614AC), t8C(lbl_805614C4), rb(), sub(), perc() {}
     inline void initWidgets(const char *base);
 };
-typedef ZoneMaster MainObj8013D2C4;  /* old placeholder name, being renamed */
 extern "C" void *fn_80145E70(const char *);
 extern "C" void *fn_802CAC28(const char *, s32);
 inline void ZoneMaster::initWidgets(const char *base) {
