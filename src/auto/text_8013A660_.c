@@ -290,6 +290,7 @@ extern "C" void fn_8013AC78(int arg0, int *arg1) {
     }
 }
 
+#pragma pop
 #pragma cplusplus off
 #pragma scheduling on
 void DBPrintf_8013B490(const char *fmt, ...) {
