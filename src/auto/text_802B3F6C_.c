@@ -33,6 +33,7 @@ extern int fn_802B475C(void *);
 extern void *fn_802B47A0(void *, int *, void *, int, int **);
 extern int fn_802B4BC0(int, int, int);
 extern void *fn_802B4014(void *);
+#define GRID (*(int **)lbl_8055F9D0)
 typedef int (*VFn)(void *, void *);
 #define VT(o, i) ((VFn)(*(void ***)(o))[i])
 void *fn_802B3F6C(void *arg0, int arg1) {
