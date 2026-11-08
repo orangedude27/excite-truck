@@ -2635,7 +2635,139 @@ char *fn_801C98F4(char *p, s32 n) {
 }
 
 s32 fn_801C9920(s32 arg0, s32 arg1) {
-    return 0;
+    char *base = lbl_80336B00;
+    char *record = (char *)arg0;
+    s32 handle = arg1;
+    f32 quat[4];
+    f32 vec[3];
+    f32 trace;
+    f32 root;
+    s32 i;
+    s32 j;
+    s32 k;
+    f32 angle;
+    f32 sv;
+    f32 scale;
+    f32 *rot;
+    fn_802E3AD0(handle, base + 0x9b0);
+    fn_802E3AD0(handle, base + 0x9c0, *(f32 *)record);
+    switch (*(u32 *)(record + 8)) {
+    case 0:
+        fn_802E3AD0(handle, base + 0x9cc);
+        fn_802E3AD0(handle, base + 0x9dc, record + 0xC);
+        break;
+    case 1:
+        fn_802E3AD0(handle, base + 0x9e8);
+        fn_802E3AD0(handle, base + 0x9f8, fn_801C34F4(*(f32 *)(record + 0x54)));
+        fn_802E3AD0(handle, base + 0xa08, *(f32 *)(record + 0xC), *(f32 *)(record + 0x10), *(f32 *)(record + 0x14));
+        rot = (f32 *)(record + 0x18);
+        trace = rot[0] + rot[4] + rot[8];
+        if (trace > lbl_80562970) {
+            root = (f32)fn_8002F234(lbl_8056296C + trace);
+            quat[3] = lbl_80562974 * root;
+            root = lbl_80562974 / root;
+            quat[0] = root * (rot[5] - rot[7]);
+            quat[1] = root * (rot[6] - rot[2]);
+            quat[2] = root * (rot[1] - rot[3]);
+        } else {
+            i = 0;
+            if (rot[4] > rot[0]) i = 1;
+            if (rot[8] > rot[i * 3 + i]) i = 2;
+            j = (i + 1) % 3;
+            k = (j + 1) % 3;
+            root = (f32)fn_8002F234(lbl_8056296C + rot[i * 3 + i] - (rot[j * 3 + k] + rot[k * 3 + j]));
+            quat[i] = lbl_80562974 * root;
+            root = lbl_80562974 / root;
+            quat[3] = root * (rot[j * 3 + k] - rot[k * 3 + j]);
+            quat[j] = root * (rot[i * 3 + j] + rot[j * 3 + i]);
+            quat[k] = root * (rot[i * 3 + k] + rot[k * 3 + i]);
+        }
+        angle = (f32)fn_8002EFA8(quat[3]);
+        sv = sin(angle);
+        if ((f32)__fabs((f64)sv) > lbl_80558DC4[0]) {
+            scale = (lbl_805629BC * angle) / sv;
+            vec[0] = quat[0] * scale;
+            vec[1] = quat[1] * scale;
+            vec[2] = quat[2] * scale;
+        } else {
+            vec[0] = lbl_80562970;
+            vec[1] = lbl_80562970;
+            vec[2] = lbl_80562970;
+        }
+        fn_802E3AD0(handle, base + 0xa24, vec[0], vec[1], vec[2]);
+        fn_802E3AD0(handle, base + 0xa40, *(f32 *)(record + 0x3C), *(f32 *)(record + 0x40), *(f32 *)(record + 0x44));
+        fn_802E3AD0(handle, base + 0xa58, *(f32 *)(record + 0x48), *(f32 *)(record + 0x4C), *(f32 *)(record + 0x50));
+        fn_802E3AD0(handle, base + 0xa70, *(f32 *)(record + 0x58) - *(f32 *)record);
+        fn_802E3AD0(handle, base + 0xa84, *(u8 *)(record + 0x5C) == 0 ? lbl_8055AAF4 : lbl_8055AAF0);
+        break;
+    case 2:
+        fn_802E3AD0(handle, base + 0xa98);
+        break;
+    case 3:
+        fn_802E3AD0(handle, base + 0xaa8);
+        fn_802E3AD0(handle, base + 0xab8, fn_801C98F4((char *)lbl_80562960, *(s32 *)(record + 0x10)));
+        fn_802E3AD0(handle, base + 0xacc, *(u8 *)(record + 0x14) == 0 ? lbl_8055AAF4 : lbl_8055AAF0);
+        fn_802E3AD0(handle, base + 0xadc, *(u8 *)(record + 0x15) == 0 ? lbl_8055AAF4 : lbl_8055AAF0);
+        fn_802E3AD0(handle, base + 0xaf0, *(s32 *)(record + 0xC));
+        break;
+    case 4:
+        fn_802E3AD0(handle, base + 0xb00);
+        fn_802E3AD0(handle, base + 0xb14, *(f32 *)(record + 0x214));
+        fn_802E3AD0(handle, base + 0xb24, record + 0x10);
+        fn_802E3AD0(handle, base + 0xb30, record + 0x110);
+        fn_802E3AD0(handle, base + 0xb40, fn_801C98F4((char *)lbl_80562954, *(s32 *)(record + 0x210)));
+        switch (*(s32 *)(record + 0x210)) {
+        case 0:
+            fn_802E3AD0(handle, base + 0xb84, *(f32 *)(record + 0x218), *(f32 *)(record + 0x21C));
+            fn_802E3AD0(handle, base + 0xb74, *(f32 *)(record + 0x220));
+            fn_802E3AD0(handle, base + 0xb98, *(f32 *)(record + 0x224), *(f32 *)(record + 0x228));
+            break;
+        case 1:
+            fn_802E3AD0(handle, base + 0xb50, *(f32 *)(record + 0x218));
+            fn_802E3AD0(handle, base + 0xb60, *(f32 *)(record + 0x21C));
+            fn_802E3AD0(handle, base + 0xb74, *(f32 *)(record + 0x220));
+            break;
+        case 2:
+            fn_802E3AD0(handle, base + 0xb74, *(f32 *)(record + 0x220));
+            fn_802E3AD0(handle, base + 0xb98, *(f32 *)(record + 0x218), *(f32 *)(record + 0x21C));
+            break;
+        default:
+            fn_802E317C(base + 0xbb0);
+            break;
+        }
+        break;
+    case 5:
+        fn_802E3AD0(handle, base + 0xbe8);
+        fn_802E3AD0(handle, base + 0xb24, record + 0x10);
+        fn_802E3AD0(handle, base + 0xb30, record + 0x110);
+        fn_802E3AD0(handle, base + 0xbf8, fn_801C98F4((char *)lbl_80562958, *(s32 *)(record + 0x210)));
+        fn_802E3AD0(handle, base + 0xb14, *(f32 *)(record + 0x218));
+        fn_802E3AD0(handle, base + 0xc04, *(f32 *)(record + 0x21C));
+        fn_802E3AD0(handle, base + 0xc14, *(f32 *)(record + 0x220));
+        fn_802E3AD0(handle, base + 0xc24, *(s32 *)(record + 0x214));
+        if (*(s32 *)(record + 0x210) == 2)
+            fn_802E3AD0(handle, base + 0xb84, *(f32 *)(record + 0x21C), *(f32 *)(record + 0x220));
+        break;
+    case 6:
+        fn_802E3AD0(handle, base + 0xc34);
+        fn_802E3AD0(handle, base + 0xc44, fn_801C98F4((char *)lbl_8056295C, *(s32 *)(record + 0xC)));
+        fn_802E3AD0(handle, base + 0xb24, record + 0x14);
+        fn_802E3AD0(handle, base + 0xb30, record + 0x114);
+        if (*(s32 *)(record + 0xC) == 0)
+            fn_802E3AD0(handle, base + 0xc50, *(f32 *)(record + 0x214), *(f32 *)(record + 0x218), *(f32 *)(record + 0x21C));
+        else
+            fn_802E317C(base + 0xc68);
+        break;
+    case 7:
+        fn_802E3AD0(handle, base + 0xc94);
+        fn_802E3AD0(handle, base + 0x9dc, record + 0x10C);
+        fn_802E3AD0(handle, base + 0xca4, record + 0xC);
+        break;
+    default:
+        fn_802E317C(base + 0xcb4);
+        fn_802E3AD0(handle, lbl_8055AAF8);
+        break;
+    }
 }
 
 extern char lbl_80336B00[];
