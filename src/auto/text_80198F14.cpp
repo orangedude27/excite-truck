@@ -3237,6 +3237,15 @@ extern "C" void fn_801A2684(void* arg0, f32* arg1, f32* arg2) {
 }
 
 struct Fn801A26FCMtx { f32 m[12]; };
+struct Fn801A26FCObj {
+    virtual void v08(); virtual void v0C(); virtual void v10(); virtual void v14();
+    virtual void v18(); virtual void v1C(); virtual void v20(); virtual void v24();
+    virtual void v28(); virtual void v2C(); virtual void v30(); virtual void v34();
+    virtual void v38(); virtual f32 getRadius();
+    virtual void v40(); virtual void v44(); virtual void v48(); virtual void v4C();
+    virtual f32 *getPos();
+    virtual Fn801A26FCMtx *getMtx();
+};
 #pragma always_inline on
 static inline void MtxMulVecPosInl(const f32 *m, const f32 *src, f32 *dst) {
     if (src == dst) {
@@ -3257,9 +3266,29 @@ extern "C" int fn_80198F64(void *, int, void *, float *, void *, float *, float)
 extern "C" void fn_801C28A8(void*, void*, void*, void*, void*, s32, s32, void* = 0, void* = 0);
 extern "C" void fn_801C2BDC(void*, s32*, f32**, s32*);
 extern "C" void fn_801A26FC(void* arg0, void* arg1) {
+    Fn801A26FCMtx mtx;
+    Vec pos;
+    f32 vecA[3];
+    f32 vecB[3];
+    f32 outHit[3];
+    f32 outN[3];
+    f32 vecA2[3];
+    f32 vecB2[3];
+    f32 n[3];
+    f32 q[3];
+    f32 pos68[3];
+    f32 up[3];
+    f32 pos50[3];
+    f32 zero[3];
+    Vec delta;
+    f32 tmp[3];
+    Vec delta2;
+    s32 count;
+    f32* list;
+    s32 pad;
+    f32 depth;
     u32 type = *(u32*)((u8*)arg1 + 0x18);
     if ((type - 0x47525500U) == 0x5550U) {
-        Vec delta;
         f32* a = *(f32**)((u8*)arg0 + 0xC);
         f32* b = *(f32**)((u8*)arg1 + 0xC);
         delta.x = a[9] - b[9];
@@ -3270,20 +3299,10 @@ extern "C" void fn_801A26FC(void* arg0, void* arg1) {
             ((f32 (*)(void*))(*(u32*)(*(u32*)arg1 + 0x3C)))(arg1);
         if (d < radius * radius) {
             u8* obj = *(u8**)((u8*)arg1 + 0x17C);
-            f32 tmp[3];
-            Fn801A26FCMtx mtx;
-            Vec pos;
-            f32 vecA[3];
-            f32 vecB[3];
-            f32 outHit[3];
-            f32 outN[3];
-            f32 pos68[3];
-            f32 up[3];
-            f32 z = lbl_805622D0;
             u8* owner;
             pos = *(Vec*)(obj + 0x38);
-            vecA[0] = z; vecA[1] = z; vecA[2] = z;
-            vecB[0] = z; vecB[1] = z; vecB[2] = z;
+            vecA[0] = lbl_805622D0; vecA[1] = lbl_805622D0; vecA[2] = lbl_805622D0;
+            vecB[0] = lbl_805622D0; vecB[1] = lbl_805622D0; vecB[2] = lbl_805622D0;
             owner = *(u8**)((u8*)arg1 + 4);
             if (owner != 0) {
                 vecA[0] = *(f32*)(owner + 0x118);
@@ -3298,17 +3317,7 @@ extern "C" void fn_801A26FC(void* arg0, void* arg1) {
             }
             mtx = *((Fn801A26FCMtx* (*)(void*))(*(u32*)(*(u32*)obj + 0x54)))(obj);
             f32* m = mtx.m;
-            f32* src = &pos.x;
-            if (tmp == src) {
-                f32 x = src[0], y = src[1], zz = src[2];
-                tmp[0] = zz * m[6] + (x * m[0] + y * m[3]);
-                tmp[1] = zz * m[7] + (x * m[1] + y * m[4]);
-                tmp[2] = zz * m[8] + (x * m[2] + y * m[5]);
-            } else {
-                tmp[0] = src[2] * m[6] + (src[0] * m[0] + src[1] * m[3]);
-                tmp[1] = src[2] * m[7] + (src[0] * m[1] + src[1] * m[4]);
-                tmp[2] = src[2] * m[8] + (src[0] * m[2] + src[1] * m[5]);
-            }
+            MtxMulVecPosInl(m, &pos.x, tmp);
             m[9] = m[9] + tmp[0];
             m[10] = m[10] + tmp[1];
             m[11] = m[11] + tmp[2];
@@ -3318,56 +3327,46 @@ extern "C" void fn_801A26FC(void* arg0, void* arg1) {
             fn_801C28A8(*(void**)((u8*)arg0 + 0x30), m, pos68, vecA, vecB,
                         *(s32*)((u8*)arg0 + 0x28), *(s32*)((u8*)arg0 + 0x2C), outHit, outN);
             if (PSVECDotProduct((Vec*)outN, (Vec*)outN) > lbl_805623AC) {
-                up[0] = z; up[1] = lbl_805622E0; up[2] = z;
+                up[0] = lbl_805622D0; up[1] = lbl_805622E0; up[2] = lbl_805622D0;
                 fn_801B34DC(arg1, 0, (Vec*)outHit, (Vec*)outN, (Vec*)up, *(s32*)((u8*)arg0 + 0x20));
             }
         }
     } else if ((type - 0x424F5800U) == 0x5820U) {
         f32* o = ((f32* (*)(void*))(*(u32*)(*(u32*)arg1 + 0x50)))(arg1);
         f32* p = *(f32**)((u8*)arg0 + 0xC);
-        Vec delta;
-        delta.x = p[9] - o[9];
-        delta.y = p[10] - o[10];
-        delta.z = p[11] - o[11];
+        delta2.x = p[9] - o[9];
+        delta2.y = p[10] - o[10];
+        delta2.z = p[11] - o[11];
+        f32 dd = PSVECDotProduct(&delta2, &delta2);
         f32 r = *(f32*)((u8*)arg0 + 0x24) + *(f32*)((u8*)arg1 + 0x30);
-        if (PSVECDotProduct(&delta, &delta) < r * r) {
-            f32 vecA[3];
-            f32 vecB[3];
-            f32 pos50[3];
-            f32 z = lbl_805622D0;
+        if (dd < r * r) {
             u8* owner;
-            vecA[0] = z; vecA[1] = z; vecA[2] = z;
-            vecB[0] = z; vecB[1] = z; vecB[2] = z;
+            vecA2[0] = lbl_805622D0; vecA2[1] = lbl_805622D0; vecA2[2] = lbl_805622D0;
+            vecB2[0] = lbl_805622D0; vecB2[1] = lbl_805622D0; vecB2[2] = lbl_805622D0;
             owner = *(u8**)((u8*)arg1 + 4);
             if (owner != 0) {
-                vecA[0] = *(f32*)(owner + 0x118);
-                vecA[1] = *(f32*)(owner + 0x11C);
-                vecA[2] = *(f32*)(owner + 0x120);
-                vecB[0] = *(f32*)(owner + 0x124);
-                vecB[1] = *(f32*)(owner + 0x128);
-                vecB[2] = *(f32*)(owner + 0x12C);
+                vecA2[0] = *(f32*)(owner + 0x118);
+                vecA2[1] = *(f32*)(owner + 0x11C);
+                vecA2[2] = *(f32*)(owner + 0x120);
+                vecB2[0] = *(f32*)(owner + 0x124);
+                vecB2[1] = *(f32*)(owner + 0x128);
+                vecB2[2] = *(f32*)(owner + 0x12C);
             }
             pos50[0] = *(f32*)((u8*)arg1 + 0x24);
             pos50[1] = *(f32*)((u8*)arg1 + 0x28);
             pos50[2] = *(f32*)((u8*)arg1 + 0x2C);
             void* r4 = ((void* (*)(void*))(*(u32*)(*(u32*)arg1 + 0x50)))(arg1);
-            fn_801C28A8(*(void**)((u8*)arg0 + 0x30), r4, pos50, vecA, vecB, 0, -1, 0, 0);
+            fn_801C28A8(*(void**)((u8*)arg0 + 0x30), r4, pos50, vecA2, vecB2, 0, -1, 0, 0);
         }
     } else if ((type - 0x504F4C00U) == 0x4C59U) {
-        s32 count = 0;
-        f32* list;
-        s32 pad;
-        s32 i;
         s32 off;
+        s32 i;
         f32 z;
+        count = 0;
         fn_801C2BDC(*(void**)((u8*)arg0 + 0x30), &count, &list, &pad);
         z = lbl_805622D0;
         off = 0;
         for (i = 0; i < count; i++, off += 0xC) {
-            f32 n[3];
-            f32 depth;
-            f32 q[3];
-            f32 zero[3];
             zero[0] = z; zero[1] = z; zero[2] = z;
             if (fn_80198F64((u8*)list + off, (int)arg1, n, &depth, q, zero, lbl_805623C0)) {
                 f32* e = (f32*)((u8*)list + off);
