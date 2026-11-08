@@ -2038,6 +2038,7 @@ void fn_801965AC(void *arg0) {
 }
 
 extern void fn_80196AA0(void *);
+extern void fn_80198530(void *);
   void fn_801967A4(void *arg0) {
       int value = *(int *)((char *)arg0 + 0x210);
       switch (value) {
