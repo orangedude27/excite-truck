@@ -2,7 +2,9 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
 
-__declspec(section ".data") extern int lbl_802FE850;
+#include <MSL/ctype.h>
+
+extern __Locale lbl_802FE850;
 
 enum argument_options {
     normal_argument,
@@ -36,4 +38,203 @@ static inline int msl_isdigit(int c) {
     int locale = *(int *)((char *)&lbl_802FE850 + 0x38);
     return (c < 0 || c >= 0x100) ? 0
                                  : (*(unsigned short *)(*(int *)(locale + 8) + c * 2) & 8);
+}
+
+const char* parse_format_80109DEC(const char* format_string, scan_format *format) {
+    const char* s = format_string;
+    int c;
+    int flag_found, invert;
+    scan_format f = { 0, 0, normal_argument, 0, 2147483647, { 0 } };
+
+    if (((c = *++s) == '%')) {
+        f.conversion_char = c;
+        *format = f;
+        return ((const char*)s + 1);
+    }
+
+    if (c == '*') {
+        f.suppress_assignment = 1;
+        c = *++s;
+    }
+
+    if (msl_isdigit(c)) {
+        f.field_width = 0;
+
+        do {
+            f.field_width = (f.field_width * 10) + (c - '0');
+            c = *++s;
+        } while (msl_isdigit(c));
+
+        if (f.field_width == 0) {
+            f.conversion_char = 0xFF;
+            *format = f;
+            return ((const char*)s + 1);
+        }
+
+        f.field_width_specified = 1;
+    }
+
+    flag_found = 1;
+
+    switch (c) {
+        case 'h':
+            f.argument_options = short_argument;
+            if (s[1] == 'h') {
+                f.argument_options = char_argument;
+                c = *++s;
+            }
+            break;
+        case 'l':
+            f.argument_options = long_argument;
+            if (s[1] == 'l') {
+                f.argument_options = long_long_argument;
+                c = *++s;
+            }
+            break;
+        case 'L':
+            f.argument_options = long_double_argument;
+            break;
+        case 'j':
+            f.argument_options = intmax_argument;
+            break;
+        case 'z':
+            f.argument_options = size_t_argument;
+            break;
+        case 't':
+            f.argument_options = ptrdiff_argument;
+            break;
+        default:
+            flag_found = 0;
+    }
+
+    if (flag_found) {
+        c = *++s;
+    }
+
+    f.conversion_char = c;
+
+    switch (c) {
+        case 'd':
+        case 'i':
+        case 'u':
+        case 'o':
+        case 'x':
+        case 'X':
+            if (f.argument_options == long_double_argument) {
+                f.conversion_char = 0xFF;
+                break;
+            }
+            break;
+
+        case 'a':
+        case 'A':
+        case 'f':
+        case 'F':
+        case 'e':
+        case 'E':
+        case 'g':
+        case 'G':
+            if (f.argument_options == char_argument || f.argument_options == short_argument || f.argument_options == intmax_argument || f.argument_options == size_t_argument || f.argument_options == ptrdiff_argument || f.argument_options == long_long_argument) {
+                f.conversion_char = 0xFF;
+                break;
+            }
+            if (f.argument_options == long_argument) {
+                f.argument_options = double_argument;
+            }
+            break;
+
+        case 'p':
+            f.argument_options = long_argument;
+            f.conversion_char = 'x';
+            break;
+
+        case 'c':
+            if (f.argument_options == long_argument) {
+                f.argument_options = wchar_argument;
+            } else {
+                if (f.argument_options != normal_argument) {
+                    f.conversion_char = 0xFF;
+                }
+            }
+            break;
+
+        case 's':
+            if (f.argument_options == long_argument) {
+                f.argument_options = wchar_argument;
+            } else {
+                if (f.argument_options != normal_argument) {
+                    f.conversion_char = 0xFF;
+                }
+            }
+            {
+                int i;
+                unsigned char* p;
+                for (i = sizeof(f.char_set), p = f.char_set; i; --i) {
+                    *p++ = 0xFF;
+                }
+                f.char_set[1] = 0xC1;
+                f.char_set[4] = 0xFE;
+            }
+            break;
+
+        case 'n':
+            break;
+
+        case '[':
+            if (f.argument_options == long_argument) {
+                f.argument_options = wchar_argument;
+            } else {
+                if (f.argument_options != normal_argument) {
+                    f.conversion_char = 0xFF;
+                }
+            }
+
+            c = *++s;
+            invert = 0;
+
+            if (c == '^') {
+                invert = 1;
+                c = *++s;
+            }
+
+            if (c == ']') {
+                set_char_map(f.char_set, ']');
+                c = *++s;
+            }
+
+            while (c && c != ']') {
+                int d;
+                set_char_map(f.char_set, c);
+
+                if (*(s + 1) == '-' && (d = *(s + 2)) != 0 && d != ']') {
+                    while (++c <= d) {
+                        set_char_map(f.char_set, c);
+                    }
+                    c = *(s += 3);
+                } else {
+                    c = *++s;
+                }
+            }
+
+            if (!c) {
+                f.conversion_char = 0xFF;
+                break;
+            }
+
+            if (invert) {
+                int i;
+                unsigned char* p;
+                for (i = sizeof(f.char_set), p = f.char_set; i; --i, ++p) {
+                    *p = ~*p;
+                }
+                break;
+            }
+            break;
+        default:
+            f.conversion_char = 0xFF;
+            break;
+    }
+
+    *format = f;
+    return ((const char*)s + 1);
 }
