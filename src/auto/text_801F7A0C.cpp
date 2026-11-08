@@ -28,6 +28,7 @@ extern f32 lbl_80563010, lbl_80562FFC;
 void fn_801A324C(void*, s32, void*, f32, f32);
 }
 struct FAAVec { f32 x; f32 y; f32 z; };
+struct FAANames { char *n[24]; };
 class FAAMgr {
 public:
     virtual void a8();
@@ -1677,6 +1678,229 @@ extern "C" void fn_801FA9AC(void) {
     for (void *node = lbl_8055EC50; node != 0; node = *(void **)((u8 *)node + 0x44)) {
         if (*(s32 *)((u8 *)node + 0x34) == 0)
             fn_801EA1E0((u8 *)node + 0x2C, 0, *(f32 *)((u8 *)node + 0x28), *(f32 *)((u8 *)node + 0x30));
+    }
+}
+
+extern "C" void fn_801FAAC4(void *arg0, FAAMgr *arg1) {
+    register char *base = lbl_8033AF80;
+    char *names[24];
+    memcpy(names, lbl_802F9B40, 96);
+    char *name = (char *)arg1->get((const char *)lbl_8055B2CC);
+    char **p = names;
+    s32 idx = 0;
+    while (stricmp(*p, name) != 0) {
+        idx++;
+        p++;
+        if (idx == 0x18) {
+            fn_802E317C(base + 0x190, name);
+        }
+    }
+    *(s32 *)((u8 *)arg0 + 0x50) = idx;
+    if (idx > 0x16) {
+        return;
+    }
+    switch (idx) {
+    case 0:
+    case 14:
+    case 17:
+    case 19:
+        *(f32 *)((u8 *)arg0 + 0x58) = arg1->getF(lbl_8055B328);
+        break;
+    case 1:
+    case 2:
+    case 3:
+    case 6:
+    case 15:
+        *(f32 *)((u8 *)arg0 + 0x58) = arg1->getF(lbl_8055B32C);
+        *(f32 *)((u8 *)arg0 + 0x5C) = arg1->getF(lbl_8055B330);
+        *(f32 *)((u8 *)arg0 + 0x60) = arg1->getF(lbl_8055B334);
+        break;
+    case 4:
+        *(f32 *)((u8 *)arg0 + 0x58) = arg1->getF(base + 0x1A8);
+        *(f32 *)((u8 *)arg0 + 0x5C) = arg1->getF(lbl_8055B338);
+        *(f32 *)((u8 *)arg0 + 0x60) = arg1->getF(lbl_8055B340);
+        break;
+    case 8:
+        *(f32 *)((u8 *)arg0 + 0x58) = arg1->getF(lbl_8055B340);
+        *(f32 *)((u8 *)arg0 + 0x5C) = arg1->getF(lbl_8055B344);
+        *(f32 *)((u8 *)arg0 + 0x60) = arg1->getF(lbl_8055B348);
+        break;
+    case 5:
+    case 7:
+        *(f32 *)((u8 *)arg0 + 0x58) = arg1->getF(lbl_8055B328);
+        *(f32 *)((u8 *)arg0 + 0x5C) = arg1->getF(lbl_8055B340);
+        break;
+    case 9:
+        *(f32 *)((u8 *)arg0 + 0x58) = arg1->getF(base + 0x1B4);
+        *(f32 *)((u8 *)arg0 + 0x5C) = arg1->getF(base + 0x1C0);
+        break;
+    case 10:
+    {
+        const char *s = arg1->getD(base + 0x1CC, lbl_8055B310);
+        s32 n = 0x10;
+        char *d = (char *)arg0 + 0x58;
+        u8 c;
+        goto body1;
+        for (;;) {
+            if (--n <= 0) { d[-1] = 0; break; }
+        body1:
+            c = *s++;
+            *d++ = c;
+            if ((s8)c == 0) break;
+        }
+        if (*(s8 *)((u8 *)arg0 + 0x58) != 0) {
+            return;
+        }
+        s = arg1->getD(lbl_8055B2A8, lbl_8055B310);
+        n = 0x10;
+        d = (char *)arg0 + 0x58;
+        goto body2;
+        for (;;) {
+            if (--n <= 0) { d[-1] = 0; break; }
+        body2:
+            c = *s++;
+            *d++ = c;
+            if ((s8)c == 0) break;
+        }
+        {
+            char *dot = fn_80029004((char *)arg0 + 0x58, 0x2E);
+            if (dot == 0) {
+                return;
+            }
+            *dot = 0;
+        }
+        d = (char *)arg0 + 0x58;
+        n = 0x10;
+        s = lbl_8055B34C;
+        do {
+            n--;
+            d++;
+        } while (*(s8 *)d != 0);
+        if (n <= 0) {
+            return;
+        }
+        goto body3;
+        for (;;) {
+            if (--n <= 0) { d[-1] = 0; break; }
+        body3:
+            c = *s++;
+            *d++ = c;
+            if ((s8)c == 0) break;
+        }
+        break;
+    }
+    case 20:
+    {
+        const char *s = arg1->getD(base + 0x1CC, lbl_8055B310);
+        s32 n = 0x10;
+        char *d = (char *)arg0 + 0x58;
+        u8 c;
+        goto body4;
+        for (;;) {
+            if (--n <= 0) { d[-1] = 0; break; }
+        body4:
+            c = *s++;
+            *d++ = c;
+            if ((s8)c == 0) break;
+        }
+        if (*(s8 *)((u8 *)arg0 + 0x58) != 0) {
+            return;
+        }
+        s = arg1->getD(lbl_8055B2A8, lbl_8055B310);
+        n = 0x10;
+        d = (char *)arg0 + 0x58;
+        goto body5;
+        for (;;) {
+            if (--n <= 0) { d[-1] = 0; break; }
+        body5:
+            c = *s++;
+            *d++ = c;
+            if ((s8)c == 0) break;
+        }
+        {
+            char *dot = fn_80029004((char *)arg0 + 0x58, 0x2E);
+            if (dot == 0) {
+                return;
+            }
+            *dot = 0;
+        }
+        d = (char *)arg0 + 0x58;
+        n = 0x10;
+        s = lbl_8055B354;
+        do {
+            n--;
+            d++;
+        } while (*(s8 *)d != 0);
+        if (n <= 0) {
+            return;
+        }
+        goto body6;
+        for (;;) {
+            if (--n <= 0) { d[-1] = 0; break; }
+        body6:
+            c = *s++;
+            *d++ = c;
+            if ((s8)c == 0) break;
+        }
+        break;
+    }
+    case 11:
+    {
+        void *model = arg1->get(lbl_8055B2A8);
+        void *res = (void *)fn_802C6B44(model);
+        memcpy((u8 *)arg0 + 0x58, (u8 *)res + 0x2C, 0x1C);
+        *(f32 *)((u8 *)arg0 + 0x70) = arg1->getFD(base + 0x1D8, lbl_80562FF0);
+        ((void (*)(void *))fn_802C6C20)(res);
+        break;
+    }
+    case 12:
+        *(f32 *)((u8 *)arg0 + 0x58) = arg1->getF(lbl_8055B328);
+        *(f32 *)((u8 *)arg0 + 0x5C) = arg1->getF(lbl_8055B340);
+        break;
+    case 13:
+    case 18:
+    case 22:
+        *(f32 *)((u8 *)arg0 + 0x58) = arg1->getF(lbl_8055B328);
+        *(f32 *)((u8 *)arg0 + 0x5C) = arg1->getF(lbl_8055B348);
+        *(f32 *)((u8 *)arg0 + 0x60) = lbl_8056300C * arg1->getFD(base + 0x1EC, lbl_80562FF0);
+        break;
+    case 16:
+    {
+        FAAVec v;
+        *(f32 *)((u8 *)arg0 + 0x58) = arg1->getF(lbl_8055B32C);
+        *(f32 *)((u8 *)arg0 + 0x5C) = arg1->getF(lbl_8055B330);
+        *(f32 *)((u8 *)arg0 + 0x60) = arg1->getF(lbl_8055B334);
+        v = arg1->getV(base + 0x204);
+        *(f32 *)((u8 *)arg0 + 0x64) = v.x;
+        *(f32 *)((u8 *)arg0 + 0x68) = v.y;
+        *(f32 *)((u8 *)arg0 + 0x6C) = v.z;
+        break;
+    }
+    case 21:
+    {
+        const char *s = (const char *)arg1->get(lbl_8055B2A8);
+        s32 n = 0x10;
+        char *d = (char *)arg0 + 0x6C;
+        u8 c;
+        goto body7;
+        for (;;) {
+            if (--n <= 0) { d[-1] = 0; break; }
+        body7:
+            c = *s++;
+            *d++ = c;
+            if ((s8)c == 0) break;
+        }
+        FAAVec v;
+        *(f32 *)((u8 *)arg0 + 0x58) = arg1->getF(lbl_8055B328);
+        *(f32 *)((u8 *)arg0 + 0x5C) = arg1->getFD(lbl_8055B35C, *(f32 *)((u8 *)arg0 + 0x58));
+        v = arg1->getV(lbl_8055B364);
+        *(f32 *)((u8 *)arg0 + 0x60) = v.x;
+        *(f32 *)((u8 *)arg0 + 0x64) = v.y;
+        *(f32 *)((u8 *)arg0 + 0x68) = v.z;
+        break;
+    }
+    default:
+        break;
     }
 }
 
