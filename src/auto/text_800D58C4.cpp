@@ -1209,6 +1209,7 @@ extern "C" void fn_800D7F78(void *arg0) {
     *(s32 *)((u8 *)arg0 + 8) = (s32)p;
 }
 
+#pragma inline off
 extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36nw4hbm3lyt11ResBlockSet(void* this_, const void* res, const void* blockSet) {
     extern void fn_800D7F78(void*);
     extern void* fn_8002F53C(void*, void (*)(s32*), s32 (*)(s32, s32), s32, s32);
@@ -1278,12 +1279,11 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
     extern void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
     extern char lbl_8031FF08[];
     extern const char lbl_8031F990[];
+    const char* strBase = lbl_8031F990;
     u8* self = (u8*)this_;
-    const u8* materialRes = (const u8*)res;
-    const u8* block = (const u8*)blockSet;
     u8* dst;
     const u8* src;
-    u32 i;
+    int i;
     s32 texBase;
     s32 off;
     void* texCoordAry;
@@ -1316,15 +1316,15 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
     void* tevDst;
     u8* tevCur;
     void* colorDst;
-    u32 j;
+    int j;
 
     *(void**)self = lbl_8031FF08;
     fn_800D7F78(self + 0x18);
     fn_8002F53C(self + 0x3C, fn_800D7F6C, fn_800D2DD4, 4, 4);
     Init__Q34nw4r3lyt8MaterialFv(self);
-    fn_800D9584(self, materialRes);
+    fn_800D9584(self, res);
     dst = self + 0x24;
-    src = materialRes + 0x14;
+    src = (const u8*)res + 0x14;
     i = 0;
     do {
         fn_800D86F0(dst, (void*)src);
@@ -1333,7 +1333,7 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
         src += 8;
     } while (i < 3);
     dst = self + 0x3C;
-    src = materialRes + 0x2C;
+    src = (const u8*)res + 0x2C;
     i = 0;
     do {
         GXInitLightColor_800D8714(dst, (void*)src);
@@ -1341,49 +1341,49 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
         dst += 4;
         src += 4;
     } while (i < 4);
-    texBase = fn_800D8A04((s32)materialRes, 0x40);
-    off = (s32)((u8)fn_800D8720((s32*)(materialRes + 0x3C)) << 2) + 0x40;
-    texCoordSrc = (void*)fn_800D89FC((s32)materialRes, off);
-    off += (u8)fn_800D872C((s32*)(materialRes + 0x3C)) * 0x14;
-    texCoordGenAry = fn_800D89F4((s32)materialRes, off);
-    off += (s32)((u8)fn_800D8738((s32*)(materialRes + 0x3C)) << 2);
-    texNum = fn_800D89E4((u8)fn_800D8720((s32*)(materialRes + 0x3C)), 8);
-    texCoordNum = fn_800D89E4((u8)fn_800D872C((s32*)(materialRes + 0x3C)), 0xA);
-    texCoordGenNum = fn_800D89E4((u8)fn_800D8738((s32*)(materialRes + 0x3C)), 8);
-    v0 = fn_800D8744((s32*)(materialRes + 0x3C));
+    texBase = fn_800D8A04((s32)res, 0x40);
+    off = (s32)((u8)fn_800D8720((s32*)((const u8*)res + 0x3C)) << 2) + 0x40;
+    texCoordSrc = (void*)fn_800D89FC((s32)res, off);
+    off += (u8)fn_800D872C((s32*)((const u8*)res + 0x3C)) * 0x14;
+    texCoordGenAry = fn_800D89F4((s32)res, off);
+    off += (s32)((u8)fn_800D8738((s32*)((const u8*)res + 0x3C)) << 2);
+    texNum = fn_800D89E4((u8)fn_800D8720((s32*)((const u8*)res + 0x3C)), 8);
+    texCoordNum = fn_800D89E4((u8)fn_800D872C((s32*)((const u8*)res + 0x3C)), 0xA);
+    texCoordGenNum = fn_800D89E4((u8)fn_800D8738((s32*)((const u8*)res + 0x3C)), 8);
+    v0 = fn_800D8744((s32*)((const u8*)res + 0x3C));
     hasA = (u8)((u8)v0 != 0);
-    v1 = fn_800D8750((s32*)(materialRes + 0x3C), (u8)v0);
+    v1 = fn_800D8750((s32*)((const u8*)res + 0x3C), (u8)v0);
     hasB = (u8)((u8)v1 != 0);
-    chanA = fn_800D875C((s32*)(materialRes + 0x3C), (u8)v1);
-    chanB = fn_800D8768((s32*)(materialRes + 0x3C));
-    v0 = fn_800D8774((s32*)(materialRes + 0x3C));
-    indNum = fn_800D89E4((u8)fn_800D8780((s32*)(materialRes + 0x3C)), 3);
-    indTexStageNum = fn_800D89E4((u8)fn_800D878C((s32*)(materialRes + 0x3C)), 4);
-    tevStageNum = fn_800D89E4((u8)fn_800D8798((s32*)(materialRes + 0x3C)), 0x10);
+    chanA = fn_800D875C((s32*)((const u8*)res + 0x3C), (u8)v1);
+    chanB = fn_800D8768((s32*)((const u8*)res + 0x3C));
+    v0 = fn_800D8774((s32*)((const u8*)res + 0x3C));
+    indNum = fn_800D89E4((u8)fn_800D8780((s32*)((const u8*)res + 0x3C)), 3);
+    indTexStageNum = fn_800D89E4((u8)fn_800D878C((s32*)((const u8*)res + 0x3C)), 4);
+    tevStageNum = fn_800D89E4((u8)fn_800D8798((s32*)((const u8*)res + 0x3C)), 0x10);
     fn_800D8B28(self, (u8)texNum, (u8)texCoordNum, (u8)texCoordGenNum, (u8)tevStageNum, chanA, (u8)indTexStageNum, (u8)indNum, hasA, hasB, chanB, v0);
     if (*(s32*)(self + 0x58) != 0) {
         SetTextureNum__Q36nw4hbm3lyt8MaterialFUc(self, (u8)texNum);
         if ((u8)texNum != 0) {
-            if (*(void**)block == 0) {
-                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x1D5, lbl_8031F990 + 0x14);
+            if (*(void**)blockSet == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(strBase, 0x1D5, strBase + 0x14);
             }
-            tableBase = fn_800D89DC(*(s32*)block, 0xC);
+            tableBase = fn_800D89DC(*(s32*)blockSet, 0xC);
             texObjAry = fn_800D9328(self);
             i = 0;
             do {
-                entry = (u8*)texBase + (i * 4);
-                if (*(u16*)entry >= *(u16*)((u8*)*(void**)block + 8)) {
-                    Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x1DB, lbl_8031F990 + 0x50);
+                entry = (u8*)texBase + ((u8)i << 2);
+                if (*(u16*)entry >= *(u16*)((u8*)*(void**)blockSet + 8)) {
+                    Panic__Q26nw4hbm2dbFPCciPCce(strBase, 0x1DB, strBase + 0x50);
                 }
-                palette = ((ResAccess_800D58C4*)*(void**)(block + 0xC))->getRes(0x74696D67, (void*)fn_800D89D4(tableBase, *(s32*)(tableBase + *(u16*)entry * 8)), 0);
+                palette = ((ResAccess_800D58C4*)*(void**)((const u8*)blockSet + 0xC))->getRes(0x74696D67, (void*)fn_800D89D4(tableBase, *(s32*)(tableBase + *(u16*)entry * 8)), 0);
                 fn_800D9CBC(self, (u8)i, palette);
-                GXInitTexObjWrapMode((s32*)(texObjAry + (i << 5)), entry[2], entry[3]);
+                GXInitTexObjWrapMode((s32*)(texObjAry + ((u8)i << 5)), entry[2], entry[3]);
                 i += 1;
             } while ((u8)i < (*(u32*)(self + 0x50) >> 28));
         }
         texCoordDst = (void*)fn_800D9330(self);
         if ((u8)texCoordNum > ((*(u32*)(self + 0x50) >> 24) & 0xF)) {
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x1E6, lbl_8031F990 + 0xA0);
+            Panic__Q26nw4hbm2dbFPCciPCce(strBase, 0x1E6, strBase + 0xA0);
         }
         texCoordCur = (u8*)texCoordSrc;
         i = 0;
@@ -1407,27 +1407,27 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
         } while (i < ((*(u32*)(self + 0x50) >> 8) & 0xF));
         if (hasA != 0) {
             if (fn_800D87C8(self) == 0) {
-                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x1F8, lbl_8031F990 + 0xD8);
+                Panic__Q26nw4hbm2dbFPCciPCce(strBase, 0x1F8, strBase + 0xD8);
             }
-            miscDst = fn_800D89CC((s32)materialRes, off);
+            miscDst = fn_800D89CC((s32)res, off);
             fn_800D9364(self);
             fn_800D87D4((void*)miscDst);
             off += 4;
         }
         if (hasB != 0) {
             if (fn_800D87F8(self) == 0) {
-                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x200, lbl_8031F990 + 0x100);
+                Panic__Q26nw4hbm2dbFPCciPCce(strBase, 0x200, strBase + 0x100);
             }
-            miscDst = fn_800D89C4((s32)materialRes, off);
+            miscDst = fn_800D89C4((s32)res, off);
             fn_800D938C(self);
             fn_800D8804((void*)miscDst);
             off += 4;
         }
         if (chanA != 0) {
             if (fn_800D8828(self) == 0) {
-                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x208, lbl_8031F990 + 0x128);
+                Panic__Q26nw4hbm2dbFPCciPCce(strBase, 0x208, strBase + 0x128);
             }
-            miscDst = fn_800D89BC((s32)materialRes, off);
+            miscDst = fn_800D89BC((s32)res, off);
             colorDst = (void*)fn_800D93BC(self);
             i = 0;
             do {
@@ -1438,10 +1438,10 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
         }
         if ((u8)indNum != 0) {
             if ((u8)indNum > ((*(u32*)(self + 0x50) >> 18) & 3)) {
-                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x214, lbl_8031F990 + 0x150);
+                Panic__Q26nw4hbm2dbFPCciPCce(strBase, 0x214, strBase + 0x150);
             }
             indDst = (void*)GetIndTexSRTAry__Q36nw4hbm3lyt8MaterialFv(self);
-            indCur = (u8*)(void*)fn_800D89FC((s32)materialRes, off);
+            indCur = (u8*)(void*)fn_800D89FC((s32)res, off);
             j = 0;
             do {
                 fn_800D8840(indDst, indCur);
@@ -1450,11 +1450,11 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
                 j += 1;
             } while (j < (u8)indNum);
         }
-        off += (u8)fn_800D8780((s32*)(materialRes + 0x3C)) * 0x14;
+        off += (u8)fn_800D8780((s32*)((const u8*)res + 0x3C)) * 0x14;
         if ((u8)indTexStageNum != 0) {
             fn_800D9ACC(self);
             texStageDst = (void*)fn_800D947C(self);
-            texStageCur = (u8*)(void*)fn_800D89B4((s32)materialRes, off);
+            texStageCur = (u8*)(void*)fn_800D89B4((s32)res, off);
             j = 0;
             do {
                 fn_800D886C(texStageDst, texStageCur);
@@ -1463,11 +1463,11 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
                 j += 1;
             } while (j < (u8)indTexStageNum);
         }
-        off += (u8)fn_800D878C((s32*)(materialRes + 0x3C)) << 2;
+        off += (u8)fn_800D878C((s32*)((const u8*)res + 0x3C)) << 2;
         if ((u8)tevStageNum != 0) {
             fn_800D9844(self);
             tevDst = (void*)fn_800D9524(self);
-            tevCur = (u8*)(void*)fn_800D89AC((s32)materialRes, off);
+            tevCur = (u8*)(void*)fn_800D89AC((s32)res, off);
             j = 0;
             do {
                 __as__Q34nw4r3lyt8TevStageFRCQ34nw4r3lyt8TevStage(tevDst, tevCur);
@@ -1476,21 +1476,21 @@ extern "C" void* __ct__Q36nw4hbm3lyt8MaterialFPCQ46nw4hbm3lyt3res8MaterialRCQ36n
                 j += 1;
             } while (j < (u8)tevStageNum);
         }
-        off += (u8)fn_800D8798((s32*)(materialRes + 0x3C)) << 4;
+        off += (u8)fn_800D8798((s32*)((const u8*)res + 0x3C)) << 4;
         if (chanB != 0) {
             if (fn_800D893C(self) == 0) {
-                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x238, lbl_8031F990 + 0x18C);
+                Panic__Q26nw4hbm2dbFPCciPCce(strBase, 0x238, strBase + 0x18C);
             }
-            miscDst = fn_800D89A4((s32)materialRes, off);
+            miscDst = fn_800D89A4((s32)res, off);
             fn_800D93F4(self);
             fn_800D8948((void*)miscDst);
             off += 4;
         }
         if (v0 != 0) {
             if (fn_800D896C(self) == 0) {
-                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x240, lbl_8031F990 + 0x1B8);
+                Panic__Q26nw4hbm2dbFPCciPCce(strBase, 0x240, strBase + 0x1B8);
             }
-            miscDst = fn_800D899C((s32)materialRes, off);
+            miscDst = fn_800D899C((s32)res, off);
             fn_800D9434(self);
             fn_800D8978((void*)miscDst);
         }
