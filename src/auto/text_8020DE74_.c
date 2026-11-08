@@ -2,7 +2,7 @@
 
 // One truck's sound effects. fn_8020DE74() creates the sounds named below --
 // fn_802077A4() makes the 3D ones, fn_802076A0() the dashboard ones -- and
-// CarSound_destroy() releases them again. The race-only sounds stay null in
+// its destructor releases them again. The race-only sounds stay null in
 // the other modes.
 typedef struct CarSound {
     void *vtable;         // at 0x0, this class's vtable
