@@ -194,7 +194,6 @@ public:
     virtual s32 get(char *, s32);
 };
 #pragma cplusplus off
-extern void fn_802E30C8();
 extern u8 lbl_8032D358[];
 extern void *fn_80131808(void *, s32, s32);
 extern void fn_80131818(void *);
@@ -415,12 +414,18 @@ u32 fn_80149658(s32 selfAddr, void *aArg, void *listArg, s32 unused) {
     }
     s30 = *(s32 *)(a + 0x20);
     i = 0;
-    if (s30 != 0 && *(f32 *)(self + 4) > 0.0f) {
-        t = (lbl_8055E3C8 - *(f32 *)(self + 4) - 0.0f) / lbl_8056164C;
+    if (s30 != 0 && *(f32 *)(self + 4) > lbl_80561648) {
         f4 = lbl_8056164C;
-        if (!(f4 < t)) f4 = t;
-        if (!(f4 > 0.0f)) f4 = 0.0f;
-        i = (s32)(0.0f + f4 * ((lbl_8056163C + (f32)s30) - 0.0f));
+        t = ((lbl_8055E3C8 - *(f32 *)(self + 4)) - lbl_80561648) / f4;
+        if (f4 < t) {
+        } else {
+            f4 = t;
+        }
+        if (f4 > lbl_80561648) {
+        } else {
+            f4 = lbl_80561648;
+        }
+        i = (s32)(lbl_80561648 + f4 * ((lbl_8056163C + (f32)s30) - lbl_80561648));
     }
     fn_801308F4(self + 0x45, 0x14, i);
     s26 = *(s32 *)(a + 0x24);
@@ -452,7 +457,7 @@ u32 fn_80149658(s32 selfAddr, void *aArg, void *listArg, s32 unused) {
         *(s32 *)self = 1;
         break;
     case 1:
-        if (*(s32 *)(self + 0x20) != 0 && *(f32 *)(self + 4) < 0.0f) {
+        if (*(s32 *)(self + 0x20) != 0 && *(f32 *)(self + 4) < lbl_80561648) {
             fn_802E30C8(lbl_8032D358 + 0x70, lbl_8032D358 + 0xC4, lbl_8055E3C4, *(s32 *)(self + 0x24), *(s32 *)(self + 0x28));
             *(f32 *)(self + 4) = lbl_8055E3C8;
         }
