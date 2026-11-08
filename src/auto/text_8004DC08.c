@@ -385,6 +385,11 @@ static inline s32 BootGetPartOffset(void) {
     return v;
 }
 
+static inline void BootReadPart(void *buf, s32 len, s32 add) {
+    s32 off = BootGetPartOffset();
+    BootReadAbs(buf, len, off + add);
+}
+
 extern int IOS_Open(const char *, int);
 extern int IOS_Ioctlv(int, int, int, int, void *);
 extern int _ES_GetTicketViews(int *, unsigned int, unsigned int, void *, unsigned int *);
