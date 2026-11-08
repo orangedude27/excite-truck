@@ -1761,12 +1761,17 @@ typedef struct Entry_802D18E8 {
     float pos[3];
     float strength;
 } Entry_802D18E8;
+static inline void subVec_802D18E8(float *out, float *b, float *a) {
+    out[0] = a[9] - b[9];
+    out[1] = a[10] - b[10];
+    out[2] = a[11] - b[11];
+}
 #pragma push
 #pragma optimization_level 3
 void fn_802D18E8(void) {
     unsigned char *base = (unsigned char *)lbl_804C5650;
-    unsigned char color[4];
     float direction[3];
+    unsigned char color[4];
     float mag;
     float scale;
     int var_r28;
@@ -1774,7 +1779,13 @@ void fn_802D18E8(void) {
     unsigned char *var_r30;
     int var_r27;
 
-    fn_802D18E8_sub(direction, (float *)(base + 0x40), (float *)(base + 0x70));
+    {
+        float *from = (float *)((unsigned int)base + 0x40);
+        float *to = (float *)((unsigned int)base + 0x70);
+        direction[0] = from[9] - to[9];
+        direction[1] = from[10] - to[10];
+        direction[2] = from[11] - to[11];
+    }
     mag = PSVECMag(direction);
     mag = mag > lbl_80564F80 ? mag : lbl_80564F80;
     scale = lbl_80564F8C / mag;
@@ -1784,8 +1795,8 @@ void fn_802D18E8(void) {
     direction[2] *= scale;
 
     if (lbl_8055FDC8 > 0) {
-        var_r30 = (unsigned char *)base + 0x4A38;
-        var_r29 = (unsigned char *)base + 0x4AC8;
+        var_r30 = (unsigned char *)((unsigned int)base + 0x4A38);
+        var_r29 = (unsigned char *)((unsigned int)base + 0x4AC8);
         var_r28 = 0;
         goto loop_test;
     loop_body:
@@ -1801,7 +1812,7 @@ void fn_802D18E8(void) {
         if (var_r28 < lbl_8055FDC8) goto loop_body;
         lbl_8055FDCC = lbl_8055FDC8;
     } else {
-        unsigned char *entry = (unsigned char *)base + 0x4180;
+        unsigned char *entry = (unsigned char *)((unsigned int)base + 0x4180);
         unsigned int packed;
         unsigned char rgba[4];
         float strength = *(float *)(entry + 0x18);
@@ -1810,11 +1821,11 @@ void fn_802D18E8(void) {
         rgba[2] = (unsigned char)(int)(strength * (float)entry[2]);
         rgba[3] = entry[3];
         packed = *(unsigned int *)rgba;
-        fn_802D17BC((unsigned char *)base + 0x4AC8, direction, (float *)(entry + 0x0C), (unsigned char *)&packed, lbl_80564FD4);
+        fn_802D17BC((unsigned char *)((unsigned int)base + 0x4AC8), direction, (float *)(entry + 0x0C), (unsigned char *)&packed, lbl_80564FD4);
         lbl_8055FDCC++;
     }
 
-    var_r30 = (unsigned char *)base + 0x4AC8;
+    var_r30 = (unsigned char *)((unsigned int)base + 0x4AC8);
     var_r28 = 0;
     var_r29 = (unsigned char *)0;
     var_r27 = 2;
@@ -1865,28 +1876,26 @@ extern int fn_802C8588(void *, void *, void *);
 extern float lbl_80564F90, lbl_80564FD8;
 extern unsigned char lbl_8055FD19;
 extern unsigned char lbl_802FAC90[];
+extern float lbl_80564F90, lbl_80564FD8, lbl_80564F88;
 void fn_802D1C04(void) {
     unsigned char *base = (unsigned char *)lbl_804C5650;
     if (lbl_8055FD70 != 0) {
-        float rot[9];
-        float vec[3];
+        Vec_802D1C04 rot[3];
+        Vec_802D1C04 pos;
         float tmp[12];
         float sp[12];
-        float *a = (float *)(base + 0x70);
+        Vec_802D1C04 *a = (Vec_802D1C04 *)(base + 0x70);
         float *b = (float *)(base + 0x40);
         float t;
-        int i;
-        for (i = 0; i < 9; i++) rot[i] = a[i];
+        rot[0] = a[0]; rot[1] = a[1]; rot[2] = a[2];
         lbl_8055FD70 = 0;
-        t = rot[1]; rot[1] = rot[3]; rot[3] = t;
-        t = rot[2]; rot[2] = rot[6]; rot[6] = t;
-        t = rot[5]; rot[5] = rot[7]; rot[7] = t;
-        vec[0] = a[9] * a[0] + a[10] * a[1] + a[11] * a[2];
-        vec[1] = a[9] * a[3] + a[10] * a[4] + a[11] * a[5];
-        vec[2] = a[9] * a[6] + a[10] * a[7] + a[11] * a[8];
-        vec[0] *= lbl_80564F90;
-        vec[1] *= lbl_80564F90;
-        vec[2] *= lbl_80564F90;
+        t = rot[0].y; rot[0].y = rot[1].x; rot[1].x = t;
+        t = rot[0].z; rot[0].z = rot[2].x; rot[2].x = t;
+        t = rot[1].z; rot[1].z = rot[2].y; rot[2].y = t;
+        mulVecSR_802D1C04((float *)a, (float *)(base + 0x70 + 0x24), (float *)&pos);
+        pos.x *= lbl_80564F90;
+        pos.y *= lbl_80564F90;
+        pos.z *= lbl_80564F90;
         fn_801BFD34(tmp, b + 9, rot);
         fn_80015B20(sp, b, rot);
         fn_802D0DD4(base, sp);
