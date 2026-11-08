@@ -11784,11 +11784,14 @@ void btm_sec_pin_code_request_timeout(void) {
 }
 
 void btm_sec_pin_code_request(UINT8 *p_bda) {
+    /* Handle the controller's HCI Pin Code Request event for device p_bda:
+       answer it from a fixed/stored PIN, reject it, or pass it up to the
+       application's PIN callback with a timeout running. */
     u8 *trace = (u8 *)lbl_80316870;
     s32 count;
-    u8 *cb = lbl_803C0F78;
+    u8 *cb = lbl_803C0F78; /* &btm_cb */
     tBTM_SEC_DEV_REC *p_dev_rec;
-    u8 *dev;
+    tBTM_SEC_DEV_REC_FULL_VIEW *dev;
     u8 *entry;
     void (*p_pin_callback)(u8 *, u8 *, u8 *);
     BOOL do_reject;
@@ -11797,14 +11800,16 @@ void btm_sec_pin_code_request(UINT8 *p_bda) {
     do_reject = FALSE;
     count = 0;
 
-    if (cb[0x27C0] >= 4) {
-        fn_800709CC(0xD0003, trace + 0x7BC, p_bda[0], p_bda[1],
+    if (cb[0x27C0] >= BTM_TRACE_LEVEL_EVENT) { /* btm_cb.trace_level */
+        fn_800709CC(TRACE_LAYER_BTM | TRACE_TYPE_EVENT, trace + 0x7BC, p_bda[0], p_bda[1],
                     p_bda[2], p_bda[3], p_bda[4], p_bda[5]);
     }
 
-    if (cb[0x1979] == 0 && cb[0x20] == 1) {
+    /* pairing enabled and a fixed PIN is configured: reply with it, unless too
+       many device records are already waiting for a link key */
+    if (cb[0x1979] == 0 && cb[0x20] == HCI_PIN_TYPE_FIXED) { /* pairing_disabled, cfg.pin_type */
         if (btm_find_dev(p_bda) == NULL) {
-            entry = lbl_803C0F78 + 0x1F30;
+            entry = lbl_803C0F78 + 0x1F30; /* btm_cb.sec_dev_rec[] */
             for (i = 0; i < 2; i++, entry += 0x440) {
                 if (!(entry[0x76] & 0x80)) goto count_done;
                 count++;
@@ -11829,7 +11834,7 @@ count_done:
             btsnd_hcic_link_key_neg_reply_800840C8(p_bda);
             return;
         }
-        btsnd_hcic_pin_code_req_reply(p_bda, cb[0x21], cb + 0x22);
+        btsnd_hcic_pin_code_req_reply(p_bda, cb[0x21], cb + 0x22); /* cfg.pin_code_len, cfg.pin_code */
         return;
     }
 
@@ -11837,47 +11842,51 @@ count_done:
     if (p_dev_rec == NULL) {
         p_dev_rec = btm_sec_alloc_dev(p_bda);
     }
-    memcpy(lbl_803C0F78 + 0x1954, p_bda, 6);
-    dev = (u8 *)p_dev_rec;
+    memcpy(btm_cb_pairing_bda, p_bda, 6);
+    dev = (tBTM_SEC_DEV_REC_FULL_VIEW *)p_dev_rec;
     if (dev != NULL) {
-        if (memcmp(p_bda, cb + 0x27B4, 6) == 0) {
-            memcpy(dev + 0x22, cb + 0x27BA, 3);
+        /* use the connecting device's class of device for this connection */
+        if (memcmp(p_bda, cb + 0x27B4, 6) == 0) { /* connecting_bda */
+            memcpy(dev->dev_class, cb + 0x27BA, 3); /* connecting_dc */
         }
-        if (dev[0x81] & 0x40) {
-            if (lbl_803C0F78[0x27C0] >= 4) {
-                fn_8007093C(0xD0003, trace + 0x7FC);
+        if (dev->sec_req & BTM_SEC_BOND) {
+            /* a PIN was already supplied by the user: send it to the controller */
+            if (btm_cb_trace_level >= BTM_TRACE_LEVEL_EVENT) {
+                fn_8007093C(TRACE_LAYER_BTM | TRACE_TYPE_EVENT, trace + 0x7FC);
             }
-            btsnd_hcic_pin_code_req_reply(p_bda, cb[0x197F], cb + 0x1980);
-            if (lbl_803C0F78[0x197B] != 0) {
-                lbl_803C0F78[0x197B] = 0;
-                if (lbl_803C0F78[0x27C0] >= 5) {
+            btsnd_hcic_pin_code_req_reply(p_bda, cb[0x197F], cb + 0x1980); /* pin_code_len, pin_code */
+            if (btm_cb_mode_changed != 0) {
+                btm_cb_mode_changed = 0;
+                if (btm_cb_trace_level >= BTM_TRACE_LEVEL_DEBUG) {
                     ((void (*)(u32, void *, u32))fn_80070954)(
-                        0xD0004, trace + 0x82C,
-                        (u32)((lbl_803C0F78[0x1978] - 3) == 0));
+                        TRACE_LAYER_BTM | TRACE_TYPE_DEBUG, trace + 0x82C,
+                        (u32)((btm_cb_security_mode - 3) == 0));
                 }
-                btsnd_hcic_write_pin_type_8008543C(
-                    (u8)((lbl_803C0F78[0x1978] - 3) == 0));
+                btsnd_hcic_write_auth_enable(
+                    (u8)((btm_cb_security_mode - 3) == 0));
             }
         } else if (cb[0x1979] != 0 || *(void **)(cb + 0x1910) == NULL ||
-                   (dev[0x80] == 0 && (dev[0x23] & 0x1F) == 5 &&
-                    (dev[0x24] & 0x40))) {
+                   (dev->is_originator == 0 && (dev->dev_class[1] & BTM_COD_MAJOR_CLASS_MASK) == BTM_COD_MAJOR_PERIPHERAL &&
+                    (dev->dev_class[2] & BTM_COD_MINOR_KEYBOARD))) {
+            /* pairing off, no callback to ask, or a stray keyboard: reject it */
             do_reject = TRUE;
         } else {
+            /* remember the device, start the PIN timeout and ask the application */
             memcpy(cb + 0x27B4, p_bda, 6);
-            memcpy(cb + 0x27BA, dev + 0x22, 3);
-            *(void **)(cb + 0x194C) = btm_sec_pin_code_request_timeout;
+            memcpy(cb + 0x27BA, dev->dev_class, 3);
+            *(void **)(cb + 0x194C) = btm_sec_pin_code_request_timeout; /* pin timer timeout_func */
             btu_start_timer((TIMER_LIST_ENT *)(cb + 0x193C), 0x16, 0x3C);
-            p_pin_callback = *(void (**)(u8 *, u8 *, u8 *))(cb + 0x1910);
-            p_pin_callback(p_bda, dev + 0x22, dev + 0x35);
+            p_pin_callback = *(void (**)(u8 *, u8 *, u8 *))(cb + 0x1910); /* api.p_pin_callback */
+            p_pin_callback(p_bda, dev->dev_class, dev->sec_bd_name);
         }
     } else {
         do_reject = TRUE;
     }
 
     if (do_reject) {
-        if (lbl_803C0F78[0x27C0] >= 2) {
+        if (btm_cb_trace_level >= BTM_TRACE_LEVEL_WARNING) {
             ((void (*)(u32, void *, u8, void *, void *))fn_80070984)(
-                0xD0001, trace + 0x85C, cb[0x1979],
+                TRACE_LAYER_BTM | TRACE_TYPE_WARNING, trace + 0x85C, cb[0x1979],
                 *(void **)(cb + 0x1910), p_dev_rec);
         }
         btsnd_hcic_link_key_neg_reply_800840C8(p_bda);
