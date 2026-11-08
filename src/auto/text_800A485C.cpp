@@ -626,7 +626,13 @@ static inline s32 findEventSlot(s32 key, s32 val) {
     return -1;
 }
 extern "C" const char *lbl_8031D990[];
+/* The ten trigger panes of the home button overlay, in the order
+ * HomeButton::updateTrigPane walks them: "B_btn_00" and "B_bar_10", the five
+ * option-button hints "B_optnBtn_00/01/10/11/20", the "B_BtnA"/"B_BtnB"
+ * prompts and "cntrl_00".  HomeButton::getPaneNo answers an index past the
+ * panes of lbl_8031D990 for one of these names. */
 extern "C" const char *lbl_8031E218[];
+#define HB_PANE_NAMES lbl_8031E218
 extern "C" const char lbl_8031E770[];
 extern "C" const char lbl_8031E83C[];
 extern "C" void *List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(void *, u16);
@@ -3617,6 +3623,296 @@ extern "C" s32 fn_800AB378(void *arg0, s32 arg1) {
     }
     *(u16 *)((u8 *)arg0 + 0x48) = ((*(u32 *)arg0 & *(u16 *)((u8 *)arg0 + 0x4A)) << 5) & 0xFFE0;
     return 0;
+}
+
+extern "C" s32 fn_800AB528(void *arg0, void *arg1, s32 arg2, u8 arg3, s32 arg4, s32 *arg5) {
+    extern s32 VFiPFSTR_StrCmp(void *, s32);
+    extern s32 VFiPFENT_LoadLFNEntryFieldsFromBuf(void *, void *);
+    extern s32 VFiPFENT_loadEntryNumericFieldsFromBuf(void *, void *);
+    extern u8 VFiPFENT_CalcCheckSum(u8 *);
+    extern s32 VFiPFENT_ITER_IsAtLogicalEnd(void *);
+    extern void VFiPFPATH_getLongNameformShortName(void *, void *, s32);
+    extern s32 VFiPFPATH_transformInUnicode(s16 *, s32, s32);
+    extern s32 fn_800AA4EC(void *, void *);
+    extern s32 fn_800AB378(void *, s32);
+    extern s32 fn_800AC4AC(void *, s32);
+    extern s32 fn_800B3754(s32, s32 *, s32);
+    extern s32 fn_800B5070(s32, s32 *);
+    extern s32 fn_800B5324(void *, u8 *, u32, u32, u32, u32 *, s32);
+    extern const char lbl_805591F0[];
+    extern const char lbl_805591F4[];
+    u8 nameBuf[16];
+    s32 sp14;
+    u32 sp10;
+    u32 spC;
+    u32 sp8;
+    u8* self = (u8*)arg0;
+    s32 result2;
+    s32 result3 = 0;
+    s32 res = 0;
+
+    if ((VFiPFSTR_StrCmp((void *)arg2, (s32)lbl_805591F0) == 0) && (((u8 *)arg1)[0x21C] & 0x10) && (*(u32 *)((u8 *)arg1 + 0x234) == 1)) {
+        return 2;
+    }
+    if (VFiPFSTR_StrCmp((void *)arg2, (s32)lbl_805591F4) == 0) {
+        *arg5 = 1;
+        return 0;
+    }
+    ((u8 *)arg1)[0x20A] = 0;
+    ((u8 *)arg1)[0x20B] = 0;
+    ((u8 *)arg1)[0x20C] = 0;
+    *(s16 *)arg1 = 0;
+    if ((*(u32 *)((const u8 *)lbl_803D2140 + 0x60) & 2) == 2) {
+        res = fn_800B5070(arg2, &sp14);
+    }
+    if (res == 1) {
+        void* vol = *(void **)(self + 0x3C);
+        s32 steps = sp14 - 1;
+        s32 prev = *(s32 *)self;
+        *(void **)(self + 4) = vol;
+        u8 shift = *(u8 *)((u8 *)vol + 0x20) - 5;
+        *(s32 *)(self + 0x40) = -1;
+        s32 big = 1 << shift;
+        *(u8 *)(self + 0x6C) = shift;
+        *(s16 *)(self + 0x4A) = (s16)(big - 1);
+        *(s32 *)self = steps;
+        s32 attempt = fn_800AB378(self, 0);
+        if (attempt != 0) {
+            *(s32 *)self = prev;
+            fn_800AB378(self, 0);
+            result2 = attempt;
+        } else {
+            s32 value;
+            if ((u32)(*(s32 *)(self + 0x44) + 0x10000) == 0xFFFF) {
+                value = 0x10;
+            } else {
+                value = fn_800B5324(*(void **)(self + 4), self + 0x4C, *(u32 *)(self + 0x44), *(u32 *)(self + 0x48), 0x20, &sp10, 0);
+                s32 tmp = 0x11;
+                if (sp10 == 0x20) {
+                    tmp = value;
+                }
+                value = tmp;
+            }
+            result2 = value & ((s32)(-value | value) >> 31);
+        }
+        for (;;) {
+            if (result2 != 0) {
+                return result2;
+            }
+            if ((self[0x57] & 0xF) != 0xF) {
+                return 0;
+            }
+            if (VFiPFENT_LoadLFNEntryFieldsFromBuf(arg1, self + 0x4C) != 0) {
+                return 3;
+            }
+            if ((self[0x4C] & 0x40) != 0) {
+                vol = *(void **)(self + 0x3C);
+                prev = *(s32 *)self;
+                *(void **)(self + 4) = vol;
+                shift = *(u8 *)((u8 *)vol + 0x20) - 5;
+                *(s32 *)(self + 0x40) = -1;
+                big = 1 << shift;
+                *(u8 *)(self + 0x6C) = shift;
+                *(s16 *)(self + 0x4A) = (s16)(big - 1);
+                *(s32 *)self = sp14;
+                attempt = fn_800AB378(self, 0);
+                s32 value2;
+                if (attempt != 0) {
+                    *(s32 *)self = prev;
+                    fn_800AB378(self, 0);
+                    value2 = attempt;
+                } else {
+                    if ((u32)(*(s32 *)(self + 0x44) + 0x10000) == 0xFFFF) {
+                        value2 = 0x10;
+                    } else {
+                        value2 = fn_800B5324(*(void **)(self + 4), self + 0x4C, *(u32 *)(self + 0x44), *(u32 *)(self + 0x48), 0x20, &spC, 0);
+                        s32 tmp = 0x11;
+                        if (spC == 0x20) {
+                            tmp = value2;
+                        }
+                        value2 = tmp;
+                    }
+                    value2 = value2 & ((s32)(-value2 | value2) >> 31);
+                }
+                if (value2 != 0) {
+                    return value2;
+                }
+                s32 flag = self[0x57];
+                if (flag == 0) {
+                    flag = 0x40;
+                }
+                result3 = 0;
+                if ((arg3 & 0x80) != 0) {
+                    s32 want = arg3 & 0x7F;
+                    s32 mask = arg4 & 0x7F;
+                    if (((want != 0) && (want != (want & flag))) || ((mask != 0) && (mask == (mask & flag)))) {
+                        result3 = -1;
+                    }
+                } else if ((arg3 != 0x7F) && (flag != arg3) && ((!(flag & arg3)) || (flag & arg4))) {
+                    result3 = -1;
+                }
+                if (result3 == -1) {
+                    return 0;
+                }
+                if ((flag & 8) != 0) {
+                    return 3;
+                }
+                fn_800AA4EC(arg1, self + 0x4C);
+                if (fn_800B3754((s32)((u8 *)arg1 + 0x20E), (s32 *)arg2, 0) != 0) {
+                    VFiPFENT_loadEntryNumericFieldsFromBuf(arg1, self + 0x4C);
+                    *(s32 *)((u8 *)arg1 + 0x238) = *(s32 *)(self + 0x44);
+                    *(u16 *)((u8 *)arg1 + 0x23C) = *(u16 *)(self + 0x48);
+                    *(void **)((u8 *)arg1 + 0x22C) = *(void **)(self + 0x3C);
+                    if ((((u8 *)arg1)[0x21C] & 0x10) && (*(s32 *)((u8 *)arg1 + 0x234) == 0)) {
+                        *(u32 *)((u8 *)arg1 + 0x234) = 1;
+                    }
+                    *arg5 = 1;
+                    return 0;
+                }
+            }
+            result2 = fn_800AC4AC(self, 0);
+            if (result2 == 0) {
+                break;
+            }
+            if (result2 != 0) {
+                return result2;
+            }
+        }
+    }
+    for (;;) {
+        if (VFiPFENT_ITER_IsAtLogicalEnd(self) != 0) {
+            return 0;
+        }
+        if (result3 != 0) {
+            return result3;
+        }
+        if (self[0x4C] == 0) {
+            goto advance;
+        }
+        if (self[0x4C] == 0xE5) {
+            ((u8 *)arg1)[0x20A] = 0;
+            *(s16 *)arg1 = 0;
+            goto advance;
+        }
+        {
+            s32 flag = self[0x57];
+            if ((flag & 0xF) == 0xF) {
+                if (VFiPFENT_LoadLFNEntryFieldsFromBuf(arg1, self + 0x4C) != 0) {
+                    ((u8 *)arg1)[0x20A] = 0;
+                    *(s16 *)arg1 = 0;
+                    goto advance;
+                }
+            }
+            if (flag == 0) {
+                flag = 0x40;
+            }
+            if ((flag & 0x40) != 0) {
+                if (fn_800B3754((s32)((u8 *)arg1 + 0x20E), (s32 *)arg2, 0) != 0) {
+                    if ((self[0x58] & 0x18) != 0) {
+                        VFiPFPATH_getLongNameformShortName((void *)((u8 *)arg1 + 0x20E), nameBuf, self[0x58]);
+                        s32 len = VFiPFPATH_transformInUnicode((s16 *)arg1, (s32)nameBuf, 0);
+                        s32 chunks = len / 13;
+                        ((u8 *)arg1)[0x20A] = (u8)(chunks + ((len - chunks * 13) != 0));
+                        ((u8 *)arg1)[0x20C] = VFiPFENT_CalcCheckSum((u8 *)arg1);
+                        ((u8 *)arg1)[0x20B] = 1;
+                    }
+                }
+                VFiPFENT_loadEntryNumericFieldsFromBuf(arg1, self + 0x4C);
+                *(s32 *)((u8 *)arg1 + 0x238) = *(s32 *)(self + 0x44);
+                *(u16 *)((u8 *)arg1 + 0x23C) = *(u16 *)(self + 0x48);
+                *(void **)((u8 *)arg1 + 0x22C) = *(void **)(self + 0x3C);
+                if ((((u8 *)arg1)[0x21C] & 0x10) && (*(s32 *)((u8 *)arg1 + 0x234) == 0)) {
+                    *(u32 *)((u8 *)arg1 + 0x234) = 1;
+                }
+                *arg5 = 1;
+                return 0;
+            }
+        }
+        {
+            s32 flag2 = self[0x57];
+            if (flag2 != 0) {
+                s32 check = 0;
+                u8 want = arg3;
+                s8 hash = arg4;
+                if ((want & 0x80) != 0) {
+                    want &= 0x7F;
+                    hash &= 0x7F;
+                    if (((want != 0) && ((s32)want != (s32)(want & flag2))) || ((hash != 0) && (hash == (hash & flag2)))) {
+                        check = -1;
+                    }
+                } else if ((want != 0x7F) && (flag2 != want) && ((!(flag2 & want)) || (flag2 & hash))) {
+                    check = -1;
+                }
+                if (check == -1) {
+                    ((u8 *)arg1)[0x20A] = 0;
+                    *(s16 *)arg1 = 0;
+                    goto advance;
+                }
+                if ((flag2 & 8) != 0) {
+                    ((u8 *)arg1)[0x20A] = 0;
+                    *(s16 *)arg1 = 0;
+                }
+            }
+        }
+        fn_800AA4EC(arg1, self + 0x4C);
+        if (((u8 *)arg1)[0x20A] != 0 && ((u8 *)arg1)[0x20B] == 1 && ((u8 *)arg1)[0x20C] == VFiPFENT_CalcCheckSum((u8 *)arg1) && fn_800B3754((s32)arg1, (s32 *)arg2, 1) != 0) {
+            VFiPFENT_loadEntryNumericFieldsFromBuf(arg1, self + 0x4C);
+            *(s32 *)((u8 *)arg1 + 0x238) = *(s32 *)(self + 0x44);
+            *(u16 *)((u8 *)arg1 + 0x23C) = *(u16 *)(self + 0x48);
+            *(void **)((u8 *)arg1 + 0x22C) = *(void **)(self + 0x3C);
+            if ((((u8 *)arg1)[0x21C] & 0x10) && (*(s32 *)((u8 *)arg1 + 0x234) == 0)) {
+                *(u32 *)((u8 *)arg1 + 0x234) = 1;
+            }
+            *arg5 = 1;
+            return 0;
+        }
+        if (fn_800B3754((s32)((u8 *)arg1 + 0x20E), (s32 *)arg2, 0) != 0) {
+            if ((self[0x58] & 0x18) != 0) {
+                VFiPFPATH_getLongNameformShortName((void *)((u8 *)arg1 + 0x20E), nameBuf, self[0x58]);
+                s32 len = VFiPFPATH_transformInUnicode((s16 *)arg1, (s32)nameBuf, 0);
+                s32 chunks = len / 13;
+                ((u8 *)arg1)[0x20A] = (u8)(chunks + ((len - chunks * 13) != 0));
+                ((u8 *)arg1)[0x20C] = VFiPFENT_CalcCheckSum((u8 *)arg1);
+                ((u8 *)arg1)[0x20B] = 1;
+            }
+            VFiPFENT_loadEntryNumericFieldsFromBuf(arg1, self + 0x4C);
+            *(s32 *)((u8 *)arg1 + 0x238) = *(s32 *)(self + 0x44);
+            *(u16 *)((u8 *)arg1 + 0x23C) = *(u16 *)(self + 0x48);
+            *(void **)((u8 *)arg1 + 0x22C) = *(void **)(self + 0x3C);
+            if ((((u8 *)arg1)[0x21C] & 0x10) && (*(s32 *)((u8 *)arg1 + 0x234) == 0)) {
+                *(u32 *)((u8 *)arg1 + 0x234) = 1;
+            }
+            *arg5 = 1;
+            return 0;
+        }
+        ((u8 *)arg1)[0x20A] = 0;
+        *(s16 *)arg1 = 0;
+advance:
+        {
+            s32 prev = *(s32 *)self;
+            *(s32 *)self = prev + 1;
+            s32 attempt2 = fn_800AB378(self, 0);
+            s32 value3;
+            if (attempt2 != 0) {
+                *(s32 *)self = prev;
+                fn_800AB378(self, 0);
+                value3 = attempt2;
+            } else {
+                if ((u32)(*(s32 *)(self + 0x44) + 0x10000) == 0xFFFF) {
+                    value3 = 0x10;
+                } else {
+                    value3 = fn_800B5324(*(void **)(self + 4), self + 0x4C, *(u32 *)(self + 0x44), *(u32 *)(self + 0x48), 0x20, &sp8, 0);
+                    s32 tmp = 0x11;
+                    if (sp8 == 0x20) {
+                        tmp = value3;
+                    }
+                    value3 = tmp;
+                }
+                value3 = value3 & ((s32)(-value3 | value3) >> 31);
+            }
+            result3 = value3 & ((s32)(-value3 | value3) >> 31);
+        }
+    }
 }
 
 extern "C" s32 fn_800AB378(void *, s32);
@@ -8249,6 +8545,235 @@ extern "C" s32 VFiPFPATH_transformInUnicode(s16 *dst, s32 src, s32 unused) {
     }
     *dst = 0;
     return count;
+}
+
+extern "C" s32 VFiPFPATH_parseShortName(void *arg0, void *arg1) {
+    extern s32 fn_800A4D74(void *, u32);
+    extern u32 fn_800A4D44(s32);
+    extern s32 fn_800A485C(s32);
+    u16 sp10;
+    u16 spE;
+    u16 spC;
+    s32 sp8;
+    u8* dest = (u8*)arg0;
+    s32 found;
+    s32 truncated;
+    u8* cursor = (u8*)fn_800A4D74(arg1, 3);
+    sp8 = (s32)arg1;
+    found = 0;
+    truncated = 0;
+    if ((*(u32 *)((const u8 *)lbl_803D2140 + 0x60) & 2) == 0) {
+loop_3:
+        {
+            u8 ch = *cursor;
+            if ((s8)ch == 0x20 || (s8)ch == 0x2E) {
+                truncated = 1;
+                cursor += 1;
+                goto loop_3;
+            }
+        }
+        s16 lastDot = 0;
+        s16 prevDot = 0;
+        s16 pos = 0;
+        s16 cur;
+loop_11:
+        cur = (u8)cursor[pos];
+        if ((s8)cur != 0) {
+            if ((s8)cur == 0x2E) {
+                if (lastDot != 0) {
+                    prevDot = lastDot;
+                }
+                lastDot = pos;
+            }
+            pos += 1;
+            goto loop_11;
+        }
+        if ((lastDot != 0) && ((s8)cursor[lastDot + 1] == 0)) {
+            if (prevDot != 0) {
+                lastDot = prevDot;
+            }
+            truncated = 1;
+        }
+        s16 written = 0;
+        u16* countPtr = &sp10;
+        u16* extPtr = &sp10;
+        sp10 = 0;
+        spE = 0;
+        s16 i2 = 0;
+        s16 state18 = 1;
+        s16 state17 = 1;
+loop_64:
+        if (spE < 3) {
+            u8 ch2 = cursor[i2];
+            if ((s8)ch2 != 0) {
+                if (((sp10 != 8) && ((lastDot == 0) || (i2 != lastDot))) || (countPtr != &spE)) {
+                    if (((s8)ch2 != 0x20) && ((s8)ch2 != 0x2E)) {
+                        void *cbv = *(void **)(lbl_803D2140 + 0x50);
+                        s32 cbRet = ((s32 (*)(u8 *))cbv)(cursor + i2);
+                        s32 mult = cbRet;
+                        if (cbRet != 1) {
+                            if (((i2 < lastDot) || (lastDot == 0)) && ((s32)(sp10 + cbRet) > 8)) {
+                                truncated = 1;
+                                goto block_63;
+                            }
+                            if ((lastDot != 0) && (i2 > lastDot) && ((s32)(spE + cbRet) > 3)) {
+                                truncated = 1;
+                            } else {
+                                if (countPtr == &sp10) {
+                                    state17 = state18;
+                                    state18 = (u16)cbRet;
+                                }
+loop_45:
+                                if (mult != 0) {
+                                    u8* at = cursor + i2;
+                                    s32 scan = (at[0] << 8) + at[1];
+                                    void *cbv2 = *(void **)(lbl_803D2140 + 0x48);
+                                    ((s32 (*)(u8, u16 *, s32))cbv2)(at[0], &spC, 0);
+                                    if ((spC >= -0xBF) && (spC <= -0xA6)) {
+                                        spC = (u16)(spC - 0x20);
+                                    }
+                                    if ((u16)spC != scan) {
+                                        truncated = 1;
+                                    } else {
+                                        u8* outPos = dest + written;
+                                        mult -= 2;
+                                        written += 2;
+                                        *(u8 *)outPos = (u8)(scan >> 8);
+                                        i2 += 2;
+                                        *(s8 *)(outPos + 1) = (s8)scan;
+                                        *countPtr += 2;
+                                    }
+                                    goto loop_45;
+                                }
+                                i2 -= 1;
+                                goto block_63;
+                            }
+                        } else {
+                            if (countPtr == &sp10) {
+                                state17 = state18;
+                                state18 = 1;
+                            }
+                            if ((*(s32 *)(lbl_803D2140 + 0x38) & 0x10000) != 0 || cursor[i2] >= 0x80 || ((u8)cursor[i2] >= 0x20 && *(u8 *)(lbl_802EEEE0 + cursor[i2] - 0x20) & 2)) {
+                                s16 before = (s16)written;
+                                written += 1;
+                                dest[before] = (u8)fn_800A485C(cursor[i2]);
+                                *countPtr += 1;
+                                if (cursor[i2] >= 0x61 && cursor[i2] <= 0x7A) {
+                                    found = 1;
+                                }
+                            } else {
+                                truncated = 1;
+                                dest[written] = 0x5F;
+                                written += 1;
+                                *countPtr += 1;
+                            }
+                            goto block_63;
+                        }
+                    } else {
+                        truncated = 1;
+                        goto block_63;
+                    }
+                } else {
+                    countPtr = &spE;
+                    if (((s8)ch2 != 0) && ((s8)ch2 != 0x2E)) {
+                        truncated = 1;
+                    }
+                    if (lastDot != 0) {
+                        dest[written] = 0x2E;
+                        i2 = lastDot;
+                        written += 1;
+block_63:
+                        i2 += 1;
+                        goto loop_64;
+                    }
+                }
+            }
+        }
+        if ((spE == 3) && ((s8)cursor[i2] != 0)) {
+            truncated = 1;
+        }
+        dest[written] = 0;
+        if (truncated != 0) {
+            s16 goal;
+            if (sp10 == 8) {
+                if (state18 != 1) {
+                    goal = 8 - state18;
+                } else {
+                    s16 guess = 2;
+                    if (state17 != 1) {
+                        guess = (s16)(state17 + 1);
+                    }
+                    goal = 8 - guess;
+                }
+            } else if (sp10 == 7) {
+                goal = (s16)(sp10 - state17);
+            } else {
+                goal = sp10;
+            }
+            if (((u16)(goal + 2) < sp10) && (goal + 2) < sp10 + ((1) - 1)) {
+                s16 k = -1;
+                u8* tail = dest + (sp10 - (goal + 2)) - 1;
+loop_81:
+                if (k < spE + 1) {
+                    s16 idx = (s16)k;
+                    k += 1;
+                    u8 v = *(tail + sp10);
+                    tail += 1;
+                    *(idx + (dest + sp10)) = v;
+                    goto loop_81;
+                }
+            } else if (((u16)(goal + 2) > sp10) && (spE + 1 > goal)) {
+                s16 k = (s16)(spE + 1);
+                s16 k2 = k;
+                s16 gap = (s16)((goal + 2) - sp10);
+                s16 n2 = (s16)(k + 1);
+                s16 base = (s16)gap;
+                if (n2 > 8) {
+                    ;
+                }
+                for (;;) {
+                    break;
+                }
+            }
+            if (sp10 != 0) {
+                if ((*(u32 *)(lbl_803D2140 + 0x60) & 2) != 2) {
+                    dest[goal] = 0x7E;
+                    dest[goal + 1] = 0x31;
+                } else {
+                    dest[goal] = 0x5F;
+                    dest[goal + 1] = 0x5F;
+                }
+            }
+            found = 1;
+        }
+        if (fn_800A4D44(sp8) == 2) {
+            found = 1;
+        }
+    } else {
+loop_112:
+        if (((s8)*cursor != 0) && (truncated == 0)) {
+            if (((s8)*cursor != 0x2E) && ((s8)*cursor != 0x20)) {
+                truncated = 1;
+            }
+            cursor += 1;
+            goto loop_112;
+        }
+        if (truncated != 0) {
+            dest[0] = 1;
+            dest[1] = 2;
+            dest[2] = 0x30;
+            dest[3] = 0x30;
+            dest[4] = 0x30;
+            dest[5] = 0x30;
+            dest[6] = 0x30;
+            dest[7] = 0x30;
+            dest[8] = 0;
+        } else {
+            dest[0] = 0;
+        }
+        found = 1;
+    }
+    return found;
 }
 
 extern "C" s32 VFiPFPATH_parseShortNameNumeric(char *name, u32 num) {
