@@ -12,6 +12,33 @@ extern const f32 lbl_80562520;
 extern const f32 lbl_8056254C;
 extern const f32 lbl_80562550;
 
+extern s32 fn_801E9EC4(void *, void *, void *, s32 *);
+extern f32 PSVECDotProduct(const f32 *, const f32 *);
+extern f32 PSVECMag(const f32 *);
+extern void PSVECNormalize(const f32 *, f32 *);
+extern void fn_8017B6D4(void *, f32 *, f32 *);
+extern f32 fn_8019DF88(void *, f32 *, void *, f32 *, f32 *, f32, f32);
+extern void fn_8017B5D4(void *, s32, s32, f32 *, f32 *, s32, s32, s32, f32);
+extern void fn_802E30C8(void *, s32, ...);
+extern char lbl_80335950[];
+extern s32 lbl_8055E3C4;
+extern const f32 lbl_80558DC4;
+extern const f32 lbl_80562524, lbl_80562528, lbl_8056252C, lbl_80562530, lbl_80562534, lbl_80562538, lbl_8056253C, lbl_80562540, lbl_80562544, lbl_80562548;
+#define F(p, o) (*(f32 *)((u8 *)(p) + (o)))
+
+static inline void xf(f32 *out, f32 *in, u8 *m) {
+    if (out == in) {
+        f32 y = in[1], x = in[0], z = in[2];
+        out[0] = z * F(m, 0x54) + (x * F(m, 0x3C) + y * F(m, 0x48));
+        out[1] = z * F(m, 0x58) + (x * F(m, 0x40) + y * F(m, 0x4C));
+        out[2] = z * F(m, 0x5C) + (x * F(m, 0x44) + y * F(m, 0x50));
+    } else {
+        out[0] = in[2] * F(m, 0x54) + (in[0] * F(m, 0x3C) + in[1] * F(m, 0x48));
+        out[1] = in[2] * F(m, 0x58) + (in[0] * F(m, 0x40) + in[1] * F(m, 0x4C));
+        out[2] = in[2] * F(m, 0x5C) + (in[0] * F(m, 0x44) + in[1] * F(m, 0x50));
+    }
+}
+
 extern void fn_801AD888(void **);
 void fn_801ADAF4(void *arg0) {
     fn_801AD888((void **)((u8 *)arg0 - 0x23C));
@@ -94,12 +121,12 @@ void *fn_801AE180(void) {
      u8 *temp_r5;
      u8 *temp_r3_3;
      u8 *temp_r3_2;
-  
+
       temp_r31 = lbl_8055E604;
       temp_r3_2 = (*(void **)((u8 *)(temp_r31) + (0)));
-      if ((temp_r3_2 == ((void *)0)) || ((s32) (*(s32 *)((u8 *)(temp_r3_2) + (4))) == 0x40)) {
+      if (!temp_r3_2 || ((s32) (*(s32 *)((u8 *)(temp_r3_2) + (4))) == 0x40)) {
           temp_r3_3 = (u8 *)fn_801284F8(0xA08, (void *)(*(s32 *)((u8 *)(temp_r31) + (4))));
-          if (temp_r3_3 != ((void *)0)) {
+          if (temp_r3_3 != NULL) {
               var_r6 = temp_r3_3 + 0x30;
               temp_r5_2 = temp_r3_3 + 0xA08;
               (*(f32 *)((u8 *)(temp_r3_3) + (0xC))) = (f32) lbl_80562520;
@@ -112,7 +139,7 @@ void *fn_801AE180(void) {
               (*(f32 *)((u8 *)(temp_r3_3) + (0x28))) = (f32) lbl_80562520;
               (*(f32 *)((u8 *)(temp_r3_3) + (0x2C))) = (f32) lbl_80562520;
               (*(s32 *)((u8 *)(temp_r3_3) + (8))) = 0;
-              if (var_r6 < temp_r5_2) {
+              if ((temp_r3_3 + 0x30) < (temp_r3_3 + 0xA08)) {
                   temp_r8 = temp_r5_2 - 0x9D8;
                   temp_r9 = temp_r5_2 - temp_r8;
                   temp_r11 = (temp_r9 + 0x27) / 40;
