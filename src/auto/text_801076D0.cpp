@@ -52,12 +52,15 @@ struct FontCodeMap {
         /* 0x0C */ FontCodeBinaryMap binary;      /* BINARY: sorted (code, index) pairs */
     } map;
 };
+} }
+
+/* FontCodeMap::map_type; at global scope so the switch in FindGlyphIndex can
+ * name its cases without qualifying them. */
 enum FontCodeMapType {
     FONT_CODE_MAP_TYPE_OFFSET = 0, /* index = offset + (code - start_code) */
     FONT_CODE_MAP_TYPE_INDEX = 1,  /* index = indices[code - start_code] */
     FONT_CODE_MAP_TYPE_BINARY = 2  /* index = binary search of the pairs */
 };
-} }
 
 #pragma push
 #pragma use_lmw_stmw off
