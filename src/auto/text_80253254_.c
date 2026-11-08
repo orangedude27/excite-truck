@@ -43,6 +43,7 @@ static inline void mtx33_mult_vec(const float *m, const float *v, float *d) {
     d[2] = outZ;
 }
 
+#define AO(T, o) (*(T *)((char *)arg0 + (o)))
 void fn_80253254(void) {}
 
 #pragma scheduling invalid_target
