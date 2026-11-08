@@ -11091,6 +11091,26 @@ extern "C" s32 fn_800BB4D4(s32 a,s32 b,s32 c,s32 d) {
     return fn_800BB81C(a,b,c,d,0,0);
 }
 
+#define SD_DEVICE_DECLARED
+/* The SD card context fn_800BBB58 (open) fills in and the read and write paths
+   below work through. */
+struct IosDevice {
+    s32 fd;             /* 0x00 the IOS handle of the opened card */
+    u8 pad[0xC];
+    s32 field10;        /* 0x10 the argument card commands carry (card address) */
+    u8 pad2[0xC];
+    u32 offset_limit;   /* 0x20 highest byte offset accepted; 0 = no limit */
+    u32 state;          /* 0x24 0 closed, 1 card set up, 2 a raw command ran: set up again */
+};
+
+/* The SD module takes one MMC/SD command per request through ioctl 7
+   (fn_800BB0A8/fn_800BAE98 build its request block).  The ones the read path
+   sends; fn_800BB81C, the write twin of fn_800BB4E0, sends 0x19. */
+#define SD_BLOCK_SIZE       0x200 /* one card block, and the alignment of a transfer */
+#define SD_CMD_SEND_CSD     7     /* read the card's CSD */
+#define SD_CMD_SET_BLOCKLEN 0x10  /* switch the card to SD_BLOCK_SIZE byte blocks */
+#define SD_CMD_READ         0x12  /* MMC READ_MULTIPLE_BLOCK */
+
 extern "C" s32 fn_800BAE98(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 extern "C" s32 fn_800BB4E0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
 const char *str=lbl_8031B838;
