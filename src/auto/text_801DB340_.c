@@ -24,6 +24,21 @@ extern unsigned short lbl_80442708[];
 extern float lbl_804424B0[];
 extern int fn_801DB348(int, int, float *, int *);
 extern float fn_801DB398(float grid[4][4], float, float);
+extern char lbl_803393B8[];
+extern char lbl_803393E0[];
+extern void fn_802E317C(const char *, ...);
+
+static inline void swap32(unsigned char *p) {
+    unsigned char t;
+    t = p[0]; p[0] = p[3]; p[3] = t;
+    t = p[1]; p[1] = p[2]; p[2] = t;
+}
+
+static inline void swap16(unsigned char *p) {
+    unsigned char t = p[0];
+    p[0] = p[1];
+    p[1] = t;
+}
 extern float fn_801DB514(float grid[4][4], void *, float, float);
 
 static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *arg4) {
@@ -356,6 +371,86 @@ void fn_801DCA5C(void) {
     fn_8012C4D8();
 }
 
+extern char lbl_80339444[], lbl_80339458[];
+extern float lbl_80562B60, lbl_80562B64, lbl_80562B80, lbl_80562B84, lbl_80562B88, lbl_80562B8C, lbl_80562B90, lbl_80562B94, lbl_80562B98, lbl_80562B9C, lbl_80562BA0, lbl_80562BA4, lbl_80562BA8;
+extern void *fn_801284F8(int, const char *);
+extern void *fn_8012850C(int, const char *);
+extern void *memset(void *, int, unsigned int);
+extern double fn_8002F234(double);
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma dont_inline on
+int fn_801DCA60(void) {
+    float *object;
+    float scale, size, val, power, radius, factor, x, z, sum, amp, zero, one;
+    float pi, falloff, minR, maxR, peak, offset, range, amplitude, base;
+    int row, col, row2, col2, offsetRow, dx, dz, width, octave;
+    lbl_80446F08[1] = 256;
+    lbl_80446F08[0] = 256;
+    object = (float *)fn_801284F8(0x34, lbl_80339444);
+    memset(object, 0, 0x34);
+    scale = lbl_80562B80 * lbl_80562B60;
+    size = scale * lbl_80562B64;
+    object[0] = size;
+    object[1] = size;
+    size = (float)lbl_80446F08[0] / scale;
+    object[3] = size;
+    object[2] = size;
+    lbl_80446F08[2] = (int)fn_8012850C(lbl_80446F08[0] * lbl_80446F08[1] * 4, lbl_80339458);
+    one = lbl_80562B70;
+    pi = lbl_80562BA4;
+    falloff = lbl_80562BA8;
+    peak = lbl_80562B90;
+    offset = lbl_80562B94;
+    range = lbl_80562B98;
+    zero = lbl_80562B84;
+    amplitude = lbl_80562B9C;
+    maxR = lbl_80562B8C;
+    minR = lbl_80562B88;
+    row = 0; row2 = 0; offsetRow = 0;
+    while (row < lbl_80446F08[0]) {
+        dz = row - 128;
+        col = 0; col2 = 0;
+        while (col < lbl_80446F08[1]) {
+            dx = col - 128;
+            val = lbl_80562B84;
+            factor = lbl_80562B70;
+            x = (float)dx;
+            z = (float)dz;
+            radius = z*z + x*x;
+            if (radius > minR && radius < maxR) {
+                radius = (float)fn_8002F234(radius);
+                if (radius > peak) radius = peak - (radius - peak);
+                radius = (radius - offset) / range;
+                if (one < radius) radius = one;
+                radius = radius > zero ? radius : zero;
+                factor = one + radius * amplitude;
+            }
+            width = lbl_80446F08[0];
+            amp = lbl_80562BA0;
+            octave = width / 2;
+            power = falloff * factor;
+            while (octave > 16) {
+                base = val;
+                sum = amp * (one + (float)sin(pi * ((float)row2 / (float)octave)));
+                val = base + sum;
+                val += amp * (one + (float)cos(pi * ((float)col2 / (float)octave)));
+                amp *= power;
+                octave /= 2;
+            }
+            ((float *)lbl_80446F08[2])[width * col + row] = val;
+            col2 += 2;
+            col++;
+        }
+        row2 += 2;
+        row++;
+        offsetRow += 4;
+    }
+    return (int)object;
+}
+#pragma pop
+
 void fn_801DCD24(void) {
     fn_80128668();
 }
@@ -459,15 +554,20 @@ float fn_801DCF0C(void) {
 #pragma dont_inline reset
 #pragma scheduling on
 extern double fabs(double);
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 float fn_801DCF48(void *arg0, float farg0, float farg1) {
     extern float lbl_80562B84;
     extern float lbl_80562BBC;
     char *state = (char *)lbl_8055E990;
     char *node, *layer;
     float sp8, var_f31, x, z, roundedX, roundedZ;
-    float base, slope, weight, var_f7, var_f8, factorX, factorZ, normalY;
+    float var_f8, var_f7, weight, slope, base, normalY, factorZ, factorX;
     int ix, iz, quotientX, quotientZ, tileX, tileZ, remX, remZ;
-    int tile, next, deltaX, deltaZ, otherX, otherZ;
+    int otherZ, otherX, deltaZ, deltaX, next;
+    unsigned short tile;
     unsigned short *tileMap;
     unsigned short sample00, sample01, sample10;
     void *tileBase;
@@ -477,12 +577,15 @@ float fn_801DCF48(void *arg0, float farg0, float farg1) {
         if (((int (*)(float *, int, int, void *))fn_801DC258)(&sp8, 0, 0, arg0) == 0) {
             sp8 = lbl_80562B84;
             if (arg0 != 0) {
-                ((float *)arg0)[0] = lbl_80562B84;
-                ((float *)arg0)[1] = lbl_80562B70;
-                ((float *)arg0)[2] = lbl_80562B84;
+                float zero = lbl_80562B84;
+                float one = lbl_80562B70;
+                ((float *)arg0)[0] = zero;
+                ((float *)arg0)[1] = one;
+                ((float *)arg0)[2] = zero;
             }
         }
-        return sp8;
+        var_f31 = sp8;
+        goto done;
     }
     x = *(float *)(state + 8) * (farg0 + *(float *)(state + 0));
     z = *(float *)(state + 0xC) * (farg1 + *(float *)(state + 4));
@@ -493,46 +596,45 @@ float fn_801DCF48(void *arg0, float farg0, float farg1) {
     else roundedZ = lbl_80562B64 + z;
     iz = (int)roundedZ;
 
-    quotientX = ix / 32;
-    quotientZ = iz / 32;
+    quotientX = ix / (int)32;
     tileX = quotientX - lbl_8055E99C;
-    tileZ = quotientZ - lbl_8055E9A0;
     remX = ix - quotientX * 32;
+    quotientZ = iz / (int)32;
     remZ = iz - quotientZ * 32;
-    node = 0;
-    if (tileX < 0) {
+    tileZ = quotientZ - lbl_8055E9A0;
+    if (tileX < 0 || tileZ < 0) {
         node = 0;
-    } else if (tileZ < 0) {
-        node = 0;
-    } else if (tileX >= 0x60) {
-        node = 0;
-    } else if (tileZ >= 0x60) {
+    } else if (tileX >= 0x60 || tileZ >= 0x60) {
         node = 0;
     } else {
         tileMap = lbl_80442708;
-        tile = tileMap[tileX * 0x60 + tileZ];
-        if (tile != 0xFFFF) {
+        tile = *(unsigned short *)((char *)tileMap + tileX * 0xC0 + tileZ * 2);
+        if (tile == 0xFFFF) node = 0;
+        else {
             tileBase = *(void **)(state + 0x18);
             node = (char *)tileBase + tile * 0x894;
         }
     }
     if (node == 0) {
         if (arg0 != 0) {
-            ((float *)arg0)[0] = lbl_80562B84;
-            ((float *)arg0)[1] = lbl_80562B70;
-            ((float *)arg0)[2] = lbl_80562B84;
+            float zero = lbl_80562B84;
+            float one = lbl_80562B70;
+            ((float *)arg0)[0] = zero;
+            ((float *)arg0)[1] = one;
+            ((float *)arg0)[2] = zero;
         }
-        return lbl_80562B84;
+        var_f31 = lbl_80562B84;
+        goto done;
     }
 
     if (arg0 != 0) {
-        deltaX = remX << 6;
-        next = *(int *)(node + 0x890);
         deltaZ = remZ << 1;
-        otherX = (remX ^ 1) << 6;
+        next = *(int *)(node + 0x890);
+        deltaX = remX << 6;
         otherZ = (remZ ^ 1) << 1;
-        base = *(float *)(node + 0);
+        otherX = (remX ^ 1) << 6;
         slope = *(float *)(node + 4);
+        base = *(float *)(node + 0);
         sample00 = *(unsigned short *)(node + deltaX + deltaZ + 8);
         sample01 = *(unsigned short *)(node + deltaX + otherZ + 8);
         sample10 = *(unsigned short *)(node + otherX + deltaZ + 8);
@@ -541,8 +643,8 @@ float fn_801DCF48(void *arg0, float farg0, float farg1) {
         var_f7 = base + slope * (float)sample10;
         next = *(int *)(node + 0x890);
         if (next >= 0) {
+            layer = (char *)*(char **)((char *)*(volatile int *)&lbl_8055E990 + 0x20) + next * 0x810;
             do {
-                layer = (char *)*(char **)(state + 0x20) + next * 0x810;
                 base = *(float *)(layer + 0);
                 slope = *(float *)(layer + 4);
                 weight = lbl_804424B0[*(int *)(layer + 0x808)];
@@ -550,18 +652,18 @@ float fn_801DCF48(void *arg0, float farg0, float farg1) {
                 var_f7 += weight * (base + slope * (float)*(unsigned short *)(layer + otherX + deltaZ + 8));
                 var_f8 += weight * (base + slope * (float)*(unsigned short *)(layer + deltaX + otherZ + 8));
                 next = *(int *)(layer + 0x80C);
-            } while (next >= 0);
+                layer = next >= 0 ? (char *)*(char **)((char *)*(volatile int *)&lbl_8055E990 + 0x20) + next * 0x810 : 0;
+            } while (layer != 0);
         }
         var_f7 -= var_f31;
         var_f8 -= var_f31;
-        if (remX & 1) factorX = lbl_80562BBC;
-        else factorX = lbl_80562B70;
+        factorX = (remX & 1) ? lbl_80562BBC : lbl_80562B70;
         factorX /= *(float *)(state + 8);
         if (remZ & 1) factorZ = lbl_80562BBC;
         else factorZ = lbl_80562B70;
         factorZ /= *(float *)(state + 0xC);
-        ((float *)arg0)[0] = -var_f7 * factorX;
         normalY = (float)fabs(factorX * factorZ);
+        ((float *)arg0)[0] = -var_f7 * factorX;
         ((float *)arg0)[2] = -var_f8 * factorZ;
         ((float *)arg0)[1] = normalY;
         PSVECNormalize((float *)arg0, (float *)arg0);
@@ -574,17 +676,115 @@ float fn_801DCF48(void *arg0, float farg0, float farg1) {
         sample00 = *(unsigned short *)(node + deltaX + deltaZ + 8);
         var_f31 = base + slope * (float)sample00;
         if (next >= 0) {
+            layer = (char *)*(char **)((char *)*(volatile int *)&lbl_8055E990 + 0x20) + next * 0x810;
             do {
-                layer = (char *)*(char **)(state + 0x20) + next * 0x810;
                 weight = lbl_804424B0[*(int *)(layer + 0x808)];
                 var_f31 += weight * (*(float *)(layer + 0) +
                     *(float *)(layer + 4) * (float)*(unsigned short *)(layer + deltaX + deltaZ + 8));
                 next = *(int *)(layer + 0x80C);
-            } while (next >= 0);
+                layer = next >= 0 ? (char *)*(char **)((char *)*(volatile int *)&lbl_8055E990 + 0x20) + next * 0x810 : 0;
+            } while (layer != 0);
         }
     }
+done:
     return var_f31;
 }
+#pragma pop
+extern float lbl_80558DC4[];
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma opt_propagation off
+void fn_801DD3BC(float *value, int flag, float x, float z) {
+    float saved[75];
+    float before, base, delta, minimum, epsilon;
+    float zero, one;
+    unsigned char *pair;
+    unsigned char *slot;
+    int i, count, smallest;
+    int depth = (int)lbl_8055E9A8;
+    lbl_8055E9A8 = (void *)(depth + 1);
+    slot = lbl_80446F18 + depth * 0x20;
+    *(float **)slot = value;
+    before = ((float (*)(float,float))fn_801DCF0C)(x,z);
+    for (i=0; i!=72; i+=8) {
+      saved[i+0] = lbl_804424B0[i+0]; lbl_804424B0[i+0] = lbl_80562B84;
+      saved[i+1] = lbl_804424B0[i+1]; lbl_804424B0[i+1] = lbl_80562B84;
+      saved[i+2] = lbl_804424B0[i+2]; lbl_804424B0[i+2] = lbl_80562B84;
+      saved[i+3] = lbl_804424B0[i+3]; lbl_804424B0[i+3] = lbl_80562B84;
+      saved[i+4] = lbl_804424B0[i+4]; lbl_804424B0[i+4] = lbl_80562B84;
+      saved[i+5] = lbl_804424B0[i+5]; lbl_804424B0[i+5] = lbl_80562B84;
+      saved[i+6] = lbl_804424B0[i+6]; lbl_804424B0[i+6] = lbl_80562B84;
+      saved[i+7] = lbl_804424B0[i+7]; lbl_804424B0[i+7] = lbl_80562B84;
+    }
+    saved[72]=lbl_804424B0[72]; lbl_804424B0[72]=lbl_80562B84;
+    saved[73]=lbl_804424B0[73]; lbl_804424B0[73]=lbl_80562B84;
+    saved[74]=lbl_804424B0[74]; lbl_804424B0[74]=lbl_80562B84;
+    base = ((float (*)(float,float))fn_801DCF0C)(x,z);
+    if (flag == 0) before=base;
+    *(float *)(slot+4)=base+(*value-before);
+    *(int *)(slot+8)=0; *(float *)(slot+12)=lbl_80562B84;
+    *(int *)(slot+16)=0; *(float *)(slot+20)=lbl_80562B84;
+    *(int *)(slot+24)=0; *(float *)(slot+28)=lbl_80562B84;
+    epsilon=lbl_80558DC4[0];
+    count=0; pair=slot; zero=lbl_80562B84; one=lbl_80562B70;
+    for(i=0;i<75;i++) {
+        lbl_804424B0[i]=one;
+        delta=((float (*)(float,float))fn_801DCF0C)(x,z)-base;
+        if (!((float)fabs(delta) <= epsilon)) {
+            if (count<3) {
+                *(int *)(pair+8)=i;
+                *(float *)(pair+12)=delta;
+                count++; pair+=8;
+            } else {
+                smallest=-1; minimum=zero;
+                if (smallest<0 || (float)fabs(*(float *)(slot+12)) < (float)fabs(minimum)) { smallest=0; minimum=*(float *)(slot+12); }
+                if (smallest<0 || (float)fabs(*(float *)(slot+20)) < (float)fabs(minimum)) { smallest=1; minimum=*(float *)(slot+20); }
+                if (smallest<0 || (float)fabs(*(float *)(slot+28)) < (float)fabs(minimum)) { smallest=2; }
+                if ((float)fabs(delta) > (float)fabs(*(float *)(slot+12+smallest*8))) {
+                    *(float *)(slot+12+smallest*8)=delta;
+                    *(int *)(slot+8+smallest*8)=i;
+                }
+            }
+        }
+        lbl_804424B0[i]=zero;
+    }
+    for (i=0;i<72;i+=24) {
+      lbl_804424B0[i+0]=saved[i+0];
+      lbl_804424B0[i+1]=saved[i+1];
+      lbl_804424B0[i+2]=saved[i+2];
+      lbl_804424B0[i+3]=saved[i+3];
+      lbl_804424B0[i+4]=saved[i+4];
+      lbl_804424B0[i+5]=saved[i+5];
+      lbl_804424B0[i+6]=saved[i+6];
+      lbl_804424B0[i+7]=saved[i+7];
+      lbl_804424B0[i+8]=saved[i+8];
+      lbl_804424B0[i+9]=saved[i+9];
+      lbl_804424B0[i+10]=saved[i+10];
+      lbl_804424B0[i+11]=saved[i+11];
+      lbl_804424B0[i+12]=saved[i+12];
+      lbl_804424B0[i+13]=saved[i+13];
+      lbl_804424B0[i+14]=saved[i+14];
+      lbl_804424B0[i+15]=saved[i+15];
+      lbl_804424B0[i+16]=saved[i+16];
+      lbl_804424B0[i+17]=saved[i+17];
+      lbl_804424B0[i+18]=saved[i+18];
+      lbl_804424B0[i+19]=saved[i+19];
+      lbl_804424B0[i+20]=saved[i+20];
+      lbl_804424B0[i+21]=saved[i+21];
+      lbl_804424B0[i+22]=saved[i+22];
+      lbl_804424B0[i+23]=saved[i+23];
+    }
+    lbl_804424B0[72]=saved[72]; lbl_804424B0[73]=saved[73]; lbl_804424B0[74]=saved[74];
+    {
+        int any=0;
+        if (!((float)fabs(*(float *)(slot+12)) <= epsilon)) any=1;
+        if (!((float)fabs(*(float *)(slot+20)) <= epsilon)) any=1;
+        if (!((float)fabs(*(float *)(slot+28)) <= epsilon)) any=1;
+        if (!any) lbl_8055E9A8=(void *)((int)lbl_8055E9A8-1);
+    }
+}
+#pragma pop
 
 extern int fn_801DC9B0(void);
 extern int fn_801DCA60(void);
