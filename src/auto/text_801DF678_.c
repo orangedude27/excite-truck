@@ -367,7 +367,7 @@ extern "C" void fn_801E0300(void *manager) {
     int i, j, changed, muted;
     float fadeStep, chargeMin, chargeDecay, fullCharge, chargeMax, chargeStep, zero,
           slipScale, spinLimit, speedLimit, frameTime, time, sinceSlip, slipLimit,
-          fadeTo, timeDiv;
+          timerValue, timeDiv;
     if ((((int *)__AXFXGetLfoSinTable_801769CC())[1] & 0x4000) != 0) return;   /* session flags */
     vehicles = lbl_804348E8;
     zero = lbl_80562C1C; chargeStep = lbl_80562C4C; chargeMax = lbl_80562C68;
@@ -375,15 +375,15 @@ extern "C" void fn_801E0300(void *manager) {
     chargeDecay = lbl_80562C6C; chargeMin = lbl_80562C3C;
     i = 0;
     frameTime = lbl_80562C58; speedLimit = lbl_80562C60; slipScale = lbl_80562C5C; spinLimit = lbl_80562C64;
-    fadeStep = lbl_80562C70; fadeTo = lbl_80562C74; timeDiv = lbl_80562C18; fullCharge = lbl_80562C20;
+    fadeStep = lbl_80562C70; timerValue = lbl_80562C74; timeDiv = lbl_80562C18; fullCharge = lbl_80562C20;
     for (; i < lbl_8055E4D0; vehicles++, entry++, i++) {
         vehicle = (char *)*vehicles;
         if ((float)__fabs((double)*(float *)(vehicle + 0x2690)) <= lbl_80558DC4) continue;
         entry->elapsed += frameTime;
         if (entry->started == 0) {
             float spin = PSVECMag(vehicle + 0x124);
-            float speed = PSVECMag(vehicle + 0x118);
-            entry->slip += frameTime * (lbl_8055AE34 * speed + lbl_8055AE38 * spin);
+            float velocity = PSVECMag(vehicle + 0x118);
+            entry->slip += frameTime * (lbl_8055AE34 * velocity + lbl_8055AE38 * spin);
             muted = ((int *)__AXFXGetLfoSinTable_801769CC())[1] == 0x180201;
             if (!muted && entry->elapsed > lbl_8055AE3C) {
                 entry->zone = -1;
@@ -397,11 +397,11 @@ extern "C" void fn_801E0300(void *manager) {
             }
         }
         {
-            float wheelSpin = *(float *)(vehicle + 0x25D4);
+            float speed = *(float *)(vehicle + 0x25D4);
             time = lbl_8055E3C8;
             sinceSlip = time - *(float *)(vehicle + 0x26A0);
             slipLimit = lbl_80562C5C;
-            if (wheelSpin > speedLimit || PSVECDotProduct(vehicle + 0x124, vehicle + 0x124) > spinLimit)
+            if (speed > speedLimit || PSVECDotProduct(vehicle + 0x124, vehicle + 0x124) > spinLimit)
                 slipLimit *= slipScale;
         }
         changed = 0;
@@ -440,7 +440,7 @@ extern "C" void fn_801E0300(void *manager) {
             if (time - entry->timer > lbl_8055AE40 / timeDiv) {
                 changed = 1;
                 if (entry->active != 0) {
-                    *(float *)(vehicle + 0x258C) = fadeTo;
+                    *(float *)(vehicle + 0x258C) = timerValue;
                     *(unsigned char *)(vehicle + 0x259D) = 0;
                 }
             }
