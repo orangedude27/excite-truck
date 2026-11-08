@@ -35,6 +35,8 @@ extern char lbl_8034CB68[];
 extern char lbl_8055D098;
 #include <revolution/GX/GXTypes.h>
 #include <revolution/GX/GXTev.h>
+#include <revolution/GX/GXAttr.h>
+#include <revolution/GX/GXPixel.h>
 extern void *lbl_8055FEE8;
 extern void fn_802D3144(void);
 extern void GXSetNumIndStages(u8);
@@ -521,13 +523,14 @@ void *fn_802E0C04(u32 size) {
     char *p;
     int align2;
 
+    head = (volatile int *)lbl_8055FEE8;
+    align = head[1];
+    link = (void **)&head[2];
+    needed = size + align;
+    needed &= ~align;
     best = 0x7FFFFFFF;
     bestLink = 0;
     result = 0;
-    head = (volatile int *)lbl_8055FEE8;
-    needed = head[1];
-    link = (void **)&head[2];
-    needed = (size + needed) & ~needed;
 
     while ((node = *link) != 0) {
         freeSize = *(int *)((char *)node + 4);
@@ -714,40 +717,40 @@ void fn_802E0F98(void) {
 }
 
 void fn_802E1058(void) {
-    void *root;
-    void *node;
-    unsigned int total;
-    unsigned int otherTotal;
+    register u32 root;
+    register u32 node;
+    register unsigned int total;
+    register unsigned int otherTotal;
 
-    root = lbl_8055FEE8;
+    root = (u32)lbl_8055FEE8;
     if (root != 0) {
-        if (*(int *)((char *)root + 0xC) != 0) {
+        if (*(int *)(root + 0xC) != 0) {
             fn_802E30C8(lbl_8034BBA8, lbl_8034BB1C);
             fn_802E30C8(lbl_8034BB9C);
 
-            node = *(void **)((char *)root + 0xC);
+            node = *(u32 *)(root + 0xC);
             total = 0;
             while (node != 0) {
-                fn_802E30C8(lbl_8034BB88, (char *)node + 0x10,
-                            *(int *)((char *)node + 4));
-                total += *(unsigned int *)((char *)node + 4);
-                node = *(void **)((char *)node + 8);
+                fn_802E30C8(lbl_8034BB88, (void *)(node + 0x10),
+                            *(int *)(node + 4));
+                total += *(unsigned int *)(node + 4);
+                node = *(u32 *)(node + 8);
             }
             fn_802E30C8(lbl_8034BB7C, total >> 10);
 
             otherTotal = 0;
             fn_802E30C8((const char *)&lbl_8055D098);
-            node = *(void **)((char *)root + 8);
+            node = *(u32 *)(root + 8);
             while (node != 0) {
-                fn_802E30C8(lbl_8034BB68, (char *)node + 0x10,
-                            *(int *)((char *)node + 4));
-                otherTotal += *(unsigned int *)((char *)node + 4);
-                node = *(void **)((char *)node + 8);
+                fn_802E30C8(lbl_8034BB68, (void *)(node + 0x10),
+                            *(int *)(node + 4));
+                otherTotal += *(unsigned int *)(node + 4);
+                node = *(u32 *)(node + 8);
             }
             fn_802E30C8(lbl_8034BB5C, otherTotal >> 10);
             fn_802E317C(lbl_8034BAEC);
         }
-        fn_80128668(root);
+        fn_80128668((void *)root);
     }
     lbl_8055FEE8 = 0;
     fn_80128670(lbl_8055FEEC);
@@ -841,19 +844,13 @@ extern const u16 lbl_802FAE28[];
 extern const u8 lbl_805650C8, lbl_805650C9, lbl_805650CA, lbl_805650CB;
 extern const f32 lbl_805650CC, lbl_805650D0, lbl_805650D4, lbl_805650D8, lbl_805650DC, lbl_805650E0;
 extern const u16 lbl_80565238, lbl_8056523A, lbl_8056523C, lbl_8056523E;
-#pragma push
-#pragma scheduling invalid_target
-#pragma optimization_level 3
-void fn_802E13D8(f32 farg0, f32 farg1, f32 farg2, f32 farg3, void *arg0) {
+#pragma processor 750
+void fn_802E13D8(f32 temp_f28, f32 temp_f31, f32 temp_f30, f32 temp_f29, void *arg0) {
     f32 sp30[24];
     u16 sp20[6];
     GXColor kColor;
     u16 tevColor[4];
     u8 *var_r3;
-    f32 temp_f31;
-    f32 temp_f28;
-    f32 temp_f30;
-    f32 temp_f29;
     f32 temp_f1;
     f32 temp_f2;
     f32 var_f1;
@@ -929,12 +926,12 @@ void fn_802E13D8(f32 farg0, f32 farg1, f32 farg2, f32 farg3, void *arg0) {
         fn_802C8DB8(sp30, 4, sp20, 6, sp20[4], sp20[3], sp20[2], sp20[1]);
         fn_802C8D74();
         temp_r5_3 = *(u32 **)((u8 *)temp_r31 + 4);
-        temp_f31 = lbl_805650DC + farg0;
-        temp_f28 = lbl_805650E0 + -farg1;
         temp_f1 = (f32)temp_r5_3[0];
         temp_f2 = (f32)temp_r5_3[1];
-        temp_f30 = farg2 / temp_f1;
-        temp_f29 = farg3 / temp_f2;
+        temp_f31 = lbl_805650DC + temp_f31;
+        temp_f28 = lbl_805650E0 + -temp_f28;
+        temp_f30 = temp_f30 / temp_f1;
+        temp_f29 = temp_f29 / temp_f2;
         GXSetZMode(0, 7, 0);
         GXSetColorUpdate(1);
         GXSetAlphaCompare(7, 0, 1, 0, 0);
@@ -962,8 +959,7 @@ void fn_802E13D8(f32 farg0, f32 farg1, f32 farg2, f32 farg3, void *arg0) {
         fn_802E2C20();
     }
 }
-#pragma optimization_level reset
-#pragma pop
+#pragma processor reset
 extern void fn_802E30C8(const char *, ...);
 extern void fn_80119214(void *, void *);
 extern void fn_80116E54(void *, void *);
