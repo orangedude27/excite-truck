@@ -254,7 +254,45 @@ extern "C" void* __dt__Q36PSGame10SoundTable11CategoryMgrFv(void* arg0, s32 arg1
     return arg0;
 }
 
-s32 fn_80198F64(Vec *arg0, void *arg1, Vec *arg2, f32 *arg3, Vec *arg4, Vec *arg5, f32 farg0) {
+s32 fn_80198F64(Vec *arg0, void *arg1, Vec *arg2, f32 farg0, f32 *arg3, Vec *arg4, Vec *arg5) {
+    f32 *m = *(f32 **)((u8 *)arg1 + 0xC);
+    f32 sp5C[3];
+    f32 x = arg0->x - m[9];
+    f32 y = arg0->y - m[10];
+    f32 z = arg0->z - m[11];
+    f32 nx = x * m[0] + y * m[1] + z * m[2];
+    f32 ny = x * m[3] + y * m[4] + z * m[5];
+    f32 nz = x * m[6] + y * m[7] + z * m[8];
+    f32 sp50[3], sp44[3];
+
+    sp5C[0] = x; sp5C[1] = y; sp5C[2] = z;
+    sp5C[0] = nx; sp5C[1] = ny; sp5C[2] = nz;
+
+    sp44[0] = ((f32 *)arg1)[0x30/4]; sp50[0] = ((f32 *)arg1)[0x24/4];
+    sp50[1] = ((f32 *)arg1)[0x28/4]; sp50[2] = ((f32 *)arg1)[0x2C/4];
+    sp44[1] = ((f32 *)arg1)[0x34/4]; sp44[2] = ((f32 *)arg1)[0x38/4];
+
+    if (nx > sp44[0] + farg0) return 0;
+    if (ny > sp44[1] + farg0) return 0;
+    if (nz > sp44[2] + farg0) return 0;
+    if (nx < sp50[0] - farg0) return 0;
+    if (ny < sp50[1] - farg0) return 0;
+    if (nz < sp50[2] - farg0) return 0;
+
+    {
+        f32 sp38[3];
+        f32 ax = arg5->x, ay = arg5->y, az = arg5->z;
+        if ((Vec*)sp38 == arg5) {
+            sp38[0] = (ax * m[0] + ay * m[1]) + az * m[2];
+            sp38[1] = (ax * m[3] + ay * m[4]) + az * m[5];
+            sp38[2] = (ax * m[6] + ay * m[7]) + az * m[8];
+        } else {
+            sp38[0] = (ay * m[1] + ax * m[0]) + az * m[2];
+            sp38[1] = (ay * m[4] + ax * m[3]) + az * m[5];
+            sp38[2] = (ay * m[7] + ax * m[6]) + az * m[8];
+        }
+        (void)sp38;
+    }
     return 0;
 }
 
@@ -3790,7 +3828,6 @@ extern "C" f32 fn_801A3880(s32 arg0) {
 #pragma scheduling on
 extern float lbl_805622D0, lbl_805622DC, lbl_805623C0;
 extern float PSVECDotProduct(float *, void *);
-extern "C" int fn_80198F64(void *, int, void *, float *, void *, float *, float);
 extern int fn_8019A788(void *, int, void *, void *, int, int, float, float, float);
 #pragma use_lmw_stmw off
 extern "C" void fn_801A38E4(int arg0, void *arg1) {
