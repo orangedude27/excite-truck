@@ -1,5 +1,10 @@
 #include "types.h"
 extern "C" void *memset(void *, s32, u32);
+extern "C" f32 fn_801B306C(void);
+extern "C" s32 fn_80009C84(void);
+extern "C" s32 fn_80179630(s32);
+extern "C" void fn_801CB5DC(s32, s32, s32);
+extern "C" void fn_801CB648(s32, s32, f32);
 struct SubArray8013D2C4 {
     void **ptr;
     s32 count;
