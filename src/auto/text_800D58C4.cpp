@@ -42,6 +42,16 @@ struct MatGXBits_800D8B28 {
     u32 pad : 5;
 };
 struct MatSRT_800D8B28 { f32 tx, ty, r, sx, sy; };
+struct MatV4_800D8B28 { f32 a, b, c, d; };
+static inline void MatInitSRT_800D8B28(MatSRT_800D8B28 *p) {
+    MatV4_800D8B28 t;
+    t.a = 0.0f; t.b = 0.0f; t.c = 1.0f; t.d = 1.0f;
+    p->tx = t.a; p->ty = t.a; p->r = t.a; p->sx = t.c; p->sy = t.c;
+}
+static inline u8 *MatFlagBase_800D8B28(u8 *self) {
+    MatGXBits_800D8B28 *c = (MatGXBits_800D8B28 *)(self + 0x4C);
+    return *(u8 **)(self + 0x58) + c->srt * 0x14 + (c->gen * 4 + c->tex * 32);
+}
 struct GetTextureSizeStringBase_800D58C4 { char text[0x500]; };
 namespace nw4hbm { namespace lyt {
 class ResourceAccessor;
@@ -1767,6 +1777,84 @@ extern "C" void *__dt__Q34nw4r3lyt8MaterialFv(void *self, s32 shouldDelete) {
         }
     }
     return self;
+}
+
+extern "C" void fn_800D8B28(void *self, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5, u32 a6, u32 a7, u8 h, u8 i, u8 j, u8 k) {
+    extern const char lbl_8031F990[];
+    const char *data = lbl_8031F990;
+    MatGXBits_800D8B28 *cap = (MatGXBits_800D8B28 *)((u8 *)self + 0x4C);
+    MatGXBits_800D8B28 *cnt = (MatGXBits_800D8B28 *)((u8 *)self + 0x50);
+    u8 *mem;
+    if (a1 > 8) Panic__Q26nw4hbm2dbFPCciPCce(data, 0x295, data + 0x1E4);
+    if (a2 > 10) Panic__Q26nw4hbm2dbFPCciPCce(data, 0x296, data + 0x218);
+    if (a3 > 8) Panic__Q26nw4hbm2dbFPCciPCce(data, 0x297, data + 0x248);
+    if (a4 > 16) Panic__Q26nw4hbm2dbFPCciPCce(data, 0x298, data + 0x284);
+    if (a6 > 4) Panic__Q26nw4hbm2dbFPCciPCce(data, 0x299, data + 0x2BC);
+    if (a7 > 3) Panic__Q26nw4hbm2dbFPCciPCce(data, 0x29A, data + 0x2F8);
+    if (cap->tex < a1 || cap->srt < a2 || cap->gen < a3 || cap->g < a4 || cap->f < a5 ||
+        cap->e < a6 || cap->ind < a7 || cap->h < h || cap->i < i || cap->j < j || cap->k < k) {
+        if (*(u8 **)((u8 *)self + 0x58) != 0) {
+            MEMFreeToAllocator(lbl_8055DDF0, *(u8 **)((u8 *)self + 0x58));
+            *(u8 **)((u8 *)self + 0x58) = 0;
+            *(u32 *)cap &= 0x1F;
+            *(u32 *)cnt &= 0x1F;
+        }
+        mem = (u8 *)MEMAllocFromAllocator(lbl_8055DDF0,
+            (u8)a1 * 32 + (u8)a4 * 16 + (a7 + a2) * 0x14 + (k + i + (a6 + a3) + (j + (a5 + h))) * 4);
+        *(u8 **)((u8 *)self + 0x58) = mem;
+        if (mem != 0) {
+            cap->tex = a1;
+            cap->srt = a2;
+            cap->gen = a3;
+            cap->ind = a7;
+            cap->e = a6;
+            cap->f = a5;
+            cap->g = a4;
+            cap->h = h;
+            cap->i = i;
+            cap->j = j;
+            cap->k = k;
+            cnt->srt = cap->srt;
+            {
+                MatSRT_800D8B28 *p = (MatSRT_800D8B28 *)(mem + cap->tex * 32);
+                for (u32 n = 0; n < cnt->srt; n++) {
+                    p[n].tx = 0.0f; p[n].ty = 0.0f; p[n].r = 0.0f; p[n].sx = 1.0f; p[n].sy = 1.0f;
+                }
+            }
+            cnt->ind = cap->ind;
+            {
+                MatSRT_800D8B28 *p = (MatSRT_800D8B28 *)(mem + cap->tex * 32 + cap->srt * 0x14 + cap->gen * 4 +
+                    (cap->h + cap->i + cap->f + cap->j + cap->k + cap->e) * 4);
+                for (u32 n = 0; n < cnt->ind; n++) {
+                    p[n].tx = 0.0f; p[n].ty = 0.0f; p[n].r = 0.0f; p[n].sx = 1.0f; p[n].sy = 1.0f;
+                }
+            }
+            u8 *flags = mem + cap->tex * 32 + cap->srt * 0x14 + cap->gen * 4;
+            cnt->h = cap->h;
+            if (cnt->h) {
+                flags[0] = 1; flags[1] = 1; flags[2] = 0; flags[3] = 0;
+            }
+            cnt->i = cap->i;
+            if (cnt->i) {
+                *(s32 *)(flags + cap->h * 4) = -1;
+            }
+            cnt->f = cap->f;
+            if (cnt->f) {
+                u8 *q = flags + (cap->h + cap->i) * 4;
+                q[0] = 0xE4; q[1] = 0xC0; q[2] = 0xD5; q[3] = 0xEA;
+            }
+            cnt->j = cap->j;
+            if (cnt->j) {
+                u8 *q = flags + (cap->h + cap->i + cap->f) * 4;
+                q[0] = 0x77; q[1] = 0; q[2] = 0; q[3] = 0;
+            }
+            cnt->k = cap->k;
+            if (cnt->k) {
+                u8 *q = flags + (cap->h + cap->i + cap->f + cap->j) * 4;
+                q[0] = 1; q[1] = 4; q[2] = 5; q[3] = 0xF;
+            }
+        }
+    }
 }
 
 extern "C" s32 fn_800D9328(void *arg0) {
