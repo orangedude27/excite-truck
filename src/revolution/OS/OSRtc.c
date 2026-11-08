@@ -120,6 +120,15 @@ OSSramEx* __OSLockSramEx(void) {
     return (OSSramEx*)LockSram(sizeof(OSSram));
 }
 
+/*
+ * Gives back the SRAM cache LockSram() handed out, with interrupts restored.
+ * When save is set, everything from the first byte still dirty (Scb.pos, kept
+ * at the lowest offset any caller modified) to the end of the block is written
+ * back to the SRAM over EXI. Writing the base OSSram means rebuilding its
+ * checksum first, and a write-back starting in it may not carry a reserved GBS
+ * mode. Returns whether the cache is in the SRAM (Scb.sync), which a failed
+ * write leaves FALSE until WriteSramCallback() retries it.
+ */
 static BOOL UnlockSram(BOOL save, u32 pos) {
     u16* data;
     OSSram* sram;
@@ -127,9 +136,11 @@ static BOOL UnlockSram(BOOL save, u32 pos) {
 
     if (save) {
         if (pos == 0) {
+            // The caller modified the base OSSram: drop the reserved flags and
+            // rebuild the checksum over the words up to OSSramEx
             sram = &Scb.sram;
-            if ((u8)(sram->flags & 0x3) > 2) {
-                sram->flags &= ~0x3;
+            if ((u8)(sram->flags & SRAM_FLAGS_RESERVED) > 2) {
+                sram->flags &= ~SRAM_FLAGS_RESERVED;
             }
 
             // Checksum base SRAM
@@ -142,14 +153,17 @@ static BOOL UnlockSram(BOOL save, u32 pos) {
             }
         }
 
+        // Keep the lowest offset modified since the last write-back
         if (pos < Scb.pos) {
             Scb.pos = pos;
         }
 
         sramEx = &Scb.sramEx;
         if (Scb.pos <= sizeof(OSSram) &&
-            (((u32)sramEx->gbs & 0x7C00) == 0x5000 ||
-             ((u32)sramEx->gbs & 0xC0) == 0xC0)) {
+            (((u32)sramEx->gbs & SRAM_GBS_RESERVED_MASK_0) ==
+                 SRAM_GBS_RESERVED_0 ||
+             ((u32)sramEx->gbs & SRAM_GBS_RESERVED_MASK_1) ==
+                 SRAM_GBS_RESERVED_1)) {
             sramEx->gbs = 0;
         }
 
