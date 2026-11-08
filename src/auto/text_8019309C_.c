@@ -21,6 +21,8 @@ extern void fn_801933FC(void *, void *);
 
       extern void fn_80194FD0(unsigned char *, float *, float);
 typedef struct { void *a; float b; int c; } Samp80194FD0;
+extern void *fn_8017960C(int);
+extern int fn_80137788(void *, int, float *);
 extern void fn_80135B9C(void *, void *, void *, void *, void *, float);
 #define F80194FD0(p, o) (*(float *)((unsigned char *)(p) + (o)))
 #define P80194FD0(p, o) (*(void **)((unsigned char *)(p) + (o)))
