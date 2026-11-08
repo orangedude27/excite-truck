@@ -11,6 +11,6 @@ extern int lbl_8055E788;
 void fn_801BF1C4(void) {
     fn_8000D838(&lbl_8055E780);
     lbl_8055E788 = 0xFFFF0000;
-    fn_8002F53C(&lbl_80436D48, fn_801BF210, 0, 0x10, 0x100);
+    fn_8002F53C(lbl_80436D48, fn_801BF210, 0, 0x10, 0x100);
 }
 #pragma scheduling on
