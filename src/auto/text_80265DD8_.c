@@ -1,5 +1,29 @@
 extern char lbl_80499080[];
 typedef struct { int w[0x8A]; } Rec_80269BB0;
+typedef struct {
+    int w0, w4; float f8, fc;
+    int w10, w14, w18, w1c, w20, w24, w28, w2c, w30, w34, w38, w3c, w40, w44, w48, w4c;
+    int w50, w54, w58, w5c, w60, w64, w68, w6c, w70, w74, w78;
+    int w7c, w80, w84, w88, w8c, w90, w94, w98, w9c, wa0, wa4, wa8, wac, wb0, wb4, wb8;
+    float fbc;
+    int wc0, wc4, wc8, wcc, wd0, wd4, wd8, wdc, we0;
+    int we4, we8, wec, wf0, wf4, wf8, wfc, w100, w104, w108, w10c, w110, w114, w118, w11c;
+    int w120, w124, w128, w12c, w130, w134;
+    unsigned char b138, b139;
+    float f13c;
+    int w140, w144, w148, w14c, w150;
+    float f154, f158, f15c;
+    int w160, w164, w168;
+    float f16c, f170, f174;
+    int w178, w17c;
+    float f180, f184, pad188, f18c, f190, f194, f198, f19c, f1a0;
+    int w1a4, w1a8, w1ac, w1b0, w1b4, w1b8, w1bc, w1c0, w1c4, w1c8, w1cc, w1d0;
+    float f1d4;
+    int w1d8, w1dc, w1e0, w1e4, w1e8;
+    short h1ec;
+    float f1f0, f1f4;
+    int w1f8, w1fc, w200, w204, w208, w20c, w210, w214, w218, w21c, w220, w224;
+} Rec2_80269BB0;
 extern void fn_8027445C(void *);
 extern void fn_80273BD0(void *);
 extern void fn_802704D4(int, void *);
@@ -1112,6 +1136,29 @@ void fn_80268E94(void *arg0, int arg1) {
  fn_80268E94_multiply(matrix, matrix, rot);
  } } } }
 }
+
+void fn_80269BB0(int idx, unsigned int sel, int *out, float *outf) {
+    Rec_80269BB0 r = ((Rec_80269BB0 *)lbl_80499080)[idx];
+    ((int *)&r)[1] = 0x15;
+    ((int *)&r)[4] = sel;
+    ((char *)&r)[0x138] = 1;
+    switch (sel) {
+    case 0: fn_80273BD0(&r); break;
+    case 1: fn_8027445C(&r); break;
+    case 2: fn_80274268(&r); break;
+    case 4:
+    case 5: fn_802704D4(sel, &r); break;
+    case 11:
+    case 17: fn_802E30C8(lbl_803468F8); break;
+    default: break;
+    }
+    out[0] = r.w[0x58 / 4]; out[1] = r.w[0x5c / 4]; out[2] = r.w[0x60 / 4];
+    out[3] = r.w[0x64 / 4]; out[4] = r.w[0x68 / 4]; out[5] = r.w[0x6c / 4];
+    out[6] = r.w[0x70 / 4]; out[7] = r.w[0x74 / 4]; out[8] = r.w[0x78 / 4];
+    out[9] = r.w[0x7c / 4]; out[10] = r.w[0x80 / 4]; out[11] = r.w[0x84 / 4];
+    *outf = *(float *)&r.w[0xbc / 4];
+}
+
 #pragma pop
 
 #pragma dont_inline on
