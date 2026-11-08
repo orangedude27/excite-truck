@@ -8834,95 +8834,117 @@ extern "C" void fn_800B7710(void *);
 extern "C" s32 fn_800A53F8(void *);
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" s32 fn_800B6628(void *arg0, s32 arg1, s32 arg2) {
+/* Attach driver's device as a drive of the file system, mounting the volume on
+ * it at once when the drive holds media.
+ *
+ * The VF instance (lbl_803D2140) holds 26 volume slots, one per drive letter
+ * 'A'..'Z'.  name, when given, is registered with the device table first
+ * (fn_800B94EC, which stores index with it); a refusal is VF_ERR_NAME, and a
+ * run with no free slot or with 26 drives attached already is VF_ERR_NO_SLOT.
+ * The slot found is cleared and set up: named 'A' + its index, with its own
+ * lock, an empty FAT bitmap list and the page cache of the driver, and its
+ * device is opened for it (fn_800A53F8), which installs the media-change
+ * callbacks.  The drive is then marked attached and counted; if the device
+ * reported media, the file system is mounted here (fn_800B5988) unless it is
+ * mounted already, and the pending mount is dropped either way - a mount that
+ * goes through also drops the pending unmount and counts the volume as mounted.
+ * A mount error is left on the volume and in the instance's last error but
+ * keeps the drive attached.  Returns 0 once the drive is attached, or the error
+ * that kept it from being attached.
+ */
+extern "C" s32 fn_800B6628(VFiPFDriver *driver, const char *name, s32 index) {
     u8 *base;
-    s32 var_r27 = arg2, var_r31, temp_r3_2, temp_r3_3, temp_r4_2, temp_r4_3, var_r0;
-    void *temp_r4, *temp_r6, *temp_r7; u8 *var_r3;
-    temp_r6 = M2C_FIELD(arg0, void **, 4);
-    if ((s32)M2C_FIELD(temp_r6, s32 *, 0xC) == 0) M2C_FIELD(temp_r6, s32 *, 0xC) = 1;
-    temp_r4 = M2C_FIELD(arg0, void **, 4);
-    if ((s32)M2C_FIELD(temp_r4, s32 *, 0x10) == 0) M2C_FIELD(temp_r4, s32 *, 0x10) = 1;
+    s32 result = index, slot_index, open_result, mount_result, attached, error;
+    VFiPFDriverParams *params, *params2, *cache;
+    void *device;
+    u8 *p;
+    VFiPFVolume *slot;
+
+    params = driver->params;
+    if (params->cacheSectors == 0) params->cacheSectors = 1;
+    params2 = driver->params;
+    if (params2->sectorsPerCluster == 0) params2->sectorsPerCluster = 1;
     base = (u8 *)lbl_803D2140;
-    M2C_FIELD(arg0, u8 *, 9) = 0U;
-    M2C_FIELD(arg0, s8 *, 8) = 0;
+    driver->flags = 0;
+    driver->letter = 0;
     fn_800B77C0(base + 0x64);
-    if (arg1 != 0 && fn_800B94EC(arg1, var_r27) != 0) {
+    if (name != 0 && fn_800B94EC((s32)name, result) != 0) {
         fn_800B783C(base + 0x64);
-        *(s32 *)(base + 0x40) = 0x11;
-        return 0x11;
+        *(s32 *)(base + 0x40) = VF_ERR_NAME;
+        return VF_ERR_NAME;
     }
-    var_r3 = (u8 *)lbl_803D2140 + 0xA0;
-    for (var_r31 = 0; var_r31 < 26; var_r3 += 0x1FC8, var_r31++) {
-        arg1 = (s32)var_r3;
-        if ((*(u16 *)(var_r3 + 0x1F8C) & 1) == 0) {
+    p = (u8 *)lbl_803D2140 + 0xA0;
+    for (slot_index = 0; slot_index < VF_MAX_VOLUMES; p += VF_VOLUME_SIZE, slot_index++) {
+        slot = (VFiPFVolume *)p;
+        if ((slot->flags & VF_VOL_IN_USE) == 0) {
             break;
         }
     }
-    if (var_r31 < 0 || var_r31 >= 0x1A ||
-        *(s32 *)((u8 *)lbl_803D2140 + 0x30) < 0 || *(s32 *)((u8 *)lbl_803D2140 + 0x30) >= 0x1A) {
-        fn_800B783C((u8 *)lbl_803D2140 + 0x64);
-        *(s32 *)((u8 *)lbl_803D2140 + 0x40) = 4;
-        return 4;
+    if (slot_index < 0 || slot_index >= VF_MAX_VOLUMES ||
+        VF_ATTACHED_DEVICES < 0 || VF_ATTACHED_DEVICES >= VF_MAX_VOLUMES) {
+        fn_800B783C(VF_LOCK);
+        VF_LAST_ERROR = VF_ERR_NO_SLOT;
+        return VF_ERR_NO_SLOT;
     }
-    *(s32 *)((u8 *)((void *)arg1) + 0x38) = -1;
-    *(s32 *)((u8 *)((void *)arg1) + 0x3C) = -1;
-    fn_800A499C((const char *)((void *)arg1), 0, 0x1FC8);
-    temp_r4_2 = M2C_FIELD(arg0, s32 *, 0);
-    *(s32 *)((u8 *)((void *)arg1) + 0x1FBC) = temp_r4_2;
-    *(s8 *)((u8 *)((void *)arg1) + 0x1F8E) = (s16)var_r31 + 0x41;
-    fn_800B7710((u8 *)((void *)arg1) + 0x1F90);
-    *(s32 *)((u8 *)((void *)arg1) + 0x1F74) = 1;
-    *(void **)((u8 *)((void *)arg1) + 0x1F7C) = (u8 *)((void *)arg1) + 0x1F78;
-    temp_r3_2 = fn_800A53F8(((void *)arg1));
-    if (temp_r3_2 != 0) var_r27 = temp_r3_2;
+    slot->unk38 = -1;
+    slot->unk3C = -1;
+    fn_800A499C((const char *)slot, 0, VF_VOLUME_SIZE);
+    device = driver->device;
+    slot->device = device;
+    slot->letter = (s16)slot_index + VF_FIRST_LETTER;
+    fn_800B7710(slot->lock);
+    slot->fatBlocks = 1;
+    slot->fatLink = &slot->fatList;
+    open_result = fn_800A53F8(slot);
+    if (open_result != 0) result = open_result;
     else {
-        temp_r7 = M2C_FIELD(arg0, void **, 4);
+        cache = driver->params;
         ((void (*)(void *, s32, s32, u16, u16))fn_800A8B94)(
-            ((void *)arg1), M2C_FIELD(temp_r7, s32 *, 0), M2C_FIELD(temp_r7, s32 *, 4),
-            M2C_FIELD(temp_r7, u16 *, 8), M2C_FIELD(temp_r7, u16 *, 0xA));
-        fn_800A8BA8(((void *)arg1), M2C_FIELD(M2C_FIELD(arg0, void **, 4), s32 *, 0xC));
-        fn_800A8BB8(((void *)arg1), M2C_FIELD(M2C_FIELD(arg0, void **, 4), s32 *, 0x10));
-        var_r27 = 0;
+            slot, (s32)cache->cacheObject, (s32)cache->cacheBuffer,
+            cache->cachePages, cache->cacheExtra);
+        fn_800A8BA8(slot, driver->params->cacheSectors);
+        fn_800A8BB8(slot, driver->params->sectorsPerCluster);
+        result = 0;
     }
-    if (var_r27 != 0) {
-        fn_800B783C((u8 *)lbl_803D2140 + 0x64);
-        *(s32 *)((u8 *)lbl_803D2140 + 0x40) = var_r27;
-        return var_r27;
+    if (result != 0) {
+        fn_800B783C(VF_LOCK);
+        VF_LAST_ERROR = result;
+        return result;
     }
-    *(u16 *)((u8 *)((void *)arg1) + 0x1F8C) |= 1;
+    slot->flags |= VF_VOL_IN_USE;
     base = (u8 *)lbl_803D2140;
-    M2C_FIELD(arg0, u8 *, 9) |= 1;
-    *(s8 *)((u8 *)((void *)arg1) + 0x1F8E) = var_r31 + 0x41;
-    M2C_FIELD(arg0, s8 *, 8) = var_r31 + 0x41;
-    temp_r4_3 = *(s32 *)(base + 0x30);
-    *(s32 *)(base + 0x30) = temp_r4_3 + 1;
-    if (fn_800A53B4(((void *)arg1)) != 0) {
-        M2C_FIELD(arg0, u8 *, 9) |= 0x10;
-        if (!(*(u16 *)((u8 *)((void *)arg1) + 0x1F8C) & 8)) {
-            temp_r3_3 = fn_800B5988(((void *)arg1));
-            if (temp_r3_3 != 0) var_r0 = temp_r3_3;
+    driver->flags |= 1;
+    slot->letter = slot_index + VF_FIRST_LETTER;
+    driver->letter = slot_index + VF_FIRST_LETTER;
+    attached = *(s32 *)(base + 0x30);
+    *(s32 *)(base + 0x30) = attached + 1;
+    if (fn_800A53B4(slot) != 0) {
+        driver->flags |= 0x10;
+        if (!(slot->flags & VF_VOL_MOUNTED)) {
+            mount_result = fn_800B5988(slot);
+            if (mount_result != 0) error = mount_result;
             else {
-                *(u16 *)((u8 *)((void *)arg1) + 0x1FAC) &= 0xFFF8;
-                fn_800A53E8(((void *)arg1));
-                (*(s32 *)((u8 *)lbl_803D2140 + 0x34))++;
-                goto block_26;
+                slot->state &= 0xFFF8;
+                fn_800A53E8(slot);
+                VF_MOUNTED_VOLUMES++;
+                goto clear_mount_pending;
             }
         } else {
-block_26:
-            fn_800A53CC(((void *)arg1));
-            var_r0 = 0;
+clear_mount_pending:
+            fn_800A53CC(slot);
+            error = 0;
         }
-        if (var_r0 != 0) {
-            *(s32 *)((u8 *)lbl_803D2140 + 0x40) = var_r0;
-            *(s32 *)((u8 *)((void *)arg1) + 0x1F80) = var_r0;
-            fn_800B783C((u8 *)lbl_803D2140 + 0x64);
+        if (error != 0) {
+            VF_LAST_ERROR = error;
+            slot->error = error;
+            fn_800B783C(VF_LOCK);
             return 0;
         }
-        M2C_FIELD(arg0, u8 *, 9) |= 2;
-        goto block_30;
+        driver->flags |= 2;
+        goto done;
     }
-block_30:
-    fn_800B783C((u8 *)lbl_803D2140 + 0x64);
+done:
+    fn_800B783C(VF_LOCK);
     return 0;
 }
 #pragma pop
