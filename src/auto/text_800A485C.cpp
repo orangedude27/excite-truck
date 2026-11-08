@@ -6799,95 +6799,95 @@ extern "C" s32 fn_800B1AFC(s32 arg0, s32 arg1, s32 *arg2, s32 arg3) {
 
 extern "C" s32 fn_800B6004(void *);
 extern "C" void fn_800B786C(void *);
-extern "C" void *fn_800B1BDC(void *arg0) {
+extern "C" void *fn_800B1BDC(void *file) {
     u8 *volume;
     s32 result = 0;
-    s32 temp_r3;
+    s32 status;
     u16 count;
 
-    if (arg0 == 0) {
+    if (file == 0) {
         volume = 0;
     } else {
-        volume = *(u8 **)((*(u8 **)((u8 *)arg0 + 8)) + 0x268);
+        volume = *(u8 **)((*(u8 **)((u8 *)file + 8)) + 0x268);
     }
 
     fn_800B77C0(volume + 0x1F90);
-    temp_r3 = fn_800B6004(volume);
-    if (temp_r3 != 0 && (temp_r3 != 0xB || *(s32 *)((u8 *)arg0 + 4) != 2)) {
+    status = fn_800B6004(volume);
+    if (status != 0 && (status != 0xB || *(s32 *)((u8 *)file + 4) != 2)) {
         fn_800B783C(volume + 0x1F90);
-        *(s32 *)((u8 *)lbl_803D2140 + 0x40) = temp_r3;
-        *(s32 *)(volume + 0x1F80) = temp_r3;
-        return (void *)temp_r3;
+        *(s32 *)((u8 *)lbl_803D2140 + 0x40) = status;
+        *(s32 *)(volume + 0x1F80) = status;
+        return (void *)status;
     }
 
-    if ((*(u32 *)(*(u8 **)((u8 *)arg0 + 8)) & 1) == 0 ||
-        (*(u32 *)(*(u8 **)((u8 *)arg0 + 8)) & 2) == 0) {
+    if ((*(u32 *)(*(u8 **)((u8 *)file + 8)) & 1) == 0 ||
+        (*(u32 *)(*(u8 **)((u8 *)file + 8)) & 2) == 0) {
         fn_800B783C(volume + 0x1F90);
         *(s32 *)((u8 *)lbl_803D2140 + 0x40) = 0xA;
         *(s32 *)(volume + 0x1F80) = 0xA;
         return (void *)0xA;
     }
 
-    *(void **)(volume + 0x1644) = arg0;
-    if (((s32)*(u16 *)(*(u8 **)((u8 *)arg0 + 8) + 0x298) - 1) > 0) goto after_poll;
-    if (*(u8 *)(*(u8 **)((u8 *)arg0 + 8) + 0x258) & 0x19) goto after_poll;
-    if (temp_r3 & 0xB) goto after_poll;
-    if ((*(u32 *)(*(u8 **)((u8 *)arg0 + 8)) & 4) == 0 &&
-        (*(u32 *)(volume + 0x1F88) & 1) == 1) goto after_poll;
-    result = fn_800AB0C0(*(u8 **)((u8 *)arg0 + 8) + 0x3C, 1);
+    *(void **)(volume + 0x1644) = file;
+    if (((s32)*(u16 *)(*(u8 **)((u8 *)file + 8) + 0x298) - 1) > 0) goto queued_write;
+    if (*(u8 *)(*(u8 **)((u8 *)file + 8) + 0x258) & 0x19) goto queued_write;
+    if (status & 0xB) goto queued_write;
+    if ((*(u32 *)(*(u8 **)((u8 *)file + 8)) & 4) == 0 &&
+        (*(u32 *)(volume + 0x1F88) & 1) == 1) goto queued_write;
+    result = fn_800AB0C0(*(u8 **)((u8 *)file + 8) + 0x3C, 1);
 
-after_poll:
-    count = *(u16 *)((u8 *)arg0 + 0x2C);
+queued_write:
+    count = *(u16 *)((u8 *)file + 0x2C);
     if (count != 0) {
-        u8 *device = *(u8 **)((u8 *)arg0 + 8);
-        if ((*(u16 *)(device + 0x27C) & 1) != 0) {
-            *(u16 *)(device + 0x27E) = *(u16 *)(device + 0x27E) - count;
-            *(u16 *)((u8 *)arg0 + 0x2C) = 0;
-            if (*(u16 *)(*(u8 **)((u8 *)arg0 + 8) + 0x27E) == 0) {
-                fn_800B786C(arg0);
+        u8 *stream = *(u8 **)((u8 *)file + 8);
+        if ((*(u16 *)(stream + 0x27C) & 1) != 0) {
+            *(u16 *)(stream + 0x27E) = *(u16 *)(stream + 0x27E) - count;
+            *(u16 *)((u8 *)file + 0x2C) = 0;
+            if (*(u16 *)(*(u8 **)((u8 *)file + 8) + 0x27E) == 0) {
+                fn_800B786C(file);
             }
-            *(u16 *)(*(u8 **)((u8 *)arg0 + 8) + 0x27C) &= 0xFFFC;
-        } else if (*(void **)(device + 0x284) != arg0) {
+            *(u16 *)(*(u8 **)((u8 *)file + 8) + 0x27C) &= 0xFFFC;
+        } else if (*(void **)(stream + 0x284) != file) {
             result = 0x19;
         } else {
-            *(u16 *)(device + 0x27E) = 0;
-            *(u16 *)((u8 *)arg0 + 0x2C) = 0;
-            *(void **)(*(u8 **)((u8 *)arg0 + 8) + 0x284) = 0;
-            fn_800B786C(arg0);
-            *(u16 *)(*(u8 **)((u8 *)arg0 + 8) + 0x27C) &= 0xFFFC;
+            *(u16 *)(stream + 0x27E) = 0;
+            *(u16 *)((u8 *)file + 0x2C) = 0;
+            *(void **)(*(u8 **)((u8 *)file + 8) + 0x284) = 0;
+            fn_800B786C(file);
+            *(u16 *)(*(u8 **)((u8 *)file + 8) + 0x27C) &= 0xFFFC;
         }
     }
 
     if (result != 0) {
         *(s32 *)((u8 *)lbl_803D2140 + 0x40) = result;
-        *(s32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 8) + 0x38) + 0x1F80) = result;
-        *(s32 *)((u8 *)arg0 + 0x18) = result;
+        *(s32 *)(*(u8 **)(*(u8 **)((u8 *)file + 8) + 0x38) + 0x1F80) = result;
+        *(s32 *)((u8 *)file + 0x18) = result;
     } else {
         if (*(u32 *)(volume + 0x1624) & 2) {
             result = ((s32 (*)(void *))fn_800A9104)(volume);
             if (result != 0) {
                 *(s32 *)((u8 *)lbl_803D2140 + 0x40) = result;
-                *(s32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 8) + 0x38) + 0x1F80) = result;
-                *(s32 *)((u8 *)arg0 + 0x18) = result;
+                *(s32 *)(*(u8 **)(*(u8 **)((u8 *)file + 8) + 0x38) + 0x1F80) = result;
+                *(s32 *)((u8 *)file + 0x18) = result;
             } else {
-                result = ((s32 (*)(void *, u32))fn_800A9138)(volume, (u32)arg0);
+                result = ((s32 (*)(void *, u32))fn_800A9138)(volume, (u32)file);
                 if (result != 0) {
                     *(s32 *)((u8 *)lbl_803D2140 + 0x40) = result;
-                    *(s32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 8) + 0x38) + 0x1F80) = result;
-                    *(s32 *)((u8 *)arg0 + 0x18) = result;
+                    *(s32 *)(*(u8 **)(*(u8 **)((u8 *)file + 8) + 0x38) + 0x1F80) = result;
+                    *(s32 *)((u8 *)file + 0x18) = result;
                 }
             }
         }
         if (result == 0) {
-            u8 *device = *(u8 **)((u8 *)arg0 + 8);
-            count = *(u16 *)(device + 0x298);
+            u8 *stream = *(u8 **)((u8 *)file + 8);
+            count = *(u16 *)(stream + 0x298);
             count--;
-            *(u16 *)(device + 0x298) = count;
+            *(u16 *)(stream + 0x298) = count;
             if (count == 0) {
-                *(u32 *)(*(u8 **)((u8 *)arg0 + 8)) &= ~1U;
-                *(s32 *)(*(u8 **)((u8 *)arg0 + 8) + 0x20) = 0;
+                *(u32 *)(*(u8 **)((u8 *)file + 8)) &= ~1U;
+                *(s32 *)(*(u8 **)((u8 *)file + 8) + 0x20) = 0;
             }
-            *(u32 *)arg0 &= ~1U;
+            *(u32 *)file &= ~1U;
             --*(s32 *)(volume + 0x161C);
         }
     }
