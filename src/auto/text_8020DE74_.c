@@ -101,7 +101,7 @@ void *fn_8020DE74(void *arg0) {
     register float initial asm("f31");
     u32 bit;
 
-    obj = (UiObj *)fn_801284F8(0x74, (const char *)&lbl_8055B648);
+    obj = (CarSound *)fn_801284F8(0x74, (const char *)&lbl_8055B648);
     if (obj != 0) {
     obj->vtable = lbl_8033C8C4;
     obj->owner = arg0;
