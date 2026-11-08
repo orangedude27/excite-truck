@@ -515,9 +515,13 @@ static void EXTIntrruptHandler(s16 intr, OSContext* ctx) {
     }
 }
 
+// Brings the EXI interfaces up at startup: waits out any transfer the IPL left
+// running, masks every EXI interrupt, resets the three channels, installs the
+// channel interrupt handlers and works out which devices are attached.
 void EXIInit(void) {
     u32 id;
 
+    // Wait for a transfer started by the IPL to finish on every channel.
     do {
         do {
             ;
@@ -525,16 +529,20 @@ void EXIInit(void) {
     } while ((EXI_CHAN_PARAMS[EXI_CHAN_1].cr & EXI_CR_TSTART) == 1 ||
              (EXI_CHAN_PARAMS[EXI_CHAN_2].cr & EXI_CR_TSTART) == 1);
 
+    // Nothing is ready to take EXI interrupts yet.
     __OSMaskInterrupts(
         OS_INTR_MASK(OS_INTR_EXI_0_EXI) | OS_INTR_MASK(OS_INTR_EXI_0_TC) |
         OS_INTR_MASK(OS_INTR_EXI_0_EXT) | OS_INTR_MASK(OS_INTR_EXI_1_EXI) |
         OS_INTR_MASK(OS_INTR_EXI_1_TC) | OS_INTR_MASK(OS_INTR_EXI_1_EXT) |
         OS_INTR_MASK(OS_INTR_EXI_2_EXI) | OS_INTR_MASK(OS_INTR_EXI_2_TC));
 
+    // No chip select, no clock: leave the peripherals deselected.
     EXI_CHAN_PARAMS[EXI_CHAN_0].cpr = 0;
     EXI_CHAN_PARAMS[EXI_CHAN_1].cpr = 0;
     EXI_CHAN_PARAMS[EXI_CHAN_2].cpr = 0;
 
+    // Channel 0's external ROM (the DVD drive's) stays disabled; the DVD
+    // interface reaches it instead.
     EXI_CHAN_PARAMS[EXI_CHAN_0].cpr = EXI_CPR_ROMDIS;
 
     __OSSetInterruptHandler(OS_INTR_EXI_0_EXI, EXIIntrruptHandler);
@@ -546,9 +554,13 @@ void EXIInit(void) {
     __OSSetInterruptHandler(OS_INTR_EXI_2_EXI, EXIIntrruptHandler);
     __OSSetInterruptHandler(OS_INTR_EXI_2_TC, TCIntrruptHandler);
 
+    // Remember channel 0's internal (serial port 1) ID now, before anything
+    // else can claim the channel and make it unreadable.
     EXIGetID(EXI_CHAN_0, EXI_DEV_NET, &IDSerialPort1);
 
     if (__OSInIPL) {
+        // The IPL may have left devices attached: probe both channels so their
+        // insertion times are set.
         EXIProbeReset();
     } else {
         // A dev board's barnacle is attached to the external port of one
