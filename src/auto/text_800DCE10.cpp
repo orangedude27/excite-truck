@@ -41,6 +41,7 @@ extern "C" void fn_800DF81C(f32 *arg0, void *arg1, const u16 *arg2, s32 arg3, f3
     if (!c0) ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, line, msg + off, p); }
 struct Vec2f { f32 x, y; };
 struct CWBuf { u8 b[0x60]; };
+extern "C" s32 fn_800DDDF4(f32 *arg0_ptr, void *arg1_ptr, const u16 *arg2_ptr, s32 arg3, u8 *arg4, f32 farg0);
 struct SoundEntry60 {
     u8 b[32];
     s32 w[8];
