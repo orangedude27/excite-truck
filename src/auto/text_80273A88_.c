@@ -10,6 +10,16 @@ extern double sin(double);
 extern double cos(double);
 extern float lbl_80564024, lbl_80564020, lbl_80563FAC, lbl_80563FB0, lbl_80563FA8;
 extern float lbl_80564010, lbl_80564014, lbl_80564018, lbl_8056401C;
+extern double lbl_80563FB8;
+extern float lbl_80563FC0, lbl_80563FC4, lbl_80563FC8, lbl_80563FCC, lbl_80563FD0, lbl_80563FD4, lbl_80563FD8, lbl_80563FDC, lbl_80563FE0;
+extern float lbl_8055F578;
+extern unsigned char lbl_8055F57C;
+extern int fn_801EA098(void *, void *, float *, int *, float, float);
+extern float PSVECDotProduct(float *, float *);
+extern double fn_8018AE3C(void *), fn_8018AE44(void *), fn_8018AE4C(void *);
+extern void fn_80015A20(void *, float *, float, float);
+extern void PSVECCrossProduct(void *, void *, void *);
+extern void PSVECNormalize(void *, void *);
 extern float lbl_802FA788[];
 extern char lbl_80347364[];
 extern char lbl_8049A2C8[];
@@ -291,7 +301,7 @@ extern double lbl_80563FB8;
 void fn_802749FC(void *arg0, void *arg1) {
     extern float PSVECDotProduct(float *, float *);
     struct { int sp8; float spC[3]; float sp18[3]; float sp24[3]; float sp30[3]; float sp3C; float pad[2]; float sp48[3]; } local;
-    unsigned long m11, m10, m9, m8, m7, m6, m5, m4, m3, m2, m1, m0;
+    unsigned int m11, m10, m9, m8, m7, m6, m5, m4, m3, m2, m1, m0;
     float temp_f0;
     float temp_f0_2;
     float temp_f0_3;
@@ -316,8 +326,8 @@ void fn_802749FC(void *arg0, void *arg1) {
     float var_f5;
 
     if ((int) (*(unsigned char *)((char *)arg0 + 0x138)) != 0) {
-        float one = lbl_80563FB0;
         float zero = lbl_80563FAC;
+        float one = lbl_80563FB0;
         (*(float *)((char *)arg0 + 0x28)) = one;
         (*(float *)((char *)arg0 + 0x2C)) = zero;
         (*(float *)((char *)arg0 + 0x30)) = one;
