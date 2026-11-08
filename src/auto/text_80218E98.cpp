@@ -90,6 +90,14 @@ extern "C" void fn_802328D4(void *);
 extern "C" f32 fn_80214D48(void);
 extern "C" void fn_80228AEC(s32, f32);
 extern "C" void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
+extern "C" void fn_80230150(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32);
+extern "C" void fn_802304EC(s32, s32, s32, s32, f32, f32, f32, f32, f32, f32, f32);
+extern "C" void fn_80230650(s32, s32, s32, s32, f32, f32, f32, f32, f32, f32, f32);
+extern "C" void fn_802307AC(s32, s32, s32, s32, f32, f32, f32, f32, f32, f32, f32);
+extern "C" double fn_8002EFB4(double, double);
+extern "C" f32 lbl_805634C0;
+extern "C" f64 lbl_805634D0;
+extern "C" f32 lbl_805634DC;
 
 extern "C" u8 lbl_8033E140[];
 extern "C" void fn_8022EE98(void *);
@@ -6855,10 +6863,10 @@ extern "C" f32 lbl_80563560;
 #pragma processor 750
 extern "C" void fn_802272D4(void *arg0) {
     u8 *p = (u8 *)arg0;
-    f32 t[3];
-    f32 r[3];
-    f32 v[3];
     f32 sp2C[9];
+    RotV3 v;
+    RotV3 r;
+    RotV3 t;
     f32 now = fn_8023659C();
     s32 id = *(s32 *)(p + 0x254);
     if (id != -2 && id != -1) {
@@ -6891,33 +6899,33 @@ extern "C" void fn_802272D4(void *arg0) {
         m[9] = zero;
         m[10] = zero;
         m[11] = zero;
-        v[2] = zero;
-        v[0] = (f32)-lbl_8055FB9C * lbl_805634C4;
-        v[1] = (f32)-lbl_8055FBA0 * lbl_805634C4;
+        v.z = zero;
+        v.x = (f32)-lbl_8055FB9C * lbl_805634C4;
+        v.y = (f32)-lbl_8055FBA0 * lbl_805634C4;
         m = *(f32 **)(p + 0x260);
-        Rot3Vec(m, v, r);
-        m[9] += r[0];
-        m[10] += r[1];
-        m[11] += r[2];
+        Rot3Vec(m, (RotV3 *)(u32)&v, (RotV3 *)(u32)&r);
+        m[9] += r.x;
+        m[10] += r.y;
+        m[11] += r.z;
         if (*(u8 *)(p + 0x270) != 0) {
             *(f32 *)(p + 0x26C) = *(f32 *)(p + 0x26C) - (now - *(f32 *)(p + 0x25C)) / lbl_805634E4;
         } else {
             *(f32 *)(p + 0x26C) = *(f32 *)(p + 0x26C) + (now - *(f32 *)(p + 0x25C)) / lbl_805634FC;
         }
-        v[0] = lbl_805634A8;
-        v[1] = lbl_805634A8;
-        v[2] = *(f32 *)(p + 0x26C);
+        v.x = lbl_805634A8;
+        v.y = lbl_805634A8;
+        v.z = *(f32 *)(p + 0x26C);
         void *h = *(void **)(p + 0x260);
-        ((void (*)(void *, f32 *))fn_80015A20)(sp2C, v);
+        ((void (*)(void *, f32 *))fn_80015A20)(sp2C, &v.x);
         fn_80015B20(h, sp2C, h);
-        v[2] = lbl_805634A8;
-        v[0] = (f32)lbl_8055FB9C * lbl_805634C4;
-        v[1] = (f32)lbl_8055FBA0 * lbl_805634C4;
+        v.z = lbl_805634A8;
+        v.x = (f32)lbl_8055FB9C * lbl_805634C4;
+        v.y = (f32)lbl_8055FBA0 * lbl_805634C4;
         m = *(f32 **)(p + 0x260);
-        Rot3Vec(m, v, t);
-        m[9] += t[0];
-        m[10] += t[1];
-        m[11] += t[2];
+        Rot3Vec(m, (RotV3 *)(u32)&v, (RotV3 *)(u32)&t);
+        m[9] += t.x;
+        m[10] += t.y;
+        m[11] += t.z;
         *(f32 *)(*(u8 **)(p + 0x260) + 0x30) = lbl_805634E8 + lbl_80563560 * *(f32 *)(p + 0x268);
         fn_8022ED00(*(void **)(p + 0x260));
         fn_80231220(*(s32 *)(p + 0x254), -1, *(f32 *)(p + 0x244), *(f32 *)(p + 0x248), *(f32 *)(p + 0x24C), *(f32 *)(p + 0x250), lbl_805634A8, lbl_805634A8, lbl_805634A4, lbl_805634A4);
