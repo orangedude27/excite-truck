@@ -142,6 +142,10 @@ void fn_80009DC8(void *arg0) {
 }
 
 #pragma push
+#pragma processor 750
+#pragma pop
+
+#pragma push
 #pragma scheduling invalid_target
 void fn_8000A644(void* arg0, void* arg1) {
     s32 count = 0;
