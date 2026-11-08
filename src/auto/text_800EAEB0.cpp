@@ -1266,7 +1266,9 @@ extern "C" s32 fn_800ED0F4(s32 arg0, s32 arg1) {
 }
 
 using namespace nw4hbm::snd::detail;
+#pragma use_lmw_stmw off
 int MmlParser::Parse(MmlSeqTrack *track, bool doNoteOn) const {
+    const char *str = (const char *)lbl_80323268;
     SeqPlayer *player;
     u8 cmd;
     bool enabled;
@@ -1274,15 +1276,15 @@ int MmlParser::Parse(MmlSeqTrack *track, bool doNoteOn) const {
     SeqArgType argType;
     s32 len;
     s32 v;
-    s16 a;
-    s16 b;
+    s32 a;
+    s32 b;
 
     if (track == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80323268, 0x31, (const char *)lbl_80323268 + 0x18);
+        Panic__Q26nw4hbm2dbFPCciPCce(str, 0x31, str + 0x18);
     }
     player = track->player;
     if (player == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80323268, 0x33, (const char *)lbl_80323268 + 0x40);
+        Panic__Q26nw4hbm2dbFPCciPCce(str, 0x33, str + 0x40);
     }
     useArg = false;
     enabled = true;
@@ -1319,113 +1321,112 @@ int MmlParser::Parse(MmlSeqTrack *track, bool doNoteOn) const {
                 track->field_0x5e = 1;
             }
         }
-        return 0;
-    }
-    a = 0;
-    b = 0;
-    switch (cmd & 0xf0) {
-    case 0x80:
-        switch (cmd) {
+    } else {
+        a = 0;
+        b = 0;
+        switch (cmd & 0xf0) {
         case 0x80:
-            v = ReadArg(&track->cur, player, (SeqTrack *)track, useArg ? argType : ARG_VLQ);
-            if (enabled) {
-                track->field_0x58 = v;
+            switch (cmd) {
+            case 0x80:
+                v = ReadArg(&track->cur, player, (SeqTrack *)track, useArg ? argType : ARG_VLQ);
+                if (enabled) {
+                    track->field_0x58 = v;
+                }
+                break;
+            case 0x81:
+                v = ReadArg(&track->cur, player, (SeqTrack *)track, useArg ? argType : ARG_VLQ);
+                if (enabled) {
+                    CommandProc(track, cmd, v, 0);
+                }
+                break;
+            case 0x88: {
+                u32 b0 = *track->cur++;
+                u16 w = *track->cur++;
+                w = (w << 8) | *track->cur++;
+                u32 b3 = *track->cur++;
+                if (enabled) {
+                    CommandProc(track, cmd, b0, (w << 8) | b3);
+                }
+                break;
+            }
+            case 0x89: {
+                u16 w = *track->cur++;
+                w = (w << 8) | *track->cur++;
+                u32 b2 = *track->cur++;
+                if (enabled) {
+                    CommandProc(track, cmd, (w << 8) | b2, 0);
+                }
+                break;
+            }
+            case 0x8a: {
+                u16 w = *track->cur++;
+                w = (w << 8) | *track->cur++;
+                u32 b2 = *track->cur++;
+                if (enabled) {
+                    CommandProc(track, cmd, (w << 8) | b2, 0);
+                }
+                break;
+            }
             }
             break;
-        case 0x81:
-            v = ReadArg(&track->cur, player, (SeqTrack *)track, useArg ? argType : ARG_VLQ);
+        case 0xc0:
+        case 0xd0:
+            v = ReadArg(&track->cur, player, (SeqTrack *)track, useArg ? argType : ARG_BYTE);
+            if (enabled) {
+                s32 w;
+                if ((s32)cmd < 0xc5 && (s32)cmd >= 0xc3) {
+                    w = (s8)(u8)v;
+                } else {
+                    w = (u8)v;
+                }
+                CommandProc(track, cmd, w, 0);
+            }
+            break;
+        case 0x90:
+        case 0xb0:
+            if (enabled) {
+                CommandProc(track, cmd, 0, 0);
+            }
+            break;
+        case 0xe0:
+            v = (s16)ReadArg(&track->cur, player, (SeqTrack *)track, useArg ? argType : ARG_WORD);
             if (enabled) {
                 CommandProc(track, cmd, v, 0);
             }
             break;
-        case 0x88: {
-            u32 b0 = *track->cur++;
-            u32 b1 = *track->cur++;
-            u32 b2 = *track->cur++;
-            u32 b3 = *track->cur++;
-            if (enabled) {
-                CommandProc(track, cmd, b0, (((b1 << 8) | b2) << 8) | b3);
-            }
-            break;
-        }
-        case 0x89: {
-            u32 b0 = *track->cur++;
-            u32 b1 = *track->cur++;
-            u32 b2 = *track->cur++;
-            if (enabled) {
-                CommandProc(track, cmd, (((b0 << 8) | b1) << 8) | b2, 0);
-            }
-            break;
-        }
-        case 0x8a: {
-            u32 b0 = *track->cur++;
-            u32 b1 = *track->cur++;
-            u32 b2 = *track->cur++;
-            if (enabled) {
-                CommandProc(track, cmd, (((b0 << 8) | b1) << 8) | b2, 0);
-            }
-            break;
-        }
-        }
-        return 0;
-    case 0xc0:
-    case 0xd0:
-        v = ReadArg(&track->cur, player, (SeqTrack *)track, useArg ? argType : ARG_BYTE);
-        if (enabled) {
-            s32 w;
-            if (cmd >= 0xc5) {
-                w = (u8)v;
-            } else if (cmd >= 0xc3) {
-                w = (s8)(u8)v;
-            } else {
-                w = (u8)v;
-            }
-            CommandProc(track, cmd, w, 0);
-        }
-        return 0;
-    case 0x90:
-    case 0xb0:
-        if (enabled) {
-            CommandProc(track, cmd, 0, 0);
-        }
-        return 0;
-    case 0xe0:
-        a = (s16)ReadArg(&track->cur, player, (SeqTrack *)track, useArg ? argType : ARG_WORD);
-        if (enabled) {
-            CommandProc(track, cmd, a, 0);
-        }
-        return 0;
-    case 0xf0:
-        switch (cmd) {
-        case 0xfe:
-            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80323268, 0x105, (const char *)lbl_80323268 + 0x6c);
-            return 0;
-        case 0xff:
-            return 1;
-        case 0xf0: {
-            u8 sub = *track->cur++;
-            switch (sub & 0xf0) {
-            case 0xe0:
-                a = (s16)ReadArg(&track->cur, player, (SeqTrack *)track, useArg ? argType : ARG_WORD);
-                if (enabled) {
-                    CommandProc(track, (cmd << 8) + sub, a, 0);
-                }
+        case 0xf0:
+            switch (cmd) {
+            case 0xfe:
+                Panic__Q26nw4hbm2dbFPCciPCce(str, 0x105, str + 0x6c);
                 break;
-            case 0x80:
-            case 0x90:
-                a = *track->cur++;
-                b = (s16)ReadArg(&track->cur, player, (SeqTrack *)track, useArg ? argType : ARG_WORD);
+            case 0xff:
+                return 1;
+            case 0xf0: {
+                u8 sub = *track->cur++;
+                switch (sub & 0xf0) {
+                case 0xe0:
+                    a = (s16)ReadArg(&track->cur, player, (SeqTrack *)track, useArg ? argType : ARG_WORD);
+                    if (enabled) {
+                        CommandProc(track, (cmd << 8) + sub, a, 0);
+                    }
+                    break;
+                case 0x80:
+                case 0x90:
+                    a = *track->cur++;
+                    b = (s16)ReadArg(&track->cur, player, (SeqTrack *)track, useArg ? argType : ARG_WORD);
+                    if (enabled) {
+                        CommandProc(track, (cmd << 8) + sub, a, b);
+                    }
+                    break;
+                }
+            }
+            default:
                 if (enabled) {
-                    CommandProc(track, (cmd << 8) + sub, a, b);
+                    CommandProc(track, cmd, a, b);
                 }
                 break;
             }
-        }
-        default:
-            if (enabled) {
-                CommandProc(track, cmd, a, b);
-            }
-            return 0;
+            break;
         }
     }
     return 0;
