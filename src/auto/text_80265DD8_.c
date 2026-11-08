@@ -1188,6 +1188,7 @@ extern char lbl_80499920[];
 extern float lbl_80563C44, lbl_80563C48, lbl_80563C2C, lbl_80563C34, lbl_80563C4C, lbl_80563C50;
 extern float lbl_80563C98;
 extern int fn_80178CA4(void);
+#pragma dont_inline on
 int fn_80268BA4(int arg0) {
     unsigned int shift = arg0 - 4;
     int result = 0;
