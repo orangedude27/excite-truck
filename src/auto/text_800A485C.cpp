@@ -8908,6 +8908,39 @@ clear_flags:
     return 0;
 }
 
+/* One of the 26 volume slots of the VF instance (lbl_803D2140): a slot is
+ * 0x1FC8 bytes and its volume object starts 0xA0 into it.  Only the fields the
+ * mount/unmount code uses are named here. */
+struct VFiPFVolume {
+    u8 pad0[0x161C];
+    s32 openFiles;                    /* 0x161C files open on the volume */
+    s32 openDirs;                     /* 0x1620 directories open on it */
+    u8 pad1624[0x1654 - 0x1624];
+    CacheSlot cache[4];               /* 0x1654 the four cached pages */
+    u8 pad1F74[0x1F80 - 0x1F74];
+    s32 error;                        /* 0x1F80 last error of this volume */
+    u8 pad1F84[8];
+    u16 flags;                        /* 0x1F8C VF_VOL_* */
+    u8 lock[0x10];                    /* 0x1F90 recursive lock of the volume */
+    u8 pad1FA0[0x1FAC - 0x1FA0];
+    u16 state;                        /* 0x1FAC reset by a mount */
+};
+
+/* VFiPFVolume.flags; the last four are driven by the media-change callbacks
+ * fn_800A535C (media present: sets 0x4|0x10) and fn_800A52DC (media gone:
+ * sets 0x20 when mounted, clears 0x4|0x8). */
+#define VF_VOL_IN_USE          0x0001 /* the slot holds an attached device */
+#define VF_VOL_MEDIA_PRESENT   0x0004 /* media is in the drive */
+#define VF_VOL_MOUNTED         0x0008 /* the file system is mounted */
+#define VF_VOL_MOUNT_PENDING   0x0010 /* a mount is waiting to be done */
+#define VF_VOL_UNMOUNT_PENDING 0x0020 /* an unmount is waiting to be done */
+
+/* The VF instance (lbl_803D2140). */
+#define VF_MOUNTED_VOLUMES (*(s32 *)((u8 *)lbl_803D2140 + 0x34))
+#define VF_LAST_ERROR      (*(s32 *)((u8 *)lbl_803D2140 + 0x40))
+#define VF_ERR_NO_DEVICE   0xA /* nothing mounted at that drive letter */
+#define VF_ERR_IN_USE      0x13 /* files or directories are still open */
+
 extern "C" s32 fn_800B5B94(void *, s32);
 extern "C" s32 fn_800B6A8C(s8 arg0, s32 arg1) {
     u8 *var_r31;
