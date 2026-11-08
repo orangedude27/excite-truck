@@ -12049,6 +12049,7 @@ static void btu_hcif_esco_connection_chg_evt(UINT8 *p) {
     STREAM_TO_UINT16(tx_pkt_len, p);
     btm_esco_proc_conn_chg(status, handle, tx_interval, retrans_window, rx_pkt_len, tx_pkt_len);
 }
+#undef static
 #pragma pop
 
 void btu_hcif_process_event(BT_HDR *p_msg) {
