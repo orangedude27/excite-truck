@@ -31,6 +31,13 @@ extern int fn_8013A9C0(void *, void *, void *, void *);
 extern int fn_8027AA48(void);
 extern void fn_802E30C8(char *, ...);
 extern float fn_8013AA68(void *, void *, void *, void *);
+extern int *fn_801E87A8(void);
+extern int fn_80135108(void);
+extern void fn_801E879C(void);
+extern void *fn_80016464(int);
+extern int fn_80016508(void *);
+extern int fn_80129D90(int, int, int);
+extern void qsort(void *, int, int, int (*)(void *, void *));
 typedef struct { int pad[3]; int (*m_fn)(void); } unkVtable;
 typedef struct { int pad[7]; int (*m_fn)(void); } unkVtable7;
 typedef struct { int pad[9]; float (*m_float)(char *); } unkVtableFloat;
@@ -189,6 +196,98 @@ extern "C" void fn_8013AC2C(register int *arg0) {
     Target *object = *(Target **)((char *)parent + 0x80);
     object->f8(lbl_8032C264, lbl_80561440);
 }
+
+extern int *fn_801E87A8(void);
+extern int fn_80135108(void);
+extern void fn_801E879C(void);
+extern void *fn_80016464(int);
+extern int fn_80016508(void *);
+extern int fn_80129D90(int, int, int);
+extern void qsort(void *, int, int, int (*)(void *, void *));
+extern int fn_8013A6C4(void *, void *);
+extern "C" int *fn_801E87A8(void);
+extern "C" int fn_80135108(void);
+extern "C" void fn_801E879C(void);
+extern "C" void *fn_80016464(int);
+extern "C" int fn_80016508(void *);
+extern "C" int fn_80129D90(int, int, int);
+extern "C" void qsort(void *, int, int, int (*)(void *, void *));
+extern "C" void fn_8013AC78(int arg0, int *arg1) {
+    struct Entry { int idx; int key; int score; } es[8];
+    int pr[100];
+    float sp8[2];
+    float f31, t;
+    int *a;
+    int count, n, i, j;
+    char *tbl = lbl_8042F858;
+
+    a = fn_801E87A8();
+    count = fn_80135108();
+    fn_801E879C();
+    if (arg0 == 0) {
+        fn_8013AB08(sp8, a);
+    } else {
+        fn_802E30C8(lbl_8032C1A0 + 0xD8, ((float *)arg0)[1], ((float *)arg0)[0]);
+        sp8[0] = ((float *)arg0)[0];
+        sp8[1] = ((float *)arg0)[1];
+    }
+    *(float *)(tbl + 0x48) = ((float (*)(int *))fn_8013AC2C)(a);
+    *(float *)tbl = sp8[1];
+    n = fn_80016508(tbl);
+    for (i = 0; i < n; i++) {
+        int *p = (int *)fn_80016464(i);
+        pr[i * 2] = p[1];
+        pr[i * 2 + 1] = p[0x12];
+    }
+    for (i = 0; i < count; i++) {
+        es[i].idx = i;
+        es[i].key = arg1[i];
+        es[i].score = fn_80129D90(3, -2, 2);
+        for (j = 0; j < n; j++) {
+            if (es[i].key == pr[j * 2]) {
+                es[i].score += pr[j * 2 + 1];
+                break;
+            }
+        }
+    }
+    qsort(es, count, 12, fn_8013A6C4);
+    f31 = lbl_80561440;
+    t = (float)(count - 1);
+    if (t > f31) f31 = t;
+    for (i = 0; i < count; i++)
+        *(float *)(tbl + es[i].idx * 8 + 8) = *(float *)tbl - ((float)i / f31) * sp8[0];
+    for (i = 0; i < count; i++)
+        es[i].score += fn_80129D90(3, -2, 2);
+    qsort(es, count, 12, fn_8013A6C4);
+    for (i = 0; i < count; i++)
+        *(float *)(tbl + es[i].idx * 8 + 0xC) = *(float *)tbl - ((float)i / f31) * sp8[0];
+    for (i = 0; i < count; i++) {
+        void *vobj, *obj;
+        int idx, has;
+        obj = 0;
+        for (j = 0; j < n; j++) {
+            if (pr[j * 2] == es[i].key)
+                obj = fn_80016464(j);
+        }
+        vobj = *(void **)((char *)obj + 0x58);
+        idx = es[i].idx;
+        has = ((int (*)(void *, char *))(*(void ***)vobj)[3])(vobj, lbl_8032C1A0 + 0xF4);
+        if (has != 0) {
+            vobj = *(void **)((char *)obj + 0x58);
+            *(float *)(tbl + idx * 8 + 8) = sp8[1] * ((float (*)(void *, char *))(*(void ***)vobj)[9])(vobj, lbl_8032C1A0 + 0xF4);
+        }
+        vobj = *(void **)((char *)obj + 0x58);
+        if (((int (*)(void *, char *))(*(void ***)vobj)[3])(vobj, lbl_8032C1A0 + 0x10C) != 0) {
+            char *q;
+            vobj = *(void **)((char *)obj + 0x58);
+            q = tbl + idx * 8;
+            *(float *)(q + 0xC) = sp8[1] * ((float (*)(void *, char *))(*(void ***)vobj)[9])(vobj, lbl_8032C1A0 + 0x10C);
+            if (has == 0)
+                *(float *)(q + 8) = *(float *)(q + 0xC);
+        }
+    }
+}
+
 #pragma cplusplus off
 #pragma scheduling on
 void DBPrintf_8013B490(const char *fmt, ...) {
