@@ -64,7 +64,7 @@ extern float lbl_8055F484;
 extern float lbl_80499980[8];
 extern float lbl_80563C6C;
 extern float lbl_80563C20;
-void fn_802693F4(void);
+void fn_802693F4(char *p, unsigned char *flag, int arg);
 extern void fn_80265E08(void*);
 extern float lbl_80563C24;
 extern float lbl_80563C44;
