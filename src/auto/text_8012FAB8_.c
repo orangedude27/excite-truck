@@ -279,6 +279,32 @@ static inline void time_append(char *dstp, int sizep, char *str) {
     }
 }
 
+static inline void time_append2(char *dstp, int sizep, char *str) {
+    int size = sizep;
+    char *dst = dstp;
+    char *src;
+    char c;
+    while (*dst != 0) {
+        size--;
+        dst++;
+    }
+    if (size > 0) {
+        src = str;
+        goto copy;
+    count_check:
+        if (--size > 0)
+            goto copy;
+        dst[-1] = 0;
+        goto done;
+    copy:
+        c = *src++;
+        *dst++ = c;
+        if (c != 0)
+            goto count_check;
+    done:;
+    }
+}
+
 void fn_80130980(char *out, int size, int level, float t);
 void fn_80130978(char *arg0, int arg1, float t) { fn_80130980(arg0, arg1, 3, t); }
 
@@ -295,8 +321,8 @@ void fn_80130980(char *out, int size, int level, float t) {
     int mins, hundredths, tenths, secs, hours;
     int hasPrev;
     char *src;
-    char *p;
     char c;
+    char *p;
     unsigned int i;
     int found;
 
@@ -361,19 +387,23 @@ void fn_80130980(char *out, int size, int level, float t) {
     }
     fn_801345D8(out, size, lbl_80559AF0, 1);
     tbl = lbl_802F8E78;
-    for (p = buf; *p != 0; p++) {
+    p = buf;
+    while (*p != 0) {
         found = 0;
-        for (i = 0; found == 0 && i < 13; i++) {
+        i = 0;
+        while (found == 0 && i < 13) {
             if (*p == tbl.e[i].c) {
                 time_append(out, size, tbl.e[i].s);
                 found = 1;
             }
+            i++;
         }
         if (found == 0) {
             *(short *)tmp = 0;
             tmp[0] = *p;
             time_append(out, size, tmp);
         }
+        p++;
     }
 }
 
