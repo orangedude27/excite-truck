@@ -4528,6 +4528,58 @@ void fn_801200BC(s32 arg0, s32 arg1, f32 *arg2, s32 arg3, s32 arg4) {
     }
 }
 
+void fn_801254E4(s32, f32 *, s32, f32 *);
+void fn_8012023C(s32 arg0, s32 arg1, f32 *arg2, s32 arg3, s32 arg4) {
+    s32 nw;
+    s32 nc;
+    s32 j;
+    f32 xr;
+    f32 t;
+
+    nw = *(s32 *)arg3;
+    if (arg0 > nw * 4) {
+        nw = arg0 >> 2;
+        fn_80120834(nw, (s32 *)arg3, (f32 *)arg4);
+    }
+    nc = *(s32 *)(arg3 + 4);
+    if (arg0 > nc) {
+        nc = arg0;
+        fn_80120B6C(arg0, (s32 *)arg3, (f32 *)arg4 + nw);
+    }
+    if (arg1 < 0) {
+        xr = *(f32 *)((u8 *)arg2 + (arg0 - 1) * 4);
+        for (j = arg0 - 2; j >= 2; j -= 2) {
+            arg2[j + 1] = arg2[j] - arg2[j - 1];
+            arg2[j] = arg2[j] + arg2[j - 1];
+        }
+        t = arg2[0];
+        arg2[1] = t - xr;
+        arg2[0] = t + xr;
+        if (arg0 > 4) {
+            fn_801252D8(arg0, arg2, nc, (f32 *)arg4 + nw);
+            fn_80120E14(arg0, arg2, arg3 + 8, nw, (void *)arg4);
+        } else if (arg0 == 4) {
+            fn_80120E14(arg0, arg2, arg3 + 8, nw, (void *)arg4);
+        }
+    }
+    fn_801254E4(arg0, arg2, nc, (f32 *)arg4 + nw);
+    if (arg1 >= 0) {
+        if (arg0 > 4) {
+            fn_80120CA4(arg0, arg2, arg3 + 8, nw, (void *)arg4);
+            fn_801250CC(arg0, (s32)arg2, nc, (s32)((f32 *)arg4 + nw));
+        } else if (arg0 == 4) {
+            fn_80120CA4(arg0, arg2, arg3 + 8, nw, (void *)arg4);
+        }
+        xr = arg2[0] - arg2[1];
+        arg2[0] = arg2[0] + arg2[1];
+        for (j = 2; j < arg0; j += 2) {
+            arg2[j - 1] = arg2[j] - arg2[j + 1];
+            arg2[j] = arg2[j] + arg2[j + 1];
+        }
+        *(f32 *)((u8 *)arg2 + (arg0 - 1) * 4) = xr;
+    }
+}
+
 void fn_80120834(s32 n, s32 *info, f32 *table) {
     register s32 i;
     register s32 stage;
