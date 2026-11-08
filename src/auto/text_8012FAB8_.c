@@ -254,8 +254,8 @@ extern float lbl_805612C8;
 extern float lbl_805612CC;
 
 static inline void time_append(char *dstp, int sizep, char *str) {
-    char *dst = dstp;
     int size = sizep;
+    char *dst = dstp;
     char *src;
     char c;
     while (*dst != 0) {
@@ -292,7 +292,7 @@ void fn_80130980(char *out, int size, int level, float t) {
     char s10[8];
     TimeSepTab tbl;
     char tmp[2];
-    int mins, secs, tenths, hundredths, hours;
+    int mins, hundredths, tenths, secs, hours;
     int hasPrev;
     char *src;
     char *p;
