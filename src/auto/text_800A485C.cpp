@@ -3293,98 +3293,97 @@ extern "C" s32 fn_800B4D00(void);
 
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" s32 fn_800AAC08(void *arg0, u32 arg1, void *arg2, void *arg3, s32 arg4, s32 *arg5) {
-    struct Copy14 { u32 word[14]; };
-    struct Copy240 { u32 word[0x90]; };
+extern "C" s32 fn_800AAC08(void *outEntry, u32 neededEntries, void *dir, void *freeSectors, s32 name, s32 *outPosition) {
+    struct DirCopy { u32 word[14]; };
     u8 iter[0x70];
     u8 converted[0x240];
     u32 callResults[2];
-    u16 *temp_r31;
-    u32 var_r30;
-    u16 var_r29;
-    u32 var_r28;
-    u32 var_r27;
-    u32 var_r26;
-    s32 var_r25;
-    s32 var_r24;
-    s32 var_r23;
-    s32 var_r3;
-    s32 temp_r0;
+    u16 *sectorSize;
+    u32 firstFreeSector;
+    u16 firstFreeSectorOff;
+    u32 lastFreeSector;
+    u32 runFirstSector;
+    u32 runLastSector;
+    s32 found;
+    s32 freeRun;
+    s32 entryPosition;
+    s32 result;
+    s32 newRun;
 
-    if ((((u32)lbl_803D2140[0x60 / 4] & 2U) == 2U) &&
-        ((u32)((s32 (*)(s32))fn_800B4D00)(arg4) == 1U)) return 1;
+    if (((VF_NAME_FLAGS & VF_NAME_UNICODE) == VF_NAME_UNICODE) &&
+        ((u32)((s32 (*)(s32))fn_800B4D00)(name) == 1U)) return VF_ERR_NAME_NOT_ALLOWED;
 
-    temp_r31 = *(u16 **)((u8 *)arg2 + 0x34);
-    var_r30 = -1;
-    var_r24 = 0;
-    *(s32 *)((u8 *)arg3 + 4) = -1;
-    var_r23 = 0;
-    var_r29 = 0;
-    var_r28 = -1;
-    *(s32 *)arg3 = -1;
-    var_r26 = -1;
-    var_r27 = -1;
-    var_r25 = 0;
-    *(u32 *)(iter + 0x44) = 0;
-    *(u32 *)iter = 0;
-    *(struct Copy14 *)(iter + 8) = *(struct Copy14 *)arg2;
+    sectorSize = (u16 *)VF_DIR_VOLUME(dir);
+    firstFreeSector = -1;
+    freeRun = 0;
+    ((s32 *)freeSectors)[1] = -1;
+    entryPosition = 0;
+    firstFreeSectorOff = 0;
+    lastFreeSector = -1;
+    ((s32 *)freeSectors)[0] = -1;
+    runLastSector = -1;
+    runFirstSector = -1;
+    found = 0;
+    VF_ITER_SECTOR(iter) = 0;
+    VF_ITER_POSITION(iter) = 0;
+    *(struct DirCopy *)(iter + 8) = *(struct DirCopy *)dir;
 
-    var_r3 = fn_800AC1B4(iter, 0);
+    result = fn_800AC1B4(iter, 0);
 loop:
-    if (var_r3 != 0) return var_r3;
-    var_r3 = *(s32 *)(iter + 0x44);
-    if ((u32)(var_r3 + 0x10000) == 0xFFFFU) goto done;
+    if (result != 0) return result;
+    result = VF_ITER_SECTOR(iter);
+    if (VF_SECTOR_IS_END(result)) goto done;
 
-    if (var_r25 == 0 && var_r24 == 0) {
-        var_r29 = *(u16 *)(iter + 0x48);
-        var_r30 = var_r3;
-        var_r28 = var_r3;
+    if (found == 0 && freeRun == 0) {
+        firstFreeSectorOff = VF_ITER_SECTOR_OFF(iter);
+        firstFreeSector = result;
+        lastFreeSector = result;
     }
-    if (var_r25 == 0) {
-        if (iter[0x4C] == 0 || iter[0x4C] == 0xE5) {
-            if (var_r28 != (u32)var_r3) {
-                temp_r0 = (var_r27 + 1) == 0;
-                if (temp_r0 != 0) var_r27 = var_r3;
-                if (temp_r0 == 0) var_r26 = var_r3;
-                var_r28 = var_r3;
+    if (found == 0) {
+        if (VF_ITER_FIRST_BYTE(iter) == VF_ENT_FREE || VF_ITER_FIRST_BYTE(iter) == VF_ENT_DELETED) {
+            if (lastFreeSector != (u32)result) {
+                newRun = (runFirstSector + 1) == 0;
+                if (newRun != 0) runFirstSector = result;
+                if (newRun == 0) runLastSector = result;
+                lastFreeSector = result;
             }
-            var_r24++;
+            freeRun++;
         } else {
-            var_r24 = 0;
-            var_r27 = -1;
-            var_r26 = -1;
+            freeRun = 0;
+            runFirstSector = -1;
+            runLastSector = -1;
         }
     }
-    if (var_r24 < arg1) goto scan_entry;
-    if (var_r25 == 0) {
-        var_r23 = *(s32 *)iter;
-        var_r25 = 1;
+    if (freeRun < neededEntries) goto scan_entry;
+    if (found == 0) {
+        entryPosition = VF_ITER_POSITION(iter);
+        found = 1;
     }
-    if (iter[0x4C] != 0) goto scan_entry;
+    if (VF_ITER_FIRST_BYTE(iter) != VF_ENT_FREE) goto scan_entry;
     goto done;
 
 scan_entry:
-    if (iter[0x4C] != 0 && iter[0x4C] != 0xE5 &&
-        fn_800A9DC0(converted, iter, arg4, 0x7F, 0, (s32 *)&callResults[0]) == 0) {
-        *(struct Copy240 *)arg0 = *(struct Copy240 *)converted;
-        *(u32 *)((u8 *)arg0 + 0x22C) = *(u32 *)((u8 *)arg2 + 0x34);
-        return 8;
+    if (VF_ITER_FIRST_BYTE(iter) != VF_ENT_FREE && VF_ITER_FIRST_BYTE(iter) != VF_ENT_DELETED &&
+        fn_800A9DC0(converted, iter, name, 0x7F, 0, (s32 *)&callResults[0]) == 0) {
+        *(VFiPFEntryCopy240 *)outEntry = *(VFiPFEntryCopy240 *)converted;
+        VF_ENTRY_VOLUME(outEntry) = VF_DIR_VOLUME(dir);
+        return VF_ERR_NAME_EXISTS;
     }
-    if (*(u16 *)(iter + 0x48) + 0x20 == *temp_r31) {
-        var_r3 = fn_800AE620((s32)arg2, *(s32 *)(iter + 0x40) + 1, 0, (s32)&callResults[1]);
-        if (var_r3 != 0) return var_r3;
-        if ((u32)(callResults[1] + 0x10000) == 0xFFFFU && (u32)var_r25 == 1U) goto done;
+    if (VF_ITER_SECTOR_OFF(iter) + 0x20 == *sectorSize) {
+        result = fn_800AE620((s32)dir, VF_ITER_INDEX(iter) + 1, 0, (s32)&callResults[1]);
+        if (result != 0) return result;
+        if (VF_SECTOR_IS_END(callResults[1]) && (u32)found == 1U) goto done;
     }
-    var_r3 = VFiPFENT_ITER_Advance(iter, 1);
+    result = VFiPFENT_ITER_Advance(iter, 1);
     goto loop;
 
 done:
-    if (var_r25 == 0) return 5;
-    *(s32 *)arg3 = var_r27;
-    *(s32 *)((u8 *)arg3 + 4) = var_r26;
-    *(s32 *)((u8 *)arg0 + 0x238) = var_r30;
-    *(u16 *)((u8 *)arg0 + 0x23C) = var_r29;
-    *arg5 = var_r23;
+    if (found == 0) return VF_ERR_NO_FREE_ENTRIES;
+    ((s32 *)freeSectors)[0] = runFirstSector;
+    ((s32 *)freeSectors)[1] = runLastSector;
+    VF_ENTRY_SECTOR(outEntry) = firstFreeSector;
+    VF_ENTRY_SECTOR_OFF(outEntry) = firstFreeSectorOff;
+    *outPosition = entryPosition;
     return 0;
 }
 #pragma pop
