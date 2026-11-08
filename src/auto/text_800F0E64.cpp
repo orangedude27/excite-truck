@@ -830,6 +830,7 @@ extern "C" s32 ReadGroupInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ
 extern "C" s32 fn_800F2824(void *arg0, u32 group, void *out) {
     return ReadGroupInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive9GroupInfo(*(void **)((u8 *)arg0 + 4), group, out);
 }
+#pragma dont_inline reset
 
 M2C_UNK ReadGroupItemInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlUlPQ46nw4hbm3snd12SoundArchive13GroupItemInfo(s32);
 extern "C" s32 fn_800F282C(void *arg0) {
