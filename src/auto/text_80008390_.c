@@ -404,6 +404,7 @@ void fn_80008684(s32 arg0) {
 }
 #pragma pop
 
+#pragma dont_inline on
 s32 fn_80008DBC(s32 arg0) {
     switch (arg0) {
     case 0x113: return 0x15;
