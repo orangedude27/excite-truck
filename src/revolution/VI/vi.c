@@ -1447,55 +1447,68 @@ void WaitMicroTime(s32 time) DECOMP_DONT_INLINE
     }
 }
 
+// Bit-bangs one I2C address byte to the AVE video encoder on the GPIO1B pins
+// and reads the slave's acknowledge: addr is the whole address byte (7 bit
+// address with the read/write bit in it), sent most significant bit first, one
+// bit per pulse of GPIO_AVE_SCL.  Returns 1 when the slave pulled SDA low to
+// acknowledge, 0 when it kept the line high.  Every level is timed by polling
+// the time base, so the caller (__VISendI2CData) has interrupts disabled.
 u32 sendSlaveAddr(u32 addr)
 {
     u32 gpio_out;
     OSTime start;
     s32 i;
 
-    if (lbl_80558FB8 == 0) {
-        gpio_out = IPC_HW_REGS[IPC_GPIO1BOUT] & ~0x8000;
-        IPC_HW_REGS[IPC_GPIO1BOUT] = gpio_out | 0x8000;
+    // start: SDA to its idle level for this board, then SCL low
+    if (viI2cSdaNonInverted == 0) {
+        gpio_out = IPC_HW_REGS[IPC_GPIO1BOUT] & ~GPIO_AVE_SDA;
+        IPC_HW_REGS[IPC_GPIO1BOUT] = gpio_out | GPIO_AVE_SDA;
     } else {
-        IPC_HW_REGS[IPC_GPIO1BOUT] &= ~0x8000;
+        IPC_HW_REGS[IPC_GPIO1BOUT] &= ~GPIO_AVE_SDA;
     }
     start = __OSGetSystemTime();
-    while (OS_TICKS_TO_USEC(__OSGetSystemTime() - start) < 2) {}
-    IPC_HW_REGS[IPC_GPIO1BOUT] &= ~0x4000;
+    while (OS_TICKS_TO_USEC(__OSGetSystemTime() - start) < 2) {} // WaitMicroTime(2), inlined
+    IPC_HW_REGS[IPC_GPIO1BOUT] &= ~GPIO_AVE_SCL;
+
     for (i = 0; i < 8; i++) {
+        // the bit to send, complemented when the SDA line is inverted
         if (addr & 0x80) {
-            if (lbl_80558FB8 == 0)
-                IPC_HW_REGS[IPC_GPIO1BOUT] &= ~0x8000;
+            if (viI2cSdaNonInverted == 0)
+                IPC_HW_REGS[IPC_GPIO1BOUT] &= ~GPIO_AVE_SDA;
             else
-                IPC_HW_REGS[IPC_GPIO1BOUT] = (IPC_HW_REGS[IPC_GPIO1BOUT] & ~0x8000) | 0x8000;
+                IPC_HW_REGS[IPC_GPIO1BOUT] = (IPC_HW_REGS[IPC_GPIO1BOUT] & ~GPIO_AVE_SDA) | GPIO_AVE_SDA;
         } else {
-            if (lbl_80558FB8 == 0)
-                IPC_HW_REGS[IPC_GPIO1BOUT] = (IPC_HW_REGS[IPC_GPIO1BOUT] & ~0x8000) | 0x8000;
+            if (viI2cSdaNonInverted == 0)
+                IPC_HW_REGS[IPC_GPIO1BOUT] = (IPC_HW_REGS[IPC_GPIO1BOUT] & ~GPIO_AVE_SDA) | GPIO_AVE_SDA;
             else
-                IPC_HW_REGS[IPC_GPIO1BOUT] &= ~0x8000;
+                IPC_HW_REGS[IPC_GPIO1BOUT] &= ~GPIO_AVE_SDA;
         }
         start = __OSGetSystemTime();
-        while (OS_TICKS_TO_USEC(__OSGetSystemTime() - start) < 2) {}
-        IPC_HW_REGS[IPC_GPIO1BOUT] = (IPC_HW_REGS[IPC_GPIO1BOUT] & ~0x4000) | 0x4000;
+        while (OS_TICKS_TO_USEC(__OSGetSystemTime() - start) < 2) {} // data set up, ...
+        IPC_HW_REGS[IPC_GPIO1BOUT] = (IPC_HW_REGS[IPC_GPIO1BOUT] & ~GPIO_AVE_SCL) | GPIO_AVE_SCL;
         start = __OSGetSystemTime();
-        while (OS_TICKS_TO_USEC(__OSGetSystemTime() - start) < 2) {}
-        IPC_HW_REGS[IPC_GPIO1BOUT] &= ~0x4000;
-        addr = (u8)(addr << 1);
+        while (OS_TICKS_TO_USEC(__OSGetSystemTime() - start) < 2) {} // ... clocked, ...
+        IPC_HW_REGS[IPC_GPIO1BOUT] &= ~GPIO_AVE_SCL;                 // ... and clock low
+        addr = (u8)(addr << 1);                                      // next bit, MSB first
     }
-    IPC_HW_REGS[IPC_GPIO1BDIR] = (IPC_HW_REGS[IPC_GPIO1BDIR] & ~0x8000) | 0x4000;
+
+    // ninth clock: hand SDA over to the slave and see whether it answers
+    IPC_HW_REGS[IPC_GPIO1BDIR] = (IPC_HW_REGS[IPC_GPIO1BDIR] & ~GPIO_AVE_SDA) | GPIO_AVE_SCL;
     start = __OSGetSystemTime();
     while (OS_TICKS_TO_USEC(__OSGetSystemTime() - start) < 2) {}
-    IPC_HW_REGS[IPC_GPIO1BOUT] = (IPC_HW_REGS[IPC_GPIO1BOUT] & ~0x4000) | 0x4000;
+    IPC_HW_REGS[IPC_GPIO1BOUT] = (IPC_HW_REGS[IPC_GPIO1BOUT] & ~GPIO_AVE_SCL) | GPIO_AVE_SCL;
     start = __OSGetSystemTime();
     while (OS_TICKS_TO_USEC(__OSGetSystemTime() - start) < 2) {}
-    if (lbl_80558FB8 == 1 && ((IPC_HW_REGS[IPC_GPIO1BIN] >> 15) & 1))
-        return 0;
-    if (*(volatile u32 *)&lbl_80558FB8 == 0)
-        IPC_HW_REGS[IPC_GPIO1BOUT] = (IPC_HW_REGS[IPC_GPIO1BOUT] & ~0x8000) | 0x8000;
+    if (viI2cSdaNonInverted == 1 && ((IPC_HW_REGS[IPC_GPIO1BIN] >> 15) & 1))
+        return 0; // SDA still high: no acknowledge
+
+    // release SDA back at its idle level, both lines outputs again, clock low
+    if (*(volatile u32 *)&viI2cSdaNonInverted == 0)
+        IPC_HW_REGS[IPC_GPIO1BOUT] = (IPC_HW_REGS[IPC_GPIO1BOUT] & ~GPIO_AVE_SDA) | GPIO_AVE_SDA;
     else
-        IPC_HW_REGS[IPC_GPIO1BOUT] &= ~0x8000;
-    IPC_HW_REGS[IPC_GPIO1BDIR] = (IPC_HW_REGS[IPC_GPIO1BDIR] & ~0x8000) | 0xC000;
-    IPC_HW_REGS[IPC_GPIO1BOUT] &= ~0x4000;
+        IPC_HW_REGS[IPC_GPIO1BOUT] &= ~GPIO_AVE_SDA;
+    IPC_HW_REGS[IPC_GPIO1BDIR] = (IPC_HW_REGS[IPC_GPIO1BDIR] & ~GPIO_AVE_SDA) | (GPIO_AVE_SDA | GPIO_AVE_SCL);
+    IPC_HW_REGS[IPC_GPIO1BOUT] &= ~GPIO_AVE_SCL;
     return 1;
 }
 
