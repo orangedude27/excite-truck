@@ -13636,7 +13636,7 @@ BOOLEAN btsnd_hcic_set_afh_channels(u8 first_disabled, u8 last_disabled) {
     u8 *p;
     int i;
 
-    /* Copy the all-channels-enabled map out of the rodata pool. */
+    /* Begin with every channel enabled. */
     map = *(tAFH_CHANNEL_MAP *)lbl_802EEC08;
 
     p = (u8 *)GKI_getpoolbuf(2);
