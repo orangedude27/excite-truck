@@ -9,6 +9,33 @@ void *fn_80131234(void *);
 void fn_802E317C(char *, ...);
 extern char lbl_803401F8[];
 extern char lbl_80340220[];
+
+// "LAYT" layout resource.  fn_8022E0EC loads one through the resource manager
+// (fn_8012C370) and byte-swaps it; fn_8022E4C0 builds the same records in
+// memory for the fallback dialog, and fn_802123B8 turns each entry into a
+// message-window node.  The block is big-endian: a 0x68-byte header followed
+// by 0x134-byte auto-item entries, the list ended by an entry whose first
+// word is 0.  Header +0x64 points at the first entry (which sits right after
+// the header in the file).  An entry holds its type (+0x00), a mode/id
+// (+0x04), its rectangle (+0x08 x, +0x0c y, +0x14 width, +0x18 height,
+// +0x1c scale), a name string (+0x20, 0x20 bytes) and a text string (+0x40,
+// 0x40 bytes); +0x80..+0xb3 are the appearance words (colour at +0x9c).  A
+// text starting with '|' is a reference to the string-table entry named by
+// the rest of it, which fn_8022E0EC resolves in place.
+#define LAYT_TAG 0x4C415954 // 'LAYT'
+#define LAYT_VERSION 5
+#define LAYT_ENTRY_SIZE 0x134
+
+// Byte-reverse the big-endian 32-bit word at (p)[off], through the calling
+// function's `t` temporary.
+#define SWAP_BE32(p, off)          \
+    t = (p)[off];                  \
+    (p)[off] = (p)[(off) + 3];     \
+    (p)[(off) + 3] = t;            \
+    t = (p)[(off) + 1];            \
+    (p)[(off) + 1] = (p)[(off) + 2]; \
+    (p)[(off) + 2] = t;
+
 #pragma scheduling invalid_target
 void *fn_8022E0EC(int arg0) {
     unsigned int size;
@@ -214,7 +241,9 @@ extern const char lbl_8055B974;
 extern const char lbl_8055B978;
 extern float lbl_805635D8;
 extern float lbl_805635DC;
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void *fn_8022E4C0(void *arg0) {
     unsigned char *base;
     unsigned char *entry;
@@ -331,7 +360,7 @@ void *fn_8022E4C0(void *arg0) {
                 strcpy((char *)(next + 0x20), *(char **)cur);
                 strcpy((char *)(next + 0x40), &lbl_8055B974);
                 add_default = 0;
-                } else {
+            } else {
                 dy = 0;
                 add_default = 0;
             }
@@ -385,14 +414,13 @@ void *fn_8022E4C0(void *arg0) {
             *(int *)(next + 0xb0) = 0x1a;
             *(int *)(next + 0x84) = 2;
         }
-        if (type == 0xc || type == 0xa || type == 5) {
-        }
+        y += dy;
         cur += 0x14;
         type = *(int *)(cur + 4);
     }
     return base;
 }
-#pragma scheduling on
+#pragma pop
 
 void fn_8022E960(void *arg0) {
     fn_80128670(*(int *)((char *)arg0 + 0x64));
