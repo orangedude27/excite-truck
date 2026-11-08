@@ -1630,10 +1630,10 @@ struct CarUIModel {
     char name[1];          /* 0x58: resource name, compared case-insensitively */
     u8 pad59[0x4F];        /* 0x59 */
     float modelMtx[4][3];  /* 0xA8: world matrix; row 3 is the position */
-    u8 padD8[4];             /* 0xD8 */
-    u8 stretch;              /* 0xDC: draw stretched (1,1.01,1) and un-tinted */
-    u8 padDD[3];             /* 0xDD */
-    s32 unkE0;               /* 0xE0 */
+    u8 padD8[4];           /* 0xD8 */
+    u8 stretch;            /* 0xDC: draw stretched (1,1.01,1) and un-tinted */
+    u8 padDD[3];           /* 0xDD */
+    s32 unkE0;             /* 0xE0 */
     s32 modelIndex;        /* 0xE4: "cc_back.mod" handle, -1 while unloaded */
     s32 resId;             /* 0xE8 */
     u8 padEC[0x10];        /* 0xEC */
