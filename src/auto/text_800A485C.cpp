@@ -11228,6 +11228,8 @@ extern "C" s32 fn_800BBB58(s32 arg0, void **arg1) {
     return returnValue;
 }
 
+#ifndef SD_DEVICE_DECLARED
+#define SD_DEVICE_DECLARED
 struct IosDevice {
     s32 fd;             /* 0x00 the IOS handle of the opened card */
     u8 pad[0xC];
@@ -11244,6 +11246,7 @@ struct IosDevice {
 #define SD_CMD_SEND_CSD     7     /* read the card's CSD */
 #define SD_CMD_SET_BLOCKLEN 0x10  /* switch the card to SD_BLOCK_SIZE byte blocks */
 #define SD_CMD_READ         0x12  /* MMC READ_MULTIPLE_BLOCK */
+#endif
 
 extern "C" s32 fn_800BB0A8(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 extern "C" s32 lbl_8055DD6C;
