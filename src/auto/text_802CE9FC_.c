@@ -2010,87 +2010,96 @@ extern void (*lbl_8055FD80)(void);
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
+// Builds the GX TEV pipeline for the scene's default draw mode (mode 0 of the
+// render request block lbl_804C5700, applied by fn_802D2B0C): a base texture
+// pass, plus optional detail, second-texture and indirect (bump) stages.
 void fn_802D2684(void) {
-    unsigned int tevFlag;
-    unsigned char texFlag;
-    unsigned char tevFlag2;
-    unsigned char indirectFlag;
+    unsigned int passThroughFlag; // GX state flag 0x40: TEV0 passes the texture through
+    unsigned char secondTexFlag;  // request +0x08: extra modulated texture stage
+    unsigned char detailTexFlag;  // request +0x09: base * detail pass
+    unsigned char indirectFlag;   // request +0x0A: indirect (bump) texture stage
     int tevStage;
     int texGen;
-    int coordCount;
-    int coordMap[4];
-    int arg8;
-    int argC;
+    int alphaCount;
+    int alphaSrc[4];
+    int utcLod;
+    int alphaSel;
 
-    tevFlag2 = (unsigned char)lbl_804C5700[9];
-    tevFlag = ((unsigned long)lbl_8055FD1C >> 6) & 1;
+    detailTexFlag = (unsigned char)lbl_804C5700[9];
+    passThroughFlag = ((unsigned long)lbl_8055FD1C >> 6) & 1;
     tevStage = 0;
-    texFlag = (unsigned char)lbl_804C5700[8];
+    secondTexFlag = (unsigned char)lbl_804C5700[8];
     texGen = 0;
     indirectFlag = (unsigned char)lbl_804C5700[10];
 
-    GXSetTexCoordGen2(0, 1, 4, lbl_804C5700[12] != 0 ? 0x1E : 0x3C, 0, 0x7D);
-    GXSetTevOrder(0, 0, 0, 4);
-    if (tevFlag != 0) {
-        GXSetTevOp(0, 3);
-    } else if (tevFlag2 != 0) {
-        GXSetTevOp(0, 3);
+    // Texcoord 0 from texture 0, either through the texture matrix or untouched.
+    GXSetTexCoordGen2(GX_TEXCOORD0, GX_TG_MTX2x4, GX_TG_TEX0,
+                      lbl_804C5700[12] != 0 ? GX_TEXMTX0 : GX_IDENTITY, FALSE, GX_PTIDENTITY);
+    GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR0A0);
+    if (passThroughFlag != 0) {
+        GXSetTevOp(GX_TEVSTAGE0, GX_REPLACE);
+    } else if (detailTexFlag != 0) {
+        GXSetTevOp(GX_TEVSTAGE0, GX_REPLACE);
         texGen = 1;
-        GXSetTexCoordGen2(1, 1, 5, 0x3C, 0, 0x7D);
+        GXSetTexCoordGen2(GX_TEXCOORD1, GX_TG_MTX2x4, GX_TG_TEX1, GX_IDENTITY, FALSE, GX_PTIDENTITY);
         tevStage = 1;
-        GXSetTevOrder(1, 1, 3, 4);
-        GXSetTevOp(1, 0);
+        GXSetTevOrder(GX_TEVSTAGE1, GX_TEXCOORD1, GX_TEXMAP3, GX_COLOR0A0);
+        GXSetTevOp(GX_TEVSTAGE1, GX_MODULATE);
     } else {
-        GXSetTevColorOp(0, 0, 0, 0, 1, 0);
-        GXSetTevColorIn(0, 0xF, 8, 0xA, 0xF);
-        coordCount = 0;
+        // Color = raster color, alpha = the two sources the material asks for.
+        GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, TRUE, GX_TEVPREV);
+        GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_TEXC, GX_CC_RASC, GX_CC_ZERO);
+        alphaCount = 0;
         if (((unsigned long)lbl_8055FD1C & 0x100) != 0) {
-            coordMap[0] = 4;
-            coordCount = 1;
+            alphaSrc[0] = GX_CA_TEXA;
+            alphaCount = 1;
         }
         if (((unsigned char *)&lbl_804C97D0)[8] < 0xFF) {
-            coordMap[coordCount] = 1;
-            coordCount++;
+            alphaSrc[alphaCount] = GX_CA_A0;
+            alphaCount++;
         }
-        if (((unsigned char *)&lbl_8055FD25)[0] == 0 && coordCount < 2) {
-            coordMap[coordCount] = 5;
-            coordCount++;
+        if (((unsigned char *)&lbl_8055FD25)[0] == 0 && alphaCount < 2) {
+            alphaSrc[alphaCount] = GX_CA_RASA;
+            alphaCount++;
         }
-        while (coordCount < 2)
-            coordMap[coordCount++] = 6;
-        GXSetTevAlphaOp(0, 0, 0, 0, 1, 0);
-        GXSetTevAlphaIn(0, 7, coordMap[0], coordMap[1], 7);
+        while (alphaCount < 2)
+            alphaSrc[alphaCount++] = GX_CA_KONST;
+        GXSetTevAlphaOp(GX_TEVSTAGE0, GX_AOP_AND, GX_AOP_AND, GX_AOP_AND, TRUE, GX_TEVPREV);
+        GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_ZERO, alphaSrc[0], alphaSrc[1], GX_CA_ZERO);
     }
 
-    if (texFlag != 0) {
+    if (secondTexFlag != 0) {
         tevStage++;
-        GXSetTevOrder(tevStage, 0, 1, 4);
-        GXSetTevColorOp(tevStage, 0, 0, 0, 1, 0);
-        GXSetTevColorIn(tevStage, 0, 0xF, 0xF, 0xF);
-        GXSetTevAlphaOp(tevStage, 0, 0, 0, 1, 0);
-        GXSetTevAlphaIn(tevStage, 7, 0, 4, 7);
+        GXSetTevOrder(tevStage, GX_TEXCOORD0, GX_TEXMAP1, GX_COLOR0A0);
+        GXSetTevColorOp(tevStage, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, TRUE, GX_TEVPREV);
+        GXSetTevColorIn(tevStage, GX_CC_CPREV, GX_CC_ZERO, GX_CC_ZERO, GX_CC_ZERO);
+        GXSetTevAlphaOp(tevStage, GX_AOP_AND, GX_AOP_AND, GX_AOP_AND, TRUE, GX_TEVPREV);
+        GXSetTevAlphaIn(tevStage, GX_CA_ZERO, GX_CA_APREV, GX_CA_TEXA, GX_CA_ZERO);
     }
     if (indirectFlag != 0) {
         texGen++;
-        GXSetTexCoordGen2(texGen, 1, 0, 0x2D, 0, 0x7D);
+        GXSetTexCoordGen2(texGen, GX_TG_MTX2x4, GX_TG_POS, GX_TEXMTX5, FALSE, GX_PTIDENTITY);
         tevStage++;
-        GXSetTevOrder(tevStage, texGen, 5, 0xFF);
-        GXSetTevColorIn(tevStage, 0, 8, 9, 0xF);
-        GXSetTevColorOp(tevStage, 0, 0, 0, 1, 0);
-        GXSetTevAlphaIn(tevStage, 0, 7, 7, 7);
-        GXSetTevAlphaOp(tevStage, 0, 0, 0, 1, 0);
+        GXSetTevOrder(tevStage, texGen, GX_TEXMAP5, GX_COLOR_NULL);
+        GXSetTevColorIn(tevStage, GX_CC_CPREV, GX_CC_TEXC, GX_CC_TEXA, GX_CC_ZERO);
+        GXSetTevColorOp(tevStage, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, TRUE, GX_TEVPREV);
+        GXSetTevAlphaIn(tevStage, GX_CA_APREV, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO);
+        GXSetTevAlphaOp(tevStage, GX_AOP_AND, GX_AOP_AND, GX_AOP_AND, TRUE, GX_TEVPREV);
     }
     GXSetNumTevStages((unsigned char)(tevStage + 1));
     GXSetNumTexGens((unsigned char)(texGen + 1));
     if (lbl_804C5700[13] != 0) {
-        GXSetBlendMode(1, 4, 5, 5);
+        // Alpha blend the bump-modulated result and read the bump map through
+        // indirect stage 0; the stages are reset again before the next pass.
+        GXSetBlendMode(GX_BM_BLEND, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_BL_INVSRCALPHA);
         GXSetNumIndStages(1);
-        arg8 = 0;
-        argC = 0;
-        GXSetTevIndirect(0, 0, 0, 3, 1, 0, 0, 0, arg8, argC);
-        GXSetIndTexOrder(0, 1, 2);
+        utcLod = 0;
+        alphaSel = 0;
+        GXSetTevIndirect(GX_TEVSTAGE0, GX_INDTEXSTAGE0, GX_ITF_8, GX_ITB_ST, GX_ITM_0, GX_ITW_OFF,
+                         GX_ITW_OFF, FALSE, utcLod, alphaSel);
+        GXSetIndTexOrder(GX_INDTEXSTAGE0, GX_TEXCOORD1, GX_TEXMAP2);
         GXSetNumTexGens(2);
-        GXSetTexCoordGen2(1, 1, 0, 0x21, 0, 0x7D);
+        GXSetTexCoordGen2(GX_TEXCOORD1, GX_TG_MTX2x4, GX_TG_POS, GX_TEXMTX1, FALSE, GX_PTIDENTITY);
         lbl_8055FD80 = fn_802D2640;
     }
 }
