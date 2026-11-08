@@ -265,22 +265,22 @@ void DBPrintf_800343C8(const char *fmt, ...) {
  * lbl_8055D81C = __DSP_last_task         lbl_8055D820 = __DSP_first_task
  * lbl_8055D824 = __DSP_curr_task
  */
-void __DSPHandler_80034418(s16 intr, OSContext *ctx) {
-    OSContext tmpCtx;
-    u16 csr;
-    u32 ucode;
+void __DSPHandler_80034418(s16 interrupt, OSContext *oldContext) {
+    OSContext context;
+    u16 dspControl;
+    u32 mail;
 
-    csr = *(volatile u16 *)0xCC00500A;
-    *(volatile u16 *)0xCC00500A = (csr & ~0x28) | 0x80;
-    OSClearContext(&tmpCtx);
-    OSSetCurrentContext(&tmpCtx);
+    dspControl = *(volatile u16 *)0xCC00500A;
+    *(volatile u16 *)0xCC00500A = (dspControl & ~0x28) | 0x80;
+    OSClearContext(&context);
+    OSSetCurrentContext(&context);
     while (DSPCheckMailFromDSP() == 0) {}
-    ucode = DSPReadMailFromDSP();
+    mail = DSPReadMailFromDSP();
 
-    if ((((DSPTask *)lbl_8055D824)->flags & DSP_TASK_CANCELED) != 0 && ucode == 0xDCD10002)
-        ucode = 0xDCD10003;
+    if ((((DSPTask *)lbl_8055D824)->flags & DSP_TASK_CANCELED) != 0 && mail == 0xDCD10002)
+        mail = 0xDCD10003;
 
-    switch (ucode) {
+    switch (mail) {
     case 0xDCD10000: /* DSP_INIT */
         ((DSPTask *)lbl_8055D824)->state = DSP_TASK_STATE_1;
         if (((DSPTask *)lbl_8055D824)->initCallback != NULL)
@@ -390,8 +390,8 @@ void __DSPHandler_80034418(s16 intr, OSContext *ctx) {
             ((DSPTask *)lbl_8055D824)->requestCallback((DSPTask *)lbl_8055D824);
         break;
     }
-    OSClearContext(&tmpCtx);
-    OSSetCurrentContext(ctx);
+    OSClearContext(&context);
+    OSSetCurrentContext(oldContext);
 }
 
 void __DSP_exec_task(void *arg0, void *arg1) {
