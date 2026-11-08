@@ -23,6 +23,13 @@ static inline void fn_801CF080_xform(f32 *dst, f32 *src, f32 *m) {
     }
 }
 
+static inline void fn_801CF080_rot(f32 *v, f32 *m) {
+    f32 x = v[0], y = v[1], z = v[2];
+    v[0] = x * m[0] + y * m[1] + z * m[2];
+    v[1] = x * m[3] + y * m[4] + z * m[5];
+    v[2] = x * m[6] + y * m[7] + z * m[8];
+}
+
 #pragma dont_inline on
 #pragma scheduling invalid_target
 #pragma dont_inline reset
@@ -40,15 +47,10 @@ void fn_801CF080(u8 *mesh, f32 *pos, f32 *out, s32 *count, f32 *mtx, f32 radius)
     s32 nodeOff;
 
     if (mtx != 0) {
-        f32 dx = pos[0] - mtx[9];
-        f32 dy = pos[1] - mtx[10];
-        f32 dz = pos[2] - mtx[11];
-        local.x = dx;
-        local.y = dy;
-        local.z = dz;
-        local.x = dx * mtx[0] + dy * mtx[1] + dz * mtx[2];
-        local.y = dx * mtx[3] + dy * mtx[4] + dz * mtx[5];
-        local.z = dx * mtx[6] + dy * mtx[7] + dz * mtx[8];
+        local.x = pos[0] - mtx[9];
+        local.y = pos[1] - mtx[10];
+        local.z = pos[2] - mtx[11];
+        fn_801CF080_xform((f32 *)&local, (f32 *)&local, mtx);
     } else {
         local.x = pos[0];
         local.y = pos[1];
@@ -59,11 +61,14 @@ void fn_801CF080(u8 *mesh, f32 *pos, f32 *out, s32 *count, f32 *mtx, f32 radius)
     n = 0;
     for (node = 0, nodeOff = 0; node < *(s32 *)(mesh + 4); node++, nodeOff += 0x18) {
         u8 *nd = *(u8 **)mesh + nodeOff;
+        f32 sq;
         f32 rr;
         s32 t;
         s32 outOff;
         s32 triOff;
-        if (PSVECSquareDistance((f32 *)nd, (f32 *)&local) > (rr = *(f32 *)(nd + 0xC) + radius, rr * rr)) {
+        sq = PSVECSquareDistance((f32 *)nd, (f32 *)&local);
+        rr = *(f32 *)(nd + 0xC) + radius;
+        if (sq > rr * rr) {
             continue;
         }
         t = *(s32 *)(nd + 0x10);
@@ -179,6 +184,7 @@ void fn_801CF080(u8 *mesh, f32 *pos, f32 *out, s32 *count, f32 *mtx, f32 radius)
             }
             if (PSVECSquareDistance((f32 *)&cp, (f32 *)&local) < radius * radius && n < maxCount) {
                 Vec801CF res;
+                f32 *dst;
                 if (mtx != 0) {
                     fn_801CF080_xform((f32 *)&res, (f32 *)&cp, mtx);
                     res.x += mtx[9];
@@ -189,9 +195,10 @@ void fn_801CF080(u8 *mesh, f32 *pos, f32 *out, s32 *count, f32 *mtx, f32 radius)
                     res.y = cp.y;
                     res.z = cp.z;
                 }
-                out[outOff / 4] = res.x;
-                out[outOff / 4 + 1] = res.y;
-                out[outOff / 4 + 2] = res.z;
+                dst = (f32 *)((u8 *)out + outOff);
+                dst[0] = res.x;
+                dst[1] = res.y;
+                dst[2] = res.z;
                 n++;
                 outOff += 0xC;
             }
