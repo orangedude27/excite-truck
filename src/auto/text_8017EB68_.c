@@ -2,6 +2,15 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+#define FC48 (*(const float *)&lbl_80561C48)
+#define FC4C (*(const float *)&lbl_80561C4C)
+#define FC7C (*(const float *)&lbl_80561C7C)
+#define FC80 (*(const float *)&lbl_80561C80)
+#define FC84 (*(const float *)&lbl_80561C84)
+#define FC88 (*(const float *)&lbl_80561C88)
+#define FC8C (*(const float *)&lbl_80561C8C)
+#define FC90 (*(const float *)&lbl_80561C90)
+#define FC94 (*(const float *)&lbl_80561C94)
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((char *)(expr) + (offset)))
 
 extern void fn_8017E930(void *);
@@ -173,6 +182,233 @@ int fn_8017FEE4(void *arg0) {
         result = 1;
     }
     return result;
+}
+
+extern float lbl_80561C7C;
+extern float lbl_80561C80;
+extern float lbl_80561C84;
+extern float lbl_80561C88;
+extern float lbl_80561C8C;
+extern float lbl_80561C90;
+extern float lbl_80561C94;
+extern float lbl_8055A330;
+extern float lbl_8055A338;
+extern float lbl_8055A33C;
+extern float lbl_8055A340;
+extern float lbl_8055A344;
+extern char lbl_80331E58[];
+extern char lbl_80331F80[];
+extern char lbl_80331F90[];
+extern char lbl_80331F9C[];
+extern char lbl_80331FA8[];
+extern char lbl_80331FB4[];
+extern char lbl_80331FC0[];
+extern char lbl_80331FCC[];
+extern char lbl_80331FD8[];
+extern char lbl_80331FE4[];
+extern char lbl_80331FF0[];
+extern char lbl_80331FFC[];
+extern char lbl_80332008[];
+extern char lbl_80332020[];
+extern char lbl_80332030[];
+extern char lbl_8033203C[];
+extern char lbl_80332050[];
+extern char lbl_80332064[];
+extern char lbl_80332078[];
+extern char lbl_8033208C[];
+extern char lbl_8033209C[];
+extern char lbl_803320B0[];
+extern char lbl_803320BC[];
+extern char lbl_803320C8[];
+extern char lbl_803320D4[];
+extern char lbl_803320E0[];
+extern char lbl_803320EC[];
+extern char lbl_803320F8[];
+extern char lbl_80332104[];
+extern char lbl_80332110[];
+extern char lbl_8033211C[];
+extern char lbl_8033212C[];
+extern char lbl_80332138[];
+extern char lbl_80332144[];
+extern char lbl_80332150[];
+extern char lbl_8033215C[];
+extern char lbl_80332168[];
+extern char lbl_80332178[];
+extern char lbl_80332184[];
+extern char lbl_80332194[];
+extern char lbl_803321A0[];
+extern char lbl_803321AC[];
+extern char lbl_803321B8[];
+extern char lbl_803321C4[];
+extern char lbl_803321D0[];
+extern char lbl_803321E4[];
+extern char lbl_803321F0[];
+extern char lbl_80332200[];
+extern char lbl_80332210[];
+extern char lbl_80332220[];
+extern char lbl_80332238[];
+extern char lbl_80332248[];
+extern char lbl_80332258[];
+extern char lbl_80332270[];
+extern int lbl_802F9530[];
+extern int lbl_802F9540[];
+__declspec(section ".sdata") extern const char lbl_8055A350[];
+__declspec(section ".sdata") extern const char lbl_8055A358[];
+__declspec(section ".sdata") extern const char lbl_8055A360[];
+__declspec(section ".sdata") extern const char lbl_8055A368[];
+__declspec(section ".sdata") extern const char lbl_8055A370[];
+__declspec(section ".sdata") extern const char lbl_8055A378[];
+__declspec(section ".sdata") extern const char lbl_8055A380[];
+__declspec(section ".sdata") extern const char lbl_8055A388[];
+__declspec(section ".sdata") extern const char lbl_8055A390[];
+__declspec(section ".sdata") extern const char lbl_8055A398[];
+extern void fn_801331C4(int, const char *, void *);
+extern void fn_801333E8(int, const char *, void *);
+extern void fn_801A7974(void *, const char *, int);
+extern void fn_801A7DFC(int, int, int);
+extern void fn_801A9110(void *, const char *);
+extern int sprintf(char *, const char *, ...);
+void fn_801808DC(void) {
+    char name[64];
+    unsigned char flag;
+    int keys1[4];
+    int keys2[4];
+    int i;
+    int count;
+    void *obj;
+    void **table;
+    int *slot;
+    fn_801333E8(8, lbl_80331E58, &lbl_8055E4B9);
+    lbl_8055E4B8 = 1;
+    for (count = 0, table = (void **)lbl_804348D8; count < 4; count++, table++) {
+        obj = *table;
+        if (obj != 0) {
+            *(int *)((char *)obj + 8) = __AXGetStackHead_80137CFC(*(int *)((char *)obj + 4));
+            *(float *)((char *)obj + 0x2C) = lbl_80561C7C;
+            *(float *)((char *)obj + 0x38) = lbl_80561C7C;
+            *(float *)((char *)obj + 0x44) = lbl_80561C80;
+            *(float *)((char *)obj + 0x34) = lbl_80561C48;
+            *(float *)((char *)obj + 0x40) = lbl_80561C84;
+            *(float *)((char *)obj + 0x4C) = lbl_80561C88;
+            *(float *)((char *)obj + 0x30) = lbl_80561C8C;
+            *(float *)((char *)obj + 0x3C) = lbl_80561C90;
+            *(float *)((char *)obj + 0x48) = lbl_80561C8C;
+            *(unsigned char *)((char *)obj + 0x340) = 0;
+            *(unsigned char *)((char *)obj + 0x341) = 0;
+            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_80332270, (char *)obj + 0x2C);
+            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_80332258, (char *)obj + 0x38);
+            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_80332248, (char *)obj + 0x44);
+            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_80332238, (char *)obj + 0x30);
+            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_80332220, (char *)obj + 0x3C);
+            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_80332210, (char *)obj + 0x48);
+            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_80332200, (char *)obj + 0x34);
+            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_803321F0, (char *)obj + 0x40);
+            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_803321E4, (char *)obj + 0x4C);
+            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_803321D0, (char *)obj + 0x60);
+            *(unsigned char *)((char *)obj + 0x5C) = 1;
+            fn_801333E8(*(int *)((char *)obj + 0x34C), lbl_803321C4, (char *)obj + 0x340);
+            fn_801333E8(*(int *)((char *)obj + 0x34C), lbl_803321B8, (char *)obj + 0x341);
+            *(unsigned char *)((char *)obj + 0x5E) = 1;
+            *(float *)((char *)obj + 0x64) = fn_8014C8F8(*(float *)((char *)obj + 0x60) - lbl_80561C48, lbl_80561C4C, lbl_80561C48);
+            *(float *)((char *)obj + 0x60) = fn_8014C8F8(*(float *)((char *)obj + 0x60), lbl_80561C4C, lbl_80561C48);
+            *(float *)((char *)obj + 0x34) = fn_801429D0(*(float *)((char *)obj + 0x34), lbl_80561C94);
+            *(float *)((char *)obj + 0x40) = fn_801429D0(*(float *)((char *)obj + 0x40), lbl_80561C94);
+            *(float *)((char *)obj + 0x4C) = fn_801429D0(*(float *)((char *)obj + 0x4C), lbl_80561C94);
+            if (((int (*)(void *))(*(void ***)obj)[23])(obj) != 0) {
+                *(float *)((char *)obj + 0x60) = lbl_80561C4C;
+            }
+            fn_802E8524(*(unsigned char *)((char *)obj + 0x5C), *(int *)((char *)obj + 8));
+            keys1[0] = lbl_802F9530[0];
+            keys1[1] = lbl_802F9530[1];
+            keys1[2] = lbl_802F9530[2];
+            keys1[3] = lbl_802F9530[3];
+            keys2[0] = lbl_802F9540[0];
+            keys2[1] = lbl_802F9540[1];
+            keys2[2] = lbl_802F9540[2];
+            keys2[3] = lbl_802F9540[3];
+            slot = (int *)((char *)obj + 0x2CC);
+            for (i = 0; i < 4; i++, slot += 4) {
+                fn_801A7DFC(keys1[i], keys2[i], *(int *)((char *)obj + 0x34C));
+                fn_801A7974((char *)slot, (const char *)keys1[i], *(int *)((char *)obj + 0x34C));
+            }
+            fn_801A7974((char *)obj + 0x6C, lbl_803321AC, *(int *)((char *)obj + 0x34C));
+            fn_801A7974((char *)obj + 0x7C, lbl_803321A0, *(int *)((char *)obj + 0x34C));
+            fn_801A7974((char *)obj + 0x18C, lbl_80332194, *(int *)((char *)obj + 0x34C));
+            fn_801A7974((char *)obj + 0x19C, lbl_80332184, *(int *)((char *)obj + 0x34C));
+            fn_801A7974((char *)obj + 0x8C, lbl_80332178, *(int *)((char *)obj + 0x34C));
+            fn_801A7974((char *)obj + 0x9C, lbl_8055A398, *(int *)((char *)obj + 0x34C));
+            fn_801A7974((char *)obj + 0xBC, lbl_80332168, *(int *)((char *)obj + 0x34C));
+            fn_801A7974((char *)obj + 0xCC, lbl_8033215C, *(int *)((char *)obj + 0x34C));
+            fn_801A7974((char *)obj + 0xDC, lbl_80332150, *(int *)((char *)obj + 0x34C));
+            fn_801A7974((char *)obj + 0xEC, lbl_80332144, *(int *)((char *)obj + 0x34C));
+            fn_801A7974((char *)obj + 0x24C, lbl_8055A390, *(int *)((char *)obj + 0x34C));
+            fn_801A7974((char *)obj + 0x25C, lbl_80332138, *(int *)((char *)obj + 0x34C));
+            fn_801A7974((char *)obj + 0x26C, lbl_8033212C, *(int *)((char *)obj + 0x34C));
+            fn_801A7974((char *)obj + 0x27C, lbl_8033211C, *(int *)((char *)obj + 0x34C));
+            fn_801A7974((char *)obj + 0xAC, lbl_8055A388, *(int *)((char *)obj + 0x34C));
+            fn_801A7974((char *)obj + 0xFC, lbl_8055A380, *(int *)((char *)obj + 0x34C));
+            fn_801A7974((char *)obj + 0x10C, lbl_80332110, *(int *)((char *)obj + 0x34C));
+            fn_801A7974((char *)obj + 0x15C, lbl_8055A378, *(int *)((char *)obj + 0x34C));
+            fn_801A7974((char *)obj + 0x13C, lbl_8055A370, *(int *)((char *)obj + 0x34C));
+            fn_801A7974((char *)obj + 0x14C, lbl_80332104, *(int *)((char *)obj + 0x34C));
+            fn_801A7974((char *)obj + 0x16C, lbl_8055A368, *(int *)((char *)obj + 0x34C));
+            fn_801A7974((char *)obj + 0x17C, lbl_8055A360, *(int *)((char *)obj + 0x34C));
+            fn_801A7974((char *)obj + 0x11C, lbl_8055A358, *(int *)((char *)obj + 0x34C));
+            fn_801A7974((char *)obj + 0x12C, lbl_8055A350, *(int *)((char *)obj + 0x34C));
+            fn_801A7974((char *)obj + 0x1AC, lbl_803320F8, *(int *)((char *)obj + 0x34C));
+            fn_801A7974((char *)obj + 0x1BC, lbl_803320EC, *(int *)((char *)obj + 0x34C));
+            fn_801A7974((char *)obj + 0x1CC, lbl_803320E0, *(int *)((char *)obj + 0x34C));
+            fn_801A7974((char *)obj + 0x28C, lbl_803320D4, *(int *)((char *)obj + 0x34C));
+            fn_801A7974((char *)obj + 0x29C, lbl_803320C8, *(int *)((char *)obj + 0x34C));
+            fn_801A7974((char *)obj + 0x2AC, lbl_803320BC, *(int *)((char *)obj + 0x34C));
+            fn_801A7974((char *)obj + 0x2BC, lbl_803320B0, *(int *)((char *)obj + 0x34C));
+            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_8033209C, &lbl_8055A330);
+            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_8033208C, &lbl_8055A334);
+            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_80332078, &lbl_8055A338);
+            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_80332064, &lbl_8055A33C);
+            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_80332050, &lbl_8055A340);
+            fn_801331C4(*(int *)((char *)obj + 0x34C), lbl_8033203C, &lbl_8055A344);
+            *(unsigned char *)((char *)obj + 0x341) = 0;
+            fn_801333E8(*(int *)((char *)obj + 0x34C), lbl_80332030, (char *)obj + 0x341);
+            *(unsigned char *)((char *)obj + 0x346) = 0;
+            *(unsigned char *)((char *)obj + 0x345) = 1;
+            fn_801333E8(*(int *)((char *)obj + 0x34C), lbl_80332020, (char *)obj + 0x346);
+            fn_801333E8(*(int *)((char *)obj + 0x34C), lbl_80332008, (char *)obj + 0x345);
+            flag = 0;
+            fn_801333E8(*(int *)((char *)obj + 0x34C), lbl_80331FFC, &flag);
+            if (flag != 0) {
+                fn_802E30C8(lbl_80331FF0);
+                *(unsigned char *)((char *)obj + 0x346) = 0;
+                *(unsigned char *)((char *)obj + 0x345) = 0;
+            }
+            fn_801A9110((char *)obj + 0x1DC, lbl_80331FE4);
+            fn_801A9110((char *)obj + 0x1EC, lbl_80331FD8);
+            fn_801A9110((char *)obj + 0x1FC, lbl_80331FCC);
+            fn_801A9110((char *)obj + 0x20C, lbl_80331FC0);
+            fn_801A9110((char *)obj + 0x21C, lbl_80331FB4);
+            fn_801A9110((char *)obj + 0x22C, lbl_80331FA8);
+            fn_801A9110((char *)obj + 0x23C, lbl_80331F9C);
+            slot = (int *)((char *)obj + 0x1DC);
+            for (i = 0; i < 6; i++, slot += 4) {
+                sprintf(name, lbl_80331F90, i + 1);
+                fn_801A7974((char *)slot, name, *(int *)((char *)obj + 0x34C));
+            }
+            fn_801A7974((char *)obj + 0x23C, lbl_80331F80, *(int *)((char *)obj + 0x34C));
+            {
+                int head = *(int *)((char *)obj + 8);
+                int *p = (int *)((char *)obj + 0x70);
+                *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4; *p = head; p += 4;
+            }
+            *(unsigned char *)((char *)obj + 0x344) = 0;
+            {
+                char buf[96];
+                if (fn_801298E8(buf, *(int *)((char *)obj + 8)) != 0 && ((*(int *)(buf + 0x50) & 0x10) != 0)) {
+                    *(unsigned char *)((char *)obj + 0x344) = 1;
+                    *(unsigned char *)((char *)obj + 0x344) = 1;
+                }
+            }
+        }
+    }
 }
 
 /* One of the sound-player slots a DriverInterface owns from 0x6C on;
