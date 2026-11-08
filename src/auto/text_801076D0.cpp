@@ -736,7 +736,12 @@ void nw4hbm::ut::detail::ResFontBase::SetDefaultCharWidths(const CharWidths& wid
 extern "C" u16 FindGlyphIndex__Q46nw4hbm2ut6detail11ResFontBaseCFPCQ36nw4hbm2ut11FontCodeMapUs(void *, void *, u16);
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" s32 SetAlternateChar__Q46nw4hbm2ut6detail11ResFontBaseFUs(void *self, u16 code) {
+/*
+ * ResFontBase::SetAlternateChar - if `code` falls inside one of the font's
+ * code maps, resolve its glyph index, store it as the alternate character and
+ * return true; otherwise leave the font unchanged and return false.
+ */
+extern "C" s32 SetAlternateChar__Q46nw4hbm2ut6detail11ResFontBaseFUs(nw4hbm::ut::detail::ResFontBase* self, u16 code) {
     const char* file = lbl_80329140;
     register u32 top = (u32)self & 0xFF000000U;
     {
@@ -751,16 +756,16 @@ extern "C" s32 SetAlternateChar__Q46nw4hbm2ut6detail11ResFontBaseFUs(void *self,
     }
     {
         register int r4 = 1, r5 = 1;
-        u8* info = *(u8**)((char*)self + 0x14);
+        u8* fontInfo = *(u8**)((char*)self + 0x14);
         register int r7 = 1;
         register int r8 = 1, r9 = 1, r10 = 1;
-        register u32 infoTop = (u32)info & 0xFF000000U;
-        if (infoTop != 0x80000000U && ((u32)info & 0xFF800000U) != 0x81000000U) r10 = 0;
-        if (r10 == 0 && ((u32)info & 0xF8000000U) != 0x90000000U) r9 = 0;
-        if (r9 == 0 && infoTop != 0xC0000000U) r8 = 0;
-        if (r8 == 0 && ((u32)info & 0xFF800000U) != 0xC1000000U) r7 = 0;
-        if (r7 == 0 && ((u32)info & 0xF8000000U) != 0xD0000000U) r5 = 0;
-        if (r5 == 0 && ((u32)info & 0xFFFFC000U) != 0xE0000000U) r4 = 0;
+        register u32 fontInfoTag = (u32)fontInfo & 0xFF000000U;
+        if (fontInfoTag != 0x80000000U && ((u32)fontInfo & 0xFF800000U) != 0x81000000U) r10 = 0;
+        if (r10 == 0 && ((u32)fontInfo & 0xF8000000U) != 0x90000000U) r9 = 0;
+        if (r9 == 0 && fontInfoTag != 0xC0000000U) r8 = 0;
+        if (r8 == 0 && ((u32)fontInfo & 0xFF800000U) != 0xC1000000U) r7 = 0;
+        if (r7 == 0 && ((u32)fontInfo & 0xF8000000U) != 0xD0000000U) r5 = 0;
+        if (r5 == 0 && ((u32)fontInfo & 0xFFFFC000U) != 0xE0000000U) r4 = 0;
         if (r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x15F, file + 0x128);
     }
     {
@@ -778,31 +783,31 @@ extern "C" s32 SetAlternateChar__Q46nw4hbm2ut6detail11ResFontBaseFUs(void *self,
     }
     {
         register int r4 = 1, r5 = 1;
-        u8* info = *(u8**)((char*)self + 0x14);
+        u8* fontInfo = *(u8**)((char*)self + 0x14);
         register int r7 = 1;
         register int r8 = 1, r9 = 1, r10 = 1;
-        register u32 infoTop = (u32)info & 0xFF000000U;
-        if (infoTop != 0x80000000U && ((u32)info & 0xFF800000U) != 0x81000000U) r10 = 0;
-        if (r10 == 0 && ((u32)info & 0xF8000000U) != 0x90000000U) r9 = 0;
-        if (r9 == 0 && infoTop != 0xC0000000U) r8 = 0;
-        if (r8 == 0 && ((u32)info & 0xFF800000U) != 0xC1000000U) r7 = 0;
-        if (r7 == 0 && ((u32)info & 0xF8000000U) != 0xD0000000U) r5 = 0;
-        if (r5 == 0 && ((u32)info & 0xFFFFC000U) != 0xE0000000U) r4 = 0;
+        register u32 fontInfoTag = (u32)fontInfo & 0xFF000000U;
+        if (fontInfoTag != 0x80000000U && ((u32)fontInfo & 0xFF800000U) != 0x81000000U) r10 = 0;
+        if (r10 == 0 && ((u32)fontInfo & 0xF8000000U) != 0x90000000U) r9 = 0;
+        if (r9 == 0 && fontInfoTag != 0xC0000000U) r8 = 0;
+        if (r8 == 0 && ((u32)fontInfo & 0xFF800000U) != 0xC1000000U) r7 = 0;
+        if (r7 == 0 && ((u32)fontInfo & 0xF8000000U) != 0xD0000000U) r5 = 0;
+        if (r5 == 0 && ((u32)fontInfo & 0xFFFFC000U) != 0xE0000000U) r4 = 0;
         if (r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x1F7, file + 0x128);
     }
-    register u8 *map=*(u8**)(*(u8**)((u8*)self+0x14)+0x10);
-    register u16 index;
-    while (map!=0) {
-        if (*(u16*)map<=code && code<=*(u16*)(map+2)) {
-            index=::FindGlyphIndex__Q46nw4hbm2ut6detail11ResFontBaseCFPCQ36nw4hbm2ut11FontCodeMapUs(self,map,code);
+    register u8 *codeMap=*(u8**)(*(u8**)((u8*)self+0x14)+0x10);
+    register u16 glyphIndex;
+    while (codeMap!=0) {
+        if (*(u16*)codeMap<=code && code<=*(u16*)(codeMap+2)) {
+            glyphIndex=::FindGlyphIndex__Q46nw4hbm2ut6detail11ResFontBaseCFPCQ36nw4hbm2ut11FontCodeMapUs(self,codeMap,code);
             goto checkIndex;
         }
-        map=*(u8**)(map+8);
+        codeMap=*(u8**)(codeMap+8);
     }
-    index=0xFFFF;
+    glyphIndex=0xFFFF;
 checkIndex:
-    if (index!=0xFFFF) {
-        *(u16*)(*(u8**)((u8*)self+0x14)+2)=index;
+    if (glyphIndex!=0xFFFF) {
+        *(u16*)(*(u8**)((u8*)self+0x14)+2)=glyphIndex;
         return 1;
     }
     return 0;
@@ -4620,55 +4625,55 @@ extern "C" f32 fn_80110D68(s32 arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 arg4) {
     f32 temp_f2;
     f32 var_f2;
     f32 var_f31;
-    s32 var_r9_7;
-    s32 var_r9_6;
-    s32 var_r9_5;
-    s32 var_r9_4;
-    s32 var_r9_3;
-    s32 var_r9_2;
-    s32 var_r9;
-    s32 var_r8_7;
-    s32 var_r8_6;
-    s32 var_r8_5;
-    s32 var_r8_4;
-    s32 var_r8_3;
-    s32 var_r8_2;
-    s32 var_r8;
-    s32 var_r7_7;
-    s32 var_r7_6;
-    s32 var_r7_5;
-    s32 var_r7_4;
-    s32 var_r7_3;
-    s32 var_r7_2;
-    s32 var_r7;
-    s32 var_r6_7;
-    s32 var_r6_6;
-    s32 var_r6_5;
-    s32 var_r6_4;
-    s32 var_r6_3;
-    s32 var_r6_2;
-    s32 var_r6;
-    s32 var_r5_7;
-    s32 var_r5_6;
-    s32 var_r5_5;
-    s32 var_r5_4;
-    s32 var_r5_3;
-    s32 var_r5_2;
     s32 var_r5;
-    s32 var_r4_6;
-    s32 var_r4_5;
-    s32 var_r4_4;
-    s32 var_r4_3;
-    s32 var_r4_2;
-    s32 var_r4;
+    s32 var_r6;
+    s32 var_r7;
+    s32 var_r8;
+    s32 var_r9;
     s32 var_r10;
     s32 temp_r11;
-    s32 temp_r10_6;
-    s32 temp_r10_5;
-    s32 temp_r10_4;
-    s32 temp_r10_3;
-    s32 temp_r10_2;
+    s32 var_r4;
+    s32 var_r4_2;
+    s32 var_r4_3;
+    s32 var_r4_4;
+    s32 var_r4_5;
+    s32 var_r4_6;
+    s32 var_r5_2;
+    s32 var_r5_3;
+    s32 var_r5_4;
+    s32 var_r5_5;
+    s32 var_r5_6;
+    s32 var_r5_7;
+    s32 var_r6_2;
+    s32 var_r6_3;
+    s32 var_r6_4;
+    s32 var_r6_5;
+    s32 var_r6_6;
+    s32 var_r6_7;
+    s32 var_r7_2;
+    s32 var_r7_3;
+    s32 var_r7_4;
+    s32 var_r7_5;
+    s32 var_r7_6;
+    s32 var_r7_7;
+    s32 var_r8_2;
+    s32 var_r8_3;
+    s32 var_r8_4;
+    s32 var_r8_5;
+    s32 var_r8_6;
+    s32 var_r8_7;
+    s32 var_r9_2;
+    s32 var_r9_3;
+    s32 var_r9_4;
+    s32 var_r9_5;
+    s32 var_r9_6;
+    s32 var_r9_7;
     s32 temp_r10;
+    s32 temp_r10_2;
+    s32 temp_r10_3;
+    s32 temp_r10_4;
+    s32 temp_r10_5;
+    s32 temp_r10_6;
     u32 temp_r0;
     u32 temp_r0_2;
     u32 temp_r0_3;
@@ -4804,19 +4809,25 @@ extern "C" f32 fn_80110D68(s32 arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 arg4) {
         copyA[0x1E] = (*(u8 *)((u8*)(arg0) + (0x1E)));
         copyA[0x1F] = (*(u8 *)((u8*)(arg0) + (0x1F)));
         (*(s32*)(copyA+0x20)) = (*(s32 *)((u8*)(arg0) + (0x20)));
-        u32 copyA_24 = (*(s32 *)((u8*)(arg0) + (0x24)));
-        u32 copyA_28 = (*(s32 *)((u8*)(arg0) + (0x28)));
-        (*(s32*)(copyA+0x24)) = copyA_24;
-        (*(s32*)(copyA+0x28)) = copyA_28;
-        s32 copyA_2C = (*(s32 *)((u8*)(arg0) + (0x2C)));
-        s32 copyA_30 = (*(s32 *)((u8*)(arg0) + (0x30)));
-        (*(s32*)(copyA+0x2C)) = copyA_2C;
-        (*(s32*)(copyA+0x30)) = copyA_30;
+        {
+            s32 copyA_28 = (*(s32 *)((u8*)(arg0) + (0x28)));
+            s32 copyA_24 = (*(s32 *)((u8*)(arg0) + (0x24)));
+            (*(s32*)(copyA+0x24)) = copyA_24;
+            (*(s32*)(copyA+0x28)) = copyA_28;
+        }
+        {
+            s32 copyA_30 = (*(s32 *)((u8*)(arg0) + (0x30)));
+            s32 copyA_2C = (*(s32 *)((u8*)(arg0) + (0x2C)));
+            (*(s32*)(copyA+0x2C)) = copyA_2C;
+            (*(s32*)(copyA+0x30)) = copyA_30;
+        }
         (*(s32*)(copyA+0x34)) = (*(s32 *)((u8*)(arg0) + (0x34)));
-        s32 copyA_38 = (*(s32 *)((u8*)(arg0) + (0x38)));
-        s32 copyA_3C = (*(s32 *)((u8*)(arg0) + (0x3C)));
-        (*(s32*)(copyA+0x38)) = copyA_38;
-        (*(s32*)(copyA+0x3C)) = copyA_3C;
+        {
+            s32 copyA_3C = (*(s32 *)((u8*)(arg0) + (0x3C)));
+            s32 copyA_38 = (*(s32 *)((u8*)(arg0) + (0x38)));
+            (*(s32*)(copyA+0x38)) = copyA_38;
+            (*(s32*)(copyA+0x3C)) = copyA_3C;
+        }
         copyA[0x40] = (*(u8 *)((u8*)(arg0) + (0x40)));
         copyA[0x41] = (*(u8 *)((u8*)(arg0) + (0x41)));
         copyA[0x42] = (*(u8 *)((u8*)(arg0) + (0x42)));
@@ -4943,19 +4954,25 @@ extern "C" f32 fn_80110D68(s32 arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 arg4) {
         copyB[0x1E] = (*(u8 *)((u8*)(arg0) + (0x1E)));
         copyB[0x1F] = (*(u8 *)((u8*)(arg0) + (0x1F)));
         (*(s32*)(copyB+0x20)) = (*(s32 *)((u8*)(arg0) + (0x20)));
-        u32 copyB_24 = (*(s32 *)((u8*)(arg0) + (0x24)));
-        u32 copyB_28 = (*(s32 *)((u8*)(arg0) + (0x28)));
-        (*(s32*)(copyB+0x24)) = copyB_24;
-        (*(s32*)(copyB+0x28)) = copyB_28;
-        s32 copyB_2C = (*(s32 *)((u8*)(arg0) + (0x2C)));
-        s32 copyB_30 = (*(s32 *)((u8*)(arg0) + (0x30)));
-        (*(s32*)(copyB+0x2C)) = copyB_2C;
-        (*(s32*)(copyB+0x30)) = copyB_30;
+        {
+            s32 copyB_28 = (*(s32 *)((u8*)(arg0) + (0x28)));
+            s32 copyB_24 = (*(s32 *)((u8*)(arg0) + (0x24)));
+            (*(s32*)(copyB+0x24)) = copyB_24;
+            (*(s32*)(copyB+0x28)) = copyB_28;
+        }
+        {
+            s32 copyB_30 = (*(s32 *)((u8*)(arg0) + (0x30)));
+            s32 copyB_2C = (*(s32 *)((u8*)(arg0) + (0x2C)));
+            (*(s32*)(copyB+0x2C)) = copyB_2C;
+            (*(s32*)(copyB+0x30)) = copyB_30;
+        }
         (*(s32*)(copyB+0x34)) = (*(s32 *)((u8*)(arg0) + (0x34)));
-        s32 copyB_38 = (*(s32 *)((u8*)(arg0) + (0x38)));
-        s32 copyB_3C = (*(s32 *)((u8*)(arg0) + (0x3C)));
-        (*(s32*)(copyB+0x38)) = copyB_38;
-        (*(s32*)(copyB+0x3C)) = copyB_3C;
+        {
+            s32 copyB_3C = (*(s32 *)((u8*)(arg0) + (0x3C)));
+            s32 copyB_38 = (*(s32 *)((u8*)(arg0) + (0x38)));
+            (*(s32*)(copyB+0x38)) = copyB_38;
+            (*(s32*)(copyB+0x3C)) = copyB_3C;
+        }
         copyB[0x40] = (*(u8 *)((u8*)(arg0) + (0x40)));
         copyB[0x41] = (*(u8 *)((u8*)(arg0) + (0x41)));
         copyB[0x42] = (*(u8 *)((u8*)(arg0) + (0x42)));
@@ -5070,19 +5087,25 @@ extern "C" f32 fn_80110D68(s32 arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 arg4) {
         copyC[0x1E] = (*(u8 *)((u8*)(arg0) + (0x1E)));
         copyC[0x1F] = (*(u8 *)((u8*)(arg0) + (0x1F)));
         (*(s32*)(copyC+0x20)) = (*(s32 *)((u8*)(arg0) + (0x20)));
-        u32 copyC_24 = (*(s32 *)((u8*)(arg0) + (0x24)));
-        u32 copyC_28 = (*(s32 *)((u8*)(arg0) + (0x28)));
-        (*(s32*)(copyC+0x24)) = copyC_24;
-        (*(s32*)(copyC+0x28)) = copyC_28;
-        s32 copyC_2C = (*(s32 *)((u8*)(arg0) + (0x2C)));
-        s32 copyC_30 = (*(s32 *)((u8*)(arg0) + (0x30)));
-        (*(s32*)(copyC+0x2C)) = copyC_2C;
-        (*(s32*)(copyC+0x30)) = copyC_30;
+        {
+            s32 copyC_28 = (*(s32 *)((u8*)(arg0) + (0x28)));
+            s32 copyC_24 = (*(s32 *)((u8*)(arg0) + (0x24)));
+            (*(s32*)(copyC+0x24)) = copyC_24;
+            (*(s32*)(copyC+0x28)) = copyC_28;
+        }
+        {
+            s32 copyC_30 = (*(s32 *)((u8*)(arg0) + (0x30)));
+            s32 copyC_2C = (*(s32 *)((u8*)(arg0) + (0x2C)));
+            (*(s32*)(copyC+0x2C)) = copyC_2C;
+            (*(s32*)(copyC+0x30)) = copyC_30;
+        }
         (*(s32*)(copyC+0x34)) = (*(s32 *)((u8*)(arg0) + (0x34)));
-        s32 copyC_38 = (*(s32 *)((u8*)(arg0) + (0x38)));
-        s32 copyC_3C = (*(s32 *)((u8*)(arg0) + (0x3C)));
-        (*(s32*)(copyC+0x38)) = copyC_38;
-        (*(s32*)(copyC+0x3C)) = copyC_3C;
+        {
+            s32 copyC_3C = (*(s32 *)((u8*)(arg0) + (0x3C)));
+            s32 copyC_38 = (*(s32 *)((u8*)(arg0) + (0x38)));
+            (*(s32*)(copyC+0x38)) = copyC_38;
+            (*(s32*)(copyC+0x3C)) = copyC_3C;
+        }
         copyC[0x40] = (*(u8 *)((u8*)(arg0) + (0x40)));
         copyC[0x41] = (*(u8 *)((u8*)(arg0) + (0x41)));
         copyC[0x42] = (*(u8 *)((u8*)(arg0) + (0x42)));
