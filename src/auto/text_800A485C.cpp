@@ -3244,6 +3244,53 @@ extern "C" void fn_800AABE0(void) {
 
 extern "C" s32 fn_800AE620(s32, s32, s32, s32);
 extern "C" s32 fn_800B4D00(void);
+
+/* ---------------------------------------------------------------------
+ * VFiPFENT: the directory entries of a FAT volume.
+ *
+ * The entry iterator is a 0x70-byte block the entry code builds on its own
+ * stack: the directory it walks is copied into it at 0x08 (the directory keeps
+ * the volume it is read through at 0x34, so that lands at 0x3C and is what the
+ * entries are read from), the entry last read is at 0x4C and 0x40..0x4B say
+ * where it came from.  fn_800AC1B4 puts the iterator on an entry,
+ * VFiPFENT_ITER_Advance moves it on and fn_800A9DC0 turns the entry it points
+ * at into a file entry object (0x240 bytes, VFiPFEntryCopy240 copies one).
+ * ------------------------------------------------------------------- */
+#define VF_ITER_POSITION(i)    (*(s32 *)((u8 *)(i)))         /* 0x00 byte position in the directory */
+#define VF_ITER_INDEX(i)       (*(s32 *)((u8 *)(i) + 0x40))  /* 0x40 entry number */
+#define VF_ITER_SECTOR(i)      (*(u32 *)((u8 *)(i) + 0x44))  /* 0x44 sector the entry was read from */
+#define VF_ITER_SECTOR_OFF(i)  (*(u16 *)((u8 *)(i) + 0x48))  /* 0x48 offset of the entry in that sector */
+#define VF_ITER_FIRST_BYTE(i)  (*(u8 *)((u8 *)(i) + 0x4C))   /* 0x4C first byte of the entry */
+
+/* The volume a directory is read through; its first field is the sector size. */
+#define VF_DIR_VOLUME(d)       (*(void **)((u8 *)(d) + 0x34))
+
+/* First byte of a directory entry: 0 was never used, 0xE5 was deleted. */
+#define VF_ENT_FREE            0x00
+#define VF_ENT_DELETED         0xE5
+
+/* The end of a directory: a sector of 0xFFFF0000 says there is no cluster
+ * after the last one read.  Spelled as the game does, which keeps the
+ * constant out of a register (addi/cmplwi). */
+#define VF_SECTOR_IS_END(s)    ((u32)((s) + 0x10000) == 0xFFFFU)
+
+/* Where an entry sits, in the file entry object fn_800A9DC0 fills. */
+#define VF_ENTRY_VOLUME(e)     (*(void **)((u8 *)(e) + 0x22C)) /* 0x22C volume it was read from */
+#define VF_ENTRY_SECTOR(e)     (*(u32 *)((u8 *)(e) + 0x238))   /* 0x238 sector of the entry */
+#define VF_ENTRY_SECTOR_OFF(e) (*(u16 *)((u8 *)(e) + 0x23C))   /* 0x23C its offset in that sector */
+
+/* Name-encoding flags of the VF instance at 0x60; bit 1 means names are held
+ * in Unicode, and the path code switches its conversions on it. */
+#define VF_NAME_FLAGS          ((u32)lbl_803D2140[0x60 / 4])
+#define VF_NAME_UNICODE        2U
+
+/* What looking for room to create an entry can give up with: the name is one
+ * the volume will not create (fn_800B4D00), the directory holds no run of free
+ * entries long enough, or an entry of that name is already there. */
+#define VF_ERR_NAME_NOT_ALLOWED 1
+#define VF_ERR_NO_FREE_ENTRIES  5
+#define VF_ERR_NAME_EXISTS      8
+
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" s32 fn_800AAC08(void *arg0, u32 arg1, void *arg2, void *arg3, s32 arg4, s32 *arg5) {
