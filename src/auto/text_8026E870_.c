@@ -87,7 +87,7 @@ extern s32 fn_80178CA4(void);
 extern double cos(double);
 extern double atan(double);
 extern double fn_8002EF30(f32);
-extern void fn_8026FCFC(void);
+extern void fn_8026FCFC();
 extern f32 fn_8026EA8C(s32, void *, f32);
 
 #pragma push
@@ -864,7 +864,7 @@ extern f32 lbl_80563F24;
 extern f32 lbl_80563F28;
 #pragma push
 #pragma processor 750
-void fn_802704E4(void *arg0) {
+void fn_802704E4(Car *car) {
     Vec sp48;
     Vec sp3C;
     Vec sp30;
@@ -884,58 +884,66 @@ void fn_802704E4(void *arg0) {
     int cond29;
 
     cond = fn_80178CA4() > 1;
+    f0 = lbl_80563E30 - car->unk13C * lbl_80563ED0;
+    f1 = *(f32 *)((char *)car->sub + 0x5B4);
     f2 = cond ? lbl_80563ED8 : lbl_80563EC0;
-    sp8 = f2 + *(f32 *)(*(char **)((char *)arg0 + 0x140) + 0x5B4) * (lbl_80563E30 - lbl_80563ED0 * *(f32 *)((char *)arg0 + 0x13C));
-    f29 = lbl_80563F20 + *(f32 *)(*(char **)((char *)arg0 + 0x140) + 0x5B8);
+    f1 = f2 + f1 * f0;
+    sp8 = f1;
+    f29 = lbl_80563F20 + *(f32 *)((char *)car->sub + 0x5B8);
 
-    if (*(s32 *)((char *)arg0 + 4) != 9) {
-        *(s32 *)((char *)arg0 + 0x114) = *(s32 *)((char *)arg0 + 0xE4);
-        *(s32 *)((char *)arg0 + 0x118) = *(s32 *)((char *)arg0 + 0xE8);
-        *(s32 *)((char *)arg0 + 0x11C) = *(s32 *)((char *)arg0 + 0xEC);
+    if (car->state != 9) {
+        *(s32 *)&car->v114.x = *(s32 *)&car->vE4.x;
+        *(s32 *)&car->v114.y = *(s32 *)&car->vE4.y;
+        *(s32 *)&car->v114.z = *(s32 *)&car->vE4.z;
 
-        *(f32 *)((char *)arg0 + 0x114) += *(f32 *)((char *)arg0 + 0xD8) * lbl_80563E44;
-        *(f32 *)((char *)arg0 + 0x118) += *(f32 *)((char *)arg0 + 0xDC) * lbl_80563E44;
-        *(f32 *)((char *)arg0 + 0x11C) += *(f32 *)((char *)arg0 + 0xE0) * lbl_80563E44;
+        f7 = car->v114.x + car->vD8.x * lbl_80563E44;
+        f6 = car->v114.y + car->vD8.y * lbl_80563E44;
+        f2 = car->v114.z + car->vD8.z * lbl_80563E44;
 
-        *(s32 *)((char *)arg0 + 0xF0) = *(s32 *)((char *)arg0 + 0xC0);
-        *(s32 *)((char *)arg0 + 0xF4) = *(s32 *)((char *)arg0 + 0xC4);
-        *(s32 *)((char *)arg0 + 0xF8) = *(s32 *)((char *)arg0 + 0xC8);
-        *(s32 *)((char *)arg0 + 0xFC) = *(s32 *)((char *)arg0 + 0xCC);
-        *(s32 *)((char *)arg0 + 0x100) = *(s32 *)((char *)arg0 + 0xD0);
-        *(s32 *)((char *)arg0 + 0x104) = *(s32 *)((char *)arg0 + 0xD4);
-        *(s32 *)((char *)arg0 + 0x108) = *(s32 *)((char *)arg0 + 0xD8);
-        *(s32 *)((char *)arg0 + 0x10C) = *(s32 *)((char *)arg0 + 0xDC);
-        *(s32 *)((char *)arg0 + 0x110) = *(s32 *)((char *)arg0 + 0xE0);
+        car->mF0[0] = car->mC0[0];
+        car->mF0[1] = car->mC0[1];
+        car->mF0[2] = car->mC0[2];
+        car->mF0[3] = car->mC0[3];
+        car->mF0[4] = car->mC0[4];
+        car->mF0[5] = car->mC0[5];
+        *(s32 *)&car->v108.x = *(s32 *)&car->vD8.x;
+        *(s32 *)&car->v108.y = *(s32 *)&car->vD8.y;
+        *(s32 *)&car->v108.z = *(s32 *)&car->vD8.z;
+
+        car->v114.x = f7;
+        car->v114.y = f6;
+        car->v114.z = f2;
     }
 
-    f31 = (*(u8 *)(*(char **)((char *)arg0 + 0x140) + 0x260C) != 0) ? lbl_80563E30 : lbl_80563E78;
-    *(f32 *)((char *)arg0 + 0xBC) = fn_8026ECE4(arg0, &sp8);
+    f31 = (*(u8 *)((char *)car->sub + 0x260C) != 0) ? lbl_80563E30 : lbl_80563E78;
+    car->unkBC = fn_8026ECE4(car, &sp8);
 
-    sp48 = *(Vec *)((char *)arg0 + 0xE4);
+    sp48 = car->vE4;
 
+    f0 = *(f32 *)((char *)car->sub + 0x5E4);
     f1 = cond ? lbl_80563F24 : lbl_80563E58;
-    sp48.y += f1 * *(f32 *)(*(char **)((char *)arg0 + 0x140) + 0x5E4);
+    sp48.y += f1 * f0;
 
-    if ((f32)__fabs(f31 - *(f32 *)((char *)arg0 + 0x19C)) <= lbl_80558DC4[0]) {
-        cond29 = *(f32 *)(*(char **)((char *)arg0 + 0x140) + 0x25D8) < lbl_80563F28;
+    if ((f32)__fabs(f31 - car->unk19C) <= lbl_80558DC4[0]) {
+        cond29 = *(f32 *)((char *)car->sub + 0x25D8) < lbl_80563F28;
         cond = !((f32)__fabs(f31) <= lbl_80558DC4[0]);
 
-        sp3C.x = sp48.x - *(f32 *)((char *)arg0 + 0x114);
-        sp3C.y = sp48.y - *(f32 *)((char *)arg0 + 0x118);
-        sp3C.z = sp48.z - *(f32 *)((char *)arg0 + 0x11C);
+        sp3C.x = sp48.x - car->v114.x;
+        sp3C.y = sp48.y - car->v114.y;
+        sp3C.z = sp48.z - car->v114.z;
         f1 = PSVECMag(&sp3C);
-        if (f1 > lbl_80563EA8) {} else f1 = lbl_80563EA8;
+        if (f1 <= lbl_80563EA8) f1 = lbl_80563EA8;
 
         f1 = lbl_80563E30 / f1;
-        *(f32 *)((char *)arg0 + 0x108) = sp3C.x * f1;
-        *(f32 *)((char *)arg0 + 0x10C) = sp3C.y * f1;
-        *(f32 *)((char *)arg0 + 0x110) = sp3C.z * f1;
+        car->v108.x = sp3C.x * f1;
+        car->v108.y = sp3C.y * f1;
+        car->v108.z = sp3C.z * f1;
 
-        f1 = PSVECMag((Vec *)((char *)arg0 + 0x12C));
+        f1 = PSVECMag(&car->v12C);
         f0 = (f1 - lbl_80563F00) / lbl_80563F04;
         f1 = lbl_80563E30;
-        if (f1 < f0) {} else f1 = f0;
-        if (f1 > lbl_80563E78) {} else f1 = lbl_80563E78;
+        if (f1 >= f0) f1 = f0;
+        if (f1 <= lbl_80563E78) f1 = lbl_80563E78;
 
         if (((cond != 0) && (cond29 == 0)) || ((cond29 != 0) && (cond == 0))) {
             f1 *= lbl_80563EA8;
@@ -943,10 +951,10 @@ void fn_802704E4(void *arg0) {
             f1 = fn_8026FCE0(f1, lbl_80563F08);
         }
 
-        f30 = f1 + lbl_80563F0C * (*(f32 *)((char *)arg0 + 0x198) - f1);
-        *(f32 *)((char *)arg0 + 0x198) = f30;
+        f30 = f1 + lbl_80563F0C * (car->unk198 - f1);
+        car->unk198 = f30;
 
-        sp30 = *(Vec *)((char *)arg0 + 0xD8);
+        sp30 = car->vD8;
         if (cond != 0) {
             sp30.x *= lbl_80563E6C;
             sp30.y *= lbl_80563E6C;
@@ -956,58 +964,65 @@ void fn_802704E4(void *arg0) {
         sp30.y *= lbl_80563EA4;
         f1 = PSVECMag(&sp30);
         f0 = lbl_80563E60;
-        if (f0 > f1) {} else f0 = f1;
+        if (f0 <= f1) f0 = f1;
         f7 = lbl_80563E30 / f0;
         sp30.x *= f7;
         sp30.y *= f7;
         sp30.z *= f7;
 
         f6 = f30 + lbl_80563F14 * (lbl_80563E30 - f30);
-        sp18.x = sp30.x + f6 * (*(f32 *)((char *)arg0 + 0x108) - sp30.x);
-        sp18.y = sp30.y + f6 * (*(f32 *)((char *)arg0 + 0x10C) - sp30.y);
-        sp18.z = sp30.z + f6 * (*(f32 *)((char *)arg0 + 0x110) - sp30.z);
+        f2 = sp30.z + f6 * (car->v108.z - sp30.z);
+        f1 = sp30.y + f6 * (car->v108.y - sp30.y);
+        f0 = sp30.x + f6 * (car->v108.x - sp30.x);
 
-        *(f32 *)((char *)arg0 + 0x108) = sp18.x;
-        *(f32 *)((char *)arg0 + 0x10C) = sp18.y;
-        *(f32 *)((char *)arg0 + 0x110) = sp18.z;
+        sp18.z = f2;
+        sp18.x = f0;
+        sp18.y = f1;
+        car->v108.x = f0;
+        car->v108.y = f1;
+        car->v108.z = f2;
     } else {
-        *(f32 *)((char *)arg0 + 0x108) *= lbl_80563E6C;
-        *(f32 *)((char *)arg0 + 0x10C) *= lbl_80563E6C;
-        *(f32 *)((char *)arg0 + 0x110) *= lbl_80563E6C;
+        f2 = lbl_80563E6C;
+        f0 = car->v108.x * f2;
+        f1 = car->v108.y * f2;
+        f2 = car->v108.z * f2;
+        car->v108.x = f0;
+        car->v108.y = f1;
+        car->v108.z = f2;
     }
 
-    f2 = lbl_80563F18 * *(f32 *)(*(char **)((char *)arg0 + 0x140) + 0x5E4);
-    *(f32 *)((char *)arg0 + 0x114) = sp48.x + *(f32 *)((char *)arg0 + 0x108) * f2;
-    *(f32 *)((char *)arg0 + 0x118) = sp48.y + *(f32 *)((char *)arg0 + 0x10C) * f2;
-    *(f32 *)((char *)arg0 + 0x11C) = sp48.z + *(f32 *)((char *)arg0 + 0x110) * f2;
+    f2 = lbl_80563F18 * *(f32 *)((char *)car->sub + 0x5E4);
+    car->v114.x = sp48.x + car->v108.x * f2;
+    car->v114.y = sp48.y + car->v108.y * f2;
+    car->v114.z = sp48.z + car->v108.z * f2;
 
-    f1 = -sp8 * *(f32 *)(*(char **)((char *)arg0 + 0x140) + 0x5E4);
-    *(f32 *)((char *)arg0 + 0x7C) = *(f32 *)((char *)arg0 + 0xE4) + *(f32 *)((char *)arg0 + 0x108) * f1;
-    *(f32 *)((char *)arg0 + 0x80) = *(f32 *)((char *)arg0 + 0xE8) + *(f32 *)((char *)arg0 + 0x10C) * f1;
-    *(f32 *)((char *)arg0 + 0x84) = *(f32 *)((char *)arg0 + 0xEC) + *(f32 *)((char *)arg0 + 0x110) * f1;
-    *(f32 *)((char *)arg0 + 0x80) += f29 * *(f32 *)(*(char **)((char *)arg0 + 0x140) + 0x5E4);
+    f1 = -sp8 * *(f32 *)((char *)car->sub + 0x5E4);
+    car->v7C.x = car->vE4.x + car->v108.x * f1;
+    car->v7C.y = car->vE4.y + car->v108.y * f1;
+    car->v7C.z = car->vE4.z + car->v108.z * f1;
+    car->v7C.y += f29 * *(f32 *)((char *)car->sub + 0x5E4);
 
-    sp24 = *(Vec *)((char *)arg0 + 0x7C);
+    sp24 = car->v7C;
 
-    if (fn_801EA03C(*(char **)((char *)arg0 + 0x140) + 0x6C, &sp24) != 0) {
-        f0 = (sp24.y + lbl_80563E50) * *(f32 *)(*(char **)((char *)arg0 + 0x140) + 0x5E4);
-        f2 = *(f32 *)((char *)arg0 + 0x80);
-        if (f2 > f0) {} else f2 = f0;
+    if (fn_801EA03C((char *)car->sub + 0x6C, &sp24) != 0) {
+        f0 = (lbl_80563E50 + sp24.y) * *(f32 *)((char *)car->sub + 0x5E4);
+        f2 = car->v7C.y;
+        f2 = f2 > f0 ? f2 : f0;
         sp24.y = f2;
     } else {
-        sp24.x = *(f32 *)((char *)arg0 + 0x7C);
-        sp24.y = *(f32 *)((char *)arg0 + 0x80);
-        sp24.z = *(f32 *)((char *)arg0 + 0x84);
+        sp24.x = car->v7C.x;
+        sp24.y = car->v7C.y;
+        sp24.z = car->v7C.z;
     }
 
-    ((void (*)(void *, Vec *, Vec *))fn_8026EF48)(arg0, &sp24, &sp48);
+    ((void (*)(void *, Vec *, Vec *))fn_8026EF48)(car, &sp24, &sp48);
 
     spC.x = lbl_80563E78;
     spC.y = lbl_80563E30;
     spC.z = lbl_80563E78;
-    fn_8026E870(&sp24, &sp48, arg0, &spC);
+    fn_8026E870(&sp24, &sp48, car, &spC);
 
-    *(f32 *)((char *)arg0 + 0x19C) = f31;
+    car->unk19C = f31;
 }
 #pragma pop
 
