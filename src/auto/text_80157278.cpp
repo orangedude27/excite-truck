@@ -2873,6 +2873,11 @@ extern "C" void fn_8015C694(void *arg0) {
 //
 // The layout is documented here only: the matched code below keeps the raw
 // byte offsets, which is what the original compiler emitted.
+// TEMP aliases: the block below is being moved up to fn_8015B9B0, the first
+// method that uses these types.
+#define BonusRecord BonusRecord_moved
+#define BonusTracker BonusTracker_moved
+#define BonusDisplay BonusDisplay_moved
 struct BonusRecord {
     s32 count;
     s32 scoredCount;
