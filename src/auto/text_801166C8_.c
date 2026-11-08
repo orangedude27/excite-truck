@@ -4529,54 +4529,56 @@ void fn_801200BC(s32 arg0, s32 arg1, f32 *arg2, s32 arg3, s32 arg4) {
 }
 
 void fn_801254E4(s32, f32 *, s32, f32 *);
-void fn_8012023C(s32 arg0, s32 arg1, f32 *arg2, s32 arg3, s32 arg4) {
+/* Ooura's ddct: in-place DCT of n floats in a (forward when isgn >= 0,
+   inverse when isgn < 0), using scratch indices in ip and twiddles in w. */
+void fn_8012023C(s32 n, s32 isgn, f32 *a, s32 ip, s32 w) {
     s32 nw;
     s32 nc;
     s32 j;
     f32 xr;
     f32 t;
 
-    nw = *(s32 *)arg3;
-    if (arg0 > nw * 4) {
-        nw = arg0 >> 2;
-        fn_80120834(nw, (s32 *)arg3, (f32 *)arg4);
+    nw = *(s32 *)ip;
+    if (n > nw * 4) {
+        nw = n >> 2;
+        fn_80120834(nw, (s32 *)ip, (f32 *)w);
     }
-    nc = *(s32 *)(arg3 + 4);
-    if (arg0 > nc) {
-        nc = arg0;
-        fn_80120B6C(arg0, (s32 *)arg3, (f32 *)arg4 + nw);
+    nc = *(s32 *)(ip + 4);
+    if (n > nc) {
+        nc = n;
+        fn_80120B6C(n, (s32 *)ip, (f32 *)w + nw);
     }
-    if (arg1 < 0) {
-        xr = *(f32 *)((u8 *)arg2 + (arg0 - 1) * 4);
-        for (j = arg0 - 2; j >= 2; j -= 2) {
-            arg2[j + 1] = arg2[j] - arg2[j - 1];
-            arg2[j] = arg2[j] + arg2[j - 1];
+    if (isgn < 0) {
+        xr = *(f32 *)((u8 *)a + (n - 1) * 4);
+        for (j = n - 2; j >= 2; j -= 2) {
+            a[j + 1] = a[j] - a[j - 1];
+            a[j] = a[j] + a[j - 1];
         }
-        t = arg2[0];
-        arg2[1] = t - xr;
-        arg2[0] = t + xr;
-        if (arg0 > 4) {
-            fn_801252D8(arg0, arg2, nc, (f32 *)arg4 + nw);
-            fn_80120E14(arg0, arg2, arg3 + 8, nw, (void *)arg4);
-        } else if (arg0 == 4) {
-            fn_80120E14(arg0, arg2, arg3 + 8, nw, (void *)arg4);
+        t = a[0];
+        a[1] = t - xr;
+        a[0] = t + xr;
+        if (n > 4) {
+            fn_801252D8(n, a, nc, (f32 *)w + nw);
+            fn_80120E14(n, a, ip + 8, nw, (void *)w);
+        } else if (n == 4) {
+            fn_80120E14(n, a, ip + 8, nw, (void *)w);
         }
     }
-    fn_801254E4(arg0, arg2, nc, (f32 *)arg4 + nw);
-    if (arg1 >= 0) {
-        if (arg0 > 4) {
-            fn_80120CA4(arg0, arg2, arg3 + 8, nw, (void *)arg4);
-            fn_801250CC(arg0, (s32)arg2, nc, (s32)((f32 *)arg4 + nw));
-        } else if (arg0 == 4) {
-            fn_80120CA4(arg0, arg2, arg3 + 8, nw, (void *)arg4);
+    fn_801254E4(n, a, nc, (f32 *)w + nw);
+    if (isgn >= 0) {
+        if (n > 4) {
+            fn_80120CA4(n, a, ip + 8, nw, (void *)w);
+            fn_801250CC(n, (s32)a, nc, (s32)((f32 *)w + nw));
+        } else if (n == 4) {
+            fn_80120CA4(n, a, ip + 8, nw, (void *)w);
         }
-        xr = arg2[0] - arg2[1];
-        arg2[0] = arg2[0] + arg2[1];
-        for (j = 2; j < arg0; j += 2) {
-            arg2[j - 1] = arg2[j] - arg2[j + 1];
-            arg2[j] = arg2[j] + arg2[j + 1];
+        xr = a[0] - a[1];
+        a[0] = a[0] + a[1];
+        for (j = 2; j < n; j += 2) {
+            a[j - 1] = a[j] - a[j + 1];
+            a[j] = a[j] + a[j + 1];
         }
-        *(f32 *)((u8 *)arg2 + (arg0 - 1) * 4) = xr;
+        *(f32 *)((u8 *)a + (n - 1) * 4) = xr;
     }
 }
 
