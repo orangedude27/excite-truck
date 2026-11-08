@@ -768,20 +768,24 @@ typedef struct GTexBlock {
 #pragma push
 #pragma small_data on
 s32 fn_80232578(const char *name) {
-    /* gText: load a font texture ("GETX" block) by name.
-     * Returns the block, already cached under the same name, or 0 on failure. */
+    /* gText: load a font texture by archive file name (e.g. "bigtext.gtx").
+     * Returns the loaded 'GETX' block, or 0.  A name already in the cache table
+     * only has its use count bumped and its "_ol_<name>" variant refreshed; a
+     * new block is byte-swapped when the archive read it in the other byte
+     * order, registered as a "<name>.tex" texture resource and appended to the
+     * cache table. */
     register char *stringBase = gTexMessages;
     s32 index;
     s32 offset;
-    u8 *data;
+    u8 *data;         /* the cache slot while it is looked up, the block afterwards */
     u8 *record;
     u8 *record2;
     s32 swapWide;
     u8 swapByte2;
-    s32 dataSize;
-    u32 version;
-    u8 firstLoad;
-    u8 swap;
+    s32 dataSize;     /* block size from the archive manager, unused here */
+    u32 version;      /* block format version, expected to be 8 */
+    u8 firstLoad;     /* the archive manager allocated the block just now */
+    u8 swap;          /* the block's bytes are in the other order */
     void *rawBlock;
     struct { char name[0xC]; s32 pad; } nameBuffer;
     s32 i;
@@ -790,6 +794,7 @@ s32 fn_80232578(const char *name) {
 
     index = fn_8023150C(name);
     if (index >= 0) {
+        /* Already loaded: bump the slot's use count and refresh its outline variant. */
         offset = index * 0xC;
         data = gTexBlockTable + offset;
         value = *(u32 *)(data + 8);
@@ -817,6 +822,7 @@ s32 fn_80232578(const char *name) {
     }
 
     if (swap != 0) {
+        /* Flip the header's 32-bit fields... */
         swapByte = data[0xC]; data[0xC] = data[0xD]; data[0xD] = swapByte;
         swapByte = data[0x14]; data[0x14] = data[0x17]; data[0x17] = swapByte;
         swapByte = data[0x15]; data[0x15] = data[0x16]; data[0x16] = swapByte;
@@ -824,13 +830,14 @@ s32 fn_80232578(const char *name) {
         swapByte = data[0x11]; data[0x11] = data[0x12]; data[0x12] = swapByte;
         swapByte = data[0x18]; data[0x18] = data[0x1B]; data[0x1B] = swapByte;
         swapByte = data[0x19]; data[0x19] = data[0x1A]; data[0x1A] = swapByte;
-        *(u32 *)(data + 0x10) += (u32)data;
-        *(u32 *)(data + 0x18) += (u32)data;
+        /* ...then turn the two sub-block offsets into pointers. */
+        ((GTexBlock *)data)->records += (u32)data;
+        ((GTexBlock *)data)->texture += (u32)data;
 
         i = 0;
         offset = 0;
-        for (; i < *(u16 *)(data + 0xC); i++, offset += 0x1C) {
-            record = (u8 *)*(u32 *)(data + 0x10) + offset;
+        for (; i < ((GTexBlock *)data)->recordCount; i++, offset += 0x1C) {
+            record = (u8 *)((GTexBlock *)data)->records + offset;
             swapByte = record[0xC]; record[0xC] = record[0xF]; record[0xF] = swapByte;
             swapByte = record[0xD]; record[0xD] = record[0xE]; record[0xE] = swapByte;
             swapByte = record[0x10]; record[0x10] = record[0x13]; record[0x13] = swapByte;
@@ -840,33 +847,34 @@ s32 fn_80232578(const char *name) {
             swapByte = record[0x18]; record[0x18] = record[0x1B]; record[0x1B] = swapByte;
             swapByte = record[0x19]; record[0x19] = record[0x1A]; record[0x1A] = swapByte;
 
-            record2 = (u8 *)*(u32 *)(data + 0x10) + offset;
+            record2 = (u8 *)((GTexBlock *)data)->records + offset;
             swapWide = record2[0]; record2[0] = record2[3]; record2[3] = (u8)swapWide;
             swapByte2 = record2[1]; record2[1] = record2[2]; record2[2] = swapByte2;
 
-            record2 = (u8 *)*(u32 *)(data + 0x10) + offset;
+            record2 = (u8 *)((GTexBlock *)data)->records + offset;
             swapByte2 = record2[8]; record2[8] = record2[0xB]; record2[0xB] = swapByte2;
             swapByte2 = record2[9]; record2[9] = record2[0xA]; record2[0xA] = swapByte2;
 
-            record2 = (u8 *)*(u32 *)(data + 0x10) + offset;
+            record2 = (u8 *)((GTexBlock *)data)->records + offset;
             swapByte2 = record2[4]; record2[4] = record2[7]; record2[7] = swapByte2;
             swapByte2 = record2[5]; record2[5] = record2[6]; record2[6] = swapByte2;
         }
     }
 
+    /* The texture resource is named after the first 11 characters of the file name. */
     strncpy(nameBuffer.name, name, 0xB);
     nameBuffer.name[0xB] = 0;
     fn_80028E00(nameBuffer.name, (const char *)&gTexExtension);
     if (strlen(nameBuffer.name) > 0x10) {
         ((void (*)(const char *, ...))fn_802E317C)(stringBase + GTEX_MSG_NAME_TOO_LONG, nameBuffer.name, 0x10, strlen(nameBuffer.name));
     }
-    index = fn_802CAC34(nameBuffer.name, *(s32 *)(data + 0x18));
+    index = fn_802CAC34(nameBuffer.name, ((GTexBlock *)data)->texture);
     if (index == -1) {
         ((void (*)(const char *, ...))fn_802E30C8)(stringBase + GTEX_MSG_NO_RESOURCE);
         return 0;
     }
-    *(s32 *)data = index;
-    *(s32 *)(data + 8) = fn_80231730((s32)name);
+    ((GTexBlock *)data)->resourceIndex = index;
+    ((GTexBlock *)data)->outline = (GTexBlock *)fn_80231730((s32)name);
     fn_8023158C(data, name);
     return (s32)data;
 }
