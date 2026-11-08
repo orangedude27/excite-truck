@@ -8411,57 +8411,75 @@ struct VFiPFVolume {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-extern "C" s32 fn_800B5324(void *arg0, u8 *arg1, u32 arg2, u32 arg3, u32 arg4, u32 *arg5, s32 arg6) {
-    void *page;
+/* Read a volume's data area into a buffer through its sector cache.
+ *
+ * The drive has to hold a device with media in it (VF_VOL_IN_USE and
+ * fn_800A53B4's VF_VOL_MEDIA_PRESENT) and the range has to stay on the volume,
+ * else 9 or 10 is returned.  A part-sector request - an offset inside the
+ * sector, or less than a whole sector to read - is served from one page of the
+ * data cache; a request that starts on a sector boundary and is a whole number
+ * of sectors goes to the cache's multi-sector read, which copies out of every
+ * cached page covering the run; a run that is not a whole number of sectors
+ * takes the whole sectors that way first, up to the next cluster boundary, and
+ * reads what is left - it stays inside one cluster - out of a single page.
+ * The bytes copied are returned in readOut; a multi-sector read that got fewer
+ * sectors than asked for is 17.  claimPage is passed on to the page read,
+ * which marks the page as held by the file being read when it is set.
+ */
+extern "C" s32 fn_800B5324(void *vol, u8 *dest, u32 sector, u32 offset, u32 length, u32 *readOut, s32 claimPage) {
+    VFiPFCACHEPage *page;
     u32 count;
     s32 result;
     u32 n;
     u32 left;
-    *arg5 = 0;
-    if (!(M2C_FIELD(arg0, u16 *, 0x1F8C) & 1) || !fn_800A53B4(arg0)) return 9;
-    if ((arg2 >= M2C_FIELD(arg0,u32 *,8) || arg3 >= M2C_FIELD(arg0,u16 *,0) || arg3 + arg4 > M2C_FIELD(arg0,u16 *,0)) && arg3 != 0) return 10;
-    if (arg3 != 0 || arg4 < M2C_FIELD(arg0,u16 *,0)) {
-        result = ((s32 (*)(void *,u32,void **,s32))fn_800A8EE0)(arg0,arg2,&page,arg6);
+    VFiPFVolume *volume = VF_VOLUME(vol);
+
+    *readOut = 0;
+    if (!(volume->flags & VF_VOL_IN_USE) || !fn_800A53B4(vol)) return 9;
+    if ((sector >= volume->totalSectors || offset >= volume->bytesPerSector || offset + length > volume->bytesPerSector) && offset != 0) return 10;
+    if (offset != 0 || length < volume->bytesPerSector) {
+        result = ((s32 (*)(void *,u32,void **,s32))fn_800A8EE0)(vol,sector,(void **)&page,claimPage);
         if (result) return result;
-        VFipf_memcpy(arg1,M2C_FIELD(page,u8 **,8)+arg3,arg4);
-        *arg5 = arg4;
-    } else if (arg3 == 0 && !(arg4 & (M2C_FIELD(arg0,u16 *,0)-1))) {
-        result = VFiPFCACHE_WriteDataNumSectorAndFreeIfNeeded(arg0,arg1,arg2,arg4 >> M2C_FIELD(arg0,u8 *,0x20),(s32)&count);
+        VFipf_memcpy(dest, page->data + offset, length);
+        *readOut = length;
+    } else if (offset == 0 && !(length & (volume->bytesPerSector - 1))) {
+        /* reads through the cache; its name is a leftover, nothing is written */
+        result = VFiPFCACHE_WriteDataNumSectorAndFreeIfNeeded(vol,dest,sector,length >> volume->sectorShift,(s32)&count);
         if (result) return result;
-        *arg5 += count << M2C_FIELD(arg0,u8 *,0x20);
-        if (count != arg4 >> M2C_FIELD(arg0,u8 *,0x20)) return 17;
-    } else if (arg3 == 0) {
-        page = ((void *(*)(void *,u32))fn_800A90F8)(arg0,arg2);
+        *readOut += count << volume->sectorShift;
+        if (count != length >> volume->sectorShift) return 17;
+    } else if (offset == 0) {
+        page = ((VFiPFCACHEPage *(*)(void *,u32))fn_800A90F8)(vol,sector);
         if (page) {
-            n = M2C_FIELD(page,u32 *,0x18) + M2C_FIELD(page,u32 *,0x14) - arg2;
-            if (n <= arg4 >> M2C_FIELD(arg0,u8 *,0x20)) {
-                VFipf_memcpy(arg1,M2C_FIELD(page,void **,8),n << M2C_FIELD(arg0,u8 *,0x20));
-                arg2 += n;
-                *arg5 += n << M2C_FIELD(arg0,u8 *,0x20);
-                arg4 -= n << M2C_FIELD(arg0,u8 *,0x20);
-            } else if (n > arg4 >> M2C_FIELD(arg0,u8 *,0x20)) {
-                VFipf_memcpy(arg1,M2C_FIELD(page,void **,8),arg4);
-                *arg5 += arg4;
-                arg4 = 0;
+            n = page->first + page->sectors - sector;
+            if (n <= length >> volume->sectorShift) {
+                VFipf_memcpy(dest,page->data,n << volume->sectorShift);
+                sector += n;
+                *readOut += n << volume->sectorShift;
+                length -= n << volume->sectorShift;
+            } else if (n > length >> volume->sectorShift) {
+                VFipf_memcpy(dest,page->data,length);
+                *readOut += length;
+                length = 0;
             }
         }
-        if (arg4 != 0) {
-            left = arg4 >> M2C_FIELD(arg0,u8 *,0x20);
-            u32 remainder = (arg2 + left) % M2C_FIELD(arg0,u32 *,0x1640);
+        if (length != 0) {
+            left = length >> volume->sectorShift;
+            u32 remainder = (sector + left) % volume->sectorsPerCluster;
             if (left > remainder) {
                 n = left - remainder;
-                result = VFiPFCACHE_WriteDataNumSectorAndFreeIfNeeded(arg0,arg1+*arg5,arg2,n,(s32)&count);
+                result = VFiPFCACHE_WriteDataNumSectorAndFreeIfNeeded(vol,dest+*readOut,sector,n,(s32)&count);
                 if (result) return result;
-                *arg5 += count << M2C_FIELD(arg0,u8 *,0x20);
+                *readOut += count << volume->sectorShift;
                 if (count != n) return 17;
-                arg2 += n;
+                sector += n;
                 left -= n;
             }
             if (left != 0) {
-                result = ((s32 (*)(void *,u32,void **,s32))fn_800A8EE0)(arg0,arg2,&page,arg6);
+                result = ((s32 (*)(void *,u32,void **,s32))fn_800A8EE0)(vol,sector,(void **)&page,claimPage);
                 if (result) return result;
-                VFipf_memcpy(arg1+*arg5,M2C_FIELD(page,void **,8),left << M2C_FIELD(arg0,u8 *,0x20));
-                *arg5 += left << M2C_FIELD(arg0,u8 *,0x20);
+                VFipf_memcpy(dest+*readOut,page->data,left << volume->sectorShift);
+                *readOut += left << volume->sectorShift;
             }
         }
     } else return 10;
