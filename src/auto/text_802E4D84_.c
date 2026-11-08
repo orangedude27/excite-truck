@@ -195,6 +195,7 @@ void fn_802E4F98(void) {
 
 extern float lbl_80565130;
 extern float lbl_80565134;
+#pragma dont_inline fn_802E5168
 unsigned short fn_802E5168(float arg0) {
     float value = lbl_80565130 * arg0;
     int converted;
@@ -777,6 +778,261 @@ void fn_802E625C(void* hi) {
     lbl_8055FF8C = hi;
 }
 
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+void fn_802E6264(void) {
+    extern char lbl_8055FFA4;
+    extern char lbl_8055FFA6;
+    extern int lbl_8055D1D0;
+    extern int lbl_8055FF88;
+    extern int lbl_8055FFA8;
+    extern int lbl_8055FFAC;
+    extern char lbl_8034D210[];
+    extern int lbl_804FC658[];
+    extern float lbl_80565138, lbl_8056514C, lbl_80565150, lbl_80565154, lbl_80565158;
+    extern void AXSetVoiceState(int, int);
+    extern int OSRestoreInterrupts(int);
+    extern void fn_80031C6C(int);
+    extern void fn_80033408(void *, int);
+    extern void fn_80033538(int, int);
+    extern void fn_80033584(void *, void *);
+    extern void fn_800337C4(void *, void *);
+    extern void fn_8003381C(void *, void *);
+    extern void fn_80033918(void *, void *);
+    extern void fn_800339B0(void *, void *);
+    extern void fn_80033A34(void *, float);
+    extern void fn_80033C8C(void *, int);
+    extern void fn_80033CD8(void *, void *);
+    extern int fn_802D9BF0(void);
+    extern int fn_802ECC10(void);
+    char *msg = lbl_8034D210;
+    unsigned char *v;
+    unsigned char *s;
+    int mixed;
+    int irq;
+    int i;
+    int off;
+    int flags;
+    int wasPlaying;
+    int n;
+    unsigned int u;
+    int r16;
+    unsigned short a[8];
+    unsigned short b[24];
+    unsigned short c[32];
+    unsigned int buf[24];
+    float f0, f1, f2, f4;
+    float one, inv, k4C, k50, k54, k58;
+    if ((unsigned char)lbl_8055FFA4 != 0) {
+        lbl_8055FFA4 = 0;
+        lbl_8055FFA6 = 1;
+        flags = 0;
+        if ((int)lbl_8055FF8C != lbl_8055D1D0) {
+            lbl_8055D1D0 = (int)lbl_8055FF8C;
+            ((void (*)(char *, ...))fn_802E30C8)(msg + 0x3C4);
+            switch ((int)lbl_8055FF8C) {
+            case 0:
+            case 1:
+                fn_80031C6C(0);
+                break;
+            case 2:
+                fn_80031C6C(2);
+                break;
+            default:
+                ((void (*)(char *, ...))fn_802E317C)(msg + 0x3E0);
+                break;
+            }
+        }
+        mixed = 1;
+        if (fn_802ECC10() == 0 && fn_802D9BF0() == 0) mixed = 0;
+        irq = OSDisableInterrupts();
+        one = lbl_80565128;
+        inv = lbl_80565138;
+        k4C = lbl_8056514C;
+        k50 = lbl_80565150;
+        k58 = lbl_80565158;
+        k54 = lbl_80565154;
+        i = 0;
+        off = 0;
+        do {
+            v = lbl_8055FF94 + off;
+            wasPlaying = VU8(0x24);
+            VU8(0x24) = VU8(0x23);
+            if ((wasPlaying != 0 && VU8(0x23) == 0) || (VU8(0x21) != 0 && VU8(0x22) == 0)) {
+                AXSetVoiceState(VI(4), 0);
+                wasPlaying = 0;
+                memset(&c[0], 0, 4);
+                fn_800337C4(*(void **)(v + 4), &c[0]);
+            }
+            if (VU8(0x20) != 0) {
+                if (VU8(0x21) != 0 && VU8(0x22) == 0) {
+                    VU8(0x22) = 1;
+                } else {
+                    if (VU8(0x21) != 0 && VU8(0x23) != 0) {
+                        VU8(0x21) = 0;
+                        wasPlaying = 0;
+                        s = *(unsigned char **)(v + 0x1C);
+                        n = SI(0x20);
+                        if (n == 0 && s[0x24] == 0) {
+                            fn_80033538(VI(4), 0);
+                            r16 = (int)SU(0x9C) / 2;
+                            memset(&a[0], 0, 0x10);
+                            a[0] = VU8(0x25);
+                            a[1] = 10;
+                            if (VU8(0x25) != 0) {
+                                a[2] = (unsigned int)r16 >> 16;
+                                a[3] = r16;
+                            } else {
+                                int h = lbl_8055FF88 / 2;
+                                a[2] = (unsigned int)h >> 16;
+                                a[3] = h;
+                            }
+                            a[6] = (unsigned int)r16 >> 16;
+                            a[7] = r16;
+                            u = r16 + (int)SU(0xA0) / 2 - 1;
+                            a[5] = u;
+                            a[4] = u >> 16;
+                            fn_8003381C(*(void **)(v + 4), &a[0]);
+                        } else if (n == 0 && s[0x24] != 0) {
+                            unsigned int w;
+                            fn_80033538(VI(4), 0);
+                            w = SU(0x9C) * 2 + 2;
+                            memset(&a[0], 0, 0x10);
+                            a[0] = VU8(0x25);
+                            a[1] = 0;
+                            if (VU8(0x25) != 0) {
+                                u = w + SU(0x38);
+                                a[2] = u >> 16;
+                                a[3] = u;
+                            } else {
+                                u = lbl_8055FF88 * 2 + 2;
+                                a[2] = u >> 16;
+                                a[3] = u;
+                            }
+                            a[6] = w >> 16;
+                            u = w + SU(0x3C) - 2;
+                            a[5] = u;
+                            a[4] = u >> 16;
+                            a[7] = w;
+                            memset(&b[0], 0, 0x28);
+                            memcpy(&b[0], s + 0x44, 0x20);
+                            b[16] = *(unsigned short *)(s + 0x64);
+                            b[17] = *(unsigned short *)(s + 0x66);
+                            b[18] = *(unsigned short *)(s + 0x68);
+                            b[19] = *(unsigned short *)(s + 0x6A);
+                            fn_8003381C(*(void **)(v + 4), &a[0]);
+                            fn_80033918(*(void **)(v + 4), &b[0]);
+                        } else if (n == 1 && s[0x24] == 0) {
+                            fn_80033538(VI(4), 0);
+                            r16 = (int)SU(0x9C) / 2;
+                            memset(&a[0], 0, 0x10);
+                            a[0] = 1;
+                            a[1] = 10;
+                            a[2] = (unsigned int)r16 >> 16;
+                            u = r16 + (SU(0xA0) >> 1) - 1;
+                            a[3] = r16;
+                            a[4] = u >> 16;
+                            a[5] = u;
+                            a[6] = (unsigned int)r16 >> 16;
+                            a[7] = r16;
+                            fn_8003381C(*(void **)(v + 4), &a[0]);
+                            *(float *)(s + 0xA8) = k4C;
+                        } else if (n == 1) {
+                            unsigned int w;
+                            fn_80033538(VI(4), 1);
+                            w = SU(0x9C) * 2 + 2;
+                            memset(&a[0], 0, 0x10);
+                            a[0] = 1;
+                            a[1] = 0;
+                            a[2] = w >> 16;
+                            a[3] = w;
+                            a[6] = w >> 16;
+                            u = w + SU(0xA0) * 2 - 3;
+                            a[7] = w;
+                            a[4] = u >> 16;
+                            a[5] = u;
+                            memset(&buf[0], 0, 0x60);
+                            (*(void (**)(void *, unsigned int, int))(s + 0x88))(&buf[0], 0x60, SI(0x8C));
+                            *(float *)(s + 0xA8) = (float)buf[2] / inv;
+                            (*(void (**)(void *, unsigned int, int))(s + 0x88))(*(void **)(s + 0x90), SU(0xA0), SI(0x8C));
+                            DCFlushRange(*(void **)(s + 0x90), SU(0xA0));
+                            fn_8003381C(*(void **)(v + 4), &a[0]);
+                            memset(&b[0], 0, 0x28);
+                            memcpy(&b[0], (char *)buf + 0x1C, 0x20);
+                            b[16] = *(unsigned short *)((char *)buf + 0x3C);
+                            b[17] = *(unsigned short *)((char *)buf + 0x3E);
+                            b[18] = *(unsigned short *)((char *)buf + 0x40);
+                            b[19] = *(unsigned short *)((char *)buf + 0x42);
+                            fn_80033918(*(void **)(v + 4), &b[0]);
+                        } else {
+                            ((void (*)(char *, ...))fn_802E317C)(msg + 0x3F8);
+                        }
+                        memset(&a[0], 0, 0xE);
+                        a[0] = 1;
+                        a[1] = 0;
+                        a[2] = 0;
+                        fn_80033408(*(void **)(v + 4), 1);
+                        fn_800339B0(*(void **)(v + 4), &a[0]);
+                    }
+                    if (VU8(0x23) != 0) {
+                        if (mixed != 0) f1 = lbl_8056512C;
+                        else f1 = *(float *)(*(unsigned char **)(v + 0x1C) + 0xA8) * (k50 * VF(0x10));
+                        fn_80033A34(*(void **)(v + 4), f1);
+                        memset(&a[0], 0, 4);
+                        f0 = VF(8);
+                        if (one < f0) f0 = one;
+                        a[1] = 0;
+                        a[0] = k54 * (k58 * f0);
+                        if (mixed != 0) a[0] = 0;
+                        fn_800337C4(*(void **)(v + 4), &a[0]);
+                        memset(&c[0], 0, 0x30);
+                        f1 = one - VF(0xC);
+                        if (f1 < one) {} else f1 = one;
+                        f4 = one + VF(0xC);
+                        if (f4 < one) {} else f4 = one;
+                        f2 = one + VF(0x14);
+                        if (f2 < one) {} else f2 = one;
+                        f0 = one - VF(0x14);
+                        if (f0 < one) {} else f0 = one;
+                        c[0] = k58 * (f1 * f2);
+                        c[2] = k58 * (f4 * f2);
+                        c[16] = k58 * (f1 * f0);
+                        c[12] = k58 * (f4 * f0);
+                        fn_80033584(*(void **)(v + 4), &c[0]);
+                        r16 = VI(0x18);
+                        flags |= r16;
+                        if (r16 != 0) fn_80033C8C(*(void **)(v + 4), 1);
+                        else fn_80033C8C(*(void **)(v + 4), 0);
+                        memset(&b[0], 0, 0x20);
+                        if (r16 & 1) {
+                            short t = fn_802E5168(lbl_804FC680[0] * VF(8));
+                            b[0] = t;
+                            b[2] = t;
+                        }
+                        if (r16 & 2) {
+                            short t = fn_802E5168(lbl_804FC680[1] * VF(8));
+                            b[4] = t;
+                            b[6] = t;
+                        }
+                        fn_80033CD8(*(void **)(v + 4), &b[0]);
+                    }
+                    if (VU8(0x23) != 0 && wasPlaying == 0) AXSetVoiceState(VI(4), 1);
+                }
+            }
+            i++;
+            off += 0x2C;
+        } while (i < 0x20);
+        OSRestoreInterrupts(irq);
+        n = lbl_8055FFAC;
+        lbl_8055FFAC = n + 1;
+        lbl_804FC658[n] = flags;
+        if (n + 1 >= 10) lbl_8055FFAC = 0;
+        lbl_8055FFA8 = flags | lbl_804FC658[0] | lbl_804FC658[1] | lbl_804FC658[2] | lbl_804FC658[3] | lbl_804FC658[4] | lbl_804FC658[5] | lbl_804FC658[6] | lbl_804FC658[7] | lbl_804FC658[8] | lbl_804FC658[9];
+        lbl_8055FFA6 = 0;
+    }
+}
+#pragma pop
 int* fn_802E6ABC(void) {
     return &lbl_8055D1EC;
 }
