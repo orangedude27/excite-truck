@@ -227,6 +227,7 @@ extern void fn_801E0F78(f32 *, f32 *, f32 *, f32);
 extern f32 fn_801E0FA4(f32 *, f32 *);
 extern float fn_801E0EE4(void *, void *);
 extern int fn_801E0ED4(int, int);
+extern f32 lbl_80562C8C;
 extern f32 lbl_80562C80, lbl_80562C84, lbl_80562C88, lbl_80562C90, lbl_80562C94;
 
 #pragma scheduling invalid_target
