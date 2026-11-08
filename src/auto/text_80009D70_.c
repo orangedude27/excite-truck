@@ -22,9 +22,12 @@ typedef struct ListEntry_80009DC8 {
     f32 f64;
     s32 key;
     s32 key2;
-    struct {
-        u8 hi : 6;
-        u8 lo : 2;
+    union {
+        u8 raw;
+        struct {
+            u8 hi : 6;
+            u8 lo : 2;
+        };
     } bits;
     s32 f74;
 } ListEntry_80009DC8;
