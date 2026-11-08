@@ -145,7 +145,6 @@ void* fn_801B3338(void* arg0) {
  return NULL;
 }
 
-#pragma dont_inline reset
 int fn_801B3390(void) {
     return 0x14;
 }
