@@ -14432,10 +14432,21 @@ typedef void (*tHID_HOST_DEV_CALLBACK)(UINT8 dev_handle, UINT8 event, UINT32 dat
 #define HID_CONN_STATE_DISCONNECTING  (5)  /* tearing the channels down */
 #define HID_CONN_STATE_SECURITY       (6)  /* control up, BTM security check running */
 
-/* conn_flags. Bit 0 says we opened the channels (the originator); the four
-   L2CAP config events masked by 0x1E are what hidh_l2cif_config_cfm waits for
-   before it reports HID_CONN_STATE_OPENED. */
-#define HID_CONN_FLAGS_IS_ORIG        0x01
+/* conn_flags, from the same hid_conn.h. Bit 0 says we opened the channels (the
+   originator); the four L2CAP config events masked by 0x1E are what
+   hidh_l2cif_config_cfm waits for before it reports HID_CONN_STATE_OPENED. */
+#define HID_CONN_FLAGS_IS_ORIG            0x01
+#define HID_CONN_FLAGS_HIS_CTRL_CFG_DONE  0x02  /* peer's config of the control channel */
+#define HID_CONN_FLAGS_MY_CTRL_CFG_DONE   0x04  /* our config of the control channel */
+#define HID_CONN_FLAGS_HIS_INTR_CFG_DONE  0x08  /* peer's config of the interrupt channel */
+#define HID_CONN_FLAGS_MY_INTR_CFG_DONE   0x10  /* our config of the interrupt channel */
+#define HID_CONN_FLAGS_ALL_CONFIGURED     0x1E  /* all four done */
+#define HID_CONN_FLAGS_CONGESTED          0x20
+#define HID_CONN_FLAGS_INACTIVE           0x40
+
+/* hh_cb.devices[].state, the tHID_HOST_DEV_STATE of hidh_api.h. */
+#define HID_DEV_NO_CONN                   0
+#define HID_DEV_CONNECTED                 1
 
 /* hh_cb.l2cap_cfg: the L2CAP config options every HID channel is opened with. */
 #define hh_cb_l2cap_cfg               (lbl_803C3C38 + 0x344)
