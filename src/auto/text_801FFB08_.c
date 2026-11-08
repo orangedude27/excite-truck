@@ -43,6 +43,7 @@ extern void *fn_801FFB74(int, int, int);
 extern char lbl_8055B3E0, lbl_8055B3E8, lbl_8055B3F0, lbl_8055B3F8, lbl_8055B400, lbl_8055B408;
 extern float lbl_80563050, lbl_80563060, lbl_80563054, lbl_80563064;
 extern void fn_801E33E4(float *, int);
+extern void fn_801E5998(void *, void *, void *);
 extern int fn_801C1BA4(int, int, int, void *, void *, void *, void *, void *);
 extern void fn_801C1CBC(int, void *, int, void *, int, void *);
 extern char lbl_802F9C60[], lbl_802F9CC0[];
