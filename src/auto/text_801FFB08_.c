@@ -42,6 +42,18 @@ extern void fn_801E3488(float *, int);
 extern void *fn_801FFB74(int, int, int);
 extern int fn_802E317C(const char *, ...);
 extern double fn_8002EFB0(float, float);
+static inline void xformv(float *v, float *m, float *out) {
+    if (out == v) {
+        float x = v[0], y = v[1], z = v[2];
+        out[0] = z * m[6] + (x * m[0] + y * m[3]);
+        out[1] = z * m[7] + (x * m[1] + y * m[4]);
+        out[2] = z * m[8] + (x * m[2] + y * m[5]);
+    } else {
+        out[0] = v[2] * m[6] + (v[0] * m[0] + v[1] * m[3]);
+        out[1] = v[2] * m[7] + (v[0] * m[1] + v[1] * m[4]);
+        out[2] = v[2] * m[8] + (v[0] * m[2] + v[1] * m[5]);
+    }
+}
 extern char lbl_8055B3E0, lbl_8055B3E8, lbl_8055B3F0, lbl_8055B3F8, lbl_8055B400, lbl_8055B408;
 extern float lbl_80563050, lbl_80563060, lbl_80563054, lbl_80563064;
 extern void fn_801E33E4(float *, int);
