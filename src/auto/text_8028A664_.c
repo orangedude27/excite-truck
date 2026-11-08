@@ -15,6 +15,11 @@ extern f32 lbl_80558DC4[];
 extern f32 lbl_80564328, lbl_8056432C, lbl_80564334, lbl_80564338, lbl_8056433C;
 extern f32 lbl_80564340, lbl_80564344, lbl_80564348, lbl_80564350, lbl_80564354;
 extern f32 lbl_80564358, lbl_8056435C, lbl_80564360;
+extern f32 lbl_80564364, lbl_805643BC, lbl_805643C0, lbl_805643C4;
+extern f32 fn_80144514(f32, f32, f32, f32, f32, f32);
+extern s32 fn_802C8DBC(s32);
+extern void fn_802C8E00();
+extern void fn_802C8E48(void);
 #define FLD(p, off) (*(f32 *)((u8 *)(p) + (off)))
 
 struct V3 { f32 x, y, z; };
@@ -356,12 +361,19 @@ next:
 #pragma push
 #pragma use_lmw_stmw off
 void fn_8028ADF4(void *arg0, s32 arg1) {
-    u8 *ent = (u8 *)arg0;
-    u8 *tbl = (u8 *)lbl_804B3238;
-    f32 b2[3], a2[3], c1[3], b1[3], a1[3];
-    f32 *pa = a2;
-    f32 k31, k30, k29, k28, k27, k26, k25, k24, k23;
+    u8 *e;
     s32 i;
+    u8 *m;
+    s32 j;
+    s32 n = arg1;
+    u8 *ent = (u8 *)arg0;
+    struct V3 *pv;
+    u8 *t;
+    f32 a1[3], b1[3], c1[3];
+    struct V3 a2;
+    f32 b2[3];
+    f32 k31, k30, k29, k28, k27, k26, k25, k24, k23;
+    pv = &a2;
     if ((f32)__fabs(fn_801E7E24()) <= lbl_80558DC4[0]) return;
     k23 = lbl_80564334;
     k24 = lbl_80564344;
@@ -372,21 +384,19 @@ void fn_8028ADF4(void *arg0, s32 arg1) {
     k30 = lbl_80564340;
     k31 = lbl_80564360;
     k28 = lbl_80564354;
-    for (i = 0; i < arg1; i++, ent += 0x10) {
-        u8 *m = *(u8 **)ent;
+    for (i = 0; i < n; i++, ent += 0x10) {
+        m = *(u8 **)ent;
         if (ent[0xC] != 0 && !(FLD(ent, 8) > k23)) {
-            u8 *e = m + 0x70;
-            s32 j;
+            e = m + 0x70;
             for (j = 0; j < 4; j++, e += 0x3C) {
                 s32 type;
-                u8 *t;
                 s32 roll;
                 f32 f4;
                 f32 f22;
                 if (e[0x30] == 0) continue;
                 type = *(s32 *)(e + 0x38);
                 if (type < 0 || type >= 8) continue;
-                t = tbl + type * 16;
+                t = (u8 *)lbl_804B3238 + type * 16;
                 if (*(s32 *)t == 0) continue;
                 if (*(s32 *)(e + 0x2C) & 8) continue;
                 roll = fn_80287B5C(0x64);
@@ -424,13 +434,13 @@ void fn_8028ADF4(void *arg0, s32 arg1) {
                         *(void **)t, a1, c1, *(s16 *)(m + 0x30), i);
                 } else if (FLD(e, 0x24) > k28 && roll < *(s32 *)(t + 0xC)) {
                     f32 r;
-                    pa[0] = FLD(e, 0);
-                    pa[1] = FLD(e, 4);
-                    pa[2] = FLD(e, 8) - k29;
-                    XfmVec((f32 *)m, pa, pa);
-                    a2[0] += FLD(m, 0x24);
-                    a2[1] += FLD(m, 0x28);
-                    a2[2] += FLD(m, 0x2C);
+                    a2.x = FLD(e, 0);
+                    a2.y = FLD(e, 4);
+                    a2.z = FLD(e, 8) - k29;
+                    XfmV3((f32 *)m, pv, (struct V3 *)&a2.x);
+                    a2.x += FLD(m, 0x24);
+                    a2.y += FLD(m, 0x28);
+                    a2.z += FLD(m, 0x2C);
                     b2[0] = FLD(m, 0x18) * k30;
                     b2[1] = FLD(m, 0x1C) * k30;
                     b2[2] = FLD(m, 0x20) * k30;
@@ -453,7 +463,7 @@ void fn_8028ADF4(void *arg0, s32 arg1) {
                     b2[0] += fn_80287BC8(-f22, f22);
                     b2[2] += fn_80287BC8(-f22, f22);
                     ((void (*)(void *, f32 *, f32 *, s16, s32))(*(void ***)*(void **)t)[6])(
-                        *(void **)t, a2, b2, *(s16 *)(m + 0x30), i);
+                        *(void **)t, (f32 *)&a2, b2, *(s16 *)(m + 0x30), i);
                 }
             }
         }
