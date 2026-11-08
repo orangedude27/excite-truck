@@ -5,6 +5,33 @@
 
 extern "C" void fn_802E30C8(const char *, ...);
 extern "C" s32 fn_80128314(s32);
+extern "C" void fn_802E0F98(void);
+extern "C" void fn_8012BEF0(const char *);
+extern "C" void fn_800125C4(void);
+extern "C" void fn_800125D4(const char *, s32);
+extern "C" void fn_8020A47C(void);
+extern "C" void fn_8023889C(void);
+extern "C" void fn_8022A5E4(void);
+extern "C" void fn_80216710(void);
+extern "C" s32 fn_8023512C(const char *);
+extern "C" void *fn_8022D228(void *, s32, s32);
+extern "C" void fn_8022D350(s32, const char *, s32);
+extern "C" void *fn_8022D458(void *, s32, s32, s32 *);
+extern "C" void fn_8022D894(s32, s32, s32, const char *, s32);
+extern "C" void *fn_8022DB50(void *, const char *, const char *, s32, s32);
+extern "C" void *fn_8022DCC4(void *, s32 *, s32, s32);
+extern "C" s32 fn_80207848(const char *, s32);
+struct S12Ptr { char *v[12]; };
+struct S3Word { s32 w[3]; };
+struct Ent18 { const char *name; f32 f; s32 v[4]; };
+extern "C" S12Ptr lbl_802F9E68;
+extern "C" S3Word lbl_802F9E98;
+extern "C" s32 lbl_8055EF08;
+extern "C" s32 lbl_8055EF3C;
+extern "C" char lbl_8055B718[];
+extern "C" s32 lbl_80563430;
+extern "C" f32 lbl_80563438;
+extern "C" f32 lbl_8056343C;
 extern "C" void *memset(void *, int, unsigned long);
 extern "C" void fn_802ECC18(int);
 extern "C" void fn_8022D2BC(s32, s32);
@@ -2127,13 +2154,13 @@ extern "C" void fn_80215500(void) {
 
 }
 
+#pragma scheduling off
 extern "C" void fn_80215504(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     f32 rate = lbl_80563450;
-    ((s32 (*)(s32, s32, s32, s32, s32, s32, s32, s32, s32, float))fn_8022BAD0)(
-        *(s32 *)((u8 *)arg0 + 8), arg1, arg2, 0, arg4, arg5,
-        *(s32 *)((u8 *)arg0 + 4), arg6, 0, rate);
+    fn_8022BAD0(*(s32 *)((u8 *)arg0 + 8), arg1, arg2, 0, arg4, arg5,
+                *(s32 *)((u8 *)arg0 + 4), arg6, 0, rate);
 }
-
+#pragma scheduling on
 extern "C" void fn_80215544(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     fn_8022AC1C(*(s32 *)((char *)arg0 + 8), *(s32 *)((char *)arg0 + 4), arg1, arg2, arg3, arg4, arg5, arg6);
 }
