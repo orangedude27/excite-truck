@@ -1520,40 +1520,49 @@ extern float lbl_80561F0C, lbl_80561F10, lbl_80561F14, lbl_80561F18;
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 #pragma cplusplus on
-extern "C" void fn_8018A2C0(void *arg0, void **arg1) {
-    struct Obj {
-        virtual void v0(void *, void *, int *, float, float, float);
+/* Offers every tunable physics parameter of the car `car` to the tuning
+ * parameter collector `collector`, which records the value's address with its
+ * display name, unit and its slider's minimum, maximum and step (see
+ * fn_801DDED0).  fn_801DDF0C calls this whenever the selected car changes and
+ * then snaps each collected value to a multiple of its step.
+ * The names come from the string blob at lbl_803322B0; the floats at
+ * +0x32C..+0x440 of the car are the ones being tuned. */
+extern "C" void fn_8018A2C0(void *car, void **collector) {
+    /* The collector's second virtual method registers one tunable parameter. */
+    struct ParamCollector {
+        virtual void add_param(const char *name, void *value, const char *unit,
+                               float min, float max, float step);
     };
-    register char *base = (char *)arg0;
+    register char *base = (char *)car;
     register char *names = lbl_803322B0;
-    register char *offset = base + 0x32C;
-    register int *style0 = &lbl_8055A3F8;
-    register int *initial_style = &lbl_8055A3FC;
-    register int *style1 = &lbl_8055A400;
-    register int *style2 = &lbl_8055A408;
-    register int *style3 = &lbl_8055A410;
-    register int *initial_name = &lbl_8055A418;
-    register Obj *obj = (Obj *)arg1;
+    register char *params = base + 0x32C;  /* the car's physics parameter block */
+    register const char *unit_m = UNIT_M;
+    register const char *unit_kg = UNIT_KG;
+    register const char *unit_kg_m2 = UNIT_KG_M2;
+    register const char *unit_n_m = UNIT_N_M;
+    register const char *unit_n_s_m = UNIT_N_S_M;
+    register const char *name_mass = NAME_MASS;
+    register ParamCollector *sink = (ParamCollector *)collector;
 
-    obj->v0(initial_name, offset, initial_style, lbl_80561CE4, lbl_80561F0C, lbl_80561F10);
-    obj->v0(names + 0x350, offset + 8, style1, lbl_80561CE4, lbl_80561D68, lbl_80561F10);
-    obj->v0(names + 0x35C, offset + 4, style1, lbl_80561CE4, lbl_80561D68, lbl_80561F10);
-    obj->v0(names + 0x36C, offset + 0xC, style1, lbl_80561CE4, lbl_80561D68, lbl_80561F10);
-    obj->v0(names + 0x378, base + 0x2DC, &lbl_8055A420, lbl_80561D00, lbl_80561D44, lbl_80561D0C);
-    obj->v0(names + 0x388, offset + 0x30, &lbl_8055A420, lbl_80561CDC, lbl_80561CEC, lbl_80561D0C);
-    obj->v0(names + 0x394, base + 0x5A8, &lbl_8055A424, lbl_80561D34, lbl_80561D28, lbl_80561CD0);
-    obj->v0(names + 0x3A4, offset + 0x18, style0, lbl_80561D00, lbl_80561CF8, lbl_80561CCC);
-    obj->v0(names + 0x3B0, offset + 0x10, style0, lbl_80561D00, lbl_80561CF8, lbl_80561CCC);
-    obj->v0(names + 0x3BC, offset + 0x14, style0, lbl_80561D00, lbl_80561CF8, lbl_80561CCC);
-    obj->v0(names + 0x3C8, offset + 0x20, style0, lbl_80561DE4, lbl_80561CD0, lbl_80561CCC);
-    obj->v0(names + 0x3D4, offset + 0x80, style0, lbl_80561CAC, lbl_80561CD0, lbl_80561CCC);
-    obj->v0(names + 0x3E4, offset + 0xC8, style0, lbl_80561CAC, lbl_80561CD0, lbl_80561CCC);
-    obj->v0(names + 0x3F0, offset + 0x84, style2, lbl_80561EBC, lbl_80561D68, lbl_80561F14);
-    obj->v0(names + 0x400, offset + 0xCC, style2, lbl_80561EBC, lbl_80561D68, lbl_80561F14);
-    obj->v0(names + 0x410, offset + 0x8C, style3, lbl_80561F14, lbl_80561F18, lbl_80561F10);
-    obj->v0(names + 0x420, offset + 0xD4, style3, lbl_80561F14, lbl_80561F18, lbl_80561F10);
-    obj->v0(names + 0x430, offset + 0x110, &lbl_8055A42C, lbl_80561D00, lbl_80561D44, lbl_80561D00);
-    obj->v0(names + 0x43C, offset + 0x114, &lbl_8055A420, lbl_80561D00, lbl_80561CEC, lbl_80561D00);
+    sink->add_param(name_mass, params, unit_kg, F_100, F_5000, F_50);
+    sink->add_param(names + 0x350, params + 0x8, unit_kg_m2, F_100, F_50000, F_50);      /* Yaw Moment */
+    sink->add_param(names + 0x35C, params + 0x4, unit_kg_m2, F_100, F_50000, F_50);      /* Pitch Moment */
+    sink->add_param(names + 0x36C, params + 0xC, unit_kg_m2, F_100, F_50000, F_50);      /* Roll Moment */
+    sink->add_param(names + 0x378, base + 0x2DC, UNIT_NONE, F_0_1, F_3, F_0_05);         /* Engine Power */
+    sink->add_param(names + 0x388, params + 0x30, UNIT_NONE, F_0_5, F_6, F_0_05);        /* Final Drive */
+    sink->add_param(names + 0x394, base + 0x5A8, UNIT_M_S, F_10, F_200, F_1);            /* Speed Limiter */
+    sink->add_param(names + 0x3A4, params + 0x18, unit_m, F_0_1, F_5, F_0_01);           /* Wheelbase */
+    sink->add_param(names + 0x3B0, params + 0x10, unit_m, F_0_1, F_5, F_0_01);           /* Front Track */
+    sink->add_param(names + 0x3BC, params + 0x14, unit_m, F_0_1, F_5, F_0_01);           /* Rear Track */
+    sink->add_param(names + 0x3C8, params + 0x20, unit_m, F_NEG_1, F_1, F_0_01);         /* CG Height */
+    sink->add_param(names + 0x3D4, params + 0x80, unit_m, F_0, F_1, F_0_01);             /* Front Height */
+    sink->add_param(names + 0x3E4, params + 0xC8, unit_m, F_0, F_1, F_0_01);             /* Rear Height */
+    sink->add_param(names + 0x3F0, params + 0x84, unit_n_m, F_1000, F_50000, F_500);     /* Front Springs */
+    sink->add_param(names + 0x400, params + 0xCC, unit_n_m, F_1000, F_50000, F_500);     /* Rear Springs */
+    sink->add_param(names + 0x410, params + 0x8C, unit_n_s_m, F_500, F_10000, F_50);     /* Front Damping */
+    sink->add_param(names + 0x420, params + 0xD4, unit_n_s_m, F_500, F_10000, F_50);     /* Rear Damping */
+    sink->add_param(names + 0x430, params + 0x110, UNIT_G, F_0_1, F_3, F_0_1);           /* Tire Grip */
+    sink->add_param(names + 0x43C, params + 0x114, UNIT_NONE, F_0_1, F_6, F_0_1);        /* Tire Slip */
 }
 #pragma cplusplus reset
 #pragma opt_propagation reset
