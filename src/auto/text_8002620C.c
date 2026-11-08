@@ -37,7 +37,7 @@ typedef struct LocaleData {
     CtypeTable *ctype;
 } LocaleData;
 
-extern char *lbl_802FE6A0;
+extern char *lbl_802FE6A0[4];
 extern LocaleData lbl_802FE850;
 
 #define MY_ISUPPER(c) (((c) < 0 || (c) >= 256) ? 0 : (lbl_802FE850.ctype->map[(c)] & 0x200))
