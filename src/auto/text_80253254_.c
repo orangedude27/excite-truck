@@ -509,7 +509,6 @@ void fn_80253CA4(void *arg0, void *arg1, float *arg2, void *arg3) {
     float pi;
     int i;
     int r30;
-
     *(int *)(base + 0x598) = srcp[0];
     *(int *)(base + 0x59C) = srcp[1];
     *(int *)(base + 0x5A0) = srcp[2];
@@ -526,7 +525,6 @@ void fn_80253CA4(void *arg0, void *arg1, float *arg2, void *arg3) {
     *(float *)(base + 0x5BC) = *(float *)(base + 0x5BC) + t1[0];
     *(float *)(base + 0x5C0) = *(float *)(base + 0x5C0) + t1[1];
     *(float *)(base + 0x5C4) = *(float *)(base + 0x5C4) + t1[2];
-
     zero = lbl_80563A04;
     pi = lbl_80563A1C;
     for (i = 0; i < 4; i++) {
@@ -1613,7 +1611,11 @@ void fn_802569DC(void *arg0, int arg1, float scale) {
     fn_802C8D74();
 }
 #pragma pop
-void fn_80256DD8(void *arg0) {
+/* Per-frame update and draw of an audio/visual effect instance (effect):
+   copies the current 3x4 matrix to the stack, updates its clamped position,
+   configures the DSP/rendering state, sets the listener and screen matrices,
+   and runs the effect's geometry pass. */
+void fn_80256DD8(void *effect) {
 
 extern void *fn_802C86DC(void);
 extern void fn_80253004(s32, void *);
@@ -1647,56 +1649,56 @@ extern u8 lbl_8055F330;
 extern float lbl_80563AA0;
 extern float lbl_80563A00, lbl_80563A04, lbl_80563A14, lbl_80563AA4, lbl_8055F334;
     u8 frame[0x160];
-    s32 *source;
-    s32 i;
-    float value;
-    float scale;
-    void *matrix;
+    s32 *srcMatrix;
+    s32 axis;
+    float time;
+    float level;
+    void *basis;
 
-    struct Copy36 { s32 v[9]; };
-    struct Copy12 { s32 v[3]; };
-    struct Object { u8 pad[0xA8]; u8 member; };
-    source = (s32 *)fn_802C86DC();
-    *(struct Copy36 *)(frame + 0xB0) = *(struct Copy36 *)source;
-    *(struct Copy12 *)(frame + 0xD4) = *(struct Copy12 *)(source + 9);
+    struct MatWord9 { s32 v[9]; };
+    struct MatWord3 { s32 v[3]; };
+    struct Effect { u8 pad[0xA8]; u8 aux; };
+    srcMatrix = (s32 *)fn_802C86DC();
+    *(struct MatWord9 *)(frame + 0xB0) = *(struct MatWord9 *)srcMatrix;
+    *(struct MatWord3 *)(frame + 0xD4) = *(struct MatWord3 *)(srcMatrix + 9);
 
     if (lbl_8055F330 != 0) {
-        float *vec = (float *)(frame + 0x120);
-        fn_80253004(*(s32 *)((u8 *)arg0 + 4), frame + 0xe0);
-        for (i = 0; i < 4; i++) {
-            vec[i] = vec[i] < lbl_80563AA0 ? vec[i] : lbl_80563AA0;
+        float *coords = (float *)(frame + 0x120);
+        fn_80253004(*(s32 *)((u8 *)effect + 4), frame + 0xe0);
+        for (axis = 0; axis < 4; axis++) {
+            coords[axis] = coords[axis] < lbl_80563AA0 ? coords[axis] : lbl_80563AA0;
         }
     } else {
-        fn_802545C4(frame + 0xe0, *(s32 *)((u8 *)arg0 + 0xE4),
-                    *(s32 *)((u8 *)arg0 + 8));
+        fn_802545C4(frame + 0xe0, *(s32 *)((u8 *)effect + 0xE4),
+                    *(s32 *)((u8 *)effect + 8));
     }
 
-    value = fn_802C9744();
-    fn_802C974C(lbl_80563A14, lbl_80563A00, value);
-    fn_802C8638((u8 *)arg0 + 0xA8);
+    time = fn_802C9744();
+    fn_802C974C(lbl_80563A14, lbl_80563A00, time);
+    fn_802C8638((u8 *)effect + 0xA8);
     fn_80253258();
     fn_802C99E8(lbl_80563A14);
-    if (*(s32 *)((u8 *)arg0 + 0x120) == 1)
+    if (*(s32 *)((u8 *)effect + 0x120) == 1)
         fn_802C9950(0x00AAAAC8);
     else
         fn_802C9950(0x00555766);
     fn_802C9994(0x00FFF5D9);
     fn_801F1C24(frame + 0x80);
     fn_802C7730(frame + 0x80);
-    fn_802ABE58((u8 *)arg0 + 0x11C, (float *)(frame + 0x4),
+    fn_802ABE58((u8 *)effect + 0x11C, (float *)(frame + 0x4),
                 (s32 *)frame, lbl_8055F334);
 
-    if (*(u8 *)*(void **)((u8 *)arg0 + 8) != 0)
-        fn_80253CA4(*(void **)((u8 *)arg0 + 8), frame + 0xe0,
+    if (*(u8 *)*(void **)((u8 *)effect + 8) != 0)
+        fn_80253CA4(*(void **)((u8 *)effect + 8), frame + 0xe0,
                     (float *)(frame + 0x120), frame + 0x130);
 
-    if (*(s32 *)((u8 *)arg0 + 0x120) == 1) {
-        scale = *(float *)(frame + 0x4);
-        fn_802569DC(arg0, *(s32 *)frame, scale);
+    if (*(s32 *)((u8 *)effect + 0x120) == 1) {
+        level = *(float *)(frame + 0x4);
+        fn_802569DC(effect, *(s32 *)frame, level);
     }
 
-    if (*(s32 *)((u8 *)arg0 + 0xE4) != -1) {
-        matrix = frame + 0x50;
+    if (*(s32 *)((u8 *)effect + 0xE4) != -1) {
+        basis = frame + 0x50;
         *(float *)(frame + 0x50) = lbl_80563A14;
         *(float *)(frame + 0x54) = lbl_80563A04;
         *(float *)(frame + 0x58) = lbl_80563A04;
@@ -1710,31 +1712,31 @@ extern float lbl_80563A00, lbl_80563A04, lbl_80563A14, lbl_80563AA4, lbl_8055F33
         *(float *)(frame + 0x78) = lbl_80563A04;
         *(float *)(frame + 0x7c) = lbl_80563A04;
         if (lbl_8055F330 != 0) {
-            *(float *)(frame + 0x74) = *(float *)((u8 *)arg0 + 0xCC);
-            *(float *)(frame + 0x78) = *(float *)((u8 *)arg0 + 0xD0);
-            *(float *)(frame + 0x7c) = *(float *)((u8 *)arg0 + 0xD4);
-            fn_802C744C(*(s32 *)((u8 *)arg0 + 0xE4), matrix);
+            *(float *)(frame + 0x74) = *(float *)((u8 *)effect + 0xCC);
+            *(float *)(frame + 0x78) = *(float *)((u8 *)effect + 0xD0);
+            *(float *)(frame + 0x7c) = *(float *)((u8 *)effect + 0xD4);
+            fn_802C744C(*(s32 *)((u8 *)effect + 0xE4), basis);
         } else {
-            fn_802C70AC(*(s32 *)((u8 *)arg0 + 0xE4), matrix, 0, 1);
+            fn_802C70AC(*(s32 *)((u8 *)effect + 0xE4), basis, 0, 1);
         }
     }
 
     if (lbl_8055F330 != 0) {
-        fn_802AEB3C(&((struct Object *)arg0)->member);
+        fn_802AEB3C(&((struct Effect *)effect)->aux);
         fn_802B016C();
     }
 
-    if (*(s32 *)((u8 *)arg0 + 0x120) == 0 &&
+    if (*(s32 *)((u8 *)effect + 0x120) == 0 &&
         fn_802C9C8C(0x50000000) != 0) {
-        void *flag = *(void **)((u8 *)arg0 + 8);
-        if (*(u8 *)flag != 0) fn_80254354(flag);
+        void *soundObj = *(void **)((u8 *)effect + 8);
+        if (*(u8 *)soundObj != 0) fn_80254354(soundObj);
         fn_802C9CE0();
     }
 
-    if (*(s32 *)((u8 *)arg0 + 0x120) == 1)
-        fn_802566A4(arg0);
+    if (*(s32 *)((u8 *)effect + 0x120) == 1)
+        fn_802566A4(effect);
 
-    if (*(u8 *)((u8 *)arg0 + 0xDC) != 0) {
+    if (*(u8 *)((u8 *)effect + 0xDC) != 0) {
         *(u8 *)(frame + 0x18) = fn_802C2C00(1);
         *(s32 *)(frame + 0x8) = fn_802C990C(0xFF000000);
         fn_802C2BB8((float *)(frame + 0xc), (float *)(frame + 0x10),
@@ -1744,29 +1746,29 @@ extern float lbl_80563A00, lbl_80563A04, lbl_80563A14, lbl_80563AA4, lbl_8055F33
         memset(frame + 0x8, 0, 0x14);
     }
 
-    if (*(u8 *)((u8 *)arg0 + 0x118) != 0 &&
-        *(u8 *)((u8 *)arg0 + 0xDC) == 0) {
-        scale = *(float *)(frame + 0x4);
-        fn_802ABFF8(*(s32 *)frame, scale);
+    if (*(u8 *)((u8 *)effect + 0x118) != 0 &&
+        *(u8 *)((u8 *)effect + 0xDC) == 0) {
+        level = *(float *)(frame + 0x4);
+        fn_802ABFF8(*(s32 *)frame, level);
     }
 
     {
-        void *flag = *(void **)((u8 *)arg0 + 8);
-        if (*(u8 *)flag != 0) fn_8025419C(flag);
+        void *soundObj = *(void **)((u8 *)effect + 8);
+        if (*(u8 *)soundObj != 0) fn_8025419C(soundObj);
     }
 
-    if (*(u8 *)((u8 *)arg0 + 0x118) != 0 &&
-        *(u8 *)((u8 *)arg0 + 0xDC) == 0)
+    if (*(u8 *)((u8 *)effect + 0x118) != 0 &&
+        *(u8 *)((u8 *)effect + 0xDC) == 0)
         fn_802AC070();
 
-    if (*(u8 *)((u8 *)arg0 + 0xDC) != 0) {
+    if (*(u8 *)((u8 *)effect + 0xDC) != 0) {
         fn_802C990C(*(s32 *)(frame + 0x8));
         fn_802C2B78(*(float *)(frame + 0xc), *(float *)(frame + 0x10),
                     *(float *)(frame + 0x14));
         fn_802C2C00(*(u8 *)(frame + 0x18));
     }
 
-    if (*(s32 *)((u8 *)arg0 + 0xE4) != -1) {
+    if (*(s32 *)((u8 *)effect + 0xE4) != -1) {
         *(float *)(frame + 0x20) = lbl_80563A14;
         *(float *)(frame + 0x24) = lbl_80563A04;
         *(float *)(frame + 0x28) = lbl_80563A04;
@@ -1779,10 +1781,10 @@ extern float lbl_80563A00, lbl_80563A04, lbl_80563A14, lbl_80563AA4, lbl_8055F33
         *(float *)(frame + 0x44) = lbl_80563A04;
         *(float *)(frame + 0x48) = lbl_80563A04;
         *(float *)(frame + 0x4c) = lbl_80563A04;
-        fn_802C70AC(*(s32 *)((u8 *)arg0 + 0xE4), frame + 0x20, 0, 2);
+        fn_802C70AC(*(s32 *)((u8 *)effect + 0xE4), frame + 0x20, 0, 2);
     }
 
-    if (*(u8 *)((u8 *)arg0 + 0x118) != 0)
+    if (*(u8 *)((u8 *)effect + 0x118) != 0)
         fn_802ABE50();
     fn_802C8638(frame + 0xb0);
 }
