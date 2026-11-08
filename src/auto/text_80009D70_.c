@@ -5,7 +5,41 @@ extern void fn_8000A7A8(void);
 extern void fn_8000A6D8(void) DECOMP_DONT_INLINE;
 extern void fn_8000A808(void);
 extern void fn_80128668(void*);
-extern void fn_80009DC8(void);
+extern void fn_80009DC8();
+extern char *fn_80016474(s32);
+extern char *fn_80016544(s32);
+extern s32 *fn_8001675C(s32, s32);
+extern s32 fn_80016804(s32, s32);
+extern s32 fn_80137C74(void);
+extern char lbl_80558A08[];
+extern char lbl_80558A10[];
+extern f32 lbl_805601F0;
+
+typedef struct ListEntry_80009DC8 {
+    s32 kind;
+    char name[0x40];
+    char label[0x20];
+    f32 f64;
+    s32 key;
+    s32 key2;
+    struct {
+        u8 hi : 6;
+        u8 lo : 2;
+    } bits;
+    s32 f74;
+} ListEntry_80009DC8;
+
+static inline void CopyStr_80009DC8(char *dst, const char *src, s32 n) {
+    u8 c;
+    do {
+        c = *src++;
+        *dst++ = c;
+        if ((s8)c == 0) {
+            return;
+        }
+    } while (--n > 0);
+    dst[-1] = 0;
+}
 extern void fn_801345D8(void*, s32, void*, s32);
 extern u8 lbl_80558A14;
 extern void fn_8012DDA8(void*);
