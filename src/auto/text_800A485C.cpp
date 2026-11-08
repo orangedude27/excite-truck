@@ -21535,55 +21535,66 @@ extern "C" void fn_800CAB04(void *arg0, s32 arg1) {
     }
 }
 
+/* Switch the home button overlay's trigger panes to the view its state asks
+ * for.
+ *
+ * The ten panes of HB_PANE_NAMES are its button graphics: the plain "B" button
+ * and its bar, the five option-button hints, the A and B prompts and the
+ * controller picture.  State 0 leaves the plain button, its bar and the
+ * controller showing, state 1 the bar and the option hints and state 2 the A
+ * and B prompts; every other pane of the set is switched off.  Each pane is
+ * looked up by name through the accessor at 0x1E0 and switched with the
+ * trigger of the pane taken from the set at 0x1F8.
+ */
 void homebutton::HomeButton::updateTrigPane() {
-    s32 state = *(s32 *)this;
+    s32 state = this->state;
     switch (state) {
     case 0: {
-        s32 i = 0;
+        s32 pane = 0;
         do {
-            if (i < 2 || i == 9) {
-                (*(PaneSearch **)((u8 *)this + 0x1F8))->getPane(
-                    ((HomeButtonPaneAccessor *)(*(void **)((u8 *)this + 0x1E0)))->lookup->findPane(lbl_8031E218[i], 1)
+            if (pane < 2 || pane == 9) {
+                this->paneSearch->getPane(
+                    this->paneAccessor->lookup->findPane(HB_PANE_NAMES[pane], 1)
                 )->setTrigger(1);
             } else {
-                (*(PaneSearch **)((u8 *)this + 0x1F8))->getPane(
-                    ((HomeButtonPaneAccessor *)(*(void **)((u8 *)this + 0x1E0)))->lookup->findPane(lbl_8031E218[i], 1)
+                this->paneSearch->getPane(
+                    this->paneAccessor->lookup->findPane(HB_PANE_NAMES[pane], 1)
                 )->setTrigger(0);
             }
-            ++i;
-        } while (i < 10);
+            ++pane;
+        } while (pane < 10);
         break;
     }
     case 1: {
-        s32 i = 0;
+        s32 pane = 0;
         do {
-            if ((i > 0 && i < 7) || i == 9) {
-                (*(PaneSearch **)((u8 *)this + 0x1F8))->getPane(
-                    ((HomeButtonPaneAccessor *)(*(void **)((u8 *)this + 0x1E0)))->lookup->findPane(lbl_8031E218[i], 1)
+            if ((pane > 0 && pane < 7) || pane == 9) {
+                this->paneSearch->getPane(
+                    this->paneAccessor->lookup->findPane(HB_PANE_NAMES[pane], 1)
                 )->setTrigger(1);
             } else {
-                (*(PaneSearch **)((u8 *)this + 0x1F8))->getPane(
-                    ((HomeButtonPaneAccessor *)(*(void **)((u8 *)this + 0x1E0)))->lookup->findPane(lbl_8031E218[i], 1)
+                this->paneSearch->getPane(
+                    this->paneAccessor->lookup->findPane(HB_PANE_NAMES[pane], 1)
                 )->setTrigger(0);
             }
-            ++i;
-        } while (i < 10);
+            ++pane;
+        } while (pane < 10);
         break;
     }
     case 2: {
-        s32 i = 0;
+        s32 pane = 0;
         do {
-            if (i < 7 || i == 9) {
-                (*(PaneSearch **)((u8 *)this + 0x1F8))->getPane(
-                    ((HomeButtonPaneAccessor *)(*(void **)((u8 *)this + 0x1E0)))->lookup->findPane(lbl_8031E218[i], 1)
+            if (pane < 7 || pane == 9) {
+                this->paneSearch->getPane(
+                    this->paneAccessor->lookup->findPane(HB_PANE_NAMES[pane], 1)
                 )->setTrigger(0);
             } else {
-                (*(PaneSearch **)((u8 *)this + 0x1F8))->getPane(
-                    ((HomeButtonPaneAccessor *)(*(void **)((u8 *)this + 0x1E0)))->lookup->findPane(lbl_8031E218[i], 1)
+                this->paneSearch->getPane(
+                    this->paneAccessor->lookup->findPane(HB_PANE_NAMES[pane], 1)
                 )->setTrigger(1);
             }
-            ++i;
-        } while (i < 10);
+            ++pane;
+        } while (pane < 10);
         break;
     }
     }
