@@ -223,20 +223,20 @@ void fn_8028A9BC(void) {
     fn_8028AB14();
 }
 
-void fn_8028A9F4(void) {
-    s32 i;
-    void **p;
-    ((void (*)(void *))(*(void ***)lbl_8055F6FC)[5])(lbl_8055F6FC);
-    p = (void **)lbl_804B3238;
-    i = 0;
+#pragma cplusplus on
+extern "C" void fn_8028A9F4(void) {
+    class Dummy { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); };
+    ((Dummy *)lbl_8055F6FC)->v3();
+    void **p = (void **)lbl_804B3238;
+    s32 i = 0;
     do {
         void *obj = *p;
-        if (obj) ((void (*)(void *))(*(void ***)obj)[5])(obj);
+        if (obj) ((Dummy *)obj)->v3();
         i++;
-        if (i >= 8) break;
         p = (void **)((u8 *)p + 0x10);
-    } while (1);
+    } while (i < 8);
 }
+#pragma cplusplus off
 
 #pragma push
 #pragma processor 750
@@ -341,21 +341,25 @@ extern "C" void fn_8028ABE8(void *arg0) {
 #pragma pop
 
 void fn_8028AD78(void) {
-    u8 *slot = (u8 *)lbl_804B3238;
-    s32 i = 0;
+    register u8 *slot;
+    register s32 i;
+    register s32 zero = 0;
+    slot = (u8 *)lbl_804B3238;
+    i = 0;
+    goto loop;
 loop:
     {
-        struct Obj8028 *p = *(struct Obj8028 **)slot;
+        void *p = *(void **)slot;
         if (p == 0) goto next;
         if (p == 0) goto clear;
-        ((void (*)(void *, s32))*(void **)((u8 *)*(void **)p + 8))(p, 1);
+        ((void (*)(void *, s32))(*(void ***)p)[2])(p, 1);
 clear:
-        *(struct Obj8028 **)slot = 0;
-    }
+        *(void **)slot = (void *)zero;
 next:
-    i++;
-    slot += 0x10;
-    if (i < 8) goto loop;
+        i++;
+        slot += 0x10;
+        if (i < 8) goto loop;
+    }
 }
 
 #pragma push
@@ -667,13 +671,12 @@ s32 fn_8028BA44(void *arg0) {
         f32 spC;
         f32 sp10;
     } locals;
-    
     f32 val;
     s32 gval;
-    
-    locals.sp8 = lbl_8056434C;
-    locals.spC = lbl_8056434C;
-    locals.sp10 = lbl_8056434C;
+    f32 init = lbl_8056434C;
+    locals.sp8 = init;
+    locals.spC = init;
+    locals.sp10 = init;
     fn_80288A70(arg0, &locals.sp8);
     val = *(f32 *)((u8 *)arg0 + 0xC);
     gval = lbl_8055F700;
@@ -960,6 +963,87 @@ void fn_8028BFEC(s32 arg0) {
     }
     list->count = ((s32)out - (s32)list->data) / 28;
 }
+
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+void fn_8028C11C(void *arg0, s32 *arg1, s32 *arg2) {
+    f32 m[9];
+    f32 tmp[9];
+    f32 t;
+    f32 s;
+    f32 scale;
+    s32 i;
+    s32 off;
+    f32 *a1 = (f32 *)arg1;
+    f32 *a2 = (f32 *)arg2;
+    if (fn_802C8DBC(*(s32 *)((u8 *)arg0 + 4) * 4) == 0)
+        return;
+    t = fn_801E7E18();
+    s = fn_801E7E24();
+    for (i = 0; i < 9; i++)
+        m[i] = a2[i];
+    {
+        f32 a = m[1];
+        m[1] = m[3];
+        m[3] = a;
+        a = m[2];
+        m[2] = m[6];
+        m[6] = a;
+        a = m[5];
+        m[5] = m[7];
+        m[7] = a;
+    }
+    for (i = 0; i < 3; i++) {
+        tmp[i * 3] = fn_80144514(m[0], a1[i * 3], m[3], a1[i * 3 + 1], m[6], a1[i * 3 + 2]);
+        tmp[i * 3 + 1] = fn_80144514(m[1], a1[i * 3], m[4], a1[i * 3 + 1], m[7], a1[i * 3 + 2]);
+        tmp[i * 3 + 2] = fn_80144514(m[2], a1[i * 3], m[5], a1[i * 3 + 1], m[8], a1[i * 3 + 2]);
+    }
+    for (i = 0; i < 9; i++)
+        m[i] = tmp[i];
+    scale = lbl_80564364 * -s;
+    (void)scale;
+    (void)t;
+    if (*(s32 *)((u8 *)arg0 + 4) <= 0) {
+        fn_802C8E48();
+        return;
+    }
+    for (i = 0, off = 0; i < *(s32 *)((u8 *)arg0 + 4); i++, off += 0x1C) {
+        u8 *ent = (u8 *)(*(s32 *)arg0) + off;
+        f32 dx = *(f32 *)(ent + 0) + *(f32 *)(ent + 12) * scale;
+        f32 dy = *(f32 *)(ent + 4) + *(f32 *)(ent + 16) * scale;
+        f32 dz = *(f32 *)(ent + 8) + *(f32 *)(ent + 20) * scale;
+        dx -= a2[9];
+        dy -= a2[10];
+        dz -= a2[11];
+        {
+            f32 diff[3];
+            diff[0] = dx;
+            diff[1] = dy;
+            diff[2] = dz;
+            XfmVec(m, diff, diff);
+            diff[0] += a1[9];
+            diff[1] += a1[10];
+            diff[2] += a1[11];
+            {
+                f32 delta[3];
+                delta[0] = diff[0] - *(f32 *)(ent + 0);
+                delta[1] = diff[1] - *(f32 *)(ent + 4);
+                delta[2] = diff[2] - *(f32 *)(ent + 8);
+                if (PSVECDotProduct(a1 + 3, delta) > lbl_8056434C)
+                    scale = lbl_8056432C;
+                else
+                    scale = lbl_80564340;
+                (void)scale;
+            }
+        }
+        fn_802C8E00(0, 0, *(f32 *)(ent + 0), *(f32 *)(ent + 4), *(f32 *)(ent + 8), lbl_8056434C, lbl_8056432C);
+    }
+    fn_802C8E48();
+}
+#pragma pop
+
 #pragma pop
 void *fn_8028C824(void *arg0, s32 arg1) {
     s32 size = arg1 * 0x28;
