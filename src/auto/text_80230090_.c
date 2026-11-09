@@ -481,30 +481,16 @@ void fn_80230E90(s32 arg0) {
         fn_80230DA4(fn_8023659C(), lbl_80563648);
     }
 }
-#pragma dont_inline reset
+#pragma dont_inline on
 float fn_80230EF4(long arg0) {
     if (!lbl_8055B998) return lbl_80563610;
     if (arg0 == 1) {
-        union {
-            u32 word[2];
-            f64 value;
-        } converted;
         s32 ticks = fn_802E2C20();
-        f64 bias;
-        f32 normalized;
-        converted.word[1] = (u32)ticks ^ 0x80000000;
-        bias = lbl_80563638;
-        converted.word[0] = 0x43300000;
-        normalized = (f32)(converted.value - bias) / lbl_80563640;
-        return fn_80230E54(normalized, lbl_80563648);
+        f32 t = ticks;
+        return fn_80230E54(t / lbl_80563640, lbl_80563648);
     }
-    {
-        f32 a = fn_8023659C();
-        f32 b = lbl_80563648;
-        return fn_80230E54(a, b);
-    }
+    return fn_80230E54(fn_8023659C(), lbl_80563648);
 }
-#pragma scheduling on
 #pragma dont_inline reset
 extern f32 lbl_80563610, lbl_80563640, lbl_80563648;
 extern u32 lbl_8055FB9C, lbl_8055FBA0;
