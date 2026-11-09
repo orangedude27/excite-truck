@@ -14995,28 +14995,19 @@ return 0;
 }
 
 s32 fn_800C083C(s32 arg0, s32 arg1, s32 *arg2) {
-    u32 *node;
-    u16 value;
     u32 index = 0;
     u32 mask = 0xF;
     s32 shift = 0x1C;
-    s32 count = arg1;
-    s32 result;
-
-    if (arg1 > 0) {
-        while (1) {
-            node = *(u32 **)(arg2[index * 4]);
-            value = *(u16 *)(node + ((mask & (arg0 >> shift)) * 2));
-            if (value & 0x8000) {
-                return value & 0x7FFF;
-            }
-            mask = *(u32 *)(lbl_8031C2B8 + ((value * 4) & 0x3C));
-            index = value >> 8;
-            shift -= value & 0xF;
-            if (--count == 0) {
-                return 0;
-            }
+    s32 count;
+    for (count = arg1; count > 0; count--) {
+        u32 *node = *(u32 **)(*(u32 **)arg2 + index);
+        u16 value = *(u16 *)((u8 *)node + ((mask & (arg0 >> shift)) * 2));
+        if (value & 0x8000) {
+            return value & 0x7FFF;
         }
+        mask = *(u32 *)(lbl_8031C2B8 + ((value * 4) & 0x3C));
+        index = (u32)(value >> 8);
+        shift -= value & 0xF;
     }
     return 0;
 }
@@ -20043,15 +20034,14 @@ extern u8 lbl_8031F43C[];
 extern "C" void* __ct__Q36nw4hbm3lyt19ArcResourceAccessorFv(void *this_) {
     volatile u32 *p = (volatile u32 *)this_;
     u32 v = (u32)&lbl_8031F43C;
-    u32 tail = (u32)this_ + 0x28;
     fn_800DCE50(this_);
     p[0x28 >> 2] = 0;
     p[0x2C >> 2] = 0;
     p[0] = v;
     p[0x20 >> 2] = 0;
     p[0x24 >> 2] = 0;
-    p[0x28 >> 2] = tail;
-    p[0x2C >> 2] = tail;
+    p[0x28 >> 2] = (u32)this_ + 0x28;
+    p[0x2C >> 2] = (u32)this_ + 0x28;
     return this_;
 }
 extern "C" const char lbl_8031F2C8[];
@@ -23526,6 +23516,7 @@ copy:
     if (value != 0) {
         goto loop;
     }
+    return arg0;
 }
 
 extern "C" s32 fn_800A4B9C(u16 *arg0, u16 *arg1, s32 count) {
