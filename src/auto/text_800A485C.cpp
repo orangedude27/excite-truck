@@ -10652,7 +10652,7 @@ extern "C" s32 fn_800B7DB0(s32 arg0, Unk800B7E18Callback arg1, Unk800B7E18Callba
     case 0:
         lbl_80405D00[0] = arg1;
         lbl_80405D00[1] = arg2;
-        result = fn_800BA3F4((Unk800B7E18Callback)fn_800B7E18, fn_800B7E38);
+        result = fn_800BA3F4((Unk800B7E18Callback)fn_800B7E18, (Unk800B7E18Callback)fn_800B7E38);
         break;
     default:
         return -2;
@@ -10665,8 +10665,10 @@ extern "C" void fn_800B7E18(u32 arg0) {
 }
 
 extern "C" void fn_800B7E38(u8 arg0) {
-    if (lbl_80405D00[1] != 0)
-        ((void (*)(u32))lbl_80405D00[1])((u32)arg0);
+    if (lbl_80405D00[1] != 0) {
+        u32 t = (u32)arg0 & 0xFF;
+        lbl_80405D00[1]((u8)t);
+    }
 }
 
 #pragma dont_inline on
@@ -17806,11 +17808,11 @@ extern "C" void fn_800D018C(void *arg0, void *arg1) {
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
         virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
         virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
-        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void v16(); virtual void v17();
         virtual void call(void *);
     };
-    void *p = *(void **)((u8 *)arg1 + 0x10);
-    lbl_8055DDA0 = 0;
+    unsigned p = *(volatile unsigned *)((u8 *)arg1 + 0x10);
+    *(volatile unsigned *) &lbl_8055DDA0 = 0;
     ((Dispatch *)arg0)->call((u8 *)p + 0x10);
 }
 
