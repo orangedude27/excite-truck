@@ -343,15 +343,15 @@ float fn_801725C8(float arg0) {
     extern float lbl_8043038C[];
     extern float lbl_80561A40;
     extern float lbl_80561A44;
-    float f0 = lbl_8043038C[2];
-    float f2 = lbl_8043038C[3];
-    float f3 = lbl_8043038C[0];
-    float f4 = lbl_8043038C[1];
-    float value = (arg0 - f0) / (f2 - f0);
+    float x0 = lbl_8043038C[2];
+    float x1 = lbl_8043038C[3];
+    float lo = lbl_8043038C[0];
+    float hi = lbl_8043038C[1];
+    float value = (arg0 - x0) / (x1 - x0);
     float t = lbl_80561A40;
     if (t < value) { t = value; } else { t = t; }
     if (t > lbl_80561A44) { t = lbl_80561A44; } else { t = t; }
-    return f3 + t * (f4 - f3);
+    return lo + t * (hi - lo);
 }
 #pragma dont_inline reset
 
@@ -1219,13 +1219,11 @@ int fn_80173A84(void *arg0) {
     int count = *(int *)((char *)arg0 + 0x170);
     int result = 0;
     int i;
-    if (count > 0) {
-        for (i = 0; i < count; i++) {
-            if (*(unsigned char *)((char *)arg0 + 0x91) == 0 &&
-                *(unsigned char *)((char *)arg0 + 0x90) != 0)
-                result++;
-            arg0 = (char *)arg0 + 0x1C;
-        }
+    for (i = 0; i < count; i++) {
+        if (*(unsigned char *)((char *)arg0 + 0x91) == 0 &&
+            *(unsigned char *)((char *)arg0 + 0x90) != 0)
+            result++;
+        arg0 = (char *)arg0 + 0x1C;
     }
     return result != 0;
 }
@@ -1637,6 +1635,155 @@ int fn_8017483C(void *arg0, void *arg1, int arg2) {
     }
     return 0;
 }
+
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+void fn_80174918(void *arg0, int arg1) {
+    extern int fn_801E866C(int);
+    extern int fn_80171D38(int);
+    extern void fn_80139318(void *, int, int, float);
+    extern void fn_80147940(void *, void *, void *, int, float);
+    extern void fn_80130978(void *, int, float);
+    extern void fn_801475D0(void *, void *, void *, void *);
+    extern void fn_8014784C(void *, const char *, const char *, int);
+    extern float fn_8001DAE8(void *);
+    extern float fn_8001DAF0(void *);
+    extern void fn_8001DF08(int, int);
+    extern float fn_801E7E18(void);
+    extern char lbl_80330F48[];
+    extern float lbl_8043038C[];
+    extern char lbl_8055A2DC[];
+    extern int lbl_8055A2A0;
+    extern char lbl_8055A2E4[];
+    extern const char lbl_8055A2EC[];
+    extern float lbl_80561AD8, lbl_80561AC8, lbl_80561A74, lbl_80561A54, lbl_80561A44, lbl_80561A40, lbl_80561A50, lbl_80561A3C, lbl_80561ADC;
+
+    int idx = fn_801E866C(arg1);
+    int flag = 1;
+    int k;
+    int i;
+    int count;
+    void *obj;
+    void *v1;
+    void *v2;
+    void *v3;
+    float x;
+    float y;
+    float val;
+    int ok;
+
+    if (*(unsigned char *)((unsigned char *)lbl_8043038C + 0x10) == 0 && fn_80171D38(arg1) == 0)
+        flag = 0;
+
+    if (*(void **)((unsigned char *)arg0 + 0x1A8) != 0) {
+        if (flag != 0) {
+            void *tmp = *(void **)((unsigned char *)arg0 + 0x1A8);
+            if (((int (*)(void *, int))(*(void ***)arg0)[4])(arg0, idx) != 0)
+                fn_80139318(tmp, *(int *)((unsigned char *)arg0 + 0x198), idx, lbl_80561AD8);
+        }
+        obj = *(void **)((unsigned char *)arg0 + 0x1A8);
+        v1 = ((void *(*)(void *, void *, void *))(*(void ***)obj)[5])(obj, lbl_80330F48 + 0x4C4, (unsigned char *)arg0 + idx * 0x1C);
+        obj = *(void **)((unsigned char *)arg0 + 0x1A8);
+        v2 = ((void *(*)(void *, void *))(*(void ***)obj)[5])(obj, lbl_80330F48 + 0x4D4);
+        if (v2 == 0)
+            v2 = v1;
+        obj = *(void **)((unsigned char *)arg0 + 0x1A8);
+        v3 = ((void *(*)(void *, void *))(*(void ***)obj)[3])(obj, lbl_80330F48 + 0x4E4);
+        count = *(int *)((unsigned char *)arg0 + 0x170) - 1;
+        for (k = 0; k < count; k++) {
+            unsigned char *e = (unsigned char *)arg0 + idx * 0x1C + 0x90 + k;
+            int r26 = (int)(((*(int *)(e + 8) ^ k) >> 1) - ((*(int *)(e + 8) ^ k) & *(int *)(e + 8)));
+            float sp10[12];
+            sp10[0] = *(float *)v1;
+            sp10[1] = *(float *)((unsigned char *)v1 + 4);
+            sp10[2] = *(float *)((unsigned char *)v1 + 8);
+            sp10[3] = *(float *)((unsigned char *)v1 + 12);
+            sp10[4] = *(float *)((unsigned char *)v1 + 16);
+            sp10[5] = *(float *)((unsigned char *)v1 + 20);
+            sp10[6] = *(float *)((unsigned char *)v1 + 24);
+            sp10[2] += (float)k * *(float *)((unsigned char *)v2 + 20);
+            if (r26 == 0)
+                sp10[7] = 1071644671.0f;
+            fn_80147940(*(void **)((unsigned char *)arg0 + 0x1A8), sp10, lbl_80330F48 + 0x4F4, 0, 0);
+            if (*(unsigned char *)(e + 0x10) != 0) {
+                fn_80147940(*(void **)((unsigned char *)arg0 + 0x1A8), sp10, lbl_80330F48 + 0x4F4, 0, sp10[4] + lbl_80561AC8);
+            }
+            if (r26 != 0 && *(int *)((unsigned char *)lbl_8043038C + 0x14) * (*(unsigned char *)(e + 0x10) + 1) != 0) {
+                float a[12];
+                for (i = 0; i < 7; i++)
+                    a[i] = *(float *)((unsigned char *)v3 + i * 4);
+                a[1] = sp10[4] + sp10[5] * lbl_80561A54;
+                a[2] = sp10[5] + sp10[6] * lbl_80561A54;
+                fn_80147230(a, (const char *)&lbl_8055A2A0, a[1], a[4], a[1]);
+            }
+        }
+        {
+            char tmpBuf[0x80];
+            if (*(unsigned char *)((unsigned char *)lbl_8043038C + 0x18) != 0) {
+                x = *(float *)((unsigned char *)arg0 + 0x19C) - fn_801E7E18();
+                if (lbl_80561A44 > x)
+                    x = lbl_80561A44;
+                fn_801345D8(tmpBuf, 0x20, lbl_8055A2DC, x);
+            } else {
+                x = *(float *)((unsigned char *)arg0 + 0x19C) - fn_801E7E18();
+                if (lbl_80561A44 > x)
+                    x = lbl_80561A44;
+                fn_80130978(tmpBuf, 0x20, x);
+            }
+            count = *(int *)((unsigned char *)arg0 + 0x170);
+            i = 0;
+            {
+                unsigned char *cur = (unsigned char *)arg0;
+                int ctr = count;
+                if (count > 0) {
+                    do {
+                        if (*(unsigned char *)(cur + 0x91) == 0 && *(unsigned char *)(cur + 0x90) != 0)
+                            i++;
+                        cur += 0x1C;
+                        ctr--;
+                    } while (ctr != 0);
+                }
+            }
+            if (i > 0) {
+                fn_801475D0(*(void **)((unsigned char *)arg0 + 0x1A8), lbl_8055A2E4, (void *)lbl_8055A2EC, tmpBuf);
+                fn_8014784C(*(void **)((unsigned char *)arg0 + 0x1A8), lbl_80330F48 + 0x500, lbl_80330F48 + 0x510, 0);
+            }
+        }
+        {
+            int offs[4] = {0x184, 0x17C, 0x18C, 0x174};
+            int strOffs[8] = {0x528, 0x538, 0x548, 0x554, 0x560, 0x574, 0x588, 0x5A0};
+            for (i = 0; i < 4; i++) {
+                int off = offs[i];
+                x = fn_8001DAE8((unsigned char *)arg0 + off) - *(float *)((unsigned char *)arg0 + off + 4);
+                ok = 0;
+                if (x >= lbl_80561A44 && x < *(float *)((unsigned char *)arg0 + off))
+                    ok = 1;
+                if (ok != 0) {
+                    y = fn_8001DAF0((unsigned char *)arg0 + off);
+                    if (y < lbl_80561A50) {
+                        val = y;
+                    } else if (y > lbl_80561A40) {
+                        val = y;
+                    } else if (y > lbl_80561A44) {
+                        val = y * (lbl_80561ADC * y * y) + (lbl_80561A3C * y * y);
+                    } else {
+                        val = y * (lbl_80561ADC * y * y) - (lbl_80561A3C * y * y);
+                    }
+                    fn_80175080(*(void ***)((unsigned char *)arg0 + 0x1A8), (int)(lbl_80330F48 + strOffs[i * 2]), (int)(lbl_80330F48 + strOffs[i * 2 + 1]), 0, (double)val);
+                }
+            }
+        }
+    }
+    fn_801E866C(arg1);
+    {
+        unsigned char *e = (unsigned char *)arg0 + idx * 0x1C;
+        fn_8001DF08(idx, *(int *)((unsigned char *)lbl_8043038C + 0x14) * (*(int *)(e + 0x9C) + *(int *)(e + 0x98)));
+    }
+}
+#pragma pop
+
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
