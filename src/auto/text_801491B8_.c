@@ -1261,7 +1261,7 @@ extern s32 fn_80145E70(void *);
 extern void *fn_8014E1D0(void *, s32);
 extern void *fn_8014E3CC(void *, s32);
 extern void *fn_8014E4BC(void *);
-extern void fn_8014E154(void);
+extern void *fn_8014E154(void *, s32);
 extern void **__AXFXGetLfoSinTable_801769CC(void);
 extern void *fn_8001285C(void *);
 extern void fn_8002F53C(void *, ...);
