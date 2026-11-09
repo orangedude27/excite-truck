@@ -40,7 +40,25 @@ void fn_80019BBC(void) {
     ((float *)lbl_803582C0)[61] = lbl_80560418;
     ((float *)lbl_803582C0)[62] = lbl_80560418;
 }
-#pragma scheduling on
+
+#pragma cplusplus on
+extern "C" float fn_80019FD4(void *arg0, int arg1, float farg0) {
+    struct Dummy {
+        virtual int f0();
+        virtual int f1();
+        virtual int f2();
+        virtual int f3();
+        virtual int f4();
+        virtual int f5();
+        virtual int f6();
+        virtual float f7(int);
+    };
+    if (((Dummy *)arg0)->f1() != 0) {
+        return ((Dummy *)arg0)->f7(arg1);
+    }
+    return farg0;
+}
+#pragma cplusplus reset
 void fn_8001A1F0(void) {
 }
 
@@ -631,14 +649,13 @@ extern "C" int fn_8001B754(float arg0) {
     };
     int i = 0;
     int result;
-
-    for (;;) {
-        fn_8001B478(arg0);
-        i++;
-        result = ((Callback *)fn_80156A40())->invoke(i);
-        if (result == 0)
-            break;
-    }
+    goto check;
+body:
+    fn_8001B478(arg0);
+    i++;
+    result = ((Callback *)fn_80156A40())->invoke(i);
+check:
+    if (result != 0) goto body;
     return result;
 }
 #pragma cplusplus reset
