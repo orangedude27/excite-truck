@@ -413,20 +413,8 @@ s32 fn_80230B9C(u32 arg0) {
 #pragma dont_inline reset
 #pragma scheduling on
 void fn_80230C30(float *arg0, float *arg1, s32 arg2, s32 arg3) {
-    s32 sign;
-    s32 value;
-
-    value = (s32)lbl_8055FB9C;
-    sign = (s32)((u32)value >> 31);
-    value = sign + value;
-    value >>= 1;
-    *arg0 = (float)(arg2 - value);
-
-    value = (s32)lbl_8055FBA0;
-    sign = (s32)((u32)value >> 31);
-    value = sign + value;
-    value >>= 1;
-    *arg1 = (float)(value - arg3);
+    *arg0 = (float)(arg2 - (s32)lbl_8055FB9C / 2);
+    *arg1 = (float)((s32)lbl_8055FBA0 / 2 - arg3);
 }
 
 /* Match note: preserve the branch-specific min/max and truncating step count; this matches the target exactly. */
