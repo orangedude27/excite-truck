@@ -45,6 +45,10 @@ typedef struct {
     char pad[0x20];
     Ent78 e[8];
 } Src;
+typedef struct {
+    float a;
+    float b;
+} Pair8;
 
 int fn_801AE618(int arg0);
 #pragma dont_inline on
@@ -666,7 +670,7 @@ done:
 #pragma use_lmw_stmw reset
 #pragma small_data on
 float fn_801AF9EC(int arg0, float *arg1) {
-    if (arg1 != 0) *arg1 = *(float *)((char *)lbl_80435740 + (arg0 << 3) + 4);
+    if (arg1 != 0) *arg1 = ((float *)((char *)lbl_80435740 + (arg0 << 3)))[1];
     return lbl_80435740[arg0 * 2];
 }
 
