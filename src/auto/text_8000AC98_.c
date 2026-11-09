@@ -378,11 +378,9 @@ void fn_8000B3DC(unsigned char arg0) {
     extern void fn_8000B5A8(void);
     extern void fn_8000B3B4(void);
     extern void AXFXSetHooks_8020DE10(void (*)(void), int, unsigned char);
-    int mask;
     lbl_8055D3EC = arg0;
     ((void (*)(int))fn_8000ADE0)(0x12);
-    mask = (-(int)lbl_8055D3EC | (int)lbl_8055D3EC) >> 31;
-    AXFXSetHooks_8020DE10(fn_8000B5A8, (int)fn_8000B3B4 & mask, lbl_8055D3EC);
+    AXFXSetHooks_8020DE10(fn_8000B5A8, lbl_8055D3EC ? (int)fn_8000B3B4 : 0, lbl_8055D3EC);
 }
 
 extern int fn_8016212C(void), fn_80265D64(void), fn_80265D6C(void), fn_80265D50(void);
