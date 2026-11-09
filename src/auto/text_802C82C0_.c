@@ -241,6 +241,15 @@ void fn_802C86E8(void* hi) {
     lbl_8055D018 = hi;
 }
 
+void *fn_802C86F0(void *arg0, int arg1, int arg2, int arg3, int arg4) {
+    *(int *)((unsigned char *)arg0) = (int)lbl_8055FC5C;
+    *(int *)((unsigned char *)arg0 + 4) = (int)lbl_8055FC60;
+    *(int *)((unsigned char *)arg0 + 8) = (int)lbl_8055FC64;
+    *(int *)((unsigned char *)arg0 + 0xC) = (int)lbl_8055FC68;
+    fn_802C87B4(arg1, arg2, arg3, arg4);
+    return arg0;
+}
+
 extern void fn_802C87B4(int, int, int, int);
 extern void fn_80128668(void *);
 void *fn_802C8750(void *arg0, int arg1) {
