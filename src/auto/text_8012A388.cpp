@@ -1,4 +1,7 @@
 #include <types.h>
+extern "C" int sprintf(char *, const char *, ...);
+extern "C" s32 lbl_80559984;
+extern "C" char lbl_805599AC[];
 extern "C" void fn_801282F4(void);
 extern "C" void fn_801284F0(void *, void *);
 extern "C" s32 fn_802E36D8(void);
