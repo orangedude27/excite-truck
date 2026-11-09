@@ -11,7 +11,20 @@ extern f32 lbl_805626B0;
 extern f32 lbl_805626B4;
 extern void *lbl_8055E710;
 extern char lbl_80335EE0[];
-extern void fn_802E317C(const char *);
+extern void fn_802E317C(const char *, ...);
+#pragma dont_inline on
+void *fn_801B5F40(void) {
+    void *node = lbl_8055E710;
+    if (node) {
+        lbl_8055E710 = ((void **)node)[1];
+        ((void **)node)[1] = 0;
+        return node;
+    }
+    fn_802E317C(lbl_80335EE0);
+    return 0;
+}
+#pragma dont_inline reset
+
 void __AXPushCallbackStack(void *arg0) {
     *((void **)arg0 + 1) = lbl_8055E710;
     lbl_8055E710 = arg0;
