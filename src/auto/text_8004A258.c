@@ -351,6 +351,8 @@ clear3_join:
     }
 }
 #pragma pop
+#pragma push
+#pragma small_data off
 void InquiryCallback(s32 result, struct DVDCommandBlock* arg1) {
     if (*(u32*)((u8*)arg1 + 0xC) == 0) goto read_drive;
     goto set_one;
