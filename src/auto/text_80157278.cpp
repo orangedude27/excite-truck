@@ -3286,7 +3286,9 @@ extern "C" s32 fn_8015D504(Unk801577F0* arg0, s32 arg1) {
     for (; i < count; i++) {
         s32 value = *(s32*)((u8*)arg0->mData + offset + 0x14);
         if (arg1 < value) goto out;
-        if (value < 0) goto out;
+        if (value >= 0) goto cont;
+        else goto out;
+    cont:
         offset += 0x38;
     }
     i = 0;
@@ -3746,59 +3748,27 @@ extern "C" void fn_8015E568(Unk801577F0V* arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 #pragma use_lmw_stmw reset
 extern "C" void fn_8015E5F4(Unk801577F0V* arg0, s32 arg1) {
-    class Base {
-    public:
-        virtual void b0();
-        virtual void b1();
-        virtual void b2();
-        virtual void b3();
-        virtual void b4();
-        virtual void b5();
-        virtual void b6();
-        virtual void b7();
-        virtual void b8();
-        virtual void b9();
-        virtual void b10();
-        virtual void b11();
-        virtual void b12();
-        virtual void b13();
-        virtual void b14();
-        virtual void b15();
-        virtual void b16();
-        virtual void b17();
-        virtual void b18();
-        virtual void b19();
-        virtual void b20();
-        virtual void b21();
-        virtual void b22();
-        virtual void b23();
-        virtual void b24();
-        virtual void b25();
-        virtual void b26();
-        virtual void b27();
-        virtual void b28();
-        virtual void b29();
-        virtual void b30();
-        virtual void b31();
-        virtual void b32();
-        virtual void b33();
-        virtual void b34();
-        virtual void b35();
-        virtual void b36();
-        virtual void b37();
-        virtual void b38();
-        virtual void b39();
-        virtual void b40();
-    };
-    class Vt3c : public Base {
-    public:
-        virtual void call(s32);
+    struct Entry {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual void Call(s32);
     };
     s32 off = 0;
     s32 i = 0;
     while (i < *(s32*)((u8*)arg0 + 8)) {
-        Vt3c* entry = *(Vt3c**)((u8*)*(void**)((u8*)arg0 + 4) + off);
-        entry->call(arg1);
+        Entry* entry = *(Entry**)((u8*)*(void**)((u8*)arg0 + 4) + off);
+        entry->Call(arg1);
         off += 4;
         i += 1;
     }
