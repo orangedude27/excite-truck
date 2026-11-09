@@ -2,6 +2,9 @@
 extern s32 fn_802B32E0(s32);
 extern s32 fn_802B4E44(s32);
 extern float lbl_8055FA10;
+extern s32 fn_801345D8(char *, s32, const char *, s32);
+extern s32 sscanf(const char *, const char *, ...);
+__declspec(section ".sdata") extern const char lbl_8055CE38[];
 
 #pragma small_data on
 __declspec(section ".sdata") extern const char lbl_8055CE40[];
@@ -1834,7 +1837,7 @@ s32 fn_802B8728(void) {
 void fn_802B8744(void) {
     lbl_8055FA48 = (void **)fn_80145E70(lbl_8034A980);
     lbl_8055FA40 = 6;
-    ((s32 *)&lbl_804BE7D8)[1] = 0;
+    *(s32 *)((u8 *)&lbl_804BE7D8 + 4) = 0;
     lbl_8055FA00 = fn_8026E214((void *)fn_802B8728, &lbl_804BE7D8);
     lbl_8055FA34 = -1;
 }
