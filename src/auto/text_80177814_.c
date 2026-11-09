@@ -381,12 +381,13 @@ void fn_80178258(void) {
         fn_8017ACCC();
     }
 }
+#pragma scheduling on
 void fn_80178290(void) {
-    if (fn_801284F8(0x1FC, &lbl_80331938) != 0) {
-        fn_801AFD20((void *)&lbl_80331938);
+    void *p = (void *)fn_801284F8(0x1FC, &lbl_80331938);
+    if (p != 0) {
+        fn_801AFD20(p);
     }
 }
-
 extern char lbl_80331944[];
 extern char lbl_80338400[];
 void *fn_8017B0B0(void *);
