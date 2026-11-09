@@ -414,20 +414,11 @@ extern char lbl_803326F8[];
 extern int lbl_8055E4D0;
 void *fn_80182010(void *arg0) {
     unsigned char *p = (unsigned char *)arg0;
-    int index;
-    int offset;
-    void **entries;
-
     fn_8017B0B0();
     *(int **)p = (int *)lbl_803326F8;
     *(short *)(p + 0x2B4) = -1;
     fn_801BD808(lbl_803326F8);
-    index = lbl_8055E4D0;
-    offset = index << 2;
-    index++;
-    entries = (void **)lbl_804348E8;
-    *(void **)((unsigned char *)entries + offset) = arg0;
-    lbl_8055E4D0 = index;
+    ((void **)lbl_804348E8)[lbl_8055E4D0++] = arg0;
     return arg0;
 }
 
