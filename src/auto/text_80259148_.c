@@ -1287,32 +1287,7 @@ extern void fn_80236958(void *);          // clears the "reached" flag of this a
 extern void fn_802168BC(int);             // asks for a result sound to be played
 extern float lbl_80563B34;                // 0.8f: seconds the value waits before it starts climbing
 
-// One row of the achievements display: a value counting up to a goal, graded
-// against the thresholds of one achievement (lbl_802FDF30, "score", "win",
-// "AAA", "air", "tree_run", "drift", "rings", ...).
-#ifndef ACHIEVEMENT_ROW_DEFINED
-#define ACHIEVEMENT_ROW_DEFINED
-typedef struct AchievementRow {
-    /* 0x00 */ char pad00[0x18];
-    /* 0x18 */ int achievement;           // which achievement this row shows
-    /* 0x1C */ int startValue;            // value the row starts counting from
-    /* 0x20 */ int goal;                  // value the row counts up to
-    /* 0x24 */ int pad24;
-    /* 0x28 */ float progress;            // value shown, eased towards the goal
-    /* 0x2C */ char progressText[0x14];   // progress as text
-    /* 0x40 */ char goalText[0x14];       // next threshold as text, empty at the last one
-    /* 0x54 */ float rate;                // progress added per second
-    /* 0x58 */ unsigned char done;        // the progress reached the goal
-    /* 0x59 */ unsigned char soundPending; // play soundId once, then clear
-    /* 0x5C */ int soundId;               // result sound to play
-    /* 0x60 */ char rankName[0x32];       // name of the threshold reached
-    /* 0x92 */ char shownRankName[0x32];  // rankName as last handed to the achievement list
-    /* 0xC4 */ unsigned char flagC4;      // row belongs to the results screen
-    /* 0xC5 */ unsigned char flagC5;      // row is live
-    /* 0xC8 */ int rank;                  // how many thresholds the value passed
-    /* 0xCC */ float timer;               // seconds since the row started
-} AchievementRow;
-#endif
+// (AchievementRow is declared above fn_8025B520.)
 
 #pragma cplusplus on
 // One row of the achievements display: eases the shown value towards the goal,
