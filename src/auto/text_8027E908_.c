@@ -2935,10 +2935,18 @@ int fn_802867B0(void *arg0) {
     return ((int (*)(void *))(*(void **)((char *)*(void **)p + 0x28)))(p);
 }
 
-void fn_80286834(void **arg0) {
-    int result;
-    result = ((int (*)(void))(*(void **)((char *)*arg0 + 0x28)))();
-    ((void (*)(void **, int))(*(void **)((char *)*arg0 + 0x30)))(arg0, result);
+void fn_80286834(void *arg0) {
+    void *obj = arg0;
+    int r;
+#pragma cplusplus on
+    struct Interface {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual int v8(); virtual void v9(); virtual void v10(int);
+    };
+    r = ((struct Interface *)obj)->v8();
+    ((struct Interface *)obj)->v10(r);
+#pragma cplusplus reset
 }
 
 #pragma cplusplus on
@@ -3185,16 +3193,21 @@ extern "C" void fn_80287304(void* arg0) {
 extern "C" void fn_80287318(void* arg0) {
     ((ebi::title::TBlackPlane*)arg0)->m_a->v4();
 }
-#pragma cplusplus off
-void* fn_8028732C(void* arg0, int arg1) {
-    void* cached = *(void**)((char*)arg0 + 8);
-    void* obj;
-    if (cached != 0 && arg1 == *(int*)((char*)arg0 + 12))
+#pragma cplusplus on
+extern "C" void *fn_8028732C(void *arg0, int arg1) {
+    class Obj {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
+        virtual void *get();
+    };
+    void *cached = *(void **)((char *)arg0 + 8);
+    if (cached != 0 && arg1 == *(int *)((char *)arg0 + 12)) {
         return cached;
-    obj = *(void**)((char*)arg0 + 4);
-    return (*(void* (**)(void))(*(void***)obj + 7))();
+    }
+    Obj *obj = *(Obj **)((char *)arg0 + 4);
+    return obj->get();
 }
-
+#pragma cplusplus off
 void fn_80287360(void) {
 }
 
