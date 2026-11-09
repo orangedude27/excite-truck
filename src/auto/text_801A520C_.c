@@ -371,12 +371,15 @@ extern "C" void fn_801A56A0(void *arg0, void *arg1, float *arg2) {
 }
 #pragma pop
 
-extern "C" float fn_801A5A7C(void * __restrict arg0, float * __restrict arg1, float * __restrict arg2) {
+/* Signed distance of a world point from a contact plane: dot(normal, point - origin).
+   `contact` is a contact record whose first three floats are its world-space normal
+   (see fn_801A5AD0, which fills it at +0x00 and stores this result at +0x14). */
+extern "C" float fn_801A5A7C(void * __restrict contact, float * __restrict point, float * __restrict origin) {
     float diff[3];
-    diff[0] = arg1[0] - arg2[0];
-    diff[1] = arg1[1] - arg2[1];
-    diff[2] = arg1[2] - arg2[2];
-    return PSVECDotProduct((float *)arg0, diff);
+    diff[0] = point[0] - origin[0];
+    diff[1] = point[1] - origin[1];
+    diff[2] = point[2] - origin[2];
+    return PSVECDotProduct((float *)contact, diff);
 }
 
 #pragma push
