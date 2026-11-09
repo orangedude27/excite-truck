@@ -1912,6 +1912,11 @@ void fn_80269BB0(int idx, unsigned int sel, int *out, float *outf) {
     *outf = r.fbc;
 }
 
+void fn_8026A1F0(int arg0, int arg1, int arg2) {
+    *(int *)((char *)((void *(*)(int))fn_80267EE4)(arg1) + 0x14) = arg0;
+    fn_802735F4(arg1, arg2);
+}
+
 #pragma pop
 
 #pragma dont_inline on
