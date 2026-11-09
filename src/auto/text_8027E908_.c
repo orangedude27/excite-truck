@@ -2965,14 +2965,30 @@ extern "C" void fn_802868AC(void* arg0) {
 extern "C" void fn_802868C0(void* arg0) {
     ((ebi::title::TPlaneObj*)arg0)->m_sub->v13();
 }
-#pragma cplusplus off
-int fn_802868D4(void *arg0) {
-    int a = ((int (*)(void *))(*(void ***)arg0)[15])(arg0);
-    int b = ((int (*)(void *))(*(void ***)arg0)[10])(arg0);
-    return b >= a;
-}
-
 #pragma cplusplus on
+extern "C" int fn_802868D4(void *arg0) {
+    class Dummy {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual int v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual int v13();
+    };
+    Dummy *o = (Dummy *)arg0;
+    int a = o->v13();
+    return a <= o->v8();
+}
+#pragma cplusplus reset
 extern "C" void fn_8028693C(void* arg0) {
     ((ebi::title::TPlaneObj*)arg0)->m_sub->v15();
 }
@@ -3198,21 +3214,13 @@ struct Obj8732C {
     virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
     virtual void *get();
 };
-#pragma cplusplus off
 #pragma cplusplus on
-#pragma dead_code on
-#pragma peephole on
 extern "C" void *fn_8028732C(void *arg0, int arg1) {
-    class Obj2 {
-    public:
-        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
-        virtual void *get();
-    };
     void *cached = *(void **)((char *)arg0 + 8);
     if (cached != 0 && arg1 == *(int *)((char *)arg0 + 12)) {
         return cached;
     }
-    Obj2 *obj = *(Obj2 **)((char *)arg0 + 4);
+    Obj8732C *obj = *(Obj8732C **)((char *)arg0 + 4);
     return obj->get();
 }
 #pragma cplusplus off
