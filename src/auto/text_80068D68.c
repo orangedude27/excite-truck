@@ -11213,62 +11213,72 @@ typedef struct {
 #define BTM_NO_AVAIL_SEC_SERVICES ((UINT16)0xffff) /* btm_sec.c's "no free record" */
 #endif
 
+/* Register one service's security requirements with the security manager: the
+ * record of a service already registered under the same PSM, multiplexer
+ * protocol, service id and name is updated, otherwise the first free record is
+ * taken (and the last one reused when none is free). */
 BOOLEAN BTM_SetSecurityLevel(BOOLEAN is_originator, char *p_name, UINT8 service_id, UINT16 sec_level, UINT16 psm, UINT32 mx_proto_id, UINT32 mx_chan_id) {
-    char *trace = lbl_80316870;
-    u8 *entry;
-    u16 index;
-    u16 first_free;
-    BOOLEAN found;
+    char *trace = lbl_80316870; /* this file's trace strings */
+    tBTM_SEC_SERV_REC_HERE *p_srec;
+    UINT16 index;
+    UINT16 first_unused_record;
+    BOOLEAN record_allocated;
 
-    first_free = 0xFFFF;
-    entry = lbl_803C0F78 + 0x1990;
-    found = FALSE;
+    first_unused_record = BTM_NO_AVAIL_SEC_SERVICES;
+    p_srec = btm_cb_sec_serv_rec;
+    record_allocated = FALSE;
     index = 0;
-    for (; index < 0x18; index++, entry += 0x3C) {
-        if (entry[0xE] & 0x80) {
-            if (*(u16 *)(entry + 0xC) == psm &&
-                *(u32 *)(entry + 0x0) == mx_proto_id &&
-                service_id == entry[0xF] &&
-                (strncmp(p_name, (char *)(entry + 0x10), 0x15) == 0 ||
-                 strncmp(p_name, (char *)(entry + 0x26), 0x15) == 0)) {
-                found = TRUE;
+    for (; index < BTM_SEC_MAX_SERVICE_RECORDS_HERE; index++, p_srec++) {
+        /* a record in use for this very service can be reused as it is */
+        if (p_srec->security_flags & BTM_SEC_IN_USE) {
+            if (p_srec->psm == psm &&
+                p_srec->mx_proto_id == mx_proto_id &&
+                service_id == p_srec->service_id &&
+                (strncmp(p_name, (char *)p_srec->orig_service_name, BTM_SEC_SERVICE_NAME_LEN_HERE) == 0 ||
+                 strncmp(p_name, (char *)p_srec->term_service_name, BTM_SEC_SERVICE_NAME_LEN_HERE) == 0)) {
+                record_allocated = TRUE;
                 break;
             }
-        } else if (!found) {
-            found = TRUE;
-            first_free = index;
+        } else if (!record_allocated) {
+            /* remember the first free record to fall back on */
+            record_allocated = TRUE;
+            first_unused_record = index;
         }
     }
-    if (found) {
-        if (index >= 0x18) {
-            index = first_free;
-            entry = lbl_803C0F78 + 0x1990 + index * 0x3C;
+    if (record_allocated) {
+        /* no duplicate service: take that first free record */
+        if (index >= BTM_SEC_MAX_SERVICE_RECORDS_HERE) {
+            index = first_unused_record;
+            p_srec = &btm_cb_sec_serv_rec[index];
         }
-        *(u16 *)(entry + 0xC) = psm;
-        entry[0xF] = service_id;
-        *(u32 *)(entry + 0x0) = mx_proto_id;
+        p_srec->psm = psm;
+        p_srec->service_id = service_id;
+        p_srec->mx_proto_id = mx_proto_id;
         if (is_originator) {
-            *(u32 *)(entry + 0x4) = mx_chan_id;
-            entry[0xE] &= ~0x38;
-            strncpy((char *)(entry + 0x10), p_name, 0x15);
+            p_srec->orig_mx_chan_id = mx_chan_id;
+            p_srec->security_flags &= ~0x38; /* old BTM_SEC_OUT_{AUTHORIZE,AUTHENTICATE,ENCRYPT} */
+            strncpy((char *)p_srec->orig_service_name, p_name, BTM_SEC_SERVICE_NAME_LEN_HERE);
         } else {
-            *(u32 *)(entry + 0x8) = mx_chan_id;
-            entry[0xE] &= 0xF8;
-            strncpy((char *)(entry + 0x26), p_name, 0x15);
+            p_srec->term_mx_chan_id = mx_chan_id;
+            p_srec->security_flags &= 0xF8; /* old BTM_SEC_IN_{AUTHORIZE,AUTHENTICATE,ENCRYPT} */
+            strncpy((char *)p_srec->term_service_name, p_name, BTM_SEC_SERVICE_NAME_LEN_HERE);
         }
-        entry[0xE] |= sec_level | 0x80;
-        if (lbl_803C0F78[0x27C0] >= 3) {
+        p_srec->security_flags |= sec_level | BTM_SEC_IN_USE;
+        if (btm_cb_trace_level >= BTM_TRACE_LEVEL_API) {
             ((void (*)(u32, void *, s32, u32, u32, u32, u32, u32))fn_800709CC)(
-                0xD0002, trace + 0xE0, index, service_id, is_originator, psm, mx_proto_id, mx_chan_id);
+                TRACE_LAYER_BTM | TRACE_TYPE_API, trace + 0xE0, /* "BTM_SEC_REG[%d]: id %d, is_orig %d, psm 0x%04x, proto_id %d, chan_id %d" */
+                index, service_id, is_originator, psm, mx_proto_id, mx_chan_id);
         }
-        if (lbl_803C0F78[0x27C0] >= 3) {
+        if (btm_cb_trace_level >= BTM_TRACE_LEVEL_API) {
             ((void (*)(u32, void *, u8, char *, u32))fn_80070984)(
-                0xD0002, trace + 0x128, entry[0xE], p_name, 0x15);
+                TRACE_LAYER_BTM | TRACE_TYPE_API, trace + 0x128, /* "               : sec: 0x%x, service name [%s] (up to %d chars saved)" */
+                p_srec->security_flags, p_name, BTM_SEC_SERVICE_NAME_LEN_HERE);
         }
-    } else if (lbl_803C0F78[0x27C0] >= 2) {
-        fn_80070954(0xD0001, trace + 0x170, 0x18);
+    } else if (btm_cb_trace_level >= BTM_TRACE_LEVEL_WARNING) {
+        fn_80070954(0xD0001 /* TRACE_LAYER_BTM | TRACE_TYPE_ERROR */, trace + 0x170, /* "BTM_SEC_REG: Out of Service Records (%d)" */
+                    BTM_SEC_MAX_SERVICE_RECORDS_HERE);
     }
-    return found;
+    return record_allocated;
 }
 
 void BTM_PINCodeReply(BD_ADDR bd_addr, UINT8 res, UINT8 pin_len, UINT8 *p_pin, UINT32 trusted_mask[]) {
