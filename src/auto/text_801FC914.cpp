@@ -173,36 +173,35 @@ extern "C" void fn_801FCAE0(void* arg0, void* arg1) {
     *(float*)((char*)arg0 + 0x38) = *(float*)((char*)arg1 + 0x18);
 }
 
+#pragma push
+#pragma processor 750
 extern "C" void fn_801FCB40(void* arg0, float farg0) {
     char* a = (char*)arg0;
     float delta = farg0;
     int count = *(int*)(a + 0x3C);
-    char* base = *(char**)(a + 4);
-    char* item = base + (count << 5);
+    char* item = *(char**)(a + 4) + (count << 5);
     float* q = (float*)(a + 0x30);
     float* q0 = (float*)(item + 0x10);
     float* q1 = (float*)(item + 0x30);
-    float dx = q1[0] - q0[0];
-    float dy = q1[1] - q0[1];
-    float dz = q1[2] - q0[2];
     Vec dir;
-    dir.x = dx; dir.y = dy; dir.z = dz;
+    dir.x = q1[0] - q0[0]; dir.y = q1[1] - q0[1]; dir.z = q1[2] - q0[2];
     float mag = PSVECMag(&dir);
     float inv = lbl_80563030 / mag;
-    Quaternion prod;
-    PSQUATMultiply((const Quaternion*)(a + 0x30), (const Quaternion*)(item + 0x10), &prod);
-    float s = inv * delta * (q0[3] + inv * prod.w * (q0[4] - q0[3]));
-    float nx = q[0] + dx * s;
-    float ny = q[1] + dy * s;
-    float nz = q[2] + dz * s;
-    q[0] = nx; q[1] = ny; q[2] = nz;
+    float t = inv * ((float (*)(const void *, const void *))PSQUATMultiply)(a + 0x30, q0);
+    float s = inv * (delta * (q0[6] + t * (q0[7] - q0[6])));
+    Vec pos;
+    pos.x = q[0] + dir.x * s;
+    pos.y = q[1] + dir.y * s;
+    pos.z = q[2] + dir.z * s;
+    
     Vec d;
-    d.x = q1[0] - nx;
-    d.y = q1[1] - ny;
-    d.z = q1[2] - nz;
+    d.x = q1[0] - pos.x;
+    d.y = q1[1] - pos.y;
+    d.z = q1[2] - pos.z;
     if (PSVECDotProduct(&dir, &d) <= lbl_80563034) {
         count = *(int*)(a + 0x3C) + 1;
         *(int*)(a + 0x3C) = count;
+        char *base = *(char**)(a + 4);
         int max = *(int*)(base + 0x310);
         if (count >= max - 1) {
             fn_801FEA28(arg0);
@@ -210,49 +209,55 @@ extern "C" void fn_801FCB40(void* arg0, float farg0) {
             return;
         }
         item = base + (count << 5);
+        q0 = q1;
         q1 = (float*)(item + 0x30);
-        dx = q1[0] - q0[0];
-        dy = q1[1] - q0[1];
-        dz = q1[2] - q0[2];
-        dir.x = dx; dir.y = dy; dir.z = dz;
+        dir.x = q1[0] - q0[0];
+        dir.y = q1[1] - q0[1];
+        dir.z = q1[2] - q0[2];
         mag = PSVECMag(&dir);
         inv = lbl_80563030 / mag;
         float k = inv * PSVECMag(&d);
-        q[0] = q0[0] + dx * k;
-        q[1] = q0[1] + dy * k;
-        q[2] = q0[2] + dz * k;
+        q[0] = q0[0] + dir.x * k;
+        q[1] = q0[1] + dir.y * k;
+        q[2] = q0[2] + dir.z * k;
     }
+    else { q[0] = pos.x; q[1] = pos.y; q[2] = pos.z; }
     count = *(int*)(a + 0x3C) + 2;
-    if (count < *(int*)(base + 0x310)) {
-        item = base + (count << 5);
+    if (count < *(int*)(*(char**)(a + 4) + 0x310)) {
+        item = *(char**)(a + 4) + (count << 5);
         float* q2 = (float*)(item + 0x10);
         Vec v;
         v.x = q2[0] - q1[0];
         v.y = q2[1] - q1[1];
         v.z = q2[2] - q1[2];
-        PSQUATMultiply((const Quaternion*)(a + 0x30), (const Quaternion*)(item + 0x10), &prod);
-        float t = inv * prod.w;
+        float t = inv * ((float (*)(const void *, const void *))PSQUATMultiply)(a + 0x30, q0);
         float* p = (float*)(a + 0xC);
-        p[0] = q0[1] + t * (q1[1] - q0[1]);
-        p[1] = q0[2] + t * (q1[2] - q0[2]);
-        p[2] = q0[3] + t * (q1[3] - q0[3]);
+        Vec up;
+        float ux = q1[3] - q0[3];
+        float uz = q1[5] - q0[5];
+        float uy = q1[4] - q0[4];
+        up.z = q0[5] + t * uz;
+        up.y = q0[4] + t * uy;
+        up.x = q0[3] + t * ux;
+        p[2] = up.z; p[1] = up.y; p[0] = up.x;
         Vec n;
-        n.x = dx + t * (v.x - dx);
-        n.y = dy + t * (v.y - dy);
-        n.z = dz + t * (v.z - dz);
-        PSVECNormalize(&n, (Vec*)(a + 0x24));
+        n.z = dir.z + t * (v.z - dir.z);
+        n.y = dir.y + t * (v.y - dir.y);
+        n.x = dir.x + t * (v.x - dir.x);
+        *(Vec*)(a + 0x24) = n;
+        PSVECNormalize((Vec*)(a + 0x24), (Vec*)(a + 0x24));
     } else {
         float* p = (float*)(a + 0xC);
-        p[0] = q0[1];
-        p[1] = q0[2];
-        p[2] = q0[3];
-        *(float*)(a + 0x24) = dx * inv;
-        *(float*)(a + 0x28) = dy * inv;
-        *(float*)(a + 0x2C) = dz * inv;
+        p[0] = q0[3];
+        p[1] = q0[4];
+        p[2] = q0[5];
+        *(float*)(a + 0x24) = dir.x * inv;
+        *(float*)(a + 0x28) = dir.y * inv;
+        *(float*)(a + 0x2C) = dir.z * inv;
     }
     PSVECCrossProduct((const Vec*)(a + 0x24), (const Vec*)(a + 0xC), (Vec*)(a + 0x18));
 }
-
+#pragma pop
 extern "C" void* fn_801FCED8(void* arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668(arg0);
@@ -303,13 +308,11 @@ extern "C" void fn_801FCF74(void* arg0, float farg0) {
 }
 
 #pragma push
-#pragma paired off
+#pragma processor 750
 extern "C" void fn_801FCFC8(void* arg0) {
     if (*(int*)((char*)arg0 + 4) != 0) {
-        int pad = 0;
         float value = fn_802C99E8(*(float*)((char*)arg0 + 0x6C));
         fn_802C744C(*(void**)((char*)arg0 + 8), (char*)arg0 + 0xC);
-        if (pad) value = pad;
         fn_802C99E8(value);
     }
 }
@@ -725,30 +728,34 @@ extern "C" void fn_801FD5E8(void* arg0, float farg0) {
     *(float*)(obj + 0x6C) = f64_val + step * (*(float*)(obj + 0x68) - f64_val);
 }
 
-#pragma ppc_psq_save off
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 extern "C" void fn_801FDF18(void* arg0, float farg0) {
     char* obj = (char*)arg0;
+    char** slot = *(char***)(obj + 4);
+    char* track = *slot;
     int idx = *(int*)(obj + 0x3C);
-    char* track = *(char**)(*(char**)(obj + 4));
     char* node = GetTrackNodeLinear(track, idx);
 
+    float one = lbl_80563030;
+    float t_step;
     float old_pos = *(float*)(obj + 0x40);
-    float speed = *(float*)(node + 0x20);
-    float t_step = old_pos + farg0;
-    register float one = lbl_80563030;
-    float step = speed * t_step;
+    t_step = old_pos + farg0;
+    float step = *(float*)(node + 0x20) * t_step;
 
     if (step < one) {
         *(float*)(obj + 0x40) = t_step;
     } else if (idx + 2 < *(int*)(track + 0x6D0)) {
-        float inv_speed = one / speed;
-        int next_idx = *(int*)(obj + 0x3C) + 1;
+        float inv_speed = one / *(float*)(node + 0x20);
+        char* slot_ptr = *(char* volatile*)(obj + 4);
+        int next_idx = *(volatile int*)(obj + 0x3C) + 1;
         *(int*)(obj + 0x3C) = next_idx;
         float delta = farg0 - inv_speed;
         step -= one;
         *(float*)(obj + 0x40) = old_pos + delta;
 
-        node = GetTrackNodeLinear(*(char**)(*(char**)(obj + 4)), next_idx);
+        node = GetTrackNodeLinear(*(char**)slot_ptr, *(int*)(obj + 0x3C));
 
         *(float*)(obj + 0x44) = *(float*)(obj + 0x54);
         *(float*)(obj + 0x48) = *(float*)(obj + 0x58);
@@ -756,13 +763,13 @@ extern "C" void fn_801FDF18(void* arg0, float farg0) {
         *(float*)(obj + 0x50) = *(float*)(obj + 0x60);
         *(float*)(obj + 0x64) = *(float*)(obj + 0x68);
 
-        char* next_node = GetTrackNodeLinear(*(char**)(*(char**)(obj + 4)), *(int*)(obj + 0x3C) + 1);
+        char* next_node = GetTrackNodeLinear(*(char**)(*(char* volatile*)(obj + 4)), *(int*)(obj + 0x3C) + 1);
         *(float*)(obj + 0x54) = *(float*)(next_node + 0xC);
         *(float*)(obj + 0x58) = *(float*)(next_node + 0x10);
         *(float*)(obj + 0x5C) = *(float*)(next_node + 0x14);
         *(float*)(obj + 0x60) = *(float*)(next_node + 0x18);
 
-        char* next2_node = GetTrackNodeLinear(*(char**)(*(char**)(obj + 4)), *(int*)(obj + 0x3C) + 1);
+        char* next2_node = GetTrackNodeLinear(*(char**)(*(char* volatile*)(obj + 4)), *(int*)(obj + 0x3C) + 1);
         *(float*)(obj + 0x68) = *(float*)(next2_node + 0x1C);
     } else {
         fn_801FEC74(obj);
@@ -771,8 +778,8 @@ extern "C" void fn_801FDF18(void* arg0, float farg0) {
         return;
     }
 
-    int cur_idx = *(int*)(obj + 0x3C);
-    char* call_track = *(char**)(*(char**)(obj + 4));
+    char* call_track = **(char***)((char*)arg0 + 4);
+    int cur_idx = *(int*)((char*)arg0 + 0x3C);
     char* prev = GetTrackNodeLinear(call_track, cur_idx - 1);
     char* next = GetTrackNodeLinear(call_track, cur_idx + 1);
     char* next2 = GetTrackNodeLinear(call_track, cur_idx + 2);
@@ -780,11 +787,11 @@ extern "C" void fn_801FDF18(void* arg0, float farg0) {
     fn_801FD144(obj, prev, node, next, next2, step);
     fn_801FD320(obj, step);
 
-    float f64_val = *(float*)(obj + 0x64);
     float f68_val = *(float*)(obj + 0x68);
+    float f64_val = *(float*)(obj + 0x64);
     *(float*)(obj + 0x6C) = f64_val + step * (f68_val - f64_val);
 }
-#pragma paired on
+#pragma pop
 extern "C" void fn_801FEDA4(void*);
 extern "C" float fn_80129DC4(int, void*, float, float);
 extern "C" float fn_801E7E24(void);
