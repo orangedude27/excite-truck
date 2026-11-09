@@ -61,7 +61,7 @@ extern "C" int fn_80128668(void *);
 extern "C" void fn_802073A4(void*, int, int);
 extern int lbl_8055ED8C;
 extern void *lbl_8055ED90;
-extern char lbl_8033BD3C;
+extern char lbl_8033BD3C[];
 extern char lbl_8033BD4C[];
 extern char lbl_8055B4C0[8];
 extern char lbl_8055B4C8[8];
