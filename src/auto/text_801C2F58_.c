@@ -311,7 +311,7 @@ s32 fn_801C3B7C(const void *arg0, const void *arg1) {
 #pragma scheduling on
 
 #pragma push
-#pragma scheduling off
+#pragma scheduling on
 void fn_801C3C14(s32 arg0) {
     s32 offset = arg0 * 0x30C;
     memset((void *)(lbl_8055E7F8 + offset), 0, 0x30C);
