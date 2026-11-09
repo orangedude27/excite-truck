@@ -1367,6 +1367,8 @@ extern "C" void *fn_8014DE50(void) {
 
 extern void fn_80128670(long);
 #pragma cplusplus on
+extern "C" void fn_80128670(s32);
+extern "C" void fn_80128668(void *);
 extern "C" void *fn_8014E154(void *arg0, s32 arg1) {
     struct Obj { char pad[0x6C]; void *f6C; char pad2[4]; void *f74; void *f78; };
     struct Obj *obj = (struct Obj *)arg0;
