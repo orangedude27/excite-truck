@@ -20,6 +20,11 @@ extern void *OSGetMEM2ArenaHi(void);
 
 const char *__OSVersion = "<< RVL_SDK - OS \trelease build: Sep 21 2006 14:32:13 (0x4200_60422) >>\0";
 
+// Copy of <revolution/OS/OS.h>'s OSConsoleType.  This unit keeps its own
+// because OS.h also declares __OSGetIOSRev(OSIOSRev*), which this file
+// declares as taking a void*.  Top nibble of the type picks the kind of
+// hardware: 0 = retail RVL board, 1 = emulator/dev (OS_CONSOLE_MASK_EMU),
+// 2 = TDEV; the low byte is the board revision (0x1x = "1", 0x2x = "2").
 typedef enum {
     OS_CONSOLE_MASK = 0xF0000000,
     OS_CONSOLE_MASK_RVL = 0x00000000,
