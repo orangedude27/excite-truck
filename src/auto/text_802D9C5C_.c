@@ -109,6 +109,254 @@ void fn_802D9C5C(int arg0, void *arg1, int arg2) {
     }
 }
 
+#pragma push
+void fn_802D9DE4(int arg0, void *arg1, int arg2) {
+    unsigned int *src, *dest;
+    int i = 0, n, safe, ctr2; unsigned int ctr;
+    unsigned int t0, t1;
+    if (arg2 > 0) {
+        n = arg2 - 8;
+        if (arg2 > 8) {
+            safe = 0;
+            if (arg2 >= 0 && arg2 <= 0x7ffffffe) safe = 1;
+            if (safe) {
+                ctr = (unsigned int)(n + 7) >> 3;
+                src = (unsigned int *)arg1;
+                dest = (unsigned int *)((char *)lbl_804DAC48 + arg0 * 0x30);
+                if (n > 0) do {
+                t0 = src[0];
+                t1 = src[1];
+                dest[0] = t0;
+                t0 = src[2];
+                dest[1] = t1;
+                t1 = src[3];
+                dest[2] = t0;
+                t0 = src[4];
+                dest[3] = t1;
+                t1 = src[5];
+                dest[4] = t0;
+                t0 = src[6];
+                dest[5] = t1;
+                t1 = src[7];
+                dest[6] = t0;
+                t0 = src[8];
+                dest[7] = t1;
+                t1 = src[9];
+                dest[8] = t0;
+                t0 = src[10];
+                dest[9] = t1;
+                t1 = src[11];
+                dest[10] = t0;
+                t0 = src[12];
+                dest[11] = t1;
+                t1 = src[13];
+                dest[12] = t0;
+                t0 = src[14];
+                dest[13] = t1;
+                t1 = src[15];
+                dest[14] = t0;
+                t0 = src[16];
+                dest[15] = t1;
+                t1 = src[17];
+                dest[16] = t0;
+                t0 = src[18];
+                dest[17] = t1;
+                t1 = src[19];
+                dest[18] = t0;
+                t0 = src[20];
+                dest[19] = t1;
+                t1 = src[21];
+                dest[20] = t0;
+                t0 = src[22];
+                dest[21] = t1;
+                t1 = src[23];
+                dest[22] = t0;
+                t0 = src[24];
+                dest[23] = t1;
+                t1 = src[25];
+                dest[24] = t0;
+                t0 = src[26];
+                dest[25] = t1;
+                t1 = src[27];
+                dest[26] = t0;
+                t0 = src[28];
+                dest[27] = t1;
+                t1 = src[29];
+                dest[28] = t0;
+                t0 = src[30];
+                dest[29] = t1;
+                t1 = src[31];
+                dest[30] = t0;
+                t0 = src[32];
+                dest[31] = t1;
+                t1 = src[33];
+                dest[32] = t0;
+                t0 = src[34];
+                dest[33] = t1;
+                t1 = src[35];
+                dest[34] = t0;
+                t0 = src[36];
+                dest[35] = t1;
+                t1 = src[37];
+                dest[36] = t0;
+                t0 = src[38];
+                dest[37] = t1;
+                t1 = src[39];
+                dest[38] = t0;
+                t0 = src[40];
+                dest[39] = t1;
+                t1 = src[41];
+                dest[40] = t0;
+                t0 = src[42];
+                dest[41] = t1;
+                t1 = src[43];
+                dest[42] = t0;
+                t0 = src[44];
+                dest[43] = t1;
+                t1 = src[45];
+                dest[44] = t0;
+                t0 = src[46];
+                dest[45] = t1;
+                t1 = src[47];
+                dest[46] = t0;
+                t0 = src[48];
+                dest[47] = t1;
+                t1 = src[49];
+                dest[48] = t0;
+                t0 = src[50];
+                dest[49] = t1;
+                t1 = src[51];
+                dest[50] = t0;
+                t0 = src[52];
+                dest[51] = t1;
+                t1 = src[53];
+                dest[52] = t0;
+                t0 = src[54];
+                dest[53] = t1;
+                t1 = src[55];
+                dest[54] = t0;
+                t0 = src[56];
+                dest[55] = t1;
+                t1 = src[57];
+                dest[56] = t0;
+                t0 = src[58];
+                dest[57] = t1;
+                t1 = src[59];
+                dest[58] = t0;
+                t0 = src[60];
+                dest[59] = t1;
+                t1 = src[61];
+                dest[60] = t0;
+                t0 = src[62];
+                dest[61] = t1;
+                t1 = src[63];
+                dest[62] = t0;
+                t0 = src[64];
+                dest[63] = t1;
+                t1 = src[65];
+                dest[64] = t0;
+                t0 = src[66];
+                dest[65] = t1;
+                t1 = src[67];
+                dest[66] = t0;
+                t0 = src[68];
+                dest[67] = t1;
+                t1 = src[69];
+                dest[68] = t0;
+                t0 = src[70];
+                dest[69] = t1;
+                t1 = src[71];
+                dest[70] = t0;
+                t0 = src[72];
+                dest[71] = t1;
+                t1 = src[73];
+                dest[72] = t0;
+                t0 = src[74];
+                dest[73] = t1;
+                t1 = src[75];
+                dest[74] = t0;
+                t0 = src[76];
+                dest[75] = t1;
+                t1 = src[77];
+                dest[76] = t0;
+                t0 = src[78];
+                dest[77] = t1;
+                t1 = src[79];
+                dest[78] = t0;
+                t0 = src[80];
+                dest[79] = t1;
+                t1 = src[81];
+                dest[80] = t0;
+                t0 = src[82];
+                dest[81] = t1;
+                t1 = src[83];
+                dest[82] = t0;
+                t0 = src[84];
+                dest[83] = t1;
+                t1 = src[85];
+                dest[84] = t0;
+                t0 = src[86];
+                dest[85] = t1;
+                t1 = src[87];
+                dest[86] = t0;
+                t0 = src[88];
+                dest[87] = t1;
+                t1 = src[89];
+                dest[88] = t0;
+                t0 = src[90];
+                dest[89] = t1;
+                t1 = src[91];
+                dest[90] = t0;
+                t0 = src[92];
+                dest[91] = t1;
+                t1 = src[93];
+                dest[92] = t0;
+                t0 = src[94];
+                dest[93] = t1;
+                t1 = src[95];
+                dest[94] = t0;
+                dest[95] = t1;
+                    i += 8;
+                    src += 96;
+                    dest += 96;
+                ctr -= 1;
+                } while (ctr != 0);
+            }
+        }
+        ctr2 = arg2 - i;
+        src = (unsigned int *)arg1 + i * 12;
+        dest = (unsigned int *)((char *)lbl_804DAC48 + arg0 * 0x30) + i * 12;
+        if (i < arg2) do {
+            t0 = src[0];
+            t1 = src[1];
+            dest[0] = t0;
+            t0 = src[2];
+            dest[1] = t1;
+            t1 = src[3];
+            dest[2] = t0;
+            t0 = src[4];
+            dest[3] = t1;
+            t1 = src[5];
+            dest[4] = t0;
+            t0 = src[6];
+            dest[5] = t1;
+            t1 = src[7];
+            dest[6] = t0;
+            t0 = src[8];
+            dest[7] = t1;
+            t1 = src[9];
+            dest[8] = t0;
+            t0 = src[10];
+            dest[9] = t1;
+            t1 = src[11];
+            dest[10] = t0;
+            dest[11] = t1;
+            src += 12; dest += 12;
+        ctr2 -= 1;
+        } while (ctr2 != 0);
+    }
+}
+#pragma pop
 void fn_802DA1F4(int arg0, void *arg1, int arg2) {
     extern int lbl_804DB458[];
     extern signed char lbl_8055FE58;
@@ -242,13 +490,18 @@ void fn_802DA2F4(void) {
     *last = value0;
 }
 
-#pragma opt_propagation reset
-#pragma scheduling off
-void *fn_802DA450(void *arg0,int arg1) {
- if(arg0) { *(void**)arg0=(void*)((char*)&lbl_8034C8E8+0x10000); fn_80128670(*(int*)((char*)arg0+4)); if(arg0) *(int*)((char*)arg0+4)=0; if(arg1>0) fn_80128668(arg0); }
- return arg0;
+#pragma scheduling on
+void *fn_802DA450(void *arg0, int arg1) {
+    if (arg0) {
+        *(void **)arg0 = lbl_8034C8E8;
+        fn_80128670(*(int *)((char *)arg0 + 4));
+        if (arg0)
+            *(int *)((char *)arg0 + 4) = 0;
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
 }
-
 void fn_802DA4C4(void) {
     void *p = lbl_8055FE5C;
     if (p != 0) {
