@@ -300,6 +300,99 @@ void fn_8024A4C4(s32 arg0, s32 arg1, s32 arg2) {
     fn_8024974C(arg0, arg1, arg2, 0);
 }
 
+extern int fn_80012818(void);
+extern int fn_80012820();
+extern int fn_80012870();
+extern void fn_801332D0(s32, s32, s32 *);
+extern s32 fn_80133348(s32, s32, s32);
+extern void fn_8027BCD0(void *);
+extern u8 fn_8024B070(s32 *, s32 **);
+extern s32 lbl_8055BF10;
+extern s32 lbl_8055BF14;
+#pragma push
+#pragma scheduling invalid_target
+s32 fn_8024A4CC(s32 *arg0, s32 *arg1, s32 *arg2) {
+    extern void *fn_8001285C(s32);
+    struct Buffer {
+        void *data;
+        s32 count;
+        s32 size;
+        u8 bytes[0xC00];
+    } buffer;
+    s32 key;
+    register s32 *entry;
+    register s32 i;
+    register s32 targetKey;
+    s32 index;
+    register s32 count;
+    void *record;
+    s32 result;
+
+    *arg0 = -1;
+    *arg1 = 0;
+    *arg2 = 0;
+    fn_801332D0(0, lbl_8055BF14, arg0);
+    fn_801332D0(0, lbl_8055BF10, arg1);
+
+    *(volatile s32 *)&buffer.count = 0;
+    *(volatile void **)&buffer.data = buffer.bytes;
+    *(volatile s32 *)&buffer.size = 0x80;
+    fn_8027BCD0(&buffer);
+    key = -1;
+
+    index = *arg0;
+    if (index >= 0 && index < fn_80012818()) {
+        record = (void *)fn_80012820(index);
+        count = *arg1;
+        if (count >= 0 && count < *(s32 *)((u8 *)record + 0x70)) {
+            record = (void *)fn_80012870(*(volatile s32 *)arg0, count);
+            count = buffer.count;
+            i = 0;
+            targetKey = *(s32 *)record;
+            entry = (s32 *)buffer.data;
+            while (i < count) {
+                if (*entry == targetKey)
+                    goto found_entry;
+                entry = (s32 *)((u8 *)entry + 0x18);
+                i++;
+            }
+            i = -1;
+found_entry:
+            if (i >= 0)
+                key = targetKey;
+        }
+    }
+
+    if (((s32 (*)(s32 *, s32 **))fn_8024B070)(&key, (s32 **)&buffer.data)) {
+        *arg0 = *(s32 *)((u8 *)fn_8001285C(key) + 4);
+        *arg1 = -1;
+        count = *(s32 *)((u8 *)fn_80012820(*arg0) + 0x70);
+        index = count;
+        goto record_continue;
+record_loop:
+        if (*(s32 *)fn_80012870(*arg0, index) == key) {
+            *arg1 = index;
+            goto record_done;
+        }
+record_continue:
+        if (index-- > 0)
+            goto record_loop;
+record_done:
+        fn_80133348(0, lbl_8055BF14, *arg0);
+        fn_80133348(0, lbl_8055BF10, *arg1);
+        *(volatile s32 *)&buffer.data = 0;
+        result = 1;
+        *(volatile s32 *)&buffer.count = 0;
+        *(volatile s32 *)&buffer.size = 0;
+        return result;
+    }
+    *(volatile s32 *)&buffer.data = 0;
+    result = 0;
+    *(volatile s32 *)&buffer.count = 0;
+    *(volatile s32 *)&buffer.size = 0;
+    return result;
+}
+#pragma pop
 s32 fn_8024A6A4(s32 *arg0) {
     if (fn_802411D4() == 0) {
         *(volatile s32 *)arg0 = -1;
@@ -339,6 +432,7 @@ extern int lbl_8055BF68;
 #pragma push
 #pragma scheduling invalid_target
 #pragma scheduling on
+#pragma use_lmw_stmw off
 s32 fn_8024ACB4(s32 *arg0, s32 arg1, void *arg2) {
     char storage[0x1F8];
     register s32 *output = arg0;
@@ -347,7 +441,7 @@ s32 fn_8024ACB4(s32 *arg0, s32 arg1, void *arg2) {
     register char *name = lbl_80343998;
     register s32 zero = 0;
     register s32 three = 3;
-    register s32 *configStackPointer = (s32 *)storage;
+    register s32 *configStackPointer;
     s32 result;
 
     if (fn_802411D4() == 0) {
@@ -356,6 +450,7 @@ s32 fn_8024ACB4(s32 *arg0, s32 arg1, void *arg2) {
     fn_8024B73C((char *)storage + 0x18, (const char *)key, work);
     fn_8024B830((char *)storage + 0x18, *output);
     work = (char *)storage + 0x18;
+    configStackPointer = (s32 *)storage;
 
     configStackPointer[49] = zero;
     configStackPointer[46] = (s32)&lbl_8055BF68;
@@ -467,6 +562,7 @@ s32 fn_8024ACB4(s32 *arg0, s32 arg1, void *arg2) {
     return 0;
 }
 #pragma pop
+#pragma use_lmw_stmw on
 void *fn_8024AFF8(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         fn_80236074((char *)arg0 + 0x4C, -1);
@@ -938,12 +1034,13 @@ void fn_8024B9AC(void *arg0) {
     *(s32 *)((char *)arg0 + 0x10) = (index + 1) % count;
 }
 
-void fn_8024B9CC(void *arg0, s32 *arg1, s32 *arg2) {
-    register char *entry = (char *)arg0 + *(s32 *)((char *)arg0 + 0x10) * 0xC;
-    register s32 value2 = *(s32 *)(entry + 0x24);
-    register s32 value1 = *(s32 *)(entry + 0x20);
+s32 fn_8024B9CC(void *arg0, s32 *arg1, s32 *arg2) {
+    char *entry = (char *)arg0 + *(s32 *)((char *)arg0 + 0x10) * 0xC;
+    s32 value1 = *(s32 *)(entry + 0x20);
+    s32 value2 = *(s32 *)(entry + 0x24);
     *arg1 = value1;
     *arg2 = value2;
+    return value1;
 }
 
 s32 fn_8024B9EC(void *arg0) {
