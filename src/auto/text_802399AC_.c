@@ -635,13 +635,47 @@ void fn_8023B220(void *arg0) {
     fn_80214A9C(6);
 }
 #pragma scheduling on
-void fn_8023B284(void *arg0) {
-    if (((s32 (*)(void *))(*(void ***)lbl_8055F10C)[24])(lbl_8055F10C) == 0) {
-        s32 value = fn_80214D04();
-        if (value == 3) *(s32 *)((char *)arg0 + 0x18) = 1;
-        else *(s32 *)((char *)arg0 + 0x18) = 0;
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_8023B284(void *arg0) {
+    struct Dummy {
+        virtual s32 f0();
+        virtual s32 f1();
+        virtual s32 f2();
+        virtual s32 f3();
+        virtual s32 f4();
+        virtual s32 f5();
+        virtual s32 f6();
+        virtual s32 f7();
+        virtual s32 f8();
+        virtual s32 f9();
+        virtual s32 f10();
+        virtual s32 f11();
+        virtual s32 f12();
+        virtual s32 f13();
+        virtual s32 f14();
+        virtual s32 f15();
+        virtual s32 f16();
+        virtual s32 f17();
+        virtual s32 f18();
+        virtual s32 f19();
+        virtual s32 f20();
+        virtual s32 f21();
+        virtual s32 f22();
+    };
+    if (((Dummy *)lbl_8055F10C)->f22() == 0) {
+        switch (fn_80214D04()) {
+        case 3:
+            *(s32 *)((char *)arg0 + 0x18) = 1;
+            break;
+        default:
+            *(s32 *)((char *)arg0 + 0x18) = 0;
+            break;
+        }
     }
 }
+#pragma cplusplus reset
+#pragma pop
 
 #pragma push
 #pragma small_data off
