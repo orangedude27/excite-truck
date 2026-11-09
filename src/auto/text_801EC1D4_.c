@@ -455,7 +455,7 @@ void fn_801ECC70(void *arg0) {
 #pragma scheduling invalid_target
 long fn_801ECC8C(unsigned int arg0) {
     long result = 0;
-    if (fn_801ECB60() != 0 || arg0 == lbl_8055EBC8)
+    if (fn_801ECB60((void *)arg0) != 0 || arg0 == lbl_8055EBC8)
         result = 1;
     return result;
 }
