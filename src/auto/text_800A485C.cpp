@@ -1,5 +1,5 @@
   #include <types.h>
-typedef void Fn800A4B78Ret;
+typedef u16 *Fn800A4B78Ret;
 struct Fn800B10E0Ent {
     u16 first;
     u8 pad2[0x20A - 2];
@@ -5486,13 +5486,7 @@ extern "C" s32 fn_800B0258(void *, s32, s32 *);
 extern "C" s32 fn_800AE620(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     u32 sign = ((u32)(-(arg2) | (arg2))) >> 31;
     s32 result = fn_800AE4C0((void *)arg0, (u32)arg1, sign, 0, (s32 *)arg3);
-    s32 ret;
-    if (result == 0) {
-        ret = 0;
-    } else {
-        ret = result;
-    }
-    return ret;
+    return result == 0 ? 0 : result;
 }
 
 extern "C" s32 fn_800AE664(void *arg0, u32 arg1, u32 arg2, s32 *arg3, s32 *arg4) {
@@ -9194,20 +9188,20 @@ extern "C" s32 fn_800B5070(s32 arg0, s32 *out) {
 }
 #pragma pop
 extern "C" s32 fn_800B51FC(void *arg0, s32 arg1) {
-    s32 position = (s32)arg0 + 7;
+    arg0 = (u8 *)arg0 + 7;
     u32 digits = 7;
     u32 divisor = 10;
     u32 place = 1;
-
     while (digits > 1 && arg1 != 0) {
-        u32 rem = arg1 % divisor;
+        u32 rem = (u32)arg1 % divisor;
         if (rem != 0) {
             arg1 -= rem;
-            *(u8 *)position += (s8)(rem / place);
+            rem /= place;
+            *(u8 *)arg0 += (s8)rem;
         }
         divisor *= 10;
         digits--;
-        position--;
+        arg0 = (u8 *)arg0 - 1;
         place *= 10;
     }
     return 0;
@@ -20046,19 +20040,19 @@ extern u8 lbl_8031F43C[];
 #pragma push
 #pragma small_data off
 #pragma pop
-extern "C" void __ct__Q36nw4hbm3lyt19ArcResourceAccessorFv(void *this_) {
-    u32 *p = (u32 *)this_;
+extern "C" void* __ct__Q36nw4hbm3lyt19ArcResourceAccessorFv(void *this_) {
+    volatile u32 *p = (volatile u32 *)this_;
     u32 v = (u32)&lbl_8031F43C;
-
+    u32 tail = (u32)this_ + 0x28;
     fn_800DCE50(this_);
-
     p[0x28 >> 2] = 0;
     p[0x2C >> 2] = 0;
     p[0] = v;
     p[0x20 >> 2] = 0;
     p[0x24 >> 2] = 0;
-    p[0x28 >> 2] = (u32)this_ + 0x28;
-    p[0x2C >> 2] = (u32)this_ + 0x28;
+    p[0x28 >> 2] = tail;
+    p[0x2C >> 2] = tail;
+    return this_;
 }
 extern "C" const char lbl_8031F2C8[];
 #pragma push
@@ -23518,7 +23512,7 @@ extern "C" s32 fn_800A4B54(s32 arg0) {
 }
 #pragma pop
 
-extern "C" void fn_800A4B78(u16 *arg0, u16 *arg1) {
+extern "C" Fn800A4B78Ret fn_800A4B78(u16 *arg0, u16 *arg1) {
     u16 *dst = arg0;
     u16 *src = arg1;
     u16 value;
@@ -23827,8 +23821,8 @@ extern "C" void fn_800A52DC(u32 arg0) {
 extern "C" void fn_800A535C(u32 arg0) {
     u8 *ptr = (u8 *)lbl_803D2140 + 0xA0;
     int i = 0;
-    for (int k = 0; k < 13; k++, ptr += 0x3F90, i++) {
-        (void)i;
+    int j = 0;
+    for (; i < 13; i++, j++, ptr += 0x3F90) {
         if (*(u32 *)(ptr + 0x1FBC) == arg0) {
             *(u16 *)(ptr + 0x1F8C) |= 0x14;
         }
