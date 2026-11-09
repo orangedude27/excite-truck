@@ -856,9 +856,11 @@ void fn_802B321C(int *param_1, int *param_2, int *param_3, int param_4)
     fn_802E30C8(lbl_8034A3BC, param_4, 0, param_3[1]);
 }
 
+#pragma dont_inline on
 int fn_802B2E00(void *);
-int fn_802B2E08(int);
 int *fn_802B320C(int *, int);
+#pragma dont_inline reset
+int fn_802B2E08(int);
 extern int lbl_8055F9B4;
 extern int lbl_8055F9B0;
 int fn_802B3340(int);
