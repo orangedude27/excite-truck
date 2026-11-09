@@ -613,14 +613,14 @@ void fn_8027B94C(void *arg0) {
 }
 
 #pragma dont_inline on
-void fn_8027B984(void *arg0, long arg1) {
-    long temp_r30;
+long fn_8027B984(void *arg0, long arg1) {
     long temp_r31;
-
+    long temp_r30;
     temp_r31 = fn_8000DA10();
     fn_8000D984(arg1);
     temp_r30 = fn_8027BAB8(fn_8027B878((long)arg0));
     fn_8000D984(temp_r31);
+    return temp_r30;
 }
 #pragma dont_inline reset
 
