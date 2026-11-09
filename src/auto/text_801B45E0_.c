@@ -134,8 +134,8 @@ extern "C" void fn_801B4720(int arg0) {
     int offset;
     unsigned int i;
     int minusOne;
-    int value;
     int zero;
+    int value;
 
     i = 0;
     offset = 0;
@@ -287,12 +287,18 @@ int fn_801B49D4(void *arg0, void **arg1, void **arg2, float *arg3, int arg4) {
 extern "C" void fn_801B4AC4(int arg0, int arg1) {
     int index;
     volatile int *entry;
+    int value;
+    F801B4AC4 *obj;
 
     index = ((int (*)(int, int))fn_801B4C9C)(arg0, arg1);
     entry = ((volatile int *(*)(int, int))fn_801B4C58)(arg0, index);
-    ((F801B4AC4 *)(*(int *)(arg0 + 4)))->f3(entry[2]);
+    value = entry[2];
+    obj = *(F801B4AC4 **)(arg0 + 4);
+    obj->f3(value);
     entry = ((volatile int *(*)(int, int))fn_801B4C60)(arg0, index);
-    ((F801B4AC4 *)(*(int *)(arg0 + 4)))->f3(entry[2]);
+    value = entry[2];
+    obj = *(F801B4AC4 **)(arg0 + 4);
+    obj->f3(value);
 }
 #pragma cplusplus off
 int fn_801B4B44(char *arg0) {
@@ -345,7 +351,7 @@ void fn_801B4C9C(int arg0, int arg1) {
 extern float lbl_80562660;
 extern float lbl_80562658;
 float fn_801B4D10(int arg0, int arg1) {
-    return (float)((arg1 - fn_801B4B9C(arg0)) % 6) / lbl_80562658;
+    return ((arg1 - ((int (*)(int))fn_801B4B9C)(arg0)) % 6) / lbl_80562658;
 }
 
 extern float lbl_80562668, lbl_8056266C, lbl_80562670, lbl_80562674, lbl_80562678, lbl_8056267C, lbl_80562680;
@@ -472,8 +478,8 @@ extern int lbl_8055E6D4;
 #pragma push
 #pragma small_data off
 void fn_801B5274(void) {
-    char *p = (char *)lbl_80435C70 + 0x208;
-    memset(p, 0, 0x40);
+    int n = 0x40;
+    memset((char *)&lbl_80435C70 + 0x208, 0, n);
     *(int *)((char *)&lbl_80435C70 + 0x200) = 0;
     *(int *)((char *)&lbl_80435C70 + 0x204) = 0;
     lbl_8055E6D8 = 0;
