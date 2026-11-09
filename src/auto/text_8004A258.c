@@ -70,34 +70,50 @@ void __OSGetIOSRev(void *arg_rev) {
     rev->verMinor = version;
 }
 
+/*
+ * OSGetConsoleType - what kind of hardware is this running on?
+ *
+ * Returns an OSConsoleType.  Normally that is just the value the boot info
+ * left in its consoleType field (OSInit points BootInfo_8055D9F8 at
+ * OS_BOOT_INFO, i.e. the boot ROM's info block in MEM1).  When there is no
+ * boot info to ask, the type is worked out here instead: the DVD drive's
+ * device code says whether a real drive is fitted (its "read" bit set means
+ * a retail drive, so the answer carries no OS_CONSOLE_MASK_EMU bit), and the
+ * Hollywood revision picks the board revision - 0-2 are the "1" boards,
+ * 0x10-0x11 the "2" boards, and anything newer counts as the newest one.
+ * With no usable drive either, 64MB of MEM2 means a retail board and less
+ * means an emulator/dev board.
+ */
 u32 OSGetConsoleType(void) {
     extern void *BootInfo_8055D9F8;
-    extern u32 OSGetPhysicalMem2Size(void);
     u32 hollywood;
     u32 mem2size;
-    u32 code;
+    u32 deviceCode;
 
-    if (BootInfo_8055D9F8 == 0 || *(u32 *)((u8 *)BootInfo_8055D9F8 + 0x2C) == 0) {
-        return 0x10000002;
+    if (BootInfo_8055D9F8 == 0 ||
+        ((OSBootInfo*)BootInfo_8055D9F8)->consoleType == 0) {
+        return 0x10000002;  // no boot info: dev board
     }
 
-    code = *(volatile u16 *)0x800030E6;
-    hollywood = *(volatile u32 *)0x80003138;
+    deviceCode = OS_DVD_DEVICE_CODE;
+    hollywood = OS_HOLLYWOOD_REV;
 
-    if (code & 0x8000) {
-        switch (*(volatile u16 *)0x800030E6 & ~0x8000) {
+    if (deviceCode & DVD_DEVICE_CODE_READ) {
+        // Re-read the code: only a drive that answers tells us anything.
+        switch (OS_DVD_DEVICE_CODE & ~DVD_DEVICE_CODE_READ) {
         case 0x0002:
         case 0x0003:
         case 0x0203:
+            // Retail drive: retail (RVL) board types.
             switch (hollywood) {
             case 0x00000000:
                 return 0x00000010;
             case 0x00000001:
-                return 0x00000011;
+                return OS_CONSOLE_RVL_PP_1;
             case 0x00000002:
-                return 0x00000012;
+                return OS_CONSOLE_RVL_PP_2_1;
             case 0x00000010:
-                return 0x00000020;
+                return OS_CONSOLE_RVL_PP_2_2;
             case 0x00000011:
                 return 0x00000021;
             }
@@ -108,63 +124,65 @@ u32 OSGetConsoleType(void) {
 
         case 0x0202:
         case 0x0201:
+            // Dev drive: same boards, flagged as emulator/dev hardware.
             switch (hollywood) {
             case 0x00000000:
-                return 0x10000010;
+                return OS_CONSOLE_NDEV_1_0;
             case 0x00000001:
-                return 0x10000011;
+                return OS_CONSOLE_NDEV_1_1;
             case 0x00000002:
-                return 0x10000012;
+                return OS_CONSOLE_NDEV_1_2;
             case 0x00000010:
-                return 0x10000020;
+                return OS_CONSOLE_NDEV_2_0;
             case 0x00000011:
-                return 0x10000021;
+                return OS_CONSOLE_NDEV_2_1;
             }
 
             if (hollywood > 0x00000011) {
-                return 0x10000021;
+                return OS_CONSOLE_NDEV_2_1;
             }
         }
     }
 
+    // No drive to ask: the MEM2 size tells retail from emulator.
     mem2size = OSGetPhysicalMem2Size();
 
     switch (hollywood) {
     case 0x00000000:
-        if (mem2size == 0x4000000) {
+        if (mem2size == OS_MEM_MB_TO_B(64)) {
             return 0x00000010;
         }
-        return 0x10000010;
+        return OS_CONSOLE_NDEV_1_0;
     case 0x00000001:
-        if (mem2size == 0x4000000) {
-            return 0x00000011;
+        if (mem2size == OS_MEM_MB_TO_B(64)) {
+            return OS_CONSOLE_RVL_PP_1;
         }
-        return 0x10000011;
+        return OS_CONSOLE_NDEV_1_1;
     case 0x00000002:
-        if (mem2size == 0x4000000) {
-            return 0x00000012;
+        if (mem2size == OS_MEM_MB_TO_B(64)) {
+            return OS_CONSOLE_RVL_PP_2_1;
         }
-        return 0x10000012;
+        return OS_CONSOLE_NDEV_1_2;
     case 0x00000010:
-        if (mem2size == 0x4000000) {
-            return 0x00000020;
+        if (mem2size == OS_MEM_MB_TO_B(64)) {
+            return OS_CONSOLE_RVL_PP_2_2;
         }
-        return 0x10000020;
+        return OS_CONSOLE_NDEV_2_0;
     case 0x00000011:
-        if (mem2size == 0x4000000) {
+        if (mem2size == OS_MEM_MB_TO_B(64)) {
             return 0x00000021;
         }
-        return 0x10000021;
+        return OS_CONSOLE_NDEV_2_1;
     }
 
     if (hollywood > 0x00000011) {
-        if (mem2size == 0x4000000) {
+        if (mem2size == OS_MEM_MB_TO_B(64)) {
             return 0x00000021;
         }
-        return 0x10000021;
+        return OS_CONSOLE_NDEV_2_1;
     }
 
-    return *(u32 *)((u8 *)BootInfo_8055D9F8 + 0x2C);
+    return ((OSBootInfo*)BootInfo_8055D9F8)->consoleType;
 }
 
 extern unsigned int OSGetResetCode(void);
