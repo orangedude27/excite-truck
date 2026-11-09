@@ -598,20 +598,26 @@ struct PlacedObj {
     ShadowDesc shadow;    /* 0x78 */
 };
 
-extern "C" void *fn_801F8188(void *arg0, s32 arg1, s32 arg2) {
+/* fn_801F8188 - object factory: looks at the parameter node's "type" ("composite", "animation",
+ * "sound", or none of them) and lets the matching creator in the table at 0x802F9BA0 allocate the
+ * object, then fills in what every type shares: its placement matrix (optionally transformed by
+ * `transform`), model name, drop height, "forbidden in objects file" flag and shadow description,
+ * and finally its "name" when the caller asks for it. Returns the new object. */
+extern "C" void *fn_801F8188(void *node, s32 transform, s32 copyName) {
+    /* The parameter node: reads values and child nodes by key through its vtable. */
     class Node {
     public:
         virtual void s8();
         virtual void sC();
         virtual void s10();
-        virtual const char *getName(const char *);
+        virtual const char *getString(const char *);   /* 0x14: a string value */
         virtual void s18();
         virtual void s1C();
         virtual void s20();
         virtual void s24();
-        virtual f32 getFloat(const char *, f32);
+        virtual f32 getFloat(const char *, f32);       /* 0x28: a float, with a default */
         virtual void s2C();
-        virtual u8 getFlag(const char *, s32);
+        virtual u8 getFlag(const char *, s32);         /* 0x30: a boolean, with a default */
         virtual void s34();
         virtual void s38();
         virtual void s3C();
@@ -622,55 +628,56 @@ extern "C" void *fn_801F8188(void *arg0, s32 arg1, s32 arg2) {
         virtual void s50();
         virtual void s54();
         virtual void s58();
-        virtual void *getNode(const char *);
+        virtual void *getNode(const char *);           /* 0x58: a child node */
     };
-    struct Ent {
-        s32 (*pred)(const char *);
-        void *(*make)(void *);
+    /* One row of the type table: a "is this our type?" test (0 = take anything) and a creator. */
+    struct TypeEntry {
+        s32 (*matches)(const char *);
+        void *(*create)(void *);
     };
-    struct Tbl { Ent e[4]; };
-    Ent *e;
-    const char *name = ((Node *)arg0)->getName((const char *)lbl_8055B2CC);
-    Tbl table = *(Tbl *)lbl_802F9BA0;
-    u8 *obj = 0;
-    e = table.e;
-    for (u32 i = 0; i < 4; i++, e++) {
-        if (e->pred == 0 || e->pred(name) != 0) {
-            obj = (u8 *)table.e[i].make(arg0);
+    struct TypeTable { TypeEntry entry[4]; };
+    TypeEntry *entry;
+    const char *typeName = ((Node *)node)->getString(OBJ_KEY_TYPE);
+    TypeTable table = *(TypeTable *)lbl_802F9BA0;
+    PlacedObj *obj = 0;
+    entry = table.entry;
+    for (u32 i = 0; i < 4; i++, entry++) {
+        if (entry->matches == 0 || entry->matches(typeName) != 0) {
+            obj = (PlacedObj *)table.entry[i].create(node);
             break;
         }
     }
-    if (fn_801F80FC(name) == 0) {
-        const char *s = ((Node *)arg0)->getName(lbl_8055B2A8);
+    if (fn_801F80FC(typeName) == 0) {  /* not a "composite": it is placed in the world itself */
+        const char *s = ((Node *)node)->getString(OBJ_KEY_MODEL);
         s32 n = 0x10;
-        char *d = (char *)obj + 0x61;
+        char *d = obj->model;
         u8 c;
-        goto body1;
+        goto copyModel;
         for (;;) {
-            if (--n <= 0) { d[-1] = 0; break; }
-body1:
+            if (--n <= 0) { d[-1] = 0; break; }   /* model name truncated to 15 characters */
+copyModel:
             c = *s++;
             *d++ = c;
             if ((s8)c == 0) break;
         }
-        obj[0x60] = fn_801F7EB0(obj + 0x30, arg0, arg1);
-        fn_801F7E20(arg0, obj);
-        obj[0x2C] = ((Node *)arg0)->getFlag((const char *)lbl_8033B024, 0);
-        if (((Node *)arg0)->getNode((const char *)lbl_8055B2D4) != 0) {
-            ((void (*)(void *, void *))fn_801F7FA0)(obj + 0x78, ((Node *)arg0)->getNode((const char *)lbl_8055B2D4));
+        obj->hasPlacement = fn_801F7EB0(obj->placement, node, transform);
+        fn_801F7E20(node, obj);
+        obj->forbidden = ((Node *)node)->getFlag(OBJ_KEY_FORBIDDEN, 0);
+        if (((Node *)node)->getNode(OBJ_KEY_SHADOW) != 0) {
+            ((void (*)(void *, void *))fn_801F7FA0)(&obj->shadow, ((Node *)node)->getNode(OBJ_KEY_SHADOW));
         }
-    } else {
-        *(f32 *)(obj + 0x28) = ((Node *)arg0)->getFloat(lbl_8033AFDC, *(f32 *)(obj + 0x28));
+    } else {  /* a composite has no model: only how far it may fall */
+        obj->dropHeight = ((Node *)node)->getFloat(OBJ_KEY_DROP_HEIGHT, obj->dropHeight);
     }
-    if (arg2 != 0) {
-        const char *s = ((Node *)arg0)->getName((const char *)lbl_8055B2DC);
+    if (copyName != 0) {
+        const char *s = ((Node *)node)->getString(OBJ_KEY_NAME);
         s32 n = 0x20;
-        char *d = (char *)obj;
+        char *d = obj->name;
         u8 c;
-        goto body2;
+        goto copyNameLoop;
         for (;;) {
-            if (--n <= 0) { d[-1] = 0; break; }
-body2:
+            if (--n <= 0) { d[-1] = 0; break; }   /* name truncated to 31 characters */
+copyNameLoop:
             c = *s++;
             *d++ = c;
             if ((s8)c == 0) break;
