@@ -15,11 +15,15 @@ extern void *fn_8012850C(int, void *);
 extern char lbl_80339B70[];
 extern char lbl_80339B80[];
 void *fn_801E76A8(void *arg0, int arg1) {
+    void *first;
     int count = arg1;
+    int remainder;
 
-    *(void **)arg0 = fn_8012850C(count * 0x18, lbl_80339B70);
+    first = fn_8012850C(count * 0x18, lbl_80339B70);
+    remainder = count - 2;
+    *(void **)arg0 = first;
     *(int *)((char *)arg0 + 8) = count;
-    count = (count - 2) * 3;
+    count = (remainder * 4) - remainder;
     *(int *)((char *)arg0 + 4) = 0;
     *(void **)((char *)arg0 + 0xC) = fn_8012850C(count * 2, lbl_80339B80);
     *(int *)((char *)arg0 + 0x10) = 0;
@@ -36,8 +40,35 @@ void *__dt__12PhysicsWorldFv_801E7730(void *arg0, int arg1) {
     return arg0;
 }
 
-void fn_801E7828(void) {
-    int *p = (int *)0;
+void fn_801E7790(void) {
+    int *buf = (int *)0;
+    int count = buf[0];
+    float *vertex = (float *)(buf[0] + buf[1] * 0x18);
+    vertex[0] = 0.0f;
+    vertex[1] = 0.0f;
+    vertex[2] = 0.0f;
+    *(int *)(vertex + 3) = 0;
+    vertex[4] = 0.0f;
+    vertex[5] = 0.0f;
+    buf[1]++;
+    if (count != 0 && buf[1] > 1) {
+        short *idxbuf = (short *)buf[3];
+        int idx = buf[4];
+        idxbuf[idx * 2] = (short)(buf[1] - 3);
+        idx++;
+        buf[4] = idx;
+        idxbuf[idx * 2] = (short)(buf[1] - 2);
+        idx++;
+        buf[4] = idx;
+        idxbuf[idx * 2] = (short)(buf[1] - 1);
+        buf[4] = idx + 1;
+    }
+}
+
+void fn_801E7828(arg0)
+    void *arg0;
+{
+    int *p = (int *)arg0;
     fn_802D68C4(p[0], p[1], p[3], p[4]);
 }
 
