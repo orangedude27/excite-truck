@@ -18,7 +18,7 @@ void fn_802E7578(void) {
 #pragma cplusplus on
   struct Dummy_8055FFF0 {
       virtual ~Dummy_8055FFF0();
-      virtual void f4(void);
+             virtual void f4(s32);
              virtual void f8(s32);
       virtual void f12(s32);
       virtual void f16(s32, s32, s32);
@@ -31,12 +31,11 @@ extern "C" void fn_802E759C(void) {
         lbl_8055FFF0 = 0;
     }
 }
-#pragma cplusplus reset
-void fn_802E75E4(s32 arg0) {
-    ((void (*)(void*, s32))(*(void***)lbl_8055FFF0)[3])(lbl_8055FFF0, arg0);
-}
-
 #pragma cplusplus on
+extern "C" void fn_802E75E4(s32 arg0) {
+    ((Dummy_8055FFF0*)lbl_8055FFF0)->f8(arg0);
+}
+#pragma cplusplus reset
 extern "C" void fn_802E765C(s32 arg0, s32 arg1, s32 arg2) {
     ((Dummy_8055FFF0*)lbl_8055FFF0)->f16(arg0, arg1, arg2);
 }
