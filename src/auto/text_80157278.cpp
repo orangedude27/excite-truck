@@ -2983,12 +2983,16 @@ extern "C" void* fn_8015CBBC(void* arg0, s32 arg1) {
 
 extern "C" u32 fn_8015CC28(void) { return 1; }
 
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
 extern "C" s32 fn_8015CC30(void* arg0) {
-    f32 x = *(f32*)((char*)arg0 + 0x250);
-    f32 r = (x < lbl_80561754) ? x - lbl_80561760 : lbl_80561760 + x;
+    register f32 x = *(f32*)((char*)arg0 + 0x250);
+    register f32 r;
+    if (x < lbl_80561754) r = x - lbl_80561760;
+    else r = lbl_80561760 + x;
     return (s32)r;
 }
+#pragma pop
 extern "C" void fn_8015CC6C(void* arg0, f32 farg0) {
     *(f32*)((char*)arg0 + 0x250) = farg0;
 }
@@ -3202,13 +3206,12 @@ extern "C" void fn_8015D270(void* arg0, void* arg1) {
 }
 
 extern "C" void fn_8015D318(Unk801577F0* arg0, f32 arg1, s32 unused, s32 arg2) {
-    if (unused == 5) {
+    if (arg2 == 5) {
         f32 value;
-        s32 old;
         if (arg1 < lbl_80561754) value = arg1 - lbl_80561760;
         else value = lbl_80561760 + arg1;
-        old = arg0->m26c;
-        arg0->m26c = old + (s32)value;
+        s32 conv = (s32)value;
+        *(volatile s32*)&arg0->m26c += conv;
     }
 }
 
@@ -4171,9 +4174,7 @@ extern "C" void fn_80159624(void *arg0, void *arg1) {
 }
 #pragma scheduling on
 extern "C" s32 fn_80159708(void* arg0) {
-    f32 f = *(f32*)((u8*)arg0 + 0x25c);
-    f64 d = (f64)f;
-    return (s32)d;
+    return (s32)*(f32*)((char*)arg0 + 0x25c);
 }
 #pragma scheduling on
 class Fn8015E338Item {
