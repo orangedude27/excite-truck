@@ -1006,10 +1006,17 @@ extern "C" void fn_800D7738(void* arg0) {
 }
 
 extern "C" void fn_800D7758(void *arg0) {
-    void **p = *(void ***)((char *)arg0 + 0x10);
-    if (p != 0) {
-        (*(void (**)(void))(*(char **)p + 0x1c))();
-    }
+    class Dummy_800D7758 {
+    public:
+        virtual void m0();
+        virtual void m1();
+        virtual void m2();
+        virtual void m3();
+        virtual void m4();
+        virtual void call();
+    };
+    Dummy_800D7758 *obj = *(Dummy_800D7758 **)((char *)arg0 + 0x10);
+    if (obj != 0) obj->call();
 }
 
 extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void* pOut, void* self) {
