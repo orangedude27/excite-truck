@@ -618,10 +618,14 @@ extern "C" u32 fn_8013D18C(u32 arg0) {
 }
 
 extern "C" s32 fn_8013D1F0(s32 arg0) {
-    u8 *obj = ((u8 *(*)(void))fn_801B2EC0)();
-    u8 *(*fn)(u8 *) = (u8 *(*)(u8 *))(*(void ***)obj)[4];
-    obj = fn(obj);
-    return *(s32 *)(obj + 0x10);
+    struct V {
+        virtual void a0();
+        virtual void a1();
+        virtual u8 *a2();
+    };
+    V *obj = (V *)((void *(*)(void))fn_801B2EC0)();
+    u8 *p = obj->a2();
+    return *(s32 *)(p + 0x10);
 }
 
 extern "C" s32 fn_8013D224(f32 farg0, f32 farg1) {
