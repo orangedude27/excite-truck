@@ -242,6 +242,22 @@ extern int lbl_80562F20;
 extern int lbl_80562F24;
 __declspec(section ".data") extern float lbl_80558DC4;
 extern char lbl_8033A3F0[];
+/* Names fn_801F0488 reads.  The pool behind `strings` is the "detached wheel." block in
+ * .data; the formats and keys below are fixed offsets into it, so they expand to exactly
+ * the address arithmetic the function does (rename_symbol cannot name game symbols). */
+#define wheelmod_string_pool lbl_8033A3F0
+#define wheelmod_fmt_lod_side (strings + 0x54) /* "%s%d%s.mod" -> "wheel0L.mod" */
+#define wheelmod_fmt_lod (strings + 0x60)      /* "%s%d.mod"   -> "wheel0.mod"  */
+#define wheelmod_fmt_one_side (strings + 0x6C) /* "%s1%s.mod"  -> "wheel1L.mod" */
+#define wheelmod_key_slow_remap (strings + 0x78) /* "slow_remap": list of models to remap */
+#define wheelmod_key_fast_remap (strings + 0x84) /* "fast_remap" */
+#define wheelmod_base_key lbl_8055B0E0    /* .sdata: "base", the resource's name-stem value */
+#define wheelmod_fmt_one lbl_8055B0E8     /* .sdata: "%s1.mod"   -> "wheel1.mod"  */
+#define wheelmod_label_left ((const char *)lbl_80562F20)  /* .sdata2: pointer to "L" */
+#define wheelmod_label_right ((const char *)lbl_80562F24) /* .sdata2: pointer to "R" */
+#define wheelmod_zero lbl_80558DC4        /* 0.0f */
+#define WHEELMOD_LOD_SLOW_SLOT 0x28       /* &((WheelMod *)0)->lods[side].slowRemap[0] */
+#define WHEELMOD_LOD_FAST_SLOT 0x30       /* ... .fastRemap[0]; the LOD table starts at 0x28 */
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" int fn_8012C33C(char *);
 extern "C" int fn_802C6FC0(char *, int, int);
