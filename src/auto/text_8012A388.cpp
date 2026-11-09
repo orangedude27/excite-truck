@@ -1437,7 +1437,6 @@ func_exit:
     return done;
 }
 
-extern "C" void fn_8012AC28(s32 arg0, s32 arg1);
 extern "C" s32 fn_802E748C(s32 arg0, s32 arg1, void *arg2);
 #pragma push
 #pragma scheduling invalid_target
