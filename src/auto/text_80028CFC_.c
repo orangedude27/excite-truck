@@ -153,12 +153,13 @@ byte_loop:
 }
 
 int strncmp(const unsigned char *s1, const unsigned char *s2, int n) {
+    unsigned char a, b;
     const unsigned char *p = s1 - 1;
     const unsigned char *q = s2 - 1;
-    int count = n + 1;
-    while (--count != 0) {
-        unsigned char a = *++p;
-        unsigned char b = *++q;
+    n++;
+    while (--n != 0) {
+        a = *++p;
+        b = *++q;
         if (a != b)
             return a - b;
         if (a == 0)
@@ -167,16 +168,18 @@ int strncmp(const unsigned char *s1, const unsigned char *s2, int n) {
     return 0;
 }
 
-unsigned char *strchr(const unsigned char *s, int c) {
-    const unsigned char *p = s - 1;
-    unsigned char ch = (unsigned char)c;
-    do {
-        if (*++p == ch)
-            return (unsigned char *)p;
-    } while (*p != 0);
-    if (ch == 0)
-        return (unsigned char *)p;
-    return 0;
+char *strchr(const char *str, int chr) {
+    const unsigned char *p = (const unsigned char *)str - 1;
+    unsigned long c = (chr & 0xff);
+    unsigned long ch;
+
+    while (ch = *++p) {
+        if (ch == c) {
+            return ((char *)p);
+        }
+    }
+
+    return (c ? 0 : (char *)p);
 }
 
 unsigned char *fn_80029004(const unsigned char *s, int c) {
