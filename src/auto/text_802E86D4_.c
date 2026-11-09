@@ -339,71 +339,91 @@ u32 fn_802E8D84(void) { return 1; }
 
 #pragma use_lmw_stmw off
 
+/* rmemcard_read_file - read a whole NAND file into the caller's buffer.
+ * Returns 1 when all len bytes are in buf, 0 on any failure.
+ *
+ * The path is published in rmemcard_current_path for the whole read so the
+ * module's error handlers know which file was in use, and every exit clears
+ * it again (the compiler turns the test on the local's address into the
+ * frame-address test it emits before each clear).
+ *
+ * The game first waits for the async NAND machine to go idle, then insists
+ * that the title's banner.bin is intact and that the file itself exists;
+ * without both it treats the saved data as broken and hands the case to the
+ * recovery handlers instead of reading it.  The read goes through the shared
+ * staging buffer when one is allocated, and a short read closes the file and
+ * runs the recovery handler for that error (-4 = NAND_RESULT_CORRUPT has its
+ * own).  rmemcard_out_of_space is consumed here: only the first failure after
+ * the module ran out of blocks asks for free space.
+ */
 int fn_802E8D8C(const char *path, void *buf, int len) {
-    struct { int pad; char info[0x8C]; } s;
-    int a, saved;
-    char *msg;
-    int n;
-    int b, r;
+    /* NANDFileInfo for the file (0x8C bytes, see revolution/NAND/nand.h);
+     * the word in front of it is the one the exits test. */
+    struct { int self; char info[0x8C]; } file;
+    int banner_ok, was_out_of_space;
+    char *messages;
+    int bytes_read;
+    int file_exists, result;
 
-    msg = lbl_8034D9C0;
-    lbl_80560030 = (int)path;
-    if (((int (*)(void *, void (*)(void)))fn_802E95E0)(msg + 0x550, fn_802E8838) == 0) {
-        if (&s.pad != 0) lbl_80560030 = 0;
+    messages = rmemcard_log_strings;
+    rmemcard_current_path = (int)path;
+    if (((int (*)(void *, void (*)(void)))rmemcard_wait_async)(messages + 0x550, rmemcard_yield) == 0) {
+        if (&file.self != 0) rmemcard_current_path = 0; /* timed out waiting */
         return 0;
     }
-    saved = lbl_8055D255;
-    lbl_8055D255 = 0;
-    a = fn_802E8A18();
-    b = fn_802E8AE8(path);
-    if (a == 0 && b == 0) {
-        fn_802E30C8(msg + 0x560);
-        if (saved != 0) fn_802E8920(len);
-        if (&s.pad != 0) lbl_80560030 = 0;
+    was_out_of_space = rmemcard_out_of_space;
+    rmemcard_out_of_space = 0;
+    banner_ok = rmemcard_test_banner_ok();
+    file_exists = rmemcard_file_exists(path);
+    if (banner_ok == 0 && file_exists == 0) {
+        fn_802E30C8(messages + 0x560); /* no banner and no file to read */
+        if (was_out_of_space != 0) rmemcard_recover_space(len);
+        if (&file.self != 0) rmemcard_current_path = 0;
         return 0;
     }
-    if (a == 0 || b == 0) {
-        fn_802E30C8(msg + 0x594);
-        if (((int (*)(void))fn_802E8BE4)() != 0) fn_802E8920(len);
-        if (&s.pad != 0) lbl_80560030 = 0;
+    if (banner_ok == 0 || file_exists == 0) {
+        fn_802E30C8(messages + 0x594); /* one of the two is missing */
+        if (((int (*)(void))fn_802E8BE4)() != 0) rmemcard_recover_space(len);
+        if (&file.self != 0) rmemcard_current_path = 0;
         return 0;
     }
-    r = NANDOpen(path, s.info, 1);
-    if (r != 0) {
-        fn_802E30C8(msg + 0x5CC, r);
-        if (saved != 0) fn_802E8920(len);
-        if (&s.pad != 0) lbl_80560030 = 0;
+    result = NANDOpen(path, file.info, 1 /* NAND_ACCESS_READ */);
+    if (result != 0) {
+        fn_802E30C8(messages + 0x5CC, result);
+        if (was_out_of_space != 0) rmemcard_recover_space(len);
+        if (&file.self != 0) rmemcard_current_path = 0;
         return 0;
     }
-    if (lbl_80560020 != 0) {
-        if (len > 0x55730) {
-            fn_802E317C(msg + 0x5F0, len, 0x55730);
+    if (rmemcard_async_buffer != 0) {
+        /* read into the shared staging buffer and copy out of it */
+        if (len > RMEMCARD_ASYNC_BUFFER_SIZE) {
+            fn_802E317C(messages + 0x5F0, len, RMEMCARD_ASYNC_BUFFER_SIZE);
         }
-        n = NANDRead(s.info, (void *)lbl_80560020, len);
-        if (n == len) {
-            memcpy(buf, (void *)lbl_80560020, len);
+        bytes_read = NANDRead(file.info, (void *)rmemcard_async_buffer, len);
+        if (bytes_read == len) {
+            memcpy(buf, (void *)rmemcard_async_buffer, len);
         }
     } else {
-        n = NANDRead(s.info, buf, len);
+        bytes_read = NANDRead(file.info, buf, len);
     }
-    if (n != len) {
-        fn_802E30C8(msg + 0x624, n);
-        NANDClose(s.info);
-        if (n == -4) {
+    if (bytes_read != len) {
+        fn_802E30C8(messages + 0x624, bytes_read);
+        NANDClose(file.info);
+        if (bytes_read == -4 /* NAND_RESULT_CORRUPT */) {
             ((void (*)(void))fn_802E8C2C)();
         } else if (((int (*)(void))fn_802E8BE4)() != 0) {
-            fn_802E8920(len);
+            rmemcard_recover_space(len);
         }
-        if (&s.pad != 0) lbl_80560030 = 0;
+        if (&file.self != 0) rmemcard_current_path = 0;
         return 0;
     }
-    r = NANDClose(s.info);
-    if (r != 0) {
-        fn_802E30C8(msg + 0x644, r);
-        if (&s.pad != 0) lbl_80560030 = 0;
+    result = NANDClose(file.info);
+    if (result != 0) {
+        fn_802E30C8(messages + 0x644, result);
+        if (&file.self != 0) rmemcard_current_path = 0;
         return 0;
     }
-    if (&s.pad != 0) lbl_80560030 = 0;
+    if (&file.self != 0) rmemcard_current_path = 0;
     return 1;
 }
 
