@@ -16816,6 +16816,9 @@ extern void l2cu_send_peer_disc_req(void *);
 extern void forward_peer_data(void *, void *);
 extern void l2cu_process_our_cfg_req(void *, void *);
 extern void l2cu_send_peer_config_req(tL2C_CCB_VIEW *, tL2CAP_CFG_INFO *);
+/* L2CAP channel state machine, OPEN state (l2c_csm.c l2c_csm_open): the channel is up, so this
+ * dispatches what the peer link layer (disconnect / QOS violation), the peer L2CAP (config request,
+ * disconnect request, data) and the upper layer (disconnect, data write, config request) send it. */
 void l2c_csm_open(tL2C_CCB_VIEW *p_ccb, u16 event, void *p_data)
 {
     char *p_str = (char *)jumptable_803183B0;   /* l2c_csm.c's trace strings, after the CSM jump table */
