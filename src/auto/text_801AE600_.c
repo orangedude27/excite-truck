@@ -380,8 +380,9 @@ void fn_801AEF28(Src *arg0) {
     int *p;
     int *q;
     int i, off;
-    Ent78 *dst = (Ent78 *)&lbl_80435780[0];
-    int *dcount = &lbl_80435780[0x3C0 / 4];
+    char *base = (char *)lbl_80435740;
+    Ent78 *dst = (Ent78 *)(base + 0x40);
+    int *dcount = (int *)(base + 0x40 + 0x3C0);
     lbl_8055E635 = 1;
     p = (int *)fn_801284F8(0x24, lbl_80335980);
     if (p != 0) {
@@ -391,28 +392,40 @@ void fn_801AEF28(Src *arg0) {
     lbl_8055E620 = p;
     q = (int *)fn_801284F8(8, lbl_80335990);
     if (q != 0) {
+        float v;
         q[1] = 8;
-        q[0] = fn_8012850C(8 * 0x1C, lbl_803359CC);
+        q[0] = fn_8012850C(q[1] * 0x1C, lbl_803359CC);
+        v = lbl_80562558;
         for (i = 0, off = 0; i < q[1]; i++, off += 0x1C) {
             char *d = (char *)q[0] + off;
+            int sel;
             memset(d, 0, 0x1C);
-            *(float *)(d + 8) = lbl_80562558;
+            *(float *)(d + 8) = v;
             *(short *)(d + 0xC) = -100;
             if (i < fn_801B2F24())
-                *(short *)(d + 0x1A) = fn_801B3050(i);
+                sel = fn_801B3050(i);
             else
-                *(short *)(d + 0x1A) = -1;
+                sel = -1;
+            *(short *)(d + 0x1A) = sel;
         }
     }
     lbl_8055E624 = q;
     lbl_8055E628 = ((int (*)(void *))fn_801AFA20)(arg0);
     *dcount = 0;
     for (i = 0; i < *(int *)((char *)arg0 + 0x3E0); i++) {
-        int id = arg0->e[i].id;
+        Ent78 *s = &arg0->e[i];
+        Ent78 *d = &dst[i];
+        int id = s->id;
         if (fn_802794AC(id, (char *)arg0 + 0x3E4) == 0)
             break;
-        dst[*dcount] = arg0->e[i];
-        ((int *)&lbl_80435740[0x408 / 4])[i] = i;
+        d->id = id;
+        d->b = s->b;
+        d->f64 = s->f64;
+        d->f68 = s->f68;
+        d->f6c = s->f6c;
+        d->f70 = s->f70;
+        d->f74 = s->f74;
+        ((int *)(base + 0x408))[i] = *dcount;
         (*dcount)++;
         if (fn_801AE600(id) != 0) {
             int *r = (int *)lbl_8055E620;
@@ -435,7 +448,7 @@ void fn_801AEF28(Src *arg0) {
     lbl_8055E630 = lbl_80562574;
     lbl_8055E62C = -1;
     for (i = 0; i < 4; i++)
-        memset((char *)lbl_80435740 + 0x428 + i * 0x10, 0, 0x10);
+        memset(base + 0x428 + i * 0x10, 0, 0x10);
 }
 
 #pragma paired_single reset
@@ -597,15 +610,14 @@ void fn_801AF6FC(void) {
 
 #pragma scheduling on
 void *fn_801AF8D0(int arg0) {
-    void *result = 0;
-    if (arg0 < lbl_8055E624[1]) {
-        result = (char *)lbl_8055E624[0] + arg0 * 0x1C;
-        fn_801AE620(result);
-        if (fn_801AE618(*(unsigned short *)((char *)result + 0xE))) {
-            result = 0;
-        }
-    }
-    return result;
+ void *result = 0;
+ if (arg0 < lbl_8055E624[1]) {
+  result = (char *)lbl_8055E624[0] + arg0 * 0x1C;
+  if (!fn_801AE620(result)) {
+   result = 0;
+  }
+ }
+ return result;
 }
 
 #pragma small_data off
@@ -654,7 +666,7 @@ done:
 #pragma use_lmw_stmw reset
 #pragma small_data on
 float fn_801AF9EC(int arg0, float *arg1) {
-    if (arg1 != 0) *arg1 = lbl_80435740[arg0 * 2 + 1];
+    if (arg1 != 0) *arg1 = *(float *)((char *)lbl_80435740 + (arg0 << 3) + 4);
     return lbl_80435740[arg0 * 2];
 }
 
