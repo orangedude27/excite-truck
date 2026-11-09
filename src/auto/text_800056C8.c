@@ -66,7 +66,7 @@ extern s32 fn_80010074(s32, s32, void *, void *, f32, f32, f32);
 extern int sprintf(char *, const char *, ...);
 extern u8 lbl_802FB2A0[];
 extern s32 lbl_80558928;
-extern u8 lbl_80558948[];
+extern s32 lbl_80558948;
 extern f32 lbl_80560134;
 extern f32 lbl_80560190;
 extern u8 lbl_802FB0C8[];
