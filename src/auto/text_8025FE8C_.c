@@ -444,11 +444,12 @@ void fn_80260E04(s32 *arg0, s32 *arg1) {
     s32 c;
     s32 b;
     s32 a;
-    a = arg1[0];
-    b = arg1[1];
-    c = arg1[2];
-    d = arg1[3];
-    e = arg1[4];
+    volatile s32 *src = arg1;
+    a = src[0];
+    b = src[1];
+    c = src[2];
+    d = src[3];
+    e = src[4];
     arg0[0] = a;
     arg0[1] = b;
     arg0[2] = c;
