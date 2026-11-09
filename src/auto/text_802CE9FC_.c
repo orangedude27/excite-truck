@@ -280,13 +280,14 @@ void fn_802CECF4(unsigned int arg0) {
 }
 
 void fn_802CED50(int arg0, int arg1, int arg2, int arg3) {
-    volatile unsigned char *state = lbl_804C5710;
-    *(volatile int *)(state + 4) = arg0;
-    *(volatile int *)(state + 8) = arg1;
-    *(volatile int *)(state + 0xC) = arg2;
-    *(volatile int *)(state + 0x10) = arg3;
-    state[0] = 1;
-    state[1] = 1;
+    volatile unsigned char *b = lbl_804C5710;
+    volatile int *w = (volatile int *)(b + 4);
+    w[0] = arg0;
+    w[1] = arg1;
+    w[2] = arg2;
+    w[3] = arg3;
+    b[0] = 1;
+    b[1] = 1;
 }
 
 extern void KPADSetBtnRepeat(int *, int *, int *, int *);
@@ -472,7 +473,10 @@ void fn_802CF5A8(void) {
     fn_802E2E0C((void (*)(void))fn_802CEC04, &lbl_8055D100);
 }
 
+#pragma push
+#pragma dont_inline on
 void fn_802CF5D0(void) {}
+#pragma pop
 
 #pragma scheduling invalid_target
 void fn_802CF5D4(void) {
@@ -1047,7 +1051,7 @@ void fn_802D0160(unsigned char a, unsigned char b, unsigned char c) {
 #pragma small_data on
 void fn_802D0188(unsigned char a, unsigned char b, unsigned char c) {
     extern char lbl_804C97D0;
-    unsigned char *p = (unsigned char *)&lbl_804C97D0;
+    volatile unsigned char *p = (volatile unsigned char *)&lbl_804C97D0;
     p[0] = a; p[1] = b; p[2] = c; p[3] = 0; p[0x5C] = 1;
 }
 
