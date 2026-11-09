@@ -585,14 +585,16 @@ void *fn_8027B834(void *arg0) {
 #pragma scheduling on
 #pragma pop
 
-#pragma dont_inline reset
+#pragma scheduling invalid_target
 void *fn_8027B878(long arg0) {
-    long v = fn_8000DA10();
-    long a = v * 0x3B10;
+    long a = fn_8000DA10() * 0x3B10;
+    char *p = lbl_804A4380 + a;
     long b = arg0 * 0xBD0;
-    return lbl_804A4380 + a + b + 0x2370;
+    p += b;
+    p += 0x2370;
+    return p;
 }
-
+#pragma scheduling on
 void fn_8027B8C0(void* alarm) {
     fn_8027BA24(fn_8027B834(alarm));
 }
@@ -1210,9 +1212,8 @@ fetch:
 }
 
 long fn_8027C850(void *arg0) {
-    long index;
-
-    index = fn_8027C1C8((void *)lbl_8055F654, *(char **)((char *)arg0 + 4));
+    char *name = (char *)*(volatile char **)((char *)arg0 + 4);
+    long index = fn_8027C1C8((void *)lbl_8055F654, name);
     if (index == 0)
         return 1;
     return fn_8027C788(fn_8027C26C((void *)lbl_8055F654,
