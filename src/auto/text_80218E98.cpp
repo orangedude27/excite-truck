@@ -3591,11 +3591,10 @@ extern "C" void fn_8021EDA4(void *self) {
 #pragma pop
 
 extern "C" void fn_8021EFE0(void *arg0, s32 arg1, s32 arg2) {
-    volatile s32 *p = (volatile s32 *)arg0;
-    s32 result = ((s32 (*)(s32, s32, s32, s32, s32, s32))fn_8022B2D4)(
-        p[0xA58 / 4], p[0xA54 / 4], arg1 - p[1], arg2 - p[2], arg2, arg1);
-    p[0x250 / 4] = result;
-    if (*(volatile u8 *)((u8 *)arg0 + 0x1A))
+    s32 dx = arg1 - *(s32 *)((u8 *)arg0 + 4);
+    s32 dy = arg2 - *(s32 *)((u8 *)arg0 + 8);
+    *(s32 *)((u8 *)arg0 + 0x250) = ((s32 (*)(s32, s32, s32, s32))fn_8022B2D4)(*(s32 *)((u8 *)arg0 + 0xA58), *(s32 *)((u8 *)arg0 + 0xA54), dx, dy);
+    if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
         *(u8 *)((u8 *)arg0 + 0x234) = 1;
 }
 
