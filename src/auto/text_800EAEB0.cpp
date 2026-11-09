@@ -516,6 +516,21 @@ void nw4hbm::snd::detail::EnvGenerator::SetDecay(int decay) {
     else result = lbl_80561014 / (f32)(0x7E - value) / lbl_80561010;
     *(f32*)((u8*)self + 8) = result;
 }
+
+#pragma push
+#pragma scheduling on
+extern "C" void SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *self, int sustain) {
+    int valid = 0;
+    if (sustain >= 0 && sustain <= 0x7F) {
+        valid = 1;
+    }
+    if (valid == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322B80, 0x116, (const char *)lbl_80322C90, sustain, 0, 0x7F);
+    }
+    *((u8 *)self + 0x14) = (u8)sustain;
+}
+#pragma pop
+
 #pragma pop
 void nw4hbm::snd::detail::EnvGenerator::SetRelease(int release) {
     f32 value;
@@ -1709,23 +1724,20 @@ scanDone:
 }
 #pragma pop
 extern "C" void fn_800EE910(void* alarm) {
-    volatile void* alarmTemp = alarm;
-    u32 level = OSDisableInterrupts();
-    u8* data = (u8*)OSGetAlarmUserData((void*)alarmTemp);
-    Warning__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323840, 0x224,
-                                    (const char*)lbl_803238C0,
-                                    *(s32*)(data + 0x2C));
+    s32 level = (s32)OSDisableInterrupts();
+    u8* data = (u8*)OSGetAlarmUserData(alarm);
+    Warning__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323840, 0x224, (const char*)lbl_803238C0, *(s32*)(data + 0x2C));
     data[6] = 1;
     data[7] = 0;
-    OSRestoreInterrupts(level);
+    OSRestoreInterrupts((u32)level);
 }
 
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void IntervalAlarmHandler__Q34nw4r3snd13RemoteSpeakerFP7OSAlarmP9OSContext(void* alarm, void* context) {
-    u32 level;
-    void* savedAlarm = alarm;
-    u8* data;
+    register void* savedAlarm = alarm;
+    register u32 level;
+    register u8* data;
     level = OSDisableInterrupts();
     data = (u8*)OSGetAlarmUserData(savedAlarm);
     if (data[8] != 0) {
@@ -2206,10 +2218,11 @@ extern "C" void Pause__Q46nw4hbm3snd6detail9SeqPlayerFb(void* self, bool pause) 
     OSRestoreInterrupts(level);
 }
 
-extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf(void* self, float volume) {
-    if (!(volume >= lbl_8056106C)) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x15d, (const char*)lbl_80323BEC);
-    unsigned int level = OSDisableInterrupts();
-    *(float*)((unsigned char*)self + 0x1c) = volume;
+void nw4hbm::snd::detail::SeqPlayer::SetVolume(float volume) {
+    float limit = lbl_8056106C;
+    if (!(volume >= limit)) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x15d, (const char*)lbl_80323BEC);
+    u32 level = OSDisableInterrupts();
+    *(float*)((unsigned char*)this + 0x1c) = volume;
     OSRestoreInterrupts(level);
 }
 
@@ -2666,10 +2679,10 @@ extern "C" void fn_800F0360(void *self) {
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv(void) {
-    register void *pHead = *(void **)&lbl_80412A6C[4];
-    register void *pList = &lbl_80412A6C[4];
+    void *pHead;
+    void *pList = &lbl_80412A6C[4];
     void *pPlayer;
-    while (pHead != pList) {
+    for (pHead = *(void **)pList; pHead != pList;) {
         pPlayer = pHead;
         pHead = *(void **)pHead;
         if (pPlayer == 0) {
