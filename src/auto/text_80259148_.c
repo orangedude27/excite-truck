@@ -1168,6 +1168,7 @@ extern "C" void fn_8025B520(void *arg0) {
         virtual void setProgress(char *, float);
     };
     char *o = (char *)arg0;
+    AchievementRow *row = (AchievementRow *)arg0;
     float start;
     int showName;
     int value;
@@ -1189,10 +1190,10 @@ extern "C" void fn_8025B520(void *arg0) {
     int shownLeft;
     unsigned char *shownDst;
 
-    start = (float)*(int *)(o + 0x1C);
-    *(float *)(o + 0x28) = start;
+    start = (float)row->startValue;
+    row->progress = start;
     value = (int)(start + lbl_80558DC4);
-    fn_80130FCC(o + 0x2C, 0x14, value);
+    fn_80130FCC(row->progressText, 0x14, value);
     showName = 1;
     if (*(unsigned char *)(o + 0xC4) != 0) {
         if (*(unsigned char *)(o + 0x58) != 0 || *(unsigned char *)(o + 0xC5) == 0) {
