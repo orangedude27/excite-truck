@@ -598,20 +598,19 @@ u32 fn_801174B0(s32 count, u32 *values, s32 offset, s32 *outIndex, s32 *outFlag)
 }
 
 s32 fn_80117598(s32 arg0, s32 arg1) {
-    u8* base;
-    u8* end;
-    s32 offset;
+    register s32 off;
+    register s32 base;
     s32 value;
-    s32 difference;
+    s32 diff;
     s32 sign;
-    base = (u8*)arg0;
-    end = base + 0x340;
-    offset = (s32)end - (s32)base;
-    base = (u8*)((s32)base - offset);
+    off = arg0 + 0x340;
+    off -= arg0;
+    base = arg0 - off;
     value = *(s32*)(base + 0x33C);
-    difference = (value - arg1) | (arg1 - value);
-    sign = difference >> 31;
-    return (-1 - value) & sign;
+    diff = (value - arg1) | (arg1 - value);
+    sign = diff >> 31;
+    off = -1 - value;
+    return off & sign;
 }
 
 void fn_801175C4(s32 arg0, s32 arg1) {
@@ -2001,13 +2000,16 @@ read_done:
 #pragma dont_inline on
 void fn_8011A330(void* arg0) {
     s32 status;
-    *(s32*)((u8*)arg0 + 0xC4) = 1;
-    DVDCancel((DVDCommandBlock*)((u8*)arg0 + 0x54));
+    s32* p1 = (s32*)((u8*)arg0 + 0xC4);
+    DVDCommandBlock* blk = (DVDCommandBlock*)((u8*)arg0 + 0x54);
+    s32* p2 = (s32*)((u8*)arg0 + 0x24);
+    *p1 = 1;
+    DVDCancel(blk);
     do {
         status = DVDGetDriveStatus();
     } while (status == 2 || status == 1);
-    *(s32*)((u8*)arg0 + 0xC4) = 0;
-    *(s32*)((u8*)arg0 + 0x24) = 0;
+    *p1 = 0;
+    *p2 = 0;
 }
 #pragma dont_inline reset
 #pragma pop
@@ -2436,8 +2438,8 @@ void fn_8011AE68(s32 out, f32 *in, u32 count, f32 scale) {
     u16 *dest = (u16 *)(out - 2);
     while (count != 0) {
         s32 value = (s32)(*in * scale);
-        if (value < -0x8000) value = -0x8000;
-        if (value > 0x7FFF) value = 0x7FFF;
+        value = (value < -0x8000) ? -0x8000 : value;
+        value = (value > 0x7FFF) ? 0x7FFF : value;
         *++dest = (u16)(value + 0x7FFF);
         in++;
         count--;
@@ -3135,16 +3137,13 @@ u32 fn_8011C1E0(s32 arg0, void *arg1) {
 #pragma dont_inline reset
 
 void fn_8011C274(s32 arg0, void *arg1) {
-    if (arg0 == 0) goto done;
-    if (arg1 == 0) goto done;
-    if (*(s32 *)((u8 *)arg1 + 0x18) == 0) goto done;
-    if (*(s32 *)((u8 *)arg1 + 0x14) == 0) goto done;
-    goto retry;
-retry:
-    OSYieldThread();
-    if (fn_8011C1E0(arg0, arg1) == 0) goto retry;
-done:
-    return;
+    if (arg0 != 0 && arg1 != 0 &&
+        *(s32 *)((u8 *)arg1 + 0x18) != 0 &&
+        *(s32 *)((u8 *)arg1 + 0x14) != 0) {
+        while (fn_8011C1E0(arg0, arg1) == 0) {
+            OSYieldThread();
+        }
+    }
 }
 
 void fn_8011C2EC(s32 arg0, void *arg1) {
@@ -5079,6 +5078,14 @@ void fn_80121BF4(void *arg0) {
     *(f32 *)((u8 *)arg0 + 0x34) = temp_14;
     *(f32 *)((u8 *)arg0 + 0x38) = temp_20;
     *(f32 *)((u8 *)arg0 + 0x3c) = temp_24;
+}
+
+extern float lbl_80561218;
+extern float lbl_80561230;
+void fn_80121C68(s32 arg0, void *arg1, void *arg2) {
+    float a = lbl_80561218;
+    float b = lbl_80561230;
+    (void)arg0; (void)arg1; (void)arg2; (void)a; (void)b;
 }
 
 extern f32 lbl_80561218;
