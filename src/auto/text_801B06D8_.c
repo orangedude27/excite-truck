@@ -97,6 +97,11 @@ struct Dummy_801B1FB4 {
     virtual void d0();
     virtual void func(s32, s32, s32, void *, s32 *);
 };
+struct Dummy_801B1FEC {
+    virtual void d0();
+    virtual void d1();
+    virtual void func(s32, s32, s32, void *, s32 *);
+};
 struct Dummy_801B3084 {
     virtual void d0();
     virtual void d1();
