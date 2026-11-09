@@ -66,24 +66,23 @@ int fn_8000AD2C(void) {
  if (index >= 0x12) goto yes;
  if (index >= 2) goto yes;
  if (index >= 0) goto no;
-yes:
- return 1;
+ goto yes;
 no:
  return 0;
+yes:
+ return 1;
 }
 
 int fn_8000AD84(void) {
  int index = ((char *)lbl_8055D3D0 - lbl_802FBC90) / 0x14;
- if (index == 0x12) goto yes;
- if (index >= 0x12) goto check24;
- if (index == 1) goto yes;
- goto no;
-check24:
- if (index == 0x18) goto yes;
-no:
- return 0;
-yes:
- return 1;
+ switch (index) {
+ case 0x12:
+ case 1:
+ case 0x18:
+  return 1;
+ default:
+  return 0;
+ }
 }
 
 extern int lbl_8034F5B8[];
@@ -360,9 +359,8 @@ void fn_8000B2AC(void) {
 }
 
 int fn_8000B33C(void **arg0, int arg1, int arg2) {
-    register void **vtable = (void **)*arg0;
-    if (((int (*)(void))((char *)vtable + 0xC))() != 0)
-        return ((int (*)(void *, int))((char *)vtable + 0x2C))(arg0, arg1);
+    if (((int (*)(void **))(*(void ***)arg0)[3])(arg0) != 0)
+        return ((int (*)(void **, int))(*(void ***)arg0)[11])(arg0, arg1);
     return arg2;
 }
 
