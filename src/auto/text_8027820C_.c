@@ -38,22 +38,17 @@ void fn_80278210(void) {}
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_80278214(void) {
-    int zero;
-    int minus;
-
-    zero = 0;
-    minus = -1;
-    lbl_8055F5B4 = zero;
-    lbl_8055F5C8 = zero;
-    lbl_8055F5BB = zero;
-    lbl_8055F5BA = zero;
-    lbl_8055F5B9 = zero;
-    lbl_8055F5BC = minus;
-    lbl_8055F5C4 = minus;
-    lbl_8055F5B8 = zero;
+    lbl_8055F5B4 = 0;
+    lbl_8055F5C8 = 0;
+    lbl_8055F5BB = 0;
+    lbl_8055F5BA = 0;
+    lbl_8055F5B9 = 0;
+    lbl_8055F5BC = -1;
+    lbl_8055F5C4 = -1;
+    lbl_8055F5B8 = 0;
     lbl_8055F5B0 = (int)fn_8002F37C(
-        (void *)fn_8012850C(0x80, lbl_80347580, zero),
-        fn_80278284, zero, 0x38, 2);
+        (void *)fn_8012850C(0x80, lbl_80347580, 0),
+        fn_80278284, 0, 0x38, 2);
 }
 #pragma scheduling on
 #pragma pop
@@ -274,6 +269,13 @@ char fn_802787F4(void) {
 
 int fn_802787FC(void) {
     return ((unsigned char)lbl_8055F5BA != 0) || ((unsigned char)lbl_8055F5BB != 0);
+}
+
+int fn_80278820(void) {
+    if (((int *)fn_802678E4(0))[4] == 0x19 && (unsigned char)lbl_8055F5B9 != 0 && lbl_8055E3C4 < lbl_8055F5C0) {
+        return 1;
+    }
+    return (unsigned char)lbl_8055F5BA != 0 ? 0 : (unsigned char)lbl_8055F5C8;
 }
 
 extern char lbl_8055F5BB;
