@@ -183,26 +183,23 @@ u8 fn_80193184(void *unused, int index) {
   }
 #pragma dont_inline reset
 
-float fn_801931AC(float a, float b, float c, float d) {
-    float quotient = a / d;
-    float value = lbl_80562140 - quotient;
-    if (value < lbl_80562140)
-        value = lbl_80562140;
-    if (value > lbl_80562144)
-        value = lbl_80562144;
-    return b + value * (c - b);
+typedef float f32;
+f32 fn_801931AC(f32 a, f32 b, f32 c, f32 d) {
+    f32 t = lbl_80562140 - a / d;
+    t = (lbl_80562140 < t) ? t : lbl_80562140;
+    t = (t > lbl_80562144) ? lbl_80562144 : t;
+    return b + t * (c - b);
 }
 
 float fn_801931EC(float a, float b) {
-    float value;
-    float floor;
-    value = lbl_80562140;
-    floor = lbl_8055E558;
-    if (value < value - a / b) {
-        value = value - a / b;
-    }
-    if (value > floor) return value;
-    return floor;
+    float quotient;
+    quotient = a / b;
+    b = lbl_8055E558;
+    a = lbl_80562140;
+    quotient = a - quotient;
+    a = a < quotient ? quotient : a;
+    if (a > b) return a;
+    return b;
 }
 
 #pragma processor 750
@@ -767,10 +764,10 @@ extern float lbl_80562140, lbl_80562144;
   extern void fn_8018ADAC(void *, float);
 #pragma scheduling invalid_target
 void fn_80194170(void *arg0, float arg1) {
-    double value = lbl_80562140;
+    register double value = lbl_80562140;
     value = value < arg1 ? arg1 : value;
     value = value > lbl_80562144 ? lbl_80562144 : value;
-    *(float *)((char *)arg0 + 0x240) = value;
+    *(float *)((char *)arg0 + 0x240) = (float)value;
     fn_8018ADB4(*(int *)((char *)arg0 + 0x294), (float)value);
 }
 #pragma scheduling invalid_target
@@ -822,10 +819,8 @@ void fn_801941A8(void *arg0, float arg1) {
 }
 #pragma scheduling on
 void fn_801942B8(void *arg0, float arg1) {
-    float value;
-    if (arg1 > lbl_80562140) value = arg1;
-    else value = lbl_80562140;
-    if (value > lbl_80562144) value = lbl_80562144;
+    double value = lbl_80562140 < arg1 ? lbl_80562140 : arg1;
+    value = value > lbl_80562144 ? value : lbl_80562144;
     *(float *)((char *)arg0 + 0x244) = value;
     fn_8018ADBC(*(int *)((char *)arg0 + 0x294), value);
 }
@@ -1801,6 +1796,15 @@ void fn_80195F6C(void *arg0, void *arg1) {
 
   void fn_801961F8(void) {
 
+}
+
+void fn_801961FC(void *arg0) {
+    extern float fn_801671FC(int);
+    extern int fn_801B89F8(void);
+    *(float *)((char *)arg0 + 0x28) *= fn_801671FC(*(int *)((char *)arg0 + 0x290));
+    if (fn_801B89F8() != 0) {
+        *(int *)((char *)arg0 + 0x2D0) |= 0x1150;
+    }
 }
 
 extern float lbl_80562140, lbl_80562144, lbl_80562168;
