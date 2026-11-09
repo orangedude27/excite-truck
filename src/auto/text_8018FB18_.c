@@ -1020,6 +1020,32 @@ void fn_80191060(void) {
     fn_801B6664();
 }
 
+#pragma cplusplus on
+extern "C" void fn_80191064(void *arg0) {
+    class Object {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+        virtual void f10();
+        virtual void f11();
+        virtual void f12();
+        virtual void f13();
+        virtual void f14();
+        virtual void f15();
+    };
+    Object *obj = (Object *)*(void **)((char *)arg0 + 0x10);
+    if (obj == 0) return;
+    obj->f15();
+}
+#pragma cplusplus off
 int fn_80191100(void *arg0) { return ((int *)arg0)[3]; }
 
 #pragma cplusplus on
