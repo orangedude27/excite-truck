@@ -493,15 +493,14 @@ void fn_8029231C(float *arg0) {
 }
 #pragma scheduling on
 void fn_802923C4(int arg0) {
-    register unsigned int *p;
-    register unsigned int old;
-    register unsigned int value;
+    unsigned int old;
+    unsigned int *p;
+    unsigned int value;
     if (lbl_8055F75C == 0) return;
     p = (unsigned int *)lbl_804B4010;
     old = p[6];
-    value = (unsigned int)arg0 << 8;
-    value >>= 8;
-    p[6] = value | (old & 0xFF000000);
+    value = (unsigned int)arg0 & 0x00FFFFFF;
+    p[6] = (old & 0xFF000000) | value;
 }
 
 extern float lbl_8056449C;
