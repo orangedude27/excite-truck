@@ -23719,6 +23719,30 @@ extern "C" s32 fn_800A728C(void *);
 extern "C" s32 fn_800A71E0(s32, void *);
 extern "C" s32 fn_800A5AE4(void *, void *);
 extern "C" s32 fn_800A5E00(void *, void *, u32 *, u32 *);
+/* What fn_800A71E0 reads off a device: five words copied straight out of it,
+ * of which the mount uses the last two. */
+struct VFiPFDeviceInfo {
+    u32 word0; /* 0x00 */
+    u32 word1; /* 0x04 */
+    u32 word2; /* 0x08 */
+    u32 flags; /* 0x0C VF_DEV_* */
+    u32 value; /* 0x10 handed back to the device when VF_DEV_HAS_VALUE is set */
+};
+
+/* VFiPFDeviceInfo.flags, as the device driver reports them. */
+#define VF_DEV_WRITE_PROTECTED 0x1 /* the media cannot be written to */
+#define VF_DEV_HAS_VALUE       0x2 /* value is meaningful */
+#define VF_DEV_KEEP_FAT        0x8 /* the media's FAT is left as it is */
+
+/* The volume fields the mount fills in, by offset. */
+#define VF_VOL_FSINFO_SECTOR(v) (*(u16 *)((u8 *)(v) + 0x14)) /* FAT32's FSInfo sector */
+#define VF_VOL_FAT_TYPE(v)      (*(s32 *)((u8 *)(v) + 0x1C)) /* which FAT; 2 = FAT32 */
+#define VF_VOL_FREE_CLUSTERS(v) (*(s32 *)((u8 *)(v) + 0x38)) /* from FSInfo; -1 unknown */
+#define VF_VOL_NEXT_CLUSTER(v)  (*(s32 *)((u8 *)(v) + 0x3C)) /* from FSInfo; -1 unknown */
+#define VF_VOL_DEVICE_ERROR(v)  (*(s32 *)((u8 *)(v) + 0x1F84)) /* for the retry handler */
+#define VF_VOL_DEVICE_VALUE(v)  (*(s32 *)((u8 *)(v) + 0x1FC4)) /* handed to the device */
+#define VF_FAT_TYPE_32          2                            /* VF_VOL_FAT_TYPE: FAT32 */
+
 extern "C" s32 fn_800A5530(void *object) {
  u8 *p=(u8 *)object;
  s32 info[5], pageNo;
