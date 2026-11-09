@@ -6129,46 +6129,50 @@ extern f32 lbl_8056353C, lbl_80563540;
 
 #pragma push
 #pragma processor 750
-extern "C" void fn_802245C8(void *arg0) {
-    extern float lbl_805634A8, lbl_805634B0, lbl_80563518, lbl_8056353C, lbl_80563540;
-    u8 *p = (u8 *)arg0;
-    if (fn_8023659C() < *(f32 *)(p+0x24C))
-        *(f32 *)(p+0x24C) = fn_8023659C();
-    switch (*(s32 *)(p+0x248)) {
+/* Runs one frame of the intensity fade.  Coming in, the value climbs linearly
+ * with the time since the fade started but never above a sine of the same rate
+ * (so it pulses its way up); going out, it falls from the value it had when the
+ * fade started at that same rate down to the mode's resting level, and clears
+ * the flag once it is within a hair of it.  fn_802192AC then refreshes the
+ * links this object drives. */
+extern "C" void fn_802245C8(IntensityFade *fade) {
+    if (fn_8023659C() < fade->startTime)
+        fade->startTime = fn_8023659C();
+    switch (fade->mode) {
     case 0:
-        if (p[0x260]) {
-            f32 wave = lbl_805634C4 + lbl_805634C4 * (f32)sin((f32)(*(s32 *)(p+0x264)+1)*(fn_8023659C()-*(f32 *)(p+0x24C)));
-            f32 ramp = (f32)(*(s32 *)(p+0x264)+1)*(fn_8023659C()-*(f32 *)(p+0x24C));
-            *(f32 *)(p+0x268) = ramp < wave ? ramp : wave;
-        } else if (p[0x261]) {
-            if (*(f32 *)(p+0x268) < lbl_80563518) {
-                f32 end = lbl_805634A8;
-                p[0x261]=0;
-                *(f32 *)(p+0x268)=end;
+        if (fade->fadingIn) {
+            f32 wave = FADE_HALF + FADE_HALF * (f32)sin((f32)(fade->speed+1)*(fn_8023659C()-fade->startTime));
+            f32 ramp = (f32)(fade->speed+1)*(fn_8023659C()-fade->startTime);
+            fade->value = ramp < wave ? ramp : wave;
+        } else if (fade->fadingOut) {
+            if (fade->value < FADE_DONE_0) {
+                f32 end = FADE_OFF;
+                fade->fadingOut=0;
+                fade->value=end;
             } else {
-                f32 ramp = *(f32 *)(p+0x26C)-(f32)(*(s32 *)(p+0x264)+1)*(fn_8023659C()-*(f32 *)(p+0x24C));
-                *(f32 *)(p+0x268)=ramp > lbl_805634A8 ? ramp : lbl_805634A8;
+                f32 ramp = fade->startValue-(f32)(fade->speed+1)*(fn_8023659C()-fade->startTime);
+                fade->value=ramp > FADE_OFF ? ramp : FADE_OFF;
             }
         }
         break;
     case 1:
-        if (p[0x260]) {
-            f32 wave = lbl_8056353C + (lbl_805634B0 + lbl_8056353C*(f32)sin((f32)-*(s32 *)(p+0x264)*(fn_8023659C()-*(f32 *)(p+0x24C))));
-            f32 ramp = lbl_805634B0 + (f32)*(s32 *)(p+0x264)*(fn_8023659C()-*(f32 *)(p+0x24C));
-            *(f32 *)(p+0x268)=ramp < wave ? ramp : wave;
-        } else if (p[0x261]) {
-            if (*(f32 *)(p+0x268) < lbl_80563540) {
-                f32 end = lbl_805634B0;
-                p[0x261]=0;
-                *(f32 *)(p+0x268)=end;
+        if (fade->fadingIn) {
+            f32 wave = FADE_SWING_1 + (FADE_IDLE + FADE_SWING_1*(f32)sin((f32)-fade->speed*(fn_8023659C()-fade->startTime)));
+            f32 ramp = FADE_IDLE + (f32)fade->speed*(fn_8023659C()-fade->startTime);
+            fade->value=ramp < wave ? ramp : wave;
+        } else if (fade->fadingOut) {
+            if (fade->value < FADE_DONE_1) {
+                f32 end = FADE_IDLE;
+                fade->fadingOut=0;
+                fade->value=end;
             } else {
-                f32 ramp = *(f32 *)(p+0x26C)-(f32)*(s32 *)(p+0x264)*(fn_8023659C()-*(f32 *)(p+0x24C));
-                *(f32 *)(p+0x268)=ramp > lbl_805634B0 ? ramp : lbl_805634B0;
+                f32 ramp = fade->startValue-(f32)fade->speed*(fn_8023659C()-fade->startTime);
+                fade->value=ramp > FADE_IDLE ? ramp : FADE_IDLE;
             }
         }
         break;
     }
-    fn_802192AC(arg0);
+    fn_802192AC(fade);
 }
 #pragma pop
 extern "C" void fn_80224864(void *arg0) {
