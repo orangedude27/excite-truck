@@ -406,14 +406,25 @@ copy_done:
     }
 }
 
-#pragma use_lmw_stmw reset
-int fn_800132E4(void *arg0, int arg1, int arg2) {
-    if (((int (*)(void))(*(void ***)arg0)[3])() != 0) {
-        return ((int (*)(void *, int))(*(void ***)arg0)[7])(arg0, arg1);
+#pragma cplusplus on
+extern "C" int fn_800132E4(void *object, int argument, int fallback) {
+    struct Dummy {
+        virtual int f0();
+        virtual int f1();
+        virtual int f2();
+        virtual int f3();
+        virtual int f4();
+        virtual int f5(int);
+    };
+    int result;
+    if (((Dummy *)object)->f1()) {
+        result = ((Dummy *)object)->f5(argument);
+    } else {
+        result = fallback;
     }
-    return arg2;
+    return result;
 }
-
+#pragma cplusplus reset
 extern char lbl_80558B1C[4];
 extern char lbl_80558B68[4];
 extern char lbl_80558B70[4];
