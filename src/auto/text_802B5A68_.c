@@ -244,6 +244,9 @@ typedef struct {
     Fn802B83CCAction action;
 } Fn802B83CCEntry;
 extern Fn802B83CCEntry lbl_8034A95C[];
+#pragma push
+#pragma scheduling invalid_target
+#pragma scheduling on
 s32 fn_802B5DD0(s32 arg0) {
     s32 temp_r31;
     s32 temp_r3;
@@ -256,10 +259,6 @@ s32 fn_802B5DD0(s32 arg0) {
     }
     return result;
 }
-
-#pragma push
-#pragma small_data off
-#pragma pop
 extern double lbl_80564C68;
 extern float lbl_80564C70;
 extern s32 fn_802E2C20(void);
@@ -299,19 +298,12 @@ void fn_802B5EC4(void) {
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_802B5EE8(void) {
-    u32 temp_r4;
-    u32 temp_r0;
-
-    temp_r4 = lbl_8055FA38 + 1;
-    temp_r0 = temp_r4 << 30;
+    register s32 v = lbl_8055FA38 + 1;
+    register s32 zero = 0;
     lbl_8055FA18 = lbl_80564C5C;
-    temp_r4 = temp_r4 >> 31;
-    temp_r0 = temp_r0 - temp_r4;
-    temp_r0 = (temp_r0 << 2) | (temp_r0 >> 30);
-    temp_r4 = temp_r0 + temp_r4;
-    temp_r0 = 0;
-    *(volatile s32 *)&lbl_8055FA38 = temp_r4;
-    *(s32 *)((u8 *)&lbl_804BE7D8 + 4) = temp_r0;
+    v %= 4;
+    lbl_8055FA38 = v;
+    *(s32 *)((u8 *)&lbl_804BE7D8 + 4) = zero;
 }
 #pragma pop
 extern s32 lbl_8055FA38;
@@ -611,11 +603,15 @@ void fn_802B6568(void *arg0, const char *fmt, ...) {
 __declspec(section ".sdata") extern const char lbl_8055CE78[], lbl_8055CE80[];
 extern const char lbl_8034A808[], lbl_8034A814[];
 extern s32 fn_80147FF0(s32);
+#pragma push
+#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802B67C8(s32 arg0) {
-    void *(*method)(void *, s32) = (void *(*)(void *, s32))(*(void ***)lbl_8055FA48)[5];
-    fn_80147FF0(*(s32 *)((char *)method(lbl_8055FA48, arg0) + 0x18));
+    void *g = lbl_8055FA48;
+    void *obj;
+    obj = ((void *(*)(void *, s32))(*(void ***)g)[5])(g, arg0);
+    ((void (*)(void *, s32))fn_80147FF0)(obj, *(s32 *)((char *)obj + 0x18));
 }
-
 __declspec(section ".sdata") extern const char lbl_8055CE74[];
 extern u8 lbl_8055FA30;
 #pragma use_lmw_stmw off
@@ -1804,16 +1800,14 @@ extern "C" void fn_802B869C(void) {
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_802B86F8(void) {
-    s8 value;
-    u8 *base;
-    value = ((s8 *)&lbl_804BFF80)[0x14];
-    base = (u8 *)&lbl_804BFF80;
-    base[0x34] = 0;
+    s32 base = (s32)&lbl_804BFF80;
+    s8 value = *(s8 *)(base + 0x14);
+    *(u8 *)(base + 0x34) = 0;
     if (value == 0)
         return;
     if (*(s32 *)(base + 0xC) & 1)
         return;
-    base[0x14] = 0;
+    *(u8 *)(base + 0x14) = 0;
 }
 #pragma pop
 s32 fn_802B8728(void) {
