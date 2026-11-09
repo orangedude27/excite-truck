@@ -6025,13 +6025,14 @@ void bta_hh_sdp_cmpl(void *arg0, u8 *status) {
 }
 
 void bta_hh_api_disc_act(void *arg0, void *arg1) {
+    u8 buf[2];
     u8 handle;
-    u8 size;
     if (arg1 != 0) handle = (u8)*(u16 *)((u8 *)arg1 + 6);
-    else handle = *((u8 *)arg0 + 0x16);
-    size = 6;
-    if ((u8)HID_HostCloseDev(handle)) {
-        (*(void (**)(int, u8 *))(lbl_803C0D48 + 0x224))(3, &size);
+    else handle = *(u8 *)((u8 *)arg0 + 0x16);
+    buf[1] = handle;
+    buf[0] = 6;
+    if (HID_HostCloseDev(handle)) {
+        (*(void (**)(int, u8 *))(lbl_803C0D48 + 0x224))(3, buf);
     }
 }
 
