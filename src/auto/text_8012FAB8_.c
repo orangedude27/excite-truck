@@ -319,9 +319,9 @@ void fn_801303A8(void) {
 #pragma use_lmw_stmw on
 void fn_80130518(void) {
     fn_8013028C();
-    *(int *)((char *)0x804230D0 + 4) = 0;
-    memset((char *)0x804230D0 + 8, 0, 0xC350);
-    *(char *)0x8055E048 = 0;
+    *(int *)((char *)&lbl_804230D0 + 4) = 0;
+    memset((char *)&lbl_804230D0 + 8, 0, 0xC350);
+    lbl_8055E048 = 0;
 }
 
 extern char *strchr(const char *, int);
