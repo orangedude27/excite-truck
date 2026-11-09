@@ -1210,7 +1210,8 @@ extern "C" void fn_801B1FB4(void *arg0, s32 arg1, s32 arg2, s32 *arg3) {
     ((Dummy_801B1FB4 *)lbl_8055E68C)->func(arg1, arg2, *(s32 *)((u8 *)arg0 + 0x60), (u8 *)arg0 + 0x7C, arg3);
 }
 #pragma cplusplus off
-void fn_801B1FEC(void *arg0, s32 arg1, s32 arg2, s32 *arg3) {
+#pragma cplusplus on
+extern "C" void fn_801B1FEC(void *arg0, s32 arg1, s32 arg2, s32 *arg3) {
     void **vtable;
     *arg3 = 0;
     if (lbl_8055E68C == 0) return;
@@ -1219,6 +1220,7 @@ void fn_801B1FEC(void *arg0, s32 arg1, s32 arg2, s32 *arg3) {
         lbl_8055E68C, arg1, arg2,
         *(s32 *)((u8 *)arg0 + 0x60), (u8 *)arg0 + 0x7C, arg3);
 }
+#pragma cplusplus off
 
 extern s32 fn_80139D4C(const char *);
 extern void fn_80204A1C(const char *, u8 *);
