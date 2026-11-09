@@ -45,6 +45,8 @@ typedef struct {
     u16 l2cap_status;
     u16 remote_cid;
 } tL2C_CONN_INFO;
+typedef struct { UINT8 tod; UINT8 app_id; } BtaHhSptTodLocal;
+typedef struct { UINT8 max_devt_spt; UINT8 _pad[3]; BtaHhSptTodLocal *p_devt_list; } BtaHhCfgLocal;
 extern u8 fn_8006EB80(void);
   extern char lbl_80314128[];
   extern char lbl_803187B0[];
