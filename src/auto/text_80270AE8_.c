@@ -561,13 +561,15 @@ void fn_802715C4(void *arg0, void *arg1)
 extern f32 lbl_8055F540;
 extern f32 lbl_8055F544;
 f32 fn_802715F0(void *arg0) {
-    f32 min = lbl_8055F544;
-    f32 value = *(f32 *)((u8 *)arg0 + 0x18) * lbl_80563F4C;
-    min = (min < value) ? value : min;
-    if (min > lbl_8055F540) {
-        return min;
-    }
-    return lbl_8055F540;
+    f32 b;
+    f32 c;
+    f32 a;
+    a = *(f32 *)((u8 *)arg0 + 0x18);
+    b = lbl_80563F4C;
+    c = lbl_8055F544;
+    c = (c < b * a) ? b * a : c;
+    c = (c > lbl_8055F540) ? c : lbl_8055F540;
+    return c;
 }
 
 int fn_80271FAC(const char *arg0) {
@@ -677,15 +679,12 @@ extern float lbl_80563F88;
 extern void *memset(void *, int, unsigned int);
 #pragma scheduling invalid_target
 void fn_80272354(void *arg0) {
-    float other;
-    float value;
-    volatile float *out = (volatile float *)arg0;
-    value = *(volatile float *)&lbl_80563F48;
-    other = *(volatile float *)&lbl_80563F88;
-    out[0] = value;
-    out[1] = value;
-    out[2] = value;
-    out[3] = other;
+    float other = 10.0f;
+    float value = 0.0f;
+    *(float *)((char *)arg0 + 0x0) = value;
+    *(float *)((char *)arg0 + 0x4) = value;
+    *(float *)((char *)arg0 + 0x8) = value;
+    *(float *)((char *)arg0 + 0xC) = other;
     memset((char *)arg0 + 0x10, 0, 8);
     *(int *)((char *)arg0 + 0x58) = 0;
     *(int *)((char *)arg0 + 0x5C) = 2;
@@ -1117,12 +1116,11 @@ extern "C" float lbl_80563F98;
 extern "C" float lbl_80563F50;
 #pragma processor gekko
 extern "C" int fn_80272DCC(void *arg0, Parser2 *arg1) {
+    char *name = lbl_80346B00;
     Parser2 *p = arg1;
     char *o = (char *)arg0;
     int a, b, c, d;
     unsigned char flags;
-    char *name = lbl_80346B00;
-    float def;
 
     if (p->has(lbl_8055C5BC) != 0 && p->has(lbl_8055C5C0) != 0 && p->has(lbl_8055C5C4) != 0
         && (p->has(lbl_8055C5C8) != 0 || p->has(lbl_8055C5D0) != 0) && p->has(lbl_8055C5D8) != 0) {
@@ -1135,17 +1133,15 @@ extern "C" int fn_80272DCC(void *arg0, Parser2 *arg1) {
             *(float *)(o + 0x18) = lbl_80563F94 * p->getFloat(lbl_8055C5C8);
         }
         *(int *)(o + 0x58) = fn_80271FAC(p->getString(lbl_8055C5D8));
-        def = lbl_80563F48;
-        *(float *)(o + 0xC) = p->getFloatDef(lbl_8055C5E0, def);
-        def = lbl_80563F48;
-        *(float *)(o + 0x10) = p->getFloatDef(lbl_8055C5E8, def);
-        def = lbl_80563F50;
-        *(float *)(o + 0x14) = p->getFloatDef(lbl_8055C5F0, def);
+        *(float *)(o + 0xC) = p->getFloatDef(lbl_8055C5E0, lbl_80563F48);
+        *(float *)(o + 0x10) = p->getFloatDef(lbl_8055C5E8, lbl_80563F48);
+        *(float *)(o + 0x14) = p->getFloatDef(lbl_8055C5F0, lbl_80563F50);
         a = p->getFlag(name + 0x690, 0);
         b = p->getFlag(lbl_8055C5F8, 0);
         c = p->getFlag(lbl_8055C600, 0);
         d = p->getFlag(name + 0x69C, 0);
-        flags = a | (((-b | b) >> 31) & 2) | (((-c | c) >> 31) & 4) | (((-d | d) >> 31) & 8);
+        flags = (a | ((-b | b) >> 31) & 2) | (((-c | c) >> 31) & 4);
+        flags |= (((-d | d) >> 31) & 8);
         *(unsigned char *)(o + 0x1D) = flags;
         switch (*(int *)(o + 0x58)) {
         case 13:
