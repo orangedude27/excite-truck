@@ -22009,7 +22009,7 @@ s32 rfc_parse_data(void *arg0, void *arg1, u8 *arg2) {
         return 1;
     case 0xF:
         temp_r6_5 = (*(u8 *)((u8 *)(arg0) + 0x6D));
-        if ((((s32) temp_r6_5 != 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) == 0)) || (((s32) temp_r6_5 == 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) != 0)) || ((u16) var_r8 != 0) || ((temp_r3_3 = (*(u8 *)((u8 *)(arg1) + 0)), (((s32) temp_r3_3 == 0) == 0)) && ((temp_r3_3 < 2U) || (temp_r3_3 > 0x3DU))) || (fn_80095084(3, temp_r7) == 0)) {
+        if ((((s32) temp_r6_5 != 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) == 0)) || (((s32) temp_r6_5 == 0) && ((s32) (*(u8 *)((u8 *)(arg1) + 2)) != 0)) || ((u16) var_r8 != 0) || ((temp_r3_3 = (*(u8 *)((u8 *)(arg1) + 0)), (((s32) temp_r3_3 == 0) == 0)) && ((temp_r3_3 < 2U) || (temp_r3_3 > 0x3DU))) || (fn_80095084(3, temp_r7, temp_r7[3]) == 0)) {
             if ((u8) (*(u8 *)((u8 *)(&lbl_803C4828) + 0x414)) >= 1U) {
                 fn_8007093C(0x90000, messages + 0x20);
             }
@@ -22234,6 +22234,18 @@ void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
     }
 }
 
+u8 fn_8009504C(u16 arg0, u8 *arg1) {
+    u8 *ptr = arg1;
+    u8 fcs = 0xFF;
+    u16 len = arg0;
+    u8 *table = lbl_802EEC40;
+    while (len-- != 0) {
+        fcs = table[(u8)(fcs ^ *ptr)];
+        ptr++;
+    }
+    return (u8)(0xFF - fcs);
+}
+
 #pragma push
 #pragma scheduling invalid_target
 u8 fn_80095084(s32 arg0, void *arg1) {
@@ -22368,12 +22380,7 @@ void fn_80095518(void *arg0) {
 
 void rfc_sec_check_complete(void *unused, void *arg0, s8 arg1) {
     if (*((u8 *)arg0 + 1) == 0) return;
-    if (*((u8 *)arg0 + 0x68) == 2)
-        goto do_call;
-    if (*((u8 *)arg0 + 0x68) == 3)
-        goto do_call;
-    return;
-do_call:
+    if (*((u8 *)arg0 + 0x68) != 2 && *((u8 *)arg0 + 0x68) != 3) return;
     rfc_port_sm_execute(arg0, 15, &arg1);
 }
 
@@ -24986,8 +24993,8 @@ BOOLEAN sdpu_compare_uuid_with_attr(tBT_UUID *p_btuuid, tSDP_DISC_ATTR *p_attr) 
 }
 
 void sdpu_sort_attr_list(UINT16 num_attr, tSDP_DISCOVERY_DB *p_db) {
-    UINT16 x;
     int last;
+    UINT16 x;
     UINT16 i;
 
     if (num_attr <= 1) {
