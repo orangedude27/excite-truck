@@ -1915,6 +1915,11 @@ void fn_80196418(void *arg0) {
     }
     fn_80195830(arg0);
 }
+
+int fn_8019643C(int arg0) {
+    return *(int *)(lbl_804348E8[arg0] + 0x10) == 0x50434152;
+}
+
 #pragma dont_inline reset
       extern int fn_801B2F24(void);
     extern void fn_801B2F40(int);
