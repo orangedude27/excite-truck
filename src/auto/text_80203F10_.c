@@ -14,4 +14,4 @@ extern short lbl_8055ECF0;
 extern short lbl_8055ECF2;
 extern short lbl_8055ECF4;
 extern int lbl_8055ECF8;
-extern void __register_global_object(void *, void (*)(void), void (*)(void), unsigned int, unsigned int);
+  extern void __register_global_object(void *, void *, void *, int, int);
