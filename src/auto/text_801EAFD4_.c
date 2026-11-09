@@ -477,12 +477,10 @@ void fn_801EB854(void) {
 
 void fn_801EB8BC(void) {
     s32 *p = lbl_804885E8;
-    u32 i = 0;
-    do {
+    u32 i;
+    for (i = 0; i < 0x18; i++, p++) {
         fn_801EB9A4(p);
-        i++;
-        if (i < 0x18) p++;
-    } while (i < 0x18);
+    }
 }
 #pragma dont_inline off
 
