@@ -21,25 +21,18 @@ extern void fn_80131818(void);
 void fn_800163F0(void) {
     extern void *lbl_8055D538;
     extern void *lbl_8055D53C;
-    extern unsigned char *lbl_8055D540;
-    extern unsigned char *lbl_8055D544;
-    extern void *lbl_8055D54C;
-    extern void *lbl_8055D550;
-    void *value;
     lbl_8055D550 = 0;
     fn_80128670(lbl_8055D544);
     lbl_8055D544 = 0;
     lbl_8055D54C = 0;
     fn_80128670(lbl_8055D540);
-    value = lbl_8055D538;
     lbl_8055D540 = 0;
-    if (value) {
-        fn_80131818();
+    if (lbl_8055D538) {
+        ((void (*)(void *))fn_80131818)(lbl_8055D538);
         lbl_8055D538 = 0;
     }
-    value = lbl_8055D53C;
-    if (value) {
-        fn_80131818();
+    if (lbl_8055D53C) {
+        ((void (*)(void *))fn_80131818)(lbl_8055D53C);
         lbl_8055D53C = 0;
     }
 }
