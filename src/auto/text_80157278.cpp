@@ -3124,60 +3124,67 @@ extern "C" void fn_8015CF00(void* self) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-extern "C" f32 fn_8015CFFC(void *a, s32 b) {
-    int nlast;
-    int end;
-    s32 saved = b;
-    u8 *p = (u8 *)a;
-    int changed = 0;
-    f32 result;
+extern "C" f32 fn_8015CFFC(void *tracker, void *truck) {
+    // One frame of the dash bonus tracker: scores every event queued since the
+    // last frame (each one restarts the bonus timer and sets the dash sound's
+    // scale), counts this frame off the timer and returns the score banked when
+    // the timer runs out or the tracker's last record is reached - 0.0f while
+    // the bonus is still running.
+    s32 lastRecord;
+    s32 atLastRecord;
+    u8 *p = (u8 *)tracker;
+    s32 scaleSet = 0;
+    f32 score;
     if (*(void **)(p + 0x278)) {
-        int v = *(s32 *)(p + 0x270) + *(s32 *)(p + 0x26c);
-        *(s32 *)(p + 0x270) = v;
-        if (v > 0) {
-            int n = *(s32 *)(p + 0x264);
-            int value = n & ((-n & ~n) >> 31);
-            int ix = (value < 4) ? value : 4;
-            u8 *q = (u8 *)*(void **)(p + 0x278);
-            f32 x = lbl_802F9478[ix];
-            if (x != *(f32 *)(q + 4)) { q[0x4e] = 1; *(f32 *)(q + 4) = x; }
-            changed = 1;
+        s32 told = *(s32 *)(p + 0x270) + *(s32 *)(p + 0x26c);
+        *(s32 *)(p + 0x270) = told;
+        if (told > 0) {
+            // the dash sound plays louder the more events this bonus scored
+            s32 scored = *(s32 *)(p + 0x264);
+            s32 positive = scored & ((-scored & ~scored) >> 31);  // max(scored, 0)
+            s32 ix = (positive < DASH_SCALE_LAST) ? positive : DASH_SCALE_LAST;
+            u8 *dash = (u8 *)*(void **)(p + 0x278);
+            f32 scale = DASH_SCALE[ix];
+            if (scale != *(f32 *)(dash + 4)) { dash[0x4e] = 1; *(f32 *)(dash + 4) = scale; }
+            scaleSet = 1;
         }
     }
-    result = lbl_80561750;
-    int i = 0;
-    int zero = 0;
-    while (i < *(s32 *)(p + 0x26c)) {
+    score = BONUS_FULL;
+    s32 i = 0;
+    s32 zero = 0;
+    while (i < *(s32 *)(p + 0x26c)) {          // one scoring pass per queued event
         ++*(s32 *)(p + 0x264);
         ++*(s32 *)(p + 0x260);
-        *(f32 *)(p + 0x254) = *(f32 *)(p + 0x250);
-        *(f32 *)(p + 0x25c) = result;
-        ((Fn8015889C *)p)->v32();
+        *(f32 *)(p + 0x254) = *(f32 *)(p + 0x250);   // the event restarts the timer
+        *(f32 *)(p + 0x25c) = score;                 // ... at the full multiplier
+        ((BonusTracker *)tracker)->scoreEvent();
         if (*(s32 *)(p + 0x248) && *(void **)(p + 0x268))
-            *(s32 *)(*(u8 **)(p + 0x268) + 8) = zero;
+            *(s32 *)(*(u8 **)(p + 0x268) + 8) = zero;  // the listener has nothing pending
         i++;
     }
     *(s32 *)(p + 0x26c) = 0;
-    if (changed && *((u8 *)*(void **)(p + 0x278) + 0x19) == 0) {
+    if (scaleSet && *((u8 *)*(void **)(p + 0x278) + 0x19) == 0) {
+        // the sound is not playing: hand it back the event it was told about
+        // and ask it to stop.
         (*(s32 *)(p + 0x270))--;
-        u8 *q = (u8 *)*(void **)(p + 0x278);
-        q[0x49] = 1; q[0x4b] = 0; q[0x4a] = 0;
+        u8 *dash = (u8 *)*(void **)(p + 0x278);
+        dash[0x49] = 1; dash[0x4b] = 0; dash[0x4a] = 0;
     }
-    *(f32 *)(p + 0x254) = fn_801429D0(lbl_80561754, *(f32 *)(p + 0x254) - lbl_8056177C);
-    if (((s32 (*)(void *))fn_8015A404)((void *)(long)saved) == 0 && ((Fn8015889C *)p)->v37() == 0)
-        *(f32 *)(p + 0x254) = fn_801429D0(*(f32 *)(p + 0x254), lbl_8056179C);
-    result = lbl_80561754;
-    end = 0;
-    if (((Fn8015889C *)p)->v39()) {
-        nlast = fn_80158D04(a) - 1;
-        int current = ((Fn8015889C *)p)->v23();
-        if (current == nlast) end = 1;
+    *(f32 *)(p + 0x254) = fn_801429D0(BONUS_NONE, *(f32 *)(p + 0x254) - BONUS_FRAME);
+    if (fn_8015A404(truck) == 0 && ((BonusTracker *)tracker)->mayTimeOut() == 0)
+        *(f32 *)(p + 0x254) = fn_801429D0(*(f32 *)(p + 0x254), BONUS_MIN_TIME);
+    score = BONUS_NONE;
+    atLastRecord = 0;
+    if (((BonusTracker *)tracker)->hasRecords()) {
+        lastRecord = fn_80158D04(tracker) - 1;
+        s32 current = ((BonusTracker *)tracker)->getIndex();
+        if (current == lastRecord) atLastRecord = 1;
     }
-    if (fn_80141F7C(*(f32 *)(p + 0x254)) || end) {
-        if (*(s32 *)(p + 0x264) > 0) result = ((f32 (*)(void *,int))fn_8015A368)(a,saved);
-        if (!end) fn_8015A318((Unk8015A368C *)a);
-    } else if (*(s32 *)(p + 0x264) > 0) ((Fn8015889C *)p)->v34();
-    return result;
+    if (fn_80141F7C(*(f32 *)(p + 0x254)) || atLastRecord) {
+        if (*(s32 *)(p + 0x264) > 0) score = ((f32 (*)(void *, void *))fn_8015A368)(tracker, truck);
+        if (!atLastRecord) fn_8015A318((Unk8015A368C *)tracker);
+    } else if (*(s32 *)(p + 0x264) > 0) ((BonusTracker *)tracker)->refreshDisplay();
+    return score;
 }
 #pragma pop
 extern "C" void fn_8015D270(void* arg0, void* arg1) {
