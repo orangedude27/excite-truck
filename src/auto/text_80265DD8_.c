@@ -2103,26 +2103,21 @@ void fn_8026A394(void *arg0) {
       fn_80269BB0(a, b, c, d);
 }
 
-#pragma push
-#pragma scheduling invalid_target
 #pragma scheduling on
 void fn_8026A4A0(int arg0, int *arg1, float *arg2) {
-    char *base = (char *)lbl_80499080 + arg0 * 0x228;
-    arg1[0] = *(int *)(base + 0x58);
-    arg1[1] = *(int *)(base + 0x5c);
-    arg1[2] = *(int *)(base + 0x60);
-    arg1[3] = *(int *)(base + 0x64);
-    arg1[4] = *(int *)(base + 0x68);
-    arg1[5] = *(int *)(base + 0x6c);
-    arg1[6] = *(int *)(base + 0x70);
-    arg1[7] = *(int *)(base + 0x74);
-    arg1[8] = *(int *)(base + 0x78);
-    arg1[9] = *(int *)(base + 0x7c);
-    arg1[10] = *(int *)(base + 0x80);
-    arg1[11] = *(int *)(base + 0x84);
-    *arg2 = *(float *)(base + 0xbc);
+    struct Pair { int a; int b; };
+    struct Pair *src = (struct Pair *)((char *)lbl_80499080 + arg0 * 0x228 + 0x58);
+    struct Pair *dst = (struct Pair *)arg1;
+    int *srcInt = (int *)src;
+    dst[0] = src[0];
+    dst[1] = src[1];
+    dst[2] = src[2];
+    dst[3] = src[3];
+    arg1[8] = srcInt[8];
+    *(struct Pair *)(arg1 + 9) = *(struct Pair *)(srcInt + 9);
+    arg1[11] = srcInt[11];
+    *arg2 = *(float *)((char *)src + 0x64);
 }
-#pragma pop
 extern float lbl_8055F484;
 extern float lbl_80563C6C;
 extern float lbl_80499980[8];
