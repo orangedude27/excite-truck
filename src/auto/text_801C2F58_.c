@@ -53,7 +53,7 @@ extern char lbl_80438490[];
 extern char lbl_80438564[];
 extern char lbl_804383F8[];
 extern char lbl_80438408[];
-extern char lbl_8055AA54[];
+extern char lbl_8055AA54[5];
   
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -1496,8 +1496,8 @@ extern s32 lbl_8055E864;
 extern Vec lbl_80438498;
 extern char lbl_8055E83D;
 void fn_801C7A28(void) {
-    Vec *src = &lbl_80438268;
-    Vec *dst = &lbl_80438498;
+    register Vec *src = &lbl_80438268;
+    register Vec *dst = &lbl_80438498;
     f32 x = src->x;
     f32 y = src->y;
     f32 z = src->z;
@@ -2633,21 +2633,14 @@ char *fn_801C98F4(char *p, s32 n) {
     return p;
 }
 
+#pragma push
+#pragma processor 750
 s32 fn_801C9920(s32 arg0, s32 arg1) {
-    char *base = lbl_80336B00;
-    char *record = (char *)arg0;
     s32 handle = arg1;
-    f32 quat[4];
+    char *record = (char *)arg0;
+    char *base = lbl_80336B00;
     f32 vec[3];
-    f32 trace;
-    f32 root;
-    s32 i;
-    s32 j;
-    s32 k;
-    f32 angle;
-    f32 sv;
-    f32 scale;
-    f32 *rot;
+    f32 quat[4];
     fn_802E3AD0(handle, base + 0x9b0);
     fn_802E3AD0(handle, base + 0x9c0, *(f32 *)record);
     switch (*(u32 *)(record + 8)) {
@@ -2655,9 +2648,18 @@ s32 fn_801C9920(s32 arg0, s32 arg1) {
         fn_802E3AD0(handle, base + 0x9cc);
         fn_802E3AD0(handle, base + 0x9dc, record + 0xC);
         break;
-    case 1:
+    case 1: {
+        f32 trace;
+        f32 root;
+        s32 i;
+        s32 j;
+        s32 k;
+        f32 angle;
+        f32 sv;
+        f32 scale;
+        f32 *rot;
         fn_802E3AD0(handle, base + 0x9e8);
-        fn_802E3AD0(handle, base + 0x9f8, fn_801C34F4(*(f32 *)(record + 0x54)));
+        fn_802E3AD0(handle, base + 0x9f8, ((f32 (*)(f32))fn_801C34F4)(*(f32 *)(record + 0x54)));
         fn_802E3AD0(handle, base + 0xa08, *(f32 *)(record + 0xC), *(f32 *)(record + 0x10), *(f32 *)(record + 0x14));
         rot = (f32 *)(record + 0x18);
         trace = rot[0] + rot[4] + rot[8];
@@ -2697,16 +2699,17 @@ s32 fn_801C9920(s32 arg0, s32 arg1) {
         fn_802E3AD0(handle, base + 0xa40, *(f32 *)(record + 0x3C), *(f32 *)(record + 0x40), *(f32 *)(record + 0x44));
         fn_802E3AD0(handle, base + 0xa58, *(f32 *)(record + 0x48), *(f32 *)(record + 0x4C), *(f32 *)(record + 0x50));
         fn_802E3AD0(handle, base + 0xa70, *(f32 *)(record + 0x58) - *(f32 *)record);
-        fn_802E3AD0(handle, base + 0xa84, *(u8 *)(record + 0x5C) == 0 ? lbl_8055AAF4 : lbl_8055AAF0);
+        fn_802E3AD0(handle, base + 0xa84, *(u8 *)(record + 0x5C) ? lbl_8055AAF0 : lbl_8055AAF4);
         break;
+    }
     case 2:
         fn_802E3AD0(handle, base + 0xa98);
         break;
     case 3:
         fn_802E3AD0(handle, base + 0xaa8);
         fn_802E3AD0(handle, base + 0xab8, fn_801C98F4((char *)lbl_80562960, *(s32 *)(record + 0x10)));
-        fn_802E3AD0(handle, base + 0xacc, *(u8 *)(record + 0x14) == 0 ? lbl_8055AAF4 : lbl_8055AAF0);
-        fn_802E3AD0(handle, base + 0xadc, *(u8 *)(record + 0x15) == 0 ? lbl_8055AAF4 : lbl_8055AAF0);
+        fn_802E3AD0(handle, base + 0xacc, *(u8 *)(record + 0x14) ? lbl_8055AAF0 : lbl_8055AAF4);
+        fn_802E3AD0(handle, base + 0xadc, *(u8 *)(record + 0x15) ? lbl_8055AAF0 : lbl_8055AAF4);
         fn_802E3AD0(handle, base + 0xaf0, *(s32 *)(record + 0xC));
         break;
     case 4:
@@ -2716,15 +2719,15 @@ s32 fn_801C9920(s32 arg0, s32 arg1) {
         fn_802E3AD0(handle, base + 0xb30, record + 0x110);
         fn_802E3AD0(handle, base + 0xb40, fn_801C98F4((char *)lbl_80562954, *(s32 *)(record + 0x210)));
         switch (*(s32 *)(record + 0x210)) {
-        case 0:
-            fn_802E3AD0(handle, base + 0xb84, *(f32 *)(record + 0x218), *(f32 *)(record + 0x21C));
-            fn_802E3AD0(handle, base + 0xb74, *(f32 *)(record + 0x220));
-            fn_802E3AD0(handle, base + 0xb98, *(f32 *)(record + 0x224), *(f32 *)(record + 0x228));
-            break;
         case 1:
             fn_802E3AD0(handle, base + 0xb50, *(f32 *)(record + 0x218));
             fn_802E3AD0(handle, base + 0xb60, *(f32 *)(record + 0x21C));
             fn_802E3AD0(handle, base + 0xb74, *(f32 *)(record + 0x220));
+            break;
+        case 0:
+            fn_802E3AD0(handle, base + 0xb84, *(f32 *)(record + 0x218), *(f32 *)(record + 0x21C));
+            fn_802E3AD0(handle, base + 0xb74, *(f32 *)(record + 0x220));
+            fn_802E3AD0(handle, base + 0xb98, *(f32 *)(record + 0x224), *(f32 *)(record + 0x228));
             break;
         case 2:
             fn_802E3AD0(handle, base + 0xb74, *(f32 *)(record + 0x220));
@@ -2768,7 +2771,7 @@ s32 fn_801C9920(s32 arg0, s32 arg1) {
         break;
     }
 }
-
+#pragma pop
 extern char lbl_80336B00[];
 extern s32 lbl_8055E814;
 extern s32 fn_802E367C(void);
