@@ -16657,47 +16657,74 @@ void l2c_csm_term_w4_sec_comp(void *p_ccb, s32 event, void *p_data)
 }
 
 extern char lbl_803183B0[];
-void l2c_csm_w4_l2cap_connect_rsp(void *p_ccb, u16 event, void *p_msg) {
-    char *p_str = (char *)jumptable_803183B0;
-    void *p_rcb = *(void **)((u8 *)p_ccb + 0x30);
-    void (*disconnect_ind)(u16, u8) = *(void (**)(u16, u8))((u8 *)p_rcb + 0x18);
-    void (*connect_cfm)(u16, u16) = *(void (**)(u16, u16))((u8 *)p_rcb + 8);
-    u16 local_cid = *(u16 *)((u8 *)p_ccb + 0x14);
-    if (lbl_803C4040[0] >= 4) fn_80070954(0x80003, p_str + 0x294, event);
-    switch (event) {
-    case 3:
-        *(u32 *)((u8 *)p_ccb + 4) = 0;
-        if (lbl_803C4040[0] >= 3) fn_80070954(0x80002, p_str + 0x40, *(u16 *)((u8 *)p_ccb + 0x14));
+/* L2CAP channel state machine, W4_L2CAP_CONNECT_RSP state (l2c_csm.c l2c_csm_w4_l2cap_connect_rsp):
+ * we have sent the peer a connect request, so this waits for what ends the wait - the peer's
+ * confirm (go to CONFIG and confirm to the upper layer), its "pending" answer (extend the timeout
+ * and let the upper layer know), its rejection, the connect timeout, the link going away or the
+ * upper layer giving up. */
+void l2c_csm_w4_l2cap_connect_rsp(tL2C_CCB_VIEW *p_ccb, u16 event, void *p_msg)
+{
+    char *p_str = (char *)jumptable_803183B0;   /* l2c_csm.c's trace strings, after the CSM jump table */
+    tL2C_RCB_VIEW *p_rcb = p_ccb->p_rcb;
+    void (*disconnect_ind)(u16, u16) = p_rcb->pL2CA_DisconnectInd_Cb;
+    void (*connect_cfm)(u16, u16) = p_rcb->pL2CA_ConnectCfm_Cb;
+    u16 local_cid = p_ccb->local_cid;
+
+    if (lbl_803C4040[0] >= 4)
+        fn_80070954(0x80003, p_str + 0x294, event); /* "L2CAP - st: W4_L2CAP_CON_RSP evt: %d" */
+
+    switch (event)
+    {
+    case L2CEVT_LP_DISCONNECT_IND:                      /* Link was disconnected */
+        p_ccb->chnl_state = CST_CLOSED;
+        if (lbl_803C4040[0] >= 3)
+            fn_80070954(0x80002, p_str + 0x40, p_ccb->local_cid); /* "L2CAP - Calling Disconnect_Ind_Cb(), CID: 0x%04x  No Conf Needed" */
         l2cu_release_ccb(p_ccb);
-        disconnect_ind(local_cid, 0);
+        disconnect_ind(local_cid, FALSE);
         break;
-    case 11:
-        *(u16 *)((u8 *)p_ccb + 0x16) = *(u16 *)((u8 *)p_msg + 0xe);
-        *(u32 *)((u8 *)p_ccb + 4) = 5;
-        btu_start_timer((TIMER_LIST_ENT *)((u8 *)p_ccb + 0x18), 3, 0x1e);
-        if (lbl_803C4040[0] >= 3) fn_80070954(0x80002, p_str + 0x2bc, *(u16 *)((u8 *)p_ccb + 0x14));
-        ((void (*)(u16, u16))*(void **)((u8 *)*(void **)((u8 *)p_ccb + 0x30) + 8))(*(u16 *)((u8 *)p_ccb + 0x14), 0);
+
+    case L2CEVT_L2CAP_CONNECT_RSP:                      /* Got peer connect confirm */
+        p_ccb->remote_cid = ((tL2C_CONN_INFO *)p_msg)->remote_cid;
+        p_ccb->chnl_state = CST_CONFIG;
+        btu_start_timer(&p_ccb->timer_entry, BTU_TTYPE_L2CAP_CHNL, L2CAP_CHNL_TIMEOUT);
+        if (lbl_803C4040[0] >= 3)
+            fn_80070954(0x80002, p_str + 0x2bc, p_ccb->local_cid); /* trace: Calling Connect_Cfm_Cb(), Success */
+        p_ccb->p_rcb->pL2CA_ConnectCfm_Cb(p_ccb->local_cid, L2CAP_CONN_OK);
         break;
-    case 12:
-        btu_start_timer((TIMER_LIST_ENT *)((u8 *)p_ccb + 0x18), 3, 0x78);
-        if (*(void **)((u8 *)*(void **)((u8 *)p_ccb + 0x30) + 0xc)) {
-            if (lbl_803C4040[0] >= 3) fn_8007093C(0x80002, p_str + 0x2f4);
-            ((void (*)(u16))*(void **)((u8 *)*(void **)((u8 *)p_ccb + 0x30) + 0xc))(0);
+
+    case L2CEVT_L2CAP_CONNECT_RSP_PND:                  /* Got peer connect pending */
+        btu_start_timer(&p_ccb->timer_entry, BTU_TTYPE_L2CAP_CHNL, L2CAP_CHNL_CONNECT_TOUT_EXT);
+        if (p_ccb->p_rcb->pL2CA_ConnectPnd_Cb)
+        {
+            if (lbl_803C4040[0] >= 3)
+                fn_8007093C(0x80002, p_str + 0x2f4);    /* trace: Calling Connect_Pnd_Cb() */
+            p_ccb->p_rcb->pL2CA_ConnectPnd_Cb(0);       /* @bug the channel's CID is not passed */
         }
         break;
-    case 13:
-        if (lbl_803C4040[0] >= 3) fn_8007096C(0x80002, p_str + 0x318, *(u16 *)((u8 *)p_ccb + 0x14), *(u16 *)((u8 *)p_msg + 0xa));
+
+    case L2CEVT_L2CAP_CONNECT_RSP_NEG:                  /* Peer rejected the connection */
+        if (lbl_803C4040[0] >= 3)
+            fn_8007096C(0x80002, p_str + 0x318, p_ccb->local_cid,
+                        ((tL2C_CONN_INFO *)p_msg)->l2cap_result); /* trace: Connect_Cfm_Cb, Failure Code */
         l2cu_release_ccb(p_ccb);
-        connect_cfm(local_cid, *(u16 *)((u8 *)p_msg + 0xa));
+        connect_cfm(local_cid, ((tL2C_CONN_INFO *)p_msg)->l2cap_result);
         break;
-    case 30:
-        if (lbl_803C4040[0] >= 3) fn_80070954(0x80002, p_str + 0x358, *(u16 *)((u8 *)p_ccb + 0x14));
+
+    case L2CEVT_TIMEOUT:                                /* Connect request timed out */
+        if (lbl_803C4040[0] >= 3)
+            fn_80070954(0x80002, p_str + 0x358, p_ccb->local_cid); /* trace: Connect_Cfm_Cb, Timeout */
         l2cu_release_ccb(p_ccb);
-        connect_cfm(local_cid, 0xeeee);
+        connect_cfm(local_cid, L2CAP_CONN_TIMEOUT);
         break;
-    case 26: l2cu_release_ccb(p_ccb); break;
-    case 19:
-    case 29: GKI_freebuf(p_msg); break;
+
+    case L2CEVT_L2CA_DISCONNECT_REQ:                    /* Upper wants to disconnect */
+        l2cu_release_ccb(p_ccb);
+        break;
+
+    case L2CEVT_L2CAP_DATA:                             /* Peer data we cannot use yet */
+    case L2CEVT_L2CA_DATA_WRITE:                        /* Upper layer data to send */
+        GKI_freebuf(p_msg);
+        break;
     }
 }
 
