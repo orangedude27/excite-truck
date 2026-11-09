@@ -253,7 +253,6 @@ int fn_802AE7AC(void) {
 #pragma cplusplus on
 #pragma push
 #pragma processor 750
-#pragma opt_propagation off
 extern "C" void fn_802AE7F4(void) {
     struct PathTbl { char text[0xC]; char lookupKey[0xC]; char statusKey[8]; };
     float values[8];
