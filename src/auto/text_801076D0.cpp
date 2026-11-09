@@ -897,33 +897,51 @@ checkIndex:
 }
 #pragma pop
 
+/*
+ * nw4hbm::ut::detail::ResFontBase::SetLineFeed (ut_ResFontBase.cpp).
+ * Puts the line feed into the font information's line-feed byte,
+ * mFontInfo (@0x14) -> +1, which is what GetLineFeed() reads back; it has to
+ * fit in a signed byte.  The strings are all in lbl_80329140: +0xC
+ * "ut_ResFontBase.cpp", +0xF0 "this(=%p) is not valid pointer.", +0x128
+ * "mFontInfo(=%p) is not valid pointer." and +0x1A0 "linefeed is out of
+ * bounds(%d)\n%d <= linefeed ...", which is given the value and the range.
+ */
 void nw4hbm::ut::detail::ResFontBase::SetLineFeed(int lineFeed) {
-    const char* file=lbl_80329140;
-    u32 value=(u32)this;
-    int a=1,b=1,c=1,d=1,e=1,f=1;
-    u32 t=value&0xFF000000U;
-    if(t!=0x80000000U&&(value&0xFF800000U)!=0x81000000U)f=0;
-    if(f==0&&(value&0xF8000000U)!=0x90000000U)e=0;
-    if(e==0&&t!=0xC0000000U)d=0;
-    if(d==0&&(value&0xFF800000U)!=0xC1000000U)c=0;
-    if(c==0&&(value&0xF8000000U)!=0xD0000000U)b=0;
-    if(b==0&&(value&0xFFFFC000U)!=0xE0000000U)a=0;
-    if(a==0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x177,file+0xF0,this);
-    int g=1,h=1;
-    u32 v=*(u32*)((char*)this+0x14);
-    int i=1,j=1,k=1,l=1;
-    u32 t2=v&0xFF000000U;
-    if(t2!=0x80000000U&&(v&0xFF800000U)!=0x81000000U)l=0;
-    if(l==0&&(v&0xF8000000U)!=0x90000000U)k=0;
-    if(k==0&&t2!=0xC0000000U)j=0;
-    if(j==0&&(v&0xFF800000U)!=0xC1000000U)i=0;
-    if(i==0&&(v&0xF8000000U)!=0xD0000000U)h=0;
-    if(h==0&&(v&0xFFFFC000U)!=0xE0000000U)g=0;
-    if(g==0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x178,file+0x128);
-    int valid=0;
-    if(lineFeed>=-128 && lineFeed<=127) valid=1;
-    if(!valid)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x179,file+0x1A0,lineFeed,-128,127);
-    *(s8*)(*(u32*)((char*)this+0x14)+1)=lineFeed;
+    const char* file = lbl_80329140;
+    u32 selfAddr = (u32)this;
+    /* nw4hbm::db pointer check: matched_<range> says the address fell in one of
+     * the ranges accepted up to that range (MEM1 0x80000000/0x81000000, MEM2
+     * 0x90000000, 0xC0000000, 0xC1000000, 0xD0000000, the ROM mirror at
+     * 0xE0000000), so `valid` is the verdict.  They are declared innermost
+     * check last: the compiler gives them r5..r10 in declaration order. */
+    int valid = 1, matched_d0 = 1, matched_c1 = 1, matched_c0 = 1, matched_mem2 = 1, matched_mem1 = 1;
+    u32 selfTop = selfAddr & 0xFF000000U;
+    if (selfTop != 0x80000000U && (selfAddr & 0xFF800000U) != 0x81000000U) matched_mem1 = 0;
+    if (matched_mem1 == 0 && (selfAddr & 0xF8000000U) != 0x90000000U) matched_mem2 = 0;
+    if (matched_mem2 == 0 && selfTop != 0xC0000000U) matched_c0 = 0;
+    if (matched_c0 == 0 && (selfAddr & 0xFF800000U) != 0xC1000000U) matched_c1 = 0;
+    if (matched_c1 == 0 && (selfAddr & 0xF8000000U) != 0xD0000000U) matched_d0 = 0;
+    if (matched_d0 == 0 && (selfAddr & 0xFFFFC000U) != 0xE0000000U) valid = 0;
+    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x177, file + 0xF0, this);
+    /* the same check on mFontInfo, whose panic names the field but not its
+     * address (the two flags it still needs are r4 and r5) */
+    int info_valid = 1, info_matched_d0 = 1;
+    u32 fontInfoPtr = *(u32*)((char*)this + 0x14);
+    int info_matched_c1 = 1, info_matched_c0 = 1, info_matched_mem2 = 1, info_matched_mem1 = 1;
+    u32 fontInfoTop = fontInfoPtr & 0xFF000000U;
+    if (fontInfoTop != 0x80000000U && (fontInfoPtr & 0xFF800000U) != 0x81000000U) info_matched_mem1 = 0;
+    if (info_matched_mem1 == 0 && (fontInfoPtr & 0xF8000000U) != 0x90000000U) info_matched_mem2 = 0;
+    if (info_matched_mem2 == 0 && fontInfoTop != 0xC0000000U) info_matched_c0 = 0;
+    if (info_matched_c0 == 0 && (fontInfoPtr & 0xFF800000U) != 0xC1000000U) info_matched_c1 = 0;
+    if (info_matched_c1 == 0 && (fontInfoPtr & 0xF8000000U) != 0xD0000000U) info_matched_d0 = 0;
+    if (info_matched_d0 == 0 && (fontInfoPtr & 0xFFFFC000U) != 0xE0000000U) info_valid = 0;
+    if (info_valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x178, file + 0x128);
+    /* and the assert that the line feed fits in the signed byte it is stored
+     * in; mFontInfo is read out again for the store itself */
+    int inRange = 0;
+    if (lineFeed >= -128 && lineFeed <= 127) inRange = 1;
+    if (!inRange) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x179, file + 0x1A0, lineFeed, -128, 127);
+    *(s8*)(*(u32*)((char*)this + 0x14) + 1) = lineFeed;
 }
 
 extern "C" s8 fn_8010B2BC(void *arg0) {
