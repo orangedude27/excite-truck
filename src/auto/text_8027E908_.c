@@ -2279,21 +2279,7 @@ increment:
 }
 int fn_80283A50(void) {
     int i;
-    int count;
-    unsigned int value;
-    void **p;
-    count = (int)lbl_804B30D8[1];
-    i = 0;
-    value = (unsigned int)lbl_8055F698;
-    p = (void **)lbl_804B30D8[0];
-    for (; i < count; ++i) {
-        if (*p == (void *)value) goto found;
-        goto increment;
-increment:
-        ++p;
-    }
-    i = -1;
-found:
+    i = fn_80283A50_find((void **)lbl_804B30D8[0], (unsigned int)lbl_8055F698, (int)lbl_804B30D8[1]);
     if (i >= 0) return 1;
     fn_80216D28();
     return 0;
