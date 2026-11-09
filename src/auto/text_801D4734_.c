@@ -665,7 +665,7 @@ int fn_801D56C0(void *alarm) {
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 #pragma cplusplus on
-void fn_801D4F2C(void *arg0) {
+extern "C" void fn_801D4F2C(void *arg0) {
     struct Entry {
         virtual void v0();
         virtual void v1();
