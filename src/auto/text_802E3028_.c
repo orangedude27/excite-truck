@@ -9,7 +9,7 @@ extern void *__AXGetStudio_8000D82C(void);
 extern char lbl_8034CEF8[];
 extern int lbl_8055D178;
 extern int lbl_8055D180;
-extern int lbl_8055D188[];
+extern char lbl_8055D188;
 
 #pragma dont_inline on
 void fn_802E3028(const char *fmt, va_list args, int flag) {}
@@ -17,7 +17,7 @@ void fn_802E3028(const char *fmt, va_list args, int flag) {}
 int fn_802E302C(void) {
     lbl_8055D178 = fn_802E367C((int)&lbl_8055D180);
     fn_802E30C8(lbl_8034CEF8);
-    fn_802E30C8((const char *)&lbl_8055D188, __AXGetStudio_8000D82C());
+    fn_802E30C8(&lbl_8055D188, __AXGetStudio_8000D82C());
     fn_802E30C8(lbl_8034CEF8);
     return 1;
 }
@@ -31,7 +31,7 @@ extern void *__AXGetStudio_8000D82C(void);
 extern char lbl_8034CEF8[];
 extern int lbl_8055D178;
 extern int lbl_8055D180;
-extern int lbl_8055D188[];
+extern char lbl_8055D188;
 
 extern void fn_802E3734(int *);
 extern int lbl_8055D178;
