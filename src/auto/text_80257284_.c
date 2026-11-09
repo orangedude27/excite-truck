@@ -18,7 +18,7 @@ int fn_802146BC(int *, int, int, int);
 int fn_80247624(void);
 extern char lbl_802FA5E0[], lbl_80498E38[];
 extern char lbl_80344CD4[];
-extern int lbl_80344CF0;
+extern char lbl_80344CF0[];
 extern int lbl_80563AA8, lbl_80563AB0;
 extern int lbl_8055B860, lbl_8055BAB8, lbl_8055C1D8, lbl_8055C1E0, lbl_8055C1E8, lbl_8055C1F0;
 extern void fn_80236914(void);
@@ -248,15 +248,15 @@ extern "C" void fn_802576EC(void *arg0) {
         }
         *(unsigned char *)(self + 0x88) = 0;
     }
+    pos = *(int *)(self + 0x18) == 0 ? 1 : 2;
     {
-        int m1 = *(int *)(self + 0x18) == 0 ? 1 : 2;
         void *cur = fn_8022D850(self + 0x1C, *(int *)(self + 0x4C), 0, 0);
-        fn_8022D894(self + 0x1C, *(int *)(self + 0x4C), 0, cur, m1);
+        fn_8022D894(self + 0x1C, *(int *)(self + 0x4C), 0, cur, pos);
     }
     if (*(int *)(self + 0x5C) > 0) {
-        int m2 = *(int *)(self + 0x18) == 1 ? 1 : 2;
+        int m = *(int *)(self + 0x18) == 1 ? 1 : 2;
         void *cur = fn_8022D850(self + 0x54, *(int *)(self + 0x84), 0, 0);
-        fn_8022D894(self + 0x54, *(int *)(self + 0x84), 0, cur, m2);
+        fn_8022D894(self + 0x54, *(int *)(self + 0x84), 0, cur, m);
     }
 }
 #pragma cplusplus reset
