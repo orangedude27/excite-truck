@@ -7,13 +7,14 @@
 void fn_802E3028(const char *fmt, va_list args, int flag) {}
 #pragma dont_inline reset
 
-extern void fn_802E367C(void);
+extern int fn_802E367C(int);
 extern void fn_802E30C8(const char *, ...);
 extern void fn_8000D82C(void);
+extern void *__AXGetStudio_8000D82C(void);
 extern char lbl_8034CEF8[];
 extern int lbl_8055D178;
-extern int lbl_8055D180;
-extern int lbl_8055D188;
+extern char lbl_8055D180[];
+extern char lbl_8055D188[];
 
 extern void fn_802E3734(int *);
 extern int lbl_8055D178;
