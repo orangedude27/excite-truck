@@ -46,22 +46,22 @@ s32 fn_8012A17C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_8012A218(void *arg0) {
-    char *base = (char *)*(int *)((char *)arg0 + 0x10);
-    int stride = *(int *)((char *)arg0 + 0x14);
-    char *end = base + (stride * (*(int *)((char *)arg0 + 0x18) - 1));
+    PoolList_8012A218 *l = (PoolList_8012A218 *)arg0;
     char *p;
-    for (p = base; p < end; p += stride) *(int *)p = (int)(p + stride);
+    char *end = (char *)((l->count - 1) * l->stride + (int)l->base);
+    for (p = l->base; p < end; p += l->stride) {
+        int *q = (int *)p;
+        *q = (int)p + l->stride;
+    }
     *(int *)end = 0;
-    *(int *)((char *)arg0 + 0x1c) = 0;
+    l->head = 0;
 }
 #pragma pop
 void *fn_8012A260(void *arg0, s32 arg1) {
     if (arg0 != 0) {
+        *(int **)arg0 = (int *)lbl_8032A620;
         if (*((u8 *)arg0 + 5) == 0) {
-            *(int **)arg0 = (int *)lbl_8032A620;
             fn_80128658(*(int *)((char *)arg0 + 0xc));
-        } else {
-            *(int **)arg0 = (int *)lbl_8032A620;
         }
         *(int *)((char *)arg0 + 0xc) = 0;
         if (arg1 > 0) fn_80128668(arg0);
