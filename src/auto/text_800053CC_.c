@@ -56,15 +56,15 @@ extern u8 lbl_8034EE84[];
 #pragma scheduling invalid_target
 void fn_80005464(void) {
     s32 mode = fn_801769B8();
-    u8 *base = lbl_8034EE84;
-    *(s32 *)(base + 4) = mode;
-    base[0] = 0;
+    s32 *w = (s32 *)lbl_8034EE84;
+    w[1] = mode;
+    lbl_8034EE84[0] = 0;
     if (mode == 2 && fn_801EA994() > 1) {
-        base[0] = 1;
+        lbl_8034EE84[0] = 1;
     }
-    base[1] = 1;
-    if (*(s32 *)(lbl_8034EE84 + 4) == 0) {
-        base[1] = 0;
+    lbl_8034EE84[1] = 1;
+    if (((s32 *)lbl_8034EE84)[1] == 0) {
+        lbl_8034EE84[1] = 0;
     }
 }
 #pragma unroll off
