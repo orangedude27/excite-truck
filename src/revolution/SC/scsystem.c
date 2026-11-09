@@ -433,29 +433,37 @@ static void ClearConfBuf(u8* conf) {
     }
 }
 
+/*
+ * Validate a SYSCONF image read from NAND and build its lookup table.
+ *
+ * Checks both magics, walks every item through the header's offset table to
+ * make sure each one sits exactly where the table says and unpacks, then
+ * searches the items for each name in NameAndIDTbl and records, at
+ * confLutBase[-id], the offset of that item's offset entry. Returns
+ * SC_STATUS_FATAL on any problem, which makes the caller start over with a
+ * cleared buffer.
+ */
 static SCStatus ParseConfBuf(u8* conf, u32 size) {
     int i;
 
-    u8* confBegin;
-    u8* confEnd;
-    u32 itemOffset;
+    u8* confBegin;    // first byte of the image
+    u8* confEnd;      // first byte of the trailing magic
+    u32 itemOffset;   // offset of the item being walked
 
-    u32 numItems;
-    u16* confItems;
-    u32 itemRest;
+    u32 numItems;     // item count from the header
+    u16* itemOffsets; // SCConfHeader::itemOffsets, one offset per item
+    u32 restSize;     // free bytes between the items and the lookup table
 
-    u8* confLutEnd;
-    u8* confLutBegin;
+    u8* confLutStart; // lookup table's lowest address
+    u8* confLutBase;  // entry for ID 0; the table grows downward from here
 
-    SCNameAndID* tblIter;
-    SCNameAndID* tblEnd;
-    const char* itName;
+    SCNameAndID* nameAndId;    // walk of NameAndIDTbl
+    SCNameAndID* nameAndIdEnd;
+    const char* name;          // name to look up
 
-    tblIter = NameAndIDTbl;
+    nameAndId = NameAndIDTbl;
 
-    /**
-     * Config parameters
-     */
+    // Config parameters
 
     if (size < SC_CONF_MIN_SIZE) {
         goto _error;
@@ -469,9 +477,7 @@ static SCStatus ParseConfBuf(u8* conf, u32 size) {
     confEnd = conf + size - sizeof(u32);
     ItemIDMaxPlus1 = SC_ITEM_MAX;
 
-    /**
-     * File magic
-     */
+    // File magic
 
     if (memcmp(conf, SC_CONF_BEGIN_MAGIC, sizeof(u32)) != 0) {
         goto _error;
@@ -483,6 +489,8 @@ static SCStatus ParseConfBuf(u8* conf, u32 size) {
 
     conf += sizeof(u32);
 
+    // The file may be shorter than the buffer: clear the rest of it and move
+    // the trailing magic down to the end of the whole buffer.
     if (size < __SCGetConfBufSize()) {
         u32 confRest = __SCGetConfBufSize() - size;
         memset(confEnd, 0, confRest);
@@ -490,9 +498,7 @@ static SCStatus ParseConfBuf(u8* conf, u32 size) {
         memcpy(confEnd, SC_CONF_END_MAGIC, sizeof(u32));
     }
 
-    /**
-     * Item count
-     */
+    // Item count
 
     if (!ParseGetBEValue(conf, confEnd, &numItems, sizeof(u16))) {
         goto _error;
@@ -500,12 +506,11 @@ static SCStatus ParseConfBuf(u8* conf, u32 size) {
 
     conf += sizeof(u16);
 
-    /**
-     * Item data
-     */
+    // Item data; the first item follows the offset table and the terminator
+    // entry that points past the last item.
 
-    confItems = (u16*)conf;
-    itemOffset = (u8*)(confItems + numItems + 1) - confBegin;
+    itemOffsets = (u16*)conf;
+    itemOffset = (u8*)(itemOffsets + numItems + 1) - confBegin;
 
     for (i = 0; i < numItems; i++) {
         SCItem item;
@@ -514,11 +519,11 @@ static SCStatus ParseConfBuf(u8* conf, u32 size) {
             goto _error;
         }
 
-        if ((u8*)&confItems[i] - confBegin > size) {
+        if ((u8*)&itemOffsets[i] - confBegin > size) {
             goto _error;
         }
 
-        if (itemOffset != confItems[i]) {
+        if (itemOffset != itemOffsets[i]) {
             goto _error;
         }
 
@@ -529,59 +534,56 @@ static SCStatus ParseConfBuf(u8* conf, u32 size) {
         itemOffset += item.itemLen;
     }
 
-    if (itemOffset > size || itemOffset != confItems[i]) {
+    // i is the terminator entry here
+    if (itemOffset > size || itemOffset != itemOffsets[i]) {
         goto _error;
     }
 
-    /**
-     * Item lookup table
-     */
+    // Item lookup table
 
-    confLutEnd = confEnd - (SC_ITEM_MAX - 1) * sizeof(u16);
+    confLutStart = confEnd - (SC_ITEM_MAX - 1) * sizeof(u16);
 
-    if (confBegin + itemOffset > confLutEnd) {
+    if (confBegin + itemOffset > confLutStart) {
         goto _error;
     }
 
-    itemRest = confLutEnd - (confBegin + itemOffset);
-    memset(confLutEnd, 0, confEnd - confLutEnd);
+    restSize = confLutStart - (confBegin + itemOffset);
+    memset(confLutStart, 0, confEnd - confLutStart);
 
     // First LUT entry (grows upward)
-    confLutBegin = confEnd - sizeof(u16);
+    confLutBase = confEnd - sizeof(u16);
 
-    /**
-     * Build lookup table
-     */
+    // Build lookup table
 
-    for (tblEnd = &tblIter[ItemIDMaxPlus1];
-         tblIter < tblEnd && (itName = tblIter->name) != (void*)NULL;
-         tblIter++) {
+    for (nameAndIdEnd = &nameAndId[ItemIDMaxPlus1];
+         nameAndId < nameAndIdEnd && (name = nameAndId->name) != (void*)NULL;
+         nameAndId++) {
 
-        u32 itNameLen = strlen(itName);
+        u32 nameLen = strlen(name);
 
         for (i = 0; i < numItems; i++) {
-            SCConfItem* itData = (SCConfItem*)(confBegin + confItems[i]);
+            SCConfItem* rawItem = (SCConfItem*)(confBegin + itemOffsets[i]);
 
             // Item length doesn't include terminator
-            if (itNameLen != (itData->desc & 0b00011111) + 1) {
+            if (nameLen != (rawItem->desc & SC_ITEM_NAME_LEN_MAX) + 1) {
                 continue;
             }
 
-            if (memcmp(itName, itData->name, itNameLen) != 0) {
+            if (memcmp(name, rawItem->name, nameLen) != 0) {
                 continue;
             }
 
             // LUT items are in reverse order
-            ((u16*)confLutBegin)[-tblIter->id] =
-                (u8*)(confItems + i) - confBegin;
+            ((u16*)confLutBase)[-nameAndId->id] =
+                (u8*)(itemOffsets + i) - confBegin;
 
             break;
         }
     }
 
-    ItemIDOffsetTblOffset = confLutBegin - confBegin;
+    ItemIDOffsetTblOffset = confLutBase - confBegin;
     ItemNumTotal = numItems;
-    ItemRestSize = itemRest;
+    ItemRestSize = restSize;
     return SC_STATUS_OK;
 
 _error:
