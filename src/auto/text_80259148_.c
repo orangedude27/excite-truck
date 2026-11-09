@@ -1167,7 +1167,6 @@ extern "C" void fn_8025B520(void *arg0) {
         virtual void m13();
         virtual void setProgress(char *, float);
     };
-    char *o = (char *)arg0;
     AchievementRow *row = (AchievementRow *)arg0;
     float start;
     int showName;
@@ -1252,10 +1251,10 @@ blank_copy:
         if ((signed char)blankC != 0) goto blank_next;
     }
 name_done:
-    *(unsigned char *)(o + 0x58) = 1;
-    *(unsigned char *)(o + 0x59) = 0;
-    *(int *)(o + 0x5C) = -0x3E8;
-    if (*(unsigned char *)(o + 0xC4) != 0) {
+    row->done = 1;
+    row->soundPending = 0;
+    row->soundId = -0x3E8;
+    if (row->flagC4 != 0) {
         ((Obj *)lbl_8055F394)->setProgress(lbl_80344E20, lbl_80563AE4);
         ((Obj *)lbl_8055F394)->show(lbl_80344E20);
     }
