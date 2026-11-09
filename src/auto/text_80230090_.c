@@ -483,28 +483,17 @@ float fn_80230E54(float a, float b) {
     return fn_80230DF4(a, b);
 }
 
+#pragma dont_inline on
 void fn_80230E90(s32 arg0) {
     if (arg0 == 1) {
-        union {
-            u32 word[2];
-            f64 value;
-        } converted;
         s32 ticks = fn_802E2C20();
-        f64 bias;
-        f32 normalized;
-
-        converted.word[1] = (u32)ticks ^ 0x80000000;
-        bias = lbl_80563638;
-        converted.word[0] = 0x43300000;
-        normalized = (f32)(converted.value - bias) / lbl_80563640;
-        fn_80230DA4(normalized, lbl_80563648);
+        f32 t = ticks;
+        fn_80230DA4(t / lbl_80563640, lbl_80563648);
     } else {
         fn_80230DA4(fn_8023659C(), lbl_80563648);
     }
 }
-
-#pragma dont_inline on
-#pragma scheduling invalid_target
+#pragma dont_inline reset
 float fn_80230EF4(long arg0) {
     if (!lbl_8055B998) return lbl_80563610;
     if (arg0 == 1) {
