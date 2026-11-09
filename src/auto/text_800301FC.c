@@ -378,7 +378,7 @@ void TRKReleaseBuffer(void *arg0) {
 
 extern void fn_80033148(void *);
 #pragma push
-#pragma scheduling off
+#pragma scheduling on
 void TRKGetFreeBuffer(void *arg0) {
     s32 level = OSDisableInterrupts();
     TRKReleaseBuffer(arg0);
@@ -623,6 +623,85 @@ void __AXGetAuxCOutput(void **arg0) {
     *arg0 = lbl_8035DAA0 + lbl_8055D6F4 * 0x480;
 }
 
+void InitMetroTRKCommTable(void) {
+    void *a[4];
+    void *c[3];
+    void *b[4];
+    void *d[3];
+    void *e[3];
+    u8 *base0 = lbl_8035BFA0;
+    u8 *base1 = lbl_8035BFA0 + 0xD80;
+    u8 *base2 = lbl_8035BFA0 + 0x1B00;
+    s32 i8 = lbl_8055D6F8 * 0x480;
+    s32 i4 = lbl_8055D6F4 * 0x480;
+    lbl_8055D710 = base0 + i8;
+    lbl_8055D70C = base0 + i4;
+    lbl_8055D708 = base1 + i8;
+    lbl_8055D704 = base1 + i4;
+    lbl_8055D700 = base2 + i8;
+    lbl_8055D6FC = base2 + i4;
+    if (lbl_8055D728 != 0) {
+        if ((u32)lbl_8055D740 == 2) {
+            s32 o = lbl_8055D6F0 * 0x480;
+            u8 *p = base0 + o;
+            u8 *q = base2 + o;
+            a[0] = p;
+            a[1] = p + 0x180;
+            a[2] = p + 0x300;
+            a[3] = q + 0x180;
+            DCInvalidateRange(a[0], 0x480);
+            DCInvalidateRange(a[3], 0x180);
+            ((TRKCommFn)lbl_8055D728)(a, lbl_8055D71C);
+            DCFlushRangeNoSync(a[0], 0x480);
+            DCFlushRangeNoSync(a[3], 0x180);
+        } else {
+            u8 *p = base0 + lbl_8055D6F0 * 0x480;
+            c[0] = p;
+            c[1] = p + 0x180;
+            c[2] = p + 0x300;
+            DCInvalidateRange(c[0], 0x480);
+            ((TRKCommFn)lbl_8055D728)(c, lbl_8055D71C);
+            DCFlushRangeNoSync(c[0], 0x480);
+        }
+    }
+    if (lbl_8055D724 != 0) {
+        if ((u32)lbl_8055D740 == 2) {
+            s32 o = lbl_8055D6F0 * 0x480;
+            u8 *p = base1 + o;
+            u8 *q = base2 + o;
+            b[0] = p;
+            b[1] = p + 0x180;
+            b[2] = p + 0x300;
+            b[3] = q + 0x300;
+            DCInvalidateRange(b[0], 0x480);
+            DCInvalidateRange(b[3], 0x180);
+            ((TRKCommFn)lbl_8055D724)(b, lbl_8055D718);
+            DCFlushRangeNoSync(b[0], 0x480);
+            DCFlushRangeNoSync(b[3], 0x180);
+        } else {
+            u8 *p = base1 + lbl_8055D6F0 * 0x480;
+            d[0] = p;
+            d[1] = p + 0x180;
+            d[2] = p + 0x300;
+            DCInvalidateRange(d[0], 0x480);
+            ((TRKCommFn)lbl_8055D724)(d, lbl_8055D718);
+            DCFlushRangeNoSync(d[0], 0x480);
+        }
+    }
+    if (lbl_8055D720 != 0 && (u32)lbl_8055D740 != 2) {
+        u8 *p = base2 + lbl_8055D6F0 * 0x480;
+        e[0] = p;
+        e[1] = p + 0x180;
+        e[2] = p + 0x300;
+        DCInvalidateRange(e[0], 0x480);
+        ((TRKCommFn)lbl_8055D720)(e, lbl_8055D714);
+        DCFlushRangeNoSync(e[0], 0x480);
+    }
+    lbl_8055D6F8 = (lbl_8055D6F8 + 1) % 3;
+    lbl_8055D6F4 = (lbl_8055D6F4 + 1) % 3;
+    lbl_8055D6F0 = (lbl_8055D6F0 + 1) % 3;
+}
+
 void AXRegisterAuxACallback(void *arg0, void *arg1) {
     lbl_8055D728 = arg0;
     lbl_8055D71C = arg1;
@@ -659,11 +738,12 @@ void* fn_80031248(void) {
 
 #pragma dont_inline on
 void *gdev_cc_initialize(void) {
-    u32 old = lbl_8055D748;
-    u32 next = (old + 1) % 2;
+    unsigned int next;
+    unsigned int old = lbl_8055D748;
+    next = (old + 1) & 1;
     lbl_8055D748 = next;
-    lbl_8055D744 = &lbl_8035E820[next * 0x300];
-    return &lbl_8035E820[old * 0x300];
+    lbl_8055D744 = (unsigned char *)&lbl_8035E820 + next * 0x300;
+    return (unsigned char *)&lbl_8035E820 + old * 0x300;
 }
 
 extern void DCFlushRange(void *, u32);
