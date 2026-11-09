@@ -356,7 +356,7 @@ void __OSPromoteThread(OSThread* thread, s32 prio) {
     }
 }
 
-static OSThread* SelectThread(BOOL b) {
+static OSThread* SelectThread(BOOL force) {
     OSThreadQueue* queue;
     OSThread* currThread;
     OSThread* head;
@@ -364,6 +364,7 @@ static OSThread* SelectThread(BOOL b) {
     OSContext* currCtx;
     s32 prio;
 
+    // A reschedule is already on the way (another thread was promoted on this CPU).
     if (Reschedule > 0) {
         return NULL;
     }
@@ -371,13 +372,16 @@ static OSThread* SelectThread(BOOL b) {
     currCtx = OSGetCurrentContext();
     currThread = OSGetCurrentThread();
 
+    // Only the thread the live context belongs to may hand the CPU over.
     if (currCtx != &currThread->context) {
         return NULL;
     }
 
     if (currThread != NULL) {
         if (currThread->state == OS_THREAD_STATE_RUNNING) {
-            if (!b) {
+            // Without force: stay on while no ready thread outranks this one.
+            // __cntlzw of the queue bits is the best priority waiting.
+            if (!force) {
                 prio = __cntlzw(RunQueueBits);
                 if (currThread->priority <= prio) {
                     return NULL;
@@ -388,13 +392,17 @@ static OSThread* SelectThread(BOOL b) {
             SetRun(currThread);
         }
 
-        if (!(currThread->context.state & 0x2)) {
+        // The caller-saved registers are only in the context when that bit says so;
+        // otherwise save them now. Coming back to this call later (the thread was
+        // loaded again), OSSaveContext returns 1 and the caller gets a NULL.
+        if (!(currThread->context.state & OS_CONTEXT_STATE_GPRS_SAVED)) {
             if (OSSaveContext(&currThread->context)) {
                 return NULL;
             }
         }
     }
 
+    // Nothing ready: idle with interrupts on until some thread can run again.
     if (RunQueueBits == 0) {
         OSSetCurrentThread(NULL);
         OSSetCurrentContext(&IdleContext);
@@ -413,6 +421,7 @@ static OSThread* SelectThread(BOOL b) {
 
     RunQueueHint = FALSE;
 
+    // Unlink the head of the highest priority ready queue; that thread runs next.
     prio = __cntlzw(RunQueueBits);
     queue = &RunQueue[prio];
     head = queue->head;
