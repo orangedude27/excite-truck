@@ -3511,7 +3511,6 @@ void fn_80155318(void *arg0) {
     *((u8 *)arg0 + 0x64) = 0;
     *((u8 *)arg0 + 0xB4) = 0;
 }
-#pragma scheduling on
 void fn_80155368(void) {
 
 }
