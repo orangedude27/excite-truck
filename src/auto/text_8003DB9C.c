@@ -2327,14 +2327,25 @@ void GXSetPointSize(s32 size, s32 format) {
     *(volatile unsigned short *)((char *)data + 2) = 0;
 }
 
-void GXEnableTexOffsets(s32 texMap, int line, int point) {
-    unsigned int *data = __GXData + texMap;
-    unsigned int value = data[0x108 / 4];
-    value = (value & ~0xC0000) | ((line << 18) & 0x40000) | ((point << 19) & 0x80000);
-    data[0x108 / 4] = value;
+void GXEnableTexOffsets(s32 texMap, s32 line, s32 point) {
+    unsigned int *base = __GXData;
+    unsigned int *data = base + texMap;
+    union {
+        unsigned int value;
+        struct {
+            unsigned int unused0 : 12;
+            unsigned int point_bit : 1;
+            unsigned int line_bit : 1;
+            unsigned int unused1 : 18;
+        } bits;
+    } reg;
+    reg.value = data[0x108 / 4];
+    reg.bits.line_bit = line;
+    reg.bits.point_bit = point;
+    data[0x108 / 4] = reg.value;
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = data[0x108 / 4];
-    *(unsigned short *)((char *)__GXData + 2) = 0;
+    *(volatile unsigned short *)((char *)base + 2) = 0;
 }
 
 void GXSetCullMode(unsigned int mode) { unsigned int field; union { unsigned int reg; struct { unsigned int pad : 16; unsigned int cull : 2; unsigned int rest : 14; } fields; } data; field = ((mode << 1) & 2); field |= (mode >> 1) & 1; data.reg = __GXData[0x254 / 4]; data.fields.cull = field; __GXData[0x254 / 4] = data.reg; __GXData[0x5FC / 4] |= 4; }
@@ -4056,17 +4067,20 @@ void GXSetTevColorIn(int stage, int a, int b, int c, int d) {
 }
 
 void GXSetTevAlphaIn(s32 stage, s32 a, s32 b, s32 c, s32 d) {
-    unsigned int *data = __GXData;
-    unsigned int *tev = data + stage;
-    unsigned int value = tev[0x1C0 / 4];
-    value = __rlwimi(value, a, 13, 16, 18);
-    value = __rlwimi(value, b, 10, 19, 21);
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    value = __rlwimi(value, c, 7, 22, 24);
-    value = __rlwimi(value, d, 4, 25, 27);
-    *(volatile unsigned int *)0xCC008000 = value;
-    tev[0x1C0 / 4] = value;
-    *(unsigned short *)((char *)data + 2) = 0;
+    unsigned int *tev;
+    unsigned int *base = __GXData;
+    tev = (unsigned int *)((unsigned char *)base + stage * 4);
+    {
+        unsigned int value = tev[0x1C0 / 4];
+        value = __rlwimi(value, a, 13, 16, 18);
+        value = __rlwimi(value, b, 10, 19, 21);
+        *(volatile unsigned char *)0xCC008000 = 0x61;
+        value = __rlwimi(value, c, 7, 22, 24);
+        value = __rlwimi(value, d, 4, 25, 27);
+        *(volatile unsigned int *)0xCC008000 = value;
+        tev[0x1C0 / 4] = value;
+    }
+    *(unsigned short *)((unsigned char *)base + 2) = 0;
 }
 
 void GXSetTevColorOp(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
@@ -5065,7 +5079,7 @@ void GXSetScissor(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     *(volatile unsigned short *)((char *)data + 2) = 0;
 }
 
-void GXSetScissorBoxOffset(s32 x, s32 y) { s32 yAdjusted; union { u32 value; struct { unsigned int tag : 8; unsigned int reserved : 4; unsigned int y : 10; unsigned int x : 10; } bits; } reg; reg.value = 0; reg.bits.x = (u32)(x + 0x156) >> 1; yAdjusted = y + 0x156; *(volatile u8 *)0xCC008000 = 0x61; reg.bits.y = (u32)yAdjusted >> 1; reg.bits.tag = 0x59; *(volatile u32 *)0xCC008000 = reg.value; *(volatile u16 *)((u8 *)__GXData + 2) = 0; }
+void GXSetScissorBoxOffset(s32 x, s32 y) { union { u32 value; struct { unsigned int tag : 8; unsigned int reserved : 4; unsigned int y : 10; unsigned int x : 10; } bits; } reg; reg.value = 0; reg.bits.x = ((u32)(x + 0x156)) >> 1; *(volatile u8 *)0xCC008000 = 0x61; reg.bits.y = ((u32)(y + 0x156)) >> 1; reg.bits.tag = 0x59; *(volatile u32 *)0xCC008000 = reg.value; *(volatile u16 *)((u8 *)__GXData + 2) = 0; }
 
 void GXSetClipMode(s32 arg0) {
     register volatile unsigned char *fifo = (volatile unsigned char *)0xCC008000;
