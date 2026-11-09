@@ -467,36 +467,53 @@ void fn_8001335C(int a0, int arg1) {
     }
 }
 
+#pragma cplusplus on
+extern "C" void fn_800135AC(char *arg0, void *arg1, char *arg2) {
+    struct Dummy {
+        virtual int f0();
+        virtual int f1(char *);
+    };
+    if (((Dummy *)arg1)->f1(arg0) != 0)
+        fn_802E317C(lbl_802FCB50, arg2, arg0);
+}
+#pragma cplusplus reset
 extern char lbl_802FCB74[];
 extern int fn_8012C33C(void);
 extern int fn_80131808(int);
 extern void fn_8001335C(int, int);
 #pragma scheduling invalid_target
 void fn_80013618(int arg0) {
+    unsigned int count;
     int result;
-    int *base;
-    int count;
     if (arg0 == 0)
         return;
     if (fn_8012C33C() == 0)
         return;
     result = fn_80131808(arg0);
-    base = (int *)lbl_8035183C;
-    count = base[0x20];
-    base[count] = result;
-    base[0x20] = count + 1;
+    count = *(unsigned int *)(lbl_8035183C + 0x80);
+    *(int *)(lbl_8035183C + count * 4) = result;
+    *(unsigned int *)(lbl_8035183C + 0x80) = count + 1;
     fn_8001335C(result, arg0);
 }
 
-int fn_80013680(void *arg0, void *arg1) {
-    void *a = *(void **)((char *)arg0 + 0x80);
-    void *b = *(void **)((char *)arg1 + 0x80);
-    int x = (*(int (**)(void *, char *, int))(*(char **)a + 0x20))(a, lbl_802FCB74, 0x63);
-    int y = (*(int (**)(void *, char *, int))(*(char **)b + 0x20))(b, lbl_802FCB74, 0x63);
+#pragma cplusplus on
+extern "C" int fn_80013680(void *arg0, void *arg1) {
+    struct Dummy {
+        virtual int f0();
+        virtual int f1();
+        virtual int f2();
+        virtual int f3();
+        virtual int f4();
+        virtual int f5();
+        virtual int f6(char *, int);
+    };
+    Dummy *a = *(Dummy **)((char *)arg0 + 0x80);
+    int x = a->f6(lbl_802FCB74, 0x63);
+    Dummy *b = *(Dummy **)((char *)arg1 + 0x80);
+    int y = b->f6(lbl_802FCB74, 0x63);
     return x - y;
 }
-
-#pragma scheduling on
+#pragma cplusplus reset
 int fn_800136FC(void *arg0, void *arg1) {
     int b = ((int *)arg1)[0x1A];
     int a = ((int *)arg0)[0x1A];
