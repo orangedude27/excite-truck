@@ -354,7 +354,7 @@ extern "C" u8 lbl_8033EB14[];
 extern "C" char lbl_8055B87C[];
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" void fn_801E4BEC(s32, s32, s32, s32, s32, s32);
-extern "C" void *lbl_8033F0FC;
+extern "C" u8 lbl_8033F0FC[];
 extern "C" void *lbl_8033EF68;
 extern "C" void fn_8021BE48(void *);
 extern "C" void fn_802223C4(void *arg0, s32 arg1);
