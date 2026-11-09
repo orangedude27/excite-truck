@@ -326,7 +326,6 @@ void fn_80287B38(s32 arg0) {
 extern u8 lbl_804B3150[12];
 extern s32 lbl_8055F6C0;
 extern s32 lbl_804B31E0[];
-extern void fn_80288870(void);
 void fn_80287B58(void) {
     fn_80288870();
 }
@@ -561,11 +560,11 @@ void fn_802882EC(void) {
     extern f32 lbl_80558DC4[];
     typedef struct { s32 v[9]; } Block9;
     typedef struct { s32 v[3]; } Block3;
-    f32 zero;
-    u8 *out;
-    f32 one;
     s32 *table;
     s32 i;
+    u8 *out;
+    f32 one;
+    f32 zero;
     zero = lbl_80564264;
     out = *(u8 **)lbl_804B3150;
     one = lbl_80564260;
@@ -576,8 +575,8 @@ void fn_802882EC(void) {
         u8 *obj = fn_801EA9CC(i);
         u8 *state = *(u8 **)(obj + 8);
         u8 *entry;
-        s32 flags, all, j;
-        u8 *src, *dst;
+        u8 *dst, *src;
+        s32 j, all, flags;
         if ((unsigned)i < 8) entry = (u8 *)*table;
         else entry = 0;
         *(Block9 *)out = *(Block9 *)(entry + 4);
@@ -653,74 +652,92 @@ extern f32 PSVECSquareDistance(void *, void *);
 extern u8 lbl_804B3160[];
 extern s32 fn_802885C4(void *, void *);
 extern void qsort(void *, unsigned int, unsigned int, int (*)(const void *, const void *));
+#pragma scheduling invalid_target
 void fn_802885F0(void) {
-    struct Entry { s32 words[12]; } local[4];
+    struct Pair { s32 a; s32 b; };
+    struct Entry {
+        struct Pair first[4];
+        s32 word8;
+        struct Pair vecpair;
+        s32 last;
+    } local[4];
     struct Entry *entry;
+    struct Entry *source;
+    struct Entry *other;
     s32 ids[4];
     s32 *id;
+    s32 *otherId;
     s32 count;
     s32 i;
-    s32 limit;
-    s32 current;
+    u8 *current;
+    u8 *currentVector;
     s32 j;
     s32 flag;
     f32 scale;
     f32 scaleSquared;
     f32 best;
     f32 distance;
+    f32 candidate;
     u8 *result;
 
     count = fn_801E85A4();
     entry = local;
     id = ids;
-    i = 0;
-    goto copy_check;
-copy_loop:
-    *entry = *(struct Entry *)fn_801E8718(i);
-    *id = fn_801E866C(i);
-    entry++;
-    id++;
-    i++;
-copy_check:
-    if (i < count) goto copy_loop;
+    for (i = 0; i < count; i++) {
+        source = (struct Entry *)fn_801E8718(i);
+        entry->first[0] = source->first[0];
+        entry->first[1] = source->first[1];
+        entry->first[2] = source->first[2];
+        entry->first[3] = source->first[3];
+        entry->word8 = source->word8;
+        entry->vecpair = source->vecpair;
+        entry->last = source->last;
+        *id = fn_801E866C(i);
+        entry++;
+        id++;
+    }
 
     result = lbl_804B3160;
-    limit = *(s32 *)(lbl_804B3150 + 4);
-    i = 0;
-    goto outer_check;
-outer_loop:
-    current = fn_80287B24(i);
-    scale = fn_801E88F0(0);
-    scaleSquared = scale * scale;
-    best = PSVECSquareDistance((u8 *)current + 0x24, &local[0].words[9]) * scaleSquared;
-    flag = 0;
-    if (i == ids[0] && fn_801E8954(0) != 0) flag = 1;
-    j = 1;
-    if (flag != 0) {
-inner_loop:
-        scale = fn_801E88F0(j);
+    for (i = 0; i < *(s32 *)(lbl_804B3150 + 4); i++) {
+        current = (u8 *)fn_80287B24(i);
+        currentVector = current + 0x24;
+        scale = fn_801E88F0(0);
         scaleSquared = scale * scale;
-        distance = PSVECSquareDistance((u8 *)current + 0x24, &local[j].words[9]) * scaleSquared;
-        if (best >= distance) best = distance;
+        distance = PSVECSquareDistance(currentVector, &local[0].vecpair);
+        best = distance * scaleSquared;
         flag = 0;
-        if (i == ids[j] && fn_801E8954(j) != 0) flag = 1;
-        j++;
-        if (flag != 0 && j < count) goto inner_loop;
+        if (i == ids[0] && fn_801E8954(0) != 0) {
+            flag = 1;
+            other = &local[1];
+            otherId = ids + 1;
+            j = 1;
+            do {
+                scale = fn_801E88F0(j);
+                scaleSquared = scale * scale;
+                distance = PSVECSquareDistance(currentVector, &other->vecpair);
+                candidate = distance * scaleSquared;
+                if (best < candidate) {
+                } else {
+                    best = candidate;
+                }
+                flag = 0;
+                if (i == *otherId && fn_801E8954(j) != 0) flag = 1;
+                other++;
+                otherId++;
+                j++;
+            } while (flag != 0 && j < count);
+        }
+        if (flag != 0) {
+            *(s32 *)result = (s32)current;
+            *(s32 *)(result + 4) = i;
+            *(f32 *)(result + 8) = best;
+            result[0xC] = flag;
+            result += 0x10;
+        }
     }
-    if (flag != 0) {
-        *(s32 *)result = current;
-        *(s32 *)(result + 4) = i;
-        *(f32 *)(result + 8) = best;
-        result[0xC] = flag;
-        result += 0x10;
-    }
-    i++;
-outer_check:
-    if (i < limit) goto outer_loop;
-    qsort(lbl_804B3160, limit, 0x10, (int (*)(const void *, const void *))fn_802885C4);
+    qsort(lbl_804B3160, *(s32 *)(lbl_804B3150 + 4), 0x10, (int (*)(const void *, const void *))fn_802885C4);
 }
-
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802887EC(void) {
     u8 *base = lbl_804B3150;
     void (**callback)(void *, s32) = (void (**)(void *, s32))(base + 0x90);
@@ -737,9 +754,8 @@ void fn_80288868(void* hi) {
 }
 
 void fn_80288870(void) {
-    volatile unsigned int value = *(unsigned int *)&lbl_8055F6C8;
-    value = value * 0x12B9B0A1u + 0x1CCE8AC1u;
-    value = value & 0x7FFFFFFFu;
-    *(unsigned int *)&lbl_8055F6C8 = value;
+    unsigned int t = (unsigned int)lbl_8055F6C8 * 0x12B9B0A1u + 0x1CCE8AC1u;
+    unsigned int v = t & 0x7FFFFFFFu;
+    lbl_8055F6C8 = (void *)v;
 }
 
