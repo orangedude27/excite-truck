@@ -148,6 +148,39 @@ extern "C" void fn_801F0148(void *arg0, void *arg1) {
     *(float *)((char *)arg0 + 0x20) = value;
 }
 
+/* --- wheel mod LOD table -------------------------------------------------
+ * A "detached wheel" record (0x138 bytes, looked up by name in fn_801F09FC)
+ * keeps up to 8 level-of-detail entries at 0x28 and how many it found at 0xE8.
+ * fn_801F08AC loads a record out of a .mod resource; fn_801F0208 below reads
+ * its lod0..lod7 parameters, each written "<distance> <flag>" ("12.5 y").
+ * fn_801F0488 then loads the two remap models of every entry and fn_801F15A8
+ * picks the entry whose squared distance the camera has not reached yet.
+ * Names and formats the game keeps in .sdata/.data:
+ */
+#define wheelmod_lod_name_fmt lbl_8055B0C8  /* .sdata: "lod%d" */
+#define wheelmod_lod_value_fmt lbl_8055B0D0 /* .sdata: "%f %s" */
+#define wheelmod_bad_lod_msg lbl_8033A420   /* .data: "wheelmod: bad lod entry in %s: %s" */
+#define WHEELMOD_MAX_LODS 8                 /* lod0 .. lod7 */
+
+typedef struct WheelModLod {
+    /* 0x00 */ int slowRemap;         /* slow_remap model, loaded by fn_801F0488 */
+    /* 0x04 */ int pad04;             /* unused, -1 */
+    /* 0x08 */ int fastRemap;         /* fast_remap model, loaded by fn_801F0488 */
+    /* 0x0C */ int pad0C;             /* unused, -1 */
+    /* 0x10 */ float distSq;          /* distance^2 at which this LOD takes over */
+    /* 0x14 */ unsigned char yesFlag; /* the entry's flag word held a 'y' */
+    /* 0x15 */ unsigned char pad15[3];
+} WheelModLod;
+
+typedef struct WheelMod {
+    /* 0x00 */ char name[0x10];       /* the wheel's name, fn_801F09FC's key */
+    /* 0x10 */ int slowRemapGroup;    /* model group of the slow_remap models */
+    /* 0x14 */ int fastRemapGroup;    /* model group of the fast_remap models */
+    /* 0x18 */ unsigned char pad18[0x10];
+    /* 0x28 */ WheelModLod lods[WHEELMOD_MAX_LODS];
+    /* 0xE8 */ int lodCount;          /* how many lod%d entries were found */
+} WheelMod;
+
 #pragma push
 #pragma processor 750
 extern "C" void fn_801F0208(void *arg0, void *arg1, char *arg2) {
@@ -623,6 +656,7 @@ void fn_801F0F78(void *arg0, void *arg1, void *arg2, float scale) {
     float matrix[9], matrix2[9];
     Vec point, angles, angles2;
     float *m = (float *)arg2;
+    Vec *out = (Vec *)((char *)arg0 + 0x3c);
     float x,y,z, a,b,c,d,e,f,g,h,i;
     unsigned int w0,w1,w2,w3,w4,w5,w6,w7,w8;
     int mode;
@@ -635,32 +669,35 @@ void fn_801F0F78(void *arg0, void *arg1, void *arg2, float scale) {
     else *(int *)((char *)arg0 + 4) = 0;
     if (*(float *)((char *)arg1 + 0x30) > lbl_80562F30)
         *(int *)((char *)arg0 + 4) |= 0x10;
-    point = *(Vec *)arg1;
-    point.y += fn_801F159C((void **)arg0);
-    *(float *)((char *)arg0 + 0x48) = *(float *)((char *)arg1 + 0x34);
+    point.x = ((Vec *)arg1)->x; point.y = ((Vec *)arg1)->y; point.z = ((Vec *)arg1)->z;
+    x = fn_801F159C((void **)arg0);
+    y = point.y;
+    z = *(float *)((char *)arg1 + 0x34);
+    point.y = y + x;
+    *(float *)((char *)arg0 + 0x48) = z;
     mode = *(int *)((char *)arg0 + 0xc);
     mode = mode == 0 || mode == 2;
-    if ((float *)((char *)arg0 + 0x3c) == (float *)&point) {
-        x = point.x; y = point.y; z = point.z;
-        a=x*m[0]; b=x*m[1]; c=x*m[2];
-        d=y*m[3]; e=y*m[4]; f=y*m[5];
+    if (out == &point) {
+        y = point.y; z = point.z; x = point.x;
+        d=y*m[3]; e=y*m[4];
+        a=x*m[0]; b=x*m[1]; c=x*m[2]; f=y*m[5];
         g=z*m[6]; h=z*m[7]; i=z*m[8];
-        (*(float *)((char *)arg0 + 0x3c))=g+(a+d); (*(float *)((char *)arg0 + 0x40))=h+(b+e); (*(float *)((char *)arg0 + 0x44))=i+(c+f);
+        out->x=g+(a+d); out->y=h+(b+e); out->z=i+(c+f);
     } else {
-        (*(float *)((char *)arg0 + 0x3c))=point.z*m[6]+(point.x*m[0]+point.y*m[3]);
-        (*(float *)((char *)arg0 + 0x40))=point.z*m[7]+(point.x*m[1]+point.y*m[4]);
-        (*(float *)((char *)arg0 + 0x44))=point.z*m[8]+(point.x*m[2]+point.y*m[5]);
+        out->x=point.z*m[6]+(point.y*m[3]+point.x*m[0]);
+        out->y=point.z*m[7]+(point.y*m[4]+point.x*m[1]);
+        out->z=point.z*m[8]+(point.y*m[5]+point.x*m[2]);
     }
-    x = (*(float *)((char *)arg0 + 0x3c)) + m[9];
-    y = (*(float *)((char *)arg0 + 0x40)) + m[10];
+    x = out->x + m[9];
+    y = out->y + m[10];
     w0=((unsigned int *)m)[0]; w1=((unsigned int *)m)[1]; w2=((unsigned int *)m)[2];
     w3=((unsigned int *)m)[3]; w4=((unsigned int *)m)[4]; w5=((unsigned int *)m)[5];
     w6=((unsigned int *)m)[6]; w7=((unsigned int *)m)[7]; w8=((unsigned int *)m)[8];
-    (*(float *)((char *)arg0 + 0x3c)) = x;
-    z = (*(float *)((char *)arg0 + 0x44)) + m[11];
-    (*(float *)((char *)arg0 + 0x40)) = y;
+    out->x = x;
+    z = out->z + m[11];
+    out->y = y;
     ((unsigned int *)((char *)arg0 + 0x18))[0]=w0;
-    (*(float *)((char *)arg0 + 0x44)) = z;
+    out->z = z;
     ((unsigned int *)((char *)arg0 + 0x18))[1]=w1; ((unsigned int *)((char *)arg0 + 0x18))[2]=w2;
     ((unsigned int *)((char *)arg0 + 0x18))[3]=w3; ((unsigned int *)((char *)arg0 + 0x18))[4]=w4;
     ((unsigned int *)((char *)arg0 + 0x18))[5]=w5; ((unsigned int *)((char *)arg0 + 0x18))[6]=w6;
@@ -668,18 +705,16 @@ void fn_801F0F78(void *arg0, void *arg1, void *arg2, float scale) {
     angles.x = lbl_80562F1C; angles.y = lbl_80562F1C; angles.z = *(float *)((char *)arg1 + 0x2c);
     fn_80015A20(matrix, (float *)&angles);
     fn_80015B20((char *)arg0 + 0x18, matrix, (char *)arg0 + 0x18);
-    angles2.x = lbl_80562F1C;
-    angles2.y = *(float *)((char *)arg1 + 0x28) + (mode ? lbl_80562F1C : lbl_80562F34);
-    angles2.z = lbl_80562F1C;
+    y = *(float *)((char *)arg1 + 0x28) + (mode ? lbl_80562F1C : lbl_80562F34);
+    angles2.x = lbl_80562F1C; angles2.y = y; angles2.z = lbl_80562F1C;
     fn_80015A20(matrix2, (float *)&angles2);
     fn_80015B20((char *)arg0 + 0x18, matrix2, (char *)arg0 + 0x18);
     if (!((float)__fabs(scale - lbl_80562F18) <= lbl_80558DC4)) {
-        float *p = (float *)((char *)arg0 + 0x18);
-        a=p[0]*scale; b=p[1]*scale; c=p[2]*scale;
-        d=p[3]*scale; e=p[4]*scale; f=p[5]*scale;
-        g=p[6]*scale; h=p[7]*scale; i=p[8]*scale;
-        p[0]=a; p[1]=b; p[2]=c; p[3]=d; p[4]=e;
-        p[5]=f; p[6]=g; p[7]=h; p[8]=i;
+        c=(*(float *)((char *)arg0 + 32))*scale; b=(*(float *)((char *)arg0 + 28))*scale; a=(*(float *)((char *)arg0 + 24))*scale;
+        d=(*(float *)((char *)arg0 + 36))*scale; e=(*(float *)((char *)arg0 + 40))*scale; f=(*(float *)((char *)arg0 + 44))*scale;
+        g=(*(float *)((char *)arg0 + 48))*scale; h=(*(float *)((char *)arg0 + 52))*scale; i=(*(float *)((char *)arg0 + 56))*scale;
+        (*(float *)((char *)arg0 + 24))=a; (*(float *)((char *)arg0 + 28))=b; (*(float *)((char *)arg0 + 32))=c; (*(float *)((char *)arg0 + 36))=d; (*(float *)((char *)arg0 + 40))=e;
+        (*(float *)((char *)arg0 + 44))=f; (*(float *)((char *)arg0 + 48))=g; (*(float *)((char *)arg0 + 52))=h; (*(float *)((char *)arg0 + 56))=i;
     }
 }
 #pragma pop
