@@ -85,14 +85,16 @@ void fn_802D3F34(void *arg0) {
     GXCallDisplayList(*(void **)((char *)arg0 + 0x30), *(u32 *)((char *)arg0 + 0x2C));
 }
 
+#pragma push
+#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802D3F98(void *arg0) {
-    void *a = *(void **)((char *)arg0 + 0x20);
-    GXSetArray(9, a, 0xC);
+    GXSetArray(9, *(void **)((char *)arg0 + 0x20), 0xC);
     GXSetArray(0xB, *(void **)((char *)arg0 + 0x24), 4);
     GXSetArray(0xD, *(void **)((char *)arg0 + 0x28), 4);
     GXCallDisplayList(*(void **)((char *)arg0 + 0x30), *(u32 *)((char *)arg0 + 0x2C));
 }
-
+#pragma pop
 void fn_802D3FFC(void *arg0) {
     void *array = *(void **)((char *)arg0 + 0x20);
     GXSetArray(9, array, 0xC);
@@ -929,10 +931,9 @@ void fn_802D5DE8(u32 flags) {
 #pragma dont_inline on
 void fn_802D5F88(s32 arg0) {
     u8 *ptr = (u8 *)arg0;
-    register u32 flags = *(u32 *)(ptr + 0xC);
-    u32 normalized = flags & 0xFFCFFFFF;
-    u8 mode = ptr[9];
-
+    u32 flags = *(u32 *)(ptr + 0xC);
+    register u32 normalized = flags & 0xFFCFFFFF;
+    register u8 mode = ptr[9];
     if (normalized != lbl_8055FDE8) {
         GXCallDisplayList(*(void **)(ptr + 0x10), (u32)ptr[0xB] << 5);
         lbl_8055FDE8 = normalized;
