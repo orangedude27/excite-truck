@@ -272,6 +272,23 @@ extern int lbl_8055E2F4;
 extern int lbl_8055E2F8;
 extern int lbl_8055E2FC;
 extern unsigned char lbl_8032F588[];
+
+// Names inside the UI string pool at lbl_8032F588, as offsets into it.  The
+// HUD manager (lbl_8055E2E0) looks elements up by name; fn_80131234() looks a
+// message up in the game's message table by its "Group:NAME" key.
+#define UI_RESULTS_ART   0x4C8 // "results_art":  banner graphic
+#define UI_RESULTS_TITLE 0x4D4 // "results1":     banner title text element
+#define UI_RESULTS_BODY  0x57C // "results2":     banner body text element
+#define UI_CONTINUE      0x110 // "continue":     "press on" prompt
+#define MSG_PASSED_HEAD  0x4E0 // "Tutorial:PASSED_HEAD"
+#define MSG_PASSED_BODY  0x4F8 // "Tutorial:PASSED_BODY"
+#define MSG_FAILED_HEAD  0x510 // "Tutorial:FAILED_HEAD"
+#define MSG_FAILED_STUNT 0x528 // "Tutorial:FAILED_BODY_STUNT"
+#define MSG_FAILED_CRASH 0x544 // "Tutorial:FAILED_BODY_CRASH"
+#define MSG_FAILED_TIME  0x560 // "Tutorial:FAILED_BODY_TIME"
+// How the tutorial was lost, in the HUD object's word at +8.
+#define FAIL_REASON_STUNT 4
+#define FAIL_REASON_CRASH 2
 extern void *fn_80145E70(void *);
 extern void *fn_802CAC28(void *, int);
 extern void *fn_8023512C(void *);
@@ -1409,7 +1426,8 @@ extern "C" s32 fn_801628E8(void *arg0) {
         virtual void v0();
         virtual void call(char *);
     };
-    if (*(f32 *)((u8 *)arg0 + 0x8C) > lbl_8056185C) {
+    f32 val = *(f32 *)((u8 *)arg0 + 0x8C);
+    if (val > lbl_8056185C) {
         ((Dummy *)lbl_8055E2E0)->call(lbl_8032F698);
         fn_801476C4();
     }
@@ -1639,14 +1657,24 @@ done:
 #pragma push
 #pragma processor 750
 #pragma scheduling on
-s32 fn_80162FE8(void * __restrict arg0) {
-    f32 temp_f31;
-    temp_f31 = *((f32 *)((char *)arg0 + 0x5B8));
-    if (((s32 (*)(void))(*(void ***)arg0)[10])() != 0) {
-        return *((f32 *)((char *)arg0 + 0x5B4)) > temp_f31;
+#pragma cplusplus on
+extern "C" s32 fn_80162FE8(void *arg0) {
+    class Obj {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
+        virtual void v5(); virtual void v6(); virtual void v7();
+        virtual s32 check();
+    };
+    struct Data { char pad0[8]; s32 v8; char padC[0x5B4-0xC]; f32 f5B4; f32 f5B8; };
+    Obj *obj = (Obj *)arg0;
+    struct Data *d = (struct Data *)arg0;
+    f32 tmp = d->f5B8;
+    if (obj->check() != 0) {
+        return d->f5B4 > tmp;
     }
-    return *((s32 *)((char *)arg0 + 8)) != 0;
+    return d->v8 != 0;
 }
+#pragma cplusplus off
 #pragma pop
 s32 fn_80163058(void *arg0) { return *(s32 *)((u8 *)arg0 + 8) == 1; }
 
