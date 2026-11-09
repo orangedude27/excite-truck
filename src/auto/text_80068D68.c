@@ -24500,37 +24500,67 @@ UINT8 *sdpu_extract_uid_seq (UINT8 *p, UINT16 param_len, tSDP_UUID_SEQ *p_seq)
     return (p);
 }
 
+/*******************************************************************************
+**
+** Function         sdpu_extract_attr_seq
+**
+** Description      Extracts an attribute sequence (an SDP data element sequence
+**                  whose elements are attribute ID ranges) from the input
+**                  buffer and puts it into the given list.  Original
+**                  stack/sdp/sdp_utils.c.
+**
+** Returns          Pointer to the next byte in the input buffer after the
+**                  sequence, or NULL if it is malformed.
+**
+*******************************************************************************/
 UINT8 *sdpu_extract_attr_seq(UINT8 *p, UINT16 param_len, tSDP_ATTR_SEQ *p_seq) {
-    UINT8 *end;
+    UINT8 *p_end_list;
     UINT8 descr, type, size;
-    UINT32 len, attr_len;
+    UINT32 list_len, attr_len;
+
+    /* Assume none found */
     p_seq->num_attr = 0;
+
+    /* The descriptor byte is a 5-bit type and a 3-bit length code. */
     descr = *p;
     type = descr >> 3;
     size = descr & 7;
-    if (type != 6) return p + 1;
+
+    /* An attribute sequence is a data element sequence; p + 1 skips its descriptor. */
+    if (type != DATA_ELE_SEQ_DESC_TYPE) return p + 1;
     p++;
+
+    /* The length code says where the sequence length follows the descriptor. */
     switch (size) {
-    case 5: BE_STREAM_TO_UINT8(len, p); break;
-    case 6: BE_STREAM_TO_UINT16(len, p); break;
-    case 7: BE_STREAM_TO_UINT32(len, p); break;
+    case SIZE_IN_NEXT_BYTE: BE_STREAM_TO_UINT8(list_len, p); break;
+    case SIZE_IN_NEXT_WORD: BE_STREAM_TO_UINT16(list_len, p); break;
+    case SIZE_IN_NEXT_LONG: BE_STREAM_TO_UINT32(list_len, p); break;
     default: return p;
     }
-    if (len > param_len) return p;
-    end = p + len;
-    while (p < end) {
+
+    /* Refuse a sequence longer than the parameter it came in. */
+    if (list_len > param_len) return p;
+    p_end_list = p + list_len;
+
+    /* Loop through, extracting the attribute IDs */
+    while (p < p_end_list) {
         BE_STREAM_TO_UINT8(descr, p);
         type = descr >> 3;
         size = descr & 7;
-        if (type != 1) return p;
+
+        /* Each attribute ID is an unsigned integer data element. */
+        if (type != UINT_DESC_TYPE) return p;
+
         switch (size) {
-        case 1: attr_len = 2; break;
-        case 2: attr_len = 4; break;
-        case 5: BE_STREAM_TO_UINT8(attr_len, p); break;
-        case 6: BE_STREAM_TO_UINT16(attr_len, p); break;
-        case 7: BE_STREAM_TO_UINT32(attr_len, p); break;
+        case SIZE_TWO_BYTES: attr_len = 2; break;
+        case SIZE_FOUR_BYTES: attr_len = 4; break;
+        case SIZE_IN_NEXT_BYTE: BE_STREAM_TO_UINT8(attr_len, p); break;
+        case SIZE_IN_NEXT_WORD: BE_STREAM_TO_UINT16(attr_len, p); break;
+        case SIZE_IN_NEXT_LONG: BE_STREAM_TO_UINT32(attr_len, p); break;
         default: return NULL;
         }
+
+        /* Attribute length must be 2-bytes or 4-bytes for a paired entry. */
         if (attr_len == 2) {
             BE_STREAM_TO_UINT16(p_seq->attr_entry[p_seq->num_attr].start, p);
             p_seq->attr_entry[p_seq->num_attr].end = p_seq->attr_entry[p_seq->num_attr].start;
@@ -24538,9 +24568,13 @@ UINT8 *sdpu_extract_attr_seq(UINT8 *p, UINT16 param_len, tSDP_ATTR_SEQ *p_seq) {
             BE_STREAM_TO_UINT16(p_seq->attr_entry[p_seq->num_attr].start, p);
             BE_STREAM_TO_UINT16(p_seq->attr_entry[p_seq->num_attr].end, p);
         } else return NULL;
+
         p_seq->num_attr++;
-        if (p_seq->num_attr >= 16) return NULL;
+
+        /* We can only do so many */
+        if (p_seq->num_attr >= MAX_ATTR_PER_SEQ) return NULL;
     }
+
     return p;
 }
 
