@@ -13,6 +13,7 @@ extern float lbl_8055FC6C;
 extern void fn_802D362C(int);
 extern void fn_802D3304(void);
 extern void *lbl_8055FC5C, *lbl_8055FC60, *lbl_8055FC64, *lbl_8055FC68;
+extern void fn_802C87B4(int, int, int, int);
 extern int lbl_8055CFF4;
 extern float lbl_80564F18;
 extern double lbl_80564F10;
@@ -81,22 +82,30 @@ void fn_802C82C0(void) {
 #pragma cplusplus on
 extern "C" int fn_80133010(void);
 extern "C" void fn_802C82C4(int arg0) {
-    char (*base)[0x40] = (char (*)[0x40])lbl_8034B498;
-    char (&baseRef)[0x40] = *base;
-    int mode;
-
-    mode = arg0;
+    const char *const base = lbl_8034B498;
+    int mode = arg0;
     if (fn_80019B9C() != 0 || fn_802E9A0C() == 1) mode = 1;
     lbl_8055FC90 = (void *)mode;
-    if (fn_80133010() != 0) fn_80133348(1, baseRef, (int)lbl_8055FC90);
+    if (fn_80133010() != 0) fn_80133348(1, base, (int)lbl_8055FC90);
     lbl_8055FC8C = 0;
     lbl_8055D020 = lbl_80564EF8;
     lbl_8055D024 = lbl_80564EF8;
     lbl_8055FC8D = 0;
     switch (mode) {
-    case 0: fn_802E30C8((char *)base + 0x10); break;
-    case 1: fn_802E30C8((char *)base + 0x20); lbl_8055FC8C = 1; lbl_8055D020 = lbl_80564EFC; break;
-    case 2: fn_802E30C8((char *)base + 0x34); lbl_8055FC8D = 1; lbl_8055D020 = lbl_80564EFC; lbl_8055D024 = lbl_80564EFC; break;
+    case 0:
+        fn_802E30C8(base + 0x10);
+        break;
+    case 1:
+        fn_802E30C8(base + 0x20);
+        lbl_8055FC8C = 1;
+        lbl_8055D020 = lbl_80564EFC;
+        break;
+    case 2:
+        fn_802E30C8(base + 0x34);
+        lbl_8055FC8D = 1;
+        lbl_8055D020 = lbl_80564EFC;
+        lbl_8055D024 = lbl_80564EFC;
+        break;
     }
 }
 #pragma cplusplus reset
@@ -534,11 +543,9 @@ void fn_802C90F0(void) {
 }
 
 #pragma scheduling invalid_target
-void fn_802C9294(int arg0, int arg1) {
-    int equal;
+void fn_802C9294(int arg0, unsigned int arg1) {
     if (arg0 != -1 && arg0 != -2) {
-        equal = arg1 == 1;
-        lbl_8055FC75 = equal;
+        lbl_8055FC75 = arg1 == 1;
         lbl_8055FC74 = 1;
     } else {
         lbl_8055FC74 = 0;
@@ -603,68 +610,80 @@ void fn_802C942C(int arg0) {
 void fn_802C9474(void) {
     if ((unsigned char)lbl_8055FC94 != 0) return;
     lbl_8055FC94 = 1;
-    ((void (*)(int, ...))fn_802E30C8)((int)lbl_8055D030, lbl_8034B4E0);
+    fn_802E30C8((const char *)lbl_8055D030, lbl_8034B4E0);
 }
 
 extern float PSVECDotProduct(const Vec *, const Vec *);
 extern float __fabsf(float);
 extern float lbl_80564F20, lbl_8055FC50, lbl_8055FC54, lbl_8055FC58;
+#pragma scheduling invalid_target
 int fn_802C94A0(float *arg0, unsigned char *arg1, float *arg2, float tolerance) {
-    float *matrix = (float *)lbl_804C1410;
-    float delta[3];
-    float depth;
-    float projection;
-    float extent;
-    float limit;
+    float *matrix;
+    volatile float delta[3];
+    float temp_f0;
+    float temp_f1;
+    float temp_f1_2;
+    float temp_f1_3;
+    float temp_f1_4;
+    float temp_f2;
+    float temp_f3;
+    float temp_f4;
+    float var_f2;
+    float var_f2_2;
 
     if (arg1 != 0) {
         *arg1 = 1;
     }
 
-    delta[0] = arg0[0] - matrix[9];
-    delta[1] = arg0[1] - matrix[10];
-    delta[2] = arg0[2] - matrix[11];
-    depth = PSVECDotProduct((Vec *)delta, (Vec *)(matrix + 6));
+    matrix = (float *)lbl_804C1410;
+    temp_f4 = arg0[0];
+    temp_f3 = arg0[1];
+    temp_f0 = matrix[9];
+    temp_f4 = temp_f4 - temp_f0;
+    temp_f2 = matrix[10];
+    temp_f2 = temp_f3 - temp_f2;
+    temp_f1 = arg0[2];
+    temp_f0 = matrix[11];
+    temp_f1 = temp_f1 - temp_f0;
+    delta[0] = temp_f4;
+    delta[1] = temp_f2;
+    delta[2] = temp_f1;
 
-    if (depth < lbl_8055FC38 - tolerance) {
+    temp_f1_2 = PSVECDotProduct((Vec *)&delta[0], (Vec *)(matrix + 6));
+    if (temp_f1_2 < lbl_8055FC38 - tolerance) {
         goto fail;
     }
-    if (depth > lbl_8055FC3C + tolerance) {
-        goto fail;
+    if (temp_f1_2 > lbl_8055FC3C + tolerance) {
+        return 0;
     }
-    if (depth - tolerance > lbl_8055FC3C - lbl_80564F20 * lbl_8055FC3C) {
-        goto fail;
+    if (temp_f1_2 - tolerance > lbl_8055FC3C - lbl_80564F20 * lbl_8055FC3C) {
+        return 0;
     }
 
-    projection = PSVECDotProduct((Vec *)delta, (Vec *)matrix);
-    extent = depth * lbl_8055FC44;
-    limit = lbl_80564F00;
-    if (limit <= extent) {
-        limit = extent;
-    }
-    if (__fabsf(projection) > limit + tolerance * lbl_8055FC54) {
-        goto fail;
+    temp_f1_3 = (float)__fabs((double)PSVECDotProduct((Vec *)&delta[0], (Vec *)matrix));
+    temp_f0 = temp_f1_2 * lbl_8055FC44;
+    var_f2 = lbl_80564F00;
+    var_f2 = (var_f2 > temp_f0) ? var_f2 : temp_f0;
+    if (temp_f1_3 > var_f2 + tolerance * lbl_8055FC54) {
+        return 0;
     }
 
-    projection = PSVECDotProduct((Vec *)delta, (Vec *)(matrix + 3));
-    extent = depth * lbl_8055FC50;
-    limit = lbl_80564F00;
-    if (limit <= extent) {
-        limit = extent;
-    }
-    if (__fabsf(projection) > limit + tolerance * lbl_8055FC58) {
-        goto fail;
+    temp_f1_4 = (float)__fabs((double)PSVECDotProduct((Vec *)&delta[0], (Vec *)((float *)lbl_804C1410 + 3)));
+    temp_f0 = temp_f1_2 * lbl_8055FC50;
+    var_f2_2 = lbl_80564F00;
+    var_f2_2 = (var_f2_2 > temp_f0) ? var_f2_2 : temp_f0;
+    if (temp_f1_4 > var_f2_2 + tolerance * lbl_8055FC58) {
+        return 0;
     }
 
     if (arg2 != 0) {
-        *arg2 = depth - tolerance;
+        *arg2 = temp_f1_2 - tolerance;
     }
     return 1;
 
 fail:
     return 0;
 }
-
 #pragma scheduling on
 int fn_802C9638(void *arg0, unsigned char *arg1, float tolerance) {
     return fn_802C94A0(arg0, arg1, 0, tolerance);
