@@ -97,10 +97,10 @@ double fn_8002F234(float, float);
 #pragma push
 #pragma processor 750
 float fn_802BC540(void *arg0, float farg0) {
-    float *p = (float *)arg0;
-    float x = p[0];
-    float z = p[2];
-    return farg0 * (float)fn_8002F234(x * x + z * z, z);
+    float x = *(float *)arg0;
+    float z = *(float *)((char *)arg0 + 8);
+    float s = x * x + z * z;
+    return farg0 * (float)fn_8002F234(s, z);
 }
 #pragma pop
 void PSVECCrossProduct(Vec *, Vec *, Vec *);
@@ -818,17 +818,28 @@ void fn_802BDC60(void) {
 extern int lbl_8034AB38, lbl_8034AC48;
 extern int lbl_8055FAA8, lbl_8055FAAC, lbl_8055FAB0;
 extern void *lbl_8055FABC;
-void deleteThreads__6SystemFv_802BDCA4(void **arg0) {
-    void *obj = *arg0;
-    if (obj) {
-        if (*arg0) {
-            void (**vtable)(void *, int) = *(void (***)(void *, int))((char *)obj + 4);
-            vtable[4](obj, 1);
-        }
-        *arg0 = 0;
+#pragma push
+#pragma cplusplus on
+extern "C" void deleteThreads__6SystemFv_802BDCA4(void **arg0) {
+    class Base {
+    public:
+        void *unk0;
+    };
+    class ThreadObject : public Base {
+    public:
+        virtual void dummy1();
+        virtual void dummy2();
+        virtual void destroy(int);
+    };
+    ThreadObject *p = *(ThreadObject **)arg0;
+    if (p) {
+        if (p)
+            p->destroy(1);
+        *(ThreadObject **)arg0 = 0;
     }
 }
-
+#pragma cplusplus reset
+#pragma pop
 void fn_802C2930(void*, unsigned int);
 #pragma push
 #pragma scheduling invalid_target
