@@ -1870,18 +1870,14 @@ void* fn_801B307C(void) {
     return lbl_8055E694;
 }
 
-#pragma push
-#pragma scheduling invalid_target
-void fn_801B3084(void *arg0, void *arg1, s32 arg2, s32 arg3) {
-    void *obj = lbl_8055E68C;
-    if (obj != NULL) {
-        s32 a = *(s32 *)((u8 *)arg0 + 0x1EC);
-        s32 b = *(s32 *)((u8 *)arg1 + 0x1EC);
-        void **vtable = *(void ***)obj;
-        ((void (*)(void *, s32, s32, s32, s32))vtable[6])(obj, a, b, arg2, arg3);
+#pragma cplusplus on
+extern "C" void fn_801B3084(void *arg0, void *arg1, s32 arg2, s32 arg3) {
+    Dummy_801B3084 *obj = (Dummy_801B3084 *)lbl_8055E68C;
+    if (obj != 0) {
+        obj->func(*(s32 *)((u8 *)arg0 + 0x1EC), *(s32 *)((u8 *)arg1 + 0x1EC), arg2, arg3);
     }
 }
-#pragma pop
+#pragma cplusplus off
 extern void fn_802E317C(const char *, s32, s32);
 extern char lbl_80335BD8[];
 extern void fn_801B196C(s32, s32);
