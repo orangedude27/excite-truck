@@ -16818,7 +16818,7 @@ extern void l2cu_process_our_cfg_req(void *, void *);
 extern void l2cu_send_peer_config_req(tL2C_CCB_VIEW *, tL2CAP_CFG_INFO *);
 void l2c_csm_open(tL2C_CCB_VIEW *p_ccb, u16 event, void *p_data)
 {
-    char *p_str = lbl_803183B0;   /* l2c_csm.c's trace strings, right after the CSM jump table */
+    char *p_str = (char *)jumptable_803183B0;   /* l2c_csm.c's trace strings, after the CSM jump table */
     void (*disconnect_ind)(u16, u16) = p_ccb->p_rcb->pL2CA_DisconnectInd_Cb;
     u16 local_cid = p_ccb->local_cid;
 
