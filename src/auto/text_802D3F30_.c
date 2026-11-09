@@ -1244,7 +1244,7 @@ void fn_802D6810(void) {
 
     lbl_8055FDF0 = 0;
     fn_801282EC(0x20);
-    buffer = fn_8012850C(0x4000, &lbl_8034C3DC);
+    buffer = fn_8012850C(0x4000, lbl_8034C3DC);
     lbl_8055FDF4 = (s32)buffer;
     lbl_8055FDF8 = (s32)buffer;
     DCInvalidateRange(buffer, 0x4000);
