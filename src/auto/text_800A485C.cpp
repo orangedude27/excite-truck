@@ -23734,11 +23734,18 @@ struct VFiPFDeviceInfo {
 #define VF_DEV_HAS_VALUE       0x2 /* value is meaningful */
 #define VF_DEV_KEEP_FAT        0x8 /* the media's FAT is left as it is */
 
-/* The volume fields the mount fills in, by offset. */
+/* The volume fields the mount fills in, by offset.  These stay offset casts:
+ * reading the same fields through VFiPFVolume makes the compiler keep the
+ * field addresses in registers of their own, which the original does not. */
+#define VF_VOL_DEVICE(v)      (*(void **)((u8 *)(v) + 0x1FBC))) /* the device behind it */
+#define VF_VOL_FLAGS(v)       (*(u16 *)((u8 *)(v) + 0x1F8C))    /* VF_VOL_* */
 #define VF_VOL_FSINFO_SECTOR(v) (*(u16 *)((u8 *)(v) + 0x14)) /* FAT32's FSInfo sector */
 #define VF_VOL_FAT_TYPE(v)      (*(s32 *)((u8 *)(v) + 0x1C)) /* which FAT; 2 = FAT32 */
-#define VF_VOL_FREE_CLUSTERS(v) ((u32 *)((u8 *)(v) + 0x38)) /* free clusters; -1 unknown */
-#define VF_VOL_NEXT_CLUSTER(v)  ((u32 *)((u8 *)(v) + 0x3C)) /* next free cluster; -1 unknown */
+#define VF_VOL_FREE_CLUSTERS(v) (*(s32 *)((u8 *)(v) + 0x38)) /* free clusters; -1 unknown */
+#define VF_VOL_NEXT_CLUSTER(v)  (*(s32 *)((u8 *)(v) + 0x3C)) /* next free cluster; -1 unknown */
+/* The same two fields as the FSInfo reader's out-arguments. */
+#define VF_VOL_FREE_CLUSTERS_REF(v) ((u32 *)((u8 *)(v) + 0x38))
+#define VF_VOL_NEXT_CLUSTER_REF(v)  ((u32 *)((u8 *)(v) + 0x3C))
 #define VF_VOL_DEVICE_ERROR(v)  (*(s32 *)((u8 *)(v) + 0x1F84)) /* for the retry handler */
 #define VF_VOL_DEVICE_VALUE(v)  (*(s32 *)((u8 *)(v) + 0x1FC4)) /* handed to the device */
 #define VF_FAT_TYPE_32          2                            /* VF_VOL_FAT_TYPE: FAT32 */
