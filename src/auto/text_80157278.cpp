@@ -1136,19 +1136,18 @@ extern "C" void fn_80158824(Unk801577F0* arg0) {
     s32 i = 0;
     s32 offset = 0;
     s32 value = 0;
-    do {
+    for (; i < arg0->mCount; i++) {
         *(s32*)(arg0->mData + offset) = value;
         *(s32*)(arg0->mData + offset + 4) = value;
         *(s32*)(arg0->mData + offset + 8) = value;
         *(f32*)(arg0->mData + offset + 0xC) = zero;
         offset += 0x38;
-        i++;
-    } while (i < arg0->mCount);
-    zero = lbl_80561754;
-    *(f32*)((u8*)arg0 + 0x25C) = zero;
-    *(f32*)((u8*)arg0 + 0x260) = zero;
-    *(f32*)((u8*)arg0 + 0x258) = zero;
-    *(f32*)((u8*)arg0 + 0x264) = zero;
+    }
+    f32 zero2 = lbl_80561754;
+    *(f32*)((u8*)arg0 + 0x25C) = zero2;
+    *(f32*)((u8*)arg0 + 0x260) = zero2;
+    *(f32*)((u8*)arg0 + 0x258) = zero2;
+    *(f32*)((u8*)arg0 + 0x264) = zero2;
     arg0->v31();
 }
 
