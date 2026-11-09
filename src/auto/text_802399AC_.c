@@ -58,8 +58,8 @@ void fn_80239AB8(void) { fn_80214CB4(lbl_8055BAC8); }
 s32 fn_80239DE4(void) {
     s32 *p = (s32 *)lbl_8049870C;
     if (p[6] != p[7] && fn_802104D0()) {
-        s32 temp = fn_80131234(&lbl_80340C44);
-        s32 arg = fn_80131234(&lbl_80340C24);
+        s32 temp = fn_80131234(lbl_80340C44);
+        s32 arg = fn_80131234(lbl_80340C24);
         return fn_8021521C(arg, temp, 0);
     }
     return 1;
