@@ -47,6 +47,19 @@ DECL_WEAK void OSPanic(const char* file, int line, const char* msg, ...) {
     PPCHalt();
 }
 
+/**
+ * Installs @handler as the handler for exception @error and returns the handler
+ * that was installed there before.
+ *
+ * The floating-point exception is special: whether it has a handler is what
+ * turns floating-point exception reporting on or off in the whole system, so
+ * every thread on the active queue is walked with interrupts disabled.
+ * Installing sets MSR[FE0:FE1] in each thread's saved MSR together with the
+ * FPSCR exception enables, and poisons the FP and PS registers of a thread that
+ * holds no FPU state yet so that its first floating-point instruction reports
+ * an invalid operation. Removing the handler clears the same bits again. The
+ * CPU's own FPSCR and MSR are brought in line with the threads at the end.
+ */
 OSErrorHandler OSSetErrorHandler(u16 error, OSErrorHandler handler) {
     OSErrorHandler oldHandler;
     BOOL enabled = OSDisableInterrupts();
@@ -59,6 +72,7 @@ OSErrorHandler OSSetErrorHandler(u16 error, OSErrorHandler handler) {
         u32 msr;
         u32 fpscr;
 
+        // FPSCR itself can only be read once the FPU is turned on here.
         msr = PPCMfmsr();
         PPCMtmsr(msr | MSR_FP);
         fpscr = PPCMffpscr();
@@ -67,10 +81,14 @@ OSErrorHandler OSSetErrorHandler(u16 error, OSErrorHandler handler) {
             int i;
             for (thread = OS_THREAD_QUEUE.head; thread != NULL;
                  thread = thread->nextActive) {
-                thread->context.srr1 |= 0x900;
+                // Resume this thread with FP exception reporting enabled.
+                thread->context.srr1 |= (MSR_FE0 | MSR_FE1);
 
-                if (!(thread->context.state & 0x1)) {
-                    thread->context.state |= 0x1;
+                if (!(thread->context.state & OS_CONTEXT_STATE_FP_SAVED)) {
+                    // The thread owns no FPU state: mark that it now does and
+                    // leave its registers as all-ones QNaNs, which raise an
+                    // invalid operation as soon as the thread uses them.
+                    thread->context.state |= OS_CONTEXT_STATE_FP_SAVED;
 
                     for (i = 0; i < 32; i++) {
                         *(u64*)&thread->context.fprs[i] = 0xFFFFFFFFFFFFFFFF;
@@ -80,36 +98,25 @@ OSErrorHandler OSSetErrorHandler(u16 error, OSErrorHandler handler) {
                     thread->context.fpscr = FPSCR_NI;
                 }
                 thread->context.fpscr |=
-                    __OSFpscrEnableBits &
-                    (FPSCR_VE | FPSCR_OE | FPSCR_UE | FPSCR_ZE | FPSCR_XE);
-                thread->context.fpscr &=
-                    (FPSCR_FEX | FPSCR_VX | FPSCR_FR | FPSCR_FPRF |
-                     FPSCR_UNK20 | FPSCR_VE | FPSCR_OE | FPSCR_UE | FPSCR_ZE |
-                     FPSCR_XE | FPSCR_NI | FPSCR_RN);
+                    __OSFpscrEnableBits & FPSCR_ENABLE;
+                thread->context.fpscr &= FPSCR_KEEP;
             }
 
-            fpscr |= __OSFpscrEnableBits &
-                     (FPSCR_VE | FPSCR_OE | FPSCR_UE | FPSCR_ZE | FPSCR_XE);
+            fpscr |= __OSFpscrEnableBits & FPSCR_ENABLE;
             msr |= (MSR_FE0 | MSR_FE1);
         } else {
             for (thread = OS_THREAD_QUEUE.head; thread != NULL;
                  thread = thread->nextActive) {
-                thread->context.srr1 &= ~0x900;
-                thread->context.fpscr &=
-                    ~(FPSCR_VE | FPSCR_OE | FPSCR_UE | FPSCR_ZE | FPSCR_XE);
-                thread->context.fpscr &=
-                    (FPSCR_FEX | FPSCR_VX | FPSCR_FR | FPSCR_FPRF |
-                     FPSCR_UNK20 | FPSCR_VE | FPSCR_OE | FPSCR_UE | FPSCR_ZE |
-                     FPSCR_XE | FPSCR_NI | FPSCR_RN);
+                thread->context.srr1 &= ~(MSR_FE0 | MSR_FE1);
+                thread->context.fpscr &= ~FPSCR_ENABLE;
+                thread->context.fpscr &= FPSCR_KEEP;
             }
 
-            fpscr &= ~(FPSCR_VE | FPSCR_OE | FPSCR_UE | FPSCR_ZE | FPSCR_XE);
+            fpscr &= ~FPSCR_ENABLE;
             msr &= ~(MSR_FE0 | MSR_FE1);
         }
 
-        PPCMtfpscr(fpscr & (FPSCR_FEX | FPSCR_VX | FPSCR_FR | FPSCR_FPRF |
-                            FPSCR_UNK20 | FPSCR_VE | FPSCR_OE | FPSCR_UE |
-                            FPSCR_ZE | FPSCR_XE | FPSCR_NI | FPSCR_RN));
+        PPCMtfpscr(fpscr & FPSCR_KEEP);
         PPCMtmsr(msr);
     }
 
