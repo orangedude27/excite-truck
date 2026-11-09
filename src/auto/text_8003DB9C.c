@@ -4224,15 +4224,18 @@ void GXSetTevKAlphaSel(s32 arg0, s32 arg1) {
 }
 
 void GXSetTevSwapMode(s32 arg0, s32 arg1, s32 arg2) {
-    unsigned char *base = (unsigned char *)__GXData;
-    unsigned int *entry = (unsigned int *)(base + arg0 * 4);
-    unsigned int value = entry[0x1C0 / 4];
-    value = __rlwimi(value, arg1, 0, 30, 31);
-    value = __rlwimi(value, arg2, 2, 28, 29);
-    entry[0x1C0 / 4] = value;
+    unsigned int *entry;
+    unsigned int *base = __GXData;
+    entry = (unsigned int *)((unsigned char *)base + arg0 * 4);
+    {
+        unsigned int value = entry[0x1C0 / 4];
+        value = __rlwimi(value, arg1, 0, 30, 31);
+        value = __rlwimi(value, arg2, 2, 28, 29);
+        entry[0x1C0 / 4] = value;
+    }
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = entry[0x1C0 / 4];
-    *(unsigned short *)(base + 2) = 0;
+    *(unsigned short *)((unsigned char *)base + 2) = 0;
 }
 
 void GXSetTevSwapModeTable(s32 index, s32 rasSel, s32 texSel, s32 rasSel2, s32 texSel2) {
@@ -5062,7 +5065,7 @@ void GXSetScissor(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     *(volatile unsigned short *)((char *)data + 2) = 0;
 }
 
-void GXSetScissorBoxOffset(s32 x, s32 y) { u32 yAdjusted; union { u32 value; struct { unsigned int tag : 8; unsigned int reserved : 4; unsigned int y : 10; unsigned int x : 10; } bits; } reg; reg.value = 0; reg.bits.x = ((u32)(x + 0x156)) >> 1; yAdjusted = (u32)(y + 0x156); *(volatile u8 *)0xCC008000 = 0x61; reg.bits.y = yAdjusted >> 1; reg.bits.tag = 0x59; *(volatile u32 *)0xCC008000 = reg.value; *(volatile u16 *)((u8 *)__GXData + 2) = 0; }
+void GXSetScissorBoxOffset(s32 x, s32 y) { s32 yAdjusted; union { u32 value; struct { unsigned int tag : 8; unsigned int reserved : 4; unsigned int y : 10; unsigned int x : 10; } bits; } reg; reg.value = 0; reg.bits.x = (u32)(x + 0x156) >> 1; yAdjusted = y + 0x156; *(volatile u8 *)0xCC008000 = 0x61; reg.bits.y = (u32)yAdjusted >> 1; reg.bits.tag = 0x59; *(volatile u32 *)0xCC008000 = reg.value; *(volatile u16 *)((u8 *)__GXData + 2) = 0; }
 
 void GXSetClipMode(s32 arg0) {
     register volatile unsigned char *fifo = (volatile unsigned char *)0xCC008000;
