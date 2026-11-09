@@ -135,7 +135,6 @@ typedef struct {
     /* 0x112 */ u16 repeat_count;
     /* 0x114 */ s16 active_chan;
     /* 0x116 */ s16 last_read_index; /* uniRingBuf index KPADRead consumed last; -1 = none */
-#define unk_0x116 last_read_index /* while callers get renamed */
     /* 0x118 */ KPADUnifiedWpadStatus uniRingBuf[12];
     /* 0x3A0 */ f32 sec_length;
     /* 0x3A4 */ Vec2 sec_nrm;
