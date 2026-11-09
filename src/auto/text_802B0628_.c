@@ -37,13 +37,6 @@ int fn_8012C33C(void);
 int fn_802CAC28(int, int);
 void **fn_802B59CC(void);
 extern char lbl_8034A078[];
-typedef struct VT802B06D4 VT802B06D4;
-typedef struct {
-    void (*f[13])(VT802B06D4 *, void *, int);
-} VTable802B06D4;
-struct VT802B06D4 {
-    VTable802B06D4 *vt;
-};
 extern char lbl_8034A0B4[], lbl_8034A0C4[];
 extern int lbl_8055F998, lbl_8055F99C;
 void fn_802B8AE0(void *, void *);
@@ -65,7 +58,8 @@ void fn_802B0690(int *arg0) {
 
 void fn_802B06D4(void) {
     void *obj = fn_802B59CC();
-    ((void (*)(void *, void *, int))(*(void ***)obj)[12])(obj, lbl_8034A078, 0);
+    void **vt = *(void ***)obj;
+    ((void (*)(void *, void *, int))vt[12])(obj, lbl_8034A078, 0);
 }
 
 extern void *fn_801284F8(int, void *);
