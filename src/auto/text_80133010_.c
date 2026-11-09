@@ -1,5 +1,74 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+
+// Options files: fn_80133BA0 parses a text file ("default.opt", written back
+// out as "options.dat") into the table lbl_8055E07C, which fn_80133024
+// allocates here.  fn_80133E10 looks an option up by section + key and adds it
+// when it is missing; fn_801332D0/fn_80133348/fn_8013323C/fn_80133460/
+// fn_8013358C read and write the typed values it keeps.
+
+// Fourcc the resource manager (fn_8012C370) looks an options file up by.
+#define OPTIONS_TAG 0x424F5054  // 'BOPT'
+#define OPTIONS_FILE_VERSION 2  // the "version 2" line a file starts with
+#define OPTIONS_MAX_ENTRIES 500 // options the table holds (0x1F4)
+#define OPTIONS_LINE_SIZE 0x100 // line buffer fn_80133BA0 reads into
+
+// The "[SECTION]" an option was written under.  fn_80133B24 turns a section
+// name into one of these (the 17 names are in lbl_802F9308) and answers
+// OPTIONS_SECTION_NONE for a name it doesn't know; fn_80133BA0 takes
+// OPTIONS_SECTION_NONE for its section argument to mean "every section".
+typedef enum OptionSection {
+    OPTIONS_SECTION_GLOBAL = 0,
+    OPTIONS_SECTION_GX = 1,
+    OPTIONS_SECTION_AI = 2,
+    OPTIONS_SECTION_MULTI = 3,
+    OPTIONS_SECTION_SOUND = 4,
+    OPTIONS_SECTION_GAME = 5,
+    OPTIONS_SECTION_PHYSICS = 6,
+    OPTIONS_SECTION_TRKEDIT = 7,
+    OPTIONS_SECTION_CONTROL = 8,
+    OPTIONS_SECTION_CONTROL1 = 9,
+    OPTIONS_SECTION_CONTROL2 = 10,
+    OPTIONS_SECTION_CONTROL3 = 11,
+    OPTIONS_SECTION_PLAYER0 = 12,
+    OPTIONS_SECTION_PLAYER1 = 13,
+    OPTIONS_SECTION_PLAYER2 = 14,
+    OPTIONS_SECTION_PLAYER3 = 15,
+    OPTIONS_SECTION_PLAYER_CAREER = 16,
+
+    OPTIONS_SECTION_COUNT = 17, // names in lbl_802F9308
+    OPTIONS_SECTION_NONE = 18   // unknown section / "any section"
+} OptionSection;
+
+// How an option's value was last written; the parser leaves 0 on the values it
+// read straight out of the file.
+typedef enum OptionValueType {
+    OPTIONS_VALUE_FILE = 0,
+    OPTIONS_VALUE_BOOL = 1,   // fn_80133460
+    OPTIONS_VALUE_INT = 2,    // fn_80133348
+    OPTIONS_VALUE_STRING = 3, // fn_8013358C
+    OPTIONS_VALUE_FLOAT = 4   // fn_8013323C
+} OptionValueType;
+
+// One option: the value as written plus its int, float and true/false
+// readings, so a reader can ask for whichever type it wants.
+typedef struct OptionEntry {
+    /* 0x00 */ int valueType;           // OptionValueType
+    /* 0x04 */ int section;             // OptionSection it belongs to
+    /* 0x08 */ unsigned char boolValue; // value read as true/false
+    /* 0x0C */ int intValue;            // value read as a number
+    /* 0x10 */ float floatValue;        // value read as a decimal
+    /* 0x14 */ char text[0x10];         // value as written in the file
+    /* 0x24 */ char name[0x14];         // key, as written
+} OptionEntry;                          // 0x38 bytes
+
+// The block lbl_8055E07C points at: a count and then the options themselves.
+typedef struct OptionTable {
+    /* 0x00 */ int unused_00; // nothing here reads it
+    /* 0x04 */ int count;     // options in use
+    /* 0x08 */ OptionEntry entries[OPTIONS_MAX_ENTRIES];
+} OptionTable;
+
 extern void *fn_8012C370(int, int, int *, int *, int, int);
 extern void fn_8012C4D8(void *);
 extern int fn_80133B24(char *);
