@@ -869,10 +869,9 @@ void MEMAppendListObject(MEMList* list, void* object) {
         list->length++;
     } else {
         register void** link = (void**)((u8*)object + list->offset);
-        register void *tail = list->tail;
-        *link++ = tail;
+        *link++ = list->tail;
         *link = 0;
-        *(void**)((u8*)tail + list->offset + 4) = object;
+        *(void**)((u8*)list->tail + list->offset + 4) = object;
         list->tail = object;
         list->length++;
     }
