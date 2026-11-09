@@ -196,7 +196,6 @@ int fn_8027D6BC(int arg0, int arg1) {
     return arg0;
 }
 
-#pragma scheduling off
 #pragma cplusplus on
 extern "C" void fn_8027D6FC(void *arg0) {
     class Obj {
