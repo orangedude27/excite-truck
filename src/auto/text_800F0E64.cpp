@@ -1350,10 +1350,10 @@ extern "C" s32 ReadStrmSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCF
     u8 *bytes = (u8 *)&refInfo;
     if (bytes[1] != 2)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80559870, 0x71, lbl_80324BA8);
-    s32 entry = (s32)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(bytes[0], *(u32 *)(bytes + 4), base);
-    if (entry == 0)
-        return 0;
-    return 1;
+    void *data = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(bytes[0], *(u32 *)(bytes + 4), base);
+    if (data != 0)
+        return 1;
+    return 0;
 }
 
 extern "C" s32 ReadWaveSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive13WaveSoundInfo(void *self, u32 index, void *info) {
@@ -4176,20 +4176,26 @@ extern "C" void detail_FreePlayerHeap__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd
     *(void **)((char *)sound + 4) = 0;
 }
 
-extern "C" void detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo(void* this_, void* pHandle, u32 id, void* pAmbient, void* pPlayer, void* pInfo) {
+extern "C" void* detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo(void* this_, void* pHandle, unsigned long id, void* pAmbient, void* pPlayer, void* pInfo) {
     struct Base {
+        virtual void d0();
+        virtual void* Start(void*, unsigned long, void*, void*, int, void*);
+    };
+    struct Sound {
         virtual void d0();
         virtual void d1();
         virtual void d2();
-        virtual void* Start(void*, u32, void*, void*, void*);
+        virtual void Attach();
     };
-    struct Sound { virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void Attach(); };
-    void* sound = ((Base*)this_)->Start(pHandle, id, pAmbient, pPlayer, pInfo);
-    if (sound == 0) {
-        if (*(void**)pHandle != 0) {
-            ((Sound*)sound)->Attach();
-        }
+    void* sound = ((Base*)this_)->Start(pHandle, id, pAmbient, pPlayer, 0, pInfo);
+    if (sound) {
+        return sound;
     }
+    void* h = *(void**)pHandle;
+    if (h) {
+        ((Sound*)h)->Attach();
+    }
+    return 0;
 }
 
 extern "C" void fn_800E2E24(void);
