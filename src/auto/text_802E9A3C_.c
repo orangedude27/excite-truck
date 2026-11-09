@@ -131,6 +131,8 @@ void *fn_802E9BEC(long arg0) {
     default: return &lbl_8055D280;
     }
 }
+#pragma scheduling on
+#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
