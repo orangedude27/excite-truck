@@ -1189,20 +1189,15 @@ loop_25:
         M2C_FIELD(((G *)arg0)->f8(), f32 *, 0x5EC) = temp_f31_2;
     }
 }
-#pragma cplusplus off
-#pragma pop
-void fn_801B1FB4(void *arg0, s32 arg1, s32 arg2, s32 *arg3) {
-    void *base = arg0;
+#pragma cplusplus on
+extern "C" void fn_801B1FB4(void *arg0, s32 arg1, s32 arg2, s32 *arg3) {
     *arg3 = 0;
     if (lbl_8055E68C == 0) {
         return;
     }
-    ((void (*)(void *, s32, s32, s32, void *, s32 *))
-        (*(void ***)lbl_8055E68C)[3])(
-            lbl_8055E68C, arg1, arg2,
-            *(s32 *)((u8 *)base + 0x60), (u8 *)base + 0x7C, arg3);
+    ((Dummy_801B1FB4 *)lbl_8055E68C)->func(arg1, arg2, *(s32 *)((u8 *)arg0 + 0x60), (u8 *)arg0 + 0x7C, arg3);
 }
-
+#pragma cplusplus off
 void fn_801B1FEC(void *arg0, s32 arg1, s32 arg2, s32 *arg3) {
     void **vtable;
     *arg3 = 0;
