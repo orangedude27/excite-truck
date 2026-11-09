@@ -167,6 +167,128 @@ unsigned char fn_8027AF84(void *arg0) {
 unsigned char fn_8027AF8C(void *arg0) { return *((unsigned char *)arg0 + 0x10); }
 void fn_8027AF94(void *arg0) { ((unsigned char *)arg0)[4] = 0; }
 
+#pragma push
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+extern "C" long fn_8027AFA0(void *self, void *arg1, void *unused) {
+    extern char lbl_80347A50[];
+    class Entry {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual long check();
+    };
+    class Source {
+    public:
+        virtual void v0();
+        virtual long has(const char *);
+        virtual void v2();
+        virtual long get(const char *);
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void v20(); virtual void v21();
+        virtual Entry *at(long);
+    };
+    char *a0 = (char *)self;
+    char *base = lbl_80347A50;
+    long rate;
+    long i;
+    Entry *obj;
+
+    *(void **)(a0 + 8) = arg1;
+    *(unsigned char *)(a0 + 4) = 1;
+    if (arg1 != 0) {
+        rate = 0;
+        if (((Source *)arg1)->has(base + 0xCC) != 0) {
+            rate = fn_80204BB4((const char *)((Source *)arg1)->get(base + 0xCC));
+            if (fn_8027D1F4() < rate) {
+                *(unsigned char *)(a0 + 4) = 0;
+            }
+        }
+        if (*(unsigned char *)(a0 + 4) != 0) {
+            *(long *)(a0 + 0x10) = ((Source *)arg1)->get(base + 0xE0);
+            *(long *)(a0 + 0xC) = ((Source *)arg1)->get(base + 0xF0);
+            *(long *)(a0 + 0x14) = fn_8027D1F4();
+            i = 0;
+            while ((obj = ((Source *)arg1)->at(i)) != 0) {
+                long n = *(volatile long *)(a0 + 0x1C);
+                char *list = *(char **)(a0 + 0x18);
+                *(volatile long *)(a0 + 0x1C) = n + 1;
+                if (((long (*)(char *, void *))fn_8027AD4C)(list + n * 0x3C, obj) == 0) {
+                    long idx = *(volatile long *)(a0 + 0x1C) - 1;
+                    if (idx >= 0) {
+                        long cnt = *(volatile long *)(a0 + 0x1C);
+                        if (idx < cnt) {
+                            long last = cnt - 1;
+                            if (idx != last) {
+                                char *b = *(char **)(a0 + 0x18);
+                                char *s = b + last * 0x3C;
+                                char *d = b + idx * 0x3C;
+                                d[4] = s[4];
+                                *(long *)(d + 8) = *(long *)(s + 8);
+                                *(long *)(d + 0xC) = *(long *)(s + 0xC);
+                                d[0x10] = s[0x10];
+                                d[0x11] = s[0x11];
+                                d[0x12] = s[0x12];
+                                {
+                                    long w14 = *(long *)(s + 0x14);
+                                    long w18 = *(long *)(s + 0x18);
+                                    *(long *)(d + 0x14) = w14;
+                                    *(long *)(d + 0x18) = w18;
+                                }
+                                {
+                                    long w1c = *(long *)(s + 0x1C);
+                                    long w20 = *(long *)(s + 0x20);
+                                    *(long *)(d + 0x1C) = w1c;
+                                    *(long *)(d + 0x20) = w20;
+                                }
+                                *(long *)(d + 0x24) = *(long *)(s + 0x24);
+                                *(long *)(d + 0x28) = *(long *)(s + 0x28);
+                                *(long *)(d + 0x2C) = *(long *)(s + 0x2C);
+                                *(long *)(d + 0x30) = *(long *)(s + 0x30);
+                                *(long *)(d + 0x34) = *(long *)(s + 0x34);
+                                d[0x38] = s[0x38];
+                            }
+                            *(volatile long *)(a0 + 0x1C) = *(volatile long *)(a0 + 0x1C) - 1;
+                        }
+                    }
+                }
+                i++;
+            }
+            if (*(long *)(a0 + 0x1C) > 0) {
+                long c;
+                *(char *)(a0 + 0x1F0) = fn_8027D0E0(*(long *)(a0 + 0x10));
+                *(char *)(a0 + 0x1F1) = fn_8027D068(*(long *)(a0 + 0x10));
+                i = 0;
+                c = *(long *)(a0 + 0x1C);
+                *(unsigned char *)(a0 + 0x1F2) = 1;
+                if (c > 0) {
+                    long off = 0;
+                    do {
+                        *(unsigned char *)(a0 + 0x1F2) =
+                            (*(unsigned char *)(a0 + 0x1F2) & ((Entry *)(*(char **)(a0 + 0x18) + off))->check()) != 0;
+                        off += 0x3C;
+                        i++;
+                    } while (i < *(long *)(a0 + 0x1C));
+                }
+                fn_8027D158(*(long *)(a0 + 0x10), a0 + 0x18C, 0x64);
+                *(char *)(a0 + 0x1F3) = rate > 0;
+            } else {
+                *(unsigned char *)(a0 + 4) = 0;
+            }
+        }
+    } else {
+        *(unsigned char *)(a0 + 4) = 0;
+    }
+    return *(unsigned char *)(a0 + 4);
+}
+#pragma cplusplus reset
+#pragma pop
+
 unsigned char fn_8027B280(void *arg0) {
     return *((unsigned char *)arg0 + 0x12);
 }
@@ -455,6 +577,11 @@ void fn_8027B77C(void) {
         lbl_8055F650 = 0;
     }
 }
+
+void *fn_8027B834(void *arg0) {
+    return lbl_804A4380 + fn_8000DA10() * 0x3B10 + (long)arg0 * 0xBD0;
+}
+
 #pragma scheduling on
 #pragma pop
 
