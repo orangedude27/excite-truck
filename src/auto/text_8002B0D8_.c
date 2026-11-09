@@ -1451,51 +1451,71 @@ void fn_8002EFBC(void) {
 #define dbl_nan       *(float *)&__float_nan /* MSL NAN: a float quiet NaN */
 
 extern unsigned long __float_nan[];
+/* __ieee754_sqrt(x) - MSL's fdlibm square root (e_sqrt.c), which the Gekko
+ * needs because it has no fsqrt: the correctly rounded root is built bit by
+ * bit in integer arithmetic.
+ *  1. Normalization: x is scaled by an even power of two up to y in [1,4), so
+ *     sqrt(x) = 2^k * sqrt(y); m keeps k.
+ *  2. Bit by bit: with s = 2*q (q = sqrt(y) truncated to i bits) the test
+ *     q + 2^-(i+1) <= y rewrites as s + 2^-(i+1) <= y, so each bit of the root
+ *     comes from one compare and one subtract.  y shifts left a bit per round
+ *     in ix0:ix1 while the 53 bits of the root collect in q:q1, r being the bit
+ *     under test (22 rounds in the high word, then 31 in the low one).
+ *  3. Rounding: what is left of y after those bits, together with one more bit,
+ *     says whether the root is exact; the hardware's rounding direction is read
+ *     back by adding and subtracting tiny to one.
+ * sqrt(+-0) = +-0, sqrt(inf) = inf, and sqrt(-ve) / sqrt(NaN) = sNaN, the last
+ * two with errno = EDOM.
+ */
 double __ieee754_sqrt(double x)
 {
-    double z;
-    int sign = (int)0x80000000;
-    unsigned r, t1, s1, ix1, q1;
-    int ix0, s0, q, m, t, i;
+    double z;                    /* the root */
+    int sign = (int)dbl_sign;    /* the sign bit, as a mask */
+    unsigned r, t1, s1, ix1, q1; /* moving bit, trial, 2*root, low word of x and of the root */
+    int ix0, s0, q, m, t, i;     /* high word of x, 2*root, root, exponent, trial, shift */
 
-    ix0 = __HI(x);
-    ix1 = __LO(x);
+    ix0 = __HI(x); /* high word of x */
+    ix1 = __LO(x); /* low word of x */
 
-    if ((ix0 & 0x7ff00000) == 0x7ff00000) {
+    /* take care of Inf and NaN */
+    if ((ix0 & dbl_exp) == dbl_exp) {
         errno = EDOM;
-        return x * x + x;
+        return x * x + x; /* sqrt(NaN)=NaN, sqrt(+inf)=+inf, sqrt(-inf)=sNaN */
     }
+    /* take care of zero */
     if (ix0 <= 0) {
-        if (((ix0 & (~sign)) | ix1) == 0) return x;
+        if (((ix0 & (~sign)) | ix1) == 0) return x; /* sqrt(+-0) = +-0 */
         else if (ix0 < 0) {
             errno = EDOM;
-            return *(float*)&__float_nan;
+            return dbl_nan; /* sqrt(-ve) = sNaN */
         }
     }
-    m = (ix0 >> 20);
-    if (m == 0) {
+    /* normalize x */
+    m = (ix0 >> dbl_exp_shift);
+    if (m == 0) { /* subnormal x: lift it 21 bits at a time, then bit by bit */
         while (ix0 == 0) {
             m -= 21;
             ix0 |= (ix1 >> 11);
             ix1 <<= 21;
         }
-        for (i = 0; (ix0 & 0x00100000) == 0; i++) ix0 <<= 1;
+        for (i = 0; (ix0 & dbl_unit) == 0; i++) ix0 <<= 1;
         m -= i - 1;
         ix0 |= (ix1 >> (32 - i));
         ix1 <<= i;
     }
-    m -= 1023;
-    ix0 = (ix0 & 0x000fffff) | 0x00100000;
-    if (m & 1) {
+    m -= dbl_bias; /* unbias exponent */
+    ix0 = (ix0 & dbl_frac) | dbl_unit;
+    if (m & 1) { /* odd m: double x to make it even */
         ix0 += ix0 + ((ix1 & sign) >> 31);
         ix1 += ix1;
     }
-    m >>= 1;
+    m >>= 1; /* m = [m/2] */
 
+    /* generate sqrt(x) bit by bit */
     ix0 += ix0 + ((ix1 & sign) >> 31);
     ix1 += ix1;
-    q = q1 = s0 = s1 = 0;
-    r = 0x00200000;
+    q = q1 = s0 = s1 = 0; /* [q,q1] = sqrt(x) */
+    r = dbl_topbit;       /* r = moving bit from right to left */
 
     while (r != 0) {
         t = s0 + r;
@@ -1509,13 +1529,13 @@ double __ieee754_sqrt(double x)
         r >>= 1;
     }
 
-    r = sign;
+    r = sign; /* the same again down the low word's 31 bits */
     while (r != 0) {
         t1 = s1 + r;
         t = s0;
         if ((t < ix0) || ((t == ix0) && (t1 <= ix1))) {
             s1 = t1 + r;
-            if (((t1 & sign) == sign) && (s1 & sign) == 0) s0 += 1;
+            if (((t1 & sign) == sign) && (s1 & sign) == 0) s0 += 1; /* s1 carried over */
             ix0 -= t;
             if (ix1 < t1) ix0 -= 1;
             ix1 -= t1;
@@ -1526,22 +1546,23 @@ double __ieee754_sqrt(double x)
         r >>= 1;
     }
 
-    if ((ix0 | ix1) != 0) {
-        z = 1.0 - 1.0e-300;
-        if (z >= 1.0) {
-            z = 1.0 + 1.0e-300;
+    /* use floating add to find out rounding direction */
+    if ((ix0 | ix1) != 0) { /* a remainder is left: the root is not exact */
+        z = dbl_one - dbl_tiny; /* trigger inexact flag */
+        if (z >= dbl_one) {
+            z = dbl_one + dbl_tiny;
             if (q1 == (unsigned)0xffffffff) { q1 = 0; q += 1; }
-            else if (z > 1.0) {
+            else if (z > dbl_one) { /* rounds up */
                 if (q1 == (unsigned)0xfffffffe) q += 1;
                 q1 += 2;
             } else
-                q1 += (q1 & 1);
+                q1 += (q1 & 1); /* rounds to even */
         }
     }
-    ix0 = (q >> 1) + 0x3fe00000;
+    ix0 = (q >> 1) + dbl_exp_one; /* the 53-bit root back into a double */
     ix1 = q1 >> 1;
     if ((q & 1) == 1) ix1 |= sign;
-    ix0 += (m << 20);
+    ix0 += (m << dbl_exp_shift); /* times 2^m */
     __HI(z) = ix0;
     __LO(z) = ix1;
     return z;
