@@ -130,7 +130,7 @@ extern s32 lbl_8055E5A0;
 extern "C" s32 fn_801CFEAC(void*);
 extern s32 lbl_803336EC[];
 extern "C" void fn_801A48E4(void*);
-extern "C" void fn_801D2414(...);
+extern "C" void fn_801D2414(void);
 extern "C" void fn_801D0738(void*, void*, void*, void*);
 #pragma push
 #pragma small_data off
@@ -2660,13 +2660,13 @@ extern "C" void fn_801A01E0(void* arg0, void* arg1, void* arg2) {
     volatile f32 inputB[4];
     volatile f32* first = (volatile f32*)arg1;
     volatile f32* second = (volatile f32*)arg2;
-    f32 value = *(f32*)((u8*)arg0 + 0x178);
+    register f32 value = *(f32*)((u8*)arg0 + 0x178);
     f32 scaleA = value * lbl_805622DC;
     void* base = *(void**)((u8*)arg0 + 0xC);
-    f32 x = *(f32*)((u8*)base + 0x24);
-    f32 y = *(f32*)((u8*)base + 0x28);
+    register f32 x = *(f32*)((u8*)base + 0x24);
+    register f32 y = *(f32*)((u8*)base + 0x28);
     f32 scaleB = value * lbl_805622E0;
-    f32 z = *(f32*)((u8*)base + 0x2C);
+    register f32 z = *(f32*)((u8*)base + 0x2C);
     f32 x0 = x + scaleA;
     f32 y0 = y + scaleA;
     inputA[0] = value;
@@ -4660,14 +4660,7 @@ void fn_801A49FC(s32 arg0) {
 }
 
 #pragma scheduling invalid_target
-extern "C" void fn_801A4A10(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    if (*(u8*)((u8*)arg0 + 0x40)) {
-        fn_801D2414();
-        if (*(s32*)((u8*)arg0 + 0x48)) {
-            fn_801D0738((void*)arg0, (void*)arg1, (void*)arg2, (void*)arg3);
-        }
-    }
-}
+extern "C" void fn_801A4A10(s32 arg0, s32 arg1, s32 arg2, s32 arg3) { if (*(u8*)((u8*)arg0 + 0x40) != 0) { fn_801D2414(); if (*(s32*)((u8*)arg0 + 0x48) != 0) { fn_801D0738((void*)arg0, (void*)arg1, (void*)arg2, (void*)arg3); } } }
 #pragma scheduling on
 extern "C" void fn_801A4A8C(void* arg0, s32 arg1, s32 arg2, void* arg3, u32* arg4, s32 arg5, s32 arg6) {
     struct VTable2C {
