@@ -435,7 +435,8 @@ extern u8 lbl_803C4040[];
 typedef struct {
     u8      pad_00[0x28];
     u16     handle;         /* +0x28  ACL connection handle, used with the LM */
-    u8      pad_2A[7];
+    u8      remote_bd_addr[6]; /* +0x2A  the peer's Bluetooth address (BD_ADDR) */
+    u8      pad_30;
     u8      id;             /* +0x31  identifier of the next command we send */
 } tL2C_LCB_VIEW;
 
