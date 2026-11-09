@@ -61,6 +61,8 @@ void fn_80012478(void) {
 }
 
 extern char lbl_80558AD0;
+#pragma push
+#pragma processor 750
 void fn_800124DC(const char *arg0, float farg0) {
     register char *p = lbl_80351790;
     register int one = 1;
