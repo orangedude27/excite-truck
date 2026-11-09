@@ -35,7 +35,7 @@ void fn_801EA1FC(void) {
     lbl_8055AF68 = x;
 }
 
-#pragma dont_inline next
+#pragma dont_inline reset
 void fn_801EA2E8(void) {
     f32 a = lbl_80562E40;
     f32 b = lbl_80562E48;
