@@ -1002,6 +1002,33 @@ void fn_8025B22C(void *arg0) {
     }
 }
 
+// The achievement-level dialog fn_80259224 builds: the name of the threshold a
+// level reached, the "Level %d" line and the level itself.
+typedef struct LevelDialog {
+    /* 0x00 */ void *vtable;             // lbl_80345158
+    /* 0x04 */ char rankName[0x32];      // name of the threshold reached
+    /* 0x36 */ char levelText[0x14];     // "Level %d", empty below level 1
+    /* 0x4A */ unsigned char flag4A;
+    /* 0x4B */ char pad4B;
+    /* 0x4C */ int level;                // level the dialog shows
+    /* 0x50 */ int sound;                // sound to release when the dialog goes away, -1 when none
+    /* 0x54 */ char pad54[0x54];
+    /* 0xA8 */ int context;
+} LevelDialog;
+
+// The "previous/next level" button of that dialog (fn_801284F8 makes it and
+// fn_80259224 fills these in); fn_8025B2BC is its message handler.
+typedef struct LevelButton {
+    /* 0x00 */ void *vtable;             // lbl_803450F8
+    /* 0x04 */ char pad04[0x10];
+    /* 0x14 */ int pad14;
+    /* 0x18 */ LevelDialog *dialog;
+    /* 0x1C */ int levelCount;           // how many levels the achievement has
+    /* 0x20 */ char description[0x50];   // "%s" filled with the threshold's name
+    /* 0x70 */ int achievement;          // which achievement the levels belong to
+    /* 0x74 */ int level;                // level the button is on
+} LevelButton;
+
 int fn_8025B2BC(void *arg0, int arg1) {
     typedef void (*Fmt)(char *, int, const char *, ...);
     char *o = (char *)arg0;
