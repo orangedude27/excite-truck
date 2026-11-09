@@ -77,7 +77,7 @@ extern s32 fn_80007554(s32, s32, s32);
 #pragma dont_inline on
 void fn_800056C8(s32 arg0, s32 arg1) {
     s32 *p = (s32 *)((u8 *)&lbl_8034EEB8 + (arg0 << 4));
-    *(p + 4) = arg1;
+    p[4] = arg1;
 }
 #pragma pop
 #pragma scheduling on
@@ -326,10 +326,10 @@ extern void *lbl_802FB520[];
 extern void *lbl_802FB2DC[];
 extern u8 lbl_802FB640[], lbl_802FB650[], lbl_802FB65C[];
 #pragma cplusplus on
-#pragma scheduling invalid_target
 #pragma push
 #pragma optimize_for_size on
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 extern "C" void fn_80005C88(void) {
     struct Dummy {
         virtual void v0() = 0; virtual void v1() = 0;
@@ -694,7 +694,6 @@ s32 fn_80006408(s32 arg0, s32 arg1, s32 arg2) {
 }
 
 #pragma cplusplus reset
-#pragma scheduling on
 void fn_800064A8(void *arg0) {
     s32 *p = (s32 *)arg0;
     if (p[2] != p[1]) {
@@ -708,7 +707,6 @@ void fn_800064A8(void *arg0) {
     case 1: if (fn_801B8874() == 0) fn_80006B18(arg0); return;
     }
 }
-
 void fn_80006550(void *arg0, s32 arg1) {
     s32 temp_r0;
     temp_r0 = *(s32 *)((u8 *)arg0 + 0x10) + arg1;
@@ -781,7 +779,21 @@ extern void fn_80230F78(u8 *, f32 *, u32 *, s32);
 extern void fn_80147940(void *, void *, void *, s32, ...);
 extern void fn_801476C4(void *);
 extern void fn_8001DFCC(void);
-void fn_800066B4(void *arg0) {
+#pragma push
+#pragma cplusplus on
+#pragma processor 750
+#pragma use_lmw_stmw off
+extern "C" void fn_800066B4(void *arg0) {
+    class Menu {
+    public:
+        virtual void d0();
+        virtual void *get(int);
+        virtual void d2();
+        virtual void *get2(int, int);
+    };
+    struct Table { u32 words[12]; };
+    struct Item { u32 first[4]; f32 four; u32 rest[3]; };
+    struct Out { u32 first[4]; f32 four, five; u32 color; };
     u8 *base = lbl_802FB0C8;
     void *obj;
     u32 table[12];
@@ -797,7 +809,7 @@ void fn_800066B4(void *arg0) {
     fn_80011E90();
     fn_800109E4(0x7F000000, lbl_80560140, lbl_80560144, lbl_80560148, lbl_8056014C);
     obj = *(void **)((u8 *)arg0 + 0x1C);
-    if (obj != 0) fn_8014784C(base + 0x1B4, base + 0x1C0, 0);
+    if (obj != 0) ((void (*)(void *, void *, void *, s32))fn_8014784C)(obj, base + 0x1B4, base + 0x1C0, 0);
     f = (f32)fn_802E2C20();
     sin(lbl_80560150 * (lbl_80560154 * f));
     if (*(void **)((u8 *)arg0 + 0x1C) == 0) return;
@@ -805,65 +817,65 @@ void fn_800066B4(void *arg0) {
     else now = fn_802E2C20();
     f = lbl_80560154 * (f32)(now - *(s32 *)((u8 *)arg0 + 0xC));
     if (f < lbl_8056015C) fn_80230E90(1);
-    for (i = 0; i < 12; i++) table[i] = lbl_802ED6A8[i];
+    *(struct Table *)table = *(struct Table *)lbl_802ED6A8;
     t0 = (f - lbl_8056011C) / lbl_80560158;
-    if (t0 > lbl_80560130) t0 = lbl_80560130;
-    if (t0 < lbl_8056011C) t0 = lbl_8056011C;
+    t0 = lbl_80560130 < t0 ? lbl_80560130 : t0;
+    t0 = t0 > lbl_8056011C ? t0 : lbl_8056011C;
     *(f32 *)&table[1] = lbl_80560160 + t0 * lbl_80560164;
     t1 = (f - lbl_80560168) / lbl_80560158;
-    if (t1 > lbl_80560130) t1 = lbl_80560130;
-    if (t1 < lbl_8056011C) t1 = lbl_8056011C;
+    t1 = lbl_80560130 < t1 ? lbl_80560130 : t1;
+    t1 = t1 > lbl_8056011C ? t1 : lbl_8056011C;
     *(f32 *)&table[5] = lbl_80560160 + t1 * lbl_80560164;
     t2 = (f - lbl_8056016C) / lbl_80560158;
-    if (t2 > lbl_80560130) t2 = lbl_80560130;
-    if (t2 < lbl_8056011C) t2 = lbl_8056011C;
+    t2 = lbl_80560130 < t2 ? lbl_80560130 : t2;
+    t2 = t2 > lbl_8056011C ? t2 : lbl_8056011C;
     *(f32 *)&table[9] = lbl_80560160 + t2 * lbl_80560164;
+    { f32 zero = lbl_8056011C, half = lbl_8056013C, one = lbl_80560130;
     for (i = 0; i < 3; i++) {
-        u32 *entry = table + i * 4;
+        s32 *entry = (s32 *)(table + i * 4);
         u32 item[8];
         if (entry[0] == 2) fn_8027AA48();
         obj = *(void **)((u8 *)arg0 + 0x1C);
-        get = *(void *(**)(void *, s32))(*(u32 *)obj + 0xC);
-        obj = get(obj, entry[2]);
-        for (now = 0; now < 8; now++) item[now] = ((u32 *)obj)[now];
+        obj = ((Menu *)obj)->get(entry[2]);
+        *(struct Item *)item = *(struct Item *)obj;
         *(f32 *)&item[1] += *(f32 *)&entry[1];
-        alpha = 0xFF;
         {
             s32 selected = *(s32 *)((u8 *)arg0 + 0x10) == (s32)entry[0];
-            f32 val = lbl_8056011C;
+            f32 val = zero;
+            alpha = 0xFF;
             if (selected) fn_80230F78(&alpha, &val, &item[6], 1);
             obj = *(void **)((u8 *)arg0 + 0x1C);
-            get2 = *(void *(**)(void *, s32, s32))(*(u32 *)obj + 0x14);
-            obj = get2(obj, entry[3], selected ? -1 : 0);
+            s32 mode;
+            if (selected) mode = 1;
+            else mode = 2;
+            obj = ((Menu *)obj)->get2(entry[3], mode);
             {
                 u32 out[7];
                 f32 a = ((f32 *)obj)[1];
                 f32 b = ((f32 *)obj)[5];
-                for (now = 0; now < 7; now++) out[now] = ((u32 *)obj)[now];
+                *(struct Out *)out = *(struct Out *)obj;
                 *(f32 *)&out[1] += *(f32 *)&entry[1];
-                fn_80147940(*(void **)((u8 *)arg0 + 0x1C), out, base + 0x1CC, selected ? 3 : 2, a, b);
+                ((void (*)(void *, void *, void *, s32))fn_80147940)(*(void **)((u8 *)arg0 + 0x1C), out, base + 0x1CC, mode);
                 if (selected) {
-                    f32 h = ((f32 *)obj)[4];
-                    f32 w = ((f32 *)obj)[5];
-                    f32 q = *(f32 *)&out[3] - lbl_8056013C * h * val;
-                    f32 r = *(f32 *)&out[2] - lbl_8056013C * w * val;
-                    *(f32 *)&out[4] = h * (lbl_80560130 + val);
-                    *(f32 *)&out[5] = w * (lbl_80560130 + val);
+                    f32 h = *(f32 *)&out[4];
+                    f32 w = *(f32 *)&out[5];
+                    f32 q = *(f32 *)&out[1] - half * h * val;
+                    f32 r = *(f32 *)&out[2] - half * w * val;
+                    *(f32 *)&out[4] = h * (one + val);
+                    *(f32 *)&out[5] = w * (one + val);
                     *(f32 *)&out[1] = q;
                     *(f32 *)&out[2] = r;
                     out[6] = (out[6] & 0x00FFFF00) | ((u32)alpha << 24) | (out[6] & 0xFFFF);
-                    fn_80147940(*(void **)((u8 *)arg0 + 0x1C), out, base + 0x1CC, 1, a,b,h,w,q,r,val,((f32 *)obj)[4]);
+                    ((void (*)(void *, void *, void *, s32))fn_80147940)(*(void **)((u8 *)arg0 + 0x1C), out, base + 0x1CC, 1);
                 }
             }
         }
         fn_801476C4(item);
     }
+    }
     fn_8001DFCC();
 }
-
-#pragma paired_single reset
-#pragma ppc_psq_save off
-#pragma use_lmw_stmw off
+#pragma pop
 extern s32 fn_80010E94(s32, s32, f32, f32, f32, f32);
 extern f32 fn_80011E34(void);
 extern f32 fn_80011E54(void);
@@ -1000,16 +1012,36 @@ extern void fn_80020430(void);
 extern void fn_80209110(void *);
 extern void *memset(void *, int, unsigned int);
 #pragma cplusplus on
+/* fn_80006E54 - tear the game's managers down (the reverse of fn_80006D9C).
+ *
+ * The managers sit in the table at lbl_8034EEB8 that fn_80005C88 builds and
+ * fn_800070DC walks every frame: one object per entry at +0x18, +0x28 ...
+ * (((s32 *)lbl_8055D350)[5] of them - the count fn_80011A5C was handed at
+ * startup) plus the singletons at +0x0, +0x4, +0x8, +0xC and +0x50 .. +0x60.
+ * Each is dropped through the shared base class's release(1), and the table is
+ * zeroed afterwards.  A manager installed over the +0x5C entry (lbl_8055D344,
+ * set before fn_80005C88 runs) gets its own slot-0x10 hook instead of being
+ * released.  The calls at the end shut down the subsystems fn_80006D9C
+ * started up, the last of them the mode master's own teardown.
+ */
 extern "C" void fn_80006E54(void) {
-    struct Object {
+    /* What the table's objects have in common: the game's usual release call,
+     * the first virtual of their base class, with the "delete too" flag set. */
+    struct Releasable {
         virtual void release(s32) = 0;
     };
-    struct ManagerObject {
+    /* the manager lbl_8055D344 can install over the table's +0x5C entry;
+     * fn_80005C88 calls its slot 0xC when it takes it over */
+    struct InstalledManager {
         virtual void v0() = 0;
         virtual void v1() = 0;
         virtual void v2() = 0;
     };
-    struct Service {
+    /* The current mode's master object: fn_801B83A0 returns the instance
+     * fn_801B81E0 created for the running mode (a ZoneMaster in zone mode).
+     * Only its slot-0xF8 hook is called here, so the slots before it are
+     * placeholders. */
+    struct ModeMaster {
         virtual void v0() = 0;
         virtual void v1() = 0;
         virtual void v2() = 0;
@@ -1071,21 +1103,21 @@ extern "C" void fn_80006E54(void) {
         virtual void v58() = 0;
         virtual void v59() = 0;
         virtual void v60() = 0;
-        virtual void setup() = 0;
+        virtual void hook() = 0;
     };
-    void *object;
+    void *manager;
 
-    ((Service *)fn_801B83A0())->setup();
+    ((ModeMaster *)fn_801B83A0())->hook();
     fn_8001DD6C();
 
     {
-        u8 *entry = (u8 *)lbl_8034EEB8;
+        u8 *entry = (u8 *)lbl_8034EEB8;   /* the per-entry objects, +0x18 apart */
         s32 i = 0;
         goto loop_test;
 loop_body:
-        object = *(void **)(entry + 0x18);
-        if (object != 0) {
-            ((Object *)object)->release(1);
+        manager = *(void **)(entry + 0x18);
+        if (manager != 0) {
+            ((Releasable *)manager)->release(1);
         }
         entry += 0x10;
         i += 1;
@@ -1095,65 +1127,65 @@ loop_test:
         }
     }
 
-    object = *(void **)((u8 *)lbl_8034EEB8 + 0xC);
-    if (object != 0) {
-        ((Object *)object)->release(1);
+    manager = *(void **)((u8 *)lbl_8034EEB8 + 0xC);
+    if (manager != 0) {
+        ((Releasable *)manager)->release(1);
     }
 
-    object = *(void **)lbl_8034EEB8;
-    if (object != 0) {
-        if (object != 0) {
-            ((Object *)object)->release(1);
+    manager = *(void **)lbl_8034EEB8;     /* table+0x00 */
+    if (manager != 0) {
+        if (manager != 0) {
+            ((Releasable *)manager)->release(1);
         }
         *(void **)lbl_8034EEB8 = 0;
     }
 
-    if (lbl_8034EEB8[1] != 0) {
+    if (lbl_8034EEB8[1] != 0) {           /* table+0x04 */
         if (lbl_8034EEB8[1] != 0) {
-            ((Object *)lbl_8034EEB8[1])->release(1);
+            ((Releasable *)lbl_8034EEB8[1])->release(1);
         }
         lbl_8034EEB8[1] = 0;
     }
 
-    object = lbl_8055D344;
-    if (object != 0) {
-        ((ManagerObject *)object)->v2();
+    manager = lbl_8055D344;               /* manager installed over table+0x5C */
+    if (manager != 0) {
+        ((InstalledManager *)manager)->v2();
     } else {
-        object = *(void **)((u8 *)lbl_8034EEB8 + 0x5C);
-        if (object != 0) {
-            ((Object *)object)->release(1);
+        manager = *(void **)((u8 *)lbl_8034EEB8 + 0x5C);
+        if (manager != 0) {
+            ((Releasable *)manager)->release(1);
         }
     }
 
-    object = *(void **)((u8 *)lbl_8034EEB8 + 0x54);
-    if (object != 0) {
-        ((Object *)object)->release(1);
+    manager = *(void **)((u8 *)lbl_8034EEB8 + 0x54);
+    if (manager != 0) {
+        ((Releasable *)manager)->release(1);
     }
 
-    object = *(void **)((u8 *)lbl_8034EEB8 + 0x50);
-    if (object != 0 && object != 0) {
-        ((Object *)object)->release(1);
+    manager = *(void **)((u8 *)lbl_8034EEB8 + 0x50);
+    if (manager != 0 && manager != 0) {
+        ((Releasable *)manager)->release(1);
     }
 
-    object = *(void **)((u8 *)lbl_8034EEB8 + 0x58);
-    if (object != 0) {
-        ((Object *)object)->release(1);
+    manager = *(void **)((u8 *)lbl_8034EEB8 + 0x58);
+    if (manager != 0) {
+        ((Releasable *)manager)->release(1);
     }
 
-    if (lbl_8034EEB8[2] != 0) {
+    if (lbl_8034EEB8[2] != 0) {           /* table+0x08 */
         if (lbl_8034EEB8[2] != 0) {
-            ((Object *)lbl_8034EEB8[2])->release(1);
+            ((Releasable *)lbl_8034EEB8[2])->release(1);
         }
         lbl_8034EEB8[2] = 0;
     }
 
-    object = *(void **)((u8 *)lbl_8034EEB8 + 0x60);
-    if (object != 0 && object != 0) {
-        ((Object *)object)->release(1);
+    manager = *(void **)((u8 *)lbl_8034EEB8 + 0x60);
+    if (manager != 0 && manager != 0) {
+        ((Releasable *)manager)->release(1);
     }
 
-    memset(lbl_8034EEB8, 0, 0x64);
-    fn_80209110(&lbl_8055D354);
+    memset(lbl_8034EEB8, 0, 0x64);        /* the whole table is empty now */
+    fn_80209110(&lbl_8055D354);           /* the subsystems fn_80006D9C started */
     fn_8000FB44();
     fn_800120BC();
     fn_8000F158();
