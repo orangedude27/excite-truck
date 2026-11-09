@@ -36,6 +36,7 @@ extern "C" f32 fn_801E7E24(void);
 extern "C" f32 fn_80204CFC(const char*);
 extern "C" void* fn_8023139C(void*,s32,u32);
 extern "C" void* fn_8017960C(s32);
+struct Item38 { u8 pad[0x14]; s32 val; u8 pad2[0x20]; };
 
 struct Fn80157CF0Obj {
     void* vtable;
@@ -2250,15 +2251,11 @@ extern "C" void fn_8015B23C(Unk8015A368C* arg0) {
     }
 }
 
-extern "C" s32 fn_8015B2E0(void* arg0) {
-    u8 flag = *(u8*)((char*)arg0 + 0x294);
-    s32 result;
-    if (flag) result = 0x7fffffff;
-    else {
-        f32 value = *(f32*)((char*)arg0 + 0x290);
-        result = value > lbl_80558DC4[0] ? (s32)value : (s32)*(f32*)((char*)arg0 + 0x28c);
-    }
-    return result;
+extern "C" s32 fn_8015B2E0(unsigned char* arg0) {
+    if (arg0[0x294]) return 0x7fffffff;
+    float value = *(float*)(arg0 + 0x290);
+    if (value > lbl_80558DC4[0]) return (s32)value;
+    return (s32)*(float*)(arg0 + 0x28C);
 }
 
 extern "C" s32 fn_8015B338(void) { return 0xC; }
@@ -3373,9 +3370,9 @@ extern "C" s32 fn_8015D77C(void* arg0) {
 }
 
 extern "C" s32 fn_8015D7CC(void* arg0) {
-    s32 count = *(s32*)((u8*)arg0 + 0xC);
+    register s32 count = *(s32*)((u8*)arg0 + 0xC);
     while (count-- > 0) {
-        u8* base = *(u8**)((u8*)arg0 + 8);
+        register u8* base = *(u8**)((u8*)arg0 + 8);
         if (*(s32*)(base + count * 0x38 + 0x14) >= 0)
             return *(s32*)(base + count * 0x38 + 0x14);
     }
