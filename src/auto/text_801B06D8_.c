@@ -1212,13 +1212,11 @@ extern "C" void fn_801B1FB4(void *arg0, s32 arg1, s32 arg2, s32 *arg3) {
 #pragma cplusplus off
 #pragma cplusplus on
 extern "C" void fn_801B1FEC(void *arg0, s32 arg1, s32 arg2, s32 *arg3) {
-    void **vtable;
     *arg3 = 0;
-    if (lbl_8055E68C == 0) return;
-    vtable = *(void ***)lbl_8055E68C;
-    ((void (*)(void *, s32, s32, s32, void *, s32 *))vtable[4])(
-        lbl_8055E68C, arg1, arg2,
-        *(s32 *)((u8 *)arg0 + 0x60), (u8 *)arg0 + 0x7C, arg3);
+    if (lbl_8055E68C == 0) {
+        return;
+    }
+    ((Dummy_801B1FEC *)lbl_8055E68C)->func(arg1, arg2, *(s32 *)((u8 *)arg0 + 0x60), (u8 *)arg0 + 0x7C, arg3);
 }
 #pragma cplusplus off
 
