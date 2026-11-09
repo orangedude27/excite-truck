@@ -65,6 +65,7 @@ void fn_802DEAC4(void) {
     GXSetNumTevStages(5);
 }
 
+#pragma scheduling invalid_target
 void fn_802DEE1C(void) {
     GXSetTevSwapMode(0, 0, 0);
     GXSetTevSwapMode(1, 0, 0);
@@ -72,7 +73,7 @@ void fn_802DEE1C(void) {
     GXSetTevSwapMode(3, 0, 0);
     GXSetTevSwapMode(4, 0, 0);
 }
-
+#pragma scheduling on
 void fn_802DEE88(void) {
     volatile int x = 1;
     GXSetTexCoordGen2(0, x, 4, 0x3C, 0, 0x7D);
