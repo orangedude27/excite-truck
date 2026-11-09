@@ -762,6 +762,16 @@ static void DeleteItemByID(SCItemID id) {
     __SCSetDirtyFlag();
 }
 
+/* Adds a SYSCONF item under an ID, in the shape UnpackItem() reads back: a
+ * descriptor byte (the item type, with the name's length minus one in its low
+ * five bits), the name, an array's length minus one (one byte, or two once the
+ * item outgrows a small array and is stored as a big one) and the data.  The
+ * item goes at the end of the configuration's item area, so its slot in the
+ * header's offset table is made by shifting every item two bytes up and adding
+ * sizeof(u16) to every stored offset; the ID's entry in the lookup table, which
+ * runs backwards from ItemIDOffsetTblOffset, then points at that slot.  FALSE
+ * means the ID, the source or the length was rejected, or the buffer has no
+ * room left for the item. */
 static BOOL CreateItemByID(SCItemID id, u8 primType, const void* src, u32 len) {
     u8* conf;
     u32 itemNameLen;
@@ -776,6 +786,7 @@ static BOOL CreateItemByID(SCItemID id, u8 primType, const void* src, u32 len) {
     u16* ofsIter;
 
     conf = __SCGetConfBuf();
+    // the item's descriptor byte
     itemSize = 1;
     it = NameAndIDTbl;
 
@@ -787,14 +798,16 @@ static BOOL CreateItemByID(SCItemID id, u8 primType, const void* src, u32 len) {
         goto _error;
     }
 
-    if (ItemNumTotal >= 0xFFFF) {
+    if (ItemNumTotal >= SC_ITEM_MAX_NUM) {
         goto _error;
     }
 
+    // no room left in the buffer for the lookup table yet
     if (ItemIDOffsetTblOffset == 0) {
         goto _error;
     }
 
+    // An array keeps its length; a primitive's length comes from its type.
     switch (primType) {
     case SC_ITEM_BYTE:
     case SC_ITEM_BOOL:
@@ -821,6 +834,7 @@ static BOOL CreateItemByID(SCItemID id, u8 primType, const void* src, u32 len) {
 
         // Length is stored minus one
         if (len > SC_SMALLARRAY_MAX + 1) {
+            // two length bytes instead of one, and the type changes
             itemSize += 2;
             primType = SC_ITEM_BIGARRAY;
         } else {
@@ -833,6 +847,7 @@ static BOOL CreateItemByID(SCItemID id, u8 primType, const void* src, u32 len) {
 
     itemSize += len;
 
+    // The name is whatever the item table registers under that ID.
     for (; (itemName = it->name) != (void*)NULL; it++) {
         if (it->id == id) {
             break;
@@ -845,16 +860,18 @@ static BOOL CreateItemByID(SCItemID id, u8 primType, const void* src, u32 len) {
 
     // Only five bits reserved for name length (minus one)
     itemNameLen = strlen(itemName);
-    if (itemNameLen > 0b00011111 + 1) {
+    if (itemNameLen > SC_ITEM_NAME_LEN_MAX + 1) {
         goto _error;
     }
 
     itemSize += itemNameLen;
+    // the item itself and its new offset table slot
     if (ItemRestSize < itemSize + sizeof(u16)) {
         goto _error;
     }
 
     confItemsBegin = ((SCConfHeader*)conf)->itemOffsets;
+    // the table's last entry is the offset past the end of the items
     confItemsEnd = &confItemsBegin[ItemNumTotal];
     itemsEndOfs = *confItemsEnd;
 
@@ -868,6 +885,7 @@ static BOOL CreateItemByID(SCItemID id, u8 primType, const void* src, u32 len) {
         *ofsIter++ += sizeof(u16);
     } while (ofsIter <= confItemsEnd);
 
+    // The new item is appended, and takes the offset slot just made for it.
     itemsEndOfs = *confItemsEnd;
     newItem = conf + itemsEndOfs;
 
@@ -885,6 +903,8 @@ static BOOL CreateItemByID(SCItemID id, u8 primType, const void* src, u32 len) {
     memcpy(newItem, src, len);
     newItem += len;
 
+    // The ID's lookup entry points at the item's offset slot, and that slot
+    // gains the end offset of the item just written.
     confLut = (u16*)(conf + ItemIDOffsetTblOffset);
     confLut[-id] = (u8*)confItemsEnd - conf;
     confItemsEnd[1] = confItemsEnd[0] + itemSize;
