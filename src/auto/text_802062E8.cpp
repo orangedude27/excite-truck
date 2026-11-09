@@ -467,19 +467,19 @@ extern "C" void fn_80206BF4(void) {
 
 #pragma dont_inline on
 extern "C" void *fn_80206BF8(int arg0, void *arg1) {
+    void *value;
     (void)arg0;
     (void)arg1;
     if (lbl_8055ED8C == 0) {
-        if (fn_801284F8(0x20, lbl_8033BD3C) != 0) {
-            lbl_8055ED90 = ((void *(*)(void *, void *, int, int))fn_8012A13C)(lbl_8033BD3C, lbl_8033BD3C, 0xC0, 0x78);
-        } else {
-            lbl_8055ED90 = 0;
+        value = (void *)fn_801284F8(0x20, lbl_8033BD3C);
+        if (value != 0) {
+            value = fn_8012A13C(value, lbl_8033BD3C, 0xC0, 0x78);
         }
+        lbl_8055ED90 = value;
     }
     if (fn_8012A2D8(lbl_8055ED90) != 0) {
         lbl_8055ED8C += 1;
     }
-    return lbl_8055ED90;
 }
 #pragma dont_inline off
 
