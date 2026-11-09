@@ -265,86 +265,92 @@ extern "C" void fn_802C77F0(int, float *);
 extern double fabs(double);
 extern "C" double __fabs(double);
 extern "C" void fn_801F0488(void *arg0, void *arg1) {
-    class Fn801F0488Resource {
+    class WheelModResource {
     public:
-        virtual void v0();
-        virtual void v1();
-        virtual void v2();
-        virtual int v3(const char *);
-        virtual void v4();
-        virtual void v5();
-        virtual void v6();
-        virtual void v7();
-        virtual void v8();
-        virtual void v9();
-        virtual void v10();
-        virtual void v11();
-        virtual void v12();
-        virtual void v13();
-        virtual void v14();
-        virtual void v15();
-        virtual void v16();
-        virtual void v17();
-        virtual void v18();
-        virtual void v19();
-        virtual void v20();
-        virtual void *v21(const char *);
+        virtual void unused0();
+        virtual void unused1();
+        virtual void unused2();
+        virtual const char *find(const char *name); /* 0x14: a string value of the resource */
+        virtual void unused4();
+        virtual void unused5();
+        virtual void unused6();
+        virtual void unused7();
+        virtual void unused8();
+        virtual void unused9();
+        virtual void unused10();
+        virtual void unused11();
+        virtual void unused12();
+        virtual void unused13();
+        virtual void unused14();
+        virtual void unused15();
+        virtual void unused16();
+        virtual void unused17();
+        virtual void unused18();
+        virtual void unused19();
+        virtual void unused20();
+        virtual void *lookup(const char *name); /* 0x5C: a sub-resource, or 0 when absent */
     };
 
-    const char *strings = lbl_8033A3F0;
-    char *entry;
-    int *pLabel;
-    char *curr;
-    int id;
-    int found;
-    int count;
-    int i;
+    const char *strings = wheelmod_string_pool;
+    char *record;
+    const char **pLabel;
+    char *slot;
+    const char *baseName;
+    int borrowed;
+    int lodIndex;
+    int side;
     char name[0x40];
-    float bounds[6];
-    int labels[2];
+    float bbox[6]; /* the model's bounding box: min xyz, then max xyz */
+    const char *labels[WHEELMOD_SIDES];
 
-    id = ((Fn801F0488Resource *)arg1)->v3((const char *)&lbl_8055B0E0);
-    entry = (char *)arg0;
-    found = 0;
+    /* every model of this wheel is named after the resource's "base" value */
+    baseName = ((WheelModResource *)arg1)->find((const char *)&wheelmod_base_key);
+    record = (char *)arg0;
+    borrowed = 0;
 
-    for (count = 0; count < *(int *)((char *)arg0 + 0xE8); entry += 0x18, count++) {
-        curr = entry;
+    for (lodIndex = 0; lodIndex < ((WheelMod *)arg0)->lodCount; record += 0x18, lodIndex++) {
+        slot = record;
         pLabel = labels;
 
-        for (i = 0; i < 2; i++, pLabel++, curr += 4) {
-            labels[0] = lbl_80562F20;
-            labels[1] = lbl_80562F24;
-            sprintf(name, strings + 0x54, id, count, *pLabel);
+        for (side = 0; side < WHEELMOD_SIDES; side++, pLabel++, slot += 4) {
+            labels[0] = wheelmod_label_left;
+            labels[1] = wheelmod_label_right;
+            sprintf(name, wheelmod_fmt_lod_side, baseName, lodIndex, *pLabel);
 
             if (!fn_8012C33C(name)) {
-                sprintf(name, strings + 0x60, id, count);
+                sprintf(name, wheelmod_fmt_lod, baseName, lodIndex);
             }
 
-            if (!fn_8012C33C(name) && count == 0) {
-                sprintf(name, strings + 0x6C, id, *pLabel);
+            /* the first LOD may fall back to the second one's models, "<base>1<L|R>.mod" */
+            if (!fn_8012C33C(name) && lodIndex == 0) {
+                sprintf(name, wheelmod_fmt_one_side, baseName, *pLabel);
                 if (!fn_8012C33C(name)) {
-                    sprintf(name, (const char *)&lbl_8055B0E8, id);
+                    sprintf(name, (const char *)&wheelmod_fmt_one, baseName);
                 }
-                found = 1;
+                borrowed = 1;
             }
 
-            if (count != 1 || !found) {
-                if (((Fn801F0488Resource *)arg1)->v21(strings + 0x78)) {
-                    fn_801F004C((int)name, *(int *)((char *)arg0 + 0x10), ((Fn801F0488Resource *)arg1)->v21(strings + 0x78));
+            /* remap the name in place; LOD 1 must not remap what LOD 0 already remapped */
+            if (lodIndex != 1 || !borrowed) {
+                if (((WheelModResource *)arg1)->lookup(wheelmod_key_slow_remap)) {
+                    fn_801F004C((int)name, ((WheelMod *)arg0)->slowRemapGroup, ((WheelModResource *)arg1)->lookup(wheelmod_key_slow_remap));
                 }
-                if (((Fn801F0488Resource *)arg1)->v21(strings + 0x84)) {
-                    fn_801F004C((int)name, *(int *)((char *)arg0 + 0x14), ((Fn801F0488Resource *)arg1)->v21(strings + 0x84));
+                if (((WheelModResource *)arg1)->lookup(wheelmod_key_fast_remap)) {
+                    fn_801F004C((int)name, ((WheelMod *)arg0)->fastRemapGroup, ((WheelModResource *)arg1)->lookup(wheelmod_key_fast_remap));
                 }
             }
 
-            *(int *)(curr + 0x28) = fn_802C6FC0(name, *(int *)((char *)arg0 + 0x10), 0);
-            *(int *)(curr + 0x30) = fn_802C6FC0(name, *(int *)((char *)arg0 + 0x14), 0);
+            /* slot walks this LOD's handles: the LOD table starts at 0x28 in the record,
+             * its fast_remap models 8 bytes behind the slow_remap ones. */
+            *(int *)(slot + WHEELMOD_LOD_SLOW_SLOT) = fn_802C6FC0(name, ((WheelMod *)arg0)->slowRemapGroup, 0);
+            *(int *)(slot + WHEELMOD_LOD_FAST_SLOT) = fn_802C6FC0(name, ((WheelMod *)arg0)->fastRemapGroup, 0);
         }
     }
 
-    if (!((float)__fabs(*(float *)((char *)arg0 + 0x20)) <= lbl_80558DC4)) {
-        fn_802C77F0(*(int *)((char *)arg0 + 0x28), bounds);
-        *(float *)((char *)arg0 + 0x24) = *(float *)((char *)arg0 + 0x20) / (bounds[1] - bounds[0]);
+    /* scale the models so that the first one is as wide as the wheel's "width" */
+    if (!((float)__fabs(((WheelMod *)arg0)->width) <= wheelmod_zero)) {
+        fn_802C77F0(((WheelMod *)arg0)->lods[0].slowRemap[0], bbox);
+        ((WheelMod *)arg0)->modelScale = ((WheelMod *)arg0)->width / (bbox[1] - bbox[0]);
     }
 }
 
