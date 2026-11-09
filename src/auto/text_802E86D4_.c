@@ -52,15 +52,17 @@ extern int NANDDelete(const char *);
 extern char lbl_8034DE54[];
 extern char lbl_8034DE6C[];
 
+#pragma cplusplus on
+struct Dispatch802E86D4 { virtual void f0(); };
+#pragma cplusplus reset
 #pragma dont_inline on
 void fn_802E86D4(void) {
-    register void **vtable = *(void ***)lbl_80560024;
-    register void *method = vtable[2];
-    ((void (*)(void))method)();
+    (*(void (**)(void *))(*(void ***)lbl_80560024 + 2))(lbl_80560024);
     lbl_80560028 = 1;
 }
 void fn_802E870C(void) {
-    ((void (*)(void *))(*(void ***)((void *)lbl_80560024))[3])(lbl_80560024);
+    void **vptr = *(void ***)lbl_80560024;
+    ((void (*)(void *))vptr[3])(lbl_80560024);
     lbl_80560028 = 0;
 }
 
