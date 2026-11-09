@@ -402,12 +402,13 @@ s32 fn_8000C7CC(void) {
 }
 
 #pragma dont_inline on
+#pragma scheduling off
 #pragma scheduling invalid_target
 u32 fn_8000C7F4(s32 arg0) {
-    if (fn_8000C7CC() != 0) {
-        return (u32)((2 - arg0) | (arg0 - 2)) >> 31;
+    if (fn_8000C7CC() == 0) {
+        return 1;
     }
-    return 1;
+    return (u32)((2 - arg0) | (arg0 - 2)) >> 31;
 }
 #pragma scheduling on
 #pragma dont_inline off
