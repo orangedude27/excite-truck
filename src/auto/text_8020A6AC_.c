@@ -90,14 +90,13 @@ void *fn_8020A774(int arg0) { return lbl_804892D0 + arg0 * 0x24; }
 
 void fn_8020A788(void) {
     if (lbl_8055EE0C == 0) {
-        if (fn_801284F8(0x20, lbl_8033C368) != 0)
-            lbl_8055EE10 = fn_8012A13C(lbl_8033C368, 0x200, 0x54);
+        void *obj = (void *)fn_801284F8(0x20, lbl_8033C368);
+        if (obj != 0)
+            lbl_8055EE10 = ((void *(*)(void *, void *, int, int))fn_8012A13C)(obj, lbl_8033C368, 0x200, 0x54);
     }
-    if (fn_8012A2D8(lbl_8055EE10) != 0) {
-        int count;
-        count = lbl_8055EE0C;
-        lbl_8055EE0C = count + 1;
-    }
+    if (fn_8012A2D8(lbl_8055EE10) == 0)
+        return;
+    lbl_8055EE0C++;
 }
 
 #pragma push
@@ -364,18 +363,21 @@ void fn_8020AC2C(void *arg0) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-void *fn_8020AF18(void *arg0, char *name, int unused, unsigned char flag) {
+#pragma cplusplus on
+extern "C" void *fn_8020AF18(void *arg0, char *name, int unused, unsigned char flag) {
+    class Sound { public: virtual void destroy(int); virtual void slot1(); virtual int valid(); };
     char *obj;
     int i;
     for (i = 0; i < 0x200; i++) {
         if (((void **)*(void **)((char *)arg0 + 4))[i] == 0) {
-            obj = ((void *(*)(int, const char *))fn_8020A788)(0x54, lbl_8033C3D8);
+            obj = (char *)((void *(*)(int, const char *))fn_8020A788)(0x54, lbl_8033C3D8);
             if (obj != 0) {
                 char buffer[64], *src, *dst, *dot;
                 int left;
                 double length;
+                { float initial = lbl_805632B0;
                 *(void **)obj = lbl_8033C3F4;
-                *(float *)(obj + 0x48) = lbl_805632B0;
+                *(float *)(obj + 0x48) = initial; }
                 *(int *)(obj + 0x40) = i;
                 *(int *)(obj + 0x44) = 0;
                 *(int *)(obj + 4) = 3;
@@ -388,37 +390,38 @@ void *fn_8020AF18(void *arg0, char *name, int unused, unsigned char flag) {
                 *(unsigned char *)(obj + 0x3c) = flag;
                 *(void **)(obj + 0x10) = fn_802E5AE8(name);
                 if (*(void **)(obj + 0x10) != 0) {
-                    src = name; dst = buffer; left = 0x40;
+                    { char *copy_src = name; int copy_left = 0x40; char *copy_dst = buffer;
                     goto copy_check;
 copy_next:
-                    if (--left > 0) goto copy_check;
-                    dst[-1] = 0; goto copied;
+                    if (--copy_left > 0) goto copy_check;
+                    copy_dst[-1] = 0; goto copied;
 copy_check:
-                    { unsigned char c = *src++; *dst++ = c; if ((signed char)c != 0) goto copy_next; }
-copied:
+                    { unsigned char c = *copy_src++; *copy_dst++ = c; if ((signed char)c != 0) goto copy_next; }
+copied: ; }
                     dot = strchr(buffer, '.');
                     if (dot != 0) {
                         if (stricmp(dot, lbl_8055B5C0) != 0) fn_802E317C(lbl_8033C4C8, name);
                         *dot = 0;
-                        dst = buffer; left = 0x40;
-                        while (*dst != 0) { left--; dst++; }
-                        if (left > 0) {
+                        { int append_left = 0x40; char *append_dst = buffer;
+                        while (*append_dst != 0) { append_left--; append_dst++; }
+                        if (append_left > 0) {
                             src = (char *)lbl_8055B5B8;
                             goto append_check;
 append_next:
-                            if (--left > 0) goto append_check;
-                            dst[-1] = 0; goto appended;
+                            if (--append_left > 0) goto append_check;
+                            append_dst[-1] = 0; goto appended;
 append_check:
-                            { unsigned char c = *src++; *dst++ = c; if ((signed char)c != 0) goto append_next; }
+                            { unsigned char c = *src++; *append_dst++ = c; if ((signed char)c == 0) goto appended; else goto append_next; }
 appended:                   ;
-                        }
+                        } }
                     } else fn_802E317C(lbl_8033C4A0, name);
                     *(void **)(obj + 0x14) = fn_802E5AE8(buffer);
                     *(void **)(obj + 0x18) = fn_8020A6AC(name);
                     length = ((double (*)(void *))fn_802E6040)(*(void **)(obj + 0x10));
+                    { register float scale = lbl_805632C4, base = lbl_805632C0, n = (float)length;
                     *(float *)(obj + 0x48) = length;
-                    *(unsigned int *)(obj + 0x4c) = (unsigned int)(lbl_805632BC * (lbl_805632C0 + lbl_805632C4 * (float)length));
-                    { float zero = lbl_805632B0, one = lbl_805632B4;
+                    *(unsigned int *)(obj + 0x4c) = (unsigned int)(lbl_805632BC * (base + scale * n)); }
+                    { float one, zero; zero = lbl_805632B0; one = lbl_805632B4;
                     *(float *)(obj + 0x20) = zero;
                     *(float *)(obj + 0x1c) = zero;
                     *(float *)(obj + 0x24) = one;
@@ -429,8 +432,8 @@ appended:                   ;
                     *(int *)(obj + 0x38) = 0; }
                 }
             }
-            if (((int (*)(void *))(*(void ***)obj)[4])(obj) == 0) {
-                if (obj != 0) ((void (*)(void *, int))(*(void ***)obj)[2])(obj, 1);
+            if (((Sound *)obj)->valid() == 0) {
+                if (obj != 0) ((Sound *)obj)->destroy(1);
                 return 0;
             }
             ((void **)*(void **)((char *)arg0 + 4))[i] = obj;
@@ -535,6 +538,73 @@ extern "C" void fn_8020B348(void *arg0) {
     if (arg0 == 0) return;
     ((Obj *)arg0)->f(1);
 }
+
+// ---------------------------------------------------------------------------
+// One sound of the sound player: 0x54 bytes allocated as "Voicesnd" by
+// fn_8020AF18, with the vtable lbl_8033C3F4.
+//     +0x08 fn_8020B1C8  destroy
+//     +0x10 fn_8020B2A8  has a sound loaded
+//     +0x14 fn_8020B874  load another sound by name
+//     +0x18 fn_8020B368  play once
+//     +0x1C fn_8020B5EC  play, looping
+//     +0x20 fn_8020AA0C  release the voices
+//     +0x24 fn_8020AA98  state
+//     +0x28 fn_8020B908  mute
+//     +0x2C fn_8020B9D4  unmute
+// fn_8020AC2C pushes the mix values below into the voices every frame.
+typedef struct SoundGroup {
+    char name[0x20]; // at 0x00  group name, from the sound configuration
+    float volume;    // at 0x20  volume set for that group
+} SoundGroup;
+
+typedef struct VoiceSnd {
+    void *vtable;           // at 0x00  lbl_8033C3F4
+    int state;              // at 0x04  1 = playing, 2 = muted, 3 = stopped
+    void *voice;            // at 0x08  voice of the main sound
+    void *voice2;           // at 0x0C  voice of the second sound, or 0
+    void *sound;            // at 0x10  main sound resource
+    void *sound2;           // at 0x14  second resource, played hard right
+    SoundGroup *group;      // at 0x18  volume group the sound belongs to
+    float volume;           // at 0x1C
+    float pan;              // at 0x20  -1 = left, 1 = right
+    float rate;             // at 0x24
+    float surroundPan;      // at 0x28  rear balance, surround mode only
+    float unused2c;         // at 0x2C  its setter does nothing
+    float unused30;         // at 0x30  its setter does nothing
+    float unused34;         // at 0x34  its setter does nothing
+    int auxFlags;           // at 0x38  effect sends, see the mixer fn_802E6264
+    unsigned char unscaled; // at 0x3C  ignore the per-frame volume scale
+    unsigned char loop;     // at 0x3D  set by the play call that started it
+    unsigned char mute;     // at 0x3E  set while the sound is muted
+    int index;              // at 0x40  slot in the player's list
+    int time;               // at 0x44  frames since the sound started
+    double length;          // at 0x48  length of the sound, in seconds
+    unsigned int limit;     // at 0x4C  ms after which the sound is dropped
+    unsigned int elapsed;   // at 0x50  ms the sound has been playing
+} VoiceSnd;
+
+// The sound library's voices: 32 slots of which fn_802E6058 grabs one, and
+// the mix values the mixer fn_802E6264 hands to the AX voice every frame.
+// This unit's prototypes for the library still say int, hence the casts.
+#define SND_GrabVoice(res) fn_802E6058((int)(res))
+#define SND_ReleaseVoice(v) ((void (*)(void *))fn_802E6138)((v))
+#define SND_SetVolume(v, x) ((void (*)(void *, float))fn_802E61E4)((v), (x))
+#define SND_SetPan(v, x) fn_802E61EC((v), (x))
+#define SND_SetSurroundPan(v, x) fn_802E620C((v), (x))
+#define SND_SetRate(v, x) fn_802E622C((v), (x))
+#define SND_SetAuxFlags(v, x) fn_802E6240((v), (x))
+#define SND_Start(v) fn_802E61A8(v)      // play once, from the start
+#define SND_StartLoop(v) fn_802E61BC(v)  // start looping unless already playing
+#define SND_Name(res) fn_802E6ABC((int)(res))
+#define SND_ReportGrabFailed() fn_80207938()  // "sound: %08d: grab failed (%s)"
+
+// Volume knobs: the master volume is 0 while the sound is switched off
+// (fn_8020A878); the scale is refreshed every frame by fn_8020AC2C.
+#define MASTER_VOLUME lbl_8055B598
+#define VOLUME_SCALE lbl_8055B590
+#define FLOAT_ZERO lbl_805632B0
+#define FLOAT_ONE lbl_805632B4
+#define FLOAT_NEG_ONE lbl_805632B8
 
 #pragma push
 #pragma processor 750
