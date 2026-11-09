@@ -338,20 +338,20 @@ void fn_802AE9D0(void) {
 done:
     lbl_8055F970 = 0;
 }
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_802AEA44(void) {
     volatile int start;
-    volatile char *buffer;
+    char *volatile buffer;
+    int diff;
     fn_802C10B8();
-    buffer = lbl_8034A048;
-    start = fn_802E2C20((char *)buffer);
+    start = fn_802E2C20(buffer = lbl_8034A048);
     fn_802BEB70();
-    if (fn_802E2C20() - start > 0x1F4) {
-        fn_802E30C8(lbl_8034A064, (char *)buffer);
-    }
+    diff = fn_802E2C20() - start;
+    if (diff > 0x1F4)
+        fn_802E30C8(lbl_8034A064, buffer, diff);
     fn_802AE774();
 }
-
+#pragma scheduling on
 extern void fn_802BDC3C(void);
 extern void fn_802B59A4(int);
 extern void fn_802B0288();
@@ -1219,18 +1219,16 @@ void fn_802AFF80(void *arg0, short arg1) {
 }
 
 void fn_802B0024(void *arg0, short arg1) {
-    unsigned short count = 0;
-    unsigned short limit = *(unsigned short *)((char *)arg0 + 6);
-    *(unsigned short *)((char *)arg0 + 4) = count;
-    if (count >= limit) return;
-    *(unsigned short *)*(void **)arg0 = count;
-    count = 1;
-    *(unsigned short *)((char *)arg0 + 4) = count;
-    count = *(unsigned short *)((char *)arg0 + 4);
-    limit = *(unsigned short *)((char *)arg0 + 6);
-    if (count < limit) {
-        *(short *)((char *)*(void **)arg0 + count * 2) = arg1;
-        *(unsigned short *)((char *)arg0 + 4) = count + 1;
+    unsigned short temp;
+    *(unsigned short *)((char *)arg0 + 4) = 0;
+    if (*(unsigned short *)((char *)arg0 + 6) > 0) {
+        *(short *)*(void **)arg0 = 0;
+        *(unsigned short *)((char *)arg0 + 4) = 1;
+    }
+    temp = *(unsigned short *)((char *)arg0 + 4);
+    if (temp < *(unsigned short *)((char *)arg0 + 6)) {
+        *(short *)((char *)*(void **)arg0 + temp * 2) = arg1;
+        *(unsigned short *)((char *)arg0 + 4) = temp + 1;
     }
 }
 
