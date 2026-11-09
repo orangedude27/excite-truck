@@ -484,19 +484,22 @@ void fn_801EB8BC(void) {
 }
 #pragma dont_inline off
 
-#pragma dont_inline on
-void fn_801EB90C(void) {
+#pragma cplusplus on
+extern "C" void fn_801EB90C(void) {
+    struct Entry {
+        virtual void u0();
+        virtual void u1();
+        virtual void u2();
+        virtual void u3();
+        virtual void f();
+    };
     void **p = (void **)lbl_804885E8;
-    u32 i = 0;
-    do {
-        void *obj = *p;
-        void **vtable = *(void ***)obj;
-        ((void (*)(void))vtable[6])();
-        i++;
-        if (i < 0x18) p++;
-    } while (i < 0x18);
+    u32 i;
+    for (i = 0; i < 0x18; i++, p++) {
+        ((Entry *)*p)->f();
+    }
 }
-#pragma dont_inline off
+#pragma cplusplus reset
 
 void fn_801EB968(void) {
 
