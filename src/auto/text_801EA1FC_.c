@@ -28,6 +28,7 @@ extern u8 lbl_8055EB59;
 extern u8 lbl_8055EB60[5];
 extern char lbl_8055EB58;
 
+#pragma dont_inline on
 void fn_801EA1FC(void) {
     float x = lbl_80562E38;
     x = lbl_80562E3C * x;
@@ -46,6 +47,28 @@ void fn_801EA318(void) {
 
 }
 
+extern s32 fn_80012954(s32);
+extern void fn_8026A54C(f32);
+extern f32 lbl_80562E50, lbl_80562E54;
+#pragma push
+#pragma processor 750
+#pragma scheduling on
+void fn_801EA31C(s32 *arg0) {
+    f32 initial = lbl_80562E50;
+    f32 f1, f2, f3;
+    s32 result;
+    *(f32 *)lbl_8055EB60 = initial;
+    fn_8026A54C(initial);
+    result = (unsigned int)__cntlzw(fn_80012954(*arg0) - 2) >> 5;
+    f1 = lbl_80562E40;
+    f2 = *(f32 *)lbl_8055EB60;
+    f3 = lbl_80562E54;
+    ((signed char *)lbl_8055EB60)[4] = (signed char)result;
+    fn_802C974C(f1, f2, f3);
+    lbl_8055EB58 = 0;
+    lbl_8055EB59 = 1;
+}
+#pragma pop
 void fn_801EA38C(void) {
     fn_801EBC2C();
 }
