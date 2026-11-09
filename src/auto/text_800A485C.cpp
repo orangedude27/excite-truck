@@ -18329,28 +18329,33 @@ extern "C" void fn_800D1300(void *arg0) {
 }
 
 extern "C" u8 fn_8005EE80(s32);
+// Watches this controller's remote-speaker tone: while a tone is active it
+// tracks whether it is still playing, drops the request after a 1 s gap, and
+// schedules the soundOn callback alarm once the tone has run for 8 minutes or
+// has not been started yet.
 extern "C" void updateSound__Q210homebutton10ControllerFv(void *arg0) {
-    s32 sound = *(s32 *)arg0;
-    if (fn_800D1E5C(*(void **)((u8 *)arg0 + 0x24), sound) == 0) {
-        if (((u8 *)arg0)[0x42] != 0) {
-            if (((u8 *)arg0)[0x43] == 0) {
+    homebutton::Controller *self = (homebutton::Controller *)arg0;
+    s32 sound = self->m_soundId;
+    if (fn_800D1E5C(self->m_soundPlayer, sound) == 0) {
+        if (self->m_soundActive != 0) {
+            if (self->m_stopTiming == 0) {
                 OSTime time = OSGetTime();
-                *(u32 *)((u8 *)arg0 + 0x3C) = (u32)time;
-                *(u32 *)((u8 *)arg0 + 0x38) = (u32)(time >> 32);
-                ((u8 *)arg0)[0x43] = 1;
-            } else if ((u32)((u32)OSGetTime() - *(u32 *)((u8 *)arg0 + 0x3C)) /
+                self->m_stopStartLo = (u32)time;
+                self->m_stopStartHi = (u32)(time >> 32);
+                self->m_stopTiming = 1;
+            } else if ((u32)((u32)OSGetTime() - self->m_stopStartLo) /
                            ((*(volatile u32 *)0x800000F8 >> 2) / 1000U) >= 0x3E8U) {
-                ((u8 *)arg0)[0x42] = 0;
-                ((u8 *)arg0)[0x43] = 0;
+                self->m_soundActive = 0;
+                self->m_stopTiming = 0;
             }
         }
-    } else if (((u8 *)arg0)[0x42] != 0 &&
-               (((u8 *)arg0)[0x43] = 0,
-                (u32)((u32)OSGetTime() - *(u32 *)((u8 *)arg0 + 0x34)) /
+    } else if (self->m_soundActive != 0 &&
+               (self->m_stopTiming = 0,
+                (u32)((u32)OSGetTime() - self->m_playStartLo) /
                         ((*(volatile u32 *)0x800000F8 >> 2) / 1000U) >= 0x75300U)) {
-        sound = *(s32 *)arg0;
-        ((u8 *)arg0)[0x42] = 0;
-        ((u8 *)arg0)[0x43] = 0;
+        sound = self->m_soundId;
+        self->m_soundActive = 0;
+        self->m_stopTiming = 0;
         if (fn_80060C7C((void *)sound) != 0) {
             OSAlarm *alarm;
             fn_80060CC0((void *)sound, 2, 0);
@@ -18360,10 +18365,10 @@ extern "C" void updateSound__Q210homebutton10ControllerFv(void *arg0) {
             ((void (*)(OSAlarm *, u32, u32, u32, OSAlarmHandler))OSSetAlarm)(
                 alarm, 0x10624DD3, 0, ((*(volatile u32 *)0x800000F8 >> 2) / 1000U) * 1000U,
                 soundOnCallback__Q210homebutton10ControllerFP7OSAlarmP9OSContext);
-            ((u8 *)arg0)[0x41] = 1;
+            self->m_alarmPending = 1;
         }
-    } else if (((u8 *)arg0)[0x41] == 0 && fn_8005EE80(sound) <= 0x55) {
-        s32 id = *(s32 *)arg0;
+    } else if (self->m_alarmPending == 0 && fn_8005EE80(sound) <= 0x55) {
+        s32 id = self->m_soundId;
         if (fn_80060C7C((void *)id) != 0) {
             OSAlarm *alarm;
             u32 ticks;
@@ -18375,7 +18380,7 @@ extern "C" void updateSound__Q210homebutton10ControllerFv(void *arg0) {
             ((void (*)(OSAlarm *, u32, u32, u32, OSAlarmHandler))OSSetAlarm)(
                 alarm, 0x10624DD3, 0, ((ticks >> 2) / 1000U) * 1000U,
                 soundOnCallback__Q210homebutton10ControllerFP7OSAlarmP9OSContext);
-            ((u8 *)arg0)[0x41] = 1;
+            self->m_alarmPending = 1;
         }
     }
 }
