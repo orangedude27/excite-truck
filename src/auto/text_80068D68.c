@@ -19049,15 +19049,14 @@ void *l2cu_find_ccb_by_cid(void *p_lcb, u16 cid) {
 }
 
 void *fn_8008EBE4(s16 psm) {
+    UINT16 i;
     u8 *p_rcb = lbl_803C4040 + 0x650;
-    int i;
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < 8; i++, p_rcb += 0x2C) {
         if (p_rcb[0] == 0) {
             p_rcb[0] = 1;
             *(s16 *)(p_rcb + 2) = psm;
             return p_rcb;
         }
-        p_rcb += 0x2c;
     }
     return 0;
 }
