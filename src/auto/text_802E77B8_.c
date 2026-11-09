@@ -109,13 +109,18 @@ extern int fn_801284E8(void *, int);
 extern int lbl_80507258[];
 extern int lbl_8055D224;
 extern int lbl_8056000C;
+#pragma scheduling invalid_target
 void fn_802E7A14(int arg0) {
+    int value;
+    int index;
     fn_801282EC(0x80);
     fn_801282F4();
-    lbl_80507258[lbl_8056000C] = fn_801284E8(&lbl_8055D224, arg0);
-    lbl_8056000C++;
+    value = fn_801284E8(&lbl_8055D224, arg0);
+    index = lbl_8056000C;
+    lbl_80507258[index] = value;
+    lbl_8056000C = index + 1;
 }
-
+#pragma scheduling on
 extern float lbl_805651A0, lbl_805651A4;
 extern int fn_8005ED8C(void), fn_8005EE20(void), fn_8005EE7C(void);
 extern int fn_80128684(void);
@@ -147,9 +152,10 @@ int fn_802E7AF4(int arg0, int arg1) {
         } else {
             fn_8005ED8C();
         }
-        fn_802E30C8((const char *)&lbl_8034D8B4);
-        if (fn_8005EE7C() != 4)
-            fn_802E30C8((const char *)&lbl_8034D8E8);
+        ((void (*)(const char *, ...))fn_802E30C8)((const char *)&lbl_8034D8B4);
+        while (fn_8005EE7C() == 4)
+            ;
+        ((void (*)(const char *, ...))fn_802E30C8)((const char *)&lbl_8034D8E8);
     }
     return 0;
 }
@@ -284,6 +290,8 @@ extern float lbl_8056518C, lbl_80565190, lbl_80565194, lbl_80565198;
 #pragma paired off
 #pragma paired_single off
 void fn_802E7DDC(void *arg0, void *arg1) {
+    typedef struct { float x, y, z; } Vec;
+    typedef struct { unsigned int hold, trig, release; Vec acc; float accValue; } Input;
     typedef struct {
         unsigned char pad0[4]; float angle; float tilt; unsigned char pad0C[0x18];
         signed char buttons[8]; unsigned char pad2C[0x18];
@@ -291,17 +299,16 @@ void fn_802E7DDC(void *arg0, void *arg1) {
         int flags; float x; float y; float z; signed char valid; unsigned char pad65[7];
         float heading; unsigned char pad70[0x5B4]; int sound;
     } Record;
-    typedef struct { unsigned int hold, trig, release; float acc[3]; float accValue; } Input;
+    register unsigned int temp_r31 = *(volatile unsigned int *)arg1;
     Record *out = (Record *)arg0;
     Input *in = (Input *)arg1;
     float temp_f0, temp_f0_2, var_f1, var_f31, var_f4;
     float ax, ay, vectorX, vectorY, vectorZ;
     double temp_f1;
     int var_r5;
-    register unsigned int temp_r31 = *(volatile unsigned int *)arg1;
 
     out->config0 = 0x800F;
-    out->valid = out->sound != 0;
+    out->valid = *(volatile int *)((char *)arg0 + 0x624) != 0;
     out->config1 = 0xFF;
     var_r5 = 0;
     out->flags |= 0x10;
@@ -309,16 +316,16 @@ void fn_802E7DDC(void *arg0, void *arg1) {
     if (temp_r31 & 1) var_r5 |= 4;
     if (temp_r31 & 8) var_r5 |= 8;
     if (temp_r31 & 4) var_r5 |= 2;
-    ay = *(volatile float *)((char *)arg1 + 0x10);
-    ax = *(volatile float *)((char *)arg1 + 0xC);
+    ay = *(volatile float *)&in->acc.y;
+    ax = *(volatile float *)&in->acc.x;
     out->buttonMask = var_r5;
     temp_f1 = -(float)fn_8002EFB0(ax, -ay);
     var_f31 = (float)temp_f1;
-    out->heading = (float)temp_f1;
+    out->heading = var_f31;
     if (var_f31 > lbl_80565180) var_f31 -= lbl_80565184;
     else if (var_f31 < lbl_80565188) var_f31 += lbl_80565184;
     var_f1 = lbl_80565160;
-    temp_f0 = lbl_8056518C * in->acc[2];
+    temp_f0 = lbl_8056518C * in->acc.z;
     if (var_f1 >= temp_f0) var_f1 = temp_f0;
     if (var_f1 <= lbl_8056517C) var_f1 = lbl_8056517C;
     var_f1 = fn_802E78A4(var_f1);
@@ -326,9 +333,10 @@ void fn_802E7DDC(void *arg0, void *arg1) {
     temp_f0_2 = lbl_80565190 * ((lbl_80565194 * var_f31) / lbl_80565180);
     if (var_f4 >= temp_f0_2) var_f4 = temp_f0_2;
     if (var_f4 <= lbl_8056517C) var_f4 = lbl_8056517C;
-    vectorX = lbl_80565198 * -in->acc[2];
-    vectorY = lbl_80565198 * in->acc[1];
-    vectorZ = lbl_80565198 * -in->acc[0];
+    vectorX = lbl_80565198 * -in->acc.z;
+    vectorY = lbl_80565198 * in->acc.y;
+    vectorZ = lbl_80565198 * -in->acc.x;
+    out->tilt = var_f4;
     out->buttons[1] = (temp_r31 >> 9) & 1;
     out->buttons[0] = (temp_r31 >> 8) & 1;
     out->buttons[4] = (temp_r31 >> 11) & 1;
@@ -338,7 +346,6 @@ void fn_802E7DDC(void *arg0, void *arg1) {
     out->buttons[5] = (temp_r31 >> 15) & 1;
     out->flags |= 0x20;
     out->angle = var_f1;
-    out->tilt = var_f4;
     out->x = vectorX;
     out->y = vectorY;
     out->z = vectorZ;
@@ -368,7 +375,6 @@ void fn_802E7FD0(void) {
     extern unsigned char lbl_80560009;
     extern int lbl_80560010;
     extern int lbl_80560014;
-
     int now;
     int previous;
     int elapsed;
@@ -379,16 +385,17 @@ void fn_802E7FD0(void) {
     unsigned char *lastState;
     unsigned char *base;
     int channel;
-    unsigned char one;
     int readCount;
     register int queueIndex;
+    register int changed;
     int current;
     int old;
     int active;
     int result;
-    int filtered;
     int timeNow;
-
+    int probe;
+    register int one;
+    register int filtered;
     formatBase = (char *)&lbl_8034D898;
     now = fn_802E2C20();
     previous = lbl_80560010;
@@ -399,8 +406,7 @@ void fn_802E7FD0(void) {
         count = lbl_80560014;
         lbl_80560010 = now;
         lbl_80560014 = count + 1;
-        {
-            int changed = fn_802ECC10();
+        changed = fn_802ECC10();
         if ((unsigned int)changed != (unsigned int)lbl_80560009) {
             lbl_80560009 = changed;
             queueIndex = 0;
@@ -412,9 +418,7 @@ void fn_802E7FD0(void) {
                 queueIndex += 1;
             } while (queueIndex < 4);
         }
-        }
     }
-
     one = 1;
     record = lbl_80505978;
     devices = lbl_80507278;
@@ -425,16 +429,16 @@ void fn_802E7FD0(void) {
         memset(record + 0xC8, 0, 0x550);
         active = 0;
         if (base[0x631] != 0)
-            active = 1;
+            active = one;
         if (base[0xC69] != 0)
-            active = 1;
+            active = one;
         if (base[0x12A1] != 0)
-            active = 1;
+            active = one;
         if (base[0x18D9] != 0)
-            active = 1;
+            active = one;
         if (active == 0 && now - *(int *)(record + 0x634) > 0x2710) {
             *(int *)(record + 0x634) = now;
-            record[0x631] = one;
+            record[0x631] = (unsigned char)one;
             result = fn_800604E8(channel, (int)(record + 0x618), fn_802E7C14);
             if (result != 0) {
                 record[0x631] = 0;
@@ -442,17 +446,16 @@ void fn_802E7FD0(void) {
                     memset(record + 0x618, 0, 0x18);
             }
         }
-
-        queueIndex = WPADProbe(channel, devices);
+        probe = WPADProbe(channel, devices);
         result = KPADRead(channel, record + 0xC8, 1);
-        if (result >= 1 && queueIndex == 0 && record[0xC4] != 0) {
+        if (result >= 1 && probe == 0 && record[0xC4] != 0) {
             current = *(signed char *)(record + 0x14D);
             old = *(signed char *)lastState;
             if (current != old) {
                 result = (int)fn_802E77C0((signed char)current);
-                queueIndex = (int)fn_802E77C0(*(signed char *)lastState);
+                probe = (int)fn_802E77C0(*(signed char *)lastState);
                 ((void (*)(const char *, ...))fn_802E30C8)(
-                    formatBase + 0x94, channel, queueIndex, result);
+                    formatBase + 0x94, channel, probe, result);
                 *lastState = (unsigned char)current;
             }
             if ((signed char)current == 0) {
@@ -473,7 +476,6 @@ void fn_802E7FD0(void) {
             ((void (*)(const char *, ...))fn_802E30C8)(
                 formatBase + 0xC0, channel);
         }
-
         if (record[0x29] != 0) {
             if (record[0xC5] == 0) {
                 record[0xC5] = (unsigned char)one;
@@ -482,18 +484,16 @@ void fn_802E7FD0(void) {
         } else {
             record[0xC5] = 0;
         }
-
-        queueIndex = 0;
+        filtered = 0;
         if (((int (*)(int))fn_802E77B8)(channel) != 0 &&
             record[0x2B] != 0 && record[0x29] != 0 &&
             record[0x27] != 0)
-            queueIndex = 1;
+            filtered = one;
         timeNow = fn_802E2C20();
-        if (queueIndex == 0)
+        if (filtered == 0)
             *(int *)(record + 0xC0) = timeNow;
         else if (timeNow - *(int *)(record + 0xC0) > 0x3E8)
             fn_802E2E38(0);
-
         channel += 1;
         record += 0x638;
         devices += 1;
