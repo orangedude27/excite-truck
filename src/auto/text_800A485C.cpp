@@ -23737,8 +23737,8 @@ struct VFiPFDeviceInfo {
 /* The volume fields the mount fills in, by offset. */
 #define VF_VOL_FSINFO_SECTOR(v) (*(u16 *)((u8 *)(v) + 0x14)) /* FAT32's FSInfo sector */
 #define VF_VOL_FAT_TYPE(v)      (*(s32 *)((u8 *)(v) + 0x1C)) /* which FAT; 2 = FAT32 */
-#define VF_VOL_FREE_CLUSTERS(v) (*(s32 *)((u8 *)(v) + 0x38)) /* from FSInfo; -1 unknown */
-#define VF_VOL_NEXT_CLUSTER(v)  (*(s32 *)((u8 *)(v) + 0x3C)) /* from FSInfo; -1 unknown */
+#define VF_VOL_FREE_CLUSTERS(v) ((u32 *)((u8 *)(v) + 0x38)) /* free clusters; -1 unknown */
+#define VF_VOL_NEXT_CLUSTER(v)  ((u32 *)((u8 *)(v) + 0x3C)) /* next free cluster; -1 unknown */
 #define VF_VOL_DEVICE_ERROR(v)  (*(s32 *)((u8 *)(v) + 0x1F84)) /* for the retry handler */
 #define VF_VOL_DEVICE_VALUE(v)  (*(s32 *)((u8 *)(v) + 0x1FC4)) /* handed to the device */
 #define VF_FAT_TYPE_32          2                            /* VF_VOL_FAT_TYPE: FAT32 */
