@@ -178,7 +178,7 @@ void reset_kpad(KPADInsideStatus* kp) {
         op->error_fg = -1;
     } while (--op >= kp->kobj_regular);
 
-    kp->unk_0x116 = -1;
+    kp->last_read_index = -1;
     kp->repeat_count = 0;
 
     if (kp->active_chan < 0) {
