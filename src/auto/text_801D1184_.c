@@ -31,27 +31,29 @@ void fn_801D1244(float *arg0) {
     *arg0 = lbl_80562A4C;
 }
 
+#pragma scheduling invalid_target
 void fn_801D1250(float *arg0, int arg1) {
     char *p = (char *)lbl_804348E8[arg1];
     float f4 = *(float *)(p + 0x25d0);
     float f5 = *(float *)(p + 0x25f4);
     float f6;
     if (f4 > arg0[11]) {
-        f6 = f4 - arg0[8];
-        if (lbl_80562A4C > f6)
-            f6 = lbl_80562A4C;
+        f6 = lbl_80562A4C > (f4 - arg0[8]) ? lbl_80562A4C : (f4 - arg0[8]);
         {
-            float val = arg0[3] + (arg0[2] * f4 + arg0[1] * (f4 * f4)) - arg0[9] * f6;
-            f6 = arg0[10];
-            if (f6 <= val)
-                f6 = val;
+            float first = arg0[2] * f4;
+            float square = f4 * f4;
+            float second = arg0[1] * square;
+            float base = arg0[3];
+            float val = (base + (first + second)) - arg0[9] * f6;
+            f6 = arg0[10] > val ? arg0[10] : val;
         }
     } else {
-        f6 = arg0[6] + (arg0[5] * f4 + arg0[4] * (f4 * f4));
+        float square = f4 * f4;
+        f6 = arg0[6] + (arg0[5] * f4 + arg0[4] * square);
     }
     arg0[0] = f5 * f6 - f4 * arg0[7];
 }
-
+#pragma scheduling on
 void fn_801D1008(void*, unsigned int);
 void fn_80128668(void*);
 long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_801D130C(long arg0, long arg1) {
@@ -80,10 +82,10 @@ void fn_801D139C(void) {
 extern int lbl_8055E8F8;
 extern char lbl_8055ABD0;
 void fn_801D1250(float*, int);
-void fn_8012850C(int, void*);
+void *fn_8012850C(int, void*);
 void* fn_8002F37C(void (*)(void*), int, int, int);
 void fn_801D14BC(void*);
-extern void fn_8012850C();
+extern void *fn_8012850C();
 extern void *fn_8002F37C();
 #pragma inline_depth(0)
 void fn_801D13A0(void) {
