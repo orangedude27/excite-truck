@@ -274,8 +274,8 @@ done:
 }
 #pragma scheduling invalid_target
 void fn_80135B24(void *arg0, void *arg1, float farg0) {
-    void *node;
-    void *entry;
+    register void *entry;
+    register void *node;
     void *base;
     float initial = lbl_80561320;
     *(void **)arg0 = 0;
@@ -284,21 +284,22 @@ void fn_80135B24(void *arg0, void *arg1, float farg0) {
     *(float *)((char *)arg0 + 4) = initial;
     node = *(void **)((char *)base + 0x20);
     *(void **)arg0 = node;
-    if (node != 0) {
-        for (;;) {
-            node = *(void **)arg0;
-            entry = *(void **)((char *)node + 0x14);
-            if (*(float *)((char *)entry + 0x1C) >= farg0) {
-                break;
-            }
-            if (*((u8 *)entry + 0x34) != 3) {
-                break;
-            }
-            *(void **)arg0 = entry;
+    if (node == 0) goto done;
+    for (;;) {
+        node = *(void **)arg0;
+        entry = *(void **)((char *)node + 0x14);
+        if (*(float *)((char *)entry + 0x1C) >= farg0) {
+            break;
         }
-        *(float *)((char *)arg0 + 4) = (farg0 - *(float *)((char *)node + 0x1C)) / *(float *)((char *)node + 0x18);
-        *(s32 *)((char *)arg0 + 8) = 0;
+        if (*((u8 *)entry + 0x34) != 3) {
+            break;
+        }
+        *(void **)arg0 = entry;
     }
+    *(float *)((char *)arg0 + 4) = (farg0 - *(float *)((char *)node + 0x1C)) / *(float *)((char *)node + 0x18);
+    *(s32 *)((char *)arg0 + 8) = 0;
+done:
+    return;
 }
 #pragma scheduling on
 void fn_80135B9C(void *arg0, void *arg1, void *arg2, float *arg3, void *arg4, float amount) {
@@ -812,12 +813,13 @@ void fn_80136768(void) {
 }
 
 void *fn_8013676C(void *arg0, s32 arg1) {
+    struct Local { char pad[0x50]; void *field_50; } *obj = arg0;
     if (arg0 != 0) {
-        if ((u8 *)arg0 + 0x50 != 0) {
-            if (*(s32 *)((u8 *)arg0 + 0x50) != 0) {
-                fn_80128670();
+        if (&obj->field_50 != 0) {
+            if (obj->field_50 != 0) {
+                fn_80128670((s32)obj->field_50);
             }
-            *(s32 *)((u8 *)arg0 + 0x50) = 0;
+            obj->field_50 = 0;
         }
         fn_8013530C(arg0, 0);
         if (arg1 > 0) {
