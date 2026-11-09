@@ -10,7 +10,7 @@ extern char lbl_8055D4EC;
 extern char *strncpy(char *, const char *, size_t);
 extern void *memset(void *, int, size_t);
 extern int fn_802E2C20(void);
-  int fn_8001255C(const char *, float);
+      void fn_8001255C(const char *, float);
 extern float lbl_80560348;
 extern int lbl_8055FB9C;
 extern int lbl_8055FBA0;
