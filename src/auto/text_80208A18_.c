@@ -349,6 +349,7 @@ void fn_80209110(void **arg0) {
         *arg0 = 0;
     }
 }
+#pragma scheduling on
 #pragma pop
 
 #pragma push
