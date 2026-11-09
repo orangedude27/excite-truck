@@ -13,7 +13,7 @@ void fn_802CA0E4(void);
 void fn_801E2F00(void);
 void fn_802C83CC(void);
 void fn_802C990C(int);
-unsigned char fn_802C2C00(unsigned char);
+unsigned char fn_802C2C00(int);
 void fn_801E6978(void);
 
 extern unsigned char lbl_804C1328[];
@@ -91,7 +91,7 @@ void fn_802C2BB8(float *arg0, float *arg1, float *arg2) {
     }
 }
 
-unsigned char fn_802C2C00(unsigned char arg0) {
+unsigned char fn_802C2C00(int arg0) {
     unsigned char saved = lbl_804C1328[0xC];
     float f;
     lbl_804C1328[0xC] = arg0;
