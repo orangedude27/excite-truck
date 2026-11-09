@@ -958,13 +958,15 @@ void fn_80006B18(void *arg0) {
 #pragma ppc_psq_save reset
 #pragma use_lmw_stmw reset
 
+#pragma scheduling invalid_target
 void fn_80006D30(void) {
     char sp8[0x48];
     if (((s32 *)((u8 *)*(void **)((u8 *)lbl_8055D350 + 0x2C) + 0x2C0))[0] & 0x10) {
         sprintf(sp8, (const char *)lbl_802FB2A0, lbl_80558928);
-        fn_80010074(-1, 0x14, lbl_80558948, sp8, lbl_80560134, lbl_8056011C, lbl_80560190);
+        ((void (*)(s32, s32, const char *, char *, f32, f32, f32, ...))fn_80010074)(-1, 0x14, (const char *)&lbl_80558948, sp8, lbl_80560134, lbl_8056011C, lbl_80560190);
     }
 }
+#pragma scheduling on
 
 extern void fn_800201F0(void);
 extern void fn_801A7F8C(void);
