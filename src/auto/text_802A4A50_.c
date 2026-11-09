@@ -231,12 +231,8 @@ void fn_802A4C20(void) {
 #pragma dont_inline on
 void fn_802A4C60(void) {
     lbl_8055F8A0 = fn_802A4A50();
-    if (lbl_8055F88C != 0) {
-        fn_802A6A7C();
-    }
-    if (lbl_8055F888 != 0) {
-        fn_802A5CA4();
-    }
+    if (lbl_8055F88C != 0) fn_802A6A7C(lbl_8055F88C);
+    if (lbl_8055F888 != 0) fn_802A5CA4(lbl_8055F888);
     fn_802A5A38();
 }
 #pragma dont_inline reset
