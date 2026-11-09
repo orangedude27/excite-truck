@@ -1856,19 +1856,14 @@ void GXGetPointSize(s32 arg0) {
 }
 
 void GXInitLightAttnA(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    int type;
+    int a;
     unsigned int value = __peReg[1];
-    int type = 0;
-    int b;
-    if (arg0 != 1) {
-        if (arg0 == 3) {
-            type = 1;
-        }
-    }
+    type = (arg0 != 1 && arg0 == 3) ? 1 : 0;
     value = __rlwimi(value, type, 0, 31, 31);
-    value = __rlwimi(value, __cntlzw(arg0 - 3), 6, 20, 20);
-    b = __cntlzw(arg0 - 2);
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    value = __rlwimi(value, b, 28, 30, 30);
+    a = __cntlzw(arg0 - 3);
+    value = __rlwimi(value, a, 6, 20, 20);
+    value = __rlwimi(value, __cntlzw(arg0 - 2), 28, 30, 30);
     value = __rlwimi(value, arg3, 12, 16, 19);
     value = __rlwimi(value, arg1, 8, 21, 23);
     value = __rlwimi(value, arg2, 5, 24, 26);
@@ -3988,11 +3983,13 @@ void __GXSetIndirectMask(s32 mask) {
 }
 
 /* Use volatile byte and word FIFO stores, then clear the GXData halfword. */
+#pragma dont_inline on
 void __GXFlushTextureState(void) {
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = __GXData[0x174 / 4];
     *(unsigned short *)((char *)__GXData + 2) = 0;
 }
+#pragma dont_inline reset
 
 extern unsigned int lbl_80303C30[];
 void GXSetTevOp(int stage, int mode) {
@@ -4121,35 +4118,54 @@ void GXSetTevAlphaOp(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5)
 }
 
 void GXSetTevColor(s32 arg0, unsigned int *arg1) {
-    unsigned int value = *arg1;
-    unsigned int *fifo = (unsigned int *)0xCC008000;
-    s32 reg = arg0 * 2 + 0xE0;
+    s32 index;
+    unsigned int value;
+    s32 reg;
+    s32 reg2;
+    unsigned int first;
+    unsigned int second;
+    index = arg0 * 2;
+    value = *arg1;
+    reg = index + 0xE0;
+    first = (unsigned int)(reg << 24);
+    first = __rlwimi(first, value, 8, 24, 31);
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *fifo = (reg << 24) | (value >> 24) | ((value << 12) & 0xFF000);
+    first = __rlwimi(first, value, 12, 12, 19);
+    reg2 = index + 0xE1;
+    *(volatile unsigned int *)0xCC008000 = first;
+    second = (unsigned int)(reg2 << 24);
+    second = __rlwimi(second, value, 24, 24, 31);
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *fifo = ((reg + 1) << 24) | ((value >> 8) & 0xFF) | ((value >> 4) & 0xFF000);
+    second = __rlwimi(second, value, 28, 12, 19);
+    *(volatile unsigned int *)0xCC008000 = second;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *fifo = ((reg + 1) << 24) | ((value >> 8) & 0xFF) | ((value >> 4) & 0xFF000);
+    *(volatile unsigned int *)0xCC008000 = second;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *fifo = ((reg + 1) << 24) | ((value >> 8) & 0xFF) | ((value >> 4) & 0xFF000);
+    *(volatile unsigned int *)0xCC008000 = second;
     *(unsigned short *)((char *)__GXData + 2) = 0;
 }
 
 void GXSetTevColorS10(s32 tevReg, void *color) {
-    unsigned int r = ((unsigned int *)color)[0];
-    unsigned int g = ((unsigned int *)color)[1];
-    unsigned int *data = __GXData;
-    s32 index = tevReg << 1;
-    unsigned int value = ((index + 0xE0) << 24) | ((r >> 16) & 0x7FF) | ((g << 12) & 0x7FF000);
+    s32 index;
+    unsigned int c0, c1, regRA, regBG;
+    unsigned int *data;
+    index = tevReg << 1;
+    c0 = *(unsigned int *)color;
+    regRA = (index + 0xE0) << 24;
+    c1 = *((unsigned int *)color + 1);
+    data = __GXData;
+    regRA = __rlwimi(regRA, c0, 16, 21, 31);
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = value;
-    value = ((index + 0xE1) << 24) | ((g >> 16) & 0x7FF) | ((r << 12) & 0x7FF000);
+    regRA = __rlwimi(regRA, c1, 12, 9, 19);
+    regBG = (index + 0xE1) << 24;
+    *(volatile unsigned int *)0xCC008000 = regRA;
+    regBG = __rlwimi(__rlwimi(regBG, c1, 16, 21, 31), c0, 12, 9, 19);
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = value;
+    *(volatile unsigned int *)0xCC008000 = regBG;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = value;
+    *(volatile unsigned int *)0xCC008000 = regBG;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = value;
+    *(volatile unsigned int *)0xCC008000 = regBG;
     *(unsigned short *)((char *)data + 2) = 0;
 }
 
@@ -4876,15 +4892,16 @@ void GXLoadPosMtxImm(const f32 mtx[3][4], u32 id) {
 void GXLoadNrmMtxImm(const f32 mtx[3][4], u32 id) {
     f64 row0, row1, row2;
     f32 tail0, tail1, tail2;
-    u32 address;
-    address = id * 3 + 0x400;
+    u32 cmd = 0;
+    cmd |= (id << 2) - id + 0x400;
+    cmd |= 8 << 16;
     *(volatile u8 *)0xCC008000 = 0x10;
-    *(volatile u32 *)0xCC008000 = address | 0x80000;
-    row0 = *(const volatile f64 *)&mtx[0][0];
+    *(volatile u32 *)0xCC008000 = cmd;
+    row0 = *(const volatile f64 *)&mtx[0][1];
     tail0 = *(const volatile f32 *)&mtx[0][2];
-    row1 = *(const volatile f64 *)&mtx[1][0];
+    row1 = *(const volatile f64 *)&mtx[1][1];
     tail1 = *(const volatile f32 *)&mtx[1][2];
-    row2 = *(const volatile f64 *)&mtx[2][0];
+    row2 = *(const volatile f64 *)&mtx[2][1];
     tail2 = *(const volatile f32 *)&mtx[2][2];
     *(volatile f64 *)0xCC008000 = row0;
     *(volatile f32 *)0xCC008000 = tail0;
@@ -5015,26 +5032,28 @@ void GXSetScissor(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
             unsigned int y : 11;
         } bits;
     } topLeft, bottomRight;
-    unsigned int *data = __GXData;
-    s32 left = arg0 + 0x156;
-    s32 top = arg1 + 0x156;
+    unsigned int *data;
+    s32 left;
+    s32 top;
+    s32 tmpRight;
+    s32 tmpBottom;
     s32 right;
     s32 bottom;
-
+    data = __GXData;
+    left = arg0 + 0x156;
+    top = arg1 + 0x156;
     topLeft.value = data[0x148 / 4];
     topLeft.bits.y = top;
     topLeft.bits.x = left;
     data[0x148 / 4] = topLeft.value;
-
-    right = left + arg2;
-    bottom = top + arg3;
-    right -= 1;
-    bottom -= 1;
+    tmpRight = left + arg2;
+    tmpBottom = top + arg3;
+    bottom = tmpBottom - 1;
     bottomRight.value = data[0x14C / 4];
+    right = tmpRight - 1;
     bottomRight.bits.y = bottom;
     bottomRight.bits.x = right;
     data[0x14C / 4] = bottomRight.value;
-
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = data[0x148 / 4];
     *(volatile unsigned char *)0xCC008000 = 0x61;
