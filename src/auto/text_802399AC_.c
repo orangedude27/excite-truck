@@ -125,6 +125,45 @@ extern "C" s32 fn_80239EF0(void) {
 #pragma pop
 unsigned char fn_80239F6C(void *arg0) { return *(unsigned char *)((char *)arg0 + 0x20); }
 
+extern s32 fn_802C83C4(void);
+extern s32 fn_802090CC(void);
+extern s32 fn_80210570(void);
+extern s32 fn_802146BC(void *, s32, s32, s32);
+extern void *fn_8023AB78(register void *arg0, register s32 arg1, register s32 arg2, ...);
+extern void *fn_8023AA2C(register void *arg0, register s32 arg1, register s32 arg2, ...);
+extern void *fn_8023A8D8(register void *arg0, register s32 arg1, register s32 arg2, ...);
+extern s32 lbl_804986F8[];
+void fn_80239F74(void) {
+    s32 *g = lbl_804986F8;
+    char buf0[0x40];
+    char buf1[0x40];
+    char buf2[0x40];
+    char buf3[0x40];
+    s32 a, b, c;
+    g[5] = fn_802C83C4();
+    g[6] = g[5];
+    a = fn_80131234(&lbl_80340B58);
+    b = fn_80131234(&lbl_80340C24);
+    fn_8023AB78(buf0, (s32)(g + 5), b, a, 0);
+    g[7] = fn_802090CC();
+    g[8] = g[7];
+    a = fn_80131234(&lbl_80340C44);
+    b = fn_80131234(&lbl_80340C24);
+    c = fn_80131234(&lbl_80340B58);
+    fn_8023AA2C(buf1, (s32)(g + 7), c, b, a, 0);
+    g[11] = fn_80210570();
+    g[12] = g[11];
+    a = fn_80131234(&lbl_80340C44);
+    b = fn_80131234(&lbl_80340C24);
+    c = fn_80131234(&lbl_80340B58);
+    fn_8023A8D8(buf2, (s32)(g + 11), c, b, a, 0);
+    while (1) {
+        s32 r = fn_802146BC(buf3, -999, -999, 1);
+        if (r + 2 > 0x12) continue;
+        break;
+    }
+}
+
 extern s32 fn_80209030(float);
 extern s32 fn_802090BC(s32);
 extern s32 fn_8020A5F8(float);
@@ -587,16 +626,13 @@ void fn_8023B21C(void) {
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_8023B220(void *arg0) {
-    if (fn_802399AC() != 0) {
-        return;
-    }
-    if (*(unsigned char *)((char *)arg0 + 0x1C) != 0) {
+    if ((fn_802399AC() != 0) || (*(unsigned char *)((char *)arg0 + 0x1C) != 0)) {
         fn_80214B94(6);
         fn_80214AF0(6);
-    } else {
-        fn_80214B44(6);
-        fn_80214A9C(6);
+        return;
     }
+    fn_80214B44(6);
+    fn_80214A9C(6);
 }
 #pragma scheduling on
 void fn_8023B284(void *arg0) {
