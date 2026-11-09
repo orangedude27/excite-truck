@@ -754,6 +754,19 @@ void GXEnableBreakPt(u32 address) {
 
 void GXDisableBreakPt(void) { unsigned int *data; unsigned int value; unsigned int cleared; OSDisableInterrupts(); data = __GXData; value = data[2]; value = __rlwinm(value, 0, 31, 29); cleared = __rlwinm(value, 0, 27, 25); data[2] = cleared; *(unsigned short *)((char *)__cpReg + 2) = (unsigned short)cleared; lbl_8055D950 = 0; OSRestoreInterrupts(); }
 
+extern GXFifoIntrHandler __OSSetInterruptHandler(int, GXFifoIntrHandler);
+extern unsigned int __OSUnmaskInterrupts(unsigned int);
+void __GXFifoInit(void) {
+    __OSSetInterruptHandler(0x11, (GXFifoIntrHandler)GXCPInterruptHandler);
+    __OSUnmaskInterrupts(0x4000);
+    lbl_8055D95C = OSGetCurrentThread();
+    lbl_8055D958 = 0;
+    memset(lbl_8037C0E4, 0, 0x24);
+    memset(lbl_8037C0C0, 0, 0x24);
+    lbl_8055D948 = 0;
+    lbl_8055D949 = 0;
+}
+
 void __GXCleanGPFifo(void) {
     int zero = 0;
     unsigned int *gd;
@@ -1856,10 +1869,14 @@ void GXGetPointSize(s32 arg0) {
 }
 
 void GXInitLightAttnA(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    int type;
+    int type = 0;
     int a;
     unsigned int value = __peReg[1];
-    type = (arg0 != 1 && arg0 == 3) ? 1 : 0;
+    if (arg0 != 1) {
+        if (arg0 == 3) {
+            type = 1;
+        }
+    }
     value = __rlwimi(value, type, 0, 31, 31);
     a = __cntlzw(arg0 - 3);
     value = __rlwimi(value, a, 6, 20, 20);
@@ -2619,53 +2636,27 @@ unsigned int GXSetDispCopyYScale(f32 yScale) {
     return result;
 }
 
-void GXSetCopyClear(unsigned char *color, s32 depth) {
-    union ColorWord {
-        unsigned int value;
-        struct {
-            unsigned int command : 8;
-            unsigned int pad : 8;
-            unsigned int channel : 8;
-            unsigned int low : 8;
-        } bits;
-    } first, second;
-    union DepthWord {
-        unsigned int value;
-        struct {
-            unsigned int command : 8;
-            unsigned int depth : 24;
-        } bits;
-    } third;
-    unsigned int red;
-    unsigned int blue;
-    unsigned int green;
+void GXSetCopyClear(unsigned char *color, unsigned int depth) {
+    unsigned int first = 0;
+    unsigned int second = 0;
+    unsigned int third = 0;
     unsigned int *data;
-
-    red = color[0];
-    green = color[3];
-    first.value = 0;
+    first = __rlwimi(first, color[0], 0, 24, 31);
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    first.bits.low = red;
-    first.bits.channel = green;
-    blue = color[2];
-    first.bits.command = 0x4F;
-    *(volatile unsigned int *)0xCC008000 = first.value;
-
-    second.value = 0;
-    second.bits.low = blue;
-    green = color[1];
-    second.bits.command = 0x50;
+    first = __rlwimi(first, color[3], 8, 16, 23);
+    first = __rlwimi(first, 0x4F, 24, 0, 7);
+    *(volatile unsigned int *)0xCC008000 = first;
+    second = __rlwimi(second, color[2], 0, 24, 31);
+    second = __rlwimi(second, color[1], 8, 16, 23);
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    second.bits.channel = green;
+    second = __rlwimi(second, 0x50, 24, 0, 7);
     data = __GXData;
-    *(volatile unsigned int *)0xCC008000 = second.value;
-
-    third.value = 0;
-    third.bits.depth = depth;
-    third.bits.command = 0x51;
+    *(volatile unsigned int *)0xCC008000 = second;
+    third = __rlwimi(third, depth, 0, 8, 31);
+    third = __rlwimi(third, 0x51, 24, 0, 7);
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = third.value;
-    *(volatile unsigned short *)((char *)data + 2) = 0;
+    *(volatile unsigned int *)0xCC008000 = third;
+    *(unsigned short *)((char *)data + 2) = 0;
 }
 
 #pragma use_lmw_stmw off
@@ -4122,27 +4113,28 @@ void GXSetTevColor(s32 arg0, unsigned int *arg1) {
     unsigned int value;
     s32 reg;
     s32 reg2;
-    unsigned int first;
-    unsigned int second;
+    unsigned int word;
+    unsigned int *gxbase;
     index = arg0 * 2;
     value = *arg1;
     reg = index + 0xE0;
-    first = (unsigned int)(reg << 24);
-    first = __rlwimi(first, value, 8, 24, 31);
+    word = (unsigned int)(reg << 24);
+    word = __rlwimi(word, value, 8, 24, 31);
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    first = __rlwimi(first, value, 12, 12, 19);
+    word = __rlwimi(word, value, 12, 12, 19);
     reg2 = index + 0xE1;
-    *(volatile unsigned int *)0xCC008000 = first;
-    second = (unsigned int)(reg2 << 24);
-    second = __rlwimi(second, value, 24, 24, 31);
+    *(volatile unsigned int *)0xCC008000 = word;
+    word = (unsigned int)(reg2 << 24);
+    word = __rlwimi(word, value, 24, 24, 31);
+    gxbase = __GXData;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    second = __rlwimi(second, value, 28, 12, 19);
-    *(volatile unsigned int *)0xCC008000 = second;
+    word = __rlwimi(word, value, 28, 12, 19);
+    *(volatile unsigned int *)0xCC008000 = word;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = second;
+    *(volatile unsigned int *)0xCC008000 = word;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = second;
-    *(unsigned short *)((char *)__GXData + 2) = 0;
+    *(volatile unsigned int *)0xCC008000 = word;
+    *(unsigned short *)((char *)gxbase + 2) = 0;
 }
 
 void GXSetTevColorS10(s32 tevReg, void *color) {
