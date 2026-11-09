@@ -30,22 +30,22 @@ s32 fn_801DDE78(void) {
 s32 fn_801DDEAC(void) {
     return fn_801DDE78() + 0x32C;
 }
-#pragma dont_inline off
+#pragma push
+#pragma scheduling invalid_target
 void fn_801DDED0(s32 arg0, f32* arg1, s32 arg2, f32 farg0, f32 farg1, f32 farg2) {
     u32* entry;
     s32 idx = lbl_8055E9C4;
-
     entry = &lbl_80486F30[idx * 7];
     entry[0] = (u32)arg0;
     entry[1] = (u32)arg2;
+    lbl_8055E9C4 = idx + 1;
     entry[2] = (u32)arg1;
     *(f32*)&entry[3] = *arg1;
     *(f32*)&entry[4] = farg0;
     *(f32*)&entry[5] = farg1;
     *(f32*)&entry[6] = farg2;
-    lbl_8055E9C4 = idx + 1;
 }
-
+#pragma pop
 extern s32 fn_8018A2C0(void **);
 extern double lbl_80562BC8;
 extern f32 lbl_80562BC0;
@@ -158,6 +158,63 @@ void fn_801DE12C(void) {
 
 void fn_801DE150(void) {
 
+}
+
+extern void fn_80230B5C(void *);
+extern void fn_802C8638(void *);
+extern void fn_802C974C(f32, f32, f32);
+extern void fn_80147230(char *, const char *, ...);
+extern void fn_80011A2C(void);
+extern f32 lbl_80562BD0;
+extern f32 lbl_80562BD4;
+extern f32 lbl_80562BD8;
+extern f32 lbl_80562BDC;
+extern char lbl_8055ADC0[];
+extern char lbl_8055ADC8[];
+extern char lbl_8055ADD0[];
+extern char lbl_8055ADD8[];
+extern char lbl_8055ADDC[];
+extern char lbl_8055ADE0[];
+extern char lbl_8055ADE4[];
+extern char lbl_8055ADE8[];
+extern char lbl_80339484[];
+extern char lbl_80339490[];
+typedef DbgRec *(*DbgGet)(void *, const char *);
+typedef void (*DbgVoid)(void *);
+void fn_801DE154(void) {
+    f32 pad[20];
+    DbgRec ra, rb, rc;
+    DbgRec ca, cb, cc;
+    char buf1[32], buf2[32];
+    s32 n;
+    s32 i;
+    u8 *e;
+    fn_801DDF0C();
+    fn_80230B5C(pad);
+    fn_802C8638(pad);
+    fn_802C974C(lbl_80562BD0, lbl_80562BD4, lbl_80562BD8);
+    ((DbgVoid)(*(void ***)lbl_8055E9C0)[7])(lbl_8055E9C0);
+    ra = *((DbgGet)(*(void ***)lbl_8055E9C0)[3])(lbl_8055E9C0, lbl_8055ADC0);
+    rb = *((DbgGet)(*(void ***)lbl_8055E9C0)[3])(lbl_8055E9C0, lbl_8055ADC8);
+    ca.b = rb.b - ra.b;
+    ca.c = rb.c - ra.c;
+    rc = *((DbgGet)(*(void ***)lbl_8055E9C0)[3])(lbl_8055E9C0, lbl_8055ADD0);
+    n = fn_802E2C20() - (s32)lbl_8055E9CC;
+    if (n >= 0x1388) {
+        s32 t = ((n - 0x1388) * 0xC0) / 1000;
+        if (t < 0) t = 0;
+        if (t > 0xC0) t = 0xC0;
+        ra.g -= t << 24;
+        rb.g -= t << 24;
+        rc.g -= t << 24;
+    }
+    e = (u8 *)lbl_80486F30 - 0x1C;
+    for (i = -1; i < lbl_8055E9C4; i++) {
+        cb = ra;
+        cc = rc;
+        e += 0x1C;
+    }
+    fn_80011A2C();
 }
 
 #pragma push
