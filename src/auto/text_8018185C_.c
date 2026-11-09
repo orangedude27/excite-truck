@@ -196,7 +196,6 @@ void fn_8018185C(void *arg0, const float *arg1) {
 
 #pragma push
 #pragma scheduling invalid_target
-#pragma scheduling on
 void fn_801819A0(void *dst, void *arg1, void *arg2, float scale, float farg1, float farg2) {
     float values[6];
     float a;
