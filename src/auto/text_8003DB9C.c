@@ -2337,23 +2337,7 @@ void GXEnableTexOffsets(s32 texMap, int line, int point) {
     *(unsigned short *)((char *)__GXData + 2) = 0;
 }
 
-void GXSetCullMode(unsigned int mode) {
-    unsigned int field = (mode >> 1) & 1;
-    union {
-        unsigned int reg;
-        struct {
-            unsigned int pad : 16;
-            unsigned int cull : 2;
-            unsigned int rest : 14;
-        } fields;
-    } data;
-
-    field = (field & ~2U) | ((mode << 1) & 2);
-    data.reg = __GXData[0x254 / 4];
-    data.fields.cull = field;
-    __GXData[0x254 / 4] = data.reg;
-    __GXData[0x5FC / 4] |= 4;
-}
+void GXSetCullMode(unsigned int mode) { unsigned int field; union { unsigned int reg; struct { unsigned int pad : 16; unsigned int cull : 2; unsigned int rest : 14; } fields; } data; field = ((mode << 1) & 2); field |= (mode >> 1) & 1; data.reg = __GXData[0x254 / 4]; data.fields.cull = field; __GXData[0x254 / 4] = data.reg; __GXData[0x5FC / 4] |= 4; }
 
 void GXSetCoPlanar(s32 enable) {
     unsigned int *data = __GXData;
