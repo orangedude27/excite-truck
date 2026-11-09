@@ -30,7 +30,7 @@ s32 fn_802C2CAC(s32 arg0) {
     unsigned int a = __rlwinm(arg0, 9, 8, 12);
     unsigned int b;
     a |= 0xFF000000;
-    b = __rlwinm(arg0, 27, 3, 31);
+    b = __rlwinm(arg0, 27, 3, 30);
     a = __rlwimi(a, arg0, 6, 16, 20);
     return (s32)(b | a);
 }
@@ -123,6 +123,7 @@ void fn_802C2FC4(void) {
 }
 
 #pragma scheduling invalid_target
+#pragma peephole off
 void fn_802C2FC8(void *arg0, u32 arg1, u32 arg2, s32 arg3, s32 arg4) {
     s32 var_r0;
     s32 var_r10;
@@ -139,6 +140,7 @@ void fn_802C2FC8(void *arg0, u32 arg1, u32 arg2, s32 arg3, s32 arg4) {
     }
     *(s32 *)((u8 *)arg0 + 0x20) = var_r0;
 }
+#pragma peephole on
 #pragma scheduling on
 void fn_802C3014(void *arg0) {
     *(s32 *)((u8 *)arg0 + 0x14) = 0;
@@ -229,22 +231,22 @@ extern void fn_802C3320();
 extern void fn_802C33A8(s32, s32, u32);
 extern void fn_802E317C(const char *, ...);
 void fn_802C32B8(s32 arg0, s32 arg1, u32 arg2) {
-    u8 *state = (u8 *)lbl_8055FC00;
-    s8 mode;
+    u32 state = lbl_8055FC00;
+    u8 mode;
     s32 flag;
-    if (state[1] & 4) return;
-    mode = (s8)state[0];
+    if (((u8 *)state)[1] & 4) return;
+    mode = ((u8 *)state)[0];
     flag = 0;
-    if (mode != 5 && mode != 6) flag = 1;
+    if ((s8)mode != 5 && (s8)mode != 6) flag = 1;
     if (flag != 0) {
         fn_802C3320();
         return;
     }
-    if ((s8)state[0] == 5) {
+    if ((s8)((u8 *)state)[0] == 5) {
         fn_802C33A8(arg0, arg1, arg2);
         return;
     }
-    fn_802E317C(lbl_8034B060, (s32)(s8)*(u8 *)lbl_8055FC00);
+    fn_802E317C(lbl_8034B060, (s32)*(volatile s8 *)lbl_8055FC00);
 }
 
 #pragma push
@@ -943,7 +945,7 @@ loop_3:
     }
 }
 
-extern int fn_800241CC(int);
+extern int fn_800241CC(int); /* abs(): (v >> 31) ^ v - (v >> 31) */
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
