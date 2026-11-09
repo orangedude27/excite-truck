@@ -1262,6 +1262,8 @@ extern float lbl_80563B34;                // 0.8f: seconds the value waits befor
 // One row of the achievements display: a value counting up to a goal, graded
 // against the thresholds of one achievement (lbl_802FDF30, "score", "win",
 // "AAA", "air", "tree_run", "drift", "rings", ...).
+#ifndef ACHIEVEMENT_ROW_DEFINED
+#define ACHIEVEMENT_ROW_DEFINED
 typedef struct AchievementRow {
     /* 0x00 */ char pad00[0x18];
     /* 0x18 */ int achievement;           // which achievement this row shows
@@ -1282,6 +1284,7 @@ typedef struct AchievementRow {
     /* 0xC8 */ int rank;                  // how many thresholds the value passed
     /* 0xCC */ float timer;               // seconds since the row started
 } AchievementRow;
+#endif
 
 #pragma cplusplus on
 // One row of the achievements display: eases the shown value towards the goal,
