@@ -3199,10 +3199,10 @@ void fn_8005EB44(void) {
     WUDSetHidConnCallback(WPADiConnCallback);
     WUDSetHidRecvCallback(WPADiRecvCallback);
 
-    lbl_8055DBFA = zero;
-    lbl_8055DBFC = zero;
+    _senseCnt = zero;
+    _checkCnt = zero;
     lbl_8055DBFD = zero;
-    lbl_8055DBFE = zero;
+    _afhCnt = zero;
     lbl_8055DC00[3] = zero;
     lbl_8055DC00[2] = zero;
     lbl_8055DC00[1] = zero;
