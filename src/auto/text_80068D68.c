@@ -2055,14 +2055,11 @@ void fn_8006A81C(void) {
     OSRestoreInterrupts(saved);
 }
 
-s8 fn_8006A940(void)
-{
-    u32 enabled;
-    volatile s8 value;
-    enabled = OSDisableInterrupts();
-    value = (s8)lbl_80392960[0x688];
-    OSRestoreInterrupts(enabled);
-    return value;
+s8 fn_8006A940(void) {
+    u32 saved = OSDisableInterrupts();
+    u8 val = lbl_80392960[0x688];
+    OSRestoreInterrupts(saved);
+    return (s8)val;
 }
 
 extern u8 lbl_80392960[];
