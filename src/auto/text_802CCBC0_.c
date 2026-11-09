@@ -362,13 +362,12 @@ extern "C" void fn_802CD254(void *arg0) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_802CD320(void *arg0, int arg1) {
-    register int *items;
-    register int count;
-
-    count = *(int *)((char *)arg0 + 0x88);
+    unsigned int count;
+    int *items;
+    count = *(unsigned int *)((char *)arg0 + 0x88);
     items = *(int **)((char *)arg0 + 0x90);
     items[count] = arg1;
-    *(int *)((char *)arg0 + 0x88) = count + 1;
+    *(unsigned int *)((char *)arg0 + 0x88) = count + 1;
 }
 #pragma pop
 void fn_802CD33C(void *arg0, int arg1, int arg2) {
@@ -381,6 +380,51 @@ void fn_802CD33C(void *arg0, int arg1, int arg2) {
     }
 }
 
+void fn_802CD37C(void *arg0, void *arg1, float *arg2, int arg3, float farg0, float farg1) {
+    float matrix[12];
+    int v;
+    int i;
+    float *p;
+    int *q;
+    fn_801293C8(lbl_8034BBE0);
+    lbl_8055FCD8 = arg0;
+    matrix[0] = lbl_80564F58; matrix[1] = lbl_80564F5C; matrix[2] = lbl_80564F5C; matrix[3] = lbl_80564F5C;
+    matrix[4] = lbl_80564F58; matrix[5] = lbl_80564F5C; matrix[6] = lbl_80564F5C; matrix[7] = lbl_80564F5C;
+    matrix[8] = lbl_80564F58; matrix[9] = lbl_80564F5C; matrix[10] = lbl_80564F5C; matrix[11] = lbl_80564F5C;
+    v = ((int (*)(void *, float))fn_802D0514)(matrix, lbl_80564F58);
+    *(int *)((char *)lbl_8055DFC4 + 0x64) = v;
+    p = arg2;
+    q = (int *)lbl_8055DFC4;
+    i = 0;
+    while (i < arg3) {
+        *(int *)((char *)q + 0x68) = ((int (*)(void *, float))fn_802D0514)(p, lbl_80564F58);
+        p += 0x30 / 4;
+        q += 1;
+        i++;
+    }
+    if (arg3 < 0x100) {
+        int rem = 0x100 - arg3;
+        int ctr;
+        int *dst = (int *)((char *)lbl_8055DFC4 + arg3 * 4);
+        if (rem > 8) {
+            ctr = (0xFF - arg3) >> 3;
+            if (arg3 < 0xF8) {
+                do {
+                    *(dst + 0x19) = v; dst[0x1A] = v; dst[0x1B] = v; dst[0x1C] = v; dst[0x1D] = v; dst[0x1E] = v; dst[0x1F] = v; dst[0x20] = v;
+                    dst += 8;
+                    ctr--;
+                } while (ctr != 0);
+            }
+        }
+        ctr = 0x100 - arg3;
+        if (arg3 < 0x100) {
+            do { *(dst + 0x19) = v; dst++; ctr--; } while (ctr != 0);
+        }
+    }
+    fn_801293DC(lbl_804C1480);
+    __AXDSPInitCallback_801293D0();
+}
+
 void fn_802CDAA8(void) {
     lbl_8055FCD8 = 0;
 }
@@ -390,10 +434,18 @@ extern int fn_802D0514(int);
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_802CDAFC(void *arg0, int arg1) {
-    int a = *(int *)((char *)arg0 + 0x18);
-    int b = *(int *)((char *)arg0 + 0x10);
-    *(unsigned char *)((char *)lbl_8055DFC4 + a + arg1 + b + 1) = 0;
+    int a;
+    int b;
+    int index;
+    unsigned char *base;
+    a = *(int *)((char *)arg0 + 0x18);
+    b = *(int *)((char *)arg0 + 0x10);
+    index = arg1 + a;
+    base = lbl_8055DFC4;
+    index = index + b;
+    base[index + 1] = 0;
 }
 
 #pragma push
