@@ -412,6 +412,11 @@ void *fn_801EC9CC(void *arg0, int arg1) {
     }
     return arg0;
 }
+
+long fn_801ECB60(void *arg0) {
+    return *(float *)(*(char **)((char *)arg0 + 0x3C) + 0x2D4) > *(float *)&lbl_80558DC4;
+}
+
 #pragma pop
 float fn_802C88D4(void *);
 float fn_801E88F0(long);
@@ -572,7 +577,7 @@ void fn_801ECFE0(void *arg0) {
             mask = *(long *)(*(char **)(self+0x3C)+0x29C) & entry[2];
             params[0] = *(long *)(self+0x3EC);
             params[1] = cached;
-            if ((float)__fabs((double)*(float *)(*(char **)(self+0x3C)+0x28C)) <= lbl_80558DC4)
+            if ((float)__fabs((double)*(float *)(*(char **)(self+0x3C)+0x28C)) <= *(float *)&lbl_80558DC4)
                 fn_802DAC54();
             handle = fn_802C7A40(1, *(char **)(self+0x3C)+(entry[0]+1)*12+0x2E0, entry[1]-entry[0], 1, params, 2);
             for (j=0, offset=0; j<*(long *)(*(char **)(self+0x3C)+0xA78); j++, offset+=0x34) {
