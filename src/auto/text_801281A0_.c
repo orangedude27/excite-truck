@@ -641,20 +641,19 @@ void fn_80128ED8(void *arg0, s32 arg1, s32 arg2) {
     p[4] = 0;
 }
 
-void fn_80128EF0(void *arg0, s32 arg1) {
+#pragma cplusplus on
+extern "C" void fn_80128EF0(void *arg0, s32 arg1) {
     s32 temp_r31;
     s32 temp_r30;
     u32 var_r6;
-    void (**vtable)(void *, s32, void *, s32);
     temp_r30 = *(s32 *)((u8 *)arg0 + 8);
     var_r6 = arg1 - (temp_r30 & (arg1 - 1));
     if (var_r6 < 0x30U) var_r6 += arg1;
     temp_r31 = *(s32 *)((u8 *)arg0 + 4);
-    vtable = (void (**)(void *, s32, void *, s32))(*(void **)arg0);
-    vtable[4](arg0, var_r6 - 0x30, &lbl_8032A05C, 3);
+    ((Dummy80128EF0 *)arg0)->d2(var_r6 - 0x30, &lbl_8032A05C, 3);
     *(u32 *)(temp_r31 + temp_r30) = 0x06630216;
 }
-
+#pragma cplusplus off
 void fn_80128F68(void *arg0) {
     fn_802E30C8(lbl_8032A448,
         (void *)(*(s32 *)((u8 *)arg0 + 0x10) / 1024),
