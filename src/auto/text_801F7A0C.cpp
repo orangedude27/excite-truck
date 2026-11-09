@@ -752,6 +752,29 @@ extern "C" void *fn_801F861C(void) {
  if(obj){obj->w108=lbl_8033B468;obj->w78=0;obj->f7c=lbl_80562FF0;obj->f80=lbl_80562FF0;obj->w104=0;obj->f24=0;obj->f20=0;obj->f28=lbl_80563000;obj->b60=1;memset(obj,0x20,0x61);memset((u8*)obj+0x61,0x61,0x10);obj->w74=-1;obj->w108=lbl_8033B3F0;}return obj;
 }
 
+/* Keys the obstacle creator reads from the parameter node.  The strings sit in the pool at
+ * lbl_8033AF80 ("polyhedra") unless they are named out of small data. */
+#define OBS_TAG_OBSTACLE      (base + 0xF4)   /* "ObstacleDI": what to call the allocation */
+#define OBS_KEY_FACING_TEST   (base + 0x100)  /* "facing_test" */
+#define OBS_KEY_REFLECT_LOAD  (base + 0x110)  /* "reflect_on_load" */
+#define OBS_KEY_FACING_X_TEST (base + 0x120)  /* "facing_x_test" */
+#define OBS_KEY_FABRIC        lbl_8055B300    /* "fabric" */
+#define OBS_KEY_EFFECT        lbl_8055B308    /* "effect": the fabric's effect name */
+#define OBS_NO_EFFECT         lbl_8055B310    /* "" - the node asked for no effect */
+#define OBS_KEY_DRAW_LAST     (base + 0x130)  /* "draw_last" */
+#define OBS_KEY_ONESIDED      (base + 0x13C)  /* "onesided" */
+#define OBS_KEY_SOBJ_EVENT    (base + 0x148)  /* "sobj_event" */
+#define OBS_KEY_DEFAULT_PROPS (base + 0x154)  /* "default_properties" */
+
+/* The obstacle's option word, at +0x190 of the object. */
+#define OBS_OPT_FACING_TEST   0x1   /* turn to face the camera (fn_801FB354) */
+#define OBS_OPT_NOT_FLOATER   0x4   /* its "type" is neither "floater" nor "gfx" (fn_801F88F4) */
+#define OBS_OPT_FACING_X      0x20  /* "facing_x_test" */
+#define OBS_OPT_FABRIC        0x40  /* "fabric": cloth, with its effect name at +0x194 */
+#define OBS_OPT_DRAW_LAST     0x80  /* "draw_last": drawn after everything else */
+#define OBS_OPT_REFLECT_LOAD  0x100 /* "reflect_on_load": mirror the placement (fn_801FB284) */
+#define OBS_OPT_ONESIDED      0x200 /* "onesided": nothing shows through it */
+
 extern "C" void *fn_801F86C8(void *arg0) {
 struct F86Obj { char pad[0x10C]; int f10C; };
 class NodeVTable { public: virtual void v0();virtual void v1();virtual void v2();virtual void *getString(const char *);virtual void v6();virtual void v7();virtual int query20(const char *,int);virtual void v9();virtual void v10();virtual void v11();virtual int query30(const char *,int);virtual void v13();virtual void v14();virtual void v15();virtual void v16();virtual void v17();virtual void v18();virtual void v19();virtual void v20();virtual void v21();virtual void v22();virtual void *query5C(const char *);};
