@@ -146,8 +146,14 @@ void OSCancelAlarm(OSAlarm* alarm) {
     OSRestoreInterrupts(enabled);
 }
 
+// The C half of the decrementer exception handler: DecrementerExceptionHandler
+// saves the registers the exception dispatcher leaves alone and jumps here.
+// The decrementer is the countdown SetTimer() armed with the head of AlarmQueue,
+// so an exception means either "the earliest alarm is due now" or, because that
+// counter saturates at 0x7FFFFFFF ticks, "come back later".  Whatever alarms run
+// here, the exception always goes back to the context it interrupted.
 static void DecrementerExceptionCallback(u8 type, OSContext* ctx) {
-#pragma unused(type)
+#pragma unused(type) // always OS_ERR_DECREMENTER, the handler is fixed to it
 
     OSAlarmHandler handler;
     OSContext tempCtx;
@@ -157,15 +163,20 @@ static void DecrementerExceptionCallback(u8 type, OSContext* ctx) {
     s64 time = __OSGetSystemTime();
     alarm = AlarmQueue.head;
 
+    // Nothing queued, so this decrementer exception was not ours.  Both
+    // OSLoadContext()s below leave the exception for good, so code past them
+    // only runs for an alarm that is due.
     if (alarm == NULL) {
         OSLoadContext(ctx);
     }
 
+    // The countdown saturated before the head came due: re-arm it and return.
     if (time < alarm->end) {
         SetTimer(alarm);
         OSLoadContext(ctx);
     }
 
+    // it is due: take it off the queue
     next = alarm->next;
     AlarmQueue.head = next;
     if (next == NULL) {
@@ -174,17 +185,27 @@ static void DecrementerExceptionCallback(u8 type, OSContext* ctx) {
         next->prev = NULL;
     }
 
+    // An unqueued alarm has no handler, so clear it before running it: one that
+    // re-arms or cancels itself inside its callback must not still look queued.
     handler = alarm->handler;
     alarm->handler = NULL;
 
+    // Periodic alarms go back in by themselves: InsertAlarm() works out the
+    // first end time after now from start and period and re-sorts it in.
     if (alarm->period > 0) {
         InsertAlarm(alarm, 0, handler);
     }
 
+    // whatever is at the head now is the next alarm due: arm the countdown
     if (AlarmQueue.head != NULL) {
         SetTimer(AlarmQueue.head);
     }
 
+    // Run the callback against a scratch current context, as the other hardware
+    // interrupt handlers do, so a nested exception saves itself there and not
+    // over the context being restored here.  The thread scheduler is off for the
+    // same reason: this exception returns to ctx no matter what the callback
+    // does to the run queue.
     OSDisableScheduler();
     OSClearContext(&tempCtx);
     OSSetCurrentContext(&tempCtx);
@@ -193,6 +214,7 @@ static void DecrementerExceptionCallback(u8 type, OSContext* ctx) {
     OSSetCurrentContext(ctx);
     OSEnableScheduler();
 
+    // the callback may have made a higher priority thread runnable
     __OSReschedule();
     OSLoadContext(ctx);
 }
