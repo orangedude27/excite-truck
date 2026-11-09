@@ -22235,12 +22235,12 @@ void rfc_process_mx_message(void *p_rfc_mcb, BT_HDR *p_buf)
 }
 
 u8 fn_8009504C(u16 arg0, u8 *arg1) {
-    u8 *ptr = arg1;
-    u8 fcs = 0xFF;
-    u16 len = arg0;
     u8 *table = lbl_802EEC40;
+    u8 fcs = 0xFF;
+    u8 *ptr = arg1;
+    u16 len = arg0;
     while (len-- != 0) {
-        fcs = table[(u8)(fcs ^ *ptr)];
+        fcs = table[fcs ^ *ptr];
         ptr++;
     }
     return (u8)(0xFF - fcs);
