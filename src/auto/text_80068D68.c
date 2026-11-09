@@ -25909,11 +25909,19 @@ enum {
 #define EUART_CMD_QUEUE 0x30000100 // read the UART queue's fill byte
 #define EUART_QUEUE_SIZE 32        // bytes the transmit queue holds
 
+// Sends n bytes of msg to the evaluation board's UART, which hangs off the
+// internal EXI port and so only exists on dev hardware.  Line feeds in the
+// caller's buffer are rewritten as carriage returns first; the text then goes
+// out in chunks, each preceded by a read of the queue's fill byte, and a chunk
+// is only written while the queue is empty, so this spins until everything has
+// gone out.  Returns an EUARTError - and reports EUART_ERROR_OK, having written
+// nothing, when another user is holding the EXI lock.
 s32 WriteUARTN(char *msg, u32 n) {
-    extern u32 lbl_8055DCA4;
-    extern u32 lbl_8055DC98;
-    extern u32 lbl_8055DC9C;
-    extern u32 lbl_80560B10;
+    extern u32 lbl_8055DCA4; // euart.c's Enabled: InitializeUART() sets 0xA5FF005A
+    extern u32 lbl_8055DC98; // euart.c's __EUARTInitialized
+    extern u32 lbl_8055DC9C; // euart.c's __EUARTLastErrorCode
+    extern u32 lbl_80560B10; // __EXIFreq (EXICommon.c): EXI_FREQ_16MHZ
+    // revolution/EXI.h's routines; this unit includes no EXI header
     extern s32 EXILock(s32, s32, void *);
     extern s32 EXISelect(s32, s32, u32);
     extern s32 EXIImm(s32, void *, s32, s32, void *);
@@ -25922,69 +25930,79 @@ s32 WriteUARTN(char *msg, u32 n) {
     extern s32 EXIUnlock(s32);
     char *p;
     u32 freq;
-    s32 length;
+    s32 space;
     s32 err;
     char *it;
     u32 cmd;
     u32 ch;
-    u32 imm;
-    u32 q;
+    u32 status;
+    u32 queueCmd;
 
     p = msg;
     if (lbl_8055DCA4 != 0xA5FF005A) {
-        return 2;
+        return EUART_ERROR_INVALID; // InitializeUART() was never run
     }
     if (!lbl_8055DC98 && !EUARTInit()) {
-        return 2;
+        return EUART_ERROR_INVALID; // this console has no EUART
     }
     if (!lbl_8055DC98) {
-        lbl_8055DC9C = 1;
-        return 2;
+        lbl_8055DC9C = EUART_ERROR_FATAL;
+        return EUART_ERROR_INVALID;
     }
-    if (!EXILock(0, 1, 0)) {
-        return 0;
+    if (!EXILock(EUART_EXI_CHAN, EUART_EXI_DEV, NULL)) {
+        return EUART_ERROR_OK; // the EXI internal port is taken
     }
+
+    // the UART wants carriage returns, and the caller's buffer is edited in place
     for (it = p; it - msg < n; it++) {
         if (*it == '\n') {
             *it = '\r';
         }
     }
+
     freq = lbl_80560B10;
-    err = 0;
-    cmd = 0xB0000100;
+    err = EUART_ERROR_OK;
+    cmd = EUART_CMD_WRITE;
+
     while (n > 0) {
-        if (!EXISelect(0, 1, freq)) {
-            length = -1;
+        // how full is the queue?  the fill byte comes back in the top byte of
+        // the immediate read; space is what it leaves of the 32-byte queue
+        if (!EXISelect(EUART_EXI_CHAN, EUART_EXI_DEV, freq)) {
+            space = -1;
         } else {
-            q = 0x30000100;
-            EXIImm(0, &q, 4, 1, 0);
-            EXISync(0);
-            EXIImm(0, &imm, 4, 0, 0);
-            EXISync(0);
-            EXIDeselect(0);
-            length = 32 - ((imm >> 24) % 64);
+            queueCmd = EUART_CMD_QUEUE;
+            EXIImm(EUART_EXI_CHAN, &queueCmd, sizeof(u32), EUART_EXI_WRITE, NULL);
+            EXISync(EUART_EXI_CHAN);
+            EXIImm(EUART_EXI_CHAN, &status, sizeof(u32), EUART_EXI_READ, NULL);
+            EXISync(EUART_EXI_CHAN);
+            EXIDeselect(EUART_EXI_CHAN);
+            space = EUART_QUEUE_SIZE - ((status >> 24) % 64);
         }
-        if (length < 0) {
-            err = 3;
+        if (space < 0) {
+            err = EUART_ERROR_BUSY;
             break;
         }
-        if (length != 32) {
-            continue;
+        if (space != EUART_QUEUE_SIZE) {
+            continue; // still draining: ask again
         }
-        if (!EXISelect(0, 1, freq)) {
-            err = 3;
+        if (!EXISelect(EUART_EXI_CHAN, EUART_EXI_DEV, freq)) {
+            err = EUART_ERROR_BUSY;
             break;
         }
-        EXIImm(0, &cmd, 4, 1, 0);
-        EXISync(0);
-        for (; length > 0 && n > 0; p++, length--, n--) {
+        EXIImm(EUART_EXI_CHAN, &cmd, sizeof(u32), EUART_EXI_WRITE, NULL);
+        EXISync(EUART_EXI_CHAN);
+
+        // one byte per immediate, in its top byte, until the queue or the text runs out
+        for (; space > 0 && n > 0; p++, space--, n--) {
             ch = *p << 24;
-            EXIImm(0, &ch, 4, 1, 0);
-            EXISync(0);
+            EXIImm(EUART_EXI_CHAN, &ch, sizeof(u32), EUART_EXI_WRITE, NULL);
+            EXISync(EUART_EXI_CHAN);
         }
-        EXIDeselect(0);
+
+        EXIDeselect(EUART_EXI_CHAN);
     }
-    EXIUnlock(0);
+
+    EXIUnlock(EUART_EXI_CHAN);
     return err;
 }
 
