@@ -12,7 +12,7 @@ extern s32 fn_802C4F2C(s32, s32 *, s32 *);
 extern s32 fn_802C501C(void);
 extern s32 fn_802C4EFC(s32);
 extern void fn_801E4BEC(s32, s32, s32, s32, s32, const char *, ...);
-extern char lbl_8055AEF0[];
+extern s32 lbl_8055AEF0;
 extern char *strncpy(char *, const char *, unsigned long);
 void fn_801E4A2C(s32 *arg0) {
     if (arg0 != 0) {
