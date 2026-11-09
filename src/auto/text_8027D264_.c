@@ -208,7 +208,7 @@ void fn_8027D6FC(void *arg0) {
 }
 
 #pragma cplusplus on
-#pragma scheduling off
+#pragma scheduling on
 extern "C" void fn_8027D77C(void *arg0) {
     struct S { int a, b, c, id; };
     class Obj {
