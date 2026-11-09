@@ -253,13 +253,15 @@ int fn_802AE7AC(void) {
 #pragma cplusplus on
 #pragma push
 #pragma processor 750
+#pragma opt_propagation off
 extern "C" void fn_802AE7F4(void) {
+    struct PathTbl { char text[0xC]; char lookupKey[0xC]; char statusKey[8]; };
     float values[8];
     float total;
-    register ETConfigPaths *base = (ETConfigPaths *)&lbl_8034A020;
+    register PathTbl *base = (PathTbl *)&lbl_8034A020;
     int i;
 
-    lbl_8055F980 = fn_8012C33C((void *)((char *)base->lookupKey - 0xC));
+    lbl_8055F980 = fn_8012C33C((void *)(&(base + 1)->text - 1));
     fn_802AE5E0(0x400);
     fn_802BE7F8();
     fn_802B40F8();
