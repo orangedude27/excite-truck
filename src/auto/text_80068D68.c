@@ -22036,7 +22036,7 @@ s32 rfc_parse_data(void *arg0, void *arg1, u8 *arg2) {
             }
             return 0x32;
         }
-        if (fn_80095084(2, temp_r7) == 0) {
+        if (fn_80095084(2, temp_r7, temp_r7[2]) == 0) {
             if ((u8) (*(u8 *)((u8 *)(&lbl_803C4828) + 0x414)) >= 1U) {
                 fn_8007093C(0x90000, lbl_80319DD8 + 0x54);
             }
