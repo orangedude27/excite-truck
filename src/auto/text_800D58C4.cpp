@@ -154,6 +154,11 @@ extern "C" s32 fn_800D4428(void);
 int strncmp(const char *, const char *, unsigned int);
 extern "C" int strncmp(const char *, const char *, unsigned int);
 struct AlphaColor { u8 r, g, b, a; };
+struct FindLinkDispatch_800D9524 {
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+    virtual void v4(); virtual void v5(); virtual void v6();
+    virtual void* find(void* anim);
+};
 struct ResBlockSetTmp { u32 a, b, c, d; };
 namespace nw4hbm { namespace lyt {
 namespace res { struct Picture; struct TextBox; struct Window; }
@@ -375,11 +380,23 @@ no:
 
 #pragma push
 #pragma dont_inline on
-extern "C" void MultipleAlpha__Q34nw4r3lyt6detailFQ34nw4r2ut5ColorUc(void* out,void* color,u8 alpha) {
- const u8* s=(const u8*)color; u8* d=(u8*)out;
- u8 a=s[0], b=s[1], c=s[2], v=s[3];
- d[0]=a; d[1]=b; d[2]=c; d[3]=v;
- if(alpha!=0xff) d[3]=(u8)((v*alpha)/255);
+extern "C" void MultipleAlpha__Q34nw4r3lyt6detailFQ34nw4r2ut5ColorUc(void* out, void* color, u8 alpha) {
+    AlphaColor* d = (AlphaColor*)out;
+    AlphaColor* s = (AlphaColor*)color;
+    {
+        u8 a3 = s->a;
+        u8 a2 = s->b;
+        u8 a1 = s->g;
+        u8 a0 = s->r;
+        d->r = a0;
+        d->g = a1;
+        d->b = a2;
+        d->a = a3;
+    }
+    if (alpha != 0xFF) {
+        u8 v = s->a;
+        d->a = (u8)((v * alpha) / 255);
+    }
 }
 #pragma pop
 
@@ -1020,19 +1037,19 @@ extern "C" void fn_800D7758(void *arg0) {
 }
 
 extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void* pOut, void* self) {
-    u8* p = (u8*)self;
+    register u8* p = (u8*)self;
     extern f32 lbl_80560E84;
     extern f32 lbl_80560E80;
     if (p[0x20] == 1) {
         f32 h = *(f32*)&p[0x1C];
         f32 w = *(f32*)&p[0x18];
         f32 negH = -h;
-        f32 negW = -w;
         f32 s = lbl_80560E84;
+        f32 negW = -w;
         *(f32*)&((u8*)pOut)[8] = w * s;
         *(f32*)&((u8*)pOut)[4] = h * s;
-        *(f32*)&((u8*)pOut)[0] = negW * s;
         *(f32*)&((u8*)pOut)[0xC] = negH * s;
+        *(f32*)&((u8*)pOut)[0] = negW * s;
     } else {
         f32 z = lbl_80560E80;
         f32 w = *(f32*)&p[0x18];
@@ -1872,31 +1889,28 @@ extern "C" s32 fn_800D9330(void *arg0) {
 }
 
 extern "C" s32 fn_800D9344(void *arg0) {
-    volatile u32 *p = (volatile u32 *)((u8 *)arg0 + 0x4C);
-    u32 x = *p;
-    s32 y = *(volatile s32 *)((u8 *)arg0 + 0x58);
-    u32 n = (x >> 0x18) & 0xF;
-    u32 b = (x >> 0x17) & 0x1E0;
-    return b + (y + n * 0x14);
+    volatile s32 *p = (volatile s32 *)((char *)arg0 + 0x4C);
+    s32 x = *p;
+    s32 y = *(volatile s32 *)((char *)arg0 + 0x58);
+    s32 n = (x >> 0x18) & 0xF;
+    s32 b = (x >> 0x17) & 0x1E0;
+    return b + (y + n * 20);
 }
 
 extern "C" s32 fn_800D9364(void *arg0) {
-    u32 x = *(u32 *)((u8 *)arg0 + 0x4C);
-    u32 a = ((x >> 0x12) & 0x3C);
-    u32 b = ((x >> 0x17) & 0x1E0);
-    u32 c = ((x >> 0x18) & 0xF);
-    s32 y = *(s32 *)((u8 *)arg0 + 0x58);
-    return a + b + y + c * 0x14;
+    MatGXBits_800D8B28 *c = (MatGXBits_800D8B28 *)((u8 *)arg0 + 0x4C);
+    u8 *base = *(u8 **)((u8 *)arg0 + 0x58);
+    return (s32)((c->gen * 4 + c->tex * 32) + (base + c->srt * 0x14));
 }
 
 extern "C" s32 fn_800D938C(void* arg0) {
-    s32 bits = *(s32*)((u8*)arg0 + 0x4C);
-    s32 base = *(s32*)((u8*)arg0 + 0x58);
-    s32 high = (bits >> 24) & 0xF;
-    s32 mid = (bits >> 18) & 0x3C;
-    s32 scaled = high * 0x14;
-    s32 top = (bits >> 23) & 0x1E0;
-    s32 low = (bits >> 6) & 4;
+    unsigned int bits = *(unsigned int*)((char*)arg0 + 0x4C);
+    unsigned int base = *(unsigned int*)((char*)arg0 + 0x58);
+    unsigned int high = (bits >> 24) & 0xF;
+    unsigned int mid = (bits >> 18) & 0x3C;
+    unsigned int scaled = high * 0x14;
+    unsigned int top = (bits >> 23) & 0x1E0;
+    unsigned int low = (bits >> 6) & 4;
     mid += top;
     scaled += low;
     mid += base;
@@ -1914,30 +1928,41 @@ extern "C" s32 fn_800D93BC(void *arg0) {
 }
 
 extern "C" s32 fn_800D93F4(void *arg0) {
-    u32 x = *(u32 *)((u8 *)arg0 + 0x4C);
-    s32 y = *(s32 *)((u8 *)arg0 + 0x58);
-    return (((((x >> 12) & 4) + ((x >> 5) & 4) + ((x >> 6) & 4) + y)
-             + (((x >> 24) & 0xF) * 0x14))
-            + ((x >> 18) & 0x3C))
-           + ((x >> 23) & 0x1E0);
+    MatGXBits_800D8B28 *c = (MatGXBits_800D8B28 *)((u8 *)arg0 + 0x4C);
+    u8 *base = *(u8 **)((u8 *)arg0 + 0x58);
+    return (s32)((c->srt * 0x14 + (c->gen * 4 + c->tex * 32)) + (base + (c->f * 4 + c->i * 4 + c->h * 4)));
 }
 
 extern "C" s32 fn_800D9434(void *arg0) {
     u32 x = *(u32 *)((u8 *)arg0 + 0x4C);
     s32 y = *(s32 *)((u8 *)arg0 + 0x58);
-    s32 a = (x >> 0x14) & 0x3C0;
-    s32 b = (x >> 0x17) & 0x1E0;
-    s32 c = (x >> 0x18) & 1;
-    s32 d = (x >> 0x18) & 0x10;
-    s32 e = (x >> 0x12) & 0x3C;
-    s32 f = (x >> 4) & 4;
-    s32 g = (x >> 5) & 4;
-    s32 h = (x >> 6) & 4;
-    return a + b + c + d + y + e + f + g + h + (((x >> 0x18) & 0xF) * 0x14);
+    return ((x >> 23) & 0x1E0) + ((x >> 24) & 1) + ((x >> 24) & 0x10) + y + ((x >> 18) & 0x3C) + ((x >> 4) & 4) + ((x >> 5) & 4) + ((x >> 6) & 4) + ((((x >> 24) & 0xF) * 0x14));
 }
 
 extern "C" s32 fn_800D947C(void* arg0) {
-    register s32 x = *(s32*)((u8*)arg0 + 0x4C);
+    s32 x = *(s32*)((u8*)arg0 + 0x4C);
+    s32 base = *(s32*)((u8*)arg0 + 0x58);
+    s32 high = (x >> 24) & 0xF;
+    s32 low1 = (x >> 4) & 4;
+    s32 scaled = high * 0x14;
+    s32 low2 = (x >> 6) & 4;
+    s32 low3 = (x >> 12) & 4;
+    s32 low4 = (x >> 5) & 4;
+    s32 mid = (x >> 18) & 0x3C;
+    s32 top = (x >> 23) & 0x1E0;
+    top = mid + top;
+    low4 = low3 + low4;
+    low1 = low1 + low2;
+    s32 low5 = (x >> 3) & 4;
+    low4 = low4 + low1;
+    top = scaled + top;
+    low4 = low5 + low4;
+    top = base + top;
+    return low4 + top;
+}
+
+extern "C" s32 GetIndTexSRTAry__Q36nw4hbm3lyt8MaterialFv(void *arg0) {
+    register u32 x = *(u32*)((u8*)arg0 + 0x4C);
     register s32 base = *(s32*)((u8*)arg0 + 0x58);
     register s32 high = (x >> 24) & 0xF;
     register s32 low1 = (x >> 4) & 4;
@@ -1947,25 +1972,17 @@ extern "C" s32 fn_800D947C(void* arg0) {
     register s32 low4 = (x >> 5) & 4;
     register s32 mid = (x >> 18) & 0x3C;
     register s32 top = (x >> 23) & 0x1E0;
+    register s32 mid2 = (x >> 13) & 0x1C;
+    register s32 low5 = (x >> 3) & 4;
     top = mid + top;
     low4 = low3 + low4;
     low1 = low1 + low2;
-    register s32 low5 = (x >> 3) & 4;
+    scaled = scaled + top;
     low4 = low4 + low1;
-    top = scaled + top;
-    low4 = low5 + low4;
-    top = base + top;
-    return low4 + top;
-}
-
-extern "C" s32 GetIndTexSRTAry__Q36nw4hbm3lyt8MaterialFv(void *arg0) {
-    u32 temp_r9 = *(u32*)((u8*)arg0 + 0x4C);
-    return ((temp_r9 >> 0xC) & 4) + ((temp_r9 >> 5U) & 4) +
-           (((temp_r9 >> 4U) & 4) + ((temp_r9 >> 6U) & 4)) +
-           ((((temp_r9 >> 0x18U) & 0xF) * 0x14) +
-            (((temp_r9 >> 0x12U) & 0x3C) + ((temp_r9 >> 0x17U) & 0x1E0))) +
-           (*(s32*)((u8*)arg0 + 0x58) +
-            (((temp_r9 >> 0xD) & 0x1C) + ((temp_r9 >> 3U) & 4)));
+    mid2 = mid2 + low5;
+    scaled = low4 + scaled;
+    base = base + mid2;
+    return scaled + base;
 }
 
 #pragma push
