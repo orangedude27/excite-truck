@@ -1020,6 +1020,21 @@ loop:
 check:
     if (i < *(int *)((char *)arg0 + 0x900)) goto loop;
 }
+
+void fn_801F6B98(void *arg0) {
+    void *entry;
+    int i;
+    i = 0;
+    entry = arg0;
+    while (i < *(int *)((char *)arg0 + 0x900)) {
+        if (*(unsigned char *)((char *)entry + 0x38) != 0) {
+            fn_801F6880(entry);
+        }
+        entry = (char *)entry + 0x48;
+        i++;
+    }
+}
+
 #pragma scheduling on
 extern void fn_801F602C(void *, int, int, int, int);
 extern char lbl_8033ADF8[];
