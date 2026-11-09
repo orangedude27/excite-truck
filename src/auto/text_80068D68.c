@@ -14535,10 +14535,10 @@ void fn_80085384(u8 *arg0, u8 arg1) {
     *(u16 *)(arg0 + 2) = 4;
     *(u16 *)(arg0 + 4) = 0;
     arg0[8] = 0x1A;
-    arg0[9] = 0xC;
+    arg0[9] = 0x0C;
     arg0[10] = 1;
     arg0[11] = arg1;
-    btu_hcif_send_cmd(0xC, 0x1A, 0, 4);
+    btu_hcif_send_cmd(arg0);
 }
 
 void fn_800853B4(u8 *arg0, u16 arg1, u16 arg2) {
