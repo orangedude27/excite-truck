@@ -1,3 +1,4 @@
+#include <revolution/BASE.h>
 #include <revolution/OS.h>
 
 static void DefaultSwitchThreadCallback(OSThread* currThread,
