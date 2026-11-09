@@ -671,10 +671,13 @@ extern "C" void fn_8029FEF8(void) {
 void fn_8029FFBC(void) {
     unsigned char *current = lbl_804B5070;
     int i = 0;
+    int temp;
     goto check;
 loop:
-    if (*(int *)(current + 0x64)) fn_8028E528();
-    if (*(int *)(current + 0x70)) fn_80292B48();
+    temp = *(int *)(current + 0x64);
+    if (temp != 0) ((void (*)(int))fn_8028E528)(temp);
+    temp = *(int *)(current + 0x70);
+    if (temp != 0) ((void (*)(void *))fn_80292B48)((void *)temp);
     current += 0x78;
     i++;
 check:
