@@ -1364,8 +1364,25 @@ extern "C" void *fn_8014DE50(void) {
     }
     return obj;
 }
-#pragma cplusplus off
-#pragma scheduling on
+
+extern void fn_80128670(long);
+#pragma cplusplus on
+extern "C" void *fn_8014E154(void *arg0, s32 arg1) {
+    struct Obj { char pad[0x6C]; void *f6C; char pad2[4]; void *f74; void *f78; };
+    struct Obj *obj = (struct Obj *)arg0;
+    if (arg0 != 0) {
+        if (&obj->f6C != 0 && &obj->f74 != 0 && obj->f74 != 0) {
+            fn_80128670((s32)obj->f74);
+            obj->f74 = 0;
+            obj->f78 = 0;
+        }
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
+}
+#pragma cplusplus reset
 
 #pragma cplusplus on
 #pragma use_lmw_stmw off
