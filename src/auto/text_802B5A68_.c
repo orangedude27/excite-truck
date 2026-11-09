@@ -189,10 +189,9 @@ extern int __cntlzw(unsigned int);
 void fn_802B5CCC(void) {
     u8 *sp8;
     u8 *object;
-
     object = (u8 *)((void *(*)(void))fn_802B5B6C)();
     fn_802B321C(0, (void **)&sp8, *(s32 *)(object + 8), lbl_8055FA40);
-    *sp8 = (u32)__cntlzw(*sp8) / 32U;
+    *(volatile u8 *)sp8 = (u32)__cntlzw(*sp8) >> 5;
     object = (u8 *)((void *(*)(void))fn_802B5B6C)();
     fn_802B32E0(*(s32 *)(object + 8));
     object = (u8 *)((void *(*)(void))fn_802B5B6C)();
@@ -1832,17 +1831,12 @@ s32 fn_802B8728(void) {
 }
 
 #pragma push
-#pragma opt_propagation off
+#pragma scheduling on
 void fn_802B8744(void) {
-    s32 result;
-    void *state;
-
-    result = fn_80145E70(lbl_8034A980);
-    state = &lbl_804BE7D8;
-    lbl_8055FA48 = (void **)result;
+    lbl_8055FA48 = (void **)fn_80145E70(lbl_8034A980);
     lbl_8055FA40 = 6;
-    *(s32 *)((u8 *)state + 4) = 0;
-    lbl_8055FA00 = fn_8026E214((void *)fn_802B8728, state);
+    ((s32 *)&lbl_804BE7D8)[1] = 0;
+    lbl_8055FA00 = fn_8026E214((void *)fn_802B8728, &lbl_804BE7D8);
     lbl_8055FA34 = -1;
 }
 #pragma pop
