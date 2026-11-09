@@ -848,6 +848,7 @@ return result;
 #pragma pop
 
 #pragma scheduling on
+#pragma dont_inline fn_801A8E38
 int fn_801A8E38(void) {
     return fn_801A7F98() > lbl_80562470;
 }
