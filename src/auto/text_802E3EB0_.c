@@ -45,6 +45,7 @@ void *fn_802E3EBC(void) {
     fn_802E317C(lbl_8034D038);
     return (void *)lbl_8055FF40;
 }
+#pragma scheduling on
 
 #pragma scheduling invalid_target
 void fn_802E3F38(void *arg0) {
