@@ -1916,10 +1916,10 @@ void fn_80196418(void *arg0) {
     fn_80195830(arg0);
 }
 #pragma dont_inline reset
-  extern int fn_801B2F24(void);
-  extern void fn_801B2F40(int);
-  extern int fn_8019643C(void);
-  int fn_80196468(int arg0) {
+      extern int fn_801B2F24(void);
+    extern void fn_801B2F40(int);
+    extern int fn_8019643C();
+    int fn_80196468(int arg0) {
       int end = fn_801B2F24();
       int i = arg0;
       while (i <= end) {
