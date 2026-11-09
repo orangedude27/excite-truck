@@ -300,6 +300,43 @@ extern int fn_802E8BE4(void);
 extern void fn_802E8C2C(void);
 extern void fn_802E8920(int);
 u32 fn_802E8D84(void) { return 1; }
+
+/* Names for the state and helpers of this "rmemcard" NAND module (the debug
+ * strings it logs are all prefixed "rmemcard: ").  The project cannot rename
+ * the game's symbols yet, so these stand in for them; they are token-identical
+ * to the symbols they name.
+ *
+ * rmemcard_current_path - path of the file the module is working on, NULL when
+ *                         idle; the error handlers delete it when it is set.
+ * rmemcard_out_of_space - flag set when a NAND operation ran out of free
+ *                         blocks; the read below consumes (clears) it.
+ * rmemcard_async_buffer - the shared staging buffer fn_802E8CA8 allocates
+ *                         RMEMCARD_ASYNC_BUFFER_SIZE bytes of under the name
+ *                         "mc_async", and fn_802E8D2C frees; NULL once freed.
+ * rmemcard_log_strings  - this module's log strings (offsets into the block).
+ * rmemcard_yield        - resumes the thread the NAND wait put to sleep, i.e.
+ *                         gives the async machine a turn.
+ * rmemcard_wait_async   - runs a pump callback until the async NAND machine
+ *                         (fn_802E9010) leaves the busy states, giving up
+ *                         after 0xFA0 ticks; 1 = idle, 0 = timed out.
+ * rmemcard_test_banner_ok - 1 when the title's banner.bin exists and has the
+ *                         size the game expects (0xF0A0 bytes).
+ * rmemcard_file_exists  - 1 when NANDOpen can open the path at all.
+ * rmemcard_recover_space - asks for len bytes of free NAND space and keeps
+ *                         running the module's recovery requests until it has
+ *                         them.
+ */
+#define rmemcard_current_path   lbl_80560030
+#define rmemcard_out_of_space   lbl_8055D255
+#define rmemcard_async_buffer   lbl_80560020
+#define rmemcard_log_strings    lbl_8034D9C0
+#define rmemcard_yield          fn_802E8838
+#define rmemcard_wait_async     fn_802E95E0
+#define rmemcard_test_banner_ok fn_802E8A18
+#define rmemcard_file_exists    fn_802E8AE8
+#define rmemcard_recover_space  fn_802E8920
+#define RMEMCARD_ASYNC_BUFFER_SIZE 0x55730
+
 #pragma use_lmw_stmw off
 
 int fn_802E8D8C(const char *path, void *buf, int len) {
