@@ -772,16 +772,14 @@ void fn_801F1378(void *arg0) {
 }
 
 #pragma push
-#pragma scheduling off
+#pragma scheduling invalid_target
 int fn_801F1394(int *arg0, int arg1) {
     int frame = fn_801F1978(0);
     int index = *(int *)((char *)arg0 + 0x10);
     int *base = *(int **)arg0;
-    int *element = (int *)((char *)base + index * 4);
-    int value = *(int *)((char *)element + 0x28);
-    int zero;
-    zero = value - value;
-    fn_802C70AC(value, arg1, zero, frame);
+    int *element = base + index;
+
+    fn_802C70AC(*(int *)((char *)element + 0x28), arg1, 0, frame);
 }
 #pragma pop
 void fn_801F13F4(int *arg0, float arg1, float arg2) {
