@@ -100,13 +100,15 @@ extern void fn_801663C8(s32, void*, void*);
 extern void fn_8013A1E8(void);
 extern void fn_8015F554(void);
 extern void fn_80160850(void);
+#pragma dont_inline on
 void fn_8013477C(void *arg0) {
+    register char *strings = lbl_8032BBE8;
+    register unsigned char *entry;
+    register void **out;
     register unsigned char *obj = (unsigned char *)arg0 + 0x20;
+    register s32 i;
     register s32 count;
     register unsigned char *end;
-    register unsigned char *entry;
-    register s32 i;
-    register void **out;
     void *slot;
     f32 value;
     f32 temp;
@@ -114,59 +116,57 @@ void fn_8013477C(void *arg0) {
     f32 f1;
     f32 f2;
 
+#pragma dont_inline on
     fn_8013472C();
+#pragma dont_inline reset
     count = *(s32 *)(obj + 0x3C0);
-    *(s32 *)&lbl_8055E0B0 = count;
+    *(volatile s32 *)&lbl_8055E0B0 = count;
     end = obj + count * 0x78;
-    for (;;) {
+#pragma scheduling invalid_target
+    while (count > 0 && *(s32 *)(end - 0x78) == 0x53) {
         count--;
-        *(s32 *)&lbl_8055E0B0 = count;
+        *(volatile s32 *)&lbl_8055E0B0 = count;
         end -= 0x78;
-        if (count <= 0)
-            break;
-        if (*(s32 *)(end - 0x78) != 0x53)
-            break;
     }
+#pragma scheduling on
     fn_8013B4E0(obj, arg0);
-    value = fn_80134B58((s32)(lbl_8032BBE8 + 0x0C), lbl_805612F0);
+    value = fn_80134B58((s32)(strings + 0x0C), lbl_805612F0);
     lbl_8055E0A0 = value;
     if (value < lbl_805612F4) {
-        temp = lbl_805612E8 * fn_80134B58((s32)lbl_8032BBE8, lbl_805612EC);
+        temp = lbl_805612E8 * fn_80134B58((s32)strings, lbl_805612EC);
         lbl_8055E0A0 = fn_8013672C() - temp;
     }
-    f1 = fn_80134B58((s32)(lbl_8032BBE8 + 0x1C), lbl_805612FC);
+    f1 = fn_80134B58((s32)(strings + 0x1C), lbl_805612FC);
     f2 = lbl_805612F8;
-    f0 = f2 * f1;
-    lbl_8055E0A8 = f0;
-    ((void (*)(const char *, float, float))fn_802E30C8)(lbl_8032BBE8 + 0x28, f0 / f2, f2);
+    fn_802E30C8(strings + 0x28, (lbl_8055E0A8 = f0 = f2 * f1, f0 / f2), f2);
     f1 = fn_8013672C();
     f0 = f1 * lbl_80561300;
-    lbl_8055E0A4 = fn_80134B58((s32)(lbl_8032BBE8 + 0x44), f0);
+    lbl_8055E0A4 = fn_80134B58((s32)(strings + 0x44), f0);
     fn_80137884(*(s32 *)&lbl_8055E0B0);
     fn_801E87A8();
     fn_80139044();
     fn_8013BAE4(*(s32 *)&lbl_8055E0B0);
     fn_801663C8(*(s32 *)&lbl_8055E0B0, obj, (unsigned char *)arg0 + 0x3E4);
+#pragma scheduling invalid_target
     entry = obj;
     out = lbl_8042F758;
     i = 0;
-    do {
+    while (i < *(s32 *)(obj + 0x3C0)) {
         if (*(s32 *)entry != 0x53) {
-            slot = fn_801284F8(8, lbl_8032BBE8 + 0x58);
+            slot = fn_801284F8(8, strings + 0x58);
             if (slot != 0) {
-                fn_8013471C(slot, i);
-                *out = slot;
+                *out = ((void *(*)(void *, s32))fn_8013471C)(slot, i);
             }
         }
         entry += 0x78;
         out++;
         i++;
-    } while (i < *(s32 *)(obj + 0x3C0));
+    }
+#pragma scheduling on
     fn_8013A1E8();
     fn_8015F554();
     fn_80160850();
 }
-
 extern void fn_80160AE4(void);
 extern void fn_8015F558(void);
 extern void fn_8013A1EC(void);
@@ -224,11 +224,16 @@ skip_clear:
 extern s32 lbl_8055E3C4;
 #pragma dont_inline on
 s32 fn_80134A44(s32 arg0) {
-    if (arg0 >= 3)
-        return 0;
-    if (arg0 >= 0)
+    switch (arg0) {
+    case 0:
+    case 1:
+    case 2:
         return (arg0 + lbl_8055E3C4) & 1;
-    return lbl_8055E3C4 & 1;
+    case -1:
+        return lbl_8055E3C4 & 1;
+    default:
+        return arg0;
+    }
 }
 #pragma dont_inline reset
 
@@ -277,9 +282,10 @@ void fn_80134A8C(void) {
       fn_80136F08(lbl_8055E0D4);
   }
   
-#pragma paired off
-#pragma paired_single off
-float fn_80134B58(s32 arg0, float arg1) {
+#pragma push
+#pragma processor 750
+float fn_80134B58(s32 arg0, float arg1)
+{
     extern s32 fn_80134B9C(s32, s32);
     extern double atof(void);
     float result = arg1;
@@ -288,8 +294,7 @@ float fn_80134B58(s32 arg0, float arg1) {
     }
     return result;
 }
-#pragma paired_single on
-#pragma paired on
+#pragma pop
 s32 fn_80134B9C(s32 arg0, s32 arg1) {
     if (lbl_8055E0AC != 0 && ((s32 (*)(void *, s32))(*(u32 *)(*(u32 *)lbl_8055E0AC + 0xC)))(lbl_8055E0AC, arg0) != 0)
         return ((s32 (*)(void *, s32))(*(u32 *)(*(u32 *)lbl_8055E0AC + 0x14)))(lbl_8055E0AC, arg0);
@@ -606,11 +611,12 @@ extern void fn_8018ADBC(void *, f32);
 extern void fn_8018ADB4(void *, f32);
 extern void fn_8018ADA4(void *, f32);
 #pragma push
+#pragma processor 750
+#pragma peephole off
 #pragma scheduling invalid_target
 void fn_801351CC(void *arg0) {
-    const f32 first = lbl_80561318;
-    void *object = *(void **)((u8 *)arg0 + 8);
-    fn_8018ADBC(object, first);
+    f32 first = *(volatile f32 *)&lbl_80561318;
+    fn_8018ADBC(*(void **)((u8 *)arg0 + 8), first);
     fn_8018ADB4(*(void **)((u8 *)arg0 + 8), lbl_805612F4);
     fn_8018ADA4(*(void **)((u8 *)arg0 + 8), lbl_805612F4);
 }
