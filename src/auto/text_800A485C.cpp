@@ -1174,16 +1174,18 @@ extern "C" s32 fn_800A625C(void *arg0, s32 arg1) {
 
 #pragma dont_inline on
 extern "C" s32 fn_800A6268(s32 arg0, void *arg1) {
-    u32 value0 = *(u32 *)((u8 *)arg0 + 0x18);
-    u32 value1 = *(u32 *)((u8 *)arg0 + 0x1C);
+    u32 value1; u32 value0;
+    value0 = *(volatile u32 *)((u8 *)arg0 + 0x18);
+    value1 = *(volatile u32 *)((u8 *)arg0 + 0x1C);
     *(u32 *)((u8 *)arg1 + 0x0) = value0;
     *(u32 *)((u8 *)arg1 + 0x4) = value1;
-    u32 value2 = *(u32 *)((u8 *)arg0 + 0x20);
-    u32 value3 = *(u32 *)((u8 *)arg0 + 0x24);
+    u32 value3; u32 value2;
+    value2 = *(volatile u32 *)((u8 *)arg0 + 0x20);
+    value3 = *(volatile u32 *)((u8 *)arg0 + 0x24);
     *(u32 *)((u8 *)arg1 + 0x8) = value2;
     *(u32 *)((u8 *)arg1 + 0xC) = value3;
-    value0 = *(u32 *)((u8 *)arg0 + 0x28);
-    *(u32 *)((u8 *)arg1 + 0x10) = value0;
+    u32 value4 = *(volatile u32 *)((u8 *)arg0 + 0x28);
+    *(u32 *)((u8 *)arg1 + 0x10) = value4;
     return 0;
 }
 #pragma dont_inline reset
@@ -11660,9 +11662,9 @@ extern "C" s32 fn_800B9FCC(s32 arg0) {
 
 #pragma dont_inline reset
 extern "C" s32 fn_800BA160(s32 arg0) {
-    register s32 result;
-    register s32 value;
     register s32 mask;
+    register s32 value;
+    register s32 result;
     if (arg0 == 0) return 1;
     result = 6;
     value = *(volatile s32 *)((u8 *)lbl_80407300 + 0x10);
