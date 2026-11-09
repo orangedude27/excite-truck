@@ -9796,54 +9796,67 @@ tBTM_PM_MODE btm_pm_get_set_mode(UINT8 pm_id, tBTM_PM_MCB *p_cb, tBTM_PM_PWR_MD 
 #define btsnd_hcic_park_mode      btsnd_hcic_hold_mode_80084A34
 #define btsnd_hcic_exit_park_mode btsnd_hcic_exit_sniff_mode_80084AE8
 
+/* Send the controller the mode change the power manager settled on for one ACL
+ * link.  btm_pm_get_set_mode() merges what every registered module asked for;
+ * the mode that comes out picks the HCI command - hold, sniff or park, or
+ * leaving sniff/park for active.  btm_cb remembers the link and the module
+ * waiting for the command status, and a request that needs no command at all
+ * is reported as stored instead of started. */
 tBTM_STATUS btm_pm_snd_md_req(UINT8 pm_id, int link_ind, tBTM_PM_PWR_MD *p_mode) {
     extern BOOLEAN btsnd_hcic_sniff_mode(BT_HDR *, s16, s16, s16, s16, u16);
     extern s32 btsnd_hcic_exit_sniff_mode(void *, u16);
-    extern s32 btsnd_hcic_exit_sniff_mode_80084AE8(u8 *, u16);
-    extern s32 btsnd_hcic_hold_mode_80084A34(u8 *, u16, u16, u16);
+    extern s32 btsnd_hcic_exit_park_mode(u8 *, u16);
+    extern s32 btsnd_hcic_park_mode(u8 *, u16, u16, u16);
     tBTM_PM_PWR_MD result;
+    tBTM_PM_MCB_VIEW *p_cb = (tBTM_PM_MCB_VIEW *)(lbl_803C0F78 + 0x4cc + link_ind * 0x22);
     u8 mode;
-    u8 *cb = lbl_803C0F78 + 0x4cc + link_ind * 0x22;
     u8 changed = 0;
     u8 *buf;
-    mode = btm_pm_get_set_mode(pm_id, (tBTM_PM_MCB *)cb, p_mode, &result);
+
+    mode = btm_pm_get_set_mode(pm_id, (tBTM_PM_MCB *)p_cb, p_mode, &result);
     result.mode = mode;
-    if (cb[0x20] == mode) {
-        if (mode == 0 || (result.max >= *(u16 *)(cb + 0x1e) && result.min <= *(u16 *)(cb + 0x1e))) return 13;
+    if (p_cb->state == mode) {
+        /* already in that mode, and the interval asked for covers the current one */
+        if (mode == BTM_PM_MD_ACTIVE || (result.max >= p_cb->interval && result.min <= p_cb->interval))
+            return BTM_CMD_STORED;
         changed = 1;
     }
-    cb[0x21] = changed;
-    if (mode != 0 && cb[0x20] != 0) cb[0x21] = 1;
-    buf = GKI_getpoolbuf(2);
-    if (buf == 0) return 3;
-    if (cb[0x21] == 1) result.mode = 0;
-    lbl_803C0F78[0x564] = link_ind;
-    lbl_803C0F78[0x565] = pm_id;
+    p_cb->chg_ind = changed;
+    /* one low-power mode into another is a change the controller has to make */
+    if (mode != BTM_PM_MD_ACTIVE && p_cb->state != BTM_PM_MD_ACTIVE) p_cb->chg_ind = 1;
+
+    buf = GKI_getpoolbuf(BTM_CMD_POOL_ID);
+    if (buf == 0) return BTM_NO_RESOURCES;
+    /* a change between two modes goes through active first */
+    if (p_cb->chg_ind == 1) result.mode = BTM_PM_MD_ACTIVE;
+    btm_cb_pm_pend_link = link_ind;
+    btm_cb_pm_pend_id = pm_id;
     switch (result.mode) {
-    case 0:
-        switch (cb[0x20]) {
-        case 2:
-            btsnd_hcic_exit_sniff_mode(buf, *(u16 *)(lbl_803C0F78 + link_ind * 0x11c + 0x34));
+    case BTM_PM_MD_ACTIVE:
+        switch (p_cb->state) {
+        case BTM_PM_MD_SNIFF:
+            btsnd_hcic_exit_sniff_mode(buf, btm_cb_acl_handle(link_ind));
             break;
-        case 3:
-            btsnd_hcic_exit_sniff_mode_80084AE8(buf, *(u16 *)(lbl_803C0F78 + link_ind * 0x11c + 0x34));
+        case BTM_PM_MD_PARK:
+            btsnd_hcic_exit_park_mode(buf, btm_cb_acl_handle(link_ind));
             break;
-        default: lbl_803C0F78[0x564] = 4; break;
+        default: btm_cb_pm_pend_link = 4; break;   /* no command went out */
         }
         break;
-    case 1:
-        ((BOOLEAN (*)(void *, u16, u16, u16))btsnd_hcic_hold_mode)(buf, *(u16 *)(lbl_803C0F78 + link_ind * 0x11c + 0x34), result.max, result.min);
+    case BTM_PM_MD_HOLD:
+        /* btsnd_hcic_hold_mode() allocates its own buffer; this caller hands it one anyway */
+        ((BOOLEAN (*)(void *, u16, u16, u16))btsnd_hcic_hold_mode)(buf, btm_cb_acl_handle(link_ind), result.max, result.min);
         break;
-    case 2:
-        ((BOOLEAN (*)(BT_HDR *, u16, u16, u16, u16, u16))btsnd_hcic_sniff_mode)((BT_HDR *)buf, *(u16 *)(lbl_803C0F78 + link_ind * 0x11c + 0x34), result.max, result.min, result.attempt, result.timeout);
+    case BTM_PM_MD_SNIFF:
+        ((BOOLEAN (*)(BT_HDR *, u16, u16, u16, u16, u16))btsnd_hcic_sniff_mode)((BT_HDR *)buf, btm_cb_acl_handle(link_ind), result.max, result.min, result.attempt, result.timeout);
         break;
-    case 3:
-        btsnd_hcic_hold_mode_80084A34(buf, *(u16 *)(lbl_803C0F78 + link_ind * 0x11c + 0x34), result.max, result.min);
+    case BTM_PM_MD_PARK:
+        btsnd_hcic_park_mode(buf, btm_cb_acl_handle(link_ind), result.max, result.min);
         break;
-    default: lbl_803C0F78[0x564] = 4; break;
+    default: btm_cb_pm_pend_link = 4; break;       /* no command went out */
     }
-    if (lbl_803C0F78[0x564] == 4) GKI_freebuf(buf);
-    return 1;
+    if (btm_cb_pm_pend_link == 4) GKI_freebuf(buf);
+    return BTM_CMD_STARTED;
 }
 
 void btm_pm_proc_cmd_status(UINT8 status) {
