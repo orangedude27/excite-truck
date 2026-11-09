@@ -531,8 +531,6 @@ void fn_8028EEB4(void *arg0, int arg1, const char *arg2) {
     (*countp)++;
 }
 
-#pragma push
-#pragma small_data on
 int fn_8028EF44(void *arg0, unsigned int arg1) {
     char *base = (char *)arg0;
     char *p = base;
@@ -551,7 +549,6 @@ int fn_8028EF44(void *arg0, unsigned int arg1) {
     fn_802E317C(lbl_80348F4C);
     return 0;
 }
-#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
