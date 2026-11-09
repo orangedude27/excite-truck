@@ -98,6 +98,16 @@ exit:
     return ret;
 }
 
+/**
+ * Handles an IPC reply from the ARM (Starlet IOS).
+ *
+ * The ARM leaves the physical address of the request it answered in the
+ * IPC_ARMMSG mailbox. Read that request back from memory, convert the
+ * physical pointers the ARM wrote into the read/ioctl/ioctlv blocks back into
+ * cached ones and invalidate the buffers the ARM filled, then hand the result
+ * over: run the async callback on a clean context and free the request, or
+ * wake the thread sleeping on it.
+ */
 static void IpcReplyHandler(s16 intr, OSContext* ctx) {
 #pragma unused(intr)
 
