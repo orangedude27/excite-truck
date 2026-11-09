@@ -52,7 +52,7 @@ extern u64 lbl_8055DF28;
 extern s32 lbl_8055DF28_unused;
 extern s32 lbl_8055DF2C;
 extern s32 lbl_8055DF30;
-extern void fn_801274C8(void);
+extern s32 fn_801274C8(void);
 extern void fn_8012766C(void);
 extern u32 lbl_8055DF34;
 extern u64 lbl_8055DF38;
@@ -62,13 +62,25 @@ extern u64 lbl_8055DF18;
 extern u64 lbl_8055DF20;
 extern u64 fn_802E2C9C(void);
 
+#pragma dont_inline on
+s32 fn_801274C8(void) {
+    s32 count = lbl_8041DEE0.zero;
+    s32 *p = lbl_8041DEE0.next + count;
+    s32 i = 0;
+    while (i < count && p != 0) {
+        p--;
+        lbl_8041D790[*p * 0x48 + 0x42] = 1;
+        i++;
+    }
+    return 0;
+}
 s32 fn_80127538(void) {
     memset(lbl_8041D790, 0, 0x480);
     memset(lbl_8041DC10, 0, 0x10);
     fn_80127968();
     fn_80127C90(fn_80127968, lbl_80329EF4);
-    lbl_8055DF18 = 0;
     lbl_8055DF1C = 0;
+    *(u32 *)&lbl_8055DF18 = 0;
     lbl_8055DF30 = 0;
     lbl_8055DF34 = 0;
     return 1;
