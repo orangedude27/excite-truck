@@ -13872,18 +13872,15 @@ BOOLEAN btsnd_hcic_inquiry(const LAP inq_lap, UINT8 duration, UINT8 response_cnt
 }
 
 u8 btsnd_hcic_inq_cancel(void) {
-    u8 *p;
-    u16 zero = 0;
-    int two = 2;
-    p = (u8 *)GKI_getpoolbuf(2);
-    if (p == NULL)
+    u8 *p = (u8 *)GKI_getpoolbuf(2);
+    if (p == 0)
         return 0;
     *(u16 *)(p + 2) = 3;
-    *(u16 *)(p + 4) = zero;
-    p[8] = (u8)two;
+    *(u16 *)(p + 4) = 0;
+    p[8] = 2;
     p[9] = 4;
-    p[10] = (u8)zero;
-    btu_hcif_send_cmd(p, two);
+    p[10] = 0;
+    btu_hcif_send_cmd(p);
     return 1;
 }
 
