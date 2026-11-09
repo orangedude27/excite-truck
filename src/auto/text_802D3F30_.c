@@ -1241,8 +1241,6 @@ void fn_802D6810(void) {
     fn_802D6C68();
 }
 
-extern void fn_802D0E48(int);
-extern void fn_802D5FE4(void *);
 extern u32 lbl_8055FDE8;
 extern u8 lbl_8055FDEC;
 extern s32 lbl_8055FE00;
