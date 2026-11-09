@@ -617,19 +617,26 @@ void fn_800062E8(void) {
     }
 }
 
-void fn_80006330(void) {
+#pragma cplusplus on
+extern "C" void fn_80006330(void) {
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+    };
     u32 *flags = (u32 *)lbl_8034EE84;
-    register s32 *entry;
-    register void *object;
-    register void **vtable;
+    s32 *manager;
     flags[8] &= 0xFFFFFF78;
     flags[8] &= 0xFFFFF9FF;
-    entry = lbl_8034EEB8 + (((s32 *)lbl_8055D350)[7] << 2);
-    object = (void *)entry[7];
-    vtable = *(void ***)object;
-    ((void (*)(void))vtable[9])();
+    manager = (s32 *)lbl_8055D350;
+    ((Dummy *)((lbl_8034EEB8 + (manager[7] << 2))[7]))->v7();
 }
-
+#pragma cplusplus off
 extern s32 fn_80011A5C(s32);
 extern s32 fn_801B84A4(s32);
 #pragma cplusplus on
@@ -1401,15 +1408,20 @@ s32 fn_800074EC(s32 arg0) {
     return result;
 }
 
+#pragma cplusplus on
 #pragma scheduling invalid_target
-s32 fn_80007554(s32 arg0, s32 arg1, s32 arg2) {
-    s32 *obj = *(s32 **)((s32 *)lbl_8034EEB8 + arg0 * 4 + 4);
+extern "C" s32 fn_80007554(s32 arg0, s32 arg1, s32 arg2) {
+    struct Dummy { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual s32 call(s32, s32, s32); };
+    s32 *entry = (s32 *)&lbl_8034EEB8;
+    entry += arg0 * 4;
+    Dummy *obj = (Dummy *)entry[4];
     if (obj != 0) {
-        return (*(s32 (**)(s32 *, s32, s32, s32))(*(s32 **)obj + 12))(obj, arg0, arg1, arg2);
+        return obj->call(arg0, arg1, arg2);
     }
     return 0;
 }
 #pragma scheduling on
+#pragma cplusplus off
 s32 fn_800075A0(s32 arg0) {
     u32 p = *(u32 *)((u8 *)&lbl_8034EEB8 + arg0 * 0x10 + 0x10);
     s32 result = 0;
@@ -1488,7 +1500,7 @@ void fn_800077E4(void *arg0) {
     void *base = lbl_8055D350;
     void *p = (u8 *)arg0 + ((s32 *)base)[7] * 4;
     *(f32 *)((u8 *)p + 4) = ((f32 *)base)[4];
-    if (fn_8000561C(p, base) != 0) {
+    if (fn_8000561C(p, base)) {
         *(f32 *)((u8 *)arg0 + 0x18) = ((f32 *)lbl_8055D350)[4];
         fn_80276DC8(((s32 *)lbl_8055D350)[7]);
     }
