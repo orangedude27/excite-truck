@@ -1,6 +1,15 @@
 #include <types.h>
 extern char lbl_8032A05C[];
 
+#pragma cplusplus on
+class Dummy80128EF0 {
+public:
+    virtual void d0(s32, void *, s32) {}
+    virtual void d1(s32, void *, s32) {}
+    virtual void d2(s32, void *, s32) {}
+};
+#pragma cplusplus off
+
 extern char lbl_8055DF88;
 __declspec(section ".data") extern u32 lbl_802F8E40;
 extern u32 lbl_80559968;
@@ -636,11 +645,13 @@ void fn_80128EF0(void *arg0, s32 arg1) {
     s32 temp_r31;
     s32 temp_r30;
     u32 var_r6;
+    void (**vtable)(void *, s32, void *, s32);
     temp_r30 = *(s32 *)((u8 *)arg0 + 8);
     var_r6 = arg1 - (temp_r30 & (arg1 - 1));
     if (var_r6 < 0x30U) var_r6 += arg1;
     temp_r31 = *(s32 *)((u8 *)arg0 + 4);
-    ((void (*)(void *, s32, void *, s32))(*(void **)((u8 *)*(void **)arg0 + 0x10)))(arg0, var_r6 - 0x30, &lbl_8032A05C, 3);
+    vtable = (void (**)(void *, s32, void *, s32))(*(void **)arg0);
+    vtable[4](arg0, var_r6 - 0x30, &lbl_8032A05C, 3);
     *(u32 *)(temp_r31 + temp_r30) = 0x06630216;
 }
 
