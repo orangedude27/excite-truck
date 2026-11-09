@@ -332,7 +332,7 @@ extern "C" int fn_801B851C(void* arg0) {
 extern "C" int fn_801B8570(int arg0) {
     extern int fn_80161B94(void);
     int result = 0;
-    result = 0;
+    if (((Dummy_801B8570 *)lbl_8055E744)->d7(arg0) != 0 && fn_80161B94() == 0) result = 1;
     return result;
 }
 
@@ -409,16 +409,69 @@ extern "C" void fn_801B86BC(int arg0, void *arg1) {
     *(float *)((char *)arg1 + 0x50) = value * lbl_8055A910;
     fn_8027DED8(arg0, arg1, value);
 }
-#pragma cplusplus off
-int fn_801B8728(int arg0) {
-    register void *obj = lbl_8055E744;
-    register int result;
-    ((void (*)(void *, int))(*(int (**)(void *, int))(*(void ***)obj + 0xB8)))(obj, arg0);
-    result = (*(int (**)(void *))(*(void ***)lbl_8055E744 + 0xE4))(lbl_8055E744);
-    return result == 0;
-}
-
 #pragma cplusplus on
+extern "C" int fn_801B8728(int arg0) {
+    struct Dummy_801B8728 {
+        virtual void d0();
+        virtual void d1();
+        virtual void d2();
+        virtual void d3();
+        virtual void d4();
+        virtual void d5();
+        virtual void d6();
+        virtual void d7();
+        virtual void d8();
+        virtual void d9();
+        virtual void d10();
+        virtual void d11();
+        virtual void d12();
+        virtual void d13();
+        virtual void d14();
+        virtual void d15();
+        virtual void d16();
+        virtual void d17();
+        virtual void d18();
+        virtual void d19();
+        virtual void d20();
+        virtual void d21();
+        virtual void d22();
+        virtual void d23();
+        virtual void d24();
+        virtual void d25();
+        virtual void d26();
+        virtual void d27();
+        virtual void d28();
+        virtual void d29();
+        virtual void d30();
+        virtual void d31();
+        virtual void d32();
+        virtual void d33();
+        virtual void d34();
+        virtual void d35();
+        virtual void d36();
+        virtual void d37();
+        virtual void d38();
+        virtual void d39();
+        virtual void d40();
+        virtual void d41();
+        virtual void d42();
+        virtual void d43();
+        virtual void call1(int);
+        virtual void d45();
+        virtual void d46();
+        virtual void d47();
+        virtual void d48();
+        virtual void d49();
+        virtual void d50();
+        virtual void d51();
+        virtual void d52();
+        virtual void d53();
+        virtual void d54();
+        virtual int call2();
+    };
+    ((Dummy_801B8728 *)lbl_8055E744)->call1(arg0);
+    return ((Dummy_801B8728 *)lbl_8055E744)->call2() == 0;
+}
 extern "C" void fn_801B8778(void) {
     ((Dummy_801B8318 *)lbl_8055E744)->f46();
 }
