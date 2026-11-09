@@ -997,6 +997,22 @@ void fn_802C9CE0(void) {
     lbl_8055FC70 = 1;
 }
 
+void *fn_802C9D10(int arg0, void *arg1) {
+    void *value;
+    (void)arg0;
+    (void)arg1;
+    if (lbl_8055FC98 == 0) {
+        value = fn_801284F8(0x20, lbl_8034B514);
+        if (value != 0) {
+            value = fn_8012A13C(value, lbl_8034B514, 0x10, 0x18);
+        }
+        lbl_8055FC9C = value;
+    }
+    if (fn_8012A2D8(lbl_8055FC9C) != 0) {
+        lbl_8055FC98 += 1;
+    }
+}
+
 extern int lbl_8055FC98;
 extern void *lbl_8055FC9C;
 extern int lbl_8055FC84;
