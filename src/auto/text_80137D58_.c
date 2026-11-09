@@ -69,10 +69,14 @@ void fn_80137F2C(void) {
 #pragma dont_inline on
 void fn_80137F30(void *arg0) {
     unsigned char *base = (unsigned char *)arg0;
-    unsigned char a = base[8];
-    unsigned char b = base[9];
-    unsigned char c = base[0xc];
-    unsigned char d = base[0xd];
+    unsigned char a;
+    unsigned char c;
+    unsigned char b;
+    unsigned char d;
+    a = base[8];
+    b = base[9];
+    c = base[0xc];
+    d = base[0xd];
     base[8] = base[0xb];
     base[0xb] = a;
     base[9] = base[0xa];
