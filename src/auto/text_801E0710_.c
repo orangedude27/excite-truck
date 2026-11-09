@@ -432,10 +432,13 @@ float fn_801E0EE4(void *arg0, void *arg1) {
 #pragma scheduling on
 void *fn_801E0F34(int arg0) {
     void *ptr;
+    void *pool;
     int value;
+    int size;
     value = arg0;
-    arg0 = (arg0 << 3) + 8;
-    ptr = fn_801284E8((void *)&lbl_8032C108, arg0);
+    size = (arg0 << 3) + 8;
+    pool = (void *)&lbl_8032C108;
+    ptr = fn_801284E8(pool, size);
     *(int *)((char *)ptr + 4) = value;
     *(int *)ptr = value;
     return ptr;
