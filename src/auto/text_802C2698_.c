@@ -89,11 +89,11 @@ void fn_802C276C(void) {
 
 void fn_802C2874(void) {
     if (lbl_8055FB6C != -2) {
-        fn_802CB228();
+        fn_802CB228(lbl_8055FB6C);
         lbl_8055FB6C = -2;
     }
     if (lbl_8055FB70 != -2) {
-        fn_802CAC54();
+        fn_802CAC54(lbl_8055FB70);
         lbl_8055FB70 = -2;
     }
 }
