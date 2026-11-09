@@ -23753,8 +23753,9 @@ struct VFiPFDeviceInfo {
 
 extern "C" s32 fn_800A5530(void *object) {
     u8 *p = (u8 *)object;
-    s32 info[5], pageNo; /* info[3]: the device's flags, info[4]: its value */
-    void *page;
+    VFiPFDeviceInfo info; /* flags: the device's own, value: handed back to it */
+    s32 pageNo;
+    VFiPFCACHEPage *page;
     s32 result, devErr, blocksRead;
 
     result = fn_800A728C(VF_VOL_DEVICE(p));
@@ -23767,33 +23768,33 @@ extern "C" s32 fn_800A5530(void *object) {
         }
         return -1;
     }
-    if (fn_800A71E0((s32)VF_VOL_DEVICE(p), info)) { fn_800A7568(VF_VOL_DEVICE(p), 0); return -1; }
-    if (info[3] & VF_DEV_WRITE_PROTECTED) VF_VOL_FLAGS(p) |= VF_VOL_WRITE_PROTECTED;
+    if (fn_800A71E0((s32)VF_VOL_DEVICE(p), &info)) { fn_800A7568(VF_VOL_DEVICE(p), 0); return -1; }
+    if (info.flags & VF_DEV_WRITE_PROTECTED) VF_VOL_FLAGS(p) |= VF_VOL_WRITE_PROTECTED;
     else VF_VOL_FLAGS(p) &= ~VF_VOL_WRITE_PROTECTED;
-    if (info[3] & VF_DEV_HAS_VALUE) { s32 v = info[4]; VF_VOL_FLAGS(p) |= VF_VOL_GIVE_VALUE; VF_VOL_DEVICE_VALUE(p) = v; }
-    if (info[3] & VF_DEV_KEEP_FAT) VF_VOL_FLAGS(p) |= VF_VOL_KEEP_FAT;
-    ((Fn800A8D08C4 *)(s32 (*)(s32, void **, s32 *, s32, s32 *))fn_800A8D08)(object, -1, &page, &pageNo);
+    if (info.flags & VF_DEV_HAS_VALUE) { s32 v = info.value; VF_VOL_FLAGS(p) |= VF_VOL_GIVE_VALUE; VF_VOL_DEVICE_VALUE(p) = v; }
+    if (info.flags & VF_DEV_KEEP_FAT) VF_VOL_FLAGS(p) |= VF_VOL_KEEP_FAT;
+    ((Fn800A8D08C4 *)(s32 (*)(s32, void **, s32 *, s32, s32 *))fn_800A8D08)(object, -1, (void **)&page, &pageNo);
 
     /* The boot sector, read into the page's buffer. */
-    result = fn_800A73A0(VF_VOL_DEVICE(p), *(s32 *)((u8 *)page + 4), 0, 1, 0x200, (s32)&blocksRead);
+    result = fn_800A73A0(VF_VOL_DEVICE(p), (s32)page->buffer, 0, 1, 0x200, (s32)&blocksRead);
     if (result) {
         if (result == VF_DEV_FAILED) { devErr = fn_800A71D8(VF_VOL_DEVICE(p)); VF_LAST_DEVICE_ERROR = devErr; VF_VOL_DEVICE_ERROR(p) = devErr; result = VF_ERR_DEVICE_RETRY; }
         else result = -1;
         fn_800A7568(VF_VOL_DEVICE(p), 0);
         return result;
     }
-    if (fn_800A5AE4(object, *(void **)((u8 *)page + 4))) { fn_800A7568(VF_VOL_DEVICE(p), 0); return 7; }
+    if (fn_800A5AE4(object, page->buffer)) { fn_800A7568(VF_VOL_DEVICE(p), 0); return 7; }
     VF_VOL_FREE_CLUSTERS(p) = -1;
     VF_VOL_NEXT_CLUSTER(p) = -1;
     if (VF_VOL_FAT_TYPE(p) == VF_FAT_TYPE_32) {
         /* FAT32 keeps its free-cluster counts in the FSInfo sector. */
-        result = fn_800A73A0(VF_VOL_DEVICE(p), *(s32 *)((u8 *)page + 4), VF_VOL_FSINFO_SECTOR(p), 1, 0x200, (s32)&blocksRead);
+        result = fn_800A73A0(VF_VOL_DEVICE(p), (s32)page->buffer, VF_VOL_FSINFO_SECTOR(p), 1, 0x200, (s32)&blocksRead);
         if (result) {
             if (result == VF_DEV_FAILED) { devErr = fn_800A71D8(VF_VOL_DEVICE(p)); VF_LAST_DEVICE_ERROR = devErr; VF_VOL_DEVICE_ERROR(p) = devErr; result = VF_ERR_DEVICE_RETRY; }
             else result = -1;
             fn_800A7568(VF_VOL_DEVICE(p), 0); return result;
         }
-        if (fn_800A5E00(object, *(void **)((u8 *)page + 4), VF_VOL_FREE_CLUSTERS_REF(p), VF_VOL_NEXT_CLUSTER_REF(p))) { fn_800A7568(VF_VOL_DEVICE(p), 0); return -1; }
+        if (fn_800A5E00(object, page->buffer, VF_VOL_FREE_CLUSTERS_REF(p), VF_VOL_NEXT_CLUSTER_REF(p))) { fn_800A7568(VF_VOL_DEVICE(p), 0); return -1; }
     }
     return 0;
 }
