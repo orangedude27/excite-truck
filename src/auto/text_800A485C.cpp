@@ -5485,7 +5485,10 @@ extern "C" s32 fn_800B0258(void *, s32, s32 *);
 extern "C" s32 fn_800AE620(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     u32 sign = ((u32)(-(arg2) | (arg2))) >> 31;
     s32 result = fn_800AE4C0((void *)arg0, (u32)arg1, sign, 0, (s32 *)arg3);
-    return result == 0 ? 0 : result;
+    if (result == 0) {
+        return 0;
+    }
+    return result;
 }
 
 extern "C" s32 fn_800AE664(void *arg0, u32 arg1, u32 arg2, s32 *arg3, s32 *arg4) {
@@ -10265,6 +10268,15 @@ extern "C" s32 VFiPFCODE_CP932_isOEMMBchar(u8 arg0, s32 arg1) {
     return 0;
 }
 
+extern "C" s16 fn_800B72B0(s32 arg0) {
+    u32 spC;
+    u16 spA;
+    s16 sp8;
+    s32 result = VFiPFCODE_CP932_Unicode2OEM(arg0, &spC);
+    fn_800A4BF4(result, &spA, &sp8);
+    return sp8;
+}
+
 extern "C" s32 VFiPFCODE_CP932_Unicode2OEM(s32, u32*);
 extern "C" s32 fn_800A4BF4(s32, u16*, s16*);
 extern "C" s32 fn_800B72E4(void) { return 0; }
@@ -11662,8 +11674,8 @@ extern "C" s32 fn_800B9FCC(s32 arg0) {
 
 #pragma dont_inline reset
 extern "C" s32 fn_800BA160(s32 arg0) {
-    register s32 mask;
     register s32 value;
+    register s32 mask;
     register s32 result;
     if (arg0 == 0) return 1;
     result = 6;
