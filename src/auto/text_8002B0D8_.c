@@ -1434,6 +1434,22 @@ void fn_8002EFBC(void) {
     __ieee754_pow();
 }
 
+/* IEEE 754 double fields as MSL's e_sqrt.c uses them: a double is the word pair
+ * __HI(x):__LO(x), the high word carrying the sign, an 11-bit biased exponent
+ * and the top 20 bits of the mantissa.  one and tiny are e_sqrt.c's statics;
+ * CodeWarrior folds both straight into the literal pool, so they stay macros. */
+#define dbl_sign      0x80000000 /* sign bit of the high word */
+#define dbl_exp       0x7ff00000 /* exponent field */
+#define dbl_exp_shift 20         /* mantissa bits kept in the high word */
+#define dbl_exp_one   0x3fe00000 /* exponent field of a value in [1,2) */
+#define dbl_frac      0x000fffff /* mantissa bits of the high word */
+#define dbl_unit      0x00100000 /* leading bit of a normalized mantissa */
+#define dbl_topbit    0x00200000 /* first moving bit r: just above that bit */
+#define dbl_bias      1023       /* exponent bias */
+#define dbl_one       1.0
+#define dbl_tiny      1.0e-300   /* small enough for one to round it away */
+#define dbl_nan       *(float *)&__float_nan /* MSL NAN: a float quiet NaN */
+
 extern unsigned long __float_nan[];
 double __ieee754_sqrt(double x)
 {
