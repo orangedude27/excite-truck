@@ -375,7 +375,7 @@ void fn_80178224(void) {
         fn_801A6484();
 }
 
-#pragma scheduling off
+#pragma scheduling on
 void fn_80178258(void) {
     if (fn_801284F8(0xD0, &lbl_8033192C) != 0) {
         fn_8017ACCC();
