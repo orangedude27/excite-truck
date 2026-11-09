@@ -3226,13 +3226,15 @@ extern "C" s32 fn_8015D374(void* arg0) {
 extern "C" u32 fn_8015D37C(void) { return 1; }
 
 extern "C" void fn_8015D384(Unk801577F0* arg0) {
-    s32 count = arg0->m260;
+    register s32 count = arg0->m260;
     arg0->m264 = 0;
     if (count > 0) {
         if (arg0->m258 != 0) fn_801CB6E4((void*)arg0->m258, arg0->m4);
         arg0->m260 = 0;
-        arg0->m254 = lbl_80561754;
-        arg0->m25c = lbl_80561750;
+        f32 a = lbl_80561754;
+        arg0->m254 = a;
+        f32 b = lbl_80561750;
+        arg0->m25c = b;
         arg0->v31();
     }
 }
@@ -3277,6 +3279,8 @@ extern "C" f32 fn_8015D4A0(Unk801577F0* arg0, s32 arg1) {
     return lbl_80561754;
 }
 
+#pragma push
+#pragma peephole off
 extern "C" s32 fn_8015D504(Unk801577F0* arg0, s32 arg1) {
     s32 count = arg0->mCount;
     s32 i;
@@ -3295,7 +3299,7 @@ extern "C" s32 fn_8015D504(Unk801577F0* arg0, s32 arg1) {
 out:
     return i;
 }
-
+#pragma pop
 extern "C" void fn_8015D554(void *arg0) {
     class Local {
     public:
@@ -3923,11 +3927,30 @@ extern "C" s32 fn_8015E910(void *arg0, s32 arg1) {
 
 #pragma scheduling invalid_target
 extern "C" void fn_8015E9A4(void *arg0, s32 arg1) {
+    struct Entry {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual void v13();
+        virtual void v14();
+        virtual void v15();
+        virtual void Call(s32);
+    };
     s32 var_r31 = 0;
     s32 var_r30 = 0;
     while (var_r30 < *(s32 *)((char *)arg0 + 8)) {
-        Unk8015E9A4V *obj = *(Unk8015E9A4V **)((char *)*(void **)((char *)arg0 + 4) + var_r31);
-        obj->v15(arg1);
+        Entry *obj = *(Entry **)((char *)*(void **)((char *)arg0 + 4) + var_r31);
+        obj->Call(arg1);
         var_r31 += 4;
         var_r30 += 1;
     }
