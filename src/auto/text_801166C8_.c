@@ -309,47 +309,7 @@ u32 fn_80116BD4(s32 arg0, s32 arg1, s32 arg2) {
     return (var_r4 << 16) | var_r3;
 }
 
-void fn_80116CC4(s32* arg0, u16 arg1, u32 arg2) {
-    s32* ptr;
-    s32 fill;
-    u32 blocks;
-    u32 count;
-    u32 words;
-    ptr = arg0;
-    words = arg2 >> 1;
-    fill = (arg1 & ~0xFFFF0000) | (arg1 << 16);
-    if (words != 0) {
-        blocks = words >> 3;
-        count = blocks;
-        if (blocks != 0) {
-            do {
-                ptr[0] = fill;
-                ptr[1] = fill;
-                ptr[2] = fill;
-                ptr[3] = fill;
-                ptr[4] = fill;
-                ptr[5] = fill;
-                ptr[6] = fill;
-                ptr[7] = fill;
-                ptr += 8;
-                count -= 1;
-            } while (count != 0);
-            words &= 7;
-            if (words != 0)
-                goto tail;
-        } else {
-tail:
-            count = words;
-            do {
-                *ptr = fill;
-                ptr += 1;
-                count -= 1;
-            } while (count != 0);
-        }
-    }
-    if (arg2 & 1)
-        *(s16*)ptr = arg1;
-}
+void fn_80116CC4(s32* arg0, u16 arg1, u32 arg2) { s32* ptr = arg0; u32 words = arg2 >> 1; u32 fill = ((u32)arg1 << 16) | arg1; if (words != 0) { u32 blocks = words >> 3; if (blocks != 0) { do { ptr[0] = fill; ptr[1] = fill; ptr[2] = fill; ptr[3] = fill; ptr[4] = fill; ptr[5] = fill; ptr[6] = fill; ptr[7] = fill; ptr += 8; } while (--blocks != 0); words &= 7; if (words == 0) goto odd; goto tail; } else { tail: do { *ptr++ = (s32)fill; } while (--words != 0); } } odd: if (arg2 & 1) *(u16*)ptr = arg1; }
 
 extern s64 OSGetTime(void);
 extern s32 lbl_8055DEC0;
@@ -1442,19 +1402,10 @@ void fn_80119218(void *arg0, s16 arg1, s16 arg2, s16 arg3) {
 #pragma scheduling invalid_target
 void fn_80119288(void* arg0, f32 arg1) {
     void* saved = arg0;
-    void* first;
-    s32 mode;
-    s32 out1;
-    s32 out2;
-    s32 out3;
-    first = *(void**)((u8*)saved + 0x7C);
+    void* first = *(void**)((u8*)saved + 0x7C);
     if (first != 0) {
-        arg0 = first;
-        mode = *(s32*)((u8*)saved + 0x78);
-        out1 = *(s32*)((u8*)saved + 0xA4);
-        out2 = *(s32*)((u8*)saved + 0xA8);
-        out3 = mode == 1 ? *(s32*)((u8*)saved + 0xAC) : 0;
-        ((void (*)(void*, s32, s32, s32))fn_80119218)(arg0, out1, out2, out3);
+        s32 mode = *(s32*)((u8*)saved + 0x78);
+        ((void (*)(void*, s32, s32, s32))fn_80119218)(first, *(s32*)((u8*)saved + 0xA4), *(s32*)((u8*)saved + 0xA8), (mode == 1) ? *(s32*)((u8*)saved + 0xAC) : 0);
     }
     first = *(void**)((u8*)saved + 0x80);
     if (first != 0)
