@@ -6,9 +6,11 @@ extern unsigned char lbl_80422F40[];
 extern signed char lbl_8032AFE0[];
 extern int memset(void *, int, unsigned int);
 #pragma scheduling invalid_target
+#pragma dont_inline on
 unsigned char fn_8012F7E0(signed char arg0) {
+    register int initialized = lbl_805599E8;
     int i;
-    if (lbl_805599E8 != 0) {
+    if (initialized != 0) {
         lbl_805599E8 = 0;
         memset(lbl_80422F40, 0xFF, 0x100);
         for (i = 0; i < 64; i++) {
