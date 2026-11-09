@@ -1066,6 +1066,5 @@ extern float lbl_805636E0;
 extern void fn_8002F6AC(void *, void (*)(void));
 extern void fn_80128668(void *);
 extern void *fn_80237968(void *, int);
-extern void fn_80237A08();
 extern char lbl_8034095C[];
 extern char lbl_80340970[];
