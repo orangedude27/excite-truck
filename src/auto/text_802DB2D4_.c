@@ -595,9 +595,8 @@ int fn_802DC6AC(int a, unsigned int b) {
     int col = (int)b / 4;
     int x = a % 4;
     int y = (int)b % 4;
-    char *tile = (char *)lbl_8055FEBC + (row + (col << 7)) * 64;
     int index = ((x + (y << 2)) << 4) / 8;
-    tile += index;
+    char *tile = (char *)lbl_8055FEBC + (row + (col << 7)) * 64 + index;
     return *(unsigned short *)(tile + 32) | ((unsigned int)*(unsigned short *)tile << 16);
 }
 
