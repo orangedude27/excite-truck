@@ -434,8 +434,12 @@ void fn_802C3918(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
     u16 temp_r0_2, temp_r7, temp_r7_2, temp_r8;
     s8 temp_r4_2, temp_r5_2;
 
-    sp8 = arg1; spC = arg2; sp10 = arg6; sp14 = arg7;
-    sp1C = arg3 - arg1; sp18 = arg4 - arg2;
+    sp8 = arg1;
+    spC = arg2;
+    sp10 = arg6;
+    sp14 = arg7;
+    sp1C = arg3 - arg1;
+    sp18 = arg4 - arg2;
     if (fn_802C3170((void *)arg5, &sp10, &sp14, &sp8, &spC, &sp1C, &sp18) != 0) {
         var_r30 = (u16 *)fn_802C3044((void *)arg0, sp8, spC);
         var_r3 = (u16 *)fn_802C3044((void *)arg5, sp10, sp14);
@@ -456,7 +460,8 @@ loop_copy:
             var_r30++;
             *var_r3 = temp_r0_2;
             var_r3++;
-            if (var_r4 > 0) goto loop_copy;
+            if (var_r4 > 0)
+                goto loop_copy;
             var_r30 = (u16 *)((u8 *)var_r30 + temp_r5);
             var_r3 = (u16 *)((u8 *)var_r3 + temp_r6);
             temp_r0 = sp18 - 1;
@@ -488,7 +493,8 @@ loop_10:
                     temp_r0_2 |= temp_r7 & 0x1F;
                     *var_r3_2 = temp_r0_2;
                     var_r3_2++;
-                    if (var_r4_2 > 0) goto loop_10;
+                    if (var_r4_2 > 0)
+                        goto loop_10;
                     var_r30_2 = (u16 *)((u8 *)var_r30_2 + temp_r5);
                     var_r3_2 = (u16 *)((u8 *)var_r3_2 + temp_r6);
                     temp_r0 = sp18 - 1;
@@ -517,10 +523,11 @@ loop_17:
                     temp_r0_4 = ((s32)temp_r8 * 2) & 0x400;
                     temp_r4_4 = ((s32)temp_r8 * 2) & 0xFFC0;
                     temp_r4_4 |= temp_r8 & 0x1F;
-                    temp_r0_4 = temp_r4_4 | (temp_r0_4 >> 5);
+                    temp_r0_4 = (temp_r4_4 | (temp_r0_4 >> 5));
                     *var_r3_3 = temp_r0_4;
                     var_r3_3++;
-                    if (var_r7 > 0) goto loop_17;
+                    if (var_r7 > 0)
+                        goto loop_17;
                     var_r30_3 = (u16 *)((u8 *)var_r30_3 + temp_r5);
                     var_r3_3 = (u16 *)((u8 *)var_r3_3 + temp_r6);
                     temp_r0 = sp18 - 1;
@@ -551,7 +558,8 @@ loop_24:
                     temp_r0_2 |= (temp_r7_2 << 4) & 0xF000;
                     *var_r3_4 = temp_r0_2;
                     var_r3_4++;
-                    if (var_r4 > 0) goto loop_24;
+                    if (var_r4 > 0)
+                        goto loop_24;
                     var_r30_4 = (u16 *)((u8 *)var_r30_4 + temp_r5);
                     var_r3_4 = (u16 *)((u8 *)var_r3_4 + temp_r6);
                     temp_r0 = sp18 - 1;
@@ -992,8 +1000,53 @@ void fn_802C47B8(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
     }
 }
 #pragma pop
-extern void *fn_8012C370(s32, u32 *, s32 *, s32, u8 *);
-extern const char lbl_8034B144[];
+/* The resource manager's loader (fn_8012C370), as the loaders in this file
+   call it: hand back the resource named `name` whose fourcc tag is `tag`,
+   report the file's version through `version`, and, through `swapFlag`,
+   whether the block was only just read in and so still holds the
+   little-endian data the caller has to swap.  `newFlag` may take a byte the
+   loader sets on such a first load; pass 0 to ignore it. */
+typedef void *(*LoadResource)(const char *name, u32 tag, u32 *version,
+                              s32 *size, void *newFlag, u8 *swapFlag);
+
+extern const char lbl_8034B144[]; /* "Wrong stamp version in \"%s\": %x (expecting %x)" */
+
+/* --- STMP: a stamp, the game's run-length encoded sprite image ---------- */
+/* fn_802C49E8 loads one by name, fn_802C4C80 releases it and fn_802C4C90
+   draws one of its frames onto a canvas: it walks the frame's rows through
+   the row table, decodes each row's 8-bit colour indices with one of the
+   two palettes and writes them out.  The file is stored little-endian and
+   its row table holds offsets into the block, so the first time a stamp is
+   loaded fn_802C49E8 swaps every 32-bit field the game reads and turns
+   those offsets into pointers. */
+typedef struct {
+    s32 width;                    /* 0x000 pixels per row */
+    s32 height;                   /* 0x004 rows per frame */
+    s32 x_off;                    /* 0x008 offset a frame is drawn at */
+    s32 y_off;                    /* 0x00C */
+    s32 frames;                   /* 0x010 frames in the stamp */
+    u16 palette[2][256];          /* 0x014 colours: [0] on a mode 3 canvas,
+                                     [1] on any other (fn_802C4C90) */
+    u32 unknown_414[256];         /* 0x414 swapped with the header; no
+                                     matched code reads it */
+    u32 *rows;                    /* 0x814 -> the row table below */
+    u8 *pixels;                   /* 0x818 -> rows + height*frames*4 */
+} Stamp;                          /* 0x81C: u32 rows[frames*height], then
+                                     each row's run-length encoded pixels */
+
+#define STAMP_TAG     0x53544D50 /* 'STMP' */
+#define STAMP_VERSION 3
+
+/* Swap the four bytes of the little-endian 32-bit field at b + off into the
+   console's byte order, in place, through the caller's u8 temporary t. */
+#define STAMP_SWAP_WORD(b, off)      \
+    t = (b)[off];                    \
+    (b)[off] = (b)[(off) + 3];       \
+    (b)[(off) + 3] = t;              \
+    t = (b)[(off) + 1];              \
+    (b)[(off) + 1] = (b)[(off) + 2]; \
+    (b)[(off) + 2] = t;
+
 #pragma push
 #pragma opt_unroll_loops off
 void *fn_802C49E8(s32 arg0) {
