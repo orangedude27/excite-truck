@@ -127,7 +127,7 @@ extern int fn_802146BC(void *, int, int, int);
 extern void fn_8023EC94(void);
 extern void fn_80236914(void);
 void fn_8023E7A8(unsigned int mode) {
-    char name[28] = {0};
+    char name[32] = {0};
     char a[128] = {0}, b[128] = {0}, c[128] = {0};
     switch (mode) {
     case 0: strcpy(name, (char *)lbl_80341CC8 + 0x34); break;
@@ -137,24 +137,36 @@ void fn_8023E7A8(unsigned int mode) {
     case 4: strcpy(name, (char *)&lbl_8055BCB0); break;
     case 5: strcpy(name, (char *)lbl_80341CC8 + 0x58); break;
     case 6: strcpy(name, (char *)lbl_80341CC8 + 0x68); break;
-    case 7: strcpy(name, (char *)lbl_80341CC8 + 0x74); break;
-    case 8:
-        strcpy(name, (char *)lbl_80341CC8 + 0x1e8);
-        strcpy(a, (char *)lbl_80341CC8 + 0x1f8);
-        strcpy(b, (char *)lbl_80341CC8 + 0x21c);
-        strcpy(c, (char *)lbl_80341CC8 + 0x238);
+    case 7:
+        strcpy(name, (char *)lbl_80341CC8 + 0x74);
+        strcpy(a, (char *)lbl_80341CC8 + 0x84);
+        strcpy(b, (char *)lbl_80341CC8 + 0xa0);
+        strcpy(c, (char *)lbl_80341CC8 + 0xb8);
         break;
-    case 9:
+    case 8:
         strcpy(name, (char *)lbl_80341CC8 + 0xc4);
         strcpy(a, (char *)lbl_80341CC8 + 0xd4);
         strcpy(b, (char *)lbl_80341CC8 + 0xf4);
         strcpy(c, (char *)&lbl_8055BCB8);
+        break;
+    case 9:
+        strcpy(name, (char *)lbl_80341CC8 + 0xc4);
+        strcpy(a, (char *)lbl_80341CC8 + 0x114);
+        strcpy(b, (char *)lbl_80341CC8 + 0x138);
+        strcpy(c, (char *)lbl_80341CC8 + 0x14c);
         break;
     case 10:
         strcpy(name, (char *)lbl_80341CC8 + 0x160);
         strcpy(a, (char *)lbl_80341CC8 + 0x174);
         strcpy(b, (char *)lbl_80341CC8 + 0x198);
         strcpy(c, (char *)&lbl_8055BCB8);
+        break;
+    default:
+        fn_802E30C8((const char *)(lbl_80341CC8 + 0x1ac));
+        strcpy(name, (char *)lbl_80341CC8 + 0x1e8);
+        strcpy(a, (char *)lbl_80341CC8 + 0x1f8);
+        strcpy(b, (char *)lbl_80341CC8 + 0x21c);
+        strcpy(c, (char *)lbl_80341CC8 + 0x238);
         break;
     }
     lbl_8055F1AC = 0;
@@ -170,10 +182,10 @@ void fn_8023E7A8(unsigned int mode) {
     }
 }
 
+#pragma scheduling invalid_target
 void fn_8023EC94(void) {
     u8 *p;
     s32 i;
-
     p = &lbl_8055F1AC;
     i = 0;
     do {
@@ -183,9 +195,10 @@ void fn_8023EC94(void) {
             fn_80214A9C(i + 1);
         }
         i++;
-    } while (i < 3 && (p++, 1));
+        p++;
+    } while (i < 3);
 }
-
+#pragma scheduling on
 s32 fn_8023ECF8(void) {
     return lbl_8055F1C8 < fn_802E2C20();
 }
