@@ -637,6 +637,7 @@ void fn_801B1318(void) {
 extern s32 fn_801B526C(void);
 extern s32 fn_8026A344(void);
 extern void fn_8026A248(s32, s32);
+extern s32 fn_8026A27C(s32);
 #pragma cplusplus on
 #pragma scheduling invalid_target
 extern "C" void fn_801B1390(s32 arg0, s32 arg1) {
