@@ -63,8 +63,12 @@ extern u8 lbl_8055FD19;
 extern u32 lbl_804C5650[];
 extern u32 lbl_8055FDE8;
 extern u8 lbl_8055FDEC;
+/* The FIFO vertex fn_802D68C4 pushes to the graphics processor: a position, one
+   RGBA8 color and one texture coordinate, 24 bytes. */
 typedef struct { f32 x, y, z; } FifoVec3;
 typedef struct { FifoVec3 pos; u32 color; f32 u, v; } FifoVtx;
+/* Writing a value here sends it to the GX FIFO. */
+#define GX_FIFO_ADDR 0xCC008000
 extern f32 lbl_804C5690[];
 extern f32 lbl_804C56C0[];
 extern f32 lbl_804DB068[];
