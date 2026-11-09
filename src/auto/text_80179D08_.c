@@ -208,7 +208,6 @@ extern "C" void fn_80179F94(void *arg0, void *arg1) {
     void *slot;
     f32 value;
     f32 old;
-
     count = *(s32 *)((u8 *)arg0 + 0x24);
     slot = (u8 *)arg0 + count * 4;
     *(void **)((u8 *)slot + 0x14) = arg1;
@@ -217,7 +216,7 @@ extern "C" void fn_80179F94(void *arg0, void *arg1) {
     *(s32 *)((u8 *)arg0 + 0x28) = count;
     value = ((Fn80179F94Dummy *)arg1)->m13(arg1, slot, count - 1);
     old = *(f32 *)((u8 *)arg0 + 0x2C);
-    old = old <= value ? value : old;
+    old = old > value ? old : value;
     *(f32 *)((u8 *)arg0 + 0x2C) = old;
 }
 #pragma cplusplus reset
@@ -244,16 +243,26 @@ extern f32 PSVECMag(f32 *);
 extern f64 sin(f64);
 extern f64 cos(f64);
 extern void fn_8017AE94(void *, f32 *, f32 *, f32);
-void fn_8017A028(void *arg0,u16 *arg1,u16 *arg2,s32 *arg3,s32 *arg4,f32 arg5) {
-f32 a[3],b[3],m0[12],m1[12],x,y,z,mag,k,c,s,t;
-fn_8017A008((u8*)a,(u8*)arg1+8,12); fn_8017A008((u8*)b,(u8*)arg2+8,12);
-#define CL(v) ((v)<0.0f?0.0f:((v)>1.0f?1.0f:(v)))
-x=CL(((f32)arg1[2]-1.0f)/65535.0f)*2.0f-1.0f; y=CL(((f32)arg1[1]-1.0f)/65535.0f)*2.0f-1.0f; z=CL(((f32)arg1[0]-1.0f)/65535.0f)*2.0f-1.0f; a[0]=x;a[1]=y;a[2]=z;
-x=CL(((f32)arg2[2]-1.0f)/65535.0f)*2.0f-1.0f; y=CL(((f32)arg2[1]-1.0f)/65535.0f)*2.0f-1.0f; z=CL(((f32)arg2[0]-1.0f)/65535.0f)*2.0f-1.0f; b[0]=x;b[1]=y;b[2]=z;
-mag=PSVECMag(a); if(mag>lbl_80561B8C){k=1.0f/mag;x=a[0]*k;y=a[1]*k;z=a[2]*k;s=(f32)sin(mag);c=(f32)cos(mag);t=1.0f-c;m0[0]=c+t*x*x;m0[1]=t*x*y+s*z;m0[2]=t*x*z-s*y;m0[3]=t*x*y-s*z;m0[4]=c+t*y*y;m0[5]=t*y*z+s*x;m0[6]=t*x*z+s*y;m0[7]=t*y*z-s*x;m0[8]=c+t*z*z;}else{m0[0]=1;m0[1]=0;m0[2]=0;m0[3]=0;m0[4]=1;m0[5]=0;m0[6]=0;m0[7]=0;m0[8]=1;}
-mag=PSVECMag(b);if(mag>lbl_80561B8C){k=1.0f/mag;x=b[0]*k;y=b[1]*k;z=b[2]*k;s=(f32)sin(mag);c=(f32)cos(mag);t=1.0f-c;m1[0]=c+t*x*x;m1[1]=t*x*y+s*z;m1[2]=t*x*z-s*y;m1[3]=t*x*y-s*z;m1[4]=c+t*y*y;m1[5]=t*y*z+s*x;m1[6]=t*x*z+s*y;m1[7]=t*y*z-s*x;m1[8]=c+t*z*z;}else{m1[0]=1;m1[1]=0;m1[2]=0;m1[3]=0;m1[4]=1;m1[5]=0;m1[6]=0;m1[7]=0;m1[8]=1;}
-fn_8017AE94((u8*)arg0+0x3c,m0,m1,arg5);fn_8017A580(arg0);*arg3=20;*arg4=20;}
-
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma dont_inline on
+void fn_8017A028(void *o,u16 *p,u16 *q,s32 *r,s32 *s,f32 angle) {
+ f32 va[3],vb[3],a[3],b[3],m[9],n[9],x,y,z,mag,k,c,si,t;
+ fn_8017A008((u8*)va,(u8*)p+8,12);fn_8017A008((u8*)vb,(u8*)q+8,12);
+ x=((f32)p[2]-lbl_80561B7C)/lbl_80561B80; if(x<lbl_80561B78)x=((f32)p[2]-lbl_80561B7C)/lbl_80561B80; if(x>lbl_80561B7C)x=lbl_80561B7C;
+ y=((f32)p[1]-lbl_80561B7C)/lbl_80561B80; if(y<lbl_80561B78)y=((f32)p[1]-lbl_80561B7C)/lbl_80561B80; if(y>lbl_80561B7C)y=lbl_80561B7C;
+ z=((f32)p[0]-lbl_80561B7C)/lbl_80561B80; if(z<lbl_80561B78)z=((f32)p[0]-lbl_80561B7C)/lbl_80561B80; if(z>lbl_80561B7C)z=lbl_80561B7C;
+ a[0]=lbl_80561B84+z*lbl_80561B88;a[1]=lbl_80561B84+y*lbl_80561B88;a[2]=lbl_80561B84+x*lbl_80561B88;
+ x=((f32)q[2]-lbl_80561B7C)/lbl_80561B80;if(x<lbl_80561B78)x=((f32)q[2]-lbl_80561B7C)/lbl_80561B80;if(x>lbl_80561B7C)x=lbl_80561B7C;
+ y=((f32)q[1]-lbl_80561B7C)/lbl_80561B80;if(y<lbl_80561B78)y=((f32)q[1]-lbl_80561B7C)/lbl_80561B80;if(y>lbl_80561B7C)y=lbl_80561B7C;
+ z=((f32)q[0]-lbl_80561B7C)/lbl_80561B80;if(z<lbl_80561B78)z=((f32)q[0]-lbl_80561B7C)/lbl_80561B80;if(z>lbl_80561B7C)z=lbl_80561B7C;
+ b[0]=lbl_80561B84+z*lbl_80561B88;b[1]=lbl_80561B84+y*lbl_80561B88;b[2]=lbl_80561B84+x*lbl_80561B88;
+ mag=PSVECMag(a);if(mag>lbl_80561B8C){k=lbl_80561B78/mag;x=k*a[0];y=k*a[1];z=k*a[2];si=(f32)sin(mag);c=(f32)cos(mag);t=lbl_80561B78-c;m[0]=c+t*x*x;m[1]=t*x*y+si*z;m[2]=t*x*z-si*y;m[3]=t*x*y-si*z;m[4]=c+t*y*y;m[5]=t*y*z+si*x;m[6]=t*x*z+si*y;m[7]=t*y*z-si*x;m[8]=c+t*z*z;}else{m[0]=lbl_80561B78;m[1]=lbl_80561B7C;m[2]=lbl_80561B7C;m[3]=lbl_80561B7C;m[4]=lbl_80561B78;m[5]=lbl_80561B7C;m[6]=lbl_80561B7C;m[7]=lbl_80561B7C;m[8]=lbl_80561B78;}
+ mag=PSVECMag(b);if(mag>lbl_80561B8C){k=lbl_80561B78/mag;x=k*b[0];y=k*b[1];z=k*b[2];si=(f32)sin(mag);c=(f32)cos(mag);t=lbl_80561B78-c;n[0]=c+t*x*x;n[1]=t*x*y+si*z;n[2]=t*x*z-si*y;n[3]=t*x*y-si*z;n[4]=c+t*y*y;n[5]=t*y*z+si*x;n[6]=t*x*z+si*y;n[7]=t*y*z-si*x;n[8]=c+t*z*z;}else{n[0]=lbl_80561B78;n[1]=lbl_80561B7C;n[2]=lbl_80561B7C;n[3]=lbl_80561B7C;n[4]=lbl_80561B78;n[5]=lbl_80561B7C;n[6]=lbl_80561B7C;n[7]=lbl_80561B7C;n[8]=lbl_80561B78;}
+ fn_8017AE94((u8*)o+0x3c,m,n,angle);fn_8017A580(o);*r=20;*s=20;
+}
+#pragma pop
 void fn_8017A578(void *arg0) {
     fn_8017A580(arg0);
 }
@@ -295,6 +304,61 @@ void fn_8017A580(void *arg0) {
 void fn_8017A800(void) {
 
 }
+
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+s32 fn_8017A804(void *arg0, void *arg1) {
+    f32 v[3], q[4];
+    f32 *qp;
+    f32 (*m)[3] = (f32 (*)[3])((u8 *)arg0 + 0x3C);
+    f32 trace, t, scale, angle, si, x, y, z;
+    s32 i, j, k, pad;
+    *(f32 *)((u8 *)arg1+8)=*(f32 *)((u8 *)arg0+0x60);
+    *(f32 *)((u8 *)arg1+12)=*(f32 *)((u8 *)arg0+0x64);
+    *(f32 *)((u8 *)arg1+16)=*(f32 *)((u8 *)arg0+0x68);
+    trace=m[2][2]+(m[0][0]+m[1][1]);
+    if(trace>lbl_80561B7C){
+        t=(f32)((double (*)(float))fn_8002F234)(lbl_80561B78+trace);
+        scale=lbl_80561B98/t;
+        q[3]=lbl_80561B98*t;
+        q[0]=scale*(m[1][2]-m[2][1]);
+        q[1]=scale*(m[2][0]-m[0][2]);
+        q[2]=scale*(m[0][1]-m[1][0]);
+    }else{
+        qp = q;
+        i=0;
+        if(m[1][1]>m[0][0])i=1;
+        if(m[2][2]>m[i][i])i=2;
+        j=(i+1)%3; k=(j+1)%3;
+        t=(f32)((double (*)(float))fn_8002F234)(lbl_80561B78+(m[i][i]-(m[j][j]+m[k][k])));
+        scale=lbl_80561B98/t;
+        qp[i]=lbl_80561B98*t;
+        qp[3]=scale*(m[j][k]-m[k][j]);
+        qp[j]=scale*(m[i][j]+m[j][i]);
+        qp[k]=scale*(m[i][k]+m[k][i]);
+    }
+    angle=(f32)fn_8002EFA8(q[3]);
+    si=(f32)sin(angle);
+    if((f32)__fabs(si)>lbl_80558DC4[0]){
+        scale=(lbl_80561B9C*angle)/si;
+        v[0]=q[0]*scale; v[1]=q[1]*scale; v[2]=q[2]*scale;
+    }else{v[0]=lbl_80561B7C;v[1]=lbl_80561B7C;v[2]=lbl_80561B7C;}
+    x=(v[0]-lbl_80561B84)/lbl_80561B88;
+    x=lbl_80561B78<x?lbl_80561B78:x;
+    x=x>lbl_80561B7C?x:lbl_80561B7C;
+    y=(v[1]-lbl_80561B84)/lbl_80561B88;
+    ((s16*)arg1)[0]=(s16)(lbl_80561B98+(lbl_80561B7C+x*lbl_80561B80));
+    y=lbl_80561B78<y?lbl_80561B78:y;
+    y=y>lbl_80561B7C?y:lbl_80561B7C;
+    z=(v[2]-lbl_80561B84)/lbl_80561B88;
+    ((s16*)arg1)[1]=(s16)(lbl_80561B98+(lbl_80561B7C+y*lbl_80561B80));
+    z=lbl_80561B78<z?lbl_80561B78:z;
+    z=z>lbl_80561B7C?z:lbl_80561B7C;
+    ((s16*)arg1)[2]=(s16)(lbl_80561B98+(lbl_80561B7C+z*lbl_80561B80));
+    return 20;
+}
+#pragma pop
 
 void fn_8017AB84(void *matrix, float *dst, const float *src) {
     if (dst == src) {
