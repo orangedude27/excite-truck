@@ -575,7 +575,13 @@ void fn_8025A50C(void) {
 }
 #pragma pop
 
-void fn_8025A83C(void *arg0) {
+#pragma cplusplus on
+extern "C" void fn_8025A83C(void *arg0) {
+    class Obj {
+    public:
+        virtual void f0();
+        virtual void apply(void *);
+    };
     float a = lbl_80563AE4;
     float b = lbl_80563AE0;
     float *p = (float *)((char *)arg0 + 0x84);
@@ -588,9 +594,9 @@ void fn_8025A83C(void *arg0) {
     p[6] = a;
     p[7] = a;
     p[8] = b;
-    ((void (*)(void *, void *))(*(void ***)arg0)[3])(arg0, (char *)arg0 + 4);
+    ((Obj *)arg0)->apply((char *)arg0 + 4);
 }
-
+#pragma cplusplus reset
 void fn_8025A87C(void *arg0) {
     float a = lbl_80563AE4;
     char zero = 0;
