@@ -4868,6 +4868,14 @@ void btu_task_msg_handler(void) {
 
     btu_task_is_idle = 1;
 }
+
+void btu_start_timer(void *p_tle, UINT16 event, UINT32 timeout) {
+    GKI_remove_from_timer_list((TIMER_LIST_Q *)&lbl_803C0A50[0x40], (TIMER_LIST_ENT *)p_tle);
+    ((TIMER_LIST_ENT *)p_tle)->event = event;
+    ((TIMER_LIST_ENT *)p_tle)->ticks = (INT32)timeout;
+    GKI_add_to_timer_list((TIMER_LIST_Q *)&lbl_803C0A50[0x40], (TIMER_LIST_ENT *)p_tle);
+}
+
 #pragma pop
 
 extern unsigned char lbl_803C0A50[];
@@ -9118,6 +9126,18 @@ found:
 
     return btm_initiate_rem_name(remote_bda, p_cur, 1, 0x28, p_cb);
 }
+
+tBTM_STATUS BTM_CancelRemoteDeviceName(void) {
+    u8 *base = lbl_803C0F78;
+    if (base[0x27C0] >= 3)
+        fn_8007093C(0xD0002, lbl_80316464);
+    if ((base[0x16AE] & 1) == 0)
+        return 6;
+    if (btsnd_hcic_link_key_neg_reply_800843D8(base + 0x16A8) == 0)
+        return 3;
+    return 1;
+}
+
 #pragma pop
 
 tBTM_INQ_INFO *BTM_InqDbRead(BD_ADDR p_bda) {
@@ -14700,14 +14720,13 @@ s32 btsnd_hcic_write_policy_set_80085668(u16 arg0, u16 arg1) {
 void btsnd_hcic_write_cur_iac_lap(u8 *p_buf, u8 num_cur_iac, u8 *cur_iac_lap) {
     u8 *p = p_buf + 12;
     u8 *q = cur_iac_lap;
-    int count = num_cur_iac;
     *(u16 *)(p_buf + 2) = num_cur_iac * 3 + 4;
     *(u16 *)(p_buf + 4) = 0;
     p_buf[8] = 0x3A;
     p_buf[9] = 0x0C;
     p_buf[10] = num_cur_iac * 3 + 1;
     p_buf[11] = num_cur_iac;
-    for (; count; count--) {
+    while (num_cur_iac-- != 0) {
         p[0] = q[2];
         p[1] = q[1];
         p[2] = q[0];
