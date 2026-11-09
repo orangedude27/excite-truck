@@ -269,16 +269,36 @@ double x;
 extern double atan(double);
 extern double fabs(double);
 extern double __fabs(double);
+/* atan2(y, x) - MSL's e_atan2.c (see src/MSL/e_atan2.c for the reference copy
+ * with Sun's copyright notice).  The angle of the point (x, y), in radians:
+ * the quadrant comes from m = 2*sign(x) + sign(y), the size from atan(|y/x|),
+ * and pi/pi_lo are subtracted in two pieces so the result stays accurate near
+ * pi.  The special cases follow the C standard:
+ *
+ *	ATAN2((anything), NaN ) is NaN;
+ *	ATAN2(NAN , (anything) ) is NaN;
+ *	ATAN2(+-0, +(anything but NaN)) is +-0  ;
+ *	ATAN2(+-0, -(anything but NaN)) is +-pi ;
+ *	ATAN2(+-(anything but 0 and NaN), 0) is +-pi/2;
+ *	ATAN2(+-(anything but INF and NaN), +INF) is +-0 ;
+ *	ATAN2(+-(anything but INF and NaN), -INF) is +-pi;
+ *	ATAN2(+-INF,+INF ) is +-pi/4 ;
+ *	ATAN2(+-INF,-INF ) is +-3pi/4;
+ *	ATAN2(+-INF, (anything but,0,NaN, and INF)) is +-pi/2;
+ *
+ * tiny is added to every exact multiple of pi/4 so that a rounding cannot turn
+ * one of those answers into the neighbouring one.  The constants are kept as
+ * function-local statics; the compiler pools them in .sdata2. */
 double __ieee754_atan2(y, x)
 double y, x;
 {
     static const double
         tiny = 1.0e-300,
         zero = 0.0,
-        pi_o_4 = 7.8539816339744827900E-01,
-        pi_o_2 = 1.5707963267948965580E+00,
-        pi = 3.1415926535897931160E+00,
-        pi_lo = 1.2246467991473531772E-16;
+        pi_o_4 = 7.8539816339744827900E-01, /* 0x3FE921FB, 0x54442D18 */
+        pi_o_2 = 1.5707963267948965580E+00, /* 0x3FF921FB, 0x54442D18 */
+        pi = 3.1415926535897931160E+00,     /* 0x400921FB, 0x54442D18 */
+        pi_lo = 1.2246467991473531772E-16;  /* 0x3CA1A626, 0x33145C07: pi - pi_o_2*2 */
 
     double z;
     int k, m, hx, hy, ix, iy;
@@ -291,71 +311,76 @@ double y, x;
     iy = hy & 0x7fffffff;
     ly = __LO(y);
     if (((ix | ((lx | -lx) >> 31)) > 0x7ff00000) ||
-        ((iy | ((ly | -ly) >> 31)) > 0x7ff00000))
+        ((iy | ((ly | -ly) >> 31)) > 0x7ff00000)) /* x or y is NaN */
         return x + y;
     if ((hx - 0x3ff00000 | lx) == 0)
-        return atan(y);
-    m = ((hy >> 31) & 1) | ((hx >> 30) & 2);
+        return atan(y);                      /* x=1.0 */
+    m = ((hy >> 31) & 1) | ((hx >> 30) & 2); /* 2*sign(x)+sign(y) */
 
+    /* when y = 0 */
     if ((iy | ly) == 0) {
         switch (m) {
         case 0:
         case 1:
-            return y;
+            return y; /* atan(+-0,+anything)=+-0 */
         case 2:
-            return pi + tiny;
+            return pi + tiny; /* atan(+0,-anything) = pi */
         case 3:
-            return -pi - tiny;
+            return -pi - tiny; /* atan(-0,-anything) =-pi */
         }
     }
+    /* when x = 0 */
     if ((ix | lx) == 0)
         return (hy < 0) ? -pi_o_2 - tiny : pi_o_2 + tiny;
 
+    /* when x is INF */
     if (ix == 0x7ff00000) {
         if (iy == 0x7ff00000) {
             switch (m) {
             case 0:
-                return pi_o_4 + tiny;
+                return pi_o_4 + tiny; /* atan(+INF,+INF) */
             case 1:
-                return -pi_o_4 - tiny;
+                return -pi_o_4 - tiny; /* atan(-INF,+INF) */
             case 2:
-                return 3.0 * pi_o_4 + tiny;
+                return 3.0 * pi_o_4 + tiny; /*atan(+INF,-INF)*/
             case 3:
-                return -3.0 * pi_o_4 - tiny;
+                return -3.0 * pi_o_4 - tiny; /*atan(-INF,-INF)*/
             }
         } else {
             switch (m) {
             case 0:
-                return zero;
+                return zero; /* atan(+...,+INF) */
             case 1:
-                return -zero;
+                return -zero; /* atan(-...,+INF) */
             case 2:
-                return pi + tiny;
+                return pi + tiny; /* atan(+...,-INF) */
             case 3:
-                return -pi - tiny;
+                return -pi - tiny; /* atan(-...,-INF) */
             }
         }
     }
+    /* when y is INF */
     if (iy == 0x7ff00000)
         return (hy < 0) ? -pi_o_2 - tiny : pi_o_2 + tiny;
 
+    /* compute y/x */
     k = (iy - ix) >> 20;
     if (k > 60)
-        z = pi_o_2 + 0.5 * pi_lo;
+        z = pi_o_2 + 0.5 * pi_lo; /* |y/x| >  2**60 */
     else if (hx < 0 && k < -60)
-        z = 0.0;
+        z = 0.0; /* |y|/x < -2**60 */
     else
-        z = atan(__fabs(y / x));
+        z = atan(__fabs(y / x)); /* safe to do y/x */
     switch (m) {
     case 0:
-        return z;
+        return z; /* atan(+,+) */
     case 1:
         __HI(z) ^= 0x80000000;
-        return z;
+        return z; /* atan(-,+) */
     case 2:
-        return pi - (z - pi_lo);
-    default:
-        return (z - pi_lo) - pi;
+        return pi - (z - pi_lo); /* atan(+,-) */
+    default:                     /* case 3 */
+        return (z - pi_lo) - pi; /* atan(-,-) */
     }
 }
 
