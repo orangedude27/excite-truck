@@ -13,7 +13,7 @@ public:
 #pragma cplusplus off
 // split_file divides it into the game's real files (file_status shows its range).
 
-void fn_8013C7D0(void);
+void *fn_8013C7D0();
 
 extern int lbl_8055E188;
 void fn_80131818(int);
@@ -21,10 +21,11 @@ void fn_8013C748(void);
 
 extern char lbl_8032C478[];
 void fn_8013C748(void) {
-    int *p = (int *)&lbl_8032C478;
-    while (*p) {
-        *(int *)(p + 2) = 0;
-        p += 3;
+    struct Entry { int a; int b; int c; };
+    struct Entry *e = (struct Entry *)&lbl_8032C478;
+    while (e->a != 0) {
+        e->c = 0;
+        e++;
     }
 }
 
