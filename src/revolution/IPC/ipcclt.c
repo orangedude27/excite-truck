@@ -293,6 +293,16 @@ static s32 __ios_Ipc1(s32 fd, IPCRequestType type, IPCAsyncCallback callback,
     return ret;
 }
 
+/*
+ * Hand a request built by __ios_Ipc1() to the ARM (Starlet IOS) and, for the
+ * synchronous IOS_* calls, wait for its reply.
+ *
+ * The request goes on the outstanding queue and is sent right away when the
+ * ARM has acked the previous one. Without a callback this thread then sleeps
+ * on the request's queue until IpcReplyHandler() wakes it, and the request is
+ * freed here; with a callback the request stays alive for the reply interrupt
+ * to run the callback on and free, so this returns as soon as it is queued.
+ */
 static s32 __ios_Ipc2(IPCRequestEx* req, IPCAsyncCallback callback) {
     s32 ret = IPC_RESULT_OK;
     BOOL enabled;
@@ -301,24 +311,30 @@ static s32 __ios_Ipc2(IPCRequestEx* req, IPCAsyncCallback callback) {
         ret = IPC_RESULT_INVALID_INTERNAL;
     } else {
         if (callback == NULL) {
+            // Only this thread will wait on it
             OSInitThreadQueue(&req->queue);
         }
+        // The ARM reads the request block straight out of memory
         DCFlushRange(&req->base, sizeof(IPCRequest));
 
         enabled = OSDisableInterrupts();
 
         ret = __ipcQueueRequest(req);
         if (ret != IPC_RESULT_OK) {
+            // Nothing was queued (too many requests outstanding already)
             OSRestoreInterrupts(enabled);
             if (callback != NULL) {
                 ipcFree(req);
             }
         } else {
+            // Send now only if the ARM acked the last request; otherwise
+            // IpcAckHandler() sends this one when that ack comes in.
             if (__mailboxAck > 0) {
                 __ipcSendRequest();
             }
 
             if (callback == NULL) {
+                // IpcReplyHandler() fills in req->base.ret and wakes us
                 OSSleepThread(&req->queue);
             }
 
@@ -330,6 +346,7 @@ static s32 __ios_Ipc2(IPCRequestEx* req, IPCAsyncCallback callback) {
         }
     }
 
+    // An async request now belongs to IpcReplyHandler(), which frees it
     if (req != NULL && callback == NULL) {
         ipcFree(req);
     }
