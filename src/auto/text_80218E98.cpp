@@ -6097,6 +6097,36 @@ extern "C" void fn_8022455C(void *arg0) {
 }
 
 extern "C" double sin(double);
+
+/* --- Intensity fade ----------------------------------------------------
+ * fn_8022435C builds one of these (vtable lbl_8033E248) from a resource whose
+ * +0x9C word gives the fade rate, its sign picking the mode.  fn_80224864
+ * starts a fade when the effect starts or stops playing, fn_802245C8 runs it
+ * every frame and fn_802248FC hands the value to the effect slot at +0x284,
+ * whose +0x30 float scales what is drawn through it.  Only the fields the fade
+ * uses are named; the ones around them belong to the functions here.
+ */
+typedef struct IntensityFade {
+    u8 header[0x248];  /* the object this is part of, see fn_8022435C */
+    s32 mode;          /* 0x248: 0 fades in/out of 0.0, 1 of 0.1 */
+    f32 startTime;     /* 0x24C: fn_8023659C() time the current fade began at */
+    u8 pad_250[0x10];
+    u8 fadingIn;       /* 0x260: rising towards the wave */
+    u8 fadingOut;      /* 0x261: falling towards the resting level */
+    u8 pad_262[2];
+    s32 speed;         /* 0x264: ramp rate and wave frequency */
+    f32 value;         /* 0x268: the intensity the fade drives */
+    f32 startValue;    /* 0x26C: value a fall-off started from */
+} IntensityFade;
+
+extern f32 lbl_8056353C, lbl_80563540;
+#define FADE_OFF     lbl_805634A8  /* 0.0f: where mode 0 rests */
+#define FADE_IDLE    lbl_805634B0  /* 0.1f: where mode 1 rests */
+#define FADE_HALF    lbl_805634C4  /* 0.5f: mode 0 wave centre and swing */
+#define FADE_DONE_0  lbl_80563518  /* 0.005f: mode 0 is done fading out below this */
+#define FADE_SWING_1 lbl_8056353C  /* 0.45f: mode 1 wave swing */
+#define FADE_DONE_1  lbl_80563540  /* 0.105f: mode 1 is done fading out below this */
+
 #pragma push
 #pragma processor 750
 extern "C" void fn_802245C8(void *arg0) {
@@ -6334,7 +6364,108 @@ extern "C" void fn_80224DDC(void *arg0, f32 x, f32 y, f32 z) {
     ((void (*)(void *, f32 *, f32, f32))fn_80015A20)(&result[0], &scaled[0], temp_f1, temp_f2);
     fn_80015B20((void *)handle, &result[0], (void *)handle);
 }
-#pragma scheduling on
+
+extern "C" f32 lbl_80563544;
+extern "C" void fn_80232C50(char *, s32, s32, s32, f32, f32, f32, f32, f32, f32);
+#pragma push
+#pragma processor 750
+extern "C" void fn_80224E74(void *this_) {
+    char buf1[0x200];
+    char buf2[0x200];
+    u8 tmp[0x40];
+    if (TB(0x299, u8) != 0) {
+        fn_8022EEF8(tmp, TB(0x29C, s32), fn_8022EDC4());
+        fn_8022ED00(tmp);
+    }
+    s32 h = ((DummyTextBoxV *)this_)->g28();
+    s32 x0 = TB(8, s32);
+    char *p = TB(0x244, char *);
+    f32 hh = (f32)h;
+    f32 hf = (f32)(TB(0x10, s32) - x0);
+    strlen(p);
+    f32 xx = (f32)TB(4, s32);
+    f32 yy = (f32)x0;
+    if (TB(0x250, u32) & 0x10) {
+        s32 n = 0;
+        while (*p != 0) {
+            char *start = p;
+            char *dst;
+            n++;
+            memset(buf1, 0, 0x200);
+            dst = buf1;
+            do {
+                u8 c = *p;
+                char *e = ((c & 0xF0) == 0xE0) ? p + 3 : ((c & 0xE0) == 0xC0) ? p + 2 : p + 1;
+                s32 len = e - p;
+                for (s32 i = 0; i < len; i++) *dst++ = *p++;
+                if (!(TB(0x254, f32) * fn_8023293C(TB(0x248, s32), (s32)buf1, lbl_805634A4) < hh)) break;
+            } while (*p != 0 && *p != 10);
+            char *save = p;
+            if (*p != 0) {
+                while (*p != 0x20 && *p != 10 && p > start) p--;
+            }
+            if (p <= start) p = save;
+            if (*p == 0x20 || *p == 10) p++;
+        }
+        f32 lh = (f32)(TB(0x10, s32) - TB(8, s32));
+        yy += lbl_805634C4 * lh;
+        yy -= lbl_805634C4 * (f32)(n - 1) * TB(0x254, f32) * (f32)fn_80232B70(TB(0x248, s32));
+    }
+    f64 f31 = yy;
+    p = TB(0x244, char *);
+    f32 wdiv = lbl_80563544;
+    f32 half = lbl_805634C4;
+    s32 row = 0;
+    while (*p != 0) {
+        char *start = p;
+        s32 n;
+        s32 fits;
+        memset(buf2, 0, 0x200);
+        n = 0;
+        do {
+            u8 c = *p;
+            char *e = ((c & 0xF0) == 0xE0) ? p + 3 : ((c & 0xE0) == 0xC0) ? p + 2 : p + 1;
+            s32 len = e - p;
+            for (s32 i = 0; i < len; i++) buf2[n++] = *p++;
+            fits = TB(0x254, f32) * fn_8023293C(TB(0x248, s32), (s32)buf2, lbl_805634A4) < hh;
+        } while (fits && *p != 0 && *p != 10);
+        char *save = p;
+        s32 saven = n;
+        if (*p != 0) {
+            while (*p != 0x20 && p != start && *p != 10) {
+                p--;
+                n--;
+            }
+        }
+        if (p == start) {
+            p = save;
+            n = saven;
+        }
+        buf2[n] = 0;
+        if (*p == 0x20 || *p == 10) p++;
+        for (s32 i = 0; i < n; i++) {
+            if (buf2[i] == 0x5E) buf2[i] = 0x20;
+        }
+        s32 W = lbl_8055FB9C;
+        s32 H = lbl_8055FBA0;
+        f32 x = (f32)W / wdiv + xx;
+        f32 f3 = TB(0x254, f32);
+        f32 y = (f32)H * half - ((f32)f31 + (f32)row * (f3 * (f32)fn_80232B70(TB(0x248, s32))));
+        row++;
+        if (TB(0x258, u8) == 0 && y < (f32)H * half - (hf + (f32)TB(8, s32))) {
+            fn_80232BA4((char *)this_ + 0x259, TB(0x248, s32), TB(0x24C, s32), 10, x + hh, y, f3 - lbl_805634B0, lbl_805634A8, lbl_805634A4);
+            break;
+        }
+        u32 flags = TB(0x250, u32);
+        if (flags & 4) x += hh * half;
+        if (flags & 2) {
+            fn_80232C50(buf2, TB(0x248, s32), TB(0x24C, s32), 9, x, y, TB(0x254, f32), hh, lbl_805634A8, lbl_805634A4);
+        } else {
+            fn_80232BA4(buf2, TB(0x248, s32), TB(0x24C, s32), 0, x, y, TB(0x254, f32), lbl_805634A8, lbl_805634A4);
+        }
+    }
+    if (TB(0x299, u8) != 0) fn_8022EDB8();
+}
 #pragma pop
 extern "C" u8 lbl_8033DA84[];
 extern "C" u8 lbl_8033DAEC[];
@@ -6536,6 +6667,12 @@ extern "C" void fn_8022591C(void *arg0) {
             entry[0] += *(f32 *)(obj + 0x260);
     }
 }
+
+extern "C" void fn_8022591C(void *arg0);
+extern "C" void fn_80225B6C(void *arg0) {
+    fn_8022591C(arg0);
+}
+
 #pragma pop
 extern "C" s32 fn_80217C4C(s32);
 extern "C" s32 fn_80217D84(s32);
