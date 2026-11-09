@@ -554,6 +554,51 @@ void fn_801F596C(void) {
 
 }
 
+#pragma push
+#pragma processor 750
+void fn_801F5970(void *arg0, void *arg1) {
+    char *self = arg0;
+    Vertex_801F4F9C *quad = arg1;
+    int w = *(int *)(self + 0x2C);
+    int h = *(int *)(self + 0x30);
+    int count = h * w;
+    int total = count * 2;
+    int i, j;
+    char *mem;
+
+    mem = fn_8012850C(total * 12 + 0x10, lbl_8033ADD4);
+    mem = fn_8002F37C(fn_8001BA68, 0, 12, total);
+    *(char **)(self + 0) = mem;
+    *(char **)(self + 4) = mem;
+    *(char **)(self + 8) = mem + count * 12;
+    *(void **)(self + 0xC) = fn_8012850C(count * 12, lbl_8033ADE8);
+    *(int *)(self + 0x10) = count;
+
+    for (i = 0; i < *(int *)(self + 0x30); i++) {
+        float t = (float)i / (float)(*(int *)(self + 0x30) - 1);
+        Vertex_801F4F9C v0 = quad[0], v1 = quad[1], v2 = quad[2], v3 = quad[3];
+        Vertex_801F4F9C left = lerp_vertex(&v0, &v2, t);
+        Vertex_801F4F9C right = lerp_vertex(&v1, &v3, t);
+        for (j = 0; j < *(int *)(self + 0x2C); j++) {
+            int n = (j + i * *(int *)(self + 0x2C)) * 12;
+            float s = (float)j / (float)(*(int *)(self + 0x2C) - 1);
+            float *pos = (float *)(*(char **)(self + 8) + n);
+            float *cpy = (float *)(*(char **)(self + 4) + n);
+            float *uvc = (float *)(*(char **)(self + 0xC) + n);
+            Vertex_801F4F9C m = lerp_vertex(&left, &right, s);
+            pos[0] = m.pos.x;
+            pos[1] = m.pos.y;
+            pos[2] = m.pos.z;
+            cpy[0] = m.pos.x;
+            cpy[1] = pos[1];
+            cpy[2] = pos[2];
+            uvc[0] = m.uv.x;
+            uvc[1] = m.uv.y;
+            *(unsigned int *)(uvc + 2) = m.color;
+        }
+    }
+}
+#pragma pop
 extern float PSQUATMultiply(void *, void *);
 extern double fn_8002F208(float);
 extern void fn_801F5970(void *, void *);
@@ -1403,8 +1448,8 @@ void fn_801F78D8(void) {
 
 extern void fn_801F75A4();
 #pragma scheduling invalid_target
-void fn_801F78DC(void *arg0, void *arg1) {
-    fn_801F75A4(arg1, (char *)arg1 + 0x2C, arg0);
+void fn_801F78DC(void *arg0, void *arg1, void *arg2) {
+    fn_801F75A4(arg2, (char *)arg2 + 0x2C, arg1);
 }
 #pragma scheduling on
 extern const char lbl_8033AECC[];
