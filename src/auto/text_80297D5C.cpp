@@ -324,6 +324,12 @@ extern "C" int fn_8029833C(void *arg0, void *arg1, void *arg2, void *arg3, short
     fn_80299338(lbl_8055F7C4, index, obj, (char *)obj + 0xC, (char *)obj + 0x18, local);
     return index;
 }
+
+extern "C" void fn_8029840C(void *arg0, int arg1) {
+    fn_802994C0(lbl_8055F7C4, arg1);
+    *(char *)((char *)arg0 + arg1 * 0x2c + 0x28) = 0;
+}
+
 #pragma pop
 extern "C" int fn_802984D0(void*, void*, void*, void*, void*, void*);
 extern "C" void fn_802994C0(void*, unsigned int);
