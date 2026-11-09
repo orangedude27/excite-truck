@@ -547,6 +547,52 @@ s32 fn_802610C8(void) {
 
 #pragma push
 #pragma cplusplus on
+/* --- the two-level selector of the challenge-difficulty screen --------- */
+/* lbl_8055F420 points at the frame header the screen loop (fn_80260954)
+   builds on its stack, which carries the state of its cursor: a list of
+   groups (the difficulties, from the data source lbl_8055F3E4) and, inside
+   each group, its items.  fn_80261C68 creates the two widget arrays and
+   stores them at 0x18 and 0x3C; the input callbacks fn_80261178 (enter),
+   fn_802616A8 (up), fn_802613E0 (down) and fn_80260E30 (leave) move the
+   cursor and repaint both lists, and lbl_8055F3EB says which list the
+   cursor is in. */
+typedef struct {
+    s32 cursor;                 /* 0x00 item the cursor is on */
+    s32 group;                  /* 0x04 group the cursor is on */
+    s32 item_count;             /* 0x08 widgets in the item array */
+    s32 group_count;            /* 0x0C widgets in the group array */
+    u8  pad_0x10[8];
+    u8 *item_widgets;           /* 0x18 SelectorWidget *[item_count] */
+    u8  pad_0x1C[0x20];
+    u8 *group_widgets;          /* 0x3C SelectorWidget *[group_count] */
+} SelectorView;
+#define SELECTOR          ((SelectorView *)lbl_8055F420)
+#define SELECTOR_IN_ITEMS (lbl_8055F3EB) /* 0: cursor on a group, 1: in its items */
+
+/* --- a group or item widget of that selector --------------------------- */
+/* Slots 0x08-0x5C belong to the widget base class (its Draw is the slot the
+   .data vtables fill at 0x28, fn_802621F0 for items).  The selector only
+   uses the five state setters below, which set the flags Draw reads: 0x1C
+   = the cursor is on this widget, 0x1D = dim it.  0x60 and 0x64 are the
+   slots the two vtables (lbl_80345E28 groups, lbl_80345EA0 items) point at
+   fn_802607C4/fn_802607EC and fn_80260848/fn_80260814, which set and clear
+   byte 0x1D; the last three are named from how the selector calls them. */
+struct SelectorWidget {
+    virtual void v08(); virtual void v0C(); virtual void v10(); virtual void v14();
+    virtual void v18(); virtual void v1C(); virtual void v20(); virtual void v24();
+    virtual void v28(); virtual void v2C(); virtual void v30(); virtual void v34();
+    virtual void v38(); virtual void v3C(); virtual void v40(); virtual void v44();
+    virtual void v48(); virtual void v4C(); virtual void v50(); virtual void v54();
+    virtual void v58(); virtual void v5C();
+    virtual void setDim();      /* 0x60 */
+    virtual void clearDim();    /* 0x64 */
+    virtual void setCursor();   /* 0x68 */
+    virtual void clearCursor(); /* 0x6C */
+    virtual void setExpanded(); /* 0x70 */
+};
+#pragma pop
+#pragma push
+#pragma cplusplus on
 extern "C" s32 fn_80261178(void *arg0) {
     struct Obj {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -597,49 +643,6 @@ extern "C" s32 fn_80261178(void *arg0) {
     }
     return 0;
 }
-#pragma cplusplus on
-/* --- the two-level selector of the challenge-difficulty screen --------- */
-/* lbl_8055F420 points at the frame header the screen loop (fn_80260954)
-   builds on its stack, which carries the state of its cursor: a list of
-   groups (the difficulties, from the data source lbl_8055F3E4) and, inside
-   each group, its items.  fn_80261C68 creates the two widget arrays and
-   stores them at 0x18 and 0x3C; the input callbacks fn_802616A8 (up) and
-   fn_802613E0 (down) move the cursor and repaint both lists, and
-   lbl_8055F3EB says which list the cursor is in. */
-typedef struct {
-    s32 cursor;                 /* 0x00 item the cursor is on */
-    s32 group;                  /* 0x04 group the cursor is on */
-    s32 item_count;             /* 0x08 widgets in the item array */
-    s32 group_count;            /* 0x0C widgets in the group array */
-    u8  pad_0x10[8];
-    u8 *item_widgets;           /* 0x18 SelectorWidget *[item_count] */
-    u8  pad_0x1C[0x20];
-    u8 *group_widgets;          /* 0x3C SelectorWidget *[group_count] */
-} SelectorView;
-#define SELECTOR          ((SelectorView *)lbl_8055F420)
-#define SELECTOR_IN_ITEMS (lbl_8055F3EB) /* 0: cursor on a group, 1: in its items */
-
-/* --- a group or item widget of that selector --------------------------- */
-/* Slots 0x08-0x5C belong to the widget base class (its Draw is the slot the
-   .data vtables fill at 0x28, fn_802621F0 for items).  The selector only
-   uses the five state setters below, which set the flags Draw reads: 0x1C
-   = the cursor is on this widget, 0x1D = dim it.  0x60 and 0x64 are the
-   slots the two vtables (lbl_80345E28 groups, lbl_80345EA0 items) point at
-   fn_802607C4/fn_802607EC and fn_80260848/fn_80260814, which set and clear
-   byte 0x1D; the last three are named from how the selector calls them. */
-struct SelectorWidget {
-    virtual void v08(); virtual void v0C(); virtual void v10(); virtual void v14();
-    virtual void v18(); virtual void v1C(); virtual void v20(); virtual void v24();
-    virtual void v28(); virtual void v2C(); virtual void v30(); virtual void v34();
-    virtual void v38(); virtual void v3C(); virtual void v40(); virtual void v44();
-    virtual void v48(); virtual void v4C(); virtual void v50(); virtual void v54();
-    virtual void v58(); virtual void v5C();
-    virtual void setDim();      /* 0x60 */
-    virtual void clearDim();    /* 0x64 */
-    virtual void setCursor();   /* 0x68 */
-    virtual void clearCursor(); /* 0x6C */
-    virtual void setExpanded(); /* 0x70 */
-};
 /* Move the selector's cursor down (input event 0x128 of the challenge screen).
  *
  * The cursor walks the group list while it is outside one, and the items of
