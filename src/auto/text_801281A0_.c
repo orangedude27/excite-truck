@@ -461,16 +461,14 @@ extern "C" void *fn_801288AC(void *arg0, s32 arg1, char *arg2, s32 arg3) {
     *(void **)((u8 *)ctx + 0x10) = record;
     start = (u8 *)record + 0x40;
     memset(start, 0xE3, size);
-    p = (u8 *)record + 0x40 + *(s32 *)((u8 *)record + 0x2C);
-    do {
+    p = start + *(s32 *)((u8 *)record + 0x2C);
+    while (p < start + ((s32 (*)(s32, s32))fn_801281F4)(*(s32 *)((u8 *)record + 0x2C), 4))
         *p++ = 0xE3;
-        rounded = ((s32 (*)(s32, s32))fn_801281F4)(*(s32 *)((u8 *)record + 0x2C), 4);
-    } while (p < (u8 *)record + 0x40 + rounded);
     limit = size + *(s32 *)((u8 *)ctx + 4) + 0x40;
     *(s32 *)((u8 *)ctx + 4) = limit;
     if (limit < *(s32 *)((u8 *)ctx + 8)) {
         rounded = ((s32 (*)(s32, s32))fn_801281F4)(*(s32 *)((u8 *)record + 0x2C), 4);
-        *(u32 *)((u8 *)record + rounded + 0x40) = 0x53544B41;
+        *(u32 *)(start + rounded) = 0x53544B41;
     }
     if (*(s32 *)((u8 *)ctx + 0x14) < *(s32 *)((u8 *)ctx + 4))
         *(s32 *)((u8 *)ctx + 0x14) = *(s32 *)((u8 *)ctx + 4);
@@ -634,10 +632,9 @@ void fn_80128EF0(void *arg0, s32 arg1) {
 }
 
 void fn_80128F68(void *arg0) {
-    s32 *p = (s32 *)arg0;
-    s32 a = p[4];
-    s32 b = p[3];
-    fn_802E30C8(&lbl_8032A448, (void *)a, (void *)b);
+    fn_802E30C8(lbl_8032A448,
+        (void *)(*(s32 *)((u8 *)arg0 + 0x10) / 1024),
+        (void *)(*(s32 *)((u8 *)arg0 + 0xC) / 1024));
 }
 
 extern s32 fn_801281F4(s32, s32);
