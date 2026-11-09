@@ -2517,15 +2517,14 @@ void fn_801C95EC(f32 arg0) {
     }
 }
 
-s32 fn_801C968C(s32 delta) {
-    register s32 temp_r4;
-    temp_r4 = lbl_8055E820 + delta;
-    lbl_8055E820 = temp_r4;
-    if (temp_r4 < 0) {
-        lbl_8055E820 = *(s32*)((u8*)lbl_8055E86C + lbl_8055E81C * 0x10 + 8) - 1;
+void fn_801C968C(s32 delta) {
+    s32 updated = lbl_8055E820 + delta;
+    lbl_8055E820 = updated;
+    if (updated < 0) {
+        lbl_8055E820 = *(s32 *)((u8 *)lbl_8055E86C + lbl_8055E81C * 0x10 + 8) - 1;
         return;
     }
-    if (temp_r4 >= *(s32*)((u8*)lbl_8055E86C + lbl_8055E81C * 0x10 + 8)) {
+    if (updated >= *(s32 *)((u8 *)lbl_8055E86C + lbl_8055E81C * 0x10 + 8)) {
         lbl_8055E820 = 0;
     }
 }
