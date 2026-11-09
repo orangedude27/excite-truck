@@ -311,7 +311,7 @@ void fn_802DFB30(void) {
     GXSetBlendMode(1, 4, 5, 0);
 }
 
-#pragma scheduling off
+#pragma scheduling invalid_target
 void fn_802DFCC0(void) {
     GXSetTevSwapMode(0, 0, 0);
     GXSetTevSwapMode(1, 0, 0);
