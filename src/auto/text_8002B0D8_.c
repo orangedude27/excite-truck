@@ -92,11 +92,13 @@ extern int __ieee754_rem_pio2(double, double *);
 extern unsigned char lbl_802FE850[];
 extern double lbl_805609D8, lbl_805609E0, lbl_805609E8, lbl_805609F0, lbl_805609F8, lbl_80560A00, lbl_80560A08;
 void fn_8002B0D8(unsigned char *s) {
-    register unsigned char *p = s;
-    register unsigned char *base = lbl_802FE850;
+    register unsigned char *base;
     register int c;
     register int skip;
+    register unsigned char *p;
 
+    base = lbl_802FE850;
+    p = s;
     goto check;
 loop:
     c = (signed char)*p;
@@ -1396,6 +1398,8 @@ double sin(double x) {
     }
 }
 #pragma pop
+#pragma push
+#pragma scheduling 603
 double fn_8002EF30(double x) {
     int hx;
     double y[2];
@@ -1405,6 +1409,7 @@ double fn_8002EF30(double x) {
     hx = __ieee754_rem_pio2(x, y);
     return __kernel_tan(1 - ((hx & 1) << 1), y[0], y[1]);
 }
+#pragma pop
 
 extern double __ieee754_acos(double);
 
