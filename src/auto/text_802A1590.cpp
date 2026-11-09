@@ -223,7 +223,9 @@ extern "C" void fn_802A1794(void) {
     do {
         void *obj = *entry;
         if (obj != 0) ((Dispatch *)obj)->call();
-    } while (++index < 8 && (entry++, index < 8));
+        index++;
+        entry++;
+    } while (index < 8);
 }
 
 extern "C" void fn_802A17F8(void) {
