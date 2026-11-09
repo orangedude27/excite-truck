@@ -133,21 +133,40 @@ def main() -> None:
 
     print(f"Downloading {url} to {output}")
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    try:
-        with urllib.request.urlopen(req) as response:
-            download(url, response, output)
-    except urllib.error.URLError as e:
-        if str(e).find("CERTIFICATE_VERIFY_FAILED") == -1:
-            raise e
+
+    last_error = None
+    for attempt in range(1, 4):
         try:
-            import certifi
-            import ssl
-        except:
-            print("\"certifi\" module not found. Please install it using \"python -m pip install certifi\".")
-            return
-            
-        with urllib.request.urlopen(req, context=ssl.create_default_context(cafile=certifi.where())) as response:
-            download(url, response, output)
+            with urllib.request.urlopen(req, timeout=30) as response:
+                download(url, response, output)
+                return
+        except urllib.error.HTTPError as e:
+            last_error = e
+            # Retry transient server/gateway errors (500, 502, 503, 504)
+            if e.code in (500, 502, 503, 504) and attempt < 3:
+                import time
+                time.sleep(attempt * 2)
+                continue
+            raise e
+        except urllib.error.URLError as e:
+            last_error = e
+            if str(e).find("CERTIFICATE_VERIFY_FAILED") != -1:
+                try:
+                    import certifi
+                    import ssl
+                except:
+                    print("\"certifi\" module not found. Please install it using \"python -m pip install certifi\".")
+                    return
+                with urllib.request.urlopen(req, context=ssl.create_default_context(cafile=certifi.where()), timeout=30) as response:
+                    download(url, response, output)
+                    return
+            if attempt < 3:
+                import time
+                time.sleep(attempt * 2)
+                continue
+            raise e
+    if last_error:
+        raise last_error
 
 if __name__ == "__main__":
     main()
