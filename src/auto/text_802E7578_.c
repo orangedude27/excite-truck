@@ -20,7 +20,7 @@ void fn_802E7578(void) {
       virtual ~Dummy_8055FFF0();
              virtual void f4(s32);
              virtual void f8(s32);
-      virtual void f12(s32);
+              virtual void f12(s32, s32, s32);
       virtual void f16(s32, s32, s32);
       virtual void f20(s32);
       virtual void f24(s32);
