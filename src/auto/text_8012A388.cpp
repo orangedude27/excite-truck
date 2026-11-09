@@ -2416,23 +2416,22 @@ extern "C" void fn_8012E498(void *arg0) {
 #pragma scheduling reset
 
 extern "C" void fn_8012E5E4(void *arg0, void *arg1) {
-    void **link = (void **)((u8 *)arg0 + 8);
     void *node;
-    s32 found = 0;
-    node = *link;
-    while (node != 0) {
+    s32 found;
+    void **link;
+    link = (void **)((u8 *)arg0 + 8);
+    found = 0;
+    while ((node = *link) != 0) {
         if (node == arg1) {
             *link = *(void **)node;
             found = 1;
             break;
         }
         link = (void **)node;
-        node = *link;
     }
-    if (found != 0) {
-        *(void **)arg1 = *(void **)((u8 *)arg0 + 0xC);
-        *(void **)((u8 *)arg0 + 0xC) = arg1;
-    }
+    if (found == 0) return;
+    *(void **)arg1 = *(void **)((u8 *)arg0 + 0xC);
+    *(void **)((u8 *)arg0 + 0xC) = arg1;
 }
 
 extern "C" void fn_8012E630(void *arg0) {
