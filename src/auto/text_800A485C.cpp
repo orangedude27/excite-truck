@@ -7210,6 +7210,8 @@ extern "C" s32 fn_800B1AFC(s32 arg0, s32 arg1, s32 *arg2, s32 arg3) {
 #define VF_ERR_BAD_REQUEST          10 /* the request does not fit the file */
 #define VF_ERR_WRITE_PROTECTED      11 /* the media cannot be written to */
 #define VF_ERR_WRITE_BUSY           25 /* another handle owns the queued write */
+#define VF_ERR_SEEK_RANGE           0x25 /* a seek to a position that would not fit in 32 bits */
+#define VF_ERR_NOT_OPEN             0x26 /* the stream the handle is on is no longer open */
 
 /* A failed operation on a handle is recorded three times over: as the VF
  * instance's last error, as the error of the volume the stream reads through
