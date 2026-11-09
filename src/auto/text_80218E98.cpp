@@ -2551,24 +2551,15 @@ extern "C" void fn_8021CB4C(void *arg0, s32 arg1) {
         virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
         virtual s32 get();
     };
-    volatile union {
-        struct {
-            u32 high;
-            u32 low;
-        } words;
-        f64 value;
-    } converted;
-    First *first;
-    register s32 result;
-    register s32 start;
-
+    volatile union { struct { u32 high; u32 low; } words; f64 value; } converted;
+    s32 result;
+    s32 start;
     fn_802C3034(arg1);
-    first = *(First **)((u8 *)arg0 + 0x248);
-    first->call();
+    ((First *)*(void **)((u8 *)arg0 + 0x248))->call();
     result = ((Second *)arg0)->get();
     start = *(s32 *)((u8 *)arg0 + 0x254);
     converted.words.high = 0x43300000;
-    converted.words.low = (result - start) ^ 0x80000000;
+    converted.words.low = (u32)(result - start) ^ 0x80000000;
 }
 #pragma push
 #pragma ppc_psq_save off
@@ -5126,18 +5117,18 @@ extern "C" void *fn_80222718(void *arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma push
+#pragma processor 750
 extern "C" void fn_80222788(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     f32 spC;
     f32 sp8;
     if (*(s32 *)((u8 *)arg0 + 4) != 0) {
-        register f32 temp_f31 = lbl_805634A8;
+        f32 temp_f31 = lbl_805634A8;
         fn_80230C30(&spC, &sp8, arg1, arg2);
         fn_802353F4(*(s32 *)((u8 *)arg0 + 4), arg4, spC, sp8, temp_f31);
     }
 }
-
-#pragma push
-#pragma use_lmw_stmw off
+#pragma pop
 extern "C" void fn_80222800(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg4, s32 *arg5, s32 *arg6) {
     *arg3 = arg1;
     *arg4 = arg2;
