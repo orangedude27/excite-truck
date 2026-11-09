@@ -16257,47 +16257,82 @@ void L2CA_Deregister(UINT16 psm) {
     }
 }
 
-u16 L2CA_ConnectReq(u16 psm, u8 *addr) {
+/* Higher layers call this to start an L2CAP connection to a PSM on a peer.
+ * Nothing is connected when it returns: it looks up (or creates) the link
+ * control block for the peer's BD_ADDR, kicks off the ACL link when there is
+ * none, and allocates the channel control block whose local CID it returns.
+ * The callbacks of the PSM's RCB report when the connection comes up or
+ * fails. Returns that CID, or 0 when the connection could not be started. */
+u16 L2CA_ConnectReq(u16 psm, u8 *p_bd_addr) {
     extern void *l2cu_find_rcb_by_psm(u16);
     extern void *l2cu_allocate_lcb(u8 *);
     extern void *l2cu_allocate_ccb(void *, u16);
     extern BOOLEAN l2cu_create_conn(void *);
-    u8 *log = lbl_80317C20;
-    void *rcb;
-    u8 *lcb, *ccb;
-    if (lbl_803C4040[0] >= 3) fn_80070954(0x80002, log + 0x110, psm);
-    if (lbl_803C4040[0] >= 3) fn_800709CC(0x80002, log + 0x130, addr[0], addr[1], addr[2], addr[3], addr[4], addr[5]);
-    if (!fn_80079514()) {
-        if (lbl_803C4040[0] >= 2) fn_8007093C(0x80001, log + 0x168);
+    u8 *trace = lbl_80317C20; /* this file's L2CAP trace strings */
+    tL2C_RCB_VIEW *p_rcb;
+    tL2C_LCB_VIEW *p_lcb;
+    tL2C_CCB_VIEW *p_ccb;
+
+    if (l2cb_trace_level >= BT_TRACE_LEVEL_API) /* L2CA_ConnectReq() PSM: ... */
+        fn_80070954(0x80002, trace + 0x110, psm);
+    if (l2cb_trace_level >= BT_TRACE_LEVEL_API) /* ... and the peer's BD_ADDR */
+        fn_800709CC(0x80002, trace + 0x130, p_bd_addr[0], p_bd_addr[1], p_bd_addr[2], p_bd_addr[3], p_bd_addr[4], p_bd_addr[5]);
+
+    /* Fail if we have not established communications with the controller */
+    if (!fn_80079514()) { /* BTM_IsDeviceUp() */
+        if (l2cb_trace_level >= BT_TRACE_LEVEL_WARNING) /* BTU not ready */
+            fn_8007093C(0x80001, trace + 0x168);
         return 0;
     }
-    rcb = l2cu_find_rcb_by_psm(psm);
-    if (rcb == 0) {
-        if (lbl_803C4040[0] >= 2) fn_80070954(0x80001, log + 0x18c, psm);
+
+    /* Fail if the PSM is not registered */
+    p_rcb = l2cu_find_rcb_by_psm(psm);
+    if (p_rcb == 0) {
+        if (l2cb_trace_level >= BT_TRACE_LEVEL_WARNING) /* no RCB for this PSM */
+            fn_80070954(0x80001, trace + 0x18c, psm);
         return 0;
     }
-    lcb = l2cu_find_lcb_by_bd_addr(addr);
-    if (lcb == 0) {
-        lcb = l2cu_allocate_lcb(addr);
-        if (lcb == 0) {
-            if (lbl_803C4040[0] >= 2) fn_8007093C(0x80001, log + 0x1bc);
+
+    /* First, see if we already have a link to the remote */
+    p_lcb = l2cu_find_lcb_by_bd_addr(p_bd_addr);
+    if (p_lcb == 0) {
+        /* No link. Get an LCB and start link establishment */
+        p_lcb = l2cu_allocate_lcb(p_bd_addr);
+        if (p_lcb == 0) {
+            if (l2cb_trace_level >= BT_TRACE_LEVEL_WARNING) /* no LCB for L2CA_conn_req */
+                fn_8007093C(0x80001, trace + 0x1bc);
             return 0;
         }
-        if (!l2cu_create_conn(lcb)) return 0;
+        if (!l2cu_create_conn(p_lcb))
+            return 0;
     }
-    if (*(s32 *)(lcb + 4) == 5) {
-        if (lbl_803C4040[0] >= 3) fn_8007093C(0x80002, log + 0x1e0);
+
+    /* A link that is on its way down cannot take another channel */
+    if (p_lcb->link_state == LST_DISCONNECTING) {
+        if (l2cb_trace_level >= BT_TRACE_LEVEL_API)
+            fn_8007093C(0x80002, trace + 0x1e0);
         return 0;
     }
-    ccb = ((void *(*)(void *))l2cu_allocate_ccb)(lcb);
-    if (ccb == 0) {
-        if (lbl_803C4040[0] >= 2) fn_8007093C(0x80001, log + 0x218);
+
+    /* Allocate a channel control block for the new channel; the CID to ask for
+     * is 0 ("pick one"), which r4 already holds, so only the LCB is passed. */
+    p_ccb = ((tL2C_CCB_VIEW *(*)(tL2C_LCB_VIEW *))l2cu_allocate_ccb)(p_lcb);
+    if (p_ccb == 0) {
+        if (l2cb_trace_level >= BT_TRACE_LEVEL_WARNING) /* no CCB for L2CA_conn_req */
+            fn_8007093C(0x80001, trace + 0x218);
         return 0;
     }
-    *(void **)(ccb + 0x30) = rcb;
-    if (*(s32 *)(lcb + 4) == 4) fn_80089E40(ccb, 0x14, 0);
-    if (lbl_803C4040[0] >= 3) fn_80070954(0x80002, log + 0x23c, *(u16 *)(ccb + 0x14));
-    return *(u16 *)(ccb + 0x14);
+
+    /* Save registration info */
+    p_ccb->p_rcb = p_rcb;
+
+    /* If the link is already up, start the L2CAP connection now */
+    if (p_lcb->link_state == LST_CONNECTED)
+        fn_80089E40(p_ccb, L2CEVT_L2CA_CONNECT_REQ, 0); /* l2c_csm_execute() */
+
+    if (l2cb_trace_level >= BT_TRACE_LEVEL_API) /* the CID the channel got */
+        fn_80070954(0x80002, trace + 0x23c, p_ccb->local_cid);
+    return p_ccb->local_cid;
 }
 
 BOOLEAN L2CA_ConnectRsp(BD_ADDR addr, UINT8 id, UINT16 lcid, UINT16 result, UINT16 status) {
