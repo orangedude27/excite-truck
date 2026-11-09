@@ -20,7 +20,7 @@ extern void *fn_801792F8(void);
   extern f32 fn_80134DF8(void);
   extern s32 fn_801769A8(void);
   extern void *fn_80134E90(void);
-  extern void *fn_80134EC8(void);
+      /* fn_80134EC8 takes bits arg; see definition */
   extern void *fn_80134FF8(void);
   extern void *fn_801350C0(void);
   extern void *fn_801A520C(void *, void *);
