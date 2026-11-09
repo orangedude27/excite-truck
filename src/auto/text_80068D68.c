@@ -16628,10 +16628,14 @@ void fn_80089E3C(void) {
 
 extern void l2c_csm_closed(void *, u16, void *);
 extern void l2c_csm_orig_w4_sec_comp(void *, u16, void *);
+extern void l2c_csm_term_w4_sec_comp(void *, s32, void *);
+extern void l2c_csm_w4_l2cap_connect_rsp(tL2C_CCB_VIEW *, u16, void *);
 extern void l2c_csm_w4_l2ca_connect_rsp(void *, u16, void *);
 extern void *jumptable_803187D4[];
 extern void l2c_csm_config(void *, u16, void *);
+extern void l2c_csm_open(tL2C_CCB_VIEW *, u16, void *);
 extern void l2c_csm_w4_l2cap_disconnect_rsp(void *, u16, void *);
+extern void l2c_csm_w4_l2ca_disconnect_rsp(void *, u16, void *);
 extern void *jumptable_803183B0[];
 extern void l2cu_process_peer_cfg_req();
 extern void l2cu_send_peer_config_rsp(tL2C_CCB_VIEW *, tL2CAP_CFG_INFO *);
