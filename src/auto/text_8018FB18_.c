@@ -484,6 +484,10 @@ void fn_80190360(int arg0) {
     fn_80191084(arg0, 0);
 }
 
+s32 fn_80190368(s32 arg0) {
+    return arg0 == 1 || arg0 == 0;
+}
+
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
