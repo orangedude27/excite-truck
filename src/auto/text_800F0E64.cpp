@@ -3975,7 +3975,7 @@ void StopAllSound__Q36nw4hbm3snd11SoundPlayerFi(void *self, s32 arg1) {
 }
 #pragma use_lmw_stmw reset
 extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800F877C(void *arg0, f32 farg0) {
-    if (!(farg0 >= lbl_805610BC)) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80325C50, 0x99, lbl_80325C64);
+    if (!(farg0 >= 0.0f)) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80325C50, 0x99, lbl_80325C64);
     *(f32 *)((u8 *)arg0 + 0x28) = farg0;
 }
 #pragma pop
