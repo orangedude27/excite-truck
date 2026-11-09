@@ -968,6 +968,15 @@ void fn_802D5FE4(void *arg0) {
     default: fn_802E317C(lbl_8034C334); break;
     }
 }
+
+extern void fn_802D0E48(int);
+void fn_802D6170(void *arg0) {
+    fn_802D0E48(0);
+    fn_802D5FE4(arg0);
+    fn_802D0E48(1);
+    GXCallDisplayList(*(void **)((u8 *)arg0 + 0x30), *(u32 *)((u8 *)arg0 + 0x2C));
+}
+
 #pragma pop
 
 void fn_802D61BC(void *arg0) {
