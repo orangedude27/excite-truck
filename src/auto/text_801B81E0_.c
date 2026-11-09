@@ -332,7 +332,7 @@ extern "C" int fn_801B851C(void* arg0) {
 extern "C" int fn_801B8570(int arg0) {
     extern int fn_80161B94(void);
     int result = 0;
-    if (((Dummy_801B8570 *)lbl_8055E744)->d7(arg0) != 0 && fn_80161B94() == 0) result = 1;
+    result = 0;
     return result;
 }
 
