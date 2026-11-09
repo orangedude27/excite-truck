@@ -264,33 +264,11 @@ void fn_801B5B04(void *arg0, void **arg1, s32 arg2) {
 
 #pragma scheduling on
 void fn_801B5BDC(void **arg0, s32 arg1, void *arg2) {
-    s32 n;
     void **dst = arg0;
     void *node = arg2;
-    if (arg1 > 0) {
-        n = (u32)arg1 >> 3;
-        if (n != 0) {
-            do {
-                dst[0] = node; node = *(void **)((u8 *)node + 0x44);
-                dst[1] = node; node = *(void **)((u8 *)node + 0x44);
-                dst[2] = node; node = *(void **)((u8 *)node + 0x44);
-                dst[3] = node; node = *(void **)((u8 *)node + 0x44);
-                dst[4] = node; node = *(void **)((u8 *)node + 0x44);
-                dst[5] = node; node = *(void **)((u8 *)node + 0x44);
-                dst[6] = node; node = *(void **)((u8 *)node + 0x44);
-                dst[7] = node; node = *(void **)((u8 *)node + 0x44);
-                dst += 8;
-                n--;
-            } while (n != 0);
-        }
-        arg1 &= 7;
-        if (arg1 != 0) {
-            do {
-                *dst++ = node;
-                node = *(void **)((u8 *)node + 0x44);
-                arg1--;
-            } while (arg1 != 0);
-        }
+    for (; arg1 > 0; arg1--) {
+        *dst++ = node;
+        node = *(void **)((u8 *)node + 0x44);
     }
 }
 
