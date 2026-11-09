@@ -176,16 +176,23 @@ int fn_802DB69C(void **arg0, int arg1) {
     return stage;
 }
 
-void fn_802DB778(int arg0) {
-    void *sp8;
-    int temp_r31;
+// Re-applies this module's GX pipeline for one of its three draw modes, and only
+// when the mode's textures changed: the flag is raised by the texture setters
+// (fn_802DBD88 / fn_802DBDE8) and cleared here, and each draw entry point calls
+// this for its mode right before sending its display list. It sets the alpha
+// compare from the texture entry, loads the mode's textures with their TEV order
+// (returning how many TEV stages that needs), picks the TEV stages and the
+// texture coordinate generation of the mode, and blends on the source alpha.
+void fn_802DB778(int mode) {
+    void *texObjs[3];
+    int numTevStages;
 
     if ((unsigned char)lbl_8055FE9E != 0) {
         lbl_8055FE9E = 0;
         fn_802DB2D4();
-        fn_802DB304(&sp8, arg0);
-        temp_r31 = fn_802DB69C(&sp8, arg0);
-        switch (arg0) {
+        fn_802DB304(texObjs, mode);
+        numTevStages = fn_802DB69C(texObjs, mode);
+        switch (mode) {
         case 0:
             fn_802DB394();
             break;
@@ -193,35 +200,37 @@ void fn_802DB778(int arg0) {
             fn_802DB3FC();
             break;
         case 2:
-            GXSetTevColorOp(0, 0, 0, 0, 1, 0);
-            GXSetTevColorIn(0, 0xF, 0xA, 8, 0xF);
-            GXSetTevAlphaOp(0, 0, 0, 0, 1, 0);
-            GXSetTevAlphaIn(0, 5, 7, 7, 7);
-            if (temp_r31 >= 2) {
-                GXSetTevColorOp(1, 8, 0, 0, 1, 0);
-                GXSetTevColorIn(1, 4, 8, 5, 0);
-                GXSetTevAlphaOp(1, 0, 0, 0, 1, 0);
-                GXSetTevAlphaIn(1, 0, 7, 7, 7);
+            // stage 0: the texture modulated by the vertex colour, alpha from the vertex
+            GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_ENABLE, GX_TEVPREV);
+            GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_RASC, GX_CC_TEXC, GX_CC_ZERO);
+            GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_ENABLE, GX_TEVPREV);
+            GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_RASA, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO);
+            if (numTevStages >= 2) {
+                // stage 1: keep the previous colour where the second texture is lit
+                GXSetTevColorOp(GX_TEVSTAGE1, GX_TEV_COMP_R8_GT, GX_TB_ZERO, GX_CS_SCALE_1, GX_ENABLE, GX_TEVPREV);
+                GXSetTevColorIn(GX_TEVSTAGE1, GX_CC_C1, GX_CC_TEXC, GX_CC_A1, GX_CC_CPREV);
+                GXSetTevAlphaOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_ENABLE, GX_TEVPREV);
+                GXSetTevAlphaIn(GX_TEVSTAGE1, GX_CA_APREV, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO);
             }
             break;
         }
-        GXSetNumTevStages((unsigned char)temp_r31);
-        switch (arg0) {
+        GXSetNumTevStages((unsigned char)numTevStages);
+        switch (mode) {
         case 0:
-            GXSetTexCoordGen2(0, 1, 0, 0x1E, 0, 0x7D);
+            GXSetTexCoordGen2(GX_TEXCOORD0, GX_TG_MTX2x4, GX_TG_POS, GX_TEXMTX0, GX_FALSE, GX_PTIDENTITY);
             break;
         case 1:
-            GXSetTexCoordGen2(0, 1, 0, 0x24, 0, 0x7D);
-            GXSetTexCoordGen2(1, 1, 0, 0x1E, 0, 0x7D);
-            GXSetTexCoordGen2(2, 1, 0, 0x24, 0, 0x7D);
+            GXSetTexCoordGen2(GX_TEXCOORD0, GX_TG_MTX2x4, GX_TG_POS, GX_TEXMTX2, GX_FALSE, GX_PTIDENTITY);
+            GXSetTexCoordGen2(GX_TEXCOORD1, GX_TG_MTX2x4, GX_TG_POS, GX_TEXMTX0, GX_FALSE, GX_PTIDENTITY);
+            GXSetTexCoordGen2(GX_TEXCOORD2, GX_TG_MTX2x4, GX_TG_POS, GX_TEXMTX2, GX_FALSE, GX_PTIDENTITY);
             break;
         case 2:
             fn_802DB620();
-            GXSetTexCoordGen2(0, 1, 4, 0x3C, 0, 0x7D);
-            GXSetTexCoordGen2(1, 1, 0, 0x1E, 0, 0x7D);
+            GXSetTexCoordGen2(GX_TEXCOORD0, GX_TG_MTX2x4, GX_TG_TEX0, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
+            GXSetTexCoordGen2(GX_TEXCOORD1, GX_TG_MTX2x4, GX_TG_POS, GX_TEXMTX0, GX_FALSE, GX_PTIDENTITY);
             break;
         }
-        GXSetBlendMode(1, 4, 5, 5);
+        GXSetBlendMode(GX_BM_BLEND, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_NOOP);
     }
 }
 
