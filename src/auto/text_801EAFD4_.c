@@ -435,12 +435,22 @@ next:
 #pragma scheduling on
 #pragma dont_inline off
 
-void fn_801EB800(void *object, s32 arg1, s32 arg2) {
-    register void **vt;
-    vt=*(void ***)object;
-    ((void (*)(void *, s32, s32))vt[10])(object,arg2,arg1);
+#pragma cplusplus on
+extern "C" void fn_801EB800(void *object, s32 arg1, s32 arg2) {
+    struct Dispatch {
+        virtual void u0();
+        virtual void u1();
+        virtual void u2();
+        virtual void u3();
+        virtual void u4();
+        virtual void u5();
+        virtual void u6();
+        virtual void u7();
+        virtual void dispatch(s32, s32);
+    };
+    ((Dispatch *)object)->dispatch(arg2, arg1);
 }
-
+#pragma cplusplus reset
 void fn_801EB81C(void) {
 
 }
@@ -730,20 +740,21 @@ extern s32 fn_801E85B4(void);
 extern char *fn_801E7E34(void);
 #pragma ppc_psq_save off
 extern double __fabs(double);
-void fn_801EBF00(void) {
+#pragma push
+#pragma cplusplus on
+#pragma ppc_psq_save off
+extern "C" void fn_801EBF00(void) {
     f32 m[12];
     f32 pos[3];
     f32 r[9];
     char *item;
     f32 *p;
     f32 a, scale, c, s, t;
-    s32 v, clamped;
+    s32 v;
     u8 b;
-    void **o;
 
     if (lbl_8055EBA0 != 0) {
-        o = (void **)lbl_804885E8[3];
-        ((void (*)(void *, s32))((void **)*o)[8])(o, 0);
+        ((EBF00Widget *)lbl_804885E8[3])->setVisible(0);
         if (lbl_8055AFB8 != -1) {
             fn_802C8B08(m);
             scale = lbl_80562E68 - lbl_8055EBA4;
@@ -761,15 +772,14 @@ void fn_801EBF00(void) {
             m[8] = lbl_80562E68;
             fn_802C744C(lbl_8055AFB8, m);
         }
-        o = (void **)lbl_804885E8[6];
-        ((void (*)(void *, s32))((void **)*o)[8])(o, 0);
+        ((EBF00Widget *)lbl_804885E8[6])->setVisible(0);
         item = fn_801E7E34() + fn_801E85B4() * 0xE0;
         a = *(f32 *)(item + 0xD8);
-        if ((f32)__fabs(a) > lbl_80558DC4[0]) {
+        if (!((f32)__fabs(a) <= lbl_80558DC4[0])) {
             v = (s32)(lbl_80562E78 * a);
-            clamped = v & ~(v >> 31);
+            v = v > 0 ? v : 0;
             b = 0xFF;
-            if (clamped < 0xFF) b = clamped;
+            if (v < 0xFF) b = v;
             fn_802C9474((b << 16) | (b << 8) | b | 0xFF000000);
             p = fn_802C86DC();
             pos[0] = p[9];
@@ -796,7 +806,8 @@ void fn_801EBF00(void) {
         fn_802B05D8();
     }
 }
-#pragma ppc_psq_save reset
+#pragma cplusplus reset
+#pragma pop
 extern f32 lbl_8055EBA4;
 extern f32 fn_801EC114(void);
 f32 fn_801EC114(void) {
