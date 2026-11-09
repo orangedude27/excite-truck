@@ -256,10 +256,10 @@ void fn_8001BDA8(void *arg0) {
 #pragma scheduling invalid_target
 #pragma scheduling on
 void fn_8001BE70(void *arg0) {
-    s32 index = *(s32 *)((u8 *)arg0 + 0xC);
-    s32 base = *(s32 *)((u8 *)arg0 + 0x18);
-    *(s32 *)((u8 *)arg0 + 0x1C) = *(s32 *)(base + index * 0xC + 8);
-    *(u8 *)((u8 *)arg0 + 0x20) = 0;
+    u8 *base = (u8 *)arg0;
+    *(s32 *)(base + 0x1C) =
+        *(s32 *)((u8 *)*(void **)(base + 0x18) + *(s32 *)(base + 0xC) * 0xC + 8);
+    *(u8 *)(base + 0x20) = 0;
 }
 #pragma scheduling reset
 void *fn_8001BE94(void *dest, int val, size_t count) {
@@ -885,18 +885,18 @@ s32 fn_8001D020(s32 arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 ar
     s32 count;
     s32 temp;
     s32 maxCount;
-    register s32 offset;
+    s32 offset;
     s32 remaining;
     s32 oldCount;
     s32 sourceByte;
     s32 *pool;
     char *cursor;
-    register char *base;
-    register char *dest;
+    char *base;
+    char *dest;
     void *entry;
     void *layout;
     volatile struct SavedValues saved;
-    /* Fix note: register argument aliases and a separate record base/slot pointer improved the match to 78.8%; loop scheduling and saved-register allocation still differ. */
+    /* Fix note: scan the pool, then shift and fill the selected record slot. */
     temp = fn_8001D25C(savedArg1);
     if (temp != 0) {
         record = fn_8001C540(savedArg0, temp, savedArg2, 1);
