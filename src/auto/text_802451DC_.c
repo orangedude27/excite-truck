@@ -556,6 +556,7 @@ void *fn_80246428(void *arg0, int arg1) {
     }
     return arg0;
 }
+#pragma small_data on
 
 void fn_80246498(void *arg0) {
     fn_80214CB4(*(unsigned char *)((char *)arg0 + 0x18) == 0);
