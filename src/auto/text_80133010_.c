@@ -139,13 +139,13 @@ void fn_801330E8(int arg0) {
 
 void fn_80133144(void) {
  int *entry=&lbl_8042F718[0];
- int i=0;
- do {
-   if (entry[1] != 0) fn_802E317C(lbl_8032B8D0, entry[0]);
-   i++;
-   if (i >= 8) break;
-   entry += 2;
- } while (1);
+ int i;
+ int flag;
+ for(i=0;i<8;i++){
+  flag = entry[1];
+  if(flag!=0) fn_802E317C(lbl_8032B8D0, entry[0]);
+  entry+=2;
+ }
  fn_80128668(lbl_8055E07C);
  lbl_8055E07C=0;
 }
@@ -428,6 +428,25 @@ int fn_80133AD8(int arg0) {
     dst[1] = src[1];
     return values[arg0];
 }
+
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+#pragma dont_inline on
+int fn_80133B24(char *arg0) {
+    int i = 0;
+
+    do {
+        if (stricmp(arg0, (char *)fn_80133AD8(i)) == 0) {
+            return i;
+        }
+        i++;
+    } while (i < 0x11);
+    fn_802E30C8(lbl_8032B9FC, arg0);
+    return 0x12;
+}
+#pragma dont_inline reset
+#pragma scheduling on
+#pragma use_lmw_stmw reset
 
 #pragma use_lmw_stmw off
 /*
