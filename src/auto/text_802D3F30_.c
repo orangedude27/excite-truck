@@ -168,6 +168,7 @@ void fn_802D422C(void *arg0) {
     GXSetArray(0xD, *(void **)((char *)arg0 + 0x28), 4);
     GXCallDisplayList(*(void **)((char *)arg0 + 0x30), *(u32 *)((char *)arg0 + 0x2C));
 }
+#pragma pop
 
 void fn_802D4280(void *arg0) {
     void * volatile array = *(void **)((char *)arg0 + 0x20);
