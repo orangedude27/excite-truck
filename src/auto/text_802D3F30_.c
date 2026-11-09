@@ -1,5 +1,6 @@
 #include "revolution/BTE/stack/include/btm_api.h"
 #include "revolution/BTE/stack/btm/btm_int.h"
+#include "revolution/GX/GXTypes.h"
 extern void fn_802E317C(const char *, ...);
 extern s32 fn_802DAC64(void);
 extern void fn_802D61BC(void *);
@@ -393,13 +394,128 @@ void fn_802D479C(void *arg0) {
         GXCallDisplayList(*(void **)((u8 *)object + 0x30), *(u32 *)((u8 *)object + 0x2C));
     }
 }
+
+#pragma push
+#pragma processor 750
+void fn_802D4988(void *arg0) {
+    extern s32 lbl_8055FE00;
+    extern u8 lbl_804D2C40[];
+    extern void PSQUATMultiply(void *, void *);
+    struct SourceVertex { f32 x; f32 y; f32 z; s16 half0; s16 half1; u8 index0; u8 index1; u16 pad; };
+    struct CacheEntry { s32 count; void *src; void *dst; s32 flag; };
+    register void *object = arg0;
+    register struct SourceVertex *src = *(struct SourceVertex **)((u8 *)object + 0x20);
+    register s32 count;
+    f32 *base;
+    s32 index;
+    s32 cached;
+
+    PSQUATMultiply(lbl_804C56C0 + 9, src);
+    count = *(s32 *)((u8 *)object + 0x1C);
+    lbl_8055FE00 += count;
+    base = (f32 *)fn_802CFF64(count * 12);
+    if (base != 0) {
+        register u8 *cache = lbl_804D2C40;
+        index = *(s32 *)(cache + 0x4000);
+        if (index < 0x400) {
+            struct CacheEntry *entry;
+            *(s32 *)(cache + 0x4000) = index + 1;
+            entry = (struct CacheEntry *)cache + index;
+            entry->count = count;
+            entry->src = src;
+            entry->dst = base;
+            entry->flag = 0;
+            cached = 1;
+        } else {
+            cached = 0;
+        }
+        if (cached == 0) {
+            f32 factor = lbl_80564FF0;
+            struct SourceVertex *vertex = src;
+            f32 *out = base;
+            s32 i;
+            for (i = count; i > 0; i--) {
+                s16 h0 = vertex->half0;
+                s16 h1 = vertex->half1;
+                f32 t0 = lbl_804CA308[vertex->index0];
+                f32 t1 = lbl_804CA308[vertex->index1];
+                f32 a = factor * (f32)h0;
+                f32 b = factor * (f32)h1;
+                f32 y = src->y;
+                f32 z = src->z;
+                f32 x = src->x;
+                vertex = (struct SourceVertex *)((u8 *)vertex + 0x14);
+                src = (struct SourceVertex *)((u8 *)src + 0x14);
+                out[0] = x;
+                out[1] = y + a * t0 + b * t1;
+                out[2] = z;
+                out += 3;
+            }
+        }
+        GXSetArray(9, base, 0xC);
+        GXSetArray(0xB, *(void **)((u8 *)object + 0x24), 2);
+        GXSetArray(0xD, *(void **)((u8 *)object + 0x28), 4);
+        GXCallDisplayList(*(void **)((u8 *)object + 0x30), *(u32 *)((u8 *)object + 0x2C));
+    }
+}
+#pragma pop
+
 #pragma pop
 
 #pragma scheduling on
 #pragma pop
 
-void fn_802D4C44(void *arg0) {}
+#pragma push
+#pragma processor 750
+void fn_802D4C44(void *arg0) {
+    extern s32 fn_802CFF64(s32);
+    extern f32 lbl_804DB068[];
+    register void *object = arg0;
+    register u8 *src = *(u8 **)((u8 *)object + 0x20);
+    register s32 count = *(s32 *)((u8 *)object + 0x1C);
+    f32 *base = (f32 *)(u32)fn_802CFF64(count * 12);
+    register f32 *out = base;
+    s32 i;
+    f32 factor = lbl_80564FF0;
+    f32 d0[3], d1[3], r[3];
 
+    if (base != 0) {
+        for (i = 0; i < count; i++) {
+            f32 wA = factor * (f32)src[0xE];
+            f32 wB = factor * (f32)src[0xF];
+            f32 *first = (f32 *)((u8 *)lbl_804DB068 + src[0xC] * 12);
+            f32 *second = (f32 *)((u8 *)lbl_804DB068 + src[0xD] * 12);
+            f32 *t0p, *t1p;
+            r[0] = *(f32 *)(src + 0) + first[0] * wA;
+            r[1] = *(f32 *)(src + 4) + first[1] * wA;
+            r[2] = *(f32 *)(src + 8) + first[2] * wA;
+            r[0] = r[0] + second[0] * wB;
+            r[1] = r[1] + second[1] * wB;
+            r[2] = r[2] + second[2] * wB;
+            d0[0] = factor * (f32)*(s16 *)(src + 0x10);
+            d0[1] = factor * (f32)*(s16 *)(src + 0x12);
+            d0[2] = factor * (f32)*(s16 *)(src + 0x14);
+            t0p = &lbl_804CA308[src[0x1C]];
+            t1p = &lbl_804CA308[src[0x1D]];
+            r[0] += d0[0] * *t0p;
+            r[1] += d0[1] * *t0p;
+            r[2] += d0[2] * *t0p;
+            d1[0] = factor * (f32)*(s16 *)(src + 0x16);
+            d1[1] = factor * (f32)*(s16 *)(src + 0x18);
+            d1[2] = factor * (f32)*(s16 *)(src + 0x1A);
+            out[0] = r[0] + d1[0] * *t1p;
+            out[1] = r[1] + d1[1] * *t1p;
+            out[2] = r[2] + d1[2] * *t1p;
+            src += 0x20;
+            out += 3;
+        }
+        GXSetArray(9, base, 0xC);
+        GXSetArray(0xB, *(void **)((u8 *)object + 0x24), 2);
+        GXSetArray(0xD, *(void **)((u8 *)object + 0x28), 4);
+        GXCallDisplayList(*(void **)((u8 *)object + 0x30), *(u32 *)((u8 *)object + 0x2C));
+    }
+}
+#pragma pop
 void fn_802D4ECC(void *arg0) {
     extern s32 fn_802CFF64(s32);
     extern f32 lbl_804DB068[];
@@ -662,21 +778,42 @@ extern f32 PSVECDotProduct(const f32 *, const f32 *);
 extern void GXSetCullMode(u32);
 extern void GXSetBlendMode(u32,u32,u32,u32);
 extern f32 lbl_804C5690[9];
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_802D5838(void *arg0) {
  s32 count=*(s32*)((u8*)arg0+0x1C);
  f32 *src=*(f32**)((u8*)arg0+0x20), *norm=*(f32**)((u8*)arg0+0x24);
- f32 *dst=(f32*)fn_802CFF64(count*12), *base=dst;
- if(dst) {
+ f32 *base=(f32*)fn_802CFF64(count*12);
+ if(base) {
   f32 *m=fn_802D2D04(); f32 v[3]; s32 i;
-  if(m==v) { v[0]=m[0]*lbl_804C5690[0]+m[1]*lbl_804C5690[1]+m[2]*lbl_804C5690[2]; v[1]=m[0]*lbl_804C5690[3]+m[1]*lbl_804C5690[4]+m[2]*lbl_804C5690[5]; v[2]=m[0]*lbl_804C5690[6]+m[1]*lbl_804C5690[7]+m[2]*lbl_804C5690[8]; }
-  else {v[0]=m[0]*lbl_804C5690[0]+m[1]*lbl_804C5690[1]+m[2]*lbl_804C5690[2];v[1]=m[0]*lbl_804C5690[3]+m[1]*lbl_804C5690[4]+m[2]*lbl_804C5690[5];v[2]=m[0]*lbl_804C5690[6]+m[1]*lbl_804C5690[7]+m[2]*lbl_804C5690[8];}
-  for(i=0;i<count;i++){ if(PSVECDotProduct(norm,v)<lbl_80565008){dst[0]=src[0]+v[0]*lbl_8055FDE0;dst[1]=src[1]+v[1]*lbl_8055FDE0;dst[2]=src[2]+v[2]*lbl_8055FDE0;}else{dst[0]=src[0];dst[1]=src[1];dst[2]=src[2];}src+=3;norm+=3;dst+=3;}
+  f32 *L=lbl_804C5690;
+  f32 *dst;
+  f32 thresh;
+  s32 cull;
+  if(v==m) {
+   f32 y=m[1], x=m[0], z=m[2];
+   f32 p1=y*L[1], p4=y*L[4], p0=x*L[0], p3=x*L[3], p6=x*L[6], p7=y*L[7];
+   f32 o0=z*L[2]+(p0+p1);
+   f32 o1=z*L[5]+(p3+p4);
+   f32 o2=z*L[8]+(p6+p7);
+   v[0]=o0; v[1]=o1; v[2]=o2;
+  } else {
+   v[0]=m[2]*L[2]+(m[0]*L[0]+m[1]*L[1]);
+   v[1]=m[2]*L[5]+(m[0]*L[3]+m[1]*L[4]);
+   v[2]=m[2]*L[8]+(m[0]*L[6]+m[1]*L[7]);
+  }
+  thresh=lbl_80565008;
+  dst=base;
+  for(i=0;i<count;i++){ if(PSVECDotProduct(norm,v)<thresh){f32 k=lbl_8055FDE0;dst[0]=src[0]+v[0]*k;dst[1]=src[1]+v[1]*k;dst[2]=src[2]+v[2]*k;}else{dst[0]=src[0];dst[1]=src[1];dst[2]=src[2];}src+=3;norm+=3;dst+=3;}
   GXSetArray(9,base,12);
-  GXSetCullMode(lbl_8055FDE4?2:1);GXSetBlendMode(1,1,1,5);GXCallDisplayList(*(void**)((u8*)arg0+0x30),*(u32*)((u8*)arg0+0x2C));
-  GXSetCullMode(lbl_8055FDE4?1:2);GXSetBlendMode(3,1,1,5);GXCallDisplayList(*(void**)((u8*)arg0+0x30),*(u32*)((u8*)arg0+0x2C));
+  cull=1; if(lbl_8055FDE4) cull=2;
+  GXSetCullMode(cull);GXSetBlendMode(1,1,1,5);GXCallDisplayList(*(void**)((u8*)arg0+0x30),*(u32*)((u8*)arg0+0x2C));
+  cull=2; if(lbl_8055FDE4) cull=1;
+  GXSetCullMode(cull);GXSetBlendMode(3,1,1,5);GXCallDisplayList(*(void**)((u8*)arg0+0x30),*(u32*)((u8*)arg0+0x2C));
  }
 }
-
+#pragma pop
 void fn_802D5ACC(void *arg0) {
     struct DrawData {
         u8 pad0[0x20];
@@ -735,9 +872,11 @@ void fn_802D5B8C(void *arg0) {
         scale = lbl_804DB068[5];
         one = lbl_8056500C;
         for (i = 0; i < count; i++) {
-            u32 c = *srcColor;
             f32 factor = one - PSVECSquareDistance(pos, &vec[2]) * scale;
-            s32 a = (s32)((f32)(u8)c * factor) > 0 ? (s32)((f32)(u8)c * factor) : 0;
+            u32 c = *srcColor;
+            s32 a;
+            if ((s32)((f32)(u8)c * factor) > 0) a = (s32)((f32)(u8)c * factor);
+            else a = 0;
             if (a > 0xFF) a = 0xFF;
             *outC = (c & ~0xFF) | (a & 0xFF);
             pos += 3;
@@ -1040,66 +1179,46 @@ extern const char lbl_8034C3B4[];
 extern f32 lbl_80565010;
 extern f32 lbl_80565014;
 void fn_802D65F8(s32 arg0, s32 arg1) {
-    volatile u8 *bytes = (volatile u8 *)arg0;
-    u8 a, b, c, d, e, f, g, h;
-    s32 count = *(s32 *)(bytes + 0x1C);
-    u8 *entries;
+    volatile u8 *bytes=(volatile u8 *)arg0;
+    u8 a,b,c,d,e,f,g,h;
     s32 i;
-    extern void fn_802D63FC(void *, s32);
-
-    fn_802D63FC((void *)arg0, arg1);
-    a = bytes[0x2C];
-    b = bytes[0x2F];
-    c = bytes[0x2D];
-    d = bytes[0x2E];
-    e = bytes[0x30];
-    f = bytes[0x33];
-    g = bytes[0x31];
-    h = bytes[0x32];
-    bytes[0x2C] = b;
-    bytes[0x2F] = a;
-    bytes[0x2D] = d;
-    bytes[0x2E] = c;
-    bytes[0x30] = f;
-    bytes[0x33] = e;
-    bytes[0x31] = h;
-    bytes[0x32] = g;
-    fn_802D657C((s32 *)((u8 *)bytes + 0x30), arg1);
-    if (bytes[8] == 0x1A) fn_802D6594((void *)bytes);
-    count = *(s32 *)(bytes + 0x1C);
-    if (bytes[8] == 0x13) {
-        entries = *(u8 **)(bytes + 0x20);
-        if (count > 0) {
-            do {
-                if ((entries[0xC] != 0x4C && entries[0xC] != 0x4D) || entries[0xD] != 0)
-                    goto second;
-                entries += 0x10;
-            } while (--count != 0);
+    u8 *entries;
+    extern void fn_802D63FC(void *,s32);
+    fn_802D63FC((void *)arg0,arg1);
+    a=bytes[0x2C]; b=bytes[0x2F]; c=bytes[0x2D]; d=bytes[0x2E];
+    e=bytes[0x30]; f=bytes[0x33]; g=bytes[0x31]; h=bytes[0x32];
+    bytes[0x2C]=b; bytes[0x2F]=a; bytes[0x2D]=d; bytes[0x2E]=c;
+    bytes[0x30]=f; bytes[0x33]=e; bytes[0x31]=h; bytes[0x32]=g;
+    fn_802D657C((s32 *)((u8 *)bytes+0x30),arg1);
+    if((s8)bytes[8]==0x1A) fn_802D6594((void *)bytes);
+    if(bytes[8]==0x13) {
+        entries=*(u8 **)(bytes+0x20);
+        for(i=0;i<*(s32 *)(bytes+0x1C);i++) {
+            if((entries[0xC]!=0x4C && entries[0xC]!=0x4D) || entries[0xD]!=0) goto second;
+            entries+=0x10;
         }
         fn_802E317C(lbl_8034C3B4);
-        bytes[8] = 0x1A;
-        entries = *(u8 **)(bytes + 0x20);
-        for (i = 0; i < *(s32 *)(bytes + 0x1C); ++i) {
-            f32 value = lbl_80565010 * (f32)entries[0xE] / lbl_80565014;
-            *(f32 *)(entries + 0xC) = entries[0xC] == 0x4C ? value : -value;
-            entries += 0x10;
+        bytes[8]=0x1A;
+        entries=*(u8 **)(bytes+0x20);
+        for(i=0;i<*(s32 *)(bytes+0x1C);++i) {
+            f32 value=lbl_80565010*(f32)entries[0xE]/lbl_80565014;
+            *(f32 *)(entries+0xC)=entries[0xC]==0x4C ? value : -value;
+            entries+=0x10;
         }
     }
 second:
-    if (bytes[8] == 0x19) {
-        count = *(s32 *)(bytes + 0x1C);
-        entries = *(u8 **)(bytes + 0x20);
-        if (count > 0) do {
-            if ((entries[0xC] != 0x4C && entries[0xC] != 0x4D) || entries[0xD] != 0)
-                return;
-            entries += 0x18;
-        } while (--count != 0);
-        bytes[8] = 0x1B;
-        entries = *(u8 **)(bytes + 0x20);
-        for (i = 0; i < *(s32 *)(bytes + 0x1C); ++i) {
-            f32 value = lbl_80565010 * (f32)entries[0xE] / lbl_80565014;
-            *(f32 *)(entries + 0xC) = entries[0xC] == 0x4C ? value : -value;
-            entries += 0x18;
+    if(bytes[8]==0x19) {
+        entries=*(u8 **)(bytes+0x20);
+        for(i=0;i<*(s32 *)(bytes+0x1C);i++) {
+            if((entries[0xC]!=0x4C && entries[0xC]!=0x4D) || entries[0xD]!=0) return;
+            entries+=0x18;
+        }
+        bytes[8]=0x1B;
+        entries=*(u8 **)(bytes+0x20);
+        for(i=0;i<*(s32 *)(bytes+0x1C);++i) {
+            f32 value=lbl_80565010*(f32)entries[0xE]/lbl_80565014;
+            *(f32 *)(entries+0xC)=entries[0xC]==0x4C ? value : -value;
+            entries+=0x18;
         }
     }
 }
