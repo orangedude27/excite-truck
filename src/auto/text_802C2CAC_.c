@@ -949,8 +949,15 @@ extern int fn_800241CC(int); /* abs(): (v >> 31) ^ v - (v >> 31) */
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+/* Draw a line from (x0, y0) to (x1, y1) on the current canvas in `color`,
+   handing every point to fn_802C32B8, the pixel plotter above.  An
+   axis-aligned line just steps one pixel at a time along the axis it spans;
+   any other line is walked by DDA: the major axis (the one spanning more,
+   see fn_800241CC = abs) moves a whole pixel at a time in `dir`, while the
+   minor coordinate accumulates the slope as a float and is truncated at each
+   point. */
 void fn_802C47B8(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
-    s32 dx, dy, a, inc, end, dir, x, y;
+    s32 dx, dy, pos, inc, end, dir, x, y;
     dx = x1 - x0;
     x = x0;
     y = y0;
@@ -959,10 +966,10 @@ void fn_802C47B8(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
         if (dy != 0) {
             dir = -1;
             if (y0 < y1) dir = 1;
-            a = y0 * dir;
+            pos = y0 * dir;
             inc = dir * dir;
             end = dir * y1;
-            for (; a < end; a += inc, y += dir)
+            for (; pos < end; pos += inc, y += dir)
                 fn_802C32B8(x, y, color);
         }
         return;
@@ -970,37 +977,37 @@ void fn_802C47B8(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
     if (dy == 0) {
         dir = -1;
         if (x0 < x1) dir = 1;
-        a = x0 * dir;
+        pos = x0 * dir;
         inc = dir * dir;
         end = dir * x1;
-        for (; a < end; a += inc, x += dir)
+        for (; pos < end; pos += inc, x += dir)
             fn_802C32B8(x, y, color);
         return;
     }
     {
-        s32 ady = fn_800241CC(dy);
-        if (fn_800241CC(dx) < ady) {
-            f32 step;
+        s32 absDy = fn_800241CC(dy);
+        if (fn_800241CC(dx) < absDy) {
+            f32 slope;
             f32 fx;
             dir = -1;
             if (y < y1) dir = 1;
-            step = ((f32)dir * (f32)dx) / (f32)dy;
+            slope = ((f32)dir * (f32)dx) / (f32)dy;
             fx = (f32)x;
             for (; y != y1; y += dir) {
                 fn_802C32B8((s32)fx, y, color);
-                fx += step;
+                fx += slope;
             }
             return;
         }
     }
     {
-        f32 step;
+        f32 slope;
         f32 fy;
         dir = -1;
         if (x < x1) dir = 1;
-        step = ((f32)dir * (f32)dy) / (f32)dx;
+        slope = ((f32)dir * (f32)dy) / (f32)dx;
         fy = (f32)y;
-        for (; x != x1; x += dir, fy += step) {
+        for (; x != x1; x += dir, fy += slope) {
             fn_802C32B8(x, (s32)fy, color);
         }
     }
