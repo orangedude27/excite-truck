@@ -354,10 +354,10 @@ f32 fn_80287BC8(f32 farg0, f32 farg1) {
 }
 #pragma paired_single reset
 #pragma paired reset
-void *fn_80287C30(u8 *arg0) {
+void *fn_80287C30(void *arg0) {
     *(s32 *)arg0 = 0;
-    memset(arg0 + 4, 0, 0x20);
-    *(s32 *)(arg0 + 0x24) = 0;
+    memset((u8 *)arg0 + 4, (int)0, (unsigned int)0x20);
+    *(s32 *)((u8 *)arg0 + 0x24) = 0;
     return arg0;
 }
 
@@ -424,7 +424,7 @@ extern const char lbl_80348A30[];
 extern const char lbl_80348A20[];
 #pragma push
 #pragma cplusplus on
-void fn_80287E80(void **arg0, s32 arg1) {
+extern "C" void fn_80287E80(void **arg0, s32 arg1) {
     class Obj {
     public:
         virtual void f(void *);
