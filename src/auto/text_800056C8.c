@@ -633,16 +633,14 @@ void fn_80006330(void) {
 extern s32 fn_80011A5C(s32);
 extern s32 fn_801B84A4(s32);
 #pragma cplusplus on
-#pragma push
 #pragma scheduling invalid_target
-void fn_80006378(s32 arg0, s32 arg1) {
-    s32 *p;
-    p = lbl_8034EEB8;
-    p = (s32 *)((u8 *)p + (arg1 << 4));
-    ((void (*)(void))(*(void ***)p[7])[12])();
+extern "C" void fn_80006378(s32 arg0, s32 arg1) {
+    struct Dummy { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); };
+    s32 *entry = (s32 *)&lbl_8034EEB8;
+    entry += arg1 * 4;
+    ((Dummy *)entry[7])->v12();
 }
 #pragma scheduling on
-#pragma pop
 #pragma cplusplus off
 s32 fn_8000639C(void) {
     return 0;
