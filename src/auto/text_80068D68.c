@@ -97,6 +97,18 @@ typedef struct {
     tBTM_PM_RCB pm_reg_db[BTM_MAX_PM_RECORDS + 1];
 } tBTM_PM_REG_DB_MATCH_VIEW;
 
+/* The power manager's per-ACL-link mode control block (btm_int.h's tBTM_PM_MCB)
+   as this stack lays it out: 0x22 bytes, one per link in btm_cb at +0x4CC.  The
+   header's version is bigger - it holds BTM_MAX_PM_RECORDS + 1 requests and the
+   SSR fields this build has - so only the fields this unit reaches are named. */
+typedef struct {
+    tBTM_PM_PWR_MD req_mode[BTM_MAX_PM_RECORDS]; /* +0x00 what each registered module asked for */
+    tBTM_PM_PWR_MD set_mode;    /* +0x14 the mode sent down to the controller */
+    UINT16         interval;    /* +0x1E interval from the last mode change */
+    tBTM_PM_STATE  state;       /* +0x20 the current mode of the connection */
+    BOOLEAN        chg_ind;     /* +0x21 a mode change is on its way */
+} tBTM_PM_MCB_VIEW;
+
 typedef struct {
     u8 pad0[0x25];
     u8 link_key[16];
