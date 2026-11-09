@@ -2841,12 +2841,13 @@ extern "C" f32 fn_8015C264(void *arg0, void *arg1) {
 
 #pragma scheduling on
 extern f32 lbl_80561760;
-extern "C" void fn_8015C564(void* arg0, void* arg1, s32 arg2, f64 arg3) {
+extern "C" void fn_8015C564(void* arg0, void* arg1, s32 arg2, f32 arg3) {
     if (*(s32*)((u8*)arg0 + 0x270) == *(s32*)((u8*)arg1 + 0x1ec)) {
         if (arg2 == 7 || arg2 == 9) {
-            *(f32*)((u8*)arg0 + 0x278) = (f32)arg3;
+            *(f32*)((u8*)arg0 + 0x278) = arg3;
             if (arg2 == 7) {
-                f32 value = (f32)arg3;
+                f64 d = arg3;
+                f32 value = (f32)d;
                 f32 offset;
                 if (value < lbl_80561754) offset = value - lbl_80561760;
                 else offset = lbl_80561760 + value;
@@ -3279,14 +3280,14 @@ extern "C" f32 fn_8015D4A0(Unk801577F0* arg0, s32 arg1) {
 
 extern "C" s32 fn_8015D504(Unk801577F0* arg0, s32 arg1) {
     s32 count = arg0->mCount;
-    s32 i = 0;
-    s32 offset = 0;
-    for (i = 0; i < count; i++) {
+    s32 i;
+    s32 offset;
+    i = 0;
+    offset = 0;
+    for (; i < count; i++) {
         s32 value = *(s32*)((u8*)arg0->mData + offset + 0x14);
         if (arg1 < value) goto out;
-        if (value >= 0) goto cont;
-        goto out;
-    cont:
+        if (value < 0) goto out;
         offset += 0x38;
     }
     i = 0;
