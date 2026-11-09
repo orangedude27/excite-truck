@@ -799,6 +799,15 @@ extern void fn_802D9230(void *);
 void fn_802D92B0(void) {
     fn_802D9230(lbl_8055FE1C);
 }
+void fn_802D9230(void *arg0) {
+    char *obj;
+    lbl_8055FE1C = arg0;
+    if (*(unsigned int *)((char *)arg0 + 0x70)) fn_802E317C(lbl_8034C5F0, arg0);
+    obj = (char *)arg0;
+    GXLoadTexObj(obj + 0x24, 2);
+    if (((unsigned char *)arg0)[0xCC]) GXLoadTexObj(obj + 0x78, 4);
+    lbl_804C5700[11] = ((unsigned char *)arg0)[0xCC];
+}
 
 extern void fn_802CFEEC(void);
 extern void fn_80128670(void *);
