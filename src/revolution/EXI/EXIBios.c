@@ -77,11 +77,17 @@ static void CompleteTransfer(EXIChannel chan) {
     }
 }
 
+/* Start one immediate (byte-wise) EXI transfer on a selected channel: up to four
+ * bytes travel in the channel's data register, so a write is packed here and a
+ * read is unpacked by CompleteTransfer() when the transfer completes.  With a
+ * callback the transfer is asynchronous and answers through it; without one the
+ * caller waits with EXISync().  FALSE means the channel was busy or not selected. */
 BOOL EXIImm(EXIChannel chan, void* buf, s32 len, u32 type,
             EXICallback callback) {
     EXIData* exi = &Ecb[chan];
     BOOL enabled = OSDisableInterrupts();
 
+    // busy, or no device selected to transfer with
     if (exi->state & EXI_STATE_BUSY || !(exi->state & EXI_STATE_SELECTED)) {
         OSRestoreInterrupts(enabled);
         return FALSE;
@@ -89,14 +95,18 @@ BOOL EXIImm(EXIChannel chan, void* buf, s32 len, u32 type,
 
     exi->tcCallback = callback;
     if (callback != NULL) {
-        u32 mask = OS_INTR_MASK(OS_INTR_EXI_0_TC);
+        // the channel's transfer-complete interrupt; the OS mask holds the three
+        // interrupts (EXI, TC, EXT) of a channel three bits apart
+        u32 tcIntrMask = OS_INTR_MASK(OS_INTR_EXI_0_TC);
+        // acknowledge any pending transfer-complete interrupt and arm it again
         EXIClearInterrupts(chan, FALSE, TRUE, FALSE);
-        __OSUnmaskInterrupts(mask >> (chan * 3));
+        __OSUnmaskInterrupts(tcIntrMask >> (chan * 3));
     }
 
     exi->state |= EXI_STATE_IMM_ACCESS;
 
     if (type != EXI_READ) {
+        // pack the bytes into the data register, the first one most significant
         int i;
         u32 word = 0;
         for (i = 0; i < len; i++) {
@@ -107,8 +117,10 @@ BOOL EXIImm(EXIChannel chan, void* buf, s32 len, u32 type,
     }
 
     exi->buffer = buf;
+    // only a read brings bytes back for CompleteTransfer() to store
     exi->bytesRead = (type != EXI_WRITE) ? len : 0;
-    EXI_CHAN_PARAMS[chan].cr = EXI_CR_TSTART | type << 2 | (len - 1) << 4;
+    EXI_CHAN_PARAMS[chan].cr = EXI_CR_TSTART | type << EXI_CR_TYPE_SHIFT |
+                               (len - 1) << EXI_CR_LEN_SHIFT;
 
     OSRestoreInterrupts(enabled);
     return TRUE;
