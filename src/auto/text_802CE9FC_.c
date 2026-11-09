@@ -920,8 +920,6 @@ extern unsigned long lbl_8055FD44;
 extern unsigned long lbl_8055FDAC;
 extern void fn_802D0C98(void);
 extern void fn_802D0BD8(void);
-#pragma push
-#pragma use_lmw_stmw off
 void fn_802CFF10(void) {
     int zero;
     zero = 0;
@@ -932,7 +930,6 @@ void fn_802CFF10(void) {
     lbl_8055FDAC = zero;
     lbl_8055FE39 = zero;
 }
-#pragma pop
 extern void *lbl_8055FD20;
 #pragma push
 #pragma dont_inline on
@@ -1052,7 +1049,11 @@ void fn_802D0160(unsigned char a, unsigned char b, unsigned char c) {
 void fn_802D0188(unsigned char a, unsigned char b, unsigned char c) {
     extern char lbl_804C97D0;
     volatile unsigned char *p = (volatile unsigned char *)&lbl_804C97D0;
-    p[0] = a; p[1] = b; p[2] = c; p[3] = 0; p[0x5C] = 1;
+    p[3] = 0;
+    p[2] = c;
+    p[1] = b;
+    p[0] = a;
+    p[0x5C] = 1;
 }
 
 #pragma scheduling off
