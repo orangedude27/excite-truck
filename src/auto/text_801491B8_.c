@@ -851,7 +851,7 @@ f32 fn_8014C75C(f32 *arg0, const f32 *arg1) {
 }
 
 #pragma scheduling invalid_target
-s64 fn_8014C770(f32 *arg0, f32 *arg1, f32 t) {
+s64 fn_8014C770(const f32 *arg0, const f32 *arg1, f32 t) {
     f32 dy = arg1[1] - arg0[1];
     f32 dx = arg1[0] - arg0[0];
     f32 y = arg0[1] + t * dy;
