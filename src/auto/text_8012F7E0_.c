@@ -19,6 +19,27 @@ unsigned char fn_8012F7E0(signed char arg0) {
     }
     return lbl_80422F40[arg0];
 }
+
+int fn_8012F968(unsigned char *arg0) {
+    unsigned char *p = arg0;
+    int result = 0;
+    int i = 0;
+    do {
+        unsigned char value;
+        result <<= 6;
+        value = fn_8012F7E0((signed char)*p);
+        if (!(value & 0xC0)) {
+            result |= value;
+        } else {
+            result = 0xFF000000;
+            break;
+        }
+        i++;
+        p++;
+    } while (i < 4);
+    return result;
+}
+
 extern int strlen(const char *);
 extern int fn_8012F968(unsigned char *);
 int fn_8012F9E8(unsigned char *out, int max, unsigned char *in) {
