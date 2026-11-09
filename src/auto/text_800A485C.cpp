@@ -23737,7 +23737,7 @@ struct VFiPFDeviceInfo {
 /* The volume fields the mount fills in, by offset.  These stay offset casts:
  * reading the same fields through VFiPFVolume makes the compiler keep the
  * field addresses in registers of their own, which the original does not. */
-#define VF_VOL_DEVICE(v)      (*(void **)((u8 *)(v) + 0x1FBC))) /* the device behind it */
+#define VF_VOL_DEVICE(v)      (*(void **)((u8 *)(v) + 0x1FBC)) /* the device behind it */
 #define VF_VOL_FLAGS(v)       (*(u16 *)((u8 *)(v) + 0x1F8C))    /* VF_VOL_* */
 #define VF_VOL_FSINFO_SECTOR(v) (*(u16 *)((u8 *)(v) + 0x14)) /* FAT32's FSInfo sector */
 #define VF_VOL_FAT_TYPE(v)      (*(s32 *)((u8 *)(v) + 0x1C)) /* which FAT; 2 = FAT32 */
