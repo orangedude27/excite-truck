@@ -23752,44 +23752,50 @@ struct VFiPFDeviceInfo {
 #define VF_FAT_TYPE_32          2                      /* VF_VOL_FAT_TYPE: FAT32 */
 
 extern "C" s32 fn_800A5530(void *object) {
- u8 *p=(u8 *)object;
- s32 info[5], pageNo;
- void *page;
- s32 result, err, read;
- result=fn_800A728C(*(void **)(p+0x1fbc));
- if (result) {
-  if (result==0x15) {
-   err=fn_800A71D8(*(void **)(p+0x1fbc));
-   lbl_803D2140[0x44/4]=err; *(s32 *)(p+0x1f84)=err;
-   return 0x1000;
-  }
-  return -1;
- }
- if (fn_800A71E0(*(s32 *)(p+0x1fbc),info)) { fn_800A7568(*(void **)(p+0x1fbc),0); return -1; }
- if (info[3]&1) *(u16 *)(p+0x1f8c)|=2;
- else *(u16 *)(p+0x1f8c)&=~2;
- if (info[3]&2) { s32 v=info[4]; *(u16 *)(p+0x1f8c)|=0x40; *(s32 *)(p+0x1fc4)=v; }
- if (info[3]&8) *(u16 *)(p+0x1f8c)|=0x80;
- ((Fn800A8D08C4 *)(s32 (*)(s32,void **,s32 *,s32,s32 *))fn_800A8D08)(object,-1,&page,&pageNo);
- result=fn_800A73A0(*(void **)(p+0x1fbc),*(s32 *)((u8 *)page+4),0,1,0x200,(s32)&read);
- if (result) {
-  if (result==0x15) { err=fn_800A71D8(*(void **)(p+0x1fbc)); lbl_803D2140[0x44/4]=err; *(s32 *)(p+0x1f84)=err; result=0x1000; }
-  else result=-1;
-  fn_800A7568(*(void **)(p+0x1fbc),0);
-  return result;
- }
- if (fn_800A5AE4(object,*(void **)((u8 *)page+4))) { fn_800A7568(*(void **)(p+0x1fbc),0); return 7; }
- *(s32 *)(p+0x38)=-1; *(s32 *)(p+0x3c)=-1;
- if (*(s32 *)(p+0x1c)==2) {
-  result=fn_800A73A0(*(void **)(p+0x1fbc),*(s32 *)((u8 *)page+4),*(u16 *)(p+0x14),1,0x200,(s32)&read);
-  if (result) {
-   if (result==0x15) { err=fn_800A71D8(*(void **)(p+0x1fbc)); lbl_803D2140[0x44/4]=err; *(s32 *)(p+0x1f84)=err; result=0x1000; }
-   else result=-1;
-   fn_800A7568(*(void **)(p+0x1fbc),0); return result;
-  }
-  if (fn_800A5E00(object,*(void **)((u8 *)page+4),(u32 *)(p+0x38),(u32 *)(p+0x3c))) { fn_800A7568(*(void **)(p+0x1fbc),0); return -1; }
- }
- return 0;
+    u8 *p = (u8 *)object;
+    s32 info[5], pageNo; /* info[3]: the device's flags, info[4]: its value */
+    void *page;
+    s32 result, devErr, blocksRead;
+
+    result = fn_800A728C(VF_VOL_DEVICE(p));
+    if (result) {
+        if (result == VF_DEV_FAILED) {
+            devErr = fn_800A71D8(VF_VOL_DEVICE(p));
+            VF_LAST_DEVICE_ERROR = devErr;
+            VF_VOL_DEVICE_ERROR(p) = devErr;
+            return VF_ERR_DEVICE_RETRY;
+        }
+        return -1;
+    }
+    if (fn_800A71E0((s32)VF_VOL_DEVICE(p), info)) { fn_800A7568(VF_VOL_DEVICE(p), 0); return -1; }
+    if (info[3] & VF_DEV_WRITE_PROTECTED) VF_VOL_FLAGS(p) |= VF_VOL_WRITE_PROTECTED;
+    else VF_VOL_FLAGS(p) &= ~VF_VOL_WRITE_PROTECTED;
+    if (info[3] & VF_DEV_HAS_VALUE) { s32 v = info[4]; VF_VOL_FLAGS(p) |= VF_VOL_GIVE_VALUE; VF_VOL_DEVICE_VALUE(p) = v; }
+    if (info[3] & VF_DEV_KEEP_FAT) VF_VOL_FLAGS(p) |= VF_VOL_KEEP_FAT;
+    ((Fn800A8D08C4 *)(s32 (*)(s32, void **, s32 *, s32, s32 *))fn_800A8D08)(object, -1, &page, &pageNo);
+
+    /* The boot sector, read into the page's buffer. */
+    result = fn_800A73A0(VF_VOL_DEVICE(p), *(s32 *)((u8 *)page + 4), 0, 1, 0x200, (s32)&blocksRead);
+    if (result) {
+        if (result == VF_DEV_FAILED) { devErr = fn_800A71D8(VF_VOL_DEVICE(p)); VF_LAST_DEVICE_ERROR = devErr; VF_VOL_DEVICE_ERROR(p) = devErr; result = VF_ERR_DEVICE_RETRY; }
+        else result = -1;
+        fn_800A7568(VF_VOL_DEVICE(p), 0);
+        return result;
+    }
+    if (fn_800A5AE4(object, *(void **)((u8 *)page + 4))) { fn_800A7568(VF_VOL_DEVICE(p), 0); return 7; }
+    VF_VOL_FREE_CLUSTERS(p) = -1;
+    VF_VOL_NEXT_CLUSTER(p) = -1;
+    if (VF_VOL_FAT_TYPE(p) == VF_FAT_TYPE_32) {
+        /* FAT32 keeps its free-cluster counts in the FSInfo sector. */
+        result = fn_800A73A0(VF_VOL_DEVICE(p), *(s32 *)((u8 *)page + 4), VF_VOL_FSINFO_SECTOR(p), 1, 0x200, (s32)&blocksRead);
+        if (result) {
+            if (result == VF_DEV_FAILED) { devErr = fn_800A71D8(VF_VOL_DEVICE(p)); VF_LAST_DEVICE_ERROR = devErr; VF_VOL_DEVICE_ERROR(p) = devErr; result = VF_ERR_DEVICE_RETRY; }
+            else result = -1;
+            fn_800A7568(VF_VOL_DEVICE(p), 0); return result;
+        }
+        if (fn_800A5E00(object, *(void **)((u8 *)page + 4), VF_VOL_FREE_CLUSTERS_REF(p), VF_VOL_NEXT_CLUSTER_REF(p))) { fn_800A7568(VF_VOL_DEVICE(p), 0); return -1; }
+    }
+    return 0;
 }
 
 #pragma dont_inline on
