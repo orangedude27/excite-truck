@@ -2339,14 +2339,7 @@ void GXEnableTexOffsets(s32 texMap, int line, int point) {
 
 void GXSetCullMode(unsigned int mode) { unsigned int field; union { unsigned int reg; struct { unsigned int pad : 16; unsigned int cull : 2; unsigned int rest : 14; } fields; } data; field = ((mode << 1) & 2); field |= (mode >> 1) & 1; data.reg = __GXData[0x254 / 4]; data.fields.cull = field; __GXData[0x254 / 4] = data.reg; __GXData[0x5FC / 4] |= 4; }
 
-void GXSetCoPlanar(s32 enable) {
-    unsigned int *data = __GXData;
-    data[0x254 / 4] = (data[0x254 / 4] & 0xFFF7FFFF) | ((enable & 1) << 19);
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = 0xFE080000;
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = data[0x254 / 4];
-}
+void GXSetCoPlanar(s32 enable) { union { unsigned int reg; struct { unsigned int pad0 : 12; unsigned int coplanar : 1; unsigned int pad1 : 19; } fields; } u; u.reg = __GXData[0x254 / 4]; u.fields.coplanar = enable; __GXData[0x254 / 4] = u.reg; *(volatile unsigned char *)0xCC008000 = 0x61; *(volatile unsigned int *)0xCC008000 = 0xFE080000; *(volatile unsigned char *)0xCC008000 = 0x61; *(volatile unsigned int *)0xCC008000 = __GXData[0x254 / 4]; }
 
 void GXDrawCylinder(void *src, void *dst, int x, int y) {
     unsigned int dx = (x << 1) & 0xFFFE;
@@ -2429,8 +2422,7 @@ void GXSetTexCopySrc(s32 x, s32 y, s32 width, s32 height) {
     data[0x244 / 4] = dst.value;
 }
 
-void GXSetDispCopyDst(s32 value) {
-    register unsigned int *gx = __GXData;
+void GXSetDispCopyDst(u16 value) {
     union {
         u32 reg;
         struct {
@@ -2439,10 +2431,9 @@ void GXSetDispCopyDst(s32 value) {
             u32 arg : 10;
         } fields;
     } data = {0};
-
     data.fields.arg = ((value << 1) & 0xFFFE) >> 5;
     data.fields.constant = 0x4D;
-    gx[0x238 / 4] = data.reg;
+    __GXData[0x238 / 4] = data.reg;
 }
 
 void __GetImageTileCount(unsigned int, int, int, int *, int *, int *);
