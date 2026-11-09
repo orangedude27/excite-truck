@@ -126,18 +126,20 @@ void fn_8000AEC4(void) {
     fn_800070DC();
 }
 
+#pragma push
+#pragma scheduling invalid_target
 int fn_8000AEC8(int arg0) {
     int i;
-    int *p = lbl_8034F5D8;
+    int *p;
     i = lbl_8055D3E0;
-    if (i <= 0) goto done;
+    p = lbl_8034F5D8;
     for (; i > 0; i--) {
         if (arg0 == *p) return 1;
         p++;
     }
-done:
     return 0;
 }
+#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
@@ -376,11 +378,11 @@ void fn_8000B3DC(unsigned char arg0) {
     extern void fn_8000B5A8(void);
     extern void fn_8000B3B4(void);
     extern void AXFXSetHooks_8020DE10(void (*)(void), int, unsigned char);
+    int mask;
     lbl_8055D3EC = arg0;
     ((void (*)(int))fn_8000ADE0)(0x12);
-    AXFXSetHooks_8020DE10(fn_8000B5A8,
-        (int)fn_8000B3B4 & (-(int)lbl_8055D3EC | (int)lbl_8055D3EC) >> 31,
-        lbl_8055D3EC);
+    mask = (-(int)lbl_8055D3EC | (int)lbl_8055D3EC) >> 31;
+    AXFXSetHooks_8020DE10(fn_8000B5A8, (int)fn_8000B3B4 & mask, lbl_8055D3EC);
 }
 
 extern int fn_8016212C(void), fn_80265D64(void), fn_80265D6C(void), fn_80265D50(void);
