@@ -201,7 +201,7 @@ void fn_802E9DDC(void) {
 #pragma dont_inline reset
 
 #pragma pop
-extern char lbl_8034E3E0, lbl_8034E3F0, lbl_805076B8, lbl_80560061, lbl_8055D2A4;
+extern char lbl_80560061, lbl_8055D2A4;
 #pragma push
 #pragma scheduling invalid_target
 void fn_802E9E54(unsigned char *dst, unsigned char *src, int count) {
