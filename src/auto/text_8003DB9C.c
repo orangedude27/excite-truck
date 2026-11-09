@@ -3173,11 +3173,7 @@ void GXSetChanMatColor_Internal(s32 type, void *color) {
     *(unsigned int *)((unsigned char *)__GXData + 0xB0 + (which << 2)) = value;
 }
 
-void GXSetNumChans(s32 num) {
-    unsigned int *data = __GXData;
-    data[0x254 / 4] = (data[0x254 / 4] & ~(7 << 4)) | ((num & 7) << 4);
-    data[0x5FC / 4] |= 0x01000004;
-}
+void GXSetNumChans(s32 num) { union { unsigned int reg; struct { unsigned int pad0 : 25; unsigned int chans : 3; unsigned int pad1 : 4; } fields; } u; u.reg = __GXData[0x254 / 4]; u.fields.chans = num; __GXData[0x254 / 4] = u.reg; __GXData[0x5FC / 4] |= 0x01000004; }
 
 void GXSetChanCtrl(s32 chan, s32 enable, s32 matColor, s32 ambColor, s32 lightMask, s32 diffFn, s32 attnFn) {
     union {
@@ -4462,13 +4458,12 @@ void GXSetTevOrder(int stage, int texCoord, int texMap, int color) {
     __GXData[0x5fc / 4] |= 1;
 }
 
-void GXSetNumTevStages(s32 count) {
+void GXSetNumTevStages(u8 count) {
     struct {
         unsigned int pad : 18;
-        signed int stages : 4;
+        unsigned int stages : 4;
         unsigned int rest : 10;
     } *fields = (void *)&__GXData[0x254 / 4];
-
     fields->stages = count - 1;
     __GXData[0x5FC / 4] |= 4;
 }
