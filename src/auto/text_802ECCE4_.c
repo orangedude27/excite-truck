@@ -14,7 +14,7 @@ extern char lbl_8034EC18[];
 extern void fn_802ECCE4(char *, void *, s32);
 extern s32 stricmp(const char *, const char *);
 extern s32 fn_802ECEEC(void);
-extern s32 fn_802ECE48();
+extern s32 fn_802ECE48(s32);
 extern s32 fn_802ECDF4(void);
 // fn_802ECEC0 declared at its definition below
 extern s32 lbl_8055D300;
