@@ -333,20 +333,20 @@ extern unsigned int strlen(const char *);
 #pragma scheduling invalid_target
 #pragma dont_inline on
 int fn_802CA898(int arg0, int arg1, int arg2, int arg3) {
-    int path_value;
-    register int strings;
-    register int flag;
-    register int best;
-    register int index;
+    int *entry;
+    unsigned strings;
+    unsigned char first;
+    int best;
+    int index;
     int offset;
     int resource;
-    register int *entry;
+    int path_value;
     int size;
     char *src;
     char *dst;
     int count;
     int c;
-    unsigned char first;
+    int flag;
 
     path_value = arg0;
     strings = (int)lbl_8034B538;
@@ -375,7 +375,7 @@ int fn_802CA898(int arg0, int arg1, int arg2, int arg3) {
                 entry[0x24 / 4] == arg1 &&
                 flag == 0) {
                 offset = index * 0x4C;
-                if (((int (*)(int, int, int))fn_802CA7D4)((int)(char *)path_value, arg3, *(int *)(lbl_8055FCB0 + offset + 0x34)) == 0) {
+                if (((int (*)(int, int, int))fn_802CA7D4)((int)(char *)path_value, arg3, *(int *)(lbl_8055FCB0 + offset + (unsigned)0x34)) == 0) {
                     fn_802E30C8((const char *)(strings + 0x318), (char *)path_value);
                     *(int *)(lbl_8055FCB0 + offset + 0x3C) = 0;
                     *(int *)(lbl_8055FCB0 + offset + 0x34) = 0xE;
@@ -625,9 +625,9 @@ void fn_802CAF1C(int arg0, signed char arg1, signed char arg2) {
     int ptr;
     if (fn_802CAE00(arg0)) {
         offset = arg0 * 0x4C;
-        ptr = *(int *)(lbl_8055FCB0 + offset + 0x2C);
+        ptr = *(int *)((char *)lbl_8055FCB0 + offset + 0x2C);
         *(signed char *)(ptr + 8) = arg1;
-        ptr = *(int *)(lbl_8055FCB0 + offset + 0x2C);
+        ptr = *(int *)((char *)lbl_8055FCB0 + offset + 0x2C);
         *(signed char *)(ptr + 9) = arg2;
     }
 }
@@ -814,6 +814,88 @@ unsigned short fn_802CB3FC(int arg0) {
     return q[0];
 }
 
+void fn_802CB424(void) {
+    typedef struct Node { int a, b, c, d; struct Node *next; } Node;
+    typedef struct Heap { int magic; int size; int unk8; void *sub; } Heap;
+    typedef struct Sub { char used; char pad[3]; int mask; void *heap; int unkC; } Sub;
+    typedef struct Big { int a, b, c, d, e; void *f14; int g[3]; int f24; int f28; int f2C; } Big;
+    typedef struct Mgr {
+        int f0; Big *f4; Big *f8; int fC; Node *f10; Node *f14; int f18[2];
+        Heap *heap; Sub *sub; int f28; int f2C; int f30; int f34; void *f38;
+        int slots[0x2800 / 4];
+        int f2844; int f2848;
+    } Mgr;
+    Mgr *m;
+    Heap *h;
+    Sub *s;
+    Big *n;
+    Node *nd;
+    int i;
+    char *strs = lbl_8034B538;
+    int zero;
+    int zero2;
+
+    m = (Mgr *)fn_801284F8(0x284C, strs + 0x488);
+    if (m != 0) {
+        zero = 0;
+        m->heap = 0;
+        m->sub = 0;
+        m->f2C = zero;
+        m->f30 = zero;
+        m->f34 = zero;
+        m->f28 = 0x177000;
+        fn_801282EC(0x80);
+        fn_801282F4();
+        m->heap = (Heap *)fn_8012850C(0x177000, (int *)(strs + 0x494));
+        s = (Sub *)fn_801284F8(0x10, strs + 0x4A0);
+        if (s != 0) {
+            h = m->heap;
+            s->unkC = zero;
+            s->mask = 0x7F;
+            h->magic = 0xABCFEED0;
+            h->unk8 = zero;
+            h->size = 0x177000 - ((s->mask + 0x10) & ~s->mask);
+            h->sub = s;
+            s->heap = h;
+            s->used = 1;
+        }
+        m->sub = s;
+        zero2 = 0;
+        s->used = zero2;
+        m->f38 = &m->heap;
+        n = (Big *)fn_8012850C(0x30, (int *)(strs + 0x4B0));
+        m->f8 = n;
+        m->f4 = n;
+        m->f0 = zero2;
+        n->f14 = (char *)n + 0x18;
+        m->f8->f2C = zero2;
+        nd = (Node *)fn_8012850C(0xC8, &lbl_8055D080);
+        m->f14 = nd;
+        m->f10 = nd;
+        m->fC = zero2;
+        m->f14[0].next = m->f14 + 1;
+        m->f14[1].next = m->f14 + 2;
+        m->f14[2].next = m->f14 + 3;
+        m->f14[3].next = m->f14 + 4;
+        m->f14[4].next = m->f14 + 5;
+        m->f14[5].next = m->f14 + 6;
+        m->f14[6].next = m->f14 + 7;
+        m->f14[7].next = m->f14 + 8;
+        m->f14[8].next = m->f14 + 9;
+        m->f14[9].next = (Node *)zero2;
+        memset(m->f18, 0, 8);
+        m->f2844 = zero2;
+        memset(m->slots, 0, 0x2800);
+        for (i = 0; i < 0x40; i++) {
+            int k;
+            for (k = 0; k < 8; k++)
+                m->slots[i * 40 + k * 5] = i * 8 + k;
+        }
+        m->f2848 = 0;
+    }
+    *(void **)lbl_8055FCBC = m;
+}
+
 extern char lbl_8034BAEC[];
 extern char lbl_8034BB1C[];
 extern char lbl_8034BB5C[];
@@ -887,9 +969,9 @@ DECL_SECTION(".sdata") extern char lbl_8055FCBC[];
 #pragma small_data off
 #pragma pop
 void fn_802CB82C(int arg0) {
-    char *temp_r30;
     char *temp_r31;
     char *temp_r29;
+    char *temp_r30;
     int temp_r0;
     char *pool, *node, *other, *joined;
     char **link, **mergeLink, **scanLink;
@@ -1422,7 +1504,7 @@ outer:
 #pragma use_lmw_stmw on
 #pragma dont_inline reset
 extern double lbl_80564F38;
-#pragma fp_contract on
+#pragma fp_contract off
 void fn_802CC518(int arg0, float arg1) {
     union {
         double value;
@@ -1439,7 +1521,6 @@ void fn_802CC518(int arg0, float arg1) {
     result = (lbl_80564F30 * arg1) / (float)(number - magic);
     lbl_8055FCC4 = result;
 }
-
 void fn_802CC550(int arg0, float arg1, float arg2) {
     int offset;
     char *entry;
@@ -1526,7 +1607,188 @@ char fn_802CC744(void) {
 
 #pragma scheduling invalid_target
 int fn_802CC74C(void) { int result = 0; char *p = *(char **)lbl_8055FCBC; if (p != 0) { if (*(int *)(p + 4) != 0) result = 1; } return result; }
-#pragma scheduling on
+
+extern float lbl_80564F4C;
+extern float lbl_80564F50;
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+void fn_802CC770(void) {
+int entry;
+int slotOffset;
+int offset;
+int i;
+float f4C;
+float f40;
+double magic;
+float f50;
+i = 0;
+offset = 0;
+slotOffset = 0;
+f4C = lbl_80564F4C;
+f40 = lbl_80564F40;
+magic = lbl_80564F38;
+f50 = lbl_80564F50;
+do {
+entry = lbl_8055FCB0 + offset;
+if (*(int *)entry > 0 && *(int *)(entry + 0x3C) != 0) {
+if (*(int *)(entry + 0x48) > 0) {
+union { double value; unsigned int words[2]; } converted;
+double number;
+float convertedFloat;
+float value;
+int ret;
+ret = fn_802CB3FC(i);
+converted.words[0] = 0x43300000;
+converted.words[1] = (ret * 2) ^ 0x80000000;
+number = converted.value;
+convertedFloat = (float)(number - magic);
+value = convertedFloat * *(float *)(entry + 0x38);
+value = value - f40;
+{
+char *root = *(char **)lbl_8055FCBC;
+char *node = root + slotOffset + 0x3C;
+*(float *)(node + 8) = value;
+if (*(int *)(node + 4) == 2)
+*(int *)(node + 0xC) = *(int *)(root + 0x2848);
+if (*(int *)(node + 4) == 0 && value < f4C && (*(char **)(root + 0x2844) == 0 || value < *(float *)(*(char **)(root + 0x2844) + 8)))
+*(char **)(root + 0x2844) = node;
+if (*(int *)(node + 4) == 2) {
+char **link = (char **)(root + 0x283C);
+char *scan = *link;
+int less;
+while (scan != 0) {
+less = *(float *)(scan + 8) < *(float *)(node + 8);
+if (less != 0)
+break;
+link = (char **)(scan + 0x10);
+scan = *link;
+}
+*(void **)(node + 0x10) = scan;
+*link = node;
+}
+}
+} else {
+char *root = *(char **)lbl_8055FCBC;
+char *node = root + slotOffset + 0x3C;
+*(float *)(node + 8) = f50;
+if (*(int *)(node + 4) == 0 && f50 < f4C && (*(char **)(root + 0x2844) == 0 || f50 < *(float *)(*(char **)(root + 0x2844) + 8)))
+*(char **)(root + 0x2844) = node;
+if (*(int *)(node + 4) == 2) {
+char **link = (char **)(root + 0x283C);
+char *scan = *link;
+int less;
+while (scan != 0) {
+less = *(float *)(scan + 8) < *(float *)(node + 8);
+if (less != 0)
+break;
+link = (char **)(scan + 0x10);
+scan = *link;
+}
+*(void **)(node + 0x10) = scan;
+*link = node;
+}
+}
+}
+i++;
+offset += 0x4C;
+slotOffset += 0x14;
+} while (i < 0x200);
+if (lbl_8055D07D == 0) {
+char *root = *(char **)lbl_8055FCBC;
+char *node = *(char **)(root + 0x283C);
+while (node != 0) {
+if (*(int *)(node + 4) == 2) {
+char *head = *(char **)(root + 0x10);
+int flag = 0;
+if (head != 0) {
+char *entry2 = (char *)lbl_8055FCB0 + *(int *)node * 0x4C;
+*(int *)(head + 4) = *(int *)(entry2 + 0x40);
+*(int *)(head + 8) = *(int *)(node + 0xC) + 2;
+*(int *)(head + 0xC) = 0;
+*(char **)head = entry2 + 4;
+fn_802CBD30((void **)(root + 0xC), (void **)(root + 0x10), head);
+*(int *)(entry2 + 0x40) = 0;
+{
+char *pool;
+char **link;
+char *freeNode;
+char *other;
+char **mergeLink;
+pool = *(char **)(*(char **)(root + 0x38) + 4);
+link = (char **)(pool + 0xC);
+freeNode = (char *)(*(int *)(entry2 + 0x44) - (*(int *)(pool + 4) + 1));
+other = *link;
+if (other != 0) {
+do {
+if (other == freeNode) {
+*link = *(char **)(freeNode + 8);
+break;
+}
+link = (char **)(other + 8);
+other = *link;
+} while (other != 0);
+}
+mergeLink = (char **)(pool + 8);
+*(char **)(freeNode + 8) = *mergeLink;
+*mergeLink = freeNode;
+{
+char **scanLink;
+char *joined;
+char *other2;
+int pageSize;
+int merged;
+int candidate;
+do {
+scanLink = (char **)(pool + 8);
+merged = 0;
+merge_loop:
+other2 = *scanLink;
+if (other2 != 0) {
+joined = *mergeLink;
+pageSize = *(int *)(pool + 4);
+candidate = 1;
+if (((char *)joined + pageSize + *(int *)(joined + 4) + 1 != other2) && ((char *)other2 + pageSize + *(int *)(other2 + 4) + 1 != joined))
+candidate = 0;
+if (candidate != 0) {
+link = mergeLink;
+if ((char *)other2 + pageSize + *(int *)(other2 + 4) + 1 == joined) {
+link = scanLink;
+scanLink = mergeLink;
+}
+joined = *link;
+mergeLink = link;
+merged = 1;
+*(int *)(joined + 4) = (((pageSize + 0x10) & ~pageSize) + (*(int *)(joined + 4) + *(int *)(*scanLink + 4)));
+*scanLink = *(char **)(*scanLink + 8);
+} else {
+scanLink = (char **)(other2 + 8);
+goto merge_loop;
+}
+}
+} while (merged != 0);
+}
+*(int *)(entry2 + 0x44) = 0;
+flag = 1;
+((void (*)(void *, void *))fn_802CB3F8)(entry2 + 4, &lbl_8034BA98);
+}
+}
+if (flag != 0)
+*(int *)(node + 4) = 0;
+}
+node = *(char **)(node + 0x10);
+}
+}
+{
+char *root = *(char **)lbl_8055FCBC;
+fn_802CC410(root);
+fn_802CBDD0(root);
+fn_802CBC3C(root, *(int *)(root + 0x2848));
+*(int *)(root + 0x2848) = *(int *)(root + 0x2848) + 1;
+}
+lbl_8055FCB8 = -2;
+}
+#pragma pop
 extern void fn_802E317C(const char *, ...);
 extern char lbl_8034B7D0[];
 
