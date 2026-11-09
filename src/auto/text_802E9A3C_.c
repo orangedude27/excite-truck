@@ -191,10 +191,10 @@ void fn_802E9CF0(void) {
 
 #pragma dont_inline on
 void fn_802E9DDC(void) {
-    if (fn_800B7E5C((signed char)(((char *)&lbl_805076B8)[8]), 1) != 0) {
+    if (fn_800B7E5C((signed char)lbl_805076B8[8], 1) != 0) {
         ((long (*)(char *, ...))fn_802E30C8)((char *)&lbl_8034E3E0);
     }
-    if (fn_800B7B34((signed char)(((char *)&lbl_805076B8)[8])) != 0) {
+    if (fn_800B7B34((signed char)*(lbl_805076B8 + 8)) != 0) {
         fn_802E317C((const char *)&lbl_8034E3F0);
     }
 }
