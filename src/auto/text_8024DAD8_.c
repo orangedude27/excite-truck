@@ -235,8 +235,7 @@ void fn_8024EBAC(void *arg0, s32 arg1, s32 arg2) {
 
 #pragma scheduling invalid_target
 s32 fn_8024EBE4(s32 arg0) {
-    int zero = 0;
-    s32 value = fn_8001668C(arg0 + 0x60, zero);
+    s32 value = fn_8001668C(arg0 + 0x60, 0);
     if (lbl_80498C48[4] != 0) {
         return ((s32 *(*)(s32, s32))fn_80016BC8)(value, 0)[0];
     }
