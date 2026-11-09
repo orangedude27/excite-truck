@@ -152,21 +152,18 @@ void fn_8000F1E0(void) {
 
 void fn_8000F22C(void) {
     UnkF22C *obj;
-    void (*destroy)(UnkF22C *, s32);
     if (lbl_8055D4BC != 0) fn_80235380(lbl_8055D4BC);
     lbl_8055D4BC = 0;
     obj = lbl_8055D4B4;
     if (obj != 0) {
         if (obj != 0) {
-            destroy = obj->vtable->unk_0x8;
-            destroy(obj, 1);
+            ((void (**)(UnkF22C *, s32))*(void **)obj)[2](obj, 1);
         }
     }
     obj = lbl_8055D4B8;
     if (obj != 0) {
         if (obj != 0) {
-            destroy = obj->vtable->unk_0x8;
-            destroy(obj, 1);
+            ((void (**)(UnkF22C *, s32))*(void **)obj)[2](obj, 1);
         }
     }
 }
@@ -799,7 +796,7 @@ extern s32 lbl_80558A90;
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-#pragma fp_contract on
+#pragma fp_contract fast
 f32 fn_8001090C(f32 farg0) {
     union {
         f64 value;
