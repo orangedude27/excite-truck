@@ -943,9 +943,10 @@ void fn_802CFF5C(void* hi) {
 }
 
 int fn_802CFF64(int arg0) {
-    int aligned = (arg0 + 0x1F) & ~0x1F;
+    int next;
     int old = lbl_8055FD94;
-    int next = old + aligned;
+    int aligned = (arg0 + 0x1F) & ~0x1F;
+    next = old + aligned;
     if (next <= 0x177000) {
         lbl_8055FD94 = next;
         return lbl_8055FDA0 + old;
