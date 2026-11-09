@@ -2550,74 +2550,85 @@ extern "C" void fn_800E6A44(void *arg0, int arg1, int arg2, void *arg3) {
 
 extern "C" void fn_800337C4(void *, unsigned short *);
 extern float lbl_80560F5C;
-extern "C" int fn_800E6B24(void *arg0) {
-    float *var_r30;
-    unsigned char *var_r29;
-    int var_r28;
-    unsigned char *var_r27;
-    int var_r26, var_r25, var_r24, var_r23, var_r22, ready;
-    unsigned char *p = (unsigned char *)arg0;
-    unsigned short sp8[2];
-    float var_f31, temp_f30, temp_f29;
-    var_f31 = lbl_80560F38;
-    var_f31 *= *(float *)(p + 0x188);
-    var_r26 = 0;
-    var_f31 *= fn_800E310C(Instance__15EmissionManagerFv());
-    if (p[0x122] != 0) var_f31 = lbl_80560F3C;
-    temp_f29 = lbl_80560F5C;
-    var_r29 = p;
-    var_r30 = (float *)(p + 0x18c);
-    var_r25 = 0; var_r28 = 0;
-    while (var_r25 < *(int *)(p + 0x108)) {
-        temp_f30 = var_f31 * *(float *)(var_r29 + 0x94);
-        var_r27 = p + var_r28;
-        var_r24 = 0;
-        while (var_r24 < *(int *)(p + 0x104)) {
-            if (p[0x121] == 0) {
-                unsigned int state = OSDisableInterrupts();
-                void *voice = *(void **)(p + 0xC);
-                if (voice == 0) {
-                    OSRestoreInterrupts(state);
-                    ready = 0;
+/* Update the volumes of every AX voice of this AxVoice (nw4hbm::snd::detail::AxVoice);
+   the 0x10 bit of the update flags at self[0x123] asks for it.  The volume a column
+   wants is the main volume (self+0x188) times the EmissionManager's engine factor
+   (fn_800E310C) times the column's own volume (self+0x94 + column*0x1C), forced to
+   0.0 while self[0x122] mutes it, and scaled to the 16-bit AX range by 32767.  Each
+   voice is handed its start volume and the delta that ramps it to the target in 96
+   mix frames; the ramp starts from the column's previous volume (self+0x18C[]) once
+   the first AX voice is playing, and from the stored start volume (self+0x19C)
+   before that.  Returns 1 while any voice is still ramping, 0 when they all match. */
+extern "C" int fn_800E6B24(void *self) {
+    float *prevColumnVolume;
+    unsigned char *columnVolume;
+    int columnOffset;
+    unsigned char *slot;
+    int ramping, column, row, volume, targetVolume, voiceActive;
+    unsigned char *base = (unsigned char *)self;
+    unsigned short axVolume[2];
+    float masterVolume, columnTarget, volumeScale;
+    masterVolume = lbl_80560F38;                    /* 1.0f */
+    masterVolume *= *(float *)(base + 0x188);       /* main volume */
+    ramping = 0;
+    masterVolume *= fn_800E310C(Instance__15EmissionManagerFv());
+    if (base[0x122] != 0) masterVolume = lbl_80560F3C;  /* muted: 0.0f */
+    volumeScale = lbl_80560F5C;                     /* 32767.0f */
+    columnVolume = base;
+    prevColumnVolume = (float *)(base + 0x18c);
+    column = 0; columnOffset = 0;
+    while (column < *(int *)(base + 0x108)) {       /* columns of voices */
+        columnTarget = masterVolume * *(float *)(columnVolume + 0x94);
+        slot = base + columnOffset;
+        row = 0;
+        while (row < *(int *)(base + 0x104)) {      /* voices per column */
+            if (base[0x121] == 0) {
+                /* Is the first AX voice already playing? */
+                unsigned int interruptState = OSDisableInterrupts();
+                void *axVoice = *(void **)(base + 0xC);
+                if (axVoice == 0) {
+                    OSRestoreInterrupts(interruptState);
+                    voiceActive = 0;
                 } else {
-                    ready = (*(unsigned short *)((unsigned char *)voice + 0x148) - 1) == 0;
-                    OSRestoreInterrupts(state);
+                    voiceActive = (*(unsigned short *)((unsigned char *)axVoice + 0x148) - 1) == 0;
+                    OSRestoreInterrupts(interruptState);
                 }
             } else {
                 goto normal_volume;
             }
-            if (!ready) {
+            if (!voiceActive) {
 normal_volume:
-                var_r23 = (int)(temp_f29 * (temp_f30 * *(float *)(p + 0x19C)));
-                var_r22 = (int)(temp_f29 * (temp_f30 * *(float *)(p + 0x1A0)));
+                volume = (int)(volumeScale * (columnTarget * *(float *)(base + 0x19C)));
+                targetVolume = (int)(volumeScale * (columnTarget * *(float *)(base + 0x1A0)));
             } else {
-                var_r23 = (int)(temp_f29 * (*var_r30 * *(float *)(p + 0x19C)));
-                var_r22 = (int)(temp_f29 * (temp_f30 * *(float *)(p + 0x1A0)));
+                /* Ramp from where this column's volume was last time. */
+                volume = (int)(volumeScale * (*prevColumnVolume * *(float *)(base + 0x19C)));
+                targetVolume = (int)(volumeScale * (columnTarget * *(float *)(base + 0x1A0)));
             }
-            sp8[0] = (unsigned short)var_r23;
-            sp8[1] = ((unsigned short)var_r22 - (unsigned short)var_r23) / 96;
-            fn_800337C4(*(void **)(var_r27 + 0xC), sp8);
-            if ((unsigned short)var_r22 != (unsigned short)var_r23) var_r26 = 1;
-            var_r27 += 0x10; var_r24++;
+            axVolume[0] = (unsigned short)volume;
+            axVolume[1] = ((unsigned short)targetVolume - (unsigned short)volume) / 96;
+            fn_800337C4(*(void **)(slot + 0xC), axVolume);  /* AXSetVoiceVolume */
+            if ((unsigned short)targetVolume != (unsigned short)volume) ramping = 1;
+            slot += 0x10; row++;
         }
-        *var_r30 = temp_f30; var_r30++; var_r29 += 0x1c; var_r28 += 4; var_r25++;
+        *prevColumnVolume = columnTarget; prevColumnVolume++; columnVolume += 0x1c; columnOffset += 4; column++;
     }
-    if (p[0x121] == 0) {
-        unsigned int state = OSDisableInterrupts();
-        void *voice = *(void **)(p + 0xC);
-        if (voice == 0) {
-            OSRestoreInterrupts(state);
-            ready = 0;
+    if (base[0x121] == 0) {
+        unsigned int interruptState = OSDisableInterrupts();
+        void *axVoice = *(void **)(base + 0xC);
+        if (axVoice == 0) {
+            OSRestoreInterrupts(interruptState);
+            voiceActive = 0;
         } else {
-            ready = (*(unsigned short *)((unsigned char *)voice + 0x148) - 1) == 0;
-            OSRestoreInterrupts(state);
+            voiceActive = (*(unsigned short *)((unsigned char *)axVoice + 0x148) - 1) == 0;
+            OSRestoreInterrupts(interruptState);
         }
-        if (ready != 0) goto done;
+        if (voiceActive != 0) goto done;
     }
-    p[0x121] = 0;
+    base[0x121] = 0;    /* the first volume update has happened */
 done:
-    *(float *)(p + 0x19c) = *(float *)(p + 0x1a0);
-    return var_r26;
+    *(float *)(base + 0x19c) = *(float *)(base + 0x1a0);  /* ramp-from = ramp-to */
+    return ramping;
 }
 
 extern "C" void CalcAXPBMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP8_AXPBMIX(void *, int, int, void *);
@@ -3358,6 +3369,8 @@ extern "C" void Update__Q46nw4hbm3snd6detail10BasicSoundFv(void *self) {
     float f31, f30, f28, f27, f26, f25, f24, f29;
     int voice, i, valid;
     float *aux;
+    char *pl;
+    char *pl2;
     if (UF(unsigned char, 0x66) != 0 && p->p18() != 0) {
         int c = UF(int, 0x6C);
         if (c == 0) {
@@ -3391,16 +3404,19 @@ extern "C" void Update__Q46nw4hbm3snd6detail10BasicSoundFv(void *self) {
     }
     if (UF(UpdCbA *, 0x1C) != 0) UF(UpdCbA *, 0x1C)->a08(UF(int, 0x24), self);
     if (UF(UpdCbB *, 0x18) != 0) UF(UpdCbB *, 0x18)->b08((char *)self + 0x28, UF(int, 0x78), self, UF(int, 0x24), -1);
-    f31 = lbl_80560FB4 * UF(float, 0x8C) * *(float *)(UF(char *, 0x10) + 0x28);
-    if (UF(char *, 0x14) != 0) f31 *= *(float *)(UF(char *, 0x14) + 0x10);
-    f31 *= UpdRamp(UF(float, 0x7C), UF(float, 0x80), UF(int, 0x84), UF(int, 0x88));
-    f31 *= UpdRamp(UF(float, 0x44), UF(float, 0x48), UF(int, 0x4C), UF(int, 0x50));
-    f31 *= UpdRamp(UF(float, 0x54), UF(float, 0x58), UF(int, 0x5C), UF(int, 0x60));
+    f31 = lbl_80560FB4 * UF(float, 0x8C);
+    pl2 = UF(char *, 0x14);
+    pl = UF(char *, 0x10);
+    f31 *= *(float *)(pl + 0x28);
+    if (pl2 != 0) f31 *= *(float *)(pl2 + 0x10);
+    f31 *= UpdRamp((UpdRampFields *)((char *)self + 0x7C));
+    f31 *= UpdRamp((UpdRampFields *)((char *)self + 0x44));
+    f31 *= UpdRamp((UpdRampFields *)((char *)self + 0x54));
     f31 *= UF(float, 0x28);
     f28 = lbl_80560FB0;
     voice = 1;
     f27 = f28;
-    f30 = lbl_80560FB4 * *(float *)(UF(char *, 0x10) + 0x34) * UF(float, 0xA4);
+    f30 = lbl_80560FB4 * *(float *)(pl + 0x34) * UF(float, 0xA4);
     f28 = f28 + UF(float, 0x90);
     f26 = f27;
     f25 = f26;
