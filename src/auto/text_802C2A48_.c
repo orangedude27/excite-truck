@@ -17,6 +17,7 @@ unsigned char fn_802C2C00(unsigned char);
 void fn_801E6978(void);
 
 extern unsigned char lbl_804C1328[];
+void fn_802C2B78(float, float, float);
 void fn_802C2AA8(void) {
     fn_802C2A48(2);
     fn_802CF5F8(*(int *)((char *)fn_802CE344(2) + 0x10));
