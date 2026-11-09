@@ -180,21 +180,23 @@ void fn_8012850C(void *arg0, void *arg1) {
     fn_8012834C(arg1, arg0, 0);
 }
 
-#pragma scheduling off
+#pragma push
+#pragma scheduling invalid_target
 s32 fn_80128520(s32 arg0) {
     if (lbl_8055DF80 == 0)
         goto do_log;
-    if (*(volatile s32 **)&lbl_8055DF84 == NULL) {
-        fn_8012834C(lbl_8032A068, (void *)arg0, 3);
-        goto done;
-    }
+    if (*(volatile s32 **)&lbl_8055DF84 == NULL)
+        goto do_special;
     goto do_log;
+do_special:
+    fn_8012834C(lbl_8032A068, (void *)arg0, 3);
+    goto done;
 do_log:
     ((s32 (*)(const char *, ...))fn_802E317C)(lbl_8032A074, arg0);
 done:
     return lbl_8055DF98;
 }
-
+#pragma pop
 extern char lbl_8032A0A0[];
 void fn_80128AA4(void *, u8 *, s32, s32);
 #pragma dont_inline on
@@ -302,23 +304,34 @@ void fn_80129218(void) {
 
 }
 
+#pragma cplusplus on
 #pragma scheduling invalid_target
-void fn_8012921C(void *arg0, s32 arg1) {
-    register s32 mask;
-    register s32 sum;
-    s32 offset;
+extern "C" void fn_8012921C(void *arg0, s32 arg1) {
+    struct Ring {
+        virtual void d0();
+        virtual void d1();
+        virtual void *alloc(s32, void *, s32);
+    };
+    void *queue;
     void *result;
+    s32 sum;
+    s32 mask;
+    s32 size;
+    s32 offset;
     if (arg1 <= 0x40)
         return;
-    mask = arg1 - 1;
-    sum = *(s32 *)((u8 *)arg0 + 0xC) + *(s32 *)((u8 *)arg0 + 4);
-    if (((sum + 0x40) & mask) == 0)
-        return;
-    offset = mask & (arg1 - ((sum + 0x80) & mask));
-    result = ((void *(*)(void *, s32, void *, s32))(*(void **)((u8 *)*(void **)arg0 + 0x10)))(arg0, offset, lbl_8032A05C, 3);
-    *(u8 *)((u8 *)result - 0x1C) = 0;
+    queue = arg0;
+    size = arg1;
+    mask = size - 1;
+    sum = *(s32 *)((u8 *)queue + 0xC) + *(s32 *)((u8 *)queue + 4);
+    if (((sum + 0x40) & mask) != 0) {
+        offset = mask & (size - ((sum + 0x80) & mask));
+        result = ((Ring *)queue)->alloc(offset, lbl_8032A05C, 3);
+        *(u8 *)((u8 *)result - 0x1C) = 0;
+    }
 }
 #pragma scheduling on
+#pragma cplusplus off
 void fn_80128584(s32, s32);
 
 void fn_80128658(s32 arg0) {
