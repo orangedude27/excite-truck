@@ -111,13 +111,13 @@ extern "C" void *fn_801B4610(void *arg0, int arg1) {
 }
 #pragma cplusplus off
 #pragma pop
+#pragma push
+#pragma small_data off
 extern int lbl_80335DB8;
+#pragma pop
 extern int fn_8012850C(int, int *);
 extern int fn_802E4CA4(int);
 extern void fn_801B4720(int);
-#pragma push
-#pragma small_data off
-#pragma pop
 void fn_801B46BC(void *arg0, int arg1, int arg2) {
     *(int *)((char *)arg0 + 0x1C) = arg1;
     *(int *)((char *)arg0 + 0x18) = fn_8012850C(arg1 * 0xC, &lbl_80335DB8);
