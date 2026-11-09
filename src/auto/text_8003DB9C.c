@@ -5022,36 +5022,29 @@ void GXSetViewport(f32 xOrig, f32 yOrig, f32 width, f32 height, f32 nearZ, f32 f
     __GXData[0x5FC / 4] |= 0x10000000;
 }
 
-void GXSetScissor(int x, int y, int wd, int ht) {
-    union {
-        unsigned int value;
-        struct {
-            unsigned int pad0 : 9;
-            unsigned int ox : 11;
-            unsigned int pad1 : 1;
-            unsigned int oy : 11;
-        } bits;
-    } a, b;
-    unsigned int *gx = __GXData;
-    int left = x + 342;
-    int top = y + 342;
-    int btm = top + ht;
-    int rgt = left + wd;
-    int bottom = btm - 1;
-    int right = rgt - 1;
-    a.value = gx[0x148 / 4];
-    a.bits.oy = top;
-    a.bits.ox = left;
-    gx[0x148 / 4] = a.value;
-    b.value = gx[0x14C / 4];
-    b.bits.oy = bottom;
-    b.bits.ox = right;
-    gx[0x14C / 4] = b.value;
+void GXSetScissor(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    unsigned int *data = __GXData;
+    s32 left = arg0 + 0x156;
+    s32 top = arg1 + 0x156;
+    s32 tmpBottom = top + arg3;
+    s32 tmpRight = left + arg2;
+    s32 bottom = tmpBottom - 1;
+    s32 right = tmpRight - 1;
+    unsigned int tl;
+    unsigned int br;
+    tl = data[0x148 / 4];
+    tl = __rlwimi(tl, top, 0, 21, 31);
+    tl = __rlwimi(tl, left, 12, 9, 19);
+    data[0x148 / 4] = tl;
+    br = data[0x14C / 4];
+    br = __rlwimi(br, bottom, 0, 21, 31);
+    br = __rlwimi(br, right, 12, 9, 19);
+    data[0x14C / 4] = br;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = gx[0x148 / 4];
+    *(volatile unsigned int *)0xCC008000 = data[0x148 / 4];
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = gx[0x14C / 4];
-    *(volatile unsigned short *)((char *)gx + 2) = 0;
+    *(volatile unsigned int *)0xCC008000 = data[0x14C / 4];
+    *(volatile unsigned short *)((char *)data + 2) = 0;
 }
 
 void GXSetScissorBoxOffset(s32 x, s32 y) { union { u32 value; struct { unsigned int tag : 8; unsigned int reserved : 4; unsigned int y : 10; unsigned int x : 10; } bits; } reg; reg.value = 0; reg.bits.x = ((u32)(x + 0x156)) >> 1; *(volatile u8 *)0xCC008000 = 0x61; reg.bits.y = ((u32)(y + 0x156)) >> 1; reg.bits.tag = 0x59; *(volatile u32 *)0xCC008000 = reg.value; *(volatile u16 *)((u8 *)__GXData + 2) = 0; }
