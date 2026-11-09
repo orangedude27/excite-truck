@@ -6,6 +6,7 @@ extern "C" s32 fn_80179630(s32);
 extern "C" void fn_801CB5DC(s32, s32, s32);
 extern "C" void fn_801CB648(s32, s32, f32);
 extern "C" f32 lbl_8056158C, lbl_80561590;
+extern "C" f32 lbl_80558DC4[];
 extern "C" u8 lbl_802F93B0[];
 struct SubArray8013D2C4 {
     void **ptr;
@@ -1836,6 +1837,10 @@ extern "C" int fn_8013FD20(void *arg0, int arg1) {
     return result;
 }
 
+extern "C" void fn_8013FDB0(void *arg0, void *arg2) {
+    return;
+}
+
 extern "C" f32 fn_8001DAF0(f32 *);
 extern "C" s32 fn_801E866C(s32);
 extern "C" void fn_8001DF08(s32, s32);
@@ -2197,6 +2202,10 @@ extern "C" void *__dt__Q210JASDrumSet5TPercFv(void *arg0, s32 arg1) {
 extern "C" void fn_802A96E8(s32, s32, s32, s32, s32, void *);
 extern "C" void fn_80141558(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     fn_802A96E8(arg1, arg2, arg3, *(s32 *)((char *)arg0 + 0), *(s32 *)((char *)arg0 + 4), arg0);
+}
+
+extern "C" void fn_80141574(char *arg0) {
+    return;
 }
 
 extern "C" void fn_80141C84(void *arg0, s32 arg1) {
