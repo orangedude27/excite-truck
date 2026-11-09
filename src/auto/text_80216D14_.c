@@ -873,17 +873,35 @@ void fn_8021818C(void *arg0) {
     *(int *)((char *)arg0 + 0x498) = -1;
 }
 
-void fn_80218198(void *arg0, void **arg1) {
-    if (arg1 == *(void ***)((char *)arg0 + 0x450)) return;
-    if (*(void ***)((char *)arg0 + 0x450) != 0) {
-        void **old = *(void ***)((char *)arg0 + 0x450);
-        (*(void (**)(void *))(((void **)*old) + 14))(old);
-    }
-    *(void ***)((char *)arg0 + 0x450) = arg1;
-    if (arg1 != 0) {
-        (*(void (**)(void *))(((void **)*arg1) + 13))(arg1);
+#pragma cplusplus on
+extern "C" void fn_80218198(void *arg0, void **arg1) {
+    struct Dummy {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+        virtual void f10();
+        virtual void f11();
+        virtual void f12();
+    };
+    void *old = *(void **)((char *)arg0 + 0x450);
+    if (arg1 != old) {
+        if (old != 0) {
+            ((Dummy *)old)->f12();
+        }
+        *(void **)((char *)arg0 + 0x450) = arg1;
+        if (arg1 != 0) {
+            ((Dummy *)arg1)->f11();
+        }
     }
 }
+#pragma cplusplus off
 
 #pragma push
 #pragma processor 750
