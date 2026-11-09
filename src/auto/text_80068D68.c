@@ -1136,6 +1136,311 @@ s32 fn_800692D0(void) {
     return 0;
 }
 
+void fn_80069408(void) {
+    u8 *base = lbl_80392960;
+    s32 sp8;
+    s32 spC;
+    s32 sp10;
+    s32 sp14;
+    s32 sp18;
+    s32 sp1C;
+    s32 sp20;
+    s32 sp24;
+    s32 sp28;
+    u8 sp30[0x30];
+    switch (base[0xC]) {
+    case 1:
+        base[0xC] = fn_80068F94();
+        return;
+    case 2: {
+        BOOL interrupts;
+        u8 timer_state;
+        sp30[0] = 1;
+        sp30[2] = 1;
+        sp30[3] = 0;
+        if (base[0x667] != 0) {
+            sp30[1] = 3;
+        } else if (base[0x669] == 0) {
+            interrupts = OSDisableInterrupts();
+            timer_state = base[0x665];
+            OSRestoreInterrupts(interrupts);
+            if (timer_state == 3) {
+                sp30[1] = 0xA - base[0x668];
+            } else {
+                sp30[1] = 5 - base[0x668];
+            }
+        } else {
+            interrupts = OSDisableInterrupts();
+            timer_state = base[0x665];
+            OSRestoreInterrupts(interrupts);
+            if (timer_state == 3) {
+                sp30[1] = 8;
+            } else {
+                sp30[1] = 3;
+            }
+        }
+        lbl_8055DC49 = 0;
+        memset(base + 0xB60, 0, 0x108);
+        BTA_DmSearch(sp30, 0, (u32)fn_8006C00C);
+        base[0xC] = 3;
+        return;
+    }
+    case 4: {
+        u8 result = 1;
+        if (lbl_8055DC49 != 0) {
+            if (memcmp(base + 0xB60 + 6, lbl_803130C8 + 0x1A0, 0x10) == 0 && (s8)lbl_8055DC48 > (s8)base[0x68B]) {
+                result = 5;
+            }
+        } else {
+            BOOL interrupts;
+            u8 timer_state;
+            s32 interval = 2;
+            interrupts = OSDisableInterrupts();
+            timer_state = base[0x665];
+            OSRestoreInterrupts(interrupts);
+            if (timer_state == 3) interval = 4;
+            interrupts = OSDisableInterrupts();
+            timer_state = base[0x665];
+            OSRestoreInterrupts(interrupts);
+            if (timer_state == 4) {
+                interrupts = OSDisableInterrupts();
+                timer_state = base[0x664];
+                OSRestoreInterrupts(interrupts);
+                if (timer_state == 4) base[0xC] = 0xE;
+            }
+            OSCreateAlarm((OSAlarm *)(base + 0x6C8));
+            OSSetAlarm((OSAlarm *)(base + 0x6C8), (s64)(interval * ((*(u32 *)0x800000F8) >> 2)), (OSAlarmHandler)fn_80068F80);
+            result = 0x18;
+        }
+        base[0xC] = result;
+        return;
+    }
+    case 5: {
+        u8 result = 0x11;
+        void *info = WUDiGetDevInfo(base + 0xB60);
+        if (info != 0) {
+            memcpy(base + 0xC68, info, 0x60);
+            result = 0x10;
+        }
+        base[0xC] = result;
+        return;
+    }
+    case 0x10: {
+        u8 *info = base + 0xC68;
+        u8 v = info[0x5B];
+        info[0x59] = 1;
+        if (v == 2 || v == 0 || (v >= 4 && v < 6)) {
+            if (base[0x669] == 0) {
+                fn_8006B598(info + 0x40);
+                base[0xC] = 0x11;
+            } else {
+                info[0x5B] = 4;
+                base[0xC] = 0xF;
+            }
+        } else {
+            WUDiMoveBottomSmpDevInfoPtr_8006B98C(info);
+            fn_8006B598(*(u8 **)(base + 0x18) + 0x40);
+            base[0xC] = 0x11;
+        }
+        return;
+    }
+    case 0x11: {
+        u8 *info = base + 0xC68;
+        info[0x59] = 1;
+        info[0x5B] = (base[0x669] != 0);
+        memcpy(info + 0x40, base + 0xB60, 6);
+        memcpy(info, base + 0xB60 + 6, 0x40);
+        memset(info + 0x46, 0, 0x10);
+        base[0xC] = 0xF;
+        return;
+    }
+    case 0xF: {
+        u8 result = 0xFF;
+        if (memcmp(base + 0xB60 + 6, lbl_803130C8 + 0x1A0, 0x10) == 0) {
+            u8 *info = base + 0xC68;
+            info[0x59] = 2;
+            BTA_HhOpen(info + 0x40, 0, 0x12);
+            result = 6;
+        }
+        base[0xC] = result;
+        return;
+    }
+    case 0x12: {
+        u8 v = *(base + 0xC68 + 0x5B);
+        u8 result = v;
+        switch (v) {
+        case 1: result = 0x13; break;
+        case 0: result = 0x14; break;
+        case 5: result = 0x15; break;
+        case 3: result = 0x17; break;
+        case 4: result = 7; break;
+        case 2: result = 7; break;
+        }
+        base[0xC] = result;
+        return;
+    }
+    case 0x13: {
+        BOOL interrupts;
+        u8 v;
+        interrupts = OSDisableInterrupts();
+        v = base[0x13];
+        OSRestoreInterrupts(interrupts);
+        if (v == 6) {
+            fn_8006B598(*(u8 **)(base + 0x18) + 0x40);
+        }
+        {
+            void *info = WUDiGetNewDevInfo();
+            memcpy(info, base + 0xC68, 0x60);
+            ((void (*)(void *))fn_8006B488)((u8 *)info + 0x40);
+            ((void (*)(u8 *))WUDiMoveTopSmpDevInfoPtr)(info);
+            base[0xC] = 0x17;
+            *(void **)(base + 0xCC8 + ((u8 *)info)[0x56] * 4) = (u8 *)info + 0x40;
+        }
+        return;
+    }
+    case 0x14: {
+        BOOL interrupts;
+        u8 v;
+        interrupts = OSDisableInterrupts();
+        v = base[0x12];
+        OSRestoreInterrupts(interrupts);
+        if (v == 0xA) {
+            base[0xE] = 1;
+            BTM_ReadStoredLinkKey(NULL, WUDStoredLinkKeyCallback);
+            base[0xC] = 0xA;
+        } else {
+            void *info = WUDiGetNewDevInfo();
+            memcpy(info, base + 0xC68, 0x60);
+            ((void (*)(void *))fn_8006B488)((u8 *)info + 0x40);
+            base[0xC] = 7;
+            *(void **)(base + 0xCC8 + ((u8 *)info)[0x56] * 4) = (u8 *)info + 0x40;
+        }
+        return;
+    }
+    case 0x15: {
+        WUDiMoveBottomSmpDevInfoPtr_8006B98C(base + 0xC68);
+        fn_8006B598(*(u8 **)(base + 0x18) + 0x40);
+        {
+            BOOL interrupts;
+            u8 v;
+            interrupts = OSDisableInterrupts();
+            v = base[0x12];
+            OSRestoreInterrupts(interrupts);
+            if (v == 0xA) {
+                base[0xE] = 1;
+                BTM_ReadStoredLinkKey(NULL, WUDStoredLinkKeyCallback);
+                base[0xC] = 0xA;
+            } else {
+                void *info = WUDiGetNewDevInfo();
+                memcpy(info, base + 0xC68, 0x60);
+                ((void (*)(void *))fn_8006B488)((u8 *)info + 0x40);
+                base[0xC] = 7;
+                *(void **)(base + 0xCC8 + ((u8 *)info)[0x56] * 4) = (u8 *)info + 0x40;
+            }
+        }
+        return;
+    }
+    case 7: {
+        if (base[0xE] != 0) {
+            base[0xC] = 7;
+        } else {
+            void *info = WUDiGetDevInfo(base + 0xC68 + 0x40);
+            DBPrintf_8006CFA8((const char *)(lbl_803130C8 + 0x1B4));
+            DBPrintf_8006CFA8((const char *)(lbl_803130C8 + 0x1CC), ((u8 *)info)[0x40], ((u8 *)info)[0x41], ((u8 *)info)[0x42], ((u8 *)info)[0x43], ((u8 *)info)[0x44], ((u8 *)info)[0x45]);
+            sp8 = ((u8 *)info)[0x4D];
+            spC = ((u8 *)info)[0x4E];
+            sp10 = ((u8 *)info)[0x4F];
+            sp14 = ((u8 *)info)[0x50];
+            sp18 = ((u8 *)info)[0x51];
+            sp1C = ((u8 *)info)[0x52];
+            sp20 = ((u8 *)info)[0x53];
+            sp24 = ((u8 *)info)[0x54];
+            sp28 = ((u8 *)info)[0x55];
+            DBPrintf_8006CFA8((const char *)(lbl_803130C8 + 0x1F8), ((u8 *)info)[0x46], ((u8 *)info)[0x47], ((u8 *)info)[0x48], ((u8 *)info)[0x49], ((u8 *)info)[0x4A], ((u8 *)info)[0x4B], ((u8 *)info)[0x4C]);
+            base[0xE] = 2;
+            BTM_WriteStoredLinkKey(1, (BD_ADDR *)((u8 *)info + 0x40), (LINK_KEY *)((u8 *)info + 0x46), WUDStoredLinkKeyCallback);
+            base[0xC] = 8;
+        }
+        return;
+    }
+    case 8: {
+        if (base[0xE] == 0) {
+            base[0xC] = 0x16;
+        } else {
+            base[0xC] = 8;
+        }
+        return;
+    }
+    case 0x16:
+        base[0xC] = fn_80069178();
+        return;
+    case 0x19: {
+        BOOL interrupts;
+        interrupts = OSDisableInterrupts();
+        base[0xC] = 0xD;
+        OSRestoreInterrupts(interrupts);
+        SCFlushAsync(SyncFlushCallback);
+        return;
+    }
+    case 0xA: {
+        if (base[0xE] == 0) {
+            fn_8006B598(base + 0x67C);
+            base[0xC] = 0x14;
+        } else {
+            base[0xC] = 0xA;
+        }
+        return;
+    }
+    case 0x17: {
+        u8 *info = base + 0xC68;
+        u8 count = base[0x666];
+        base[0x666] = count + 1;
+        memset(info, 0, 0x60);
+        if (base[0x669] == 0) {
+            base[0xC] = 0xE;
+        } else {
+            base[0xC] = 1;
+        }
+        return;
+    }
+    case 0xFF: {
+        memset(base + 0xC68, 0, 0x60);
+        if (base[0x669] == 0) {
+            base[0xC] = 0xE;
+        } else {
+            base[0xC] = 1;
+        }
+        return;
+    }
+    case 0xE:
+        base[0xC] = fn_800692D0();
+        return;
+    case 3: {
+        BOOL interrupts;
+        u8 v;
+        interrupts = OSDisableInterrupts();
+        v = base[0x665];
+        OSRestoreInterrupts(interrupts);
+        if (v == 4) {
+            interrupts = OSDisableInterrupts();
+            v = base[0x664];
+            OSRestoreInterrupts(interrupts);
+            if (v == 4) {
+                DBPrintf_8006CFA8((const char *)(lbl_803130C8 + 0x250));
+                fn_80073CA8();
+                base[0xC] = 0x1A;
+                return;
+            }
+        }
+        base[0xC] = 3;
+        return;
+    }
+    default:
+        DBPrintf_8006CFA8((const char *)(lbl_803130C8 + 0x280));
+        return;
+    }
+}
+
 extern u8 lbl_80393680[];
 extern void fn_80069408(void);
 extern void fn_80069D80(void);
@@ -24211,6 +24516,12 @@ BOOLEAN sdpu_is_base_uuid(UINT8 *uuid) {
     }
     return TRUE;
 }
+
+/* stack/sdp/sdp_utils.c kept its static const sdp_base_uuid[] in .rodata: the
+   Bluetooth SIG base UUID 00000000-0000-1000-8000-00805F9B34FB that 16- and
+   32-bit UUIDs are expanded into before they are compared.  The game's symbols
+   can't be renamed yet, so alias it here. */
+#define sdp_base_uuid lbl_802EED40
 
 BOOLEAN sdpu_compare_uuid_arrays(UINT8 *p_uuid1, UINT32 len1, UINT8 *p_uuid2, UINT16 len2)
 {
