@@ -1269,27 +1269,28 @@ extern "C" void fn_802422DC(void *arg0, s32 arg1) {
         *(u8 *)((u8 *)infoDst + 0x284) = 0;
     }
 }
-#pragma scheduling on
-#pragma use_lmw_stmw reset
-#pragma cplusplus reset
-s32 fn_802426C0(void *arg0) {
-    s32 index = *(s32 *)((char *)arg0 + 0x28);
-    void *object;
-    volatile void **vtable;
-    s32 count;
+#pragma cplusplus on
+extern "C" s32 fn_802426C0(void *arg0) {
+    struct Obj {
+        virtual s32 f0() = 0;
+        virtual s32 f1() = 0;
+        virtual s32 f2() = 0;
+        virtual s32 getCount() = 0;
+        virtual s32 f4() = 0;
+        virtual s32 getItem(s32) = 0;
+    };
+    s32 index = *(s32 *)((u8 *)arg0 + 0x28);
+    Obj *object;
     if (index >= 0) {
-        object = *(void **)((char *)arg0 + 0x24);
-        vtable = *(volatile void ***)object;
-        count = (*(s32 (**)(void *))((char *)vtable + 0x14))(object);
-        if (index < count) {
-            object = *(void **)((char *)arg0 + 0x24);
-            vtable = *(volatile void ***)object;
-            return (*(s32 (**)(void *, s32))((char *)vtable + 0x1c))(object, index);
+        object = *(Obj **)((u8 *)arg0 + 0x24);
+        if (index < object->getCount()) {
+            object = *(Obj **)((u8 *)arg0 + 0x24);
+            return object->getItem(index);
         }
     }
     return 0;
 }
-
+#pragma cplusplus off
 extern void fn_80214A9C(s32);
 extern void fn_80214AF0(s32);
 extern void fn_802E317C(char *, ...);
