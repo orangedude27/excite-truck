@@ -9,8 +9,8 @@ extern void *fn_802C110C(int);
 extern void *fn_802C120C(void);
 extern float fn_80129DC4(int, float, float);
 extern void *lbl_8055FB50;
-extern char lbl_8034AFB8[4];
-extern char lbl_8034AFC8[4];
+extern char lbl_8034AFB8[];
+extern char lbl_8034AFC8[];
 extern char lbl_8034AFD8[];
 extern int lbl_8055FB54;
 int fn_8012C33C(void);
@@ -197,6 +197,15 @@ void fn_802C20DC(int *arg0) {
 
 short fn_802C2120(int arg0) {
     return (short)(((arg0 << 8) / 1024) + 0x80);
+}
+
+void fn_802C2138(void) {
+    int result;
+    result = fn_802C2074(lbl_8034AFB8);
+    lbl_8055FB50 = (void *)result;
+    if (result == -2) {
+        lbl_8055FB50 = (void *)fn_802C2074(lbl_8034AFC8);
+    }
 }
 
 void fn_802B52B4(void *);
