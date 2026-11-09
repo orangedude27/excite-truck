@@ -9780,6 +9780,14 @@ tBTM_PM_MODE btm_pm_get_set_mode(UINT8 pm_id, tBTM_PM_MCB *p_cb, tBTM_PM_PWR_MD 
     return p_res->mode;
 }
 
+/* btm_cb's power-management members and the ACL handle of a link, named from
+   the code that reads them.  btm_int.h's tBTM_CB cannot be used here: its
+   tACL_CONN is 0x120 bytes where this stack's is 0x11C, and it counts
+   MAX_L2CAP_LINKS links where this build has four, so the byte offsets stay. */
+#define btm_cb_pm_pend_link  (lbl_803C0F78[0x564]) /* acl_db entry with a mode change outstanding, 4 (this build's MAX_L2CAP_LINKS) when none */
+#define btm_cb_pm_pend_id    (lbl_803C0F78[0x565]) /* the module waiting for its command status, BTM_PM_SET_ONLY_ID when none */
+#define btm_cb_acl_handle(i) (*(u16 *)(lbl_803C0F78 + (i) * 0x11c + 0x34)) /* acl_db[i].hci_handle */
+
 /* The two park-mode command senders.  Like the other senders in this unit they
    build the packet in the buffer they are handed (NULL = allocate one) and the
    game's symbols kept the names of the sniff/hold senders next to them: the
