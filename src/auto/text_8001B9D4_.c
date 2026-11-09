@@ -126,8 +126,8 @@ void fn_8001BB0C(s32 arg0, s32 arg1, s32 arg2) {
 }
 #pragma pop
 void fn_8001BB58(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    volatile register s32 a = arg3;
-    volatile register s32 b = arg2;
+    register s32 a = arg3;
+    register s32 b = arg2;
     fn_8001CE74(arg0, fn_8001D25C(arg1), b, a);
 }
 #pragma scheduling reset
@@ -217,11 +217,9 @@ void fn_8001BD54(Unk8001BBBC *arg0, void *arg1) {
 }
 #pragma scheduling invalid_target
 u32 fn_8001BD6C(void *arg0, void *arg1) {
-    u32 a0 = *(u32 *)((s8 *)arg0 + 0x18);
-    u32 a0c = *(u32 *)((s8 *)arg0 + 0xC);
-    u32 a18 = *(u32 *)((s8 *)arg1 + 0x18);
-    u32 a1c = *(u32 *)((s8 *)arg1 + 0xC);
-    u32 r = fn_8001D2E4(a0, a0c, a18, a1c);
+    volatile register void *p1 = arg1;
+    volatile register void *p0 = arg0;
+    u32 r = fn_8001D2E4(*(u32 *)((s8 *)p0 + 0x18), *(u32 *)((s8 *)p0 + 0xC), *(u32 *)((s8 *)p1 + 0x18), *(u32 *)((s8 *)p1 + 0xC));
     return (r & 0x80000000) >> 31;
 }
 #pragma scheduling on
