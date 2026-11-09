@@ -2251,13 +2251,14 @@ extern "C" void fn_8015B23C(Unk8015A368C* arg0) {
     }
 }
 
-extern "C" s32 fn_8015B2E0(unsigned char* arg0) {
-    if (arg0[0x294]) return 0x7fffffff;
-    float value = *(float*)(arg0 + 0x290);
+#pragma scheduling on
+extern "C" s32 fn_8015B2E0(void* arg0) {
+    if (*(unsigned char*)((unsigned char*)arg0 + 0x294)) return 0x7FFFFFFF;
+    float value = *(float*)((unsigned char*)arg0 + 0x290);
     if (value > lbl_80558DC4[0]) return (s32)value;
-    return (s32)*(float*)(arg0 + 0x28C);
+    return (s32)*(float*)((unsigned char*)arg0 + 0x28C);
 }
-
+#pragma scheduling reset
 extern "C" s32 fn_8015B338(void) { return 0xC; }
 
 extern "C" void fn_8015B340(Unk801577F0* self) {
@@ -3280,18 +3281,16 @@ extern "C" s32 fn_8015D504(Unk801577F0* arg0, s32 arg1) {
     s32 count = arg0->mCount;
     s32 i = 0;
     s32 offset = 0;
-    if (count > 0) {
-        while (i < count) {
-            s32 value = *(s32*)((u8*)arg0->mData + offset + 0x14);
-            if (arg1 < value) break;
-            if (value >= 0) {
-                offset += 0x38;
-                i++;
-                continue;
-            }
-            break;
-        }
+    for (i = 0; i < count; i++) {
+        s32 value = *(s32*)((u8*)arg0->mData + offset + 0x14);
+        if (arg1 < value) goto out;
+        if (value >= 0) goto cont;
+        goto out;
+    cont:
+        offset += 0x38;
     }
+    i = 0;
+out:
     return i;
 }
 
@@ -3370,11 +3369,11 @@ extern "C" s32 fn_8015D77C(void* arg0) {
 }
 
 extern "C" s32 fn_8015D7CC(void* arg0) {
-    register s32 count = *(s32*)((u8*)arg0 + 0xC);
+    s32 count = *(s32*)((u8*)arg0 + 0xC);
     while (count-- > 0) {
-        register u8* base = *(u8**)((u8*)arg0 + 8);
-        if (*(s32*)(base + count * 0x38 + 0x14) >= 0)
-            return *(s32*)(base + count * 0x38 + 0x14);
+        Item38* base = *(Item38**)((u8*)arg0 + 8);
+        if (base[count].val >= 0)
+            return base[count].val;
     }
     return 0;
 }
@@ -4008,10 +4007,6 @@ extern "C" void fn_8015EB28(void *arg0) {
         virtual void v1();
         virtual void v2();
         virtual void v3();
-        virtual void v4();
-        virtual void v5();
-        virtual void v6();
-        virtual void v7();
         virtual void dispatch();
     };
     int i;
