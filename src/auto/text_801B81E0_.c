@@ -561,15 +561,21 @@ void fn_801B8A10(void* arg0, int arg1, int arg2) {
     fn_801CB6B4(arg1, arg2, 2);
 }
 
-int fn_801B8A20(void *arg0) {
-    extern char lbl_8055E748;
-    if (*(volatile unsigned char *)&lbl_8055E748 != 0) {
-        return (*(int (***)(void *))arg0)[7](arg0);
+#pragma cplusplus on
+extern "C" int fn_801B8A20(void *arg0) {
+    struct Dummy {
+        virtual void d0();
+        virtual void d1();
+        virtual void d2();
+        virtual void d3();
+        virtual void d4();
+        virtual int d5();
+    };
+    if (*(unsigned char *)&lbl_8055E748 != 0) {
+        return ((Dummy *)arg0)->d5();
     }
     return 0;
 }
-
-#pragma cplusplus on
 extern "C" int fn_801B8A44(void *arg0) {
     struct Dummy {
         virtual void d0();
