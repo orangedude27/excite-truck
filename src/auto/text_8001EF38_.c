@@ -247,18 +247,22 @@ null_result:
     return 0;
 }
 
+#pragma scheduling off
 s32 fn_8001F41C(const char* arg) {
-    s32* p = (s32*)&lbl_802FDF30;
+    SrcCoef* p = lbl_802FDF30;
     u32 idx = 0;
-    while (idx < 8) {
-        if (stricmp((const char*)p[0], arg) == 0) {
+    for (;;) {
+        if (stricmp((const char*)p->unk0, arg) == 0) {
             return idx;
         }
         idx++;
-        p += 4;
+        p++;
+        if (idx >= 8) {
+            return -1;
+        }
     }
-    return -1;
 }
+#pragma scheduling on
 
 #pragma scheduling off
 void fn_8001F490(s32 arg) {
