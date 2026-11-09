@@ -255,6 +255,7 @@ public:
     int total;
     int elapsed;
     void SetVolume(float, int);
+    void SetInitialVolume(float);
 };
 }
 }
@@ -387,10 +388,15 @@ extern float lbl_80320E38[];
 #pragma pop
 extern "C" f32 SinFIdx__Q24nw4r4mathFf(f32 angle) {
     f32 index = __fabsf(angle);
-    while (index >= lbl_80560F00) index -= lbl_80560F00;
-    u16 quantized = ((u16 *)&index)[0];
-    f32 *entry = (f32 *)((char *)lbl_80320E38 + ((quantized * 0x10) & 0xFF0));
-    f32 value = entry[0] + (index - index) * entry[2];
+    while (index >= 65536.0f) index -= 65536.0f;
+    u16 q = __OSf32tou16(index);
+    f32 whole = __OSu16tof32(&q);
+    u32 off = ((q * 0x10) & 0xFF0);
+    f32 frac = index - whole;
+    u8 *base = (u8 *)lbl_80320E38;
+    f32 v0 = *(f32 *)(base + off);
+    f32 v1 = *(f32 *)(base + off + 8);
+    f32 value = v0 + frac * v1;
     if (angle < lbl_80560F04) value = -value;
     return value;
 }
@@ -3486,11 +3492,11 @@ extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(void *this
 }
 
 extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf(void *this_, float vol) {
-    BasicSound *sound = (BasicSound *)this_;
-    if (!(vol >= lbl_80560FB0)) {
+    float v = vol;
+    if (!(v >= lbl_80560FB0)) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x216, lbl_80322830);
     }
-    *(f32*)&((u8*)sound)[0x8C] = vol;
+    *(float *)((char *)this_ + 0x8C) = v;
 }
 
 void nw4hbm::snd::detail::BasicSound::SetVolume(float volume, int arg2) {
