@@ -22822,7 +22822,7 @@ BOOLEAN find_uuid_in_seq(UINT8 *p, UINT32 seq_len, UINT8 *p_uuid, UINT16 uuid_le
 
 tSDP_RECORD *sdp_db_find_record(UINT32 handle) {
     u8 *start = &lbl_803C4C40[0x1224];
-    u8 *end = start + (u32)(*(u16 *)&lbl_803C4C40[0x1222]) * 0x298;
+    u8 *end = &lbl_803C4C40[0] + 0x1224 + (u32)(*(u16 *)&lbl_803C4C40[0x1222]) * 0x298;
     u8 *p;
     for (p = start; p < end; p += 0x298) {
         if (*(u32 *)p == handle) return (tSDP_RECORD *)p;
