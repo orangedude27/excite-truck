@@ -46,7 +46,6 @@ typedef struct { void *pad[3]; int (*has)(void *, void *); void *(*next)(void *,
 typedef struct { void *pad[15]; int (*has)(void *, void *); void *(*value)(void *, void *); } IterFE;
 typedef struct { void *pad[14]; void *(*begin)(void *, void *, void *); } ObjFA;
 typedef struct { float x,y,z,w; u8 flag; } EntryFC;
-typedef struct { f32 x, y; } Vec2_8014C770;
 extern f32 fn_80144514(f32,f32,f32,f32,f32,f32);
 static inline void MatrixMul80151E60(f32 *dst, const f32 *left, const f32 *right) {
  if (dst == right || dst == left) {
