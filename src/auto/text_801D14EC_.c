@@ -40,6 +40,101 @@ void fn_801D153C(void) {
     fn_801D1540();
 }
 
+extern void *memset(void *, int, unsigned long);
+extern unsigned char *lbl_8055E908;
+extern float lbl_80562A50, lbl_80562A54, lbl_80562A5C, lbl_80562A60, lbl_80562A64, lbl_80562A68;
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+void fn_801D1540(Obj801D *p, int idx) {
+    unsigned char *cfg = lbl_804348E8[idx];
+    float *curve = (float *)(lbl_8055E908 + idx * 0x34);
+    unsigned char *ratios = cfg + 0x32c;
+    float limit;
+    float v, top, base, scale;
+    v = *(float *)(cfg + 0x35c);
+    p->mul = v;
+    top = *(float *)(cfg + 0x2544);
+    base = *(float *)(cfg + 0x23e8);
+    scale = *(float *)(cfg + 0x358);
+    p->div = lbl_80562A50 * (base + scale * (top - base)) / v;
+    limit = curve[12];
+    memset(p->rec, 0, 0x70);
+    p->max = *(int *)(ratios + 0x34);
+    {
+        unsigned char *src = ratios;
+        unsigned char *dst = (unsigned char *)p;
+        int i;
+        for (i = 0; i < *(int *)(ratios + 0x34); i++) {
+            *(float *)(dst + 0x2c) = *(float *)(src + 0x38);
+            src += 4;
+            dst += 16;
+        }
+    }
+    {
+    float a, b, x, y, t, u, z;
+    float zero = lbl_80562A58, dscale = lbl_80562A68, cscale = lbl_80562A64, last = lbl_80562A60, step = lbl_80562A5C;
+    unsigned char *prev = (unsigned char *)p;
+    Rec801D *r = p->rec;
+    int count;
+    int i;
+    for (i = 0; i < (count = p->max); i++, r++, prev += 16) {
+        a = r->a;
+        if (i < count - 1) {
+            b = r[1].a;
+            for (x = lbl_80562A54; x < limit; x += step) {
+                y = x / a * b;
+                if (x > curve[11]) {
+                    z = x - curve[8];
+                    if (zero > z) z = zero;
+                    t = curve[3] + (curve[2] * x + curve[1] * (x*x)) - curve[9] * z;
+                    if (curve[10] > t) t = curve[10];
+                } else {
+                    t = curve[6] + (curve[5] * x + curve[4] * (x*x));
+                }
+                t = a * (t - curve[7] * x);
+                if (y > curve[11]) {
+                    z = y - curve[8];
+                    if (zero > z) z = zero;
+                    u = curve[3] + (curve[2] * y + curve[1] * (y*y)) - curve[9] * z;
+                    if (curve[10] > u) u = curve[10];
+                } else {
+                    u = curve[6] + (curve[5] * y + curve[4] * (y*y));
+                }
+                if (b * (u - curve[7] * y) > t) break;
+            }
+            r->b = x / a;
+        } else r->b = last;
+        if (i - 1 >= 0) {
+            x = limit / a;
+            y = *(float *)(prev + 0x20);
+            if (y > x) y = x;
+            r->c = cscale * y;
+            r->d = dscale * y;
+        } else {
+            r->c = zero;
+            r->d = zero;
+        }
+    }
+    }
+}
+
+#pragma dont_inline on
+void fn_801D1810(int arg0, int arg1) {
+    float zero = lbl_80562A58;
+    *(int *)((char *)arg0 + 0x10) = 0;
+    *(float *)arg0 = zero;
+    *(float *)((char *)arg0 + 4) = zero;
+    *(float *)((char *)arg0 + 0x1C) = zero;
+    *(float *)((char *)arg0 + 0x18) = zero;
+    *(int *)((char *)arg0 + 0xC) = 0;
+    *(int *)((char *)arg0 + 0x14) = 0;
+    *(int *)((char *)arg0 + 8) = 0;
+}
+#pragma dont_inline off
+
+#pragma pop
+
 void fn_801D183C(int arg0, int idx) {
     Obj801D *p = (Obj801D *)arg0;
     unsigned char *cfg = lbl_804348E8[idx];
