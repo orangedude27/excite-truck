@@ -57,13 +57,12 @@ void fn_801EAB80(void *arg0, long arg1) {
     fn_80176948(arg1, (long)arg0 + 0x34, (long)arg0);
 }
 
-void fn_801EAB90(void *arg0, int arg1) {
+#pragma cplusplus on
+extern "C" void fn_801EAB90(void *arg0, int arg1) {
     int offset = *(int *)((char *)arg0 + 0x34);
-    void **vtable = *(void ***)arg0;
-    ((void (*)(void *, int))vtable[8])(arg0, arg1 + offset);
+    ((Dummy_801EAB90 *)arg0)->m6(arg1 + offset);
 }
-
-#pragma scheduling invalid_target
+#pragma cplusplus off
 void fn_801EABA8(void *arg0, void *arg1) {
     s32 l, k, j, i, h, g, f, e, d, c, b, a;
     s16 m;
