@@ -334,17 +334,18 @@ void *fn_802090D4(int arg0)
 
 #pragma push
 #pragma inline_depth(0)
+#pragma scheduling invalid_target
 void fn_80209110(void **arg0) {
-    void *entry = *arg0;
-    int i;
-    if (entry != 0) {
-        *(int *)((char *)entry + 4) = 0;
-        for (i = *(int *)(lbl_80489258 + 0x40); i > 0; i = *(int *)(lbl_80489258 + 0x40)) {
-            if (*(int *)(lbl_80489258 + i * 8 - 4) != 0)
+    char *state;
+    if (*arg0 != 0) {
+        *(int *)((char *)*arg0 + 4) = 0;
+        state = lbl_80489258;
+        while (*(int *)(state + 0x40) > 0) {
+            if (*(int *)(state + *(int *)(state + 0x40) * 8 - 4) != 0)
                 break;
-            *(int *)(lbl_80489258 + 0x40) = i - 1;
+            *(int *)(state + 0x40) = *(int *)(state + 0x40) - 1;
         }
-        fn_80208A50(0);
+        ((void (*)(void))fn_80208A50)();
         *arg0 = 0;
     }
 }
