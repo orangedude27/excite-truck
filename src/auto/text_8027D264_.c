@@ -196,7 +196,8 @@ int fn_8027D6BC(int arg0, int arg1) {
     return arg0;
 }
 
-void fn_8027D6FC(void *arg0) {
+#pragma cplusplus on
+extern "C" void fn_8027D6FC(void *arg0) {
     void *res = fn_8001285C(*(int *)((char *)arg0 + 0xC));
     void *obj = *(void **)((char *)res + 0x20);
     if ((*(int (**)(void *, int))(*(char **)obj + 0xC))(obj, (int)&lbl_8055C77C) != 0) {
