@@ -3,9 +3,8 @@
 #include "types.h"
 #include "revolution/MTX/mtxtypes.h"
 
-#pragma small_data on
-extern char lbl_80559B10[], lbl_80559B18[], lbl_80559B1C[];
 #pragma small_data off
+__declspec(section ".sdata") extern char lbl_80559B10[], lbl_80559B18[], lbl_80559B1C[];
 extern char lbl_8032B7BC[], lbl_8032B73C[];
 extern int sscanf(const char*, ...);
 
