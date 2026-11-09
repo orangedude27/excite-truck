@@ -125,6 +125,25 @@ s32 fn_8015621C(void) {
     return *(s32*)((char*)fn_8001285C(*fn_801E87A8()) + 0x20);
 }
 
+#pragma push
+#pragma scheduling invalid_target
+#pragma dont_inline on
+s32 fn_80156248(void *arg0, s32 arg1) {
+    struct Obj {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual char *m4(const char *, const char *);
+    };
+    Obj *obj = (Obj *)fn_8015621C();
+    char *result = obj->m4((const char *)lbl_8032E238, (const char *)&lbl_80559FC0);
+    fn_801345D8((s32)arg0, arg1, lbl_8032E248, result);
+    return (s32)arg0;
+}
+#pragma dont_inline off
+#pragma pop
+
 extern "C" u8 *fn_801E879C(void);
 extern "C" void fn_801561E8(u8 *);
 extern "C" s32 fn_801345D8(s32, s32, const char *, ...);
@@ -261,8 +280,12 @@ extern "C" void fn_801564B0(void) {
     u8 path[0x40];
     char input[0x10], text[0x20];
     register u8 *base = lbl_8032E238;
+    register const char *format;
+    register s32 line;
+    register const char *suffix;
+    register Entry *entry;
     register void *helper;
-    Config *resource;
+    register Config *resource;
     register Reader *reader;
     void *wrapper;
 
@@ -287,9 +310,9 @@ extern "C" void fn_801564B0(void) {
             resource->objects = (void **)((u8 *)resource + 0x9C);
             resource->objectCapacity = 0x10;
             resource->objectCount = 0;
-            const char *format = (const char *)&lbl_80559FD8;
-            s32 line = 1;
-            const char *suffix = (const char *)&lbl_80559FE8;
+            format = (const char *)&lbl_80559FD8;
+            line = 1;
+            suffix = (const char *)&lbl_80559FE8;
             for (;; ++line) {
                 fn_801345D8((s32)input, 0x10, (const char *)&lbl_80559FE0, format, line);
                 char *result = reader->read(input, 0);
@@ -297,9 +320,7 @@ extern "C" void fn_801564B0(void) {
                     break;
                 if (resource->count + 1 > resource->capacity)
                     break;
-                s32 oldCount = resource->count;
-                Entry *entry = &resource->entries[oldCount];
-                resource->count = oldCount + 1;
+                entry = &resource->entries[resource->count++];
                 entry->id = fn_801563BC((s32)result, helper);
 
                 char *src = input;
@@ -322,7 +343,7 @@ extern "C" void fn_801564B0(void) {
 
                 dst = text;
                 remaining = 0x20;
-                do { remaining--; dst++; } while ((s8)*dst != 0);
+                while ((s8)*dst != 0) { remaining--; dst++; }
                 if (remaining > 0) {
                     src = (char *)suffix;
                     {
@@ -356,20 +377,29 @@ extern "C" void fn_801564B0(void) {
             IndexReader *list = (IndexReader *)reader->open((const char *)base + 0x128);
             if (list != 0) {
                 s32 index = 0;
+                goto list_test;
                 do {
                     resource->objects[resource->objectCount++] = fn_801399FC();
                     index++;
+                list_test:
                     if (list->valid(index) == 0) break;
                 } while (resource->objectCount + 1 <= resource->objectCapacity);
             }
 
-            resource->value0 = reader->value((const char *)base + 0x144, lbl_80561738);
-            resource->value1 = reader->value((const char *)base + 0x154, lbl_8056173C);
-            fn_802E30C8(
-                (const char *)base + 0x168,
-                resource->count, resource->count == 1 ? (const char *)&lbl_80559FC0 : (const char *)&lbl_80559FF0,
-                resource->objectCount, resource->objectCount == 1 ? (const char *)&lbl_80559FC0 : (const char *)&lbl_80559FF0,
-                resource->value0, resource->value1);
+            {
+                f32 v0 = reader->value((const char *)base + 0x144, lbl_80561738);
+                resource->value0 = v0;
+                f32 v1 = reader->value((const char *)base + 0x154, lbl_8056173C);
+                resource->value1 = v1;
+            }
+            {
+                s32 oc = resource->objectCount;
+                const char *ocs = oc == 1 ? (const char *)&lbl_80559FC0 : (const char *)&lbl_80559FF0;
+                s32 cnt = resource->count;
+                const char *cs = cnt == 1 ? (const char *)&lbl_80559FC0 : (const char *)&lbl_80559FF0;
+                fn_802E30C8((const char *)base + 0x168, cnt, cs, oc, ocs,
+                            resource->value0, resource->value1);
+            }
             ((ConfigVtable *)resource)->dispose();
         }
     } else {
@@ -517,43 +547,56 @@ extern "C" void fn_80156B54(void) {
 extern "C" void fn_80128658(void*);
 extern u8 lbl_8032E424[];
 extern "C" void* fn_80156B58(void* arg0, s32 arg1) {
-    register void *this_ = arg0;
-    register s32 deleting = arg1;
-    register s32 i;
-    register s32 offset;
-    register s32 zero = 0;
-    if (this_ != 0) {
-        *(void **)this_ = lbl_8032E424;
+    struct Obj {
+        void *vtable;
+        void * volatile first;
+        volatile s32 firstCount;
+        u8 pad[0x84];
+        void ** volatile items;
+        s32 itemCount;
+        s32 itemCapacity;
+    };
+    s32 i;
+    s32 offset;
+    s32 j;
+    s32 offset2;
+    if (arg0 != 0) {
+        Obj *self = (Obj *)arg0;
+        self->vtable = lbl_8032E424;
         i = 0;
         offset = 0;
-        while (i < *(s32 *)((char *)this_ + 8)) {
-            ((void (*)(void *))fn_80138AD8)((char *)*(volatile void **)((char *)this_ + 4) + offset);
+        while (i < self->firstCount) {
+            fn_c_linkage::fn_80138AD8((char *)self->first + offset);
             offset += 8;
             i++;
         }
-        *(s32 *)((char *)this_ + 8) = 0;
-        i = 0;
-        offset = 0;
-        while (i < *(s32 *)((char *)this_ + 0x94)) {
-            fn_80128658(*(void **)((char *)*(volatile void **)((char *)this_ + 0x90) + offset));
-            offset += 4;
-            i++;
+        self->firstCount = 0;
+        j = 0;
+        offset2 = 0;
+        while (j < self->itemCount) {
+            fn_c_linkage::fn_80128658(*(void **)((char *)self->items + offset2));
+            offset2 += 4;
+            j++;
         }
-        *(s32 *)((char *)this_ + 0x94) = zero;
-        if ((char *)this_ + 0x90 != 0) {
-            *(s32 *)((char *)this_ + 0x90) = zero;
-            *(s32 *)((char *)this_ + 0x94) = zero;
-            *(s32 *)((char *)this_ + 0x98) = zero;
+        self->itemCount = 0;
+        if ((s32)self + 0x90 != 0) {
+            if ((s32)self + 0x90 != 0) {
+                self->items = 0;
+                self->itemCount = 0;
+                self->itemCapacity = 0;
+            }
         }
-        if ((char *)this_ + 4 != 0) {
-            *(s32 *)((char *)this_ + 4) = zero;
-            *(s32 *)((char *)this_ + 8) = zero;
-            *(s32 *)((char *)this_ + 0xC) = zero;
+        if ((s32)self + 4 != 0) {
+            if ((s32)self + 4 != 0) {
+                self->first = 0;
+                self->firstCount = 0;
+                *(s32 *)((char *)self + 0xC) = 0;
+            }
         }
-        if (deleting > 0)
-            fn_80128668(this_);
+        if (arg1 > 0)
+            fn_c_linkage::fn_80128668(self);
     }
-    return this_;
+    return arg0;
 }
 
 extern "C" s32 fn_80156C60(void *arg0, s32 arg1) {
@@ -569,49 +612,56 @@ extern "C" f32 fn_80129DC4(s32, s32, s32, f32, f32);
 extern "C" f32 fn_801B306C(void);
 extern "C" f32 lbl_80561740;
 extern "C" f32 lbl_80561744;
-s32 fn_80156C84(void *arg0, s32 arg1) {
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+extern "C" s32 fn_80156C84(void *arg0, s32 arg1) {
     s32 off = arg1 * 8;
-    u8 *r28 = (u8 *)arg0 + off;
     f32 f31 = lbl_8055E3C8;
-    if (f31 != *(f32 *)(r28 + 0xE4)) {
-        void *r29 = fn_8017960C(arg1);
-        s32 r26 = 0;
-        s32 r27 = 0;
-        s32 count = ((s32 *)r28)[0x94 / 4];
-        for (;;) {
-            if (r27 >= count) {
-                if (count == 0) break;
-            } else {
-                s32 v = fn_80139B70(((s32 *)r28)[0x90 / 4] + r26,
-                                     ((f32 *)r29)[0x60 / 4],
-                                     ((f32 *)r29)[0x68 / 4]);
-                if (v != 0) break;
-                r26 += 4;
-                r27 += 1;
-                continue;
-            }
-            s32 r3 = fn_80129D90(4, 0, ((s32 *)r28)[2]);
-            s32 *r5 = (s32 *)((s32 *)r28)[1];
-            s32 r27b = r5[r3 * 2];
-            if (r27b == 0) {
-                s32 next = r3 + 1;
-                s32 index = next - ((next / ((s32 *)r28)[2]) * ((s32 *)r28)[2]);
-                r27b = r5[index * 2];
-            }
-            *(f32 *)(r28 + 0xE4) = f31 +
-                fn_80129DC4(4, ((s32 *)r28)[2], (s32)(long)r5,
-                            *(f32 *)(r28 + 0xDC), *(f32 *)(r28 + 0xE0));
-            *(s32 *)(r28 + 0xE8) = r27b;
-            break;
-        }
-    } else {
-        *(f32 *)(r28 + 0xE4) = *(f32 *)(r28 + 0xE4) + lbl_80561740;
-    }
-    if (fn_801B306C() > lbl_80561744)
-        return *(s32 *)(r28 + 0xE8);
-    return *(s32 *)((u8 *)arg0 + off + 0xE8);
-}
+    u8 *element = (u8 *)arg0 + off;
+    void *self = arg0;
 
+    if (f31 >= *(f32 *)(element + 0xE4)) {
+        s32 val;
+        void *r29 = fn_8017960C(arg1);
+        s32 found;
+        s32 offset;
+        for (val = 0, offset = 0; val < *(s32 *)((u8 *)self + 0x94); offset += 4, val++) {
+            f32 a = *(f32 *)((u8 *)r29 + 0x60);
+            f32 b = *(f32 *)((u8 *)r29 + 0x68);
+            s32 elem = *(s32 *)(*(u8 **)((u8 *)self + 0x90) + offset);
+            if (fn_80139B70(elem, a, b)) {
+                found = 1;
+                goto check;
+            }
+        }
+        found = !*(s32 *)((u8 *)self + 0x94);
+    check:
+        if (found) {
+            s32 idx = fn_80129D90(4, 0, *(s32 *)((u8 *)self + 8));
+            u32 *table = *(u32 **)((u8 *)self + 4);
+            val = *(s32 *)((u8 *)table + idx * 8);
+            if (val == 0) {
+                s32 next = idx + 1;
+                s32 divisor = *(s32 *)((u8 *)self + 8);
+                idx = next % divisor;
+                val = *(s32 *)((u8 *)table + idx * 8);
+            }
+            *(f32 *)(element + 0xE4) = f31 +
+                ((f32 (*)(s32, f32, f32))fn_80129DC4)(
+                    4, *(f32 *)((u8 *)self + 0xDC), *(f32 *)((u8 *)self + 0xE0));
+            ((s32 *)self)[arg1 * 2 + 0x3A] = val;
+        } else {
+            *(f32 *)(element + 0xE4) += lbl_80561740;
+        }
+    }
+
+    if (fn_801B306C() > lbl_80561744) {
+        return *(s32 *)((u8 *)self + 0xE8);
+    }
+    return ((s32 *)self)[arg1 * 2 + 0x3A];
+}
+#pragma pop
 extern s32 fn_80129D90(s32, s32, s32);
 #pragma push
 #pragma scheduling invalid_target
@@ -675,42 +725,67 @@ extern "C" void fn_80156E74(void *arg0, s32 arg1, void *arg2) {
 extern "C" s32 fn_801B2F24(void);
 extern "C" void *fn_801B2ED0(s32);
 extern "C" f32 lbl_8055E3C8;
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void fn_80156F6C(void *arg0) {
-    // Fix note: builds the category list on the stack, then assigns a randomized matching entry.
+    struct Object {
+        virtual ~Object();
+        virtual void unused();
+        virtual Object *call();
+    };
+    u8 *out;
+    s32 i;
     u8 *base = (u8 *)arg0;
     s32 total = fn_801B2F24();
-    f32 threshold = lbl_80561744;
-    s32 i;
-    u32 entries[8];
-    s32 count;
-    s32 j;
-    s32 offset;
-    s32 category;
-    s32 n;
-    u32 *selected;
-    u8 *out = base;
-    for (i = 0; i < total; i++) {
+    f32 threshold;
+    f32 addValue;
+    addValue = lbl_8055E3C8;
+    threshold = lbl_80561744;
+    out = base;
+    i = 0;
+    u32 entries[7];
+    volatile s32 max;
+    volatile s32 count;
+    u32 * volatile values;
+    while (i < total) {
+        values = entries;
+        max = 8;
         count = 0;
-        category = 0;
-        void *obj = fn_801B2ED0(i);
-        f32 value = ((f32 (*)(void *))(*(void ***)obj)[4])(obj);
-        if (value > threshold)
+        Object *obj = (Object *)fn_801B2ED0(i);
+        obj = obj->call();
+        s32 category = 0;
+        if (*(f32 *)((u8 *)obj + 0x34) > threshold)
             category = 1;
-        for (j = 0, offset = 0; j < *(s32 *)(base + 8) && count < 8; j++, offset += 8) {
+        s32 offset = 0;
+        s32 j = 0;
+        while (j < *(s32 *)(base + 8) && count + 1 <= max) {
             u8 *entry = *(u8 **)(base + 4) + offset;
-            if (category == *(s32 *)(entry + 4))
-                entries[count++] = *(u32 *)entry;
+            if (category == *(s32 *)(entry + 4)) {
+                s32 index = count;
+                u32 *array = values;
+                count = index + 1;
+                array[index] = *(volatile u32 *)entry;
+            }
+            offset += 8;
+            j++;
         }
-        if (count > 0) {
-            selected = &entries[(i / count) * count == i ? 0 : i - (i / count) * count];
-            f32 result = fn_80129DC4(4, 0, 0, *(f32 *)(base + 0xDC), *(f32 *)(base + 0xE0));
-            *(f32 *)(out + 0xE4) = result;
-            *(u32 *)(out + 0xE8) = *selected;
+        s32 divisor = count;
+        if (divisor > 0) {
+            s32 index = i % divisor;
+            u32 selected = values[index];
+            f32 result = ((f32 (*)(s32, f32, f32))fn_80129DC4)(
+                4, *(f32 *)(base + 0xDC), *(f32 *)(base + 0xE0));
+            *(f32 *)(out + 0xE4) = addValue + result;
+            *(u32 *)(out + 0xE8) = selected;
         }
+        values = (u32 *)0;
+        count = 0;
+        max = 0;
         out += 8;
+        i++;
     }
 }
-
+#pragma pop
 extern "C" void* fn_801570D0(void* arg0, s32 arg1) {
     extern u8 lbl_8032E3F8[];
     struct Obj { virtual void c(s32); };
