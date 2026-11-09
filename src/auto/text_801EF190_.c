@@ -37,7 +37,7 @@ void **fn_801EF1F0(void **arg0, void *arg1) {
     *((void **)*arg0 + 5) = fn_801E3004(**(void ***)arg0, L->s40, -1);
     *((void **)*arg0 + 7) = fn_801E3004(**(void ***)arg0, lbl_8055B0A8, -1);
     fn_801E3534(*((void **)*arg0 + 4));
-    *((float *)*arg0 + 8) = fn_801EF190();
+    *((float *)*arg0 + 8) = fn_801EF190(0);
     *((float *)*arg0 + 18) = lbl_80562EEC;
     *((void **)*arg0 + 11) = fn_801E3004(**(void ***)arg0, L->s4C, -1);
     *((void **)*arg0 + 12) = fn_801E3004(**(void ***)arg0, L->s58, -1);
