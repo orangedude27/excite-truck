@@ -266,7 +266,8 @@ void fn_801C3A3C(s32 arg0, f32 arg1, f32 arg2) {
     fn_80015A20(out, values);
     fn_80015B20(arg0, out, arg0);
 }
-#pragma pop
+#pragma push
+#pragma processor 750
 void fn_801C3AF8(s32 arg0, s32 arg1, f32 arg2) {
     f32 values[2];
     f32 cosine;
@@ -277,7 +278,7 @@ void fn_801C3AF8(s32 arg0, s32 arg1, f32 arg2) {
     values[1] = cosine;
     fn_801B7C8C(arg0, arg1, &values[0]);
 }
-#pragma scheduling on
+#pragma pop
 s32 *__AXFXGetLfoSinTable_801769CC(void);
 void *fn_8001285C(s32);
 extern f32 lbl_80562990;
