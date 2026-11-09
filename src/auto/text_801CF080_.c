@@ -50,7 +50,7 @@ void fn_801CF080(u8 *mesh, f32 *pos, f32 *out, s32 *count, f32 *mtx, f32 radius)
         local.x = pos[0] - mtx[9];
         local.y = pos[1] - mtx[10];
         local.z = pos[2] - mtx[11];
-        fn_801CF080_xform((f32 *)&local, (f32 *)&local, mtx);
+        fn_801CF080_rot((f32 *)&local, mtx);
     } else {
         local.x = pos[0];
         local.y = pos[1];
@@ -64,7 +64,6 @@ void fn_801CF080(u8 *mesh, f32 *pos, f32 *out, s32 *count, f32 *mtx, f32 radius)
         f32 sq;
         f32 rr;
         s32 t;
-        s32 outOff;
         s32 triOff;
         sq = PSVECSquareDistance((f32 *)nd, (f32 *)&local);
         rr = *(f32 *)(nd + 0xC) + radius;
@@ -72,7 +71,6 @@ void fn_801CF080(u8 *mesh, f32 *pos, f32 *out, s32 *count, f32 *mtx, f32 radius)
             continue;
         }
         t = *(s32 *)(nd + 0x10);
-        outOff = n * 0xC;
         triOff = t * 0x3C;
         for (; t < *(s32 *)(nd + 0x14); t++, triOff += 0x3C) {
             u8 *tri = *(u8 **)(mesh + 0x10) + triOff;
@@ -195,12 +193,11 @@ void fn_801CF080(u8 *mesh, f32 *pos, f32 *out, s32 *count, f32 *mtx, f32 radius)
                     res.y = cp.y;
                     res.z = cp.z;
                 }
-                dst = (f32 *)((u8 *)out + outOff);
+                dst = out + n * 3;
                 dst[0] = res.x;
                 dst[1] = res.y;
                 dst[2] = res.z;
                 n++;
-                outOff += 0xC;
             }
         next:;
         }
@@ -380,17 +377,18 @@ check3:
 extern s32 fn_8012C370(s32, s32 *, s32, s32, u8 *);
 extern void fn_801CFA48(void *);
 #pragma scheduling invalid_target
-void fn_801CFEAC(void) {
+void *fn_801CFEAC(void *arg0) {
     s32 spC;
     u8 sp8;
-    s32 temp_r31;
+    void *res;
 
     spC = 1;
     sp8 = 0;
-    temp_r31 = fn_8012C370(0x504D7368, &spC, 0, 0, &sp8);
+    res = ((void *(*)(void *, s32, s32 *, s32, s32, u8 *))fn_8012C370)(arg0, 0x504D7368, &spC, 0, 0, &sp8);
     if (sp8 != 0) {
-        fn_801CFA48((void *)0);
+        fn_801CFA48(res);
     }
+    return res;
 }
 #pragma scheduling on
 void fn_801CFF14(void) {
