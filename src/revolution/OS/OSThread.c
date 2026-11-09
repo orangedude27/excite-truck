@@ -447,6 +447,13 @@ void OSYieldThread(void) {
     OSRestoreInterrupts(enabled);
 }
 
+/**
+ * Sets up a caller-allocated thread to run func(funcArg) on the stack ending at
+ * stackBegin, and adds it to the tail of the active thread list. The new thread
+ * starts suspended (OSResumeThread lets it run) and leaves through
+ * OSExitThread when func returns. Fails only on a priority outside
+ * OS_PRIORITY_MIN..OS_PRIORITY_MAX.
+ */
 BOOL OSCreateThread(OSThread* thread, OSThreadFunc func, void* funcArg,
                     void* stackBegin, u32 stackSize, s32 prio, u16 flags) {
     BOOL enabled;
@@ -458,24 +465,32 @@ BOOL OSCreateThread(OSThread* thread, OSThreadFunc func, void* funcArg,
         return FALSE;
     }
 
+    // Ready but held: suspend > 0 keeps the scheduler off it until
+    // OSResumeThread. base keeps the priority the thread was created with,
+    // priority is the one it effectively has (mutexes may raise it).
     thread->state = OS_THREAD_STATE_READY;
     thread->flags = flags & OS_THREAD_DETACHED;
     thread->base = prio;
     thread->priority = prio;
     thread->suspend = 1;
-    thread->val = 0xFFFFFFFF;
+    thread->val = (u32)-1; // no OSJoinThread return value yet
     thread->mutex = NULL;
     OSInitThreadQueue(&thread->joinQueue);
     OSInitMutexQueue(&thread->mutexQueue);
 
+    // The first frame on the new stack: the two words below the initial stack
+    // pointer are a null backchain and return address, which end a stack walk.
     sp = ROUND_DOWN_PTR(stackBegin, 8);
-    *((u32*)sp - 2) = 0x00000000;
-    *((u32*)sp - 1) = 0x00000000;
+    *((u32*)sp - 2) = 0;
+    *((u32*)sp - 1) = 0;
 
+    // Start at func with funcArg in r3; lr rather than srr0 carries the thread
+    // into OSExitThread once func returns.
     OSInitContext(&thread->context, func, (char*)sp - 8);
     thread->context.lr = (u32)OSExitThread;
     thread->context.gprs[3] = (u32)funcArg;
 
+    // The magic word at the bottom of the stack catches an overflow (OSCheckStack).
     thread->stackBegin = (u32*)stackBegin;
     thread->stackEnd = (u32*)((char*)stackBegin - stackSize);
     *thread->stackEnd = OS_THREAD_STACK_MAGIC;
@@ -486,18 +501,26 @@ BOOL OSCreateThread(OSThread* thread, OSThreadFunc func, void* funcArg,
     }
 
     enabled = OSDisableInterrupts();
+    // With an FP exception handler installed every thread must report FP
+    // exceptions: resume with the FP exception enables on, and own the FP state
+    // right away (OS_CONTEXT_STATE_FP_SAVED) so the handler will not overwrite
+    // these registers with a first lazy save.
     if (__OSErrorTable[OS_ERR_FP_EXCEPTION] != NULL) {
-        thread->context.srr1 |= 0x900;
-        thread->context.state |= 0x1;
-        thread->context.fpscr = __OSFpscrEnableBits & 0xF8;
-        thread->context.fpscr |= 0x4;
+        thread->context.srr1 |= (MSR_FE0 | MSR_FE1);
+        thread->context.state |= OS_CONTEXT_STATE_FP_SAVED;
+        thread->context.fpscr = __OSFpscrEnableBits & FPSCR_ENABLE;
+        thread->context.fpscr |= FPSCR_NI;
 
+        // All-ones FPRs and PSFs are quiet NaNs: the thread traps on its very
+        // first floating-point use.
         for (i = 0; i < 32; i++) {
             *(u64*)&thread->context.fprs[i] = 0xFFFFFFFFFFFFFFFF;
             *(u64*)&thread->context.psfs[i] = 0xFFFFFFFFFFFFFFFF;
         }
     }
 
+    // Append to the active thread list, under interrupt disable so a running
+    // thread cannot walk the list half-linked.
     tail = OS_THREAD_QUEUE.tail;
     if (tail == NULL) {
         OS_THREAD_QUEUE.head = thread;
@@ -508,7 +531,7 @@ BOOL OSCreateThread(OSThread* thread, OSThreadFunc func, void* funcArg,
     thread->prevActive = tail;
     thread->nextActive = NULL;
     OS_THREAD_QUEUE.tail = thread;
-    tail = thread;
+    tail = thread; // leftover of the SDK's queue code; never read again
 
     OSRestoreInterrupts(enabled);
     return TRUE;
