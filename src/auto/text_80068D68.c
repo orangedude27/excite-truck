@@ -528,6 +528,19 @@ typedef struct t_l2c_ccb_view {
 #define L2CEVT_L2CA_DATA_WRITE       29 /* upper layer data to send */
 #define L2CEVT_TIMEOUT               30 /* channel timeout */
 
+/* The L2CAP link states (l2c_int.h's tL2C_LINK_STATE); the game numbers them
+   the same way. p_lcb's +0x04 link_state field holds one of these. */
+#define LST_DISCONNECTED             0  /* link control block is free */
+#define LST_CONNECT_HOLDING          1  /* waiting for another link to drop */
+#define LST_CONNECTING_WAIT_SWITCH   2  /* waiting for a role switch to connect */
+#define LST_CONNECTING               3  /* ACL connect request has been sent */
+#define LST_CONNECTED                4  /* link is up */
+#define LST_DISCONNECTING            5  /* tearing the link down */
+
+/* Link timeouts in seconds passed to btu_start_timer() (l2c_int.h / bt_target.h). */
+#define L2CAP_ECHO_RSP_TOUT          30 /* waiting for the peer's echo response */
+#define L2CAP_LINK_STARTUP_TOUT      60 /* link left idle right after connecting */
+
 /* Seconds an L2CAP channel waits for the peer; this stack uses 30 both while
    negotiating a configuration and while tearing the channel down. */
 #define L2CAP_CHNL_TIMEOUT           30
