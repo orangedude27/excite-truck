@@ -923,6 +923,7 @@ void fn_802D5DE8(u32 flags) {
 }
 
 #pragma push
+#pragma processor 750
 #pragma scheduling on
 #pragma dont_inline on
 void fn_802D5F88(s32 arg0) {
