@@ -254,6 +254,7 @@ public:
     float target;
     int total;
     int elapsed;
+    float initialVolume;
     void SetVolume(float, int);
     void SetInitialVolume(float);
 };
@@ -3491,12 +3492,11 @@ extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(void *this
     }
 }
 
-extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf(void *this_, float vol) {
-    float v = vol;
-    if (!(v >= lbl_80560FB0)) {
+void nw4hbm::snd::detail::BasicSound::SetInitialVolume(float vol) {
+    if (!(vol >= lbl_80560FB0)) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x216, lbl_80322830);
     }
-    *(float *)((char *)this_ + 0x8C) = v;
+    *(float *)((char *)this + 0x8C) = vol;
 }
 
 void nw4hbm::snd::detail::BasicSound::SetVolume(float volume, int arg2) {
