@@ -1013,6 +1013,35 @@ void fn_80267680(void) {
         *out++ = zero;
     }
 }
+
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_8026785C(void) {
+    extern void fn_801EF024(void *);
+    extern void fn_80278288(void);
+    extern void fn_802733F0(void);
+    extern void fn_80209110(void *);
+    extern int fn_8026A554(int *);
+    extern void *lbl_8055F490;
+    extern int lbl_8055F494;
+    fn_801EF024((void *)fn_8026A554);
+    fn_80278288();
+    fn_802733F0();
+    class SoundObject {
+    public:
+        virtual void destroy(int);
+    };
+    SoundObject *p = (SoundObject *)lbl_8055F490;
+    if (p) {
+        if (p)
+            p->destroy(1);
+        lbl_8055F490 = 0;
+    }
+    fn_80209110((void *)&lbl_8055F494);
+}
+#pragma cplusplus reset
+#pragma pop
+
 #pragma scheduling on
 #pragma use_lmw_stmw reset
 #pragma pop
