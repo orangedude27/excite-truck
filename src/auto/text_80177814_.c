@@ -1184,6 +1184,10 @@ long fn_801796EC(long arg0, long arg1, long arg2) {
     return fn_8017873C((long*)&lbl_80431874, arg0, arg1, arg2, arg0);
 }
 
+float fn_8017970C(void) {
+    return lbl_80561B60 * (float)fn_80178C1C((long *)lbl_80430850);
+}
+
 #pragma dont_inline off
 void DBPrintf_80179758(const char *fmt, ...) {
 #pragma unused(fmt)
