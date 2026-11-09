@@ -967,10 +967,11 @@ extern "C" char lbl_803494F0[];
 extern float lbl_805645E4, lbl_805645E8, lbl_805645EC, lbl_805645F0, lbl_805645F4;
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
 void fn_80299A88(void *arg0, void *out, unsigned int unused, float scale) {
     Fn80299A88Frame frame;
-    float *q = frame.rotation.v;
-    float *m = frame.matrix.v;
+    float *q;
+    float *m;
     float *init = (float *)((char *)&frame - 8);
     int count;
     (void)arg0;
@@ -990,32 +991,35 @@ void fn_80299A88(void *arg0, void *out, unsigned int unused, float scale) {
     *(int *)&init[0xac/4] = 2; ((unsigned char*)init)[0xf1]=1;
     void *res = fn_8028E2F8(&init[0x68/4], lbl_803494F0, lbl_8055CA80);
     *(void**)out = res;
-    count = (int)(lbl_805645F0 * scale);
-    if (count >= 12) count = 12;
-    if (count < 1) count = 1;
+    count = (int)(lbl_805645F0 * scale) < 12 ? (int)(lbl_805645F0 * scale) : 12;
+    count = count > 1 ? count : 1;
+    q = frame.rotation.v;
     float c = (float)cos((double)(lbl_805645F4 / (float)count));
     float s = (float)sin((double)(lbl_805645F4 / (float)count));
-    q[0]=c; q[1]=s; q[2]=lbl_8056459C; q[3]=-s; q[4]=c;
-    q[5]=lbl_8056459C; q[6]=lbl_8056459C; q[7]=lbl_8056459C; q[8]=lbl_80564590;
+    float neg = -s;
+    float zero = lbl_8056459C, one = lbl_80564590;
     float *p=(float*)unused;
-    frame.matrix = *(Fn80299A88Matrix *)p;
-    for (int n=0; n<count; n++) {
-       ((float*)out)[1+n*3]=p[9]+m[3]*scale;
-       ((float*)out)[2+n*3]=p[10]+m[4]*scale;
-       ((float*)out)[3+n*3]=p[11]+m[5]*scale;
-       float a=fn_80144514(m[0],q[0],m[3],q[1],m[6],q[2]);
-       float b=fn_80144514(m[0],q[3],m[3],q[4],m[6],q[5]);
-       float c=fn_80144514(m[0],q[6],m[3],q[7],m[6],q[8]);
-       float d=fn_80144514(m[1],q[0],m[4],q[1],m[7],q[2]);
-       float e=fn_80144514(m[1],q[3],m[4],q[4],m[7],q[5]);
-       float f=fn_80144514(m[1],q[6],m[4],q[7],m[7],q[8]);
-       float g=fn_80144514(m[2],q[0],m[5],q[1],m[8],q[2]);
-       float h=fn_80144514(m[2],q[3],m[5],q[4],m[8],q[5]);
-       float j=fn_80144514(m[2],q[6],m[5],q[7],m[8],q[8]);
-       m[0]=a;m[3]=b;m[6]=c;m[1]=d;m[4]=e;m[7]=f;m[2]=g;m[5]=h;m[8]=j;
+    u32 *w = (u32 *)p;
+    u32 w8,w7,w6,w5,w4,w3,w2,w1,w0;
+    w0=w[0];w1=w[1];w2=w[2];w3=w[3];w4=w[4];w5=w[5];w6=w[6];w7=w[7];w8=w[8];
+    q[0]=c; q[1]=s; q[2]=zero; q[3]=neg; q[4]=c;
+    q[5]=zero; q[6]=zero; q[7]=zero; q[8]=one;
+    u32 *d=(u32 *)frame.matrix.v; d[0]=w0;d[1]=w1;d[2]=w2;d[3]=w3;d[4]=w4;d[5]=w5;d[6]=w6;d[7]=w7;d[8]=w8;
+    m = frame.matrix.v;
+    if (count > 0) {
+    char *cursor=(char*)out;
+    for (int n=0; n<count; cursor+=0xc, n++) {
+       float product=m[3]*scale;
+       float b=p[10], a=p[9], c=p[11];
+       *(float *)(cursor+4)=a+product;
+       *(float *)(cursor+8)=b+m[4]*scale;
+       *(float *)(cursor+0xc)=c+m[5]*scale;
+       MatrixMul801FD5E8(m, m, q);
     }
+    }
+    float endzero=lbl_8056459C;
     *(int*)((char*)out+0x94)=count;
-    *(float*)((char*)out+0x98)=lbl_8056459C;
+    *(float*)((char*)out+0x98)=endzero;
 }
 #pragma pop
 extern "C" void* fn_80299FA8(void* arg0, void* arg1) {
@@ -1474,50 +1478,66 @@ extern "C" void fn_8029AAE0(int arg0, int arg1, void* arg2) {
     XformData *d = (XformData *)arg2;
     fn_80288208(arg1);
     if (out == d->v0) {
-        float p0 = d->m[3] * d->v0[1];
-        float p1 = d->m[0] * d->v0[0];
-        float p2 = d->m[6] * d->v0[2];
-        float p3 = d->m[4] * d->v0[1];
-        float p4 = d->m[1] * d->v0[0];
-        float p5 = d->m[7] * d->v0[2];
-        float p6 = d->m[5] * d->v0[1];
-        float p7 = d->m[2] * d->v0[0];
-        float p8 = d->m[8] * d->v0[2];
-        out[0] = (p0 + p1) + p2;
-        out[1] = (p3 + p4) + p5;
-        out[2] = (p6 + p7) + p8;
+        float m3 = d->m[3], y = d->v0[1], m0 = d->m[0], x = d->v0[0], m4 = d->m[4], m1 = d->m[1], m6 = d->m[6], z = d->v0[2], m5 = d->m[5], m2 = d->m[2], m7 = d->m[7], m8 = d->m[8];
+        out[0] = y * m3 + x * m0 + z * m6;
+        out[1] = y * m4 + x * m1 + z * m7;
+        out[2] = y * m5 + x * m2 + z * m8;
     } else {
-        out[0] = d->m[3] * d->v0[1] + d->m[0] * d->v0[0] + d->m[6] * d->v0[2];
-        out[1] = d->m[4] * d->v0[1] + d->m[1] * d->v0[0] + d->m[7] * d->v0[2];
-        out[2] = d->m[5] * d->v0[1] + d->m[2] * d->v0[0] + d->m[8] * d->v0[2];
+        {
+            float m3 = d->m[3], m0 = d->m[0], m6 = d->m[6];
+            out[0] = d->v0[2] * m6 + (d->v0[0] * m0 + d->v0[1] * m3);
+        }
+        {
+            float m4 = d->m[4], m1 = d->m[1], m7 = d->m[7];
+            out[1] = d->v0[2] * m7 + (d->v0[0] * m1 + d->v0[1] * m4);
+        }
+        {
+            float m5 = d->m[5], m2 = d->m[2], m8 = d->m[8];
+            out[2] = d->v0[2] * m8 + (d->v0[0] * m2 + d->v0[1] * m5);
+        }
     }
-    out[0] += d->t[0];
-    out[2] += d->t[2];
-    out[1] += d->t[1];
-    out[1] += lbl_80564598;
+    {
+        float o0 = out[0], t0 = d->t[0], k = lbl_80564598;
+        out[0] = t0 + o0;
+        float o1 = out[1], t1 = d->t[1];
+        float s1 = t1 + o1;
+        out[1] = s1;
+        float y1 = k + s1;
+        float o2 = out[2], t2 = d->t[2];
+        out[2] = t2 + o2;
+        out[1] = y1;
+    }
     out += 3;
     if (out == d->v1) {
-        float p0 = d->m[3] * d->v1[1];
-        float p1 = d->m[0] * d->v1[0];
-        float p2 = d->m[6] * d->v1[2];
-        float p3 = d->m[4] * d->v1[1];
-        float p4 = d->m[1] * d->v1[0];
-        float p5 = d->m[7] * d->v1[2];
-        float p6 = d->m[5] * d->v1[1];
-        float p7 = d->m[2] * d->v1[0];
-        float p8 = d->m[8] * d->v1[2];
-        out[0] = (p0 + p1) + p2;
-        out[1] = (p3 + p4) + p5;
-        out[2] = (p6 + p7) + p8;
+        float m3 = d->m[3], y = d->v1[1], m0 = d->m[0], x = d->v1[0], m4 = d->m[4], m1 = d->m[1], m6 = d->m[6], z = d->v1[2], m5 = d->m[5], m2 = d->m[2], m7 = d->m[7], m8 = d->m[8];
+        out[0] = y * m3 + x * m0 + z * m6;
+        out[1] = y * m4 + x * m1 + z * m7;
+        out[2] = y * m5 + x * m2 + z * m8;
     } else {
-        out[0] = d->m[3] * d->v1[1] + d->m[0] * d->v1[0] + d->m[6] * d->v1[2];
-        out[1] = d->m[4] * d->v1[1] + d->m[1] * d->v1[0] + d->m[7] * d->v1[2];
-        out[2] = d->m[5] * d->v1[1] + d->m[2] * d->v1[0] + d->m[8] * d->v1[2];
+        {
+            float m3 = d->m[3], m0 = d->m[0], m6 = d->m[6];
+            out[0] = d->v1[2] * m6 + (d->v1[0] * m0 + d->v1[1] * m3);
+        }
+        {
+            float m4 = d->m[4], m1 = d->m[1], m7 = d->m[7];
+            out[1] = d->v1[2] * m7 + (d->v1[0] * m1 + d->v1[1] * m4);
+        }
+        {
+            float m5 = d->m[5], m2 = d->m[2], m8 = d->m[8];
+            out[2] = d->v1[2] * m8 + (d->v1[0] * m2 + d->v1[1] * m5);
+        }
     }
-    out[0] += d->t[0];
-    out[2] += d->t[2];
-    out[1] += d->t[1];
-    out[1] += lbl_80564598;
+    {
+        float o0 = out[0], t0 = d->t[0], k = lbl_80564598;
+        out[0] = t0 + o0;
+        float o1 = out[1], t1 = d->t[1];
+        float s1 = t1 + o1;
+        out[1] = s1;
+        float y1 = k + s1;
+        float o2 = out[2], t2 = d->t[2];
+        out[2] = t2 + o2;
+        out[1] = y1;
+    }
 }
 #pragma pop
 extern "C" int fn_8029ADCC(void *arg0);
@@ -1579,6 +1599,11 @@ extern "C" void* __dt__Q210JASDrumSet5TPercFv_8029AE88(void* arg0, int arg1) {
         }
     }
     return arg0;
+}
+
+extern "C" int fn_8029AEE8(void *arg0) {
+    memset(arg0, 0, 0x1C0);
+    *(int *)((char *)arg0 + 0x1E0) = 0;
 }
 
 #pragma paired_single off
