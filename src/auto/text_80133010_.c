@@ -434,75 +434,102 @@ int fn_80133AD8(int arg0) {
 }
 
 #pragma use_lmw_stmw off
-int fn_80133BA0(int arg0, int arg1, int arg2) {
-    int sp18;
-    int sp14;
-    int sp10;
-    char *spC;
-    void *sp8;
-    union { char c[256]; double align; } bufu;
-    char *base = lbl_8032B868;
+/*
+ * fn_80133BA0 - read an options file into the option table.
+ *
+ * Asks the resource manager for the "BOPT" file called `path` and reads it
+ * line by line.  "[SECTION]" lines pick the section (fn_80133B24 knows the 17
+ * names), ';' '#' and empty lines are skipped, and any other line inside the
+ * file is "key value": the text after the first space is stored under that
+ * section and key, together with its int, float and true/false readings
+ * (fn_80133E10 finds the option and adds it when it isn't there yet).  The
+ * file has to start with "version 2" unless ignoreVersion is set, and only
+ * options of wantSection are stored - OPTIONS_SECTION_NONE takes them all.
+ * Returns 0 when the file can't be read or has the wrong version.
+ */
+int fn_80133BA0(int path, int ignoreVersion, int wantSection) {
+    int size;
+    int loadStatus;
+    int fileVersion;
+    char *pos;
+    void *entry;
+    union { char c[OPTIONS_LINE_SIZE]; double align; } bufu;
+    char *strings = lbl_8032B868;
     void *data;
     int ok;
-    int type;
+    int section;
     int inSection;
-    char *p;
-    int v;
+    char *sep;
+    int newSection;
     int c;
 #define buf bufu.c
 
-    sp18 = 0;
-    data = fn_8012C370(arg0, 0x424F5054, &sp14, &sp18, 0, 0);
+    size = 0;
+    data = fn_8012C370(path, OPTIONS_TAG, &loadStatus, &size, 0, 0);
     ok = 0;
     if (data != 0) {
-        spC = (char *)data;
+        pos = (char *)data;
         inSection = 0;
         ok = 1;
-        type = 0;
-        while (ok != 0 && fn_80133A08(&spC, sp18 - (spC - (char *)data), buf, 0x100) != 0) {
+        section = 0;
+        while (ok != 0 &&
+               fn_80133A08(&pos, size - (pos - (char *)data), buf,
+                           OPTIONS_LINE_SIZE) != 0) {
             c = (signed char)buf[0];
-            if (c == 0x5B) {
-                p = strchr(buf, 0x5D);
-                v = 0x12;
-                if (p != 0) {
-                    *p = 0;
-                    v = fn_80133B24(buf + 1);
+            if (c == '[') {  // "[SECTION]" header
+                sep = strchr(buf, ']');
+                newSection = OPTIONS_SECTION_NONE;
+                if (sep != 0) {
+                    *sep = 0;
+                    newSection = fn_80133B24(buf + 1);
                 }
-                if (v != 0x12) {
-                    type = v;
+                if (newSection != OPTIONS_SECTION_NONE) {
+                    section = newSection;
                 } else {
-                    fn_802E30C8(base + 0x1B0, spC);
+                    // "opt: bad section on line %d"
+                    fn_802E30C8(strings + 0x1B0, pos);
                 }
-            } else if (c == 0x3B || c == 0 || c == 0x23) {
+            } else if (c == ';' || c == 0 || c == '#') {  // comment or blank
             } else {
                 if (inSection != 0) {
-                    if (*(int *)((char *)lbl_8055E07C + 4) < 0x1F4) {
-                        p = strchr(buf, 0x20);
-                        if (p != 0 && (signed char)*p != 0) {
-                            *p = 0;
-                            if (arg2 == 0x12 || arg2 == type) {
-                                fn_80133E10(&sp8, type, (int)buf);
-                                strcpy((char *)sp8 + 0x14, p + 1);
-                                *(int *)((char *)sp8 + 0xC) = fn_801338D8((char *)sp8 + 0x14);
-                                *(float *)((char *)sp8 + 0x10) = fn_80133960((char *)sp8 + 0x14);
-                                *(char *)((char *)sp8 + 8) = fn_80133844((char *)sp8 + 0x14);
-                                *(int *)sp8 = 0;
+                    if (((OptionTable *)lbl_8055E07C)->count <
+                        OPTIONS_MAX_ENTRIES) {
+                        sep = strchr(buf, ' ');
+                        if (sep != 0 && (signed char)*sep != 0) {
+                            *sep = 0;  // "key value": cut the key off
+                            if (wantSection == OPTIONS_SECTION_NONE ||
+                                wantSection == section) {
+                                fn_80133E10(&entry, section, (int)buf);
+                                strcpy(((OptionEntry *)entry)->text, sep + 1);
+                                ((OptionEntry *)entry)->intValue =
+                                    fn_801338D8(((OptionEntry *)entry)->text);
+                                ((OptionEntry *)entry)->floatValue =
+                                    fn_80133960(((OptionEntry *)entry)->text);
+                                ((OptionEntry *)entry)->boolValue =
+                                    fn_80133844(((OptionEntry *)entry)->text);
+                                ((OptionEntry *)entry)->valueType =
+                                    OPTIONS_VALUE_FILE;
                             }
                         } else {
-                            fn_802E30C8(base + 0x1D0, fn_80133AD8(type), buf);
+                            // "Item %s:%s has no value"
+                            fn_802E30C8(strings + 0x1D0,
+                                        fn_80133AD8(section), buf);
                         }
                     }
-                } else if ((sscanf(buf, base + 0x1E8, &sp10) == 1 && sp10 == 2) || arg1 != 0) {
-                    inSection = 1;
+                } else if ((sscanf(buf, strings + 0x1E8, &fileVersion) == 1 &&
+                            fileVersion == OPTIONS_FILE_VERSION) ||
+                           ignoreVersion != 0) {
+                    inSection = 1;  // "version 2" (or told not to care)
                 } else {
-                    fn_802E30C8(base + 0x1F4, arg0);
+                    fn_802E30C8(strings + 0x1F4, path);  // "Wrong version"
                     ok = 0;
                 }
             }
         }
         fn_8012C4D8(data);
     } else {
-        fn_802E30C8(base + 0x208, arg0);
+        // "Couldn't open options file: %s"
+        fn_802E30C8(strings + 0x208, path);
     }
     return ok;
 }
