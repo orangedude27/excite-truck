@@ -354,12 +354,10 @@ f32 fn_80287BC8(f32 farg0, f32 farg1) {
 }
 #pragma paired_single reset
 #pragma paired reset
-void *fn_80287C30(void *arg0) {
-    s32 size;
+void *fn_80287C30(u8 *arg0) {
     *(s32 *)arg0 = 0;
-    size = 0x20;
-    memset((u8 *)arg0 + 4, 0, size);
-    *(s32 *)((u8 *)arg0 + 0x24) = 0;
+    memset(arg0 + 4, 0, 0x20);
+    *(s32 *)(arg0 + 0x24) = 0;
     return arg0;
 }
 
@@ -424,13 +422,21 @@ extern int sprintf(char *, const char *, ...);
 extern const char lbl_80348A40[];
 extern const char lbl_80348A30[];
 extern const char lbl_80348A20[];
+#pragma push
+#pragma cplusplus on
 void fn_80287E80(void **arg0, s32 arg1) {
+    class Obj {
+    public:
+        virtual void f(void *);
+    };
     char local[0x40];
     Obj *obj;
     fn_801346B4(local, 0x40, arg1);
     obj = (Obj *)*arg0;
-    ((void (*)(Obj *, void *))obj->vtable[2])(obj, local);
+    obj->f(local);
 }
+#pragma cplusplus reset
+#pragma pop
 
 #pragma scheduling invalid_target
 void fn_80287ED0(Obj *arg0, Obj **arg1, s32 arg2, s32 arg3) {
