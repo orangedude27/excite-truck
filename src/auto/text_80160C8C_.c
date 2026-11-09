@@ -2629,10 +2629,12 @@ f32 fn_80164CD4(void) {
     return lbl_80561870;
 }
 
-void fn_80164CDC(void *arg0) {
-    ((void (*)(void *, s32, s32))(*(void **)((char *)*(void **)((char *)arg0 + 4) + 0x18)))(*(void **)((char *)arg0 + 4), lbl_8055A0E0, lbl_8055A0E8);
+#pragma cplusplus on
+extern "C" void fn_80164CDC(void *arg0) {
+    Obj_80164CDC *obj = *(Obj_80164CDC **)((char *)arg0 + 4);
+    obj->f4(&lbl_8055A0E0, &lbl_8055A0E8);
 }
-
+#pragma cplusplus off
 extern int fn_80128668(void);
 int fn_80164CF8(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
