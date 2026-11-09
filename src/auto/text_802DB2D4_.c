@@ -350,31 +350,24 @@ void fn_802DBDD8(void) {
 void fn_802DBDE8(int arg0, void *arg1) {
     int count;
     void **entry;
+    int value;
+    int oldCount;
 
     if (arg1 != 0) {
-        int oldCount = *(int *)((char *)arg1 + 0xF0);
-        int value = lbl_8055FD30;
+        value = lbl_8055FD30;
+        oldCount = *(int *)((char *)arg1 + 0xF0);
         *(int *)((char *)arg1 + 0xEC) = value;
         *(int *)((char *)arg1 + 0xF0) = oldCount + 1;
-        entry = lbl_804DB468;
-        entry[arg0] = arg1;
-        count = 0;
-        lbl_8055FEA4 = count;
-        goto loop_body;
     }
-
-    entry = lbl_804DB468;
     count = 0;
-    goto loop_check;
-
-loop_body:
-    count++;
+    lbl_804DB468[arg0] = arg1;
+    entry = lbl_804DB468 + arg0;
     lbl_8055FEA4 = count;
-    entry++;
-
-loop_check:
-    if (count < 3 && entry[0] != 0)
-        goto loop_body;
+    while (count < 3 && entry[0] != 0) {
+        count++;
+        lbl_8055FEA4 = count;
+        entry++;
+    }
     lbl_8055FE9E = 1;
 }
 #pragma scheduling on
@@ -583,9 +576,9 @@ void fn_802DC628(void) {}
 void fn_802DC62C(void) {
     volatile unsigned char *p = (volatile unsigned char *)*(void **)&lbl_804DB468;
     if (GXGetTexObjMipMap((void *)(p + 0x24)) != 6)
-        fn_802E317C(lbl_8034CB00);
+        ((void (*)(const char *, ...))fn_802E317C)(lbl_8034CB00);
     if (GXGetTexObjWrapS((void *)(p + 0x24)) != 0x200)
-        fn_802E317C(lbl_8034CB24);
+        ((void (*)(const char *, ...))fn_802E317C)(lbl_8034CB24);
     lbl_8055FEBC = GXGetTexObjFmt((void *)(p + 0x24)) + 0x80000000;
 }
 #pragma pop
@@ -602,11 +595,10 @@ int fn_802DC6AC(int a, unsigned int b) {
     int col = (int)b / 4;
     int x = a % 4;
     int y = (int)b % 4;
-    int index = ((x + (y << 2)) << 4) / 8;
     char *tile = (char *)lbl_8055FEBC + (row + (col << 7)) * 64;
+    int index = ((x + (y << 2)) << 4) / 8;
     tile += index;
-    return *(unsigned short *)(tile + 32) |
-           ((unsigned int)*(unsigned short *)tile << 16);
+    return *(unsigned short *)(tile + 32) | ((unsigned int)*(unsigned short *)tile << 16);
 }
 
 extern void fn_802CADD0(int, int);
