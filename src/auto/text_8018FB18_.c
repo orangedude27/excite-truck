@@ -1315,7 +1315,7 @@ extern "C" void fn_80191584(void *arg0) {
     Dummy *obj38;
     obj = *(void **)((char *)arg0 + 0x34);
     *(unsigned char *)((char *)obj + 0x2680) = (unsigned char)zero;
-    fn_8018AE24(obj, zero);
+    fn_8018AE24(*(void **)((char *)arg0 + 0x34), zero);
     obj = *(void **)((char *)arg0 + 0x34);
     *(unsigned char *)((char *)obj + 0x260E) = (unsigned char)zero;
     obj38 = *(Dummy **)((char *)arg0 + 0x38);
