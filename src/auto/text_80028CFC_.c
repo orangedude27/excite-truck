@@ -53,8 +53,8 @@ byte_tail:
 }
 
 void strncpy(unsigned char *dst, const unsigned char *src, int n) {
-    unsigned char *p = dst - 1;
     const unsigned char *q = src - 1;
+    unsigned char *p = dst - 1;
     int count = n + 1;
     while (--count != 0) {
         unsigned char c = *++q;
@@ -184,22 +184,18 @@ char *strchr(const char *str, int chr) {
 
 unsigned char *fn_80029004(const unsigned char *s, int c) {
     const unsigned char *p = s - 1;
-    unsigned char current;
-    unsigned int ch = c & 0xFF;
+    unsigned long ch = (c & 0xff);
+    unsigned long cur;
     unsigned char *last = 0;
-    goto next;
-compare:
-    if (current == ch)
-        last = (unsigned char *)p;
-next:
-    current = *++p;
-    if (current != 0)
-        goto compare;
+
+    while (cur = *++p) {
+        if (cur == ch) {
+            last = (unsigned char *)p;
+        }
+    }
     if (last != 0)
         return last;
-    if (ch != 0)
-        return 0;
-    return (unsigned char *)p;
+    return (ch ? 0 : (unsigned char *)p);
 }
 
 unsigned char *strstr(const unsigned char *s, const unsigned char *find) {
