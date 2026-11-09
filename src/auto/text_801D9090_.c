@@ -458,22 +458,24 @@ void *fn_801D9A54(const char *arg0) {
     return 0;
 }
 
-#pragma scheduling off
+#pragma push
+#pragma processor 750
 void fn_801D9AB8(void *arg0, float weight) {
     void *node;
-    float value;
+    float start;
+    float end;
     if (lbl_8055E968 != 0)
         return;
     *(float *)((char *)arg0 + 0x20) = weight;
     node = *(void **)((char *)arg0 + 0x24);
     while (node != 0) {
-        value = *(float *)node;
-        fn_80178DBC(*(int *)((char *)node + 8),
-                    value + weight * (*(float *)((char *)node + 4) - value));
+        end = *(float *)((char *)node + 4);
+        start = *(float *)node;
+        fn_80178DBC(*(int *)((char *)node + 8), start + weight * (end - start));
         node = *(void **)((char *)node + 0xC);
     }
 }
-#pragma scheduling on
+#pragma pop
 extern unsigned char lbl_8055E968;
 extern float lbl_80562B2C;
 extern int strcmp(const char *, const char *);
