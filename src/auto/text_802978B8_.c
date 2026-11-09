@@ -49,8 +49,8 @@ void fn_802978E4(void) {
 void fn_8029790C(void) {
     if (fn_802C9C8C(lbl_8055F7B0)) {
         fn_802C7ADC((*(unsigned int *)((char *)fn_801E87A8() + 0x10) >> 1) & 1);
-        fn_802979A4();
         fn_80297AFC();
+        fn_802979A4();
         fn_802C9CE0();
     } else if (lbl_8055F7B4 == 0) {
         lbl_8055F7B4 = 1;
