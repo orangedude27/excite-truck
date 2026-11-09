@@ -168,7 +168,7 @@ int fn_801B81E0(void *arg0) {
 #pragma cplusplus on
 #pragma scheduling invalid_target
 #pragma dont_inline on
-extern "C" void fn_801B826C(void *arg0) {
+extern "C" void fn_801B826C(register void *arg0) {
     int value;
     void *object;
     void *manager;
@@ -290,18 +290,13 @@ int fn_801B84F0(void) {
     return 0;
 }
 
-void fn_801B84F8(void) {
+#pragma cplusplus on
+extern "C" void fn_801B84F8(void) {
     extern char lbl_8055E748;
-    void *obj;
-    void **vt;
-    void (*fn)(void *);
     lbl_8055E748 = 1;
-    obj = lbl_8055E744;
-    vt = *(void ***)obj;
-    fn = (void (*)(void *))vt[6];
-    fn(obj);
+    ((Dummy_801B8318 *)lbl_8055E744)->f4();
 }
-
+#pragma cplusplus off
 extern char lbl_8055E748;
 char fn_801B8514(void) {
     return lbl_8055E748;
