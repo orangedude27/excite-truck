@@ -22771,39 +22771,54 @@ BOOLEAN SDP_AddServiceClassIdList(UINT32 handle, UINT16 num_services, UINT16 *p_
     return SDP_AddAttribute(handle, 1, 6, (UINT32)(p - buff), buff);
 }
 
+extern char lbl_8031A000[];
+/* Delete one attribute from a record of the SDP server database (stack/sdp/sdp_db.c):
+   the record's attribute list shifts up over the entry, the values stored after the
+   deleted one move down by its length, and the record's value pool gives back the
+   bytes it held.  Returns TRUE when the attribute was deleted, FALSE if not found. */
 BOOLEAN SDP_DeleteAttribute(UINT32 handle, UINT16 attr_id) {
-    extern u8 lbl_8031A000[];
-    UINT16 zz, yy;
-    UINT16 len2;
-    UINT32 len;
+    UINT16 entry_index, yy;
+    UINT16 tail_len;
+    UINT32 len;                        /* Number of bytes in the entry */
     UINT8 *pad_ptr;
     tSDP_RECORD *p_rec = (tSDP_RECORD *)(lbl_803C4C40 + 0x1224);
     tSDP_ATTRIBUTE *p_attr;
 
-    for (zz = 0; zz < *(UINT16 *)(lbl_803C4C40 + 0x1222); zz++, p_rec = (tSDP_RECORD *)((UINT8 *)p_rec + 0x298)) {
+    /* Find the record in the database; a record is 0x298 bytes in this build. */
+    for (entry_index = 0; entry_index < *(UINT16 *)(lbl_803C4C40 + 0x1222);
+         entry_index++, p_rec = (tSDP_RECORD *)((UINT8 *)p_rec + 0x298)) {
         if (p_rec->record_handle == handle) {
+            /* Found it. Now, find the attribute */
             p_attr = &p_rec->attribute[0];
             if (lbl_803C4C40[0x4630] >= BT_TRACE_LEVEL_API) {
-                ((void (*)(u32, void *, u32, u32))fn_8007096C)(TRACE_LAYER_SDP | TRACE_TYPE_API, lbl_8031A000, attr_id, handle);
+                /* SDP_TRACE_API2("Deleting attr_id 0x%04x for handle 0x%x", attr_id, handle) */
+                ((void (*)(u32, void *, u32, u32))fn_8007096C)(
+                    TRACE_LAYER_SDP | TRACE_TYPE_API, lbl_8031A000, attr_id, handle);
             }
-            for (zz = 0; zz < p_rec->num_attributes; zz++, p_attr++) {
+            for (entry_index = 0; entry_index < p_rec->num_attributes;
+                 entry_index++, p_attr++) {
                 if (p_attr->id == attr_id) {
                     len = p_attr->len;
                     pad_ptr = p_attr->value_ptr;
                     if (len != 0) {
+                        /* Values held after the deleted one move down by its length */
                         for (yy = 0; yy < p_rec->num_attributes; yy++) {
                             if (p_rec->attribute[yy].value_ptr > pad_ptr) {
                                 p_rec->attribute[yy].value_ptr -= len;
                             }
                         }
                     }
+                    /* Found it. Shift everything up one */
                     p_rec->num_attributes--;
-                    for (yy = zz; yy < p_rec->num_attributes; yy++, p_attr++) {
+                    for (yy = entry_index; yy < p_rec->num_attributes;
+                         yy++, p_attr++) {
                         *p_attr = *(p_attr + 1);
                     }
                     if (len != 0) {
-                        len2 = p_rec->free_pad_ptr - (pad_ptr + len - p_rec->attr_pad);
-                        for (yy = 0; yy < len2; yy++, pad_ptr++) {
+                        /* adjust attribute values: close the gap in the value pool */
+                        tail_len =
+                            p_rec->free_pad_ptr - (pad_ptr + len - p_rec->attr_pad);
+                        for (yy = 0; yy < tail_len; yy++, pad_ptr++) {
                             *pad_ptr = *(pad_ptr + len);
                         }
                         p_rec->free_pad_ptr -= len;
@@ -22813,6 +22828,7 @@ BOOLEAN SDP_DeleteAttribute(UINT32 handle, UINT16 attr_id) {
             }
         }
     }
+    /* If here, not found */
     return FALSE;
 }
 
