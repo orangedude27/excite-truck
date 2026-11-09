@@ -609,11 +609,10 @@ extern "C" void fn_802B676C(void) {
         virtual void m0();
         virtual Dummy_802B676C *m1(void *);
     };
-    char *base = lbl_8034A598;
     s32 *p = ((s32 *(*)())fn_802B5B6C)();
     Dummy_802B676C *obj = (Dummy_802B676C *)lbl_8055FA48;
-    obj = obj->m1(base + 0x108);
-    fn_802B6568(obj, base + 0x1F8, *p);
+    obj = obj->m1(lbl_8034A6A0);
+    fn_802B6568(obj, lbl_8034A790, *p);
 }
 #pragma cplusplus reset
 
