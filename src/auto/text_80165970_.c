@@ -236,10 +236,9 @@ extern float lbl_805618CC;
 #pragma cplusplus on
 extern "C" void fn_80165B78(void **arg0) {
     char *strings = lbl_8032FCC0;
+    char *match, *text;
     Dummy80165B78 *obj2;
     Dummy80165B78 *obj;
-    char *match;
-    char *text;
     float scale;
     float value;
 
@@ -273,17 +272,17 @@ extern "C" void fn_80165B78(void **arg0) {
     match = strchr(text, 0x4C);
     if (match != 0) {
         scale = fn_8013672C((int)match);
-        value = (float)atof(text) * scale;
+        { float parsed = (float)atof(text); value = parsed * scale; }
     } else {
         value = (float)atof(text);
     }
-    *(float *)((char *)&lbl_8042FE38 + 0x48) = lbl_8055E324 - value;
+    *(volatile float *)((volatile char *)&lbl_8042FE38 + 0x48) = lbl_8055E324 - value;
 
-    *((unsigned char *)&lbl_8042FE38 + 0x4C) =
+    *((volatile unsigned char *)&lbl_8042FE38 + 0x4C) =
         obj->getFlag(strings + 0xC0, 1);
-    *((unsigned char *)&lbl_8042FE38 + 0x4D) =
+    *((volatile unsigned char *)&lbl_8042FE38 + 0x4D) =
         obj->getFlag(strings + 0xD8, 1);
-    *((unsigned char *)&lbl_8042FE38 + 0x4E) =
+    *((volatile unsigned char *)&lbl_8042FE38 + 0x4E) =
         obj->getFlag(strings + 0xEC, 0);
 
     obj2 = obj->getObject(strings + 0x100);
@@ -300,7 +299,8 @@ extern "C" void fn_80165B78(void **arg0) {
     *(float *)((char *)&lbl_8042FE38 + 0x54) = fn_80204CFC(strings + 0x164);
     *(float *)((char *)&lbl_8042FE38 + 0x58) = fn_80204CFC(strings + 0x178);
     *(float *)((char *)&lbl_8042FE38 + 0x5c) = obj->getFloatDefault(strings + 0x194, lbl_805618C4);
-    *(float *)((char *)&lbl_8042FE38 + 0x60) = lbl_805618CC * (float)((Dummy80165B78D *)obj)->getFloatDefaultDouble(strings + 0x1A8, lbl_805618C8);
+    value = (float)((Dummy80165B78D *)obj)->getFloatDefaultDouble(strings + 0x1A8, lbl_805618C8);
+    *(float *)((char *)&lbl_8042FE38 + 0x60) = value * lbl_805618CC;
 }
 
 #pragma push
@@ -329,16 +329,17 @@ extern "C" void fn_80165FAC(void) {
 #pragma scheduling on
 #pragma pop
 #pragma dont_inline on
+#pragma scheduling invalid_target
 void *fn_80166040(int arg0) {
     void *base;
-    void *cur;
     void *found;
+    void *cur;
     int count;
     int i;
     base = *(void **)&lbl_8042FEB0;
     count = *(int *)((char *)&lbl_8042FEB0 + 4);
-    cur = base;
     found = 0;
+    cur = base;
     i = 0;
     while (count > 0) {
         if (*(int *)((char *)cur + 0x10) == -1) {
@@ -352,6 +353,7 @@ void *fn_80166040(int arg0) {
     }
     return found;
 }
+#pragma scheduling on
 #pragma dont_inline reset
 #pragma pop
 void fn_80166098(void) {
@@ -650,9 +652,9 @@ extern float fn_80166F90(float *);
 extern void fn_8016707C(void *, void **);
 extern float lbl_8055E3C8, lbl_80561898, lbl_805618D0, lbl_805618E0, lbl_805618EC;
 #pragma push
+#pragma cplusplus on
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-#pragma cplusplus on
 extern "C" void fn_80166A24(void) {
     int wasActive;
     int var_r27;
@@ -776,8 +778,6 @@ extern "C" void fn_80166A24(void) {
         }
     }
 }
-#pragma cplusplus off
-#pragma scheduling on
 #pragma pop
 float fn_80166DD4(void *arg0) {
     float y0, y1, t, x0, x1;
