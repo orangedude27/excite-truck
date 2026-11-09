@@ -3092,6 +3092,35 @@ extern "C" void fn_8015CF00(void* self) {
     }
 }
 
+// The dash bonus tracker.  Like the other bonus trackers it owns a table of
+// mCount records of 0x38 bytes at +8 (see BonusRecord) and scores one of them
+// per event, but it also drives the "SoundDash" sound fn_802076A0() makes and
+// runs on a timer:
+//
+//   +0x248 BonusDisplay*  the bonus popup, while one is up
+//   +0x250 f32            the bonus time one event buys
+//   +0x254 f32            bonus time left; the bonus ends when it reaches zero
+//   +0x258 void*          the record buffer the scoring fills (fn_8015A318 frees it)
+//   +0x25C f32            multiplier of the event being scored
+//   +0x260 s32            events scored since the last reset
+//   +0x264 s32            events scored since the bonus started
+//   +0x268 void*          bonus listener; its +8 is cleared with every event
+//   +0x26C s32            events queued since the last frame
+//   +0x270 s32            events the dash sound has been told about
+//   +0x278 SoundDash*     the dash sound: +4 is the scale written for it (+0x4E
+//                         marks it dirty), +0x19 is set while it is being kept
+//                         going and +0x49/+0x4A/+0x4B are its stop requests
+//
+// Globals this tracker shares with the other bonus trackers.
+#define DASH_SCALE       lbl_802F9478  // .rodata: {0.7932, 0.8904, 0.9433, 0.9994, 1.0},
+                                       // the scale written to the dash sound, by the
+                                       // number of events scored
+#define DASH_SCALE_LAST  4             // last index of DASH_SCALE
+#define BONUS_FULL       lbl_80561750  // .sdata2: 1.0f, the multiplier an event starts at
+#define BONUS_NONE       lbl_80561754  // .sdata2: 0.0f
+#define BONUS_FRAME      lbl_8056177C  // .sdata2: 1/59.94 s, taken off the timer per frame
+#define BONUS_MIN_TIME   lbl_8056179C  // .sdata2: two frames, the least time left at rest
+
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
