@@ -137,6 +137,7 @@ void fn_801EAD5C(void* arg0) {
     fn_802C744C(*(s32*)((u8*)arg0 + 0x3C), (u8*)arg0 + 4);
 }
 
+#pragma dont_inline on
 void *fn_801EAD6C(void *arg0, s32 arg1) {
     fn_801EAB2C(arg0);
     *(void **)arg0 = lbl_80339E18;
@@ -145,7 +146,6 @@ void *fn_801EAD6C(void *arg0, s32 arg1) {
     *(s32 *)((u8 *)arg0 + 0x70) = -1;
     return arg0;
 }
-
 void fn_801EADD8(void *arg0) {
     s32 value;
     s32 sp8;
