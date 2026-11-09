@@ -884,6 +884,7 @@ extern "C" void fn_80146638(void *);
 extern "C" void fn_801466B4(void *);
 extern "C" void fn_80146730(void *);
 extern "C" void fn_801467AC(void *);
+extern "C" void fn_8002F6AC(s32, void *);
 
 extern "C" void *fn_80146490(void *arg0) {
     struct Obj {
