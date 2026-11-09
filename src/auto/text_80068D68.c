@@ -400,6 +400,8 @@ extern char lbl_80315700[];
 extern u8 lbl_802EEB60[];
 extern u8 lbl_802EEC40[];
 extern u8 fn_8009504C(u16, u8 *);
+extern u8 lbl_803C3740[];
+extern void fn_800826D4(void);
 extern u8 lbl_802EEBD8[];
 extern char *bta_hh_evt_code(u32);
 extern char lbl_8031A188[];
@@ -13872,16 +13874,15 @@ BOOLEAN btsnd_hcic_inquiry(const LAP inq_lap, UINT8 duration, UINT8 response_cnt
 u8 btsnd_hcic_inq_cancel(void) {
     u8 *p;
     u16 zero = 0;
-    u8 two = 2;
-    u8 four = 4;
+    int two = 2;
     p = (u8 *)GKI_getpoolbuf(2);
     if (p == NULL)
         return 0;
     *(u16 *)(p + 2) = 3;
     *(u16 *)(p + 4) = zero;
-    p[8] = two;
-    p[9] = four;
-    p[10] = zero;
+    p[8] = (u8)two;
+    p[9] = 4;
+    p[10] = (u8)zero;
     btu_hcif_send_cmd(p, two);
     return 1;
 }
