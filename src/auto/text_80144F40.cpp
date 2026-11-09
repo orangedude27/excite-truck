@@ -1838,10 +1838,12 @@ extern "C" void fn_80147F30(s32 arg0, s32 arg1, s32 arg2,
     fn_80011630(arg0, arg1, arg2, temp_f1, temp_f31, farg2, farg3,
                 farg4, farg5, farg6, farg7, farg8, farg9);
 }
-extern "C" void fn_80147FF0(void *arg0, s32 arg1) {
+extern "C" void fn_80147FF0(void * __restrict arg0, s32 arg1) {
     f32 temp_f31;
     f32 temp_f30;
-    temp_f30 = fn_801452A0(*(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 0x10));
+    f32 v10 = *(f32 *)((u8 *)arg0 + 0x10);
+    s32 v0c = *(s32 *)((u8 *)arg0 + 0xC);
+    temp_f30 = fn_801452A0(v0c, v10);
     temp_f31 = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
     f32 x = *(f32 *)((u8 *)arg0 + 4);
     s32 id = *(s32 *)((u8 *)arg0 + 0xC);
