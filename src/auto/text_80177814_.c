@@ -530,11 +530,14 @@ int fn_80178604(void *arg0) {
 
 long fn_8017873C(long *arg0, long arg1, long arg2, long arg3, long arg4) {
     if ((unsigned long)(arg3 + *arg0 + 1) < 0x1000) {
+        long result;
         *(unsigned char *)((char *)arg0 + *arg0 + 4) = arg1;
         memcpy((char *)arg0 + *arg0 + 5, (void *)arg2, arg3);
-        *arg0 = arg3 + *arg0 + 1;
+        result = arg3 + *arg0;
+        *arg0 = result + 1;
+        return result;
     }
-    return 0;
+    return (long)arg0;
 }
 
 #pragma push
