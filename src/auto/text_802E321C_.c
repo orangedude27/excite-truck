@@ -122,23 +122,28 @@ void fn_802E3498(void) {
 }
 
 extern void fn_802E3550(void);
-void fn_802E34DC(void) {
+#pragma cplusplus on
+extern "C" void fn_802E34DC(void) {
+    class Obj {
+    public:
+        virtual void v0(s32);
+    };
     s32 obj;
     fn_802E3550();
     obj = lbl_8055FF18;
     if (obj != 0) {
-        ((void (*)(s32, s32))(*(s32 *)(*(s32 *)obj + 8)))(obj, 1);
+        ((Obj *)obj)->v0(1);
     }
     lbl_8055FF18 = 0;
     obj = lbl_8055FF1C;
     if (obj != 0) {
         if (obj != 0) {
-            ((void (*)(s32, s32))(*(s32 *)(*(s32 *)obj + 8)))(obj, 1);
+            ((Obj *)obj)->v0(1);
         }
         lbl_8055FF1C = 0;
     }
 }
-
+#pragma cplusplus off
 extern char lbl_8034CF80[];
 #pragma scheduling invalid_target
 void fn_802E3550(void) {
