@@ -3496,7 +3496,7 @@ void nw4hbm::snd::detail::BasicSound::SetInitialVolume(float vol) {
     if (!(vol >= lbl_80560FB0)) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x216, lbl_80322830);
     }
-    *(float *)((char *)this + 0x8C) = vol;
+    initialVolume = vol;
 }
 
 void nw4hbm::snd::detail::BasicSound::SetVolume(float volume, int arg2) {
@@ -3519,10 +3519,9 @@ void nw4hbm::snd::detail::BasicSound::SetVolume(float volume, int arg2) {
 }
 
 extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800E9AAC(void *this_, float vol) {
-    if (!(vol >= lbl_80560FB0)) {
+    if (!(vol >= 0.0f)) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x234, lbl_80322858);
     }
-
     *(float *)((char *)this_ + 0x98) = vol;
 }
 
