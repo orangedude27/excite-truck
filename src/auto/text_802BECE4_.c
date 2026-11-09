@@ -78,7 +78,7 @@ int fn_802BECE4(const char *arg0, int arg1) {
 void fn_802BED90(float *arg0) {
     float mag = PSVECMag(arg0);
     float scale;
-    if (lbl_80564D7C > mag) mag = lbl_80564D7C;
+    mag = lbl_80564D7C > mag ? lbl_80564D7C : mag;
     scale = lbl_80564D80 / mag;
     arg0[0] *= scale;
     arg0[1] *= scale;
@@ -136,9 +136,8 @@ float fn_802BEFB4(void) {
     fn_801E866C(-1);
     value = (*(float *)((char *)*(void **)((char *)fn_801EA9A0() + 8) + 0x64) - lbl_80564D88) / lbl_80564D8C;
     limit = lbl_80564D80;
-    result = limit < value ? value : limit;
-    limit = result;
-    limit = limit > lbl_80564D90 ? lbl_80564D90 : limit;
+    limit = limit < value ? value : limit;
+    limit = lbl_80564D90 < limit ? lbl_80564D90 : limit;
     result = limit * lbl_80564D94;
     return lbl_80564D84 + result;
 }
