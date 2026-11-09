@@ -151,7 +151,7 @@ void fn_80133144(void) {
 }
 
 void fn_801331C4(int arg0,int arg1,float *arg2) {
- void *sp8=0;
+ void *sp8;
  int ok;
  ok=fn_80133E10(&sp8,arg0,arg1);
  if(ok) *arg2=*(float *)((char *)sp8+0x10);
@@ -301,9 +301,7 @@ void fn_801336E0(int arg0, int arg1) {
 }
 #pragma scheduling on
 int fn_80133780(void *arg0, void *arg1) {
-    int second = *(int *)((char *)arg1 + 4);
-    int first = *(int *)((char *)arg0 + 4);
-    int result = first - second;
+    int result = *(int *)((char *)arg0 + 4) - *(int *)((char *)arg1 + 4);
     switch (result) {
     case 0:
         result = fn_8002B1D8((char *)arg0 + 0x24, (char *)arg1 + 0x24, 0x13);
@@ -344,13 +342,11 @@ char *fn_801337E4(char *arg0) {
         p = (char *)((unsigned int)p + 1);
         byte = *(volatile unsigned char *)p;
         c = (signed char)byte;
-        if (c == 0) break;
+        if (c == 0) return p;
         if ((c < 0 || c >= 0x100) ? 0 : (*(unsigned short *)(*(int *)(table + 8) + c * 2) & 0x100)) continue;
-        break;
+        return p;
     } while (1);
-    return p;
 }
-#pragma peephole on
 int fn_80133844(const char *arg0) {
     int c = (signed char)*fn_801337E4((char *)arg0);
     int table = *(int *)(lbl_802FE850 + 0x38);
