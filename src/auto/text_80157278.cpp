@@ -3635,12 +3635,16 @@ extern "C" void fn_8015E238(Unk801577F0V* arg0) {
 }
 #pragma scheduling on
 #pragma use_lmw_stmw reset
-extern "C" void fn_8015E2C8(Unk801577F0V* arg0) {
-    UnkVt34** entries = *(UnkVt34***)((u8*)arg0 + 4);
-    s32 count = arg0->mCount;
-    s32 off;
-    for (off = 0; off < count; off++) {
-        entries[off]->v18(0);
+extern "C" void fn_8015E2C8(void *arg0) {
+    struct Entry {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+    };
+    int i;
+    for (i = 0; i < *(int *)((char *)arg0 + 0x8); i++) {
+        Entry *entry = *(Entry **)((char *)*(void **)((char *)arg0 + 0x4) + i * 0x4);
+        entry->v2();
     }
 }
 
