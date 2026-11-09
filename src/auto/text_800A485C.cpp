@@ -7127,6 +7127,20 @@ extern "C" s32 fn_800B1AFC(s32 arg0, s32 arg1, s32 *arg2, s32 arg3) {
 #define VF_HANDLE_PENDING(f)   (*(u16 *)((u8 *)(f) + 0x2C)) /* 0x2C of its bytes queued for writing */
 #define VF_HANDLE_OPEN         1U    /* the handle is open */
 
+/* Where the handle reads next, kept in step with VF_HANDLE_POS: the sector of
+ * the volume's data that holds the position and the byte inside that sector.
+ * A seek drops the cluster the position is in (-1); it is looked up in the FAT
+ * again the next time the file is read (fn_800B0DEC). */
+#define VF_HANDLE_POS(f)        (*(u32 *)((u8 *)(f) + 0x1C)) /* 0x1C byte position in the file */
+#define VF_HANDLE_CLUSTER(f)    (*(s32 *)((u8 *)(f) + 0x20)) /* 0x20 cluster of it, -1 when not known */
+#define VF_HANDLE_SECTOR(f)     (*(u32 *)((u8 *)(f) + 0x24)) /* 0x24 sector of it */
+#define VF_HANDLE_SECTOR_OFF(f) (*(u16 *)((u8 *)(f) + 0x28)) /* 0x28 byte inside that sector */
+
+/* Where a seek counts its offset from (third argument of fn_800B1FF4). */
+#define VF_SEEK_SET  0 /* from the start of the file */
+#define VF_SEEK_CUR  1 /* from where the handle reads now */
+#define VF_SEEK_END  2 /* from the end of the file */
+
 /* How a handle was opened (VF_HANDLE_MODE); bit 1 is what close() compares
  * against a write-protected volume, and bit 0 makes the stream read-only. */
 #define VF_MODE_READ_ONLY      1
