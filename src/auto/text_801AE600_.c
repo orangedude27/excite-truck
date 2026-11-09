@@ -13,6 +13,7 @@ extern float lbl_8055E630;
 extern float lbl_8056255C;
   extern float lbl_80562558;
   extern float lbl_80562560;
+extern float lbl_80562570;
 extern int lbl_8055E628;
 extern signed char lbl_8055E635;
   extern int lbl_8055E62C;
@@ -670,7 +671,7 @@ done:
 #pragma use_lmw_stmw reset
 #pragma small_data on
 float fn_801AF9EC(int arg0, float *arg1) {
-    if (arg1 != 0) *arg1 = ((float *)((char *)lbl_80435740 + (arg0 << 3)))[1];
+    if (arg1 != 0) *arg1 = ((float (*)[2])lbl_80435740)[arg0][1];
     return lbl_80435740[arg0 * 2];
 }
 
