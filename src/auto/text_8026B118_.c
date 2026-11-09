@@ -295,9 +295,9 @@ int fn_8026B734(int arg0, float *arg1) {
     return 0;
 }
 
-int fn_8026B768(int arg0) {
+int fn_8026B768(int arg0, int arg1) {
     if (lbl_8049A0E8[arg0 * 0x10] != 0) {
-        fn_8026A1F0(0xB, lbl_8049A0E8, 0);
+        fn_8026A1F0(0xB, arg1, 0);
         return 1;
     }
     return 0;
