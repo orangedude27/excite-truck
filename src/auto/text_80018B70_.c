@@ -105,12 +105,12 @@ extern "C" void fn_80018CCC(void) {
     extern void *lbl_802FD2A0 __attribute__((section(".rodata")));
     extern const char lbl_80558C48[] __attribute__((section(".sdata")));
     extern s32 stricmp(const char *, const char *);
-    register char *strings = (char *)&lbl_802FD2A0;
-    register int outer = 0;
-    register Item *object;
     register char *name;
-    register int offset;
+    register char *strings = (char *)&lbl_802FD2A0;
     register int row;
+    register int offset;
+    register Item *object;
+    register int outer = 0;
 
     goto get_next;
 check_object:
@@ -127,14 +127,15 @@ search_advance:
         offset += 0x10;
         row++;
 check_count:
-        if (row < *(int *)((char *)&lbl_803580A4 + 4))
+        if (row < *(volatile int *)((char *)&lbl_803580A4 + 4))
             goto search;
         row = -1;
 found:
         if (row < 0) {
-            row = *(int *)((char *)&lbl_803580A4 + 4);
-            *(int *)((char *)&lbl_803580A4 + 4) = row + 1;
-            ((const char **)*(void **)&lbl_803580A4)[row] = name;
+            int count = *(volatile int *)((char *)&lbl_803580A4 + 4);
+            row = *(volatile int *)((char *)&lbl_803580A4 + 4);
+            *(volatile int *)((char *)&lbl_803580A4 + 4) = count + 1;
+            *(const char **)((char *)*(void **)&lbl_803580A4 + count * 0x10) = name;
         }
         name = (char *)*(void **)&lbl_803580A4 + row * 0x10;
         *(void **)(name + 4) =
@@ -210,6 +211,7 @@ void fn_80018FA8(s32 arg0) {
     fn_80018E44(lbl_80558C50, arg0);
 }
 
+#pragma dont_inline on
 s32 fn_80019430(void) {
     return 0;
 }
@@ -217,6 +219,7 @@ s32 fn_80019430(void) {
 s32 fn_800194C8(void) {
     fn_80019438();
 }
+#pragma dont_inline off
 
 extern char lbl_8055D588;
 extern s32 lbl_8055DDF8;
