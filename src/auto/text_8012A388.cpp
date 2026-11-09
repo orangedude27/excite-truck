@@ -29,7 +29,7 @@ class Unk8012A570 { public: virtual ~Unk8012A570(); };
 extern "C" s32 lbl_8055E004;
 extern "C" void **lbl_8055E008;
 extern "C" u32 lbl_805599A0;
-extern "C" u8 lbl_8032A6F8[];
+extern "C" char lbl_8032A6F8[];
 extern "C" s32 lbl_8055E00C;
 extern "C" void **lbl_8055E010;
 extern "C" u8 lbl_8032AC88[];
