@@ -237,7 +237,7 @@ extern "C" s32 fn_800AF530(void *, void *, s32, s32);
 extern "C" char *fn_800A4AAC(char *, char *);
 extern "C" s32 fn_800A4A8C(s32);
 extern "C" s32 fn_800B7F28(void *);
-extern "C" void fn_800A4B78(u16 *, u16 *);
+extern "C" Fn800A4B78Ret fn_800A4B78(u16 *, u16 *);
 extern "C" s32 VFiPFPATH_transformInUnicode(s16 *, s32, s32);
 extern "C" void VFiPFPATH_transformFromUnicodeToNormal(u16 *, u16 *);
 namespace nw4hbm { namespace lyt { class Pane; class Material; namespace res { class AnimationBlock; } class ResourceAccessor { public: virtual ~ResourceAccessor(); virtual void *GetResource(u32, const char *, u32); }; class AnimTransformBasic { public: void Animate(unsigned long, Pane *); void Animate(unsigned long, Material *); void Bind(Material *); void Bind(Pane *, bool); void SetResource(const res::AnimationBlock *, ResourceAccessor *); }; } }
@@ -23826,8 +23826,9 @@ extern "C" void fn_800A52DC(u32 arg0) {
 
 extern "C" void fn_800A535C(u32 arg0) {
     u8 *ptr = (u8 *)lbl_803D2140 + 0xA0;
-    s32 i;
-    for (i = 0; i < 13; i++, ptr += 0x3F90) {
+    int i = 0;
+    for (int k = 0; k < 13; k++, ptr += 0x3F90, i++) {
+        (void)i;
         if (*(u32 *)(ptr + 0x1FBC) == arg0) {
             *(u16 *)(ptr + 0x1F8C) |= 0x14;
         }
