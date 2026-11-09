@@ -664,6 +664,7 @@ int fn_801D56C0(void *alarm) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma dont_inline on
+#pragma cplusplus on
 void fn_801D4F2C(void *arg0) {
     int offset;
     int i;
@@ -677,6 +678,7 @@ void fn_801D4F2C(void *arg0) {
         i += 1;
     }
 }
+#pragma cplusplus reset
 #pragma pop
 #pragma push
 #pragma use_lmw_stmw off
