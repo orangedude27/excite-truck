@@ -1230,14 +1230,15 @@ extern "C" void fn_801F99CC(F92Obj *obj) {
 #pragma scheduling on
 extern "C" void fn_801F9A24(F92Node **arg0) {
     F92Node *node = *arg0;
-    do {
+    F92Node *next;
+    while (node != 0) {
         fn_801F99CC((F92Obj *)node);
-        F92Node *next = node->next;
+        next = node->next;
         if (node != 0) {
-            ((F92VT *)((F92Obj *)node)->w108)->fn8(node, 1);
+            ((void (*)(F92Obj *, s32))(*(void **)((u8 *)*(void **)((char *)node + 0x108) + 8)))((F92Obj *)node, 1);
         }
         node = next;
-    } while (node != 0);
+    }
     *arg0 = 0;
 }
 
@@ -2236,6 +2237,7 @@ extern "C" void fn_801FBFE8(void* arg0) {
  void* obj = fn_801284F8(0xE0, lbl_8033B53C);
  if (obj != 0) fn_801A324C(obj, 0, (char*)arg0 + 0x58, value, *(f32*)((char*)arg0 + 0x4C));
 }
+#pragma pop
 
 extern u8 lbl_8033B54C[], lbl_80333B48[];
 extern f32 lbl_80563014;
