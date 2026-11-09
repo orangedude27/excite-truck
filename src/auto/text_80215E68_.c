@@ -407,7 +407,7 @@ void fn_8021683C(u32 arg0) {
             return;
         }
     }
-    fn_802E317C(&lbl_8033D7EC);
+    fn_802E317C((const char *)(void *)&lbl_8033D7EC);
 }
 #pragma small_data on
 void fn_802168BC(s32 arg0) {
