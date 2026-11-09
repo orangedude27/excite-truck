@@ -126,22 +126,36 @@ int fn_802452E4(void *arg0) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma opt_unroll_loops off
-int fn_80245360(int *a, int *b) {
-    int value;
+int fn_80245360(int *a, struct Menu *b) {
+    int sp8;
     char obj[0x30];
-    int text[0x80];
-    struct { int a, b; } buf[64];
-    char *s, *split, *p;
-    char *item_ptr;
-    int i, j, save, color;
-    float w, h, x0, x1, y, alpha, wave, temp;
-    char *prompt;
-    int selected;
-    int (*callback)(int *);
+    char text[0x200];
+    unsigned long long buf[64];
+    char *s;
+    float y;
 
-    selected = b[4];
-    prompt = &lbl_8055BE50;
+    int selected = b->selected;
+    float temp_f19 = lbl_80563854;
+    float temp_f20 = lbl_8056384C;
+    float temp_f21 = lbl_8056385C;
+    float temp_f23 = lbl_80563864;
+    float temp_f24 = lbl_80563838;
+    float temp_f25 = lbl_80563870;
+    float temp_f26 = lbl_8056386C;
+    float temp_f27 = lbl_80563868;
+    float temp_f28 = lbl_80563844;
+    float temp_f29 = lbl_8056387C;
+    float temp_f16 = lbl_80563840;
+    float temp_f17 = lbl_80563834;
+    float temp_f18 = lbl_80563850;
+    float temp_f31 = lbl_80563874;
+    float temp_f30 = lbl_80563878;
+
     for (;;) {
+        float w, h;
+        float fw, fh;
+        float x0, x1;
+        char *desc;
         fn_802C8530();
         fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
         fn_802C88BC(2);
@@ -150,8 +164,10 @@ int fn_80245360(int *a, int *b) {
         fn_802C974C(lbl_80563834, lbl_80563838, lbl_8056383C);
         w = (float)(lbl_8055FB9C + 1);
         h = (float)(lbl_8055FBA0 + 1);
-        x0 = lbl_80563840 * (float)lbl_8055FB9C * lbl_80563844 - lbl_80563834;
-        x1 = lbl_80563834 + (float)lbl_8055FBA0 * lbl_80563844;
+        fw = (float)lbl_8055FB9C;
+        fh = (float)lbl_8055FBA0;
+        x0 = temp_f16 * fw * temp_f28 - temp_f17;
+        x1 = temp_f17 + fh * temp_f28;
         if (a[1] != 0) {
             fn_802C5320(a[1], x0, x1, lbl_80563830, w, h, 0);
         } else {
@@ -159,65 +175,86 @@ int fn_80245360(int *a, int *b) {
             fn_802C92DC(0, 0, (int)w, (int)h, 0xFF000000);
             fn_802C92D8();
         }
-        s = (char *)b[0];
-        split = (char *)b[1];
+        s = b->title;
+        desc = b->desc;
         y = lbl_80563848;
         if (strlen(s) != 0) {
-            fn_80232BA4(s, a[3], 0xFF000000, 12, lbl_8056384C + ((float *)a)[5], y - lbl_8056384C, lbl_80563834, lbl_80563830, lbl_80563834);
+            fn_80232BA4(s, a[3], 0xFF000000, 12, temp_f20 + ((float *)a)[5], y - temp_f20, lbl_80563834, lbl_80563830, lbl_80563834);
             fn_80232BA4(s, a[3], -1, 12, ((float *)a)[5], y, lbl_80563834, lbl_80563830, lbl_80563834);
         }
-        y -= lbl_80563850;
-        strcpy((char *)text, split);
-        s = (char *)text;
+        y -= temp_f18;
+        strcpy(text, desc);
+        s = text;
         while (strlen(s) != 0) {
-            for (i = 0; i < 64; i++) { buf[i].a = 0; buf[i].b = 0; }
-            split = 0;
+            int i;
+            char *last_space;
+            char *p_buf;
+            unsigned int j;
+            signed char save;
+            for (i = 0; i < 64; i++) {
+                buf[i] = 0;
+            }
+            last_space = 0;
+            p_buf = (char *)buf;
             j = 0;
-            while ((unsigned)j < strlen(s) && fn_8023293C(a[3], (char *)buf, lbl_80563834) < lbl_80563854) {
-                p = s + j;
-                if (*p == 32) split = p;
-                else if (*p == 94) *p = 32;
-                ((char *)buf)[j] = *p;
+            while (j < strlen(s) && fn_8023293C(a[3], (char *)buf, lbl_80563834) < temp_f19) {
+                char ch = s[j];
+                char *curr = &s[j];
+                if (ch == ' ') {
+                    last_space = curr;
+                } else if (ch == '^') {
+                    *curr = ' ';
+                }
                 j++;
-                ((char *)buf)[j] = 0;
+                *p_buf++ = *curr;
+                *p_buf = 0;
             }
             save = 0;
-            if ((unsigned)j != strlen(s)) {
-                if (split == 0) {
-                    split = s + j;
-                    save = *split;
+            if (j != strlen(s)) {
+                if (last_space == 0) {
+                    last_space = &s[j];
+                    save = s[j];
                 }
-                *split = 0;
+                *last_space = 0;
             } else {
-                split = s + j - 1;
+                last_space = &s[j] - 1;
             }
-            fn_80232BA4(s, a[3], 0xFF000000, 12, lbl_8056384C + ((float *)a)[5], y - lbl_8056384C, lbl_80563858, lbl_80563830, lbl_80563834);
+            fn_80232BA4(s, a[3], 0xFF000000, 12, temp_f20 + ((float *)a)[5], y - temp_f20, lbl_80563858, lbl_80563830, lbl_80563834);
             fn_80232BA4(s, a[3], -1, 12, ((float *)a)[5], y, lbl_80563858, lbl_80563830, lbl_80563834);
-            if (save == 0) s = split + 1;
-            else { *split = save; s = split; }
-            y -= lbl_8056385C;
+            if (save == 0) {
+                s = last_space + 1;
+            } else {
+                *last_space = save;
+                s = last_space;
+            }
+            y -= temp_f21;
         }
         y = lbl_80563860;
-        item_ptr = (char *)b;
-        for (i = 0; i < b[5]; i++, item_ptr += 8) {
-            char *item = *(char **)(item_ptr + 0x18);
-            wave = (float)sin(lbl_80563864 * (float)fn_802E2C20() / lbl_80563838);
-            alpha = lbl_80563868 * (lbl_8056386C + lbl_80563870 * wave);
-            fn_80232BA4(item, a[3], 0xFF000000, 12, lbl_8056384C + ((float *)a)[5], y - lbl_8056384C, lbl_80563834, lbl_80563830, lbl_80563834);
-            if (selected == i) {
-                color = ((int)alpha << 24) | 0x00FFD03F;
-            } else {
-                color = 0xC8646464;
+        {
+            void *item_ptr = b;
+            int i = 0;
+            while (i < b->count) {
+                float wave = (float)sin(temp_f23 * (float)fn_802E2C20() / temp_f24);
+                float alpha = temp_f27 * (temp_f26 + temp_f25 * wave);
+                char *name = *(char **)((char *)item_ptr + 0x18);
+                int color;
+                fn_80232BA4(name, a[3], 0xFF000000, 12, temp_f20 + ((float *)a)[5], y - temp_f20, lbl_80563834, lbl_80563830, lbl_80563834);
+                if (selected == i) {
+                    color = ((int)alpha << 24) | 0x00FFD03F;
+                } else {
+                    color = 0xC8646464;
+                }
+                fn_80232BA4(name, a[3], color, 12, ((float *)a)[5], y, lbl_80563834, lbl_80563830, lbl_80563834);
+                y -= temp_f21;
+                item_ptr = (char *)item_ptr + 8;
+                i++;
             }
-            fn_80232BA4(item, a[3], color, 12, ((float *)a)[5], y, lbl_80563834, lbl_80563830, lbl_80563834);
-            y -= lbl_8056385C;
         }
         if (a[2] != 0) {
-            temp = lbl_80563878 + lbl_80563844 * fn_8023293C(a[4], prompt, lbl_80563834);
-            fn_802C5310(a[2], 0, lbl_8056387C + temp, lbl_80563864 + lbl_80563874, lbl_80563830);
-            fn_802337A0(a[4], -1, 9, &lbl_8055BE58, prompt, lbl_80563878, lbl_80563874, lbl_80563830, lbl_80563844, lbl_80563834);
+            fn_802C5310(a[2], 0, temp_f29 + (temp_f30 + temp_f28 * fn_8023293C(a[4], &lbl_8055BE50, lbl_80563834)), temp_f23 + temp_f31, lbl_80563830);
+            fn_802337A0(a[4], -1, 9, &lbl_8055BE58, &lbl_8055BE50, temp_f30, temp_f31, lbl_80563830, lbl_80563844, lbl_80563834);
         } else {
-            fn_802337A0(a[4], -1, 12, lbl_80343080, &lbl_8055BE5C, lbl_80563878, lbl_80563874, lbl_80563830, lbl_80563844, lbl_80563834);
+            fn_802337A0(a[4], -1, 12, lbl_80343080, &lbl_8055BE5C, temp_f30, temp_f31, lbl_80563830, lbl_80563844, lbl_80563834);
         }
         fn_802C9A70(1);
         fn_802C855C();
@@ -232,7 +269,7 @@ int fn_80245360(int *a, int *b) {
                 }
                 break;
             case 0x128:
-                if (selected + 1 < b[5]) {
+                if (selected + 1 < b->count) {
                     fn_80214D50(0);
                     selected++;
                 }
@@ -242,11 +279,12 @@ int fn_80245360(int *a, int *b) {
                 return *(int *)((char *)b + 0x1C + selected * 8);
             }
         }
-        callback = *(int (**)(int *))((char *)b + 0xC);
-        if (callback != 0) {
-            int (*fn)(int *) = callback;
-            value = -1;
-            if (fn(&value) == 1) return value;
+        {
+            int (*callback)(int *) = b->callback;
+            if (callback != 0) {
+                sp8 = -1;
+                if (callback(&sp8) == 1) return sp8;
+            }
         }
         fn_802E2D74(5);
     }
@@ -548,6 +586,33 @@ int fn_802464B4(void *arg0, int arg1) {
 done:
     return 1;
 }
+
+/* Gauge widget: a horizontal progress bar whose Draw method is fn_802465A4
+ * (vtable lbl_803430E8, dtor fn_80246428).  Only the fields the draw uses are
+ * named here. */
+struct BarWidget {
+    void *vtable;  /* 0x00 */
+    int x;         /* 0x04 bar box top-left, screen units (origin at screen centre, y up) */
+    int y;         /* 0x08 */
+    int width;     /* 0x0C bar box size */
+    int height;    /* 0x10 */
+    int pad14;     /* 0x14 */
+    float fill;    /* 0x18 part of the bar to fill, 0.0 .. 1.0 */
+    int image;     /* 0x1C bar image (see fn_8023505C parts), 0 = plain rectangle */
+};
+
+/* Bar image pieces: two rows of three, the outer ones being fixed-width caps.
+ * Row 0 (0,1,2) is the frame drawn over the full width, row 1 (3,4,5) the fill. */
+#define BAR_PIECE_FRAME_LEFT 0
+#define BAR_PIECE_FRAME_MID 1
+#define BAR_PIECE_FRAME_RIGHT 2
+#define BAR_PIECE_FILL_LEFT 3
+#define BAR_PIECE_FILL_MID 4
+#define BAR_PIECE_FILL_RIGHT 5
+
+#define BAR_Z lbl_80563830      /* depth the bar quads are drawn at, 0.0f */
+#define BAR_TEX_V lbl_80563834  /* whole height of a piece's texture, 1.0f */
+#define BAR_HALF lbl_80563844   /* 0.5f, for centring */
 
 extern void fn_80230C30(float *, float *, int, int);
 extern void fn_80230924(int, float, float, float, float, float);
