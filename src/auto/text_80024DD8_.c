@@ -14,9 +14,10 @@ void *memchr(const void *src, int val, unsigned int n) {
 
 void *__memrchr(const unsigned char *arg0, int arg1, unsigned int arg2) {
     const unsigned char *p = arg0 + arg2;
+    unsigned char c = (unsigned char)arg1;
     unsigned int n = arg2 + 1;
     while (--n != 0) {
-        if ((unsigned char)arg1 == *--p) return (void *)p;
+        if (*--p == c) return (void *)p;
     }
     return 0;
 }
