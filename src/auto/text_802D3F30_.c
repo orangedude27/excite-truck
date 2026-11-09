@@ -77,12 +77,16 @@ extern f32 PSVECSquareDistance(void *, void *);
 void fn_802D3F30(void) {
 }
 
+#pragma push
+#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802D3F34(void *arg0) {
     GXSetArray(9, *(void **)((char *)arg0 + 0x20), 0xC);
     GXSetArray(0xB, *(void **)((char *)arg0 + 0x24), 2);
     GXSetArray(0xD, *(void **)((char *)arg0 + 0x28), 4);
     GXCallDisplayList(*(void **)((char *)arg0 + 0x30), *(u32 *)((char *)arg0 + 0x2C));
 }
+#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
