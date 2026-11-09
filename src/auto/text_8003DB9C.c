@@ -4051,19 +4051,7 @@ void GXSetTevOp(int stage, int mode) {
     *(unsigned short *)((char *)data + 2) = 0;
 }
 
-void GXSetTevColorIn(int stage, int a, int b, int c, int d) {
-    unsigned int *data = __GXData;
-    unsigned int *tev = data + stage;
-    unsigned int value = tev[0x180 / 4];
-    value = __rlwimi(value, a, 12, 16, 19);
-    value = __rlwimi(value, b, 8, 20, 23);
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    value = __rlwimi(value, c, 4, 24, 27);
-    value = __rlwimi(value, d, 0, 28, 31);
-    *(volatile unsigned int *)0xCC008000 = value;
-    tev[0x180 / 4] = value;
-    *(unsigned short *)((char *)data + 2) = 0;
-}
+void GXSetTevColorIn(s32 stage, s32 a, s32 b, s32 c, s32 d) { unsigned int *tev; unsigned int *base = __GXData; tev = (unsigned int *)((unsigned char *)base + stage * 4); { unsigned int value = tev[0x180 / 4]; value = __rlwimi(value, a, 12, 16, 19); value = __rlwimi(value, b, 8, 20, 23); *(volatile unsigned char *)0xCC008000 = 0x61; value = __rlwimi(value, c, 4, 24, 27); value = __rlwimi(value, d, 0, 28, 31); *(volatile unsigned int *)0xCC008000 = value; tev[0x180 / 4] = value; } *(unsigned short *)((unsigned char *)base + 2) = 0; }
 
 void GXSetTevAlphaIn(s32 stage, s32 a, s32 b, s32 c, s32 d) {
     unsigned int *tev;
@@ -4716,23 +4704,14 @@ void GXSetDstAlpha(s32 enable, s32 alpha) {
 }
 
 void GXSetFieldMask(s32 even, s32 odd) {
-    union {
-        unsigned int value;
-        struct {
-            unsigned int type : 8;
-            unsigned int pad : 22;
-            unsigned int evenF : 1;
-            unsigned int oddF : 1;
-        } bits;
-    } reg;
     unsigned int *data;
-    reg.value = 0;
+    unsigned int value = 0;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    reg.bits.oddF = odd;
-    reg.bits.evenF = even;
+    value = __rlwimi(value, odd, 0, 31, 31);
+    value = __rlwimi(value, even, 1, 30, 30);
+    value = __rlwimi(value, 0x44, 24, 0, 7);
     data = __GXData;
-    reg.bits.type = 0x44;
-    *(volatile unsigned int *)0xCC008000 = reg.value;
+    *(volatile unsigned int *)0xCC008000 = value;
     *(volatile unsigned short *)((char *)data + 2) = 0;
 }
 
