@@ -75,6 +75,15 @@ void fn_8028E024(void) {
     lbl_8055F744 = 0;
 }
 
+void fn_8028DF58(void) {
+    char *base = (char *)&lbl_804B34B0;
+    fn_8028ED74(base);
+    fn_8028ED74(base + 0x104);
+    fn_8028EE1C(base + 0x208);
+    lbl_8055F740 = 0;
+    lbl_8055F744 = 1;
+    lbl_8055F748 = 0;
+}
 void fn_8028E070(float farg0) {
     lbl_8055F738 = farg0;
     lbl_8055F73C = 1;
@@ -107,7 +116,7 @@ void fn_8028E0F0(void) {
     fn_8028F5A4();
     fn_8028EE28(base + 0x208);
     fn_8028ED80(base + 0x104);
-    fn_8028ED80(base);
+    fn_8028ED80(0 + base);
 }
 #pragma pop
 extern void fn_8028ED74(void *);
@@ -603,16 +612,13 @@ inner_check:
 #pragma push
 #pragma dont_inline on
 int fn_8028F0C0(int *arg0, int arg1, int arg2) {
-    int i = arg1 + 1;
-    int *p = (int *)((char *)arg0 + i * 0x104);
-    if (i < 9) {
-        do {
-            if (*(int *)((char *)p + 0x100) > 0) {
-                return fn_8028F040((int *)((char *)arg0 + arg1 * 0x104), (int *)((char *)arg0 + i * 0x104), arg2);
-            }
-            p = (int *)((char *)p + 0x104);
-            i++;
-        } while (i < 9);
+    int i;
+    int *p;
+    i = arg1 + 1;
+    p = (int *)((char *)arg0 + i * 0x104);
+    for (; i < 9; p = (int *)((char *)p + 0x104), i++) {
+        if (*(int *)((char *)p + 0x100) > 0)
+            return fn_8028F040((int *)((char *)arg0 + arg1 * 0x104), (int *)((char *)arg0 + i * 0x104), arg2);
     }
     return -2;
 }
