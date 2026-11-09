@@ -130,14 +130,9 @@ extern int fn_801D9948(int *);
 extern void fn_801D9120(float *, float *, int, float);
 #pragma dont_inline on
 void *fn_801D9260(int count) {
-    extern void *lbl_8055E96C;
     void *node = lbl_8055E96C;
-    do {
+    while (node != 0 && --count >= 0)
         node = *(void **)((char *)node + 0x54);
-        if (node == 0)
-            break;
-        count--;
-    } while (count >= 0);
     return node;
 }
 #pragma dont_inline off
@@ -289,15 +284,17 @@ extern "C" void fn_801D9654(void **head, DtbManager801D9394 *manager, const char
         char pad31[3];
         void *next;
     };
+    int index = 0;
     DtbItem *item;
     Node *node;
-    int index = 0;
-    int i, slot, result, capacity, limit;
+    int i, slot, result, capacity;
     void *value;
-    char key[0x20];
+    void **array;
+    void **vtable;
     char valueName[0x20];
-    extern const char lbl_8055AD80[];
-    extern const char lbl_8055AD88[];
+    char key[0x20];
+    extern const char lbl_8055AD80;
+    extern const char lbl_8055AD88;
 
     item = 0;
     goto next_item;
@@ -313,29 +310,33 @@ extern "C" void fn_801D9654(void **head, DtbManager801D9394 *manager, const char
                 node->valueCount = 0;
                 i = 0;
                 while (i < node->childLimit) {
-                    fn_801345D8(key, 0x20, lbl_8055AD80, i);
+                    fn_801345D8(key, 0x20, &lbl_8055AD80, i);
                     result = item->parse(key, -1);
                     if (result < 0)
                         break;
                     value = fn_801D9260(result);
                     slot = node->childCount;
                     ++i;
+                    array = node->children;
                     node->childCount = slot + 1;
-                    node->children[slot] = value;
+                    array[slot] = value;
                 }
                 capacity = 1 << node->childCount;
-                limit = node->valueCapacity;
-                if (capacity < limit)
-                    limit = capacity;
-                i = 0;
-                while (i < limit) {
-                    fn_801345D8(valueName, 0x20, lbl_8055AD88, i);
-                    result = (int)item->getString(valueName);
-                    value = (void *)fn_802C6FC0(result, 0, 0);
-                    slot = node->valueCount;
-                    ++i;
-                    node->valueCount = slot + 1;
-                    node->values[slot] = value;
+                {
+                    int limit = node->valueCapacity;
+                    if (capacity < limit)
+                        limit = capacity;
+                    i = 0;
+                    while (i < limit) {
+                        fn_801345D8(valueName, 0x20, &lbl_8055AD88, i);
+                        result = (int)item->getString(valueName);
+                        value = (void *)fn_802C6FC0(result, 0, 0);
+                        slot = node->valueCount;
+                        ++i;
+                        array = node->values;
+                        node->valueCount = slot + 1;
+                        array[slot] = value;
+                    }
                 }
                 node->active = 0;
             }
@@ -343,7 +344,9 @@ extern "C" void fn_801D9654(void **head, DtbManager801D9394 *manager, const char
             *head = node;
         }
     next_item:
-        item = (DtbItem *)manager->getAt(++index);
+        ++index;
+        vtable = *(void ***)manager;
+        item = ((DtbItem *(*)(DtbManager801D9394 *, int))vtable[24])(manager, index);
     } while (item != 0);
 }
 #pragma cplusplus reset
