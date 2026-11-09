@@ -4442,17 +4442,11 @@ extern "C" void fn_801A442C(void* arg0, void* arg1, void* arg2) {
 }
 
 #pragma scheduling invalid_target
-extern "C" f32 fn_801A4460(void* arg0) {
-    register void* base = arg0;
-    f32 first = PSVECDotProduct((const Vec*)((u8*)base + 0x34), (const Vec*)((u8*)base + 0x34));
-    f32 second = PSVECDotProduct((const Vec*)((u8*)base + 0x28), (const Vec*)((u8*)base + 0x28));
-    f32 result;
-    if (second > first) {
-        result = second;
-    } else {
-        result = first;
-    }
-    return fn_8002F234(result);
+extern "C" f32 fn_801A4460(s32 arg0) {
+    f32 first = PSVECDotProduct((Vec*)(arg0 + 0x34), (Vec*)(arg0 + 0x34));
+    f32 second = PSVECDotProduct((Vec*)(arg0 + 0x28), (Vec*)(arg0 + 0x28));
+    f32 selected = second > first ? second : first;
+    return (f32)fn_8002F234(selected);
 }
 #pragma scheduling on
 extern "C" void fn_801A44C4(void* arg0) {
@@ -4556,14 +4550,17 @@ extern "C" void fn_801A47B0(s32* arg0, s32 arg1) {
 #pragma push
 #pragma unroll off
 extern "C" void fn_801A47C8(void* arg0) {
-    s32 off = 0;
-    s32 i = 0;
+    s32 off;
+    s32 i;
+    register s32 one = 1;
+    i = 0;
+    off = 0;
     while (i < *(s32*)arg0) {
         void** entries = *(void***)((u8*)arg0 + 4);
         i += 1;
         void* p = *(void**)((u8*)entries + off);
         off += 4;
-        *(u8*)((u8*)p + 0x40) = 1;
+        *(u8*)((u8*)p + 0x40) = (u8)one;
     }
 }
 #pragma pop
