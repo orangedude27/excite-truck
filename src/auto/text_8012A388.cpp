@@ -272,7 +272,7 @@ extern "C" s32 fn_802E37C4(void);
 extern "C" void fn_802E3734(s32 *);
 extern "C" s32 fn_802E4CA8(void *, s32, s32);
 extern "C" s32 fn_802E7354(void *);
-extern "C" s32 fn_802E746C(s32 *, s32 *);
+extern "C" s32 fn_802E746C(s32, s32 *, s32 *);
 #pragma scheduling off
 extern "C" void fn_8012A7FC(void) {
     lbl_8055DFF9 = 1;
