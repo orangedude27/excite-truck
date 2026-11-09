@@ -60,10 +60,10 @@ static Diffs2_80135278 fn_80135278_diff(float *b, float *c) {
 float fn_80135278(float *a, float *b, float *c) {
     return a[0] * (b[0] - c[0]) + a[1] * (b[1] - c[1]);
 }
-#pragma scheduling invalid_target
+#pragma scheduling off
 void *fn_801352B8(Unk_80135278 *arg0) {
-    float value = lbl_80561320;
     Unk_80135278 *self;
+    float value = lbl_80561320;
 
     arg0->unk_0 = (s32)&lbl_8032BE80;
     self = arg0;
@@ -73,7 +73,7 @@ void *fn_801352B8(Unk_80135278 *arg0) {
     fn_80135390(self);
     return self;
 }
-#pragma scheduling reset
+#pragma scheduling on
 void *fn_8013530C(void *arg0, s32 arg1) {
     if (arg0 != (void*)0) {
         *(s32 *)((u8 *)arg0 + 0x2C) = 0;
@@ -109,6 +109,7 @@ void fn_80135390(Unk_80135278 *arg0) {
 #pragma dont_inline off
 
 #pragma dont_inline on
+#pragma scheduling invalid_target
 void fn_801353C8(Unk_80135278 *arg0, s32 arg1, s32 arg2, s32 arg3) {
     float f = lbl_80561320;
     arg0->unk_4 = arg3;
@@ -116,6 +117,7 @@ void fn_801353C8(Unk_80135278 *arg0, s32 arg1, s32 arg2, s32 arg3) {
     fn_801355C0(arg0, arg1, arg2, &arg0->unk_4, 0);
     fn_801357A4(arg0, arg1);
 }
+#pragma scheduling reset
 #pragma scheduling invalid_target
 void *fn_80135420(float *point, void *unused, void *list) {
     extern double __fabs(double);
@@ -498,13 +500,14 @@ void fn_8013605C(void *arg0) {
 }
 
 #pragma scheduling invalid_target
-int fn_80136068(Unk_80135278 *arg0, void *arg1, int arg2) {
+int fn_80136068(void *arg0, void *arg1, int arg2) {
     extern float lbl_8055E3C8;
     extern float lbl_80561324;
     extern float lbl_80561338;
     extern float lbl_80561340;
     extern float lbl_80561344;
     extern float lbl_80561348;
+    char *self = (char *)arg0;
     struct { char *node; float fraction; int saved; } locals;
     int changed;
     int status;
@@ -520,23 +523,23 @@ int fn_80136068(Unk_80135278 *arg0, void *arg1, int arg2) {
     float edge;
     float delta;
 
-    if ((void *)arg0->unk_2c == 0) {
+    if (*(void **)(self + 0x2C) == 0) {
         return 2;
     }
-    locals.node = (char *)arg0->unk_4;
-    locals.fraction = arg0->unk_8;
-    changed = (((unsigned int)locals.node - (unsigned int)(char *)arg0->unk_60) | ((unsigned int)(char *)arg0->unk_60 - (unsigned int)locals.node)) >> 31;
-    locals.saved = arg0->unk_c;
+    locals.node = *(char **)(self + 4);
+    locals.fraction = *(float *)(self + 8);
+    changed = (((unsigned int)locals.node - (unsigned int)*(char **)(self + 0x60)) | ((unsigned int)*(char **)(self + 0x60) - (unsigned int)locals.node)) >> 31;
+    locals.saved = *(int *)(self + 0xC);
     status = fn_801353C4();
-    base = arg0->unk_34;
+    base = *(int *)(self + 0x34);
     start = *(unsigned int *)(locals.node + 0x10);
     if (base != 0) {
-        end = *(unsigned int *)((char *)(void *)arg0->unk_2c + 0x18);
+        end = *(unsigned int *)((char *)*(void **)(self + 0x2C) + 0x18);
         start = (end + (start - base)) % end;
     }
 
     if (status == 0) {
-        char *head = (char *)arg0->unk_4;
+        char *head = *(char **)(self + 4);
         if (arg2 != 0) {
         char *walk = locals.node;
         float total = lbl_80561324 - locals.fraction;
@@ -547,7 +550,7 @@ int fn_80136068(Unk_80135278 *arg0, void *arg1, int arg2) {
                 walk = *(char **)(walk + 0x14);
                 index = *(unsigned int *)(walk + 0x10);
                 if (base != 0) {
-                    unsigned int size = *(unsigned int *)((char *)(void *)arg0->unk_2c + 0x18);
+                    unsigned int size = *(unsigned int *)((char *)*(void **)(self + 0x2C) + 0x18);
                     index = (size + (index - base)) % size;
                 }
             } while (index > start);
@@ -558,74 +561,76 @@ int fn_80136068(Unk_80135278 *arg0, void *arg1, int arg2) {
             length += lbl_80561324;
             walk = *(char **)(walk + 0x14);
         } while (walk != head);
-        *(float *)arg2 = lbl_80561340 * (lbl_80561324 - (total / (length + arg0->unk_8)));
+        *(float *)arg2 = lbl_80561340 * (lbl_80561324 - (total / (length + *(float *)(self + 8))));
         }
     }
 
     {
-        char *saved = (char *)arg0->unk_5c;
+        char *saved = *(char **)(self + 0x5C);
         if (saved != 0 && (status == 2 || status == 0)) {
-            int cleanupBase = *(volatile s32 *)&arg0->unk_34;
+            int cleanupBase = *(volatile int *)(self + 0x34);
             float fill = lbl_8055E3C8;
             unsigned int a = *(unsigned int *)(saved + 0x10);
             if (cleanupBase != 0) {
-                unsigned int size = *(unsigned int *)((char *)(void *)arg0->unk_2c + 0x18);
+                unsigned int size = *(unsigned int *)((char *)*(void **)(self + 0x2C) + 0x18);
                 a = (size + (a - cleanupBase)) % size;
             }
             start = ((int)a) >> 16;
             {
-                unsigned int b = *(unsigned int *)((char *)arg0->unk_4 + 0x10);
+                unsigned int b = *(unsigned int *)(*(char **)(self + 4) + 0x10);
                 if (cleanupBase != 0) {
-                    unsigned int size = *(unsigned int *)((char *)(void *)arg0->unk_2c + 0x18);
+                    unsigned int size = *(unsigned int *)((char *)*(void **)(self + 0x2C) + 0x18);
                     b = (size + (b - cleanupBase)) % size;
                 }
                 end = ((int)b) >> 16;
             }
             while ((unsigned int)start != (unsigned int)end) {
-                *(float *)((char *)arg0->unk_50 + start * 4) = fill;
-                start = (start + 1) % (unsigned int)arg0->unk_54;
+                *(float *)(*(char **)(self + 0x50) + start * 4) = fill;
+                start = (start + 1) % *(unsigned int *)(self + 0x54);
             }
         }
     }
-    arg0->unk_5c = arg0->unk_4;
+    *(char **)(self + 0x5C) = *(char **)(self + 4);
     fn_80136714(arg0);
 
     {
-        old48 = arg0->unk_48;
-        old40 = arg0->unk_40;
-        arg0->unk_48 = *(float *)((char *)arg0->unk_4 + 0x1C) +
-                                  *(float *)((char *)arg0->unk_4 + 0x18) * arg0->unk_8;
-    arg0->unk_40 = arg0->unk_14 * arg0->unk_18 +
-                              -arg0->unk_10 * arg0->unk_1c;
+        old48 = *(float *)(self + 0x48);
+        old40 = *(float *)(self + 0x40);
+        *(float *)(self + 0x48) = *(float *)(*(char **)(self + 4) + 0x1C) +
+                                  *(float *)(*(char **)(self + 4) + 0x18) * *(float *)(self + 8);
+    *(float *)(self + 0x40) = *(float *)(self + 0x14) * *(float *)(self + 0x18) +
+                              -*(float *)(self + 0x10) * *(float *)(self + 0x1C);
 
         keep = 1;
         if (!changed) {
-            if (*(unsigned char *)((char *)arg0->unk_4 + 0x35) == *(unsigned char *)(locals.node + 0x35) &&
-                *(unsigned char *)((char *)arg0->unk_4 + 0x34) == *(unsigned char *)(locals.node + 0x34)) {
+            if (*(unsigned char *)(*(char **)(self + 4) + 0x35) == *(unsigned char *)(locals.node + 0x35) &&
+                *(unsigned char *)(*(char **)(self + 4) + 0x34) == *(unsigned char *)(locals.node + 0x34)) {
                 keep = 0;
             }
         }
     if (!keep) {
-        value = arg0->unk_48 - old48;
-        arg0->unk_4c = value;
-        edge = *(float *)((char *)arg0->unk_2c +
-                          *(unsigned char *)((char *)arg0->unk_4 + 0x34) * 4 + 8);
+        value = *(float *)(self + 0x48) - old48;
+        *(float *)(self + 0x4C) = value;
+        edge = *(float *)(*(char **)(self + 0x2C) +
+                          *(unsigned char *)(*(char **)(self + 4) + 0x34) * 4 + 8);
         if (value < -edge * lbl_80561338) {
-            arg0->unk_4c = value + edge;
+            *(float *)(self + 0x4C) = value + edge;
         }
-        delta = lbl_80561344 * (arg0->unk_40 - old40);
-        arg0->unk_4c *= lbl_80561344;
-        arg0->unk_44 = delta + lbl_80561348 * (arg0->unk_44 - delta);
+        delta = lbl_80561344 * (*(float *)(self + 0x40) - old40);
+        *(float *)(self + 0x4C) *= lbl_80561344;
+        *(float *)(self + 0x44) = delta + lbl_80561348 * (*(float *)(self + 0x44) - delta);
         }
     }
-    arg0->unk_60 = arg0->unk_4;
+    *(char **)(self + 0x60) = *(char **)(self + 4);
     return status;
 }
-#pragma scheduling invalid_target
 int fn_801363A0(void *arg0, void *arg1) {
-    void *temp_r6 = *(void * volatile *)arg1;
-    int temp_r31 = *(int *)((char *)temp_r6 + 0x10);
-    int var = *(int *)((char *)*(void **)((char *)temp_r6 + 0x14) + 0x10);
+    void *temp_r6;
+    int temp_r31;
+    int var;
+    temp_r6 = *(void **)arg1;
+    temp_r31 = *(int *)((char *)temp_r6 + 0x10);
+    var = *(int *)((char *)*(void **)((char *)temp_r6 + 0x14) + 0x10);
     if (var == 0) {
         var = *(int *)((char *)*(void **)((char *)arg0 + 0x2C) + 0x18);
     }
