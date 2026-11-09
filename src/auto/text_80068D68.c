@@ -24523,26 +24523,56 @@ BOOLEAN sdpu_is_base_uuid(UINT8 *uuid) {
    can't be renamed yet, so alias it here. */
 #define sdp_base_uuid lbl_802EED40
 
+/*******************************************************************************
+**
+** Function         sdpu_compare_uuid_arrays
+**
+** Description      Compares two Big Endian UUIDs of any length (16-, 32- or
+**                  128-bit): same-length ones are compared as they are, a short
+**                  one is first expanded into the Bluetooth base UUID, then the
+**                  two 128-bit forms are compared.  Original stack/sdp/sdp_utils.c.
+**
+** NOTE             it is assumed that the arrays are in Big Endian format
+**
+** Returns          TRUE if matched, else FALSE
+**
+*******************************************************************************/
 BOOLEAN sdpu_compare_uuid_arrays(UINT8 *p_uuid1, UINT32 len1, UINT8 *p_uuid2, UINT16 len2)
 {
-    UINT8 nu1[MAX_UUID_SIZE];
+    UINT8 nu1[MAX_UUID_SIZE]; /* the two UUIDs, each written out as 128 bits */
     UINT8 nu2[MAX_UUID_SIZE];
+
+    /* If lengths match, do a straight compare */
     if (len1 == len2) {
+        /* two 16-bit UUIDs */
         if (len1 == 2) return p_uuid1[0] == p_uuid2[0] && p_uuid1[1] == p_uuid2[1];
+        /* two 32-bit UUIDs */
         if (len1 == 4) return p_uuid1[0] == p_uuid2[0] && p_uuid1[1] == p_uuid2[1] && p_uuid1[2] == p_uuid2[2] && p_uuid1[3] == p_uuid2[3];
+        /* two 128-bit UUIDs (or two of any other length) */
         return memcmp(p_uuid1, p_uuid2, len1) == 0;
     } else if (len1 > len2) {
+        /* If the len1 was 4-byte, (so len2 is 2-byte), compare on the fly */
         if (len1 == 4) return p_uuid1[0] == 0 && p_uuid1[1] == 0 && p_uuid1[2] == p_uuid2[0] && p_uuid1[3] == p_uuid2[1];
-        memcpy(nu1, p_uuid1, MAX_UUID_SIZE);
-        memcpy(nu2, lbl_802EED40, MAX_UUID_SIZE);
-        if (len2 == 4) memcpy(nu2, p_uuid2, len2); else memcpy(nu2 + 2, p_uuid2, len2);
-        return memcmp(nu1, nu2, MAX_UUID_SIZE) == 0;
+        else {
+            /* Normalize UUIDs to 16-byte form, then compare. Len1 must be 16 */
+            memcpy(nu1, p_uuid1, MAX_UUID_SIZE);
+            memcpy(nu2, sdp_base_uuid, MAX_UUID_SIZE);
+            /* a 32-bit UUID replaces the base's first four bytes, a 16-bit one
+               the two bytes just before the 12-byte body of the base */
+            if (len2 == 4) memcpy(nu2, p_uuid2, len2); else memcpy(nu2 + 2, p_uuid2, len2);
+            return memcmp(nu1, nu2, MAX_UUID_SIZE) == 0;
+        }
     } else {
+        /* len2 is greater than len1 */
+        /* If the len2 was 4-byte, (so len1 is 2-byte), compare on the fly */
         if (len2 == 4) return p_uuid2[0] == 0 && p_uuid2[1] == 0 && p_uuid2[2] == p_uuid1[0] && p_uuid2[3] == p_uuid1[1];
-        memcpy(nu2, p_uuid2, MAX_UUID_SIZE);
-        memcpy(nu1, lbl_802EED40, MAX_UUID_SIZE);
-        if (len1 == 4) memcpy(nu1, p_uuid1, len1); else memcpy(nu1 + 2, p_uuid1, len1);
-        return memcmp(nu1, nu2, MAX_UUID_SIZE) == 0;
+        else {
+            /* Normalize UUIDs to 16-byte form, then compare. Len2 must be 16 */
+            memcpy(nu2, p_uuid2, MAX_UUID_SIZE);
+            memcpy(nu1, sdp_base_uuid, MAX_UUID_SIZE);
+            if (len1 == 4) memcpy(nu1, p_uuid1, len1); else memcpy(nu1 + 2, p_uuid1, len1);
+            return memcmp(nu1, nu2, MAX_UUID_SIZE) == 0;
+        }
     }
 }
 
