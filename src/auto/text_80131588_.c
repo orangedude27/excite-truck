@@ -738,14 +738,35 @@ void fn_80132AE4(void* arg0, void* arg1, s32 arg2, void* arg3) {
 
 typedef float f32;
 typedef signed long s32;
-f32 fn_80132BD0(void *arg0, s32 arg1, f32 farg0) {
-    if (((s32 (*)(void *))(*(void ***)arg0)[3])(arg0) != 0) {
-        return ((f32 (*)(void *, s32))(*(void ***)arg0)[19])(arg0, arg1);
+#pragma cplusplus on
+extern "C" f32 fn_80132BD0(void *arg0, s32 arg1, f32 farg0) {
+    class Dummy {
+    public:
+        virtual int v0();
+        virtual int v1();
+        virtual int v2();
+        virtual int v3();
+        virtual int v4();
+        virtual int v5();
+        virtual int v6();
+        virtual int v7();
+        virtual int v8();
+        virtual int v9();
+        virtual int v10();
+        virtual int v11();
+        virtual int v12();
+        virtual int v13();
+        virtual int v14();
+        virtual int v15();
+        virtual int v16();
+        virtual float v17(s32);
+    };
+    if (((Dummy *)arg0)->v1() != 0) {
+        return ((Dummy *)arg0)->v17(arg1);
     }
     return farg0;
 }
-
-#pragma pop
+#pragma cplusplus reset
 
 s32 fn_80132C48(void) { return 0; }
 
