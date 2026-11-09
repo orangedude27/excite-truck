@@ -22781,7 +22781,7 @@ BOOLEAN SDP_DeleteAttribute(UINT32 handle, UINT16 attr_id) {
     UINT16 tail_len;
     UINT32 len;                        /* Number of bytes in the entry */
     UINT8 *pad_ptr;
-    tSDP_RECORD *p_rec = (tSDP_RECORD *)(lbl_803C4C40 + 0x1224);
+    tSDP_RECORD *p_rec = (tSDP_RECORD *)sdp_cb_record_db;
     tSDP_ATTRIBUTE *p_attr;
 
     /* Find the record in the database; a record is 0x298 bytes in this build. */
@@ -22790,7 +22790,7 @@ BOOLEAN SDP_DeleteAttribute(UINT32 handle, UINT16 attr_id) {
         if (p_rec->record_handle == handle) {
             /* Found it. Now, find the attribute */
             p_attr = &p_rec->attribute[0];
-            if (lbl_803C4C40[0x4630] >= BT_TRACE_LEVEL_API) {
+            if (sdp_cb_trace_level >= BT_TRACE_LEVEL_API) {
                 /* SDP_TRACE_API2("Deleting attr_id 0x%04x for handle 0x%x", attr_id, handle) */
                 ((void (*)(u32, void *, u32, u32))fn_8007096C)(
                     TRACE_LAYER_SDP | TRACE_TYPE_API, lbl_8031A000, attr_id, handle);
