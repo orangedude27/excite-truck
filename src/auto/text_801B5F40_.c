@@ -13,6 +13,7 @@ extern void *lbl_8055E710;
 extern char lbl_80335EE0[];
 extern void fn_802E317C(const char *, ...);
 #pragma dont_inline on
+#pragma scheduling invalid_target
 void *fn_801B5F40(void) {
     void *node = lbl_8055E710;
     if (node) {
@@ -23,6 +24,7 @@ void *fn_801B5F40(void) {
     fn_802E317C(lbl_80335EE0);
     return 0;
 }
+#pragma scheduling on
 #pragma dont_inline reset
 
 void __AXPushCallbackStack(void *arg0) {
