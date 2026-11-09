@@ -3151,7 +3151,7 @@ void fn_8005EB44(void) {
     BOOL enabled;
 
     if (!_regShutdown) {
-        OSRegisterShutdownFunction(&lbl_80312130);
+        OSRegisterShutdownFunction(&wpd_shutdown_info);
         _regShutdown = TRUE;
     }
 
@@ -3167,7 +3167,7 @@ void fn_8005EB44(void) {
         _dev_handle_index[i] = WUD_DEV_HANDLE_INVALID;
     }
 
-    DBPrintf_80068D68(lbl_80312158);
+    DBPrintf_80068D68(wpd_init_msg);
 
     p_wpd = (u8*)&_wpd[0];
     p_wpdcb = (u8*)&_wpdcb[0];
@@ -3212,12 +3212,12 @@ void fn_8005EB44(void) {
 
     _senseCnt = zero;
     _checkCnt = zero;
-    lbl_8055DBFD = zero;
+    wpd_ext_count = zero;
     _afhCnt = zero;
-    lbl_8055DC00[3] = zero;
-    lbl_8055DC00[2] = zero;
-    lbl_8055DC00[1] = zero;
-    lbl_8055DC00[0] = zero;
+    wpd_game_code_count[3] = zero;
+    wpd_game_code_count[2] = zero;
+    wpd_game_code_count[1] = zero;
+    wpd_game_code_count[0] = zero;
 
     OSCreateAlarm(&_managerAlarm);
     OSSetPeriodicAlarm(&_managerAlarm, OSGetTime(), OS_MSEC_TO_TICKS(1), WPADiManageHandler0);
