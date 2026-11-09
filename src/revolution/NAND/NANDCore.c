@@ -360,6 +360,9 @@ static s32 nandOnShutdown(const char* path, NANDCommandBlock* block, BOOL async,
     }
 }
 
+/* This is the SDK's NANDChangeDir(const char* path): it hands its one
+ * argument to the change-dir helper above and converts the IPC code back -
+ * the NANDGetType name, and the unused type parameter, are leftovers. */
 s32 NANDGetType(const char* path, u8* type) {
     if (!nandIsInitialized()) {
         return NAND_RESULT_FATAL_ERROR;
