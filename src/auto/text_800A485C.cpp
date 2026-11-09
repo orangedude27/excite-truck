@@ -9014,7 +9014,7 @@ extern "C" s32 VFiPFPATH_parseShortNameNumeric(char *name, u32 num) {
 extern "C" s32 fn_800A4D44(void *);
 extern "C" s32 fn_800A4AD0(u8 *, u8 *);
 extern "C" char *fn_800A4AAC(char *, char *);
-extern "C" void fn_800A4B78(u16 *, u16 *);
+extern "C" Fn800A4B78Ret fn_800A4B78(u16 *, u16 *);
 extern "C" s32 VFiPFSTR_StrCmp(void *, s32);
 extern "C" void VFiPFPATH_transformFromUnicodeToNormal(u16 *, u16 *);
 extern "C" s32 fn_800B77C0(void *);
