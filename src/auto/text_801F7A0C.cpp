@@ -2236,7 +2236,6 @@ extern "C" void fn_801FBF48(void *arg0) {
 #pragma scheduling on
 #pragma push
 #pragma processor 750
-#pragma scheduling off
 extern "C" void fn_801FBFE8(void* arg0) {
     void *heap = (void *)lbl_8033B53C;
     register f32 value = lbl_80563010;
