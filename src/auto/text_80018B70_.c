@@ -249,6 +249,7 @@ void fn_800196F0(void) {
     fn_80131234(lbl_802FD404);
 }
 
+#pragma dont_inline on
 s32 fn_80019604(void) {
     s32 var_r31;
     volatile u16 result;
@@ -480,13 +481,11 @@ s32 fn_80019438(void) {
 
 s32 fn_800194CC(void) {
     s32 var_r31;
-    s32 (* volatile check194C8)(void);
-    check194C8 = fn_800194C8;
     if ((s32)(u8)lbl_8055D588 != 0) {
         var_r31 = 1;
     } else {
         var_r31 = 0;
-        if ((fn_80019430() != 0) || (check194C8() != 0) || (fn_80019604() != 0)) {
+        if ((fn_80019430() != 0) || (fn_800194C8() != 0) || (fn_80019604() != 0)) {
             var_r31 = 1;
         }
     }
