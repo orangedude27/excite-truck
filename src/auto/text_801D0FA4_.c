@@ -36,6 +36,26 @@ extern "C" void fn_801D108C(void *arg0) {
         ((Object *)lbl_80438858[i])->m5(arg0);
     }
 }
+
+#pragma cplusplus on
+extern "C" void fn_801D1100(void *arg0) {
+    class Object {
+    public:
+        virtual void m0(void *);
+        virtual void m1(void *);
+        virtual void m2(void *);
+        virtual void m3(void *);
+        virtual void m4(void *);
+        virtual void m5(void *);
+        virtual void m6(void *);
+    };
+    s32 i;
+    for (i = lbl_8055E8FC - 1; i >= 0; i--) {
+        ((Object *)lbl_80438858[i])->m6(arg0);
+    }
+}
+#pragma cplusplus off
+
 #pragma cplusplus off
 
 #pragma scheduling on
