@@ -591,6 +591,9 @@ done2:
 }
 
 #pragma pop
+extern "C" int sprintf(char *, const char *, ...);
+extern "C" s32 lbl_80559984;
+extern "C" char lbl_805599AC;
 extern "C" s32 fn_8012B2C4(s32, s32, s32);
 extern "C" void *fn_8012B314(s32 arg0, s32 arg1, s32 arg2) {
     return (void *)fn_8012B2C4(arg1, arg0, arg2);
