@@ -267,4 +267,17 @@ void fn_802A1290(void) {
         lbl_8055F844 = -2;
     }
 }
+
+void fn_802A14F8(void) {
+    if (lbl_8055F844 != -2) {
+        fn_802CAC54(lbl_8055F844);
+        lbl_8055F844 = -2;
+    }
+    if (lbl_8055F840 != 0) {
+        fn_802CA094(lbl_8055F840);
+        lbl_8055F840 = 0;
+    }
+    fn_802A93A4();
+}
+
 #pragma pop
