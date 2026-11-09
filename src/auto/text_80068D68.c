@@ -22788,7 +22788,7 @@ BOOLEAN SDP_DeleteAttribute(UINT32 handle, UINT16 attr_id) {
     tSDP_ATTRIBUTE *p_attr;
 
     /* Find the record in the database; a record is 0x298 bytes in this build. */
-    for (entry_index = 0; entry_index < *(UINT16 *)(lbl_803C4C40 + 0x1222);
+    for (entry_index = 0; entry_index < sdp_cb_num_records;
          entry_index++, p_rec = (tSDP_RECORD *)((UINT8 *)p_rec + 0x298)) {
         if (p_rec->record_handle == handle) {
             /* Found it. Now, find the attribute */
