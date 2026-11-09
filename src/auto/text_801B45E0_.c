@@ -304,11 +304,14 @@ int fn_801B4B9C(int arg0) {
 
 int fn_801B4BDC(int arg0);
 
+#pragma push
+#pragma processor 750
 int fn_801B4C1C(int arg0, int arg1) {
     int result = (int)fn_801B4BDC(arg0);
-    return arg1 >= result;
+    int copy = arg1;
+    return copy >= result;
 }
-
+#pragma pop
 int fn_801B4BDC(int arg0) {
     void *p = (void *)(arg0 + 4);
     return *fn_801B479C(arg0 + 4, fn_801B47B4(p));
@@ -381,10 +384,13 @@ int fn_801B4D80(void *arg0, int p1, int p2, float arg3) {
 
 void *__AXGetStudio_80178C90(void);
 int fn_801B4D80(void *, int, int, float);
+#pragma push
+#pragma scheduling invalid_target
 void fn_801B5060(int arg0, int arg1, float arg2) {
  void *studio = __AXGetStudio_80178C90();
  fn_801B4D80(studio, arg0, arg1, arg2);
 }
+#pragma pop
 
 #pragma push
 #pragma dont_inline on
