@@ -11188,6 +11188,31 @@ void BTM_SetPinType(UINT8 pin_type, PIN_CODE pin_code, UINT8 pin_code_len) {
     memcpy(&lbl_803C0F78[0x22], pin_code, pin_code_len);
 }
 
+/*
+ * tBTM_SEC_SERV_REC as this stack lays it out: 0x3C bytes, and
+ * BTM_SEC_MAX_SERVICE_RECORDS_HERE of them in btm_cb at 0x1990.  The header's
+ * version has a 16-bit security_flags (and newer configs add UCD flags), so
+ * its field offsets no longer fit this build.
+ */
+typedef struct {
+    UINT32 mx_proto_id;             /* 0x00 multiplexer protocol below L2CAP */
+    UINT32 orig_mx_chan_id;         /* 0x04 its channel, for a connection we open */
+    UINT32 term_mx_chan_id;         /* 0x08 its channel, for a connection we accept */
+    UINT16 psm;                     /* 0x0C L2CAP PSM of the service */
+    UINT8  security_flags;          /* 0x0E BTM_SEC_* required; BTM_SEC_IN_USE when taken */
+    UINT8  service_id;              /* 0x0F passed to the authorization callback */
+    UINT8  orig_service_name[0x16]; /* 0x10 name to show, for a connection we open */
+    UINT8  term_service_name[0x16]; /* 0x26 name to show, for a connection we accept */
+} tBTM_SEC_SERV_REC_HERE;           /* 0x3C */
+
+/* This stack's service-record config; bt_target.h describes a newer one. */
+#define BTM_SEC_MAX_SERVICE_RECORDS_HERE 0x18
+#define BTM_SEC_SERVICE_NAME_LEN_HERE    0x15
+#define btm_cb_sec_serv_rec ((tBTM_SEC_SERV_REC_HERE *)(lbl_803C0F78 + 0x1990))
+#ifndef BTM_NO_AVAIL_SEC_SERVICES
+#define BTM_NO_AVAIL_SEC_SERVICES ((UINT16)0xffff) /* btm_sec.c's "no free record" */
+#endif
+
 BOOLEAN BTM_SetSecurityLevel(BOOLEAN is_originator, char *p_name, UINT8 service_id, UINT16 sec_level, UINT16 psm, UINT32 mx_proto_id, UINT32 mx_chan_id) {
     char *trace = lbl_80316870;
     u8 *entry;
