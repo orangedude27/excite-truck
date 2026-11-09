@@ -781,18 +781,15 @@ BOOL MEMFreeByStateToFrmHeap(MEMiHeapHead* heap, u32 id) {
     return (BOOL)state;
 }
 
-u32 MEMAdjustFrmHeap(MEMiHeapHead *heap) {
-    MEMiFrmHeapHead *frm = (MEMiFrmHeapHead *)(heap + 1);
-    MEMiFrmHeapState *state;
-    u32 result = 0;
-    LockHeap(heap);
-    state = frm->states;
-    if (state != 0) {
-        result = (u32)state->head;
-        frm->head = state->head;
+void *MEMAdjustFrmHeap(MEMiHeapHead *heap, void *newHead) {
+    MEMiFrmHeapHead *frm;
+    if (newHead != 0) {
+        LockHeap(heap);
+        frm = (MEMiFrmHeapHead *)(heap + 1);
+        *(void **)newHead = frm->head;
+        frm->head = (u8 *)newHead;
+        UnlockHeap(heap);
     }
-    UnlockHeap(heap);
-    return result;
 }
 
 u32 MEMResizeForMBlockFrmHeap(MEMiHeapHead *heap, void *memBlock, u32 size) {
