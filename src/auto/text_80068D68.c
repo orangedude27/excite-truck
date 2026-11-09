@@ -16816,92 +16816,92 @@ extern void l2cu_send_peer_disc_req(void *);
 extern void forward_peer_data(void *, void *);
 extern void l2cu_process_our_cfg_req(void *, void *);
 extern void l2cu_send_peer_config_req(tL2C_CCB_VIEW *, tL2CAP_CFG_INFO *);
-void l2c_csm_open(void *p_ccb, u16 event, void *p_data)
+void l2c_csm_open(tL2C_CCB_VIEW *p_ccb, u16 event, void *p_data)
 {
-    char *p_str = lbl_803183B0;
-    void (*disconnect_ind)(u16, u16) = *(void (**)(u16, u16))((u8 *)*(void **)((u8 *)p_ccb + 0x30) + 0x18);
-    u16 local_cid = *(u16 *)((u8 *)p_ccb + 0x14);
+    char *p_str = lbl_803183B0;   /* l2c_csm.c's trace strings, right after the CSM jump table */
+    void (*disconnect_ind)(u16, u16) = p_ccb->p_rcb->pL2CA_DisconnectInd_Cb;
+    u16 local_cid = p_ccb->local_cid;
 
     if (lbl_803C4040[0] >= 4)
-        fn_80070954(0x80003, p_str + 0x628, event);
+        fn_80070954(0x80003, p_str + 0x628, event);   /* "L2CAP - st: OPEN evt: %d" */
 
     switch (event)
     {
-    case 3:
+    case L2CEVT_LP_DISCONNECT_IND:                    /* Link was disconnected */
         if (lbl_803C4040[0] >= 3)
-            fn_80070954(0x80002, p_str + 0x40, *(u16 *)((u8 *)p_ccb + 0x14));
+            fn_80070954(0x80002, p_str + 0x40, p_ccb->local_cid); /* Disconnect_Ind, no conf needed */
         l2cu_release_ccb(p_ccb);
-        disconnect_ind(local_cid, 0);
+        disconnect_ind(local_cid, FALSE);
         break;
 
-    case 6:
+    case L2CEVT_LP_QOS_VIOLATION_IND:                 /* QOS violation */
     {
-        void *p_rcb = *(void **)((u8 *)p_ccb + 0x30);
-        void (*cb)(void *) = *(void (**)(void *))((u8 *)p_rcb + 0x20);
-        if (cb != 0)
-            cb((u8 *)*(void **)((u8 *)p_ccb + 0x10) + 0x2A);
+        tL2C_RCB_VIEW *p_rcb = p_ccb->p_rcb;
+        void (*qos_violation_ind)(u8 *) = p_rcb->pL2CA_QoSViolationInd_Cb;
+        if (qos_violation_ind != 0)
+            qos_violation_ind(p_ccb->p_lcb->remote_bd_addr);
         break;
     }
 
-    case 14:
+    case L2CEVT_L2CAP_CONFIG_REQ:                     /* Peer config request */
     {
-        u32 tempstate = *(u32 *)((u8 *)p_ccb + 4);
-        u8 tempcfgdone = *((u8 *)p_ccb + 0x34);
-        *(u32 *)((u8 *)p_ccb + 4) = 5;
-        *((u8 *)p_ccb + 0x34) = 0;
-        btu_start_timer((TIMER_LIST_ENT *)((u8 *)p_ccb + 0x18), 3, 0x1E);
+        tL2C_CHNL_STATE tempstate = p_ccb->chnl_state;
+        u8 tempcfgdone = p_ccb->config_done;
+        p_ccb->chnl_state = CST_CONFIG;
+        p_ccb->config_done = 0;                       /* config_done &= ~CFG_DONE_MASK */
+        btu_start_timer(&p_ccb->timer_entry, BTU_TTYPE_L2CAP_CHNL, L2CAP_CHNL_TIMEOUT);
         if (((u8 (*)(void *, void *))l2cu_process_peer_cfg_req)(p_ccb, p_data))
         {
-            void *p_rcb = *(void **)((u8 *)p_ccb + 0x30);
-            void (*config_ind)(u16, void *) = *(void (**)(u16, void *))((u8 *)p_rcb + 0x10);
-            config_ind(*(u16 *)((u8 *)p_ccb + 0x14), p_data);
+            tL2C_RCB_VIEW *p_rcb = p_ccb->p_rcb;
+            void (*config_ind)(u16, void *) = p_rcb->pL2CA_ConfigInd_Cb;
+            config_ind(p_ccb->local_cid, p_data);
         }
-        else
+        else  /* error in the peer's parameters: put the state back and answer it */
         {
-            fn_80070F90((void *)((u32)p_ccb + 0x18));
-            *(u32 *)((u8 *)p_ccb + 4) = tempstate;
-            *((u8 *)p_ccb + 0x34) = tempcfgdone;
+            fn_80070F90(&p_ccb->timer_entry);         /* btu_stop_timer */
+            p_ccb->chnl_state = tempstate;
+            p_ccb->config_done = tempcfgdone;
             l2cu_send_peer_config_rsp(p_ccb, p_data);
         }
         break;
     }
 
-    case 17:
+    case L2CEVT_L2CAP_DISCONNECT_REQ:                 /* Peer disconnected request */
     {
-        void *p_rcb;
-        *(u32 *)((u8 *)p_ccb + 4) = 8;
-        btu_start_timer((TIMER_LIST_ENT *)((u8 *)p_ccb + 0x18), 3, 0x1E);
+        tL2C_RCB_VIEW *p_rcb;
+        p_ccb->chnl_state = CST_W4_L2CA_DISCONNECT_RSP;
+        btu_start_timer(&p_ccb->timer_entry, BTU_TTYPE_L2CAP_CHNL, L2CAP_CHNL_TIMEOUT);
         if (lbl_803C4040[0] >= 3)
-            fn_80070954(0x80002, p_str + 0x54C, *(u16 *)((u8 *)p_ccb + 0x14));
-        p_rcb = *(void **)((u8 *)p_ccb + 0x30);
-        (*(void (**)(u16, u16))((u8 *)p_rcb + 0x18))(*(u16 *)((u8 *)p_ccb + 0x14), 1);
+            fn_80070954(0x80002, p_str + 0x54C, p_ccb->local_cid); /* Disconnect_Ind, conf needed */
+        p_rcb = p_ccb->p_rcb;
+        p_rcb->pL2CA_DisconnectInd_Cb(p_ccb->local_cid, TRUE);
         break;
     }
 
-    case 19:
+    case L2CEVT_L2CAP_DATA:                           /* Peer data packet rcvd */
     {
-        void *p_rcb = *(void **)((u8 *)p_ccb + 0x30);
-        (*(void (**)(u16, void *))((u8 *)p_rcb + 0x24))(*(u16 *)((u8 *)p_ccb + 0x14), p_data);
+        tL2C_RCB_VIEW *p_rcb = p_ccb->p_rcb;
+        p_rcb->pL2CA_DataInd_Cb(p_ccb->local_cid, p_data);
         break;
     }
 
-    case 26:
+    case L2CEVT_L2CA_DISCONNECT_REQ:                  /* Upper layer wants to disconnect */
         l2cu_send_peer_disc_req(p_ccb);
-        *(u32 *)((u8 *)p_ccb + 4) = 7;
-        btu_start_timer((TIMER_LIST_ENT *)((u8 *)p_ccb + 0x18), 3, 0x1E);
+        p_ccb->chnl_state = CST_W4_L2CAP_DISCONNECT_RSP;
+        btu_start_timer(&p_ccb->timer_entry, BTU_TTYPE_L2CAP_CHNL, L2CAP_CHNL_TIMEOUT);
         break;
 
-    case 29:
-        *(u16 *)p_data = *(u16 *)((u8 *)p_ccb + 0x14);
+    case L2CEVT_L2CA_DATA_WRITE:                      /* Upper layer data to send */
+        *(u16 *)p_data = p_ccb->local_cid;            /* our CID heads the buffer for the link layer */
         forward_peer_data(p_ccb, p_data);
         break;
 
-    case 23:
+    case L2CEVT_L2CA_CONFIG_REQ:                      /* Upper layer config request */
         l2cu_process_our_cfg_req(p_ccb, p_data);
         l2cu_send_peer_config_req(p_ccb, p_data);
-        *(u32 *)((u8 *)p_ccb + 4) = 5;
-        *((u8 *)p_ccb + 0x34) = 0;
-        btu_start_timer((TIMER_LIST_ENT *)((u8 *)p_ccb + 0x18), 3, 0x1E);
+        p_ccb->chnl_state = CST_CONFIG;
+        p_ccb->config_done = 0;
+        btu_start_timer(&p_ccb->timer_entry, BTU_TTYPE_L2CAP_CHNL, L2CAP_CHNL_TIMEOUT);
         break;
     }
 }
