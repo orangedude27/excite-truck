@@ -85,6 +85,16 @@ void fn_801D4888(void) {
     fn_801D5860();
 }
 
+void fn_801D5454(void *, void *);
+void fn_801D597C(void *, int);
+int fn_801D5A68(void *);
+void fn_801D488C(int arg0, int arg1, int arg2, float *arg3) {
+    fn_801D597C((void *)arg0, arg1);
+    if (arg2 != 0 && fn_801D5A68((void *)arg0) != 0) {
+        fn_801D5454((void *)arg0, (void *)arg3);
+    }
+}
+
 void fn_801D48F4(void) {
     fn_801D58DC();
 }
@@ -654,14 +664,14 @@ check:
 #pragma cplusplus reset
 #pragma pop
 
-extern void fn_801D4FA0(int);
+extern void fn_801D4FA0(void *);
 int fn_801D57F0(void *alarm) {
     int offset;
     int i;
     offset = 0;
     i = 0;
     while (i < lbl_804423A4[1]) {
-        fn_801D4FA0(*(int *)((char *)lbl_804423A4[0] + offset));
+        fn_801D4FA0(*(void **)((char *)lbl_804423A4[0] + offset));
         offset += 4;
         i += 1;
     }
