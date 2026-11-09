@@ -29,7 +29,20 @@ typedef struct OverlayQuad {
     s32 texScale;     /* 0x80: S/T of the far corner; the near one is (0, 0) */
     s32 width;        /* 0x84: corners span -width..width (0x2D0 = 720 on NTSC) */
     s32 height;       /* 0x88: corners span -height..height (0x1E0 = 480) */
-                      /* 0x8C..0xB0: scroll/jitter state, see fn_8022FB6C */
+    /* 0x8C..0xB0: scroll/drift state, walked every frame by fn_8022FB6C and
+     * applied by fn_8022FD9C; the defaults come from .sdata2 in fn_8022F638. */
+    f32 scrollOffset; /* 0x8C: random-walk offset, kept inside +-scrollLimit */
+    f32 unused90;     /* 0x90: only ever copied from and to the current quad */
+    f32 driftVelX;    /* 0x94: drift velocity x, kept inside +-driftLimit */
+    f32 driftVelY;    /* 0x98: drift velocity y, kept inside +-driftLimit */
+    u8 scrollOn;      /* 0x9C: scroll this quad (fn_8022F638's arg1) */
+    u8 driftOn;       /* 0x9D: drift this quad (fn_8022F638's arg2) */
+    f32 driftRange;   /* 0xA0: how far the quad may move before its drift is
+                       * pushed back (0x805635E8 = 30.0f) */
+    f32 scrollStep;   /* 0xA4: biggest scroll step one frame takes (0.0015f) */
+    f32 scrollLimit;  /* 0xA8: scroll clamp (0x805635F8 = 0.035f) */
+    f32 driftStep;    /* 0xAC: biggest drift step one frame takes (0.18f) */
+    f32 driftLimit;   /* 0xB0: drift clamp (0x805635F0 = 4.5f) */
 } OverlayQuad;
 
 /* The 24-byte GX FIFO vertex fn_802D68C4 pushes: position, RGBA8 color and one
@@ -427,18 +440,21 @@ void fn_8022FB6C(void *arg0) {
         }
     }
 }
-#pragma pop
+#pragma push
+#pragma processor 750
 void fn_8022FF10(void *arg0, void *arg1) {
-    int sp8;
-    float temp_f31 = *(float *)((char *)arg1 + 0);
-    float temp_f30 = *(float *)((char *)arg1 + 8);
-    fn_80015EB0(*(float *)((char *)arg1 + 4));
-    fn_80015E30(&sp8, temp_f31);
-    fn_80015B20(arg0, arg0, &sp8);
-    fn_80015AA0(&sp8, temp_f30);
-    fn_80015B20(arg0, arg0, &sp8);
+    int temp[12];
+    float angle, temp_f31, temp_f30;
+    angle = *(float *)((char *)arg1 + 4);
+    temp_f31 = *(float *)((char *)arg1 + 0);
+    temp_f30 = *(float *)((char *)arg1 + 8);
+    fn_80015EB0(angle);
+    fn_80015E30(temp, temp_f31);
+    fn_80015B20(arg0, arg0, temp);
+    fn_80015AA0(temp, temp_f30);
+    fn_80015B20(arg0, arg0, temp);
 }
-
+#pragma pop
 void fn_8022FF90(void *arg0) {
     float f0 = lbl_805635FC;
     float f1 = lbl_8056360C;
