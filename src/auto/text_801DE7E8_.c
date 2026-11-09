@@ -142,6 +142,22 @@ void fn_801DE9F0(int arg0, int arg1) {
         }
     }
 }
+
+#pragma dont_inline on
+void fn_801DEB10(void) {
+    unsigned long long result;
+    if (lbl_8055E9E8 == 8) {
+        lbl_8055E9E0 = 0;
+        *(int *)(lbl_804873B8 + 4) = 0;
+    }
+    lbl_8055E9E8 = 0;
+    lbl_8055E9DC |= 1;
+    result = ((unsigned long long (*)(void))fn_802E2C9C)();
+    lbl_8055ADF4 = (unsigned int)result;
+    lbl_8055ADF0 = result >> 32;
+}
+#pragma dont_inline off
+
 #pragma small_data on
 
 unsigned int fn_801DEB6C(const char *arg0) {
