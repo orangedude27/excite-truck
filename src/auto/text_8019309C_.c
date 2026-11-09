@@ -764,9 +764,8 @@ extern float lbl_80562140, lbl_80562144;
   extern void fn_8018ADAC(void *, float);
 #pragma scheduling invalid_target
 void fn_80194170(void *arg0, float arg1) {
-    register double value = lbl_80562140;
-    value = value < arg1 ? arg1 : value;
-    value = value > lbl_80562144 ? lbl_80562144 : value;
+    double value = lbl_80562140 > arg1 ? lbl_80562140 : arg1;
+    value = value < lbl_80562144 ? value : lbl_80562144;
     *(float *)((char *)arg0 + 0x240) = (float)value;
     fn_8018ADB4(*(int *)((char *)arg0 + 0x294), (float)value);
 }
@@ -820,9 +819,11 @@ void fn_801941A8(void *arg0, float arg1) {
 #pragma scheduling on
 void fn_801942B8(void *arg0, float arg1) {
     double value = lbl_80562140 < arg1 ? lbl_80562140 : arg1;
+    float f;
     value = value > lbl_80562144 ? value : lbl_80562144;
+    f = value;
     *(float *)((char *)arg0 + 0x244) = value;
-    fn_8018ADBC(*(int *)((char *)arg0 + 0x294), value);
+    fn_8018ADBC(*(int *)((char *)arg0 + 0x294), f);
 }
 
 void fn_801942F0(void *arg0, int arg1) {
@@ -916,16 +917,14 @@ void fn_801944C0(void *arg0) {
 }
 
 void fn_80194590(void *arg0) {
-    int var_r4;
-    float product;
+    int v;
     if (*(int *)((char *)arg0 + 0x260) == 0) {
-        var_r4 = 1;
+        v = 1;
         *(int *)((char *)arg0 + 0x260) = 1;
         if (*(int *)((char *)arg0 + 0x18) == 1) {
-            var_r4 = -1;
+            v = -1;
         }
-        product = lbl_8055A488 * lbl_8056215C;
-        *(float *)((char *)arg0 + 0x264) = (float)var_r4 * (*(float *)((char *)arg0 + 0x284) + product);
+        *(float *)((char *)arg0 + 0x264) = (float)v * (*(float *)((char *)arg0 + 0x284) + lbl_8055A488 * lbl_8056215C);
     }
 }
 
