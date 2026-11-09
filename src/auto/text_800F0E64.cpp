@@ -738,13 +738,11 @@ extern "C" void fn_800F1E50(void *arg0, f32 value) {
     OSRestoreInterrupts(token);
 }
 
-extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_800F1E90(void* arg0, f32 farg0) {
-    if (!(farg0 >= *(volatile f32*)&lbl_8056107C)) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390, 0x25B, lbl_803244D4);
-    }
-    OSDisableInterrupts();
-    *(f32*)((char*)arg0 + 0xC) = farg0;
-    ((void (*)(void))OSRestoreInterrupts)();
+extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_800F1E90(void* self, float volume) {
+    if (!(volume >= 0.0f)) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80324390, 0x25b, (const char*)lbl_803244D4);
+    unsigned int level = OSDisableInterrupts();
+    *(float*)((unsigned char*)self + 0xC) = volume;
+    OSRestoreInterrupts(level);
 }
 
 extern "C" void fn_800F1F04(void* arg0, f32 farg0) {
