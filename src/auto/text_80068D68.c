@@ -21649,7 +21649,7 @@ void rfc_send_disc(void *arg0, s32 arg1, void *arg2) {
     *p_data++ = 1 | cr | (((u8)arg1) << 2);
     p_data[0] = 0x53;
     p_data[1] = 1;
-    p_data[2] = fn_8009504C(3, (u8 *)(p_buf + 1) + 9, 0x53);
+    p_data[2] = fn_8009504C(3, (u8 *)(p_buf + 1) + 9);
     p_buf->len = 4;
     rfc_check_send_cmd(arg0, p_buf);
 }
@@ -24985,15 +24985,15 @@ BOOLEAN sdpu_compare_uuid_with_attr(tBT_UUID *p_btuuid, tSDP_DISC_ATTR *p_attr) 
 }
 
 void sdpu_sort_attr_list(UINT16 num_attr, tSDP_DISCOVERY_DB *p_db) {
+    int last;
     UINT16 i;
     UINT16 x;
-    int last;
 
     if (num_attr <= 1) {
         return;
     }
     last = num_attr - 1;
-    for (i = 0; (int)i < last;) {
+    for (i = 0; i < last;) {
         if (p_db->attr_filters[i] > p_db->attr_filters[i + 1]) {
             x = p_db->attr_filters[i];
             p_db->attr_filters[i] = p_db->attr_filters[i + 1];
