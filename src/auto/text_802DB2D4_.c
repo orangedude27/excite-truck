@@ -1,4 +1,6 @@
 #include "revolution/GX/GXHardware.h"
+extern void fn_802CADD0(int, int);
+extern void fn_802DFB30(void);
 extern void *lbl_8055FEB4;
 extern unsigned char lbl_8055FEB0, lbl_8055FEB9, lbl_8055FEBB, lbl_8055FD24;
 extern unsigned char lbl_804DB480[];
