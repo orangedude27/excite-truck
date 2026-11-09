@@ -15389,39 +15389,49 @@ u8 HID_HostCloseDev(u8 dev_handle) {
     return hidh_conn_disconnect(dev_handle);
 }
 
-s32 HID_HostSetSecurityLevel(void *p_name, u8 sec_level) {
+/* Register the HID host's services with the security manager (BTM_SetSecurityLevel
+ * keeps a service record per psm/service_id/name): the HID service on the control
+ * PSM at the level the application asked for, then the HID device record and the
+ * boot interface on the interrupt PSM at the stack default, each registered twice
+ * - once as the acceptor of the connection and once as its initiator.  The last
+ * two arguments are BTM's class-of-service feature mask and the security id BTM
+ * hands back with the channel (1 control, 2 interrupt, 0 boot).
+ * Returns a tHID_STATUS: HID_SUCCESS, or HID_ERR_NO_RESOURCES if BTM has no free
+ * service record, which is traced as "Security Registration <n> failed". */
+s32 HID_HostSetSecurityLevel(void *serv_name, u8 sec_lvl) {
     char *messages = lbl_80317720;
-    if (!BTM_SetSecurityLevel(0, p_name, 0x20, sec_level, 0x11, 6, 1)) {
-        if (lbl_803C3C38[0x401] >= 1)
-            fn_8007093C(0x1E0000, messages + 0x54);
-        return 3;
+
+    if (!BTM_SetSecurityLevel(FALSE, serv_name, HID_SERVICE_ATTR_MASK, sec_lvl, HID_PSM_CONTROL, 6, 1)) {
+        if (hh_cb_trace_level >= BT_TRACE_LEVEL_ERROR)
+            fn_8007093C(TRACE_LAYER_HID | TRACE_TYPE_ERROR, messages + 0x54); /* "Security Registration 1 failed" */
+        return HID_ERR_NO_RESOURCES;
     }
-    if (!BTM_SetSecurityLevel(1, p_name, 0x20, sec_level, 0x11, 6, 1)) {
-        if (lbl_803C3C38[0x401] >= 1)
-            fn_8007093C(0x1E0000, messages + 0x74);
-        return 3;
+    if (!BTM_SetSecurityLevel(TRUE, serv_name, HID_SERVICE_ATTR_MASK, sec_lvl, HID_PSM_CONTROL, 6, 1)) {
+        if (hh_cb_trace_level >= BT_TRACE_LEVEL_ERROR)
+            fn_8007093C(TRACE_LAYER_HID | TRACE_TYPE_ERROR, messages + 0x74); /* "Security Registration 2 failed" */
+        return HID_ERR_NO_RESOURCES;
     }
-    if (!BTM_SetSecurityLevel(0, p_name, 0x21, 0, 0x11, 6, 2)) {
-        if (lbl_803C3C38[0x401] >= 1)
-            fn_8007093C(0x1E0000, messages + 0x94);
-        return 3;
+    if (!BTM_SetSecurityLevel(FALSE, serv_name, HID_HID_DEV_ATTR_MASK, 0, HID_PSM_CONTROL, 6, 2)) {
+        if (hh_cb_trace_level >= BT_TRACE_LEVEL_ERROR)
+            fn_8007093C(TRACE_LAYER_HID | TRACE_TYPE_ERROR, messages + 0x94); /* "Security Registration 3 failed" */
+        return HID_ERR_NO_RESOURCES;
     }
-    if (!BTM_SetSecurityLevel(1, p_name, 0x21, 0, 0x11, 6, 2)) {
-        if (lbl_803C3C38[0x401] >= 1)
-            fn_8007093C(0x1E0000, messages + 0xB4);
-        return 3;
+    if (!BTM_SetSecurityLevel(TRUE, serv_name, HID_HID_DEV_ATTR_MASK, 0, HID_PSM_CONTROL, 6, 2)) {
+        if (hh_cb_trace_level >= BT_TRACE_LEVEL_ERROR)
+            fn_8007093C(TRACE_LAYER_HID | TRACE_TYPE_ERROR, messages + 0xB4); /* "Security Registration 4 failed" */
+        return HID_ERR_NO_RESOURCES;
     }
-    if (!BTM_SetSecurityLevel(1, p_name, 0x22, 0, 0x13, 6, 0)) {
-        if (lbl_803C3C38[0x401] >= 1)
-            fn_8007093C(0x1E0000, messages + 0xD4);
-        return 3;
+    if (!BTM_SetSecurityLevel(TRUE, serv_name, HID_BOOT_IFACE_ATTR_MASK, 0, HID_PSM_INTERRUPT, 6, 0)) {
+        if (hh_cb_trace_level >= BT_TRACE_LEVEL_ERROR)
+            fn_8007093C(TRACE_LAYER_HID | TRACE_TYPE_ERROR, messages + 0xD4); /* "Security Registration 5 failed" */
+        return HID_ERR_NO_RESOURCES;
     }
-    if (!BTM_SetSecurityLevel(0, p_name, 0x22, 0, 0x13, 6, 0)) {
-        if (lbl_803C3C38[0x401] >= 1)
-            fn_8007093C(0x1E0000, messages + 0xF4);
-        return 3;
+    if (!BTM_SetSecurityLevel(FALSE, serv_name, HID_BOOT_IFACE_ATTR_MASK, 0, HID_PSM_INTERRUPT, 6, 0)) {
+        if (hh_cb_trace_level >= BT_TRACE_LEVEL_ERROR)
+            fn_8007093C(TRACE_LAYER_HID | TRACE_TYPE_ERROR, messages + 0xF4); /* "Security Registration 6 failed" */
+        return HID_ERR_NO_RESOURCES;
     }
-    return 0;
+    return HID_SUCCESS;
 }
 
 u8 hidh_conn_reg(void) {
