@@ -531,9 +531,18 @@ extern "C" void VFipf_memcpy(void *, const void *, u32);
 namespace homebutton {
 class Controller {
 public:
-    s32 m_soundId;
+    s32 m_soundId;          // 0x00 remote-speaker tone this controller plays
     u8 pad4[0x20];
-    void *m_soundPlayer;
+    void *m_soundPlayer;    // 0x24 archive player that plays the tone
+    u8 pad28[0x30 - 0x28];
+    u32 m_playStartHi;      // 0x30 OSGetTime() when the tone started playing
+    u32 m_playStartLo;      // 0x34
+    u32 m_stopStartHi;      // 0x38 OSGetTime() when it was first seen stopped
+    u32 m_stopStartLo;      // 0x3C
+    u8 pad40;               // 0x40
+    u8 m_alarmPending;      // 0x41 soundOn callback alarm is scheduled
+    u8 m_soundActive;       // 0x42 a tone is active
+    u8 m_stopTiming;        // 0x43 timing the "stopped playing" grace period
     void updateSound();
     void clearCallback();
     s32 isPlayingSoundId(s32) const;
