@@ -22783,8 +22783,8 @@ BOOLEAN SDP_DeleteAttribute(UINT32 handle, UINT16 attr_id) {
     for (zz = 0; zz < *(UINT16 *)(lbl_803C4C40 + 0x1222); zz++, p_rec = (tSDP_RECORD *)((UINT8 *)p_rec + 0x298)) {
         if (p_rec->record_handle == handle) {
             p_attr = &p_rec->attribute[0];
-            if (lbl_803C4C40[0x4630] >= 3) {
-                ((void (*)(u32, void *, u32, u32))fn_8007096C)(0xA0002, lbl_8031A000, attr_id, handle);
+            if (lbl_803C4C40[0x4630] >= BT_TRACE_LEVEL_API) {
+                ((void (*)(u32, void *, u32, u32))fn_8007096C)(TRACE_LAYER_SDP | TRACE_TYPE_API, lbl_8031A000, attr_id, handle);
             }
             for (zz = 0; zz < p_rec->num_attributes; zz++, p_attr++) {
                 if (p_attr->id == attr_id) {
