@@ -3040,10 +3040,10 @@ void fn_80198E7C(int index) {
     extern void *lbl_804349E0[];
       void fn_801964D0(void *);
       void fn_80128668(void *);
-    void fn_80193138();
+    void fn_80193138(void *, int);
       void fn_801964D0(void *);
       void fn_80128668(void *);
-    void fn_80193138();
+    void fn_80193138(void *, int);
   extern float fn_801671FC(int);
   extern int fn_801B89F8(void);
   extern int lbl_8055E0D0;
