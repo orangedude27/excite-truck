@@ -46,6 +46,7 @@ typedef struct { void *pad[3]; int (*has)(void *, void *); void *(*next)(void *,
 typedef struct { void *pad[15]; int (*has)(void *, void *); void *(*value)(void *, void *); } IterFE;
 typedef struct { void *pad[14]; void *(*begin)(void *, void *, void *); } ObjFA;
 typedef struct { float x,y,z,w; u8 flag; } EntryFC;
+typedef struct { f32 x, y; } Vec2_8014C770;
 extern f32 fn_80144514(f32,f32,f32,f32,f32,f32);
 static inline void MatrixMul80151E60(f32 *dst, const f32 *left, const f32 *right) {
  if (dst == right || dst == left) {
@@ -325,17 +326,18 @@ unsigned long *fn_801494D8(void) { return &lbl_80559E94; }
 int fn_801494E0(void) { return 0xFF0000FF; }
 
 void fn_801494EC(void *arg0, float *arg1, float *arg2) {
-    float a = arg2[1];
-    float b = arg1[0];
-    float c = arg2[4];
-    float d = a + b;
-    float e = arg2[2];
-    float f = c - b;
-    float g = arg1[1];
-    float h = arg2[5];
-    float i = e + g;
-    float j = h - g;
+    float a; float b; float c; float d; float e; float f; float g; float h; float i; float j;
+    a = arg2[1];
+    b = arg1[0];
+    c = arg2[4];
+    d = a + b;
+    e = arg2[2];
+    f = c - b;
+    g = arg1[1];
+    h = arg2[5];
+    i = e + g;
     arg2[1] = d;
+    j = h - g;
     arg2[4] = f;
     arg2[2] = i;
     arg2[5] = j;
@@ -850,15 +852,13 @@ f32 fn_8014C75C(f32 *arg0, const f32 *arg1) {
 
 #pragma scheduling invalid_target
 s64 fn_8014C770(f32 *arg0, f32 *arg1, f32 t) {
+    f32 dy = arg1[1] - arg0[1];
+    f32 dx = arg1[0] - arg0[0];
+    f32 y = arg0[1] + t * dy;
+    f32 x = arg0[0] + t * dx;
     union { struct { f32 x, y; } f; s64 bits; } out;
-    volatile f32 *a = (volatile f32 *)arg0;
-    volatile f32 *b = (volatile f32 *)arg1;
-    f32 y1 = b[1];
-    f32 y0 = a[1];
-    f32 x1 = b[0];
-    f32 x0 = a[0];
-    out.f.y = y0 + t * (y1 - y0);
-    out.f.x = x0 + t * (x1 - x0);
+    out.f.y = y;
+    out.f.x = x;
     return out.bits;
 }
 #pragma scheduling on
