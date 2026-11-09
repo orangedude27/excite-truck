@@ -593,52 +593,64 @@ struct SelectorWidget {
 #pragma pop
 #pragma push
 #pragma cplusplus on
-extern "C" s32 fn_80261178(void *arg0) {
-    struct Obj {
-        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
-        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
-        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
-        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
-        virtual void v20(); virtual void v21();
-        virtual void f60(); virtual void f64(); virtual void f68(); virtual void f6c(); virtual void f70();
-    };
+/* Open the group the selector's cursor is on (input event 0xD of the challenge
+ * screen, the pair of fn_80260E30, which closes it again).
+ *
+ * Only reachable from the group list: from inside a group the callback reports
+ * that it did nothing by returning 1.  Otherwise the cursor moves into the
+ * group, on its first item (the group holds the two items group * 2 and
+ * group * 2 + 1), and both widget lists are repainted as fn_802613E0 does it:
+ * the item under the cursor gets setCursor(), the two items of the open group
+ * come out of the dim state, everything else is dimmed, and the open group is
+ * the one widget that gets setExpanded().
+ */
+extern "C" s32 fn_80261178(void *unused) {
     s32 offset;
     s32 i;
-    if (lbl_8055F3EB != 0) return 1;
-    lbl_8055F3EB = 1;
+
+    if (SELECTOR_IN_ITEMS != 0) return 1;
+
+    /* the cursor goes into the group it was standing on */
+    SELECTOR_IN_ITEMS = 1;
     i = 0;
     offset = 0;
-    *(s32 *)lbl_8055F420 = *(s32 *)(lbl_8055F420 + 4) << 1;
-    for (; i < *(s32 *)(lbl_8055F420 + 8); offset += 4, i++) {
-        if (lbl_8055F3EB == 0) {
-            (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x18) + offset))->f60();
-            (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x18) + offset))->f6c();
-        } else if (i == *(s32 *)lbl_8055F420) {
-            (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x18) + offset))->f68();
-        } else if (i == *(s32 *)(lbl_8055F420 + 4) * 2 || i == *(s32 *)(lbl_8055F420 + 4) * 2 + 1) {
-            (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x18) + offset))->f64();
-            (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x18) + offset))->f6c();
+    SELECTOR->cursor = SELECTOR->group << 1;
+
+    /* repaint the item list */
+    for (; i < SELECTOR->item_count; offset += 4, i++) {
+        if (SELECTOR_IN_ITEMS == 0) {
+            /* the cursor is not here, so the whole list dims */
+            (*(SelectorWidget **)(SELECTOR->item_widgets + offset))->setDim();
+            (*(SelectorWidget **)(SELECTOR->item_widgets + offset))->clearCursor();
+        } else if (i == SELECTOR->cursor) {
+            (*(SelectorWidget **)(SELECTOR->item_widgets + offset))->setCursor();
+        } else if (i == SELECTOR->group * 2 || i == SELECTOR->group * 2 + 1) {
+            /* the two items of the group that was opened stay bright */
+            (*(SelectorWidget **)(SELECTOR->item_widgets + offset))->clearDim();
+            (*(SelectorWidget **)(SELECTOR->item_widgets + offset))->clearCursor();
         } else {
-            (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x18) + offset))->f6c();
+            (*(SelectorWidget **)(SELECTOR->item_widgets + offset))->clearCursor();
         }
     }
+
+    /* repaint the group list */
     i = 0;
     offset = 0;
-    for (; i < *(s32 *)(lbl_8055F420 + 0xC); offset += 4, i++) {
-        if (lbl_8055F3EB == 0) {
-            if (i == *(s32 *)(lbl_8055F420 + 4)) {
-                (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset))->f68();
+    for (; i < SELECTOR->group_count; offset += 4, i++) {
+        if (SELECTOR_IN_ITEMS == 0) {
+            if (i == SELECTOR->group) {
+                (*(SelectorWidget **)(SELECTOR->group_widgets + offset))->setCursor();
             } else {
-                (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset))->f64();
-                (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset))->f6c();
+                (*(SelectorWidget **)(SELECTOR->group_widgets + offset))->clearDim();
+                (*(SelectorWidget **)(SELECTOR->group_widgets + offset))->clearCursor();
             }
-        } else if (i == *(s32 *)(lbl_8055F420 + 4)) {
-            (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset))->f68();
-            (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + *(s32 *)(lbl_8055F420 + 4) * 4))->f70();
+        } else if (i == SELECTOR->group) {
+            /* the group the cursor is inside: open, and let it show its items */
+            (*(SelectorWidget **)(SELECTOR->group_widgets + offset))->setCursor();
+            (*(SelectorWidget **)(SELECTOR->group_widgets + SELECTOR->group * 4))->setExpanded();
         } else {
-            (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset))->f60();
-            (*(Obj **)(*(u8 **)(lbl_8055F420 + 0x3C) + offset))->f6c();
+            (*(SelectorWidget **)(SELECTOR->group_widgets + offset))->setDim();
+            (*(SelectorWidget **)(SELECTOR->group_widgets + offset))->clearCursor();
         }
     }
     return 0;
