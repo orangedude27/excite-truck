@@ -2891,8 +2891,8 @@ extern "C" void fn_800E80B4(void) {
 }
 
 extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv(void *self, const void *bank);
-extern "C" void *fn_800E80B8(void *arg0) {
-    __ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv(arg0, (const void *)0);
+extern "C" void *fn_800E80B8(void *arg0, const void *arg1) {
+    __ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv(arg0, arg1);
     *(int *)((char *)arg0 + 0xC) = 0;
     return arg0;
 }
