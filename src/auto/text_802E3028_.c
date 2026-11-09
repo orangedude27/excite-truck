@@ -14,6 +14,7 @@ extern char lbl_8055D188;
 #pragma dont_inline on
 void fn_802E3028(const char *fmt, va_list args, int flag) {}
 
+#pragma scheduling invalid_target
 int fn_802E302C(void) {
     lbl_8055D178 = fn_802E367C((int)&lbl_8055D180);
     fn_802E30C8(lbl_8034CEF8);
@@ -21,8 +22,7 @@ int fn_802E302C(void) {
     fn_802E30C8(lbl_8034CEF8);
     return 1;
 }
-
-#pragma dont_inline reset
+#pragma scheduling on
 
 extern int fn_802E367C(int);
 extern void fn_802E30C8(const char *, ...);
