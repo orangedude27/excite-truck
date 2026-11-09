@@ -153,6 +153,6 @@ void fn_801E4DBC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, const char *a
     char buf[0x100];
     strncpy(buf, arg5, arg6);
     buf[arg6] = 0;
-    ((void (*)(s32, s32, s32, s32, s32, const char *, ...))fn_801E4BEC)(arg0, arg1, arg2, arg3, arg4, (char *)lbl_8055AEF0, buf);
+    ((void (*)(s32, s32, s32, s32, s32, const char *, ...))fn_801E4BEC)(arg0, arg1, arg2, arg3, arg4, (char *)&lbl_8055AEF0, buf);
 }
 #pragma pop
