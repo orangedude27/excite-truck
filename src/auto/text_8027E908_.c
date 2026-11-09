@@ -3194,8 +3194,16 @@ extern "C" void fn_80287318(void* arg0) {
     ((ebi::title::TBlackPlane*)arg0)->m_a->v4();
 }
 #pragma cplusplus on
+struct Obj8732C {
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
+    virtual void *get();
+};
+#pragma cplusplus off
+#pragma cplusplus on
+#pragma dead_code on
+#pragma peephole on
 extern "C" void *fn_8028732C(void *arg0, int arg1) {
-    class Obj {
+    class Obj2 {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
         virtual void *get();
@@ -3204,7 +3212,7 @@ extern "C" void *fn_8028732C(void *arg0, int arg1) {
     if (cached != 0 && arg1 == *(int *)((char *)arg0 + 12)) {
         return cached;
     }
-    Obj *obj = *(Obj **)((char *)arg0 + 4);
+    Obj2 *obj = *(Obj2 **)((char *)arg0 + 4);
     return obj->get();
 }
 #pragma cplusplus off
