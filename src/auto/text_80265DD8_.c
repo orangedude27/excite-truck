@@ -34,6 +34,74 @@ typedef struct { float x, y, z; } V3_80267EF8;
 typedef struct { V3_80267EF8 r[4]; } M34_80267EF8;
 typedef struct { float m[9]; } R9_80267EF8;
 typedef struct { float m[9]; V3_80267EF8 pos; } MP_80267EF8;
+
+/* One camera of the game's four-camera array.  The module keeps the
+ * transform it used last frame next to the one it just built so
+ * fn_802678E8 can blend between the two, and hands the result to the
+ * renderer as rotation + position + field of view.  Fields no matched
+ * function has named yet keep their raw w/f names. */
+typedef struct Camera {
+    int index;                    /* 0x000: which record this is (0..3) */
+    int command;                  /* 0x004: request for the mode handler (0x15 from fn_80269BB0) */
+    float f008, f00C;             /* 0x008 */
+    int mode;                     /* 0x010: camera mode in use, 0..0x21 (10 = nothing yet) */
+    int wantedMode;               /* 0x014: mode asked for; out-of-range falls back to 4 */
+    int w018;                     /* 0x018 */
+    int w01C;                     /* 0x01C: passed through to the renderer's frame */
+    int subject;                  /* 0x020: index of the object the camera follows */
+    int wantedSubject;            /* 0x024 */
+    V3_80267EF8 up;               /* 0x028: up vector, (0,1,0) */
+    V3_80267EF8 v034;             /* 0x034 */
+    V3_80267EF8 v040;             /* 0x040 */
+    int w04C[3];                  /* 0x04C */
+    MP_80267EF8 transform;        /* 0x058: rotation + position in use */
+    MP_80267EF8 prevTransform;    /* 0x088: the same, as of the last scene change */
+    int scene;                    /* 0x0B8: scene stamp prevTransform belongs to */
+    float fov;                    /* 0x0BC: field of view */
+    MP_80267EF8 xform0C0;         /* 0x0C0: second transform (fn_802682B0 builds it from the track) */
+    MP_80267EF8 xform0F0;         /* 0x0F0: third transform */
+    float v120[6];                /* 0x120: two points handed to fn_8020655C */
+    unsigned char reset;          /* 0x138: 1 = just (re)set; the next frame takes it whole */
+    unsigned char b139;           /* 0x139: second one-shot flag, cleared with reset */
+    float f13C;                   /* 0x13C */
+    void *subjectObject;          /* 0x140: the followed object, looked up from subject */
+    int w144;                     /* 0x144 */
+    int w148;                     /* 0x148 */
+    int w14C;                     /* 0x14C */
+    int w150;                     /* 0x150 */
+    float volume;                 /* 0x154: sound level this camera may ask for */
+    float startTime;              /* 0x158: time that level was last raised */
+    float f15C;                   /* 0x15C */
+    int w160[3];                  /* 0x160: path cursor (fn_80265E08) */
+    float f16C[3];                /* 0x16C */
+    int w178[2];                  /* 0x178: spline cursor (fn_80266150) */
+    float f180[2];                /* 0x180 */
+    int pad188;                   /* 0x188 */
+    float f18C[6];                /* 0x18C */
+    float viewMatrix[12];         /* 0x1A4: 4x3 view matrix handed in by fn_8026A2CC */
+    float angle;                  /* 0x1D4: view angle that goes with it */
+    int w1D8[5];                  /* 0x1D8 */
+    short h1EC;                   /* 0x1EC */
+    short pad1EE;                 /* 0x1EE */
+    float f1F0[2];                /* 0x1F0 */
+    int w1F8[12];                 /* 0x1F8 */
+} Camera;                        /* 0x228 bytes */
+
+#define CAMERA_COUNT      4
+#define CAMERA_SIZE       0x228
+#define CAMERA_MODE_NONE  10      /* nothing chosen yet */
+#define sCameras          lbl_80499080 /* Camera[CAMERA_COUNT] */
+#define FLOAT_ZERO        lbl_80563C20 /* 0.0f */
+#define FLOAT_ONE         lbl_80563C2C /* 1.0f */
+#define CAMERA_VIEW_ANGLE lbl_80563C54 /* 1.1781f = 3*pi/8, the default view angle */
+#define STR_CRASH_VOL     lbl_803467D0 /* "crash_vol" */
+#define STR_CHEER3_SFX    lbl_803467DC /* "cheer3.sfx" */
+#define sCrashVolume      lbl_8055F494 /* volume slot of STR_CRASH_VOL */
+#define sCheerSound       lbl_8055F490 /* sound object of STR_CHEER3_SFX */
+#define sound_volume_open fn_802090D4  /* name -> {float volume; int name} slot */
+#define sound_volume_set  fn_80209190  /* slot, level (clamped to 0..1) */
+#define sound_object_create fn_80207848 /* name, arg -> 0x70-byte sound object */
+#define callback_install  fn_801EEFDC  /* fn, category -> first free of 4 slots */
 extern float lbl_80563C80, lbl_80563C84, lbl_80563C88, lbl_80563C64;
 extern float lbl_8055F48C;
 extern int fn_802E2C20(void);
@@ -1261,12 +1329,12 @@ void fn_80268358(void *arg0) {
     halfF = lbl_80563C6C;
     e0 = (float *)(lbl_803467E8 + (lbl_8055F4A0 << 5));
     e1 = (float *)(lbl_803467E8 + (lbl_8055F4A4 << 5));
-    frame.entries[0] = e0[0];
     frame.entries[1] = e0[1];
-    frame.entries[2] = e0[2];
+    frame.entries[0] = e0[0];
     frame.entries[3] = e0[3];
-    frame.entries[4] = e0[4];
+    frame.entries[2] = e0[2];
     frame.entries[5] = e0[5];
+    frame.entries[4] = e0[4];
     frame.entries[6] = e1[0];
     frame.entries[7] = e1[1];
     frame.entries[8] = e1[2];
@@ -1382,12 +1450,12 @@ void fn_80268358(void *arg0) {
     } else {
         w2 = t / lbl_8055C4F4;
     }
-    frame.v30[0] = frame.acc[3] + w * (frame.acc[12] - frame.acc[3]);
-    frame.v30[1] = frame.acc[4] + w * (frame.acc[13] - frame.acc[4]);
-    frame.v30[2] = frame.acc[5] + w * (frame.acc[14] - frame.acc[5]);
-    frame.v24[0] = frame.acc[0] + w2 * (frame.acc[9] - frame.acc[0]);
     frame.v24[1] = frame.acc[1] + w2 * (frame.acc[10] - frame.acc[1]);
+    frame.v24[0] = frame.acc[0] + w2 * (frame.acc[9] - frame.acc[0]);
     frame.v24[2] = frame.acc[2] + w2 * (frame.acc[11] - frame.acc[2]);
+    frame.v30[1] = frame.acc[4] + w * (frame.acc[13] - frame.acc[4]);
+    frame.v30[0] = frame.acc[3] + w * (frame.acc[12] - frame.acc[3]);
+    frame.v30[2] = frame.acc[5] + w * (frame.acc[14] - frame.acc[5]);
     frame.v18[0] = frame.acc[6] + w * (frame.acc[15] - frame.acc[6]);
     frame.v18[1] = frame.acc[7] + w * (frame.acc[16] - frame.acc[7]);
     frame.v18[2] = frame.acc[8] + w * (frame.acc[17] - frame.acc[8]);
