@@ -122,7 +122,7 @@ float fn_8029748C(void *arg0) {
     s32 offset = 0;
     while (count > 0) {
         float value = *(float *)(*(u8 **)arg0 + offset + 0x14);
-        if (value > max) max = value;
+        max = (max > value) ? max : value;
         offset += 0x18;
         count--;
     }
