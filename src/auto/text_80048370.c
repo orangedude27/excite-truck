@@ -6,7 +6,9 @@
 #undef MEMRecordStateForFrmHeap
 #include "revolution/KPAD/__KPAD.h"
 #include "revolution/OS/OSInterrupt.h"
+#define PSMTXInverse PSMTXInverse_GCN
 #include "revolution/MTX/mtx.h"
+#undef PSMTXInverse
 #include "revolution/MTX/mtxtypes.h"
 
 extern f32 lbl_80560C48;
@@ -866,10 +868,11 @@ void MEMAppendListObject(MEMList* list, void* object) {
         list->tail = object;
         list->length++;
     } else {
-        u16 offset = list->offset;
-        *(void**)((u8*)object + offset) = list->tail;
-        *(void**)((u8*)object + offset + 4) = 0;
-        *(void**)((u8*)list->tail + offset + 4) = object;
+        register void** link = (void**)((u8*)object + list->offset);
+        register void *tail = list->tail;
+        *link++ = tail;
+        *link = 0;
+        *(void**)((u8*)tail + list->offset + 4) = object;
         list->tail = object;
         list->length++;
     }
@@ -959,13 +962,14 @@ z_axis:
 #pragma pop
 extern f32 lbl_80560C48;
 extern f32 lbl_80560C4C;
+#pragma paired_single on
 void PSMTXRotRad(Mtx m, f32 x, f32 y, f32 z) {
     register f32 zero = lbl_80560C4C;
     register f32 one = lbl_80560C48;
     m[0][3] = x;
     m[1][3] = y;
-    *(double *)&m[0][1] = zero;
-    *(double *)&m[2][0] = zero;
+    *(double *)&m[0][1] = (double)zero;
+    *(double *)&m[2][0] = (double)zero;
     m[1][0] = zero;
     m[1][1] = one;
     m[1][2] = zero;
@@ -973,7 +977,6 @@ void PSMTXRotRad(Mtx m, f32 x, f32 y, f32 z) {
     m[2][3] = z;
     m[0][0] = one;
 }
-
 void PSMTXRotTrig(register Mtx m, register Mtx r, register f32 sx, register f32 sy, register f32 sz) {
     register f32 a0, a1, a2, a3, a4, a5, a6, a7, a8, a9;
     a0 = *(f32 *)&m[0][0];
@@ -998,18 +1001,20 @@ void PSMTXRotTrig(register Mtx m, register Mtx r, register f32 sx, register f32 
     *(f32 *)&r[2][1] = a9;
 }
 
+#pragma paired on
+#pragma paired_single on
 void PSMTXIdentity(Mtx m) {
-    m[0][0] = 1.0f;
-    m[0][1] = 0.0f;
-    m[0][2] = 0.0f;
-    m[0][3] = 0.0f;
-    m[1][0] = 0.0f;
-    m[1][1] = 1.0f;
-    m[1][2] = 0.0f;
-    m[1][3] = 0.0f;
-    m[2][0] = 0.0f;
-    m[2][1] = 0.0f;
-    m[2][2] = 1.0f;
-    m[2][3] = 0.0f;
+    register f32 zero = lbl_80560C4C;
+    register f32 one = lbl_80560C48;
+    *(double *)&m[0][0] = (double)(one * 1.0f + zero);
+    m[0][2] = zero;
+    m[0][3] = zero;
+    m[1][0] = zero;
+    m[1][1] = one;
+    m[1][2] = zero;
+    m[1][3] = zero;
+    m[2][0] = zero;
+    m[2][1] = zero;
+    m[2][2] = one;
+    m[2][3] = zero;
 }
-
