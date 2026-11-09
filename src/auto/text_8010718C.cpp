@@ -34,6 +34,29 @@ public:
     virtual u32 Seek(s32 off, u32 origin);  // vtable 0x54
 };
 class FileStream54 : public IOStream54 {};
+class IOStream50 {
+public:
+    virtual void vf0();
+    virtual void vf1();
+    virtual void vf2();
+    virtual void vf3();
+    virtual void vf4();
+    virtual void vf5();
+    virtual void vf6();
+    virtual void vf7();
+    virtual void vf8();
+    virtual void vf9();
+    virtual void vfA();
+    virtual void vfB();
+    virtual void vfC();
+    virtual void vfD();
+    virtual void vfE();
+    virtual void vfF();
+    virtual void vf10();
+    virtual void vf11();
+    virtual u32 Seek(s32 off, u32 origin);  // vtable 0x50
+};
+class FileStream50 : public IOStream50 {};
 } // namespace ut
 } // namespace nw4hbm
 extern "C" void Seek__Q36nw4hbm2ut10FileStreamFlUl(void* this_, s32 off,
@@ -87,7 +110,7 @@ public:
 }
 
 s32 nw4hbm::ut::FileStream::CancelAsync(CancelCallback callback, void* user) {
-    register u8* base = lbl_80328458;
+    u8* base = lbl_80328458;
     if (v21(callback, user) == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char*)(base + 0), 0x4E,
                                      (const char*)(base + 0x38));
