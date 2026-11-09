@@ -16647,8 +16647,37 @@ extern void fn_8008EE40(void *, void *);
 extern void fn_8008EF90(void *, void *);
 void fn_80089E40(void *p_ccb, u8 event, void *p_data) {
     u32 state = *(u32 *)((u8 *)p_ccb + 4);
-    if (state > 8) return;
-    ((void (*)(void *, u16, void *))jumptable_803183B0[state])(p_ccb, event, p_data);
+    switch (state) {
+    case 0:
+        l2c_csm_closed(p_ccb, event, p_data);
+        break;
+    case 1:
+        l2c_csm_orig_w4_sec_comp(p_ccb, event, p_data);
+        break;
+    case 2:
+        l2c_csm_term_w4_sec_comp(p_ccb, event, p_data);
+        break;
+    case 3:
+        l2c_csm_w4_l2cap_connect_rsp((tL2C_CCB_VIEW *)p_ccb, event, p_data);
+        break;
+    case 4:
+        l2c_csm_w4_l2ca_connect_rsp(p_ccb, event, p_data);
+        break;
+    case 5:
+        l2c_csm_config(p_ccb, event, p_data);
+        break;
+    case 6:
+        l2c_csm_open((tL2C_CCB_VIEW *)p_ccb, event, p_data);
+        break;
+    case 7:
+        l2c_csm_w4_l2cap_disconnect_rsp(p_ccb, event, p_data);
+        break;
+    case 8:
+        l2c_csm_w4_l2ca_disconnect_rsp(p_ccb, event, p_data);
+        break;
+    default:
+        break;
+    }
 }
 
 void l2c_csm_closed(void *p_ccb, u16 event, void *p_msg) {
