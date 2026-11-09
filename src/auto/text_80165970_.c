@@ -143,7 +143,7 @@ void fn_801659C8(int arg0) {
 float fn_801659D0(int arg0) {
     float temp_f31;
     temp_f31 = fn_8013672C(arg0);
-    return temp_f31 * ((float)fn_800081F0(arg0) - lbl_80561890);
+    return temp_f31 * (float)fn_800081F0(arg0);
 }
 #pragma pop
 extern int strcmp(const char *, const char *);
