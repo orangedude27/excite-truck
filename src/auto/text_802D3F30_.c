@@ -929,17 +929,13 @@ void fn_802D5DE8(u32 flags) {
     GXSetVtxDescv(desc);
 }
 
-#pragma push
-#pragma processor 750
-#pragma scheduling on
+#pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_802D5F88(s32 arg0) {
-    u8 *ptr = (u8 *)arg0;
-    u32 flags = *(u32 *)(ptr + 0xC);
-    register u32 normalized = flags & 0xFFCFFFFF;
-    register u8 mode = ptr[9];
+    u32 normalized = *(u32 *)((u8 *)arg0 + 0xC) & 0xFFCFFFFF;
+    u8 mode = *(u8 *)((u8 *)arg0 + 9);
     if (normalized != lbl_8055FDE8) {
-        GXCallDisplayList(*(void **)(ptr + 0x10), (u32)ptr[0xB] << 5);
+        GXCallDisplayList(*(void **)((u8 *)arg0 + 0x10), (u32)*(u8 *)((u8 *)arg0 + 0xB) << 5);
         lbl_8055FDE8 = normalized;
         lbl_8055FDEC = mode;
     }
