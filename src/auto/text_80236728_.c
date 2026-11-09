@@ -241,7 +241,7 @@ void fn_80236A5C(void *arg0, int arg1) {
     extern int fn_8002B1D8(const char *, const char *, int);
     extern void *fn_801284F8(int, char *);
     extern void *fn_8012850C(int, char *);
-    extern void *fn_8002F37C(void *, void (*)(void *), void (*)(void), int, int);
+    extern void *fn_8002F37C(void *, void (*)(void *), void *, int, int);
     extern void fn_80237A84(void *);
     extern void fn_80237A04(void);
     extern void fn_802379EC(void *);
