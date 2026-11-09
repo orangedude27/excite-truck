@@ -776,27 +776,73 @@ extern "C" void *fn_801F861C(void) {
 #define OBS_OPT_ONESIDED      0x200 /* "onesided": nothing shows through it */
 
 extern "C" void *fn_801F86C8(void *arg0) {
-struct F86Obj { char pad[0x10C]; int f10C; };
-class NodeVTable { public: virtual void v0();virtual void v1();virtual void v2();virtual void *getString(const char *);virtual void v6();virtual void v7();virtual int query20(const char *,int);virtual void v9();virtual void v10();virtual void v11();virtual int query30(const char *,int);virtual void v13();virtual void v14();virtual void v15();virtual void v16();virtual void v17();virtual void v18();virtual void v19();virtual void v20();virtual void v21();virtual void v22();virtual void *query5C(const char *);};
-const char *base=lbl_8033AF80;void *saved=arg0;void *object;
-object=fn_801284F8(0x1A0,(void *)(base+0xF4));
-if(object){
-fn_801F92AC((F92Obj *)object);*(void **)((char *)object+0x108)=lbl_8033B440;
-((void (*)(void *))fn_801F92A8)(&((F86Obj *)object)->f10C);
-*(int *)((char *)object+0x190)=0;
-{F86Obj *sub=(F86Obj *)object;sub->f10C=0;
-fn_801F8988(&sub->f10C,saved);}
-if(fn_801F88F4(saved)==0)*(int *)((char *)object+0x190)|=4;
-if(((NodeVTable *)saved)->query30(base+0x100,0))*(int *)((char *)object+0x190)|=1;
-if(((NodeVTable *)saved)->query30(base+0x110,0))*(int *)((char *)object+0x190)|=0x100;
-if(((NodeVTable *)saved)->query30(base+0x120,0))*(int *)((char *)object+0x190)|=0x20;
-if(((NodeVTable *)saved)->query30(lbl_8055B300,0)){*(int *)((char *)object+0x190)|=0x40;*(void **)((char *)object+0x194)=((NodeVTable *)saved)->getString(lbl_8055B308);}
-else *(void **)((char *)object+0x194)=lbl_8055B310;
-if(((NodeVTable *)saved)->query30(base+0x130,0))*(int *)((char *)object+0x190)|=0x80;
-if(((NodeVTable *)saved)->query30(base+0x13C,0))*(int *)((char *)object+0x190)|=0x200;
-*(int *)((char *)object+0x198)=((NodeVTable *)saved)->query20(base+0x148,-1);
-*(void **)((char *)object+0x19C)=((NodeVTable *)saved)->query5C(base+0x154);}
-return object;
+    /* What this creator adds past the part every created object shares. */
+    struct Obstacle {
+        u8 pad[0x108];
+        void *vtable;        /* 0x108 the obstacle's own vtable, lbl_8033B440 */
+        s32 obst;            /* 0x10C the "OBST" record fn_801F8988 fills in */
+        u8 pad110[0x190 - 0x110];
+        u32 options;         /* 0x190 the OBS_OPT_* bits */
+        const char *effect;  /* 0x194 the fabric's effect name, "" when there is none */
+        s32 sobjEvent;       /* 0x198 "sobj_event", -1 when the node has none */
+        void *defaultProps;  /* 0x19C the "default_properties" child node */
+    };
+    /* The parameter node: reads values and child nodes by key through its vtable. */
+    class Node {
+    public:
+        virtual void s8();
+        virtual void sC();
+        virtual void s10();
+        virtual const char *getString(const char *);  /* 0x14: a string value */
+        virtual void s18();
+        virtual void s1C();
+        virtual s32 getInt(const char *, s32);   /* 0x20: an int, with a default */
+        virtual void s24();
+        virtual void s28();
+        virtual void s2C();
+        virtual s32 getFlag(const char *, s32);  /* 0x30: a boolean, with a default */
+        virtual void s34();
+        virtual void s38();
+        virtual void s3C();
+        virtual void s40();
+        virtual void s44();
+        virtual void s48();
+        virtual void s4C();
+        virtual void s50();
+        virtual void s54();
+        virtual void s58();
+        virtual void *getNode(const char *);     /* 0x5C: a child node */
+    };
+    const char *base = lbl_8033AF80;
+    void *node = arg0;
+    void *object;
+    object = fn_801284F8(0x1A0, (void *)OBS_TAG_OBSTACLE);
+    if (object != 0) {
+        fn_801F92AC((F92Obj *)object);                 /* what every created object starts with */
+        ((Obstacle *)object)->vtable = lbl_8033B440;   /* ... drawn and updated as an obstacle */
+        ((void (*)(void *))fn_801F92A8)(&((Obstacle *)object)->obst);
+        ((Obstacle *)object)->options = 0;
+        {
+            Obstacle *sub = (Obstacle *)object;
+            sub->obst = 0;                             /* the "OBST" fourcc, which fn_801F8988 rewrites */
+            fn_801F8988(&sub->obst, node);             /* the obstacle settings held in the node */
+        }
+        if (fn_801F88F4(node) == 0) ((Obstacle *)object)->options |= OBS_OPT_NOT_FLOATER;
+        if (((Node *)node)->getFlag(OBS_KEY_FACING_TEST, 0)) ((Obstacle *)object)->options |= OBS_OPT_FACING_TEST;
+        if (((Node *)node)->getFlag(OBS_KEY_REFLECT_LOAD, 0)) ((Obstacle *)object)->options |= OBS_OPT_REFLECT_LOAD;
+        if (((Node *)node)->getFlag(OBS_KEY_FACING_X_TEST, 0)) ((Obstacle *)object)->options |= OBS_OPT_FACING_X;
+        if (((Node *)node)->getFlag(OBS_KEY_FABRIC, 0)) {
+            ((Obstacle *)object)->options |= OBS_OPT_FABRIC;
+            ((Obstacle *)object)->effect = ((Node *)node)->getString(OBS_KEY_EFFECT);
+        } else {
+            ((Obstacle *)object)->effect = OBS_NO_EFFECT;
+        }
+        if (((Node *)node)->getFlag(OBS_KEY_DRAW_LAST, 0)) ((Obstacle *)object)->options |= OBS_OPT_DRAW_LAST;
+        if (((Node *)node)->getFlag(OBS_KEY_ONESIDED, 0)) ((Obstacle *)object)->options |= OBS_OPT_ONESIDED;
+        ((Obstacle *)object)->sobjEvent = ((Node *)node)->getInt(OBS_KEY_SOBJ_EVENT, -1);
+        ((Obstacle *)object)->defaultProps = ((Node *)node)->getNode(OBS_KEY_DEFAULT_PROPS);
+    }
+    return object;
 }
 
 extern u32 lbl_802F9B30[];
