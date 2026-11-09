@@ -228,7 +228,7 @@ f32 fn_8026EA8C(s32 arg0, void *arg1, f32 farg0) {
 #pragma pop
 
 #pragma push
-#pragma dont_inline on
+#pragma processor 750
 f32 fn_8026EAEC(f32 farg0) {
     f32 value;
     if (fn_80178CA4() > 1) {
@@ -238,7 +238,7 @@ f32 fn_8026EAEC(f32 farg0) {
     }
     return value;
 }
-
+#pragma pop
 extern f32 lbl_80563E5C;
 extern f32 lbl_8055F530;
 extern f32 lbl_8055F534;
