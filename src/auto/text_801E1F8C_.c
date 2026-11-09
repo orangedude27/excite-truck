@@ -6,6 +6,8 @@ typedef struct E2640Scratch { s32 count; f32 dot; } E2640Scratch;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+typedef struct VTable_801E2084 { void *unk0; void *unk4; void *unk8; void *unkC; void (*call)(void *, void *); } VTable_801E2084;
+typedef struct Obj_801E2084 { VTable_801E2084 *vtable; } Obj_801E2084;
 extern void *lbl_8055EA40;
 extern void *lbl_8055EA3C;
 extern char lbl_8055EA38;
