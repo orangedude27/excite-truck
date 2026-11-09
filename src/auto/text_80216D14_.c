@@ -37,6 +37,88 @@ void fn_80216D34(void) {
     lbl_8055EFAC = 0;
 }
 
+extern char lbl_8055B868[];
+extern char lbl_8055B870[];
+extern char lbl_8033D808[];
+extern int fn_8012C33C(char *);
+extern int fn_802C5130(char *);
+extern void *fn_8022EE9C(int);
+extern void fn_8022EE98(int, void *);
+extern void fn_802C2CDC(void *, int, int);
+extern int stricmp(char *, char *);
+extern char *strstr(char *, char *);
+__declspec(section ".sdata") extern char lbl_8055B868[];
+__declspec(section ".sdata") extern char lbl_8055B870[];
+void *fn_80216D40(void *arg0, char *arg1, int arg2, int arg3, int arg4, int arg5, int arg6) {
+    char *obj = (char *)arg0;
+    *(int *)(obj + 0x454) = arg2;
+    *(int *)(obj + 0x490) = arg6;
+    *(int *)(obj + 0x458) = arg3;
+    *(int *)(obj + 0x45C) = arg4;
+    *(int *)(obj + 0x460) = arg5;
+    *(char *)(obj + 0x46C) = 1;
+    *(int *)(obj + 0x430) = 0;
+    *(int *)(obj + 0x434) = 0;
+    *(int *)(obj + 0x438) = 0;
+    *(int *)(obj + 0x43C) = 0;
+    *(int *)(obj + 0x440) = 0;
+    *(int *)(obj + 0x444) = 0;
+    *(int *)(obj + 0x448) = 0;
+    *(int *)(obj + 0x44C) = 0;
+    *(int *)(obj + 0x450) = 0;
+    *(int *)(obj + 0x468) = 0;
+    *(int *)(obj + 0x464) = 0;
+    fn_802C2CDC(obj + 0xC, 4, 4);
+    *(char *)(obj + 0xDE4) = 0;
+    *(int *)(obj + 0) = 0;
+    *(int *)(obj + 4) = 0;
+    *(int *)(obj + 8) = 0;
+    if (arg1 != (char *)0 && (signed char)*arg1 != 0) {
+        if (strstr(arg1, lbl_8055B868) != (char *)0) {
+            if (fn_8012C33C(arg1) != 0) {
+                *(int *)(obj + 8) = fn_802C5130(arg1);
+            } else {
+                fn_802E30C8(lbl_8033D808, arg1);
+            }
+        } else if (stricmp(arg1, lbl_8055B870) == 0) {
+            *(char *)(obj + 0xDE4) = 1;
+        }
+    }
+    {
+        char *p = obj + 0x46D;
+        int i;
+        for (i = 0; i < 0x20; i++) p[i] = 0;
+        *(int *)(obj + 0x494) = 0;
+        *(int *)(obj + 0x498) = -1;
+    }
+    {
+        struct Rec80216 *rec = (struct Rec80216 *)fn_8022EE9C(0);
+        char *dest = obj;
+        int slot = 0;
+        int iter = 5;
+        int *s = (int *)rec;
+        float *sf = (float *)rec;
+        do {
+            int *d;
+            d = (int *)(dest + 0x6A0); d[0]=s[0]; d[1]=s[1]; d[2]=s[2]; d[3]=s[3]; d[4]=s[4]; d[5]=s[5]; d[6]=s[6]; d[7]=s[7]; d[8]=s[8]; d[9]=s[9]; d[10]=s[10]; d[11]=s[11]; ((float *)d)[12]=sf[12]; ((float *)d)[13]=sf[13]; ((float *)d)[14]=sf[14];
+            d = (int *)(dest + 0x6DC); d[0]=s[0]; d[1]=s[1]; d[2]=s[2]; d[3]=s[3]; d[4]=s[4]; d[5]=s[5]; d[6]=s[6]; d[7]=s[7]; d[8]=s[8]; d[9]=s[9]; d[10]=s[10]; d[11]=s[11]; ((float *)d)[12]=sf[12]; ((float *)d)[13]=sf[13]; ((float *)d)[14]=sf[14];
+            d = (int *)(dest + 0x718); d[0]=s[0]; d[1]=s[1]; d[2]=s[2]; d[3]=s[3]; d[4]=s[4]; d[5]=s[5]; d[6]=s[6]; d[7]=s[7]; d[8]=s[8]; d[9]=s[9]; d[10]=s[10]; d[11]=s[11]; ((float *)d)[12]=sf[12]; ((float *)d)[13]=sf[13]; ((float *)d)[14]=sf[14];
+            d = (int *)(dest + 0x754); d[0]=s[0]; d[1]=s[1]; d[2]=s[2]; d[3]=s[3]; d[4]=s[4]; d[5]=s[5]; d[6]=s[6]; d[7]=s[7]; d[8]=s[8]; d[9]=s[9]; d[10]=s[10]; d[11]=s[11]; ((float *)d)[12]=sf[12]; ((float *)d)[13]=sf[13]; ((float *)d)[14]=sf[14];
+            slot += 6;
+            d = (int *)(dest + 0x790); d[0]=s[0]; d[1]=s[1]; d[2]=s[2]; d[3]=s[3]; d[4]=s[4]; d[5]=s[5]; d[6]=s[6]; d[7]=s[7]; d[8]=s[8]; d[9]=s[9]; d[10]=s[10]; d[11]=s[11]; ((float *)d)[12]=sf[12]; ((float *)d)[13]=sf[13]; ((float *)d)[14]=sf[14];
+            dest += 0x168;
+            iter--;
+        } while (iter != 0);
+        {
+            char *finalDest = obj + slot * 0x3C;
+            int *d = (int *)(finalDest + 0x6A0);
+            d[0]=s[0]; d[1]=s[1]; d[2]=s[2]; d[3]=s[3]; d[4]=s[4]; d[5]=s[5]; d[6]=s[6]; d[7]=s[7]; d[8]=s[8]; d[9]=s[9]; d[10]=s[10]; d[11]=s[11]; ((float *)d)[12]=sf[12]; ((float *)d)[13]=sf[13]; ((float *)d)[14]=sf[14];
+            fn_8022EE98(s[10], finalDest);
+        }
+    }
+    return arg0;
+}
+
 extern void fn_802C2D94(void *);
 extern void fn_802C4C80(void *);
 extern void fn_802C2FC4(void *);
@@ -776,10 +858,12 @@ void fn_802180E0(void *arg0, int arg1) {
 int fn_80218120(void *arg0) {
     extern char lbl_8033D860[];
     extern void fn_802E30C8(const char *, ...);
-    long i;
-    int count = *(int *)((char *)arg0 + 0x494);
-    for (i = 0; i < count; i++) {
-        if (*(int *)((char *)arg0 + 0x498) == *(int *)((char *)arg0 + 0x4A0 + i * 8)) return i;
+    char *base = (char *)arg0;
+    char *p = (char *)arg0;
+    int i;
+    int count = *(int *)(base + 0x494);
+    for (i = 0; i < count; p += 8, i++) {
+        if (*(int *)(base + 0x498) == *(int *)(p + 0x4A0)) return i;
     }
     fn_802E30C8(lbl_8033D860);
     return 0;
@@ -920,13 +1004,14 @@ checkFirst:
 }
 #pragma cplusplus off
 void fn_80218464(void *arg0) {
-    char *base = (char *)arg0;
+    char *cursor;
     int i = 0;
-    char *cursor = base;
+    char *base;
+    base = (char *)arg0;
+    cursor = base;
     while (i < *(int *)(base + 0x430)) {
         void *obj = *(void **)(cursor + 0x30);
-        void **vtable = *(void ***)obj;
-        ((void (*)(void *))vtable[32])(obj);
+        (*(void (**)(void *))(*(void ***)obj + 32))(obj);
         cursor += 4;
         i++;
     }
