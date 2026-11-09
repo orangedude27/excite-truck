@@ -532,11 +532,12 @@ void fn_802E59BC(unsigned char *arg0) {
     fn_8012C41C((void (*)())fn_802E58A0, 0, arg0);
 }
 
+extern void fn_802E5D5C(void *);
 void fn_802E5A54(void) {
     unsigned char *ptr;
     int i;
     for (i = 0; i < lbl_8055FFA0; i++) {
-        fn_802E5D5C(lbl_8055FF9C[i]);
+        fn_802E5D5C((void *)lbl_8055FF9C[i]);
     }
     lbl_8055FFA0 = 0;
     for (ptr = lbl_804FC558, i = 0; i < lbl_8055FF78; i++, ptr += 0x20) {
