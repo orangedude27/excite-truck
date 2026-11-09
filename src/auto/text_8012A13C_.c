@@ -17,23 +17,50 @@ void *fn_8012A13C(void *arg0, int arg1, int arg2, int arg3) {
     return arg0;
 }
 
+extern s32 fn_801284E8(s32, s32);
+extern void fn_8012A218(void *);
+extern char lbl_8032A5D8[];
+s32 fn_8012A17C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    u8 *base = (u8 *)arg0;
+    s32 temp_r0;
+    *(u8 *)(base + 4) = 1;
+    *(s32 *)(base + 0x14) = arg3;
+    *(s32 *)(base + 0x18) = arg2;
+    *(u8 *)(base + 5) = (u8)(arg4 != 0);
+    *(s32 *)(base + 8) = arg1;
+    if (arg4 == 0) {
+        *(s32 *)(base + 0xC) = fn_801284E8(arg1, arg2 * arg3);
+    } else {
+        *(s32 *)(base + 0xC) = arg4;
+    }
+    temp_r0 = *(s32 *)(base + 0xC);
+    if (temp_r0 != 0) {
+        *(s32 *)(base + 0x10) = temp_r0;
+        fn_8012A218(base);
+        return;
+    }
+    fn_802E317C((int *)&lbl_8032A5D8);
+}
+
+#pragma push
+#pragma scheduling invalid_target
 void fn_8012A218(void *arg0) {
-    unsigned char *base = *(unsigned char **)((char *)arg0 + 0x10);
+    char *base = (char *)*(int *)((char *)arg0 + 0x10);
     int stride = *(int *)((char *)arg0 + 0x14);
-    unsigned char *end = base + (*(int *)((char *)arg0 + 0x18) - 1) * stride;
-    unsigned char *p;
-    for (p = base; p < end; p += stride) *(unsigned char **)p = p + stride;
+    char *end = base + (stride * (*(int *)((char *)arg0 + 0x18) - 1));
+    char *p;
+    for (p = base; p < end; p += stride) *(int *)p = (int)(p + stride);
     *(int *)end = 0;
     *(int *)((char *)arg0 + 0x1c) = 0;
 }
-
+#pragma pop
 void *fn_8012A260(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         if (*((u8 *)arg0 + 5) == 0) {
-            *(int **)arg0 = &lbl_8032A620;
+            *(int **)arg0 = (int *)lbl_8032A620;
             fn_80128658(*(int *)((char *)arg0 + 0xc));
         } else {
-            *(int **)arg0 = &lbl_8032A620;
+            *(int **)arg0 = (int *)lbl_8032A620;
         }
         *(int *)((char *)arg0 + 0xc) = 0;
         if (arg1 > 0) fn_80128668(arg0);
