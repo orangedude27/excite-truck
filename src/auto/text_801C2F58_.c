@@ -132,13 +132,14 @@ void fn_801C2FF4(float *out, float *a, float *b, float weight) {
 }
 
 #pragma dont_inline on
+#pragma push
+#pragma processor 750
 f32 fn_801C3450(f32 arg0) {
-    f32 denom;
-    f32 value;
-    denom = fn_801C2F58(2, lbl_80562978);
-    value = (f32)(s32)(arg0 * fn_801C2F58(2, lbl_80562978));
-    return (value - *(f32 *)&lbl_80562980) / denom;
+    f32 denom = fn_801C2F58(2, lbl_80562978);
+    f32 value = (f32)(s32)(arg0 * fn_801C2F58(2, lbl_80562978));
+    return value / denom;
 }
+#pragma pop
 #pragma dont_inline reset
 
 #pragma dont_inline on
