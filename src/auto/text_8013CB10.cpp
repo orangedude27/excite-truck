@@ -608,13 +608,16 @@ extern "C" u32 fn_8013D148(u8 *arg0, f32 arg1) {
 }
 
 extern "C" u32 fn_8013D18C(u32 arg0) {
-    struct {
-        s32 v[6];
-    } values = {{
-        lbl_802F9398[0], lbl_802F9398[1], lbl_802F9398[2],
-        lbl_802F9398[3], lbl_802F9398[4], lbl_802F9398[5]
-    }};
-    return values.v[arg0 % 6];
+    u32 idx = arg0 % 6;
+    s32 values[6];
+    s32 *src = lbl_802F9398;
+    values[0] = *src++;
+    values[1] = *src++;
+    values[2] = *src++;
+    values[3] = *src++;
+    values[4] = *src++;
+    values[5] = *src;
+    return values[idx];
 }
 
 extern "C" s32 fn_8013D1F0(s32 arg0) {
@@ -629,9 +632,10 @@ extern "C" s32 fn_8013D1F0(s32 arg0) {
 }
 
 extern "C" s32 fn_8013D224(f32 farg0, f32 farg1) {
-    register f32 diff = farg0 - farg1;
+    f32 diff = farg0 - farg1;
+    f64 abs = __fabs((f64)diff);
     f32 result;
-    if ((f32)__fabs((f64)diff) <= lbl_80558DC4[0]) {
+    if ((f32)abs <= lbl_80558DC4[0]) {
         return 0;
     }
     if (diff > lbl_805614A4) {
@@ -2395,7 +2399,7 @@ extern "C" s32 fn_80141F28(void *arg0, s32 arg1) {
         return 0;
     s32 *base = (s32 *)((s32 *)arg0)[0];
     s32 tmp = capacity + head;
-    s32 index = (arg1 + tmp) % capacity;
+    s32 index = (tmp + arg1) % capacity;
     return (s32)base + index * 12;
 }
 
