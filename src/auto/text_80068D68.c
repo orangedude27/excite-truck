@@ -13373,6 +13373,14 @@ BOOLEAN WBT_ExtCreateRecord(void) {
     return TRUE;
 }
 
+void GAP_Init(void) {
+    memset(lbl_803C3740, 0, 0x3AC);
+    *(void **)(lbl_803C3740 + 0x20) = fn_800833E8;
+    *(void **)(lbl_803C3740 + 0x24) = fn_800833F4;
+    *(u8 *)(lbl_803C3740 + 0x28) = 5;
+    fn_800826D4();
+}
+
 extern u8 lbl_803C3740[];
 typedef struct {
     u8 inq[0x3C];
@@ -15403,7 +15411,7 @@ u8 HID_HostOpenDev(u32 arg0) {
     if (entry[0xA] != 0)
         return 10;
     entry[0xC] = 1;
-    return hidh_conn_initiate();
+    return hidh_conn_initiate(arg0);
 }
 
 u8 HID_HostWriteDev(u8 dev_handle, u8 t_type, u8 param,
