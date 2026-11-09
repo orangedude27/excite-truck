@@ -174,14 +174,14 @@ void fn_802E1A9C(void *arg0, int *arg1, int *arg2, int *arg3, int *arg4, int *ar
 #pragma optimization_level reset
 #pragma push
 #pragma scheduling invalid_target
-int fn_802E1BB4(register void *arg0, int arg1) {
+int fn_802E1BB4(void *arg0, int arg1) {
     typedef void (*Calc)(void *, int *, int *, int *, int *, int *, int *, int *);
     int sp20, sp1C, sp18, sp14, sp10, spC, sp8;
-    register int temp;
-    register int i;
-    register char *slot;
-    register char *dest;
-    register unsigned char *p;
+    int temp;
+    int i;
+    char *slot;
+    char *dest;
+    unsigned char *p;
     (void)arg1;
     ((Calc)fn_802E1A9C)((char *)arg0 + 0x100, &sp20, &sp1C, &sp18, &sp14, &sp10, &spC, &sp8);
     temp = fn_8011FFC4(sp10 + sp14 * *(int *)((char *)arg0 + 0x100) + 0x7F, sp14);
@@ -492,10 +492,11 @@ void fn_802E2E38(int arg0) {
 }
 #pragma pop
 
+#pragma scheduling invalid_target
 void fn_802E300C(int arg0) {
-    ((void (*)(const char *, int))fn_802E317C)(lbl_8034CEE4, arg0);
+    fn_802E317C(lbl_8034CEE4, arg0);
 }
-
+#pragma scheduling on
 extern unsigned int fn_802E176C(unsigned int);
 extern void fn_802E1780(void *, unsigned int, int);
 extern int fn_802E1804(void *, void *, int, int, int);
