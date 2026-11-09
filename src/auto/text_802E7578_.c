@@ -38,6 +38,14 @@ extern "C" void fn_802E759C(void) {
 extern "C" void fn_802E75E4(s32 arg0) {
     ((Dummy_8055FFF0*)lbl_8055FFF0)->f4(arg0);
 }
+
+#pragma scheduling reset
+extern "C" void fn_802E75FC(s32 arg0) {
+    fn_802E30C8(lbl_8034D808);
+    ((Dummy_8055FFF0*)lbl_8055FFF0)->f8(arg0);
+    fn_802E30C8(lbl_8034D818);
+}
+
 #pragma cplusplus reset
 extern "C" void fn_802E765C(s32 arg0, s32 arg1, s32 arg2) {
     s32 a0 = arg0;
