@@ -34,6 +34,7 @@ extern int btsnd_hcic_reject_esco_conn(void *, u8 *, u8);
 #include "revolution/BTE/gki/common/gki.h"
 #include <revolution/OS.h>
 #include "revolution/BTE/stack/include/hiddefs.h"
+extern void BTA_DmSetVisibility(unsigned char, unsigned char);
 
 
 /* Forward declare tL2C_CONN_INFO for l2c_csm_w4_l2ca_connect_rsp */
