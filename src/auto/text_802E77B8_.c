@@ -589,19 +589,15 @@ extern float lbl_80565164, lbl_80565170, lbl_80565198, lbl_8056519C;
 extern unsigned char lbl_80505978[];
 void fn_802E8524(void) {}
 
-#pragma push
-#pragma scheduling invalid_target
 void fn_802E8528(int index, float value, float unused) {
     extern float lbl_80565164, lbl_80565170, lbl_80565198, lbl_8056519C;
     extern unsigned char lbl_80505978[];
-    register float scaled;
-    register float rounded;
+    float scaled;
+    float rounded;
     int result;
     int converted;
     int magnitude;
-
-    scaled = value - lbl_80565198;
-    scaled = lbl_8056519C * scaled;
+    scaled = (value - lbl_80565198) * lbl_8056519C;
     if (scaled < lbl_80565164)
         rounded = scaled - lbl_80565170;
     else
