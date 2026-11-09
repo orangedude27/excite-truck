@@ -46,6 +46,8 @@ typedef struct MenuRenderCopy {
 } MenuRenderCopy;
 #pragma pack(pop)
 extern char lbl_8034A598[];
+extern char lbl_8034A6A0[];
+extern char lbl_8034A790[];
 __declspec(section ".sdata") extern const char lbl_8055CEA8[];
 __declspec(section ".sdata") extern const char lbl_8055CE58[];
 __declspec(section ".sdata") extern const char lbl_8055CE60[];
@@ -599,6 +601,22 @@ void fn_802B6568(void *arg0, const char *fmt, ...) {
     }
     fn_80147230(arg0, lbl_8055CE70, buf);
 }
+
+#pragma cplusplus on
+extern "C" void fn_802B676C(void) {
+    class Dummy_802B676C {
+    public:
+        virtual void m0();
+        virtual Dummy_802B676C *m1(void *);
+    };
+    char *base = lbl_8034A598;
+    s32 *p = ((s32 *(*)())fn_802B5B6C)();
+    Dummy_802B676C *obj = (Dummy_802B676C *)lbl_8055FA48;
+    obj = obj->m1(base + 0x108);
+    fn_802B6568(obj, base + 0x1F8, *p);
+}
+#pragma cplusplus reset
+
 #pragma scheduling on
 __declspec(section ".sdata") extern const char lbl_8055CE78[], lbl_8055CE80[];
 extern const char lbl_8034A808[], lbl_8034A814[];
