@@ -8811,8 +8811,9 @@ void btm_return_link_keys_evt(tBTM_RETURN_LINK_KEYS_EVT *result) {
 }
 
 void fn_8007ABE8(void *arg0) {
-    void (*callback)(void) = *(void (**)(void))(lbl_803C0F78 + 0x568);
-    if (callback != NULL) callback();
+    void (*callback)(void *) = *(void (**)(void *))(lbl_803C0F78 + 0x568);
+    if (callback != 0)
+        callback(arg0);
 }
 
 void btm_discovery_db_init(void) {
