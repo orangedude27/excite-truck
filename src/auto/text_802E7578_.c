@@ -33,7 +33,7 @@ extern "C" void fn_802E759C(void) {
 }
 #pragma cplusplus on
 extern "C" void fn_802E75E4(s32 arg0) {
-    ((Dummy_8055FFF0*)lbl_8055FFF0)->f8(arg0);
+    ((Dummy_8055FFF0*)lbl_8055FFF0)->f4(arg0);
 }
 #pragma cplusplus reset
 extern "C" void fn_802E765C(s32 arg0, s32 arg1, s32 arg2) {
