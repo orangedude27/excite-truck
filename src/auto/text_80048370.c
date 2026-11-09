@@ -914,7 +914,7 @@ void PSMTXConcat(register const Mtx a, register const Mtx b, register Mtx out) {
 u32 PSMTXInverse(Mtx m, char axis, f32 rad) {
     f32 sinA = sinf(rad);
     f32 cosA = cosf(rad);
-    return PSMTXInvXpose(m, axis, (f64)sinA, (f64)cosA);
+    return PSMTXInvXpose(m, axis, sinA, cosA);
 }
 
 #pragma push
