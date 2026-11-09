@@ -75,8 +75,17 @@ void fn_800124DC(const char *arg0, float farg0) {
 }
 
 #pragma pop
+void fn_8001255C(const char *arg0, float farg0) {
+    register char *p = lbl_80351790;
+    float f = *(float *)(p + 0x84) + farg0;
+    strncpy(p + 1, arg0, 0x7f);
+    *(float *)(p + 0x84) = f;
+    p[0x80] = 0;
+    *(int *)(p + 0x90) = fn_802E2C20() - *(int *)(p + 0x8c);
+}
+
 void fn_800125C4(void) {
-    fn_8001255C(lbl_802FC600, lbl_80560350);
+    ((void(*)(const char *, float))fn_8001255C)(lbl_802FC600, lbl_80560350);
 }
 
 void fn_800125D4(const char *arg0) {
