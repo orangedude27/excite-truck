@@ -294,6 +294,23 @@ s32 NANDInit(void) {
     }
 }
 
+/**
+ * Make @p path the library's current directory. This is the RVL SDK's
+ * nandChangeDir() helper; the name this project carries for it is a leftover
+ * from an early pass, as is the name of its caller below.
+ *
+ * ISFS_ReadDir() is what does the work: it succeeds on a directory and fails
+ * on anything else, so once it returns IPC_RESULT_OK the absolute path is
+ * stored as the current directory - nandReadDirCallback() does the same for
+ * the asynchronous request. Interrupts keep the two writers of s_currentDir
+ * (and of NANDGetCurrentDir()) from interleaving.
+ *
+ * @param async  TRUE: build the request in @p block and hand it to
+ *               ISFS_ReadDirAsync(); FALSE: do it here with local storage.
+ * @param priv   TRUE skips the check that rejects the private "/shared2"
+ *               tree, for the NANDPrivate* entry points.
+ * @return an IPC_RESULT_* code that the caller passes to nandConvertErrorCode().
+ */
 static s32 nandOnShutdown(const char* path, NANDCommandBlock* block, BOOL async,
                           BOOL priv) {
     if (async) {
@@ -301,7 +318,7 @@ static s32 nandOnShutdown(const char* path, NANDCommandBlock* block, BOOL async,
 
         if (!priv) {
             BOOL isPriv;
-            if (strncmp(block->path, "/shared2", 8) == 0) {
+            if (strncmp(block->path, "/shared2", sizeof("/shared2") - 1) == 0) {
                 isPriv = TRUE;
             } else {
                 isPriv = FALSE;
@@ -314,7 +331,7 @@ static s32 nandOnShutdown(const char* path, NANDCommandBlock* block, BOOL async,
         return ISFS_ReadDirAsync(block->path, NULL, &block->dirFileCount,
                                  nandReadDirCallback, block);
     } else {
-        char absPath[64];
+        char absPath[FS_MAX_PATH];
         u32 numFiles = 0;
         s32 result;
 
@@ -323,7 +340,7 @@ static s32 nandOnShutdown(const char* path, NANDCommandBlock* block, BOOL async,
 
         if (!priv) {
             BOOL isPriv;
-            if (strncmp(absPath, "/shared2", 8) == 0) {
+            if (strncmp(absPath, "/shared2", sizeof("/shared2") - 1) == 0) {
                 isPriv = TRUE;
             } else {
                 isPriv = FALSE;
@@ -335,9 +352,9 @@ static s32 nandOnShutdown(const char* path, NANDCommandBlock* block, BOOL async,
 
         result = ISFS_ReadDir(absPath, NULL, &numFiles);
         if (result == IPC_RESULT_OK) {
-            BOOL intr = OSDisableInterrupts();
+            BOOL enabled = OSDisableInterrupts();
             strcpy(s_currentDir, absPath);
-            OSRestoreInterrupts(intr);
+            OSRestoreInterrupts(enabled);
         }
         return result;
     }
