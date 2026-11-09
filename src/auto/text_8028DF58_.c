@@ -531,6 +531,8 @@ void fn_8028EEB4(void *arg0, int arg1, const char *arg2) {
     (*countp)++;
 }
 
+#pragma push
+#pragma scheduling off
 int fn_8028EF44(void *arg0, unsigned int arg1) {
     char *base = (char *)arg0;
     char *p = base;
