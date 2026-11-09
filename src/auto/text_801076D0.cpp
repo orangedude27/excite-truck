@@ -409,7 +409,18 @@ extern "C" s32 fn_80109040(s32 arg0, s32 arg1) {
 }
 
 extern "C" void SetResourceBuffer__Q46nw4hbm2ut6detail11ResFontBaseFPvPQ36nw4hbm2ut15FontInformation(void* self, void* resource, void* info) {
+    /* lbl_80329140 is this file's debug blob: +0xC is "ut_ResFontBase.cpp",
+     * and +0x20, +0x5C, +0x98 and +0xC4 the nw4hbm::db messages quoted here. */
     const char* file=lbl_80329140;
+
+    /* nw4hbm::db's valid-pointer check, unrolled by the compiler: each flag
+     * stays 1 while the address was found in one of the ranges tested so far,
+     * and the last one decides whether to panic.  The ranges are MEM1
+     * (0x80000000, with the 8 MiB expanded at 0x81000000), MEM2 (0x90000000),
+     * their uncached mirrors (0xC0000000, 0xC1000000, 0xD0000000) and the
+     * 16 KiB block at 0xE0000000.  The flags keep their one-letter names: the
+     * allocator binds them to r10..r5 in that order, and naming them after
+     * their range flips the binding and breaks the match. */
     u32 resourceAddr=(u32)resource;
     int a=1,b=1,c=1,d=1,e=1,f=1;
     u32 t=resourceAddr&0xFF000000U;
@@ -420,6 +431,8 @@ extern "C" void SetResourceBuffer__Q46nw4hbm2ut6detail11ResFontBaseFPvPQ36nw4hbm
     if(c==0&&(resourceAddr&0xF8000000U)!=0xD0000000U)b=0;
     if(b==0&&(resourceAddr&0xFFFFC000U)!=0xE0000000U)a=0;
     if(a==0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x4F,file+0x20,resource);
+
+    /* The same check over the FontInformation the caller rebuilt. */
     u32 v=(u32)info;
     int g=1,h=1,i=1,j=1,k=1,l=1;
     u32 t2=v&0xFF000000U;
@@ -430,6 +443,8 @@ extern "C" void SetResourceBuffer__Q46nw4hbm2ut6detail11ResFontBaseFPvPQ36nw4hbm
     if(i==0&&(v&0xF8000000U)!=0xD0000000U)h=0;
     if(h==0&&(v&0xFFFFC000U)!=0xE0000000U)g=0;
     if(g==0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x50,file+0x5C,info);
+
+    /* "NW4HBM:Failed assertion mResource == NULL" and "mFontInfo == NULL". */
     if(*(void**)((char*)self+0x10)!=0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x51,file+0x98);
     if(*(void**)((char*)self+0x14)!=0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x52,file+0xC4);
     *(void**)((char*)self+0x10)=resource;
