@@ -476,6 +476,11 @@ asm void OSInitContext(register OSContext* ctx, register void* _srr0,
     // clang-format on
 }
 
+// Dumps a whole CPU context to the OS report console: the 32 GPRs two per
+// line, the LR/CR/SRR0/SRR1 SPRs, the 8 GQRs, then -- if the context still
+// holds saved floating-point state -- its 32 FPRs and 32 PSFs, and finally a
+// walk of up to 16 frames of the stack it was running on (back chain and saved
+// LR per frame).
 void OSDumpContext(const OSContext* ctx) {
     u32 i;
     u32* sp;
@@ -484,7 +489,8 @@ void OSDumpContext(const OSContext* ctx) {
         "------------------------- Context 0x%08x -------------------------\n",
         ctx);
 
-    for (i = 0; i < 16; i++) {
+    // One line per pair: r0 with r16, r1 with r17, ...
+    for (i = 0; i < ARRAY_SIZE(ctx->gprs) / 2; i++) {
         OSReport("r%-2d  = 0x%08x (%14d)  r%-2d  = 0x%08x (%14d)\n", i,
                  ctx->gprs[i], ctx->gprs[i], i + 16, ctx->gprs[i + 16],
                  ctx->gprs[i + 16]);
@@ -495,28 +501,35 @@ void OSDumpContext(const OSContext* ctx) {
     OSReport("SRR0 = 0x%08x                   SRR1 = 0x%08x\n", ctx->srr0,
              ctx->srr1);
 
+    // Same for the GQRs: gqr0 with gqr4, gqr1 with gqr5, ...
     OSReport("\nGQRs----------\n");
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < ARRAY_SIZE(ctx->gqrs) / 2; i++) {
         OSReport("gqr%d = 0x%08x \t gqr%d = 0x%08x\n", i, ctx->gqrs[i], i + 4,
                  ctx->gqrs[i + 4]);
     }
 
     if (ctx->state & OS_CONTEXT_STATE_FP_SAVED) {
         OSContext tempCtx;
+        // The values printed here come from the context's memory, so the dump
+        // has to keep the OS from writing live FPU state over them: interrupts
+        // are off for the whole dump and a cleared scratch context is made the
+        // current one, so no context switch can save into ctx while we read it.
         BOOL enabled = OSDisableInterrupts();
         OSContext* currCtx = OSGetCurrentContext();
 
         OSClearContext(&tempCtx);
         OSSetCurrentContext(&tempCtx);
 
+        // The FP registers print as the integer value of the double they hold,
+        // not as its bit pattern.
         OSReport("\n\nFPRs----------\n");
-        for (i = 0; i < 32; i += 2) {
+        for (i = 0; i < ARRAY_SIZE(ctx->fprs); i += 2) {
             OSReport("fr%d \t= %d \t fr%d \t= %d\n", i, (u32)ctx->fprs[i],
                      i + 1, (u32)ctx->fprs[i + 1]);
         }
 
         OSReport("\n\nPSFs----------\n");
-        for (i = 0; i < 32; i += 2) {
+        for (i = 0; i < ARRAY_SIZE(ctx->psfs); i += 2) {
             OSReport("ps%d \t= 0x%x \t ps%d \t= 0x%x\n", i, (u32)ctx->psfs[i],
                      i + 1, (u32)ctx->psfs[i + 1]);
         }
@@ -526,6 +539,8 @@ void OSDumpContext(const OSContext* ctx) {
         OSRestoreInterrupts(enabled);
     }
 
+    // Follow r1's back chain while it looks like a frame: 0xFFFFFFFF is where
+    // the OS ends a stack, and 16 frames is as far as we are willing to go.
     OSReport("\nAddress:      Back Chain    LR Save\n");
     i = 0;
     sp = (u32*)ctx->gprs[1];
