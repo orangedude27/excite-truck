@@ -941,7 +941,7 @@ void fn_80006B18(void *arg0) {
                 remainder = (s32)(percent * value) - whole * 100;
                 fn_801345D8(sp8, 8, lbl_80558940, whole, remainder);
             }
-            fn_8000FF88(-0x100, 0x41, lbl_80558948,
+            fn_8000FF88(-0x100, 0x41, &lbl_80558948,
                         lbl_80560180, advance, (y - gap) - threshold, sp8);
             advance += percentScale;
         } else {
@@ -1500,12 +1500,12 @@ void fn_800077E4(void *arg0) {
     void *base = lbl_8055D350;
     void *p = (u8 *)arg0 + ((s32 *)base)[7] * 4;
     *(f32 *)((u8 *)p + 4) = ((f32 *)base)[4];
-    if (fn_8000561C(p, base) != 0) {
-        *(f32 *)((u8 *)arg0 + 0x18) = ((f32 *)lbl_8055D350)[4];
-        fn_80276DC8(((s32 *)lbl_8055D350)[7]);
+    if (!fn_8000561C(p, base)) {
+        return;
     }
+    *(f32 *)((u8 *)arg0 + 0x18) = ((f32 *)lbl_8055D350)[4];
+    fn_80276DC8(((s32 *)lbl_8055D350)[7]);
 }
-#pragma scheduling on
 void fn_80007848(void) {
     void *base = lbl_8055D350;
     void *object = *(void **)((u8 *)base + 0x2C);
