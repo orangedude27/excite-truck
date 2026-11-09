@@ -141,15 +141,13 @@ extern void fn_802E317C(const char *, ...);
 #pragma optimization_level 2
 #pragma scheduling invalid_target
 s32 *fn_80167874(s32 arg0) {
-    s32 *entry = (s32 *)lbl_80330020;
-    s32 value = *entry;
-    while (value != 6) {
+    s32 *entry;
+    s32 value;
+    for (entry = (s32 *)lbl_80330020; (value = *entry) != 6; entry += 8) {
         if (value == arg0)
             return entry;
-        entry = (s32 *)((u8 *)entry + 0x20);
-        value = *entry;
     }
-    fn_802E317C(lbl_803300E0);
+    fn_802E317C(lbl_803300E0, arg0);
     return (s32 *)lbl_80330020;
 }
 #pragma scheduling on
@@ -781,9 +779,9 @@ extern char lbl_803301B8[];
 extern s32 lbl_8055E354;
 extern s32 lbl_80430260[];
 void fn_801688B4(s32 arg0) {
+    u8 *base = (u8 *)lbl_8055E354 + 0x20000;
     s32 i = 0;
     s32 offset = 0;
-    u8 *base = (u8 *)(u32)lbl_8055E354 + 0x20000;
     while (i < *(s32 *)(base - 0x2B30)) {
         s32 *record = (s32 *)(*(s32 *)(base - 0x2B34) + offset);
         if (arg0 == *(s32 *)((u8 *)record + offset)) {
@@ -796,14 +794,15 @@ void fn_801688B4(s32 arg0) {
 
 void fn_801688FC(s32 arg0) {
     s32 i = 0;
-    s32 j = 0;
-    while (i < *(s32 *)(&lbl_8055E354 + 0x1D4D0)) {
-        s32 *p = *(s32 **)(&lbl_8055E354 + 0x1D4CC) + j;
-        if (arg0 == *p) {
-            *(char *)(p + 4) = 0;
+    s32 offset = 0;
+    u8 *base = (u8 *)(u32)lbl_8055E354 + 0x20000;
+    while (i < *(s32 *)(base - 0x2B30)) {
+        s32 table = *(s32 *)(base - 0x2B34);
+        if (arg0 == *(s32 *)(table + offset)) {
+            *((u8 *)(table + offset) + 4) = 0;
         }
-        j += 0x20;
-        i += 1;
+        offset += 0x20;
+        i++;
     }
 }
 
@@ -823,22 +822,27 @@ extern "C" s32 fn_8016899C(void *arg0, DummyArg1 *arg1, DummyManager *arg2, f32 
     public:
         virtual void v0();
         virtual void v1();
-        virtual void v2();
         virtual s32 check(const char *name);
     };
+
     s32 *values;
-    const char *name;
-    name = arg1->getName();
-    if (((DummyCheck *)arg0)->check(name) == 0) {
-        fn_802E30C8(lbl_80330000 + 0x298, name);
+
+    if (((DummyCheck *)arg0)->check(arg1->getName()) == 0) {
+        fn_802E30C8(lbl_80330000 + 0x298, arg1->getName());
         return 0;
     }
+
     values = fn_801399FC(arg1);
     if (*values < 2) {
-        fn_802E30C8(lbl_80330000 + 0x2D0, name);
+        fn_802E30C8(lbl_80330000 + 0x2D0, arg1->getName());
         fn_80128658(values);
         return 0;
     }
+
+    /* TODO: reconstruct full path/record generation from target asm */
+    (void)arg2;
+    (void)arg3;
+    (void)lbl_802F94B8;
     fn_80128658(values);
     return 1;
 }
