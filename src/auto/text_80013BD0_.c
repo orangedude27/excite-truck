@@ -939,7 +939,7 @@ void fn_80015658(void *arg0) {
     ((void (*)(s32, s32, void *, s32, ...))fn_8000FF88)(-0x100, 0xA, &lbl_80558BA4, temp_r30, lbl_805603E0, temp_f31 - lbl_805603A0, temp_f30 - lbl_805603E4);
 }
 
-void fn_80015A20(void *arg0, volatile f32 *arg1);
+void fn_80015A20();
 #pragma push
 #pragma use_lmw_stmw off
 void fn_80015770(void *arg0, f64 x, f64 y, f32 a, f32 b, f32 c) {
@@ -1002,20 +1002,18 @@ void fn_80015770(void *arg0, f64 x, f64 y, f32 a, f32 b, f32 c) {
 #pragma pop
 void fn_80015AA0(void *, f32);
 void fn_80015EB0(void *, f32);
-#pragma push
 #pragma scheduling invalid_target
 void fn_80015A20(void *arg0, volatile f32 *arg1) {
     f32 matrix[9];
-    f32 angle1 = arg1[1];
     f32 angle0 = arg1[0];
     f32 angle2 = arg1[2];
-    fn_80015EB0(arg0, angle1);
+    fn_80015EB0(arg0, arg1[1]);
     fn_80015E30(matrix, angle0);
     fn_80015B20(arg0, matrix, arg0);
     fn_80015AA0(matrix, angle2);
     fn_80015B20(arg0, matrix, arg0);
 }
-#pragma pop
+#pragma scheduling on
 extern void fn_801476C4(void);
 extern u8 lbl_80558BBC[];
 extern u8 lbl_802FCDB4[];
@@ -1025,25 +1023,25 @@ extern f64 cos(void);
 extern f64 sin(f32);
 #pragma scheduling invalid_target
 void fn_80015AA0(void *arg0, f32 angle) {
-    f32 c;
-    f32 s;
+    f32 one;
     f32 zero;
-    f32 neg;
+    f32 sine;
+    f32 cosine;
     f32 *m;
-    c = (f32)cos();
-    s = (f32)sin(angle);
+    cosine = (f32)cos();
+    sine = (f32)sin(angle);
     zero = lbl_80560360;
+    one = lbl_80560368;
     m = (f32 *)arg0;
-    m[0] = c;
-    neg = -s;
-    m[1] = s;
+    m[0] = cosine;
+    m[1] = sine;
     m[2] = zero;
-    m[3] = neg;
-    m[4] = c;
+    m[3] = -sine;
+    m[4] = cosine;
     m[5] = zero;
     m[6] = zero;
     m[7] = zero;
-    m[8] = lbl_80560368;
+    m[8] = one;
 }
 #pragma push
 #pragma scheduling invalid_target
@@ -1192,10 +1190,12 @@ extern "C" void fn_80015F30(void* arg0) {
 #pragma cplusplus reset
 #pragma pop
 
-#pragma scheduling invalid_target
+#pragma push
+#pragma scheduling off
+#pragma processor 750
 s32 fn_80016214(void) {
-    register f64 scale = lbl_80560400;
     register void *manager = lbl_8055D350;
+    register f64 scale = lbl_80560400;
     f32 speed = *(f32 *)((u8 *)manager + 0x10);
     f32 value = (f32)((f64 (*)(void *, f32, f64))fn_8002EFB4)(manager, speed, scale);
     s32 greater = value > lbl_805603BC;
@@ -1206,7 +1206,7 @@ s32 fn_80016214(void) {
     }
     return 0;
 }
-#pragma scheduling on
+#pragma pop
 s32 fn_80016288(void) { return 0; }
 
 extern f32 fn_8002EFB4(void *, f32, f64);
