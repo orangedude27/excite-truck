@@ -29,7 +29,7 @@ extern "C" void Warning__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, 
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern int fn_80128668(void);
-extern int Pause__Q46nw4hbm3snd6detail7AxVoiceFb(int, unsigned char);
+extern "C" void Pause__Q46nw4hbm3snd6detail7AxVoiceFb(int, unsigned char);
 extern int ReleaseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFi_801016C0(int);
 extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFi_801016C0(void *, int);
 extern "C" int fn_800EAD00(void *);
@@ -610,7 +610,7 @@ extern "C" void SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36n
 nw4hbm::ut::CharWriter::CharWriter() {
     unsigned char *self = (unsigned char *)this;
     unsigned char *source1, *source2, *source3;
-    nw4hbm::ut::Color colorA, colorB;
+    nw4hbm::ut::Color colorB, white, colorA;
     unsigned int addr = (unsigned int)this;
     int r9 = 1, r10 = 1, r11 = 1, r12 = 1, r30 = 1, r29 = 1;
     unsigned int top = addr & 0xFF000000U;
@@ -655,11 +655,8 @@ nw4hbm::ut::CharWriter::CharWriter() {
         self[0xB] = product_b / 255; self[0xF] = product_f / 255;
         self[0x13] = product_13 / 255; self[0x17] = product_17 / 255;
     }
-    {
-        nw4hbm::ut::Color white;
-        *(int *)&white = -1;
-        SetTextColor(white);
-    }
+    *(int *)&white = -1;
+    SetTextColor(white);
     CW_CHECK_THIS(this, 0x1E7);
     *(float *)(self + 0x24) = lbl_80561154;
     *(float *)(self + 0x28) = lbl_80561154;
