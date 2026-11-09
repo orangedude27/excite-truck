@@ -24,7 +24,7 @@ extern f32 lbl_8055FDE0;
 extern s32 lbl_8055FDF0;
 extern s32 lbl_8055FDF4;
 extern s32 lbl_8055FDF8;
-extern u8 lbl_8034C3DC;
+extern u8 lbl_8034C3DC[];
 extern void fn_801282EC(s32);
 extern void *fn_8012850C(s32, void *);
 extern void DCInvalidateRange(void *, u32);
@@ -161,7 +161,8 @@ void fn_802D41C8(void *arg0) {
 }
 
 void fn_802D422C(void *arg0) {
-    GXSetArray(9, *(void **)((char *)arg0 + 0x20), 0xC);
+    void *p20 = *(void **)((char *)arg0 + 0x20);
+    GXSetArray(9, p20, 0xC);
     GXSetArray(0xD, *(void **)((char *)arg0 + 0x28), 4);
     GXCallDisplayList(*(void **)((char *)arg0 + 0x30), *(u32 *)((char *)arg0 + 0x2C));
 }
