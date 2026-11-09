@@ -35,9 +35,12 @@ extern short lbl_80562E28;
 extern u8 lbl_80339E60[];
 void fn_801EAB2C(void *arg0) {
     float a = lbl_80562E60;
+    void *vptr = &lbl_80339E60;
     float b = lbl_80562E64;
     float *p = (float *)arg0;
-    *(int *)arg0 = (int)&lbl_80339E60;
+    p[1] = a;
+    *(short *)((char *)arg0 + 0x38) = lbl_80562E28;
+    *(int *)arg0 = (int)vptr;
     p[1] = a;
     p[2] = b;
     p[3] = b;
@@ -50,7 +53,6 @@ void fn_801EAB2C(void *arg0) {
     p[10] = b;
     p[11] = b;
     p[12] = b;
-    *(short *)((char *)arg0 + 0x38) = lbl_80562E28;
 }
 
 void fn_801EAB80(void *arg0, long arg1) {
@@ -100,6 +102,8 @@ s16 fn_801EAC3C(void* arg0) {
     return *(s16*)((u8*)arg0 + 0x38);
 }
 
+#pragma dont_inline on
+#pragma scheduling invalid_target
 void* fn_801EAC44(void* this_, s32 arg1, s32 arg2) {
     fn_801EAB2C(this_);
     *(u32*)this_ = (u32)lbl_80339E3C;
@@ -107,7 +111,8 @@ void* fn_801EAC44(void* this_, s32 arg1, s32 arg2) {
     fn_801EAB80(this_, arg1);
     return this_;
 }
-
+#pragma scheduling on
+#pragma dont_inline off
 s32 fn_801EACB8(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
