@@ -6,6 +6,7 @@
 #undef MEMRecordStateForFrmHeap
 #include "revolution/KPAD/__KPAD.h"
 #include "revolution/OS/OSInterrupt.h"
+#include "revolution/MTX/mtx.h"
 #include "revolution/MTX/mtxtypes.h"
 
 extern f32 lbl_80560C48;
@@ -290,15 +291,65 @@ static inline MEMiExpHeapMBlock *InsertAfterMBlock_(MEMiExpHeapMBlockList *list,
     return mblock;
 }
 
-void *AllocUsedBlockFromFreeBlock_(MEMiExpHeapHead *exp, MEMiExpHeapMBlock *blk, void *mem, u32 size, u16 align) {
-MEMiExpHeapMBlock *prev=blk->prev,*next=blk->next,*first,*last,*p; u32 alloc=(u32)mem,before=alloc-(align&0x7F),end=(u32)blk+blk->size+0x10,after=alloc+size;
-if(prev)prev->next=next;else exp->freeMBlocks.head=next;if(next)next->prev=prev;else exp->freeMBlocks.tail=prev;
-first=(MEMiExpHeapMBlock *)(alloc-0x10);
-if(alloc-before>=0x14){first=(MEMiExpHeapMBlock *)before;first->state=0x4652;first->settings=0;first->size=alloc-before-0x10;first->prev=0;first->next=0;p=exp->freeMBlocks.tail;if(p)p->next=first;else exp->freeMBlocks.head=first;first->prev=p;exp->freeMBlocks.tail=first;}
-last=(MEMiExpHeapMBlock *)after;
-if(end-after>=0x14){last->state=0x4652;last->settings=0;last->size=end-after-0x10;last->prev=0;last->next=0;p=exp->freeMBlocks.tail;if(p)p->next=last;else exp->freeMBlocks.head=last;last->prev=p;exp->freeMBlocks.tail=last;}
-first=(MEMiExpHeapMBlock *)(alloc-0x10);first->state=0x5544;first->size=size;first->settings=(align&0x8000)|(((alloc-before)<<8)&0x7F00)|(exp->group&0xFF);
-p=exp->usedMBlocks.tail;if(p)p->next=first;else exp->usedMBlocks.head=first;first->prev=p;first->next=0;exp->usedMBlocks.tail=first;return mem;
+void *AllocUsedBlockFromFreeBlock_(MEMiExpHeapHead *exp, MEMiExpHeapMBlock *blk, void *mem, u32 size, u16 direction) {
+    MEMiExpHeapMBlock *prev = blk->prev;
+    MEMiExpHeapMBlock *usedStart;
+    u8 *after = (u8 *)mem + size;
+    MEMiExpHeapMBlock *newBlk = (MEMiExpHeapMBlock *)((u8 *)mem - sizeof(MEMiExpHeapMBlock));
+    u16 settings = blk->settings;
+    u8 *start = (u8 *)blk - ((settings >> 8) & 0x7F);
+    MEMiExpHeapMBlock *next = blk->next;
+    u8 *end = (u8 *)blk + blk->size + sizeof(MEMiExpHeapMBlock);
+    MEMiExpHeapMBlock *fb;
+
+    usedStart = newBlk;
+    if (prev != 0) {
+        prev->next = next;
+    } else {
+        exp->freeMBlocks.head = next;
+    }
+    if (next != 0) {
+        next->prev = prev;
+    } else {
+        exp->freeMBlocks.tail = prev;
+    }
+
+    if ((u32)newBlk - (u32)start < 0x14) {
+        usedStart = (MEMiExpHeapMBlock *)start;
+    } else {
+        fb = (MEMiExpHeapMBlock *)start;
+        fb->state = 0x4652;
+        fb->settings = 0;
+        fb->size = (u32)newBlk - ((u32)start + sizeof(MEMiExpHeapMBlock));
+        fb->next = 0;
+        prev = InsertAfterMBlock_(&exp->freeMBlocks, prev, fb);
+    }
+
+    if ((u32)end - (u32)after < 0x14) {
+        after = end;
+    } else {
+        fb = (MEMiExpHeapMBlock *)after;
+        fb->state = 0x4652;
+        fb->settings = 0;
+        fb->size = (u32)end - ((u32)after + sizeof(MEMiExpHeapMBlock));
+        fb->next = 0;
+        prev = InsertAfterMBlock_(&exp->freeMBlocks, prev, fb);
+    }
+
+    if (((MEMiHeapHead *)exp)[-1].attribute & 1) {
+        memset(usedStart, 0, after - (u8 *)usedStart);
+    }
+
+    newBlk->state = 0x5544;
+    newBlk->size = after - (u8 *)mem;
+    newBlk->prev = 0;
+    newBlk->next = 0;
+    newBlk->settings = 0;
+    newBlk->allocDir = direction;
+    newBlk->align = (u8 *)newBlk - (u8 *)usedStart;
+    newBlk->group = exp->group;
+    InsertAfterMBlock_(&exp->usedMBlocks, exp->usedMBlocks.tail, newBlk);
+    return mem;
 }
 
 void* AllocFromHead_(MEMiHeapHead* heap, u32 size, s32 align) {
