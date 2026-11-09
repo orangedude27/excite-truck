@@ -139,11 +139,13 @@ done:
     return 0;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_8000AF04(void) {
+    lbl_8034F5D8[0] = 4;
     lbl_8055D3E0 = 1;
-    *(int *)0x8034F5D8 = 4;
 }
-
+#pragma pop
 extern int fn_80204024(void);
 extern int fn_801E7C1C(void *);
 extern void fn_801E8818(void (*)(void), void *);
