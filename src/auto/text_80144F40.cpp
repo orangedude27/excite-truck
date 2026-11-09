@@ -487,6 +487,19 @@ extern "C" FloatPair80145A24 fn_80145A24(void *arg0) {
 #pragma dont_inline reset
 #pragma processor reset
 
+// One line of the game's on-screen text, as read from the level's text data
+// (see fn_80145368 / fn_80145538, which fill it from the "name", "x", "y",
+// "elem_just", ... keys) and drawn by the fn_80145B50..fn_80145CF4 printers.
+struct TextEntry80145C08 {
+    s32 id;            /* +0x00 "name" */
+    f32 x;             /* +0x04 "x" */
+    f32 y;             /* +0x08 "y" */
+    s32 justification; /* +0x0C "elem_just": 0 auto, 1 right, 2 left, 3 centre; |0x20 = scale by aspect */
+    f32 scale;         /* +0x10 */
+    s32 fontId;        /* +0x14 font the drawer picks */
+    s32 color;         /* +0x18 colour, parsed from "#rrggbb" by fn_801454E8 */
+};
+
 extern "C" f32 lbl_80561608;
 extern "C" void fn_8001027C(s32, s32, void *, u32, f32, f32, f32);
 extern "C" f32 fn_801452A0(s32, f32);
