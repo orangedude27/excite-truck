@@ -641,9 +641,12 @@ check:
     }
 }
 #pragma scheduling on
+#pragma push
+#pragma dont_inline on
 int fn_802B2E00(void *arg0) {
     return ((int *)arg0)[1];
 }
+#pragma pop
 
 extern double cos(float);
 extern double sin(float);
