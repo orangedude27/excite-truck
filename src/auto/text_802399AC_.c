@@ -589,16 +589,48 @@ void fn_8023B0BC(void *arg0) {
     fn_8022BAD0(0xC9, temp_r31, temp_r30, 0, temp_r29, temp_r28, temp_r3, *(s32 *)((char *)p + 0x18), 0, 1.0f);
 }
 #pragma pop
-s32 fn_8023B138(void *arg0) {
-    register void *object = lbl_8055F10C;
-    if (((s32 (*)(void *))(*(void ***)object)[24])(object) == 0) {
-        if (fn_80214D04() == 0) {
+#pragma push
+#pragma cplusplus on
+extern "C" s32 fn_80214D04(void);
+extern "C" void fn_8023B138(void *arg0) {
+    struct Dummy {
+        virtual s32 f0();
+        virtual s32 f1();
+        virtual s32 f2();
+        virtual s32 f3();
+        virtual s32 f4();
+        virtual s32 f5();
+        virtual s32 f6();
+        virtual s32 f7();
+        virtual s32 f8();
+        virtual s32 f9();
+        virtual s32 f10();
+        virtual s32 f11();
+        virtual s32 f12();
+        virtual s32 f13();
+        virtual s32 f14();
+        virtual s32 f15();
+        virtual s32 f16();
+        virtual s32 f17();
+        virtual s32 f18();
+        virtual s32 f19();
+        virtual s32 f20();
+        virtual s32 f21();
+        virtual s32 f22();
+    };
+    if (((Dummy *)lbl_8055F10C)->f22() == 0) {
+        switch (fn_80214D04()) {
+        case 0:
             *(s32 *)((char *)arg0 + 0x18) = 1;
-        } else {
+            break;
+        default:
             *(s32 *)((char *)arg0 + 0x18) = 0;
+            break;
         }
     }
 }
+#pragma cplusplus reset
+#pragma pop
 
 #pragma push
 #pragma small_data off
