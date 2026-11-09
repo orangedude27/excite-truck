@@ -58,6 +58,7 @@ float fn_802E7824(float arg0, float arg1) {
 
 #pragma push
 #pragma scheduling invalid_target
+#pragma processor 750
 float fn_802E78A4(float arg0) {
     float a = fn_802E7824(lbl_80565174 + arg0, lbl_80565178);
     float b = fn_802E7824(arg0 - lbl_80565174, lbl_80565178);
@@ -65,6 +66,7 @@ float fn_802E78A4(float arg0) {
     float f = v * __fabs(v) - v;
     return v + lbl_80565164 * f;
 }
+#pragma pop
 #pragma push
 #pragma scheduling invalid_target
 void fn_802E7920(int arg0) {
