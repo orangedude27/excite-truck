@@ -727,7 +727,6 @@ const char *OSGetAppGamename(void) {
 extern BOOL __OSInIPL;
 extern const char *AppGameNameForSysMenu;
 extern char GameNameBuffer[5];
-extern u8 DriveInfo[4];
 u8 OSGetAppType(void) {
     if (__OSInIPL) return 0x40;
     return *(u8 *)0x80003184;
