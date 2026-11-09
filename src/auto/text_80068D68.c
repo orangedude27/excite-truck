@@ -6867,8 +6867,8 @@ BOOLEAN bta_hh_tod_spt(void *p_cb, UINT8 sub_class) {
     UINT8 cod = (sub_class >> 2) & 0x3F;
     UINT8 xx;
     UINT8 max_devt = lbl_80559030[0];
-    UINT8 *p_list = *(UINT8 **)(lbl_80559030 + 4);
     for (xx = 0; xx < max_devt; xx++) {
+        UINT8 *p_list = *(UINT8 **)(lbl_80559030 + 4);
         if (cod == p_list[xx * 2]) {
             ((UINT8 *)p_cb)[0x15] = p_list[xx * 2 + 1];
             return TRUE;
@@ -21625,7 +21625,7 @@ void rfc_send_dm(void *arg0, u8 arg1, u8 arg2) {
         data[0] = command;
         data[1] = (u8)((((-(s32)arg2 | arg2) >> 31) & 0x10) | 0xF);
         data[2] = 1;
-        data[3] = fn_8009504C(3, data, command);
+        data[3] = fn_8009504C(3, data);
         *(u16 *)(buf + 2) = 4;
         rfc_check_send_cmd(arg0, buf);
     }
@@ -22367,7 +22367,12 @@ void fn_80095518(void *arg0) {
 
 void rfc_sec_check_complete(void *unused, void *arg0, s8 arg1) {
     if (*((u8 *)arg0 + 1) == 0) return;
-    if (*((u8 *)arg0 + 0x68) != 2 && *((u8 *)arg0 + 0x68) != 3) return;
+    if (*((u8 *)arg0 + 0x68) == 2)
+        goto do_call;
+    if (*((u8 *)arg0 + 0x68) == 3)
+        goto do_call;
+    return;
+do_call:
     rfc_port_sm_execute(arg0, 15, &arg1);
 }
 
@@ -24982,10 +24987,13 @@ BOOLEAN sdpu_compare_uuid_with_attr(tBT_UUID *p_btuuid, tSDP_DISC_ATTR *p_attr) 
 void sdpu_sort_attr_list(UINT16 num_attr, tSDP_DISCOVERY_DB *p_db) {
     UINT16 i;
     UINT16 x;
+    int last;
 
-    if (num_attr <= 1) return;
-    num_attr--;
-    for (i = 0; i < num_attr;) {
+    if (num_attr <= 1) {
+        return;
+    }
+    last = num_attr - 1;
+    for (i = 0; (int)i < last;) {
         if (p_db->attr_filters[i] > p_db->attr_filters[i + 1]) {
             x = p_db->attr_filters[i];
             p_db->attr_filters[i] = p_db->attr_filters[i + 1];
