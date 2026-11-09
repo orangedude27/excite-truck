@@ -6863,6 +6863,20 @@ void bta_hh_add_device_to_list(void *arg0, s8 arg1, s16 arg2, void *arg3, s32 ar
     }
 }
 
+BOOLEAN bta_hh_tod_spt(void *p_cb, UINT8 sub_class) {
+    UINT8 cod = (sub_class >> 2) & 0x3F;
+    UINT8 xx;
+    UINT8 max_devt = lbl_80559030[0];
+    UINT8 *p_list = *(UINT8 **)(lbl_80559030 + 4);
+    for (xx = 0; xx < max_devt; xx++) {
+        if (cod == p_list[xx * 2]) {
+            ((UINT8 *)p_cb)[0x15] = p_list[xx * 2 + 1];
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
 void bta_hh_trace_dev_db(void) {
     extern u8 lbl_803159E0[];
     extern void fn_8007093C(u32, void *);
@@ -21898,7 +21912,7 @@ void rfc_send_credit(void *p_mcb, UINT8 credits, UINT8 arg2, u32 arg3) {
     rfc_check_send_cmd(p_mcb, p_buf);
 }
 
-extern u8 fn_80095084(s32, void *);
+extern u8 fn_80095084();
 extern char lbl_80319DD8[];
 extern char lbl_80559090[];
 extern char lbl_80559098[];
