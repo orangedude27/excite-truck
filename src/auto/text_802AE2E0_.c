@@ -30,7 +30,13 @@ void fn_802AE328(void) {
     fn_802AE2E0(&lists[0x1C]);
     lbl_8055F958 = 1;
 }
-#pragma pop
+
+#pragma scheduling reset
+void fn_802AE374(void) {
+    lbl_8055F958 = 0;
+    lbl_8055F959 = 1;
+    lbl_804BD8CC[1] = 0;
+}
 int fn_802AE414(void *arg0) {
     extern u8 lbl_8055F958;
     extern int lbl_804BD8CC[3];
@@ -65,18 +71,13 @@ extern void fn_80131818(void *);
 extern void fn_802AE328(void);
 #pragma scheduling invalid_target
 s32 fn_802AE4C8(s32 arg0) {
-    s32 count;
-    s32 *items;
-    s32 result;
     if ((s32)lbl_8055F958 == 0)
         fn_802AE328();
-    if (arg0 < 0)
-        return 0;
-    count = lbl_804BD8CC[1];
-    if (arg0 >= count)
-        return 0;
-    items = (s32 *)lbl_804BD8CC[0];
-    result = items[arg0];
-    return result;
+    if (arg0 >= 0) {
+        s32 count = lbl_804BD8CC[1];
+        if (arg0 < count)
+            return ((s32 *)lbl_804BD8CC[0])[arg0];
+    }
+    return 0;
 }
 #pragma scheduling on
