@@ -29,15 +29,20 @@ unsigned int *fn_802E3EB0(void) { return &lbl_8055FF38; }
 
 void fn_802E3EB8(void) {}
 
+#pragma scheduling invalid_target
 void *fn_802E3EBC(void) {
+    unsigned char *p;
     int i;
+    p = lbl_804FBAA0;
     for (i = 0; i < 0x10; i++) {
-        if (lbl_804FBAA0[i * 0x91] == 0) {
-            lbl_804FBAA0[i * 0x91] = 1;
-            return &lbl_804FBAA0[i * 0x91 + 1];
+        if (*p == 0) {
+            p = &lbl_804FBAA0[i * 0x91];
+            *p = 1;
+            return p + 1;
         }
+        p += 0x91;
     }
-    fn_802E317C(&lbl_8034D038);
+    fn_802E317C(lbl_8034D038);
     return (void *)lbl_8055FF40;
 }
 
