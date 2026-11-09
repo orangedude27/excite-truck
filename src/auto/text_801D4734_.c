@@ -673,14 +673,11 @@ void fn_801D4F2C(void *arg0) {
         virtual void v3();
         virtual void v4();
     };
-    int offset;
-    int i;
-    void *obj;
-    offset = 0;
-    i = 0;
+    int offset = 0;
+    int i = 0;
     while (i < *(int *)((char *)arg0 + 0x34)) {
-        obj = *(void **)((char *)*(void **)((char *)arg0 + 0x30) + offset);
-        ((void (**)(void *))*(void **)obj)[4](obj);
+        Entry *entry = *(Entry **)((char *)*(void **)((char *)arg0 + 0x30) + offset);
+        entry->v4();
         offset += 4;
         i += 1;
     }
