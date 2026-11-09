@@ -1029,112 +1029,117 @@ typedef struct LevelButton {
     /* 0x74 */ int level;                // level the button is on
 } LevelButton;
 
+// Message handler of the achievement-level selector button: "one level down"
+// (0x128) and "one level up" (0x126) step the level within the achievement's
+// thresholds and refresh the dialog's texts with the name and value of the
+// threshold now shown; a button already at the first or last level plays the
+// "cannot go any further" cue instead.
 int fn_8025B2BC(void *arg0, int arg1) {
     typedef void (*Fmt)(char *, int, const char *, ...);
-    char *o = (char *)arg0;
-    char *obj;
-    int idx;
-    unsigned char *src;
-    unsigned char c;
-    int count;
-    unsigned char *dst;
-    int v;
-    int n;
-    int old;
-    int res;
-    int idx2;
-    char *obj2;
-    unsigned char *src2;
-    unsigned char c2;
-    int count2;
-    unsigned char *dst2;
-    int v2;
-    int n2;
-    int old2;
-    int res2;
+    LevelButton *button = (LevelButton *)arg0;
+    LevelDialog *dialog;
+    int level;
+    unsigned char *nameSrc;
+    unsigned char nameC;
+    int nameLeft;
+    unsigned char *nameDst;
+    int bounded;
+    int stepped;
+    int oldLevel;
+    int achievement;
+    int level2;
+    LevelDialog *dialog2;
+    unsigned char *nameSrc2;
+    unsigned char nameC2;
+    int nameLeft2;
+    unsigned char *nameDst2;
+    int bounded2;
+    int stepped2;
+    int oldLevel2;
+    int achievement2;
 
     switch (arg1) {
-    case 0x128:
-        old = *(int *)(o + 0x74);
-        idx = *(int *)(o + 0x1C);
-        n = old - 1;
-        *(int *)(o + 0x74) = n;
-        v = 1;
-        if (n > 1) v = n;
-        if (v < idx) idx = v;
-        *(int *)(o + 0x74) = idx;
-        if (old != idx) {
-            res = *(int *)(o + 0x70);
-            obj = *(char **)(o + 0x18);
-            *(int *)(obj + 0x4C) = idx;
-            src = fn_8001EFAC(res, idx);
-            if (src == 0) goto dn_else;
-            dst = (unsigned char *)obj + 4;
-            count = 0x32;
-            goto dn_copy;
-dn_next:
-            count--;
-            if (count > 0) goto dn_copy;
-            dst[-1] = 0;
-            goto dn_done;
-dn_copy:
-            c = *src++;
-            *dst++ = c;
-            if ((signed char)c == 0) goto dn_done;
-            goto dn_next;
-dn_else:
-            obj[4] = 0;
-dn_done:
-            if (idx > 0) {
-                ((Fmt)fn_801345D8)(obj + 0x36, 0x14, lbl_80344F08, idx);
+    case 0x128:  // one level down
+        oldLevel = button->level;
+        level = button->levelCount;
+        stepped = oldLevel - 1;
+        button->level = stepped;
+        bounded = 1;                     // never below the first level
+        if (stepped > 1) bounded = stepped;
+        if (bounded < level) level = bounded;  // nor above what the achievement has
+        button->level = level;
+        if (oldLevel != level) {
+            achievement = button->achievement;
+            dialog = button->dialog;
+            dialog->level = level;
+            nameSrc = fn_8001EFAC(achievement, level);
+            if (nameSrc == 0) goto prev_else;
+            nameDst = (unsigned char *)(dialog->rankName);
+            nameLeft = 0x32;
+            goto prev_copy;
+prev_next:
+            nameLeft--;
+            if (nameLeft > 0) goto prev_copy;
+            nameDst[-1] = 0;
+            goto prev_done;
+prev_copy:
+            nameC = *nameSrc++;
+            *nameDst++ = nameC;
+            if ((signed char)nameC == 0) goto prev_done;
+            goto prev_next;
+prev_else:
+            dialog->rankName[0] = 0;
+prev_done:
+            if (level > 0) {
+                ((Fmt)fn_801345D8)(dialog->levelText, 0x14, lbl_80344F08, level);
             } else {
-                obj[0x36] = 0;
+                dialog->levelText[0] = 0;  // below the first threshold: no level
             }
-            ((Fmt)fn_801345D8)(o + 0x20, 0x50, &lbl_8055C38C,
-                        fn_8001EFAC(*(int *)(o + 0x70), *(int *)(o + 0x74)));
+            ((Fmt)fn_801345D8)(button->description, 0x50, &lbl_8055C38C,
+                        fn_8001EFAC(button->achievement, button->level));
         } else {
             fn_80216D28();
             fn_80214D50(1);
         }
         return 1;
-    case 0x126:
-        old2 = *(int *)(o + 0x74);
-        idx2 = *(int *)(o + 0x1C);
-        n2 = old2 + 1;
-        *(int *)(o + 0x74) = n2;
-        v2 = 1;
-        if (n2 > 1) v2 = n2;
-        if (v2 < idx2) idx2 = v2;
-        *(int *)(o + 0x74) = idx2;
-        if (old2 != idx2) {
-            res2 = *(int *)(o + 0x70);
-            obj2 = *(char **)(o + 0x18);
-            *(int *)(obj2 + 0x4C) = idx2;
-            src2 = fn_8001EFAC(res2, idx2);
-            if (src2 == 0) goto up_else;
-            dst2 = (unsigned char *)obj2 + 4;
-            count2 = 0x32;
-            goto up_copy;
-up_next:
-            count2--;
-            if (count2 > 0) goto up_copy;
-            dst2[-1] = 0;
-            goto up_done;
-up_copy:
-            c2 = *src2++;
-            *dst2++ = c2;
-            if ((signed char)c2 == 0) goto up_done;
-            goto up_next;
-up_else:
-            obj2[4] = 0;
-up_done:
-            if (idx2 > 0) {
-                ((Fmt)fn_801345D8)(obj2 + 0x36, 0x14, lbl_80344F08, idx2);
+    case 0x126:  // one level up
+        oldLevel2 = button->level;
+        level2 = button->levelCount;
+        stepped2 = oldLevel2 + 1;
+        button->level = stepped2;
+        bounded2 = 1;
+        if (stepped2 > 1) bounded2 = stepped2;
+        if (bounded2 < level2) level2 = bounded2;
+        button->level = level2;
+        if (oldLevel2 != level2) {
+            achievement2 = button->achievement;
+            dialog2 = button->dialog;
+            dialog2->level = level2;
+            nameSrc2 = fn_8001EFAC(achievement2, level2);
+            if (nameSrc2 == 0) goto next_else;
+            nameDst2 = (unsigned char *)(dialog2->rankName);
+            nameLeft2 = 0x32;
+            goto next_copy;
+next_next:
+            nameLeft2--;
+            if (nameLeft2 > 0) goto next_copy;
+            nameDst2[-1] = 0;
+            goto next_done;
+next_copy:
+            nameC2 = *nameSrc2++;
+            *nameDst2++ = nameC2;
+            if ((signed char)nameC2 == 0) goto next_done;
+            goto next_next;
+next_else:
+            dialog2->rankName[0] = 0;
+next_done:
+            if (level2 > 0) {
+                ((Fmt)fn_801345D8)(dialog2->levelText, 0x14, lbl_80344F08, level2);
             } else {
-                obj2[0x36] = 0;
+                dialog2->levelText[0] = 0;
             }
-            ((Fmt)fn_801345D8)(o + 0x20, 0x50, &lbl_8055C38C,
-                        fn_8001EFAC(*(int *)(o + 0x70), *(int *)(o + 0x74)));
+            ((Fmt)fn_801345D8)(button->description, 0x50, &lbl_8055C38C,
+                        fn_8001EFAC(button->achievement, button->level));
         } else {
             fn_80216D28();
             fn_80214D50(1);
