@@ -7180,7 +7180,15 @@ extern "C" s32 fn_800B1AFC(s32 arg0, s32 arg1, s32 *arg2, s32 arg3) {
 #define VF_VOL_PAGE_OWNER(v)        (*(void **)((u8 *)(v) + 0x1644)) /* pages read now belong to this file */
 #define VF_VOL_ERROR(v)             (*(s32 *)((u8 *)(v) + 0x1F80))  /* last error of the volume */
 #define VF_VOL_LOCK(v)              ((u8 *)(v) + 0x1F90)            /* the volume's recursive lock */
+#define VF_VOL_SECTOR_SIZE(v)       (*(u16 *)((u8 *)(v)))           /* 0x0000 bytes in one sector */
+#define VF_VOL_SECTOR_SHIFT(v)      (*(u8 *)((u8 *)(v) + 0x20))     /* 0x0020 log2 of it */
 #define VF_CACHE_ACTIVE             2U    /* the page cache has been set up */
+
+/* The volume lock's two halves: fn_800B77C0 takes it (counting recursions and
+ * remembering which thread holds it) and fn_800B783C drops it, waking the next
+ * waiter when the count reaches zero. */
+#define VFiPFLOCK_Acquire           fn_800B77C0
+#define VFiPFLOCK_Release           fn_800B783C
 
 #ifndef VF_LAST_ERROR
 #define VF_LAST_ERROR               (*(s32 *)((u8 *)lbl_803D2140 + 0x40))
