@@ -94,18 +94,16 @@ void fn_802D3F98(void *arg0) {
     GXSetArray(0xD, *(void **)((char *)arg0 + 0x28), 4);
     GXCallDisplayList(*(void **)((char *)arg0 + 0x30), *(u32 *)((char *)arg0 + 0x2C));
 }
-#pragma pop
+#pragma push
+#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802D3FFC(void *arg0) {
-    void *array = *(void **)((char *)arg0 + 0x20);
-    GXSetArray(9, array, 0xC);
+    GXSetArray(9, *(void **)((char *)arg0 + 0x20), 0xC);
     GXSetArray(0xD, *(void **)((char *)arg0 + 0x28), 4);
     GXSetArray(0xE, *(void **)((char *)arg0 + 0x24), 4);
     GXCallDisplayList(*(void **)((char *)arg0 + 0x30), *(u32 *)((char *)arg0 + 0x2C));
 }
-
-#pragma push
-#pragma processor 750
-#pragma scheduling invalid_target
+#pragma pop
 void fn_802D4060(void *arg0) {
     extern s32 fn_802CFF64(s32);
     extern f32 lbl_804DB068[];
@@ -164,9 +162,9 @@ void fn_802D41C8(void *arg0) {
 }
 
 void fn_802D422C(void *arg0) {
-    GXSetArray(9, *(void **)((char *)arg0 + 0x20), 0xC);
-    GXSetArray(0xD, *(void **)((char *)arg0 + 0x28), 4);
-    GXCallDisplayList(*(void **)((char *)arg0 + 0x30), *(u32 *)((char *)arg0 + 0x2C));
+    GXSetArray(9, *(void **)((u8 *)arg0 + 0x20), 0xC);
+    GXSetArray(0xD, *(void **)((u8 *)arg0 + 0x28), 4);
+    GXCallDisplayList(*(void **)((u8 *)arg0 + 0x30), *(u32 *)((u8 *)arg0 + 0x2C));
 }
 
 void fn_802D4280(void *arg0) {
