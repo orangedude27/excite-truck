@@ -950,10 +950,8 @@ int fn_802A0620(Unk802A0794Params *arg0) {
 #pragma push
 #pragma use_lmw_stmw off
 int fn_802A0720(int *arg0, int arg1) {
-    int *baseptr;
     int offset;
     int i;
-    baseptr = lbl_804B9B7C;
     i = 0;
     offset = 0;
     goto check;
@@ -967,7 +965,7 @@ loop:
     offset += 0x34;
     i++;
 check:
-    if (i < baseptr[1])
+    if (i < lbl_804B9B7C[1])
         goto loop;
     return 4;
 }
