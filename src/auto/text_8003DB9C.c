@@ -752,20 +752,7 @@ void GXEnableBreakPt(u32 address) {
     ((void (*)(s32))OSRestoreInterrupts)(interruptState);
 }
 
-void GXDisableBreakPt(void) {
-    unsigned char *data;
-    unsigned int value;
-    unsigned int cleared;
-    OSDisableInterrupts();
-    data = (unsigned char *)__GXData;
-    value = *(unsigned int *)(data + 8);
-    value = __rlwinm(value, 0, 31, 29);
-    cleared = __rlwinm(value, 0, 27, 25);
-    *(unsigned int *)(data + 8) = cleared;
-    *(unsigned short *)((char *)__cpReg + 2) = (unsigned short)cleared;
-    lbl_8055D950 = 0;
-    OSRestoreInterrupts();
-}
+void GXDisableBreakPt(void) { unsigned int *data; unsigned int value; unsigned int cleared; OSDisableInterrupts(); data = __GXData; value = data[2]; value = __rlwinm(value, 0, 31, 29); cleared = __rlwinm(value, 0, 27, 25); data[2] = cleared; *(unsigned short *)((char *)__cpReg + 2) = (unsigned short)cleared; lbl_8055D950 = 0; OSRestoreInterrupts(); }
 
 void __GXCleanGPFifo(void) {
     int zero = 0;
@@ -4114,6 +4101,8 @@ void GXSetTevColorOp(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5)
 }
 
 void GXSetTevAlphaOp(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
+    unsigned int v;
+    unsigned int *data = (unsigned int *)((unsigned char *)__GXData + arg0 * 4);
     union TevAlphaOpReg {
         unsigned int value;
         struct {
@@ -4126,25 +4115,22 @@ void GXSetTevAlphaOp(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5)
             unsigned int pad1 : 16;
         } bits;
     };
-    register union TevAlphaOpReg reg;
-    register unsigned int *base = __GXData;
-    register unsigned int *data = base + arg0;
-
-    reg.value = data[0x1C0 / 4];
-    reg.bits.clamp = arg1;
+    union TevAlphaOpReg *reg = (union TevAlphaOpReg *)&v;
+    reg->value = data[0x1C0 / 4];
+    reg->bits.clamp = arg1;
     if (arg1 <= 1) {
-        reg.bits.scale = arg3;
-        reg.bits.bias = arg2;
+        reg->bits.scale = arg3;
+        reg->bits.bias = arg2;
     } else {
-        reg.bits.scale = ((unsigned int)arg1) >> 1;
-        reg.bits.bias = 3;
+        reg->bits.scale = ((unsigned int)arg1) >> 1;
+        reg->bits.bias = 3;
     }
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    reg.bits.arg4 = arg4;
-    reg.bits.konst = arg5;
-    *(volatile unsigned int *)0xCC008000 = reg.value;
-    data[0x1C0 / 4] = reg.value;
-    *(volatile unsigned short *)((char *)base + 2) = 0;
+    reg->bits.arg4 = arg4;
+    reg->bits.konst = arg5;
+    *(volatile unsigned int *)0xCC008000 = reg->value;
+    data[0x1C0 / 4] = reg->value;
+    *(volatile unsigned short *)((char *)__GXData + 2) = 0;
 }
 
 void GXSetTevColor(s32 arg0, unsigned int *arg1) {
@@ -4558,18 +4544,19 @@ void GXSetFogRangeAdj(int enable, u16 center, const u16 *table) {
 
 void GXSetBlendMode(s32 type, s32 src, s32 dst, s32 op) {
     unsigned int *data = __GXData;
-    unsigned int value;
-    value = data[0x220 / 4];
-    value = (value & ~0x800) | ((__cntlzw(type - 3) << 6) & 0x800);
-    value = (value & ~1) | (type & 1);
-    value = (value & ~2) | (((unsigned int)__cntlzw(type - 2) >> 4) & 2);
+    unsigned int value = data[0x220 / 4];
+    int b;
+    value = __rlwimi(value, __cntlzw(type - 3), 6, 20, 20);
+    b = __cntlzw(type - 2);
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    value = (value & ~0xF000) | ((op << 12) & 0xF000);
-    value = (value & ~0x700) | ((src << 8) & 0x700);
-    value = (value & ~0xE0) | ((dst << 5) & 0xE0);
+    value = __rlwimi(value, type, 0, 31, 31);
+    value = __rlwimi(value, b, 28, 30, 30);
+    value = __rlwimi(value, op, 12, 16, 19);
+    value = __rlwimi(value, src, 8, 21, 23);
+    value = __rlwimi(value, dst, 5, 24, 26);
     *(volatile unsigned int *)0xCC008000 = value;
     data[0x220 / 4] = value;
-    *(unsigned short *)((char *)data + 2) = 0;
+    *(volatile unsigned short *)((unsigned char *)data + 2) = 0;
 }
 
 void GXSetColorUpdate(s32 enable) {
@@ -4713,14 +4700,15 @@ void GXSetDstAlpha(s32 enable, s32 alpha) {
     *(unsigned short *)((char *)data + 2) = 0;
 }
 
-void GXSetFieldMask(s32 even, s32 odd) {
+void GXSetFieldMask(unsigned char even, unsigned char odd) {
+    unsigned int value;
     unsigned int *data;
-    unsigned int value = 0;
     *(volatile unsigned char *)0xCC008000 = 0x61;
+    value = 0;
     value = __rlwimi(value, odd, 0, 31, 31);
     value = __rlwimi(value, even, 1, 30, 30);
-    value = __rlwimi(value, 0x44, 24, 0, 7);
     data = __GXData;
+    value = __rlwimi(value, 0x44, 24, 0, 7);
     *(volatile unsigned int *)0xCC008000 = value;
     *(volatile unsigned short *)((char *)data + 2) = 0;
 }
@@ -4825,17 +4813,15 @@ extern float lbl_80560BD0;
 #pragma paired on
 #pragma paired_single on
 void __GXSetProjection(void) {
-    f64 *src = (f64 *)((u8 *)__GXData + 0x52C);
-    volatile f64 *fifo = (volatile f64 *)0xCC008000;
-    volatile u8 *fifo8 = (volatile u8 *)fifo;
-    volatile u32 *fifo32 = (volatile u32 *)fifo;
+    double *src = (double *)((u8 *)__GXData + 0x52C);
+    volatile double *fifo = (volatile double *)0xCC008000;
 
-    fifo8[0] = 0x10;
-    fifo32[0] = 0x61020;
-    *fifo = *(src + 0);
-    *fifo = *(src + 1);
-    *fifo = *(src + 2);
-    fifo32[0] = *(u32 *)((u8 *)__GXData + 0x528);
+    *(volatile u8 *)0xCC008000 = 0x10;
+    *(volatile u32 *)0xCC008000 = 0x61020;
+    fifo[0] = src[0];
+    fifo[0] = src[1];
+    fifo[0] = src[2];
+    *(volatile u32 *)0xCC008000 = *(u32 *)((u8 *)__GXData + 0x528);
 }
 #pragma pop
 void GXSetProjection(float *arg0, int arg1) {
