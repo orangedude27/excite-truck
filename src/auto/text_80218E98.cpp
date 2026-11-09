@@ -1997,7 +1997,7 @@ extern "C" void fn_8022EDB8(void);
 #pragma small_data off
 extern "C" void *fn_8021BBA0(void *arg0, s32 arg1) {
     if (arg0 != 0) {
-        *(void **)arg0 = &lbl_8033F0FC;
+        *(void **)arg0 = lbl_8033F0FC;
         fn_8022A8E4(*(s32 *)((u8 *)arg0 + 0x244));
         {
             void *ptr = *(void **)((u8 *)arg0 + 0x258);
