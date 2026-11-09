@@ -185,9 +185,10 @@ s32 fn_8001BCF0(void *arg0) {
     s32 var_r5 = 0;
     u8 *ptr = (u8 *)(((s32 *)arg0)[6] + ((s32 *)arg0)[3] * 0xC);
     if (ptr[0x10] != 0)
-        goto done;
+        goto yes;
     if (((u8 *)arg0)[0x20] == 0)
         goto done;
+yes:
     var_r5 = 1;
 done:
     return var_r5;
