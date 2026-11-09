@@ -8875,7 +8875,6 @@ extern "C" void fn_80229CD8(void *);
 
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" void fn_801E4BEC(s32, s32, s32, s32, s32, s32);
-extern "C" void *lbl_8033F0FC;
 extern "C" void *lbl_8033E1C4[];
 class CallObj80223880 {
 public:
