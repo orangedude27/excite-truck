@@ -1445,12 +1445,11 @@ extern "C" void fn_8021A910(void *arg0, s32 arg1) {
 extern "C" s32 fn_8021A9A4(void *arg0) {
     u8 *base = (u8 *)arg0;
     u32 flag = *(u8 *)fn_80216708();
-    s32 second, first = 0;
-    s32 *p;
+    s32 first = 0;
     if (flag != 0)
         first = 2;
-    p = *(s32 **)(base + 0x254);
-    second = 0;
+    s32 *p = *(s32 **)(base + 0x254);
+    s32 second = 0;
     if (p != 0 && *p == *(s32 *)(base + 0x258))
         second = 1;
     return (s32)(((u32)(second | -second)) >> 31) | first;
@@ -5496,6 +5495,20 @@ next:
     ((void (*)(void *))fn_8022375C)((void *)obj);
     return (void *)obj;
 }
+
+extern "C" void *fn_80223208(void *arg0, unsigned int arg1) {
+    if (arg0 != 0) {
+        *(void **)arg0 = lbl_8033E4DC;
+        fn_802328D4(*(void **)((u8 *)arg0 + 0x3FC));
+        *(s32 *)((u8 *)arg0 + 0x3FC) = 0;
+        fn_8021915C(arg0, 0);
+        if ((s32)arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
+}
+
 #pragma pop
 extern "C" void fn_80230924(s32, s32, f32, f32, f32, f32, f32);
 
