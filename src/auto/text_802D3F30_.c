@@ -155,16 +155,16 @@ void fn_802D4060(void *arg0) {
     GXSetArray(14, *(void **)((u8 *)object + 0x24), 4);
     GXCallDisplayList(*(void **)((u8 *)object + 0x30), *(u32 *)((u8 *)object + 0x2C));
 }
+#pragma push
+#pragma scheduling invalid_target
 #pragma scheduling on
-#pragma pop
 void fn_802D41C8(void *arg0) {
-    void *array = *(void **)((char *)arg0 + 0x20);
-    GXSetArray(9, array, 0xC);
+    GXSetArray(9, *(void **)((char *)arg0 + 0x20), 0xC);
     GXSetArray(0xA, *(void **)((char *)arg0 + 0x24), 3);
     GXSetArray(0xD, *(void **)((char *)arg0 + 0x28), 4);
     GXCallDisplayList(*(void **)((char *)arg0 + 0x30), *(u32 *)((char *)arg0 + 0x2C));
 }
-
+#pragma pop
 void fn_802D422C(void *arg0) {
     GXSetArray(9, *(void **)((u8 *)arg0 + 0x20), 0xC);
     GXSetArray(0xD, *(void **)((u8 *)arg0 + 0x28), 4);
