@@ -214,6 +214,93 @@ done:
     *dst = 0;
 }
 
+void fn_802E9EB8(void) {
+    extern int OSTryLockMutex(void *);
+    extern void OSUnlockMutex(void *);
+    extern int lbl_80560070;
+    extern int lbl_80560074;
+    extern int lbl_8056007C;
+    extern int lbl_805600CC;
+    extern char lbl_805600C9;
+    extern float lbl_805651BC, lbl_805651C0, lbl_805651C8, lbl_805651CC, lbl_805651D0;
+    extern void fn_802E620C(int, float);
+    extern void fn_802E61BC(int);
+    extern char lbl_805600D2;
+    extern char lbl_805584A0;
+    extern char lbl_80508818[];
+    extern char lbl_805600D1;
+    extern int lbl_8055D264;
+    extern int lbl_8055D260;
+
+    if (lbl_805600D2 != 0) {
+        ((long (*)(char *, long))fn_802E30C8)((char *)&lbl_8034E260 + 0x1A0, 0);
+        fn_802E61BC((&lbl_80560090)[0]);
+        fn_802E61BC((&lbl_80560090)[1]);
+        lbl_805600D2 = 0;
+    }
+
+    if (OSTryLockMutex(&lbl_805584A0) != 0) {
+        int changed;
+        if (lbl_80560070 != lbl_80560074) {
+            lbl_80560074 = lbl_80560070;
+            changed = 1;
+        } else {
+            changed = 0;
+        }
+        if (changed != 0) {
+            int count = lbl_8056007C;
+            *(int *)&lbl_80560080 = count;
+            if (count > 0) {
+                int i = 0;
+                char *src = lbl_80508818;
+                char *dst = lbl_8052E658;
+                for (; i < count; i++) {
+                    int j;
+                    for (j = 0; j < 0x610; j++) dst[j] = src[j];
+                    src += 0x610;
+                    dst += 0x610;
+                }
+            }
+            ((long (*)(char *, long))fn_802E30C8)((char *)&lbl_8034E260 + 0x1CC, 0);
+            {
+                int i;
+                for (i = 0; i < *(int *)&lbl_80560080; i++) {
+                    ((long (*)(char *, long, char *))fn_802E30C8)((char *)&lbl_8034E260 + 0x1DC, i, lbl_8052E658 + i * 0x610 + 0x408);
+                }
+            }
+        }
+        OSUnlockMutex(&lbl_805584A0);
+    }
+
+    if (lbl_805600D1 == 0 && lbl_8055D264 != lbl_8055D260) {
+    }
+
+    {
+        float f30;
+        if (lbl_805600C9 != 0) {
+            int now = fn_802E2C20();
+            int delta = now - lbl_805600CC;
+            float t = (lbl_805651BC * (float)delta - lbl_805651C4) / lbl_805651C8;
+            if (lbl_805651C0 >= t) ; else t = lbl_805651C0;
+            if (t <= lbl_805651C4) t = lbl_805651C4;
+            f30 = lbl_805651C0 + t * lbl_805651CC;
+        } else {
+            f30 = lbl_805651C0;
+        }
+        {
+            int i;
+            float vol;
+            int en = 0;
+            if (lbl_805600D0 != 0 && lbl_805600D1 == 0) en = 1;
+            vol = en ? lbl_8055D270 * f30 : lbl_805651C4;
+            for (i = 0; i < 2; i++) {
+                fn_802E61E4((&lbl_80560090)[i], vol);
+                fn_802E620C((&lbl_80560090)[i], lbl_805651D0);
+            }
+        }
+    }
+}
+
 #pragma use_lmw_stmw off
 int fn_802EA5D4(void *arg0, int arg1) {
     extern void fn_801345D8(char *, long, const char *, ...);
@@ -405,6 +492,81 @@ int fn_802EAA58(int *arg0, int arg1) {
     return result;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+extern int lbl_805600B0;
+extern int lbl_805600C0;
+extern int lbl_8055D26C;
+extern void *memset(void *, int, int);
+#pragma push
+#pragma use_lmw_stmw off
+int fn_802EB7D4(void *arg0, int arg1, int arg2, int arg_sp0) {
+    int idx = arg2 * 4;
+    int elem = lbl_8055D26C;
+    int b8 = lbl_805600B8;
+    if (*(int *)((char *)&lbl_805600B0 + idx) == b8) {
+        memset(arg0, 0, arg1);
+        *(int *)((char *)&lbl_805600C0 + idx) = *(int *)((char *)&lbl_805600C0 + idx) + 1;
+        return arg1;
+    }
+    if (*(int *)((char *)&lbl_805600B0 + idx) < b8) {
+        int bytes = arg1 * elem;
+        int rem = b8 - *(int *)((char *)&lbl_805600B0 + idx);
+        int avail = bytes < rem ? bytes : rem;
+        if (avail < bytes && *(int *)((char *)&lbl_805600C0 + idx) != 0) {
+            memset(arg0, 0, arg1);
+            *(int *)((char *)&lbl_805600C0 + idx) = *(int *)((char *)&lbl_805600C0 + idx) + 1;
+            return arg1;
+        }
+        {
+            int count = avail / (elem * 2);
+            int i;
+            unsigned short *src = (unsigned short *)(lbl_805600A0 + *(int *)((char *)&lbl_805600B0 + idx));
+            unsigned short *dst = (unsigned short *)arg0;
+            *(int *)((char *)&lbl_805600C0 + idx) = 0;
+            if (elem == 2) {
+                for (i = 0; i < count; i++) dst[i] = src[i * 2 + arg2];
+            } else {
+                for (i = 0; i < count; i++) dst[i] = src[i];
+            }
+            *(int *)((char *)&lbl_805600B0 + idx) = *(int *)((char *)&lbl_805600B0 + idx) + avail;
+            if (*(int *)((char *)&lbl_805600B0 + idx) >= lbl_805600A4) *(int *)((char *)&lbl_805600B0 + idx) = 0;
+            return arg1;
+        }
+    } else {
+        int bytes = arg1 * elem;
+        int rem = lbl_805600A4 - *(int *)((char *)&lbl_805600B0 + idx);
+        int avail = bytes < rem ? bytes : rem;
+        if (avail < bytes && *(int *)((char *)&lbl_805600C0 + idx) != 0) {
+            memset(arg0, 0, arg1);
+            *(int *)((char *)&lbl_805600C0 + idx) = *(int *)((char *)&lbl_805600C0 + idx) + 1;
+            return arg1;
+        }
+        {
+            int count = avail / (elem * 2);
+            int countBytes = avail / elem;
+            int i;
+            unsigned short *src = (unsigned short *)(lbl_805600A0 + *(int *)((char *)&lbl_805600B0 + idx));
+            unsigned short *dst = (unsigned short *)arg0;
+            *(int *)((char *)&lbl_805600C0 + idx) = 0;
+            if (elem == 2) {
+                for (i = 0; i < count; i++) dst[i] = src[i * 2 + arg2];
+            } else {
+                for (i = 0; i < count; i++) dst[i] = src[i];
+            }
+            *(int *)((char *)&lbl_805600B0 + idx) = *(int *)((char *)&lbl_805600B0 + idx) + avail;
+            if (*(int *)((char *)&lbl_805600B0 + idx) >= lbl_805600A4) {
+                *(int *)((char *)&lbl_805600B0 + idx) = 0;
+                if (arg1 > countBytes) {
+                    fn_802EB7D4((char *)arg0 + countBytes, arg1 - countBytes, arg2, arg_sp0);
+                }
+            }
+            return arg1;
+        }
+    }
+}
+#pragma pop
+
 #pragma scheduling invalid_target
 #pragma dont_inline on
 int fn_802EBD40(void) {
@@ -588,15 +750,15 @@ void fn_802EC158(void) {
 }
 
 #pragma push
-#pragma inline_depth 0
+#pragma dont_inline on
 void fn_802EC1C0(float arg0) {
     lbl_8055D270 = arg0;
     if ((unsigned char)lbl_805600D0 != 0) {
         fn_802EC138();
     }
 }
+#pragma dont_inline reset
 #pragma pop
-#pragma dont_inline fn_802EC1D8
 void fn_802EC1D8(void) {
     lbl_805600C8 = 1;
 }
