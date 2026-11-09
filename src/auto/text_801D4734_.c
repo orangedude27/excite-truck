@@ -669,8 +669,6 @@ extern "C" void fn_801D4F2C(void *arg0) {
     struct Entry {
         virtual void v0();
         virtual void v1();
-        virtual void v2();
-        virtual void v3();
         virtual void v4();
     };
     int offset = 0;
