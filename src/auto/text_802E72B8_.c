@@ -11,7 +11,7 @@ extern unsigned char lbl_804FC978[];
 extern int lbl_8055FFD8;
 extern int lbl_8055FFDC;
 extern signed char lbl_8055FFE0;
-extern int lbl_8034D7D8;
+extern const char lbl_8034D7D8[];
 extern int fn_802E30C8(const char *, ...);
 #pragma dont_inline on
 int fn_802E72B8(int arg0) {
