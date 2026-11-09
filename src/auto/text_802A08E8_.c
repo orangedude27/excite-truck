@@ -3,6 +3,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern u8 *lbl_8055F834;
+typedef struct Rec54 { u32 w[21]; } Rec54;
 extern int lbl_8055CB68;
 extern int fn_80128670(int);
 extern long fn_801EF024(long (*)(void *));
@@ -156,42 +157,90 @@ typedef struct {
     Fn802A0B54FloatConv firstConv;
     Fn802A0B54FloatConv secondConv;
 } Fn802A0B54Work;
+#pragma ppc_psq_save off
 void fn_802A0B54(void) {
-    char sp48[0x120];
-    short indices[0x80];
-    int outer=0, offset=0;
-    float size=lbl_805646D0, scale=lbl_805646D8, base=lbl_805646D4, add=lbl_805646DC;
+    Fn802A0B54Work work;
+    int outer;
+    int offset;
+    int minusOne;
+    int magic;
+    int count;
+    int first;
+    int j;
+    double bias;
+    float scale;
+    float add;
+    float size;
+    float base;
+    float firstFloat;
+    float extentFloat;
+    float f3;
+    float f0;
+    float f4;
+    u8 *record;
+
+    /* Fix note: place indices, vertices, and float conversion words at their target stack offsets. */
     fn_802C8BD0(lbl_8055CB68);
+    bias = lbl_805646E0;
+    scale = lbl_805646D8;
+    add = lbl_805646DC;
+    size = lbl_805646D0;
+    base = lbl_805646D4;
+    outer = 0;
+    offset = 0;
+    minusOne = -1;
+    magic = 0x43300000;
     do {
-        char *entry=(char *)lbl_8055F834+offset;
-        int count=*(int *)(entry+8);
-        if (count>1) {
-            int first=*(int *)entry, j, ioff=0;
-            float f3=size*(float)first;
-            for (j=0;j<count;j++) {
-                char *dst=sp48+ioff;
-                float f=((float)j/scale)*(base+(float)(first*6));
-                *(float *)(dst+0)=*(float *)(entry+12);
-                *(float *)(dst+4)=*(float *)(entry+16);
-                *(float *)(dst+8)=*(float *)(entry+20);
-                *(float *)(dst+16)=f; *(float *)(dst+20)=f3;
-                *(int *)(dst+12)=-1; *(int *)(dst+24)=*(int *)dst;
-                *(float *)(dst+28)=*(float *)(dst+4);
-                *(float *)(dst+32)=*(float *)(dst+8);
-                *(int *)(dst+36)=-1; *(float *)(dst+40)=f;
-                *(float *)(dst+28)+=add; *(float *)(dst+44)=size+f3;
-                if (j>0) {
-                    int n=j-1, at=(j-1)*6;
-                    indices[at-3]=(short)(n*2); indices[at-2]=(short)(n*2+2);
-                    indices[at-1]=(short)(n*2+1); indices[at]=(short)(n*2+1);
-                    indices[at+1]=(short)(n*2+2); indices[at+2]=(short)(n*2+3);
+        record = lbl_8055F834 + offset;
+        count = *(int *)(record + 8);
+        if (count > 1) {
+            first = *(int *)record;
+            work.firstConv.words.high = magic;
+            work.firstConv.words.low = (u32)first ^ 0x80000000;
+            firstFloat = (float)(work.firstConv.value - bias);
+            work.secondConv.words.high = magic;
+            work.secondConv.words.low = (u32)(first * 6) ^ 0x80000000;
+            extentFloat = (float)(work.secondConv.value - bias);
+            f3 = size * firstFloat;
+            f0 = size + f3;
+            f4 = base + extentFloat;
+            for (j = 0; j < count; j++) {
+                float jFloat;
+                float f;
+                work.secondConv.words.high = magic;
+                work.secondConv.words.low = (u32)j ^ 0x80000000;
+                jFloat = (float)(work.secondConv.value - bias);
+                f = (jFloat / scale) * f4;
+                work.vertices[j].f0 = *(float *)(record + 0xC);
+                work.vertices[j].f4 = *(float *)(record + 0x10);
+                work.vertices[j].f8 = *(float *)(record + 0x14);
+                work.vertices[j].f10 = f;
+                work.vertices[j].f14 = f3;
+                work.vertices[j].unk0C = minusOne;
+                work.vertices[j].f18 = work.vertices[j].f0;
+                work.vertices[j].f1C = work.vertices[j].f4 + add;
+                work.vertices[j].f20 = work.vertices[j].f8;
+                work.vertices[j].unk24 = minusOne;
+                work.vertices[j].f28 = f;
+                work.vertices[j].f2C = f0;
+                if (j > 0) {
+                    int n = j - 1;
+                    int at = n * 6;
+                    int index = n * 2;
+                    work.indices[at + 0] = (short)index;
+                    work.indices[at + 1] = (short)(index + 2);
+                    work.indices[at + 2] = (short)(index + 1);
+                    work.indices[at + 3] = (short)(index + 1);
+                    work.indices[at + 4] = (short)(index + 2);
+                    work.indices[at + 5] = (short)(index + 3);
                 }
-                ioff+=0x30; entry+=0xc;
+                record += 0xC;
             }
-            fn_802C8DB8(sp48,count*2,indices,(count-1)*6);
+            fn_802C8DB8(work.vertices, count * 2, work.indices, (count - 1) * 6);
         }
-        outer++; offset+=0x54;
-    } while (outer<0x40);
+        outer++;
+        offset += 0x54;
+    } while (outer < 0x40);
     fn_802C8D74();
 }
-
+#pragma ppc_psq_save reset
