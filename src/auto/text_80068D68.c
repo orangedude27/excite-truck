@@ -329,6 +329,9 @@ typedef struct {
 
 #define UUSB_CB_DEFINED_EARLY 1
 extern u8 lbl_803C0F78[];
+extern char lbl_80316464[];
+extern void fn_8007093C(u32, void *);
+extern s32 btsnd_hcic_link_key_neg_reply_800843D8(u8 *);
 extern BOOLEAN l2c_link_hci_conn_comp(UINT8 status, UINT16 handle, UINT8 *p_bda);
 static inline u8 *btm_bda_to_acl_inl(u8 *bda) {
     u8 *q = lbl_803C0F78 + 0x34;
@@ -22266,15 +22269,17 @@ u8 fn_8009504C(u16 arg0, u8 *arg1) {
 #pragma push
 #pragma scheduling invalid_target
 u8 fn_80095084(arg0, arg1, arg2)
-s32 arg0;
+u16 arg0;
 u8 *arg1;
 u8 arg2;
 {
+    u8 *ptr = arg1;
+    u16 len = arg0;
     u8 *table = lbl_802EEC40;
-    u32 crc = 0xFF;
-    while ((u16)arg0-- != 0) {
-        crc = table[crc ^ *arg1];
-        arg1++;
+    u8 crc = 0xFF;
+    while (len-- != 0) {
+        crc = table[crc ^ *ptr];
+        ptr++;
     }
     crc = lbl_802EEC40[crc ^ arg2];
     return crc == 0xCF;
@@ -25505,16 +25510,16 @@ s32 AXFXReverbHiInit(void* arg0) {
     s32 zero;
     s32 five;
     f32 h, g, f, e, d, c, b, a;
-    a = *(f32*)((u8*)arg0 + 0x158);
-    zero = 0;
-    f = lbl_80560D50;
+    a = *(volatile f32*)((u8*)arg0 + 0x158);
     five = 5;
-    b = *(f32*)((u8*)arg0 + 0x150);
-    c = *(f32*)((u8*)arg0 + 0x148);
-    d = *(f32*)((u8*)arg0 + 0x154);
-    e = *(f32*)((u8*)arg0 + 0x15C);
-    g = lbl_80560D54;
-    h = *(f32*)((u8*)arg0 + 0x14C);
+    f = *(volatile f32*)&lbl_80560D50;
+    zero = 0;
+    b = *(volatile f32*)((u8*)arg0 + 0x150);
+    c = *(volatile f32*)((u8*)arg0 + 0x148);
+    d = *(volatile f32*)((u8*)arg0 + 0x154);
+    e = *(volatile f32*)((u8*)arg0 + 0x15C);
+    g = *(volatile f32*)&lbl_80560D54;
+    h = *(volatile f32*)((u8*)arg0 + 0x14C);
     *(s32*)((u8*)arg0 + 0x110) = five;
     *(f32*)((u8*)arg0 + 0x114) = a;
     *(f32*)((u8*)arg0 + 0x118) = a;
