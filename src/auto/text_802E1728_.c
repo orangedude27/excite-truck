@@ -263,10 +263,10 @@ void fn_802E29AC(void) {
     int count = *(int *)lbl_804DB780;
     int *array = *(int **)((char *)lbl_804DB780 + 4);
     int i;
-    int n = count >> 2;
+    int n = count / 4;
     for (i = n - 1; i >= 0; --i) {
         if (array[-i] != 0x53ffeedd) {
-            fn_802E30C8(lbl_8034CD30, (i * 4) >> 10, count >> 10);
+            fn_802E30C8(lbl_8034CD30, (i * 4) / 1024, count / 1024);
             return;
         }
     }
@@ -401,11 +401,16 @@ extern unsigned long long __div2i(unsigned long long, unsigned long long);
 #pragma scheduling invalid_target
 unsigned long long fn_802E2C9C(void) {
     unsigned long long now = OSGetTime();
-    unsigned long long start = ((unsigned long long)(unsigned int)lbl_8055FEF8 << 32) | lbl_8055FEFC;
-    unsigned long long elapsed = now - start;
-    unsigned int busClock = *(volatile unsigned int *)0x800000F8;
-    unsigned int scale = (busClock >> 2) / 125000;
-    return __div2i(elapsed << 3, scale);
+    unsigned long long start;
+    start = (unsigned long long)(unsigned int)lbl_8055FEF8;
+    start <<= 32;
+    start |= lbl_8055FEFC;
+    {
+        unsigned long long elapsed = now - start;
+        unsigned int busClock = *(volatile unsigned int *)0x800000F8;
+        unsigned int scale = (busClock >> 2) / 125000;
+        return __div2i(elapsed << 3, scale);
+    }
 }
 #pragma scheduling on
 void fn_802E2CFC(void *arg0) {
