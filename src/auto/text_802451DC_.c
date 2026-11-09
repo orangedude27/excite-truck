@@ -382,7 +382,8 @@ void fn_8024590C(int *a, int *b) {
 extern int fn_8012C33C(void *, void *);
 extern int fn_80214D50(int);
 extern char lbl_8034308C[];
-void fn_80245CC8(void *arg0) {
+#pragma cplusplus on
+extern "C" void fn_80245CC8(void *arg0) {
  unsigned char result;
  *(unsigned char*)((char*)arg0+0x1C)=1;
  result=fn_8012C33C(lbl_8034308C, 0);
@@ -393,6 +394,7 @@ void fn_80245CC8(void *arg0) {
  }
  *(unsigned char*)((char*)arg0+0x1E)=1;
 }
+#pragma cplusplus reset
 
 #pragma cplusplus on
 extern "C" void fn_80245D2C(void *arg0) {
