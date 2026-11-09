@@ -859,12 +859,13 @@ void *nw4hbm::snd::detail::FrameHeap::Alloc(unsigned long size, void (*callback)
     return (u8 *)block + 0x20;
 }
 #pragma pop
-extern "C" u32 fn_800EC56C(void **arg0) {
+extern "C" u32 fn_800EC56C(void *arg0) {
+    void **heap = (void **)arg0;
     u32 size;
-    if (*arg0 == 0) {
+    if (*heap == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322D60, 0x127, (const char *)lbl_80322DA4);
     }
-    size = MEMGetAllocatableSizeForFrmHeapEx(*arg0, 0x20);
+    size = MEMGetAllocatableSizeForFrmHeapEx(*heap, 0x20);
     if (size < 0x20) {
         return 0;
     }
@@ -1086,7 +1087,7 @@ extern "C" void *OpenStream__Q34nw4r3snd18MemorySoundArchiveCFPviUlUl(void *this
     u32 base = *(u32 *)((u8 *)this_ + 0x108);
     if (base == 0) return 0;
     if (bufferSize < 0x20) return 0;
-    if (stream == 0) return stream;
+    if (!stream) return stream;
     *(u8 *)((u8 *)stream + 4) = 0;
     *(u32 *)((u8 *)stream + 0xC) = 0;
     *(u32 *)((u8 *)stream + 0x10) = 0;
@@ -1432,6 +1433,9 @@ int MmlParser::Parse(MmlSeqTrack *track, bool doNoteOn) const {
     }
     return 0;
 }
+
+void MmlParser::CommandProc(MmlSeqTrack *track, u32 command, s32 arg, s32 arg2) const { (void)track; (void)command; (void)arg; (void)arg2; }
+
 #pragma use_lmw_stmw reset
 
 #pragma push
@@ -1713,9 +1717,11 @@ extern "C" void fn_800EE910(void* alarm) {
     OSRestoreInterrupts(level);
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void IntervalAlarmHandler__Q34nw4r3snd13RemoteSpeakerFP7OSAlarmP9OSContext(void* alarm, void* context) {
-    void* savedAlarm = alarm;
     u32 level;
+    void* savedAlarm = alarm;
     u8* data;
     level = OSDisableInterrupts();
     data = (u8*)OSGetAlarmUserData(savedAlarm);
@@ -1727,7 +1733,7 @@ extern "C" void IntervalAlarmHandler__Q34nw4r3snd13RemoteSpeakerFP7OSAlarmP9OSCo
     data[8] = 0;
     OSRestoreInterrupts(level);
 }
-
+#pragma pop
 extern "C" void* OSGetAlarmUserData(void*);
 extern "C" void OSCancelAlarm(void*);
 extern "C" void* fn_800EE4F0(void*);
@@ -2197,23 +2203,18 @@ extern "C" void Pause__Q46nw4hbm3snd6detail9SeqPlayerFb(void* self, bool pause) 
     OSRestoreInterrupts(level);
 }
 
-extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf(void* self, f32 volume) {
-    if (!(volume <= lbl_8056106C)) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x15d, (const char*)lbl_80323BEC);
-    u32 level = OSDisableInterrupts();
-    *(f32*)((u8*)self + 0x1c) = volume;
+extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf(void* self, float volume) {
+    if (!(volume >= lbl_8056106C)) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x15d, (const char*)lbl_80323BEC);
+    unsigned int level = OSDisableInterrupts();
+    *(float*)((unsigned char*)self + 0x1c) = volume;
     OSRestoreInterrupts(level);
 }
 
-extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_800EF804(void* arg0, f32 farg0) {
-    extern f32 lbl_8056106C;
-    extern u8 lbl_80323B28[];
-    extern u8 lbl_80323C14[];
-    if (farg0 != lbl_8056106C) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x164, (const char*)lbl_80323C14);
-    }
-    OSDisableInterrupts();
-    *(f32*)((u8*)arg0 + 0x34) = farg0;
-    OSRestoreInterrupts(0);
+extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_800EF804(void* self, float volume) {
+    if (!(volume >= 0.0f)) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x164, (const char*)lbl_80323C14);
+    unsigned int level = OSDisableInterrupts();
+    *(float*)((unsigned char*)self + 0x34) = volume;
+    OSRestoreInterrupts(level);
 }
 
 extern "C" void fn_800EF878(void* arg0, f32 farg0) {
