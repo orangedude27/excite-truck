@@ -887,14 +887,21 @@ extern "C" void *fn_802C0310(void *arg0, int arg1) {
     return arg0;
 }
 #pragma cplusplus off
-void fn_802C03B4(void *arg0) {
+#pragma cplusplus on
+extern "C" void fn_802C03B4(void *arg0) {
+    class Obj {
+    public:
+        virtual void v0();
+        virtual void v1();
+    };
     void *obj = *(void **)((char *)arg0 + 0x2c58);
-    void (*fn)(void *);
-    if (obj == 0) return;
-    if (lbl_8055CF71 == 0) return;
-    fn = (void (*)(void *))(*(void ***)obj)[3];
-    fn(obj);
+    if (obj == 0)
+        return;
+    if (lbl_8055CF71 == 0)
+        return;
+    ((Obj *)obj)->v1();
 }
+#pragma cplusplus off
 
 #pragma push
 #pragma peephole off
@@ -903,6 +910,29 @@ int fn_802C03E0(unsigned int arg0) {
     unsigned int b = (arg0 << 8) & 0xFF0000FF;
     return a | b;
 }
+
+extern void fn_802C98DC(float *, float *, float *, float *, float);
+extern double fn_8002F234(double, double);
+extern float fn_802C9C50(void);
+extern float fn_802C9C40(void);
+extern float fn_802C9C38(void);
+extern float fn_802C9C48(void);
+extern void fn_802BED90(float *);
+extern void fn_802C03F0(void *arg0) {
+    float m[12];
+    float a, b, c, d;
+    float e, f, g, h;
+    fn_802C8B08(m);
+    fn_802C98DC(&a, &b, &c, &d, m[10]);
+    (void)fn_8002F234(0, 0);
+    (void)fn_802C9C50();
+    (void)fn_802C9C40();
+    (void)fn_802C9C38();
+    (void)fn_802C9C48();
+    (void)arg0;
+    (void)e; (void)f; (void)g; (void)h;
+}
+
 #pragma pop
 int fn_802C0C98(void *arg0) { return *(int *)((char *)arg0 + 8); }
 
