@@ -428,7 +428,8 @@ void *fn_80134E90(void) {
 
 #pragma push
 #pragma cplusplus on
-extern "C" void *fn_80134EC8(void) {
+extern "C" void *fn_80134EC8(s32 arg0)
+{
     struct Dummy {
         virtual void f0();
         virtual void f1();
@@ -491,18 +492,16 @@ extern "C" void *fn_80134EC8(void) {
     };
     void *obj = fn_801B83A0();
     s32 result = ((Dummy *)obj)->f57();
-    register s32 selector = (s32)obj;
-    if (result != 0)
-        return;
-    switch (selector) {
-    case 0x180201:
-        fn_80134E90();
-        break;
-    default:
-        fn_802E30C8(lbl_8032BC5C, obj);
-        fn_80134FF8();
-        break;
+    if (result == 0) {
+        switch (arg0) {
+        case 0x180201:
+            return fn_80134E90();
+        default:
+            fn_802E30C8(lbl_8032BC5C, (void *)arg0);
+            return fn_80134FF8();
+        }
     }
+    return (void *)result;
 }
 #pragma cplusplus reset
 #pragma pop
