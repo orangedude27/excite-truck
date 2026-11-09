@@ -358,12 +358,29 @@ void fn_8000B2AC(void) {
     fn_802D08C4(1);
 }
 
-int fn_8000B33C(void **arg0, int arg1, int arg2) {
-    if (((int (*)(void **))(*(void ***)arg0)[3])(arg0) != 0)
-        return ((int (*)(void **, int))(*(void ***)arg0)[11])(arg0, arg1);
-    return arg2;
+#pragma cplusplus on
+extern "C" int fn_8000B33C(void *object, int argument, int fallback) {
+    struct Dummy {
+        virtual int f0();
+        virtual int f1();
+        virtual int f2();
+        virtual int f3();
+        virtual int f4();
+        virtual int f5();
+        virtual int f6();
+        virtual int f7();
+        virtual int f8();
+        virtual int f9(int);
+    };
+    int result;
+    if (((Dummy *)object)->f1()) {
+        result = ((Dummy *)object)->f9(argument);
+    } else {
+        result = fallback;
+    }
+    return result;
 }
-
+#pragma cplusplus reset
 void fn_8000B3B4(void) {
     void (*callback)(void);
     callback = *(void (**)(void))(lbl_802FBC90 + lbl_8055D3DC * 0x14);
