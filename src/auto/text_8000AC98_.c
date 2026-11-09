@@ -1202,9 +1202,10 @@ void fn_8000C6E4(void) {
 
 void fn_8000C730(void) {
     switch ((int)lbl_8055D3DC) {
-    case 19: lbl_8055D3DC = 0x13; return;
-    case 0: lbl_8055D3DC = 0x14; return;
-    default: lbl_8055D3DC = 0; return;
+    case 0: lbl_8055D3DC = 0x13; return;
+    case 19: lbl_8055D3DC = 0x14; return;
+    default:
+    case 20: lbl_8055D3DC = 0; return;
     }
 }
 
