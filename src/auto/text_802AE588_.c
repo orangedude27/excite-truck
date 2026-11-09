@@ -313,7 +313,6 @@ extern "C" void fn_802AE7F4(void) {
     fn_802BEAB0();
     lbl_8055F97C = 0xFA;
 }
-#pragma opt_propagation on
 #pragma pop
 #pragma cplusplus reset
 
