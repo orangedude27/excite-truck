@@ -52,6 +52,13 @@ void fn_801EFF70(void* alarm) {
     fn_801F0CC4(fn_801F17DC(alarm));
 }
 
+#pragma scheduling invalid_target
+void fn_801EFF94(int arg0, int arg1, int arg2) {
+    int result = fn_801284F8(0x4C, &lbl_8055B0B8);
+    if (result != 0) {
+        fn_801F0DC0(result, arg0, arg1, arg2);
+    }
+}
 void fn_801EFFF8(int arg0) {
     fn_801F0F18(arg0, 1);
 }
