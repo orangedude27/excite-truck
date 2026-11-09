@@ -204,14 +204,19 @@ extern "C" s32 fn_802A16EC(s32 arg0, s32 arg1) {
 }
 
 extern "C" void fn_802A172C(void) {
-    struct Dispatch { virtual void f0(); virtual void f1(); virtual void f2(); virtual void call(); };
-    void **var_r31 = lbl_804BCF88;
-    int var_r30;
-    for (var_r30 = 0; var_r30 < 8; var_r30++, var_r31++) {
-        void *temp_r3 = *var_r31;
-        if (temp_r3 != 0)
-            ((Dispatch *)temp_r3)->call();
-    }
+    void ***entry = (void ***)&lbl_804BCF88;
+    s32 index = 0;
+    struct Dispatch {
+        virtual void f0();
+        virtual void f1();
+        virtual void call();
+    };
+    do {
+        void **obj = *entry;
+        if (obj != 0) ((Dispatch *)obj)->call();
+        index++;
+        entry++;
+    } while (index < 8);
 }
 
 extern "C" void fn_802A1790(void) {}
