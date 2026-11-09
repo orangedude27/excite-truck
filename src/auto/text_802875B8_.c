@@ -775,4 +775,21 @@ void fn_80288870_old(void) {
     lbl_8055F6C8 = (void *)v;
 }
 #endif
-
+#pragma push
+#pragma cplusplus on
+extern "C" s32 fn_80287E20(void ***arg0, s32 arg1) {
+    class Obj {
+    public:
+        virtual void f0(void *);
+        virtual void f1(void *);
+        virtual s32 f2(void *);
+    };
+    char local[0x40];
+    Obj *obj;
+    fn_801346B4(local, 0x40, arg1);
+    obj = (Obj *)*arg0;
+    if (obj != 0) return obj->f2(local);
+    return 0;
+}
+#pragma cplusplus reset
+#pragma pop
