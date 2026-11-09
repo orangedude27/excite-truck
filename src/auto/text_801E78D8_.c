@@ -422,15 +422,19 @@ second_check:
     if (callback != 0)
         callback();
 }
-#pragma pop
-void fn_801E837C(void) {
+#pragma scheduling invalid_target
+extern "C" void fn_801E837C(void) {
     extern void fn_802D6C54(long, void *, float);
-    long i;
-    for (i = 0; i < 0x4B; i++)
-        fn_802D6C54(i, (char *)lbl_8055EB04 + i * 4,
-                    *(float *)((char *)lbl_8055EB04 + i * 4 + 0xDB4));
+    long offset = 0;
+    long i = 0;
+    do {
+        fn_802D6C54(i, (char *)lbl_8055EB04 + offset,
+                    *(float *)((char *)lbl_8055EB04 + offset + 0xDB4));
+        i++;
+        offset += 4;
+    } while (i < 0x4B);
 }
-
+#pragma scheduling on
 void fn_801E83D4(void) { extern int fn_801B89F8(void); extern void *lbl_8055AF0C; extern void fn_801EBD18(void *); if (fn_801B89F8() == 0 || lbl_8055AF0C == 0) fn_801EBD18(lbl_8055AF0C); }
 
 #pragma scheduling invalid_target
@@ -638,18 +642,18 @@ void *fn_801E87A8(void) {
 
 #pragma dont_inline on
 void fn_801E87B8(long arg0) {
-    lbl_8055EB3C[lbl_8055EB34] = arg0;
-    lbl_8055EB34 += 1;
+    int i = (int)lbl_8055EB34;
+    lbl_8055EB3C[i] = arg0;
+    lbl_8055EB34 = i + 1;
 }
 void fn_801E87D4(long arg0) {
-    long value;
-    long index;
+    long value2 = arg0;
+    int index;
     long *base;
-    value = arg0;
-    fn_801E87B8(value);
-    index = lbl_8055EB38;
+    fn_801E87B8(value2);
+    index = (int)lbl_8055EB38;
     base = lbl_8055EB40;
-    base[index] = value;
+    base[index] = value2;
     lbl_8055EB38 = index + 1;
 }
 
