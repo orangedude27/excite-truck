@@ -1004,6 +1004,22 @@ extern "C" void fn_80146730(void *arg0) {
     }
 }
 
+extern "C" void fn_801467AC(void *arg0) {
+    void *p = *(void **)arg0;
+    if (p != 0) {
+        if (p != 0) {
+            fn_8002F6AC(((s32 *)p)[3], (void *)__dt__24J3DUMtxAnmCacheTableBaseFv_8014641C);
+            if (p != 0) {
+                ((s32 *)p)[0] = 0;
+                ((s32 *)p)[1] = 0;
+                ((s32 *)p)[2] = 0;
+            }
+            fn_80128668(p);
+        }
+        *(void **)arg0 = 0;
+    }
+}
+
 extern "C" char lbl_8032D114[];
 extern "C" char lbl_8032D124[];
 extern "C" char lbl_8055E20C[];
