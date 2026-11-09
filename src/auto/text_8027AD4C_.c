@@ -975,7 +975,7 @@ long *fn_8027C26C(void *arg0, const char *arg1) {
     long index = fn_8027C1C8(arg0, arg1);
     if (index < 0)
         return 0;
-    return *(long **)((char *)arg0 + 0xAF0C) + index * 0xC;
+    return (long *)((char *)*(void **)((char *)arg0 + 0xAF0C) + index * 0xC);
 }
 
 #pragma push
