@@ -230,7 +230,7 @@ extern "C" void fn_8027D7B8(void *arg0) {
 extern "C" void fn_8027D7E4(void *arg0) {
     fn_80007FF0(*(int *)((char *)fn_8001285C(((int *)arg0)[3]) + sizeof(int) * 2));
 }
-#pragma scheduling off
+#pragma scheduling on
 extern "C" void fn_8027D810(void *arg0) {
     class Obj {
     public:
