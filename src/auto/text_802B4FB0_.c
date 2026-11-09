@@ -13,12 +13,15 @@ int fn_802B4FB0(unsigned char arg0) {
     }
     return result;
 }
+typedef struct { unsigned char pad0[2]; unsigned char kind; unsigned char pad3[9]; unsigned short w; unsigned short h; unsigned char idx; } Fn802B5070Arg;
 extern char lbl_8034A4E0[];
 extern int fn_802E3D04(void);
 extern int fn_802E39D0(int, void *, int);
 extern void fn_802E3734(int *);
 
 #pragma dont_inline on
+#pragma scheduling invalid_target
+#pragma scheduling on
 int fn_802B5070(void *arg0, int arg1) {
     int result = 0;
     if (*(unsigned char *)((char *)arg0 + 2) == 2 &&
@@ -29,7 +32,6 @@ int fn_802B5070(void *arg0, int arg1) {
     }
     return result;
 }
-
 extern int fn_802B5070(void *, int);
 int fn_802B50E8(int arg0, int arg1, int arg2) {
     int result = 0;
@@ -93,25 +95,31 @@ extern int fn_802E3D68(int, int, int);
 extern int fn_802E3A64(int, void *, int);
 extern void fn_802E30C8(char *, int);
 extern char lbl_8034A4EC[];
+#pragma scheduling invalid_target
 int fn_802B52C0(int arg0, void *arg1) {
     int result = 0;
+    int value0;
+    int value1;
     int sp8;
     char spC[0x12];
+
     memset(spC, 0, 0x12);
+    value0 = *(int *)arg1;
     spC[2] = 2;
-    *(short *)(spC + 0xC) = (short)*(int *)arg1;
-    *(short *)(spC + 0xE) = (short)*(int *)((char *)arg1 + 4);
+    value1 = *(int *)((char *)arg1 + 4);
+    *(short *)(spC + 0xC) = (short)value0;
+    *(short *)(spC + 0xE) = (short)value1;
     spC[0x10] = 0x20;
-    sp8 = fn_802E3D68(arg0, *(int *)((char *)arg1 + 4), *(int *)arg1);
+    sp8 = fn_802E3D68(arg0, value1, value0);
     if (sp8 != -1) {
         fn_802E3A64(sp8, spC, 0x12);
         fn_802E3A64(sp8, *(void **)((char *)arg1 + 8),
-                     *(int *)((char *)arg1 + 4) * (*(int *)arg1 * 4));
+                    *(int *)((char *)arg1 + 4) * (*(int *)arg1 * 4));
         fn_802E3734(&sp8);
         result = 1;
     } else {
-        fn_802E30C8(lbl_8034A4EC, arg0);
+        ((void (*)(char *, ...))fn_802E30C8)(lbl_8034A4EC, arg0);
     }
     return result;
 }
-
+#pragma scheduling on
