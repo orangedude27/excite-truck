@@ -23751,6 +23751,19 @@ struct VFiPFDeviceInfo {
 #define VF_VOL_DEVICE_VALUE(v)  (*(s32 *)((v) + 0x1FC4)) /* handed to the device */
 #define VF_FAT_TYPE_32          2                      /* VF_VOL_FAT_TYPE: FAT32 */
 
+/*
+ * Mount a volume - what the file system does before anything can be read.
+ *
+ * Brings the volume's device up (fn_800A728C) and takes the device's own info
+ * over into the volume's flags: whether it refuses writes, the value the mount
+ * has to hand back to it, and whether its FAT is to be left as it is.  The
+ * boot sector is then read into a cache page and the volume's FAT fields are
+ * filled from it; on a FAT32 volume the FSInfo sector is read as well, for its
+ * free-cluster counts.  Any device error unmounts the device again and leaves
+ * its code in the volume and in the VF instance, answered with
+ * VF_ERR_DEVICE_RETRY so the caller can run the volume's retry handler; a boot
+ * sector that is not a FAT one is 7.
+ */
 extern "C" s32 fn_800A5530(void *object) {
     u8 *p = (u8 *)object;
     VFiPFDeviceInfo info; /* flags: the device's own, value: handed back to it */
