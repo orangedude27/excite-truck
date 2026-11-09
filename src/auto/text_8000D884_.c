@@ -25,21 +25,15 @@ extern void *fn_80131234(const char *);
 extern char lbl_802FC24C[];
 extern int fn_80128658(int);
 void fn_8000D884(int arg0, int arg1, int arg2, int arg3, int arg4) {
-    int *entry;
-    int count;
-    int offset;
-
-    count = lbl_8055D464;
-    entry = (int *)(lbl_8034F650 + count * 0x18);
-    entry[0] = arg0;
+    int *entry = (int *)(lbl_8034F650 + lbl_8055D464 * 0x18);
+    *entry = arg0;
     entry[1] = arg1;
     entry[2] = arg2;
     entry[3] = arg3;
     entry[4] = arg4;
-    lbl_8055D464 = count + 1;
+    lbl_8055D464++;
     entry[5] = lbl_80558A88;
-    offset = arg3 * 4;
-    lbl_80558A88 += offset;
+    lbl_80558A88 += arg3 * 4;
 }
 
 #pragma push
@@ -101,11 +95,17 @@ int fn_8000DA10(void) {
 void fn_8000DA1C(const char *arg0) {
     register int n;
     register char *dst;
+    register char *base;
     register unsigned char c;
-    *((int *)((char *)lbl_8055D46C + *lbl_8055D46C * 0x18) + 1) = 2;
-    dst = (char *)lbl_8055D46C + *lbl_8055D46C * 0x18 + 8;
+    base = (char *)lbl_8055D46C;
+    *(int *)(base + *lbl_8055D46C * 0x18 + 4) = 2;
+    base = (char *)lbl_8055D46C;
+    base += *lbl_8055D46C * 0x18;
+    dst = base + 8;
     n = 0x12;
-    while (--n > 0) {
+    if (n > 0) {
+        while (--n > 0) {
+        }
     }
     dst[-1] = 0;
     do {
@@ -178,13 +178,14 @@ void fn_8000DBC8(int arg0) {
     }
     lbl_8034F628[lbl_8055D460++] = arg0;
 }
-#pragma pop
+#pragma optimization_level 2
 void fn_8000DC28(const char *arg0, int arg1) {
-    register int count;
     register char *dst;
     register unsigned char c;
+    register int count;
 
-    dst = (char *)lbl_8055D46C + arg1 * 0x12 + 0x64;
+    dst = (char *)lbl_8055D46C + arg1 * 0x12;
+    dst += 0x64;
     count = 0x12;
     while (--count > 0) {
     }
@@ -242,11 +243,12 @@ extern char lbl_80558A8C;
 extern char lbl_802FC298[];
 extern void fn_801345D8(char *, int, const char *, ...);
 #pragma use_lmw_stmw off
+#pragma optimization_level 2
 #pragma scheduling invalid_target
 void fn_8000DD98(void) {
     register int zero = 0;
-    register int minusOne = -1;
-    register const char *format = lbl_802FC298;
+    register int minusOne;
+    register const char *format;
     register int index;
     register int stringOffset;
     register int fieldOffset;
@@ -299,6 +301,9 @@ done1:
         offset += 0x18;
     } while (--outer != 0);
 
+    zero = 0;
+    minusOne = -1;
+    format = lbl_802FC298;
     index = 0;
     stringOffset = 0;
     fieldOffset = 0;
@@ -312,7 +317,7 @@ limit2:
         remaining--;
         if (remaining > 0)
             goto copy2;
-        dst[-1] = zero;
+        dst[-1] = (char)zero;
         goto done2;
 copy2:
         c = *src++;
@@ -326,7 +331,21 @@ done2:
         fieldOffset += 4;
     } while (index < 4);
 }
+
+void fn_8000DF2C(int arg0) {
+    unsigned int *entry;
+    int i;
+    i = 0;
+    entry = lbl_8034F628;
+    while (i < lbl_8055D460) {
+        ((void (*)(int, int))*entry)(*lbl_8055D46C, arg0);
+        entry++;
+        i++;
+    }
+}
+
 #pragma scheduling on
+#pragma optimization_level 4
 #pragma use_lmw_stmw on
 extern int lbl_8055D460;
 extern unsigned int lbl_8034F628[];
