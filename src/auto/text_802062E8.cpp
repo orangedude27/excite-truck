@@ -76,7 +76,7 @@ extern float lbl_80563200;
 extern float lbl_80563204;
 extern "C" int fn_8012A364(void*, void*);
 extern "C" int fn_801284F8(int, void*);
-extern "C" void *fn_8012A13C(void*, int, int);
+extern "C" void *fn_8012A13C(void *, void *, int, int);
 extern "C" int fn_8012A2D8(void*);
 extern "C" float PSVECMag(void*);
 
