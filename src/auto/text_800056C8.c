@@ -945,7 +945,7 @@ void fn_80006B18(void *arg0) {
                         lbl_80560180, advance, (y - gap) - threshold, sp8);
             advance += percentScale;
         } else {
-            fn_8000FF88(-0x100, 0x41, lbl_80558948,
+            fn_8000FF88(-0x100, 0x41, &lbl_80558948,
                         lbl_80560180, advance, (y - gap) - threshold,
                         fn_800122B4(i + 1, sp10));
             advance += offset;
