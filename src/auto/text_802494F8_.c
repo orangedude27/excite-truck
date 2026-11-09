@@ -184,20 +184,22 @@ void *fn_8024A268(void *arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_8024A2BC(void *arg0, s32 arg1, s32 arg2) {
     s32 count = *(s32 *)((char *)arg0 + 0x14);
     char *entry = (char *)arg0;
     s32 index = 0;
-    if (count <= 0) return;
-    for (; index < count; index++) {
+    while (count-- > 0) {
         if (arg1 == *(s32 *)(entry + 0x20) && arg2 == *(s32 *)(entry + 0x24)) {
             *(s32 *)((char *)arg0 + 0x10) = index;
             return;
         }
         entry += 0xC;
+        index++;
     }
 }
-
+#pragma pop
 extern char lbl_80343E7C[];
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
