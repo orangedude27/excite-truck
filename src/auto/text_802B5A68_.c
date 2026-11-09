@@ -1769,17 +1769,16 @@ s32 fn_802B8510(s32 arg0) {
 #pragma pop
 void fn_802B8624(void *arg0) {
     #pragma small_data off
-    s32 *p = (s32 *)&lbl_804BFF80;
-    *p = 8;
+    lbl_804BFF80[0] = 8;
     if (arg0 != 0) {
-        *p = *(s32 *)arg0;
-        p[1] = ((s32 *)arg0)[1];
-        p[2] = ((s32 *)arg0)[2];
-        p[3] = ((s32 *)arg0)[3];
-        p[4] = ((s32 *)arg0)[4];
-        fn_802B84E4(p);
+        lbl_804BFF80[0] = *(s32 *)arg0;
+        lbl_804BFF80[1] = ((s32 *)arg0)[1];
+        lbl_804BFF80[2] = ((s32 *)arg0)[2];
+        lbl_804BFF80[3] = ((s32 *)arg0)[3];
+        lbl_804BFF80[4] = ((s32 *)arg0)[4];
+        fn_802B84E4(lbl_804BFF80);
         fn_802B83CC();
-        fn_802B8510(*p);
+        fn_802B8510(lbl_804BFF80[0]);
     }
 }
 #pragma pop
