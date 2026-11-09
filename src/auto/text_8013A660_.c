@@ -179,8 +179,7 @@ extern char lbl_8032C264[];
 float fn_8013AA68(void *, void *, void *, void *);
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" void fn_8013AC2C(register int *arg0) {
-    /* Resolve the object handle and dispatch the virtual callback at offset 0x28. */
+extern "C" void fn_8013AC2C(int *arg0) {
     struct Target {
         virtual void f0();
         virtual void f1();
@@ -192,7 +191,8 @@ extern "C" void fn_8013AC2C(register int *arg0) {
         virtual void f7();
         virtual void f8(char *, float);
     };
-    void *parent = fn_80012820(*(int *)((char *)fn_8001285C(*arg0) + 4));
+    void *tmp = fn_8001285C(*arg0);
+    void *parent = fn_80012820(*(int *)((char *)tmp + 4));
     Target *object = *(Target **)((char *)parent + 0x80);
     object->f8(lbl_8032C264, lbl_80561440);
 }
@@ -399,9 +399,11 @@ void fn_8013B6C0(int *arg0, float *arg1, int arg2) {
 
 #pragma dont_inline on
 float fn_8013B744(int arg0) {
+    float v;
     if ((unsigned char)lbl_8055E161 != 0) {
         return lbl_80561440 - lbl_80561460 * (float)arg0;
     }
-    return *(float *)((char *)fn_8013B578(arg0) + 4) * lbl_80559C98;
+    v = *(float *)((char *)fn_8013B578(arg0) + 4);
+    return v * lbl_80559C98;
 }
 #pragma dont_inline reset
