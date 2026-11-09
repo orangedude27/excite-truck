@@ -712,10 +712,7 @@ float fn_801E88F0(long arg0) {
     long which;
     char *base;
     if (index < 0) index = (long)lbl_8055AF0C;
-    params[0] = *(long *)lbl_802F99F8;
-    params[1] = *(long *)((char *)lbl_802F99F8 + 4);
-    params[2] = *(long *)((char *)lbl_802F99F8 + 8);
-    params[3] = *(long *)((char *)lbl_802F99F8 + 12);
+    *(struct FourLongs *)params = *(struct FourLongs *)lbl_802F99F8;
     which = (long)lbl_8055EB2C - 1;
     base = (char *)lbl_8055EB04 + index * 0xE0;
     return *(float *)(base + 0x38) * ((float *)params)[which];
@@ -886,13 +883,11 @@ void fn_801E8E38(void) {
 void *fn_801E8EA4(long arg0) {
     unsigned char *entry;
     entry = lbl_80339CC0;
-    for (;;) {
+    do {
         if (*(long *)(entry + 4) == arg0)
             break;
         entry += 0xC;
-        if (*(long *)entry == 0)
-            break;
-    }
+    } while (*(long *)entry != 0);
     if (*(long *)entry == 0) {
         fn_802E317C(lbl_80339CFC, arg0);
     }
