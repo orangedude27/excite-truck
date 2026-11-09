@@ -2395,17 +2395,27 @@ void GXDrawCylinder(void *src, void *dst, int x, int y) {
 }
 
 void GXSetDispCopySrc(s32 left, s32 top, s32 width, s32 height) {
+    union {
+        u32 value;
+        struct {
+            unsigned int tag : 8;
+            unsigned int reserved : 4;
+            unsigned int y : 10;
+            unsigned int x : 10;
+        } bits;
+    } src, dst;
     unsigned int *data = __GXData;
-    unsigned int src = 0;
-    unsigned int size = 0;
-    src |= left & 0x3FF;
-    src |= (top << 10) & 0xFFC00;
-    src |= 0x49000000;
-    size |= (width - 1) & 0x3FF;
-    size |= ((height - 1) << 10) & 0xFFC00;
-    size |= 0x4A000000;
-    data[0x230 / 4] = src;
-    data[0x234 / 4] = size;
+
+    src.value = 0;
+    dst.value = 0;
+    src.bits.x = left;
+    src.bits.y = top;
+    src.bits.tag = 0x49;
+    dst.bits.x = width - 1;
+    dst.bits.y = height - 1;
+    dst.bits.tag = 0x4A;
+    data[0x230 / 4] = src.value;
+    data[0x234 / 4] = dst.value;
 }
 
 void GXSetTexCopySrc(s32 x, s32 y, s32 width, s32 height) {
