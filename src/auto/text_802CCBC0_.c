@@ -435,16 +435,9 @@ extern int fn_802D0514(int);
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_802CDAFC(void *arg0, int arg1) {
-    int a;
-    int b;
-    int index;
-    unsigned char *base;
-    a = *(int *)((char *)arg0 + 0x18);
-    b = *(int *)((char *)arg0 + 0x10);
-    index = arg1 + a;
-    base = lbl_8055DFC4;
-    index = index + b;
-    base[index + 1] = 0;
+    int a = *(int *)((char *)arg0 + 0x18);
+    unsigned b = *(int *)((char *)arg0 + 0x10);
+    lbl_8055DFC4[arg1 + a + b + 1] = 0;
 }
 
 #pragma push
