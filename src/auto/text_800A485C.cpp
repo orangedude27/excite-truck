@@ -9146,12 +9146,16 @@ struct VFiPFVolume {
 
 /* VFiPFVolume.flags; the last four are driven by the media-change callbacks
  * fn_800A535C (media present: sets 0x4|0x10) and fn_800A52DC (media gone:
- * sets 0x20 when mounted, clears 0x4|0x8). */
+ * sets 0x20 when mounted, clears 0x4|0x8).  0x2, 0x40 and 0x80 are taken over
+ * from the device's own info flags by the mount, fn_800A5530. */
 #define VF_VOL_IN_USE          0x0001 /* the slot holds an attached device */
+#define VF_VOL_WRITE_PROTECTED 0x0002 /* the device refuses writes */
 #define VF_VOL_MEDIA_PRESENT   0x0004 /* media is in the drive */
 #define VF_VOL_MOUNTED         0x0008 /* the file system is mounted */
 #define VF_VOL_MOUNT_PENDING   0x0010 /* a mount is waiting to be done */
 #define VF_VOL_UNMOUNT_PENDING 0x0020 /* an unmount is waiting to be done */
+#define VF_VOL_GIVE_VALUE      0x0040 /* mount: hand the value at 0x1FC4 to the device */
+#define VF_VOL_KEEP_FAT        0x0080 /* mount: leave the FAT as it is */
 
 /* One drive slot, and the drive letters 'A'..'Z' they are named by. */
 #define VF_VOLUME_SIZE 0x1FC8
