@@ -7420,66 +7420,66 @@ extern "C" s32 fn_800B1FF4(void *file, u32 offset, s32 whence) {
     u32 back;
     u32 flags;
     u8 *vol;
-    volume = file == 0 ? 0 : *(u8 **)(*(u8 **)((u8 *)file + 8) + 0x268);
-    fn_800B77C0(VF_VOL_LOCK(volume));
+    volume = file == 0 ? 0 : VF_STREAM_VOLUME(VF_HANDLE_STREAM(file));
+    VFiPFLOCK_Acquire(VF_VOL_LOCK(volume));
     status = fn_800B5E14(volume);
     if (status != 0) {
-        fn_800B783C(VF_VOL_LOCK(volume));
+        VFiPFLOCK_Release(VF_VOL_LOCK(volume));
         VF_LAST_ERROR = status;
         VF_VOL_ERROR(volume) = status;
         return status;
     }
-    stream = *(u8 **)((u8 *)file + 8);
-    flags = *(u32 *)stream;
-    if (!(flags & 1) || !(flags & 2)) {
-        fn_800B783C(VF_VOL_LOCK(volume));
+    stream = VF_HANDLE_STREAM(file);
+    flags = VF_STREAM_FLAGS(stream);
+    if ((flags & VF_STREAM_IN_USE) == 0 || (flags & VF_STREAM_OPEN) == 0) {
+        VFiPFLOCK_Release(VF_VOL_LOCK(volume));
         VF_LAST_ERROR = VF_ERR_NOT_OPEN;
         VF_VOL_ERROR(volume) = VF_ERR_NOT_OPEN;
         return VF_ERR_NOT_OPEN;
     }
     switch (whence) {
     case VF_SEEK_CUR:
-        pos = *(u32 *)((u8 *)file + 0x1C);
+        pos = VF_HANDLE_POS(file);
         break;
     case VF_SEEK_SET:
         pos = 0;
         break;
     case VF_SEEK_END:
-        pos = *(u32 *)(stream + 0x264);
+        pos = VF_STREAM_SIZE(stream);
         break;
     default:
-        fn_800B783C(VF_VOL_LOCK(volume));
+        VFiPFLOCK_Release(VF_VOL_LOCK(volume));
         VF_SET_FILE_ERROR(file, VF_ERR_BAD_REQUEST);
         return VF_ERR_BAD_REQUEST;
     }
     if (offset & 0x80000000) {
         back = (~offset & 0x7FFFFFFF) + 1;
         if (pos < back) {
-            fn_800B783C(VF_VOL_LOCK(volume));
+            VFiPFLOCK_Release(VF_VOL_LOCK(volume));
             VF_SET_FILE_ERROR(file, VF_ERR_BAD_REQUEST);
             return VF_ERR_BAD_REQUEST;
         }
         pos -= back;
     } else {
         if (offset > 0xFFFFFFFF - pos) {
-            fn_800B783C(VF_VOL_LOCK(volume));
+            VFiPFLOCK_Release(VF_VOL_LOCK(volume));
             VF_SET_FILE_ERROR(file, VF_ERR_SEEK_RANGE);
             return VF_ERR_SEEK_RANGE;
         }
         pos += offset;
     }
-    *(s32 *)((u8 *)file + 0x20) = -1;
-    *(u32 *)((u8 *)file + 0x1C) = 0;
-    vol = file == 0 ? 0 : *(u8 **)(*(u8 **)((u8 *)file + 8) + 0x268);
-    back = *(u32 *)((u8 *)file + 0x1C);
-    *(u32 *)((u8 *)file + 0x24) = back >> vol[0x20];
-    *(u16 *)((u8 *)file + 0x28) = back & (*(u16 *)vol - 1);
-    *(u32 *)((u8 *)file + 0x1C) = pos;
-    vol = file == 0 ? 0 : *(u8 **)(*(u8 **)((u8 *)file + 8) + 0x268);
-    pos = *(u32 *)((u8 *)file + 0x1C);
-    *(u32 *)((u8 *)file + 0x24) = pos >> vol[0x20];
-    *(u16 *)((u8 *)file + 0x28) = pos & (*(u16 *)vol - 1);
-    fn_800B783C(VF_VOL_LOCK(volume));
+    VF_HANDLE_CLUSTER(file) = -1;
+    VF_HANDLE_POS(file) = 0;
+    vol = file == 0 ? 0 : VF_STREAM_VOLUME(VF_HANDLE_STREAM(file));
+    back = VF_HANDLE_POS(file);
+    VF_HANDLE_SECTOR(file) = back >> VF_VOL_SECTOR_SHIFT(vol);
+    VF_HANDLE_SECTOR_OFF(file) = back & (VF_VOL_SECTOR_SIZE(vol) - 1);
+    VF_HANDLE_POS(file) = pos;
+    vol = file == 0 ? 0 : VF_STREAM_VOLUME(VF_HANDLE_STREAM(file));
+    pos = VF_HANDLE_POS(file);
+    VF_HANDLE_SECTOR(file) = pos >> VF_VOL_SECTOR_SHIFT(vol);
+    VF_HANDLE_SECTOR_OFF(file) = pos & (VF_VOL_SECTOR_SIZE(vol) - 1);
+    VFiPFLOCK_Release(VF_VOL_LOCK(volume));
     return status;
 }
 
