@@ -210,15 +210,20 @@ extern unsigned char *lbl_8055D544;
 void fn_800168B0(int arg0, int arg1) {
     int i;
     unsigned char *p;
-    int base;
     for (i = 0, p = lbl_803577F0; i < (int)lbl_8055D554; i++, p += 0x5C) {
-        if (arg0 == *(int *)(p + 4)) *(int *)(p + 0x50) = arg1;
+        if (arg0 == *(int *)(p + 4))
+            *(int *)(p + 0x50) = arg1;
     }
-    base = (int)lbl_8055D540;
-    for (i = 0, p = (unsigned char *)base; i < (int)lbl_8055D54C; i++, p += 0x5C) {
-        if (arg0 == *(int *)(p + 4)) {
-            *(int *)(base + i * 0x5C + 0x50) = arg1;
-            return;
+    {
+        unsigned char *entry;
+        unsigned char *base;
+        int j = 0;
+        entry = base = lbl_8055D540;
+        for (j = 0; j < (int)lbl_8055D54C; entry += 0x5C, j++) {
+            if (arg0 == *(int *)(entry + 4)) {
+                *(int *)(base + j * 0x5C + 0x50) = arg1;
+                return;
+            }
         }
     }
 }
