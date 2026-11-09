@@ -950,7 +950,7 @@ void fn_80006B18(void *arg0) {
                         fn_800122B4(i + 1, sp10));
             advance += offset;
         }
-        fn_8000FF88(-0x100, 0x21, lbl_80558948,
+        fn_8000FF88(-0x100, 0x21, &lbl_80558948,
                     lbl_80560130, advance, (y - gap) - threshold,
                     (u8 *)entry + 0x48);
     }
