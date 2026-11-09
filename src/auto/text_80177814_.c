@@ -1171,6 +1171,10 @@ int fn_80179630(int arg0) {
 }
 
 extern void *lbl_8055E430;
+extern char *fn_80178374(long);
+extern long fn_802E317C(const char *, long, ...);
+extern const char lbl_80331B40[];
+extern unsigned char *fn_801781F4(long);
 void* fn_80179650(void) {
     return lbl_8055E430;
 }
