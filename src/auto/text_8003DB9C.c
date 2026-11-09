@@ -514,87 +514,86 @@ void GXSetCPUFifo(void *arg0) {
 void GXSetGPFifo(unsigned int *fifo) {
     int intStatus;
     unsigned int tmp;
-    unsigned int *gx = (unsigned int *)lbl_8037C0C0;
-    unsigned int *gd = __GXData;
 
     intStatus = OSDisableInterrupts();
 
-    tmp = gd[2] & ~1u;
-    gd[2] = tmp;
-    __cpReg[1] = (unsigned short)tmp;
-    tmp = gd[2] & 0xFFFFFFF3u;
-    gd[2] = tmp;
-    __cpReg[1] = (unsigned short)tmp;
+    tmp = __GXData[2] & ~1u;
+    __GXData[2] = tmp;
+    __cpReg[1] = tmp;
+    tmp = __GXData[2] & 0xFFFFFFF3u;
+    __GXData[2] = tmp;
+    __cpReg[1] = tmp;
 
     if (fifo == 0) {
         lbl_8055D949 = 0;
         lbl_8055D960 = 0;
-        tmp = gd[2] & 0xFFFFFFEFu;
-        gd[2] = tmp;
-        __cpReg[1] = (unsigned short)tmp;
-        *((unsigned char *)gx + 0x21) = 0;
-        *((unsigned char *)gx + 0x22) = 0;
+        tmp = __GXData[2] & 0xFFFFFFEFu;
+        __GXData[2] = tmp;
+        __cpReg[1] = tmp;
+        ((unsigned char *)lbl_8037C0C0)[0x21] = 0;
+        ((unsigned char *)lbl_8037C0C0)[0x22] = 0;
         ((void (*)(int))OSRestoreInterrupts)(intStatus);
         return;
     }
 
-    gx[0] = fifo[0];
-    gx[1] = fifo[1];
-    gx[2] = fifo[2];
-    gx[3] = fifo[3];
-    gx[4] = fifo[4];
-    gx[5] = fifo[5];
-    gx[6] = fifo[6];
-    gx[7] = fifo[7];
-    gx[8] = fifo[8];
+    ((unsigned int *)lbl_8037C0C0)[0] = fifo[0];
+    ((unsigned int *)lbl_8037C0C0)[1] = fifo[1];
+    ((unsigned int *)lbl_8037C0C0)[2] = fifo[2];
+    ((unsigned int *)lbl_8037C0C0)[3] = fifo[3];
+    ((unsigned int *)lbl_8037C0C0)[4] = fifo[4];
+    ((unsigned int *)lbl_8037C0C0)[5] = fifo[5];
+    ((unsigned int *)lbl_8037C0C0)[6] = fifo[6];
+    ((unsigned int *)lbl_8037C0C0)[7] = fifo[7];
+    ((unsigned int *)lbl_8037C0C0)[8] = fifo[8];
     lbl_8055D949 = 1;
-    *((unsigned char *)gx + 0x22) = 1;
+    ((unsigned char *)lbl_8037C0C0)[0x22] = 1;
 
-    __cpReg[0x20 / 2] = (unsigned short)gx[0];
-    __cpReg[0x24 / 2] = (unsigned short)gx[1];
-    __cpReg[0x30 / 2] = (unsigned short)gx[7];
-    __cpReg[0x34 / 2] = (unsigned short)gx[6];
-    __cpReg[0x38 / 2] = (unsigned short)gx[5];
-    __cpReg[0x28 / 2] = (unsigned short)gx[3];
-    __cpReg[0x2C / 2] = (unsigned short)gx[4];
-    __cpReg[0x22 / 2] = (unsigned short)((gx[0] >> 16) & 0x3FFF);
-    __cpReg[0x26 / 2] = (unsigned short)((gx[1] >> 16) & 0x3FFF);
-    __cpReg[0x32 / 2] = (unsigned short)((int)gx[7] >> 16);
-    __cpReg[0x36 / 2] = (unsigned short)((gx[6] >> 16) & 0x3FFF);
-    __cpReg[0x3A / 2] = (unsigned short)((gx[5] >> 16) & 0x3FFF);
-    __cpReg[0x2A / 2] = (unsigned short)(gx[3] >> 16);
-    __cpReg[0x2E / 2] = (unsigned short)(gx[4] >> 16);
+    __cpReg[0x20 / 2] = ((unsigned int *)lbl_8037C0C0)[0];
+    __cpReg[0x24 / 2] = ((unsigned int *)lbl_8037C0C0)[1];
+    __cpReg[0x30 / 2] = ((unsigned int *)lbl_8037C0C0)[7];
+    __cpReg[0x34 / 2] = ((unsigned int *)lbl_8037C0C0)[6];
+    __cpReg[0x38 / 2] = ((unsigned int *)lbl_8037C0C0)[5];
+    __cpReg[0x28 / 2] = ((unsigned int *)lbl_8037C0C0)[3];
+    __cpReg[0x2C / 2] = ((unsigned int *)lbl_8037C0C0)[4];
+    __cpReg[0x22 / 2] = (((unsigned int *)lbl_8037C0C0)[0] >> 16) & 0x3FFF;
+    __cpReg[0x26 / 2] = (((unsigned int *)lbl_8037C0C0)[1] >> 16) & 0x3FFF;
+    __cpReg[0x32 / 2] = ((int)((unsigned int *)lbl_8037C0C0)[7] >> 16);
+    __cpReg[0x36 / 2] = (((unsigned int *)lbl_8037C0C0)[6] >> 16) & 0x3FFF;
+    __cpReg[0x3A / 2] = (((unsigned int *)lbl_8037C0C0)[5] >> 16) & 0x3FFF;
+    __cpReg[0x2A / 2] = ((unsigned int *)lbl_8037C0C0)[3] >> 16;
+    __cpReg[0x2E / 2] = ((unsigned int *)lbl_8037C0C0)[4] >> 16;
 
     PPCSync();
 
     if ((CPGPLinkCheck() & 0xFF) != 0) {
         lbl_8055D960 = 1;
-        *((unsigned char *)gx + 0x21) = 1;
-        tmp = (gd[2] | 4u) & 0xFFFFFFF7u;
-        gd[2] = tmp;
-        __cpReg[1] = (unsigned short)tmp;
-        tmp = gd[2] | 0x10u;
-        gd[2] = tmp;
-        __cpReg[1] = (unsigned short)tmp;
+        ((unsigned char *)lbl_8037C0C0)[0x21] = 1;
+        tmp = (__GXData[2] | 4u) & 0xFFFFFFF7u;
+        __GXData[2] = tmp;
+        __cpReg[1] = tmp;
+        tmp = __GXData[2] | 0x10u;
+        __GXData[2] = tmp;
+        __cpReg[1] = tmp;
     } else {
         lbl_8055D960 = 0;
-        *((unsigned char *)gx + 0x21) = 0;
-        tmp = gd[2] & 0xFFFFFFF3u;
-        gd[2] = tmp;
-        __cpReg[1] = (unsigned short)tmp;
-        tmp = gd[2] & 0xFFFFFFEFu;
-        gd[2] = tmp;
-        __cpReg[1] = (unsigned short)tmp;
+        ((unsigned char *)lbl_8037C0C0)[0x21] = 0;
+        tmp = __GXData[2] & 0xFFFFFFF3u;
+        __GXData[2] = tmp;
+        __cpReg[1] = tmp;
+        tmp = __GXData[2] & 0xFFFFFFEFu;
+        __GXData[2] = tmp;
+        __cpReg[1] = tmp;
     }
 
-    __cpReg[1] = (unsigned short)(gd[2] & 0xFFFFFFFDu & 0xFFFFFFDFu);
-    __cpReg[1] = (unsigned short)gd[2];
-    tmp = gd[4] | 3u;
-    gd[4] = tmp;
-    __cpReg[2] = (unsigned short)tmp;
-    tmp = gd[2] | 1u;
-    gd[2] = tmp;
-    __cpReg[1] = (unsigned short)tmp;
+    tmp = __GXData[2] & 0xFFFFFFFDu;
+    __cpReg[1] = tmp & 0xFFFFFFDFu;
+    __cpReg[1] = __GXData[2];
+    tmp = __GXData[4] | 3u;
+    __GXData[4] = tmp;
+    __cpReg[2] = tmp;
+    tmp = __GXData[2] | 1u;
+    __GXData[2] = tmp;
+    __cpReg[1] = tmp;
     ((void (*)(int))OSRestoreInterrupts)(intStatus);
 }
 
@@ -840,6 +839,93 @@ void *GXInitVtxDescList(void) {
     lbl_8055D94C = 0;
     return temp;
 }
+
+// GXAttr as this build of the GX library counts it: GX_VA_NBT still sits right
+// after GX_VA_NRM here. include/revolution/GX/GXTypes.h documents the newer
+// numbering, where NBT moved down next to GX_VA_MAX_ATTR - GXSetVtxDescv below
+// was built with that one.
+typedef enum _GXAttr {
+    GX_VA_PNMTXIDX,   // position / normal matrix index
+    GX_VA_TEX0MTXIDX, // GX_TEXCOORD0 matrix index
+    GX_VA_TEX1MTXIDX,
+    GX_VA_TEX2MTXIDX,
+    GX_VA_TEX3MTXIDX,
+    GX_VA_TEX4MTXIDX,
+    GX_VA_TEX5MTXIDX,
+    GX_VA_TEX6MTXIDX,
+    GX_VA_TEX7MTXIDX,
+    GX_VA_POS,        // 09 position
+    GX_VA_NRM,        // 10 normal
+    GX_VA_NBT,        // 11 normal, binormal and tangent
+    GX_VA_CLR0,       // 12 color 0
+    GX_VA_CLR1,       // 13 color 1
+    GX_VA_TEX0,       // 14 texture coordinate 0
+    GX_VA_TEX1,
+    GX_VA_TEX2,
+    GX_VA_TEX3,
+    GX_VA_TEX4,
+    GX_VA_TEX5,
+    GX_VA_TEX6,
+    GX_VA_TEX7,       // 21 texture coordinate 7
+    GX_POS_MTX_ARRAY, // 22
+    GX_NRM_MTX_ARRAY, // 23
+    GX_TEX_MTX_ARRAY, // 24
+    GX_LIGHT_ARRAY,   // 25
+
+    GX_VA_NULL = 0xff
+} GXAttr;
+
+// How one attribute's data reaches the display list.
+typedef enum _GXAttrType {
+    GX_NONE,   // no data sent
+    GX_DIRECT, // data sent directly to the FIFO
+    GX_INDEX8, // 8-bit index sent to the FIFO
+    GX_INDEX16 // 16-bit index sent to the FIFO
+} GXAttrType;
+
+// Where each attribute's GXAttrType lives (GX_BITSET position, counted from the
+// MSB) in the vcdLo / vcdHi vertex descriptor words.
+#define VCD_PNMTXIDX_FIELD 31
+#define VCD_TEX0MTXIDX_FIELD 30
+#define VCD_TEX1MTXIDX_FIELD 29
+#define VCD_TEX2MTXIDX_FIELD 28
+#define VCD_TEX3MTXIDX_FIELD 27
+#define VCD_TEX4MTXIDX_FIELD 26
+#define VCD_TEX5MTXIDX_FIELD 25
+#define VCD_TEX6MTXIDX_FIELD 24
+#define VCD_TEX7MTXIDX_FIELD 23
+#define VCD_POS_FIELD 21
+#define VCD_NRM_FIELD 19
+#define VCD_CLR0_FIELD 17
+#define VCD_CLR1_FIELD 15
+#define VCD_TC0_FIELD 30
+#define VCD_TC1_FIELD 28
+#define VCD_TC2_FIELD 26
+#define VCD_TC3_FIELD 24
+#define VCD_TC4_FIELD 22
+#define VCD_TC5_FIELD 20
+#define VCD_TC6_FIELD 18
+#define VCD_TC7_FIELD 16
+
+#define DIRTY_VCD 0x8 // vertex descriptor changed; GX_DIRTY_VCD in GXTypes.h
+
+// __GXData's vertex-descriptor part. The library grew __GXData_struct
+// (include/revolution/GX/__gx.h) past the GameCube layout it describes, so the
+// normal bookkeeping sits at 0x520 and the dirty flags at 0x5FC here.
+typedef struct {
+    u8 unused_000[0x14];
+    u32 vcdLo;                    // 0x14 descriptor for attributes 0-13
+    u32 vcdHi;                    // 0x18 descriptor for GX_VA_TEX0-7
+    u8 unused_01C[0x520 - 0x1C];
+    u32 normalType;               // 0x520 GXAttrType of the normal data
+    u8 normal;                    // 0x524 GX_VA_NRM is enabled
+    u8 binormal;                  // 0x525 GX_VA_NBT is enabled
+    u8 unused_526[0x5FC - 0x526];
+    u32 dirtyState;               // 0x5FC what __GXSetDirtyState has to resend
+} GXVtxDescData;
+
+// Written as a cast rather than a local pointer: every case reloads __GXData.
+#define gxdata ((GXVtxDescData *)__GXData)
 
 void GXSetVtxDesc(unsigned int attr, unsigned int type) {
     switch (attr) {
@@ -1856,7 +1942,8 @@ extern void OSSleepThread(void *);
 extern void OSInitThreadQueue(void *);
 extern void (*lbl_8055D978_callback)(unsigned short);
 #pragma cplusplus on
-extern "C" void GXInitSpecularDir(unsigned int arg0, void *ctx) {
+#pragma scheduling 750
+void GXInitSpecularDir(unsigned int arg0, void *ctx) {
     extern unsigned int lbl_8055D978;
     extern unsigned short *__peReg;
     extern void OSClearContext(void *);
@@ -1872,7 +1959,8 @@ extern "C" void GXInitSpecularDir(unsigned int arg0, void *ctx) {
     }
     __peReg[5] |= 4;
 }
-#pragma cplusplus off
+#pragma scheduling reset
+#pragma cplusplus reset
 unsigned int GXLoadLightObjIndx(unsigned int value) {
     unsigned int old = lbl_8055D974;
 
@@ -1905,6 +1993,124 @@ void __GXPEInit(void) {
     __OSUnmaskInterrupts(0x1000);
 
     __peReg[5] |= 0xF;
+}
+
+void __GXSetDirtyState(void) {
+    unsigned int *data = __GXData;
+    unsigned int dirty = data[0x5FC / 4];
+    unsigned int r4;
+    unsigned int reg;
+    unsigned int count1;
+    unsigned int count2;
+    u8 *ptr1;
+    u8 *ptr2;
+
+    if (dirty & 1) {
+        __GXSetSUTexRegs();
+    }
+    if (dirty & 2) {
+        __GXUpdateBPMask();
+    }
+    if (dirty & 4) {
+        WGPIPE.c = 0x61;
+        WGPIPE.i = __GXData[0x254 / 4];
+        *(unsigned short *)((char *)__GXData + 2) = 0;
+    }
+    if (dirty & 8) {
+        __GXSetVCD();
+    }
+    if (dirty & 0x10) {
+        __GXSetVAT();
+    }
+    if (dirty & 0x18) {
+        __GXCalculateVLim();
+    }
+    dirty &= ~0xFF;
+    if (dirty) {
+        r4 = dirty & 0xF00;
+        if (r4) {
+            if (r4 & 0x100) {
+                WGPIPE.c = 0x10;
+                WGPIPE.i = 0x100A;
+                WGPIPE.i = data[0xA8 / 4];
+            }
+            if (r4 & 0x200) {
+                WGPIPE.c = 0x10;
+                WGPIPE.i = 0x100B;
+                WGPIPE.i = data[0xAC / 4];
+            }
+            if (r4 & 0x400) {
+                WGPIPE.c = 0x10;
+                WGPIPE.i = 0x100C;
+                WGPIPE.i = data[0xB0 / 4];
+            }
+            if (r4 & 0x800) {
+                WGPIPE.c = 0x10;
+                WGPIPE.i = 0x100D;
+                WGPIPE.i = data[0xB4 / 4];
+            }
+        }
+        count1 = dirty & 0x0100F000;
+        if (count1) {
+            reg = 0x100E;
+            if (count1 & 0x01000000) {
+                unsigned int val = (data[0x254 / 4] >> 4) & 7;
+                WGPIPE.c = 0x10;
+                WGPIPE.i = 0x1009;
+                WGPIPE.i = val;
+            }
+            ptr1 = (u8*)data;
+            count1 = (count1 >> 12) & 0xF;
+            while (count1 != 0) {
+                if (count1 & 1) {
+                    WGPIPE.c = 0x10;
+                    WGPIPE.i = reg;
+                    WGPIPE.i = *(u32*)(ptr1 + 0xB8);
+                }
+                count1 >>= 1;
+                ptr1 += 4;
+                reg++;
+            }
+        }
+        count2 = dirty & 0x02FF0000;
+        if (count2) {
+            reg = 0x1040;
+            if (count2 & 0x02000000) {
+                unsigned int val = data[0x254 / 4] & 0xF;
+                WGPIPE.c = 0x10;
+                WGPIPE.i = 0x103F;
+                WGPIPE.i = val;
+            }
+            ptr2 = (u8*)data;
+            count2 = (count2 >> 16) & 0xFF;
+            while (count2 != 0) {
+                unsigned int reg2 = reg + 0x10;
+                if (count2 & 1) {
+                    WGPIPE.c = 0x10;
+                    WGPIPE.i = reg;
+                    WGPIPE.i = *(u32*)(ptr2 + 0xC8);
+                    WGPIPE.c = 0x10;
+                    WGPIPE.i = reg2;
+                    WGPIPE.i = *(u32*)(ptr2 + 0xE8);
+                }
+                count2 >>= 1;
+                reg++;
+                ptr2 += 4;
+            }
+        }
+        if (dirty & 0x04000000) {
+            __GXSetMatrixIndex(0);
+            __GXSetMatrixIndex(5);
+        }
+        if (dirty & 0x10000000) {
+            __GXSetViewport();
+        }
+        if (dirty & 0x08000000) {
+            __GXSetProjection();
+        }
+        *(unsigned short *)((char *)data + 2) = 1;
+    }
+    data[0x5FC / 4] = 0;
 }
 
 void GXBegin(unsigned char prim, unsigned char vtxfmt, unsigned short nverts) {
@@ -3412,105 +3618,105 @@ void __GXSetTmemConfig(s32 arg0) {
     goto default_case;
 compare3:
     if (arg0 >= 3) goto default_case;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0x8C0D8000;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0x900DC000;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0x8D0D8800;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0x910DC800;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0x8E0D9000;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0x920DD000;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0x8F0D9800;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0x930DD800;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0xAC0DA000;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0xB00DC400;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0xAD0DA800;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0xB10DCC00;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0xAE0DB000;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0xB20DD400;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0xAF0DB800;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0xB30DDC00;
     goto done;
 case1:
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0x8C0D8000;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0x900DC000;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0x8D0D8800;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0x910DC800;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0x8E0D9000;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0x920DD000;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0x8F0D9800;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0x930DD800;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0xAC0DA000;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0xB00DE000;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0xAD0DA800;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0xB10DE800;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0xAE0DB000;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0xB20DF000;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0xAF0DB800;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0xB30DF800;
     goto done;
 default_case:
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0x8C0D8000;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0x900DC000;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0x8D0D8400;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0x910DC400;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0x8E0D8800;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0x920DC800;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0x8F0D8C00;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0x930DCC00;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0xAC0D9000;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0xB00DD000;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0xAD0D9400;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0xB10DD400;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0xAE0D9800;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0xB20DD800;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0xAF0D9C00;
-    *fifo8 = (u8)0x61;
+    *fifo8 = 0x61;
     *fifo32 = 0xB30DDC00;
 done:
     ;
@@ -4847,6 +5053,181 @@ void __GXSetMatrixIndex(s32 arg0) {
         *(volatile unsigned int *)0xCC008000 = data[0x84 / 4];
     }
     *(unsigned short *)((char *)data + 2) = 1;
+}
+
+void GXSetGPMetric(unsigned int metric1, unsigned int metric2) {
+    unsigned int *data = __GXData;
+    int old1 = data[0x5EC / 4];
+    if (old1 == 0x22) goto doA;
+    if (old1 >= 0x22) goto end1;
+    if (old1 >= 0xB) goto checkB1;
+    if (old1 >= 0) goto doA;
+    goto end1;
+checkB1:
+    if (old1 >= 0x1B) goto doB2;
+    goto doB1;
+doA:
+    WGPIPE.c = 0x10;
+    WGPIPE.i = 0x1006;
+    WGPIPE.i = 0;
+    goto end1;
+doB1:
+    WGPIPE.c = 0x61;
+    WGPIPE.i = 0x23000000;
+    goto end1;
+doB2:
+    WGPIPE.c = 0x61;
+    WGPIPE.i = 0x24000000;
+end1:;
+    {
+        int old2 = data[0x5F0 / 4];
+        if (old2 == 0x15) goto doC;
+        if (old2 >= 0x15) goto end2;
+        if (old2 >= 9) goto checkD;
+        if (old2 >= 0) goto doC;
+        goto end2;
+checkD:
+        if (old2 >= 0x11) goto doCP;
+        goto doD;
+doC:
+        WGPIPE.c = 0x61;
+        WGPIPE.i = 0x67000000;
+        goto end2;
+doD:
+        data[0x5F4 / 4] &= 0xFFFFFF0F;
+        WGPIPE.c = 8;
+        WGPIPE.c = 0x20;
+        WGPIPE.i = data[0x5F4 / 4];
+        goto end2;
+doCP:
+        __cpReg[3] = 0;
+end2:;
+    }
+    data[0x5EC / 4] = metric1;
+    switch (metric1) {
+    case 0:
+        WGPIPE.c = 0x10; WGPIPE.i = 0x1006; WGPIPE.i = 0x273; break;
+    case 1:
+        WGPIPE.c = 0x10; WGPIPE.i = 0x1006; WGPIPE.i = 0x14A; break;
+    case 2:
+        WGPIPE.c = 0x10; WGPIPE.i = 0x1006; WGPIPE.i = 0x16B; break;
+    case 3:
+        WGPIPE.c = 0x10; WGPIPE.i = 0x1006; WGPIPE.i = 0x84; break;
+    case 4:
+        WGPIPE.c = 0x10; WGPIPE.i = 0x1006; WGPIPE.i = 0xC6; break;
+    case 5:
+        WGPIPE.c = 0x10; WGPIPE.i = 0x1006; WGPIPE.i = 0x210; break;
+    case 6:
+        WGPIPE.c = 0x10; WGPIPE.i = 0x1006; WGPIPE.i = 0x252; break;
+    case 7:
+        WGPIPE.c = 0x10; WGPIPE.i = 0x1006; WGPIPE.i = 0x231; break;
+    case 8:
+        WGPIPE.c = 0x10; WGPIPE.i = 0x1006; WGPIPE.i = 0x1AD; break;
+    case 9:
+        WGPIPE.c = 0x10; WGPIPE.i = 0x1006; WGPIPE.i = 0x1CE; break;
+    case 34:
+        WGPIPE.c = 0x10; WGPIPE.i = 0x1006; WGPIPE.i = 0x21; break;
+    case 10:
+        WGPIPE.c = 0x10; WGPIPE.i = 0x1006; WGPIPE.i = 0x153; break;
+    case 11:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x2300AE7F; break;
+    case 12:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x23008E7F; break;
+    case 13:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x23009E7F; break;
+    case 14:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x23001E7F; break;
+    case 15:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x2300AC3F; break;
+    case 16:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x2300AC7F; break;
+    case 17:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x2300ACBF; break;
+    case 18:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x2300ACFF; break;
+    case 19:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x2300AD3F; break;
+    case 20:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x2300AD7F; break;
+    case 21:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x2300ADBF; break;
+    case 22:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x2300ADFF; break;
+    case 23:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x2300AE3F; break;
+    case 24:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x2300A27F; break;
+    case 25:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x2300A67F; break;
+    case 26:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x2300AA7F; break;
+    case 27:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x2402C0C6; break;
+    case 28:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x2402C16B; break;
+    case 29:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x2402C0E7; break;
+    case 30:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x2402C108; break;
+    case 31:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x2402C129; break;
+    case 32:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x2402C14A; break;
+    case 33:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x2402C1AD; break;
+    case 35:
+        break;
+    }
+    data[0x5F0 / 4] = metric2;
+    switch (metric2) {
+    case 0:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x67000042; break;
+    case 1:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x67000084; break;
+    case 2:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x67000063; break;
+    case 3:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x67000129; break;
+    case 8:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x67000252; break;
+    case 21:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x67000021; break;
+    case 4:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x6700014B; break;
+    case 5:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x6700018D; break;
+    case 6:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x670001CF; break;
+    case 7:
+        WGPIPE.c = 0x61; WGPIPE.i = 0x67000211; break;
+    case 9:
+        data[0x5F4 / 4] = GX_BITSET(data[0x5F4 / 4], 24, 4, 2); WGPIPE.c = 8; WGPIPE.c = 0x20; WGPIPE.i = data[0x5F4 / 4]; break;
+    case 10:
+        data[0x5F4 / 4] = GX_BITSET(data[0x5F4 / 4], 24, 4, 3); WGPIPE.c = 8; WGPIPE.c = 0x20; WGPIPE.i = data[0x5F4 / 4]; break;
+    case 11:
+        data[0x5F4 / 4] = GX_BITSET(data[0x5F4 / 4], 24, 4, 4); WGPIPE.c = 8; WGPIPE.c = 0x20; WGPIPE.i = data[0x5F4 / 4]; break;
+    case 12:
+        data[0x5F4 / 4] = GX_BITSET(data[0x5F4 / 4], 24, 4, 5); WGPIPE.c = 8; WGPIPE.c = 0x20; WGPIPE.i = data[0x5F4 / 4]; break;
+    case 13:
+        data[0x5F4 / 4] = GX_BITSET(data[0x5F4 / 4], 24, 4, 6); WGPIPE.c = 8; WGPIPE.c = 0x20; WGPIPE.i = data[0x5F4 / 4]; break;
+    case 14:
+        data[0x5F4 / 4] = GX_BITSET(data[0x5F4 / 4], 24, 4, 7); WGPIPE.c = 8; WGPIPE.c = 0x20; WGPIPE.i = data[0x5F4 / 4]; break;
+    case 15:
+        data[0x5F4 / 4] = GX_BITSET(data[0x5F4 / 4], 24, 4, 9); WGPIPE.c = 8; WGPIPE.c = 0x20; WGPIPE.i = data[0x5F4 / 4]; break;
+    case 16:
+        data[0x5F4 / 4] = GX_BITSET(data[0x5F4 / 4], 24, 4, 8); WGPIPE.c = 8; WGPIPE.c = 0x20; WGPIPE.i = data[0x5F4 / 4]; break;
+    case 17:
+        __cpReg[3] = 2; break;
+    case 18:
+        __cpReg[3] = 3; break;
+    case 19:
+        __cpReg[3] = 4; break;
+    case 20:
+        __cpReg[3] = 5; break;
+    case 22:
+        break;
+    }
+    *(unsigned short *)((char *)data + 2) = 0;
 }
 
 void GXClearGPMetric(void) {
