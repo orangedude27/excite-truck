@@ -995,13 +995,14 @@ void fn_802BDFF4(void *arg0, int arg1) {
 #pragma scheduling invalid_target
 void *fn_802BE008(void *arg0) {
     int count = *(int *)((char *)&lbl_804C00D4 + 4);
+    int found;
     char *entry = *(char **)&lbl_804C00D4;
     int i;
     for (i = 0; i < count; i++, entry += 0x60) {
         char *list = *(char **)(entry + 0x58);
         if (list != 0) {
             char *item = *(char **)(list + 8);
-            int found = 0;
+            found = 0;
             if ((unsigned)arg0 >= (unsigned)*(int *)item && (unsigned)arg0 < (unsigned)*(int *)item + (unsigned)*(int *)(item + 4) * 0x10) {
                 found = 1;
             }
@@ -1068,11 +1069,15 @@ void fn_802BE07C(void *arg0, float (*arg1)(int, int, int, short, float, float, f
 }
 
 extern int lbl_804C00D4;
-#pragma scheduling invalid_target
+#pragma push
+#pragma use_lmw_stmw off
 int fn_802BE1D8(void) {
-    int i = 0;
-    int sum = 0;
-    int offset = 0;
+    int offset;
+    int sum;
+    int i;
+    sum = 0;
+    i = 0;
+    offset = 0;
     while (i < *(int *)((char *)&lbl_804C00D4 + 4)) {
         sum += fn_802BD0C8(*(char **)&lbl_804C00D4 + offset);
         offset += 0x60;
@@ -1080,7 +1085,7 @@ int fn_802BE1D8(void) {
     }
     return sum;
 }
-#pragma scheduling on
+#pragma pop
 void fn_802BE244(void) {
     int offset = 0;
     int i = 0;
