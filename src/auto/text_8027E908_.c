@@ -2267,17 +2267,30 @@ extern "C" int fn_802839D0(void) {
     return 0;
 }
 #pragma cplusplus reset
-int fn_80283A50(void) {
+static inline int fn_80283A50_find(void **p, unsigned int value, int count) {
     int i = 0;
-    int count = (int)lbl_804B30D8[1];
-    unsigned int *p = (unsigned int *)lbl_804B30D8[0];
-    unsigned int value = (unsigned int)lbl_8055F698;
-    if (count > 0) {
-        do {
-            if (*p == value) goto found;
-            p++;
-            i++;
-        } while (--count != 0);
+    for (; i < count; ++i) {
+        if (*p != (void *)value) goto increment;
+        return i;
+increment:
+        ++p;
+    }
+    return -1;
+}
+int fn_80283A50(void) {
+    int i;
+    int count;
+    unsigned int value;
+    void **p;
+    count = (int)lbl_804B30D8[1];
+    i = 0;
+    value = (unsigned int)lbl_8055F698;
+    p = (void **)lbl_804B30D8[0];
+    for (; i < count; ++i) {
+        if (*p == (void *)value) goto found;
+        goto increment;
+increment:
+        ++p;
     }
     i = -1;
 found:
