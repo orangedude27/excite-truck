@@ -217,12 +217,15 @@ void fn_8001FEB8(void) {
 
 #pragma dont_inline on
 void fn_8001FEE8(void) {
+#pragma scheduling off
     int temp_r3;
     temp_r3 = fn_802E2C20();
     lbl_8055D63C = temp_r3;
-    lbl_8055D644 = (lbl_8055D638 = temp_r3, 1);
+    lbl_8055D638 = temp_r3;
     lbl_8055D640 = 0;
+    lbl_8055D644 = 1;
     lbl_8055D645 = 0;
+#pragma scheduling on
 }
 #pragma dont_inline off
 
@@ -386,10 +389,13 @@ void fn_80020430(void) {
     fn_8001FF24();
 }
 
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 int fn_80020434(void* arg0, float* arg1) {
     float out1[2], out2[2];
     float mat[12];
-    double dbl;
+    float dbl_tmp[2];
     float var_f1;
     float var_f3;
     float var_f31;
@@ -407,17 +413,17 @@ int fn_80020434(void* arg0, float* arg1) {
     s32 temp_r0;
     void* temp_r28;
 
-    mat[0] = lbl_805604B8;
     mat[1] = lbl_805604B4;
-    mat[2] = lbl_805604B4;
+    mat[0] = lbl_805604B8;
     mat[3] = lbl_805604B4;
+    mat[2] = lbl_805604B4;
     mat[4] = lbl_805604B8;
     mat[5] = lbl_805604B4;
-    mat[6] = lbl_805604B4;
     mat[7] = lbl_805604B4;
+    mat[6] = lbl_805604B4;
     mat[8] = lbl_805604B8;
-    mat[9] = lbl_805604B4;
     mat[10] = lbl_805604B4;
+    mat[9] = lbl_805604B4;
     mat[11] = lbl_805604B4;
     fn_802A1120(out1, out2, lbl_805604B8);
     mat[9] = out1[0];
@@ -431,9 +437,9 @@ int fn_80020434(void* arg0, float* arg1) {
     temp_r6 = temp_r3 - lbl_8055D63C;
     temp_r0 = temp_r6 / 50000;
     temp_r0 = temp_r6 - temp_r0 * 50000;
-    ((s32*)&dbl)[0] = 0x43300000;
-    ((s32*)&dbl)[1] = temp_r0 ^ 0x8000;
-    temp_f2 = (dbl - lbl_805604E8) / lbl_805604BC * lbl_805604C0;
+    dbl_tmp[0] = 176.0f;
+    *(s32*)&dbl_tmp[1] = temp_r0 ^ 0x8000;
+    temp_f2 = (float)(*(double*)&dbl_tmp[0] - lbl_805604E8) / lbl_805604BC * lbl_805604C0;
     temp_f7 = lbl_805604C4 + (lbl_805604C8 * (lbl_805604B8 - cos(temp_f2)));
     temp_f5 = mat[9];
     temp_f3 = mat[10];
@@ -448,10 +454,11 @@ int fn_80020434(void* arg0, float* arg1) {
     var_f1 = lbl_805604D0;
     if (lbl_8055D630 > 0) {
         temp_r28 = &lbl_8035B758[lbl_8055D634 * 0x70];
-        ((s32*)&dbl)[0] = 0x43300000;
+        dbl_tmp[0] = 176.0f;
         temp_r3 = fn_802E2C20();
-        ((s32*)&dbl)[1] = (temp_r3 - lbl_8055D638) ^ 0x8000;
-        var_f31 = lbl_805604D4 * (dbl - lbl_805604E8);
+        temp_r0 = (temp_r3 - lbl_8055D638) ^ 0x8000;
+        *(s32*)&dbl_tmp[1] = temp_r0;
+        var_f31 = lbl_805604D4 * (float)(*(double*)&dbl_tmp[0] - lbl_805604E8);
         temp_f3 = *(float*)&((char*)temp_r28)[0x68];
         if (var_f31 > temp_f3) {
             temp_r4 = lbl_8055D634 + 1;
@@ -499,7 +506,7 @@ int fn_80020434(void* arg0, float* arg1) {
     *arg1 = var_f1;
     return 0;
 }
-
+#pragma pop
 extern int fn_80020434(void*, float*);
 extern int fn_8026A2CC(void*, int, float);
 extern int fn_8000C630(int, int);
