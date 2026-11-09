@@ -501,10 +501,17 @@ s32 fn_801784DC(Vec *arg0, f32 *arg1, Vec *arg2, s32 *arg3, s32 arg4) {
 }
 #pragma scheduling on
 void fn_801785A4(void **arg0) {
-    int index = lbl_8055E438;
-    lbl_8055E434[index] = arg0;
+    int index;
+    void **table;
+    struct Funcs {
+        void *pad[0x10];
+        int (*callback)(void **);
+    };
+    index = lbl_8055E438;
+    table = lbl_8055E434;
+    table[index] = arg0;
     lbl_8055E438 = index + 1;
-    if (((int (*)(void *))(*(int **)*(void **)arg0 + 0x40))(*arg0) != 0) {
+    if (((struct Funcs *)*arg0)->callback(arg0) != 0) {
         fn_801B5318(arg0);
     }
 }
@@ -888,22 +895,26 @@ extern int fn_802E4C18(int);
 extern int fn_801787B4(void *);
 extern void fn_80177F40(void);
 extern long lbl_80430850[];
-void fn_80179140(void) {
-    int var_r31;
-    int var_r30;
-    void **var_r28;
-
-    var_r31 = 0;
-    var_r30 = 0;
-    do {
-        var_r28 = *(void ***)(lbl_8055E434 + var_r31);
-        ((void (*)(void **))(*(void ***)*var_r28 + 0x14))(var_r28);
-        var_r31 += 4;
-        var_r30 += 1;
-    } while (var_r30 < lbl_8055E438);
+#pragma cplusplus on
+extern "C" void fn_80179140(void) {
+    class Element {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+    };
+    s32 i = 0;
+    s32 count = 0;
+    Element *entry;
+    while (count < lbl_8055E438) {
+        entry = (Element *)*(void **)((char *)lbl_8055E434 + i);
+        entry->f3();
+        i += 4;
+        count += 1;
+    }
 }
-
-#pragma dont_inline off
+#pragma cplusplus off
 
 void fn_801791A4(void) {
 
