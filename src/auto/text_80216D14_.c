@@ -182,24 +182,30 @@ check:
     if (callback != 0)
         callback();
 }
-#pragma cplusplus off
-#pragma scheduling on
-void fn_802173F8(void *arg0) {
+#pragma cplusplus on
+#pragma dont_inline on
+extern "C" void fn_802173F8(void *arg0) {
+    class Obj {
+    public:
+        virtual void m0();
+        virtual void m1();
+        virtual void m2();
+    };
     char *base = (char *)arg0;
     int i;
-    if (*(void **)(base + 0x43C) != 0) (*(void (**)(void))((char *)base + 0x43C))();
+    if (*(void **)(base + 0x43C) != 0) (*(void (**)(void))(base + 0x43C))();
     i = *(int *)(base + 0x430) - 1;
     base += i * 4;
     while (i >= 0) {
         void *obj = *(void **)(base + 0x30);
-        void **vtable = *(void ***)obj;
-        ((void (*)(void *))vtable[4])(obj);
+        ((Obj *)obj)->m2();
         base -= 4;
         i--;
     }
     fn_80216D28();
 }
-#pragma scheduling on
+#pragma dont_inline reset
+#pragma cplusplus off
 void fn_80217478(void) {
 
 }
