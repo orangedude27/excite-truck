@@ -662,6 +662,8 @@ extern "C" void fn_801B1390(s32 arg0, s32 arg1) {
     }
 }
 
+#pragma scheduling on
+#pragma cplusplus off
 #pragma dont_inline on
 void fn_801B146C(void) {
     s32 i = 0;
@@ -674,9 +676,6 @@ void fn_801B146C(void) {
     } while (i < 4);
 }
 #pragma dont_inline reset
-
-#pragma scheduling on
-#pragma cplusplus off
 void fn_801B14BC(s32 *arg0,s32 arg1,s32 arg2) {
     if(arg2){*arg0 |= arg1;return;}
     *arg0 &= ~arg1;
