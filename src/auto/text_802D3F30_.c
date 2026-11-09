@@ -719,14 +719,15 @@ void fn_802D5270(void *arg0) {
     }
 }
 
-#pragma dont_inline on
+#pragma push
+#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802D5680(void *arg0) {
-    void * volatile array = *(void **)((char *)arg0 + 0x20);
-    GXSetArray(9, array, 0x10);
+    GXSetArray(9, *(void **)((char *)arg0 + 0x20), 0x10);
     GXSetArray(0xA, *(void **)((char *)arg0 + 0x24), 3);
     GXCallDisplayList(*(void **)((char *)arg0 + 0x30), *(u32 *)((char *)arg0 + 0x2C));
 }
-#pragma dont_inline reset
+#pragma pop
 
 extern s32 fn_802CFF64(s32);
 extern f32 lbl_804DB068[];
