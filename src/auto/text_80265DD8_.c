@@ -343,10 +343,14 @@ void *fn_80266120(void *arg0) {
 
 #pragma dont_inline on
 void fn_80266150(void *arg0) {
-    *(float *)((char *)arg0 + 0xC) = lbl_80563C2C;
-    *(int *)((char *)arg0 + 4) = 0;
-    *(int *)((char *)arg0 + 0) = 0;
-    *(float *)((char *)arg0 + 8) = lbl_8055C4C0;
+    float a;
+    float b;
+    ((int *)arg0)[1] = 0;
+    a = lbl_80563C2C;
+    ((int *)arg0)[0] = 0;
+    b = lbl_8055C4C0;
+    *(float *)((char *)arg0 + 8) = b;
+    *(float *)((char *)arg0 + 0xC) = a;
 }
 #pragma dont_inline reset
 
@@ -1567,35 +1571,21 @@ void fn_80268BD4(void *out, int arg1, float t, float angle) {
 }
 #pragma pop
 void fn_80268D94(void) {
-    struct {
-        int a;
-        int b;
-        int c;
-        int d;
-        int e;
-        int f;
-        int g;
-        int h;
-        int i;
-        int j;
-        int k;
-        int l;
-        int m;
-        int n;
-        int o;
-        int p;
-        int q;
-        int r;
-        int s;
-    } sp8;
-    int sp58;
-    fn_80135DC4(&sp8, 0, 0);
-    fn_80268BD4(lbl_80499920, *(int *)&sp8 + 0x1c, lbl_80563C20, lbl_80563C98);
-    if (sp58 != 0) {
-        fn_80128670();
+    struct Object {
+        char pad2c[0x2C];
+        void *context;
+        char pad30[0x20];
+        int resource;
+        int field54;
+        int field58;
+    } object;
+    fn_80135DC4(&object, 0, 0);
+    fn_80268BD4(lbl_80499920, *(int *)((char *)object.context + 0x1C), lbl_80563C20, lbl_80563C98);
+    if (object.resource != 0) {
+        ((void (*)(int))fn_80128670)(object.resource);
     }
-    sp58 = 0;
-    fn_8013530C(&sp8, 0);
+    object.resource = 0;
+    fn_8013530C(&object, 0);
 }
 
 void fn_80268E00(void) {
@@ -1958,24 +1948,23 @@ void fn_8026A2C8(void) {
 #pragma scheduling invalid_target
 #pragma scheduling on
 void fn_8026A2CC(int *arg0, int arg1, float arg2) {
+    int a = arg0[0];
+    int b = arg0[1];
+    int c = arg0[2];
+    int d = arg0[3];
     int *dst = (int *)((char *)lbl_80499080 + arg1 * 0x228 + 0x1a4);
-    int *src = arg0;
-    int a = src[0];
-    int b = src[1];
-    int c = src[2];
-    int d = src[3];
     dst[0] = a;
     dst[1] = b;
     dst[2] = c;
     dst[3] = d;
-    dst[4] = src[4];
-    dst[5] = src[5];
-    dst[6] = src[6];
-    dst[7] = src[7];
-    dst[8] = src[8];
-    dst[9] = src[9];
-    dst[10] = src[10];
-    dst[11] = src[11];
+    dst[4] = arg0[4];
+    dst[5] = arg0[5];
+    dst[6] = arg0[6];
+    dst[7] = arg0[7];
+    dst[8] = arg0[8];
+    dst[9] = arg0[9];
+    dst[10] = arg0[10];
+    dst[11] = arg0[11];
     *(float *)(dst + 12) = arg2;
 }
 int fn_8026A344(int arg0) {
