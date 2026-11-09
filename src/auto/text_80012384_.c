@@ -75,6 +75,7 @@ void fn_800124DC(const char *arg0, float farg0) {
     *(int *)(p + 0x8c) = fn_802E2C20();
     p[0] = one;
 }
+#pragma pop
 
 #pragma pop
 #pragma push
