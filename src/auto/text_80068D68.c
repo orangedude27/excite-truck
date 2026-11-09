@@ -6877,12 +6877,11 @@ void bta_hh_add_device_to_list(void *arg0, s8 arg1, s16 arg2, void *arg3, s32 ar
 }
 
 BOOLEAN bta_hh_tod_spt(void *p_cb, UINT8 sub_class) {
-    UINT8 *p_cfg = lbl_80559030;
     UINT8 cod = (sub_class >> 2) & 0x3F;
     UINT8 xx;
-    UINT8 max_devt = p_cfg[0];
+    UINT8 max_devt = lbl_80559030[0];
     for (xx = 0; xx < max_devt; xx++) {
-        UINT8 *p_list = *(UINT8 **)(p_cfg + 4);
+        UINT8 *p_list = *(UINT8 **)(lbl_80559030 + 4);
         if (cod == p_list[xx * 2]) {
             ((UINT8 *)p_cb)[0x15] = p_list[xx * 2 + 1];
             return TRUE;
@@ -14711,15 +14710,13 @@ s32 btsnd_hcic_inq_cancel_8008576C(void) {
 
 s32 btsnd_hcic_reset_800857CC(void) {
     u8 *p = GKI_getpoolbuf(2);
-    u16 three = 3;
-    u16 zero = 0;
     if (p == NULL) return 0;
-    *(u16 *)(p + 2) = three;
-    *(u16 *)(p + 4) = zero;
-    p[8] = (u8)three;
+    *(u16 *)(p + 2) = 3;
+    *(u16 *)(p + 4) = 0;
+    p[8] = 3;
     p[9] = 0x10;
-    p[10] = (u8)zero;
-    btu_hcif_send_cmd(0, 3);
+    p[10] = 0;
+    btu_hcif_send_cmd(p);
     return 1;
 }
 
