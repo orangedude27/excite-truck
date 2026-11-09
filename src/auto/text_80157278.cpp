@@ -3226,15 +3226,13 @@ extern "C" s32 fn_8015D374(void* arg0) {
 extern "C" u32 fn_8015D37C(void) { return 1; }
 
 extern "C" void fn_8015D384(Unk801577F0* arg0) {
-    register s32 count = arg0->m260;
-    arg0->m264 = 0;
+    int count = *(int*)((char*)arg0 + 0x260);
+    *(int*)((char*)arg0 + 0x264) = 0;
     if (count > 0) {
-        if (arg0->m258 != 0) fn_801CB6E4((void*)arg0->m258, arg0->m4);
-        arg0->m260 = 0;
-        f32 a = lbl_80561754;
-        arg0->m254 = a;
-        f32 b = lbl_80561750;
-        arg0->m25c = b;
+        if (*(int*)((char*)arg0 + 0x258) != 0) fn_801CB6E4(*(void**)((char*)arg0 + 0x258), *(int*)((char*)arg0 + 4));
+        *(int*)((char*)arg0 + 0x260) = 0;
+        *(float*)((char*)arg0 + 0x254) = lbl_80561754;
+        *(float*)((char*)arg0 + 0x25c) = lbl_80561750;
         arg0->v31();
     }
 }
@@ -3832,31 +3830,27 @@ extern "C" void fn_8015E778(Unk801577F0V* arg0, s32 arg1, s32 arg2, f32 farg0) {
 }
 #pragma use_lmw_stmw reset
 extern "C" void fn_8015E80C(void* arg0, s32 arg1) {
-    class Entry {
-    public:
-        virtual void v0();
-        virtual void v1();
-        virtual void v2();
-        virtual void v3();
-        virtual void v4();
-        virtual void v5();
-        virtual void v6();
-        virtual void v7();
-        virtual void v8();
-        virtual void v9();
-        virtual void dispatch(s32);
-    };
-    struct List {
-        s32 unk0;
-        Entry** entries;
-        s32 count;
-    };
-    List* list = (List*)arg0;
-    s32 off = 0;
-    s32 i = 0;
-    while (i < list->count) {
-        list->entries[off / 4]->dispatch(arg1);
-        i += (off += 4, 1);
+    s32 var_r31 = 0;
+    s32 var_r30 = 0;
+    while (var_r30 < *(s32*)((char*)arg0 + 8)) {
+        class Entry {
+        public:
+            virtual void v0();
+            virtual void v1();
+            virtual void v2();
+            virtual void v3();
+            virtual void v4();
+            virtual void v5();
+            virtual void v6();
+            virtual void v7();
+            virtual void v8();
+            virtual void v9();
+            virtual void dispatch(s32);
+        };
+        Entry* obj = *(Entry**)((char*)*(void**)((char*)arg0 + 4) + var_r31);
+        obj->dispatch(arg1);
+        var_r31 += 4;
+        var_r30 += 1;
     }
 }
 
