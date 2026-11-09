@@ -12,7 +12,7 @@ extern int lbl_8055FFD8;
 extern int lbl_8055FFDC;
 extern signed char lbl_8055FFE0;
 extern int lbl_8034D7D8;
-extern int fn_802E30C8(int *, int, int, int);
+extern int fn_802E30C8(const char *, ...);
 #pragma dont_inline on
 int fn_802E72B8(int arg0) {
     return (arg0 + 0x7ff) / 2048;
@@ -26,11 +26,8 @@ void fn_802E7318(void) {
 }
 
 void fn_802E7330(void) {
-    int *p = &lbl_8034D7D8;
-    int a = lbl_8055FFD8;
-    int b = lbl_8055FFDC;
     lbl_8055FFE0 = 0;
-    fn_802E30C8(p, a, 0x100, b);
+    fn_802E30C8("StrmEnd: used %d of %d entries, %d sectors", lbl_8055FFD8, 0x100, lbl_8055FFDC);
 }
 
 extern int stricmp(const char *, const char *);
@@ -38,13 +35,13 @@ extern int fn_802E37C4(void);
 extern int fn_802E72B8(int);
 int fn_802E7354(const char *name) {
     int index = 0;
+    int count;
     int fileIndex;
     int size;
     int blocks;
     int remaining;
     unsigned char *entry;
     char *dst;
-    const char *src;
     signed char c;
 
     entry = lbl_804FC978;
@@ -59,14 +56,15 @@ search_test:
         goto search_body;
 
     fileIndex = fn_802E36D8((void *)name);
-    if (fileIndex == -1)
-        return fileIndex;
-    index = lbl_8055FFD8;
+    if (fileIndex != -1)
+        goto create_entry;
+    return fileIndex;
+create_entry:
+    count = lbl_8055FFD8;
     entry = lbl_804FC978;
-    entry += index * 0x90;
-    lbl_8055FFD8 = index + 1;
+    entry += count * 0x90;
+    lbl_8055FFD8 = count + 1;
     dst = (char *)(entry + 0x10);
-    src = name;
     remaining = 0x80;
     goto copy_body;
 copy_limit:
@@ -76,8 +74,8 @@ copy_limit:
     *--dst = 0;
     goto copy_end;
 copy_body:
-    c = *src;
-    src++;
+    c = *name;
+    name++;
     *dst = c;
     dst++;
     if (c != 0)
@@ -90,7 +88,7 @@ copy_end:
     *(int *)(entry + 4) = lbl_8055FFDC;
     *(int *)(entry + 8) = size;
     fn_802E3734(&fileIndex);
-    return index;
+    return count;
 }
 
 void fn_802E746C(int arg0, int *arg1, int *arg2) {
