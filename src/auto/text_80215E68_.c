@@ -55,7 +55,9 @@ extern f32 lbl_8055EF94;
 extern s32 lbl_8055EF74;
 extern s32 fn_80217270(s32);
 extern s32 fn_802E317C(const char *, ...);
+#pragma small_data off
 extern char lbl_8033D7EC;
+#pragma small_data on
 extern s32 fn_80218464(void);
 extern u32 lbl_8055EF98;
 extern char lbl_8055EF99;
@@ -230,16 +232,13 @@ void fn_80216194(void) {
 
 #pragma dont_inline on
 s32 fn_802161CC(s32 arg0) {
-    u32 *p = lbl_804908C8;
-    s32 i = 0;
-    do {
-        u32 value = *p;
+    s32 i;
+    for (i = 0; i < 16; i++) {
+        u32 value = lbl_804908C8[i];
         if (value != 0 && (arg0 != 0 || value != (u32)lbl_8055EF88)) {
             fn_80218464();
         }
-        i++;
-        p++;
-    } while (i < 16);
+    }
 }
 
 #pragma push
@@ -398,19 +397,19 @@ void *fn_80216770(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     fn_802E317C((const char *)&lbl_8033D7B4);
     return 0;
 }
-#pragma pop
+#pragma small_data off
 void fn_8021683C(u32 arg0) {
     s32 i;
     for (i = 0; i < 16; i++) {
-        if (lbl_804908C8[i] == arg0) {
-            fn_80217270(1);
+        if (arg0 == lbl_804908C8[i]) {
+            ((void (*)(u32, s32))fn_80217270)(arg0, 1);
             lbl_804908C8[i] = 0;
             return;
         }
     }
     fn_802E317C(&lbl_8033D7EC);
 }
-
+#pragma small_data on
 void fn_802168BC(s32 arg0) {
     lbl_8055EF74 = arg0;
     lbl_8055EF70 = 1;
