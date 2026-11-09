@@ -764,42 +764,46 @@ void fn_802DCAE4(void *arg0, void *arg1, float farg0) {
      alpha = farg0;
      if (lbl_8055FEBB != 0) {
          unsigned int first;
-         unsigned int *records;
+         unsigned char *dest;
          int count;
-         unsigned int *dest;
          g = lbl_804DB480;
          first = *(unsigned int *)input;
-         records = (unsigned int *)*(void **)g;
+         dest = *(void **)g;
          count = *(int *)(g + 4);
-         dest = records + count * 13;
          *(void **)(g + 0x214) = state;
-         *(int *)(g + 4) = count + 1;
-         dest[0] = first;
-         dest[1] = *(unsigned int *)((unsigned char *)input + 0x04);
-         dest[2] = *(unsigned int *)((unsigned char *)input + 0x08);
-         dest[3] = *(unsigned int *)((unsigned char *)input + 0x0C);
-         dest[4] = *(unsigned int *)((unsigned char *)input + 0x10);
-         dest[5] = *(unsigned int *)((unsigned char *)input + 0x14);
-         dest[6] = *(unsigned int *)((unsigned char *)input + 0x18);
-         dest[7] = *(unsigned int *)((unsigned char *)input + 0x1C);
-         dest[8] = *(unsigned int *)((unsigned char *)input + 0x20);
-         dest[9] = *(unsigned int *)((unsigned char *)input + 0x24);
-         dest[10] = *(unsigned int *)((unsigned char *)input + 0x28);
-         dest[11] = *(unsigned int *)((unsigned char *)input + 0x2C);
-         *(float *)&dest[12] = alpha;
+         dest += count * 0x34;
+         *(int *)(g + 4) = ++count;
+         *(unsigned int *)dest = first;
+         *(unsigned int *)(dest + 0x04) = *(unsigned int *)((unsigned char *)input + 0x04);
+         *(unsigned int *)(dest + 0x08) = *(unsigned int *)((unsigned char *)input + 0x08);
+         *(unsigned int *)(dest + 0x0C) = *(unsigned int *)((unsigned char *)input + 0x0C);
+         *(unsigned int *)(dest + 0x10) = *(unsigned int *)((unsigned char *)input + 0x10);
+         *(unsigned int *)(dest + 0x14) = *(unsigned int *)((unsigned char *)input + 0x14);
+         *(unsigned int *)(dest + 0x18) = *(unsigned int *)((unsigned char *)input + 0x18);
+         *(unsigned int *)(dest + 0x1C) = *(unsigned int *)((unsigned char *)input + 0x1C);
+         *(unsigned int *)(dest + 0x20) = *(unsigned int *)((unsigned char *)input + 0x20);
+         *(unsigned int *)(dest + 0x24) = *(unsigned int *)((unsigned char *)input + 0x24);
+         *(unsigned int *)(dest + 0x28) = *(unsigned int *)((unsigned char *)input + 0x28);
+         *(unsigned int *)(dest + 0x2C) = *(unsigned int *)((unsigned char *)input + 0x2C);
+         *(float *)(dest + 0x30) = alpha;
          if (*(int *)(g + 4) + 1 > *(int *)(g + 8)) {
              unsigned char *colors = (unsigned char *)fn_802CFF64(0x28);
              unsigned char *coords = (unsigned char *)fn_802CFF64(0x50);
              if (colors != 0 && coords != 0) {
                  void *data;
-                 int n = *(int *)(g + 4);
-                 int i = 0;
-                 int byteOffset = 0;
-                 unsigned char *colorOut = colors;
-                 unsigned char *coordOut = coords;
+                 int n;
+                 int i;
+                 int byteOffset;
+                 unsigned char *colorOut;
+                 unsigned char *coordOut;
                  float temp_f29;
                  float temp_f30;
                  float temp_f31;
+                 n = *(int *)(g + 4);
+                 i = 0;
+                 byteOffset = 0;
+                 colorOut = colors;
+                 coordOut = coords;
                  if (*(unsigned char *)(g + 0x218) != 0)
                      fn_802D6B54(*(void **)(g + 0x214));
                  data = ((void *(*)(void *))fn_802DC628)(*(void **)(g + 0x214));
@@ -850,14 +854,18 @@ void fn_802DCAE4(void *arg0, void *arg1, float farg0) {
              fn_802DCAE4_GXColor col;
              float t = lbl_80565040 * alpha;
              float rounded;
-             int a; unsigned int pixel;
+             int a;
+             unsigned int pixel;
              if (t < lbl_80565048)
                  rounded = t - lbl_80565044;
              else
                  rounded = lbl_80565044 + t;
-             a = (int)rounded;
-             a = a & ((-a & ~a) >> 31);
-             if (a >= 0xFF) a = 0xFF;
+             a = 0xFF;
+             {
+                 int raw = (int)rounded;
+                 int masked = raw & ((-raw & ~raw) >> 31);
+                 if (masked < 0xFF) a = masked;
+             }
              pixel = fn_802DC6AC(((int)*(float *)((unsigned char *)input + 0x24) / 4) + 0x100,
                                  ((int)*(float *)((unsigned char *)input + 0x2C) / 4) + 0x100);
              col.r = (unsigned char)(pixel >> 16);
@@ -888,10 +896,13 @@ void fn_802DCAE4(void *arg0, void *arg1, float farg0) {
                      rounded = t - lbl_80565044;
                  else
                      rounded = lbl_80565044 + t;
-                 a = (int)rounded;
-                 a = a & ((-a & ~a) >> 31);
-                 if (a >= 0xFF) a = 0xFF;
-                 if (a != lbl_8055FEA0) {
+                 a = 0xFF;
+                 {
+                     int raw = (int)rounded;
+                     int masked = raw & ((-raw & ~raw) >> 31);
+                     if (masked < 0xFF) a = masked;
+                 }
+                 if ((unsigned char)a != lbl_8055FEA0) {
                      fn_802DCAE4_GXColor color;
                      color.r = 0xFF; color.g = 0xFF; color.b = 0xFF; color.a = a;
                      GXSetTevKColor(1, color);
