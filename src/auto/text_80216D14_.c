@@ -27,7 +27,7 @@ int fn_80216D14(int arg0) {
     return arg0 < 0 ? 0 : 1 << arg0;
 }
 
-#pragma noinline
+#pragma dont_inline fn_80216D28
 void fn_80216D28(void) {
     lbl_8055EFAC = 1;
 }
