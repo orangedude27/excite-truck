@@ -14724,17 +14724,11 @@ void fn_80085828(void *arg0) {
 
 s32 btsnd_hcic_inq_cancel_80085850(void) {
     u8 *p = GKI_getpoolbuf(2);
-    u16 zero = 0;
-    u8 opcode = 9;
-    if (p == 0) {
-        return 0;
-    }
+    if (p == 0) return 0;
     *(u16 *)(p + 2) = 3;
-    *(u16 *)(p + 4) = zero;
-    p[8] = opcode;
-    p[9] = 0x10;
-    p[10] = zero;
-    btu_hcif_send_cmd(p, opcode);
+    *(u16 *)(p + 4) = 0;
+    p[8] = 9; p[9] = 0x10; p[10] = 0;
+    btu_hcif_send_cmd(p);
     return 1;
 }
 
