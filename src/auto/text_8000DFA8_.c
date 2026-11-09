@@ -808,14 +808,12 @@ f32 fn_8001090C(f32 farg0) {
     s32 raw;
     f64 number;
     f64 magic;
-    f32 scaled;
     raw = fn_80232B70(lbl_8055D490);
     converted.words[1] = (u32)raw ^ 0x80000000;
     converted.words[0] = 0x43300000;
     number = converted.value;
     magic = lbl_80560268;
-    scaled = (f32)(number - magic);
-    return lbl_805602C8 * (farg0 * scaled);
+    return lbl_805602C8 * (farg0 * (f32)(number - magic));
 }
 #pragma pop
 s32 fn_80010964(s32 arg0) {
@@ -887,15 +885,14 @@ void fn_80010B7C(void) {
     fn_802C8D74();
 }
 
-void fn_80010B80(s32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4) {
+void fn_80010B80(s32 arg0, float arg1, float arg2, float arg3, float arg4) {
     volatile s32 spill_arg0_a;
     volatile s32 spill_arg0_b;
-    volatile f32 spill_arg4;
-    volatile f32 spill_arg3;
-    volatile f32 spill_arg2;
-    volatile f32 spill_arg1;
+    volatile float spill_arg4;
+    volatile float spill_arg3;
+    volatile float spill_arg2;
+    volatile float spill_arg1;
     register s32 index;
-
     index = lbl_8055D4A8;
     spill_arg1 = arg1;
     spill_arg2 = arg2;
@@ -903,16 +900,15 @@ void fn_80010B80(s32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4) {
     spill_arg4 = arg4;
     spill_arg0_b = arg0;
     spill_arg0_a = arg0;
-
     if (index < 0x100) {
         Unk0x18 *entry = &lbl_8034F6B0[index];
-        entry->unk_0x00 = arg1;
-        entry->unk_0x04 = arg2;
-        entry->unk_0x08 = arg3;
-        entry->unk_0x0C = arg4;
+        entry->unk_0x00 = (float)(double)arg1;
+        entry->unk_0x04 = (float)(double)arg2;
+        entry->unk_0x08 = (float)(double)arg3;
+        entry->unk_0x0C = (float)(double)arg4;
         entry->unk_0x10 = arg0;
-        entry->unk_0x14 = arg0;
         lbl_8055D4A8 = index + 1;
+        entry->unk_0x14 = arg0;
     }
 }
 
@@ -1818,10 +1814,9 @@ extern "C" void fn_800120BC(void) {
 }
 #pragma cplusplus reset
 void fn_80012158(void) {
-    register u8 *obj;
-    register s32 *base;
+    u8 * __restrict obj;
+    s32 * __restrict base;
     s32 n;
-
     base = (s32 *)lbl_8055D4AC;
     obj = *(u8 **)((u8 *)base + base[0] * 4 + 4);
     if (obj == 0) return;
@@ -1839,19 +1834,17 @@ void fn_800121A4(void) {
     u8 *obj;
     s32 *base;
     s32 n;
-    s32 zero;
-
     base = (s32 *)lbl_8055D4AC;
-    obj = *(u8 **)((u8 *)base + base[0] * 4 + 0x10);
+    obj = ((u8 **)base)[base[0] + 4];
     if (obj == 0) return;
     obj[0x49] = 1;
-    zero = 0;
-    obj[0x4B] = zero;
-    obj[0x4A] = zero;
-    n = base[0] + 1;
+    obj[0x4B] = 0;
+    obj[0x4A] = 0;
+    n = base[0];
+    n++;
     base[0] = n;
     if (n < 3) return;
-    base[0] = zero;
+    base[0] = 0;
 }
 
 extern void fn_801331C4(s32, void *, f32 *);
