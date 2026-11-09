@@ -104,11 +104,10 @@ int fn_802CCD0C(void *arg0, void *arg1) {
 }
 
 int fn_802CCDC4(void ***arg0, void ***arg1) {
-    void **obj0 = **arg0;
-    void **obj1 = *arg1[0];
-    int (*method0)(void **) = (int (*)(void **))(*(void **)(*arg0[0]));
-    int (*method1)(void **) = (int (*)(void **))(*(void **)(*obj1));
-    return method0(obj0) - method1(obj1);
+    void **obj0 = *arg0;
+    void **obj1 = *arg1;
+    int first = ((int (**)(void **))(*obj0))[4](obj0);
+    return first - ((int (**)(void **))(*obj1))[4](obj1);
 }
 
 extern int fn_802CAC28(void *, int);
@@ -427,6 +426,11 @@ void fn_802CD37C(void *arg0, void *arg1, float *arg2, int arg3, float farg0, flo
 
 void fn_802CDAA8(void) {
     lbl_8055FCD8 = 0;
+}
+
+void fn_802CDAB4(void *arg0, int arg1, void *arg2) {
+    unsigned char *base = lbl_8055DFC4;
+    *(int *)(base + arg1 * 4 + 0x64) = ((int (*)(void *))fn_802D0514)(arg2);
 }
 
 extern unsigned char *lbl_8055DFC4;
