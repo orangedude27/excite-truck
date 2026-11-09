@@ -144,7 +144,7 @@ extern "C" void OSUnlockMutex(void*);
 extern "C" void DisposeCallbackFunc__Q36nw4hbm3snd9SoundHeapFPvUlPv(void*, unsigned long, void*);
 extern "C" void Destroy__Q46nw4hbm3snd6detail9FrameHeapFv(void*);
 extern "C" void* __dt__Q46nw4hbm3snd6detail9FrameHeapFv(void*, int);
-extern "C" void* lbl_80325C40;
+extern "C" u8 lbl_80325C40[];
 extern "C" void Dispose__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv(void*, unsigned long, void*);
 extern "C" void DisposeWave__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv_800EB214(void*, unsigned long, void*);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...) __attribute__((noreturn));
@@ -448,23 +448,33 @@ extern "C" const char lbl_80324734[];
 extern "C" const char lbl_803247D0[];
 extern "C" const char lbl_80324788[];
 extern "C" void UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *self) {
-    DummySeqPlayerIface *p = M2C_FIELD(self, DummySeqPlayerIface **, 0xB4);
     f32 a = (f32)M2C_FIELD(self, u8 *, 0x80) / 127.0f;
     f32 b = (f32)M2C_FIELD(self, u8 *, 0x81) / 127.0f;
-    f32 c = (f32)p->b90 / 127.0f;
-    f32 vol = 1.0f * (a * a) * (b * b) * (c * c) * M2C_FIELD(self, f32 *, 8);
-    vol *= p->g15();
-    f32 pan = (f32)(s8)M2C_FIELD(self, u8 *, 0x82) * 0.0078125f;
+    f32 c = (f32)M2C_FIELD(SeqTrackPlayer(self), u8 *, 0x90) / 127.0f;
+    f32 vol = 1.0f;
+    vol *= a * a;
+    vol *= b * b;
+    vol *= c * c;
+    vol *= M2C_FIELD(self, f32 *, 8);
+    vol *= SeqTrackPlayer(self)->g15();
+    f32 pan = (f32)(s8)M2C_FIELD(self, u8 *, 0x82);
+    pan = 0.0078125f * pan;
     f32 pan2 = pan * (f32)M2C_FIELD(self, u8 *, 0x83);
-    f32 pitch = 1.0f * p->g16() * M2C_FIELD(self, f32 *, 0xC);
+    f32 pitch = 1.0f;
+    pitch *= SeqTrackPlayer(self)->g16();
+    pitch *= M2C_FIELD(self, f32 *, 0xC);
+    f32 f25 = 0.0f;
     f32 t = (f32)(s8)M2C_FIELD(self, u8 *, 0x84) / 63.0f;
     f32 tc;
     if (t > 1.0f) tc = 1.0f;
     else if (t < -1.0f) tc = -1.0f;
     else tc = t;
-    f32 f25 = 0.0f + tc;
-    f25 = f25 * M2C_FIELD(self, f32 *, 0x18) * p->volume + M2C_FIELD(self, f32 *, 0x10);
-    f25 += p->g17();
+    f25 += tc;
+    f25 *= M2C_FIELD(self, f32 *, 0x18);
+    f25 *= M2C_FIELD(SeqTrackPlayer(self), f32 *, 0x28);
+    f25 += M2C_FIELD(self, f32 *, 0x10);
+    f25 += SeqTrackPlayer(self)->g17();
+    f32 f24 = 0.0f;
     f32 t2 = (f32)(s8)M2C_FIELD(self, u8 *, 0x86) / 63.0f;
     f32 tc2;
     if (t2 > 2.0f) tc2 = 2.0f;
@@ -472,37 +482,49 @@ extern "C" void UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *self) 
         if (t2 < 0.0f) t2 = 0.0f;
         tc2 = t2;
     }
-    f32 f24 = 0.0f + tc2;
+    f24 += tc2;
     f24 += M2C_FIELD(self, f32 *, 0x14);
-    f24 += p->g18();
+    f24 += SeqTrackPlayer(self)->g18();
     f32 f23 = 0.0f;
-    f23 += p->g19();
+    f23 += SeqTrackPlayer(self)->g19();
     f32 f22 = 0.0f;
-    f22 += p->g20();
-    f32 f21 = 0.0f + ((f32)((s32)M2C_FIELD(self, u8 *, 0x93) - 0x40)) * 0.015625f;
+    f22 += SeqTrackPlayer(self)->g20();
+    f32 f21 = 0.0f;
+    f32 rawp = (f32)((s32)M2C_FIELD(self, u8 *, 0x93) - 0x40);
+    f21 += rawp * 0.015625f;
     f21 += M2C_FIELD(self, f32 *, 0x1C);
-    f21 += p->g21();
-    f32 f20 = 0.0f + ((f32)M2C_FIELD(self, u8 *, 0x8F) / 127.0f - 1.0f);
+    f21 += SeqTrackPlayer(self)->g21();
+    f32 f20 = 0.0f;
+    f20 += (f32)M2C_FIELD(self, u8 *, 0x8F) / 127.0f - 1.0f;
     f20 += M2C_FIELD(self, f32 *, 0x20);
-    f20 += p->g31();
+    f20 += SeqTrackPlayer(self)->g31();
     f32 sa[3];
     f32 sb[4];
     f32 sc[4];
     int i;
+    f32 *pa = sa;
+    u8 *q = (u8 *)self;
     for (i = 0; i < 3; i++) {
-        sa[i] = 0.0f;
-        sa[i] = sa[i] + (f32)M2C_FIELD(self, u8 *, 0x90 + i) / 127.0f + M2C_FIELD(self, f32 *, 0x24 + i * 4);
-        sa[i] += p->g32(i);
+        *pa = 0.0f;
+        *pa += (f32)M2C_FIELD(self, u8 *, 0x90 + i) / 127.0f;
+        *pa += M2C_FIELD(q, f32 *, 0x24);
+        *pa += SeqTrackPlayer(self)->g32(i);
+        q += 4;
+        pa++;
     }
+    f32 *pb = sb;
+    f32 *pc = sc;
     for (i = 0; i < 4; i++) {
-        sb[i] = 0.0f;
-        sb[i] = sb[i] + p->g34(i);
-        sc[i] = 0.0f;
-        sc[i] += p->g35(i);
+        *pb = 0.0f;
+        *pb += SeqTrackPlayer(self)->g34(i);
+        *pc = 0.0f;
+        *pc += SeqTrackPlayer(self)->g35(i);
+        pb++;
+        pc++;
     }
     u32 irq = OSDisableInterrupts();
-    void *ch = M2C_FIELD(self, void **, 0xB8);
-    while (ch != 0) {
+    void *ch;
+    for (ch = M2C_FIELD(self, void **, 0xB8); ch != 0; ch = M2C_FIELD(ch, void **, 0xE4)) {
         M2C_FIELD(ch, f32 *, 0x40) = vol;
         M2C_FIELD(ch, f32 *, 0xA4) = pan2;
         M2C_FIELD(ch, f32 *, 0x44) = pitch;
@@ -511,22 +533,35 @@ extern "C" void UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *self) 
         M2C_FIELD(ch, f32 *, 0x50) = f23;
         M2C_FIELD(ch, f32 *, 0x54) = f22;
         M2C_FIELD(ch, f32 *, 0x58) = f21;
-        M2C_FIELD(ch, s32 *, 0x5C) = p->g29();
-        M2C_FIELD(ch, f32 *, 0x60) = p->g30();
+        M2C_FIELD(ch, s32 *, 0x5C) = SeqTrackPlayer(self)->g29();
+        M2C_FIELD(ch, f32 *, 0x60) = SeqTrackPlayer(self)->g30();
         M2C_FIELD(ch, f32 *, 0x64) = f20;
         M2C_FIELD(ch, f32 *, 0x68) = sa[0];
         M2C_FIELD(ch, f32 *, 0x6C) = sa[1];
         M2C_FIELD(ch, f32 *, 0x70) = sa[2];
-        for (i = 0; i < 4; i++) {
-            f32 v = p->g33(i);
-            if (!(i >= 0 && i < 4)) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324728, 0xA5, lbl_803246E0, i, 0, 4);
-            M2C_FIELD(ch, f32 *, 0x74 + i * 4) = v;
-            v = sb[i];
-            if (!(i >= 0 && i < 4)) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8032477C, 0xAA, lbl_80324734, i, 0, 4);
-            M2C_FIELD(ch, f32 *, 0x84 + i * 4) = v;
-            v = sc[i];
-            if (!(i >= 0 && i < 4)) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803247D0, 0xAF, lbl_80324788, i, 0, 4);
-            M2C_FIELD(ch, f32 *, 0x94 + i * 4) = v;
+        u8 *cp = (u8 *)ch;
+        f32 *qb = sb;
+        f32 *qc = sc;
+        int j;
+        for (j = 0; j < 4; j++) {
+            f32 v = SeqTrackPlayer(self)->g33(j);
+            int ok = 0;
+            if (j >= 0 && j < 4) ok = 1;
+            if (!ok) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324728, 0xA5, lbl_803246E0, j, 0, 4);
+            M2C_FIELD(cp, f32 *, 0x74) = v;
+            v = *qb;
+            ok = 0;
+            if (j >= 0 && j < 4) ok = 1;
+            if (!ok) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8032477C, 0xAA, lbl_80324734, j, 0, 4);
+            M2C_FIELD(cp, f32 *, 0x84) = v;
+            v = *qc;
+            ok = 0;
+            if (j >= 0 && j < 4) ok = 1;
+            if (!ok) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803247D0, 0xAF, lbl_80324788, j, 0, 4);
+            M2C_FIELD(cp, f32 *, 0x94) = v;
+            cp += 4;
+            qb++;
+            qc++;
         }
         M2C_FIELD(ch, f32 *, 0x20) = M2C_FIELD(self, f32 *, 0x68);
         M2C_FIELD(ch, f32 *, 0x24) = M2C_FIELD(self, f32 *, 0x6C);
@@ -536,7 +571,6 @@ extern "C" void UpdateChannelParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *self) 
         M2C_FIELD(ch, u8 *, 0x2E) = M2C_FIELD(self, u8 *, 0x76);
         M2C_FIELD(ch, u8 *, 0x2F) = M2C_FIELD(self, u8 *, 0x77);
         M2C_FIELD(ch, u8 *, 0x38) = M2C_FIELD(self, u8 *, 0x78);
-        ch = M2C_FIELD(ch, void **, 0xE4);
     }
     OSRestoreInterrupts(irq);
 }
@@ -2407,6 +2441,268 @@ extern "C" s32 SetupMram__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12Sou
     *(u32 *)((u8 *)self + 0xD4) = size;
     return 1;
 }
+
+extern "C" void Update__Q36nw4hbm3snd18SoundArchivePlayerFv(void* arg0) {
+    extern void* GetInstance__Q46nw4hbm3snd6detail11SoundThreadFv(void);
+    extern void OSLockMutex(void*);
+    extern void OSUnlockMutex(void*);
+    extern void Update__Q36nw4hbm3snd11SoundPlayerFv(void*);
+    extern void* fn_8002F53C(void*, void (*)(void*), void* (*)(void*, int), s32, s32);
+    extern void* fn_8002F634(void*, void* (*)(void*, int), s32, s32);
+    extern void Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(void*, void**);
+    extern void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void*, void**, void*);
+    extern void fn_800F4F04(void*);
+    extern void fn_800F4F7C(void*);
+    extern void fn_800F4FF4(void*);
+    extern void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F4F24(void*, int);
+    extern void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F4F9C(void*, int);
+    extern void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F5014(void*, int);
+    extern void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
+    extern const char lbl_80324E88[];
+    extern const char lbl_803250C8[];
+    extern const char lbl_803259E4[];
+    extern const char lbl_803259C0[];
+    extern const char lbl_80324314[];
+    extern const char lbl_803242F0[];
+    extern const char lbl_803259B4[];
+    extern const char lbl_80325990[];
+    extern const char lbl_80324344[];
+    extern const char lbl_80324320[];
+    extern const char lbl_80325924[];
+    extern const char lbl_80325900[];
+    extern const char lbl_803258C4[];
+    extern const char lbl_803258A0[];
+    extern const char lbl_803258F4[];
+    extern const char lbl_803258D0[];
+    extern const char lbl_80325894[];
+    extern const char lbl_80325870[];
+    extern const char lbl_80325864[];
+    extern const char lbl_80325840[];
+    extern const char lbl_80325804[];
+    extern const char lbl_803257E0[];
+    extern const char lbl_80325834[];
+    extern const char lbl_80325810[];
+    extern const char lbl_803257D4[];
+    extern const char lbl_803257B0[];
+    u8* self = (u8*)arg0;
+    void *it_34, *it_30, *it_2C, *it_28, *it_24, *it_20, *it_1C, *it_18, *it_14, *it_10, *it_C, *it_8;
+    u8 arrA[0x600];
+    u8 arrB[0x600];
+    u8 arrC[0x600];
+    void* mutex = (u8*)GetInstance__Q46nw4hbm3snd6detail11SoundThreadFv() + 0x2320;
+    OSLockMutex(mutex);
+    u32 index = 0;
+    s32 offset = 0;
+    while (index < *(u32*)(self + 0x70)) {
+        if (index >= *(u32*)(self + 0x70)) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x2B2, lbl_803250C8, index, 0);
+        }
+        Update__Q36nw4hbm3snd11SoundPlayerFv((void*)(*(s32*)(self + 0x74) + offset));
+        offset += 0x48;
+        index += 1;
+    }
+    fn_8002F53C(arrA, fn_800F4F04, __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F4F24, 0xC, 0x80);
+    while (*(s32*)(self + 0x7C) != 0) {
+        if (*(s32*)(self + 0x7C) == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803259E4, 0x1F1, lbl_803259C0);
+        }
+        {
+            void* node = *(void**)(self + 0x80);
+            if (node == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324314, 0x23D, lbl_803242F0);
+            }
+            u8* elt = (u8*)node - 0xB8;
+            if (elt == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_803259B4, 0x193, lbl_80325990);
+            }
+            it_28 = *(void**)(self + 0x80);
+            Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(self + 0x7C, (void**)&it_28);
+            s32 prio = *(u8*)(elt + 0x74) + *(s32*)(elt + 0x40);
+            if (prio > 0x7F) {
+                prio = 0x7F;
+            } else {
+                prio = prio & ~(prio >> 31);
+            }
+            u8* bucket = arrA + prio * 0xC;
+            it_2C = (void*)(bucket + 4);
+            if (elt == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324344, 0x233, lbl_80324320);
+            }
+            Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(bucket, (void**)&it_2C, elt + 0xB8);
+        }
+    }
+    {
+        u8* entry = arrA;
+        u32 k = 0;
+        do {
+            if (*(void**)entry != 0) {
+                void* temp;
+                do {
+                    temp = *(void**)entry;
+                    if (temp != 0) {
+                        if (temp == 0) {
+                            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803259E4, 0x1F1, lbl_803259C0);
+                        }
+                        void* next2 = *(void**)(entry + 4);
+                        if (next2 == 0) {
+                            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324314, 0x23D, lbl_803242F0);
+                        }
+                        u8* elt2 = (u8*)next2 - 0xB8;
+                        if (elt2 == 0) {
+                            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803259B4, 0x193, lbl_80325990);
+                        }
+                        it_30 = *(void**)(entry + 4);
+                        Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(entry, (void**)&it_30);
+                        if (elt2 == 0) {
+                            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324344, 0x233, lbl_80324320);
+                        }
+                        it_34 = (void*)(self + 0x80);
+                        Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(self + 0x7C, (void**)&it_34, elt2 + 0xB8);
+                    }
+                    temp = *(void**)entry;
+                } while (temp != 0);
+            }
+            k += 1;
+            entry += 0xC;
+        } while (k < 0x80);
+    }
+    fn_8002F634(arrA, __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F4F24, 0xC, 0x80);
+    fn_8002F53C(arrB, fn_800F4F7C, __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F4F9C, 0xC, 0x80);
+    while (*(s32*)(self + 0x8C) != 0) {
+        if (*(s32*)(self + 0x8C) == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325924, 0x1F1, lbl_80325900);
+        }
+        {
+            void* node = *(void**)(self + 0x90);
+            if (node == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_803258C4, 0x23D, lbl_803258A0);
+            }
+            u8* elt = (u8*)node - 0xB8;
+            if (elt == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_803258F4, 0x193, lbl_803258D0);
+            }
+            it_18 = *(void**)(self + 0x90);
+            Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(self + 0x8C, (void**)&it_18);
+            s32 prio = *(u8*)(elt + 0x74) + *(s32*)(elt + 0x40);
+            if (prio > 0x7F) {
+                prio = 0x7F;
+            } else {
+                prio = prio & ~(prio >> 31);
+            }
+            u8* bucket = arrB + prio * 0xC;
+            it_1C = (void*)(bucket + 4);
+            if (elt == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325894, 0x233, lbl_80325870);
+            }
+            Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(bucket, (void**)&it_1C, elt + 0xB8);
+        }
+    }
+    {
+        u8* entry = arrB;
+        u32 k = 0;
+        do {
+            if (*(void**)entry != 0) {
+                void* temp;
+                do {
+                    temp = *(void**)entry;
+                    if (temp != 0) {
+                        if (temp == 0) {
+                            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325924, 0x1F1, lbl_80325900);
+                        }
+                        void* next2 = *(void**)(entry + 4);
+                        if (next2 == 0) {
+                            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803258C4, 0x23D, lbl_803258A0);
+                        }
+                        u8* elt2 = (u8*)next2 - 0xB8;
+                        if (elt2 == 0) {
+                            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803258F4, 0x193, lbl_803258D0);
+                        }
+                        it_20 = *(void**)(entry + 4);
+                        Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(entry, (void**)&it_20);
+                        if (elt2 == 0) {
+                            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325894, 0x233, lbl_80325870);
+                        }
+                        it_24 = (void*)(self + 0x90);
+                        Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(self + 0x8C, (void**)&it_24, elt2 + 0xB8);
+                    }
+                    temp = *(void**)entry;
+                } while (temp != 0);
+            }
+            k += 1;
+            entry += 0xC;
+        } while (k < 0x80);
+    }
+    fn_8002F634(arrB, __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F4F9C, 0xC, 0x80);
+    fn_8002F53C(arrC, fn_800F4FF4, __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F5014, 0xC, 0x80);
+    while (*(s32*)(self + 0x9C) != 0) {
+        if (*(s32*)(self + 0x9C) == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325864, 0x1F1, lbl_80325840);
+        }
+        {
+            void* node = *(void**)(self + 0xA0);
+            if (node == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325804, 0x23D, lbl_803257E0);
+            }
+            u8* elt = (u8*)node - 0xB8;
+            if (elt == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325834, 0x193, lbl_80325810);
+            }
+            it_8 = *(void**)(self + 0xA0);
+            Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(self + 0x9C, (void**)&it_8);
+            s32 prio = *(u8*)(elt + 0x74) + *(s32*)(elt + 0x40);
+            if (prio > 0x7F) {
+                prio = 0x7F;
+            } else {
+                prio = prio & ~(prio >> 31);
+            }
+            u8* bucket = arrC + prio * 0xC;
+            it_C = (void*)(bucket + 4);
+            if (elt == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_803257D4, 0x233, lbl_803257B0);
+            }
+            Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(bucket, (void**)&it_C, elt + 0xB8);
+        }
+    }
+    {
+        u8* entry = arrC;
+        u32 k = 0;
+        do {
+            if (*(void**)entry != 0) {
+                void* temp;
+                do {
+                    temp = *(void**)entry;
+                    if (temp != 0) {
+                        if (temp == 0) {
+                            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325864, 0x1F1, lbl_80325840);
+                        }
+                        void* next2 = *(void**)(entry + 4);
+                        if (next2 == 0) {
+                            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325804, 0x23D, lbl_803257E0);
+                        }
+                        u8* elt2 = (u8*)next2 - 0xB8;
+                        if (elt2 == 0) {
+                            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325834, 0x193, lbl_80325810);
+                        }
+                        it_10 = *(void**)(entry + 4);
+                        Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(entry, (void**)&it_10);
+                        if (elt2 == 0) {
+                            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803257D4, 0x233, lbl_803257B0);
+                        }
+                        it_14 = (void*)(self + 0xA0);
+                        Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(self + 0x9C, (void**)&it_14, elt2 + 0xB8);
+                    }
+                    temp = *(void**)entry;
+                } while (temp != 0);
+            }
+            k += 1;
+            entry += 0xC;
+        } while (k < 0x80);
+    }
+    fn_8002F634(arrC, __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F5014, 0xC, 0x80);
+    OSUnlockMutex(mutex);
+    return;
+}
+
 extern "C" s32 GetSoundPlayer__Q36nw4hbm3snd18SoundArchivePlayerFUl(void *arg0, u32 arg1) {
     struct SoundArchivePlayer {
         u8 pad[0x70];
