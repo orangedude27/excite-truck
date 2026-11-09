@@ -13,11 +13,11 @@
       lbl_8055E8C0 = 0;
   }
   
-  void *fn_801D04A8(int arg0) {
-      if (arg0 < 0 || arg0 >= 8)
-          arg0 = 0;
-      return (char *)&lbl_80338098 + arg0 * 0x14;
-  }
+void *fn_801D04A8(int arg0) {
+    if (arg0 < 0 || arg0 >= 8)
+        arg0 = 0;
+    return &lbl_80338098[arg0 * 0x14];
+}
   
 #pragma push
 #pragma scheduling invalid_target
