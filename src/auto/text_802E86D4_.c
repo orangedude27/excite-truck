@@ -197,7 +197,7 @@ void fn_802E8B34(const char *arg0) {
 
 void fn_802E8B98(void) {
     if (lbl_80560030 != 0) {
-        fn_802E8B34((const char *)0);
+        fn_802E8B34((const char *)lbl_80560030);
         fn_802E8B34(lbl_8034DD78);
     } else {
         fn_802E30C8(lbl_8034DE94);
