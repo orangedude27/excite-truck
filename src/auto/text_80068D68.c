@@ -21597,7 +21597,7 @@ void rfc_send_ua(void *arg0, s32 arg1, void *arg2) {
     *p_data++ = 1 | cr | (arg1 << 2);
     *p_data++ = 0x73;
     *p_data++ = 1;
-    *p_data = fn_8009504C(3, p_data, 0x73);
+    *p_data = fn_8009504C(3, p_data);
     p_buf->len = 4;
     rfc_check_send_cmd(arg0, p_buf);
 }
