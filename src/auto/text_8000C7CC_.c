@@ -250,7 +250,7 @@ extern "C" void fn_8000D1DC(void) {
         goto done;
     }
     if (lbl_8055D40C != 0) {
-        ((void (*)(void))lbl_8055D40C)();
+        ((void (*)(void))(u32)lbl_8055D40C)();
     }
     fn_80230B5C(matrix);
     fn_802C8638(matrix);
