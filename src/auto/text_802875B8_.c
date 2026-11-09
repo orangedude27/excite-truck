@@ -424,8 +424,6 @@ extern int sprintf(char *, const char *, ...);
 extern const char lbl_80348A40[];
 extern const char lbl_80348A30[];
 extern const char lbl_80348A20[];
-#pragma push
-#pragma scheduling invalid_target
 void fn_80287E80(void **arg0, s32 arg1) {
     char local[0x40];
     Obj *obj;
