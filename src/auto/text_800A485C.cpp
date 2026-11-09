@@ -791,6 +791,14 @@ extern "C" s32 fn_800A5994(void *arg0, s32 p1, s32 *arg2) {
     result = fn_800A7090(arg0, p1, arg2);
     return result & ((-result | result) >> 31);
 }
+
+#pragma dont_inline on
+extern "C" s32 fn_800A59CC(s32 arg0) {
+    s32 r = fn_800A71A0((s32 *)arg0);
+    return r & ((-r | r) >> 31);
+}
+#pragma dont_inline reset
+
 #pragma dont_inline reset
 
 extern "C" s32 fn_800A59FC(void *arg0) {
@@ -1166,14 +1174,14 @@ extern "C" s32 fn_800A625C(void *arg0, s32 arg1) {
 
 #pragma dont_inline on
 extern "C" s32 fn_800A6268(s32 arg0, void *arg1) {
-    u32 value1 = *(u32 *)((u8 *)arg0 + 0x1C);
     u32 value0 = *(u32 *)((u8 *)arg0 + 0x18);
+    u32 value1 = *(u32 *)((u8 *)arg0 + 0x1C);
     *(u32 *)((u8 *)arg1 + 0x0) = value0;
     *(u32 *)((u8 *)arg1 + 0x4) = value1;
-    value1 = *(u32 *)((u8 *)arg0 + 0x24);
-    value0 = *(u32 *)((u8 *)arg0 + 0x20);
-    *(u32 *)((u8 *)arg1 + 0x8) = value0;
-    *(u32 *)((u8 *)arg1 + 0xC) = value1;
+    u32 value2 = *(u32 *)((u8 *)arg0 + 0x20);
+    u32 value3 = *(u32 *)((u8 *)arg0 + 0x24);
+    *(u32 *)((u8 *)arg1 + 0x8) = value2;
+    *(u32 *)((u8 *)arg1 + 0xC) = value3;
     value0 = *(u32 *)((u8 *)arg0 + 0x28);
     *(u32 *)((u8 *)arg1 + 0x10) = value0;
     return 0;
@@ -23485,12 +23493,12 @@ extern "C" s32 fn_800A4B08(u8 *arg0, u8 *arg1, s32 count) {
 #pragma push
 #pragma dont_inline on
 extern "C" s32 fn_800A4B54(s32 arg0) {
-    u8 *start = (u8 *)arg0;
-    u8 *ptr = start;
-    do {
-        ptr += 2;
-    } while (*(u16 *)ptr != 0);
-    return (ptr - start) >> 1;
+    u16 *ptr = (u16 *)arg0;
+    u16 *start = ptr;
+    while (*ptr != 0) {
+        ptr++;
+    }
+    return ptr - start;
 }
 #pragma pop
 
