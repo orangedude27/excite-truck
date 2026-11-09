@@ -3,7 +3,9 @@
 #include "types.h"
 #include "revolution/MTX/mtxtypes.h"
 
+#pragma small_data on
 extern char lbl_80559B10[], lbl_80559B18[], lbl_80559B1C[];
+#pragma small_data off
 extern char lbl_8032B7BC[], lbl_8032B73C[];
 extern int sscanf(const char*, ...);
 
@@ -524,15 +526,22 @@ extern "C" f32 fn_801321EC(void **arg0) {
     };
     return (f32) atof(((Dummy *)arg0)->v3());
 }
-#pragma cplusplus off
-s32 fn_80132220(void* arg0) {
-    char* value = ((char* (*)(void*))(*(void**)((char*)*(void**)arg0 + 0x14)))(arg0);
+#pragma cplusplus on
+extern "C" s32 fn_80132220(void **arg0) {
+    class Dummy {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual char *v3();
+    };
+    char *value = ((Dummy *)arg0)->v3();
     s32 result = 0;
     if (stricmp(value, lbl_80559B18) != 0 && stricmp(value, lbl_80559B10) == 0)
         result = 1;
     return result;
 }
-
+#pragma cplusplus reset
 extern unsigned long strlen(const char*);
 extern char lbl_8032B790[];
 #pragma push
