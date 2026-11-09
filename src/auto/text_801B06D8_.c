@@ -97,6 +97,13 @@ struct Dummy_801B1FB4 {
     virtual void d0();
     virtual void func(s32, s32, s32, void *, s32 *);
 };
+struct Dummy_801B3084 {
+    virtual void d0();
+    virtual void d1();
+    virtual void d2();
+    virtual void d3();
+    virtual void func(s32, s32, s32, s32);
+};
 #pragma cplusplus off
 extern s32 fn_80139EC4(f32, f32);
 extern s32 fn_802B04D4(f32 *, f32, f32, f32);
