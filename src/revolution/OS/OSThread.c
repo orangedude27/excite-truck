@@ -41,16 +41,19 @@ OSSwitchThreadCallback OSSetSwitchThreadCallback(OSSwitchThreadCallback newCb) {
 }
 
 void __OSThreadInit(void) {
+    // Initialize the thread subsystem: set up the default (main) thread the
+    // game runs on, one ready queue per priority, and the idle thread's context.
     int i;
     OSThread* thread = &DefaultThread;
     OSThread* tail;
 
+    // The main thread starts running and detached, at the default priority.
     thread->state = OS_THREAD_STATE_RUNNING;
     thread->flags = OS_THREAD_DETACHED;
     thread->base = 16;
     thread->priority = 16;
     thread->suspend = 0;
-    thread->val = 0xFFFFFFFF;
+    thread->val = (u32)-1; // no OSJoinThread return value yet
     thread->mutex = NULL;
 
     OSInitThreadQueue(&thread->joinQueue);
@@ -60,6 +63,7 @@ void __OSThreadInit(void) {
     OSClearContext(&thread->context);
     OSSetCurrentContext(&thread->context);
 
+    // The default thread runs on the static stack.
     thread->stackBegin = (u32*)_stack_addr;
     thread->stackEnd = (u32*)_stack_end;
     *thread->stackEnd = OS_THREAD_STACK_MAGIC;
@@ -67,12 +71,14 @@ void __OSThreadInit(void) {
     OSSetCurrentThread(thread);
     OSClearStack(0x00);
 
+    // One ready queue per priority level; none has a runnable thread yet.
     RunQueueBits = 0;
     RunQueueHint = FALSE;
-    for (i = 0; i < 32; i++) {
+    for (i = 0; i < OS_PRIORITY_MAX + 1; i++) {
         OSInitThreadQueue(&RunQueue[i]);
     }
 
+    // Append the default thread to the active-thread list.
     OSInitThreadQueue(&OS_THREAD_QUEUE);
 
     tail = OS_THREAD_QUEUE.tail;
