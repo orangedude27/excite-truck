@@ -17119,6 +17119,16 @@ initial_done:
     }
 }
 
+/*******************************************************************************
+**
+** Function         l2c_link_hci_conn_comp
+**
+** Description      Handles an HCI Connection Complete event: finds the link
+**                  control block for the peer, records the connection handle,
+**                  and runs every channel's state machine with the connect
+**                  confirm (or connect confirm-neg) event.
+**
+*******************************************************************************/
 BOOLEAN l2c_link_hci_conn_comp(UINT8 status, UINT16 handle, UINT8 *p_bda) {
     extern u8 lbl_80318C30[];
     extern u8 lbl_80318C58[];
@@ -17126,57 +17136,72 @@ BOOLEAN l2c_link_hci_conn_comp(UINT8 status, UINT16 handle, UINT8 *p_bda) {
     extern void l2c_process_held_packets(u8 timed_out);
     extern void l2cu_send_peer_echo_req(void *p_lcb, u8 *p_data, s32 data_len);
     extern u8 l2cu_lcb_disconnecting(void);
-    u8 *p_lcb;
+    tL2C_LCB_VIEW *p_lcb;
     u8 *p_buf;
     u8 *next;
     u8 *p_dev;
-    u8 bda[24];
+    u8 ci[24];   /* a tL2C_CONN_INFO: bd_addr in [0..5], then status at [6] */
 
-    *(volatile u8 *)&bda[6] = status;
-    memcpy(bda, p_bda, 6);
-    p_lcb = l2cu_find_lcb_by_bd_addr(bda);
+    /* Save the event parameters where the CSM callbacks can reach them. */
+    *(volatile u8 *)&ci[6] = status;
+    memcpy(ci, p_bda, 6);
+
+    /* See if we have a link control block for the remote device. */
+    p_lcb = l2cu_find_lcb_by_bd_addr(ci);
     if (p_lcb == 0) {
+        /* fn_8007FEFC() looks the handle up; warn only when it is unknown. */
         if (!(u8)fn_8007FEFC(handle) && lbl_803C4040[0] >= 2) {
-            fn_8007093C(0x80001, lbl_80318C30);
+            fn_8007093C(0x80001, lbl_80318C30);   /* L2CAP_TRACE_WARNING0 */
         }
         return FALSE;
     }
-    if (*(s32 *)(p_lcb + 4) != 3) {
+
+    /* Only meaningful while the link is still connecting. */
+    if (p_lcb->link_state != LST_CONNECTING) {
         if (lbl_803C4040[0] >= 1) {
-            ((void (*)(u32, void *, s32, s32))fn_8007096C)(0x80000, lbl_80318C58, *(s32 *)(p_lcb + 4), status);
+            ((void (*)(u32, void *, s32, s32))fn_8007096C)(0x80000, lbl_80318C58, p_lcb->link_state, status);   /* L2CAP_TRACE_ERROR2 */
         }
-        if (status != 0) {
-            l2c_link_hci_disc_comp(*(u16 *)(p_lcb + 0x28), status);
+        if (status != HCI_SUCCESS) {
+            l2c_link_hci_disc_comp(p_lcb->handle, status);
         }
         return FALSE;
     }
-    *(u16 *)(p_lcb + 0x28) = handle;
-    if (bda[6] == 0) {
-        *(s32 *)(p_lcb + 4) = 4;
+
+    /* Save the handle. */
+    p_lcb->handle = handle;
+    if (ci[6] == HCI_SUCCESS) {
+        /* Connected OK. Change state to connected. */
+        p_lcb->link_state = LST_CONNECTED;
+        /* Tell BTM ACL management about the link. */
         p_dev = (u8 *)btm_find_dev(p_bda);
         if (p_dev) {
-            ((void (*)(u8 *, u8 *, u8 *, u16, u8))btm_acl_created)(bda, p_dev + 0x22, p_dev + 0x35, handle, p_lcb[0x30]);
+            ((void (*)(u8 *, u8 *, u8 *, u16, u8))btm_acl_created)(ci, p_dev + 0x22, p_dev + 0x35, handle, p_lcb->link_role);
         } else {
-            ((void (*)(u8 *, u8 *, u8 *, u16, u8))btm_acl_created)(bda, 0, 0, handle, p_lcb[0x30]);
+            ((void (*)(u8 *, u8 *, u8 *, u16, u8))btm_acl_created)(ci, 0, 0, handle, p_lcb->link_role);
         }
+        /* Update the timeouts in the hold queue and stop the connect timer. */
         l2c_process_held_packets(0);
-        fn_80070F90(p_lcb + 0x10);
-        for (p_buf = *(u8 **)(p_lcb + 8); p_buf; p_buf = *(u8 **)(p_buf + 8)) {
-            fn_80089E40(p_buf, 0, bda);
+        fn_80070F90(&p_lcb->timer_entry);   /* btu_stop_timer */
+        /* For all channels, send the connect-confirm event through their FSMs. */
+        for (p_buf = (u8 *)p_lcb->p_first_ccb; p_buf; p_buf = *(u8 **)(p_buf + 8)) {
+            fn_80089E40(p_buf, L2CEVT_LP_CONNECT_CFM, ci);   /* l2c_csm_execute */
         }
-        if (*(s32 *)(p_lcb + 0x54) != 0) {
+        if (p_lcb->p_echo_rsp_cb != 0) {
             l2cu_send_peer_echo_req(p_lcb, 0, 0);
-            btu_start_timer((TIMER_LIST_ENT *)(p_lcb + 0x10), 2, 0x1E);
-        } else if (*(void **)(p_lcb + 8) == 0) {
-            btu_start_timer((TIMER_LIST_ENT *)(p_lcb + 0x10), 2, 0x3C);
+            btu_start_timer(&p_lcb->timer_entry, BTU_TTYPE_L2CAP_LINK, L2CAP_ECHO_RSP_TOUT);
+        } else if (p_lcb->p_first_ccb == 0) {
+            btu_start_timer(&p_lcb->timer_entry, BTU_TTYPE_L2CAP_LINK, L2CAP_LINK_STARTUP_TOUT);
         }
-    } else if (bda[6] == 9 && l2cu_lcb_disconnecting()) {
-        *(s32 *)(p_lcb + 4) = 1;
-        *(u16 *)(p_lcb + 0x28) = 0xFFFF;
+    } else if (ci[6] == HCI_ERR_MAX_NUM_OF_CONNECTIONS && l2cu_lcb_disconnecting()) {
+        /* Max ACL connections: if one is dropping, hold this one instead. */
+        p_lcb->link_state = LST_CONNECT_HOLDING;
+        p_lcb->handle = HCI_INVALID_HANDLE;
     } else {
-        for (p_buf = *(u8 **)(p_lcb + 8); p_buf; p_buf = next) {
+        /* Connection failed: send connect-confirm-neg through each channel's
+           FSM (they remove themselves), then release the LCB. */
+        for (p_buf = (u8 *)p_lcb->p_first_ccb; p_buf; p_buf = next) {
             next = *(u8 **)(p_buf + 8);
-            fn_80089E40(p_buf, 1, bda);
+            fn_80089E40(p_buf, L2CEVT_LP_CONNECT_CFM_NEG, ci);   /* l2c_csm_execute */
         }
         l2cu_release_lcb(p_lcb);
     }
