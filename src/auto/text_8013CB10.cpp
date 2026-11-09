@@ -629,9 +629,9 @@ extern "C" s32 fn_8013D1F0(s32 arg0) {
 }
 
 extern "C" s32 fn_8013D224(f32 farg0, f32 farg1) {
-    f32 diff = farg0 - farg1;
+    register f32 diff = farg0 - farg1;
     f32 result;
-    if ((f32)__fabs((f64)diff) <= *(f32 *)&lbl_80558DC4) {
+    if ((f32)__fabs((f64)diff) <= lbl_80558DC4[0]) {
         return 0;
     }
     if (diff > lbl_805614A4) {
@@ -1123,7 +1123,7 @@ extern "C" void fn_8013E2AC(void *arg0, void *arg1) {
 
 #pragma dont_inline off
 extern "C" f64 fn_8002F234(f32);
-#pragma processor 750
+#pragma scheduling on
 extern "C" f32 fn_8013E300(void *arg0) {
     f32 y = *(f32 *)((u8 *)arg0 + 4);
     f32 x = *(f32 *)arg0;
@@ -2394,7 +2394,8 @@ extern "C" s32 fn_80141F28(void *arg0, s32 arg1) {
     if (arg1 >= count % capacity)
         return 0;
     s32 *base = (s32 *)((s32 *)arg0)[0];
-    s32 index = (arg1 + (capacity + head)) % capacity;
+    s32 tmp = capacity + head;
+    s32 index = (arg1 + tmp) % capacity;
     return (s32)base + index * 12;
 }
 
@@ -2815,15 +2816,17 @@ extern "C" s32 fn_80142BB4(void *arg0) {
 #pragma opt_propagation off
 extern "C" void *fn_80142BD8(void *arg0) {
     s32 *ring = (s32 *)arg0;
-    s32 write = ring[2];
-    s32 count = ring[1];
-    s32 next;
-    s32 read = ring[3];
+    s32 count;
     u8 *base;
+    s32 write;
+    s32 read;
+    register s32 next;
     void *result;
-
-    next = (write + 1) % count;
+    write = ring[2];
+    count = ring[1];
+    read = ring[3];
     base = (u8 *)ring[0];
+    next = (write + 1) % count;
     result = base + write * 12;
     ring[2] = next;
     if (next == read)
