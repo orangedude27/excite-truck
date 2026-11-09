@@ -160,10 +160,9 @@ int fn_80193110(void *arg0, int arg1) {
     return 0;
 }
 
-void fn_80193138(int index) {
-    void *entry;
-    entry = lbl_804349C0[index];
-    if (entry) *((u8 *)entry + 0x304) = 0x14;
+void fn_80193138(void *unused, int index) {
+    void *entry = lbl_804349C0[index];
+    if (entry) *((unsigned char *)entry + 0x304) = 0x14;
 }
 
 #pragma dont_inline on
