@@ -1049,50 +1049,51 @@ typedef struct {
 
 #pragma push
 #pragma opt_unroll_loops off
-void *fn_802C49E8(s32 arg0) {
+/* Load the stamp `name` through the resource manager, and stop the game if
+   the file is not version 3.  A block that was only just read in is stored
+   little-endian and its row table holds offsets into the block: swap its
+   words and turn those offsets into pointers before handing it back. */
+void *fn_802C49E8(const char *name) {
     s32 unused;
-    u32 size;
+    u32 version;
     u8 swap;
     u8 *obj;
+    Stamp *stamp;
     u8 *p;
-    u8 *base;
-    s32 x;
+    u32 *rows;
+    s32 row;
     u8 t;
 
     swap = 0;
     unused = 0;
-    obj = (u8 *)((void *(*)(s32, s32, u32 *, s32 *, s32, u8 *))fn_8012C370)(arg0, 0x53544D50, &size, &unused, 0, &swap);
+    obj = (u8 *)((LoadResource)fn_8012C370)(name, STAMP_TAG, &version, &unused, 0, &swap);
     if (obj == 0)
         goto ret0;
-    if (size != 3)
-        fn_802E317C(lbl_8034B144, arg0, size, 3);
+    stamp = (Stamp *)obj;
+    if (version != STAMP_VERSION)
+        fn_802E317C(lbl_8034B144, name, version, STAMP_VERSION);
     if (swap != 0) {
-        t = obj[0]; obj[0] = obj[3]; obj[3] = t;
-        t = obj[1]; obj[1] = obj[2]; obj[2] = t;
-        t = obj[4]; obj[4] = obj[7]; obj[7] = t;
-        t = obj[5]; obj[5] = obj[6]; obj[6] = t;
-        t = obj[8]; obj[8] = obj[11]; obj[11] = t;
-        t = obj[9]; obj[9] = obj[10]; obj[10] = t;
-        t = obj[12]; obj[12] = obj[15]; obj[15] = t;
-        t = obj[13]; obj[13] = obj[14]; obj[14] = t;
-        t = obj[16]; obj[16] = obj[19]; obj[19] = t;
-        t = obj[17]; obj[17] = obj[18]; obj[18] = t;
-        t = obj[0x814]; obj[0x814] = obj[0x817]; obj[0x817] = t;
-        t = obj[0x815]; obj[0x815] = obj[0x816]; obj[0x816] = t;
-        t = obj[0x818]; obj[0x818] = obj[0x81b]; obj[0x81b] = t;
-        t = obj[0x819]; obj[0x819] = obj[0x81a]; obj[0x81a] = t;
-        base = obj + 0x81c;
-        *(u32 *)(obj + 0x814) = (u32)base;
-        *(u32 *)(obj + 0x818) = (u32)base + *(u32 *)(obj + 4) * *(u32 *)(obj + 0x10) * 4;
-        for (x = 0; x < (s32)(*(u32 *)(obj + 4) * *(u32 *)(obj + 0x10)); x++) {
+        /* the header's five words and the two pointers, byte-swapped in place */
+        STAMP_SWAP_WORD(obj, 0);
+        STAMP_SWAP_WORD(obj, 4);
+        STAMP_SWAP_WORD(obj, 8);
+        STAMP_SWAP_WORD(obj, 12);
+        STAMP_SWAP_WORD(obj, 16);
+        STAMP_SWAP_WORD(obj, 0x814);
+        STAMP_SWAP_WORD(obj, 0x818);
+        /* the row table follows the header, the rows' pixels follow it */
+        rows = (u32 *)(stamp + 1);
+        stamp->rows = rows;
+        stamp->pixels = (u8 *)rows + stamp->height * stamp->frames * 4;
+        for (row = 0; row < stamp->height * stamp->frames; row++) {
             u8 a, b;
-            p = *(u8 **)(obj + 0x814) + x * 4;
+            p = (u8 *)stamp->rows + row * 4;
             a = p[0]; p[0] = p[3]; p[3] = a;
             b = p[1]; p[1] = p[2]; p[2] = b;
-            *(u32 *)(*(u8 **)(obj + 0x814) + x * 4) += *(u32 *)(obj + 0x818);
+            *(u32 *)((u8 *)stamp->rows + row * 4) += (u32)stamp->pixels;
         }
-        p = obj + 0x414;
-        for (x = 0; x < 0x100; x++) {
+        p = (u8 *)stamp->unknown_414;
+        for (row = 0; row < 0x100; row++) {
             t = p[0]; p[0] = p[3]; p[3] = t;
             t = p[1]; p[1] = p[2]; p[2] = t;
             p += 4;
