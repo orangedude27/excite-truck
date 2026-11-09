@@ -194,9 +194,11 @@ extern char lbl_80329FC0[];
 extern char lbl_80329FA0[];
 extern void fn_802E30C8();
 void fn_80127EF8(void) {
+    int *entry = lbl_8041E098;
     int i;
-    for (i = 0; i < lbl_8041E098[1]; i++)
-        fn_802E30C8(lbl_80329FE8, lbl_8041E098[i * 4 + 4]);
+    for (i = 0; i < lbl_8041E098[1]; entry += 4, i++) {
+        ((void (*)(const char *, ...))fn_802E30C8)(lbl_80329FE8, entry[4]);
+    }
 }
 
 void fn_80127F70(void* alarm) {
