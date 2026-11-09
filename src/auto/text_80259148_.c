@@ -1163,117 +1163,117 @@ extern "C" void fn_8025B520(void *arg0) {
         virtual void m9();
         virtual void m10();
         virtual void m11();
-        virtual void m12(char *);
+        virtual void show(char *);
         virtual void m13();
-        virtual void m14(char *, float);
+        virtual void setProgress(char *, float);
     };
     char *o = (char *)arg0;
-    float num;
-    int flag;
-    int cur;
-    int res;
-    unsigned char c1;
-    unsigned char *src1;
-    int count1;
-    unsigned char *dst1;
-    unsigned char *src2;
-    unsigned char c2;
-    int count2;
-    unsigned char *dst2;
-    unsigned char c3;
-    unsigned char *src3;
-    int count3;
-    unsigned char *dst3;
-    unsigned char c4;
-    unsigned char *src4;
-    int count4;
-    unsigned char *dst4;
+    float start;
+    int showName;
+    int value;
+    int result;
+    unsigned char goalC;
+    unsigned char *goalSrc;
+    int goalLeft;
+    unsigned char *goalDst;
+    unsigned char *nameSrc;
+    unsigned char nameC;
+    int nameLeft;
+    unsigned char *nameDst;
+    unsigned char blankC;
+    unsigned char *blankSrc;
+    int blankLeft;
+    unsigned char *blankDst;
+    unsigned char shownC;
+    unsigned char *shownSrc;
+    int shownLeft;
+    unsigned char *shownDst;
 
-    num = (float)*(int *)(o + 0x1C);
-    *(float *)(o + 0x28) = num;
-    cur = (int)(num + lbl_80558DC4);
-    fn_80130FCC(o + 0x2C, 0x14, cur);
-    flag = 1;
+    start = (float)*(int *)(o + 0x1C);
+    *(float *)(o + 0x28) = start;
+    value = (int)(start + lbl_80558DC4);
+    fn_80130FCC(o + 0x2C, 0x14, value);
+    showName = 1;
     if (*(unsigned char *)(o + 0xC4) != 0) {
         if (*(unsigned char *)(o + 0x58) != 0 || *(unsigned char *)(o + 0xC5) == 0) {
-            flag = 0;
+            showName = 0;
         }
     }
-    res = fn_8001EFA0(*(int *)(o + 0x18), cur);
-    *(int *)(o + 0xC8) = res;
-    res = fn_8001EFA4(*(int *)(o + 0x18), res + 1);
-    if (res >= 0) {
-        fn_80130FCC(o + 0x40, 0x14, res);
+    result = fn_8001EFA0(*(int *)(o + 0x18), value);
+    *(int *)(o + 0xC8) = result;
+    result = fn_8001EFA4(*(int *)(o + 0x18), result + 1);
+    if (result >= 0) {
+        fn_80130FCC(o + 0x40, 0x14, result);
     } else {
-        dst1 = (unsigned char *)(o + 0x40);
-        src1 = lbl_8055C380;
-        count1 = 0x14;
-        goto a_copy;
-a_next:
-        count1--;
-        if (count1 > 0) goto a_copy;
-        dst1[-1] = 0;
-        goto a_done;
-a_copy:
-        c1 = *src1++;
-        *dst1++ = c1;
-        if ((signed char)c1 != 0) goto a_next;
-a_done:;
+        goalDst = (unsigned char *)(o + 0x40);
+        goalSrc = lbl_8055C380;
+        goalLeft = 0x14;
+        goto goal_copy;
+goal_next:
+        goalLeft--;
+        if (goalLeft > 0) goto goal_copy;
+        goalDst[-1] = 0;
+        goto goal_done;
+goal_copy:
+        goalC = *goalSrc++;
+        *goalDst++ = goalC;
+        if ((signed char)goalC != 0) goto goal_next;
+goal_done:;
     }
-    src2 = fn_8001EFAC(*(int *)(o + 0x18), *(int *)(o + 0xC8));
-    if (src2 != 0 && flag != 0) {
-        dst2 = (unsigned char *)(o + 0x60);
-        count2 = 0x32;
-        goto b_copy;
-b_next:
-        count2--;
-        if (count2 > 0) goto b_copy;
-        dst2[-1] = 0;
-        goto b_done;
-b_copy:
-        c2 = *src2++;
-        *dst2++ = c2;
-        if ((signed char)c2 == 0) goto b_done;
-        goto b_next;
+    nameSrc = fn_8001EFAC(*(int *)(o + 0x18), *(int *)(o + 0xC8));
+    if (nameSrc != 0 && showName != 0) {
+        nameDst = (unsigned char *)(o + 0x60);
+        nameLeft = 0x32;
+        goto name_copy;
+name_next:
+        nameLeft--;
+        if (nameLeft > 0) goto name_copy;
+        nameDst[-1] = 0;
+        goto name_done;
+name_copy:
+        nameC = *nameSrc++;
+        *nameDst++ = nameC;
+        if ((signed char)nameC == 0) goto name_done;
+        goto name_next;
     } else {
-        dst3 = (unsigned char *)(o + 0x60);
-        src3 = lbl_8055C380;
-        count3 = 0x32;
-        goto c_copy;
-c_next:
-        count3--;
-        if (count3 > 0) goto c_copy;
-        dst3[-1] = 0;
-        goto b_done;
-c_copy:
-        c3 = *src3++;
-        *dst3++ = c3;
-        if ((signed char)c3 != 0) goto c_next;
+        blankDst = (unsigned char *)(o + 0x60);
+        blankSrc = lbl_8055C380;
+        blankLeft = 0x32;
+        goto blank_copy;
+blank_next:
+        blankLeft--;
+        if (blankLeft > 0) goto blank_copy;
+        blankDst[-1] = 0;
+        goto name_done;
+blank_copy:
+        blankC = *blankSrc++;
+        *blankDst++ = blankC;
+        if ((signed char)blankC != 0) goto blank_next;
     }
-b_done:
+name_done:
     *(unsigned char *)(o + 0x58) = 1;
     *(unsigned char *)(o + 0x59) = 0;
     *(int *)(o + 0x5C) = -0x3E8;
     if (*(unsigned char *)(o + 0xC4) != 0) {
-        ((Obj *)lbl_8055F394)->m14(lbl_80344E20, lbl_80563AE4);
-        ((Obj *)lbl_8055F394)->m12(lbl_80344E20);
+        ((Obj *)lbl_8055F394)->setProgress(lbl_80344E20, lbl_80563AE4);
+        ((Obj *)lbl_8055F394)->show(lbl_80344E20);
     }
     fn_80214A9C(0x10);
     fn_80214A9C(0xD);
-    src4 = (unsigned char *)(o + 0x60);
-    dst4 = (unsigned char *)(o + 0x92);
-    count4 = 0x32;
-    goto d_copy;
-d_next:
-    count4--;
-    if (count4 > 0) goto d_copy;
-    dst4[-1] = 0;
-    goto d_done;
-d_copy:
-    c4 = *src4++;
-    *dst4++ = c4;
-    if ((signed char)c4 != 0) goto d_next;
-d_done:;
+    shownSrc = (unsigned char *)(o + 0x60);
+    shownDst = (unsigned char *)(o + 0x92);
+    shownLeft = 0x32;
+    goto shown_copy;
+shown_next:
+    shownLeft--;
+    if (shownLeft > 0) goto shown_copy;
+    shownDst[-1] = 0;
+    goto shown_done;
+shown_copy:
+    shownC = *shownSrc++;
+    *shownDst++ = shownC;
+    if ((signed char)shownC != 0) goto shown_next;
+shown_done:;
 }
 #pragma cplusplus reset
 void fn_8025B784(void) {
