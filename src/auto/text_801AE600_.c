@@ -1,4 +1,5 @@
 extern int lbl_80435780[];
+extern float fn_801AF9EC(int, float *);
 extern void *fn_801AF8D0(int);
 extern void fn_801AFABC();
 extern int *lbl_8055E624;
