@@ -108,7 +108,9 @@ struct Dummy_801B8318 {
             virtual void d4();
             virtual void d5();
             virtual void d6();
-            virtual int d7(int);
+            virtual void d7();
+            virtual void d8();
+            virtual int d9(int);
         };
         struct Dummy_801B8874 {
           virtual void d0();
