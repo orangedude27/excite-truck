@@ -764,106 +764,120 @@ extern int fn_8026A554(int *);
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+/* fn_80267420 - camera module init, run once at boot.
+ *
+ * Clears each of the CAMERA_COUNT camera records in sCameras and gives it
+ * its starting state: its index, mode and subject CAMERA_MODE_NONE (nothing
+ * to follow yet), an up vector of (0,1,0), identity rotations for the
+ * current transform, its saved copy and the two helper transforms, zeroed
+ * blend points, the reset flag set so the first frame is taken whole, and
+ * the view matrix the game feeds in from outside identity with the default
+ * view angle.  Then the camera helpers in the 0x8026E870..0x80278214 units
+ * are initialised, the two ambience sounds the cameras drive are opened -
+ * a volume slot for "crash_vol" and a sound object for "cheer3.sfx" - the
+ * module installs its category-13 callback (fn_8026A554), and fn_80267680
+ * lays the per-frame defaults on top.
+ */
 void fn_80267420(void) {
     extern void *__AXFXGetLfoSinTable_801769CC(void);
-    extern float lbl_80563C54;
-    extern int lbl_8055F494;
-    extern void *lbl_8055F490;
-    extern char lbl_803467D0[], lbl_803467DC[];
+    extern float FLOAT_ZERO, FLOAT_ONE, CAMERA_VIEW_ANGLE;
+    extern int sCrashVolume;
+    extern void *sCheerSound;
+    extern char STR_CRASH_VOL[], STR_CHEER3_SFX[];
     extern void fn_80276B8C(void), fn_80278214(void), fn_80273354(void), fn_8027045C(void);
     extern void fn_80267680(void), fn_80268D94(void), fn_80268E00(void);
-    extern int fn_802090D4(void *);
-    extern void *fn_80207848(void *, int);
-    extern void fn_801EEFDC(void *, int);
+    extern int sound_volume_open(void *);
+    extern void *sound_object_create(void *, int);
+    extern void callback_install(void *, int);
     extern void *memset(void *, int, unsigned long);
-    struct M33 { float m[9]; };
-    struct V3 { float v[3]; };
     char *p;
     float angle, one, zero;
     int i;
 
-    __AXFXGetLfoSinTable_801769CC();
-    zero = lbl_80563C20;
-    one = lbl_80563C2C;
-    p = lbl_80499080;
-    angle = lbl_80563C54;
-    for (i = 0; i < 4; i++, p += 0x228) {
-        memset(p, 0, 0x228);
-        *(int *)(p + 0x0) = i;
-        *(float *)(p + 0x8) = zero;
-        *(float *)(p + 0xC) = zero;
-        *(int *)(p + 0x24) = 0;
-        *(int *)(p + 0x20) = 0;
-        *(int *)(p + 0x14) = 10;
-        *(int *)(p + 0x10) = 10;
-        *(float *)(p + 0x28) = zero;
-        *(float *)(p + 0x2C) = one;
-        *(float *)(p + 0x30) = zero;
-        *(float *)(p + 0x34) = zero;
-        *(float *)(p + 0x38) = zero;
-        *(float *)(p + 0x3C) = zero;
-        *(char *)(p + 0x138) = 1;
-        *(float *)(p + 0x58) = one;
-        *(float *)(p + 0x5C) = zero;
-        *(float *)(p + 0x60) = zero;
-        *(float *)(p + 0x64) = zero;
-        *(float *)(p + 0x68) = one;
-        *(float *)(p + 0x6C) = zero;
-        *(float *)(p + 0x70) = zero;
-        *(float *)(p + 0x74) = zero;
-        *(float *)(p + 0x78) = one;
-        *(float *)(p + 0x7C) = zero;
-        *(float *)(p + 0x80) = zero;
-        *(float *)(p + 0x84) = zero;
-        *(struct M33 *)(p + 0x88) = *(struct M33 *)(p + 0x58);
-        *(struct V3 *)(p + 0xAC) = *(struct V3 *)(p + 0x7C);
-        *(float *)(p + 0x120) = zero;
-        *(float *)(p + 0x124) = zero;
-        *(float *)(p + 0x128) = zero;
-        *(float *)(p + 0x12C) = zero;
-        *(float *)(p + 0x130) = zero;
-        *(float *)(p + 0x134) = zero;
-        *(float *)(p + 0xF0) = one;
-        *(float *)(p + 0xF4) = zero;
-        *(float *)(p + 0xF8) = zero;
-        *(float *)(p + 0xFC) = zero;
-        *(float *)(p + 0x100) = one;
-        *(float *)(p + 0x104) = zero;
-        *(float *)(p + 0x108) = zero;
-        *(float *)(p + 0x10C) = zero;
-        *(float *)(p + 0x110) = one;
-        *(float *)(p + 0x114) = zero;
-        *(float *)(p + 0x118) = zero;
-        *(float *)(p + 0x11C) = zero;
-        *(float *)(p + 0xC0) = one;
-        *(float *)(p + 0xC4) = zero;
-        *(float *)(p + 0xC8) = zero;
-        *(float *)(p + 0xCC) = zero;
-        *(float *)(p + 0xD0) = one;
-        *(float *)(p + 0xD4) = zero;
-        *(float *)(p + 0xD8) = zero;
-        *(float *)(p + 0xDC) = zero;
-        *(float *)(p + 0xE0) = one;
-        *(float *)(p + 0xE4) = zero;
-        *(float *)(p + 0xE8) = zero;
-        *(float *)(p + 0xEC) = zero;
-        *(int *)(p + 0x140) = 0;
-        *(int *)(p + 0x144) = 0;
-        *(int *)(p + 0x4) = 10;
-        *(int *)(p + 0x1C) = 10;
-        *(float *)(p + 0x1A4) = one;
-        *(float *)(p + 0x1A8) = zero;
-        *(float *)(p + 0x1AC) = zero;
-        *(float *)(p + 0x1B0) = zero;
-        *(float *)(p + 0x1B4) = one;
-        *(float *)(p + 0x1B8) = zero;
-        *(float *)(p + 0x1BC) = zero;
-        *(float *)(p + 0x1C0) = zero;
-        *(float *)(p + 0x1C4) = one;
-        *(float *)(p + 0x1C8) = zero;
-        *(float *)(p + 0x1CC) = zero;
-        *(float *)(p + 0x1D0) = zero;
-        *(float *)(p + 0x1D4) = angle;
+    __AXFXGetLfoSinTable_801769CC(); /* game-state object; result unused */
+    zero = FLOAT_ZERO;
+    one = FLOAT_ONE;
+    p = sCameras;
+    angle = CAMERA_VIEW_ANGLE;
+    for (i = 0; i < CAMERA_COUNT; i++, p += CAMERA_SIZE) {
+        Camera *cam = (Camera *)p;
+
+        memset(p, 0, CAMERA_SIZE);
+        cam->index = i;
+        cam->f008 = zero;
+        cam->f00C = zero;
+        cam->wantedSubject = 0;
+        cam->subject = 0;
+        cam->wantedMode = CAMERA_MODE_NONE;
+        cam->mode = CAMERA_MODE_NONE;
+        cam->up.x = zero;
+        cam->up.y = one;
+        cam->up.z = zero;
+        cam->v034.x = zero;
+        cam->v034.y = zero;
+        cam->v034.z = zero;
+        cam->reset = 1;
+        cam->transform.m[0] = one;
+        cam->transform.m[1] = zero;
+        cam->transform.m[2] = zero;
+        cam->transform.m[3] = zero;
+        cam->transform.m[4] = one;
+        cam->transform.m[5] = zero;
+        cam->transform.m[6] = zero;
+        cam->transform.m[7] = zero;
+        cam->transform.m[8] = one;
+        cam->transform.pos.x = zero;
+        cam->transform.pos.y = zero;
+        cam->transform.pos.z = zero;
+        *(R9_80267EF8 *)&cam->prevTransform = *(R9_80267EF8 *)&cam->transform;
+        cam->prevTransform.pos = cam->transform.pos;
+        cam->v120[0] = zero;
+        cam->v120[1] = zero;
+        cam->v120[2] = zero;
+        cam->v120[3] = zero;
+        cam->v120[4] = zero;
+        cam->v120[5] = zero;
+        cam->xform0F0.m[0] = one;
+        cam->xform0F0.m[1] = zero;
+        cam->xform0F0.m[2] = zero;
+        cam->xform0F0.m[3] = zero;
+        cam->xform0F0.m[4] = one;
+        cam->xform0F0.m[5] = zero;
+        cam->xform0F0.m[6] = zero;
+        cam->xform0F0.m[7] = zero;
+        cam->xform0F0.m[8] = one;
+        cam->xform0F0.pos.x = zero;
+        cam->xform0F0.pos.y = zero;
+        cam->xform0F0.pos.z = zero;
+        cam->xform0C0.m[0] = one;
+        cam->xform0C0.m[1] = zero;
+        cam->xform0C0.m[2] = zero;
+        cam->xform0C0.m[3] = zero;
+        cam->xform0C0.m[4] = one;
+        cam->xform0C0.m[5] = zero;
+        cam->xform0C0.m[6] = zero;
+        cam->xform0C0.m[7] = zero;
+        cam->xform0C0.m[8] = one;
+        cam->xform0C0.pos.x = zero;
+        cam->xform0C0.pos.y = zero;
+        cam->xform0C0.pos.z = zero;
+        cam->subjectObject = 0;
+        cam->w144 = 0;
+        cam->command = CAMERA_MODE_NONE;
+        cam->w01C = CAMERA_MODE_NONE;
+        cam->viewMatrix[0] = one;
+        cam->viewMatrix[1] = zero;
+        cam->viewMatrix[2] = zero;
+        cam->viewMatrix[3] = zero;
+        cam->viewMatrix[4] = one;
+        cam->viewMatrix[5] = zero;
+        cam->viewMatrix[6] = zero;
+        cam->viewMatrix[7] = zero;
+        cam->viewMatrix[8] = one;
+        cam->viewMatrix[9] = zero;
+        cam->viewMatrix[10] = zero;
+        cam->viewMatrix[11] = zero;
+        cam->angle = angle;
     }
     fn_80276B8C();
     fn_80268D94();
@@ -871,9 +885,9 @@ void fn_80267420(void) {
     fn_80278214();
     fn_80273354();
     fn_8027045C();
-    lbl_8055F494 = fn_802090D4(lbl_803467D0);
-    lbl_8055F490 = fn_80207848(lbl_803467DC, 0);
-    fn_801EEFDC((void *)fn_8026A554, 0xD);
+    sCrashVolume = sound_volume_open(STR_CRASH_VOL);
+    sCheerSound = sound_object_create(STR_CHEER3_SFX, 0);
+    callback_install((void *)fn_8026A554, 0xD);
     fn_80267680();
 }
 #pragma pop
