@@ -150,24 +150,29 @@ void fn_8000F1E0(void) {
     lbl_8055D4B8 = (UnkF22C *)fn_80207848(lbl_802FC42C, flag);
 }
 
+#pragma push
+#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_8000F22C(void) {
     UnkF22C *obj;
+    void (*destroy)(UnkF22C *, s32);
     if (lbl_8055D4BC != 0) fn_80235380(lbl_8055D4BC);
     lbl_8055D4BC = 0;
     obj = lbl_8055D4B4;
     if (obj != 0) {
         if (obj != 0) {
-            ((void (**)(UnkF22C *, s32))*(void **)obj)[2](obj, 1);
+            destroy = obj->vtable->unk_0x8;
+            destroy(obj, 1);
         }
     }
     obj = lbl_8055D4B8;
     if (obj != 0) {
         if (obj != 0) {
-            ((void (**)(UnkF22C *, s32))*(void **)obj)[2](obj, 1);
+            destroy = obj->vtable->unk_0x8;
+            destroy(obj, 1);
         }
     }
 }
-
 void fn_8000F2A8(s32 arg0, s32 arg1) {
     lbl_80350F88 = fn_8023512C(arg0);
     lbl_80351214 = fn_8023512C(arg1);
@@ -796,7 +801,7 @@ extern s32 lbl_80558A90;
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-#pragma fp_contract fast
+#pragma fp_contract on
 f32 fn_8001090C(f32 farg0) {
     union {
         f64 value;
@@ -805,12 +810,14 @@ f32 fn_8001090C(f32 farg0) {
     s32 raw;
     f64 number;
     f64 magic;
+    f32 scaled;
     raw = fn_80232B70(lbl_8055D490);
     converted.words[1] = (u32)raw ^ 0x80000000;
     converted.words[0] = 0x43300000;
     number = converted.value;
     magic = lbl_80560268;
-    return lbl_805602C8 * (farg0 * (f32)(number - magic));
+    scaled = (f32)(number - magic);
+    return lbl_805602C8 * (farg0 * scaled);
 }
 #pragma pop
 s32 fn_80010964(s32 arg0) {
