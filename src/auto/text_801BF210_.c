@@ -757,8 +757,8 @@ int fn_801C0440(void *arg0) {
 int fn_801C0454(void *arg0) {
     extern void fn_80144DAC(float *, float *);
     extern void fn_80144DC8(void *);
-    extern void fn_8017C7C8(void *, void *);
-    extern int fn_801E9E78(void *, float *, float *, void *, float);
+    extern void fn_8017C7C8(void *, void *, void *);
+    extern int fn_801E9E78(void *, float *, float *, void *, int);
     extern void fn_801C2694(int, void *, int *, float *, float *, void *, void *);
     extern float fn_80144CC8(float);
     extern void fn_801C092C(void *, void *, void *, int);
@@ -767,108 +767,80 @@ int fn_801C0454(void *arg0) {
     extern void fn_801C0E44(void *);
     extern void fn_801C0E4C(void *, void *, void *);
     extern void fn_801C0E60(float *, float *, float *);
-    extern void fn_8017A580(int, int, int, int, int, int);
     extern float lbl_805628C8;
     extern float lbl_805628F0;
     extern float lbl_805628F4;
     extern float lbl_805628F8;
     extern float lbl_805628FC;
-    float sp160[128];
-    int sp130[8];
-    float sp124[3];
-    float sp118[3];
-    float sp10C[3];
-    float sp100[3];
-    float spF4[3];
-    float spE8[3];
-    float spE4;
-    float spE0;
-    float spDC;
-    float spD8;
-    float spD4;
-    float spD0;
-    float sp8[2];
-    float tmp;
-    float f10;
-    float f8;
-    float f6;
-    float f9;
-    float f7;
-    float f4;
-    float f5;
-    float f3;
-    float f2;
-    float f31;
-    float f1;
+    struct Pt { float x, y, z; };
+    struct {
+        float sp8;
+        int spC;
+        float tmp10[48];
+        float spD0[3];
+        float spDC[3];
+        float spE8[3];
+        float spF4[3];
+        float sp100[12];
+        float sp130[12];
+        struct Pt pts[14];
+    } frame;
     int i;
     int n;
-    float *p;
-    int spC;
-    if (*(int *)((char *)arg0 + 0x1EC) != 0 && *(int *)((char *)arg0 + 0x214) != 0) {
-        fn_8017C7C8(spF4, spE8);
-        spC = 8;
-        tmp = *(float *)((char *)arg0 + 0x60);
-        spDC = tmp;
-        spE0 = *(float *)((char *)arg0 + 0x64);
-        spE4 = *(float *)((char *)arg0 + 0x68);
-        if (fn_801E9E78((char *)arg0 + 0x6C, &spDC, &spD0, sp8, tmp) != 0) {
-            f10 = spD0;
-            f8 = spD4;
-            f6 = spD8;
-            f9 = spDC + (f10 * lbl_805628C8);
-            f7 = spE0 + (f8 * lbl_805628C8);
-            f4 = f10 * lbl_805628F0;
-            spDC = f9;
-            f5 = spE4 + (f6 * lbl_805628C8);
-            f3 = f8 * lbl_805628F0;
-            f2 = f6 * lbl_805628F0;
-            spE0 = f7;
-            spE4 = f5;
-            spD0 = f4;
-            spD4 = f3;
-            spD8 = f2;
-            spD0 = f4 + (*(float *)((char *)arg0 + 0x26C) * lbl_805628F4);
-            spD4 = f3 + (*(float *)((char *)arg0 + 0x270) * lbl_805628F4);
-            spD8 = f2 + (*(float *)((char *)arg0 + 0x274) * lbl_805628F4);
-            PSVECNormalize(&spD0, &spD0);
-            *(float *)((char *)arg0 + 0x260) = spDC;
-            *(float *)((char *)arg0 + 0x264) = spE0;
-            *(float *)((char *)arg0 + 0x268) = spE4;
-            *(float *)((char *)arg0 + 0x26C) = spD0;
-            *(float *)((char *)arg0 + 0x270) = spD4;
-            *(float *)((char *)arg0 + 0x274) = spD8;
-            fn_801C2694(*(int *)((char *)arg0 + 0x214), sp160, &spC, &spDC, &spD0, spF4, spE8);
-            n = spC;
-            p = sp160;
-            for (i = 0; i < n; i++) {
-                p[1] += lbl_805628F8;
-                p += 3;
+    float f31;
+    if (*(int *)((char *)arg0 + 0x1EC) != 0) {
+        if (*(int *)((char *)arg0 + 0x214) != 0) {
+            fn_8017C7C8(arg0, frame.spF4, frame.spE8);
+            frame.spC = 8;
+            *(int *)&frame.spDC[0] = *(int *)((char *)arg0 + 0x60);
+            *(int *)&frame.spDC[1] = *(int *)((char *)arg0 + 0x64);
+            *(int *)&frame.spDC[2] = *(int *)((char *)arg0 + 0x68);
+            if (fn_801E9E78((char *)arg0 + 0x6C, frame.spDC, frame.spD0, &frame.sp8, *(int *)((char *)arg0 + 0x60)) != 0) {
+                frame.spDC[0] = frame.spDC[0] + (frame.spD0[0] * lbl_805628C8);
+                frame.spDC[1] = frame.spDC[1] + (frame.spD0[1] * lbl_805628C8);
+                frame.spDC[2] = frame.spDC[2] + (frame.spD0[2] * lbl_805628C8);
+                frame.spD0[0] = frame.spD0[0] * lbl_805628F0;
+                frame.spD0[1] = frame.spD0[1] * lbl_805628F0;
+                frame.spD0[2] = frame.spD0[2] * lbl_805628F0;
+                frame.spD0[0] = frame.spD0[0] + (*(float *)((char *)arg0 + 0x26C) * lbl_805628F4);
+                frame.spD0[1] = frame.spD0[1] + (*(float *)((char *)arg0 + 0x270) * lbl_805628F4);
+                frame.spD0[2] = frame.spD0[2] + (*(float *)((char *)arg0 + 0x274) * lbl_805628F4);
+                PSVECNormalize(frame.spD0, frame.spD0);
+                *(float *)((char *)arg0 + 0x260) = frame.spDC[0];
+                *(float *)((char *)arg0 + 0x264) = frame.spDC[1];
+                *(float *)((char *)arg0 + 0x268) = frame.spDC[2];
+                *(float *)((char *)arg0 + 0x26C) = frame.spD0[0];
+                *(float *)((char *)arg0 + 0x270) = frame.spD0[1];
+                *(float *)((char *)arg0 + 0x274) = frame.spD0[2];
+                fn_801C2694(*(int *)((char *)arg0 + 0x214), frame.pts, &frame.spC, frame.spDC, frame.spD0, frame.spF4, frame.spE8);
+                n = frame.spC;
+                for (i = 0; i < n; i++) {
+                    struct Pt v = frame.pts[i];
+                    v.y += lbl_805628F8;
+                    frame.pts[i] = v;
+                }
+                fn_80144DC8(&frame.sp100[0]);
+                fn_80144DAC(&frame.sp100[9], &frame.pts[*(int *)((char *)arg0 + 0x21C)].x);
+                fn_801C0E60(&frame.sp100[0], &frame.pts[*(int *)((char *)arg0 + 0x224)].x, &frame.pts[*(int *)((char *)arg0 + 0x220)].x);
+                fn_801C0E60(&frame.sp100[3], &frame.pts[*(int *)((char *)arg0 + 0x22C)].x, &frame.pts[*(int *)((char *)arg0 + 0x228)].x);
+                fn_801C0E4C(&frame.sp100[6], &frame.sp100[0], &frame.sp100[3]);
+                f31 = fn_80144CC8(lbl_805628FC);
+                if (((float (*)(void *))fn_801C0E44)(&frame.sp100[6]) > f31) {
+                    fn_801C0D6C(&frame.sp100[0]);
+                } else {
+                    fn_801C0D3C(&frame.sp100[0]);
+                }
+                ((void (*)(void *, void *, void *))fn_801C092C)(frame.sp130, (char *)arg0 + 0x230, &frame.sp100[0]);
+                {
+                    struct Pt *dst = (struct Pt *)((char *)arg0 + 0x3C);
+                    struct Pt *src = (struct Pt *)frame.sp130;
+                    dst[0] = src[0];
+                    dst[1] = src[1];
+                    dst[2] = src[2];
+                    dst[3] = src[3];
+                }
+                ((void (*)(void *))fn_8017A580)(arg0);
             }
-            fn_80144DC8(sp100);
-            fn_80144DAC(sp124, &sp160[*(int *)((char *)arg0 + 0x21C) * 3]);
-            fn_801C0E60(sp100, &sp160[*(int *)((char *)arg0 + 0x224) * 3], &sp160[*(int *)((char *)arg0 + 0x220) * 3]);
-            fn_801C0E60(sp10C, &sp160[*(int *)((char *)arg0 + 0x22C) * 3], &sp160[*(int *)((char *)arg0 + 0x228) * 3]);
-            fn_801C0E4C(sp118, sp100, sp10C);
-            f31 = fn_80144CC8(lbl_805628FC);
-            f1 = ((float (*)(void *))fn_801C0E44)(sp118);
-            if (f1 > f31) {
-                fn_801C0D6C(sp100);
-            } else {
-                fn_801C0D3C(sp100);
-            }
-            ((void (*)(void *, void *, void *))fn_801C092C)(sp130, (char *)arg0 + 0x230, sp100);
-            *(int *)((char *)arg0 + 0x3C) = sp130[0];
-            *(int *)((char *)arg0 + 0x40) = sp130[1];
-            *(int *)((char *)arg0 + 0x44) = sp130[2];
-            *(int *)((char *)arg0 + 0x48) = sp130[3];
-            *(int *)((char *)arg0 + 0x4C) = sp130[4];
-            *(int *)((char *)arg0 + 0x50) = sp130[5];
-            *(int *)((char *)arg0 + 0x54) = sp130[6];
-            *(int *)((char *)arg0 + 0x58) = sp130[7];
-            *(float *)((char *)arg0 + 0x60) = *(float *)((char *)sp130 + 0x20);
-            *(float *)((char *)arg0 + 0x64) = *(float *)((char *)sp130 + 0x24);
-            *(float *)((char *)arg0 + 0x68) = *(float *)((char *)sp130 + 0x28);
-            ((void (*)(void *))fn_8017A580)(arg0);
         }
     }
     return 0;
@@ -960,6 +932,23 @@ void fn_801C092C(void *arg0, void *arg1, void *arg2, int arg3) {
         out[8] = fn_80144514(matrix[2], input[6], matrix[5], input[7], matrix[8], input[8]);
     }
 }
+
+void fn_801C0D3C(void *arg0)
+{
+    float *o = (float *)arg0;
+    float a = lbl_805628B8;
+    float b = lbl_805628BC;
+    o[1] = a;
+    o[0] = b;
+    o[2] = a;
+    o[3] = a;
+    o[4] = b;
+    o[5] = a;
+    o[6] = a;
+    o[7] = a;
+    o[8] = b;
+}
+
 #pragma pop
 /* Reverse-ordered scalar loads keep the vector copies and final register restore matching. */
 void fn_801C0D6C(void *arg0) {
