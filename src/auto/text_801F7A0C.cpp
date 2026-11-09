@@ -2229,6 +2229,8 @@ extern "C" void fn_801FBF48(void *arg0) {
     }
 }
 #pragma scheduling on
+#pragma push
+#pragma processor 750
 extern "C" void fn_801FBFE8(void* arg0) {
  f64 value = lbl_80563010;
  void* obj = fn_801284F8(0xE0, lbl_8033B53C);
