@@ -54,6 +54,7 @@ extern void PSVECNormalize(float *, float *);
 extern float lbl_80562DBC, lbl_80562DC0, lbl_80562DD4, lbl_80562DD8;
 extern float lbl_80562DDC, lbl_80562DE0;
 extern float lbl_802F99F8[4];
+struct FourLongs { long w0, w1, w2, w3; };
 extern long lbl_8055AF10;
 extern void fn_802C6CF8(long);
 extern void fn_80127464(void);
@@ -883,18 +884,15 @@ void fn_801E8E38(void) {
 }
 #pragma scheduling invalid_target
 void *fn_801E8EA4(long arg0) {
-    unsigned char *entry = lbl_80339CC0;
-    long sentinel;
-
-    goto check_key;
-
-check_key:
-    if (*(long *)(entry + 4) == arg0) goto done;
-    entry += 0xC;
-    sentinel = *(long *)entry;
-    if (sentinel != 0) goto check_key;
-
-done:
+    unsigned char *entry;
+    entry = lbl_80339CC0;
+    for (;;) {
+        if (*(long *)(entry + 4) == arg0)
+            break;
+        entry += 0xC;
+        if (*(long *)entry == 0)
+            break;
+    }
     if (*(long *)entry == 0) {
         fn_802E317C(lbl_80339CFC, arg0);
     }
