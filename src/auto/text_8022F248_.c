@@ -316,59 +316,64 @@ void fn_8022F868(void *arg0, void *arg1) {
 #pragma push
 #pragma processor 750
 #pragma dont_inline on
-void fn_8022F8CC(void *arg0) {
-    extern void fn_80230A68(void *, int, float, float, float, float, float);
+/* Draws one overlay quad.  Builds its four corners at the quad's z, half-width
+ * and half-height, all with the color fn_80230B9C reads from the quad's palette
+ * entry and texture coordinates running from (0, 0) to (texScale, texScale),
+ * points the texture matrix at the quad's transform composed with the current
+ * one, then pushes the quad as two triangles through the GX FIFO. */
+void fn_8022F8CC(OverlayQuad *quad) {
+    extern void fn_80230A68(QuadVtx *, int, f32, f32, f32, f32, f32);
     extern int fn_80230B9C(int);
     extern void fn_8022F868(void *, void *);
-    extern void fn_802C8B98(int, void *);
-    extern void fn_802C8DB8(void *, int, unsigned short *, int);
+    extern void fn_802C8B98(int, QuadMtx *);
+    extern void fn_802C8DB8(QuadVtx *, int, u16 *, int);
     extern void fn_802C8D74(void);
     extern unsigned short lbl_802F9FB0[6];
-    struct V { double a; int b, c; float d, e; } __declspec(align(16)) arr[4];
-    struct X { int a, b, c, d, e, f, g, h, i, j, k, l; } spB0, sp80;
-    struct V v0, v1, v2, v3;
-    unsigned short ids[6];
-    float u, z, x, y;
-    int state;
+    QuadVtx __declspec(align(16)) vtx[4];
+    QuadMtx world, local;
+    QuadVtx v0, v1, v2, v3;
+    u16 idx[6];
+    f32 texScale, z, x, y;
+    int color;
 
-    u = *(int *)((char *)arg0 + 0x80);
-    z = *(float *)((char *)arg0 + 0x7c);
-    state = fn_80230B9C(*(int *)((char *)arg0 + 0x38));
-    x = *(int *)((char *)arg0 + 0x84);
-    y = *(int *)((char *)arg0 + 0x88);
+    texScale = quad->texScale;
+    z = quad->z;
+    color = fn_80230B9C(quad->colorIndex);
+    x = quad->width;
+    y = quad->height;
 
-    fn_80230A68(&v0, state, -x, y, z, lbl_805635FC, lbl_805635FC);
-    arr[0].a = v0.a;
-    arr[0].b = v0.b;
-    arr[0].c = v0.c;
-    arr[0].d = v0.d;
-    arr[0].e = v0.e;
-    fn_80230A68(&v1, state, x, y, z, u, lbl_805635FC);
-    arr[1].a = v1.a;
-    arr[1].b = v1.b;
-    arr[1].c = v1.c;
-    arr[1].d = v1.d;
-    arr[1].e = v1.e;
-    fn_80230A68(&v2, state, -x, -y, z, lbl_805635FC, u);
-    arr[2].a = v2.a;
-    arr[2].b = v2.b;
-    arr[2].c = v2.c;
-    arr[2].d = v2.d;
-    arr[2].e = v2.e;
-    fn_80230A68(&v3, state, x, -y, z, u, u);
-    arr[3].a = v3.a;
-    arr[3].b = v3.b;
-    arr[3].c = v3.c;
-    arr[3].d = v3.d;
-    arr[3].e = v3.e;
-    { struct X *p = &sp80; struct X *q = &spB0;
-    { unsigned short *p = lbl_802F9FB0 - 1;
-      ids[0] = *++p; ids[1] = *++p; ids[2] = *++p;
-      ids[3] = *++p; ids[4] = *++p; ids[5] = *++p; }
-    sp80 = *(struct X *)arg0;
-    fn_8022F868(q, p); }
-    fn_802C8B98(*(int *)((char *)arg0 + 0x30), &spB0);
-    fn_802C8DB8(arr, 4, ids, 6);
+    fn_80230A68(&v0, color, -x, y, z, FLOAT_ZERO, FLOAT_ZERO);
+    vtx[0].xy = v0.xy;
+    vtx[0].z = v0.z;
+    vtx[0].color = v0.color;
+    vtx[0].s = v0.s;
+    vtx[0].t = v0.t;
+    fn_80230A68(&v1, color, x, y, z, texScale, FLOAT_ZERO);
+    vtx[1].xy = v1.xy;
+    vtx[1].z = v1.z;
+    vtx[1].color = v1.color;
+    vtx[1].s = v1.s;
+    vtx[1].t = v1.t;
+    fn_80230A68(&v2, color, -x, -y, z, FLOAT_ZERO, texScale);
+    vtx[2].xy = v2.xy;
+    vtx[2].z = v2.z;
+    vtx[2].color = v2.color;
+    vtx[2].s = v2.s;
+    vtx[2].t = v2.t;
+    fn_80230A68(&v3, color, x, -y, z, texScale, texScale);
+    vtx[3].xy = v3.xy;
+    vtx[3].z = v3.z;
+    vtx[3].color = v3.color;
+    vtx[3].s = v3.s;
+    vtx[3].t = v3.t;
+    { QuadMtx *src = &local; QuadMtx *dst = &world;
+    { u16 *p = QUAD_INDEXES - 1;
+      idx[0] = *++p; idx[1] = *++p; idx[2] = *++p;
+      idx[3] = *++p; idx[4] = *++p; idx[5] = *++p; }
+    local = quad->mtx;
+    fn_8022F868(dst, src); }
+    fn_802C8B98(quad->texIndex, &world);
+    fn_802C8DB8(vtx, 4, idx, 6);
     fn_802C8D74();
 }
 #pragma pop
