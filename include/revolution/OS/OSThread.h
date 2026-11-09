@@ -35,11 +35,12 @@ typedef struct OSThread {
     OSContext context;
     u16 state;                   // at 0x2C8
     u16 flags;                   // at 0x2CA
-    s32 suspend;                 // at 0x2CC
-    s32 priority;                // at 0x2D0
-    s32 base;                    // at 0x2D4
-    u32 val;                     // at 0x2D8
-    OSThreadQueue* queue;        // at 0x2DC
+    s32 suspend;                 // at 0x2CC  >0 while suspended (OS{Suspend,Resume}Thread)
+    s32 priority;                // at 0x2D0  effective priority; higher runs first
+    s32 base;                    // at 0x2D4  priority the thread was created/set with
+    u32 val;                     // at 0x2D8  value returned to OSJoinThread
+    OSThreadQueue* queue;        // at 0x2DC  RunQueue[priority] when ready, the
+                                 //           sleep queue when sleeping; else NULL
     struct OSThread* next;       // at 0x2E0
     struct OSThread* prev;       // at 0x2E4
     OSThreadQueue joinQueue;     // at 0x2E8
