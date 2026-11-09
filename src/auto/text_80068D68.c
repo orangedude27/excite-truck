@@ -440,19 +440,91 @@ typedef struct {
     u8      id;             /* +0x31  identifier of the next command we send */
 } tL2C_LCB_VIEW;
 
+/* The L2CAP channel state machine states (l2c_int.h's tL2C_CHNL_STATE); the game
+   numbers them the same way, so these are the header's names. */
+typedef enum {
+    CST_CLOSED,                   /* channel is in closed state */
+    CST_ORIG_W4_SEC_COMP,         /* originator waits for security clearance */
+    CST_TERM_W4_SEC_COMP,         /* acceptor waits for security clearance */
+    CST_W4_L2CAP_CONNECT_RSP,     /* waiting for the peer's connect response */
+    CST_W4_L2CA_CONNECT_RSP,      /* waiting for the upper layer's connect response */
+    CST_CONFIG,                   /* negotiating configuration */
+    CST_OPEN,                     /* data transfer state */
+    CST_W4_L2CAP_DISCONNECT_RSP,  /* waiting for the peer's disconnect response */
+    CST_W4_L2CA_DISCONNECT_RSP    /* waiting for the upper layer's disconnect response */
+} tL2C_CHNL_STATE;
+
+/* The registration control block (l2c_int.h's tL2C_RCB): one per PSM an
+   application registered with L2CA_Register(), 0x2C bytes each in the pool
+   l2cu_register_for_connection hands out, holding the API callbacks L2CAP
+   calls back into (their prototypes are l2c_api.h's tL2CA_*_CB). */
+typedef struct {
+    u8   in_use;                                              /* +0x00 */
+    u8   pad_01;
+    u16  psm;                                                 /* +0x02  PSM this is registered for */
+    void (*pL2CA_ConnectInd_Cb)(u8 *bd_addr, u16 lcid, u16 psm, u8 status);
+                                                              /* +0x04  peer wants to connect */
+    void (*pL2CA_ConnectCfm_Cb)(u16 lcid, u16 status);        /* +0x08  our connect request done */
+    void (*pL2CA_ConnectPnd_Cb)(u16 lcid);                    /* +0x0C  peer's connect still pending */
+    void (*pL2CA_ConfigInd_Cb)(u16 lcid, void *p_cfg);        /* +0x10  peer wants to configure */
+    void (*pL2CA_ConfigCfm_Cb)(u16 lcid, void *p_cfg);        /* +0x14  our config request done */
+    void (*pL2CA_DisconnectInd_Cb)(u16 lcid, u16 need_confirm);
+                                                              /* +0x18  channel is going away */
+    void (*pL2CA_DisconnectCfm_Cb)(u16 lcid, u16 result);     /* +0x1C  our disconnect done */
+    void (*pL2CA_QoSViolationInd_Cb)(u8 *bd_addr);            /* +0x20  link QOS was violated */
+    void (*pL2CA_DataInd_Cb)(u16 lcid, void *p_buf);          /* +0x24  data from the peer */
+    void (*pL2CA_CongestionStatus_Cb)(u16 lcid, u16 congested);/* +0x28  transmit queue filled up */
+} tL2C_RCB_VIEW;
+
 /* The L2CAP channel control block (l2c_int.h's tL2C_CCB); the game lays it out
    the same way, so the names below are the header's. */
 typedef struct t_l2c_ccb_view {
-    u8              pad_00[0x10];
-    tL2C_LCB_VIEW  *p_lcb;      /* +0x10  the link this channel is assigned to */
-    u16             local_cid;  /* +0x14  our CID on that link */
-    u16             remote_cid; /* +0x16  the peer's CID */
-    u8              pad_18[0x18];
-    void           *p_rcb;      /* +0x30  registration control block of the PSM */
-    u8              config_done;/* +0x34  IB_CFG_DONE / OB_CFG_DONE flags */
-    u8              local_id;   /* +0x35  identifier of the last command we sent */
-    u8              remote_id;  /* +0x36  identifier of the peer's last command */
+    u8              pad_00[4];
+    tL2C_CHNL_STATE chnl_state;   /* +0x04  where this channel is in the CSM */
+    u8              pad_08[8];
+    tL2C_LCB_VIEW  *p_lcb;        /* +0x10  the link this channel is assigned to */
+    u16             local_cid;    /* +0x14  our CID on that link */
+    u16             remote_cid;   /* +0x16  the peer's CID */
+    TIMER_LIST_ENT  timer_entry;  /* +0x18  this channel's timeout entry */
+    tL2C_RCB_VIEW  *p_rcb;        /* +0x30  registration control block of the PSM */
+    u8              config_done;  /* +0x34  IB_CFG_DONE / OB_CFG_DONE flags */
+    u8              local_id;     /* +0x35  identifier of the last command we sent */
+    u8              remote_id;    /* +0x36  identifier of the peer's last command */
 } tL2C_CCB_VIEW;
+
+/* Events l2c_csm_execute() (fn_80089E40) feeds the state handlers. This stack
+   predates l2c_int.h's L2CEVT_ list: it has no L2CEVT_L2CAP_INFO_RSP and no
+   L2CA_FLUSH_REQ, and numbers the security events after the link ones, so the
+   values are the game's own. Checked against the senders: the HCI connect
+   complete sends 0/1, a link disconnect 3, a QOS violation 6, the peer's
+   connect signalling 10..13, a data indication 19, L2CA_ConnectReq 20,
+   L2CA_ConfigRsp 24/25, L2CA_DisconnectReq 26, L2CA_DisconnectRsp 27,
+   L2CA_DataWrite 29 and l2c_process_timeout 30. */
+#define L2CEVT_LP_CONNECT_CFM        0  /* lower layer connect confirm */
+#define L2CEVT_LP_CONNECT_CFM_NEG    1  /* lower layer connect confirm (failed) */
+#define L2CEVT_LP_DISCONNECT_IND     3  /* link was disconnected */
+#define L2CEVT_LP_QOS_VIOLATION_IND  6  /* lower layer QOS violation indication */
+#define L2CEVT_L2CAP_CONNECT_REQ     10 /* peer connection request */
+#define L2CEVT_L2CAP_CONNECT_RSP     11 /* peer connection response */
+#define L2CEVT_L2CAP_CONNECT_RSP_PND 12 /* peer connection response pending */
+#define L2CEVT_L2CAP_CONNECT_RSP_NEG 13 /* peer connection response (failed) */
+#define L2CEVT_L2CAP_CONFIG_REQ      14 /* peer configuration request */
+#define L2CEVT_L2CAP_DISCONNECT_REQ  17 /* peer disconnect request */
+#define L2CEVT_L2CAP_DATA            19 /* peer data */
+#define L2CEVT_L2CA_CONNECT_REQ      20 /* upper layer connect request */
+#define L2CEVT_L2CA_CONNECT_RSP      21 /* upper layer connect response */
+#define L2CEVT_L2CA_CONNECT_RSP_NEG  22 /* upper layer connect response (failed) */
+#define L2CEVT_L2CA_CONFIG_REQ       23 /* upper layer config request */
+#define L2CEVT_L2CA_CONFIG_RSP       24 /* upper layer config response */
+#define L2CEVT_L2CA_CONFIG_RSP_NEG   25 /* upper layer config response (failed) */
+#define L2CEVT_L2CA_DISCONNECT_REQ   26 /* upper layer disconnect request */
+#define L2CEVT_L2CA_DISCONNECT_RSP   27 /* upper layer disconnect response */
+#define L2CEVT_L2CA_DATA_WRITE       29 /* upper layer data to send */
+#define L2CEVT_TIMEOUT               30 /* channel timeout */
+
+/* Seconds an L2CAP channel waits for the peer; this stack uses 30 both while
+   negotiating a configuration and while tearing the channel down. */
+#define L2CAP_CHNL_TIMEOUT           30
 
 extern void l2c_init(void);
 extern char lbl_803181F0[];
