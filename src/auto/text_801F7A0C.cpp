@@ -1416,11 +1416,15 @@ void fn_80128670(void);
 void fn_801F9A24(void *);
 void fn_801FA138(void *);
 extern "C" void clear__Q211J2DBloSaver19CTextureNameConnectFv(void **arg0) {
-    void *node = *arg0;
+    void *node;
+    void *next;
+    node = *arg0;
     while (node != 0) {
-        void *next = *(void **)((char *)node + 0x44);
-        fn_802C6CF8(*(s32 *)node);
-        ((void (*)(void *))fn_80128668)(node);
+        next = *(void **)((char *)node + 0x44);
+        if (node != 0) {
+            fn_802C6CF8(*(s32 *)node);
+            ((void (*)(void *))fn_80128668)(node);
+        }
         node = next;
     }
     *arg0 = 0;
@@ -2233,9 +2237,9 @@ extern "C" void fn_801FBF48(void *arg0) {
 #pragma push
 #pragma processor 750
 extern "C" void fn_801FBFE8(void* arg0) {
- f64 value = lbl_80563010;
- void* obj = fn_801284F8(0xE0, lbl_8033B53C);
- if (obj != 0) fn_801A324C(obj, 0, (char*)arg0 + 0x58, value, *(f32*)((char*)arg0 + 0x4C));
+    register f32 value = lbl_80563010;
+    void* obj = fn_801284F8(0xE0, lbl_8033B53C);
+    if (obj != 0) fn_801A324C(obj, 0, (char*)arg0 + 0x58, value, *(f32*)((char*)arg0 + 0x4C));
 }
 #pragma pop
 
