@@ -5,6 +5,7 @@ extern "C" void fn_801345D8(void *, int, const char *, ...);
 extern "C" int fn_802C6FC0(char *, int, int);
 #pragma pop
 extern int lbl_8055B0C8;
+extern int lbl_8055B0B8;
 extern int lbl_8055B0F0;
 extern int lbl_8055B0F8;
 extern float lbl_80562F28;
