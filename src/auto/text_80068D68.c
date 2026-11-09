@@ -8165,7 +8165,7 @@ void BTM_SendHciReset(void (*arg0)(void)) {
     *(volatile u32 *)(lbl_803C0F78 + 0x620) = (u32)arg0;
     *(volatile u8 *)(lbl_803C0F78 + 0x64E) = zero;
     *(volatile u8 *)(lbl_803C0F78 + 0x64F) = 5;
-    btu_start_timer(lbl_803C0F78 + 0x574, 1, 4, zero);
+    btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0F78 + 0x574), 1, 4);
     ((void (*)(void))btsnd_hcic_reset)();
     if (*(void (**)(void *))(lbl_803C0F78 + 0x568) != NULL)
         (*(void (**)(void *))(lbl_803C0F78 + 0x568))((void *)1);
