@@ -23,6 +23,18 @@ extern float lbl_80562EE8;
 extern float lbl_80562EEC;
 typedef struct { float x, y, z; } Vec801EF;
 typedef struct { Vec801EF x, y, z, pos; } Matrix801EF;
+#pragma scheduling invalid_target
+float fn_801EF190(int arg0) {
+    float a, c, e, b, d, f;
+    if (arg0 == -1) {
+        return lbl_80562EE0;
+    }
+    c = lbl_80562EE4;
+    d = lbl_80562EE4;
+    fn_802C7760((void *)arg0, &a, &b, &c, &d, &e, &f);
+    return d - c;
+}
+#pragma scheduling on
 void **fn_801EF1F0(void **arg0, void *arg1) {
     Lbl801EF *L = (Lbl801EF *)lbl_8033A380;
     *arg0 = fn_801284F8(0x4C, &L->s0[0]);
