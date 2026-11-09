@@ -36,32 +36,37 @@ void OSCreateAlarm(OSAlarm* alarm) {
 }
 
 static void InsertAlarm(OSAlarm* alarm, s64 end, OSAlarmHandler handler) {
-    OSAlarm* iter;
+    // AlarmQueue is sorted by ascending end time, so this walks it to the first
+    // alarm that ends later and links the new one in front of it.  Only an insert
+    // at the front can change what the decrementer is counting down to, so that is
+    // the only place SetTimer is called.  Callers hold interrupts disabled.
+    OSAlarm* later;
     OSAlarm* prev;
 
-    // Calculate periodic alarm end time (caller makes 'end' 0)
+    // A periodic alarm (OSSetPeriodicAlarm passes end as 0) fires on its own
+    // schedule: its start, moved up to the first period that has not passed yet.
     if (alarm->period > 0) {
         s64 time = __OSGetSystemTime();
         end = alarm->start;
 
         if (alarm->start < time) {
-            s64 periodLeft = ((time - alarm->start) / alarm->period);
-            end += alarm->period * (periodLeft + 1);
+            s64 periodsElapsed = ((time - alarm->start) / alarm->period);
+            end += alarm->period * (periodsElapsed + 1);
         }
     }
 
     alarm->handler = handler;
     alarm->end = end;
 
-    // Find position to insert alarm (sorted ascending by end time)
-    for (iter = AlarmQueue.head; iter != NULL; iter = iter->next) {
-        if (iter->end <= end) {
+    for (later = AlarmQueue.head; later != NULL; later = later->next) {
+        if (later->end <= end) {
             continue;
         }
 
-        alarm->prev = iter->prev;
-        iter->prev = alarm;
-        alarm->next = iter;
+        // link in front of 'later'
+        alarm->prev = later->prev;
+        later->prev = alarm;
+        alarm->next = later;
 
         prev = alarm->prev;
         if (prev != NULL) {
@@ -74,6 +79,7 @@ static void InsertAlarm(OSAlarm* alarm, s64 end, OSAlarmHandler handler) {
         return;
     }
 
+    // nothing ends later: hang it off the tail
     alarm->next = NULL;
     prev = AlarmQueue.tail;
     AlarmQueue.tail = alarm;
@@ -82,6 +88,7 @@ static void InsertAlarm(OSAlarm* alarm, s64 end, OSAlarmHandler handler) {
     if (prev != NULL) {
         prev->next = alarm;
     } else {
+        // the queue was empty
         AlarmQueue.tail = alarm;
         AlarmQueue.head = alarm;
         SetTimer(alarm);
