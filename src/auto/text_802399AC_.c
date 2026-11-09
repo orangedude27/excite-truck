@@ -48,8 +48,8 @@ extern s32 fn_802104D0(void);
 extern void *lbl_8055BAC8;
 extern s32 lbl_80340B58;
 extern s32 lbl_80340B58;
-extern s32 lbl_80340C44;
-extern s32 lbl_80340C24;
+extern char lbl_80340C44[];
+extern char lbl_80340C24[];
 extern s32 lbl_8049870C[];
 void fn_80239AB8(void) { fn_80214CB4(lbl_8055BAC8); }
 
