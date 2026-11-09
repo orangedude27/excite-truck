@@ -36,6 +36,32 @@ extern int btsnd_hcic_reject_esco_conn(void *, u8 *, u8);
 #include <revolution/OS.h>
 #include "revolution/BTE/stack/include/hiddefs.h"
 extern void BTA_DmSetVisibility(unsigned char, unsigned char);
+typedef struct {
+    u8 _p0[0x110];
+    u32 earlyMode;
+    f32 preDelayTimeMax;
+    f32 preDelayTime;
+    u32 fusedMode;
+    f32 fusedTime;
+    f32 coloration;
+    f32 damping;
+    f32 crosstalk;
+    f32 earlyGain;
+    f32 fusedGain;
+    void *busIn;
+    void *busOut;
+    f32 outGain;
+    f32 sendGain;
+} AutoReverbExp;
+typedef struct {
+    AutoReverbExp exp;
+    f32 coloration;
+    f32 mix;
+    f32 time;
+    f32 damping;
+    f32 preDelay;
+    f32 crosstalk;
+} AutoReverbHi;
 
 
 /* Forward declare tL2C_CONN_INFO for l2c_csm_w4_l2ca_connect_rsp */
@@ -9133,7 +9159,7 @@ tBTM_STATUS BTM_CancelRemoteDeviceName(void) {
         fn_8007093C(0xD0002, lbl_80316464);
     if ((base[0x16AE] & 1) == 0)
         return 6;
-    if (btsnd_hcic_link_key_neg_reply_800843D8(base + 0x16A8) == 0)
+    if ((u8)btsnd_hcic_link_key_neg_reply_800843D8(base + 0x16A8) == 0)
         return 3;
     return 1;
 }
@@ -11142,19 +11168,17 @@ int btm_num_sco_links_active(void) {
     unsigned char *base = lbl_803C0F78;
     int count = 0;
     int state;
-    state = *(unsigned short *)(base + 0x185C);
+    state = *(unsigned short *)(base + 0x185c);
     if (state < 7) {
         if (state >= 2)
             count = 1;
-        else {}
     }
     state = *(unsigned short *)(base + 0x1890);
     if (state < 7) {
         if (state >= 2)
             count++;
-        else {}
     }
-    state = *(unsigned short *)(base + 0x18C4);
+    state = *(unsigned short *)(base + 0x18c4);
     if (state >= 7)
         return count;
     if (state >= 2)
