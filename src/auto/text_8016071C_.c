@@ -43,9 +43,10 @@ void fn_801607BC(void) {
 
 #pragma dont_inline on
 void fn_801607F8(void) {
-    if (lbl_8055E2BC == 0) {
-        if (lbl_8055E2BC == 0) {
-            fn_80128668();
+    void *p = lbl_8055E2BC;
+    if (p != 0) {
+        if (p != 0) {
+            ((int (*)(void *))fn_80128668)(p);
         }
         lbl_8055E2BC = 0;
     }
