@@ -217,11 +217,10 @@ unsigned short fn_802E5168(float arg0) {
 #pragma scheduling invalid_target
 void fn_802E51D0(int arg0, int arg1) {
     unsigned char *entry;
-
     if (arg1 != 0) {
         return;
     }
-    ((volatile unsigned char *)lbl_804FC800)[arg0 * 0x2C] = 1;
+    lbl_804FC800[arg0 * 0x2C] = 1;
     entry = lbl_804FC800 + arg0 * 0x2C;
     *(int *)(entry + 0x24) = 1;
     *(int *)(entry + 0x28) = 0;
