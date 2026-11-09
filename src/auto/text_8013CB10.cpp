@@ -2396,7 +2396,7 @@ extern "C" s32 fn_80141F28(void *arg0, s32 arg1) {
 
 #pragma small_data off
 extern "C" s32 fn_80141F7C(f32 arg0) {
-    return (f32)__fabs((f64)arg0) <= *(volatile f32 *)0x80558DC4;
+    return (f32)__fabs((f64)arg0) <= lbl_80558DC4[0];
 }
 #pragma small_data on
 extern "C" u8 lbl_8055E1BC;
