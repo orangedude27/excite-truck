@@ -194,7 +194,8 @@ s32 fn_80231504(void) {
     return 0;
 }
 
-#pragma dont_inline on
+#pragma push
+#pragma scheduling invalid_target
 s32 fn_8023150C(const char *arg0) {
     s32 offset = 0;
     s32 i = 0;
@@ -207,7 +208,7 @@ s32 fn_8023150C(const char *arg0) {
     }
     return -1;
 }
-#pragma dont_inline off
+#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
