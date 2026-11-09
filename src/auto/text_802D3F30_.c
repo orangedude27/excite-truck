@@ -936,6 +936,9 @@ void fn_802D5F88(s32 arg0) {
         lbl_8055FDEC = mode;
     }
 }
+#pragma pop
+#pragma scheduling invalid_target
+#pragma dont_inline on
 
 #pragma push
 #pragma dont_inline on
