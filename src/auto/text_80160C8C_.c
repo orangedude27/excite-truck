@@ -293,6 +293,86 @@ void* fn_80160C8C(void* arg0, s32 arg1) {
 s32 fn_80160CE4(void) {
     return lbl_8055A0B8 - lbl_8055A0C0;
 }
+
+#pragma cplusplus on
+extern "C" char lbl_8032F790[];
+extern "C" void fn_80158558(void *);
+extern "C" int stricmp(const char *, const char *);
+extern "C" char lbl_8055A0D4;
+extern "C" f32 lbl_8056183C;
+extern "C" char lbl_8055A0C4;
+extern "C" char lbl_8055A0CC;
+extern "C" f32 lbl_80561838;
+extern "C" f32 lbl_80561840;
+extern "C" void fn_80160CF4(void) {
+    struct Node {
+        virtual void s0();
+        virtual void s1();
+        virtual const char *name();
+        virtual void s3();
+        virtual void s4();
+        virtual const char *attr(const char *);
+        virtual void s6();
+        virtual s32 attrInt(const char *);
+        virtual void s8();
+        virtual void s9();
+        virtual f32 attrF(const char *, f32);
+        virtual void s11();
+        virtual s32 attrB(const char *, s32);
+        virtual void s13(); virtual void s14(); virtual void s15(); virtual void s16(); virtual void s17();
+        virtual void s18(); virtual void s19(); virtual void s20(); virtual void s21(); virtual void s22();
+        virtual void s23();
+        virtual Node *child(s32);
+    };
+    struct Root { s32 pad[8]; Node *node; };
+    char *text = (char *)lbl_8032F588;
+    Root *root;
+    Node *n;
+    s32 idx = 1;
+    f32 f31;
+    root = (Root *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC());
+    lbl_8055E300 = 0;
+    {
+        s32 *obj = (s32 *)fn_801284F8(0xC, text + 0x48);
+        if (obj != 0) *obj = (s32)lbl_8032F790;
+        *(s32 *)(*(s32 *)lbl_8042FDEC + (*(s32 *)(lbl_8042FDEC + 4))++ * 4) = (s32)obj;
+    }
+    f31 = lbl_8056183C;
+    for (n = root->node->child(0); n != 0; n = root->node->child(idx++)) {
+        const char *kind;
+        if (stricmp(n->name(), text + 0x54) != 0) continue;
+        kind = n->attr((const char *)&lbl_8055A0C4);
+        if (stricmp(kind, (const char *)&lbl_8055A0CC) == 0) {
+            char *obj = (char *)fn_801284F8(0x5BC, text + 0x60);
+            if (obj != 0) {
+                *(s32 *)(obj + 4) = (s32)n;
+                *(f32 *)(obj + 0x84) = n->attrF(text + 0x70, lbl_80561838);
+                *(f32 *)(obj + 0xCC) = f31;
+                *(s32 *)obj = (s32)lbl_8032F858;
+                *(s32 *)(obj + 0x574) = 0;
+                *(char *)(obj + 0x5B0) = n->attrB(text + 0x7C, 0);
+                {
+                    s32 j = 0;
+                    Node *c;
+                    for (c = n->child(0); c != 0; c = n->child(++j)) {
+                        if (stricmp(c->name(), (const char *)&lbl_8055A0CC) == 0) {
+                            s32 *ent = (s32 *)(*(char **)(obj + 0x570) + *(s32 *)(obj + 0x574) * 0xC);
+                            const char *a;
+                            *(s32 *)(obj + 0x574) += 1;
+                            a = c->attr((const char *)&lbl_8055A0C4);
+                            ent[0] = -1;
+                            ent[1] = c->attrInt((const char *)&lbl_8055A0D4);
+                        }
+                    }
+                }
+                *(f32 *)(obj + 0x5B8) = n->attrF(text + 0x88, lbl_80561840);
+                fn_80158558(obj + 0x56C);
+            }
+            *(s32 *)(*(s32 *)lbl_8042FDEC + (*(s32 *)(lbl_8042FDEC + 4))++ * 4) = (s32)obj;
+        }
+    }
+}
+
 #pragma pop
 
 void *fn_801612BC(void *arg0, s32 arg1) {
@@ -1867,7 +1947,7 @@ extern "C" void fn_801638A0(void *arg0) {
     u8 *car,*flags,*ui;
     f32 velocity[2],length,scale;
     f32 threshold,one,epsilon;
-    f32 vx,vy;
+    f32 vx,vy,sqrtLen;
     if (((*(f32 *)(self+0x98)>*(f32 *)(self+0x84))&1)!=0) self[0x56D]=1;
     if (fn_801C5B60()==0) fn_801DF074(8,0);
     if (((Dummy_801638A0 *)self)->f7()==0) {
@@ -1886,10 +1966,10 @@ extern "C" void fn_801638A0(void *arg0) {
                             velocity[1]=*(f32 *)(car+0x120);
                             length=velocity[0]*velocity[0]+velocity[1]*velocity[1];
                             if (length>epsilon) {
-                                scale=(f32)fn_8002F234(length);
+                                sqrtLen=(f32)fn_8002F234(length);
                                 vx=velocity[0];
                                 vy=velocity[1];
-                                scale=one/scale;
+                                scale=one/sqrtLen;
                                 velocity[0]=vx*scale;
                                 velocity[1]=vy*scale;
                                 if (velocity[0]**(f32 *)(entry+0x2C)+velocity[1]**(f32 *)(entry+0x30)>threshold) {
@@ -1940,7 +2020,6 @@ extern "C" void fn_801638A0(void *arg0) {
     }
 }
 #pragma pop
-#pragma cplusplus off
 
 #pragma push
 #pragma processor 750
@@ -1970,58 +2049,60 @@ s32 fn_80163C38(void *arg0) {
 }
 
 #pragma cplusplus on
+// Draws the tutorial/progress HUD: the top and bottom bar graphics, a status
+// text line and the bar fill, picking the message from the object's state.
 extern "C" s32 fn_80163D34(void *arg0) {
-    class Self {
+    class HudObject {
     public:
         virtual void m08(); virtual void m0C(); virtual void m10(); virtual void m14();
         virtual void m18(); virtual void m1C(); virtual void m20(); virtual void m24();
         virtual s32 isOn();
     };
-    class Cfg {
+    class UiManager {
     public:
         virtual void m08();
-        virtual void *getA(const char *);
-        virtual void *getB(const char *);
+        virtual void *getText(const char *); // vtable slot 0xC: named text element
+        virtual void *getBar(const char *);  // vtable slot 0x10: named bar element
     };
-    char *base = (char *)lbl_8032F588;
-    s32 key;
-    f32 spC, sp8;
-    u8 *a;
-    u8 *b;
-    s32 gt;
-    fn_801476D8((s32)((Cfg *)lbl_8055E2E0)->getB((const char *)&lbl_8055A0F8), -1, lbl_8055E2E8);
-    fn_801476D8((s32)((Cfg *)lbl_8055E2E0)->getB((const char *)&lbl_8055A100), -1, lbl_8055E2EC);
-    if (((Self *)arg0)->isOn() != 0) {
-        fn_801476D8((s32)((Cfg *)lbl_8055E2E0)->getB(base + 0x4C8), -1, lbl_8055E2F0);
-        fn_801473F8(lbl_8055E2E0, base + 0x4D4, fn_80131234(base + 0x4E0));
-        key = fn_80131234(base + 0x4F8);
+    char *names = (char *)lbl_8032F588; // table of UI element names
+    s32 text;
+    f32 screenX, screenY;
+    u8 *textElem;
+    u8 *barElem;
+    s32 overLimit;
+    fn_801476D8((s32)((UiManager *)lbl_8055E2E0)->getBar((const char *)&lbl_8055A0F8), -1, lbl_8055E2E8);
+    fn_801476D8((s32)((UiManager *)lbl_8055E2E0)->getBar((const char *)&lbl_8055A100), -1, lbl_8055E2EC);
+    if (((HudObject *)arg0)->isOn() != 0) {
+        fn_801476D8((s32)((UiManager *)lbl_8055E2E0)->getBar(names + 0x4C8), -1, lbl_8055E2F0);
+        fn_801473F8(lbl_8055E2E0, names + 0x4D4, fn_80131234(names + 0x4E0));
+        text = fn_80131234(names + 0x4F8);
     } else {
-        fn_801476D8((s32)((Cfg *)lbl_8055E2E0)->getB(base + 0x4C8), -1, lbl_8055E2F4);
-        fn_801473F8(lbl_8055E2E0, base + 0x4D4, fn_80131234(base + 0x510));
-        gt = *(f32 *)((u8 *)arg0 + 0x98) > *(f32 *)((u8 *)arg0 + 0x84);
-        if (gt) {
-            key = fn_80131234(base + 0x560);
+        fn_801476D8((s32)((UiManager *)lbl_8055E2E0)->getBar(names + 0x4C8), -1, lbl_8055E2F4);
+        fn_801473F8(lbl_8055E2E0, names + 0x4D4, fn_80131234(names + 0x510));
+        overLimit = *(f32 *)((u8 *)arg0 + 0x98) > *(f32 *)((u8 *)arg0 + 0x84);
+        if (overLimit) {
+            text = fn_80131234(names + 0x560);
         } else if (*((u8 *)arg0 + 0x91) != 0) {
-            key = fn_80131234(base + 0x544);
+            text = fn_80131234(names + 0x544);
         } else {
-            key = fn_80131234(base + 0x528);
+            text = fn_80131234(names + 0x528);
         }
     }
-    a = (u8 *)((Cfg *)lbl_8055E2E0)->getA(base + 0x57C);
-    b = (u8 *)((Cfg *)lbl_8055E2E0)->getB(base + 0x4C8);
-    if (a != 0 && b != 0) {
-        f32 px = *(f32 *)(a + 4);
-        f32 py = *(f32 *)(a + 8);
-        s32 w = *(s32 *)(a + 0xC);
-        f32 size;
+    textElem = (u8 *)((UiManager *)lbl_8055E2E0)->getText(names + 0x57C);
+    barElem = (u8 *)((UiManager *)lbl_8055E2E0)->getBar(names + 0x4C8);
+    if (textElem != 0 && barElem != 0) {
+        f32 x = *(f32 *)(textElem + 4);
+        f32 y = *(f32 *)(textElem + 8);
+        s32 mode = *(s32 *)(textElem + 0xC);
+        f32 fill;
         f32 scale;
-        fn_80148134(&spC, &sp8, w, px, py);
-        size = *(f32 *)(b + 0x10) - lbl_80561860;
-        scale = *(f32 *)(a + 0x10);
-        fn_800103B8(*(s32 *)(a + 0x18), *(s32 *)(a + 0x14), (s32 *)&lbl_8055A0DC, key, scale, spC, sp8, size);
+        fn_80148134(&screenX, &screenY, mode, x, y);
+        fill = *(f32 *)(barElem + 0x10) - lbl_80561860;
+        scale = *(f32 *)(textElem + 0x10);
+        fn_800103B8(*(s32 *)(textElem + 0x18), *(s32 *)(textElem + 0x14), (s32 *)&lbl_8055A0DC, text, scale, screenX, screenY, fill);
     }
     if (*(f32 *)((u8 *)arg0 + 0x8C) > lbl_8056185C) {
-        ((Cfg *)lbl_8055E2E0)->getA(base + 0x110);
+        ((UiManager *)lbl_8055E2E0)->getText(names + 0x110);
         fn_801476C4();
     }
     return 1;
@@ -2434,32 +2515,31 @@ extern char lbl_8055A128;
 extern float lbl_80561840;
 extern float lbl_8056186C;
 s32 fn_801648AC(void *arg0, void *arg1, s32 arg2) {
-    struct Vec2 { float x; float y; };
     struct State { void *node; float frac; s32 id; };
     char obj[0x40];
-    struct Vec2 pts[3];
+    struct Vec2_648 pts[3];
     char place[0x10];
     struct State state;
     char bound[0x10];
-    struct Vec2 pos;
-    struct Vec2 dir;
-    struct Vec2 copy;
-    struct Vec2 ret;
-    struct Vec2 e2;
-    struct Vec2 e1;
-    struct Vec2 mid;
+    struct Vec2_648 pos;
+    struct Vec2_648 dir;
+    struct Vec2_648 copy;
+    struct Vec2_648 ret;
+    struct Vec2_648 e2;
+    struct Vec2_648 e1;
+    struct Vec2_648 mid;
     void *self;
     void *scalePtr;
     void *obj2;
     s32 i;
-    struct Vec2 *p;
+    struct Vec2_648 *p;
     s32 best;
     float bestLen;
     float len;
     float inv;
     float len01;
     void *node;
-    void *next;
+    float frac;
     float speed;
     float scale;
 
@@ -2468,7 +2548,7 @@ s32 fn_801648AC(void *arg0, void *arg1, s32 arg2) {
     *(float *)((char *)scalePtr + 0x14) = lbl_80561848;
     if (*(void **)((char *)self + 4) != 0) {
         ((void (*)(char *, s32, const char *, ...))fn_801345D8)(place, 0x10, lbl_8032FB9C, arg2);
-        obj2 = ((void *(*)(void *, char *))(*(void ***)(*(void **)((char *)self + 4)))[0x17])(*(void **)((char *)self + 4), place);
+        obj2 = ((struct ObjInner_648*)*(void **)((char *)self + 4))->i21(place);
         if (obj2 != 0) {
             pos.x = lbl_80561848;
             pos.y = lbl_80561848;
@@ -2478,7 +2558,7 @@ s32 fn_801648AC(void *arg0, void *arg1, s32 arg2) {
             i = 0;
             do {
                 ((void (*)(char *, s32, const char *, ...))fn_801345D8)(bound, 0x10, (char *)&lbl_8055A120, i);
-                ret = ((struct Vec2(*)(void *, char *))(*(void ***)obj2)[0xF])(obj2, bound);
+                ret = ((struct Obj2_648*)obj2)->o13(bound);
                 p->x = ret.x;
                 p->y = ret.y;
                 p++;
@@ -2511,19 +2591,19 @@ s32 fn_801648AC(void *arg0, void *arg1, s32 arg2) {
             inv = lbl_80561840 / len;
             dir.x = dir.x * inv;
             dir.y = dir.y * inv;
-            if (((s32 (*)(void *, char *, s32))(*(void ***)obj2)[0xC])(obj2, lbl_8032FBA8, 1) != 0) {
+            if (((struct Obj2_648*)obj2)->o10(lbl_8032FBA8, 1) != 0) {
                 fn_801352B8(obj);
-                fn_80135D60(obj, ((s32 (*)(void *, s32))(*(void ***)fn_80156A40())[3])(fn_80156A40(), 0));
+                fn_80135D60(obj, ((struct Mgr_648*)fn_80156A40())->m1(0));
                 state.node = 0;
                 state.id = 0x2710;
                 state.frac = lbl_80561848;
                 fn_801355C0(obj, &pos, 0, &state, 0);
                 node = state.node;
-                next = *(void **)((char *)node + 0x14);
-                pos.x = *(float *)node + state.frac * (*(float *)next - *(float *)node);
-                pos.y = *(float *)((char *)node + 4) + state.frac * (*(float *)((char *)next + 4) - *(float *)((char *)node + 4));
-                dir.x = *(float *)((char *)node + 8) + state.frac * (*(float *)((char *)next + 8) - *(float *)((char *)node + 8));
-                dir.y = *(float *)((char *)node + 0xC) + state.frac * (*(float *)((char *)next + 0xC) - *(float *)((char *)node + 0xC));
+                frac = state.frac;
+                pos.x = *(float *)node + frac * (*(float *)(*(void **)((char *)node + 0x14)) - *(float *)node);
+                pos.y = *(float *)((char *)node + 4) + frac * (*(float *)((char *)(*(void **)((char *)node + 0x14)) + 4) - *(float *)((char *)node + 4));
+                dir.x = *(float *)((char *)node + 8) + frac * (*(float *)((char *)(*(void **)((char *)node + 0x14)) + 8) - *(float *)((char *)node + 8));
+                dir.y = *(float *)((char *)node + 0xC) + frac * (*(float *)((char *)(*(void **)((char *)node + 0x14)) + 0xC) - *(float *)((char *)node + 0xC));
                 len = (float)fn_8002F234(dir.x * dir.x + dir.y * dir.y);
                 inv = lbl_80561840 / len;
                 dir.x = dir.x * inv;
@@ -2531,7 +2611,7 @@ s32 fn_801648AC(void *arg0, void *arg1, s32 arg2) {
                 fn_8013530C(obj, -1);
             }
             fn_801B7C8C(arg1, &pos, &dir);
-            speed = ((float (*)(void *, char *, float))(*(void ***)obj2)[0xA])(obj2, (char *)&lbl_8055A128, lbl_80561848);
+            speed = ((struct Obj2_648*)obj2)->o8((char *)&lbl_8055A128, lbl_80561848);
             scale = lbl_8056186C * speed;
             *(float *)((char *)arg1 + 0x30) = *(float *)((char *)arg1 + 0x18) * scale;
             *(float *)((char *)arg1 + 0x34) = *(float *)((char *)arg1 + 0x1C) * scale;
@@ -2775,6 +2855,139 @@ int fn_80165240(void) {
 void fn_80165248(void) {
 
 }
+
+extern void fn_80147940(void *, void *, const char *, s32);
+extern void fn_80230F78(void *, void *, void *, s32);
+extern void fn_80147230(void *, const char *, s32);
+extern int fn_801E8838(void);
+extern s32 fn_80012910(s32);
+extern int fn_80230E90();
+extern char lbl_8055A130, lbl_8055A138, lbl_8055A140, lbl_8055A148;
+extern u8 lbl_8055E308;
+#pragma cplusplus on
+extern "C" s32 fn_8016524C(void *arg0) {
+    struct Manager {
+        virtual void slot0();
+        virtual void *slot1(const char *);
+        virtual void *slot2(const char *);
+        virtual void *slot3(const char *);
+    };
+    struct Name {
+        virtual void s0(); virtual void s1(); virtual void s2(); virtual void s3();
+        virtual const char *s4(const char *, s32);
+    };
+    struct Holder { s32 value; s32 pad[7]; Name *names; };
+    struct Entry {
+        virtual void s0(); virtual void s1(); virtual void s2(); virtual void s3(); virtual void s4();
+        virtual void s5(); virtual void s6(); virtual void s7(); virtual void s8(); virtual void s9();
+        virtual void s10(); virtual void s11(); virtual void s12(); virtual void s13(); virtual void s14();
+        virtual void s15(); virtual void s16(); virtual void s17(); virtual void s18(); virtual void s19();
+        virtual void s20(); virtual s32 label();
+    };
+    struct Rec { s32 a; s32 x; s32 y; s32 d; f32 e; s32 f; u32 color; s32 h; };
+    struct Rec7 { s32 a; s32 x; s32 y; s32 d; f32 e; f32 f; u32 color; };
+#define FX(r) (*(f32 *)&(r).x)
+#define FY(r) (*(f32 *)&(r).y)
+    char *text = (char *)lbl_8032F588;
+    Manager *mgr;
+    Holder *holder;
+    void *r24, *r25, *r26, *r27;
+    Rec7 rec3;
+    Rec7 rec2;
+    Rec7 rec1;
+    Rec rec0;
+    char buf[10];
+    f32 amount;
+    u8 alpha;
+
+    if (*((u8 *)arg0 + 6) != 0) {
+        s32 first = fn_80131234(text + 0x680);
+        s32 second = fn_80131234(text + 0x66C);
+        ((void (*)(s32, s32))fn_80161438)(second, first);
+    } else {
+        if (fn_801E8838() > 100) fn_80230E90(1);
+        mgr = (Manager *)lbl_8055E2E0;
+        fn_801476D8((s32)mgr->slot2((const char *)&lbl_8055A0F8), -1, lbl_8055E2E8);
+        fn_801476D8((s32)((Manager *)lbl_8055E2E0)->slot2((const char *)&lbl_8055A100), -1, lbl_8055E2EC);
+        holder = (Holder *)((void *(*)(s32))fn_8001285C)(*__AXFXGetLfoSinTable_801769CC());
+        ((Manager *)lbl_8055E2E0)->slot1(text + 0x694);
+        fn_801476C4();
+        fn_801473F8(lbl_8055E2E0, text + 0x6A0, (const char *)&lbl_8055A0DC,
+            holder->names->s4(text + 0x6AC, fn_80012910(holder->value)));
+        ((Manager *)lbl_8055E2E0)->slot1(text + 0x110);
+        fn_801476C4();
+        r24 = ((Manager *)lbl_8055E2E0)->slot1(&lbl_8055A130);
+        r25 = ((Manager *)lbl_8055E2E0)->slot1(&lbl_8055A138);
+        r26 = ((Manager *)lbl_8055E2E0)->slot3(&lbl_8055A140);
+        r27 = ((Manager *)lbl_8055E2E0)->slot3(text + 0x6BC);
+        if (r24 != 0 && r25 != 0) {
+            f32 f31 = lbl_80561840;
+            f32 f30 = lbl_8056185C;
+            f32 f29 = lbl_80561848;
+            s32 i = 1;
+            s32 off = 4;
+            for (; i <= *(s32 *)(lbl_8042FDEC + 4); i++, off += 4) {
+                Rec *src;
+                ((void (*)(char *, s32, const char *, ...))fn_801345D8)(buf, 10, &lbl_8055A148, i);
+                src = (Rec *)((Manager *)lbl_8055E2E0)->slot1(buf);
+                if (src != 0) {
+                    f32 dy, dx;
+                    s32 flag;
+                    rec0 = *src;
+                    dx = FX(rec0) - *(f32 *)&((Rec *)r24)->x;
+                    dy = FY(rec0) - *(f32 *)&((Rec *)r24)->y;
+                    rec1 = *(Rec7 *)r26;
+                    flag = (i != *(s32 *)((u8 *)arg0 + 8));
+                    if (i > fn_80160CE4() && i != *(s32 *)(lbl_8042FDEC + 4)) rec1.color = 0x55FFFFFF;
+                    FY(rec1) += dy;
+                    FX(rec1) += dx;
+                    fn_80147940(lbl_8055E2E0, &rec1, text + 0x6C8, flag);
+                    if (i > fn_80160CE4() && i < *(s32 *)(lbl_8042FDEC + 4))
+                        rec0.color = ((Rec *)r25)->color;
+                    else
+                        rec0.color = ((Rec *)r24)->color;
+                    alpha = 0xFF;
+                    amount = f29;
+                    if (i == *(s32 *)((u8 *)arg0 + 8)) {
+                        fn_80230F78(&alpha, &amount, &rec0.color, 1);
+                        FX(rec1) -= f30 * rec1.e * amount;
+                        FY(rec1) -= f30 * rec1.f * amount;
+                        rec1.e = rec1.e * (f31 + amount);
+                        rec1.f = rec1.f * (f31 + amount);
+                        rec1.color = ((u32)alpha << 24) | (rec1.color & 0x00FF0000) | (rec1.color & 0xFFFF);
+                        fn_80147940(lbl_8055E2E0, &rec1, text + 0x6C8, flag);
+                    }
+                    if (i != *(s32 *)(lbl_8042FDEC + 4)) {
+                        if (i < fn_80160CE4()) {
+                            rec2 = *(Rec7 *)r27;
+                            FY(rec2) += dy;
+                            FX(rec2) += dx;
+                            fn_80147940(lbl_8055E2E0, &rec2, text + 0x6D8, 2);
+                        } else {
+                            s32 cur = fn_80160CE4();
+                            rec3 = *(Rec7 *)r27;
+                            FY(rec3) += dy;
+                            FX(rec3) += dx;
+                            if (i > cur) rec3.color = 0x55FFFFFF;
+                            fn_80147940(lbl_8055E2E0, &rec3, text + 0x6D8, 3);
+                        }
+                    }
+                    if (i < *(s32 *)(lbl_8042FDEC + 4)) {
+                        Entry *entry = *(Entry **)(*(s32 *)lbl_8042FDEC + off);
+                        ((void (*)(Rec *, const char *, ...))fn_80147230)(&rec0, (const char *)&lbl_8055A0DC, entry->label());
+                    } else {
+                        ((void (*)(Rec *, const char *, ...))fn_80147230)(&rec0, (const char *)&lbl_8055A0DC, fn_80131234(text + 0x66C));
+                    }
+                } else if (lbl_8055E308 == 0) {
+                    lbl_8055E308 = 1;
+                    ((void (*)(const char *, const char *, ...))fn_802E30C8)((const char *)&lbl_8055A0DC, text + 0x6E8);
+                }
+            }
+        }
+    }
+    return 1;
+}
+#pragma cplusplus off
 
 int fn_801657D4(void) { return 1; }
 
