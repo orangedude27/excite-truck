@@ -90,17 +90,20 @@ void fn_801D9F84(void *arg0, int *arg1) {
 #pragma scheduling on
 #pragma use_lmw_stmw off
 int fn_801D9FC4(char **arg0, const char *arg1) {
+    register int offset;
     register int count;
     register char *base;
-    register int i;
+    register int index;
 
     base = *arg0;
     count = *(int *)base;
-    i = 0;
-    while (i < count) {
-        if (strcmp(base + i * 0x18 + 4, arg1) == 0)
+    index = 0;
+    offset = 0;
+    while (index < count) {
+        if (strcmp(base + offset + 4, arg1) == 0)
             return 1;
-        i++;
+        offset += 0x18;
+        index++;
     }
     return 0;
 }
