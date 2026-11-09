@@ -384,15 +384,20 @@ extern int fn_80214D50(int);
 extern char lbl_8034308C[];
 #pragma cplusplus on
 extern "C" void fn_80245CC8(void *arg0) {
- unsigned char result;
- *(unsigned char*)((char*)arg0+0x1C)=1;
- result=fn_8012C33C(lbl_8034308C, 0);
- *(unsigned char*)((char*)arg0+0x1D)=result;
- if(result==0) {
-   void **obj=(void**)((char*)arg0+4);
-   ((void(*)(void*))(*(void**)((char*)*obj+8)))((char*)arg0+4);
- }
- *(unsigned char*)((char*)arg0+0x1E)=1;
+    unsigned char result;
+    struct Dummy {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+    };
+    *(unsigned char *)((char *)arg0 + 0x1C) = 1;
+    result = ((int (*)(void *))fn_8012C33C)(lbl_8034308C);
+    *(unsigned char *)((char *)arg0 + 0x1D) = result;
+    if (result == 0) {
+        ((Dummy *)((char *)arg0 + 4))->f0();
+    }
+    *(unsigned char *)((char *)arg0 + 0x1E) = 1;
 }
 #pragma cplusplus reset
 
