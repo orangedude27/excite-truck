@@ -103,10 +103,10 @@ test:
 #pragma scheduling invalid_target
 #pragma scheduling on
 void fn_8028DF58(void) {
-    char *base = (char *)&lbl_804B34B0;
-    fn_8028ED74(base);
-    fn_8028ED74(base + 0x104);
-    fn_8028EE1C(base + 0x208);
+    void *base = (void *)&lbl_804B34B0;
+    fn_8028ED74((char *)base + 0x0);
+    fn_8028ED74((char *)base + 0x104);
+    fn_8028EE1C((char *)base + 0x208);
     lbl_8055F740 = 0;
     lbl_8055F744 = 1;
     lbl_8055F748 = 0;
@@ -126,10 +126,9 @@ extern void fn_8028F8C4(int);
 #pragma scheduling invalid_target
 #pragma scheduling on
 void fn_8028E138(void) {
-    struct Table { int entries[64]; int count; };
-    int i;
+    register int i;
     int *entries = (int *)&lbl_804B34B0;
-    register struct Table *base = (struct Table *)&lbl_804B34B0;
+    struct Table { int entries[64]; int count; } *base = (struct Table *)&lbl_804B34B0;
     lbl_8055F738 = lbl_80564420;
     i = 0;
     goto test;
@@ -471,15 +470,15 @@ extern char lbl_80348F4C[];
   #pragma push
   #pragma scheduling invalid_target
   #pragma scheduling on
-  int fn_8028EDA8(unsigned int *arg0, unsigned int arg1) {
-    unsigned int *base = arg0;
-    unsigned int i = 0;
-    unsigned int count = *(unsigned int *)((char *)arg0 + 0x100);
+int fn_8028EDA8(unsigned int *arg0, unsigned int arg1) {
+    register unsigned int *base = arg0;
+    register long i = 0;
+    register int count = *(unsigned int *)((char *)arg0 + 0x100);
     for (; i < count; i++) {
-        if (arg1 == base[i]) {
-            base[i] = 0;
-            return 1;
-        }
+        if (base[i] != arg1)
+            continue;
+        base[i] = 0;
+        return 1;
     }
     fn_802E317C(lbl_80348F4C);
     return 0;
@@ -574,22 +573,24 @@ body:
 test:
     if (i < *(int *)((char *)base + 0x100)) goto body;
 }
-#pragma pop
+#pragma push
+#pragma scheduling invalid_target
+#pragma scheduling on
 int fn_8028F040(int *arg0, int *arg1, int arg2) {
     int outerCount;
     int outerIndex;
-    int id;
-    int innerCount;
-    void **cursor;
-    int i;
-    int found;
     void *item;
+    int innerCount;
+    int i;
+    int id;
+    void **cursor;
+    int found;
     int other;
-    outerCount = *(int *)((char *)arg0 + 0x100);
+    outerCount = arg0[64];
     for (outerIndex = 0; outerIndex < outerCount; outerIndex++) {
         id = *(int *)((char *)*arg0 + 0xA4);
         if (id != arg2) {
-            innerCount = *(int *)((char *)arg1 + 0x100);
+            innerCount = arg1[64];
             cursor = (void **)arg1;
             found = 0;
             i = 0;
@@ -608,9 +609,7 @@ inner_check:
     }
     return -2;
 }
-
-#pragma push
-#pragma dont_inline on
+#pragma pop
 int fn_8028F0C0(int *arg0, int arg1, int arg2) {
     int i;
     int *p;
