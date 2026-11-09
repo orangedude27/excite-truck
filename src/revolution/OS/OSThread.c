@@ -694,16 +694,27 @@ void OSDetachThread(OSThread* thread) {
     OSRestoreInterrupts(enabled);
 }
 
+/* Undoes one OSSuspendThread() and returns the suspend count from before this
+ * call.  The count never goes below zero, so resuming a thread that was not
+ * suspended changes nothing.  Only the resume that drops the count to zero
+ * makes the thread eligible to run again:
+ *   ready    - it is put back on the run queue for its effective priority;
+ *   sleeping - it is unlinked from the queue it is sleeping on and re-inserted
+ *              there in priority order (a sleeping thread is not on a run
+ *              queue, but its priority still decides who is woken first);
+ * either way the scheduler is then offered the highest priority thread.
+ * A sleeping thread that owns a mutex may have been raising its owner's
+ * priority, so that chain is recomputed from the owner. */
 s32 OSResumeThread(OSThread* thread) {
     BOOL enabled;
-    s32 suspend;
+    s32 prevSuspend;
     OSThread* iter;
     OSThread* iterPrev;
     OSThread* next;
     OSThread* prev;
 
     enabled = OSDisableInterrupts();
-    suspend = thread->suspend--;
+    prevSuspend = thread->suspend--;
 
     if (thread->suspend < 0) {
         thread->suspend = 0;
@@ -714,6 +725,7 @@ s32 OSResumeThread(OSThread* thread) {
             SetRun(thread);
             break;
         case OS_THREAD_STATE_SLEEPING:
+            /* unlink from the sleep queue */
             next = thread->next;
             prev = thread->prev;
             if (next == NULL) {
@@ -730,12 +742,14 @@ s32 OSResumeThread(OSThread* thread) {
 
             thread->priority = __OSGetEffectivePriority(thread);
 
+            /* re-insert ahead of the first thread of higher priority */
             for (iter = thread->queue->head;
                  iter != NULL && iter->priority <= thread->priority;
                  iter = iter->next) {
             }
 
             if (iter == NULL) {
+                /* none: go on the end of the queue */
                 iter = thread->queue->tail;
                 if (iter == NULL) {
                     thread->queue->head = thread;
@@ -770,7 +784,7 @@ s32 OSResumeThread(OSThread* thread) {
     }
 
     OSRestoreInterrupts(enabled);
-    return suspend;
+    return prevSuspend;
 }
 
 s32 OSSuspendThread(OSThread* thread) {
