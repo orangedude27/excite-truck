@@ -402,6 +402,8 @@ extern u8 lbl_802EEC40[];
 extern u8 fn_8009504C(u16, u8 *);
 extern u8 lbl_803C3740[];
 extern void fn_800826D4(void);
+extern void fn_800833E8(void *);
+extern void fn_800833F4(void *);
 extern u8 lbl_802EEBD8[];
 extern char *bta_hh_evt_code(u32);
 extern char lbl_8031A188[];
@@ -11116,17 +11118,19 @@ int btm_num_sco_links_active(void) {
     unsigned char *base = lbl_803C0F78;
     int count = 0;
     int state;
-    state = *(unsigned short *)(base + 0x185c);
+    state = *(unsigned short *)(base + 0x185C);
     if (state < 7) {
         if (state >= 2)
             count = 1;
+        else {}
     }
     state = *(unsigned short *)(base + 0x1890);
     if (state < 7) {
         if (state >= 2)
             count++;
+        else {}
     }
-    state = *(unsigned short *)(base + 0x18c4);
+    state = *(unsigned short *)(base + 0x18C4);
     if (state >= 7)
         return count;
     if (state >= 2)
