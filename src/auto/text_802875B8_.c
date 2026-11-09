@@ -9,7 +9,7 @@ extern const char lbl_80348A40[];
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void fn_80288868(void *);
-extern void fn_80288870(void);
+extern unsigned int fn_80288870(void);
 extern void fn_802AB504(void);
 extern void fn_8029F0D0(void);
 extern void fn_802A7C24(void);
