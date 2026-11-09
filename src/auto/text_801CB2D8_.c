@@ -1640,9 +1640,9 @@ void fn_801CE6F8(void) {
     s32 *temp_r31;
     if (fn_801CE898() != 0) return;
     temp_r31 = lbl_8055E884;
-    fn_801CBD48((void *)temp_r31, (void *)(temp_r31 + 0x2C0 / 4));
+    fn_801CBD48((void *)(temp_r31 + 0x2C0 / 4), (void *)temp_r31);
     if (temp_r31[0x2C8 / 4] != 0)
-        fn_802AE220((void *)(temp_r31 + 0x608 / 4));
+        ((void (*)(void *, void *))fn_802AE220)((void *)temp_r31[0x2C8 / 4], (void *)(temp_r31 + 0x608 / 4));
     if (temp_r31[0x2C0 / 4] == 3)
         fn_8001DFCC();
 }
