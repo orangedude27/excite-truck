@@ -57,6 +57,8 @@ typedef struct QuadVtx {
 
 #define QUAD_INDEXES lbl_802F9FB0 /* {0, 1, 3, 0, 3, 2}: the quad's two triangles */
 #define FLOAT_ZERO lbl_805635FC   /* 0.0f, this unit's float zero in .sdata2 */
+#define RAND_SCALE lbl_80563608   /* 1.0e7f: fixed-point scale of the random
+                                   * steps fn_8022FB6C adds to a quad */
 
 extern char lbl_80340394[];
 extern char lbl_803403CC[];
