@@ -445,23 +445,26 @@ extern "C" void fn_802E3CA4(s32 arg0) {
 void fn_802E3D00(void) {
 }
 
-s32 fn_802E3D04(s32 arg0) {
-    s32 *obj = fn_802E336C();
+#pragma cplusplus on
+extern "C" s32 fn_802E3D04(s32 arg0) {
+    class V {
+    public:
+        virtual void a();
+        virtual void b();
+        virtual s32 c(s32);
+    };
+    V *obj = (V *)fn_802E336C();
     s32 result;
-    if (obj == 0) {
-        result = -1;
-    } else {
-        result = ((s32 (*)(s32, s32))(*(s32 **)obj)[4])((s32)obj, arg0);
-        if (result != 0) {
-            result = fn_802E35C0((const char *)arg0, result);
-        } else {
-            result = -1;
-        }
-    }
+    if (obj == 0) goto fail;
+    result = obj->c(arg0);
+    if (result == 0) goto fail;
+    result = fn_802E35C0((const char *)arg0, result);
+    goto done;
+fail:
+    result = -1;
+done:
     return result;
 }
-
-#pragma cplusplus on
 extern "C" s32 fn_802E3D68(s32 arg0) {
     class V {
     public:
