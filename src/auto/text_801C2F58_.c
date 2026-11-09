@@ -316,8 +316,7 @@ void fn_801C3C14(s32 arg0) {
     s32 offset = arg0 * 0x30C;
     memset((void *)(lbl_8055E7F8 + offset), 0, 0x30C);
     *(f32 *)(lbl_8055E7F8 + offset) = lbl_80562994;
-    qsort((void *)lbl_8055E7F8, lbl_8055E7F0, 0x30C,
-          (int (*)(const void *, const void *))fn_801C3B7C);
+    qsort((void *)lbl_8055E7F8, lbl_8055E7F0, 0x30C, (int (*)(const void *, const void *))fn_801C3B7C);
     lbl_8055E7F0--;
 }
 #pragma pop
