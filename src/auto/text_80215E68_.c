@@ -55,9 +55,7 @@ extern f32 lbl_8055EF94;
 extern s32 lbl_8055EF74;
 extern s32 fn_80217270(s32);
 extern s32 fn_802E317C(const char *, ...);
-#pragma small_data off
-extern char lbl_8033D7EC;
-#pragma small_data on
+extern char lbl_8033D7EC[];
 extern s32 fn_80218464(void);
 extern u32 lbl_8055EF98;
 extern char lbl_8055EF99;
