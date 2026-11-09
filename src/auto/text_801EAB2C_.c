@@ -12,6 +12,18 @@ extern void *memset(void *, int, unsigned int);
 extern void fn_802C6CF8(s32);
 extern s32 fn_802C6FC0(s32, s32, s32);
 extern void fn_801EAB2C(void*);
+#pragma cplusplus on
+class Dummy_801EAB90 {
+public:
+    virtual void d0(int);
+    virtual void d1(int);
+    virtual void d2(int);
+    virtual void d3(int);
+    virtual void d4(int);
+    virtual void d5(int);
+    virtual void m6(int);
+};
+#pragma cplusplus off
 extern void fn_801EABA8(void *, void *);
 extern void fn_801EAB80(void*, s32);
 extern u8 lbl_80339E3C[];
@@ -51,6 +63,40 @@ void fn_801EAB90(void *arg0, int arg1) {
     ((void (*)(void *, int))vtable[8])(arg0, arg1 + offset);
 }
 
+#pragma scheduling invalid_target
+void fn_801EABA8(void *arg0, void *arg1) {
+    s32 l, k, j, i, h, g, f, e, d, c, b, a;
+    s16 m;
+
+    e = *(volatile s32 *)((u8 *)arg1 + 0x10);
+    d = *(volatile s32 *)((u8 *)arg1 + 0x0C);
+    c = *(volatile s32 *)((u8 *)arg1 + 0x08);
+    b = *(volatile s32 *)((u8 *)arg1 + 0x04);
+    a = *(volatile s32 *)((u8 *)arg1 + 0x00);
+    f = *(volatile s32 *)((u8 *)arg1 + 0x14);
+    g = *(volatile s32 *)((u8 *)arg1 + 0x18);
+    h = *(volatile s32 *)((u8 *)arg1 + 0x1C);
+    i = *(volatile s32 *)((u8 *)arg1 + 0x20);
+    j = *(volatile s32 *)((u8 *)arg1 + 0x24);
+    k = *(volatile s32 *)((u8 *)arg1 + 0x28);
+    l = *(volatile s32 *)((u8 *)arg1 + 0x2C);
+    m = *(volatile s16 *)((u8 *)arg1 + 0x30);
+
+    *(s32 *)((u8 *)arg0 + 0x04) = a;
+    *(s32 *)((u8 *)arg0 + 0x08) = b;
+    *(s32 *)((u8 *)arg0 + 0x0C) = c;
+    *(s32 *)((u8 *)arg0 + 0x10) = d;
+    *(s32 *)((u8 *)arg0 + 0x14) = e;
+    *(s32 *)((u8 *)arg0 + 0x18) = f;
+    *(s32 *)((u8 *)arg0 + 0x1C) = g;
+    *(s32 *)((u8 *)arg0 + 0x20) = h;
+    *(s32 *)((u8 *)arg0 + 0x24) = i;
+    *(s32 *)((u8 *)arg0 + 0x28) = j;
+    *(s32 *)((u8 *)arg0 + 0x2C) = k;
+    *(s32 *)((u8 *)arg0 + 0x30) = l;
+    *(s16 *)((u8 *)arg0 + 0x38) = m;
+}
+#pragma scheduling on
 s16 fn_801EAC3C(void* arg0) {
     return *(s16*)((u8*)arg0 + 0x38);
 }
@@ -117,6 +163,46 @@ void fn_801EADD8(void *arg0) {
                 value, *(s32 *)((u8 *)arg0 + 0x74));
 }
 
+#pragma dont_inline fn_801EABA8
+void fn_801EAE68(void *arg0, void *arg1) {
+    register s16 half;
+    s32 o, n, m, l, k, j, i, h, g, f, e, d, c, b, a;
+
+    fn_801EABA8(arg0, arg1);
+    a = *(volatile s32 *)((u8 *)arg1 + 0x00);
+    b = *(volatile s32 *)((u8 *)arg1 + 0x04);
+    c = *(volatile s32 *)((u8 *)arg1 + 0x08);
+    d = *(volatile s32 *)((u8 *)arg1 + 0x0C);
+    e = *(volatile s32 *)((u8 *)arg1 + 0x10);
+    f = *(volatile s32 *)((u8 *)arg1 + 0x14);
+    g = *(volatile s32 *)((u8 *)arg1 + 0x18);
+    h = *(volatile s32 *)((u8 *)arg1 + 0x1C);
+    i = *(volatile s32 *)((u8 *)arg1 + 0x20);
+    j = *(volatile s32 *)((u8 *)arg1 + 0x24);
+    k = *(volatile s32 *)((u8 *)arg1 + 0x28);
+    l = *(volatile s32 *)((u8 *)arg1 + 0x2C);
+    half = *(volatile s16 *)((u8 *)arg1 + 0x30);
+    m = *(volatile s32 *)((u8 *)arg1 + 0x34);
+    n = *(volatile s32 *)((u8 *)arg1 + 0x38);
+    o = *(volatile s32 *)((u8 *)arg1 + 0x3C);
+
+    *(s32 *)((u8 *)arg0 + 0x54) = g;
+    *(s32 *)((u8 *)arg0 + 0x3C) = a;
+    *(s32 *)((u8 *)arg0 + 0x40) = b;
+    *(s32 *)((u8 *)arg0 + 0x44) = c;
+    *(s32 *)((u8 *)arg0 + 0x48) = d;
+    *(s32 *)((u8 *)arg0 + 0x4C) = e;
+    *(s32 *)((u8 *)arg0 + 0x50) = f;
+    *(s32 *)((u8 *)arg0 + 0x58) = h;
+    *(s32 *)((u8 *)arg0 + 0x5C) = i;
+    *(s32 *)((u8 *)arg0 + 0x60) = j;
+    *(s32 *)((u8 *)arg0 + 0x64) = k;
+    *(s32 *)((u8 *)arg0 + 0x68) = l;
+    *(s16 *)((u8 *)arg0 + 0x6C) = half;
+    *(s32 *)((u8 *)arg0 + 0x70) = m;
+    *(s32 *)((u8 *)arg0 + 0x74) = n;
+    *(s32 *)((u8 *)arg0 + 0x78) = o;
+}
 s32 fn_801EAF20(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
