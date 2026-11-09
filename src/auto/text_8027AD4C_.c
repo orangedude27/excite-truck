@@ -616,14 +616,18 @@ void fn_8027B94C(void *arg0) {
 }
 
 #pragma dont_inline on
-long fn_8027B984(void *arg0, long arg1) {
-    long temp_r31;
-    long temp_r30;
-    temp_r31 = fn_8000DA10();
-    fn_8000D984(arg1);
-    temp_r30 = fn_8027BAB8(fn_8027B878((long)arg0));
-    fn_8000D984(temp_r31);
-    return temp_r30;
+// Returns 1 if every entry of player `player`'s secondary list `listIndex`
+// (the sub-table at +0x2370 within that player's block) is valid, else 0.
+// Temporarily makes `player` the current player so the list pointer resolves
+// against it, runs the validity check, then restores the previously current player.
+long fn_8027B984(void *listIndex, long player) {
+    long savedPlayer;
+    long allValid;
+    savedPlayer = fn_8000DA10();
+    fn_8000D984(player);
+    allValid = fn_8027BAB8(fn_8027B878((long)listIndex));
+    fn_8000D984(savedPlayer);
+    return allValid;
 }
 #pragma dont_inline reset
 
