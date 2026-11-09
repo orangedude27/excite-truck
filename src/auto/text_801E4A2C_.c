@@ -145,7 +145,6 @@ extern s32 fn_801E4B00(s32 *);
 extern s32 fn_801E4B48(s32 *);
 extern s32 fn_802C4EFC(s32);
 extern void fn_801E4BEC(s32, s32, s32, s32, s32, const char *, ...);
-extern char lbl_8055AEF0[];
 extern char *strncpy(char *, const char *, unsigned long);
 #pragma push
 #pragma use_lmw_stmw off
