@@ -791,6 +791,18 @@ int fn_801D5A2C(void *arg0, int arg1, int arg2) {
     return 0;
 }
 
+u8 fn_801D5A68(void *arg0) {
+    void **entries = (void **)lbl_804423A4[0];
+    int count = lbl_804423A4[1];
+    int i;
+    for (i = 0; i < count; i++) {
+        if (entries[i] == arg0) {
+            return *((u8 *)arg0 + 0x22);
+        }
+    }
+    return 0;
+}
+
 extern char lbl_80338D20[];
 void fn_801D5AA8(void *arg0) {
     char *base;
