@@ -1404,7 +1404,7 @@ double fn_8002EF30(double x) {
     int hx;
     double y[2];
     hx = *(int *)&x & 0x7fffffff;
-    if (hx <= 0x3fe921fb) return __kernel_tan(1, x, 0.0);
+    if (hx <= 0x3fe921fb) return __kernel_tan(1, x, lbl_80560AD0);
     if (hx >= 0x7ff00000) return x - x;
     hx = __ieee754_rem_pio2(x, y);
     return __kernel_tan(1 - ((hx & 1) << 1), y[0], y[1]);
