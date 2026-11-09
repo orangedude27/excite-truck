@@ -646,17 +646,27 @@ void fn_801EBC70(void) {
     }
 }
 
-void fn_801EBCAC(void) {
+#pragma cplusplus on
+extern "C" void fn_801EBCAC(void) {
+    class Entry {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+    };
     if (lbl_8055EBA0 != 0) {
         s32 *p = lbl_804885E8;
         u32 i = 0;
         for (; i < 0x18; i++, p++) {
-            Obj *obj = (Obj *)*p;
-            ((void (*)(void))obj->vt[7])();
+            Entry *obj = (Entry *)*p;
+            obj->v5();
         }
     }
 }
-
+#pragma cplusplus reset
 void fn_801EBD14(void) {
 
 }
