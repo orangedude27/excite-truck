@@ -433,11 +433,17 @@ extern u8 lbl_803C4040[];
 /* The L2CAP link control block, as far as this unit reaches into it (the game
    runs an older stack than l2c_int.h, so only the fields it uses are named). */
 typedef struct {
-    u8      pad_00[0x28];
+    u8      pad_00[4];
+    s32     link_state;     /* +0x04  a LST_* link state */
+    void   *p_first_ccb;    /* +0x08  first channel on this link (ccb_queue.p_first_ccb) */
+    u8      pad_0C[4];
+    TIMER_LIST_ENT timer_entry; /* +0x10  this link's timeout entry (btu_start/stop_timer) */
     u16     handle;         /* +0x28  ACL connection handle, used with the LM */
     u8      remote_bd_addr[6]; /* +0x2A  the peer's Bluetooth address (BD_ADDR) */
-    u8      pad_30;
+    u8      link_role;      /* +0x30  master or slave */
     u8      id;             /* +0x31  identifier of the next command we send */
+    u8      pad_32[0x22];
+    void   *p_echo_rsp_cb;  /* +0x54  echo response callback, NULL when none is set */
 } tL2C_LCB_VIEW;
 
 /* The L2CAP channel state machine states (l2c_int.h's tL2C_CHNL_STATE); the game
