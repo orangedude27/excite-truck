@@ -64,19 +64,18 @@ void fn_801E1F8C(void *arg0, void *arg1) {
         i++;
     }
 }
-#pragma use_lmw_stmw reset
+#pragma scheduling invalid_target
 void fn_801E2084(void *arg0, void *arg1) {
     int i = 0;
     void **entry = (void **)arg1;
     while (i < *(int *)((char *)arg1 + 0x24)) {
         void *obj = *(void **)((char *)entry + 0x14);
-        ((void (*)(void *, void *))(*(void ***)obj)[4])(obj, arg0);
+        void (*func)(void *, void *) = (*(void ***)obj)[4];
+        func(obj, arg0);
         entry++;
         i++;
     }
 }
-#pragma scheduling on
-#pragma dont_inline on
 void fn_801E2100(void *arg0, void *arg1) {
     int result;
     int (*first)(int);
@@ -338,5 +337,4 @@ extern "C" s32 fn_801E2640(f32 *arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 *arg4,
     return found;
 }
 #pragma pop
-typedef struct VTable_801E2084 { void *unk0; void *unk4; void *unk8; void *unkC; void (*call)(void *, void *); } VTable_801E2084;
-typedef struct Obj_801E2084 { VTable_801E2084 *vtable; } Obj_801E2084;
+
