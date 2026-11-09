@@ -5379,6 +5379,16 @@ void BTA_DmSetDeviceName(char *name) {
     }
 }
 
+void BTA_DmSetVisibility(u8 arg0, u8 arg1) {
+    void *buf = GKI_getbuf(0x110);
+    if (buf != 0) {
+        *(u16 *)buf = 0x103;
+        *((u8 *)buf + 8) = arg0;
+        *((u8 *)buf + 9) = arg1;
+        fn_80071450(buf);
+    }
+}
+
 void BTA_DmSearch(u8 *services, u32 duration, u32 mode) {
     u8 *buf = GKI_getbuf(0x1C);
     if (buf != 0) {
