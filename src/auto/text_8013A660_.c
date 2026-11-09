@@ -41,13 +41,19 @@ extern void qsort(void *, int, int, int (*)(void *, void *));
 typedef struct { int pad[3]; int (*m_fn)(void); } unkVtable;
 typedef struct { int pad[7]; int (*m_fn)(void); } unkVtable7;
 typedef struct { int pad[9]; float (*m_float)(char *); } unkVtableFloat;
-void fn_8013A660(unkVtable **arg0, char *arg1, char *arg2) {
-    int result = ((int (*)(void *))(*arg0)->m_fn)(arg0);
-    if (result == 0) {
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_8013A660(void *arg0, char *arg1, char *arg2) {
+    struct Dummy {
+        virtual int f0();
+        virtual int f1();
+    };
+    if (((Dummy *)arg0)->f1() == 0) {
         fn_802E317C(lbl_8032C1A0, arg2, arg1);
     }
 }
-
+#pragma cplusplus reset
+#pragma scheduling on
 int fn_8013A6C4(void *arg0, void *arg1) {
     return *(int *)((char *)arg0 + 8) - *(int *)((char *)arg1 + 8);
 }
