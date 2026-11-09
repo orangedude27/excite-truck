@@ -58,18 +58,16 @@ void fn_80127C8C(void) {
 
 }
 
-#pragma push
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 void fn_80127C90(int arg0, int arg1) {
     int count;
     int *base;
-    int value;
     int masked;
     int shifted;
+    int value;
     unsigned int available;
     char *entry;
-
     base = lbl_8041E098;
     count = base[1];
     value = count ^ 10;
@@ -87,8 +85,6 @@ void fn_80127C90(int arg0, int arg1) {
     if (available == 0)
         ((void (*)(const char *, ...))fn_802E317C)(lbl_80329FA0);
 }
-#pragma scheduling invalid_target
-#pragma opt_propagation off
 void fn_80127CF4(int arg0, int arg1) {
     int count;
     int *base;
