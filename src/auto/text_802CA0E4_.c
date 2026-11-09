@@ -1308,6 +1308,13 @@ void fn_802CBFA0(void *arg0, unsigned int arg1) {
     }
 }
 
+void fn_802CBFCC(void *arg0, void *arg1) {
+    extern char lbl_8055D088;
+    *(int *)((char *)arg1 + 0x10) = -1;
+    ((void (*)(int, int, int, int))fn_8012C720)(*(int *)((char *)arg1 + 0), *(int *)((char *)arg1 + 8), *(int *)((char *)lbl_8055FCB0 + *(int *)((char *)arg1 + 4) * 0x4C + 0x3C), 0);
+    ((void (*)(void *, void *))fn_802CB3F8)((char *)lbl_8055FCB0 + *(int *)((char *)arg1 + 4) * 0x4C + 4, &lbl_8055D088);
+}
+
 extern char lbl_8034BA34[];
 extern char lbl_8034BA70[];
 int fn_802D9154(void);
