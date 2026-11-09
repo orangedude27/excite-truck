@@ -999,7 +999,7 @@ extern char lbl_8034B514[];
 extern int fn_8012A364(void *, int);
 extern void *fn_801E7840(int);
 extern void *fn_801284F8(int, const char *);
-extern void *fn_8012A13C(const char *, int, int);
+extern void *fn_8012A13C(void *, const char *, int, int);
 extern int fn_8012A2D8(void *);
 extern void fn_802D362C(int);
 extern void fn_802D3304(void);
