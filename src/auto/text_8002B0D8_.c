@@ -1399,7 +1399,7 @@ double sin(double x) {
 }
 #pragma pop
 #pragma push
-#pragma optimization_level 3
+#pragma optimization_level 2
 double fn_8002EF30(double x) {
     int hx;
     double y[2];
