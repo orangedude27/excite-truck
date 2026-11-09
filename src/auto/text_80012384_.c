@@ -75,6 +75,8 @@ void fn_800124DC(const char *arg0, float farg0) {
 }
 
 #pragma pop
+#pragma push
+#pragma processor 750
 void fn_8001255C(const char *arg0, float farg0) {
     register char *p = lbl_80351790;
     float f = *(float *)(p + 0x84) + farg0;
