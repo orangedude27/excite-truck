@@ -209,14 +209,62 @@ extern "C" void fn_80208D80(int arg0) {
     fn_80133348(4, &lbl_8055B4E0, (int)lbl_8055EDA8);
     fn_801336E0(lbl_8055B4DC, fn_80208A78);
 }
+
+#pragma cplusplus on
+extern "C" int strncmp(const char *, const char *, unsigned int);
+extern "C" void fn_802E30C8(const char *, ...);
+extern "C" void fn_80208E90(void *arg0, int arg1) {
+    struct Dummy {
+        virtual void close(int);
+        virtual const char *name();
+        virtual void unused10();
+        virtual void unused14();
+        virtual int enabled();
+        virtual void unused1c();
+        virtual void unused20();
+        virtual void finish();
+    };
+    Dummy *object = (Dummy *)arg0;
+    const char *strings = lbl_8033BEF8;
+    int *table = (int *)lbl_80489238;
+    int addObject;
+    unsigned int count;
+
+    if (strncmp(object->name(), strings + 0x60, 0xB) == 0) {
+        fn_802E30C8(strings + 0x70, object->name());
+        if (arg0 != 0) {
+            object->close(1);
+        }
+    } else {
+        count = (unsigned int)table[6];
+        if (count < 6) {
+            addObject = arg1 == 0;
+            if (arg1 == 1 && object->enabled() != 0) {
+                addObject = 1;
+                object->finish();
+            }
+            if (addObject != 0) {
+                table[table[6]] = (int)arg0;
+                table[6] = table[6] + 1;
+            } else if (arg0 != 0) {
+                object->close(1);
+            }
+        } else {
+            fn_802E30C8(strings + 0x88, object->name());
+            if (arg0 != 0) {
+                object->close(1);
+            }
+        }
+    }
+}
+#pragma cplusplus reset
+
 #pragma cplusplus reset
 float fn_80209028(void) {
     return lbl_8055B4D4;
 }
 
-#pragma scheduling invalid_target
-#pragma push
-#pragma inline_depth(0)
+#pragma cplusplus on
 void fn_80209030(float arg0) {
     float value = lbl_80563230 < arg0 ? lbl_80563230 : arg0;
     value = value > lbl_80563234 ? value : lbl_80563234;
@@ -224,8 +272,7 @@ void fn_80209030(float arg0) {
     fn_8013323C(4, lbl_8033BEF8, (float)(double)value);
     ((void (*)(void))fn_80208A50)();
 }
-#pragma pop
-#pragma scheduling on
+#pragma cplusplus reset
 void fn_80209090(int arg0) {
     if (arg0 >= 0 && arg0 <= 2) {
         lbl_8055EDA8 = (void *)arg0;
@@ -285,6 +332,8 @@ void *fn_802090D4(int arg0)
   }
 }
 
+#pragma push
+#pragma inline_depth(0)
 void fn_80209110(void **arg0) {
     void *entry = *arg0;
     int i;
@@ -337,20 +386,15 @@ int fn_80209214(void) {
 
 extern float lbl_8055B4D0;
 extern void fn_801332D0(int, void *, void *);
-#pragma scheduling invalid_target
+#pragma scheduling on
 int fn_8020921C(void) {
-    struct Config { int value; unsigned int pad; unsigned int version; };
+    struct Config { int pad; int value; unsigned int version; };
     extern struct Config lbl_8048929C;
     extern unsigned int lbl_8055E044;
     extern void fn_80131318(void);
-    unsigned int version;
-    volatile struct Config *config;
-    config = &lbl_8048929C;
-    version = config->version;
-    if (version != lbl_8055E044)
+    if (lbl_8048929C.version != lbl_8055E044)
         fn_80131318();
-    config = &lbl_8048929C;
-    return config->value;
+    return lbl_8048929C.value;
 }
 #pragma scheduling default
 int fn_80209260(int arg0) { return arg0 + 4; }
