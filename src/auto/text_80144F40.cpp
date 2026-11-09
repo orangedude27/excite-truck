@@ -533,15 +533,21 @@ extern "C" void fn_80145B94(void * __restrict arg0, u32 arg1) {
 #pragma push
 #pragma processor 750
 #pragma scheduling on
-extern "C" void fn_80145C08(void * __restrict arg0, const char *arg1) {
-    f32 scale = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
-    f32 input = *(f32 *)((u8 *)arg0 + 4);
-    s32 id = *(s32 *)((u8 *)arg0 + 0xC);
-    f32 value = ((f32 (*)(s32, f32))fn_801451DC)(id, input);
-    f32 last = *(f32 *)((u8 *)arg0 + 0x10);
-    s32 b = *(s32 *)((u8 *)arg0 + 0x14);
-    s32 a = *(s32 *)((u8 *)arg0 + 0x18);
-    ((void (*)(s32, s32, s32, ...))fn_800104B0)(a, b, (s32)arg1, last, value, scale);
+extern "C" void fn_80145C08(void * __restrict arg0, const char *text) {
+    // Draw one formatted line of on-screen text in the style `entry` holds:
+    // fn_801451DC slides x into the visible area on letterbox screens and
+    // fn_801452B4 flips y to the text drawer's origin; fn_800104B0 does the
+    // vsprintf and hands the string to the 2D text drawer with the scale,
+    // font and colour the entry carries.
+    TextEntry80145C08 *entry = (TextEntry80145C08 *)arg0;
+    f32 y = fn_801452B4(entry->y);
+    f32 x = entry->x;
+    s32 justification = entry->justification;
+    f32 screenX = ((f32 (*)(s32, f32))fn_801451DC)(justification, x);
+    f32 scale = entry->scale;
+    s32 fontId = entry->fontId;
+    s32 color = entry->color;
+    ((void (*)(s32, s32, s32, ...))fn_800104B0)(color, fontId, (s32)text, scale, screenX, y);
 }
 #pragma scheduling on
 #pragma pop
