@@ -3123,11 +3123,15 @@ s32 fn_8005D234(s32 chan, WPADGameInfo* pInfo)
     return result;
 }
 
-// fn_8005EB44: WPAD initialization
+// WPADInit(): bring up the WPAD library. Registers the library's shutdown
+// function, starts the Bluetooth stack (WUDInit), powers on the sensor bar,
+// clears the four control blocks, copies the DPD sensitivity / sensor bar
+// position / motor mode / speaker volume out of the System Configuration and
+// starts the 1 ms management alarm.
 void fn_8005EB44(void) {
-    register u8* p_wpd asm("r29");
-    register u8* p_wpdcb asm("r28");
-    register u8* p_active asm("r27");
+    register u8* p_wpd asm("r29");    // &(_wpd[chan])
+    register u8* p_wpdcb asm("r28");  // &(_wpdcb[chan])
+    register u8* p_active asm("r27"); // &(_chan_active_state[chan])
     register s32 chan asm("r26");
     register s32 zero asm("r30") = 0;
     s32 i;
@@ -3135,9 +3139,9 @@ void fn_8005EB44(void) {
     u8 vol;
     BOOL enabled;
 
-    if (!lbl_8055DBF8) {
+    if (!_regShutdown) {
         OSRegisterShutdownFunction(&lbl_80312130);
-        lbl_8055DBF8 = 1;
+        _regShutdown = TRUE;
     }
 
     if (!WUDInit()) {
@@ -3145,7 +3149,7 @@ void fn_8005EB44(void) {
     }
 
     enabled = OSDisableInterrupts();
-    *(volatile u32*)0xCD0000C0 |= 0x100;
+    IPC_HW_REGS_PPC[IPC_GPIO1BOUT] |= GPIO_SENSORBAR; // sensor bar power on
     OSRestoreInterrupts(enabled);
 
     for (i = 0; i < WUD_MAX_DEV_ENTRY; i++) {
@@ -3156,41 +3160,41 @@ void fn_8005EB44(void) {
 
     p_wpd = (u8*)&_wpd[0];
     p_wpdcb = (u8*)&_wpdcb[0];
-    chan = 0;
-    p_active = lbl_8055DC08;
+    chan = WPAD_CHAN0;
+    p_active = _chan_active_state;
     do {
         *(void**)p_wpdcb = p_wpd;
         *p_active = zero;
-        *(void**)(*(u8**)p_wpdcb + 0x7E4) = (void*)zero;
+        *(void**)(*(u8**)p_wpdcb + 0x7E4) = (void*)zero; // samplingCB
         __ClearControlBlock(chan);
-        OSInitThreadQueue((OSThreadQueue*)(p_wpd + 0x824));
+        OSInitThreadQueue((OSThreadQueue*)(p_wpd + 0x824)); // threadQueue
         chan++;
-        p_wpd += 0x8E0;
+        p_wpd += 0x8E0; // sizeof(WPADCB) of this WPAD build
         p_wpdcb += 4;
         p_active++;
-    } while (chan < 4);
+    } while (chan < WPAD_MAX_CONTROLLERS);
 
-    lbl_8055DC1A = 5;
-    lbl_8055DC0C = OSGetAppGamename();
-    lbl_8055DC10 = OSGetAppType();
+    _sleepTime = 5;
+    _gamecode = OSGetAppGamename();
+    _gametype = OSGetAppType();
 
     sens = SCGetBtDpdSensibility();
-    if (sens < 1) {
-        sens = 1;
+    if (sens < WPAD_MIN_DPD_SENS) {
+        sens = WPAD_MIN_DPD_SENS;
     }
-    if (sens > 5) {
-        sens = 5;
+    if (sens > WPAD_MAX_DPD_SENS) {
+        sens = WPAD_MAX_DPD_SENS;
     }
-    lbl_8055DC19 = sens;
+    _dpdSensitivity = sens;
 
-    lbl_8055DC18 = (SCGetWpadSensorBarPosition() == 1);
-    lbl_8055DC14 = (void*)(SCGetWpadMotorMode() == 1);
+    _sensorBarPos = (SCGetWpadSensorBarPosition() == SC_SENSOR_BAR_TOP);
+    _rumble = (SCGetWpadMotorMode() == 1);
 
     vol = SCGetWpadSpeakerVolume();
-    if (vol > 127) {
-        vol = 127;
+    if (vol > WPAD_MAX_SPEAKER_VOLUME) {
+        vol = WPAD_MAX_SPEAKER_VOLUME;
     }
-    lbl_8055DC12 = vol;
+    _speakerVolume = vol;
 
     WUDSetHidConnCallback(WPADiConnCallback);
     WUDSetHidRecvCallback(WPADiRecvCallback);
@@ -3207,12 +3211,12 @@ void fn_8005EB44(void) {
     OSCreateAlarm(&_managerAlarm);
     OSSetPeriodicAlarm(&_managerAlarm, OSGetTime(), OS_MSEC_TO_TICKS(1), WPADiManageHandler0);
 
-    lbl_8055DC05 = zero;
-    lbl_8055DC11 = zero;
-    lbl_8055DC06 = 1;
-    lbl_8055DC04 = -1;
+    _shutdown = zero;
+    _scFlush = zero;
+    _scSetting = TRUE;
+    _afhChannel = WPAD_CHAN_INVALID;
 
-    OSRegisterVersion(lbl_80558FD8);
+    OSRegisterVersion(__WPADVersion);
 }
 
 // fn_8005ED8C: WPAD reset
