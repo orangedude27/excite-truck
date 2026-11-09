@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+typedef struct VObj { struct VObjVt { int pad[8]; void (*fn)(struct VObj *, int); } *vt; char pad[0x84]; int off; } VObj;
 extern unsigned int lbl_8055FF38;
 extern unsigned int lbl_8055D1B0;
 extern char lbl_8034D074[];
@@ -90,33 +91,62 @@ int fn_802E4070(void) {
     return 0;
 }
 
-void *fn_802E40A0(void *arg0, char *arg1) {
+#pragma push
+#pragma cplusplus on
+extern "C" void *fn_802E40A0(void *arg0, char *arg1) {
+    class Obj {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+        virtual void release(int);
+        char unk_04[0x3C];
+        char pathText[0x40];
+        unsigned char valid;
+        unsigned char pad_81[3];
+        int length;
+        int cursor;
+        void *owner;
+    };
     char cwd[0x100];
-    register char *path = arg1;
-    register void *obj;
+    Obj *obj;
+    char *path;
     int status;
-    obj = ((void *(*)(int, void *))fn_802E3EBC)(0x90, &lbl_8055D1B4);
+    path = arg1;
+    obj = (Obj *)((void *(*)(int, void *))fn_802E3EBC)(0x90, &lbl_8055D1B4);
     if (obj != 0) {
         *(void **)obj = &lbl_8034D130;
-        *(void **)((char *)obj + 0x8C) = arg0;
+        obj->owner = arg0;
         if (strncmp(path, (char *)&lbl_8055D1B8, 2) == 0) path += 2;
         if (*path == '\\') path++;
-        strcpy((char *)obj + 0x40, path);
-        memset((char *)obj + 4, 0, 0x3C);
-        *(int *)((char *)obj + 0x88) = 0;
-        *(int *)((char *)obj + 0x84) = 0;
-        strcpy(cwd, (char *)obj + 0x40);
-        status = DVDGetCurrentDir((char **)&cwd, (char *)obj + 4);
-        *((unsigned char *)obj + 0x80) = (status != 0);
-        if (status != 0) *(int *)((char *)obj + 0x84) = *(int *)((char *)obj + 0x38);
+        strcpy(obj->pathText, path);
+        memset(obj->unk_04, 0, 0x3C);
+        obj->cursor = 0;
+        obj->length = 0;
+        strcpy(cwd, obj->pathText);
+        status = DVDGetCurrentDir((char **)&cwd, obj->unk_04);
+        obj->valid = (unsigned int)(-status | status) >> 31;
+        if (obj->valid != 0) obj->length = *(int *)((char *)obj + 0x38);
     }
-    if (obj == 0 || *(unsigned char *)((char *)obj + 0x80) == 0) {
-        if (obj != 0) ((void (*)(void *, int))(*(void ***)obj)[12])(obj, 1);
-        obj = 0;
+    switch (obj->valid) {
+    case 0:
+        if (obj != 0) obj->release(1);
+        break;
+    default:
+        break;
     }
+    obj = 0;
     return obj;
 }
-
+#pragma cplusplus reset
+#pragma pop
 extern unsigned int lbl_8055D1B0;
 extern char lbl_8034D074[];
 extern char lbl_8034D098[];
