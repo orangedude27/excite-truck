@@ -86,7 +86,8 @@ void fn_802D3F34(void *arg0) {
 }
 
 void fn_802D3F98(void *arg0) {
-    GXSetArray(9, *(void **)((char *)arg0 + 0x20), 0xC);
+    void *a = *(void **)((char *)arg0 + 0x20);
+    GXSetArray(9, a, 0xC);
     GXSetArray(0xB, *(void **)((char *)arg0 + 0x24), 4);
     GXSetArray(0xD, *(void **)((char *)arg0 + 0x28), 4);
     GXCallDisplayList(*(void **)((char *)arg0 + 0x30), *(u32 *)((char *)arg0 + 0x2C));
@@ -160,9 +161,10 @@ void fn_802D41C8(void *arg0) {
     GXCallDisplayList(*(void **)((char *)arg0 + 0x30), *(u32 *)((char *)arg0 + 0x2C));
 }
 
+#pragma push
+#pragma scheduling off
 void fn_802D422C(void *arg0) {
-    void *p20 = *(void **)((char *)arg0 + 0x20);
-    GXSetArray(9, p20, 0xC);
+    GXSetArray(9, *(void **)((char *)arg0 + 0x20), 0xC);
     GXSetArray(0xD, *(void **)((char *)arg0 + 0x28), 4);
     GXCallDisplayList(*(void **)((char *)arg0 + 0x30), *(u32 *)((char *)arg0 + 0x2C));
 }
