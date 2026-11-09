@@ -1873,11 +1873,11 @@ void fn_80196328(void *arg0) {
     fn_80136E8C(lbl_8055E0D0, *(int *)((char *)arg0 + 0x290), 0);
 }
 
-  extern int fn_801B2F24(void);
-  extern void fn_801B2F40(int);
-  extern int fn_8019643C(void);
+      extern int fn_801B2F24(void);
+    extern void fn_801B2F40(int);
+    extern int fn_8019643C();
 
-  void fn_8019639C(void) {
+    void fn_8019639C(void) {
       fn_80194844();
   }
 
@@ -2975,6 +2975,14 @@ void fn_80198488(void *arg0) {
         }
     }
 }
+
+void fn_80198530(void *arg0) {
+    float a = lbl_80562140;
+    float b = lbl_80562144;
+    (void)a; (void)b;
+    fn_801961FC(arg0);
+}
+
 #pragma dont_inline reset
 void *fn_80198DD0(void *arg0, int arg1) {
     struct Table {
