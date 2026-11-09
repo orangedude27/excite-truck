@@ -24,6 +24,71 @@ void fn_802C1C2C(void) {}
 
 void fn_802C1C30(void) {}
 
+void fn_802C1C34(void *arg0, void *obj, int slot) {
+    typedef struct { int v[9]; } Block9;
+    typedef struct { float v[3]; } Vec3;
+    float pos[3], mat[9], vel[3], scale[3];
+    int index, i;
+    int *info, *data, *entry;
+    int **list;
+    float *recent;
+    void *effect;
+    float x, y;
+    index = ((int (*)(void *))(*(int **)obj)[9])(obj) - lbl_8055CFA0;
+    if (index < 0) return;
+    if (index >= lbl_8055FB2C) return;
+    info = fn_802C110C(index);
+    list = (int **)lbl_8055FB30;
+    data = list[index];
+    if (data == 0) return;
+    if (((int (*)(void *))(*(int **)obj)[8])(obj) == 0x3eb) {
+        if (((float *)data)[10] < lbl_80564E70)
+            ((void (*)(void *, int))(*(int **)obj)[6])(obj, 0);
+        return;
+    }
+    if (((float *)data)[10] < lbl_80564E70) return;
+    recent = &lbl_804C1050[slot * 2];
+    if (index != *(int *)recent || lbl_8055FB38 - recent[1] > lbl_80564E78) {
+        if (*((unsigned char *)info + 0x28)) {
+            float axis[3];
+            entry = fn_802C120C();
+            entry[1] = (int)data;
+            list[index] = 0;
+            entry[0] = index;
+            *(Block9 *)(entry+2) = *(Block9 *)data;
+            *(Vec3 *)(entry+11) = *(Vec3 *)(data+9);
+            entry[17] = *(int *)&lbl_8055FB38;
+            axis[0] = lbl_80564E54;
+            axis[1] = lbl_80564E50;
+            axis[2] = lbl_80564E50;
+            *(Vec3 *)(entry+14) = *(Vec3 *)axis;
+        }
+        if (info[15] > 0) {
+            for (i=0; i<info[15]; i++) {
+                effect = ((void **)info[13])[i];
+                *(Vec3 *)pos = *(Vec3 *)(data+9);
+                pos[0] += fn_80129DC4(4, lbl_80564E7C, lbl_80564E60);
+                pos[2] += fn_80129DC4(4, lbl_80564E7C, lbl_80564E60);
+                pos[1] += ((float *)info)[11];
+                mat[0]=lbl_80564E54; mat[1]=lbl_80564E50; mat[2]=lbl_80564E50;
+                mat[3]=lbl_80564E50; mat[4]=lbl_80564E54; mat[5]=lbl_80564E50;
+                mat[6]=lbl_80564E50; mat[7]=lbl_80564E50; mat[8]=lbl_80564E54;
+                x = fn_80129DC4(4, lbl_80564E7C, lbl_80564E60);
+                y = lbl_80564E80 + fn_80129DC4(4, lbl_80564E7C, lbl_80564E60);
+                vel[0] = fn_80129DC4(4, lbl_80564E7C, lbl_80564E60);
+                vel[1]=y; vel[2]=x;
+                x = fn_80129DC4(4, lbl_80564E84, lbl_80564E88);
+                y = fn_80129DC4(4, lbl_80564E84, lbl_80564E88);
+                scale[0] = fn_80129DC4(4, lbl_80564E84, lbl_80564E88);
+                scale[1]=y; scale[2]=x;
+                ((void (*)(void *, float *, float *, float *))(*(int **)effect)[10])(effect, mat, vel, scale);
+            }
+        }
+    }
+    *(int *)recent = index;
+    lbl_804C1050[slot*2+1] = lbl_8055FB38;
+}
+
 #pragma dont_inline on
 void fn_802C1F80(int arg0) {}
 
@@ -147,8 +212,7 @@ void* fn_802C21B8(void) {
 }
 
 void fn_802C21C0(void) {
-    int value = lbl_8055FB54;
-    if (value != 0) fn_802B52C0(lbl_8034AFD8);
+    if (lbl_8055FB54 != 0) ((int (*)(int, void *))fn_802B52C0)((int)lbl_8034AFD8, (void *)lbl_8055FB54);
 }
 
 #pragma push
