@@ -526,6 +526,10 @@ typedef struct t_l2c_ccb_view {
    negotiating a configuration and while tearing the channel down. */
 #define L2CAP_CHNL_TIMEOUT           30
 
+/* Extra seconds it waits after the peer answered a connect request with
+   "pending" (l2c_int.h's L2CAP_CHNL_CONNECT_TOUT_EXT). */
+#define L2CAP_CHNL_CONNECT_TOUT_EXT  120
+
 extern void l2c_init(void);
 extern char lbl_803181F0[];
 extern void fn_80089E40(void *, u8, void *);
