@@ -104,6 +104,7 @@ int fn_801D9FC4(char **arg0, const char *arg1) {
     }
     return 0;
 }
+#pragma use_lmw_stmw reset
 
 void *fn_801DA03C(int **arg0, int arg1) {
     int *base = *arg0;
