@@ -622,6 +622,17 @@ void *fn_802E5AE8(char *arg0) {
     *(void **)(slot + 0xAC) = res;
     return slot;
 }
+
+void fn_802E5D5C(void *arg0) {
+    if (*(int *)((char *)arg0 + 0x94) == 1 && *(int *)((char *)arg0 + 0x98) > 0) {
+        fn_802E317C(lbl_8034D528, arg0, *(int *)((char *)arg0 + 0x98));
+    }
+    if ((*(int *)((char *)arg0 + 0x94) -= 1) == 0 && *(int *)((char *)arg0 + 0xAC) != 0) {
+        ((void (*)(void *))fn_8012C4D8)(*(void **)((char *)arg0 + 0xAC));
+        *(int *)((char *)arg0 + 0xAC) = 0;
+    }
+}
+
 #pragma ppc_psq_save reset
 extern void *lbl_8055FF90;
 extern float lbl_80565128, lbl_80565148;
