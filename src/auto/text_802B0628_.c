@@ -37,6 +37,13 @@ int fn_8012C33C(void);
 int fn_802CAC28(int, int);
 void **fn_802B59CC(void);
 extern char lbl_8034A078[];
+typedef struct VT802B06D4 VT802B06D4;
+typedef struct {
+    void (*f[13])(VT802B06D4 *, void *, int);
+} VTable802B06D4;
+struct VT802B06D4 {
+    VTable802B06D4 *vt;
+};
 extern char lbl_8034A0B4[], lbl_8034A0C4[];
 extern int lbl_8055F998, lbl_8055F99C;
 void fn_802B8AE0(void *, void *);
@@ -57,10 +64,8 @@ void fn_802B0690(int *arg0) {
 }
 
 void fn_802B06D4(void) {
-    void **obj = fn_802B59CC();
-    void (**vtable)(void *, void *, int) = (void (**)(void *, void *, int))*obj;
-    void (*call)(void *, void *, int) = vtable[12];
-    call(obj, lbl_8034A078, 0);
+    void *obj = fn_802B59CC();
+    ((void (*)(void *, void *, int))(*(void ***)obj)[12])(obj, lbl_8034A078, 0);
 }
 
 extern void *fn_801284F8(int, void *);
@@ -457,53 +462,54 @@ void fn_802B13F8(void *arg0, int arg1, void *arg2, int arg3, float farg0) {
     fn_802BAFF8(arg1, &sp8);
 }
 
+#pragma use_lmw_stmw off
+#pragma opt_loop_invariants off
 void fn_802B14B4(void *arg0) {
+    int cache;
+    int obj;
     int i;
+    int saved;
+    int c;
+    int *node;
+    int flag;
+    unsigned idx;
+    unsigned mask;
     int j;
     int k;
-    int count;
-    int obj;
-    unsigned mask;
-    unsigned idx;
-    int *slot;
-    int *node;
-    int c;
-    int saved;
-    int cache;
     int cacheCount;
-    int flag;
+    int *slot;
+    char *self;
 
+    self = (char *)arg0;
     fn_802B1BEC();
-    if (fn_802B1BE4((char *)arg0 + 0x318) > 0) {
-        fn_802B1B60(arg0);
+    if (fn_802B1BE4(self + 0x318) > 0) {
+        fn_802B1B60(self);
         saved = fn_802C2C00(0);
         if (lbl_8055FA59 != 0) {
-            fn_802C8BD0(*(int *)((char *)arg0 + 4));
+            fn_802C8BD0(*(int *)(self + 4));
         } else {
             fn_802C28C0();
             fn_802C8BD0();
         }
         fn_802B05EC();
         fn_802DBF00();
-        for (i = 0; i < fn_802B1AF0((char *)arg0 + 0xC); i++) {
-            obj = fn_802B1B50((int *)((char *)arg0 + 0xC), i) + 4;
+        for (i = 0; i < fn_802B1AF0(self + 0xC); i++) {
+            obj = fn_802B1B50((int *)(self + 0xC), i) + 4;
             if (lbl_8055FA59 != 0) {
-                fn_802CADD0(*(int *)(fn_802B1B50((int *)((char *)arg0 + 0xC), i) + 0x7C), 1);
-                __AXGetStackHead_802BC30C(i);
-                fn_802CADD0(0, 2);
+                fn_802CADD0(*(int *)(fn_802B1B50((int *)(self + 0xC), i) + 0x7C), 1);
+                fn_802CADD0(__AXGetStackHead_802BC30C(i), 2);
             } else {
                 for (j = 0; j < fn_802B1B38((void *)obj); j++) {
                     fn_802CADD0(*(int *)fn_802B1B40((int *)obj, j), j + 1);
                 }
-                __AXGetStackHead_802BC30C(i);
-                fn_802CADD0(0, 3);
+                fn_802CADD0(__AXGetStackHead_802BC30C(i), 3);
             }
-            cache = fn_802B1B28((int *)((char *)arg0 + 0x318), 0);
-            cacheCount = fn_802B1BE4((char *)arg0 + 0x318);
+            cache = fn_802B1B28((int *)(self + 0x318), 0);
+            cacheCount = fn_802B1BE4(self + 0x318);
             mask = 1 << i;
             idx = mask;
-            slot = (int *)((char *)arg0 + mask * 4 + 0x934);
-            for (; idx <= 0x40; idx++, slot++) {
+            slot = (int *)(self + mask * 4 + 0x934);
+            for (; idx < 0x41; slot++, idx++) {
                 if ((idx & mask) && fn_802B1B18(slot) == 0) {
                     flag = (((mask - 1) & idx) == 0);
                     for (node = (int *)fn_802B1B10(slot); node != 0; node = (int *)node[3]) {
@@ -527,15 +533,13 @@ void fn_802B14B4(void *arg0) {
         fn_802DBF30();
         fn_802C8D74();
         fn_802C2C00(saved);
-        count = fn_802B1BE4((char *)arg0 + 0x318);
-        fn_802BB0FC(fn_802B1B28((int *)((char *)arg0 + 0x318), 0), count);
-        fn_802B1758(arg0);
-        count = fn_802B1BE4((char *)arg0 + 0x318);
-        fn_802BB3B8(fn_802B1B28((int *)((char *)arg0 + 0x318), 0), count);
+        saved = fn_802B1BE4(self + 0x318);
+        fn_802BB0FC(fn_802B1B28((int *)(self + 0x318), 0), saved);
+        fn_802B1758(self);
+        saved = fn_802B1BE4(self + 0x318);
+        fn_802BB3B8(fn_802B1B28((int *)(self + 0x318), 0), saved);
     }
 }
-
-#pragma scheduling on
 extern float lbl_80564BB8, lbl_80564BD0, lbl_80564BD4, lbl_80564BD8;
 extern float lbl_80564BDC, lbl_80564BE0, lbl_80564BE4, lbl_80564BE8;
 extern double lbl_80564BF0;
@@ -549,8 +553,7 @@ extern void fn_802DC440(void);
 extern void fn_802DC464();
 extern float fn_801DCF48(int, float, float);
 #pragma push
-  #pragma ppc_psq_save off
-    #pragma scheduling invalid_target
+#pragma processor 750
 void fn_802B1758(void *arg0) {
     float setupA[3];
     float setupB[3];
@@ -561,11 +564,11 @@ void fn_802B1758(void *arg0) {
     int i;
     int offset;
     int sign;
-    float radius;
+    register float radius;
     float *point;
-    float z;
+    register float z;
     float y;
-    float x;
+    register float x;
     unsigned short values[14];
 
     node = *(void **)((char *)arg0 + 0x934);
@@ -661,9 +664,7 @@ void fn_802B1758(void *arg0) {
             values[11] = lbl_802FAAB0[11];
             values[12] = lbl_802FAAB0[12];
             values[13] = lbl_802FAAB0[13];
-            fn_802DC464(lbl_804BE190, 8, values, 0xE,
-                lbl_802FAAB0[0x18 / 2], lbl_802FAAB0[0x16 / 2],
-                lbl_802FAAB0[0x14 / 2], lbl_802FAAB0[0x12 / 2]);
+            fn_802DC464(lbl_804BE190, 8, values, 0xE);
             fn_802DC440();
             fn_802C8D74();
         }
@@ -752,8 +753,9 @@ void *fn_802B1C1C(void *arg0, int arg1) {
 
 int fn_802B1C50(void *arg0, int arg1, int arg2) {
     if (arg1 >= 0 && arg1 < *(int *)((char *)arg0 + 0x10)) {
-        char *base = (char *)*(int *)((char *)arg0 + 0xC);
-        return *(int *)(base + (arg2 << 2) + (arg1 << 7) + 0x74);
+        char *row = (char *)*(int *)((char *)arg0 + 0xC);
+        row += arg1 << 7;
+        return *(int *)(row + (arg2 << 2) + 0x74);
     }
     return 0;
 }
