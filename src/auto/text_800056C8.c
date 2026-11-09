@@ -632,18 +632,18 @@ void fn_80006330(void) {
 
 extern s32 fn_80011A5C(s32);
 extern s32 fn_801B84A4(s32);
+#pragma cplusplus on
+#pragma push
 #pragma scheduling invalid_target
 void fn_80006378(s32 arg0, s32 arg1) {
     s32 *p;
-    void *object;
-    void **vtable;
     p = lbl_8034EEB8;
     p = (s32 *)((u8 *)p + (arg1 << 4));
-    object = (void *)p[7];
-    vtable = *(void ***)object;
-    ((void (*)(void))vtable[12])();
+    ((void (*)(void))(*(void ***)p[7])[12])();
 }
 #pragma scheduling on
+#pragma pop
+#pragma cplusplus off
 s32 fn_8000639C(void) {
     return 0;
 }
@@ -1380,9 +1380,11 @@ s32 fn_8000749C(void) {
 
 s32 fn_800074C4(void) {
     s32 result = 0;
-    if (lbl_8055D340[1] == 0) return result;
-    if (lbl_8055D340[2] == 0) return result;
-    result = 1;
+    if (lbl_8055D340[1] != 0) {
+        if (lbl_8055D340[2] != 0) {
+            result = 1;
+        }
+    }
     return result;
 }
 
