@@ -14952,6 +14952,12 @@ void hidd_pm_proc_mode_change(s32 arg0, u8 arg1, s32 arg2) {
     if (callback != 0) callback(3, arg1, &spA);
 }
 
+void fn_80086468(void *arg) {
+    memcpy(lbl_803C3AF0 + 0x70, lbl_803C3AF0 + 0x56, 0xA);
+    hidd_pm_set_now(lbl_803C3AF0 + 0x56);
+    lbl_803C3AF0[0x6F] = 1;
+}
+
 s32 HID_HostGetSDPRecord(void *addr, void *p_db, u32 db_len, void *sdp_cback) {
     extern u8 lbl_803C3C38[];
     extern void hidh_search_callback(u16);
