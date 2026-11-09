@@ -363,48 +363,57 @@ struct TipsCamera_8035B758 {
 };
 #pragma cplusplus on
 #pragma use_lmw_stmw off
+/* Loads the tip camera sequence at start-up: opens the "camera3.val" parameter
+   archive, walks the items of its "tips_sequence" list and turns every "camera"
+   item into one TipsCamera_8035B758 entry - the two cameras it names looked up
+   by name, plus its duration and hermite flag.  Afterwards it (re)arms the tips
+   flag lbl_8055D644 from the game-option bits, unless lbl_8055D646 forces tips
+   off. */
 extern "C" void fn_800201F0(void) {
-    int var;
+    int tipOptions;
     char *base = lbl_802FE138;
-    VList_800201F0 *o;
-    VObj_800201F0 *list;
+    VList_800201F0 *valFile;
+    VObj_800201F0 *sequence;
     VObj_800201F0 *item;
     int i;
     fn_8001FEE8();
-    lbl_8055D630 = 0;
-    lbl_8055D634 = 0;
-    o = (VList_800201F0 *)fn_80131810(base + 0xE4);
-    if (o != 0) {
-        if (o->f10(base + 0xF0) != 0) {
-            list = (VObj_800201F0 *)o->f8(base + 0xF0);
-            fn_802E30C8(base + 0x100);
-            for (i = 0; (item = list->f60(i)) != 0; i++) {
-                if (strcmp(item->f8(), &lbl_80558D90) == 0) {
-                    void *a = item->f14(base + 0x118);
-                    void *b = item->f14(base + 0x128);
-                    char *e = lbl_8035B758 + lbl_8055D630 * 0x70;
+    lbl_8055D630 = 0; /* number of entries in the sequence */
+    lbl_8055D634 = 0; /* entry being shown */
+    valFile = (VList_800201F0 *)fn_80131810(TIPS_VAL_FILE);
+    if (valFile != 0) {
+        if (valFile->f10(TIPS_SEQ_NAME) != 0) {
+            sequence = (VObj_800201F0 *)valFile->f8(TIPS_SEQ_NAME);
+            fn_802E30C8(TIPS_MSG_GOT_SEQ);
+            for (i = 0; (item = sequence->f60(i)) != 0; i++) {
+                if (strcmp(item->f8(), TIPS_ITEM_CAMERA) == 0) {
+                    void *startName = item->f14(TIPS_PROP_START);
+                    void *endName = item->f14(TIPS_PROP_END);
+                    struct TipsCamera_8035B758 *entry =
+                        (struct TipsCamera_8035B758 *)(lbl_8035B758 + lbl_8055D630 * 0x70);
                     lbl_8055D630 += 1;
-                    if (fn_80277960(a, e, e + 0x60) == 0) {
-                        fn_802E317C(base + 0x134, a);
+                    if (fn_80277960(startName, entry->startCamera, &entry->startCameraParam) == 0) {
+                        fn_802E317C(TIPS_MSG_NO_CAM1, startName);
                     }
-                    if (fn_80277960(b, e + 0x30, e + 0x64) == 0) {
-                        fn_802E317C(base + 0x150, a);
+                    /* the game reports the start camera's name here, too */
+                    if (fn_80277960(endName, entry->endCamera, &entry->endCameraParam) == 0) {
+                        fn_802E317C(TIPS_MSG_NO_CAM2, startName);
                     }
-                    *(float *)(e + 0x68) = item->f24(base + 0x16C);
-                    e[0x6C] = item->f30(&lbl_80558D98, 0);
+                    entry->duration = item->f24(TIPS_PROP_TIME);
+                    entry->hermite = item->f30(TIPS_PROP_HERMITE, 0);
                 }
             }
         } else {
-            fn_802E30C8(base + 0x178);
+            fn_802E30C8(TIPS_MSG_NO_SEQ);
         }
-        fn_80131818(o);
+        fn_80131818(valFile);
     }
-    var = 0;
+    tipOptions = 0;
     lbl_8055D648 = 0;
     if (fn_80019B84() != 0 || fn_80019B90() != 0 || fn_80019B3C() != 0) {
-        var = 1;
+        tipOptions = 1;
     }
-    *(signed char *)&lbl_8055D644 = (unsigned int)__cntlzw(var) >> 5;
+    /* __cntlzw(x) >> 5 is just "x != 0", written as a 0/1 byte */
+    *(signed char *)&lbl_8055D644 = (unsigned int)__cntlzw(tipOptions) >> 5;
     if (lbl_8055D646 != 0) {
         lbl_8055D644 = 0;
         lbl_8055D648 = 1;
