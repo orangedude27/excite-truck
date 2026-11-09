@@ -223,11 +223,8 @@ void fn_802A4B90(void) {
 }
 
 void fn_802A4C20(void) {
-    volatile s32 *flag;
-    flag = &lbl_8055F88C;
-    if (*flag != 0) ((s32 (*)(s32 *))fn_802A6A44)((s32 *)flag);
-    flag = &lbl_8055F888;
-    if (*flag != 0) fn_802A5C1C();
+    if (lbl_8055F88C != 0) fn_802A6A44((s32 *)lbl_8055F88C);
+    if (lbl_8055F888 != 0) ((void (*)(void *))fn_802A5C1C)((void *)lbl_8055F888);
     fn_802A59E0();
 }
 
