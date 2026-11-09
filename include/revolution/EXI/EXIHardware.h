@@ -35,6 +35,9 @@ volatile EXIChannelParam EXI_CHAN_PARAMS[EXI_MAX_CHAN] : 0xCD006800;
 #define EXI_CR_DMA (1 << 1)
 #define EXI_CR_RW (1 << 2 | 1 << 3)
 #define EXI_CR_TLEN (1 << 4 | 1 << 5)
+// where an EXIType and the transfer length - 1 sit in CR
+#define EXI_CR_TYPE_SHIFT 2
+#define EXI_CR_LEN_SHIFT 4
 
 #ifdef __cplusplus
 }
