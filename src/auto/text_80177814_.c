@@ -338,17 +338,20 @@ extern char jumptable_803318F8[];
 #pragma dont_inline off
 long fn_801781B8(void) { return 0; }
 
-long fn_801781C0(unsigned int arg0) {
-    register char *table = jumptable_803318F8;
-    register long r;
-    if (arg0 - 0x13 <= 0xC) {
-        r = *(long *)(table + (arg0 - 0x13) * 4);
-        return r;
-    }
-    return 0;
-}
-#pragma dont_inline on
 #pragma scheduling invalid_target
+int fn_801781C0(int arg0) {
+    switch (arg0 - 0x13) {
+    case 0:
+    case 2:
+    case 5:
+    case 7:
+    case 12:
+        return 1;
+    default:
+        return 0;
+    }
+}
+#pragma scheduling on
 unsigned char *fn_801781F4(long arg0) {
     volatile unsigned char *p = &lbl_8055E46C;
     unsigned char a;
@@ -1193,10 +1196,11 @@ void DBPrintf_801797A8(const char *fmt, ...) {
 
 extern int lbl_804305A0[];
 extern int lbl_8055E450;
-void fn_801797F8(int arg0, int arg1, unsigned short arg2) {
-    int *p = &lbl_804305A0[arg0 * 2];
-    p[0] = (arg1 << 16) + (arg2 & 0xffff);
-    p[1] += 1;
+int fn_801797F8(int arg0, int arg1, int arg2) {
+    int combined = (arg1 << 16) | (arg2 & 0xFFFF);
+    int *entry = (int *)((char *)lbl_804305A0 + (arg0 << 3));
+    entry[0] = combined;
+    return entry[1]++;
 }
 
 #pragma push
