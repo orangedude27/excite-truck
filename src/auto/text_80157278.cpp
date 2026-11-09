@@ -3358,11 +3358,12 @@ extern "C" void fn_8015D73C(Unk8015A368C* arg0) {
 }
 
 extern "C" s32 fn_8015D77C(void* arg0) {
-    s32 count = *(s32*)((u8*)arg0 + 0xC);
-    s32 offset = 0;
+    s32 count = *(s32*)((unsigned char*)arg0 + 0xC);
+    unsigned char* base;
     s32 i = 0;
+    s32 offset = 0;
     for (; count > 0; count--) {
-        u8* base = (u8*)arg0 + 8;
+        base = *(unsigned char**)((unsigned char*)arg0 + 8);
         if (*(s32*)(base + offset + 0x14) >= 0)
             return *(s32*)(base + i * 0x38 + 0x14);
         offset += 0x38;
@@ -3373,13 +3374,10 @@ extern "C" s32 fn_8015D77C(void* arg0) {
 
 extern "C" s32 fn_8015D7CC(void* arg0) {
     s32 count = *(s32*)((u8*)arg0 + 0xC);
-    s32 offset = count * 0x38;
-    u8* base = (u8*)arg0 + 8;
-    while (count > 0) {
-        if (*(s32*)(base + offset + 0x14) >= 0)
-            return *(s32*)(base + (count - 1) * 0x38 + 0x14);
-        count--;
-        offset -= 0x38;
+    while (count-- > 0) {
+        u8* base = *(u8**)((u8*)arg0 + 8);
+        if (*(s32*)(base + count * 0x38 + 0x14) >= 0)
+            return *(s32*)(base + count * 0x38 + 0x14);
     }
     return 0;
 }
