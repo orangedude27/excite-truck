@@ -183,40 +183,46 @@ typedef struct WheelMod {
 
 #pragma push
 #pragma processor 750
-extern "C" void fn_801F0208(void *arg0, void *arg1, char *arg2) {
-    class Fn801F0208Resource {
+/* Read a wheel mod's level-of-detail table: lod0..lod7 of the .mod resource each
+ * hold "<distance> <flag>", stored as the squared switch distance and whether the
+ * flag word said 'y'.  The record gets the number of entries it found; a malformed
+ * entry is fatal (fn_802E317C reports it and exits), and the first missing lod ends
+ * the table. */
+extern "C" void fn_801F0208(void *arg0, void *arg1, char *modName) {
+    class ModResource {
     public:
         virtual void v0();
-        virtual int test(const char *);
+        virtual int has(const char *name);
         virtual void v2();
-        virtual const char *find(const char *);
+        virtual const char *find(const char *name);
     };
 
-    char *entry = (char *)arg0 + 0x28;
-    int i;
-    Fn801F0208Resource *res = (Fn801F0208Resource *)arg1;
+    WheelMod *mod = (WheelMod *)arg0;
+    WheelModLod *lod = mod->lods;
+    int count;
+    ModResource *res = (ModResource *)arg1;
     float zero = lbl_80562F1C;
 
-    for (i = 0; i < 8; i++, entry += 0x18) {
-        char name[32];
-        sprintf(name, (const char *)&lbl_8055B0C8, i);
+    for (count = 0; count < WHEELMOD_MAX_LODS; count++, lod++) {
+        char lodName[32];
+        sprintf(lodName, (const char *)&wheelmod_lod_name_fmt, count);
 
-        if (!res->test(name)) {
+        if (!res->has(lodName)) {
             break;
         }
 
-        float value = zero;
-        char buffer[32] = "n";
+        float dist = zero;
+        char flagWord[32] = "n";
 
-        if (sscanf(res->find(name), (const char *)&lbl_8055B0D0, &value, buffer) != 2) {
-            fn_802E317C(lbl_8033A420, arg2, res->find(name));
+        if (sscanf(res->find(lodName), (const char *)&wheelmod_lod_value_fmt, &dist, flagWord) != 2) {
+            fn_802E317C(wheelmod_bad_lod_msg, modName, res->find(lodName));
         }
 
-        *(float *)(entry + 0x10) = value * value;
-        *(char *)(entry + 0x14) = (strchr(buffer, 'y') != 0);
+        lod->distSq = dist * dist;
+        lod->yesFlag = (strchr(flagWord, 'y') != 0);
     }
 
-    *(int *)((char *)arg0 + 0xE8) = i;
+    mod->lodCount = count;
 }
 #pragma pop
 
