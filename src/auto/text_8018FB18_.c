@@ -896,11 +896,22 @@ void fn_80190E6C(void) {
 #pragma cplusplus on
 extern "C" void fn_801B665C(void);
 extern "C" void fn_80190E70(void *arg0) {
-    typedef struct VObj { void **vtbl; } VObj;
+    class VTable {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+    };
     void *obj = *(void **)((char *)arg0 + 0x10);
     if (obj != 0) {
-        VObj *o = (VObj *)obj;
-        ((void (*)(void *))o->vtbl[11])(obj);
+        ((VTable *)obj)->f9();
     }
     fn_801B665C();
 }
