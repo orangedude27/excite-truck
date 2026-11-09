@@ -172,13 +172,10 @@ void fn_80137C84(int arg0, int arg1) {
 
 int fn_80137C98(int value) {
     int count = fn_800167F4();
-    int i = 0;
-    if (count > 0) {
-        do {
-            if (value == lbl_8042F798[i])
-                return i;
-            i++;
-        } while (--count != 0);
+    int i;
+    for (i = 0; i < count; i++) {
+        if (value == lbl_8042F798[i])
+            return i;
     }
     return -1;
 }
