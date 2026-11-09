@@ -457,8 +457,7 @@ extern "C" void fn_801996BC(Vec* arg0, s32 arg1, Vec* arg2, void* arg3, void* ar
 #pragma dont_inline on
 extern "C" void fn_80199870(void* arg0) {
     u32 value = *(u32*)((u8*)arg0 + 0x10);
-    if ((u32)(value - 0x50430000) == 0x4152 ||
-        (u32)(value - 0x41430000) == 0x4152) {
+    if (value == 0x50434152 || value == 0x41434152) {
         fn_801A5C4C(arg0);
     }
 }
@@ -2192,8 +2191,9 @@ extern "C" void fn_8019F1B4(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) 
     fn_8019DDFC(arg1, arg2, arg3, arg4, (u8 *)arg0 + 0x34, arg0, *(f32 *)((u8 *)arg0 + 0x24));
 }
 
+#pragma push
 #pragma scheduling invalid_target
-extern "C" void fn_8019F1D4(void* arg0, f32* arg1, f32* arg2) {
+extern "C" void fn_8019F1D4(void* arg0, void* arg1, void* arg2) {
     volatile f32 inputA[2];
     volatile f32 inputB[4];
     f32 width = *(f32*)((u8*)arg0 + 0x24);
@@ -2203,25 +2203,25 @@ extern "C" void fn_8019F1D4(void* arg0, f32* arg1, f32* arg2) {
     f32 scaleB = width * lbl_805622E0;
     f32 right = *(f32*)((u8*)arg0 + 0x3C);
     f32 x0 = left + scaleA;
+    inputA[0] = width;
     f32 x1 = mid + scaleA;
     f32 x2 = right + scaleA;
+    inputA[1] = width;
+    *(f32*)arg1 = x0;
     f32 y0 = left + scaleB;
     f32 y1 = mid + scaleB;
     f32 y2 = right + scaleB;
-    inputA[0] = width;
-    inputA[1] = width;
+    ((f32*)arg1)[1] = x1;
+    ((f32*)arg1)[2] = x2;
     inputB[0] = width;
     inputB[1] = left;
     inputB[2] = mid;
     inputB[3] = right;
-    arg1[0] = x0;
-    arg1[1] = x1;
-    arg1[2] = x2;
-    arg2[0] = y0;
-    arg2[1] = y1;
-    arg2[2] = y2;
+    *(f32*)arg2 = y0;
+    ((f32*)arg2)[1] = y1;
+    ((f32*)arg2)[2] = y2;
 }
-#pragma scheduling on
+#pragma pop
 extern "C" void fn_8019F248(void *arg0) {
     extern f32 lbl_80562300;
     extern s32 lbl_8055E598;
@@ -4766,17 +4766,12 @@ extern "C" void fn_801D0650(void);
 extern s32 lbl_8055E5A0;
 extern void fn_801CFF14(void);
 extern s32 fn_801CF828(s32, s32, s32, s32, s32);
-extern "C" s32 fn_801A4E88(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32* arg4) {
-    register s32 a0 = arg0;
-    register s32 a1 = arg1;
-    register s32 a2 = arg2;
-    register s32* out = arg4;
-    s32 result = 0;
-    if (lbl_8055E5A0 != 0 && fn_801CF828(lbl_8055E5A0, a0, a1, a2, arg3) != 0) {
-        *out = 0x6E;
-        result = 1;
+extern "C" s32 fn_801A4E88(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4) {
+    if ((lbl_8055E5A0 != 0) && (fn_801CF828(lbl_8055E5A0, arg0, arg1, arg2, arg3) != 0)) {
+        *arg4 = 0x6E;
+        return 1;
     }
-    return result;
+    return 0;
 }
 
 extern "C" s32 fn_801A4F00(s32 arg0, s32 arg1) {
