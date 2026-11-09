@@ -4355,6 +4355,12 @@ block_21:
 #define VFiPFFAT_GetEntry12        fn_800AFBA8   /* FAT12: the 12-bit entry of a cluster */
 #define VFiPFFAT_GetEntry16        fn_800B00E8   /* FAT16: the 16-bit entry of a cluster */
 #define VFiPFFAT_GetEntry32        fn_800B05C8   /* FAT32: the 28-bit entry of a cluster */
+#define VFiPFFAT_SetEntry12        fn_800AF8EC   /* FAT12: write a 12-bit entry through a page */
+#define VFiPFFAT_SetEntry16        fn_800AFFE0   /* FAT16: write a 16-bit entry through a page */
+#define VFiPFFAT_SetEntry32        fn_800B0488   /* FAT32: write a 28-bit entry through a page */
+/* The entry of a position of a file's cluster chain, followed from the start of
+ * the cached page that holds it; *found says whether the chain reaches it. */
+#define VFiPFFAT_GetChainEntryPage fn_800AD0B0
 
 /* Volume fields the FAT code reads (VFiPFVolume is described further down). */
 #define VF_VOL_CLUSTER_COUNT(v)    (*(u32 *)((u8 *)(v) + 0x34)) /* clusters the volume holds */
