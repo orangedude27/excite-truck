@@ -194,8 +194,6 @@ void fn_8018185C(void *arg0, const float *arg1) {
 }
 #pragma scheduling on
 
-#pragma push
-#pragma scheduling invalid_target
 void fn_801819A0(void *dst, void *arg1, void *arg2, float scale, float farg1, float farg2) {
     float values[6];
     float a;
@@ -214,7 +212,6 @@ void fn_801819A0(void *dst, void *arg1, void *arg2, float scale, float farg1, fl
     values[3] = d * farg1;
     fn_8018185C(dst, values);
 }
-#pragma pop
 float fn_80181A14(void *arg0) {
     float value;
     if (*((unsigned char *)arg0 + 0x259d) != 0) value = lbl_80434930[6];
@@ -2512,10 +2509,10 @@ extern "C" int fn_8018BA54(void *arg0, void *arg1) {
 #pragma scheduling on
 #pragma cplusplus reset
 void fn_8018BDEC(void *arg0) {
+    register f32 zero = lbl_80561CAC;
+    register f32 one = lbl_80561CD0;
     f32 sp[12];
     f32 *matrix = sp;
-    register f32 zero = *(volatile f32 *)&lbl_80561CAC;
-    register f32 one = lbl_80561CD0;
     int value;
     sp[0]=one; sp[1]=zero; sp[2]=zero; sp[3]=zero;
     sp[4]=one; sp[5]=zero; sp[6]=zero; sp[7]=zero;
