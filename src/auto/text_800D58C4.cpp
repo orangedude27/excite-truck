@@ -491,22 +491,23 @@ extern "C" void InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPalet
                     0, lodTex[0x20], 0);
 }
 extern "C" void* __ct__Q34nw4r3lyt8DrawInfoFv(void* arg0) {
-    extern f32 lbl_80560E78;
-    extern f32 lbl_80560E7C;
+    extern float lbl_80560E78;
+    extern float lbl_80560E7C;
     extern char lbl_8031F618[];
     extern void memset(void*, int, unsigned int);
     extern void PSMTXIdentity(void*);
-    u8* p = (u8*)arg0;
-    f32 b = lbl_80560E7C;
-    f32 a = lbl_80560E78;
-    *(void**)p = lbl_8031F618;
-    *(f32*)(p + 0x34) = a;
-    *(f32*)(p + 0x38) = a;
-    *(f32*)(p + 0x3C) = a;
-    *(f32*)(p + 0x40) = a;
-    *(f32*)(p + 0x44) = b;
-    *(f32*)(p + 0x48) = b;
-    *(f32*)(p + 0x4C) = b;
+    register unsigned char* p = (unsigned char*)arg0;
+    register float b = lbl_80560E7C;
+    register float a = lbl_80560E78;
+    register void* vt = (void*)lbl_8031F618;
+    *(void**)p = vt;
+    *(float*)(p + 0x34) = a;
+    *(float*)(p + 0x38) = a;
+    *(float*)(p + 0x3C) = a;
+    *(float*)(p + 0x40) = a;
+    *(float*)(p + 0x44) = b;
+    *(float*)(p + 0x48) = b;
+    *(float*)(p + 0x4C) = b;
     memset(p + 0x50, 0, 1);
     PSMTXIdentity(p + 4);
     return arg0;
@@ -3362,14 +3363,10 @@ extern "C" void DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3
 extern "C" GetVtxPosResult GetVtxPos__Q34nw4r3lyt4PaneCFv(void*);
 extern "C" void DrawSelf__Q36nw4hbm3lyt4PaneFRCQ36nw4hbm3lyt8DrawInfo(void* self, void* info) {
     if (*(s32*)((u8*)self + 0xC) != 0 && ((*(u8*)((u8*)info + 0x50) >> 3) & 1)) {
-        void (**vtable)(void) = *(void (***)(void))self;
-        vtable[0x60 / 4]();
+        ((DrawSelfVirt_800D58C4*)self)->v22();
         u32 color = 0xFF00FF;
         GetVtxPosResult pos = GetVtxPos__Q34nw4r3lyt4PaneCFv(self);
-        void* args[2];
-        args[0] = &pos;
-        args[1] = (u8*)self + 0x4C;
-        DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3lyt4SizeQ36nw4hbm2ut5Color(args, args[1], &color);
+        ((void (*)(void*, void*, void*))DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3lyt6detail4SizeQ36nw4hbm2ut5Color)(&pos, (u8*)self + 0x4C, &color);
     }
 }
 
