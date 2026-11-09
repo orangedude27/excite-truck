@@ -255,19 +255,30 @@ void fn_801B8418(void) {
 
 }
 
-void fn_801B841C(void) {
+#pragma cplusplus on
+extern "C" void fn_801B841C(void) {
     extern void fn_80161A18(void);
     extern float lbl_8055E750;
     extern float lbl_80562744;
     extern float lbl_80562748;
-    ((void (*)(void))(*(void ***)lbl_8055E744)[3])();
+    struct Dummy {
+        virtual void d0();
+        virtual void d1();
+        virtual void d2();
+        virtual void d3();
+        virtual void d4();
+        virtual void d5();
+        virtual void d6();
+        virtual int d7();
+    };
+    ((Dummy *)lbl_8055E744)->d1();
     fn_80161A18();
-    if (((int (*)(void))(*(void ***)lbl_8055E744)[9])() != 0)
+    if (((Dummy *)lbl_8055E744)->d7() != 0)
         lbl_8055E750 += lbl_80562748;
     else
         lbl_8055E750 = lbl_80562744;
 }
-
+#pragma cplusplus off
 void fn_801B8488(void) {
 
 }
