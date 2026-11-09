@@ -37,11 +37,8 @@ void fn_801EA1FC(void) {
 
 #pragma dont_inline reset
 void fn_801EA2E8(void) {
-    f32 a = lbl_80562E40;
-    f32 b = lbl_80562E48;
-    f32 c = lbl_80562E4C;
     fn_801EA1FC();
-    fn_802C974C(a, b, c);
+    fn_802C974C(lbl_80562E40, lbl_80562E48, lbl_80562E4C);
 }
 void fn_801EA318(void) {
 
