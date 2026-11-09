@@ -1182,7 +1182,7 @@ void fn_8014DB94(void *arg0) {
     obj = *(void **)((u8 *)arg0 + 0x68);
     f2 = lbl_80561648;
     f0 = *(f32 *)((u8 *)obj + 0x8DC) - *(f32 *)((u8 *)obj + 0x8D4);
-    if (f2 <= f0) f2 = f0;
+    if (f2 > f0) f2 = f2; else f2 = f0;
     fn_801CB648(*(void **)arg0, 0, *(f32 *)((u8 *)obj + 0x8DC) - f2);
 }
 
@@ -2719,18 +2719,10 @@ void fn_80153900(void *arg0, s32 arg1) {
 }
 
 void fn_801539C0(s32 arg0, s32 arg1) {
-    s32 offset = fn_801E866C(arg1) * 0xC0;
-    s32 p = arg0 + offset;
-    p += 0x9E4;
-    if (p != 0) {
-        s32 value;
-        if (fn_801E85A4() != 2) goto use_other;
-        value = lbl_8055E23C;
-        goto call;
-    use_other:
-        value = lbl_8055E238;
-    call:
-        fn_8014CA48(p, value, arg1);
+    s32 temp_r31 = arg0 + (fn_801E866C(arg1) * 0xC0) + 0x9E4;
+    if (temp_r31 != 0) {
+        s32 var_r4 = (fn_801E85A4() == 2) ? lbl_8055E23C : lbl_8055E238;
+        fn_8014CA48(temp_r31, var_r4, arg1);
     }
 }
 
