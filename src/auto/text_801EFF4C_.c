@@ -162,11 +162,11 @@ extern "C" void fn_801F0148(void *arg0, void *arg1) {
 #define wheelmod_bad_lod_msg lbl_8033A420   /* .data: "wheelmod: bad lod entry in %s: %s" */
 #define WHEELMOD_MAX_LODS 8                 /* lod0 .. lod7 */
 
+#define WHEELMOD_SIDES 2 /* a wheel has one model per side, "L" and "R" */
+
 typedef struct WheelModLod {
-    /* 0x00 */ int slowRemap;         /* slow_remap model, loaded by fn_801F0488 */
-    /* 0x04 */ int pad04;             /* unused, -1 */
-    /* 0x08 */ int fastRemap;         /* fast_remap model, loaded by fn_801F0488 */
-    /* 0x0C */ int pad0C;             /* unused, -1 */
+    /* 0x00 */ int slowRemap[WHEELMOD_SIDES]; /* slow_remap models, "<base><lod>L/R.mod" */
+    /* 0x08 */ int fastRemap[WHEELMOD_SIDES]; /* fast_remap models, same names, fast group */
     /* 0x10 */ float distSq;          /* distance^2 at which this LOD takes over */
     /* 0x14 */ unsigned char yesFlag; /* the entry's flag word held a 'y' */
     /* 0x15 */ unsigned char pad15[3];
@@ -176,7 +176,10 @@ typedef struct WheelMod {
     /* 0x00 */ char name[0x10];       /* the wheel's name, fn_801F09FC's key */
     /* 0x10 */ int slowRemapGroup;    /* model group of the slow_remap models */
     /* 0x14 */ int fastRemapGroup;    /* model group of the fast_remap models */
-    /* 0x18 */ unsigned char pad18[0x10];
+    /* 0x18 */ float tireRadius;      /* "tire_diameter" in inches, halved into metres */
+    /* 0x1C */ float rimRadius;       /* "rim_diameter", likewise */
+    /* 0x20 */ float width;           /* "width" in metres; 0 leaves the model unscaled */
+    /* 0x24 */ float modelScale;      /* width over the first model's X extent, else 1.0 */
     /* 0x28 */ WheelModLod lods[WHEELMOD_MAX_LODS];
     /* 0xE8 */ int lodCount;          /* how many lod%d entries were found */
 } WheelMod;
