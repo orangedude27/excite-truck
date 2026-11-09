@@ -11,7 +11,6 @@ extern void WUDiMoveTopStdDevInfoPtr(unsigned char *);
 #include "revolution/BTE/stack/btm/btm_int.h"
 #define btsnd_hcic_reject_conn btsnd_hcic_reject_conn_public
 #define btsnd_hcic_reject_esco_conn btsnd_hcic_reject_esco_conn_public
-#define btsnd_hcic_read_stored_key btsnd_hcic_read_stored_key_public
 #define btsnd_hcic_accept_conn btsnd_hcic_accept_conn_public
 #define btsnd_hcic_write_cur_iac_lap btsnd_hcic_write_cur_iac_lap_hcimsgs
 #define btsnd_hcic_exit_sniff_mode btsnd_hcic_exit_sniff_mode_api
