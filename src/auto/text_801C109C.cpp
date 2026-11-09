@@ -409,11 +409,12 @@ extern "C" void fn_801C1B9C(void) {
 extern "C" void fn_801C1BA0(void) {
 }
 
-int fn_801C1BA4(int arg0, int arg1, int arg2) {
+extern "C" int fn_801C1BA4(int arg0, int arg1, int arg2) {
     int result;
     result = fn_801284F8(0x70, &lbl_8055A950);
-    if (result == 0) return result;
-    fn_801C109C(arg0, arg1, arg2, 0);
+    if (result != 0) {
+        fn_801C109C(result, arg0, arg1, arg2, 0);
+    }
     return result;
 }
 
