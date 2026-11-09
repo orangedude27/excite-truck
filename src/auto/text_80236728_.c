@@ -662,6 +662,25 @@ void fn_802379EC(void *arg0) {
 void fn_80237A04(void) {
 }
 
+void *fn_80237A08(void *arg0, int arg1) {
+    struct Object { int field0; int field4; int field8; };
+    struct Object *object = (struct Object *)arg0;
+    if (arg0 != 0) {
+        int value = object->field4;
+        if (value == 0) goto reset;
+        if (value == 0) goto reset;
+        fn_80128670(value - 0x10);
+    reset:
+        object->field0 = -1;
+        object->field8 = 0;
+        object->field4 = 0;
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
+}
+
 void fn_80237A84(void *arg0) {
     *(int *)arg0 = -1;
     *(int *)((char *)arg0 + 8) = 0;
