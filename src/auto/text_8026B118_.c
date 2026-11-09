@@ -277,11 +277,9 @@ void fn_8026B6D0(void) {
 void fn_8026B6E4(void) {
     int i;
     if (lbl_8055F4C8 > 0) {
-        i = 0;
-        do {
+        for (i = 0; i < fn_801B2F24(); i++) {
             fn_8026B3D4(i);
-            i++;
-        } while (i < fn_801B2F24());
+        }
     }
 }
 
