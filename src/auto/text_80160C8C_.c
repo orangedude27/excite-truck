@@ -868,18 +868,22 @@ s32 fn_80161C38(void) {
     return (s32)(tmp >> 31);
 }
 
-s32 fn_80161C4C(void) {
-    void *obj = (void *)lbl_8055E300;
-    void **vtable;
-    s32 (*fn)(void);
-    if (obj != 0) {
-        vtable = *(void ***)obj;
-        fn = (s32 (*)(void))vtable[0x50 / 4];
-        return fn();
+#pragma cplusplus on
+extern "C" s32 fn_80161C4C(void) {
+    struct Dummy {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual s32 v18();
+    };
+    Dummy *p = (Dummy *)lbl_8055E300;
+    if (p != 0) {
+        return p->v18();
     }
     return 1;
 }
-
+#pragma cplusplus off
 s32 fn_80161C70(void) {
     void *obj = (void *)lbl_8055E300;
     if (obj != 0) {
@@ -2644,11 +2648,11 @@ int fn_80164CF8(int arg0, int arg1) {
 }
 
 void fn_80164D38(void *arg0) {
-    *(volatile unsigned char *)((char *)arg0 + 4) = 0;
-    *(volatile int *)((char *)arg0 + 8) = 1;
-    *(volatile unsigned char *)((char *)arg0 + 5) = 0;
-    *(volatile unsigned char *)((char *)arg0 + 6) = 0;
-    *(volatile unsigned char *)((char *)arg0 + 7) = 0;
+    ((unsigned char *)arg0)[4] = 0;
+    ((int *)((char *)arg0 + 8))[0] = 1;
+    ((unsigned char *)arg0)[5] = 0;
+    ((unsigned char *)arg0)[6] = 0;
+    ((unsigned char *)arg0)[7] = 0;
 }
 
 void fn_80164D58(void) {
