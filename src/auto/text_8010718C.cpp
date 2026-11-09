@@ -59,11 +59,10 @@ public:
 class FileStream50 : public IOStream50 {};
 } // namespace ut
 } // namespace nw4hbm
-extern "C" void Seek__Q36nw4hbm2ut10FileStreamFlUl(void* this_, s32 off,
+extern "C" void Seek__Q36nw4hbm2ut10FileStreamFlUl(nw4hbm::ut::FileStream50* this_,
+                                                   s32 off,
                                                    u32 origin) {
-    void** vtable = *(void***)this_;
-    u32 result = ((u32(*)(void*, s32, u32))(vtable[0x14]))(this_, off, origin);
-    if (result == 0) {
+    if (this_->Seek(off, origin) == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80328458, 0x2C,
                                      (const char*)lbl_8032846C);
     }
