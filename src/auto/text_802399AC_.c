@@ -498,7 +498,7 @@ success:
 }
 
 #pragma push
-#pragma scheduling off
+#pragma scheduling on
 void fn_8023AFD0(void *arg0) {
     s32 temp_r28;
     s32 temp_r29;
