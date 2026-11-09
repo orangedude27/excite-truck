@@ -9946,8 +9946,9 @@ void btm_pm_proc_mode_change(u8 status, u16 handle, u8 mode, u16 interval) {
 
 void fn_8007D4C4(void) {
     extern u32 lbl_802EEBF8[];
-    u8 *dst = lbl_803C0F78;
     u32 *src = lbl_802EEBF8;
+    u8 *dst = lbl_803C0F78;
+
     *(u16 *)(dst + 0x18F6) = 0xFFFF;
     *(u32 *)(dst + 0x18F8) = *src++;
     *(u32 *)(dst + 0x18FC) = *src++;
@@ -21563,7 +21564,7 @@ void rfc_send_sabme(void *arg0, s32 arg1, void *arg2) {
     p_data[0] = (u8)(1 | cr | ((u8)arg1 << 2));
     p_data[1] = command;
     p_data[2] = 1;
-    p_data[3] = fn_8009504C(3, (u8 *)(p_buf + 1) + 9, command);
+    p_data[3] = fn_8009504C(3, (u8 *)(p_buf + 1) + 9);
     p_buf->len = 4;
     rfc_check_send_cmd(arg0, p_buf);
 }
