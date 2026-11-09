@@ -50,6 +50,25 @@ loop_test:
 done:
     return var_r31;
 }
+
+#pragma dont_inline on
+#pragma scheduling invalid_target
+void *fn_8013C7D0(arg0)
+int arg0;
+{
+    int *var_r4;
+    var_r4 = (int *)&lbl_8032C478;
+    while (1) {
+        if (arg0 == *(var_r4 + 1)) {
+            break;
+        }
+        var_r4 += 3;
+        if (*var_r4 == 0) {
+            break;
+        }
+    }
+    return var_r4;
+}
 #pragma scheduling on
 #pragma dont_inline off
 
@@ -103,13 +122,13 @@ report_error:
 #pragma dont_inline off
 #pragma cplusplus off
 
-#pragma inline off
+#pragma dont_inline on
 void fn_8013C8B8(void) {
     fn_8013C748();
     fn_80131818(lbl_8055E188);
     lbl_8055E188 = 0;
 }
-#pragma inline auto
+#pragma dont_inline off
 void *fn_8013C770();
 extern int lbl_8055E188;
 void fn_80131818(int);
