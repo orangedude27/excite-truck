@@ -410,15 +410,15 @@ extern "C" s32 fn_80109040(s32 arg0, s32 arg1) {
 
 extern "C" void SetResourceBuffer__Q46nw4hbm2ut6detail11ResFontBaseFPvPQ36nw4hbm2ut15FontInformation(void* self, void* resource, void* info) {
     const char* file=lbl_80329140;
-    u32 value=(u32)resource;
+    u32 resourceAddr=(u32)resource;
     int a=1,b=1,c=1,d=1,e=1,f=1;
-    u32 t=value&0xFF000000U;
-    if(t!=0x80000000U&&(value&0xFF800000U)!=0x81000000U)f=0;
-    if(f==0&&(value&0xF8000000U)!=0x90000000U)e=0;
+    u32 t=resourceAddr&0xFF000000U;
+    if(t!=0x80000000U&&(resourceAddr&0xFF800000U)!=0x81000000U)f=0;
+    if(f==0&&(resourceAddr&0xF8000000U)!=0x90000000U)e=0;
     if(e==0&&t!=0xC0000000U)d=0;
-    if(d==0&&(value&0xFF800000U)!=0xC1000000U)c=0;
-    if(c==0&&(value&0xF8000000U)!=0xD0000000U)b=0;
-    if(b==0&&(value&0xFFFFC000U)!=0xE0000000U)a=0;
+    if(d==0&&(resourceAddr&0xFF800000U)!=0xC1000000U)c=0;
+    if(c==0&&(resourceAddr&0xF8000000U)!=0xD0000000U)b=0;
+    if(b==0&&(resourceAddr&0xFFFFC000U)!=0xE0000000U)a=0;
     if(a==0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x4F,file+0x20,resource);
     u32 v=(u32)info;
     int g=1,h=1,i=1,j=1,k=1,l=1;
@@ -1473,6 +1473,40 @@ extern "C" s32 GetFont__Q36nw4hbm2ut10CharWriterCFv_8010DB5C(s32 arg0) {
     if ((var_r6 == 0) && (((u32)((arg0 & 0xFFFFC000) + 0x20000000)) >= 1U)) var_r5 = 0;
     if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329560, 0x15A, lbl_80329578, arg0);
     return *(s32 *)(arg0 + 0x54);
+}
+
+extern "C" f32 fn_8010F81C(void *writer, s32 arg1, s32 arg2);
+extern "C" f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(void *);
+extern "C" f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(void *);
+extern "C" f32 fn_8010DC74(void *writer, const char *fmt, ...) {
+    va_list args;
+    char *buf;
+    int len;
+    unsigned char copy[0x60];
+    unsigned char *s = (unsigned char *)writer;
+    int i;
+    f32 w;
+    f32 h1;
+    f32 h2;
+
+    va_start(args, fmt);
+    if (lbl_8055DEB0 != 0) {
+        buf = lbl_8055DEB0;
+    } else {
+        buf = (char *)(((unsigned int)alloca((unsigned int)lbl_80559928) + 7) & ~(unsigned int)7);
+    }
+    len = vsnprintf(buf, (unsigned int)lbl_80559928, fmt, args);
+    va_end(args);
+
+    s = (unsigned char *)writer;
+    for (i = 0; i < 0x60; i++) copy[i] = s[i];
+
+    w = fn_8010F81C(copy, (s32)buf, len);
+    h1 = GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(copy);
+    h2 = GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(copy);
+    SetCursor__Q36nw4hbm2ut10CharWriterFff((s32)writer, h1, h2);
+    fn_801033F0(copy, 0);
+    return w;
 }
 
 extern "C" s32 fn_8010E3BC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
