@@ -5770,7 +5770,7 @@ extern "C" int lbl_8033E458[];
 extern "C" void *fn_80223800(void *arg0, s32 arg1, s32 arg2, s32 arg3, void *arg4) {
     ((void (*)(void))fn_802230A4)();
     *(void **)((u8 *)arg0 + 0x420) = arg4;
-    *(void **)arg0 = &lbl_8033E458;
+    *(void **)arg0 = lbl_8033E458;
     if (arg4 != 0) {
         fn_80219440(arg0, 0, arg4, 4);
     }
