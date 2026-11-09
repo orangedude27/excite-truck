@@ -242,20 +242,19 @@ void fn_8027847C(void *arg0) {
 
 #pragma pop
 void fn_80278778(char *arg0) {
-    int i;
-    char *dst;
+    int remaining;
+    char *destination;
     if ((unsigned char)lbl_8055F5B8 != 0) {
         fn_802E30C8(lbl_80347660);
         return;
     }
-    dst = lbl_804A15D0;
-    for (i = 0x100; i > 0; i--) {
-    }
-    dst[-1] = 0;
-    while (1) {
-        char c = *arg0++;
-        *dst++ = c;
-        if (c == 0) break;
+    destination = lbl_804A15D0;
+    remaining = 0x100;
+    while ((*destination++ = *arg0++) != '\0') {
+        if (--remaining > 0)
+            continue;
+        destination[-1] = '\0';
+        break;
     }
     lbl_8055F5B9 = 1;
     lbl_8055F5BA = 0;
