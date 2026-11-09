@@ -569,14 +569,23 @@ int fn_801B8A20(void *arg0) {
     return 0;
 }
 
-int fn_801B8A44(void *arg0) {
-    if (lbl_8055E748 != 0) {
-        volatile void **vt = *(volatile void ***)arg0;
-        return ((int (*)(void *))vt[8])(arg0);
+#pragma cplusplus on
+extern "C" int fn_801B8A44(void *arg0) {
+    struct Dummy {
+        virtual void d0();
+        virtual void d1();
+        virtual void d2();
+        virtual void d3();
+        virtual void d4();
+        virtual void d5();
+        virtual int d6();
+    };
+    if (*(unsigned char *)&lbl_8055E748 != 0) {
+        return ((Dummy *)arg0)->d6();
     }
     return 0;
 }
-
+#pragma cplusplus off
 void fn_801B8A68(void *arg0, int arg1) {
     extern void fn_801B0C78(void *);
     fn_801B0C78((void *)arg1);
