@@ -1149,7 +1149,9 @@ typedef struct AchievementRow {
 extern char lbl_80344E20[];
 #pragma cplusplus on
 extern "C" void fn_8025B520(void *arg0) {
-    class Obj {
+    // The "achieve tally" banner of the results/pause screen (lbl_8055F394);
+    // slots 12 and 14 are the ones fn_8025B788 uses as show() and setProgress().
+    class AchievementBanner {
     public:
         virtual void m0();
         virtual void m1();
@@ -1163,9 +1165,9 @@ extern "C" void fn_8025B520(void *arg0) {
         virtual void m9();
         virtual void m10();
         virtual void m11();
-        virtual void show(char *);
+        virtual void show(char *name);
         virtual void m13();
-        virtual void setProgress(char *, float);
+        virtual void setProgress(char *name, float amount);
     };
     AchievementRow *row = (AchievementRow *)arg0;
     float start;
@@ -1189,10 +1191,12 @@ extern "C" void fn_8025B520(void *arg0) {
     int shownLeft;
     unsigned char *shownDst;
 
+    // The row starts at its start value rather than counting up to it from zero.
     start = (float)row->startValue;
     row->progress = start;
-    value = (int)(start + lbl_80558DC4);
+    value = (int)(start + lbl_80558DC4);  // 2^-23 bias, then truncate
     fn_80130FCC(row->progressText, 0x14, value);
+    // A results-screen row keeps its threshold name hidden until it is finished.
     showName = 1;
     if (row->flagC4 != 0) {
         if (row->done != 0 || row->flagC5 == 0) {
@@ -1205,7 +1209,7 @@ extern "C" void fn_8025B520(void *arg0) {
     if (result >= 0) {
         fn_80130FCC(row->goalText, 0x14, result);
     } else {
-        goalDst = (unsigned char *)(row->goalText);
+        goalDst = (unsigned char *)(row->goalText);  // last threshold: blank the text
         goalSrc = lbl_8055C380;
         goalLeft = 0x14;
         goto goal_copy;
@@ -1236,7 +1240,7 @@ name_copy:
         if ((signed char)nameC == 0) goto name_done;
         goto name_next;
     } else {
-        blankDst = (unsigned char *)(row->rankName);
+        blankDst = (unsigned char *)(row->rankName);  // nothing named: blank it
         blankSrc = lbl_8055C380;
         blankLeft = 0x32;
         goto blank_copy;
@@ -1251,15 +1255,20 @@ blank_copy:
         if ((signed char)blankC != 0) goto blank_next;
     }
 name_done:
+    // Counting state cleared: the row is not done and has no result sound queued.
     row->done = 1;
     row->soundPending = 0;
     row->soundId = -0x3E8;
     if (row->flagC4 != 0) {
-        ((Obj *)lbl_8055F394)->setProgress(lbl_80344E20, lbl_80563AE4);
-        ((Obj *)lbl_8055F394)->show(lbl_80344E20);
+        // restart the tally banner ("achieve_tally", the same name fn_8025B788
+        // fills in) from zero progress and show it again
+        ((AchievementBanner *)lbl_8055F394)->setProgress(lbl_80344E20, lbl_80563AE4);
+        ((AchievementBanner *)lbl_8055F394)->show(lbl_80344E20);
     }
-    fn_80214A9C(0x10);
+    fn_80214A9C(0x10);  // fade the next-threshold and goal-reached elements out
     fn_80214A9C(0xD);
+    // The threshold name counts as announced already: fn_8025B788 only reports
+    // a name to the achievement list when it changes.
     shownSrc = (unsigned char *)(row->rankName);
     shownDst = (unsigned char *)(row->shownRankName);
     shownLeft = 0x32;
