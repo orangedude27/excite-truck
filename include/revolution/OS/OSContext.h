@@ -7,6 +7,10 @@ extern "C" {
 
 typedef enum {
     OS_CONTEXT_STATE_FP_SAVED = (1 << 0),
+    // The context also holds the caller-saved registers r5-r12: OSLoadContext()
+    // restores r5-r31 instead of r13-r31 and clears this as it goes, and the
+    // scheduler (SelectThread) sees no need to OSSaveContext() over them.
+    OS_CONTEXT_STATE_GPRS_SAVED = (1 << 1),
 } OSContextState;
 
 typedef struct OSContext {
