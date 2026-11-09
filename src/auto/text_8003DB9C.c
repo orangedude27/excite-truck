@@ -3602,7 +3602,7 @@ void GXInitTlutRegion(unsigned int *region, int tmem_addr, int tlut_name) {
         unsigned int name : 11;
         unsigned int addr : 10;
     } value = {0, 0, 0, 0};
-    value.addr = tmem_addr - 0x80000;
+    value.addr = (unsigned int)(tmem_addr - 0x80000) >> 9;
     value.name = tlut_name;
     value.type = 0x65;
     *region = *(unsigned int *)&value;
