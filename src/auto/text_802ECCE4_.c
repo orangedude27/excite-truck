@@ -68,8 +68,8 @@ void fn_802ECF00(void) {
     fn_802ECE48();
 }
 
-void fn_802ECF04(void) {
-    (void)fn_802ECDF4();
+s32 fn_802ECF04(void) {
+    return fn_802ECDF4();
 }
 
 void *fn_802ECF08(void *arg0, s32 arg1) {
