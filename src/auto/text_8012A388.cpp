@@ -176,16 +176,20 @@ extern "C" s32 fn_8012A470(void *arg0, s32 arg1, void *arg2, void *arg3) {
 #pragma use_lmw_stmw reset
 #pragma dont_inline reset
 #pragma dont_inline on
-extern "C" void *fn_8012A570(u32, void *) {
+extern "C" void *fn_8012A570(u32 arg0, void *arg1) {
+    void *value;
+    (void)arg0;
+    (void)arg1;
     if (lbl_8055E004 == 0) {
-        void *name = lbl_8032A6F8;
-        void *p = fn_801284F8(0x20, name);
-        if (p) p = fn_8012A13C(p, lbl_8032A6F8, 0x20, 0x18);
-        lbl_8055E008 = (void **)p;
+        value = fn_801284F8(0x20, lbl_8032A6F8);
+        if (value != 0) {
+            value = (void *)fn_8012A13C(value, lbl_8032A6F8, 0x20, 0x18);
+        }
+        lbl_8055E008 = (void **)value;
     }
-    void *p = fn_8012A2D8(lbl_8055E008);
-    if (p) ++lbl_8055E004;
-    return p;
+    if (fn_8012A2D8(lbl_8055E008) != 0) {
+        lbl_8055E004 += 1;
+    }
 }
 #pragma dont_inline reset
 extern "C" void fn_8012A5E8(void *arg0) {
@@ -593,7 +597,7 @@ done2:
 #pragma pop
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" s32 lbl_80559984;
-extern "C" char lbl_805599AC;
+extern "C" char lbl_805599AC[];
 extern "C" s32 fn_8012B2C4(s32, s32, s32);
 extern "C" void *fn_8012B314(s32 arg0, s32 arg1, s32 arg2) {
     return (void *)fn_8012B2C4(arg1, arg0, arg2);
