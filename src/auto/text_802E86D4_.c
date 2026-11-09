@@ -59,13 +59,13 @@ extern "C" void fn_802E86D4(void) {
     ((Dispatch *)lbl_80560024)->f0();
     lbl_80560028 = 1;
 }
-#pragma cplusplus reset
-void fn_802E870C(void) {
-    void **vptr = *(void ***)lbl_80560024;
-    ((void (*)(void *))vptr[3])(lbl_80560024);
+#pragma cplusplus on
+extern "C" void fn_802E870C(void) {
+    class Cb { public: virtual void v0(); virtual void v1(); };
+    ((Cb *)lbl_80560024)->v1();
     lbl_80560028 = 0;
 }
-
+#pragma cplusplus off
 extern int fn_80131234(int, int, int, int, int, int, int, int);
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
