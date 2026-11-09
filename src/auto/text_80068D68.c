@@ -1,5 +1,6 @@
 extern unsigned char lbl_80313E90[];
 extern unsigned char lbl_803935C8[];
+extern unsigned char lbl_803C3AF0[];
 extern void WUDiMoveTopStdDevInfoPtr(unsigned char *);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -9947,7 +9948,6 @@ void fn_8007D4C4(void) {
     extern u32 lbl_802EEBF8[];
     u8 *dst = lbl_803C0F78;
     u32 *src = lbl_802EEBF8;
-
     *(u16 *)(dst + 0x18F6) = 0xFFFF;
     *(u32 *)(dst + 0x18F8) = *src++;
     *(u32 *)(dst + 0x18FC) = *src++;
