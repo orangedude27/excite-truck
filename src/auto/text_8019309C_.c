@@ -372,18 +372,19 @@ void fn_80193870(void *arg0) {
 }
 
 void fn_80193878(void *arg0) {
+    float t = lbl_80562144;
     float a[3], b[3], low[3];
     void *obj;
-    low[0] = lbl_8056217C;
-    low[1] = lbl_80562144;
-    low[2] = lbl_80562144;
-    a[0] = lbl_80562144;
-    a[1] = lbl_80562144;
+    a[0] = t;
+    a[1] = t;
     a[2] = lbl_80562178;
+    low[0] = lbl_8056217C;
+    low[1] = t;
+    low[2] = t;
     obj = *(void **)((unsigned char *)arg0 + 0x294);
     b[0] = *(float *)((unsigned char *)obj + 0x94) + low[0];
-    b[1] = *(float *)((unsigned char *)obj + 0x98) + a[0];
-    b[2] = *(float *)((unsigned char *)obj + 0x9C) + a[0];
+    b[1] = *(float *)((unsigned char *)obj + 0x98) + t;
+    b[2] = *(float *)((unsigned char *)obj + 0x9C) + t;
     fn_8017B4E0(*(void **)((unsigned char *)arg0 + 0x294), a, b, lbl_80562140);
 }
 
@@ -764,9 +765,9 @@ extern float lbl_80562140, lbl_80562144;
   extern void fn_8018ADAC(void *, float);
 #pragma scheduling invalid_target
 void fn_80194170(void *arg0, float arg1) {
-    double value = lbl_80562140 > arg1 ? lbl_80562140 : arg1;
-    value = value < lbl_80562144 ? value : lbl_80562144;
-    *(float *)((char *)arg0 + 0x240) = (float)value;
+    double value = lbl_80562140 < arg1 ? lbl_80562140 : arg1;
+    value = value > lbl_80562144 ? value : lbl_80562144;
+    *(float *)((char *)arg0 + 0x240) = value;
     fn_8018ADB4(*(int *)((char *)arg0 + 0x294), (float)value);
 }
 #pragma scheduling invalid_target
@@ -1071,10 +1072,14 @@ float fn_801948B0(void *arg0, int arg1, float arg2) {
 #pragma scheduling invalid_target
 void fn_80194AF4(void *unused, float *out, float *a, float *b, float t) {
     volatile double pair;
-    union { double d; float f[2]; } temp;
-    temp.f[1] = a[1] + t * (b[1] - a[1]);
-    temp.f[0] = a[0] + t * (b[0] - a[0]);
-    pair = temp.d;
+    float temp[2];
+    float dy = b[1] - a[1];
+    float dx = b[0] - a[0];
+    float ty = a[1] + t * dy;
+    float tx = a[0] + t * dx;
+    temp[1] = ty;
+    temp[0] = tx;
+    pair = *(double *)temp;
     out[0] = ((float *)&pair)[0];
     out[1] = ((float *)&pair)[1];
     out[2] = a[2] + t * (b[2] - a[2]);
@@ -1886,8 +1891,7 @@ finish:
   extern void fn_80136EA4(int, int);
   extern void fn_80136E8C(int, int, int);
 void fn_80196328(void *arg0) {
-    float value = lbl_80562140;
-    fn_8018ADBC(*(int *)((char *)arg0 + 0x294), value);
+    fn_8018ADBC(*(int *)((char *)arg0 + 0x294), lbl_80562140);
     fn_8018ADB4(*(int *)((char *)arg0 + 0x294), lbl_80562144);
     fn_8018ADAC(*(void **)((char *)arg0 + 0x294), lbl_80562144);
     fn_8018AE24(*(int *)((char *)arg0 + 0x294), 0);
