@@ -3123,6 +3123,17 @@ s32 fn_8005D234(s32 chan, WPADGameInfo* pInfo)
     return result;
 }
 
+/*
+ * WPAD library state that the game's symbol table leaves unnamed (.sbss
+ * 0x8055DBFD and 0x8055DC00, .data 0x80312130 and 0x80312158). The named WPAD
+ * statics next to them (_regShutdown, _senseCnt, _sleepTime, ...) are declared
+ * at the top of this file.
+ */
+#define wpd_ext_count       lbl_8055DBFD /* u8: 5-tick gate for the extension command queue */
+#define wpd_game_code_count lbl_8055DC00 /* u8[4]: per-channel 5-tick gate to resend the game code */
+#define wpd_shutdown_info   lbl_80312130 /* OSShutdownFunctionInfo: fn_8005D0DC, priority 0x7f */
+#define wpd_init_msg        lbl_80312158 /* "WPADInit()\n" */
+
 // WPADInit(): bring up the WPAD library. Registers the library's shutdown
 // function, starts the Bluetooth stack (WUDInit), powers on the sensor bar,
 // clears the four control blocks, copies the DPD sensitivity / sensor bar
