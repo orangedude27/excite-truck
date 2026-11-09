@@ -113,7 +113,7 @@ extern "C" void *fn_801B4610(void *arg0, int arg1) {
 #pragma pop
 #pragma push
 #pragma small_data off
-extern int lbl_80335DB8;
+__declspec(section ".data") extern int lbl_80335DB8;
 #pragma pop
 extern int fn_8012850C(int, int *);
 extern int fn_802E4CA4(int);
@@ -472,7 +472,8 @@ extern int lbl_8055E6D4;
 #pragma push
 #pragma small_data off
 void fn_801B5274(void) {
-    memset((char *)&lbl_80435C70 + 0x208, 0, 0x40);
+    char *p = (char *)lbl_80435C70 + 0x208;
+    memset(p, 0, 0x40);
     *(int *)((char *)&lbl_80435C70 + 0x200) = 0;
     *(int *)((char *)&lbl_80435C70 + 0x204) = 0;
     lbl_8055E6D8 = 0;
