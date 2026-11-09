@@ -325,20 +325,20 @@ unsigned long *fn_801494D8(void) { return &lbl_80559E94; }
 int fn_801494E0(void) { return 0xFF0000FF; }
 
 void fn_801494EC(void *arg0, float *arg1, float *arg2) {
-    float f2 = arg2[1];
-    float f1 = arg1[0];
-    float f0 = arg2[4];
-    float f4 = f2 + f1;
-    float f2b = arg2[2];
-    float f1b = f0 - f1;
-    float f3 = arg1[1];
-    float f0b = arg2[5];
-    float f2c = f2b + f3;
-    float f0c = f0b - f3;
-    arg2[1] = f4;
-    arg2[4] = f1b;
-    arg2[2] = f2c;
-    arg2[5] = f0c;
+    float a = arg2[1];
+    float b = arg1[0];
+    float c = arg2[4];
+    float d = a + b;
+    float e = arg2[2];
+    float f = c - b;
+    float g = arg1[1];
+    float h = arg2[5];
+    float i = e + g;
+    float j = h - g;
+    arg2[1] = d;
+    arg2[4] = f;
+    arg2[2] = i;
+    arg2[5] = j;
 }
 
 extern unsigned long lbl_80559E94;
@@ -1942,18 +1942,28 @@ s32 fn_8015160C(void) {
     return (fn_80179650() > 1 ? 0x160B : 0x564B) & 0xFFFFFFBF;
 }
 
-void fn_80151654(void *a0, void *a1, s32 selector) {
-    s32 index;
+#pragma cplusplus on
+extern "C" void fn_80151654(void *a0, void *a1, int selector) {
+    struct Obj {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+    };
+    int index;
     void *obj;
     if (selector != 0x3EB) return;
-    index = *(s32 *)((char *)a1 + 0x1EC);
+    index = *(int *)((char *)a1 + 0x1EC);
     obj = (char *)a0 + index * 0xC0;
     obj = (char *)obj + 0x9E4;
     if (obj == 0) return;
-    obj = *(void **)((char *)obj + 0x10);
-    (*(void (**)(void))(*(char **)obj + 0x24))();
+    ((Obj *)*(void **)((char *)obj + 0x10))->v7();
 }
-
+#pragma cplusplus reset
 void fn_80151688(void) {
 
 }
