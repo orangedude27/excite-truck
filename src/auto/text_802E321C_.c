@@ -303,13 +303,20 @@ extern "C" void fn_802E3930(s32 arg0, s32 arg1, s32 arg2) {
     s32 entry = *(s32 *)(obj + 0x24);
     ((Obj *)entry)->v2(arg1, arg2);
 }
-#pragma cplusplus off
-void fn_802E3990(s32 arg0) {
+#pragma cplusplus on
+extern "C" void fn_802E3990(s32 arg0) {
+    class Obj {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+    };
     s32 obj = fn_802E33D8(arg0, lbl_8034CFB4, 0x16c);
     s32 entry = *(s32 *)(obj + 0x24);
-    ((void (*)(s32))(*(s32 **)entry)[5])(entry);
+    ((Obj *)entry)->v3();
 }
-
+#pragma cplusplus off
 s32 fn_802E39D0(s32 arg0, s32 arg1, s32 arg2) {
     s32 sp8 = arg2;
     fn_802E3898(arg0, (const char *)arg1, &sp8);
