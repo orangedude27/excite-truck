@@ -377,6 +377,10 @@ extern float lbl_80560FB0;
 #pragma pop
 extern float lbl_80560F00;
 extern float lbl_80560F04;
+typedef signed short s16;
+#define TYPES_H
+#include "revolution/OS/OSFastCast.h"
+#undef TYPES_H
 #pragma push
 #pragma small_data off
 extern float lbl_80320E38[];
