@@ -2430,39 +2430,46 @@ extern "C" void fn_802180D4();
 extern "C" f32 fabsf(f32);
 #pragma push
 #pragma processor 750
-extern "C" s32 fn_8021C730(void *arg0, s32 arg1) {
-    s32 *p = *(s32 **)((u8 *)arg0 + 0x2a8);
-    if (!p) return 0;
-    if (*(s32 *)((u8 *)arg0 + 0x2ac) != *p) return 0;
-    f32 base = ((V24x *)*(void **)((u8 *)arg0 + 0x2a4))->get();
-    switch (arg1) {
-    case 0x127:
-        if (*(u8 *)((u8 *)arg0 + 0x2d0)) {
-            ((V14x *)*(void **)((u8 *)arg0 + 0x2a4))->get();
-            if ((f32)__fabs((double)(base - ((V24x *)*(void **)((u8 *)arg0 + 0x2a4))->get())) <= *(f32 *)&lbl_80558DC4) fn_80216D28();
+/* Key handler of a menu item that shows a steppable value.  It only reacts
+   while the screen's selection is on this item: Return starts editing and
+   Escape leaves it; while editing the left/right arrows step the value and
+   up/down do nothing, otherwise all four arrows move the selection to the
+   neighbouring item.  A step that leaves the value where it was (it is already
+   at its limit) asks for the screen's key sound to be skipped.  Returns
+   whether the key was used. */
+extern "C" s32 fn_8021C730(MenuValueItem *item, s32 keyCode) {
+    s32 *selectedKey = item->selectedKey;
+    if (!selectedKey) return 0;
+    if (item->key != *selectedKey) return 0;
+    f32 valueBefore = item->value->get();
+    switch (keyCode) {
+    case MENU_KEY_RIGHT:
+        if (item->editing) {
+            item->value->increment();
+            if ((f32)__fabs((double)(valueBefore - item->value->get())) <= *(f32 *)&lbl_80558DC4) fn_80216D28();
             return 1;
         }
-        if (*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x2c) + 0x494) > 1) { fn_802180BC(); return 1; }
+        if (item->screen->entryCount > 1) { ((void (*)(MenuScreen *))MoveSelectionRight)(item->screen); return 1; }
         break;
-    case 0x125:
-        if (*(u8 *)((u8 *)arg0 + 0x2d0)) {
-            ((V18x *)*(void **)((u8 *)arg0 + 0x2a4))->get();
-            if ((f32)__fabs((double)(base - ((V24x *)*(void **)((u8 *)arg0 + 0x2a4))->get())) <= *(f32 *)&lbl_80558DC4) fn_80216D28();
+    case MENU_KEY_LEFT:
+        if (item->editing) {
+            item->value->decrement();
+            if ((f32)__fabs((double)(valueBefore - item->value->get())) <= *(f32 *)&lbl_80558DC4) fn_80216D28();
             return 1;
         }
-        if (*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x2c) + 0x494) > 1) { fn_802180B0(); return 1; }
+        if (item->screen->entryCount > 1) { ((void (*)(MenuScreen *))MoveSelectionLeft)(item->screen); return 1; }
         break;
-    case 0x126:
-        if (!*(u8 *)((u8 *)arg0 + 0x2d0) && *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x2c) + 0x494) > 1) { fn_802180C8(); return 1; }
+    case MENU_KEY_UP:
+        if (!item->editing && item->screen->entryCount > 1) { ((void (*)(MenuScreen *))MoveSelectionUp)(item->screen); return 1; }
         break;
-    case 0x128:
-        if (!*(u8 *)((u8 *)arg0 + 0x2d0) && *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x2c) + 0x494) > 1) { fn_802180D4(); return 1; }
+    case MENU_KEY_DOWN:
+        if (!item->editing && item->screen->entryCount > 1) { ((void (*)(MenuScreen *))MoveSelectionDown)(item->screen); return 1; }
         break;
-    case 0xD:
-        *(s8 *)((u8 *)arg0 + 0x2d0) = !*(u8 *)((u8 *)arg0 + 0x2d0);
+    case MENU_KEY_RETURN:
+        *(s8 *)&item->editing = !item->editing;
         return 1;
-    case 0x1B:
-        if (*(u8 *)((u8 *)arg0 + 0x2d0)) { *(u8 *)((u8 *)arg0 + 0x2d0) = 0; return 1; }
+    case MENU_KEY_ESCAPE:
+        if (item->editing) { item->editing = 0; return 1; }
         return 0;
     }
     return 0;
