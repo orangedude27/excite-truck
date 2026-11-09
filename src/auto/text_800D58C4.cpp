@@ -496,11 +496,10 @@ extern "C" void* __ct__Q34nw4r3lyt8DrawInfoFv(void* arg0) {
     extern char lbl_8031F618[];
     extern void memset(void*, int, unsigned int);
     extern void PSMTXIdentity(void*);
-    register unsigned char* p = (unsigned char*)arg0;
-    register float b = lbl_80560E7C;
-    register float a = lbl_80560E78;
-    register void* vt = (void*)lbl_8031F618;
-    *(void**)p = vt;
+    unsigned char* p = (unsigned char*)arg0;
+    float b = lbl_80560E7C;
+    float a = lbl_80560E78;
+    *(void**)p = (void*)lbl_8031F618;
     *(float*)(p + 0x34) = a;
     *(float*)(p + 0x38) = a;
     *(float*)(p + 0x3C) = a;
@@ -508,9 +507,9 @@ extern "C" void* __ct__Q34nw4r3lyt8DrawInfoFv(void* arg0) {
     *(float*)(p + 0x44) = b;
     *(float*)(p + 0x48) = b;
     *(float*)(p + 0x4C) = b;
-    memset(p + 0x50, 0, 1);
-    PSMTXIdentity(p + 4);
-    return arg0;
+    memset((void*)(p + 0x50), (int)0, (unsigned int)1);
+    PSMTXIdentity((void*)(p + 4));
+    return (void*)p;
 }
 
 extern "C" s32 fn_800D67B8(s32 arg0, s32 arg1) {
@@ -3366,7 +3365,7 @@ extern "C" void DrawSelf__Q36nw4hbm3lyt4PaneFRCQ36nw4hbm3lyt8DrawInfo(void* self
         ((DrawSelfVirt_800D58C4*)self)->v22();
         u32 color = 0xFF00FF;
         GetVtxPosResult pos = GetVtxPos__Q34nw4r3lyt4PaneCFv(self);
-        ((void (*)(void*, void*, void*))DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3lyt6detail4SizeQ36nw4hbm2ut5Color)(&pos, (u8*)self + 0x4C, &color);
+        ((void (*)(void*, void*, void*))DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3lyt4SizeQ36nw4hbm2ut5Color)(&pos, (u8*)self + 0x4C, &color);
     }
 }
 
