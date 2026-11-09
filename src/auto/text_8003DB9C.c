@@ -927,54 +927,106 @@ typedef struct {
 // Written as a cast rather than a local pointer: every case reloads __GXData.
 #define gxdata ((GXVtxDescData *)__GXData)
 
+// Sets how one vertex attribute reaches the geometry pipeline: its GXAttrType is
+// written into the vcdLo/vcdHi vertex descriptor. attr is a GXAttr (the dispatch
+// below is an unsigned compare, so it stays a plain u32). GX_VA_NRM and GX_VA_NBT
+// are the two post-transform normal groups: enabling one only remembers its type
+// and turns the other off, and the descriptor's normal field is rewritten from
+// that at the end. Finally the descriptor is marked dirty so __GXSetDirtyState
+// resends it before the next draw.
 void GXSetVtxDesc(unsigned int attr, unsigned int type) {
     switch (attr) {
-    case 0: __GXData[5] = __rlwimi(__GXData[5], type, 0, 31, 31); break;
-    case 1: __GXData[5] = __rlwimi(__GXData[5], type, 1, 30, 30); break;
-    case 2: __GXData[5] = __rlwimi(__GXData[5], type, 2, 29, 29); break;
-    case 3: __GXData[5] = __rlwimi(__GXData[5], type, 3, 28, 28); break;
-    case 4: __GXData[5] = __rlwimi(__GXData[5], type, 4, 27, 27); break;
-    case 5: __GXData[5] = __rlwimi(__GXData[5], type, 5, 26, 26); break;
-    case 6: __GXData[5] = __rlwimi(__GXData[5], type, 6, 25, 25); break;
-    case 7: __GXData[5] = __rlwimi(__GXData[5], type, 7, 24, 24); break;
-    case 8: __GXData[5] = __rlwimi(__GXData[5], type, 8, 23, 23); break;
-    case 9: __GXData[5] = __rlwimi(__GXData[5], type, 9, 21, 22); break;
-    case 10:
-        if (type) {
-            ((u8 *)__GXData)[0x524] = 1;
-            ((u8 *)__GXData)[0x525] = 0;
-            __GXData[0x520 / 4] = type;
+    case GX_VA_PNMTXIDX:
+        gxdata->vcdLo = GX_BITSET(gxdata->vcdLo, VCD_PNMTXIDX_FIELD, 1, type);
+        break;
+    case GX_VA_TEX0MTXIDX:
+        gxdata->vcdLo = GX_BITSET(gxdata->vcdLo, VCD_TEX0MTXIDX_FIELD, 1, type);
+        break;
+    case GX_VA_TEX1MTXIDX:
+        gxdata->vcdLo = GX_BITSET(gxdata->vcdLo, VCD_TEX1MTXIDX_FIELD, 1, type);
+        break;
+    case GX_VA_TEX2MTXIDX:
+        gxdata->vcdLo = GX_BITSET(gxdata->vcdLo, VCD_TEX2MTXIDX_FIELD, 1, type);
+        break;
+    case GX_VA_TEX3MTXIDX:
+        gxdata->vcdLo = GX_BITSET(gxdata->vcdLo, VCD_TEX3MTXIDX_FIELD, 1, type);
+        break;
+    case GX_VA_TEX4MTXIDX:
+        gxdata->vcdLo = GX_BITSET(gxdata->vcdLo, VCD_TEX4MTXIDX_FIELD, 1, type);
+        break;
+    case GX_VA_TEX5MTXIDX:
+        gxdata->vcdLo = GX_BITSET(gxdata->vcdLo, VCD_TEX5MTXIDX_FIELD, 1, type);
+        break;
+    case GX_VA_TEX6MTXIDX:
+        gxdata->vcdLo = GX_BITSET(gxdata->vcdLo, VCD_TEX6MTXIDX_FIELD, 1, type);
+        break;
+    case GX_VA_TEX7MTXIDX:
+        gxdata->vcdLo = GX_BITSET(gxdata->vcdLo, VCD_TEX7MTXIDX_FIELD, 1, type);
+        break;
+    case GX_VA_POS:
+        gxdata->vcdLo = GX_BITSET(gxdata->vcdLo, VCD_POS_FIELD, 2, type);
+        break;
+    case GX_VA_NRM:
+        if (type != GX_NONE) {
+            gxdata->normal = TRUE;
+            // GX_VA_NRM and GX_VA_NBT should not be enabled at the same time
+            gxdata->binormal = FALSE;
+            gxdata->normalType = type;
         } else {
-            ((u8 *)__GXData)[0x524] = 0;
+            gxdata->normal = FALSE;
         }
         break;
-    case 11:
-        if (type) {
-            ((u8 *)__GXData)[0x525] = 1;
-            ((u8 *)__GXData)[0x524] = 0;
-            __GXData[0x520 / 4] = type;
+    case GX_VA_NBT:
+        if (type != GX_NONE) {
+            gxdata->binormal = TRUE;
+            // GX_VA_NRM and GX_VA_NBT should not be enabled at the same time
+            gxdata->normal = FALSE;
+            gxdata->normalType = type;
         } else {
-            ((u8 *)__GXData)[0x525] = 0;
+            gxdata->binormal = FALSE;
         }
         break;
-    case 12: __GXData[5] = __rlwimi(__GXData[5], type, 13, 17, 18); break;
-    case 13: __GXData[5] = __rlwimi(__GXData[5], type, 15, 15, 16); break;
-    case 14: __GXData[6] = __rlwimi(__GXData[6], type, 0, 30, 31); break;
-    case 15: __GXData[6] = __rlwimi(__GXData[6], type, 2, 28, 29); break;
-    case 16: __GXData[6] = __rlwimi(__GXData[6], type, 4, 26, 27); break;
-    case 17: __GXData[6] = __rlwimi(__GXData[6], type, 6, 24, 25); break;
-    case 18: __GXData[6] = __rlwimi(__GXData[6], type, 8, 22, 23); break;
-    case 19: __GXData[6] = __rlwimi(__GXData[6], type, 10, 20, 21); break;
-    case 20: __GXData[6] = __rlwimi(__GXData[6], type, 12, 18, 19); break;
-    case 21: __GXData[6] = __rlwimi(__GXData[6], type, 14, 16, 17); break;
-    case 25: break;
+    case GX_VA_CLR0:
+        gxdata->vcdLo = GX_BITSET(gxdata->vcdLo, VCD_CLR0_FIELD, 2, type);
+        break;
+    case GX_VA_CLR1:
+        gxdata->vcdLo = GX_BITSET(gxdata->vcdLo, VCD_CLR1_FIELD, 2, type);
+        break;
+    case GX_VA_TEX0:
+        gxdata->vcdHi = GX_BITSET(gxdata->vcdHi, VCD_TC0_FIELD, 2, type);
+        break;
+    case GX_VA_TEX1:
+        gxdata->vcdHi = GX_BITSET(gxdata->vcdHi, VCD_TC1_FIELD, 2, type);
+        break;
+    case GX_VA_TEX2:
+        gxdata->vcdHi = GX_BITSET(gxdata->vcdHi, VCD_TC2_FIELD, 2, type);
+        break;
+    case GX_VA_TEX3:
+        gxdata->vcdHi = GX_BITSET(gxdata->vcdHi, VCD_TC3_FIELD, 2, type);
+        break;
+    case GX_VA_TEX4:
+        gxdata->vcdHi = GX_BITSET(gxdata->vcdHi, VCD_TC4_FIELD, 2, type);
+        break;
+    case GX_VA_TEX5:
+        gxdata->vcdHi = GX_BITSET(gxdata->vcdHi, VCD_TC5_FIELD, 2, type);
+        break;
+    case GX_VA_TEX6:
+        gxdata->vcdHi = GX_BITSET(gxdata->vcdHi, VCD_TC6_FIELD, 2, type);
+        break;
+    case GX_VA_TEX7:
+        gxdata->vcdHi = GX_BITSET(gxdata->vcdHi, VCD_TC7_FIELD, 2, type);
+        break;
+    case GX_LIGHT_ARRAY: // vertex light indices: nothing to describe
+        break;
     }
-    if (((u8 *)__GXData)[0x524] || ((u8 *)__GXData)[0x525]) {
-        __GXData[5] = __rlwimi(__GXData[5], __GXData[0x520 / 4], 11, 19, 20);
+
+    if (gxdata->normal || gxdata->binormal) {
+        gxdata->vcdLo = GX_BITSET(gxdata->vcdLo, VCD_NRM_FIELD, 2, gxdata->normalType);
     } else {
-        __GXData[5] &= 0xFFFFE7FF;
+        gxdata->vcdLo &= 0xFFFFE7FF; // clear the normal field
     }
-    __GXData[0x5FC / 4] |= 8;
+
+    gxdata->dirtyState |= DIRTY_VCD;
 }
 
 void GXSetVtxDescv(unsigned int *desc) {
