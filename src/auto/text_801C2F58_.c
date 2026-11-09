@@ -2428,13 +2428,17 @@ void fn_801C855C(void) {
 }
 
 void fn_801C9444(void) {
-    s32 *p = (s32 *)lbl_8055E86C;
-    int i = 0;
+    s32 zero = 0;
+    s32 off = 0;
+    s32 i = 0;
+    u8 *base;
     do {
-        fn_80128670(*p);
+        base = lbl_8055E86C;
+        fn_80128670(*(s32 *)(base + off));
+        base = lbl_8055E86C;
         i++;
-        *p = 0;
-        p++;
+        *(s32 *)(base + off) = zero;
+        off += 0x10;
     } while (i < 0x21);
     fn_80128670((s32)lbl_8055E86C);
     lbl_8055E86C = 0;
