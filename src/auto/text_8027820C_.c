@@ -38,17 +38,19 @@ void fn_80278210(void) {}
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_80278214(void) {
-    lbl_8055F5B4 = 0;
-    lbl_8055F5C8 = 0;
-    lbl_8055F5BB = 0;
-    lbl_8055F5BA = 0;
-    lbl_8055F5B9 = 0;
-    lbl_8055F5BC = -1;
-    lbl_8055F5C4 = -1;
-    lbl_8055F5B8 = 0;
+    int minus = -1;
+    int zero = 0;
+    lbl_8055F5B4 = zero;
+    lbl_8055F5C8 = zero;
+    lbl_8055F5BB = zero;
+    lbl_8055F5BA = zero;
+    lbl_8055F5B9 = zero;
+    lbl_8055F5BC = minus;
+    lbl_8055F5C4 = minus;
+    lbl_8055F5B8 = zero;
     lbl_8055F5B0 = (int)fn_8002F37C(
-        (void *)fn_8012850C(0x80, lbl_80347580, 0),
-        fn_80278284, 0, 0x38, 2);
+        (void *)fn_8012850C(0x80, lbl_80347580, zero),
+        fn_80278284, zero, 0x38, 2);
 }
 #pragma scheduling on
 #pragma pop
@@ -291,7 +293,7 @@ extern float lbl_805640BC;
 void *fn_802678E4(int);
 
 extern int lbl_8055F5BC;
-extern float lbl_805640B0;
+extern double lbl_805640B0;
 #pragma scheduling invalid_target
 void fn_8027889C(float arg0) {
     float t;
@@ -306,8 +308,8 @@ void fn_8027889C(float arg0) {
 }
 #pragma scheduling on
 int fn_80278924(float *arg0, float *arg1) {
-    int result = 0;
     float scale = lbl_805640B8;
+    int result = 0;
     *arg0 = scale * (float)lbl_8055F5C0;
     *arg1 = scale * (float)lbl_8055F5BC;
     if (lbl_8055F5C0 >= 0 && lbl_8055F5BC >= lbl_8055F5C0) result = 1;
