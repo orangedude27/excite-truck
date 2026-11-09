@@ -3799,7 +3799,7 @@ void DetachSound__Q34nw4r3snd11SoundHandleFv(void **arg0) {
 #pragma push
 #pragma small_data off
 extern "C" void* fn_800F8310(void* self) {
-    *(void**)self = &lbl_80325C40;
+    *(void**)self = (void*)lbl_80325C40;
     fn_800EBB88((char*)self + 0x1C);
     OSInitMutex((char*)self + 4);
     return self;
