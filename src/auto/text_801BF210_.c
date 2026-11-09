@@ -556,9 +556,10 @@ long fn_801C00F8(void *arg0, long arg1) {
 }
 
 void fn_801C0124(float *arg0, float *arg1, float arg2) {
-    float x = arg1[0];
-    float y = arg1[1];
-    float z = arg1[2];
+    float z, y, x;
+    x = arg1[0];
+    y = arg1[1];
+    z = arg1[2];
     x *= arg2;
     y *= arg2;
     z *= arg2;
