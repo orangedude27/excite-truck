@@ -17,7 +17,6 @@ extern int fn_802328D4(void *);
 extern int fn_802451DC(void *, int);
 extern int fn_8024521C(void *, int);
 extern int fn_80245264(void *);
-extern int fn_802452E4(void *);
 int fn_802451DC(void *arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668(arg0);
     return (int)arg0;
