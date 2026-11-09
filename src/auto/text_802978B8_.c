@@ -16,7 +16,7 @@ extern void *fn_801E87A8(void);
 extern void fn_802979A4(void);
 extern void fn_80297AFC(void);
 extern void fn_802C9CE0(void);
-extern void fn_802E30C8(void *, const char *);
+extern void fn_802E30C8(void *, ...);
 
 typedef struct Obj Obj;
 typedef void (*ObjMethod)(Obj *);
@@ -52,7 +52,7 @@ void fn_8029790C(void) {
         fn_802C9CE0();
     } else if (lbl_8055F7B4 == 0) {
         lbl_8055F7B4 = 1;
-        fn_802E30C8(lbl_8055CA60, lbl_803493D8);
+        fn_802E30C8(&lbl_8055CA60, lbl_803493D8);
     }
 }
 
