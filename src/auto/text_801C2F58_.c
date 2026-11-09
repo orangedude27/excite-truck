@@ -1378,7 +1378,7 @@ typedef struct Unk_80437D88 {
 extern Unk_80437D88 lbl_80437D88;
 extern void fn_801C7964(void);
 extern s32 lbl_8055E828;
-extern char lbl_8055AA54[];
+extern char lbl_8055AA54[5];
 extern s32 fn_801C34CC(f32, f32);
 #pragma scheduling off
 extern s32 lbl_8055E82C;
