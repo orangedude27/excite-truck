@@ -2990,7 +2990,6 @@ void GXLoadLightObjImm(void *arg0, s32 arg1) {
     volatile double *fifo64 = (volatile double *)0xCC008000;
     const double *src = (const double *)((char *)arg0 + 0x10);
     unsigned int count = 31 - __cntlzw(arg1);
-
     *fifo8 = 0x10;
     fifo32[0] = (((count & 7) << 4) + 0x600) | 0xF0000;
     fifo32[0] = *(unsigned int *)((char *)arg0 + 0xC);
@@ -3748,38 +3747,22 @@ done:
 
 #pragma dont_inline GXSetTevIndirect
 void GXSetTevIndirect(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, u8 arg8, s32 arg9) {
-    union {
-        u32 value;
-        struct {
-            unsigned int opcode : 8;
-            unsigned int unused : 3;
-            unsigned int indirectPrev : 1;
-            unsigned int utcLod : 1;
-            unsigned int stage : 3;
-            unsigned int wrapT : 3;
-            unsigned int matrix : 4;
-            unsigned int bias : 2;
-            unsigned int format : 3;
-            unsigned int texStage : 2;
-            unsigned int tevStage : 2;
-        } fields;
-    } reg;
+    u32 cmd = 0;
+    u32 opcode = arg0 + 0x10;
     unsigned int *data;
-
-    reg.value = 0;
-    reg.fields.tevStage = arg1;
-    reg.fields.texStage = arg2;
+    cmd = __rlwimi(cmd, arg1, 0, 30, 31);
+    cmd = __rlwimi(cmd, arg2, 2, 28, 29);
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    reg.fields.format = arg3;
-    reg.fields.utcLod = arg8 & 1;
-    reg.fields.bias = arg9;
+    cmd = __rlwimi(cmd, arg3, 4, 25, 27);
+    cmd = __rlwimi(cmd, arg9, 7, 23, 24);
     data = __GXData;
-    reg.fields.matrix = arg4;
-    reg.fields.wrapT = arg5;
-    reg.fields.stage = arg6;
-    reg.fields.indirectPrev = arg7;
-    reg.fields.opcode = arg0 + 0x10;
-    *(volatile unsigned int *)0xCC008000 = reg.value;
+    cmd = __rlwimi(cmd, arg4, 9, 19, 22);
+    cmd = __rlwimi(cmd, arg5, 13, 16, 18);
+    cmd = __rlwimi(cmd, arg6, 16, 13, 15);
+    cmd = __rlwimi(cmd, arg8, 19, 12, 12);
+    cmd = __rlwimi(cmd, arg7, 20, 11, 11);
+    cmd = __rlwimi(cmd, opcode, 24, 0, 7);
+    *(volatile unsigned int *)0xCC008000 = cmd;
     *(unsigned short *)((char *)data + 2) = 0;
 }
 
@@ -4239,32 +4222,27 @@ void GXSetTevSwapModeTable(s32 index, s32 rasSel, s32 texSel, s32 rasSel2, s32 t
             unsigned int rasSel : 2;
         } fields;
     } word;
-    u32 offset1;
-    u32 offset0;
-    u32 index2;
-    unsigned int *table;
-    unsigned int *data;
-
+    register u32 offset0;
+    register u32 index2;
+    register u32 offset1;
+    register unsigned int *table;
+    register unsigned int *data;
     offset0 = (u32)index << 3;
     index2 = (u32)index << 1;
     offset1 = index2 + 1;
     data = __GXData;
     table = (unsigned int *)((char *)data + 0x200);
-
     word.value = *(u32 *)((char *)table + offset0);
     word.fields.rasSel = rasSel;
     word.fields.texSel = texSel;
     *(u32 *)((char *)table + offset0) = word.value;
-
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = *(u32 *)((char *)table + offset0);
-
     offset1 <<= 2;
     word.value = *(u32 *)((char *)table + offset1);
     word.fields.rasSel = rasSel2;
     word.fields.texSel = texSel2;
     *(u32 *)((char *)table + offset1) = word.value;
-
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = *(u32 *)((char *)table + offset1);
     *(volatile unsigned short *)((char *)data + 2) = 0;
