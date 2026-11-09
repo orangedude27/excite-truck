@@ -219,14 +219,11 @@ void fn_800168B0(int arg0, int arg1) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_80016928(int arg0, int arg1) {
-    register unsigned char *entry;
-    register unsigned char *base;
-    register int i;
-
-    i = 0;
-    base = lbl_8055D540;
-    entry = base;
-    for (; i < (int)lbl_8055D54C; i++, entry += 0x5C) {
+    unsigned char *entry;
+    unsigned char *base;
+    int i = 0;
+    entry = base = lbl_8055D540;
+    for (i = 0; i < (int)lbl_8055D54C; entry += 0x5C, i++) {
         if (arg0 == *(int *)(entry + 4)) {
             *(int *)(base + i * 0x5C + 0x50) = arg1;
             return;
@@ -448,6 +445,189 @@ extern "C" void fn_80016ED4(void *arg0) {
     entry->unk50 = 0xFF008040;
     lbl_8055D54C = (void *)((int)lbl_8055D54C + 1);
 }
+
+#pragma push
+#pragma cplusplus on
+extern char lbl_802FCEA8[];
+extern char lbl_80558C08[];
+extern char lbl_80558C10[];
+extern char lbl_80558BD0[];
+extern char *fn_80029004(char *, int);
+extern char *fn_80131234(char *);
+extern int fn_80016DD8(const char *);
+extern int fn_8013C8E8(char *);
+extern void fn_802E317C(char *, char *);
+extern "C" void fn_80017010(void *arg0) {
+    struct Interface {
+        virtual void m0();
+        virtual void m1();
+        virtual void m2();
+        virtual char *m3(const char *, int);
+        virtual char *m4(const char *, void *);
+        virtual void m5();
+        virtual int m6(const char *, int);
+        virtual void m7();
+        virtual void m8();
+        virtual void m9();
+        virtual int m10(const char *, int);
+    };
+    char *entry;
+    char *src;
+    int c;
+    int v29, v30, v31;
+    char *found;
+    char *r26;
+    int eidx, off;
+    char *nameArg;
+    entry = (char *)lbl_8055D544 + (int)lbl_8055D550 * 0xA8;
+    *(int *)entry = (int)lbl_8055D550;
+    *(int *)(entry + 4) = (int)lbl_8055D550 | 0x40000000;
+    src = ((Interface *)arg0)->m3(lbl_80558C08, (int)lbl_8055D550);
+    {
+        char *p = src;
+        char *q = entry + 0x2C;
+        int lim = 0x20;
+        for (;;) {
+            unsigned char ch = *p++;
+            *q++ = ch;
+            if ((signed char)ch != 0) {
+                lim--;
+                if (lim <= 0) { *(q - 1) = 0; break; }
+            } else break;
+        }
+    }
+    c = (signed char)*(unsigned char *)(entry + 0x2C);
+    if (c < 0 || c >= 0x100) {
+    } else {
+        c = lbl_802FE850.cmap->to_lower_table[c];
+        *(unsigned char *)(entry + 0x2C) = c;
+    }
+    v29 = ((Interface *)arg0)->m10(lbl_802FCEA8 + 0x74, 0);
+    v30 = ((Interface *)arg0)->m10(lbl_802FCEA8 + 0x84, 0);
+    v31 = ((Interface *)arg0)->m10(lbl_80558C10, 0);
+    r26 = (char *)0;
+    if (v29 != 0) {
+        *(int *)(entry + 8) = 0;
+        {
+            char sp88[64];
+            char *p = entry + 0x2C;
+            char *q = sp88;
+            int lim = 0x40;
+            for (;;) {
+                unsigned char ch = *p++;
+                *q++ = ch;
+                if ((signed char)ch != 0) {
+                    lim--;
+                    if (lim <= 0) { *(q - 1) = 0; break; }
+                } else break;
+            }
+            found = fn_80029004(sp88, 0x5F);
+            if (found != (char *)0) {
+                *found = 0;
+                eidx = 0;
+                off = 0;
+                while (eidx < (int)lbl_8055D550) {
+                    if (stricmp(sp88, (char *)lbl_8055D544 + off + 0x2C) == 0) {
+                        *(int *)(entry + 8) = *(int *)((char *)lbl_8055D544 + eidx * 0xA8 + 4);
+                        *(int *)((char *)lbl_8055D544 + eidx * 0xA8 + 8) = *(int *)(entry + 4);
+                        r26 = (char *)lbl_8055D544 + eidx * 0xA8 + 0x2C;
+                        break;
+                    }
+                    off += 0xA8;
+                    eidx++;
+                }
+                if (*(int *)(entry + 8) == 0) fn_802E317C(lbl_802FCEA8 + 0x94, entry + 0x2C);
+            } else {
+                fn_802E317C(lbl_802FCEA8 + 0xC4, entry + 0x2C);
+            }
+        }
+    } else {
+        *(int *)(entry + 8) = *(int *)(entry + 4);
+    }
+    nameArg = r26 ? r26 : entry + 0x2C;
+    src = ((Interface *)arg0)->m4(lbl_802FCEA8 + 0xFC, nameArg);
+    {
+        char *p = src;
+        char *q = entry + 0xC;
+        int lim = 0x20;
+        for (;;) {
+            unsigned char ch = *p++;
+            *q++ = ch;
+            if ((signed char)ch != 0) {
+                lim--;
+                if (lim <= 0) { *(q - 1) = 0; break; }
+            } else break;
+        }
+    }
+    {
+        char *p = lbl_802FCEA8 + 0x10C;
+        char *q = entry + 0x4C;
+        int lim = 0x10;
+        for (;;) {
+            unsigned char ch = *p++;
+            *q++ = ch;
+            if ((signed char)ch != 0) {
+                lim--;
+                if (lim <= 0) { *(q - 1) = 0; break; }
+            } else break;
+        }
+    }
+    {
+        char sp48[64];
+        fn_801345D8(sp48, 0x40, lbl_802FCEA8 + 0x118, (int)(entry + 0xC));
+        src = fn_80131234(sp48);
+        char *p = src;
+        char *q = entry + 0xC;
+        int lim = 0x20;
+        for (;;) {
+            unsigned char ch = *p++;
+            *q++ = ch;
+            if ((signed char)ch != 0) {
+                lim--;
+                if (lim <= 0) { *(q - 1) = 0; break; }
+            } else break;
+        }
+    }
+    *(int *)(entry + 0x98) = 0;
+    while (*(int *)(entry + 0x98) < 0xC) {
+        char sp28[32];
+        fn_801345D8(sp28, 0x20, lbl_802FCEA8 + 0x124, *(int *)(entry + 0x98) + 1);
+        if (((Interface *)arg0)->m4(lbl_802FCEA8 + 0x124, sp28) != (char *)0) {
+            *(int *)(entry + 0x64 + *(int *)(entry + 0x98) * 4) = fn_80016DD8(sp28);
+            *(int *)(entry + 0x98) = *(int *)(entry + 0x98) + 1;
+            continue;
+        }
+        if (*(int *)(entry + 0x98) == 0) {
+            *(int *)(entry + 0x64) = 0xFF008040;
+            *(int *)(entry + 0x98) = *(int *)(entry + 0x98) + 1;
+        }
+        break;
+    }
+    *(int *)(entry + 0x94) = ((Interface *)arg0)->m6(lbl_802FCEA8 + 0x134, 0) - 1;
+    *(int *)(entry + 0x9C) = fn_8013C8E8(entry + 0x2C);
+    *(int *)(entry + 0xA0) = 0;
+    if (((Interface *)arg0)->m10(lbl_802FCEA8 + 0x14C, 0) != 0) *(int *)(entry + 0xA0) |= 1;
+    if (v29 != 0) *(int *)(entry + 0xA0) |= 2;
+    if (v30 != 0) *(int *)(entry + 0xA0) |= 4;
+    if (v31 != 0) *(int *)(entry + 0xA0) |= 8;
+    *(int *)(entry + 0xA4) = 0x0FF807FF;
+    eidx = 0;
+    while (1) {
+        char sp8[32];
+        int count;
+        fn_801345D8(sp8, 0x20, lbl_802FCEA8 + 0x158, eidx + 1);
+        count = ((Interface *)arg0)->m6(sp8, 0);
+        if (count == 0) break;
+        if (count >= 0) *(int *)(entry + 0xA4) |= (1 << count);
+        else *(int *)(entry + 0xA4) &= ~(1 << -count);
+        eidx++;
+    }
+    fn_801345D8(entry + 0x5C, 8, lbl_80558BD0, *(int *)(entry + 4) & 0xBFFFFFFF);
+    lbl_8055D550 = (void *)((int)lbl_8055D550 + 1);
+}
+#pragma cplusplus reset
+#pragma pop
+
 #pragma cplusplus reset
 extern char lbl_802FD00C[];
 extern char lbl_802FD040[];
