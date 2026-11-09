@@ -83,23 +83,27 @@ s32 fn_802407F0(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-void *fn_80240830(void *arg0, s32 arg1) {
-    register void *prev;
+extern int fn_80128668();
+#pragma cplusplus on
+extern "C" void *fn_80240830(void *arg0, s32 arg1) {
+    class Entry {
+    public:
+        virtual void destroy(s32);
+    };
+    void *prev;
     if (arg0 != 0) {
         prev = *(void **)((char *)arg0 + 0x24);
         *(void **)((char *)arg0 + 0x0C) = lbl_80342618;
         if (prev != 0) {
-            register void *vtable = *(void **)prev;
-            register void *method = *(void **)((char *)vtable + 8);
-            ((void (*)(void *, s32))method)(prev, 1);
+            ((Entry *)prev)->destroy(1);
         }
         if (arg1 > 0) {
-            fn_80128668(arg0);
+            ((void (*)(void *))fn_80128668)(arg0);
         }
     }
     return arg0;
 }
-
+#pragma cplusplus reset
 extern char lbl_80342618[];
 extern char lbl_803426B0[];
 extern s32 lbl_8055F1F4;
