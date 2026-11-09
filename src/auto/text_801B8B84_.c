@@ -6,11 +6,12 @@ void fn_80128670(int);
 int fn_8012850C(int, int *);
 extern void *lbl_8055E760;
 extern int lbl_80336990[];
+#pragma scheduling invalid_target
 void fn_801B8B84(void) {
     lbl_8055E760 = (void *)fn_8012850C(0x500, lbl_80336990);
     lbl_8055E764 = 0;
 }
-
+#pragma scheduling on
 void fn_801B8BBC(void) {
     fn_80128670((int)lbl_8055E760);
     lbl_8055E760 = 0;
