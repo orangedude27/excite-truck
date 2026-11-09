@@ -1,6 +1,18 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#pragma cplusplus on
+class Dummy_802E4688 {
+public:
+    virtual void d0(int);
+    virtual void d1(int);
+    virtual void d2(int);
+    virtual void d3(int);
+    virtual void d4(int);
+    virtual void d5(int);
+    virtual void m6(int);
+};
+#pragma cplusplus off
 typedef struct VObj { struct VObjVt { int pad[8]; void (*fn)(struct VObj *, int); } *vt; char pad[0x84]; int off; } VObj;
 typedef struct VtObj88 { struct VtObj88Vt { int pad[8]; void (*fn)(struct VtObj88 *, int); } *vt; char pad[0x84]; int off; } VtObj88;
 extern unsigned int lbl_8055FF38;
@@ -32,7 +44,7 @@ void fn_802E3EB8(void) {}
 #pragma scheduling invalid_target
 void *fn_802E3EBC(void) {
     unsigned char *p;
-    int i;
+    register int i;
     p = lbl_804FBAA0;
     for (i = 0; i < 0x10; i++) {
         if (*p == 0) {
