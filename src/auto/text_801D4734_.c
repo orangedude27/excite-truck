@@ -666,7 +666,9 @@ check:
 #pragma cplusplus reset
 #pragma pop
 
-extern void fn_801D4FA0(void *);
+#pragma cplusplus on
+extern "C" void fn_801D4FA0(void *);
+#pragma cplusplus reset
 int fn_801D57F0(void *alarm) {
     int offset;
     int i;
