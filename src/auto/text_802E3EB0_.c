@@ -19,7 +19,7 @@ extern int strncmp(const char *, const char *, unsigned int);
 extern char *strcpy(char *, const char *);
 extern void *memset(void *, int, unsigned int);
 extern int DVDGetCurrentDir(char **, char *);
-extern unsigned int lbl_8034D038;
+extern char lbl_8034D038[];
 extern char lbl_8034D054[];
 extern unsigned int lbl_8055FF40;
 extern void fn_802E317C(void *, ...);
