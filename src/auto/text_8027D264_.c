@@ -208,6 +208,7 @@ void fn_8027D6FC(void *arg0) {
 }
 
 #pragma cplusplus on
+#pragma scheduling full
 extern "C" void fn_8027D77C(void *arg0) {
     struct Input {
         char pad[0xC];
@@ -242,7 +243,7 @@ extern "C" void fn_8027D810(void *arg0) {
         virtual void v2();
         virtual void v3(int);
     };
-    void *res = fn_8001285C(*(volatile int *)((char *)arg0 + 0xC));
+    void *res = fn_8001285C(*(int *)((char *)arg0 + 0xC));
     void *obj = *(void **)((char *)res + 0x20);
     ((Obj *)obj)->v3((int)lbl_80347DE8);
 }
