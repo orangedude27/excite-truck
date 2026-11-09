@@ -41,6 +41,9 @@ void *fn_802E77C0(int x) {
 }
 #pragma pop
 
+#pragma push
+#pragma scheduling invalid_target
+#pragma processor 750
 float fn_802E7824(float arg0, float arg1) {
     float t = lbl_80565160 / (lbl_80565160 - arg1);
     if (arg0 >= lbl_80565164) {
@@ -55,6 +58,7 @@ float fn_802E7824(float arg0, float arg1) {
         return v;
     }
 }
+#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
