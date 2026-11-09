@@ -203,6 +203,20 @@ void fn_802B5CCC(void) {
 
 #pragma push
 #pragma dont_inline on
+#pragma scheduling invalid_target
+s32 fn_802B5D2C(const char *arg0, s32 arg1) {
+    char buf[0x40];
+    s32 out;
+    ((s32 (*)(char *, s32, const char *, ...))fn_801345D8)(buf, 0x40, lbl_8055CE38, arg0);
+    if (sscanf((const char *)arg1, buf, &out) != 1) {
+        out = -1;
+    }
+    return out;
+}
+#pragma pop
+
+#pragma push
+#pragma dont_inline on
 s32 fn_802B5D94(s32 arg0) {
     return fn_802B5D2C(lbl_8055CE40, arg0);
 }
