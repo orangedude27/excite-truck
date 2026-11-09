@@ -124,16 +124,15 @@ void* fn_802AE588(void* arg0, s32 arg1) {
 
 #pragma scheduling invalid_target
 void fn_802AE5E0(int arg0) {
-    register int *ptr = &lbl_804BDFF0[1];
-    register int total = 0;
-    register int i = 2;
-loop:
-    *ptr = total;
-    total += (i + 1) * 4;
-    i *= 2;
-    ptr++;
-    if (i <= arg0)
-        goto loop;
+    int *ptr = &lbl_804BDFF0[1];
+    int total = 0;
+    int i = 2;
+    while (i <= arg0) {
+        *ptr = total;
+        total += (i + 1) * 4;
+        ptr++;
+        i *= 2;
+    }
     *(int *)lbl_8055F984 = fn_8012850C(total * 2, &lbl_8055CD7C);
 }
 #pragma scheduling on
@@ -187,19 +186,19 @@ void fn_802AE690(void *arg0) {
     lbl_8055F988 = result;
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 float fn_802AE6E0(void *arg0, void *arg1) {
-    float y0 = *(volatile float *)((char *)arg0 + 8);
-    float y1 = *(volatile float *)((char *)arg1 + 8);
-    float x0 = *(volatile float *)arg0;
-    float x1 = *(volatile float *)arg1;
+    float y0 = *(float *)((char *)arg0 + 8);
+    float y1 = *(float *)((char *)arg1 + 8);
+    float x0 = *(float *)arg0;
+    float x1 = *(float *)arg1;
     float dy = y0 - y1;
     float dx = x0 - x1;
     float dy2 = dy * dy;
     float dx2 = dx * dx;
     return (float)fn_8002F234(dx2 + dy2, dy, y0);
 }
-
+#pragma scheduling off
 extern void fn_802C7A44(void);
 extern float lbl_80564B3C;
 extern void fn_802C9648(float);
@@ -230,11 +229,11 @@ void fn_802BAE50(void);
 #pragma scheduling invalid_target
 void fn_802AE774(void) {
     fn_802BA004();
-    if (((int (*)(void))fn_802B05E4)() != 0)
-        return;
-    fn_802BA348();
-    fn_802C29A0();
-    fn_802BAE50();
+    if (((int (*)(void))fn_802B05E4)() == 0) {
+        fn_802BA348();
+        fn_802C29A0();
+        fn_802BAE50();
+    }
 }
 #pragma scheduling on
 int fn_802AE7AC(void) {
@@ -1209,11 +1208,11 @@ void fn_802AFF6C(void *arg0) {
 
 void fn_802AFF80(void *arg0, short arg1) {
     unsigned int index = *(unsigned short *)((char *)arg0 + 4);
-    unsigned int limit = *(unsigned short *)((char *)arg0 + 6);
+    u32 limit = *(unsigned short *)((char *)arg0 + 6);
     if (index < limit) {
         short *data = *(short **)arg0;
         unsigned int offset = index << 1;
-        index = index + 1;
+        register index = index + 1;
         data[offset >> 1] = arg1;
         *(unsigned short *)((char *)arg0 + 4) = index;
     }
