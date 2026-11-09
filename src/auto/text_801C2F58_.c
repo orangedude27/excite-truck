@@ -1466,13 +1466,17 @@ void fn_801C7964(void) {
     dst->z = src->z;
 }
 void (*fn_801C7990(void))(void) {
-    lbl_80437D88.f_6F8.x = lbl_80437D88.f_4E0.x;
-    lbl_80437D88.f_6F8.y = lbl_80437D88.f_4E0.y;
-    lbl_80437D88.f_6F8.z = lbl_80437D88.f_4E0.z;
+    register Unk_80437D88 *s = &lbl_80437D88;
+    register Vec *src = (Vec *)((char *)s + 0x4E0);
+    register Vec *dst1 = (Vec *)((char *)s + 0x6F8);
+    register Vec *dst2 = (Vec *)((char *)s + 0x4D4);
+    dst1->x = src->x;
+    dst1->y = src->y;
+    dst1->z = src->z;
     lbl_8055E83B = 1;
-    lbl_80437D88.f_4D4.x = lbl_80437D88.f_4E0.x;
-    lbl_80437D88.f_4D4.y = lbl_80437D88.f_4E0.y;
-    lbl_80437D88.f_4D4.z = lbl_80437D88.f_4E0.z;
+    dst2->x = src->x;
+    dst2->y = src->y;
+    dst2->z = src->z;
     lbl_8055E868 = fn_801C7964;
     return fn_801C7964;
 }
@@ -1496,18 +1500,13 @@ extern s32 lbl_8055E864;
 extern Vec lbl_80438498;
 extern char lbl_8055E83D;
 void fn_801C7A28(void) {
-    register Vec *src = &lbl_80438268;
-    register Vec *dst = &lbl_80438498;
-    f32 x = src->x;
-    f32 y = src->y;
-    f32 z = src->z;
-    dst->x = x;
-    dst->y = y;
-    dst->z = z;
+    lbl_80438498.x = lbl_80438268.x;
+    lbl_80438498.y = lbl_80438268.y;
+    lbl_80438498.z = lbl_80438268.z;
     lbl_8055E83A = 0;
     lbl_8055E868 = fn_801C6CB0;
     lbl_8055E83D = 0;
-    ((void (*)(f32, f32))fn_801C78D8)(y, x);
+    ((void (*)(f32, f32))fn_801C78D8)(lbl_80438268.y, lbl_80438268.x);
 }
 
 extern f64 atof(const char *);
@@ -2934,7 +2933,6 @@ s32 fn_801C9708();
 s32 fn_80176780(s32, s32);
 s32 fn_801CA070(s32 *);
 void fn_801C9514(void);
-s32 fn_801C968C(s32);
 s32 fn_801CB114(s32 arg0) {
     if ((u8)lbl_8055E838 != 0) return fn_801C9708();
     if (arg0 == 0x68) lbl_8055E7E0 = (u8)lbl_8055E7E0 == 0;
