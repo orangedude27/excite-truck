@@ -14,6 +14,11 @@
 #define SC_SMALLARRAY_MAX 0xFF
 #define SC_BIGARRAY_MAX 0xFFFF
 
+// The header counts its items in a u16, and the item's desc byte keeps only
+// five bits for the name length (minus one).
+#define SC_ITEM_MAX_NUM 0xFFFF
+#define SC_ITEM_NAME_LEN_MAX 0b00011111
+
 // Steps of the asynchronous SYSCONF write started by SCFlushAsync(). Each step
 // names the NAND operation that is in flight; MyNandCallback() handles the
 // result of that operation and queues the next one.
