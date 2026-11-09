@@ -247,7 +247,6 @@ null_result:
     return 0;
 }
 
-#pragma scheduling off
 s32 fn_8001F41C(const char* arg) {
     SrcCoef* p = lbl_802FDF30;
     u32 idx = 0;
@@ -262,7 +261,6 @@ s32 fn_8001F41C(const char* arg) {
         }
     }
 }
-#pragma scheduling on
 
 #pragma scheduling off
 void fn_8001F490(s32 arg) {
