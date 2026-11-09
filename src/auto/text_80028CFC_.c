@@ -79,29 +79,26 @@ unsigned char *fn_80028E00(unsigned char *dst, const unsigned char *src) {
     return dst;
 }
 
-void fn_80028E2C(unsigned char *dst, const unsigned char *src, int n) {
+unsigned char *fn_80028E2C(unsigned char *dst, const unsigned char *src, int n) {
+    const unsigned char *q = src - 1;
+    unsigned char *p = dst - 1;
     unsigned char ch;
 
-    src--;
-    dst--;
-    while (*++dst != 0) {
+    while (*++p != 0) {
     }
-    dst--;
-    n = n + 1;
-    goto test;
-copy:
-    ch = *++src;
-    *++dst = ch;
-    if (ch == 0) {
-        dst--;
-        goto done;
+    p--;
+    n++;
+    while (--n != 0) {
+        ch = *++q;
+        *++p = ch;
+        if (ch == 0) {
+            p--;
+            goto done;
+        }
     }
-test:
-    n = n - 1;
-    if (n != 0)
-        goto copy;
 done:
-    *++dst = 0;
+    *++p = 0;
+    return dst;
 }
 
 int strcmp(const unsigned char *p, const unsigned char *q) {
