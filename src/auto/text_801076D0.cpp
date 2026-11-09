@@ -408,6 +408,16 @@ extern "C" s32 fn_80109040(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+/* nw4hbm::ut::detail::ResFontBase::SetResourceBuffer(void* pUserBuffer,
+ * FontInformation* pFontInfo) -- those are the original parameter names, the
+ * ones the assertion strings below print.
+ *
+ * Installs a font's raw resource buffer (mResource) and the FontInformation
+ * rebuilt from it (mFontInfo) as the base class's two members.  nw4hbm's debug
+ * build first checks that both pointers point into memory the library owns and
+ * that neither member is set yet, so a ResFontBase's buffers can only be
+ * installed once.
+ */
 extern "C" void SetResourceBuffer__Q46nw4hbm2ut6detail11ResFontBaseFPvPQ36nw4hbm2ut15FontInformation(void* self, void* resource, void* info) {
     /* ResFontBase's two pointers, which the assertions below name; the 0x10
      * bytes in front of them are the class's own bookkeeping. */
