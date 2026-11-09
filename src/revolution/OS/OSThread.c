@@ -356,6 +356,17 @@ void __OSPromoteThread(OSThread* thread, s32 prio) {
     }
 }
 
+/**
+ * Chooses the thread that runs next, switches to it and returns it; NULL means the
+ * current thread keeps the CPU.
+ *
+ * The scheduler is parked while Reschedule is set. Unless `force` is set (OSYieldThread
+ * asks for it), a running thread is only taken off the CPU when some ready thread
+ * outranks it. A thread that gives up the CPU goes back onto its priority's ready queue
+ * and has its registers saved into its context, and the thread at the head of the
+ * highest priority ready queue comes off it and is loaded. With nothing ready at all,
+ * the idle context runs with interrupts enabled until some thread becomes runnable.
+ */
 static OSThread* SelectThread(BOOL force) {
     OSThreadQueue* queue;
     OSThread* currThread;
