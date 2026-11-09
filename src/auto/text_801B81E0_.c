@@ -100,7 +100,15 @@ struct Dummy_801B8318 {
           virtual void d7();
           virtual int d8(void *);
       };
-      struct Dummy_801B8874 {
+                struct Dummy_801B8570 {
+            virtual void d0();
+            virtual void d1();
+            virtual void d2();
+            virtual void d3();
+            virtual void d4();
+            virtual int d5(int);
+        };
+        struct Dummy_801B8874 {
           virtual void d0();
           virtual void d1();
           virtual void d2();
