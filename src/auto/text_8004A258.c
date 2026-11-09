@@ -354,13 +354,14 @@ clear3_join:
 #pragma push
 #pragma small_data off
 void InquiryCallback(s32 result, struct DVDCommandBlock* arg1) {
-    if (*(u32*)((u8*)arg1 + 0xC) == 0) goto read_drive;
-    goto set_one;
-read_drive:
-    *(u16*)0x800030E6 = *(u16*)(DriveInfo + 2) | 0x8000;
-    return;
-set_one:
-    *(u16*)0x800030E6 = 1;
+    switch (*(u32*)((u8*)arg1 + 0xC)) {
+    case 0:
+        *(u16*)0x800030E6 = *(u16*)(DriveInfo + 2) | 0x8000;
+        break;
+    default:
+        *(u16*)0x800030E6 = 1;
+        break;
+    }
 }
 #pragma small_data on
 extern const char lbl_80558F04[];
