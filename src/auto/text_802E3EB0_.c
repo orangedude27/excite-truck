@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 typedef struct VObj { struct VObjVt { int pad[8]; void (*fn)(struct VObj *, int); } *vt; char pad[0x84]; int off; } VObj;
+typedef struct VtObj88 { struct VtObj88Vt { int pad[8]; void (*fn)(struct VtObj88 *, int); } *vt; char pad[0x84]; int off; } VtObj88;
 extern unsigned int lbl_8055FF38;
 extern unsigned int lbl_8055D1B0;
 extern char lbl_8034D074[];
