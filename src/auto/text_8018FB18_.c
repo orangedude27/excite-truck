@@ -1069,6 +1069,35 @@ extern "C" void fn_80191064(void *arg0) {
     if (obj == 0) return;
     obj->f15();
 }
+
+#pragma cplusplus on
+extern "C" void fn_80191084(int arg0, int arg1) {
+    class Dummy {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8(int);
+    };
+    void *old;
+    old = *(void **)((char *)arg0 + 0x10);
+    if ((unsigned int)arg1 != (unsigned int)old) {
+        if (old != 0) {
+            ((Dummy *)old)->f8(arg1);
+        }
+        *(void **)((char *)arg0 + 0x10) = (void *)arg1;
+        if (arg1 != 0) {
+            ((Dummy *)(void *)arg1)->f7();
+        }
+    }
+}
+#pragma cplusplus off
+
 #pragma cplusplus off
 int fn_80191100(void *arg0) { return ((int *)arg0)[3]; }
 
