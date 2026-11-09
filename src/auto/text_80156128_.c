@@ -23,6 +23,3 @@ void fn_80156128(void) {
     lbl_8055E254 = -1;
     lbl_8055E234 = 0x7F000000;
 }
-#pragma opt_dead_assignments reset
-#pragma opt_propagation reset
-#pragma scheduling reset
