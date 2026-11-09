@@ -795,6 +795,7 @@ extern void DCFlushRange(void *, unsigned int);
 extern unsigned int GXGetTexObjTlut(void *);
 extern void fn_802D78D4(void *, void *, unsigned int, unsigned int);
 extern void GXInvalidateTexAll(void);
+extern void fn_802D9230(void *);
 void fn_802D92B0(void) {
     fn_802D9230(lbl_8055FE1C);
 }
