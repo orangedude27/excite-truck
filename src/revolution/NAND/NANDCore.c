@@ -239,10 +239,23 @@ static void nandGetParentDirectory(char* dir, const char* path) {
     }
 }
 
+/**
+ * Bring up the NAND library: open the ISFS (the low-level NAND file system) and
+ * ask the ES module for this title's own directory on NAND, which becomes the
+ * library's current directory - the base every relative NAND path is resolved
+ * against (nandGenerateAbsPath()).
+ *
+ * The library state is checked and set under interrupt disable, so a second
+ * caller while the first is still working gets NAND_RESULT_BUSY and an already
+ * initialized library simply returns NAND_RESULT_OK. Only failing to open ISFS
+ * is reported back (converted by nandConvertErrorCode()); if the ES queries
+ * fail the library still comes up, reporting the problem and leaving "/" - the
+ * built-in default - as the current directory.
+ */
 s32 NANDInit(void) {
     s32 result;
-    u64 tid;
-    s32 fd;
+    u64 titleId;
+    s32 esFd;
     BOOL enabled;
 
     enabled = OSDisableInterrupts();
@@ -255,27 +268,29 @@ s32 NANDInit(void) {
         return NAND_RESULT_OK;
     }
 
+    // Claim the initialization before letting interrupts back on.
     s_libState = NAND_LIB_INITIALIZING;
     OSRestoreInterrupts(enabled);
 
     result = ISFS_OpenLib();
     if (result == IPC_RESULT_OK) {
 
-        result = _ES_InitLib(&fd);
+        // This title's data directory on NAND, e.g. "/title/00000001/xxxxxxxx/data".
+        result = _ES_InitLib(&esFd);
 
         if (result == IPC_RESULT_OK) {
-            result = _ES_GetTitleId(&fd, &tid);
+            result = _ES_GetTitleId(&esFd, &titleId);
         }
 
         if (result == IPC_RESULT_OK) {
-            result = _ES_GetDataDir(&fd, tid, s_homeDir);
+            result = _ES_GetDataDir(&esFd, titleId, s_homeDir);
         }
 
         if (result == IPC_RESULT_OK) {
             strcpy(s_currentDir, s_homeDir);
         }
 
-        _ES_CloseLib(&fd);
+        _ES_CloseLib(&esFd);
 
         if (result != IPC_RESULT_OK) {
             OSReport("Failed to set home directory.\n");
