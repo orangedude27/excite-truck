@@ -39,7 +39,7 @@ extern "C" u8 lbl_8032ACB0[];
 namespace nw4r { namespace ef { class Effect; } }
 extern "C" nw4r::ef::Effect *lbl_8055E014;
 extern "C" void fn_80127CF4(s32, s32);
-extern "C" void *fn_801284F8(u32, void *);
+extern "C" void *fn_801284F8(int, void *);
 extern "C" void **fn_8012A13C(void *, void *, u32, u32);
 extern "C" void *fn_8012A2D8(void **);
 extern "C" void fn_8012A364(void **, void *);
