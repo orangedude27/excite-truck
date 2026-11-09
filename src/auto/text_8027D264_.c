@@ -230,12 +230,8 @@ extern "C" void fn_8027D7B8(void *arg0) {
 extern "C" void fn_8027D7E4(void *arg0) {
     fn_80007FF0(*(int *)((char *)fn_8001285C(((int *)arg0)[3]) + sizeof(int) * 2));
 }
-#pragma scheduling invalid_target
+#pragma scheduling off
 extern "C" void fn_8027D810(void *arg0) {
-    struct Input {
-        char pad[0xC];
-        int id;
-    };
     class Obj {
     public:
         virtual void v0();
@@ -243,7 +239,7 @@ extern "C" void fn_8027D810(void *arg0) {
         virtual void v2();
         virtual void v3(int);
     };
-    void *res = fn_8001285C(((Input *)arg0)->id);
+    void *res = fn_8001285C(*(int *)((char *)arg0 + 0xC));
     void *obj = *(void **)((char *)res + 0x20);
     ((Obj *)obj)->v3((int)lbl_80347DE8);
 }
