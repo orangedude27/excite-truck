@@ -800,9 +800,10 @@ extern "C" s8 fn_8016C768(void *arg0, void *arg1, void *arg2) {
 extern f32 lbl_805619A0;
 #pragma scheduling invalid_target
 void fn_8016CD10(void *arg0) {
-    *((f32 *)((u8 *)arg0 + 0x34)) = lbl_805619A0;
-    *((u8 *)arg0 + 0x30) = 0;
-    *((u8 *)arg0 + 0x31) = 0;
+    f32 value = lbl_805619A0;
+    *(u8 *)((u8 *)arg0 + 0x30) = 0;
+    *(u8 *)((u8 *)arg0 + 0x31) = 0;
+    *(f32 *)((u8 *)arg0 + 0x34) = value;
 }
 #pragma scheduling on
 void fn_8016CD28(void *arg0) {
