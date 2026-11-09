@@ -53,6 +53,81 @@ s32 fn_802A9048(void) {
 }
 
 #pragma dont_inline on
+void fn_802A9090(f32 *pos, f32 *dir) {
+    struct V2 { f32 x, y; };
+    f32 *g = (f32 *)lbl_804BD6F8;
+    f32 *m;
+    f32 w[6];
+    f32 c[3];
+    f32 d[3];
+    f32 r[2];
+    f32 a[2];
+    f32 b[2];
+    f32 s, ns, f9, p0, p1, t0, t1;
+    *(struct V2 *)r = *(struct V2 *)dir;
+    ns = -r[0];
+    r[0] = r[1];
+    r[1] = ns;
+    if (*(s32 *)(lbl_804BD6F8 + 0x4C) != -1) {
+        fn_802C77F0(*(void **)(lbl_804BD6F8 + 0x4C), w);
+        s = w[1] - w[0];
+    } else {
+        s = lbl_80564970;
+    }
+    ns = -s;
+    p0 = pos[0];
+    p1 = pos[1];
+    t0 = r[0] * ns;
+    t1 = r[1] * ns;
+    a[0] = p0 + t0;
+    a[1] = p1 + t1;
+    b[0] = p0 + r[0] * s;
+    b[1] = p1 + r[1] * s;
+    fn_802A8FEC(c, a);
+    g[0] = c[0];
+    g[1] = c[1];
+    g[2] = c[2];
+    fn_802A8FEC(d, b);
+    m = g + 0x68 / 4;
+    {
+        f32 x = g[0] + d[0], y = g[1] + d[1], z = g[2] + d[2];
+        f9 = g[1];
+        m[0x24 / 4] = x;
+        m[0x28 / 4] = y;
+        m[0x2C / 4] = z;
+        g[3] = d[0];
+        g[4] = d[1];
+        g[5] = d[2];
+        m[0x24 / 4] = x * lbl_80564974;
+        m[0x28 / 4] = y * lbl_80564974;
+        m[0x2C / 4] = z * lbl_80564974;
+    }
+    if (f9 > d[1]) {
+    } else {
+        f9 = d[1];
+    }
+    m = g + 0x68 / 4;
+    {
+        f32 dx = g[3] - g[0], dy = g[4] - g[1], dz = g[5] - g[2];
+        m[1] = dy;
+        m[0x28 / 4] = f9;
+        m[0] = dx;
+        m[2] = dz;
+        m[1] = lbl_80564978;
+        m[3] = lbl_80564978;
+        m[4] = lbl_8056497C;
+        m[5] = lbl_80564978;
+    }
+    PSVECCrossProduct(m, m + 3, m + 6);
+    PSVECNormalize(m, m);
+    PSVECNormalize(m + 6, m + 6);
+    PSVECCrossProduct(m + 6, m, m + 3);
+    if (*(u32 *)((char *)fn_801E87A8() + 0x10) & 2) {
+        m[0] *= lbl_80564980;
+        m[1] *= lbl_80564980;
+        m[2] *= lbl_80564980;
+    }
+}
 extern u8 lbl_8055F8F8;
 extern f32 lbl_8055F900;
 extern f32 lbl_8055F908;
@@ -203,5 +278,4 @@ void fn_802A95AC(u8 arg0) {
 }
 extern u8 lbl_8055F8F0;
 extern s32 lbl_8055CC58;
-extern s32 lbl_804BD790;
 extern f32 lbl_80564978;
