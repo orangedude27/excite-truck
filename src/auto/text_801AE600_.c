@@ -240,6 +240,26 @@ int fn_801AEA64(float arg0, float arg1) {
     return -1;
 }
 
+#pragma push
+#pragma processor 750
+#pragma dont_inline on
+int fn_801AEB58(const void *arg0, const void *arg1) {
+    float f31;
+    float f1;
+    float f2;
+    int temp = *(const int *)arg1;
+    f31 = fn_801AF9EC(*(const int *)arg0, 0);
+    f1 = fn_801AF9EC(temp, 0);
+    f2 = f1;
+    if (f31 < lbl_8056255C)
+        f31 = lbl_80562570;
+    if (f1 < lbl_8056255C)
+        f2 = lbl_80562570;
+    return fn_801AEA64(f31, f2);
+}
+#pragma dont_inline reset
+#pragma pop
+
 #pragma scheduling invalid_target
 void fn_801AEBD0(void) {
     int value = lbl_8055E62C;
