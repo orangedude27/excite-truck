@@ -409,6 +409,9 @@ extern "C" s32 fn_80109040(s32 arg0, s32 arg1) {
 }
 
 extern "C" void SetResourceBuffer__Q46nw4hbm2ut6detail11ResFontBaseFPvPQ36nw4hbm2ut15FontInformation(void* self, void* resource, void* info) {
+    /* ResFontBase's two pointers, which the assertions below name; the 0x10
+     * bytes in front of them are the class's own bookkeeping. */
+    struct ResFontBaseMembers { void* unused[4]; void* mResource; void* mFontInfo; };
     /* lbl_80329140 is this file's debug blob: +0xC is "ut_ResFontBase.cpp",
      * and +0x20, +0x5C, +0x98 and +0xC4 the nw4hbm::db messages quoted here. */
     const char* file=lbl_80329140;
@@ -445,10 +448,10 @@ extern "C" void SetResourceBuffer__Q46nw4hbm2ut6detail11ResFontBaseFPvPQ36nw4hbm
     if(g==0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x50,file+0x5C,info);
 
     /* "NW4HBM:Failed assertion mResource == NULL" and "mFontInfo == NULL". */
-    if(*(void**)((char*)self+0x10)!=0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x51,file+0x98);
-    if(*(void**)((char*)self+0x14)!=0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x52,file+0xC4);
-    *(void**)((char*)self+0x10)=resource;
-    *(void**)((char*)self+0x14)=info;
+    if(((ResFontBaseMembers*)self)->mResource!=0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x51,file+0x98);
+    if(((ResFontBaseMembers*)self)->mFontInfo!=0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x52,file+0xC4);
+    ((ResFontBaseMembers*)self)->mResource=resource;
+    ((ResFontBaseMembers*)self)->mFontInfo=info;
 }
 
 u8 nw4hbm::ut::detail::ResFontBase::GetWidth() const {
