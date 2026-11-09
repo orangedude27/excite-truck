@@ -106,7 +106,7 @@ struct Menu {
     struct MenuItem items[1];
 };
 
-int fn_802452E4(void *arg0) {
+void fn_802452E4(void *arg0) {
     void *value;
     value = *(void **)((char *)arg0 + 4);
     if (value) fn_802C519C(value);
@@ -118,7 +118,6 @@ int fn_802452E4(void *arg0) {
     fn_802328D4(*(void **)((char *)arg0 + 0x10));
     *(int *)((char *)arg0 + 0xC) = 0;
     *(int *)((char *)arg0 + 0x10) = 0;
-    return 0;
 }
 
 #pragma push
