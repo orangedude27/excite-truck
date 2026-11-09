@@ -1,9 +1,15 @@
 #include "src/review_kpad.h"
 #include "src/review___kpad.h"
 
+/* KPAD's shared defaults.  The game's symbols can't be renamed yet, so alias the
+   three this file reads to the names review_KPAD.c gives the same globals. */
 extern Vec2 lbl_8055D988;
 extern f32 lbl_8055D990;
 extern u16 lbl_80558EB0;
+
+#define kp_zero_vec2 lbl_8055D988    /* .sbss Vec2 {0.0f, 0.0f}: "no pointer motion" */
+#define kp_dist_vv1 lbl_8055D990     /* .sbss f32: IR dot interval / tan(21 deg), the sensor half angle */
+#define kp_ah_circle_ct lbl_80558EB0 /* .sdata u16 100: frames the acc horizon may sit in the circle */
 
 void reset_kpad(KPADInsideStatus* kp) {
     KPADObject* op;
