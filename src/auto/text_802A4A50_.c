@@ -230,12 +230,13 @@ void fn_802A4C20(void) {
 
 #pragma dont_inline on
 void fn_802A4C60(void) {
-    volatile s32 *p;
     lbl_8055F8A0 = fn_802A4A50();
-    p = (volatile s32 *)&lbl_8055F88C;
-    if (*p) fn_802A6A7C();
-    p = (volatile s32 *)&lbl_8055F888;
-    if (*p) fn_802A5CA4();
+    if (lbl_8055F88C != 0) {
+        fn_802A6A7C();
+    }
+    if (lbl_8055F888 != 0) {
+        fn_802A5CA4();
+    }
     fn_802A5A38();
 }
 #pragma dont_inline reset
@@ -1045,8 +1046,9 @@ f32 fn_802A4AD4(void);
 f32 fn_80287BC8(f32, f32);
 extern f32 lbl_805648A4, lbl_805648A8;
 void fn_802A6408(void *arg0) {
-    f32 value = (f32)__fabs((double)fn_802A4AD4());
-    if (!(value <= *(f32 *)(void *)&lbl_80558DC4)) {
+    f32 value = ((f32 (*)(void))fn_802A4AD4)();
+    f32 abs = (f32)__fabs((double)value);
+    if (!(abs <= *(f32 *)(void *)&lbl_80558DC4)) {
         *(f32 *)((u8 *)arg0 + 0x14) = fn_80287BC8(lbl_805648A4, lbl_805648A8);
         *(f32 *)((u8 *)arg0 + 0x18) = fn_80287BC8(lbl_805648A4, lbl_805648A8);
     }
