@@ -3,7 +3,7 @@
 
 extern void fn_802E3990(void);
 extern int fn_802E3734(int *);
-extern int fn_802E72C8(void);
+extern int fn_802E72C8(int);
 extern int fn_802E36D8(void *);
 extern void fn_802E3A14(int);
 extern void fn_802E3930(int, void *, int);
@@ -105,7 +105,7 @@ int fn_802E748C(int arg0, void *arg1, int arg2, int arg3) {
     int temp_r3_2;
     int temp_r3;
     int temp_r29;
-    temp_r3_2 = fn_802E72C8();
+    temp_r3_2 = fn_802E72C8(arg0);
     if (temp_r3_2 < 0) return -1;
     temp_r31 = lbl_804FC978 + temp_r3_2 * 0x90;
     temp_r3 = fn_802E36D8(temp_r31 + 0x10);
