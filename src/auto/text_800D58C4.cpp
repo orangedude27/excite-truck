@@ -131,6 +131,7 @@ extern "C" void DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3
 extern "C" GetVtxPosResult GetVtxPos__Q34nw4r3lyt4PaneCFv(void*);
 
 struct GroupNodeV { virtual ~GroupNodeV(); virtual void f(); };
+struct DrawSelfVirt_800D58C4 { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19(); virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23(); virtual void v24(); };
 struct GroupListNode { GroupListNode* next; };
 struct GroupList { u32 count; GroupListNode* first; GroupListNode* last; };
 struct GroupLayout { void* vtable; u32 unk4; u32 unk8; GroupList children; };
