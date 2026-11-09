@@ -1252,8 +1252,9 @@ void fn_801F73F0(void) { fn_801F6DF0(lbl_8055EC14); }
 
 #pragma dont_inline on
 void fn_801F6EC0(void *arg0) {
+    void *p;
+    void *q;
     int i;
-    void *p, *q;
     i = 0;
     p = arg0;
     q = arg0;
