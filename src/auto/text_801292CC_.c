@@ -13,13 +13,10 @@ extern int fn_802E75E4(const char *);
 extern int sprintf(char *, const char *, ...);
 #pragma scheduling invalid_target
 void fn_801292CC(int arg0) {
-    char sp8[8];
-    int sp30;
-    fn_802E30C8((const char *)(void *)&lbl_8032A588, (const char *)(void *)&lbl_8032A588[0x10]);
+    char sp8[24];
+    fn_802E30C8((const char *)(void *)&lbl_8032A588);
     sprintf(sp8, (const char *)(void *)&lbl_80559978, arg0);
     lbl_8055DFA8 = fn_802E75E4(sp8);
-    sp30 = 0;
-    (void)sp30;
 }
 #pragma scheduling on
 
