@@ -1,3 +1,4 @@
+#include <revolution/MTX/mtxtypes.h>
 extern float lbl_80561830;
 extern double fn_8002F234(float);
 
