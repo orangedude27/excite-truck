@@ -633,12 +633,12 @@ int fn_80217BC8(int *arg0, int *arg1) {
 #pragma scheduling invalid_target
 void *fn_80217BD8(void *arg0, int arg1, int arg2) {
     char *base = (char *)arg0;
-    int count = *(int *)(base + 0x494);
-    *(int *)(base + count * 8 + 0x4A0) = arg1;
-    *(int *)(base + count * 8 + 0x4A4) = arg2;
-    count = *(int *)(base + 0x494) + 1;
-    *(int *)(base + 0x494) = count;
-    qsort(base + 0x4A0, count, 8, fn_80217BC8, base);
+    int cnt;
+    *(int *)(base + *(int *)(base + 0x494) * 8 + 0x4A0) = arg1;
+    *(int *)(base + *(int *)(base + 0x494) * 8 + 0x4A4) = arg2;
+    cnt = *(int *)(base + 0x494) + 1;
+    *(int *)(base + 0x494) = cnt;
+    qsort(base + 0x4A0, cnt, 8, fn_80217BC8);
     *(int *)(base + 0x498) = *(int *)(base + 0x4A0);
     return base + 0x498;
 }
@@ -874,20 +874,14 @@ void fn_8021818C(void *arg0) {
 }
 
 void fn_80218198(void *arg0, void **arg1) {
-    void **old;
-    old = *(void ***)( (char *)arg0 + 0x450);
-    if (arg1 != old) {
-        if (old != 0) {
-            void *obj = old;
-            void **vt = *(void ***)obj;
-            ((void (*)(void *))vt[14])(obj);
-        }
-        *(void ***)((char *)arg0 + 0x450) = arg1;
-        if (arg1 != 0) {
-            void *obj = arg1;
-            void **vt = *(void ***)obj;
-            ((void (*)(void *))vt[13])(obj);
-        }
+    if (arg1 == *(void ***)((char *)arg0 + 0x450)) return;
+    if (*(void ***)((char *)arg0 + 0x450) != 0) {
+        void **old = *(void ***)((char *)arg0 + 0x450);
+        (*(void (**)(void *))(((void **)*old) + 14))(old);
+    }
+    *(void ***)((char *)arg0 + 0x450) = arg1;
+    if (arg1 != 0) {
+        (*(void (**)(void *))(((void **)*arg1) + 13))(arg1);
     }
 }
 
@@ -1011,7 +1005,8 @@ void fn_80218464(void *arg0) {
     cursor = base;
     while (i < *(int *)(base + 0x430)) {
         void *obj = *(void **)(cursor + 0x30);
-        (*(void (**)(void *))(*(void ***)obj + 32))(obj);
+        void *fnptr = *(void **)((char *)*(void **)obj + 0x80);
+        ((void (*)(void *))fnptr)(obj);
         cursor += 4;
         i++;
     }
