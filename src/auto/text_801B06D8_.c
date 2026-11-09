@@ -661,6 +661,20 @@ extern "C" void fn_801B1390(s32 arg0, s32 arg1) {
         fn_8026A248(lbl_80435C30[index], arg0);
     }
 }
+
+#pragma dont_inline on
+void fn_801B146C(void) {
+    s32 i = 0;
+    do {
+        s32 r = fn_8026A27C(i);
+        if (r != 0) {
+            fn_801B1390(i, r);
+        }
+        i++;
+    } while (i < 4);
+}
+#pragma dont_inline reset
+
 #pragma scheduling on
 #pragma cplusplus off
 void fn_801B14BC(s32 *arg0,s32 arg1,s32 arg2) {
@@ -1347,6 +1361,7 @@ void fn_801B235C(void) {
 extern s32 lbl_8055E6A8;
 extern f32 lbl_805625DC;
 extern char lbl_80335B94[];
+#pragma dont_inline fn_801B146C
 #pragma push
 #pragma processor 750
 void fn_801B2364(void) {
