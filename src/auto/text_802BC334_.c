@@ -522,10 +522,11 @@ void fn_802BD0F4(void *arg0) {
 #pragma push
 #pragma use_lmw_stmw off
 void *fn_802BD194(void *arg0, const char *arg1) {
+    unsigned int offset;
     unsigned int count = *(unsigned int *)arg0;
-    unsigned int offset = 0;
-    unsigned int i = 0;
     char *base;
+    unsigned int i = 0;
+    offset = 0;
     while (i < count) {
         base = *(char **)((char *)arg0 + 4);
         if (strcmp(base + offset, arg1) == 0)
