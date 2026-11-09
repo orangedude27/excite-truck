@@ -775,6 +775,11 @@ extern "C" void *fn_801F861C(void) {
 #define OBS_OPT_REFLECT_LOAD  0x100 /* "reflect_on_load": mirror the placement (fn_801FB284) */
 #define OBS_OPT_ONESIDED      0x200 /* "onesided": nothing shows through it */
 
+/* fn_801F86C8 - the obstacle creator.  The object factory (fn_801F8188) falls through to it for
+ * any node whose "type" is none of composite / animation / sound, so an obstacle is what a plain
+ * object in the game's object files becomes.  It allocates the object under the "ObstacleDI" tag,
+ * builds the part every created object shares plus the "OBST" record at +0x10C (fn_801F8988), and
+ * finally reads the obstacle-only switches and values out of the parameter node. */
 extern "C" void *fn_801F86C8(void *node) {
     /* What this creator adds past the part every created object shares. */
     struct Obstacle {
