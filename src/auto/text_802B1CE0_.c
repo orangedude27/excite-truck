@@ -876,8 +876,13 @@ void *fn_802B3DA4(void *arg0, int arg1, int arg2) {
         void *items = *(void **)arg0;
         void *entry = (char *)((void **)items)[arg2] + ((arg1 & 0x7F) * 4);
         void *obj = *(void **)((char *)entry + 0x208);
-        if (obj != 0 && *(int *)*(void **)((char *)obj + 0xC) != 0) {
-            result = (char *)obj + 0x10;
+        result = 0;
+        if (obj != 0) {
+            void *inner = *(void **)((char *)obj + 0xC);
+            result = 0;
+            if (*(int *)inner != 0) {
+                result = (char *)obj + 0x10;
+            }
         }
     }
     return result;
