@@ -757,7 +757,7 @@ extern s32 lbl_8055D494;
 #pragma processor 750
 #pragma paired_single off
 void fn_80010724(s32 arg0, s32 arg1, s32 arg2) {
-    extern s32 fn_8001084C(s32);
+    extern s32 fn_8001084C();
     extern s32 fn_80010964(s32);
     extern f32 fn_800109A0(s32);
     extern void fn_80010B80(s32, f32, f32, f32, f32);
