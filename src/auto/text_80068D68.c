@@ -9157,11 +9157,12 @@ tBTM_STATUS BTM_CancelRemoteDeviceName(void) {
     u8 *base = lbl_803C0F78;
     if (base[0x27C0] >= 3)
         fn_8007093C(0xD0002, lbl_80316464);
-    if ((base[0x16AE] & 1) == 0)
-        return 6;
-    if ((u8)btsnd_hcic_link_key_neg_reply_800843D8(base + 0x16A8) == 0)
+    if (base[0x16AE] & 1) {
+        if ((u8)btsnd_hcic_link_key_neg_reply_800843D8(base + 0x16A8) != 0)
+            return 1;
         return 3;
-    return 1;
+    } else
+        return 6;
 }
 
 #pragma pop
