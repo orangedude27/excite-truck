@@ -332,14 +332,14 @@ extern "C" void fn_80165FAC(void) {
 #pragma scheduling invalid_target
 void *fn_80166040(int arg0) {
     void *base;
-    void *found;
     void *cur;
+    void *found;
     int count;
     int i;
     base = *(void **)&lbl_8042FEB0;
     count = *(int *)((char *)&lbl_8042FEB0 + 4);
-    found = 0;
     cur = base;
+    found = 0;
     i = 0;
     while (count > 0) {
         if (*(int *)((char *)cur + 0x10) == -1) {
