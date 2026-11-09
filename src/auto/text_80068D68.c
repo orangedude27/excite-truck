@@ -25888,6 +25888,27 @@ s32 fn_8009D000(void) {
     return 0;
 }
 
+// The evaluation-board UART driver (revolution/EUART/euart.c in the SDK; this
+// unit is C and does not include those headers).  The UART sits on the internal
+// EXI port, and its queue is written a byte at a time as 32-bit immediates.
+enum {
+    EUART_ERROR_OK,     // everything went out
+    EUART_ERROR_FATAL,  // __EUARTLastErrorCode: init did not finish
+    EUART_ERROR_INVALID,// not enabled / not initialised / EXI busy
+    EUART_ERROR_BUSY,   // the EXI peripheral could not be selected
+};
+
+enum {
+    EUART_EXI_CHAN = 0,  // EXI_CHAN_0
+    EUART_EXI_DEV = 1,   // EXI_DEV_INT: the internal port the dev board's UART is on
+    EUART_EXI_READ = 0,  // EXI_READ
+    EUART_EXI_WRITE = 1, // EXI_WRITE
+};
+
+#define EUART_CMD_WRITE 0xB0000100 // write bytes to the UART queue
+#define EUART_CMD_QUEUE 0x30000100 // read the UART queue's fill byte
+#define EUART_QUEUE_SIZE 32        // bytes the transmit queue holds
+
 s32 WriteUARTN(char *msg, u32 n) {
     extern u32 lbl_8055DCA4;
     extern u32 lbl_8055DC98;
