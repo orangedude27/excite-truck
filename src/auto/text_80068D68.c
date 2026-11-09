@@ -8148,7 +8148,7 @@ void BTM_DeviceReset(void (*arg0)(void *)) {
     *(volatile u32 *)(lbl_803C0F78 + 0x58C) = (u32)arg0;
     *(volatile u8 *)(lbl_803C0F78 + 0x64E) = zero;
     *(volatile u8 *)(lbl_803C0F78 + 0x64F) = 5;
-    btu_start_timer(lbl_803C0F78 + 0x574, 1, 4, 0);
+    btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0F78 + 0x574), 1, 4);
     ((void (*)(void))btsnd_hcic_reset)();
     if (*(void (**)(void *))(lbl_803C0F78 + 0x568) != NULL)
         (*(void (**)(void *))(lbl_803C0F78 + 0x568))((void *)1);
@@ -14697,21 +14697,22 @@ s32 btsnd_hcic_write_policy_set_80085668(u16 arg0, u16 arg1) {
     return 1;
 }
 
-void btsnd_hcic_write_cur_iac_lap(u8 *p_buf, u8 num_cur_iac, LAP *cur_iac_lap) {
-    u8 *p = p_buf + 0xC;
-    u8 i;
-
-    *(u16 *)(p_buf + 2) = (num_cur_iac * 3) + 4;
+void btsnd_hcic_write_cur_iac_lap(u8 *p_buf, u8 num_cur_iac, u8 *cur_iac_lap) {
+    u8 *p = p_buf + 12;
+    u8 *q = cur_iac_lap;
+    int count = num_cur_iac;
+    *(u16 *)(p_buf + 2) = num_cur_iac * 3 + 4;
     *(u16 *)(p_buf + 4) = 0;
     p_buf[8] = 0x3A;
-    p_buf[9] = 0xC;
-    p_buf[10] = (num_cur_iac * 3) + 1;
+    p_buf[9] = 0x0C;
+    p_buf[10] = num_cur_iac * 3 + 1;
     p_buf[11] = num_cur_iac;
-    for (i = 0; i < num_cur_iac; i++) {
-        p[0] = cur_iac_lap[i][2];
-        p[1] = cur_iac_lap[i][1];
-        p[2] = cur_iac_lap[i][0];
+    for (; count; count--) {
+        p[0] = q[2];
+        p[1] = q[1];
+        p[2] = q[0];
         p += 3;
+        q += 3;
     }
     btu_hcif_send_cmd(p_buf);
 }
