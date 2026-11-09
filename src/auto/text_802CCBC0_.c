@@ -434,7 +434,6 @@ extern int fn_802D0514(int);
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-#pragma opt_propagation off
 void fn_802CDAFC(void *arg0, int arg1) {
     int a;
     int b;
