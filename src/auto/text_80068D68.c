@@ -15403,11 +15403,8 @@ u8 HID_HostOpenDev(u32 arg0) {
     s32 offset;
     if (entry[0x400] == 0)
         return 1;
-    if (arg0 <= 0x10) {
-        offset = arg0 * 0x34;
-        if (entry[offset] == 0)
-            return 5;
-    }
+    if (arg0 > 0x10 || ((offset = arg0 * 0x34), entry[offset] == 0))
+        return 5;
     entry += offset;
     if (entry[0xA] != 0)
         return 10;
