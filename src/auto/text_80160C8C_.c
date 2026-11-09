@@ -1742,63 +1742,68 @@ s32 fn_801631E0(void *arg0) {
 
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" s32 fn_801632C8(void *arg0) {
-    struct Manager {
-        virtual void slot0();
-        virtual void *slot1(const char *);
-        virtual void *slot2(const char *);
+// Draws the tutorial results banner: the top and bottom bars, the
+// "results_art" graphic in the pass or fail colour, the banner's title line
+// ("results1") and body line ("results2", whose text comes from the message
+// table and says why the tutorial was lost), and, once the banner is far
+// enough in, the "continue" prompt.  Returns 1 to keep the HUD object alive.
+extern "C" s32 fn_801632C8(void *banner) {
+    class HudObject {
+    public:
+        virtual void m08(); virtual void m0C(); virtual void m10(); virtual void m14();
+        virtual void m18(); virtual void m1C(); virtual void m20(); virtual void m24();
+        virtual s32 isOn();     // vtable slot 0x28: banner already on screen
     };
-    struct Object {
-        virtual void slot0(); virtual void slot1(); virtual void slot2(); virtual void slot3();
-        virtual void slot4(); virtual void slot5(); virtual void slot6(); virtual void slot7();
-        virtual s32 ready();
+    class UiManager {
+    public:
+        virtual void m08();
+        virtual void *getText(const char *); // vtable slot 0xC: named text element
+        virtual void *getBar(const char *);  // vtable slot 0x10: named bar element
     };
-    const char *text = (const char *)lbl_8032F588;
-    f32 spC, sp8;
-    void *first;
-    void *settings;
-    void *objectSettings;
-    s32 selected;
+    char *names = (char *)lbl_8032F588; // pool of UI element / message names
+    f32 screenX, screenY;
+    void *bar;
+    void *textElem;
+    void *barElem;
+    s32 bodyText;
 
-    first = ((Manager *)lbl_8055E2E0)->slot2((const char *)&lbl_8055A0F8);
-    fn_801476D8((s32)first, -1, lbl_8055E2E8);
-    first = ((Manager *)lbl_8055E2E0)->slot2((const char *)&lbl_8055A100);
-    fn_801476D8((s32)first, -1, lbl_8055E2EC);
-    if (((Object *)arg0)->ready() != 0) {
-        first = ((Manager *)lbl_8055E2E0)->slot2(text + 0x4C8);
-        fn_801476D8((s32)first, -1, lbl_8055E2F0);
-        fn_801473F8(lbl_8055E2E0, text + 0x4D4,
-            fn_80131234((void *)(text + 0x4E0)));
-        selected = fn_80131234((void *)(text + 0x4F8));
+    fn_801476D8((s32)(bar = ((UiManager *)lbl_8055E2E0)->getBar((const char *)&lbl_8055A0F8)), -1, lbl_8055E2E8); // "bar_top"
+    fn_801476D8((s32)(bar = ((UiManager *)lbl_8055E2E0)->getBar((const char *)&lbl_8055A100)), -1, lbl_8055E2EC); // "bar_bot"
+    if (((HudObject *)banner)->isOn() != 0) {
+        bar = ((UiManager *)lbl_8055E2E0)->getBar(names + UI_RESULTS_ART);
+        fn_801476D8((s32)bar, -1, lbl_8055E2F0); // passing artwork
+        fn_801473F8(lbl_8055E2E0, names + UI_RESULTS_TITLE,
+            fn_80131234(names + MSG_PASSED_HEAD));
+        bodyText = fn_80131234(names + MSG_PASSED_BODY);
     } else {
-        first = ((Manager *)lbl_8055E2E0)->slot2(text + 0x4C8);
-        fn_801476D8((s32)first, -1, lbl_8055E2F4);
-        fn_801473F8(lbl_8055E2E0, text + 0x4D4,
-            fn_80131234((void *)(text + 0x510)));
-        if (*(s32 *)((u8 *)arg0 + 8) == 4)
-            selected = fn_80131234((void *)(text + 0x528));
-        else if (*(s32 *)((u8 *)arg0 + 8) == 2)
-            selected = fn_80131234((void *)(text + 0x544));
+        bar = ((UiManager *)lbl_8055E2E0)->getBar(names + UI_RESULTS_ART);
+        fn_801476D8((s32)bar, -1, lbl_8055E2F4); // failing artwork
+        fn_801473F8(lbl_8055E2E0, names + UI_RESULTS_TITLE,
+            fn_80131234(names + MSG_FAILED_HEAD));
+        if (*(s32 *)((u8 *)banner + 8) == FAIL_REASON_STUNT)
+            bodyText = fn_80131234(names + MSG_FAILED_STUNT);
+        else if (*(s32 *)((u8 *)banner + 8) == FAIL_REASON_CRASH)
+            bodyText = fn_80131234(names + MSG_FAILED_CRASH);
         else
-            selected = fn_80131234((void *)(text + 0x560));
+            bodyText = fn_80131234(names + MSG_FAILED_TIME);
     }
-    settings = ((Manager *)lbl_8055E2E0)->slot1(text + 0x57C);
-    objectSettings = ((Manager *)lbl_8055E2E0)->slot2(text + 0x4C8);
-    if (settings != 0 && objectSettings != 0) {
-        f32 value4 = *(f32 *)((u8 *)settings + 4);
-        f32 value8 = *(volatile f32 *)((u8 *)settings + 8);
-        s32 valueC = *(s32 *)((u8 *)settings + 0xC);
-        fn_80148134(&spC, &sp8, valueC, value4, value8);
-        f32 firstValue = *(f32 *)((u8 *)objectSettings + 0x10);
-        f32 settingValue = *(f32 *)((u8 *)settings + 0x10);
-        f32 delta = firstValue - lbl_80561860;
-        fn_800103B8(*(s32 *)((u8 *)settings + 0x18),
-            *(s32 *)((u8 *)settings + 0x14), (s32 *)&lbl_8055A0DC, selected,
-            settingValue, spC, sp8, delta);
+    textElem = ((UiManager *)lbl_8055E2E0)->getText(names + UI_RESULTS_BODY);
+    barElem = ((UiManager *)lbl_8055E2E0)->getBar(names + UI_RESULTS_ART);
+    if (textElem != 0 && barElem != 0) {
+        f32 x = *(f32 *)((u8 *)textElem + 4);
+        f32 y = *(volatile f32 *)((u8 *)textElem + 8);
+        s32 mode = *(s32 *)((u8 *)textElem + 0xC);
+        fn_80148134(&screenX, &screenY, mode, x, y); // element position -> screen
+        f32 barFill = *(f32 *)((u8 *)barElem + 0x10);
+        f32 textScale = *(f32 *)((u8 *)textElem + 0x10);
+        f32 fill = barFill - lbl_80561860; // 100.0f = a full bar
+        fn_800103B8(*(s32 *)((u8 *)textElem + 0x18),
+            *(s32 *)((u8 *)textElem + 0x14), (s32 *)&lbl_8055A0DC /* "%s" */, bodyText,
+            textScale, screenX, screenY, fill);
     }
-    if (*(f32 *)((u8 *)arg0 + 0x8C) > lbl_8056185C) {
-        ((Manager *)lbl_8055E2E0)->slot1(text + 0x110);
-        fn_801476C4();
+    if (*(f32 *)((u8 *)banner + 0x8C) > lbl_8056185C) { // faded in past 0.5
+        ((UiManager *)lbl_8055E2E0)->getText(names + UI_CONTINUE);
+        fn_801476C4(); // draws it; takes the element above in r3
     }
     return 1;
 }
