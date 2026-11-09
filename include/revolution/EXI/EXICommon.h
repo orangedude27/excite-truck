@@ -43,6 +43,9 @@ typedef enum {
     EXI_ID_MEMCARD_2043 = 0x00000080,
     EXI_ID_USB_ADAPTER = 0x01010000,
     EXI_ID_IS_DOL_VIEWER = 0x05070000,
+    // The SDK leaves this fourth ID of the same family unnamed; EXISync()
+    // treats it like the two development peripherals above.
+    EXI_ID_04220001 = 0x04220001,
     EXI_ID_BROADBAND_ADAPTER = 0x04020200,
     // The barnacle debug interface of dev boards; EXIInit() enables it on the
     // internal port of the other channel when it finds one attached.
