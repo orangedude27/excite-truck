@@ -222,8 +222,7 @@ extern "C" void fn_8013AC78(int arg0, int *arg1) {
     float sp8[2];
     float f31, t;
     int *a;
-    int count, n, i, j;
-    struct Entry *e;
+    int count, n, i, j, k, pairs;
     int *q;
 
     a = fn_801E87A8();
@@ -246,50 +245,48 @@ extern "C" void fn_8013AC78(int arg0, int *arg1) {
         q[1] = p[0x12];
         q += 2;
     }
-    e = es;
-    for (i = 0; i < count; i++) {
+    pairs = i;
+    q = (int *)es;
+    for (k = 0; k < count; k++) {
         int *pp;
-        e->idx = i;
-        e->key = *arg1;
-        e->score = fn_80129D90(3, -2, 2);
-        pp = pr;
-        for (j = 0; j < n; j++) {
-            if (e->key == *pp) {
-                e->score += pr[j * 2 + 1];
+        q[0] = k;
+        q[1] = *arg1;
+        q[2] = fn_80129D90(3, -2, 2);
+        for (j = 0, pp = pr; j < pairs; j++, pp += 2) {
+            if (q[1] == *pp) {
+                q[2] += pr[j * 2 + 1];
                 break;
             }
-            pp += 2;
         }
-        e++;
+        q += 3;
         arg1++;
     }
     qsort(es, count, 12, fn_8013A6C4);
     f31 = lbl_80561440;
     t = (float)(count - 1);
     if (t > f31) f31 = t;
-    for (i = 0; i < count; i++)
-        *(float *)(lbl_8042F858 + es[i].idx * 8 + 8) = *(float *)lbl_8042F858 - ((float)i / f31) * sp8[0];
-    e = es;
-    for (i = 0; i < count; i++) {
-        e->score += fn_80129D90(3, -2, 2);
-        e++;
+    for (k = 0; k < count; k++)
+        *(float *)(lbl_8042F858 + es[k].idx * 8 + 8) = *(float *)lbl_8042F858 - ((float)k / f31) * sp8[0];
+    q = (int *)es;
+    for (k = 0; k < count; k++) {
+        q[2] += fn_80129D90(3, -2, 2);
+        q += 3;
     }
     qsort(es, count, 12, fn_8013A6C4);
-    for (i = 0; i < count; i++)
-        *(float *)(lbl_8042F858 + es[i].idx * 8 + 0xC) = *(float *)lbl_8042F858 - ((float)i / f31) * sp8[0];
-    e = es;
-    for (i = 0; i < count; i++) {
+    for (k = 0; k < count; k++)
+        *(float *)(lbl_8042F858 + es[k].idx * 8 + 0xC) = *(float *)lbl_8042F858 - ((float)k / f31) * sp8[0];
+    q = (int *)es;
+    for (k = 0; k < count; k++) {
         void *vobj, *obj;
         int idx, has;
-        int *pp = pr;
+        int *pp;
         obj = 0;
-        for (j = 0; j < n; j++) {
-            if (*pp == e->key)
+        for (j = 0, pp = pr; j < pairs; j++, pp += 2) {
+            if (*pp == q[1])
                 obj = fn_80016464(j);
-            pp += 2;
         }
         vobj = *(void **)((char *)obj + 0x58);
-        idx = e->idx;
+        idx = q[0];
         has = ((int (*)(void *, char *))(*(void ***)vobj)[3])(vobj, base + 0xF4);
         if (has != 0) {
             vobj = *(void **)((char *)obj + 0x58);
@@ -304,7 +301,7 @@ extern "C" void fn_8013AC78(int arg0, int *arg1) {
             if (has == 0)
                 *(float *)(r + 8) = *(float *)(r + 0xC);
         }
-        e++;
+        q += 3;
     }
 }
 
@@ -348,9 +345,7 @@ void fn_8013B56C(void) {
 
 #pragma scheduling invalid_target
 void *fn_8013B578(int arg0) {
-    register char *base = lbl_8042F858;
-    register int offset = arg0 * 8;
-    return base + offset + 8;
+    return lbl_8042F858 + 8 + arg0 * 8;
 }
 #pragma scheduling on
 extern void **fn_801B2ED0(void);
