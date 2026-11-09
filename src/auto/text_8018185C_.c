@@ -194,6 +194,9 @@ void fn_8018185C(void *arg0, const float *arg1) {
 }
 #pragma scheduling on
 
+#pragma push
+#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_801819A0(void *dst, void *arg1, void *arg2, float scale, float farg1, float farg2) {
     float values[6];
     float a;
@@ -212,7 +215,7 @@ void fn_801819A0(void *dst, void *arg1, void *arg2, float scale, float farg1, fl
     values[3] = d * farg1;
     fn_8018185C(dst, values);
 }
-
+#pragma pop
 float fn_80181A14(void *arg0) {
     float value;
     if (*((unsigned char *)arg0 + 0x259d) != 0) value = lbl_80434930[6];
