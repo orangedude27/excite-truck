@@ -351,6 +351,31 @@ loop_test:
 void fn_801D4F9C(void) {
 }
 
+#pragma push
+#pragma dont_inline on
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_801D4FA0(void *arg0) {
+    struct E {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8();
+    };
+    s32 offset;
+    s32 i;
+    E *obj;
+    i = 0;
+    offset = 0;
+    while (i < *(s32 *)((u8 *)arg0 + 0x34)) {
+        obj = *(E **)((u8 *)*(void **)((u8 *)arg0 + 0x30) + offset);
+        obj->v8();
+        offset += 4;
+        i += 1;
+    }
+}
+#pragma pop
+#pragma cplusplus reset
+
 void fn_801D5010(void) {
 }
 
@@ -3031,6 +3056,25 @@ void fn_801D8C0C(void *arg0) {
 }
 
 void fn_801D8C18(void) {
+}
+
+extern float lbl_80562AE4;
+extern void fn_801E1F78(void);
+void fn_801D8C1C(void *arg0, float farg0) {
+    float tmp;
+    float v;
+    int t;
+    tmp = farg0 / *(float *)((char *)arg0 + 0x14);
+    if (tmp < lbl_80562ADC) {
+        v = tmp - lbl_80562AE4;
+    } else {
+        v = lbl_80562AE4 + tmp;
+    }
+    t = (int)v;
+    if (t != *(int *)((char *)arg0 + 0x18)) {
+        fn_801E1F78();
+        *(int *)((char *)arg0 + 0x18) = t;
+    }
 }
 
 void fn_801D8C94(void) {
