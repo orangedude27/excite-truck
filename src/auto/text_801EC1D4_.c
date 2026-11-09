@@ -838,7 +838,7 @@ void fn_801EDD7C(void *arg0, long arg1) {
     fn_801EABA8(object, *(void **)((char *)object + 0x3C));
     scale = *(float *)((char *)data + 0x2D0);
     *(float *)((char *)object + 0x4D0) = scale;
-    if (__fabsf(scale - lbl_80562E90) <= lbl_80558DC4) {
+    if (__fabsf(scale - lbl_80562E90) <= *(float *)&lbl_80558DC4) {
         *(unsigned int *)((char *)object + 0x4A0) = *(unsigned int *)((char *)object + 4);
         *(unsigned int *)((char *)object + 0x4A4) = *(unsigned int *)((char *)object + 8);
         *(unsigned int *)((char *)object + 0x4A8) = *(unsigned int *)((char *)object + 0xC);
