@@ -1195,18 +1195,18 @@ extern "C" void fn_8025B520(void *arg0) {
     value = (int)(start + lbl_80558DC4);
     fn_80130FCC(row->progressText, 0x14, value);
     showName = 1;
-    if (*(unsigned char *)(o + 0xC4) != 0) {
-        if (*(unsigned char *)(o + 0x58) != 0 || *(unsigned char *)(o + 0xC5) == 0) {
+    if (row->flagC4 != 0) {
+        if (row->done != 0 || row->flagC5 == 0) {
             showName = 0;
         }
     }
-    result = fn_8001EFA0(*(int *)(o + 0x18), value);
-    *(int *)(o + 0xC8) = result;
-    result = fn_8001EFA4(*(int *)(o + 0x18), result + 1);
+    result = fn_8001EFA0(row->achievement, value);
+    row->rank = result;
+    result = fn_8001EFA4(row->achievement, result + 1);
     if (result >= 0) {
-        fn_80130FCC(o + 0x40, 0x14, result);
+        fn_80130FCC(row->goalText, 0x14, result);
     } else {
-        goalDst = (unsigned char *)(o + 0x40);
+        goalDst = (unsigned char *)(row->goalText);
         goalSrc = lbl_8055C380;
         goalLeft = 0x14;
         goto goal_copy;
