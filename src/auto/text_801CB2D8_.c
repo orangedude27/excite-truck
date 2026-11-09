@@ -340,8 +340,11 @@ void fn_801CBD04(void *arg0) {
     }
 }
 
+#pragma push
+#pragma dont_inline on
 void fn_801CBD48(void *arg0, void *arg1) {
 }
+#pragma pop
 
 extern int fn_80145E70(void *);
 extern int fn_8001BA74(int);
