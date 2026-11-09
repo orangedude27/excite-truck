@@ -4,6 +4,9 @@
 extern char lbl_80338208[];
 extern char lbl_80338214[];
 #pragma small_data on
+extern void *lbl_804348E8[];
+extern float lbl_80562A48;
+extern void fn_801819A0(void *, void *, void *, float, float, float);
 
 #pragma scheduling invalid_target
 void fn_801D1184(void) {
