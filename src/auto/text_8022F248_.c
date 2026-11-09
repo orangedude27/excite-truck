@@ -1,6 +1,50 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#include "types.h"
+
+/* --- Named overlay quads -------------------------------------------
+ * A list of 0xB4-byte textured quads hangs off lbl_8055F014: fn_8022F638
+ * creates one from a texture name, fn_8022F2FC finds it by name,
+ * fn_8022F364/fn_8022F77C add and remove list nodes, and fn_8022F8CC draws
+ * one.  lbl_80497E3C holds the "current" settings a quad is copied in and
+ * out of (fn_8022F418 / fn_8022F548).
+ */
+
+/* Affine transform in the row-vector convention: three basis rows followed by
+ * a translation row, so a point moves as out = in * basis + translation.
+ * fn_80015B20 multiplies two basis parts and fn_801BFD34 transforms a
+ * translation row by a whole transform. */
+typedef struct QuadMtx {
+    f32 m[4][3];
+} QuadMtx;
+
+typedef struct OverlayQuad {
+    QuadMtx mtx;      /* 0x00: transform, composed with the current one on draw */
+    s32 texIndex;     /* 0x30: texture table entry (fn_802CAC28), -1 if unknown */
+    u32 color;        /* 0x34: RGBA color; fn_8022FF90 starts it at white */
+    s32 colorIndex;   /* 0x38: palette entry fn_80230B9C turns into a color */
+    char name[0x40];  /* 0x3C: texture name, compared case-insensitively */
+    f32 z;            /* 0x7C: depth the corners are drawn at */
+    s32 texScale;     /* 0x80: S/T of the far corner; the near one is (0, 0) */
+    s32 width;        /* 0x84: corners span -width..width (0x2D0 = 720 on NTSC) */
+    s32 height;       /* 0x88: corners span -height..height (0x1E0 = 480) */
+                      /* 0x8C..0xB0: scroll/jitter state, see fn_8022FB6C */
+} OverlayQuad;
+
+/* The 24-byte GX FIFO vertex fn_802D68C4 pushes: position, RGBA8 color and one
+ * S/T pair.  The game copies these word by word - x and y travel as a single
+ * double, z as a raw word - so the fields are declared the way they travel. */
+typedef struct QuadVtx {
+    f64 xy;           /* 0x00: f32 x, then f32 y */
+    u32 z;            /* 0x08: f32 z, copied as a word */
+    u32 color;        /* 0x0C: RGBA8 */
+    f32 s, t;         /* 0x10, 0x14: texture coordinates */
+} QuadVtx;
+
+#define QUAD_INDEXES lbl_802F9FB0 /* {0, 1, 3, 0, 3, 2}: the quad's two triangles */
+#define FLOAT_ZERO lbl_805635FC   /* 0.0f, this unit's float zero in .sdata2 */
+
 extern char lbl_80340394[];
 extern char lbl_803403CC[];
 extern char lbl_80340408[];
