@@ -396,49 +396,57 @@ extern float lbl_80563608;
 int fn_80129D90(int, int, int);
 #pragma push
 #pragma processor 750
-void fn_8022FB6C(void *arg0) {
-    char *p = (char *)arg0;
-    float s, v;
-    int r;
-    if (*(unsigned char *)(p + 0x9c) != 0) {
-        s = lbl_80563608;
-        r = (int)(*(float *)(p + 0xa4) * s);
-        v = *(float *)(p + 0x8c) + (float)fn_80129D90(2, -r, r + 1) / s;
-        *(float *)(p + 0x8c) = v;
-        if (v > *(float *)(p + 0xa8)) {
-            *(float *)(p + 0x8c) = *(float *)(p + 0xa8);
-        } else if (v < -*(float *)(p + 0xa8)) {
-            *(float *)(p + 0x8c) = -*(float *)(p + 0xa8);
+/* One frame of a quad's scroll/drift wander, run by fn_8022FFE8 right before
+ * the values are applied.  fn_80129D90(2, min, max) draws a random int from
+ * min..max-1 out of random source 2, so dividing it by the 1.0e7f RAND_SCALE
+ * gives a float step inside +-(the field it was scaled from).
+ * With scrollOn, the scroll offset takes a random step of +-scrollStep and is
+ * clamped to +-scrollLimit.  With driftOn, each drift velocity is first pushed
+ * back by one driftStep once the quad's translation has left +-driftRange,
+ * then takes a random step of +-driftStep and is clamped to +-driftLimit. */
+void fn_8022FB6C(OverlayQuad *quad) {
+    float scale, value;
+    int range;
+
+    if (quad->scrollOn != 0) {
+        scale = RAND_SCALE;
+        range = (int)(quad->scrollStep * scale);
+        value = quad->scrollOffset + (float)fn_80129D90(2, -range, range + 1) / scale;
+        quad->scrollOffset = value;
+        if (value > quad->scrollLimit) {
+            quad->scrollOffset = quad->scrollLimit;
+        } else if (value < -quad->scrollLimit) {
+            quad->scrollOffset = -quad->scrollLimit;
         }
     }
-    if (*(unsigned char *)(p + 0x9d) != 0) {
-        if (*(float *)(p + 0x24) > *(float *)(p + 0xa0)) {
-            *(float *)(p + 0x94) = *(float *)(p + 0x94) - *(float *)(p + 0xac);
-        } else if (*(float *)(p + 0x24) < -*(float *)(p + 0xa0)) {
-            *(float *)(p + 0x94) = *(float *)(p + 0x94) + *(float *)(p + 0xac);
+    if (quad->driftOn != 0) {
+        if (quad->mtx.m[3][0] > quad->driftRange) {
+            quad->driftVelX = quad->driftVelX - quad->driftStep;
+        } else if (quad->mtx.m[3][0] < -quad->driftRange) {
+            quad->driftVelX = quad->driftVelX + quad->driftStep;
         }
-        if (*(float *)(p + 0x28) > *(float *)(p + 0xa0)) {
-            *(float *)(p + 0x98) = *(float *)(p + 0x98) - *(float *)(p + 0xac);
-        } else if (*(float *)(p + 0x28) < -*(float *)(p + 0xa0)) {
-            *(float *)(p + 0x98) = *(float *)(p + 0x98) + *(float *)(p + 0xac);
+        if (quad->mtx.m[3][1] > quad->driftRange) {
+            quad->driftVelY = quad->driftVelY - quad->driftStep;
+        } else if (quad->mtx.m[3][1] < -quad->driftRange) {
+            quad->driftVelY = quad->driftVelY + quad->driftStep;
         }
-        r = (int)(*(float *)(p + 0xac) * lbl_80563608);
-        s = lbl_80563608;
-        v = *(float *)(p + 0x94) + (float)fn_80129D90(2, -r, r + 1) / s;
-        *(float *)(p + 0x94) = v;
-        if (v > *(float *)(p + 0xb0)) {
-            *(float *)(p + 0x94) = *(float *)(p + 0xb0);
-        } else if (v < -*(float *)(p + 0xb0)) {
-            *(float *)(p + 0x94) = -*(float *)(p + 0xb0);
+        range = (int)(quad->driftStep * RAND_SCALE);
+        scale = RAND_SCALE;
+        value = quad->driftVelX + (float)fn_80129D90(2, -range, range + 1) / scale;
+        quad->driftVelX = value;
+        if (value > quad->driftLimit) {
+            quad->driftVelX = quad->driftLimit;
+        } else if (value < -quad->driftLimit) {
+            quad->driftVelX = -quad->driftLimit;
         }
-        r = (int)(*(float *)(p + 0xac) * lbl_80563608);
-        s = lbl_80563608;
-        v = *(float *)(p + 0x98) + (float)fn_80129D90(2, -r, r + 1) / s;
-        *(float *)(p + 0x98) = v;
-        if (v > *(float *)(p + 0xb0)) {
-            *(float *)(p + 0x98) = *(float *)(p + 0xb0);
-        } else if (v < -*(float *)(p + 0xb0)) {
-            *(float *)(p + 0x98) = -*(float *)(p + 0xb0);
+        range = (int)(quad->driftStep * RAND_SCALE);
+        scale = RAND_SCALE;
+        value = quad->driftVelY + (float)fn_80129D90(2, -range, range + 1) / scale;
+        quad->driftVelY = value;
+        if (value > quad->driftLimit) {
+            quad->driftVelY = quad->driftLimit;
+        } else if (value < -quad->driftLimit) {
+            quad->driftVelY = -quad->driftLimit;
         }
     }
 }
