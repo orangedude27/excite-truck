@@ -623,41 +623,62 @@ extern void fn_802354A0(int, int, int, float, float, float, float, float);
 extern void fn_80235758(int, int, int, float, float, float, float, float, float, float, float);
 #pragma push
 #pragma processor 750
-void fn_802465A4(void *arg0) {
-    float x, y, xpos;
-    float width, height, left, right, mid, total, barheight, fill, part;
-    int obj;
-    fn_80230C30(&x, &y, *(int *)((char *)arg0+4), *(int *)((char *)arg0+8));
-    width = (float)*(int *)((char *)arg0+0xc);
-    height = (float)*(int *)((char *)arg0+0x10);
-    obj = *(int *)((char *)arg0+0x1c);
-    if (obj) {
-        left = fn_80235EF0(obj, 0);
-        right = fn_80235EF0(*(int *)((char *)arg0+0x1c), 2);
-        mid = (width-left)-right;
-        total = right+(left+mid);
-        barheight = fn_80235F64(*(int *)((char *)arg0+0x1c), 0);
-        x = (x + lbl_80563844*width) - lbl_80563844*total;
-        y = (y + lbl_80563844*height) - lbl_80563844*barheight;
-        fill = total * *(float *)((char *)arg0+0x18);
-        if (fill < left) {
-            fn_80235758(*(int *)((char *)arg0+0x1c), 3, -1, x, y, fill, barheight, lbl_80563830, lbl_80563830, fill/left, lbl_80563834);
-        } else if (fill < left+mid) {
-            fn_802353F4(*(int *)((char *)arg0+0x1c), 3, x, y, lbl_80563830);
-            part = fill-left;
-            fn_80235758(*(int *)((char *)arg0+0x1c), 4, -1, x+left, y, part, barheight, lbl_80563830, lbl_80563830, part/mid, lbl_80563834);
+/* Draw the gauge.
+ *
+ * The bar has its top-left corner at (x, y) - the widget's position turned
+ * into screen coordinates (origin at the middle of the screen, y upwards) -
+ * and is nudged so that it sits in the middle of the widget's height box.
+ * widget->fill (0.0 .. 1.0) says how much of its total width to show.
+ *
+ * With a bar image, that width is spent on the fill row's left cap, then on
+ * the stretchable middle, then on the right cap; whichever piece the fill
+ * stops inside is drawn showing only the covered part of its texture
+ * (fn_80235758's u1 argument is the fraction to show).  The frame row is then
+ * drawn over the whole bar at its natural size.  Without an image the fill is
+ * just a plain rectangle of the widget's own box. */
+void fn_802465A4(struct BarWidget *widget) {
+    float x, y, midX;
+    float width, height, leftWidth, rightWidth, midWidth, totalWidth, barHeight, fillWidth, partWidth;
+    int image;
+
+    fn_80230C30(&x, &y, widget->x, widget->y);
+    width = (float)widget->width;
+    height = (float)widget->height;
+    image = widget->image;
+    if (image) {
+        /* the caps keep their width; the middle takes the rest of the box */
+        leftWidth = fn_80235EF0(image, BAR_PIECE_FRAME_LEFT);
+        rightWidth = fn_80235EF0(widget->image, BAR_PIECE_FRAME_RIGHT);
+        midWidth = (width-leftWidth)-rightWidth;
+        totalWidth = rightWidth+(leftWidth+midWidth);
+        barHeight = fn_80235F64(widget->image, BAR_PIECE_FRAME_LEFT);
+        x = (x + BAR_HALF*width) - BAR_HALF*totalWidth;
+        y = (y + BAR_HALF*height) - BAR_HALF*barHeight;
+        fillWidth = totalWidth * widget->fill;
+
+        if (fillWidth < leftWidth) {
+            /* stops inside the left cap: show only that much of it */
+            fn_80235758(widget->image, BAR_PIECE_FILL_LEFT, -1, x, y, fillWidth, barHeight, BAR_Z, BAR_Z, fillWidth/leftWidth, BAR_TEX_V);
+        } else if (fillWidth < leftWidth+midWidth) {
+            /* covers the left cap and part of the middle */
+            fn_802353F4(widget->image, BAR_PIECE_FILL_LEFT, x, y, BAR_Z);
+            partWidth = fillWidth-leftWidth;
+            fn_80235758(widget->image, BAR_PIECE_FILL_MID, -1, x+leftWidth, y, partWidth, barHeight, BAR_Z, BAR_Z, partWidth/midWidth, BAR_TEX_V);
         } else {
-            fn_802353F4(*(int *)((char *)arg0+0x1c), 3, x, y, lbl_80563830);
-            fn_802354A0(*(int *)((char *)arg0+0x1c), 4, -1, x+left, y, lbl_80563830, mid, barheight);
-            xpos = x+left;
-            part = (fill-left)-mid;
-            fn_80235758(*(int *)((char *)arg0+0x1c), 5, -1, mid+xpos, y, part, barheight, lbl_80563830, lbl_80563830, part/right, lbl_80563834);
+            /* covers the middle too, and eats into the right cap */
+            fn_802353F4(widget->image, BAR_PIECE_FILL_LEFT, x, y, BAR_Z);
+            fn_802354A0(widget->image, BAR_PIECE_FILL_MID, -1, x+leftWidth, y, BAR_Z, midWidth, barHeight);
+            midX = x+leftWidth;
+            partWidth = (fillWidth-leftWidth)-midWidth;
+            fn_80235758(widget->image, BAR_PIECE_FILL_RIGHT, -1, midWidth+midX, y, partWidth, barHeight, BAR_Z, BAR_Z, partWidth/rightWidth, BAR_TEX_V);
         }
-        fn_802353F4(*(int *)((char *)arg0+0x1c), 0, x, y, lbl_80563830);
-        fn_802354A0(*(int *)((char *)arg0+0x1c), 1, -1, x+left, y, lbl_80563830, mid, barheight);
-        fn_802353F4(*(int *)((char *)arg0+0x1c), 2, mid+(x+left), y, lbl_80563830);
+
+        /* frame over the full width */
+        fn_802353F4(widget->image, BAR_PIECE_FRAME_LEFT, x, y, BAR_Z);
+        fn_802354A0(widget->image, BAR_PIECE_FRAME_MID, -1, x+leftWidth, y, BAR_Z, midWidth, barHeight);
+        fn_802353F4(widget->image, BAR_PIECE_FRAME_RIGHT, midWidth+(x+leftWidth), y, BAR_Z);
     } else {
-        fn_80230924(-1, x, y, x+width* *(float *)((char *)arg0+0x18), y-height, lbl_80563830);
+        fn_80230924(-1, x, y, x+width* widget->fill, y-height, BAR_Z);
     }
 }
 #pragma pop
