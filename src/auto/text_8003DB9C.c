@@ -2423,7 +2423,7 @@ void GXSetTexCopySrc(s32 x, s32 y, s32 width, s32 height) {
 }
 
 void GXSetDispCopyDst(u16 value) {
-    union {
+    register union {
         u32 reg;
         struct {
             u32 constant : 8;
@@ -2491,24 +2491,15 @@ void GXSetDispCopyFrame2Field(s32 value) {
 }
 
 void GXSetCopyClamp(s32 value) {
-    union {
-        unsigned int reg;
-        struct {
-            unsigned int pad : 30;
-            unsigned int bit1 : 1;
-            unsigned int bit0 : 1;
-        } fields;
-    } data;
-    unsigned int *gx = __GXData;
-
-    data.reg = gx[0x23C / 4];
-    data.fields.bit0 = value;
-    data.fields.bit1 = value;
-    gx[0x23C / 4] = data.reg;
-    data.reg = gx[0x24C / 4];
-    data.fields.bit0 = value;
-    data.fields.bit1 = value;
-    gx[0x24C / 4] = data.reg;
+    u32 reg;
+    reg = __GXData[0x23C / 4];
+    reg = __rlwimi(reg, value, 0, 31, 31);
+    reg = __rlwimi(reg, value, 0, 30, 30);
+    __GXData[0x23C / 4] = reg;
+    reg = __GXData[0x24C / 4];
+    reg = __rlwimi(reg, value, 0, 31, 31);
+    reg = __rlwimi(reg, value, 0, 30, 30);
+    __GXData[0x24C / 4] = reg;
 }
 
 /* Display-copy Y scale (BP register 0x4D) is a 9-bit 8.8 fixed-point value:
@@ -4709,14 +4700,23 @@ void GXSetDstAlpha(s32 enable, s32 alpha) {
 }
 
 void GXSetFieldMask(s32 even, s32 odd) {
+    union {
+        unsigned int value;
+        struct {
+            unsigned int type : 8;
+            unsigned int pad : 22;
+            unsigned int evenF : 1;
+            unsigned int oddF : 1;
+        } bits;
+    } reg;
     unsigned int *data;
-    unsigned int value = 0;
+    reg.value = 0;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    value = __rlwimi(value, odd, 0, 31, 31);
-    value = __rlwimi(value, even, 1, 30, 30);
+    reg.bits.oddF = odd;
+    reg.bits.evenF = even;
     data = __GXData;
-    value = __rlwimi(value, 0x44, 24, 0, 7);
-    *(volatile unsigned int *)0xCC008000 = value;
+    reg.bits.type = 0x44;
+    *(volatile unsigned int *)0xCC008000 = reg.value;
     *(volatile unsigned short *)((char *)data + 2) = 0;
 }
 
@@ -5062,27 +5062,7 @@ void GXSetScissor(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     *(volatile unsigned short *)((char *)data + 2) = 0;
 }
 
-void GXSetScissorBoxOffset(s32 x, s32 y) {
-    register u32 yAdjusted;
-    union {
-        u32 value;
-        struct {
-            unsigned int tag : 8;
-            unsigned int reserved : 4;
-            unsigned int y : 10;
-            unsigned int x : 10;
-        } bits;
-    } reg;
-
-    reg.value = 0;
-    reg.bits.x = ((u32)(x + 0x156)) >> 1;
-    *(volatile u8 *)0xCC008000 = 0x61;
-    yAdjusted = (u32)(y + 0x156);
-    reg.bits.y = yAdjusted >> 1;
-    reg.bits.tag = 0x59;
-    *(volatile u32 *)0xCC008000 = reg.value;
-    *(volatile u16 *)((u8 *)__GXData + 2) = 0;
-}
+void GXSetScissorBoxOffset(s32 x, s32 y) { u32 yAdjusted; union { u32 value; struct { unsigned int tag : 8; unsigned int reserved : 4; unsigned int y : 10; unsigned int x : 10; } bits; } reg; reg.value = 0; reg.bits.x = ((u32)(x + 0x156)) >> 1; yAdjusted = (u32)(y + 0x156); *(volatile u8 *)0xCC008000 = 0x61; reg.bits.y = yAdjusted >> 1; reg.bits.tag = 0x59; *(volatile u32 *)0xCC008000 = reg.value; *(volatile u16 *)((u8 *)__GXData + 2) = 0; }
 
 void GXSetClipMode(s32 arg0) {
     register volatile unsigned char *fifo = (volatile unsigned char *)0xCC008000;
