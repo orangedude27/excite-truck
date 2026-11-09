@@ -237,16 +237,17 @@ extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFi_801016C0(void
     OSRestoreInterrupts(interrupts);
 }
 #pragma pop
-void PauseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFb(void *arg0, unsigned char arg1) {
-    void *channel = *(void **)((char *)arg0 + 0x30);
-    do {
-        if (*(unsigned char *)((char *)channel + 0x3A) &&
-            arg1 != (unsigned int)(*(unsigned char *)((char *)channel + 0x39) != 0)) {
-            *(unsigned char *)((char *)channel + 0x39) = arg1;
+extern "C" void PauseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFb(void *arg0, unsigned char arg1) {
+    unsigned char *track = (unsigned char *)arg0;
+    void *channel = *(void **)(track + 0x30);
+    while (channel != 0) {
+        unsigned char *p = (unsigned char *)channel;
+        if (p[0x3A] != 0 && arg1 != (p[0x39] != 0)) {
+            p[0x39] = arg1;
             Pause__Q46nw4hbm3snd6detail7AxVoiceFb(*(int *)((char *)channel + 0xE0), arg1);
         }
-        channel = *(void **)((char *)channel + 0xE4);
-    } while (channel != 0);
+        channel = *(void **)(p + 0xE4);
+    }
 }
 
 #pragma processor gekko
