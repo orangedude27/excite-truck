@@ -842,24 +842,24 @@ check:
 
 #pragma dont_inline on
 void fn_801F6728(void *arg0) {
-    int i;
     int offset;
+    int i;
     unsigned short index;
     char *records;
     char *record;
     char *output;
     i = 0;
     offset = 0;
-    records = *(char **)((char *)arg0 + 0x1C);
     while (i < *(int *)((char *)arg0 + 0x20)) {
+        records = *(char * volatile *)((char *)arg0 + 0x1C);
+        i++;
+        output = *(char * volatile *)((char *)arg0 + 4);
         record = records + offset;
-        output = *(char **)((char *)arg0 + 4);
-        index = *(unsigned short *)(records + offset);
+        index = *(unsigned short *)record;
         *(float *)(output + index * 0xC) = *(float *)(record + 4);
         *(float *)(output + index * 0xC + 4) = *(float *)(record + 8);
         *(float *)(output + index * 0xC + 8) = *(float *)(record + 0xC);
         offset += 0x10;
-        i++;
     }
 }
 #pragma dont_inline off
