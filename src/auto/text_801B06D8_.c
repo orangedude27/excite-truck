@@ -1811,13 +1811,18 @@ s32 fn_801B2F40(s32 arg0) {
 }
 
 typedef void (*VFnPtr)(void *);
-s32 fn_801B2F54(s32 arg0) {
-    register void **base = (void **)lbl_8055E684;
-    void *obj = &base[arg0 * 32];
-    void *result = ((void *(*)(void *))((void ***)base)[arg0 * 32][4])(obj);
+#pragma cplusplus on
+extern "C" s32 fn_801B2F54(s32 arg0) {
+    struct Dummy {
+        virtual void *d0(void *);
+        virtual void *d1(void *);
+        virtual void *d2(void *);
+    };
+    Dummy *obj = (Dummy *)((u8 *)lbl_8055E684 + (arg0 << 7));
+    void *result = obj->d2(lbl_8055E684);
     return *(s32 *)((u8 *)result + 0x10);
 }
-
+#pragma cplusplus reset
 extern f32 lbl_8056261C;
 extern f32 fn_801365C4(void *, void *);
 extern double __fabs(double);
