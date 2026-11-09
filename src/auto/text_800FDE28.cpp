@@ -540,27 +540,12 @@ extern "C" f32 CalcPitchRatio__Q46nw4hbm3snd6detail4UtilFi(s32 pitch) {
     return ratio;
 }
 
-#pragma push
 #pragma scheduling on
 extern "C" f32 CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(f32 value) {
-    f32 v;
-    s32 index;
-    u8 *table;
-
-    if (value > lbl_805610D4) {
-        v = lbl_805610D4;
-    } else if (value < lbl_805610D8) {
-        v = lbl_805610D8;
-    } else {
-        v = value;
-    }
-
-    index = (s32)(lbl_805610DC * v);
-    table = lbl_802F5210;
-    return *(f32 *)(table + (index + 0x388) * 4);
+    register f32 v = value > lbl_805610D4 ? lbl_805610D4 : (value < lbl_805610D8 ? lbl_805610D8 : value);
+    return *(f32 *)(lbl_802F5210 + ((s32)(lbl_805610DC * v) + 0x388) * 4);
 }
-#pragma push
-#pragma scheduling invalid_target
+#pragma scheduling off
 extern "C" f32 CalcPanRatio__Q46nw4hbm3snd6detail4UtilFf(f32 pan) {
     f32 v;
     if (pan > lbl_805610C8) v = lbl_805610C8;
@@ -1034,17 +1019,19 @@ extern "C" void fn_800FF708(void *);
 #pragma push
 #pragma small_data off
 #pragma pop
+#pragma use_lmw_stmw off
 extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FF824(void) {
     void *cur = *(void **)(lbl_8041D4AC + 4);
     void *end = lbl_8041D4AC + 4;
-    do {
+    while (cur != end) {
         void *item = cur;
         cur = *(void **)cur;
         if (item == 0)
             Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80327370, 0x23D, (char *)lbl_8032734C);
         fn_800FF708((u8 *)item - 0x94);
-    } while (cur != end);
+    }
 }
+#pragma use_lmw_stmw reset
 #pragma push
 #pragma small_data off
 #pragma pop
