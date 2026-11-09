@@ -7171,6 +7171,16 @@ extern "C" s32 fn_800B1AFC(s32 arg0, s32 arg1, s32 *arg2, s32 arg3) {
 #ifndef VF_LAST_ERROR
 #define VF_LAST_ERROR               (*(s32 *)((u8 *)lbl_803D2140 + 0x40))
 #endif
+#ifndef VF_LAST_DEVICE_ERROR
+#define VF_LAST_DEVICE_ERROR        (*(s32 *)((u8 *)lbl_803D2140 + 0x44))
+#endif
+
+/* What the device layer answers when the device itself failed, and what the
+ * volume code hands up in that case: 0x15 says there is a device code to read
+ * back with fn_800A71D8, and 0x1000 says the caller may pass that code to the
+ * volume's retry handler (volume + 0x1FC0) and try the run again. */
+#define VF_DEV_FAILED               0x15
+#define VF_ERR_DEVICE_RETRY         0x1000
 
 /* What fn_800B6004 reports for a volume, and what a file operation answers
  * with.  The mount code calls the same 0xA VF_ERR_NO_DEVICE. */
@@ -21244,6 +21254,10 @@ extern "C" void fn_800CA234(s32 arg0, s32 arg1) {
         return;
     }
     (*(void (*)(s32, s32))vt)(arg0, arg1);
+}
+
+extern "C" void fn_800CA264(void *arg0, void *arg1) {
+    (void)arg0; (void)arg1;
 }
 
 extern "C" void fn_800CF3EC(void *);
