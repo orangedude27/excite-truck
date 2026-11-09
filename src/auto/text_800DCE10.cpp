@@ -373,6 +373,96 @@ extern "C" void SetVtxColorElement__Q36nw4hbm3lyt7TextBoxFUlUc(void *this_ptr, u
     base[part2 + 0xD8] = color;
 }
 
+extern "C" void fn_80111B64(void *);
+extern "C" void SetFont__Q36nw4hbm2ut10CharWriterFRCQ36nw4hbm2ut4Font(void *, void *);
+extern "C" void SetFontSize__Q36nw4hbm2ut10CharWriterFff(void *, f32, f32);
+extern "C" void SetCursorX__Q36nw4hbm2ut10CharWriterFf_80111D88(void *, f32);
+extern "C" void SetCursorX__Q36nw4hbm2ut10CharWriterFf_80111EAC(void *, f32);
+extern "C" void SetCursorX__Q36nw4hbm2ut10CharWriterFf(void *, f32);
+extern "C" void MultipleAlpha__Q34nw4r3lyt6detailFQ34nw4r2ut5ColorUc(u32 *, u32 *, u8);
+extern "C" void SetGradationMode__Q36nw4hbm2ut10CharWriterFQ46nw4hbm2ut10CharWriter13GradationMode(void *, s32);
+extern "C" void SetTextColor__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color(void *, u32 *, u32 *);
+extern "C" void SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color(void *, u32 *, u32 *);
+extern "C" void SetFont__Q36nw4hbm2ut10CharWriterFRCQ36nw4hbm2ut4Font_80112200(void *, void *);
+extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *);
+extern "C" void fn_80112528(void *, const u16 *, s32);
+extern "C" void fn_80112960(void *, void *);
+extern "C" void fn_800DF208(f32 *arg0, u8 *arg1, void *arg2);
+extern "C" void fn_800DD70C(u8 *self) {
+    CWBuf w;
+    f32 bounds[4];
+    f32 line[4];
+    u32 c2, c3;
+    u16 q0[4], q1[4];
+    u8 k0[4], k1[4];
+    u32 t0, t1;
+    u8 flag;
+    f32 fa;
+    f32 zero;
+    const u16 *str;
+    s32 n;
+    const char *msg = lbl_80320560;
+    if (*(s32 *)(self + 0xD4) != 0 && *(s32 *)(self + 0xE0) != 0) {
+    if (*(s32 *)(self + 0x28) == 0) return;
+    (*(void (**)(void *))(*(u8 **)self + 0x60))(self);
+    fn_80111B64(&w);
+    SetFont__Q36nw4hbm2ut10CharWriterFRCQ36nw4hbm2ut4Font(&w, *(void **)(self + 0xE0));
+    SetFontSize__Q36nw4hbm2ut10CharWriterFff(&w, *(f32 *)(self + 0xE4), *(f32 *)(self + 0xE8));
+    SetCursorX__Q36nw4hbm2ut10CharWriterFf_80111D88(&w, *(f32 *)(self + 0xEC));
+    SetCursorX__Q36nw4hbm2ut10CharWriterFf_80111EAC(&w, *(f32 *)(self + 0xF0));
+    k0[0] = self[0xD8]; k0[1] = self[0xD9]; k0[2] = self[0xDA]; k0[3] = self[0xDB];
+    MultipleAlpha__Q34nw4r3lyt6detailFQ34nw4r2ut5ColorUc(&t0, (u32 *)k0, self[0xCE]);
+    k1[0] = self[0xDC]; k1[1] = self[0xDD]; k1[2] = self[0xDE]; k1[3] = self[0xDF];
+    MultipleAlpha__Q34nw4r3lyt6detailFQ34nw4r2ut5ColorUc(&t1, (u32 *)k1, self[0xCE]);
+    SetGradationMode__Q36nw4hbm2ut10CharWriterFQ46nw4hbm2ut10CharWriter13GradationMode(&w, t0 != t1 ? 2 : 0);
+    c2 = t0; c3 = t1;
+    SetTextColor__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color(&w, &c2, &c3);
+    {
+        u16 *m = *(u16 **)(self + 0x28);
+        u32 a, b;
+        q0[0] = m[0x24/2]; q0[1] = m[0x26/2]; q0[2] = m[0x28/2]; q0[3] = m[0x2A/2];
+        fn_800DCE68(&a, q0);
+        m = *(u16 **)(self + 0x28);
+        q1[0] = m[0x2C/2]; q1[1] = m[0x2E/2]; q1[2] = m[0x30/2]; q1[3] = m[0x32/2];
+        fn_800DCE68(&b, q1);
+        c2 = a; c3 = b;
+        SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color(&w, &c2, &c3);
+    }
+    if (*(s32 *)(self + 0xF4) != 0)
+        SetFont__Q36nw4hbm2ut10CharWriterFRCQ36nw4hbm2ut4Font_80112200(&w, 0);
+    SetupGX__Q36nw4hbm2ut10CharWriterFv(&w);
+    fn_800DF208(bounds, self, &w);
+    switch (self[0xFC] % 3) {
+    case 1: fa = lbl_80560EE0; break;
+    case 2: fa = lbl_80560EE4; break;
+    default: fa = lbl_80560ED0; break;
+    }
+    str = *(const u16 **)(self + 0xD4);
+    SetCursor__Q36nw4hbm2ut10CharWriterFff(&w, bounds[0], bounds[1]);
+    n = *(u16 *)(self + 0xFA);
+    zero = lbl_80560ED0;
+    while (n > 0) {
+        CWBuf w2;
+        s32 used;
+        f32 mx = *(f32 *)(self + 0x4C);
+        PTRCHECK(&w, 0x113, 0x194)
+        PTRCHECK(str, 0x114, 0x1D0)
+        if (n < 0) ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0x115, msg + 0x208, n, 0);
+        w2 = w;
+        line[0] = line[1] = line[2] = line[3] = zero;
+        SetCursor__Q36nw4hbm2ut10CharWriterFff(&w2, zero, zero);
+        used = fn_800DDDF4(line, &w2, str, n, &flag, mx);
+        __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80111BB8(&w2, -1);
+        SetCursorX__Q36nw4hbm2ut10CharWriterFf(&w, bounds[0] + fa * ((bounds[2] - bounds[0]) - (line[2] - line[0])));
+        fn_80112528(&w, str, used);
+        if (flag) fn_80112960(&w, &lbl_80559800);
+        n -= used;
+        str += used;
+    }
+    __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80111BB8(&w, -1);
+    }
+}
+
 extern "C" s32 fn_800DDDF4(f32 *arg0_ptr, void *arg1_ptr, const u16 *arg2_ptr, s32 arg3, u8 *arg4, f32 farg0) {
 
 extern void GetCharStrmReader__Q36nw4hbm2ut4FontCFv(void*,u32);
@@ -964,8 +1054,8 @@ extern "C" void fn_800DEFD8(void *this_ptr) {
     }
 }
 
-#pragma scheduling invalid_target
-extern "C" void SetString__Q36nw4hbm3lyt7TextBoxFPCwUs(void *this_ptr, const wchar_t *str, u16 len) {
+#pragma optimization_level 2
+extern "C" void SetString__Q36nw4hbm3lyt7TextBoxFPCwUs(void *this_ptr, const wchar_t *str, u32 len) {
     class TextBox {
     public:
         virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
@@ -975,12 +1065,12 @@ extern "C" void SetString__Q36nw4hbm3lyt7TextBoxFPCwUs(void *this_ptr, const wch
         virtual void m16(); virtual void m17(); virtual void m18(); virtual void m19();
         virtual void m20(); virtual void m21(); virtual void m22(); virtual void m23();
         virtual void m24(); virtual void m25();
-        virtual void setString(const wchar_t *, u16, u32);
+        virtual void setString(const wchar_t *, u32, u32);
     };
     u32 wlen = fn_8002AEE8((const u16 *)str);
     ((TextBox *)this_ptr)->setString(str, len, (u32)(u16)wlen);
 }
-#pragma scheduling on
+#pragma optimization_level reset
 extern "C" u16 SetString__Q36nw4hbm3lyt7TextBoxFPCwUsUs(void *this_ptr, const u16 *str, u16 offset, u16 len) {
     const char *msg = lbl_80320560;
     u16 *buffer;
