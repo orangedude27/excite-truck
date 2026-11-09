@@ -1233,7 +1233,7 @@ extern "C" void fn_801F9A24(F92Node **arg0) {
     F92Node *next;
     while (node != 0) {
         fn_801F99CC((F92Obj *)node);
-        next = node->next;
+        next = (F92Node *)*(void **)((char *)node + 0x20);
         if (node != 0) {
             ((void (*)(F92Obj *, s32))(*(void **)((u8 *)*(void **)((char *)node + 0x108) + 8)))((F92Obj *)node, 1);
         }
@@ -2236,9 +2236,11 @@ extern "C" void fn_801FBF48(void *arg0) {
 #pragma scheduling on
 #pragma push
 #pragma processor 750
+#pragma scheduling off
 extern "C" void fn_801FBFE8(void* arg0) {
+    void *heap = (void *)lbl_8033B53C;
     register f32 value = lbl_80563010;
-    void* obj = fn_801284F8(0xE0, lbl_8033B53C);
+    void *obj = fn_801284F8(0xE0, heap);
     if (obj != 0) fn_801A324C(obj, 0, (char*)arg0 + 0x58, value, *(f32*)((char*)arg0 + 0x4C));
 }
 #pragma pop
