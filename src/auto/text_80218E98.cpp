@@ -2370,6 +2370,59 @@ extern "C" void fn_8021C6D0(void *arg0) {
         *(u8 *)((u8 *)arg0 + 0x234) = 1;
 }
 
+/* The screen a menu item belongs to.  Its items are kept in a sorted list of
+   {key, item} pairs -- the count at 0x494, the keys at 0x4A0 and the items at
+   0x4A4, eight bytes per entry -- and 0x498 holds the key of the selected one. */
+typedef struct MenuScreen {
+    char pad000[0x494];
+    s32 entryCount; /* 0x494 number of items in the list */
+} MenuScreen;
+
+/* The value a menu item shows and steps.  Two leading destructor slots, so the
+   first declared method sits at 0x8. */
+struct ValueWidget {
+    virtual void f08();
+    virtual void f0C();
+    virtual void f10();
+    virtual void increment(); /* 0x14 the right arrow raises the value */
+    virtual void decrement(); /* 0x18 the left arrow lowers it */
+    virtual void f1C();
+    virtual void f20();
+    virtual f32 get(); /* 0x24 the value as it now stands */
+};
+
+/* A menu item that shows a value; while it is being edited the left/right
+   arrows step that value instead of moving the selection. */
+typedef struct MenuValueItem {
+    char pad000[0x2C];
+    MenuScreen *screen;  /* 0x2C the screen holding this item */
+    char pad030[0x2A4 - 0x30];
+    ValueWidget *value;  /* 0x2A4 the value the arrows step */
+    s32 *selectedKey;    /* 0x2A8 -> the key the screen has selected */
+    s32 key;             /* 0x2AC this item's key in the screen's list */
+    char pad2B0[0x2D0 - 0x2B0];
+    u8 editing;          /* 0x2D0 the arrows step the value, not the selection */
+} MenuValueItem;
+
+/* Keys a menu item's handler sees.  The arrows are the Windows virtual-key
+   codes with a 0x100 base (see the TEXT_KEY_* enum further down this file);
+   Return and Escape keep their plain codes. */
+enum {
+    MENU_KEY_RETURN = 0xD,
+    MENU_KEY_ESCAPE = 0x1B,
+    MENU_KEY_LEFT = 0x125,
+    MENU_KEY_UP = 0x126,
+    MENU_KEY_RIGHT = 0x127,
+    MENU_KEY_DOWN = 0x128
+};
+
+/* The screen's "move the selection to the neighbouring item" helpers:
+   fn_80217EC0(screen, axis, direction) for each of the four arrows. */
+#define MoveSelectionLeft fn_802180B0
+#define MoveSelectionRight fn_802180BC
+#define MoveSelectionUp fn_802180C8
+#define MoveSelectionDown fn_802180D4
+
 extern "C" void fn_802180B0();
 extern "C" void fn_802180BC();
 extern "C" void fn_802180C8();
