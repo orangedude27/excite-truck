@@ -317,9 +317,130 @@ void *memset(void *, int, unsigned int);
 #pragma push
 #pragma small_data off
 int fn_8028E61C(void *arg0) {
-    memset(arg0, 0, 0x8C);
+    memset(arg0, 0, 0x8Cu);
     return (int)arg0;
 }
+
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_8028E654(void *arg0, void *arg1) {
+    class Obj {
+    public:
+        virtual void v0();
+        virtual int vC(const char *);
+        virtual void v10();
+        virtual int v14(const char *);
+        virtual void v18();
+        virtual int v1c(const char *);
+        virtual int v20(const char *, int);
+        virtual float v24(const char *);
+        virtual double v28(const char *, float);
+        virtual void v2c();
+        virtual int v30(const char *, int);
+        virtual void v34();
+        virtual void v38(void *, void *, const char *, void *);
+    };
+    extern int fn_8028E594(void);
+    extern char lbl_80348CE0[];
+    extern int lbl_8055C8F0, lbl_8055C8F8, lbl_8055C900, lbl_8055C908, lbl_8055C910;
+    extern float lbl_80564420, lbl_80564424;
+
+    Obj *obj = (Obj *)arg1;
+    char *base = lbl_80348CE0;
+    float buf[6];
+    float buf2[6];
+    float inA[6];
+    float inB[6];
+    memset(arg0, 0, 0x8C);
+    obj->v14((const char *)&lbl_8055C8F0);
+    *(int *)arg0 = fn_8028E594();
+    *(int *)((unsigned char *)arg0 + 4) = obj->v1c(base + 0x6C);
+    *(float *)((unsigned char *)arg0 + 8) = obj->v24(base + 0x7C);
+    *(float *)((unsigned char *)arg0 + 12) = obj->v24(base + 0x88);
+    {
+        double d1 = obj->v28(base + 0x94, lbl_80564420);
+        double d2 = obj->v28(base + 0xA8, lbl_80564420);
+        *(float *)((unsigned char *)arg0 + 0x10) = (float)d1;
+        *(float *)((unsigned char *)arg0 + 0x14) = (float)d2;
+        *(float *)((unsigned char *)arg0 + 0x18) = (float)d1;
+    }
+    {
+        double d1 = obj->v28(base + 0xBC, lbl_80564420);
+        double d2 = obj->v28(base + 0xD0, lbl_80564420);
+        *(float *)((unsigned char *)arg0 + 0x1C) = (float)d1;
+        *(float *)((unsigned char *)arg0 + 0x20) = (float)d2;
+        *(float *)((unsigned char *)arg0 + 0x24) = (float)d1;
+    }
+    *(float *)((unsigned char *)arg0 + 0x28) = (float)obj->v28(base + 0xE4, lbl_80564420);
+    *(float *)((unsigned char *)arg0 + 0x2C) = (float)obj->v28(base + 0xF4, lbl_80564420);
+    *(int *)((unsigned char *)arg0 + 0x44) = obj->v20(base + 0x104, 5);
+    *(float *)((unsigned char *)arg0 + 0x48) = (float)obj->v28((const char *)&lbl_8055C8F8, lbl_80564420);
+    *(float *)((unsigned char *)arg0 + 0x30) = (float)obj->v28((const char *)&lbl_8055C900, lbl_80564420);
+    *(float *)((unsigned char *)arg0 + 0x34) = (float)obj->v28((const char *)&lbl_8055C908, lbl_80564420);
+    *(unsigned char *)((unsigned char *)arg0 + 0x38) = (unsigned char)obj->v30(base + 0x110, 1);
+    *(float *)((unsigned char *)arg0 + 0x4C) = (float)obj->v28(base + 0x120, lbl_80564420);
+    *(float *)((unsigned char *)arg0 + 0x50) = (float)obj->v28(base + 0x134, lbl_80564420);
+    *(float *)((unsigned char *)arg0 + 0x54) = (float)obj->v28(base + 0x140, lbl_80564420);
+    *(float *)((unsigned char *)arg0 + 0x58) = (float)obj->v28(base + 0x150, lbl_80564420);
+    *(float *)((unsigned char *)arg0 + 0x5C) = (float)obj->v28(base + 0x15C, lbl_80564420);
+    *(float *)((unsigned char *)arg0 + 0x78) = (float)obj->v28(base + 0x16C, lbl_80564420);
+    *(float *)((unsigned char *)arg0 + 0x7C) = (float)obj->v28(base + 0x17C, lbl_80564420);
+    *(float *)((unsigned char *)arg0 + 0x3C) = (float)obj->v28(base + 0x190, lbl_80564424);
+    *(float *)((unsigned char *)arg0 + 0x40) = (float)obj->v28(base + 0x1A0, lbl_80564420);
+    if (obj->vC(base + 0x1AC) != 0 || obj->vC(base + 0x1B8) != 0) {
+        float v = (float)obj->v28(base + 0x1AC, lbl_80564420);
+        *(float *)((unsigned char *)arg0 + 0x70) = v;
+        *(float *)((unsigned char *)arg0 + 0x68) = v;
+        *(float *)((unsigned char *)arg0 + 0x60) = v;
+        v = (float)obj->v28(base + 0x1B8, lbl_80564420);
+        *(float *)((unsigned char *)arg0 + 0x74) = v;
+        *(float *)((unsigned char *)arg0 + 0x6C) = v;
+        *(float *)((unsigned char *)arg0 + 0x64) = v;
+    } else if (obj->vC(base + 0x1C8) != 0 || obj->vC(base + 0x1D4) != 0) {
+        inA[0] = lbl_80564420;
+        inA[1] = lbl_80564420;
+        inA[2] = lbl_80564420;
+        obj->v38(buf, obj, base + 0x1C8, inA);
+        inB[0] = lbl_80564420;
+        inB[1] = lbl_80564420;
+        inB[2] = lbl_80564420;
+        obj->v38(buf2, obj, base + 0x1D4, inB);
+        *(float *)((unsigned char *)arg0 + 0x60) = buf2[0] - buf[0];
+        *(float *)((unsigned char *)arg0 + 0x64) = buf[0];
+        *(float *)((unsigned char *)arg0 + 0x68) = buf2[1] - buf[1];
+        *(float *)((unsigned char *)arg0 + 0x6C) = buf[1];
+        *(float *)((unsigned char *)arg0 + 0x70) = buf2[2] - buf[2];
+        *(float *)((unsigned char *)arg0 + 0x74) = buf[2];
+    } else {
+        *(float *)((unsigned char *)arg0 + 0x60) = (float)obj->v28(base + 0x1E0, lbl_80564420);
+        *(float *)((unsigned char *)arg0 + 0x64) = (float)obj->v28(base + 0x1EC, lbl_80564420);
+        *(float *)((unsigned char *)arg0 + 0x68) = (float)obj->v28(base + 0x1FC, lbl_80564420);
+        *(float *)((unsigned char *)arg0 + 0x6C) = (float)obj->v28(base + 0x208, lbl_80564420);
+        *(float *)((unsigned char *)arg0 + 0x70) = (float)obj->v28(base + 0x218, lbl_80564420);
+        *(float *)((unsigned char *)arg0 + 0x74) = (float)obj->v28(base + 0x224, lbl_80564420);
+    }
+    if (obj->vC(base + 0x234) != 0) {
+        inA[0] = lbl_80564420;
+        inA[1] = lbl_80564420;
+        inA[2] = lbl_80564420;
+        obj->v38(buf, obj, base + 0x234, inA);
+        *(float *)((unsigned char *)arg0 + 0x60) = lbl_80564420;
+        *(float *)((unsigned char *)arg0 + 0x64) = buf[0];
+        *(float *)((unsigned char *)arg0 + 0x68) = lbl_80564420;
+        *(float *)((unsigned char *)arg0 + 0x6C) = buf[1];
+        *(float *)((unsigned char *)arg0 + 0x70) = lbl_80564420;
+        *(float *)((unsigned char *)arg0 + 0x74) = buf[2];
+    }
+    *(float *)((unsigned char *)arg0 + 0x80) = (float)obj->v28(base + 0x244, lbl_80564420);
+    *(int *)((unsigned char *)arg0 + 0x84) = obj->v20((const char *)&lbl_8055C910, 1);
+    *(unsigned char *)((unsigned char *)arg0 + 0x88) = (unsigned char)obj->v30(base + 0x254, 0);
+}
+#pragma cplusplus reset
+#pragma pop
+
 extern char lbl_80348CF8[];
 extern char lbl_80348D28[];
 extern int stricmp(const char *, const char *);
@@ -756,12 +877,11 @@ int fn_8028F858(int arg0, int arg1) {
 }
 
 void fn_8028F8C4(int arg0) {
-    char *p = (char *)arg0;
-    float f;
-    *(int *)(p + 0x90) = -1;
-    *(int *)(p + 0x94) = 0;
-    f = lbl_80564420;
-    *(float *)(p + 0x9C) = f;
+    volatile int *p = (volatile int *)arg0;
+    float value = lbl_80564420;
+    p[36] = -1;
+    p[37] = 0;
+    *(volatile float *)((char *)arg0 + 0x9C) = value;
 }
 
 extern float lbl_80558DC4;
@@ -1202,6 +1322,331 @@ void fn_80290160(void *arg0, void *arg1, void *arg2, float farg0) {
     *(float *)((char *)arg1 + 8) = al;
     *(float *)((char *)arg1 + 4) = an;
 }
+
+extern void *fn_802C86DC(void);
+extern void fn_802C8DB8(void *, int, void *, int);
+extern float PSVECDotProduct(float *, float *);
+void fn_80290224(void *arg0, void *arg1, int arg2) {
+    struct { EfVtx v[32]; short idx[48]; } buf;
+    volatile int count;
+    int n;
+    int i;
+    EfVec pos;
+    EfVec dsub;
+    EfVec dadd;
+    EfMtx3 mtx;
+    EfVec campos;
+    EfVec dir;
+    EfVtx q[4];
+    char *p;
+    float one;
+    float t, tm, k, alpha, h, nh;
+    int r, g, b, a;
+
+    {
+        float *bb = (float *)fn_802C86DC();
+        dsub.x = bb[3] - bb[0];
+        dsub.y = bb[4] - bb[1];
+        dsub.z = bb[5] - bb[2];
+        one = lbl_8055F738;
+        dadd.x = bb[3] + bb[0];
+        dadd.y = bb[4] + bb[1];
+        dadd.z = bb[5] + bb[2];
+    }
+    for (i = 0; i < 8; i++) {
+        buf.idx[i * 6 + 0] = i * 4;
+        buf.idx[i * 6 + 1] = i * 4 + 1;
+        buf.idx[i * 6 + 2] = i * 4 + 2;
+        buf.idx[i * 6 + 3] = i * 4;
+        buf.idx[i * 6 + 4] = i * 4 + 2;
+        buf.idx[i * 6 + 5] = i * 4 + 3;
+    }
+    count = 0;
+    p = (char *)arg1;
+    for (n = 0; n < arg2; n++, p += 0x28) {
+        float *bb;
+        float fa, fb, fc, fd;
+        unsigned int col;
+        t = one - *(float *)(p + 0x18);
+        h = lbl_8056444C * (*(float *)((char *)arg0 + 0x54) + *(float *)((char *)arg0 + 0x50) * t
+              + lbl_8056444C * *(float *)((char *)arg0 + 0x4c) * (t * t));
+        k = t * *(float *)((char *)arg0 + 0xa0);
+        fn_80290160(arg0, &pos, p, t);
+        bb = (float *)fn_802C86DC();
+        mtx = *(EfMtx3 *)bb;
+        campos = *(EfVec *)(bb + 9);
+        dir.x = campos.x - pos.x;
+        dir.y = campos.y - pos.y;
+        dir.z = campos.z - pos.z;
+        {
+            float c0 = *(float *)((char *)arg0 + 0x3c);
+            float c1 = *(float *)((char *)arg0 + 0x40);
+            tm = c1 + (PSVECDotProduct((float *)&dir, (float *)&dir) / (lbl_80564424 + c0 * c0)) * (lbl_80564424 - c1);
+        }
+        if (lbl_80564424 < tm) tm = lbl_80564424;
+        if (!(tm > lbl_80564420)) tm = lbl_80564420;
+        r = (int)(lbl_8056445C * (*(float *)((char *)arg0 + 0x74) + *(float *)((char *)arg0 + 0x70) * k));
+        r = r > 0 ? r : 0; if (r > 255) r = 255;
+        g = (int)(lbl_8056445C * (*(float *)((char *)arg0 + 0x6c) + *(float *)((char *)arg0 + 0x68) * k));
+        g = g > 0 ? g : 0; if (g > 255) g = 255;
+        b = (int)(lbl_8056445C * (*(float *)((char *)arg0 + 0x64) + *(float *)((char *)arg0 + 0x60) * k));
+        b = b > 0 ? b : 0; if (b > 255) b = 255;
+        alpha = lbl_8056445C * (*(float *)((char *)arg0 + 0x5c) + *(float *)((char *)arg0 + 0x58) * k);
+        a = (int)(*(float *)(p + 0x24) * (tm * alpha));
+        a = a > 0 ? a : 0; if (a > 255) a = 255;
+        col = (a << 24) | ((b & 0xff) << 16) | ((g & 0xff) << 8) | (r & 0xff);
+        {
+            unsigned char fl = *(unsigned char *)(p + 0x1c);
+            int ia = ((fl + 1) & 2) >> 1;
+            int ib = (fl >> 1) & 1;
+            fa = (float)ia; fb = (float)ib; fc = (float)(1 - ib); fd = (float)(1 - ia);
+        }
+        nh = -h;
+        q[0].x = pos.x + dsub.x * h; q[0].y = pos.y + dsub.y * h; q[0].z = pos.z + dsub.z * h;
+        q[1].x = pos.x + dadd.x * h; q[1].y = pos.y + dadd.y * h; q[1].z = pos.z + dadd.z * h;
+        q[2].x = pos.x + dsub.x * nh; q[2].y = pos.y + dsub.y * nh; q[2].z = pos.z + dsub.z * nh;
+        q[3].x = pos.x + dadd.x * nh; q[3].y = pos.y + dadd.y * nh; q[3].z = pos.z + dadd.z * nh;
+        q[0].color = q[1].color = q[2].color = q[3].color = col;
+        q[0].u = fa; q[0].v = fb;
+        q[1].u = fc; q[1].v = fa;
+        q[2].u = fd; q[2].v = fc;
+        q[3].u = fb; q[3].v = fd;
+        if (count >= 8) {
+            fn_802C8DB8(buf.v, count * 4, buf.idx, count * 6);
+            count = 0;
+        }
+        buf.v[count * 4 + 0] = q[0];
+        buf.v[count * 4 + 1] = q[1];
+        buf.v[count * 4 + 2] = q[2];
+        buf.v[count * 4 + 3] = q[3];
+        count++;
+    }
+    if (count > 0) {
+        fn_802C8DB8(buf.v, count * 4, buf.idx, count * 6);
+        count = 0;
+    }
+}
+
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma scheduling on
+void fn_802908CC(void *arg0, void *arg1, int arg2) {
+    typedef struct { EfMtx3 m; EfVec p; } EfCam;
+    struct { EfVtx v[32]; short idx[48]; } buf;
+    EfVtx q[4];
+    EfCam cam;
+    EfVec dsub;
+    EfVec dadd;
+    EfVec pos;
+    EfVec dir;
+    int n;
+    int i;
+    char *p;
+    float one, half, c1, c0, c255;
+    float t, tm, k, alpha, h, nh;
+    float u0, u1, v0, v1, cs;
+    int r, g, b, a;
+    int frames, fr, cols, row, col;
+    volatile int count;
+
+    {
+        float *bb = (float *)fn_802C86DC();
+        dsub.x = bb[3] - bb[0];
+        dsub.y = bb[4] - bb[1];
+        dsub.z = bb[5] - bb[2];
+        one = lbl_8055F738;
+        dadd.x = bb[3] + bb[0];
+        dadd.y = bb[4] + bb[1];
+        dadd.z = bb[5] + bb[2];
+    }
+    for (i = 0; i < 8; i++) {
+        buf.idx[i * 6 + 0] = i * 4;
+        buf.idx[i * 6 + 1] = i * 4 + 1;
+        buf.idx[i * 6 + 2] = i * 4 + 2;
+        buf.idx[i * 6 + 3] = i * 4;
+        buf.idx[i * 6 + 4] = i * 4 + 2;
+        buf.idx[i * 6 + 5] = i * 4 + 3;
+    }
+    count = 0;
+    half = lbl_8056444C;
+    c1 = lbl_80564424;
+    c0 = lbl_80564420;
+    c255 = lbl_8056445C;
+    p = (char *)arg1;
+    for (n = 0; n < arg2; n++, p += 0x28) {
+        float *bb;
+        unsigned int col32;
+        frames = *(int *)((char *)arg0 + 0x84);
+        t = one - *(float *)(p + 0x18);
+        k = t * *(float *)((char *)arg0 + 0xa0);
+        h = half * (*(float *)((char *)arg0 + 0x54) + *(float *)((char *)arg0 + 0x50) * t
+              + half * *(float *)((char *)arg0 + 0x4c) * (t * t));
+        fr = (*(unsigned char *)(p + 0x1d) + (int)(k * ((float)frames * *(float *)((char *)arg0 + 0x80)))) % frames;
+        fn_80290160(arg0, &pos, p, t);
+        bb = (float *)fn_802C86DC();
+        cam = *(EfCam *)bb;
+        dir.x = cam.p.x - pos.x;
+        dir.y = cam.p.y - pos.y;
+        dir.z = cam.p.z - pos.z;
+        {
+            float f0 = *(float *)((char *)arg0 + 0x3c);
+            float f1 = *(float *)((char *)arg0 + 0x40);
+            tm = f1 + (PSVECDotProduct((float *)&dir, (float *)&dir) / (c1 + f0 * f0)) * (c1 - f1);
+        }
+        if (c1 < tm) tm = c1;
+        if (!(tm > c0)) tm = c0;
+        r = (int)(c255 * (*(float *)((char *)arg0 + 0x74) + *(float *)((char *)arg0 + 0x70) * k));
+        r = r > 0 ? r : 0; if (r > 255) r = 255;
+        g = (int)(c255 * (*(float *)((char *)arg0 + 0x6c) + *(float *)((char *)arg0 + 0x68) * k));
+        g = g > 0 ? g : 0; if (g > 255) g = 255;
+        b = (int)(c255 * (*(float *)((char *)arg0 + 0x64) + *(float *)((char *)arg0 + 0x60) * k));
+        b = b > 0 ? b : 0; if (b > 255) b = 255;
+        alpha = c255 * (*(float *)((char *)arg0 + 0x5c) + *(float *)((char *)arg0 + 0x58) * k);
+        a = (int)(*(float *)(p + 0x24) * (tm * alpha));
+        a = a > 0 ? a : 0; if (a > 255) a = 255;
+        col32 = (a << 24) | ((b & 0xff) << 16) | ((g & 0xff) << 8) | (r & 0xff);
+        cols = *(int *)((char *)arg0 + 0xa8);
+        row = fr / cols;
+        col = fr % cols;
+        cs = *(float *)((char *)arg0 + 0xac);
+        u0 = (float)col * cs;
+        u1 = (float)(col + 1) * cs;
+        v0 = (float)row * cs;
+        v1 = (float)(row + 1) * cs;
+        nh = -h;
+        q[0].x = pos.x + dsub.x * h; q[0].y = pos.y + dsub.y * h; q[0].z = pos.z + dsub.z * h;
+        q[1].x = pos.x + dadd.x * h; q[1].y = pos.y + dadd.y * h; q[1].z = pos.z + dadd.z * h;
+        q[2].x = pos.x + dsub.x * nh; q[2].y = pos.y + dsub.y * nh; q[2].z = pos.z + dsub.z * nh;
+        q[3].x = pos.x + dadd.x * nh; q[3].y = pos.y + dadd.y * nh; q[3].z = pos.z + dadd.z * nh;
+        q[0].color = q[1].color = q[2].color = q[3].color = col32;
+        q[0].u = u0; q[0].v = v0;
+        q[1].u = u1; q[1].v = v0;
+        q[2].u = u1; q[2].v = v1;
+        q[3].u = u0; q[3].v = v1;
+        if (count >= 8) {
+            fn_802C8DB8(buf.v, count * 4, buf.idx, count * 6);
+            count = 0;
+        }
+        buf.v[count * 4 + 0] = q[0];
+        buf.v[count * 4 + 1] = q[1];
+        buf.v[count * 4 + 2] = q[2];
+        buf.v[count * 4 + 3] = q[3];
+        count++;
+    }
+    if (count > 0) {
+        fn_802C8DB8(buf.v, count * 4, buf.idx, count * 6);
+        count = 0;
+    }
+}
+#pragma pop
+extern float lbl_80564460, lbl_80564464, lbl_80564468, lbl_8056446C, lbl_80564470;
+extern double lbl_80564478;
+void fn_80290FC4(void *arg0, void *arg1, int arg2) {
+    struct { EfVtx v[32]; short idx[48]; } buf;
+    volatile int count;
+    int n;
+    int i;
+    int j;
+    EfVec pos;
+    EfVec axA;
+    EfVec axB;
+    EfMtx3 mtx;
+    EfVec campos;
+    EfVec dir;
+    EfVtx q[4];
+    char *p;
+    float *cam;
+    float one, k0;
+    float t, tm, k, alpha, h, nh, ang, inv, m, ts;
+    int r, g, b, a;
+
+    cam = (float *)fn_802C86DC();
+    k0 = lbl_8056444C * *(float *)((char *)arg0 + 0x48);
+    one = lbl_8055F738;
+    for (i = 0; i < 8; i++) {
+        buf.idx[i * 6 + 0] = i * 4;
+        buf.idx[i * 6 + 1] = i * 4 + 1;
+        buf.idx[i * 6 + 2] = i * 4 + 2;
+        buf.idx[i * 6 + 3] = i * 4;
+        buf.idx[i * 6 + 4] = i * 4 + 2;
+        buf.idx[i * 6 + 5] = i * 4 + 3;
+    }
+    count = 0;
+    p = (char *)arg1;
+    for (n = 0; n < arg2; n++, p += 0x28) {
+        float *bb;
+        t = one - *(float *)(p + 0x18);
+        k = t * *(float *)((char *)arg0 + 0xa0);
+        h = lbl_8056444C * (*(float *)((char *)arg0 + 0x54) + *(float *)((char *)arg0 + 0x50) * t
+              + lbl_8056444C * *(float *)((char *)arg0 + 0x4c) * (t * t));
+        if (!(h > lbl_80564460)) h = lbl_80564460;
+        inv = lbl_80564424 / (lbl_80564464 * h);
+        ts = *(float *)(p + 0x20) * t;
+        ang = lbl_80564468 + (float)fn_8002EFB4(
+            lbl_80564468 * (float)*(unsigned char *)(p + 0x1e) * lbl_8056446C
+              + ts * (*(float *)((char *)arg0 + 0x7c) + *(float *)((char *)arg0 + 0x78) * k),
+            lbl_80564428);
+        fn_80290160(arg0, (float *)&pos, p, t);
+        fn_8028F608((float *)&axA, (float *)&axB, (float (*)[3])cam, ang);
+        bb = (float *)fn_802C86DC();
+        mtx = *(EfMtx3 *)bb;
+        campos = *(EfVec *)(bb + 9);
+        dir.x = campos.x - pos.x;
+        dir.y = campos.y - pos.y;
+        dir.z = campos.z - pos.z;
+        {
+            float c0 = *(float *)((char *)arg0 + 0x3c);
+            float c1 = *(float *)((char *)arg0 + 0x40);
+            tm = c1 + (PSVECDotProduct((float *)&dir, (float *)&dir) / (lbl_80564424 + c0 * c0)) * (lbl_80564424 - c1);
+        }
+        if (lbl_80564424 < tm) tm = lbl_80564424;
+        if (!(tm > lbl_80564420)) tm = lbl_80564420;
+        nh = -h;
+        q[0].x = pos.x + axA.x * nh + axB.x * h;
+        q[0].y = pos.y + axA.y * nh + axB.y * h;
+        q[0].z = pos.z + axA.z * nh + axB.z * h;
+        q[1].x = q[0].x + axA.x * (lbl_80564434 * h);
+        q[1].y = q[0].y + axA.y * (lbl_80564434 * h);
+        q[1].z = q[0].z + axA.z * (lbl_80564434 * h);
+        q[2].x = q[1].x + axB.x * (lbl_80564470 * h);
+        q[2].y = q[1].y + axB.y * (lbl_80564470 * h);
+        q[2].z = q[1].z + axB.z * (lbl_80564470 * h);
+        q[3].x = q[0].x + axB.x * (lbl_80564470 * h);
+        q[3].y = q[0].y + axB.y * (lbl_80564470 * h);
+        q[3].z = q[0].z + axB.z * (lbl_80564470 * h);
+        q[0].u = lbl_80564420; q[0].v = lbl_80564420;
+        q[1].u = lbl_80564424; q[1].v = lbl_80564420;
+        q[2].u = lbl_80564424; q[2].v = lbl_80564424;
+        q[3].u = lbl_80564420; q[3].v = lbl_80564424;
+        for (j = 0; j < 4; j++) {
+            m = lbl_8056445C * (one - k0 * (one - inv * (q[j].y - pos.y)));
+            a = (int)(*(float *)(p + 0x24) * (tm * (lbl_8056445C * (*(float *)((char *)arg0 + 0x5c) + *(float *)((char *)arg0 + 0x58) * k))));
+            a = a > 0 ? a : 0; if (a > 255) a = 255;
+            b = (int)(m * (*(float *)((char *)arg0 + 0x64) + *(float *)((char *)arg0 + 0x60) * k));
+            b = b > 0 ? b : 0; if (b > 255) b = 255;
+            g = (int)(m * (*(float *)((char *)arg0 + 0x6c) + *(float *)((char *)arg0 + 0x68) * k));
+            g = g > 0 ? g : 0; if (g > 255) g = 255;
+            r = (int)(m * (*(float *)((char *)arg0 + 0x74) + *(float *)((char *)arg0 + 0x70) * k));
+            r = r > 0 ? r : 0; if (r > 255) r = 255;
+            q[j].color = (a << 24) | ((b & 0xff) << 16) | ((g & 0xff) << 8) | (r & 0xff);
+        }
+        if (count >= 8) {
+            fn_802C8DB8(buf.v, count * 4, buf.idx, count * 6);
+            count = 0;
+        }
+        buf.v[count * 4 + 0] = q[0];
+        buf.v[count * 4 + 1] = q[1];
+        buf.v[count * 4 + 2] = q[2];
+        buf.v[count * 4 + 3] = q[3];
+        count++;
+    }
+    if (count > 0) {
+        fn_802C8DB8(buf.v, count * 4, buf.idx, count * 6);
+        count = 0;
+    }
+}
+
 #pragma pop
 extern int fn_80128668(void *);
 int fn_8029169C(int arg0, int arg1) {
