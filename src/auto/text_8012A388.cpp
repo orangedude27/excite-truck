@@ -380,7 +380,6 @@ extern "C" void fn_8012AC28(s32 arg0, s32 arg1) {
 
 #pragma dont_inline reset
 
-extern "C" void fn_8012AC28(s32, s32);
 extern "C" void fn_8012AC98(s32 arg0) {
     fn_8012AC28(arg0, 0);
 }
