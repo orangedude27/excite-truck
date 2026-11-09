@@ -344,16 +344,39 @@ float fn_801B4D10(int arg0, int arg1) {
 
 extern float lbl_80562668, lbl_8056266C, lbl_80562670, lbl_80562674, lbl_80562678, lbl_8056267C, lbl_80562680;
 int fn_801B4D80(void *arg0, int p1, int p2, float arg3) {
-void *arg1=(void*)p1,*arg2=(void*)p2; float a,b,c,d,e,f,t; unsigned short x;
-*(int*)arg0=*(int*)arg1; *((unsigned char*)arg0+4)=*((unsigned char*)arg1+4);
-x=*(unsigned short*)((char*)arg2+6); a=((float)x-lbl_80562674)/lbl_80562678; if(a<lbl_80562668)a=lbl_80562668; if(a>lbl_80562674)a=lbl_80562674;
-x=*(unsigned short*)((char*)arg1+6); b=((float)x-lbl_80562674)/lbl_80562678; if(b<lbl_80562668)b=lbl_80562668; if(b>lbl_80562674)b=lbl_80562674;
-c=lbl_8056266C+b*lbl_80562670; t=lbl_8056266C+a*lbl_80562670; *(float*)((char*)arg0+8)=c+arg3*(t-c);
-x=*(unsigned short*)((char*)arg2+8); d=((float)x-lbl_80562674)/lbl_80562678; if(d<lbl_80562668)d=lbl_80562668; if(d>lbl_80562674)d=lbl_80562674;
-x=*(unsigned short*)((char*)arg1+8); e=((float)x-lbl_80562674)/lbl_80562678; if(e<lbl_80562668)e=lbl_80562668; if(e>lbl_80562674)e=lbl_80562674;
-c=lbl_8056267C+e*lbl_80562680; t=lbl_8056267C+d*lbl_80562680; *(float*)((char*)arg0+12)=c+arg3*(t-c);
-x=*(unsigned short*)((char*)arg1+10); f=((float)x-lbl_80562674)/lbl_80562678; if(f<lbl_80562668)f=lbl_80562668; if(f>lbl_80562674)f=lbl_80562674;
-c=lbl_8056267C+f*lbl_80562680; t=lbl_8056267C+d*lbl_80562680; *(float*)((char*)arg0+16)=c+arg3*(t-c); return 0;
+    void *arg1=(void *)p1, *arg2=(void *)p2;
+    float a,b,c,d,e,f,t;
+    unsigned short x;
+    x=*(unsigned short *)((char *)arg2+6);
+    { int word=*(int *)arg1; *(int *)arg0=word; }
+    *(int *)((char *)arg0+4)=*((unsigned char *)arg1+4);
+    a=lbl_80562668 > ((float)x-lbl_80562674)/lbl_80562678 ? lbl_80562668 : ((float)x-lbl_80562674)/lbl_80562678;
+    a=a < lbl_80562674 ? a : lbl_80562674;
+    t=lbl_8056266C+a*lbl_80562670;
+    x=*(unsigned short *)((char *)arg1+6);
+    b=lbl_80562668 > ((float)x-lbl_80562674)/lbl_80562678 ? lbl_80562668 : ((float)x-lbl_80562674)/lbl_80562678;
+    b=b < lbl_80562674 ? b : lbl_80562674;
+    c=lbl_8056266C+b*lbl_80562670;
+    x=*(unsigned short *)((char *)arg2+8);
+    *(float *)((char *)arg0+8)=c+arg3*(t-c);
+    d=lbl_80562668 > ((float)x-lbl_80562674)/lbl_80562678 ? lbl_80562668 : ((float)x-lbl_80562674)/lbl_80562678;
+    d=d < lbl_80562674 ? d : lbl_80562674;
+    t=lbl_8056267C+d*lbl_80562680;
+    x=*(unsigned short *)((char *)arg1+8);
+    e=lbl_80562668 > ((float)x-lbl_80562674)/lbl_80562678 ? lbl_80562668 : ((float)x-lbl_80562674)/lbl_80562678;
+    e=e < lbl_80562674 ? e : lbl_80562674;
+    c=lbl_8056267C+e*lbl_80562680;
+    x=*(unsigned short *)((char *)arg2+10);
+    *(float *)((char *)arg0+12)=c+arg3*(t-c);
+    d=lbl_80562668 > ((float)x-lbl_80562674)/lbl_80562678 ? lbl_80562668 : ((float)x-lbl_80562674)/lbl_80562678;
+    d=d < lbl_80562674 ? d : lbl_80562674;
+    t=lbl_8056267C+d*lbl_80562680;
+    x=*(unsigned short *)((char *)arg1+10);
+    f=lbl_80562668 > ((float)x-lbl_80562674)/lbl_80562678 ? lbl_80562668 : ((float)x-lbl_80562674)/lbl_80562678;
+    f=f < lbl_80562674 ? f : lbl_80562674;
+    c=lbl_8056267C+f*lbl_80562680;
+    *(float *)((char *)arg0+16)=c+arg3*(t-c);
+    return (int)arg0;
 }
 
 void *__AXGetStudio_80178C90(void);
@@ -365,21 +388,24 @@ void fn_801B5060(int arg0, int arg1, float arg2) {
 
 #pragma push
 #pragma dont_inline on
-void fn_801B50B4(void **arg0, int arg1) {
-    void *state;
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_801B50B4(void **arg0, int arg1) {
+    void *state = lbl_8055E6D8;
     unsigned char *buffer;
     unsigned char *initialBuffer;
     int offset;
     float rate;
     int i;
 
-    state = lbl_8055E6D8;
     if (state == 0)
-        return;
-    if (fn_801B4B44((char *)state) == 0)
-        return;
+        goto done;
+    if (fn_801B4B44((char *)state) != 0)
+        goto state_ready;
+    goto done;
 
-    if (fn_801B49D4(state, (void **)&buffer, (void **)&offset, &rate, lbl_8055E3C4) != 0) {
+state_ready:
+    if (fn_801B49D4(lbl_8055E6D8, (void **)&buffer, (void **)&offset, &rate, lbl_8055E3C4) != 0) {
         int length;
         int extra;
 
@@ -389,18 +415,13 @@ void fn_801B50B4(void **arg0, int arg1) {
         offset += 0xC;
 
         for (i = 0; i < arg1; i++) {
-            void *object = *arg0;
-            if (object != 0) {
-                void **vtable = *(void ***)object;
-                if (((int (*)(void *))vtable[16])(object) != 0) {
-                    length = -1;
-                    extra = -1;
-                    vtable = *(void ***)object;
-                    ((void (*)(void *, unsigned char *, int, int *, int *, float))vtable[12])(
-                        object, buffer, offset, &length, &extra, rate);
-                    buffer += length;
-                    offset += extra;
-                }
+            F801B50B4 *object = *(F801B50B4 **)arg0;
+            if (object != 0 && object->f14() != 0) {
+                length = -1;
+                extra = -1;
+                object->f10(buffer, offset, &length, &extra, rate);
+                buffer += length;
+                offset += extra;
             }
             arg0++;
         }
@@ -421,12 +442,16 @@ void fn_801B50B4(void **arg0, int arg1) {
             }
         }
         lbl_8055E6DC = (char *)initialBuffer;
-        fn_801B4AC4((int)state, lbl_8055E3C4);
+        fn_801B4AC4((int)lbl_8055E6D8, lbl_8055E3C4);
     }
 
-    if (fn_801B4C1C((int)state, lbl_8055E3C4) != 0)
+    if (fn_801B4C1C((int)lbl_8055E6D8, lbl_8055E3C4) != 0)
         __AXDSPInitCallback_801769E0();
+
+done:
+    ;
 }
+#pragma cplusplus off
 #pragma pop
 
 char fn_801B526C(void) {
@@ -466,7 +491,7 @@ extern void fn_801B49C8(void *);
 extern int __dt__15shdStateMachineFv_801B496C();
 void fn_801B531C(void) {
     if (lbl_8055E6D8 != 0) {
-        ((int (*)(int))__dt__15shdStateMachineFv_801B496C)(1);
+        ((int (*)(void *, int))__dt__15shdStateMachineFv_801B496C)(lbl_8055E6D8, 1);
         lbl_8055E6D8 = 0;
     }
 }
