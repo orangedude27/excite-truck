@@ -484,16 +484,17 @@ extern "C" void fn_80206C70(void *arg0) {
     }
 }
 
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
 extern "C" float fn_80206CD0(void* arg0, float arg1) {
     float f = lbl_805631FC;
     float x = lbl_80563204 * *(float*)((char*)arg0 + 8);
-    if (f > x) f = x;
+    f = (f > x) ? f : x;
     float y = PSVECMag(arg0) - f;
-    if (y > arg1) y = arg1;
+    y = (y > arg1) ? y : arg1;
     return arg1 / y;
 }
-#pragma scheduling on
+#pragma pop
 extern "C" float PSVECDotProduct(const void*, const void*);
 extern float lbl_805631F8, lbl_805631FC, lbl_80563208;
 #pragma scheduling invalid_target
