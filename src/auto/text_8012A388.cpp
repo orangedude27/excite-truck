@@ -190,9 +190,11 @@ extern "C" void *fn_8012A570(u32 arg0, void *arg1) {
         }
         lbl_8055E008 = (void **)value;
     }
-    if (fn_8012A2D8(lbl_8055E008) != 0) {
+    void *p = fn_8012A2D8(lbl_8055E008);
+    if (p != 0) {
         lbl_8055E004 += 1;
     }
+    return p;
 }
 #pragma dont_inline reset
 extern "C" void fn_8012A5E8(void *arg0) {
@@ -368,7 +370,7 @@ extern "C" s32 fn_8012ABB0(s32 arg0, s32 arg1) {
     return sp8;
 }
 
-extern "C" void fn_8012AC28(s32 arg0, s32 arg1) {
+extern "C" s32 fn_8012AC28(s32 arg0, s32 arg1) {
     u8 buffer[0x104];
     s32 spC = -1;
     s32 sp8;
@@ -376,9 +378,10 @@ extern "C" void fn_8012AC28(s32 arg0, s32 arg1) {
     fn_802E4CA8(buffer, arg0, 0x104);
     result = fn_802E7354(buffer);
     if (result != -1) {
-        ((s32 (*)(s32, s32 *, s32 *))fn_802E746C)(result, &spC, &sp8);
+        fn_802E746C(result, &spC, &sp8);
         if (arg1 != 0) *(s32 *)arg1 = sp8;
     }
+    return spC;
 }
 
 #pragma dont_inline reset
@@ -2192,14 +2195,22 @@ extern "C" void fn_8012DFCC(Unk8012DFCCList *arg0, Unk8012DFCCNode *arg1) {
 }
 
 extern "C" void fn_8012DFE8(void *arg0, const char *arg1, s32 arg2) {
-    char *dst = (char *)arg0 + 0xc;
+    const unsigned char *src = (const unsigned char *)arg1;
     int count = 0x40;
-    while ((*dst++ = *arg1++) != 0) {
-        if (--count <= 0) {
-            dst[-1] = 0;
-            break;
-        }
-    }
+    char *dst = (char *)arg0 + 0xc;
+    unsigned char c;
+    goto copy;
+count_check:
+    if (--count > 0)
+        goto copy;
+    dst[-1] = 0;
+    goto done;
+copy:
+    c = *src++;
+    *dst++ = c;
+    if ((signed char)c != 0)
+        goto count_check;
+done:
     *(s32 *)((u8 *)arg0 + 0x4c) = fn_8012CAA0(arg2, (void *)arg1);
     *(s32 *)((u8 *)arg0 + 8) = 1;
 }
@@ -3131,18 +3142,16 @@ extern "C" void fn_8012C958(void *arg0) {
 }
 
 extern "C" void fn_8012C9C8(void) {
+    void *p;
     if (lbl_8055E00C == 0) {
-        void *p = fn_801284F8(0x20, lbl_8032AC88);
+        p = fn_801284F8(0x20, lbl_8032AC88);
         if (p) p = fn_8012A13C(p, lbl_8032AC88, 0x20, 0xD0);
         lbl_8055E010 = (void **)p;
     }
-    void *p = fn_8012A2D8(lbl_8055E010);
-    if (p) {
-        s32 count = lbl_8055E00C;
-        count++;
-        lbl_8055E00C = count;
+    if (fn_8012A2D8(lbl_8055E010) != 0) {
+        lbl_8055E00C += 1;
     }
-  }
+}
   
   extern "C" void fn_80127464(void);
   extern "C" const char lbl_8032AB78[];
