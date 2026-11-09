@@ -6150,10 +6150,10 @@ extern "C" void *fn_802244C8(void *arg0, s32 arg1) {
 }
 
 extern "C" void fn_8022455C(void *arg0) {
-    void *result = fn_80217BD8(*(s32 *)((u8 *)arg0 + 0x2C), *(s32 *)((u8 *)arg0 + 0x254), arg0);
+    void *result = (void *)fn_80217BD8(*(s32 *)((u8 *)arg0 + 0x2C), *(s32 *)((u8 *)arg0 + 0x254), arg0);
     *(void **)((u8 *)arg0 + 0x258) = result;
-    ((void (*)(void *, s32, void *, s32))fn_80219440)(arg0, 0, result, 4);
-    ((void (*)(void *, s32, s32))(*(void ***)arg0)[0x74 / 4])(arg0, 0, 0);
+    fn_80219440(arg0, 0, result, 4);
+    ((Dummy2455C *)arg0)->d27(0, 0);
 }
 
 extern "C" double sin(double);
