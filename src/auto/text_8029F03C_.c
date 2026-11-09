@@ -116,17 +116,23 @@ void fn_8029F0D0(void) {
     fn_8029FFBC();
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_8029F124(void) {
-    int zero = 0;
-    int offset = 0;
-    int i = 0;
+    int zero;
+    int offset;
+    int i;
     fn_802A002C();
-    do {
+    i = 0;
+    offset = 0;
+    zero = 0;
+    while (i < fn_801E85A4()) {
         i++;
         *(int *)((char *)lbl_8055F820 + offset) = zero;
         offset += 4;
-    } while (i < fn_801E85A4());
+    }
 }
+#pragma pop
 
 #pragma push
 #pragma processor 750
@@ -342,6 +348,135 @@ extern "C" void fn_8029F5C8(void *arg0, unsigned char *arg1) {
         *(int *)((char *)arg0 + 4) = 0;
     }
 }
+
+#pragma push
+#pragma cplusplus on
+#pragma dont_inline on
+#pragma scheduling invalid_target
+extern "C" void fn_8029F658(void *arg0) {
+    class Obj {
+    public:
+        virtual const char *name();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual int getId(const char *);
+        virtual int getProp(const char *, int, int);
+        virtual void v7();
+        virtual float getFloat(float, const char *);
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual Fn8029Vec getVec(const char *, Fn8029Vec);
+        virtual void v13();
+        virtual Fn8029Pair getPair(const char *, Fn8029Pair);
+        virtual void v15();
+        virtual void v16();
+        virtual void v17();
+        virtual void v18();
+        virtual void v19();
+        virtual void v20();
+        virtual int getSub(const char *);
+    };
+    char *table;
+    unsigned char *record;
+    Obj *obj;
+    Fn8029Vec defaultVec;
+    Fn8029Vec defaultVec2;
+    Fn8029Vec v1;
+    Fn8029Vec v2;
+    Fn8029Vec v3;
+    Fn8029Pair pairDefault;
+    Fn8029Pair out1;
+    Fn8029Pair out2;
+    Fn8029Pair out3;
+    Fn8029Pair out4;
+    Fn8029Pair out5;
+    const char *str;
+    unsigned char *dst;
+    char *src;
+    int n;
+    unsigned char c;
+    int packed;
+    int rPart;
+    int gPart;
+    int bPart;
+
+    table = lbl_80349810;
+    record = lbl_804B5070 + lbl_8055F81C * 0x78;
+    obj = (Obj *)arg0;
+    defaultVec.x = lbl_805646B4;
+    defaultVec.y = lbl_805646B4;
+    defaultVec.z = lbl_805646B4;
+    pairDefault.x = lbl_805646B4;
+    pairDefault.y = lbl_805646B4;
+    *(int *)record = obj->getId(lbl_8055CAF0);
+    str = obj->name();
+    src = (char *)str + strlen(&table[0x44]);
+    if (*src == '_')
+        src++;
+    dst = lbl_804B6E70 + lbl_8055F81C * 0x24;
+    *(int *)(dst + 0x20) = *(int *)record;
+    n = 0x20;
+    goto copy_start;
+dec:
+    n--;
+    if (n > 0) goto copy;
+    dst[-1] = 0;
+    goto done;
+copy_start:
+copy:
+    c = *(unsigned char *)src++;
+    *dst++ = c;
+    if ((signed char)c != 0) goto dec;
+done:
+    *(float *)(record + 4) = obj->getFloat(lbl_805646B4, &table[0x50]);
+    *(float *)(record + 8) = obj->getFloat(lbl_805646B4, lbl_8055CAF4);
+    *(float *)(record + 0xC) = obj->getFloat(lbl_805646B4, lbl_8055CAFC);
+    out1 = obj->getPair(lbl_8055CB04, pairDefault);
+    *(float *)(record + 0x10) = out1.x;
+    *(float *)(record + 0x14) = out1.y;
+    out2 = obj->getPair(lbl_8055CB0C, pairDefault);
+    *(float *)(record + 0x18) = out2.x;
+    *(float *)(record + 0x1C) = out2.y;
+    out3 = obj->getPair(lbl_8055CB14, pairDefault);
+    *(float *)(record + 0x20) = out3.x;
+    *(float *)(record + 0x24) = out3.y;
+    out4 = obj->getPair(lbl_8055CB18, pairDefault);
+    *(float *)(record + 0x28) = out4.x;
+    *(float *)(record + 0x2C) = out4.y;
+    v1 = obj->getVec(lbl_8055CB1C, defaultVec);
+    *(float *)(record + 0x30) = v1.x;
+    *(float *)(record + 0x34) = v1.y;
+    *(float *)(record + 0x38) = v1.z;
+    out5 = obj->getPair(lbl_8055CB28, pairDefault);
+    *(float *)(record + 0x3C) = out5.x;
+    *(float *)(record + 0x40) = out5.y;
+    *(float *)(record + 0x44) = obj->getFloat(lbl_805646B8, lbl_8055CB30);
+    *(float *)(record + 0x48) = obj->getFloat(lbl_805646B4, &table[0x5C]);
+    defaultVec2.x = lbl_805646BC;
+    defaultVec2.y = lbl_805646BC;
+    defaultVec2.z = lbl_805646BC;
+    v2 = obj->getVec(&table[0x68], defaultVec2);
+    rPart = (int)(lbl_805646C0 * v2.x);
+    gPart = (int)(lbl_805646C0 * v2.y);
+    bPart = (int)(lbl_805646C0 * v2.z);
+    packed = (rPart << 16) | (gPart << 8) | bPart;
+    packed |= 0xFF000000;
+    *(int *)(record + 0x4C) = packed;
+    *(int *)(record + 0x50) = obj->getProp(lbl_8055CB38, 1, packed);
+    v3 = obj->getVec(lbl_8055CB40, defaultVec);
+    *(float *)(record + 0x54) = v3.x;
+    *(float *)(record + 0x58) = v3.y;
+    *(float *)(record + 0x5C) = v3.z;
+    fn_8029F534(record + 0x60, (unsigned char *)(long)obj->getSub(&table[0x74]));
+    fn_8029F5C8(record + 0x6C, (unsigned char *)(long)obj->getSub(lbl_8055CB48));
+    lbl_8055F81C++;
+}
+#pragma dont_inline reset
+#pragma cplusplus off
+#pragma pop
 
 #pragma cplusplus on
 extern "C" void fn_8029FB00(void *arg0) {
