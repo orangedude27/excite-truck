@@ -131,13 +131,12 @@ extern char lbl_802FC3DC[];
 extern s32 fn_802E317C(void *, ...);
 extern char lbl_802FC420[];
 extern char lbl_802FC42C[];
-#pragma scheduling off
-#pragma peephole off
+#pragma push
+#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_8000F188(s32 arg0) {
     lbl_80558A94 = fn_802C6FC0(arg0, 0, 0);
 }
-#pragma peephole on
-#pragma scheduling reset
 void fn_8000F1B4(void) {
     fn_802C6CF8(lbl_80558A94);
     lbl_80558A94 = -1;
@@ -2022,9 +2021,9 @@ extern char lbl_80558AAC, lbl_80558AB8, lbl_80558ABC, lbl_80558AC4;
 void fn_8000E874(s32 arg0) {
     char buf[16];
     char *base;
-    char *entry;
-    s32 i, a, b;
-    f32 width, y, h, inset, x, x1, x2, y1, aWidth, limit;
+    char *entry, *end;
+    s32 i, a, b, color;
+    f32 width, y, h, inset, x, x1, x2, y1, aWidth, limit, half, twenty;
     if (*(s32 *)((char *)&lbl_80351214 + 0x288) < 1) return;
     if (arg0 < 0) width = fn_80011E34();
     else width = fn_80011DEC(arg0);
@@ -2033,13 +2032,15 @@ void fn_8000E874(s32 arg0) {
     a = fn_8000DFA8(0);
     h = fn_80235F64(lbl_80351214, a);
     limit = fn_80011EC8(arg0) - h;
-    limit = 0.0f > limit ? 0.0f : limit;
-    y += limit;
+    y = (limit > 0.0f ? limit : 0.0f) + y;
     base = (char *)&lbl_80351214;
     inset = *(u8 *)(base+4) ? 56.0f : 0.0f;
+    
+    half = 0.5f; twenty = 20.0f;
     entry = base + 8;
+    end = (char *)&lbl_80351214;
     limit = 0.0f;
-    for (i = 0; i < *(s32 *)(base + 0x288); i++, entry += 0x40) {
+    for (i = 0; i < *(s32 *)(end + 0x288); entry += 0x40, i++) {
         a = fn_8000DFA8(*(s32 *)(entry + 0x38));
         b = fn_8000DFC0(*(s32 *)(entry + 0x38));
         aWidth = fn_80235EF0(lbl_80351214, a) + inset;
@@ -2050,7 +2051,7 @@ void fn_8000E874(s32 arg0) {
         x1 = 9.0f + x;
         x2 = 5.0f + x;
         x += aWidth;
-        y1 = 1.0f + (y - h * 0.5f);
+        y1 = 1.0f + (y - h * half);
         switch (*(s32 *)(entry + 0x38)) {
         case 1:
             fn_8000FF88(fn_8000E2D8(*(s32 *)(entry+0x2c)), 0x12, (const char *)&lbl_80558AA4, 1.1f, x1, y1, entry);
@@ -2083,7 +2084,7 @@ void fn_8000E874(s32 arg0) {
         case 7:
             a = fn_8000E338(*(s32 *)(entry+0x2c));
             fn_8000DFD8(entry, a, x2, y1);
-            fn_800109E4(lbl_8055D48C, x2 + ((f32)*(s32 *)(entry+0x34) * 89.0f) / 100.0f - 1.0f, y1 + 17.0f*0.5f, 2.0f, 17.0f);
+            fn_800109E4(lbl_8055D48C, x2 + ((f32)*(s32 *)(entry+0x34) * 89.0f) / 100.0f - 1.0f, y1 + 17.0f*half, 2.0f, 17.0f);
             break;
         case 8:
             a = fn_8000E338(*(s32 *)(entry+0x2c));
@@ -2093,12 +2094,12 @@ void fn_8000E874(s32 arg0) {
             fn_8000E15C(entry, 0xFF2D2DC8, x2, y1);
             break;
         case 10:
-            aWidth = y1 + 0.5f * 20.0f;
+            aWidth = y1 + half * twenty;
             fn_8000FF88(fn_8000E2D8(*(s32 *)(entry+0x2c)), 0x12, (const char *)&lbl_80558AA4, 1.0f, x1, y1, entry);
-            if (*(s32 *)(entry+0x30) >= 0) ((void (*)(s32,s32,f32,f32,f32,f32))fn_80010E94)(lbl_8055D4CC, *(s32 *)(entry+0x30), x1, aWidth, 20.0f, 20.0f);
+            if (*(s32 *)(entry+0x30) >= 0) ((void (*)(s32,s32,f32,f32,f32,f32))fn_80010E94)(lbl_8055D4CC, *(s32 *)(entry+0x30), x1, aWidth, twenty, twenty);
             break;
         }
-        if (limit < *(f32 *)(entry+0x3c)) limit = *(f32 *)(entry+0x3c);
+        limit = limit > *(f32 *)(entry+0x3c) ? limit : *(f32 *)(entry+0x3c);
         y -= h - 1.0f;
     }
     a = fn_8000DFA8(0);
