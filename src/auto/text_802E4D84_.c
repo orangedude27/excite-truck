@@ -198,16 +198,19 @@ extern float lbl_80565134;
 #pragma dont_inline fn_802E5168
 unsigned short fn_802E5168(float arg0) {
     float value = lbl_80565130 * arg0;
+    float adjusted;
     int converted;
     int result;
     if (value < lbl_8056512C) {
-        value -= lbl_80565134;
+        adjusted = value - lbl_80565134;
     } else {
-        value += lbl_80565134;
+        adjusted = lbl_80565134 + value;
     }
-    converted = (int)value;
+    converted = (int)adjusted;
     result = converted & ((-converted & ~converted) >> 31);
-    if (result >= 0x8000) result = 0x8000;
+    if (result >= 0x8000) {
+        result = 0x8000;
+    }
     return (unsigned short)result;
 }
 
@@ -663,7 +666,7 @@ end:
 
 void fn_802E5FE4(void *arg0) {
     if (*(int *)((char *)arg0 + 0x98) > 0) {
-        ((void (*)(char *, void *, ...))fn_802E317C)(lbl_8034D584, arg0);
+        fn_802E317C(lbl_8034D584, arg0, *(int *)((char *)arg0 + 0x98));
     }
     fn_80128670(*(int *)((char *)arg0 + 0x90));
     *(int *)((char *)arg0 + 0x90) = 0;
