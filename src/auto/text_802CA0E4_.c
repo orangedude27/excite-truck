@@ -325,6 +325,17 @@ int fn_802CA7DC(const unsigned char *arg0) { return ((signed char)*arg0 - 0x2A) 
 #pragma dont_inline fn_802CA7F4
 int fn_802CA7F4(const char *arg0) { return strchr(arg0, 0x2F) != 0; }
 
+int fn_802CA824(int arg0) {
+    int slash;
+    if (((int (*)(const unsigned char *))fn_802CA7DC)((const unsigned char *)arg0) != 0) {
+        slash = (int)strchr((char *)arg0, 0x2F);
+        if (slash == 0)
+            fn_802E317C(lbl_8034B7D0, arg0);
+        return slash + 1;
+    }
+    return arg0;
+}
+
 extern int fn_802CA824(int);
 extern void fn_802CA57C(void *, int, int, int);
 extern int fn_802CA4E0(int, int, int, int, int);
