@@ -1,4 +1,5 @@
   #include <types.h>
+typedef void Fn800A4B78Ret;
 struct Fn800B10E0Ent {
     u16 first;
     u8 pad2[0x20A - 2];
@@ -5485,10 +5486,13 @@ extern "C" s32 fn_800B0258(void *, s32, s32 *);
 extern "C" s32 fn_800AE620(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     u32 sign = ((u32)(-(arg2) | (arg2))) >> 31;
     s32 result = fn_800AE4C0((void *)arg0, (u32)arg1, sign, 0, (s32 *)arg3);
+    s32 ret;
     if (result == 0) {
-        return 0;
+        ret = 0;
+    } else {
+        ret = result;
     }
-    return result;
+    return ret;
 }
 
 extern "C" s32 fn_800AE664(void *arg0, u32 arg1, u32 arg2, s32 *arg3, s32 *arg4) {
@@ -10687,10 +10691,8 @@ extern "C" void fn_800B7E18(u32 arg0) {
 }
 
 extern "C" void fn_800B7E38(u8 arg0) {
-    if (lbl_80405D00[1] != 0) {
-        u32 t = (u32)arg0 & 0xFF;
-        lbl_80405D00[1]((u8)t);
-    }
+    if (lbl_80405D00[1] != 0)
+        lbl_80405D00[1](arg0);
 }
 
 #pragma dont_inline on
@@ -11674,12 +11676,12 @@ extern "C" s32 fn_800B9FCC(s32 arg0) {
 
 #pragma dont_inline reset
 extern "C" s32 fn_800BA160(s32 arg0) {
-    register s32 value;
-    register s32 mask;
-    register s32 result;
+    s32 result;
+    s32 value;
+    s32 mask;
     if (arg0 == 0) return 1;
     result = 6;
-    value = *(volatile s32 *)((u8 *)lbl_80407300 + 0x10);
+    value = *(s32 *)((u8 *)lbl_80407300 + 0x10);
     mask = -value | value;
     mask >>= 31;
     result &= ~mask;
