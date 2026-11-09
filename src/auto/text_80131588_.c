@@ -512,11 +512,19 @@ extern "C" s32 fn_801321BC(void **arg0) {
 }
 #pragma cplusplus reset
 extern double atof(const char*);
-f32 fn_801321EC(void *arg0) {
-    char *(* volatile get)(void) = (char *(*)(void))(*(void **)((char *)*(void **)arg0 + 0x14));
-    return (f32) atof(get());
+extern double atof(const char *);
+#pragma cplusplus on
+extern "C" f32 fn_801321EC(void **arg0) {
+    class Dummy {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual char *v3();
+    };
+    return (f32) atof(((Dummy *)arg0)->v3());
 }
-
+#pragma cplusplus off
 s32 fn_80132220(void* arg0) {
     char* value = ((char* (*)(void*))(*(void**)((char*)*(void**)arg0 + 0x14)))(arg0);
     s32 result = 0;
