@@ -42,7 +42,7 @@ extern int lbl_8055E468;
 extern int lbl_8055E448;
 extern unsigned char lbl_8055E44C;
 __declspec(section ".data") extern long lbl_80331938;
-extern long lbl_8033192C;
+__declspec(section ".data") extern long lbl_8033192C;
 extern void fn_801AFD20(void *);
 extern void fn_8017ACCC(void);
 extern void fn_8018A180(void);
