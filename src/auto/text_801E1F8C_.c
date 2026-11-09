@@ -101,17 +101,23 @@ void fn_801E21B4(void* hi) {
     lbl_8055EA40 = hi;
 }
 
+#pragma scheduling invalid_target
 void fn_801E21BC(void) {
     int values[2];
-    int i;
+    int *var_r31;
+    u32 var_r30;
+    var_r31 = values;
+    var_r30 = 0U;
+    lbl_8055EA38 = 1;
     values[0] = (int)lbl_8055EA3C;
     values[1] = (int)lbl_8055EA40;
-    lbl_8055EA38 = 1;
-    for (i = 0; i < 2; i++)
-        fn_801A47FC(values[i]);
+    do {
+        fn_801A47FC(*var_r31);
+        var_r30 += 1;
+        var_r31++;
+    } while (var_r30 < 2U);
     fn_8015F670(values, 2);
 }
-
 void fn_801E222C(void) {
     lbl_8055EA38 = 0;
     if (lbl_8055EA3C != 0) {
@@ -137,18 +143,26 @@ extern double __fabs(double);
 #pragma cplusplus on
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma auto_inline off
 extern "C" s32 fn_801E2640(f32 *arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 *arg4, void **arg5, void **arg6, s32 arg7, s32 (*arg_sp8)(s32)) {
+    class Item {
+      public:
+        virtual s32 m0(); virtual s32 m1(); virtual s32 m2(); virtual s32 m3();
+        virtual s32 m4(f32 *, f32 *, f32 *, s32);
+    };
     class Node {
       public:
         virtual s32 v0(); virtual s32 v1(); virtual s32 v2(); virtual s32 v3();
         virtual s32 v4(); virtual s32 v5(); virtual s32 v6(); virtual s32 v7();
         virtual s32 v8(); virtual s32 v9(); virtual s32 v10(); virtual s32 v11();
         virtual s32 v12(); virtual s32 v13(); virtual s32 v14(); virtual s32 v15();
-    };
-    class Item {
-      public:
-        virtual s32 m0(); virtual s32 m1(); virtual s32 m2(); virtual s32 m3();
-        virtual s32 m4(f32 *, f32 *, f32 *, s32);
+        void *pad[4];
+        Item *items[4];
+        s32 count;
+        Item *getItem(s32 idx) {
+            if (idx >= 0 && idx < count) return items[idx];
+            return 0;
+        }
     };
     f32 dot;
     s32 count;
@@ -165,7 +179,7 @@ extern "C" s32 fn_801E2640(f32 *arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 *arg4,
     f32 mag, scale, clampMag;
     f32 diffX, diffY, diffZ;
     f32 threshold;
-    f32 posX, posY, posZ, dirX, dirY, dirZ;
+    f32 dirZ, dirY, dirX, posZ, posY, posX;
     register s32 found;
     Item *item;
     Node *obj;
@@ -192,7 +206,7 @@ extern "C" s32 fn_801E2640(f32 *arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 *arg4,
     found = 0;
     threshold = lbl_80562CE4;
     *arg5 = 0;
-    if ((f32)__fabs((f64)normal[1]) > threshold) {
+    if (threshold < (f32)__fabs((f64)normal[1])) {
         count = 5;
         fn_801B619C(hits, &count, arg0);
         hitp = hits;
@@ -229,8 +243,8 @@ extern "C" s32 fn_801E2640(f32 *arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 *arg4,
         rangeScale = lbl_80562CD8;
         queryStorage.position.x = posX;
         queryStorage.position.y = posY;
-        queryStorage.direction.x = dirX;
         queryStorage.position.z = posZ;
+        queryStorage.direction.x = dirX;
         queryStorage.direction.y = dirY;
         queryStorage.direction.z = dirZ;
         queryStorage.dot = &dot;
@@ -280,12 +294,8 @@ extern "C" s32 fn_801E2640(f32 *arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 *arg4,
         for (i = 0; i < arg7; i++) {
             obj = (Node *)arg6[i];
             if (obj && obj->v15()) {
-                slot = (void **)obj;
-                for (j = 0; j < *(s32 *)((char *)obj + 0x24); j++) {
-                    if (j >= 0 && j < *(s32 *)((char *)obj + 0x24))
-                        item = (Item *)slot[5];
-                    else
-                        item = 0;
+                for (j = 0; j < obj->count; j++) {
+                    item = obj->getItem(j);
                     value = *(s32 *)((char *)item + 0x20);
                     if ((!arg_sp8 || arg_sp8(value)) &&
                         item->m4(arg0, normal, &dot, arg3)) {
@@ -293,7 +303,6 @@ extern "C" s32 fn_801E2640(f32 *arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 *arg4,
                         found = 1;
                         *arg5 = obj;
                     }
-                    slot++;
                 }
             }
         }
@@ -328,5 +337,6 @@ extern "C" s32 fn_801E2640(f32 *arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 *arg4,
     }
     return found;
 }
+#pragma pop
 typedef struct VTable_801E2084 { void *unk0; void *unk4; void *unk8; void *unkC; void (*call)(void *, void *); } VTable_801E2084;
 typedef struct Obj_801E2084 { VTable_801E2084 *vtable; } Obj_801E2084;
