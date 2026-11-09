@@ -1905,14 +1905,17 @@ void fn_801963A0(void *arg0) {
 void fn_80196418(void *arg0) {
     int value = *(int *)((char *)arg0 + 0x210);
     if (value == 1) {
-        return;
+        goto done;
     }
-    if (value > 1) {
-        return;
+    if (value >= 1) {
+        goto done;
     }
     if (value >= 0) {
-        return;
+        goto tail;
     }
+done:
+    return;
+tail:
     fn_80195830(arg0);
 }
 
