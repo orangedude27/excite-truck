@@ -769,17 +769,23 @@ int fn_802E317C(const char *, ...);
 char *fn_8013126C(char *arg0, const char *arg1) {
     const unsigned char *src = (const unsigned char *)arg1;
     int count;
-    unsigned char c;
     char *dst;
+    unsigned char c;
     fn_802E317C(lbl_8032B328);
     dst = arg0;
-    for (count = 0x12c; count > 0; count--) {
-    }
+    count = 0x12c;
+    goto copy;
+count_check:
+    if (--count > 0)
+        goto copy;
     dst[-1] = 0;
-    do {
-        c = *src++;
-        *dst++ = c;
-    } while ((signed char)c != 0);
+    goto done;
+copy:
+    c = *src++;
+    *dst++ = c;
+    if ((signed char)c != 0)
+        goto count_check;
+done:
     return arg0;
 }
 extern char lbl_80559B00[];
