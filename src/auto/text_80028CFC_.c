@@ -67,17 +67,16 @@ void strncpy(unsigned char *dst, const unsigned char *src, int n) {
     }
 }
 
-void fn_80028E00(unsigned char *dst, const unsigned char *src) {
-    unsigned char *p;
-    const unsigned char *q;
-    q = src - 1;
-    p = dst - 1;
+unsigned char *fn_80028E00(unsigned char *dst, const unsigned char *src) {
+    const unsigned char *q = src - 1;
+    unsigned char *p = dst - 1;
     while (*++p != 0) {
     }
     p--;
     do {
         *++p = *++q;
     } while (*p != 0);
+    return dst;
 }
 
 void fn_80028E2C(unsigned char *dst, const unsigned char *src, int n) {
