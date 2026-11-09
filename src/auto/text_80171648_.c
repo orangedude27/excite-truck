@@ -5,6 +5,11 @@ extern void fn_8000D838(void *);
 extern int lbl_8055E368;
 extern int lbl_8055E370;
 extern int lbl_80430358[5];
+
+extern void fn_8000D838(void *);
+extern int lbl_8055E368;
+extern int lbl_8055E370;
+extern int lbl_80430358[5];
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 void fn_80171648(void) {
