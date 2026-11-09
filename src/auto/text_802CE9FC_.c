@@ -280,14 +280,13 @@ void fn_802CECF4(unsigned int arg0) {
 }
 
 void fn_802CED50(int arg0, int arg1, int arg2, int arg3) {
-    volatile unsigned char *b = lbl_804C5710;
-    volatile int *w = (volatile int *)(b + 4);
-    w[0] = arg0;
-    w[1] = arg1;
-    w[2] = arg2;
-    w[3] = arg3;
-    b[0] = 1;
-    b[1] = 1;
+    volatile unsigned char *state = lbl_804C5710;
+    *(volatile int *)(state + 4) = arg0;
+    *(volatile int *)(state + 8) = arg1;
+    *(volatile int *)(state + 0xC) = arg2;
+    *(volatile int *)(state + 0x10) = arg3;
+    state[0] = 1;
+    state[1] = 1;
 }
 
 extern void KPADSetBtnRepeat(int *, int *, int *, int *);
@@ -921,8 +920,7 @@ extern unsigned long lbl_8055FDAC;
 extern void fn_802D0C98(void);
 extern void fn_802D0BD8(void);
 void fn_802CFF10(void) {
-    int zero;
-    zero = 0;
+    int zero = 0;
     lbl_8055FD44 = zero;
     fn_802CF5D0();
     fn_802D0C98();
@@ -1049,10 +1047,10 @@ void fn_802D0160(unsigned char a, unsigned char b, unsigned char c) {
 void fn_802D0188(unsigned char a, unsigned char b, unsigned char c) {
     extern char lbl_804C97D0;
     volatile unsigned char *p = (volatile unsigned char *)&lbl_804C97D0;
-    p[3] = 0;
-    p[2] = c;
+    lbl_804C97D0 = a;
     p[1] = b;
-    p[0] = a;
+    p[2] = c;
+    p[3] = 0;
     p[0x5C] = 1;
 }
 
@@ -2267,15 +2265,12 @@ void fn_802D306C(unsigned char arg0) {
     GXSetDstAlpha(1, arg0);
 }
 
+extern void GXSetIndTexMtx(int, void *, int);
 void fn_802D307C(void) {
-    int mtx[6];
-    mtx[0] = lbl_802FACB0[0];
-    mtx[1] = lbl_802FACB0[1];
-    mtx[2] = lbl_802FACB0[2];
-    mtx[3] = lbl_802FACB0[3];
-    mtx[4] = lbl_802FACB0[4];
-    mtx[5] = lbl_802FACB0[5];
-    GXSetIndTexMtx(1, mtx, 1, lbl_802FACB0[4], lbl_802FACB0[3], lbl_802FACB0[2], lbl_802FACB0[1], lbl_802FACB0[0]);
+    int m[6];
+    int *p = (int *)lbl_802FACB0;
+    m[0] = p[0]; m[1] = p[1]; m[2] = p[2]; m[3] = p[3]; m[4] = p[4]; m[5] = p[5];
+    GXSetIndTexMtx(1, m, 1);
 }
 
 extern void *lbl_8055FD5C;
@@ -2435,17 +2430,14 @@ void fn_802D37E4(void) {
 }
 
 void fn_802D3894(void) {
-    unsigned char *p;
+    unsigned char *p = lbl_804C9984;
     int i;
-    p = lbl_804C9984;
-    i = 0;
-    do {
-        if (p[0xC] == 0) break;
+    for (i = 0; i < 0x40; i++, p += 0x18) {
+        if (p[0xC] == 0) {
+            break;
+        }
         fn_802E317C((const char *)lbl_8034C1C4);
-        i++;
-        if (i >= 0x40) break;
-        p += 0x18;
-    } while (1);
+    }
 }
 
 void fn_802D3900(void) {
@@ -2631,19 +2623,17 @@ void fn_802D3D94(int arg0, void *arg1) {
     GXLoadTexMtxImm(arg1, arg0 * 3 + 30, 1);
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802D3DAC(void) {
     int id;
-
-    if ((lbl_8055FDD0 & 0x3F) == 0) {
+    if ((*(int *)&lbl_8055FDD0 & 0x3F) == 0) {
         OSReport(lbl_8034C204);
     }
-    id = lbl_8055FDD0;
-    lbl_8055FDD0 = id + 1;
+    id = *(int *)&lbl_8055FDD0;
+    *(int *)&lbl_8055FDD0 = id + 1;
     GXInitVtxDescList(id);
     GXDisableBreakPt();
 }
-#pragma scheduling on
 void fn_802D3DF8(int arg0, signed char arg1, float farg0, float farg1) {
     float mtx[2][3];
     lbl_804C5700[13] = 1;
