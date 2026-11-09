@@ -821,9 +821,12 @@ outer_check:
         goto outer_body;
 }
 #pragma pop
+#pragma push
+#pragma dont_inline on
 int *fn_802B320C(int *arg0, int arg1) {
     return (int *)((char *)*arg0 + arg1 * 4);
 }
+#pragma pop
 
 extern char lbl_8034A3BC[];
 extern void fn_802E30C8(const char *, ...);
