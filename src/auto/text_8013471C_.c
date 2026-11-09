@@ -520,7 +520,7 @@ void *fn_80134F48(void) {
     else {
         bits = *((u32*)p + 1);
         if (bits & 0x100) p = fn_80134E90();
-        else if (bits & 0x200) p = fn_80134EC8();
+        else if (bits & 0x200) p = ((void *(*)(s32))fn_80134EC8)(bits);
         else p = fn_80134FF8();
     }
     {
