@@ -55,6 +55,12 @@ enum
 
 typedef UINT8 tHID_STATUS;
 
+/* Service IDs (SDP attribute masks) the HID host registers with the security
+ * manager, from the SDK's hid_api.h; see HID_HostSetSecurityLevel(). */
+#define HID_SERVICE_ATTR_MASK       0x0020  /* HID service, on the control PSM */
+#define HID_HID_DEV_ATTR_MASK       0x0021  /* HID Device record */
+#define HID_BOOT_IFACE_ATTR_MASK    0x0022  /* boot keyboard/mouse, interrupt PSM */
+
 #define    HID_L2CAP_CONN_FAIL (0x0100) /* Connection Attempt was made but failed */
 #define    HID_L2CAP_REQ_FAIL  (0x0200)  /* L2CAP_ConnectReq API failed */
 #define    HID_L2CAP_CFG_FAIL  (0x0400) /* L2CAP Configuration was rejected by peer */
