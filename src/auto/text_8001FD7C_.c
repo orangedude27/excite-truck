@@ -335,6 +335,32 @@ int fn_80020184(void) {
     return 0xFF - temp_r3;
 }
 
+/* Names and messages the tips loader uses; they sit in .data right after this
+   module's config block (lbl_802FE138), so they are reached as offsets from it. */
+#define TIPS_VAL_FILE     (base + 0xE4)  /* "camera3.val" */
+#define TIPS_SEQ_NAME     (base + 0xF0)  /* "tips_sequence" */
+#define TIPS_MSG_GOT_SEQ  (base + 0x100) /* "tips: got tips sequence" */
+#define TIPS_PROP_START   (base + 0x118) /* "start_camera" */
+#define TIPS_PROP_END     (base + 0x128) /* "end_camera" */
+#define TIPS_MSG_NO_CAM1  (base + 0x134) /* "tips: can't find camera1 %s" */
+#define TIPS_MSG_NO_CAM2  (base + 0x150) /* "tips: can't find camera2 %s" */
+#define TIPS_PROP_TIME    (base + 0x16C) /* "duration" */
+#define TIPS_MSG_NO_SEQ   (base + 0x178) /* "tips: camera3 does not contain tips sequence" */
+#define TIPS_ITEM_CAMERA  (&lbl_80558D90) /* item type read here: "camera" */
+#define TIPS_PROP_HERMITE (&lbl_80558D98) /* "hermite" */
+
+/* One "camera" entry of the tips sequence (0x70 bytes; up to 8 of them live in
+   the array at lbl_8035B758, their count is lbl_8055D630 and the one being
+   shown lbl_8055D634).  fn_80277960 fills the two camera records by name, each
+   with the extra float its lookup returns. */
+struct TipsCamera_8035B758 {
+    unsigned char startCamera[0x30]; /* the "start_camera" record */
+    unsigned char endCamera[0x30];   /* the "end_camera" record */
+    float startCameraParam;          /* float that came with the first record */
+    float endCameraParam;            /* ... and with the second */
+    float duration;                  /* the item's "duration" */
+    char hermite;                    /* the item's "hermite" flag */
+};
 #pragma cplusplus on
 #pragma use_lmw_stmw off
 extern "C" void fn_800201F0(void) {
