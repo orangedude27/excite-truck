@@ -39,7 +39,7 @@ void MEMFreeToFrmHeap(MEMiHeapHead* heap, u32 flags);
 u32 MEMGetAllocatableSizeForFrmHeapEx(MEMiHeapHead* heap, s32 align);
 BOOL MEMRecordStateForFrmHeap(MEMiHeapHead* heap, u32 id);
 BOOL MEMFreeByStateToFrmHeap(MEMiHeapHead* heap, u32 id);
-/* u32 MEMAdjustFrmHeap(MEMiHeapHead* heap); -- decl removed pending fixup */
+void* MEMAdjustFrmHeap(MEMiHeapHead* heap, void* newHead);
 u32 MEMResizeForMBlockFrmHeap(MEMiHeapHead* heap, void* memBlock, u32 size);
 
 static MEMiHeapHead* MEMCreateFrmHeap(void* start, u32 size) {
