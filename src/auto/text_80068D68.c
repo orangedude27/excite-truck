@@ -20055,12 +20055,14 @@ void *port_find_dlci_port(unsigned int arg0) {
 int port_flow_control_user(void *arg0) {
     void *temp_r4;
     unsigned char var_r5 = 0;
-    if (*((unsigned char *)arg0 + 0x24) != 0) goto done;
+    if (*((unsigned char *)arg0 + 0x24) != 0) goto set1;
     temp_r4 = *(void **)((char *)arg0 + 0x6c);
-    if (temp_r4 == 0) goto done;
-    if (*((unsigned char *)temp_r4 + 0x71) == 0) goto done;
-    if (*(unsigned int *)((char *)arg0 + 0x28) > 0x1f40) goto done;
-    if (*(unsigned short *)((char *)arg0 + 0x20) > 0x10) var_r5 = 1;
+    if (temp_r4 == 0) goto set1;
+    if (*((unsigned char *)temp_r4 + 0x71) == 0) goto set1;
+    if (*(unsigned int *)((char *)arg0 + 0x28) > 0x1f40) goto set1;
+    if (*(unsigned short *)((char *)arg0 + 0x20) <= 0x10) goto done;
+set1:
+    var_r5 = 1;
 done:
     if (*((unsigned char *)arg0 + 0x25) == var_r5) return 0;
     *((unsigned char *)arg0 + 0x25) = var_r5;
