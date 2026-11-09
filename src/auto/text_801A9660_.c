@@ -2050,11 +2050,12 @@ extern float lbl_8055E3C8;
 typedef void (*Fn801ADA9C)(void *, void *, void *);
 extern unsigned char lbl_8055A8A0;
 extern unsigned char lbl_8055A8B0;
-void fn_801ADA9C(void *arg0) {
-    struct Obj_801ADA9C *obj = *(struct Obj_801ADA9C **)((char *)arg0 + 0x240);
-    obj->vtable->call(obj, &lbl_8055A8A0, &lbl_8055A8B0);
+#pragma cplusplus on
+extern "C" void fn_801ADA9C(void *arg0) {
+    Dummy_801ADA9C *obj = *(Dummy_801ADA9C **)((char *)arg0 + 0x240);
+    obj->v4(&lbl_8055A8A0, &lbl_8055A8B0);
 }
-
+#pragma cplusplus off
 long fn_801ADAB8(void *arg0) {
     return *(long *)((char *)arg0 + 0x240);
 }
