@@ -64,8 +64,8 @@ s32 fn_802ECEEC(void) {
     return (s32)(tmp >> 31);
 }
 
-void fn_802ECF00(void) {
-    fn_802ECE48();
+void fn_802ECF00(s32 arg0) {
+    fn_802ECE48(arg0);
 }
 
 s32 fn_802ECF04(void) {
