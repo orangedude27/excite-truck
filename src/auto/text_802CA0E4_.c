@@ -5,6 +5,7 @@
 extern char lbl_8034BA98[];
 extern void fn_802E317C(const char *, ...);
 extern char lbl_8034B538[];
+extern char lbl_8034B7D0[];
 extern void *jumptable_8034B794[];
 extern char lbl_8034B618[];
 extern int lbl_8055D058;
