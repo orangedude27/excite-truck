@@ -79,12 +79,23 @@ s32 *fn_802E336C(void) {
     return (s32 *)lbl_8055FF1C;
 }
 
-#pragma dont_inline on
-void fn_802E339C(void) {
-    s32 *p = ((s32 *(*)())fn_802E333C)(0);
-    ((void (*)(void))(*(s32 **)p)[9])();
+#pragma cplusplus on
+extern "C" void fn_802E339C(void) {
+    class V {
+    public:
+        virtual void a0();
+        virtual void a1();
+        virtual void a2();
+        virtual void a3();
+        virtual void a4();
+        virtual void a5();
+        virtual void a6();
+        virtual void a7();
+    };
+    V *obj = (V *)((s32 (*)(s32))fn_802E333C)(0);
+    obj->a7();
 }
-#pragma dont_inline reset
+#pragma cplusplus off
 s32 fn_802E33D0(void) { return 0; }
 
 #pragma scheduling invalid_target
