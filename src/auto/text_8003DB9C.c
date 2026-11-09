@@ -2328,8 +2328,6 @@ void GXSetPointSize(s32 size, s32 format) {
 }
 
 void GXEnableTexOffsets(s32 texMap, s32 line, s32 point) {
-    unsigned int *base = __GXData;
-    unsigned int *data = base + texMap;
     union {
         unsigned int value;
         struct {
@@ -2339,13 +2337,14 @@ void GXEnableTexOffsets(s32 texMap, s32 line, s32 point) {
             unsigned int unused1 : 18;
         } bits;
     } reg;
-    reg.value = data[0x108 / 4];
+    unsigned int *data = __GXData;
+    reg.value = data[texMap + 0x108 / 4];
     reg.bits.line_bit = line;
     reg.bits.point_bit = point;
-    data[0x108 / 4] = reg.value;
+    data[texMap + 0x108 / 4] = reg.value;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = data[0x108 / 4];
-    *(volatile unsigned short *)((char *)base + 2) = 0;
+    *(volatile unsigned int *)0xCC008000 = data[texMap + 0x108 / 4];
+    *(volatile unsigned short *)((char *)data + 2) = 0;
 }
 
 void GXSetCullMode(unsigned int mode) { unsigned int field; union { unsigned int reg; struct { unsigned int pad : 16; unsigned int cull : 2; unsigned int rest : 14; } fields; } data; field = ((mode << 1) & 2); field |= (mode >> 1) & 1; data.reg = __GXData[0x254 / 4]; data.fields.cull = field; __GXData[0x254 / 4] = data.reg; __GXData[0x5FC / 4] |= 4; }
