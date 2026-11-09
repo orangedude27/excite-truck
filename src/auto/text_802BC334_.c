@@ -86,23 +86,23 @@ void *fn_802BC4D4(void *arg0) {
     return *(void **)(*(char **)((char *)arg0 + 4) + 0xC);
 }
 
-#pragma scheduling invalid_target
-int fn_802BC4E0(void *arg0) {
-    int arg = *(int *)((char *)arg0 + 4);
-    int result = fn_802C9C24(arg);
-    if (fn_8012C33C() == 0)
-        ((void (*)(void *, int, ...))fn_802E317C)(&lbl_8034AB38, result);
-    fn_802B110C(&fn_802BC334, result);
-    return result;
-}
 #pragma scheduling on
+int fn_802BC4E0(void *__restrict arg0) {
+    int result = fn_802C9C24(*(int *)((char *)arg0 + 4));
+    if (fn_8012C33C() == 0)
+        fn_802E317C((const char *)&lbl_8034AB38, result);
+    return fn_802B110C(&fn_802BC334, result);
+}
 double fn_8002F234(float, float);
+#pragma push
+#pragma processor 750
 float fn_802BC540(void *arg0, float farg0) {
-    float x = *(float *)arg0;
-    float z = *(float *)((char *)arg0 + 8);
+    float *p = (float *)arg0;
+    float x = p[0];
+    float z = p[2];
     return farg0 * (float)fn_8002F234(x * x + z * z, z);
 }
-
+#pragma pop
 void PSVECCrossProduct(Vec *, Vec *, Vec *);
 void PSVECNormalize(const Vec *, Vec *);
 void fn_801EA18C(void *, s32, s32);
