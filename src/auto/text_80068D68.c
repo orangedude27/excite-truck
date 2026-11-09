@@ -25920,7 +25920,7 @@ s32 WriteUARTN(char *msg, u32 n) {
     extern u32 lbl_8055DCA4; // euart.c's Enabled: InitializeUART() sets 0xA5FF005A
     extern u32 lbl_8055DC98; // euart.c's __EUARTInitialized
     extern u32 lbl_8055DC9C; // euart.c's __EUARTLastErrorCode
-    extern u32 lbl_80560B10; // __EXIFreq (EXICommon.c): EXI_FREQ_16MHZ
+    extern const u32 __EXIFreq; // EXICommon.c: EXI_FREQ_16MHZ
     // revolution/EXI.h's routines; this unit includes no EXI header
     extern s32 EXILock(s32, s32, void *);
     extern s32 EXISelect(s32, s32, u32);
@@ -25960,7 +25960,7 @@ s32 WriteUARTN(char *msg, u32 n) {
         }
     }
 
-    freq = lbl_80560B10;
+    freq = __EXIFreq;
     err = EUART_ERROR_OK;
     cmd = EUART_CMD_WRITE;
 
