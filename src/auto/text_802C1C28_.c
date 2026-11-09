@@ -199,11 +199,12 @@ short fn_802C2120(int arg0) {
     return (short)(((arg0 << 8) / 1024) + 0x80);
 }
 
+void fn_802B52B4(void *);
 #pragma dont_inline on
 void fn_802C217C(void) {
     fn_802C20DC((int *)&lbl_8055FB50);
     if (lbl_8055FB54 == 0) return;
-    fn_802B52B4();
+    fn_802B52B4((void *)lbl_8055FB54);
     lbl_8055FB54 = 0;
 }
 #pragma dont_inline reset
