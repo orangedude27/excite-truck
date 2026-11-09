@@ -348,6 +348,7 @@ void fn_80209110(void **arg0) {
         *arg0 = 0;
     }
 }
+#pragma pop
 
 #pragma push
 #pragma inline_depth(0)
