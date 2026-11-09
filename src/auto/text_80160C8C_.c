@@ -1402,9 +1402,7 @@ extern "C" s32 fn_80162800(void *arg0) {
 extern char lbl_8032F698[];
 extern void *lbl_8055E2E0;
 extern int fn_801476C4(void);
-#pragma push
-#pragma processor 750
-#pragma scheduling on
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" s32 fn_801628E8(void *arg0) {
     struct Dummy {
