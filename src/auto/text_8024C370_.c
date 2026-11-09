@@ -584,6 +584,7 @@ void fn_8024CFB4(void) {
     if (((int (*)(int *))fn_8024CF48)(&sp8) != 0) fn_8000D984(sp8);
 }
 
+extern double lbl_80563938;
 int fn_80232B70(int);
 void fn_8024CFE8(void *arg0) {
     int denominator = fn_80232B70(*(int *)((char *)arg0 + 0x34));
