@@ -1166,31 +1166,26 @@ void fn_802D657C(s32 *arg0, s32 arg1) {
 }
 
 void fn_802D6594(void *arg0) {
-    u8 *bytes = arg0;
-    u8 t0, t1, t2, t3;
-    register u8 *p;
-    s32 i;
-
-    t0 = bytes[0x34];
-    p = bytes + 0x38;
-    t1 = bytes[0x37];
-    i = 0;
-    t2 = bytes[0x35];
-    t3 = bytes[0x36];
-    bytes[0x34] = t1;
-    bytes[0x37] = t0;
-    bytes[0x35] = t3;
-    bytes[0x36] = t2;
-
-    while (i < *(s32 *)(bytes + 0x34)) {
-        t0 = p[0];
-        p[0] = p[3];
-        p[3] = t0;
-        t0 = p[1];
-        p[1] = p[2];
-        p[2] = t0;
+    unsigned char *base = (unsigned char *)arg0;
+    unsigned char a = base[0x34];
+    unsigned char *p = base + 0x38;
+    unsigned char b = base[0x35];
+    int i;
+    unsigned char c;
+    base[0x34] = base[0x37];
+    base[0x37] = a;
+    base[0x35] = base[0x36];
+    base[0x36] = b;
+    for (i = 0; i < *(int *)(base + 0x34); i++) {
+        a = p[0];
+        c = p[3];
+        p[0] = c;
+        p[3] = a;
+        a = p[1];
+        c = p[2];
+        p[1] = c;
+        p[2] = a;
         p += 4;
-        i += 1;
     }
 }
 
