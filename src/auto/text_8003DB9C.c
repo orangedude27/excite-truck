@@ -1584,19 +1584,18 @@ out:
 }
 
 void GXGetVtxDesc(void) {
-    volatile unsigned int *fifo = (volatile unsigned int *)0xCC008000;
     if (__GXData[0x5FC / 4] != 0) {
         __GXSetDirtyState();
     }
-    fifo[0] = 0;
-    fifo[0] = 0;
-    fifo[0] = 0;
-    fifo[0] = 0;
-    fifo[0] = 0;
-    fifo[0] = 0;
-    fifo[0] = 0;
-    fifo[0] = 0;
-    PPCSync(0xCC010000);
+    *(volatile unsigned int *)0xCC008000 = 0;
+    *(volatile unsigned int *)0xCC008000 = 0;
+    *(volatile unsigned int *)0xCC008000 = 0;
+    *(volatile unsigned int *)0xCC008000 = 0;
+    *(volatile unsigned int *)0xCC008000 = 0;
+    *(volatile unsigned int *)0xCC008000 = 0;
+    *(volatile unsigned int *)0xCC008000 = 0;
+    *(volatile unsigned int *)0xCC008000 = 0;
+    PPCSync();
 }
 
 void GXGetVtxDescv(void) {
@@ -1857,36 +1856,24 @@ void GXGetPointSize(s32 arg0) {
 }
 
 void GXInitLightAttnA(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    union {
-        u32 reg;
-        struct {
-            unsigned int high : 8;
-            unsigned int unused : 8;
-            unsigned int attenB : 4;
-            unsigned int distA : 1;
-            unsigned int attenA : 3;
-            unsigned int attenC : 3;
-            unsigned int unused2 : 3;
-            unsigned int distB : 1;
-            unsigned int type : 1;
-        } fields;
-    } value;
-
-    s32 type = 0;
-    value.reg = __peReg[1];
+    unsigned int value = __peReg[1];
+    int type = 0;
+    int b;
     if (arg0 != 1) {
         if (arg0 == 3) {
             type = 1;
         }
     }
-    value.fields.type = type;
-    value.fields.distA = __cntlzw(arg0 - 3);
-    value.fields.distB = __cntlzw(arg0 - 2);
-    value.fields.attenB = arg3;
-    value.fields.attenA = arg1;
-    value.fields.attenC = arg2;
-    value.fields.high = 0x41;
-    __peReg[1] = value.reg;
+    value = __rlwimi(value, type, 0, 31, 31);
+    value = __rlwimi(value, __cntlzw(arg0 - 3), 6, 20, 20);
+    b = __cntlzw(arg0 - 2);
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    value = __rlwimi(value, b, 28, 30, 30);
+    value = __rlwimi(value, arg3, 12, 16, 19);
+    value = __rlwimi(value, arg1, 8, 21, 23);
+    value = __rlwimi(value, arg2, 5, 24, 26);
+    value = __rlwimi(value, 0x41, 24, 0, 7);
+    __peReg[1] = value;
 }
 
 void GXInitLightAttnK(s32 arg0) {
@@ -4068,35 +4055,35 @@ void GXSetTevAlphaIn(s32 stage, s32 a, s32 b, s32 c, s32 d) {
 }
 
 void GXSetTevColorOp(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
-    union TevColorOpReg {
-        unsigned int value;
-        struct {
-            unsigned int pad0 : 8;
-            unsigned int konst : 2;
-            unsigned int scale : 2;
-            unsigned int arg4 : 1;
-            unsigned int clamp : 1;
-            unsigned int bias : 2;
-            unsigned int pad1 : 16;
-        } bits;
-    };
-    unsigned int *data = __GXData + arg0;
-    union TevColorOpReg reg;
-
-    reg.value = data[0x180 / 4];
-    reg.bits.clamp = arg1;
-    if (arg1 <= 1) {
-        reg.bits.scale = arg3;
-        reg.bits.bias = arg2;
-    } else {
-        reg.bits.scale = ((unsigned int)arg1) >> 1;
-        reg.bits.bias = 3;
+    unsigned int *data = (unsigned int *)((unsigned char *)__GXData + arg0 * 4);
+    {
+        union TevColorOpReg {
+            unsigned int value;
+            struct {
+                unsigned int pad0 : 8;
+                unsigned int konst : 2;
+                unsigned int scale : 2;
+                unsigned int arg4 : 1;
+                unsigned int clamp : 1;
+                unsigned int bias : 2;
+                unsigned int pad1 : 16;
+            } bits;
+        } reg;
+        reg.value = data[0x180 / 4];
+        reg.bits.clamp = arg1;
+        if (arg1 <= 1) {
+            reg.bits.scale = arg3;
+            reg.bits.bias = arg2;
+        } else {
+            reg.bits.scale = ((unsigned int)arg1) >> 1;
+            reg.bits.bias = 3;
+        }
+        *(volatile unsigned char *)0xCC008000 = 0x61;
+        reg.bits.arg4 = arg4;
+        reg.bits.konst = arg5;
+        *(volatile unsigned int *)0xCC008000 = reg.value;
+        data[0x180 / 4] = reg.value;
     }
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    reg.bits.arg4 = arg4;
-    reg.bits.konst = arg5;
-    *(volatile unsigned int *)0xCC008000 = reg.value;
-    data[0x180 / 4] = reg.value;
     *(volatile unsigned short *)((char *)__GXData + 2) = 0;
 }
 
@@ -4863,22 +4850,24 @@ void GXSetProjectionv(float *arg0) {
 }
 
 void GXLoadPosMtxImm(const f32 mtx[3][4], u32 id) {
-    f64 pairs[6];
-    volatile f64 *fifo = (volatile f64 *)0xCC008000;
-    pairs[0] = *(const f64 *)&mtx[0][0];
-    pairs[1] = *(const f64 *)&mtx[0][2];
-    pairs[2] = *(const f64 *)&mtx[1][0];
-    pairs[3] = *(const f64 *)&mtx[1][2];
-    pairs[4] = *(const f64 *)&mtx[2][0];
-    pairs[5] = *(const f64 *)&mtx[2][2];
-    *(volatile u8 *)0xCC008000 = 0x10;
-    *(volatile u32 *)0xCC008000 = (id << 2) | 0xB0000;
-    *fifo = pairs[0];
-    *fifo = pairs[1];
-    *fifo = pairs[2];
-    *fifo = pairs[3];
-    *fifo = pairs[4];
-    *fifo = pairs[5];
+    volatile u8 *fifo8 = (volatile u8 *)0xCC008000;
+    volatile u32 *fifo32 = (volatile u32 *)0xCC008000;
+    volatile f64 *fifo64 = (volatile f64 *)0xCC008000;
+    f64 p0 = *(const f64 *)&mtx[0][0];
+    f64 p1 = *(const f64 *)&mtx[0][2];
+    f64 p2 = *(const f64 *)&mtx[1][0];
+    f64 p3 = *(const f64 *)&mtx[1][2];
+    f64 p4 = *(const f64 *)&mtx[2][0];
+    f64 p5 = *(const f64 *)&mtx[2][2];
+
+    *fifo8 = 0x10;
+    *fifo32 = (id << 2) | 0xB0000;
+    *fifo64 = p0;
+    *fifo64 = p1;
+    *fifo64 = p2;
+    *fifo64 = p3;
+    *fifo64 = p4;
+    *fifo64 = p5;
 }
 
 #pragma push
