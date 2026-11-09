@@ -679,73 +679,86 @@ extern "C" void fn_8020B368(void *arg0) {
 
 #pragma push
 #pragma processor 750
+/**
+ * Starts the sound and loops it (vtable slot +0x1C of a Voicesnd object).
+ *
+ * Grabs a voice for the sound, plus one for its second resource when the
+ * sound has one, and starts them looping. Before that the mix values are
+ * handed to the sound library: the volume is the sound's own times its
+ * group's, scaled by the master volume and, unless the sound is flagged
+ * unscaled, by the scale refreshed every frame; a sound with two resources is
+ * played hard left and hard right with the pan splitting the volume between
+ * them. The playing counters start over.
+ */
 extern "C" void fn_8020B5EC(void *arg0) {
-    char *p = (char *)arg0;
-    float f31, f1, f0;
+    VoiceSnd *snd = (VoiceSnd *)arg0;
+    float master, gain, side;
     int i;
-    void *h;
-    *(unsigned char *)(p + 0x3d) = 1;
-    if (*(int *)(p + 0x10) != 0 && *(void **)(p + 8) == 0) {
-        *(void **)(p + 8) = fn_802E6058(*(int *)(p + 0x10));
-        if (*(void **)(p + 8) == 0) {
-            fn_802E6ABC(*(int *)(p + 0x10));
-            fn_80207938();
-        } else if (*(int *)(p + 0x14) != 0) {
-            *(void **)(p + 0xc) = fn_802E6058(*(int *)(p + 0x14));
-            if (*(void **)(p + 0xc) == 0) {
-                ((void (*)(void *))fn_802E6138)(*(void **)(p + 8));
-                *(void **)(p + 8) = 0;
+    void *voice;
+    snd->loop = 1;
+    if (snd->sound != 0 && snd->voice == 0) {
+        snd->voice = SND_GrabVoice(snd->sound);
+        if (snd->voice == 0) {
+            // The name the library returns is the report's argument.
+            SND_Name(snd->sound);
+            SND_ReportGrabFailed();
+        } else if (snd->sound2 != 0) {
+            snd->voice2 = SND_GrabVoice(snd->sound2);
+            if (snd->voice2 == 0) {
+                SND_ReleaseVoice(snd->voice);
+                snd->voice = 0;
             }
         }
     }
-    if (*(void **)(p + 8) != 0) {
-        *(int *)(p + 0x50) = 0;
-        f1 = *(float *)(p + 0x1c) * *(float *)(*(char **)(p + 0x18) + 0x20);
-        if (*(unsigned char *)(p + 0x3e) != 0) f31 = lbl_805632B0;
+    if (snd->voice != 0) {
+        snd->elapsed = 0;
+        gain = snd->volume * snd->group->volume;
+        if (snd->mute != 0) master = FLOAT_ZERO;
         else {
-            f31 = lbl_8055B598 * (*(unsigned char *)(p + 0x3c) ? f1 : f1 * lbl_8055B590);
+            master = MASTER_VOLUME * (snd->unscaled ? gain : gain * VOLUME_SCALE);
         }
-        if (*(void **)(p + 0xc) != 0) {
-            f1 = lbl_805632B4;
-            f0 = f1 + -*(float *)(p + 0x20);
-            f1 = (f1 < f0) ? f1 : f0;
-            f1 = (f1 > lbl_805632B0) ? f1 : lbl_805632B0;
-            ((void (*)(void *, float))fn_802E61E4)(*(void **)(p + 8), f31 * f1);
-            fn_802E61EC(*(void **)(p + 8), lbl_805632B8);
-            f1 = lbl_805632B4;
-            f0 = f1 + *(float *)(p + 0x20);
-            f1 = (f1 < f0) ? f1 : f0;
-            f1 = (f1 > lbl_805632B0) ? f1 : lbl_805632B0;
-            ((void (*)(void *, float))fn_802E61E4)(*(void **)(p + 0xc), f31 * f1);
-            fn_802E61EC(*(void **)(p + 0xc), lbl_805632B4);
+        if (snd->voice2 != 0) {
+            // Two resources: one per channel, the pan splits the volume.
+            gain = FLOAT_ONE;
+            side = gain + -snd->pan;
+            gain = (gain < side) ? gain : side;
+            gain = (gain > FLOAT_ZERO) ? gain : FLOAT_ZERO;
+            SND_SetVolume(snd->voice, master * gain);
+            SND_SetPan(snd->voice, FLOAT_NEG_ONE);
+            gain = FLOAT_ONE;
+            side = gain + snd->pan;
+            gain = (gain < side) ? gain : side;
+            gain = (gain > FLOAT_ZERO) ? gain : FLOAT_ZERO;
+            SND_SetVolume(snd->voice2, master * gain);
+            SND_SetPan(snd->voice2, FLOAT_ONE);
         } else {
-            ((void (*)(void *, float))fn_802E61E4)(*(void **)(p + 8), f31);
-            fn_802E61EC(*(void **)(p + 8), *(float *)(p + 0x20));
+            SND_SetVolume(snd->voice, master);
+            SND_SetPan(snd->voice, snd->pan);
         }
         i = 0;
         do {
-            if (i == 0) h = *(void **)(p + 8);
-            else h = *(void **)(p + 0xc);
-            if (h != 0) {
-                fn_802E620C(h, *(float *)(p + 0x28));
-                fn_802E6234(h, *(float *)(p + 0x2c));
-                fn_802E6238(h, *(float *)(p + 0x30));
-                fn_802E623C(h, *(float *)(p + 0x34));
-                fn_802E622C(h, *(float *)(p + 0x24));
-                fn_802E6240(h, *(int *)(p + 0x38));
+            if (i == 0) voice = snd->voice;
+            else voice = snd->voice2;
+            if (voice != 0) {
+                SND_SetSurroundPan(voice, snd->surroundPan);
+                fn_802E6234(voice, snd->unused2c);  // the three setters
+                fn_802E6238(voice, snd->unused30);  // of this build do
+                fn_802E623C(voice, snd->unused34);  // nothing at all
+                SND_SetRate(voice, snd->rate);
+                SND_SetAuxFlags(voice, snd->auxFlags);
             }
             i++;
         } while (i < 2);
-        if (*(unsigned char *)(p + 0x3d) != 0) {
-            fn_802E61BC(*(void **)(p + 8));
-            if (*(void **)(p + 0xc) != 0) fn_802E61BC(*(void **)(p + 0xc));
+        if (snd->loop != 0) {
+            SND_StartLoop(snd->voice);
+            if (snd->voice2 != 0) SND_StartLoop(snd->voice2);
         } else {
-            fn_802E61A8(*(void **)(p + 8));
-            if (*(void **)(p + 0xc) != 0) fn_802E61A8(*(void **)(p + 0xc));
+            SND_Start(snd->voice);
+            if (snd->voice2 != 0) SND_Start(snd->voice2);
         }
     }
-    *(int *)(p + 0x44) = 0;
-    *(int *)(p + 4) = 1;
+    snd->time = 0;
+    snd->state = 1;
 }
 #pragma pop
 
