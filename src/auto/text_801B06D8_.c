@@ -622,15 +622,13 @@ extern s32 fn_801B11DC(const void *, const void *);
 extern void qsort(void *, unsigned long, unsigned long, s32 (*)(const void *, const void *));
 #pragma dont_inline on
 void fn_801B1318(void) {
-    s32 i;
     s32 *p;
+    s32 i;
     qsort(lbl_80435C30, (unsigned long)lbl_8055E678, 4, fn_801B11DC);
-    i = 0;
     p = lbl_80435C30;
-    while (i < (s32)lbl_8055E678) {
+    for (i = 0; i < (s32)lbl_8055E678; i++) {
         s32 value = *p;
-        i++;
-        *(s32 *)((u8 *)lbl_8055E684 + (value << 7) + 8) = i;
+        *(s32 *)((u8 *)lbl_8055E684 + (value << 7) + 8) = i + 1;
         p++;
     }
 }
