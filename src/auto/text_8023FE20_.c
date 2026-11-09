@@ -66,6 +66,11 @@ void fn_8023FE60(s32 arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
     }
     fn_802E317C(lbl_803422C0, arg0, found);
 }
+
+s32 fn_8023FF1C(s32 arg0) {
+    return arg0;
+}
+
 #pragma scheduling on
 extern char lbl_80342618[];
 s32 fn_802407B0(s32 arg0, s32 arg1) {
@@ -132,17 +137,20 @@ void fn_802409A4(void *arg0, signed char arg1) {
 }
 
 void fn_802409AC(void *arg0, s32 arg1) {
+    void *item;
     s32 count = *(s32 *)((char *)arg0 + 0x2C);
     s32 i;
+    s32 value;
     char *entry = (char *)arg0;
-    void *item;
-    *(s32 *)(entry + 0x18 + count * 4) = arg1;
-    *(s32 *)(entry + 0x2C) = count + 1;
-    for (i = 0; i < *(s32 *)(entry + 0x2C); i++) {
-        s32 value = **(s32 **)(entry + 0x34);
-        s32 selected = *(u8 *)(entry + 0x38) != 0 && i == *(s32 *)(entry + 0x30);
+    s32 selected;
+    *(s32 *)((char *)arg0 + 0x18 + count * 4) = arg1;
+    *(s32 *)((char *)arg0 + 0x2C) = count + 1;
+    for (i = 0; i < *(s32 *)((char *)arg0 + 0x2C);) {
+        value = **(s32 **)((char *)arg0 + 0x34);
+        selected = *(u8 *)((char *)arg0 + 0x38) != 0 && i == *(s32 *)((char *)arg0 + 0x30);
         item = *(void **)(entry + 0x18);
         entry += 4;
+        i++;
         *(u8 *)item = selected;
         *(s32 *)((char *)item + 4) = value;
     }
@@ -764,8 +772,8 @@ extern void fn_8022BD40(int, void *, int, int, float, float, float, float, float
 #pragma processor 750
 void fn_80241820(void *arg0) {
     char *self = (char *)arg0;
-    float sy, sx;
-    if (*(int *)(self + 0x28) != 0 && ((int (*)(void *))(*(void ***)(self + 0xc))[3])(self) != 0) {
+    float sx, sy;
+    if (*(int *)(self + 0x28) != 0 && ((Fn241820Obj *)self)->vt->isActive(self) != 0) {
         float w, h, cw, t, c, v;
         float base;
         int i;
@@ -776,17 +784,7 @@ void fn_80241820(void *arg0) {
         t = (float)((int)(lbl_80563768 * fn_8023659C()) - *(int *)(self + 0x48)) / lbl_8056376C;
         t = (lbl_80563764 < t) ? lbl_80563764 : t;
         t = (t > lbl_80563758) ? t : lbl_80563758;
-        c = lbl_80563770;
-        if (t < c) {
-        } else {
-            c = lbl_80563764;
-            if (t > c) {
-            } else if (t > lbl_80563758) {
-                c = t * (lbl_80563774 * t * t) + lbl_80563778 * t * t;
-            } else {
-                c = t * (lbl_80563774 * t * t) - lbl_80563778 * t * t;
-            }
-        }
+        c = (t < lbl_80563770) ? lbl_80563770 : ((t > lbl_80563764) ? lbl_80563764 : ((t > lbl_80563758) ? (t * (lbl_80563774 * t * t) + lbl_80563778 * t * t) : (t * (lbl_80563774 * t * t) - lbl_80563778 * t * t)));
         base = ((sx + w * lbl_80563784) - cw * lbl_80563784) - cw * (*(float *)(self + 0x4c) + c * (*(float *)(self + 0x50) - *(float *)(self + 0x4c)));
         for (i = 0; i < *(int *)(*(char **)(self + 0x28) + 0x98); i++) {
             float x = base + (float)i * cw;
@@ -818,7 +816,7 @@ void fn_80241820(void *arg0) {
                 }
             }
         }
-        if (((int (*)(void *))(*(void ***)(self + 0xc))[3])(self) != 0) {
+        if (((Fn241820Obj *)self)->vt->isActive(self) != 0) {
             if (*(int *)(self + 0x2c) > 0) {
                 s32 o = fn_80211660(0);
                 float k = (h - fn_80235F64(o, 1)) * lbl_80563784;
@@ -848,21 +846,21 @@ void fn_80241820(void *arg0) {
 }
 #pragma pop
 
-#pragma scheduling on
-#pragma optimize_for_size on
+#pragma push
+#pragma scheduling invalid_target
 void fn_80241DE8(void *arg0) {
-    s32 *p = (s32 *)arg0;
-    s32 *entry = p;
+    s32 *entry = (s32 *)arg0;
     s32 i;
+    s32 value;
 
-    for (i = 0; i < p[11]; i++, entry += 1) {
-        s32 *out = *(s32 **)(entry + 6);
-        *out = (p[14] != 0 && i == p[12]);
-        out[1] = *(s32 *)p[9];
+    for (i = 0; i < *(s32 *)((char *)arg0 + 0x2C); i++, entry++) {
+        value = *(s32 *)(*(s32 **)((char *)arg0 + 0x34));
+        *(u8 *)(*(s32 **)((char *)entry + 0x18)) =
+            (*(u8 *)((char *)arg0 + 0x38) != 0 && i == *(s32 *)((char *)arg0 + 0x30));
+        *(s32 *)((char *)(*(s32 **)((char *)entry + 0x18)) + 4) = value;
     }
 }
-
-#pragma scheduling invalid_target
+#pragma pop
 s32 fn_80241E40(void *arg0) {
     s32 i;
     void *entry;
