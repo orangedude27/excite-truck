@@ -309,21 +309,20 @@ void fn_801E0864(void *arg0) {
 void fn_801E0890(void *arg0) {
     Obj_801E0890 *obj = (Obj_801E0890 *)arg0;
     u8 *ref = lbl_80339780;
+    Vec2_801E0890 sp8, sp10, sp18, sp20;
+    Vec2_801E0890 sp28, sp30, sp38, sp40;
+    Vec2_801E0890 t1, t2, t3, t4;
     s32 best, j, i;
+    s32 ok;
     void *item;
     Poly_801E0890 *poly;
     Rec_801E0890 *rec;
     Vec2_801E0890 *a;
-    s32 ok;
     void *it;
     s32 idx;
     f32 k2, w1, d, k1, k3, v, w;
-    Vec2_801E0890 sp8, sp10, sp18, sp20;
-    Vec2_801E0890 sp28, sp30, sp38, sp40;
-    Vec2_801E0890 t1, t2, t3, t4;
     void *p;
     Cell_801E0890 *cell;
-    s32 n;
 
     p = *(void **)((u8 *)fn_8001285C(*(s32 *)__AXFXGetLfoSinTable_801769CC()) + 0x20);
     ((void (*)(void *, void *, void *))(*(void ***)p)[6])(p, ref + 0x2C, ref + 0x3C);
@@ -402,12 +401,12 @@ void fn_801E0890(void *arg0) {
             }
             fn_80160B14(poly);
             if (ok == 0) {
-                n = obj->count - 1;
-                if (n >= 0 && n < obj->count) {
-                    s32 last = obj->count - 1;
-                    if (n != last)
-                        obj->recs[n] = obj->recs[last];
-                    obj->count--;
+                s32 ri = *(volatile s32 *)&obj->count - 1;
+                if (ri >= 0 && ri < *(volatile s32 *)&obj->count) {
+                    s32 last = *(volatile s32 *)&obj->count - 1;
+                    if (ri != last)
+                        obj->recs[ri] = obj->recs[last];
+                    obj->count = *(volatile s32 *)&obj->count - 1;
                 }
             }
         }
@@ -439,14 +438,14 @@ void *fn_801E0F34(int arg0) {
 }
 
 void fn_801E0F78(f32 *arg0, f32 *arg1, f32 *arg2, f32 arg3) {
-    f32 x = arg2[0];
-    f32 y = arg2[1];
-    f32 b = arg1[1];
-    f32 a = arg1[0];
-    arg0[0] = a + x * arg3;
-    arg0[1] = b + y * arg3;
+    f32 x = arg1[0] + arg2[0] * arg3;
+    f32 y = arg1[1] + arg2[1] * arg3;
+    arg0[0] = x;
+    arg0[1] = y;
 }
 
+#pragma push
+#pragma scheduling off
 f32 fn_801E0FA4(f32 *arg0, f32 *arg1) {
     f32 a = arg1[1];
     f32 b = arg0[1];
@@ -456,7 +455,7 @@ f32 fn_801E0FA4(f32 *arg0, f32 *arg1) {
     f32 y = d * c;
     return y + x;
 }
-
+#pragma pop
 void *fn_801E0FC4(void *arg0) {
     void *temp_r6 = (u8 *)arg0 + 0xC;
     ((s32 *)arg0)[2] = 0x64;
