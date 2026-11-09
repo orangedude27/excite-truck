@@ -4330,6 +4330,31 @@ block_21:
     }
 }
 
+/* ---------------------------------------------------------------------
+ * The FAT of a volume: one entry per cluster, holding the next cluster of
+ * the file's chain, or 0 when the cluster is free.  Entries 0 and 1 are
+ * reserved, so a volume's clusters run from 2 to its cluster count + 1.
+ * The FAT is read a page at a time: VFiPFCACHE_ClaimPage takes a page from
+ * the volume's cache, VFiPFFAT_ReadClusterSector reads into it the FAT
+ * sector that holds a cluster, and VFiPFCACHE_FreeFATPage gives the page
+ * back.  While a page is held the entry readers move it from sector to
+ * sector themselves, so a walk over consecutive clusters reads every
+ * sector once.
+ * ------------------------------------------------------------------- */
+#define VFiPFCACHE_ClaimPage       fn_800A8D08   /* a page of the volume's cache; -1: claimed for nobody */
+#define VFiPFFAT_ReadClusterSector fn_800ACA5C   /* read the FAT sector holding a cluster into a page */
+#define VFiPFFAT_GetEntry12        fn_800AFBA8   /* FAT12: the 12-bit entry of a cluster */
+#define VFiPFFAT_GetEntry16        fn_800B00E8   /* FAT16: the 16-bit entry of a cluster */
+#define VFiPFFAT_GetEntry32        fn_800B05C8   /* FAT32: the 28-bit entry of a cluster */
+
+/* Volume fields the FAT code reads (VFiPFVolume is described further down). */
+#define VF_VOL_CLUSTER_COUNT(v)    (*(u32 *)((u8 *)(v) + 0x34)) /* clusters the volume holds */
+#define VF_VOL_FAT_TYPE(v)         (*(s32 *)((v) + 0x1C)) /* which FAT it was mounted with */
+#define VF_FAT_FIRST_CLUSTER       2             /* first cluster a file may hold */
+#define VF_FAT_TYPE_12             0             /* VF_VOL_FAT_TYPE: 12-bit entries */
+#define VF_FAT_TYPE_16             1             /* VF_VOL_FAT_TYPE: 16-bit entries */
+#define VF_FAT_TYPE_32             2             /* VF_VOL_FAT_TYPE: 28-bit entries */
+
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" s32 fn_800ACBB0(void *arg0, s32 arg1, s32 arg2, s32 arg3, u32 *arg4, u32 *arg5) {
