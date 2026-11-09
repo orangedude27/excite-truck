@@ -224,6 +224,7 @@ void fn_8028A9BC(void) {
 }
 
 #pragma cplusplus on
+#pragma scheduling invalid_target
 extern "C" void fn_8028A9F4(void) {
     class Dummy { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); };
     ((Dummy *)lbl_8055F6FC)->v3();
@@ -236,6 +237,7 @@ extern "C" void fn_8028A9F4(void) {
         p = (void **)((u8 *)p + 0x10);
     } while (i < 8);
 }
+#pragma scheduling on
 #pragma cplusplus off
 
 #pragma push
