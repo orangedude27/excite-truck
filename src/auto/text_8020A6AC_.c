@@ -578,7 +578,7 @@ typedef struct VoiceSnd {
     unsigned char mute;     // at 0x3E  set while the sound is muted
     int index;              // at 0x40  slot in the player's list
     int time;               // at 0x44  frames since the sound started
-    double length;          // at 0x48  length of the sound, in seconds
+    float length;         // at 0x48  length of the sound, in seconds
     unsigned int limit;     // at 0x4C  ms after which the sound is dropped
     unsigned int elapsed;   // at 0x50  ms the sound has been playing
 } VoiceSnd;
