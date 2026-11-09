@@ -141,11 +141,8 @@ void fn_80234DE4(unsigned int arg0) {
 
 void *fn_80234E88(const char *arg0) {
     void *node = lbl_8055F084;
-    goto loop;
-loop:
-    node = *(void **)((char *)node + 4);
-    if (node != 0 && stricmp(arg0, *(const char **)node) != 0)
-        goto loop;
+    while (node != 0 && stricmp(arg0, *(const char **)node) != 0)
+        node = *(void **)((char *)node + 4);
     if (node == 0)
         return 0;
     return *(void **)node;
@@ -377,6 +374,81 @@ void fn_802354A0(int arg0, int arg1, int arg2, float x, float y, float z, float 
     fn_802C8DB8(frame.v, 4, ids.i, 6);
     fn_802C8D74();
 }
+
+#pragma push
+#pragma processor 750
+void fn_80235758(int arg0, int arg1, int arg2, float x, float y, float dx, float dy, float u0, float v0, float u1, float v1) {
+    Idx_80235CBC ids;
+    Vtx_80235CBC t3, t2, t1, t0;
+    struct Frame {
+        Vtx_80235CBC v[4];
+    } __attribute__((aligned(16))) frame;
+    void *node;
+    float sx, sy, n3, n2, n1, n0;
+    int handle;
+    void *obj;
+    int index;
+    float s;
+
+    if (arg1 < 0)
+        return;
+
+    node = fn_8023505C((void *)arg0, arg1);
+    if (node == 0) {
+        fn_802E30C8(lbl_80340808, arg1, arg0);
+        return;
+    }
+
+    {
+        float hi, lo, a;
+        hi = *((float *)node + 3); lo = *((float *)node + 1);
+        a = lbl_805636B0 < v1 ? lbl_805636B0 : v1;
+        a = a > lbl_805636B8 ? a : lbl_805636B8;
+        n3 = lo + a * (hi - lo);
+        hi = *((float *)node + 2); lo = *(float *)node;
+        a = lbl_805636B0 < u1 ? lbl_805636B0 : u1;
+        a = a > lbl_805636B8 ? a : lbl_805636B8;
+        n2 = lo + a * (hi - lo);
+        hi = *((float *)node + 3); lo = *((float *)node + 1);
+        a = lbl_805636B0 < v0 ? lbl_805636B0 : v0;
+        a = a > lbl_805636B8 ? a : lbl_805636B8;
+        n1 = lo + a * (hi - lo);
+        hi = *((float *)node + 2); lo = *(float *)node;
+        a = lbl_805636B0 < u0 ? lbl_805636B0 : u0;
+        a = a > lbl_805636B8 ? a : lbl_805636B8;
+        n0 = lo + a * (hi - lo);
+    }
+    sy = dy; sx = dx;
+
+    handle = *(int *)((char *)arg0 + 0x84);
+    obj = fn_8022EDC4();
+    fn_802C8B98(handle, (int)obj);
+    index = fn_80230B9C(arg2);
+
+    s = *(float *)((char *)obj + 0x38);
+    if (!((float)__fabs(s - lbl_805636B0) <= lbl_80558DC4)) {
+        sx = dx * s;
+        sy = dy * s;
+        x += lbl_805636B4 * (dx * (lbl_805636B0 - s));
+        y -= lbl_805636B4 * (dy * (lbl_805636B0 - s));
+    }
+
+    t0 = fn_80230A68(index, x, y, lbl_805636B8, n0, n1);
+    frame.v[0].a = t0.a; frame.v[0].b = t0.b; frame.v[0].c = t0.c; frame.v[0].d = t0.d; frame.v[0].e = t0.e;
+    t1 = fn_80230A68(index, x + sx, y, lbl_805636B8, n2, n1);
+    frame.v[1].a = t1.a; frame.v[1].b = t1.b; frame.v[1].c = t1.c; frame.v[1].d = t1.d; frame.v[1].e = t1.e;
+    t2 = fn_80230A68(index, x, y - sy, lbl_805636B8, n0, n3);
+    frame.v[2].a = t2.a; frame.v[2].b = t2.b; frame.v[2].c = t2.c; frame.v[2].d = t2.d; frame.v[2].e = t2.e;
+    t3 = fn_80230A68(index, x + sx, y - sy, lbl_805636B8, n2, n3);
+    frame.v[3].a = t3.a; frame.v[3].b = t3.b; frame.v[3].c = t3.c; frame.v[3].d = t3.d; frame.v[3].e = t3.e;
+
+    ids = *(Idx_80235CBC *)lbl_802FA008;
+
+    fn_802C8DB8(frame.v, 4, ids.i, 6);
+    fn_802C8D74();
+}
+#pragma pop
+
 #pragma pop
 
 extern double cos(float);
@@ -607,6 +679,88 @@ void fn_80236134(void *arg0, int arg1, const char *arg2) {
         *(int *)(entry + 0x24) = id;
     }
 }
+
+#pragma push
+#pragma processor 750
+extern float lbl_805636C0;
+extern float lbl_805636C8;
+extern void* fn_802CC5B8(int);
+extern float fn_802C9A4C(float);
+#pragma push
+#pragma processor 750
+void fn_802361E8(void *obj, int key, int idx, float a, float b, float c, float d, float e) {
+    Idx_80235CBC ids;
+    Vtx_80235CBC t3, t2, t1, t0;
+    struct Frame { Vtx_80235CBC v[4]; } __attribute__((aligned(16))) frame;
+    int handle;
+    void *nodePtr;
+    int count;
+    int i;
+    void *entry;
+    void *transform;
+    int renderIdx;
+    float sx, sy, n0, n1, n2, n3;
+    float s;
+    float scale;
+    int ia, ib, ic, id;
+    handle = *(int *)((char *)obj + 0x10);
+    count = *(int *)((char *)obj + 0xC);
+    i = 0;
+    entry = *(void **)((char *)obj + 4);
+    while (i < count) {
+        if (*(int *)((char *)entry + 0x28) == key) {
+            *((int **)&nodePtr) = (int *)fn_802CC5B8(*(int *)((char *)entry + 0x24));
+            handle = *((int *)nodePtr + 0);
+            break;
+        }
+        i++;
+        entry = (char *)entry + 0x2C;
+    }
+    if (handle == -2) return;
+    scale = fn_802C9A4C(lbl_805636C8);
+    if (*(unsigned char *)((char *)obj + 0x14) != 0) {
+        n2 = lbl_805636B8;
+        n3 = lbl_805636B0;
+    } else {
+        n2 = lbl_805636B0;
+        n3 = lbl_805636B8;
+    }
+    ia = *(int *)&a ^ 0x80000000;
+    ix: ib = *(int *)&b ^ 0x80000000;
+    ic = *(int *)&c ^ 0x80000000;
+    id = *(int *)&d ^ 0x80000000;
+    sx = *(float *)&ia;
+    n0 = *(float *)&ib;
+    sy = *(float *)&ic;
+    n1 = *(float *)&id;
+    (void)idx;
+    transform = fn_8022EDC4();
+    fn_802C8B98(handle, (int)transform);
+    renderIdx = fn_80230B9C(-1);
+    s = *(float *)((char *)transform + 0x38);
+    {
+        float diff = s - lbl_805636B0;
+        float adiff = (float)__fabs(diff);
+        if (!(adiff <= lbl_80558DC4)) {
+            sx = c * s * 0;
+            sy = d * s * 0;
+        }
+    }
+    t0 = fn_80230A68(renderIdx, sx, sy, a, n0, n1);
+    frame.v[0].a = t0.a; frame.v[0].b = t0.b; frame.v[0].c = t0.c; frame.v[0].d = t0.d; frame.v[0].e = t0.e;
+    t1 = fn_80230A68(renderIdx, sx + sy, sy, a, n2, n1);
+    frame.v[1].a = t1.a; frame.v[1].b = t1.b; frame.v[1].c = t1.c; frame.v[1].d = t1.d; frame.v[1].e = t1.e;
+    t2 = fn_80230A68(renderIdx, sx, sy - n0, a, n0, n3);
+    frame.v[2].a = t2.a; frame.v[2].b = t2.b; frame.v[2].c = t2.c; frame.v[2].d = t2.d; frame.v[2].e = t2.e;
+    t3 = fn_80230A68(renderIdx, sx + sy, sy - n0, a, n2, n3);
+    frame.v[3].a = t3.a; frame.v[3].b = t3.b; frame.v[3].c = t3.c; frame.v[3].d = t3.d; frame.v[3].e = t3.e;
+    ids = *(Idx_80235CBC *)lbl_802FA008;
+    fn_802C8DB8(frame.v, 4, ids.i, 6);
+    fn_802C8D74();
+    fn_802C9A4C(scale);
+}
+#pragma pop
+
 #pragma scheduling on
 extern void fn_802354A0(int, int, int, float, float, float, float, float);
 extern const char lbl_80340808[];
