@@ -6650,70 +6650,79 @@ typedef struct ScrollList {
 #pragma push
 #pragma unroll off
 #pragma opt_loop_invariants off
+/* Runs one frame of the list's one-row scroll.  A scroll message (fn_802263CC,
+ * after fn_80226570 moved every row's target one rowHeight and wrapped it into
+ * the band) leaves scrollDir 1 for rows moving down or 2 for rows moving up and
+ * stamps scrollStart; here each row's y is interpolated from the y that scroll
+ * started at toward its target over SCROLL_TWEEN_TIME seconds.  A target that
+ * wrapped past the band's edge is reached through the wrapped side, so a row
+ * keeps going the way it was heading instead of turning back across the screen.
+ * Once the time is up every row is left exactly on its target and the scroll
+ * ends. */
 extern "C" void fn_8022591C(void *arg0) {
-    u8 *obj = (u8 *)arg0;
-    if (*(s32 *)(obj + 0x274) == 0)
+    ScrollList *list = (ScrollList *)arg0;
+    if (list->scrollDir == 0)
         return;
-    f32 time = fn_8023659C();
-    f32 *duration = (f32 *)(obj + 0x250);
-    if (*duration > time)
-        *duration = time - lbl_80563548;
-    f32 limit = lbl_80563548;
-    f32 remain = time - *duration;
-    if (remain > limit) {
-        for (s32 i = 0; i < *(s32 *)(*(u8 **)(obj + 0x244) + 8); i++) {
-            f32 end = (*(f32 **)(obj + 0x278))[i * 3 + 2];
-            (*(f32 **)(obj + 0x278))[i * 3] = end;
-            (*(f32 **)(obj + 0x278))[i * 3 + 1] = end;
+    f32 now = fn_8023659C();
+    f32 *startTime = &list->scrollStart;
+    if (*startTime > now)
+        *startTime = now - SCROLL_TWEEN_TIME;
+    f32 duration = SCROLL_TWEEN_TIME;
+    f32 elapsed = now - *startTime;
+    if (elapsed > duration) {
+        for (s32 i = 0; i < list->rowTable->rowCount; i++) {
+            f32 end = list->rows[i].toY;
+            list->rows[i].y = end;
+            list->rows[i].fromY = end;
         }
-        *(s32 *)(obj + 0x274) = 0;
+        list->scrollDir = 0;
         return;
     }
-    for (s32 i = 0; i < *(s32 *)(*(u8 **)(obj + 0x244) + 8); i++) {
-        switch (*(s32 *)(obj + 0x274)) {
+    for (s32 i = 0; i < list->rowTable->rowCount; i++) {
+        switch (list->scrollDir) {
         case 0: break;
-        case 2: {
-            f32 *entry = *(f32 **)(obj + 0x278) + i * 3;
+        case 2: { /* rows moving up */
+            ScrollRow *row = &list->rows[i];
             f32 low, high;
-            high = entry[2];
-            low = entry[1];
+            high = row->toY;
+            low = row->fromY;
             if (high > low)
-                entry[0] = low + (remain / limit) * (high - low);
-            else if (high < low) {
-                if (entry[0] > high) {
-                    f32 base = *(f32 *)(obj + 0x264) + (high - *(f32 *)(obj + 0x268));
-                    entry[0] = low + (remain / limit) * (base - low);
-                } else if (entry[0] < high) {
-                    f32 base = *(f32 *)(obj + 0x268) - (*(f32 *)(obj + 0x264) - low);
-                    entry[0] = base + (remain / limit) * (high - base);
+                row->y = low + (elapsed / duration) * (high - low);
+            else if (high < low) { /* the target wrapped below the band */
+                if (row->y > high) {
+                    f32 base = list->yMax + (high - list->yMin);
+                    row->y = low + (elapsed / duration) * (base - low);
+                } else if (row->y < high) {
+                    f32 base = list->yMin - (list->yMax - low);
+                    row->y = base + (elapsed / duration) * (high - base);
                 }
             }
             break;
         }
-        case 1: {
-            f32 *entry = *(f32 **)(obj + 0x278) + i * 3;
+        case 1: { /* rows moving down */
+            ScrollRow *row = &list->rows[i];
             f32 low, high;
-            high = entry[2];
-            low = entry[1];
+            high = row->toY;
+            low = row->fromY;
             if (high < low)
-                entry[0] = low + (remain / limit) * (high - low);
-            else if (high > low) {
-                if (entry[0] < high) {
-                    f32 base = *(f32 *)(obj + 0x268) - (*(f32 *)(obj + 0x264) - high);
-                    entry[0] = low + (remain / limit) * (base - low);
-                } else if (entry[0] > high) {
-                    f32 base = *(f32 *)(obj + 0x264) + (low - *(f32 *)(obj + 0x268));
-                    entry[0] = base + (remain / limit) * (high - base);
+                row->y = low + (elapsed / duration) * (high - low);
+            else if (high > low) { /* the target wrapped above the band */
+                if (row->y < high) {
+                    f32 base = list->yMin - (list->yMax - high);
+                    row->y = low + (elapsed / duration) * (base - low);
+                } else if (row->y > high) {
+                    f32 base = list->yMax + (low - list->yMin);
+                    row->y = base + (elapsed / duration) * (high - base);
                 }
             }
             break;
         }
         }
-        f32 *entry = *(f32 **)(obj + 0x278) + i * 3;
-        if (entry[0] > *(f32 *)(obj + 0x264))
-            entry[0] -= *(f32 *)(obj + 0x260);
-        else if (entry[0] < *(f32 *)(obj + 0x268))
-            entry[0] += *(f32 *)(obj + 0x260);
+        ScrollRow *row = &list->rows[i];
+        if (row->y > list->yMax)
+            row->y -= list->loopHeight;
+        else if (row->y < list->yMin)
+            row->y += list->loopHeight;
     }
 }
 
