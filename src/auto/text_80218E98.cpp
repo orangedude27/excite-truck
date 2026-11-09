@@ -2552,14 +2552,14 @@ extern "C" void fn_8021CB4C(void *arg0, s32 arg1) {
         virtual s32 get();
     };
     volatile union { struct { u32 high; u32 low; } words; f64 value; } converted;
-    s32 result;
-    s32 start;
     fn_802C3034(arg1);
     ((First *)*(void **)((u8 *)arg0 + 0x248))->call();
-    result = ((Second *)arg0)->get();
-    start = *(s32 *)((u8 *)arg0 + 0x254);
-    converted.words.high = 0x43300000;
-    converted.words.low = (u32)(result - start) ^ 0x80000000;
+    {
+        s32 result = ((Second *)arg0)->get();
+        u32 start = *(u32 *)((u8 *)arg0 + 0x254);
+        converted.words.high = 0x43300000;
+        converted.words.low = (u32)(result - (s32)start) ^ 0x80000000;
+    }
 }
 extern "C" void fn_8021CBBC(void *arg0) {
     register s32 y;
@@ -8238,8 +8238,7 @@ extern "C" void fn_802297D0(void *arg0) {
         *(u8 *)((u8 *)arg0 + 0x254) != 0 &&
         *(u8 *)((u8 *)arg0 + 0x18) != 0) {
         callback = *(s32 (**)(s32))((u8 *)arg0 + 0x258);
-        if (callback == 0 || callback(*(s32 *)((u8 *)arg0 + 0x25C)) == 0) {
-        } else {
+        if (callback == 0 || callback(*(s32 *)((u8 *)arg0 + 0x25C)) != 0) {
             fn_802168BC((void *)*(s32 *)((u8 *)arg0 + 0x25C));
         }
     }
