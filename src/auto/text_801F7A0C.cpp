@@ -775,7 +775,7 @@ extern "C" void *fn_801F861C(void) {
 #define OBS_OPT_REFLECT_LOAD  0x100 /* "reflect_on_load": mirror the placement (fn_801FB284) */
 #define OBS_OPT_ONESIDED      0x200 /* "onesided": nothing shows through it */
 
-extern "C" void *fn_801F86C8(void *arg0) {
+extern "C" void *fn_801F86C8(void *node) {
     /* What this creator adds past the part every created object shares. */
     struct Obstacle {
         u8 pad[0x108];
@@ -814,7 +814,6 @@ extern "C" void *fn_801F86C8(void *arg0) {
         virtual void *getNode(const char *);     /* 0x5C: a child node */
     };
     const char *base = lbl_8033AF80;
-    void *node = arg0;
     void *object;
     object = fn_801284F8(0x1A0, (void *)OBS_TAG_OBSTACLE);
     if (object != 0) {
