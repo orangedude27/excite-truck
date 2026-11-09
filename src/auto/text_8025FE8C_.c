@@ -4,6 +4,7 @@
 typedef signed int s32;
 typedef unsigned char u8;
 typedef unsigned int u32;
+struct Words5_80260E04 { s32 w[5]; };
 extern float lbl_80563B88;
 extern void fn_80214A9C(s32);
 extern s32 fn_8025C204(s32);
