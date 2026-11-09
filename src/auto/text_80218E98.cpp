@@ -6717,7 +6717,6 @@ extern "C" void fn_8022591C(void *arg0) {
     }
 }
 
-extern "C" void fn_8022591C(void *arg0);
 extern "C" void fn_80225B6C(void *arg0) {
     fn_8022591C(arg0);
 }
