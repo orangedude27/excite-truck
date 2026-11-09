@@ -608,6 +608,9 @@ typedef struct {
    is at 0x4630.  The header's tSDP_DB only serves for the first three fields;
    its record[] is followed by the wrong-sized records. */
 #define sdp_cb_server_db        ((tSDP_DB *)(lbl_803C4C40 + 0x121C))
+/* sdp_cb.server_db.num_records.  Reading it through tSDP_DB schedules the record
+   pointer's setup differently, so the server-database loops count with this. */
+#define sdp_cb_num_records      (*(UINT16 *)(lbl_803C4C40 + 0x1222))
 #define sdp_cb_record_db        ((tSDP_RECORD_BUILD_VIEW *)(lbl_803C4C40 + 0x1224))
 #define sdp_cb_trace_level      (lbl_803C4C40[0x4630])
 #define sdp_cb_max_attr_list_size   (*(UINT16 *)(lbl_803C4C40 + 0x462C))
