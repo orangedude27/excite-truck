@@ -1847,14 +1847,11 @@ void fn_802B8744(void) {
 }
 #pragma pop
 void fn_802B87A0(void) {
-    fn_8026E214((void *)lbl_8055FA00, 0);
-    deleteThreads__6SystemFv((void *)((u8 *)&lbl_8055FA48));
-    {
-        register s32 state = lbl_8055FA34;
-        if (state != -1) {
-            fn_802C6CF8();
-            lbl_8055FA34 = -1;
-        }
+    ((s32 (*)(void *))fn_8026E214)((void *)lbl_8055FA00);
+    deleteThreads__6SystemFv((void *)&lbl_8055FA48);
+    if (lbl_8055FA34 != -1) {
+        ((void (*)(s32))fn_802C6CF8)(lbl_8055FA34);
+        lbl_8055FA34 = -1;
     }
     *(s32 *)((u8 *)&lbl_804BFA70 + 4) = 0;
 }
