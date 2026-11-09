@@ -562,11 +562,11 @@ void fn_80138AD8(void **arg0) { void *p=*arg0; fn_8013C428(*(int*)((char*)p+0x28
 void *fn_80138B1C(void *arg0) { void *p=*(void **)((char*)arg0+0x24); void *result=0; while(p){ if(*(int*)p==0){result=p;break;} p=*(void **)((char*)p+4); } return result; }
 
 void *fn_80138B4C(void *arg0, void *arg1) {
-    void *node;
     void *result;
+    void *node;
     node = arg1 != 0 ? *(void **)((char *)arg1 + 4) : 0;
     result = 0;
-    if (node == 0) node = *(void **)((char *)arg0 + 0x24);
+    node = node != 0 ? node : *(void **)((char *)arg0 + 0x24);
     while (node != 0) {
         if (*(unsigned int *)node == 2) {
             result = node;
