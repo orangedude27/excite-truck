@@ -43,13 +43,11 @@ void fn_80160BBC(float *arg0, float *arg1, float *arg2) {
     arg0[1] = y;
 }
 
-#pragma scheduling off
 float fn_80160BE0(float *arg0, float *arg1) {
     float dx = arg0[1] - arg1[1];
     float dy = arg0[0] - arg1[0];
     return dx * dx + dy * dy;
 }
-#pragma scheduling on
 long fn_80160C18(void) {
     return 0;
 }
