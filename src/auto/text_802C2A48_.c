@@ -50,6 +50,21 @@ void fn_802C2B48(void) {
     fn_802E4C18(0);
 }
 
+void fn_802C2B78(float arg0, float arg1, float arg2) {
+    float f;
+    double d;
+    *(float *)lbl_804C1328 = arg0;
+    *(float *)(lbl_804C1328 + 4) = arg1;
+    *(float *)(lbl_804C1328 + 8) = arg2;
+    if (lbl_804C1328[0xC] != 0) {
+        d = arg2;
+        f = d;
+    } else {
+        f = lbl_80564ED8;
+    }
+    fn_802D0014(*(float *)lbl_804C1328, *(float *)(lbl_804C1328 + 4), f);
+}
+
 void fn_802C2BB8(float *arg0, float *arg1, float *arg2) {
     if (arg0 != 0) {
         *arg0 = *(float *)lbl_804C1328;
