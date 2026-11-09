@@ -1349,7 +1349,7 @@ s32 KPADRead(s32 chan, KPADStatus* sampling_bufs, s32 length) {
         }
     }
     var_r24 = index - var_r25;
-    kp->unk_0x116 = index;
+    kp->last_read_index = index;
     if (var_r24 == 0) {
         return 0;
     }
