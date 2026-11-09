@@ -1,12 +1,12 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #include <math.h>
+#define PSMTXInverse PSMTXInverse_GCN
 #define MEMRecordStateForFrmHeap MEMRecordStateForFrmHeap_SDK
 #include <revolution/MEM.h>
 #undef MEMRecordStateForFrmHeap
 #include "revolution/KPAD/__KPAD.h"
 #include "revolution/OS/OSInterrupt.h"
-#define PSMTXInverse PSMTXInverse_GCN
 #include "revolution/MTX/mtx.h"
 #undef PSMTXInverse
 #include "revolution/MTX/mtxtypes.h"
