@@ -103,16 +103,9 @@ extern "C" void fn_802979A4(void) {
 #pragma cplusplus off
 void fn_80297A08(int arg0) {
     int index = lbl_8055F7A4;
-    int next;
-
-    if (index >= 0x40) {
-        return;
-    }
-
-    next = index + 1;
-    index <<= 2;
-    lbl_8055F7A4 = next;
-    *(int *)((char *)lbl_804B4F10 + index) = arg0;
+    if (index >= 0x40) return;
+    lbl_804B4F10[index] = arg0;
+    lbl_8055F7A4 = index + 1;
 }
 
 #pragma scheduling invalid_target
@@ -157,35 +150,40 @@ extern float lbl_80564584;
 extern float lbl_80564588;
 extern char lbl_80558DC4[];
 #pragma paired_single off
+extern double __fabs(double);
 void fn_80297AFC(void) {
     int cameraPosition[3];
     void *camera;
-    int i;
     int offset;
+    int i;
     char *record;
     float maximum;
     float minimum;
     float divisor;
     float speed;
+    float now;
+    float current;
     float value;
 
     camera = fn_802C86DC();
-    cameraPosition[0] = *(int *)((char *)camera + 0x24);
-    cameraPosition[1] = *(int *)((char *)camera + 0x28);
-    cameraPosition[2] = *(int *)((char *)camera + 0x2C);
+    cameraPosition[0] = *(volatile int *)((char *)camera + 0x24);
     i = 0;
+    cameraPosition[1] = *(volatile int *)((char *)camera + 0x28);
     offset = 0;
     maximum = lbl_80564584;
     minimum = lbl_80564580;
     divisor = lbl_80564588;
+    cameraPosition[2] = *(volatile int *)((char *)camera + 0x2C);
 
-    for (; i < lbl_8055F7AC; i++, offset += 0x40) {
+    for (; i < lbl_8055F7AC; offset += 0x40, i++) {
         record = (char *)lbl_8055F7A8 + offset;
         speed = fn_801E88F0(-1);
         speed = speed * speed;
         if (PSVECSquareDistance(cameraPosition, record + 0x2C) * speed >
             *(float *)(record + 0x3C) * *(float *)(record + 0x3C)) {
-            value = (float)fn_8002F234() - *(float *)(record + 0x3C);
+            now = (float)fn_8002F234();
+            current = *(float *)(record + 0x38);
+            value = now - *(float *)(record + 0x3C);
             value = value - maximum;
             value = value / divisor;
             if (value < minimum) {
@@ -194,13 +192,12 @@ void fn_80297AFC(void) {
             if (value > maximum) {
                 value = maximum;
             }
-            value = *(float *)(record + 0x38) +
-                    value * (maximum - *(float *)(record + 0x38));
+            value = current + value * (maximum - current);
         } else {
             value = *(float *)(record + 0x38);
         }
 
-        if (__fabsf(value) != *(float *)&lbl_80558DC4) {
+        if (!((float)__fabs((double)value) <= *(float *)lbl_80558DC4)) {
             fn_802C7AE0(*(int *)record, record + 8, *(int *)(record + 4));
         }
     }
