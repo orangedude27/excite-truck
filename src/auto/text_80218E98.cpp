@@ -1445,11 +1445,12 @@ extern "C" void fn_8021A910(void *arg0, s32 arg1) {
 extern "C" s32 fn_8021A9A4(void *arg0) {
     u8 *base = (u8 *)arg0;
     u32 flag = *(u8 *)fn_80216708();
-    s32 first = 0;
+    s32 second, first = 0;
+    s32 *p;
     if (flag != 0)
         first = 2;
-    s32 *p = *(s32 **)(base + 0x254);
-    s32 second = 0;
+    p = *(s32 **)(base + 0x254);
+    second = 0;
     if (p != 0 && *p == *(s32 *)(base + 0x258))
         second = 1;
     return (s32)(((u32)(second | -second)) >> 31) | first;
@@ -2534,8 +2535,7 @@ extern "C" void *fn_8021CAD4(void *arg0, s32 arg1) {
     return arg0;
 }
 
-#pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void fn_8021CB4C(void *arg0, s32 arg1) {
     struct First {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -2561,9 +2561,6 @@ extern "C" void fn_8021CB4C(void *arg0, s32 arg1) {
     converted.words.high = 0x43300000;
     converted.words.low = (u32)(result - start) ^ 0x80000000;
 }
-#pragma push
-#pragma ppc_psq_save off
-#pragma scheduling invalid_target
 extern "C" void fn_8021CBBC(void *arg0) {
     register s32 y;
     register s32 x;
@@ -3942,27 +3939,22 @@ extern "C" void fn_8021FA98(void *arg0, s32 arg1, s32 arg2) {
 }
 #pragma scheduling on
 #pragma pop
-extern "C" s32 fn_8021FBC4(void* arg0, s32 arg1, s32 arg2) {
-    s32 x = *(s32*)((u8*)arg0 + 0x264);
-    s32 r7 = 0;
-    s32 r8 = 0;
-    s32 r9 = 0;
-    if (arg1 < x - 0x14) goto done;
-    if (arg1 >= x + *(s32*)((u8*)arg0 + 0x26C) + 0x14) goto done;
-    r9 = 1;
-    if (r9 == 0) goto second;
-    if (arg2 < *(s32*)((u8*)arg0 + 0x268) - 0x14) goto second;
-    r8 = 1;
-    if (r8 == 0) goto third;
-    {
-        s32 y = *(s32*)((u8*)arg0 + 0x268);
-        if (arg2 >= y + *(s32*)((u8*)arg0 + 0x270) + 0x14) goto third;
+extern "C" s32 fn_8021FBC4(void *arg0, s32 arg1, s32 arg2) {
+    s32 temp_r6;
+    s32 var_r7 = 0;
+    s32 var_r8 = 0;
+    s32 var_r9 = 0;
+    temp_r6 = *(s32 *)((u8 *)arg0 + 0x264);
+    if ((arg1 >= temp_r6 - 0x14) && (arg1 < temp_r6 + *(s32 *)((u8 *)arg0 + 0x26C) + 0x14)) {
+        var_r9 = 1;
     }
-    r7 = 1;
-third:
-second:
-done:
-    return r7;
+    if ((var_r9 != 0) && (arg2 >= *(s32 *)((u8 *)arg0 + 0x268) - 0x14)) {
+        var_r8 = 1;
+    }
+    if ((var_r8 != 0) && (arg2 < *(s32 *)((u8 *)arg0 + 0x268) + *(s32 *)((u8 *)arg0 + 0x270) + 0x14)) {
+        var_r7 = 1;
+    }
+    return var_r7;
 }
 
 extern "C" void fn_8021FC40(void *arg0, s32 arg1) {
