@@ -2533,61 +2533,74 @@ void GXSetCopyClamp(s32 value) {
 #define GX_YSCALE_MASK  0x1FF
 #define GX_XFB_MAX_LINES 0x400
 
-f32 GXGetYScaleFactor(u32 arg0, u32 arg1) {
-    f32 previous;
-    f32 ratio;
-    u32 numerator, height, scale, factor;
+f32 GXGetYScaleFactor(u32 efbHeight, u32 xfbHeight) {
+    f32 prevScale;
+    f32 yScale;
+    u32 lineSpan, xfbLines, numXfbLines, yScaleBits;
 
-    ratio = (f32)arg1 / (f32)arg0;
-    height = arg1;
-    factor = (u32)(256.0f / ratio) & 0x1FF;
-    numerator = (arg0 - 1) << 8;
-    scale = numerator / factor + 1;
+    /* Pick the display-copy Y scale that turns an EFB of efbHeight lines into
+     * xfbHeight XFB lines (GXRenderModeObj's efbHeight/xfbHeight at the call
+     * site).  The BP Y-Scale field is 9 bits of 8.8 fixed point, so the code
+     * walks a trial XFB line count down and then back up, each time working
+     * out - with the calculation GXGetNumXfbLines() does, which the SDK's
+     * -inline auto folded in here - how many XFB lines that scale would
+     * really copy, and stops once it can reach xfbHeight.  Returns the
+     * xfbLines/efbHeight ratio to hand to GXSetDispCopyYScale(); it is the
+     * last one that did not copy more than xfbHeight lines.
+     * (GXFrameBuf.h declares the two parameters as u16; this build's code
+     * converts them to f32 as unsigned 32-bit values.) */
+    yScale = (f32)xfbHeight / (f32)efbHeight;
+    xfbLines = xfbHeight;
+    yScaleBits = (u32)(GX_YSCALE_ONE / yScale) & GX_YSCALE_MASK;
+    lineSpan = (efbHeight - 1) << 8;
+    numXfbLines = lineSpan / yScaleBits + 1;
 
-    if (factor > 0x80 && factor < 0x100) {
-        while (!(factor & 1))
-            factor >>= 1;
-        if (arg0 % factor == 0)
-            scale++;
+    /* between 1:1 and 2:1, a scale that divides efbHeight exactly copies one
+     * line more than the integer division says */
+    if (yScaleBits > 0x80 && yScaleBits < 0x100) {
+        while (!(yScaleBits & 1))
+            yScaleBits >>= 1;
+        if (efbHeight % yScaleBits == 0)
+            numXfbLines++;
     }
 
-    if (scale > 0x400)
-        scale = 0x400;
+    if (numXfbLines > GX_XFB_MAX_LINES)
+        numXfbLines = GX_XFB_MAX_LINES;
 
-    while (scale > arg1) {
-        height--;
-        ratio = (f32)height / (f32)arg0;
-        factor = (u32)(256.0f / ratio) & 0x1FF;
-        scale = numerator / factor + 1;
-        if (factor > 0x80 && factor < 0x100) {
-            while (!(factor & 1))
-                factor >>= 1;
-            if (arg0 % factor == 0)
-                scale++;
+    while (numXfbLines > xfbHeight) {
+        xfbLines--;
+        yScale = (f32)xfbLines / (f32)efbHeight;
+        yScaleBits = (u32)(GX_YSCALE_ONE / yScale) & GX_YSCALE_MASK;
+        numXfbLines = lineSpan / yScaleBits + 1;
+        if (yScaleBits > 0x80 && yScaleBits < 0x100) {
+            while (!(yScaleBits & 1))
+                yScaleBits >>= 1;
+            if (efbHeight % yScaleBits == 0)
+                numXfbLines++;
         }
-        if (scale > 0x400)
-            scale = 0x400;
+        if (numXfbLines > GX_XFB_MAX_LINES)
+            numXfbLines = GX_XFB_MAX_LINES;
     }
 
-    previous = ratio;
+    prevScale = yScale;
 
-    while (scale < arg1) {
-        height++;
-        previous = ratio;
-        ratio = (f32)height / (f32)arg0;
-        factor = (u32)(256.0f / ratio) & 0x1FF;
-        scale = numerator / factor + 1;
-        if (factor > 0x80 && factor < 0x100) {
-            while (!(factor & 1))
-                factor >>= 1;
-            if (arg0 % factor == 0)
-                scale++;
+    while (numXfbLines < xfbHeight) {
+        xfbLines++;
+        prevScale = yScale;
+        yScale = (f32)xfbLines / (f32)efbHeight;
+        yScaleBits = (u32)(GX_YSCALE_ONE / yScale) & GX_YSCALE_MASK;
+        numXfbLines = lineSpan / yScaleBits + 1;
+        if (yScaleBits > 0x80 && yScaleBits < 0x100) {
+            while (!(yScaleBits & 1))
+                yScaleBits >>= 1;
+            if (efbHeight % yScaleBits == 0)
+                numXfbLines++;
         }
-        if (scale > 0x400)
-            scale = 0x400;
+        if (numXfbLines > GX_XFB_MAX_LINES)
+            numXfbLines = GX_XFB_MAX_LINES;
     }
 
-    return previous;
+    return prevScale;
 }
 
 extern f32 lbl_80560B40;
