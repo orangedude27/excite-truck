@@ -1,5 +1,7 @@
 #include <types.h>
 
+extern void *fn_8001285C();
+extern s32 lbl_80558CDC;
 extern s32 fn_8001D020(s32, s32, s32, const char *, s32, s32, f32);
 
 extern char lbl_802FD6D8[];
@@ -524,8 +526,10 @@ extern s32 fn_802E317C(const char *);
 #pragma scheduling on
 s32 *fn_8001C4E0(s32 arg0) {
     s32 *entry = lbl_802ED7B8;
+    s32 val;
     for (;;) {
-        if (*entry == arg0) {
+        val = *entry;
+        if (val == arg0) {
             return entry;
         }
         entry += 3;
