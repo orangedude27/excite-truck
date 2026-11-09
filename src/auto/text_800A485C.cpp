@@ -1196,6 +1196,7 @@ extern "C" s32 fn_800A6298(void *arg0, u16 *arg1) {
     return 0;
 }
 
+#pragma dont_inline on
 extern "C" s32 fn_800A62A8(void *arg0) {
     s16 state = *(s16 *)((u8 *)arg0 + 0xC);
     s32 result;
@@ -1217,6 +1218,7 @@ extern "C" s32 fn_800A62A8(void *arg0) {
     *(s16 *)((u8 *)arg0 + 0xC) += 1;
     return 0;
 }
+#pragma dont_inline reset
 
 extern "C" s32 fn_800A6358(void *arg0) {
     s16 state = *(s16 *)((u8 *)arg0 + 0xE);
@@ -1798,16 +1800,14 @@ extern "C" s32 fn_800A7610(void *arg0) {
     s32 temp;
     if ((*(u32 *)arg0 & 4) != 0) {
         temp = fn_800A625C(*(void **)((u8 *)arg0 + 4), (s32)arg0);
-        if (temp != 0) goto done;
+        if (temp != 0)
+            return temp;
     }
     temp = fn_800A6808(*(void **)((u8 *)arg0 + 4));
-    if (temp != 0) temp = 0xD;
-done:
-    if (temp == 0) {
-        *(u32 *)arg0 &= ~4U;
-        return 0;
-    }
-    return temp;
+    if (temp != 0)
+        return 0xD;
+    *(u32 *)arg0 &= ~4U;
+    return 0;
 }
 
 extern "C" s32 fn_800A7688(void *arg0, void **arg1, void **arg2) {
@@ -9235,7 +9235,7 @@ extern "C" s32 fn_800B5070(s32 arg0, s32 *out) {
 }
 #pragma pop
 extern "C" s32 fn_800B51FC(void *arg0, s32 arg1) {
-    arg0 = (u8 *)arg0 + 7;
+    arg0 = (void *)((s32)arg0 + 7);
     u32 digits = 7;
     u32 divisor = 10;
     u32 place = 1;
@@ -9248,7 +9248,7 @@ extern "C" s32 fn_800B51FC(void *arg0, s32 arg1) {
         }
         divisor *= 10;
         digits--;
-        arg0 = (u8 *)arg0 - 1;
+        arg0 = (void *)((s32)arg0 - 1);
         place *= 10;
     }
     return 0;
