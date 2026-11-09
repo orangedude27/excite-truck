@@ -360,6 +360,20 @@ extern "C" float fn_8013B590(void) {
         return *(float *)((char *)result + 0xC);
     return lbl_80561430;
 }
+
+extern "C" float fn_80129DC4(int, float, float);
+extern float lbl_80561458;
+extern float lbl_8056145C;
+#pragma dont_inline fn_8013B578
+#pragma push
+#pragma processor 750
+float fn_8013B5DC(int arg0, int arg1) {
+ void *p = ((void *(*)(int))fn_8013B578)(arg0);
+ float t = ((float (*)(int))fn_8013B590)(arg0) / *(float *)((char *)p + 4);
+ return t + t * fn_80129DC4(arg1, lbl_80561458, lbl_8056145C);
+}
+#pragma pop
+
 #pragma cplusplus off
 float fn_8013B650(int arg0) {
     float temp = fn_80134B58((float *)lbl_8032C364, lbl_80561434);
