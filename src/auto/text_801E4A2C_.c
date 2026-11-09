@@ -23,13 +23,12 @@ void fn_801E4A2C(s32 *arg0) {
 
 #pragma scheduling invalid_target
 s32 fn_801E4A6C(s32 *arg0, const u8 *arg1) {
-    s32 index;
     s32 sum = 0;
+    s32 index;
     if (arg0) {
-        while (*arg1 != 0) {
+        for (; *arg1 != 0; arg1++) {
             index = *arg1;
             sum += *(s16 *)((u8 *)arg0 + (index << 1) + 0x204);
-            arg1++;
         }
         return sum;
     }
@@ -49,7 +48,7 @@ s32 fn_801E4AB0(s32 *arg0, const u8 *arg1, s32 count) {
     }
     return fn_802C4FF8((const char *)arg1);
 }
-#pragma scheduling off
+#pragma scheduling invalid_target
 s32 fn_801E4B00(s32 *arg0) {
     s32 scratch;
     s32 result;
@@ -60,8 +59,7 @@ s32 fn_801E4B00(s32 *arg0) {
     }
     return fn_802C501C();
 }
-
-#pragma scheduling off
+#pragma scheduling on
 s32 fn_801E4B48(s32 *arg0) {
     s32 spC;
     s32 sp8;
