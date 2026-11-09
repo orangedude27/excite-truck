@@ -125,10 +125,93 @@ void fn_802B561C(void (*fn)(void *), void *arg0) {
     fn(arg0);
 }
 
-void fn_802B57B8(void) {
-    const char *name = lbl_8034A588;
-    int r = fn_8012E96C(name);
-    fn_802B5510(name);
+extern "C" void fn_802B0B20(void *, void *);
+extern "C" void fn_802B224C(void *);
+extern "C" void *fn_802B1138(const char *);
+extern "C" int fn_802B2C98(char *);
+extern "C" void fn_801345D8(char *, int, const char *, ...);
+extern "C" int fn_802B110C(int (*)(int), int);
+extern "C" int fn_802B2C34(void *, void *);
+extern "C" int fn_802C6DC4(void *, int, int, int);
+extern "C" int fn_802B539C(int);
+extern "C" void *fn_802C6B44(void *);
+extern const char lbl_8055CE20[];
+__declspec(section ".sdata") extern const char lbl_8055CE20[];
+extern "C" void fn_802B562C(void *arg0, void *arg1, void *arg2) {
+    class Manager {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void *getName(const char *);
+        virtual void *getNamed(const char *, void *);
+        virtual void *f5();
+        virtual void *f6();
+        virtual void *f7();
+        virtual void *f8();
+        virtual void *f9();
+        virtual void *f10();
+        virtual void *f11();
+        virtual void *f12();
+        virtual void *f13();
+        virtual void *f14();
+        virtual void *f15();
+        virtual void *f16();
+        virtual void *f17();
+        virtual void *f18();
+        virtual void *f19();
+        virtual void *f20();
+        virtual void *getLarge(const char *);
+    };
+    char nameBuffer[0x20];
+    register const char *labels;
+    register char *entry;
+    register void *name;
+    register int i;
+    register Manager *manager;
+    register void *loopItem;
+    register int result;
+
+    manager = (Manager *)arg1;
+    labels = lbl_8034A510;
+    *(void **)arg0 = manager->getName(lbl_8055CE18);
+    loopItem = manager->getLarge(labels + 0x40);
+    fn_802B0B20(manager, loopItem);
+    fn_802B224C(manager);
+    *(void **)((char *)arg0 + 4) = fn_802B1138(*(const char **)arg0);
+    *(int *)((char *)arg0 + 8) = fn_802B2C98(*(char **)arg0);
+    name = manager->getNamed(labels + 0x54, (void *)lbl_8055CE20);
+
+    entry = (char *)arg0;
+    i = 0;
+    do {
+        fn_801345D8(nameBuffer, 0x20, labels + 0x60, i + 1);
+        loopItem = manager->getNamed(nameBuffer, name);
+        *(void **)(entry + 0xC) = loopItem;
+        result = fn_802B110C((int (*)(int))fn_802B539C, (int)loopItem);
+        *(int *)(entry + 0x10) = result;
+        i++;
+        entry += 8;
+    } while (i < 4);
+
+    i = (int)manager->getNamed(labels + 0x6C, 0);
+    if (i != 0) {
+        result = fn_802B2C34(fn_802C6B44, (void *)i);
+    } else {
+        result = 0;
+    }
+    if (result != 0) {
+        *(int *)((char *)arg0 + 0x2C) = fn_802C6DC4((void *)i, result, 0, 0);
+    } else {
+        *(int *)((char *)arg0 + 0x2C) = -1;
+    }
+}
+
+extern "C" void fn_802B57B8(void) {
+    int name;
+    name = (int)lbl_8034A588;
+    fn_8012E96C((const char *)name);
+    fn_802B5510((const char *)name);
     if (lbl_8055F9E8 == 0) {
         lbl_8055F9E8 = (void *)fn_8013184C();
     }
