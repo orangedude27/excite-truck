@@ -1995,6 +1995,40 @@ extern "C" s32 fn_800A7B34(void *arg0, void *arg1) {
     return 0;
 }
 
+/* ---------------------------------------------------------------------
+ * One page of a volume's sector cache.  A volume keeps two LRU lists of them,
+ * one for the FAT and one for the file data; VFiPFCACHEPage, described with
+ * the volume further down, is the same page.  A page covers the run of
+ * `sectors` sectors that starts at `first`: `buffer` is that run's first byte
+ * and `data` the byte of it the caller is working on, so a page taken for one
+ * sector of its run is moved along the run without another read.  Dropping a
+ * page clears its run (first = 0xFFFFFFFF).
+ * ------------------------------------------------------------------- */
+#define VF_PAGE_FLAGS(p)        (*(u16 *)((u8 *)(p)))          /* 0x00 VF_PAGE_* */
+#define VF_PAGE_BUFFER(p)       (*(u8 **)((u8 *)(p) + 0x04))   /* 0x04 first byte of the run */
+#define VF_PAGE_DATA(p)         (*(u8 **)((u8 *)(p) + 0x08))   /* 0x08 the byte the caller is on */
+#define VF_PAGE_CHANGED_FROM(p) (*(u32 *)((u8 *)(p) + 0x0C))   /* 0x0C first byte written to */
+#define VF_PAGE_CHANGED_TO(p)   (*(u32 *)((u8 *)(p) + 0x10))   /* 0x10 last byte written to */
+#define VF_PAGE_SECTORS(p)      (*(u32 *)((u8 *)(p) + 0x14))   /* 0x14 sectors in the run */
+#define VF_PAGE_FIRST(p)        (*(u32 *)((u8 *)(p) + 0x18))   /* 0x18 first sector of the run */
+#define VF_PAGE_NEXT(p)         (*(void **)((u8 *)(p) + 0x20)) /* 0x20 next page of the list */
+#define VF_PAGE_PREV(p)         (*(void **)((u8 *)(p) + 0x24)) /* 0x24 page used before it */
+#define VF_PAGE_IN_USE          1U /* the page holds a run of sectors */
+#define VF_PAGE_CHANGED         2U /* and was written to */
+#define VF_PAGE_FAT             4U /* and belongs to the FAT list */
+
+/* Volume fields the page cache reads (VFiPFVolume is described further down;
+ * VF_VOL_FAT_TYPE, VF_VOL_SECTOR_SHIFT, VF_FAT_TYPE_32 and VF_SECTOR_IS_END
+ * are named again below, with the same text). */
+#define VF_VOL_TOTAL_SECTORS(v) (*(u32 *)((u8 *)(v) + 0x08))  /* sectors on the volume */
+#define VF_VOL_FSINFO_SECTOR(v) (*(u16 *)((v) + 0x14))        /* FAT32's FSInfo sector */
+#define VF_VOL_FAT_TYPE(v)      (*(s32 *)((v) + 0x1C))        /* which FAT it was mounted with */
+#define VF_VOL_SECTOR_SHIFT(v)  (*(u8 *)((u8 *)(v) + 0x20))   /* log2 of the bytes in a sector */
+#define VF_VOL_DATA_START(v)    (*(u32 *)((u8 *)(v) + 0x30))  /* first sector of the cluster heap */
+#define VF_FAT_TYPE_32          2                             /* VF_VOL_FAT_TYPE: FAT32 */
+#define VF_SECTOR_IS_END(s)     ((u32)((s) + 0x10000) == 0xFFFFU) /* no sector at all */
+#define VF_ERR_NO_FREE_PAGE     0x1E /* the page cache has no page left to hand out */
+
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" s32 fn_800A7C20(void *arg0, void **arg1, u32 arg2, void **arg3, s32 *arg4) {
@@ -2370,6 +2404,19 @@ extern "C" s32 VFiPFCACHE_InitCaches(void *arg0) {
     return status & ((-status | status) >> 31);
 }
 
+extern "C" s32 fn_800A7C20(void *arg0, void **arg1, u32 arg2, void **arg3, s32 *arg4);
+#pragma scheduling off
+extern "C" s32 fn_800A8C90(void *arg0, s32 arg1, void **arg2, s32 *arg3) {
+    if (*(s32 *)((u8 *)arg0 + 0x1630) == 0) {
+        *(s32 *)(*(u8 **)((u8 *)arg0 + 0x162C) + 4) = *(s32 *)((u8 *)arg0 + 0x1638);
+        *(s32 *)(*(u8 **)((u8 *)arg0 + 0x162C) + 8) = *(s32 *)((u8 *)arg0 + 0x1638);
+        *arg2 = *(void **)((u8 *)arg0 + 0x162C);
+        return 0;
+    }
+    s32 r = fn_800A7C20(arg0, (void **)((u8 *)arg0 + 0x1630), (u32)arg1, arg2, arg3);
+    return r & (((-r) | r) >> 31);
+}
+#pragma scheduling on
 extern "C" s32 fn_800A7C20(void *, void **, u32, void **, s32 *);
 extern "C" s32 fn_800A8D08(s32 arg0, void **arg1, s32 *arg2, s32 arg3, s32 *arg4) {
     s32 result;
@@ -15005,7 +15052,7 @@ s32 fn_800C083C(s32 arg0, s32 arg1, s32 *arg2) {
         if (value & 0x8000) {
             return value & 0x7FFF;
         }
-        mask = *(u32 *)(lbl_8031C2B8 + ((value & 0xF) * 4));
+        mask = *(u32 *)(lbl_8031C2B8 + ((value * 4) & 0x3C));
         index = (u32)(value >> 8);
         shift -= value & 0xF;
     }
