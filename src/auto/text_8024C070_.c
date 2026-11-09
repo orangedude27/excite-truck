@@ -33,34 +33,46 @@ typedef struct {
     int args[20];
 } Fn8024C070Frame;
 
+typedef struct {
+    char pad0[0x10];
+    int idx;
+    int *buf;
+    int pad1;
+    int cnt;
+    int *out;
+} Fn8024C2C4Queue;
+
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_8024C070(void) {
     Fn8024C070Frame frame;
+    int value;
 
     /* Fix note: model the stack data as one frame and pass its argument table through config. */
     frame.flag = 0;
     fn_801333E8(5, &lbl_8055C010, &frame.flag);
-    frame.value = frame.flag != 0;
+    value = frame.flag != 0;
+    frame.value = value;
     frame.settings[0] = lbl_80563928;
-    frame.settings[1] = lbl_8056392C;
     frame.settings[2] = lbl_80563920;
     frame.settings[3] = lbl_80563924;
+    frame.settings[1] = lbl_8056392C;
 
     frame.object.enabled = 0;
     frame.object.sentinel = -1;
     frame.object.secondary = 0;
     frame.object.name = lbl_80343ECC;
     frame.object.selected = 0;
-    if (frame.value == lbl_80563920)
-        frame.object.selected = 0;
-    if (frame.value == frame.settings[3])
-        frame.object.selected = 1;
     frame.object.current = &frame.settings[2];
     frame.object.options = &frame.settings[0];
     frame.object.count = 2;
     frame.object.value = &frame.value;
+    if (value == lbl_80563920)
+        frame.object.selected = 0;
+    if (value == frame.settings[3])
+        frame.object.selected = 1;
 
+#pragma scheduling on
     frame.args[0] = (int)&lbl_8055C010;
     frame.args[1] = 0x10;
     frame.args[2] = 0;
@@ -88,7 +100,7 @@ void fn_8024C070(void) {
     frame.config[3] = lbl_802FA520[3];
     frame.config[4] = lbl_802FA520[4];
     ((int (*)(int *, int, int, int))fn_802146BC)(frame.config, -999, -999, 1);
-    frame.flag = frame.value == 1;
+    frame.flag = !(frame.value - 1);
     fn_80133460(5, &lbl_8055C010, frame.flag);
 }
 #pragma scheduling on
