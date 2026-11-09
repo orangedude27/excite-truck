@@ -114,6 +114,8 @@ extern "C" void fn_802E9BCC(void *arg0) {
 }
 #pragma cplusplus reset
 #pragma pop
+#pragma push
+#pragma scheduling invalid_target
 void *fn_802E9BEC(long arg0) {
     char *base = (char *)&lbl_8034E260;
     switch (arg0) {
@@ -184,6 +186,18 @@ void fn_802E9CF0(void) {
         fn_802E317C(strings + 0x170);
     lbl_80560061 = ((unsigned char *)(base + 0xB8))[9] >> 4 & 1;
 }
+
+#pragma dont_inline on
+void fn_802E9DDC(void) {
+    if (fn_800B7E5C((signed char)(((char *)&lbl_805076B8)[8]), 1) != 0) {
+        ((long (*)(char *, ...))fn_802E30C8)((char *)&lbl_8034E3E0);
+    }
+    if (fn_800B7B34((signed char)(((char *)&lbl_805076B8)[8])) != 0) {
+        fn_802E317C((const char *)&lbl_8034E3F0);
+    }
+}
+#pragma dont_inline reset
+
 #pragma pop
 extern char lbl_8034E3E0, lbl_8034E3F0, lbl_805076B8, lbl_80560061, lbl_8055D2A4;
 #pragma push
@@ -203,8 +217,7 @@ body:
     src++;
     next = *(volatile unsigned char *)src;
     count--;
-    *(volatile unsigned char *)dst = 0x3F;
-    dst++;
+    *dst++ = 0x3F;
     if ((signed char)next == 0) goto check;
     src++;
 check:
@@ -448,15 +461,16 @@ extern "C" long *fn_802EA834(long arg0, long *arg1) {
 #pragma scheduling on
 #pragma pop
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_802EAA08(void) {
-    int offset = lbl_805600A4;
-    int end = lbl_805600B8;
-    if (end >= offset) {
-        __builtin_memcpy((char *)&lbl_805600A0, (char *)&lbl_805600A0 + offset, end - offset);
-        lbl_805600B8 = end - offset;
+    if (lbl_805600B8 >= lbl_805600A4) {
+        memcpy((void *)lbl_805600A0, (void *)(lbl_805600A0 + lbl_805600A4), lbl_805600B8 - lbl_805600A4);
+        lbl_805600B8 -= lbl_805600A4;
     }
 }
-
+#pragma scheduling on
+#pragma pop
 int fn_802EAA58(int *arg0, int arg1) {
     int sizeOk;
     int channelOk;
