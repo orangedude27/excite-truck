@@ -430,6 +430,15 @@ extern void *l2cu_allocate_lcb(u8 *);
 extern BOOLEAN l2cu_create_conn(void *);
 extern u8 lbl_803C4040[];
 
+/* The L2CAP control block l2cb (l2c_int.h's tL2C_CB): lbl_803C4040 is its
+   address and byte 0 is its first field, l2cb.l2cap_trace_level. The stack's
+   L2CAP_TRACE_* macros compare it with bt_types.h's BT_TRACE_LEVEL_* values
+   (1 error, 2 warning, 3 API, 4 event) and hand the message to the LogMsg_N()
+   trace functions (fn_8007093C/_954/_96C/_984/_9CC take the number of
+   parameters to print, plus the trace code TRACE_CTRL_GENERAL |
+   TRACE_LAYER_L2CAP | TRACE_ORG_STACK | TRACE_TYPE_*). */
+#define l2cb_trace_level lbl_803C4040[0]
+
 /* The L2CAP link control block, as far as this unit reaches into it (the game
    runs an older stack than l2c_int.h, so only the fields it uses are named). */
 typedef struct {
