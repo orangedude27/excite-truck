@@ -114,8 +114,8 @@ void fn_801D1458(void *arg0, int arg1) {
 
 void fn_801D1468(void) {
     int count = lbl_8055E8F8;
-    fn_8012850C(count * 0x34 + 0x10, &lbl_8055ABD0);
-    lbl_8055E908 = (int)fn_8002F37C(fn_801D14BC, 0, 0x34, count);
+    int result = (int)fn_8012850C(count * 0x34 + 0x10, &lbl_8055ABD0);
+    lbl_8055E908 = ((int (*)(int, void *, int, int, int))fn_8002F37C)(result, fn_801D14BC, 0, 0x34, count);
 }
 
 void fn_801D14BC(void* arg0) {
