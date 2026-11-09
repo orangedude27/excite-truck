@@ -353,6 +353,28 @@ extern int fn_80004D64(void *);
 extern int fn_802E2A5C(void);
 extern void fn_80004E20(void);
 extern void fn_802E2B34(void);
+void fn_802E2B34(void) {
+    fn_80127D58((void *)fn_802E2A1C);
+    fn_802E29AC();
+    fn_802EC7AC();
+    fn_802CFBA8();
+    fn_802EC038();
+    fn_802E759C();
+    fn_802E56F0();
+    fn_80129864();
+    fn_801275AC();
+    fn_802E8D2C();
+    fn_80127EF8();
+    fn_802E46E4();
+    fn_802E7330();
+    fn_802E99A8();
+    fn_801282A0();
+    fn_802E2A58();
+    fn_802E3090();
+    fn_801293C4();
+    fn_802E34DC();
+    fn_802E77AC();
+}
 extern void OSPanic(const char *, int, const char *, ...);
 extern char lbl_8034CD8C[];
 extern char lbl_8055D174[];
