@@ -4,7 +4,7 @@
 
 extern f64 fn_8002F234(f32);
 extern void *fn_801284E8(void *, s32);
-extern unsigned int lbl_8032C108;
+__declspec(section ".data") extern unsigned int lbl_8032C108;
 extern f32 lbl_80562C78;
 extern f32 lbl_80562C7C;
 extern s32 fn_802C8DBC(s32);
@@ -291,16 +291,20 @@ void *fn_801E07E8(void *arg0, s32 arg1) {
 }
 #pragma scheduling on
 void fn_801E0864(void *arg0) {
-    float x;
-    float y;
-    y = lbl_80562C7C;
-    x = lbl_80562C78;
-    *(int *)arg0 = -1;
-    *((char *)arg0 + 4) = 0;
-    *(int *)((char *)arg0 + 0x10) = 0;
-    *(int *)((char *)arg0 + 0x14) = 0;
-    *(float *)((char *)arg0 + 8) = x;
-    *(float *)((char *)arg0 + 0xC) = y;
+    float b;
+    float a;
+    int z;
+    int m;
+    a = lbl_80562C78;
+    z = 0;
+    b = lbl_80562C7C;
+    m = -1;
+    *(int *)arg0 = m;
+    *((char *)arg0 + 4) = z;
+    *(int *)((char *)arg0 + 0x10) = z;
+    *(int *)((char *)arg0 + 0x14) = z;
+    *(float *)((char *)arg0 + 8) = a;
+    *(float *)((char *)arg0 + 0xC) = b;
 }
 
 #pragma push
