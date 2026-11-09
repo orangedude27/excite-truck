@@ -126,20 +126,10 @@ void fn_8024C28C(void *arg0) {
     *temp_r4 = temp_r5[temp_r0];
 }
 
-void fn_8024C2C4(void *arg0) {
-    int temp_r4;
-    int temp_r6;
-    int temp_r7;
-    int *temp_r5;
-    int *temp_r4p;
-    temp_r4 = *(int *)((char *)arg0 + 0x10);
-    temp_r6 = *(int *)((char *)arg0 + 0x1C);
-    temp_r7 = temp_r4 + 1;
-    temp_r5 = *(int **)((char *)arg0 + 0x14);
-    temp_r4p = *(int **)((char *)arg0 + 0x20);
-    temp_r7 = temp_r7 % temp_r6;
-    *(int *)((char *)arg0 + 0x10) = temp_r7;
-    *temp_r4p = temp_r5[temp_r7];
+void fn_8024C2C4(Fn8024C2C4Queue *q) {
+    int n = (q->idx + 1) % q->cnt;
+    q->idx = n;
+    *q->out = q->buf[n];
 }
 
 int fn_8024C2F8(void *arg0) {
