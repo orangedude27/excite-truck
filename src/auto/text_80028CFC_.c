@@ -52,7 +52,7 @@ byte_tail:
     return dst;
 }
 
-void strncpy(unsigned char *dst, const unsigned char *src, int n) {
+unsigned char *strncpy(unsigned char *dst, const unsigned char *src, int n) {
     const unsigned char *q = src - 1;
     unsigned char *p = dst - 1;
     int count = n + 1;
@@ -62,9 +62,10 @@ void strncpy(unsigned char *dst, const unsigned char *src, int n) {
         if (c == 0) {
             while (--count != 0)
                 *++p = 0;
-            return;
+            return dst;
         }
     }
+    return dst;
 }
 
 unsigned char *fn_80028E00(unsigned char *dst, const unsigned char *src) {
