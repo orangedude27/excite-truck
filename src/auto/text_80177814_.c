@@ -1179,6 +1179,16 @@ void* fn_80179650(void) {
     return lbl_8055E430;
 }
 
+s32 fn_80179658(long arg0) {
+    char *entry;
+    entry = fn_80178374(arg0);
+    if (entry != 0) {
+        return *(s32 *)(entry + 4);
+    }
+    fn_802E317C(lbl_80331B40, (long)fn_801781F4(arg0));
+    return -1;
+}
+
 extern char lbl_8055E45D;
 char fn_801796B4(void) {
     return lbl_8055E45D;
