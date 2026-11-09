@@ -2105,19 +2105,21 @@ outer_check:
 
 #pragma cplusplus reset
 void fn_8016FF98(void *arg0) {
-    s32 i = 0;
-    s32 found = 0;
+    s32 off;
+    s32 found;
     s32 count = *(s32 *)((u8 *)arg0 + 8);
-    void **items = *(void ***)((u8 *)arg0 + 4);
-    if (count > 0) {
-        for (; i < count; i++) {
-            if (*((u8 *)items[i] + 8) != 0) {
-                found = 1;
-                break;
-            }
+    s32 i;
+    found = 0;
+    off = 0;
+    for (i = 0; i < count; i++, off += 4) {
+        void **items = *(void ***)((u8 *)arg0 + 4);
+        void *elem = *(void **)((u8 *)items + off);
+        if (*(u8 *)((u8 *)elem + 8) != 0) {
+            found = 1;
+            break;
         }
     }
-    if (!found) {
+    if (found == 0) {
         fn_8016A438();
     }
 }
