@@ -3000,6 +3000,28 @@ int fn_801D8CA4(void *arg0) {
 }
 
 #pragma cplusplus on
+extern "C" s32 fn_801D8CAC(void *arg0) {
+    struct Obj {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12();
+        s32 f4;
+        u8 pad[8];
+        f32 f10;
+    };
+    Obj *o = (Obj *)arg0;
+    if (o->f4 == 1) {
+        o->f4 = 2;
+        o->f10 = lbl_8055E3C8;
+        o->v12();
+        return 1;
+    }
+    return 0;
+}
+#pragma cplusplus reset
+
+#pragma cplusplus on
 extern "C" void fn_801D8DA0(void *arg0) {
     struct Dummy {
         virtual void v0();
