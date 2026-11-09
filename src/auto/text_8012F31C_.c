@@ -19,15 +19,26 @@ void *fn_8012F31C(s32 arg0) {
     return result;
 }
 
+#pragma scheduling invalid_target
+void fn_8012F384(void *arg0) {
+    if (arg0 != 0) {
+        fn_80128670(*(s32 *)arg0);
+        ((s32 *)arg0)[1] = 0;
+        ((void (*)(void *))fn_80128668)(arg0);
+    }
+}
+#pragma scheduling on
 void fn_8012F3CC(s32 arg0) {
     s32 *p = (s32 *)fn_801284F8(8, &lbl_8032AFC4);
     if (p != 0) { p[0] = arg0; p[1] = 0; }
 }
 
 void fn_8012F418(s32 *arg0) {
+    s32 z = 0;
+    s32 c = 0x2bad2bad;
     if (arg0 == 0) return;
-    arg0[1] = 0x2bad2bad;
-    arg0[0] = 0;
+    arg0[1] = c;
+    arg0[0] = z;
     fn_80128668();
 }
 
