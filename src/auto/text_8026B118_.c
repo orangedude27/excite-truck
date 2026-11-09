@@ -166,16 +166,16 @@ extern "C" void fn_8026B260(void) {
 #pragma paired off
 #pragma paired_single off
 void fn_8026B3D4(int arg0) {
+    struct Ent { unsigned char on; unsigned char pad[3]; float t; float v; int idx; };
     float t = lbl_8055E3C8;
     unsigned char *p = (unsigned char *)fn_8017960C();
     if (fn_80178CA4() == 1 && *(int *)(p + 0x1F0) == 0x50) {
-        int off = arg0 << 4;
-        unsigned char *e = lbl_8049A0E8 + off;
-        if (e[0] != 0) {
-            if ((*(int *)(p + 0x2620) >= 2 && t - *(float *)(e + 4) > lbl_80563D68) ||
-                t - *(float *)(lbl_8049A0E8 + off + 4) > lbl_80563D6C) {
+        struct Ent *e = (struct Ent *)lbl_8049A0E8 + arg0;
+        if (e->on != 0) {
+            if ((*(int *)(p + 0x2620) >= 2 && t - e->t > lbl_80563D68) ||
+                t - ((struct Ent *)lbl_8049A0E8)[arg0].t > lbl_80563D6C) {
                 unsigned char *o;
-                e[0] = 0;
+                e->on = 0;
                 o = (unsigned char *)lbl_8055F4D0;
                 if (o != 0) {
                     o[0x4A] = 1;
@@ -193,18 +193,20 @@ void fn_8026B3D4(int arg0) {
                 }
                 fn_802C2C68(0, 1);
                 fn_80176A00(2);
-                *(float *)(lbl_8049A0E8 + off + 8) = lbl_80563D70;
+                ((struct Ent *)lbl_8049A0E8)[arg0].v = lbl_80563D70;
             }
         } else {
             float sp10[2];
             float sp8[2];
-            float x = *(float *)(p + 0x60);
-            float z = *(float *)(p + 0x68);
+            double xd = *(float *)(p + 0x60);
+            double zd = *(float *)(p + 0x68);
+            float x = xd;
+            float z = zd;
             float *tab = (float *)lbl_8049A028;
             int found = 0;
             int j = 0;
-            sp10[0] = x;
-            sp10[1] = z;
+            sp10[0] = *(float *)(p + 0x60);
+            sp10[1] = *(float *)(p + 0x68);
             while (j < lbl_8055F4C8 && found == 0) {
                 float dz = z - tab[1];
                 float r = tab[2];
@@ -212,17 +214,17 @@ void fn_8026B3D4(int arg0) {
                 sp8[0] = dx;
                 sp8[1] = dz;
                 if (dx * dx + dz * dz < r * r) {
-                    *(int *)(e + 0xC) = j;
+                    e->idx = j;
                     found = 1;
-                    *(float *)(e + 4) = t;
+                    e->t = t;
                 }
                 tab += 3;
                 j++;
             }
-            if (t - *(float *)(lbl_8049A0E8 + off + 4) < lbl_80563D68 && *(int *)(p + 0x2620) == 0) {
+            if (t - ((struct Ent *)lbl_8049A0E8)[arg0].t < lbl_80563D68 && *(int *)(p + 0x2620) == 0) {
                 if (*(float *)(p + 0x64) - fn_801E9FDC(p + 0x6C, *(float *)(p + 0x60), *(float *)(p + 0x68)) > lbl_80563D68) {
                     unsigned char *o;
-                    e[0] = 1;
+                    e->on = 1;
                     o = (unsigned char *)lbl_8055F4CC;
                     if (o != 0) {
                         o[0x49] = 1;
@@ -235,7 +237,7 @@ void fn_8026B3D4(int arg0) {
                 fn_80206454();
                 fn_80176A00(1);
                 fn_8020C900(0);
-                *(float *)(lbl_8049A0E8 + off + 8) = lbl_80563D74;
+                ((struct Ent *)lbl_8049A0E8)[arg0].v = lbl_80563D74;
             }
         }
     }
@@ -284,9 +286,10 @@ void fn_8026B6E4(void) {
 }
 
 int fn_8026B734(int arg0, float *arg1) {
-    register int index = arg0 << 4;
-    if (lbl_8049A0E8[index] != 0) {
-        *arg1 = *(float *)(lbl_8049A0E8 + index + 8);
+    int index = arg0 << 4;
+    volatile unsigned char *base = lbl_8049A0E8;
+    if (base[index] != 0) {
+        *arg1 = *(float *)(base + index + 8);
         return 1;
     }
     return 0;
