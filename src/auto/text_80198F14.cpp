@@ -457,7 +457,9 @@ extern "C" void fn_801996BC(Vec* arg0, s32 arg1, Vec* arg2, void* arg3, void* ar
 #pragma dont_inline on
 extern "C" void fn_80199870(void* arg0) {
     u32 value = *(u32*)((u8*)arg0 + 0x10);
-    if (value == 0x50434152 || value == 0x41434152) {
+    u32 v2 = value;
+    if ((u32)(v2 - 0x50430000) == 0x4152 ||
+        (u32)(value - 0x41430000) == 0x4152) {
         fn_801A5C4C(arg0);
     }
 }
@@ -4550,16 +4552,16 @@ extern "C" void fn_801A47B0(s32* arg0, s32 arg1) {
 #pragma push
 #pragma unroll off
 extern "C" void fn_801A47C8(void* arg0) {
-    u32 off;
-    u32 i;
+    s32 off;
+    s32 i;
     i = 0;
     off = 0;
-    while ((s32)i < *(s32*)arg0) {
+    while (i < *(s32*)arg0) {
         void** entries = *(void***)((u8*)arg0 + 4);
         i += 1;
         void* p = *(void**)((u8*)entries + off);
-        off += 4;
         *(u8*)((u8*)p + 0x40) = 1;
+        off += 4;
     }
 }
 #pragma pop
