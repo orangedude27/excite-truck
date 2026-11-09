@@ -119,36 +119,33 @@ __declspec(section ".sdata") extern char lbl_8055ADB0[];
 extern char lbl_80339240[];
 extern char lbl_8033924C[];
 void *fn_801DA8C8(const char *arg0, const char *arg1) {
+    char *stack[512];
     void *space;
     const char *name;
     const char *text;
-    char *stack[512];
     char *entry;
     char *result;
     int count;
-    int offset;
     int i;
     int matchAll;
 
     space = lbl_8055E984;
     name = arg0;
     text = arg1;
-    offset = 0;
     count = 0;
     result = 0;
     matchAll = strcmp(name, lbl_8055ADB0) == 0;
     entry = (char *)space + 8;
-    i = 0;
-    while (i < *(int *)((char *)space + 0x5808)) {
-        if (matchAll || strcmp(entry, name) == 0) {
-            if (fn_801D9FC4((char **)*(void **)((char *)entry + 0x28), text) != 0) {
-                *(char **)((char *)stack + offset) = entry;
-                count += 1;
-                offset += 4;
-            }
+    for (i = 0; i < *(int *)((char *)space + 0x5808); i++) {
+        if (matchAll == 0) {
+            if (strcmp(entry, name) != 0) goto next;
         }
+        if (fn_801D9FC4((char **)*(void **)((char *)entry + 0x28), text) != 0) {
+            stack[count] = entry;
+            count++;
+        }
+    next:
         entry += 0x2C;
-        i += 1;
     }
     if (count > 0) {
         char *dst;
@@ -225,7 +222,8 @@ check:
 }
 
 #pragma scheduling invalid_target
-float fn_801DAC5C(void *arg0) {
+float fn_801DAC5C(void *arg0)
+{
     int count = *(int *)((char *)arg0 + 8);
     int index;
     float max = lbl_80562B54;
@@ -234,9 +232,7 @@ float fn_801DAC5C(void *arg0) {
         void *entry = items[index];
         void *data = *(void **)((char *)entry + 0x28);
         float value = *(float *)((char *)data + 0xC);
-        if (max <= value) {
-            max = value;
-        }
+        max = (max > value) ? max : value;
     }
     return max;
 }
