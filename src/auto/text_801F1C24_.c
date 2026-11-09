@@ -1630,9 +1630,10 @@ check:
 }
 
 #pragma scheduling invalid_target
-void fn_801F44DC(int arg1, int arg2, int arg3) {
+__declspec(section ".sdata") extern unsigned char lbl_8055B140[];
+void fn_801F44DC(void *unused, int arg1, int arg2, int arg3) {
     int v = arg2 + 0x2C;
-    void *p = fn_801284F8(0xC, (void *)lbl_8055B140);
+    void *p = fn_801284F8(0xC, lbl_8055B140);
     if (p != 0) {
         *(void **)p = (void *)lbl_8033AA48;
         *(int *)((char *)p + 4) = v;
