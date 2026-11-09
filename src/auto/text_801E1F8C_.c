@@ -67,17 +67,25 @@ void fn_801E1F8C(void *arg0, void *arg1) {
     }
 }
 #pragma scheduling invalid_target
-void fn_801E2084(void *arg0, void *arg1) {
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_801E2084(void *arg0, void *arg1) {
+    class Obj {
+      public:
+        virtual void v0();
+        virtual void v1();
+        virtual void call(void *);
+    };
     int i = 0;
     void **entry = (void **)arg1;
     while (i < *(int *)((char *)arg1 + 0x24)) {
-        void *obj = *(void **)((char *)entry + 0x14);
-        void (*func)(void *, void *) = (*(void ***)obj)[4];
-        func(obj, arg0);
+        Obj *obj = *(Obj **)((char *)entry + 0x14);
+        obj->call(arg0);
         entry++;
         i++;
     }
 }
+#pragma pop
 void fn_801E2100(void *arg0, void *arg1) {
     int result;
     int (*first)(int);
