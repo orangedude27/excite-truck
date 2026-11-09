@@ -661,7 +661,23 @@ int fn_801D56C0(void *alarm) {
     }
 }
 
-extern void fn_801D4F2C(void *);
+#pragma push
+#pragma use_lmw_stmw off
+#pragma dont_inline on
+void fn_801D4F2C(void *arg0) {
+    int offset;
+    int i;
+    void *obj;
+    offset = 0;
+    i = 0;
+    while (i < *(int *)((char *)arg0 + 0x34)) {
+        obj = *(void **)((char *)*(void **)((char *)arg0 + 0x30) + offset);
+        ((void (**)(void *))*(void **)obj)[4](obj);
+        offset += 4;
+        i += 1;
+    }
+}
+#pragma pop
 #pragma push
 #pragma use_lmw_stmw off
 #pragma cplusplus on
@@ -3061,11 +3077,10 @@ void fn_801D8C18(void) {
 extern float lbl_80562AE4;
 extern void fn_801E1F78(void);
 void fn_801D8C1C(void *arg0, float farg0) {
-    float tmp;
+    float tmp = farg0 / *(float *)((char *)arg0 + 0x14);
     float v;
     int t;
-    tmp = farg0 / *(float *)((char *)arg0 + 0x14);
-    if (tmp < lbl_80562ADC) {
+    if (farg0 / *(float *)((char *)arg0 + 0x14) < lbl_80562ADC) {
         v = tmp - lbl_80562AE4;
     } else {
         v = lbl_80562AE4 + tmp;
