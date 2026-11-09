@@ -194,8 +194,8 @@ f32 fn_801931AC(f32 a, f32 b, f32 c, f32 d) {
 float fn_801931EC(float a, float b) {
     float quotient;
     quotient = a / b;
-    b = lbl_8055E558;
     a = lbl_80562140;
+    b = lbl_8055E558;
     quotient = a - quotient;
     a = a < quotient ? quotient : a;
     if (a > b) return a;
@@ -1877,9 +1877,9 @@ void fn_80196328(void *arg0) {
 
       extern int fn_801B2F24(void);
     extern void fn_801B2F40(int);
-    extern int fn_8019643C();
-
-    void fn_8019639C(void) {
+          extern int fn_8019643C();
+      void fn_80194844();
+      void fn_8019639C(void) {
       fn_80194844();
   }
 
