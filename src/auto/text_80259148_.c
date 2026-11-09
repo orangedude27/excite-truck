@@ -1221,9 +1221,9 @@ goal_copy:
         if ((signed char)goalC != 0) goto goal_next;
 goal_done:;
     }
-    nameSrc = fn_8001EFAC(*(int *)(o + 0x18), *(int *)(o + 0xC8));
+    nameSrc = fn_8001EFAC(row->achievement, row->rank);
     if (nameSrc != 0 && showName != 0) {
-        nameDst = (unsigned char *)(o + 0x60);
+        nameDst = (unsigned char *)(row->rankName);
         nameLeft = 0x32;
         goto name_copy;
 name_next:
@@ -1237,7 +1237,7 @@ name_copy:
         if ((signed char)nameC == 0) goto name_done;
         goto name_next;
     } else {
-        blankDst = (unsigned char *)(o + 0x60);
+        blankDst = (unsigned char *)(row->rankName);
         blankSrc = lbl_8055C380;
         blankLeft = 0x32;
         goto blank_copy;
@@ -1261,8 +1261,8 @@ name_done:
     }
     fn_80214A9C(0x10);
     fn_80214A9C(0xD);
-    shownSrc = (unsigned char *)(o + 0x60);
-    shownDst = (unsigned char *)(o + 0x92);
+    shownSrc = (unsigned char *)(row->rankName);
+    shownDst = (unsigned char *)(row->shownRankName);
     shownLeft = 0x32;
     goto shown_copy;
 shown_next:
