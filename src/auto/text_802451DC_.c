@@ -540,12 +540,13 @@ extern "C" void fn_802462A0(register void *arg0, register void *arg1) {
 #pragma small_data on
 #pragma cplusplus reset
 
+#pragma small_data off
 void *fn_80246428(void *arg0, int arg1) {
     int temp_r0;
 
     if (arg0 != 0) {
         temp_r0 = *(int *)((char *)arg0 + 0x1C);
-        *(void **)arg0 = lbl_803430E8;
+        *(void **)arg0 = &lbl_803430E8;
         if (temp_r0 != 0) {
             fn_80235380(temp_r0);
         }
