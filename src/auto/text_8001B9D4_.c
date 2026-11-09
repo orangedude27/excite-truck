@@ -48,7 +48,7 @@ extern char lbl_80358628[];
 extern s32 fn_8001CDB8(s32, s32, s32, s32, s32);
 extern s32 fn_8001CE34(s32, s32, s32, s32);
 extern s32 fn_8001CE74(s32, s32, s32, s32);
-extern const char lbl_80558C90[];
+extern s32 lbl_80558C90;
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -390,21 +390,24 @@ return_one:
 #pragma dont_inline reset
 s32 fn_8001C200(const char *arg0, const char *arg1) {
     s32 result = 0;
-    if (stricmp(arg0, arg1) == 0 || stricmp(arg0, lbl_80558C90) == 0 || stricmp(arg1, lbl_80558C90) == 0) {
+    if (stricmp(arg0, arg1) == 0 || stricmp(arg0, &lbl_80558C90) == 0 || stricmp(arg1, &lbl_80558C90) == 0) {
+        result = 1;
+    }
+    return result;
+}
+#pragma dont_inline on
+#pragma scheduling invalid_target
+#pragma scheduling on
+s32 fn_8001C27C(void *arg0, u32 arg1, const char *arg2) {
+    u32 key = *(u32 *)arg0;
+    s32 result = 0;
+    if (key == arg1 && fn_8001C200(*(const char **)((u8 *)arg0 + 4), arg2) != 0) {
         result = 1;
     }
     return result;
 }
 #pragma scheduling reset
-s32 fn_8001C27C(void *arg0, u32 arg1, const char *arg2) {
-    volatile u32 key = *(volatile u32 *)arg0;
-    s32 result = 0;
-    if (key == arg1 && fn_8001C200(*(const char **)((u8 *)arg0 + 4), arg2) != 0)
-        result = 1;
-    return result;
-}
-#pragma dont_inline on
-#pragma use_lmw_stmw off
+#pragma dont_inline reset
 s32 fn_8001C2CC(s32 arg0, u32 arg1, const char *arg2, s32 arg3) {
     s32 offset = 0;
     s32 i = 0;
