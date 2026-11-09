@@ -834,25 +834,35 @@ void OSGetFontTexel(char *arg0, unsigned char *arg1, int arg2, int arg3, int *ar
         *arg4 = *(unsigned char *)(spC + *(unsigned short *)(spC + 0x22) + sp8);
 }
 extern void DCStoreRange(void *, unsigned int);
-int ExpandFontSheet(void *arg0, void *src0, void *dst0) {
+int ExpandFontSheet(void *font0, void *src0, void *dst0) {
+    const OSFontHeader *font = (const OSFontHeader *)font0;
     int i;
-    unsigned char *src = (unsigned char *)src0;
-    unsigned char *dst = (unsigned char *)dst0;
-    const unsigned char *tmp = (unsigned char *)arg0 + 0x2C;
-    if (*(unsigned short *)((char *)arg0 + 0x18) == 0) {
-        for (i = *(int *)((char *)arg0 + 0x28) / 2 - 1; i >= 0; i--) {
-            dst[i * 2 + 0] = tmp[src[i] >> 6 & 3] & 0xF0 | tmp[src[i] >> 4 & 3] & 0x0F;
-            dst[i * 2 + 1] = tmp[src[i] >> 2 & 3] & 0xF0 | tmp[src[i] >> 0 & 3] & 0x0F;
+    u8 *src = (u8 *)src0;
+    u8 *dst = (u8 *)dst0;
+    // The four bytes after the header map a packed 2-bit code to its texel value.
+    const u8 *palette = &font->c0;
+
+    // Unpack the glyph sheet that ReadFont() left at the old sheetImageOfs into
+    // the 32-byte-aligned area just past it. Walking backwards keeps the write
+    // pointer (which is ahead of the read pointer) from clobbering source bytes.
+    if (font->sheetFormat == GX_TF_I4) {
+        // 4-bit texels: two codes per source byte become one output byte.
+        for (i = (s32)font->sheetFullSize / 2 - 1; i >= 0; i--) {
+            dst[i * 2 + 0] = palette[src[i] >> 6 & 3] & 0xF0 | palette[src[i] >> 4 & 3] & 0x0F;
+            dst[i * 2 + 1] = palette[src[i] >> 2 & 3] & 0xF0 | palette[src[i] >> 0 & 3] & 0x0F;
         }
-    } else if (*(unsigned short *)((char *)arg0 + 0x18) == 2) {
-        for (i = *(int *)((char *)arg0 + 0x28) / 4 - 1; i >= 0; i--) {
-            dst[i * 4 + 0] = tmp[src[i] >> 6 & 3];
-            dst[i * 4 + 1] = tmp[src[i] >> 4 & 3];
-            dst[i * 4 + 2] = tmp[src[i] >> 2 & 3];
-            dst[i * 4 + 3] = tmp[src[i] >> 0 & 3];
+    } else if (font->sheetFormat == GX_TF_IA4) {
+        // 4-bit intensity + 4-bit alpha: one output byte per source byte.
+        for (i = (s32)font->sheetFullSize / 4 - 1; i >= 0; i--) {
+            dst[i * 4 + 0] = palette[src[i] >> 6 & 3];
+            dst[i * 4 + 1] = palette[src[i] >> 4 & 3];
+            dst[i * 4 + 2] = palette[src[i] >> 2 & 3];
+            dst[i * 4 + 3] = palette[src[i] >> 0 & 3];
         }
     }
-    DCStoreRange(dst, *(int *)((char *)arg0 + 0x28));
+
+    // Tell the CPU the expanded sheet is written; the font is read by the GX texture cache.
+    DCStoreRange(dst, font->sheetFullSize);
 }
 
 extern int ExpandFontSheet(void *, void *, void *);
