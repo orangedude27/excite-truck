@@ -609,7 +609,6 @@ void fn_802E8528(int index, float value, float unused) {
         result = magnitude;
     *(unsigned short *)(lbl_80505978 + index * 0x638 + 0xB0) = result;
 }
-#pragma pop
 void fn_802E85A8(void) {}
 
 void fn_802E85AC(void) {}
