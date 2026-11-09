@@ -2983,12 +2983,12 @@ extern "C" void* fn_8015CBBC(void* arg0, s32 arg1) {
 
 extern "C" u32 fn_8015CC28(void) { return 1; }
 
+#pragma scheduling invalid_target
 extern "C" s32 fn_8015CC30(void* arg0) {
     f32 x = *(f32*)((char*)arg0 + 0x250);
     f32 r = (x < lbl_80561754) ? x - lbl_80561760 : lbl_80561760 + x;
     return (s32)r;
 }
-
 extern "C" void fn_8015CC6C(void* arg0, f32 farg0) {
     *(f32*)((char*)arg0 + 0x250) = farg0;
 }
@@ -4169,10 +4169,10 @@ extern "C" void fn_80159624(void *arg0, void *arg1) {
         obj[0x4C] = 0;
     }
 }
-#pragma pop
+#pragma scheduling on
 extern "C" s32 fn_80159708(void* arg0) {
-    f32 f = *(f32*)((char*)arg0 + 0x25c);
-    f64 d = f;
+    f32 f = *(f32*)((u8*)arg0 + 0x25c);
+    f64 d = (f64)f;
     return (s32)d;
 }
 #pragma scheduling on
