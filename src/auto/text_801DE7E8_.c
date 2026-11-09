@@ -434,7 +434,6 @@ extern "C" int fn_801DF110(void) {
 
 int fn_801DF238(int arg0) {
     extern int fn_801769F8(void);
-    extern void fn_801DEB10(void);
     extern void fn_800121A4(void);
     extern void fn_801331C4(int, int *, float *);
     extern int lbl_804874A8[];
