@@ -53,7 +53,8 @@ void fn_801F131C(void *, long, void *, float);
 void fn_801EFC90(long, long, void *);
 extern float lbl_80488668[3];
 extern unsigned int lbl_8055EBC8;
-long fn_801ECB60(void);
+long fn_801ECB60();
+extern float lbl_80558DC4;
 void fn_801EC1D4(void) {
     ((unsigned int *)lbl_80488668)[0] = 0x555766;
     ((unsigned int *)lbl_80488668)[1] = 0xFFF5D9;
