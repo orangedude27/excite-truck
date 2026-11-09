@@ -254,44 +254,181 @@ extern "C" void* __dt__Q36PSGame10SoundTable11CategoryMgrFv(void* arg0, s32 arg1
     return arg0;
 }
 
-s32 fn_80198F64(Vec *arg0, void *arg1, Vec *arg2, f32 farg0, f32 *arg3, Vec *arg4, Vec *arg5) {
-    f32 *m = *(f32 **)((u8 *)arg1 + 0xC);
+extern "C" f64 __fabs(f64);
+extern "C" int fn_80198F64(void *arg0, int arg1, void *arg2, float *arg3, void *arg4, float *arg5, float farg0) {
+    f32 *pt = (f32 *)arg0;
+    u8 *obj = (u8 *)arg1;
+    f32 *outPos = (f32 *)arg2;
+    f32 *outDepth = arg3;
+    f32 *outDir = (f32 *)arg4;
+    f32 *inVec = (f32 *)arg5;
+    f32 radius = farg0;
+    f32 *m = *(f32 **)(obj + 0xC);
     f32 sp5C[3];
-    f32 x = arg0->x - m[9];
-    f32 y = arg0->y - m[10];
-    f32 z = arg0->z - m[11];
-    f32 nx = x * m[0] + y * m[1] + z * m[2];
-    f32 ny = x * m[3] + y * m[4] + z * m[5];
-    f32 nz = x * m[6] + y * m[7] + z * m[8];
-    f32 sp50[3], sp44[3];
-
+    f32 sp50[3];
+    f32 sp48[3];
+    f32 sp44[3];
+    f32 sp38[3];
+    f32 sp2C[3];
+    s32 sp20[3];
+    f32 sp14[3];
+    f32 sp8[3];
+    f32 sp68[8][4];
+    f32 x = pt[0] - m[9];
+    f32 y = pt[1] - m[10];
+    f32 z = pt[2] - m[11];
+    f32 nx = z * m[2] + (x * m[0] + y * m[1]);
+    f32 ny = z * m[5] + (x * m[3] + y * m[4]);
+    f32 nz = z * m[8] + (x * m[6] + y * m[7]);
     sp5C[0] = x; sp5C[1] = y; sp5C[2] = z;
     sp5C[0] = nx; sp5C[1] = ny; sp5C[2] = nz;
+    sp44[0] = *(f32 *)(obj + 0x30);
+    sp50[0] = *(f32 *)(obj + 0x24);
+    sp50[1] = *(f32 *)(obj + 0x28);
+    sp50[2] = *(f32 *)(obj + 0x2C);
+    sp48[0] = *(f32 *)(obj + 0x34);
+    sp48[1] = *(f32 *)(obj + 0x38);
+    if (nx > sp44[0] + radius) return 0;
+    if (ny > sp48[0] + radius) return 0;
+    if (nz > sp48[1] + radius) return 0;
+    if (nx < sp50[0] - radius) return 0;
+    if (ny < sp50[1] - radius) return 0;
+    if (nz < sp50[2] - radius) return 0;
 
-    sp44[0] = ((f32 *)arg1)[0x30/4]; sp50[0] = ((f32 *)arg1)[0x24/4];
-    sp50[1] = ((f32 *)arg1)[0x28/4]; sp50[2] = ((f32 *)arg1)[0x2C/4];
-    sp44[1] = ((f32 *)arg1)[0x34/4]; sp44[2] = ((f32 *)arg1)[0x38/4];
-
-    if (nx > sp44[0] + farg0) return 0;
-    if (ny > sp44[1] + farg0) return 0;
-    if (nz > sp44[2] + farg0) return 0;
-    if (nx < sp50[0] - farg0) return 0;
-    if (ny < sp50[1] - farg0) return 0;
-    if (nz < sp50[2] - farg0) return 0;
+    if ((f32 *)sp38 == inVec) {
+        sp38[0] = inVec[2] * m[2] + (inVec[0] * m[0] + inVec[1] * m[1]);
+        sp38[1] = inVec[2] * m[5] + (inVec[0] * m[3] + inVec[1] * m[4]);
+        sp38[2] = inVec[2] * m[8] + (inVec[0] * m[6] + inVec[1] * m[7]);
+    } else {
+        sp38[0] = inVec[2] * m[2] + (inVec[0] * m[0] + inVec[1] * m[1]);
+        sp38[1] = inVec[2] * m[5] + (inVec[0] * m[3] + inVec[1] * m[4]);
+        sp38[2] = inVec[2] * m[8] + (inVec[0] * m[6] + inVec[1] * m[7]);
+    }
 
     {
-        f32 sp38[3];
-        f32 ax = arg5->x, ay = arg5->y, az = arg5->z;
-        if ((Vec*)sp38 == arg5) {
-            sp38[0] = (ax * m[0] + ay * m[1]) + az * m[2];
-            sp38[1] = (ax * m[3] + ay * m[4]) + az * m[5];
-            sp38[2] = (ax * m[6] + ay * m[7]) + az * m[8];
-        } else {
-            sp38[0] = (ay * m[1] + ax * m[0]) + az * m[2];
-            sp38[1] = (ay * m[4] + ax * m[3]) + az * m[5];
-            sp38[2] = (ay * m[7] + ax * m[6]) + az * m[8];
+        f32 var_f31 = lbl_805622D0;
+        u8 *var_r24 = obj + 0x3C;
+        s32 var_r31 = 0;
+        s32 var_r25 = 0;
+        s32 var_r23 = 0;
+        while (var_r23 < *(s32 *)(obj + 0xBC)) {
+            f32 temp_f28 = (f32)__fabs((f64)PSVECDotProduct((Vec *)sp38, (Vec *)var_r24));
+            f32 temp_f2 = (PSVECDotProduct((Vec *)sp5C, (Vec *)var_r24) - *(f32 *)(var_r24 + 0xC)) + temp_f28;
+            if (temp_f2 >= lbl_805622D4) {
+                f32 *dst = (f32 *)((u8 *)sp68 + var_r25);
+                dst[0] = *(f32 *)(var_r24 + 0);
+                var_r31 += 1;
+                dst[1] = *(f32 *)(var_r24 + 4);
+                var_r25 += 0x10;
+                var_f31 += temp_f2 * temp_f2;
+                dst[2] = *(f32 *)(var_r24 + 8);
+                dst[3] = temp_f2;
+            }
+            var_r24 += 0x10;
+            var_r23 += 1;
         }
-        (void)sp38;
+        {
+            u8 *var_r24_2 = obj + 0xC0;
+            s32 var_r25_2 = var_r31 * 0x10;
+            s32 var_r23_2 = 0;
+            while (var_r23_2 < *(s32 *)(obj + 0xDC)) {
+                f32 t;
+                f32 mag;
+                sp2C[0] = sp5C[0] - *(f32 *)(var_r24_2 + 0);
+                sp2C[1] = sp5C[1] - *(f32 *)(var_r24_2 + 4);
+                sp2C[2] = sp5C[2] - *(f32 *)(var_r24_2 + 8);
+                t = -PSVECDotProduct((Vec *)sp2C, (Vec *)(var_r24_2 + 0xC));
+                sp2C[0] += *(f32 *)(var_r24_2 + 0xC) * t;
+                sp2C[1] += *(f32 *)(var_r24_2 + 0x10) * t;
+                sp2C[2] += *(f32 *)(var_r24_2 + 0x14) * t;
+                mag = PSVECMag((Vec *)sp2C);
+                {
+                    f32 sep = *(f32 *)(var_r24_2 + 0x18) - mag;
+                    if (mag > lbl_805622D8 && sep > lbl_805622D4) {
+                        f32 inv = lbl_805622DC / mag;
+                        f32 *dst = (f32 *)((u8 *)sp68 + var_r25_2);
+                        var_r31 += 1;
+                        dst[0] = sp2C[0] * inv;
+                        var_r25_2 += 0x10;
+                        dst[1] = sp2C[1] * inv;
+                        var_f31 += sep * sep;
+                        dst[2] = sp2C[2] * inv;
+                        dst[3] = sep;
+                    }
+                }
+                var_r24_2 += 0x1C;
+                var_r23_2 += 1;
+            }
+        }
+        if (var_r31 == 0) return 0;
+        {
+            f32 invsum = lbl_805622E0 / var_f31;
+            f32 *p = (f32 *)sp68;
+            s32 i = var_r31;
+            u32 r;
+            sp20[0] = *(s32 *)&sp5C[0]; sp20[1] = *(s32 *)&sp5C[1]; sp20[2] = *(s32 *)&sp5C[2];
+            if (i > 0) {
+                r = (u32)i >> 1;
+                if (r != 0) {
+                    do {
+                        f32 w0 = p[3];
+                        f32 w1 = p[7];
+                        f32 s0 = -w0 * (invsum * (w0 * w0));
+                        f32 s1 = -w1 * (invsum * (w1 * w1));
+                        *(f32 *)&sp20[0] = *(f32 *)&sp20[0] + p[0] * s0;
+                        *(f32 *)&sp20[1] = *(f32 *)&sp20[1] + p[1] * s0;
+                        *(f32 *)&sp20[2] = *(f32 *)&sp20[2] + p[2] * s0;
+                        *(f32 *)&sp20[0] = *(f32 *)&sp20[0] + p[4] * s1;
+                        *(f32 *)&sp20[1] = *(f32 *)&sp20[1] + p[5] * s1;
+                        *(f32 *)&sp20[2] = *(f32 *)&sp20[2] + p[6] * s1;
+                        p += 8;
+                        r--;
+                    } while (r != 0);
+                    i = var_r31 & 1;
+                    if (i == 0) goto done_acc;
+                }
+                do {
+                    f32 w = p[3];
+                    f32 s = -w * (invsum * (w * w));
+                    *(f32 *)&sp20[0] += p[0] * s;
+                    *(f32 *)&sp20[1] += p[1] * s;
+                    *(f32 *)&sp20[2] += p[2] * s;
+                    p += 4;
+                    i--;
+                } while (i != 0);
+            }
+        done_acc:
+            if ((f32 *)sp14 == (f32 *)sp20) {
+                sp14[0] = *(f32 *)&sp20[2] * m[6] + (*(f32 *)&sp20[0] * m[0] + *(f32 *)&sp20[1] * m[3]);
+                sp14[1] = *(f32 *)&sp20[2] * m[7] + (*(f32 *)&sp20[0] * m[1] + *(f32 *)&sp20[1] * m[4]);
+                sp14[2] = *(f32 *)&sp20[2] * m[8] + (*(f32 *)&sp20[0] * m[2] + *(f32 *)&sp20[1] * m[5]);
+            } else {
+                sp14[0] = *(f32 *)&sp20[2] * m[6] + (*(f32 *)&sp20[0] * m[0] + *(f32 *)&sp20[1] * m[3]);
+                sp14[1] = *(f32 *)&sp20[2] * m[7] + (*(f32 *)&sp20[0] * m[1] + *(f32 *)&sp20[1] * m[4]);
+                sp14[2] = *(f32 *)&sp20[2] * m[8] + (*(f32 *)&sp20[0] * m[2] + *(f32 *)&sp20[1] * m[5]);
+            }
+            sp14[0] += m[9];
+            sp14[1] += m[10];
+            sp14[2] += m[11];
+            sp8[0] = sp14[0] - pt[0];
+            sp8[1] = sp14[1] - pt[1];
+            sp8[2] = sp14[2] - pt[2];
+            {
+                f32 mag = PSVECMag((Vec *)sp8);
+                f32 depth = radius - mag;
+                *outDepth = depth;
+                if (depth > lbl_805622D0) {
+                    f32 inv = lbl_805622DC / mag;
+                    outPos[0] = sp14[0];
+                    outPos[1] = sp14[1];
+                    outPos[2] = sp14[2];
+                    outDir[0] = sp8[0] * inv;
+                    outDir[1] = sp8[1] * inv;
+                    outDir[2] = sp8[2] * inv;
+                    return 1;
+                }
+            }
+        }
     }
     return 0;
 }
@@ -997,6 +1134,12 @@ extern "C" s32 fn_8019B08C(void* arg0, const Vec* arg1, void* arg2, f32 farg0) {
     fn_8019A788(arg0, arg2, &point, &copy, 0, 0, f31, lbl_805622D0, lbl_805622D0);
     return 1;
 }
+
+extern "C" s32 fn_8019B4D8(void *arg0, void *arg1, void *arg2, s32 arg3, f32 farg0) {
+    (void)arg0; (void)arg1; (void)arg2; (void)arg3; (void)farg0;
+    return 0;
+}
+
 extern "C" s32 fn_8019BD4C(void *arg0) {
     return ((s32 *)arg0)[0xC / 4];
 }
@@ -2084,9 +2227,7 @@ extern "C" void fn_8019F248(void *arg0) {
     extern s32 lbl_8055E598;
     extern void fn_801E3FC8(void*, s32, f32);
     f32 var_f1 = *(f32*)((u8*)arg0 + 0x24);
-    if (var_f1 < lbl_80562300) {
-        var_f1 = lbl_80562300;
-    }
+    var_f1 = (var_f1 > lbl_80562300) ? var_f1 : lbl_80562300;
     fn_801E3FC8((u8*)arg0 + 0x34, lbl_8055E598, var_f1);
 }
 
@@ -2258,6 +2399,159 @@ extern "C" void fn_8019F6F0(void *arg0) {
     *(f32 *)((u8 *)arg0 + 0xBC) = value;
     *(f32 *)((u8 *)arg0 + 0xC0) = value;
 }
+
+extern "C" f64 fn_801E9DDC(void*, f32, f32);
+extern "C" void fn_801B3B24(void*, Vec*, Vec*);
+extern "C" void fn_8017B3A8(s32, Vec*, s32);
+extern "C" f64 fn_8002EFB4(f32, f64);
+extern "C" f64 sin(f64);
+extern f32 lbl_80562380, lbl_80562384, lbl_80562388, lbl_8055E3C8, lbl_8056238C, lbl_80562398, lbl_8056239C, lbl_805623A0, lbl_805623A4, lbl_805623A8, lbl_805623AC, lbl_805623B0, lbl_805623B4, lbl_8056234C;
+extern f64 lbl_80562390;
+#pragma push
+#pragma processor 750
+extern "C" void fn_8019F780(void *arg0) {
+    u8 *self = (u8 *)arg0;
+    u8 *body = *(u8 **)(self + 4);
+    Vec q, hit, nrm, c[8], w, g, delta, sp84, sp60, sp54, v48, v3c, v30;
+    s32 sp8;
+    q.x = *(f32 *)(self + 0x34);
+    q.y = *(f32 *)(self + 0x38);
+    q.z = *(f32 *)(self + 0x3c);
+    if (fn_801E9F08(body + 0x6c, &q, &hit, (s32)&nrm, (s32)&sp8, lbl_80562380 + *(f32 *)(self + 0x24)) != 0) {
+        if (sp8 == 7) {
+            if (self[0x4c] == 0) {
+                fn_8017B6D4((s32)body, &sp84, (s32)&hit);
+                fn_801B3B24(arg0, &hit, &sp84);
+                self[0x4c] = 1;
+            }
+            *(f32 *)(self + 0x50) = hit.y;
+        } else {
+            f32 *pc = (f32 *)c;
+            f32 *ps = (f32 *)c;
+            f32 *p64 = (f32 *)(self + 0x64);
+            f32 *pz = (f32 *)self;
+            s32 i;
+            f32 hx = *(f32 *)(self + 0x58), hy = *(f32 *)(self + 0x5c), hz = *(f32 *)(self + 0x60);
+            f32 k27 = lbl_8056231C, k28 = lbl_80562320, k29 = lbl_805622D0, k30 = lbl_80562384, k31 = lbl_80562388, k24 = lbl_805622D4;
+            self[0x4c] = 0;
+            c[0].x = -hx; c[0].y = -hy; c[0].z = -hz;
+            c[1].x = hx;  c[1].y = -hy; c[1].z = -hz;
+            c[2].x = -hx; c[2].y = hy;  c[2].z = -hz;
+            c[3].x = hx;  c[3].y = hy;  c[3].z = -hz;
+            c[4].x = -hx; c[4].y = -hy; c[4].z = hz;
+            c[5].x = hx;  c[5].y = -hy; c[5].z = hz;
+            c[6].x = -hx; c[6].y = hy;  c[6].z = hz;
+            c[7].x = hx;  c[7].y = hy;  c[7].z = hz;
+            for (i = 0; i < 8; i++) {
+                f32 *m = *(f32 **)(self + 0xc);
+                f32 dist;
+                fn801A1F98Transform((volatile f32 *)&w, (volatile f32 *)pc, (volatile f32 *)ps, m);
+                w.x += m[9];
+                w.y += m[10];
+                w.z += m[11];
+                g.x = w.x;
+                g.z = w.z;
+                g.y = (f32)fn_801E9DDC(body + 0x6c, w.x, w.z);
+                delta.x = g.x - w.x;
+                delta.y = g.y - w.y;
+                delta.z = g.z - w.z;
+                dist = PSVECDotProduct(&delta, &nrm);
+                if (dist > k29) {
+                    f32 d2, fac, push, lim, mag;
+                    fn_8017B6D4((s32)body, &sp60, (s32)&w);
+                    d2 = PSVECDotProduct(&sp60, &nrm);
+                    fac = -d2;
+                    sp54.x = sp60.x + nrm.x * fac;
+                    sp54.y = sp60.y + nrm.y * fac;
+                    sp54.z = sp60.z + nrm.z * fac;
+                    p64[0] += sp54.x * k27;
+                    p64[1] += sp54.y * k27;
+                    p64[2] += sp54.z * k27;
+                    mag = PSVECMag((Vec *)p64);
+                    if (mag > k28) {
+                        f32 s = k28 / mag;
+                        p64[0] *= s;
+                        p64[1] *= s;
+                        p64[2] *= s;
+                    }
+                    push = dist * *(f32 *)(self + 0x10) * (d2 < k29 ? lbl_805622E0 : lbl_80562300);
+                    v48.x = nrm.x * push;
+                    v48.y = nrm.y * push;
+                    v48.z = nrm.z * push;
+                    v3c.x = sp54.x * (k30 * *(f32 *)(body + 0xd4));
+                    v3c.y = sp54.y * (k30 * *(f32 *)(body + 0xd4));
+                    v3c.z = sp54.z * (k30 * *(f32 *)(body + 0xd4));
+                    lim = k31 * *(f32 *)(body + 0xd4);
+                    v3c.x += p64[0] * lim;
+                    v3c.y += p64[1] * lim;
+                    v3c.z += p64[2] * lim;
+                    mag = PSVECMag(&v3c);
+                    lim = push * *(f32 *)(self + 0x54);
+                    if (mag > lim) {
+                        f32 s = lim / mag;
+                        v3c.x *= s;
+                        v3c.y *= s;
+                        v3c.z *= s;
+                    }
+                    v48.x += v3c.x;
+                    v48.y += v3c.y;
+                    v48.z += v3c.z;
+                    ((void (*)(void *, Vec *, Vec *, s32, s32))(*(void ***)arg0)[7])(arg0, &v48, &w, sp8, 0);
+                    mag = fn_8019DF88(body + 0x60, (f32 *)&sp60, body + 0x148, (f32 *)&w, (f32 *)&nrm, *(f32 *)(body + 0xd4), lbl_805622D0);
+                    if (mag > k29) {
+                        v30.x = nrm.x * mag;
+                        v30.y = nrm.y * mag;
+                        v30.z = nrm.z * mag;
+                        if (k24 > dist) dist = k24;
+                        ((void (*)(void *, s32, Vec *, Vec *, s32, s32, s32, f32))(*(void ***)arg0)[8])(arg0, 0, &v30, &w, sp8, 0, 0, dist);
+                    }
+                } else {
+                    pz[0x19] = k29;
+                    pz[0x1a] = k29;
+                    pz[0x1b] = k29;
+                }
+                pc += 3;
+                ps += 3;
+                p64 += 3;
+                pz += 3;
+            }
+        }
+    } else {
+        f32 *p = (f32 *)(self + 0x64);
+        s32 i;
+        for (i = 0; i < 24; i++) p[i] = lbl_805622D0;
+    }
+    if (self[0x4c] != 0) {
+        f32 y, k3, k26, k24, f2, s, t;
+        Vec a, b;
+        y = (*(f32 *)(self + 0x50) - *(f32 *)(self + 0x38)) + *(f32 *)(self + 0x24);
+        fn_8017B6D4((s32)body, &a, (s32)(self + 0x34));
+        t = lbl_8056238C * lbl_8055E3C8;
+        s = (f32)sin((f64)(f32)fn_8002EFB4(*(f32 *)(self + 0x34) + t * lbl_805622E8, lbl_80562390));
+        y += lbl_80562398 * (lbl_805622E0 + s);
+        if (y > lbl_805622D0) {
+            f32 r = *(f32 *)(self + 0x24);
+            f32 r2 = r * r;
+            k24 = lbl_8056239C * r2;
+            k26 = lbl_805623A0 * (lbl_805623A4 * r * r2);
+            k3 = -k24 * (lbl_805623A8 + lbl_805623AC * PSVECMag(&a));
+            b.x = a.x * k3;
+            b.y = a.y * k3;
+            b.z = a.z * k3;
+            fn_8017B3A8((s32)body, &b, (s32)(self + 0x34));
+            f2 = lbl_8056234C * *(f32 *)(self + 0x24);
+            k3 = lbl_805623B0 + lbl_8056232C * y;
+            if (!(y < f2)) y = f2;
+            b.x = lbl_805622D0;
+            b.z = lbl_805622D0;
+            b.y = lbl_805623B4 * (k3 * (k26 * y));
+            fn_8017B3A8((s32)body, &b, (s32)(self + 0x34));
+            return;
+        }
+        self[0x4c] = 0;
+    }
+}
+#pragma pop
 
 extern "C" void fn_8019FF88(void* arg0) {
     ((void (*)(void))fn_8019EBC0)();
@@ -4259,16 +4553,20 @@ extern "C" void fn_801A47B0(s32* arg0, s32 arg1) {
     }
 }
 
-#pragma opt_tail_call on
+#pragma push
+#pragma unroll off
 extern "C" void fn_801A47C8(void* arg0) {
-    s32 limit = *(s32*)arg0;
-    volatile s32** ptrs = *(volatile s32***)((u8*)arg0 + 4);
-    for (s32 i = 0; i < limit; i++) {
-        ((u8*)ptrs[i])[0x40] = 1;
+    s32 off = 0;
+    s32 i = 0;
+    while (i < *(s32*)arg0) {
+        void** entries = *(void***)((u8*)arg0 + 4);
+        i += 1;
+        void* p = *(void**)((u8*)entries + off);
+        off += 4;
+        *(u8*)((u8*)p + 0x40) = 1;
     }
 }
-
-#pragma opt_tail_call on
+#pragma pop
 extern "C" void fn_801A47FC(void* arg0) {
     register s32* r29 = (s32*)arg0;
     register s32 r30 = 0;
