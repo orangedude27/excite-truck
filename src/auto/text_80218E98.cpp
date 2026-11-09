@@ -6602,6 +6602,51 @@ extern "C" void fn_80225918(void *arg0) {
 }
 
 extern "C" f32 lbl_80563548;
+
+/* The row table the scrolling list walks (built elsewhere; fn_8022553C reads its
+ * counts and fn_802263CC asks it before accepting a message). */
+typedef struct ScrollRowTable {
+    u8   header[8];
+    s32  rowCount;        /* 0x08: rows in the list */
+    s32  topRowCount;     /* 0x0C: rows stacked before the list wraps */
+    u8   pad_10[4];
+    s32 (*callback)(void);/* 0x14: optional gate for message 0xD */
+    u8   enabled;         /* 0x18: gates the up/down messages */
+} ScrollRowTable;
+
+/* One row of the scrolling list: where it draws, and the two ends of the
+ * scroll it is settling. */
+typedef struct ScrollRow {
+    f32 y;      /* 0x00: the row's current y */
+    f32 fromY;  /* 0x04: the y the current scroll started from */
+    f32 toY;    /* 0x08: the y the scroll leaves the row at */
+} ScrollRow;
+
+/* The scrolling list of text rows fn_8022553C builds (a results/credits
+ * roller): rows sit rowHeight apart inside the band [yMin, yMax] and wrap by
+ * loopHeight.  A scroll message moves every row's target one rowHeight and
+ * starts a SCROLL_TWEEN_TIME second settle; only the fields used by the
+ * functions here are named. */
+typedef struct ScrollList {
+    u8             header[0x244];
+    ScrollRowTable *rowTable;   /* 0x244 */
+    void           *fontRes;    /* 0x248: text resource, see fn_80232578 */
+    s32            drawRows;    /* 0x24C: rows drawn, 1..3 */
+    f32            scrollStart; /* 0x250: fn_8023659C() time the scroll began */
+    f32            x;           /* 0x254 */
+    f32            yCenter;     /* 0x258 */
+    f32            rowHeight;   /* 0x25C: one row step */
+    f32            loopHeight;  /* 0x260: rowHeight * rowCount, one full wrap */
+    f32            yMax;        /* 0x264: top of the band rows wrap inside */
+    f32            yMin;        /* 0x268: bottom of that band */
+    f32            fade;        /* 0x26C */
+    f32            time;        /* 0x270 */
+    s32            scrollDir;   /* 0x274: 0 settled, 1 rows moving down, 2 up */
+    ScrollRow     *rows;        /* 0x278: rowCount of them */
+} ScrollList;
+
+#define SCROLL_TWEEN_TIME lbl_80563548 /* 0.2f: how long a one-row scroll takes */
+
 #pragma push
 #pragma unroll off
 #pragma opt_loop_invariants off
