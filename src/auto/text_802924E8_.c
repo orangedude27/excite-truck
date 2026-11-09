@@ -149,8 +149,8 @@ extern "C" void fn_80292698(void) {
     register unsigned char *p;
     register float one;
     register float threshold;
-    register float angle;
-    register float zero;
+    float angle;
+    float zero;
 
     angle = fn_801E7E18();
     one = lbl_805644D4;
@@ -454,18 +454,20 @@ void fn_80292EB4(void *arg0) { *(s32 *)((u8 *)arg0 + 0x180) = 0; }
 
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
+#pragma scheduling off
 int fn_80292EC0(void *arg0, const char *arg1, s32 *arg2, s32 arg3) {
-    u8 *entry = (u8 *)arg0;
-    s32 i = 0;
-    do {
-        if (fn_8002B1D8(arg1, (char *)entry, 0xF) == 0) {
+    char *p;
+    int i;
+    p = (char *)arg0;
+    i = 0;
+    while (i < *(int *)((char *)arg0 + 0x180)) {
+        if (fn_8002B1D8(arg1, p, 15) == 0) {
             *arg2 = i;
             return 1;
         }
-        entry += 0x18;
-        i += 1;
-    } while (i < *(s32 *)((u8 *)arg0 + 0x180));
+        p += 0x18;
+        i++;
+    }
     return 0;
 }
 #pragma pop
@@ -745,6 +747,205 @@ check_loop:
     if (checkValue != 0) goto body;
     return out;
 }
+
+#pragma push
+#pragma scheduling invalid_target
+void fn_802936C4(void *arg0) {
+    struct Rec {
+        unsigned int copy[9];
+        float x, y, z;
+        float vx, vy, vz;
+        float age;
+        unsigned char b40;
+        short idx;
+        unsigned char p[2];
+        int mode;
+        /* 0x48 */ unsigned char flag;
+        /* 0x49 */ unsigned char type;
+        /* 0x4a */ unsigned char b4a;
+    };
+    struct Tpl {
+        unsigned int pad[4];
+        unsigned int copy[9];
+    };
+    extern void fn_801E9DD4(void *, void *, float, float);
+    extern void fn_801E9DD8(void);
+    extern int fn_80292BA8(float *, float *, float *, float *);
+    extern float lbl_805644D4;
+    extern float lbl_805644D8;
+    extern float lbl_805644F8;
+    extern float lbl_805644FC;
+    extern float lbl_80564500;
+    extern float lbl_80564504;
+    extern float lbl_80564508;
+    extern void *lbl_8055C958;
+    extern void *lbl_8055C964;
+    extern unsigned char lbl_804B4030[];
+    float dt;
+    float scale;
+    float tmp_vx;
+    float tmp_vy;
+    float tmp_vz;
+    float tmp_nx;
+    float tmp_ny;
+    float tmp_nz;
+    float tmp_vx2;
+    float tmp_vy2;
+    float tmp_vz2;
+    float outer;
+    float two;
+    float zeroF;
+    float oneF;
+    float gravF;
+    float smallF;
+    float dt2;
+    struct Rec *cur;
+    struct Rec *out;
+    struct Tpl *src;
+    int iter;
+    int kept;
+    int mode;
+    unsigned char type;
+    float ageDt;
+    float tmp[13];
+    short entry;
+    int zeroI;
+    int r0;
+    dt = fn_801E7E24(arg0);
+    scale = lbl_805644F8 * dt;
+    fn_801E9DD4(lbl_8055C958, lbl_8055C964, scale, lbl_805644F8);
+    scale = lbl_805644D4 - scale;
+    zeroF = lbl_805644D8;
+    oneF = lbl_805644D4;
+    gravF = lbl_80564500;
+    smallF = lbl_80564508;
+    dt2 = lbl_805644F8;
+    two = lbl_80564504;
+    outer = lbl_805644FC;
+    cur = (struct Rec *)((unsigned char *)arg0 + 0x2C);
+    out = cur;
+    iter = 0;
+    kept = 0;
+    goto check_loop;
+body:
+    {
+        float age;
+        age = cur->age;
+        if (age < zeroF) goto next;
+        if (age >= outer) goto next;
+do_work:
+        ageDt = age + dt;
+        tmp_vx = cur->vx * scale;
+        tmp_vy = cur->vy * scale;
+        tmp_vz = cur->vz * scale;
+        tmp_vy = tmp_vy - (gravF * dt) * *(float *)((unsigned char *)arg0 + 4);
+        tmp_nx = cur->x + tmp_vx * dt;
+        tmp_ny = cur->y + tmp_vy * dt;
+        tmp_nz = cur->z + tmp_vz * dt;
+        mode = cur->mode;
+        type = cur->type;
+        tmp[0] = tmp_vx;
+        tmp[1] = tmp_vy;
+        tmp[2] = tmp_vz;
+        tmp[3] = tmp_nx;
+        tmp[4] = tmp_ny;
+        tmp[5] = tmp_nz;
+        tmp_vx2 = cur->vx * scale;
+        tmp[6] = tmp_vx2;
+        tmp_vy2 = cur->vy * scale;
+        tmp_vy2 = tmp_vy2 - (gravF * dt) * *(float *)((unsigned char *)arg0 + 4);
+        tmp[7] = tmp_vy2;
+        tmp_vz2 = cur->vz * scale;
+        tmp[8] = tmp_vz2;
+        entry = cur->idx;
+        if (mode == 2) {
+            tmp[9] = tmp[0] * dt;
+            tmp[10] = tmp[6] * dt;
+            tmp[11] = tmp[8] * dt;
+            tmp[3] = tmp[3] + tmp[9];
+            tmp[4] = tmp[4] + tmp[10];
+            tmp[5] = tmp[5] + tmp[11];
+            tmp[10] = zeroF;
+            tmp[11] = zeroF;
+            zeroI = 0;
+            if (fn_801E9E78(&entry, tmp + 3, tmp + 9, &zeroI, gravF * dt) != 0) {
+                if (fn_80292BA8(tmp + 3, tmp + 6, tmp, tmp + 9) != 0) {
+                    type = (unsigned char)((int (*)(int))fn_80287B5C)(6);
+                    if (tmp[7] < dt2) {
+                        ageDt = zeroF;
+                        mode = 1;
+                    }
+                }
+            } else {
+                mode = 3;
+            }
+            goto write_out;
+        }
+        if (mode == 3) {
+            tmp[3] = tmp[3] + tmp[0] * dt;
+            tmp[4] = tmp[4] + tmp[6] * dt;
+            tmp[5] = tmp[5] + tmp[8] * dt;
+            goto write_out;
+        }
+        if (ageDt < two) {
+            if (ageDt > zeroF) tmp[4] = tmp[4] - smallF * dt;
+            tmp[6] = zeroF;
+            tmp[7] = zeroF;
+            tmp[8] = zeroF;
+        }
+write_out:
+        out->x = tmp[3];
+        out->y = tmp[4];
+        out->z = tmp[5];
+        r0 = 0;
+        if (mode == 2) r0 = 1;
+        if (mode == 3) r0 = 1;
+        if (r0 != 0)
+            src = (struct Tpl *)(lbl_804B4030 + type * 0x34);
+        else
+            src = (struct Tpl *)cur;
+        kept++;
+        {
+            unsigned int a, b;
+            a = src->copy[0];
+            b = src->copy[1];
+            out->copy[0] = a;
+            out->copy[1] = b;
+            a = src->copy[2];
+            out->copy[2] = a;
+            a = src->copy[3];
+            b = src->copy[4];
+            out->copy[3] = a;
+            out->copy[4] = b;
+            a = src->copy[5];
+            out->copy[5] = a;
+            a = src->copy[6];
+            b = src->copy[7];
+            out->copy[6] = a;
+            out->copy[7] = b;
+            a = src->copy[8];
+            out->copy[8] = a;
+        }
+        out->vx = tmp[6];
+        out->vy = tmp[7];
+        out->vz = tmp[8];
+        out->age = ageDt;
+        out->idx = entry;
+        out->mode = mode;
+        out->flag = cur->flag;
+        out->type = type;
+        out->b4a = cur->b4a;
+        out++;
+    }
+next:
+    iter++;
+    cur++;
+check_loop:
+    if (iter < *(int *)((unsigned char *)arg0 + 0x2FAC)) goto body;
+    *(int *)((unsigned char *)arg0 + 0x2FAC) = kept;
+    fn_801E9DD8();
+}
+#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
