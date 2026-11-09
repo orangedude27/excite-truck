@@ -805,9 +805,7 @@ extern "C" s32 fn_8012B6FC(void *arg0, s32 arg1) {
     return (flags >> 3) & 1;
 }
 
-#pragma push
 #pragma scheduling invalid_target
-#pragma optimization_level 3
 extern "C" s32 fn_8012B85C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     s32 sp8;
     volatile u8 requestName[5];
@@ -820,15 +818,13 @@ extern "C" s32 fn_8012B85C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32
         if (fn_8012B6FC(manager, sp8) != 0) {
             u8 *entry = *(u8 **)(manager + 0x60) + sp8 * 0x44;
             if ((u32)arg1 == *(u32 *)(entry + 0x20)) {
-                u32 oldFlags;
-                u32 bit;
+                s32 flags;
                 s32 count;
                 *(u32 *)(entry + 0x34) |= 2;
                 if ((s8 *)arg5 != 0) {
-                    oldFlags = *(u32 *)(entry + 0x34);
-                    *(u32 *)(entry + 0x34) = oldFlags | 1;
-                    bit = oldFlags & 1;
-                    *(s8 *)arg5 = !bit;
+                    flags = *(s32 *)(entry + 0x34);
+                    *(s32 *)(entry + 0x34) = flags | 1;
+                    *(s8 *)arg5 = !(flags & 1);
                 }
                 if ((s32 *)arg3 != 0) *(s32 *)arg3 = *(s32 *)(entry + 0x28);
                 if ((s8 *)arg4 != 0) *(s8 *)arg4 = *(s32 *)(entry + 0x38) == 0;
@@ -842,7 +838,6 @@ extern "C" s32 fn_8012B85C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32
                 result = *(u8 **)(entry + 0x3C) + 8;
                 ((void (*)(void *, const char *))fn_8012A46C)(result, strings + 0x408);
             } else {
-                const char *fmt = strings + 0x414;
                 u8 *request = (u8 *)requestName;
                 u32 first;
                 u8 fourth;
@@ -868,7 +863,7 @@ extern "C" s32 fn_8012B85C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32
                 entryName[1] = third;
                 entryName[2] = second;
                 entryName[4] = 0;
-                fn_802E30C8(fmt, arg0, (const char *)request, (const char *)entryName);
+                fn_802E30C8(strings + 0x414, arg0, (const char *)request, (const char *)entryName);
             }
         } else {
             fn_802E30C8(strings + 0x450, arg0);
@@ -876,7 +871,7 @@ extern "C" s32 fn_8012B85C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32
     }
     return (s32)result;
 }
-#pragma pop
+#pragma scheduling on
 
 #pragma dont_inline reset
 #pragma scheduling reset
@@ -1205,9 +1200,9 @@ read_rest:
     } while (i < 3);
 }
 #pragma cplusplus on
-extern "C" s32 fn_8012C33C(void) {
+extern "C" s32 fn_8012C33C(char *arg0) {
     s32 sp8;
-    return ((s32 (*)(s32, s32 *, s32))fn_8012B534)(0, &sp8, 0) != 0;
+    return fn_8012B534(arg0, &sp8, 0) != 0;
 }
 
 #pragma use_lmw_stmw off
