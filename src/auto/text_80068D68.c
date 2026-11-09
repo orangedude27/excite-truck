@@ -11,6 +11,7 @@ extern void WUDiMoveTopStdDevInfoPtr(unsigned char *);
 #include "revolution/BTE/stack/btm/btm_int.h"
 #define btsnd_hcic_reject_conn btsnd_hcic_reject_conn_public
 #define btsnd_hcic_reject_esco_conn btsnd_hcic_reject_esco_conn_public
+#define btsnd_hcic_read_stored_key btsnd_hcic_read_stored_key_public
 #define btsnd_hcic_accept_conn btsnd_hcic_accept_conn_public
 #define btsnd_hcic_write_cur_iac_lap btsnd_hcic_write_cur_iac_lap_hcimsgs
 #define btsnd_hcic_exit_sniff_mode btsnd_hcic_exit_sniff_mode_api
@@ -13871,15 +13872,18 @@ BOOLEAN btsnd_hcic_inquiry(const LAP inq_lap, UINT8 duration, UINT8 response_cnt
 u8 btsnd_hcic_inq_cancel(void) {
     u8 *p;
     u16 zero = 0;
+    u8 two = 2;
+    u8 four = 4;
     p = (u8 *)GKI_getpoolbuf(2);
-    if (p == NULL) return FALSE;
+    if (p == NULL)
+        return 0;
     *(u16 *)(p + 2) = 3;
     *(u16 *)(p + 4) = zero;
-    p[8] = 2;
-    p[9] = 4;
+    p[8] = two;
+    p[9] = four;
     p[10] = zero;
-    btu_hcif_send_cmd(p, 2);
-    return TRUE;
+    btu_hcif_send_cmd(p, two);
+    return 1;
 }
 
 BOOLEAN btsnd_hcic_per_inq_mode(UINT16 max_period, UINT16 min_period, const LAP inq_lap, UINT8 duration, UINT8 response_cnt) {
