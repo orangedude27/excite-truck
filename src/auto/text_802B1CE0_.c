@@ -871,11 +871,16 @@ extern int lbl_8055F9B4;
 extern int lbl_8055F9B0;
 int fn_802B3340(int);
 void fn_802B32E0(int *arg0) {
+    int *object = arg0;
     int i = 0;
-    do {
-        fn_802B3340(*fn_802B320C(arg0, i));
-        i++;
-    } while (i < fn_802B2E00(arg0));
+    goto check;
+loop:
+    fn_802B3340(*fn_802B320C(object, i));
+    i++;
+check:
+    if (i < fn_802B2E00(object)) {
+        goto loop;
+    }
 }
 
 void *fn_802B3DA4(void *arg0, int arg1, int arg2) {
