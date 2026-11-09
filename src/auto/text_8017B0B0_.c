@@ -32,14 +32,15 @@ void *fn_8017B0B0(void *arg0) {
     return arg0;
 }
 
+#pragma scheduling invalid_target
 void fn_8017B0F8(void *arg0, float *arg1) {
     fn_80179D94();
-    *(volatile int *)((char *)arg0 + 0xD0) = 0;
+    *(int *)((char *)arg0 + 0xD0) = 0;
     fn_8017B2D0(arg0, arg1[2], arg1[3], arg1[4], arg1[5]);
     *(int *)((char *)arg0 + 0x184) = 0;
     fn_8017B198(arg0);
 }
-
+#pragma scheduling on
 void fn_8017B164(void *arg0) {
     fn_80179E00(arg0);
     fn_8017B198(arg0);
