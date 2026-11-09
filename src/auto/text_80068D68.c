@@ -6864,11 +6864,12 @@ void bta_hh_add_device_to_list(void *arg0, s8 arg1, s16 arg2, void *arg3, s32 ar
 }
 
 BOOLEAN bta_hh_tod_spt(void *p_cb, UINT8 sub_class) {
+    UINT8 *p_cfg = lbl_80559030;
     UINT8 cod = (sub_class >> 2) & 0x3F;
     UINT8 xx;
-    UINT8 max_devt = lbl_80559030[0];
+    UINT8 max_devt = p_cfg[0];
     for (xx = 0; xx < max_devt; xx++) {
-        UINT8 *p_list = *(UINT8 **)(lbl_80559030 + 4);
+        UINT8 *p_list = *(UINT8 **)(p_cfg + 4);
         if (cod == p_list[xx * 2]) {
             ((UINT8 *)p_cb)[0x15] = p_list[xx * 2 + 1];
             return TRUE;
@@ -21907,7 +21908,7 @@ void rfc_send_credit(void *p_mcb, UINT8 credits, UINT8 arg2, u32 arg3) {
     data[10] = 0xFF;
     data[11] = 1;
     data[12] = arg2;
-    *p_check = fn_8009504C(2, (UINT8 *)p_buf + p_buf->offset + 8, 9);
+    *p_check = fn_8009504C(2, (UINT8 *)p_buf + p_buf->offset + 8);
     p_buf->len = 5;
     rfc_check_send_cmd(p_mcb, p_buf);
 }
