@@ -2526,6 +2526,13 @@ void GXSetCopyClamp(s32 value) {
     gx[0x24C / 4] = data.reg;
 }
 
+/* Display-copy Y scale (BP register 0x4D) is a 9-bit 8.8 fixed-point value:
+ * GX_YSCALE_ONE is 1:1, only GX_YSCALE_MASK+1 values exist, and a copy never
+ * produces more than GX_XFB_MAX_LINES XFB lines. */
+#define GX_YSCALE_ONE   256.0f
+#define GX_YSCALE_MASK  0x1FF
+#define GX_XFB_MAX_LINES 0x400
+
 f32 GXGetYScaleFactor(u32 arg0, u32 arg1) {
     f32 previous;
     f32 ratio;
