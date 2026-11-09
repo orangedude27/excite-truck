@@ -221,7 +221,7 @@ void fn_8023158C(void *arg0, const char *arg1) {
     offset = count * 0xC;
     *(s32 *)(base + 0x168) = count + 1;
     entry = base + offset;
-    *(void **)(base + offset) = arg0;
+    *(void **)entry = arg0;
     *(s32 *)(entry + 8) = 1;
     *(char **)(entry + 4) = fn_8012850C(0x40, lbl_80340440);
     strcpy(*(char **)(entry + 4), arg1);
@@ -258,21 +258,20 @@ s32 fn_802315FC(s32 arg0) {
     }
     return 0;
 }
-#pragma pop
+#pragma scheduling invalid_target
 s32 fn_802316A4(void *arg0) {
-    s32 i = 0;
     u8 *entry = lbl_8055F068;
+    s32 i = 0;
     s32 count = *(s32 *)(lbl_8055F068 + 0x168);
     while (i < count) {
         if (*(void **)entry == arg0) return fn_802315FC(i);
         entry += 0xC;
         i++;
     }
-    fn_802E30C8(lbl_8034044C);
+    ((void (*)(const char *, ...))fn_802E30C8)(lbl_8034044C, arg0);
     return 0;
 }
-
-#pragma dont_inline on
+#pragma scheduling on
 void fn_80231714(s32 *arg0) {}
 #pragma dont_inline off
 
