@@ -31,13 +31,15 @@ char *fn_80137950(int arg0) {
     }
 }
 
+#pragma push
+#pragma scheduling invalid_target
 int fn_801379CC(void) {
     if ((int)lbl_80559C00 == -1) {
-        fn_802E317C("x");
+        fn_802E317C(lbl_8032BEE4);
     }
     return (int)lbl_8042F788[(int)lbl_80559C00];
 }
-
+#pragma pop
 extern void *fn_80131808(void *);
 extern void fn_80131818(void *);
 extern int sprintf(char *, const char *, ...);
