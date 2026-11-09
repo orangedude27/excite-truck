@@ -4,6 +4,7 @@
 
 extern u8 *lbl_8055F834;
 typedef struct Rec54 { u32 w[21]; } Rec54;
+typedef struct Rec48 { u32 w[18]; } Rec48;
 extern int lbl_8055CB68;
 extern int fn_80128670(int);
 extern long fn_801EF024(long (*)(void *));
@@ -27,24 +28,12 @@ void fn_802A0940(void) {
 
 s32 fn_802A0944(void *arg0) {
     s32 index;
-    u32 *src;
-    u32 *dst;
-    u32 *record;
-    index = *(s32 *)arg0;
-    if (index == 1)
+    Rec54 *table = (Rec54 *)lbl_8055F834;
+    if (*(s32 *)arg0 == 1)
         index = 0x3F - *((s32 *)arg0 + 1);
     else
         index = *((s32 *)arg0 + 1);
-    record = (u32 *)(lbl_8055F834 + index * 0x54);
-    *record = *(u32 *)arg0;
-    record[1] = *((u32 *)arg0 + 1);
-    record[2] = *((u32 *)arg0 + 2);
-    src = (u32 *)((u8 *)arg0 + 0xC);
-    dst = record + 3;
-    do {
-        *dst++ = *src++;
-        *dst++ = *src++;
-    } while (src < (u32 *)((u8 *)arg0 + 0x54));
+    table[index] = *(Rec54 *)arg0;
     return 0x54;
 }
 
