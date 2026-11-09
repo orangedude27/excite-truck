@@ -7,7 +7,10 @@ extern int lbl_8055E234;
 extern int lbl_8055E254;
 extern int lbl_8042FC70[];
 extern void fn_8000D838(void *);
+#pragma small_data off
 #pragma scheduling invalid_target
+#pragma opt_propagation off
+#pragma opt_dead_assignments off
 void fn_80156128(void) {
     int v;
     int *p;
@@ -23,3 +26,6 @@ void fn_80156128(void) {
     lbl_8055E254 = -1;
     lbl_8055E234 = 0x7F000000;
 }
+#pragma opt_dead_assignments reset
+#pragma opt_propagation reset
+#pragma scheduling reset
