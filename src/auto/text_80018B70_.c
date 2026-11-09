@@ -264,6 +264,7 @@ s32 fn_80019604(void) {
     }
     return var_r31;
 }
+#pragma dont_inline off
 
 #pragma cplusplus on
 #pragma scheduling invalid_target
