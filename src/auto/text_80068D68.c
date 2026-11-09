@@ -20058,14 +20058,13 @@ void *port_find_dlci_port(unsigned int arg0) {
 int port_flow_control_user(void *arg0) {
     void *temp_r4;
     unsigned char var_r5 = 0;
-    if (*((unsigned char *)arg0 + 0x24) == 0) {
-        temp_r4 = *(void **)((char *)arg0 + 0x6c);
-        if (temp_r4 != 0 && *((unsigned char *)temp_r4 + 0x71) != 0 &&
-            *(unsigned int *)((char *)arg0 + 0x28) <= 0x1f40 &&
-            *(unsigned short *)((char *)arg0 + 0x20) > 0x10) {
-            var_r5 = 1;
-        }
-    }
+    if (*((unsigned char *)arg0 + 0x24) != 0) goto done;
+    temp_r4 = *(void **)((char *)arg0 + 0x6c);
+    if (temp_r4 == 0) goto done;
+    if (*((unsigned char *)temp_r4 + 0x71) == 0) goto done;
+    if (*(unsigned int *)((char *)arg0 + 0x28) > 0x1f40) goto done;
+    if (*(unsigned short *)((char *)arg0 + 0x20) > 0x10) var_r5 = 1;
+done:
     if (*((unsigned char *)arg0 + 0x25) == var_r5) return 0;
     *((unsigned char *)arg0 + 0x25) = var_r5;
     if (var_r5 != 0) return 0x10000;
@@ -22266,16 +22265,18 @@ u8 fn_8009504C(u16 arg0, u8 *arg1) {
 
 #pragma push
 #pragma scheduling invalid_target
-u8 fn_80095084(s32 arg0, void *arg1) {
-    volatile u8 *table = lbl_802EEC40;
-    u8 crc = 0xFF;
-
-    do {
-        crc = table[crc ^ *(u8 *)arg1];
-        arg1 = (u8 *)arg1 + 1;
-    } while ((u16)arg0-- != 0);
-
-    crc = lbl_802EEC40[crc ^ (u32)arg1];
+u8 fn_80095084(arg0, arg1, arg2)
+s32 arg0;
+u8 *arg1;
+u8 arg2;
+{
+    u8 *table = lbl_802EEC40;
+    u32 crc = 0xFF;
+    while ((u16)arg0-- != 0) {
+        crc = table[crc ^ *arg1];
+        arg1++;
+    }
+    crc = lbl_802EEC40[crc ^ arg2];
     return crc == 0xCF;
 }
 #pragma pop
@@ -22467,11 +22468,12 @@ void rfc_check_send_cmd(void *arg0, void *arg1) {
     if (arg1 != 0) {
         GKI_enqueue((BUFFER_Q *)(p + 0x18), arg1);
     }
-    for (;;) {
+    while (p[0x73] == 0) {
         arg1 = GKI_dequeue((BUFFER_Q *)(p + 0x18));
-        if (arg1 == 0) return;
+        if (arg1 == 0) {
+            return;
+        }
         L2CA_DataWrite(*(u16 *)(p + 0x68), (BT_HDR *)arg1);
-        if (p[0x73] != 0) return;
     }
 }
 
@@ -25500,17 +25502,20 @@ s32 IUSB_WriteCtrlMsgAsync(s32 a,s32 b,s32 c,s32 d,s32 e,u32 length,void* data,v
 }
 #pragma use_lmw_stmw reset
 s32 AXFXReverbHiInit(void* arg0) {
-    s32 zero = 0;
+    s32 zero;
+    s32 five;
     f32 h, g, f, e, d, c, b, a;
     a = *(f32*)((u8*)arg0 + 0x158);
+    zero = 0;
     f = lbl_80560D50;
+    five = 5;
     b = *(f32*)((u8*)arg0 + 0x150);
     c = *(f32*)((u8*)arg0 + 0x148);
     d = *(f32*)((u8*)arg0 + 0x154);
     e = *(f32*)((u8*)arg0 + 0x15C);
     g = lbl_80560D54;
     h = *(f32*)((u8*)arg0 + 0x14C);
-    *(s32*)((u8*)arg0 + 0x110) = 5;
+    *(s32*)((u8*)arg0 + 0x110) = five;
     *(f32*)((u8*)arg0 + 0x114) = a;
     *(f32*)((u8*)arg0 + 0x118) = a;
     *(s32*)((u8*)arg0 + 0x11C) = zero;
