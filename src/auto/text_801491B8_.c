@@ -373,10 +373,8 @@ s32 *fn_80149580(void) {
 
 void fn_80149588(s32 arg0) {
     s32 sp8;
-    do {
-        fn_80130980(&sp8, 0x20, 3);
-        fn_801474EC(arg0, &lbl_80559EC4, &sp8);
-    } while (0);
+    fn_80130980(&sp8, 0x20, 3);
+    fn_801474EC(arg0, &lbl_80559EC4, &sp8);
 }
 
 extern s32 lbl_8055E3C4;
@@ -3496,7 +3494,6 @@ s32 fn_801552D8(s32 arg0, s32 arg1) {
 
 extern s32 lbl_8032E1A0[];
 extern f32 lbl_8056171C;
-#pragma scheduling invalid_target
 void fn_80155318(void *arg0) {
     f32 f0 = lbl_80561648;
     f32 f1 = lbl_8056171C;
