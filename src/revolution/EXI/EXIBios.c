@@ -172,17 +172,34 @@ BOOL EXIDma(EXIChannel chan, void* buf, s32 len, u32 type,
     return TRUE;
 }
 
+/* Waits for the transfer started on a selected channel to come off the bus and
+ * completes it: CompleteTransfer() copies an immediate read's bytes out of the
+ * channel's data register into the buffer EXIImm() was given.  FALSE tells the
+ * caller not to use what it read -- either the channel got deselected while
+ * waiting, or this is the one transfer the SDK does not trust: a four-byte read
+ * at the fastest EXI clock whose data register holds a development peripheral's
+ * ID (a USB adapter, the DOL viewer or EXI_ID_04220001) on a retail unit whose
+ * DVD interface config byte still reads 0xFF and whose drive is not the 0x0200
+ * one.  EXIImmEx() and EXIGetID() answer that as a failed transfer. */
 BOOL EXISync(EXIChannel chan) {
     EXIData* exi = &Ecb[chan];
     BOOL ret = FALSE;
 
+    // Spin while the channel's transfer is still running; a deselected channel
+    // leaves with ret still FALSE.
     while (exi->state & EXI_STATE_SELECTED) {
         if (!(EXI_CHAN_PARAMS[chan].cr & EXI_CR_TSTART)) {
+            // Take the completion itself, with no interrupt handler getting in
+            // between the check above and clearing the busy state.
             BOOL enabled = OSDisableInterrupts();
 
             if (exi->state & EXI_STATE_SELECTED) {
                 CompleteTransfer(chan);
 
+                // Workaround: only that four-byte read of a development
+                // peripheral is left unreported as complete -- any other
+                // transfer, a development unit, a configured DVD interface, a
+                // slowed-down clock or a 0x0200 drive reports success.
                 if (__OSGetDIConfig() != 0xFF ||
                     (OSGetConsoleType() & OS_CONSOLE_MASK) ==
                         OS_CONSOLE_MASK_TDEV ||
@@ -190,7 +207,7 @@ BOOL EXISync(EXIChannel chan) {
                     EXI_CHAN_PARAMS[chan].cpr & EXI_CPR_CLK ||
                     (EXI_CHAN_PARAMS[chan].data != EXI_ID_USB_ADAPTER &&
                      EXI_CHAN_PARAMS[chan].data != EXI_ID_IS_DOL_VIEWER &&
-                     EXI_CHAN_PARAMS[chan].data != 0x04220001) ||
+                     EXI_CHAN_PARAMS[chan].data != EXI_ID_04220001) ||
                     OS_DVD_DEVICE_CODE == MAKE_DVD_DEVICE_CODE(0x0200)) {
                     ret = TRUE;
                 }
