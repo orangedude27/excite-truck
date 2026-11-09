@@ -75,15 +75,6 @@ void fn_8028E024(void) {
     lbl_8055F744 = 0;
 }
 
-void fn_8028DF58(void) {
-    char *base = (char *)&lbl_804B34B0;
-    fn_8028ED74(base);
-    fn_8028ED74(base + 0x104);
-    fn_8028EE1C(base + 0x208);
-    lbl_8055F740 = 0;
-    lbl_8055F744 = 1;
-    lbl_8055F748 = 0;
-}
 void fn_8028E070(float farg0) {
     lbl_8055F738 = farg0;
     lbl_8055F73C = 1;
