@@ -55,7 +55,8 @@ extern char lbl_8034DE6C[];
 #pragma dont_inline on
 #pragma cplusplus on
 extern "C" void fn_802E86D4(void) {
-    (*(void (**)(void *))(*(void ***)lbl_80560024 + 2))(lbl_80560024);
+    struct Dispatch { virtual void f0(); };
+    ((Dispatch *)lbl_80560024)->f0();
     lbl_80560028 = 1;
 }
 #pragma cplusplus reset
