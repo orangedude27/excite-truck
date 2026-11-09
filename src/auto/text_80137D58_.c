@@ -89,12 +89,18 @@ void fn_80137F30(void *arg0) {
 #pragma dont_inline reset
 
 void fn_80137F74(void *arg0) {
-    unsigned char a0 = ((unsigned char *)arg0)[0];
-    unsigned char a1 = ((unsigned char *)arg0)[1];
-    unsigned char a4 = ((unsigned char *)arg0)[4];
-    unsigned char a5 = ((unsigned char *)arg0)[5];
-    unsigned char a8 = ((unsigned char *)arg0)[8];
-    unsigned char a9 = ((unsigned char *)arg0)[9];
+    unsigned char a0;
+    unsigned char a4;
+    unsigned char a8;
+    unsigned char a1;
+    unsigned char a5;
+    unsigned char a9;
+    a0 = ((unsigned char *)arg0)[0];
+    a1 = ((unsigned char *)arg0)[1];
+    a4 = ((unsigned char *)arg0)[4];
+    a5 = ((unsigned char *)arg0)[5];
+    a8 = ((unsigned char *)arg0)[8];
+    a9 = ((unsigned char *)arg0)[9];
     ((unsigned char *)arg0)[0] = ((unsigned char *)arg0)[3];
     ((unsigned char *)arg0)[3] = a0;
     ((unsigned char *)arg0)[1] = ((unsigned char *)arg0)[2];
