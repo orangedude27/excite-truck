@@ -1950,7 +1950,7 @@ extern "C" void fn_801B30E0(s32 index) {
 #pragma push
 #pragma processor 750
 void fn_801B3208(s32 arg0, s32 arg1, f32 farg0) {
-    fn_802E317C(lbl_80335BD8, arg0, arg1);
+    ((void (*)(const char *, ...))fn_802E317C)(lbl_80335BD8, arg0, arg1, farg0);
     *(s32 *)((u8 *)lbl_8055E684 + (arg0 << 7) + 0x6C) = arg1;
     *(f32 *)((u8 *)lbl_8055E684 + (arg0 << 7) + 0x24) = farg0;
 }
