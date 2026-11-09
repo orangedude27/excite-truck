@@ -25,18 +25,22 @@ extern void fn_802DB2C8(void);
 extern void fn_802C3478(s32, s32, s32, s32, u32);
 extern void fn_802C356C(s32, s32, s32, s32, u32);
 extern void fn_802C365C(s32, s32, s32, s32, u32);
+#pragma scheduling invalid_target
 s32 fn_802C2CAC(s32 arg0) {
-    return (((arg0 << 9) & 0xF80000) | 0xFF000000 | ((arg0 << 6) & 0xF800)) | ((arg0 & 0x1F) << 3);
+    unsigned int a = __rlwinm(arg0, 9, 8, 12);
+    unsigned int b;
+    a |= 0xFF000000;
+    b = __rlwinm(arg0, 27, 3, 31);
+    a = __rlwimi(a, arg0, 6, 16, 20);
+    return (s32)(b | a);
 }
-
+#pragma push
+#pragma peephole off
 s32 fn_802C2CC4(s32 arg0) {
-    unsigned int value = ((unsigned int)arg0 << 8) & 0x00F80000;
-    value |= 0xFF000000;
-    value |= ((unsigned int)arg0 << 5) & 0x0000FC00;
-    value |= ((unsigned int)arg0 & 0x1F) << 3;
-    return (s32)value;
+    unsigned int low = (arg0 << 3) & 0xF8;
+    return (s32)(low | __rlwimi(__rlwinm(arg0, 8, 8, 12) | 0xFF000000, arg0, 5, 16, 21));
 }
-
+#pragma pop
 void fn_802C2CDC(void *arg0, s32 arg1, s32 arg2) {
     fn_802C2CE8(arg0, arg1, arg2, (s8)lbl_8055CFF8);
 }
