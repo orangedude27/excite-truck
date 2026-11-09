@@ -316,12 +316,10 @@ extern "C" int fn_801B851C(void* arg0) {
     if (fn_80161BB8() != 0) return 0;
     return ((Dummy_801B851C *)lbl_8055E744)->d8(arg0);
 }
-int fn_801B8570(int arg0) {
+extern "C" int fn_801B8570(int arg0) {
     extern int fn_80161B94(void);
     int result = 0;
-    register void *obj = lbl_8055E744;
-    register int (**vtable)(void *, int) = *(int (***)(void *, int))obj;
-    if (vtable[11](obj, arg0) != 0 && fn_80161B94() == 0) result = 1;
+    result = 0;
     return result;
 }
 
