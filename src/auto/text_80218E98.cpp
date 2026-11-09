@@ -7339,14 +7339,14 @@ extern "C" void fn_802272D4(void *arg0) {
     }
     *(f32 *)(p + 0x25C) = now;
 }
-#pragma pop
+#pragma push
+#pragma processor 750
 extern "C" void fn_80227880(s32 unused, f32 x, f32 y, f32 width, f32 height) {
     ((void (*)(s32, f32, f32, f32, f32, f32))fn_80230924)(
         0x40FFFFFF, x, y, x + width, y - height, lbl_805634A8);
     ((void (*)(s32, f32, f32, f32, f32, f32))fn_80230924)(
         0x99000000, x, y, x + width, y - height, lbl_805634A8);
 }
-#pragma scheduling on
 #pragma pop
 extern "C" void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
 #pragma scheduling invalid_target
