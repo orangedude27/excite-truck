@@ -29,10 +29,9 @@ void fn_8012F384(void *arg0) {
 }
 #pragma scheduling on
 void fn_8012F3CC(s32 arg0) {
-    s32 *p = (s32 *)fn_801284F8(8, &lbl_8032AFC4);
+    s32 *p = (s32 *)fn_801284F8(8, lbl_8032AFC4);
     if (p != 0) { p[0] = arg0; p[1] = 0; }
 }
-
 void fn_8012F418(s32 *arg0) {
     s32 z = 0;
     s32 c = 0x2bad2bad;
