@@ -67,7 +67,6 @@ int fn_802AE414(void *arg0) {
 #pragma pop
 extern u8 lbl_8055F958;
 extern u8 lbl_8055F959;
-extern void fn_80131818(void *);
 extern void fn_802AE328(void);
 #pragma scheduling invalid_target
 s32 fn_802AE4C8(s32 arg0) {
