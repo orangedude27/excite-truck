@@ -383,15 +383,15 @@ void TRKGetFreeBuffer(void *arg0) {
     s32 level = OSDisableInterrupts();
     TRKReleaseBuffer(arg0);
     if (*(u16 *)((u8 *)arg0 + 0x148) == 1) {
-        *(volatile u32 *)((u8 *)arg0 + 0x20) = 1;
-        fn_80033148(arg0);
-        {
-            void *head = (void *)lbl_8035BEA0[0];
-            *(void **)arg0 = head;
-            lbl_8035BEA0[0] = (s32)arg0;
-        }
-        *(volatile u32 *)((u8 *)arg0 + 0xC) = 0;
+        *(u32 *)((u8 *)arg0 + 0x20) = 1;
     }
+    fn_80033148(arg0);
+    {
+        void *head = (void *)lbl_8035BEA0[0];
+        *(void **)arg0 = head;
+        lbl_8035BEA0[0] = (s32)arg0;
+    }
+    *(u32 *)((u8 *)arg0 + 0xC) = 0;
     OSRestoreInterrupts(level);
 }
 
