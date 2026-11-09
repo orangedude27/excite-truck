@@ -253,15 +253,28 @@ int fn_8027D850(void *arg0) {
 }
 
 typedef int (*Fn8027D858)(void *, int);
-int fn_8027D858(void *arg0) {
-    if (*((unsigned char *)arg0 + 0x38) != 0) {
-        Fn8027D858 fn = ((Fn8027D858 *)*(void **)arg0)[12];
-        int arg1 = *(int *)((char *)arg0 + 0x34);
-        return fn(arg0, arg1);
+#pragma cplusplus on
+extern "C" int fn_8027D858(void *arg0) {
+    class Obj {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual int v10(int);
+    };
+    if (*(unsigned char *)((char *)arg0 + 0x38) != 0) {
+        return ((Obj *)arg0)->v10(*(int *)((char *)arg0 + 0x34));
     }
     return -1;
 }
-
+#pragma cplusplus off
 void fn_8027D880(void *arg0) {
     fn_8001D9B4((char *)arg0 + 0x14);
 }
