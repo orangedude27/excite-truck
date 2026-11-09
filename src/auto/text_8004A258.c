@@ -2,10 +2,7 @@
 #include <revolution/OS/OSHardware.h>
 #include <revolution/OS/OSMemory.h>
 
-#pragma push
-#pragma small_data off
-extern u8 DriveInfo[4];
-#pragma pop
+extern char DriveInfo[];
 
 extern BOOL __OSInIPL;
 extern const char lbl_80558F0C[4];
