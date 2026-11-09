@@ -179,11 +179,15 @@ void fn_80160A90(void* alarm) {
     fn_80160998(fn_80160AB4(alarm));
 }
 
+#pragma dont_inline on
 int fn_80160AB4(void *alarm) {
-    fn_8027DED0();
+    int r = fn_8027DED0();
+    if (r != -1) {
+        return r;
+    }
     return fn_80160A74();
 }
-
+#pragma dont_inline reset
 void fn_80160AE4(void) {
     fn_801607F8();
 }
