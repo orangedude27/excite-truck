@@ -46,7 +46,7 @@ void **fn_801EF1F0(void **arg0, void *arg1) {
     *((void **)*arg0 + 14) = fn_801E3004(**(void ***)arg0, L->s64, -1);
     *((void **)*arg0 + 16) = fn_801E3004(**(void ***)arg0, lbl_8055B0B0, -1);
     fn_801E3534(*((void **)*arg0 + 13));
-    *((float *)*arg0 + 17) = fn_801EF190();
+    *((float *)*arg0 + 17) = fn_801EF190(0);
     return arg0;
 }
 
