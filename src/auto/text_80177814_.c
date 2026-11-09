@@ -41,7 +41,7 @@ extern int lbl_8055E438;
 extern int lbl_8055E468;
 extern int lbl_8055E448;
 extern unsigned char lbl_8055E44C;
-extern long lbl_80331938;
+__declspec(section ".data") extern long lbl_80331938;
 extern long lbl_8033192C;
 extern void fn_801AFD20(void *);
 extern void fn_8017ACCC(void);
@@ -354,18 +354,17 @@ int fn_801781C0(int arg0) {
 #pragma scheduling on
 unsigned char *fn_801781F4(long arg0) {
     volatile unsigned char *p = &lbl_8055E46C;
-    unsigned char a;
+    register unsigned char a;
     unsigned char b;
     unsigned char c;
-    unsigned char d;
     *(volatile long *)p = arg0;
     a = p[0];
     c = p[3];
     b = p[1];
-    d = p[2];
+    b = p[2];
     p[0] = c;
     p[3] = a;
-    p[1] = d;
+    p[1] = b;
     p[2] = b;
     return (unsigned char *)p;
 }
