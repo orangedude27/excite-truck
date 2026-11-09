@@ -1402,7 +1402,7 @@ extern "C" s32 fn_80162800(void *arg0) {
 extern char lbl_8032F698[];
 extern void *lbl_8055E2E0;
 extern int fn_801476C4(void);
-#pragma scheduling on
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" s32 fn_801628E8(void *arg0) {
     struct Dummy {
@@ -1636,6 +1636,9 @@ done:
 #pragma cplusplus reset
 #pragma scheduling on
 
+#pragma push
+#pragma processor 750
+#pragma scheduling on
 s32 fn_80162FE8(void *arg0) {
     f32 temp_f31;
     temp_f31 = *((f32 *)((char *)arg0 + 0x5B8));
@@ -1644,7 +1647,7 @@ s32 fn_80162FE8(void *arg0) {
     }
     return *((s32 *)((char *)arg0 + 8)) != 0;
 }
-
+#pragma pop
 s32 fn_80163058(void *arg0) { return *(s32 *)((u8 *)arg0 + 8) == 1; }
 
 #pragma cplusplus on
