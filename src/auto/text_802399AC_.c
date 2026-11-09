@@ -498,7 +498,7 @@ success:
 }
 
 #pragma push
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_8023AFD0(void *arg0) {
     s32 temp_r28;
     s32 temp_r29;
@@ -506,6 +506,7 @@ void fn_8023AFD0(void *arg0) {
     s32 temp_r31;
     s32 temp_r3;
     s32 sp8;
+    s32 arg8;
     float factor;
     void *p = arg0;
     temp_r28 = *(s32 *)((char *)p + 0x10);
@@ -515,8 +516,9 @@ void fn_8023AFD0(void *arg0) {
     temp_r3 = fn_80131234(&lbl_8034127C[0]);
     sp8 = 0;
     factor = lbl_80563730;
+    arg8 = *(s32 *)((char *)p + 0x1C);
     fn_8022BAD0(0xCB, temp_r31, temp_r30, 0, temp_r29, temp_r28, temp_r3,
-                *(s32 *)((char *)p + 0x1C), sp8, factor);
+                arg8, sp8, factor);
 }
 #pragma pop
 
