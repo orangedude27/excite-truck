@@ -1931,15 +1931,17 @@ extern "C" void fn_800E56D0(void *arg0, float arg1) {
     float sum = arg1 + lbl_80560F38;
     float value;
     if (sum > lbl_80560F38) {
-        value = sum;
+        value = lbl_80560F38;
+    } else if (sum < lbl_80560F3C) {
+        value = lbl_80560F3C;
     } else {
-        if (sum < lbl_80560F3C) value = sum;
-        else value = lbl_80560F3C;
+        value = sum;
     }
     float *field = (float *)((char *)arg0 + 0x144);
     if (value != *field) {
+        unsigned char *flags = (unsigned char *)arg0 + 0x123;
         *field = value;
-        *((unsigned char *)arg0 + 0x123) |= 0x20;
+        *flags |= 0x20;
     }
 }
 
