@@ -103,21 +103,26 @@ static void IpcReplyHandler(s16 intr, OSContext* ctx) {
 
     IPCRequestEx* req;
     IPCIoctlvArgs* args;
-    u32 reg;
+    u32 mbox;
     OSContext temp;
-    int i;
+    u32 i;
 
-    reg = IPCReadReg(IPC_IPC_ARMMSG);
-    if (reg != 0) {
-        req = (IPCRequestEx*)OSPhysicalToCached(reg);
+    mbox = IPCReadReg(IPC_IPC_ARMMSG);
+    if (mbox != 0) {
+        req = (IPCRequestEx*)OSPhysicalToCached(mbox);
 
-        IPCWriteReg(IPC_IPC_PPCCTRL, (IPCReadReg(IPC_IPC_PPCCTRL) & 0x30) | 4);
-        ACRWriteReg(ACR_PPCIRQFLAG, 0x40000000);
+        // Reply received; keep the ARM's flags and report the reply state.
+        IPCWriteReg(IPC_IPC_PPCCTRL,
+                    (IPCReadReg(IPC_IPC_PPCCTRL) & IPC_PPCCTRL_ARM_FLAGS) |
+                        IPC_PPCCTRL_STATE_REPLY);
+        ACRWriteReg(ACR_PPCIRQFLAG, ACR_PPCIRQFLAG_IPC);
         DCInvalidateRange(&req->base, sizeof(IPCRequest));
 
-        // Not type??
+        // NB: the original dispatches on the fd word here, not on
+        // req->base.type, and compares it against IPCRequestType values.
         switch (req->base.fd) {
         case IPC_REQ_READ:
+            // The ARM echoes the buffer address back as a physical address.
             req->base.rw.data = (req->base.rw.data != NULL)
                                     ? OSPhysicalToCached((u32)req->base.rw.data)
                                     : NULL;
@@ -147,8 +152,11 @@ static void IpcReplyHandler(s16 intr, OSContext* ctx) {
                               (args->inCount + args->outCount) *
                                   sizeof(IPCIOVector));
 
+            // Every vector handed to the ARM may have been written to.
             for (i = 0; i < args->inCount + args->outCount; i++) {
-                // Just trust me
+                // The original nudges the counter here and back; the compiler
+                // keeps the vector byte offset as a second induction
+                // variable, and this is what orders the two increments.
                 i++;
                 i--;
 
@@ -160,6 +168,7 @@ static void IpcReplyHandler(s16 intr, OSContext* ctx) {
                                   req->base.ioctlv.vectors[i].length);
             }
 
+            // A reboot request never gets an ack, so this one is its reply.
             if (__relnchFl && __relnchRpc == req) {
                 __relnchFl = FALSE;
                 if (__mailboxAck < 1) {
@@ -170,6 +179,7 @@ static void IpcReplyHandler(s16 intr, OSContext* ctx) {
         }
 
         if (req->callback != NULL) {
+            // Run the callback as if it owned the CPU, then give the CPU back.
             OSClearContext(&temp);
             OSSetCurrentContext(&temp);
             req->callback(req->base.ret, req->callbackArg);
@@ -180,7 +190,9 @@ static void IpcReplyHandler(s16 intr, OSContext* ctx) {
             OSWakeupThread(&req->queue);
         }
 
-        IPCWriteReg(IPC_IPC_PPCCTRL, (IPCReadReg(IPC_IPC_PPCCTRL) & 0x30) | 8);
+        IPCWriteReg(IPC_IPC_PPCCTRL,
+                    (IPCReadReg(IPC_IPC_PPCCTRL) & IPC_PPCCTRL_ARM_FLAGS) |
+                        IPC_PPCCTRL_STATE_REPLY_ACK);
         IPCiProfReply(req, req->base.fd);
     }
 }
