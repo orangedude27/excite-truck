@@ -14995,9 +14995,9 @@ return 0;
 }
 
 s32 fn_800C083C(s32 arg0, s32 arg1, s32 *arg2) {
-    u32 index = 0;
     u32 mask = 0xF;
     s32 shift = 0x1C;
+    u32 index = 0;
     s32 count;
     for (count = arg1; count > 0; count--) {
         u32 *node = *(u32 **)(*(u32 **)arg2 + index);
@@ -15005,7 +15005,7 @@ s32 fn_800C083C(s32 arg0, s32 arg1, s32 *arg2) {
         if (value & 0x8000) {
             return value & 0x7FFF;
         }
-        mask = *(u32 *)(lbl_8031C2B8 + ((value * 4) & 0x3C));
+        mask = *(u32 *)(lbl_8031C2B8 + ((value & 0xF) * 4));
         index = (u32)(value >> 8);
         shift -= value & 0xF;
     }
@@ -20034,14 +20034,17 @@ extern u8 lbl_8031F43C[];
 extern "C" void* __ct__Q36nw4hbm3lyt19ArcResourceAccessorFv(void *this_) {
     volatile u32 *p = (volatile u32 *)this_;
     u32 v = (u32)&lbl_8031F43C;
+    u32 zero = 0;
+    u32 tail;
     fn_800DCE50(this_);
-    p[0x28 >> 2] = 0;
-    p[0x2C >> 2] = 0;
+    tail = (u32)this_ + 0x28;
+    p[0x28 >> 2] = zero;
+    p[0x2C >> 2] = zero;
     p[0] = v;
-    p[0x20 >> 2] = 0;
-    p[0x24 >> 2] = 0;
-    p[0x28 >> 2] = (u32)this_ + 0x28;
-    p[0x2C >> 2] = (u32)this_ + 0x28;
+    p[0x20 >> 2] = zero;
+    p[0x24 >> 2] = zero;
+    p[0x28 >> 2] = tail;
+    p[0x2C >> 2] = tail;
     return this_;
 }
 extern "C" const char lbl_8031F2C8[];
@@ -23811,9 +23814,8 @@ extern "C" void fn_800A52DC(u32 arg0) {
 
 extern "C" void fn_800A535C(u32 arg0) {
     u8 *ptr = (u8 *)lbl_803D2140 + 0xA0;
-    int i = 0;
-    int j = 0;
-    for (; i < 13; i++, j++, ptr += 0x3F90) {
+    s32 i;
+    for (i = 0; i < 13; i++, ptr += 0x3F90) {
         if (*(u32 *)(ptr + 0x1FBC) == arg0) {
             *(u16 *)(ptr + 0x1F8C) |= 0x14;
         }
@@ -23998,20 +24000,17 @@ extern "C" s32 fn_800A5788(void *arg0, s32 arg1) {
 }
 #pragma dont_inline reset
 extern "C" s32 fn_800A5800(void *arg0, s32 arg1) {
-    s32 result = fn_800A7338(*(void **)((u8 *)arg0 + 0x1FBC), arg1);
-    switch (result) {
-    case 0:
-        break;
-    case 21: {
-        s32 value = ((s32 (*)(void *))fn_800A71D8)(*(void **)((u8 *)arg0 + 0x1FBC));
-        *(s32 *)((u8 *)lbl_803D2140 + 0x44) = value;
-        *(s32 *)((u8 *)arg0 + 0x1F84) = value;
-        return 0x1000;
-    }
-    default:
-        return -1;
-    }
-    return 0;
+    s32 result;
+    s32 value;
+    result = fn_800A7338(*(void **)((u8 *)arg0 + 0x1FBC), arg1);
+    if (result == 0) goto zero;
+    if (result != 21) goto fail;
+    value = ((s32 (*)(void *))fn_800A71D8)(*(void **)((u8 *)arg0 + 0x1FBC));
+    *(s32 *)((u8 *)lbl_803D2140 + 0x44) = value;
+    *(s32 *)((u8 *)arg0 + 0x1F84) = value;
+    return 0x1000;
+fail: return -1;
+zero: return 0;
 }
 
 extern "C" s32 fn_800A71A0(s32 *);
