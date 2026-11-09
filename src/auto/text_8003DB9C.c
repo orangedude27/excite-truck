@@ -4719,7 +4719,7 @@ void GXSetFieldMask(unsigned char even, unsigned char odd) {
 void GXSetFieldMode(s32 mode, s32 field) {
     unsigned int *data = __GXData;
     unsigned int value = data[0x7C / 4];
-    value = (value & ~0x400000) | ((field << 22) & 0x400000);
+    value = __rlwimi(value, field, 22, 9, 9);
     data[0x7C / 4] = value;
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = data[0x7C / 4];
@@ -5022,43 +5022,36 @@ void GXSetViewport(f32 xOrig, f32 yOrig, f32 width, f32 height, f32 nearZ, f32 f
     __GXData[0x5FC / 4] |= 0x10000000;
 }
 
-void GXSetScissor(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    union ScissorReg {
+void GXSetScissor(int x, int y, int wd, int ht) {
+    union {
         unsigned int value;
         struct {
             unsigned int pad0 : 9;
-            unsigned int x : 11;
+            unsigned int ox : 11;
             unsigned int pad1 : 1;
-            unsigned int y : 11;
+            unsigned int oy : 11;
         } bits;
-    } topLeft, bottomRight;
-    unsigned int *data;
-    s32 left;
-    s32 top;
-    s32 tmpRight;
-    s32 tmpBottom;
-    s32 right;
-    s32 bottom;
-    data = __GXData;
-    left = arg0 + 0x156;
-    top = arg1 + 0x156;
-    topLeft.value = data[0x148 / 4];
-    topLeft.bits.y = top;
-    topLeft.bits.x = left;
-    data[0x148 / 4] = topLeft.value;
-    tmpRight = left + arg2;
-    tmpBottom = top + arg3;
-    bottom = tmpBottom - 1;
-    bottomRight.value = data[0x14C / 4];
-    right = tmpRight - 1;
-    bottomRight.bits.y = bottom;
-    bottomRight.bits.x = right;
-    data[0x14C / 4] = bottomRight.value;
+    } a, b;
+    unsigned int *gx = __GXData;
+    int left = x + 342;
+    int top = y + 342;
+    int btm = top + ht;
+    int rgt = left + wd;
+    int bottom = btm - 1;
+    int right = rgt - 1;
+    a.value = gx[0x148 / 4];
+    a.bits.oy = top;
+    a.bits.ox = left;
+    gx[0x148 / 4] = a.value;
+    b.value = gx[0x14C / 4];
+    b.bits.oy = bottom;
+    b.bits.ox = right;
+    gx[0x14C / 4] = b.value;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = data[0x148 / 4];
+    *(volatile unsigned int *)0xCC008000 = gx[0x148 / 4];
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = data[0x14C / 4];
-    *(volatile unsigned short *)((char *)data + 2) = 0;
+    *(volatile unsigned int *)0xCC008000 = gx[0x14C / 4];
+    *(volatile unsigned short *)((char *)gx + 2) = 0;
 }
 
 void GXSetScissorBoxOffset(s32 x, s32 y) { union { u32 value; struct { unsigned int tag : 8; unsigned int reserved : 4; unsigned int y : 10; unsigned int x : 10; } bits; } reg; reg.value = 0; reg.bits.x = ((u32)(x + 0x156)) >> 1; *(volatile u8 *)0xCC008000 = 0x61; reg.bits.y = ((u32)(y + 0x156)) >> 1; reg.bits.tag = 0x59; *(volatile u32 *)0xCC008000 = reg.value; *(volatile u16 *)((u8 *)__GXData + 2) = 0; }
