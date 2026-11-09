@@ -1362,6 +1362,25 @@ extern "C" int fn_801D6948(void *out, void *object) {
     *(int *)((char *)out + 4) = 1;
     return 1;
 }
+
+#pragma push
+#pragma cplusplus on
+#pragma scheduling invalid_target
+extern "C" void fn_801D6BD0(void *arg0) {
+    class ThreadObject {
+    public:
+        virtual void destroy(int);
+    };
+    ThreadObject *p = *(ThreadObject **)((u8 *)arg0 + 0x30);
+    if (p) {
+        if (p)
+            p->destroy(1);
+    }
+    *(ThreadObject **)((u8 *)arg0 + 0x30) = 0;
+}
+#pragma pop
+#pragma cplusplus reset
+
 #pragma cplusplus reset
 #pragma scheduling reset
 #pragma pop
