@@ -336,14 +336,12 @@ void *fn_802090D4(int arg0)
 #pragma inline_depth(0)
 #pragma scheduling invalid_target
 void fn_80209110(void **arg0) {
-    char *state;
     if (*arg0 != 0) {
         *(int *)((char *)*arg0 + 4) = 0;
-        state = lbl_80489258;
-        while (*(int *)(state + 0x40) > 0) {
-            if (*(int *)(state + *(int *)(state + 0x40) * 8 - 4) != 0)
+        while (*(int *)(lbl_80489258 + 0x40) > 0) {
+            if (*(int *)(lbl_80489258 + *(int *)(lbl_80489258 + 0x40) * 8 - 4) != 0)
                 break;
-            *(int *)(state + 0x40) = *(int *)(state + 0x40) - 1;
+            *(int *)(lbl_80489258 + 0x40) = *(int *)(lbl_80489258 + 0x40) - 1;
         }
         ((void (*)(void))fn_80208A50)();
         *arg0 = 0;
