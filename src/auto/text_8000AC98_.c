@@ -422,15 +422,9 @@ int fn_8000B42C(int arg0) {
 #pragma scheduling invalid_target
 int fn_8000B53C(int arg0) {
     ((void (*)(int))fn_8000ADE0)(0x12);
-    AXFXSetHooks_8020DE10(fn_8000B5A8,
-        (-(int)lbl_8055D3EC | (int)lbl_8055D3EC) >> 31 & (int)fn_8000B3B4,
-        lbl_8055D3EC);
-    switch (arg0) {
-    default:
-        return 0;
-    case 1:
-        return 1;
-    }
+    AXFXSetHooks_8020DE10(fn_8000B5A8, lbl_8055D3EC ? (int)fn_8000B3B4 : 0, lbl_8055D3EC);
+    if (arg0 == 1) return 1;
+    return 0;
 }
 
 extern int fn_80137C98(int);
