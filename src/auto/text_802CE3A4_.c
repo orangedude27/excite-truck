@@ -210,12 +210,12 @@ void fn_802CE744(void *arg0) {
 #pragma scheduling on
 void fn_802CE7D4(int arg0, int arg1, void *arg2);
 void fn_802CE7D4(int arg0, int arg1, void *arg2) {
-    char *ptr = (char *)arg2;
+    unsigned char *ptr = (unsigned char *)arg2;
     if (*ptr != 0) {
         *(int *)(ptr + 0x30) = arg0;
-        fn_802C61BC(ptr + 8);
+        fn_802C61BC(arg0, ptr + 8);
         fn_802C6FA8(*(int *)(ptr + 0x30));
-        *(int *)(ptr + 0x34) = fn_802C6DC4((int)(ptr + 8), *(int *)(ptr + 0x30), 0, 0);
+        *(int *)(ptr + 0x34) = fn_802C6DC4(ptr + 8, *(int *)(ptr + 0x30), 0, 0);
         *(int *)(ptr + 0x38) = 2;
     } else {
         *(int *)(ptr + 0x38) = 0;
