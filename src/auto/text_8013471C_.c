@@ -221,6 +221,25 @@ skip_clear:
       fn_8013A1F0();
   }
 
+void fn_801349C4(void) {
+    extern void fn_80136CB8(void *, s32);
+    extern void fn_8013A200(s32);
+    struct Entry { s32 value; u8 flag; };
+    struct Entry **entries = (struct Entry **)lbl_8042F758;
+    struct Entry *entry;
+    s32 i = 0;
+    do {
+        entry = *entries;
+        if (entry != 0) {
+            fn_80136CB8(lbl_8055E0D4, entry->value);
+            fn_8013A200(entry->value);
+            entry->flag = 1;
+        }
+        i++;
+        entries++;
+    } while (i < 8);
+}
+
 extern s32 lbl_8055E3C4;
 #pragma dont_inline on
 s32 fn_80134A44(s32 arg0) {
