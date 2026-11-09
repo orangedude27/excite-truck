@@ -156,7 +156,7 @@ extern "C" int strncmp(const char *, const char *, unsigned int);
 struct AlphaColor { u8 r, g, b, a; };
 struct FindLinkDispatch_800D9524 {
     virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-    virtual void v4(); virtual void v5(); virtual void v6();
+    virtual void v4(); virtual void v5();
     virtual void* find(void* anim);
 };
 struct ResBlockSetTmp { u32 a, b, c, d; };
@@ -3558,6 +3558,17 @@ extern "C" void AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLi
     iterator = (char*)self + 0x20;
     if (!link) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031FF54, 0x233, lbl_8031FF30);
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char*)self + 0x1c, &iterator, link);
+}
+
+extern "C" void* FindAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform(void* self, void* anim) {
+    void* p = ((void*(*)(void*))fn_800D4F98)((u8*)self + 0x1C);
+    if (p != 0) return p;
+    FindLinkDispatch_800D9524* obj = *(FindLinkDispatch_800D9524**)((u8*)self + 0x28);
+    if (obj != 0) {
+        void* q = obj->find(anim);
+        if (q != 0) return q;
+    }
+    return 0;
 }
 
 extern "C" void SetAnimationEnable__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransformbb(void *self, void *anim, u32 enable, u32 recursive) {
