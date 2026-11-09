@@ -7,6 +7,7 @@ extern int lbl_804BD8CC[3];
 typedef struct { char a[0xC]; char b[0x10]; char c[0x10]; } Lists802AE328;
 extern char lbl_80349FF0[];
 extern u8 lbl_8055F958;
+extern u8 lbl_8055F959;
 #pragma push
 #pragma scheduling invalid_target
 #pragma opt_common_subs off
@@ -20,15 +21,16 @@ void fn_802AE2E0(void *arg0) {
     }
 }
 
+#pragma push
+#pragma optimization_level 1
 void fn_802AE328(void) {
-    Lists802AE328 *lists = (Lists802AE328 *)lbl_80349FF0;
-    fn_802AE2E0(&lists->a);
-    fn_802AE2E0(lists->b);
-    fn_802AE2E0(lists->c);
+    char *lists = lbl_80349FF0;
+    fn_802AE2E0(&lists[(int)(sizeof(char) - 1)]);
+    fn_802AE2E0(&lists[0xC]);
+    fn_802AE2E0(&lists[0x1C]);
     lbl_8055F958 = 1;
 }
-
-#pragma dont_inline reset
+#pragma pop
 int fn_802AE414(void *arg0) {
     extern u8 lbl_8055F958;
     extern int lbl_804BD8CC[3];
