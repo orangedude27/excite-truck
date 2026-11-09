@@ -63,7 +63,7 @@ float fn_802E78A4(float arg0) {
     float a = fn_802E7824(lbl_80565174 + arg0, lbl_80565178);
     float b = fn_802E7824(arg0 - lbl_80565174, lbl_80565178);
     float v = lbl_80565170 * (b + a);
-    float f = v * __fabs(v) - v;
+    float f = v * (float)__fabs(v) - v;
     return v + lbl_80565164 * f;
 }
 #pragma pop
