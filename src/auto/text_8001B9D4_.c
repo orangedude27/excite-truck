@@ -525,15 +525,13 @@ extern s32 fn_802E317C(const char *);
 #pragma scheduling invalid_target
 #pragma scheduling on
 s32 *fn_8001C4E0(s32 arg0) {
-    s32 *entry = lbl_802ED7B8;
-    s32 val;
+    u8 *entry = (u8 *)lbl_802ED7B8;
     for (;;) {
-        val = *entry;
-        if (val == arg0) {
-            return entry;
+        if (*(s32 *)entry == arg0) {
+            return (s32 *)entry;
         }
-        entry += 3;
-        if (*entry == 0) {
+        entry += 0xC;
+        if (*(s32 *)entry == 0) {
             fn_802E317C(lbl_802FD85C);
             return 0;
         }
@@ -986,6 +984,23 @@ void fn_8001D234(s32 arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
     *arg2 = mid;
     *(s8 *)arg3 = (byte != 0);
 }
+
+#pragma cplusplus on
+extern "C" s32 fn_8001D25C(s32 arg0) {
+    class Obj {
+    public:
+        virtual void m0(s32, s32);
+        virtual void m1(s32, s32);
+        virtual void m2(s32, s32);
+        virtual void m3(s32, s32);
+        virtual s32 m4(s32, s32);
+    };
+    Obj *obj;
+    obj = *(Obj **)((char *)fn_8001285C() + 0x20);
+    return obj->m4((s32)&lbl_80558CDC, 0);
+}
+#pragma cplusplus off
+
 #pragma scheduling on
 void fn_8001D298(s32 arg0) {
     s32 temp_r31;
