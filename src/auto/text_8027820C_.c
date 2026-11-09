@@ -175,6 +175,71 @@ report_once:
         fn_802E30C8(lbl_803475D8);
     }
 }
+
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+void fn_8027847C(void *arg0) {
+    struct Key { float mat[12]; float value; int frame; };
+    register const char *base = lbl_80347580;
+    register char *obj = (char *)arg0;
+    register struct Key *first, *next;
+    struct Key *p=(struct Key *)lbl_8055F5B0;
+    int now=lbl_8055E3C4;
+    int count=lbl_8055F5B4;
+    int i=0;
+    float fraction, denominator, v, nextvalue;
+    int delta, keybase;
+    char buffer[256];
+    int frame;
+    while (i+2 < count) {
+        if (p[1].frame > now) break;
+        p++; i++;
+    }
+    if (i>=0 && i+1<count) {
+        keybase=*(volatile int *)&lbl_8055F5B0;
+        first=(struct Key *)(keybase + i*0x38);
+        next=(struct Key *)(keybase + (i+1)*0x38);
+        delta=next->frame-first->frame;
+        denominator=lbl_805640A0;
+        if ((float)delta > denominator) denominator=(float)delta;
+        fraction=(float)(now-first->frame)/denominator;
+        fraction = lbl_805640A4 < fraction ? lbl_805640A4 : fraction;
+        fraction = fraction > lbl_805640A8 ? fraction : lbl_805640A8;
+        fn_8026E22C((float *)(obj+0x58),first,next,fraction);
+        nextvalue=next->value;
+        v=first->value;
+        *(float *)(obj+0xbc)=v+fraction*(nextvalue-v);
+        if (*(unsigned char *)&lbl_8055F5B9 && !*(unsigned char *)&lbl_8055F5BA && lbl_8055E3C4>=lbl_8055F5C0 && lbl_8055E3C4<lbl_8055F5C0+10) {
+            lbl_8055F5B9=0; lbl_8055F5BA=1; lbl_8055F5C4=-1;
+            fn_802E30C8(base+0x70,lbl_8055F5C0,lbl_8055F5BC);
+        } else if (*(unsigned char *)&lbl_8055F5BA && lbl_8055E3C4>((struct Key *)lbl_8055F5B0)[lbl_8055F5B4-1].frame) {
+            lbl_8055F5BA=0;
+            fn_802E30C8(base+0x90);
+        }
+        if (*(unsigned char *)&lbl_8055F5BA && lbl_8055E3C4!=lbl_8055F5C4) {
+            lbl_8055F5C4=lbl_8055E3C4;
+            frame=lbl_8055E3C4-lbl_8055F5C0;
+            if (frame>=0 && frame<=lbl_8055F5BC-lbl_8055F5C0 && lbl_8055F5C0<=lbl_8055F5BC && frame%2==0) {
+                fn_802E30C8(base+0xa8,frame);
+                fn_801345D8(buffer,256,base+0xd0,lbl_804A15D0,frame/2);
+                fn_802D08B4(2,2,1);
+                fn_802D07E4(buffer,1);
+            }
+        }
+    } else {
+        float *m=(float *)(obj+0x58);
+        float end, zero, one;
+        zero=lbl_805640A8; one=lbl_805640A4; end=lbl_805640AC;
+        m[0]=one; m[1]=zero; m[2]=zero;
+        m[3]=zero; m[4]=one; m[5]=zero;
+        m[6]=zero; m[7]=zero; m[8]=one;
+        m[9]=zero; m[10]=zero; m[11]=zero;
+        *(float *)(obj+0xbc)=end;
+    }
+}
+#pragma pop
+
 #pragma pop
 void fn_80278778(char *arg0) {
     int i;
@@ -208,12 +273,7 @@ char fn_802787F4(void) {
 }
 
 int fn_802787FC(void) {
-    int result = 0;
-    if ((unsigned char)lbl_8055F5BA != 0) goto done;
-    if ((unsigned char)lbl_8055F5BB == 0) goto done;
-    result = 1;
-done:
-    return result;
+    return ((unsigned char)lbl_8055F5BA != 0) || ((unsigned char)lbl_8055F5BB != 0);
 }
 
 extern char lbl_8055F5BB;
