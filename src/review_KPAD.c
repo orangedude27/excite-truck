@@ -1341,7 +1341,7 @@ s32 KPADRead(s32 chan, KPADStatus* sampling_bufs, s32 length) {
     } else {
         index = WPADGetLatestIndexInBuf(active_chan + 4);
     }
-    var_r25 = kp->unk_0x116;
+    var_r25 = kp->last_read_index;
     if (var_r25 < 0) {
         var_r25 = index - 1;
         if (var_r25 < 0) {
