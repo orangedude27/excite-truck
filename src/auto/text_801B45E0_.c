@@ -134,8 +134,8 @@ extern "C" void fn_801B4720(int arg0) {
     int offset;
     unsigned int i;
     int minusOne;
-    int zero;
     int value;
+    int zero;
 
     i = 0;
     offset = 0;
@@ -149,8 +149,8 @@ extern "C" void fn_801B4720(int arg0) {
         *(int *)((char *)*(int **)(arg0 + 0x18) + offset + 8) = zero;
         offset += 12;
     }
-    value = *(int *)(arg0 + 4);
     zero = 0;
+    value = *(int *)(arg0 + 4);
     *(int *)(arg0 + 8) = zero;
     *(int *)(arg0 + 0xC) = value;
     *(int *)(arg0 + 0x10) = value;
@@ -343,9 +343,9 @@ void fn_801B4C9C(int arg0, int arg1) {
     count = arg1 - ((int (*)(int))fn_801B4B9C)(arg0);
     value = fn_801B47AC(arg0 + 4);
     count /= 6;
-    do {
-        fn_801B47BC(arg0 + 4, value);
-    } while (count-- != 0);
+    while (count-- != 0) {
+        value = fn_801B47BC(arg0 + 4, value);
+    }
 }
 #pragma pop
 extern float lbl_80562660;
