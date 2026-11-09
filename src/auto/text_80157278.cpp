@@ -2526,6 +2526,16 @@ struct BonusTracker {
     virtual void v27();
     virtual void v28();
     virtual s32 GetType();         // 0x7C bonus category
+    // Past the category getters, the trackers that run on a timer (fn_8015CFFC,
+    // fn_8015C264 and fn_80159F2C) use these:
+    virtual void scoreEvent();      // 0x80 score one queued event
+    virtual void v30();             // 0x84
+    virtual void refreshDisplay();  // 0x88 redraw the popup with what has been scored
+    virtual void v32();             // 0x8C
+    virtual void v33();             // 0x90
+    virtual s32 mayTimeOut();       // 0x94 non-zero lets the bonus timer reach zero
+    virtual void v35();             // 0x98
+    virtual s32 hasRecords();       // 0x9C non-zero while the record table can end the bonus
 };
 
 // The bonus popup a tracker drives (tracker+0x248; NULL while none is up).
