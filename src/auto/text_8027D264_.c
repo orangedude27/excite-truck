@@ -196,13 +196,22 @@ int fn_8027D6BC(int arg0, int arg1) {
     return arg0;
 }
 
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_8027D6FC(void *arg0) {
-    void *res = fn_8001285C(*(int *)((char *)arg0 + 0xC));
+    class Obj {
+    public:
+        virtual void v0();
+        virtual int v1(int);
+        virtual void v2();
+        virtual int v3(int);
+    };
+    int id = *(int *)((char *)arg0 + 0xC);
+    void *res = fn_8001285C(id);
     void *obj = *(void **)((char *)res + 0x20);
-    if ((*(int (**)(void *, int))(*(char **)obj + 0xC))(obj, (int)&lbl_8055C77C) != 0) {
+    if (((Obj *)obj)->v1((int)&lbl_8055C77C) != 0) {
         obj = *(void **)((char *)res + 0x20);
-        fn_80008188((*(int (**)(void *, int))(*(char **)obj + 0x14))(obj, (int)&lbl_8055C774));
+        fn_80008188(((Obj *)obj)->v3((int)&lbl_8055C774));
     } else {
         fn_80008188(fn_80012820(*(int *)((char *)res + 4)) + 8);
     }
