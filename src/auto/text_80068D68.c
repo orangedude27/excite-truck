@@ -9780,6 +9780,14 @@ tBTM_PM_MODE btm_pm_get_set_mode(UINT8 pm_id, tBTM_PM_MCB *p_cb, tBTM_PM_PWR_MD 
     return p_res->mode;
 }
 
+/* The two park-mode command senders.  Like the other senders in this unit they
+   build the packet in the buffer they are handed (NULL = allocate one) and the
+   game's symbols kept the names of the sniff/hold senders next to them: the
+   first writes HCI opcode 0x0805 (Link Policy / Park_Mode, parameters handle,
+   interval, interval) and the second 0x0806 (Exit_Park_Mode, parameter handle). */
+#define btsnd_hcic_park_mode      btsnd_hcic_hold_mode_80084A34
+#define btsnd_hcic_exit_park_mode btsnd_hcic_exit_sniff_mode_80084AE8
+
 tBTM_STATUS btm_pm_snd_md_req(UINT8 pm_id, int link_ind, tBTM_PM_PWR_MD *p_mode) {
     extern BOOLEAN btsnd_hcic_sniff_mode(BT_HDR *, s16, s16, s16, s16, u16);
     extern s32 btsnd_hcic_exit_sniff_mode(void *, u16);
