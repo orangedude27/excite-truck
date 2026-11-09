@@ -210,6 +210,7 @@ void fn_8027D6FC(void *arg0) {
 #pragma cplusplus on
 #pragma scheduling off
 extern "C" void fn_8027D77C(void *arg0) {
+    struct S { int a, b, c, id; };
     class Obj {
     public:
         virtual void v0();
@@ -217,7 +218,8 @@ extern "C" void fn_8027D77C(void *arg0) {
         virtual void v2();
         virtual void v3(int);
     };
-    void *res = fn_8001285C(*(int *)((char *)arg0 + 0xC));
+    int id = ((struct S *)arg0)->id;
+    void *res = fn_8001285C(id);
     void *obj = *(void **)((char *)res + 0x20);
     ((Obj *)obj)->v3((int)&lbl_8055C784);
 }
@@ -376,11 +378,14 @@ void fn_8027D96C(int arg0) {
   extern char lbl_80347DF8[];
   extern void fn_802E30C8(char *, ...);
 void fn_8027D9A4(int arg0, int arg1) {
-    if (arg1 != 0) {
-        return;
+    switch (arg1) {
+    case 0:
+        fn_802E30C8(lbl_80347DF8, arg0);
+        memset(lbl_804B2FD8 + arg0 * 8, 0, 8);
+        break;
+    default:
+        break;
     }
-    fn_802E30C8(lbl_80347DF8, arg0);
-    memset(lbl_804B2FD8 + arg0 * 8, 0, 8);
 }
 
 __declspec(section ".data") extern char lbl_804B2FD8[];
