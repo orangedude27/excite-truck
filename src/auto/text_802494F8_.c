@@ -167,18 +167,12 @@ void *fn_8024A204(void *arg0, s32 arg1) {
 }
 #pragma scheduling reset
 void *fn_8024A268(void *arg0, s32 arg1) {
-    volatile s32 *p;
-    volatile s32 test;
     if (arg0 != 0) {
-        p = (volatile s32 *)arg0;
-        p[4] = 0;
-        test = arg1;
-        p[6] = -1;
-        if (test > 0) {
-            p[7] = 0;
+        *(s32 *)((char *)arg0 + 0x10) = 0;
+        *(s32 *)((char *)arg0 + 0x1C) = 0;
+        *(s32 *)((char *)arg0 + 0x18) = -1;
+        if (arg1 > 0) {
             fn_80128668(arg0);
-        } else {
-            p[7] = 0;
         }
     }
     return arg0;
@@ -397,10 +391,11 @@ record_done:
 #pragma pop
 s32 fn_8024A6A4(s32 *arg0) {
     if (fn_802411D4() == 0) {
-        *(volatile s32 *)arg0 = -1;
+        *arg0 = -1;
         return 1;
+    } else {
+        return 0;
     }
-    return 0;
 }
 
 void *fn_8024AC54(void *arg0, int arg1) {
@@ -1100,6 +1095,38 @@ void fn_8024BB5C(void *arg0) {
 s32 fn_8024BB7C(void *arg0) {
     return *(s32 *)((char *)lbl_802FA4B0 + (*(s32 *)((char *)arg0 + 0x10) << 3) + 4);
 }
+
+#pragma cplusplus on
+#pragma scheduling invalid_target
+extern "C" void fn_8024BB98(void *arg0) {
+    class Base {
+    public:
+        char pad[0xC];
+    };
+    class Dummy : public Base {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12(s32 *, s32 *);
+    };
+    s32 spC;
+    s32 sp8;
+    void *obj = *(void **)((char *)arg0 + 0x4C);
+    ((Dummy *)obj)->v12(&spC, &sp8);
+    fn_80257BB8(arg0, *(s32 *)fn_80012870(spC, sp8));
+}
+#pragma scheduling on
+#pragma cplusplus off
 
 extern char lbl_80343E60[];
 void fn_8024BBF4(void *arg0) {
