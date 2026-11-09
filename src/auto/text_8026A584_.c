@@ -3,9 +3,9 @@
 
 extern void fn_8000D838(void *);
 extern void fn_8002F53C(void *, void *, void *, int, int);
-extern char lbl_80499080[];
-extern char lbl_803467E8[];
-extern char lbl_8055F470[];
+extern unsigned char lbl_80499080[];
+extern unsigned char lbl_803467E8[];
+extern unsigned char lbl_8055F470;
 extern int lbl_8055F478;
 extern float lbl_8055F47C;
 extern float lbl_8055F49C;
