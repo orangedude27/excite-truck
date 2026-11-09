@@ -1,4 +1,14 @@
 #include "revolution/MTX/vec.h"
+#pragma cplusplus on
+class Dummy_801ADA9C {
+public:
+    virtual void d0(void *, void *);
+    virtual void d1(void *, void *);
+    virtual void d2(void *, void *);
+    virtual void d3(void *, void *);
+    virtual void v4(void *, void *);
+};
+#pragma cplusplus off
 struct FnTable_801ADA9C { char pad[0x18]; void (*call)(void *, void *, void *); };
 struct Obj_801ADA9C { struct FnTable_801ADA9C *vtable; };
 // Code of main that had no source file yet: decomp.wtf gave it this one.
@@ -1327,6 +1337,115 @@ void fn_801AC508(void) {
         lbl_8055E5F0 = fn_801C1BA4(value * 5, value * 5 - 1, value);
     }
 }
+
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+extern float PSQUATMultiply(void *, void *);
+extern void fn_801A2674(void *, int, int, float);
+extern void fn_801C1CBC(int, int, void *, int, void *, int, void *);
+extern float lbl_805624AC, lbl_805624F0, lbl_805624F4, lbl_805624F8;
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+void fn_801AC544(void *arg0) {
+    struct Point { float x,y,z,a,b; };
+    struct Link { int a,b; float distance, value; };
+    struct Anchor { int index; void *matrix; int unused; };
+    struct Point points[320];
+    struct Link links[320];
+    struct Anchor anchors[64];
+    Vec a, b;
+    int npoints, nlinks, nanchors, i, j;
+    fn_801AC184(arg0);
+    if (*(int *)((char *)arg0 + 0x250) == lbl_8055E5EC - 1 && lbl_8055E5F0 != 0) {
+        float divisor = lbl_805624F4, one = lbl_805624AC, zero = lbl_8056247C, val = lbl_805624F8, factor = lbl_805624F0, base = lbl_80562478;
+        npoints = nlinks = nanchors = 0;
+        { void **iter = lbl_80435628;
+        for (i = 0; i < lbl_8055E5EC; i++, iter++) {
+            char *obj = *iter;
+            float *m = (float *)(obj + 0x1ec);
+            float *v = (float *)(obj + 0x244);
+            char *parent;
+            if (&a == (Vec *)v) {
+                float x = v[0], y = v[1], z = v[2];
+                float p0 = x*m[0], p1 = y*m[3], p2 = z*m[6];
+                float xx = p2 + (p0 + p1);
+                float q0 = x*m[1], q1 = y*m[4], q2 = z*m[7];
+                float yy = q2 + (q0 + q1);
+                float r0 = x*m[2], r1 = y*m[5], r2 = z*m[8];
+                float zz = r2 + (r0 + r1);
+                a.x = xx; a.y = yy; a.z = zz;
+            } else {
+                a.x = v[2]*m[6] + (v[0]*m[0] + v[1]*m[3]);
+                a.y = v[2]*m[7] + (v[0]*m[1] + v[1]*m[4]);
+                a.z = v[2]*m[8] + (v[0]*m[2] + v[1]*m[5]);
+            }
+            a.x += m[9]; a.y += m[10]; a.z += m[11];
+            parent = *(char **)(obj + 0x23c);
+            if (parent) {
+                float d = base + factor * PSQUATMultiply(obj + 0x210, parent + 0x210);
+                if (*(void **)(obj + 0x240))
+                    fn_801A2674(*(void **)(obj + 0x240), npoints, npoints + 5, d);
+                parent = *(char **)(obj + 0x23c);
+                m = (float *)(parent + 0x1ec);
+                v = (float *)(parent + 0x244);
+                if (&b == (Vec *)v) {
+                    float x = v[0], y = v[1], z = v[2];
+                    float p0 = x*m[0], p1 = y*m[3], p2 = z*m[6];
+                float xx = p2 + (p0 + p1);
+                    float q0 = x*m[1], q1 = y*m[4], q2 = z*m[7];
+                float yy = q2 + (q0 + q1);
+                    float r0 = x*m[2], r1 = y*m[5], r2 = z*m[8];
+                float zz = r2 + (r0 + r1);
+                    b.x = xx; b.y = yy; b.z = zz;
+                } else {
+                    b.x = v[2]*m[6] + (v[0]*m[0] + v[1]*m[3]);
+                    b.y = v[2]*m[7] + (v[0]*m[1] + v[1]*m[4]);
+                    b.z = v[2]*m[8] + (v[0]*m[2] + v[1]*m[5]);
+                }
+                b.x += m[9]; b.y += m[10]; b.z += m[11];
+                for (j = 0; j < 5; j++) {
+                    if (j > 0) {
+                        float t = (float)j / divisor;
+                        float s = one - t;
+                        points[npoints].x = b.x*s + a.x*t;
+                        points[npoints].y = b.y*s + a.y*t;
+                        points[npoints].z = b.z*s + a.z*t;
+                        points[npoints].a = one;
+                        points[npoints].b = one;
+                        npoints++;
+                    }
+                    { struct Link *link = &links[nlinks];
+                    link->a = npoints;
+                    link->b = npoints - 1;
+                    link->distance = zero;
+                    link->value = val;
+                    nlinks++; }
+                }
+            }
+            anchors[nanchors].index = npoints;
+            anchors[nanchors].matrix = obj + 0x3c;
+            anchors[nanchors].unused = 0;
+            nanchors++;
+            *(int *)(obj + 0x254) = npoints;
+            points[npoints].x = a.x;
+            points[npoints].y = a.y;
+            points[npoints].z = a.z;
+            points[npoints].a = one;
+            points[npoints].b = one;
+            npoints++;
+        }
+        }
+        for (i = 0; i < nlinks; i++) {
+            PSQUATMultiply(&points[links[i].a], &points[links[i].b]);
+            links[i].distance = zero;
+        }
+        fn_801C1CBC(lbl_8055E5F0, npoints, points, nlinks, links, nanchors, anchors);
+    }
+}
+#pragma pop
+
 #pragma dont_inline reset
 
 #pragma push
