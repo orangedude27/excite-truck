@@ -395,7 +395,7 @@ extern void SCInit(void);
 extern char lbl_80315700[];
 extern u8 lbl_802EEB60[];
 extern u8 lbl_802EEC40[];
-extern u8 fn_8009504C();
+extern u8 fn_8009504C(u16, u8 *);
 extern u8 lbl_802EEBD8[];
 extern char *bta_hh_evt_code(u32);
 extern char lbl_8031A188[];
@@ -24986,9 +24986,9 @@ BOOLEAN sdpu_compare_uuid_with_attr(tBT_UUID *p_btuuid, tSDP_DISC_ATTR *p_attr) 
 }
 
 void sdpu_sort_attr_list(UINT16 num_attr, tSDP_DISCOVERY_DB *p_db) {
+    UINT16 x;
     int last;
     UINT16 i;
-    UINT16 x;
 
     if (num_attr <= 1) {
         return;
