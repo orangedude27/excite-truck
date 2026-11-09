@@ -551,6 +551,7 @@ int fn_8028EF44(void *arg0, unsigned int arg1) {
     fn_802E317C(lbl_80348F4C);
     return 0;
 }
+#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
