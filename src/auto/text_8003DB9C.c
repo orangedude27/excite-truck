@@ -2500,9 +2500,19 @@ void GXSetTexCopyDst(int width, int height, int format, int depth) {
 }
 
 void GXSetDispCopyFrame2Field(s32 value) {
-    unsigned int *data = __GXData;
-    data[0x23C / 4] = (data[0x23C / 4] & ~(3U << 12)) | ((value & 3) << 12);
-    data[0x24C / 4] = data[0x24C / 4] & ~(3U << 12);
+    union {
+        unsigned int reg;
+        struct {
+            unsigned int pad : 18;
+            unsigned int field : 2;
+            unsigned int rest : 12;
+        } fields;
+    } data;
+    unsigned int *gx = __GXData;
+    data.reg = gx[0x23C / 4];
+    data.fields.field = value;
+    gx[0x23C / 4] = data.reg;
+    gx[0x24C / 4] &= 0xFFFFCFFF;
 }
 
 void GXSetCopyClamp(s32 value) {
