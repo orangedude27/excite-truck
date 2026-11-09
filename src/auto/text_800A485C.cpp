@@ -324,7 +324,7 @@ extern "C" s32 VFiPFCODE_CP932_OEM2Unicode(s32, u16 *);
 extern "C" s32 VFiPFCODE_CP932_Unicode2OEM(s32, u32 *);
 extern "C" s32 VFiPFCODE_CP932_isOEMMBchar(u8, s32);
 extern "C" s16 fn_800B7200(s32);
-extern "C" void fn_800B72B0(void);
+extern "C" s16 fn_800B72B0(s32);
 extern "C" s32 fn_800B72E4(void);
 extern "C" void fn_800B7710(void *);
 extern "C" void __AXDSPInitCallback_800B7860(void);
@@ -5483,9 +5483,9 @@ extern "C" s32 fn_800AFE14(void *arg0, s32 arg1, s32 *arg2);
 extern "C" s32 fn_800B5260(void *, void *, u32, u32, s32);
 extern "C" s32 fn_800B0258(void *, s32, s32 *);
 extern "C" s32 fn_800AE620(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    s32 sign = (-arg2 | arg2) >> 31;
-    s32 result = fn_800AE4C0((void *)arg0, (u32)arg1, (u32)sign, 0, (s32 *)arg3);
-    return (result != 0) ? result : 0;
+    u32 sign = ((u32)(-(arg2) | (arg2))) >> 31;
+    s32 result = fn_800AE4C0((void *)arg0, (u32)arg1, sign, 0, (s32 *)arg3);
+    return result == 0 ? 0 : result;
 }
 
 extern "C" s32 fn_800AE664(void *arg0, u32 arg1, u32 arg2, s32 *arg3, s32 *arg4) {
@@ -23505,8 +23505,8 @@ extern "C" s32 fn_800A4B54(s32 arg0) {
 #pragma pop
 
 extern "C" void fn_800A4B78(u16 *arg0, u16 *arg1) {
+    u16 *dst = arg0;
     u16 *src = arg1;
-    volatile u16 *dst = (volatile u16 *)arg0;
     u16 value;
     goto copy;
 loop:
