@@ -1,5 +1,6 @@
 extern int lbl_8055F5B0;
 extern int lbl_8055F5C4;
+void *fn_802678E4(int);
 extern float lbl_805640A0, lbl_805640A4, lbl_805640A8, lbl_805640AC;
 extern void fn_8026E22C(float *, void *, void *, float);
 extern void fn_801345D8(char *, int, const char *, ...);
