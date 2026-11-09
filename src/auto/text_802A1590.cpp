@@ -243,7 +243,8 @@ extern "C" void fn_802A17FC(void) {
         void **obj = *entry;
         if (obj != 0) ((Dispatch *)obj)->call();
         index++;
-    } while (index < 8 && (entry++, index < 8));
+        entry++;
+    } while (index < 8);
 }
 
 extern "C" void fn_802A1860(void) {}
@@ -1468,15 +1469,13 @@ extern "C" void *fn_802A42C8(void *arg0, void *arg1, s32 arg2) {
 
     f32 upper = lbl_80564734 - *(f32 *)((char *)object + 0x4c);
     f32 clampUpper = lbl_80564744;
-    if (clampUpper > upper) {
-    } else {
+    if (clampUpper <= upper)
         clampUpper = upper;
-    }
     f32 clampLower = *(f32 *)((char *)object + 0x4c);
-    if (clampLower < lbl_80564734) {
-    } else {
+    if (clampLower >= lbl_80564734)
+        ;
+    else
         clampLower = lbl_80564734;
-    }
     f32 product = *(f32 *)((char *)object + 0x44) * clampLower;
     f32 base = *(f32 *)((char *)object + 0x40) + product;
     *(f32 *)((char *)object + 0x64) = (f32)fn_8002F208(
