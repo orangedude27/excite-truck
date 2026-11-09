@@ -1365,40 +1365,49 @@ extern void fn_802D5FE4(void *);
 extern void fn_802E30C8(const char *, ...);
 extern void fn_80128670(s32);
 
-void fn_802D68C4(FifoVtx *__restrict vertices, void *unused, u16 *__restrict indices, s32 count) {
+/* Draw an indexed triangle list by pushing its vertices straight into the GX
+   FIFO.  The vertex array holds FifoVtx records and the index array says which
+   of them to send, `count` of them as GX_TRIANGLES in vertex format 0, which is
+   set up here to take position, color 0 and texture coordinate 0 directly from
+   the FIFO.  Each color is rotated left by eight on the way out, and the
+   renderer's own cached state is set to mode 0 and applied before the draw and
+   cleared again after it.  The vertex count the callers pass is not used. */
+void fn_802D68C4(FifoVtx *__restrict vertices, s32 vertexCount,
+                 u16 *__restrict indices, s32 count) {
     register s32 i;
+
     lbl_8055FD25 = 0;
     lbl_804C5700[9] = 0;
     *(u32 *)(lbl_804C5700 + 4) = 0;
     fn_802D2614();
     fn_802D2B0C();
     GXClearVtxDesc();
-    GXSetVtxDesc(9, 1);
-    GXSetVtxDesc(0xB, 1);
-    GXSetVtxDesc(0xD, 1);
-    GXSetVtxAttrFmt(0, 9, 1, 4, 0);
-    GXSetVtxAttrFmt(0, 0xB, 1, 5, 0);
-    GXSetVtxAttrFmt(0, 0xD, 1, 4, 0);
-    GXBegin(0x90, 0, (u16)count);
+    GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+    GXSetVtxDesc(GX_VA_CLR0, GX_DIRECT);
+    GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGBA8, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+    GXBegin(GX_TRIANGLES, GX_VTXFMT0, (u16)count);
     for (i = 0; i < count; i++) {
-        register FifoVtx *v = &vertices[indices[i]];
-        FifoVtx t;
+        register FifoVtx *vertex = &vertices[indices[i]];
+        FifoVtx vtx;
         f32 x;
         f32 y;
         f32 z;
-        t.pos = v->pos;
-        t.color = v->color;
-        t.u = v->u;
-        t.v = v->v;
-        x = t.pos.x;
-        y = t.pos.y;
-        z = t.pos.z;
-        *(volatile f32 *)0xCC008000 = x;
-        *(volatile f32 *)0xCC008000 = y;
-        *(volatile f32 *)0xCC008000 = z;
-        *(volatile u32 *)0xCC008000 = (t.color << 8) | (t.color >> 24);
-        *(volatile f32 *)0xCC008000 = t.u;
-        *(volatile f32 *)0xCC008000 = t.v;
+        vtx.pos = vertex->pos;
+        vtx.color = vertex->color;
+        vtx.u = vertex->u;
+        vtx.v = vertex->v;
+        x = vtx.pos.x;
+        y = vtx.pos.y;
+        z = vtx.pos.z;
+        *(volatile f32 *)GX_FIFO_ADDR = x;
+        *(volatile f32 *)GX_FIFO_ADDR = y;
+        *(volatile f32 *)GX_FIFO_ADDR = z;
+        *(volatile u32 *)GX_FIFO_ADDR = (vtx.color << 8) | (vtx.color >> 24);
+        *(volatile f32 *)GX_FIFO_ADDR = vtx.u;
+        *(volatile f32 *)GX_FIFO_ADDR = vtx.v;
     }
     fn_802D6C68();
 }
