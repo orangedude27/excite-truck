@@ -43,6 +43,29 @@ static u32 InterruptPrioTable[] = {
 void ExternalInterruptHandler(u8 type, OSContext* ctx);
 u32 SetInterruptMask(u32 type, u32 mask);
 
+/**
+ * @brief Apply the requested interrupt mask to the hardware register that
+ *        owns one group of sources, and report which sources it handled.
+ *
+ * @p type is the set of sources still to be dealt with (the callers' work
+ * mask, built with OS_INTR_MASK()); @p mask is the set that must stay
+ * enabled.  __cntlzw() picks out the highest source number in @p type, which
+ * says which group this round owns: the memory interface, the DSP, the AI,
+ * one of the three EXI channels or the PI.  That group's register is then
+ * rewritten whole - every source of the group that is missing from @p mask
+ * gets its mask bit set, the others are cleared - so a caller that mixes
+ * groups has to come back for each one; that is what the loop in
+ * __OSMaskInterrupts()/__OSUnmaskInterrupts() does.
+ *
+ * The return value is @p type with this group's sources removed, so the
+ * caller can use it as the remaining work mask.  A source number outside
+ * every group leaves the hardware alone and is handed back unchanged, which
+ * also ends those loops.
+ *
+ * Writing the register whole is why some groups clear more than the mask
+ * bits: the DSP case also drops the three cause bits, the AI case the
+ * sound-code reset, and EXI channel 0 the ROM-disable bit.
+ */
 u32 SetInterruptMask(u32 type, u32 mask) {
     u32 miMask;
     u32 dspMask;
@@ -51,9 +74,8 @@ u32 SetInterruptMask(u32 type, u32 mask) {
     u32 piMask;
 
     switch (__cntlzw(type)) {
-    /**
-     * MEM interrupts
-     */
+    /* memory interface: MI_INTMR is write-only here, so the register is
+     * rebuilt from nothing */
     case OS_INTR_MEM_0:
     case OS_INTR_MEM_1:
     case OS_INTR_MEM_2:
@@ -82,9 +104,7 @@ u32 SetInterruptMask(u32 type, u32 mask) {
                ~(OS_INTR_MASK(OS_INTR_MEM_0) | OS_INTR_MASK(OS_INTR_MEM_1) |
                  OS_INTR_MASK(OS_INTR_MEM_2) | OS_INTR_MASK(OS_INTR_MEM_3) |
                  OS_INTR_MASK(OS_INTR_MEM_ADDRESS));
-    /**
-     * DSP interrupts
-     */
+    /* DSP: AI/ARAM/DSP requests, all in the DSP control/status register */
     case OS_INTR_DSP_AI:
     case OS_INTR_DSP_ARAM:
     case OS_INTR_DSP_DSP:
@@ -106,9 +126,7 @@ u32 SetInterruptMask(u32 type, u32 mask) {
         return type &
                ~(OS_INTR_MASK(OS_INTR_DSP_AI) | OS_INTR_MASK(OS_INTR_DSP_ARAM) |
                  OS_INTR_MASK(OS_INTR_DSP_DSP));
-    /**
-     * AI interrupts
-     */
+    /* AI: the one audio request, next to the sound-code reset bit */
     case OS_INTR_AI_AI:
         aiMask = AI_HW_REGS[AI_AICR];
         aiMask &= ~(AI_AICR_AIINTMSK | AI_AICR_AIINT | AI_AICR_SCRESET);
@@ -119,9 +137,7 @@ u32 SetInterruptMask(u32 type, u32 mask) {
 
         AI_HW_REGS[AI_AICR] = aiMask;
         return type & ~OS_INTR_MASK(OS_INTR_AI_AI);
-    /**
-     * EXI interrupts (Channel 0)
-     */
+    /* EXI channel 0 (flash/game interface); its register also holds ROMDIS */
     case OS_INTR_EXI_0_EXI:
     case OS_INTR_EXI_0_TC:
     case OS_INTR_EXI_0_EXT:
@@ -144,9 +160,7 @@ u32 SetInterruptMask(u32 type, u32 mask) {
         return type & ~(OS_INTR_MASK(OS_INTR_EXI_0_EXI) |
                         OS_INTR_MASK(OS_INTR_EXI_0_TC) |
                         OS_INTR_MASK(OS_INTR_EXI_0_EXT));
-    /**
-     * EXI interrupts (Channel 1)
-     */
+    /* EXI channel 1 (Bluetooth on this game) */
     case OS_INTR_EXI_1_EXI:
     case OS_INTR_EXI_1_TC:
     case OS_INTR_EXI_1_EXT:
@@ -168,9 +182,7 @@ u32 SetInterruptMask(u32 type, u32 mask) {
         return type & ~(OS_INTR_MASK(OS_INTR_EXI_1_EXI) |
                         OS_INTR_MASK(OS_INTR_EXI_1_TC) |
                         OS_INTR_MASK(OS_INTR_EXI_1_EXT));
-    /**
-     * EXI interrupts (Channel 2)
-     */
+    /* EXI channel 2: no external interrupt line, so no EXT bit */
     case OS_INTR_EXI_2_EXI:
     case OS_INTR_EXI_2_TC:
         exi2Mask = EXI_CHAN_PARAMS[EXI_CHAN_2].cpr;
@@ -187,9 +199,7 @@ u32 SetInterruptMask(u32 type, u32 mask) {
         EXI_CHAN_PARAMS[EXI_CHAN_2].cpr = exi2Mask;
         return type & ~(OS_INTR_MASK(OS_INTR_EXI_2_EXI) |
                         OS_INTR_MASK(OS_INTR_EXI_2_TC));
-    /**
-     * PI interrupts
-     */
+    /* PI: everything else, in one 16-bit register */
     case OS_INTR_PI_CP:
     case OS_INTR_PI_PE_TOKEN:
     case OS_INTR_PI_PE_FINISH:
@@ -201,6 +211,7 @@ u32 SetInterruptMask(u32 type, u32 mask) {
     case OS_INTR_PI_DEBUG:
     case OS_INTR_PI_HSP:
     case OS_INTR_PI_ACR:
+        /* the four sources owned by other registers above stay masked */
         piMask = PI_INTMR_EXI | PI_INTMR_AI | PI_INTMR_DSP | PI_INTMR_MEM;
 
         if (!(mask & OS_INTR_MASK(OS_INTR_PI_CP))) {
@@ -246,6 +257,7 @@ u32 SetInterruptMask(u32 type, u32 mask) {
                  OS_INTR_MASK(OS_INTR_PI_RSW) | OS_INTR_MASK(OS_INTR_PI_ERROR) |
                  OS_INTR_MASK(OS_INTR_PI_VI) | OS_INTR_MASK(OS_INTR_PI_DEBUG) |
                  OS_INTR_MASK(OS_INTR_PI_HSP) | OS_INTR_MASK(OS_INTR_PI_ACR));
+    /* not a source number: nothing to mask, and the caller's loop stops */
     default:
         return type;
     }
