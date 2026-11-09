@@ -2,7 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
   extern char lbl_8055E8C0;
-  extern char lbl_80338098;
+      extern char lbl_80338098[];
   extern char lbl_802F9940[];
   extern char lbl_8033819C[];
   extern int stricmp(const char *, const char *);
@@ -19,16 +19,27 @@
       return (char *)&lbl_80338098 + arg0 * 0x14;
   }
   
-  int fn_801D04D0(const char *arg0) {
-      Entry entries[13];
-      int i;
-      for (i = 0; i < 13; i++)
-          entries[i] = ((Entry *)lbl_802F9940)[i];
-      for (i = 0; i < 13; i++) {
-          if (stricmp(arg0, entries[i].name) == 0)
-              return entries[i].value;
-      }
-      fn_802E317C(lbl_8033819C, arg0);
-      return 100;
-  }
-
+#pragma push
+#pragma scheduling invalid_target
+#pragma scheduling on
+int fn_801D04D0(const char *arg0) {
+    Entry entries[13];
+    unsigned int i;
+    const Entry *src = (const Entry *)lbl_802F9940 - 1;
+    Entry *dst = entries - 1;
+    i = 13;
+    while (i) {
+        i--;
+        dst->name = src->name;
+        dst->value = src->value;
+        dst++;
+        src++;
+    }
+    for (i = 0; i < 13; i++) {
+        if (stricmp(arg0, entries[i].name) == 0)
+            return entries[i].value;
+    }
+    fn_802E317C(lbl_8033819C, arg0);
+    return 100;
+}
+#pragma pop
