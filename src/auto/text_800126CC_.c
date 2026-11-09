@@ -7,6 +7,7 @@ extern char lbl_802FC638[];
 extern char lbl_802FC69C[];
 extern char lbl_80352AD0[];
 extern char lbl_802FC610[];
+extern char lbl_802FCB50[];
 extern int lbl_8055D51C;
 extern int lbl_8055D50C;
 extern int lbl_8055D510;
@@ -472,16 +473,18 @@ extern int fn_80131808(int);
 extern void fn_8001335C(int, int);
 #pragma scheduling invalid_target
 void fn_80013618(int arg0) {
-    int count;
     int result;
+    int *base;
+    int count;
     if (arg0 == 0)
         return;
     if (fn_8012C33C() == 0)
         return;
     result = fn_80131808(arg0);
-    count = *(int *)(lbl_8035183C + 0x80);
-    *(int *)(lbl_8035183C + count * 4) = result;
-    *(int *)(lbl_8035183C + 0x80) = count + 1;
+    base = (int *)lbl_8035183C;
+    count = base[0x20];
+    base[count] = result;
+    base[0x20] = count + 1;
     fn_8001335C(result, arg0);
 }
 
