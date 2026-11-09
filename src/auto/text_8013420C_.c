@@ -86,7 +86,9 @@ s32 fn_80134424(Container *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
     s32 active;
     Entry *entry;
     s32 size;
+    char *message;
 
+    message = lbl_8032BB18;
     active = 0;
     for (i = 0; i < arg0->count; i++) {
         entry = (Entry *)((char *)arg0->entries + i * 0x18);
@@ -99,13 +101,13 @@ s32 fn_80134424(Container *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
         if (entry->state == 0) {
             entry->state = 1;
             entry->obj = (void *)fn_8012C5B8(arg1, arg2, arg3);
-            if (entry->obj == 0) fn_802E317C(lbl_8032BB18 + 0x30, arg1);
+            if (entry->obj == 0) fn_802E317C(message + 0x30, arg1);
             entry->cb = (void (*)(void *, void *, void *))arg4;
             entry->unk10 = (void *)arg5;
             size = fn_8012C6F0(entry->obj);
             if (arg7 <= 0) arg7 = size;
-            if (arg7 > arg0->stride) fn_802E317C(lbl_8032BB18 + 0x48, arg1, arg7);
-            if (arg6 + arg7 > size) fn_802E317C(lbl_8032BB18 + 0x70, size, arg6, arg7);
+            if (arg7 > arg0->stride) fn_802E317C(message + 0x48, arg1, arg7);
+            if (arg6 + arg7 > size) fn_802E317C(message + 0x70, size, arg6, arg7);
             entry->pad = arg7;
             fn_8012C720(entry->obj, entry->unk4, arg7, arg6);
             return i;
@@ -117,10 +119,8 @@ s32 fn_80134424(Container *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg
 
 #pragma scheduling invalid_target
 s32 fn_801345A4(Container *arg0, s32 arg1) {
-    register s32 *base = (s32 *)arg0->entries;
-    arg1 *= 0x18;
-    if (base[arg1] == 1) return 0;
-    base[arg1] = 0;
+    if (arg0->entries[arg1].state == 1) return 0;
+    arg0->entries[arg1].state = 0;
     return 1;
 }
 #pragma scheduling on
