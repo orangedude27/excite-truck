@@ -25552,34 +25552,22 @@ s32 IUSB_WriteCtrlMsgAsync(s32 a,s32 b,s32 c,s32 d,s32 e,u32 length,void* data,v
 }
 #pragma use_lmw_stmw reset
 s32 AXFXReverbHiInit(void* arg0) {
-    s32 zero;
-    s32 five;
-    f32 h, g, f, e, d, c, b, a;
-    a = *(volatile f32*)((u8*)arg0 + 0x158);
-    five = 5;
-    f = *(volatile f32*)&lbl_80560D50;
-    zero = 0;
-    b = *(volatile f32*)((u8*)arg0 + 0x150);
-    c = *(volatile f32*)((u8*)arg0 + 0x148);
-    d = *(volatile f32*)((u8*)arg0 + 0x154);
-    e = *(volatile f32*)((u8*)arg0 + 0x15C);
-    g = *(volatile f32*)&lbl_80560D54;
-    h = *(volatile f32*)((u8*)arg0 + 0x14C);
-    *(s32*)((u8*)arg0 + 0x110) = five;
-    *(f32*)((u8*)arg0 + 0x114) = a;
-    *(f32*)((u8*)arg0 + 0x118) = a;
-    *(s32*)((u8*)arg0 + 0x11C) = zero;
-    *(f32*)((u8*)arg0 + 0x120) = b;
-    *(f32*)((u8*)arg0 + 0x124) = c;
-    *(f32*)((u8*)arg0 + 0x128) = d;
-    *(f32*)((u8*)arg0 + 0x12C) = e;
-    *(f32*)((u8*)arg0 + 0x130) = f;
-    *(f32*)((u8*)arg0 + 0x134) = g;
-    *(s32*)((u8*)arg0 + 0x138) = zero;
-    *(s32*)((u8*)arg0 + 0x13C) = zero;
-    *(f32*)((u8*)arg0 + 0x140) = h;
-    *(f32*)((u8*)arg0 + 0x144) = f;
-    return AXFXReverbHiExpInit(arg0);
+    AutoReverbHi* fx = (AutoReverbHi*)arg0;
+    fx->exp.earlyMode = 5;
+    fx->exp.preDelayTimeMax = fx->preDelay;
+    fx->exp.preDelayTime = fx->preDelay;
+    fx->exp.fusedMode = 0;
+    fx->exp.fusedTime = fx->time;
+    fx->exp.coloration = fx->coloration;
+    fx->exp.damping = fx->damping;
+    fx->exp.crosstalk = fx->crosstalk;
+    fx->exp.earlyGain = 0.0f;
+    fx->exp.fusedGain = 1.0f;
+    fx->exp.busIn = 0;
+    fx->exp.busOut = 0;
+    fx->exp.outGain = fx->mix;
+    fx->exp.sendGain = 0.0f;
+    return AXFXReverbHiExpInit(&fx->exp);
 }
 
 s32 fn_8009BF98(void* arg0) {
