@@ -260,13 +260,15 @@ extern "C" void fn_80298160(void) {
         return (void*)fn_80299A04(lbl_8055F7CC, size, value);
     }
 
-  extern "C" void fn_802981F8(void* self) {
-      float sp8 = lbl_8056459C;
-      float spC = lbl_80564590;
-      float sp10 = lbl_8056459C;
-      fn_8028E584(lbl_8055F7E0, self, &sp8, lbl_8056459C);
-      fn_80288A40(self, &sp8);
-  }
+extern "C" void fn_802981F8(void* self) {
+    register float f9C = lbl_8056459C;
+    register float f90 = lbl_80564590;
+    float sp8 = f9C;
+    float spC = f90;
+    float sp10 = f9C;
+    fn_8028E584(lbl_8055F7E0, self, &sp8, f9C);
+    fn_80288A40(self, &sp8);
+}
 
   void* __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_80298250(void* self, int arg1) {
       if (self != 0) {
@@ -1120,8 +1122,7 @@ extern "C" void fn_8029A17C(void* arg0) {
 }
 
 extern "C" void fn_8029A4B4(void*, int);
-  extern "C" void fn_8029840C(void);
-  extern "C" void fn_8029A208(void* arg0, int arg1, int arg2) {
+    extern "C" void fn_8029A208(void* arg0, int arg1, int arg2) {
       int index;
       unsigned char* entry;
       if (arg2 != 0 && *(int*)((char*)arg0 + 0x40) == -1) {
