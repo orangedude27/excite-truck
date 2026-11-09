@@ -446,10 +446,7 @@ extern "C" void fn_8014595C(void *arg0, const char *arg1) {
 #pragma use_lmw_stmw reset
 #pragma dont_inline on
 extern "C" f32 fn_80145A08(f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
-    f32 span = farg3 - farg2;
-    f32 den = farg1 - farg0;
-    f32 num = farg4 - farg0;
-    return farg2 + (num / den) * span;
+    return farg2 + ((farg3 - farg2) * ((farg4 - farg0) / (farg1 - farg0)));
 }
 #pragma dont_inline reset
 
@@ -496,8 +493,8 @@ extern "C" f32 fn_801452A0(s32, f32);
 extern "C" void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
 extern "C" s32 lbl_80559E1C;
 extern "C" void fn_80145B50(void *arg0, s32 arg1) {
-    f32 value = (f32)arg1;
     f32 multiplier = lbl_80561608;
+    f32 value = (f32)arg1;
     *(f32 *)((u8 *)arg0 + 4) = lbl_805615D4;
     *(f32 *)((u8 *)arg0 + 0xC) = multiplier;
     *(f32 *)((u8 *)arg0 + 8) = multiplier;
@@ -523,9 +520,8 @@ extern "C" void fn_80145B94(void * __restrict arg0, u32 arg1) {
 #pragma push
 #pragma processor 750
 #pragma scheduling on
-extern "C" void fn_80145C08(void *arg0, const char *arg1) {
-    f32 scale_input = *(f32 *)((u8 *)arg0 + 8);
-    f32 scale = fn_801452B4(scale_input);
+extern "C" void fn_80145C08(void * __restrict arg0, const char *arg1) {
+    f32 scale = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
     f32 input = *(f32 *)((u8 *)arg0 + 4);
     s32 id = *(s32 *)((u8 *)arg0 + 0xC);
     f32 value = ((f32 (*)(s32, f32))fn_801451DC)(id, input);
@@ -1205,6 +1201,15 @@ extern "C" void *fn_80146C2C(s32 arg0, void *arg1, s32 arg2) {
         virtual void i3(); virtual void i4(); virtual void *get(const char *);
         virtual void i6(); virtual void i7();
     };
+    struct Object {
+        void *vtable;
+        u8 flag;
+        u8 pad5[3];
+        s32 value;
+        void *list0;
+        void *list1;
+        void *list2;
+    };
     struct Result {
         void *data;
         s32 count;
@@ -1212,17 +1217,17 @@ extern "C" void *fn_80146C2C(s32 arg0, void *arg1, s32 arg2) {
         void *end;
     };
     extern s32 fn_801454E8(void *, const char *);
-    register const char *base = lbl_8032CEC8;
-    u8 *object = (u8 *)fn_801284F8(0x18, (void *)(base + 0x26C));
+    register char *base = lbl_8032CEC8;
+    Object *object = (Object *)fn_801284F8(0x18, base + 0x26C);
     if (object != 0) {
-    *(void **)object = (void *)&lbl_8032D1D8;
-    object[4] = 0;
-    *(s32 *)(object + 8) = arg0;
-    *(void **)(object + 0xC) = 0;
-    *(void **)(object + 0x10) = 0;
-    *(void **)(object + 0x14) = 0;
+    object->vtable = (void *)&lbl_8032D1D8;
+    object->flag = 0;
+    object->value = arg0;
+    object->list0 = 0;
+    object->list1 = 0;
+    object->list2 = 0;
 
-    register const char *search0 = base + 0x280;
+    register char *search0 = base + 0x280;
     {
     register s32 count = 0;
     register s32 i = 0;
@@ -1236,7 +1241,7 @@ extern "C" void *fn_80146C2C(s32 arg0, void *arg1, s32 arg2) {
         i++;
     }
 
-    register Result *result0 = (Result *)fn_801284F8(0x10, (void *)(base + 0x28C));
+    Result *result0 = (Result *)fn_801284F8(0x10, base + 0x28C);
     if (result0 != 0) {
         void *data = fn_8012850C(count * 8, lbl_80559E48);
         result0->data = data;
@@ -1260,11 +1265,11 @@ extern "C" void *fn_80146C2C(s32 arg0, void *arg1, s32 arg2) {
         }
         i++;
     }
-    *(void **)(object + 0xC) = result0;
+    object->list0 = result0;
     }
 
     {
-    const char *name1 = base + 0x29C;
+    char *name1 = base + 0x29C;
     register s32 count = 0;
     register s32 i = 0;
     while (1) {
@@ -1277,7 +1282,7 @@ extern "C" void *fn_80146C2C(s32 arg0, void *arg1, s32 arg2) {
         i++;
     }
 
-    register Result *result1 = (Result *)fn_801284F8(0x10, (void *)(base + 0x28C));
+    Result *result1 = (Result *)fn_801284F8(0x10, base + 0x28C);
     if (result1 != 0) {
         void *data = fn_8012850C(count * 12, lbl_80559E48);
         result1->data = data;
@@ -1302,12 +1307,12 @@ extern "C" void *fn_80146C2C(s32 arg0, void *arg1, s32 arg2) {
         }
         i++;
     }
-    *(void **)(object + 0x10) = result1;
+    object->list1 = result1;
     }
 
     {
-    const char *name2 = lbl_80559E60;
     register s32 count = 0;
+    const char *name2 = lbl_80559E60;
     register s32 i = 0;
     while (1) {
         void *item = ((Collection *)arg1)->get(i);
@@ -1319,7 +1324,7 @@ extern "C" void *fn_80146C2C(s32 arg0, void *arg1, s32 arg2) {
         i++;
     }
 
-    register Result *result2 = (Result *)fn_801284F8(0x10, (void *)(base + 0x28C));
+    Result *result2 = (Result *)fn_801284F8(0x10, base + 0x28C);
     if (result2 != 0) {
         void *data = fn_8012850C(count * 12, lbl_80559E48);
         result2->data = data;
@@ -1344,7 +1349,7 @@ extern "C" void *fn_80146C2C(s32 arg0, void *arg1, s32 arg2) {
         }
         i++;
     }
-    *(void **)(object + 0x14) = result2;
+    object->list2 = result2;
     }
     }
     return object;
@@ -2059,6 +2064,12 @@ extern "C" void fn_80148610(void *arg0) {
 }
 
 extern "C" u8 fn_80148624(void *arg0) { return ((u8 *)arg0)[4]; }
+
+extern "C" void fn_8014862C(void *arg0) {
+    if (*(u8 *)((u8 *)arg0 + 4) == 0) {
+        return;
+    }
+}
 
 extern "C" void *fn_80148D74(void *arg0, s32 arg1) {
     if (arg0 != 0) {
