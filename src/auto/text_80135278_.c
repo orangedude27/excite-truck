@@ -74,6 +74,7 @@ void *fn_801352B8(Unk_80135278 *arg0) {
     return self;
 }
 #pragma scheduling on
+#pragma dont_inline on
 void *fn_8013530C(void *arg0, s32 arg1) {
     if (arg0 != (void*)0) {
         *(s32 *)((u8 *)arg0 + 0x2C) = 0;
@@ -83,6 +84,7 @@ void *fn_8013530C(void *arg0, s32 arg1) {
     }
     return arg0;
 }
+#pragma dont_inline off
 
 void fn_80135354(Unk_80135278 *arg0) {
     float g, f;
@@ -111,7 +113,7 @@ void fn_80135390(Unk_80135278 *arg0) {
 #pragma dont_inline on
 #pragma scheduling invalid_target
 void fn_801353C8(Unk_80135278 *arg0, s32 arg1, s32 arg2, s32 arg3) {
-    float f = lbl_80561320;
+    volatile float f = lbl_80561320;
     arg0->unk_4 = arg3;
     arg0->unk_8 = f;
     fn_801355C0(arg0, arg1, arg2, &arg0->unk_4, 0);
@@ -270,13 +272,12 @@ advance:
 done:
     return;
 }
-#pragma pop
+#pragma scheduling invalid_target
 void fn_80135B24(void *arg0, void *arg1, float farg0) {
-    void *entry;
     void *node;
+    void *entry;
     void *base;
     float initial = lbl_80561320;
-
     *(void **)arg0 = 0;
     base = *(void **)((char *)arg1 + 0x2C);
     *(s32 *)((char *)arg0 + 8) = 0x2710;
@@ -299,7 +300,7 @@ void fn_80135B24(void *arg0, void *arg1, float farg0) {
         *(s32 *)((char *)arg0 + 8) = 0;
     }
 }
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_80135B9C(void *arg0, void *arg1, void *arg2, float *arg3, void *arg4, float amount) {
     extern double fn_8002F234(float);
     float step;
