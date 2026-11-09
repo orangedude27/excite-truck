@@ -85,6 +85,7 @@ void fn_8001255C(const char *arg0, float farg0) {
     p[0x80] = 0;
     *(int *)(p + 0x90) = fn_802E2C20() - *(int *)(p + 0x8c);
 }
+#pragma pop
 
 void fn_800125C4(void) {
     ((void(*)(const char *, float))fn_8001255C)(lbl_802FC600, lbl_80560350);
