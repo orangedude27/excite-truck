@@ -7397,81 +7397,96 @@ extern "C" s32 fn_800B1EB8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4) {
     return temp;
 }
 
-extern "C" s32 fn_800B1FF4(void *arg0, u32 arg1, s32 arg2) {
-    u8 *vol;
-    s32 r;
-    u8 *file;
+/* Move where a file handle reads from - the seek of the file API, run on the
+ * file thread by fn_800B75EC.
+ *
+ * The volume the handle's stream belongs to is locked and any mount or unmount
+ * waiting on it carried out first (fn_800B5E14), and the stream still has to be
+ * one that is open.  The new position is the handle's own, the start of the
+ * file or its end, plus offset - which is signed: a negative one moves back and
+ * is refused before the start of the file, and a positive one that would not
+ * fit in 32 bits is refused too.  The handle then forgets the cluster its
+ * position was in, since only a read looks it up in the FAT again, and derives
+ * the sector and the byte inside it from the new position; it does that once
+ * with the position cleared and once with the new one, the same pair the open
+ * does.  A failure is left in the VF instance's last error, in the volume's and
+ * in the handle's, and is the return value.
+ */
+extern "C" s32 fn_800B1FF4(void *file, u32 offset, s32 whence) {
+    u8 *volume;
+    s32 status;
+    u8 *stream;
     u32 pos;
-    u32 t;
-    u32 fl;
-    u8 *v;
-    vol = arg0 == 0 ? 0 : *(u8 **)(*(u8 **)((u8 *)arg0 + 8) + 0x268);
-    fn_800B77C0(vol + 0x1F90);
-    r = fn_800B5E14(vol);
-    if (r != 0) {
-        fn_800B783C(vol + 0x1F90);
-        lbl_803D2140[0x40 / 4] = r;
-        *(s32 *)(vol + 0x1F80) = r;
-        return r;
+    u32 back;
+    u32 flags;
+    u8 *vol;
+    volume = file == 0 ? 0 : *(u8 **)(*(u8 **)((u8 *)file + 8) + 0x268);
+    fn_800B77C0(volume + 0x1F90);
+    status = fn_800B5E14(volume);
+    if (status != 0) {
+        fn_800B783C(volume + 0x1F90);
+        lbl_803D2140[0x40 / 4] = status;
+        *(s32 *)(volume + 0x1F80) = status;
+        return status;
     }
-    file = *(u8 **)((u8 *)arg0 + 8);
-    fl = *(u32 *)file;
-    if (!(fl & 1) || !(fl & 2)) {
-        fn_800B783C(vol + 0x1F90);
+    stream = *(u8 **)((u8 *)file + 8);
+    flags = *(u32 *)stream;
+    if (!(flags & 1) || !(flags & 2)) {
+        fn_800B783C(volume + 0x1F90);
         lbl_803D2140[0x40 / 4] = 0x26;
-        *(s32 *)(vol + 0x1F80) = 0x26;
+        *(s32 *)(volume + 0x1F80) = 0x26;
         return 0x26;
     }
-    switch (arg2) {
+    switch (whence) {
     case 1:
-        pos = *(u32 *)((u8 *)arg0 + 0x1C);
+        pos = *(u32 *)((u8 *)file + 0x1C);
         break;
     case 0:
         pos = 0;
         break;
     case 2:
-        pos = *(u32 *)(file + 0x264);
+        pos = *(u32 *)(stream + 0x264);
         break;
     default:
-        fn_800B783C(vol + 0x1F90);
+        fn_800B783C(volume + 0x1F90);
         lbl_803D2140[0x40 / 4] = 0xA;
-        *(s32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 8) + 0x38) + 0x1F80) = 0xA;
-        *(s32 *)((u8 *)arg0 + 0x18) = 0xA;
+        *(s32 *)(*(u8 **)(*(u8 **)((u8 *)file + 8) + 0x38) + 0x1F80) = 0xA;
+        *(s32 *)((u8 *)file + 0x18) = 0xA;
         return 0xA;
     }
-    if (arg1 & 0x80000000) {
-        t = (~arg1 & 0x7FFFFFFF) + 1;
-        if (pos < t) {
-            fn_800B783C(vol + 0x1F90);
+    if (offset & 0x80000000) {
+        back = (~offset & 0x7FFFFFFF) + 1;
+        if (pos < back) {
+            fn_800B783C(volume + 0x1F90);
             lbl_803D2140[0x40 / 4] = 0xA;
-            *(s32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 8) + 0x38) + 0x1F80) = 0xA;
-            *(s32 *)((u8 *)arg0 + 0x18) = 0xA;
+            *(s32 *)(*(u8 **)(*(u8 **)((u8 *)file + 8) + 0x38) + 0x1F80) = 0xA;
+            *(s32 *)((u8 *)file + 0x18) = 0xA;
             return 0xA;
         }
-        pos -= t;
+        pos -= back;
     } else {
-        if (arg1 > 0xFFFFFFFF - pos) {
-            fn_800B783C(vol + 0x1F90);
+        if (offset > 0xFFFFFFFF - pos) {
+            fn_800B783C(volume + 0x1F90);
             lbl_803D2140[0x40 / 4] = 0x25;
-            *(s32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 8) + 0x38) + 0x1F80) = 0x25;
-            *(s32 *)((u8 *)arg0 + 0x18) = 0x25;
+            *(s32 *)(*(u8 **)(*(u8 **)((u8 *)file + 8) + 0x38) + 0x1F80) = 0x25;
+            *(s32 *)((u8 *)file + 0x18) = 0x25;
             return 0x25;
         }
-        pos += arg1;
+        pos += offset;
     }
-    *(s32 *)((u8 *)arg0 + 0x20) = -1;
-    *(u32 *)((u8 *)arg0 + 0x1C) = 0;
-    v = arg0 == 0 ? 0 : *(u8 **)(*(u8 **)((u8 *)arg0 + 8) + 0x268);
-    t = *(u32 *)((u8 *)arg0 + 0x1C);
-    *(u32 *)((u8 *)arg0 + 0x24) = t >> v[0x20];
-    *(u16 *)((u8 *)arg0 + 0x28) = t & (*(u16 *)v - 1);
-    *(u32 *)((u8 *)arg0 + 0x1C) = pos;
-    v = arg0 == 0 ? 0 : *(u8 **)(*(u8 **)((u8 *)arg0 + 8) + 0x268);
-    pos = *(u32 *)((u8 *)arg0 + 0x1C);
-    *(u32 *)((u8 *)arg0 + 0x24) = pos >> v[0x20];
-    *(u16 *)((u8 *)arg0 + 0x28) = pos & (*(u16 *)v - 1);
-    fn_800B783C(vol + 0x1F90);
-    return r;
+    *(s32 *)((u8 *)file + 0x20) = -1;
+    *(u32 *)((u8 *)file + 0x1C) = 0;
+    vol = file == 0 ? 0 : *(u8 **)(*(u8 **)((u8 *)file + 8) + 0x268);
+    back = *(u32 *)((u8 *)file + 0x1C);
+    *(u32 *)((u8 *)file + 0x24) = back >> vol[0x20];
+    *(u16 *)((u8 *)file + 0x28) = back & (*(u16 *)vol - 1);
+    *(u32 *)((u8 *)file + 0x1C) = pos;
+    vol = file == 0 ? 0 : *(u8 **)(*(u8 **)((u8 *)file + 8) + 0x268);
+    pos = *(u32 *)((u8 *)file + 0x1C);
+    *(u32 *)((u8 *)file + 0x24) = pos >> vol[0x20];
+    *(u16 *)((u8 *)file + 0x28) = pos & (*(u16 *)vol - 1);
+    fn_800B783C(volume + 0x1F90);
+    return status;
 }
 
 extern "C" void *fn_800B224C(void *arg0, void *arg1) {
