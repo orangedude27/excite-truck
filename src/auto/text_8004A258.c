@@ -1,5 +1,6 @@
 #include <types.h>
 #include <revolution/OS/OSHardware.h>
+#include <revolution/OS/OSMemory.h>
 
 extern u8 DriveInfo[4];
 
@@ -487,13 +488,13 @@ extern void OSSetMEM2ArenaHi(void*);
 extern void OSPanic(const char*, s32, const char*, ...);
 void OSInit(void) {
     OSBI2* bi2;
-    u8* rebootParams = (u8*)__OSRebootParams;
+    register u8* rebootParams = (u8*)__OSRebootParams;
     void* mem1lo;
     void* mem1hi;
     void* mem2lo;
     void* mem2hi;
 
-    if (AreWeInitialized_8055D9CC == 0) {
+    if (!AreWeInitialized_8055D9CC) {
         AreWeInitialized_8055D9CC = 1;
         __OSStartTime = __OSGetSystemTime();
         OSDisableInterrupts();
@@ -528,7 +529,7 @@ void OSInit(void) {
                 mem1lo = ((OSBootInfo*)BootInfo_8055D9F8)->arenaLo == NULL
                             ? __ArenaLo
                             : *(void**)((u8*)BootInfo_8055D9F8 + 0x30);
-                if (*(void**)((u8*)BootInfo_8055D9F8 + 0x30) == NULL &&
+                if (*(void**)((u8*)*(void * volatile *)&BootInfo_8055D9F8 + 0x30) == NULL &&
                     BI2DebugFlag_8055D9F4 != NULL && *BI2DebugFlag_8055D9F4 < 2) {
                     mem1lo = (void*)(((u32)_stack_addr + 0x1F) & 0xFFFFFFE0);
                 }
@@ -640,9 +641,8 @@ void __OSDBIntegrator(void) {
     PPCMtmsr(0x30);
 }
 
-extern void __OSDBJump(void) {
-    (void)(OSExceptionVector(), 0);
-    return;
+void __OSDBJump(void) {
+    OSExceptionVector();
 }
 
 #pragma small_data on
