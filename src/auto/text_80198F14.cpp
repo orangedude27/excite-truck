@@ -2203,20 +2203,20 @@ extern "C" void fn_8019F1D4(void* arg0, f32* arg1, f32* arg2) {
     f32 scaleB = width * lbl_805622E0;
     f32 right = *(f32*)((u8*)arg0 + 0x3C);
     f32 x0 = left + scaleA;
-    inputA[0] = width;
     f32 x1 = mid + scaleA;
     f32 x2 = right + scaleA;
-    inputA[1] = width;
-    arg1[0] = x0;
     f32 y0 = left + scaleB;
     f32 y1 = mid + scaleB;
     f32 y2 = right + scaleB;
-    arg1[1] = x1;
-    arg1[2] = x2;
+    inputA[0] = width;
+    inputA[1] = width;
     inputB[0] = width;
     inputB[1] = left;
     inputB[2] = mid;
     inputB[3] = right;
+    arg1[0] = x0;
+    arg1[1] = x1;
+    arg1[2] = x2;
     arg2[0] = y0;
     arg2[1] = y1;
     arg2[2] = y2;
@@ -4550,32 +4550,35 @@ extern "C" void fn_801A47B0(s32* arg0, s32 arg1) {
 #pragma push
 #pragma unroll off
 extern "C" void fn_801A47C8(void* arg0) {
-    s32 off;
-    s32 i;
-    register s32 one = 1;
+    u32 off;
+    u32 i;
     i = 0;
     off = 0;
-    while (i < *(s32*)arg0) {
+    while ((s32)i < *(s32*)arg0) {
         void** entries = *(void***)((u8*)arg0 + 4);
         i += 1;
         void* p = *(void**)((u8*)entries + off);
         off += 4;
-        *(u8*)((u8*)p + 0x40) = (u8)one;
+        *(u8*)((u8*)p + 0x40) = 1;
     }
 }
 #pragma pop
 extern "C" void fn_801A47FC(void* arg0) {
     register s32* r29 = (s32*)arg0;
-    register s32 r30 = 0;
-    register s32 r31 = 0;
-    if (!r29) return;
+    if (r29 == 0) {
+        return;
+    }
+    register s32 r30;
+    register s32 r31;
+    r31 = 0;
+    r30 = 0;
     goto check;
 loop:
-    fn_801A49E8((void*)(*(s32*)(r29[1] + r31)));
-    r31 += 4;
-    r30++;
+    fn_801A49E8((void*)(*(s32*)((u8*)r29[1] + r30)));
+    r30 += 4;
+    r31++;
 check:
-    if (r30 < r29[0]) goto loop;
+    if (r31 < r29[0]) goto loop;
 }
 
 #pragma opt_tail_call on
