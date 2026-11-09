@@ -52,10 +52,11 @@ void *fn_8024C374(void *arg0, int arg1) {
 }
 #pragma pop
 void *fn_8024C3FC(void *arg0, int arg1) {
+    struct Local { char pad[0x34]; void *field_34; } *obj = arg0;
     if (arg0 != 0) {
-        if (*(void **)((char *)arg0 + 0x34) != 0) {
-            fn_802328D4(*(void **)((char *)arg0 + 0x34));
-            *(void **)((char *)arg0 + 0x34) = 0;
+        if (&obj->field_34 != 0) {
+            fn_802328D4(obj->field_34);
+            obj->field_34 = 0;
         }
         if (arg1 > 0)
             fn_80128668(arg0);
@@ -202,99 +203,8 @@ __declspec(section ".sdata") extern char lbl_8055C034[], lbl_8055C03C[], lbl_805
 __declspec(section ".sdata") extern char lbl_8055C054[], lbl_8055C05C[], lbl_8055C064[];
 __declspec(section ".sdata") extern char lbl_8055C06C[], lbl_8055C074[], lbl_8055C07C[], lbl_8055C084[];
 #pragma scheduling invalid_target
-#pragma dont_inline on
 unsigned int fn_8024C768(void) {
     int args[90];
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     int temp_r3;
     int var_r15;
     int var_r16;
@@ -302,10 +212,11 @@ unsigned int fn_8024C768(void) {
     char *temp_r6;
     char *temp_r7;
     char *temp_r8;
-    char *base;
-    int *table;
+    register char *base;
+    register int *table;
 
     base = lbl_804989E8;
+    table = (int *)base;
     temp_r6 = base + 0x18;
     args[12] = (int)(temp_r6);
     args[8] = 0;
@@ -390,11 +301,11 @@ unsigned int fn_8024C768(void) {
     args[82] = 0;
     args[83] = -1;
     args[84] = 0x1B;
-    args[85] = *(int *)(base + 0);
-    args[86] = *(int *)(base + 4);
-    args[87] = *(int *)(base + 8);
-    args[88] = *(int *)(base + 0xC);
-    args[89] = *(int *)(base + 0x10);
+    args[85] = table[0];
+    args[86] = table[1];
+    args[87] = table[2];
+    args[88] = table[3];
+    args[89] = table[4];
     args[0] = *(int *)((char *)lbl_802FA538 + 0);
     args[2] = *(int *)((char *)lbl_802FA538 + 8);
     args[3] = *(int *)((char *)lbl_802FA538 + 0xC);
@@ -420,7 +331,7 @@ loop_19:
         } else {
             lbl_8055F2CC = 0;
         }
-        switch (var_r16) {                          /* irregular */
+        switch (var_r16) {
         case -1:
             var_r15 = 1;
             break;
@@ -438,7 +349,6 @@ loop_19:
     }
     return (unsigned int) ((-1 - var_r16) | (var_r16 + 1)) >> 0x1FU;
 }
-
 void fn_8024CAAC(int arg0) {
     extern char lbl_80498A58[];
     extern char lbl_80498AA0[];
@@ -523,19 +433,125 @@ void fn_8024CBF4(void) {
     fn_80214CB4();
 }
 
+#pragma scheduling invalid_target
+#pragma dont_inline on
+int fn_8024CC54(void *out, void *arg1, int arg2) {
+    int args[90];
+    char *base = lbl_804989E8;
+    char *temp_r11 = base + 0x70;
+    char *temp_r10 = base + 0xB8;
+    int temp_r3;
+
+    args[22] = (int)arg1;
+    args[37] = (int)arg1;
+    args[8] = 0;
+    args[9] = 0;
+    args[7] = (int)((char *)&fn_8024CBF4);
+    args[6] = 8;
+    args[5] = (int)lbl_8055BAC0;
+    args[10] = (int)lbl_8055C01C;
+    args[11] = 3;
+    args[12] = (int)temp_r11;
+    args[13] = 0;
+    args[14] = 0;
+    args[16] = 3;
+    args[15] = (int)lbl_8055C06C;
+    args[17] = (int)temp_r10;
+    args[18] = 0;
+    args[19] = 0;
+    args[21] = 0;
+    args[20] = (int)lbl_8055C01C;
+    args[23] = 0;
+    args[24] = 0;
+    args[26] = 3;
+    args[25] = (int)lbl_8055C02C;
+    args[27] = (int)(temp_r11 + 0x12);
+    args[28] = 0;
+    args[29] = 0;
+    args[31] = 3;
+    args[30] = (int)lbl_8055C074;
+    args[32] = (int)(temp_r10 + 0x64);
+    args[33] = 0;
+    args[34] = 0;
+    args[36] = 0;
+    args[35] = (int)lbl_8055C02C;
+    args[38] = 1;
+    args[39] = 0;
+    args[41] = 3;
+    args[40] = (int)lbl_8055C03C;
+    args[42] = (int)(temp_r11 + 0x24);
+    args[43] = 0;
+    args[44] = 0;
+    args[45] = (int)lbl_8055C07C;
+    args[47] = (int)(temp_r10 + 0xC8);
+    args[55] = (int)lbl_8055C04C;
+    args[50] = (int)lbl_8055C03C;
+    args[46] = 3;
+    args[48] = 0;
+    args[49] = 0;
+    args[51] = 0;
+    args[52] = (int)arg1;
+    args[53] = 2;
+    args[54] = 0;
+    args[56] = 3;
+    args[57] = (int)(temp_r11 + 0x36);
+    args[58] = 0;
+    args[59] = 0;
+    args[61] = 3;
+    args[60] = (int)lbl_8055C084;
+    args[62] = (int)(temp_r10 + 0x12C);
+    args[63] = 0;
+    args[64] = 0;
+    args[66] = 0;
+    args[65] = (int)lbl_8055C04C;
+    args[67] = (int)arg1;
+    args[68] = 3;
+    args[69] = 0;
+    args[71] = 0;
+    args[70] = (int)lbl_8055C05C;
+    args[72] = 0;
+    args[73] = 4;
+    args[74] = 0;
+    args[76] = 0;
+    args[75] = (int)lbl_8055C064;
+    args[77] = 0;
+    args[78] = 5;
+    args[79] = 0;
+    args[81] = 6;
+    args[80] = (int)lbl_8055B860;
+    args[82] = 0;
+    args[83] = -1;
+    args[84] = 0x1B;
+    args[85] = *(int *)(base + 0);
+    args[86] = *(int *)(base + 4);
+    args[87] = *(int *)(base + 8);
+    args[88] = *(int *)(base + 0xC);
+    args[89] = *(int *)(base + 0x10);
+    args[0] = *(int *)((char *)lbl_802FA54C + 0);
+    args[2] = *(int *)((char *)lbl_802FA54C + 8);
+    args[3] = *(int *)((char *)lbl_802FA54C + 0xC);
+    args[4] = *(int *)((char *)lbl_802FA54C + 0x10);
+    args[1] = (int)(&args[5]);
+
+    fn_8024CAAC(arg2);
+    temp_r3 = fn_802146BC(&args[0], -0x3E7, -0x3E7, 1);
+    if (temp_r3 == -1) {
+        return 0;
+    }
+    if (out != 0) {
+        *(int *)out = temp_r3;
+    }
+    return 1;
+}
 extern char lbl_80343FC4[];
 extern char lbl_80343FF0[];
-#pragma scheduling invalid_target
+#pragma scheduling reset
 int fn_8024CEF0(void) {
-    void *second;
-    void *first;
     if (((int (*)(void))fn_8000DBAC)() != 0)
         return 1;
-    second = lbl_80343FC4;
-    first = lbl_80343FF0;
-    return ((int (*)(void *, void *, int))fn_80215214)(first, second, 0);
+    return ((int (*)(void *, void *, int))fn_80215214)(lbl_80343FF0, lbl_80343FC4, 0);
 }
-#pragma scheduling on
+#pragma scheduling invalid_target
 int fn_8024CF38(int *arg0) {
     fn_8024CC54(arg0, fn_8024CEF0, 1);
 }
@@ -735,8 +751,9 @@ int fn_8024D394(void *arg0, int arg1) {
         {
             char c = *text++;
             *dst++ = c;
-            if ((signed char)c != 0)
-                goto check_count;
+            if ((signed char)c == 0)
+                goto copied_text;
+            goto check_count;
         }
     copied_text:
         goto handled;
@@ -757,14 +774,14 @@ int fn_8024D394(void *arg0, int arg1) {
         int row = *(int *)((char *)arg0 + 0x64);
         int i;
         int length;
-        if (row == 9 && *(int *)((char *)arg0 + 0x68) == 3)
+        if (row == 9 && 3 == *(int *)((char *)arg0 + 0x68))
             return 0;
         if (row == 8 && *(int *)((char *)arg0 + 0x68) == 3) {
-            int cursor = *(int *)((char *)arg0 + 0x48);
-            if (cursor != 0) {
+            i = *(int *)((char *)arg0 + 0x48);
+            if (i != 0) {
                 length = strlen(*(char **)((char *)arg0 + 0x44));
-                if (length != 0 && *(int *)((char *)arg0 + 0x48) <= length) {
-                    for (i = *(int *)((char *)arg0 + 0x48); i <= length; ++i)
+                if (length != 0) {
+                    for (; i <= length; ++i)
                         ((char **)((char *)arg0 + 0x44))[0][i - 1] = ((char **)((char *)arg0 + 0x44))[0][i];
                     *(int *)((char *)arg0 + 0x48) = *(int *)((char *)arg0 + 0x48) - 1;
                     ((char **)((char *)arg0 + 0x44))[0][length - 1] = 0;
@@ -772,11 +789,12 @@ int fn_8024D394(void *arg0, int arg1) {
                 }
             }
         } else {
+            int column = *(int *)((char *)arg0 + 0x68);
             char *table = base + 0x248;
             char value;
             if (*(unsigned char *)((char *)arg0 + 0x6C) != 0)
                 table = base + 0x220;
-            value = (signed char)table[*(int *)((char *)arg0 + 0x68) * 10 + row];
+            value = (signed char)table[column * 10 + row];
             if (*(unsigned char *)((char *)arg0 + 0x60) == 0) {
                 memset(*(char **)((char *)arg0 + 0x44), 0, 0x11);
                 *(int *)((char *)arg0 + 0x48) = 0;
