@@ -111,7 +111,10 @@ class SeqFileReader {
 public:
     void *GetBaseAddress() const;
 };
-class SeqPlayer;
+class SeqPlayer {
+public:
+    void SetVolume(float);
+};
 class SeqTrack {
 public:
     s16 field_0x94;
