@@ -71,6 +71,31 @@ typedef enum { LIST_OF_REGS } ACRHwReg;
 #undef X
 
 /**
+ * IPC_PPCCTRL / IPC_ARMCTRL mailbox control
+ *
+ * The low nibble is the state the writing side reports (its half of the
+ * message/ack/reply handshake); bits 4-5 are flags the *other* side sets, so
+ * a state write keeps them with IPC_PPCCTRL_ARM_FLAGS.
+ */
+typedef enum {
+    IPC_PPCCTRL_STATE_MSG = (1 << 0),       // message sent
+    IPC_PPCCTRL_STATE_ACK = (1 << 1),       // other side's message acked
+    IPC_PPCCTRL_STATE_REPLY = (1 << 2),     // reply sent
+    IPC_PPCCTRL_STATE_REPLY_ACK = (1 << 3), // other side's reply acked
+    IPC_PPCCTRL_ARM_MSG = (1 << 4),         // ARM left an address in ARMMSG
+    IPC_PPCCTRL_ARM_ACK = (1 << 5),         // ARM acked the PPC's message
+    IPC_PPCCTRL_ARM_FLAGS = IPC_PPCCTRL_ARM_MSG | IPC_PPCCTRL_ARM_ACK,
+} IPCPPCControl;
+
+/**
+ * IPC_HW_REGS_PPC[PPCIRQFLAG]/[PPCIRQMASK] flags (same bits through the
+ * ACR_PPCIRQ* indexes): bit 30 is the IPC interrupt that raises OS_INTR_PI_ACR.
+ */
+typedef enum {
+    ACR_PPCIRQFLAG_IPC = (1 << 30),
+} IPCPPCIrqFlag;
+
+/**
  * GPIO register flags
  */
 typedef enum {
