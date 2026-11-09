@@ -20,6 +20,3 @@ void fn_80160C2C(void) {
     *(int *)((char *)&lbl_8042FD84 + 4) = 0;
     __register_global_object(&lbl_8042FD84, &fn_80160C8C, &lbl_8042FD78, sz);
 }
-#pragma opt_dead_assignments reset
-#pragma opt_propagation reset
-#pragma scheduling reset
