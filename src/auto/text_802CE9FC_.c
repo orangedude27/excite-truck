@@ -1765,22 +1765,19 @@ typedef struct Entry_802D18E8 {
 #pragma optimization_level 3
 void fn_802D18E8(void) {
     unsigned char *base = (unsigned char *)lbl_804C5650;
-    float direction[3];
+    float *from = (float *)(base + 0x40);
+    float *to = (float *)(base + 0x70);
     unsigned char color[4];
+    float direction[3];
     float mag;
     float scale;
     int var_r28;
     unsigned char *var_r29;
     unsigned char *var_r30;
     int var_r27;
-
-    {
-        float *from = (float *)((unsigned int)base + 0x40);
-        float *to = (float *)((unsigned int)base + 0x70);
-        direction[0] = from[9] - to[9];
-        direction[1] = from[10] - to[10];
-        direction[2] = from[11] - to[11];
-    }
+    direction[0] = from[9] - to[9];
+    direction[1] = from[10] - to[10];
+    direction[2] = from[11] - to[11];
     mag = PSVECMag(direction);
     mag = mag > lbl_80564F80 ? mag : lbl_80564F80;
     scale = lbl_80564F8C / mag;
@@ -1788,10 +1785,9 @@ void fn_802D18E8(void) {
     direction[0] *= scale;
     direction[1] *= scale;
     direction[2] *= scale;
-
     if (lbl_8055FDC8 > 0) {
-        var_r30 = (unsigned char *)((unsigned int)base + 0x4A38);
-        var_r29 = (unsigned char *)((unsigned int)base + 0x4AC8);
+        var_r30 = (unsigned char *)base + 0x4A38;
+        var_r29 = (unsigned char *)base + 0x4AC8;
         var_r28 = 0;
         goto loop_test;
     loop_body:
@@ -1807,7 +1803,7 @@ void fn_802D18E8(void) {
         if (var_r28 < lbl_8055FDC8) goto loop_body;
         lbl_8055FDCC = lbl_8055FDC8;
     } else {
-        unsigned char *entry = (unsigned char *)((unsigned int)base + 0x4180);
+        unsigned char *entry = (unsigned char *)base + 0x4180;
         unsigned int packed;
         unsigned char rgba[4];
         float strength = *(float *)(entry + 0x18);
@@ -1816,11 +1812,10 @@ void fn_802D18E8(void) {
         rgba[2] = (unsigned char)(int)(strength * (float)entry[2]);
         rgba[3] = entry[3];
         packed = *(unsigned int *)rgba;
-        fn_802D17BC((unsigned char *)((unsigned int)base + 0x4AC8), direction, (float *)(entry + 0x0C), (unsigned char *)&packed, lbl_80564FD4);
+        fn_802D17BC((unsigned char *)base + 0x4AC8, direction, (float *)(entry + 0x0C), (unsigned char *)&packed, lbl_80564FD4);
         lbl_8055FDCC++;
     }
-
-    var_r30 = (unsigned char *)((unsigned int)base + 0x4AC8);
+    var_r30 = (unsigned char *)base + 0x4AC8;
     var_r28 = 0;
     var_r29 = (unsigned char *)0;
     var_r27 = 2;
@@ -2626,9 +2621,8 @@ void fn_802D3D80(void) {
 }
 
 extern void GXLoadTexMtxImm(void *, unsigned int, unsigned char);
-void fn_802D3D94(void *arg1, int arg0) {
-    unsigned int id;
-    GXLoadTexMtxImm(arg1, arg0 * 30, 1);
+void fn_802D3D94(int arg0, void *arg1) {
+    GXLoadTexMtxImm(arg1, arg0 * 3 + 30, 1);
 }
 
 #pragma scheduling invalid_target
