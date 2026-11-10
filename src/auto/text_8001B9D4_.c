@@ -836,8 +836,8 @@ s32 fn_8001CE74(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     return 0;
 }
 
-#pragma paired off
-#pragma paired_single off
+#pragma push
+#pragma processor 750
 s32 fn_8001CED4(void *arg0, s32 arg1, s32 arg2, f32 arg3) {
     void *ptr = (void *)fn_8001285C(arg1);
     s32 count = *(s32 *)((u8 *)arg0 + 0x6C);
