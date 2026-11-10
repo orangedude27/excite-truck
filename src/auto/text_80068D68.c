@@ -15930,27 +15930,30 @@ done:
 
 extern u8 lbl_8031787C[];
 void hidh_sec_check_complete_term(u8 *bd_addr, void *p_ref_data, u8 res) {
-    u8 *cb = lbl_803C3C38;
+    /* HID security procedure callback: on success when connection is in pairing state, send L2CAP connect response and config request; on failure, mark failure and disconnect any active L2CAP channels. */
+    u8 *hidhCb = lbl_803C3C38;
     u8 *conn = p_ref_data;
-    u8 index = (u8)(((u8 *)p_ref_data - cb) / 0x34);
-    u8 *record;
+    u8 connIndex = (u8)(((u8 *)p_ref_data - hidhCb) / 0x34);
+    u8 *connRec;
     if (res == 0 && conn[0x10] == 6) {
         *(u16 *)(conn + 0x1A) = 0;
         conn[0x10] = 2;
         L2CA_ConnectRsp(conn + 1, conn[0x12], *(u16 *)(conn + 0x14), 0, 0);
-        L2CA_ConfigReq(*(u16 *)(conn + 0x14), (void *)(cb + 0x344));
+        L2CA_ConfigReq(*(u16 *)(conn + 0x14), (void *)(hidhCb + 0x344));
         return;
     }
     if (res != 0) {
         *(u16 *)(conn + 0x1A) = 0xF;
-        record = lbl_803C3C38 + index * 0x34;
-        if (lbl_803C3C38[0x401] >= 4) fn_8007093C(0x1E0003, lbl_8031787C);
-        if (*(u16 *)(record + 0x14) != 0 || *(u16 *)(record + 0x16) != 0) {
-            record[0x10] = 5;
-            if (*(u16 *)(record + 0x16) != 0) L2CA_DisconnectReq(*(u16 *)(record + 0x16));
-            if (*(u16 *)(record + 0x14) != 0) L2CA_DisconnectReq(*(u16 *)(record + 0x14));
+        connRec = lbl_803C3C38 + connIndex * 0x34;
+        if (lbl_803C3C38[0x401] >= 4) {
+            fn_8007093C(0x1E0003, lbl_8031787C);
+        }
+        if (*(u16 *)(connRec + 0x14) != 0 || *(u16 *)(connRec + 0x16) != 0) {
+            connRec[0x10] = 5;
+            if (*(u16 *)(connRec + 0x16) != 0) L2CA_DisconnectReq(*(u16 *)(connRec + 0x16));
+            if (*(u16 *)(connRec + 0x14) != 0) L2CA_DisconnectReq(*(u16 *)(connRec + 0x14));
         } else {
-            record[0x10] = 0;
+            connRec[0x10] = 0;
         }
     }
 }
