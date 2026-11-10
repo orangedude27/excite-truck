@@ -2118,6 +2118,7 @@ extern void fn_80037800(void);
 extern void fn_80035E6C();
 #pragma push
 #pragma dont_inline on
+#pragma small_data off
 void fn_800379A8(u32 arg0) {
     u64 time;
     u32 ticks;
@@ -2129,14 +2130,13 @@ void fn_800379A8(u32 arg0) {
     } else if (arg0 & 1) {
         time = __OSGetSystemTime();
         lbl_8055D8A4 = time;
-        alarm = (void *)((u32)&lbl_8037B580 + 0x10000U - 0x10000U);
+        alarm = &lbl_8037B580;
         lbl_8055D8A0 = time >> 32;
         lbl_8055D8AC = 0;
         lbl_8055D85C = 0;
         OSCreateAlarm(alarm);
         ticks = ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 100;
-        ((void (*)(void *, u32, u32, u32, void (*)(void)))OSSetAlarm)(
-            alarm, 0x10624DD3, 0, ticks, fn_80037800);
+        ((void (*)(void *, u32, u32, u32, void (*)(void)))OSSetAlarm)(alarm, 0x10624DD3, 0, ticks, fn_80037800);
     } else {
         fn_800356F4(0x27, 0, 0);
         fn_8003B218(fn_80035E6C);
