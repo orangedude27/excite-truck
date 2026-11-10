@@ -1975,29 +1975,30 @@ loop_13:
 extern void fn_802ADE60(s32, s32);
 #pragma cplusplus on
 extern "C" void fn_8016EE34(void *arg0) {
+    /* Release owned resources and virtual subobjects held by this object. */
     class VObj { public: virtual void destroy(int); };
-    VObj *p;
-    s32 value;
+    VObj *resource;
+    s32 handle;
 
-    value = *(s32 *)((u8 *)arg0 + 0xB8);
-    if (value != 0) {
-        fn_802ADE60(value, 1);
+    handle = *(s32 *)((u8 *)arg0 + 0xB8);
+    if (handle != 0) {
+        fn_802ADE60(handle, 1);
         *(s32 *)((u8 *)arg0 + 0xB8) = 0;
     }
-    p = *(VObj **)((u8 *)arg0 + 0xC0);
-    if (p != 0) { if (p != 0) p->destroy(1); *(VObj **)((u8 *)arg0 + 0xC0) = 0; }
-    p = *(VObj **)((u8 *)arg0 + 0xC4);
-    if (p != 0) { if (p != 0) p->destroy(1); *(VObj **)((u8 *)arg0 + 0xC4) = 0; }
-    p = *(VObj **)((u8 *)arg0 + 0xC8);
-    if (p != 0) { if (p != 0) p->destroy(1); *(VObj **)((u8 *)arg0 + 0xC8) = 0; }
-    p = *(VObj **)((u8 *)arg0 + 0xD0);
-    if (p != 0) { if (p != 0) p->destroy(1); *(VObj **)((u8 *)arg0 + 0xD0) = 0; }
-    p = *(VObj **)((u8 *)arg0 + 0xD4);
-    if (p != 0) { if (p != 0) p->destroy(1); *(VObj **)((u8 *)arg0 + 0xD4) = 0; }
-    p = *(VObj **)((u8 *)arg0 + 0xD8);
-    if (p != 0) { if (p != 0) p->destroy(1); *(VObj **)((u8 *)arg0 + 0xD8) = 0; }
-    p = *(VObj **)((u8 *)arg0 + 0x98);
-    if (p != 0) p->destroy(1);
+    resource = *(VObj **)((u8 *)arg0 + 0xC0);
+    if (resource != 0) { if (resource != 0) resource->destroy(1); *(VObj **)((u8 *)arg0 + 0xC0) = 0; }
+    resource = *(VObj **)((u8 *)arg0 + 0xC4);
+    if (resource != 0) { if (resource != 0) resource->destroy(1); *(VObj **)((u8 *)arg0 + 0xC4) = 0; }
+    resource = *(VObj **)((u8 *)arg0 + 0xC8);
+    if (resource != 0) { if (resource != 0) resource->destroy(1); *(VObj **)((u8 *)arg0 + 0xC8) = 0; }
+    resource = *(VObj **)((u8 *)arg0 + 0xD0);
+    if (resource != 0) { if (resource != 0) resource->destroy(1); *(VObj **)((u8 *)arg0 + 0xD0) = 0; }
+    resource = *(VObj **)((u8 *)arg0 + 0xD4);
+    if (resource != 0) { if (resource != 0) resource->destroy(1); *(VObj **)((u8 *)arg0 + 0xD4) = 0; }
+    resource = *(VObj **)((u8 *)arg0 + 0xD8);
+    if (resource != 0) { if (resource != 0) resource->destroy(1); *(VObj **)((u8 *)arg0 + 0xD8) = 0; }
+    resource = *(VObj **)((u8 *)arg0 + 0x98);
+    if (resource != 0) resource->destroy(1);
 }
 #pragma cplusplus reset
 
