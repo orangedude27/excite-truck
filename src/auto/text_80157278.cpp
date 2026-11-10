@@ -2444,6 +2444,7 @@ extern "C" void fn_8015B864(void *arg0) {
     };
     Obj *obj = (Obj *)arg0;
     s32 limit, current;
+    /* Updates the attached UI adaptor with progress/type and marks complete when upper >= lower. */
     if (*(void **)((char *)arg0 + 0x248) != 0) {
         (*(Adaptor **)((char *)arg0 + 0x248))->format((int)&lbl_8055A058[0], obj->progress());
         (*(Adaptor **)((char *)arg0 + 0x248))->setProgress(obj->type());
@@ -4155,7 +4156,11 @@ extern "C" void fn_80159624(void *arg0, void *arg1) {
     }
 }
 #pragma scheduling on
-extern "C" s32 fn_80159708(void *arg0) { return (s32)*(f32 *)((char *)arg0 + 0x25C); }
+extern "C" s32 fn_80159708(void *arg0) {
+    double v = *(f32 *)((char *)arg0 + 0x25C);
+    return (s32)v;
+}
+#pragma scheduling off
 class Fn8015E338Item {
 public:
  virtual void v0(); virtual void v1(); virtual void v2(); virtual f32 v3(void*);
