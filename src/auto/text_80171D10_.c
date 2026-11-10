@@ -182,7 +182,7 @@ unsigned long long fn_80171FF0(void *arg0, int arg1, float angle, float step) {
 
 #pragma dont_inline on
 unsigned int fn_801720E0(unsigned int arg0) {
-    return (arg0 & 0xFF000000) | ((arg0 & 0xFEFEFE) >> 1);
+    return ((arg0 >> 1) & 0x7F7F7F) | (arg0 & 0xFF000000);
 }
 #pragma dont_inline reset
 
