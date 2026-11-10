@@ -17799,6 +17799,7 @@ s32 l2c_link_hci_qos_violation(u16 handle) {
 }
 
 void l2c_link_timeout(void *arg0) {
+    /* Handle an L2CAP link timeout: flush queued packets and release the link in terminal states, or complete disconnect processing (callback/trace, security disconnect timer, or send pending packets). */
     extern char lbl_80318CB4[];
     extern void l2c_link_check_send_pkts(void *, u8, void *, u8);
     u8 *lcb = arg0;
