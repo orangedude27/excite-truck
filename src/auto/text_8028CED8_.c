@@ -107,8 +107,9 @@ struct Obj8028D084 {
 void fn_8028D084(void *arg0, void *arg1) {
     extern char lbl_8055C8C8[8];
     char *base = lbl_80348C50;
+    const char *tex = lbl_8055C8C8;
     int value;
-    ((void (*)(void *, const char *))(*(void ***)arg1)[5])(arg1, lbl_8055C8C8);
+    ((void (*)(void *, const char *))(*(void ***)arg1)[5])(arg1, tex);
     *(int *)arg0 = fn_802CAC28(0);
     *(float *)((char *)arg0 + 4) = ((float (*)(void *, char *))(*(void ***)arg1)[9])(arg1, base);
     *(float *)((char *)arg0 + 8) = ((float (*)(void *, char *))(*(void ***)arg1)[9])(arg1, base + 0xC);
@@ -129,26 +130,28 @@ extern void fn_8028D084(void *, void *);
 #pragma scheduling invalid_target
 #pragma dont_inline on
 int fn_8028D17C(void) {
-    register int *base;
+    register char *base;
     register int *slot;
-    int i;
+    register int i;
     register int invalid;
     char temp[0x20];
-    void *obj;
+    register void *obj;
 
     slot = (int *)lbl_804B3470;
     lbl_8055F728 = 0;
-    base = (int *)&lbl_804B3400;
+    base = (char *)&lbl_804B3400;
     i = 0;
     invalid = -1;
     for (; i < 8; i++) {
         fn_801345D8(temp, 0x20, lbl_80348CA0, i);
         obj = fn_802AE414(temp);
         if (obj != 0) {
-            obj = ((void *(*)(void *, void *))(*(void ***)obj)[23])(obj, &lbl_8055C8D0);
+            void **vt = *(void ***)obj;
+            typedef void *(*F)(void *, void *);
+            obj = ((F *)vt)[23](obj, &lbl_8055C8D0);
         }
         if (obj != 0) {
-            fn_8028D084((char *)base + lbl_8055F728 * 0x1C, obj);
+            fn_8028D084(base + lbl_8055F728 * 0x1C, obj);
             *slot = lbl_8055F728;
             lbl_8055F728++;
         } else {
@@ -181,16 +184,16 @@ extern void fn_8028D49C(void);
 #pragma scheduling invalid_target
 void fn_8028D2B4(void) {
     typedef struct {
-        int value0;
-        int value1;
-        int value2;
-        int value3;
-        int size;
-        int value5;
-        int value6;
-    } Entry;
-    register char *names = lbl_80348C50;
-    register int sum = 0;
+        int unk0;
+        int unk4;
+        int unk8;
+        int unkC;
+        int elemCount; /* 0x10 */
+        int subRecords; /* 0x14 */
+        int unk18;
+    } SkidDef;
+    register char *labelStrings = lbl_80348C50;
+    register int totalElems = 0;
     int i = 0;
     int slots;
     int records;
@@ -198,27 +201,28 @@ void fn_8028D2B4(void) {
     int *current;
     int *entry;
     int *ptr;
-    int outer;
-    int inner;
+    int defIndex;
+    int slotIndex;
 
+    /* Allocate and initialize per-definition skid particle/element buffers. */
     for (; i < lbl_8055F728; i++)
-        sum += ((Entry *)&lbl_804B3400)[i].size;
+        totalElems += ((SkidDef *)&lbl_804B3400)[i].elemCount;
 
     slots = fn_80287B14() * 4;
-    sum *= slots;
+    totalElems *= slots;
     lbl_8055F724 = slots;
     records = lbl_8055F728 * slots;
-    buffer = fn_8012850C(sum * 0x28 + 0x10, names + 0x5C);
-    lbl_8055F718 = (int)fn_8002F37C(buffer, fn_8028D49C, 0, 0x28, sum);
-    lbl_8055F71C = (int)fn_8012850C(records * 0xC, names + 0x6C);
-    lbl_8055F720 = (int)fn_8012850C(*(volatile int *)&lbl_8055F724 * 8, names + 0x80);
+    buffer = fn_8012850C(totalElems * 0x28 + 0x10, labelStrings + 0x5C);
+    lbl_8055F718 = (int)fn_8002F37C(buffer, fn_8028D49C, 0, 0x28, totalElems);
+    lbl_8055F71C = (int)fn_8012850C(records * 0xC, labelStrings + 0x6C);
+    lbl_8055F720 = (int)fn_8012850C(*(volatile int *)&lbl_8055F724 * 8, labelStrings + 0x80);
 
     entry = &lbl_804B3400;
     current = (int *)lbl_8055F718;
     ptr = (int *)lbl_8055F71C;
-    for (outer = 0; outer < lbl_8055F728; outer++) {
+    for (defIndex = 0; defIndex < lbl_8055F728; defIndex++) {
         *(int **)((char *)entry + 0x14) = ptr;
-        for (inner = 0; inner < *(volatile int *)&lbl_8055F724; inner++) {
+        for (slotIndex = 0; slotIndex < *(volatile int *)&lbl_8055F724; slotIndex++) {
             *ptr = (int)current;
             ptr[2] = entry[4];
             ptr += 3;
@@ -380,7 +384,6 @@ void fn_8028D7C0(int arg0) {
     register int *group;
     register int inner;
     register int *item;
-
     bias = lbl_805643F8;
     scale = lbl_805643F4;
     table = (int *)((char *)&lbl_804B3400 + arg0 * 0x1C);
@@ -394,14 +397,9 @@ void fn_8028D7C0(int arg0) {
             item = (int *)((char *)group[0] + offset);
             {
                 double raw;
-                float tmp;
                 *(unsigned int *)&raw = 0x43300000;
-                *((unsigned int *)&raw + 1) =
-                    *(unsigned short *)((char *)item + 0x24);
-                tmp = raw - bias;
-                fn_801E53A8(item, (char *)item + 0xC, (char *)item + 0x18,
-                            *((unsigned char *)item + 0x26) != 0,
-                            scale * tmp);
+                *((unsigned int *)&raw + 1) = *(unsigned short *)((char *)item + 0x24);
+                fn_801E53A8(item, (char *)item + 0xC, (char *)item + 0x18, *((unsigned char *)item + 0x26) != 0, (float)(raw - bias) * scale);
             }
             offset += 0x28;
             inner++;
