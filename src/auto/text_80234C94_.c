@@ -118,8 +118,6 @@ void fn_80234D44(int arg0) {
         }
     }
 }
-#pragma scheduling reset
-
 void fn_80234DE4(unsigned int arg0) {
     unsigned int *node;
     unsigned int *prev;
