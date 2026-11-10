@@ -15,29 +15,41 @@ extern void fn_801607F8(void);
 extern int __AXGetStackHead(int);
 typedef struct Obj { void **vtable; } Obj;
 typedef int (*Callback)(Obj *, int, int);
-void fn_8016071C(Obj *obj) {
+#pragma cplusplus on
+extern "C" void fn_8016071C(void *obj_) {
+    class ObjV {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual int meth(int h, int y);
+    };
     int i;
-    int head;
-    if (fn_801284F8(0x18, lbl_8032F4C8)) {
-        lbl_8055E2BC = (void *)fn_8001D884(obj);
+    int h;
+    void *mem = (void *)fn_801284F8(0x18, lbl_8032F4C8);
+    if (mem != 0) {
+        lbl_8055E2BC = (void *)((int (*)(void *, void *))fn_8001D884)(mem, obj_);
     }
+    ObjV *obj = (ObjV *)obj_;
     for (i = 0; i < 5; i++) {
-        head = __AXGetStackHead(i);
-        lbl_8042FD60[i] = ((Callback)obj->vtable[4])(obj, head, -1);
+        h = __AXGetStackHead(i);
+        lbl_8042FD60[i] = obj->meth(h, -1);
     }
 }
-
+#pragma cplusplus off
 void fn_801607BC(void) {
-    int a, b, c, d, e;
-    a = lbl_802F9490[0];
+    int a = lbl_802F9490[0];
+    int b = lbl_802F9490[1];
+    int c = lbl_802F9490[2];
+    int d = lbl_802F9490[3];
+    int e = lbl_802F9490[4];
     lbl_8042FD60[0] = a;
-    b = lbl_802F9490[1];
     lbl_8042FD60[1] = b;
-    c = lbl_802F9490[2];
     lbl_8042FD60[2] = c;
-    d = lbl_802F9490[3];
     lbl_8042FD60[3] = d;
-    e = lbl_802F9490[4];
     lbl_8042FD60[4] = e;
 }
 
@@ -69,7 +81,7 @@ typedef int (*Fn80160850NamedCall)(void *, const char *);
 #pragma cplusplus on
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
-/* Virtual slots and the scalar key address reproduce the target lookup sequence. */
+/* Initialize audio/effect data: try obtaining it via the audio interface, fall back to loading the named resource by key, and log/reset on failure. */
 extern "C" void fn_80160850(void) {
     class Audio {
     public:
