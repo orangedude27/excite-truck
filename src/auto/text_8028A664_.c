@@ -198,24 +198,25 @@ void fn_8028A89C(void) {
     } while (1);
 }
 
-void fn_8028A92C(void) {
-    s32 i;
-    void **p;
+#pragma cplusplus on
+#pragma scheduling invalid_target
+extern "C" void fn_8028A92C(void) {
+    class Dummy { public: virtual void v0(); virtual void v1(); virtual void v2(); };
     fn_8028BD5C(lbl_8055F6F0);
     fn_8028BD5C(lbl_8055F6F4);
     fn_8028C938(lbl_8055F6F8);
-    ((void (*)(void *))(*(void ***)lbl_8055F6FC)[4])(lbl_8055F6FC);
-    p = (void **)lbl_804B3238;
-    i = 0;
+    ((Dummy *)lbl_8055F6FC)->v2();
+    void **p = (void **)lbl_804B3238;
+    s32 i = 0;
     do {
         void *obj = *p;
-        if (obj) ((void (*)(void *))(*(void ***)obj)[4])(obj);
+        if (obj) ((Dummy *)obj)->v2();
         i++;
-        if (i >= 8) break;
         p = (void **)((u8 *)p + 0x10);
-    } while (1);
+    } while (i < 8);
 }
-
+#pragma scheduling on
+#pragma cplusplus off
 void fn_8028A9BC(void) {
     fn_8028BD60(lbl_8055F6F0);
     fn_8028BD60(lbl_8055F6F4);
