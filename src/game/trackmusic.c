@@ -251,31 +251,46 @@ void fn_8020F950(void) {
 
 #pragma scheduling invalid_target
 long fn_8020F9F4(void) {
-    long i;
     char *base;
-
-    fn_8000DA10();
-    base = (char *)fn_8020F5F0(0);
+    long i;
+    long g;
+    long c;
+    base = (char *)fn_8020F5F0(fn_8000DA10());
     i = 0;
-    do {
-        if ((signed char)base[4] == 0) return i;
+    for (g = 0; g < 8; g++) {
+        if ((signed char)base[4] == 0)
+            return i;
+        c = base[0x68];
         i++;
-        if ((signed char)base[0x68] == 0) return i;
+        if ((signed char)c == 0)
+            return i;
+        c = base[0xCC];
         i++;
-        if ((signed char)base[0xCC] == 0) return i;
+        if ((signed char)c == 0)
+            return i;
+        c = base[0x130];
         i++;
-        if ((signed char)base[0x130] == 0) return i;
+        if ((signed char)c == 0)
+            return i;
+        c = base[0x194];
         i++;
-        if ((signed char)base[0x194] == 0) return i;
+        if ((signed char)c == 0)
+            return i;
+        c = base[0x1F8];
         i++;
-        if ((signed char)base[0x1F8] == 0) return i;
+        if ((signed char)c == 0)
+            return i;
+        c = base[0x25C];
         i++;
-        if ((signed char)base[0x25C] == 0) return i;
+        if ((signed char)c == 0)
+            return i;
+        c = base[0x2C0];
         i++;
-        if ((signed char)base[0x2C0] == 0) return i;
+        if ((signed char)c == 0)
+            return i;
         i++;
         base += 0x320;
-    } while (i < 8);
+    }
     return 0;
 }
 
@@ -446,12 +461,8 @@ void fn_8020FE90(void) {
 
 long fn_8020FEF0(long arg0) {
     long state = lbl_8055EEE0;
-    long count;
-    long pos;
-    long max;
-
     if (state == -2) {
-        count = lbl_8055EEBC;
+        long count = lbl_8055EEBC;
         if (count > 0) {
             if (arg0 == 1) {
                 lbl_8055EEE0 = -1;
@@ -468,26 +479,29 @@ long fn_8020FEF0(long arg0) {
         fn_8020FE90();
         return;
     }
-
-    pos = lbl_8055EEE4;
-    max = lbl_8055EEE8 - 1;
-    arg0 += pos;
-    arg0 &= ((-arg0 & ~arg0) >> 31);
-    if (arg0 < max) {
-        max = arg0;
-    }
-    lbl_8055EEE4 = max;
-    count = lbl_8055EEBC;
-    if (pos == max) {
-        return;
-    }
-    if (count == 0) {
-        lbl_8055EEE0 = -2;
-    } else if (state >= 0 && state + max * 10 >= count) {
-        lbl_8055EEE0 = (count - 1) % 10;
-    }
-    if (lbl_8055EEE0 >= 0) {
-        fn_8020FE90();
+    {
+        long pos = lbl_8055EEE4;
+        long max = lbl_8055EEE8 - 1;
+        long tmp = pos + arg0;
+        tmp &= ((-tmp & ~tmp) >> 31);
+        if (tmp < max) {
+            max = tmp;
+        }
+        lbl_8055EEE4 = max;
+        {
+            long count = lbl_8055EEBC;
+            if (pos == max) {
+                return;
+            }
+            if (count == 0) {
+                lbl_8055EEE0 = -2;
+            } else if (state >= 0 && state + max * 10 >= count) {
+                lbl_8055EEE0 = (count - 1) % 10;
+            }
+            if (lbl_8055EEE0 >= 0) {
+                fn_8020FE90();
+            }
+        }
     }
 }
 
@@ -521,36 +535,37 @@ void fn_8020FFE4(long arg0) {
 extern long lbl_8055B67C;
 extern signed char lbl_8055EEEC, lbl_8055EEED;
 long fn_802100AC(void) {
-    long state;
-    long index;
-    void *base;
-    struct Dummy_802113D8 *object;
+    long trackState;
+    long trackIndex;
+    void *container;
+    struct Dummy_802113D8 *resource;
 
+    /* Selects/prepares track music entry based on lbl_8055EEE0 state and updates related globals. */
     fn_802EC12C();
-    state = lbl_8055EEE0;
-    if (state == -2) {
-        base = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
-        object = *(struct Dummy_802113D8 **)((char *)base + 0x20);
+    trackState = lbl_8055EEE0;
+    if (trackState == -2) {
+        container = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
+        resource = *(struct Dummy_802113D8 **)((char *)container + 0x20);
         fn_8020FDE4(0, (const char *)&lbl_8055B67C,
-                    (char *)object->f6(&lbl_8055B674, lbl_8033C970));
+                    (char *)resource->f6(&lbl_8055B674, lbl_8033C970));
         if ((unsigned char)lbl_8055EEEC != 0) {
             fn_8020F608(0, fn_8000DA10());
         }
-    } else if (state == -1) {
-        base = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
-        object = *(struct Dummy_802113D8 **)((char *)base + 0x20);
+    } else if (trackState == -1) {
+        container = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
+        resource = *(struct Dummy_802113D8 **)((char *)container + 0x20);
         fn_8020FDE4(1, (const char *)&lbl_8055B67C,
-                    (char *)object->f6(&lbl_8055B674, lbl_8033C970));
+                    (char *)resource->f6(&lbl_8055B674, lbl_8033C970));
         if ((unsigned char)lbl_8055EEED != 0) {
             fn_8020F608(1, fn_8000DA10());
         }
     } else {
-        index = state + lbl_8055EEE4 * 10;
-        base = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
-        object = *(struct Dummy_802113D8 **)((char *)base + 0x20);
-        fn_8020FDE4(2, (const char *)lbl_804900AC.m_entries[index],
-                    (char *)object->f6(&lbl_8055B674, lbl_8033C970));
-        lbl_8055B658 = index;
+        trackIndex = trackState + lbl_8055EEE4 * 10;
+        container = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
+        resource = *(struct Dummy_802113D8 **)((char *)container + 0x20);
+        fn_8020FDE4(2, (const char *)lbl_804900AC.m_entries[trackIndex],
+                    (char *)resource->f6(&lbl_8055B674, lbl_8033C970));
+        lbl_8055B658 = trackIndex;
     }
 }
 
