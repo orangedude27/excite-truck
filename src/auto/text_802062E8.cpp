@@ -227,6 +227,8 @@ extern "C" void *fn_80206570(int index) {
     return lbl_8033BD30;
 }
 
+#pragma push
+#pragma scheduling off
 extern "C" char *strncpy(char *, const char *, unsigned int);
 extern "C" void *fn_802065F8(void *arg0, int arg1, int arg2) {
     struct Obj {
@@ -286,6 +288,7 @@ extern "C" void *fn_802065F8(void *arg0, int arg1, int arg2) {
     self->bytes34[2] = oneInt;
     return arg0;
 }
+#pragma pop
 
 #pragma dont_inline on
 extern "C" void *fn_802066C8(void *arg0, u32 arg1) {
@@ -610,6 +613,7 @@ extern "C" f32 fn_802072DC(void) {
     return lbl_805631FC;
 }
 
+#pragma scheduling invalid_target
 extern "C" void *fn_802072E4(void *arg0, int arg1, int arg2) {
     void *vtable;
     float value;
@@ -619,7 +623,7 @@ extern "C" void *fn_802072E4(void *arg0, int arg1, int arg2) {
     value = *(volatile float *)&lbl_805631FC;
     vtable = &lbl_8033BD90;
     value2 = *(volatile float *)&lbl_805631F8;
-    *(volatile void **)arg0 = vtable;
+    *(void **)arg0 = vtable;
     *(float *)((char *)arg0 + 0x64) = value;
     *(char *)((char *)arg0 + 0x6C) = 1;
     *(float *)((char *)arg0 + 0x68) = value2;
@@ -646,7 +650,7 @@ extern "C" void *fn_802072E4(void *arg0, int arg1, int arg2) {
     *(float *)((char *)arg0 + 0x24) = value;
     return arg0;
 }
-
+#pragma scheduling on
 extern "C" void fn_802073A4(void* arg0, int arg1, int arg2) {
     class Dispatch {
     public:
