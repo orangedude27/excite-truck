@@ -1,7 +1,10 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#pragma push
+#pragma small_data off
 extern int lbl_80335DCC;
+#pragma pop
 extern char lbl_8055E6D0;
 extern int memset(void *, int, unsigned int);
 extern int lbl_8055E6D4;
@@ -213,16 +216,11 @@ int fn_801B4818(void) { return 0x100000; }
 void fn_801B4820(int unused, int *arg0, int *arg1, unsigned int arg2) {
     unsigned int value;
     unsigned int limit;
-
     value = arg2 / ((fn_801B2F24() + 1) * 0x44 + 0xC);
-    limit = 0x7E90;
-    if ((int)value < 0x7E90) {
-        limit = value;
-    }
+    limit = (int)value < 0x7E90 ? value : 0x7E90;
     *arg0 = 0x5000;
     *arg1 = 0x32;
-    fn_802E30C8(&lbl_80335DCC, (limit / 9) / 60, (limit / 9) % 60,
-                (0x32 * 0xC) >> 10, *arg0 / 1024, arg2 >> 10);
+    fn_802E30C8(&lbl_80335DCC, (limit / 9) / 60, (limit / 9) % 60, (0x32 * 0xC) >> 10, *arg0 / 1024, arg2 >> 10);
 }
 
 #pragma push
