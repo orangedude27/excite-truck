@@ -1180,6 +1180,9 @@ FN_801F70D0_RETURN fn_801F70D0(void *arg0, int arg1) {
 }
 
 extern void fn_801E8C84(float *);
+#pragma push
+#pragma paired reset
+#pragma paired_single reset
 void fn_801F7160(void *arg0) {
     float sp[6];
     float offset, scale;
@@ -1202,6 +1205,7 @@ void fn_801F7160(void *arg0) {
         i++;
     }
 }
+#pragma pop
 
 #pragma dont_inline on
 void fn_801F7220(void *arg0) {
