@@ -12098,7 +12098,9 @@ extern "C" s32 fn_800BA49C(s32 countv, s32 addr, s32 lba, s32 size, s32 *out) {
 
 extern "C" s32 fn_800BB4BC(s32, s32, s32, s32);
 extern "C" s32 fn_800BB4D4(s32, s32, s32, s32);
-extern "C" s32 fn_800BA688(void *countp, s32 addr, s32 lba, s32 size, s32 *out) {
+/* SD card read helper: reads count sectors of given size from lba into addr (or via temp buffer if unaligned), returning status and count read in out. */
+extern "C" s32 fn_800BA688(void *countp, s32 addr, s32 lba, s32 size, s32 *out)
+{
     const char *str = lbl_8031B2B0;
     u32 count = (u32)countp;
     s32 total, off, r;
