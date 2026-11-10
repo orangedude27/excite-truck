@@ -73,8 +73,8 @@ void fn_802B0710(void) {
     void *obj;
     int *fields;
     int n = 0x54;
-    register int offset;
     register int i;
+    register int offset;
     int *entry;
     obj = fn_801284F8(0x14, lbl_8034A0A8);
     if (obj != 0) {
@@ -161,64 +161,65 @@ __declspec(section ".data") extern void *lbl_804BE104;
 #pragma dont_inline on
 #pragma opt_common_subs off
 void fn_802B0954(void) {
+    /* Clears the global pool and destroys all entries in lbl_804BE104, releasing nested handles/rows and freeing each object. */
     extern void fn_8002F634(void *, void *, int, int);
     extern void fn_802B0690(int *);
     extern void fn_802B0874(void);
     extern void fn_80128668(void *);
-    void *obj;
-    int off_i;
-    int i;
+    void *entry;
+    int entryOffset;
+    int entryIndex;
     void *table;
-    int j;
-    int k;
+    int rowIndex;
+    int itemIndex;
     char *row;
-    int off_j;
-    int off_k;
+    int rowOffset;
+    int itemOffset;
 
     fn_802B0874();
     table = &lbl_804BE104;
-    i = 0;
-    off_i = 0;
-    for (; i < *(int *)((char *)table + 4); off_i += 4, i++) {
-        obj = *(void **)(*(char **)&lbl_804BE104 + off_i);
-        if (obj != 0) {
-            for (j = 0, off_j = 0; j < *(int *)((char *)obj + 0x10); off_j += 0x80, j++) {
-                row = *(char **)((char *)obj + 0xc) + off_j;
+    entryIndex = 0;
+    entryOffset = 0;
+    for (; entryIndex < *(int *)((char *)table + 4); entryOffset += 4, entryIndex++) {
+        entry = *(void **)(*(char **)&lbl_804BE104 + entryOffset);
+        if (entry != 0) {
+            for (rowIndex = 0, rowOffset = 0; rowIndex < *(int *)((char *)entry + 0x10); rowOffset += 0x80, rowIndex++) {
+                row = *(char **)((char *)entry + 0xc) + rowOffset;
                 fn_802B0690((int *)(row + 0x7c));
-                for (k = 0, off_k = 0; k < *(int *)(row + 8); off_k += 0x10, k++) {
-                    fn_802B0690((int *)(*(char **)(row + 4) + off_k));
+                for (itemIndex = 0, itemOffset = 0; itemIndex < *(int *)(row + 8); itemOffset += 0x10, itemIndex++) {
+                    fn_802B0690((int *)(*(char **)(row + 4) + itemOffset));
                 }
                 *(int *)(row + 8) = 0;
             }
-            *(int *)((char *)obj + 0x10) = 0;
-            if (*(int *)((char *)obj + 8) == *(int *)((char *)obj + 4)) {
-                *(int *)((char *)obj + 8) = -2;
+            *(int *)((char *)entry + 0x10) = 0;
+            if (*(int *)((char *)entry + 8) == *(int *)((char *)entry + 4)) {
+                *(int *)((char *)entry + 8) = -2;
             }
-            fn_802B0690((int *)((char *)obj + 4));
-            fn_802B0690((int *)((char *)obj + 8));
-            if ((char *)obj + 0x324 != 0) {
-                if ((char *)obj + 0x324 != 0) {
-                    *(int *)((char *)obj + 0x324) = 0;
-                    *(int *)((char *)obj + 0x328) = 0;
-                    *(int *)((char *)obj + 0x32c) = 0;
+            fn_802B0690((int *)((char *)entry + 4));
+            fn_802B0690((int *)((char *)entry + 8));
+            if ((char *)entry + 0x324 != 0) {
+                if ((char *)entry + 0x324 != 0) {
+                    *(int *)((char *)entry + 0x324) = 0;
+                    *(int *)((char *)entry + 0x328) = 0;
+                    *(int *)((char *)entry + 0x32c) = 0;
                 }
             }
-            if ((char *)obj + 0x318 != 0) {
-                if ((char *)obj + 0x318 != 0) {
-                    *(int *)((char *)obj + 0x318) = 0;
-                    *(int *)((char *)obj + 0x31c) = 0;
-                    *(int *)((char *)obj + 0x320) = 0;
+            if ((char *)entry + 0x318 != 0) {
+                if ((char *)entry + 0x318 != 0) {
+                    *(int *)((char *)entry + 0x318) = 0;
+                    *(int *)((char *)entry + 0x31c) = 0;
+                    *(int *)((char *)entry + 0x320) = 0;
                 }
             }
-            if ((char *)obj + 0xc != 0) {
-                fn_8002F634((char *)obj + 0x18, fn_802B0AC0, 0x80, 6);
-                if ((char *)obj + 0xc != 0) {
-                    *(int *)((char *)obj + 0xc) = 0;
-                    *(int *)((char *)obj + 0x10) = 0;
-                    *(int *)((char *)obj + 0x14) = 0;
+            if ((char *)entry + 0xc != 0) {
+                fn_8002F634((char *)entry + 0x18, fn_802B0AC0, 0x80, 6);
+                if ((char *)entry + 0xc != 0) {
+                    *(int *)((char *)entry + 0xc) = 0;
+                    *(int *)((char *)entry + 0x10) = 0;
+                    *(int *)((char *)entry + 0x14) = 0;
                 }
             }
-            fn_80128668(obj);
+            fn_80128668(entry);
         }
     }
     *(int *)((char *)table + 4) = 0;
