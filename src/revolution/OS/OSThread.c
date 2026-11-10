@@ -601,6 +601,8 @@ void OSCancelThread(OSThread* thread) {
     OSThread* next;
     OSThread* prev;
 
+    /* Cancel a thread: remove it from scheduling/wait queues, unlock its mutexes,
+     * wake joiners, mark it exited or moribund, then reschedule. */
     enabled = OSDisableInterrupts();
 
     switch (thread->state) {
