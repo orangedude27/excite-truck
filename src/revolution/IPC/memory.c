@@ -203,6 +203,9 @@ void* iosAllocAligned(s32 handle, u32 size, u32 align) {
     return __iosAlloc(handle, size, align);
 }
 
+// Frees a block from an IPC heap: validates the handle and pointer, returns the
+// block's chunk to the free list in address order, and coalesces it with adjacent
+// free chunks.
 s32 iosFree(s32 handle, void* block) {
     IPCHeapChunk* chunk;
     IPCHeapChunk* it;
