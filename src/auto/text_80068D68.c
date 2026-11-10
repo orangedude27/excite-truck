@@ -19523,38 +19523,39 @@ void *l2cu_find_rcb_by_psm(UINT16 psm) {
 }
 
 void l2cu_process_peer_cfg_req(void *arg0, void *arg1) {
-    int var_r0, var_r3, var_r6 = 1, var_r7 = 1, var_r8 = 1;
-    unsigned short temp_r0;
-    unsigned char *a = (unsigned char *)arg0;
-    unsigned char *b = (unsigned char *)arg1;
-    if (b[2]) {
-        temp_r0 = *(unsigned short *)(b + 4);
-        if (temp_r0 >= 0x30) {
-            *(unsigned short *)(a + 0x3A) = temp_r0;
-            if (temp_r0 > 0x69B) {
-                *(unsigned short *)(b + 4) = 0x69B;
-                *(unsigned short *)(a + 0x3A) = 0x69B;
+    /* Validate a peer L2CAP config request (MTU, flush timeout, QoS): clamp/adjust invalid fields and, on any rejection, mark the response unacceptable and clear accepted options. */
+    int var_r0, var_r3, mtuOk = 1, qosOk = 1, flushOk = 1;
+    unsigned short mtu;
+    unsigned char *ccb = (unsigned char *)arg0;
+    unsigned char *cfg = (unsigned char *)arg1;
+    if (cfg[2]) {
+        mtu = *(unsigned short *)(cfg + 4);
+        if (mtu >= 0x30) {
+            *(unsigned short *)(ccb + 0x3A) = mtu;
+            if (mtu > 0x69B) {
+                *(unsigned short *)(cfg + 4) = 0x69B;
+                *(unsigned short *)(ccb + 0x3A) = 0x69B;
             }
-        } else { var_r6 = 0; *(unsigned short *)(b + 4) = 0x30; }
+        } else { mtuOk = 0; *(unsigned short *)(cfg + 4) = 0x30; }
     }
-    if (b[0x20] && !*(unsigned short *)(b + 0x22)) {
-        var_r8 = 0; *(unsigned short *)(b + 0x22) = 0xFFFF;
+    if (cfg[0x20] && !*(unsigned short *)(cfg + 0x22)) {
+        flushOk = 0; *(unsigned short *)(cfg + 0x22) = 0xFFFF;
     }
-    if (b[6]) {
-        if (b[9] <= 2) {
+    if (cfg[6]) {
+        if (cfg[9] <= 2) {
             struct Copy { unsigned int w[6]; };
-            *(struct Copy *)(a + 0x40) = *(struct Copy *)(b + 8);
-        } else { var_r7 = 0; b[9] = 1; }
+            *(struct Copy *)(ccb + 0x40) = *(struct Copy *)(cfg + 8);
+        } else { qosOk = 0; cfg[9] = 1; }
     }
     var_r3 = 0; var_r0 = 0;
-    if (var_r6 && var_r8 && var_r7) var_r0 = 1;
+    if (mtuOk && flushOk && qosOk) var_r0 = 1;
     if (var_r0) var_r3 = 1;
     if (!var_r3) {
-        *(short *)b = 1;
-        if (var_r6) b[2] = 0;
-        if (var_r8) b[0x20] = 0;
-        if (var_r7) b[6] = 0;
-        *(signed char *)(b + 0x24) = 0;
+        *(short *)cfg = 1;
+        if (mtuOk) cfg[2] = 0;
+        if (flushOk) cfg[0x20] = 0;
+        if (qosOk) cfg[6] = 0;
+        *(signed char *)(cfg + 0x24) = 0;
     }
 }
 
