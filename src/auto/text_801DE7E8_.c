@@ -397,6 +397,14 @@ int fn_801DF060(void) {
     return (int)(tmp >> 31);
 }
 
+int fn_801DF074(int arg0, int arg1) {
+    if ((unsigned int)(arg0 - 7) <= 1U && fn_801E85A4() == 1 && lbl_8055E9E8 == 0 && (((unsigned char *)lbl_804872B0)[arg0 * 0x1C] != 0 || !(lbl_8055E9DC & (1 << arg0)))) {
+        fn_801DE9F0(arg0, arg1);
+        return 1;
+    }
+    return 0;
+}
+
 extern float lbl_80562BF8, lbl_80562BFC, lbl_80562C00, lbl_80562C04, lbl_80562C08, lbl_80562C0C, lbl_80562C10;
 extern int lbl_8055AE28;
 extern char lbl_803395C4[];
