@@ -40,7 +40,7 @@ s32 fn_802EC4E8(s32 arg0) {
     s32 sp8;
     s32 temp_r30;
     s32 temp_r31;
-    ((void (*)(void *, s32, ...))fn_801345D8)(sp10, 0x40, base, arg0);
+    ((void (*)(void *, s32, void *, ...))fn_801345D8)(sp10, 0x40, base - 0, arg0);
     sp8 = fn_802E36D8(sp10);
     if (sp8 == -1)
         ((void (*)(void *, ...))fn_802E317C)(base + 0x10, sp10);
@@ -162,7 +162,7 @@ extern void fn_800C64F4(void *);
 extern void *memset(void *, int, unsigned int);
 #pragma scheduling invalid_target
 void fn_802EC7AC(void) {
-    register s32 *p;
+    s32 *p;
     s32 i;
     lbl_805600EC = 0;
     fn_800C657C();
@@ -176,12 +176,11 @@ void fn_802EC7AC(void) {
     } while (i < 8);
     p = (s32 *)&lbl_80558860;
     fn_80128670(p[4]);
-    fn_80128670(p[0]);
-    if (p[1] != 0)
-        fn_80128670(p[1]);
-    p = (s32 *)&lbl_80558860;
-    fn_80128670(p[2]);
-    fn_80128670(p[3]);
+    fn_80128670(*(s32 *)lbl_80558860);
+    if (*(s32 *)(lbl_80558860 + 4) != 0)
+        fn_80128670(*(s32 *)(lbl_80558860 + 4));
+    fn_80128670(*(s32 *)(lbl_80558860 + 8));
+    fn_80128670(*(s32 *)(lbl_80558860 + 12));
     if (lbl_805600E0 != 0)
         fn_80128670(lbl_805600E0);
     if (lbl_805600E4 != 0)
