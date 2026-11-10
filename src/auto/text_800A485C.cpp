@@ -12763,27 +12763,30 @@ extern "C" s32 fn_800BC134(void *sdCtx, s32 mode, s32 unused) {
     return result;
 }
 
-s32 fn_800BC2EC(void *arg0, s32 *arg1) {
-    const char *str = lbl_8031B838;
-    s32 sp18[4];
-    s32 res = (s32)0xC1000000;
-    if (arg1 != 0) {
-        OSReport(str + 0x688);
-        fn_800BB0A8(*(s32 *)arg0, 0x10, 3, 1, 4, 0, 0, 0, 0, (s32)sp18, 0, 0);
-        res = fn_800BB0A8(*(s32 *)arg0, 0x37, 3, 1, *(s32 *)((u8 *)arg0 + 0x10), 0, 0, 0, 0, (s32)sp18, 0, 0);
-        if (res != 0) {
-            OSReport(str + 0x6A0, res);
-            return res;
+s32 fn_800BC2EC(void *device, s32 *outData) {
+    /* Issues a sequence of SD card ioctl commands via fn_800BB0A8 to query data
+       into outData (and logs progress/results via OSReport strings in lbl_8031B838).
+       Returns 0 on success or an error/status code (0xC1000000 if outData is NULL). */
+    const char *baseStr = lbl_8031B838;
+    s32 ioctlReply[4];
+    s32 result = (s32)0xC1000000;
+    if (outData != 0) {
+        OSReport(baseStr + 0x688);
+        fn_800BB0A8(*(s32 *)device, 0x10, 3, 1, 4, 0, 0, 0, 0, (s32)ioctlReply, 0, 0);
+        result = fn_800BB0A8(*(s32 *)device, 0x37, 3, 1, *(s32 *)((u8 *)device + 0x10), 0, 0, 0, 0, (s32)ioctlReply, 0, 0);
+        if (result != 0) {
+            OSReport(baseStr + 0x6A0, result);
+            return result;
         }
-        res = fn_800BB0A8(*(s32 *)arg0, 0x33, 3, 1, 0, (s32)arg1, 1, 4, 0, (s32)sp18, 0, 0);
-        if (res != 0) {
-            OSReport(str + 0x6C0, res);
+        result = fn_800BB0A8(*(s32 *)device, 0x33, 3, 1, 0, (s32)outData, 1, 4, 0, (s32)ioctlReply, 0, 0);
+        if (result != 0) {
+            OSReport(baseStr + 0x6C0, result);
         } else {
-            OSReport(str + 0x6E0, arg1[0], arg1[1]);
+            OSReport(baseStr + 0x6E0, outData[0], outData[1]);
         }
-        res = fn_800BB0A8(*(s32 *)arg0, 0x10, 3, 1, 0x200, 0, 0, 0, 0, (s32)sp18, 0, 0);
+        result = fn_800BB0A8(*(s32 *)device, 0x10, 3, 1, 0x200, 0, 0, 0, 0, (s32)ioctlReply, 0, 0);
     }
-    return res;
+    return result;
 }
 
 extern "C" s32 fn_800BB0A8(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
