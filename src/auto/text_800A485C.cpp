@@ -20768,39 +20768,52 @@ extern "C" u8 lbl_8031D840[];
 #define AXFXSetHooks AXFXSetHooks_8009CDB0
 #define AXFXGetHooks AXGetAuxACallback_8009CDBC
 
+/* Takes over the AX Aux A bus with its own AXFX high-quality reverb.  Fields
+ * of this object:
+ *   +0x004 sound system; its +0x14 is a callback run with (0, 0) before and
+ *          (1, 0) after the reverb is rebuilt
+ *   +0x0AC sound mode; 3 = no reverb here, leave AX as it is
+ *   +0x5D8 the three audio level limits, saved here (fn_80031C74..fn_80031C9C)
+ *   +0x5E0 the AXFX alloc/free hooks, saved here
+ *   +0x5E8 the AXFX reverb this object runs (0x160 bytes, see below)
+ *   +0x748 the Aux A callback and its context, saved here
+ * The saved values are what a later shutdown puts back. */
 extern "C" void fn_800C7E6C(void *arg0) {
     u8 *self = (u8 *)arg0;
-    void *object;
-    void (*callback)(s32, s32);
-    f32 f3, f2, f1, f0;
+    void *system;
+    void (*notify)(s32, s32);
+    f32 mix, coloration, reverbTime, zero;
     if (*(s32 *)(self + 0xAC) == 3) return;
-    object = *(void **)(self + 4);
-    callback = *(void (**)(s32, s32))((u8 *)object + 0x14);
-    if (callback != 0) callback(0, 0);
+    system = *(void **)(self + 4);
+    notify = *(void (**)(s32, s32))((u8 *)system + 0x14);
+    if (notify != 0) notify(0, 0);
     *(s16 *)(self + 0x5D8) = fn_80031C74();
     *(s16 *)(self + 0x5DA) = fn_80031C7C();
     *(s16 *)(self + 0x5DC) = fn_80031C84();
-    AXGetAuxACallback_8009CDBC(self + 0x5E0, self + 0x5E4);
+    AXFXGetHooks((void *)(self + 0x5E0), (void *)(self + 0x5E4));
     AXGetAuxACallback(self + 0x748, self + 0x74C);
-    AXFXSetHooks_8009CDB0((void *)fn_800C64DC, (void *)fn_800C64E8);
-    f0 = lbl_80560DC8;
-    f1 = lbl_80560DF0;
-    f2 = lbl_80560DF4;
-    f3 = lbl_80560DCC;
-    *(f32 *)(self + 0x740) = f0;
-    *(f32 *)(self + 0x738) = f1;
-    *(f32 *)(self + 0x730) = f2;
-    *(f32 *)(self + 0x73C) = f0;
-    *(f32 *)(self + 0x744) = f0;
-    *(f32 *)(self + 0x734) = f3;
+    /* the reverb's delay lines come from the game's sound allocator */
+    AXFXSetHooks((void *)fn_800C64DC, (void *)fn_800C64E8);
+    zero = lbl_80560DC8;       /* 0.0f */
+    reverbTime = lbl_80560DF0; /* 2.5s */
+    coloration = lbl_80560DF4; /* 0.5f */
+    mix = lbl_80560DCC;        /* 1.0f */
+    ((AXFX_REVERBHI *)(self + 0x5E8))->preDelay = zero;
+    ((AXFX_REVERBHI *)(self + 0x5E8))->time = reverbTime;
+    ((AXFX_REVERBHI *)(self + 0x5E8))->coloration = coloration;
+    ((AXFX_REVERBHI *)(self + 0x5E8))->damping = zero;
+    ((AXFX_REVERBHI *)(self + 0x5E8))->crosstalk = zero;
+    ((AXFX_REVERBHI *)(self + 0x5E8))->mix = mix;
     AXFXReverbHiInit((AXFX_REVERBHI *)(self + 0x5E8));
-    AXRegisterAuxACallback((void *)fn_8009BFBC, self + 0x5E8);
+    /* fn_8009BFBC is the AXFXReverbHiCallback() stub: it tail-calls
+     * AXFXReverbHiExpCallback() with this reverb as its context */
+    AXRegisterAuxACallback((void *)fn_8009BFBC, (AXFX_REVERBHI *)(self + 0x5E8));
     fn_80031C8C(0x8000);
     fn_80031C94(0);
     fn_80031C9C(0);
-    object = *(void **)(self + 4);
-    callback = *(void (**)(s32, s32))((u8 *)object + 0x14);
-    if (callback != 0) callback(1, 0);
+    system = *(void **)(self + 4);
+    notify = *(void (**)(s32, s32))((u8 *)system + 0x14);
+    if (notify != 0) notify(1, 0);
     self[0x8E] = 1;
 }
 
