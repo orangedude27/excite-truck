@@ -6829,9 +6829,12 @@ extern "C" s32 fn_8022DBE8(void *);
 extern "C" s32 fn_8022DBFC(void *);
 extern "C" s32 fn_8022DC20(void *);
 extern "C" s32 fn_802263CC(void *arg0, s32 arg1) {
-    void *temp_r6 = *(void **)((u8 *)arg0 + 0x27C);
+    /* Handles UI/menu input events for this widget: validates the active selection, then
+       dispatches button/action codes (0xD/0x125-0x128) to step/select items, update state and
+       timestamp, or invoke a confirm callback. Returns 1 if handled, 0 otherwise. */
+    void *activeEntry = *(void **)((u8 *)arg0 + 0x27C);
     s32 result;
-    if (temp_r6 != 0 && (s32)*(void **)((u8 *)arg0 + 0x280) != (s32)*(void **)temp_r6)
+    if (activeEntry != 0 && (s32)*(void **)((u8 *)arg0 + 0x280) != (s32)*(void **)activeEntry)
         return 0;
 
     switch (arg1) {
