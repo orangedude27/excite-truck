@@ -4880,6 +4880,31 @@ extern "C" s32 VFiPFFAT_ReadClusterPage(void *arg0, u32 arg1, s32 arg2, s32 *arg
     return 0;
 }
 
+/* ---------------------------------------------------------------------
+ * A file's cluster chain, cached a page of FAT entries at a time.
+ *
+ * Following a chain entry by entry would read the FAT over and over, so a file
+ * keeps a table with the cluster every page of the chain starts at: a page
+ * holds VF_CHAIN_PAGE_SIZE + 1 entries, as many as fit a FAT sector.  To reach
+ * position N of the chain the walk starts at VF_CHAIN_TABLE()[N / pageSize] and
+ * follows that many entries, reading them through a cache page the caller holds
+ * for it.  The table only covers what has been written in order, and is 0 for a
+ * file that has none.
+ * ------------------------------------------------------------------- */
+#define VF_CHAIN_TABLE(p)    (*(u32 **)((p) + 0x1C)) /* the cluster each page of the chain starts at; 0: no cache */
+#define VF_CHAIN_PAGE_SIZE(p) (*(u16 *)((p) + 0x20)) /* entries a page holds, less one */
+#define VF_CHAIN_PAGE_POS(p)  (*(u16 *)((p) + 0x22)) /* how far into that page the cache is built */
+#define VF_CHAIN_PAGE(p)      (*(u32 *)((p) + 0x24)) /* the page of the chain the last write is at */
+#define VF_CHAIN_PAGES(p)     (*(u32 *)((p) + 0x28)) /* pages the table has room for */
+#define VF_CHAIN_LAST(p)      (*(u32 *)((p) + 0x2C)) /* position of the file's last cluster */
+#define VF_CHAIN_VOLUME(p)    (*(u8 **)((p) + 0x34)) /* the volume the file is on */
+
+/* lbl_802EEF40: five words per FAT type (FAT12, FAT16, FAT32) for the values an
+ * entry cannot hold as a cluster number.  [2] is the end-of-chain value a write
+ * puts in a file's last cluster; [1] is the first value that means "the chain
+ * ends at or after here". */
+#define VF_FAT_END_OF_CHAIN(t) lbl_802EEF40[(t) * 5 + 2]
+
 extern "C" s32 fn_800AF734(void *, s32, s32);
 extern "C" s32 fn_800AFF28(void *, s32, u16);
 extern "C" s32 fn_800B037C(void *, s32, s32);
@@ -23879,18 +23904,18 @@ extern "C" void fn_800A52A0(void *arg0, const void *arg1) {
 
 #pragma dont_inline reset
 extern "C" void fn_800A52DC(u32 arg0) {
-    u8 *base = (u8 *)lbl_803D2140;
-    s32 i = 0;
-    u8 *ptr = base + 0xA0;
+    register u8 *base = (u8 *)lbl_803D2140;
+    register u8 *ptr = base + 0xA0;
+    register s32 i = 0;
     for (; i < 13; ++i) {
         if (*(u32 *)(ptr + 0x1FBC) == arg0) {
             u16 v = *(u16 *)(ptr + 0x1F8C);
-            if (v & 8) *(u16 *)(ptr + 0x1F8C) = v | 0x20;
+            if ((v & 8) != 0) *(u16 *)(ptr + 0x1F8C) = v | 0x20;
             *(u16 *)(ptr + 0x1F8C) &= ~0xC;
         }
         if (*(u32 *)(ptr + 0x3F84) == arg0) {
             u16 v = *(u16 *)(ptr + 0x3F54);
-            if (v & 8) *(u16 *)(ptr + 0x3F54) = v | 0x20;
+            if ((v & 8) != 0) *(u16 *)(ptr + 0x3F54) = v | 0x20;
             *(u16 *)(ptr + 0x3F54) &= ~0xC;
         }
         ptr += 0x3F90;
