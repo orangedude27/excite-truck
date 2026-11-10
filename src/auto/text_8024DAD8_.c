@@ -69,7 +69,7 @@ void fn_8024DADC(void) {
 #pragma push
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" void *fn_8024E6E4(void *arg0, s32 arg1) {
+extern "C" void *fn_8024E6E4(void *self, s32 shouldDelete) {
     extern unsigned char lbl_80344410[];
     extern unsigned char lbl_8034453C[];
     extern s32 fn_80128670(s32);
@@ -77,25 +77,26 @@ extern "C" void *fn_8024E6E4(void *arg0, s32 arg1) {
     extern s32 fn_802CAC54(s32);
     extern s32 fn_80128668(void *);
     class V { public: virtual void f2(int); };
-    V *object;
-    if (arg0 != 0) {
-        object = *(V **)((u8 *)arg0 + 0xD4);
-        *(void **)arg0 = lbl_80344410;
-        if (object != 0) object->f2(1);
-        if (arg0 != 0) {
-            *(void **)arg0 = lbl_803444D8;
-            fn_80128670(*(s32 *)((u8 *)arg0 + 0xCC));
+    V *ownedObject;
+    /* Destroy this object: tear down owned subobjects/resources across its base vtables, release shared state when refcount hits zero, and optionally free it. */
+    if (self != 0) {
+        ownedObject = *(V **)((u8 *)self + 0xD4);
+        *(void **)self = lbl_80344410;
+        if (ownedObject != 0) ownedObject->f2(1);
+        if (self != 0) {
+            *(void **)self = lbl_803444D8;
+            fn_80128670(*(s32 *)((u8 *)self + 0xCC));
             if (--lbl_8055F2E8 == 0) { CleanupEntries(lbl_8055F2E4); lbl_8055F2E4 = 0; }
-            if (arg0 != 0) {
-                *(void **)arg0 = lbl_8034453C;
-                fn_80128670(*(s32 *)((u8 *)arg0 + 0x18));
-                fn_80235380(*(s32 *)((u8 *)arg0 + 0x24));
-                fn_802CAC54(*(s32 *)((u8 *)arg0 + 0x20));
+            if (self != 0) {
+                *(void **)self = lbl_8034453C;
+                fn_80128670(*(s32 *)((u8 *)self + 0x18));
+                fn_80235380(*(s32 *)((u8 *)self + 0x24));
+                fn_802CAC54(*(s32 *)((u8 *)self + 0x20));
             }
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (shouldDelete > 0) fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 #pragma scheduling on
 #pragma pop
@@ -1208,12 +1209,15 @@ void fn_80250108(void *arg0) {
     s32 offset;
     s32 i;
     f32 current;
+    f32 coef;
+    f32 value;
     i = 0;
     offset = 0;
     limit = lbl_80563960;
-    current = *(f32 *)((u8 *)arg0 + 0x28);
-    *(f32 *)((u8 *)arg0 + 0x28) = current + lbl_80563968 * ((f32)*(s32 *)((u8 *)arg0 + 0x2C) - current);
     speed = lbl_8056396C;
+    coef = lbl_80563968;
+    current = *(f32 *)((u8 *)arg0 + 0x28);
+    *(f32 *)((u8 *)arg0 + 0x28) = current + coef * ((f32)*(s32 *)((u8 *)arg0 + 0x2C) - current);
     subtract = lbl_80563970;
     threshold = lbl_80563964;
     for (; i < *(s32 *)((u8 *)arg0 + 0x1C); offset += 12, i++) {
@@ -1225,7 +1229,7 @@ void fn_80250108(void *arg0) {
                 *(f32 *)(entry + 8) -= subtract;
             }
         } else {
-            f32 value = *(f32 *)(entry + 8) + speed * dt;
+            value = *(f32 *)(entry + 8) + speed * dt;
             if (limit < value) value = limit;
             *(f32 *)(entry + 8) = value;
         }
