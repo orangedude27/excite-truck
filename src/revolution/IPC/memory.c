@@ -47,6 +47,7 @@ static void __iosCoalesceChunk(IPCHeapChunk* chunk) {
 }
 
 s32 iosCreateHeap(void* base, u32 size) {
+    /* Creates an IOS IPC heap in a 32-byte-aligned region by initializing its first free chunk in __heaps; returns the heap index or an internal error code. */
     s32 ret = IPC_RESULT_INVALID_INTERNAL;
     BOOL enabled = OSDisableInterrupts();
     IPCHeapDesc* desc;
