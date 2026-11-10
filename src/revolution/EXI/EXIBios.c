@@ -387,6 +387,7 @@ BOOL EXIDetach(EXIChannel chan) {
     return TRUE;
 }
 
+/* Selects a device on the given EXI channel at the requested frequency, updating channel state and CPR while masking external interrupts when attached. */
 BOOL EXISelect(EXIChannel chan, u32 dev, u32 freq) {
     EXIData* exi = &Ecb[chan];
     BOOL enabled;
