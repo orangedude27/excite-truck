@@ -256,6 +256,40 @@ void fn_80209904(void) {
     }
 }
 
+extern "C" void fn_80209904(void);
+extern "C" void fn_80127D58(void *);
+extern "C" void fn_80128668(void *);
+extern "C" s32 lbl_8055EDBC;
+extern "C" u8 lbl_8033C1E0[];
+extern "C" void *fn_8020999C(void *arg0, s32 arg1) {
+    struct ItemDummy {
+        virtual void m0(s32) = 0;
+    };
+    u8 *p;
+    void *item;
+    s32 i;
+    if (arg0 != 0) {
+        *(s32 *)arg0 = (s32)&lbl_8033C1E0[0];
+        p = (u8 *)arg0;
+        i = 0;
+        goto check;
+    loop:
+        item = *(void **)(p + 4);
+        if (item != 0)
+            ((ItemDummy *)item)->m0(1);
+        p += 0x34;
+        i += 1;
+    check:
+        if (i < *(s32 *)((u8 *)arg0 + 0x13C))
+            goto loop;
+        if (--lbl_8055EDBC == 0)
+            fn_80127D58((void *)fn_80209904);
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 #pragma pop
 
 extern "C" s32 fn_80178CA4(void);
