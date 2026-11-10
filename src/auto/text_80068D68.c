@@ -9499,52 +9499,53 @@ static tBTM_STATUS btm_set_inq_event_filter(UINT8 filter_cond_type, UINT8 *p_fil
 
 void btm_event_filter_complete(UINT8 *p) {
     u8 *cleanup;
-    u8 *base=lbl_803C0F78;
+    u8 *p_inq = lbl_803C0F78;
     u8 *lap;
-    u8 status;
-    void (*callback)(void *)=*(void (**)(void *))(base+0x16b8);
-    if(base[0x1845]) { base[0x1845]--; return; }
-    if(base[0x1844]!=1) return;
-    if(*p) {
-        if(base[0x27c0]>=2) fn_80070954(0xd0001,lbl_803164B8,*p);
-        status=10;
-    } else status=0;
-    if(base[0x1847]==0) {
-        base[0x1844]=0;
-        if(callback) callback(&status);
-    } else if(status) {
-        ((void (*)(UINT8))btm_process_inq_complete)(10);
-        base[0x1844]=0; base[0x1848]=0; base[0x1847]=0;
-    } else if(base[0x1847]==1) {
-        status=btm_set_inq_event_filter(base[0x1837],base+0x1838);
-        if(status==1) base[0x1847]=2;
-        else { base[0x1844]=0; ((void (*)(UINT8))btm_process_inq_complete)(10); }
+    tBTM_STATUS status;
+    tBTM_CMPL_CB *p_cb = btm_inq_filt_cmpl_cb(p_inq);
+    if (btm_inq_pending_cmpl(p_inq)) { btm_inq_pending_cmpl(p_inq)--; return; }
+    if (btm_inq_filt_active(p_inq) != TRUE) return;
+    if (*p != HCI_SUCCESS) {
+        if (btm_cb_trace_level >= BTM_TRACE_LEVEL_WARNING)
+            fn_80070954(TRACE_LAYER_BTM | TRACE_TYPE_WARNING, lbl_803164B8, *p); /* "BTM Warning: Set Event Filter Failed (HCI returned 0x%x)" */
+        status = BTM_ERR_PROCESSING;
+    } else status = BTM_SUCCESS;
+    if (btm_inq_state(p_inq) == BTM_INQ_INACTIVE_STATE) {
+        btm_inq_filt_active(p_inq) = FALSE;
+        if (p_cb) p_cb(&status);
+    } else if (status != BTM_SUCCESS) {
+        ((void (*)(UINT8))btm_process_inq_complete)(BTM_ERR_PROCESSING);
+        btm_inq_filt_active(p_inq) = FALSE; btm_inq_active(p_inq) = BTM_INQUIRY_INACTIVE; btm_inq_state(p_inq) = BTM_INQ_INACTIVE_STATE;
+    } else if (btm_inq_state(p_inq) == BTM_INQ_CLR_FILT_STATE) {
+        status = btm_set_inq_event_filter(btm_inq_filt_type(p_inq), btm_inq_filt_cond(p_inq));
+        if (status == BTM_CMD_STARTED) btm_inq_state(p_inq) = BTM_INQ_SET_FILT_STATE;
+        else { btm_inq_filt_active(p_inq) = FALSE; ((void (*)(UINT8))btm_process_inq_complete)(BTM_ERR_PROCESSING); }
     } else {
-        u8 old=base[0x1836];
-        int zero=0;
-        base[0x1847]=3;
-        base[0x1844]=zero;
-        base[0x1836]=(old<=12)?old:12;
-        lap=lbl_80560D30;
-        if(base[0x1848]&1) lap=lbl_80560D34;
-        if(base[0x1848]&4) {
-            if(!btsnd_hcic_per_inq_mode(*(u16*)(base+0x1842),*(u16*)(base+0x1840),lap,base[0x1835],base[0x1836]))
-                ((void (*)(UINT8))btm_process_inq_complete)(3);
+        UINT8 old_max_resps = btm_inq_max_resps(p_inq);
+        int zero = 0;
+        btm_inq_state(p_inq) = BTM_INQ_ACTIVE_STATE;
+        btm_inq_filt_active(p_inq) = zero;
+        btm_inq_max_resps(p_inq) = (old_max_resps <= BTM_INQ_DB_SIZE_HERE) ? old_max_resps : BTM_INQ_DB_SIZE_HERE;
+        lap = general_inq_lap;
+        if (btm_inq_active(p_inq) & BTM_LIMITED_INQUIRY_ACTIVE_HERE) lap = limited_inq_lap;
+        if (btm_inq_active(p_inq) & BTM_PERIODIC_INQUIRY_ACTIVE_HERE) {
+            if (!btsnd_hcic_per_inq_mode(btm_inq_per_max_delay(p_inq), btm_inq_per_min_delay(p_inq), lap, btm_inq_duration(p_inq), btm_inq_max_resps(p_inq)))
+                ((void (*)(UINT8))btm_process_inq_complete)(BTM_NO_RESOURCES);
         } else {
-            cleanup=lbl_803C0F78;
-            if(*(void**)(cleanup+0x16dc)) {
-                GKI_freebuf(*(void**)(cleanup+0x16dc));
-                *(void**)(cleanup+0x16dc)=NULL;
+            cleanup = lbl_803C0F78; /* btm_clr_inq_result_flt(), on btm_cb again */
+            if (btm_inq_bd_db(cleanup)) {
+                GKI_freebuf(btm_inq_bd_db(cleanup));
+                btm_inq_bd_db(cleanup) = NULL;
             }
-            *(u16*)(cleanup+0x16e0)=0;
-            *(u16*)(cleanup+0x16e2)=0;
-            *(void**)(base+0x16dc)=GKI_getbuf(0x708);
-            if(*(void**)(base+0x16dc)) {
-                *(u16*)(base+0x16e2)=0x96;
-                memset(*(void**)(base+0x16dc),0,0x708);
+            btm_inq_num_bd(cleanup) = 0;
+            btm_inq_max_bd(cleanup) = 0;
+            btm_inq_bd_db(p_inq) = GKI_getbuf(BTM_INQ_BD_BUF_SIZE_HERE);
+            if (btm_inq_bd_db(p_inq)) {
+                btm_inq_max_bd(p_inq) = BTM_INQ_BD_BUF_ENTRIES_HERE;
+                memset(btm_inq_bd_db(p_inq), 0, BTM_INQ_BD_BUF_SIZE_HERE);
             }
-            if(!btsnd_hcic_inquiry(lap,base[0x1835],0))
-                ((void (*)(UINT8))btm_process_inq_complete)(3);
+            if (!btsnd_hcic_inquiry(lap, btm_inq_duration(p_inq), 0))
+                ((void (*)(UINT8))btm_process_inq_complete)(BTM_NO_RESOURCES);
         }
     }
 }
