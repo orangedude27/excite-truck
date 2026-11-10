@@ -22,6 +22,9 @@ extern char lbl_803582C0[];
 extern double cos(double);
 extern double sin(double);
 #pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_80019BBC(void) {
     float initial = lbl_80560418;
     float angle = lbl_80560418;
