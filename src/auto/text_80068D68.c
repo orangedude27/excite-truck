@@ -16764,14 +16764,15 @@ u16 L2CA_ConnectReq(u16 psm, u8 *p_bd_addr) {
 }
 
 BOOLEAN L2CA_ConnectRsp(BD_ADDR addr, UINT8 id, UINT16 lcid, UINT16 result, UINT16 status) {
+    /* Handle an upper-layer L2CAP connect response by finding the link/channel and advancing the CCB state machine. */
     register u8 *logBase = lbl_80317C20;
-    void *lcb;
-    void *ccb;
+    void *linkControlBlock;
+    void *channelControlBlock;
     struct {
         u8 pad[0xA];
         s16 info[2];
     } resultData;
-    u8 ccbId;
+    u8 channelId;
 
     if (lbl_803C4040[0] >= 3)
         fn_80070984(0x80002, logBase + 0x26C);
@@ -16780,36 +16781,36 @@ BOOLEAN L2CA_ConnectRsp(BD_ADDR addr, UINT8 id, UINT16 lcid, UINT16 result, UINT
         fn_800709CC(0x80002, logBase + 0x2A4,
                     addr[0], addr[1], addr[2], addr[3], addr[4], addr[5]);
 
-    lcb = l2cu_find_lcb_by_bd_addr(addr);
-    if (lcb == 0) {
+    linkControlBlock = l2cu_find_lcb_by_bd_addr(addr);
+    if (linkControlBlock == 0) {
         if (lbl_803C4040[0] >= 2)
             fn_8007093C(0x80001, logBase + 0x2DC);
         return 0;
     }
 
-    ccb = l2cu_find_ccb_by_cid(lcb, lcid);
-    if (ccb == 0) {
+    channelControlBlock = l2cu_find_ccb_by_cid(linkControlBlock, lcid);
+    if (channelControlBlock == 0) {
         if (lbl_803C4040[0] >= 2)
             fn_8007093C(0x80001, logBase + 0x300);
         return 0;
     }
 
-    ccbId = *(u8 *)((u8 *)ccb + 0x36);
-    if (ccbId != id) {
+    channelId = *(u8 *)((u8 *)channelControlBlock + 0x36);
+    if (channelId != id) {
         if (lbl_803C4040[0] >= 2)
-            fn_8007096C(0x80001, logBase + 0x324, ccbId, id);
+            fn_8007096C(0x80001, logBase + 0x324, channelId, id);
         return 0;
     }
 
     if (result == 0) {
-        fn_80089E40(ccb, 0x15, 0);
+        fn_80089E40(channelControlBlock, 0x15, 0);
     } else {
         resultData.info[0] = result;
         resultData.info[1] = status;
         if (result == 1)
-            fn_80089E40(ccb, 0x15, &resultData);
+            fn_80089E40(channelControlBlock, 0x15, &resultData);
         else
-            fn_80089E40(ccb, 0x16, &resultData);
+            fn_80089E40(channelControlBlock, 0x16, &resultData);
     }
     return 1;
 }
