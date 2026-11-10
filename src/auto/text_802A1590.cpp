@@ -507,15 +507,13 @@ extern "C" void* fn_802A1E80(void* arg0, s32 arg1) {
     return arg0;
 }
 
-#pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
 extern "C" void fn_802A1F00(void *arg0) {
-    register double f31 = (double)lbl_80564734;
-    register double f30 = (double)lbl_80564744;
+    register float f31 = 0.5f;
+    register float f30 = 0.0f;
     register void *p = arg0;
-    register s32 count = 0;
-    while (count < ((s32 (*)(void))fn_80287B14)()) {
+    register int count = 0;
+    while (count < ((int (*)(void))fn_80287B14)()) {
         *(float *)((char *)p + 0x14) = f30;
         count++;
         *(float *)((char *)p + 0x18) = f31;
@@ -525,7 +523,7 @@ extern "C" void fn_802A1F00(void *arg0) {
     }
     fn_802A4524(*(void **)((char *)arg0 + 0x10));
 }
-#pragma pop
+#pragma processor reset
 extern "C" void* fn_80287B24(s32);
 extern "C" void fn_802A4658(s32);
 extern "C" f32 lbl_80564730, lbl_80564748, lbl_8056474C, lbl_80564750;
