@@ -1679,7 +1679,8 @@ extern "C" s32 fn_80162FE8(void *arg0) {
 s32 fn_80163058(void *arg0) { return *(s32 *)((u8 *)arg0 + 8) == 1; }
 
 #pragma cplusplus on
-extern "C" void fn_8016306C(void *arg0, s32 arg1, s32 arg2) {
+/* Dispatches an object action based on arg1 when the object is ready; for case 0, if the indexed table entry (lbl_804348E8[arg2]) has tag 'PCAR' at +0x10 it finalizes and sets a flag at +0x91. */
+extern "C" void fn_8016306C(void *object, s32 action, s32 index) {
     class Obj {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -1691,20 +1692,20 @@ extern "C" void fn_8016306C(void *arg0, s32 arg1, s32 arg2) {
         virtual void v23(); virtual void v24(); virtual void v25(); virtual void v26();
         virtual void dispatch(s32, s32, s32);
     };
-    Obj *obj = (Obj *)arg0;
+    Obj *obj = (Obj *)object;
 
     if (obj->check() == 0) {
-        switch (arg1) {
-        case 2: obj->dispatch(0x10, arg2, 5); break;
-        case 1: obj->dispatch(0x11, arg2, 5); break;
-        case 3: obj->dispatch(0x12, arg2, 5); break;
-        case 4: obj->dispatch(0x13, arg2, 5); break;
+        switch (action) {
+        case 2: obj->dispatch(0x10, index, 5); break;
+        case 1: obj->dispatch(0x11, index, 5); break;
+        case 3: obj->dispatch(0x12, index, 5); break;
+        case 4: obj->dispatch(0x13, index, 5); break;
         }
     }
 
     if (obj->check() != 0)
         goto done;
-    switch (arg1) {
+    switch (action) {
     case 0:
         goto check_tag;
     default:
@@ -1712,9 +1713,9 @@ extern "C" void fn_8016306C(void *arg0, s32 arg1, s32 arg2) {
     }
 
 check_tag:
-    if (*(u32 *)(lbl_804348E8[arg2] + 0x10) == 0x50434152) {
+    if (*(u32 *)(lbl_804348E8[index] + 0x10) == 0x50434152) {
         obj->finish(2);
-        *((u8 *)arg0 + 0x91) = 1;
+        *((u8 *)object + 0x91) = 1;
     }
 
 done:
