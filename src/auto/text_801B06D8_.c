@@ -1367,35 +1367,48 @@ extern char lbl_80335B94[];
 #pragma push
 #pragma processor 750
 void fn_801B2364(void) {
- f32 time;
- void *obj;
- s32 offset, i, state;
- s32 off, j;
- fn_801B146C();
- if(fn_801769F8()!=0) return;
- state=fn_801E89EC();
- time=lbl_8055E3C8;
- if(lbl_8055E6A0 && time>=lbl_8055E6A4) {
-  if(state==0) {
-   fn_801E89F4(1);
-   for(i=0,offset=0;i<(s32)lbl_8055E678;offset+=0x80,i++) {
-    obj=(u8*)lbl_8055E684+offset;
-    fn_8018B0D0(*(s32*)((u8*)obj+0x5C),2);
-    fn_801CB3AC(*(s32*)((u8*)obj+0x60));
-   }
-  }
-  if(lbl_8055E6A8==1 && fn_800216D0()!=0) lbl_8055E6AC+=lbl_805625DC;
-  if(lbl_8055E6A8==1 && time>lbl_8055E6AC) {
-   fn_802E30C8(lbl_80335B94);
-   lbl_8055E6A8=0;
-   j=0; off=0;
-   while(j<(s32)lbl_8055E678) {
-    *(s32*)((u8*)lbl_8055E684+off+0x28)=lbl_8055E6A8;
-    off+=0x80; j++;
-   }
-   if(lbl_8055E691) fn_801B84F8();
-  }
- }
+    f32 currentTime;
+    void *entry;
+    s32 entryOffset;
+    s32 entryIndex;
+    s32 state;
+    s32 resetOffset;
+    s32 resetIndex;
+
+    /* Per-frame update: advance state and, after timeout, activate/dispatch entries and finish. */
+    fn_801B146C();
+    if (fn_801769F8() != 0) {
+        return;
+    }
+    state = fn_801E89EC();
+    currentTime = lbl_8055E3C8;
+    if (lbl_8055E6A0 && currentTime >= lbl_8055E6A4) {
+        if (state == 0) {
+            fn_801E89F4(1);
+            for (entryIndex = 0, entryOffset = 0; entryIndex < (s32)lbl_8055E678; entryOffset += 0x80, entryIndex++) {
+                entry = (u8 *)lbl_8055E684 + entryOffset;
+                fn_8018B0D0(*(s32 *)((u8 *)entry + 0x5C), 2);
+                fn_801CB3AC(*(s32 *)((u8 *)entry + 0x60));
+            }
+        }
+        if (lbl_8055E6A8 == 1 && fn_800216D0() != 0) {
+            lbl_8055E6AC += lbl_805625DC;
+        }
+        if (lbl_8055E6A8 == 1 && currentTime > lbl_8055E6AC) {
+            fn_802E30C8(lbl_80335B94);
+            lbl_8055E6A8 = 0;
+            resetIndex = 0;
+            resetOffset = 0;
+            while (resetIndex < (s32)lbl_8055E678) {
+                *(s32 *)((u8 *)lbl_8055E684 + resetOffset + 0x28) = lbl_8055E6A8;
+                resetOffset += 0x80;
+                resetIndex++;
+            }
+            if (lbl_8055E691) {
+                fn_801B84F8();
+            }
+        }
+    }
 }
 #pragma pop
 extern void fn_801B15A8(s32, f32);
