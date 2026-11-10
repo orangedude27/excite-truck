@@ -85,21 +85,23 @@ long fn_80177988(void) {
     return 1;
 }
 
+#pragma push
+#pragma processor 750
 void fn_80177990(void) {
-    double temp_f31 = lbl_80561B48;
-    float *var_r31 = &lbl_80430700[0];
-    float *var_r30 = &lbl_804305D4[0];
-    int var_r29;
-
-    for (var_r29 = 0; var_r29 < 0x4b; var_r29++) {
-        *var_r31 = (float)temp_f31;
-        *var_r30 = (float)temp_f31;
-        fn_801DCEC8(var_r29, (float)temp_f31);
-        fn_801DCEDC(var_r29, lbl_80561B48);
-        var_r31++;
-        var_r30++;
+    float tmp3 = lbl_80561B48;
+    float *p1 = &lbl_80430700[0];
+    float *p2 = &lbl_804305D4[0];
+    int i;
+    for (i = 0; i < 0x4b; i++) {
+        *p1 = tmp3;
+        *p2 = tmp3;
+        fn_801DCEC8(i, tmp3);
+        fn_801DCEDC(i, lbl_80561B48);
+        p1++;
+        p2++;
     }
 }
+#pragma pop
 
 #pragma dont_inline on
 void fn_80177A18(void) {
