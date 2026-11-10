@@ -16972,28 +16972,38 @@ BOOLEAN L2CA_DisconnectRsp(UINT16 cid)
 }
 
 extern u8 lbl_80317C20[];
+/* Higher layers call this to send data on an open L2CAP channel. The buffer is
+ * handed to the channel's state machine, which owns it from here on; the answer
+ * says whether the link the channel runs on is now congested. A buffer no
+ * channel will take (no CCB for the CID, or bigger than the peer's MTU) is
+ * freed here and the call fails. */
 UINT8 L2CA_DataWrite(UINT16 lcid, BT_HDR *p_buf) {
-    u8 *trace = lbl_80317C20;
-    void *ccb;
-    if (lbl_803C4040[0] >= 3)
-        fn_8007096C(0x80002, trace + 0x49C, lcid, p_buf->len);
-    ccb = l2cu_find_ccb_by_cid(0, lcid);
-    if (ccb == 0) {
-        if (lbl_803C4040[0] >= 2)
-            fn_80070954(0x80001, trace + 0x4C4, lcid);
+    u8 *trace = lbl_80317C20; /* this file's L2CAP trace strings */
+    tL2C_CCB_VIEW *p_ccb;
+
+    if (l2cb_trace_level >= BT_TRACE_LEVEL_API) /* L2CA_DataWrite() CID: 0x%04x Len: %d */
+        fn_8007096C(TRACE_LAYER_L2CAP | TRACE_TYPE_API, trace + 0x49C, lcid, p_buf->len);
+
+    /* Find the channel control block; we don't know which link it is on. */
+    p_ccb = l2cu_find_ccb_by_cid(NULL, lcid);
+    if (p_ccb == NULL) {
+        if (l2cb_trace_level >= BT_TRACE_LEVEL_WARNING) /* no CCB for L2CA_DataWrite */
+            fn_80070954(TRACE_LAYER_L2CAP | TRACE_TYPE_WARNING, trace + 0x4C4, lcid);
         GKI_freebuf(p_buf);
-        return 0;
+        return L2CAP_DW_FAILED;
     }
-    if (p_buf->len <= *(u16 *)((u8 *)ccb + 0x3A)) {
-        fn_80089E40(ccb, 0x1D, p_buf);
-        if (*(u8 *)(*(u8 **)((u8 *)ccb + 0x10) + 0x41))
-            return 2;
-        return 1;
+
+    if (p_buf->len <= p_ccb->peer_mtu) {
+        fn_80089E40(p_ccb, L2CEVT_L2CA_DATA_WRITE, p_buf); /* l2c_csm_execute() */
+        if (p_ccb->p_lcb->is_congested)
+            return L2CAP_DW_CONGESTED;
+        return L2CAP_DW_SUCCESS;
     }
-    if (lbl_803C4040[0] >= 2)
-        fn_8007093C(0x80001, trace + 0x4F0);
+
+    if (l2cb_trace_level >= BT_TRACE_LEVEL_WARNING) /* bigger than the peer's MTU */
+        fn_8007093C(TRACE_LAYER_L2CAP | TRACE_TYPE_WARNING, trace + 0x4F0);
     GKI_freebuf(p_buf);
-    return 0;
+    return L2CAP_DW_FAILED;
 }
 
 BOOLEAN L2CA_SetIdleTimeout(UINT16 cid, UINT16 timeout, BOOLEAN is_global)
