@@ -161,15 +161,21 @@ void fn_80009DC8(void *arg0) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_8000A644(void* arg0, void* arg1) {
+    s32 v;
+    s32 w;
+    s32* base = (s32*)((u8*)arg0 + 0x20);
+    s32* dst = base;
+    s32* limit = base;
+    u8* src = (u8*)arg1;
     s32 count = 0;
-    char* dst = (char*)arg0 + 0x20;
-    s32* src = (s32*)arg1;
-    ((s32*)arg0)[0x3E0 / 4] = src[0x24 / 4];
-    while (count < ((s32*)arg0)[0x3C0 / 4]) {
-        dst += 0x78;
-        *(s32*)(dst - 0x10) = src[4 / 4];
-        *(s32*)(dst - 0xC) = src[0x28 / 4];
-        src++;
+    ((s32*)arg0)[0x3E0 / 4] = *(s32*)(src + 0x24);
+    while (count < limit[0x3C0 / 4]) {
+        v = *(s32*)(src + 4);
+        w = *(s32*)(src + 0x28);
+        src += 4;
+        dst[0x68 / 4] = v;
+        dst[0x6C / 4] = w;
+        dst += 0x78 / 4;
         count++;
     }
     ((void (*)(void))fn_80009DC8)();
@@ -177,8 +183,8 @@ void fn_8000A644(void* arg0, void* arg1) {
 #pragma pop
 void fn_8000A688(void (*arg0)(void*), s32 arg1) DECOMP_DONT_INLINE {
     char sp8[0x20];
-    ((void (*)(void*, s32, void*, s32))fn_801345D8)(sp8 + 8, 0x20, &lbl_80558A14, arg1);
-    arg0(sp8 + 8);
+    fn_801345D8(sp8, 0x20, &lbl_80558A14, arg1);
+    arg0(sp8);
 }
 
 extern void *fn_80131810(const char *);
@@ -333,6 +339,8 @@ void fn_8000A868(void) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_8000A8C4(void* arg0) {
+    /* Load/setup track-related resources for arg0: build paths/names, query resource
+     * items and weather name, set flags/strings, init subsystems, and cache "speech" id. */
     extern void fn_802E3D00(void);
     extern void* fn_8001285C(void*);
     extern void fn_800124DC(void*, s32, s32, f32);
