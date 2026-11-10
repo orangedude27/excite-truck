@@ -629,7 +629,7 @@ extern s32 lbl_8055BFC8;
 extern s32 lbl_8055BFD0;
 extern char lbl_804989AC[];
 #pragma scheduling invalid_target
-#pragma inline no fn_8024B178
+#pragma dont_inline fn_8024B178
 extern s32 fn_8024B178(s32);
 #pragma cplusplus on
 s32 fn_8024B178(s32 arg0) {
