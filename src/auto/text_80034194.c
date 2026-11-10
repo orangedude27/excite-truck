@@ -2047,13 +2047,14 @@ void fn_8003773C(void) {
 }
 
 void fn_80037800(void) {
-    s32 enabled;
+    /* Initializes a platform-specific error path, logging an error record and starting the corresponding transfer/callback. */
+    s32 savedInterrupts;
 
     if (*(u16 *)0x800030E6 == 0x8003) {
         lbl_8055D8CC = (s32)fn_80037A8C;
         fn_8003BCDC(0);
 
-        enabled = OSDisableInterrupts();
+        savedInterrupts = OSDisableInterrupts();
         if (*(volatile u32 *)&lbl_8055D848 >= 5)
             *(volatile u32 *)&lbl_8055D848 = 0;
         *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x25;
@@ -2062,14 +2063,14 @@ void fn_80037800(void) {
         *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
         *(volatile u32 *)&lbl_8055D848 =
             *(volatile u32 *)&lbl_8055D848 + 1;
-        OSRestoreInterrupts(enabled);
+        OSRestoreInterrupts(savedInterrupts);
         fn_8003B69C(0x20000, fn_80037B54);
     } else {
         DCInvalidateRange(lbl_80376B00, 0x20);
         lbl_8055D8CC = (s32)fn_80037CEC;
         fn_8003BCDC(0);
 
-        enabled = OSDisableInterrupts();
+        savedInterrupts = OSDisableInterrupts();
         if (*(volatile u32 *)&lbl_8055D848 >= 5)
             *(volatile u32 *)&lbl_8055D848 = 0;
         *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 5;
@@ -2078,7 +2079,7 @@ void fn_80037800(void) {
         *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
         *(volatile u32 *)&lbl_8055D848 =
             *(volatile u32 *)&lbl_8055D848 + 1;
-        OSRestoreInterrupts(enabled);
+        OSRestoreInterrupts(savedInterrupts);
         fn_8003A834(lbl_80376B00, fn_80037DBC);
     }
 }
