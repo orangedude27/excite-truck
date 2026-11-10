@@ -108,8 +108,11 @@ void fn_80288A1C(void) {}
 
 #pragma push
 #pragma peephole off
+float fn_801E7E24(void);
+float fn_801E7E24();
 void fn_80288A20(void) {
-    fn_801E7E24();
+    volatile float f;
+    f = fn_801E7E24();
 }
 #pragma pop
 extern void *lbl_8055F6E0;
@@ -184,83 +187,108 @@ void *fn_80288B88(void *arg0, int arg1) {
 int fn_80288BF0(int arg0, int arg1, int arg2) {
     extern void *fn_80287B24(int);
     extern int fn_8028E584(int, int, int);
-    volatile float sp28, sp24, sp20, sp1C, sp18, sp14, sp10, spC, sp8;
-    volatile float *matrix;
-    volatile float *vector;
-    float m3,m4,m5,m0,m1,m2,m6,m7,m8;
-    float x, y, z;
-    float p0,p1,p2,p3,p4,p5,p6,p7,p8;
+    float frame[9];
+    float *matrix;
+    float *vector;
+    float p0, p1, p2, p3, p4, p5, p6, p7, p8;
+    float v1;
+    float v0;
+    float v2;
+    float t2;
+    float t1;
 
     if (arg2 == 2) {
         matrix = (float *)fn_80287B24(arg1);
-        vector = (float *)((char *)arg0 + arg1 * 0xC);
-        if ((volatile float *)&sp20 == vector) {
-            m3=matrix[3]; y=vector[1]; m4=matrix[4]; p3=y*m3;
-            m5=matrix[5]; m0=matrix[0]; p4=y*m4;
-            x=vector[0]; m1=matrix[1]; p0=x*m0;
-            m2=matrix[2]; p1=x*m1; m6=matrix[6]; p2=x*m2;
-            p5=y*m5; z=vector[2]; m7=matrix[7]; p6=z*m6;
-            m8=matrix[8]; p7=z*m7; p8=z*m8;
-            sp20 = p6 + (p0 + p3);
-            sp24 = p7 + (p1 + p4);
-            sp28 = p8 + (p2 + p5);
+        vector = (float *)((char *)arg0 + (arg1 * 0xC));
+        if (&frame[6] == vector) {
+            v1 = vector[1];
+            p3 = matrix[3] * v1;
+            p4 = matrix[4] * v1;
+            v0 = vector[0];
+            p0 = matrix[0] * v0;
+            p1 = matrix[1] * v0;
+            p2 = matrix[2] * v0;
+            p5 = matrix[5] * v1;
+            v2 = vector[2];
+            p6 = matrix[6] * v2;
+            p7 = matrix[7] * v2;
+            p8 = matrix[8] * v2;
+            frame[6] = p6 + (p0 + p3);
+            frame[7] = p7 + (p1 + p4);
+            frame[8] = p8 + (p2 + p5);
         } else {
-            p3 = matrix[3] * vector[1]; p0 = matrix[0] * vector[0]; p6 = matrix[6] * vector[2];
-            sp20 = p6 + (p0 + p3);
-            p4 = matrix[4] * vector[1]; p1 = matrix[1] * vector[0]; p7 = matrix[7] * vector[2];
-            sp24 = p7 + (p1 + p4);
-            p5 = matrix[5] * vector[1]; p2 = matrix[2] * vector[0]; p8 = matrix[8] * vector[2];
-            sp28 = p8 + (p2 + p5);
+            frame[6] = matrix[6] * vector[2] + ((matrix[0] * vector[0]) + (matrix[3] * vector[1]));
+            frame[7] = matrix[7] * vector[2] + ((matrix[1] * vector[0]) + (matrix[4] * vector[1]));
+            frame[8] = matrix[8] * vector[2] + ((matrix[2] * vector[0]) + (matrix[5] * vector[1]));
         }
-        x = sp28; y = sp24;
-        sp20 += matrix[9]; sp24 += matrix[10]; sp28 += matrix[11];
-        return ((int (*)(int, float *, void *, float, float))fn_8028E584)(
-            *(int *)((char *)arg0 + 0x60), (float *)&sp20, (char *)matrix + 0x34, x, y);
+        t2 = frame[7];
+        t1 = frame[8];
+        frame[6] += matrix[9];
+        frame[7] = t2 + matrix[10];
+        frame[8] = t1 + matrix[11];
+        return ((int (*)(int, float *, void *, float, float))fn_8028E584)(*(int *)((char *)arg0 + 0x60), &frame[6], (char *)matrix + 0x34, t1, t2);
     } else if ((unsigned)(arg2 - 6) <= 1U) {
         matrix = (float *)fn_80287B24(arg1);
-        vector = (float *)((char *)arg0 + arg1 * 0xC);
-        if ((volatile float *)&sp14 == vector) {
-            p3 = matrix[3] * vector[1]; p4 = matrix[4] * vector[1]; p5 = matrix[5] * vector[1];
-            p0 = matrix[0] * vector[0]; p1 = matrix[1] * vector[0]; p2 = matrix[2] * vector[0];
-            p6 = matrix[6] * vector[2]; p7 = matrix[7] * vector[2]; p8 = matrix[8] * vector[2];
-            sp14 = p6 + (p0 + p3);
-            sp18 = p7 + (p1 + p4);
-            sp1C = p8 + (p2 + p5);
+        vector = (float *)((char *)arg0 + (arg1 * 0xC));
+        if (&frame[3] == vector) {
+            v1 = vector[1];
+            p3 = matrix[3] * v1;
+            p4 = matrix[4] * v1;
+            v0 = vector[0];
+            p0 = matrix[0] * v0;
+            p1 = matrix[1] * v0;
+            p2 = matrix[2] * v0;
+            p5 = matrix[5] * v1;
+            v2 = vector[2];
+            p6 = matrix[6] * v2;
+            p7 = matrix[7] * v2;
+            p8 = matrix[8] * v2;
+            frame[3] = p6 + (p0 + p3);
+            frame[4] = p7 + (p1 + p4);
+            frame[5] = p8 + (p2 + p5);
         } else {
-            p3 = matrix[3] * vector[1]; p0 = matrix[0] * vector[0]; p6 = matrix[6] * vector[2];
-            sp14 = p6 + (p0 + p3);
-            p4 = matrix[4] * vector[1]; p1 = matrix[1] * vector[0]; p7 = matrix[7] * vector[2];
-            sp18 = p7 + (p1 + p4);
-            p5 = matrix[5] * vector[1]; p2 = matrix[2] * vector[0]; p8 = matrix[8] * vector[2];
-            sp1C = p8 + (p2 + p5);
+            frame[3] = matrix[6] * vector[2] + ((matrix[0] * vector[0]) + (matrix[3] * vector[1]));
+            frame[4] = matrix[7] * vector[2] + ((matrix[1] * vector[0]) + (matrix[4] * vector[1]));
+            frame[5] = matrix[8] * vector[2] + ((matrix[2] * vector[0]) + (matrix[5] * vector[1]));
         }
-        x = sp1C; y = sp18;
-        sp14 += matrix[9]; sp18 += matrix[10]; sp1C += matrix[11];
-        return ((int (*)(int, float *, void *, float, float))fn_8028E584)(
-            *(int *)((char *)arg0 + 0x64), (float *)&sp14, (char *)matrix + 0x34, x, y);
+        t2 = frame[4];
+        t1 = frame[5];
+        frame[3] += matrix[9];
+        frame[4] = t2 + matrix[10];
+        frame[5] = t1 + matrix[11];
+        return ((int (*)(int, float *, void *, float, float))fn_8028E584)(*(int *)((char *)arg0 + 0x64), &frame[3], (char *)matrix + 0x34, t1, t2);
     } else if ((unsigned)(arg2 - 10) <= 1U) {
         matrix = (float *)fn_80287B24(arg1);
-        vector = (float *)((char *)arg0 + arg1 * 0xC);
-        if ((volatile float *)&sp8 == vector) {
-            p3 = matrix[3] * vector[1]; p4 = matrix[4] * vector[1]; p5 = matrix[5] * vector[1];
-            p0 = matrix[0] * vector[0]; p1 = matrix[1] * vector[0]; p2 = matrix[2] * vector[0];
-            p6 = matrix[6] * vector[2]; p7 = matrix[7] * vector[2]; p8 = matrix[8] * vector[2];
-            sp8 = p6 + (p0 + p3);
-            spC = p7 + (p1 + p4);
-            sp10 = p8 + (p2 + p5);
+        vector = (float *)((char *)arg0 + (arg1 * 0xC));
+        if (&frame[0] == vector) {
+            v1 = vector[1];
+            p3 = matrix[3] * v1;
+            p4 = matrix[4] * v1;
+            v0 = vector[0];
+            p0 = matrix[0] * v0;
+            p1 = matrix[1] * v0;
+            p2 = matrix[2] * v0;
+            p5 = matrix[5] * v1;
+            v2 = vector[2];
+            p6 = matrix[6] * v2;
+            p7 = matrix[7] * v2;
+            p8 = matrix[8] * v2;
+            frame[0] = p6 + (p0 + p3);
+            frame[1] = p7 + (p1 + p4);
+            frame[2] = p8 + (p2 + p5);
         } else {
-            p3 = matrix[3] * vector[1]; p0 = matrix[0] * vector[0]; p6 = matrix[6] * vector[2];
-            sp8 = p6 + (p0 + p3);
-            p4 = matrix[4] * vector[1]; p1 = matrix[1] * vector[0]; p7 = matrix[7] * vector[2];
-            spC = p7 + (p1 + p4);
-            p5 = matrix[5] * vector[1]; p2 = matrix[2] * vector[0]; p8 = matrix[8] * vector[2];
-            sp10 = p8 + (p2 + p5);
+            frame[0] = matrix[6] * vector[2] + ((matrix[0] * vector[0]) + (matrix[3] * vector[1]));
+            frame[1] = matrix[7] * vector[2] + ((matrix[1] * vector[0]) + (matrix[4] * vector[1]));
+            frame[2] = matrix[8] * vector[2] + ((matrix[2] * vector[0]) + (matrix[5] * vector[1]));
         }
-        x = sp10; y = spC;
-        sp8 += matrix[9]; spC += matrix[10]; sp10 += matrix[11];
-        return ((int (*)(int, float *, void *, float, float))fn_8028E584)(
-            *(int *)((char *)arg0 + 0x68), (float *)&sp8, (char *)matrix + 0x34, x, y);
+        t2 = frame[1];
+        t1 = frame[2];
+        frame[0] += matrix[9];
+        frame[1] = t2 + matrix[10];
+        frame[2] = t1 + matrix[11];
+        return ((int (*)(int, float *, void *, float, float))fn_8028E584)(*(int *)((char *)arg0 + 0x68), &frame[0], (char *)matrix + 0x34, t1, t2);
     }
+    return 0;
 }
 
 extern int fn_80287E20();
@@ -272,11 +300,10 @@ extern float lbl_80564274, lbl_80564278;
 void fn_80289084(void *arg0) {
     float result[3];
     volatile float fallback[3];
-    float f31 = lbl_80564278;
-    float f30 = lbl_80564274;
+    float f31 = 2.0f;
+    float f30 = 0.0f;
     float *dst = (float *)arg0;
     int i = 0;
-
     while (i < fn_80287B14()) {
         void *obj = (void *)fn_80288208(i);
         if (fn_80287E20(obj, &lbl_8055C884)) {
@@ -705,7 +732,7 @@ int fn_802897E0(int arg0) {
         fn_8028E2F8((int *)&frame.sp20, &lbl_80348B34, lbl_8055C880, zero,
                     f1, f2, f3, f4, f5, f6, f7);
 }
-#pragma pop
+#pragma scheduling invalid_target
 void fn_802898CC(void *self, int arg0, int arg1, int arg2) {
     extern void *fn_80287B24(int);
     extern int fn_80288208(int);
@@ -742,9 +769,9 @@ void fn_802898CC(void *self, int arg0, int arg1, int arg2) {
         float r0 = m2 * x6;
         float r1 = m2 * x7;
         float r2 = m2 * x8;
-        sp14[0] = r0 + (p0 + q0);
-        sp14[1] = r1 + (p1 + q1);
-        sp14[2] = r2 + (p2 + q2);
+        sp14[0] = (p0 + q0) + r0;
+        sp14[1] = (p1 + q1) + r1;
+        sp14[2] = (p2 + q2) + r2;
     } else {
         sp14[0] = (*(float *)((char *)mat + 0x2C) * vec[6]) + ((*(float *)((char *)mat + 0x24) * vec[0]) + (*(float *)((char *)mat + 0x28) * vec[3]));
         sp14[1] = (*(float *)((char *)mat + 0x2C) * vec[7]) + ((*(float *)((char *)mat + 0x24) * vec[1]) + (*(float *)((char *)mat + 0x28) * vec[4]));
@@ -776,9 +803,9 @@ void fn_802898CC(void *self, int arg0, int arg1, int arg2) {
         float r0 = m2 * x6;
         float r1 = m2 * x7;
         float r2 = m2 * x8;
-        sp8[0] = r0 + (p0 + q0);
-        sp8[1] = r1 + (p1 + q1);
-        sp8[2] = r2 + (p2 + q2);
+        sp8[0] = (p0 + q0) + r0;
+        sp8[1] = (p1 + q1) + r1;
+        sp8[2] = (p2 + q2) + r2;
     } else {
         sp8[0] = (*(float *)((char *)mat + 0x14) * vec[6]) + ((*(float *)((char *)mat + 0xC) * vec[0]) + (*(float *)((char *)mat + 0x10) * vec[3]));
         sp8[1] = (*(float *)((char *)mat + 0x14) * vec[7]) + ((*(float *)((char *)mat + 0xC) * vec[1]) + (*(float *)((char *)mat + 0x10) * vec[4]));
@@ -793,7 +820,6 @@ void fn_802898CC(void *self, int arg0, int arg1, int arg2) {
     sp8[2] = *(float *)((char *)vec + 0x3C) + c;
     fn_8028E584(arg0, (int)sp14, (int)sp8);
 }
-#pragma pop
 void fn_80289C80(int *);
 int fn_80289BE8(int arg0) {
     fn_80289C80((int *)arg0);
@@ -995,14 +1021,12 @@ int fn_80289F54(int arg0) {
         offset += 0x68;
     }
 }
-#pragma push
 #pragma scheduling invalid_target
 void fn_80289FC4(int **arg0, int arg1, int arg2) {
     char *temp = (char *)*arg0 + arg1 * 0x68;
-    if (arg2 == 3 && *(void **)(temp + 0x64) == 0 &&
-        *(long *)(temp + 0x60) > 0) {
+    if (arg2 == 3 && *(void **)(temp + 0x64) == 0 && *(long *)(temp + 0x60) > 0L) {
         int index = fn_80287B5C();
-        *(void **)(temp + 0x64) = temp + index * 0x18;
+        *(void **)(temp + 0x64) = (void *)(temp + index * 0x18);
         fn_8028A330((int *)arg0, arg1);
     } else if (arg2 != 3 && *(void **)(temp + 0x64) != 0) {
         *(void **)(temp + 0x64) = 0;
@@ -1010,7 +1034,7 @@ void fn_80289FC4(int **arg0, int arg1, int arg2) {
         fn_8028A330((int *)arg0, arg1);
     }
 }
-
+#pragma scheduling on
 int fn_8028A084(int arg0) {
     fn_80289394Frame frame;
     register float f0;
@@ -1191,7 +1215,7 @@ int fn_8028A330(int *arg0, int arg1) {
  sp8[0]=vec[3]*lbl_805642B4; sp8[1]=vec[4]*lbl_805642B4; sp8[2]=vec[5]*lbl_805642B4;
  {
  volatile float *p = sp8;
- if ((volatile float *)sp8 == p) {
+ if (p == (volatile float *)sp8) {
  float x=sp8[2]*mat[6]+(sp8[0]*mat[0]+sp8[1]*mat[3]);
  float y=sp8[2]*mat[7]+(sp8[0]*mat[1]+sp8[1]*mat[4]);
  float z=sp8[2]*mat[8]+(sp8[0]*mat[2]+sp8[1]*mat[5]);
