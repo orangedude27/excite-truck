@@ -73,8 +73,11 @@ int *fn_8012A2D8(void *arg0) {
     int *temp_r31 = *(int **)((char *)arg0 + 0x10);
     int *temp_r3;
     if (temp_r31 == 0) {
-        if (*((u8 *)arg0 + 4) == 0) return 0;
-        fn_802E317C((int *)&lbl_8032A5FC, *(int *)((char *)arg0 + 8));
+        if (*((u8 *)arg0 + 4) != 0) {
+            fn_802E317C((int *)&lbl_8032A5FC, *(int *)((char *)arg0 + 8));
+        } else {
+            return 0;
+        }
     }
     temp_r3 = *(int **)((char *)arg0 + 0x10);
     if (temp_r3 != 0) *(int **)((char *)arg0 + 0x10) = (int *)*temp_r3;
