@@ -18020,6 +18020,7 @@ extern "C" void setAllComponentTriggerTarget__Q310homebutton3gui7ManagerFb(void 
 }
 
 homebutton::gui::PaneManager::~PaneManager() {
+    /* Destroy PaneManager: drain and free pane nodes/resources, then run base Manager list cleanup; uses MEM allocator when present, otherwise object delete/free paths. */
     class Dispatch {
     public:
         virtual void method0();
