@@ -14,8 +14,8 @@ extern int fn_802E2C20(void);
 extern int sscanf(const char *, const char *, ...);
 void *fn_802AC0E8(void *arg0, const char *arg1, int arg2) {
     char *node = (char *)arg0;
-    const char *name = arg1;
     int key = arg2;
+    const char *name = arg1;
     if (node == 0)
         return 0;
     while (*(int *)node != 0) {
@@ -37,6 +37,7 @@ int fn_802AC174(const char *arg0) {
 #pragma scheduling on
 extern char *strstr(const char *, const char *);
 extern int lbl_802FAA50[];
+#pragma use_lmw_stmw off
 int fn_802AC1BC(const char *arg0, int arg1) {
     int entries[24];
     int *src = lbl_802FAA50 - 1;
@@ -55,12 +56,12 @@ int fn_802AC1BC(const char *arg0, int arg1) {
         int *entry = entries;
         while (entry[0] != 0) {
             if (strstr(arg0, (const char *)entry[0]) != 0) {
-                unsigned char align = ((unsigned char *)entry)[8];
                 int masked = flags & 7;
+                unsigned char align = ((unsigned char *)entry)[8];
                 if (align != 0) masked = flags & ~7;
                 flags = masked | entry[1];
-                has_align = (has_align == 0 || align != 0);
-                has_no_align = (has_no_align == 0 || align == 0);
+                has_align = (has_align != 0 || align != 0);
+                has_no_align = (has_no_align != 0 || align == 0);
             }
             entry = (int *)((char *)entry + 12);
         }
@@ -69,11 +70,11 @@ int fn_802AC1BC(const char *arg0, int arg1) {
     if (has_no_align == 0) flags |= 0x10;
     return flags;
 }
-
+#pragma use_lmw_stmw on
 int fn_802AC2B4(void **arg0, int arg1, float *arg2) {
-    if (arg0 != 0 && ((int (*)(void *))(*(void **)((char *)*arg0 + 0xC)))(arg0) != 0) {
+    if (arg0 != 0 && ((int (*)(void *))((void **)*arg0)[3])(arg0) != 0) {
         if (arg2 != 0) {
-            *arg2 = ((float (*)(void *, int))(*(void **)((char *)*arg0 + 0x24)))(arg0, arg1);
+            *arg2 = ((float (*)(void *, int))((void **)*arg0)[9])(arg0, arg1);
         }
         return 1;
     }
@@ -414,22 +415,24 @@ extern char lbl_80349F98[];
 extern int lbl_8055CD1C;
 extern void *lbl_804BD7C0[];
 void fn_802ADBB4(void) {
-    int t = fn_802E2C20();
-    float f;
-    int valid;
+    /* Renders a debug overlay for the current animation entry: updates the time offset while
+       active, draws index/name and elapsed time, and evaluates the selected animation. */
+    int currentTime = fn_802E2C20();
+    float elapsedSeconds;
+    int isValidIndex;
 
     if ((unsigned char)lbl_8055F94C != 0) {
-        lbl_8055F944 = t - lbl_8055F948;
+        lbl_8055F944 = currentTime - lbl_8055F948;
     }
-    f = (float)(t - lbl_8055F944) * 0.001f;
+    elapsedSeconds = (float)(currentTime - lbl_8055F944) * 0.001f;
     fn_8023895C();
     fn_80238B44(0, 0, 0x12C, 0x32, 0xC0000000);
-    valid = (lbl_8055F940 >= 0 && lbl_8055F940 < (int)lbl_8055F93C);
-    fn_80238A80(10, 10, 0xC0FFFFFF, lbl_80349F84, lbl_8055F940, valid ? lbl_804BD7C0[lbl_8055F940] : &lbl_8055CD1C);
-    fn_80238A80(10, 30, 0xC0FFFFFF, lbl_80349F98, f);
+    isValidIndex = (lbl_8055F940 >= 0 && lbl_8055F940 < (int)lbl_8055F93C);
+    fn_80238A80(10, 10, 0xC0FFFFFF, lbl_80349F84, lbl_8055F940, isValidIndex ? lbl_804BD7C0[lbl_8055F940] : &lbl_8055CD1C);
+    fn_80238A80(10, 30, 0xC0FFFFFF, lbl_80349F98, elapsedSeconds);
     fn_802389E4();
     if (lbl_8055F940 >= 0 && lbl_8055F940 < (int)lbl_8055F93C) {
-        fn_802AD4C4(lbl_804BD7C0[lbl_8055F940], 0, f);
+        fn_802AD4C4(lbl_804BD7C0[lbl_8055F940], 0, elapsedSeconds);
     }
 }
 #pragma pop
@@ -511,21 +514,20 @@ loop_test:
 int fn_802ADF34(void **arg0, char *arg1, int arg2) {
     int result;
     char *header;
+    int count;
+    char *dst;
+    char *entry;
     int index;
     char *base;
-    char *entry;
-    char *dst;
-    int count;
-    char c;
-
+    unsigned char c;
     result = fn_802AC4A8(arg1, arg2);
     if (result != 0) {
         header = (char *)*arg0;
-        index = *(int *)(header + 4);
-        base = *(char **)header;
-        entry = base + index * 0x74;
+        index = ((int *)header)[1];
+        base = ((char **)header)[0];
+        entry = &base[index * 0x74];
         index++;
-        *(int *)(header + 4) = index;
+        ((int *)header)[1] = index;
         dst = entry;
         count = 0x64;
         goto copy;
@@ -539,12 +541,11 @@ copy:
         *dst++ = c;
         if ((signed char)c != 0) goto check;
 copied:
-        /* Store the result and clear both entry flags after the bounded copy. */
         *(int *)(entry + 0x64) = result;
         entry[0x68] = 0;
         entry[0x69] = 0;
         header = (char *)*arg0;
-        return *(int *)(header + 4) - 1;
+        return ((int *)header)[1] - 1;
     }
     return -1;
 }
