@@ -68,7 +68,6 @@ void fn_8023B77C(void) {
 #pragma scheduling invalid_target
 void fn_8023B7EC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 sp8[16];
-
     fn_802ECC18(0);
     fn_802445FC(arg1, arg2, arg3);
     fn_8023B77C();
@@ -76,9 +75,9 @@ void fn_8023B7EC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     fn_8027B77C();
     fn_80211F4C();
     fn_8023C0EC(arg0, arg1, arg2);
-    fn_80018318((u8 *)arg0 + 0x3F8, arg1);
-    fn_800126B4(arg0, (u8 *)arg0 + 0x3F8, 0, 1);
-    fn_80018440(sp8, *(s32 *)((u8 *)arg0 + 0x3E4), (u8 *)arg0 + 0x3F8);
+    fn_80018318((u8 *)arg0 + 1016, arg1);
+    fn_800126B4(arg0, (u8 *)arg0 + 1016, 0, 1);
+    fn_80018440(sp8, *(s32 *)((u8 *)arg0 + 0x3E4), (u8 *)arg0 + 1016);
     fn_8000AB48(arg0, sp8);
 }
 #pragma pop
@@ -104,27 +103,28 @@ void fn_8023B904(void *arg0, void *dest, s32 flag) {
     } local;
     s32 *source;
     s32 *target;
-    s32 count;
 
     if (flag == 0) {
         local.data = lbl_803413A8;
         ((void (*)(void *, void *))fn_8000BF20)(arg0, &local);
         if (dest != 0) {
             *(s32 *)dest = local.field0;
-            target = (s32 *)((u8 *)dest + 0xC);
             *(s32 *)((u8 *)dest + 4) = local.field1;
             *(s32 *)((u8 *)dest + 8) = local.field2;
             ((u8 *)dest)[0xC] = local.bytes[0];
             ((u8 *)dest)[0xD] = local.bytes[1];
             ((u8 *)dest)[0xE] = local.bytes[2];
+            target = (s32 *)((u8 *)dest + 0xC);
             source = (s32 *)local.bytes;
-            count = 0x14;
-            do {
-                target[1] = source[1];
-                target[2] = source[2];
-                source += 2;
-                target += 2;
-            } while (--count != 0);
+            {
+                s32 i = 0x14;
+                do {
+                    target[1] = source[1];
+                    target[2] = source[2];
+                    source += 2;
+                    target += 2;
+                } while (--i != 0);
+            }
         }
     } else {
         fn_8000C0E8();
@@ -249,8 +249,9 @@ int fn_8023BC24(int ignored, int arg1, int arg2) {
     int *obj = (int *)fn_8027DB40(1);
     int result = fn_8024DAE0(arg1, arg2, 0, (int)obj, 0);
     if (obj != 0) {
-        int *vt = *(int **)obj;
-        ((void (*)(int *, int))vt[2])(obj, 1);
+        void **vt = *(void ***)obj;
+        void (*fn)(void *, int) = (void (*)(void *, int))vt[2];
+        fn(obj, 1);
     }
     return result;
 }
@@ -280,6 +281,7 @@ void fn_8023BCEC(void) {
     sp10 = 0;
     spC = 0;
     sp8 = 0;
+    goto loop;
 loop:
     if (((int (*)(s32 *, s32 *, s32 *, s32))fn_8023BC24)(&sp1C, &sp18, &sp14, 0) == 0) {
         goto loop;
@@ -396,7 +398,31 @@ void fn_8023BF68(void) {
 }
 
 extern void fn_8000824C(void *, s32);
-extern u32 lbl_8055BB3C;
+extern u32 lbl_8055BB3C; /* the string "track": the table element a contest's track is read from */
+
+/* One event (a cup) of the event table at lbl_803518C0, 0x84 bytes each;
+ * fn_80012B50 fills a record from the event's parameter table object.  Only
+ * the fields this unit reads are named. */
+struct EventRecord {
+    s32 index;        /* +0x00: its index in the table */
+    s32 league;       /* +0x04: the table's "league" element */
+    char track[0x20]; /* +0x08: the table's "track" element */
+    char name[0x40];  /* +0x28: "name2", or "name" when the table has none */
+    u8 unk_68[0x18];
+    void *table;      /* +0x80: the event's parameter table object */
+};
+
+/* One contest (a course of an event) of the table at lbl_80352AD0, 0x28 bytes
+ * each, count lbl_8055D508; fn_80012B50 appends one per contest of an event. */
+struct ContestEntry {
+    s32 index;    /* +0x00: its index in the table */
+    s32 eventId;  /* +0x04: the event the contest belongs to */
+    s32 type;     /* +0x08: contest type word; fn_80007FF0 turns it into a name */
+    s32 unk_0C[5];
+    void *table;  /* +0x20: the contest's parameter table object */
+    s32 inUse;    /* +0x24: the entry holds a contest */
+};
+
 #pragma cplusplus on
 void fn_8023C0EC(void *arg0, s32 arg1, s32 arg2) {
     struct StringObject {
