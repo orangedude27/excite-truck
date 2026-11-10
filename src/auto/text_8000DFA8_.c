@@ -678,7 +678,8 @@ void fn_800103B8(s32 arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3,
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_800105A0(s32 arg0, s32 arg1, s32 unused) {
+/* Draw a highlighted UI label/text element: computes position/size offsets based on UI mode and renders a box and text. */
+void fn_800105A0(s32 text, s32 layoutId, s32 unused) {
     extern s32 fn_80137C74(void);
     extern f32 fn_800108C8(f32, s32);
     extern f32 fn_80011E04(s32);
@@ -697,39 +698,39 @@ void fn_800105A0(s32 arg0, s32 arg1, s32 unused) {
     s32 temp;
     s32 mask;
     s32 amount;
-    s32 result;
-    f32 f31;
-    f32 f30;
-    f32 f29;
-    f32 f28;
-    f32 f27;
-    f32 f26;
+    s32 isHighlighted;
+    f32 boxHeight;
+    f32 textScale;
+    f32 boxWidth;
+    f32 boxX;
+    f32 baseX;
+    f32 textY;
 
     mode = fn_80137C74();
     temp = mode ^ 2;
     mask = temp >> 1;
     temp &= mode;
     temp = mask - temp;
-    result = ((u32)temp) >> 31;
-    if (result != 0)
-        f30 = lbl_80560264;
+    isHighlighted = ((u32)temp) >> 31;
+    if (isHighlighted != 0)
+        textScale = lbl_80560264;
     else
-        f30 = lbl_80560318;
-    f29 = lbl_805602F8 + fn_800108C8(f30, arg0);
-    if (result != 0)
-        f31 = lbl_805602EC;
+        textScale = lbl_80560318;
+    boxWidth = lbl_805602F8 + fn_800108C8(textScale, text);
+    if (isHighlighted != 0)
+        boxHeight = lbl_805602EC;
     else
-        f31 = lbl_80560314;
-    f28 = (-f29 * lbl_8056025C) + fn_80011E04(arg1);
-    f27 = fn_80011E04(arg1);
-    amount = (result != 0) ? 0 : -0x28;
-    f26 = (f32)amount + fn_80011E1C(arg1);
-    fn_80010B80(0x90000000, f28, f26, f29, f31);
-    fn_80010C74(f28, lbl_80560264 + f26, lbl_80560264 + f29);
-    fn_80010D88(f28 + f29, f26, f31);
-    fn_80010C74(f28, f26 - f31, lbl_80560264 + f29);
-    fn_80010D88(f28, f26, f31);
-    fn_8000FF88(-1, 0xC, (const char *)arg0, f30, f27, f26);
+        boxHeight = lbl_80560314;
+    boxX = (-boxWidth * lbl_8056025C) + fn_80011E04(layoutId);
+    baseX = fn_80011E04(layoutId);
+    amount = (isHighlighted != 0) ? 0 : -0x28;
+    textY = (f32)amount + fn_80011E1C(layoutId);
+    fn_80010B80(0x90000000, boxX, textY, boxWidth, boxHeight);
+    fn_80010C74(boxX, lbl_80560264 + textY, lbl_80560264 + boxWidth);
+    fn_80010D88(boxX + boxWidth, textY, boxHeight);
+    fn_80010C74(boxX, textY - boxHeight, lbl_80560264 + boxWidth);
+    fn_80010D88(boxX, textY, boxHeight);
+    fn_8000FF88(-1, 0xC, (const char *)text, textScale, baseX, textY);
 }
 #pragma scheduling on
 #pragma use_lmw_stmw reset
@@ -785,14 +786,13 @@ void fn_80010724(s32 arg0, s32 arg1, s32 arg2) {
     result = fn_800109A0(lbl_80558A90);
     ((void (*)(s32, s32, const char *, f32, ...))fn_8000FF88)(-1, 0x14, (const char *)&lbl_80558AA4, result, arg2, temp_f30, temp_f31_2);
 }
-#pragma pop
-s32 fn_8001084C(s32 arg0) {
-    return (s32)(((f32)arg0 * fn_8023293C(lbl_8055D490, lbl_80560264)) / (f32)lbl_80558A90);
-}
-
 #pragma push
 #pragma processor 750
-#pragma scheduling invalid_target
+#pragma paired_single off
+s32 fn_8001084C(s32 arg0, s32 arg1) {
+    return (s32)(((f32)arg0 * ((f32 (*)(s32, s32, f32))fn_8023293C)(lbl_8055D490, arg1, lbl_80560264)) / (f32)lbl_80558A90);
+}
+#pragma pop
 f32 fn_800108C8(f32 farg0, s32 arg0) {
     return (farg0 * ((f32 (*)(s32, s32, f32))fn_8023293C)(lbl_8055D490, arg0, lbl_80560264)) * lbl_805602C8;
 }
