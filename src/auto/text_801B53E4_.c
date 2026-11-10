@@ -35,16 +35,18 @@ s32 fn_801B53E4(void *arg0) {
 
 void fn_801B5410(void *arg0, void *arg1, void *arg2) {
     f32 *m;
-    register f32 one;
-    register f32 scale;
-    register f32 product;
-    register f32 sum;
-
+    f32 scale;
+    f32 product;
+    f32 sum;
+    f32 one;
+    f32 m6;
+    f32 m9;
     m = *(f32 **)((u8 *)arg0 + 0xC);
     scale = *(f32 *)((u8 *)arg0 + 0x2C);
-    product = m[6] * scale;
-    one = lbl_80562690;
-    sum = m[9] + product;
+    m6 = m[6];
+    m9 = m[9];
+    product = m6 * scale;
+    sum = m9 + product;
     *(f32 *)arg1 = sum;
     product = m[7] * scale;
     sum = m[10] + product;
@@ -52,7 +54,6 @@ void fn_801B5410(void *arg0, void *arg1, void *arg2) {
     product = m[8] * scale;
     sum = m[11] + product;
     *(f32 *)((u8 *)arg1 + 8) = sum;
-
     scale = -*(f32 *)((u8 *)arg0 + 0x2C);
     product = m[6] * scale;
     sum = m[9] + product;
@@ -60,6 +61,7 @@ void fn_801B5410(void *arg0, void *arg1, void *arg2) {
     product = m[7] * scale;
     sum = m[10] + product;
     *(f32 *)((u8 *)arg2 + 4) = sum;
+    one = lbl_80562690;
     product = m[8] * scale;
     *(f32 *)((u8 *)arg2 + 4) = one;
     sum = m[11] + product;
@@ -272,36 +274,47 @@ void fn_801B5BDC(void **arg0, s32 arg1, void *arg2) {
     }
 }
 
-void fn_801B5C58(void *arg0) {
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_801B5C58(void *arg0) {
+    class D {
+    public:
+        virtual void m0(int);
+        virtual void m1();
+        virtual void m2();
+        virtual void m3();
+        virtual void m4();
+        virtual void m5();
+        virtual void m6();
+        virtual void m7();
+        virtual void m8();
+        virtual void m9(int);
+    };
     s32 index = 0;
     s32 i = 0;
     void *item;
     void *object;
-    void **vtable;
     while (i < *(s32 *)arg0) {
-        item = *(void **)((u8 *)arg0 + 4);
-        item = *(void **)((u8 *)item + index);
+        item = *(void **)((unsigned char *)arg0 + 4);
+        item = *(void **)((unsigned char *)item + index);
         fn_801A49FC(item);
-        item = *(void **)((u8 *)arg0 + 4);
-        item = *(void **)((u8 *)item + index);
-        object = *(void **)((u8 *)item + 0x3C);
-        if (object != NULL) {
-            vtable = *(void ***)object;
-            ((void (*)(void *, s32))vtable[2])(object, 1);
+        item = *(void **)((unsigned char *)arg0 + 4);
+        item = *(void **)((unsigned char *)item + index);
+        object = *(void **)((unsigned char *)item + 0x3C);
+        if (object != 0) {
+            ((D *)object)->m0(1);
         }
-        item = *(void **)((u8 *)arg0 + 4);
-        item = *(void **)((u8 *)item + index);
-        if (item != NULL) {
-            vtable = *(void ***)item;
-            ((void (*)(void *, s32))vtable[11])(item, 1);
+        item = *(void **)((unsigned char *)arg0 + 4);
+        item = *(void **)((unsigned char *)item + index);
+        if (item != 0) {
+            ((D *)item)->m9(1);
         }
         index += 4;
         i++;
     }
     fn_80128658(arg0);
 }
-
-#pragma dont_inline on
+#pragma pop
 s32 fn_801B5D10(void *arg0) {
     s32 count = 0;
     goto check;
