@@ -8129,6 +8129,8 @@ tBTM_SEC_DEV_REC *btm_find_dev(BD_ADDR bd_addr) {
     return 0;
 }
 
+/* Returns the oldest BTM security device record: first among in-use, non-linked
+ * records by lowest timestamp, or if none qualify, the oldest in-use record. */
 tBTM_SEC_DEV_REC *btm_find_oldest_dev(void) {
     struct RecView {
         u8 pad0[0x0C];
@@ -8137,30 +8139,30 @@ tBTM_SEC_DEV_REC *btm_find_oldest_dev(void) {
         u8 sec_flags;
         u8 pad2[0x11];
     };
-    struct RecView *p_dev_rec = (struct RecView *)(lbl_803C0F78 + 0x1F30);
-    struct RecView *p_oldest = p_dev_rec;
-    UINT32 ot = 0xFFFFFFFF;
-    int i;
-    for (i = 0; i < 16; i++, p_dev_rec++) {
-        if (((p_dev_rec->sec_flags & 0x80) == 0) || ((p_dev_rec->sec_flags & 0x10) != 0))
+    struct RecView *deviceRecord = (struct RecView *)(lbl_803C0F78 + 0x1F30);
+    struct RecView *candidate = deviceRecord;
+    UINT32 oldestTimestamp = 0xFFFFFFFF;
+    int index;
+    for (index = 0; index < 16; index++, deviceRecord++) {
+        if (((deviceRecord->sec_flags & 0x80) == 0) || ((deviceRecord->sec_flags & 0x10) != 0))
             continue;
-        if (p_dev_rec->timestamp < ot) {
-            p_oldest = p_dev_rec;
-            ot = p_dev_rec->timestamp;
+        if (deviceRecord->timestamp < oldestTimestamp) {
+            candidate = deviceRecord;
+            oldestTimestamp = deviceRecord->timestamp;
         }
     }
-    if (ot != 0xFFFFFFFF)
-        return (tBTM_SEC_DEV_REC *)p_oldest;
-    p_dev_rec = (struct RecView *)(lbl_803C0F78 + 0x1F30);
-    for (i = 0; i < 16; i++, p_dev_rec++) {
-        if ((p_dev_rec->sec_flags & 0x80) == 0)
+    if (oldestTimestamp != 0xFFFFFFFF)
+        return (tBTM_SEC_DEV_REC *)candidate;
+    deviceRecord = (struct RecView *)(lbl_803C0F78 + 0x1F30);
+    for (index = 0; index < 16; index++, deviceRecord++) {
+        if ((deviceRecord->sec_flags & 0x80) == 0)
             continue;
-        if (p_dev_rec->timestamp < ot) {
-            p_oldest = p_dev_rec;
-            ot = p_dev_rec->timestamp;
+        if (deviceRecord->timestamp < oldestTimestamp) {
+            candidate = deviceRecord;
+            oldestTimestamp = deviceRecord->timestamp;
         }
     }
-    return (tBTM_SEC_DEV_REC *)p_oldest;
+    return (tBTM_SEC_DEV_REC *)candidate;
 }
 
 #pragma small_data on
