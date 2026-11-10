@@ -33,14 +33,17 @@ void *fn_801E3004();
 int fn_801E2C1C(void *arg0, int arg1, void **arg2, void **arg3) {
     int table = fn_802C6C34();
     int count = *(int *)(table + 0x10);
-    int offset = 0;
+    int offset;
+    offset = 0;
     while (count > 0) {
         int entry = *(int *)(*(int *)(table + 0x14) + offset);
-        if (*(unsigned int *)entry == 0x4D524A54 && arg1 >= 0 && arg1 < *(int *)(entry + 8)) {
-            int item = entry + arg1 * 0x50;
-            *arg2 = (void *)(item + 0xC);
-            *arg3 = (void *)(item + 0x2C);
-            return 1;
+        if (*(unsigned int *)entry == 0x4D524A54) {
+            if (arg1 >= 0 && arg1 < *(int *)(entry + 8)) {
+                int item = entry + arg1 * 0x50;
+                *arg2 = (void *)(item + 0xC);
+                *arg3 = (void *)(item + 0x2C);
+                return 1;
+            }
         }
         offset += 4;
         count--;
@@ -51,51 +54,55 @@ int fn_801E2C1C(void *arg0, int arg1, void **arg2, void **arg3) {
 #pragma push
 #pragma small_data on
 extern const char lbl_8055AEB0[3];
+#pragma push
+#pragma small_data on
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
-int fn_801E2CCC(void *arg0, const char *arg1, void **arg2) {
-    void *value;
-    void *name;
-    int buffer[16];
+/* Look up an MRJT item's value by name in the sound archive (uses first token unless the requested name contains a space). */
+int fn_801E2CCC(void *archiveCtx, const char *requestedName, void **outValue) {
+    void *itemValue;
+    void *itemName;
+    int nameBuf[16];
     BOOL hasSpace;
     int index;
     register int zero;
 
     zero = 0;
-    value = (void *)zero;
-    name = (void *)zero;
-    hasSpace = strchr(arg1, ' ') != 0;
-    for (index = 0; fn_801E2C1C(arg0, index, &name, &value) != 0; index++) {
-        buffer[0] = zero;
-        buffer[1] = zero;
-        buffer[2] = zero;
-        buffer[3] = zero;
-        buffer[4] = zero;
-        buffer[5] = zero;
-        buffer[6] = zero;
-        buffer[7] = zero;
-        buffer[8] = zero;
-        buffer[9] = zero;
-        buffer[10] = zero;
-        buffer[11] = zero;
-        buffer[12] = zero;
-        buffer[13] = zero;
-        buffer[14] = zero;
-        buffer[15] = zero;
+    itemValue = (void *)zero;
+    itemName = (void *)zero;
+    hasSpace = strchr(requestedName, ' ') != 0;
+    for (index = 0; fn_801E2C1C(archiveCtx, index, &itemName, &itemValue) != 0; index++) {
+        nameBuf[0] = zero;
+        nameBuf[1] = zero;
+        nameBuf[2] = zero;
+        nameBuf[3] = zero;
+        nameBuf[4] = zero;
+        nameBuf[5] = zero;
+        nameBuf[6] = zero;
+        nameBuf[7] = zero;
+        nameBuf[8] = zero;
+        nameBuf[9] = zero;
+        nameBuf[10] = zero;
+        nameBuf[11] = zero;
+        nameBuf[12] = zero;
+        nameBuf[13] = zero;
+        nameBuf[14] = zero;
+        nameBuf[15] = zero;
         if (!hasSpace)
-            sscanf((const char *)name, lbl_8055AEB0, (char *)buffer);
+            sscanf((const char *)itemName, lbl_8055AEB0, (char *)nameBuf);
         else
-            strcpy((char *)buffer, (const char *)name);
-        if (stricmp((char *)buffer, arg1) == 0) {
-            *arg2 = value;
+            strcpy((char *)nameBuf, (const char *)itemName);
+        if (stricmp((char *)nameBuf, requestedName) == 0) {
+            *outValue = itemValue;
             return 1;
         }
     }
-    *arg2 = 0;
+    *outValue = 0;
     return 0;
 }
 #pragma use_lmw_stmw reset
 #pragma scheduling on
+#pragma pop
 
 #pragma push
 #pragma small_data on
@@ -191,71 +198,74 @@ extern s32 fn_8012C33C(char *);
 extern s32 fn_802C6FC0(char *, s32, s32);
 extern void fn_802E30C8(const char *, ...);
 extern char lbl_803398E4[];
+#pragma scheduling invalid_target
 void *fn_801E3004(s32 arg0, s32 arg1, s32 arg2) {
-    char path;
-    s32 *result;
+    struct Pair { s32 x[2]; };
+    char path[0x28];
+    register char *result;
     s32 *source;
+    f32 other;
+    f32 one;
+    f32 *matrix;
 
-    result = (s32 *)fn_8012A2D8(lbl_8055EA50);
-    result[1] = 0;
-    result[0] = -1;
-    ((f32 *)result)[2] = lbl_80562CE8;
-    ((f32 *)result)[3] = lbl_80562CEC;
-    ((f32 *)result)[4] = lbl_80562CEC;
-    ((f32 *)result)[5] = lbl_80562CEC;
-    ((f32 *)result)[6] = lbl_80562CE8;
-    ((f32 *)result)[7] = lbl_80562CEC;
-    ((f32 *)result)[8] = lbl_80562CEC;
-    ((f32 *)result)[9] = lbl_80562CEC;
-    ((f32 *)result)[10] = lbl_80562CE8;
-    ((f32 *)result)[11] = lbl_80562CEC;
-    ((f32 *)result)[12] = lbl_80562CEC;
-    ((f32 *)result)[13] = lbl_80562CEC;
-    ((f32 *)result)[14] = lbl_80562CE8;
-    ((f32 *)result)[15] = lbl_80562CEC;
-    ((f32 *)result)[16] = lbl_80562CEC;
-    ((f32 *)result)[17] = lbl_80562CEC;
-    ((f32 *)result)[18] = lbl_80562CE8;
-    ((f32 *)result)[19] = lbl_80562CEC;
-    ((f32 *)result)[20] = lbl_80562CEC;
-    ((f32 *)result)[21] = lbl_80562CEC;
-    ((f32 *)result)[22] = lbl_80562CE8;
-    ((f32 *)result)[23] = lbl_80562CEC;
-    ((f32 *)result)[24] = lbl_80562CEC;
-    ((f32 *)result)[25] = lbl_80562CEC;
+    result = (char *)fn_8012A2D8(lbl_8055EA50);
+    matrix = (f32 *)(result + 8);
+    one = lbl_80562CE8;
+    *(s32 *)(result + 4) = 0;
+    *(s32 *)result = -1;
+    other = lbl_80562CEC;
+    matrix[0] = one;
+    matrix[1] = other;
+    matrix[2] = other;
+    matrix[3] = other;
+    matrix[4] = one;
+    matrix[5] = other;
+    matrix[6] = other;
+    matrix[7] = other;
+    matrix[8] = one;
+    matrix[9] = other;
+    matrix[10] = other;
+    matrix[11] = other;
+    matrix[12] = one;
+    matrix[13] = other;
+    matrix[14] = other;
+    matrix[15] = other;
+    matrix[16] = one;
+    matrix[17] = other;
+    matrix[18] = other;
+    matrix[19] = other;
+    matrix[20] = one;
+    matrix[21] = other;
+    matrix[22] = other;
+    matrix[23] = other;
 
-    if (arg0 != -1) {
-        source = (s32 *)fn_801E2DEC(arg0, arg1, (s32)&path);
-        if (source != 0) {
-            result[14] = source[8];
-            result[15] = source[9];
-            result[16] = source[10];
-            result[17] = source[11];
-            result[18] = source[12];
-            result[19] = source[13];
-            result[20] = source[14];
-            result[21] = source[15];
-            result[22] = source[16];
-            result[23] = source[17];
-            result[24] = source[18];
-            result[25] = source[19];
-            if (path != 0 && strchr(&path, '.') != 0) {
-                if (fn_8012C33C(&path) != 0) {
-                    if (arg2 >= 0)
-                        result[0] = fn_802C6FC0(&path, arg2, 0);
-                    else
-                        result[0] = fn_802C6FC0(&path, 0, 0);
-                } else {
-                    fn_802E30C8(lbl_803398E4, arg1, &path);
-                }
+    if (arg0 == -1)
+        return result;
+
+    source = (s32 *)fn_801E2DEC(arg0, arg1, (s32)path);
+    if (source != 0) {
+        ((struct Pair *)(result + 0x38))[0] = ((struct Pair *)(source + 8))[0];
+        ((struct Pair *)(result + 0x38))[1] = ((struct Pair *)(source + 8))[1];
+        ((struct Pair *)(result + 0x38))[2] = ((struct Pair *)(source + 8))[2];
+        ((struct Pair *)(result + 0x38))[3] = ((struct Pair *)(source + 8))[3];
+        *(s32 *)(result + 0x58) = source[16];
+        ((struct Pair *)(result + 0x5C))[0] = ((struct Pair *)(source + 17))[0];
+        *(s32 *)(result + 0x64) = source[19];
+
+        if (path[0] != 0 && strchr(path, '.') != 0) {
+            if (fn_8012C33C(path) != 0) {
+                if (arg2 >= 0)
+                    *(s32 *)result = fn_802C6FC0(path, arg2, 0);
+                else
+                    *(s32 *)result = fn_802C6FC0(path, 0, 0);
+            } else {
+                fn_802E30C8(lbl_803398E4, arg1, path);
             }
         }
     }
     return result;
 }
-
-#pragma push
-#pragma small_data off
+#pragma scheduling on
 void fn_801E31D8(s32 *arg0) {
     *(s32 **)((u8 *)((void *(*)(s32))fn_801E3004)(*arg0) + 4) = arg0;
 }
@@ -364,39 +374,42 @@ void fn_801E3488(void *arg0, void *arg1) {
     ((void (*)(void *, void *, f32 *))fn_801E3440)(arg0, arg1, sp);
 }
 
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
 void fn_801E34E4(s32 *arg0, s32 arg1) {
     s32 sp8[12];
-    register s32 sentinel = *arg0;
-    if (sentinel != -1) {
+
+    if (*arg0 != -1) {
         fn_801E3284(&sp8[0], arg0, arg1);
         fn_802C744C(*arg0, &sp8[0]);
     }
 }
-#pragma scheduling on
+#pragma pop
 s32 fn_801E3534(s32 *arg0) {
     return *arg0;
 }
 
+#pragma push
+#pragma processor 750
 void fn_801E353C(s32 arg0, f32 angle) {
-    Mat3x3 m;
     f32 c;
     f32 s;
-
-    c = (f32)cos(angle);
-    s = (f32)sin(angle);
-    m.x[0] = c;
-    m.x[1] = s;
-    m.x[2] = lbl_80562CEC;
-    m.x[3] = -s;
-    m.x[4] = c;
-    m.x[5] = lbl_80562CEC;
-    m.x[6] = lbl_80562CEC;
-    m.x[7] = lbl_80562CEC;
-    m.x[8] = lbl_80562CE8;
-    fn_801E35D4((void *)arg0, &m);
+    f32 sp[9];
+    f32 *p = sp;
+    c = (f32)((double (*)(float))cos)(angle);
+    s = (f32)((double (*)(float))sin)(angle);
+    p[0] = c;
+    p[1] = s;
+    p[2] = lbl_80562CEC;
+    p[3] = -s;
+    p[4] = c;
+    p[5] = lbl_80562CEC;
+    p[6] = lbl_80562CEC;
+    p[7] = lbl_80562CEC;
+    p[8] = lbl_80562CE8;
+    fn_801E35D4((void *)arg0, p);
 }
-
+#pragma pop
 void fn_801E35D4(void *arg0, void *arg1) {
     f32 val = lbl_80562CEC;
     s32 *src = (s32 *)arg1;
