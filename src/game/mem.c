@@ -3,6 +3,7 @@
 // Static-init thunk fn_802E3EA8 (+ .ctors slot 0x802ED5F4) remains in
 // auto/text_802E3EA8_.c pending a promotion pass.
 extern void fn_802E317C(const char *, ...);
+extern char lbl_8034D020[];
 #pragma scheduling invalid_target
 void fn_802E3DF8(int arena, void **outLo, unsigned int *outSize) {
     unsigned int hi = 0;
