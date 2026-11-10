@@ -17545,6 +17545,9 @@ free_data:
 
 extern char lbl_80318B28[];
 extern char lbl_803183F0[];
+// L2CAP CSM handler for "waiting for local disconnect response": traces the event, sends peer
+// disconnect response/releases CCB and/or notifies disconnect indication as required, or frees
+// unexpected buffers (events 20/30), depending on event.
 void l2c_csm_w4_l2ca_disconnect_rsp(void *p_ccb, u16 event, void *p_data)
 {
     void *disconnect_ind;
