@@ -25,24 +25,25 @@ extern int lbl_8055EA88;
 extern unsigned char lbl_8055EA8F, lbl_8055EA90;
 extern int sprintf(char *, const char *, ...);
 #pragma scheduling invalid_target
+/* Draws the debug/status overlay panel with device, recording, and log information. */
 void fn_801E45CC(void) {
-    char buf[80];
+    char textBuf[80];
     register char *textBase = lbl_80339930;
     int y;
     int i;
-    int color;
+    int statusColor;
 
     fn_8023895C();
     fn_80238B44(10, 10, 230, 84, 0x80000000);
-    sprintf(buf, textBase + 0x4C, lbl_8055AEC4);
-    fn_80238A74(15, 15, buf, -1);
+    sprintf(textBuf, textBase + 0x4C, lbl_8055AEC4);
+    fn_80238A74(15, 15, textBuf, -1);
     fn_80238A74(15, 27, textBase + 0x60, -1);
-    sprintf(buf, textBase + 0x74, lbl_8055AEC8, lbl_8055AED4);
-    fn_80238A74(10, 39, buf, -1);
-    sprintf(buf, textBase + 0x80, lbl_8055AECC, lbl_8055AED8);
-    fn_80238A74(10, 51, buf, -1);
-    color = lbl_8055EA90 ? 0xFF2DC82D : 0xFF202020;
-    fn_80238A74(10, 63, lbl_8055AEE0, color);
+    sprintf(textBuf, textBase + 0x74, lbl_8055AEC8, lbl_8055AED4);
+    fn_80238A74(10, 39, textBuf, -1);
+    sprintf(textBuf, textBase + 0x80, lbl_8055AECC, lbl_8055AED8);
+    fn_80238A74(10, 51, textBuf, -1);
+    statusColor = lbl_8055EA90 ? 0xFF2DC82D : 0xFF202020;
+    fn_80238A74(10, 63, lbl_8055AEE0, statusColor);
     if (fn_802CC744() == 0) {
         fn_80238A74(50, 63, textBase + 0x90, 0xFF2D2DC8);
     } else if (fn_802CC74C() == 0) {
