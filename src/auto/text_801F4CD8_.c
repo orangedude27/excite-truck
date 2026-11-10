@@ -870,7 +870,7 @@ void fn_801F6728(void *arg0) {
 extern void fn_801E8CB8(float *, float *);
 extern float fn_80287BC8(float, float);
 extern float lbl_80562FE4;
-void fn_801F6778(float *out, int count, float *angles, float offset, float scale, float unused) {
+void fn_801F6778(float *out, int count, float *angles, float offset, float scale) {
     float spC, sp8;
     float f6, f4, f31, f30, f29, f28, f27, f26;
     int i;
@@ -1106,13 +1106,13 @@ void *fn_801F6D60(void *arg0, int arg1) {
 void fn_801F6DF0(void *arg0, int arg1) {
     extern float lbl_80558DC4;
     float sp[96];
-    int enabled6;
+    int enabled7;
     void *entry;
     int i;
-    enabled6 = !((float)__fabs((double)fn_801E7E24()) <= lbl_80558DC4);
+    enabled7 = !((float)__fabs((double)fn_801E7E24()) <= lbl_80558DC4);
     entry = arg0;
     for (i = 0; i < *(int *)((char *)arg0 + 0x2A0); entry = (char *)entry + 0x54, i++) {
-        if (enabled6) {
+        if (enabled7) {
             ((void (*)(float *, int, float *, float, float))fn_801F6778)(&sp[0], *(int *)((char *)entry + 0x10), (float *)((char *)entry + 0x48), *(float *)((char *)entry + 0x3C), *(float *)((char *)entry + 0x40));
             fn_801F64E4(entry, &sp[0], *(float *)((char *)entry + 0x44));
         }
