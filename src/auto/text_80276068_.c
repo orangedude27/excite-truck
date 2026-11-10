@@ -2,6 +2,8 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern volatile int lbl_8055F598, lbl_8055F59C, lbl_8055F5A0;
+__declspec(section ".data") extern unsigned char lbl_8049FEE0;
+extern int stricmp(const char *, const char *);
 __declspec(section ".data") extern unsigned char lbl_8049FD58[];
 extern float lbl_8055E3C8, lbl_80564054, lbl_80564060;
 extern float lbl_8049FD58_float_dummy;
