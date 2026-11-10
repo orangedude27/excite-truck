@@ -551,7 +551,7 @@ void fn_80277828(void) {
     }
 }
 int fn_80277960(void *arg0, void *arg1, float *arg2) {
-    unsigned char *p = (unsigned char *)fn_80276A44();
+    unsigned char *p = (unsigned char *)fn_80276A44(arg0);
     if (p != 0) {
         unsigned int *dst = (unsigned int *)arg1;
         unsigned int *src = (unsigned int *)(p + 4);
