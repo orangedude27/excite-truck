@@ -228,7 +228,7 @@ extern "C" void *fn_80206570(int index) {
 }
 
 #pragma push
-#pragma scheduling off
+#pragma scheduling on
 extern "C" char *strncpy(char *, const char *, unsigned int);
 extern "C" void *fn_802065F8(void *arg0, int arg1, int arg2) {
     struct Obj {
