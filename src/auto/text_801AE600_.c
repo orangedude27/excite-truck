@@ -529,9 +529,9 @@ void fn_801AF598(void) {
 
 #pragma scheduling invalid_target
 void fn_801AF65C(void) {
-    int i = 0;
-    int offset = 0;
     int *base = lbl_80435780;
+    int offset = 0;
+    int i = 0;
     while (i < base[0x3C0 / 4]) {
         char *entry = (char *)lbl_8055E624[0] + offset;
         if (fn_801AE620(entry) && *fn_801EA9A0(i)) {
@@ -541,8 +541,6 @@ void fn_801AF65C(void) {
         i++;
     }
 }
-
-#pragma scheduling invalid_target
 extern int fn_801769B8(void);
 extern void fn_801AE928(void);
 extern void fn_801AF65C(void);
