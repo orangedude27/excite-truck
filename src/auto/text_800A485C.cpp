@@ -5631,39 +5631,40 @@ extern "C" s32 fn_800AE620(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     return result == 0 ? 0 : result;
 }
 
-extern "C" s32 fn_800AE664(void *arg0, u32 arg1, u32 arg2, s32 *arg3, s32 *arg4) {
-    void *context = *(void **)((u8 *)arg0 + 0x34);
-    s32 offset = *arg3;
-    s32 index = -1;
+extern "C" s32 fn_800AE664(void *arg0, u32 arg1, u32 arg2, s32 *clusterOffset, s32 *bytesRemaining) {
+    /* Compute the cluster index and remaining bytes for a file offset (arg1), resolving the cluster if needed and extending the chain when the requested size exceeds the current span. */
+    void *volume = *(void **)((u8 *)arg0 + 0x34);
+    s32 offset = *clusterOffset;
+    s32 clusterIndex = -1;
 
     if ((u32)(offset + 0x10000) != 0xFFFFU) {
-        index = ((u32)(offset - *(s32 *)((u8 *)context + 0x30)) >>
-                 *(u8 *)((u8 *)context + 0x21)) + 2;
+        clusterIndex = ((u32)(offset - *(s32 *)((u8 *)volume + 0x30)) >>
+                 *(u8 *)((u8 *)volume + 0x21)) + 2;
     } else {
-        s32 result = fn_800AE4C0(arg0, arg1, 0, 0, arg3);
+        s32 result = fn_800AE4C0(arg0, arg1, 0, 0, clusterOffset);
         result &= (-result | result) >> 31;
         if (result != 0)
             return result;
-        offset = *arg3;
+        offset = *clusterOffset;
         if ((u32)(offset + 0x10000) != 0xFFFFU) {
-            index = ((u32)(offset - *(s32 *)((u8 *)context + 0x30)) >>
-                     *(u8 *)((u8 *)context + 0x21)) + 2;
+            clusterIndex = ((u32)(offset - *(s32 *)((u8 *)volume + 0x30)) >>
+                     *(u8 *)((u8 *)volume + 0x21)) + 2;
         }
     }
 
     if ((u32)(offset + 0x10000) != 0xFFFFU) {
-        *arg4 = (*(s32 *)((u8 *)context + 0x30) +
-                 ((index - 1) << *(u8 *)((u8 *)context + 0x21))) - offset;
+        *bytesRemaining = (*(s32 *)((u8 *)volume + 0x30) +
+                 ((clusterIndex - 1) << *(u8 *)((u8 *)volume + 0x21))) - offset;
     } else {
-        *arg4 = 0;
+        *bytesRemaining = 0;
     }
 
-    if ((u32)(*arg3 + 0x10000) != 0xFFFFU &&
-        ((u32)*arg4 << *(u8 *)((u8 *)context + 0x20)) < arg2) {
+    if ((u32)(*clusterOffset + 0x10000) != 0xFFFFU &&
+        ((u32)*bytesRemaining << *(u8 *)((u8 *)volume + 0x20)) < arg2) {
         s32 result = ((s32 (*)(void *, s32, s32, u32, s32 *))fn_800AE108)(
-            arg0, index,
-            (arg1 >> *(u8 *)((u8 *)context + 0x21)) + 1,
-            arg2, arg4);
+            arg0, clusterIndex,
+            (arg1 >> *(u8 *)((u8 *)volume + 0x21)) + 1,
+            arg2, bytesRemaining);
         if (result != 0)
             return result;
     }
