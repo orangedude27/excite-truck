@@ -188,6 +188,7 @@ void fn_802A85C8(void) {
     }
     lbl_804BD6C4[1] = 0;
 }
+#pragma pop
 
 #pragma push
 #pragma processor 750
