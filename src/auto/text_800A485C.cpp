@@ -3027,40 +3027,41 @@ extern "C" s32 fn_800B317C(s32, s32);
 extern "C" s32 VFiPFPATH_cmpName(void *, s32, s32);
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" s32 fn_800A9BB4(u8 *arg0, u8 *arg1, s32 arg2, s32 arg3, u32 arg4, s32 arg5, s32 *arg6, s32 arg_sp0) {
- s32 flag;
- s32 ret=1, valid=1;
- u8 buf[13];
- u32 sum, next;
+// Checks a directory/path entry against requested name, attributes and state; returns 0 if it matches, 1 if rejected.
+extern "C" s32 fn_800A9BB4(u8 *entry, u8 *source, s32 compareArg, s32 attrMask, u32 requiredAttr, s32 excludedAttr, s32 *matchCount, s32 arg_sp0) {
+ s32 isVolumeLabel;
+ s32 reject = 1, attrValid = 1;
+ u8 shortName[13];
+ u32 checksum, next;
  u16 i;
- if ((arg3 & 15)==15) { ret=1; goto done; }
- if (arg3==0) arg3=0x40;
- if (arg4&0x80) {
-  s32 b=arg5&0x7f, a=arg4&0x7f;
-  if ((a && a!=(a&arg3)) || (b && b==(b&arg3))) valid=0;
- } else if (arg4!=0x7f && (u32)arg3!=arg4 && (!(arg3&arg4) || (arg3&arg5))) valid=0;
- if (!valid) { ret=1; goto done; }
- flag=arg3&8;
- if (flag) { *(u8*)(&arg0[0x20a])=0; *(u16*)arg0=0; }
- fn_800B3BEC(&arg0[0x20e],(u8*)arg1,*(u8*)((u8*)arg1+0xb));
- if (*(s8*)(&arg0[0x20e])==5) *(s8*)(&arg0[0x20e])=-27;
- if (*(u8*)(&arg0[0x20a]) && *(u8*)(&arg0[0x20b])==1) {
-  fn_800B3A70(buf,&arg0[0x20e],0);
-  sum=0;
-  for (i=0;i<11;i++) {
-  next=((sum&0xfe)>>1)+((sum&1)?0x80:0)+buf[i];
-  sum=next&0xff;
+ if ((attrMask & 15) == 15) { reject = 1; goto done; }
+ if (attrMask == 0) attrMask = 0x40;
+ if (requiredAttr & 0x80) {
+  s32 excluded = excludedAttr & 0x7f, required = requiredAttr & 0x7f;
+  if ((required && required != (required & attrMask)) || (excluded && excluded == (excluded & attrMask))) attrValid = 0;
+ } else if (requiredAttr != 0x7f && (u32)attrMask != requiredAttr && (!(attrMask & requiredAttr) || (attrMask & excludedAttr))) attrValid = 0;
+ if (!attrValid) { reject = 1; goto done; }
+ isVolumeLabel = attrMask & 8;
+ if (isVolumeLabel) { *(u8*)(&entry[0x20a]) = 0; *(u16*)entry = 0; }
+ fn_800B3BEC(&entry[0x20e], (u8*)source, *(u8*)((u8*)source + 0xb));
+ if (*(s8*)(&entry[0x20e]) == 5) *(s8*)(&entry[0x20e]) = -27;
+ if (*(u8*)(&entry[0x20a]) && *(u8*)(&entry[0x20b]) == 1) {
+  fn_800B3A70(shortName, &entry[0x20e], 0);
+  checksum = 0;
+  for (i = 0; i < 11; i++) {
+  next = ((checksum & 0xfe) >> 1) + ((checksum & 1) ? 0x80 : 0) + shortName[i];
+  checksum = next & 0xff;
  }
-  if (*(u8*)(&arg0[0x20c])==sum) ret=fn_800B317C((s32)arg0,arg2)!=0;
+  if (*(u8*)(&entry[0x20c]) == checksum) reject = fn_800B317C((s32)entry, compareArg) != 0;
  }
- if (ret==1) {
-  if (((u32)lbl_803D2140[0x60/4]&2U)==2U && !flag) {
-   if (!VFiPFPATH_cmpName(&arg0[0x20e],arg2,0)) ret=0;
-  } else if (!VFiPFPATH_cmpName(&arg0[0x20e],arg2,1)) ret=0;
+ if (reject == 1) {
+  if (((u32)lbl_803D2140[0x60/4] & 2U) == 2U && !isVolumeLabel) {
+   if (!VFiPFPATH_cmpName(&entry[0x20e], compareArg, 0)) reject = 0;
+  } else if (!VFiPFPATH_cmpName(&entry[0x20e], compareArg, 1)) reject = 0;
  }
- if (ret==1) ++*arg6;
+ if (reject == 1) ++*matchCount;
 done:
- return ret;
+ return reject;
 }
 #pragma pop
 extern "C" s32 fn_800AF530(void *, void *, s32, s32);
