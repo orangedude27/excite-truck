@@ -1655,14 +1655,14 @@ int fn_801CE75C(void) {
 }
 
 extern unsigned int fn_801CE898(void);
-extern void fn_802ADE60(int);
+extern void fn_802ADE60(void *, int);
 void fn_801CE7A0(void) {
     s32 *state;
     void *ptr;
     if (fn_801CE898() != 0) return;
     state = lbl_8055E884;
     ptr = (void *)state[0x2C8 / 4];
-    if (ptr != 0) { fn_802ADE60(1); state[0x2C8 / 4] = 0; }
+    if (ptr != 0) { fn_802ADE60(ptr, 1); state[0x2C8 / 4] = 0; }
     ptr = (void *)state[0x2CC / 4];
     if (ptr != 0) { if (ptr != 0) ((void (*)(void *, int))((u32 *)*(u32 *)ptr)[2])(ptr, 1); state[0x2CC / 4] = 0; }
     ptr = (void *)state[0x2D0 / 4];
