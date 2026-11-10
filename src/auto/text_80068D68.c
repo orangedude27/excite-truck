@@ -2153,6 +2153,7 @@ static inline BOOL StartSyncDeviceBusy(void) {
     return 1;
 }
 
+/* Starts the WUD sync process if the library is ready and not busy: arms the sync state/params and schedules the periodic sync alarm callback. */
 s32 StartSyncDevice(u8 syncType, s8 syncLoopNum, BOOL syncSkipChecks) {
     WUDSyncControlView *control = (WUDSyncControlView *)lbl_80392960;
     s32 success = 0;
