@@ -578,6 +578,7 @@ void __DVDFSInit(void) {
     MaxEntryNum_8055D838 = *(u32 *)(fst + 8);
     FstStringStart_8055D83C = fst + MaxEntryNum_8055D838 * 12;
 }
+#pragma dont_inline off
 
 #pragma use_lmw_stmw off
 s32 DVDConvertPathToEntrynum(const char *path) {
