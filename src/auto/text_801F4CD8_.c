@@ -993,7 +993,7 @@ extern float fn_801E7E24(void);
 extern unsigned char fn_802CDB20(int, int);
 #pragma scheduling invalid_target
 #pragma push
-#pragma processor 750
+#pragma paired_single off
 void fn_801F6A98(void *arg0, int arg1) {
     extern float lbl_80558DC4;
     float sp[6];
