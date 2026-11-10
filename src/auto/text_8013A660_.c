@@ -125,6 +125,8 @@ extern "C" int fn_8013A860(float *arg0, void *arg1) {
     return result;
 }
 
+#pragma push
+#pragma processor 750
 #pragma cplusplus on
 extern "C" float fn_8013A90C(void *arg0, int arg1, int arg2, float arg3) {
     class LocalVtable {
@@ -148,6 +150,7 @@ extern "C" float fn_8013A90C(void *arg0, int arg1, int arg2, float arg3) {
         ((char *(*)(char *, int, int))fn_8013A708)(sp28, arg2, arg1));
     return temp_f1 + arg3 * (temp_f31 - temp_f1);
 }
+#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
@@ -430,14 +433,17 @@ float fn_8013B744(int arg0) {
 }
 #pragma dont_inline reset
 
+#pragma push
+#pragma processor 750
 float fn_8013AA68(void *arg0, void *arg1, void *arg2, void *arg3) {
     int spC;
     float sp8;
-    float result = lbl_80561434;
-    if (fn_8013A760((unkVtable **)arg0, (int)arg1) != 0) {
-        fn_8013B6C0(&spC, &sp8, *(int *)((char *)arg3 + 0xC));
-        fn_8013A7E8((unkVtable **)arg0, (char *)arg1, (char *)arg2);
-        result = fn_8013A90C(arg0, (int)arg1, spC, sp8);
+    float result = *(volatile float *)&lbl_80561434;
+    if (((int (*)(unkVtable **, int))fn_8013A760)((unkVtable **)arg0, (int)arg1) != 0) {
+        ((void (*)(int *, float *, int))fn_8013B6C0)(&spC, &sp8, *(int *)((char *)arg3 + 0xC));
+        ((void (*)(unkVtable **, char *, char *))fn_8013A7E8)((unkVtable **)arg0, (char *)arg1, (char *)arg2);
+        result = ((float (*)(void *, int, int, float))fn_8013A90C)(arg0, (int)arg1, spC, sp8);
     }
     return result;
 }
+#pragma pop
