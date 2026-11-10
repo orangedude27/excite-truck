@@ -103,7 +103,7 @@ extern "C" void* __dt__Q36nw4hbm3lyt7PictureFv(void* this_, s32 arg1) {
         data = *(void**)((u8*)this_ + 0x28);
         *(void**)this_ = lbl_80320408;
         if (data != 0 && *((u8*)data + 0x54) == 0) {
-            ((PicDataVt*)data)->vf2(-1);
+            ((PicDataVt*)data)->vf0(-1);
             MEMFreeToAllocator((void*)lbl_8055DDF0, *(void**)((u8*)this_ + 0x28));
             *(u32*)((u8*)this_ + 0x28) = 0;
         }
