@@ -33,13 +33,12 @@ extern float *fn_80265D98(void);
 extern void fn_8012F57C(int, void *, void *, float);
 #pragma dont_inline on
 float fn_801A6370(float arg0, float arg1, float arg2, float arg3) {
-    return arg0 + arg1 * arg3 + arg3 * ((lbl_80562418 * arg2) * arg3);
+    return (arg0 + arg1 * arg3) + arg3 * ((lbl_80562418 * arg2) * arg3);
 }
 #pragma dont_inline reset
 
 float fn_801A6390(int arg0, int arg1) {
-    int delta = arg0 - arg1;
-    return lbl_8056241C * (float)delta;
+    return lbl_8056241C * (float)(arg0 - arg1);
 }
 
 #pragma dont_inline on
@@ -99,7 +98,6 @@ void *fn_801A6484(void *arg0) {
 }
 
 void fn_801A6520(void) {
-
 }
 
 extern void fn_8018381C(void);
@@ -127,32 +125,39 @@ void fn_801A6524(void *arg0) {
     fn_801A6558(arg0);
 }
 
+#pragma dont_inline on
 #pragma scheduling invalid_target
 void fn_801A6558(void *arg0) {
-    float zero = lbl_80562430;
-    float one = lbl_8056242C;
-    *(int *)((char *)arg0 + 0x2778) = 4;
-    *(void **)((char *)arg0 + 0x277C) = fn_802E2C20();
-    *(float *)((char *)arg0 + 0x273C) = one;
-    *(float *)((char *)arg0 + 0x2738) = one;
-    *(int *)((char *)arg0 + 0x2704) = 0;
-    *(float *)((char *)arg0 + 0x272C) = zero;
-    *(float *)((char *)arg0 + 0x2730) = zero;
-    *(float *)((char *)arg0 + 0x2734) = zero;
-    *(float *)((char *)arg0 + 0x2708) = zero;
-    *(float *)((char *)arg0 + 0x270C) = zero;
-    *(float *)((char *)arg0 + 0x2710) = zero;
-    *(float *)((char *)arg0 + 0x2714) = zero;
-    *(float *)((char *)arg0 + 0x2718) = zero;
-    *(float *)((char *)arg0 + 0x271C) = zero;
-    *(float *)((char *)arg0 + 0x2720) = zero;
-    *(float *)((char *)arg0 + 0x2724) = zero;
-    *(float *)((char *)arg0 + 0x2728) = zero;
-    memset(*(void **)((char *)arg0 + 0x2700), 0, 0xE7);
-    if (*(unsigned char *)((char *)arg0 + 0x2740))
+    float zero;
+    float one;
+    void *tmp;
+    char *p = (char *)arg0;
+    *(int *)(p + 0x2778) = 4;
+    tmp = fn_802E2C20();
+    zero = lbl_80562430;
+    one = lbl_8056242C;
+    *(void **)(p + 0x277C) = tmp;
+    *(float *)(p + 0x273C) = one;
+    *(float *)(p + 0x2738) = one;
+    *(int *)(p + 0x2704) = 0;
+    *(float *)(p + 0x272C) = zero;
+    *(float *)(p + 0x2730) = zero;
+    *(float *)(p + 0x2734) = zero;
+    *(float *)(p + 0x2708) = zero;
+    *(float *)(p + 0x270C) = zero;
+    *(float *)(p + 0x2710) = zero;
+    *(float *)(p + 0x2714) = zero;
+    *(float *)(p + 0x2718) = zero;
+    *(float *)(p + 0x271C) = zero;
+    *(float *)(p + 0x2720) = zero;
+    *(float *)(p + 0x2724) = zero;
+    *(float *)(p + 0x2728) = zero;
+    memset(*(void **)(p + 0x2700), 0, 0xE7);
+    if (*(unsigned char *)(p + 0x2740))
         fn_801A67B0(arg0);
 }
 #pragma scheduling on
+#pragma dont_inline reset
 extern void fn_80182074(void);
 extern void *fn_801B2EC0(int);
 extern void fn_80265D40(void *, int, float);
@@ -203,6 +208,24 @@ void *fn_801A669C(void *arg0, int arg1) {
     }
     return arg0;
 }
+
+#pragma dont_inline on
+#pragma scheduling invalid_target
+int fn_801A6724(void *arg0) {
+    int ret;
+    if (*(int *)((char *)arg0 + 0x2704) > 0) {
+        float v = fn_801A6390(lbl_8055E3C4, *(int *)(*(char **)((char *)arg0 + 0x2700) + 4));
+        ret = (v > lbl_80562434);
+    } else {
+        ret = 0;
+        if (fn_801E89EC() == 1 && ((int)fn_802E2C20() - *(int *)((char *)arg0 + 0x277C) > 0x7D0)) {
+            ret = 1;
+        }
+    }
+    return ret;
+}
+#pragma scheduling on
+#pragma dont_inline reset
 
 extern float lbl_80562438;
 void fn_801A67B0(void *arg0) {
