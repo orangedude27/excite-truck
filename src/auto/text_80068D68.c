@@ -21100,35 +21100,39 @@ void rfc_mx_sm_sabme_wait_ua(void *p_mcb, s32 event, void *p_data) {
     }
 }
 
-void rfc_mx_sm_state_wait_sabme(void *arg0, s32 arg1, void *arg2) {
+/* RFCOMM multiplexer state machine, WAIT_SABME state: the L2CAP link is configured
+   and we wait for the peer to open the multiplexer channel with a SABME, or for
+   our own start request to come back. */
+void rfc_mx_sm_state_wait_sabme(void *p_mcb, s32 event, void *p_data) {
     extern char lbl_80319868[];
     extern void PORT_CloseInd(void *);
     extern void PORT_StartInd(void *);
     extern void rfc_send_ua(void *, s32, void *);
+    tRFC_MCB_VIEW *mcb = (tRFC_MCB_VIEW *)p_mcb;
 
-    if (lbl_803C4828[0x414] >= 4)
-        ((void (*)(u32, void *, s32))fn_80070954)(0x90003, lbl_80319994, arg1);
+    if (rfc_cb_trace_level >= 4)
+        ((void (*)(u32, void *, s32))fn_80070954)(0x90003, lbl_80319994, event);
 
-    switch (arg1) {
-    case 14:
-        *(u8 *)((u8 *)arg0 + 0x6C) = 0;
-        PORT_CloseInd(arg0);
+    switch (event) {
+    case RFC_MX_EVENT_DISC_IND:
+        mcb->state = RFC_MX_STATE_IDLE;
+        PORT_CloseInd(p_mcb);
         return;
-    case 0:
-        PORT_StartInd(arg0);
+    case RFC_EVENT_SABME:
+        PORT_StartInd(p_mcb);
         return;
-    case 7:
-        if (*(u16 *)arg2 != 0) {
-            rfc_send_dm(arg0, 0, 1);
+    case RFC_MX_EVENT_START_RSP:
+        if (*(u16 *)p_data != 0) { /* status != RFCOMM_SUCCESS: refuse the channel */
+            rfc_send_dm(p_mcb, RFCOMM_MX_DLCI, TRUE);
             return;
         }
-        ((void (*)(void *, s32))rfc_send_ua)(arg0, 0);
-        *(u8 *)((u8 *)arg0 + 0x6C) = 5;
-        *(u8 *)((u8 *)arg0 + 0x71) = 1;
+        ((void (*)(void *, s32))rfc_send_ua)(p_mcb, RFCOMM_MX_DLCI);
+        mcb->state = RFC_MX_STATE_CONNECTED;
+        mcb->peer_ready = TRUE;
         return;
     default:
-        if (lbl_803C4828[0x414] >= 4)
-            ((void (*)(u32, void *, s32, u16))fn_8007096C)(0x90003, lbl_80319868, arg1, *(u8 *)((u8 *)arg0 + 0x6C));
+        if (rfc_cb_trace_level >= 4)
+            ((void (*)(u32, void *, s32, u16))fn_8007096C)(0x90003, lbl_80319868, event, mcb->state);
         return;
     }
 }
