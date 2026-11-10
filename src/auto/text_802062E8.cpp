@@ -227,68 +227,45 @@ extern "C" void *fn_80206570(int index) {
     return lbl_8033BD30;
 }
 
-#pragma push
-#pragma scheduling on
 extern "C" char *strncpy(char *, const char *, unsigned int);
 extern "C" void *fn_802065F8(void *arg0, int arg1, int arg2) {
-    struct Obj {
-        void *vtable;
-        float a4;
-        float a8;
-        int c;
-        int value10;
-        int value14;
-        char bytes18[4];
-        float f1c;
-        float f20;
-        float f24;
-        float f28;
-        float f2c;
-        float f30;
-        char bytes34[3];
-        char name[12];
-        char byte43;
-        int value44;
-        char flags48[8];
-        int value50;
-    } *self = (struct Obj *)arg0;
-    self->vtable = &lbl_8033BDC0;
-    strncpy(self->name, (const char *)arg1, 0xC);
+    char *self = (char *)arg0;
+    *(void **)self = &lbl_8033BDC0;
+    strncpy(self + 0x37, (const char *)arg1, 0xC);
     float zero = lbl_805631FC;
-    int zeroInt = 0;
-    int oneInt = 1;
+    register int zeroInt = 0;
+    register int oneInt = 1;
     float one = lbl_805631F8;
     int neg = -0x64;
-    self->byte43 = zeroInt;
-    self->c = zeroInt;
-    self->value44 = arg2;
-    self->a4 = one;
-    self->a8 = one;
-    self->flags48[1] = zeroInt;
-    self->flags48[0] = zeroInt;
-    self->flags48[2] = oneInt;
-    self->flags48[4] = zeroInt;
-    self->flags48[3] = zeroInt;
-    self->flags48[6] = oneInt;
-    self->flags48[5] = oneInt;
-    self->flags48[7] = oneInt;
-    self->value10 = neg;
-    self->value14 = zeroInt;
-    self->bytes18[0] = zeroInt;
-    self->bytes18[1] = zeroInt;
-    self->f20 = zero;
-    self->f1c = one;
-    self->f24 = zero;
-    self->value50 = zeroInt;
-    self->f28 = zero;
-    self->bytes34[0] = oneInt;
-    self->f2c = zero;
-    self->bytes34[1] = oneInt;
-    self->f30 = zero;
-    self->bytes34[2] = oneInt;
+    self[0x43] = zeroInt;
+    *(int *)(self + 0xC) = zeroInt;
+    *(int *)(self + 0x44) = arg2;
+    *(float *)(self + 4) = one;
+    *(float *)(self + 8) = one;
+    self[0x49] = zeroInt;
+    self[0x48] = zeroInt;
+    self[0x4A] = oneInt;
+    self[0x4C] = zeroInt;
+    self[0x4B] = zeroInt;
+    self[0x4E] = oneInt;
+    self[0x4D] = oneInt;
+    self[0x4F] = oneInt;
+    *(int *)(self + 0x10) = neg;
+    *(int *)(self + 0x14) = zeroInt;
+    self[0x18] = zeroInt;
+    self[0x19] = zeroInt;
+    *(float *)(self + 0x20) = zero;
+    *(float *)(self + 0x1C) = one;
+    *(float *)(self + 0x24) = zero;
+    *(int *)(self + 0x50) = zeroInt;
+    *(float *)(self + 0x28) = zero;
+    self[0x34] = oneInt;
+    *(float *)(self + 0x2C) = zero;
+    self[0x35] = oneInt;
+    *(float *)(self + 0x30) = zero;
+    self[0x36] = oneInt;
     return arg0;
 }
-#pragma pop
 
 #pragma dont_inline on
 extern "C" void *fn_802066C8(void *arg0, u32 arg1) {
