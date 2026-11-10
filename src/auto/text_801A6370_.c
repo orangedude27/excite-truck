@@ -612,6 +612,7 @@ extern "C" void fn_801A6C14(void *arg0) {
 #pragma scheduling reset
 #pragma push
 #pragma processor 750
+#pragma scheduling invalid_target
 float fn_801A70EC(int arg0, void *arg1, void *arg2, int arg3) {
     float ratio;
     float denominator;
