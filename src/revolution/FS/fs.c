@@ -192,32 +192,33 @@ end:
     return ret;
 }
 
+/* Handles completion of an asynchronous ISFS operation: runs state-specific post-processing on success, clears the async count, invokes the user callback, frees the command block, and returns the IPC result. */
 static s32 _isfsFuncCb(s32 result, void* arg) {
-    FSCommandBlock* block = (FSCommandBlock*)arg;
+    FSCommandBlock* commandBlock = (FSCommandBlock*)arg;
 
     if (result >= IPC_RESULT_OK) {
-        switch (block->callbackState) {
+        switch (commandBlock->callbackState) {
         case CB_STATE_GET_STATS:
-            _FSGetStatsCb(result, block);
+            _FSGetStatsCb(result, commandBlock);
             break;
         case CB_STATE_READ_DIR:
-            _FSReadDirCb(result, block);
+            _FSReadDirCb(result, commandBlock);
             break;
         case CB_STATE_GET_ATTR:
-            _FSGetAttrCb(result, block);
+            _FSGetAttrCb(result, commandBlock);
             break;
         case CB_STATE_GET_USAGE:
-            _FSGetUsageCb(result, block);
+            _FSGetUsageCb(result, commandBlock);
             break;
         }
     }
 
     lbl_8055DCDC = 0;
-    if (block->callback != NULL) {
-        block->callback(result, block->callbackArg);
+    if (commandBlock->callback != NULL) {
+        commandBlock->callback(result, commandBlock->callbackArg);
     }
 
-    FS_DELETE(block);
+    FS_DELETE(commandBlock);
     return result;
 }
 
