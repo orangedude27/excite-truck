@@ -398,7 +398,7 @@ found:
 int fn_80258C08(void *arg0, const char *arg1) {
     int index = 0;
     int offset = 0;
-    unsigned int entries;
+    char *entries;
     int entry_offset;
     int len;
     goto check;
@@ -420,8 +420,8 @@ check:
     index = -1;
 found:
     if (index >= 0) {
-        entries = *(unsigned int *)((char *)arg0 + 4);
         entry_offset = index * 0x48;
+        entries = *(char **)((char *)arg0 + 4);
         return *(int *)(entries + entry_offset + 0x44);
     }
     return 0;
