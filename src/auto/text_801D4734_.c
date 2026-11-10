@@ -627,36 +627,38 @@ void fn_801D5488(void) {
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_801D5520(char *arg0) {
- struct Manager { virtual void v0(); virtual void *get(int); };
- struct Node { virtual const char *name(); };
- struct Releasable { virtual void release(int); };
- extern void *fn_80131810(void); extern void fn_80131818(void *); extern void *fn_801D4B34(void *); extern int fn_801D4CF8(void *,void *); extern void *fn_801284F8(int,void *); extern void fn_802E30C8(const char *, const char *); extern int stricmp(const char *,const char *); extern char lbl_80338460; extern int lbl_804423A4[];
- char *base=(char *)&lbl_80338460;
- void *obj;
- Manager *manager=(Manager *)fn_80131810();
- Node *node;
- const char *name;
- int i;
- if(!manager) { ((void (*)(const char *, ...))fn_802E30C8)(base+0x120,arg0); return; }
- i=0;
- goto fetch;
+    /* Look up a node named "..." (base+0x150) under the given manager, build
+     * a wrapper object for it, and append it to the global list on success. */
+    struct Manager { virtual void v0(); virtual void *get(int); };
+    struct Node { virtual const char *name(); };
+    struct Releasable { virtual void release(int); };
+    extern void *fn_80131810(void); extern void fn_80131818(void *); extern void *fn_801D4B34(void *); extern int fn_801D4CF8(void *,void *); extern void *fn_801284F8(int,void *); extern void fn_802E30C8(const char *, const char *); extern int stricmp(const char *,const char *); extern char lbl_80338460; extern int lbl_804423A4[];
+    char *base=(char *)&lbl_80338460;
+    void *obj;
+    Manager *manager=(Manager *)fn_80131810();
+    Node *node;
+    const char *name;
+    int i;
+    if(!manager) { ((void (*)(const char *, ...))fn_802E30C8)(base+0x120,arg0); return; }
+    i=0;
+    goto fetch;
 body:
- name=node->name();
- if(stricmp(name,base+0x150)==0) {
-  obj=fn_801284F8(0x13c,base+0x160);
-  if(obj) obj=fn_801D4B34(obj);
-  if(fn_801D4CF8(obj,node)) {
-   int n=lbl_804423A4[1];
-   void **items=(void **)lbl_804423A4[0];
-   lbl_804423A4[1]=n+1;
-   items[n]=obj;
-  } else if(obj) ((Releasable *)obj)->release(1);
- }
- i++;
+    name=node->name();
+    if(stricmp(name,base+0x150)==0) {
+        obj=fn_801284F8(0x13c,base+0x160);
+        if(obj) obj=fn_801D4B34(obj);
+        if(fn_801D4CF8(obj,node)) {
+            int n=lbl_804423A4[1];
+            void **items=(void **)lbl_804423A4[0];
+            lbl_804423A4[1]=n+1;
+            items[n]=obj;
+        } else if(obj) ((Releasable *)obj)->release(1);
+    }
+    i++;
 fetch:
- node=(Node *)manager->get(i);
- if(node) goto body;
- fn_80131818(manager);
+    node=(Node *)manager->get(i);
+    if(node) goto body;
+    fn_80131818(manager);
 }
 #pragma cplusplus reset
 #pragma pop
