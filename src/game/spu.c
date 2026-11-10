@@ -65,49 +65,50 @@ void fn_802E4D84(void *dst, void *src, int size) {
 extern unsigned char *fn_8012C370(int, unsigned int *, int, unsigned char *, unsigned char *);
 extern char lbl_8034D280[];
 #pragma scheduling invalid_target
-void *fn_802E4DC8(char *arg0) {
-    unsigned int size;
-    unsigned char sp9;
-    unsigned char sp8;
-    unsigned char *buf;
-    unsigned char *data;
+/* Load an SFX0 sample blob by name: endian-swap its header when the loader says so, relocate its data offset into a pointer, byte-swap 16-bit sample data for non-raw formats, then flush it for the ARAM/DSP reader. */
+void *fn_802E4DC8(char *path) {
+    unsigned int version;
+    unsigned char attr;
+    unsigned char needsSwap;
+    unsigned char *sfx;
+    unsigned char *samples;
     unsigned char tmp;
     int i;
     register int adjusted;
     register int length;
 
-    buf = ((unsigned char *(*)(char *, unsigned int, unsigned int *, int, unsigned char *, unsigned char *))fn_8012C370)(
-        arg0, 0x53465830, &size, 0, &sp9, &sp8);
-    if (buf == 0) goto return_null;
-    if (size != 3) fn_802E317C(lbl_8034D280, arg0, size, 3);
-    if (sp8 != 0) {
-        tmp=buf[0]; buf[0]=buf[3]; buf[3]=tmp;
-        tmp=buf[1]; buf[1]=buf[2]; buf[2]=tmp;
-        tmp=buf[4]; buf[4]=buf[7]; buf[7]=tmp;
-        tmp=buf[5]; buf[5]=buf[6]; buf[6]=tmp;
-        tmp=buf[12]; buf[12]=buf[13]; buf[13]=tmp;
-        tmp=buf[14]; buf[14]=buf[15]; buf[15]=tmp;
-        tmp=buf[16]; buf[16]=buf[19]; buf[19]=tmp;
-        tmp=buf[17]; buf[17]=buf[18]; buf[18]=tmp;
-        tmp=buf[20]; buf[20]=buf[23]; buf[23]=tmp;
-        tmp=buf[21]; buf[21]=buf[22]; buf[22]=tmp;
-        tmp=buf[24]; buf[24]=buf[25]; buf[25]=tmp;
-        tmp=buf[26]; buf[26]=buf[27]; buf[27]=tmp;
-        tmp=buf[28]; buf[28]=buf[29]; buf[29]=tmp;
-        *(unsigned int *)(buf+4) = (unsigned int)(buf + *(unsigned int *)(buf+4));
-        if (*(unsigned short *)(buf+26) == 16 && buf[9] != 1) {
-            data = *(unsigned char **)(buf+4);
-            for (i=0; (length=*(int *)buf, adjusted=((unsigned int)length >> 31),
+    sfx = ((unsigned char *(*)(char *, unsigned int, unsigned int *, int, unsigned char *, unsigned char *))fn_8012C370)(
+        path, 0x53465830 /* 'SFX0' */, &version, 0, &attr, &needsSwap);
+    if (sfx == 0) goto return_null;
+    if (version != 3) fn_802E317C(lbl_8034D280, path, version, 3);
+    if (needsSwap != 0) {
+        tmp=sfx[0]; sfx[0]=sfx[3]; sfx[3]=tmp;
+        tmp=sfx[1]; sfx[1]=sfx[2]; sfx[2]=tmp;
+        tmp=sfx[4]; sfx[4]=sfx[7]; sfx[7]=tmp;
+        tmp=sfx[5]; sfx[5]=sfx[6]; sfx[6]=tmp;
+        tmp=sfx[12]; sfx[12]=sfx[13]; sfx[13]=tmp;
+        tmp=sfx[14]; sfx[14]=sfx[15]; sfx[15]=tmp;
+        tmp=sfx[16]; sfx[16]=sfx[19]; sfx[19]=tmp;
+        tmp=sfx[17]; sfx[17]=sfx[18]; sfx[18]=tmp;
+        tmp=sfx[20]; sfx[20]=sfx[23]; sfx[23]=tmp;
+        tmp=sfx[21]; sfx[21]=sfx[22]; sfx[22]=tmp;
+        tmp=sfx[24]; sfx[24]=sfx[25]; sfx[25]=tmp;
+        tmp=sfx[26]; sfx[26]=sfx[27]; sfx[27]=tmp;
+        tmp=sfx[28]; sfx[28]=sfx[29]; sfx[29]=tmp;
+        *(unsigned int *)(sfx+4) = (unsigned int)(sfx + *(unsigned int *)(sfx+4));
+        if (*(unsigned short *)(sfx+26) == 16 && sfx[9] != 1) {
+            samples = *(unsigned char **)(sfx+4);
+            for (i=0; (length=*(int *)sfx, adjusted=((unsigned int)length >> 31),
                        adjusted+=length, i<(adjusted >> 1)); i++) {
-                tmp=data[0];
-                data[0]=data[1];
-                data[1]=tmp;
-                data+=2;
+                tmp=samples[0];
+                samples[0]=samples[1];
+                samples[1]=tmp;
+                samples+=2;
             }
         }
-        DCFlushRange(*(void **)(buf+4), *(unsigned int *)buf);
+        DCFlushRange(*(void **)(sfx+4), *(unsigned int *)sfx);
     }
-    return buf;
+    return sfx;
 return_null:
     return 0;
 }
