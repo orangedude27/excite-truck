@@ -501,11 +501,18 @@ extern "C" void fn_801A5C4C(void *arg0, unsigned int key) {
 }
 #pragma cplusplus on
 extern "C" void fn_801A5D80(void *arg0, int arg1, int arg2, int arg3, int arg4) {
-    void *obj;
+    class Obj {
+    public:
+        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+        virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
+        virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
+        virtual void f12(int, int, int, int);
+    };
     float zero;
+    Obj *obj;
     fn_8018B09C();
-    obj = *(void **)((char *)arg0 + 0x270C);
-    ((void (*)(void *, int, int, int, int))(*(void ***)obj)[14])(obj, arg1, arg2, arg3, arg4);
+    obj = (Obj *)*(void **)((char *)arg0 + 0x270C);
+    obj->f12(arg1, arg2, arg3, arg4);
     if (arg3 == 0x6D) {
         zero = lbl_805623C8;
         *(int *)((char *)arg0 + 0x2714) = 1;
