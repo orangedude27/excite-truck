@@ -26044,37 +26044,38 @@ void AXFXReverbHiExpCallback(AXFX_BUFFERUPDATE_VIEW* update,
 }
 #pragma use_lmw_stmw reset
 
-BOOL __AllocDelayLine(AXFX_REVERBHI_EXP_FREE_VIEW *fx) {
+/* Allocates the per-channel early, pre-delay, comb, allpass and last-allpass delay line buffers for a reverb effect; returns FALSE on any allocation failure. */
+BOOL __AllocDelayLine(AXFX_REVERBHI_EXP_FREE_VIEW *reverb) {
     extern void *lbl_805590B0;
-    u32 ch, i;
+    u32 channel, i;
 
-    for (ch = 0; ch < 3; ch++) {
-        fx->earlyLine[ch] = ((void *(*)(s32))lbl_805590B0)(fx->earlyMaxLength * 4);
-        if (fx->earlyLine[ch] == 0)
+    for (channel = 0; channel < 3; channel++) {
+        reverb->earlyLine[channel] = ((void *(*)(s32))lbl_805590B0)(reverb->earlyMaxLength * 4);
+        if (reverb->earlyLine[channel] == 0)
             return FALSE;
 
-        if (fx->preDelayMaxLength != 0) {
-            fx->preDelayLine[ch] = ((void *(*)(s32))lbl_805590B0)(fx->preDelayMaxLength * 4);
-            if (fx->preDelayLine[ch] == 0)
+        if (reverb->preDelayMaxLength != 0) {
+            reverb->preDelayLine[channel] = ((void *(*)(s32))lbl_805590B0)(reverb->preDelayMaxLength * 4);
+            if (reverb->preDelayLine[channel] == 0)
                 return FALSE;
         } else {
-            fx->preDelayLine[ch] = 0;
+            reverb->preDelayLine[channel] = 0;
         }
 
         for (i = 0; i < 3; i++) {
-            fx->combLine[ch][i] = ((void *(*)(s32))lbl_805590B0)(fx->combMaxLength[i] * 4);
-            if (fx->combLine[ch][i] == 0)
+            reverb->combLine[channel][i] = ((void *(*)(s32))lbl_805590B0)(reverb->combMaxLength[i] * 4);
+            if (reverb->combLine[channel][i] == 0)
                 return FALSE;
         }
 
         for (i = 0; i < 2; i++) {
-            fx->allpassLine[ch][i] = ((void *(*)(s32))lbl_805590B0)(fx->allpassMaxLength[i] * 4);
-            if (fx->allpassLine[ch][i] == 0)
+            reverb->allpassLine[channel][i] = ((void *(*)(s32))lbl_805590B0)(reverb->allpassMaxLength[i] * 4);
+            if (reverb->allpassLine[channel][i] == 0)
                 return FALSE;
         }
 
-        fx->lastAllpassLine[ch] = ((void *(*)(s32))lbl_805590B0)(fx->lastAllpassMaxLength[ch] * 4);
-        if (fx->lastAllpassLine[ch] == 0)
+        reverb->lastAllpassLine[channel] = ((void *(*)(s32))lbl_805590B0)(reverb->lastAllpassMaxLength[channel] * 4);
+        if (reverb->lastAllpassLine[channel] == 0)
             return FALSE;
     }
     return TRUE;
