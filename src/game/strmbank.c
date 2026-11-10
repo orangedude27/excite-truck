@@ -31,7 +31,6 @@ void fn_802E7578(void) {
       virtual void f16(s32, s32, s32);
       virtual void f20(s32);
       virtual void f24(s32);
-      virtual void f28(s32);
   };
 extern "C" void fn_802E759C(void) {
     if (lbl_8055FFF0) {
