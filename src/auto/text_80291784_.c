@@ -193,7 +193,7 @@ void fn_80291A1C(void) {
     fn_802CA294();
     settings[4] = fn_802D39A4(lbl_80564490);
     *((unsigned char *)settings + 0x14) = 0;
-    settings[6] = -1;
+    settings[6] = 0xFFFFFFFF;
     ((float *)settings)[7] = value;
 }
 #pragma pop
@@ -221,14 +221,15 @@ void fn_80291B14(float *arg0) {
     }
     *((unsigned char *)(lbl_804B4010 + 0x14)) = success;
 }
-#pragma scheduling on
+#pragma processor 750
+#pragma push
+#pragma processor 750
 void fn_80291B9C(void *arg0, float *arg1, float arg2) {
     float a = arg1[0];
-    float b = arg1[1];
     float c = arg1[2];
-    int i;
+    float b = arg1[1];
     char *entry;
-
+    int i;
     *((float *)((char *)arg0 + 0x130)) = a;
     *((float *)((char *)arg0 + 0x134)) = b;
     *((float *)((char *)arg0 + 0x138)) = c;
@@ -254,7 +255,7 @@ void fn_80291B9C(void *arg0, float *arg1, float arg2) {
         } while (i < *((int *)((char *)arg0 + 0x120)));
     }
 }
-
+#pragma processor reset
 extern double fabs(double);
 extern double sin(double);
 extern double cos(double);
@@ -450,15 +451,16 @@ check:
 }
 
 void fn_8029227C(void) {
-    int old; int *settings;
-    if (!lbl_8055F75C) return;
-    if (!lbl_8055C920) goto done;
-    old=fn_802C2C00(0); settings=(int *)&lbl_804B4010;
-    if (*((unsigned char *)settings+0x14)) fn_802D3BB0(settings[4]);
-    if (*((unsigned char *)settings+0x14)) fn_802920D0();
-    if (*((unsigned char *)&lbl_804B3EC0+0x148)) fn_80291E64(&lbl_804B3EC0);
-    fn_802C2C00(old);
-done: ;
+    int old;
+    if (lbl_8055F75C != 0) {
+        if (lbl_8055C920 != 0) {
+            old = fn_802C2C00(0);
+            if (*((unsigned char *)(lbl_804B4010 + 0x14))) fn_802D3BB0(*((int *)(lbl_804B4010 + 0x10)));
+            if (*((unsigned char *)(lbl_804B4010 + 0x14))) fn_802920D0();
+            if (*((unsigned char *)&lbl_804B3EC0 + 0x148)) fn_80291E64(&lbl_804B3EC0);
+            fn_802C2C00(old);
+        }
+    }
 }
 
 #pragma push
@@ -510,29 +512,26 @@ void fn_802923EC(float arg0) {
     register int i;
     register unsigned int packed;
     register int amount;
-
     if (lbl_8055F75C != 0) {
-        value = lbl_80564480;
-        if (value < arg0) value = arg0;
-        if (value > lbl_80564484) value = lbl_80564484;
+        value = lbl_80564480 < arg0 ? arg0 : lbl_80564480;
+        value = value > lbl_80564484 ? lbl_80564484 : value;
         settings = (int *)&lbl_804B4010;
-        packed = settings[6];
-        packed <<= 8;
-        packed >>= 8;
+        packed = (unsigned int)settings[6] & 0xFFFFFFu;
         amount = (int)(lbl_8056449C * value);
-        settings[6] = packed | (((unsigned int)amount & 0xFF) << 24);
+        settings[6] = (int)(packed | ((unsigned int)amount << 24));
         entry = (int *)&lbl_804B3EC0;
         table = entry;
         i = 0;
         goto check;
-    loop:
-        packed = entry[6];
+loop:
+        packed = (unsigned int)entry[6];
         i++;
-        entry[6] = ((unsigned int)(int)(value * (float)(packed >> 24)) << 24) |
-                   (packed & 0xFFFFFF);
+        entry[6] = (int)(((unsigned int)(int)(value * (float)(packed >> 24)) << 24) | (packed & 0xFFFFFFu));
         entry = (int *)((char *)entry + 0x24);
-    check:
-        if (i < table[0x48]) goto loop;
+check:
+        if (i < table[0x120 / 4]) {
+            goto loop;
+        }
     }
 }
 
