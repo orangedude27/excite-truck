@@ -161,15 +161,17 @@ void fn_8022D924(volatile int *p, int arg1) {
     p[0x10 / 4] = arg1;
     p[0x24 / 4] = cnt + 1;
     if (v < 0) return;
-    arg1 = v;
-    goto divide;
+    if (v >= 0) { arg1 = v; goto divide; }
+    return;
 store:
+    cnt = p[0x24 / 4];
     p[0x20 / 4] = arg1;
-    p[0x24 / 4] = p[0x24 / 4] + 1;
+    p[0x24 / 4] = cnt + 1;
     return;
 divide:
+    cnt = p[0x10 / 4];
     p[0x2C / 4] = arg1;
-    arg1 = arg1 / p[0x10 / 4];
+    arg1 = arg1 / cnt;
     p[0x24 / 4] = p[0x24 / 4] + 1;
     goto store;
 }
@@ -184,7 +186,6 @@ void fn_8022D98C(void *arg0, int arg1, float arg2, float arg3, float arg4, float
     float value = arg4;
     volatile int *count = (volatile int *)((char *)arg0 + 0x1C);
     int n;
-
     *(int *)((char *)arg0 + 0x18) = arg1;
     *(void **)arg0 = lbl_803401A0;
     *(float *)((char *)arg0 + 4) = arg2;
@@ -193,10 +194,12 @@ void fn_8022D98C(void *arg0, int arg1, float arg2, float arg3, float arg4, float
     *(float *)((char *)arg0 + 0x10) = arg6;
     *count = 0;
     do {
+        float frac;
         n = *count;
         value *= lbl_805635C0;
         *count = n + 1;
-        if (value - (float)(int)value > lbl_805635C4)
+        frac = value - (float)(int)value;
+        if ((frac > lbl_805635C4) == 0)
             break;
         if (*count < 4)
             continue;
@@ -343,51 +346,24 @@ void fn_8022DD9C(void *arg0,int *arg1,int *arg2) {
 #pragma push
 #pragma opt_propagation off
 void fn_8022DDB0(void *arg0) {
-    float *temp_r4;
-    float temp_f3;
-    float var_f4;
-    float temp_f0;
-
-    temp_f0 = lbl_805635D4;
-    temp_r4 = *(float **)((char *)arg0 + 0x18);
-    temp_f3 = *(float *)((char *)arg0 + 0x14);
-    {
-        float temp_f1 = *temp_r4;
-        float temp_f2 = temp_f1 + temp_f3;
-        temp_f2 = temp_f2 / temp_f3;
-        temp_f0 = temp_f0 + temp_f2;
-        temp_f0 = (float)(int)temp_f0;
-        temp_f0 = temp_f3 * temp_f0;
-    }
-    var_f4 = *(float *)((char *)arg0 + 0x10);
-    if (var_f4 < temp_f0) var_f4 = temp_f0;
-    *temp_r4 = var_f4;
+    float c = lbl_805635D4;
+    float *p = *(float **)((char *)arg0 + 0x18);
+    float step = *(float *)((char *)arg0 + 0x14);
+    float v = step * (float)(int)(c + ((*p + step) / step));
+    float low = *(float *)((char *)arg0 + 0x10);
+    *p = (low < v) ? low : v;
 }
-#pragma push
-#pragma scheduling invalid_target
+#pragma opt_propagation on
 void fn_8022DE1C(void *arg0) {
-    float *temp_r4;
-    float temp_f0;
-    float temp_f1;
-    float temp_f2;
-    float temp_f3;
-    float var_f4;
-    temp_f0 = lbl_805635D4;
-    temp_r4 = *(float **)((char *)arg0 + 0x18);
-    temp_f3 = *(float *)((char *)arg0 + 0x14);
-    temp_f1 = *temp_r4;
-    temp_f2 = temp_f1 - temp_f3;
-    temp_f2 = temp_f2 / temp_f3;
-    temp_f0 = temp_f0 + temp_f2;
-    temp_f0 = (float)(int)temp_f0;
-    var_f4 = *(float *)((char *)arg0 + 0x0C);
-    temp_f0 = temp_f3 * temp_f0;
-    if (var_f4 <= temp_f0) {
-        var_f4 = temp_f0;
-    }
-    *temp_r4 = var_f4;
+    float c = lbl_805635D4;
+    float *p = *(float **)((char *)arg0 + 0x18);
+    float val = *p;
+    float step = *(float *)((char *)arg0 + 0x14);
+    float v = step * (float)(int)(c + ((val - step) / step));
+    float low = *(float *)((char *)arg0 + 0x0C);
+    *p = (low > v) ? low : v;
 }
-#pragma pop
+#pragma opt_propagation reset
 int fn_8022DE88(void *arg0) {
     float *epsilon_ptr = (float *)&lbl_80558DC4;
     float current = *(float *)((char *)arg0 + 0x10);
@@ -403,16 +379,17 @@ int fn_8022DE88(void *arg0) {
 #pragma pop
 extern double __fabs(double);
 #pragma push
-#pragma optimization_level 2
+#pragma optimization_level 1
 int fn_8022DEC4(void *arg0) {
     float *valuePtr = *(float **)((char *)arg0 + 0x18);
     float current = *(float *)((char *)arg0 + 0xC);
     float value = *valuePtr;
-    float diff = current;
-    diff -= value;
-    if ((float)__fabs(diff) <= lbl_80558DC4[0]) {
-        return 0;
-    }
+    float diff = current - value;
+    float mag = __fabs(diff);
+    if (!(mag <= lbl_80558DC4[0]))
+        goto ret1;
+    return 0;
+ret1:
     return 1;
 }
 #pragma pop
