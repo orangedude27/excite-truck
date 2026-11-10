@@ -12642,14 +12642,15 @@ void btm_sec_disconnected(UINT16 handle, UINT8 reason) {
     p_dev_rec->unk_0x04 = 0;
 }
 
-/* Match note: initialize the callback table at its base, then walk two entries by four bytes. */
+/* Match note: initialize the callback table at its base, then walk two entries by four bytes.
+ * Notifies BTM callbacks of a new/updated link key for a device, allocating/storing device state as needed. */
 void btm_sec_link_key_notification(u8 *bd_addr, u8 *link_key, u8 key_type) {
     extern u8 lbl_80316F58[];
     extern u8 lbl_80316F9C[];
     u8 *dev = (u8 *)btm_find_dev(bd_addr);
     u32 (*auth_cb)(void *, void *, void *, void *, u8);
     u32 (*key_cb)(void *, void *, void *, void *, u8);
-    u8 *callbacks;
+    u8 *callbackTable;
     s32 i;
 
     if (dev == NULL) {
@@ -12674,14 +12675,14 @@ void btm_sec_link_key_notification(u8 *bd_addr, u8 *link_key, u8 key_type) {
     auth_cb = *(u32 (**)(void *, void *, void *, void *, u8))(lbl_803C0F78 + 0x1914);
     if (auth_cb != NULL)
         auth_cb(bd_addr, dev + 0x22, dev + 0x35, link_key, dev[0x83]);
-    callbacks = lbl_803C0F78;
+    callbackTable = lbl_803C0F78;
     i = 0;
     do {
-        key_cb = *(u32 (**)(void *, void *, void *, void *, u8))(callbacks + 0x1924);
+        key_cb = *(u32 (**)(void *, void *, void *, void *, u8))(callbackTable + 0x1924);
         if (key_cb != NULL)
             key_cb(bd_addr, dev + 0x22, dev + 0x35, link_key, dev[0x83]);
         i++;
-        callbacks += 4;
+        callbackTable += 4;
     } while (i < 2);
 }
 
