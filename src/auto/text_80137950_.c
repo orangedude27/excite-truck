@@ -16,17 +16,19 @@ extern int lbl_80559C04;
 extern int lbl_80559C08;
 extern int lbl_80559C10;
 char *fn_80137950(int arg0) {
+    char *s;
     switch (arg0) {
-        case 0:
-            return (char *)&lbl_80559C10;
+        case 3:
+            return (char *)&lbl_80559C04;
         case 1:
             return lbl_8032BEC0;
         case 2:
             return (char *)&lbl_80559C08;
-        case 3:
-            return (char *)&lbl_80559C04;
+        case 0:
+            return (char *)&lbl_80559C10;
         default:
-            fn_802E317C(lbl_8032BECC);
+            s = lbl_8032BECC;
+            fn_802E317C(s, arg0);
             return (char *)0;
     }
 }
@@ -97,7 +99,7 @@ void fn_80137B14(void) {
     lbl_80559C00 = (void*)-1;
 }
 
-extern char lbl_80559C38[];
+__declspec(section ".sdata") extern char lbl_80559C38[];
 extern void *fn_801284F8(int, const char *);
 extern char *fn_80137950(int);
 extern void fn_80137B0C(void *);
