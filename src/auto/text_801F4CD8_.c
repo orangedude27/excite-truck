@@ -1008,12 +1008,16 @@ void fn_801F6A98(void *arg0, int arg1) {
     goto check;
 loop:
     if (enabled != 0) {
+        float c, b, a;
         scale = *(float *)((char *)entry + 0x40);
         offset = *(float *)((char *)entry + 0x3C);
         fn_801E8C84(&sp[0]);
-        sp[3] = sp[0] * scale;
-        sp[5] = sp[2] * scale;
-        sp[4] = sp[1] * scale - offset;
+        a = sp[0] * scale;
+        b = sp[1] * scale;
+        c = sp[2] * scale;
+        sp[3] = a;
+        sp[4] = b - offset;
+        sp[5] = c;
         fn_801F63F0(entry, &sp[3], *(float *)((char *)entry + 0x44));
     }
     fn_801F65D0(entry);
@@ -1099,6 +1103,8 @@ void *fn_801F6D60(void *arg0, int arg1) {
     return arg0;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_801F6DF0(void *arg0, int arg1) {
     extern float lbl_80558DC4;
     float sp[96];
@@ -1125,6 +1131,7 @@ loop:
 check:
     if (i < *(int *)((char *)arg0 + 0x2A0)) goto loop;
 }
+#pragma pop
 
 extern char lbl_8033AE20[], lbl_8033AE48[];
 extern int fn_801F4E44(const char *);
