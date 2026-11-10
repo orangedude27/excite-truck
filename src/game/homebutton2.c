@@ -291,6 +291,10 @@ extern s32 fn_802EC4BC(void);
 extern float lbl_805651E0, lbl_805651E8, lbl_805651F0, lbl_805651F4;
 extern float lbl_805651F8, lbl_805651FC, lbl_80565200, lbl_80565204, lbl_80565208;
 #pragma dont_inline on
+/* Set up GX state and orthographic projection for home-button/menu rendering
+ * when active: configures viewport/scissor, TEV/Z/blend, chooses ortho bounds
+ * based on layout mode, then draws/flushes the home-button UI.
+ */
 void fn_802ECA48(void) {
     u8 projection[0x40];
     u16 *dims;
