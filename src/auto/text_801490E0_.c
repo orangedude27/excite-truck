@@ -4,7 +4,7 @@
 
 extern void fn_8000D838(void *);
 extern void fn_801491B8(void *, s32);
-extern void __register_global_object(void *, void *, ...);
+extern void __register_global_object(void *, void *, void *);
 extern char lbl_8032D2C8[];
 extern char lbl_8032D2E4[];
 extern char lbl_8032D300[];
@@ -50,6 +50,6 @@ void fn_801490E0(void) {
     sub[0] = (s32)(sub + 3);
     sub[2] = 0x28;
     sub[1] = 0;
-    __register_global_object(sub, fn_801491B8, base + 5, sub + 3, p220, lbl_8032D2C8, p218, v7f);
+    __register_global_object(sub, fn_801491B8, base + 5);
 }
 #pragma pop
