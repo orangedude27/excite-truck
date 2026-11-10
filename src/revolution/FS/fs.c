@@ -447,6 +447,7 @@ s32 ISFS_ReadDirAsync(const char* path, char* filesOut, u32* fileCountOut,
 s32 ISFS_GetAttr(const char* path, u32* ownerIdOut, u16* groupIdOut,
                  u32* attrOut, u32* ownerPermOut, u32* groupPermOut,
                  u32* otherPermOut) {
+    /* Query file/directory attributes (owner, group, permissions, attr) from ISFS. */
     s32 ret;
     FSFileIoctl* fileIoctl;
     size_t len;
