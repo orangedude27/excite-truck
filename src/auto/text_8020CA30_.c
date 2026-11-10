@@ -108,7 +108,7 @@ extern "C" void* fn_8020CA3C(void* arg0) {
 
 #pragma cplusplus on
 struct CC78_Item { virtual void s0(int); };
-static inline void CC78_call(CC78_Item *p, int v) { p->s0(v); }
+static inline void CC78_call(void *p, int v) { ((CC78_Item *)p)->s0(v); }
 #pragma cplusplus reset
 #pragma scheduling invalid_target
 void *fn_8020CC78(void *arg0, int arg1) {
