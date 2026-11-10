@@ -11938,39 +11938,40 @@ extern "C" s32 fn_800BA238(s32 arg0) {
 
 extern "C" s32 fn_800BA874(u32 *, u16 *);
 extern "C" s32 fn_800BA290(s32 arg0, u32 *arg1) {
-    u32 flags;
+    /* Query SD device state/capacity into arg1, validating device presence and readiness; returns 0 on success or an error/status code. */
+    u32 statusFlags;
     s32 result;
-    const char *str = lbl_8031B2B0;
+    const char *logBase = lbl_8031B2B0;
 
     if (arg0 == 0 || arg1 == 0)
         return 1;
     if ((*(u32 *)lbl_80407300 & 2) == 0)
         return 0xF;
 
-    result = fn_800BAD9C(*(void **)(lbl_80407300 + 8), &flags);
+    result = fn_800BAD9C(*(void **)(lbl_80407300 + 8), &statusFlags);
     if (result != 0) {
-        OSReport(str + 0x278, result);
+        OSReport(logBase + 0x278, result);
         return 0x15;
     }
-    if ((flags & 1) == 0) {
-        OSReport(str + 0x2A8);
+    if ((statusFlags & 1) == 0) {
+        OSReport(logBase + 0x2A8);
         return 6;
     }
-    if (flags & 2) {
-        OSReport(str + 0x2E0);
+    if (statusFlags & 2) {
+        OSReport(logBase + 0x2E0);
         return 6;
     }
-    if ((flags & 0x10000) == 0) {
-        OSReport(str + 0x314);
+    if ((statusFlags & 0x10000) == 0) {
+        OSReport(logBase + 0x314);
         return 0x15;
     }
 
     arg1[3] = 4;
-    if (flags & 4)
+    if (statusFlags & 4)
         arg1[3] |= 1;
     result = fn_800BA874(arg1, (u16 *)((u8 *)arg1 + 8));
     if (result != 0) {
-        OSReport(str + 0x354);
+        OSReport(logBase + 0x354);
         return 0x15;
     }
     *(u16 *)((u8 *)arg1 + 4) = 0;
