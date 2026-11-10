@@ -263,29 +263,28 @@ extern void fn_801B8054(int, int, float, float);
 extern float lbl_80562720;
 extern const float lbl_80562730;
 extern float lbl_80562734;
+#pragma push
+#pragma processor 750
 void fn_801B7F4C(void *arg0, int arg1, int arg2) {
     void *root;
     void *container;
     void *object;
+    float scale;
     float base;
-    float offset;
-
     (void)arg2;
+    scale = lbl_80562730;
     if (*(void **)((char *)*(void **)((char *)fn_80178C9C() + 0x2C) + 0x20) != 0) {
         container = *(void **)((char *)fn_80178C9C() + 0x2C);
         object = *(void **)((char *)container + 0x20);
         base = lbl_80562734 + *(float *)((char *)object + 0x1C);
         root = fn_80178C9C();
-        offset = lbl_80562720 + base;
-        fn_801B8054((int)arg0, (int)root, lbl_80562708,
-                    offset + (float)arg1 * lbl_80562730);
+        fn_801B8054((int)arg0, (int)root, lbl_80562708, (lbl_80562720 + base) + (float)arg1 * scale);
     } else {
         root = fn_80178C9C();
-        fn_801B78EC((int)arg0, (int)root, 0, lbl_80562708,
-                    (float)arg1 * lbl_80562730, lbl_80562708);
+        fn_801B78EC((int)arg0, (int)root, 0, lbl_80562708, (float)arg1 * scale, lbl_80562708);
     }
 }
-
+#pragma pop
 void fn_801B8040(int arg0, int arg1, float farg0) {
     fn_801B7760(arg0, arg1, farg0, lbl_80562708);
 }
