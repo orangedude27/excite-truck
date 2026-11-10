@@ -97,6 +97,23 @@ extern void *fn_802972A4(void *);
 __declspec(section ".sdata") extern char lbl_8055CA48[];
 __declspec(section ".sdata") extern char lbl_8055CA50[];
 #pragma scheduling invalid_target
+#pragma cplusplus on
+struct Vec97354 { float x; float y; float z; };
+struct Arg1Dummy97354 {
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+    virtual void v4(); virtual void v5(); virtual void v6();
+    virtual float m24(char *);
+    virtual void w28(); virtual void w2C(); virtual void w30(); virtual void w34();
+    virtual Vec97354 m38(char *, Vec97354 *);
+};
+struct ObjDummy97354 {
+    virtual void u0(); virtual void u1();
+    virtual float get();
+};
+static inline float Arg1_get24_97354(void *p, char *k) { return ((Arg1Dummy97354 *)p)->m24(k); }
+static inline Vec97354 Arg1_get38_97354(void *p, char *k, Vec97354 *in) { return ((Arg1Dummy97354 *)p)->m38(k, in); }
+static inline float Obj_get10_97354(void *p) { return ((ObjDummy97354 *)p)->get(); }
+#pragma cplusplus reset
 s32 fn_80297354(void *arg0, void *arg1) {
     struct Vec3 {
         float x;
