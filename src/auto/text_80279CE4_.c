@@ -72,6 +72,21 @@ extern int sprintf(char *, const char *, ...);
 extern const char lbl_80347A08[];
 extern const char lbl_80347A1C[];
 extern const float lbl_80564120;
+void fn_80279CE4(void) {
+    unsigned char *p = lbl_804A1968;
+    int i = 0;
+    int cont;
+loop:
+    memset(p, 0, 0x44);
+    i++;
+    cont = i < 0x20;
+#pragma scheduling off
+    p += 0x44;
+#pragma scheduling on
+    if (cont)
+        goto loop;
+}
+
 void fn_80279D3C(void) {
 }
 
@@ -122,6 +137,114 @@ void fn_80279D40(void *arg0, int arg1) {
     f[71] = lbl_8056418C; f[72] = lbl_80564190; f[73] = lbl_80564120; f[74] = lbl_80564194;
 }
 
+#pragma cplusplus on
+void fn_80279F58(void *arg0, void *arg1) {
+    float *f = (float *)arg0;
+    int *w = (int *)arg0;
+    char name[32];
+    Vec3_80279F58 tmpVec;
+    File_80279F58 *file = (File_80279F58 *)arg1;
+    Res_80279F58 *res;
+    Res_80279F58 *res2;
+    Res_80279F58 *res3;
+    char *base = lbl_80347848;
+    int i;
+    float *dest;
+    f32 v;
+    f32 v2;
+    fn_80279D40(arg0, (int)arg1);
+    res = file->getRes(lbl_8055C6E8);
+    f[0] = lbl_80564198 * res->getFloat(lbl_8055C6F0);
+    f[1] = lbl_8056419C * (lbl_8056419C * (lbl_80564198 * res->getFloat(lbl_8055C6F8)));
+    f[2] = lbl_8056419C * (lbl_8056419C * (lbl_80564198 * res->getFloat(lbl_8055C6FC)));
+    f[3] = lbl_8056419C * (lbl_8056419C * (lbl_80564198 * res->getFloat(lbl_8055C700)));
+    f[6] = lbl_805641A0 * res->getFloat(base);
+    f[4] = lbl_805641A0 * res->getFloat(lbl_8055C704);
+    f[7] = lbl_8056411C;
+    f[5] = lbl_805641A0 * res->getFloat(lbl_8055C70C);
+    f[9] = lbl_805641A0 * res->getFloat(base + 0xC);
+    f[8] = lbl_805641A0 * res->getFloatDefault(base + 0x18, lbl_805641A4);
+    f[10] = lbl_805641AC * res->getFloatDefault(base + 0x2C, lbl_805641A8);
+    res2 = file->getRes(base + 0x38);
+    f[11] = res2->getFloat(base + 0x48);
+    w[13] = res2->getInt(base + 0x58);
+    dest = f + 14;
+    for (i = 0; i < w[13]; i++) {
+        sprintf(name, lbl_8055C714, i + 1);
+        *dest++ = res2->getFloat(name);
+    }
+    res3 = file->getRes(base + 0x64);
+    v = lbl_805641B0 * res3->getFloat(base + 0x74);
+    f[20] = lbl_8056419C * v;
+    f[22] = res3->getFloat(base + 0x80);
+    f[21] = lbl_805641B4 * res3->getFloat(base + 0x8C);
+    f[23] = res3->getFloat(base + 0x98);
+    v = lbl_805641B0 * res3->getFloat(lbl_8055C718);
+    f[24] = lbl_8056419C * v;
+    f[26] = res3->getFloat(base + 0xA4);
+    f[25] = res3->getFloat(lbl_8055C720);
+    f[27] = res3->getFloatDefault(base + 0xB0, lbl_80564120);
+    f[28] = res3->getFloatDefault(base + 0xC0, lbl_80564120);
+    f[29] = res3->getFloatDefault(base + 0xD4, lbl_80564120);
+    v2 = res->getFloatDefault(lbl_8055C728, lbl_805641B8);
+    if (v2 > lbl_805641BC) {
+        v2 = lbl_805641BC;
+    }
+    if (v2 < lbl_805641C0) {
+        v2 = lbl_805641C0;
+    }
+    f[68] = lbl_805641C4 * v2;
+    f[69] = lbl_805641C8 * res->getFloatDefault(lbl_8055C730, lbl_80564120);
+    f[70] = res->getFloatDefault(base + 0xE4, lbl_80564120);
+    f[72] = f[72] * res->getFloatDefault(base + 0xF0, lbl_80564120);
+    v = lbl_805641B0 * res->getFloatDefault(lbl_8055C738, lbl_805641CC);
+    f[30] = v / lbl_805641A0;
+    v = lbl_805641B0 * res->getFloatDefault(lbl_8055C740, lbl_805641D0);
+    f[31] = v / lbl_805641A0;
+    tmpVec = res->getVec(base + 0x100);
+    f[75] = lbl_805641D8;
+    f[76] = -f[8];
+    f[77] = -(f[7] - lbl_8056411C) * f[6];
+    if (res->slot3(base + 0x10C, tmpVec.x, tmpVec.y, tmpVec.z, lbl_805641A0, f[76]) != 0) {
+        Vec3_80279F58 add = res->getVec(base + 0x10C);
+        f[75] += add.x * lbl_805641A0;
+        f[76] += add.y * lbl_805641A0;
+        f[77] += add.z * lbl_805641A0;
+    }
+    file->getRes(lbl_8055C748);
+    file->getRes(lbl_8055C750);
+    dest = f + 32;
+    for (i = 0; i < 4; i++) {
+        int useAlt;
+        f32 a;
+        f32 b;
+        f32 c;
+        useAlt = 0;
+        if (i == 0 || i == 1) {
+            useAlt = 1;
+        }
+        a = res->getFloatDefault(base + 0x11C, lbl_80564120);
+        b = res->getFloatDefault(base + 0x12C, lbl_80564120);
+        c = res->getFloatDefault(base + 0x13C, lbl_80564120);
+        if (useAlt) {
+            tmpVec = res->getVec(base + 0x158);
+        } else {
+            tmpVec = res->getVec(base + 0x168);
+        }
+        dest[6] = lbl_805641C8;
+        dest[1] = dest[1] * a;
+        dest[2] = dest[2] * c;
+        dest[3] = dest[3] * tmpVec.x;
+        dest[0] = lbl_805641A0 * res->getFloatDefault(base + 0x178, lbl_805641DC);
+        dest[4] = lbl_805641A0 * res->getFloatDefault(base + 0x188, lbl_805641D8);
+        dest[5] = lbl_805641B0 * res->getFloatDefault(base + 0x188, lbl_805641D8) / lbl_805641A0;
+        dest += 9;
+    }
+    f[73] = res->getFloatDefault(base + 0x198, lbl_805641E0);
+    f[74] = lbl_805641E8 * res->getFloatDefault(base + 0x1B4, lbl_805641E4);
+}
+#pragma cplusplus reset
+
 #pragma scheduling invalid_target
 void fn_8027A714(void *arg0, const char *arg1) {
     char buf[0x100];
@@ -143,10 +266,10 @@ extern void fn_8027A888(float *);
 char *fn_8027A798(char *arg0) {
     char *entry;
     char *input;
-    char *dst;
     int i;
-    int left;
     char c;
+    int left;
+    char *dst;
 
     input = arg0;
     entry = (char *)lbl_804A1968;
@@ -164,17 +287,19 @@ char *fn_8027A798(char *arg0) {
         if (*entry == 0) {
             dst = entry;
             left = 0x20;
-        copy_character:
+            goto copy_start;
+        dec:
+            if (--left <= 0) {
+                dst[-1] = 0;
+                goto done;
+            }
+        copy_start:
             c = *input++;
             *dst++ = c;
             if (c != 0) {
-                left--;
-                if (left <= 0) {
-                    dst[-1] = 0;
-                } else {
-                    goto copy_character;
-                }
+                goto dec;
             }
+        done:
             fn_8027A888((float *)(entry + 0x20));
             return entry + 0x20;
         }
