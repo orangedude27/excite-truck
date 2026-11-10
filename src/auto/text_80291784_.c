@@ -463,9 +463,9 @@ void fn_8029227C(void) {
 done: ;
 }
 
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
 void fn_8029231C(float *arg0) {
-    /* Fix note: scale the vector, store the translated point, and forward the result. */
     float *base;
     register float dt;
     volatile float sp[3];
@@ -473,7 +473,6 @@ void fn_8029231C(float *arg0) {
     register float temp_f2;
     register float temp_f3;
     register float temp_f4;
-
     if (lbl_8055F75C != 0) {
         dt = fn_801EC114();
         base = (float *)fn_802C86DC();
@@ -490,7 +489,7 @@ void fn_8029231C(float *arg0) {
         fn_80291B9C(&lbl_804B3EC0, (float *)sp, dt);
     }
 }
-#pragma scheduling on
+#pragma pop
 void fn_802923C4(int arg0) {
     unsigned int old;
     unsigned int *p;
