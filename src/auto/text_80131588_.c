@@ -572,8 +572,8 @@ extern "C" f32 fn_80132354(void *arg0, s32 arg1, f32 farg0) {
     public:
         virtual char *f0(); virtual void f1(); virtual void f2(); virtual char *f3();
     };
-    f32 b;
     f32 a;
+    f32 b;
     char *value = ((A *)arg0)->f3();
     if (sscanf(value, lbl_80559B1C, &a, &b) != 2) {
         fn_802E317C(lbl_8032B7BC, value, arg1, ((A *)arg0)->f0());
