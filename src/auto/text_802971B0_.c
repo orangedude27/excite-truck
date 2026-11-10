@@ -66,7 +66,25 @@ extern "C" void *fn_802971B0(void *arg0) {
     return obj;
 }
 
-void *fn_802972A4(void *arg0) { return 0; }
+extern "C" void *fn_802972A4(void *arg0) {
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual char *v3(char *);
+    };
+    s32 flag = 0;
+    void *result = 0;
+    char *name = ((Dummy *)arg0)->v3(lbl_8055CA40);
+    if (stricmp(lbl_8055CA38[1], name) == 0) {
+        result = ((void *(*)(void *))lbl_8055CA38[0])(arg0);
+        flag = 1;
+    }
+    if (flag == 0) {
+        fn_802E317C(lbl_80349384, name);
+    }
+    return result;
+}
 
 #pragma cplusplus reset
 #pragma scheduling on
