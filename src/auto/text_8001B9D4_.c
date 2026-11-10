@@ -859,8 +859,7 @@ s32 fn_8001CED4(void *arg0, s32 arg1, s32 arg2, f32 arg3) {
     }
     return result;
 }
-#pragma paired_single reset
-#pragma paired reset
+#pragma pop
 int fn_8001CF8C(arg0, arg1, arg2, arg3, arg4)
 s32 arg0, arg1, arg2, arg3;
 double arg4;
