@@ -502,7 +502,10 @@ typedef struct {
     u8      remote_bd_addr[6]; /* +0x2A  the peer's Bluetooth address (BD_ADDR) */
     u8      link_role;      /* +0x30  master or slave */
     u8      id;             /* +0x31  identifier of the next command we send */
-    u8      pad_32[0x22];
+    u8      pad_32[0xF];
+    u8      is_congested;   /* +0x41  set while the link's transmit queue is at or over
+                               its quota; channels answer L2CA_DataWrite with CONGESTED */
+    u8      pad_42[0x12];
     void   *p_echo_rsp_cb;  /* +0x54  echo response callback, NULL when none is set */
 } tL2C_LCB_VIEW;
 
