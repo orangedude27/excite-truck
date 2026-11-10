@@ -117,7 +117,7 @@ void* fn_800165D4(void) {
 }
 
 void fn_800165DC(void) {
-    fn_80016510(*(int *)((char *)fn_80016474() + 0x4C));
+    fn_80016510(*(int *)((char *)((void *(*)())fn_80016474)() + 0x4C));
 }
 
 int fn_80016604(const char *arg0) {
