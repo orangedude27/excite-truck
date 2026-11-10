@@ -1370,28 +1370,29 @@ void fn_80035E6C(u32 arg0) {
 
 extern void fn_80036550(u32);
 void fn_80036370(u32 arg0) {
-    register u32 value = arg0;
+    register u32 errorCode = arg0;
     s32 interrupts;
     u32 tick;
     u8 *info;
 
+    /* Record DVD error info into __ErrorInfo ring and dispatch recovery based on error code. */
     interrupts = OSDisableInterrupts();
     if (*(volatile u32 *)&lbl_8055D848 == 0)
-        *(u32 *)(__ErrorInfo + 0x78) = value;
+        *(u32 *)(__ErrorInfo + 0x78) = errorCode;
     else
-        *(u32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x14) = value;
+        *(u32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x14) = errorCode;
     OSRestoreInterrupts(interrupts);
 
-    if (value == 0x10) {
+    if (errorCode == 0x10) {
         fn_8003A1A0(0x1234568, fn_80035C78);
         return;
     }
-    if (value == 0x20) {
+    if (errorCode == 0x20) {
         fn_8003A1A0(0x1234569, fn_80035C78);
         return;
     }
 
-    if (value & 1) {
+    if (errorCode & 1) {
         interrupts = OSDisableInterrupts();
         if (*(volatile u32 *)&lbl_8055D848 >= 5)
             *(volatile u32 *)&lbl_8055D848 = 0;
@@ -2496,6 +2497,14 @@ void fn_80038368(void *arg0) {
  default: lbl_80558E08(arg0,fn_80038870); break;
  }
 }
+
+void fn_80038870(void) {
+    s32 interrupts;
+    interrupts = OSDisableInterrupts();
+    OSRestoreInterrupts(interrupts);
+    fn_80038040();
+}
+
 #pragma pop
 
 s32 DVDReadAbsAsyncPrio(void *block, void *addr, s32 length, s32 offset, void *callback, s32 prio) {
@@ -2616,14 +2625,13 @@ s32 fn_800393C4(s32 value) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_800393D4(void) {
-    s32 enabled = OSDisableInterrupts();
-
-    lbl_8055D84C = 0;
+    s32 interruptsEnabled = OSDisableInterrupts();
+    *(volatile s32 *)&lbl_8055D84C = 0;
     if (PausingFlag_8055D850 != 0) {
         PausingFlag_8055D850 = 0;
         fn_80038040();
     }
-    OSRestoreInterrupts(enabled);
+    OSRestoreInterrupts(interruptsEnabled);
 }
 #pragma pop
 // The DVD driver's command block and its status codes. include/revolution/DVD/dvd.h
