@@ -23627,6 +23627,7 @@ void sdp_disc_server_rsp(tCONN_CB *p_ccb, BT_HDR *p_msg) {
 
 extern char lbl_8031A050[];
 void process_service_search_rsp(void *p_ccb, UINT8 *p_reply, UINT16 len) {
+    /* Handles an SDP service-search response: collect handles, cap to max, continue on continuation, or proceed to attribute request. */
     tCONN_CB_SEARCH_VIEW *ccb = (tCONN_CB_SEARCH_VIEW *)p_ccb;
     UINT16 xx;
     UINT16 total, cur_handles, orig;
