@@ -86,7 +86,7 @@ long fn_80177988(void) {
 }
 
 #pragma push
-#pragma scheduling on
+#pragma scheduling invalid_target
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_80177990(void) {
