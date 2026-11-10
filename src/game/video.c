@@ -359,10 +359,11 @@ void fn_802DFE88(void) {
     GXSetTevAlphaOp(2, 0, 0, 0, 1, 0); GXSetNumTevStages(3);
 }
 
+/* Configures GX texcoord generation and a 2-stage TEV combiner for this render path. */
 void fn_802E009C(void) {
-    register u32 coord = 0;
-    register u32 type = 1;
-    GXSetTexCoordGen2(coord, type, 5, 0x3C, 0, 0x7D);
+    register u32 texCoord = 0;
+    register u32 texGenType = 1;
+    GXSetTexCoordGen2(texCoord, texGenType, 5, 0x3C, 0, 0x7D);
     GXSetTexCoordGen2(1, 1, 4, 0x3C, 0, 0x7D);
     GXSetNumTexGens(2);
     GXSetTevOrder(0, 1, 1, 4);
