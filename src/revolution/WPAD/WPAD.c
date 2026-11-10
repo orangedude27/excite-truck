@@ -1827,6 +1827,7 @@ void WPADRead(s32 chan, WPADStatus* pStatus) {
 }
 
 void WPADSetAutoSamplingBuf(s32 chan, void* pBuffer, u32 len) {
+    /* Configure the auto-sampling ring buffer for a channel: select entry size by format, clear/init entries (err set by controller state), and install buffer/length. */
     WPADCB* p;
     BOOL enabled;
     s8 defaultErr;
