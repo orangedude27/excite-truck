@@ -562,6 +562,9 @@ static s32 __ios_Ioctl(IPCRequestEx* req, s32 type, void* in, s32 inSize,
     return ret;
 }
 
+/**
+ * Queues an asynchronous ioctl request to IOS.
+ */
 s32 IOS_IoctlAsync(s32 fd, s32 type, void* in, s32 inSize, void* out,
                    s32 outSize, IPCAsyncCallback callback, void* callbackArg) {
     IPCRequestEx* req;
