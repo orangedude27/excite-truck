@@ -313,9 +313,7 @@ void fn_802353F4(int arg0, int arg1, float arg2, float arg3, float arg4) {
         fn_802E30C8(lbl_80340808, arg1, arg0);
         return;
     }
-    fn_802354A0(arg0, arg1, -1, arg2, arg3, arg4,
-                *(float *)((char *)node + 0x14),
-                *(float *)((char *)node + 0x10));
+    fn_802354A0(arg0, arg1, -1, arg2, arg3, arg4, *(float *)((char *)node + 0x14), *(float *)((char *)node + 0x10));
 }
 
 #pragma push
