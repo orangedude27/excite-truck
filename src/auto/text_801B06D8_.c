@@ -1294,7 +1294,7 @@ extern "C" void fn_801B2024(void *arg0) {
 #pragma scheduling on
 #pragma cplusplus reset
 
-void fn_801B2118(void) {}
+/* fn_801B2118 stub removed for prototype fix */
 
 void *fn_801B21B8(void *arg0) {
     register float value = lbl_805625BC;
