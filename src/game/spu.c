@@ -242,15 +242,24 @@ void fn_802E5264(int arg0, int arg1) {
     if (arg1 >= 0) fn_80060CC0(arg0, 1, (void (*)())fn_802E5248);
 }
 
+/* One Wii remote speaker stream, 0x2C bytes per channel at lbl_804FC800;
+ * fn_802E51D0 opens one (fn_802E5264 closes it again). */
+struct SpkStream {
+    unsigned char enabled;   /* +0x00: the channel's speaker stream is open */
+    unsigned char enc[0x20]; /* +0x01: the WENCInfo ADPCM encoder state (wenc.h) */
+    int restart;             /* +0x24: encode the next frame from scratch */
+    int unk_28;              /* +0x28: cleared when the stream is opened */
+};
+
 extern int OSRestoreInterrupts(int);
 extern int WPADCanSendStreamData(int);
-extern unsigned char fn_802E86B4(int);
+extern unsigned char fn_802E86B4(int); /* the remote's radio quality, 0-100 */
 extern int AXRmtGetSamples(int, short *, int);
 extern void WENCGetEncodeData(void *, int, short *, int, void *);
-extern void fn_80062278(int, void *, int);
+extern void fn_80062278(int, void *, int); /* WPADSendStreamData(chan, data, len) */
 extern void AXRmtAdvancePtr(int);
-extern unsigned char lbl_804FC6C0[];
-extern int lbl_8055FFA8;
+extern unsigned char lbl_804FC6C0[]; /* the AX remote-speaker mix, 0x28 samples per channel */
+extern int lbl_8055FFA8;             /* channels whose voices used a speaker lately */
 #pragma push
 #pragma use_lmw_stmw off
 void fn_802E52EC(void) {
