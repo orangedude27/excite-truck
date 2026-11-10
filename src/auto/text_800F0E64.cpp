@@ -648,45 +648,45 @@ callback:
 
 extern "C" void Stop__Q46nw4hbm3snd6detail7ChannelFv(void *);
 extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFi(void *, int);
-extern "C" void SetMute__Q46nw4hbm3snd6detail8SeqTrackFQ36nw4hbm3snd7SeqMute(void *arg0, int arg1) {
-    u32 token = OSDisableInterrupts();
-    switch (arg1) {
+extern "C" void SetMute__Q46nw4hbm3snd6detail8SeqTrackFQ36nw4hbm3snd7SeqMute(void *track, int muteMode) {
+    u32 interruptState = OSDisableInterrupts();
+    switch (muteMode) {
     case 0:
-        *(u8 *)((u8 *)arg0 + 0x5C) = 0;
+        *(u8 *)((u8 *)track + 0x5C) = 0;
         break;
     case 3: {
-        u32 inner = OSDisableInterrupts();
-        void *channel = *(void **)((u8 *)arg0 + 0xB8);
+        u32 channelInterruptState = OSDisableInterrupts();
+        void *channel = *(void **)((u8 *)track + 0xB8);
         while (channel) {
             fn_800EAD00(channel);
             Stop__Q46nw4hbm3snd6detail7ChannelFv(channel);
             channel = *(void **)((u8 *)channel + 0xE4);
         }
-        *(void **)((u8 *)arg0 + 0xB8) = 0;
-        OSRestoreInterrupts(inner);
-        *(u8 *)((u8 *)arg0 + 0x5C) = 1;
+        *(void **)((u8 *)track + 0xB8) = 0;
+        OSRestoreInterrupts(channelInterruptState);
+        *(u8 *)((u8 *)track + 0x5C) = 1;
         break;
     }
     case 2: {
-        ReleaseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFi(arg0, -1);
+        ReleaseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFi(track, -1);
         void *channel;
-        u32 inner;
-        inner = OSDisableInterrupts();
-        channel = *(void **)((u8 *)arg0 + 0xB8);
+        u32 channelInterruptState;
+        channelInterruptState = OSDisableInterrupts();
+        channel = *(void **)((u8 *)track + 0xB8);
         while (channel) {
             fn_800EAD00(channel);
             channel = *(void **)((u8 *)channel + 0xE4);
         }
-        *(void **)((u8 *)arg0 + 0xB8) = 0;
-        OSRestoreInterrupts(inner);
-        *(u8 *)((u8 *)arg0 + 0x5C) = 1;
+        *(void **)((u8 *)track + 0xB8) = 0;
+        OSRestoreInterrupts(channelInterruptState);
+        *(u8 *)((u8 *)track + 0x5C) = 1;
         break;
     }
     case 1:
-        *(u8 *)((u8 *)arg0 + 0x5C) = 1;
+        *(u8 *)((u8 *)track + 0x5C) = 1;
         break;
     }
-    OSRestoreInterrupts(token);
+    OSRestoreInterrupts(interruptState);
 }
 
 extern "C" const char lbl_80324690[];
