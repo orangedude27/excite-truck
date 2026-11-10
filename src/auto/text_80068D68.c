@@ -3611,41 +3611,44 @@ void GKI_add_to_timer_list(TIMER_LIST_Q *p_timer_list, TIMER_LIST_ENT *p_tle) {
     p_tle->in_use = 1;
 }
 
-void GKI_remove_from_timer_list(TIMER_LIST_Q *p_timer_listq, TIMER_LIST_ENT *p_tle) {
-    if (p_tle == NULL || p_tle->in_use == FALSE || p_timer_listq->p_first == NULL)
+/* Remove a timer entry from a delta-tick timer list, adjusting the following entry's
+ * remaining ticks or the list tail remainder as needed before unlinking it. Invalid
+ * or inconsistent links are left unchanged. */
+void GKI_remove_from_timer_list(TIMER_LIST_Q *timer_list, TIMER_LIST_ENT *timer_entry) {
+    if (timer_entry == NULL || timer_entry->in_use == FALSE || timer_list->p_first == NULL)
         return;
 
-    if (p_tle->p_next != NULL)
-        p_tle->p_next->ticks += p_tle->ticks;
+    if (timer_entry->p_next != NULL)
+        timer_entry->p_next->ticks += timer_entry->ticks;
     else
-        p_timer_listq->last_ticks -= p_tle->ticks;
+        timer_list->last_ticks -= timer_entry->ticks;
 
-    if (p_timer_listq->p_first == p_tle) {
-        p_timer_listq->p_first = p_tle->p_next;
-        if (p_timer_listq->p_first != NULL)
-            p_timer_listq->p_first->p_prev = NULL;
-        if (p_timer_listq->p_last == p_tle)
-            p_timer_listq->p_last = NULL;
+    if (timer_list->p_first == timer_entry) {
+        timer_list->p_first = timer_entry->p_next;
+        if (timer_list->p_first != NULL)
+            timer_list->p_first->p_prev = NULL;
+        if (timer_list->p_last == timer_entry)
+            timer_list->p_last = NULL;
     } else {
-        if (p_timer_listq->p_last == p_tle) {
-            p_timer_listq->p_last = p_tle->p_prev;
-            if (p_timer_listq->p_last != NULL)
-                p_timer_listq->p_last->p_next = NULL;
+        if (timer_list->p_last == timer_entry) {
+            timer_list->p_last = timer_entry->p_prev;
+            if (timer_list->p_last != NULL)
+                timer_list->p_last->p_next = NULL;
         } else {
-            if (p_tle->p_next != NULL && p_tle->p_next->p_prev == p_tle)
-                p_tle->p_next->p_prev = p_tle->p_prev;
+            if (timer_entry->p_next != NULL && timer_entry->p_next->p_prev == timer_entry)
+                timer_entry->p_next->p_prev = timer_entry->p_prev;
             else
                 return;
-            if (p_tle->p_prev != NULL && p_tle->p_prev->p_next == p_tle)
-                p_tle->p_prev->p_next = p_tle->p_next;
+            if (timer_entry->p_prev != NULL && timer_entry->p_prev->p_next == timer_entry)
+                timer_entry->p_prev->p_next = timer_entry->p_next;
             else
                 return;
         }
     }
 
-    p_tle->p_next = p_tle->p_prev = NULL;
-    p_tle->ticks = 0x80000000L;
-    p_tle->in_use = FALSE;
+    timer_entry->p_next = timer_entry->p_prev = NULL;
+    timer_entry->ticks = 0x80000000L;
+    timer_entry->in_use = FALSE;
 }
 
 void GKI_init(void) {
