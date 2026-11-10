@@ -832,13 +832,17 @@ extern "C" void fn_8000BF20(void *arg0, int arg1) {
         virtual void submit(void *);
         virtual void finish(void);
     };
-    unsigned char result[0xA8];
-    int active;
-    int limit;
-    int count;
-    int value;
+    unsigned char frameResult[0xA8];
+    int isActive;
+    int frameLimit;
+    int frameCount;
+    int sampleValue;
 
-    active = fn_80204024();
+    /* Runs the main game-loop sequence: initializes state, polls/updates frames
+     * until the running flag clears (or a frame limit expires), submits the
+     * frame result through the optional callback interface, handles post-frame
+     * transitions, and may restart; finally tears down via arg0. */
+    isActive = fn_80204024();
     fn_8000AF1C(arg0);
     fn_80176780(0x1200, 0);
     if (arg1 != 0) {
@@ -848,14 +852,14 @@ extern "C" void fn_8000BF20(void *arg0, int arg1) {
 restart:
     fn_80206454();
     lbl_8055D3D4 = 1;
-    if (active == 0) {
+    if (isActive == 0) {
         fn_80019B3C();
     }
     fn_80176780(0x10002, 0);
 
-    value = fn_80019B78();
-    limit = ((-value | value) >> 31) & 0x1F4;
-    count = 0;
+    sampleValue = fn_80019B78();
+    frameLimit = ((-sampleValue | sampleValue) >> 31) & 0x1F4;
+    frameCount = 0;
     fn_8000BD64();
     goto state_check;
 
@@ -864,8 +868,8 @@ poll:
     if (*(volatile unsigned char *)&lbl_8055D3D4 != 0) {
         fn_8000B2AC();
     }
-    count++;
-    if (limit == 0 || count < limit) {
+    frameCount++;
+    if (frameLimit == 0 || frameCount < frameLimit) {
         goto state_check;
     }
     *(volatile unsigned char *)&lbl_8055D3D4 = 0;
@@ -874,14 +878,14 @@ state_check:
         goto poll;
     }
 
-    ((void (*)(int))fn_8000BD98)(count);
+    ((void (*)(int))fn_8000BD98)(frameCount);
     ((void (*)(char *, ...))fn_802E30C8)(lbl_802FC02C, lbl_8055D0B4);
-    fn_8000B150(result);
+    fn_8000B150(frameResult);
     if (arg1 != 0) {
-        ((Interface *)arg1)->submit(result);
+        ((Interface *)arg1)->submit(frameResult);
     }
 
-    if (result[0xD] != 0 && result[0xE] == 0) {
+    if (frameResult[0xD] != 0 && frameResult[0xE] == 0) {
         fn_801CB4DC();
         fn_8001EFB4();
     } else {
