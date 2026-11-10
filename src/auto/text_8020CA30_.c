@@ -108,27 +108,28 @@ extern "C" void* fn_8020CA3C(void* arg0) {
 
 #pragma cplusplus on
 struct CC78_Item { virtual void s0(int); };
+static inline void CC78_call(CC78_Item *p, int v) { p->s0(v); }
 #pragma cplusplus reset
 #pragma scheduling invalid_target
 void *fn_8020CC78(void *arg0, int arg1) {
-    register void **vtable;
     void *cur;
     int i;
-
     if (arg0 != 0) {
         *(void **)arg0 = lbl_8033C650;
         cur = arg0;
         i = 0;
         while (i < *(int *)((char *)arg0 + 8)) {
             void *item = *(void **)((char *)cur + 0xC);
+            unsigned long tmp;
             if (item == 0) {
                 goto next;
             }
             if (item == 0) {
                 goto next;
             }
-            vtable = *(void ***)item;
-            ((void (*)(void *, int))vtable[2])(item, 1);
+            tmp = *(unsigned long *)item;
+            tmp = *(unsigned long *)(tmp + 8);
+            ((void (*)(void *, int))tmp)(item, 1);
         next:
             cur = (char *)cur + 0x24;
             i++;
