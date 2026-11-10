@@ -97,13 +97,12 @@ void fn_80236780(void) {
         lbl_8055F0C0 = p;
     } else {
         p = fn_80237C40();
-        *(int *)(lbl_8055F0C0 + 0x24) = 0;
-        p = (char *)lbl_8055F0C0 + 0x24;
-        lbl_8055F0C0 = p;
+        *(char **)(lbl_8055F0C0 + 0x24) = p;
+        lbl_8055F0C0 = *(char **)(lbl_8055F0C0 + 0x24);
     }
     lbl_8055F0C0[0x1F] = lbl_8055F0C7;
     lbl_8055F0C0[0x20] = 0;
-    if ((int)lbl_8055F0C5 != 0 || (int)lbl_8055F0C6 == 0)
+    if ((unsigned char)lbl_8055F0C5 != 0 || (unsigned char)lbl_8055F0C6 == 0)
         lbl_8055F0C0[0x21] = 1;
     else
         lbl_8055F0C0[0x21] = 0;
@@ -853,7 +852,6 @@ int fn_80237EFC(char *arg0) {
     register int found;
     register int offset;
     float currentTime;
-
     found = 0;
     manager = *(TrailMgr **)((char *)lbl_8055F0C0 + 0x30);
     active = 0;
@@ -878,9 +876,12 @@ int fn_80237EFC(char *arg0) {
         i++;
     }
     if (found != 0) {
-        if (active != 0)
+        switch (active) {
+        default:
             return 1;
-        return 2;
+        case 0:
+            return 2;
+        }
     }
     return 0;
 }
