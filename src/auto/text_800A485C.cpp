@@ -10967,7 +10967,7 @@ extern "C" s32 fn_800B814C(void *arg0) {
 
 #pragma push
 #pragma global_optimizer off
-// Create/open NAND file from path in arg0+0x4, writing handle to arg0+0x58.
+// Creates/opens the NAND file for the path in arg0+0x4 and stores handle in arg0+0x58.
 extern "C" s32 fn_800B8318(void *arg0, s32 arg1) {
     extern s32 NANDCreate(void*,s32,s32);
     extern s32 NANDGetType(void*);
