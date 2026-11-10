@@ -641,7 +641,8 @@ void fn_80010188(s32 arg0, s32 arg1, const char *fmt, f32 scale, f32 x, f32 y, .
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-void fn_8001027C(s32 arg0, s32 arg1, const char *fmt, f32 last, f32 value, f32 scale, ...) {
+/* Formats text with vsprintf and, if the dash text font/context is set (lbl_8055D494), draws it via fn_802337A0 at (value, scale/last) with the given color/fontId; warns on oversized buffer. */
+void fn_8001027C(s32 color, s32 fontId, const char *fmt, f32 y, f32 x, f32 scale, ...) {
     char buffer[0x200];
     va_list args;
 
@@ -650,8 +651,8 @@ void fn_8001027C(s32 arg0, s32 arg1, const char *fmt, f32 last, f32 value, f32 s
         vsprintf(buffer, fmt, args);
         if (strlen(buffer) >= 0x200)
             fn_802E317C((void *)lbl_802FC518, strlen(buffer), fmt);
-        fn_802337A0(value, lbl_8055D494, scale, arg0,
-                    lbl_80560280, last, arg1, lbl_80560264,
+        fn_802337A0(x, lbl_8055D494, scale, color,
+                    lbl_80560280, y, fontId, lbl_80560264,
                     (const char *)&lbl_80558AA4, buffer);
     }
 }
