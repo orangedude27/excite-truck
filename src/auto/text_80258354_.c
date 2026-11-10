@@ -133,25 +133,25 @@ void fn_80258550(void *arg0, const char *arg1, const char *arg2, int arg3) {
     count = 0x20;
     entry = &((struct Entry *)(*(unsigned int *)((char *)arg0 + 4)))[(*(int *)((char *)arg0 + 8))++];
     dst = entry->first;
-    while (1) {
-        count--;
-        if (count <= 0) {
-            dst[-1] = 0;
-            break;
-        }
-        if ((*dst++ = *arg1++) == 0) break;
-    }
+    goto copy1;
+check1:
+    if (--count > 0) goto copy1;
+    dst[-1] = 0;
+    goto copied1;
+copy1:
+    if ((*dst++ = *arg1++) != 0) goto check1;
+copied1:
     arg1 = arg2;
     dst = entry->second;
     count = 0x20;
-    while (1) {
-        count--;
-        if (count <= 0) {
-            dst[-1] = 0;
-            break;
-        }
-        if ((*dst++ = *arg1++) == 0) break;
-    }
+    goto copy2;
+check2:
+    if (--count > 0) goto copy2;
+    dst[-1] = 0;
+    goto copied2;
+copy2:
+    if ((*dst++ = *arg1++) != 0) goto check2;
+copied2:
     entry->field = (void *)fn_8023512C((void *)arg2);
     entry->value = arg3;
 }
