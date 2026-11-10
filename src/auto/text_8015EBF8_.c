@@ -47,6 +47,7 @@ int fn_8015ECC0(void *arg0) {
     }
     return result;
 }
+#pragma dont_inline reset
 
 #pragma push
 #pragma auto_inline off
