@@ -581,19 +581,22 @@ void fn_80132410(void *arg0, void *arg1, const char *arg2) {
     }
     *(Vector *)arg0 = values;
 }
-#pragma pop
-Vec2 fn_801324E0(void *arg0, s32 arg1) {
+#pragma small_data on
+#pragma cplusplus on
+extern "C" Vec2 fn_801324E0(void *arg0, s32 arg1) {
+    class A {
+    public:
+        virtual char *f0(); virtual void f1(); virtual void f2(); virtual char *f3();
+    };
     Vec2 result;
-    char *value = ((char *(*)(void *))(*(void **)((char *)*(void **)arg0 + 0x14)))(arg0);
+    char *value = ((A *)arg0)->f3();
     if (sscanf(value, lbl_80559B24, &result.x, &result.y) != 2) {
-        fn_802E317C(lbl_8032B818, value, arg1,
-            ((char *(*)(void *))(*(void **)((char *)*(void **)arg0 + 8)))(arg0));
+        fn_802E317C(lbl_8032B818, value, arg1, ((A *)arg0)->f0());
     }
     return result;
 }
-
-#pragma push
-#pragma optimize_for_size on
+#pragma cplusplus off
+#pragma small_data off
 void fn_80132584(void *arg0, register void *arg1, const char *arg2) {
     typedef struct { float x, y, z; } Vec3;
     Vec3 v1, v2, v3, v4;
