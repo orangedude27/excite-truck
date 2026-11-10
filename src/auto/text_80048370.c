@@ -32,6 +32,7 @@ static inline void KPADNotifySampling(s32 chan) {
 #pragma push
 #pragma use_lmw_stmw off
 void KPADiControlDpdCallback(s32 chan, u32 type) {
+    /* Handle WPAD DPD control notifications: select the data format/sample mode for the reported device type, reconfigure auto-sampling, and update sampling state. */
     extern s32 fn_800624A4(s32, s32, void*);
     extern void WPADiSamplingCallback(s32, s32);
     KPADInsideStatus* kp;
