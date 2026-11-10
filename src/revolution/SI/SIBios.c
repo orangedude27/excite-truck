@@ -576,44 +576,45 @@ static void AlarmHandler(OSAlarm* alarm, OSContext* ctx) {
     }
 }
 
+/* Queue a Serial Interface transfer on a channel now or at a scheduled fire time, updating the pending packet state. */
 BOOL SITransfer(s32 chan, void* outAddr, u32 outSize, void* inAddr, u32 inSize,
                 SICallback callback, s64 wait) {
-    BOOL enabled;
-    SIPacket* packet;
-    s64 start;
-    s64 fire;
+    BOOL interrupts;
+    SIPacket* req;
+    s64 now;
+    s64 deadline;
 
-    packet = &Packet[chan];
-    enabled = OSDisableInterrupts();
+    req = &Packet[chan];
+    interrupts = OSDisableInterrupts();
 
-    if (packet->chan != SI_CHAN_NONE || Si_80311630.chan == chan) {
-        OSRestoreInterrupts(enabled);
+    if (req->chan != SI_CHAN_NONE || Si_80311630.chan == chan) {
+        OSRestoreInterrupts(interrupts);
         return FALSE;
     }
 
-    start = __OSGetSystemTime();
+    now = __OSGetSystemTime();
     if (wait == 0) {
-        fire = start;
+        deadline = now;
     } else {
-        fire = wait + XferTime[chan];
+        deadline = wait + XferTime[chan];
     }
 
-    if (start < fire) {
-        OSSetAlarm(&Alarm[chan], fire - start, AlarmHandler);
+    if (now < deadline) {
+        OSSetAlarm(&Alarm[chan], deadline - now, AlarmHandler);
     } else if (__SITransfer(chan, outAddr, outSize, inAddr, inSize, callback)) {
-        OSRestoreInterrupts(enabled);
+        OSRestoreInterrupts(interrupts);
         return TRUE;
     }
 
-    packet->chan = chan;
-    packet->outAddr = outAddr;
-    packet->outSize = outSize;
-    packet->inAddr = inAddr;
-    packet->inSize = inSize;
-    packet->callback = callback;
-    packet->fire = fire;
+    req->chan = chan;
+    req->outAddr = outAddr;
+    req->outSize = outSize;
+    req->inAddr = inAddr;
+    req->inSize = inSize;
+    req->callback = callback;
+    req->fire = deadline;
 
-    OSRestoreInterrupts(enabled);
+    OSRestoreInterrupts(interrupts);
     return TRUE;
 }
 
