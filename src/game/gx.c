@@ -182,6 +182,7 @@ void fn_802CEA34(void) {
 
 #pragma dont_inline reset
 
+/* Draws the Clip Clocks indicator depending on TV format and connection status. */
 void fn_802CEAC4(void) {
     extern int VIGetTvFormat(void), fn_802E9A1C(void), fn_8005AD9C(void);
     extern void fn_802E30C8(const char *, ...);
@@ -189,19 +190,33 @@ void fn_802CEAC4(void) {
     extern char lbl_8034BD18[], lbl_803038D8[], lbl_80303914[], lbl_80303950[], lbl_8030398C[], lbl_803039C8[];
     extern void *lbl_8055FD64;
     extern unsigned char lbl_804C9724[];
-    char *base = lbl_8034BD18;
-    int format = VIGetTvFormat();
-    switch (format) {
+    char *strBase = lbl_8034BD18;
+    int tvFormat = VIGetTvFormat();
+    switch (tvFormat) {
     case 0:
         if (fn_802E9A1C() == 0 || fn_8005AD9C() == 0) {
-            fn_802E30C8(base + 0xA0); lbl_8055FD64 = lbl_803038D8;
+            fn_802E30C8(strBase + 0xA0);
+            lbl_8055FD64 = lbl_803038D8;
         } else {
-            fn_802E30C8(base + 0xB0); lbl_8055FD64 = lbl_80303914;
-        } break;
-    case 1: fn_802E30C8(base + 0xC0); lbl_8055FD64 = lbl_8030398C; break;
-    case 5: fn_802E30C8(base + 0xCC); lbl_8055FD64 = lbl_803039C8; break;
-    case 2: fn_802E30C8(base + 0xE0); lbl_8055FD64 = lbl_80303950; break;
-    default: fn_802E317C(base + 0xF0); break;
+            fn_802E30C8(strBase + 0xB0);
+            lbl_8055FD64 = lbl_80303914;
+        }
+        break;
+    case 1:
+        fn_802E30C8(strBase + 0xC0);
+        lbl_8055FD64 = lbl_8030398C;
+        break;
+    case 5:
+        fn_802E30C8(strBase + 0xCC);
+        lbl_8055FD64 = lbl_803039C8;
+        break;
+    case 2:
+        fn_802E30C8(strBase + 0xE0);
+        lbl_8055FD64 = lbl_80303950;
+        break;
+    default:
+        fn_802E317C(strBase + 0xF0);
+        break;
     }
     GXDrawCylinder(lbl_8055FD64, lbl_804C9724, 0, 0x10);
     lbl_8055FD64 = lbl_804C9724;
