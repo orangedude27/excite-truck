@@ -165,44 +165,46 @@ void fn_80012954(void) {
 }
 
 #pragma use_lmw_stmw off
+/* Initialize/load resource data for the given id, append optional extra paths,
+ * snapshot counts, format per-entry strings when requested, and finalize setup. */
 void fn_80012984(int arg0) {
-    char sp8[0x80];
-    register char *base = lbl_802FC610;
-    register char *p;
+    char pathBuf[0x80];
+    register char *strBase = lbl_802FC610;
+    register char *entry;
     register int i;
-    void *temp_r3;
-    int val;
+    void *resourceInfo;
+    int extraPath;
 
     fn_8013C804();
-    temp_r3 = fn_800126CC(arg0);
+    resourceInfo = fn_800126CC(arg0);
     lbl_8055D514 = 0;
-    lbl_80558AD8 = *(int *)temp_r3;
+    lbl_80558AD8 = *(int *)resourceInfo;
     lbl_8055D508 = 0;
     lbl_8055D51C = 0;
     lbl_8055D504 = 0;
     lbl_8055D518 = 0;
 
-    val = *(int *)((char *)temp_r3 + 8);
-    if (val != 0) {
-        fn_80013618(val);
+    extraPath = *(int *)((char *)resourceInfo + 8);
+    if (extraPath != 0) {
+        fn_80013618(extraPath);
     }
     if (fn_8019B3C() != 0) {
-        fn_80013618((int)(base + 0x128));
+        fn_80013618((int)(strBase + 0x128));
     }
     if (fn_8019B54() != 0) {
-        fn_80013618((int)(base + 0x138));
+        fn_80013618((int)(strBase + 0x138));
     }
     fn_80013724();
     lbl_8055D50C = (int)lbl_8055D504;
     lbl_8055D510 = lbl_8055D508;
 
-    if (*(unsigned char *)((char *)temp_r3 + 0x11) != 0) {
-        p = lbl_80352AD0;
-        for (i = 0; i < lbl_8055D510; p += 0x28, i++) {
-            fn_801345D8(sp8, 0x80, base + 0x144,
-                        *(int *)((char *)temp_r3 + 4),
-                        lbl_803518C0 + *(int *)(p + 4) * 0x84 + 8,
-                        fn_80007F90(*(int *)(p + 8)));
+    if (*(unsigned char *)((char *)resourceInfo + 0x11) != 0) {
+        entry = lbl_80352AD0;
+        for (i = 0; i < lbl_8055D510; entry += 0x28, i++) {
+            fn_801345D8(pathBuf, 0x80, strBase + 0x144,
+                        *(int *)((char *)resourceInfo + 4),
+                        lbl_803518C0 + *(int *)(entry + 4) * 0x84 + 8,
+                        fn_80007F90(*(int *)(entry + 8)));
         }
     }
     fn_80013A34();
