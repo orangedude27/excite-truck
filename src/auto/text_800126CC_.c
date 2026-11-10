@@ -126,13 +126,15 @@ char *fn_80012820(int arg0) DECOMP_DONT_INLINE {
 #pragma scheduling invalid_target
 void *fn_80012870(int arg0, int arg1) {
     unsigned char *p = (unsigned char *)lbl_80352AD0;
-    unsigned int i;
     int j = 0;
+    unsigned int i = 0;
     int count = lbl_8055D508;
-    for (i = 0; count > 0; i++, count--, p += 0x28) {
-        if (arg0 == *(int *)(p + 4) && p[0x24] != 0 && j == arg1)
-            return &lbl_80352AD0[i * 0x28];
-        j++;
+    for (; count > 0; count--, p += 0x28, i++) {
+        if (arg0 == *(int *)(p + 4) && p[0x24] != 0) {
+            if (j == arg1)
+                return &lbl_80352AD0[i * 0x28];
+            j++;
+        }
     }
     fn_802E317C(lbl_802FC700, arg0, arg1);
     return 0;
