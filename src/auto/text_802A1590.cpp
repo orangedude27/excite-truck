@@ -983,6 +983,24 @@ struct Fn802A31DCConfig {
     f32 f80, f84, f88, f8c, f90, f94, f98, f9c, fa0, fa4;
 };
 
+// Effect creation descriptor for the effect builder fn_8028E2F8.  fn_8028E61C
+// clears the 0x8C bytes that start at `mode`, and fn_8028FD00 copies them into
+// the new effect object verbatim (there at 0x00-0x89, i.e. 0x18 lower than
+// here); the six words before `mode` are not read by the builder.
+struct EffectDesc {
+    /* 0x00 */ f32 f00, f04, f08;  // left behind by the builder (0.6, 0.6, 0.6)
+    /* 0x0c */ f32 f0c, f10, f14;  // left behind by the builder (0.9, 0.4, 0.9)
+    /* 0x18 */ s32 mode;           // effect kind; 2 = looping emitter group
+    /* 0x1c */ s32 emitterCount;   // emitters of 0x28 bytes allocated for the effect
+    /* 0x20 */ f32 emitRate;       // effect+0xa0 = 1.0f / emitRate
+    /* 0x24 */ f32 phaseStep;      // effect+0x0c, added to the effect phase every frame
+    /* 0x28 */ f32 f28, f2c, f30, f34, f38, f3c;
+    /* 0x40 */ f32 f40, f44, f48, f4c, f50, f54, f58;
+    /* 0x5c */ s32 f5c;
+    /* 0x60 */ f32 f60, f64, f68, f6c, f70, f74, f78, f7c;
+    /* 0x80 */ f32 f80, f84, f88, f8c, f90, f94, f98, f9c, fa0, fa4;
+};
+
 /* Initializes a "large trail smoke" particle emitter config and stores the created emitter handle at offset 8 of the owner. */
 extern "C" void fn_802A31DC(void *owner, s32 param) {
     Fn802A31DCConfig cfg;
