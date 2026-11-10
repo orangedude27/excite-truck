@@ -1,3 +1,7 @@
+// shot — screenshot capture ("shot%02d.tga").
+// Recovered TU window 0x802E46AC..0x802E4C0C (see docs/attribution_analysis.md).
+// Static-init thunk fn_802E4C0C (+ .ctors slot 0x802ED5FC) remains in
+// auto/text_802E4C0C_.c pending a promotion pass.
 #include <types.h>
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
@@ -41,7 +45,6 @@ s32 fn_802E46F0(void) {
     char buffer[0x20];
     volatile u16 *p;
     u16 a, b, c;
-
     fn_802E4A2C();
     raw = lbl_8055FF50;
     mask = (u32)raw & 0xFFFF0FFF;
@@ -59,7 +62,9 @@ s32 fn_802E46F0(void) {
     mode = (u16)mask;
     if (mode == 0x17A)
         goto special;
-    if (mode != 0x17B || lbl_8055FF60 != 0x112)
+    if (mode != 0x17B)
+        goto done;
+    if (lbl_8055FF60 != 0x112)
         goto done;
 special:
     sprintf(buffer, lbl_8034D1C0, lbl_8055FF64);
@@ -153,15 +158,15 @@ extern u8 lbl_804FC458[];
 u8 fn_802E4A1C(s32 arg0) { return lbl_804FC458[arg0]; }
 
 void fn_802E4A2C(void) {
-    volatile u32 stack[64];
+    volatile u32 stack[65];
     volatile u32 *p;
     if ((s32)lbl_8055D1C0 < 0) return;
-    p = &stack[0];
+    p = &stack[1];
     do {
         *p = 0;
         p[1] = 0;
         p += 2;
-    } while (p < &stack[64]);
+    } while (p < &stack[65]);
 }
 
 extern unsigned char lbl_8055FF58;

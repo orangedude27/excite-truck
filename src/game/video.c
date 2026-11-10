@@ -1,6 +1,7 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
-
+// video — platform video layer ("video/%s", Vid*).
+// Recovered TU window 0x802DEAC4..0x802E1720 (see docs/attribution_analysis.md).
+// Static-init thunk fn_802E1720 (+ .ctors slot 0x802ED5E4) remains in
+// auto/text_802E1720_.c pending a promotion pass.
 #include <types.h>
 extern char fn_8011A168[];
 extern void fn_80119214(void *, void *);

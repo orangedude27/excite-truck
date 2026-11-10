@@ -1,6 +1,7 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
-
+// strm — streaming ("StrmEnd: used %d of %d entries").
+// Recovered TU window 0x802E72B8..0x802E7570 (see docs/attribution_analysis.md).
+// Static-init thunk fn_802E7570 (+ .ctors slot 0x802ED60C) remains in
+// auto/text_802E7570_.c pending a promotion pass.
 extern void fn_802E3990(void);
 extern int fn_802E3734(int *);
 extern int fn_802E72C8(int);
@@ -17,6 +18,21 @@ extern int fn_802E30C8(const char *, ...);
 int fn_802E72B8(int arg0) {
     return (arg0 + 0x7ff) / 2048;
 }
+
+int fn_802E72C8(int arg0) {
+    unsigned char *entry;
+    int index;
+    int remaining;
+    entry = lbl_804FC978;
+    for (remaining = lbl_8055FFD8, index = 0; remaining > 0; remaining--) {
+        if (arg0 >= *(int *)entry && arg0 < *(int *)(entry + 4))
+            return index;
+        entry += 0x90;
+        index++;
+    }
+    return -1;
+}
+
 #pragma dont_inline reset
 
 void fn_802E7318(void) {

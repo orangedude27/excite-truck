@@ -193,6 +193,20 @@ warnings for the old unit name; they clear once `ninja` regenerates metadata.
 | 2026-11-10 | `src/game/file.c` | `file.cpp` | 0x802E321C..0x802E3DF0 | NonMatching | was `auto/text_802E321C_.c` |
 | 2026-11-10 | `src/game/soundmgr.c` | `soundmgr.cpp` | 0x80207960..0x80208A10 | NonMatching | was `auto/text_80207960_.c`; preserved uncommitted agent edits |
 | 2026-11-10 | `src/game/mroll.c` | `mroll.cpp` | 0x8023FE20..0x80243410 | NonMatching | was `auto/text_8023FE20_.c` |
+| 2026-11-10 | `src/game/video.c` | video platform (inferred) | 0x802DEAC4..0x802E1720 | NonMatching | was `auto/text_802DEAC4_.c`; "video/%s" |
+| 2026-11-10 | `src/game/abend.c` | abend (inferred) | 0x802E3028..0x802E3214 | Matching | was `auto/text_802E3028_.c`; "ABEND: %s" |
+| 2026-11-10 | `src/game/mem.c` | mem (inferred) | 0x802E3DF8..0x802E3EA8 | NonMatching | was `auto/text_802E3DF8_.c` |
+| 2026-11-10 | `src/game/filecd.c` | filecd (inferred) | 0x802E3EB0..0x802E46A4 | NonMatching | was `auto/text_802E3EB0_.c`; "filecd: DVDRead fails!" |
+| 2026-11-10 | `src/game/shot.c` | shot (inferred) | 0x802E46AC..0x802E4C0C | NonMatching | was `auto/text_802E46AC_.c`; "shot%02d.tga" |
+| 2026-11-10 | `src/game/vmem.c` | vmem (inferred) | 0x802E4C14..0x802E4D7C | NonMatching | was `auto/text_802E4C14_.c` |
+| 2026-11-10 | `src/game/spu.c` | spu (inferred) | 0x802E4D84..0x802E6B48 | NonMatching | was `auto/text_802E4D84_.c` |
+| 2026-11-10 | `src/game/memcard.c` | memcard (inferred) | 0x802E6B50..0x802E72B0 | NonMatching | was `auto/text_802E6B50_.c` |
+| 2026-11-10 | `src/game/strm.c` | strm (inferred) | 0x802E72B8..0x802E7570 | NonMatching | was `auto/text_802E72B8_.c` |
+| 2026-11-10 | `src/game/strmbank.c` | strmbank (inferred) | 0x802E7578..0x802E7768 | NonMatching | was `auto/text_802E7578_.c` |
+| 2026-11-10 | `src/game/rjoy.c` | rjoy (inferred) | 0x802E77B8..0x802E86CC | NonMatching | was `auto/text_802E77B8_.c` |
+| 2026-11-10 | `src/game/nandsave.c` | nandsave (inferred) | 0x802E86D4..0x802E988C | NonMatching | was `auto/text_802E86D4_.c` |
+| 2026-11-10 | `src/game/config.c` | config (inferred) | 0x802E98C8..0x802E9A34 | NonMatching | was `auto/text_802E98C8_.c` |
+| 2026-11-10 | `src/game/homebutton2.c` | homeButton2 (inferred) | 0x802EC4BC..0x802ECCDC | NonMatching | was `auto/text_802EC4BC_.c`; distinct from `homebutton_controller.cpp` (0x800A485C region) |
 
 Post-carve TODO per batch: re-register source ownership in the decomp.wtf
 app ("Give them source files") so agent briefs point at the new files; the

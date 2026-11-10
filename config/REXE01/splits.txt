@@ -3127,7 +3127,7 @@ auto/text_802DEA90_.c:
 	.text       start:0x802DEA90 end:0x802DEAC4
 	.ctors      start:0x802ED5E0 end:0x802ED5E4
 
-auto/text_802DEAC4_.c:
+game/video.c:
 	.text       start:0x802DEAC4 end:0x802E1720
 
 auto/text_802E1720_.c:
@@ -3141,7 +3141,7 @@ auto/text_802E3020_.c:
 	.text       start:0x802E3020 end:0x802E3028
 	.ctors      start:0x802ED5E8 end:0x802ED5EC
 
-auto/text_802E3028_.c:
+game/abend.c:
 	.text       start:0x802E3028 end:0x802E3214
 
 auto/text_802E3214_.c:
@@ -3155,56 +3155,56 @@ auto/text_802E3DF0_.c:
 	.text       start:0x802E3DF0 end:0x802E3DF8
 	.ctors      start:0x802ED5F0 end:0x802ED5F4
 
-auto/text_802E3DF8_.c:
+game/mem.c:
 	.text       start:0x802E3DF8 end:0x802E3EA8
 
 auto/text_802E3EA8_.c:
 	.text       start:0x802E3EA8 end:0x802E3EB0
 	.ctors      start:0x802ED5F4 end:0x802ED5F8
 
-auto/text_802E3EB0_.c:
+game/filecd.c:
 	.text       start:0x802E3EB0 end:0x802E46A4
 
 auto/text_802E46A4_.c:
 	.text       start:0x802E46A4 end:0x802E46AC
 	.ctors      start:0x802ED5F8 end:0x802ED5FC
 
-auto/text_802E46AC_.c:
+game/shot.c:
 	.text       start:0x802E46AC end:0x802E4C0C
 
 auto/text_802E4C0C_.c:
 	.text       start:0x802E4C0C end:0x802E4C14
 	.ctors      start:0x802ED5FC end:0x802ED600
 
-auto/text_802E4C14_.c:
+game/vmem.c:
 	.text       start:0x802E4C14 end:0x802E4D7C
 
 auto/text_802E4D7C_.c:
 	.text       start:0x802E4D7C end:0x802E4D84
 	.ctors      start:0x802ED600 end:0x802ED604
 
-auto/text_802E4D84_.c:
+game/spu.c:
 	.text       start:0x802E4D84 end:0x802E6B48
 
 auto/text_802E6B48_.c:
 	.text       start:0x802E6B48 end:0x802E6B50
 	.ctors      start:0x802ED604 end:0x802ED608
 
-auto/text_802E6B50_.c:
+game/memcard.c:
 	.text       start:0x802E6B50 end:0x802E72B0
 
 auto/text_802E72B0_.c:
 	.text       start:0x802E72B0 end:0x802E72B8
 	.ctors      start:0x802ED608 end:0x802ED60C
 
-auto/text_802E72B8_.c:
+game/strm.c:
 	.text       start:0x802E72B8 end:0x802E7570
 
 auto/text_802E7570_.c:
 	.text       start:0x802E7570 end:0x802E7578
 	.ctors      start:0x802ED60C end:0x802ED610
 
-auto/text_802E7578_.c:
+game/strmbank.c:
 	.text       start:0x802E7578 end:0x802E7768
 
 auto/text_802E7768_.c:
@@ -3218,21 +3218,21 @@ auto/text_802E77B0_.c:
 	.text       start:0x802E77B0 end:0x802E77B8
 	.ctors      start:0x802ED614 end:0x802ED618
 
-auto/text_802E77B8_.c:
+game/rjoy.c:
 	.text       start:0x802E77B8 end:0x802E86CC
 
 auto/text_802E86CC_.c:
 	.text       start:0x802E86CC end:0x802E86D4
 	.ctors      start:0x802ED618 end:0x802ED61C
 
-auto/text_802E86D4_.c:
+game/nandsave.c:
 	.text       start:0x802E86D4 end:0x802E988C
 
 auto/text_802E988C_.c:
 	.text       start:0x802E988C end:0x802E98C8
 	.ctors      start:0x802ED61C end:0x802ED620
 
-auto/text_802E98C8_.c:
+game/config.c:
 	.text       start:0x802E98C8 end:0x802E9A34
 
 auto/text_802E9A34_.c:
@@ -3246,7 +3246,7 @@ auto/text_802EC464_.c:
 	.text       start:0x802EC464 end:0x802EC4BC
 	.ctors      start:0x802ED624 end:0x802ED628
 
-auto/text_802EC4BC_.c:
+game/homebutton2.c:
 	.text       start:0x802EC4BC end:0x802ECCDC
 
 auto/text_802ECCDC_.c:

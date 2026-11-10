@@ -1,6 +1,7 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
-
+// spu — SPU voice channels ("Spu: channel %d/%s is still playing").
+// Recovered TU window 0x802E4D84..0x802E6B48 (see docs/attribution_analysis.md).
+// Static-init thunk fn_802E6B48 (+ .ctors slot 0x802ED604) remains in
+// auto/text_802E6B48_.c pending a promotion pass.
 extern char lbl_8055FFB5;
 extern void *lbl_8055FF8C;
 extern float lbl_80565128;
@@ -701,14 +702,10 @@ void *fn_802E6058(void *arg0) {
     unsigned int shifted;
     float zeroValue;
     float oneValue;
-
-    for (i = 0; i < 0x20; i++) {
+    for (i = 0; i < 32; i++) {
         unsignedIndex = (unsigned int)i;
         shifted = unsignedIndex << 27;
-        entry = lbl_8055FF94 +
-                (((((shifted - (unsignedIndex >> 31)) << 5) |
-                   ((shifted - (unsignedIndex >> 31)) >> 27)) +
-                  (unsignedIndex >> 31)) * 0x2C);
+        entry = lbl_8055FF94 + (((unsignedIndex >> 31) + (((shifted - (unsignedIndex >> 31)) << 5) | ((shifted - (unsignedIndex >> 31)) >> 27))) * 44);
         if (entry[0x20] == 0) {
             OSDisableInterrupts();
             entry[0x20] = 1;

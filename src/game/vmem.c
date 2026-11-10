@@ -1,4 +1,7 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
+// vmem — virtual memory ("VirtualMemory: %d K", vmem_buf).
+// Recovered TU window 0x802E4C14..0x802E4D7C (see docs/attribution_analysis.md).
+// Static-init thunk fn_802E4D7C (+ .ctors slot 0x802ED600) remains in
+// auto/text_802E4D7C_.c pending a promotion pass.
 extern void *fn_801284F8(int, void *);
 extern int fn_8012850C(int, void *);
 extern void fn_802E30C8(const char *, ...);
@@ -18,9 +21,9 @@ void fn_802E4C18(void) {
 void *fn_802E4C1C(int arg0) {
     char *object = fn_801284F8(0xC, &lbl_8055D1C8);
     if (object != 0) {
-        *(char **)object = lbl_8034D1D0;
+        *(void **)object = (void *)lbl_8034D1D0;
         *(int *)(object + 8) = arg0;
-        *(int *)(object + 4) = fn_8012850C(arg0, lbl_8034D204);
+        *(int *)(object + 4) = fn_8012850C(arg0, (void *)lbl_8034D204);
         fn_802E30C8(lbl_8034D1F0, arg0 / 1024);
     }
     return object;

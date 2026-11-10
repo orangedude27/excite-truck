@@ -1,6 +1,7 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
-
+// abend — abnormal-end reporting ("ABEND: %s").
+// Recovered TU window 0x802E3028..0x802E3214 (see docs/attribution_analysis.md).
+// Static-init thunk fn_802E3214 (+ .ctors slot 0x802ED5EC) remains in
+// auto/text_802E3214_.c pending a promotion pass.
 #include <stdarg.h>
 
 extern int fn_802E367C(int);

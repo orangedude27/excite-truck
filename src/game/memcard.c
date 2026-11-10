@@ -1,6 +1,7 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
-
+// memcard — memory-card saves ("memcard: writing file", mcs_data).
+// Recovered TU window 0x802E6B50..0x802E72B0 (see docs/attribution_analysis.md).
+// Static-init thunk fn_802E72B0 (+ .ctors slot 0x802ED608) remains in
+// auto/text_802E72B0_.c pending a promotion pass.
 extern void *memcpy(void *, const void *, unsigned long);
 extern int lbl_8055FFC8;
 extern unsigned char lbl_804FC8B0[];
@@ -273,9 +274,9 @@ int fn_802E7130(void) {
     int i = 0;
     unsigned char *entry = lbl_804FC8B0;
     while (i < count) {
-        total += *(int *)(entry + 0xC);
-        entry += 0x14;
-        i++;
+        total = total + *(int *)(entry + 0xC);
+        entry = entry + 0x14;
+        i = i + 1;
     }
     return (total + 0x1FFF) & 0xFFFFE000;
 }

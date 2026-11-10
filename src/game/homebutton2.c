@@ -1,6 +1,7 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
-
+// homebutton2 — home button channel 2 resources ("homeButton2/%s").
+// Recovered TU window 0x802EC4BC..0x802ECCDC (see docs/attribution_analysis.md).
+// Static-init thunk fn_802ECCDC (+ .ctors slot 0x802ED628) remains in
+// auto/text_802ECCDC_.c pending a promotion pass.
 #include "types.h"
 #include "revolution/OS/OSFastCast.h"
 

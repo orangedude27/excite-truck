@@ -1,5 +1,7 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-
+// rjoy — WPAD joystick layer ("rjoy: waiting for WPAD to shut down").
+// Recovered TU window 0x802E77B8..0x802E86CC (see docs/attribution_analysis.md).
+// Static-init thunk fn_802E86CC (+ .ctors slot 0x802ED618) remains in
+// auto/text_802E86CC_.c pending a promotion pass.
 extern void fn_802E6B44(int, int);
 extern int lbl_80507268[];
 extern unsigned char lbl_80505978[];
@@ -80,12 +82,12 @@ void fn_802E7920(int arg0) {
     extern int fn_802E2C20(void);
     extern unsigned char lbl_80505978[];
     extern unsigned char lbl_80560008;
-    int time;
+    register unsigned char *p;
+    register int player = arg0;
+    register int time;
     int motor;
     int value;
-    unsigned char *p;
-    int player = arg0;
-
+    int cmd;
     p = lbl_80505978 + player * 0x638;
     time = fn_802E2C20();
     motor = fn_802D9BF0();
@@ -102,12 +104,13 @@ void fn_802E7920(int arg0) {
     if (motor == 0) {
         value = *(int *)(p + 0xB4) + *(unsigned short *)(p + 0xB0);
         *(int *)(p + 0xB4) = value;
-        if ((unsigned int)value >= 0x8000U)
-            *(int *)(p + 0xB4) -= 0x10000;
+        cmd = (value >= 0x8000);
+        if (cmd != 0)
+            *(int *)(p + 0xB4) = *(int *)(p + 0xB4) - 0x10000;
     } else {
-        *(int *)(p + 0xB4) = 0;
+        *(int *)(p + 0xB4) = cmd = 0;
     }
-    WPADControlMotor(player, motor);
+    WPADControlMotor(player, cmd);
 }
 #pragma pop
 extern int fn_801282EC(int);
@@ -168,11 +171,11 @@ int fn_802E7AF4(int arg0, int arg1) {
 }
 
 void fn_802E7B6C(int arg0, int arg1) {
-    int var_r30 = arg0;
+    register int var_r30 = arg0;
     int var_r31 = arg1;
     unsigned char *record;
 
-    if (var_r30 < 0) {
+    if (0 > var_r30) {
         goto done;
     }
     if (var_r30 < 4) {

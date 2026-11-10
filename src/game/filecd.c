@@ -1,6 +1,7 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
-
+// filecd — DVD file layer ("filecd: DVDRead fails!").
+// Recovered TU window 0x802E3EB0..0x802E46A4 (see docs/attribution_analysis.md).
+// Static-init thunk fn_802E46A4 (+ .ctors slot 0x802ED5F8) remains in
+// auto/text_802E46A4_.c pending a promotion pass.
 #pragma cplusplus on
 class Dummy_802E4688 {
 public:
@@ -75,6 +76,7 @@ void fn_802E3F38(void *arg0) {
 }
 
 void *fn_802E3F94(void) {
+    void (*fn)(void *, int);
     void *obj;
 
     obj = ((void *(*)(int, void *))fn_802E3EB0)(8, &lbl_8055D1B0);
@@ -88,7 +90,8 @@ void *fn_802E3F94(void) {
         return obj;
     }
     if (obj != 0) {
-        ((void (*)(void *, int))(*(void ***)obj)[2])(obj, 1);
+        fn = ((void (**)(void *, int))*(void **)obj)[2];
+        fn(obj, 1);
     }
     return 0;
 }

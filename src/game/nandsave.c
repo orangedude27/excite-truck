@@ -1,4 +1,7 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
+// nandsave — NAND saves/banner ("NANDWriteAsync", banner.bin).
+// Recovered TU window 0x802E86D4..0x802E988C (see docs/attribution_analysis.md).
+// Static-init thunk fn_802E988C (+ .ctors slot 0x802ED61C) remains in
+// auto/text_802E988C_.c pending a promotion pass.
 extern int fn_802E2C20(void);
 __declspec(section ".data") extern int lbl_80507288;
 extern int NANDCheck(unsigned int, unsigned int, unsigned int *);
@@ -162,18 +165,20 @@ void fn_802E8920(int arg0) {
                     fn_802E8918();
                     break;
                 }
-                if (fn_802E88D8() != 0) {
-                    break;
-                }
+                if (fn_802E88D8() != 0)
+                    goto done;
+                goto loop_cont;
             } else {
                 if (fn_802E888C(7) != 0) {
                     break;
                 }
-                if (fn_802E88D8() != 0) {
-                    break;
-                }
+                if (fn_802E88D8() != 0)
+                    goto done;
+                goto loop_cont;
             }
+loop_cont:;
         }
+done:;
     } else {
         fn_802E30C8(messages + 0x398, result);
     }
