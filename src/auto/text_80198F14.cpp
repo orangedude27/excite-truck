@@ -1329,10 +1329,13 @@ extern "C" void fn_8019D06C(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     Target *target = (Target *)arg0;
     Vec position;
     Vec delta;
+
+    /* Compute influence from arg1's position toward this object's point, store result at +0x24, then chain to fn_8019BD54. */
     fn_801A1F44(&position, arg1);
     delta.x = position.x - target->point.x;
     delta.y = position.y - target->point.y;
     delta.z = position.z - target->point.z;
+
     f32 distance = PSVECSquareDistance(&position, &target->point);
     f32 result;
     if (distance > lbl_8056232C) {
@@ -1341,6 +1344,7 @@ extern "C" void fn_8019D06C(void *arg0, void *arg1, s32 arg2, s32 arg3) {
         delta.x *= scale;
         delta.y *= scale;
         delta.z *= scale;
+
         Vec *axis = (Vec *)((u8 *)*(void **)((u8 *)arg0 + 0xC) + 0xC);
         f32 dot = PSVECDotProduct(&delta, axis);
         register f32 high;
@@ -1357,6 +1361,7 @@ extern "C" void fn_8019D06C(void *arg0, void *arg1, s32 arg2, s32 arg3) {
         if (low > high) result = low;
         else result = high;
     }
+
     *(f32 *)((u8 *)arg0 + 0x24) = result;
     fn_8019BD54(arg0, arg1, arg2, arg3);
 }
