@@ -712,7 +712,7 @@ void fn_801F63F0(void *arg0, float *arg1, float arg2) {
 
     off=0; i=0;
     x=lbl_80562FB0-arg2;
-    a=arg1[0]; t=lbl_80562FD8; b=arg1[1]; c=a*t; z=arg1[2]; b=b*t; z=z*t;
+    a=arg1[0]; t=lbl_80562FD8; b=arg1[1]; c=(float)((double)a*(double)t); z=arg1[2]; b=(float)((double)b*(double)t); z=(float)((double)z*(double)t);
     t=lbl_80562FD4; y=-(x); v=c; u=b; x=t-arg2; a=b; b=z;
     goto check;
 loop:
@@ -992,6 +992,8 @@ FN_801F6A08_RETURN fn_801F6A08(void *arg0, int arg1) {
 extern float fn_801E7E24(void);
 extern unsigned char fn_802CDB20(int, int);
 #pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
 void fn_801F6A98(void *arg0, int arg1) {
     extern float lbl_80558DC4;
     float sp[6];
@@ -1023,6 +1025,7 @@ loop:
 check:
     if (i < *(int *)((char *)arg0 + 0x900)) goto loop;
 }
+#pragma pop
 
 void fn_801F6B98(void *arg0) {
     void *entry;
@@ -1094,6 +1097,33 @@ void *fn_801F6D60(void *arg0, int arg1) {
         }
     }
     return arg0;
+}
+
+void fn_801F6DF0(void *arg0, int arg1) {
+    extern float lbl_80558DC4;
+    float sp[96];
+    float offset, scale;
+    int enabled;
+    void *entry;
+    int i;
+    enabled = !((float)__fabs((double)fn_801E7E24()) <= lbl_80558DC4);
+    entry = arg0;
+    i = 0;
+    goto check;
+loop:
+    if (enabled != 0) {
+        scale = *(float *)((char *)entry + 0x40);
+        offset = *(float *)((char *)entry + 0x3C);
+        ((void (*)(float *, int, float *, float, float))fn_801F6778)(&sp[0], *(int *)((char *)entry + 0x10), (float *)((char *)entry + 0x48), offset, scale);
+        fn_801F64E4(entry, &sp[0], *(float *)((char *)entry + 0x44));
+    }
+    fn_801F65D0(entry);
+    fn_801F6728(entry);
+    *(unsigned char *)((char *)entry + 0x38) = fn_802CDB20(arg1, *(int *)((char *)entry + 0x34));
+    entry = (char *)entry + 0x54;
+    i++;
+check:
+    if (i < *(int *)((char *)arg0 + 0x2A0)) goto loop;
 }
 
 extern char lbl_8033AE20[], lbl_8033AE48[];
