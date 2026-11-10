@@ -26,17 +26,15 @@ extern void *lbl_8055D54C;
 extern void fn_80128670(void *);
 extern void fn_80131818(void);
 void fn_80016354(void) {
-    int i;
-    lbl_8055D538 = (void *)fn_80131808(&lbl_802FCEA8[0xC]);
-    lbl_8055D540 = (void *)fn_8012850C(0x11F8, &lbl_802FCEA8[0x18]);
-    lbl_8055D544 = (void *)fn_8012850C(0x20D0, &lbl_802FCEA8[0x28]);
+    int i = 0;
+    lbl_8055D538 = (void *)fn_80131808((char *)lbl_802FCEA8 + 0xC);
+    lbl_8055D540 = (void *)fn_8012850C(0x11F8, (char *)lbl_802FCEA8 + 0x18);
+    lbl_8055D544 = (void *)fn_8012850C(0x20D0, (char *)lbl_802FCEA8 + 0x28);
     fn_80016C1C();
     lbl_8055D554 = 0;
-    i = 0;
-    do {
+    for (i = 0; i < 4; i++) {
         fn_8001766C(i);
-        i++;
-    } while (i < 4);
+    }
     fn_8000D884(0x44727672, 1, &lbl_8055D548, 0x960, fn_800177B8);
 }
 
@@ -387,19 +385,27 @@ __declspec(section ".sdata") extern char lbl_80558BD4[];
 __declspec(section ".sdata") extern char lbl_80558BE0[];
 extern void fn_80016ED4(void *);
 extern void fn_80017010(void *);
-void fn_80016D14(void **arg0) {
-    void **child;
+#pragma cplusplus on
+extern "C" void fn_80016D14(void **arg0) {
+    struct Node {
+        virtual const char *name();
+    };
+    struct List {
+        virtual void m0();
+        virtual void *get(int);
+    };
+    void *child;
     int i;
     i = 0;
-    for (; (child = (*(void **(**)())((char *)*arg0 + 0xC))(arg0, i)) != 0; i++) {
-        if (stricmp((*(const char *(**)())((char *)*child + 8))(child), lbl_80558BD4) == 0) {
+    for (; (child = ((List *)arg0)->get(i)) != 0; i++) {
+        if (stricmp(((Node *)child)->name(), lbl_80558BD4) == 0) {
             fn_80016ED4(child);
-        } else if (stricmp((*(const char *(**)())((char *)*child + 8))(child), lbl_80558BE0) == 0) {
+        } else if (stricmp(((Node *)child)->name(), lbl_80558BE0) == 0) {
             fn_80017010(child);
         }
     }
 }
-
+#pragma cplusplus reset
 extern __Locale lbl_802FE850;
 extern char lbl_802FCF04[];
 __declspec(section ".sdata") extern char lbl_80558BE8[];
@@ -708,40 +714,36 @@ extern void *memset(void *, int, unsigned int);
 #pragma scheduling invalid_target
 void fn_8001766C(int arg0) {
     unsigned char *base = lbl_803577F0;
-    int recordOffset = arg0 * 0x5C;
-    unsigned char *entryBase = base;
-    unsigned char *entry = entryBase + recordOffset;
-    int index = arg0;
-    int offset68 = index * 0x68;
-    int offset8 = index * 8;
-
-    memset(entry, 0, 0x5C);
+    int off5c = arg0 * 0x5c;
+    unsigned char *base2 = base;
+    unsigned char *entry = base2 + off5c;
+    int idx = arg0;
+    memset(entry, 0, 0x5c);
     *(int *)(entry + 4) = -1000;
-    ((void (*)(char *, int, const char *, ...))fn_801345D8)(
-        (char *)(entry + 8), 0x40, (const char *)lbl_802FD07C, index + 1);
-    *(int *)(entry + 0x48) = 1000;
-    *(unsigned char *)(lbl_803577F0 + 0x410 + offset8) = 0;
-    *(unsigned char *)(lbl_803577F0 + 0x430 + offset68) = 0;
+    ((void (*)(char *, int, const char *, ...))fn_801345D8)((char *)(entry + 8), 0x40, (const char *)lbl_802FD07C, idx + 1);
+    *(int *)(base2 + off5c + 0x48) = 1000;
+    *(unsigned char *)(base + 0x410 + idx * 8) = 0;
+    *(unsigned char *)(base + 0x430 + idx * 0x68) = 0;
 }
 #pragma scheduling on
 void fn_80017708(void *arg0, int arg1, void *arg2) {
+    register int temp_r4;
     int temp_r0;
     int temp_r0_2;
-    int temp_r4;
     int temp_r4_2;
     memset(arg2, 0, 0xC);
     temp_r4 = *(int *)((char *)arg0 + 0x94);
     *(signed char *)((char *)arg2 + 8) = 0;
-    if (temp_r4 < 0) {
-        temp_r4_2 = *(int *)((char *)arg0 + 0x98);
-        temp_r0_2 = (*(int *)((char *)arg0 + 4) + ((arg1 * temp_r4_2) / 4)) % temp_r4_2;
-        *(int *)arg2 = temp_r0_2;
-        *(int *)((char *)arg2 + 4) = temp_r0_2;
+    if (temp_r4 >= 0) {
+        temp_r0 = (temp_r4 + arg1) % *(int *)((char *)arg0 + 0x98);
+        *(int *)arg2 = temp_r0;
+        *(int *)((char *)arg2 + 4) = temp_r0;
         return;
     }
-    temp_r0 = (temp_r4 + arg1) % *(int *)((char *)arg0 + 0x98);
-    *(int *)arg2 = temp_r0;
-    *(int *)((char *)arg2 + 4) = temp_r0;
+    temp_r4_2 = *(int *)((char *)arg0 + 0x98);
+    temp_r0_2 = (*(int *)((char *)arg0 + 4) + ((arg1 * temp_r4_2) / 4)) % temp_r4_2;
+    *(int *)arg2 = temp_r0_2;
+    *(int *)((char *)arg2 + 4) = temp_r0_2;
 }
 #pragma dont_inline on
 void fn_800177B8(void) {
