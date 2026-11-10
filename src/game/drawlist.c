@@ -777,6 +777,7 @@ void fn_802C974C(float f0, float f1, float f2) {
     float denom_angle, denom_sine, atan_value, ratio, depth;
     unsigned char mode = lbl_8055FC74;
 
+    /* Updates projection/FOV-related view parameters from near/far/fov inputs and recomputes derived trig and depth values. */
     lbl_8055FC38 = f0;
     lbl_8055FC3C = f1;
     lbl_8055FC40 = f2;
