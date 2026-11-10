@@ -75,12 +75,12 @@ __declspec(section ".sdata") extern float lbl_805649F0;
 s32 fn_802A9F30(void *arg0) {
     extern double lbl_805649E8;
     UnkAAF04Conversion conversion;
-    s32 temp_r5 = *(s32 *)arg0 * 0x108;
-    conversion.words[0] = 0x43300000;
+    s32 offset = *(s32 *)arg0 * 0x108;
     conversion.words[1] = *(u8 *)((u8 *)arg0 + 8);
-    *(u8 *)((u8 *)(lbl_8055F928 + temp_r5) + 0xC4) = 1;
-    *(f32 *)((u8 *)(lbl_8055F928 + temp_r5) + 0xD4) = *(f32 *)((u8 *)arg0 + 4);
-    *(f32 *)((u8 *)(lbl_8055F928 + temp_r5) + 0xD8) = (f32)conversion.value - lbl_805649E8;
+    *(u8 *)((u8 *)(lbl_8055F928 + offset) + 0xC4) = 1;
+    conversion.words[0] = 0x43300000;
+    *(f32 *)((u8 *)(lbl_8055F928 + offset) + 0xD4) = *(f32 *)((u8 *)arg0 + 4);
+    *(f32 *)((u8 *)(lbl_8055F928 + offset) + 0xD8) = (f32)(conversion.value - lbl_805649E8);
     return 0xC;
 }
 
@@ -92,12 +92,12 @@ s32 fn_802A9F90(s32 *arg0) {
 
 #pragma scheduling invalid_target
 s32 fn_802A9FB0(void *arg0) {
-    extern int lbl_8055F928;
     int index = *(int *)arg0;
+    extern int lbl_8055F928;
     int offset = index * 0x108;
     unsigned char value = *((unsigned char *)arg0 + 4);
-    *(unsigned char *)(lbl_8055F928 + offset + 0xEC) = 1;
-    *(unsigned char *)(lbl_8055F928 + offset + 0xF4) = value;
+    *(u8 *)((u8 *)(lbl_8055F928 + offset) + 0xEC) = 1;
+    *(u8 *)((u8 *)(lbl_8055F928 + offset) + 0xF4) = value;
     return 8;
 }
 #pragma scheduling on
@@ -187,6 +187,9 @@ void fn_802AA1D0(unsigned int arg0) {
     *(float *)((char *)p + 0xFC) = sp[5] - sp[4];
 }
 
+void fn_802AA25C(void *arg0, void *arg1, float farg0) {
+}
+
 #pragma push
 #pragma processor 750
 void fn_802AA9D4(UnkAA9D4 *arg0, void *arg1, float delta) {
@@ -243,7 +246,8 @@ void fn_802AA9D4(UnkAA9D4 *arg0, void *arg1, float delta) {
 }
 #pragma pop
 
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
 void fn_802AAC80(void *arg0, void *arg1, float farg0) {
     struct Object {
         unsigned char pad0[0xEC];
@@ -287,7 +291,7 @@ void fn_802AAC80(void *arg0, void *arg1, float farg0) {
     if (state->m_flags & 8)
         object->m_value = lbl_805649F0;
 }
-#pragma scheduling on
+#pragma pop
 void fn_802AAD5C(int arg0, int arg1, int arg2) {
     extern void fn_802C8BD0(int);
     extern void fn_801E866C(int);
@@ -472,6 +476,138 @@ void fn_802AAF04(int arg0, int arg1, int arg2) {
         fn_802C8D74();
     }
 }
+
+#pragma push
+#pragma processor 750
+void fn_802AB21C(void) {
+    struct {
+        Vec v[4];
+        InitStruct s2;
+        InitStruct s1;
+    } frame;
+    const char *base;
+    void *buffer;
+    int *r29;
+    register int two;
+    register int five;
+    register float t31;
+    float t13, t3, t2;
+
+    base = lbl_80349DC8;
+#pragma push
+#pragma opt_propagation off
+    buffer = fn_8012850C(0x850, base + 0);
+#pragma pop
+    lbl_8055F928 = (int)fn_8002F37C(buffer, fn_802AB500, 0, 0x108, 8);
+    r29 = (int *)fn_801284F8(8, base + 0xC);
+    if (r29 != NULL) {
+        fn_8028E61C(&frame.s1);
+        t31 = lbl_80564A68 * lbl_80564A68;
+        two = 2;
+        five = 5;
+        t13 = lbl_80564A80 * (lbl_80564A70 / t31);
+        t3 = lbl_805649F4 * t13;
+        t3 = t3 * t31;
+        t2 = lbl_80564A84 - t3;
+        t2 = t2 / lbl_80564A68;
+        frame.s1.field_04 = 0x12C;
+        frame.s1.field_08 = lbl_80564A68;
+        frame.s1.field_0C = lbl_805649FC;
+        frame.s1.field_00 = two;
+        frame.s1.field_48 = lbl_805649F4;
+        frame.s1.field_44 = five;
+
+        frame.v[2].x = lbl_805649F0;
+        frame.v[2].y = lbl_805649FC;
+        frame.v[2].z = lbl_805649F0;
+        frame.s1.vA.x = lbl_805649F0;
+        frame.s1.vA.y = lbl_805649FC;
+        frame.s1.vA.z = lbl_805649F0;
+
+        frame.v[3].x = lbl_80564A6C;
+        frame.v[3].y = lbl_805649FC;
+        frame.v[3].z = lbl_80564A6C;
+        frame.s1.vB.x = lbl_80564A6C;
+        frame.s1.vB.y = lbl_805649FC;
+        frame.s1.vB.z = lbl_80564A6C;
+
+        frame.s1.vC.x = lbl_805649F0;
+        frame.s1.vC.y = lbl_80564A70;
+        frame.s1.vC.z = lbl_805649F0;
+        frame.s1.field_34 = lbl_80564A74;
+
+        frame.s1.field_60 = lbl_80564A78;
+        frame.s1.field_68 = lbl_80564A78;
+        frame.s1.field_70 = lbl_80564A78;
+        frame.s1.field_64 = lbl_805649FC;
+        frame.s1.field_6C = lbl_805649FC;
+        frame.s1.field_74 = lbl_805649FC;
+
+        frame.s1.field_58 = lbl_805649F0;
+        frame.s1.field_5C = lbl_80564A7C;
+        frame.s1.field_4C = t13;
+        frame.s1.field_50 = t2;
+        frame.s1.field_54 = lbl_80564A58;
+        frame.s1.field_78 = lbl_805649F0;
+        frame.s1.field_7C = lbl_80564A04;
+
+        r29[0] = ((int (*)(void *, const void *, const void *))fn_8028E2F8)(&frame.s1, lbl_80349E24, lbl_80349E18);
+
+        fn_8028E61C(&frame.s2);
+        frame.s2.field_04 = 0x60;
+        frame.s2.field_08 = lbl_805649F4;
+        frame.s2.field_0C = lbl_805649FC;
+        frame.s2.field_00 = two;
+        frame.s2.field_48 = lbl_805649F4;
+        frame.s2.field_44 = five;
+
+        frame.v[0].x = lbl_805649F0;
+        frame.v[0].y = lbl_805649F0;
+        frame.v[0].z = lbl_805649F0;
+        frame.s2.vA.x = lbl_805649F0;
+        frame.s2.vA.y = lbl_805649F0;
+        frame.s2.vA.z = lbl_805649F0;
+
+        frame.v[1].x = lbl_805649FC;
+        frame.v[1].y = lbl_805649FC;
+        frame.v[1].z = lbl_805649FC;
+        frame.s2.vB.x = lbl_805649FC;
+        frame.s2.vB.y = lbl_805649FC;
+        frame.s2.vB.z = lbl_805649FC;
+
+        frame.s2.vC.x = lbl_805649F0;
+        frame.s2.vC.y = lbl_80564A00;
+        frame.s2.vC.z = lbl_805649F0;
+        frame.s2.field_34 = lbl_80564A74;
+
+        frame.s2.field_70 = lbl_80564A78;
+        frame.s2.field_68 = lbl_80564A78;
+        frame.s2.field_60 = lbl_80564A78;
+        frame.s2.field_74 = lbl_80564A88;
+        frame.s2.field_6C = lbl_80564A88;
+        frame.s2.field_64 = lbl_80564A88;
+
+        frame.s2.field_58 = lbl_80564A78;
+        frame.s2.field_5C = lbl_80564A8C;
+        frame.s2.field_50 = lbl_80564A8C;
+        frame.s2.field_54 = lbl_80564A90;
+        frame.s2.field_78 = lbl_80564A94;
+        frame.s2.field_7C = lbl_805649FC;
+
+        r29[1] = ((int (*)(void *, const void *, const void *))fn_8028E2F8)(&frame.s2, &lbl_8055CC80, lbl_80349E08);
+    }
+
+    lbl_8055F924 = r29;
+    fn_802AB5B8();
+    lbl_8055CC60 = fn_802CAC28(base + 0x18, 0);
+    lbl_8055CC64 = fn_802CAC28(base + 0x24, 0);
+    fn_801EEFDC(fn_802A9F30, 0xF);
+    fn_801EEFDC(fn_802A9F90, 0x10);
+    fn_801EEFDC(fn_802A9FB0, 0x11);
+    *(char *)&lbl_8055F92C = (*(int *)((char *)fn_801E87A8() + 4) == 0x180304);
+}
+#pragma pop
+
 #pragma scheduling on
 #pragma pop
 void fn_802AB500(void) {}
