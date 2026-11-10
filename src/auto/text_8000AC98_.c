@@ -395,7 +395,7 @@ void fn_8000B3DC(unsigned char arg0) {
     extern void AXFXSetHooks_8020DE10(void (*)(void), int, unsigned char);
     lbl_8055D3EC = arg0;
     ((void (*)(int))fn_8000ADE0)(0x12);
-    AXFXSetHooks_8020DE10(fn_8000B5A8, lbl_8055D3EC ? (int)fn_8000B3B4 : 0, lbl_8055D3EC);
+    AXFXSetHooks_8020DE10((void (*)(void))fn_8000B5A8, lbl_8055D3EC ? (int)fn_8000B3B4 : 0, lbl_8055D3EC);
 }
 
 extern int fn_8016212C(void), fn_80265D64(void), fn_80265D6C(void), fn_80265D50(void);
