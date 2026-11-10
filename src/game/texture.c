@@ -1220,82 +1220,83 @@ extern void fn_802CC03C(int **, int *, int);
 extern int fn_802CC10C(void *, int, int, int);
 extern int fn_802CC404(void *);
 extern void *fn_802CC2C8(void *, int);
-void fn_802CBDD0(void *arg0) {
+void fn_802CBDD0(void *mgr) {
+    // Queue the pending texture by priority, allocate it, evicting lower-priority entries until it fits.
     char *context;
-    int index;
-    char *root;
-    char *table;
-    char *input;
-    int changed;
+    int texId;
+    char *freeHead;
+    char *texInfo;
+    char *req;
+    int didAlloc;
     int zero = 0;
-    char *selected;
-    char *scan;
-    char **link;
-    int less;
+    char *active;
+    char *probe;
+    char **prevLink;
+    int isLower;
 
-    selected = *(char **)((char *)arg0 + 0x2844);
-    context = (char *)arg0;
-    if (selected == 0)
+    active = *(char **)((char *)mgr + 0x2844);
+    context = (char *)mgr;
+    if (active == 0)
         return;
-    if (*(void **)((char *)arg0 + 4) == 0)
+    if (*(void **)((char *)mgr + 4) == 0)
         return;
 
-    link = (char **)(context + 0x283C);
+    prevLink = (char **)(context + 0x283C);
     goto load_scan;
 compare_scan:
-    less = *(float *)(scan + 8) < *(float *)(selected + 8);
-    if (less != 0) {
-        *(char **)(context + 0x2840) = scan;
-        *link = 0;
+    isLower = *(float *)(probe + 8) < *(float *)(active + 8);
+    if (isLower != 0) {
+        *(char **)(context + 0x2840) = probe;
+        *prevLink = 0;
         goto scan_done;
     }
-    link = (char **)(scan + 0x10);
+    prevLink = (char **)(probe + 0x10);
 load_scan:
-    scan = *link;
-    if (scan != 0)
+    probe = *prevLink;
+    if (probe != 0)
         goto compare_scan;
 scan_done:
-    input = *(char **)(context + 4);
-    changed = zero;
-    selected = *(char **)(context + 0x2844);
-    root = *(char **)(context + 0x283C);
-    index = *(int *)selected;
-    if (input != 0) {
+    req = *(char **)(context + 4);
+    didAlloc = zero;
+    active = *(char **)(context + 0x2844);
+    freeHead = *(char **)(context + 0x283C);
+    texId = *(int *)active;
+    if (req != 0) {
         if (fn_802D9068() != 0) {
-            table = (char *)lbl_8055FCB0 + index * 0x4C;
-            *(int *)(input + 0x10) = zero;
+            texInfo = (char *)lbl_8055FCB0 + texId * 0x4C;
+            *(int *)(req + 0x10) = zero;
         alloc_loop:
-            *(void **)(input + 8) =
+            *(void **)(req + 8) =
                 fn_802CC2C8((void *)fn_802CC404(context),
-                            *(int *)(table + 0x3C));
-            if (*(void **)(input + 8) == 0 && root != 0 &&
-                fn_802CC10C(context, *(int *)root,
-                            *(int *)(root + 0xC) + 2, (int)input) != 0) {
-                *(int *)(root + 4) = zero;
-                root = *(char **)(root + 0x10);
-                (*(int *)(input + 0x10))++;
+                            *(int *)(texInfo + 0x3C));
+            if (*(void **)(req + 8) == 0 && freeHead != 0 &&
+                fn_802CC10C(context, *(int *)freeHead,
+                            *(int *)(freeHead + 0xC) + 2, (int)req) != 0) {
+                *(int *)(freeHead + 4) = zero;
+                freeHead = *(char **)(freeHead + 0x10);
+                (*(int *)(req + 0x10))++;
                 goto alloc_loop;
             }
-            if (*(void **)(input + 8) != 0) {
-                fn_802CC03C((int **)context, (int *)input, index);
-                if (*(int *)(input + 0x10) == zero)
-                    fn_802CBFCC(context, input);
-                changed = 1;
+            if (*(void **)(req + 8) != 0) {
+                fn_802CC03C((int **)context, (int *)req, texId);
+                if (*(int *)(req + 0x10) == zero)
+                    fn_802CBFCC(context, req);
+                didAlloc = 1;
             } else {
-                fn_802CBFA0(context, (unsigned int)input);
-                *(int *)(input + 0x10) = zero;
+                fn_802CBFA0(context, (unsigned int)req);
+                *(int *)(req + 0x10) = zero;
             }
-        } else if (root != 0 &&
+        } else if (freeHead != 0 &&
                    *(int *)((char *)lbl_8055FCB0 +
-                            *(int *)root * 0x4C + 0x44) != zero &&
-                   fn_802CC10C(context, *(int *)root,
-                               *(int *)(root + 0xC) + 2, zero) != 0) {
-            *(int *)(root + 4) = zero;
+                            *(int *)freeHead * 0x4C + 0x44) != zero &&
+                   fn_802CC10C(context, *(int *)freeHead,
+                               *(int *)(freeHead + 0xC) + 2, zero) != 0) {
+            *(int *)(freeHead + 4) = zero;
         }
     }
-    if (changed != zero) {
-        selected = *(char **)(context + 0x2844);
-        *(int *)(selected + 4) = 1;
+    if (didAlloc != zero) {
+        active = *(char **)(context + 0x2844);
+        *(int *)(active + 4) = 1;
     }
 }
 
