@@ -101,14 +101,16 @@ s32 fn_802E33D0(void) { return 0; }
 #pragma scheduling invalid_target
 s32 fn_802E33D8(s32 arg0, const char *arg1, s32 arg2) {
     s32 offset;
+    unsigned char *entry;
     if (arg0 < 0 || arg0 == -1 || arg0 > 0x10) {
         fn_802E317C(lbl_8034CF40, arg0, arg1, arg2);
     }
     offset = arg0 * 0x28;
-    if (((unsigned char *)(lbl_804DB810 + offset))[0x20] == 0) {
-        fn_802E317C(lbl_8034CF60, arg0, arg1, arg2);
+    entry = (unsigned char *)(lbl_804DB810 + offset);
+    if (entry[0x20] == 0) {
+        fn_802E317C(lbl_8034CF60, arg0, entry, arg1, arg2);
     }
-    return (s32)(lbl_804DB810 + offset);
+    return (s32)lbl_804DB810 + offset;
 }
 #pragma scheduling on
 void fn_802E3498(void) {
