@@ -509,6 +509,7 @@ void fn_802E0684(void) {
 }
 
 void fn_802E09EC(void) {
+    /* Configure GX texcoord generation and a 2-stage TEV combiner setup used by this renderer path. */
     register u32 coord = 0;
     register u32 projection = 1;
     GXSetTexCoordGen2(coord, projection, 4, 0x3C, 0, 0x7D);
