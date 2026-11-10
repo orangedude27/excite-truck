@@ -404,13 +404,15 @@ void fn_80296AAC(void *arg0) {
 #pragma use_lmw_stmw off
 #pragma push
 #pragma cplusplus on
+/* Looks up or builds a 0x30-byte-entry table from a named collection iterator,
+ * filtering/copying entries into a newly allocated result buffer. */
 extern "C" void *fn_80296B10(char *arg0, void *arg1) {
     class Iterator {
     public:
         virtual void v0();
         virtual void *get(int);
     };
-    int close, open;
+    int closeCount, openCount;
     void *result;
     int ok;
     Iterator *it;
@@ -423,29 +425,29 @@ extern "C" void *fn_80296B10(char *arg0, void *arg1) {
         ok = 0;
         if (fn_8012C33C(arg0) != 0) {
             it = (Iterator *)fn_80131808(arg0);
-            open = 0;
+            openCount = 0;
             fn_80296AAC(sp8);
-            close = 0;
+            closeCount = 0;
             for (;;) {
-                entry = it->get(open + close);
+                entry = it->get(openCount + closeCount);
                 if (entry == 0) break;
                 if (fn_802962CC(entry) != 0) {
-                    open++;
+                    openCount++;
                 } else {
                     if (fn_80296308(entry) != 0) {
                         fn_802964EC(sp8, entry, sp8);
                     }
-                    close++;
+                    closeCount++;
                 }
             }
             if (arg1 != 0) {
                 fn_802964EC(sp8, arg1, sp8);
             }
-            if (open != 0) {
+            if (openCount != 0) {
                 ok = 1;
                 result = fn_801284F8(0x30, lbl_80349348);
-                *(void **)((char *)result + 0x24) = fn_8002F37C(fn_8012850C(open * 0x30 + 0x10, lbl_80349354, open * 0x30), (void *)fn_80296D24, 0, 0x30, open);
-                *(int *)((char *)result + 0x2C) = open;
+                *(void **)((char *)result + 0x24) = fn_8002F37C(fn_8012850C(openCount * 0x30 + 0x10, lbl_80349354, openCount * 0x30), (void *)fn_80296D24, 0, 0x30, openCount);
+                *(int *)((char *)result + 0x2C) = openCount;
                 *(int *)((char *)result + 0x28) = 0;
                 if (arg1 != 0) {
                     *(char *)result = 0;
