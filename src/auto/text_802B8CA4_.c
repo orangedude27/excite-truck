@@ -51,3 +51,4 @@ void fn_802B8CA4(void) {
     base[0x12c0 / 4] = 0x20;
     ((void (*)(void *, void *, void *))__register_global_object)(q, fn_802B8DA0, (void *)(base + 0x12ac / 4));
 }
+#pragma pop
