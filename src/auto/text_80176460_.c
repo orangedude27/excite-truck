@@ -613,49 +613,54 @@ void fn_80176A6C(void) {
 }
 
 void *fn_80176A70(void) {
+    /* Wait/pump loop during physics init: snapshots generation and start time, then
+       runs fn_80176610 until state==2/cancelled/generation changed/fn_802D3EBC!=0.
+       After >10000ms logs progress via base+0x190/0x1C8; on 16-bit wrap via +0x204.
+       Updates smoothed elapsed in lbl_8055E3D0, stores fn_801773E4() at +0xDB0 of
+       fn_80179824()'s result, notifies fn_801C6AD0, and returns it. */
     char *base;
-    s32 snap;
-    s32 startTime;
-    s32 count;
-    u64 start;
-    u64 now;
-    u64 elapsed;
-    f32 scaled;
-    void *p;
+    s32 generationSnap;
+    s32 startTimeMs;
+    s32 loopCount;
+    u64 startTicks;
+    u64 nowTicks;
+    u64 elapsedTicks;
+    f32 elapsedScaled;
+    void *physicsObj;
 
     base = lbl_803315A0;
-    snap = lbl_8055E3C4;
-    startTime = fn_802E2C20();
-    count = 0;
-    start = fn_802E2C9C();
-    now = start;
+    generationSnap = lbl_8055E3C4;
+    startTimeMs = fn_802E2C20();
+    loopCount = 0;
+    startTicks = fn_802E2C9C();
+    nowTicks = startTicks;
 
 loop:
     fn_80176610();
     if ((s32)fn_80176A1C() == 2 || (u8)lbl_8055E3BD != 0 ||
-        snap != lbl_8055E3C4 || fn_802D3EBC() != 0) {
+        generationSnap != lbl_8055E3C4 || fn_802D3EBC() != 0) {
         goto done;
     }
     fn_802E2D74(0);
-    if (fn_802E2C20() - startTime > 0x2710) {
+    if (fn_802E2C20() - startTimeMs > 0x2710) {
         fn_802E30C8(base + 0x190, fn_8017970C());
         fn_802E317C(base + 0x1C8, 10);
     }
-    count++;
-    if ((u16)count == 0) {
-        fn_802E30C8(base + 0x204, count);
+    loopCount++;
+    if ((u16)loopCount == 0) {
+        fn_802E30C8(base + 0x204, loopCount);
     }
-    now = fn_802E2C9C();
+    nowTicks = fn_802E2C9C();
     goto loop;
 
 done:
-    elapsed = now - start;
-    scaled = lbl_80561B30 * fn_8002FD54((u32)(elapsed >> 32), (u32)elapsed);
-    lbl_8055E3D0 = scaled + lbl_80561B34 * (lbl_8055E3D0 - scaled);
-    p = fn_80179824();
-    ((s32 *)p)[0x36C] = fn_801773E4();
-    fn_801C6AD0(&((s32 *)p)[0x36C]);
-    return p;
+    elapsedTicks = nowTicks - startTicks;
+    elapsedScaled = lbl_80561B30 * fn_8002FD54((u32)(elapsedTicks >> 32), (u32)elapsedTicks);
+    lbl_8055E3D0 = elapsedScaled + lbl_80561B34 * (lbl_8055E3D0 - elapsedScaled);
+    physicsObj = fn_80179824();
+    ((s32 *)physicsObj)[0x36C] = fn_801773E4();
+    fn_801C6AD0(&((s32 *)physicsObj)[0x36C]);
+    return physicsObj;
 }
 
 void fn_80176BA8(void) {
