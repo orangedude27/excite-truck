@@ -211,19 +211,15 @@ int fn_802CA3F4(void *arg0, int arg1, int arg2, int arg3, int arg4) {
         dst[2] = flags;
     }
 }
-#pragma dont_inline on
-#pragma use_lmw_stmw on
+#pragma use_lmw_stmw off
 int fn_802CA4E0(int arg0, int arg1, int arg2, int arg3, int arg4) {
     char sp8[0x34];
-
-    if (fn_802C90E0() == 0 && (unsigned int)arg1 != (unsigned int)lbl_8055D058) {
-        const char *format = lbl_8034B618;
-        fn_802E30C8(format, arg1);
-    }
+    if (fn_802C90E0() == 0 && (unsigned int)arg1 != (unsigned int)lbl_8055D058)
+        fn_802E30C8(lbl_8034B618, arg1);
     fn_802CA3F4(sp8, arg0, arg2 == 1 ? 3 : 1, arg3, arg4);
     return fn_802D8E9C(sp8, arg1);
 }
-#pragma dont_inline reset
+#pragma use_lmw_stmw on
 
 extern void fn_802D8DCC(void *, int);
 #pragma scheduling invalid_target
