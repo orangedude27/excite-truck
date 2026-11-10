@@ -693,42 +693,43 @@ extern "C" const char lbl_80324690[];
 extern "C" const char lbl_803246D4[];
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" void SetSilence__Q46nw4hbm3snd6detail8SeqTrackFbi(void *self, bool silence, int ticks) {
-    *(volatile u8 *)((u8 *)self + 0x5d) = silence;
-    register int duration;
+extern "C" void SetSilence__Q46nw4hbm3snd6detail8SeqTrackFbi(void *track, bool silence, int fadeTime) {
+    /* Sets or clears the track's silence flag and applies a fade to all attached channels. */
+    *(volatile u8 *)((u8 *)track + 0x5d) = silence;
+    register int fadeFrames;
     register void *channel;
-    register u32 state;
-    state = OSDisableInterrupts();
-    duration = (ticks + 2) / 3;
-    channel = *(void **)((u8 *)self + 0xb8);
+    register u32 savedIrqState;
+    savedIrqState = OSDisableInterrupts();
+    fadeFrames = (fadeTime + 2) / 3;
+    channel = *(void **)((u8 *)track + 0xb8);
     while (channel != 0) {
-        int valid = 0;
-        if (duration >= 0) {
-            if (duration <= 0xffff)
-                valid = 1;
+        int inRange = 0;
+        if (fadeFrames >= 0) {
+            if (fadeFrames <= 0xffff)
+                inRange = 1;
         }
-        if (valid == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803246D4, 0x7c, lbl_80324690, duration, 0, 0xffff);
+        if (inRange == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803246D4, 0x7c, lbl_80324690, fadeFrames, 0, 0xffff);
 
         register u16 elapsed;
         register u16 total;
         total = *(u16 *)((u8 *)channel + 0xc6);
         elapsed = *(u16 *)((u8 *)channel + 0xc8);
-        u8 from;
+        u8 startLevel;
         if (elapsed >= total) {
-            from = *(u8 *)((u8 *)channel + 0xc5);
+            startLevel = *(u8 *)((u8 *)channel + 0xc5);
         } else {
-            u8 start = *(u8 *)((u8 *)channel + 0xc4);
-            u8 end = *(u8 *)((u8 *)channel + 0xc5);
-            from = (u8)(start + (elapsed * (end - start)) / total);
+            u8 currentLevel = *(u8 *)((u8 *)channel + 0xc4);
+            u8 targetLevel = *(u8 *)((u8 *)channel + 0xc5);
+            startLevel = (u8)(currentLevel + (elapsed * (targetLevel - currentLevel)) / total);
         }
-        *(u8 *)((u8 *)channel + 0xc4) = from;
+        *(u8 *)((u8 *)channel + 0xc4) = startLevel;
         ((u8 *)channel)[0xc5] = silence ? 0 : 0xff;
-        *(u16 *)((u8 *)channel + 0xc6) = duration;
+        *(u16 *)((u8 *)channel + 0xc6) = fadeFrames;
         *(u16 *)((u8 *)channel + 0xc8) = 0;
         channel = *(void **)((u8 *)channel + 0xe4);
     }
-    OSRestoreInterrupts(state);
+    OSRestoreInterrupts(savedIrqState);
 }
 #pragma pop
 
