@@ -2859,47 +2859,48 @@ void fn_8006D4C4(void *arg) {
     ((u16 *)arg)[4] = 0;
 }
 
+/* Allocate a buffer from the first suitable GKI pool for the requested size, or report an allocation error. */
 void *GKI_getbuf(UINT16 size) {
-    UINT8 i;
-    FREE_QUEUE_T *Q;
-    BUFFER_HDR_T *p_hdr;
-    tGKI_COM_CB *p_cb = (tGKI_COM_CB *)((UINT8 *)lbl_803946C0 + 0x54);
+    UINT8 poolIndex;
+    FREE_QUEUE_T *freeQueue;
+    BUFFER_HDR_T *bufferHdr;
+    tGKI_COM_CB *comCb = (tGKI_COM_CB *)((UINT8 *)lbl_803946C0 + 0x54);
 
     if (size == 0) {
         ((void (*)(u16, const char *))fn_8006EBF0)(GKI_ERROR_BUF_SIZE_ZERO, lbl_80314110);
         return NULL;
     }
 
-    for (i = 0; i < p_cb->curr_total_no_of_pools; i++) {
-        if (size <= p_cb->freeq[p_cb->pool_list[i]].size)
+    for (poolIndex = 0; poolIndex < comCb->curr_total_no_of_pools; poolIndex++) {
+        if (size <= comCb->freeq[comCb->pool_list[poolIndex]].size)
             break;
     }
 
-    if (i == p_cb->curr_total_no_of_pools) {
+    if (poolIndex == comCb->curr_total_no_of_pools) {
         ((void (*)(u16, const char *))fn_8006EBF0)(GKI_ERROR_BUF_SIZE_TOOBIG, lbl_80314128);
         return NULL;
     }
 
     fn_8006EBAC();
 
-    for (; i < p_cb->curr_total_no_of_pools; i++) {
-        if (((UINT16)1 << p_cb->pool_list[i]) & *(volatile UINT16 *)((UINT8 *)p_cb + 0x28A7C))
+    for (; poolIndex < comCb->curr_total_no_of_pools; poolIndex++) {
+        if (((UINT16)1 << comCb->pool_list[poolIndex]) & *(volatile UINT16 *)((UINT8 *)comCb + 0x28A7C))
             continue;
 
-        Q = &p_cb->freeq[p_cb->pool_list[i]];
-        if (Q->cur_cnt < Q->total) {
-            p_hdr = Q->p_first;
-            Q->p_first = p_hdr->p_next;
-            if (!Q->p_first)
-                Q->p_last = NULL;
-            if (++Q->cur_cnt > Q->max_cnt)
-                Q->max_cnt = Q->cur_cnt;
+        freeQueue = &comCb->freeq[comCb->pool_list[poolIndex]];
+        if (freeQueue->cur_cnt < freeQueue->total) {
+            bufferHdr = freeQueue->p_first;
+            freeQueue->p_first = bufferHdr->p_next;
+            if (!freeQueue->p_first)
+                freeQueue->p_last = NULL;
+            if (++freeQueue->cur_cnt > freeQueue->max_cnt)
+                freeQueue->max_cnt = freeQueue->cur_cnt;
             fn_8006EB88();
-            p_hdr->task_id = fn_8006EB80();
-            p_hdr->status = BUF_STATUS_UNLINKED;
-            p_hdr->p_next = NULL;
-            p_hdr->Type = 0;
-            return (void *)((UINT8 *)p_hdr + BUFFER_HDR_SIZE);
+            bufferHdr->task_id = fn_8006EB80();
+            bufferHdr->status = BUF_STATUS_UNLINKED;
+            bufferHdr->p_next = NULL;
+            bufferHdr->Type = 0;
+            return (void *)((UINT8 *)bufferHdr + BUFFER_HDR_SIZE);
         }
     }
     fn_8006EB88();
