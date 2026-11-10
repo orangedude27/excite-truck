@@ -340,17 +340,24 @@ int fn_802BF4F0(void) {
     return (int)(unsigned int)lbl_804C07F0 != 0;
 }
 
-void fn_802BF508(void) {
+#pragma cplusplus on
+extern "C" void fn_802BF508(void) {
+    class Dummy {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+    };
     int index = fn_801E85B4();
-    int saved;
     if (lbl_804C07F0[index] != 0 && lbl_8055CF70 != 0) {
-        saved = fn_802C2C00(0);
-        ((void (*)(void *, int))(*(void ***)lbl_804C07F0[index])[4])(lbl_804C07F0[index], 0);
+        int saved = fn_802C2C00(0);
+        Dummy *obj = (Dummy *)lbl_804C07F0[index];
+        obj->f2();
         fn_802C2C00(saved);
     }
     fn_802BF160();
 }
-
+#pragma cplusplus reset
 float fn_802BF590(void) { return lbl_8055FAF4; }
 
 #pragma cplusplus on
