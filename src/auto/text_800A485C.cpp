@@ -1674,12 +1674,22 @@ extern "C" s32 fn_800A625C(void *, s32);
 extern "C" s32 fn_800A62A8(void *);
 extern "C" s32 fn_800A7214(void *arg0) {
     s32 result;
-    if ((*(u32 *)arg0 & 4) == 0) {
-        result = fn_800A625C(*(void **)((u8 *)arg0 + 4), (s32)arg0);
-        if (result != 0) return result;
+    s32 result2;
+    if ((*(u32 *)arg0 & 4) != 0) {
+        goto flag_set;
     }
-    result = fn_800A62A8(*(void **)((u8 *)arg0 + 4));
-    if (result != 0) return 0xB;
+    result = fn_800A625C(*(void **)((u8 *)arg0 + 4), (s32)arg0);
+    if (result != 0) {
+        return result;
+    }
+    result2 = fn_800A62A8(*(void **)((u8 *)arg0 + 4));
+    if (result2 != 0) {
+        return result2;
+    }
+    goto set_flag;
+flag_set:
+    return 0xB;
+set_flag:
     *(u32 *)arg0 |= 4;
     return 0;
 }
