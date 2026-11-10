@@ -1,5 +1,8 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
+// world/event.cpp — event handler registry and dispatcher.
+// Recovered TU window 0x801EEFC8..0x801EF190 (see docs/attribution_analysis.md):
+// assert string "world/event.cpp: No handler for evt type %d".
+// The TU's static-init thunk fn_801EF188 (+ .ctors slot 0x802ED33C) remains in
+// auto/text_801EF188_.c pending a promotion pass.
 
 extern unsigned char lbl_80488678[];
 void *memset(void *, int, unsigned int);

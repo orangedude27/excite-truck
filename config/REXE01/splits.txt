@@ -1940,7 +1940,7 @@ auto/text_801EEF7C_.c:
 	.text       start:0x801EEF7C end:0x801EEFC8
 	.ctors      start:0x802ED338 end:0x802ED33C
 
-auto/text_801EEFC8_.c:
+game/world/event.c:
 	.text       start:0x801EEFC8 end:0x801EF188
 
 auto/text_801EF188_.c:
@@ -2052,7 +2052,7 @@ auto/text_80207958_.c:
 	.text       start:0x80207958 end:0x80207960
 	.ctors      start:0x802ED378 end:0x802ED37C
 
-auto/text_80207960_.c:
+game/soundmgr.c:
 	.text       start:0x80207960 end:0x80208A10
 
 auto/text_80208A10_.c:
@@ -2322,7 +2322,7 @@ auto/text_8023FDC8_.c:
 	.text       start:0x8023FDC8 end:0x8023FE20
 	.ctors      start:0x802ED414 end:0x802ED418
 
-auto/text_8023FE20_.c:
+game/mroll.c:
 	.text       start:0x8023FE20 end:0x80243410
 
 auto/text_80243410_.c:
@@ -3134,7 +3134,7 @@ auto/text_802E1720_.c:
 	.text       start:0x802E1720 end:0x802E1728
 	.ctors      start:0x802ED5E4 end:0x802ED5E8
 
-auto/text_802E1728_.c:
+game/kernel.c:
 	.text       start:0x802E1728 end:0x802E3020
 
 auto/text_802E3020_.c:
@@ -3148,7 +3148,7 @@ auto/text_802E3214_.c:
 	.text       start:0x802E3214 end:0x802E321C
 	.ctors      start:0x802ED5EC end:0x802ED5F0
 
-auto/text_802E321C_.c:
+game/file.c:
 	.text       start:0x802E321C end:0x802E3DF0
 
 auto/text_802E3DF0_.c:

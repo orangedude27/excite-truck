@@ -1,4 +1,7 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
+// soundmgr.cpp — game sound manager (SoundManager, soundclass table).
+// Recovered TU window 0x80207960..0x80208A18 (see docs/attribution_analysis.md):
+// assert string "soundmgr.cpp", "SoundManager::*". Static-init thunk fn_80208A10
+// (+ .ctors slot 0x802ED37C) remains in auto/text_80208A10_.c pending promotion.
 extern void *fn_8012850C(signed long, const char *);
 extern void fn_80207C50(void *, void *, signed long);
 extern void fn_80127CF4(void *, const char *, signed long);
@@ -269,7 +272,6 @@ void fn_80207F34(void *arg0);
 typedef struct SlotLimits { signed long total; signed long lim[9]; signed long pad; } SlotLimits;
 
 void fn_80207C80(void *arg0) {
-    /* Fix note: iterate the item list twice, then run the matching completion callbacks. */
     struct Object {
         char pad0[0xC];
         int *items;
@@ -278,30 +280,30 @@ void fn_80207C80(void *arg0) {
         char field5c[0x30];
         signed long field8c;
     };
-    volatile struct Object *object = (volatile struct Object *)arg0;
+    struct Object *object = (struct Object *)arg0;
     signed long i;
     signed long offset;
-
-    i = 0;
     offset = 0;
+    i = 0;
     while (i < object->count) {
         fn_802067C8(*(int *)((char *)object->items + offset),
-                    (void *)&object->field5c, object->field8c);
+                    object->field5c, object->field8c);
         offset += 4;
-        i += 1;
+        ++i;
     }
     fn_8020835C(arg0);
     fn_80207F34(arg0);
-    offset = 0;
     i = 0;
+    offset = 0;
     while (i < object->count) {
         fn_80206824(*(int *)((char *)object->items + offset),
-                    (void *)&object->field5c, object->field8c);
+                    object->field5c, object->field8c);
         offset += 4;
-        i += 1;
+        i++;
     }
     fn_8020815C(arg0);
     fn_80207E70(arg0);
+    return;
 }
 
 #pragma dont_inline on
@@ -394,8 +396,9 @@ extern "C" void fn_80207E70(void *arg0) {
 
 void fn_80207F34(void *arg0) {
     char *obj = (char *)arg0;
-    signed long idx = (signed long)fn_802090B4() * 0x2C;
-    signed long rem = *(signed long *)((char *)lbl_802F9DC8 + idx);
+    signed long idx = (signed long)fn_802090B4();
+    SlotLimits *tbl = (SlotLimits *)lbl_802F9DC8;
+    signed long rem = tbl[idx].total;
     signed long counts[9];
     signed long sel[9];
     signed long row, j, take, done;
@@ -417,14 +420,13 @@ void fn_80207F34(void *arg0) {
     }
     memset(sel, 0, 0x24);
     do {
-        signed long *lim = (signed long *)((char *)lbl_802F9DC8 + idx);
         done = 1;
         row = 0;
         while (rem > 0 && row < 9) {
             signed long c = counts[row];
             if (c != 0) {
                 take = rem;
-                if (lim[1] < rem) take = lim[1];
+                if (tbl[idx].lim[row] < rem) take = tbl[idx].lim[row];
                 if (c > take) {
                     rem -= take;
                     done = 0;
@@ -437,7 +439,6 @@ void fn_80207F34(void *arg0) {
                 }
             }
             row++;
-            lim++;
         }
     } while (done == 0 && rem > 0);
     {
@@ -462,7 +463,6 @@ void fn_80207F34(void *arg0) {
     }
 }
 
-#pragma cplusplus on
 #pragma push
 #pragma use_lmw_stmw off
 #pragma dont_inline on
@@ -483,9 +483,9 @@ extern "C" signed long fn_8020815C(void *arg0) {
     register signed long i;
     void *entry;
     void *owner;
-
-    limit = *(signed long *)((char *)&lbl_802F9DC8 +
-             (signed long)fn_802090B4() * 0x2C);
+    signed long idx;
+    idx = (signed long)fn_802090B4();
+    limit = *(signed long *)((char *)lbl_802F9DC8 + idx * 0x2C);
     matches = 0;
     i = 0;
     offset = 0;
@@ -499,7 +499,6 @@ extern "C" signed long fn_8020815C(void *arg0) {
     if (matches > limit) fn_802E317C(lbl_8033BE20, matches, limit);
 }
 #pragma pop
-#pragma cplusplus reset
 
 #pragma cplusplus reset
 #pragma scheduling on
@@ -519,37 +518,37 @@ signed long fn_8020820C(SoundMgrObj* arg0, SoundMgrObj* arg1) {
     return greater;
 }
 
-#pragma push
 #pragma inline_depth(0)
 void fn_802082C0(void *arg0, void *arg1) {
-    register signed long *source;
-    register signed long *target;
+    register SoundMgrObj **source;
+    register SoundMgrObj **target;
     register signed long count;
-    register signed long *base;
+    register SoundMgrObj **base;
     register signed long i;
-    register signed long value;
+    register SoundMgrObj *value;
     register signed long j;
     register signed long outerOffset;
-
-    base = *(signed long **)arg1;
+    base = *(SoundMgrObj ***)arg1;
     i = 1;
     count = *(signed long *)((char *)arg1 + 4);
     outerOffset = 4;
-    source = (signed long *)((char *)base + 4);
-
+    source = base + 1;
     goto outer_check;
 outer:
     value = *source;
     j = i;
-    target = (signed long *)((char *)base + outerOffset);
+    target = (SoundMgrObj **)((char *)base + outerOffset);
     goto inner;
 inner:
     *target = target[-1];
-    j--;
-    target--;
-    if (j > 0 &&
-        fn_8020820C((SoundMgrObj *)value, (SoundMgrObj *)target[-1]) != 0)
-        goto inner;
+    j = j - 1;
+    target = target - 1;
+    if (j <= 0)
+        goto done;
+    if (fn_8020820C(value, target[-1]) == 0)
+        goto done;
+    goto inner;
+done:
     base[j] = value;
     source++;
     i++;
@@ -558,11 +557,6 @@ outer_check:
     if (i < count)
         goto outer;
 }
-
-#pragma cplusplus reset
-#pragma push
-#pragma use_lmw_stmw off
-#pragma dont_inline on
 extern char lbl_8033BE50[];
 extern char lbl_8033BE70[];
 #pragma cplusplus reset
@@ -719,30 +713,27 @@ signed long fn_802085F0(void* arg0, signed long x) {
 
 extern char lbl_8033BE80[];
 void fn_80208620(void* arg0, void* arg1) {
-    signed long index = *(signed long*)((char*)arg1 + 0x44);
-    void* entry = (char*)arg0 + index * 8;
-    void* found = 0;
-    signed long i = 0;
-    signed long offset = 0;
-    signed long count = *(signed long*)((char*)entry + 0x18);
-    while (i < count) {
-        if (*(void**)((char*)*(void**)((char*)entry + 0x14) + offset) == arg1) {
-            found = (char*)*(void**)((char*)entry + 0x14) + i * 4;
+    typedef struct { int *ptr; int count; } Ent;
+    typedef struct { char pad0[0xc]; int *base; int total; Ent ents[9]; } Hdr;
+    Hdr *h = (Hdr*)arg0;
+    int idx = *(int*)((char*)arg1 + 0x44);
+    int *found = 0;
+    int i;
+    int j;
+    for (i = 0; i < h->ents[idx].count; i++) {
+        if ((void*)h->ents[idx].ptr[i] == arg1) {
+            found = &h->ents[idx].ptr[i];
             break;
         }
-        offset += 4;
-        i++;
     }
     if (found != 0) {
-        *(signed long*)((char*)arg0 + 0x10) -= 1;
-        *(signed long*)((char*)entry + 0x18) -= 1;
-        memmove(found, (char*)found + 4, (unsigned long)(*(signed long*)((char*)arg0 + 0x10) - ((signed long)((char*)found - *(char**)((char*)arg0 + 0xC)) / 4)) * 4);
-        index += 1;
-        if (index < 9) {
-            do {
-                *(signed long*)((char*)arg0 + index * 8 + 0x14) -= 4;
-                index++;
-            } while (index < 9);
+        h->total -= 1;
+        h->ents[idx].count -= 1;
+        memmove(found, found + 1, (h->total - (found - h->base)) * 4);
+        j = idx + 1;
+        while (j < 9) {
+            h->ents[j].ptr--;
+            j++;
         }
     } else {
         fn_802E317C(lbl_8033BE80, (char*)arg1 + 0x37);

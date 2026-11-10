@@ -1,3 +1,7 @@
+// file.cpp — engine file API (FileFindNext/FileFindClose, file_id handling).
+// Recovered TU window 0x802E321C..0x802E3DF8 (see docs/attribution_analysis.md):
+// assert strings "file: ...". Static-init thunk fn_802E3DF0 (+ .ctors slot
+// 0x802ED5F0) remains in auto/text_802E3DF0_.c pending a promotion pass.
 #include <stdarg.h>
 #include <string.h>
 typedef signed long s32;

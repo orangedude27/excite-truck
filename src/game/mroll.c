@@ -1,5 +1,7 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
+// mroll.cpp — player-info/roll management ("mroll.cpp: get_player_info ...").
+// Recovered TU window 0x8023FE20..0x80243460 (see docs/attribution_analysis.md).
+// Static-init thunk fn_80243410 (+ .ctors slot 0x802ED418) remains in
+// auto/text_80243410_.c pending a promotion pass.
 
 typedef signed int s32;
 typedef unsigned char u8;

@@ -1,5 +1,7 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
+// kernel.cpp — engine kernel: stack check, PlatExitProcess, video/canvas init.
+// Recovered TU window 0x802E1728..0x802E3028 (see docs/attribution_analysis.md):
+// assert string "kernel.cpp". Static-init thunk fn_802E3020 (+ .ctors slot
+// 0x802ED5E8) remains in auto/text_802E3020_.c pending a promotion pass.
 
 typedef struct { char data[0x20]; } GXTexObj;
 extern void GXInitTexObj(GXTexObj *, void *, unsigned short, unsigned short, int, int, int, int);
@@ -400,10 +402,10 @@ int main(void) {
 unsigned int fn_802E2C20(void) {
     unsigned long long now;
     unsigned long long diff;
-    register unsigned int baseHigh;
-    register unsigned int baseLow;
-    register unsigned int ticks;
-    register unsigned int factor;
+    unsigned int baseHigh;
+    unsigned int baseLow;
+    unsigned int ticks;
+    unsigned int factor;
     now = OSGetTime();
     if ((*(volatile int *)&lbl_8055FEF8 | *(volatile unsigned int *)&lbl_8055FEFC) == 0) {
         *(volatile unsigned int *)&lbl_8055FEFC = (unsigned int)now;

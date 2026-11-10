@@ -1,0 +1,156 @@
+[
+ {
+  "lo": "0x800049c0",
+  "hi": "0x80021948",
+  "key": "boot",
+  "desc": "Bootstrap / menu flow / meta-game init",
+  "windows": 28,
+  "fns": 768,
+  "auto": 116028,
+  "authored": 23,
+  "active": 25
+ },
+ {
+  "lo": "0x80021948",
+  "hi": "0x800d58c4",
+  "key": "sdk-gap",
+  "desc": "SDK libraries block (NOT a TU; existing SDK lanes)",
+  "windows": 1,
+  "fns": 2656,
+  "auto": 579720,
+  "authored": 881,
+  "active": 25
+ },
+ {
+  "lo": "0x800d58c4",
+  "hi": "0x801166c8",
+  "key": "nw4hbm",
+  "desc": "nw4hbm middleware (lyt / snd / ut) \u2014 sibling reference source exists",
+  "windows": 17,
+  "fns": 962,
+  "auto": 265732,
+  "authored": 2,
+  "active": 10
+ },
+ {
+  "lo": "0x801166c8",
+  "hi": "0x8013471c",
+  "key": "engine",
+  "desc": "Engine services: archive, prof, bg tasks, pools, options, nw4r::ef, streams",
+  "windows": 23,
+  "fns": 530,
+  "auto": 122964,
+  "authored": 10,
+  "active": 13
+ },
+ {
+  "lo": "0x8013471c",
+  "hi": "0x801bd628",
+  "key": "race",
+  "desc": "Race sim: cars, AI, physics, track, replay + JStudio/PSSystem sound middleware blocks",
+  "windows": 67,
+  "fns": 2546,
+  "auto": 560908,
+  "authored": 14,
+  "active": 50
+ },
+ {
+  "lo": "0x801bd628",
+  "hi": "0x801f1c24",
+  "key": "world",
+  "desc": "World/track/events: collide, QuadTree, physics world, ActionSequenceEvent, CollisionSpace",
+  "windows": 49,
+  "fns": 1115,
+  "auto": 214524,
+  "authored": 4,
+  "active": 36
+ },
+ {
+  "lo": "0x801f1c24",
+  "hi": "0x80207960",
+  "key": "hud",
+  "desc": "Menus/HUD/terrain + SHMainMenu block",
+  "windows": 13,
+  "fns": 493,
+  "auto": 89404,
+  "authored": 0,
+  "active": 11
+ },
+ {
+  "lo": "0x80207960",
+  "hi": "0x80215e68",
+  "key": "soundmgr",
+  "desc": "Game sound manager (soundmgr.cpp found here)",
+  "windows": 13,
+  "fns": 396,
+  "auto": 58632,
+  "authored": 0,
+  "active": 11
+ },
+ {
+  "lo": "0x80215e68",
+  "hi": "0x80265ce0",
+  "key": "ui",
+  "desc": "UI / menus / saves / profiles / unlocks (mroll.cpp, MemoryCard::Resource, ResourceLoader)",
+  "windows": 51,
+  "fns": 1538,
+  "auto": 327288,
+  "authored": 0,
+  "active": 42
+ },
+ {
+  "lo": "0x80265ce0",
+  "hi": "0x8027d264",
+  "key": "camera",
+  "desc": "Cameras + car-type data (physcam, blimpcam, ep_career.val)",
+  "windows": 22,
+  "fns": 352,
+  "auto": 95620,
+  "authored": 1,
+  "active": 16
+ },
+ {
+  "lo": "0x8027d264",
+  "hi": "0x802a4a50",
+  "key": "efx",
+  "desc": "Effects: nw4r::ef, efx.val, FlipBook, shadows, textures",
+  "windows": 21,
+  "fns": 738,
+  "auto": 161772,
+  "authored": 0,
+  "active": 17
+ },
+ {
+  "lo": "0x802a4a50",
+  "hi": "0x802c2cac",
+  "key": "envrender",
+  "desc": "Environment render: weather, water, sky, terrain materials, roadbrush",
+  "windows": 29,
+  "fns": 630,
+  "auto": 123484,
+  "authored": 1,
+  "active": 22
+ },
+ {
+  "lo": "0x802c2cac",
+  "hi": "0x802deac4",
+  "key": "renderer",
+  "desc": "Renderer: gx canvas, drgc/surf, drgc/tex, model pool, DrawListWrapper",
+  "windows": 18,
+  "fns": 630,
+  "auto": 114200,
+  "authored": 0,
+  "active": 16
+ },
+ {
+  "lo": "0x802deac4",
+  "hi": "0x802ed060",
+  "key": "platform",
+  "desc": "Platform/kernel tail: kernel.cpp, file.cpp, video, memcard, NAND, rjoy, homeButton",
+  "windows": 20,
+  "fns": 414,
+  "auto": 58780,
+  "authored": 0,
+  "active": 12
+ }
+]
