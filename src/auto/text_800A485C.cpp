@@ -15498,27 +15498,52 @@ extern "C" void fn_800C1984(s32 *arg0, s32 *arg1) {
 
 extern "C" void fn_800C1C1C(void *, s32 *);
 extern "C" void fn_800C1A80(void *arg0, void *arg1, s32 *out) {
-    s32 v[19]; s32 d;
-    fn_800C1C1C(arg0, &v[9]); fn_800C1C1C(arg1, &v[0]);
-    *out = v[9];
-    d = v[0] - *out; out[1] = d;
-    d = v[10] - d; out[2] = d;
-    v[1] -= v[0]; d = v[1] - out[2]; out[3] = d;
-    d = v[11] - d; out[4] = d;
-    v[2] -= v[1]; d = v[2] - out[4]; out[5] = d;
-    d = v[12] - d; out[6] = d;
-    v[3] -= v[2]; d = v[3] - out[6]; out[7] = d;
-    d = v[13] - d; out[8] = d;
-    v[4] -= v[3]; d = v[4] - out[8]; out[9] = d;
-    d = v[14] - d; out[10] = d;
-    v[5] -= v[4]; d = v[5] - out[10]; out[11] = d;
-    d = v[15] - d; out[12] = d;
-    v[6] -= v[5]; d = v[6] - out[12]; out[13] = d;
-    d = v[16] - d; out[14] = d;
-    v[7] -= v[6]; d = v[7] - out[14]; out[15] = d;
-    out[16] = v[17] - d;
-    v[8] -= v[7];
-    out[17] = v[8] - out[16];
+    /* Decode two 9-sample blocks and emit 18 interleaved differential output values. */
+    s32 samples[19];
+    s32 delta;
+    fn_800C1C1C(arg0, &samples[9]);
+    fn_800C1C1C(arg1, &samples[0]);
+    *out = samples[9];
+    delta = samples[0] - *out;
+    out[1] = delta;
+    delta = samples[10] - delta;
+    out[2] = delta;
+    samples[1] -= samples[0];
+    delta = samples[1] - out[2];
+    out[3] = delta;
+    delta = samples[11] - delta;
+    out[4] = delta;
+    samples[2] -= samples[1];
+    delta = samples[2] - out[4];
+    out[5] = delta;
+    delta = samples[12] - delta;
+    out[6] = delta;
+    samples[3] -= samples[2];
+    delta = samples[3] - out[6];
+    out[7] = delta;
+    delta = samples[13] - delta;
+    out[8] = delta;
+    samples[4] -= samples[3];
+    delta = samples[4] - out[8];
+    out[9] = delta;
+    delta = samples[14] - delta;
+    out[10] = delta;
+    samples[5] -= samples[4];
+    delta = samples[5] - out[10];
+    out[11] = delta;
+    delta = samples[15] - delta;
+    out[12] = delta;
+    samples[6] -= samples[5];
+    delta = samples[6] - out[12];
+    out[13] = delta;
+    delta = samples[16] - delta;
+    out[14] = delta;
+    samples[7] -= samples[6];
+    delta = samples[7] - out[14];
+    out[15] = delta;
+    out[16] = samples[17] - delta;
+    samples[8] -= samples[7];
+    out[17] = samples[8] - out[16];
 }
 
 extern "C" void fn_800C1C1C(void *arg0, s32 *out) {
