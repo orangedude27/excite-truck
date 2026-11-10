@@ -140,7 +140,7 @@ extern void fn_802A9090();
 extern s32 fn_802C6FC0(s32, s32, s32);
 extern s32 fn_802CAC28(void *, s32);
 extern void fn_802A9574(void);
-#pragma scheduling off
+#pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_802A92CC(void) {
     f32 value1;
