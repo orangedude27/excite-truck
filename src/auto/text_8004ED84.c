@@ -378,6 +378,7 @@ static inline BOOL IsSjisTrailByte(u8 ch) {
     return (0x40 <= ch && ch <= 0xFC) && (ch != 0x7F);
 }
 
+/* Converts a character code in the given encoding to the OS font glyph index. */
 u32 GetFontCode(u16 encode, u16 code) {
     u32 tmp;
     s32 trail;
@@ -664,25 +665,25 @@ extern unsigned short lbl_80304B70[];
 extern int *lbl_8055DA50;
 extern int *lbl_8055DA54;
 char *ParseStringS(int format, char *text, int **outWidths, int *outCode) {
-    char *next;
     int *widths;
+    unsigned char *next;
     unsigned short first;
     int valid;
     unsigned char second;
-    next = text;
-    first = 0;
     widths = outCode;
+    next = (unsigned char *)text;
+    first = 0;
     switch (format) {
     case 0:
         first = *(unsigned char *)text;
         widths = lbl_8055DA54;
-        if (first != 0) next = text + 1;
+        if (first != 0) next = (unsigned char *)text + 1;
         break;
     case 1:
         first = *(unsigned char *)text;
         widths = lbl_8055DA50;
         if (first != 0) {
-            next = text + 1;
+            next = (unsigned char *)text + 1;
             valid = 0;
             if ((first >= 0x81 && first <= 0x9F) || (first >= 0xE0 && first <= 0xFC))
                 valid = 1;
@@ -691,7 +692,7 @@ char *ParseStringS(int format, char *text, int **outWidths, int *outCode) {
                 valid = 0;
                 if (second >= 0x40 && second <= 0xFC && second != 0x7F) valid = 1;
                 if (valid != 0) {
-                    first = (first << 8) | *(unsigned char *)next;
+                    first = (first << 8) | *(volatile unsigned char *)next;
                     next++;
                 }
             }
@@ -699,8 +700,8 @@ char *ParseStringS(int format, char *text, int **outWidths, int *outCode) {
         break;
     }
     *outWidths = widths;
-    *outCode = GetFontCode(format, first);
-    return next;
+    *outCode = ((u32 (*)(int, unsigned short))GetFontCode)(format, first);
+    return (char *)next;
 }
 
 extern void *OSUTF8to32(void *, int *);
