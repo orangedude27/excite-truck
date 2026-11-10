@@ -368,6 +368,8 @@ extern "C" void fn_801E81B8(int arg0, void (*callback)(void)) {
     long values[4];
     float value;
 
+    /* Per-frame/step update: advances frame state, runs per-player update passes, and
+     * performs single/multi-player follow-up logic before invoking an optional callback. */
     (void)arg0;
     fn_802E2C9C();
     lbl_8055EB1C = lbl_8055EB1C + 1;
@@ -642,11 +644,7 @@ void *fn_801E87A8(void) {
 }
 
 #pragma dont_inline on
-void fn_801E87B8(long arg0) {
-    int i = (int)lbl_8055EB34;
-    lbl_8055EB3C[i] = arg0;
-    lbl_8055EB34 = i + 1;
-}
+void fn_801E87B8(long arg0) { long *base = lbl_8055EB3C; long i = lbl_8055EB34; base[i] = arg0; lbl_8055EB34 = i + 1; }
 void fn_801E87D4(long arg0) {
     long value2 = arg0;
     int index;
@@ -865,16 +863,14 @@ void fn_801E8DD4(void) {
 #pragma scheduling invalid_target
 void fn_801E8E38(void) {
     struct InitData { long tag; long size; float a; float b; float c; float d; } data;
-    register float fill = lbl_80562DA8;
-    register float main = lbl_80562DB0;
     void *object;
 
     data.tag = 0x4D555450;
     data.size = 0x18;
-    data.a = main;
-    data.b = fill;
-    data.c = fill;
-    data.d = fill;
+    data.a = lbl_80562DB0;
+    data.d = lbl_80562DA8;
+    data.c = lbl_80562DA8;
+    data.b = lbl_80562DA8;
     object = ((void *(*)(int, void *))fn_801284F8)(0x7C, &lbl_80339CB4);
     if (object != 0) fn_801EAD6C(object, (long)&data);
     ((void (*)(void))fn_801E87D4)();
@@ -882,13 +878,16 @@ void fn_801E8E38(void) {
 #pragma scheduling invalid_target
 void *fn_801E8EA4(long arg0) {
     unsigned char *entry;
+    long sentinel;
     entry = lbl_80339CC0;
-    do {
-        if (*(long *)(entry + 4) == arg0)
-            break;
-        entry += 0xC;
-    } while (*(long *)entry != 0);
-    if (*(long *)entry == 0) {
+    goto check_key;
+check_key:
+    if (*(long *)(entry + 4) == arg0) goto done;
+    entry = (unsigned char *)((long)entry + 0xC);
+    sentinel = *(long *)entry;
+    if (sentinel != 0) goto check_key;
+done:
+    if (sentinel == 0) {
         fn_802E317C(lbl_80339CFC, arg0);
     }
     return entry;
