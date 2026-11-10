@@ -713,18 +713,50 @@ extern void fn_802CDAA8(void);
 extern void fn_802CDB5C(s32);
 extern f32 lbl_80562E70;
 void fn_801EBDCC(void) {
- s32 stack[10]; s32 temp_r3; s32 var_r3;
- if (lbl_8055EBA0 != 0) {
-  fn_802C7A44(); fn_80202718(); fn_801F1C24(&stack[0]); fn_802C7730(&stack[0]);
-  temp_r3=fn_801EA470();
-  if(temp_r3) var_r3=lbl_8055EBA0[2]; else var_r3=lbl_8055EBA0[1];
-  fn_802CD37C(var_r3,0,0,0,lbl_8055EB98[0],lbl_8055EB98[1]);
-  fn_802CDB5C(0); fn_802C7A94(1);
-  if(!temp_r3){fn_802C9648(lbl_80562E70);fn_802CDB5C(1);fn_802C7A94(2);fn_802C7A94(3);fn_80287A34(0);fn_802C967C();fn_802CDB5C(2);fn_802879E4(0);fn_802C7A94(4);}
-  fn_801FA6B8();fn_802C7730(&stack[0]);fn_802CDB5C(3);fn_802C7A50();
-  if(!temp_r3){fn_8029790C(0);fn_801F4DCC();fn_802CDB5C(4);}
-  fn_802C7AD4();fn_802CDAA8();
- } else fn_802B01A8();
+    /* Run the render/scene update sequence when a scene context exists; fallback otherwise. */
+    s32 stack[10];
+    s32 temp_r3;
+    s32 var_r3;
+
+    if (lbl_8055EBA0 != 0) {
+        fn_802C7A44();
+        fn_80202718();
+        fn_801F1C24(&stack[0]);
+        fn_802C7730(&stack[0]);
+        temp_r3 = fn_801EA470();
+        if (temp_r3) {
+            var_r3 = lbl_8055EBA0[2];
+        } else {
+            var_r3 = lbl_8055EBA0[1];
+        }
+        fn_802CD37C(var_r3, 0, 0, 0, lbl_8055EB98[0], lbl_8055EB98[1]);
+        fn_802CDB5C(0);
+        fn_802C7A94(1);
+        if (!temp_r3) {
+            fn_802C9648(lbl_80562E70);
+            fn_802CDB5C(1);
+            fn_802C7A94(2);
+            fn_802C7A94(3);
+            fn_80287A34(0);
+            fn_802C967C();
+            fn_802CDB5C(2);
+            fn_802879E4(0);
+            fn_802C7A94(4);
+        }
+        fn_801FA6B8();
+        fn_802C7730(&stack[0]);
+        fn_802CDB5C(3);
+        fn_802C7A50();
+        if (!temp_r3) {
+            fn_8029790C(0);
+            fn_801F4DCC();
+            fn_802CDB5C(4);
+        }
+        fn_802C7AD4();
+        fn_802CDAA8();
+    } else {
+        fn_802B01A8();
+    }
 }
 
 extern void fn_802B0144(void);
