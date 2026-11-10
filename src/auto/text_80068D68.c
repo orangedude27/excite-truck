@@ -3121,6 +3121,8 @@ void GKI_enqueue_head(BUFFER_Q *p_q, void *p_buf) {
     extern char lbl_803141C0[];
     extern char lbl_803141FC[];
     extern void fn_8006EBF0(void);
+    /* Prepends a buffer to the head of a GKI queue after inline damage/status checks,
+       updating queue links/count and buffer status under interrupt protection. */
     BUFFER_HDR_T *p_hdr = (BUFFER_HDR_T *)((u8 *)p_buf - 8);
     u8 pool_id;
     u16 size;
