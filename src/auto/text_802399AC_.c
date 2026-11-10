@@ -58,8 +58,11 @@ extern s32 fn_8021521C(s32, s32, s32);
 extern s32 fn_8027B9EC(s32);
 extern s32 fn_802104D0(void);
 extern void *lbl_8055BAC8;
+#pragma push
+#pragma small_data off
 extern s32 lbl_80340B58;
 extern s32 lbl_80340B58;
+#pragma pop
 extern char lbl_80340C44[];
 extern char lbl_80340C24[];
 extern s32 lbl_8049870C[];
