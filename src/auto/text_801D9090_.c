@@ -80,7 +80,7 @@ void fn_801D9118(int arg0) { fn_801D89C0(arg0 - 4); }
 #pragma dont_inline on
 #pragma push
 #pragma processor 750
-#pragma scheduling gekko
+#pragma scheduling on
 void fn_801D9120(float *out, float *values, int count, float weight) {
     float value = values[count - 1];
     if (count == 1) {
