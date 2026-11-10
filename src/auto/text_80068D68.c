@@ -23594,6 +23594,7 @@ void sdp_snd_service_search_req(tCONN_CB *p_ccb, u8 num_uuid, u8 *p_uuid_list) {
     u8 *p_db;
     u16 param_len;
 
+    /* Build and send an SDP Service Search Request for the UUIDs in the discovery DB. */
     p_msg = (BT_HDR *)GKI_getpoolbuf(2);
     if (p_msg == NULL) {
         sdp_disconnect(p_ccb, 6);
