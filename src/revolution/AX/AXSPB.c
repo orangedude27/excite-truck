@@ -124,6 +124,8 @@ void __AXSPBInit(void) {
 void fn_80032778(void) {}
 
 void __AXDepopVoice(AXPB* pb) {
+    /* Accumulates this voice's depop deltas (main/aux L/R/S and remote
+     * main/aux channels) into the global SPB mix accumulators. */
     __AXSpbAL += pb->dpop.aL;
     __AXSpbAAL += pb->dpop.aAuxAL;
     __AXSpbABL += pb->dpop.aAuxBL;
