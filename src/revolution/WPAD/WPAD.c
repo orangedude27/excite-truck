@@ -1922,6 +1922,7 @@ void WPADiExcludeButton(s32 chan) {
 }
 
 void fn_80060AFC(s32 chan) {
+    /* Copy the latest received WPAD status into the optional ring buffer for chan (size/format at +0x7EC..+0x7F8), invoke sampling callback if set, and bump sample count. */
     WPADCB* p = lbl_8038F4F0[chan];
     BOOL enabled = OSDisableInterrupts();
     u8 rxBufIndex = *(u8*)((u8*)p + 0x806) != 0 ? 0 : 1;
