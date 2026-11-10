@@ -866,22 +866,24 @@ extern struct IndexList802ED748 lbl_802ED748;
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma scheduling on
-void fn_80010A50(f32 farg0, f32 farg1, f32 farg2, f32 farg3, s32 arg4, s32 arg5) {
+void fn_80010A50(f32 left, f32 top, f32 width, f32 height, s32 colorTop, s32 colorBottom) {
+    /* Build four colored/textured vertices for an axis-aligned quad and submit
+     * them as two triangles using the shared index list. */
     struct Frame {
         struct IndexList802ED748 indices;
         u8 pad[4];
-        f32 sp20[6];
-        f32 sp38[6];
-        f32 sp50[6];
-        f32 sp68[6];
+        f32 topLeft[6];
+        f32 topRight[6];
+        f32 bottomLeft[6];
+        f32 bottomRight[6];
     } __attribute__((aligned(16))) frame;
 
-    fn_80231380(frame.sp20, arg4, farg0, farg1, lbl_80560264, lbl_80560280, lbl_80560280);
-    fn_80231380(frame.sp38, arg5, farg0 + farg2, farg1, lbl_80560264, lbl_80560280, lbl_80560280);
-    fn_80231380(frame.sp50, arg4, farg0, farg1 - farg3, lbl_80560264, lbl_80560280, lbl_80560280);
-    fn_80231380(frame.sp68, arg5, farg0 + farg2, farg1 - farg3, lbl_80560264, lbl_80560280, lbl_80560280);
+    fn_80231380(frame.topLeft, colorTop, left, top, lbl_80560264, lbl_80560280, lbl_80560280);
+    fn_80231380(frame.topRight, colorBottom, left + width, top, lbl_80560264, lbl_80560280, lbl_80560280);
+    fn_80231380(frame.bottomLeft, colorTop, left, top - height, lbl_80560264, lbl_80560280, lbl_80560280);
+    fn_80231380(frame.bottomRight, colorBottom, left + width, top - height, lbl_80560264, lbl_80560280, lbl_80560280);
     frame.indices = lbl_802ED748;
-    fn_802C8DB8(frame.sp20, 4, frame.indices.idx, 6);
+    fn_802C8DB8(frame.topLeft, 4, frame.indices.idx, 6);
 }
 #pragma pop
 void fn_80010B74(void) {
