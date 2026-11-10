@@ -464,6 +464,7 @@ extern "C" void SetResourceBuffer__Q46nw4hbm2ut6detail11ResFontBaseFPvPQ36nw4hbm
     ((ResFontBaseMembers*)self)->mFontInfo=info;
 }
 
+// Validates this and font info pointer; returns width byte from font data.
 u8 nw4hbm::ut::detail::ResFontBase::GetWidth() const {
     const char* file=lbl_80329140;
     u32 value=(u32)this;
