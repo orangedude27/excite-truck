@@ -130,8 +130,8 @@ void fn_8017188C(void *arg0) {
         offset += 0x28;
         i++;
     }
-#pragma use_lmw_stmw on
 }
+#pragma use_lmw_stmw on
 
 void fn_80171930(void) {
 }
