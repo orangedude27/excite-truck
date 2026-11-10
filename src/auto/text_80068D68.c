@@ -16329,30 +16329,32 @@ void hidh_l2cif_disconnect_cfm(u32 handle) {
 
 extern u8 lbl_80317B80[];
 extern u8 lbl_80317BB8[];
-void hidh_l2cif_cong_ind(u32 arg0, s32 arg1) {
-    u8 dhandle;
-    u8 *found = 0;
+// Handles an L2CAP congestion indication for a HID host channel: finds the device/channel
+// matching the given CID, logs if unknown, and sets/clears the channel's congestion flag.
+void hidh_l2cif_cong_ind(u32 lcid, s32 congested) {
+    u8 deviceIndex;
+    u8 *channel = 0;
 
-    for (dhandle = 0; dhandle < 0x10; dhandle++) {
-        u8 *entry = (u8 *)lbl_803C3C38 + dhandle * 0x34;
-        if (entry[0] != 0 && entry[0x10] != 0 &&
-            (arg0 == *(u16 *)(entry + 0x14) ||
-             arg0 == *(u16 *)(entry + 0x16)))
+    for (deviceIndex = 0; deviceIndex < 0x10; deviceIndex++) {
+        u8 *device = (u8 *)lbl_803C3C38 + deviceIndex * 0x34;
+        if (device[0] != 0 && device[0x10] != 0 &&
+            (lcid == *(u16 *)(device + 0x14) ||
+             lcid == *(u16 *)(device + 0x16)))
             break;
     }
-    if (dhandle != 0x10)
-        found = (u8 *)lbl_803C3C38 + dhandle * 0x34 + 0x10;
+    if (deviceIndex != 0x10)
+        channel = (u8 *)lbl_803C3C38 + deviceIndex * 0x34 + 0x10;
 
-    if (found == 0) {
+    if (channel == 0) {
         if (*((u8 *)lbl_803C3C38 + 0x401) >= 2)
-            ((void (*)(u32, void *, u32))fn_80070954)(0x1E0001, lbl_80317B80, arg0);
+            ((void (*)(u32, void *, u32))fn_80070954)(0x1E0001, lbl_80317B80, lcid);
     } else {
         if (*((u8 *)lbl_803C3C38 + 0x401) >= 4)
-            ((void (*)(u32, void *, u32, s32))fn_8007096C)(0x1E0003, lbl_80317BB8, arg0, arg1);
-        if (arg1 != 0)
-            found[1] |= 0x20;
+            ((void (*)(u32, void *, u32, s32))fn_8007096C)(0x1E0003, lbl_80317BB8, lcid, congested);
+        if (congested != 0)
+            channel[1] |= 0x20;
         else
-            found[1] &= ~0x20;
+            channel[1] &= ~0x20;
     }
 }
 
