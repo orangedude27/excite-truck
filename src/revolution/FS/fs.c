@@ -611,6 +611,7 @@ s32 ISFS_DeleteAsync(const char* path, FSAsyncCallback callback,
 }
 
 
+/* Retrieves the block and file usage counts for an ISFS path via IOS_Ioctlv (FS_IOCTLV_GET_USAGE). */
 s32 ISFS_GetUsage(const char* path, s32* blockCountOut, s32* fileCountOut) {
     s32 ret;
     u32* blockCountWork;
