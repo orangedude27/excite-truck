@@ -1075,8 +1075,8 @@ void fn_8024BA00(void *arg0) {
         *(void **)((char *)arg0 + 0x124), value, item, count - 1, count);
     index = *(s32 *)((char *)arg0 + 0x11C);
     items = *(s32 **)((char *)arg0 + 0x10);
-    fn_801345D8((char *)arg0 + 0x128, 0x20, &lbl_80343E70,
-        items[index * 2 + 1], &lbl_8055BFF8);
+    fn_801345D8((char *)arg0 + 0x128, 0x20, (const char *)&lbl_80343E70,
+        items[index * 2 + 1], (const char *)&lbl_8055BFF8);
 }
 
 #pragma scheduling invalid_target
@@ -1084,7 +1084,7 @@ void fn_8024BAA0(void *arg0) {
     int plus1 = *(int *)((char *)arg0 + 0x11C) + 1;
     *(int *)((char *)arg0 + 0x11C) = plus1 % *(int *)((char *)arg0 + 0x14);
     ((void (*)(void *, int, int, int, int))(*(void ***)((char *)*(void **)((char *)arg0 + 0x124) + 0xC))[12])(*(void **)((char *)arg0 + 0x124), *(int *)((char *)arg0 + 0x120), *(*(int **)((char *)arg0 + 0x10) + *(int *)((char *)arg0 + 0x11C) * 2 + 1), *(int *)((char *)arg0 + 0x14), plus1);
-    fn_801345D8((char *)arg0 + 0x128, 0x20, &lbl_80343E70, *(*(int **)((char *)arg0 + 0x10) + *(int *)((char *)arg0 + 0x11C) * 2 + 1), &lbl_8055BFF8);
+    fn_801345D8((char *)arg0 + 0x128, 0x20, (const char *)&lbl_80343E70, *(*(int **)((char *)arg0 + 0x10) + *(int *)((char *)arg0 + 0x11C) * 2 + 1), (const char *)&lbl_8055BFF8);
 }
 #pragma scheduling on
 void fn_8024BB3C(void *arg0) {
