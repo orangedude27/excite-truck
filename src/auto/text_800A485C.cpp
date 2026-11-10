@@ -12717,34 +12717,37 @@ end:
 typedef s32 (*FnBB0A8)(s32,s32,s32,s32,s32,s32,s32,s32);
 extern "C" s32 fn_800BABD0(void *, s32, s32 *, s32);
 extern "C" s32 fn_800BACC4(void *, s32, s32 *, s32);
-extern "C" s32 fn_800BC134(void *arg0, s32 arg1, s32 arg2) {
-    const char *str = lbl_8031B838;
-    s32 sp18;
-    s32 sp20[6];
+/* SD host helper: configure card mode (select flag from arg1==4), read/modify/write
+ * a register field via SD ioctls, reporting errors through OSReport.
+ */
+extern "C" s32 fn_800BC134(void *sdCtx, s32 mode, s32 unused) {
+    const char *sdMsgBase = lbl_8031B838;
+    s32 regValue;
+    s32 responseBuf[6];
     s32 result;
-    s32 flag = (arg1 == 4) ? 2 : 0;
-    result = fn_800BB0A8(*(s32 *)arg0, 0x37, 3, 1, *(s32 *)((u8 *)arg0 + 0x10), 0, 0, 0, 0, (s32)sp20, 0, 0);
+    s32 modeFlag = (mode == 4) ? 2 : 0;
+    result = fn_800BB0A8(*(s32 *)sdCtx, 0x37, 3, 1, *(s32 *)((u8 *)sdCtx + 0x10), 0, 0, 0, 0, (s32)responseBuf, 0, 0);
     if (result) {
-        OSReport(str + 0x618);
-        OSReport(str + 0x624, str + 0x608, result);
+        OSReport(sdMsgBase + 0x618);
+        OSReport(sdMsgBase + 0x624, sdMsgBase + 0x608, result);
         return result;
     }
-    result = fn_800BB0A8(*(s32 *)arg0, 6, 3, 1, flag, 0, 0, 0, 0, (s32)sp20, 0, 0);
+    result = fn_800BB0A8(*(s32 *)sdCtx, 6, 3, 1, modeFlag, 0, 0, 0, 0, (s32)responseBuf, 0, 0);
     if (result) {
-        OSReport(str + 0x638);
-        OSReport(str + 0x624, str + 0x608, result);
+        OSReport(sdMsgBase + 0x638);
+        OSReport(sdMsgBase + 0x624, sdMsgBase + 0x608, result);
         return result;
     }
-    result = fn_800BABD0(arg0, 0x28, &sp18, 1);
+    result = fn_800BABD0(sdCtx, 0x28, &regValue, 1);
     if (result) {
-        OSReport(str + 0x648, str + 0x608, 0x28);
+        OSReport(sdMsgBase + 0x648, sdMsgBase + 0x608, 0x28);
         return result;
     }
-    if (flag) sp18 |= 2;
-    else sp18 &= ~2;
-    result = fn_800BACC4(arg0, 0x28, &sp18, 1);
+    if (modeFlag) regValue |= 2;
+    else regValue &= ~2;
+    result = fn_800BACC4(sdCtx, 0x28, &regValue, 1);
     if (result) {
-        OSReport(str + 0x668, str + 0x608, 0x28);
+        OSReport(sdMsgBase + 0x668, sdMsgBase + 0x608, 0x28);
         return result;
     }
     return result;
