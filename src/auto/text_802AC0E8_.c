@@ -241,6 +241,168 @@ void fn_802AD414(void *arg0, float farg0) {
     }
 }
 
+extern float lbl_80564AB4, lbl_80564ACC, lbl_80564AD0, lbl_80564AD4, lbl_80564AD8, lbl_80564AC0;
+extern char lbl_8055CD68;
+extern int fn_802C2C00(int);
+extern void fn_8012F57C(float *, void *, void *, float);
+extern void fn_802C9900(void);
+extern void fn_802C9904(void);
+extern void fn_802C744C(int, float *);
+extern void fn_802C70AC(int, float *, int, int);
+extern int fn_8023389C(int, unsigned int, int, float *, char *, int, ...);
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+void fn_802AD4C4(void *arg0, int arg1, float t) {
+    char *obj = (char *)arg0;
+    float *off = (float *)arg1;
+    float m[12];
+    float sp30[4];
+    float sp20[3];
+    float sp14[3];
+    float sp8[3];
+    int h;
+    int i;
+    int boff;
+    float one, eps, lo, c1, c2, zero, half;
+    h = fn_802C2C00(0);
+    one = lbl_80564AB4;
+    eps = lbl_80564ACC;
+    lo = lbl_80564AD0;
+    c1 = lbl_80564AD4;
+    c2 = lbl_80564AD8;
+    zero = lbl_80564AB0;
+    boff = 0;
+    for (i = 0; i < *(int *)(obj + 0x24); i++, boff += 0xC) {
+        char *seg = *(char **)(obj + 0x28) + boff;
+        int n = *(int *)(seg + 4) - 1;
+        int j;
+        int jo = 0;
+        for (j = 0; j < n; j++, jo += 0x38) {
+            char *a = *(char **)(seg + 8) + jo;
+            char *b = *(char **)(seg + 8) + (j + 1) * 0x38;
+            float f23, u, f4, f6, a0 = *(float *)a;
+            if (t >= a0 && t <= *(float *)b + eps) {
+                char *c;
+                float *p2;
+                u = (t - a0) / (*(float *)b - a0);
+                if (one < u) u = one;
+                u = (u > zero) ? u : zero;
+                f23 = zero + u * one;
+                switch (*(int *)(a + 0x30)) {
+                case 1:
+                    if (f23 < lo) {
+                        f23 = lo;
+                    } else if (f23 > one) {
+                        f23 = one;
+                    } else if (f23 > zero) {
+                        f23 = f23 * (c1 * f23 * f23) + c2 * f23 * f23;
+                    } else {
+                        f23 = f23 * (c1 * f23 * f23) - c2 * f23 * f23;
+                    }
+                    break;
+                case 2:
+                    f23 = f23 * f23;
+                    break;
+                case 3:
+                    f23 = one - (one - f23) * (one - f23);
+                    break;
+                }
+                fn_8012F57C(sp30, a + 0x20, b + 0x20, f23);
+                sp20[2] = *(float *)(a + 0x1C) + f23 * (*(float *)(b + 0x1C) - *(float *)(a + 0x1C));
+                sp20[1] = *(float *)(a + 0x18) + f23 * (*(float *)(b + 0x18) - *(float *)(a + 0x18));
+                sp20[0] = *(float *)(a + 0x14) + f23 * (*(float *)(b + 0x14) - *(float *)(a + 0x14));
+                if (off != 0) f4 = off[0]; else f4 = lbl_80564AB4;
+                if (off != 0) {
+                    sp20[0] += off[1];
+                    sp20[1] += off[2];
+                    sp20[2] += off[3];
+                }
+                f6 = one;
+                {
+                    float x = sp30[0], y = sp30[1], z = sp30[2], w = sp30[3];
+                    float y2 = y + y, z2 = z + z, x2 = x + x;
+                    float yy = y * y2, zz = z * z2, xx = x * x2;
+                    float wx = w * x2, wy = w * y2, wz = w * z2;
+                    float yz = y * z2, xz = x * z2, xy = x * y2;
+                    m[0] = one - (yy + zz);
+                    m[4] = one - (xx + zz);
+                    m[7] = yz - wx;
+                    m[8] = one - (xx + yy);
+                    m[5] = yz + wx;
+                    m[2] = xz - wy;
+                    m[6] = xz + wy;
+                    m[3] = xy - wz;
+                    m[1] = xy + wz;
+                    m[9] = sp20[0] * f4;
+                    m[10] = sp20[1] * f4;
+                    m[11] = sp20[2] * f4;
+                }
+                sp14[2] = *(float *)(a + 0xC) + f23 * (*(float *)(b + 0xC) - *(float *)(a + 0xC));
+                sp14[1] = *(float *)(a + 8) + f23 * (*(float *)(b + 8) - *(float *)(a + 8));
+                sp14[0] = *(float *)(a + 4) + f23 * (*(float *)(b + 4) - *(float *)(a + 4));
+                c = *(char **)(obj + 0x20) + *(int *)seg * 0x28;
+                p2 = *(float **)(c + 8);
+                if (p2 != 0) {
+                    m[9] += p2[1] * f4;
+                    m[10] += p2[2] * f4;
+                    m[11] += p2[3] * f4;
+                    f6 = one * (*(float **)(c + 8))[0];
+                }
+                if (*(int *)c == 2) {
+                    if (sp8 == (float *)(c + 0x14)) {
+                        float c14 = *(float *)(c + 0x14), c18 = *(float *)(c + 0x18), c1c = *(float *)(c + 0x1C);
+                        sp8[0] = c1c * m[6] + (c14 * m[0] + c18 * m[3]);
+                        sp8[1] = c1c * m[7] + (c14 * m[1] + c18 * m[4]);
+                        sp8[2] = c1c * m[8] + (c14 * m[2] + c18 * m[5]);
+                    } else {
+                        sp8[0] = *(float *)(c + 0x1C) * m[6] + (*(float *)(c + 0x14) * m[0] + *(float *)(c + 0x18) * m[3]);
+                        sp8[1] = *(float *)(c + 0x1C) * m[7] + (*(float *)(c + 0x14) * m[1] + *(float *)(c + 0x18) * m[4]);
+                        sp8[2] = *(float *)(c + 0x1C) * m[8] + (*(float *)(c + 0x14) * m[2] + *(float *)(c + 0x18) * m[5]);
+                    }
+                    m[9] += sp8[0];
+                    m[10] += sp8[1];
+                    m[11] += sp8[2];
+                    {
+                        float k = f6 * (f4 * (sp14[0] * *(float *)(c + 0x10)));
+                        m[0] *= k; m[1] *= k; m[2] *= k;
+                        k = f6 * (f4 * (sp14[1] * *(float *)(c + 0x10)));
+                        m[3] *= k; m[4] *= k; m[5] *= k;
+                        k = f6 * (f4 * (sp14[2] * *(float *)(c + 0x10)));
+                        m[6] *= k; m[7] *= k; m[8] *= k;
+                    }
+                    fn_802C9900();
+                    {
+                        int r;
+                        if (*(int **)(c + 0x24) != 0) r = **(int **)(c + 0x24); else r = *(int *)(c + 0x20);
+                        if (r < 0) {
+                            fn_802C744C(*(int *)(c + 0xC), m);
+                        } else {
+                            fn_802C70AC(*(int *)(c + 0xC), m, -1, 1 << r);
+                        }
+                    }
+                    fn_802C9904();
+                } else if (*(int *)c == 1) {
+                    unsigned int col = *(unsigned int *)(c + 0x14);
+                    float lerp = *(float *)(a + 0x10) + f23 * (*(float *)(b + 0x10) - *(float *)(a + 0x10));
+                    float v = lerp * (float)(col >> 24);
+                    int iv;
+                    half = lbl_80564AC0;
+                    if (v < zero) v = v - half; else v = half + v;
+                    iv = (int)v;
+                    if (iv < 0) iv = 0;
+                    if (iv > 0xFF) iv = 0xFF;
+                    fn_8023389C(*(int *)(c + 0xC), (col & 0x00FFFFFF) | ((unsigned int)iv << 24), *(int *)(c + 0x10), m, &lbl_8055CD68, *(int *)(c + 0x1C),
+                        zero, zero, zero, f6 * (f4 * (sp14[0] * *(float *)(c + 0x18))), one);
+                }
+                break;
+            }
+        }
+    }
+    fn_802C2C00(h);
+}
+#pragma pop
+
 #pragma push
 #pragma processor 750
 extern void fn_8023895C(void);
@@ -304,7 +466,7 @@ int fn_802ADCF8(int arg0) {
 
 void *fn_802ADDD8(void *arg0,int arg1) {
  int *obj; int data;
- obj=(int *)fn_801284F8(0x10,&lbl_80349FA4,&lbl_80349FA4);
+ obj=(int *)((void*(*)(int, void*))fn_801284F8)(0x10,&lbl_80349FA4);
  if(obj){data=(int)fn_8012850C(arg1*0x74,&lbl_8055CD70);obj[0]=data;obj[2]=arg1;obj[1]=0;obj[3]=data;}
  *(int **)arg0=obj; *(float *)((char *)arg0+4)=lbl_8055E3C8; return arg0;
 }
