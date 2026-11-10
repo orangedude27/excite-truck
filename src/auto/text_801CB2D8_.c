@@ -1656,21 +1656,26 @@ int fn_801CE75C(void) {
 
 extern unsigned int fn_801CE898(void);
 extern void fn_802ADE60(void *, int);
-void fn_801CE7A0(void) {
+#pragma cplusplus on
+extern "C" void fn_801CE7A0(void) {
+    class VObj {
+    public:
+        virtual void d0(s32);
+    };
     s32 *state;
-    void *ptr;
+    VObj *ptr;
     if (fn_801CE898() != 0) return;
     state = lbl_8055E884;
-    ptr = (void *)state[0x2C8 / 4];
+    ptr = (VObj *)state[0x2C8 / 4];
     if (ptr != 0) { fn_802ADE60(ptr, 1); state[0x2C8 / 4] = 0; }
-    ptr = (void *)state[0x2CC / 4];
-    if (ptr != 0) { if (ptr != 0) ((void (*)(void *, int))((u32 *)*(u32 *)ptr)[2])(ptr, 1); state[0x2CC / 4] = 0; }
-    ptr = (void *)state[0x2D0 / 4];
-    if (ptr != 0) { if (ptr != 0) ((void (*)(void *, int))((u32 *)*(u32 *)ptr)[2])(ptr, 1); state[0x2D0 / 4] = 0; }
-    ptr = (void *)state[0x2D4 / 4];
-    if (ptr != 0) { if (ptr != 0) ((void (*)(void *, int))((u32 *)*(u32 *)ptr)[2])(ptr, 1); state[0x2D4 / 4] = 0; }
+    ptr = (VObj *)state[0x2CC / 4];
+    if (ptr != 0) { if (ptr != 0) ptr->d0(1); state[0x2CC / 4] = 0; }
+    ptr = (VObj *)state[0x2D0 / 4];
+    if (ptr != 0) { if (ptr != 0) ptr->d0(1); state[0x2D0 / 4] = 0; }
+    ptr = (VObj *)state[0x2D4 / 4];
+    if (ptr != 0) { if (ptr != 0) ptr->d0(1); state[0x2D4 / 4] = 0; }
 }
-
+#pragma cplusplus reset
 int fn_801CE874(int arg0) {
     return *fn_801EA9A0();
 }
