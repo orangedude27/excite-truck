@@ -2520,7 +2520,10 @@ extern "C" void Close__Q46nw4hbm3snd6detail8SeqTrackFv(void *);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
 #pragma use_lmw_stmw off
 extern "C" bool ParseNextTick__Q46nw4hbm3snd6detail9SeqPlayerFb(void *self, bool arg) {
-    extern u8 lbl_80323B28[], lbl_80323B3C[];
+    // Advance each of the player's 16 sequencer tracks by one tick. If a track
+    // reports it is finished, close it and ask the manager to remove it from the
+    // slot. Returns false if any track parse fails.
+    extern u8 lbl_80323B28[], lbl_80323B3C[]; // "snd_SeqPlayer.cpp", trackNo bounds message
     struct Manager {
         virtual void method0();
         virtual void method1();
@@ -2528,43 +2531,43 @@ extern "C" bool ParseNextTick__Q46nw4hbm3snd6detail9SeqPlayerFb(void *self, bool
     };
     register void *player = self;
     register void *track;
-    register char *entry = (char *)player;
-    register int failed = 0;
-    register int i = 0;
+    register char *slotPtr = (char *)player;
+    register int parseFailed = 0;
+    register int trackIndex = 0;
     register int zero = 0;
-    int valid;
+    int trackIndexValid;
 
     do {
-        if (i > 15)
+        if (trackIndex > 15)
             track = (void *)zero;
         else
-            track = *(void **)(entry + 0x9C);
+            track = *(void **)(slotPtr + 0x9C);
         if (track != 0) {
             UpdateChannelLength__Q46nw4hbm3snd6detail8SeqTrackFv(track);
             if (!ParseNextTick__Q46nw4hbm3snd6detail8SeqTrackFb(track, arg)) {
-                failed = 1;
+                parseFailed = 1;
             } else {
-                valid = 0;
-                if (i >= 0 && i < 16)
-                    valid = 1;
-                if (valid == 0)
-                    Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80323B28, 0x2FD, (const char *)lbl_80323B3C, i, 0, 16);
-                if (i > 15)
+                trackIndexValid = 0;
+                if (trackIndex >= 0 && trackIndex < 16)
+                    trackIndexValid = 1;
+                if (trackIndexValid == 0)
+                    Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80323B28, 0x2FD, (const char *)lbl_80323B3C, trackIndex, 0, 16);
+                if (trackIndex > 15)
                     track = (void *)zero;
                 else
-                    track = *(void **)(entry + 0x9C);
+                    track = *(void **)(slotPtr + 0x9C);
                 if (track != 0) {
                     Close__Q46nw4hbm3snd6detail8SeqTrackFv(track);
                     void *manager = *(void **)((char *)player + 0x98);
-                    ((Manager *)manager)->RemoveTrack(*(void **)(entry + 0x9C));
-                    *(void **)(entry + 0x9C) = (void *)zero;
+                    ((Manager *)manager)->RemoveTrack(*(void **)(slotPtr + 0x9C));
+                    *(void **)(slotPtr + 0x9C) = (void *)zero;
                 }
             }
         }
-        ++i;
-        entry += 4;
-    } while (i < 16);
-    return failed == 0;
+        ++trackIndex;
+        slotPtr += 4;
+    } while (trackIndex < 16);
+    return parseFailed == 0;
 }
 #pragma use_lmw_stmw reset
 
