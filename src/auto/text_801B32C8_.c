@@ -146,20 +146,32 @@ int fn_801B3390(void) {
     return 0x14;
 }
 
+#pragma use_lmw_stmw off
 s32 fn_801B3398(void* arg0) {
- Unk801B3398 local;
- s32* src=(s32*)arg0;
- s32 t0,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13;
- t0=src[0]; t1=src[1]; t2=src[2]; t3=src[3]; t4=src[4]; t5=src[5]; t6=src[6];
- t7=src[7]; t8=src[8]; t9=src[9]; t10=src[10]; t11=src[11]; t12=src[12]; t13=src[13];
- local.unk_0x00=t0; local.unk_0x04=t1; local.unk_0x08=t2; local.unk_0x0C=t3;
- local.unk_0x10=t4; local.unk_0x14=t5; local.unk_0x18=t6; local.unk_0x1C=t7;
- local.unk_0x20=t8; local.unk_0x24=t9; local.unk_0x28=t10; local.unk_0x2C=t11;
- local.unk_0x30=t12; local.unk_0x34=t13;
- fn_801796CC(1,&local,0x38);
- return 0x38;
+    Unk801B3398 local;
+    s32 t13, t12, t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
+    t0 = *(volatile s32 *)((char *)arg0 + 0x00);
+    t1 = *(volatile s32 *)((char *)arg0 + 0x04);
+    t2 = *(volatile s32 *)((char *)arg0 + 0x08);
+    t3 = *(volatile s32 *)((char *)arg0 + 0x0C);
+    t4 = *(volatile s32 *)((char *)arg0 + 0x10);
+    t5 = *(volatile s32 *)((char *)arg0 + 0x14);
+    t6 = *(volatile s32 *)((char *)arg0 + 0x18);
+    t7 = *(volatile s32 *)((char *)arg0 + 0x1C);
+    t8 = *(volatile s32 *)((char *)arg0 + 0x20);
+    t9 = *(volatile s32 *)((char *)arg0 + 0x24);
+    t10 = *(volatile s32 *)((char *)arg0 + 0x28);
+    t11 = *(volatile s32 *)((char *)arg0 + 0x2C);
+    t12 = *(volatile s32 *)((char *)arg0 + 0x30);
+    t13 = *(volatile s32 *)((char *)arg0 + 0x34);
+    local.unk_0x00 = t0; local.unk_0x04 = t1; local.unk_0x08 = t2; local.unk_0x0C = t3;
+    local.unk_0x10 = t4; local.unk_0x14 = t5; local.unk_0x18 = t6; local.unk_0x1C = t7;
+    local.unk_0x20 = t8; local.unk_0x24 = t9; local.unk_0x28 = t10; local.unk_0x2C = t11;
+    local.unk_0x30 = t12; local.unk_0x34 = t13;
+    fn_801796CC(1, &local, 0x38);
+    return 0x38;
 }
-#pragma scheduling invalid_target
+#pragma use_lmw_stmw on
 void fn_801B3448(void) {
     void *p = (void *)fn_801284F8(0x5C0, &lbl_80335D3C);
     if (p != NULL) {
@@ -592,10 +604,13 @@ void* fn_801B447C(void* arg0, void* arg1, s32 arg2) {
     s32 half;
     s32 right;
     if (arg2 == 1) return arg1;
-    half = (arg2 + ((u32)arg2 >> 31)) >> 1;
+    half = ((s32)((u32)arg2 >> 31) + arg2) >> 1;
     if (half > 0) *(void**)((u8*)arg1 + half * 16 + 8) = fn_801B447C(arg0, arg1, half);
     right = arg2 - half - 1;
-    if (right > 0) *(void**)((u8*)arg1 + half * 16 + 12) = fn_801B447C(arg0, (u8*)arg1 + half * 16 + 16, right);
+    if (right > 0) {
+        s32 off = half * 16;
+        *(void**)((u8*)arg1 + off + 12) = fn_801B447C(arg0, (u8*)arg1 + off + 16, right);
+    }
     return (u8*)arg1 + half * 16;
 }
 void *fn_801B4528(void *arg0, u32 *arg1, u32 arg2) {
