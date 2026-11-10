@@ -75,9 +75,10 @@ static s32 GetLeapDays(s32 year) {
 }
 
 static void GetDates(s32 days, OSCalendarTime* cal) DECOMP_DONT_INLINE {
+    /* Convert day count since epoch into weekday/year/day-of-year/month/day-of-month fields. */
     s32 year;
     s32 totalDays;
-    s32* p_days;
+    s32* monthDaysTable;
     s32 month;
 
     cal->wday = (days + 6) % WEEK_DAY_MAX;
@@ -91,12 +92,12 @@ static void GetDates(s32 days, OSCalendarTime* cal) DECOMP_DONT_INLINE {
     cal->year = year;
     cal->yday = days;
 
-    p_days = IsLeapYear(year) ? LeapYearDays : YearDays;
-    for (month = MONTH_MAX; days < p_days[--month];) {
+    monthDaysTable = IsLeapYear(year) ? LeapYearDays : YearDays;
+    for (month = MONTH_MAX; days < monthDaysTable[--month];) {
         ;
     }
     cal->month = month;
-    cal->mday = days - p_days[month] + 1;
+    cal->mday = days - monthDaysTable[month] + 1;
 }
 
 void OSTicksToCalendarTime(s64 ticks, OSCalendarTime* cal) {
