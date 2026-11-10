@@ -4513,24 +4513,25 @@ void GXSetFog(GXFogType type, GXColor color, f32 start, f32 end, f32 near, f32 f
     *(volatile u16 *)((u8 *)__GXData + 2) = 0;
 }
 
-void GXSetFogRangeAdj(int enable, u16 center, const u16 *table) {
+void GXSetFogRangeAdj(int adjEnable, u16 center, const u16 *rangeAdjTable) {
     u32 fogRangeReg;
-    u32 fogRangeRegK;
+    u32 fogRangeKReg;
     s32 i;
 
-    if (enable) {
+    /* Set fog range adjustment table (BP 0xE9-0xED) and center/enable (BP 0xE8). */
+    if (adjEnable) {
         for (i = 0; i < 10; i += 2) {
-            fogRangeRegK = 0;
-            fogRangeRegK = __rlwimi(fogRangeRegK, table[i], 0, 20, 31);
-            fogRangeRegK = __rlwimi(fogRangeRegK, table[i + 1], 12, 8, 19);
-            fogRangeRegK = __rlwimi(fogRangeRegK, 0xE9 + (i / 2), 24, 0, 7);
+            fogRangeKReg = 0;
+            fogRangeKReg = __rlwimi(fogRangeKReg, rangeAdjTable[i], 0, 20, 31);
+            fogRangeKReg = __rlwimi(fogRangeKReg, rangeAdjTable[i + 1], 12, 8, 19);
+            fogRangeKReg = __rlwimi(fogRangeKReg, 0xE9 + (i / 2), 24, 0, 7);
             *(volatile u8 *)0xCC008000 = 0x61;
-            *(volatile u32 *)0xCC008000 = fogRangeRegK;
+            *(volatile u32 *)0xCC008000 = fogRangeKReg;
         }
     }
     fogRangeReg = 0;
     fogRangeReg = __rlwimi(fogRangeReg, center + 342, 0, 22, 31);
-    fogRangeReg = __rlwimi(fogRangeReg, enable, 10, 21, 21);
+    fogRangeReg = __rlwimi(fogRangeReg, adjEnable, 10, 21, 21);
     fogRangeReg = __rlwimi(fogRangeReg, 0xE8, 24, 0, 7);
     *(volatile u8 *)0xCC008000 = 0x61;
     *(volatile u32 *)0xCC008000 = fogRangeReg;
