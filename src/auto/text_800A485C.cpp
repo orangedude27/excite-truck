@@ -6814,52 +6814,53 @@ extern "C" s32 fn_800B0868(void *arg0, s32 arg1, u32 arg2, u32 *arg3) {
     return 0;
 }
 
-extern "C" s32 fn_800B0A60(void *arg0, s32 arg1, u32 arg2, u32 *arg3) {
-    s32 spC;
-    u32 sp8;
-    u8 *vol;
+extern "C" s32 fn_800B0A60(void *file, s32 dst, u32 length, u32 *bytesReadOut) {
+    /* Reads file data into dst, clamping to available/cluster-aligned bytes and advancing the file cursor. */
+    s32 clusters;
+    u32 bytesRead;
+    u8 *volume;
     s32 result;
-    s32 off;
+    s32 sectorOffset;
 
-    *arg3 = 0;
-    vol = arg0 == 0 ? 0 : *(u8 **)(*(u8 **)((u8 *)arg0 + 8) + 0x268);
-    spC = 0;
-    result = fn_800AE664(*(u8 **)((u8 *)arg0 + 8) + 4, *(u32 *)((u8 *)arg0 + 0x24), arg2, (s32 *)((volatile u8 *)arg0 + 0x20), &spC);
+    *bytesReadOut = 0;
+    volume = file == 0 ? 0 : *(u8 **)(*(u8 **)((u8 *)file + 8) + 0x268);
+    clusters = 0;
+    result = fn_800AE664(*(u8 **)((u8 *)file + 8) + 4, *(u32 *)((u8 *)file + 0x24), length, (s32 *)((volatile u8 *)file + 0x20), &clusters);
     if (result != 0)
         return result;
-    off = *(s32 *)((u8 *)arg0 + 0x20);
-    if ((u32)(off + 0x10000) == 0xFFFF) {
-        u8 *fs = *(u8 **)((u8 *)arg0 + 8);
-        u8 *v2;
+    sectorOffset = *(s32 *)((u8 *)file + 0x20);
+    if ((u32)(sectorOffset + 0x10000) == 0xFFFF) {
+        u8 *fs = *(u8 **)((u8 *)file + 8);
+        u8 *volume2;
         u32 pos;
-        *(u32 *)((u8 *)arg0 + 0x1C) = *(u32 *)(fs + 0x264);
-        v2 = arg0 == 0 ? 0 : *(u8 **)(fs + 0x268);
-        pos = *(u32 *)((u8 *)arg0 + 0x1C);
-        *(u32 *)((u8 *)arg0 + 0x24) = pos >> v2[0x20];
-        *(u16 *)((u8 *)arg0 + 0x28) = pos & (*(u16 *)v2 - 1);
+        *(u32 *)((u8 *)file + 0x1C) = *(u32 *)(fs + 0x264);
+        volume2 = file == 0 ? 0 : *(u8 **)(fs + 0x268);
+        pos = *(u32 *)((u8 *)file + 0x1C);
+        *(u32 *)((u8 *)file + 0x24) = pos >> volume2[0x20];
+        *(u16 *)((u8 *)file + 0x28) = pos & (*(u16 *)volume2 - 1);
         return 0x1C;
     }
     {
-        u32 lim = (u32)spC << vol[0x20];
+        u32 maxBytes = (u32)clusters << volume[0x20];
         u32 start, end;
-        if (arg2 > lim)
-            arg2 = lim;
-        start = *(u32 *)((u8 *)arg0 + 0x1C);
-        end = *(u32 *)(*(u8 **)((u8 *)arg0 + 8) + 0x264);
-        if (start + arg2 > end) {
-            u32 ss = *(u16 *)vol;
-            arg2 = end - start;
-            arg2 = arg2 - (arg2 & (ss - 1));
-            if (arg2 < ss)
+        if (length > maxBytes)
+            length = maxBytes;
+        start = *(u32 *)((u8 *)file + 0x1C);
+        end = *(u32 *)(*(u8 **)((u8 *)file + 8) + 0x264);
+        if (start + length > end) {
+            u32 sectorSize = *(u16 *)volume;
+            length = end - start;
+            length = length - (length & (sectorSize - 1));
+            if (length < sectorSize)
                 return 0;
         }
     }
-    result = ((s32 (*)(void *, u8 *, u32, u32, u32, u32 *, s32))fn_800B5324)(vol, (u8 *)arg1, off, *(u16 *)((u8 *)arg0 + 0x28), arg2, &sp8, 1);
-    if (result != 0 && sp8 == 0)
+    result = ((s32 (*)(void *, u8 *, u32, u32, u32, u32 *, s32))fn_800B5324)(volume, (u8 *)dst, sectorOffset, *(u16 *)((u8 *)file + 0x28), length, &bytesRead, 1);
+    if (result != 0 && bytesRead == 0)
         return result;
-    *arg3 = sp8;
-    VFiPFFILE_Cursor_AdvanceToRead(arg0, sp8, *(s32 *)((u8 *)arg0 + 0x20));
-    if (sp8 != arg2 - (arg2 & (*(u16 *)vol - 1)))
+    *bytesReadOut = bytesRead;
+    VFiPFFILE_Cursor_AdvanceToRead(file, bytesRead, *(s32 *)((u8 *)file + 0x20));
+    if (bytesRead != length - (length & (*(u16 *)volume - 1)))
         return result;
     return 0;
 }
