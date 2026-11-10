@@ -294,8 +294,6 @@ loop:
 }
 #pragma opt_propagation reset
 extern int fn_80128668(void);
-extern int fn_8027DB40(int);
-extern int fn_8024DAE0(int, int, int, int, int, int);
 extern void fn_802411C8(void);
 extern int fn_8023FF1C(int);
 extern void fn_8023BB0C(void);
