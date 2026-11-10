@@ -33,7 +33,6 @@ extern s32 fn_8002F37C();
 extern void *memset(void *, s32, s32);
 extern float fn_8013672C(void);
 extern void fn_801369EC(void *);
-#pragma push
 #pragma scheduling invalid_target
 s32 fn_801368F8(s32 arg0, s32 arg1) {
     s32 pairs;
@@ -41,27 +40,26 @@ s32 fn_801368F8(s32 arg0, s32 arg1) {
     s32 stride;
     s32 size;
     s32 data;
-    pairs = ((s32)((arg1 * (arg1 - 1)) >> 31) + arg1 * (arg1 - 1)) >> 1;
+    s32 buf;
+    s32 m;
+    m = arg1 * (arg1 - 1);
+    pairs = ((s32)(((unsigned)m >> 31) + m) >> 1);
     *(s32 *)arg0 = arg1;
-    count = 1;
-    if (pairs > 1)
-        count = pairs;
-    fn_8012850C(count * 0x2C + 0x10, (s32)lbl_8032BE98);
-    *(s32 *)(arg0 + 8) = fn_8002F37C((s32)&fn_801369EC, 0, 0x2C, count);
+    count = (pairs > 1) ? pairs : 1;
+    *(s32 *)(arg0 + 8) = fn_8002F37C(fn_8012850C(count * 0x2C + 0x10, (s32)lbl_8032BE98), (s32)&fn_801369EC, 0, 0x2C, count);
     stride = arg1 * 4 - arg1;
     size = stride * 4 + 0x18;
     *(s32 *)(arg0 + 0xC) = size;
     data = arg1 * size;
-    *(s32 *)(arg0 + 0x10) = fn_801284E8((s32)lbl_8032BEA8, data);
-    if (*(s32 *)(arg0 + 0x10) != 0 && *(s32 *)(arg0 + 8) != 0) {
-        memset((void *)0, 0, data);
+    buf = fn_801284E8((s32)lbl_8032BEA8, data);
+    *(s32 *)(arg0 + 0x10) = buf;
+    if (buf != 0 && *(s32 *)(arg0 + 8) != 0) {
+        memset((void *)buf, 0, data);
         fn_80136AA8((void *)arg0);
     }
     *(f32 *)(arg0 + 0x14) = fn_8013672C();
     return arg0;
 }
-#pragma pop
-
 void fn_801369EC(void *arg0) {
     f32 value = lbl_80561368;
     *(s32 *)((char *)arg0 + 0x14) = -1;
@@ -247,30 +245,31 @@ extern "C" void fn_80136F08(void *arg0) {
         virtual void *v6();
     };
     void *entry;
-    int i;
-    int count;
+    int index;
+    int entryCount;
     int pairCount;
     int pairOffset;
-    int j;
+    int pairIndex;
 
-    i = 0;
-    while (i < *(int*)arg0) {
+    /* Copies per-entry data from fn_801B2ED0(index)->v6() and recomputes all pairwise deltas. */
+    index = 0;
+    while (index < *(int*)arg0) {
         int stride = *(int*)((char*)arg0 + 0xC);
-        entry = (char*)*(void**)((char*)arg0 + 0x10) + i * stride;
-        void *obj = fn_801B2ED0(i);
+        entry = (char*)*(void**)((char*)arg0 + 0x10) + index * stride;
+        void *obj = fn_801B2ED0(index);
         obj = ((Dummy*)obj)->v6();
         *(float*)entry = *(float*)((char*)obj + 0x60);
         *(float*)((char*)entry + 4) = *(float*)((char*)obj + 0x68);
         *(float*)((char*)entry + 8) = *(float*)((char*)obj + 0x118);
         *(float*)((char*)entry + 0xC) = *(float*)((char*)obj + 0x120);
         *((unsigned char*)entry + 0x16) = 1;
-        i++;
+        index++;
     }
-    count = *(int*)arg0;
-    pairCount = count * (count - 1) / 2;
-    j = 0;
+    entryCount = *(int*)arg0;
+    pairCount = entryCount * (entryCount - 1) / 2;
+    pairIndex = 0;
     pairOffset = 0;
-    while (j < pairCount) {
+    while (pairIndex < pairCount) {
         void *p;
         void *a;
         void *b;
@@ -290,7 +289,7 @@ extern "C" void fn_80136F08(void *arg0) {
         *(float*)((char*)p + 0x20) = *(float*)((char*)b + 4) - *(float*)((char*)a + 4);
         fn_8013776C((char*)*(void**)((char*)arg0 + 8) + pairOffset);
         pairOffset += 0x2C;
-        j++;
+        pairIndex++;
     }
 }
 #pragma scheduling reset
@@ -521,15 +520,15 @@ s32 fn_8002F768(void *, s32, s32);
 extern "C" void fn_801376A8(s32 arg0, s32 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
     struct CompareObject { s32 compare(s32, s32); };
     typedef s32 (CompareObject::*CompareMethod)(s32, s32);
-    s32 *item;
-    s32 flag;
-    s32 start;
-    s32 length;
-    s32 end;
-    s32 index;
-    s32 temp;
-    CompareMethod *method;
-    s32 *array;
+    register s32 *item;
+    register s32 flag;
+    register s32 start;
+    register s32 length;
+    register s32 end;
+    register s32 index;
+    register s32 temp;
+    register CompareMethod *method;
+    register s32 *array;
     *(s32 *)(arg0 + 4) = arg3;
     length = *(volatile s32 *)arg0;
     array = arg1;
