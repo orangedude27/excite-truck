@@ -1653,7 +1653,7 @@ extern int fn_802E317C(const char *, ...);
 extern int stricmp(const char *, const char *);
 extern int fn_802B8E50(int);
 #pragma push
-#pragma scheduling off
+#pragma scheduling invalid_target
 void fn_802BB674(char *arg0, int arg1) {
     struct Entry { char *name; int state; };
     struct Entry *entry = ((struct Entry **)lbl_804C0088)[arg1];
