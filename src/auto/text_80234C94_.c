@@ -652,8 +652,8 @@ extern int fn_802CAC28(const char *, int);
 void fn_80236134(void *arg0, int arg1, const char *arg2) {
     unsigned char ch;
     char *dst;
-    char *entry;
     int count;
+    char *entry;
     int id;
     if (fn_8012C33C(arg2) != 0) {
         id = fn_802CAC28(arg2, 0);
