@@ -119,7 +119,8 @@ void *fn_801717B4(void *arg0, int arg1) {
     return obj;
 }
 
-void fn_8017188C(void *arg0) {
+  void fn_8017188C(void *arg0) {
+#pragma use_lmw_stmw off
     int i = 0;
     int offset = 0;
     while (i < *(int *)((char *)arg0 + 0xC)) {
@@ -183,13 +184,12 @@ void fn_80171934(void *p) {
 }
 #pragma pop
 void fn_80171A4C(void *arg0) {
-    int count = 0;
-    int offset = 0;
-    while (count < *(int *)((char *)arg0 + 12)) {
+    int offset;
+    int count;
+
+    for (count = 0, offset = 0; count < *(int *)((char *)arg0 + 12); count++, offset += 0x28) {
         unsigned char *base = *(unsigned char **)((char *)arg0 + 8);
         base[offset + 0x24] = 0;
-        offset += 0x28;
-        count++;
     }
 }
 
@@ -265,10 +265,10 @@ extern "C" void fn_80171A80(void *arg0) {
     };
     char sp8[8];
     f32 v[4];
-    int n;
-    char *e;
     f32 *p;
     int k, j;
+    char *e;
+    int n;
     f32 d1, d2;
     Mgr *mgr = *(Mgr **)((char *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20);
     int i = 0;
