@@ -280,7 +280,8 @@ extern "C" s32 fn_802A1864(const char *name) {
     return 0;
 }
 
-extern "C" void *fn_802A194C(void *arg0) {
+extern "C" void *fn_802A194C(void *terrainObj) {
+    // Find the "type" id, reuse a cached terrain slot of the same type, else allocate the handler for ids 1-6.
     class Receiver {
     public:
         virtual void v0();
@@ -297,7 +298,7 @@ extern "C" void *fn_802A194C(void *arg0) {
         void *vtable;
         void *item;
     };
-    Receiver *receiver = (Receiver *)arg0;
+    Receiver *receiver = (Receiver *)terrainObj;
     char *strings = lbl_80349928;
     void **entries;
     s32 type;
@@ -328,32 +329,32 @@ extern "C" void *fn_802A194C(void *arg0) {
     case 1:
         result = fn_801284F8(0x94, strings + 0x40);
         if (result != 0)
-            return fn_802A1DF4(result, (DummyReceiver_802A3314 *)arg0);
+            return fn_802A1DF4(result, (DummyReceiver_802A3314 *)terrainObj);
         return result;
     case 2:
         result = fn_801284F8(0x0C, strings + 0x50);
         if (result != 0)
-            return fn_802A2EEC(result, (DummyReceiver_802A3314 *)arg0);
+            return fn_802A2EEC(result, (DummyReceiver_802A3314 *)terrainObj);
         return result;
     case 3:
         result = fn_801284F8(8, strings + 0x68);
         if (result != 0)
-            return fn_802A3314(result, (DummyReceiver_802A3314 *)arg0);
+            return fn_802A3314(result, (DummyReceiver_802A3314 *)terrainObj);
         return result;
     case 4:
         result = fn_801284F8(8, strings + 0x78);
         if (result != 0)
-            return fn_802A3610(result, (DummyReceiver_802A3314 *)arg0);
+            return fn_802A3610(result, (DummyReceiver_802A3314 *)terrainObj);
         return result;
     case 5:
         result = fn_801284F8(8, strings + 0x88);
         if (result != 0)
-            return fn_802A38D0(result, (DummyReceiver_802A3314 *)arg0);
+            return fn_802A38D0(result, (DummyReceiver_802A3314 *)terrainObj);
         return result;
     case 6:
         result = fn_801284F8(0x28, strings + 0x98);
         if (result != 0)
-            return fn_802A3D3C(result, (DummyReceiver_802A3314 *)arg0);
+            return fn_802A3D3C(result, (DummyReceiver_802A3314 *)terrainObj);
         return result;
     default:
         ((void (*)(const char *, ...))fn_802E317C)(strings + 0xA8, type);
