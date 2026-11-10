@@ -4787,7 +4787,7 @@ void fn_80120E14(register s32 count, register void *dst, register s32 mode, regi
         } else {
             fn_80123CEC(count, dst, srcIndex, src);
         }
-        fn_80121400(count, (s32 *)mode, (f32 *)dst FN1400_CALL_TAIL);
+        fn_80121400(count, (s32 *)mode, (f32 *)dst);
     } else if (count > 8) {
         if (count == 0x20) {
             fn_80123E98(dst, (u8 *)src + (srcIndex - 8) * 4);
