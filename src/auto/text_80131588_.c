@@ -750,7 +750,8 @@ extern "C" unsigned long long fn_80132A48(void *arg0, s32 arg1, void *arg2) {
     if (((Dummy*)arg0)->f1() != 0) {
         tmp = ((Dummy*)arg0)->f13(arg1);
     } else {
-        tmp = *(unsigned long long*)arg2;
+        ((unsigned*) &tmp)[0] = ((unsigned*)arg2)[0];
+        ((unsigned*) &tmp)[1] = ((unsigned*)arg2)[1];
     }
     res = *(double*)&tmp;
     return *(unsigned long long*)&res;
