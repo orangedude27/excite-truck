@@ -375,7 +375,7 @@ void fn_80291E64(void *arg0) {
 }
 #pragma ppc_psq_save reset
 
-#pragma dont_inline off
+#pragma dont_inline on
 void fn_802920D0(void) {
     int *settings = (int *)&lbl_804B4010;
     fn_802C8C04(settings[3]);
