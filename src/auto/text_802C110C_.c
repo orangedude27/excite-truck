@@ -37,37 +37,44 @@ void *fn_802C110C(int arg0) {
 }
 #pragma scheduling on
 void fn_802C1180(void *arg0) {
-    volatile int *src = (volatile int *)arg0;
-    volatile int *dst = (volatile int *)src[1];
-    int zero = 0;
-    int a, b;
-    if (dst == 0) return;
-    b = src[2]; a = src[3]; dst[0] = b; dst[1] = a;
-    b = src[4]; a = src[5]; dst[2] = b; dst[3] = a;
-    b = src[6]; a = src[7]; dst[4] = b; dst[5] = a;
-    b = src[8]; a = src[9]; dst[6] = b; dst[7] = a;
+    struct Pair { int a; int b; };
+    int *src = (int *)arg0;
+    int *dst = (int *)src[1];
+    struct Pair *s = (struct Pair *)src;
+    struct Pair *d = (struct Pair *)dst;
+    if (dst == 0) {
+        return;
+    }
+    d[0] = s[1];
+    d[1] = s[2];
+    d[2] = s[3];
+    d[3] = s[4];
     dst[8] = src[10];
-    b = src[11]; a = src[12]; dst[9] = b; dst[10] = a;
+    *(struct Pair *)(dst + 9) = *(struct Pair *)(src + 11);
     dst[11] = src[13];
     ((int **)lbl_8055FB30)[src[0]] = (int *)src[1];
-    src[1] = zero;
+    src[1] = 0;
 }
-#pragma scheduling invalid_target
+#pragma scheduling on
 void *fn_802C120C(void) {
-    unsigned int nextIndex;
     unsigned int oldIndex;
+    unsigned int nextIndex;
+    unsigned int leftPart;
+    unsigned int rightPart;
     unsigned int value;
     void *entry;
     oldIndex = lbl_8055FB34;
     entry = (char *)&lbl_804C0E10 + oldIndex * 0x48;
     nextIndex = oldIndex + 1;
-    value = (nextIndex << 29) - (nextIndex >> 31);
-    value = ((value << 3) | (value >> 29)) + (nextIndex >> 31);
+    leftPart = nextIndex << 29;
+    rightPart = nextIndex >> 31;
+    value = leftPart - rightPart;
+    value = ((value << 3) | (value >> 29)) + rightPart;
     lbl_8055FB34 = value;
     fn_802C1180(entry);
     return entry;
 }
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_802C126C(void) {
     register char *var_r30;
     int *var_r29;
@@ -199,15 +206,14 @@ int fn_802C1500(int arg0, int arg1) {
         char padding[0x58];
     };
     int index = lbl_8055FB2C;
-    struct Entry *entry = (struct Entry *)lbl_804C0810 + arg1;
     int *list = (int *)lbl_8055FB30;
     lbl_8055FB2C = index + 1;
     list[index] = arg0;
-    if (entry->first < 0) {
-        entry->first = index;
-        entry->second = index;
+    if (((struct Entry *)lbl_804C0810)[arg1].first < 0) {
+        ((struct Entry *)lbl_804C0810)[arg1].first = index;
+        ((struct Entry *)lbl_804C0810)[arg1].second = index;
     } else {
-        entry->second = index;
+        ((struct Entry *)lbl_804C0810)[arg1].second = index;
     }
     return lbl_8055CFA0 + index;
 }
@@ -328,81 +334,73 @@ extern f32 lbl_80564E50, lbl_80564E54, lbl_80564E5C, lbl_80564E60;
 extern f32 lbl_80564E64, lbl_80564E68, lbl_80564E6C;
 #pragma paired_single off
 void fn_802C173C(float time) {
-    struct Scratch {
-        f32 vec[3];
-        f32 rot[3];
-        char padding[0x18];
-        int data[12];
-    };
-    register f32 scaleBase;
-    register f32 base;
-    register f32 slope;
-    register f32 angle;
-    register f32 min;
-    register f32 upper;
-    register f32 lower;
-    char *record;
+    struct Scratch { f32 vec[3]; f32 rot[3]; char padding[0x18]; int data[12]; };
+    register f32 scaleBase, base, slope, angle, min, upper, lower;
+    volatile char *record;
     int i;
-
     lbl_8055FB38 = time;
-    min = lbl_80564E50;
-    angle = lbl_80564E64;
-    slope = lbl_80564E68;
-    base = lbl_80564E54;
-    scaleBase = lbl_80564E6C;
-    upper = lbl_80564E60;
-    lower = lbl_80564E5C;
-    record = lbl_804C0E10;
-    i = 0;
+    min = lbl_80564E50; angle = lbl_80564E64; slope = lbl_80564E68;
+    base = lbl_80564E54; scaleBase = lbl_80564E6C;
+    upper = lbl_80564E60; lower = lbl_80564E5C;
+    record = lbl_804C0E10; i = 0;
     do {
-        if (*(int *)(record + 4) != 0) {
-            f32 age = lbl_8055FB38 - *(f32 *)(record + 0x44);
+        if (*(volatile int *)(record + 4) != 0) {
+            f32 age = lbl_8055FB38 - *(volatile f32 *)(record + 0x44);
             if (age >= lower && age < upper) {
                 struct Scratch scratch;
-                int d0, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11;
-                f32 clamped;
-                f32 sn;
-                f32 factor;
-                d0 = *(int *)(record + 8);
-                d1 = *(int *)(record + 0xC);
-                d2 = *(int *)(record + 0x10);
-                d3 = *(int *)(record + 0x14);
-                d4 = *(int *)(record + 0x18);
-                d5 = *(int *)(record + 0x1C);
-                d6 = *(int *)(record + 0x20);
-                d7 = *(int *)(record + 0x24);
-                d8 = *(int *)(record + 0x28);
-                d9 = *(int *)(record + 0x2C);
-                d10 = *(int *)(record + 0x30);
-                d11 = *(int *)(record + 0x34);
+                int d11, d10, d9, d8, d7, d6, d5, d4, d3, d2, d1, d0;
+                f32 clamped, sn, product, x, y, z, delta, scaledSin, factor;
+                d0 = *(volatile int *)(record + 8);
+                d1 = *(volatile int *)(record + 0xC);
+                d2 = *(volatile int *)(record + 0x10);
+                d3 = *(volatile int *)(record + 0x14);
+                d4 = *(volatile int *)(record + 0x18);
+                d5 = *(volatile int *)(record + 0x1C);
+                d6 = *(volatile int *)(record + 0x20);
+                d7 = *(volatile int *)(record + 0x24);
+                d8 = *(volatile int *)(record + 0x28);
+                d9 = *(volatile int *)(record + 0x2C);
+                d10 = *(volatile int *)(record + 0x30);
+                d11 = *(volatile int *)(record + 0x34);
                 scratch.data[0] = d0; scratch.data[1] = d1; scratch.data[2] = d2;
                 scratch.data[3] = d3; scratch.data[4] = d4; scratch.data[5] = d5;
                 scratch.data[6] = d6; scratch.data[7] = d7; scratch.data[8] = d8;
                 scratch.data[9] = d9; scratch.data[10] = d10; scratch.data[11] = d11;
                 clamped = age > min ? age : min;
                 sn = (f32)sin(angle * clamped);
-                factor = (base - age * slope) * (scaleBase * sn);
-                scratch.vec[0] = *(f32 *)(record + 0x38) * factor;
-                scratch.vec[1] = *(f32 *)(record + 0x3C) * factor;
-                scratch.vec[2] = *(f32 *)(record + 0x40) * factor;
+                x = *(volatile f32 *)(record + 0x38);
+                product = age * slope;
+                y = *(volatile f32 *)(record + 0x3C);
+                z = *(volatile f32 *)(record + 0x40);
+                delta = base - product;
+                scaledSin = scaleBase * sn;
+                factor = delta * scaledSin;
+                scratch.vec[0] = x * factor;
+                scratch.vec[1] = y * factor;
+                scratch.vec[2] = z * factor;
                 fn_8022FF10(scratch.rot, scratch.vec);
                 fn_80015B20(scratch.data, scratch.data, scratch.rot);
-                d0 = scratch.data[0]; d1 = scratch.data[1]; d2 = scratch.data[2];
-                d3 = scratch.data[3]; d4 = scratch.data[4]; d5 = scratch.data[5];
-                d6 = scratch.data[6]; d7 = scratch.data[7]; d8 = scratch.data[8];
-                d9 = scratch.data[9]; d10 = scratch.data[10]; d11 = scratch.data[11];
                 {
-                    int *dst = (int *)*(int *)(record + 4);
-                    dst[0] = d0; dst[1] = d1; dst[2] = d2; dst[3] = d3;
-                    dst[4] = d4; dst[5] = d5; dst[6] = d6; dst[7] = d7;
-                    dst[8] = d8; dst[9] = d9; dst[10] = d10; dst[11] = d11;
+                    volatile int *dst = (volatile int *)*(volatile int *)(record + 4);
+                    register int out1;
+                    register int out0;
+                    out0 = scratch.data[0]; out1 = scratch.data[1];
+                    dst[0] = out0; dst[1] = out1;
+                    out0 = scratch.data[2]; out1 = scratch.data[3];
+                    dst[2] = out0; dst[3] = out1;
+                    out0 = scratch.data[4]; out1 = scratch.data[5];
+                    dst[4] = out0; dst[5] = out1;
+                    out0 = scratch.data[6]; out1 = scratch.data[7];
+                    dst[6] = out0; dst[7] = out1;
+                    out0 = scratch.data[8]; out1 = scratch.data[9];
+                    dst[8] = out0; dst[9] = out1;
+                    out0 = scratch.data[10]; out1 = scratch.data[11];
+                    dst[10] = out0; dst[11] = out1;
                 }
-            } else {
-                fn_802C1180(record);
-            }
+            } else fn_802C1180((void *)record);
         }
-        i++;
-        record += 0x48;
+        i = i + 1;
+        record = record + 0x48;
     } while (i < 8);
 }
 extern f32 lbl_804C1050[16];
