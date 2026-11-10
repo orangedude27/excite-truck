@@ -122,18 +122,17 @@ void fn_801B78EC(int arg0, int arg1, int arg2, float farg0, float farg1, float f
         int third;
     };
     struct Triple slots[3];
-
     (void)arg1;
     slots[2].first = 0;
-    slots[2].second = lbl_80562708;
     slots[2].third = 0x2710;
+    slots[2].second = 0.0f;
     if (arg2 != 0) {
-        fn_80135B24(&slots[1], farg1);
+        ((void (*)(void *, void *, float))fn_80135B24)(&slots[1], (void *)arg1, farg1);
         slots[2].first = slots[1].first;
         slots[2].second = slots[1].second;
         slots[2].third = slots[1].third;
     } else {
-        fn_80136468(&slots[0], farg1);
+        ((void (*)(void *, void *, float))fn_80136468)(&slots[0], (void *)arg1, farg1);
         slots[2].first = slots[0].first;
         slots[2].second = slots[0].second;
         slots[2].third = slots[0].third;
@@ -152,23 +151,36 @@ void fn_801B7BA8(float *arg0, float *arg1, float *arg2) {
     float a[3];
     float b[3];
     float c[3];
-    volatile float *p = arg1;
-    volatile float *q = arg2;
-    float x = p[0];
-    float y = p[1];
-    float z = p[2];
-    float u = q[0];
-    float v = q[1];
-    a[0] = x; a[1] = y; a[2] = z;
-    b[0] = u; b[1] = lbl_80562708; b[2] = v;
+    register float x;
+    register float y;
+    register float z;
+    register float u;
+    register float v;
+    x = arg1[0];
+    y = arg1[1];
+    z = arg1[2];
+    u = arg2[0];
+    v = arg2[1];
+    a[0] = x;
+    a[1] = y;
+    a[2] = z;
+    b[0] = u;
+    b[1] = lbl_80562708;
+    b[2] = v;
     PSVECCrossProduct(a, b, c);
     PSVECCrossProduct(c, a, b);
     PSVECNormalize(c, c);
     PSVECNormalize(a, a);
     PSVECNormalize(b, b);
-    arg0[0] = c[0]; arg0[1] = c[1]; arg0[2] = c[2];
-    arg0[3] = a[0]; arg0[4] = a[1]; arg0[5] = a[2];
-    arg0[6] = b[0]; arg0[7] = b[1]; arg0[8] = b[2];
+    arg0[0] = c[0];
+    arg0[1] = c[1];
+    arg0[2] = c[2];
+    arg0[3] = a[0];
+    arg0[4] = a[1];
+    arg0[5] = a[2];
+    arg0[6] = b[0];
+    arg0[7] = b[1];
+    arg0[8] = b[2];
 }
 
 void fn_801E9DC4(void *, float *, float *);
@@ -322,6 +334,7 @@ void fn_801B8060(int arg0, void *arg1) {
 #pragma optimize_for_size off
 extern char lbl_80336718[];
 extern int fn_802E317C(char *, ...);
+#pragma dont_inline on
 void fn_801B8100(void *arg0, int arg1, int arg2) {
     int result;
     memset(arg0, 0, 0x50);
@@ -345,3 +358,4 @@ void fn_801B8100(void *arg0, int arg1, int arg2) {
             fn_802E317C(lbl_80336718, result);
     }
 }
+#pragma dont_inline reset
