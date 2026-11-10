@@ -258,16 +258,14 @@ extern char lbl_803392F0[];
 #pragma push
 #pragma processor 750
 void fn_801DACA0(void *arg0, float arg1) {
-    float value;
-    int count;
+    float value = lbl_80562B54;
     int offset;
-    void *entry;
-    struct Ctx801DACA0 *ctx = (struct Ctx801DACA0 *)arg0;
-
-    value = lbl_80562B54;
-    if (!(arg1 >= value))
+    int count;
+    void *entry = 0;
+    struct Ctx801DACA0 *ctx;
+    if (arg1 < value)
         value = ((struct Obj801DACA0 *)arg0)->get();
-
+    ctx = (struct Ctx801DACA0 *)arg0;
     count = 0;
     offset = 0;
     while (count < ctx->count) {
@@ -366,51 +364,52 @@ extern int fn_801DA648(int);
 extern int fn_801DA688(int);
 #pragma push
 #pragma scheduling invalid_target
-void fn_801DAF68(void *arg0) {
+void fn_801DAF68(void *space) {
+    // Advance each active pathman slot: step its timer, sample/scale its bounds, write back, retire finished slots.
     register void *base;
-    register unsigned char *entry;
-    register int index;
-    register f32 rate;
-    register f32 threshold;
-    register f32 scale;
+    register unsigned char *slot;
+    register int i;
+    register f32 step;
+    register f32 limit;
+    register f32 extent;
     Mtx transform;
     Vec first;
     Vec second;
 
-    scale = lbl_80562B5C;
-    base = arg0;
-    rate = lbl_80562B58;
-    entry = (unsigned char *)base + 8;
-    threshold = lbl_80562B54;
-    index = 0;
-    for (; index < *(int *)((char *)base + 0x5808); entry += 0x2C, index++) {
-        if (entry[0x18] == 0 && entry[0x10] == 0)
+    extent = lbl_80562B5C;
+    base = space;
+    step = lbl_80562B58;
+    slot = (unsigned char *)base + 8;
+    limit = lbl_80562B54;
+    i = 0;
+    for (; i < *(int *)((char *)base + 0x5808); slot += 0x2C, i++) {
+        if (slot[0x18] == 0 && slot[0x10] == 0)
             continue;
-        if (entry[0x18] != 0)
-            fn_801DA0EC(*(int *)(entry + 0x28), rate * *(float *)(entry + 0x1C));
-        if (fn_801DA294(*(int *)(entry + 0x28), transform, &first.x, &second.x) != 0) {
-            first.x *= scale;
-            first.y *= scale;
-            first.z *= scale;
-            second.x *= scale;
-            second.y *= scale;
-            second.z *= scale;
-            if (entry[0x10] != 0)
-                transform[2][2] = *(float *)(entry + 0x14) + fn_801EA0E8(transform[2][1], transform[2][3]);
-            fn_8017CFFC(*(int *)(entry + 0x20), transform, &first.x, &second.x);
+        if (slot[0x18] != 0)
+            fn_801DA0EC(*(int *)(slot + 0x28), step * *(float *)(slot + 0x1C));
+        if (fn_801DA294(*(int *)(slot + 0x28), transform, &first.x, &second.x) != 0) {
+            first.x *= extent;
+            first.y *= extent;
+            first.z *= extent;
+            second.x *= extent;
+            second.y *= extent;
+            second.z *= extent;
+            if (slot[0x10] != 0)
+                transform[2][2] = *(float *)(slot + 0x14) + fn_801EA0E8(transform[2][1], transform[2][3]);
+            fn_8017CFFC(*(int *)(slot + 0x20), transform, &first.x, &second.x);
         } else if (lbl_8055E980 == 0) {
             lbl_8055E980 = 1;
             ((void (*)(char *, ...))fn_802E30C8)(&lbl_8055ADB4, lbl_80339318);
         }
-        if (*(float *)(entry + 0x1C) >= threshold) {
-            if (fn_801DA648(*(int *)(entry + 0x28)) != 0) {
-                if (entry[0x19] != 0)
-                    fn_801DA198(*(int *)(entry + 0x28), lbl_80562B54);
+        if (*(float *)(slot + 0x1C) >= limit) {
+            if (fn_801DA648(*(int *)(slot + 0x28)) != 0) {
+                if (slot[0x19] != 0)
+                    fn_801DA198(*(int *)(slot + 0x28), lbl_80562B54);
                 else
-                    entry[0x18] = 0;
+                    slot[0x18] = 0;
             }
-        } else if (fn_801DA688(*(int *)(entry + 0x28)) != 0 && entry[0x19] == 0) {
-            entry[0x18] = 0;
+        } else if (fn_801DA688(*(int *)(slot + 0x28)) != 0 && slot[0x19] == 0) {
+            slot[0x18] = 0;
         }
     }
 }
