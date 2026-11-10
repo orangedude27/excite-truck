@@ -69,21 +69,18 @@ void fn_802A0D60(s32 arg0, float *arg1, float *arg2, float *arg3, s32 arg4, floa
         }
     }
 }
-#pragma dont_inline on
-s32 fn_802A0FBC(void) {
-    struct CallbackVTable {
-        void *reserved[12];
-        s32 (*check)(void *, char *, s32);
-    };
-    struct CallbackObject {
-        struct CallbackVTable *vtable;
+#pragma cplusplus on
+extern "C" s32 fn_802A0FBC(void) {
+    struct V30 {
+        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+        virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+        virtual void d8(); virtual void d9(); virtual s32 v30(const char *, long);
     };
     char *self = (char *)fn_8000AC38();
-    struct CallbackObject *obj = *(struct CallbackObject **)(self + 0x20);
-    s32 status = obj->vtable->check(obj, (char *)&lbl_80349900, 1);
+    V30 *obj = *(V30 **)(self + 0x20);
+    s32 status = obj->v30(lbl_80349900, 1);
     u32 type = *(u32 *)(self + 8);
     s32 result = 0;
-
     if (status == 0) goto done;
     if (type == 0x180304) goto done;
     if ((type & 0x100) == 0) goto done;
@@ -92,10 +89,12 @@ s32 fn_802A0FBC(void) {
 done:
     return result;
 }
-
+#pragma cplusplus reset
 extern float lbl_805646F0;
 extern float fn_802A0F7C(void *, void *, void *);
-#pragma scheduling off
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void *fn_802A1040(void *arg0, void *arg1, void *arg2) {
     register s32 count = 0;
     void *entry = arg1;
