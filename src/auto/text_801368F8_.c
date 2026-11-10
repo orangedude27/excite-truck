@@ -77,7 +77,7 @@ void fn_801369EC(void *arg0) {
 s32 fn_80136A18(s32 arg0, s32 arg1) {
     if (arg0 != 0) {
         if (*(s32 *)(arg0 + 0x10) != 0) {
-            fn_80128658();
+            fn_80128658(*(s32 *)(arg0 + 0x10));
             *(s32 *)(arg0 + 0x10) = 0;
         }
         if (*(s32 *)(arg0 + 8) != 0) {
@@ -89,6 +89,7 @@ s32 fn_80136A18(s32 arg0, s32 arg1) {
         if (arg1 > 0)
             fn_80128668((void *)arg0);
     }
+    return arg0;
 }
 
 void fn_80136AA8(void *g) {
