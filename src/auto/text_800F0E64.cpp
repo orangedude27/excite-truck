@@ -1249,33 +1249,34 @@ extern "C" char lbl_805598C8;
 extern "C" char lbl_805598D0;
 #pragma push
 #pragma scheduling on
-s32 nw4hbm::snd::detail::SoundArchiveFileReader::GetSoundType(u32 arg1) const {
-    register u8 *ref = *(u8 **)((u8 *)this + 0x28);
-    u8 type;
-    u8 *info;
-    u32 offset;
-    if (ref[1] != 0)
+s32 nw4hbm::snd::detail::SoundArchiveFileReader::GetSoundType(u32 soundId) const {
+    // Look up the sound type for a sound id in the archive file; returns 1/2/3 or 0 if missing.
+    register u8 *dataRef = *(u8 **)((u8 *)this + 0x28);
+    u8 soundType;
+    u8 *soundInfo;
+    u32 entryOffset;
+    if (dataRef[1] != 0)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598C8, 0x6F, lbl_80324DE4);
-    info = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(ref[0], *(u32 *)(ref + 4), ref);
-    if (!info)
+    soundInfo = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(dataRef[0], *(u32 *)(dataRef + 4), dataRef);
+    if (!soundInfo)
         return 0;
-    if (arg1 >= *(u32 *)info)
+    if (soundId >= *(u32 *)soundInfo)
         return 0;
     if (*(u16 *)((u8 *)this + 6) >= 0x101) {
-        offset = arg1 * 8;
-        ref = *(u8 **)((u8 *)this + 0x28);
-        if (info[offset + 5] != 0)
+        entryOffset = soundId * 8;
+        dataRef = *(u8 **)((u8 *)this + 0x28);
+        if (soundInfo[entryOffset + 5] != 0)
             Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598D0, 0x6F, lbl_80324E10);
-        type = info[offset + 5];
-        info = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(info[offset + 4], *(u32 *)(info + offset + 8), ref);
-        if (!info)
+        soundType = soundInfo[entryOffset + 5];
+        soundInfo = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(soundInfo[entryOffset + 4], *(u32 *)(soundInfo + entryOffset + 8), dataRef);
+        if (!soundInfo)
             return 0;
-        type = info[0x16];
+        soundType = soundInfo[0x16];
     } else {
-        offset = arg1 * 8;
-        type = info[offset + 5];
+        entryOffset = soundId * 8;
+        soundType = soundInfo[entryOffset + 5];
     }
-    switch (type) {
+    switch (soundType) {
     case 1: return 1;
     case 2: return 2;
     case 3: return 3;
