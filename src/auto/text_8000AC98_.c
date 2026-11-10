@@ -618,6 +618,9 @@ extern void fn_8000B64C(int, int);
 extern unsigned char lbl_8055D3ED;
 #pragma push
 #pragma dont_inline on
+/* Per-frame home/menu/audio-key handler: tracks home-button state transitions,
+ * handles menu open conditions, runs input/audio updates, and dispatches key events.
+ */
 void fn_8000B950(void) {
     int state;
     int result;
