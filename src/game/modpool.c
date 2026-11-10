@@ -74,6 +74,7 @@ extern char lbl_8034BCF0[];
 #pragma optimize_for_size on
 #pragma use_lmw_stmw off
 void fn_802CE4F4(void *arg0, int arg1) {
+ /* Reclaim model pool slot when full: clear finished entries, evict oldest idle (state 2) if needed, then service manager. */
  void *entry;
  int best;
  int active;
