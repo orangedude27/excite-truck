@@ -630,26 +630,27 @@ int ReadFont(int dst, int encode, int font) {
     return size;
 }
 #pragma use_lmw_stmw reset
-int OSLoadFont(int arg0, int arg1) {
+/* Load OS font image data into the provided buffer based on the current font encoding. */
+int OSLoadFont(int fontBuffer, int fontInfo) {
     int result;
 
     switch (OSGetFontEncode()) {
     case 0:
-        lbl_8055DA54 = (int *)arg0;
-        result = ReadFont(arg1, 0, arg0);
+        lbl_8055DA54 = (int *)fontBuffer;
+        result = ReadFont(fontInfo, 0, fontBuffer);
         break;
     case 1:
-        lbl_8055DA50 = (int *)arg0;
-        result = ReadFont(arg1, 1, arg0);
+        lbl_8055DA50 = (int *)fontBuffer;
+        result = ReadFont(fontInfo, 1, fontBuffer);
         break;
     case 3:
     case 4:
     case 5:
-        lbl_8055DA54 = (int *)arg0;
-        result = ReadFont(arg1, 0, arg0);
+        lbl_8055DA54 = (int *)fontBuffer;
+        result = ReadFont(fontInfo, 0, fontBuffer);
         if (result != 0) {
             lbl_8055DA50 = (int *)((char *)lbl_8055DA54 + result);
-            result += ReadFont(arg1, 1, (int)lbl_8055DA50);
+            result += ReadFont(fontInfo, 1, (int)lbl_8055DA50);
         }
         break;
     case 2:
