@@ -129,6 +129,7 @@ void *fn_802B8EB8(s32 arg0, s32 arg1, u32 arg2, s32 arg3) {
 
 #pragma push
 #pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 void *fn_802B8EF0(int arg0, void *arg1) {
     struct Entry {
         char *name;
@@ -742,21 +743,21 @@ void fn_802B9CF4(void *arg0) {
 #pragma push
 #pragma use_lmw_stmw off
 void fn_802B9D08(void) {
-    register int i;
-    register int offset;
+    register long i;
     register void *node;
+    register int offset;
     register char *base = lbl_804BFFE8;
-    register int zero;
-    register void **list;
+    register unsigned long zero;
+    void **list;
     fn_802B9DD0(&lbl_8055FA7C);
     fn_802B9E4C(&lbl_8055FA78);
     list = (void **)(base + 0x0C);
-    i = 0;
     offset = 0;
+    i = 0;
     zero = 0;
     while (i < ((int *)list)[1]) {
         node = *(void **)((char *)list[0] + offset);
-        if (node != 0) {
+        if (node) {
             *(int *)((char *)node + 0x0C) = zero;
             if (*(int *)((char *)node + 4) != -2) {
                 fn_802CAC54();
@@ -764,7 +765,7 @@ void fn_802B9D08(void) {
             fn_80128668(node);
         }
         offset += 4;
-        i++;
+        i += 1;
     }
     ((int *)list)[1] = zero;
     {
@@ -1656,18 +1657,18 @@ extern int fn_802B8E50(int);
 #pragma scheduling invalid_target
 void fn_802BB674(char *arg0, int arg1) {
     struct Entry { char *name; int state; };
-    struct Entry *entry = ((struct Entry **)lbl_804C0088)[arg1];
-    int result2;
-    char first2;
+    register struct Entry *entry = ((struct Entry **)lbl_804C0088)[arg1];
+    int result4;
+    char first4;
     if (entry != 0 && stricmp(entry->name, arg0) != 0) {
         if (entry->state != -2) fn_802CAC54();
-        first2 = *arg0;
-        result2 = -2;
+        first4 = *arg0;
+        result4 = -2;
         entry->state = -2;
-        if (first2 != 0) result2 = fn_802B110C(fn_802B8E50, arg0);
-        entry->state = result2;
+        if (first4 != 0) result4 = fn_802B110C(fn_802B8E50, arg0);
+        entry->state = result4;
         entry->name = arg0;
-        if (result2 == -2 && (signed char)*(volatile char *)entry->name != 0)
+        if (result4 == -2 && (signed char)entry->name[0] != 0)
             fn_802E317C(lbl_8034AA50);
     }
 }
