@@ -26,6 +26,7 @@ asm void __VprintfThunk(void) {
     // clang-format on
 }
 
+/* Print a formatted panic message with source location, dump a stack backtrace, then halt. */
 DECL_WEAK void OSPanic(const char* file, int line, const char* msg, ...) {
     u32 depth;
     u32* sp;
