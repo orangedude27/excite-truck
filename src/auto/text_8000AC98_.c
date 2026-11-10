@@ -779,35 +779,36 @@ void fn_8000BD98(void) {
     return;
 }
 
-int fn_8000BD9C(int arg0, int arg1, int arg2) {
-    int *p;
+/* Handles a command/value lookup for this module. For command 0, it treats *outValue as an element in a ring buffer (lbl_8034F5D8, count lbl_8055D3E0) and replaces it with the next element; specific command IDs map to fixed output values and report handled. */
+int fn_8000BD9C(int arg0, int command, int outPtr) {
+    int *entry;
     int count, found, i;
-    int *out = (int *)arg2;
+    int *outValue = (int *)outPtr;
 
-    switch (arg1) {
+    switch (command) {
     case 0:
-        p = lbl_8034F5D8;
+        entry = lbl_8034F5D8;
         count = lbl_8055D3E0;
         found = 0;
         for (i = 0; i < count; i++) {
-            if (*out == *p) {
-                *out = lbl_8034F5D8[(i + 1) % count];
+            if (*outValue == *entry) {
+                *outValue = lbl_8034F5D8[(i + 1) % count];
                 found = 1;
                 break;
             }
-            p++;
+            entry++;
         }
-        if (found == 0) *out = lbl_8034F5D8[0];
+        if (found == 0) *outValue = lbl_8034F5D8[0];
         break;
-    case 0x170: *out = 0; return 1;
-    case 0x171: *out = 1; return 1;
-    case 0x172: *out = 2; return 1;
-    case 0x173: *out = 4; return 1;
-    case 0x373: *out = 7; return 1;
-    case 0x174: *out = 5; return 1;
-    case 0x175: *out = 6; return 1;
-    case 0x176: *out = 10; return 1;
-    case 0x376: *out = 16; return 1;
+    case 0x170: *outValue = 0; return 1;
+    case 0x171: *outValue = 1; return 1;
+    case 0x172: *outValue = 2; return 1;
+    case 0x173: *outValue = 4; return 1;
+    case 0x373: *outValue = 7; return 1;
+    case 0x174: *outValue = 5; return 1;
+    case 0x175: *outValue = 6; return 1;
+    case 0x176: *outValue = 10; return 1;
+    case 0x376: *outValue = 16; return 1;
     default: break;
     }
     return 0;
