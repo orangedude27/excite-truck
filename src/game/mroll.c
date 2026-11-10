@@ -185,7 +185,7 @@ void *fn_80240A1C(void *arg0, int *arg1, void *arg2) {
     self->vtable = lbl_80342650;
     {
         char *source;
-        int count;
+        int length;
         char *dest = self->name;
         self->object = arg2;
         self->unk14 = 0;
@@ -193,10 +193,10 @@ void *fn_80240A1C(void *arg0, int *arg1, void *arg2) {
         self->selected = 0;
         self->payload = arg1;
         self->active = 1;
-        count = 0x20;
+        length = 0x20;
         source = &lbl_8055BD60;
         while ((signed char)(*dest++ = *source++) != 0) {
-            if (--count <= 0) {
+            if (--length <= 0) {
                 dest[-1] = 0;
                 break;
             }
@@ -205,20 +205,20 @@ void *fn_80240A1C(void *arg0, int *arg1, void *arg2) {
     *(int *)((unsigned char *)self->object + 0xD8) = *self->payload;
     if (*self->payload < 0) {
         char *source = &lbl_8055BD60;
-        int count = 0x20;
+        int length = 0x20;
         char *dest = self->name;
         while ((signed char)(*dest++ = *source++) != 0) {
-            if (--count <= 0) {
+            if (--length <= 0) {
                 dest[-1] = 0;
                 break;
             }
         }
     } else {
         char *source = (char *)fn_802E85B8(*self->payload);
-        int count = 0x20;
+        int length = 0x20;
         char *dest = self->name;
         while ((signed char)(*dest++ = *source++) != 0) {
-            if (--count <= 0) {
+            if (--length <= 0) {
                 dest[-1] = 0;
                 break;
             }
