@@ -1,6 +1,7 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
-
+// music — music playback ("music: play!", player_music_vol).
+// Recovered TU window 0x80209FFC..0x8020A6A4+thunk (see docs/attribution_analysis.md).
+// Static-init thunk fn_8020A6A4 (+ .ctors slot 0x802ED38C) remains in
+// auto/text_8020A6A4_.c pending a promotion pass.
 #pragma use_lmw_stmw off
 
 extern char lbl_8055EDDC;

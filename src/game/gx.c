@@ -1,3 +1,7 @@
+// gx — gx draw core ("gx: unhandled draw sync token", screenshots, visibility).
+// Recovered TU window 0x802CE9FC..0x802D3ED4+thunk (see docs/attribution_analysis.md).
+// Static-init thunk fn_802D3ED4 (+ .ctors slot 0x802ED5C0) remains in
+// auto/text_802D3ED4_.c pending a promotion pass.
 #include <revolution/GX/GXTypes.h>
 
 #pragma dont_inline fn_802D1678

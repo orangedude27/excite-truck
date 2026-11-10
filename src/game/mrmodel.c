@@ -1,3 +1,7 @@
+// mrmodel — model resource (mrModelLoad/Unload/End, ModelInfo).
+// Recovered TU window 0x802C5390..0x802C8238+thunk (see docs/attribution_analysis.md).
+// Static-init thunk fn_802C8238 (+ .ctors slot 0x802ED5A4) remains in
+// auto/text_802C8238_.c pending a promotion pass.
 #include "types.h"
 extern void fn_802CC550(int, void *, float, float);
 extern void *fn_8012C370(int, int, u32 *, int *, u8 *, u8 *);

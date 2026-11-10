@@ -1,3 +1,7 @@
+// cpulight — cpu lighting ("I only cpu-light from 8888 textures").
+// Recovered TU window 0x802DB2D4..0x802DD430+thunk (see docs/attribution_analysis.md).
+// Static-init thunk fn_802DD430 (+ .ctors slot 0x802ED5DC) remains in
+// auto/text_802DD430_.c pending a promotion pass.
 #include "revolution/GX/GXHardware.h"
 extern void fn_802CADD0(int, int);
 extern void fn_802DFB30(void);
@@ -93,10 +97,10 @@ void fn_802DB3FC(void) {
     GXSetTevAlphaOp(3, 0, 0, 0, 1, 0);
     GXSetTevAlphaIn(3, 7, 0, 4, 7);
 }
-#pragma scheduling invalid_target
+#pragma push
+#pragma scheduling on
 void fn_802DB4E4(void) {
     volatile int m[16];
-    register float *q = (float *)lbl_804DB068;
     m[8] = 0;
     m[14] = 0;
     m[0] = 0;
@@ -107,20 +111,20 @@ void fn_802DB4E4(void) {
     m[12] = 0;
     m[13] = 0;
     m[15] = 0;
-    *(volatile float *)&m[8] = q[3];
-    *(volatile float *)&m[14] = q[4];
+    *(volatile float *)&m[8] = *(float *)(lbl_804DB068 + 0xc);
+    *(volatile float *)&m[14] = *(float *)(lbl_804DB068 + 0x10);
     m[1] = 0;
     m[2] = 0;
     m[3] = 0;
     m[4] = 0;
     m[5] = 0;
     m[7] = 0;
-    *(volatile float *)&m[0] = q[6];
-    *(volatile float *)&m[6] = q[7];
+    *(volatile float *)&m[0] = *(float *)(lbl_804DB068 + 0x18);
+    *(volatile float *)&m[6] = *(float *)(lbl_804DB068 + 0x1c);
     GXLoadTexMtxImm((float *)&m[8], 0x1e, 1);
     GXLoadTexMtxImm((float *)m, 0x21, 1);
 }
-#pragma scheduling on
+#pragma pop
 void fn_802DB58C(void) {
     int m[8];
     int *p = (int *)lbl_802FACD8;
@@ -372,6 +376,20 @@ void fn_802DBDE8(int arg0, void *arg1) {
     }
     lbl_8055FE9E = 1;
 }
+
+#pragma scheduling invalid_target
+void fn_802DBE4C(void) {
+    register int one;
+    fn_802D0610(0);
+    fn_802D68C4(0, 0, 0, 0);
+    one = 1;
+    GXSetZMode(1, 3, 1);
+    GXSetNumChans(1);
+    GXSetChanCtrl(4, 0, 1, 1, 0, 0, 2);
+    lbl_8055FEB8 = (unsigned char)one;
+}
+#pragma scheduling on
+
 #pragma scheduling on
 void fn_802DBECC(void) {
     fn_802D3360();

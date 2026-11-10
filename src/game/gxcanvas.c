@@ -1,6 +1,7 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
-
+// gxcanvas — gx canvas/stamp images ("gxCanvasGet(%s): wrong ver").
+// Recovered TU window 0x802C2CAC..0x802C5028+thunk (see docs/attribution_analysis.md).
+// Static-init thunk fn_802C5028 (+ .ctors slot 0x802ED59C) remains in
+// auto/text_802C5028_.c pending a promotion pass.
 #include <types.h>
 extern const char lbl_8034B078[];
 extern const char lbl_8034B0E4[];

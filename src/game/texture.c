@@ -1,6 +1,7 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
-
+// texture — textures + SimpleHeap ("texture: create %s in scene").
+// Recovered TU window 0x802CA0E4..0x802CCB84+thunk (see docs/attribution_analysis.md).
+// Static-init thunk fn_802CCB84 (+ .ctors slot 0x802ED5AC) remains in
+// auto/text_802CCB84_.c pending a promotion pass.
 #include <macros.h>
 extern char lbl_8034BA98[];
 extern void fn_802E317C(const char *, ...);

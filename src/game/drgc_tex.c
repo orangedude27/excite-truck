@@ -1,3 +1,7 @@
+// drgc_tex — GC texture creation ("drgc/tex:", drCreateTexture).
+// Recovered TU window 0x802D7564..0x802D98BC+thunk (see docs/attribution_analysis.md).
+// Static-init thunk fn_802D98BC (+ .ctors slot 0x802ED5C8) remains in
+// auto/text_802D98BC_.c pending a promotion pass.
 #include "types.h"
 extern void DCFlushRange(void *, unsigned int);
 extern unsigned int GXGetTexBufferSize(unsigned short, unsigned short, unsigned int, int, unsigned char);

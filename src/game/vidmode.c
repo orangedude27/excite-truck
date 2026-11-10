@@ -1,6 +1,7 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
-
+// vidmode — video mode info (VidGetVideoModeInfo).
+// Recovered TU window 0x802CE344..0x802CE39C+thunk (see docs/attribution_analysis.md).
+// Static-init thunk fn_802CE39C (+ .ctors slot 0x802ED5B4) remains in
+// auto/text_802CE39C_.c pending a promotion pass.
 extern char lbl_8034BC00[];
 extern char lbl_8034BCA8[];
 extern void fn_802E317C(const char *, ...);

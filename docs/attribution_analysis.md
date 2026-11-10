@@ -207,6 +207,29 @@ warnings for the old unit name; they clear once `ninja` regenerates metadata.
 | 2026-11-10 | `src/game/nandsave.c` | nandsave (inferred) | 0x802E86D4..0x802E988C | NonMatching | was `auto/text_802E86D4_.c` |
 | 2026-11-10 | `src/game/config.c` | config (inferred) | 0x802E98C8..0x802E9A34 | NonMatching | was `auto/text_802E98C8_.c` |
 | 2026-11-10 | `src/game/homebutton2.c` | homeButton2 (inferred) | 0x802EC4BC..0x802ECCDC | NonMatching | was `auto/text_802EC4BC_.c`; distinct from `homebutton_controller.cpp` (0x800A485C region) |
+| 2026-11-10 | `src/game/mixer.c` | mixer (inferred) | 0x80208A18..0x80209410 | NonMatching | was `auto/text_80208A18_.c`; "Null Mixer" |
+| 2026-11-10 | `src/game/engsnd.c` | engsnd (inferred) | 0x80209448..0x80209D04 | NonMatching | was `auto/text_80209448_.c` |
+| 2026-11-10 | `src/game/squeal.c` | squeal (inferred) | 0x80209D4C..0x80209FF4 | NonMatching | was `auto/text_80209D4C_.c` |
+| 2026-11-10 | `src/game/music.c` | music (inferred) | 0x80209FFC..0x8020A6A4 | NonMatching | was `auto/text_80209FFC_.c` |
+| 2026-11-10 | `src/game/voicesnd.c` | voicesnd (inferred) | 0x8020A6AC..0x8020BCB8 | NonMatching | was `auto/text_8020A6AC_.c`; SndVoice/VoiceSoundMixer |
+| 2026-11-10 | `src/game/sounddash.c` | sound dash (inferred) | 0x8020BCE4..0x8020C114 | NonMatching | was `auto/text_8020BCE4_.c` |
+| 2026-11-10 | `src/game/musprerace.c` | pre-race music (inferred) | 0x8020C140..0x8020CA28 | NonMatching | was `auto/text_8020C140_.c` |
+| 2026-11-10 | `src/game/roadsnd.c` | roadsnd (inferred) | 0x8020CA30..0x8020CF60 | NonMatching | was `auto/text_8020CA30_.c` |
+| 2026-11-10 | `src/game/waterbounce.c` | waterbounce (inferred) | 0x8020DE74..0x8020F3AC | NonMatching | was `auto/text_8020DE74_.c` |
+| 2026-11-10 | `src/game/trackmusic.c` | trackmusic (inferred) | 0x8020F3B4..0x802114F4 | NonMatching | was `auto/text_8020F3B4_.c`; TrackMusic/TrkMusDash |
+| 2026-11-10 | `src/game/gxcanvas.c` | gxcanvas (inferred) | 0x802C2CAC..0x802C5028 | NonMatching | was `auto/text_802C2CAC_.c` |
+| 2026-11-10 | `src/game/image.c` | image (inferred) | 0x802C5130..0x802C5364 | Matching | was `auto/text_802C5130_.c` |
+| 2026-11-10 | `src/game/mrmodel.c` | mrmodel (inferred) | 0x802C5390..0x802C8238 | NonMatching | was `auto/text_802C5390_.c` |
+| 2026-11-10 | `src/game/drawlist.c` | drawlist (inferred) | 0x802C82C0..0x802CA0A4 | NonMatching | was `auto/text_802C82C0_.c` |
+| 2026-11-10 | `src/game/texture.c` | texture (inferred) | 0x802CA0E4..0x802CCB84 | NonMatching | was `auto/text_802CA0E4_.c` |
+| 2026-11-10 | `src/game/mlist.c` | mlist (inferred) | 0x802CCBC0..0x802CE308 | NonMatching | was `auto/text_802CCBC0_.c` |
+| 2026-11-10 | `src/game/vidmode.c` | vidmode (inferred) | 0x802CE344..0x802CE39C | Matching | was `auto/text_802CE344_.c` |
+| 2026-11-10 | `src/game/modpool.c` | modpool (inferred) | 0x802CE3A4..0x802CE858 | NonMatching | was `auto/text_802CE3A4_.c` |
+| 2026-11-10 | `src/game/gx.c` | gx (inferred) | 0x802CE9FC..0x802D3ED4 | NonMatching | was `auto/text_802CE9FC_.c` |
+| 2026-11-10 | `src/game/drgc_surf.c` | drgc/surf (inferred) | 0x802D3F30..0x802D755C | NonMatching | was `auto/text_802D3F30_.c` |
+| 2026-11-10 | `src/game/drgc_tex.c` | drgc/tex (inferred) | 0x802D7564..0x802D98BC | NonMatching | was `auto/text_802D7564_.c` |
+| 2026-11-10 | `src/game/stackalloc.c` | stackalloc (inferred) | 0x802D9C5C..0x802DAC70 | NonMatching | was `auto/text_802D9C5C_.c` |
+| 2026-11-10 | `src/game/cpulight.c` | cpulight (inferred) | 0x802DB2D4..0x802DD430 | NonMatching | was `auto/text_802DB2D4_.c` |
 
 Post-carve TODO per batch: re-register source ownership in the decomp.wtf
 app ("Give them source files") so agent briefs point at the new files; the

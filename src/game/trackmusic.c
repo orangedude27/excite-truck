@@ -1,3 +1,7 @@
+// trackmusic — track music ("TrackMusic: Found song", TrkMusDash).
+// Recovered TU window 0x8020F3B4..0x802114F4+thunk (see docs/attribution_analysis.md).
+// Static-init thunk fn_802114F4 (+ .ctors slot 0x802ED3A8) remains in
+// auto/text_802114F4_.c pending a promotion pass.
 extern long fn_802EC104(long);
 #pragma cplusplus on
 struct Dummy_802113D8 {
@@ -745,6 +749,9 @@ void AXFXSetHooks_80210950(void *arg0, void *arg1) {
     lbl_8055EEDC = arg1;
 }
 
+void fn_8021095C(void) {
+}
+
 extern long fn_8020FEF0(long);
 extern long fn_802100AC(void);
 extern long fn_80012158(void);
@@ -873,14 +880,12 @@ extern float lbl_80563404;
 extern void fn_80206454(void);
 extern void fn_801769EC(void);
 #pragma scheduling on
-#pragma processor 750
 void fn_802114C4(void) {
     float value = lbl_80563404;
-    fn_80209190(lbl_8055EEF0, value);
+    ((void (*)(float, long))fn_80209190)(value, lbl_8055EEF0);
     fn_80206454();
     fn_801769EC();
 }
-#pragma processor gekko
 extern void fn_801345D8(void *, ...);
 extern long lbl_8055B664;
 extern signed char lbl_8055EEF4;

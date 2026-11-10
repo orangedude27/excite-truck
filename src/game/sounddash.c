@@ -1,6 +1,7 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
-
+// sounddash — sound debug dash ("SOUND DASH", sounds.txt dump).
+// Recovered TU window 0x8020BCE4..0x8020C114+thunk (see docs/attribution_analysis.md).
+// Static-init thunk fn_8020C114 (+ .ctors slot 0x802ED394) remains in
+// auto/text_8020C114_.c pending a promotion pass.
 extern int fn_8020A76C(void);
 extern char *fn_8020A774(int);
 extern void fn_8023895C(void);

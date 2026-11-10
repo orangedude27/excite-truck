@@ -2059,56 +2059,56 @@ auto/text_80208A10_.c:
 	.text       start:0x80208A10 end:0x80208A18
 	.ctors      start:0x802ED37C end:0x802ED380
 
-auto/text_80208A18_.c:
+game/mixer.c:
 	.text       start:0x80208A18 end:0x80209410
 
 auto/text_80209410_.c:
 	.text       start:0x80209410 end:0x80209448
 	.ctors      start:0x802ED380 end:0x802ED384
 
-auto/text_80209448_.c:
+game/engsnd.c:
 	.text       start:0x80209448 end:0x80209D04
 
 auto/text_80209D04_.c:
 	.text       start:0x80209D04 end:0x80209D4C
 	.ctors      start:0x802ED384 end:0x802ED388
 
-auto/text_80209D4C_.c:
+game/squeal.c:
 	.text       start:0x80209D4C end:0x80209FF4
 
 auto/text_80209FF4_.c:
 	.text       start:0x80209FF4 end:0x80209FFC
 	.ctors      start:0x802ED388 end:0x802ED38C
 
-auto/text_80209FFC_.c:
+game/music.c:
 	.text       start:0x80209FFC end:0x8020A6A4
 
 auto/text_8020A6A4_.c:
 	.text       start:0x8020A6A4 end:0x8020A6AC
 	.ctors      start:0x802ED38C end:0x802ED390
 
-auto/text_8020A6AC_.c:
+game/voicesnd.c:
 	.text       start:0x8020A6AC end:0x8020BCB8
 
 auto/text_8020BCB8_.c:
 	.text       start:0x8020BCB8 end:0x8020BCE4
 	.ctors      start:0x802ED390 end:0x802ED394
 
-auto/text_8020BCE4_.c:
+game/sounddash.c:
 	.text       start:0x8020BCE4 end:0x8020C114
 
 auto/text_8020C114_.c:
 	.text       start:0x8020C114 end:0x8020C140
 	.ctors      start:0x802ED394 end:0x802ED398
 
-auto/text_8020C140_.c:
+game/musprerace.c:
 	.text       start:0x8020C140 end:0x8020CA28
 
 auto/text_8020CA28_.c:
 	.text       start:0x8020CA28 end:0x8020CA30
 	.ctors      start:0x802ED398 end:0x802ED39C
 
-auto/text_8020CA30_.c:
+game/roadsnd.c:
 	.text       start:0x8020CA30 end:0x8020CF60
 
 auto/text_8020CF60_.c:
@@ -2122,14 +2122,14 @@ auto/text_8020DE24_.c:
 	.text       start:0x8020DE24 end:0x8020DE74
 	.ctors      start:0x802ED3A0 end:0x802ED3A4
 
-auto/text_8020DE74_.c:
+game/waterbounce.c:
 	.text       start:0x8020DE74 end:0x8020F3AC
 
 auto/text_8020F3AC_.c:
 	.text       start:0x8020F3AC end:0x8020F3B4
 	.ctors      start:0x802ED3A4 end:0x802ED3A8
 
-auto/text_8020F3B4_.c:
+game/trackmusic.c:
 	.text       start:0x8020F3B4 end:0x802114F4
 
 auto/text_802114F4_.c:
@@ -3001,56 +3001,56 @@ auto/text_802C2C70_.c:
 	.text       start:0x802C2C70 end:0x802C2CAC
 	.ctors      start:0x802ED598 end:0x802ED59C
 
-auto/text_802C2CAC_.c:
+game/gxcanvas.c:
 	.text       start:0x802C2CAC end:0x802C5028
 
 auto/text_802C5028_.c:
 	.text       start:0x802C5028 end:0x802C5130
 	.ctors      start:0x802ED59C end:0x802ED5A0
 
-auto/text_802C5130_.c:
+game/image.c:
 	.text       start:0x802C5130 end:0x802C5364
 
 auto/text_802C5364_.c:
 	.text       start:0x802C5364 end:0x802C5390
 	.ctors      start:0x802ED5A0 end:0x802ED5A4
 
-auto/text_802C5390_.c:
+game/mrmodel.c:
 	.text       start:0x802C5390 end:0x802C8238
 
 auto/text_802C8238_.c:
 	.text       start:0x802C8238 end:0x802C82C0
 	.ctors      start:0x802ED5A4 end:0x802ED5A8
 
-auto/text_802C82C0_.c:
+game/drawlist.c:
 	.text       start:0x802C82C0 end:0x802CA0A4
 
 auto/text_802CA0A4_.c:
 	.text       start:0x802CA0A4 end:0x802CA0E4
 	.ctors      start:0x802ED5A8 end:0x802ED5AC
 
-auto/text_802CA0E4_.c:
+game/texture.c:
 	.text       start:0x802CA0E4 end:0x802CCB84
 
 auto/text_802CCB84_.c:
 	.text       start:0x802CCB84 end:0x802CCBC0
 	.ctors      start:0x802ED5AC end:0x802ED5B0
 
-auto/text_802CCBC0_.c:
+game/mlist.c:
 	.text       start:0x802CCBC0 end:0x802CE308
 
 auto/text_802CE308_.c:
 	.text       start:0x802CE308 end:0x802CE344
 	.ctors      start:0x802ED5B0 end:0x802ED5B4
 
-auto/text_802CE344_.c:
+game/vidmode.c:
 	.text       start:0x802CE344 end:0x802CE39C
 
 auto/text_802CE39C_.c:
 	.text       start:0x802CE39C end:0x802CE3A4
 	.ctors      start:0x802ED5B4 end:0x802ED5B8
 
-auto/text_802CE3A4_.c:
+game/modpool.c:
 	.text       start:0x802CE3A4 end:0x802CE858
 
 auto/text_802CE858_.c:
@@ -3064,21 +3064,21 @@ auto/text_802CE9F4_.c:
 	.text       start:0x802CE9F4 end:0x802CE9FC
 	.ctors      start:0x802ED5BC end:0x802ED5C0
 
-auto/text_802CE9FC_.c:
+game/gx.c:
 	.text       start:0x802CE9FC end:0x802D3ED4
 
 auto/text_802D3ED4_.c:
 	.text       start:0x802D3ED4 end:0x802D3F30
 	.ctors      start:0x802ED5C0 end:0x802ED5C4
 
-auto/text_802D3F30_.c:
+game/drgc_surf.c:
 	.text       start:0x802D3F30 end:0x802D755C
 
 auto/text_802D755C_.c:
 	.text       start:0x802D755C end:0x802D7564
 	.ctors      start:0x802ED5C4 end:0x802ED5C8
 
-auto/text_802D7564_.c:
+game/drgc_tex.c:
 	.text       start:0x802D7564 end:0x802D98BC
 
 auto/text_802D98BC_.c:
@@ -3092,7 +3092,7 @@ auto/text_802D9C54_.c:
 	.text       start:0x802D9C54 end:0x802D9C5C
 	.ctors      start:0x802ED5CC end:0x802ED5D0
 
-auto/text_802D9C5C_.c:
+game/stackalloc.c:
 	.text       start:0x802D9C5C end:0x802DAC70
 
 auto/text_802DAC70_.c:
@@ -3113,7 +3113,7 @@ auto/text_802DB2CC_.c:
 	.text       start:0x802DB2CC end:0x802DB2D4
 	.ctors      start:0x802ED5D8 end:0x802ED5DC
 
-auto/text_802DB2D4_.c:
+game/cpulight.c:
 	.text       start:0x802DB2D4 end:0x802DD430
 
 auto/text_802DD430_.c:

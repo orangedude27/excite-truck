@@ -1,6 +1,7 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
-
+// mixer — sound mixer incl. null backend ("Null Mixer", "mixer: ...").
+// Recovered TU window 0x80208A18..0x80209410+thunk (see docs/attribution_analysis.md).
+// Static-init thunk fn_80209410 (+ .ctors slot 0x802ED380) remains in
+// auto/text_80209410_.c pending a promotion pass.
 extern char lbl_8033BF18[];
 extern char lbl_8033C058[];
 extern char lbl_8055B4F0;
@@ -389,13 +390,12 @@ extern float lbl_8055B4D0;
 extern void fn_801332D0(int, void *, void *);
 #pragma scheduling on
 int fn_8020921C(void) {
-    struct Config { int pad; int value; unsigned int version; };
-    extern struct Config lbl_8048929C;
+    extern unsigned int lbl_8048929C[];
     extern unsigned int lbl_8055E044;
     extern void fn_80131318(void);
-    if (lbl_8048929C.version != lbl_8055E044)
+    if (lbl_8048929C[2] != lbl_8055E044)
         fn_80131318();
-    return lbl_8048929C.value;
+    return (int)lbl_8048929C[1];
 }
 #pragma scheduling default
 int fn_80209260(int arg0) { return arg0 + 4; }

@@ -1,6 +1,7 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
-
+// mlist — material/model list ("mlist: unhandled priority %d").
+// Recovered TU window 0x802CCBC0..0x802CE308+thunk (see docs/attribution_analysis.md).
+// Static-init thunk fn_802CE308 (+ .ctors slot 0x802ED5B0) remains in
+// auto/text_802CE308_.c pending a promotion pass.
 extern void *lbl_8055FCD8;
 extern int fn_802CAFC8(int);
 extern char lbl_8034BBE0[];
@@ -90,26 +91,37 @@ int fn_802CCBC4(void *arg0, float *arg1, float arg2, float arg3) {
 }
 #pragma pop
 int fn_802CCD0C(void *arg0, void *arg1) {
-    int result;
     int x = fn_802CAFC8(*(int *)((char *)arg0 + 0x10));
     int y = fn_802CAFC8(*(int *)((char *)arg1 + 0x10));
-    if (x != y) return x - y;
+    if (x != y) {
+        return x - y;
+    }
     x = fn_802CAFF0(*(int *)((char *)arg0 + 0x10));
     y = fn_802CAFF0(*(int *)((char *)arg1 + 0x10));
-    if (x != y) return x - y;
-    if (*(int *)((char *)arg0 + 0x10) == -1) return 1;
-    if (*(int *)((char *)arg1 + 0x10) == -1) return -1;
-    result = stricmp(arg0, arg1);
-    return result;
+    if (x != y) {
+        return x - y;
+    }
+    if (*(int *)((char *)arg0 + 0x10) == -1) {
+        return 1;
+    }
+    if (*(int *)((char *)arg1 + 0x10) == -1) {
+        return -1;
+    }
+    return stricmp((char *)arg0, (char *)arg1);
 }
 
-int fn_802CCDC4(void ***arg0, void ***arg1) {
-    void **obj0 = *arg0;
-    void **obj1 = *arg1;
-    int first = ((int (**)(void **))(*obj0))[4](obj0);
-    return first - ((int (**)(void **))(*obj1))[4](obj1);
+#pragma cplusplus on
+extern "C" int fn_802CCDC4(void ***arg0, void ***arg1) {
+    struct Local {
+        virtual void v0();
+        virtual void v1();
+        virtual int v2();
+    };
+    Local *obj1 = (Local *)*arg1;
+    int first = ((Local *)*arg0)->v2();
+    return first - obj1->v2();
 }
-
+#pragma cplusplus reset
 extern int fn_802CAC28(void *, int);
 extern void fn_802E317C(const char *, ...);
 extern void *memset(void *, int, unsigned int);

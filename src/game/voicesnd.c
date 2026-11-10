@@ -1,6 +1,7 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
-
+// voicesnd — voice sounds (SndVoice::Set3D, VoiceSoundMixer, sounds.val).
+// Recovered TU window 0x8020A6AC..0x8020BCB8+thunk (see docs/attribution_analysis.md).
+// Static-init thunk fn_8020BCB8 (+ .ctors slot 0x802ED390) remains in
+// auto/text_8020BCB8_.c pending a promotion pass.
 extern void *fn_802E6058(int);
 extern void fn_802E6ABC(int);
 extern void fn_80207938(void);
@@ -140,15 +141,18 @@ int fn_8020A878(void *arg0) {
 void fn_8020A8E8(void *arg0) {
     int *list = *(int **)((char *)arg0 + 4);
     int i = 0;
+    int off = 0;
+    fn_802E6B34();
     while (i < 0x200) {
-        if (list[i] != 0) {
+        if (*(int *)((char *)list + off) != 0) {
             fn_802E317C(lbl_8033C388);
         }
         i++;
+        off += 4;
     }
-    fn_80128670(list);
-    *(int **)((char *)arg0 + 4) = 0;
-    *(void **)lbl_8055EE04 = 0;
+    fn_80128670(*(void **)((char *)arg0 + 4));
+    *(int *)((char *)arg0 + 4) = 0;
+    lbl_8055EE04 = 0;
 }
 
 #pragma push

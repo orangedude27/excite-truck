@@ -1,6 +1,7 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
-
+// image — image wrapper ("image: gxGetImage(...)").
+// Recovered TU window 0x802C5130..0x802C5364+thunk (see docs/attribution_analysis.md).
+// Static-init thunk fn_802C5364 (+ .ctors slot 0x802ED5A0) remains in
+// auto/text_802C5364_.c pending a promotion pass.
 extern void fn_80235380(void);
 extern int fn_80235FD8(void);
 typedef float f32;

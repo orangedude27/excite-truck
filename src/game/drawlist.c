@@ -1,3 +1,7 @@
+// drawlist — draw lists (DrawListWrapper::pool, mrDrawList).
+// Recovered TU window 0x802C82C0..0x802CA0A4+thunk (see docs/attribution_analysis.md).
+// Static-init thunk fn_802CA0A4 (+ .ctors slot 0x802ED5A8) remains in
+// auto/text_802CA0A4_.c pending a promotion pass.
 #include <revolution/MTX/mtxtypes.h>
 extern char lbl_8055FC34;
 extern int lbl_8055D028;

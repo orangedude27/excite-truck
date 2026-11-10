@@ -1,6 +1,7 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
-
+// stackalloc — stack allocator (StackAlloc::buf, BoneHandleAlloc).
+// Recovered TU window 0x802D9C5C..0x802DAC70+thunk (see docs/attribution_analysis.md).
+// Static-init thunk fn_802DAC70 (+ .ctors slot 0x802ED5D0) remains in
+// auto/text_802DAC70_.c pending a promotion pass.
 extern void *lbl_8055FE5C;
 extern void *fn_801284F8(int, void *);
 extern int fn_8012850C(int, void *);
@@ -730,37 +731,39 @@ extern float lbl_80565030;
 extern void fn_802E317C(char *, ...);
 extern int memcpy(void *, const void *, unsigned int);
 extern char lbl_80346798[];
-void *fn_802DA918(float arg0, float arg1, float arg2) {
-    float a, b, c;
+#pragma scheduling on
+void *fn_802DA918(float x0, float x1, float x2) {
     unsigned char saved;
-    unsigned char *p;
+    unsigned char *base;
+    int off;
     void *result;
-    c = lbl_80565030 / (arg2 * arg2);
-    a = arg0;
-    b = arg1;
-    p = (unsigned char *)lbl_8055FE5C;
-    saved = p[0x25];
-    p[0x25] = 0;
-    if (*(int *)(p + 0x10) + 0x2c > *(int *)(p + 0xc)) {
-        fn_802E317C((char *)0, *(int *)(p + 8), 0x24, *(int *)(p + 0xc) >> 10);
+    void *st;
+    x2 = lbl_80565030 / (x2 * x2);
+    st = lbl_8055FE5C;
+    saved = *(volatile unsigned char *)((char *)st + 0x25);
+    *(volatile unsigned char *)((char *)st + 0x25) = 0;
+    if (*(volatile int *)((char *)st + 0x10) + 0x2c > *(volatile int *)((char *)st + 0x0C)) {
+        int lim = *(volatile int *)((char *)st + 0x0C);
+        fn_802E317C(lbl_80346798, *(volatile int *)((char *)st + 8), 0x24, lim / 1024);
         result = 0;
     } else {
-        int *base = (int *)(*(int *)(p + 4) + *(int *)(p + 0x10));
-        *base = 1;
-        result = base + 1;
-        *(int *)((char *)base + 0x28) = 0x24;
-        *(int *)(p + 0x10) += 0x2c;
+        off = *(volatile int *)((char *)st + 4);
+        base = (unsigned char *)*(volatile int *)((char *)st + 0x10);
+        base += off;
+        *(int *)base = 1;
+        result = base + 4;
+        *(int *)((*(volatile int *)((char *)st + 4) + *(volatile int *)((char *)st + 0x10)) + 0x28) = 0x24;
+        *(volatile int *)((char *)st + 0x10) += 0x2c;
     }
     *(int *)((char *)result + 0) = 7;
     *(int *)((char *)result + 4) = 1;
     *(int *)((char *)result + 8) = 1;
-    *(int *)((char *)result + 0xc) = 0;
+    *(int *)((char *)result + 0x0C) = 0;
     *(int *)((char *)result + 0x14) = 0;
     *((unsigned char *)result + 0x10) = saved;
-    memcpy((char *)result + 0x18, &a, 0xc);
+    memcpy((char *)result + 0x18, &x0, 0xc);
     return result;
 }
-
 extern void *memset(void *, int, unsigned int);
 #pragma opt_propagation off
 struct DaaContext {
@@ -853,28 +856,42 @@ void fn_802DAA18(void *arg0) {
 #pragma opt_propagation reset
 #pragma scheduling on
 void fn_802DABA4(float *arg0) {
-    float sp8, spC, sp10, sp14, sp18, sp1C, sp20, sp24, sp28, sp2C, sp30, sp34;
-    float f6 = arg0[0];
-    float f4 = arg0[1];
-    float f3 = arg0[2];
-    float f12 = lbl_80565038;
-    float f9 = lbl_8056503C;
-    float f2 = arg0[3];
-    float f1 = arg0[4];
-    float f0 = arg0[5];
-    sp8 = f6 * f12;
-    spC = f4 * f12;
-    sp10 = f3 * f12;
-    sp14 = f6 * f9;
-    sp18 = f4 * f9;
-    sp1C = f3 * f9;
-    sp20 = f2 * f12;
-    sp24 = f1 * f12;
-    sp28 = f0 * f12;
-    sp2C = f2 * f9;
-    sp30 = f1 * f9;
-    sp34 = f0 * f9;
-    fn_802DAA18(fn_802DA704(0x4C, &sp8, 4));
+    float a0 = arg0[0];
+    float s1 = lbl_80565038;
+    float a1 = arg0[1];
+    float s2 = lbl_8056503C;
+    float t0 = a0 * s1;
+    float a2 = arg0[2];
+    float t3 = a0 * s2;
+    float t1 = a1 * s1;
+    float t2 = a2 * s1;
+    float sp[12];
+    sp[0] = t0;
+    a0 = arg0[3];
+    t0 = a0 * s1;
+    t3 = a1 * s2;
+    a1 = arg0[4];
+    t1 = a2 * s2;
+    a2 = arg0[5];
+    t2 = a1 * s1;
+    a0 = a2 * s1;
+    sp[1] = t1;
+    t1 = a0;
+    a0 = arg0[3];
+    t2 = a0 * s2;
+    t1 = a1 * s2;
+    a1 = a2 * s2;
+    sp[2] = t2;
+    sp[3] = t3;
+    sp[4] = t3;
+    sp[5] = t1;
+    sp[6] = t0;
+    sp[7] = t2;
+    sp[8] = a0;
+    sp[9] = t2;
+    sp[10] = t1;
+    sp[11] = a1;
+    fn_802DAA18(fn_802DA704(0x4C, sp, 4));
 }
 
 void fn_802DAC54(void) {

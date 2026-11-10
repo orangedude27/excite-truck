@@ -1,6 +1,7 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
-
+// squeal — tire squeal sfx ("squeal.sfx").
+// Recovered TU window 0x80209D4C..0x80209FF4+thunk (see docs/attribution_analysis.md).
+// Static-init thunk fn_80209FF4 (+ .ctors slot 0x802ED388) remains in
+// auto/text_80209FF4_.c pending a promotion pass.
 extern char lbl_8033C258[];
 extern char lbl_8033C268[];
 extern int lbl_8055B548;
@@ -45,23 +46,26 @@ void *fn_80209D4C(void *arg0) {
 extern void fn_80128668(void *);
 #pragma scheduling invalid_target
 void *fn_80209DE4(void *arg0, int arg1) {
-    register void *p;
+    char *q;
+    char *r;
     if (arg0 != 0) {
-        p = *(void **)((char *)arg0 + 8);
+        q = *(char **)((char *)arg0 + 8);
         *(void **)arg0 = lbl_8033C258;
-        if (p != 0) {
-            if (p != 0) {
-                ((void (*)(void *, int))(*(void * volatile **)p)[2])(p, 1);
+        if (q != 0) {
+            if (q != 0) {
+                ((void (*)(void *, int))(*(void * volatile **)q)[2])(q, 1);
             }
             *(void **)((char *)arg0 + 8) = 0;
         }
-        p = *(void **)((char *)arg0 + 0xc);
-        if (p != 0) {
-            if (p != 0) {
-                ((void (*)(void *, int))(*(void * volatile **)p)[2])(p, 1);
+        r = *(char **)((char *)arg0 + 0xC);
+        if (r != 0) {
+            if (r != 0) {
+                ((void (*)(void *, int))(*(void * volatile **)r)[2])(r, 1);
             }
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
     }
     return arg0;
 }

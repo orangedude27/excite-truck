@@ -1,3 +1,7 @@
+// waterbounce — water bounce sfx ("waterbounce.sfx").
+// Recovered TU window 0x8020DE74..0x8020F3AC+thunk (see docs/attribution_analysis.md).
+// Static-init thunk fn_8020F3AC (+ .ctors slot 0x802ED3A4) remains in
+// auto/text_8020F3AC_.c pending a promotion pass.
 #include "types.h"
 
 // One truck's sound effects. fn_8020DE74() creates the sounds named below --
@@ -263,13 +267,12 @@ extern "C" void *fn_8020E288(CarSound *snd, s32 deleteMemory) {
 
 extern "C" s32 fn_80009C84();
 extern "C" void fn_80206750(s32, s32, s32);
-void fn_8020F15C(void *arg0) {
-    int value;
-    int mode;
-    void *p;
-    p = *(void **)((char *)arg0 + 4);
-    value = *(int *)((char *)p + 0x1EC);
-    mode = fn_80009C84() == 0 ? 2 : 0;
+extern "C" void fn_8020F15C(void *arg0) {
+    void *p = *(void **)((char *)arg0 + 4);
+    int value = *(int *)((char *)p + 0x1EC);
+    int mode = 2;
+    if (fn_80009C84() != 0)
+        mode = 0;
     if (*(int *)((char *)arg0 + 0x48) != 0)
         fn_80206750(*(int *)((char *)arg0 + 0x48), value, mode);
     if (*(int *)((char *)arg0 + 0x4C) != 0)

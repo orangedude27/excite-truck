@@ -1,6 +1,7 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
-
+// modpool — model pool ("modpool: oldest_model is NULL", loadpool).
+// Recovered TU window 0x802CE3A4..0x802CE858+thunk (see docs/attribution_analysis.md).
+// Static-init thunk fn_802CE858 (+ .ctors slot 0x802ED5B8) remains in
+// auto/text_802CE858_.c pending a promotion pass.
 int fn_80128668(void *);
 int fn_80128670(int);
 int fn_801342B0(int, int);
@@ -118,29 +119,25 @@ void fn_802CE4F4(void *arg0, int arg1) {
 #pragma push
 #pragma scheduling invalid_target
 void *fn_802CE630(void *arg0, const char *arg1, int arg2) {
-    int count = *(int *)((char *)arg0 + 8);
-    int offset = 0;
+    int cnt = *(int *)((char *)arg0 + 8);
+    int off = 0;
     unsigned char *entry;
-    register void *result = 0;
-
-    while (count > 0) {
-        entry = (unsigned char *)*(char **)arg0 + offset;
+    void *ret = 0;
+    while (cnt > 0) {
+        entry = (unsigned char *)*(char **)arg0 + off;
         if (*entry == 0 && *(int *)(entry + 0x38) == 0) {
-            char *copy;
-
             entry[0] = 1;
             *(void **)(entry + 4) = arg0;
-            copy = strcpy((char *)entry + 8, arg1);
+            ret = strcpy((char *)entry + 8, arg1);
             *(int *)(entry + 0x28) = arg2;
-            return copy;
+            return ret;
         }
-        offset += 0x40;
-        count--;
+        off += 0x40;
+        cnt--;
     }
-    return result;
+    return ret;
 }
 #pragma pop
-#pragma scheduling on
 void fn_802CE6C0(void *arg0) {
     if (*(int *)((char *)arg0 + 0x38) == 2 && *(int *)((char *)arg0 + 0x38) == 2) {
         fn_802C6FB4(*(int *)((char *)arg0 + 0x30));
@@ -164,45 +161,22 @@ extern int fn_80134424(int, void *, int, int *, void *, void *, int, int);
 #pragma push
 #pragma scheduling invalid_target
 void fn_802CE744(void *arg0) {
-    struct Entry {
-        int padding0;
-        int resource;
-        int padding8;
-        int paddingC;
-        int count;
-    };
-    struct Manager {
-        int padding0;
-        struct Entry *entry;
-        char name[0x24];
-        int result;
-        int padding30;
-        int padding34;
-        int state;
-        int lastCount;
-    };
-    struct Manager *manager = (struct Manager *)arg0;
-    register struct Entry *entry = manager->entry;
-    register int value = entry->count;
+    char *manager;
+    char *entry;
+    int value;
     int result;
     int sp8;
-
-    manager->lastCount = value;
-    entry->count = value + 1;
-    if (manager->state == 0) {
+    manager = (char *)arg0;
+    entry = *(char **)(manager + 4);
+    value = *(int *)(entry + 0x10);
+    *(int *)(manager + 0x3C) = value;
+    *(int *)(entry + 0x10) = value + 1;
+    if (*(int *)(manager + 0x38) == 0) {
         sp8 = 0;
-        result = fn_80134424(
-            entry->resource,
-            (char *)manager + 8,
-            0x4D4F444C,
-            &sp8,
-            (void *)fn_802CE7D4,
-            manager,
-            0,
-            -1);
+        result = fn_80134424(*(int *)(entry + 4), manager + 8, 0x4D4F444C, &sp8, (void *)fn_802CE7D4, manager, 0, -1);
         if (result >= 0) {
-            manager->result = result;
-            manager->state = 1;
+            *(int *)(manager + 0x2C) = result;
+            *(int *)(manager + 0x38) = 1;
         }
     }
 }

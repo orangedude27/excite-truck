@@ -1,3 +1,7 @@
+// drgc_surf — GC surface drawing ("drgc/surf:", drDrawSurface).
+// Recovered TU window 0x802D3F30..0x802D755C+thunk (see docs/attribution_analysis.md).
+// Static-init thunk fn_802D755C (+ .ctors slot 0x802ED5C4) remains in
+// auto/text_802D755C_.c pending a promotion pass.
 #include "revolution/BTE/stack/include/btm_api.h"
 #include "revolution/BTE/stack/btm/btm_int.h"
 #include "revolution/GX/GXTypes.h"

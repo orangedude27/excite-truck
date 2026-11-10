@@ -1,6 +1,7 @@
-// Code of main that had no source file yet: decomp.wtf gave it this one.
-// split_file divides it into the game's real files (file_status shows its range).
-
+// engsnd — engine sound ("engsnd: skipping %s", rpm_factor).
+// Recovered TU window 0x80209448..0x80209D04+thunk (see docs/attribution_analysis.md).
+// Static-init thunk fn_80209D04 (+ .ctors slot 0x802ED384) remains in
+// auto/text_80209D04_.c pending a promotion pass.
 #include <types.h>
 
 #define M2C_UNK s32
