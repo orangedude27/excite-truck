@@ -632,49 +632,54 @@ MEMiHeapHead* MEMDestroyFrmHeap(MEMiHeapHead* heap) {
 
 #pragma push
 #pragma use_lmw_stmw off
-void *MEMAllocFromFrmHeapEx(MEMiHeapHead *heap, u32 size, s32 align) {
-    u32 start;
-    u32 end;
-    u32 alloc;
-    u32 mask;
-    u32 result;
+void* MEMAllocFromFrmHeapEx(MEMiHeapHead* heap, u32 size, s32 align) {
+    // Frame heap state sits right behind the base heap head.
+    MEMiFrmHeapHead* frm = (MEMiFrmHeapHead*)(heap + 1);
+    u32 head;     // first free byte, growing up from the heap's start
+    u32 tail;     // byte past the last free byte, growing down from the end
+    u32 blockEnd; // byte past the block being taken
+    u32 mask;     // alignment mask
+    u32 memBlock; // block to return, NULL when the heap is full
 
-    if (size == 0)
+    // A zero request still costs a word; everything is word aligned.
+    if (size == 0) {
         size = 1;
+    }
     size = (size + 3) & ~3;
-    if (*(u32 *)((u8 *)heap + 0x38) & 4)
-        OSLockMutex((OSMutex *)((u8 *)heap + 0x20));
+
+    LockHeap(heap);
+
     if (align >= 0) {
-        start = *(u32 *)((u8 *)heap + 0x3C);
+        // Positive alignment: allocate from the head towards the tail.
+        head = (u32)frm->head;
         mask = ~(align - 1);
-        result = (align + start - 1) & mask;
-        alloc = size + result;
-        end = *(u32 *)((u8 *)heap + 0x40);
-        if (alloc > end) {
-            result = 0;
+        memBlock = (align + head - 1) & mask;
+        blockEnd = size + memBlock;
+        tail = (u32)frm->tail;
+        if (blockEnd > tail) {
+            memBlock = 0;
         } else {
-            u32 clearSize = alloc - start;
-            if (*(u32 *)((u8 *)heap + 0x38) & 1)
-                memset((void *)start, 0, clearSize);
-            *(u32 *)((u8 *)heap + 0x3C) = alloc;
+            u32 clearSize = blockEnd - head;
+            FillAllocMemory(heap, (void*)head, clearSize);
+            frm->head = (u8*)blockEnd;
         }
     } else {
-        end = *(u32 *)((u8 *)heap + 0x40);
+        // Negative alignment: allocate from the tail towards the head.
+        tail = (u32)frm->tail;
         mask = ~(-align - 1);
-        result = (end - size) & mask;
-        start = *(u32 *)((u8 *)heap + 0x3C);
-        if (result < start) {
-            result = 0;
+        memBlock = (tail - size) & mask;
+        head = (u32)frm->head;
+        if (memBlock < head) {
+            memBlock = 0;
         } else {
-            u32 clearSize = end - result;
-            if (*(u32 *)((u8 *)heap + 0x38) & 1)
-                memset((void *)result, 0, clearSize);
-            *(u32 *)((u8 *)heap + 0x40) = result;
+            u32 clearSize = tail - memBlock;
+            FillAllocMemory(heap, (void*)memBlock, clearSize);
+            frm->tail = (u8*)memBlock;
         }
     }
-    if (*(u32 *)((u8 *)heap + 0x38) & 4)
-        OSUnlockMutex((OSMutex *)((u8 *)heap + 0x20));
-    return (void *)result;
+
+    UnlockHeap(heap);
+    return (void*)memBlock;
 }
 #pragma pop
 
