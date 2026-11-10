@@ -60,17 +60,18 @@ void fn_80177814(int *arg0) {
 
 #pragma dont_inline on
 void fn_801778C0(void) {
-    void **var_r31 = &lbl_804340C0[0];
-    void **var_r28;
-    int var_r30 = 0;
-    int var_r29 = 0;
-
+    struct Obj { void *vtbl; };
+    struct V { void *f[18]; };
+    void **vbase = &lbl_804340C0[0];
+    int voffset = 0;
+    int vcount = 0;
+    struct Obj *velem;
     lbl_8055E468 = 0;
-    for (; var_r29 < lbl_8055E438; var_r29++, var_r30 += 4) {
-        var_r28 = *(void **)(lbl_8055E434 + var_r30);
-        if (((int (*)(void **))(*(void ***)*var_r28 + 0x44))(var_r28) != 0 &&
-            ((int (*)(void **))(*(void ***)*var_r28 + 0x40))(var_r28) != 0) {
-            var_r31[lbl_8055E468] = var_r28;
+    for (; vcount < lbl_8055E438; vcount++, voffset += 4) {
+        velem = *(struct Obj **)(lbl_8055E434 + voffset);
+        if (((int (*)(struct Obj *))((struct V *)velem->vtbl)->f[0x11])(velem) != 0 &&
+            ((int (*)(struct Obj *))((struct V *)velem->vtbl)->f[0x10])(velem) != 0) {
+            vbase[lbl_8055E468] = velem;
             lbl_8055E468 += 1;
         }
     }
@@ -90,13 +91,17 @@ long fn_80177988(void) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_80177990(void) {
-    float tmp9 = lbl_80561B48;
+    float tmp6 = lbl_80561B48;
+    float *p1 = &lbl_80430700[0];
+    float *p2 = &lbl_804305D4[0];
     int i;
     for (i = 0; i < 0x4b; i++) {
-        lbl_80430700[i] = tmp9;
-        lbl_804305D4[i] = tmp9;
-        fn_801DCEC8(i, tmp9);
+        *p1 = tmp6;
+        *p2 = tmp6;
+        fn_801DCEC8(i, tmp6);
         fn_801DCEDC(i, lbl_80561B48);
+        p1++;
+        p2++;
     }
 }
 #pragma pop
@@ -526,6 +531,24 @@ int fn_80178604(void *arg0) {
     }
     if (result != 0) return 0;
     if (magic == 0x4f425354 && *(int *)((char *)arg0 + 0x50) == 0x14) return 2;
+    return 1;
+}
+
+int fn_80178678(void *arg0, void **arg1, int arg2) {
+    int size;
+    void *data;
+    int position;
+    void *result;
+    data = 0;
+    fn_8012F500(arg0, &size);
+    if (size < 0) return 0;
+    position = fn_8012F450(arg0);
+    fn_8012F550(arg0, &data, 8);
+    fn_8012F448(arg0, position);
+    fn_8012F550(arg0, &data, ((int *)data)[1]);
+    if (arg2 == fn_80178604(data)) result = fn_801783A8(data, size);
+    else result = 0;
+    *arg1 = result;
     return 1;
 }
 
