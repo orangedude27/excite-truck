@@ -487,14 +487,16 @@ void fn_8023E0DC(void *arg0, int arg1, int arg2) {
 
 void fn_8023E16C(void *arg0, int arg1) {
     int var_r31;
-    if (arg1 < 0 || arg1 >= *(int *)((char *)arg0 + 8)) {
+    if (arg1 < 0) {
+        return;
+    }
+    if (arg1 >= *(int *)((char *)arg0 + 8)) {
         return;
     }
     var_r31 = *(int *)((char *)arg0 + 4);
-    do {
+    while (var_r31-- > 0) {
         fn_8022D894(arg0, arg1, var_r31, fn_8022D850(arg0, arg1, var_r31, 0), 0);
-        var_r31--;
-    } while (var_r31 > 0);
+    }
 }
 
 extern char lbl_80341BE0[];
@@ -594,6 +596,15 @@ void fn_8023E33C(void *arg0) {
     nameInfo.unkC = 0;
     fn_801A9050(&nameInfo, *(int *)((char *)arg0 + 0x10));
     fn_801A7E54((char *)arg0 + 0x14, 0x14, &nameInfo);
+}
+
+int fn_8023E3D8(int arg0, int arg1) {
+    s32 max = fn_801A902C() + 1;
+    s32 *p = (s32 *)arg0;
+    s32 sum = max + arg1;
+    s32 old = p[4] + 1;
+    p[4] = (old + sum) % max - 1;
+    fn_8023E33C(p);
 }
 
 void *fn_8023E440(void *arg0, void *arg1) {
