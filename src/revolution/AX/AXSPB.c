@@ -61,6 +61,7 @@ void __AXDepopFadeRmt(s32* all, s32* value, s16* depop) {
     }
 }
 
+/* Applies studio depop fades to main/aux/remote SPB channels and flushes the studio state. */
 void __AXPrintStudio(void) {
     __AXDepopFadeMain(&__AXSpbAL, &__AXStudio.L, &__AXStudio.dL);
     __AXDepopFadeMain(&__AXSpbAR, &__AXStudio.R, &__AXStudio.dR);
