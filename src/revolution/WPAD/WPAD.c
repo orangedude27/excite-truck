@@ -4903,7 +4903,8 @@ BOOL fn_800638C8(u8* queue, const void* src, u32 len, u32 val1, u32 val2) {
     return TRUE;
 }
 
-BOOL fn_80063A50(u8* p, u32 value, u16 halfword, u32 word, u32 last) {
+BOOL fn_80063A50(u8* queue, u32 value, u16 halfword, u32 word, u32 last) {
+    /* Build and enqueue a 0x30-byte WPAD command packet into the ring buffer at queue (indices at +0/+1, buffer base at +4, capacity at +8). Returns FALSE if full. */
     u8 buf[0x68] ALIGN(8);
     s8 diff;
     BOOL enabled;
@@ -4936,22 +4937,22 @@ BOOL fn_80063A50(u8* p, u32 value, u16 halfword, u32 word, u32 last) {
 
     enabled = OSDisableInterrupts();
     innerEnabled = OSDisableInterrupts();
-    diff = (s8)(p[1] - p[0]);
+    diff = (s8)(queue[1] - queue[0]);
     if (diff < 0)
-        diff = (s8)(diff + *(u32*)(p + 8));
+        diff = (s8)(diff + *(u32*)(queue + 8));
     OSRestoreInterrupts(innerEnabled);
 
-    if (*(u32*)(p + 8) - 1 == (u32)diff) {
+    if (*(u32*)(queue + 8) - 1 == (u32)diff) {
         OSRestoreInterrupts(enabled);
         return FALSE;
     }
-    memset(*(u8**)(p + 4) + (s8)p[1] * 0x30, 0, 0x30);
-    memcpy(*(u8**)(p + 4) + (s8)p[1] * 0x30, buf + 8, 0x30);
+    memset(*(u8**)(queue + 4) + (s8)queue[1] * 0x30, 0, 0x30);
+    memcpy(*(u8**)(queue + 4) + (s8)queue[1] * 0x30, buf + 8, 0x30);
 
-    index = (s8)p[1];
-    lastIndex = *(u32*)(p + 8) - 1;
+    index = (s8)queue[1];
+    lastIndex = *(u32*)(queue + 8) - 1;
     wrapMask = ~(((s32)index - lastIndex) | (lastIndex - (s32)index)) >> 31;
-    p[1] = (index + 1) & ~wrapMask;
+    queue[1] = (index + 1) & ~wrapMask;
     OSRestoreInterrupts(enabled);
     return TRUE;
 }
