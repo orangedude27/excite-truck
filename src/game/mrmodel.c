@@ -56,15 +56,14 @@ extern int fn_802C9638(void *, unsigned char *, float);
 #pragma push
 #pragma scheduling off
 void *fn_802C5390(int arg0) { u32 base = *(u32 *)((char *)lbl_804C139C + 8); return (void *)(base + (arg0 << 4)); }
-#pragma pop
+#pragma scheduling off
 int fn_802C53A8(arg0)
 int arg0;
 {
     int *base = *(int * volatile *)((char *)lbl_804C139C + 8);
     return *(int *)((char *)base + (arg0 << 4) + 4);
 }
-
-#pragma scheduling invalid_target
+#pragma scheduling reset
 void fn_802C53C4(void *a, void *b, int x, int y, signed char z) {
     register int count = lbl_804C1338[0];
     register int limit = lbl_804C1338[1];
