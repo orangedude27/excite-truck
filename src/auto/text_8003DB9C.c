@@ -2341,47 +2341,64 @@ void GXSetCullMode(unsigned int mode) { unsigned int field; union { unsigned int
 
 void GXSetCoPlanar(s32 enable) { union { unsigned int reg; struct { unsigned int pad0 : 12; unsigned int coplanar : 1; unsigned int pad1 : 19; } fields; } u; u.reg = __GXData[0x254 / 4]; u.fields.coplanar = enable; __GXData[0x254 / 4] = u.reg; *(volatile unsigned char *)0xCC008000 = 0x61; *(volatile unsigned int *)0xCC008000 = 0xFE080000; *(volatile unsigned char *)0xCC008000 = 0x61; *(volatile unsigned int *)0xCC008000 = __GXData[0x254 / 4]; }
 
-void GXDrawCylinder(void *src, void *dst, int x, int y) {
-    unsigned int dx = (x << 1) & 0xFFFE;
-    unsigned int dy = (y << 1) & 0xFFFE;
-    unsigned int a, b, mode;
-    unsigned short radius;
-    if (src != dst) {
-        b = *(unsigned int *)((char *)src + 0x00); a = *(unsigned int *)((char *)src + 0x04);
-        *(unsigned int *)((char *)dst + 0x00) = b; *(unsigned int *)((char *)dst + 0x04) = a;
-        a = *(unsigned int *)((char *)src + 0x08); b = *(unsigned int *)((char *)src + 0x0C);
-        *(unsigned int *)((char *)dst + 0x08) = a; *(unsigned int *)((char *)dst + 0x0C) = b;
-        a = *(unsigned int *)((char *)src + 0x10); b = *(unsigned int *)((char *)src + 0x14);
-        *(unsigned int *)((char *)dst + 0x10) = a; *(unsigned int *)((char *)dst + 0x14) = b;
-        a = *(unsigned int *)((char *)src + 0x18); b = *(unsigned int *)((char *)src + 0x1C);
-        *(unsigned int *)((char *)dst + 0x18) = a; *(unsigned int *)((char *)dst + 0x1C) = b;
-        a = *(unsigned int *)((char *)src + 0x20); b = *(unsigned int *)((char *)src + 0x24);
-        *(unsigned int *)((char *)dst + 0x20) = a; *(unsigned int *)((char *)dst + 0x24) = b;
-        a = *(volatile unsigned int *)((char *)src + 0x28);
-        b = *(volatile unsigned int *)((char *)src + 0x2C);
-        *(unsigned int *)((char *)dst + 0x28) = a; *(unsigned int *)((char *)dst + 0x2C) = b;
-        a = *(volatile unsigned int *)((char *)src + 0x30);
-        b = *(volatile unsigned int *)((char *)src + 0x34);
-        *(unsigned int *)((char *)dst + 0x30) = a; *(unsigned int *)((char *)dst + 0x34) = b;
-        a = *(unsigned int *)((char *)src + 0x38);
-        *(unsigned int *)((char *)dst + 0x38) = a;
+/* GXDrawCylinder(from, to, insetX, insetY)
+ *
+ * Copies the 0x3C-byte VI/render-mode record `from` over `to` (unless they are
+ * the same record) and re-fits its screen rectangle for a border of insetX
+ * pixels and insetY lines left around the picture.  This is the record the
+ * game keeps in lbl_8055FD64 - the five modes at lbl_803038D8..lbl_803039C8
+ * and the working copy lbl_804C9724 that fn_802CEAC4 builds - and the fields
+ * are the ones the GX setup calls read: +0x04/+0x06/+0x08 are the frame-buffer
+ * width, efb height and xfb height GXSetScissor, GXSetDispCopySrc and
+ * GXGetYScaleFactor take, and +0x0A/+0x0C is a rectangle origin with its size
+ * at +0x0E/+0x10.  Each size loses twice the inset (dx and dy below) while the
+ * origin moves in by (insetX, insetY), so the rectangle shrinks on all four
+ * sides; +0x06 is scaled by efbHeight/xfbHeight, +0x08 only loses half the
+ * vertical inset when the mode (low two bits of word 0) is 0 and the flag at
+ * +0x14 is clear, and +0x10 loses twice dy when the mode is 1.  The name is
+ * the game's own symbol; nothing here draws a cylinder.
+ */
+void GXDrawCylinder(void *srcMode, void *dstMode, int insetX, int insetY) {
+    unsigned int dx = (insetX << 1) & 0xFFFE; /* what every width loses */
+    unsigned int dy = (insetY << 1) & 0xFFFE; /* what every height loses */
+    unsigned int word0, word1, mode;
+    unsigned short value;
+    if (srcMode != dstMode) {
+        word1 = *(unsigned int *)((char *)srcMode + 0x00); word0 = *(unsigned int *)((char *)srcMode + 0x04);
+        *(unsigned int *)((char *)dstMode + 0x00) = word1; *(unsigned int *)((char *)dstMode + 0x04) = word0;
+        word0 = *(unsigned int *)((char *)srcMode + 0x08); word1 = *(unsigned int *)((char *)srcMode + 0x0C);
+        *(unsigned int *)((char *)dstMode + 0x08) = word0; *(unsigned int *)((char *)dstMode + 0x0C) = word1;
+        word0 = *(unsigned int *)((char *)srcMode + 0x10); word1 = *(unsigned int *)((char *)srcMode + 0x14);
+        *(unsigned int *)((char *)dstMode + 0x10) = word0; *(unsigned int *)((char *)dstMode + 0x14) = word1;
+        word0 = *(unsigned int *)((char *)srcMode + 0x18); word1 = *(unsigned int *)((char *)srcMode + 0x1C);
+        *(unsigned int *)((char *)dstMode + 0x18) = word0; *(unsigned int *)((char *)dstMode + 0x1C) = word1;
+        word0 = *(unsigned int *)((char *)srcMode + 0x20); word1 = *(unsigned int *)((char *)srcMode + 0x24);
+        *(unsigned int *)((char *)dstMode + 0x20) = word0; *(unsigned int *)((char *)dstMode + 0x24) = word1;
+        word0 = *(volatile unsigned int *)((char *)srcMode + 0x28);
+        word1 = *(volatile unsigned int *)((char *)srcMode + 0x2C);
+        *(unsigned int *)((char *)dstMode + 0x28) = word0; *(unsigned int *)((char *)dstMode + 0x2C) = word1;
+        word0 = *(volatile unsigned int *)((char *)srcMode + 0x30);
+        word1 = *(volatile unsigned int *)((char *)srcMode + 0x34);
+        *(unsigned int *)((char *)dstMode + 0x30) = word0; *(unsigned int *)((char *)dstMode + 0x34) = word1;
+        word0 = *(unsigned int *)((char *)srcMode + 0x38);
+        *(unsigned int *)((char *)dstMode + 0x38) = word0;
     }
-    radius = *(volatile unsigned short *)((char *)src + 4);
-    mode = *(volatile unsigned int *)src & 3;
-    *(unsigned short *)((char *)dst + 4) = radius - dx;
-    radius = *(volatile unsigned short *)((char *)src + 6);
-    *(unsigned short *)((char *)dst + 6) = radius - ((dy * radius) / *(volatile unsigned short *)((char *)src + 8));
-    if (*(int *)((char *)src + 0x14) == 0 && mode == 0)
-        *(unsigned short *)((char *)dst + 8) = *(volatile unsigned short *)((char *)src + 8) - ((dy >> 1) & 0x7FFF);
+    value = *(volatile unsigned short *)((char *)srcMode + 4);
+    mode = *(volatile unsigned int *)srcMode & 3;
+    *(unsigned short *)((char *)dstMode + 4) = value - dx;
+    value = *(volatile unsigned short *)((char *)srcMode + 6);
+    *(unsigned short *)((char *)dstMode + 6) = value - ((dy * value) / *(volatile unsigned short *)((char *)srcMode + 8));
+    if (*(int *)((char *)srcMode + 0x14) == 0 && mode == 0)
+        *(unsigned short *)((char *)dstMode + 8) = *(volatile unsigned short *)((char *)srcMode + 8) - ((dy >> 1) & 0x7FFF);
     else
-        *(unsigned short *)((char *)dst + 8) = *(volatile unsigned short *)((char *)src + 8) - dy;
-    *(unsigned short *)((char *)dst + 0xE) = *(unsigned short *)((char *)src + 0xE) - dx;
+        *(unsigned short *)((char *)dstMode + 8) = *(volatile unsigned short *)((char *)srcMode + 8) - dy;
+    *(unsigned short *)((char *)dstMode + 0xE) = *(unsigned short *)((char *)srcMode + 0xE) - dx;
     if (mode == 1)
-        *(unsigned short *)((char *)dst + 0x10) = *(unsigned short *)((char *)src + 0x10) - ((dy << 1) & 0x1FFFE);
+        *(unsigned short *)((char *)dstMode + 0x10) = *(unsigned short *)((char *)srcMode + 0x10) - ((dy << 1) & 0x1FFFE);
     else
-        *(unsigned short *)((char *)dst + 0x10) = *(unsigned short *)((char *)src + 0x10) - dy;
-    *(unsigned short *)((char *)dst + 0xA) = *(unsigned short *)((char *)src + 0xA) + x;
-    *(unsigned short *)((char *)dst + 0xC) = *(unsigned short *)((char *)src + 0xC) + y;
+        *(unsigned short *)((char *)dstMode + 0x10) = *(unsigned short *)((char *)srcMode + 0x10) - dy;
+    *(unsigned short *)((char *)dstMode + 0xA) = *(unsigned short *)((char *)srcMode + 0xA) + insetX;
+    *(unsigned short *)((char *)dstMode + 0xC) = *(unsigned short *)((char *)srcMode + 0xC) + insetY;
 }
 
 void GXSetDispCopySrc(s32 left, s32 top, s32 width, s32 height) {
