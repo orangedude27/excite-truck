@@ -12,7 +12,7 @@ extern s32 fn_80128668(void);
 extern int stricmp(const char*, const char*);
 extern s32 fn_80131C88(void *, const char *);
 extern int sprintf(char *, const char *, ...);
-extern char lbl_80559B50[];
+__declspec(section ".sdata") extern char lbl_80559B50[4];
 typedef struct {
     void *vtable;
     void *pad0;
@@ -140,21 +140,21 @@ s32 fn_8013181C(void) {
 #pragma scheduling invalid_target
 void* fn_8013184C(void) {
     if (lbl_8055E060 == 0) {
-        register void *vtable0 = lbl_8032B64C;
-        register void *vtable1 = lbl_8032B574;
+        register void *vtable0 = (void*)lbl_8032B64C;
+        register void *vtable1 = (void*)lbl_8032B574;
         register void **obj;
-        register void *zero = 0;
+        register int zero = 0;
         ((void* volatile*)lbl_8042F53C)[0] = vtable0;
         ((void* volatile*)lbl_8042F53C)[0] = vtable1;
         obj = lbl_8042F53C;
-        ((void* volatile*)obj)[5] = zero;
+        ((void* volatile*)obj)[5] = (void*)zero;
         ((void* volatile*)obj)[1] = &lbl_80559B0C;
         ((void* volatile*)obj)[2] = &lbl_80559B08;
-        ((void* volatile*)obj)[3] = zero;
-        ((void* volatile*)obj)[4] = zero;
-        ((void* volatile*)obj)[5] = zero;
-        ((void* volatile*)obj)[6] = zero;
-        __register_global_object(obj, (void (*)(void*))((s32(*)(s32,s32))fn_80131920), lbl_8042F530);
+        ((void* volatile*)obj)[3] = (void*)zero;
+        ((void* volatile*)obj)[4] = (void*)zero;
+        ((void* volatile*)obj)[5] = (void*)zero;
+        ((void* volatile*)obj)[6] = (void*)zero;
+        __register_global_object(obj, (void (*)(void*))fn_80131920, (void*)lbl_8042F530);
         lbl_8055E060 = 1;
     }
     return lbl_8042F53C;
@@ -695,18 +695,28 @@ extern "C" s32 fn_8013284C(void *arg0, s32 arg1) {
     }
     return 0;
 }
-#pragma cplusplus off
-s32 fn_801328D4(void *arg0, s32 arg1) {
+#pragma small_data on
+#pragma cplusplus on
+extern "C" s32 fn_801328D4(void *arg0, s32 arg1) {
+    class A {
+    public:
+        virtual void f0(); virtual s32 f1(char *); virtual void f2(); virtual s32 f3(char *);
+    };
+    class B {
+    public:
+        virtual s32 g0(s32);
+    };
     char buf[0x40];
     sprintf(buf, lbl_80559B50, arg1);
-    if (((s32 (*)(void *, char *))(*(void ***)arg0)[3])(arg0, buf) != 0) {
-        s32 val = ((s32 (*)(void *, char *))(*(void ***)arg0)[5])(arg0, buf);
+    if (((A *)arg0)->f1(buf) != 0) {
+        s32 val = ((A *)arg0)->f3(buf);
         void *ptr = *(void **)((char *)arg0 + 0x18);
-        return ((s32 (*)(void *, s32))(*(void ***)ptr)[2])(ptr, val);
+        return ((B *)ptr)->g0(val);
     }
     return 0;
 }
-#pragma use_lmw_stmw off
+#pragma cplusplus off
+#pragma small_data off
 struct Unk80132968Vector { s32 x, y, z; } fn_80132968(void *arg1, s32 arg2, struct Unk80132968Vector *arg3) {
     struct Unk80132968Vector copy;
     struct Unk80132968Vector result;
