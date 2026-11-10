@@ -59,7 +59,7 @@ void fn_801E3640(void *arg0, float *arg1) {
     PSVECCrossProduct(arg1 + 6, arg1, arg1 + 3);
 }
 
-int fn_801E36F0(int arg0) { unsigned int s = ((unsigned int)arg0 >> 1) & 0x7F7F7F; unsigned int a = (unsigned int)arg0 & 0xFF000000; return (int)(s | a); }
+int fn_801E36F0(int arg0) { return (((unsigned int)arg0 >> 1) & 0x7F7F7F) | ((unsigned int)arg0 & 0xFF000000); }
 
 #pragma push
 #pragma processor 750
