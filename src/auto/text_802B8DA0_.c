@@ -172,6 +172,9 @@ void *fn_802B8EF0(int arg0, void *arg1) {
     }
     return table[arg0];
 }
+#pragma pop
+#pragma push
+#pragma scheduling invalid_target
 
 extern void *fn_802B59CC(int, int, void *, void *);
 extern void fn_801345D8(void *, int, const char *, ...);
