@@ -2,6 +2,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+/* Updates auto-repeat state for the pad's digital buttons (mode 2: horizon, else standard), setting repeat-trigger flags from timers/thresholds. */
 void calc_button_repeat(void *arg0, void *arg1, u32 arg2) {
     u16 t, t2, t3, t4;
 #define F(p,T,o) (*(T *)((u8 *)(p)+(o)))
