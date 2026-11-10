@@ -15273,6 +15273,10 @@ BOOLEAN hidd_pm_set_now(void *arg0) {
 
 typedef void (*hidd_pm_callback)(u32, u8, void *);
 void hidd_pm_proc_mode_change(s32 arg0, u8 arg1, s32 arg2) {
+    /* HID device power-mode change callback: on error notifies the host callback (event 4);
+       on success updates mode/interval, reconciles a pending request (0x78) or on idle copies
+       the active power-mode params and arms a 0x3C-tick timer to fn_80086468, then notifies
+       the host callback (event 3) with the new interval. */
     u8 sp8;
     u16 spA;
     u32 arg2cmp;
