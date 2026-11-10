@@ -512,7 +512,7 @@ static s32 _FSGetAttrCb(s32 result, FSCommandBlock* block) {
     return IPC_RESULT_OK;
 }
 
-/* Asynchronously retrieves the owner, group, attributes and permissions for an ISFS path via FS_IOCTL_GET_ATTR. */
+/* Asynchronously retrieves owner/group IDs and access attributes/permissions for an ISFS path. */
 s32 ISFS_GetAttrAsync(const char* path, u32* ownerIdOut, u16* groupIdOut,
                       u32* attrOut, u32* ownerPermOut, u32* groupPermOut,
                       u32* otherPermOut, FSAsyncCallback callback,
