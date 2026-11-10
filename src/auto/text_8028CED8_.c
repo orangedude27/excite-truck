@@ -57,8 +57,8 @@ void fn_8028CF64(void) {
     }
 }
 
-#pragma paired off
-#pragma paired_single off
+#pragma push
+#pragma processor 750
 #pragma scheduling invalid_target
 void fn_8028CFB0(void) {
     int *entry;
@@ -85,9 +85,7 @@ void fn_8028CFB0(void) {
         fn_802C9A4C(time);
     }
 }
-#pragma scheduling on
-#pragma paired_single reset
-#pragma paired reset
+#pragma pop
 extern int fn_802CAC28(int);
 extern int fn_802E317C(char *, ...);
 extern char lbl_80348C50[];
@@ -236,21 +234,40 @@ void fn_8028D4A0(void) {
 extern int lbl_8055F724;
 extern float lbl_805643F0;
 extern void fn_8028D58C(void *);
+#pragma scheduling invalid_target
 void fn_8028D4FC(void) {
     typedef struct { unsigned char pad[0x14]; int *items; int total; } Entry;
-    Entry *entry = (Entry *)&lbl_804B3400;
+    Entry *e = (Entry *)&lbl_804B3400;
+    int off;
     int i, j;
-    for (i = 0; i < lbl_8055F728; i++) {
-        int *item = entry[i].items;
-        for (j = 0; j < lbl_8055F724; j++)
-            *(int *)((char *)item + j * 0xC + 4) = 0;
+    int *itemp;
+    i = 0;
+    while (i < *(volatile int *)&lbl_8055F728) {
+        j = 0;
+        off = 0;
+        while (j < *(volatile int *)&lbl_8055F724) {
+            itemp = (int *)((char *)e->items + off);
+            *(int *)((char *)itemp + 4) = 0;
+            j++;
+            off += 0xC;
+        }
+        e++;
+        i++;
     }
-    for (i = 0; i < lbl_8055F724; i++) {
-        *(int *)((char *)lbl_8055F720 + i * 8) = -1;
-        *(float *)((char *)lbl_8055F720 + i * 8 + 4) = lbl_805643F0;
+    {
+        float f = lbl_805643F0;
+        int k = 0;
+        unsigned int o = 0;
+        while (k < *(volatile int *)&lbl_8055F724) {
+            int *b = (int *)*(volatile int *)&lbl_8055F720;
+            *(int *)((char *)b + o) = -1;
+            *(float *)((char *)b + o + 4) = f;
+            k++;
+            o += 8;
+        }
     }
 }
-
+#pragma scheduling on
 void fn_8028D58C(void *arg0) {
     unsigned int count;
     unsigned int iterations;
@@ -377,6 +394,121 @@ void fn_8028D7C0(int arg0) {
         outer++;
     }
 }
+
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+extern float lbl_80564400;
+extern float lbl_80564404;
+extern float lbl_80564408;
+extern float lbl_8056440C;
+extern float lbl_80564410;
+extern void PSVECCrossProduct(void *, void *, void *);
+void fn_8028D89C(void *arg0, int arg1, float arg2) {
+    void *base;
+    unsigned char *entry;
+    int idx, kind, key;
+    int *state;
+    unsigned char *group;
+    void *p;
+    void *g;
+    unsigned char *item;
+    float cross[3];
+    float t;
+    int i;
+    base = *(void **)arg0;
+    entry = (unsigned char *)base + arg1 * 0x3c;
+    idx = arg1 + *(int *)((unsigned char *)arg0 + 4) * 4;
+    state = (int *)((unsigned char *)&lbl_8055F720 + idx * 8);
+    kind = *(int *)(entry + 0xa8);
+    if (kind >= 8) goto clear;
+    key = ((int *)&lbl_804B3470)[kind];
+    if (key < 0) goto clear;
+    group = (unsigned char *)&lbl_804B3400 + key * 0x1c;
+    if (!(*(unsigned char *)(entry + 0xa0))) goto clear;
+    if (!(*(float *)(entry + 0x98) > *(float *)(group + 0xc))) goto clear;
+    if (state[0] == key && arg2 > lbl_80564400 + *(float *)(state + 1)) {
+        p = *(void **)(group + 0x14);
+        g = (unsigned char *)p + idx * 0xc;
+        item = (unsigned char *)*(void **)g + *(int *)((unsigned char *)g + 4) * 0x28;
+        *(float *)(item + 0) = *(float *)(entry + 0x7c);
+        *(float *)(item + 4) = *(float *)(entry + 0x80);
+        *(float *)(item + 8) = *(float *)(entry + 0x84);
+        *(float *)(item + 0xc) = *(float *)((unsigned char *)base + 0x34) * lbl_80564404;
+        *(float *)(item + 0x10) = *(float *)((unsigned char *)base + 0x38) * lbl_80564404;
+        *(float *)(item + 0x14) = *(float *)((unsigned char *)base + 0x3c) * lbl_80564404;
+        PSVECCrossProduct((unsigned char *)base + 0x40, entry + 0x88, cross);
+        t = (*(int *)(entry + 0x9c) & 8) ? lbl_8056440C : lbl_80564408;
+        *(float *)(item + 0x18) = cross[0] * t;
+        *(float *)(item + 0x1c) = cross[1] * t;
+        *(float *)(item + 0x20) = cross[2] * t;
+        t = *(float *)(entry + 0x98);
+        if (lbl_805643F0 > *(float *)(group + 0xc)) t -= lbl_805643F0;
+        else t -= *(float *)(group + 0xc);
+        i = (int)(lbl_80564410 * (*(float *)(group + 4) + *(float *)(group + 8) * t));
+        if (i < 0) i = 0;
+        *(unsigned short *)(item + 0x24) = i;
+        *(unsigned char *)(item + 0x26) = 1;
+        *(int *)((unsigned char *)*(void **)g + 4) = *(int *)((unsigned char *)*(void **)g + 4) + 1;
+        *(int *)(group + 0x18) = *(int *)(group + 0x18) + 1;
+        *(float *)(state + 1) = arg2;
+        state[0] = key;
+        return;
+    } else {
+        p = *(void **)(group + 0x14);
+        g = (unsigned char *)p + idx * 0xc;
+        if (state[0] == key) {
+            item = (unsigned char *)*(void **)g + (*(int *)((unsigned char *)g + 4) - 1) * 0x28;
+            *(float *)(item + 0) = *(float *)(entry + 0x7c);
+        } else {
+            item = (unsigned char *)*(void **)g + *(int *)((unsigned char *)g + 4) * 0x28;
+            *(float *)(item + 0) = *(float *)(entry + 0x7c);
+        }
+        *(float *)(item + 4) = *(float *)(entry + 0x80);
+        *(float *)(item + 8) = *(float *)(entry + 0x84);
+        *(float *)(item + 0xc) = *(float *)((unsigned char *)base + 0x34) * lbl_80564404;
+        *(float *)(item + 0x10) = *(float *)((unsigned char *)base + 0x38) * lbl_80564404;
+        *(float *)(item + 0x14) = *(float *)((unsigned char *)base + 0x3c) * lbl_80564404;
+        PSVECCrossProduct((unsigned char *)base + 0x40, entry + 0x88, cross);
+        t = (*(int *)(entry + 0x9c) & 8) ? lbl_8056440C : lbl_80564408;
+        *(float *)(item + 0x18) = cross[0] * t;
+        *(float *)(item + 0x1c) = cross[1] * t;
+        *(float *)(item + 0x20) = cross[2] * t;
+        t = *(float *)(entry + 0x98);
+        if (lbl_805643F0 > *(float *)(group + 0xc)) t -= lbl_805643F0;
+        else t -= *(float *)(group + 0xc);
+        i = (int)(lbl_80564410 * (*(float *)(group + 4) + *(float *)(group + 8) * t));
+        if (i < 0) i = 0;
+        *(unsigned short *)(item + 0x24) = i;
+        if (state[0] != key) {
+            *(unsigned char *)(item + 0x26) = 0;
+            {
+                unsigned char *next = item + 0x28;
+                *(float *)(next + 0) = *(float *)(item + 0);
+                *(float *)(next + 4) = *(float *)(item + 4);
+                *(float *)(next + 8) = *(float *)(item + 8);
+                *(float *)(next + 0xc) = *(float *)(item + 0xc);
+                *(float *)(next + 0x10) = *(float *)(item + 0x10);
+                *(float *)(next + 0x14) = *(float *)(item + 0x14);
+                *(float *)(next + 0x18) = *(float *)(item + 0x18);
+                *(float *)(next + 0x1c) = *(float *)(item + 0x1c);
+                *(float *)(next + 0x20) = *(float *)(item + 0x20);
+                *(unsigned short *)(next + 0x24) = *(unsigned short *)(item + 0x24);
+                *(unsigned char *)(next + 0x26) = 1;
+                *(int *)((unsigned char *)*(void **)g + 4) = *(int *)((unsigned char *)*(void **)g + 4) + 2;
+                *(int *)(group + 0x18) = *(int *)(group + 0x18) + 2;
+            }
+        } else {
+            *(int *)((unsigned char *)*(void **)g + 4) = *(int *)((unsigned char *)*(void **)g + 4) + 1;
+            *(int *)(group + 0x18) = *(int *)(group + 0x18) + 1;
+        }
+        state[0] = key;
+        return;
+    }
+clear:
+    state[0] = -1;
+}
+#pragma pop
 
 extern int lbl_804B3490[];
 extern float lbl_80564414;
