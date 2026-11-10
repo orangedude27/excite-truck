@@ -126,7 +126,7 @@ extern s32 fn_80131920(s32, s32);
 extern void __register_global_object(void*, void (*)(void*), void*);
 extern void fn_802E317C(const char*, ...);
 extern s32 fn_8012F9E8(void*, s32, const char*);
-extern char lbl_80559B24[]; /* "%f, %f" */
+__declspec(section ".sdata") extern char lbl_80559B24[7]; /* "%f, %f" */
 __declspec(section ".sdata") extern char lbl_80559B2C[], lbl_80559B38[], lbl_80559B40[], lbl_80559B48[];
 extern char lbl_8032B818[]; /* "Bad vector value \"%s\" for \"%s\" i" */
 extern char lbl_8032B840[]; /* "Bad real64 value \"%s\" for \"%s\" i" */
@@ -815,9 +815,9 @@ s32 fn_80132C50(void* arg0, s32 arg1) {
 s32 fn_80132C74(void *arg0, s32 arg1) {
     register s32 offset = 0;
     register s32 i = 0;
-    register s32 count;
-    while ((count = *(s32 *)((u8 *)arg0 + 4)), i < count) {
-        char *s = *(char **)((u8 *)arg0 + 0xC) + offset;
+    while (i < *(s32 *)((u8 *)arg0 + 4)) {
+        register char *s;
+        s = *(char **)((u8 *)arg0 + 0xC) + offset;
         if (stricmp(*(char **)(s + 4), (char *)arg1) == 0)
             return (s32)(*(char **)((u8 *)arg0 + 0xC) + i * 0x1C);
         offset += 0x1C;
