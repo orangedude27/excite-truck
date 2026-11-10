@@ -403,15 +403,17 @@ void __DSPHandler_80034418(s16 interrupt, OSContext *oldContext) {
     OSSetCurrentContext(oldContext);
 }
 
-void __DSP_exec_task(void *arg0, void *arg1) {
-    if (arg0 != NULL) {
-        DSPSendMailToDSP(*(u32 *)((u8 *)arg0 + 0x18));
+/* Send DSP task mailboxes: previous task's DRAM region (or zeros), then the
+ * current task's IRAM region and either its initial vectors or resume vectors. */
+void __DSP_exec_task(void *prevTask, void *currTask) {
+    if (prevTask != NULL) {
+        DSPSendMailToDSP(*(u32 *)((u8 *)prevTask + 0x18));
         while (DSPCheckMailToDSP() != 0) {
         }
-        DSPSendMailToDSP(*(u32 *)((u8 *)arg0 + 0x1C));
+        DSPSendMailToDSP(*(u32 *)((u8 *)prevTask + 0x1C));
         while (DSPCheckMailToDSP() != 0) {
         }
-        DSPSendMailToDSP(*(u32 *)((u8 *)arg0 + 0x20));
+        DSPSendMailToDSP(*(u32 *)((u8 *)prevTask + 0x20));
         while (DSPCheckMailToDSP() != 0) {
         }
     } else {
@@ -425,17 +427,17 @@ void __DSP_exec_task(void *arg0, void *arg1) {
         while (DSPCheckMailToDSP() != 0) {
         }
     }
-    DSPSendMailToDSP(*(u32 *)((u8 *)arg1 + 0xC));
+    DSPSendMailToDSP(*(u32 *)((u8 *)currTask + 0xC));
     while (DSPCheckMailToDSP() != 0) {
     }
-    DSPSendMailToDSP(*(u32 *)((u8 *)arg1 + 0x10));
+    DSPSendMailToDSP(*(u32 *)((u8 *)currTask + 0x10));
     while (DSPCheckMailToDSP() != 0) {
     }
-    DSPSendMailToDSP(*(u32 *)((u8 *)arg1 + 0x14));
+    DSPSendMailToDSP(*(u32 *)((u8 *)currTask + 0x14));
     while (DSPCheckMailToDSP() != 0) {
     }
-    if (*(s32 *)arg1 == 0) {
-        DSPSendMailToDSP(*(u16 *)((u8 *)arg1 + 0x24));
+    if (*(s32 *)currTask == 0) {
+        DSPSendMailToDSP(*(u16 *)((u8 *)currTask + 0x24));
         while (DSPCheckMailToDSP() != 0) {
         }
         DSPSendMailToDSP(0);
@@ -449,16 +451,16 @@ void __DSP_exec_task(void *arg0, void *arg1) {
         }
         return;
     }
-    DSPSendMailToDSP(*(u16 *)((u8 *)arg1 + 0x26));
+    DSPSendMailToDSP(*(u16 *)((u8 *)currTask + 0x26));
     while (DSPCheckMailToDSP() != 0) {
     }
-    DSPSendMailToDSP(*(u32 *)((u8 *)arg1 + 0x18));
+    DSPSendMailToDSP(*(u32 *)((u8 *)currTask + 0x18));
     while (DSPCheckMailToDSP() != 0) {
     }
-    DSPSendMailToDSP(*(u32 *)((u8 *)arg1 + 0x1C));
+    DSPSendMailToDSP(*(u32 *)((u8 *)currTask + 0x1C));
     while (DSPCheckMailToDSP() != 0) {
     }
-    DSPSendMailToDSP(*(u32 *)((u8 *)arg1 + 0x20));
+    DSPSendMailToDSP(*(u32 *)((u8 *)currTask + 0x20));
     while (DSPCheckMailToDSP() != 0) {
     }
 }
