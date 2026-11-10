@@ -6550,51 +6550,54 @@ read_value:
 }
 #pragma pop
 
-extern "C" s32 fn_800B0258(void *arg0, s32 arg1, s32 *arg2) {
-    u32 value;
-    u32 index;
-    u16 offset;
-    s32 result;
-    u32 retry = 1;
-    s32 *output = arg2;
-    void *object = arg0;
-    u16 flags = *(u16 *)((u8 *)object + 0x18);
-    u32 scaled = (u32)arg1 * 4;
+extern "C" s32 fn_800B0258(void *context, s32 clusterIndex, s32 *outEntry) {
+    /* Read the 32-bit FAT entry for clusterIndex from context, byte-swap it from
+     * on-disk order, and return the 28-bit cluster value; retries through the
+     * context's read-retry callback on transient sector read failures. */
+    u32 entryValue;
+    u32 sector;
+    u16 byteOffset;
+    s32 readResult;
+    u32 retryCount = 1;
+    s32 *entryOut = outEntry;
+    void *fatContext = context;
+    u16 flags = *(u16 *)((u8 *)fatContext + 0x18);
+    u32 byteIndex = (u32)clusterIndex * 4;
 
-    index = (u16)(*(u32 *)((u8 *)object + 0x28) +
-                  (scaled >> *(u8 *)((u8 *)object + 0x20)));
-    offset = (u16)(scaled & (*(u16 *)object - 1));
+    sector = (u16)(*(u32 *)((u8 *)fatContext + 0x28) +
+                   (byteIndex >> *(u8 *)((u8 *)fatContext + 0x20)));
+    byteOffset = (u16)(byteIndex & (*(u16 *)fatContext - 1));
     if (flags & 0x80)
-        retry = flags & 7;
+        retryCount = flags & 7;
 loop:
-    result = fn_800B5260(object, &value, index, offset, 4);
-    if (result == 0x1000) {
-        s32 (*callback)(void *) =
-            *(s32 (**)(void *))((u8 *)object + 0x1FC0);
-        if (callback != 0) {
-            s32 callbackResult = callback(*(void **)((u8 *)object + 0x1F84));
+    readResult = fn_800B5260(fatContext, &entryValue, sector, byteOffset, 4);
+    if (readResult == 0x1000) {
+        s32 (*retryCallback)(void *) =
+            *(s32 (**)(void *))((u8 *)fatContext + 0x1FC0);
+        if (retryCallback != 0) {
+            s32 callbackResult = retryCallback(*(void **)((u8 *)fatContext + 0x1F84));
             if (callbackResult == 0)
                 goto retryCheck;
             if (callbackResult == 1 &&
-                *(u8 *)((u8 *)object + 0x22) >= 2 &&
-                retry < *(u8 *)((u8 *)object + 0x22)) {
-                retry++;
-                index += *(u32 *)((u8 *)object + 0xC);
+                *(u8 *)((u8 *)fatContext + 0x22) >= 2 &&
+                retryCount < *(u8 *)((u8 *)fatContext + 0x22)) {
+                retryCount++;
+                sector += *(u32 *)((u8 *)fatContext + 0xC);
                 goto retryCheck;
             }
         }
     }
-    if (result != 0) {
-        *output = -1;
-        return result;
+    if (readResult != 0) {
+        *entryOut = -1;
+        return readResult;
     }
 retryCheck:
-    if (result == 0) {
-        u32 upper = __rlwinm(value, 8, 8, 15);
-        u32 lower = __rlwinm(value, 24, 16, 23);
-        upper = __rlwimi(upper, value, 24, 0, 7);
-        lower = __rlwimi(lower, value, 8, 24, 31);
-        *output = (upper | lower) & 0x0FFFFFFF;
+    if (readResult == 0) {
+        u32 upper = __rlwinm(entryValue, 8, 8, 15);
+        u32 lower = __rlwinm(entryValue, 24, 16, 23);
+        upper = __rlwimi(upper, entryValue, 24, 0, 7);
+        lower = __rlwimi(lower, entryValue, 8, 24, 31);
+        *entryOut = (upper | lower) & 0x0FFFFFFF;
         return 0;
     }
     goto loop;
