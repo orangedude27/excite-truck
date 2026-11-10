@@ -19706,6 +19706,9 @@ void RFCOMM_Init(void) {
     rfcomm_l2cap_if_init();
 }
 
+// Handles RFCOMM server-channel start confirmation: if successful, request parameter
+// negotiation for each port on the multiplexer; on failure, report the error, close the
+// affected ports, and notify callbacks. If no ports remain up, release the multiplexer.
 void PORT_StartCnf(void *mux_id, u16 status) {
     u8 *p_port;
     s32 i;
