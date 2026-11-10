@@ -321,30 +321,31 @@ extern void *fn_8012850C(s32, s32 *);
 #pragma small_data off
 #pragma push
 #pragma scheduling invalid_target
-void *fn_8023AA2C(register void *arg0, register s32 arg1, register s32 arg2, ...) {
+void *fn_8023AA2C(register void *obj, register s32 value, register s32 firstItem, ...) {
   va_list ap;
   s32 offset;
-  *(unsigned char *)arg0=0;
-  *(s32 *)((char *)arg0+4)=-1;
-  *(unsigned char *)((char *)arg0+8)=0;
-  *(s32 **)((char *)arg0+0xC)=&lbl_803410D8;
-  va_start(ap,arg2);
-  *(s32 *)((char *)arg0+0x14)=0;
+  /* Initialize a variadic item-list object: set vtable, count items until 0 sentinel, allocate and copy them, and store value. */
+  *(unsigned char *)obj = 0;
+  *(s32 *)((char *)obj + 4) = -1;
+  *(unsigned char *)((char *)obj + 8) = 0;
+  *(s32 **)((char *)obj + 0xC) = &lbl_803410D8;
+  va_start(ap, firstItem);
+  *(s32 *)((char *)obj + 0x14) = 0;
   do {
-   (*(s32 *)((char *)arg0+0x14))++;
-  } while(va_arg(ap,s32)!=0);
+    (*(s32 *)((char *)obj + 0x14))++;
+  } while (va_arg(ap, s32) != 0);
   va_end(ap);
-  *(s32 **)((char *)arg0+0x10)=fn_8012850C(*(s32 *)((char *)arg0+0x14)*4,&lbl_803412A4);
-  va_start(ap,arg2);
-  offset=0;
+  *(s32 **)((char *)obj + 0x10) = fn_8012850C(*(s32 *)((char *)obj + 0x14) * 4, &lbl_803412A4);
+  va_start(ap, firstItem);
+  offset = 0;
   do {
-   *(s32 *)((char *)*(s32 **)((char *)arg0+0x10)+offset)=arg2;
-   offset+=4;
-   arg2=va_arg(ap,s32);
-  } while(arg2!=0);
+    *(s32 *)((char *)*(s32 **)((char *)obj + 0x10) + offset) = firstItem;
+    offset += 4;
+    firstItem = va_arg(ap, s32);
+  } while (firstItem != 0);
   va_end(ap);
-  *(s32 *)((char *)arg0+0x18)=arg1;
-  return arg0;
+  *(s32 *)((char *)obj + 0x18) = value;
+  return obj;
 }
 #pragma pop
 __declspec(section ".data") extern s32 lbl_803412B8;
