@@ -64,15 +64,58 @@ extern "C" int fn_800FFA6C(int arg0, int arg1) {
 extern "C" const char lbl_80327500[];
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
 extern "C" void Prepare__Q46nw4hbm3snd6detail9WsdPlayerFPCviiPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUl(void *, const void *, long, int, const nw4hbm::snd::detail::WsdTrack::WsdCallback *, unsigned long);
+#pragma use_lmw_stmw off
 void nw4hbm::snd::detail::WaveSound::Prepare(const void *arg1, long arg2, int arg3, const nw4hbm::snd::detail::WsdTrack::WsdCallback *arg4, unsigned long arg5) {
     const char *base = lbl_80327500;
-    if (!arg1) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x43, base + 0x18);
-    if (!arg4) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x44, base + 0x48);
-    if (*(int *)((char *)this + 0x10) == 0) Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x45, base + 0x74);
+    if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327500, 0x43, base + 0x18);
+    if (arg4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327500, 0x44, base + 0x48);
+    if (*(int *)((char *)this + 0x10) == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327500, 0x45, base + 0x74);
     this->unk_0x58();
     Prepare__Q46nw4hbm3snd6detail9WsdPlayerFPCviiPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUl((char *)this + 0xD8, arg1, arg2, arg3, arg4, arg5);
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" void Shutdown__Q46nw4hbm3snd6detail9WaveSoundFv_800FFB80(void *self) {
+    extern void Shutdown__Q46nw4hbm3snd6detail10BasicSoundFv(void*);
+    extern int OSDisableInterrupts(void);
+    extern void OSRestoreInterrupts(int);
+    extern void fn_800EC848(void*, void*);
+    extern const char lbl_803276D8[];
+    extern const char lbl_803276B0[];
+    extern const char lbl_803257D4[];
+    extern const char lbl_803257B0[];
+    extern void Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(void*, void*);
+    struct List { void* head; void* tail; };
+    struct Player { int unk0; struct List list; };
+    struct Node { char pad[0]; };
+    struct WSoundV {
+        virtual void m0();
+        virtual void m1(int);
+    };
+    struct WSound { void* vtbl; char pad[0xB8-4]; struct Node node; };
+    struct WSound* ws = (struct WSound*)self;
+    int interrupts;
+    struct Player* player;
+    Shutdown__Q46nw4hbm3snd6detail10BasicSoundFv(self);
+    player = *(struct Player**)((char*)self + 0x1B0);
+    if (self == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803276D8, 0x86, lbl_803276B0);
+    interrupts = OSDisableInterrupts();
+    if (player->list.head == 0) {
+        OSRestoreInterrupts(interrupts);
+        return;
+    }
+    if (self == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803257D4, 0x233, lbl_803257B0);
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(&player->list, &ws->node);
+    ((struct WSoundV*)self)->m1(-1);
+    fn_800EC848(player, self);
+    OSRestoreInterrupts(interrupts);
+}
+#pragma pop
+
+#pragma use_lmw_stmw reset
 extern "C" int fn_800FFC5C(int arg0, int arg1) {
     extern void fn_80128668(void);
     if (arg0 != 0 && arg1 > 0) fn_80128668();
