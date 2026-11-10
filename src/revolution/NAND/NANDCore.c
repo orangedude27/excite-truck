@@ -85,33 +85,34 @@ void nandGetHeadToken(char* head, char* rest, const char* path) {
     }
 }
 
-void nandConvertPath(char* abs, const char* dir, const char* rel) {
+/* Converts a relative NAND path to an absolute path. */
+void nandConvertPath(char *absPath, const char *dirPath, const char *relPath) {
     char head[128];
     char rest[128];
     char notail[128];
     char newdir[128];
 
-    if (strlen(rel) == 0) {
-        strcpy(abs, dir);
+    if (strlen(relPath) == 0) {
+        strcpy(absPath, dirPath);
         return;
     }
 
-    nandGetHeadToken(head, rest, rel);
+    nandGetHeadToken(head, rest, relPath);
 
     if (strcmp(head, ".") == 0) {
-        nandConvertPath(abs, dir, rest);
+        nandConvertPath(absPath, dirPath, rest);
     } else if (strcmp(head, "..") == 0) {
-        nandRemoveTailToken(notail, dir);
-        nandConvertPath(abs, notail, rest);
+        nandRemoveTailToken(notail, dirPath);
+        nandConvertPath(absPath, notail, rest);
     } else if (head[0] != '\0') {
-        if (strcmp(dir, "/") == 0) {
+        if (strcmp(dirPath, "/") == 0) {
             sprintf(newdir, "/%s", head);
         } else {
-            sprintf(newdir, "%s/%s", dir, head);
+            sprintf(newdir, "%s/%s", dirPath, head);
         }
-        nandConvertPath(abs, newdir, rest);
+        nandConvertPath(absPath, newdir, rest);
     } else {
-        strcpy(abs, dir);
+        strcpy(absPath, dirPath);
     }
 }
 
