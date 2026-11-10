@@ -60,6 +60,7 @@ static BOOL ReadSram(OSScb* scb) {
 }
 
 static void WriteSramCallback(EXIChannel chan, OSContext* ctx) {
+    /* EXI callback: continue SRAM write from current position and mark complete on success. */
 #pragma unused(chan)
 #pragma unused(ctx)
 
