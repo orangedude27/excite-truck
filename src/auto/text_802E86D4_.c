@@ -173,6 +173,32 @@ void fn_802E8920(int arg0) {
         fn_802E30C8(messages + 0x398, result);
     }
 }
+
+int fn_802E8A18(void) {
+    char spC[0x8C];
+    unsigned int sp8;
+    int r;
+    int ret = 0;
+    r = NANDOpen(lbl_8034D9C0 + 0x3B8, spC, 1);
+    if (r == 0) {
+        sp8 = 0;
+        if (NANDGetLength(spC, &sp8) == 0) {
+            if (sp8 == 0xF0A0) {
+                fn_802E30C8(lbl_8034D9C0 + 0x3C4);
+                ret = 1;
+            } else {
+                fn_802E30C8(lbl_8034D9C0 + 0x3EC, sp8, 0xF0A0);
+            }
+        } else {
+            fn_802E30C8(lbl_8034D9C0 + 0x428);
+        }
+        NANDClose(spC);
+    } else {
+        fn_802E30C8(lbl_8034D9C0 + 0x460, r);
+    }
+    return ret;
+}
+
 #pragma scheduling on
 int fn_802E8AE8(const char *arg0) {
     unsigned char sp8[0x88];
