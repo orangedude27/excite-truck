@@ -1170,6 +1170,9 @@ double atan(double x) {
 }
 
 double ceil(double x) {
+    /* fdlibm-style ceil: rounds x up to an integer value, raising inexact for non-integer
+       finite inputs and handling signed zero, subnormals, infinities, and NaN via bit-level
+       exponent/mantissa manipulation. */
     int i0, i1, j0;
     unsigned i, j;
     union { double d; int w[2]; } u;
