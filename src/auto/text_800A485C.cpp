@@ -17719,6 +17719,7 @@ void homebutton::FrameController::calc() {
 }
 
 extern "C" void fn_800CF554(s32 arg0, u8 *arg1, f32 x0, f32 y0, f32 x1, f32 y1, f32 z) {
+    /* Draws a single colored line segment (two vertices) at constant z with identity rotation. */
     f32 mtx[3][4];
     GXClearVtxDesc();
     GXSetVtxDesc(9, 1);
