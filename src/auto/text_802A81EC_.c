@@ -52,6 +52,7 @@ void fn_802A81EC(void) {
 
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" void fn_802A81F0(void) {
     struct Mgr {
@@ -63,27 +64,32 @@ extern "C" void fn_802A81F0(void) {
         virtual float getd(const char *, float); virtual void m9(); virtual void m10(); virtual void m11();
         virtual void m12(); virtual long long get2(const char *);
     };
-    Mgr *mgr;
-    Obj *obj;
-    Obj *src;
-    char *entry;
-    int found, index, i, j, n, k;
+    int off;
     int *tbl;
+    char *cfg = lbl_80349D08;
+    char *entry;
+    int i;
+    Mgr *mgr;
+    int index;
+    Obj *obj;
+    int found;
+    int j, k;
     float base, ofs;
     char name[0x40];
     char tmp[8];
-    union { long long ll; float f[2]; } u;
-    mgr = (Mgr *)fn_80131810(lbl_80349D08);
+    union { long long ll; double d; } ra;
+    union { double d; float f[2]; } rb;
     lbl_804BD6C4[1] = 0;
+    mgr = (Mgr *)fn_80131810(cfg);
     if (!mgr) return;
-    found = 0;
     index = 1;
-    base = lbl_80564928;
     obj = (Obj *)mgr->child(0);
+    base = lbl_80564928;
+    found = 0;
     while (obj) {
         if (stricmp(obj->name(), lbl_8055CC38) == 0) {
             tbl = (int *)lbl_804BD6C4[0];
-            n = lbl_804BD6C4[1]++;
+            off = lbl_804BD6C4[1]++ << 2;
             entry = (char *)fn_801284F8(0x578, lbl_8055CC38);
             if (entry) {
                 *(char **)(entry + 0x28) = entry + 0x34;
@@ -105,28 +111,30 @@ extern "C" void fn_802A81F0(void) {
                 k = obj->count(lbl_8055CC48);
                 for (i = 0; i < k; i++)
                     *(int *)(entry + 0x70) += 1;
-                u.ll = obj->get2(lbl_8055CC50);
-                *(float *)(entry + 0x60) = u.f[0];
+                ra.ll = obj->get2(lbl_8055CC50);
+                rb.d = ra.d;
+                *(float *)(entry + 0x60) = rb.f[0];
                 *(float *)(entry + 0x64) = base;
-                *(float *)(entry + 0x68) = u.f[1];
+                *(float *)(entry + 0x68) = rb.f[1];
                 ofs = obj->getf(lbl_8055CC54);
                 fn_801E9DC4(tmp);
                 fn_801E9E30(tmp, entry + 0x60);
                 *(float *)(entry + 0x64) += ofs;
-                *(float *)(entry + 0x44) = obj->getd(lbl_80349D08 + 0xc, lbl_8056492C);
-                *(float *)(entry + 0x48) = obj->getd(lbl_80349D08 + 0x18, lbl_80564930);
-                *(float *)(entry + 0x4c) = obj->getd(lbl_80349D08 + 0x24, lbl_80564934);
-                *(float *)(entry + 0x50) = obj->getd(lbl_80349D08 + 0x30, lbl_80564930);
-                *(float *)(entry + 0x54) = obj->getd(lbl_80349D08 + 0x40, lbl_80564938);
-                *(float *)(entry + 0x58) = obj->getd(lbl_80349D08 + 0x50, lbl_8056493C);
-                *(float *)(entry + 0x5c) = obj->getd(lbl_80349D08 + 0x5c, lbl_80564940);
+                *(float *)(entry + 0x44) = obj->getd(cfg + 0xc, lbl_8056492C);
+                *(float *)(entry + 0x48) = obj->getd(cfg + 0x18, lbl_80564930);
+                *(float *)(entry + 0x4c) = obj->getd(cfg + 0x24, lbl_80564934);
+                *(float *)(entry + 0x50) = obj->getd(cfg + 0x30, lbl_80564930);
+                *(float *)(entry + 0x54) = obj->getd(cfg + 0x40, lbl_80564938);
+                *(float *)(entry + 0x58) = obj->getd(cfg + 0x50, lbl_8056493C);
+                *(float *)(entry + 0x5c) = obj->getd(cfg + 0x5c, lbl_80564940);
             }
-            tbl[n] = (int)entry;
+            *(int *)((char *)tbl + off) = (int)entry;
             found++;
         }
-        obj = (Obj *)mgr->child(index++);
+        obj = (Obj *)mgr->child(index);
+        index++;
     }
-    fn_802E30C8(lbl_80349D08 + 0x68, found);
+    fn_802E30C8(cfg + 0x68, found);
     fn_80131818(mgr);
 }
 #pragma cplusplus reset
@@ -134,6 +142,9 @@ extern "C" void fn_802A81F0(void) {
 
 extern void fn_80128668(void *);
 extern void fn_802C6CF8(s32);
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_802A85C8(void) {
     void *entry;
     s32 j;
