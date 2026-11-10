@@ -1608,6 +1608,9 @@ void fn_802141A0(void **arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5
 #pragma dont_inline on
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
+// Runs a mapped UI/dialog flow for the given descriptor: sets up runtime/context, swaps in
+// the descriptor callback, executes/tears down the flow, reports overlap mismatch, then copies
+// the descriptor name (or fallback) into a bounded global buffer before returning the result.
 extern "C" s32 fn_802146BC(void *arg0, s32 arg1, s32 arg2, s32 arg3,
                             s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
     void *sp8;
@@ -1867,41 +1870,31 @@ extern "C" void fn_80214D50(s32 arg0) {
         s32 unk0;
         f32 scale;
         void *objects[4];
-        s32 unk18;
-        s32 unk1C;
     };
+    struct Entry *table;
     s32 index;
-    s32 offset;
-    Entry *table;
-    Entry *entry;
     void *obj;
     f32 value;
-
     if (fn_80206430() == 0)
         return;
-
     index = lbl_8055EF5C + 1;
     lbl_8055EF5C = index;
     if (index >= 4) {
         index = 0;
         lbl_8055EF5C = 0;
     }
-
-    offset = arg0 * 0x18;
-    table = (Entry *)lbl_80490558;
-    entry = (Entry *)((char *)table + offset);
-    obj = entry->objects[index];
+    table = (struct Entry *)lbl_80490558;
+    obj = table[arg0].objects[index];
     if (obj == 0)
         return;
-
-    value = entry->scale * fn_80209028();
+    value = table[arg0].scale * fn_80209028();
     if (value != *(f32 *)((char *)obj + 8)) {
         *((u8 *)obj + 0x4D) = 1;
         *(f32 *)((char *)obj + 8) = value;
-        *((u8 *)obj + 0x49) = 1;
-        *((u8 *)obj + 0x4B) = 0;
-        *((u8 *)obj + 0x4A) = 0;
     }
+    *((u8 *)obj + 0x49) = 1;
+    *((u8 *)obj + 0x4B) = 0;
+    *((u8 *)obj + 0x4A) = 0;
 }
 
 #pragma push
