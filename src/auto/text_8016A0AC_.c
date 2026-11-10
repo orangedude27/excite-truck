@@ -252,15 +252,13 @@ void fn_8016A68C(void* arg0) {
 extern f32 lbl_80561970;
 typedef struct { f32 first; f32 second; } FloatPair8016A6B0;
 FloatPair8016A6B0 fn_8016A6B0(const char *arg0, s32 arg1) {
-    /* Fix note: compare each name and item ID, then return both selected float bit patterns. */
     register s32 nameOffset;
     register s32 itemOffset;
     register s32 i;
-    register volatile s32 *nameCount = (volatile s32 *)&lbl_80430340.unk_0x4;
     i = 0;
     nameOffset = 0;
     itemOffset = 0;
-    while (i < *nameCount) {
+    while (i < lbl_80430340.unk_0x4) {
         if (stricmp(lbl_80430340.unk_0x0 + nameOffset + 1, arg0) == 0) {
             char *records = *(char **)lbl_80430318;
             if (arg1 == *(s32 *)(records + itemOffset + 4)) {
