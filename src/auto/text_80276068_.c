@@ -5,7 +5,7 @@ extern volatile int lbl_8055F598, lbl_8055F59C, lbl_8055F5A0;
 __declspec(section ".data") extern unsigned char lbl_8049FD58[];
 extern float lbl_8055E3C8, lbl_80564054, lbl_80564060;
 extern float lbl_8049FD58_float_dummy;
-extern void *fn_80276A44(void);
+extern void *fn_80276A44();
 extern void fn_8026A4A0(int, void *, float *);
 extern void fn_80276098(void *, void *, float, float, float, int, int);
 extern void *memcpy(void *, const void *, unsigned int);
