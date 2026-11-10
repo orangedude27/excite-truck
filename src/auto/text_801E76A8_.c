@@ -10,22 +10,22 @@ extern void fn_80128668(void *);
 extern char lbl_80339B90[];
 typedef struct { void *a; int b; int c; void *d; int e; int f; } S76;
 void fn_801E7828();
-void fn_801E7790();
+void fn_801E7790(void *, int, int, float, float, float, float, float);
 #pragma dont_inline on
 extern void *fn_8012850C(int, void *);
 extern char lbl_80339B70[];
 extern char lbl_80339B80[];
 void *fn_801E76A8(void *arg0, int arg1) {
+    S76 *o = (S76 *)arg0;
     int rem;
-    int zero = 0;
-    *(void **)arg0 = fn_8012850C(arg1 * 0x18, lbl_80339B70);
+    o->a = fn_8012850C(arg1 * 0x18, lbl_80339B70);
     rem = arg1 - 2;
-    *(int *)((char *)arg0 + 8) = arg1;
+    o->c = arg1;
     arg1 = (rem * 4) - rem;
-    *(int *)((char *)arg0 + 4) = zero;
-    *(void **)((char *)arg0 + 0xC) = fn_8012850C(arg1 * 2, lbl_80339B80);
-    *(int *)((char *)arg0 + 0x10) = zero;
-    *(int *)((char *)arg0 + 0x14) = arg1;
+    o->b = 0;
+    o->d = fn_8012850C(arg1 * 2, lbl_80339B80);
+    o->e = 0;
+    o->f = arg1;
     return arg0;
 }
 
@@ -38,28 +38,32 @@ void *__dt__12PhysicsWorldFv_801E7730(void *arg0, int arg1) {
     return arg0;
 }
 
-void fn_801E7790(void) {
-    int *buf = (int *)0;
-    int count = buf[0];
-    float *vertex = (float *)(buf[0] + buf[1] * 0x18);
-    vertex[0] = 0.0f;
-    vertex[1] = 0.0f;
-    vertex[2] = 0.0f;
-    *(int *)(vertex + 3) = 0;
-    vertex[4] = 0.0f;
-    vertex[5] = 0.0f;
-    buf[1]++;
-    if (count != 0 && buf[1] > 1) {
-        short *idxbuf = (short *)buf[3];
-        int idx = buf[4];
-        idxbuf[idx * 2] = (short)(buf[1] - 3);
-        idx++;
-        buf[4] = idx;
-        idxbuf[idx * 2] = (short)(buf[1] - 2);
-        idx++;
-        buf[4] = idx;
-        idxbuf[idx * 2] = (short)(buf[1] - 1);
-        buf[4] = idx + 1;
+void fn_801E7790(void *buf, int id, int emit, float x, float y, float z, float u, float v) {
+    int *b = (int *)buf;
+    char *base = (char *)b[0];
+    int cnt = b[1];
+    float *dst = (float *)(base + cnt * 0x18);
+    dst[0] = x;
+    dst[1] = y;
+    dst[2] = z;
+    ((int *)dst)[3] = id;
+    dst[4] = u;
+    dst[5] = v;
+    cnt++;
+    b[1] = cnt;
+    if (emit == 0) return;
+    if (cnt <= 1) return;
+    {
+        short *ib = (short *)b[3];
+        int ic = b[4];
+        ib[ic] = (short)(cnt - 3);
+        ic++;
+        b[4] = ic;
+        ib[ic] = (short)(cnt - 2);
+        ic++;
+        b[4] = ic;
+        ib[ic] = (short)(cnt - 1);
+        b[4] = ic + 1;
     }
 }
 
@@ -83,8 +87,8 @@ void *fn_801E7888(void *arg0) {
     return __dt__12PhysicsWorldFv_801E7730(arg0, 1);
 }
 
-void fn_801E7890(void) {
-    fn_801E7790();
+void fn_801E7890(void *a, int b, int c, float d, float e, float f, float g, float h) {
+    fn_801E7790(a, b, c, d, e, f, g, h);
 }
 
 void fn_801E7894(void) {
