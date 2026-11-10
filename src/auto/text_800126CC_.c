@@ -100,9 +100,10 @@ extern char lbl_8055D500;
 extern int lbl_8055D514;
 #pragma scheduling invalid_target
 void fn_80012794(void) {
+    void **p;
     void **base = (void **)&lbl_8035183C[0];
-    void **p = base;
     int i = 0;
+    p = base;
     lbl_80558AD8 = 0x134;
     while (i < *(int *)((char *)base + 0x80)) {
         fn_80131818(*p);
@@ -206,6 +207,39 @@ void fn_80012984(int arg0) {
     fn_8013C8B8();
     lbl_8055D500 = 1;
 }
+
+#pragma cplusplus on
+#pragma dont_inline on
+extern int fn_80019B3C(void);
+extern int lbl_80558AFC;
+extern char *strstr(const char *, const char *);
+extern "C" int fn_80012AB4(void *arg0) {
+    struct Dummy {
+        virtual int f0();
+        virtual int f1();
+        virtual int f2();
+        virtual int f3();
+        virtual const char *f4(const char *, int);
+    };
+    void *entry;
+    char *needle;
+    int result;
+    const char *vr;
+    if (fn_80019B3C() != 0)
+        return 1;
+    entry = fn_800126CC(lbl_80558AD8);
+    needle = *(char **)((char *)entry + 4);
+    result = *(unsigned char *)((char *)entry + 0x10);
+    vr = ((Dummy *)arg0)->f4((const char *)&lbl_80558AFC, 0);
+    if (vr != 0) {
+        result = 0;
+        if (strstr(vr, needle) != 0)
+            result = 1;
+    }
+    return result;
+}
+#pragma dont_inline reset
+#pragma cplusplus reset
 
 extern void fn_8022D0D8(void *arg0, int arg1);
 extern void fn_8022D0E8(void *arg0, int arg1, int arg2);
@@ -496,6 +530,7 @@ void fn_80013618(int arg0) {
     fn_8001335C(result, arg0);
 }
 
+#pragma scheduling on
 #pragma cplusplus on
 extern "C" int fn_80013680(void *arg0, void *arg1) {
     struct Dummy {
@@ -507,13 +542,11 @@ extern "C" int fn_80013680(void *arg0, void *arg1) {
         virtual int f5();
         virtual int f6(char *, int);
     };
-    Dummy *a = *(Dummy **)((char *)arg0 + 0x80);
-    int x = a->f6(lbl_802FCB74, 0x63);
-    Dummy *b = *(Dummy **)((char *)arg1 + 0x80);
-    int y = b->f6(lbl_802FCB74, 0x63);
-    return x - y;
+    return ((Dummy *)*(void **)((char *)arg0 + 0x80))->f6(lbl_802FCB74, 0x63)
+        - ((Dummy *)*(void **)((char *)arg1 + 0x80))->f6(lbl_802FCB74, 0x63);
 }
 #pragma cplusplus reset
+#pragma scheduling invalid_target
 int fn_800136FC(void *arg0, void *arg1) {
     int b = ((int *)arg1)[0x1A];
     int a = ((int *)arg0)[0x1A];
