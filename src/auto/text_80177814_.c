@@ -534,6 +534,10 @@ int fn_80178604(void *arg0) {
     return 1;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling on
+#pragma dont_inline on
 int fn_80178678(void *arg0, void **arg1, int arg2) {
     int size;
     void *data;
@@ -551,6 +555,7 @@ int fn_80178678(void *arg0, void **arg1, int arg2) {
     *arg1 = result;
     return 1;
 }
+#pragma pop
 
 long fn_8017873C(long *arg0, long arg1, long arg2, long arg3, long arg4) {
     if ((unsigned long)(arg3 + *arg0 + 1) < 0x1000) {
