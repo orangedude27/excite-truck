@@ -250,6 +250,7 @@ extern void fn_80017A2C(void *, s32);
 extern void fn_800178BC(void *, s32, s32);
 extern void fn_80016928(s32, s32);
 #pragma scheduling invalid_target
+/* Build track route lists by sampling from three descriptor lists according to arg1 entries */
 void fn_80017DD4(s32 *arg0, s32 arg1, s32 *arg2) {
     struct { s32 *items; s32 count; s32 capacity; s32 buf[50]; } a, b, c;
     s32 i, x, y, z;
