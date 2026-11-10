@@ -1653,21 +1653,21 @@ extern int fn_802E317C(const char *, ...);
 extern int stricmp(const char *, const char *);
 extern int fn_802B8E50(int);
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling off
 void fn_802BB674(char *arg0, int arg1) {
     struct Entry { char *name; int state; };
     struct Entry *entry = ((struct Entry **)lbl_804C0088)[arg1];
-    int result;
-    char first;
+    int result2;
+    char first2;
     if (entry != 0 && stricmp(entry->name, arg0) != 0) {
         if (entry->state != -2) fn_802CAC54();
-        first = *arg0;
-        result = -2;
+        first2 = *arg0;
+        result2 = -2;
         entry->state = -2;
-        if (first != 0) result = fn_802B110C(fn_802B8E50, arg0);
-        entry->state = result;
+        if (first2 != 0) result2 = fn_802B110C(fn_802B8E50, arg0);
+        entry->state = result2;
         entry->name = arg0;
-        if (result == -2 && (signed char)*(volatile char *)entry->name != 0)
+        if (result2 == -2 && (signed char)*(volatile char *)entry->name != 0)
             fn_802E317C(lbl_8034AA50);
     }
 }
