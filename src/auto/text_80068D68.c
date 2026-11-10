@@ -23799,55 +23799,56 @@ static void process_service_search_attr_rsp(tCONN_CB *p_ccb, UINT8 *p_reply, UIN
 
 extern void *add_record(void *, void *);
 extern UINT8 *add_attr(UINT8 *, tSDP_DISCOVERY_DB *, tSDP_DISC_REC *, UINT16, tSDP_DISC_ATTR *, UINT8);
+/* Parses an SDP attribute-sequence element from a response and adds each attribute ID/value to the connection's discovery record. */
 UINT8 *save_attr_seq(tCONN_CB *p_ccb, UINT8 *p, UINT8 *p_msg_end) {
-    register char *log = lbl_8031A028;
-    UINT32 seq_len;
-    UINT32 attr_len;
-    UINT16 attr_id;
+    register char *logBase = lbl_8031A028;
+    UINT32 seqLen;
+    UINT32 attrLen;
+    UINT16 attrId;
     UINT8 type;
-    UINT8 *p_seq_end;
-    UINT8 *p_next;
-    tSDP_DISC_REC *p_rec;
+    UINT8 *pSeqEnd;
+    UINT8 *pNext;
+    tSDP_DISC_REC *pRec;
 
     type = *p;
-    p_next = p + 1;
+    pNext = p + 1;
     if ((type >> 3) != 6) {
         if (lbl_803C4C40[0x4630] >= 2)
-            fn_80070954(0xA0001, log + 0x50, type);
+            fn_80070954(0xA0001, logBase + 0x50, type);
         return NULL;
     }
 
-    p = sdpu_get_len_from_type(p_next, type, &seq_len);
-    if (p + seq_len > p_msg_end) {
+    p = sdpu_get_len_from_type(pNext, type, &seqLen);
+    if (p + seqLen > p_msg_end) {
         if (lbl_803C4C40[0x4630] >= 2)
-            ((void (*)(u32, void *, u32))fn_80070954)(0xA0001, log + 0x78, seq_len);
+            ((void (*)(u32, void *, u32))fn_80070954)(0xA0001, logBase + 0x78, seqLen);
         return NULL;
     }
 
-    p_rec = add_record(*(void **)((u8 *)p_ccb + 0x410), (u8 *)p_ccb + 2);
-    if (p_rec == NULL) {
+    pRec = add_record(*(void **)((u8 *)p_ccb + 0x410), (u8 *)p_ccb + 2);
+    if (pRec == NULL) {
         if (lbl_803C4C40[0x4630] >= 2)
-            fn_8007093C(0xA0001, log + 0x98);
+            fn_8007093C(0xA0001, logBase + 0x98);
         return NULL;
     }
 
-    p_seq_end = p + seq_len;
-    while (p < p_seq_end) {
+    pSeqEnd = p + seqLen;
+    while (p < pSeqEnd) {
         type = *p++;
-        p = sdpu_get_len_from_type(p, type, &attr_len);
-        if ((type >> 3) != 1 || attr_len != 2) {
+        p = sdpu_get_len_from_type(p, type, &attrLen);
+        if ((type >> 3) != 1 || attrLen != 2) {
             if (lbl_803C4C40[0x4630] >= 2)
                 ((void (*)(u32, void *, u32, u32))fn_8007096C)(
-                    0xA0001, log + 0xA8, type, attr_len);
+                    0xA0001, logBase + 0xA8, type, attrLen);
             return NULL;
         }
 
-        attr_id = ((UINT16)p[0] << 8) + p[1];
+        attrId = ((UINT16)p[0] << 8) + p[1];
         p += 2;
-        p = add_attr(p, *(tSDP_DISCOVERY_DB **)((u8 *)p_ccb + 0x410), p_rec, attr_id, NULL, 0);
+        p = add_attr(p, *(tSDP_DISCOVERY_DB **)((u8 *)p_ccb + 0x410), pRec, attrId, NULL, 0);
         if (p == NULL) {
             if (lbl_803C4C40[0x4630] >= 2)
-                fn_8007093C(0xA0001, log + 0x98);
+                fn_8007093C(0xA0001, logBase + 0x98);
             return NULL;
         }
     }
