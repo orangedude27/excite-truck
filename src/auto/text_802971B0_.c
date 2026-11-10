@@ -86,7 +86,7 @@ extern "C" void *fn_802972A4(void *arg0) {
     }
     return result;
 }
-
+#pragma dont_inline reset
 #pragma cplusplus reset
 #pragma scheduling on
 __declspec(section ".sdata") extern char lbl_8055CA40[];
