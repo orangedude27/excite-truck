@@ -243,6 +243,8 @@ check:
 
 #pragma dont_inline reset
 #pragma scheduling on
+extern int fn_8027DB40(int);
+extern int fn_8024DAE0(int, int, int, int, int);
 int fn_8023BC24(int ignored, int arg1, int arg2) {
     int *obj = (int *)fn_8027DB40(1);
     int result = fn_8024DAE0(arg1, arg2, 0, (int)obj, 0);
