@@ -202,6 +202,7 @@ void *__dt__14CollisionSpaceFv_801DAB70(void *arg0, int arg1) {
     return arg0;
 }
 
+#pragma scheduling invalid_target
 float fn_801DABD4(void *arg0) {
     float value;
     register float max = lbl_80562B54;
@@ -220,8 +221,7 @@ check:
         goto loop;
     return max;
 }
-
-#pragma scheduling invalid_target
+#pragma scheduling on
 float fn_801DAC5C(void *arg0)
 {
     int count = *(int *)((char *)arg0 + 8);
@@ -242,6 +242,8 @@ extern void fn_801DA198(int, float);
 extern void fn_802E30C8(char *, int, void *);
 extern char lbl_803392F0[];
 #pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
 void fn_801DACA0(void *arg0, float arg1) {
     float value;
     int count;
@@ -280,17 +282,15 @@ int fn_801DAD7C(void *arg0) {
 }
 #pragma scheduling on
 void fn_801DADBC(void *arg0) {
-    int i = 0;
-    int offset = 0;
+    int i;
+    int offset;
     void **items;
-    while (i < *(int *)((char *)arg0 + 8)) {
+    for (i = 0, offset = 0; i < *(int *)((char *)arg0 + 8); i++, offset += 4) {
         items = *(void ***)((char *)arg0 + 4);
         fn_801DA198(*(int *)((char *)items[offset / 4] + 0x28), lbl_80562B54);
-        offset += 4;
-        i++;
     }
 }
-#pragma scheduling off
+#pragma scheduling reset
 extern void fn_801D9F44(void *, int);
 extern void fn_801D9F24(void *);
 extern void fn_801D0DFC(void *);
@@ -303,7 +303,7 @@ void *fn_801DAE28(void *arg0, int arg1) {
         *(void **)arg0 = lbl_80339258;
         entry = (unsigned char *)arg0 + 8;
         i = 0;
-        lbl_8055E984 = 0;
+        lbl_8055E984 = (void *)0;
         while (i < *(int *)((char *)arg0 + 0x5808)) {
             fn_801D9F44(*(void **)(entry + 0x28), 1);
             fn_801D9F24(*(void **)(entry + 0x24));
