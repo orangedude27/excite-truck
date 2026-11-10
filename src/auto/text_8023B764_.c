@@ -245,8 +245,11 @@ check:
 #pragma scheduling on
 int fn_8023BC24(int ignored, int arg1, int arg2) {
     int *obj = (int *)fn_8027DB40(1);
-    int result = fn_8024DAE0(arg1, arg2, 0, (int)obj, 0, 0);
-    if (obj != 0) ((void (*)(int *, int))(*(int **)obj)[2])(obj, 1);
+    int result = fn_8024DAE0(arg1, arg2, 0, obj, 0);
+    if (obj != 0) {
+        int *vt = *(int **)obj;
+        ((void (*)(int *, int))vt[2])(obj, 1);
+    }
     return result;
 }
 
