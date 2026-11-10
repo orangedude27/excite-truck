@@ -74,6 +74,7 @@ static void read_kpad_acc_head(KPADInsideStatus* kp) {
     KPADStatus* sp = &kp->status;
     f32 f1, f2, ax, ay;
 
+    /* Updates the status' vertical acceleration vector from raw accelerometer readings. */
     f2 = kp->hard_acc.x * kp->hard_acc.x + kp->hard_acc.y * kp->hard_acc.y;
     ax = fn_8002F234(f2);
     ay = -kp->hard_acc.z;
