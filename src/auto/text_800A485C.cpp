@@ -4766,57 +4766,57 @@ done:
     return 0;
 }
 
-extern "C" s32 fn_800AD24C(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg4) {
+extern "C" s32 fn_800AD24C(void *context, s32 index, s32 position, s32 *outCluster, s32 *ioState) {
     s32 result;
-    s32 val;
-    u8 *p = (u8 *)arg0;
-    *arg3 = -1;
-    if (*(s32 *)(p + 0x1C) != 0 && *(u32 *)arg4 == 1) {
-        result = fn_800ACF20(arg0, arg2, (u32 *)arg3, (u32 *)arg4);
+    s32 cluster;
+    u8 *ctxBytes = (u8 *)context;
+    *outCluster = -1;
+    if (*(s32 *)(ctxBytes + 0x1C) != 0 && *(u32 *)ioState == 1) {
+        result = fn_800ACF20(context, position, (u32 *)outCluster, (u32 *)ioState);
         if (result != 0) {
             return result;
         }
     }
-    if (*(s32 *)(p + 0x1C) == 0 || *arg4 == 0) {
-        switch (*(s32 *)(*(u8 **)(p + 0x34) + 0x1C)) {
+    if (*(s32 *)(ctxBytes + 0x1C) == 0 || *ioState == 0) {
+        switch (*(s32 *)(*(u8 **)(ctxBytes + 0x34) + 0x1C)) {
         case 0:
-            result = fn_800AF5A0(*(void **)(p + 0x34), (u16)arg1, arg3);
+            result = fn_800AF5A0(*(void **)(ctxBytes + 0x34), (u16)index, outCluster);
             break;
         case 1:
-            result = fn_800AFE14(*(void **)(p + 0x34), arg1, arg3);
+            result = fn_800AFE14(*(void **)(ctxBytes + 0x34), index, outCluster);
             break;
         case 2:
-            result = fn_800B0258(*(void **)(p + 0x34), arg1, arg3);
+            result = fn_800B0258(*(void **)(ctxBytes + 0x34), index, outCluster);
             break;
         default:
             result = 0xF;
-            *arg3 = -1;
+            *outCluster = -1;
             break;
         }
         if (result != 0) {
             return result;
         }
-        val = *arg3;
-        if (val == 0) {
+        cluster = *outCluster;
+        if (cluster == 0) {
             return 0xD;
         }
-        if ((u32)(val + 0x10000) == 0xFFFF) {
+        if ((u32)(cluster + 0x10000) == 0xFFFF) {
             return 6;
         }
-        if (*(s32 *)(p + 0x1C) != 0) {
+        if (*(s32 *)(ctxBytes + 0x1C) != 0) {
             u32 *tbl = lbl_802EEF40;
-            if ((u32)val != tbl[*(s32 *)(*(u8 **)(p + 0x34) + 0x1C) * 5 + 2]) {
-                u32 a = *(u32 *)(p + 0x24);
-                u32 b = *(u32 *)(p + 0x28);
+            if ((u32)cluster != tbl[*(s32 *)(*(u8 **)(ctxBytes + 0x34) + 0x1C) * 5 + 2]) {
+                u32 a = *(u32 *)(ctxBytes + 0x24);
+                u32 b = *(u32 *)(ctxBytes + 0x28);
                 if (b > a && b != 0) {
-                    if ((u32)arg2 == a * (*(u16 *)(p + 0x20) + 1)) {
-                        *(u16 *)(p + 0x22) = 0;
-                        *(s32 *)(*(u8 **)(p + 0x1C) + a * 4) = val;
-                        *(u32 *)(p + 0x24) = *(u32 *)(p + 0x24) + 1;
+                    if ((u32)position == a * (*(u16 *)(ctxBytes + 0x20) + 1)) {
+                        *(u16 *)(ctxBytes + 0x22) = 0;
+                        *(s32 *)(*(u8 **)(ctxBytes + 0x1C) + a * 4) = cluster;
+                        *(u32 *)(ctxBytes + 0x24) = *(u32 *)(ctxBytes + 0x24) + 1;
                     } else {
-                        *(u16 *)(p + 0x22) = *(u16 *)(p + 0x22) + 1;
+                        *(u16 *)(ctxBytes + 0x22) = *(u16 *)(ctxBytes + 0x22) + 1;
                     }
-                    *(s32 *)(p + 0x2C) = arg2;
+                    *(s32 *)(ctxBytes + 0x2C) = position;
                 }
             }
         }
