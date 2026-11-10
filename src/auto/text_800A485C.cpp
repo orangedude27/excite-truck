@@ -5477,41 +5477,43 @@ static inline s32 VFiPFFAT_FindCluster(void *arg0, u32 arg1, u32 arg2, u32 *arg3
         *arg3 = spC;
     return 0;
 }
-extern "C" s32 VFiPFFAT_GetClusterSpecified(void *arg0, u32 arg1, u32 arg2, u32 *arg3) {
-    u32 sp10;
-    u32 *temp_r7 = *(u32 **)((u8 *)arg0 + 8);
-    u8 *temp_r8 = *(u8 **)((u8 *)arg0 + 0x34);
-    u32 temp_r0 = *temp_r7;
-    u32 count = *(u32 *)(temp_r8 + 0x1C);
-    u32 *temp_r31 = *(u32 **)((u8 *)arg0 + 0x30);
-    s32 res;
-    if (temp_r0 == 0 && arg2 == 0) {
-        *arg3 = (u32)-1;
+extern "C" s32 VFiPFFAT_GetClusterSpecified(void *fileInfo, u32 startCluster, u32 clusterIndex, u32 *outCluster) {
+    u32 foundInCache;
+    u32 *state = *(u32 **)((u8 *)fileInfo + 8);
+    u8 *fatInfo = *(u8 **)((u8 *)fileInfo + 0x34);
+    u32 mode = *state;
+    u32 clusterCount = *(u32 *)(fatInfo + 0x1C);
+    u32 *cache = *(u32 **)((u8 *)fileInfo + 0x30);
+    s32 result;
+
+    /* Resolves the cluster at a given index in a chain, optionally using/updating the file's FAT cluster cache. */
+    if (mode == 0 && clusterIndex == 0) {
+        *outCluster = (u32)-1;
         return 0;
     }
-    if (temp_r0 == 1) {
-        if (count <= 1) {
-            *arg3 = (u32)-1;
+    if (mode == 1) {
+        if (clusterCount <= 1) {
+            *outCluster = (u32)-1;
             return 0;
         }
-        *temp_r7 = *(u32 *)(temp_r8 + 0x10);
+        *state = *(u32 *)(fatInfo + 0x10);
     }
-    if (*(s32 *)((u8 *)arg0 + 0x1C) != 0 && arg2 == 0) {
-        res = fn_800ACF20(arg0, arg1, arg3, &sp10);
-        if (res != 0) return res;
-        if (sp10 == 1) {
-            temp_r31[2] = *(u32 *)arg0;
-            temp_r31[0] = arg1;
-            temp_r31[1] = *arg3;
+    if (*(s32 *)((u8 *)fileInfo + 0x1C) != 0 && clusterIndex == 0) {
+        result = fn_800ACF20(fileInfo, startCluster, outCluster, &foundInCache);
+        if (result != 0) return result;
+        if (foundInCache == 1) {
+            cache[2] = *(u32 *)fileInfo;
+            cache[0] = startCluster;
+            cache[1] = *outCluster;
             return 0;
         }
     }
-    res = VFiPFFAT_FindCluster(arg0, arg1, arg2, arg3);
-    if (res != 0) return res;
-    if (*arg3 == (u32)-1) return 0;
-    temp_r31[2] = *(u32 *)arg0;
-    temp_r31[0] = arg1;
-    temp_r31[1] = *arg3;
+    result = VFiPFFAT_FindCluster(fileInfo, startCluster, clusterIndex, outCluster);
+    if (result != 0) return result;
+    if (*outCluster == (u32)-1) return 0;
+    cache[2] = *(u32 *)fileInfo;
+    cache[0] = startCluster;
+    cache[1] = *outCluster;
     return 0;
 }
 
