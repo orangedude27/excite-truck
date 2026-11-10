@@ -224,42 +224,43 @@ extern "C" void fn_8012A67C(void) {
 #pragma push
 #pragma scheduling invalid_target
 extern "C" s32 fn_8012A6C8(s32 arg0, s32 arg1, s32 arg2) {
+    /* Validates an RSTM/"RST0" header (magic, header size, version, and optional expected field) after running its 0x30-byte checksum/init; logs a mismatch and returns 0 on failure, 1 on success. */
     const char *messages = lbl_8032A630;
-    u32 *data = (u32 *)arg0;
-    volatile u8 buffer[5];
-    u32 first;
-    u8 fourth;
-    u32 second;
-    u8 third;
+    u32 *header = (u32 *)arg0;
+    volatile u8 magicText[5];
+    u32 firstByte;
+    u8 fourthByte;
+    u32 secondByte;
+    u8 thirdByte;
     u32 value;
 
     fn_80132E7C((void *)arg0, 0x30);
-    value = data[0];
+    value = header[0];
     if (value != 0x52535430) {
-        *(volatile u32 *)buffer = 0x52535430;
-        first = buffer[0];
-        fourth = buffer[3];
-        second = buffer[1];
-        third = buffer[2];
-        buffer[0] = fourth;
-        buffer[3] = first;
-        buffer[1] = third;
-        buffer[2] = second;
-        buffer[4] = 0;
-        fn_802E30C8(messages + 0xDC, (const char *)arg1, value, (const char *)buffer);
+        *(volatile u32 *)magicText = 0x52535430;
+        firstByte = magicText[0];
+        fourthByte = magicText[3];
+        secondByte = magicText[1];
+        thirdByte = magicText[2];
+        magicText[0] = fourthByte;
+        magicText[3] = firstByte;
+        magicText[1] = thirdByte;
+        magicText[2] = secondByte;
+        magicText[4] = 0;
+        fn_802E30C8(messages + 0xDC, (const char *)arg1, value, (const char *)magicText);
         goto failed;
     }
-    value = data[2];
+    value = header[2];
     if (value != 8) {
         fn_802E30C8(messages + 0x114, (const char *)arg1, value, 8);
         goto failed;
     }
-    value = data[1];
+    value = header[1];
     if (value != 0x34) {
         fn_802E30C8(messages + 0x148, (const char *)arg1, value, 0x34);
         goto failed;
     }
-    value = data[4];
+    value = header[4];
     if (value != (u32)arg2 && arg2 != 0) {
         fn_802E30C8(messages + 0x180, (const char *)arg1, value, arg2);
         goto failed;
