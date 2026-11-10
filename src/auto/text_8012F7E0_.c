@@ -42,6 +42,7 @@ int fn_8012F968(unsigned char *arg0) {
 
 extern int strlen(const char *);
 extern int fn_8012F968(unsigned char *);
+#pragma use_lmw_stmw off
 int fn_8012F9E8(unsigned char *out, int max, unsigned char *in) {
     int len = strlen((const char *)in);
     int ok = 1;
@@ -52,13 +53,11 @@ int fn_8012F9E8(unsigned char *out, int max, unsigned char *in) {
         while (inpos < len && outpos < max) {
             int value = fn_8012F968(in + inpos);
             if (!(value & 0xFF000000)) {
-                volatile unsigned char *dst = out + outpos;
                 int shift = 16;
                 while (outpos < max && shift >= 0) {
-                    *dst = (unsigned int)value >> shift;
+                    out[outpos] = (unsigned int)value >> shift;
                     shift -= 8;
                     outpos++;
-                    dst++;
                 }
             } else {
                 ok = 0;
@@ -69,5 +68,4 @@ int fn_8012F9E8(unsigned char *out, int max, unsigned char *in) {
     }
     return ok;
 }
-
-#pragma dont_inline off
+#pragma use_lmw_stmw on
