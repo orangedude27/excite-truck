@@ -154,10 +154,11 @@ void fn_802DF2F0(void) {
 }
 
 void *fn_802D3138(void);
+/* Configures GX TEV/texture state for a 2-stage textured blend setup. */
 void fn_802DF300(void) {
-    register u32 coord = 0;
-    register u32 type = 1;
-    GXSetTexCoordGen2(coord, type, 0, 0x2D, 0, 0x7D);
+    register u32 texCoordId = 0;
+    register u32 texGenType = 1;
+    GXSetTexCoordGen2(texCoordId, texGenType, 0, 0x2D, 0, 0x7D);
     GXSetNumTexGens(1);
     GXSetTevOrder(0, 0xFF, 0xFF, 4);
     GXSetTevOrder(1, 0, 7, 0xFF);
