@@ -2395,6 +2395,7 @@ void fn_8006B26C(tBTM_VSC_CMPL *arg0) {
 }
 
 void fn_8006B330(void) {
+    /* Configure local BT device state/callbacks and initialize active device entries. */
     extern u8 lbl_80560CF0;
     extern u8 lbl_80560CF1;
     extern u8 lbl_80560CF2;
@@ -2412,43 +2413,43 @@ void fn_8006B330(void) {
     extern void WUDVendorSpecificCallback(u8, u8 *);
     extern void WUDPowerManagerCallback(u8 *, s32, s32, s32);
     extern void fn_8006B488(void);
-    u8 name[4];
-    DEV_CLASS dev_class;
-    register u8 *entry;
-    register u8 *current;
-    register u8 *base = lbl_80392960;
-    s32 i;
+    u8 deviceName[4];
+    DEV_CLASS deviceClass;
+    register u8 *entryFlags;
+    register u8 *entryData;
+    register u8 *wudState = lbl_80392960;
+    s32 index;
     BOOL interrupts;
 
-    name[0] = lbl_80560CF0;
-    name[1] = lbl_80560CF1;
-    name[2] = lbl_80560CF2;
-    name[3] = lbl_80560CF3;
-    dev_class[0] = lbl_80560CF4;
-    dev_class[1] = lbl_80560CF5;
-    dev_class[2] = lbl_80560CF6;
+    deviceName[0] = lbl_80560CF0;
+    deviceName[1] = lbl_80560CF1;
+    deviceName[2] = lbl_80560CF2;
+    deviceName[3] = lbl_80560CF3;
+    deviceClass[0] = lbl_80560CF4;
+    deviceClass[1] = lbl_80560CF5;
+    deviceClass[2] = lbl_80560CF6;
     DBPrintf_8006CFA8(lbl_80313644, lbl_80560CF5, lbl_80560CF4,
                       lbl_80560CF3, lbl_80560CF2, lbl_80560CF1, lbl_80560CF0);
-    BTA_DmSetDeviceName((char *)name);
-    BTM_SetDeviceClass(dev_class);
+    BTA_DmSetDeviceName((char *)deviceName);
+    BTM_SetDeviceClass(deviceClass);
     fn_8007A534((s32)WUDVendorSpecificCallback);
     fn_8007A3B4((s32)WUDDeviceStatusCallback);
-    BTM_PmRegister(3, base + 0x68A, (tBTM_PM_STATUS_CBACK *)WUDPowerManagerCallback);
+    BTM_PmRegister(3, wudState + 0x68A, (tBTM_PM_STATUS_CBACK *)WUDPowerManagerCallback);
     BTM_WritePageTimeout(0x8000);
     fn_800778C8(5);
     fn_80077C94(0xC80);
-    current = base + 0xA4;
-    entry = base;
-    i = 0;
+    entryData = wudState + 0xA4;
+    entryFlags = wudState;
+    index = 0;
     do {
-        if (entry[0xBD] == 1)
-            ((void (*)(void *))fn_8006B488)(current);
-        i++;
-        entry += 0x60;
-        current += 0x60;
-    } while (i < 10);
+        if (entryFlags[0xBD] == 1)
+            ((void (*)(void *))fn_8006B488)(entryData);
+        index++;
+        entryFlags += 0x60;
+        entryData += 0x60;
+    } while (index < 10);
     interrupts = OSDisableInterrupts();
-    base[0x688] = 3;
+    wudState[0x688] = 3;
     OSRestoreInterrupts(interrupts);
     interrupts = OSDisableInterrupts();
     lbl_80392960[0x66B] = 0;
