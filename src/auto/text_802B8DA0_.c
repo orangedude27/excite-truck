@@ -128,7 +128,7 @@ void *fn_802B8EB8(s32 arg0, s32 arg1, u32 arg2, s32 arg3) {
 }
 
 #pragma push
-#pragma scheduling off
+#pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 void *fn_802B8EF0(int arg0, void *arg1) {
     struct Entry {
