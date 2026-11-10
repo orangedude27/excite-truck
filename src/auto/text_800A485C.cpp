@@ -7633,6 +7633,7 @@ queued_write:
 }
 
 extern "C" s32 fn_800B1EB8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4) {
+    /* Read data from an open file handle under volume lock, storing bytes read in *arg4 and propagating errors. */
     u32 bytesRead;
     s32 result;
     s32 temp;
