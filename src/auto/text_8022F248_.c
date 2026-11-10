@@ -150,23 +150,24 @@ void fn_8022F364(void *arg0) {
 void fn_8022F418(arg0)
 void *arg0;
 {
+    /* Copies a 0xB4-byte configuration/state record from arg0 into the global buffer at lbl_80497E3C, including fixed fields, a string at +0x3C, and trailing float/byte values. */
     struct Pair { unsigned int a; unsigned int b; };
-    struct Pair *from = (struct Pair *)arg0;
-    struct Pair *to = (struct Pair *)lbl_80497E3C;
-    unsigned int *words = (unsigned int *)arg0;
+    struct Pair *sourcePairs = (struct Pair *)arg0;
+    struct Pair *destPairs = (struct Pair *)lbl_80497E3C;
+    unsigned int *sourceWords = (unsigned int *)arg0;
     float value;
-    unsigned char byte;
+    unsigned char byteValue;
 
-    to[0] = from[0];
-    to[1] = from[1];
-    to[2] = from[2];
-    to[3] = from[3];
-    to[4].a = words[8];
-    *(struct Pair *)((char *)to + 0x24) = *(struct Pair *)((char *)from + 0x24);
-    to[5].b = words[11];
-    to[6].a = (unsigned int)-1;
-    to[6].b = words[13];
-    to[7].a = words[14];
+    destPairs[0] = sourcePairs[0];
+    destPairs[1] = sourcePairs[1];
+    destPairs[2] = sourcePairs[2];
+    destPairs[3] = sourcePairs[3];
+    destPairs[4].a = sourceWords[8];
+    *(struct Pair *)((char *)destPairs + 0x24) = *(struct Pair *)((char *)sourcePairs + 0x24);
+    destPairs[5].b = sourceWords[11];
+    destPairs[6].a = (unsigned int)-1;
+    destPairs[6].b = sourceWords[13];
+    destPairs[7].a = sourceWords[14];
     strcpy((char *)lbl_80497E3C + 0x3c, (char *)arg0 + 0x3c);
     value = *(float *)((char *)arg0 + 0x7c);
     *(float *)((char *)lbl_80497E3C + 0x7c) = value;
@@ -181,10 +182,10 @@ void *arg0;
     *(float *)((char *)lbl_80497E3C + 0x94) = value;
     value = *(float *)((char *)arg0 + 0x98);
     *(float *)((char *)lbl_80497E3C + 0x98) = value;
-    byte = *((unsigned char *)arg0 + 0x9c);
-    *((unsigned char *)lbl_80497E3C + 0x9c) = byte;
-    byte = *((unsigned char *)arg0 + 0x9d);
-    *((unsigned char *)lbl_80497E3C + 0x9d) = byte;
+    byteValue = *((unsigned char *)arg0 + 0x9c);
+    *((unsigned char *)lbl_80497E3C + 0x9c) = byteValue;
+    byteValue = *((unsigned char *)arg0 + 0x9d);
+    *((unsigned char *)lbl_80497E3C + 0x9d) = byteValue;
     value = *(float *)((char *)arg0 + 0xa0);
     *(float *)((char *)lbl_80497E3C + 0xa0) = value;
     value = *(float *)((char *)arg0 + 0xa4);
