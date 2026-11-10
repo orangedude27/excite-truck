@@ -373,8 +373,13 @@ void *fn_80258B60(void *arg0, const char *arg1) {
     goto check;
 loop:
     len = stricmp((const char *)(*(unsigned int *)((char *)arg0 + 4) + offset), arg1);
-    if (((unsigned int)__cntlzw(len) >> 5))
+    switch (((unsigned int)__cntlzw(len) >> 5)) {
+    case 0:
+        goto increment;
+    default:
         goto found;
+    }
+increment:
     offset += 0x48;
     index++;
 check:
@@ -393,24 +398,30 @@ found:
 int fn_80258C08(void *arg0, const char *arg1) {
     int index = 0;
     int offset = 0;
-    int entry_offset;
     unsigned int entries;
+    int entry_offset;
+    int len;
     goto check;
 loop:
-    if (((unsigned int)__cntlzw(stricmp((const char *)(*(unsigned int *)((char *)arg0 + 4) + offset), arg1)) >> 5) == 0) goto increment;
-found:
-    goto done;
+    len = stricmp((const char *)(*(unsigned int *)((char *)arg0 + 4) + offset), arg1);
+    switch (((unsigned int)__cntlzw(len) >> 5)) {
+    case 0:
+        goto increment;
+    default:
+        goto found;
+    }
 increment:
     offset += 0x48;
     index++;
 check:
-    if (index < *(int *)((char *)arg0 + 8)) goto loop;
+    if (index < *(int *)((char *)arg0 + 8)) {
+        goto loop;
+    }
     index = -1;
-done:
-    /* Return the final word of the matching 0x48-byte entry. */
+found:
     if (index >= 0) {
-        entry_offset = index * 0x48;
         entries = *(unsigned int *)((char *)arg0 + 4);
+        entry_offset = index * 0x48;
         return *(int *)(entries + entry_offset + 0x44);
     }
     return 0;
