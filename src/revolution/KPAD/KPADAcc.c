@@ -34,26 +34,38 @@ static void calc_acc_horizon(KPADInsideStatus* kp, f32* acc, f32 acc2) {
 }
 
 static void calc_acc_vertical(KPADInsideStatus* kp) {
-    f32 f1, vx, vy, ax, ay;
-    f1 = (f32)fn_8002F234(kp->hard_acc.x * kp->hard_acc.x + kp->hard_acc.y * kp->hard_acc.y);
-    if (f1 == 0.0f || f1 >= lbl_80560BF0) return;
-    ax = kp->hard_acc.x / f1;
-    ay = kp->hard_acc.y / f1;
-    if (f1 > lbl_80560BE4) f1 = lbl_80560BF0 - f1;
-    f1 *= f1 * lbl_80558EA4;
-    vx = kp->accXY_nrm_hori.x * ax + kp->accXY_nrm_hori.y * ay;
-    vy = kp->accXY_nrm_hori.y * ax - kp->accXY_nrm_hori.x * ay;
-    ax = (vx - kp->acc_horizon.x) * f1 + kp->acc_horizon.x;
-    ay = (vy - kp->acc_horizon.y) * f1 + kp->acc_horizon.y;
-    f1 = (f32)fn_8002F234(ax * ax + ay * ay);
-    if (f1 == 0.0f) return;
-    kp->acc_horizon.x = ax / f1;
-    kp->acc_horizon.y = ay / f1;
+    /* Compute filtered vertical/horizon acceleration from horizontal hard_acc and
+     * update the smoothed horizon circle position/counter. */
+    f32 mag, projX, projY, dirX, dirY;
+
+    mag = (f32)fn_8002F234(kp->hard_acc.x * kp->hard_acc.x + kp->hard_acc.y * kp->hard_acc.y);
+    if (mag == 0.0f || mag >= lbl_80560BF0) return;
+
+    dirX = kp->hard_acc.x / mag;
+    dirY = kp->hard_acc.y / mag;
+
+    if (mag > lbl_80560BE4) mag = lbl_80560BF0 - mag;
+    mag *= mag * lbl_80558EA4;
+
+    projX = kp->accXY_nrm_hori.x * dirX + kp->accXY_nrm_hori.y * dirY;
+    projY = kp->accXY_nrm_hori.y * dirX - kp->accXY_nrm_hori.x * dirY;
+
+    dirX = (projX - kp->acc_horizon.x) * mag + kp->acc_horizon.x;
+    dirY = (projY - kp->acc_horizon.y) * mag + kp->acc_horizon.y;
+
+    mag = (f32)fn_8002F234(dirX * dirX + dirY * dirY);
+    if (mag == 0.0f) return;
+
+    kp->acc_horizon.x = dirX / mag;
+    kp->acc_horizon.y = dirY / mag;
+
     kp->ah_circle_pos.x += (kp->acc_horizon.x - kp->ah_circle_pos.x) * lbl_80558EAC;
     kp->ah_circle_pos.y += (kp->acc_horizon.y - kp->ah_circle_pos.y) * lbl_80558EAC;
-    vx = kp->acc_horizon.x - kp->ah_circle_pos.x;
-    vy = kp->acc_horizon.y - kp->ah_circle_pos.y;
-    if (vx * vx + vy * vy <= lbl_8055D994) {
+
+    projX = kp->acc_horizon.x - kp->ah_circle_pos.x;
+    projY = kp->acc_horizon.y - kp->ah_circle_pos.y;
+
+    if (projX * projX + projY * projY <= lbl_8055D994) {
         if (kp->ah_circle_ct) --kp->ah_circle_ct;
     } else kp->ah_circle_ct = lbl_80558EB0;
 }
