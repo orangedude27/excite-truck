@@ -186,6 +186,23 @@ unsigned int fn_8027656C(void *arg0, void *arg1, unsigned int arg2) {
         *(float *)arg1 = *(float *)(base + off + 0x3C) + s * (*(float *)(base + off + 0x40) - *(float *)(base + off + 0x3C));
     }
 }
+
+#pragma dont_inline on
+void *fn_80276A44(void *arg) {
+    unsigned char *current = &lbl_8049FEE0;
+    int i = 0;
+    goto check;
+loop:
+    if (stricmp((const char *)current + 0x38, (const char *)arg) == 0)
+        return &lbl_8049FEE0 + i * 0x48;
+    current += 0x48;
+    i++;
+check:
+    if (i < lbl_8055F5A0) goto loop;
+    return 0;
+}
+#pragma dont_inline off
+
 #pragma pop
 __declspec(section ".data") extern unsigned char lbl_8049FEE0;
 extern char lbl_8055C638, lbl_8055C63C, lbl_8055C644;
