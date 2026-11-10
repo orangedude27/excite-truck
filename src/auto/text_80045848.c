@@ -18,6 +18,8 @@ void calc_button_repeat(void *arg0, void *arg1, u32 arg2) {
 extern void reset_kpad(void *);
 extern void calc_button_repeat(void *, void *, u32);
 void calc_acc_horizon(void *p, void *input, u32 mode) {
+    /* Update held/pressed/released buttons (and horizon buttons for mode 2) from a report,
+     * handling error/reset status and maintaining repeat state via calc_button_repeat. */
     u8 *pad = (u8 *)p;
     u8 *report = (u8 *)input;
     u32 old_buttons;
