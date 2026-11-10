@@ -659,6 +659,8 @@ long fn_8027BAB8(void *arg0) {
 #pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" long fn_8027BB4C(long arg0, long arg1, long arg2, long arg3) {
+    /* Sum resource sizes for items in a two-level list: arg3 clamps each to loaded size (+4),
+     * outputs accumulated sum to *arg1 and total item size to *arg2 when non-null. */
     class OuterList {
     public:
         virtual void v0();
