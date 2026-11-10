@@ -736,19 +736,26 @@ struct Unk80132AE4Value {
     struct Unk80132968Vector vector;
 };
 
-u64 fn_80132A48(void *arg0, s32 arg1, void *arg2) {
-    u64 result;
-    if (((s32 (**)(void *))(*(void **)arg0))[3](arg0) != 0) {
-        result = ((u64 (**)(void *, s32))(*(void **)arg0))[15](arg0, arg1);
+#pragma cplusplus on
+extern "C" unsigned long long fn_80132A48(void *arg0, s32 arg1, void *arg2) {
+    class Dummy {
+    public:
+        virtual s32 f0(); virtual s32 f1(); virtual void f2(); virtual void f3();
+        virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
+        virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
+        virtual void f12(); virtual unsigned long long f13(s32);
+    };
+    unsigned long long tmp;
+    double res;
+    if (((Dummy*)arg0)->f1() != 0) {
+        tmp = ((Dummy*)arg0)->f13(arg1);
     } else {
-        result = *(u64 *)arg2;
+        tmp = *(unsigned long long*)arg2;
     }
-    return result;
+    res = *(double*)&tmp;
+    return *(unsigned long long*)&res;
 }
-
-#pragma push
-#pragma use_lmw_stmw off
-#pragma scheduling on
+#pragma cplusplus off
 void fn_80132AE4(void* arg0, void* arg1, s32 arg2, void* arg3) {
     typedef struct { s32 a[9]; } Matrix;
     typedef struct { Matrix matrix; struct Unk80132968Vector vector; } Value;
