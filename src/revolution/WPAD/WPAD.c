@@ -3667,21 +3667,22 @@ void fn_8006022C(s32 chan)
 #pragma push
 #pragma opt_propagation off
 s32 fn_800604E8(s32 chan, s32 format, void* data) {
+    /* Queue a WPAD command for the given channel if the device is ready; returns 0 on success, -2 if busy/not ready, or prior error. */
     WPADCB* cb = lbl_8038F4F0[chan];
-    s32 enabled, innerEnabled, result, status;
-    s32 scratch;
-    s32 minusTwo;
-    s32 mask;
+    s32 intrState, nestedIntrState, result, devStatus;
+    s32 enqueueOk;
+    s32 negTwo;
+    s32 resultMask;
     u8 command[0x60] ALIGN(8);
-    u8* queue;
-    s8 diff, index;
-    s32 lastIndex, wrapMask;
-    enabled = OSDisableInterrupts();
-    status = *(s32*)((u8*)cb + 0x81C);
+    u8* cmdQueue;
+    s8 usedCount, tailIndex;
+    s32 lastSlot, wrapMask;
+    intrState = OSDisableInterrupts();
+    devStatus = *(s32*)((u8*)cb + 0x81C);
     result = *(s32*)((u8*)cb + 0x7FC);
-    OSRestoreInterrupts(enabled);
+    OSRestoreInterrupts(intrState);
     if (result != -1) {
-        if (status == 0) result = -2;
+        if (devStatus == 0) result = -2;
         else {
             *(u32*)&command[0] = 0x15;
             *(u16*)&command[0x1A] = 1;
@@ -3694,34 +3695,34 @@ s32 fn_800604E8(s32 chan, s32 format, void* data) {
             *(double*)&command[0x48] = *(double*)&command[0x18];
             *(double*)&command[0x50] = *(double*)&command[0x20];
             *(double*)&command[0x58] = *(double*)&command[0x28];
-            queue = (u8*)cb + 0x160;
-            enabled = OSDisableInterrupts();
-            innerEnabled = OSDisableInterrupts();
-            scratch = queue[0];
-            diff = (s8)(queue[1] - scratch);
-            if (diff < 0) {
-                diff = (s8)(diff + *(u32*)(queue + 8));
+            cmdQueue = (u8*)cb + 0x160;
+            intrState = OSDisableInterrupts();
+            nestedIntrState = OSDisableInterrupts();
+            enqueueOk = cmdQueue[0];
+            usedCount = (s8)(cmdQueue[1] - enqueueOk);
+            if (usedCount < 0) {
+                usedCount = (s8)(usedCount + *(u32*)(cmdQueue + 8));
             }
-            OSRestoreInterrupts(innerEnabled);
-            if (*(u32*)(queue + 8) - 1 == (u32)diff) {
-                OSRestoreInterrupts(enabled);
-                scratch = 0;
+            OSRestoreInterrupts(nestedIntrState);
+            if (*(u32*)(cmdQueue + 8) - 1 == (u32)usedCount) {
+                OSRestoreInterrupts(intrState);
+                enqueueOk = 0;
             } else {
-                memset(*(u8**)(queue + 4) + (s8)queue[1] * 0x30, 0, 0x30);
-                memcpy(*(u8**)(queue + 4) + (s8)queue[1] * 0x30, command + 0x30, 0x30);
-                index = (s8)queue[1];
-                lastIndex = *(s32*)(queue + 8) - 1;
-                wrapMask = ~(((s32)index - lastIndex) | (lastIndex - (s32)index)) >> 31;
-                queue[1] = (index + 1) & ~wrapMask;
-                OSRestoreInterrupts(enabled);
-                scratch = 1;
+                memset(*(u8**)(cmdQueue + 4) + (s8)cmdQueue[1] * 0x30, 0, 0x30);
+                memcpy(*(u8**)(cmdQueue + 4) + (s8)cmdQueue[1] * 0x30, command + 0x30, 0x30);
+                tailIndex = (s8)cmdQueue[1];
+                lastSlot = *(s32*)(cmdQueue + 8) - 1;
+                wrapMask = ~(((s32)tailIndex - lastSlot) | (lastSlot - (s32)tailIndex)) >> 31;
+                cmdQueue[1] = (tailIndex + 1) & ~wrapMask;
+                OSRestoreInterrupts(intrState);
+                enqueueOk = 1;
             }
-            mask = scratch;
-            mask = -mask;
-            mask |= scratch;
-            mask >>= 31;
-            minusTwo = -2;
-            result = minusTwo & ~mask;
+            resultMask = enqueueOk;
+            resultMask = -resultMask;
+            resultMask |= enqueueOk;
+            resultMask >>= 31;
+            negTwo = -2;
+            result = negTwo & ~resultMask;
         }
     }
     return result;
