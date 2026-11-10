@@ -25,15 +25,13 @@ void *fn_801D04A8(int arg0) {
 int fn_801D04D0(const char *arg0) {
     Entry entries[13];
     unsigned int i;
-    const Entry *src = (const Entry *)lbl_802F9940 - 1;
-    Entry *dst = entries - 1;
+    int *dst = (int *)entries - 1;
+    int *src = (int *)lbl_802F9940 - 1;
     i = 13;
     while (i) {
         i--;
-        dst->name = src->name;
-        dst->value = src->value;
-        dst++;
-        src++;
+        *++dst = *++src;
+        *++dst = *++src;
     }
     for (i = 0; i < 13; i++) {
         if (stricmp(arg0, entries[i].name) == 0)
