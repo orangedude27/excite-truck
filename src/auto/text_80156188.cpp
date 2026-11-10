@@ -441,23 +441,20 @@ extern f32 fn_80129DC4(s32, s32, s32, f32, f32);
 extern f32 lbl_8055E3C8;
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma processor 750
 void fn_80156960(void *arg0) {
-    f32 base = lbl_8055E3C8;
     s32 value;
     void *out = arg0;
     s32 count = 0;
-
+    register f32 base = lbl_8055E3C8;
     do {
         s32 divisor = ((s32 *)arg0)[2];
+        s32 *data = (s32 *)((s32 *)arg0)[1];
         s32 index = count % divisor;
-        value = ((s32 *)((s32 *)arg0)[1])[index * 2];
-        ((f32 *)out)[0xE4 / 4] = base + fn_80129DC4(
-            4,
-            ((s32 *)arg0)[2],
-            (s32)(long)((s32 *)arg0)[1],
-            ((f32 *)arg0)[0xDC / 4],
-            ((f32 *)arg0)[0xE0 / 4]);
+        f32 angle1 = ((f32 *)arg0)[0xDC / 4];
+        f32 angle2 = ((f32 *)arg0)[0xE0 / 4];
+        value = data[index * 2];
+        ((f32 *)out)[0xE4 / 4] = base + fn_80129DC4(4, divisor, (s32)(long)data, angle1, angle2);
         *(s32 *)((u8 *)out + 0xE8) = value;
         out = (u8 *)out + 8;
         count++;
