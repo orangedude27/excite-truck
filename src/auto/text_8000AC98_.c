@@ -390,7 +390,6 @@ void fn_8000B3B4(void) {
 
 void fn_8000B3DC(unsigned char arg0) {
     extern unsigned char lbl_8055D3EC;
-    extern void fn_8000B5A8(void);
     extern void fn_8000B3B4(void);
     extern void AXFXSetHooks_8020DE10(void (*)(void), int, unsigned char);
     lbl_8055D3EC = arg0;
