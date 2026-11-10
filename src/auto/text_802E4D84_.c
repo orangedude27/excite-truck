@@ -534,13 +534,13 @@ void fn_802E59BC(unsigned char *arg0) {
 
 extern void fn_802E5D5C(void *);
 void fn_802E5A54(void) {
+    int i, j;
     unsigned char *ptr;
-    int i;
     for (i = 0; i < lbl_8055FFA0; i++) {
         fn_802E5D5C((void *)lbl_8055FF9C[i]);
     }
     lbl_8055FFA0 = 0;
-    for (ptr = lbl_804FC558, i = 0; i < lbl_8055FF78; i++, ptr += 0x20) {
+    for (j = 0, ptr = lbl_804FC558; j < lbl_8055FF78; ptr += 0x20, j++) {
         fn_8012BF24(ptr);
     }
     lbl_8055FF78 = 0;
