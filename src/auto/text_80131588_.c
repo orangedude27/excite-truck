@@ -824,21 +824,29 @@ s32 fn_80132D1C(void *arg0, char *arg1) {
     }
     return 0;
 }
-#pragma scheduling invalid_target
-s32 fn_80132DA8(void *arg0) {
+#pragma cplusplus on
+extern "C" s32 fn_80132DA8(void *arg0) {
+    class Item {
+    public:
+        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4();
+        virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9();
+        virtual void f10(); virtual void f11(); virtual void f12(); virtual void f13(); virtual void f14();
+        virtual void f15(); virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19();
+        virtual void f20(); virtual void f21(); virtual void f22(); virtual s32 f23();
+    };
     s32 offset = 0;
     s32 sum = 0xFEEDFACE;
     s32 i = 0;
     while (i < *(s32 *)((u8 *)arg0 + 4)) {
         char *item = (char *)*(void **)((u8 *)arg0 + 0xC) + offset;
-        sum += ((s32 (*)(void *))(*(void **)((u8 *)(*(void **)item) + 0x64)))(item);
+        sum += ((Item *)item)->f23();
         sum += 0x123B;
         offset += 0x1C;
         i++;
     }
     return sum;
 }
-#pragma scheduling on
+#pragma cplusplus off
 s32 fn_80132E34(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
