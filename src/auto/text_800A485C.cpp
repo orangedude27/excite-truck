@@ -20739,7 +20739,7 @@ extern "C" void fn_80031C9C(u32);
 extern "C" void AXGetAuxACallback_8009CDBC(void *, void *);
 extern "C" void AXGetAuxACallback(void *, void *);
 extern "C" void AXFXSetHooks_8009CDB0(void *, void *);
-extern "C" void AXFXReverbHiInit(void *);
+#include <revolution/AXFX/AXFXReverbHi.h>
 extern "C" void AXRegisterAuxACallback(void *, void *);
 extern "C" void *fn_800C64DC(u32);
 extern "C" void fn_800C64E8(u32);
@@ -20785,7 +20785,7 @@ extern "C" void fn_800C7E6C(void *arg0) {
     *(f32 *)(self + 0x73C) = f0;
     *(f32 *)(self + 0x744) = f0;
     *(f32 *)(self + 0x734) = f3;
-    AXFXReverbHiInit(self + 0x5E8);
+    AXFXReverbHiInit((AXFX_REVERBHI *)(self + 0x5E8));
     AXRegisterAuxACallback((void *)fn_8009BFBC, self + 0x5E8);
     fn_80031C8C(0x8000);
     fn_80031C94(0);
