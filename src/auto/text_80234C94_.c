@@ -459,7 +459,7 @@ extern float lbl_805636B0;
 extern float lbl_805636B4;
 extern unsigned short lbl_802FA014[];
 #pragma paired_single off
-void fn_80235AFC(void *arg0, int arg1, int arg2,
+void fn_80235AFC(void *arg0, int texNodeIndex, int vertexFlags,
                  float x, float y, float z,
                  float width, float height, float angle) {
     struct Frame {
@@ -475,9 +475,10 @@ void fn_80235AFC(void *arg0, int arg1, int arg2,
     float c;
     float s;
     float zero;
-    float w;
-    float h;
+    float halfWidth;
+    float halfHeight;
 
+    /* Build a transformed textured quad (2D matrix + 4 vertices) and submit it for rendering. */
     matrix = frame.matrix;
     matrix[9] = x;
     matrix[10] = y;
@@ -495,16 +496,16 @@ void fn_80235AFC(void *arg0, int arg1, int arg2,
     matrix[7] = zero;
     matrix[8] = lbl_805636B0;
 
-    node = ((void *(*)(void *, int))fn_8023505C)(arg0, arg1);
-    w = width * lbl_805636B4;
-    h = height * lbl_805636B4;
-    fn_80231380(frame.vertices[0], arg2, -w, h, zero,
+    node = ((void *(*)(void *, int))fn_8023505C)(arg0, texNodeIndex);
+    halfWidth = width * lbl_805636B4;
+    halfHeight = height * lbl_805636B4;
+    fn_80231380(frame.vertices[0], vertexFlags, -halfWidth, halfHeight, zero,
                 *(float *)node, *((float *)node + 1));
-    fn_80231380(frame.vertices[1], arg2, w, h, zero,
+    fn_80231380(frame.vertices[1], vertexFlags, halfWidth, halfHeight, zero,
                 *((float *)node + 2), *((float *)node + 1));
-    fn_80231380(frame.vertices[2], arg2, -w, -h, zero,
+    fn_80231380(frame.vertices[2], vertexFlags, -halfWidth, -halfHeight, zero,
                 *(float *)node, *((float *)node + 3));
-    fn_80231380(frame.vertices[3], arg2, w, -h, zero,
+    fn_80231380(frame.vertices[3], vertexFlags, halfWidth, -halfHeight, zero,
                 *((float *)node + 2), *((float *)node + 3));
 
     render = *(volatile int *)((char *)arg0 + 0x84);
