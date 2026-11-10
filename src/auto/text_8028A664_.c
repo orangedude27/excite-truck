@@ -268,7 +268,10 @@ void fn_8028AB14(void) {
 #pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" void fn_8028ABE8(void *arg0) {
-    class Obj {
+    /* Initializes the 8 terrain chunk slots by looking up each "terrain_%d"
+       object, resolving its "chunk" child, querying texture/skid parameters,
+       clamping skid and random chances to [0,100], then registers the update callback. */
+    class TerrainChunkQuery {
     public:
         virtual void dummy0();
         virtual void dummy1();
@@ -291,7 +294,7 @@ extern "C" void fn_8028ABE8(void *arg0) {
         virtual void dummy18();
         virtual void dummy19();
         virtual void dummy20();
-        virtual Obj *v21(void *);
+        virtual TerrainChunkQuery *v21(void *);
     };
     extern char lbl_80348B98[];
     extern char lbl_8055C8A8, lbl_8055C8B0, lbl_8055C8B8;
@@ -301,38 +304,38 @@ extern "C" void fn_8028ABE8(void *arg0) {
     extern void *fn_802929D8(s32, void *, s32, s32);
     extern void fn_80287B38(void (*)(void));
     extern void fn_8028ADF4(void *, s32);
-    u8 sp8[0x20];
-    char *data = lbl_80348B98;
-    s32 *entry = (s32 *)lbl_804B3238;
-    s32 validCount = 0;
+    u8 nameBuffer[0x20];
+    char *terrainData = lbl_80348B98;
+    s32 *chunkEntry = (s32 *)lbl_804B3238;
+    s32 foundCount = 0;
     s32 i = 0;
     do {
-        void *object;
-        fn_801345D8(sp8, 0x20, data + 0x38, i);
-        object = fn_802AE414(sp8);
-        if (object != 0) {
-            object = ((Obj *)object)->v21(&lbl_8055C8A8);
+        void *terrainObj;
+        fn_801345D8(nameBuffer, 0x20, terrainData + 0x38, i);
+        terrainObj = fn_802AE414(nameBuffer);
+        if (terrainObj != 0) {
+            terrainObj = ((TerrainChunkQuery *)terrainObj)->v21(&lbl_8055C8A8);
         }
-        if (object != 0) {
-            entry[0] = (s32)fn_802929D8(2, data + 0x44, validCount,
-                                        ((Obj *)object)->v4(&lbl_8055C8B0, &lbl_8055C8B8));
-            *(f32 *)&entry[1] = ((Obj *)object)->v8(data + 0x50, lbl_80564330);
+        if (terrainObj != 0) {
+            chunkEntry[0] = (s32)fn_802929D8(2, terrainData + 0x44, foundCount,
+                                             ((TerrainChunkQuery *)terrainObj)->v4(&lbl_8055C8B0, &lbl_8055C8B8));
+            *(f32 *)&chunkEntry[1] = ((TerrainChunkQuery *)terrainObj)->v8(terrainData + 0x50, lbl_80564330);
             {
-                s32 value = ((Obj *)object)->v6(data + 0x5C, 0x14);
+                s32 value = ((TerrainChunkQuery *)terrainObj)->v6(terrainData + 0x5C, 0x14);
                 value = value & ((-value & ~value) >> 31);
-                entry[2] = value < 0x64 ? value : 0x64;
+                chunkEntry[2] = value < 0x64 ? value : 0x64;
             }
             {
-                s32 value = ((Obj *)object)->v6(data + 0x68, 2);
+                s32 value = ((TerrainChunkQuery *)terrainObj)->v6(terrainData + 0x68, 2);
                 value = value & ((-value & ~value) >> 31);
-                entry[3] = value < 0x64 ? value : 0x64;
+                chunkEntry[3] = value < 0x64 ? value : 0x64;
             }
-            validCount++;
+            foundCount++;
         } else {
-            entry[0] = 0;
+            chunkEntry[0] = 0;
         }
         i++;
-        entry += 4;
+        chunkEntry += 4;
     } while (i < 8);
     fn_80287B38((void (*)(void))fn_8028ADF4);
 }
