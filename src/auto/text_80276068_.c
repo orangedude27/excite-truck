@@ -306,7 +306,7 @@ void fn_80276BE4(u32 *arg0, f32 *arg1) {
 void fn_80276CB0(void *arg0, int arg1) {
     unsigned char *p;
 
-    p = (unsigned char *)fn_80276A44();
+    p = (unsigned char *)fn_80276A44(arg0);
     if (p == 0)
         p = (unsigned char *)lbl_8055F598;
     if (arg1 != 0) {
