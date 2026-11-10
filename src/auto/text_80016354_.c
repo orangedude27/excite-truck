@@ -77,25 +77,27 @@ int fn_80016510(int arg0) { extern void *lbl_8055D550; if (arg0 < (int)lbl_8055D
 
 #pragma scheduling invalid_target
 void *fn_80016544(int arg0) {
-    register unsigned char *entry1;
-    register unsigned char *entry2;
+    unsigned char *entry;
     unsigned char *base;
     int i;
-    register int j;
-    for (i = 0, entry1 = lbl_80357960; i < (int)lbl_8055D554; entry1 += 0xA8, i++) {
-        if (arg0 == *(int *)(entry1 + 4)) {
+    int j;
+    for (i = 0, entry = lbl_80357960; i < (int)lbl_8055D554; entry += 0xA8, i++) {
+        if (arg0 == *(int *)(entry + 4)) {
             return lbl_80357960 + i * 0xA8;
         }
     }
-    j = 0;
-    base = lbl_8055D544;
-    entry2 = base;
-    for (; j < (int)lbl_8055D550; entry2 += 0xA8, j++) {
-        if (arg0 == *(int *)(entry2 + 4)) {
-            return base + j * 0xA8;
+    {
+        unsigned char *e2;
+        unsigned char *b2;
+        int k = 0;
+        e2 = b2 = lbl_8055D544;
+        for (k = 0; k < (int)lbl_8055D550; e2 += 0xA8, k++) {
+            if (arg0 == *(int *)(e2 + 4)) {
+                return b2 + k * 0xA8;
+            }
         }
+        return b2;
     }
-    return base;
 }
 #pragma scheduling on
 
@@ -245,10 +247,14 @@ void fn_80016928(int arg0, int arg1) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_80016970(int arg0, int arg1, int arg2, int arg3) {
-    *(int *)(lbl_803577F0 + arg0 * 0x5C + 4) = arg1;
-    *(int *)(lbl_803577F0 + arg0 * 0x5C + 0x4C) = *(int *)fn_80016544(arg2);
-    *(int *)(lbl_803577F0 + arg0 * 0x5C + 0x50) = arg3;
-    *(int *)(lbl_80357960 + arg0 * 0xA8 + 4) = -1000;
+    struct E { char pad[0x4]; int id; char pad2[0x44]; int f4C; int f50; char rest[0x8]; };
+    struct E *b = (struct E *)lbl_803577F0;
+    int idx = arg0;
+    int saved = arg3;
+    b[idx].id = arg1;
+    b[idx].f4C = *(int *)fn_80016544(arg2);
+    b[idx].f50 = saved;
+    *(int *)(lbl_80357960 + idx * 0xA8 + 4) = -1000;
 }
 #pragma pop
 void fn_800169F8(const char *src, int index) { int count = 0x40; char *dst = (char *)(lbl_803577F0 + index * 0x5C + 8); while ((*dst++ = *src++) != 0) { if (--count <= 0) { dst[-1] = 0; return; } } }
