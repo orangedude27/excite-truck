@@ -1147,7 +1147,9 @@ void fn_80035C64(void) {
 }
 
 extern s32 lbl_8055D890;
+#pragma small_data off
 extern u8 lbl_8037B580;
+#pragma small_data on
 extern s32 fn_8003BE40(void);
 extern s32 lbl_8055D880;
 extern void fn_80037E94(void);
@@ -2598,9 +2600,8 @@ s32 DVDGetCommandBlockStatus(void *arg0) {
     s32 status;
     s32 enabled;
     s32 next;
-
     enabled = OSDisableInterrupts();
-    status = *(s32 *)((u8 *)arg0 + 0xC);
+    status = *(s32 *)((u8 *)arg0 + 12);
     if (status == 3) {
         status = 1;
     } else if (status == 5) {
@@ -2609,11 +2610,11 @@ s32 DVDGetCommandBlockStatus(void *arg0) {
         next = __DVDGetNextWaitingQueue();
         if (next != 0) {
             if ((u32)arg0 == (u32)next) status = 1;
-            else status = *(s32 *)((u8 *)arg0 + 0xC);
+            else status = *(s32 *)((u8 *)arg0 + 12);
         } else if ((u32)arg0 == (u32)&lbl_8037B5B0) {
             status = 0;
         } else {
-            status = *(s32 *)((u8 *)arg0 + 0xC);
+            status = *(s32 *)((u8 *)arg0 + 12);
         }
     }
     OSRestoreInterrupts(enabled);
@@ -2942,11 +2943,9 @@ void fn_8003998C(void* hi) {
 
 u32 __DVDGetCoverStatus(void) {
     u32 status;
-    u32 frequency;
-    u32 threshold;
     u64 now;
-    s64 elapsed;
-    u64 stamp;
+    u32 lo;
+    u32 hi;
     lbl_8055D88C = 0;
     fn_8003BB58((void (*)(void))fn_8003998C);
     while (*(volatile u32 *)&lbl_8055D88C == 0) {
@@ -2956,11 +2955,9 @@ u32 __DVDGetCoverStatus(void) {
     }
     status = fn_8003BB48();
     now = __OSGetSystemTime();
-    frequency = *(volatile u32 *)0x800000F8;
-    threshold = ((frequency >> 2) / 1000) * 100;
-    stamp = *(u64 *)(void *)&lbl_8055D8A0;
-    elapsed = (s64)now - (s64)stamp;
-    if (elapsed < (s64)threshold) {
+    lo = lbl_8055D8A4;
+    hi = lbl_8055D8A0;
+    if ((s64)now - (s64)(((u64)hi << 32) | lo) < (s64)(((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 100)) {
         return 0;
     }
     status &= 1;
