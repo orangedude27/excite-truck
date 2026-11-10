@@ -534,21 +534,22 @@ void fn_801ECCE0(long arg0, long arg1) {
 #pragma dont_inline reset
 void fn_801ECF58(void *arg0) {
     long flag;
-    long entry;
+    char *entry;
     long owner;
-
+    long idx;
+    char *b;
     if (*(long *)((char *)arg0 + 0x184) != 0) {
         flag = 0;
-        entry = *(long *)((char *)arg0 + 0x170) +
-                *(long *)((char *)arg0 + 0x3F8) * 8;
+        idx = *(long *)((char *)arg0 + 0x3F8);
+        b = *(char **)((char *)arg0 + 0x170);
+        entry = b + idx * 8;
         if (*(unsigned char *)(entry + 5) != 0) {
             owner = *(long *)((char *)arg0 + 0x3C);
             if ((*(long *)(owner + 0x2C0) & 0x100) == 0)
                 flag = 1;
         }
-                  fn_801ECC70(arg0);
-          fn_80201018(*(long *)((char *)arg0 + 0x184),
-                    *(void **)((char *)arg0 + 0x3C), flag);
+        fn_801ECC70(arg0);
+        fn_80201018(*(long *)((char *)arg0 + 0x184), *(void **)((char *)arg0 + 0x3C), flag);
     }
 }
 
