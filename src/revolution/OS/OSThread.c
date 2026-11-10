@@ -842,17 +842,19 @@ s32 OSResumeThread(OSThread* thread) {
     return prevSuspend;
 }
 
+/* Increment a thread's suspend count; if newly suspended, remove it from
+ * scheduling or its wait queue as appropriate and trigger rescheduling. */
 s32 OSSuspendThread(OSThread* thread) {
-    BOOL enabled;
-    s32 suspend;
+    BOOL interrupts;
+    s32 previousSuspend;
     OSThread* next;
     OSThread* prev;
     OSThread* tail;
 
-    enabled = OSDisableInterrupts();
-    suspend = thread->suspend++;
+    interrupts = OSDisableInterrupts();
+    previousSuspend = thread->suspend++;
 
-    if (suspend == 0) {
+    if (previousSuspend == 0) {
         switch (thread->state) {
         case OS_THREAD_STATE_RUNNING:
             RunQueueHint = TRUE;
@@ -901,8 +903,8 @@ s32 OSSuspendThread(OSThread* thread) {
         __OSReschedule();
     }
 
-    OSRestoreInterrupts(enabled);
-    return suspend;
+    OSRestoreInterrupts(interrupts);
+    return previousSuspend;
 }
 
 void OSSleepThread(OSThreadQueue* queue) {
