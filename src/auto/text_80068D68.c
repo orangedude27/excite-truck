@@ -12442,6 +12442,7 @@ void btm_sec_mkey_comp_event(u16 handle, u8 status, u8 event) {
 }
 
 void btm_sec_encrypt_change(UINT16 handle, UINT8 status, UINT8 encr_enable) {
+    /* Handle HCI Encryption Change event: log state, handle LMP collision retry, or complete pending security procedure. */
     tBTM_SEC_DEV_REC *p_dev_rec;
     void (*callback)(u8 *, u32, u8);
     u8 result;
