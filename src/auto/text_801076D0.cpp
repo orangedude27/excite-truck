@@ -543,30 +543,32 @@ extern "C" u8 GetWidth__Q46nw4hbm2ut6detail11ResFontBaseCFv_801096F0(void* self)
 }
 
 s32 nw4hbm::ut::detail::ResFontBase::GetDescent() const {
-    const char* file=lbl_80329140;
-    u32 value=(u32)this;
-    int a=1,b=1,c=1,d=1,e=1,f=1;
-    u32 t=value&0xFF000000U;
-    if(t!=0x80000000U&&(value&0xFF800000U)!=0x81000000U)f=0;
-    if(f==0&&(value&0xF8000000U)!=0x90000000U)e=0;
-    if(e==0&&t!=0xC0000000U)d=0;
-    if(d==0&&(value&0xFF800000U)!=0xC1000000U)c=0;
-    if(c==0&&(value&0xF8000000U)!=0xD0000000U)b=0;
-    if(b==0&&(value&0xFFFFC000U)!=0xE0000000U)a=0;
-    if(a==0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0xB3,file+0xF0,this);
-    int g=1,h=1;
-    u32 v=*(u32*)((char*)this+0x14);
-    int i=1,j=1,k=1,l=1;
-    u32 t2=v&0xFF000000U;
-    if(t2!=0x80000000U&&(v&0xFF800000U)!=0x81000000U)l=0;
-    if(l==0&&(v&0xF8000000U)!=0x90000000U)k=0;
-    if(k==0&&t2!=0xC0000000U)j=0;
-    if(j==0&&(v&0xFF800000U)!=0xC1000000U)i=0;
-    if(i==0&&(v&0xF8000000U)!=0xD0000000U)h=0;
-    if(h==0&&(v&0xFFFFC000U)!=0xE0000000U)g=0;
-    if(g==0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0xB4,file+0x128);
-    u8* data=*(u8**)((char*)this+0x14);
-    return data[0x14]-data[0x16];
+    /* Return font descent from the referenced font data after validating the
+       this pointer and the data pointer against expected MEM1/MEM2 address ranges. */
+    const char *file = lbl_80329140;
+    u32 thisValue = (u32)this;
+    int validAll = 1, validD = 1, validC = 1, validB = 1, validA = 1, validMem1 = 1;
+    u32 top = thisValue & 0xFF000000U;
+    if (top != 0x80000000U && (thisValue & 0xFF800000U) != 0x81000000U) validMem1 = 0;
+    if (validMem1 == 0 && (thisValue & 0xF8000000U) != 0x90000000U) validA = 0;
+    if (validA == 0 && top != 0xC0000000U) validB = 0;
+    if (validB == 0 && (thisValue & 0xFF800000U) != 0xC1000000U) validC = 0;
+    if (validC == 0 && (thisValue & 0xF8000000U) != 0xD0000000U) validD = 0;
+    if (validD == 0 && (thisValue & 0xFFFFC000U) != 0xE0000000U) validAll = 0;
+    if (validAll == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0xB3, file + 0xF0, this);
+    int dataValidAll = 1, dataValidD = 1;
+    u32 dataPtrValue = *(u32*)((char*)this + 0x14);
+    int dataValidC = 1, dataValidB = 1, dataValidA = 1, dataValidMem1 = 1;
+    u32 dataTop = dataPtrValue & 0xFF000000U;
+    if (dataTop != 0x80000000U && (dataPtrValue & 0xFF800000U) != 0x81000000U) dataValidMem1 = 0;
+    if (dataValidMem1 == 0 && (dataPtrValue & 0xF8000000U) != 0x90000000U) dataValidA = 0;
+    if (dataValidA == 0 && dataTop != 0xC0000000U) dataValidB = 0;
+    if (dataValidB == 0 && (dataPtrValue & 0xFF800000U) != 0xC1000000U) dataValidC = 0;
+    if (dataValidC == 0 && (dataPtrValue & 0xF8000000U) != 0xD0000000U) dataValidD = 0;
+    if (dataValidD == 0 && (dataPtrValue & 0xFFFFC000U) != 0xE0000000U) dataValidAll = 0;
+    if (dataValidAll == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0xB4, file + 0x128);
+    u8 *data = *(u8**)((char*)this + 0x14);
+    return data[0x14] - data[0x16];
 }
 
 extern "C" s32 GetBaselinePos__Q46nw4hbm2ut6detail11ResFontBaseCFv(void* self) {
@@ -944,18 +946,24 @@ void nw4hbm::ut::detail::ResFontBase::SetLineFeed(int lineFeed) {
     *(s8*)(*(u32*)((char*)this + 0x14) + 1) = lineFeed;
 }
 
+#pragma push
+#pragma scheduling off
 extern "C" s8 fn_8010B2BC(void *arg0) {
     struct V { virtual u32 a0()=0; virtual u32 a1()=0; virtual u32 a2()=0; virtual u32 a3()=0; virtual u32 a4()=0; virtual u32 a5()=0; virtual u32 a6()=0; virtual u32 a7()=0; virtual u32 a8()=0; virtual u32 a9()=0; virtual u32 a10()=0; virtual u32 a11()=0; virtual u32 a12()=0; virtual u32 a13()=0; virtual u32 a14()=0; virtual u32 a15()=0; virtual u32 a16()=0; virtual u32 f()=0; };
     u32 value = ((V *)arg0)->f();
     volatile u8 c;
     volatile u8 b;
     volatile u8 a;
+    u8 tmp;
+    s8 ret;
     a = (u8)(value >> 24);
     b = (u8)(value >> 16);
-    c = (u8)(value >> 8);
-    return (s8)(value >> 8);
+    tmp = (u8)(value >> 8);
+    ret = tmp;
+    c = tmp;
+    return ret;
 }
-
+#pragma pop
 extern "C" const char lbl_80329140[];
 extern "C" u16 FindGlyphIndex__Q46nw4hbm2ut6detail11ResFontBaseCFPCQ36nw4hbm2ut11FontCodeMapUs(void*, void*, u16);
 extern "C" u32 GetCharWidths__Q46nw4hbm2ut6detail11ResFontBaseCFUs(void *self, u16 code) {
