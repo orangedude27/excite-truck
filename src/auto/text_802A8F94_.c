@@ -30,16 +30,17 @@ void* fn_802A8F94(void* arg0, s32 arg1) {
 }
 
 extern f32 fn_801EA0E8(f32, f32);
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
 void fn_802A8FEC(void *arg0, void *arg1) {
+    f32 y = ((f32 *)arg1)[1];
     f32 *dst = (f32 *)arg0;
     f32 *src = (f32 *)arg1;
-    f32 y = src[1];
     dst[1] = fn_801EA0E8(src[0], y);
     dst[0] = src[0];
     dst[2] = y;
 }
-#pragma scheduling on
+#pragma pop
 s32 fn_802A9048(void) {
     u32 value;
     s32 result;
@@ -177,16 +178,16 @@ void fn_802A92CC(void) {
 
 #pragma scheduling invalid_target
 void fn_802A93A4(void) {
-    register s32 *p;
-    register s32 value;
-    register u32 i;
+    s32 *p;
+    s32 value;
+    u32 i;
     if (lbl_8055F8F0 != 0) {
         p = (s32 *)lbl_804BD740;
         i = 0;
         do {
             value = p[1];
             if (value != -1) {
-                fn_802C6CF8();
+                fn_802C6CF8(value);
                 p[1] = -1;
             }
             i++;
@@ -258,16 +259,15 @@ void fn_802A9428(void) {
 }
 
 void fn_802A9574(void) {
+    Unk804BD790 *p = lbl_804BD790;
     f32 f = lbl_80564978;
-    s32 *p = (s32 *)lbl_804BD790;
-    p[2] = -1;
-    p[1] = -1;
-    p[0] = -1;
-    ((f32 *)p)[3] = f;
-    p[6] = -1;
-    p[5] = -1;
-    p[4] = -1;
-    ((f32 *)p)[7] = f;
+    s32 i;
+    for (i = 0; i < 2; i++) {
+        p[i].c = -1;
+        p[i].b = -1;
+        p[i].a = -1;
+        p[i].d = f;
+    }
 }
 
 void fn_802A95A8(void) {
