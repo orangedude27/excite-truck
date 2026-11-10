@@ -299,7 +299,7 @@ void fn_802C3424(s32 arg0, s32 arg1, s32 arg2, s32 arg3, u32 arg4) {
 void fn_802C3478(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
     u32 pixel;
     s32 width, height, skip, n;
-    s32 mode;
+    u8 mode;
     u16 *p;
     if (x1 == x0 || y1 == y0) return;
     if (!fn_802C307C((void *)lbl_8055FC00, &x0, &y0, &x1, &y1)) return;
@@ -357,6 +357,7 @@ void fn_802C356C(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
 #pragma optimize_for_size off
 void fn_802C365C(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
     u32 pixel;
+    u32 packed;
     s32 low;
     s32 width, height, n;
     u32 skip;
@@ -364,10 +365,10 @@ void fn_802C365C(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
     if (x1 == x0 || y1 == y0) return;
     if (!fn_802C307C((void *)lbl_8055FC00, &x0, &y0, &x1, &y1)) return;
     low = (s32)((color * 8) & 0xF8) >> 4;
-    pixel = ((s32)color >> 3) & 0xF00;
-    pixel = (pixel & ~0xF0) | (((s32)color >> 2) & 0xF0);
+    packed = ((s32)color >> 3) & 0xF00;
+    packed = (packed & ~0xF0) | (((s32)color >> 2) & 0xF0);
     width = x1 - x0;
-    pixel = low | pixel;
+    pixel = low | packed;
     height = y1 - y0;
     p = (u16 *)fn_802C3044((void *)lbl_8055FC00, x0, y0);
     skip = (*(s32 *)((u8 *)lbl_8055FC00 + 0x10) - width * 2);
@@ -383,6 +384,40 @@ void fn_802C365C(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
         p = (u16 *)((u8 *)p + skip);
     } while (height > 0);
 }
+
+void fn_802C3754(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
+    u8 mode = *(u8 *)arg0;
+    s32 flag = 0;
+    if ((s8)mode != 5 && (s8)mode != 6) flag = 1;
+    if (flag) {
+        flag = 0;
+        if (*(s8 *)arg5 != 5 && *(s8 *)arg5 != 6) flag = 1;
+        if (flag) {
+            fn_802C3918(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7);
+            return;
+        }
+    }
+    if ((s8)mode == 5 && (s32)*(u8 *)arg5 == 5) {
+        fn_802C3C68(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7);
+        return;
+    }
+    flag = 0;
+    if ((s8)mode != 5 && (s8)mode != 6) flag = 1;
+    if (flag && (s32)*(u8 *)arg5 == 5) {
+        fn_802C3D74(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7);
+        return;
+    }
+    if ((s8)mode == 5) {
+        flag = 0;
+        if (*(s8 *)arg5 != 5 && *(s8 *)arg5 != 6) flag = 1;
+        if (flag) {
+            fn_802C3F00(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7);
+            return;
+        }
+    }
+    fn_802E317C(lbl_8034B078, (s32)*(s8 *)arg0, (s32)*(s8 *)arg5);
+}
+
 #pragma pop
 
 #pragma pop
