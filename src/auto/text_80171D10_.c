@@ -2017,7 +2017,8 @@ extern float lbl_8055E3C8, lbl_80561A40, lbl_80561A44;
 #pragma push
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" int fn_801758CC(void *arg0, int arg1, int arg2) {
+extern "C" int fn_801758CC(void *obj, int unused, int actionId) {
+    /* Handles action 0x58 when queried, or advances this object's timed state and triggers cleanup/child activation near timer end. */
     class Query {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -2028,44 +2029,44 @@ extern "C" int fn_801758CC(void *arg0, int arg1, int arg2) {
         virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
         virtual int query();
     };
-    int result = 0;
-    if (((Query *)arg0)->query() != 0 && arg2 == 0x58) {
-        if (*(volatile int *)((char *)arg0 + 0x1AC) == 2)
-            *((unsigned char *)arg0 + 0x1B5) = 1;
-        result = 1;
-    } else if (*(volatile int *)((char *)arg0 + 0x1AC) != 0) {
-        float total = lbl_8055E3C8;
-        if (*(volatile int *)((char *)arg0 + 0x1AC) == 1 &&
-            *((unsigned char *)arg0 + 0x1BC) == 0) {
-            if (*(float *)((char *)arg0 + 0x1B0) > lbl_80561A44 &&
-                total - *(float *)((char *)arg0 + 0x1B0) < lbl_80561A40) {
-                void *p;
-                int handle = *(int *)((char *)arg0 + 0x1B8);
-                *((unsigned char *)arg0 + 0x1BC) = 1;
-                if (handle != 0) fn_802AE118();
-                p = *(void **)((char *)arg0 + 0x1C0);
-                if (p) { *((unsigned char *)p + 0x4A) = 1; *((unsigned char *)p + 0x4C) = 0; }
-                p = *(void **)((char *)arg0 + 0x1C4);
-                if (p) { *((unsigned char *)p + 0x4A) = 1; *((unsigned char *)p + 0x4C) = 0; }
-                p = *(void **)((char *)arg0 + 0x1D4);
-                if (p) { *((unsigned char *)p + 0x4A) = 1; *((unsigned char *)p + 0x4C) = 0; }
-                p = *(void **)((char *)arg0 + 0x1D8);
-                if (p) { *((unsigned char *)p + 0x4A) = 1; *((unsigned char *)p + 0x4C) = 0; }
+    int handled = 0;
+    if (((Query *)obj)->query() != 0 && actionId == 0x58) {
+        if (*(volatile int *)((char *)obj + 0x1AC) == 2)
+            *((unsigned char *)obj + 0x1B5) = 1;
+        handled = 1;
+    } else if (*(volatile int *)((char *)obj + 0x1AC) != 0) {
+        float endTime = lbl_8055E3C8;
+        if (*(volatile int *)((char *)obj + 0x1AC) == 1 &&
+            *((unsigned char *)obj + 0x1BC) == 0) {
+            if (*(float *)((char *)obj + 0x1B0) > lbl_80561A44 &&
+                endTime - *(float *)((char *)obj + 0x1B0) < lbl_80561A40) {
+                void *child;
+                int timerHandle = *(int *)((char *)obj + 0x1B8);
+                *((unsigned char *)obj + 0x1BC) = 1;
+                if (timerHandle != 0) fn_802AE118();
+                child = *(void **)((char *)obj + 0x1C0);
+                if (child) { *((unsigned char *)child + 0x4A) = 1; *((unsigned char *)child + 0x4C) = 0; }
+                child = *(void **)((char *)obj + 0x1C4);
+                if (child) { *((unsigned char *)child + 0x4A) = 1; *((unsigned char *)child + 0x4C) = 0; }
+                child = *(void **)((char *)obj + 0x1D4);
+                if (child) { *((unsigned char *)child + 0x4A) = 1; *((unsigned char *)child + 0x4C) = 0; }
+                child = *(void **)((char *)obj + 0x1D8);
+                if (child) { *((unsigned char *)child + 0x4A) = 1; *((unsigned char *)child + 0x4C) = 0; }
                 {
                     float finalFloor;
-                    float finalTotal;
+                    float finalEnd;
                     int zero;
-                    finalTotal = lbl_8055E3C8;
+                    finalEnd = lbl_8055E3C8;
                     zero = 0;
                     finalFloor = lbl_80561A40;
-                    if ((*((volatile unsigned char *)arg0 + 0x1B4) = zero) == 0)
-                        *(float *)((char *)arg0 + 0x1B0) = finalTotal - finalFloor;
+                    if ((*((volatile unsigned char *)obj + 0x1B4) = zero) == 0)
+                        *(float *)((char *)obj + 0x1B0) = finalEnd - finalFloor;
                 }
             }
         }
-        result = 1;
+        handled = 1;
     }
-    return result;
+    return handled;
 }
 #pragma scheduling on
 #pragma cplusplus reset
