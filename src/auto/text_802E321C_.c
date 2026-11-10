@@ -100,15 +100,12 @@ s32 fn_802E33D0(void) { return 0; }
 
 #pragma scheduling invalid_target
 s32 fn_802E33D8(s32 arg0, const char *arg1, s32 arg2) {
-    char *entry;
     s32 offset;
-
     if (arg0 < 0 || arg0 == -1 || arg0 > 0x10) {
         fn_802E317C(lbl_8034CF40, arg0, arg1, arg2);
     }
     offset = arg0 * 0x28;
-    entry = lbl_804DB810 + offset;
-    if (((unsigned char *)entry)[0x20] == 0) {
+    if (((unsigned char *)(lbl_804DB810 + offset))[0x20] == 0) {
         fn_802E317C(lbl_8034CF60, arg0, arg1, arg2);
     }
     return (s32)(lbl_804DB810 + offset);
@@ -163,16 +160,19 @@ void fn_802E3550(void) {
 #pragma scheduling on
 extern char lbl_8034CF98[];
 s32 fn_802E35C0(const char *arg0, s32 arg1) {
-    char *scan = lbl_804DB810;
-    s32 i = 0;
-    for (; i < 16; i++, scan += 0x28) {
-        if ((unsigned char)scan[0x20] == 0) {
-            char *entry = lbl_804DB810 + i * 0x28;
+    unsigned char *p = (unsigned char *)lbl_804DB810;
+    s32 j = 0;
+    s32 count;
+    for (count = 16; count != 0; count--) {
+        if (p[0x20] == 0) {
+            char *entry = lbl_804DB810 + j * 0x28;
             entry[0x20] = 1;
             strncpy(entry, arg0, 0x20);
             *(s32 *)(entry + 0x24) = arg1;
-            return i;
+            return j;
         }
+        p += 0x28;
+        j++;
     }
     fn_802E317C(lbl_8034CF98, arg0);
     return -1;
@@ -363,7 +363,7 @@ extern int vsprintf(char *, const char *, va_list);
 extern "C" int vsprintf(char *, const char *, va_list);
 #pragma scheduling invalid_target
 extern "C" void fn_802E3AD0(s32 arg0, const char *fmt, ...) {
-    char buf[0x10];
+    char buf[0x400];
     va_list args;
     va_start(args, fmt);
     vsprintf(buf, fmt, args);
@@ -372,10 +372,20 @@ extern "C" void fn_802E3AD0(s32 arg0, const char *fmt, ...) {
         fn_802E3A64(arg0, (s32)buf, strlen(buf));
         return;
     }
-    s32 *p = fn_802E333C();
+    s32 *p = ((s32 *(*)(s32))fn_802E333C)(0);
     if (p != 0) {
-        p = fn_802E333C();
-        ((void (*)(s32 *, char *))(*(s32 **)p)[8])(p, buf);
+        class Obj {
+        public:
+            virtual void v0();
+            virtual void v1();
+            virtual void v2();
+            virtual void v3();
+            virtual void v4();
+            virtual void v5();
+            virtual void v6(char *);
+        };
+        p = ((s32 *(*)(s32))fn_802E333C)(0);
+        ((Obj *)p)->v6(buf);
     }
 }
 #pragma scheduling on
