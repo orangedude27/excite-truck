@@ -45,7 +45,7 @@ extern void *fn_801284F8(int, void *);
 extern void fn_8012850C(int, void *);
 extern void *fn_8002F37C(void *, void *, int, int, int);
 extern void fn_802BAE30(void *);
-extern int lbl_8034A9F4;
+extern char lbl_8034A9F4[];
 extern int lbl_8055CEF0;
 extern char lbl_8034A990[];
 extern char lbl_8034AA1C[];
@@ -261,6 +261,265 @@ int fn_802B9100(void) {
     return 0;
 }
 
+#pragma push
+#pragma processor 750
+#pragma dont_inline on
+void fn_802B9108(short arg0) {
+    typedef struct Node {
+        void *data;
+        s32 used;
+        s32 capacity;
+        struct Node *next;
+    } Node;
+    typedef struct Pool {
+        void *unused;
+        Node *nodes;
+        s32 used;
+        s32 capacity;
+    } Pool;
+    struct Frame {
+        float vec1[2];
+        float vec2[2];
+        short sz;
+        void *grid;
+        s32 gridCount;
+        void *mgr;
+        void **items;
+        s32 itemCount;
+        s32 itemCap;
+        void *itemBuf[64];
+    } frame;
+    float k1;
+    float k2;
+    float f27;
+    float f28;
+    s32 denom;
+    s32 i;
+    s32 off;
+    s32 idx;
+    void *entry;
+    s32 kind;
+    void *node;
+    s16 v1;
+    s16 v2;
+    s16 v3;
+    s16 v4;
+    s32 gx;
+    s32 gy;
+    s32 step;
+    s32 t;
+    void **cell;
+    void **p;
+    void *item;
+    s32 found;
+    s32 ii;
+    s32 rows;
+    s32 cellIdx;
+    Node **cellPtr;
+    Node *tail;
+    void *slot;
+    Node *newNode;
+    s32 used;
+    s32 fx;
+    s32 fy;
+    void *record;
+    s32 savedCount;
+    Node *cellNode;
+    s32 flag;
+    void *obj;
+    void *glist;
+    s32 cnt;
+    s32 cnt2;
+    s32 gc;
+    s32 knd;
+    void *pp;
+    void *recs;
+    frame.sz = arg0;
+    denom = frame.sz * 2;
+    frame.gridCount = (0x400 / denom) * (0x400 / denom);
+    frame.grid = ((void *(*)(void *, void *, int, int, int))fn_8002F37C)(((void *(*)(int, void *))fn_8012850C)(frame.gridCount * 8 + 0x10, lbl_8055CF00), fn_802B9B40, 0, 8, frame.gridCount);
+    frame.mgr = fn_801284F8(0x14, lbl_8034AA84);
+    if (frame.mgr != 0) {
+        cnt = (frame.gridCount * 6) / 4;
+        recs = ((void *(*)(void *, void *, int, int, int))fn_8002F37C)(((void *(*)(int, void *))fn_8012850C)(cnt * 0x10 + 0x10, &lbl_8055CEF0), fn_802B9B2C, (int)fn_802B9AD4, 0x10, cnt);
+        ((void **)frame.mgr)[1] = recs;
+        ((s32 *)frame.mgr)[3] = cnt;
+        ((s32 *)frame.mgr)[2] = 0;
+        ((void **)frame.mgr)[4] = recs;
+        ((void **)frame.mgr)[0] = ((void *(*)(int, void *))fn_8012850C)(cnt * 0x10, lbl_8034AA74);
+        off = 0;
+        for (i = 0; i < ((s32 *)frame.mgr)[3]; i++) {
+            idx = ((s32 *)frame.mgr)[2];
+            ((s32 *)frame.mgr)[2] = idx + 1;
+            cell = (void **)((char *)recs + idx * 0x10);
+            *cell = (char *)((void **)frame.mgr)[0] + off;
+            off += 0x10;
+            ((s32 *)cell)[2] = 4;
+            ((s32 *)cell)[1] = 0;
+        }
+        ((s32 *)frame.mgr)[2] = 0;
+    }
+    k1 = lbl_80564CB0;
+    k2 = lbl_80564CC8;
+    for (i = 0, off = 0; i < *(s32 *)(lbl_804BFFF4 + 4); i++, off += 4) {
+        entry = *(void **)(*(char **)lbl_804BFFF4 + off);
+        kind = fn_802B9ACC((char *)entry + 0xC);
+        if (kind != 2) {
+            if (kind < 2) {
+                if (kind >= 0) {
+                    if (frame.sz == 4) {
+                        node = *(void **)((char *)entry + 0xC);
+                        f27 = (float)frame.sz * k1;
+                        f28 = k2 * f27;
+                        while (node != 0) {
+                            fn_801602B0(frame.vec1);
+                            fn_801602B0(frame.vec2);
+                            fn_802B9AA4(((void *(*)(void *))fn_802B9AC8)(node), frame.vec1, frame.vec2);
+                            v1 = (s16)((f27 + f28 * fn_80141C9C(frame.vec1[0] / f28)) / k1);
+                            v2 = (s16)((f27 + f28 * fn_80141C9C(frame.vec1[1] / f28)) / k1);
+                            v3 = (s16)((f28 * fn_802B9A80(frame.vec2[0] / f28) - f27) / k1);
+                            v4 = (s16)((f28 * fn_802B9A80(frame.vec2[1] / f28) - f27) / k1);
+                            for (v1 = v1; v1 <= v3; v1 = (s16)(v1 + frame.sz * 2)) {
+                                for (v2 = v2; v2 <= v4; v2 = (s16)(v2 + frame.sz * 2)) {
+                                    fn_802B9964(&frame.sz, (s32)node, v1, v2);
+                                }
+                            }
+                            node = *(void **)((char *)node + 0x10);
+                        }
+                    }
+                }
+            }
+        } else {
+            node = *(void **)((char *)entry + 0xC);
+            while (node != 0) {
+                pp = ((void *(*)(void *))fn_802B9960)(node);
+                if (frame.sz == fn_802B9920(fn_802B9954(pp))) {
+                    fn_802B9964(&frame.sz, (s32)node, fn_802B9954(pp), fn_802B9914(pp));
+                }
+                node = *(void **)((char *)node + 0x10);
+            }
+        }
+    }
+    if (frame.sz > 4 && frame.sz <= 8) {
+        step = denom;
+        gx = frame.sz - 0x200;
+        for (; gx < 0x200; gx += step) {
+            gy = frame.sz - 0x200;
+            for (; gy < 0x200; gy += step) {
+                frame.items = frame.itemBuf;
+                frame.itemCount = 0;
+                frame.itemCap = 0x40;
+                for (t = 0; t < 4; t++) {
+                    cell = (void **)fn_802B8EB8((short)gx, (short)gy, frame.sz, t);
+                    p = *cell;
+                    while (*p != 0) {
+                        item = *p;
+                        kind = ((s32 *)item)[2];
+                        if ((u32)kind <= 1U) {
+                            found = -1;
+                            for (ii = 0; ii < frame.itemCount; ii++) {
+                                if (frame.items[ii] == item) { found = ii; break; }
+                            }
+                            if (found == -1 && frame.itemCount + 1 <= frame.itemCap && ((u32)kind != 1U || frame.sz <= 4)) {
+                                frame.items[frame.itemCount] = item;
+                                frame.itemCount++;
+                            }
+                        }
+                        p++;
+                    }
+                }
+                rows = 0x400 / denom;
+                for (ii = 0; ii < frame.itemCount; ii++) {
+                    cellIdx = ((gy - frame.sz + 0x200) / denom) * rows + ((gx - frame.sz + 0x200) / denom);
+                    cellPtr = (Node **)((char *)frame.grid + cellIdx * 8);
+                    tail = cellPtr[1];
+                    slot = 0;
+                    if (tail == 0 || tail->used + 1 > tail->capacity) {
+                        newNode = 0;
+                        if (((Pool *)frame.mgr)->used + 1 <= ((Pool *)frame.mgr)->capacity) {
+                            used = ((Pool *)frame.mgr)->used;
+                            newNode = &((Pool *)frame.mgr)->nodes[used];
+                            ((Pool *)frame.mgr)->used = used + 1;
+                            newNode->used = 0;
+                            newNode->next = 0;
+                        }
+                        if (newNode != 0) {
+                            if (cellPtr[0] == 0) cellPtr[0] = newNode;
+                            if (cellPtr[1] != 0) cellPtr[1]->next = newNode;
+                            cellPtr[1] = newNode;
+                            newNode->next = 0;
+                            tail = cellPtr[1];
+                            slot = (char *)tail->data + tail->used * 4;
+                            tail->used = tail->used + 1;
+                        }
+                    } else {
+                        slot = (char *)tail->data + tail->used * 4;
+                        tail->used = tail->used + 1;
+                    }
+                    if (slot != 0) *(void **)slot = frame.items[ii];
+                }
+                frame.items = 0;
+                frame.itemCount = 0;
+                frame.itemCap = 0;
+            }
+        }
+    }
+    fx = arg0 - 0x200;
+    for (; fx < 0x200; fx += denom) {
+        fy = arg0 - 0x200;
+        for (; fy < 0x200; fy += denom) {
+            record = fn_802BE844((short)fx, (short)fy, arg0);
+            glist = lbl_8055FA80;
+            savedCount = ((s32 *)glist)[1];
+            rows = 0x400 / denom;
+            cellIdx = ((fy - frame.sz + 0x200) / denom) * rows + ((fx - frame.sz + 0x200) / denom);
+            cellNode = *(Node **)((char *)frame.grid + cellIdx * 8);
+            while (cellNode != 0) {
+                cnt2 = cellNode->used;
+                for (ii = 0; ii < cnt2; ii++) {
+                    item = ((void **)cellNode->data)[ii];
+                    knd = ((s32 *)item)[2];
+                    if ((u32)knd == 2U && ((int (*)(void *))fn_802B9100)(record) == 0) {
+                        glist = lbl_8055FA80;
+                        gc = ((s32 *)glist)[1];
+                        ((s32 *)glist)[1] = gc + 1;
+                        ((void ***)glist)[0][gc] = item;
+                        flag = 0;
+                        if ((u32)((s32 *)item)[2] == 2U) {
+                            obj = ((void *(*)())fn_802B59CC)();
+                            if (((s32 (**)(void *, void *, s32))(*(void **)obj))[12](obj, lbl_8034AA90, 1) != 0) flag = 1;
+                        }
+                        if (flag != 0) ((s32 *)record)[2] |= 0x800000;
+                    }
+                    if ((u32)((s32 *)item)[2] == 2U) ((s32 *)record)[2] |= 0x1000000;
+                }
+                cellNode = cellNode->next;
+            }
+            glist = lbl_8055FA80;
+            gc = ((s32 *)glist)[1];
+            ((s32 *)glist)[1] = gc + 1;
+            ((void ***)glist)[0][gc] = 0;
+            ((void **)record)[0] = (char *)((void ***)glist)[0] + savedCount * 4;
+        }
+    }
+    if (frame.mgr != 0) {
+        fn_802B98D0(frame.mgr);
+        if ((char *)frame.mgr + 4 != 0) {
+            fn_8002F6AC(((s32 *)frame.mgr)[4], (void (*)(void))fn_802B9AD4);
+            if ((char *)frame.mgr + 4 != 0) {
+                ((s32 *)frame.mgr)[1] = 0;
+                ((s32 *)frame.mgr)[2] = 0;
+                ((s32 *)frame.mgr)[3] = 0;
+            }
+        }
+        fn_80128668(frame.mgr);
+    }
+    if (frame.grid != 0) {
+        fn_80128670((s32)frame.grid - 0x10);
+    }
+}
+#pragma dont_inline off
+#pragma pop
 void fn_802B98D0(void *arg0) {
     void *buf = *(void **)arg0;
     if (buf != NULL) {
@@ -274,12 +533,20 @@ int fn_802B9914(void *arg0) {
 }
 
 extern short lbl_802FAB60[];
+#pragma push
+#pragma scheduling invalid_target
 int fn_802B9920(int arg0) {
+    short s = (short)(arg0 + 0x200);
     int v = arg0 + 0x200;
-    int idx = (v >> 31) + (v << 27) + ((v << 27) >> 27);
-    return (short)lbl_802FAB60[idx];
+    int sign = (unsigned int)s >> 31;
+    int t = (v << 27) - sign;
+    int u = (t << 5) | ((unsigned int)t >> 27);
+    int w = u + sign;
+    short idx = (short)w;
+    return lbl_802FAB60[idx];
 }
-
+#pragma scheduling on
+#pragma pop
 short fn_802B9954(void* arg0) {
     return (short)((int*)arg0)[5];
 }
@@ -1070,19 +1337,21 @@ found:
 #pragma pop
 #pragma cplusplus reset
 
+#pragma push
+#pragma processor 750
 void fn_802BAD0C(void *arg0, float angle) {
-    register float c;
-    register float x;
-    register float s;
-    register float y;
+    float c;
+    float x;
+    float s;
+    float y;
     x = *(float *)((char *)arg0 + 0);
     c = (float)cos(angle);
     s = (float)sin(angle);
     y = *(float *)((char *)arg0 + 4);
-    *(float *)((char *)arg0 + 4) = x * s + y * c;
+    *(float *)((char *)arg0 + 4) = y * c + x * s;
     *(float *)((char *)arg0 + 0) = *(float *)((char *)arg0 + 0) * c - y * s;
 }
-
+#pragma pop
 int fn_80128668(void *);
 int fn_80128670(int);
 double cos(double);
