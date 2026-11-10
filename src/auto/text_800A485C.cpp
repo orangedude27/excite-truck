@@ -17714,6 +17714,7 @@ extern "C" void fn_800CF3EC(void *arg0) {
 }
 
 void homebutton::FrameController::calc() {
+    /* Advance the frame controller by m_speed according to m_dir while active (m_state==1), clamping/wrapping m_value and updating state/flag at bounds. */
     if (m_state != 1) return;
     switch (m_dir) {
     case 0: {
