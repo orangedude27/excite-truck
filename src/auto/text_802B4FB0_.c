@@ -1,6 +1,9 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern int fn_802E3D04(void);
+extern int fn_802E39D0(int, void *, int);
+extern void fn_802E3734(int *);
 extern void fn_80128658(void *);
 extern int fn_802B4FD0(void *, int *, int *);
 extern void *fn_802B51E4(int, int);
@@ -22,14 +25,14 @@ extern void fn_802E3734(int *);
 #pragma dont_inline on
 #pragma scheduling invalid_target
 #pragma scheduling on
-int fn_802B5070(void *arg0, int arg1) {
+int fn_802B5070(void *p, int arg1) {
+    Fn802B5070Arg *arg0 = p;
     int result = 0;
-    if (*(unsigned char *)((char *)arg0 + 2) == 2 &&
-        fn_802B4FB0(*(unsigned char *)((char *)arg0 + 0x10)) != 0 &&
-        arg1 == *(unsigned short *)((char *)arg0 + 0xC) *
-                *(unsigned short *)((char *)arg0 + 0xE)) {
-        result = 1;
-    }
+    if (arg0->kind != 2) goto out;
+    if (fn_802B4FB0(arg0->idx) == 0) goto out;
+    if (arg1 != arg0->w * arg0->h) goto out;
+    result = 1;
+out:
     return result;
 }
 extern int fn_802B5070(void *, int);
