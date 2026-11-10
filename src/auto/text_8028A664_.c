@@ -236,6 +236,29 @@ extern "C" void fn_8028A9F4(void) {
         p = (void **)((u8 *)p + 0x10);
     } while (i < 8);
 }
+
+void fn_8028AA6C(void *arg0, s32 arg1, f32 arg2) {
+    if (arg1 != 0 && (u32)lbl_804B32B8[0x50] < 0x10U) {
+        f32 t = fn_801E7E18();
+        f32 z;
+        f32 y;
+        f32 x;
+        s32 c;
+        x = ((f32 *)arg0)[0];
+        y = ((f32 *)arg0)[1];
+        z = ((f32 *)arg0)[2];
+        c = *(volatile s32 *)&lbl_804B32B8[0x50];
+        ((f32 *)lbl_804B32B8)[c * 5] = t;
+        c = *(volatile s32 *)&lbl_804B32B8[0x50];
+        ((f32 *)lbl_804B32B8)[c * 5 + 1] = x;
+        ((f32 *)lbl_804B32B8)[c * 5 + 2] = y;
+        ((f32 *)lbl_804B32B8)[c * 5 + 3] = z;
+        c = *(volatile s32 *)&lbl_804B32B8[0x50];
+        lbl_804B32B8[c * 5 + 4] = arg1;
+        lbl_804B32B8[0x50]++;
+    }
+}
+
 #pragma scheduling on
 #pragma cplusplus off
 
@@ -1051,14 +1074,11 @@ void fn_8028C11C(void *arg0, s32 *arg1, s32 *arg2) {
 }
 #pragma pop
 
-#pragma pop
+#pragma scheduling invalid_target
 void *fn_8028C824(void *arg0, s32 arg1) {
     s32 size = arg1 * 0x28;
-    void *memory;
-    void *array;
-
-    memory = ((void *(*)(s32, void *, s32))fn_8012850C)(size + 0x10, lbl_80348C34, size);
-    array = ((void *(*)(void *, void *, s32, s32, s32))fn_8002F37C)(memory, fn_8028C8BC, 0, 0x28, arg1);
+    s32 memory = fn_8012850C(size + 0x10, lbl_80348C34, size);
+    void *array = ((void *(*)(s32, void *, s32, s32, s32))fn_8002F37C)(memory, (void *)fn_8028C8BC, 0, 0x28, arg1);
     ((void **)arg0)[0] = array;
     ((s32 *)arg0)[1] = 0;
     ((s32 *)arg0)[2] = arg1;
@@ -1066,7 +1086,7 @@ void *fn_8028C824(void *arg0, s32 arg1) {
     ((f32 *)arg0)[4] = (f32)fn_8002F208(lbl_805643C8);
     return arg0;
 }
-#pragma dont_inline off
+#pragma scheduling on
 void fn_8028C8BC(void) {}
 
 extern void fn_802CAC54(s32);
