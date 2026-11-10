@@ -439,6 +439,8 @@ extern "C" void fn_802BCBDC(void) {
     }
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 void fn_802BCF04(void) {
     void *base;
     char *entry;
@@ -468,6 +470,7 @@ check:
         lbl_8055FAB4 = 0;
     }
 }
+#pragma pop
 void fn_802BCFB0(int *arg0) {
     int temp_r31;
     temp_r31 = *arg0;
