@@ -23463,9 +23463,10 @@ extern "C" void GXSetBlendMode(u32, u32, u32, u32);
 extern "C" void GXSetAlphaUpdate(u32);
 extern "C" void GXSetZMode(u32, u32, u32);
 extern "C" void fn_800CEDE8(void) {
-    f32 mtx[3][4];
-    PSMTXIdentity(mtx);
-    GXLoadPosMtxImm((const f32 *)mtx, 0);
+    /* Set up GX state for drawing an untextured, position-only primitive with a constant TEV color and alpha blending. */
+    f32 identityMtx[3][4];
+    PSMTXIdentity(identityMtx);
+    GXLoadPosMtxImm((const f32 *)identityMtx, 0);
     GXSetCurrentMtx(0);
     GXClearVtxDesc();
     GXSetVtxDesc(9, 1);
