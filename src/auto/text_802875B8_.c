@@ -9,6 +9,7 @@ extern const char lbl_80348A40[];
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void fn_80288868(void *);
+extern signed char lbl_8055F6BC;
 extern unsigned int fn_80288870(void);
 extern void fn_802AB504(void);
 extern void fn_8029F0D0(void);
@@ -341,19 +342,14 @@ s32 fn_80287B94(s32 arg0, s32 arg1) {
     return arg0 + fn_80287B5C(arg1 - arg0);
 }
 
-#pragma paired off
-#pragma paired_single off
+#pragma push
+#pragma processor 750
 f32 fn_80287BC8(f32 farg0, f32 farg1) {
     unsigned int random;
-    f32 diff;
-    f32 ratio;
     random = ((unsigned int (*)(void))fn_80288870)() & 0x1FFFF;
-    diff = farg1 - farg0;
-    ratio = (f32)random / lbl_80564250;
-    return farg0 + diff * ratio;
+    return farg0 + (farg1 - farg0) * ((f32)random / lbl_80564250);
 }
-#pragma paired_single reset
-#pragma paired reset
+#pragma pop
 void *fn_80287C30(void *arg0) {
     *(s32 *)arg0 = 0;
     memset((u8 *)arg0 + 4, (int)0, (unsigned int)0x20);
@@ -379,13 +375,11 @@ void *fn_80287C80(void *arg0, s32 arg1) {
 void fn_80287CE8(int arg0, void *arg1, int arg2, int arg3) {
     char local[0x40];
     sprintf(local, lbl_80348A20, arg1);
-    do {
-        if (fn_8012C33C(local) == 0)
-            break;
-        *(void **)arg0 = (void *)fn_80131808(local);
-        fn_80287D70((void *)arg0, arg2, arg3);
-          } while (0);
-  }
+    if (fn_8012C33C(local) == 0) goto end;
+    *(void **)arg0 = (void *)fn_80131808(local);
+    fn_80287D70((void *)arg0, arg2, arg3);
+end:;
+}
 #pragma dont_inline reset
   
   #pragma scheduling invalid_target
