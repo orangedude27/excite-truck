@@ -21006,7 +21006,8 @@ void rfc_mx_sm_state_connected(void *arg0, s32 arg1, void *arg2) {
     }
 }
 
-void rfc_mx_sm_state_disc_wait_ua(void *p_mcb, s32 event, void *p_data) {
+/* RFCOMM multiplexer state machine: handle events while waiting for UA after disconnect. */
+void rfc_mx_sm_state_disc_wait_ua(void *muxCb, s32 event, void *eventData) {
     extern u8 lbl_803C4828[];
     extern char lbl_80319A0C[];
     extern char lbl_80319868[];
@@ -21016,7 +21017,7 @@ void rfc_mx_sm_state_disc_wait_ua(void *p_mcb, s32 event, void *p_data) {
     extern void GKI_freebuf(void *);
     extern void PORT_CloseInd(void *);
     extern void PORT_StartCnf(void *, u16);
-    u8 *mcb = (u8 *)p_mcb;
+    u8 *muxCbBytes = (u8 *)muxCb;
 
     if (lbl_803C4828[0x414] >= 4)
         ((void (*)(u32, void *, s32))fn_80070954)(0x90003, lbl_80319A0C, event);
@@ -21025,36 +21026,36 @@ void rfc_mx_sm_state_disc_wait_ua(void *p_mcb, s32 event, void *p_data) {
     case 1:
     case 2:
     case 5:
-        L2CA_DisconnectReq(*(u16 *)(mcb + 0x68));
-        if (mcb[0x70]) {
-            u16 lcid = L2CA_ConnectReq(3, mcb + 0x62);
-            *(u16 *)(mcb + 0x68) = lcid;
+        L2CA_DisconnectReq(*(u16 *)(muxCbBytes + 0x68));
+        if (muxCbBytes[0x70]) {
+            u16 lcid = L2CA_ConnectReq(3, muxCbBytes + 0x62);
+            *(u16 *)(muxCbBytes + 0x68) = lcid;
             if (lcid == 0) {
-                PORT_StartCnf(p_mcb, 1);
+                PORT_StartCnf(muxCb, 1);
                 return;
             }
-            fn_800916D8(p_mcb, lcid);
-            mcb[0x70] = 0;
-            mcb[0x6e] = 0;
-            mcb[0x6f] = 0;
-            mcb[0x6c] = 1;
+            fn_800916D8(muxCb, lcid);
+            muxCbBytes[0x70] = 0;
+            muxCbBytes[0x6e] = 0;
+            muxCbBytes[0x6f] = 0;
+            muxCbBytes[0x6c] = 1;
         } else {
-            rfc_release_multiplexer_channel(p_mcb);
+            rfc_release_multiplexer_channel(muxCb);
         }
         return;
     case 3:
-        ((void (*)(void *, u8))rfc_send_ua)(p_mcb, 0);
+        ((void (*)(void *, u8))rfc_send_ua)(muxCb, 0);
         return;
     case 4:
-        GKI_freebuf(p_data);
-        rfc_send_dm(p_mcb, 0, 0);
+        GKI_freebuf(eventData);
+        rfc_send_dm(muxCb, 0, 0);
         return;
     case 6:
-        mcb[0x70] = 1;
+        muxCbBytes[0x70] = 1;
         return;
     case 14:
-        mcb[0x6c] = 0;
-        PORT_CloseInd(p_mcb);
+        muxCbBytes[0x6c] = 0;
+        PORT_CloseInd(muxCb);
         return;
     case 8:
         return;
@@ -21065,7 +21066,7 @@ void rfc_mx_sm_state_disc_wait_ua(void *p_mcb, s32 event, void *p_data) {
     }
 
     if (lbl_803C4828[0x414] >= 4)
-        ((void (*)(u32, void *, s32, u32))fn_8007096C)(0x90003, lbl_80319868, event, mcb[0x6c]);
+        ((void (*)(u32, void *, s32, u32))fn_8007096C)(0x90003, lbl_80319868, event, muxCbBytes[0x6c]);
 }
 
 void rfc_mx_conf_cnf(void *arg0, u16 *arg1) {
