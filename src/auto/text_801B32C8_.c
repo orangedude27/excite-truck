@@ -106,26 +106,21 @@ typedef struct Unk801B3398 {
 s32 fn_801B32C8(void* arg0, s32 arg1) {
     s32 vals[2];
     s32 first = *(s32*)((char*)arg0 + 0x20);
-    register s32 idx;
     s32 result = 0;
-    s32 isMagic = (first == 0x6D);
 
     *(volatile s32*)&vals[0] = first;
-    idx = -1;
     *(volatile s32*)&vals[1] = arg1;
-    if (isMagic) {
-        idx = 0;
-    } else if (arg1 == 0x6D) {
-        idx = 1;
-    }
-    if (idx != -1) {
-        switch (vals[!idx]) {
-        case 0x6E:
-        case 1:
-            result = 1;
-            break;
-        default:
-            break;
+    {
+        s32 idx = (first == 0x6D) ? 0 : (arg1 == 0x6D) ? 1 : -1;
+        if (idx != -1) {
+            switch (vals[!idx]) {
+            case 0x6E:
+            case 1:
+                result = 1;
+                break;
+            default:
+                break;
+            }
         }
     }
     return result;
@@ -166,15 +161,13 @@ s32 fn_801B3398(void* arg0) {
 }
 #pragma scheduling invalid_target
 void fn_801B3448(void) {
-    void *p;
-    int (*callback)(void);
-    p = (void *)fn_801284F8(0x5C0, &lbl_80335D3C);
-    if (p == NULL) return;
-    p = fn_801B3B70(p);
-    callback = fn_801B3390;
-    lbl_8055E6C0 = (s32)p;
-    fn_801B5364(1, callback);
-    fn_801B5364(0xF, fn_801B3398);
+    void *p = (void *)fn_801284F8(0x5C0, &lbl_80335D3C);
+    if (p != NULL) {
+        p = fn_801B3B70(p);
+        lbl_8055E6C0 = (s32)p;
+        fn_801B5364(1, fn_801B3390);
+        fn_801B5364(0xF, fn_801B3398);
+    }
 }
 #pragma scheduling on
 void fn_801B34A4(void) {
@@ -543,26 +536,24 @@ void fn_801B4204(void *arg0) {
     *(void **)((u8 *)arg0 + 0x2F8) = fn_801B447C(arg0, (u8 *)arg0 + 0x48, 0x2B);
 }
 
-#pragma scheduling off
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_801B42D0(void* arg0) {
- void* val=*(void**)lbl_802F9630;
- f64 init=lbl_80562650;
- u8* p=(u8*)arg0+0x2fc;
- s32 i=0;
- s32 zero=0;
- while(i<0x10) {
-   *(s32*)(p+0x1c)=fn_802077A4(val,5,p+0x10,p+4);
-   i++;
-   if(i>=0x10) break;
-   *(s32*)(p+0x20)=zero;
-   *(s32*)(p+0x24)=zero;
-   *(f32*)(p+0x28)=init;
-   p+=0x2c;
- }
- *(s32*)((u8*)arg0+0x5bc)=0;
+    u8* p = (u8*)arg0 + 0x2FC;
+    void* val = *(void**)lbl_802F9630;
+    f64 init = lbl_80562650;
+    s32 i;
+    s32 zero = 0;
+    for (i = 0; i < 0x10; i++, p += 0x2C) {
+        *(s32*)(p + 0x1C) = fn_802077A4(val, 5, p + 0x10, p + 4);
+        *(s32*)(p + 0x20) = 0;
+        *(s32*)(p + 0x24) = 0;
+        *(f32*)(p + 0x28) = init;
+    }
+    *(s32*)((u8*)arg0 + 0x5BC) = 0;
 }
-
-#pragma scheduling on
+#pragma pop
 void fn_801B435C(void *arg0) {
     register u32 zero = 0;
     f32 value;
