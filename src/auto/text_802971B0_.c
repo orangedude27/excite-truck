@@ -2,6 +2,11 @@
 // split_file divides it into the game's real files (file_status shows its range).
 typedef unsigned char u8;
 typedef signed int s32;
+__declspec(section ".sdata") extern char lbl_8055CA40[];
+__declspec(section ".sdata") extern char *lbl_8055CA38[];
+extern char lbl_80349384[];
+extern int stricmp(const char *, const char *);
+extern int fn_802E317C(char *, ...);
 extern s32 fn_80296D28(s32);
 extern s32 fn_80128668(void *);
 extern s32 fn_8002F6AC(s32, void *);
@@ -60,6 +65,9 @@ extern "C" void *fn_802971B0(void *arg0) {
     }
     return obj;
 }
+
+void *fn_802972A4(void *arg0) { return 0; }
+
 #pragma cplusplus reset
 #pragma scheduling on
 __declspec(section ".sdata") extern char lbl_8055CA40[];
