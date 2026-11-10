@@ -2947,69 +2947,91 @@ void *GKI_getpoolbuf(UINT8 pool_id) {
     return GKI_getbuf(p_cb->freeq[pool_id].size);
 }
 
-/* Frees a GKI buffer back to its pool: validates header/magic, logs errors for bad/unlinked/invalid-pool buffers, otherwise enqueues the header on the free queue and clears state. */
-void GKI_freebuf(void *buffer)
-{
-    char *errorStrings = lbl_80314110;
-    BUFFER_HDR_T *header;
-    u16 bufferSize;
-    u8 poolId;
-    u32 *magic;
-    u8 damaged;
-    FREE_QUEUE_T *freeQueue;
+/* GKI_exception() message strings, as offsets into the GKI strings block that
+   starts at lbl_80314110 ("getbuf: Size is zero").  See gki_buffer.c. */
+#define GKI_STR_FREE_BUF_CORRUPTED  0x30  /* "Free - Buf Corrupted" */
+#define GKI_STR_FREEING_LINKED_BUF  0x48  /* "Freeing Linked Buf" */
+#define GKI_STR_BAD_BUF_QID         0x5C  /* "Bad Buf QId" */
 
-    if (buffer == 0)
+/*
+ * Return a buffer to the free list of the pool it came from (gki_buffer.c).
+ *
+ * The buffer is checked the way gki_chk_buf_damage() does: its size comes from
+ * the pool named by the header's queue id (GKI_get_buf_size()), and MAGIC_NO
+ * has to sit in the word right past the buffer.  A null or damaged buffer, a
+ * header that is still queued and a pool id past the last pool are each
+ * reported with GKI_exception() and left alone.  Otherwise the header goes on
+ * the tail of gki_cb.com.freeq[q_id], is marked free and no longer owned by a
+ * task, and the pool's count of allocated buffers drops by one - all with
+ * interrupts disabled around the list surgery.
+ */
+void GKI_freebuf(void *p_buf)
+{
+    char *p_str = lbl_80314110;   /* GKI_exception() message strings */
+    BUFFER_HDR_T *p_hdr;
+    UINT16 size;
+    UINT8 pool_id;
+    UINT32 *magic;
+    BOOLEAN damaged;
+    FREE_QUEUE_T *Q;
+
+    if (p_buf == NULL)
         goto bad_buffer;
 
-    header = (BUFFER_HDR_T *)((u8 *)buffer - 8);
-    if (((u32)header & 1) != 0) {
-        bufferSize = 0;
+    /* GKI_get_buf_size(): an odd header address means no size to trust */
+    p_hdr = (BUFFER_HDR_T *)((UINT8 *)p_buf - BUFFER_HDR_SIZE);
+    if (((UINT32)p_hdr & 1) != 0) {
+        size = 0;
     } else {
-        poolId = header->q_id;
-        if (poolId < 9)
-            bufferSize = *(u16 *)((u8 *)lbl_803946C0 + 0x289E8 + (poolId << 4));
+        pool_id = p_hdr->q_id;
+        if (pool_id < GKI_NUM_TOTAL_BUF_POOLS)
+            size = gki_cb.com.freeq[pool_id].size;
         else
-            bufferSize = 0;
+            size = 0;
     }
 
-    magic = (u32 *)((u8 *)buffer + bufferSize);
-    if (((u32)magic & 1) != 0) {
-        damaged = 1;
-    } else if (*magic == 0xDDBADDBA) {
-        damaged = 0;
+    /* gki_chk_buf_damage(): the magic word written past the user's buffer */
+    magic = (UINT32 *)((UINT8 *)p_buf + size);
+    if (((UINT32)magic & 1) != 0) {
+        damaged = TRUE;
+    } else if (*magic == MAGIC_NO) {
+        damaged = FALSE;
     } else {
-        damaged = 1;
+        damaged = TRUE;
     }
-    if (damaged == 0)
+    if (damaged == FALSE)
         goto valid_buffer;
 
 bad_buffer:
-    ((void (*)(u16, const char *))fn_8006EBF0)(0xFFFF, errorStrings + 0x30);
+    ((void (*)(u16, const char *))fn_8006EBF0)(GKI_ERROR_BUF_CORRUPTED,
+                                               p_str + GKI_STR_FREE_BUF_CORRUPTED);
     return;
 
 valid_buffer:
-    if (header->status != BUF_STATUS_UNLINKED) {
-        ((void (*)(u16, const char *))fn_8006EBF0)(0xFFFC, errorStrings + 0x48);
+    if (p_hdr->status != BUF_STATUS_UNLINKED) {
+        ((void (*)(u16, const char *))fn_8006EBF0)(GKI_ERROR_FREEBUF_BUF_LINKED,
+                                                   p_str + GKI_STR_FREEING_LINKED_BUF);
         return;
     }
-    if (header->q_id >= 9) {
-        ((void (*)(u16, const char *))fn_8006EBF0)(0xFFFD, errorStrings + 0x5C);
+    if (p_hdr->q_id >= GKI_NUM_TOTAL_BUF_POOLS) {
+        ((void (*)(u16, const char *))fn_8006EBF0)(GKI_ERROR_FREEBUF_BAD_QID,
+                                                   p_str + GKI_STR_BAD_BUF_QID);
         return;
     }
 
-    fn_8006EBAC();
-    freeQueue = (FREE_QUEUE_T *)((u8 *)lbl_803946C0 + 0x289E0 + (header->q_id << 4));
-    if (freeQueue->p_last != 0)
-        freeQueue->p_last->p_next = header;
+    fn_8006EBAC();                            /* GKI_disable() */
+    Q = &gki_cb.com.freeq[p_hdr->q_id];
+    if (Q->p_last != NULL)
+        Q->p_last->p_next = p_hdr;
     else
-        freeQueue->p_first = header;
-    freeQueue->p_last = header;
-    header->p_next = 0;
-    header->status = BUF_STATUS_FREE;
-    header->task_id = GKI_INVALID_TASK;
-    if (freeQueue->cur_cnt != 0)
-        freeQueue->cur_cnt--;
-    fn_8006EB88();
+        Q->p_first = p_hdr;
+    Q->p_last = p_hdr;
+    p_hdr->p_next = NULL;
+    p_hdr->status = BUF_STATUS_FREE;
+    p_hdr->task_id = GKI_INVALID_TASK;
+    if (Q->cur_cnt != 0)
+        Q->cur_cnt--;
+    fn_8006EB88();                            /* GKI_enable() */
 }
 
 void *GKI_read_mbox(UINT8 mbox) {
