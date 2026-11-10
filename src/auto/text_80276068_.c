@@ -322,7 +322,7 @@ void fn_80276CB0(void *arg0, int arg1) {
 void fn_80276D3C(int unused, int arg) {
     unsigned char sp10[0x38];
     float sp8;
-    unsigned char *p = (unsigned char *)fn_80276A44();
+    unsigned char *p = (unsigned char *)fn_80276A44((void *)unused);
     if (arg == 1) {
         fn_8026A4A0(0, sp10, &sp8);
         fn_80276098(sp10, p + 4, sp8, *(float *)(p + 0x34), lbl_80564060, 0, 0x22);
