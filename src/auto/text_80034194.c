@@ -2122,7 +2122,6 @@ extern void fn_80035E6C();
 void fn_800379A8(u32 arg0) {
     u64 time;
     u32 ticks;
-    register void *alarm;
     if (arg0 == 0x10) {
         fn_8003A1A0(0x1234568, fn_80035C78);
     } else if (arg0 == 0x20) {
@@ -2130,13 +2129,12 @@ void fn_800379A8(u32 arg0) {
     } else if (arg0 & 1) {
         time = __OSGetSystemTime();
         lbl_8055D8A4 = time;
-        alarm = &lbl_8037B580;
         lbl_8055D8A0 = time >> 32;
         lbl_8055D8AC = 0;
         lbl_8055D85C = 0;
-        OSCreateAlarm(alarm);
+        OSCreateAlarm(&lbl_8037B580);
         ticks = ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 100;
-        ((void (*)(void *, u32, u32, u32, void (*)(void)))OSSetAlarm)(alarm, 0x10624DD3, 0, ticks, fn_80037800);
+        ((void (*)(void *, u32, u32, u32, void (*)(void)))OSSetAlarm)(&lbl_8037B580, 0x10624DD3, 0, ticks, fn_80037800);
     } else {
         fn_800356F4(0x27, 0, 0);
         fn_8003B218(fn_80035E6C);
