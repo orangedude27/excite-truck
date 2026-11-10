@@ -7,6 +7,8 @@
 extern unsigned int lbl_802ED860[];
 extern void Block_link(void*, void*);
 extern void __sys_free(void*);
+
+#define sFixedPoolSizes lbl_802ED860
 void deallocate_from_fixed_pools(void ***, unsigned char *, unsigned int);
 
 typedef struct {
