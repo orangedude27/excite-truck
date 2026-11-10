@@ -383,6 +383,7 @@ static s32 _FSReadDirCb(s32 result, FSCommandBlock* block) {
 
 s32 ISFS_ReadDirAsync(const char* path, char* filesOut, u32* fileCountOut,
                       FSAsyncCallback callback, void* callbackArg) {
+    /* Issues an asynchronous IOS FS ioctl to read directory entries into filesOut and return the file count via fileCountOut/callback. */
     FSCommandBlock* block;
     char* pathWork;
     IPCIOVector* vectors;
