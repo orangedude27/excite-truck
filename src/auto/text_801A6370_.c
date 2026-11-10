@@ -38,7 +38,7 @@ float fn_801A6370(float arg0, float arg1, float arg2, float arg3) {
 #pragma dont_inline reset
 
 float fn_801A6390(int arg0, int arg1) {
-    return lbl_8056241C * (float)(arg0 - arg1);
+    return (float)(arg0 - arg1) * lbl_8056241C;
 }
 
 #pragma dont_inline on
