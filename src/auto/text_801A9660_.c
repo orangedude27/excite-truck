@@ -1947,33 +1947,49 @@ extern "C" void fn_801AD888(void *arg0) {
 }
 #pragma cplusplus off
 
-void fn_801AD8C8(void *arg0, int *arg1, float *arg2, float *arg3) {
-    int l, k, j, i, h, g, f, e, d, c, b, a;
-    float z1, y1, x1, z0, y0, x0;
-    a=arg1[0]; b=arg1[1]; c=arg1[2]; d=arg1[3];
-    e=arg1[4]; f=arg1[5]; g=arg1[6]; h=arg1[7];
-    i=arg1[8]; j=arg1[9]; k=arg1[10]; l=arg1[11];
-    *(int *)((char *)arg0+0x3c)=a;
-    *(int *)((char *)arg0+0x40)=b;
-    *(int *)((char *)arg0+0x44)=c;
-    *(int *)((char *)arg0+0x48)=d;
-    *(int *)((char *)arg0+0x4c)=e;
-    *(int *)((char *)arg0+0x50)=f;
-    *(int *)((char *)arg0+0x54)=g;
-    *(int *)((char *)arg0+0x58)=h;
-    *(int *)((char *)arg0+0x5c)=i;
-    *(int *)((char *)arg0+0x60)=j;
-    *(int *)((char *)arg0+0x64)=k;
-    *(int *)((char *)arg0+0x68)=l;
+void fn_801AD8C8(void *arg0, unsigned int *arg1, float *arg2, float *arg3) {
+    volatile unsigned int *src = (volatile unsigned int *)arg1;
+    float *vec1 = arg2;
+    float *vec2 = arg3;
+    unsigned int t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
+    float f0, f1, f2, f3, f4, f5;
+    t0 = src[0];
+    t1 = src[1];
+    t2 = src[2];
+    t3 = src[3];
+    t4 = src[4];
+    t5 = src[5];
+    t6 = src[6];
+    t7 = src[7];
+    t8 = src[8];
+    t9 = src[9];
+    t10 = src[10];
+    t11 = src[11];
+    *(unsigned int *)((char *)arg0 + 0x3C) = t0;
+    *(unsigned int *)((char *)arg0 + 0x40) = t1;
+    *(unsigned int *)((char *)arg0 + 0x44) = t2;
+    *(unsigned int *)((char *)arg0 + 0x48) = t3;
+    *(unsigned int *)((char *)arg0 + 0x4C) = t4;
+    *(unsigned int *)((char *)arg0 + 0x50) = t5;
+    *(unsigned int *)((char *)arg0 + 0x54) = t6;
+    *(unsigned int *)((char *)arg0 + 0x58) = t7;
+    *(unsigned int *)((char *)arg0 + 0x5C) = t8;
+    *(unsigned int *)((char *)arg0 + 0x60) = t9;
+    *(unsigned int *)((char *)arg0 + 0x64) = t10;
+    *(unsigned int *)((char *)arg0 + 0x68) = t11;
     ((void (*)(void *))fn_8017A580)(arg0);
-    x0=arg2[0]; y0=arg2[1]; z0=arg2[2];
-    x1=arg3[0]; y1=arg3[1]; z1=arg3[2];
-    *(float *)((char *)arg0+0x118)=x0;
-    *(float *)((char *)arg0+0x11c)=y0;
-    *(float *)((char *)arg0+0x120)=z0;
-    *(float *)((char *)arg0+0x124)=x1;
-    *(float *)((char *)arg0+0x128)=y1;
-    *(float *)((char *)arg0+0x12c)=z1;
+    f5 = vec1[0];
+    f4 = vec1[1];
+    f3 = vec1[2];
+    f2 = vec2[0];
+    f1 = vec2[1];
+    f0 = vec2[2];
+    *(float *)((char *)arg0 + 0x118) = f5;
+    *(float *)((char *)arg0 + 0x11C) = f4;
+    *(float *)((char *)arg0 + 0x120) = f3;
+    *(float *)((char *)arg0 + 0x124) = f2;
+    *(float *)((char *)arg0 + 0x128) = f1;
+    *(float *)((char *)arg0 + 0x12C) = f0;
     fn_801AC240(arg0);
 }
 
