@@ -1432,46 +1432,47 @@ extern "C" s32 fn_800A68F0(void *arg0, u32 arg1, s32 *arg2) {
 }
 
 extern "C" s32 fn_800A6A40(void *arg0) {
+    /* Returns nonzero if the sector is a valid FAT boot sector/PBR (jump opcode, 0x55AA signature, BPB geometry, and media descriptor). */
     /* Fix note: put the high-byte term first so the compiler builds the low-byte shift as the merge base. */
-    u8 *data = (u8 *)arg0;
-    u8 temp_r4;
-    s32 var_r5;
-    u16 temp_r0;
-    u16 var_r4;
-    u8 temp_r0_2;
-    u8 temp_r0_3;
+    u8 *sector = (u8 *)arg0;
+    u8 jumpOpcode;
+    s32 isValid;
+    u16 bytesPerSectorWord;
+    u16 bytesPerSector;
+    u8 sectorsPerCluster;
+    u8 mediaDescriptor;
 
-    var_r5 = 1;
-    temp_r4 = data[0];
-    if (((temp_r4 != 0xEB) || (data[2] != 0x90)) && (temp_r4 != 0xE9))
-        var_r5 = 0;
-    if (data[0x1FE] != 0x55 || data[0x1FF] != 0xAA)
-        var_r5 = 0;
+    isValid = 1;
+    jumpOpcode = sector[0];
+    if (((jumpOpcode != 0xEB) || (sector[2] != 0x90)) && (jumpOpcode != 0xE9))
+        isValid = 0;
+    if (sector[0x1FE] != 0x55 || sector[0x1FF] != 0xAA)
+        isValid = 0;
 
     if ((((u32)arg0 + 0xB) & 1) != 0) {
-        var_r4 = (data[0xB] & ~0xFF00) |
-                 ((data[0xC] << 8) & 0xFF00);
+        bytesPerSector = (sector[0xB] & ~0xFF00) |
+                         ((sector[0xC] << 8) & 0xFF00);
     } else {
-        temp_r0 = *(u16 *)(data + 0xC);
-        var_r4 = ((temp_r0 >> 8) & 0xFF) |
-                 ((temp_r0 << 8) & 0xFF00);
+        bytesPerSectorWord = *(u16 *)(sector + 0xC);
+        bytesPerSector = ((bytesPerSectorWord >> 8) & 0xFF) |
+                         ((bytesPerSectorWord << 8) & 0xFF00);
     }
 
-    if (var_r4 != 0x200 && var_r4 != 0x400 && var_r4 != 0x800 && var_r4 != 0x1000)
-        var_r5 = 0;
+    if (bytesPerSector != 0x200 && bytesPerSector != 0x400 && bytesPerSector != 0x800 && bytesPerSector != 0x1000)
+        isValid = 0;
 
-    temp_r0_2 = data[0xD];
-    if (temp_r0_2 != 1 && temp_r0_2 != 2 && temp_r0_2 != 4 &&
-        temp_r0_2 != 8 && temp_r0_2 != 0x10 && temp_r0_2 != 0x20 &&
-        temp_r0_2 != 0x40 && temp_r0_2 != 0x80)
-        var_r5 = 0;
+    sectorsPerCluster = sector[0xD];
+    if (sectorsPerCluster != 1 && sectorsPerCluster != 2 && sectorsPerCluster != 4 &&
+        sectorsPerCluster != 8 && sectorsPerCluster != 0x10 && sectorsPerCluster != 0x20 &&
+        sectorsPerCluster != 0x40 && sectorsPerCluster != 0x80)
+        isValid = 0;
 
-    temp_r0_3 = data[0x15];
-    if (temp_r0_3 != 0xF0 && temp_r0_3 != 0xF8 && temp_r0_3 != 0xF9 &&
-        temp_r0_3 != 0xFA && temp_r0_3 != 0xFB && temp_r0_3 != 0xFC &&
-        temp_r0_3 != 0xFD && temp_r0_3 != 0xFE && temp_r0_3 != 0xFF)
-        var_r5 = 0;
-    return var_r5;
+    mediaDescriptor = sector[0x15];
+    if (mediaDescriptor != 0xF0 && mediaDescriptor != 0xF8 && mediaDescriptor != 0xF9 &&
+        mediaDescriptor != 0xFA && mediaDescriptor != 0xFB && mediaDescriptor != 0xFC &&
+        mediaDescriptor != 0xFD && mediaDescriptor != 0xFE && mediaDescriptor != 0xFF)
+        isValid = 0;
+    return isValid;
 }
 
 extern "C" s32 fn_800A6520(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 *arg5);
