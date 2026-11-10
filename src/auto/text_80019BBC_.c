@@ -26,11 +26,16 @@ extern double sin(double);
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_80019BBC(void) {
-    float initial = lbl_80560418;
-    float angle = lbl_80560418;
-    float step = lbl_8056041C;
-    float *p = (float *)lbl_803582C0;
-    int i = 0;
+    float step;
+    float initial;
+    float angle;
+    float *p;
+    int i;
+    step = lbl_8056041C;
+    angle = lbl_80560418;
+    p = (float *)lbl_803582C0;
+    initial = angle;
+    i = 0;
     do {
         *p++ = (float)cos(angle);
         p[0] = (float)sin(angle);
@@ -709,40 +714,41 @@ extern void fn_802C8750(int *, int);
 extern void fn_802C96DC(float *, int);
 extern float lbl_80560418, lbl_80560420, lbl_80560424, lbl_80560440, lbl_80560458;
 #pragma scheduling invalid_target
-void fn_8001B7BC(void *arg0) {
+/* Sets up projection/model-view for rendering an object and draws two passes. */
+void fn_8001B7BC(void *obj) {
     struct {
-        int sp58[2];
+        int viewport[2];
         unsigned char pad[8];
-        float sp78[4];
-        float sp28[12];
+        float projParams[4];
+        float modelMtx[12];
     } frame;
-    double angle;
-    float ratio;
-    float temp_f4;
-    int temp_r31;
-    fn_802CB274(*(int *)((char *)arg0 + 4));
-    fn_802C9294(*(int *)((char *)arg0 + 4), 0);
-    angle = lbl_80560458;
-    temp_f4 = (float)fn_8002EF30((float)angle * lbl_80560420);
-    ratio = (lbl_80560420 * *(float *)((char *)arg0 + 0x28)) / temp_f4;
-    fn_802C9694(frame.sp78, ratio - lbl_80560424, lbl_80560424 + ratio, (float)angle, temp_f4);
-    temp_f4 = *(float *)((char *)arg0 + 0x1C);
-    fn_802C86F0(frame.sp58, 0, 0, (int)temp_f4, (int)temp_f4);
+    double angleRad;
+    float aspectRatio;
+    float tanHalf;
+    int savedState;
+    fn_802CB274(*(int *)((char *)obj + 4));
+    fn_802C9294(*(int *)((char *)obj + 4), 0);
+    angleRad = lbl_80560458;
+    tanHalf = (float)fn_8002EF30((float)angleRad * lbl_80560420);
+    aspectRatio = (lbl_80560420 * *(float *)((char *)obj + 0x28)) / tanHalf;
+    fn_802C9694(frame.projParams, aspectRatio - lbl_80560424, lbl_80560424 + aspectRatio, (float)angleRad, tanHalf);
+    tanHalf = *(float *)((char *)obj + 0x1C);
+    fn_802C86F0(frame.viewport, 0, 0, (int)tanHalf, (int)tanHalf);
     fn_802C88CC(0xFFFFFF);
-    temp_r31 = fn_802C2C00(0);
-    frame.sp28[9] = lbl_80560418; frame.sp28[10] = ratio; frame.sp28[11] = lbl_80560418;
-    frame.sp28[0] = lbl_80560424; frame.sp28[1] = lbl_80560418; frame.sp28[2] = lbl_80560418;
-    frame.sp28[3] = lbl_80560418; frame.sp28[4] = lbl_80560418; frame.sp28[5] = lbl_80560424;
-    frame.sp28[6] = lbl_80560418; frame.sp28[7] = lbl_80560440; frame.sp28[8] = lbl_80560418;
-    fn_802C8638(frame.sp28, lbl_80560424, lbl_80560418);
-    fn_802C8BD0(*(int *)((char *)arg0 + 0xC));
-    fn_8001B754(*(float *)((char *)arg0 + 0x3C)); fn_802C8D74();
+    savedState = fn_802C2C00(0);
+    frame.modelMtx[9] = lbl_80560418; frame.modelMtx[10] = aspectRatio; frame.modelMtx[11] = lbl_80560418;
+    frame.modelMtx[0] = lbl_80560424; frame.modelMtx[1] = lbl_80560418; frame.modelMtx[2] = lbl_80560418;
+    frame.modelMtx[3] = lbl_80560418; frame.modelMtx[4] = lbl_80560418; frame.modelMtx[5] = lbl_80560424;
+    frame.modelMtx[6] = lbl_80560418; frame.modelMtx[7] = lbl_80560440; frame.modelMtx[8] = lbl_80560418;
+    fn_802C8638(frame.modelMtx, lbl_80560424, lbl_80560418);
+    fn_802C8BD0(*(int *)((char *)obj + 0xC));
+    fn_8001B754(*(float *)((char *)obj + 0x3C)); fn_802C8D74();
     ((void (*)(int))fn_8001B7B8)(0);
-    fn_802C8BD0(*(int *)((char *)arg0 + 8));
-    fn_8001B754(*(float *)((char *)arg0 + 0x3C)); fn_802C8D74();
+    fn_802C8BD0(*(int *)((char *)obj + 8));
+    fn_8001B754(*(float *)((char *)obj + 0x3C)); fn_802C8D74();
     ((void (*)(int))fn_8001B7B8)(1);
-    fn_802C2C00(temp_r31); fn_802C9294(-2, 0);
-    fn_802C8750(frame.sp58, -1); fn_802C96DC(frame.sp78, -1);
+    fn_802C2C00(savedState); fn_802C9294(-2, 0);
+    fn_802C8750(frame.viewport, -1); fn_802C96DC(frame.projParams, -1);
 }
 #pragma scheduling on
 
