@@ -7221,6 +7221,9 @@ found:
 #pragma pop
 void btm_acl_encrypt_change(u16 handle, u8 status, u8 enable)
 {
+    /* Finds the ACL device entry matching handle in lbl_803C0F78, then handles
+     * pending encrypt/switch-role states (0x14F == 2/4), issuing HCI switch-role
+     * when needed and invoking/clearing a stored callback on completion/failure. */
     u8 *base = lbl_803C0F78;
     u32 index = 0;
     u8 *dev;
