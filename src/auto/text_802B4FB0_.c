@@ -38,9 +38,6 @@ int fn_802B4FD0(void *arg0, int *arg1, int *arg2) {
 #pragma dont_inline reset
 typedef struct { unsigned char pad0[2]; unsigned char kind; unsigned char pad3[9]; unsigned short w; unsigned short h; unsigned char idx; } Fn802B5070Arg;
 extern char lbl_8034A4E0[];
-extern int fn_802E3D04(void);
-extern int fn_802E39D0(int, void *, int);
-extern void fn_802E3734(int *);
 
 #pragma dont_inline on
 #pragma scheduling invalid_target
