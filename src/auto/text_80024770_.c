@@ -8,7 +8,11 @@
 // 0x80024A0C, which is just `b _ftell`.
 #define ftell fn_80024A0C
 int fn_80024A0C(void *);
-/* Flush a stream's output buffer; if stream is NULL, flush all open streams. */
+/* MSL fflush(): write a stream's buffered output.  With NULL it flushes every
+ * open stream.  A stream that was reading just drops its read buffer; one that
+ * was writing has its buffer written and its file position re-read.
+ * Returns 0, or -1 if the stream is closed, already in error, or the write
+ * failed.  Same source as src/MSL/file_io.c's fflush(). */
 int fflush(FILE *stream) {
     int position;
 
@@ -40,7 +44,7 @@ int fflush(FILE *stream) {
     if (stream->file_mode.file_kind != __disk_file) {
         position = 0;
     } else {
-        position = fn_80024A0C(stream);
+        position = ftell(stream);
     }
 
     if (__flush_buffer(stream, 0) != 0) {
