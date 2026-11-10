@@ -108,48 +108,58 @@ extern "C" int ReadWaveSoundInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hb
 #pragma pop
 extern "C" char lbl_80327880[], lbl_803278AC[], lbl_803278D8[];
 extern "C" char lbl_80559908, lbl_80559910;
-extern "C" int ReadWaveSoundNoteInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hbm3snd6detail17WaveSoundNoteInfoii(void* arg0, void* arg1, int arg2, int arg3) {
-    register unsigned char* reader = (unsigned char*)arg0;
+extern "C" int ReadWaveSoundNoteInfo__Q46nw4hbm3snd6detail13WsdFileReaderCFPQ46nw4hbm3snd6detail17WaveSoundNoteInfoii(void* readerPtr, void* outNoteInfo, int soundIndex, int noteIndex) {
+    /* Reads the indexed wave-sound note from WSD data, resolves its wave data,
+       and fills the output WaveSoundNoteInfo (with v1.01+ fields when present). */
+    register unsigned char* reader = (unsigned char*)readerPtr;
     register unsigned char* base = (unsigned char*)*(void**)(reader + 4);
     register unsigned char* data = base + 8;
-    register unsigned char* entry = base + arg2 * 8;
-    unsigned char* wave;
-    unsigned char* note;
-    unsigned char* ref;
-    unsigned char* voice;
-    long index = arg3;
+    register unsigned char* soundEntry = base + soundIndex * 8;
+    unsigned char* waveData;
+    unsigned char* noteTable;
+    unsigned char* soundRef;
+    unsigned char* voiceEntry;
+    long noteOffset = noteIndex;
     unsigned waveWord;
-    unsigned char* header;
-    unsigned short version;
-    if (entry[0xD] != 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559918, 0x6F, lbl_803278D8);
-    ref = (unsigned char*)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(entry[0xC], *(unsigned int*)(entry + 0x10), data);
+    unsigned char* fileHeader;
+    unsigned short fileVersion;
+
+    if (soundEntry[0xD] != 0)
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559918, 0x6F, lbl_803278D8);
+    soundRef = (unsigned char*)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(soundEntry[0xC], *(unsigned int*)(soundEntry + 0x10), data);
+
     data = (unsigned char*)*(void**)(reader + 4) + 8;
-    if (ref[0x11] != 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559908, 0x6F, lbl_80327880);
-    note = (unsigned char*)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(ref[0x10], *(unsigned int*)(ref + 0x14), data);
-    index *= 8;
+    if (soundRef[0x11] != 0)
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559908, 0x6F, lbl_80327880);
+    noteTable = (unsigned char*)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(soundRef[0x10], *(unsigned int*)(soundRef + 0x14), data);
+
+    noteOffset *= 8;
     data = (unsigned char*)*(void**)(reader + 4) + 8;
-    if (note[index + 5] != 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559910, 0x6F, lbl_803278AC);
-    voice = index + note;
-    wave = (unsigned char*)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(voice[4], *(unsigned int*)(voice + 8), data);
-    waveWord = *(volatile unsigned int*)wave;
-    header = (unsigned char*)*(volatile void**)reader;
-    *(unsigned int*)arg1 = waveWord;
-    ((unsigned char*)arg1)[4] = wave[4];
-    ((unsigned char*)arg1)[5] = wave[5];
-    ((unsigned char*)arg1)[6] = wave[6];
-    ((unsigned char*)arg1)[7] = wave[7];
-    ((unsigned char*)arg1)[8] = wave[0xC];
-    ((unsigned char*)arg1)[0xB] = wave[0xD];
-    version = *(unsigned short*)(header + 6);
-    if (version >= 0x101) {
-        ((unsigned char*)arg1)[9] = wave[0xE];
-        ((unsigned char*)arg1)[0xA] = wave[0xF];
-        *(float*)((char*)arg1 + 0xC) = *(float*)(wave + 0x10);
+    if (noteTable[noteOffset + 5] != 0)
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80559910, 0x6F, lbl_803278AC);
+    voiceEntry = noteOffset + noteTable;
+    waveData = (unsigned char*)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(voiceEntry[4], *(unsigned int*)(voiceEntry + 8), data);
+
+    waveWord = *(volatile unsigned int*)waveData;
+    fileHeader = (unsigned char*)*(volatile void**)reader;
+    *(unsigned int*)outNoteInfo = waveWord;
+    ((unsigned char*)outNoteInfo)[4] = waveData[4];
+    ((unsigned char*)outNoteInfo)[5] = waveData[5];
+    ((unsigned char*)outNoteInfo)[6] = waveData[6];
+    ((unsigned char*)outNoteInfo)[7] = waveData[7];
+    ((unsigned char*)outNoteInfo)[8] = waveData[0xC];
+    ((unsigned char*)outNoteInfo)[0xB] = waveData[0xD];
+
+    fileVersion = *(unsigned short*)(fileHeader + 6);
+    if (fileVersion >= 0x101) {
+        ((unsigned char*)outNoteInfo)[9] = waveData[0xE];
+        ((unsigned char*)outNoteInfo)[0xA] = waveData[0xF];
+        *(float*)((char*)outNoteInfo + 0xC) = *(float*)(waveData + 0x10);
     } else {
         float defaultValue = lbl_80561118;
-        ((unsigned char*)arg1)[9] = 0x40;
-        ((unsigned char*)arg1)[0xA] = 0;
-        *(float*)((char*)arg1 + 0xC) = defaultValue;
+        ((unsigned char*)outNoteInfo)[9] = 0x40;
+        ((unsigned char*)outNoteInfo)[0xA] = 0;
+        *(float*)((char*)outNoteInfo + 0xC) = defaultValue;
     }
     return 1;
 }
