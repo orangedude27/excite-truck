@@ -17940,48 +17940,52 @@ void l2c_link_check_send_pkts(void *arg0, u8 arg1, void *arg2, u8 arg3) {
 }
 
 extern char lbl_80318D98[];
+/* Recompute L2CAP link transmit allocations and flow-control thresholds for all
+ * active link control blocks based on the current scheduler divisor/state. */
 void l2c_link_adjust_allocation(void) {
     u8 *base = lbl_803C4040;
-    u16 divisor = *(u16 *)(base + 0x7B8);
+    u16 num_active_links = *(u16 *)(base + 0x7B8);
     u8 *loopBase;
-    u32 i;
-    u8 *entry;
-    u16 allocation;
-    s32 active = 0;
-    u16 value;
+    u32 lcb_index;
+    u8 *lcb;
+    u16 fair_allocation;
+    s32 active_link_count = 0;
+    u16 high_watermark;
 
-    if (divisor == 0)
+    if (num_active_links == 0)
         return;
+    /* Count LCBs that are both present and in the active transmission state. */
     if (base[8] != 0 && base[0x62] == 1)
-        active = 1;
+        active_link_count = 1;
     if (base[0x64] != 0 && base[0xBE] == 1)
-        active++;
+        active_link_count++;
     if (base[0xC0] != 0 && base[0x11A] == 1)
-        active++;
+        active_link_count++;
     if (base[0x11C] != 0 && base[0x176] == 1)
-        active++;
+        active_link_count++;
 
     loopBase = lbl_803C4040;
-    allocation = *(u16 *)(loopBase + 2) / divisor + 1;
-    entry = loopBase + 8;
-    for (i = 0; i < 4; i++, entry += 0x5C) {
-        if (entry[0] != 0) {
-            if (active == 0 || entry[0x5A] == 1) {
-                *(u16 *)(entry + 0x34) = allocation;
-                *(u16 *)(entry + 0x36) = allocation;
+    fair_allocation = *(u16 *)(loopBase + 2) / num_active_links + 1;
+    lcb = loopBase + 8;
+    for (lcb_index = 0; lcb_index < 4; lcb_index++, lcb += 0x5C) {
+        if (lcb[0] != 0) {
+            /* Inactive/idle links get a small fixed quota; active links share fairly. */
+            if (active_link_count == 0 || lcb[0x5A] == 1) {
+                *(u16 *)(lcb + 0x34) = fair_allocation;
+                *(u16 *)(lcb + 0x36) = fair_allocation;
             } else {
-                *(u16 *)(entry + 0x34) = 3;
-                *(u16 *)(entry + 0x36) = 3;
+                *(u16 *)(lcb + 0x34) = 3;
+                *(u16 *)(lcb + 0x36) = 3;
             }
-            value = *(u16 *)(entry + 0x34) * 120 / 100;
-            *(u16 *)(entry + 0x3A) = value;
-            *(u16 *)(entry + 0x3C) = value > 3 ? value - 3 : 0;
-            *(u16 *)(entry + 0x3E) = value + 2;
+            high_watermark = *(u16 *)(lcb + 0x34) * 120 / 100;
+            *(u16 *)(lcb + 0x3A) = high_watermark;
+            *(u16 *)(lcb + 0x3C) = high_watermark > 3 ? high_watermark - 3 : 0;
+            *(u16 *)(lcb + 0x3E) = high_watermark + 2;
             if (*(u8 *)lbl_803C4040 >= 5)
                 ((void (*)(u32, void *, u16, u8, u16, u16, u16, u16))fn_800709CC)(
-                    0x80004, lbl_80318D98, (u16)i, entry[0x5A],
-                    *(u16 *)(entry + 0x36), *(u16 *)(entry + 0x3A),
-                    *(u16 *)(entry + 0x3C), *(u16 *)(entry + 0x3E));
+                    0x80004, lbl_80318D98, (u16)lcb_index, lcb[0x5A],
+                    *(u16 *)(lcb + 0x36), *(u16 *)(lcb + 0x3A),
+                    *(u16 *)(lcb + 0x3C), *(u16 *)(lcb + 0x3E));
         }
     }
 }
