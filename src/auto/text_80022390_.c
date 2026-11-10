@@ -38,75 +38,77 @@ struct ET_FixBlock {
     ET_FixSubBlock *start_;
     unsigned int n_allocated_;
 };
-/* Frees a block allocated from the fixed-size pool list and returns its backing block to the system allocator when empty. */
-void deallocate_from_fixed_pools(void ***poolList, unsigned char *ptr, unsigned int size) {
-    register unsigned int *poolSize = sFixedPoolSizes;
-    register unsigned int poolIndex = 0;
+#pragma section ".extab"
+#pragma section ".extabindex"
+/* Returns a suballocation to its fixed-size pool and, when its block becomes empty, unlinks and frees the backing heap block if it is now a standalone free region. */
+void deallocate_from_fixed_pools(void ***heapList, unsigned char *ptr, unsigned int size) {
+    register unsigned int *sizes = sFixedPoolSizes;
+    register unsigned int i = 0;
     ET_FixSubBlock *subBlock;
-    ET_FixBlock *block;
-    unsigned char *poolEntry;
+    ET_FixBlock *fixBlock;
+    unsigned char *poolList;
     unsigned int flags;
     unsigned char *heapBlock;
-    unsigned int *isFreeable;
-    unsigned char *nextNode;
+    unsigned int *canFree;
+    unsigned char *next;
 
-    while (size > *poolSize) {
-        poolSize++;
-        poolIndex++;
+    while (size > *sizes) {
+        sizes++;
+        i++;
     }
     subBlock = (ET_FixSubBlock *)(ptr - 4);
-    block = subBlock->block_;
-    poolEntry = (unsigned char *)poolList + poolIndex * 8;
-    if (block->start_ == 0) {
-        ET_FixBlock *head = *(ET_FixBlock **)(poolEntry + 8);
-        if (head != block) {
-            if (*(ET_FixBlock **)(poolEntry + 4) == block) {
-                *(ET_FixBlock **)(poolEntry + 8) = head->prev_;
-                head = *(ET_FixBlock **)(poolEntry + 4);
-                *(ET_FixBlock **)(poolEntry + 4) = head->prev_;
+    fixBlock = subBlock->block_;
+    poolList = (unsigned char *)heapList + i * 8;
+    if (fixBlock->start_ == 0) {
+        ET_FixBlock *head = *(ET_FixBlock **)(poolList + 8);
+        if (head != fixBlock) {
+            if (*(ET_FixBlock **)(poolList + 4) == fixBlock) {
+                *(ET_FixBlock **)(poolList + 8) = head->prev_;
+                head = *(ET_FixBlock **)(poolList + 4);
+                *(ET_FixBlock **)(poolList + 4) = head->prev_;
             } else {
-                block->prev_->next_ = block->next_;
-                block->next_->prev_ = block->prev_;
-                head = *(ET_FixBlock **)(poolEntry + 8);
-                block->next_ = head;
-                block->prev_ = head->prev_;
-                block->prev_->next_ = block;
-                block->next_->prev_ = block;
-                *(ET_FixBlock **)(poolEntry + 8) = block;
+                fixBlock->prev_->next_ = fixBlock->next_;
+                fixBlock->next_->prev_ = fixBlock->prev_;
+                head = *(ET_FixBlock **)(poolList + 8);
+                fixBlock->next_ = head;
+                fixBlock->prev_ = head->prev_;
+                fixBlock->prev_->next_ = fixBlock;
+                fixBlock->next_->prev_ = fixBlock;
+                *(ET_FixBlock **)(poolList + 8) = fixBlock;
             }
         }
     }
-    subBlock->next_ = block->start_;
-    block->start_ = subBlock;
-    if (--block->n_allocated_ == 0) {
-        if (*(ET_FixBlock **)(poolEntry + 8) == block)
-            *(ET_FixBlock **)(poolEntry + 8) = block->next_;
-        if (*(ET_FixBlock **)(poolEntry + 4) == block)
-            *(ET_FixBlock **)(poolEntry + 4) = block->prev_;
-        block->prev_->next_ = block->next_;
-        block->next_->prev_ = block->prev_;
-        if (*(ET_FixBlock **)(poolEntry + 8) == block)
-            *(ET_FixBlock **)(poolEntry + 8) = 0;
-        if (*(ET_FixBlock **)(poolEntry + 4) == block)
-            *(ET_FixBlock **)(poolEntry + 4) = 0;
-        heapBlock = (unsigned char *)block - 8;
+    subBlock->next_ = fixBlock->start_;
+    fixBlock->start_ = subBlock;
+    if (--fixBlock->n_allocated_ == 0) {
+        if (*(ET_FixBlock **)(poolList + 8) == fixBlock)
+            *(ET_FixBlock **)(poolList + 8) = fixBlock->next_;
+        if (*(ET_FixBlock **)(poolList + 4) == fixBlock)
+            *(ET_FixBlock **)(poolList + 4) = fixBlock->prev_;
+        fixBlock->prev_->next_ = fixBlock->next_;
+        fixBlock->next_->prev_ = fixBlock->prev_;
+        if (*(ET_FixBlock **)(poolList + 8) == fixBlock)
+            *(ET_FixBlock **)(poolList + 8) = 0;
+        if (*(ET_FixBlock **)(poolList + 4) == fixBlock)
+            *(ET_FixBlock **)(poolList + 4) = 0;
+        heapBlock = (unsigned char *)fixBlock - 8;
         heapBlock = (unsigned char *)(*(unsigned int *)(heapBlock + 4) & ~1u);
-        Block_link(heapBlock, (unsigned char *)block - 8);
+        Block_link(heapBlock, (unsigned char *)fixBlock - 8);
         flags = *(unsigned int *)(heapBlock + 0x10);
-        isFreeable = (unsigned int *)0;
+        canFree = (unsigned int *)0;
         if (!(flags & 2) &&
             ((flags & ~7u) == ((*(unsigned int *)(heapBlock + 0xC) & ~7u) - 0x18)))
-            isFreeable = (unsigned int *)1;
-        if (isFreeable != 0) {
-            unsigned char *prevNode = *(unsigned char **)(heapBlock + 4);
-            if (prevNode == heapBlock)
-                prevNode = 0;
-            if ((unsigned char *)*poolList == heapBlock)
-                *poolList = (void **)prevNode;
-            if (prevNode != 0) {
-                nextNode = *(unsigned char **)heapBlock;
-                *(unsigned char **)prevNode = nextNode;
-                *(unsigned char **)(nextNode + 4) = prevNode;
+            canFree = (unsigned int *)1;
+        if (canFree != 0) {
+            unsigned char *prev = *(unsigned char **)(heapBlock + 4);
+            if (prev == (unsigned char *)heapBlock)
+                prev = 0;
+            if ((unsigned char *)*heapList == heapBlock)
+                *heapList = (void **)prev;
+            if (prev != 0) {
+                next = *(unsigned char **)heapBlock;
+                *(unsigned char **)prev = next;
+                *(unsigned char **)(next + 4) = prev;
             }
             *(unsigned char **)(heapBlock + 4) = 0;
             *(unsigned char **)heapBlock = 0;
