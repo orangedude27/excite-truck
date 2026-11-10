@@ -1862,43 +1862,44 @@ void fn_800370F4(u32 errorCode) {
     }
 }
 
-void fn_8003727C(u32 arg0) {
-    register u32 value = arg0;
+/* Handles a DVD DI/drive status value: records it in __ErrorInfo, then either starts error-report/reset flows (0x10/0x20/bit0) or issues a stop-motor/reset command sequence. */
+void fn_8003727C(u32 status) {
+    register u32 diStatus = status;
     s32 interrupts = OSDisableInterrupts();
-    s32 resetDone;
-    void *block;
+    s32 resetHandled;
+    void *commandBlock;
     void (*callback)(s32, void *);
 
     if (*(volatile u32 *)&lbl_8055D848 == 0) {
-        *(u32 *)(__ErrorInfo + 0x78) = value;
+        *(u32 *)(__ErrorInfo + 0x78) = diStatus;
     } else {
-        *(u32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x14) = value;
+        *(u32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x14) = diStatus;
     }
     OSRestoreInterrupts(interrupts);
 
-    if (value == 0x10) {
+    if (diStatus == 0x10) {
         fn_8003A1A0(0x1234568, fn_80035C78);
-    } else if (value == 0x20) {
+    } else if (diStatus == 0x20) {
         fn_8003A1A0(0x1234569, fn_80035C78);
-    } else if (value & 1) {
+    } else if (diStatus & 1) {
         *(volatile s32 *)&lbl_8055D860 = 0;
         if (*(volatile s32 *)&lbl_8055D858 != 0) {
-            block = (void *)executing_8055D8C8;
+            commandBlock = (void *)executing_8055D8C8;
             lbl_8055D85C = 0;
             lbl_8055D858 = 0;
             executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
-            *(s32 *)((u8 *)block + 0xC) = 0xA;
-            callback = *(void (**)(s32, void *))((u8 *)block + 0x28);
+            *(s32 *)((u8 *)commandBlock + 0xC) = 0xA;
+            callback = *(void (**)(s32, void *))((u8 *)commandBlock + 0x28);
             if (callback != 0)
-                callback(-3, block);
+                callback(-3, commandBlock);
             if (lbl_8055D8B8 != 0)
-                lbl_8055D8B8(0, block);
+                lbl_8055D8B8(0, commandBlock);
             fn_80038040();
-            resetDone = 1;
+            resetHandled = 1;
         } else {
-            resetDone = 0;
+            resetHandled = 0;
         }
-        if (resetDone == 0) {
+        if (resetHandled == 0) {
             *(s32 *)((u8 *)executing_8055D8C8 + 0xC) = 1;
             fn_80038368((void *)executing_8055D8C8);
         }
