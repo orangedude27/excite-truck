@@ -103,6 +103,8 @@ void OSTicksToCalendarTime(s64 ticks, OSCalendarTime* cal) {
     s32 days, secs;
     s64 d;
 
+    /* Converts a tick count into calendar date/time fields, normalizing the
+     * sub-second remainder and seconds-of-day into days since the OS epoch. */
     d = ticks % OS_SEC_TO_TICKS(1);
     if (d < 0) {
         d += OS_SEC_TO_TICKS(1);
