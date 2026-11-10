@@ -338,6 +338,7 @@ void fn_802DFD00(void) {
     GXSetNumTevStages(2);
 }
 #pragma scheduling reset
+/* Configures GX texture coordinate generation and a 3-stage TEV combiner setup. */
 void fn_802DFE88(void) {
     GXSetTexCoordGen2(0, 1, 0, 0x1E, 0, 0x7D);
     GXSetTexCoordGen2(1, 1, 4, 0x3C, 0, 0x7D);
