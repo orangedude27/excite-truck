@@ -1280,7 +1280,7 @@ extern "C" void fn_801B2024(void *arg0) {
     pool = fn_8012850C((count << 7) + 0x10, base + 0x130);
     lbl_8055E684 =
         ((void *(*)(s32, void *(*)(void *), void (*)(void), s32, s32))fn_8002F37C)(
-            pool, fn_801B21B8, fn_801B2118, 0x80, count);
+            pool, fn_801B21B8, (void (*)(void))fn_801B2118, 0x80, count);
     __AXFXGetLfoSinTable_801769CC();
     lbl_8055E680 = fn_800081F0();
     result = ((InitObject *)fn_801B83A0())->initialize();
@@ -1495,6 +1495,7 @@ check_second:
 
 #pragma push
 #pragma processor 750
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" s32 fn_801B25B0(s32 *arg0, s32 *arg1) {
     struct First {
@@ -1507,14 +1508,15 @@ extern "C" s32 fn_801B25B0(s32 *arg0, s32 *arg1) {
         virtual void v1();
         virtual void *get();
     };
+    register s32 i1 = *arg1;
+    register s32 i0 = *arg0;
     void *base = lbl_8055E684;
-    Second *obj1 = (Second *)((u8 *)base + (*arg1 << 7));
-    First *obj0 = (First *)((u8 *)base + (*arg0 << 7));
-    void *result0 = obj0->get(*arg1, base);
+    First *obj0 = (First *)((u8 *)base + (i0 << 7));
+    Second *obj1 = (Second *)((u8 *)base + (i1 << 7));
+    void *result0 = obj0->get(i1, base);
     register f32 var_f31 = *(f32 *)((u8 *)result0 + 0x20);
     void *result1 = obj1->get();
     f32 var_f1 = *(f32 *)((u8 *)result1 + 0x20);
-
     if (var_f31 < lbl_80562604) var_f31 = lbl_80562610;
     if (var_f1 < lbl_80562604) var_f1 = lbl_80562610;
     if (var_f31 < var_f1) return -1;
