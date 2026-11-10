@@ -47,6 +47,9 @@ extern "C" void fn_80128668(void*);
 #pragma push
 #pragma small_data off
 #pragma pop
+// nw4hbm::lyt::Picture constructor: initializes Pane base, sets Picture vtable/state,
+// reserves/copies texcoords and vertex colors from resource, and creates/attaches Material
+// from the ResBlockSet (panics if material table missing) before returning this.
 extern "C" void* __ct__Q36nw4hbm3lyt7PictureFPCQ46nw4hbm3lyt3res7PictureRCQ36nw4hbm3lyt11ResBlockSet(void* this_, const void* res, const void* blockSet) {
     extern void* __ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(void*, const void*);
     extern void* fn_8002F53C(void*, void*, void*, s32, s32);
