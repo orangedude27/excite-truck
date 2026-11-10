@@ -379,9 +379,10 @@ void fn_802E009C(void) {
     GXSetNumTevStages(2);
 }
 
+/* 3-stage TEV combiner setup, alternate-texture variant (picked by fn_802DC71C when useAlt is set). */
 void fn_802E0218(void) {
-    register u32 first = 0;
-    GXSetTexCoordGen2(first, 1, 5, 0x3C, 0, 0x7D);
+    register u32 coord = 0;
+    GXSetTexCoordGen2(coord, 1, 5, 0x3C, 0, 0x7D);
     GXSetTexCoordGen2(1, 1, 4, 0x3C, 0, 0x7D);
     GXSetNumTexGens(2);
     GXSetTevOrder(0, 1, 1, 0xFF);
