@@ -9468,6 +9468,35 @@ static tBTM_STATUS btm_set_inq_event_filter(UINT8 filter_cond_type, UINT8 *p_fil
 #define BTM_LIMITED_INQUIRY_ACTIVE_HERE   0x1
 #define BTM_PERIODIC_INQUIRY_ACTIVE_HERE  0x4
 
+/*
+ * The same btm_cb.btm_inq_vars members through the byte pointer a function
+ * keeps in a register (btm_event_filter_complete holds &btm_cb in one, and
+ * btm_initiate_inquiry is inlined into it).  The macros above fold to
+ * lbl_803C0F78 and cost the compiler an extra address load, so these take the
+ * pointer as an argument.
+ */
+#define btm_inq_filt_cmpl_cb(b)   (*(tBTM_CMPL_CB **)((b) + 0x16B8)) /* p_inqfilter_cmpl_cb */
+#define btm_inq_bd_db(b)          (*(tINQ_BDADDR **)((b) + 0x16DC))  /* p_bd_db: answers so far */
+#define btm_inq_num_bd(b)         (*(UINT16 *)((b) + 0x16E0))        /* num_bd_entries */
+#define btm_inq_max_bd(b)         (*(UINT16 *)((b) + 0x16E2))        /* max_bd_entries */
+#define btm_inq_duration(b)       ((b)[0x1835])                      /* inqparms.duration */
+#define btm_inq_max_resps(b)      ((b)[0x1836])                      /* inqparms.max_resps */
+#define btm_inq_filt_type(b)      ((b)[0x1837])                      /* inqparms.filter_cond_type */
+#define btm_inq_filt_cond(b)      ((b) + 0x1838)                     /* inqparms.filter_cond */
+#define btm_inq_per_min_delay(b)  (*(UINT16 *)((b) + 0x1840))        /* per_min_delay */
+#define btm_inq_per_max_delay(b)  (*(UINT16 *)((b) + 0x1842))        /* per_max_delay */
+#define btm_inq_filt_active(b)    ((b)[0x1844])                      /* inqfilt_active */
+#define btm_inq_pending_cmpl(b)   ((b)[0x1845])                      /* pending_filt_complete_event */
+#define btm_inq_state(b)          ((b)[0x1847])                      /* BTM_INQ_*_STATE */
+#define btm_inq_active(b)         ((b)[0x1848])                      /* BTM_*_INQUIRY_ACTIVE masks */
+
+/* This build's largest GKI buffer (pool 3, see gki_buffer_init) and how many
+   12-byte tINQ_BDADDR entries fit in it; btm_initiate_inquiry() allocates one
+   to record the addresses that answer an inquiry.  gki_target.h's
+   GKI_MAX_BUF_SIZE is a newer, bigger configuration. */
+#define BTM_INQ_BD_BUF_SIZE_HERE    0x708
+#define BTM_INQ_BD_BUF_ENTRIES_HERE (BTM_INQ_BD_BUF_SIZE_HERE / sizeof(tINQ_BDADDR))
+
 void btm_event_filter_complete(UINT8 *p) {
     u8 *cleanup;
     u8 *base=lbl_803C0F78;
