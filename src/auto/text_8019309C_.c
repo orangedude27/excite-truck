@@ -372,19 +372,18 @@ void fn_80193870(void *arg0) {
 }
 
 void fn_80193878(void *arg0) {
-    float t = lbl_80562144;
     float a[3], b[3], low[3];
     void *obj;
-    a[0] = t;
-    a[1] = t;
+    a[0] = lbl_80562144;
+    a[1] = lbl_80562144;
     a[2] = lbl_80562178;
     low[0] = lbl_8056217C;
-    low[1] = t;
-    low[2] = t;
+    low[1] = lbl_80562144;
+    low[2] = lbl_80562144;
     obj = *(void **)((unsigned char *)arg0 + 0x294);
     b[0] = *(float *)((unsigned char *)obj + 0x94) + low[0];
-    b[1] = *(float *)((unsigned char *)obj + 0x98) + t;
-    b[2] = *(float *)((unsigned char *)obj + 0x9C) + t;
+    b[1] = *(float *)((unsigned char *)obj + 0x98) + low[2];
+    b[2] = *(float *)((unsigned char *)obj + 0x9C) + low[2];
     fn_8017B4E0(*(void **)((unsigned char *)arg0 + 0x294), a, b, lbl_80562140);
 }
 
@@ -479,6 +478,7 @@ public:
 #pragma cplusplus on
 #pragma scheduling invalid_target
 extern "C" void fn_80193AEC(void *arg0, void *arg1) {
+    /* Initialize a player/vehicle-related runtime object, register it, and one-time init shared tuning/state. */
     char *table = lbl_80333158;
     int zero = 0;
     int id;
@@ -765,10 +765,13 @@ extern float lbl_80562140, lbl_80562144;
   extern void fn_8018ADAC(void *, float);
 #pragma scheduling invalid_target
 void fn_80194170(void *arg0, float arg1) {
-    double value = lbl_80562140 < arg1 ? lbl_80562140 : arg1;
+    double value;
+    float f;
+    value = lbl_80562140 < arg1 ? lbl_80562140 : arg1;
     value = value > lbl_80562144 ? value : lbl_80562144;
+    f = (float)value;
     *(float *)((char *)arg0 + 0x240) = value;
-    fn_8018ADB4(*(int *)((char *)arg0 + 0x294), (float)value);
+    fn_8018ADB4(*(int *)((char *)arg0 + 0x294), f);
 }
 #pragma scheduling invalid_target
 void fn_801941A8(void *arg0, float arg1) {
