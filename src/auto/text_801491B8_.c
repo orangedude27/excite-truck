@@ -2775,6 +2775,8 @@ u32 fn_80153AC8(void) { return 1; }
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 extern "C" s32 fn_80153AD0(void *arg0, s32 arg1) {
+    /* Update per-slot UI/state for arg1 based on active flags, optionally trigger setup on
+     * a virtual condition, and return 1 if any player slot state (+0x454) is not 4. */
     struct Dummy {
         virtual void v0();
         virtual void v1();
