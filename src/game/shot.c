@@ -171,6 +171,7 @@ void fn_802E4A2C(void) {
 
 extern unsigned char lbl_8055FF58;
 extern unsigned char lbl_804FC3B0[];
+/* Copies the saved state from lbl_804FC3B0 into dst when lbl_8055FF58 is set; returns 1 on copy, 0 otherwise. */
 int fn_802E4A60(void *arg0) {
     unsigned char *dst = (unsigned char *)arg0;
     if (lbl_8055FF58 != 0) {
