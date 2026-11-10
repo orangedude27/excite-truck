@@ -214,6 +214,8 @@ extern void fn_80233354(s32, s32, s32, s32, f32, f32, f32, f32);
 #pragma scheduling invalid_target
 #pragma paired off
 #pragma paired_single off
+// Computes a wrapped/clamped Y range for drawing: derives base/extents with fn_8023293C,
+// adjusts via fn_80230C9C, issues an extra fn_80233354 draw when wrapped, then the final draw.
 void fn_80230650(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
                  f32 farg0, f32 farg1, f32 farg2, f32 farg3,
                  f32 farg4, f32 farg5, f32 farg6, s32 arg_sp0) {
