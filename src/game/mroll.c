@@ -182,6 +182,7 @@ void *fn_80240A1C(void *arg0, int *arg1, void *arg2) {
     struct Constructor *self = (struct Constructor *)arg0;
     int i;
 
+    /* Initialize a menu item: bind vtable/payload, copy the default or indexed name, publish the value, and refresh entry states. */
     self->vtable = lbl_80342650;
     {
         char *source;
