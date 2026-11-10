@@ -76,8 +76,7 @@ void fn_802DEE1C(void) {
 }
 #pragma scheduling on
 void fn_802DEE88(void) {
-    volatile int x = 1;
-    GXSetTexCoordGen2(0, x, 4, 0x3C, 0, 0x7D);
+    GXSetTexCoordGen2(0, 1, 4, 0x3C, 0, 0x7D);
     GXSetNumTexGens(1);
     GXSetTevOrder(0, 0, 0, 4);
     GXSetTevSwapMode(0, 0, 0);
