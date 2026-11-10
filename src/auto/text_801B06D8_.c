@@ -1323,7 +1323,6 @@ s32 fn_801B224C(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-extern void fn_801B2118(void);
 #pragma cplusplus on
 struct VTable68C {
     virtual void d0();
