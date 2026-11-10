@@ -10935,33 +10935,36 @@ done:
     return result;
 }
 
-extern "C" s32 fn_800B814C(void *arg0) {
+extern "C" s32 fn_800B814C(void *fileState) {
     extern s32 NANDClose(void *); extern s32 NANDDelete(void *);
     extern s32 fn_800B8318(void); extern s32 fn_800B878C(void *,u8*,s32*,s32);
     extern s32 fn_800B8520(void *,u32 *); extern void fn_800B865C(void *);
-    u8 buf2[0x200] __attribute__((aligned(32))), buf0[0x200] __attribute__((aligned(32))), buf1[0x200] __attribute__((aligned(32)));
-    s32 type,r; u32 zero,remain;
-    if((r=fn_800B8318())!=0)return r;
-    fn_800A499C((const char*)buf0,0,0x200); zero=0;
-    fn_800B878C(arg0,buf0,&type,0);
-    if(type!=fn_800B8520(buf0,&zero))fn_800B878C(arg0,buf0,&type,zero);
-    r=NANDWrite((u8*)arg0+0x58,buf0,0x200);
-    if(r<0){NANDClose((u8*)arg0+0x58);NANDDelete((u8*)arg0+4);return r;}
-    remain=*(u32*)((u8*)arg0+0x54)-0x200;
-    if(type==2){
-        fn_800B865C(buf1); r=NANDWrite((u8*)arg0+0x58,buf1,0x200);
-        if(r<0){NANDClose((u8*)arg0+0x58);NANDDelete((u8*)arg0+4);return r;}
-        remain-=0x200;
+    u8 zeroSector[0x200] __attribute__((aligned(32))), bootSector[0x200] __attribute__((aligned(32))), fsInfoSector[0x200] __attribute__((aligned(32)));
+    s32 fatType,result; u32 clusterCount,bytesRemaining;
+    /* Initializes a NAND-backed FAT image for fileState: writes the boot sector (and
+     * FS info sector for FAT32), then clears the rest of the file, closing and
+     * deleting it on any write error. */
+    if((result=fn_800B8318())!=0)return result;
+    fn_800A499C((const char*)bootSector,0,0x200); clusterCount=0;
+    fn_800B878C(fileState,bootSector,&fatType,0);
+    if(fatType!=fn_800B8520(bootSector,&clusterCount))fn_800B878C(fileState,bootSector,&fatType,clusterCount);
+    result=NANDWrite((u8*)fileState+0x58,bootSector,0x200);
+    if(result<0){NANDClose((u8*)fileState+0x58);NANDDelete((u8*)fileState+4);return result;}
+    bytesRemaining=*(u32*)((u8*)fileState+0x54)-0x200;
+    if(fatType==2){
+        fn_800B865C(fsInfoSector); result=NANDWrite((u8*)fileState+0x58,fsInfoSector,0x200);
+        if(result<0){NANDClose((u8*)fileState+0x58);NANDDelete((u8*)fileState+4);return result;}
+        bytesRemaining-=0x200;
     }
-    fn_800A499C((const char*)buf2,0,0x200);
-    while(remain>=0x200){
-        r=NANDWrite((u8*)arg0+0x58,buf2,0x200);
-        if(r<0){NANDClose((u8*)arg0+0x58);NANDDelete((u8*)arg0+4);return r;}
-        remain-=0x200;
+    fn_800A499C((const char*)zeroSector,0,0x200);
+    while(bytesRemaining>=0x200){
+        result=NANDWrite((u8*)fileState+0x58,zeroSector,0x200);
+        if(result<0){NANDClose((u8*)fileState+0x58);NANDDelete((u8*)fileState+4);return result;}
+        bytesRemaining-=0x200;
     }
-    if(remain!=0){
-        r=NANDWrite((u8*)arg0+0x58,buf2,remain);
-        if(r<0){NANDClose((u8*)arg0+0x58);NANDDelete((u8*)arg0+4);return r;}
+    if(bytesRemaining!=0){
+        result=NANDWrite((u8*)fileState+0x58,zeroSector,bytesRemaining);
+        if(result<0){NANDClose((u8*)fileState+0x58);NANDDelete((u8*)fileState+4);return result;}
     }
     return 0;
 }
