@@ -564,17 +564,25 @@ s32 fn_80132290(void* arg0, const char* arg1, const char* arg2) {
         ((char *(*)(void *))(*(void ***)((char *)*(void **)arg0 + 8)))(arg0));
     return -1;
 }
-#pragma pop
-f32 fn_80132354(void *arg0, s32 arg1, f32 farg0) {
-    f32 a, b;
-    s32 name = ((s32 (*)(void *))(*(void **)((char *)*(void **)arg0 + 0x14)))(arg0);
-    if (sscanf(lbl_80559B1C, &a, &b) != 2) {
-        fn_802E317C(lbl_8032B7BC, name, arg1,
-            ((char *(*)(void *))(*(void **)((char *)*(void **)arg0 + 8)))(arg0));
+#pragma processor 750
+#pragma small_data on
+#pragma cplusplus on
+extern "C" f32 fn_80132354(void *arg0, s32 arg1, f32 farg0) {
+    class A {
+    public:
+        virtual char *f0(); virtual void f1(); virtual void f2(); virtual char *f3();
+    };
+    f32 b;
+    f32 a;
+    char *value = ((A *)arg0)->f3();
+    if (sscanf(value, lbl_80559B1C, &a, &b) != 2) {
+        fn_802E317C(lbl_8032B7BC, value, arg1, ((A *)arg0)->f0());
     }
     return a + farg0 * (b - a);
 }
-
+#pragma cplusplus off
+#pragma small_data off
+#pragma processor reset
 extern char lbl_8032B80C[], lbl_8032B7E4[];
 #pragma push
 #pragma scheduling invalid_target
@@ -651,21 +659,30 @@ void fn_80132584(void *arg0, register void *arg1, const char *arg2) {
     ((float *)arg0)[10] = v4.y;
     ((float *)arg0)[11] = v4.z;
 }
-#pragma pop
-f32 fn_8013278C(void *arg0, s32 arg1) {
-    f32 a, b;
-    s32 name = ((s32 (*)(void *))(*(void **)((char *)*(void **)arg0 + 0x14)))(arg0);
-    if (fn_8012F9E8(&a, 4, (const char *)name) != 0) {
-        u8 *p = (u8 *)&a;
-        u8 t = p[0]; p[0] = p[3]; p[3] = t;
-        t = p[1]; p[1] = p[2]; p[2] = t;
+#pragma cplusplus on
+extern "C" float fn_8013278C(void *arg0, s32 arg1) {
+    class Dummy {
+    public:
+        virtual char *f0();
+        virtual void f1();
+        virtual void f2();
+        virtual char *f3();
+    };
+    float a;
+    float b;
+    char *name = ((Dummy*)arg0)->f3();
+    if (fn_8012F9E8(&a, 4, (const char*)name) != 0) {
+        unsigned char *p = (unsigned char*)&a;
+        unsigned char t0 = p[0];
+        unsigned char t1 = p[1];
+        p[0] = p[3]; p[3] = t0;
+        p[1] = p[2]; p[2] = t1;
     } else {
-        fn_802E317C(lbl_8032B840, name, arg1,
-            ((char *(*)(void *))(*(void **)((char *)*(void **)arg0 + 8)))(arg0));
+        fn_802E317C(lbl_8032B840, (long)name, arg1, ((Dummy*)arg0)->f0());
     }
     return a;
 }
-#pragma pop
+#pragma cplusplus off
 
 #pragma cplusplus on
 extern "C" s32 fn_8013284C(void *arg0, s32 arg1) {
