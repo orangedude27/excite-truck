@@ -20826,6 +20826,37 @@ void fn_800916D8(void *callback, u32 cid) {
     *(void **)(base + 0x3C + index * 4) = callback;
 }
 
+/* RFCOMM multiplexer control block (rfc_int.h's tRFC_MCB) as this build lays it
+   out; only the fields the multiplexer state machine is known to touch are named.
+   fn_800916F4 dispatches on state, +0x68 is the channel L2CA_DisconnectReq() is
+   called with and +0x62 is the address handed to L2CA_ConnectReq(). */
+typedef struct t_rfc_mcb_view {
+    u8  pad_00[0x62];
+    u8  sec_bd_addr[6]; /* +0x62  peer this multiplexer channel runs to */
+    u16 lcid;           /* +0x68  L2CAP channel carrying the multiplexer */
+    u16 pad_6A;
+    u8  state;          /* +0x6C  RFC_MX_STATE_* */
+    u8  pad_6D[4];
+    u8  peer_ready;     /* +0x71  peer is up on the multiplexer channel */
+} tRFC_MCB_VIEW;
+
+/* Multiplexer states (tRFC_MCB.state, 0..6 is the switch in fn_800916F4) and the
+   events rfc_mx_sm_execute() hands the state handlers. The names are rfc_int.h's
+   and its values match this stack: the L2CAP layer's disconnect indication is 14,
+   the peer's SABME is 0 and the start response carrying a status word is 7. */
+#define RFC_MX_STATE_IDLE           0
+#define RFC_MX_STATE_WAIT_CONN_CNF  1
+#define RFC_MX_STATE_CONFIGURE      2
+#define RFC_MX_STATE_SABME_WAIT_UA  3
+#define RFC_MX_STATE_WAIT_SABME     4
+#define RFC_MX_STATE_CONNECTED      5
+#define RFC_MX_STATE_DISC_WAIT_UA   6
+#define RFC_EVENT_SABME             0  /* peer sent SABME on the multiplexer channel */
+#define RFC_MX_EVENT_START_RSP      7  /* our start request finished; status word in p_data */
+#define RFC_MX_EVENT_DISC_IND       14 /* the L2CAP link under the multiplexer went down */
+#define RFCOMM_MX_DLCI              0  /* DLCI of the multiplexer control channel */
+#define rfc_cb_trace_level          (lbl_803C4828[0x414]) /* RFCOMM_TRACE_LEVEL_* */
+
 extern void rfc_mx_sm_state_idle(void *, s32, void *);
 extern void rfc_mx_sm_state_wait_conn_cnf(void *, s32, void *);
 extern void rfc_mx_sm_state_configure(void *, s32, void *);
