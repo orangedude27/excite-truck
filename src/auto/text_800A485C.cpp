@@ -12099,45 +12099,45 @@ extern "C" s32 fn_800BA49C(s32 countv, s32 addr, s32 lba, s32 size, s32 *out) {
 extern "C" s32 fn_800BB4BC(s32, s32, s32, s32);
 extern "C" s32 fn_800BB4D4(s32, s32, s32, s32);
 /* SD card read helper: reads count sectors of given size from lba into addr (or via temp buffer if unaligned), returning status and count read in out. */
-extern "C" s32 fn_800BA688(void *countp, s32 addr, s32 lba, s32 size, s32 *out)
-{
+extern "C" s32 fn_800BA688(void *countp, s32 addr, s32 lba, s32 size, s32 *out) {
+    /* Read `countp` sectors of `size` bytes from `lba` into `addr`, returning status and bytes/blocks read in `out`. */
     const char *str = lbl_8031B2B0;
-    u32 count = (u32)countp;
-    s32 total, off, r;
+    u32 sectorCount = (u32)countp;
+    s32 totalBytes, byteOffset, result;
     u32 i;
     if (!(*(u32 *)lbl_80407300 & 2)) {
         *out = 0;
         return 0xF;
     }
-    total = count * size;
-    if (total == 0) {
+    totalBytes = sectorCount * size;
+    if (totalBytes == 0) {
         *out = 0;
         return 1;
     }
-    off = lba * size;
+    byteOffset = lba * size;
     *out = -1;
     if ((addr & 0x1F) == 0) {
         if (*(s32 *)(lbl_80407300 + 0x10) == 0) {
             *out = 0;
             return 6;
         }
-        if (count == 1) {
-            r = fn_800BB4BC(*(s32 *)(lbl_80407300 + 8), off, addr, total);
-            if (r != 0) {
-                OSReport(str + 0x470, r);
+        if (sectorCount == 1) {
+            result = fn_800BB4BC(*(s32 *)(lbl_80407300 + 8), byteOffset, addr, totalBytes);
+            if (result != 0) {
+                OSReport(str + 0x470, result);
                 *out = 0;
                 return 0x15;
             }
         } else {
-            r = fn_800BB4D4(*(s32 *)(lbl_80407300 + 8), off, addr, total);
-            if (r != 0) {
-                OSReport(str + 0x4B8, r);
+            result = fn_800BB4D4(*(s32 *)(lbl_80407300 + 8), byteOffset, addr, totalBytes);
+            if (result != 0) {
+                OSReport(str + 0x4B8, result);
                 *out = 0;
                 return 0x15;
             }
         }
     } else {
-        for (i = 0; i < count; i++) {
+        for (i = 0; i < sectorCount; i++) {
             if (*(s32 *)(lbl_80407300 + 0x10) == 0) {
                 if (i != 0) {
                     *out = i;
@@ -12147,9 +12147,9 @@ extern "C" s32 fn_800BA688(void *countp, s32 addr, s32 lba, s32 size, s32 *out)
                 return 6;
             }
             VFipf_memcpy(lbl_80407360, (void *)addr, size);
-            r = fn_800BB4BC(*(s32 *)(lbl_80407300 + 8), off, (s32)lbl_80407360, size);
-            if (r != 0) {
-                OSReport(str + 0x500, r);
+            result = fn_800BB4BC(*(s32 *)(lbl_80407300 + 8), byteOffset, (s32)lbl_80407360, size);
+            if (result != 0) {
+                OSReport(str + 0x500, result);
                 if (i != 0) {
                     *out = i;
                     return 0;
@@ -12158,10 +12158,10 @@ extern "C" s32 fn_800BA688(void *countp, s32 addr, s32 lba, s32 size, s32 *out)
                 return 0x15;
             }
             addr += size;
-            off += size;
+            byteOffset += size;
         }
     }
-    *out = count;
+    *out = sectorCount;
     return 0;
 }
 
