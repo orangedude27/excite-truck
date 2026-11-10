@@ -84,17 +84,20 @@ _exit:
     return ret;
 }
 
+// Allocates a block from an IOS/IPC heap: finds the best-fit free chunk, optionally
+// splits it, marks it used (inserting an alignment marker when needed), and returns
+// the aligned usable pointer, or NULL on failure.
 void* __iosAlloc(s32 handle, u32 size, u32 align) {
-    BOOL enabled;
-    IPCHeapDesc* desc;
-    u8* block;
+    BOOL interruptsEnabled;
+    IPCHeapDesc* heapDesc;
+    u8* allocatedBlock;
     IPCHeapChunk* chunk;
-    IPCHeapChunk* best;
-    u8* bestMem;
-    u32 bestUnalign;
+    IPCHeapChunk* bestChunk;
+    u8* bestUsablePtr;
+    u32 bestAlignPadding;
 
-    block = NULL;
-    enabled = OSDisableInterrupts();
+    allocatedBlock = NULL;
+    interruptsEnabled = OSDisableInterrupts();
 
     if (size == 0 || align == 0) {
         goto _exit;
@@ -111,21 +114,21 @@ void* __iosAlloc(s32 handle, u32 size, u32 align) {
     size = ROUND_UP(size, 32);
 
     if (handle < 0 || handle >= IPC_HEAP_MAX || __heaps[handle].start == NULL) {
-        block = NULL;
+        allocatedBlock = NULL;
         goto _exit;
     }
 
-    desc = &__heaps[handle];
-    best = NULL;
+    heapDesc = &__heaps[handle];
+    bestChunk = NULL;
 
     // Find chunk best fit for specified size
-    for (chunk = desc->head; chunk != NULL; chunk = chunk->next) {
+    for (chunk = heapDesc->head; chunk != NULL; chunk = chunk->next) {
         u8* chunkMem = (u8*)chunk + sizeof(IPCHeapChunk);
         u32 chunkUnalign =
             (align - 1) & (align - ((u32)chunkMem & (align - 1)));
 
         if (chunk->size == size && chunkUnalign == 0) {
-            best = chunk;
+            bestChunk = chunk;
             break;
         }
 
@@ -133,63 +136,63 @@ void* __iosAlloc(s32 handle, u32 size, u32 align) {
             continue;
         }
 
-        if (best == NULL || chunk->size < best->size) {
-            best = chunk;
+        if (bestChunk == NULL || chunk->size < bestChunk->size) {
+            bestChunk = chunk;
         }
     }
 
-    if (best == NULL) {
+    if (bestChunk == NULL) {
         goto _exit;
     }
 
-    bestMem = (u8*)best + sizeof(IPCHeapChunk);
-    bestUnalign = (align - 1) & (align - ((u32)bestMem & (align - 1)));
+    bestUsablePtr = (u8*)bestChunk + sizeof(IPCHeapChunk);
+    bestAlignPadding = (align - 1) & (align - ((u32)bestUsablePtr & (align - 1)));
 
     // Split off extra size that won't be used by this allocation
-    if (best->size > size + bestUnalign + sizeof(IPCHeapChunk)) {
-        IPCHeapChunk* rest = (IPCHeapChunk*)((u8*)best + size + bestUnalign +
+    if (bestChunk->size > size + bestAlignPadding + sizeof(IPCHeapChunk)) {
+        IPCHeapChunk* restChunk = (IPCHeapChunk*)((u8*)bestChunk + size + bestAlignPadding +
                                              sizeof(IPCHeapChunk));
 
-        rest->magic = IPC_HEAP_CHUNK_FREE;
-        rest->size = best->size - size - bestUnalign - sizeof(IPCHeapChunk);
-        rest->next = best->next;
+        restChunk->magic = IPC_HEAP_CHUNK_FREE;
+        restChunk->size = bestChunk->size - size - bestAlignPadding - sizeof(IPCHeapChunk);
+        restChunk->next = bestChunk->next;
 
-        if (rest->next != NULL) {
-            rest->next->prev = rest;
+        if (restChunk->next != NULL) {
+            restChunk->next->prev = restChunk;
         }
 
-        best->next = rest;
-        best->size = size + bestUnalign;
+        bestChunk->next = restChunk;
+        bestChunk->size = size + bestAlignPadding;
     }
 
-    best->magic = IPC_HEAP_CHUNK_USED;
+    bestChunk->magic = IPC_HEAP_CHUNK_USED;
 
     // Remove chunk from list
-    if (best->prev != NULL) {
-        best->prev->next = best->next;
+    if (bestChunk->prev != NULL) {
+        bestChunk->prev->next = bestChunk->next;
     } else {
-        desc->head = best->next;
+        heapDesc->head = bestChunk->next;
     }
 
-    if (best->next != NULL) {
-        best->next->prev = best->prev;
+    if (bestChunk->next != NULL) {
+        bestChunk->next->prev = bestChunk->prev;
     }
 
-    best->next = NULL;
-    best->prev = NULL;
+    bestChunk->next = NULL;
+    bestChunk->prev = NULL;
 
     // For unaligned chunks, create a header where one would normally be.
     // To find the real chunk, you take the FORALIGN one and jump back one.
-    block = (u8*)best + bestUnalign + sizeof(IPCHeapChunk);
-    if (bestUnalign != 0) {
-        IPCHeapChunk* aligned = (IPCHeapChunk*)(block - sizeof(IPCHeapChunk));
-        aligned->magic = IPC_HEAP_CHUNK_FORALIGN;
-        aligned->prev = best;
+    allocatedBlock = (u8*)bestChunk + bestAlignPadding + sizeof(IPCHeapChunk);
+    if (bestAlignPadding != 0) {
+        IPCHeapChunk* alignedChunk = (IPCHeapChunk*)(allocatedBlock - sizeof(IPCHeapChunk));
+        alignedChunk->magic = IPC_HEAP_CHUNK_FORALIGN;
+        alignedChunk->prev = bestChunk;
     }
 
 _exit:
-    OSRestoreInterrupts(enabled);
-    return block;
+    OSRestoreInterrupts(interruptsEnabled);
+    return allocatedBlock;
 }
 
 void* iosAlloc(s32 handle, u32 size) {
