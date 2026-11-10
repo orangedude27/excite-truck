@@ -28,9 +28,9 @@ int fwide(void *stream, int mode)
     switch (orient) {
     case 0:
         if (m > 0) {
-            *(unsigned int *)((char *)stream + 4) = (flags & 0xffcfffff) | (2 << 20);
+            ((FwideFlags *)((char *)stream + 4))->mode = 2;
         } else if (m < 0) {
-            *(unsigned int *)((char *)stream + 4) = (flags & 0xffcfffff) | (1 << 20);
+            ((FwideFlags *)((char *)stream + 4))->mode = 1;
         }
         break;
     case 2:
