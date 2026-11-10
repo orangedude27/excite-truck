@@ -14791,6 +14791,7 @@ BOOLEAN btsnd_hcic_read_stored_key(BD_ADDR bd_addr, BOOLEAN read_all_flag) {
     return TRUE;
 }
 
+/* Builds and sends an HCI Write_Stored_Link_Key command for up to 11 BD_ADDR/link-key pairs. */
 BOOLEAN btsnd_hcic_write_stored_key(void *buffer, UINT8 num_keys, BD_ADDR *bd_addr, LINK_KEY *link_key) {
     u32 len;
     u16 length;
