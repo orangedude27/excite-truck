@@ -503,7 +503,11 @@ int fn_80289268(int arg0) {
 
 #pragma push
 #pragma scheduling invalid_target
-int fn_80289394(int arg0) {
+int fn_80289394(int effectOwner) {
+    /* Initialize nw4r::ef smoke-effect creation args in a stack frame (starting at
+     * sp20), fill this effect's parameters from fixed sdata2 constants, then create
+     * the effect via fn_8028E2F8 (smoke.tex/lbl_8055C880, template lbl_80348B10)
+     * and store the returned handle at effectOwner+0x68. */
     fn_80289394Frame frame;
     register float f1;
     register float f2;
@@ -573,7 +577,7 @@ int fn_80289394(int arg0) {
     frame.sp74 = f2;
     frame.sp98 = f1;
     frame.sp9C = *(volatile float *)&lbl_8056428C;
-    *(int *)((char *)arg0 + 0x68) =
+    *(int *)((char *)effectOwner + 0x68) =
         ((int (*)(int *, int *, int, float, float, float, float, float, float, float))fn_8028E2F8)(
             (int *)&frame.sp20, (int *)(void *)&lbl_80348B10, lbl_8055C880,
             f1, f2, f3, f4, f5, f6, f7);
