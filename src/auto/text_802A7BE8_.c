@@ -118,8 +118,10 @@ void qsort(void *, u32, u32, s32 (*)(s32 *, s32 *));
 void fn_802339A8(s32 a, f32 b, s32 c, f32 d, ...);
 #pragma push
 #pragma processor 750
+#pragma scheduling off
 s32 fn_802A7E08(s32 *arg0, s32 *arg1) {
     unsigned int a[3];
+    unsigned int x;
     float dist;
     s32 manager;
     void *obj;
@@ -127,10 +129,11 @@ s32 fn_802A7E08(s32 *arg0, s32 *arg1) {
     fn_801E85B4();
     manager = (s32)fn_802678C0();
     obj = *(void **)((char *)((void *(*)(int))fn_801EA9A0)(*arg0) + 8);
-    a[0] = *(unsigned int *)((char *)obj + 0x24);
+    x = *(unsigned int *)((char *)obj + 0x24);
     a[1] = *(unsigned int *)((char *)obj + 0x28);
     f = *(float *)&a[1];
     f = f + lbl_80564910;
+    a[0] = x;
     a[2] = *(unsigned int *)((char *)obj + 0x2C);
     *(float *)&a[1] = f;
     dist = PSVECSquareDistance((Vec *)a, (Vec *)(manager + 0x24));
