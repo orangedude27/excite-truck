@@ -20,6 +20,20 @@ void *fn_801D0FA4(void *arg0) {
     return arg0;
 }
 
+void *fn_801D1008(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        s32 index = lbl_8055E8FC - 1;
+        lbl_8055E8FC = index;
+        lbl_80438858[index] = 0;
+        if (arg0 != 0) {
+            *(void **)arg0 = lbl_803381C0;
+            fn_801D0DFC(arg0);
+        }
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 #pragma cplusplus on
 extern "C" void fn_801D108C(void *arg0) {
     class Object {
