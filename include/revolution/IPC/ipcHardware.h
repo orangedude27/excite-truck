@@ -125,6 +125,26 @@ typedef enum {
     GPIO_DEBUG7 = (1 << 23),
 } GPIOFlag;
 
+/**
+ * IPC_HW_REGS[IPC_DIFLAGS] flags
+ */
+typedef enum {
+    IPC_DIFLAGS_AI_CLOCK = (1 << 8), // AI clock state; __AIClockInit() writes
+                                     // its enable flag here
+} IPCDIFlags;
+
+/**
+ * GPIO2 register flags: the lines Broadway switches for the AI (the ARM side of
+ * the DSP).  __AIClockInit() is the only user and the SDK leaves them unnamed,
+ * so they are numbered here.
+ */
+typedef enum {
+    GPIO2_AI_LINE_28 = (1 << 28),
+    GPIO2_AI_LINE_30 = (1 << 30),
+    GPIO2_AI_LINE_31 = (1 << 31),
+    GPIO2_AI_LINES_30_31 = GPIO2_AI_LINE_30 | GPIO2_AI_LINE_31,
+} GPIO2Flag;
+
 #undef LIST_OF_REGS
 
 #ifdef __cplusplus
