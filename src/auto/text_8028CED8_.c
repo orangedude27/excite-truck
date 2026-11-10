@@ -90,16 +90,30 @@ extern int fn_802CAC28(int);
 extern int fn_802E317C(char *, ...);
 extern char lbl_80348C50[];
 extern char lbl_8055C8C8[];
+#pragma cplusplus on
+struct Obj8028D084 {
+    virtual void f0();
+    virtual void f1();
+    virtual void f2();
+    virtual void f3();
+    virtual void f4();
+    virtual void f5(const char *);
+    virtual void f6();
+    virtual int f7(char *);
+    virtual void f8();
+    virtual float f9(char *);
+};
+#pragma cplusplus reset
 void fn_8028D084(void *arg0, void *arg1) {
+    extern char lbl_8055C8C8[8];
     char *base = lbl_80348C50;
     int value;
-    void **vtable = *(void ***)arg1;
-    ((void (*)(void *, const char *))vtable[5])(arg1, lbl_8055C8C8);
+    ((void (*)(void *, const char *))(*(void ***)arg1)[5])(arg1, lbl_8055C8C8);
     *(int *)arg0 = fn_802CAC28(0);
-    *(float *)((char *)arg0 + 4) = ((float (*)(void *, char *))vtable[9])(arg1, base);
-    *(float *)((char *)arg0 + 8) = ((float (*)(void *, char *))vtable[9])(arg1, base + 0xC);
-    *(float *)((char *)arg0 + 0xC) = ((float (*)(void *, char *))vtable[9])(arg1, base + 0x18);
-    value = ((int (*)(void *, char *))vtable[7])(arg1, base + 0x24);
+    *(float *)((char *)arg0 + 4) = ((float (*)(void *, char *))(*(void ***)arg1)[9])(arg1, base);
+    *(float *)((char *)arg0 + 8) = ((float (*)(void *, char *))(*(void ***)arg1)[9])(arg1, base + 0xC);
+    *(float *)((char *)arg0 + 0xC) = ((float (*)(void *, char *))(*(void ***)arg1)[9])(arg1, base + 0x18);
+    value = ((int (*)(void *, char *))(*(void ***)arg1)[7])(arg1, base + 0x24);
     *(int *)((char *)arg0 + 0x10) = value;
     if (value < 8 || value > 0x24)
         fn_802E317C(base + 0x30, value);
@@ -112,10 +126,10 @@ extern int fn_801345D8(void *, int, const void *, ...);
 extern void *fn_802AE414(void *);
 extern void fn_8028D084(void *, void *);
 #pragma use_lmw_stmw off
-#pragma scheduling on
+#pragma scheduling invalid_target
 #pragma dont_inline on
 int fn_8028D17C(void) {
-    register char *base;
+    register int *base;
     register int *slot;
     int i;
     register int invalid;
@@ -124,7 +138,7 @@ int fn_8028D17C(void) {
 
     slot = (int *)lbl_804B3470;
     lbl_8055F728 = 0;
-    base = (char *)&lbl_804B3400;
+    base = (int *)&lbl_804B3400;
     i = 0;
     invalid = -1;
     for (; i < 8; i++) {
@@ -134,7 +148,7 @@ int fn_8028D17C(void) {
             obj = ((void *(*)(void *, void *))(*(void ***)obj)[23])(obj, &lbl_8055C8D0);
         }
         if (obj != 0) {
-            fn_8028D084(base + lbl_8055F728 * 0x1C, obj);
+            fn_8028D084((char *)base + lbl_8055F728 * 0x1C, obj);
             *slot = lbl_8055F728;
             lbl_8055F728++;
         } else {
@@ -380,12 +394,14 @@ void fn_8028D7C0(int arg0) {
             item = (int *)((char *)group[0] + offset);
             {
                 double raw;
+                float tmp;
                 *(unsigned int *)&raw = 0x43300000;
                 *((unsigned int *)&raw + 1) =
                     *(unsigned short *)((char *)item + 0x24);
+                tmp = raw - bias;
                 fn_801E53A8(item, (char *)item + 0xC, (char *)item + 0x18,
                             *((unsigned char *)item + 0x26) != 0,
-                            scale * (float)(raw - bias));
+                            scale * tmp);
             }
             offset += 0x28;
             inner++;
