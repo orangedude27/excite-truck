@@ -262,38 +262,45 @@ extern unsigned char lbl_804FC6C0[]; /* the AX remote-speaker mix, 0x28 samples 
 extern int lbl_8055FFA8;             /* channels whose voices used a speaker lately */
 #pragma push
 #pragma use_lmw_stmw off
+/* Remote-speaker pump, the callback of the periodic OS alarm fn_802E5478 arms:
+ * for each of the 4 Wii remote channels that can take stream data, whose radio
+ * quality is still good and whose speaker mix has a full frame, it reads 0x28
+ * samples out of the AX remote mix, ADPCM-encodes them with the channel's WENC
+ * state and queues them to the remote as stream data.  A channel whose stream
+ * is open but that was skipped marks its encoder to restart on the next frame;
+ * the mix pointer is advanced once, after all channels, if any of them read. */
 void fn_802E52EC(void) {
-    unsigned char *entry = lbl_804FC800;
+    struct SpkStream *stream = (struct SpkStream *)lbl_804FC800;
     short *samples = (short *)lbl_804FC6C0;
-    int i;
-    int any;
+    int chan;
+    int sent;
     int zero = 0;
     int one = 1;
 
-    any = 0;
-    i = 0;
+    sent = 0;
+    chan = 0;
     do {
-        int state = OSDisableInterrupts();
-        if (WPADCanSendStreamData(i) && fn_802E86B4(i) > 0x55 &&
-            AXRmtGetSamples(i, samples, 0x28) == 0x28) {
-            any = 1;
-            if (entry[0] && (lbl_8055FFA8 & (one << i))) {
-                unsigned char buf[0x14];
-                int active = *(int *)(entry + 0x24);
-                int encode = active == 0;
-                if (active) *(int *)(entry + 0x24) = zero;
-                WENCGetEncodeData(entry + 1, encode, samples, 0x28, buf);
-                fn_80062278(i, buf, 0x14);
+        int intr = OSDisableInterrupts();
+        if (WPADCanSendStreamData(chan) && fn_802E86B4(chan) > 0x55 &&
+            AXRmtGetSamples(chan, samples, 0x28) == 0x28) {
+            sent = 1;
+            if (stream->enabled && (lbl_8055FFA8 & (one << chan))) {
+                unsigned char adpcm[0x14];
+                int restart = stream->restart;
+                int continuing = restart == 0;
+                if (restart) stream->restart = zero;
+                WENCGetEncodeData(stream->enc, continuing, samples, 0x28, adpcm);
+                fn_80062278(chan, adpcm, 0x14);
             } else {
-                *(int *)(entry + 0x24) = one;
+                stream->restart = one;
             }
         }
-        OSRestoreInterrupts(state);
-        i++;
-        entry += 0x2C;
+        OSRestoreInterrupts(intr);
+        chan++;
+        stream++;
         samples += 0x28;
-    } while (i < 4);
-    if (any) AXRmtAdvancePtr(0x28);
+    } while (chan < 4);
+    if (sent) AXRmtAdvancePtr(0x28);
 }
 #pragma pop
 int fn_802E540C(int arg0) {
