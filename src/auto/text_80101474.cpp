@@ -974,45 +974,46 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
 #pragma push
 #pragma processor 750
 #pragma paired_single off
-extern "C" void SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color(void *arg0, void *arg1, void *arg2) {
-    int var_r5 = 1;
-    int var_r6 = 1;
-    int var_r7 = 1;
-    int var_r8 = 1;
-    int var_r9 = 1;
-    int var_r10 = 1;
-    unsigned int temp_r11 = (unsigned int)arg0 & 0xFF000000U;
+/* Sets the CharWriter's color mapping (text/gradation colors) after validating the this pointer. */
+extern "C" void SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color(void *charWriter, void *color1, void *color2) {
+    int valid5 = 1;
+    int valid6 = 1;
+    int valid7 = 1;
+    int valid8 = 1;
+    int valid9 = 1;
+    int valid10 = 1;
+    unsigned int topByte = (unsigned int)charWriter & 0xFF000000U;
     unsigned char c7, c6, c5, c4, c3, c2, c1, c0;
-    if (temp_r11 != 0x80000000U && (((unsigned int)arg0 & 0xFF800000U) != 0x81000000U))
-        var_r10 = 0;
-    if (var_r10 == 0 && (((unsigned int)arg0 & 0xF8000000U) != 0x90000000U))
-        var_r9 = 0;
-    if (var_r9 == 0 && temp_r11 != 0xC0000000U)
-        var_r8 = 0;
-    if (var_r8 == 0 && (((unsigned int)arg0 & 0xFF800000U) != 0xC1000000U))
-        var_r7 = 0;
-    if (var_r7 == 0 && (((unsigned int)arg0 & 0xF8000000U) != 0xD0000000U))
-        var_r6 = 0;
-    if (var_r6 == 0 && (((unsigned int)arg0 & 0xFFFFC000U) != 0xE0000000U))
-        var_r5 = 0;
-    if (var_r5 == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0xEB, lbl_8032818C, arg0);
-    c0 = ((unsigned char *)arg1)[0];
-    c1 = ((unsigned char *)arg1)[1];
-    c2 = ((unsigned char *)arg1)[2];
-    c3 = ((unsigned char *)arg1)[3];
-    c4 = ((unsigned char *)arg2)[0];
-    c5 = ((unsigned char *)arg2)[1];
-    c6 = ((unsigned char *)arg2)[2];
-    c7 = ((unsigned char *)arg2)[3];
-    ((unsigned char *)arg0)[0] = c0;
-    ((unsigned char *)arg0)[1] = c1;
-    ((unsigned char *)arg0)[2] = c2;
-    ((unsigned char *)arg0)[3] = c3;
-    ((unsigned char *)arg0)[4] = c4;
-    ((unsigned char *)arg0)[5] = c5;
-    ((unsigned char *)arg0)[6] = c6;
-    ((unsigned char *)arg0)[7] = c7;
+    if (topByte != 0x80000000U && (((unsigned int)charWriter & 0xFF800000U) != 0x81000000U))
+        valid10 = 0;
+    if (valid10 == 0 && (((unsigned int)charWriter & 0xF8000000U) != 0x90000000U))
+        valid9 = 0;
+    if (valid9 == 0 && topByte != 0xC0000000U)
+        valid8 = 0;
+    if (valid8 == 0 && (((unsigned int)charWriter & 0xFF800000U) != 0xC1000000U))
+        valid7 = 0;
+    if (valid7 == 0 && (((unsigned int)charWriter & 0xF8000000U) != 0xD0000000U))
+        valid6 = 0;
+    if (valid6 == 0 && (((unsigned int)charWriter & 0xFFFFC000U) != 0xE0000000U))
+        valid5 = 0;
+    if (valid5 == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0xEB, lbl_8032818C, charWriter);
+    c0 = ((unsigned char *)color1)[0];
+    c1 = ((unsigned char *)color1)[1];
+    c2 = ((unsigned char *)color1)[2];
+    c3 = ((unsigned char *)color1)[3];
+    c4 = ((unsigned char *)color2)[0];
+    c5 = ((unsigned char *)color2)[1];
+    c6 = ((unsigned char *)color2)[2];
+    c7 = ((unsigned char *)color2)[3];
+    ((unsigned char *)charWriter)[0] = c0;
+    ((unsigned char *)charWriter)[1] = c1;
+    ((unsigned char *)charWriter)[2] = c2;
+    ((unsigned char *)charWriter)[3] = c3;
+    ((unsigned char *)charWriter)[4] = c4;
+    ((unsigned char *)charWriter)[5] = c5;
+    ((unsigned char *)charWriter)[6] = c6;
+    ((unsigned char *)charWriter)[7] = c7;
 }
 #pragma pop
 void nw4hbm::ut::CharWriter::SetGradationMode(GradationMode mode) {
