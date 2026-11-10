@@ -82,6 +82,9 @@ static void __AIClockInit(BOOL enable) {
     waitMicroSec(1000);
 }
 
+/* Initializes the DSP/audio subsystem: sets up AI clock if not in IPL, loads and runs
+ * the DSP init code via DSP/ARAM DMA with required waits, then restores the backed-up
+ * work memory. */
 void __OSInitAudioSystem(void) {
     u16 cpuMboxHi;
     u32 start;
