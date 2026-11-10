@@ -289,6 +289,7 @@ void fn_801A7DFC(int arg0, const char *arg1, int arg2) {
 #pragma dont_inline on
 #pragma cplusplus on
 extern "C" void fn_801A7E54(char *dst, int len, const char *name) {
+    /* Resolve an input/action key name to its display string into dst (always null-terminated). */
     void *found = fn_801A9234(name);
 
     if (found != 0) {
