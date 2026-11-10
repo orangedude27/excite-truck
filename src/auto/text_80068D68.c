@@ -6386,22 +6386,24 @@ void fn_80075AA4(void *arg0) {
     (*(void (**)(int, void *))(lbl_803C0D48 + 0x224))(10, arg0);
 }
 
-void bta_hh_maint_dev_act(void *arg0, void *arg1) {
+void bta_hh_maint_dev_act(void *devCbArg, void *eventArg) {
     extern unsigned char lbl_803C0D48[];
     extern char lbl_80315530[];
     extern u8 lbl_8055DC80;
     extern u8 HID_HostRemoveDev(u32);
+    /* Maintain an HID host device: add on event 11, remove on 12, else log invalid. */
     struct {
         u32 data;
         u16 pad;
         u8 status;
         u8 dev;
-    } cb;
-    u8 sp8;
+    } resultCb;
+    u8 hostDevHandle;
     s32 event;
-    cb.status = 6;
-    cb.dev = 0xFF;
-    event = *(u16 *)((u8 *)arg1 + 0x10);
+
+    resultCb.status = 6;
+    resultCb.dev = 0xFF;
+    event = *(u16 *)((u8 *)eventArg + 0x10);
     switch (event) {
     case 12:
         goto remove;
@@ -6411,34 +6413,34 @@ void bta_hh_maint_dev_act(void *arg0, void *arg1) {
         goto default_case;
     }
 add:
-    fn_80070FA4(&cb, &((u32 *)arg1)[2]);
-    if (*(u8 *)((u8 *)arg0 + 0x16) == 0xFF) {
-        if (HID_HostAddDev((u8 *)arg1 + 8, *(u16 *)((u8 *)arg1 + 0xE), &sp8) == 0) {
-            cb.status = 0;
-            cb.dev = sp8;
-            ((void (*)(void *, u8, u16, u32, u8, u8))bta_hh_add_device_to_list)(arg0, sp8, *(u16 *)((u8 *)arg1 + 0xE), 0, *(u8 *)((u8 *)arg1 + 0x12), *(u8 *)((u8 *)arg1 + 0x13));
-            *((u8 *)(lbl_803C0D48 + sp8) + 0x214) = *(u8 *)((u8 *)arg0 + 0x12);
+    fn_80070FA4(&resultCb, &((u32 *)eventArg)[2]);
+    if (*(u8 *)((u8 *)devCbArg + 0x16) == 0xFF) {
+        if (HID_HostAddDev((u8 *)eventArg + 8, *(u16 *)((u8 *)eventArg + 0xE), &hostDevHandle) == 0) {
+            resultCb.status = 0;
+            resultCb.dev = hostDevHandle;
+            ((void (*)(void *, u8, u16, u32, u8, u8))bta_hh_add_device_to_list)(devCbArg, hostDevHandle, *(u16 *)((u8 *)eventArg + 0xE), 0, *(u8 *)((u8 *)eventArg + 0x12), *(u8 *)((u8 *)eventArg + 0x13));
+            *((u8 *)(lbl_803C0D48 + hostDevHandle) + 0x214) = *(u8 *)((u8 *)devCbArg + 0x12);
         }
     } else {
-        cb.dev = *(u8 *)((u8 *)arg0 + 0x16);
-        cb.status = 0;
+        resultCb.dev = *(u8 *)((u8 *)devCbArg + 0x16);
+        resultCb.status = 0;
     }
     goto trace;
 trace:
     bta_hh_trace_dev_db();
     goto finish;
 remove:
-    cb.dev = (u8)*(u16 *)((u8 *)arg1 + 6);
-    fn_80070FA4(&cb, (u8 *)arg0 + 8);
-    if (*(u8 *)((u8 *)arg0 + 0x1C) != 3 && HID_HostRemoveDev(cb.dev) == 0) {
-        cb.status = 0;
-        bta_hh_clean_up_kdev(arg0);
+    resultCb.dev = (u8)*(u16 *)((u8 *)eventArg + 6);
+    fn_80070FA4(&resultCb, (u8 *)devCbArg + 8);
+    if (*(u8 *)((u8 *)devCbArg + 0x1C) != 3 && HID_HostRemoveDev(resultCb.dev) == 0) {
+        resultCb.status = 0;
+        bta_hh_clean_up_kdev(devCbArg);
     }
     goto finish;
 default_case:
     if (lbl_8055DC80 >= 5) fn_8007093C(0x504, lbl_80315530);
 finish:
-    (*(void (**)(u16, void *, void *))(lbl_803C0D48 + 0x224))(*(u16 *)((u8 *)arg1 + 0x10), &cb, lbl_803C0D48);
+    (*(void (**)(u16, void *, void *))(lbl_803C0D48 + 0x224))(*(u16 *)((u8 *)eventArg + 0x10), &resultCb, lbl_803C0D48);
 }
 
 void bta_hh_get_acl_q_info(void) {
