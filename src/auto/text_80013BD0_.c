@@ -820,6 +820,7 @@ extern f32 lbl_805603C0, lbl_805603C4, lbl_805603C8;
 extern f64 lbl_80560390;
 #pragma dont_inline on
 #pragma use_lmw_stmw off
+/* Draws per-participant progress bars in the results/progress UI. */
 void fn_80015364(void *arg0) {
     f32 selected;
     f32 delta;
