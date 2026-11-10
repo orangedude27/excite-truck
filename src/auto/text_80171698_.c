@@ -130,6 +130,7 @@ void *fn_801717B4(void *arg0, int arg1) {
         offset += 0x28;
         i++;
     }
+#pragma use_lmw_stmw on
 }
 
 void fn_80171930(void) {
