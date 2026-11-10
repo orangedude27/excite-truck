@@ -326,6 +326,12 @@ public:
     virtual void v4(); virtual void v5();
     virtual long valid();
 };
+class Fn8027BAB8Item {
+public:
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+    virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+    virtual long valid();
+};
 class Fn8027BA24List {
 public:
       virtual void v0();
@@ -957,18 +963,16 @@ long fn_8027C1C8(void *arg0, const char *arg1) {
         long count;
     };
     struct StringTable *table = (struct StringTable *)arg0;
-    long index = 0;
-    long offset = 0;
-
-    while (index < table->count) {
+    long index;
+    long offset;
+    for (index = 0, offset = 0; index < table->count; offset += 0xC, index++) {
         unsigned int equal = (unsigned int)__cntlzw((unsigned int)stricmp(arg1, *(char **)(table->entries + offset + 4))) >> 5;
-        if (equal)
-            break;
-        offset += 0xC;
-        index++;
+        if (equal) {
+            goto found;
+        }
     }
-
     index = -1;
+found:
     return index;
 }
 #pragma pop
