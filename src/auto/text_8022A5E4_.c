@@ -333,8 +333,8 @@ extern void fn_8022ACFC(int, char *, float *, float *, float *, float *, float, 
 __declspec(section ".sdata2") extern double lbl_80563590;
 void fn_8022AC1C(int unused0, char *unused1, int arg2, int arg3, int *arg4, int *arg5, int *arg6, int *arg7) {
     float a, b, c, d;
-    float x = (float)((double)(arg2 ^ 0x80000000) - lbl_80563590);
-    float y = (float)((double)(arg3 ^ 0x80000000) - lbl_80563590);
+    float x = (float)arg2;
+    float y = (float)arg3;
     fn_8022ACFC(unused0, unused1, &a, &b, &c, &d, x, y);
     *arg4 = (int)a;
     *arg5 = (int)b;
