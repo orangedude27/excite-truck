@@ -65,9 +65,9 @@ extern int fn_802D9628(short, short, unsigned int);
 #pragma dont_inline on
 #pragma use_lmw_stmw off
 void fn_802BB958(short arg0, int arg1, unsigned char *arg2, unsigned char *arg3) {
-    int temp_r29;
+    int *var_r31; // v4
     short temp_r30;
-    int *var_r31;
+    int temp_r29;
     int var_r28;
     temp_r30 = fn_802BB928(arg0);
     temp_r29 = fn_802BB93C(arg1);
@@ -299,6 +299,7 @@ void fn_802BBCC4(void) {
 unsigned char fn_802BBD38(int arg0, int arg1, int arg2) {
     extern signed char lbl_8055FA90;
     extern int fn_802D972C(void *, int, int);
+    unsigned char result;
     int *slot;
     int value;
     int x;
@@ -306,7 +307,6 @@ unsigned char fn_802BBD38(int arg0, int arg1, int arg2) {
     int x2;
     int y2;
     int invalid;
-    unsigned char result;
 
     if ((unsigned char)lbl_8055FA90 != 0)
         return (unsigned char)(~((arg2 - 1) | (1 - arg2)) >> 31);
@@ -435,7 +435,6 @@ void fn_802BBFA4(unsigned char *arg0, int arg1, int arg2, int arg3) {
     register unsigned char *base = arg0;
     register int index = arg1;
     register int skip = arg2;
-    register unsigned char *p = arg0;
     register int i = 0;
     register int value0;
     register int value1;
@@ -449,9 +448,8 @@ void fn_802BBFA4(unsigned char *arg0, int arg1, int arg2, int arg3) {
     int value;
 
     do {
-        *p = (unsigned char)fn_802BBF94(*p);
+        arg0[i] = (unsigned char)fn_802BBF94(arg0[i]);
         i++;
-        p++;
     } while (i < 6);
 
     value0 = base[0];
@@ -473,7 +471,7 @@ void fn_802BBFA4(unsigned char *arg0, int arg1, int arg2, int arg3) {
             return;
         }
         j = 0;
-        do {
+        while (sum != 0xFF && j < 6) {
             if (j != skip) {
                 value = *base;
                 delta = sum - 0xFF;
@@ -485,10 +483,10 @@ void fn_802BBFA4(unsigned char *arg0, int arg1, int arg2, int arg3) {
             }
             j++;
             base++;
-        } while (sum != 0xFF && j < 6);
+        }
     }
 }
-
+#pragma pop
 extern int fn_802B05DC(void);
 extern void *memset(void *, int, unsigned long);
 extern float lbl_80564D00;
