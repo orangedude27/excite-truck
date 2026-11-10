@@ -27,19 +27,30 @@ static void waitMicroSec(u32 usec) {
     } while (OS_TICKS_TO_USEC(OS_TICKS_DELTA(OSGetTick(), start)) < usec);
 }
 
-static void __AIClockInit(BOOL arg0) {
+/* Bring the AI clock (the ARM side of the DSP) up, or down.  The ARM is first
+ * told which clock state to use through the DI flags; the AI lines on GPIO2 are
+ * then walked: lines 31 and 30 dropped, the AI line directions set for the
+ * state asked for, line 28 dropped, and lines 30 and 31 raised one after the
+ * other, with a wait after every edge.  __OSInitAudioSystem() calls this with
+ * TRUE before loading DSP code; the IPL leaves the AI clock as it found it. */
+static void __AIClockInit(BOOL enable) {
     u32 tmp;
 
+    /* DI flag bit 8 carries the clock state; bit 7 is cleared either way. */
     tmp = IPC_HW_REGS[IPC_DIFLAGS];
-    tmp &= ~0x100;
-    tmp |= (arg0 << 8);
+    tmp &= ~IPC_DIFLAGS_AI_CLOCK;
+    tmp |= (enable << 8);
     tmp &= ~0x80;
     IPC_HW_REGS[IPC_DIFLAGS] = tmp;
 
-    IPC_HW_REGS[IPC_GPIO2IN] &= ~0xC0000000;
+    IPC_HW_REGS[IPC_GPIO2IN] &= ~GPIO2_AI_LINES_30_31;
     waitMicroSec(100);
 
-    if (!arg0) {
+    /* Line directions for the state asked for.  Bits 0-5, 6-17 and 22-26 are
+     * cleared first in both cases: the enabled case then sets bits 1-3 and 6-15
+     * and takes lines 20, 21, 23 and 26, the disabled case only bits 6-11 and
+     * lines 18, 22 and 26. */
+    if (!enable) {
         tmp = IPC_HW_REGS[IPC_GPIO2DIR];
         tmp &= ~0x3FFC0;
         tmp |= 0xFC0;
@@ -59,15 +70,15 @@ static void __AIClockInit(BOOL arg0) {
     }
     waitMicroSec(100);
 
-    IPC_HW_REGS[IPC_GPIO2IN] &= ~0x10000000;
+    IPC_HW_REGS[IPC_GPIO2IN] &= ~GPIO2_AI_LINE_28;
     waitMicroSec(1000);
 
     IPC_HW_REGS[IPC_GPIO2IN] =
-        (IPC_HW_REGS[IPC_GPIO2IN] & ~0x40000000) | 0x40000000;
+        (IPC_HW_REGS[IPC_GPIO2IN] & ~GPIO2_AI_LINE_30) | GPIO2_AI_LINE_30;
     waitMicroSec(1000);
 
     IPC_HW_REGS[IPC_GPIO2IN] =
-        (IPC_HW_REGS[IPC_GPIO2IN] & ~0x80000000) | 0x80000000;
+        (IPC_HW_REGS[IPC_GPIO2IN] & ~GPIO2_AI_LINE_31) | GPIO2_AI_LINE_31;
     waitMicroSec(1000);
 }
 
