@@ -497,9 +497,12 @@ int fn_802BD0C8(void *arg0) {
 int strcmp(const char *, const char *);
 int fn_802BA580(int, float *, float);
 void fn_802BD0F4(void *arg0) {
-    int i, offset, count;
-    char *entries, *entry;
+    char *entry;
+    char *entries;
     void *array;
+    int offset;
+    int count;
+    int i;
     float pos[2];
     if (*(int *)((char *)arg0 + 4) != 0 && (array = *(void **)((char *)arg0 + 0x58)) != 0) {
         entries = *(char **)array;
@@ -507,12 +510,16 @@ void fn_802BD0F4(void *arg0) {
         i = 0;
         offset = 0;
         while (i < count) {
+            int a;
+            float f;
             array = *(void **)((char *)arg0 + 0x58);
             entries = *(char **)array;
             entry = *(char **)entries + offset;
             pos[0] = *(float *)(entry + 0x30);
             pos[1] = *(float *)(entry + 0x38);
-            *(int *)(entry + 4) = fn_802BA580(*(int *)((char *)arg0 + 4), pos, *(float *)(entry + 0x1c));
+            f = *(float *)(entry + 0x1c);
+            a = *(int *)((char *)arg0 + 4);
+            *(int *)(entry + 4) = fn_802BA580(a, pos, f);
             offset += 0x44;
             i++;
         }
@@ -771,19 +778,19 @@ int fn_802BD80C(int arg0, int arg1) { return arg0 + arg1; }
 
 __declspec(section ".data") extern int lbl_8034AC48;
 #pragma scheduling invalid_target
+extern int __cntlzw(unsigned int);
 void fn_802BDBA8(void) {
     char *strings = (char *)&lbl_8034AB38;
     void *object;
     int result;
-    int failed;
-
+    int isZero;
     fn_802C126C();
     fn_802BCBDC();
     fn_802B8AE0(strings + 0xE8, &lbl_8055FAA8);
     fn_802B8AE0(strings + 0xF4, &lbl_8055FAAC);
     result = fn_802B05E4();
-    failed = result == 0;
-    *(unsigned char *)&lbl_8055FAB0 = failed;
+    isZero = (int)((unsigned int)__cntlzw((unsigned int)result) >> 5);
+    *(unsigned char *)&lbl_8055FAB0 = isZero;
     if (result == 0) {
         return;
     }
