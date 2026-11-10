@@ -233,15 +233,14 @@ int fn_8029F3BC(unsigned char *arg0) {
 #pragma dont_inline on
 void fn_8029F458(unsigned char *arg0, int arg1) {
     unsigned char buf[0x20];
-    signed char first;
     unsigned char c;
     int remaining;
     unsigned char *dst;
     int id;
-    int *table;
     int i;
     int offset;
-    if ((first = *(volatile signed char *)arg0) == '$')
+    int *table;
+    if (*(volatile signed char *)arg0 == '$')
         arg0++;
     dst = buf;
     remaining = 0x20;
@@ -265,9 +264,9 @@ lookup:
     goto check;
 loop:
     {
-        int address = *(volatile int *)&lbl_804B9B7C[0] + offset;
-        if (*(int *)address == id)
-            *(int *)(address + 0x30) = arg1;
+        unsigned char *entry = (unsigned char *)*(volatile int *)&lbl_804B9B7C[0] + offset;
+        if (*(int *)entry == id)
+            *(int *)(entry + 0x30) = arg1;
     }
     offset += 0x34;
     i++;
@@ -341,8 +340,8 @@ extern "C" void fn_8029F5C8(void *arg0, unsigned char *arg1) {
         obj->set((const char *)&lbl_8034983C);
         *(int *)((char *)arg0 + 4) = fn_802929F8();
         {
-            float scalar = *(volatile float *)&lbl_805646B4;
-            *(float *)((char *)arg0 + 8) = obj->getFloat(scalar, (const char *)&lbl_8055CAE8);
+            const char *s = (const char *)&lbl_8055CAE8;
+            *(float *)((char *)arg0 + 8) = obj->getFloat((float)lbl_805646B4, s);
         }
     } else {
         *(int *)((char *)arg0 + 4) = 0;
@@ -495,65 +494,74 @@ extern "C" void fn_8029FB00(void *arg0) {
         virtual unsigned char getBool(const char *, int);
         virtual Vec3_8029FB00 getVec(const char *);
     };
-    Vec3_8029FB00 v, w;
+    /* Looks up an object by name in a table (or registers it if new), allocates/fills a 0x34-byte entry
+       with its id, a bool flag, type id, position and direction vectors, and initializes a subfield. */
+    Vec3_8029FB00 pos;
+    Vec3_8029FB00 dir;
     unsigned char *entry;
-    char *a;
-    char *b;
-    int found;
+    char *tableCursor;
+    char *idCursor;
+    int foundId;
     int i;
-    int *t;
+    int *allocator;
     Obj *obj = (Obj *)arg0;
-    found = lbl_8055F818;
-    a = (char *)lbl_804B7770;
-    t = lbl_804B9B7C;
-    entry = *(unsigned char **)t + t[1]++ * 0x34;
-    b = a;
+
+    foundId = lbl_8055F818;
+    tableCursor = (char *)lbl_804B7770;
+    allocator = lbl_804B9B7C;
+    entry = *(unsigned char **)allocator + allocator[1]++ * 0x34;
+    idCursor = tableCursor;
     for (i = 0; i < lbl_8055F818; i++) {
-        if (strcmp(a, obj->name(lbl_8055CB50)) == 0)
-            found = *(int *)(b + 0x20);
-        a += 0x24;
-        b += 0x24;
+        if (strcmp(tableCursor, obj->name(lbl_8055CB50)) == 0)
+            foundId = *(int *)(idCursor + 0x20);
+        tableCursor += 0x24;
+        idCursor += 0x24;
     }
-    *(int *)entry = found;
+
+    *(int *)entry = foundId;
     *(unsigned char *)(entry + 0x2e) = obj->getBool(lbl_80349890, 0);
     *(int *)(entry + 0x28) = fn_8029FE6C(obj->name(lbl_8034983C));
-    v = obj->getVec(lbl_8055CB58);
-    *(float *)(entry + 4) = v.x;
-    *(float *)(entry + 8) = v.y;
-    *(float *)(entry + 0xc) = v.z;
-    w = obj->getVec(lbl_8055CB5C);
+
+    pos = obj->getVec(lbl_8055CB58);
+    *(float *)(entry + 4) = pos.x;
+    *(float *)(entry + 8) = pos.y;
+    *(float *)(entry + 0xc) = pos.z;
+
+    dir = obj->getVec(lbl_8055CB5C);
     {
         float z, y, x;
-        x = w.x;
+        x = dir.x;
         *(float *)(entry + 0x1c) = x;
-        y = w.y;
+        y = dir.y;
         *(float *)(entry + 0x20) = y;
-        z = w.z;
+        z = dir.z;
         *(float *)(entry + 0x24) = z;
         *(int *)(entry + 0x30) = 0;
         *(float *)(entry + 0x10) = x;
         *(float *)(entry + 0x14) = y;
         *(float *)(entry + 0x18) = z;
     }
+
     fn_801E9DC4(entry + 0x2c);
-    if (found == lbl_8055F818) {
-        const char *s;
+
+    if (foundId == lbl_8055F818) {
+        const char *src;
         int n;
-        char *d;
+        char *dst;
         unsigned char c;
-        *(int *)(lbl_804B7770 + lbl_8055F818 * 0x24 + 0x20) = found;
-        s = obj->name(lbl_8055CB50);
-        d = (char *)lbl_804B7770 + lbl_8055F818 * 0x24;
+        *(int *)(lbl_804B7770 + lbl_8055F818 * 0x24 + 0x20) = foundId;
+        src = obj->name(lbl_8055CB50);
+        dst = (char *)lbl_804B7770 + lbl_8055F818 * 0x24;
         n = 0x20;
         goto copy;
     dec:
         n--;
         if (n > 0) goto copy;
-        d[-1] = 0;
+        dst[-1] = 0;
         goto done;
     copy:
-        c = *s++;
-        *d++ = c;
+        c = *src++;
+        *dst++ = c;
         if ((signed char)c != 0) goto dec;
     done:
         lbl_8055F818++;
