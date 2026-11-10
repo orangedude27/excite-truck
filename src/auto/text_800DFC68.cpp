@@ -157,44 +157,45 @@ extern "C" void *__ct__Q36nw4hbm3lyt6WindowFPCQ46nw4hbm3lyt3res6WindowRCQ36nw4hb
     return self;
 }
 
-extern "C" void* __dt__Q36nw4hbm3lyt6WindowFv(void* arg0, int arg1) {
+extern "C" void* __dt__Q36nw4hbm3lyt6WindowFv(void* self, int shouldDelete) {
+    /* Destroys a nw4hbm::lyt::Window: tear down child entries/pane, run member destructors, chain to Pane, and optionally free. */
     struct LocalObj { virtual void destroy(int); };
     int offset;
     int count;
     int hasEntries;
     LocalObj *pane;
-    char *self = (char *)arg0;
+    char *window = (char *)self;
 
-    if (arg0 != 0) {
-        hasEntries = *(int *)(self + 0xFC);
-        *(void **)arg0 = (void *)lbl_80320CFC;
+    if (self != 0) {
+        hasEntries = *(int *)(window + 0xFC);
+        *(void **)self = (void *)lbl_80320CFC;
         if (hasEntries != 0) {
             count = 0;
             offset = 0;
-            while (count < *(u8 *)(self + 0x100)) {
-                pane = *(LocalObj **)(*(char **)(self + 0xFC) + offset + 4);
+            while (count < *(u8 *)(window + 0x100)) {
+                pane = *(LocalObj **)(*(char **)(window + 0xFC) + offset + 4);
                 pane->destroy(-1);
-                MEMFreeToAllocator(lbl_8055DDF0, *(void **)(*(char **)(self + 0xFC) + offset + 4));
+                MEMFreeToAllocator(lbl_8055DDF0, *(void **)(*(char **)(window + 0xFC) + offset + 4));
                 offset += 8;
                 count++;
             }
-            MEMFreeToAllocator(lbl_8055DDF0, *(void **)(self + 0xFC));
+            MEMFreeToAllocator(lbl_8055DDF0, *(void **)(window + 0xFC));
         }
 
-        pane = *(LocalObj **)(self + 0x28);
+        pane = *(LocalObj **)(window + 0x28);
         if (pane != 0 && *((u8 *)pane + 0x54) == 0) {
             pane->destroy(-1);
-            MEMFreeToAllocator(lbl_8055DDF0, *(void **)(self + 0x28));
-            *(void **)(self + 0x28) = 0;
+            MEMFreeToAllocator(lbl_8055DDF0, *(void **)(window + 0x28));
+            *(void **)(window + 0x28) = 0;
         }
-        fn_800D598C(self + 0xF4);
-        if (self + 0xE4 != 0)
-            fn_8002F634(self + 0xE4, (void *)fn_800D2DD4, 4, 4);
-        __dt__Q36nw4hbm3lyt4PaneFv(arg0, 0);
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        fn_800D598C(window + 0xF4);
+        if (window + 0xE4 != 0)
+            fn_8002F634(window + 0xE4, (void *)fn_800D2DD4, 4, 4);
+        __dt__Q36nw4hbm3lyt4PaneFv(self, 0);
+        if (shouldDelete > 0)
+            fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
 #pragma use_lmw_stmw off
@@ -363,15 +364,20 @@ extern "C" void fn_800E0434(void* self) {
 
 extern "C" void AnimateSelf__Q36nw4hbm3lyt6WindowFUl(void* self, unsigned long arg) {
     extern void AnimateSelf__Q36nw4hbm3lyt4PaneFUl(void*, unsigned long);
+    struct DummyPane {
+        virtual void v0(); virtual void v1(); virtual void v2();
+        virtual void v3(); virtual void v4();
+        virtual void Animate();
+    };
+    int offset = 0;
+    int count = 0;
     AnimateSelf__Q36nw4hbm3lyt4PaneFUl(self, arg);
     if (!(*((unsigned char*)self + 0xCF) & 1) && !(arg & 1)) {
-        int offset = 0;
-        int count = 0;
+        count = 0;
+        offset = 0;
         while (count < *((unsigned char*)self + 0x100)) {
-            void* pane = *(void**)(*(unsigned char**)((unsigned char*)self + 0xFC) + offset + 4);
-            void** vtable = *(void***)pane;
-            void (*fn)(void*) = (void (*)(void*))vtable[7];
-            fn(pane);
+            DummyPane* pane = *(DummyPane**)(*(unsigned char**)((unsigned char*)self + 0xFC) + offset + 4);
+            pane->Animate();
             offset += 8;
             count++;
         }
@@ -1101,22 +1107,23 @@ extern "C" void DrawFrame8__Q36nw4hbm3lyt6WindowFRCQ36nw4hbm4math4VEC2PCQ46nw4hb
     DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc((f32 *)&sp48, (f32 *)&sp100, 1, (f32 (*)[]) (spBuffer + 0), (s32) &sp108 & ((s32) (-temp_r23_8 | temp_r23_8) >> 0x1F), arg4);
 }
 
+#pragma push
+#pragma processor 750
 extern "C" void GetFrameSize__Q36nw4hbm3lyt6WindowFUcPCQ46nw4hbm3lyt6Window5Frame(f64* out, void* self, u8 a, u32 b) {
-    f32 sp2C;
-    f32 sp28;
-    f32 sp24;
     f32 sp20;
+    f32 sp24;
+    f32 sp28;
+    f32 sp2C;
     f32 sp18;
     f32 sp1C;
     f32 sp14;
     f32 sp10;
     f32 spC;
     f32 sp8;
-
-    sp20 = 0.0f;
-    sp24 = 0.0f;
-    sp28 = 0.0f;
-    sp2C = 0.0f;
+    *(int*)&sp20 = 0;
+    *(int*)&sp24 = 0;
+    *(int*)&sp28 = 0;
+    *(int*)&sp2C = 0;
     switch (a) {
     case 1:
         GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(&sp18, (void*)(*(u32*)((u8*)b + 4)), 0);
@@ -1138,11 +1145,10 @@ extern "C" void GetFrameSize__Q36nw4hbm3lyt6WindowFUcPCQ46nw4hbm3lyt6Window5Fram
         break;
     }
     *(f32*)out = sp20;
-    *(f32*)(out + 1) = sp24;
-    *(f32*)(out + 2) = sp28;
-    *(f32*)(out + 3) = sp2C;
+    *(f32*)((char*)out + 4) = sp24;
+    *(f32*)((char*)out + 8) = sp28;
+    *(f32*)((char*)out + 12) = sp2C;
 }
-
 #pragma pop
 extern "C" int GetFrameMaterial__Q36nw4hbm3lyt6WindowCFUl(void* self, unsigned int index) {
     extern void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
