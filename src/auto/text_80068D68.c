@@ -3065,6 +3065,7 @@ void *GKI_read_mbox(UINT8 mbox) {
 }
 
 void GKI_enqueue(BUFFER_Q *p_q, void *p_buf) {
+    /* Enqueue a buffer at the tail of a GKI queue after validating its header/magic and link status. */
     extern u32 lbl_803946C0[];
     extern char lbl_803141C0[];
     extern char lbl_803141DC[];
