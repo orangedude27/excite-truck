@@ -209,28 +209,30 @@ extern void fn_802E7C40(void);
 extern s32 fn_802E8668(s32);
 extern void fn_802E99AC(void);
 extern s32 lbl_80558898[];
+/* Update Home Menu/WPAD shutdown flow: on a request, stop motors, initialize
+ * home-button state, then poll/advance until completion and log status. */
 void fn_802EC884(void) {
-    register char *base = lbl_8034E9E0;
+    register char *homeStrBase = lbl_8034E9E0;
     const char *message;
     char *destination;
-    register s32 *out;
-    register u32 zeroes;
-    s32 motor;
-    s32 index;
+    register s32 *wpadInfoOut;
+    register u32 isNormalMode;
+    s32 chan;
+    s32 i;
 
     if ((u8)lbl_805600EC == 0) return;
     if ((u8)lbl_805600EA != 0) {
         lbl_805600EA = 0;
         if (fn_802D9BF0() == 0) {
-            destination = base + 0x16C;
+            destination = homeStrBase + 0x16C;
             message = &lbl_8055D2F8;
-            zeroes = (u32)__cntlzw((u32)lbl_805600E9);
-            zeroes >>= 5;
-            lbl_805600EB = zeroes;
-            if (zeroes != 0) message = base + 0x198;
+            isNormalMode = (u32)__cntlzw((u32)lbl_805600E9);
+            isNormalMode >>= 5;
+            lbl_805600EB = isNormalMode;
+            if (isNormalMode != 0) message = homeStrBase + 0x198;
             fn_802E30C8(destination, message);
             lbl_805600E8 = 1;
-            for (motor = 0; motor < 4; motor++) WPADControlMotor(motor, 0);
+            for (chan = 0; chan < 4; chan++) WPADControlMotor(chan, 0);
             fn_800C6774(lbl_805600E4, lbl_805600E0, 0x19000);
             fn_800C65C4();
             fn_802EC4BC();
@@ -239,25 +241,25 @@ void fn_802EC884(void) {
     }
     fn_802E2C20();
     if ((u8)lbl_805600E8 == 0) return;
-    out = lbl_80558898;
-    for (index = 0; index < 4; index++) {
-        *out = fn_802E8668(index);
-        out += 4;
+    wpadInfoOut = lbl_80558898;
+    for (i = 0; i < 4; i++) {
+        *wpadInfoOut = fn_802E8668(i);
+        wpadInfoOut += 4;
     }
     if (fn_800C65CC(lbl_80558898) >= 0) {
         fn_802E99AC();
         fn_802E7C40();
         fn_802E5438();
-        fn_802E30C8(base + 0x1A4);
-        fn_802E30C8(base + 0x1C0, fn_800C673C());
-        fn_802E30C8(base + 0x1D0, fn_800C6768());
+        fn_802E30C8(homeStrBase + 0x1A4);
+        fn_802E30C8(homeStrBase + 0x1C0, fn_800C673C());
+        fn_802E30C8(homeStrBase + 0x1D0, fn_800C6768());
         switch (fn_800C673C()) {
         case 1:
-            fn_802E30C8(base + 0x1E0);
+            fn_802E30C8(homeStrBase + 0x1E0);
             fn_802E2E38(1);
             break;
         case 2:
-            fn_802E30C8(base + 0x200);
+            fn_802E30C8(homeStrBase + 0x200);
             fn_802E2E38(0);
             break;
         }
