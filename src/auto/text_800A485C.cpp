@@ -3563,6 +3563,7 @@ extern "C" s32 fn_800AAF70(void *arg0) {
     s32 result;
     u32 var_r30;
 
+    /* Validates or finalizes a PF/FAT context, releasing the cached page on error. */
     switch (*(s32 *)((u8 *)arg0 + 0x1C)) {
     case 2:
         fn_800AEF6C(arg0);
