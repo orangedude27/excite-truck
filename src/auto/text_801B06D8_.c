@@ -691,7 +691,6 @@ extern s32 fn_801366C0(s32,s32,f32);
 extern void fn_801B14BC(s32*,s32,s32);
 extern s32 fn_8026A27C(s32);
 extern void fn_801B1390(s32, s32);
-#pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_801B14E4(void *arg0) {
     struct {
@@ -701,13 +700,10 @@ void fn_801B14E4(void *arg0) {
         u8 unk60[4];
         s32 count;
     } *base = (void *)arg0;
-    register f32 threshold = lbl_805625F8;
+    f32 threshold = lbl_805625F8;
     s32 passed;
 
-    if (((s32 (*)(f32, s32, s32))fn_801366C0)(
-            threshold,
-            *(s32 *)((u8 *)arg0 + 0x58),
-            base->field5C + 0x118)) {
+    if (fn_801366C0(base->field58, base->field5C + 0x118, threshold)) {
         base->count += 1;
     } else {
         base->count = 0;
@@ -715,8 +711,6 @@ void fn_801B14E4(void *arg0) {
     passed = (f32)base->count > lbl_805625FC;
     fn_801B14BC((s32 *)((u8 *)base + 4), 4, passed);
 }
-#pragma dont_inline reset
-#pragma scheduling on
 void fn_801B157C(void *arg0,s32 arg1) {
     *(u8*)((u8*)arg0+0x2C)=1;*(f32*)((u8*)arg0+0x30)=lbl_8055E3C8;
     if(lbl_8055E690)fn_801CB6B4(*(s32*)((u8*)arg0+0x60),arg1,2);
@@ -1300,18 +1294,18 @@ extern "C" void fn_801B2024(void *arg0) {
 void fn_801B2118(void) {}
 
 void *fn_801B21B8(void *arg0) {
-    register f32 value = lbl_805625BC;
-    register s32 zero = 0;
+    register float value = lbl_805625BC;
+    register int zero = 0;
     *(void **)arg0 = lbl_80335BFC;
     *(s32 *)((u8 *)arg0 + 0x40) = zero;
     *(s32 *)((u8 *)arg0 + 0x48) = 0x2710;
-    *(f32 *)((u8 *)arg0 + 0x44) = value;
+    *(float *)((u8 *)arg0 + 0x44) = value;
     *(s32 *)((u8 *)arg0 + 0x4C) = zero;
     *(s32 *)((u8 *)arg0 + 0x54) = 0x2710;
-    *(f32 *)((u8 *)arg0 + 0x50) = value;
+    *(float *)((u8 *)arg0 + 0x50) = value;
     memset((u8 *)arg0 + 4, zero, 0x38);
+    *(float *)((u8 *)arg0 + 0x70) = lbl_805625BC;
     *(s32 *)((u8 *)arg0 + 0x5C) = zero;
-    *(f32 *)((u8 *)arg0 + 0x70) = lbl_805625BC;
     *(s32 *)((u8 *)arg0 + 0x60) = -1;
     *(s32 *)((u8 *)arg0 + 0x6C) = -1;
     *(s32 *)((u8 *)arg0 + 0x58) = zero;
@@ -1327,6 +1321,13 @@ s32 fn_801B224C(s32 arg0, s32 arg1) {
 }
 
 extern void fn_801B2118(void);
+#pragma cplusplus on
+struct VTable68C {
+    virtual void d0();
+    virtual void d1();
+    virtual void d2(s32);
+};
+#pragma cplusplus off
 void fn_801B228C(void) {
     fn_8002F6AC(lbl_8055E684, fn_801B2118);
     lbl_8055E684 = 0;
@@ -1338,11 +1339,11 @@ void fn_801B228C(void) {
         lbl_8055E68C = 0;
     }
     if (lbl_8055E66C != 0) {
-        fn_80139E18();
+        fn_80139E18(lbl_8055E66C);
         lbl_8055E66C = 0;
     }
     if (lbl_8055E670 != 0) {
-        fn_80139E18();
+        fn_80139E18(lbl_8055E670);
         lbl_8055E670 = 0;
     }
 }
