@@ -49,12 +49,10 @@ extern int fn_802C9638(void *, unsigned char *, float);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-#pragma dont_inline on
-void *fn_802C5390(int arg0) {
-    u32 base = *(u32 *)((char *)lbl_804C139C + 8);
-    return (void *)(base + (arg0 << 4));
-}
-
+#pragma push
+#pragma scheduling off
+void *fn_802C5390(int arg0) { u32 base = *(u32 *)((char *)lbl_804C139C + 8); return (void *)(base + (arg0 << 4)); }
+#pragma pop
 int fn_802C53A8(arg0)
 int arg0;
 {
@@ -63,7 +61,7 @@ int arg0;
 }
 
 #pragma scheduling invalid_target
-void fn_802C53C4(void *a, void *b, int x, int y, unsigned char z) {
+void fn_802C53C4(void *a, void *b, int x, int y, signed char z) {
     register int count = lbl_804C1338[0];
     register int limit = lbl_804C1338[1];
     unsigned char *entry;
@@ -78,7 +76,7 @@ void fn_802C53C4(void *a, void *b, int x, int y, unsigned char z) {
     if (entry == 0)
         return;
     *(int *)(entry + 0) = *(int *)((char *)a + 12);
-    *(unsigned char *)(entry + 4) = z;
+    *(signed char *)(entry + 4) = z;
     *(int *)(entry + 8) = x;
     if ((*(unsigned int *)((char *)a + 4) & 1) != 0)
         *(int *)(entry + 12) = y;
@@ -87,12 +85,12 @@ void fn_802C53C4(void *a, void *b, int x, int y, unsigned char z) {
     *(void **)(entry + 16) = *(void **)((char *)b + 8);
     *(void **)((char *)b + 8) = entry;
 }
-#pragma scheduling on
 void fn_802C543C(void) {
     lbl_804C1338[0] = 0;
 }
 #pragma dont_inline off
 
+#pragma scheduling invalid_target
 int fn_802C544C(void **a, void **b) {
     void *right = *b;
     void *left = *a;
@@ -101,7 +99,7 @@ int fn_802C544C(void **a, void **b) {
     if (y != x) return y - x;
     return stricmp(fn_802CAE34(*(char **)left), fn_802CAE34(*(char **)right));
 }
-
+#pragma scheduling on
 void *fn_802C54B4(int i) { return (void *)(lbl_804C1348 + (i - 1) * 8); }
 
 unsigned char fn_802C54CC(unsigned int arg0) { return (unsigned char)(arg0 >> 8); }
@@ -444,8 +442,7 @@ void fn_802C5BA0(int *arg0) {
 
 #pragma scheduling invalid_target
 u16 fn_802C5BEC(int arg0, int arg1) {
-    int temp = ((arg0 * 2) & 0xFFFE) + ((int (*)(int, int))fn_802C5A50)(5, 0x64);
-    return temp + (arg1 & 0xFFFF);
+    return ((int (*)(int, int))fn_802C5A50)(5, 0x64) + ((unsigned int)((arg0 * 2) & 0xFFFE)) + (arg1 & 0xFFFF);
 }
 #pragma scheduling on
 extern int fn_802CAC28(void *, int);
@@ -1259,22 +1256,15 @@ float fn_802C7808(int arg0) {
     return *(float *)((char *)(*(void **)((char *)fn_802C5390(arg0) + 4)) + 0x1C);
 }
 
-s32 fn_802C7830(char *arg0, s32 arg1, signed char c) {
+s32 fn_802C7830(char *arg0, s32 is_digit, signed char c) {
     s32 value = 0;
-    register s32 is_digit;
     while (c != 0) {
         value <<= 4;
         is_digit = 0;
-        if (c >= '0') {
-            if (c <= '9') {
-                is_digit = 1;
-            }
+        if (c >= '0' && c <= '9') {
+            is_digit = 1;
         }
-        if (is_digit != 0) {
-            value |= c - '0';
-        } else {
-            value |= c - '7';
-        }
+        value |= is_digit ? c - '0' : c - '7';
         arg0++;
         c = *arg0;
     }
@@ -1397,6 +1387,93 @@ void fn_802C7AD4(void) {
 void fn_802D754C(void);
 void fn_802C7ADC(void) { fn_802D754C(); }
 
+#pragma scheduling invalid_target
+void fn_802C7AE0(int arg0, void *arg1, int arg2, float farg0) {
+    int i;
+    struct {
+        unsigned char status;
+        float vector[3];
+    } local;
+    void *manager;
+    void *entry;
+    float *rot;
+    float *input;
+
+    manager = fn_802C5390(arg0);
+    local.status = 1;
+    rot = (float *)((char *)*(void **)((char *)manager + 4) + 0x20);
+    input = (float *)arg1;
+    if (local.vector == rot) {
+        float y0 = input[3];
+        float y1 = input[4];
+        float y2 = input[5];
+        float x0 = input[0];
+        float x1 = input[1];
+        float x2 = input[2];
+        float z0 = input[6];
+        float z1 = input[7];
+        float z2 = input[8];
+
+        float my0 = rot[1] * y0;
+        float my1 = rot[1] * y1;
+        float mx0 = rot[0] * x0;
+        float mx1 = rot[0] * x1;
+        float mx2 = rot[0] * x2;
+        float my2 = rot[1] * y2;
+        float mz0 = rot[2] * z0;
+        float mz1 = rot[2] * z1;
+        float mz2 = rot[2] * z2;
+
+        local.vector[0] = mz0 + (mx0 + my0);
+        local.vector[1] = mz1 + (mx1 + my1);
+        local.vector[2] = mz2 + (mx2 + my2);
+    } else {
+        float y0 = input[3];
+        float x0 = input[0];
+        float z0 = input[6];
+        float y1 = input[4];
+        float x1 = input[1];
+        float z1 = input[7];
+        float y2 = input[5];
+        float x2 = input[2];
+        float z2 = input[8];
+
+        local.vector[0] = rot[2] * z0 + (rot[0] * x0 + rot[1] * y0);
+        local.vector[1] = rot[2] * z1 + (rot[1] * y1 + rot[0] * x1);
+        local.vector[2] = rot[2] * z2 + (rot[1] * y2 + rot[0] * x2);
+    }
+    {
+        float tx = local.vector[0] + input[9];
+        float ty = local.vector[1] + input[10];
+        float tz = input[11] + local.vector[2];
+        local.vector[0] = tx;
+        local.vector[1] = ty;
+        local.vector[2] = tz;
+    }
+    {
+        float *vec = fn_802C9A40();
+        float scale = lbl_80564EF4 * farg0;
+        local.vector[0] += vec[0] * scale;
+        local.vector[1] += vec[1] * scale;
+        local.vector[2] += vec[2] * scale;
+        if (fn_802C9638(local.vector, &local.status, scale + *(float *)((char *)*(void **)((char *)manager + 4) + 0x1C)) != 0) {
+            fn_802D6C4C(farg0);
+            fn_802DB2BC(local.status);
+            fn_802C7734(arg1);
+            entry = fn_802C6C34(arg0);
+            for (i = 0; i < *(int *)entry; i++) {
+                char *item = *(char **)((char *)entry + 4) + i * 0x10;
+                if (arg2 & (1 << *(int *)item)) {
+                    fn_802D6B08(*(int *)(item + 0xC));
+                }
+            }
+        }
+    }
+}
+
+void fn_802C7D54(int p1, float *p2, int p3) { }
+
+#pragma scheduling on
 void fn_802C8218(s32 arg0) {
     s32 var_r0;
 
