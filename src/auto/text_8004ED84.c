@@ -664,10 +664,10 @@ extern unsigned short lbl_80304B70[];
 extern int *lbl_8055DA50;
 extern int *lbl_8055DA54;
 char *ParseStringS(int format, char *text, int **outWidths, int *outCode) {
-    int valid;
-    unsigned short first;
-    int *widths;
     char *next;
+    int *widths;
+    unsigned short first;
+    int valid;
     unsigned char second;
     next = text;
     first = 0;
@@ -684,16 +684,14 @@ char *ParseStringS(int format, char *text, int **outWidths, int *outCode) {
         if (first != 0) {
             next = text + 1;
             valid = 0;
-            if (first >= 0x81) {
-                if (first <= 0x9F) valid = 1;
-                else if (first >= 0xE0 && first <= 0xFC) valid = 1;
-            }
+            if ((first >= 0x81 && first <= 0x9F) || (first >= 0xE0 && first <= 0xFC))
+                valid = 1;
             if (valid != 0) {
                 second = *(unsigned char *)next;
                 valid = 0;
                 if (second >= 0x40 && second <= 0xFC && second != 0x7F) valid = 1;
                 if (valid != 0) {
-                    first = (first << 8) | second;
+                    first = (first << 8) | *(unsigned char *)next;
                     next++;
                 }
             }
@@ -1016,9 +1014,11 @@ char *OSGetFontTexture(char *arg0, void **arg1, int *arg2, int *arg3, int *arg4)
     return next;
 }
 
-void OSGetFontWidth(int ch,int *out) {
- void *p; int n; unsigned short e=lbl_80558F58; int v;
- if(e==(unsigned short)-1) { v=*(volatile int*)0x800000CC; if(v==0) {e=(*(volatile unsigned short*)0xCC00206E>>1)&1;lbl_80558F58=e;} else if(v<0){e=0;lbl_80558F58=e;}else{e=0;lbl_80558F58=e;} lbl_8055DA48=ParseStringS; }
- ((int(*)(unsigned short,int,void**,int*))lbl_8055DA48)(e,ch,&p,&n);
- if(out) *out=(unsigned char)*((char*)p+*(unsigned short*)((char*)p+0x22)+n);
+char *OSGetFontWidth(char *str, int *out) {
+    unsigned char *p;
+    int n;
+    unsigned short e = OSGetFontEncode();
+    str = ((char *(*)(int, char *, int **, int *))lbl_8055DA48)((int)e, str, (int **)&p, &n);
+    if (out) *out = p[*(unsigned short *)(p + 0x22) + n];
+    return str;
 }
