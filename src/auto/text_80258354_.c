@@ -157,39 +157,33 @@ copied2:
 }
 #pragma scheduling on
 void fn_8025861C(void *arg0, const char *arg1, void *arg2) {
-    register int count;
-    register unsigned char *base;
-    register unsigned char *dst;
-    register int n;
-    unsigned char c;
+    char *base;
+    int n = 0x20;
+    char *dst;
     void *p;
-
-    count = *(int *)((char *)arg0 + 0x914);
-    base = *(unsigned char **)((char *)arg0 + 0x910) + count * 0x24;
-    *(int *)((char *)arg0 + 0x914) = count + 1;
+    base = *(char **)((char *)arg0 + 0x910) + (*(int *)((char *)arg0 + 0x914))++ * 0x24;
     dst = base;
-    n = 0x20;
     goto copy;
 check:
-    n--;
-    if (n > 0) goto copy;
+    if (--n > 0) {
+        goto copy;
+    }
     dst[-1] = 0;
     goto copied;
 copy:
-    c = *arg1++;
-    *dst++ = c;
-    if ((signed char)c != 0) goto check;
+    if ((*dst++ = *arg1++) != 0) {
+        goto check;
+    }
 copied:
     p = fn_801284F8(0x14, lbl_8055C258);
     if (p != 0) {
-        *(int *)((char *)p + 0) = 0;
-        *(int *)((char *)p + 4) = -1;
-        *(int *)((char *)p + 8) = 9;
-        *(float *)((char *)p + 0xC) = lbl_80563AC8;
-        *(float *)((char *)p + 0x10) = lbl_80563AC8;
-        *(int *)((char *)p + 0) = fn_80232578(arg2);
+        ((int *)p)[0] = 0;
+        ((int *)p)[1] = -1;
+        ((int *)p)[2] = 9;
+        ((float *)p)[3] = lbl_80563AC8;
+        ((float *)p)[4] = lbl_80563AC8;
+        ((int *)p)[0] = fn_80232578(arg2);
     }
-    /* Store the new object's pointer beside its bounded copied name. */
     *(void **)(base + 0x20) = p;
 }
 #pragma scheduling on
@@ -503,11 +497,14 @@ found:
 }
 
 extern float fn_80209028(void);
+/* Find a named sub-object entry on this object, apply its timed value, and update
+ * playback/control flags based on whether the entry requests a restart. */
 void fn_80258E64(void *arg0, const char *arg1) {
     int index = 0;
     int offset = 0;
     void *obj;
     float value;
+
     goto check;
 loop:
     switch ((unsigned int)__cntlzw(stricmp((const char *)(*(unsigned int *)((char *)arg0 + 0xD9C) + offset), arg1)) >> 5) {
