@@ -1041,6 +1041,15 @@ void __SCFlushSyncCallback(SCStatus status) {
     OSWakeupThread(&Control.threadQueue);
 }
 
+// Writes the SYSCONF image in ConfBuf out to NAND, without blocking the caller.
+// The write is a chain of asynchronous NAND operations (see MyNandCallback and
+// the SCFlushState steps): this function queues the first one, asking what
+// /shared2/sys/SYSCONF is, and the callback queues the rest.  Nothing is
+// written when the image was not changed since the last flush.  callback gets
+// the SCStatus of the flush when it is done; passing NULL installs
+// __SCFlushSyncCallback(), which wakes this thread instead, so that
+// SCFlush() can wait here.  Only one background job runs at a time: while one
+// is going, this reports its status and does nothing else.
 void SCFlushAsync(SCFlushCallback callback) {
     SCControl* ctrl;
     BOOL enabled;
@@ -1051,6 +1060,7 @@ void SCFlushAsync(SCFlushCallback callback) {
     status = BgJobStatus;
 
     if (status == SC_STATUS_OK) {
+        // claim the background job before dropping the lock
         SetBgJobStatus(SC_STATUS_BUSY);
 
         if (callback == ((void*)NULL)) {
@@ -1063,15 +1073,19 @@ void SCFlushAsync(SCFlushCallback callback) {
         ctrl->flushSize = __SCGetConfBufSize();
 
         if (!__SCIsDirty()) {
+            // the file already holds what the buffer holds: done
             OSRestoreInterrupts(enabled);
             FinishFromFlush();
         } else {
             __SCClearDirtyFlag();
+            // the NAND chain writes ConfBufForFlush, so later changes to
+            // ConfBuf are not lost halfway through the flush
             memcpy(ConfBufForFlush, __SCGetConfBuf(), __SCGetConfBufSize());
 
             OSRestoreInterrupts(enabled);
             ctrl->nandCbState = SC_FLUSH_STATE_FILE_TYPE;
 
+            // fileType is the union member of the NANDStatus this fills in
             if (NANDPrivateGetTypeAsync(ConfFileName, &ctrl->fileType,
                                         MyNandCallback, (NANDCommandBlock*)&ctrl->commandBlock) !=
                 NAND_RESULT_OK) {
@@ -1079,6 +1093,7 @@ void SCFlushAsync(SCFlushCallback callback) {
             }
         }
     } else {
+        // another job is busy: report it, anything else is a dead SC module
         if (callback != NULL) {
             callback(status == SC_STATUS_BUSY ? status : SC_STATUS_FATAL);
         }
