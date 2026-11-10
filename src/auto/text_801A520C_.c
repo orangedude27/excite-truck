@@ -134,26 +134,36 @@ extern "C" void fn_801A5300(void *arg0, void **arg1) {
         ((Obj *)*(void **)((char *)arg0 + 0x270C))->f9();
     }
 }
-#pragma cplusplus off
-void *fn_801A538C(void *arg0, int arg1) {
+#pragma cplusplus on
+extern "C" void *fn_801A538C(void *arg0, int arg1) {
+    class Obj {
+    public:
+        virtual void f0(int);
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+    };
     void *obj;
     if (arg0 != 0) {
         *(void **)arg0 = &lbl_80333C48;
-        fn_80265D3C(&lbl_80333C48);
+        fn_80265D3C(arg0);
         obj = *(void **)((char *)arg0 + 0x270C);
-        ((void (*)(void *))(*(void ***)obj)[10])(obj);
+        ((Obj *)obj)->f8();
         obj = *(void **)((char *)arg0 + 0x270C);
         if (obj != 0)
-            ((void (*)(void *, int))(*(void ***)obj)[2])(obj, 1);
-        *(void **)((char *)arg0 + 0x270C) = 0;
+            ((Obj *)obj)->f0(1);
+        *(volatile void **)((char *)arg0 + 0x270C) = 0;
         fn_801836E0(arg0, 0);
         if (arg1 > 0)
             fn_80128668(arg0);
     }
     return arg0;
 }
-
-#pragma cplusplus on
 extern "C" void fn_801A5434(void *arg0) {
     class Obj {
     public:
@@ -638,17 +648,27 @@ extern "C" int fn_801A5F44(void *arg0, int arg1) {
     VTable *obj = (VTable *)*(void **)((char *)arg0 + 0x270C);
     return (int)((char *)obj->f4(arg1 + 0x44) + 0x44);
 }
-#pragma scheduling invalid_target
-void fn_801A5F7C(void *arg0, int arg1, int arg2, int *arg3, int *arg4, float farg0) {
+#pragma cplusplus on
+#pragma use_lmw_stmw off
+extern "C" void fn_801A5F7C(void *arg0, int arg1, int arg2, int *arg3, int *arg4, float farg0) {
+    class Obj {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5(int, int, int *, int *, float);
+    };
     int x, y, a, b;
-    void *obj;
-    fn_8018B0D8(&x, &y);
-    obj = *(void **)((char *)arg0 + 0x270C);
-    ((void (*)(void *, int, int, int *, int *, float))(*(void ***)obj)[7])(obj, arg1 + x, arg2 + y, &a, &b, farg0);
+    Obj *obj;
+    ((void (*)(void *, int, int, int *, int *, float))fn_8018B0D8)(arg0, arg1, arg2, &x, &y, farg0);
+    obj = (Obj *)*(void **)((char *)arg0 + 0x270C);
+    obj->f5(arg1 + x, arg2 + y, &a, &b, farg0);
     *arg3 = x + a;
     *arg4 = y + b;
 }
-#pragma scheduling on
+#pragma use_lmw_stmw on
 extern "C" int fn_801A6024(void *arg0, int arg1) {
     class Obj {
     public:
