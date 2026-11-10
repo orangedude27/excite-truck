@@ -2273,6 +2273,7 @@ extern "C" const char lbl_80325B70[];
 
 
 extern "C" s32 GetRequiredMemSize__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchive(void *player, void *archive) {
+    /* Computes the total aligned memory required for sound archive player data (groups, tracks, and player info blocks) from archive metadata. */
     struct GroupInfo { s32 count; s32 size; };
     struct SoundInfo { s32 a; s32 b; s32 c; s32 d; s32 e; s32 f; };
     if (archive == 0)
