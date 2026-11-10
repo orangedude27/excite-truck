@@ -132,9 +132,11 @@ void *fn_801F1DE4(void) {
 void fn_801F1E24(void) {
     void *p = fn_801284F8(0x40, &lbl_8055B120);
     if (p != 0) {
-        float f1 = lbl_80562F44;
-        float f0 = lbl_80562F40;
+        float f0;
+        float f1;
+        f1 = 1.0f;
         *(void **)p = &lbl_8033A928;
+        f0 = 0.0f;
         *(int *)((char *)p + 0x3C) = 0;
         *(float *)((char *)p + 0xC) = f1;
         *(float *)((char *)p + 0x10) = f0;
