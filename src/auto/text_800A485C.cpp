@@ -4967,31 +4967,6 @@ extern "C" s32 VFiPFFAT_WriteCluster(void *object, s32 arg1, s32 arg2, s32 arg3,
  return 0;
 }
 
-/* ---------------------------------------------------------------------
- * A file's cluster chain, cached a page of FAT entries at a time.
- *
- * Following a chain entry by entry would read the FAT over and over, so a file
- * keeps a table with the cluster every page of the chain starts at: a page
- * holds VF_CHAIN_PAGE_SIZE + 1 entries, as many as fit a FAT sector.  To reach
- * position N of the chain the walk starts at VF_CHAIN_TABLE()[N / pageSize] and
- * follows that many entries, reading them through a cache page the caller holds
- * for it.  The table only covers what has been written in order, and is 0 for a
- * file that has none.
- * ------------------------------------------------------------------- */
-#define VF_CHAIN_TABLE(p)    (*(u32 **)((p) + 0x1C)) /* the cluster each page of the chain starts at; 0: no cache */
-#define VF_CHAIN_PAGE_SIZE(p) (*(u16 *)((p) + 0x20)) /* entries a page holds, less one */
-#define VF_CHAIN_PAGE_POS(p)  (*(u16 *)((p) + 0x22)) /* how far into that page the cache is built */
-#define VF_CHAIN_PAGE(p)      (*(u32 *)((p) + 0x24)) /* the page of the chain the last write is at */
-#define VF_CHAIN_PAGES(p)     (*(u32 *)((p) + 0x28)) /* pages the table has room for */
-#define VF_CHAIN_LAST(p)      (*(u32 *)((p) + 0x2C)) /* position of the file's last cluster */
-#define VF_CHAIN_VOLUME(p)    (*(u8 **)((p) + 0x34)) /* the volume the file is on */
-
-/* lbl_802EEF40: five words per FAT type (FAT12, FAT16, FAT32) for the values an
- * entry cannot hold as a cluster number.  [2] is the end-of-chain value a write
- * puts in a file's last cluster; [1] is the first value that means "the chain
- * ends at or after here". */
-#define VF_FAT_END_OF_CHAIN(t) lbl_802EEF40[(t) * 5 + 2]
-
 extern "C" s32 fn_800AF8EC(void *, s32, u32, void *);
 extern "C" s32 fn_800AFFE0(void *, s32, u16, void *, s32);
 extern "C" s32 fn_800B0488(void *, u32, u32, void *, s32);
