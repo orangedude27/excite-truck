@@ -299,19 +299,20 @@ void *fn_8022F638(char *arg0, unsigned char arg1, unsigned char arg2, int arg3, 
 #pragma use_lmw_stmw reset
 #pragma scheduling on
 #pragma pop
-void fn_8022F77C(void *arg0) {
-    void *prev = 0;
-    void *node = lbl_8055F014;
-    while (*(void **)node != arg0) {
-        if (node == 0) fn_802E317C((void *)0x80340408, (char *)arg0 + 0x3c);
+void fn_8022F77C(OverlayQuad *arg0) {
+    struct Node { void *payload; int unk; struct Node *next; };
+    struct Node *prev = 0;
+    struct Node *node = lbl_8055F014;
+    while (node->payload != arg0) {
+        if (node == 0) ((void (*)(const char *, ...))fn_802E317C)(lbl_80340408, arg0->name);
         prev = node;
-        node = *(void **)((char *)node + 8);
+        node = node->next;
     }
-    if (prev == 0) lbl_8055F014 = *(void **)((char *)node + 8);
-    else *(void **)((char *)prev + 8) = *(void **)((char *)node + 8);
-    *(int *)((char *)node + 4) = 0;
-    *(void **)((char *)node + 8) = 0;
-    *(void **)node = 0;
+    if (prev == 0) lbl_8055F014 = node->next;
+    else prev->next = node->next;
+    node->unk = 0;
+    node->next = 0;
+    node->payload = 0;
     fn_80128668(node);
 }
 
