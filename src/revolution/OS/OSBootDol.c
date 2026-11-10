@@ -9,6 +9,7 @@ extern void fn_8004E538(s32 doloffset, u32 restartCode, void* regionStart,
                         char** argv);
 
 void __OSBootDol(u32 doloffset, u32 restartCode, const char** argv) {
+    /* Boot a DOL image from the given disc offset, forwarding restart code and optional argv through MEM1. */
     char doloffInString[20];
     s32 argvlen;
     char** argvToPass;
