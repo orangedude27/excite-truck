@@ -40,16 +40,13 @@ extern void PSVECCrossProduct(const float *, const float *, float *);
 #pragma scheduling on
 void fn_801E3640(void *arg0, float *arg1) {
     float basis[3];
-    float temp_f3;
-    float temp_f1;
-
-    temp_f3 = *(float *)arg0;
-    temp_f1 = *(float *)((char *)arg0 + 8);
-    arg1[6] = temp_f3;
-    arg1[7] = *(float *)((char *)arg0 + 4);
-    arg1[8] = temp_f1;
-    if (((float)fabs(temp_f3) < lbl_80562CF0) &&
-        ((float)fabs(temp_f1) < lbl_80562CF0)) {
+    float x = *(float *)arg0;
+    float y = *(float *)((char *)arg0 + 4);
+    float z = *(float *)((char *)arg0 + 8);
+    arg1[6] = x;
+    arg1[7] = y;
+    arg1[8] = z;
+    if (__fabs(x) < lbl_80562CF0 && __fabs(z) < lbl_80562CF0) {
         basis[0] = lbl_80562CF4;
         basis[1] = lbl_80562CF4;
         basis[2] = lbl_80562CF8;
@@ -61,6 +58,9 @@ void fn_801E3640(void *arg0, float *arg1) {
     PSVECCrossProduct(basis, arg1 + 6, arg1);
     PSVECCrossProduct(arg1 + 6, arg1, arg1 + 3);
 }
+
+int fn_801E36F0(int arg0) { unsigned int s = ((unsigned int)arg0 >> 1) & 0x7F7F7F; unsigned int a = (unsigned int)arg0 & 0xFF000000; return (int)(s | a); }
+
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
