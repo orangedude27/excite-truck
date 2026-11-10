@@ -33,7 +33,6 @@ void fn_8015EC50(unsigned short *arg0, void *arg1) {
     fn_80136594(&value, arg1, (char *)arg0 + 4);
     *arg0 = (value - ((int *)((void **)arg1)[11])[7]) / 60;
 }
-#pragma dont_inline reset
 
 int fn_8015ECC0(void *arg0) {
     register int result = 0;
@@ -227,8 +226,9 @@ extern "C" void fn_8015EF84(void **arg0) {
     goto fetch;
 process:
     if (fn_8015ED54((void **)obj)) {
-        union { u64 bits; double d; } raw;
         union { double d; f32 f[2]; } coords;
+        union { u64 bits; double d; } raw;
+        volatile f32 differences[2];
         f32 radius;
         f32 radius2;
         int i;
@@ -247,22 +247,28 @@ process:
             char *entry = array + offset;
             f32 dy = coords.f[1] - *(f32 *)(entry + 8);
             f32 dx = coords.f[0] - *(f32 *)(entry + 4);
-            if (dx * dx + dy * dy < radius2) {
-                if (i >= 0 && i < table[1]) {
-                    int count = table[1];
-                    int last = count - 1;
-                    if (i != last) {
-                        char *from = array + last * 16;
-                        *(u16 *)(entry + 0) = *(u16 *)(from + 0);
-                        *(s16 *)(entry + 2) = *(s16 *)(from + 2);
-                        *(int *)(entry + 4) = *(int *)(from + 4);
-                        *(int *)(entry + 8) = *(int *)(from + 8);
-                        *(f32 *)(entry + 12) = *(f32 *)(from + 12);
-                    }
-                    table[1] = count - 1;
+            f32 dy2 = dy * dy;
+            differences[1] = dy;
+            f32 dx2 = dx * dx;
+            differences[0] = dx;
+            if (dx2 + dy2 >= radius2)
+                goto advance;
+            if (i >= 0 && i < table[1]) {
+                int count = table[1];
+                int last = count - 1;
+                if (i != last) {
+                    int lastOffset = last * 16;
+                    char *from = array + lastOffset;
+                    *(u16 *)(entry + 0) = *(u16 *)(from + 0);
+                    *(s16 *)(entry + 2) = *(s16 *)(from + 2);
+                    *(int *)(entry + 4) = *(int *)(from + 4);
+                    *(int *)(entry + 8) = *(int *)(from + 8);
+                    *(f32 *)(entry + 12) = *(f32 *)(from + 12);
                 }
-                goto inner;
+                table[1] = count - 1;
             }
+            goto inner;
+        advance:
             offset += 16;
             i++;
             table = (volatile int *)lbl_8055E29C;
@@ -811,6 +817,9 @@ s32 fn_801602CC(void *arg0) {
 extern float fn_80160588(void *, void *, void *);
 extern float fn_801605C8(void *, void *, void *);
 extern float lbl_8055E2A4, lbl_805617D4, lbl_805617DC, lbl_805617E8, lbl_80561800, lbl_80561828;
+#pragma push
+#pragma processor 750
+#pragma opt_common_subs off
 void fn_801602D4(struct Hit *arg0, void *arg1, void *arg2, float arg3) {
     float dist, pos, height, low, high, t;
     s16 type;
@@ -824,64 +833,67 @@ void fn_801602D4(struct Hit *arg0, void *arg1, void *arg2, float arg3) {
             high = lbl_80561800 * lbl_805617DC;
             if (pos - height < high) {
                 type = *(s16 *)((char *)arg1 + 2);
-                first = last = 0;
+                
                 switch (type) {
                 case 0:
                     t = (pos - height - low) / (high - low);
-                    if (t < lbl_805617E8) t = lbl_805617E8;
-                    if (t > lbl_805617D4) t = lbl_805617D4;
+                    t = t > lbl_805617E8 ? t : lbl_805617E8;
+                    t = t < lbl_805617D4 ? t : lbl_805617D4;
                     first = (int)(lbl_805617D4 + t * lbl_80561828);
                     t = (lbl_8055E2A4 + pos + height - low) / (high - low);
-                    if (t < lbl_805617E8) t = lbl_805617E8;
-                    if (t > lbl_805617D4) t = lbl_805617D4;
+                    t = t > lbl_805617E8 ? t : lbl_805617E8;
+                    t = t < lbl_805617D4 ? t : lbl_805617D4;
                     last = (int)(lbl_805617D4 + t * lbl_80561828);
                     break;
                 case 2:
+                    first = 0;
                     t = (pos + lbl_8055E2A4 - low) / (high - low);
-                    if (t < lbl_805617E8) t = lbl_805617E8;
-                    if (t > lbl_805617D4) t = lbl_805617D4;
+                    t = t > lbl_805617E8 ? t : lbl_805617E8;
+                    t = t < lbl_805617D4 ? t : lbl_805617D4;
                     last = (int)(lbl_805617D4 + t * lbl_80561828);
                     break;
                 case 1:
                     t = (pos - low) / (high - low);
-                    if (t < lbl_805617E8) t = lbl_805617E8;
-                    if (t > lbl_805617D4) t = lbl_805617D4;
+                    t = t > lbl_805617E8 ? t : lbl_805617E8;
+                    t = t < lbl_805617D4 ? t : lbl_805617D4;
                     first = (int)(lbl_805617D4 + t * lbl_80561828);
                     last = 0x40;
                     break;
                 default:
+                    first = last = 0;
                     break;
                 }
                 for (i = first; i < last; i++) {
                     if (dist < arg0[i].x) {
                         arg0[i].x = dist;
-                        arg0[i].y = type;
+                        arg0[i].y = *(s16 *)((char *)arg1 + 2);
                     }
                 }
             }
         }
     }
 }
-
 #pragma scheduling invalid_target
 f32 fn_801605C8(void *arg0, void *arg1, void *arg2) {
+    f32 result2;
+    f32 result1;
+    f32 y;
+    f32 negX;
+    f32 dy;
+    f32 dx;
     f32 spC;
     f32 sp8;
-    f32 temp_f2;
-    f32 temp_f3;
-    f32 result1;
-    f32 result2;
-
-    temp_f3 = *(f32 *)arg1 - *(f32 *)arg2;
-    temp_f2 = *(f32 *)((u8 *)arg1 + 4) - *(f32 *)((u8 *)arg2 + 4);
-    result1 = temp_f3 * *(f32 *)((u8 *)arg0 + 4);
-    *(volatile f32 *)&sp8 = temp_f3;
-    result2 = temp_f2 * -*(f32 *)arg0;
-    *(volatile f32 *)&spC = temp_f2;
+    dx = *(f32 *)arg1 - *(f32 *)arg2;
+    dy = *(f32 *)((u8 *)arg1 + 4) - *(f32 *)((u8 *)arg2 + 4);
+    negX = -*(f32 *)arg0;
+    y = *(f32 *)((u8 *)arg0 + 4);
+    *(volatile f32 *)&spC = dx;
+    *(volatile f32 *)&sp8 = dy;
+    result1 = y * dx;
+    result2 = negX * dy;
     return result1 + result2;
 }
-
-#pragma scheduling invalid_target
+#pragma scheduling on
 void *fn_8016060C(void *arg0, void *arg1) {
     volatile f32 *dst = (volatile f32 *)arg0;
     volatile f32 *src = (volatile f32 *)arg1;
