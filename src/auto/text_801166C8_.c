@@ -4765,8 +4765,9 @@ void fn_80120CA4(register s32 count, register void *dst, register s32 mode, regi
     }
 }
 
-#define FN1400_TAIL
-#define FN1400_CALL_TAIL
+/* fn_80121400(n, s32 *map, f32 *data) reads its 3rd argument from r4 only:
+ * the slot above it (sp+0x10) is never loaded, so callers may pass any type
+ * there -- fn_80120E14 hands it the int `mode` and still matches. */
 extern void fn_80121400(s32, s32 *, f32 *);
 extern void fn_801219B4(void *);
 extern void fn_80121BF4(void *);
