@@ -9,7 +9,7 @@ typedef struct D_801A520C {
     int (*d5)(struct D_801A520C *);
 } D_801A520C;
 
-void fn_8018B0D8(int *, int *);
+void fn_8018B0D8(void *, int, int, int *, int *, float);
 int fn_8018BA54();
 void fn_80189CB4(void);
 void fn_8018AF00(void);
@@ -274,7 +274,8 @@ extern "C" void fn_801A54EC(void *arg0) {
         obj = (char *)obj + 0x24;
     } while (i < 8);
 }
-#pragma cplusplus on
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void fn_801A55BC(void *arg0) {
     class Obj {
     public:
@@ -304,6 +305,7 @@ extern "C" void fn_801A55BC(void *arg0) {
     *(int *)((char *)arg0 + 0x2700) = 0;
     *(unsigned char *)((char *)arg0 + 0x2704) = 0;
 }
+#pragma pop
 extern "C" void fn_801A5660(void *arg0) {
     fn_80183DF8();
     ((Dummy_801A5660 *)*(void **)((char *)arg0 + 0x270C))->d11();
