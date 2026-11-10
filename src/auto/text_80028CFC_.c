@@ -151,9 +151,9 @@ byte_loop:
 }
 
 int strncmp(const unsigned char *s1, const unsigned char *s2, int n) {
-    unsigned char a, b;
     const unsigned char *p = s1 - 1;
     const unsigned char *q = s2 - 1;
+    unsigned char a, b;
     n++;
     while (--n != 0) {
         a = *++p;
