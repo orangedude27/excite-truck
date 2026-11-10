@@ -492,7 +492,7 @@ void fn_801663C8(int count, void *records, void *config) {
     fn_802E30C8(strings + 0x280, *(float *)((char *)&lbl_8042FE38 + 8), (float)(double)value, *(float *)((char *)&lbl_8042FE38 + 4), *(float *)&lbl_8042FE38);
     holder = fn_801284F8(16, strings + 0x2A0);
     if (holder) {
-        array = fn_8002F37C(fn_8012850C(count * 0x88 + 16, &lbl_8055A190), fn_80166754, 0, 0x88, count);
+        array = fn_8002F37C(fn_8012850C(count * 0x88 + 16, &lbl_8055A190), (void (*)(void *))fn_80166754, 0, 0x88, count);
         *(void **)holder = array;
         *(int *)((char *)holder + 8) = count;
         *(int *)((char *)holder + 4) = 0;
@@ -780,15 +780,16 @@ extern "C" void fn_80166A24(void) {
 }
 #pragma pop
 float fn_80166DD4(void *arg0) {
-    float y0, y1, t, x0, x1;
-    y1 = *(float *)((char *)arg0 + 0xC);
-    y0 = *(float *)((char *)arg0 + 8);
-    if (fabs(y0 - y1) <= lbl_80558DC4) return *(float *)arg0;
-    t = (lbl_8055E318 - y0) / (y1 - y0);
-    x1 = *(float *)((char *)arg0 + 4);
-    x0 = *(float *)arg0;
-    if (t < lbl_805618D0) t = lbl_805618D0;
-    if (t > lbl_8056189C) t = lbl_8056189C;
+    float y1, y0, t, x1, x0;
+    float *p = (float *)arg0;
+    y1 = p[3];
+    y0 = p[2];
+    if ((float)__fabs(y0 - y1) <= lbl_80558DC4) return p[0];
+    t = (float)(lbl_8055E318 - y0) / (y1 - y0);
+    x1 = p[1];
+    x0 = p[0];
+    t = t < lbl_805618D0 ? t : lbl_805618D0;
+    t = t > lbl_8056189C ? t : lbl_8056189C;
     return x0 + t * (x1 - x0);
 }
 
