@@ -292,12 +292,26 @@ void fn_8017B6A8(void *arg0) {
 extern float PSVECDotProduct(const void *, const void *);
 extern void PSVECCrossProduct();
 #pragma scheduling on
-void fn_8017B6D4(void *arg0, float *arg1, float *arg2) {
+void fn_8017B6D4(void * __restrict arg0, float * __restrict arg1, float * __restrict arg2) {
+    float vector[3];
+    float temp0 = arg2[0];
+    float temp1 = arg2[1];
+    float temp2 = arg2[2];
+    vector[0] = temp0 - *(float *)((char *)arg0 + 0x60);
+    vector[1] = temp1 - *(float *)((char *)arg0 + 0x64);
+    vector[2] = temp2 - *(float *)((char *)arg0 + 0x68);
+    PSVECCrossProduct((char *)arg0 + 0x124, vector, arg1);
+    arg1[0] += *(float *)((char *)arg0 + 0x118);
+    arg1[1] += *(float *)((char *)arg0 + 0x11C);
+    arg1[2] += *(float *)((char *)arg0 + 0x120);
+}
+extern void PSVECCrossProduct(const float *, const float *, float *);
+#pragma scheduling on
+void fn_8017B778(void *arg0, float *arg1, float *arg2) {
     float vector[3];
     register float temp_f1;
     register float temp_f2;
     float delta0;
-
     temp_f1 = arg2[0];
     temp_f2 = arg2[1];
     delta0 = temp_f1 - *(float *)((char *)arg0 + 0x60);
@@ -305,32 +319,11 @@ void fn_8017B6D4(void *arg0, float *arg1, float *arg2) {
     vector[0] = delta0;
     vector[1] = temp_f2 - *(float *)((char *)arg0 + 0x64);
     vector[2] = temp_f1 - *(float *)((char *)arg0 + 0x68);
-    PSVECCrossProduct((char *)arg0 + 0x124, vector, arg1, temp_f1, temp_f2);
-    arg1[0] += *(float *)((char *)arg0 + 0x118);
-    arg1[1] += *(float *)((char *)arg0 + 0x11C);
-    arg1[2] += *(float *)((char *)arg0 + 0x120);
-}
-extern void PSVECCrossProduct(const float *, const float *, float *);
-#pragma push
-#pragma scheduling invalid_target
-void fn_8017B778(void *arg0, float *arg1, float *arg2) {
-    float vector[3];
-    float temp_f1;
-    float temp_f2;
-    float temp_f0;
-
-    temp_f1 = arg2[0];
-    temp_f2 = arg2[1];
-    vector[0] = temp_f1 - *(float *)((char *)arg0 + 0x60);
-    vector[1] = temp_f2 - *(float *)((char *)arg0 + 0x64);
-    temp_f0 = arg2[2];
-    vector[2] = temp_f0 - *(float *)((char *)arg0 + 0x68);
     PSVECCrossProduct((const float *)((char *)arg0 + 0x178), vector, arg1);
     arg1[0] += *(float *)((char *)arg0 + 0x16c);
     arg1[1] += *(float *)((char *)arg0 + 0x170);
     arg1[2] += *(float *)((char *)arg0 + 0x174);
 }
-#pragma pop
 extern float lbl_80561BB8, lbl_80561BBC, lbl_80561BC0, lbl_80561BC4, lbl_80561BC8, lbl_80561BCC, lbl_80561BD0, lbl_80561BD4, lbl_80561BD8;
 extern void fn_8017D0C8(void *);
 extern void fn_8017A578(void *);
