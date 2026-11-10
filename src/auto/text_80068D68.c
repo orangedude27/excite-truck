@@ -6067,29 +6067,30 @@ void bta_hh_start_sdp(void *arg0, void *arg1) {
 }
 
 void bta_hh_sdp_cmpl(void *arg0, u8 *status) {
-    u8 info[8];
-    u8 result;
+    /* Handles HID Host SDP completion: on success opens the device (or continues SM), on failure reports an open event and cleans up. */
+    u8 eventData[8];
+    u8 hciStatus;
     if (lbl_8055DC80 >= 5)
         fn_80070954(0x504, lbl_803152B0, status[0]);
-    memset(info, 0, 8);
-    info[7] = *((u8 *)arg0 + 0x16);
-    fn_80070FA4(info, (u8 *)arg0 + 8);
-    result = status[0];
-    if (result == 0) {
+    memset(eventData, 0, 8);
+    eventData[7] = *((u8 *)arg0 + 0x16);
+    fn_80070FA4(eventData, (u8 *)arg0 + 8);
+    hciStatus = status[0];
+    if (hciStatus == 0) {
         if (*((u8 *)arg0 + 0x19) == 0) {
             HID_HostSetSecurityLevel(&lbl_80559058, *((u8 *)arg0 + 0x14));
-            result = HID_HostOpenDev(*((u8 *)arg0 + 0x16));
-            if (result != 0) {
+            hciStatus = HID_HostOpenDev(*((u8 *)arg0 + 0x16));
+            if (hciStatus != 0) {
                 if (lbl_8055DC80 >= 5)
-                    fn_80070954(0x504, lbl_803152D0, result);
+                    fn_80070954(0x504, lbl_803152D0, hciStatus);
                 HID_HostRemoveDev(*((u8 *)arg0 + 0x16));
             }
         } else bta_hh_sm_execute(arg0, 0x170B, 0);
     }
-    if (result == 0) return;
-    if (status[0] == 0xFF) info[6] = 0xA;
-    else info[6] = 7;
-    ((void (*)(u32, void *))(*(void **)(lbl_803C0D48 + 0x224)))(2, info);
+    if (hciStatus == 0) return;
+    if (status[0] == 0xFF) eventData[6] = 0xA;
+    else eventData[6] = 7;
+    ((void (*)(u32, void *))(*(void **)(lbl_803C0D48 + 0x224)))(2, eventData);
     bta_hh_sm_execute(arg0, 0x1701, 0);
     if (*((u8 *)arg0 + 0x15) == 0 && *((u8 *)arg0 + 0x19) == 0)
         bta_hh_clean_up_kdev(arg0);
