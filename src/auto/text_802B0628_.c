@@ -68,23 +68,24 @@ extern void *fn_8002F37C(void *, void (*)(void *), void *(*)(void *, int), int, 
 extern void fn_802B0860(void *);
 extern char lbl_8034A0A8[];
 extern char lbl_8034A27C[];
-extern char lbl_8055CD88[];
+extern int lbl_8055CD88;
 void fn_802B0710(void) {
     void *obj;
     int *fields;
+    int n = 0x54;
     register int i;
     register int offset;
     int *entry;
 
     obj = fn_801284F8(0x14, lbl_8034A0A8);
     if (obj != 0) {
-        fields = (int *)fn_8002F37C(fn_8012850C(0x550, lbl_8055CD88),
-            fn_802B0860, fn_802B0808, 0x10, 0x54);
+        fields = (int *)fn_8002F37C(fn_8012850C(0x550, &lbl_8055CD88),
+            fn_802B0860, fn_802B0808, 0x10, n);
         ((int **)obj)[1] = fields;
-        ((int *)obj)[3] = 0x54;
+        ((int *)obj)[3] = n;
         ((int *)obj)[2] = 0;
         ((int **)obj)[4] = fields;
-        ((void **)obj)[0] = fn_8012850C(0x15000, lbl_8034A27C);
+        ((void **)obj)[0] = fn_8012850C(n << 10, lbl_8034A27C);
         i = 0;
         offset = 0;
         while (i < ((int *)obj)[3]) {
