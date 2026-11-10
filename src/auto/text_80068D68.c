@@ -21356,29 +21356,30 @@ void rfc_port_sm_term_wait_sec_check(void *p_port, u16 event, void *p_data) {
         fn_80070954(0x90001, messages + 0x128, event);
 }
 
+/* RFCOMM port state machine: originator waits for security check result. */
 void rfc_port_sm_orig_wait_sec_check(void *port, u16 event, void *data) {
     extern char lbl_80319AB0[];
     extern void rfc_send_sabme();
     extern void rfc_port_closed(void *);
-    u8 *p = port;
+    u8 *portBytes = port;
     char *messages = lbl_80319AB0;
     switch (event) {
     case 15:
         if (*(u8 *)data != 0) {
-            PORT_DlcEstablishCnf(*(void **)(p + 0x6C), p[0xD], 0, 0x70);
+            PORT_DlcEstablishCnf(*(void **)(portBytes + 0x6C), portBytes[0xD], 0, 0x70);
             rfc_port_closed(port);
             return;
         }
-        ((void (*)(void *, u8))rfc_send_sabme)(*(void **)(p + 0x6C), p[0xD]);
+        ((void (*)(void *, u8))rfc_send_sabme)(*(void **)(portBytes + 0x6C), portBytes[0xD]);
         rfc_port_timer_start(port, 0x3C);
-        p[0x68] = 1;
+        portBytes[0x68] = 1;
         return;
     case 9:
     case 0:
-        if (lbl_803C4828[0x414] >= 1) fn_8007096C(0x90000, messages + 0x14, p[0x68], event);
+        if (lbl_803C4828[0x414] >= 1) fn_8007096C(0x90000, messages + 0x14, portBytes[0x68], event);
         return;
     case 12:
-        btm_sec_abort_access_req((u8 *)*(void **)(p + 0x6C) + 0x62);
+        btm_sec_abort_access_req((u8 *)*(void **)(portBytes + 0x6C) + 0x62);
         rfc_port_closed(port);
         return;
     case 14:
