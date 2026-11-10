@@ -381,6 +381,7 @@ extern "C" s32 fn_802A4FA8(float *out, void *object) {
         virtual void v10();
         virtual Vec3 get(const char *);
     };
+    /* Fetches four named vectors from an object and validates the cross-product magnitude. */
     if (object != 0) {
         const Vec3 &v0 = ((Dummy *)object)->get(&lbl_8055CBD0);
         out[0] = v0.x; out[1] = v0.y; out[2] = v0.z;
