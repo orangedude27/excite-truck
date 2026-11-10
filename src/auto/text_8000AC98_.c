@@ -87,6 +87,16 @@ int fn_8000AD84(void) {
  }
 }
 
+/* lbl_8034F5B8: one record per player (4).  fn_8000AF1C fills `value` from the
+ * race config and sets `override` to NO_OVERRIDE; fn_8000C630 queues a one-shot
+ * `override` for a player (-1 = all of them) and fn_8000BC44 hands the record's
+ * value to that player's object (fn_8026A1F0) every frame. */
+struct PlayerRecord {
+    int value;    /* 0x00 current game value */
+    int override; /* 0x04 value to use once, or NO_OVERRIDE when none is queued */
+};
+#define NO_OVERRIDE 0x22
+
 extern int lbl_8034F5B8[];
 extern int lbl_8034F5D8[];
 extern int lbl_8055D3D8, lbl_8055D3DC, lbl_8055D3E8;
