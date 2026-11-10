@@ -140,7 +140,7 @@ extern void fn_802A9090();
 extern s32 fn_802C6FC0(s32, s32, s32);
 extern s32 fn_802CAC28(void *, s32);
 extern void fn_802A9574(void);
-#pragma scheduling invalid_target
+#pragma scheduling off
 #pragma dont_inline on
 void fn_802A92CC(void) {
     f32 value1;
@@ -153,14 +153,14 @@ void fn_802A92CC(void) {
     lbl_8055F8F0 = result;
     if (result != 0) {
         fn_802A1120(&lbl_8055F8F8, &lbl_8055F908);
-        value0 = *(volatile f32 *)&lbl_8055F908;
-        value1 = *((volatile f32 *)&lbl_8055F908 + 1);
+        value0 = lbl_8055F908;
+        value1 = *(((volatile f32 *)&lbl_8055F908) + 1);
         *(volatile f32 *)&lbl_8055F900 = value0;
+        *(((volatile f32 *)&lbl_8055F900) + 1) = value1;
         entry = (s32 *)lbl_804BD740;
-        *((volatile f32 *)&lbl_8055F900 + 1) = value1;
         i = 0;
         *(volatile f32 *)&lbl_8055F900 = value1;
-        *((volatile f32 *)&lbl_8055F900 + 1) = -value0;
+        *(((volatile f32 *)&lbl_8055F900) + 1) = -value0;
         do {
             if (fn_8012C33C(entry[0]) != 0)
                 entry[1] = fn_802C6FC0(entry[0], 0, 0);
