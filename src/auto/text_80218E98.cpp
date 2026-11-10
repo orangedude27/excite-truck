@@ -1945,47 +1945,48 @@ extern "C" void *fn_8021B9AC(void *arg0, void *arg1, s32 arg2, s32 arg3) {
 
 extern "C" char lbl_8055B878;
 extern "C" void fn_8022D924(void *, s32);
-extern "C" void fn_8021BA64(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, void *arg5,
-                              s32 arg6, s32 arg7, s32 arg8, s32 arg9, s32 arg10, s32 arg11, s32 arg12) {
-    s32 half1 = 0;
-    s32 half2 = 0;
+/* Initializes a render/texture setup record (arg0) with stride/sizing derived from format flags and calls setup helpers. */
+extern "C" void fn_8021BA64(void *setup, s32 width, s32 arg2, s32 buffer, s32 arg4, void *data,
+                              s32 formatFlags, s32 arg7, s32 arg8, s32 arg9, s32 arg10, s32 height, s32 arg12) {
+    s32 halfWidth = 0;
+    s32 halfHeight = 0;
     s32 stride;
 
-    *(s32 *)((u8 *)arg0 + 0x25C) = arg4;
-    *(s32 *)((u8 *)arg0 + 0x254) = arg3;
-    *(s32 *)((u8 *)arg0 + 0x250) = arg11;
-    *(s32 *)((u8 *)arg0 + 0x258) = 0;
+    *(s32 *)((u8 *)setup + 0x25C) = arg4;
+    *(s32 *)((u8 *)setup + 0x254) = buffer;
+    *(s32 *)((u8 *)setup + 0x250) = height;
+    *(s32 *)((u8 *)setup + 0x258) = 0;
 
-    if (arg6 & 4)
-        half1 = arg1 / 2;
-    else if (arg6 & 2)
-        half1 = arg1;
+    if (formatFlags & 4)
+        halfWidth = width / 2;
+    else if (formatFlags & 2)
+        halfWidth = width;
 
-    if (arg6 & 0x60)
-        half2 = arg11;
-    else if (arg6 & 0x10)
-        half2 = arg11 / 2;
+    if (formatFlags & 0x60)
+        halfHeight = height;
+    else if (formatFlags & 0x10)
+        halfHeight = height / 2;
 
     s32 params[22] = {0};
-    params[0] = (s32)arg5;
-    params[2] = arg6;
+    params[0] = (s32)data;
+    params[2] = formatFlags;
     params[3] = arg7;
     params[4] = arg10;
     params[5] = arg12;
-    params[6] = half1;
-    params[7] = half2;
+    params[6] = halfWidth;
+    params[7] = halfHeight;
     params[10] = arg9;
     params[11] = arg10;
     params[12] = arg12;
-    params[13] = half1;
-    params[14] = half2;
+    params[13] = halfWidth;
+    params[14] = halfHeight;
 
     stride = fn_8022A86C(params);
-    *(s32 *)((u8 *)arg0 + 0x244) = stride;
+    *(s32 *)((u8 *)setup + 0x244) = stride;
     stride = fn_8022B620(stride, &lbl_8055B878) - 0x17;
-    *(s32 *)((u8 *)arg0 + 0x260) = stride / 2;
-    fn_80219440(arg0, 0, (u8 *)arg3 + 0x24, 4);
-    fn_8022D924((void *)arg3, arg2 / arg11);
+    *(s32 *)((u8 *)setup + 0x260) = stride / 2;
+    fn_80219440(setup, 0, (u8 *)buffer + 0x24, 4);
+    fn_8022D924((void *)buffer, arg2 / height);
 }
 
 #pragma pop
