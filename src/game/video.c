@@ -705,40 +705,30 @@ extern void fn_80117618(s32, void *);
 extern s32 fn_802E1BB4(void *);
 extern void fn_801176FC(s32, void *);
 void fn_802E0EAC(void *arg0) {
-    s32 sp8;
-    s32 sp10;
-    s32 sp14;
-    s32 sp18;
-    s32 sp1C;
-    s32 sp20;
-    s32 sp24;
-    s32 sp28;
-    s32 sp2C;
-    s32 sp30;
-    s32 sp34;
-    s32 sp38;
-    s32 sp3C;
-    char *label;
+    s32 tmp;
+    char buf[0x20];
+    char *label = (char *)lbl_8034CB68;
+    s32 ret;
+    unsigned char *a = arg0;
     fn_802E0E60(arg0);
-    label = lbl_8034CB68;
-    sp8 = fn_802E36D8((u8 *)arg0 + 8);
-    if (sp8 != -1) {
-        fn_802E3804(&sp10, 0x20);
-        fn_802E3734(&sp8);
+    tmp = fn_802E36D8(a + 8);
+    if (tmp != -1) {
+        ((void (*)(s32, void *, s32))fn_802E3804)(tmp, buf, 0x20);
+        fn_802E3734(&tmp);
     }
-    sp10 = fn_8011770C((u8 *)arg0 + 8, 0x10400);
-    *(s32 *)((u8 *)arg0 + 4) = sp10;
-    if (sp10 != 0) {
-        fn_802E30C8(label + 0x10, (u8 *)arg0 + 8);
-        fn_80117618(sp10, (u8 *)arg0 + 0x150);
-        fn_80117618(sp10, (u8 *)arg0 + 0x150);
-        if (fn_802E1BB4((u8 *)arg0 + 0x50) == 0) {
+    ret = fn_8011770C(a + 8, 0x100400);
+    *(s32 *)(a + 4) = ret;
+    if (ret != 0) {
+        fn_802E30C8(label + 0x10, a + 8);
+        fn_80117618(*(s32 *)(a + 4), a + 0x150);
+        fn_80117618(*(s32 *)(a + 4), a + 0x150);
+        if (fn_802E1BB4(a + 0x50) == 0) {
             fn_802E317C(label + 0x20);
         }
-        fn_801176FC(sp10, (u8 *)arg0 + 0x150);
-        *(s32 *)((u8 *)arg0 + 0x4C) = ((s32 (*)(void))fn_802E2C20)();
+        fn_801176FC(*(s32 *)(a + 4), a + 0x150);
+        *(s32 *)(a + 0x4C) = ((s32 (*)(void))fn_802E2C20)();
     } else {
-        fn_802E30C8(label + 0x48, (u8 *)arg0 + 8);
+        fn_802E30C8(label + 0x48, a + 8);
     }
 }
 
@@ -810,15 +800,15 @@ void fn_802E1058(void) {
 
 #pragma push
 #pragma use_lmw_stmw off
-s32 fn_802E11A4(s32 arg0, s32 arg1) {
+s32 fn_802E11A4(const char *arg0, u8 arg1) {
     s32 saved = ((s32 (*)(void))fn_802E0BA8)();
-    register void *object = fn_802E0BA4();
+    void *object = fn_802E0BA4();
     char *dot;
-    register char *dest;
-    register const char *suffix;
-    register int remaining;
+    char *dest;
+    const char *suffix;
+    int remaining;
     *(s32 *)((char *)object + 4) = 0;
-    *(u8 *)((char *)object + 0x48) = (u8)arg1;
+    *(u8 *)((char *)object + 0x48) = arg1;
     fn_801345D8((char *)object + 8, 0x40, lbl_8034CBC4, arg0);
     dot = fn_80029004((char *)object + 8, 0x2e);
     if (dot != 0)
@@ -826,12 +816,12 @@ s32 fn_802E11A4(s32 arg0, s32 arg1) {
     dest = (char *)object + 8;
     remaining = 0x40;
     suffix = lbl_8055D168;
-    while ((s8)*dest) {
+    while ((signed char)*dest) {
         --remaining;
         ++dest;
     }
     if (remaining > 0) {
-        while ((s8)(*dest++ = *suffix++) != 0) {
+        while ((signed char)(*dest++ = *suffix++) != 0) {
             if (--remaining <= 0) {
                 dest[-1] = 0;
                 break;
@@ -857,8 +847,8 @@ void fn_802E1290(void *arg0) {
 #pragma push
 #pragma use_lmw_stmw off
 void fn_802E12DC(void) {
-    void *object = fn_802E0BA4();
     s32 current;
+    void *object = fn_802E0BA4();
     if (*(void **)((char *)object + 4) != 0 &&
         *(s32 *)((char *)(*(void **)((char *)object + 4)) + 0x1C) != 0) {
         fn_802E30C8(lbl_8034CBE0);
@@ -879,7 +869,7 @@ void fn_802E12DC(void) {
                 fn_80118C44(*(void **)((char *)object + 4));
             *(s32 *)((char *)object + 0x4C) += 0x20;
         }
-        fn_802E27A0((char *)object + 0x50);
+        fn_802E27A0((char *)object + 80);
     }
 }
 #pragma pop
