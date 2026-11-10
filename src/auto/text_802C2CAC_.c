@@ -63,22 +63,23 @@ extern void *fn_8012C370(s32,u32 *,s32 *,s32,u8 *);
 extern void fn_802E317C(const char *,...);
 extern const char lbl_8034B020[],lbl_8034B048[];
 #pragma scheduling invalid_target
-void *fn_802C2DD4(s32 arg0) {
-    /* Fix note: explicit volatile byte swaps and bottom-tested pixel loops reproduce the image conversion. */
-    u32 sp10;
-    s32 spC;
-    u8 sp8;
+/* Loads a CANV image resource, byte-swaps its header fields when flagged, converts pixels to RGBA order, and reports load/format errors. */
+void *fn_802C2DD4(s32 resourceId) {
+    u32 format;
+    s32 size;
+    u8 needsSwap;
     u32 *pixels;
     s32 row;
     s32 col;
-    u32 value;
+    u32 pixel;
     u8 temp;
-    void *obj;
-    obj = ((void *(*)(s32, s32, u32 *, s32 *, s32, u8 *))fn_8012C370)(arg0, 0x43414E56, &sp10, &spC, 0, &sp8);
-    if (obj != 0) {
-        if (sp10 == 1) {
-            if (sp8 != 0) {
-                volatile u8 *bytes = (volatile u8 *)obj;
+    void *resource;
+
+    resource = ((void *(*)(s32, s32, u32 *, s32 *, s32, u8 *))fn_8012C370)(resourceId, 0x43414E56, &format, &size, 0, &needsSwap);
+    if (resource != 0) {
+        if (format == 1) {
+            if (needsSwap != 0) {
+                volatile u8 *bytes = (volatile u8 *)resource;
                 pixels = (u32 *)(bytes + 0x24);
                 temp = bytes[4]; bytes[4] = bytes[7]; bytes[7] = temp;
                 temp = bytes[5]; bytes[5] = bytes[6]; bytes[6] = temp;
@@ -99,19 +100,19 @@ void *fn_802C2DD4(s32 arg0) {
                 *(void **)(bytes + 4) = pixels;
                 for (row = 0; row < *(volatile s32 *)(bytes + 0xC); row++) {
                     for (col = 0; col < *(volatile s32 *)(bytes + 8); col++) {
-                        value = *pixels;
-                        *pixels = (value << 24) | (value >> 8);
+                        pixel = *pixels;
+                        *pixels = (pixel << 24) | (pixel >> 8);
                         pixels++;
                     }
                 }
             }
         } else {
-            fn_802E317C(lbl_8034B020, arg0, sp10, 1);
+            fn_802E317C(lbl_8034B020, resourceId, format, 1);
         }
     } else {
-        fn_802E317C(lbl_8034B048, arg0);
+        fn_802E317C(lbl_8034B048, resourceId);
     }
-    return obj;
+    return resource;
 }
 #pragma scheduling on
 void fn_802C2FC4(void) {
