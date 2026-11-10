@@ -86,21 +86,17 @@ long fn_80177988(void) {
 }
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 #pragma processor 750
 #pragma use_lmw_stmw off
 void fn_80177990(void) {
-    register float tmp7 = lbl_80561B48;
-    float *p1 = &lbl_80430700[0];
-    float *p2 = &lbl_804305D4[0];
+    float tmp9 = lbl_80561B48;
     int i;
     for (i = 0; i < 0x4b; i++) {
-        *p1 = tmp7;
-        *p2 = tmp7;
-        fn_801DCEC8(i, tmp7);
+        lbl_80430700[i] = tmp9;
+        lbl_804305D4[i] = tmp9;
+        fn_801DCEC8(i, tmp9);
         fn_801DCEDC(i, lbl_80561B48);
-        p1++;
-        p2++;
     }
 }
 #pragma pop
