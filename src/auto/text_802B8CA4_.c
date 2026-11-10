@@ -18,6 +18,8 @@ extern float lbl_80564C88;
 extern float lbl_80564CA8;
 extern float lbl_80564C98;
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_802B8CA4(void) {
     volatile unsigned int *base;
     unsigned int *q;
