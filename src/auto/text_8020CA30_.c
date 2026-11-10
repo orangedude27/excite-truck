@@ -120,16 +120,13 @@ void *fn_8020CC78(void *arg0, int arg1) {
         i = 0;
         while (i < *(int *)((char *)arg0 + 8)) {
             void *item = *(void **)((char *)cur + 0xC);
-            unsigned long tmp;
             if (item == 0) {
                 goto next;
             }
             if (item == 0) {
                 goto next;
             }
-            tmp = *(unsigned long *)item;
-            tmp = *(unsigned long *)(tmp + 8);
-            ((void (*)(void *, int))tmp)(item, 1);
+            CC78_call(item, 1);
         next:
             cur = (char *)cur + 0x24;
             i++;
