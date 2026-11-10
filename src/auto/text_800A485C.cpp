@@ -20625,6 +20625,7 @@ extern "C" f32 lbl_80560DDC,lbl_80560DE0,lbl_80560DE4;
 extern "C" f32 lbl_80560DD0,lbl_80560DE8;
 #pragma dont_inline off
 extern "C" s32 fn_800C7C70(void *arg0) {
+    /* Updates timer-based UI state for this object. */
     u8 *p;
     s32 i, index;
     void *obj;
