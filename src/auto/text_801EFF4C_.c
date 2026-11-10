@@ -459,17 +459,18 @@ extern "C" void fn_801F08AC(int arg0, const char *arg1) {
         virtual int has(const char *);
     };
 
-    char name[0x20];
+    char nameBuffer[0x20];
     Fn801F08ACResource *resource;
+    /* Initializes a wheel/class record from a named resource (dimensions, sections, optional data). */
     strncpy((char *)arg0, arg1, 0x10);
     *(char *)(arg0 + 0xF) = 0;
-    sprintf(name, (const char *)&lbl_8055B100, arg1);
-    if (fn_8012C33C(name) == 0) {
+    sprintf(nameBuffer, (const char *)&lbl_8055B100, arg1);
+    if (fn_8012C33C(nameBuffer) == 0) {
         fn_802E317C(lbl_8033A4A4, arg1);
     }
-    resource = (Fn801F08ACResource *)fn_80131808(name);
+    resource = (Fn801F08ACResource *)fn_80131808(nameBuffer);
     fn_801F0148((void *)arg0, resource->lookup(lbl_8033A4C8));
-    fn_801F0208((void *)arg0, resource->lookup((const char *)&lbl_8055B108), name);
+    fn_801F0208((void *)arg0, resource->lookup((const char *)&lbl_8055B108), nameBuffer);
     ((void (*)(void *, void *))fn_801F0488)((void *)arg0, resource->lookup((const char *)&lbl_8055B0F0));
     if (resource->has((const char *)&lbl_8055B10C) != 0) {
         fn_801F06DC((char *)arg0 + 0xEC, resource->lookup((const char *)&lbl_8055B10C));
@@ -620,17 +621,17 @@ int fn_801F09FC(const char *);
 void fn_801F1878(void *);
 #pragma dont_inline on
 int fn_801F0DC0(int arg0, int arg1, int arg2, int arg3) {
-    int zero = 0;
-    *(int *)(arg0 + 0) = fn_801F09FC((const char *)arg1);
-    *(int *)(arg0 + 4) = zero;
+    int result = fn_801F09FC((const char *)arg1);
+    *(int *)(arg0 + 4) = 0;
+    *(int *)(arg0 + 0) = result;
     *(int *)(arg0 + 8) = arg2;
     *(int *)(arg0 + 0xC) = arg3;
     if ((arg3 == 0) || (arg3 == 2)) {
         float z = lbl_80562F1C;
         float one = lbl_80562F18;
-        register unsigned int normalized = (unsigned int)__cntlzw(1) >> 5;
-        *(int *)(arg0 + 0x10) = normalized;
-        *(unsigned char *)(arg0 + 0x14) = zero;
+        int norm = (unsigned int)__cntlzw(1) >> 5;
+        *(int *)(arg0 + 0x10) = norm;
+        *(unsigned char *)(arg0 + 0x14) = 0;
         *(float *)(arg0 + 0x18) = one;
         *(float *)(arg0 + 0x1C) = z;
         *(float *)(arg0 + 0x20) = z;
