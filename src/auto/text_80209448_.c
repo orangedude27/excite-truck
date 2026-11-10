@@ -155,7 +155,8 @@ z = lbl_80563238;
 goto loop_test;
 loop_body:
 if (strcmp(((M2CItem *)item)->f2(), (const char *)&lbl_8055B534) == 0) {
-block = (void *)&result->blocks[result->count++];
+Block *b_entry = &result->blocks[result->count++];
+block = (void *)b_entry;
 memset(block, 0, 0x34);
 text = ((M2CItem *)item)->f5((const char *)&lbl_8055B52C);
 void *entry;
@@ -228,6 +229,33 @@ result->f154 = lbl_80563238;
 }
 return result;
 }
+
+extern s32 fn_800216D0(void);
+extern s32 fn_801B89F8(void);
+extern f32 lbl_80563238;
+extern f32 lbl_80563258;
+extern f32 lbl_8055B4FC;
+void fn_80209904(void) {
+    f32 temp_f0;
+    f32 temp_f0_2;
+    f32 var_f2;
+    f32 var_f2_2;
+    s32 var_r31;
+    var_r31 = 0;
+    if ((fn_800216D0() != 0) || (fn_801B89F8() != 0)) {
+        var_r31 = 1;
+    }
+    if (var_r31 != 0) {
+        temp_f0 = lbl_8055EDB8 - lbl_80563258;
+        var_f2 = lbl_80563238 > temp_f0 ? lbl_80563238 : temp_f0;
+        lbl_8055EDB8 = var_f2;
+    } else {
+        temp_f0_2 = lbl_80563258 + lbl_8055EDB8;
+        var_f2_2 = lbl_8055B4FC < temp_f0_2 ? lbl_8055B4FC : temp_f0_2;
+        lbl_8055EDB8 = var_f2_2;
+    }
+}
+
 #pragma pop
 
 extern "C" s32 fn_80178CA4(void);
