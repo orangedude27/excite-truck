@@ -696,16 +696,14 @@ extern void fn_8001BDA8(void *);
 extern int fn_8001BBB4(s32, s32, void *, s32, s32, f32);
 #pragma scheduling invalid_target
 void fn_801CCBC4(void) {
-    s32 *state;
+    void *state;
     void *entry;
     void *object;
     s32 i;
     s32 offset;
-
     state = lbl_8055E884;
     if (*(u8 *)((u8 *)state + 0x10) != 0)
         return;
-
     i = 0;
     offset = 0;
     goto check_first;
@@ -716,22 +714,20 @@ first_loop:
     offset += 4;
     i += 1;
 check_first:
-    if (i < state[0x1C / 4])
+    if (i < *(s32 *)((u8 *)state + 0x1C))
         goto first_loop;
-
     if (fn_801CE898() != 0)
         return;
-    if (state[0x2AC / 4] == 0)
+    if (*(s32 *)((u8 *)state + 0x2AC) == 0)
         return;
-
     i = 0;
     goto check_second;
 second_loop:
     object = fn_801EA9A0(i);
     if (*(s32 *)((u8 *)object + 0x44) == 0x50) {
         ((int (*)(s32, s32, s32, void *, s32, s32, f32))fn_8001BBB4)(
-            fn_8000DA10(), state[0], state[1], (u8 *)object + 0x48,
-            state[0x2AC / 4], state[0x2B0 / 4],
+            fn_8000DA10(), *(s32 *)((u8 *)state + 0), *(s32 *)((u8 *)state + 4), (u8 *)object + 0x48,
+            *(s32 *)((u8 *)state + 0x2AC), *(s32 *)((u8 *)state + 0x2B0),
             *(f32 *)((u8 *)state + 0x2B8));
         return;
     }
