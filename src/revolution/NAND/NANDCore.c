@@ -596,14 +596,15 @@ static s32 _ES_CloseLib(s32* fd) {
 }
 
 
-void NANDInitBanner(s32 result, void* arg) {
-    NANDCommandBlock* block = (NANDCommandBlock*)arg;
+void NANDInitBanner(s32 ipcResult, void* arg) {
+    NANDCommandBlock* cmdBlock = (NANDCommandBlock*)arg;
 
-    if (result == IPC_RESULT_OK) {
-        BOOL enabled = OSDisableInterrupts();
-        strcpy(s_currentDir, block->path);
-        OSRestoreInterrupts(enabled);
+    if (ipcResult == IPC_RESULT_OK) {
+        BOOL interrupts = OSDisableInterrupts();
+        strcpy(s_currentDir, cmdBlock->path);
+        OSRestoreInterrupts(interrupts);
     }
 
-    block->callback(nandConvertErrorCode(result), block);
+    /* On success, store the command block path as the current NAND directory, then invoke the callback with the converted result. */
+    cmdBlock->callback(nandConvertErrorCode(ipcResult), cmdBlock);
 }
