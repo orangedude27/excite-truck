@@ -150,20 +150,14 @@ extern "C" int fn_802963F0(void *arg0, int arg1) {
         virtual void f2();
         virtual char *getText(const char *);
     };
-    typedef char *(*GetText)(void *, const char *);
+    int *table;
     int result = arg1;
     int values[8];
-    register int *table;
-    register void **vtable;
-    GetText getText;
     char *text;
     unsigned int i;
-
-    if (((Node *)arg0)->has(lbl_8055C9E4) != 0) {
-        vtable = *(void ***)arg0;
-        table = lbl_802FA9D0;
+    if (((Node *)arg0)->has((const char *)lbl_8055C9E4) != 0) {
+        table = (int *)lbl_802FA9D0;
         values[0] = *table++;
-        getText = (GetText)vtable[5];
         values[1] = *table++;
         values[2] = *table++;
         values[3] = *table++;
@@ -171,7 +165,7 @@ extern "C" int fn_802963F0(void *arg0, int arg1) {
         values[5] = *table++;
         values[6] = *table++;
         values[7] = *table++;
-        text = getText(arg0, lbl_8055C9E4);
+        text = ((Node *)arg0)->getText((const char *)lbl_8055C9E4);
         result = 0;
         table = values;
         for (i = 0; i < 4; i++, table += 2) {
@@ -501,153 +495,57 @@ struct KF { float dur; float a[4]; unsigned int col; int p18; float h; float v[3
 #pragma dont_inline on
 #pragma scheduling invalid_target
 int fn_80296D2C(void *arg0, float *arg1, float farg0) {
-    char * volatile selected;
-    char * volatile next;
-    char *current;
-    int count;
-    register int offset;
-    char *base;
-    int flags;
-    int color;
-    int alpha;
-    int alpha2;
-    float total;
-    float duration;
-    
-    float t;
-    float ease;
-    float x;
-    float y;
-    float z;
-    float w;
-    float h;
-    float d;
-    float v0;
-    float v1;
-    float v2;
-    float v3;
-    float v4;
-    float v5;
-    float vx;
-    float vy;
-    float vz;
-    float sp1c;
-    float sp20;
-    float sp24;
+    struct KF *kf[2];
+    struct KF *base;
+    struct KF *cur, *nxt;
+    int count, i, flags;
+    float total, dur, t, ease, x, y, z, w, h;
     unsigned int packed;
-    unsigned int rgb;
-    unsigned int low;
-
+    float vec[3];
+    float sp[3];
+    kf[0] = 0; kf[1] = 0;
     count = *(int *)((char *)arg0 + 0x2C);
-    base = (char *)*(void **)((char *)arg0 + 0x24);
-    selected = 0;
-    next = 0;
+    base = *(struct KF **)((char *)arg0 + 0x24);
     total = lbl_8056456C;
-    offset = 0;
-    if (count > 0) {
-        do {
-            duration = *(float *)(base + offset);
-            if (farg0 < total + duration) {
-                selected = base + offset;
-                break;
-            }
-            total += duration;
-            offset += 0x30;
-        } while (--count != 0);
+    for (i = 0; i < count; i++) {
+        dur = base[i].dur;
+        if (farg0 < total + dur) { kf[0] = &base[i]; break; }
+        total += dur;
     }
-    if (selected == 0) return 0;
-
-    next = selected;
-    current = (char *)*(void **)((char *)arg0 + 0x24) +
-        *(int *)((char *)arg0 + 0x2C) * 0x30 - 0x30;
-    if (selected != current) next += 0x30;
-
-    current = selected;
-    t = (total - farg0) / *(float *)current;
-    flags = *(int *)(next + 0x2C);
-    if (t < lbl_80564548) {
-        ease = lbl_80564548;
-    } else if (t > lbl_80564560) {
-        ease = lbl_80564560;
-    } else if (t > lbl_8056456C) {
-        v0 = lbl_80564570 * t;
-        v1 = lbl_80564574 * t;
-        v0 = v0 * t;
-        v1 = v1 * t;
-        v0 = t * v0;
-        ease = v0 + v1;
-    } else {
-        v0 = lbl_80564570 * t;
-        v1 = lbl_80564574 * t;
-        v0 = v0 * t;
-        v1 = v1 * t;
-        v0 = t * v0;
-        ease = v0 - v1;
-    }
-
-    if (flags & 1) {
-        v0 = *(float *)(current + 4);
-        v1 = *(float *)(next + 4);
-        x = v0 + ease * (v1 - v0);
-    } else x = *(float *)(current + 4);
-    if (flags & 1) {
-        v0 = *(float *)(current + 8);
-        v1 = *(float *)(next + 8);
-        y = v0 + ease * (v1 - v0);
-    } else y = *(float *)(current + 8);
-    if (flags & 1) {
-        v0 = *(float *)(current + 0xC);
-        v1 = *(float *)(next + 0xC);
-        z = v0 + ease * (v1 - v0);
-    } else z = *(float *)(current + 0xC);
-    if (flags & 1) {
-        v0 = *(float *)(current + 0x10);
-        v1 = *(float *)(next + 0x10);
-        w = v0 + ease * (v1 - v0);
-    } else w = *(float *)(current + 0x10);
-
-    if (flags & 2)
-        packed = fn_80296A10(*(unsigned int *)(current + 0x14), *(unsigned int *)(next + 0x14), ease);
-    else
-        packed = *(unsigned int *)(current + 0x14);
-
+    if (kf[0] == 0) return 0;
+    kf[1] = kf[0];
+    if (kf[0] != &base[count] - 1) kf[1] = kf[1] + 1;
+    cur = kf[0];
+    t = (total - farg0) / cur->dur;
+    nxt = kf[1];
+    flags = nxt->flags;
+    if (t < lbl_80564548) ease = lbl_80564548;
+    else if (t > lbl_80564560) ease = lbl_80564560;
+    else if (t > lbl_8056456C) ease = t * (lbl_80564570 * t * t) + lbl_80564574 * t * t;
+    else ease = t * (lbl_80564570 * t * t) - lbl_80564574 * t * t;
+    if (flags & 1) x = cur->a[0] + ease * (nxt->a[0] - cur->a[0]); else x = cur->a[0];
+    if (flags & 1) y = cur->a[1] + ease * (nxt->a[1] - cur->a[1]); else y = cur->a[1];
+    if (flags & 1) z = cur->a[2] + ease * (nxt->a[2] - cur->a[2]); else z = cur->a[2];
+    if (flags & 1) w = cur->a[3] + ease * (nxt->a[3] - cur->a[3]); else w = cur->a[3];
+    if (flags & 2) packed = fn_80296A10(cur->col, nxt->col, ease); else packed = cur->col;
+    if (flags & 8) h = cur->h + ease * (nxt->h - cur->h); else h = cur->h;
     if (flags & 8) {
-        v0 = *(float *)(current + 0x1C);
-        v1 = *(float *)(next + 0x1C);
-        h = v0 + ease * (v1 - v0);
-    } else h = *(float *)(current + 0x1C);
-
-    if (flags & 8) {
-        v0 = *(float *)(current + 0x20);
-        v1 = *(float *)(next + 0x20);
-        v2 = *(float *)(current + 0x24);
-        v3 = *(float *)(next + 0x24);
-        v4 = *(float *)(current + 0x28);
-        v5 = *(float *)(next + 0x28);
-        d = v4 + ease * (v5 - v4);
-        y = v2 + ease * (v3 - v2);
-        x = v0 + ease * (v1 - v0);
+        vec[0] = cur->v[0] + ease * (nxt->v[0] - cur->v[0]);
+        vec[1] = cur->v[1] + ease * (nxt->v[1] - cur->v[1]);
+        vec[2] = cur->v[2] + ease * (nxt->v[2] - cur->v[2]);
     } else {
-        vx = *(float *)(current + 0x20);
-        vy = *(float *)(current + 0x24);
-        vz = *(float *)(current + 0x28);
+        vec[0] = cur->v[0]; vec[1] = cur->v[1]; vec[2] = cur->v[2];
     }
-
-    sp1c = vx + arg1[0];
-    sp20 = vy + arg1[1];
-    sp24 = vz + arg1[2];
-
+    sp[0] = vec[0] + arg1[0];
+    sp[1] = vec[1] + arg1[1];
+    sp[2] = vec[2] + arg1[2];
     if (flags & 4) {
-        alpha = (packed >> 24) & 0xFF;
-        alpha2 = fn_802969B4(alpha, 0, ease) & 0xFF;
-        rgb = packed & 0xFFFFFF;
-        fn_802960A0(&sp1c, (alpha2 << 24) | rgb, *(int *)(selected + 0x18), h, x, y, z, w);
-        alpha = (packed >> 24) & 0xFF;
-        low = packed & 0xFFFFFF;
-        fn_802960A0((float *)&x, (low | ((alpha - alpha2) << 24)),
-            *(int *)(next + 0x18), h, x, y, z, w);
+        int a = packed >> 24;
+        int a2 = fn_802969B4(a, 0, ease) & 0xFF;
+        fn_802960A0(sp, (a2 << 24) | (packed & 0xFFFFFF), kf[0]->p18, h, x, y, z, w);
+        fn_802960A0(sp, (packed & 0xFFFFFF) | ((a - a2) << 24), kf[1]->p18, h, x, y, z, w);
     } else {
-        fn_802960A0((float *)&x, packed, *(int *)(selected + 0x18), h, x, y, z, w);
+        fn_802960A0(sp, packed, kf[0]->p18, h, x, y, z, w);
     }
     return 1;
 }
@@ -655,40 +553,58 @@ int fn_80296D2C(void *arg0, float *arg1, float farg0) {
 #pragma push
 #pragma cplusplus on
 extern "C" float fn_802970C8(void *arg0) {
+    int use_unrolled = 0;
     int count = *(int *)((char *)arg0 + 0x2C);
     int processed = 0;
-    int offset = 0;
     int rest;
     unsigned int groups;
     float sum = lbl_8056456C;
-
-    if (count <= 0) return sum;
+    if (count <= 0) {
+        return sum;
+    }
     rest = count - 8;
-    if (rest > 0 && count <= 0x7FFFFFFE) {
-        groups = ((unsigned int)rest + 7) >> 3;
+    if (rest <= 0) {
+        goto tail;
+    }
+    if (count < 0) {
+        goto check;
+    }
+    if (count > 0x7FFFFFFE) {
+        goto check;
+    }
+    use_unrolled = 1;
+check:
+    if (use_unrolled == 0) {
+        goto tail;
+    }
+    groups = ((unsigned int)rest + 7) >> 3;
+    {
+        int offset = 0;
+        unsigned int g = groups;
+        float *base0 = *(float **)((char *)arg0 + 0x24);
         do {
-            float *base = *(float * volatile *)((char *)arg0 + 0x24);
-            float *record = (float *)((char *)base + offset);
-            sum += *(float *)((char *)record + 0x00);
-            sum += *(float *)((char *)record + 0x30);
-            sum += *(float *)((char *)record + 0x60);
-            sum += *(float *)((char *)record + 0x90);
-            sum += *(float *)((char *)record + 0xC0);
-            sum += *(float *)((char *)record + 0xF0);
-            sum += *(float *)((char *)record + 0x120);
-            sum += *(float *)((char *)record + 0x150);
+            float *rec = (float *)((char *)base0 + offset);
+            sum += rec[0];
+            sum += rec[0x30/4];
+            sum += rec[0x60/4];
+            sum += rec[0x90/4];
+            sum += rec[0xC0/4];
+            sum += rec[0xF0/4];
+            sum += rec[0x120/4];
+            sum += rec[0x150/4];
             processed += 8;
             offset += 0x180;
-        } while (--groups != 0);
+        } while (--g != 0);
     }
+tail:
     if (processed < count) {
-        float *base = *(float * volatile *)((char *)arg0 + 0x24);
-        offset = processed * 0x30;
-        rest = count - processed;
+        float *base = *(float **)((char *)arg0 + 0x24);
+        int off = processed * 0x30;
+        int r = count - processed;
         do {
-            sum += *(float *)((char *)base + offset);
-            offset += 0x30;
-        } while (--rest != 0);
+            sum += *(float *)((char *)base + off);
+            off += 0x30;
+        } while (--r != 0);
     }
     return sum;
 }
