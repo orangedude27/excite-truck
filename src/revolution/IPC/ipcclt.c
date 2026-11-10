@@ -231,12 +231,17 @@ static void IpcAckHandler(u8 intr, OSContext* ctx) {
     }
 }
 
+/* Dispatches the PI ACR IPC interrupt to the reply or ack handler based on PPCCTRL flags set by the ARM. */
 static void IPCInterruptHandler(s16 intr, OSContext* ctx) {
-    if ((IPCReadReg(IPC_IPC_PPCCTRL) & 0x14) == 0x14) {
+    if ((IPCReadReg(IPC_IPC_PPCCTRL) &
+         (IPC_PPCCTRL_ARM_MSG | IPC_PPCCTRL_STATE_REPLY)) ==
+        (IPC_PPCCTRL_ARM_MSG | IPC_PPCCTRL_STATE_REPLY)) {
         IpcReplyHandler(intr, ctx);
     }
 
-    if ((IPCReadReg(IPC_IPC_PPCCTRL) & 0x22) == 0x22) {
+    if ((IPCReadReg(IPC_IPC_PPCCTRL) &
+         (IPC_PPCCTRL_ARM_ACK | IPC_PPCCTRL_STATE_ACK)) ==
+        (IPC_PPCCTRL_ARM_ACK | IPC_PPCCTRL_STATE_ACK)) {
         IpcAckHandler(intr, ctx);
     }
 }
