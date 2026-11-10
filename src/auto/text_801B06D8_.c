@@ -691,6 +691,7 @@ extern s32 fn_801366C0(s32,s32,f32);
 extern void fn_801B14BC(s32*,s32,s32);
 extern s32 fn_8026A27C(s32);
 extern void fn_801B1390(s32, s32);
+#pragma scheduling on
 #pragma dont_inline on
 void fn_801B14E4(void *arg0) {
     struct {
@@ -700,10 +701,11 @@ void fn_801B14E4(void *arg0) {
         u8 unk60[4];
         s32 count;
     } *base = (void *)arg0;
-    f32 threshold = lbl_805625F8;
+    s32 v5c = base->field5C;
+    s32 v58 = *(s32 *)((u8 *)arg0 + 0x58);
     s32 passed;
 
-    if (fn_801366C0(base->field58, base->field5C + 0x118, threshold)) {
+    if (fn_801366C0(v58, v5c + 0x118, lbl_805625F8)) {
         base->count += 1;
     } else {
         base->count = 0;
@@ -711,6 +713,7 @@ void fn_801B14E4(void *arg0) {
     passed = (f32)base->count > lbl_805625FC;
     fn_801B14BC((s32 *)((u8 *)base + 4), 4, passed);
 }
+#pragma scheduling invalid_target
 void fn_801B157C(void *arg0,s32 arg1) {
     *(u8*)((u8*)arg0+0x2C)=1;*(f32*)((u8*)arg0+0x30)=lbl_8055E3C8;
     if(lbl_8055E690)fn_801CB6B4(*(s32*)((u8*)arg0+0x60),arg1,2);
@@ -1327,27 +1330,33 @@ struct VTable68C {
     virtual void d1();
     virtual void d2(s32);
 };
-#pragma cplusplus off
-void fn_801B228C(void) {
+struct VSingle {
+    virtual void m(s32);
+};
+#pragma cplusplus on
+extern "C" void fn_8002F6AC(void *, void (*)(void));
+extern "C" void fn_801B2118(void);
+extern "C" void fn_80139E18(void *);
+extern "C" void fn_801B228C(void) {
     fn_8002F6AC(lbl_8055E684, fn_801B2118);
     lbl_8055E684 = 0;
     lbl_8055E678 = 0;
     if (lbl_8055E68C != 0) {
         if (lbl_8055E68C != 0) {
-            ((void (*)(void *, s32))(*(void ***)lbl_8055E68C)[2])(lbl_8055E68C, 1);
+            ((VTable68C *)lbl_8055E68C)->d2(1);
         }
         lbl_8055E68C = 0;
     }
     if (lbl_8055E66C != 0) {
-        fn_80139E18(lbl_8055E66C);
+        fn_80139E18((void *)lbl_8055E66C);
         lbl_8055E66C = 0;
     }
     if (lbl_8055E670 != 0) {
-        fn_80139E18(lbl_8055E670);
+        fn_80139E18((void *)lbl_8055E670);
         lbl_8055E670 = 0;
     }
 }
-
+#pragma cplusplus off
 void fn_801B2320(void) {
     lbl_8055E688 = *(s32 *)((u8 *)*(void **)((u8 *)fn_80178C9C() + 0x2C) + 0x18);
 }
