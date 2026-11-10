@@ -9497,55 +9497,92 @@ static tBTM_STATUS btm_set_inq_event_filter(UINT8 filter_cond_type, UINT8 *p_fil
 #define BTM_INQ_BD_BUF_SIZE_HERE    0x708
 #define BTM_INQ_BD_BUF_ENTRIES_HERE (BTM_INQ_BD_BUF_SIZE_HERE / sizeof(tINQ_BDADDR))
 
-void btm_event_filter_complete(UINT8 *p) {
-    u8 *cleanup;
-    u8 *p_inq = lbl_803C0F78;
-    u8 *lap;
+/*
+ * btm_inq.c: a Set Event Filter command has completed.  btu_hcif_hdl_command_complete
+ * calls this with the parameter part of the HCI Command Complete event, whose
+ * first byte is the HCI status.  Only the inquiry filter is used here: the
+ * status decides whether the inquiry carries on to the next filter state or
+ * ends, and a filter set on its own (no inquiry active) is simply reported to
+ * the caller's completion callback.  The last branch is btm_initiate_inquiry(),
+ * which this build inlines.
+ */
+void btm_event_filter_complete(UINT8 *p_param) {
+    u8 *cb_clr;                     /* the inlined btm_clr_inq_result_flt()'s view */
+    u8 *cb = lbl_803C0F78;          /* the BTM control block */
+    u8 *lap;                        /* the access code to inquire against */
     tBTM_STATUS status;
-    tBTM_CMPL_CB *p_cb = btm_inq_filt_cmpl_cb(p_inq);
-    if (btm_inq_pending_cmpl(p_inq)) { btm_inq_pending_cmpl(p_inq)--; return; }
-    if (btm_inq_filt_active(p_inq) != TRUE) return;
-    if (*p != HCI_SUCCESS) {
+    tBTM_CMPL_CB *p_cb = btm_inq_filt_cmpl_cb(cb);
+
+    /* a filter command this state sent on its own is only counted out */
+    if (btm_inq_pending_cmpl(cb)) { btm_inq_pending_cmpl(cb)--; return; }
+    if (btm_inq_filt_active(cb) != TRUE) return;
+
+    if (*p_param != HCI_SUCCESS) {
         if (btm_cb_trace_level >= BTM_TRACE_LEVEL_WARNING)
-            fn_80070954(TRACE_LAYER_BTM | TRACE_TYPE_WARNING, lbl_803164B8, *p); /* "BTM Warning: Set Event Filter Failed (HCI returned 0x%x)" */
+            fn_80070954(TRACE_LAYER_BTM | TRACE_TYPE_WARNING, lbl_803164B8, *p_param); /* "BTM Warning: Set Event Filter Failed (HCI returned 0x%x)" */
         status = BTM_ERR_PROCESSING;
-    } else status = BTM_SUCCESS;
-    if (btm_inq_state(p_inq) == BTM_INQ_INACTIVE_STATE) {
-        btm_inq_filt_active(p_inq) = FALSE;
-        if (p_cb) p_cb(&status);
+    } else {
+        status = BTM_SUCCESS;
+    }
+
+    if (btm_inq_state(cb) == BTM_INQ_INACTIVE_STATE) {
+        /* the filter was set by BTM_SetEventFilter(): report it and stop */
+        btm_inq_filt_active(cb) = FALSE;
+        if (p_cb) {
+            p_cb(&status);
+        }
     } else if (status != BTM_SUCCESS) {
         ((void (*)(UINT8))btm_process_inq_complete)(BTM_ERR_PROCESSING);
-        btm_inq_filt_active(p_inq) = FALSE; btm_inq_active(p_inq) = BTM_INQUIRY_INACTIVE; btm_inq_state(p_inq) = BTM_INQ_INACTIVE_STATE;
-    } else if (btm_inq_state(p_inq) == BTM_INQ_CLR_FILT_STATE) {
-        status = btm_set_inq_event_filter(btm_inq_filt_type(p_inq), btm_inq_filt_cond(p_inq));
-        if (status == BTM_CMD_STARTED) btm_inq_state(p_inq) = BTM_INQ_SET_FILT_STATE;
-        else { btm_inq_filt_active(p_inq) = FALSE; ((void (*)(UINT8))btm_process_inq_complete)(BTM_ERR_PROCESSING); }
-    } else {
-        UINT8 old_max_resps = btm_inq_max_resps(p_inq);
-        int zero = 0;
-        btm_inq_state(p_inq) = BTM_INQ_ACTIVE_STATE;
-        btm_inq_filt_active(p_inq) = zero;
-        btm_inq_max_resps(p_inq) = (old_max_resps <= BTM_INQ_DB_SIZE_HERE) ? old_max_resps : BTM_INQ_DB_SIZE_HERE;
-        lap = general_inq_lap;
-        if (btm_inq_active(p_inq) & BTM_LIMITED_INQUIRY_ACTIVE_HERE) lap = limited_inq_lap;
-        if (btm_inq_active(p_inq) & BTM_PERIODIC_INQUIRY_ACTIVE_HERE) {
-            if (!btsnd_hcic_per_inq_mode(btm_inq_per_max_delay(p_inq), btm_inq_per_min_delay(p_inq), lap, btm_inq_duration(p_inq), btm_inq_max_resps(p_inq)))
-                ((void (*)(UINT8))btm_process_inq_complete)(BTM_NO_RESOURCES);
+        btm_inq_filt_active(cb) = FALSE;
+        btm_inq_active(cb) = BTM_INQUIRY_INACTIVE;
+        btm_inq_state(cb) = BTM_INQ_INACTIVE_STATE;
+    } else if (btm_inq_state(cb) == BTM_INQ_CLR_FILT_STATE) {
+        /* the inquiry's own filter is off again: set the caller's and wait */
+        status = btm_set_inq_event_filter(btm_inq_filt_type(cb), btm_inq_filt_cond(cb));
+        if (status == BTM_CMD_STARTED) {
+            btm_inq_state(cb) = BTM_INQ_SET_FILT_STATE;
         } else {
-            cleanup = lbl_803C0F78; /* btm_clr_inq_result_flt(), on btm_cb again */
-            if (btm_inq_bd_db(cleanup)) {
-                GKI_freebuf(btm_inq_bd_db(cleanup));
-                btm_inq_bd_db(cleanup) = NULL;
-            }
-            btm_inq_num_bd(cleanup) = 0;
-            btm_inq_max_bd(cleanup) = 0;
-            btm_inq_bd_db(p_inq) = GKI_getbuf(BTM_INQ_BD_BUF_SIZE_HERE);
-            if (btm_inq_bd_db(p_inq)) {
-                btm_inq_max_bd(p_inq) = BTM_INQ_BD_BUF_ENTRIES_HERE;
-                memset(btm_inq_bd_db(p_inq), 0, BTM_INQ_BD_BUF_SIZE_HERE);
-            }
-            if (!btsnd_hcic_inquiry(lap, btm_inq_duration(p_inq), 0))
+            btm_inq_filt_active(cb) = FALSE;
+            ((void (*)(UINT8))btm_process_inq_complete)(BTM_ERR_PROCESSING);
+        }
+    } else {
+        /* --- btm_initiate_inquiry(), inlined --- */
+        UINT8 old_max_resps = btm_inq_max_resps(cb);
+        int zero = 0;                /* the compiler keeps the 0 in a register here */
+
+        btm_inq_state(cb) = BTM_INQ_ACTIVE_STATE;
+        btm_inq_filt_active(cb) = zero;
+        /* never ask the controller for more answers than the inquiry database holds */
+        btm_inq_max_resps(cb) = (old_max_resps <= BTM_INQ_DB_SIZE_HERE) ? old_max_resps : BTM_INQ_DB_SIZE_HERE;
+
+        lap = general_inq_lap;
+        if (btm_inq_active(cb) & BTM_LIMITED_INQUIRY_ACTIVE_HERE) {
+            lap = limited_inq_lap;
+        }
+
+        if (btm_inq_active(cb) & BTM_PERIODIC_INQUIRY_ACTIVE_HERE) {
+            if (!btsnd_hcic_per_inq_mode(btm_inq_per_max_delay(cb), btm_inq_per_min_delay(cb),
+                                         lap, btm_inq_duration(cb), btm_inq_max_resps(cb))) {
                 ((void (*)(UINT8))btm_process_inq_complete)(BTM_NO_RESOURCES);
+            }
+        } else {
+            /* btm_clr_inq_result_flt(): start the list of answering addresses afresh */
+            cb_clr = lbl_803C0F78;
+            if (btm_inq_bd_db(cb_clr)) {
+                GKI_freebuf(btm_inq_bd_db(cb_clr));
+                btm_inq_bd_db(cb_clr) = NULL;
+            }
+            btm_inq_num_bd(cb_clr) = 0;
+            btm_inq_max_bd(cb_clr) = 0;
+
+            btm_inq_bd_db(cb) = GKI_getbuf(BTM_INQ_BD_BUF_SIZE_HERE);
+            if (btm_inq_bd_db(cb)) {
+                btm_inq_max_bd(cb) = BTM_INQ_BD_BUF_ENTRIES_HERE;
+                memset(btm_inq_bd_db(cb), 0, BTM_INQ_BD_BUF_SIZE_HERE);
+            }
+            if (!btsnd_hcic_inquiry(lap, btm_inq_duration(cb), 0)) {
+                ((void (*)(UINT8))btm_process_inq_complete)(BTM_NO_RESOURCES);
+            }
         }
     }
 }
