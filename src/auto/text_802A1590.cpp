@@ -700,10 +700,10 @@ extern "C" void fn_8028E584(void*, void*);
 extern "C" s32 fn_80287B14(void*);
 #pragma scheduling invalid_target
 extern "C" void fn_802A2A38(void* arg0, void* arg1) {
-    s32 index = *(s32*)((char*)arg1 + 0x28);
-    f32* value = (f32*)((char*)arg0 + (index << 4) + 0x20);
-    f32 limit = lbl_80564730 - lbl_80558DC4;
-    int shouldCall = *value > limit;
+    register s32 index = *(s32*)((char*)arg1 + 0x28);
+    register f32* value = (f32*)((char*)arg0 + (index << 4) + 0x20);
+    register f32 limit = lbl_80564730 - lbl_80558DC4;
+    register int shouldCall = *value > limit;
     if (shouldCall) {
         ((void (*)(void*, void*, void*))fn_8028E584)(
             *(void**)((char*)arg0 + 0xC), arg1, (char*)arg1 + 0xC);
@@ -854,8 +854,8 @@ extern "C" void fn_802A2E08(void *arg0, s32 arg1) {
     params.g = lbl_80564740;
     params.h = lbl_80564730;
     params.j = lbl_805647CC;
-    params.i = lbl_805647AC;
     params.k = lbl_80564744;
+    params.i = lbl_805647AC;
     params.l = lbl_80564734;
     params.m = lbl_805647D0;
     params.n = lbl_805647D4;
@@ -865,9 +865,10 @@ extern "C" void fn_802A2E08(void *arg0, s32 arg1) {
     params.r = lbl_80564744;
     params.s = lbl_805647C8;
     void *obj = fn_801284F8(0x68, (void *)lbl_80349A34);
-    if (obj == 0) return;
-    *(s32 *)((u8 *)arg0 + 0x10) =
-        ((s32 (*)(void *, Params *, s32))fn_802A42C8)(obj, &params, arg1);
+    if (obj != 0) {
+        *(s32 *)((u8 *)arg0 + 0x10) =
+            ((s32 (*)(void *, Params *, s32))fn_802A42C8)(obj, &params, arg1);
+    }
 }
 
 #pragma push
@@ -1302,7 +1303,7 @@ extern "C" void fn_802A3C50(void *arg0, s32 arg1) {
     settings.values[33] = lbl_80564730;
     settings.values[31] = lbl_80564730;
     settings.values[37] = lbl_80564730;
-    *(s32 *)((char *)arg0 + 4) = fn_8028E2F8(&settings.values[6], lbl_80349A80, arg1, words[7]);
+    *(s32 *)((char *)arg0 + 4) = ((s32 (*)(void *, void *, s32))fn_8028E2F8)(&settings.values[6], lbl_80349A80, arg1);
 }
 #pragma scheduling on
 extern "C" void* fn_802A3D3C(void* arg0, DummyReceiver_802A3314* arg1) {
@@ -1339,18 +1340,16 @@ extern "C" f32 lbl_80564834;
 extern "C" void fn_802A4118(void *arg0, void *arg1) {
     s32 index = *(s32 *)((char *)arg1 + 0x28);
     f32 *p = (f32 *)((char *)arg0 + (index << 2));
-    s32 shouldCall = p[2] > (lbl_80564730 - lbl_80558DC4);
+    s32 shouldCall = p[2] > (1.0f - lbl_80558DC4);
     if (shouldCall != 0) {
-        f32 scale = fn_80287BC8(lbl_80564834, lbl_8056477C);
-        fn_8028E590(*(s32 *)((char *)arg0 + 4), (f32 *)arg1,
-                     (f32 *)((char *)arg1 + 0xC), scale);
+        f32 scale = fn_80287BC8(-3.14159274f, 3.14159274f);
+        fn_8028E590(*(s32 *)((char *)arg0 + 4), (f32 *)arg1, (f32 *)((char *)arg1 + 0xC), scale);
     }
-
     index = *(s32 *)((char *)arg1 + 0x28);
     p = (f32 *)((char *)arg0 + (index << 2));
-    if (p[2] > (lbl_80564730 - lbl_80558DC4))
-        p[2] = p[2] - lbl_80564730;
-    p[2] += lbl_80564750;
+    if (p[2] > (1.0f - lbl_80558DC4))
+        p[2] = p[2] - 1.0f;
+    p[2] += 0.1f;
 }
 #pragma scheduling on
 extern "C" void fn_8028E61C(void *);
