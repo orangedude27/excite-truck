@@ -141,24 +141,25 @@ static s32 _FSGetUsageCb(s32 result, FSCommandBlock* block);
 // Not part of MSL, but implemented in IPC.
 size_t strnlen(const char* str, size_t maxlen);
 
+// Opens the /dev/fs device for ISFS operations, allocating its work buffer from the IPC arena on first use.
 s32 ISFS_OpenLib(void) {
     static BOOL firstFl = TRUE;
-    static void* lo;
-    static void* hi;
+    static void* ipcBufferLo;
+    static void* ipcBufferHi;
 
-    s32 ret = IPC_RESULT_OK;
-    u8* base;
+    s32 result = IPC_RESULT_OK;
+    u8* fsWorkBuffer;
 
     if (firstFl) {
-        lo = IPCGetBufferLo();
-        hi = IPCGetBufferHi();
+        ipcBufferLo = IPCGetBufferLo();
+        ipcBufferHi = IPCGetBufferHi();
     }
 
-    __devfs = (char*)ROUND_UP_PTR(lo, 32);
+    __devfs = (char*)ROUND_UP_PTR(ipcBufferLo, 32);
 
-    if (firstFl && __devfs + FS_MAX_PATH > hi) {
+    if (firstFl && __devfs + FS_MAX_PATH > ipcBufferHi) {
         OSReport("APP ERROR: Not enough IPC arena\n");
-        ret = IPC_RESULT_ALLOC_FAILED;
+        result = IPC_RESULT_ALLOC_FAILED;
         goto end;
     }
 
@@ -166,30 +167,30 @@ s32 ISFS_OpenLib(void) {
     __fsFd = IOS_Open(__devfs, 0);
 
     if (__fsFd < 0) {
-        ret = __fsFd;
+        result = __fsFd;
         goto end;
     }
 
-    base = (u8*)__devfs;
+    fsWorkBuffer = (u8*)__devfs;
 
-    if (firstFl && base + FS_MAX_PATH + FS_HEAP_SIZE > hi) {
+    if (firstFl && fsWorkBuffer + FS_MAX_PATH + FS_HEAP_SIZE > ipcBufferHi) {
         OSReport("APP ERROR: Not enough IPC arena\n");
-        ret = IPC_RESULT_ALLOC_FAILED;
+        result = IPC_RESULT_ALLOC_FAILED;
         goto end;
     }
 
     if (firstFl) {
-        IPCSetBufferLo(base + FS_MAX_PATH + FS_HEAP_SIZE);
+        IPCSetBufferLo(fsWorkBuffer + FS_MAX_PATH + FS_HEAP_SIZE);
         firstFl = FALSE;
     }
 
-    hId = iosCreateHeap(base, FS_MAX_PATH + FS_HEAP_SIZE);
+    hId = iosCreateHeap(fsWorkBuffer, FS_MAX_PATH + FS_HEAP_SIZE);
     if (hId < 0) {
-        ret = IPC_RESULT_ALLOC_FAILED;
+        result = IPC_RESULT_ALLOC_FAILED;
     }
 
 end:
-    return ret;
+    return result;
 }
 
 /* Handles completion of an asynchronous ISFS operation: runs state-specific post-processing on success, clears the async count, invokes the user callback, frees the command block, and returns the IPC result. */
