@@ -152,6 +152,18 @@ extern "C" float fn_8013A90C(void *arg0, int arg1, int arg2, float arg3) {
 }
 #pragma pop
 
+/* Offsets of the strings in the block at lbl_8032C1A0 (the first one is the
+   warning fn_8013A660 prints when a table has no element). */
+#define AI_STR_NO_ELEMENT 0x00 /* "AI: Warning: table \"%s\" has no element \"%s\"" */
+#define AI_STR_NO_GHOST 0x40   /* "AI: Warning: No ghost data." */
+#define AI_STR_SPEED_FACTOR 0x48 /* "speed_factor" */
+#define AI_STR_SKILL_RANGE 0x58  /* "skill_range" */
+#define AI_STR_EASY_SKILL_RANGE 0x64 /* "easy_skill_range" */
+#define AI_STR_CONTEST_TABLE 0x78 /* "Contest Table" */
+#define AI_STR_EVE_TABLE 0x88     /* "Eve Table" */
+#define AI_STR_NO_SKILL 0x94 /* "skill: !! !! no skill for this contest !! !!" */
+/* The three difficulty prefixes fn_8013A708 puts in front of an element name:
+   lbl_802F9350 = {"easy_", "medium_", "hard_"}. */
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void fn_8013AB08(float *arg0, int *arg1) {
