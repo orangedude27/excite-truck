@@ -35,20 +35,27 @@ extern double lbl_80563938;
 #pragma push
 #pragma use_lmw_stmw off
 void *fn_8024C374(void *arg0, int arg1) {
-    void *result = arg0;
+    struct Obj {
+        char pad0[0x18];
+        char field_18;
+        char pad1[0x4C - 0x19];
+        void *field_4C;
+        char pad2[0x78 - 0x50];
+        void *field_78;
+    } *obj = arg0;
     if (arg0 != 0) {
-        if ((int)arg0 + 0x78 != 0) {
-            fn_802328D4(((void **)arg0)[0x78 / 4]);
-            ((void **)arg0)[0x78 / 4] = 0;
+        if (&obj->field_78 != 0) {
+            fn_802328D4(obj->field_78);
+            obj->field_78 = 0;
         }
-        if ((int)arg0 + 0x18 != 0 && (int)arg0 + 0x4C != 0) {
-            fn_802328D4(((void **)arg0)[0x4C / 4]);
-            ((void **)arg0)[0x4C / 4] = 0;
+        if (&obj->field_18 != 0 && &obj->field_4C != 0) {
+            fn_802328D4(obj->field_4C);
+            obj->field_4C = 0;
         }
         if (arg1 > 0)
             fn_80128668(arg0);
     }
-    return result;
+    return arg0;
 }
 #pragma pop
 void *fn_8024C3FC(void *arg0, int arg1) {
