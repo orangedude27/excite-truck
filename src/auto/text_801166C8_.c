@@ -4773,35 +4773,53 @@ extern void fn_801219B4(void *);
 extern void fn_80121BF4(void *);
 extern void fn_80125014(void *);
 extern void fn_80122518(s32, u8 *, void *);
-void fn_80120E14(register s32 count, register void *dst, register s32 mode, register s32 srcIndex, register void *src) {
-    register s32 n;
-    if (count > 0x20) {
-        n = count >> 2;
-        fn_80122518(count, (u8 *)dst, (u8 *)src + (srcIndex - n) * 4);
-        if (count > 0x200) {
-            fn_80122E08(n, dst, srcIndex, src);
-            fn_80122ED8(n, (u8 *)dst + n * 4, srcIndex, src);
-            fn_80122E08(n, (u8 *)dst + n * 8, srcIndex, src);
-            fn_80122E08(n, (u8 *)dst + ((n * 3) << 2), srcIndex, src);
-        } else if (n > 0x20) {
-            fn_80122FA4(count, dst, srcIndex, src);
+void fn_80120E14(register s32 n, register void *a, register s32 ip, register s32 nw, register void *w) {
+    /* Inverse-direction half of the recursive radix-4 complex FFT (Ooura-style)
+     * that ddct/dcdft run on n floats in `a`, i.e. n/2 re/im samples.  `w` is the
+     * twiddle table, `nw` its length in floats, `ip` the caller's bit-reversal
+     * scratch table (ip + 2 of the caller's int array).  fn_80120CA4 is the
+     * forward twin; each helper used here has the forward-sign partner that one
+     * calls instead.
+     *
+     * n > 32: one twiddled butterfly stage over the whole array (fn_80122518,
+     * taking its twiddles from w + nw - n/4), then the four quarters of n/4
+     * floats transformed -- recursively through fn_80122E08/fn_80122ED8 while
+     * n > 512, by the flat loops fn_80122FA4 once n/4 > 32 and fn_80123CEC below
+     * that -- and last the bit-reversal permutation with conjugation
+     * (fn_80121400, bitrv2conj), which puts the decimation-in-frequency result
+     * back in natural order.
+     * n == 32 and n == 16: their fixed butterfly (fn_80123E98, fn_80124AD8)
+     * followed by the fixed permutation that orders it.
+     * n == 8 and n == 4: a single stage of four (fn_80125014) or two
+     * (fn_80125098) samples. */
+    register s32 m;
+    if (n > 0x20) {
+        m = n >> 2;
+        fn_80122518(n, (u8 *)a, (u8 *)w + (nw - m) * 4);
+        if (n > 0x200) {
+            fn_80122E08(m, a, nw, w);
+            fn_80122ED8(m, (u8 *)a + m * 4, nw, w);
+            fn_80122E08(m, (u8 *)a + m * 8, nw, w);
+            fn_80122E08(m, (u8 *)a + ((m * 3) << 2), nw, w);
+        } else if (m > 0x20) {
+            fn_80122FA4(n, a, nw, w);
         } else {
-            fn_80123CEC(count, dst, srcIndex, src);
+            fn_80123CEC(n, a, nw, w);
         }
-        fn_80121400(count, (s32 *)mode, (f32 *)dst);
-    } else if (count > 8) {
-        if (count == 0x20) {
-            fn_80123E98(dst, (u8 *)src + (srcIndex - 8) * 4);
-            fn_801219B4(dst);
+        fn_80121400(n, (s32 *)ip, (f32 *)a);
+    } else if (n > 8) {
+        if (n == 0x20) {
+            fn_80123E98(a, (u8 *)w + (nw - 8) * 4);
+            fn_801219B4(a);
         } else {
-            fn_80124AD8(dst, src);
-            fn_80121BF4(dst);
+            fn_80124AD8(a, w);
+            fn_80121BF4(a);
         }
     } else {
-        if (count == 8) {
-            fn_80125014(dst);
-        } else if (count == 4) {
-            fn_80125098(dst);
+        if (n == 8) {
+            fn_80125014(a);
+        } else if (n == 4) {
+            fn_80125098(a);
         }
     }
 }
