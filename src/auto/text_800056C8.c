@@ -704,9 +704,10 @@ extern "C" s32 fn_80006408(void *arg0, s32 arg1, u32 arg2, u32 arg3) {
         virtual void v9();
         virtual s32 v10();
     };
-    void *obj;
     if ((((s32 *)lbl_8055D350)[8] & 4) != 0) {
-        obj = *(void **)((u8 *)lbl_8034EEB8 + (arg1 << 4) + 0x18);
+        u8 *base = (u8 *)lbl_8034EEB8;
+        s32 off = arg1 << 4;
+        void *obj = *(void **)(base + off + 0x18);
         if (((Obj *)obj)->v10() != 0) {
             return 1;
         }
@@ -741,28 +742,29 @@ void fn_80006550(void *arg0, s32 arg1) {
 
 #pragma push
 #pragma dont_inline on
-s32 fn_80006580(void *arg0, u32 arg1, u32 arg2, u32 arg3) {
+/* Handles UI message 0x3E8 for a menu/state object: state at +4, selection at +0x10. 0x58 advances states 1->2->3 (state 2 gated by fn_801CB880), and in state 3 applies selection via fn_800060E0. 0x126/0x128 step selection down/up in state 3, clamped by fn_80006550, triggering feedback and fn_80230E90/fn_80012158. */
+s32 fn_80006580(void *obj, u32 unused, u32 msg, u32 param) {
     s32 state;
     s32 event;
     s32 result = 0;
     s32 direction;
     s32 i;
 
-    if (arg2 == 0x3E8) {
-        state = *(s32 *)((u8 *)arg0 + 4);
-        event = (u32)arg3 & 0xFFFF;
+    if (msg == 0x3E8) {
+        state = *(s32 *)((u8 *)obj + 4);
+        event = (u32)param & 0xFFFF;
         switch (state) {
         case 3:
             if (event == 0x58) {
-                s32 value = *(s32 *)((u8 *)arg0 + 0x10);
-                ((void (*)(s32, s32))fn_800060E0)((value - 2) == 0, (value - 1) == 0);
+                s32 selection = *(s32 *)((u8 *)obj + 0x10);
+                ((void (*)(s32, s32))fn_800060E0)((selection - 2) == 0, (selection - 1) == 0);
                 fn_800121A4();
                 result = 1;
             } else if ((u32)event == 0x126 || (u32)event == 0x128) {
                 direction = (u32)event == 0x126 ? -1 : 1;
-                fn_80006550(arg0, direction);
+                fn_80006550(obj, direction);
                 for (i = 0; i < 3; i++) {
-                    if (*(s32 *)((u8 *)arg0 + 0x10) == 2)
+                    if (*(s32 *)((u8 *)obj + 0x10) == 2)
                         fn_8027AA48();
                 }
                 fn_80230E90(1);
@@ -771,13 +773,13 @@ s32 fn_80006580(void *arg0, u32 arg1, u32 arg2, u32 arg3) {
             break;
         case 2:
             if (event == 0x58 && fn_801CB880() != 0) {
-                *(s32 *)((u8 *)arg0 + 4) = 3;
+                *(s32 *)((u8 *)obj + 4) = 3;
                 result = 1;
             }
             break;
         case 1:
             if (event == 0x58) {
-                *(s32 *)((u8 *)arg0 + 4) = 2;
+                *(s32 *)((u8 *)obj + 4) = 2;
                 result = 1;
             }
             break;
