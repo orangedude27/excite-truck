@@ -36,12 +36,13 @@ extern void fn_801331C4(int, int *, float *);
 
 #pragma scheduling invalid_target
 void fn_801DE7E8(int arg0) {
-    /* Fix note: use the mode value to initialize the corresponding table fields. */
     extern char lbl_804872B0[];
-    extern char lbl_803394B0[], lbl_803394BC[];
+    extern char lbl_803394B0[];
+    extern char lbl_803394BC[];
     extern int fn_80145E70(const char *);
     extern int fn_802CAC28(const char *, int);
-    int index, value;
+    int index;
+    int value;
     switch (arg0) {
     case 1:
         value = fn_80145E70(lbl_803394B0);
@@ -282,6 +283,13 @@ extern "C" void fn_801DEE3C(void) {
         int state;
         int field6;
     };
+    /* Tear down popup/UI state: for 9 rows at lbl_804872B0 (stride 0x1C)
+       destroy object (vcall d0(1)) and clear, stop active state via
+       fn_802CAC54 if != -1, call fn_801DE88C(i); then shutdown lbl_8055E9EC via
+       fn_80209110 and destroy singleton object lbl_8055E9F0; destroy/clear 4
+       objects in table lbl_804874A8; if handle lbl_8055E9E4 nonzero close via
+       fn_80131818; clear lbl_8055E9E8 and save/clear flags lbl_8055E9DC through
+       fn_80133348(fn_8000DA10()+0xC, &lbl_80339570 "popups_seen", lbl_8055E9DC). */
     register int sentinel = -1;
     register int zero = 0;
     register char *row = lbl_804872B0;
