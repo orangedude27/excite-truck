@@ -21675,6 +21675,7 @@ void rfc_process_rpn(struct tRFC_MCB *p_mcb, BOOLEAN is_command, void *is_reques
     }
 }
 
+/* Processes an RFCOMM MSC (modem status command/response) message for a port. */
 void rfc_process_msc(void *mcb, s32 is_command, void *message) {
     u8 flags = *((u8 *)message + 9);
     u8 *port = port_find_mcb_dlci_port(mcb, *(u8 *)message);
