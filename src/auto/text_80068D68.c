@@ -19940,40 +19940,41 @@ void PORT_DlcEstablishInd(s32 arg0, s32 arg1, s32 arg2) {
 }
 
 extern char lbl_80319350[];
+/* Handle DLC establishment confirmation: update port state and negotiate parameters */
 void PORT_DlcEstablishCnf(void *p_mcb, u8 dlci, u16 mtu, u16 result) {
-    extern void RFCOMM_PortNegReq(void *, u8, void *);
-    extern void RFCOMM_ControlReq(void *, u8, void *);
-    void *port = port_find_mcb_dlci_port(p_mcb, dlci);
+    extern void RFCOMM_PortNegReq(void *p_mcb, u8 dlci, void *p_port_pars);
+    extern void RFCOMM_ControlReq(void *p_mcb, u8 dlci, void *p_pars);
+    void *p_port = port_find_mcb_dlci_port(p_mcb, dlci);
 
     if (lbl_803C4828[0x414] >= 4) {
         ((void (*)(u32, void *, u8, u16, u16))fn_80070984)(
             0x90003, lbl_80319350, dlci, mtu, result);
     }
-    if (port == 0) return;
+    if (p_port == 0) return;
     if (result != 0) {
-        *(u8 *)((u8 *)port + 0x0E) = 0x0C;
-        port_rfc_closed((struct t_port_info *)port, 0x0C);
+        *(u8 *)((u8 *)p_port + 0x0E) = 0x0C;
+        port_rfc_closed((struct t_port_info *)p_port, 0x0C);
         return;
     }
-    if (mtu != 0 && mtu < *(u16 *)((u8 *)port + 0x14))
-        *(u16 *)((u8 *)port + 0x14) = mtu;
+    if (mtu != 0 && mtu < *(u16 *)((u8 *)p_port + 0x14))
+        *(u16 *)((u8 *)p_port + 0x14) = mtu;
     rfc_timer_stop(p_mcb);
-    if (*(void **)((u8 *)port + 0x8C) != 0 &&
-        (*(u32 *)((u8 *)port + 0x88) & 0x200) != 0) {
-        ((void (*)(u32, u8))*(void **)((u8 *)port + 0x8C))(0x200, *(u8 *)port);
+    if (*(void **)((u8 *)p_port + 0x8C) != 0 &&
+        (*(u32 *)((u8 *)p_port + 0x88) & 0x200) != 0) {
+        ((void (*)(u32, u8))*(void **)((u8 *)p_port + 0x8C))(0x200, *(u8 *)p_port);
     }
-    if (*(void **)((u8 *)port + 0x90) != 0) {
-        ((void (*)(u32, u8))*(void **)((u8 *)port + 0x90))(0, *(u8 *)port);
+    if (*(void **)((u8 *)p_port + 0x90) != 0) {
+        ((void (*)(u32, u8))*(void **)((u8 *)p_port + 0x90))(0, *(u8 *)p_port);
     }
-    *(u8 *)((u8 *)port + 2) = 2;
-    if (*(u16 *)((u8 *)port + 4) == 0x1103 ||
-        *(u16 *)((u8 *)port + 4) == 0x1111) {
-        RFCOMM_PortNegReq(*(void **)((u8 *)port + 0x6C),
-                          *(u8 *)((u8 *)port + 0x0D), 0);
+    *(u8 *)((u8 *)p_port + 2) = 2;
+    if (*(u16 *)((u8 *)p_port + 4) == 0x1103 ||
+        *(u16 *)((u8 *)p_port + 4) == 0x1111) {
+        RFCOMM_PortNegReq(*(void **)((u8 *)p_port + 0x6C),
+                          *(u8 *)((u8 *)p_port + 0x0D), 0);
     } else {
-        RFCOMM_ControlReq(*(void **)((u8 *)port + 0x6C),
-                          *(u8 *)((u8 *)port + 0x0D),
-                          (u8 *)port + 0x5A);
+        RFCOMM_ControlReq(*(void **)((u8 *)p_port + 0x6C),
+                          *(u8 *)((u8 *)p_port + 0x0D),
+                          (u8 *)p_port + 0x5A);
     }
 }
 
