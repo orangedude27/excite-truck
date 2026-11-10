@@ -15,7 +15,7 @@ void fn_802E3DF8(int arena, void **outLo, unsigned int *outSize) {
         lo = OSGetMEM2ArenaLo();
         hi = OSGetMEM2ArenaHi();
     } else {
-        fn_802E317C("invalid arena %d", arena);
+        fn_802E317C(lbl_8034D020, arena);
     }
     lo = (lo + 0x7f) & ~0x7f;
     *outLo = (void *)lo;
