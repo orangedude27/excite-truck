@@ -1047,6 +1047,8 @@ void fn_8003588C(void) {
 }
 #pragma dont_inline on
 void fn_80035A04(u32 arg0) {
+    /* DVD error/status handler: record the error code, handle fatal/cover-open/reset cases,
+     * or log an error record (type 0x27) and dispatch the error callback. */
     register s32 state;
     s32 firstInterrupts;
     s32 *block;
