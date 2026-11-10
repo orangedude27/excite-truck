@@ -67,8 +67,9 @@ int PackArgs(void* base, int count, char** args, int unused) {
 #pragma dont_inline on
 void fn_8004DD88(void (*target)(void)) {
     ICFlashInvalidate();
-    __asm_sync_placeholder();
-    target();
+    __sync();
+    __isync();
+    ((void (*)(void))(u32)target)();
 }
 #pragma dont_inline reset
 
@@ -439,6 +440,7 @@ void fn_8004E3F0(void) {
     s32 fd = -1;
     s32 result;
 
+    /* Restart current title via ES and loop forever on success */
     if (_ES_InitLib(&fd) != 0) {
         return;
     }
