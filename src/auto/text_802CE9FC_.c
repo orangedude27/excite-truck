@@ -293,6 +293,7 @@ extern void KPADSetBtnRepeat(int *, int *, int *, int *);
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
+/* Reports GX GP status flags and a KPAD button-repeat change diagnostic via OSReport. */
 void fn_802CED78(void) {
     extern char lbl_8034BD18[];
     extern void GXGetGPStatus(char *, char *, char *, char *, char *);
@@ -964,13 +965,13 @@ void fn_802CFFA4(unsigned short arg0) {
     lbl_8055FD86 = arg0;
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802CFFAC(int arg0, int arg1, int arg2) {
-    unsigned long packed;
     volatile unsigned char spB;
     volatile unsigned char spA;
     volatile unsigned char sp9;
     volatile unsigned char sp8;
+    unsigned long packed;
 
     packed = fn_802CE9FC(arg0, arg1, arg2, 0);
     spB = (unsigned char)packed;
@@ -983,7 +984,6 @@ void fn_802CFFAC(int arg0, int arg1, int arg2) {
     lbl_804C97B0[0x1C] = 1;
     spA = (unsigned char)(packed >> 8);
 }
-#pragma scheduling on
 void fn_802D0014(float a, float b, float c) {
     extern unsigned char lbl_804C97B0[];
     extern char lbl_80558DC4[];
@@ -1768,9 +1768,8 @@ typedef struct Entry_802D18E8 {
 #pragma push
 #pragma optimization_level 3
 void fn_802D18E8(void) {
-    unsigned char *base = (unsigned char *)lbl_804C5650;
-    float *from = (float *)(base + 0x40);
-    float *to = (float *)(base + 0x70);
+    float *from = (float *)((unsigned char *)lbl_804C5650 + 0x40);
+    float *to = (float *)((unsigned char *)lbl_804C5650 + 0x70);
     unsigned char color[4];
     float direction[3];
     float mag;
@@ -1779,6 +1778,7 @@ void fn_802D18E8(void) {
     unsigned char *var_r29;
     unsigned char *var_r30;
     int var_r27;
+    unsigned char *base = (unsigned char *)lbl_804C5650;
     direction[0] = from[9] - to[9];
     direction[1] = from[10] - to[10];
     direction[2] = from[11] - to[11];
@@ -2430,10 +2430,11 @@ void fn_802D37E4(void) {
 }
 
 void fn_802D3894(void) {
-    unsigned char *p = lbl_804C9984;
+    struct Entry { unsigned char pad[0xC]; unsigned char flag; unsigned char pad2[0xB]; };
+    struct Entry *p = (struct Entry *)lbl_804C9984;
     int i;
-    for (i = 0; i < 0x40; i++, p += 0x18) {
-        if (p[0xC] == 0) {
+    for (i = 0; i < 0x40; i++, p++) {
+        if (p->flag == 0) {
             break;
         }
         fn_802E317C((const char *)lbl_8034C1C4);
