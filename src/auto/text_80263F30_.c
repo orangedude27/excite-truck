@@ -322,8 +322,8 @@ void fn_802645FC(void *arg0) {
     extern float lbl_80563BF0;
     float a;
     float b;
-    a = lbl_80563BF8;
     b = lbl_80563BF0;
+    a = lbl_80563BF8;
     *(float *)((char *)arg0 + 0x18) = a;
     *(float *)((char *)arg0 + 0x1C) = lbl_8055C454;
     *(float *)((char *)arg0 + 0x20) = b;
