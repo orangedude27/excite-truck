@@ -891,20 +891,21 @@ void fn_8028F8C4(int arg0) {
 
 extern float lbl_80558DC4;
 __declspec(section ".data") extern float lbl_80558DC4;
-void fn_8028F8E0(int arg0, float farg0) {
-    char *p = (char *)arg0;
-    float *fp9c = (float *)(p + 0x9C);
+/* Advances a timed playback cursor (arg0+0x90/0x94/0x98, entries at arg0+0x8C stride 0x28) over entries whose time (entry+0x18) is below (timeNow - startOffset at arg0+8), wrapping/accumulating the phase at arg0+0x9C. */
+void fn_8028F8E0(int playbackState, float timeNow) {
+    char *p = (char *)playbackState;
+    float *phase = (float *)(p + 0x9C);
     float threshold;
     int index, count, count2, i, j;
 
-    if (*fp9c >= lbl_80564424 - lbl_80558DC4) {
-        *fp9c = *fp9c - lbl_80564424;
+    if (*phase >= lbl_80564424 - lbl_80558DC4) {
+        *phase = *phase - lbl_80564424;
     }
     index = *(int *)(p + 0x90);
-    *fp9c = *fp9c + *(float *)(p + 0xC);
+    *phase = *phase + *(float *)(p + 0xC);
     if (index < 0) return;
 
-    threshold = farg0 - *(float *)(p + 8);
+    threshold = timeNow - *(float *)(p + 8);
     count = *(int *)(p + 0x94);
     i = index;
     if (i < count) {
