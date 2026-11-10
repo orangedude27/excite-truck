@@ -19,10 +19,11 @@ DECL_SECTION(".extabindex") const BlockLinkExtabIndex eti_80004700 = {
 };
 
 extern void SubBlock_merge_next(unsigned int **);
-void Block_link(void *arg0, unsigned int *arg1) {
-    unsigned int flags, size, new_size, prev_size;
-    unsigned int *sentinel, *head, *next, *tmp, *block;
-    unsigned int *current, *merged;
+/* Links a freed heap block into the free list, coalescing with adjacent free blocks. */
+void Block_link(void *heap, unsigned int *block) {
+    unsigned int blockFlags, blockSize, mergedSize, prevBlockSize;
+    unsigned int *freeListSentinel, *freeHead, *nextBlock, *unlinkTmp, *largestBlock;
+    unsigned int *currentBlock, *prevBlock;
     union {
         unsigned int word;
         struct {
@@ -31,60 +32,60 @@ void Block_link(void *arg0, unsigned int *arg1) {
         } bits;
     } combined;
 
-    size = arg1[0];
-    flags = size & 0xFFFFFFF8;
-    arg1[0] = size & 0xFFFFFFFD;
-    *(unsigned int *)((char *)arg1 + flags) &= 0xFFFFFFFB;
-    *(unsigned int *)((char *)arg1 + flags - 4) = flags;
+    blockSize = block[0];
+    blockFlags = blockSize & 0xFFFFFFF8;
+    block[0] = blockSize & 0xFFFFFFFD;
+    *(unsigned int *)((char *)block + blockFlags) &= 0xFFFFFFFB;
+    *(unsigned int *)((char *)block + blockFlags - 4) = blockFlags;
 
-    sentinel = (unsigned int *)((char *)arg0 + (*(unsigned int *)((char *)arg0 + 0xC) & 0xFFFFFFF8)) - 1;
-    head = (unsigned int *)*sentinel;
-    if (head != 0) {
-        next = (unsigned int *)head[2];
-        current = arg1;
-        current[2] = (unsigned int)next;
-        next[3] = (unsigned int)current;
-        current[3] = *sentinel;
-        ((unsigned int *)*sentinel)[2] = (unsigned int)current;
-        *sentinel = (unsigned int)current;
+    freeListSentinel = (unsigned int *)((char *)heap + (*(unsigned int *)((char *)heap + 0xC) & 0xFFFFFFF8)) - 1;
+    freeHead = (unsigned int *)*freeListSentinel;
+    if (freeHead != 0) {
+        nextBlock = (unsigned int *)freeHead[2];
+        currentBlock = block;
+        currentBlock[2] = (unsigned int)nextBlock;
+        nextBlock[3] = (unsigned int)currentBlock;
+        currentBlock[3] = *freeListSentinel;
+        ((unsigned int *)*freeListSentinel)[2] = (unsigned int)currentBlock;
+        *freeListSentinel = (unsigned int)currentBlock;
 
-        if (!(arg1[0] & 4)) {
-            prev_size = *(unsigned int *)((char *)arg1 - 4);
-            if (prev_size & 2) {
-                current = arg1;
+        if (!(block[0] & 4)) {
+            prevBlockSize = *(unsigned int *)((char *)block - 4);
+            if (prevBlockSize & 2) {
+                currentBlock = block;
             } else {
-                merged = (unsigned int *)((char *)arg1 - prev_size);
-                flags = *merged & 7;
-                *merged = flags;
-                new_size = prev_size + (arg1[0] & 0xFFFFFFF8);
-                combined.word = flags;
-                combined.bits.size = new_size >> 3;
-                flags = combined.word;
-                *merged = flags;
-                if (!(flags & 2)) {
-                    new_size = prev_size + (((volatile unsigned int *)arg1)[0] & 0xFFFFFFF8);
-                    *(unsigned int *)((char *)merged + new_size - 4) = new_size;
+                prevBlock = (unsigned int *)((char *)block - prevBlockSize);
+                blockFlags = *prevBlock & 7;
+                *prevBlock = blockFlags;
+                mergedSize = prevBlockSize + (block[0] & 0xFFFFFFF8);
+                combined.word = blockFlags;
+                combined.bits.size = mergedSize >> 3;
+                blockFlags = combined.word;
+                *prevBlock = blockFlags;
+                if (!(blockFlags & 2)) {
+                    mergedSize = prevBlockSize + (((volatile unsigned int *)block)[0] & 0xFFFFFFF8);
+                    *(unsigned int *)((char *)prevBlock + mergedSize - 4) = mergedSize;
                 }
-                head = (unsigned int *)*sentinel;
-                if (head == arg1)
-                    *sentinel = head[3];
-                ((unsigned int *)arg1[3])[2] = arg1[2];
-                tmp = (unsigned int *)arg1[3];
-                ((unsigned int *)tmp[2])[3] = (unsigned int)tmp;
-                current = merged;
+                freeHead = (unsigned int *)*freeListSentinel;
+                if (freeHead == block)
+                    *freeListSentinel = freeHead[3];
+                ((unsigned int *)block[3])[2] = block[2];
+                unlinkTmp = (unsigned int *)block[3];
+                ((unsigned int *)unlinkTmp[2])[3] = (unsigned int)unlinkTmp;
+                currentBlock = prevBlock;
             }
         }
 
-        *sentinel = (unsigned int)current;
-        ((void (*)(unsigned int *, unsigned int **))SubBlock_merge_next)(current, (unsigned int **)sentinel);
+        *freeListSentinel = (unsigned int)currentBlock;
+        ((void (*)(unsigned int *, unsigned int **))SubBlock_merge_next)(currentBlock, (unsigned int **)freeListSentinel);
     } else {
-        *sentinel = (unsigned int)arg1;
-        arg1[2] = (unsigned int)arg1;
-        arg1[3] = (unsigned int)arg1;
+        *freeListSentinel = (unsigned int)block;
+        block[2] = (unsigned int)block;
+        block[3] = (unsigned int)block;
     }
 
-    block = (unsigned int *)*sentinel;
-    size = block[0] & 0xFFFFFFF8;
-    if (*(unsigned int *)((char *)arg0 + 8) < size)
-        *(unsigned int *)((char *)arg0 + 8) = size;
+    largestBlock = (unsigned int *)*freeListSentinel;
+    blockSize = largestBlock[0] & 0xFFFFFFF8;
+    if (*(unsigned int *)((char *)heap + 8) < blockSize)
+        *(unsigned int *)((char *)heap + 8) = blockSize;
 }
