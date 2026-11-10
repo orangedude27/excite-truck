@@ -799,7 +799,7 @@ void fn_8022BAD0(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5, int
 
 extern void fn_80230C30(float *, float *, int, int);
 #pragma push
-#pragma opt_common_subs off
+#pragma processor 750
 void fn_8022BB60(float *arg0, float *arg1, float farg0, float farg1) {
     fn_80230C30(arg0, arg1, (int)farg0, (int)farg1);
     *arg0 += farg0 - (float)(int)farg0;
@@ -1205,18 +1205,8 @@ float fn_8022CA40(void *arg0) {
     if (*(float *)((char *)arg0 + 0x34) < lbl_80563588)
         return lbl_80563588;
     else {
-        union {
-            double d;
-            unsigned int w[2];
-        } converted;
         int value = fn_80232B70(*(int *)((char *)arg0 + 8));
-        double raw;
-        double bias;
-        converted.w[1] = (unsigned int)value ^ 0x80000000;
-        converted.w[0] = 0x43300000;
-        raw = converted.d;
-        bias = lbl_80563590;
-        return *(float *)((char *)arg0 + 0x34) / (float)(raw - bias);
+        return *(float *)((char *)arg0 + 0x34) / (float)value;
     }
 }
 
