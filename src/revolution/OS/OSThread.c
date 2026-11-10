@@ -687,7 +687,9 @@ void OSCancelThread(OSThread* thread) {
     OSRestoreInterrupts(enabled);
 }
 
-BOOL OSJoinThread(OSThread* thread, void* val) {
+BOOL OSJoinThread(OSThread* thread, void* result) {
+    /* Waits for a joinable thread to terminate, copies its exit value to result if requested,
+       removes it from the active thread list, marks it exited, and reports success/failure. */
     BOOL enabled;
     OSThread* next;
     OSThread* prev;
@@ -705,8 +707,8 @@ BOOL OSJoinThread(OSThread* thread, void* val) {
     }
 
     if (thread->state == OS_THREAD_STATE_MORIBUND) {
-        if (val != NULL) {
-            *(u32*)val = thread->val;
+        if (result != NULL) {
+            *(u32*)result = thread->val;
         }
 
         next = thread->nextActive;
