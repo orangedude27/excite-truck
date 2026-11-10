@@ -2031,15 +2031,34 @@ extern "C" s32 fn_800A7B34(void *arg0, void *arg1) {
 
 #pragma push
 #pragma use_lmw_stmw off
+/* Take the cache page covering `sector` off one of the volume's page lists
+ * (`list` is the address of the list head: volume+0x1630 for the FAT pages,
+ * volume+0x1634 for the file data pages) and hand it back in *outPage, with
+ * *outCached telling whether a page already covered the sector.
+ *
+ * A page that already covers it is only moved to the front of the list.
+ * Otherwise a page is taken from the list; when none is free the search still
+ * names the one to evict, which is written back first (fn_800A7B34) and has
+ * its changed range cleared - a list with no page at all gives
+ * VF_ERR_NO_FREE_PAGE.  The page then takes the run of VF_PAGE_SECTORS of its
+ * size that `sector` falls in, aligned to the start of that run, and points
+ * VF_PAGE_DATA at `sector` inside the run.  A data page of a FAT32 volume
+ * holds the FSInfo sector on its own, and the VF_NO_SECTOR request leaves the
+ * run empty with VF_PAGE_DATA at the page's first byte.  Marked in use and
+ * moved to the front of the list, the page is the caller's until the cache
+ * hands it out again.
+ */
 extern "C" s32 fn_800A7C20(void *volume, void **list, u32 sector, void **outPage, s32 *outCached) {
     u8 *page;
     s32 r;
+    /* the page covering the sector, if the list already has one */
     r = VFiPFCACHE_SearchForPage((s32)volume, (s32)*list, (s32)sector);
     *outPage = (void *)r;
     if (r != 0) {
         *outCached = 1;
     } else {
         *outCached = 0;
+        /* a free page, or the least recently used one to write back */
         if (VFiPFCACHE_SearchForFreePage(*list, outPage) == 0) {
             if (*outPage == 0) {
                 *outPage = 0;
@@ -2056,6 +2075,7 @@ extern "C" s32 fn_800A7C20(void *volume, void **list, u32 sector, void **outPage
         if (!VF_SECTOR_IS_END(sector)) {
             page = (u8 *)*outPage;
             if (VF_PAGE_FLAGS(page) & VF_PAGE_FAT) {
+                /* a FAT page spans the whole FAT, not just one run */
                 VF_PAGE_FIRST(page) = sector - sector % VF_PAGE_SECTORS(page);
                 page = (u8 *)*outPage;
                 VF_PAGE_DATA(page) = VF_PAGE_BUFFER(page) + ((sector % VF_PAGE_SECTORS(page)) << VF_VOL_SECTOR_SHIFT((u8 *)volume));
@@ -2063,6 +2083,7 @@ extern "C" s32 fn_800A7C20(void *volume, void **list, u32 sector, void **outPage
                 if (VF_VOL_FAT_TYPE((u8 *)volume) == VF_FAT_TYPE_32 &&
                     (sector < VF_VOL_DATA_START((u8 *)volume) || sector >= VF_VOL_TOTAL_SECTORS((u8 *)volume)) &&
                     sector == VF_VOL_FSINFO_SECTOR((u8 *)volume)) {
+                    /* the FSInfo sector of a FAT32 volume gets a page to itself */
                     VF_PAGE_SECTORS(page) = 1;
                 }
                 page = (u8 *)*outPage;
@@ -2071,6 +2092,7 @@ extern "C" s32 fn_800A7C20(void *volume, void **list, u32 sector, void **outPage
                 VF_PAGE_DATA(page) = VF_PAGE_BUFFER(page) + ((sector % VF_PAGE_SECTORS(page)) << VF_VOL_SECTOR_SHIFT((u8 *)volume));
             }
         } else {
+            /* no sector asked for: an empty page at the start of the buffer */
             page = (u8 *)*outPage;
             VF_PAGE_FIRST(page) = sector;
             page = (u8 *)*outPage;
@@ -2080,6 +2102,7 @@ extern "C" s32 fn_800A7C20(void *volume, void **list, u32 sector, void **outPage
         VF_PAGE_FLAGS(page) |= VF_PAGE_IN_USE;
     }
     {
+        /* move the page to the front of the list (it is the LRU tail) */
         u8 *taken = (u8 *)*outPage;
         u8 *head = (u8 *)*list;
         if (taken != head) {
