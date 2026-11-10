@@ -1002,46 +1002,50 @@ struct EffectDesc {
 };
 
 /* Initializes a "large trail smoke" particle emitter config and stores the created emitter handle at offset 8 of the owner. */
-extern "C" void fn_802A31DC(void *owner, s32 param) {
-    Fn802A31DCConfig cfg;
-    fn_8028E61C(&cfg.f18);
-    cfg.f1c = 0x40;
-    cfg.f20 = lbl_805647D4;
-    cfg.f24 = lbl_805647F4;
-    cfg.f18 = 2;
-    cfg.f60 = lbl_80564734;
-    cfg.f0c = lbl_80564798;
-    cfg.f10 = lbl_80564760;
-    cfg.f14 = lbl_80564798;
-    cfg.f28 = lbl_80564798;
-    cfg.f2c = lbl_80564760;
-    cfg.f30 = lbl_80564798;
-    cfg.f00 = lbl_8056479C;
-    cfg.f04 = lbl_8056479C;
-    cfg.f08 = lbl_8056479C;
-    cfg.f34 = lbl_8056479C;
-    cfg.f38 = lbl_8056479C;
-    cfg.f3c = lbl_8056479C;
-    cfg.f40 = lbl_8056479C;
-    cfg.f44 = lbl_805647BC;
-    cfg.f48 = lbl_805647EC;
-    cfg.f4c = lbl_805647AC;
-    cfg.f5c = 4;
-    cfg.f88 = lbl_80564750;
-    cfg.f80 = lbl_80564750;
-    cfg.f78 = lbl_80564750;
-    cfg.f8c = lbl_80564798;
-    cfg.f84 = lbl_80564798;
-    cfg.f7c = lbl_80564798;
-    cfg.f70 = lbl_805647F8;
-    cfg.f74 = lbl_805647FC;
-    cfg.f68 = lbl_80564800;
-    cfg.f6c = lbl_805647B4;
-    cfg.f90 = lbl_8056475C;
-    cfg.f94 = lbl_80564730;
-    *(s32 *)((char *)owner + 8) =
+extern "C" void fn_802A31DC(void *effectGroup, s32 texturePath) {
+    // "large trail smoke": fill this effect's creation descriptor, hand it to
+    // the effect builder (which allocates the effect, copies the descriptor in,
+    // resolves texturePath in the texture table and registers the effect) and
+    // keep the new effect handle in the group object at +8.
+    EffectDesc desc;
+    fn_8028E61C(&desc.mode);
+    desc.emitterCount = 0x40;
+    desc.emitRate = lbl_805647D4;
+    desc.phaseStep = lbl_805647F4;
+    desc.mode = 2;
+    desc.f60 = lbl_80564734;
+    desc.f0c = lbl_80564798;
+    desc.f10 = lbl_80564760;
+    desc.f14 = lbl_80564798;
+    desc.f28 = lbl_80564798;
+    desc.f2c = lbl_80564760;
+    desc.f30 = lbl_80564798;
+    desc.f00 = lbl_8056479C;
+    desc.f04 = lbl_8056479C;
+    desc.f08 = lbl_8056479C;
+    desc.f34 = lbl_8056479C;
+    desc.f38 = lbl_8056479C;
+    desc.f3c = lbl_8056479C;
+    desc.f40 = lbl_8056479C;
+    desc.f44 = lbl_805647BC;
+    desc.f48 = lbl_805647EC;
+    desc.f4c = lbl_805647AC;
+    desc.f5c = 4;
+    desc.f88 = lbl_80564750;
+    desc.f80 = lbl_80564750;
+    desc.f78 = lbl_80564750;
+    desc.f8c = lbl_80564798;
+    desc.f84 = lbl_80564798;
+    desc.f7c = lbl_80564798;
+    desc.f70 = lbl_805647F8;
+    desc.f74 = lbl_805647FC;
+    desc.f68 = lbl_80564800;
+    desc.f6c = lbl_805647B4;
+    desc.f90 = lbl_8056475C;
+    desc.f94 = lbl_80564730;
+    *(s32 *)((char *)effectGroup + 8) =
         ((s32 (*)(void *, void *, s32))fn_8028E2F8)(
-            &cfg.f18, lbl_80349A54, param);
+            &desc.mode, lbl_80349A54, texturePath);
 }
 #pragma paired_single reset
 #pragma paired reset
