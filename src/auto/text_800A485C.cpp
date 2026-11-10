@@ -17384,7 +17384,7 @@ extern "C" void fn_800CEDE8(void);
 extern "C" void GXSetTevColor(u32, void *);
 extern "C" void GXBegin(u8, u8, u16);
 extern "C" void fn_800C6610(void) {
-    s32 count;
+    s32 i;
     u8 *entry;
     u8 *base = (u8 *)lbl_8055DD98;
     struct Dispatch {
@@ -17393,20 +17393,21 @@ extern "C" void fn_800C6610(void) {
         virtual void d8(void *);
     };
 
+    /* Draw a fullscreen quad tinted by computed alpha: dispatch draw callbacks, set TEV color alpha, emit GX quads. */
     ((Dispatch **)(base + 0x1E0))[0]->d8(base + 0x200);
     if (*(s32 *)(*(u8 **)(base + 4) + 0x20) == 0) {
         entry = base + 0xC;
-        count = 3;
+        i = 3;
         do {
             ((Dispatch **)(entry + 0x1E4))[0]->d8(base + 0x200);
-            count--;
+            i--;
             entry -= 4;
-        } while (count >= 0);
+        } while (i >= 0);
     }
 
     s32 value = *(s32 *)(base + 0x3FC);
     s32 numerator = (value << 8) - value;
-    count = (numerator / *(s32 *)(base + 0x400)) & 0xFF;
+    i = (numerator / *(s32 *)(base + 0x400)) & 0xFF;
     fn_800CEDE8();
 
     u8 color[4];
@@ -17414,7 +17415,7 @@ extern "C" void fn_800C6610(void) {
     color[0] = *(u8 *)(base + 0x408);
     color[1] = *(u8 *)(base + 0x409);
     color[2] = *(u8 *)(base + 0x40A);
-    color[3] = (u8)count;
+    color[3] = (u8)i;
     packed = *(u32 *)color;
     GXSetTevColor(1, &packed);
     GXBegin(0x80, 0, 4);
