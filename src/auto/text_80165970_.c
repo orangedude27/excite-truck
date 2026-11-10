@@ -71,7 +71,6 @@ extern void fn_80131818(void *);
 extern int fn_80204EA0(const char *);
 extern void fn_802E30C8(char *, ...);
 extern void fn_80163550(int);
-extern void fn_80166754(void *);
 extern void *fn_801284F8(int, void *);
 extern void *fn_8012850C(int, void *);
 extern void *fn_8002F37C(void *, void (*)(void *), void *, int, int);
