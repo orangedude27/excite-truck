@@ -1059,7 +1059,7 @@ extern "C" void fn_802184D0(void *arg0) {
     char *cursor;
     int i;
     char *base;
-    for (threshold = lbl_80563490, base = (char *)arg0, cursor = base, i = 0;
+    for (threshold = lbl_80563490, i = 0, base = (char *)arg0, cursor = base;
          i < *(int *)(base + 0x430); cursor += 4, i++) {
         void *obj = *(void **)(cursor + 0x30);
         int call = 0;
@@ -1230,20 +1230,21 @@ void fn_80218968(void *arg0, int arg1, float arg2) {
 
 #pragma dont_inline on
 void fn_80218A34(void *arg0, int arg1) {
-    char *base=(char *)arg0, *cursor;
-    int i, one=1;
-    int mask=fn_80216D14(arg1);
-    if (*(int *)(base+0x468)&mask) {
-        mask=fn_80216D14(arg1);
-        *(int *)(base+0x468)&=~mask;
-        cursor=base;
-        i=0;
-        for (; i<*(int *)(base+0x430); i++,cursor+=4) {
-            void *obj=*(void **)(cursor+0x30);
-            if ((*(int *)(base+0x468)&*(int *)((char *)obj+0x238))==0) {
-                *(unsigned char *)((char *)obj+0x1B)=one;
-                if (*(unsigned char *)((char *)obj+0x1A))
-                    *(unsigned char *)((char *)obj+0x234)=one;
+    char *cursor;
+    void *obj;
+    int i, one = 1;
+    int mask = fn_80216D14(arg1);
+    if (*(int *)((char *)arg0 + 0x468) & mask) {
+        mask = fn_80216D14(arg1);
+        *(int *)((char *)arg0 + 0x468) &= ~mask;
+        cursor = (char *)arg0;
+        i = 0;
+        for (; i < *(int *)((char *)arg0 + 0x430); cursor += 4, i++) {
+            obj = *(void **)(cursor + 0x30);
+            if ((*(int *)((char *)arg0 + 0x468) & *(int *)((char *)obj + 0x238)) == 0) {
+                *(unsigned char *)((char *)obj + 0x1B) = one;
+                if (*(unsigned char *)((char *)obj + 0x1A))
+                    *(unsigned char *)((char *)obj + 0x234) = one;
             }
         }
     }
