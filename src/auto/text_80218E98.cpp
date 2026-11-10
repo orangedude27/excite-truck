@@ -919,14 +919,16 @@ extern "C" void fn_80219510(void *arg0, s32 arg1, s32 arg2) {
 }
 
 extern "C" void fn_8021952C(void* arg0, s32 arg1, s32 arg2) {
-    void* p = *(void**)((u8*)arg0 + 0x2C);
-    if (*(u8*)((u8*)arg0 + 0x24C) != 0) {
-        s32 dx = *(s32*)((u8*)arg0 + 0x244) + arg1;
-        s32 old1 = *(s32*)((u8*)p + 0x454);
-        s32 dy = *(s32*)((u8*)arg0 + 0x248) + arg2;
-        s32 old2 = *(s32*)((u8*)p + 0x458);
-        *(s32*)((u8*)p + 0x454) = old1 + dx;
-        *(s32*)((u8*)p + 0x458) = old2 + dy;
+    void* p = *(void**)((char*)arg0 + 0x2C);
+    if (*(unsigned char*)((char*)arg0 + 0x24C) != 0) {
+        s32 a = *(s32*)((char*)arg0 + 0x244);
+        s32 old1 = *(s32*)((char*)p + 0x454);
+        s32 dx = a + arg1;
+        s32 b = *(s32*)((char*)arg0 + 0x248);
+        s32 old2 = *(s32*)((char*)p + 0x458);
+        s32 dy = b + arg2;
+        *(s32*)((char*)p + 0x454) = old1 + dx;
+        *(s32*)((char*)p + 0x458) = old2 + dy;
     }
 }
 
@@ -3474,46 +3476,48 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8021E884(void *arg0, 
     return arg0;
 }
 
-extern "C" void fn_8021E8DC(void *self, s32 arg1) {
-    char buffer[0x58];
-    s32 height;
-    s32 width;
+extern "C" void fn_8021E8DC(void *widget, s32 drawContext) {
+    /* Draws a labeled UI widget: optionally performs inner layout/content passes
+       when enabled, then draws the frame and renders "width label" text. */
+    char labelBuffer[0x58];
+    s32 rightBound;
+    s32 layoutWidth;
     s32 x;
     s32 y;
-    s32 left;
-    s32 right;
-    register char *text;
+    s32 savedLeft;
+    s32 innerWidth;
+    register char *labelText;
 
-    if (*(u8 *)((u8 *)self + 0x268) != 0) {
-        ((Fn80219264VTable *)self)->Call(
-            *(s32 *)((u8 *)self + 4), *(s32 *)((u8 *)self + 0x10) + 3);
-        height = *(s32 *)((u8 *)self + 8);
-        width = *(s32 *)((u8 *)self + 0x10) - height;
-        left = ((Fn8021E8DCVTable *)self)->Get();
-        fn_80219284(self, *(s32 *)((u8 *)self + 0x26C),
-                    *(s32 *)((u8 *)self + 0x270));
-        fn_8021E3BC(self, arg1);
-        fn_80219284(self, left, width);
-        height = *(s32 *)((u8 *)self + 8);
-        ((Fn80219264VTable *)self)->Call(
-            *(s32 *)((u8 *)self + 4),
-            height * 2 - 3 - *(s32 *)((u8 *)self + 0x10));
+    if (*(u8 *)((u8 *)widget + 0x268) != 0) {
+        ((Fn80219264VTable *)widget)->Call(
+            *(s32 *)((u8 *)widget + 4), *(s32 *)((u8 *)widget + 0x10) + 3);
+        rightBound = *(s32 *)((u8 *)widget + 8);
+        layoutWidth = *(s32 *)((u8 *)widget + 0x10) - rightBound;
+        savedLeft = ((Fn8021E8DCVTable *)widget)->Get();
+        fn_80219284(widget, *(s32 *)((u8 *)widget + 0x26C),
+                    *(s32 *)((u8 *)widget + 0x270));
+        fn_8021E3BC(widget, drawContext);
+        fn_80219284(widget, savedLeft, layoutWidth);
+        rightBound = *(s32 *)((u8 *)widget + 8);
+        ((Fn80219264VTable *)widget)->Call(
+            *(s32 *)((u8 *)widget + 4),
+            rightBound * 2 - 3 - *(s32 *)((u8 *)widget + 0x10));
     }
 
-    fn_802C3034(arg1);
-    ((void (*)(void *, s32))fn_802192A0)(self, arg1);
-    x = *(s32 *)((u8 *)self + 4);
-    y = *(s32 *)((u8 *)self + 8);
-    height = ((Fn8021E8DCVTable *)self)->Get();
-    right = x + height;
-    fn_802C3424(x, y, right, *(s32 *)((u8 *)self + 0x10), lbl_8055FBDC);
-    text = ((char *(*)(s32, s32, s32))fn_8022D3F8)(
-        *(s32 *)((u8 *)self + 0x244),
-        **(s32 **)((u8 *)self + 0x25C), 0);
-    sprintf(buffer, (const char *)&lbl_8055B884, *(s32 *)((u8 *)self + 0x250),
-            text != 0 ? text : (char *)&lbl_8055B88C);
-    fn_802C4F58(*(s32 *)((u8 *)self + 4) + 1,
-                *(s32 *)((u8 *)self + 8) + 1, buffer, lbl_8055FBC0);
+    fn_802C3034(drawContext);
+    ((void (*)(void *, s32))fn_802192A0)(widget, drawContext);
+    x = *(s32 *)((u8 *)widget + 4);
+    y = *(s32 *)((u8 *)widget + 8);
+    rightBound = ((Fn8021E8DCVTable *)widget)->Get();
+    innerWidth = x + rightBound;
+    fn_802C3424(x, y, innerWidth, *(s32 *)((u8 *)widget + 0x10), lbl_8055FBDC);
+    labelText = ((char *(*)(s32, s32, s32))fn_8022D3F8)(
+        *(s32 *)((u8 *)widget + 0x244),
+        **(s32 **)((u8 *)widget + 0x25C), 0);
+    sprintf(labelBuffer, (const char *)&lbl_8055B884, *(s32 *)((u8 *)widget + 0x250),
+            labelText != 0 ? labelText : (char *)&lbl_8055B88C);
+    fn_802C4F58(*(s32 *)((u8 *)widget + 4) + 1,
+                *(s32 *)((u8 *)widget + 8) + 1, labelBuffer, lbl_8055FBC0);
 }
 
 #pragma scheduling invalid_target
@@ -8359,19 +8363,17 @@ extern "C" void fn_80229998(void *arg0) {
 
 #pragma scheduling invalid_target
 extern "C" s32 fn_802299B0(void *arg0) {
-    s32 result = 0;
-    s32 *p;
+    s32 result;
     s32 value;
-
-    if (*(u8 *)((u8 *)arg0 + 0x18) != 0)
+    s32 *p;
+    result = 0;
+    if (*(unsigned char *)((char *)arg0 + 0x18) != 0)
         result = 2;
-    p = *(s32 **)((u8 *)arg0 + 0x254);
+    p = *(s32 **)((char *)arg0 + 0x254);
     value = 0;
-    if (p != 0) {
-        if (*p == *(s32 *)((u8 *)arg0 + 0x258))
-            value = 1;
-    }
-    return (((u32)(-value | value)) >> 31) | result;
+    if (p != 0 && *p == *(s32 *)((char *)arg0 + 0x258))
+        value = 1;
+    return (s32)((((unsigned int)(-value | value)) >> 31) | (unsigned int)result);
 }
 #pragma scheduling reset
 extern "C" void fn_802299FC(void *arg0) {
