@@ -5,6 +5,21 @@
 
 extern float lbl_80562B54;
 void fn_801DA198(int, float);
+#pragma cplusplus on
+struct Obj801DACA0 {
+    virtual float f0();
+    virtual float f1();
+    virtual float f2();
+    virtual float get();
+};
+struct Ctx801DACA0 {
+    void *vtable;
+    void **items;
+    int count;
+    char padC[4];
+    char info[16];
+};
+#pragma cplusplus reset
 extern void *fn_80128668(void *);
 extern void fn_80128670(void *);
 extern int lbl_80339288[];
@@ -251,15 +266,15 @@ void fn_801DACA0(void *arg0, float arg1) {
     void *entry;
 
     value = lbl_80562B54;
-    if (arg1 < value)
-        value = ((float (*)(void *))(*(void ***)(arg0) + 3)[0])(arg0);
+    if (!(arg1 >= value))
+        value = ((float (*)(void *))(*(void ***)arg0)[3])(arg0);
 
     count = 0;
     offset = 0;
     while (count < *(int *)((char *)arg0 + 8)) {
         entry = *(void **)((char *)*(void ***)((char *)arg0 + 4) + offset);
         if (*((unsigned char *)entry + 0x18) != 0)
-            ((void (*)(char *, ...))fn_802E30C8)((char *)lbl_803392F0, count, (void *)((int *)arg0 + 4));
+            ((void (*)(char *, ...))fn_802E30C8)((char *)lbl_803392F0, count, (char *)arg0 + 0x10);
         *((unsigned char *)entry + 0x18) = 1;
         *((float *)((char *)entry + 0x1C)) = arg1;
         fn_801DA064(*(int *)((char *)entry + 0x28), (char *)arg0 + 0x10);
