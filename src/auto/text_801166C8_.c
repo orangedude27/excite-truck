@@ -4719,6 +4719,10 @@ extern void fn_80121BB0(void *);
 extern void fn_80124F90(void *);
 extern void fn_80125098(void *);
 void fn_80120CA4(register s32 count, register void *dst, register s32 mode, register s32 srcIndex, register void *src) {
+    /* Dispatches to size-specific transform/copy helpers based on element count:
+     * for large counts (>0x20) computes a quarter-size, prepares data, runs one
+     * of several bulk paths, then finalizes; for medium/small counts uses the
+     * corresponding fixed-size helpers. */
     register s32 n;
     if (count > 0x20) {
         n = count >> 2;
