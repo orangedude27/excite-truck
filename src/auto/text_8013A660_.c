@@ -166,27 +166,43 @@ extern "C" float fn_8013A90C(void *arg0, int arg1, int arg2, float arg3) {
    lbl_802F9350 = {"easy_", "medium_", "hard_"}. */
 #pragma push
 #pragma scheduling invalid_target
-extern "C" void fn_8013AB08(float *arg0, int *arg1) {
-    char *base = lbl_8032C1A0;
-    void *obj1 = fn_8001285C(*arg1);
-    void *obj2 = fn_80012820(*(int *)((char *)obj1 + 4));
+extern "C" void fn_8013AB08(float *skill_speed, int *entry) {
+    /* AI skill and speed for one opponent: skill_speed[0] = skill_range and
+     * skill_speed[1] = speed_factor, read from the contest/event tables.
+     *
+     * entry[0] indexes the scene records (fn_8001285C, 0x28 bytes each); the id
+     * at +4 of that record picks an event record (fn_80012820, 0x84 or 0x88
+     * bytes each).  The contest table is the scene record's +0x20 and the event
+     * table the event record's +0x80.  Each can supply the pair two ways:
+     * fn_8013A860 reads the plain "speed_factor"/"skill_range" elements, and
+     * fn_8013A9C0 interpolates them when the table has "easy_skill_range"
+     * (fn_8013B6C0 turns entry[3], the race stage, into the row/fraction pair
+     * that lerps between the "easy_"/"medium_"/"hard_" elements - fn_8013A90C).
+     * If none of the four lookups finds anything, fall back to the defaults
+     * (skill_range 0.05, speed_factor 1.5) and print the "no skill for this
+     * contest" warning.  Then, unless the fn_8027AA48 mode flag is set, the
+     * stage-scaled "srd" and "sfd" adjustments (skill-range and speed-factor
+     * deltas, 0.0 when the contest table has none) are added on. */
+    char *strings = lbl_8032C1A0;
+    void *contest_rec = fn_8001285C(*entry);
+    void *event_rec = fn_80012820(*(int *)((char *)contest_rec + 4));
 
-    if (((int (*)(float *, void *, void *))fn_8013A860)(arg0, *(void **)((char *)obj1 + 0x20), base + 0x78) == 0 &&
-        ((int (*)(float *, void *, void *))fn_8013A860)(arg0, *(void **)((char *)obj2 + 0x80), base + 0x88) == 0 &&
-        fn_8013A9C0(arg0, *(void **)((char *)obj1 + 0x20), arg1, base + 0x78) == 0 &&
-        fn_8013A9C0(arg0, *(void **)((char *)obj2 + 0x80), arg1, base + 0x88) == 0) {
-        float y;
-        float x;
-        x = lbl_80561438;
-        y = lbl_8056143C;
-        arg0[0] = x;
-        arg0[1] = y;
-        fn_802E30C8(base + 0x94);
+    if (((int (*)(float *, void *, void *))fn_8013A860)(skill_speed, *(void **)((char *)contest_rec + 0x20), strings + AI_STR_CONTEST_TABLE) == 0 &&
+        ((int (*)(float *, void *, void *))fn_8013A860)(skill_speed, *(void **)((char *)event_rec + 0x80), strings + AI_STR_EVE_TABLE) == 0 &&
+        fn_8013A9C0(skill_speed, *(void **)((char *)contest_rec + 0x20), entry, strings + AI_STR_CONTEST_TABLE) == 0 &&
+        fn_8013A9C0(skill_speed, *(void **)((char *)event_rec + 0x80), entry, strings + AI_STR_EVE_TABLE) == 0) {
+        float factor;
+        float range;
+        range = lbl_80561438;
+        factor = lbl_8056143C;
+        skill_speed[0] = range;
+        skill_speed[1] = factor;
+        fn_802E30C8(strings + AI_STR_NO_SKILL);
     }
 
     if (fn_8027AA48() == 0) {
-        arg0[0] += fn_8013AA68(*(void **)((char *)obj1 + 0x20), &lbl_80559CB8, base + 0x78, arg1);
-        arg0[1] += fn_8013AA68(*(void **)((char *)obj1 + 0x20), &lbl_80559CBC, base + 0x78, arg1);
+        skill_speed[0] += fn_8013AA68(*(void **)((char *)contest_rec + 0x20), &lbl_80559CB8, strings + AI_STR_CONTEST_TABLE, entry);
+        skill_speed[1] += fn_8013AA68(*(void **)((char *)contest_rec + 0x20), &lbl_80559CBC, strings + AI_STR_CONTEST_TABLE, entry);
     }
 }
 #pragma pop
