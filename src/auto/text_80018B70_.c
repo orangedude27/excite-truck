@@ -230,7 +230,7 @@ extern char lbl_802FD3A0[];
 extern char lbl_802FD3B4[];
 extern char lbl_802FD434[];
 extern void *lbl_802FD2DC;
-extern const char lbl_80558C54[];
+extern const char lbl_80558C54[] __attribute__((section(".sdata")));
 extern void *lbl_803580A4;
 extern u8 lbl_80357E0C[12];
 void fn_80019708(void) {
@@ -251,14 +251,13 @@ void fn_800196F0(void) {
 
 #pragma dont_inline on
 s32 fn_80019604(void) {
+    static volatile s32 result;
     s32 var_r31;
-    volatile u16 result;
     if ((s32)(u8)lbl_8055D588 != 0) {
         var_r31 = 1;
     } else {
         var_r31 = 0;
-        result = (u16)fn_80019430();
-        if ((result != 0) || (fn_8027DE68(2) != 0)) {
+        if (((result = fn_80019430()) != 0) || (fn_8027DE68(2) != 0)) {
             var_r31 = 1;
         }
     }
