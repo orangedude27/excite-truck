@@ -1646,7 +1646,7 @@ clear_nodes:
 }
 
 extern int lbl_804C0088[];
-extern int lbl_8034AA50;
+extern char lbl_8034AA50[];
 extern int fn_802B110C(void *, char *);
 extern int fn_802CAC54(void);
 extern int fn_802E317C(const char *, ...);
@@ -1666,7 +1666,7 @@ void fn_802BB674(char *arg0, int arg1) {
         entry->state = result;
         entry->name = arg0;
         if (result == -2 && (signed char)*(volatile char *)entry->name != 0)
-            fn_802E317C((char *)&lbl_8034AA50);
+            fn_802E317C(lbl_8034AA50);
     }
 }
 
