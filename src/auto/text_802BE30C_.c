@@ -120,14 +120,13 @@ extern char lbl_8034AC90[];
 #pragma use_lmw_stmw off
 void fn_802BE694(void) {
     s32 size;
+    s32 off;
     u32 i;
     s32 j;
-    s32 off;
     for (i = 4; i < 0x41U; i <<= 1) {
         size = fn_802BE378((s16)i);
-        lbl_804C06E0[i] = fn_8012850C(size * 0xC, &lbl_8034AC90);
-        off = 0;
-        for (j = 0; j < size; j++, off += 0xC) {
+        lbl_804C06E0[i] = fn_8012850C(size * 0xC, lbl_8034AC90);
+        for (j = 0, off = 0; j < size; off += 0xC, j++) {
             fn_802BE364((char *)lbl_804C06E0[i] + off);
         }
     }
@@ -254,7 +253,7 @@ void fn_802BE8B4(s16 arg0, s16 arg1, s32 arg2) {
     value |= best << 6;
     *(u32 *)((char *)entry + 8) = value;
 }
-#pragma use_lmw_stmw on
+#pragma use_lmw_stmw off
 void fn_802BEAB0(void) {
     s16 size, y, x;
     s32 value, step;
