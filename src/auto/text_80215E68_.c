@@ -192,19 +192,15 @@ s32 fn_802160AC(void) {
     s32 temp_r31;
     f32 a;
     f32 b;
-    void *enabled = lbl_8055EF88;
-
-    if (enabled != 0)
+    if (lbl_8055EF88 != 0)
         temp_r31 = fn_8021832C();
     else
         temp_r31 = 0;
     if (temp_r31 == 0 && lbl_8055EF7C == 0)
         goto done;
-
     fn_802C974C(lbl_80563468, lbl_8056346C, lbl_80563470);
     fn_80230B5C(scratch.buffer);
     fn_802C8638(scratch.buffer);
-
     scratch.x.words.low = (u32)lbl_8055EF80 ^ 0x80000000;
     scratch.x.words.high = 0x43300000;
     a = scratch.x.value - lbl_80563460;
@@ -296,6 +292,8 @@ extern s32 fn_802E47B8(void), fn_802E46F0(void);
 extern void fn_80217874(void *,u16);
 s32 fn_802164D8(void) {
     s32 event[6];
+
+    /* Poll pointer events, scale to screen coords, dispatch to active UI object, then handle key input. */
     if (fn_80127A50(event)) {
         s32 x = (s32)((lbl_8056347C * (f32)event[1]) / (f32)lbl_8055CFF0);
         s32 y = (s32)((lbl_80563480 * (f32)event[2]) / (f32)lbl_8055CFF4);
