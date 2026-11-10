@@ -423,10 +423,11 @@ void fn_802E0420(void) {
     GXSetNumTevStages(1);
 }
 #pragma scheduling on
+/* Configures GX texcoord generation and a 2-stage TEV combiner with constant color/alpha selection. */
 void fn_802E050C(void) {
-    register u32 stage = 0;
-    register u32 type = 1;
-    GXSetTexCoordGen2(stage, type, 4, 0x3C, 0, 0x7D);
+    register u32 texCoord = 0;
+    register u32 texGenType = 1;
+    GXSetTexCoordGen2(texCoord, texGenType, 4, 0x3C, 0, 0x7D);
     GXSetNumTexGens(1);
     GXSetTevOrder(0, 0, 1, 0xFF);
     GXSetTevOrder(1, 0, 2, 0xFF);
