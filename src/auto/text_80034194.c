@@ -567,6 +567,7 @@ void __DSP_remove_task(void *task) {
     *(void **)((u8 *)*(void **)((u8 *)task + 0x38) + 0x3c) = *(void **)((u8 *)task + 0x3c);
 }
 
+#pragma dont_inline on
 void __DVDFSInit(void) {
     u8 *fst;
     BootInfo_8055D844 = (void *)0x80000000;
