@@ -6021,65 +6021,66 @@ extern "C" void fn_800AF2B8(void *arg0) {
     ((s32 *)arg0)[2] = 0;
 }
 
-extern "C" s32 fn_800AF2CC(void *arg0, u32 arg1, s32 arg2, s32 *arg3, u32 *arg4, s32 arg5) {
-    u32 end;
+extern "C" s32 fn_800AF2CC(void *fatFile, u32 startCluster, s32 length, s32 *clusterOut, u32 *nextClusterOut, s32 flags) {
+    /* Walks the FAT chain for a length to find the resulting cluster and next-cluster value, updating cached end state. */
+    u32 nextCluster;
     s32 one;
     s32 result;
     s32 page;
-    u32 count;
-    void *context;
+    u32 clusterCount;
+    void *volume;
     u32 pageSize;
     u32 i;
-    u32 savedPos = arg1;
-    u32 first;
+    u32 lastCluster = startCluster;
+    u32 firstCluster;
 
-    *arg3 = 0;
-    *arg4 = 0;
-    first = **(u32 **)((u8 *)arg0 + 8);
-    if (first < 2)
+    *clusterOut = 0;
+    *nextClusterOut = 0;
+    firstCluster = **(u32 **)((u8 *)fatFile + 8);
+    if (firstCluster < 2)
         return 0;
-    if (arg1 < 2)
+    if (startCluster < 2)
         return 0;
-    if (arg2 == 0)
+    if (length == 0)
         return 0;
-    context = *(void **)((u8 *)arg0 + 0x34);
-    if ((u32)(arg2 + 0x10000) == 0xFFFF) {
-        u32 v = *(u32 *)((u8 *)arg0 + 0xC);
-        if (v != 0) {
-            *arg3 = v;
-            *arg4 = *(u32 *)((u8 *)lbl_802EEF40 + *(s32 *)((u8 *)context + 0x1C) * 0x14 + 8);
+    volume = *(void **)((u8 *)fatFile + 0x34);
+    if ((u32)(length + 0x10000) == 0xFFFF) {
+        u32 cachedCluster = *(u32 *)((u8 *)fatFile + 0xC);
+        if (cachedCluster != 0) {
+            *clusterOut = cachedCluster;
+            *nextClusterOut = *(u32 *)((u8 *)lbl_802EEF40 + *(s32 *)((u8 *)volume + 0x1C) * 0x14 + 8);
             return 0;
         }
     }
-    pageSize = *(u16 *)context * *(u8 *)((u8 *)context + 6);
-    count = (u32)arg2 / pageSize;
-    if ((u32)arg2 % pageSize != 0)
-        count++;
-    if (first == arg1) {
+    pageSize = *(u16 *)volume * *(u8 *)((u8 *)volume + 6);
+    clusterCount = (u32)length / pageSize;
+    if ((u32)length % pageSize != 0)
+        clusterCount++;
+    if (firstCluster == startCluster) {
         page = 1;
     } else {
-        page = **(s32 **)((u8 *)arg0 + 0x30) + 1;
+        page = **(s32 **)((u8 *)fatFile + 0x30) + 1;
     }
-    end = -1;
+    nextCluster = -1;
     one = 1;
     i = 0;
-    while (i < count) {
-        result = fn_800AD24C(arg0, arg1, page, (s32 *)&end, &one);
+    while (i < clusterCount) {
+        result = fn_800AD24C(fatFile, startCluster, page, (s32 *)&nextCluster, &one);
         if (result != 0)
             return result;
-        savedPos = arg1;
-        if (end == *(u32 *)((u8 *)lbl_802EEF40 + *(s32 *)((u8 *)context + 0x1C) * 0x14 + 8)) {
-            *(u32 *)((u8 *)arg0 + 0xC) = arg1;
-            *(s32 *)((u8 *)arg0 + 0x10) = page - 1;
+        lastCluster = startCluster;
+        if (nextCluster == *(u32 *)((u8 *)lbl_802EEF40 + *(s32 *)((u8 *)volume + 0x1C) * 0x14 + 8)) {
+            *(u32 *)((u8 *)fatFile + 0xC) = startCluster;
+            *(s32 *)((u8 *)fatFile + 0x10) = page - 1;
             break;
         }
-        arg1 = end;
+        startCluster = nextCluster;
         page++;
         i++;
     }
-    **(s32 **)((u8 *)arg0 + 0x30) = page - 1;
-    *arg3 = savedPos;
-    *arg4 = end;
+    **(s32 **)((u8 *)fatFile + 0x30) = page - 1;
+    *clusterOut = lastCluster;
+    *nextClusterOut = nextCluster;
     return 0;
 }
 
