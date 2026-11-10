@@ -361,26 +361,22 @@ void fn_80016C1C(void) {
     if (lbl_8055D53C != 0) fn_80016D14(lbl_8055D53C);
     if (lbl_8055D550 == 0) fn_802E317C(lbl_802FCEEC);
     for (i = 0, offset = 0; i < (int)lbl_8055D54C; offset += 0x5C, i++) {
-        count = *(volatile int *)&lbl_8055D550;
+        count = (int)lbl_8055D550;
         found = 0;
-        j = 0;
+        entry = lbl_8055D540 + offset;
         p = lbl_8055D544;
-        entry = *(unsigned char * volatile *)&lbl_8055D540 + offset;
-        if (count > 0) do {
+        for (j = 0; j < count; p += 0xA8, j++) {
             if (*(int *)(p + 4) == *(int *)(entry + 0x4C)) {
                 *(int *)(entry + 0x4C) = j;
                 found = 1;
                 break;
             }
-            p += 0xA8;
-            j++;
-        } while (j < count);
+        }
         if (!found) *(int *)(entry + 0x4C) = i % (int)lbl_8055D550;
     }
     fn_80017558();
     fn_8013C8B8();
 }
-#pragma pop
 __declspec(section ".sdata") extern char lbl_80558BD4[];
 __declspec(section ".sdata") extern char lbl_80558BE0[];
 extern void fn_80016ED4(void *);
@@ -413,7 +409,7 @@ extern int sscanf(const char *, const char *, ...);
 #pragma push
 #pragma processor gekko
 int fn_80016DD8(const char *arg0) {
-    unsigned int hex, blue, green, red;
+    unsigned int hex, red, green, blue;
     int c;
     int first = *(const unsigned char *)arg0;
     int result = 0xFF008040;
@@ -715,15 +711,16 @@ extern void *memset(void *, int, unsigned int);
 void fn_8001766C(int arg0) {
     unsigned char *base = lbl_803577F0;
     int off5c = arg0 * 0x5c;
-    unsigned char *base2 = base;
-    unsigned char *entry = base2 + off5c;
+    unsigned char *entry = base + off5c;
     int idx = arg0;
+    int off1 = 0x410 + idx * 8;
+    int off2 = 0x430 + idx * 0x68;
     memset(entry, 0, 0x5c);
     *(int *)(entry + 4) = -1000;
     ((void (*)(char *, int, const char *, ...))fn_801345D8)((char *)(entry + 8), 0x40, (const char *)lbl_802FD07C, idx + 1);
-    *(int *)(base2 + off5c + 0x48) = 1000;
-    *(unsigned char *)(base + 0x410 + idx * 8) = 0;
-    *(unsigned char *)(base + 0x430 + idx * 0x68) = 0;
+    *(int *)(entry + 0x48) = 1000;
+    base[off1] = 0;
+    base[off2] = 0;
 }
 #pragma scheduling on
 void fn_80017708(void *arg0, int arg1, void *arg2) {
