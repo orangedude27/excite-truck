@@ -23617,7 +23617,7 @@ extern void process_service_search_rsp(void *, UINT8 *, UINT16);
 extern char lbl_8031A028[];
 extern void process_service_search_rsp(void *, UINT8 *, UINT16);
 extern char lbl_8031A028[];
-/* Handle an SDP discovery server response PDU and dispatch by current discovery state */
+/* Handle an SDP discovery server response PDU and dispatch by current discovery state. */
 void sdp_disc_server_rsp(tCONN_CB *p_ccb, BT_HDR *p_msg) {
     UINT8 *p;
     UINT8 rsp_pdu;
