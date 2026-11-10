@@ -20231,16 +20231,17 @@ extern "C" s32 fn_800D50A8(ARCHandle *handle, const char *name) {
     return result;
 }
 
-extern "C" s32 fn_800D51F4(long a0, long a1, long a2, long a3, long a4, long a5) {
+extern "C" s32 fn_800D51F4(long arcHandle, long dirPath, long subDirFourCC, long fileName, long outSize, long unused) {
+    /* Resolves a file in an ARC directory/subdirectory and returns its memory address, optionally writing its length. */
     s32 entry=-1;
-    char p[5]; ARCFileInfo info;
-    #define ARC ((ARCHandle *)a0)
-    if (ARCConvertPathToEntrynum(ARC,(const char*)a1)!=-1 && ARCChangeDir(ARC,(const char*)a1)!=0) {
-        if(!a2) entry=fn_800D50A8(ARC,(const char*)a3);
+    char subDirName[5]; ARCFileInfo info;
+    #define ARC ((ARCHandle *)arcHandle)
+    if (ARCConvertPathToEntrynum(ARC,(const char*)dirPath)!=-1 && ARCChangeDir(ARC,(const char*)dirPath)!=0) {
+        if(!subDirFourCC) entry=fn_800D50A8(ARC,(const char*)fileName);
         else {
-            p[0]=(u32)a2>>24; p[1]=(u32)a2>>16; p[2]=(u32)a2>>8; p[3]=a2; p[4]=0;
-            if(ARCConvertPathToEntrynum(ARC,p)!=-1 && ARCChangeDir(ARC,p)!=0) {
-                entry=ARCConvertPathToEntrynum(ARC,(const char*)a3);
+            subDirName[0]=(u32)subDirFourCC>>24; subDirName[1]=(u32)subDirFourCC>>16; subDirName[2]=(u32)subDirFourCC>>8; subDirName[3]=subDirFourCC; subDirName[4]=0;
+            if(ARCConvertPathToEntrynum(ARC,subDirName)!=-1 && ARCChangeDir(ARC,subDirName)!=0) {
+                entry=ARCConvertPathToEntrynum(ARC,(const char*)fileName);
                 if(ARCChangeDir(ARC,lbl_805597FC)==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8,0x75,lbl_8031F2E4);
             }
         }
@@ -20250,7 +20251,7 @@ extern "C" s32 fn_800D51F4(long a0, long a1, long a2, long a3, long a4, long a5)
         s32 result;
         if(ARCFastOpen(ARC,entry,&info)==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8,0x83,lbl_8031F2E4);
         result=(s32)ARCGetStartAddrInMem(&info);
-        if(a4) *(u32*)a4=fn_80116A30(&info);
+        if(outSize) *(u32*)outSize=fn_80116A30(&info);
         fn_80116A38(&info);
         return result;
     }
