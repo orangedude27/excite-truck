@@ -139,20 +139,27 @@ void fn_802C13A4(void) {
     int address_check;
     char *base;
     int i;
+    int value;
+
     fn_801D05B4(&lbl_8055FB40);
     address_check = (int)&lbl_8055FB40;
     base = (char *)&lbl_8055FB40;
-    if (address_check != 0) {
+    if (address_check != 0)
         fn_801D0824(base + 4);
-    }
+
     entry = lbl_804C0810;
-    for (i = 0; i < lbl_8055FB28; i++) {
-        int value = *(int *)(entry + 0x34);
-        if (value != 0) {
-            fn_80128670(value);
-        }
-        entry += 0x60;
-    }
+    i = 0;
+    goto check;
+loop:
+    value = *(int *)(entry + 0x34);
+    if (value != 0)
+        fn_80128670(value);
+    entry += 0x60;
+    i += 1;
+check:
+    if (i < lbl_8055FB28)
+        goto loop;
+
     fn_80128670(lbl_8055FB30);
     lbl_8055FB30 = 0;
     lbl_8055FB2C = 0;
@@ -162,9 +169,6 @@ void fn_802C13A4(void) {
 extern int fn_801345D8(char *, int, const char *, ...);
 extern char lbl_8034AF14[];
 
-#pragma cplusplus on
-struct VCls_802C143C { virtual int m0(); virtual int m1(); virtual int m2(); virtual int m3(); virtual int m4(); virtual int m5(); virtual int m6(char *, int); };
-#pragma cplusplus reset
 extern int lbl_8055FB28;
 #pragma use_lmw_stmw off
 int fn_802C143C(void *arg0) {
