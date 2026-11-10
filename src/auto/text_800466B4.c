@@ -491,6 +491,7 @@ void read_kpad_dpd(void *arg0, void *arg1, s32 mode) {
 }
 
 static void clamp_stick_circle(Vec2* stick, s32 sx, s32 sy, s32 min, s32 max) {
+    /* Clamp stick input to a circular deadzone and normalize it into a Vec2. */
     f32 length;
     f32 fx = (f32)sx;
     f32 fy = (f32)sy;
