@@ -1350,10 +1350,11 @@ extern "C" s32 ReadStrmSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCF
     u8 *bytes = (u8 *)&refInfo;
     if (bytes[1] != 2)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80559870, 0x71, lbl_80324BA8);
-    void *data = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(bytes[0], *(u32 *)(bytes + 4), base);
+    s32 data = (s32)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(bytes[0], *(u32 *)(bytes + 4), base);
+    s32 ret = 0;
     if (data != 0)
-        return 1;
-    return 0;
+        ret = 1;
+    return ret;
 }
 
 extern "C" s32 ReadWaveSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive13WaveSoundInfo(void *self, u32 index, void *info) {
@@ -3240,36 +3241,37 @@ extern "C" void fn_800F7110(void *self, unsigned long taskId) {
     ((void (*)(void*, unsigned long))CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl)(manager, id);
 }
 
+/* Resolve bank and wave data for a sequence note-on and create the sound; returns the created sound or NULL. */
 void *nw4hbm::snd::SoundArchivePlayer::SeqNoteOnCallback::NoteOn(
-    nw4hbm::snd::detail::SeqPlayer *player, int arg2,
-    const nw4hbm::snd::detail::NoteOnInfo &noteInfo) {
+    nw4hbm::snd::detail::SeqPlayer *seqPlayer, int unused,
+    const nw4hbm::snd::detail::NoteOnInfo &noteOnInfo) {
     struct Scratch {
         u8 bankInfo[8];
         u8 reader[16];
         u8 seqInfo[16];
     } scratch;
 
-    void *fileInfo =
+    void *fileReader =
         *(void **)(*(u8 **)((u8 *)this + 4) + 0x10);
-    s32 result;
-    if (fileInfo == 0) {
-        result = 0;
+    s32 hasReader;
+    if (fileReader == 0) {
+        hasReader = 0;
     } else {
-        result = fn_800F273C(fileInfo);
+        hasReader = fn_800F273C(fileReader);
     }
-    if (result == 0) {
+    if (hasReader == 0) {
         return 0;
     }
 
-    void *archive = *(void **)((u8 *)this + 4);
-    if (*(s32 *)((u8 *)archive + 0x10) == 0) {
+    void *soundArchive = *(void **)((u8 *)this + 4);
+    if (*(s32 *)((u8 *)soundArchive + 0x10) == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x2AC, lbl_80325110);
     }
 
-    void *bankFileReader = *(void **)((u8 *)archive + 0x10);
-    u32 bankIndex = *(u32 *)((u8 *)player + 4);
+    void *bankFileReader = *(void **)((u8 *)soundArchive + 0x10);
+    u32 seqBankIndex = *(u32 *)((u8 *)seqPlayer + 4);
     if (((s32 (*)(void *, u32, void *))fn_800F27F4)(
-            bankFileReader, bankIndex, scratch.seqInfo) == 0) {
+            bankFileReader, seqBankIndex, scratch.seqInfo) == 0) {
         return 0;
     }
 
@@ -3301,7 +3303,7 @@ void *nw4hbm::snd::SoundArchivePlayer::SeqNoteOnCallback::NoteOn(
     *(s32 *)(scratch.reader + 0xC) = waveAddress;
     void *sound =
         NoteOn__Q46nw4hbm3snd6detail4BankCFRCQ46nw4hbm3snd6detail10NoteOnInfo(
-            scratch.reader, (const void *)&noteInfo);
+            scratch.reader, (const void *)&noteOnInfo);
     ((int (*)(int, int))fn_800E80F0)((int)scratch.reader, -1);
     return sound;
 }
@@ -4263,19 +4265,17 @@ extern "C" void fn_800FA350(void) {
 #pragma scheduling on
 extern "C" void* GetInstance__Q46nw4hbm3snd6detail11SoundThreadFv(void) {
     if ((s8)lbl_8055DE68 == 0) {
-        volatile u32 *base = (volatile u32 *)lbl_80412CC8;
+        volatile unsigned long *base = (volatile unsigned long *)lbl_80412CC8;
+        void *object = (void *)((u8 *)base + 0x2388);
         base[0x2388 / 4] = 0;
-        register void *object = (void *)((u8 *)base + 0x2388);
         base[0x238c / 4] = 0;
         base[0x2378 / 4] = 0;
         base[0x237c / 4] = 0;
         base[0x2384 / 4] = 0;
-        base[0x2388 / 4] = (u32)object;
-        base[0x238c / 4] = (u32)object;
+        base[0x2388 / 4] = (unsigned long)object;
+        base[0x238c / 4] = (unsigned long)object;
         ((volatile u8 *)base)[0x2394] = 0;
-        register const void *label = (const void *)&lbl_80412CB8;
-        __register_global_object((void *)base, (void *)&__dt__10TitleSceneFv,
-                                 (void *)label, object);
+        __register_global_object((void *)base, (void *)&__dt__10TitleSceneFv, (void *)&lbl_80412CB8, object);
         lbl_8055DE68 = 1;
     }
     return (void *)lbl_80412CC8;
