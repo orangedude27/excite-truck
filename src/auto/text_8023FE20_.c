@@ -867,15 +867,16 @@ void fn_80241DE8(void *arg0) {
 #pragma pop
 s32 fn_80241E40(void *arg0) {
     s32 i;
-    void *entry;
+    s32 result;
     void *out;
     s32 value;
-    s32 result;
-
-    if (*(s32 *)*(s32 **)((char *)arg0 + 0x34) == fn_802E4A10() &&
-        *(u8 *)((char *)arg0 + 0x38) == 0) {
-        return 0;
+    void *entry;
+    if (*(s32 *)*(s32 **)((char *)arg0 + 0x34) == fn_802E4A10()) {
+        if (*(u8 *)((char *)arg0 + 0x38) != 0)
+            goto do_loop;
     }
+    return 0;
+do_loop:
     entry = arg0;
     i = 0;
     while (i < *(s32 *)((char *)arg0 + 0x2C)) {
@@ -883,7 +884,7 @@ s32 fn_80241E40(void *arg0) {
         result = (*(u8 *)((char *)arg0 + 0x38) != 0 && i == *(s32 *)((char *)arg0 + 0x30)) ? 1 : 0;
         out = *(void **)((char *)entry + 0x18);
         entry = (char *)entry + 4;
-        i++;
+        ++i;
         *(u8 *)out = result;
         *(s32 *)((char *)out + 4) = value;
     }
