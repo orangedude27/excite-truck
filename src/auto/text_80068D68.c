@@ -21209,6 +21209,10 @@ void rfc_port_sm_sabme_wait_ua(void *p_port, u16 event, void *p_data) {
     }
 }
 
+/* RFCOMM port state machine: TERM_WAIT_SEC_CHECK state.
+ * Handles security-check completion and teardown events while waiting to
+ * establish/release the DLC after a security procedure.
+ */
 void rfc_port_sm_term_wait_sec_check(void *p_port, u16 event, void *p_data) {
     extern u8 lbl_803C4828[];
     extern char lbl_80319AB0[];
