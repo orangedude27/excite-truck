@@ -767,6 +767,7 @@ BOOL SIGetResponse(s32 chan, void* data) {
     BOOL valid;
     u32 status;
 
+    /* Reads a serial interface response for a channel into data when available. */
     enabled = OSDisableInterrupts();
     {
         BOOL statusEnabled = OSDisableInterrupts();
