@@ -9912,7 +9912,13 @@ void btm_pm_sm_alloc(u8 index) {
 }
 
 extern u8 lbl_802EEBE8[];
-/* Match fix: the p_md1 == NULL path copies p_md2 verbatim and returns it; only forced modes clear BTM_PM_MD_FORCE. */
+/* The stack's own names for the power mode comparison (stack/btm/btm_pm.c). */
+#define btm_pm_md_comp_matrix   lbl_802EEBE8 /* who wins each pair of set modes */
+#define BTM_PM_NUM_SET_MODES    3             /* only hold, sniff & park */
+#define BTM_PM_GET_MD1          1             /* the first mode wins */
+#define BTM_PM_GET_MD2          2             /* the second mode wins */
+#define BTM_PM_GET_COMP         3             /* the same mode twice: merge the parameters */
+
 tBTM_PM_PWR_MD *btm_pm_compare_modes(tBTM_PM_PWR_MD *p_md1, tBTM_PM_PWR_MD *p_md2, tBTM_PM_PWR_MD *p_res) {
     u8 res;
     if (p_md1 == NULL) {
