@@ -1051,6 +1051,7 @@ void fn_802C70AC(int arg0, void *arg1, int arg2, int arg3) {
 extern unsigned char lbl_804C13C0[];
 extern float lbl_80564EF0;
 extern float PSVECSquareDistance(const float *, const float *);
+/* For each outer entry of type 2 within range, dispatches eligible inner elements via fn_802C53C4/fn_802CC550 using the global context. */
 void fn_802C729C(int arg0, float arg1) {
     char *outerEntry;
     int globalValue;
