@@ -469,6 +469,9 @@ void SIInit(void) {
     Initialized = TRUE;
 }
 
+/* Start a Serial Interface transfer on a channel: clear status, latch callback/buffer
+ * state, copy output words to SI RAM, and program SICOMSCR to begin the transfer.
+ */
 static BOOL __SITransfer(s32 chan, void* outAddr, u32 outSize, void* inAddr,
                          u32 inSize, SICallback callback) {
     BOOL enabled;
