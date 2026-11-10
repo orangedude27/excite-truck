@@ -651,10 +651,11 @@ extern "C" long fn_8027BA24(void *arg0) {
 #pragma cplusplus reset
 #pragma cplusplus on
 extern "C" long fn_8027BAB8(void *arg0) {
-    long i;
-    for (i = 0; i < ((long (*)(void *))(*(void ***)arg0)[3])(arg0); i++) {
-        void *item = ((void *(*)(void *, long))(*(void ***)arg0)[4])(arg0, i);
-        if (((long (*)(void *))(*(void ***)item)[10])(item) == 0) return 0;
+    long i = 0;
+    while (i < ((Fn8027BA24List *)arg0)->count()) {
+        if (((Fn8027BAB8Item *)((Fn8027BA24List *)arg0)->item(i))->valid() == 0)
+            return 0;
+        i++;
     }
     return 1;
 }
