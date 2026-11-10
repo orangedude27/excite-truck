@@ -15953,6 +15953,9 @@ void hidh_proc_repage_timeout(TIMER_LIST_ENT *p_tle) {
 }
 
 void hidh_sec_check_complete_orig(BD_ADDR bd_addr, void *p_ref_data, UINT8 res) {
+    /* HID host security check completion: on success in connecting state, open the
+       control L2CAP channel; on failure or connect error, disconnect channels and
+       report status via the registered callback. */
     u8 *p_dev = (u8 *)p_ref_data;
     char *strings = lbl_80317838;
     u8 dhandle = (u8)((p_dev - lbl_803C3C38) / 0x34);
