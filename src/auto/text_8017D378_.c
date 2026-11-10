@@ -51,10 +51,9 @@ void fn_8017D380(float *arg0, int arg1) {
     extern float lbl_80561BE4;
     extern double lbl_80561BE8;
     void *root = fn_80178C9C();
-    void *sub = *(void **)((char *)root + 0x2C);
     int scaled = arg1 * 2;
-    volatile float *values = *(volatile float **)((char *)sub + 0x1C);
-
+    void *sub = *(void **)((char *)root + 0x2C);
+    float *values = *(float **)((char *)sub + 0x1C);
     arg0[0] = values[0];
     arg0[1] = lbl_80561BE0;
     arg0[1] = lbl_80561BE4 + (float)scaled;
@@ -293,6 +292,7 @@ long fn_8017EB04(long);
 void fn_8017DEE0(void *, long, long, short, float);
 void fn_8017DA8C(void *arg0) {
     float sp[3];
+    int g;
     int flags;
     fn_8017B164();
     fn_8017D380(sp, *(int *)((char *)arg0 + 0x1F8));
@@ -301,8 +301,9 @@ void fn_8017DA8C(void *arg0) {
     *(float *)((char *)arg0 + 0x68) = sp[2];
     fn_8017A580(arg0);
     *((char *)arg0 + 0x1E9) = 0;
+    g = lbl_8055D430;
     flags = 0;
-    if ((lbl_8055D430 & 1) && (lbl_8055D430 & 8)) flags = 1;
+    if ((g & 1) && (g & 8)) flags = 1;
     if (flags != 0) {
         *(int *)((char *)arg0 + 0x1F0) = 0;
         *(float *)((char *)arg0 + 0x1F4) = lbl_80561C0C + fn_8017D378();
@@ -418,7 +419,7 @@ void fn_8017DEE0(void *arg0, long arg1, long arg2, short arg3, float farg0) {
     float point[3];
     float tmp[3];
     float m[12];
-    register float vx, vy, vz;
+    float vx, vy, vz;
     int flags;
     int var_r3;
     int var_r3_2;
@@ -443,9 +444,9 @@ void fn_8017DEE0(void *arg0, long arg1, long arg2, short arg3, float farg0) {
     ((int *)m)[10] = ((int *)arg1)[10];
     ((int *)m)[11] = ((int *)arg1)[11];
     if (point == (float *)((char *)arg0 + 0x224)) {
-        vx = *(float *)((char *)arg0 + 0x224);
-        vy = *(float *)((char *)arg0 + 0x228);
-        vz = *(float *)((char *)arg0 + 0x22C);
+        vx = point[0];
+        vy = point[1];
+        vz = point[2];
         point[0] = vx * m[0] + vy * m[3] + vz * m[6];
         point[1] = vx * m[1] + vy * m[4] + vz * m[7];
         point[2] = vx * m[2] + vy * m[5] + vz * m[8];
