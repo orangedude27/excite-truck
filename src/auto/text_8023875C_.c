@@ -57,24 +57,26 @@ void fn_8023875C(int x, int y, const char *text, int arg3, int arg4) {
                 lbl_805636F0, lbl_805636F4, lbl_805636F8);
 }
 
-void fn_8023889C(void) {
-    int sp8;
-    int spC;
-    int i = 0;
-    register int one = 1;
-    sp8 = lbl_80563708;
-    spC = lbl_8056370C;
-    lbl_8055F0D9 = one;
-    do {
-        if (fn_8012C33C(*(int *)((char *)&sp8 + i * 4)) != 0) {
-            lbl_8055F0D4 = fn_80232578(*(int *)((char *)&sp8 + i * 4));
-            break;
-        }
-        i++;
-    } while (i < 2);
-}
-
 #pragma scheduling invalid_target
+void fn_8023889C(void) {
+    int values[2];
+    int *var_r31;
+    unsigned int var_r30;
+    var_r31 = values;
+    var_r30 = 0U;
+    lbl_8055F0D9 = 1;
+    values[0] = lbl_80563708;
+    values[1] = lbl_8056370C;
+    do {
+        if (fn_8012C33C(*var_r31) != 0) {
+            lbl_8055F0D4 = fn_80232578(values[var_r30]);
+            return;
+        }
+        var_r30 += 1;
+        var_r31++;
+    } while (var_r30 < 2U);
+}
+#pragma scheduling on
 void fn_80238920(void) {
     int value = *(volatile int *)&lbl_8055F0D4;
     lbl_8055F0D9 = 0;
@@ -114,5 +116,17 @@ void fn_80238A80(int arg0, int arg1, int arg2, const char *fmt, ...) {
     vsprintf(buffer, fmt, args);
     ((void (*)(int, int, int, int))fn_80238A74)(arg0, arg1, (int)buffer, arg2);
 }
+
+#pragma use_lmw_stmw off
+void fn_80238B44(int arg0, int arg1, int arg2, int arg3, int arg4) {
+    int halfX = 0;
+    int halfY = 0;
+    fn_802C8BD0(-1);
+    halfY = (int)(((unsigned int)lbl_8055CFF4 >> 31) + lbl_8055CFF4) >> 1;
+    halfX = (int)(((unsigned int)lbl_8055CFF0 >> 31) + lbl_8055CFF0) >> 1;
+    fn_802C92DC(arg0 - halfX, halfY - arg1, arg2 - halfX, halfY - arg3, arg4);
+    fn_802C8D74();
+}
+#pragma use_lmw_stmw on
 
 #include <stdarg.h>
