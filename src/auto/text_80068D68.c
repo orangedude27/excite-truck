@@ -1651,6 +1651,7 @@ s32 WUDiDeleteDevice(void)
 }
 
 void fn_80069D80(void) {
+    /* Advances the WUD device-delete state machine (lbl_80392960 control block, state at +0xD): clears busy flag (+0xC), steps through visibility off, terminate/delete, SC BT device-info flush, then restores visibility and invokes the completion callback (+8). */
     extern s32 WUDiDeleteDevice(void);
     extern s32 SCCheckStatus(void);
     extern s32 SCSetBtDeviceInfoArray(void *);
@@ -1658,45 +1659,45 @@ void fn_80069D80(void) {
     extern void OSCancelAlarm(OSAlarm *);
     extern u8 lbl_80393058[];
     u8 connectable;
-    u8 *base = lbl_80392960;
-    u8 state = base[0xD];
-    void (*callback)(u32);
-    base[0xC] = 0;
-    switch (state) {
+    u8 *wud = lbl_80392960;
+    u8 deleteState = wud[0xD];
+    void (*completionCallback)(u32);
+    wud[0xC] = 0;
+    switch (deleteState) {
     case 1:
         BTA_DmSetVisibility(0, 0);
-        base[0xD] = 2;
+        wud[0xD] = 2;
         break;
     case 2:
-        base[0xD] = WUDiTerminateDevice();
+        wud[0xD] = WUDiTerminateDevice();
         break;
     case 3:
-        base[0xD] = WUDiDeleteDevice();
+        wud[0xD] = WUDiDeleteDevice();
         break;
     case 5:
         if (SCCheckStatus() != 0) break;
         memset(lbl_80393058, 0, 0x461);
         if (SCSetBtDeviceInfoArray(lbl_80393058) != 0) {
-            base[0xD] = 6;
+            wud[0xD] = 6;
             SCFlushAsync(DeleteFlushCallback);
         }
         break;
     case 8: {
         BOOL enabled = OSDisableInterrupts();
-        connectable = base[0x66A];
+        connectable = wud[0x66A];
         OSRestoreInterrupts(enabled);
         enabled = OSDisableInterrupts();
-        base[0x66B] = 0;
-        base[0x66A] = connectable;
+        wud[0x66B] = 0;
+        wud[0x66A] = connectable;
         OSRestoreInterrupts(enabled);
         BTA_DmSetVisibility(0, connectable);
-        OSCancelAlarm((OSAlarm *)(base + 0x690));
-        callback = *(void (**)(u32))(base + 8);
-        base[0xD] = 0;
-        if (callback != 0) {
-            callback(1);
+        OSCancelAlarm((OSAlarm *)(wud + 0x690));
+        completionCallback = *(void (**)(u32))(wud + 8);
+        wud[0xD] = 0;
+        if (completionCallback != 0) {
+            completionCallback(1);
         }
-        base[0xD] = 0;
+        wud[0xD] = 0;
         break;
     }
     }
