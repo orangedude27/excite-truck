@@ -20760,6 +20760,14 @@ extern "C" void fn_800D16A8(s32 *);
 extern "C" f32 lbl_80560DD8;
 extern "C" u8 lbl_8031D840[];
 
+/* The AXFX memory hooks -- the SDK's AXFXSetHooks()/AXFXGetHooks() over
+ * __AXFXAlloc/__AXFXFree (lbl_805590B0/lbl_805590B4), which AXFXReverbHiExp
+ * allocates its delay lines through.  The auto names are misleading:
+ * AXGetAuxACallback_8009CDBC reads those hooks, not the Aux A callback (that
+ * is the AXGetAuxACallback() called next to it). */
+#define AXFXSetHooks AXFXSetHooks_8009CDB0
+#define AXFXGetHooks AXGetAuxACallback_8009CDBC
+
 extern "C" void fn_800C7E6C(void *arg0) {
     u8 *self = (u8 *)arg0;
     void *object;
