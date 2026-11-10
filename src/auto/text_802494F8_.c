@@ -26,7 +26,7 @@ typedef s32 (*UnkFunc)(s32);
 extern s32 lbl_802FA4B0[];
 extern s32 fn_80257BB8(void *, s32);
 extern s32 fn_801345D8(void *, s32, const char *, ...);
-extern char lbl_80343E70;
+extern char lbl_80343E70[];
 extern char lbl_8055BFF8;
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
