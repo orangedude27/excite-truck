@@ -1915,7 +1915,7 @@ extern char lbl_8055FA59;
 #pragma small_data off
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" s32 fn_802B8998(s32 arg0) {
+extern "C" s32 fn_802B8998(s32 inputId) {
     struct Handler {
         virtual void method0();
         virtual void method2();
@@ -1928,13 +1928,15 @@ extern "C" s32 fn_802B8998(s32 arg0) {
         virtual void method8();
     };
 
-    /* Match note: retain target virtual dispatch, unsigned zero tests, and explicit state writes. */
+    /* Handles UI/menu input events while a handler is active: processes navigation/selection
+       cases (0x125/0x127), dispatches virtual actions for 0x5/0x73, triggers mode changes, toggles
+       flags for 0x6e/0x77, and returns 1 when handled or 0 for unrecognized input. */
     if (lbl_8055FA48) {
-        switch (arg0) {
+        switch (inputId) {
         case 0x125:
         case 0x127:
             if (lbl_8055FA38 == 0)
-                fn_802B5C24(arg0 == 0x125U ? -1 : 1);
+                fn_802B5C24(inputId == 0x125U ? -1 : 1);
             *(s32 *)&lbl_804BFF80 = 8;
             *(u8 *)((u8 *)&lbl_804BFF80 + 0x34) = 0;
             *(s32 *)&lbl_8055FA44 = -1;
