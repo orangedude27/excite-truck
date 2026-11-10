@@ -87,42 +87,33 @@ s32 fn_80263658(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-#pragma push
+#pragma cplusplus on
 #pragma scheduling invalid_target
-void *fn_80263698(void *arg0, s32 arg1) {
-    register void *child;
-    struct VTable {
-        void *pad[2];
-        void (*destroy)(void *, s32);
+extern "C" void *fn_80263698(void *arg0, s32 arg1) {
+    struct VTable_80263698 {
+        virtual void destroy(s32);
     };
-    struct Child {
-        struct VTable *vtable;
-    };
-
     if (arg0 != 0) {
-        child = *(void **)((char *)arg0 + 0x30);
+        void *child = *(void **)((char *)arg0 + 0x30);
         *(void **)arg0 = (void *)lbl_80346048;
-        if (child == 0) {
+        if (child == 0)
             goto cleanup;
-        }
-        if (child == 0) {
+        if (child == 0)
             goto cleanup;
-        }
-        ((struct Child *)child)->vtable->destroy(child, 1);
-
+        ((VTable_80263698 *)child)->destroy(1);
     cleanup:
         if (arg0 != 0) {
             *(void **)arg0 = (void *)lbl_80346120;
             ((s32 (*)(s32, const u8 *))fn_802328D4)(*(s32 *)((char *)arg0 + 0x18), lbl_80346120);
             *(s32 *)((char *)arg0 + 0x18) = 0;
         }
-        if (arg1 > 0) {
+        if (arg1 > 0)
             ((void (*)(void *))fn_80128668)(arg0);
-        }
     }
     return arg0;
 }
-#pragma pop
+#pragma scheduling on
+#pragma cplusplus off
 extern const u8 lbl_80346048[];
 extern f32 lbl_80563BD8;
 extern f32 lbl_80563BE8;
