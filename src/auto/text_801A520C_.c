@@ -110,22 +110,31 @@ extern "C" void fn_801A5258(void *arg0, void *arg1) {
     *(float *)((char *)arg0 + 0x2718) = zero;
     *(unsigned char *)((char *)arg0 + 0x2710) = 0;
 }
-#pragma cplusplus off
-void fn_801A5300(void *arg0, void **arg1) {
-    void **temp_r0;
-    void **temp_r3;
-    temp_r0 = *(void ***)((char *)arg0 + 0x270C);
-    if (temp_r0 != 0) {
-        ((int (**)(void **))(*temp_r0))[10](temp_r0);
+#pragma cplusplus on
+extern "C" void fn_801A5300(void *arg0, void **arg1) {
+    class Obj {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2(void *);
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f9();
+        virtual void f10();
+    };
+    Obj *old = *(Obj **)((char *)arg0 + 0x270C);
+    if (old != 0) {
+        old->f10();
     }
-    *(void ***)((char *)arg0 + 0x270C) = arg1;
+    *(void **)((char *)arg0 + 0x270C) = (void *)arg1;
     if (arg1 != 0) {
-        ((int (**)(void **, void *))(*arg1))[4](arg1, arg0);
-        temp_r3 = *(void ***)((char *)arg0 + 0x270C);
-        ((int (**)(void **))(*temp_r3))[9](temp_r3);
+        ((Obj *)arg1)->f2(arg0);
+        ((Obj *)*(void **)((char *)arg0 + 0x270C))->f9();
     }
 }
-
+#pragma cplusplus off
 void *fn_801A538C(void *arg0, int arg1) {
     void *obj;
     if (arg0 != 0) {
