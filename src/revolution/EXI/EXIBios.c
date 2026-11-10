@@ -268,6 +268,7 @@ void EXIProbeReset(void) {
     __EXIProbe(EXI_CHAN_1);
 }
 
+/* Probe whether an EXI device is present on the given channel, updating last-insert timing state. */
 static BOOL __EXIProbe(EXIChannel chan) {
     EXIData* exi = &Ecb[chan];
     BOOL enabled;
