@@ -3522,33 +3522,34 @@ extern "C" void fn_8021E8DC(void *widget, s32 drawContext) {
 }
 
 #pragma scheduling invalid_target
-extern "C" void *fn_8021EA64(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, char *arg5, s32 arg6, s32 arg7, s32 arg8, u8 arg9) {
+extern "C" void *fn_8021EA64(void *self, s32 x, s32 y, s32 width, s32 height, char *textBuffer, s32 columns, s32 rows, s32 unkA8, u8 clearText) {
     extern char lbl_8033E988[];
     extern char lbl_8033D96C[];
     extern char lbl_8033D978[];
-    s32 *words = (s32 *)arg0;
+    s32 *words = (s32 *)self;
 
-    fn_80218F34(arg0, arg1, arg2, arg1 + arg3, arg2 + arg4 + 3, 0);
-    *(void **)arg0 = lbl_8033E988;
-    if (arg9 != 0)
-        *arg5 = 0;
-    *(char **)((u8 *)arg0 + 0xA54) = arg5;
-    *(s32 *)((u8 *)arg0 + 0xA58) = arg8;
-    words[0x248 / 4] = ((arg6 >> 31) ^ arg6) - (arg6 >> 31);
-    words[0x24C / 4] = arg7;
-    if (arg7 == 1 && arg6 > 0)
+    /* Initialize a text edit control: set bounds and vtable, optionally clear the buffer, load slider/caret images, and seed its text content. */
+    fn_80218F34(self, x, y, x + width, y + height + 3, 0);
+    *(void **)self = lbl_8033E988;
+    if (clearText != 0)
+        *textBuffer = 0;
+    *(char **)((u8 *)self + 0xA54) = textBuffer;
+    *(s32 *)((u8 *)self + 0xA58) = unkA8;
+    words[0x248 / 4] = ((columns >> 31) ^ columns) - (columns >> 31);
+    words[0x24C / 4] = rows;
+    if (rows == 1 && columns > 0)
         words[0xA60 / 4] = ((s32 (*)(void *))fn_802C5130)(lbl_8033D96C);
     else
         words[0xA60 / 4] = 0;
     words[0x244 / 4] = 0;
     words[0xA5C / 4] = ((s32 (*)(void *))fn_802C5130)(lbl_8033D978);
-    words[0x250 / 4] = strlen(arg5);
-    fn_80219440(arg0, 0, arg5, words[0x248 / 4] * words[0x24C / 4]);
+    words[0x250 / 4] = strlen(textBuffer);
+    fn_80219440(self, 0, textBuffer, words[0x248 / 4] * words[0x24C / 4]);
     if (words[0xA60 / 4] != 0) {
         s32 count = fn_802C5220(words[0xA60 / 4]);
-        fn_80219284(arg0, ((Vf78 *)arg0)->get(), count);
+        fn_80219284(self, ((Vf78 *)self)->get(), count);
     }
-    return arg0;
+    return self;
 }
 #pragma scheduling on
 extern "C" void fn_8022B2D4(void *, s32, s32, s32, s32, s32, s32);
