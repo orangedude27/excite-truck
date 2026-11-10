@@ -86,35 +86,43 @@ extern f32 lbl_80561418, lbl_8056141C, lbl_80561420;
 extern f32 lbl_80561424, lbl_80561428, lbl_8056142C;
 f32 fn_80134B58(f32 *, f32);
 
+#pragma push
+#pragma scheduling invalid_target
 void *fn_8013A264(void *arg0) {
     f32 *p = lbl_8032C118;
-    *(f32 *)((u8 *)arg0 + 0xC) = fn_80134B58(p, lbl_80561418);
-    *(f32 *)((u8 *)arg0 + 8) = fn_80134B58(p + 4, lbl_80561418);
-    *(f32 *)((u8 *)arg0 + 0x10) = fn_80134B58(p + 8, lbl_80561418);
-    *(f32 *)((u8 *)arg0 + 0x18) = fn_80134B58(&lbl_80559C60, lbl_8056141C);
+    *(f32 *)((u8 *)arg0 + 0xC) = fn_80134B58(p, *(volatile f32 *)&lbl_80561418);
+    *(f32 *)((u8 *)arg0 + 8) = fn_80134B58(p + 4, *(volatile f32 *)&lbl_80561418);
+    *(f32 *)((u8 *)arg0 + 0x10) = fn_80134B58(p + 8, *(volatile f32 *)&lbl_80561418);
+    *(f32 *)((u8 *)arg0 + 0x18) = fn_80134B58(&lbl_80559C60, *(volatile f32 *)&lbl_8056141C);
     *(f32 *)((u8 *)arg0 + 0x14) = lbl_80561418;
     *(f32 *)((u8 *)arg0 + 0x1C) = lbl_80561418;
     *(f32 *)((u8 *)arg0 + 4) = lbl_80561420;
     *(s32 *)arg0 = 0;
     return arg0;
 }
+#pragma pop
 
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" void fn_8013A2FC(AIConfig *config, struct Container *container) {
+extern "C" void fn_8013A2FC(AIConfig *config, struct Container *container, int i) {
     const char *base = (const char *)lbl_8032C118;
     if (container != 0) {
-        f32 step = lbl_8056142C;
-        f32 min = lbl_80561428;
-        f32 max = lbl_80561424;
-        int i;
+        Node604 *node;
+        f32 step;
+        f32 min;
+        f32 max;
         struct Entry *entry;
 
-        for (i = 0; (entry = container->GetEntry(i)) != 0; i++) {
+        max = lbl_80561424;
+        i = 0;
+        min = lbl_80561428;
+        step = lbl_8056142C;
+
+        for (; (entry = container->GetEntry(i)) != 0; i++) {
             if (stricmp(entry->GetName(), base + 0x34) == 0) {
-                Node604 *node = (Node604 *)fn_801284F8(0x28, base + 0x40);
+                node = (Node604 *)fn_801284F8(0x28, base + 0x40);
                 node->lo = entry->GetFloat(&lbl_80559C68);
                 node->hi = entry->GetFloat(&lbl_80559C70);
                 node->f8 = entry->GetFloatDef(&lbl_80559C78, config->f4);
