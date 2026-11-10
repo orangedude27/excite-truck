@@ -10005,6 +10005,15 @@ tBTM_PM_MODE btm_pm_get_set_mode(UINT8 pm_id, tBTM_PM_MCB *p_cb, tBTM_PM_PWR_MD 
     register tBTM_PM_REG_DB_MATCH_VIEW *reg_db;
     tBTM_PM_PWR_MD *p_md = NULL;
 
+    /* BTM power manager: compute the power mode to set for a connection (pm_id,
+       link control block p_cb) given optional requested mode p_mode, writing the
+       chosen mode into *p_res and returning its mode. A forced request
+       (BTM_PM_MD_FORCE) is applied directly (force bit cleared). Otherwise scan
+       registered modules in btm_cb.pm_reg_db (lbl_803C0F78, mask BTM_PM_REG_SET)
+       up to BTM_MAX_PM_RECORDS: any ACTIVE request forces ACTIVE, else merge each
+       request into p_md via btm_pm_compare_modes (NULL -> ACTIVE). If no merged
+       mode, use p_mode or ACTIVE; for BTM_PM_SET_ONLY_ID also reconcile p_mode vs
+       merged p_md. reg_db view matches target's global base/offset. */
     if (p_mode != NULL && p_mode->mode & BTM_PM_MD_FORCE) {
         *p_res = *p_mode;
         p_res->mode &= ~BTM_PM_MD_FORCE;
