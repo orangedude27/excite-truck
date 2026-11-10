@@ -16,6 +16,7 @@ extern void fn_8012A570(u32, void *);
 extern void fn_8012A5E8(void *);
 extern s32 lbl_8055F004;
 extern char lbl_803402A0[];
+extern char lbl_80340344[];
 extern char lbl_803402F4[];
 extern char lbl_80340308[];
 extern void fn_802E317C(const char *);
