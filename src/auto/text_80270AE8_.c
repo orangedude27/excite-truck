@@ -100,7 +100,6 @@ int fn_80270B50(void) {
 
 #pragma push
 #pragma small_data off
-#pragma scheduling off
 void fn_80270B74(void) {
     int *p = (int *)lbl_8049F9D8;
     *p = 0;
