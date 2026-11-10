@@ -2419,9 +2419,7 @@ f32 fn_80192D10(void *arg0) {
     } else {
         value = ((f32)raw - lbl_8056208C) / lbl_805620AC;
     }
-    if (value > lbl_8056208C) {
-        value = lbl_8056208C;
-    }
+    value = value > lbl_8056208C ? value : lbl_8056208C;
     return lbl_80562094 + value * lbl_80562138;
 }
 #pragma scheduling on
