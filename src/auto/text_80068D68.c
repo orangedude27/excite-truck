@@ -9919,8 +9919,21 @@ extern u8 lbl_802EEBE8[];
 #define BTM_PM_GET_MD2          2             /* the second mode wins */
 #define BTM_PM_GET_COMP         3             /* the same mode twice: merge the parameters */
 
+/*
+ * btm_pm_compare_modes - work out the power mode a link gets when the module
+ * wanting p_md1 and the one wanting p_md2 have to agree on one, leave it in
+ * p_res and return the request it came from (NULL when there is no mode both
+ * can live with).  Active is never a compromise.  A mode a module forced
+ * (BTM_PM_MD_FORCE) wins outright and loses its force bit; otherwise
+ * btm_pm_md_comp_matrix picks the winner of hold, sniff and park (sniff over
+ * park over hold), and two requests for the same mode are merged into the
+ * overlap of their intervals - the shorter max and the longer min, which is no
+ * mode at all when the intervals do not overlap - plus, for sniff, the longer
+ * attempt count and timeout.  Unlike the stack's btm_pm.c, a NULL p_md1 here
+ * copies p_md2 across as it is, force bit and all.
+ */
 tBTM_PM_PWR_MD *btm_pm_compare_modes(tBTM_PM_PWR_MD *p_md1, tBTM_PM_PWR_MD *p_md2, tBTM_PM_PWR_MD *p_res) {
-    u8 res;
+    UINT8 res;
     if (p_md1 == NULL) {
         *p_res = *p_md2;
         return p_md2;
@@ -9936,16 +9949,16 @@ tBTM_PM_PWR_MD *btm_pm_compare_modes(tBTM_PM_PWR_MD *p_md1, tBTM_PM_PWR_MD *p_md
         p_res->mode &= ~BTM_PM_MD_FORCE;
         return p_res;
     }
-    res = (p_md1->mode - 1) * 3 + (p_md2->mode - 1);
-    res = lbl_802EEBE8[res];
+    res = (p_md1->mode - 1) * BTM_PM_NUM_SET_MODES + (p_md2->mode - 1);
+    res = btm_pm_md_comp_matrix[res];
     switch (res) {
-    case 1:
+    case BTM_PM_GET_MD1:
         *p_res = *p_md1;
         return p_md1;
-    case 2:
+    case BTM_PM_GET_MD2:
         *p_res = *p_md2;
         return p_md2;
-    case 3:
+    case BTM_PM_GET_COMP:
         p_res->mode = p_md1->mode;
         p_res->max = p_md1->max < p_md2->max ? p_md1->max : p_md2->max;
         p_res->min = p_md1->min > p_md2->min ? p_md1->min : p_md2->min;
