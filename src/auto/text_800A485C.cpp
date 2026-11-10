@@ -4825,6 +4825,9 @@ extern "C" s32 fn_800AD24C(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg4)
 }
 
 extern "C" s32 VFiPFFAT_ReadClusterPage(void *arg0, u32 arg1, s32 arg2, s32 *arg3, s32 *arg4, void *arg5) {
+    /* Reads the FAT entry for a file's cluster into arg3 (and arg4 state) via a cache page,
+     * or computes/fills it from the volume FAT when needed, updating the file's cluster-chain
+     * cache fields when a next cluster is established. Returns 0 on success or a VF error. */
     s32 result;
     s32 val;
     u8 *p = (u8 *)arg0;
