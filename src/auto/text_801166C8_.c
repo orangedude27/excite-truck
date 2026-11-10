@@ -4766,6 +4766,7 @@ void fn_80120CA4(register s32 count, register void *dst, register s32 mode, regi
 }
 
 #define FN1400_TAIL , s32 unused
+#define FN1400_CALL_TAIL , srcIndex
 extern void fn_80121400(s32, s32 *, f32 * FN1400_TAIL);
 extern void fn_801219B4(void *);
 extern void fn_80121BF4(void *);
