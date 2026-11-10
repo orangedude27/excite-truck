@@ -11143,23 +11143,24 @@ s32 fn_800B8520(void *arg0, u32 *arg1) {
     return 2;
 }
 
-extern "C" s32 fn_800B865C(u8 *arg0) {
-    fn_800A499C((const char *)arg0, 0, 0x200);
-    if ((u32)arg0 & 3) {
-        arg0[0] = 0x52; arg0[1] = 0x52; arg0[2] = 0x61; arg0[3] = 0x41;
-    } else *(u32 *)arg0 = 0x52526141;
-    if (((u32)arg0 + 0x1E4) & 3) {
-        arg0[0x1E4] = 0x72; arg0[0x1E5] = 0x72; arg0[0x1E6] = 0x41; arg0[0x1E7] = 0x61;
-    } else *(u32 *)(arg0 + 0x1E4) = 0x72724161;
-    if (((u32)arg0 + 0x1E8) & 3) {
-        arg0[0x1E8] = 0xFF; arg0[0x1E9] = 0xFF; arg0[0x1EA] = 0xFF; arg0[0x1EB] = 0xFF;
-    } else *(u32 *)(arg0 + 0x1E8) = 0xFFFFFFFF;
-    if (((u32)arg0 + 0x1EC) & 3) {
-        arg0[0x1EC] = 0xFF; arg0[0x1ED] = 0xFF; arg0[0x1EE] = 0xFF; arg0[0x1EF] = 0xFF;
-    } else *(u32 *)(arg0 + 0x1EC) = 0xFFFFFFFF;
-    if (((u32)arg0 + 0x1FC) & 3) {
-        arg0[0x1FC] = 0; arg0[0x1FD] = 0; arg0[0x1FE] = 0x55; arg0[0x1FF] = 0xAA;
-    } else *(u32 *)(arg0 + 0x1FC) = 0x55AA;
+extern "C" s32 fn_800B865C(u8 *buffer) {
+    /* Zero a 0x200-byte buffer, then stamp alignment-aware signature words at the header and trailer. */
+    fn_800A499C((const char *)buffer, 0, 0x200);
+    if ((u32)buffer & 3) {
+        buffer[0] = 0x52; buffer[1] = 0x52; buffer[2] = 0x61; buffer[3] = 0x41;
+    } else *(u32 *)buffer = 0x52526141;
+    if (((u32)buffer + 0x1E4) & 3) {
+        buffer[0x1E4] = 0x72; buffer[0x1E5] = 0x72; buffer[0x1E6] = 0x41; buffer[0x1E7] = 0x61;
+    } else *(u32 *)(buffer + 0x1E4) = 0x72724161;
+    if (((u32)buffer + 0x1E8) & 3) {
+        buffer[0x1E8] = 0xFF; buffer[0x1E9] = 0xFF; buffer[0x1EA] = 0xFF; buffer[0x1EB] = 0xFF;
+    } else *(u32 *)(buffer + 0x1E8) = 0xFFFFFFFF;
+    if (((u32)buffer + 0x1EC) & 3) {
+        buffer[0x1EC] = 0xFF; buffer[0x1ED] = 0xFF; buffer[0x1EE] = 0xFF; buffer[0x1EF] = 0xFF;
+    } else *(u32 *)(buffer + 0x1EC) = 0xFFFFFFFF;
+    if (((u32)buffer + 0x1FC) & 3) {
+        buffer[0x1FC] = 0; buffer[0x1FD] = 0; buffer[0x1FE] = 0x55; buffer[0x1FF] = 0xAA;
+    } else *(u32 *)(buffer + 0x1FC) = 0x55AA;
     return 0;
 }
 
