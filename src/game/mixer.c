@@ -93,9 +93,10 @@ void fn_80208AC8(int arg0, int arg1) {
 
 #pragma push
 #pragma inline_depth(0)
-void fn_80208B8C(int arg0) {
-    int mode = (int)fn_802E9A14();
-    switch (mode) {
+/* Initializes the sound mixer backend and default settings. */
+void fn_80208B8C(int initBackends) {
+    int configMode = (int)fn_802E9A14();
+    switch (configMode) {
     default:
     case 1:
         *(int *)&lbl_8055B4D8 = 1;
@@ -108,26 +109,26 @@ void fn_80208B8C(int arg0) {
         break;
     }
     *(int *)(lbl_80489258 + 0x40) = 0;
-    if (arg0 != 0) {
-        void *object;
-        int *table;
+    if (initBackends != 0) {
+        void *nullMixer;
+        int *mixerTable;
         memset((void *)lbl_80489238, 0, 0x20);
-        object = fn_801284F8(0x10, lbl_8033BF18);
-        if (object != 0) {
-            *(void **)object = lbl_8033C058;
-            memset((char *)object + 4, 0, 0xC);
+        nullMixer = fn_801284F8(0x10, lbl_8033BF18);
+        if (nullMixer != 0) {
+            *(void **)nullMixer = lbl_8033C058;
+            memset((char *)nullMixer + 4, 0, 0xC);
         }
-        table = (int *)lbl_80489238;
-        table[table[6]] = (int)object;
-        mode = table[6];
-        table[6] = mode + 1;
+        mixerTable = (int *)lbl_80489238;
+        mixerTable[mixerTable[6]] = (int)nullMixer;
+        configMode = mixerTable[6];
+        mixerTable[6] = configMode + 1;
         fn_8020A72C();
     }
     {
-        int *table = (int *)lbl_80489238;
-        fn_801332D0(4, &lbl_8055B4E8, (char *)table + 0x1C);
-        mode = table[7];
-        if (mode < 0 || mode >= table[6])
+        int *mixerTable = (int *)lbl_80489238;
+        fn_801332D0(4, &lbl_8055B4E8, (char *)mixerTable + 0x1C);
+        configMode = mixerTable[7];
+        if (configMode < 0 || configMode >= mixerTable[6])
             *(int *)((char *)lbl_80489238 + 0x1C) = 0;
     }
     fn_8013323C(4, lbl_8033BEF8, lbl_80563230);
