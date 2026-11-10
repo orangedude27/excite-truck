@@ -485,42 +485,46 @@ extern "C" void fn_8015F670(void **arg0, s32 arg1) {
     struct Resource {
         virtual void **get(const char *);
     };
-    void **object;
-    void *context;
-    void **resource;
-    s32 count;
-    void *record;
-    void *array;
-    context = fn_80178C9C();
-    resource = fn_80131810(lbl_8032F4AC);
-    if (resource != 0) {
-        object = ((Resource *)resource)->get(lbl_8055A0A0);
+    void **itemObject;
+    void *processContext;
+    void **resourceHandle;
+    s32 entryCount;
+    void *entryRecord;
+    void *entryArray;
+
+    processContext = fn_80178C9C();
+    resourceHandle = fn_80131810(lbl_8032F4AC);
+    if (resourceHandle != 0) {
+        itemObject = ((Resource *)resourceHandle)->get(lbl_8055A0A0);
     } else {
-        object = 0;
+        itemObject = 0;
     }
-    count = fn_8015F148(arg0, arg1);
-    count += fn_8015ED90(object);
-    if (count > 0) {
+
+    entryCount = fn_8015F148(arg0, arg1);
+    entryCount += fn_8015ED90(itemObject);
+    if (entryCount > 0) {
+        /* Build and populate the global entry record when any entries are found. */
         register const char *recordName = lbl_8032F4B8;
-        record = fn_801284F8(0x10, recordName);
-        if (record != 0) {
-            register int arraySize = (count << 4) + 0x10;
+        entryRecord = fn_801284F8(0x10, recordName);
+        if (entryRecord != 0) {
+            register int arrayAllocSize = (entryCount << 4) + 0x10;
             register int arrayTag = (int)&lbl_8055A098;
-            array = fn_8012850C(arraySize, arrayTag);
-            array = fn_8002F37C(array, (void (*)(void *))fn_8015F79C, 0, 0x10, count);
-            *(void **)record = array;
-            *(s32 *)((char *)record + 8) = count;
-            *(s32 *)((char *)record + 4) = 0;
-            *(void **)((char *)record + 0xC) = array;
+            entryArray = fn_8012850C(arrayAllocSize, arrayTag);
+            entryArray = fn_8002F37C(entryArray, (void (*)(void *))fn_8015F79C, 0, 0x10, entryCount);
+            *(void **)entryRecord = entryArray;
+            *(s32 *)((char *)entryRecord + 8) = entryCount;
+            *(s32 *)((char *)entryRecord + 4) = 0;
+            *(void **)((char *)entryRecord + 0xC) = entryArray;
         }
-        lbl_8055E29C = (s32)record;
-        fn_8015F320(arg0, arg1, context);
-        fn_8015EF84(object);
-        fn_8015EE14(object, context);
-        fn_8015F3FC(context);
+        lbl_8055E29C = (s32)entryRecord;
+        fn_8015F320(arg0, arg1, processContext);
+        fn_8015EF84(itemObject);
+        fn_8015EE14(itemObject, processContext);
+        fn_8015F3FC(processContext);
     }
-    if (resource != 0) {
-        fn_80131818(resource);
+
+    if (resourceHandle != 0) {
+        fn_80131818(resourceHandle);
     }
 }
 #pragma cplusplus reset
