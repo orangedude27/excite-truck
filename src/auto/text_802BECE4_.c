@@ -308,15 +308,20 @@ void fn_802BF350(void) {
     }
 }
 
-void fn_802BF40C(void) {
+#pragma cplusplus on
+extern "C" void fn_802BF40C(void) {
+    class Obj {
+    public:
+        virtual void f0(int);
+    };
     int i;
-    void **obj;
+    void *obj;
     int handle;
     for (i = 0; i < lbl_8055FADC; i++) {
-        obj = (void **)lbl_804C07F0[i];
+        obj = lbl_804C07F0[i];
         if (obj != 0) {
             if (obj != 0) {
-                ((void (*)(void *, int))(*(void ***)obj)[2])(obj, 1);
+                ((Obj *)obj)->f0(1);
             }
             lbl_804C07F0[i] = 0;
         }
@@ -324,11 +329,11 @@ void fn_802BF40C(void) {
     handle = lbl_8055CF6C;
     lbl_8055FADC = 0;
     if (handle != -1) {
-        fn_802C6CF8();
+        fn_802C6CF8(handle);
         lbl_8055CF6C = -1;
     }
 }
-
+#pragma cplusplus reset
 int fn_802BF4B0(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668((void *)arg0);
