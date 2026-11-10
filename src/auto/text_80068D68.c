@@ -2734,6 +2734,22 @@ void DBPrintf_8006CFA8(const char *fmt, ...) {
 
 #pragma push
 #pragma use_lmw_stmw off
+/*******************************************************************************
+**
+** Function         gki_init_free_queue
+**
+** Description      Internal function called at startup to initialize one buffer
+**                  pool and its free queue (once per queue, from
+**                  gki_buffer_init() / GKI_create_pool()).  The pool's buffers
+**                  are size bytes of payload each, spaced act_size apart
+**                  (payload + BUFFER_PADDING_SIZE for the header and its magic
+**                  word); they are chained through p_next into the pool's free
+**                  queue and every header is marked free and unowned.
+**                  Original gki/common/gki_buffer.c.
+**
+** Returns          void
+**
+*******************************************************************************/
 void gki_init_free_queue(UINT8 id, UINT16 size, UINT16 total, void *p_mem) {
     UINT16 i;
     UINT16 act_size;
@@ -2741,18 +2757,27 @@ void gki_init_free_queue(UINT8 id, UINT16 size, UINT16 total, void *p_mem) {
     BUFFER_HDR_T *hdr1 = NULL;
     UINT32 *magic;
     INT32 tempsize = size;
-    tGKI_COM_CB *p_cb = (tGKI_COM_CB *)((u8 *)lbl_803946C0 + 0x54);
+    tGKI_COM_CB *p_cb = &gki_cb.com;
+
+    /* Round the payload up to a whole number of longwords; each buffer also
+       needs room for its header and trailing magic number */
     tempsize = (INT32)ALIGN_POOL(size);
     act_size = (UINT16)(tempsize + BUFFER_PADDING_SIZE);
+
+    /* Remember where this pool lives and how big its buffers are */
     p_cb->pool_start[id] = (UINT8 *)p_mem;
     p_cb->pool_end[id] = (UINT8 *)p_mem + (act_size * total);
     p_cb->pool_size[id] = act_size;
+
+    /* The free queue starts empty, holding buffers of the aligned size */
     p_cb->freeq[id].size = (UINT16)tempsize;
     p_cb->freeq[id].total = total;
     p_cb->freeq[id].cur_cnt = 0;
     p_cb->freeq[id].max_cnt = 0;
     hdr = (BUFFER_HDR_T *)p_mem;
     p_cb->freeq[id].p_first = hdr;
+
+    /* Link all total buffers into one free list */
     for (i=0; i<total; i++) {
         hdr->task_id = GKI_INVALID_TASK;
         hdr->q_id = id;
@@ -2763,6 +2788,8 @@ void gki_init_free_queue(UINT8 id, UINT16 size, UINT16 total, void *p_mem) {
         hdr = (BUFFER_HDR_T *)((UINT8 *)hdr + act_size);
         hdr1->p_next = hdr;
     }
+
+    /* Terminate the list; hdr1 is the last buffer of the pool */
     hdr1->p_next = NULL;
     p_cb->freeq[id].p_last = hdr1;
 }
