@@ -113,27 +113,30 @@ int fn_801D32E0(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
 #pragma cplusplus on
 #pragma scheduling invalid_target
 extern "C" void fn_801D334C(void *arg0, void *arg1) {
-    const char (*base)[12] = (const char (*)[12])lbl_80338340;
+    const char *base = lbl_80338340;
     Fn801D334CObj *obj = (Fn801D334CObj *)arg1;
     struct Fn801D334CData *data = (struct Fn801D334CData *)arg0;
+    f32 mz;
     f32 temp_f2;
     int mode;
 
-    data->max_life = obj->getFloat(base[0]);
+    data->max_life = obj->getFloat(base + 0x0);
     data->mass = obj->getFloat((const char *)&lbl_8055AC30);
     data->mx = obj->getFloat((const char *)&lbl_8055AC38);
     data->my = obj->getFloat((const char *)&lbl_8055AC3C);
-    data->mz = obj->getFloat((const char *)&lbl_8055AC40);
-    temp_f2 = lbl_80562AA4 * data->mass;
-    data->spring = obj->getFloatDef((const char *)&lbl_8055AC44, lbl_80562AA0 * (temp_f2 / lbl_80562AA8));
-    data->friction = obj->getFloatDef(base[1], lbl_80562AAC);
-    if (obj->hasKey(base[2]) != 0) {
-        data->surf_type = fn_801D04D0(obj->getString(base[2]));
+    mz = obj->getFloat((const char *)&lbl_8055AC40);
+    temp_f2 = 9.81f;
+    temp_f2 *= data->mass;
+    data->mz = mz;
+    data->spring = obj->getFloatDef((const char *)&lbl_8055AC44, 1.5f * (temp_f2 / 0.03f));
+    data->friction = obj->getFloatDef(base + 0x0C, 1.0f);
+    if (obj->hasKey(base + 0x18) != 0) {
+        data->surf_type = fn_801D04D0(obj->getString(base + 0x18));
     } else {
         data->surf_type = 100;
     }
-    data->ground_test = obj->getByte(base[3], 1);
-    data->effect_id = obj->getInt(base[4], -1);
+    data->ground_test = obj->getByte(base + 0x24, 1);
+    data->effect_id = obj->getInt(base + 0x30, -1);
     mode = fn_801D37C4(obj->getString((const char *)&lbl_8055AC4C));
     data->mode = mode;
     switch (mode) {
@@ -152,7 +155,7 @@ extern "C" void fn_801D334C(void *arg0, void *arg1) {
         data->f2c = obj->getFloat((const char *)&lbl_8055AC58);
         break;
     default:
-        fn_802E317C(base[5], mode);
+        fn_802E317C(base + 0x3C, mode);
         break;
     }
 }
@@ -246,6 +249,34 @@ unsigned int fn_801D37AC(void *arg0) {
     int temp_r4;
     temp_r4 = *(int *)((char *)arg0 + 0x1EC);
     return (unsigned int)((-1 - temp_r4) | (temp_r4 + 1)) >> 31;
+}
+
+extern int lbl_802F99A8[];
+extern char lbl_803383E4[];
+extern int stricmp(const char *, const char *);
+int fn_801D37C4(const char *arg0) {
+    int table[8];
+    int *src = lbl_802F99A8;
+    int *dst = table;
+    int *p = table;
+    unsigned int i = 0;
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst = *src;
+    do {
+        if (stricmp(arg0, (const char *)p[0]) == 0) {
+            return *(int *)((char *)table + 4 + (i << 3));
+        }
+        ++i;
+        p += 2;
+    } while (i < 4);
+    fn_802E317C(lbl_803383E4, arg0);
+    return 0;
 }
 
 #pragma scheduling invalid_target
@@ -433,13 +464,12 @@ extern void fn_8017B81C(void);
 extern void fn_801D4598(void *, float);
 extern float lbl_8055E3C8;
 extern float lbl_80562AC0;
-#pragma paired off
-#pragma paired_single off
+#pragma push
+#pragma processor 750
 void fn_801D3BF0(void *arg0) {
     float temp_f31;
     float a, b, c, d, e, f;
     volatile int reserve[2];
-
     temp_f31 = lbl_8055E3C8;
     if (*(int *)((char *)arg0 + 0x230) == 2) {
         fn_8017B81C();
@@ -464,9 +494,8 @@ void fn_801D3BF0(void *arg0) {
     }
     fn_801D411C(arg0);
     *(int *)((char *)arg0 + 0x1E4) = 0;
-    /* Scale the six stored components only on the timed branch. */
 }
-
+#pragma pop
 extern float lbl_8055E460;
 extern char lbl_80558DC4[];
 void fn_801D3CB8(void *arg0, char *arg1) {
@@ -767,23 +796,24 @@ extern "C" void fn_801D4294(void *arg0, void *arg1) {
     unsigned char *self = (unsigned char *)arg0;
     const unsigned char *src = (const unsigned char *)arg1;
     float size;
-    float zero = lbl_80562AB8;
-    int mode = *(int *)(src + 0x28);
+    float zero;
+    int mode;
     volatile float sp10;
     volatile float spc;
     volatile float sp8;
     void *resource;
 
+    zero = lbl_80562AB8;
+    mode = *(int *)(src + 0x28);
     sp8 = zero;
     spc = zero;
     sp10 = zero;
     switch (mode) {
     case 0: {
-        size = *(float *)(src + 0x2C);
         unsigned char *p;
         float posx;
         float posy;
-        int shouldInit;
+        size = *(float *)(src + 0x2C);
         *(unsigned int *)(self + 0x23C) = 0x53504852;
         *(float *)(self + 0x240) = size;
         resource = *(void **)(self + 0x244);
@@ -800,7 +830,6 @@ extern "C" void fn_801D4294(void *arg0, void *arg1) {
         *(unsigned int *)(p + 0x20) = 0x64;
         *(unsigned int *)(p + 0x1C) = 0;
         *(void **)p = (void *)&lbl_80333B48;
-        shouldInit = arg0 != 0;
         *(volatile float *)(p + 0x28) = sp8;
         *(volatile float *)(p + 0x2C) = spc;
         *(volatile float *)(p + 0x30) = sp10;
@@ -816,7 +845,7 @@ extern "C" void fn_801D4294(void *arg0, void *arg1) {
         *(volatile float *)(p + 0x28) = sp8;
         *(volatile float *)(p + 0x2C) = spc;
         *(volatile float *)(p + 0x30) = sp10;
-        if (shouldInit) fn_8019EECC(arg0, p + 0x28);
+        if (arg0 != 0) fn_8019EECC(arg0, p + 0x28);
         break;
     }
     case 1: {
