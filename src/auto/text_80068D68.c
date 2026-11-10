@@ -25633,6 +25633,7 @@ s32 _intBlkCtrlCb(s32 arg0, void *arg1) {
 }
 
 extern s32 IOS_Open(const char *, s32);
+/* Opens an IOS USB device node for the given device name/vendor/product and stores the fd. */
 s32 IUSB_OpenDeviceIds(const char *name, u16 vendorId, u16 productId, s32 *fd) {
     register char *base = lbl_8031A620;
     s32 result;
