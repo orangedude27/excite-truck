@@ -2774,6 +2774,12 @@ extern "C" s32 detail_GetFileWaveDataAddress__Q36nw4hbm3snd18SoundArchivePlayerC
     u32 filePos[2];
     u32 wavePos[4];
     u32 fileInfo[4];
+    /* Resolve the wave-data address for a sound archive file id: try archive
+       lookup (vtable f2) and optional alt source (f1) at +0x6C, read file info/
+       positions, map group index through wave table at +0x14 (warn on missing
+       table, lbl_80324E88/snd_SoundArchivePlayer.cpp:0x366 with
+       lbl_803251B0 "Failed to SoundArchivePlayer::GetGroupWaveDataAddress..."),
+       return group base (+8) + wave item offset (wavePos[3]). */
     u8 *obj = (u8 *)self;
     s32 result = ((DummySoundArchiveLookup *)*(void **)(obj + 0x10))->f2();
     if (result != 0)
