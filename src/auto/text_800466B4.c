@@ -77,11 +77,12 @@ s32 select_2obj_first(void *arg0) {
     u8 *bestA;
     u8 *bestB;
     f32 length;
-    f32 best;
+    f32 bestScore;
     f32 threshold;
-    volatile f32 temp[2];
+    volatile f32 proj[2];
 
-    best = lbl_80558EC0;
+    /* Pick the best pair among the 4 candidates (0xC8..0xEC, stride 0xC) by projected score. */
+    bestScore = lbl_80558EC0;
     threshold = lbl_80560BD8;
     a = obj + 0xC8;
     length = lbl_80560BE4;
@@ -94,35 +95,35 @@ s32 select_2obj_first(void *arg0) {
                 if (*(s8 *)(b + 8) == 0) {
                     register f32 dy, dx;
                     f32 q, p;
-                    f32 mag;
-                    f32 v;
+                    f32 dist;
+                    f32 invLen;
                     f32 scale;
                     f32 c0, c1, score;
                     dx = *(f32 *)(b + 0) - *(f32 *)(a + 0);
                     dy = *(f32 *)(b + 4) - *(f32 *)(a + 4);
-                    mag = (f32)fn_8002F234((f64)(dx * dx + dy * dy));
+                    dist = (f32)fn_8002F234((f64)(dx * dx + dy * dy));
                     p = *(f32 *)(obj + 0xB4);
                     q = *(f32 *)(obj + 0xB8);
-                    scale = length / mag;
+                    scale = length / dist;
                     dx *= scale;
                     dy *= scale;
-                    v = lbl_8055D990 * scale;
+                    invLen = lbl_8055D990 * scale;
                     c0 = p * dx + q * dy;
                     c1 = q * dx - p * dy;
-                    temp[0] = c0;
-                    temp[1] = c1;
-                    if (v <= lbl_8055D9B0 || v >= lbl_80558EB8)
+                    proj[0] = c0;
+                    proj[1] = c1;
+                    if (invLen <= lbl_8055D9B0 || invLen >= lbl_80558EB8)
                         goto skip_score;
                     score = *(f32 *)(obj + 0x3C8) * c0 + *(f32 *)(obj + 0x3CC) * c1;
                     if (score < threshold) {
                         score = -score;
-                        if (score > best) {
-                            best = score;
+                        if (score > bestScore) {
+                            bestScore = score;
                             bestA = b;
                             bestB = a;
                         }
-                    } else if (score > best) {
-                        best = score;
+                    } else if (score > bestScore) {
+                        bestScore = score;
                         bestA = a;
                         bestB = b;
                     }
@@ -133,7 +134,7 @@ s32 select_2obj_first(void *arg0) {
         }
         a += 0xC;
     } while (a < aEnd);
-    if (best == lbl_80558EC0)
+    if (bestScore == lbl_80558EC0)
         return 0;
     *(struct Pair *)(obj + 0xF8) = *(struct Pair *)bestA;
     *(u32 *)(obj + 0x100) = *(u32 *)(bestA + 8);
