@@ -2393,9 +2393,7 @@ f32 fn_80192C7C(void *arg0) {
     u8 raw;
     f32 normalized;
     f32 value;
-
-    raw = byte >> 4;
-    raw |= byte & 0xF0;
+    raw = (byte & 0xF0) | ((byte >> 4) & 0xF);
     normalized = ((f32)raw - lbl_8056208C) / lbl_805620AC;
     if (lbl_80562090 < normalized) {
         value = lbl_80562090;
