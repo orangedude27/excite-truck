@@ -865,28 +865,40 @@ int fn_80166F78(float *arg0) {
 extern double fn_8002EFB4(float, float, float);
 extern float lbl_805618A0, lbl_805618F4, lbl_805618F8, lbl_805618FC;
 #pragma push
-#pragma optimization_level 2
+#pragma optimization_level 4
 #pragma scheduling on
 float fn_80166F90(float *arg0) {
+    register float prod = lbl_805618A0 * arg0[2];
+    register float diff = lbl_8055E318 - arg0[3];
     float x;
     float value;
     float start;
     float end;
-    x = (float)fn_8002EFB4(lbl_8055E318 - arg0[3], lbl_805618A0 * arg0[2], lbl_805618A0);
+    float term1;
+    float term2;
+    x = (float)fn_8002EFB4(diff, prod, lbl_805618A0);
     if (x > arg0[2]) {
         x = lbl_805618A0 * arg0[2] - x;
     }
     x /= arg0[2];
     if (x < lbl_805618F4) {
         value = lbl_805618F4;
+    } else if (x > lbl_805618D0) {
+        value = lbl_805618D0;
+    } else if (x > lbl_8056189C) {
+        term1 = lbl_805618F8 * x;
+        term2 = lbl_805618FC * x;
+        term1 *= x;
+        term2 *= x;
+        term1 = x * term1;
+        value = term1 + term2;
     } else {
-        if (x > lbl_805618D0) {
-            value = lbl_805618D0;
-        } else if (x > lbl_8056189C) {
-            value = x * ((lbl_805618F8 * x) * x) + (lbl_805618FC * x) * x;
-        } else {
-            value = x * ((lbl_805618F8 * x) * x) - (lbl_805618FC * x) * x;
-        }
+        term1 = lbl_805618F8 * x;
+        term2 = lbl_805618FC * x;
+        term1 *= x;
+        term2 *= x;
+        term1 = x * term1;
+        value = term1 - term2;
     }
     end = arg0[1];
     start = arg0[0];
