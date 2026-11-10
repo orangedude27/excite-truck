@@ -10684,6 +10684,10 @@ extern "C" s32 fn_800B7968(u32 arg0, s32 arg1, s32 arg2, void* arg3) {
     s32 sp8;
     Req req;
     s32 r;
+    /* Dispatches a VF/NAND drive request (arg0 selects the operation) for the drive
+     * context in arg3: validates inputs, resolves a handle for ops 0-2, submits it
+     * via fn_800B7408 (copying extra info when arg0==2), and updates the per-drive
+     * handle/id tables indexed by the drive letter at arg3+8. */
     if (arg0 >= 4) return -2;
     if (arg3 == 0) return -2;
     if (arg0 == 2 && arg1 == 0) return -2;
