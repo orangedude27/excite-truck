@@ -76,31 +76,31 @@ int fn_80249668(int *arg0) {
     extern int fn_802411D4(void);
     char *strings[3];
     char **stringPtr = lbl_802FA4C8;
-    int index;
-    char *src;
-    int count;
-    unsigned char *dst;
-    unsigned char c;
+    int index2;
+    char *src2;
+    int count2;
+    unsigned char *dst2;
+    unsigned char c2;
     strings[0] = *stringPtr++;
     strings[1] = *stringPtr++;
     strings[2] = *stringPtr;
-    index = fn_80214D04();
-    src = strings[index];
-    dst = lbl_8055F294;
-    count = 0x100;
-    goto copy;
-decrement:
-    count--;
-    if (count > 0)
-        goto copy;
-    dst[-1] = 0;
-    goto done;
-copy:
-    c = *src++;
-    *dst++ = c;
-    if ((signed char)c != 0)
-        goto decrement;
-done:
+    index2 = fn_80214D04();
+    src2 = strings[index2];
+    dst2 = lbl_8055F294;
+    count2 = 0x100;
+    goto copy2;
+decrement2:
+    count2--;
+    if (count2 > 0)
+        goto copy2;
+    dst2[-1] = 0;
+    goto done2;
+copy2:
+    c2 = *src2++;
+    *dst2++ = c2;
+    if ((signed char)c2 != 0)
+        goto decrement2;
+done2:
     if (lbl_8055F290 != 0 && fn_802411D4() == 0) {
         *(volatile int *)arg0 = -1;
         return 1;
