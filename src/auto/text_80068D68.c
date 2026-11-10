@@ -21302,7 +21302,9 @@ void rfc_port_sm_orig_wait_sec_check(void *port, u16 event, void *data) {
     if (lbl_803C4828[0x414] >= 2) fn_80070954(0x90001, messages + 0x1C8, event);
 }
 
-void rfc_port_sm_opened(void *p_port, u16 event, void *p_data) {
+/* RFCOMM port state machine handler for the OPENED state. */
+void rfc_port_sm_opened(void *p_port, u16 event, void *p_data)
+{
     extern u8 lbl_803C4828[];
     extern char lbl_80319AC4[];
     extern char lbl_80319CE8[];
