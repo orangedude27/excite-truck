@@ -341,6 +341,7 @@ static s32 nandGetStatus(const char* path, NANDStatus* status,
     u32 ownerPerm, groupPerm, otherPerm;
     char absPath[64];
 
+    /* Resolve the path and query file attributes (async via command block, or sync into locals). */
     MEMCLR(&absPath);
     nandGenerateAbsPath(absPath, path);
 
