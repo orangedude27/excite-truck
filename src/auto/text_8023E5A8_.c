@@ -811,11 +811,11 @@ int fn_8023F964(int *arg0) {
     if (lbl_8055F1C0 != 0) ((void (*)(void))lbl_8055F1C0)();
     if (fn_802E8D84() == 0) {
         lbl_8055F1C4 = 1;
-    } else {
-        if (lbl_8055F1C4 != 0 && fn_802E8D84() != 0) {
-            *arg0 = -2;
-            return 1;
-        }
+        return 0;
+    }
+    if (lbl_8055F1C4 != 0 && fn_802E8D84() != 0) {
+        *arg0 = -2;
+        return 1;
     }
     return 0;
 }
