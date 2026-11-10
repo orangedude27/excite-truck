@@ -4366,6 +4366,7 @@ extern "C" s32 fn_800ACA5C(void *arg0, void *arg1, u32 arg2) {
     u16 flags;
     u8 shift;
 
+    /* Compute a transfer/window size from mode, issue request via fn_800B5260, retrying via callback/offset rules. */
     switch (mode) {
     case 0:
         scaled = (arg2 + (arg2 >> 1)) & 0xFFFF;
