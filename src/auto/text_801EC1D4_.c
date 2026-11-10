@@ -1021,15 +1021,16 @@ extern char lbl_8033A060[];
 extern char lbl_8055B080;
 #pragma cplusplus on
 extern "C" void fn_801EEA64(void *arg0, void *arg1, int arg2, int arg3) {
+ /* Loads UI/string configuration for the given index from a named resource and fills output fields. */
  char *base = lbl_8033A060;
- char sp108[0x100]; char sp8[0x100]; Unk_801EEA64Iface *iter; Unk_801EEA64Iface *obj; int obj2; int value, shift;
- fn_801345D8(sp108,0x100,base+0x174,arg2);
- iter=(Unk_801EEA64Iface *)fn_80131810(sp108);
- if(iter != 0 && iter->m10(&lbl_8055B080) != 0) {
-  obj=iter->m8(&lbl_8055B080);
-  obj2=obj->m14(base+0x194);
-  fn_801345D8(sp8,0x100,base+0x188,arg2,obj2);
-  *(int *)((char *)arg0+0x488)=fn_802C6FC0(sp8,0,arg3);
+ char pathBuf[0x100]; char nameBuf[0x100]; Unk_801EEA64Iface *resource; Unk_801EEA64Iface *obj; int objId; int value, shift;
+ fn_801345D8(pathBuf,0x100,base+0x174,arg2);
+ resource=(Unk_801EEA64Iface *)fn_80131810(pathBuf);
+ if(resource != 0 && resource->m10(&lbl_8055B080) != 0) {
+  obj=resource->m8(&lbl_8055B080);
+  objId=obj->m14(base+0x194);
+  fn_801345D8(nameBuf,0x100,base+0x188,arg2,objId);
+  *(int *)((char *)arg0+0x488)=fn_802C6FC0(nameBuf,0,arg3);
   *(int *)((char *)arg0+0x48C)=obj->m1C(base+0x1A0);
   *(int *)((char *)arg0+0x490)=obj->m1C(base+0x1AC);
   *(int *)((char *)arg0+0x494)=obj->m1C(base+0x1B8);
@@ -1041,7 +1042,7 @@ extern "C" void fn_801EEA64(void *arg0, void *arg1, int arg2, int arg3) {
   *(int *)((char *)arg0+0x49C)=1<<shift;
   value=obj->m14(base+0x1D8);
   fn_801345D8((char *)arg1+0xEC,0x20,base+0x188,arg2,value);
-  fn_80131818(iter); return;
+  fn_80131818(resource); return;
  }
  *(int *)((char *)arg0+0x488)=-1; *(int *)((char *)arg0+0x494)=0; *((char *)arg1+0xEC)=0;
 }
@@ -1116,6 +1117,8 @@ extern "C" void fn_801EECAC(long arg0, long arg1) {
 #pragma cplusplus reset
 #pragma pop
 
+#pragma push
+#pragma processor 750
 #pragma scheduling invalid_target
 long fn_801EEE38(void) {
     long *entries;
@@ -1130,8 +1133,8 @@ long fn_801EEE38(void) {
 
 loop:
     fn_801EECAC(value, context);
-    i++;
     entries++;
+    i++;
     if (i < 8u) {
         goto check;
     }
@@ -1145,6 +1148,7 @@ check:
     return value;
 }
 #pragma scheduling on
+#pragma pop
 extern void *fn_801EC750();
 extern int lbl_8033A2D4[64];
 #pragma scheduling off
