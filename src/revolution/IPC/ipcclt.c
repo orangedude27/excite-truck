@@ -589,8 +589,8 @@ s32 IOS_Ioctl(s32 fd, s32 type, void* in, s32 inSize, void* out, s32 outSize) {
     return ret;
 }
 
-static s32 __ios_Ioctlv(IPCRequestEx* req, s32 type, s32 inCount, s32 outCount,
-                        IPCIOVector* vectors) {
+/* Flushes and converts ioctlv vectors to physical addresses. */
+static s32 __ios_Ioctlv(IPCRequestEx *req, s32 type, s32 inCount, s32 outCount, IPCIOVector *vectors) {
     int i;
     s32 ret = IPC_RESULT_OK;
 
@@ -608,8 +608,7 @@ static s32 __ios_Ioctlv(IPCRequestEx* req, s32 type, s32 inCount, s32 outCount,
 
             req->base.ioctlv.vectors[inCount + i].base =
                 (req->base.ioctlv.vectors[inCount + i].base != NULL)
-                    ? OSCachedToPhysical(
-                          req->base.ioctlv.vectors[inCount + i].base)
+                    ? OSCachedToPhysical(req->base.ioctlv.vectors[inCount + i].base)
                     : NULL;
         }
 
@@ -624,11 +623,9 @@ static s32 __ios_Ioctlv(IPCRequestEx* req, s32 type, s32 inCount, s32 outCount,
         }
 
         DCFlushRange(req->base.ioctlv.vectors,
-                     (req->base.ioctlv.inCount + req->base.ioctlv.outCount) *
-                         sizeof(IPCIOVector));
+                     (req->base.ioctlv.inCount + req->base.ioctlv.outCount) * sizeof(IPCIOVector));
 
-        req->base.ioctlv.vectors =
-            (vectors != NULL) ? OSCachedToPhysical(vectors) : NULL;
+        req->base.ioctlv.vectors = (vectors != NULL) ? OSCachedToPhysical(vectors) : NULL;
     }
 
     return ret;
