@@ -1487,6 +1487,9 @@ s32 fn_8016E1A4(s32 *arg0, s32 arg1) {
     return *arg0 + (arg1 * 0x14);
 }
 
+// Builds a formatted state label for this object, applies it via UI helper, resets the
+// selected list entry's runtime fields/child handles when index is valid, and stops its
+// active sound handle if one is set.
 void fn_8016E1B4(void *arg0, s32 arg1) {
     char sp8[0x28];
     register char *format = lbl_803306D0;
