@@ -19110,6 +19110,10 @@ void l2cu_send_peer_config_rsp(tL2C_CCB_VIEW *p_ccb, tL2CAP_CFG_INFO *p_cfg)
 }
 
 extern char lbl_80319194[];
+/* Build and send an L2CAP Configuration Response rejecting unsupported options.
+ * Copies rejectable (non-hint, unrecognized) options from the peer config into
+ * the response, fills L2CAP/signaling headers from the CCB/LCB, and queues it.
+ */
 void l2cu_send_peer_config_rej(void *p_ccb, u8 *p_cfg_start, u16 cfg_len, u16 cfg_rej_len) {
     u8 *p_msg;
     u8 *out;
