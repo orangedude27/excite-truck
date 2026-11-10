@@ -17801,27 +17801,30 @@ extern "C" s32 fn_800CFBC0(void *arg0, s32 arg1) {
 
 #pragma push
 #pragma processor 750
-extern "C" s32 update__Q310homebutton3gui9ComponentFiffUlUlUlPv(void *self, int index, f32 x, f32 y, unsigned long a, unsigned long b, unsigned long c, void *arg) {
-    ComponentUpdateDispatch *obj = (ComponentUpdateDispatch *)self;
-    s32 result = 0;
-    if (obj->enabled()) {
-        if (obj->hit(x, y)) {
-            if (obj->active(index)) {
-                obj->motion(x, y);
-                (*(ComponentUpdateManager **)((u8 *)self + 0x28))->notify(obj->id(), 3, arg);
+extern "C" s32 update__Q310homebutton3gui9ComponentFiffUlUlUlPv(void *self, int pointIndex, f32 x, f32 y, unsigned long param4, unsigned long param5, unsigned long param6, void *userData) {
+    ComponentUpdateDispatch *component = (ComponentUpdateDispatch *)self;
+    s32 handled = 0;
+
+    // Handle pointer/touch update for a GUI component: notify manager on hover, press, motion, or leave.
+    if (component->enabled()) {
+        if (component->hit(x, y)) {
+            if (component->active(pointIndex)) {
+                component->motion(x, y);
+                (*(ComponentUpdateManager **)((u8 *)self + 0x28))->notify(component->id(), 3, userData);
             } else {
-                obj->setActive(index, 1);
-                obj->enter();
-                (*(ComponentUpdateManager **)((u8 *)self + 0x28))->notify(obj->id(), 1, arg);
+                component->setActive(pointIndex, 1);
+                component->enter();
+                (*(ComponentUpdateManager **)((u8 *)self + 0x28))->notify(component->id(), 1, userData);
             }
-            result = 1;
-        } else if (obj->active(index)) {
-            obj->setActive(index, 0);
-            obj->leave();
-            (*(ComponentUpdateManager **)((u8 *)self + 0x28))->notify(obj->id(), 2, arg);
+            handled = 1;
+        } else if (component->active(pointIndex)) {
+            component->setActive(pointIndex, 0);
+            component->leave();
+            (*(ComponentUpdateManager **)((u8 *)self + 0x28))->notify(component->id(), 2, userData);
         }
     }
-    return result;
+
+    return handled;
 }
 #pragma pop
 extern "C" u8 fn_800CFDB4(void *arg0) { return *((u8 *)((u8 *)arg0 + 0x24)); }
