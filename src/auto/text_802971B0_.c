@@ -291,8 +291,8 @@ s32 fn_8029788C(void *arg0) {
 extern s32 fn_80296D2C(s32);
 extern s32 fn_802970C8(s32);
 extern float lbl_80564578;
-extern char lbl_8055CA40[];
-extern char *lbl_8055CA38[];
+__declspec(section ".sdata") extern char lbl_8055CA40[];
+__declspec(section ".sdata") extern char *lbl_8055CA38[];
 extern char lbl_80349384[];
 extern int stricmp(const char *, const char *);
 extern int fn_802E317C(char *, ...);
