@@ -12770,37 +12770,42 @@ void btm_sec_link_key_notification(u8 *bd_addr, u8 *link_key, u8 key_type) {
 
 extern char lbl_80316FC8[];
 void btm_sec_link_key_request(BD_ADDR bd_addr) {
-    tBTM_SEC_DEV_REC *p_dev;
+    tBTM_SEC_DEV_REC *p_dev_rec;
     tBTM_SEC_DEV_REC_MATCH_VIEW *p_dev_view;
-    u8 key[16];
-    u8 (*p_callback)(BD_ADDR, u8 *);
+    u8 temp_link_key[16];
+    u8 (*p_link_key_req_cb)(BD_ADDR, u8 *);
 
-    p_dev = btm_find_dev(bd_addr);
-    p_dev_view = (tBTM_SEC_DEV_REC_MATCH_VIEW *)p_dev;
+    /* Handle controller link-key request: reply with stored/app key when available, else negative reply. */
+    p_dev_rec = btm_find_dev(bd_addr);
+    p_dev_view = (tBTM_SEC_DEV_REC_MATCH_VIEW *)p_dev_rec;
     if (lbl_803C0F78[0x27C0] >= 4)
         fn_800709CC(0xD0003, lbl_80316FC8, bd_addr[0], bd_addr[1], bd_addr[2], bd_addr[3], bd_addr[4], bd_addr[5]);
-    if (p_dev != 0 && (p_dev_view->sec_flags_76 & 0x10)) {
+
+    if (p_dev_rec != 0 && (p_dev_view->sec_flags_76 & 0x10)) {
         btsnd_hcic_link_key_req_reply(bd_addr, p_dev_view->link_key);
         return;
     }
-    if (p_dev == 0) {
-        p_dev = btm_sec_alloc_dev(bd_addr);
-        p_dev_view = (tBTM_SEC_DEV_REC_MATCH_VIEW *)p_dev;
+
+    if (p_dev_rec == 0) {
+        p_dev_rec = btm_sec_alloc_dev(bd_addr);
+        p_dev_view = (tBTM_SEC_DEV_REC_MATCH_VIEW *)p_dev_rec;
     }
+
     if ((p_dev_view->sec_flags_81 & 0x40) == 0) {
-        p_callback = *(u8 (**)(BD_ADDR, u8 *))(lbl_803C0F78 + 0x1918);
-        if (p_callback != 0) {
-            if (p_dev != 0) {
-                if (p_callback(bd_addr, p_dev_view->link_key) == 0) {
+        p_link_key_req_cb = *(u8 (**)(BD_ADDR, u8 *))(lbl_803C0F78 + 0x1918);
+        if (p_link_key_req_cb != 0) {
+            if (p_dev_rec != 0) {
+                if (p_link_key_req_cb(bd_addr, p_dev_view->link_key) == 0) {
                     btsnd_hcic_link_key_req_reply(bd_addr, p_dev_view->link_key);
                     return;
                 }
-            } else if (p_callback(bd_addr, key) == 0) {
-                btsnd_hcic_link_key_req_reply(bd_addr, key);
+            } else if (p_link_key_req_cb(bd_addr, temp_link_key) == 0) {
+                btsnd_hcic_link_key_req_reply(bd_addr, temp_link_key);
                 return;
             }
         }
     }
+
     btsnd_hcic_link_key_neg_reply(bd_addr);
 }
 
