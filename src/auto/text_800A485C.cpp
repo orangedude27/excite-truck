@@ -6205,52 +6205,55 @@ retryCheck:
     goto loop;
 }
 
-extern "C" s32 fn_800AF734(void *arg0, s32 arg1, s32 arg2) {
+/* Set a packed 12-bit FAT entry (even/odd nibble layout), updating it across
+ * all FAT copies while preserving the neighbouring nibble/byte in the sector.
+ */
+extern "C" s32 fn_800AF734(void *fatCtx, s32 clusterIndex, s32 entryValue) {
     extern s32 fn_800B5618(void *, void *, u32, u16, s32);
-    u32 sector;
-    u8 *obj = (u8 *)arg0;
-    u8 sp8[2];
-    u16 bits = *(u16 *)obj;
-    u8 shift = obj[0x20];
-    u16 offset = arg1 + (arg1 >> 1);
-    u32 base = *(u32 *)(obj + 0x28);
-    u16 index = base + (offset >> shift);
-    u16 value;
-    u16 i;
-    s32 result;
+    u32 byteOffsetInPage;
+    u8 *fat = (u8 *)fatCtx;
+    u8 sectorBytes[2];
+    u16 bytesPerSector = *(u16 *)fat;
+    u8 sectorShift = fat[0x20];
+    u16 entryByteOffset = clusterIndex + (clusterIndex >> 1);
+    u32 fatBaseSector = *(u32 *)(fat + 0x28);
+    u16 fatSector = fatBaseSector + (entryByteOffset >> sectorShift);
+    u16 packedValue;
+    u16 fatCopyIndex;
+    s32 firstError;
     s32 status;
-    sector = offset & (bits - 1);
-    if (arg1 & 1) {
-        status = fn_800B5260(arg0, sp8, index, (u16)sector, 1);
+    byteOffsetInPage = entryByteOffset & (bytesPerSector - 1);
+    if (clusterIndex & 1) {
+        status = fn_800B5260(fatCtx, sectorBytes, fatSector, (u16)byteOffsetInPage, 1);
         if (status != 0)
             return status;
-        value = ((u16)arg2 << 4) + (sp8[0] & 0xF);
+        packedValue = ((u16)entryValue << 4) + (sectorBytes[0] & 0xF);
     } else {
-        s32 next = offset + 1;
-        status = fn_800B5260(arg0, sp8, (u16)(base + (next >> shift)), (u16)(next & (bits - 1)), 1);
+        s32 nextByteOffset = entryByteOffset + 1;
+        status = fn_800B5260(fatCtx, sectorBytes, (u16)(fatBaseSector + (nextByteOffset >> sectorShift)), (u16)(nextByteOffset & (bytesPerSector - 1)), 1);
         if (status != 0)
             return status;
-        value = ((sp8[0] << 8) & 0xF000) + (arg2 & 0xFFF);
+        packedValue = ((sectorBytes[0] << 8) & 0xF000) + (entryValue & 0xFFF);
     }
-    sector = (u16)sector;
-    __sthbrx(value, sp8, 0);
-    result = 0;
-    for (i = 0; i < obj[0x22]; i++) {
-        if ((s32)sector < *(u16 *)obj - 1) {
-            status = fn_800B5618(arg0, sp8, index, sector, 2);
-            if (status != 0 && result == 0)
-                result = status;
+    byteOffsetInPage = (u16)byteOffsetInPage;
+    __sthbrx(packedValue, sectorBytes, 0);
+    firstError = 0;
+    for (fatCopyIndex = 0; fatCopyIndex < fat[0x22]; fatCopyIndex++) {
+        if ((s32)byteOffsetInPage < *(u16 *)fat - 1) {
+            status = fn_800B5618(fatCtx, sectorBytes, fatSector, byteOffsetInPage, 2);
+            if (status != 0 && firstError == 0)
+                firstError = status;
         } else {
-            status = fn_800B5618(arg0, sp8, index, sector, 1);
-            if (status != 0 && result == 0)
-                result = status;
-            status = fn_800B5618(arg0, sp8 + 1, index + 1, 0, 1);
-            if (status != 0 && result == 0)
-                result = status;
+            status = fn_800B5618(fatCtx, sectorBytes, fatSector, byteOffsetInPage, 1);
+            if (status != 0 && firstError == 0)
+                firstError = status;
+            status = fn_800B5618(fatCtx, sectorBytes + 1, fatSector + 1, 0, 1);
+            if (status != 0 && firstError == 0)
+                firstError = status;
         }
-        index = index + *(u32 *)(obj + 0xC);
+        fatSector = fatSector + *(u32 *)(fat + 0xC);
     }
-    return result;
+    return firstError;
 }
 
 #pragma use_lmw_stmw off
