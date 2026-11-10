@@ -120,22 +120,20 @@ int fn_8024C550(void) {
     fn_8024C464();
     return 0;
 }
-#pragma dont_inline reset
-#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 int fn_8024C578(int arg0) {
     int result;
     if (((int (*)(void))fn_8000DBAC)() != 0) {
-        int sp[4];
-        short last;
-        sp[0] = 0;
-        sp[1] = 0;
-        sp[2] = 0;
-        sp[3] = 0;
-        last = 0;
-        if (fn_8023FAD4(sp, 0x12) != 0) {
+        struct S { int w[4]; short h; } s;
+        s.w[0] = 0;
+        s.w[1] = 0;
+        s.w[2] = 0;
+        s.w[3] = 0;
+        s.h = 0;
+        if (fn_8023FAD4(&s, 0x12) != 0) {
             fn_8000D984(arg0);
             fn_8000DA80();
-            fn_8000DA1C(sp);
+            fn_8000DA1C(&s);
             fn_802E6FBC();
             fn_8024C464();
             result = 1;
@@ -150,7 +148,7 @@ int fn_8024C578(int arg0) {
     }
     return result;
 }
-#pragma use_lmw_stmw on
+#pragma scheduling reset
 
 #pragma push
 #pragma use_lmw_stmw off
@@ -601,19 +599,21 @@ void fn_8024CFE8(void *arg0) {
 }
 #pragma scheduling on
 int fn_8024D054(void *arg0, int arg1) {
-    int value;
+    int len;
+    int lim;
     switch (arg1) {
     case 0x6f:
-        value = (int)strlen(*(char **)((char *)arg0 + 0x2c));
-        if (value >= *(int *)((char *)arg0 + 0x30) + 1)
-            value = *(int *)((char *)arg0 + 0x30) + 1;
-        *(int *)((char *)arg0 + 0x30) = value;
+        len = (int)strlen(*(char **)((char *)arg0 + 0x2c));
+        lim = *(int *)((char *)arg0 + 0x30) + 1;
+        if (len < lim)
+            lim = len;
+        *(int *)((char *)arg0 + 0x30) = lim;
         *(char *)((char *)arg0 + 0x48) = 1;
         return 1;
     case 0x20:
         *(char *)((char *)arg0 + 0x48) = 1;
-        value = *(int *)((char *)arg0 + 0x30) - 1;
-        *(int *)((char *)arg0 + 0x30) = value & ~(value >> 31);
+        lim = *(int *)((char *)arg0 + 0x30) - 1;
+        *(int *)((char *)arg0 + 0x30) = lim & ~(lim >> 31);
         return 1;
     default:
         return 0;
