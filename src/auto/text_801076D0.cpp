@@ -5449,17 +5449,27 @@ extern "C" f32 fn_80111C10(s32 arg0) {
     return *(f32*)(arg0 + 0x50) + (f32)var_r30 * GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80104F90(arg0);
 }
 
-extern "C" void SetCursorX__Q36nw4hbm2ut10CharWriterFf_80111D88(void *arg0, float farg0) {
-    int var_r5 = 1; int var_r6 = 1; int var_r7 = 1; int var_r8 = 1; int var_r9 = 1; int var_r10 = 1;
-    unsigned int temp_r11 = (unsigned int)arg0 & 0xFF000000U;
-    if (temp_r11 != 0x80000000U && (((unsigned int)arg0 & 0xFF800000U) != 0x81000000U)) var_r10 = 0;
-    if (var_r10 == 0 && (((unsigned int)arg0 & 0xF8000000U) != 0x90000000U)) var_r9 = 0;
-    if (var_r9 == 0 && temp_r11 != 0xC0000000U) var_r8 = 0;
-    if (var_r8 == 0 && (((unsigned int)arg0 & 0xFF800000U) != 0xC1000000U)) var_r7 = 0;
-    if (var_r7 == 0 && (((unsigned int)arg0 & 0xF8000000U) != 0xD0000000U)) var_r6 = 0;
-    if (var_r6 == 0 && (((unsigned int)arg0 & 0xFFFFC000U) != 0xE0000000U)) var_r5 = 0;
-    if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329560, 0x105, lbl_80329578, arg0);
-    *(float*)((char*)arg0 + 0x50) = farg0;
+/* nw4hbm::ut::CharWriter::SetCursorX(f32) (ut_TextWriterBase.cpp): put the
+   writer's cursor at this absolute X. The writer pointer is first checked
+   against the Wii's memory windows; one outside them panics. */
+extern "C" void SetCursorX__Q36nw4hbm2ut10CharWriterFf_80111D88(nw4hbm::ut::CharWriter *writer, float x) {
+    /* One flag per window, all six believed at first; declared high to low,
+       which is the order the checks below clear them in reversed. */
+    int inIO = 1;           /* 0xE0000000-0xE0003FFF, the IO window */
+    int inD0 = 1;           /* ... or 0xD0000000-0xD7FFFFFF */
+    int inC1 = 1;           /* ... or 0xC1000000-0xC17FFFFF */
+    int inC0 = 1;           /* ... or 0xC0000000-0xC0FFFFFF */
+    int inMem2 = 1;         /* ... or 0x90000000-0x97FFFFFF, MEM2 */
+    int inMem1 = 1;         /* ... or 0x80000000-0x80FFFFFF / 0x81000000-0x817FFFFF, MEM1 */
+    unsigned int top = (unsigned int)writer & 0xFF000000U;
+    if (top != 0x80000000U && (((unsigned int)writer & 0xFF800000U) != 0x81000000U)) inMem1 = 0;
+    if (inMem1 == 0 && (((unsigned int)writer & 0xF8000000U) != 0x90000000U)) inMem2 = 0;
+    if (inMem2 == 0 && top != 0xC0000000U) inC0 = 0;
+    if (inC0 == 0 && (((unsigned int)writer & 0xFF800000U) != 0xC1000000U)) inC1 = 0;
+    if (inC1 == 0 && (((unsigned int)writer & 0xF8000000U) != 0xD0000000U)) inD0 = 0;
+    if (inD0 == 0 && (((unsigned int)writer & 0xFFFFC000U) != 0xE0000000U)) inIO = 0;
+    if (inIO == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329560, 0x105, lbl_80329578, writer);
+    writer->cursorX = x;
 }
 
 extern "C" void SetCursorX__Q36nw4hbm2ut10CharWriterFf_80111EAC(void *arg0, float farg0) {
