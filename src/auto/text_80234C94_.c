@@ -159,9 +159,10 @@ extern char lbl_8055B9E0[5];
 extern unsigned char lbl_803406B0[];
 extern void fn_80265940(void);
 #pragma scheduling invalid_target
-void fn_80234EF4(void *arg0, const char *arg1) {
-    if (fn_8012C33C(arg1)) {
-        void *source = fn_8012F150(arg1);
+/* Loads art/texture metadata rows for a named resource into a linked list at obj+0x88, or logs lbl_803406B0 when the resource is unavailable. */
+void fn_80234EF4(void *artObject, const char *resourceName) {
+    if (fn_8012C33C(resourceName)) {
+        void *source = fn_8012F150(resourceName);
         int count = fn_8012F2E8();
         void *last = 0;
         int i;
@@ -173,14 +174,14 @@ void fn_80234EF4(void *arg0, const char *arg1) {
             *(float *)((char *)item + 0xc) = (float)atof(fn_8012F2F0(source, i, 3));
             *(float *)((char *)item + 0x14) = (float)atof(fn_8012F2F0(source, i, 4));
             *(float *)((char *)item + 0x10) = (float)atof(fn_8012F2F0(source, i, 5));
-            if (!last) *(void **)((char *)arg0 + 0x88) = item;
+            if (!last) *(void **)((char *)artObject + 0x88) = item;
             else *(void **)((char *)last + 0x18) = item;
             last = item;
         }
         fn_8012F2E4(source);
         *(void **)((char *)last + 0x18) = 0;
     } else {
-        fn_802E317C((const char *)lbl_803406B0, arg1);
+        fn_802E317C((const char *)lbl_803406B0, resourceName);
     }
 }
 #pragma scheduling on
