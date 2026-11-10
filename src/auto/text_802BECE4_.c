@@ -62,7 +62,7 @@ extern void *lbl_804C07F0[];
 extern unsigned char lbl_8055CF70;
 extern int lbl_8055FADC;
 extern int lbl_8055CF6C;
-#pragma dont_inline on
+#pragma scheduling invalid_target
 int fn_802BECE4(const char *arg0, int arg1) {
     int a, b, c, d;
     int result = arg1;
@@ -75,6 +75,7 @@ int fn_802BECE4(const char *arg0, int arg1) {
     }
     return result;
 }
+#pragma scheduling on
 void fn_802BED90(float *arg0) {
     float mag = PSVECMag(arg0);
     float scale;
