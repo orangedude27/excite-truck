@@ -218,14 +218,17 @@ void fn_80265E08(void* arg0) {
 }
 #pragma dont_inline reset
 
-#pragma dont_inline on
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 void fn_80265E2C(void) {
-    #pragma scheduling invalid_target
     struct Record { float x; float y; int value; };
-    float scale = lbl_80563C24;
-    struct Record *record = (struct Record *)lbl_804999A0;
-    int count = 0;
-
+    struct Record *record;
+    float scale;
+    int count;
+    scale = lbl_80563C24;
+    record = (struct Record *)lbl_804999A0;
+    count = 0;
     do {
         record->x = scale * fn_80129DC4(6, -lbl_8055C4E0, lbl_8055C4E0);
         record->y = scale * fn_80129DC4(6, -lbl_8055C4E4, lbl_8055C4E4);
@@ -237,7 +240,7 @@ void fn_80265E2C(void) {
         record++;
     } while (count < 0x64);
 }
-#pragma dont_inline reset
+#pragma pop
 
 #pragma scheduling invalid_target
 void fn_80265EC4(void *arg0, int arg1, int arg2) {
@@ -671,7 +674,7 @@ void fn_80267130(void *arg0) {
     clamp = lbl_80563C2C;
     value = (*(float *)((char *)arg0 + 0x30) - lbl_80563C44) / lbl_80563C48;
     clamp = clamp < value ? value : clamp;
-    clamp = clamp > lbl_80563C20 ? lbl_80563C20 : clamp;
+    clamp = lbl_80563C20 < clamp ? lbl_80563C20 : clamp;
     *(float *)((char *)arg0 + 0x48) = lbl_80563C34 + clamp * lbl_80563C4C;
     if (fn_80178CA4() == 1) value = lbl_80563C2C;
     else value = lbl_80563C50;
@@ -1156,11 +1159,12 @@ void fn_802678E8(void *arg0, int arg1) {
  }
  fn_80267130(arg0); ((void (*)(void *))fn_802671CC)(arg0);
 }
-#pragma pop
-void fn_80267E40(unsigned int arg0, float arg1, int arg2) {
-    float temp_f29;
-    float temp_f30;
+#pragma push
+#pragma processor 750
+void fn_80267E40(unsigned int arg0, float arg1) {
     float temp_f31;
+    float temp_f30;
+    float temp_f29;
     int i;
     void *p;
     temp_f29 = lbl_8055E3C8;
@@ -1177,7 +1181,7 @@ void fn_80267E40(unsigned int arg0, float arg1, int arg2) {
         }
     }
 }
-
+#pragma pop
 extern void fn_802734F0(void);
 extern char lbl_80499080[];
 extern float lbl_80499050[];
