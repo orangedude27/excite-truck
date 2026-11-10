@@ -9,5 +9,5 @@ char fn_80144F2C(void) {
 }
 
 s32 fn_80144F34(void *arg0, s32 arg1, s8 *arg2) {
-    return fn_80144E38(arg0, arg1, arg2);
+    return fn_80144E38((s32)arg0, arg1, arg2);
 }
