@@ -36,6 +36,11 @@ extern u32 lbl_8055DDF0;
 #pragma pop
 extern "C" void MEMFreeToAllocator(void*, void*);
 extern "C" void fn_800D598C(void*);
+struct PicDataVt {
+    virtual void vf0();
+    virtual void vf1();
+    virtual void vf2(int);
+};
 extern "C" void fn_8002F634(void*, void*, s32, s32);
 extern "C" void __dt__Q36nw4hbm3lyt4PaneFv(void*, s32);
 extern "C" void fn_80128668(void*);
@@ -93,7 +98,7 @@ extern "C" void* __ct__Q36nw4hbm3lyt7PictureFPCQ46nw4hbm3lyt3res7PictureRCQ36nw4
 }
 
 extern "C" void* __dt__Q36nw4hbm3lyt7PictureFv(void* this_, s32 arg1) {
-    void* data;
+    register void* data;
     if (this_ != 0) {
         data = *(void**)((u8*)this_ + 0x28);
         *(void**)this_ = lbl_80320408;
