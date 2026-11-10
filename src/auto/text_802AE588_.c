@@ -258,7 +258,6 @@ extern "C" void fn_802AE7F4(void) {
     float total;
     register PathTbl *base = (PathTbl *)&lbl_8034A020;
     int i;
-
     lbl_8055F980 = fn_8012C33C((void *)(&(base + 1)->text - 1));
     fn_802AE5E0(0x400);
     fn_802BE7F8();
@@ -275,7 +274,6 @@ extern "C" void fn_802AE7F4(void) {
     if ((unsigned char)lbl_8055F980 == 0)
         fn_802BF350();
     fn_802B58E0();
-
     {
         ETConfigAccess *obj = (ETConfigAccess *)fn_802B59CC();
         lbl_8055CD78 = obj->lookup(base->lookupKey, -1);
@@ -284,7 +282,6 @@ extern "C" void fn_802AE7F4(void) {
         ETConfigAccess *obj = (ETConfigAccess *)fn_802B59CC();
         lbl_8055F981 = obj->status(base->statusKey, 0);
     }
-
     values[0] = lbl_80564B40 * (lbl_80564B44 * lbl_80564AF0);
     total = values[0];
     values[1] = lbl_80564B48 * (lbl_80564B48 * lbl_80564AF0);
@@ -300,8 +297,7 @@ extern "C" void fn_802AE7F4(void) {
         float *val = &values[1];
         for (i = 0; i < 7; i++) {
             float v = *val;
-            float next = (lbl_80564B68 * (lbl_80564B6C * lbl_80564AF0)) *
-                         (float)((step << 1) + step);
+            float next = (lbl_80564B68 * (lbl_80564B6C * lbl_80564AF0)) * (float)((step << 1) + step);
             *dst = total;
             total += (next > v) ? next : v;
             step *= 2;
@@ -363,7 +359,8 @@ void fn_802AEAA8(void) { fn_802BDC3C(); }
 
 #pragma dont_inline fn_802AEAAC
 void fn_802AEAAC(void) {
-    int offset, i;
+    int offset;
+    int i;
     if (lbl_8055F970 == 0) {
         fn_802B59A4(0);
         fn_802B0288();
@@ -372,12 +369,11 @@ void fn_802AEAAC(void) {
     offset = 0;
     lbl_8055F974 = *(int *)(lbl_8055F970 + 4);
     lbl_8055F978 = *(int *)(lbl_8055F970 + 8);
-    do {
+    while (i < 4) {
         fn_802BB674(*(int *)((char *)lbl_8055F970 + offset + 0xC), i);
         i++;
-        if (i >= 4) break;
         offset += 8;
-    } while (1);
+    }
     fn_802C10CC(*(int *)(lbl_8055F970 + 0x2C));
 }
 
@@ -1218,6 +1214,18 @@ void fn_802AFF80(void *arg0, short arg1) {
     }
 }
 
+#pragma scheduling invalid_target
+int fn_802AFFA8(int arg0, int arg1) {
+    float out[3];
+    float x = (float)arg0 * lbl_80564AF0;
+    float z = (float)arg1 * lbl_80564AF0;
+    out[2] = z;
+    out[0] = x;
+    out[1] = fn_801DCF48(0, x, z);
+    return (unsigned short)fn_802B127C(lbl_8055F974, (int)out);
+}
+#pragma scheduling on
+
 void fn_802B0024(void *arg0, short arg1) {
     unsigned short temp;
     *(unsigned short *)((char *)arg0 + 4) = 0;
@@ -1240,16 +1248,15 @@ unsigned short fn_802B0070(int arg0) {
     return fn_802B127C(lbl_8055F974, arg0);
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802B009C(void *arg0, int arg1, int arg2, int arg3) {
-    float *out = (float *)arg0;
     float x = (float)arg2 * lbl_80564AF0;
     float z = (float)arg3 * lbl_80564AF0;
+    float *out = (float *)arg0;
     out[0] = x;
     out[2] = z;
     out[1] = fn_801DCF48(arg1, x, z);
 }
-#pragma scheduling on
 void fn_802B0114(void) {
 }
 
