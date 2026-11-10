@@ -258,12 +258,13 @@ extern "C" void* FindAnimationLink__Q36nw4hbm3lyt6WindowFPQ36nw4hbm3lyt13AnimTra
 }
 
 extern "C" void SetAnimationEnable__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransformbb(void* self, void* anim, bool enable, bool recursive);
+#pragma use_lmw_stmw off
 extern "C" void SetAnimationEnable__Q36nw4hbm3lyt6WindowFPQ36nw4hbm3lyt13AnimTransformbb(void* self, void* anim, bool enable, bool recursive) {
     struct DummyPane {
         virtual void v0(); virtual void v1(); virtual void v2();
         virtual void v3(); virtual void v4(); virtual void v5();
-        virtual void v6(); virtual void v7();
-        virtual void SetAnimationEnable(void* anim, bool enable, bool recursive);
+        virtual void v6();
+        virtual void SetAnimationEnable(void* anim, bool enable);
     };
     int offset;
     int count;
@@ -271,7 +272,7 @@ extern "C" void SetAnimationEnable__Q36nw4hbm3lyt6WindowFPQ36nw4hbm3lyt13AnimTra
     offset = 0;
     while (count < *((unsigned char*)self + 0x100)) {
         DummyPane* pane = *(DummyPane**)(*(unsigned char**)((unsigned char*)self + 0xFC) + offset + 4);
-        pane->SetAnimationEnable(anim, enable, recursive);
+        pane->SetAnimationEnable(anim, enable);
         offset += 8;
         count++;
     }
@@ -457,6 +458,46 @@ void nw4r::lyt::Window::DrawContent(const nw4r::math::VEC2 &arg1, const nw4r::ly
     DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(
         (f32 *)&quad[2], (f32 *)&quad[0], format,
         (f32 (*)[])texture, (s32)vtxColor, arg3);
+}
+
+extern "C" void DrawFrame4__Q36nw4hbm3lyt6WindowFRCQ36nw4hbm4math4VEC2PCQ46nw4hbm3lyt6Window5FrameRCQ36nw4hbm3lyt15WindowFrameSizeUc(void *arg0, f32 *arg1, void *arg2, void *arg3, u8 arg4) {
+    struct MaterialVTable { virtual void fn0(); virtual s32 fn1(s32, u8); };
+    const u8 *frameTable;
+    s32 spA4;
+    s32 spA0;
+    s32 sp108[4];
+    volatile f32 sp104, sp100, spFC, spF8, spF4, spF0;
+    f32 spBuffer[8];
+    f32 temp_f0, temp_f1, temp_f2, temp_f4, temp_f6, temp_f7;
+    s32 temp_r23;
+    u8 temp_r26;
+    void *temp_r3_2;
+    const u8 *temp_r4;
+    u8 temp_r0, temp_r3_3, temp_r8, temp_r10;
+    spA0 = 0x43300000;
+    sp108[0] = -1; sp108[1] = -1; sp108[2] = -1; sp108[3] = -1;
+    sp100 = lbl_80560EE8; sp104 = lbl_80560EE8;
+    frameTable = (const u8 *)lbl_80320BD8;
+    temp_r3_2 = M2C_FIELD(arg2, void *, 4);
+    temp_r23 = ((MaterialVTable *)temp_r3_2)->fn1(IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(0, arg4), arg4);
+    temp_f1 = M2C_FIELD(arg3, f32, 8);
+    temp_f0 = M2C_FIELD(arg3, f32, 0);
+    spFC = temp_f1; temp_r26 = M2C_FIELD(arg2, u8, 0); spF8 = temp_f0; sp100 = temp_f0; sp104 = temp_f1;
+    GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc((f32 *)&spF0, M2C_FIELD(arg2, void *, 4), 0);
+    if (temp_r26 >= 6U) Panic__Q26nw4hbm2dbFPCciPCce((const char *)(frameTable + 0x3C), 0x32, (const char *)(frameTable + 0xB8));
+    temp_r4 = frameTable + (temp_r26 * 0xA);
+    temp_r0 = *(const volatile u8 *)(temp_r4 + 9); temp_r3_3 = *(const volatile u8 *)(temp_r4 + 8);
+    temp_r8 = *(temp_r4 + temp_r0); temp_r10 = *(temp_r4 + temp_r3_3);
+    temp_f6 = (f32) temp_r8;
+    temp_f4 = sp100 / ((f32) (M2C_FIELD((temp_r4 + temp_r3_3), u8, 2) - temp_r10) * ((f32 *)&spF0)[temp_r3_3]);
+    spA4 = (s32) temp_r10; spA4 = (s32) temp_r8; temp_f7 = (f32) temp_r10;
+    spBuffer[4 + temp_r3_3] = temp_f7; spBuffer[temp_r3_3] = temp_f7; spBuffer[2 + temp_r0] = temp_f6; spBuffer[temp_r0] = temp_f6;
+    temp_f2 = (f32) temp_r10 + temp_f4; temp_f1 = (f32) temp_r8;
+    spBuffer[2 + temp_r3_3] = temp_f2;
+    temp_f0 = temp_f1 + (sp104 / ((f32) (M2C_FIELD((temp_r4 + temp_r0), u8, 4) - temp_r8) * ((f32 *)&spF0)[temp_r0]));
+    spBuffer[6 + temp_r3_3] = temp_f2; spBuffer[4 + temp_r0] = temp_f0; spBuffer[6 + temp_r0] = temp_f0;
+    SetVertexFormat__Q34nw4r3lyt6detailFbUc(temp_r23, 1);
+    DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(arg1, (f32 *)&sp100, 1, (f32 (*)[]) (spBuffer), (s32) sp108 & ((s32) (-temp_r23 | temp_r23) >> 0x1F), arg4);
 }
 
 extern "C" s32 IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(void *, u8);
