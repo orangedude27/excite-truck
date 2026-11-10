@@ -258,7 +258,6 @@ void fn_8017EC30(void) {
     } while (i < 4 && (++ptr, 1));
     lbl_8055E4BA = 0;
 }
-
 int fn_8017ECC0(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
