@@ -179,7 +179,7 @@ int fn_801B81E0(void *arg0) {
 
 #pragma push
 #pragma cplusplus on
-#pragma scheduling off
+#pragma scheduling invalid_target
 #pragma dont_inline on
 extern "C" void fn_801B826C(void *arg0) {
     int value;
