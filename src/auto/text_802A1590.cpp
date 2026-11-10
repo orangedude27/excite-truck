@@ -698,13 +698,12 @@ extern "C" f32 lbl_80564744;
 extern "C" int lbl_80349AB0[];
 extern "C" void fn_8028E584(void*, void*);
 extern "C" s32 fn_80287B14(void*);
-#pragma scheduling on
+#pragma scheduling invalid_target
 extern "C" void fn_802A2A38(void* arg0, void* arg1) {
     s32 index = *(s32*)((char*)arg1 + 0x28);
     f32* value = (f32*)((char*)arg0 + (index << 4) + 0x20);
-    f32 current = *value;
     f32 limit = lbl_80564730 - lbl_80558DC4;
-    int shouldCall = current > limit;
+    int shouldCall = *value > limit;
     if (shouldCall) {
         ((void (*)(void*, void*, void*))fn_8028E584)(
             *(void**)((char*)arg0 + 0xC), arg1, (char*)arg1 + 0xC);
