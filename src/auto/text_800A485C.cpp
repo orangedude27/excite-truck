@@ -2453,7 +2453,6 @@ extern "C" s32 fn_800A8C90(void *arg0, s32 arg1, void **arg2, s32 *arg3) {
 extern "C" s32 fn_800A7C20(void *, void **, u32, void **, s32 *);
 extern "C" s32 fn_800A8D08(s32 arg0, void **arg1, s32 *arg2, s32 arg3, s32 *arg4) {
     s32 result;
-
     if (*(s32 *)((u8 *)arg0 + 0x1634) == 0) {
         *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x162C) + 4) =
             *(s32 *)((u8 *)arg0 + 0x1638);
@@ -4452,6 +4451,15 @@ block_21:
 /* The entry of a position of a file's cluster chain, followed from the start of
  * the cached page that holds it; *found says whether the chain reaches it. */
 #define VFiPFFAT_GetChainEntryPage fn_800AD0B0
+/* The same entry of a position of a chain with no page held for it: the walk
+ * reads every FAT sector through the volume's own sector I/O. */
+#define VFiPFFAT_GetChainEntry     fn_800ACF20
+/* Writing an entry with no page held: the FAT sector is read, the entry
+ * changed in it and the sector written back to every FAT copy of the volume
+ * (the volume's VFiPFVolume fields, further down, say how many there are). */
+#define VFiPFFAT_SetEntry12NoPage  fn_800AF734  /* FAT12: write a 12-bit entry to the FAT */
+#define VFiPFFAT_SetEntry16NoPage  fn_800AFF28  /* FAT16: write a 16-bit entry to the FAT */
+#define VFiPFFAT_SetEntry32NoPage  fn_800B037C  /* FAT32: write a 28-bit entry to the FAT */
 
 /* Volume fields the FAT code reads (VFiPFVolume is described further down). */
 #define VF_VOL_CLUSTER_COUNT(v)    (*(u32 *)((u8 *)(v) + 0x34)) /* clusters the volume holds */
@@ -9268,10 +9276,10 @@ extern "C" s32 fn_800B5070(s32 arg0, s32 *out) {
 }
 #pragma pop
 extern "C" s32 fn_800B51FC(void *arg0, s32 arg1) {
-    arg0 = (void *)((s32)arg0 + 7);
     u32 digits = 7;
     u32 divisor = 10;
     u32 place = 1;
+    ((u8 *)arg0) += 7;
     while (digits > 1 && arg1 != 0) {
         u32 rem = (u32)arg1 % divisor;
         if (rem != 0) {
@@ -9281,7 +9289,7 @@ extern "C" s32 fn_800B51FC(void *arg0, s32 arg1) {
         }
         divisor *= 10;
         digits--;
-        arg0 = (void *)((s32)arg0 - 1);
+        ((u8 *)arg0)--;
         place *= 10;
     }
     return 0;
@@ -10592,14 +10600,11 @@ extern "C" void __AXDSPInitCallback_800B7860(void) {
 }
 
 extern "C" void fn_800B786C(void *arg0) {
-    void *temp_r3;
-
-    fn_800B8048(*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x288));
-    temp_r3 = *(void **)((u8 *)arg0 + 8);
-    if (((s32) *(u16 *)((u8 *)temp_r3 + 0x27E) == 0) && (*(s32 *)((u8 *)temp_r3 + 0x280) == 0) && ((s32) lbl_8055DD10 != 0)) {
-        fn_800B7FC4(*(s32 *)((u8 *)temp_r3 + 0x288));
-        *(s32 *)((u8 *)temp_r3 + 0x288) = 0;
-        lbl_8055DD10 = (void *)((s32) lbl_8055DD10 - 1);
+    fn_800B8048(*(int *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x288));
+    if (*(u16 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x27E) == 0 && *(int *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x280) == 0 && (int)lbl_8055DD10 != 0) {
+        fn_800B7FC4(*(int *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x288));
+        *(int *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x288) = 0;
+        lbl_8055DD10 = (void *)((int)lbl_8055DD10 - 1);
     }
 }
 
@@ -23875,17 +23880,17 @@ extern "C" void fn_800A52A0(void *arg0, const void *arg1) {
 #pragma dont_inline reset
 extern "C" void fn_800A52DC(u32 arg0) {
     u8 *base = (u8 *)lbl_803D2140;
-    register u8 *ptr = base + 0xA0;
-    register s32 i = 0;
+    s32 i = 0;
+    u8 *ptr = base + 0xA0;
     for (; i < 13; ++i) {
         if (*(u32 *)(ptr + 0x1FBC) == arg0) {
-            u16 value = *(u16 *)(ptr + 0x1F8C);
-            if (value & 8) *(u16 *)(ptr + 0x1F8C) = value | 0x20;
+            u16 v = *(u16 *)(ptr + 0x1F8C);
+            if (v & 8) *(u16 *)(ptr + 0x1F8C) = v | 0x20;
             *(u16 *)(ptr + 0x1F8C) &= ~0xC;
         }
         if (*(u32 *)(ptr + 0x3F84) == arg0) {
-            u16 value = *(u16 *)(ptr + 0x3F54);
-            if (value & 8) *(u16 *)(ptr + 0x3F54) = value | 0x20;
+            u16 v = *(u16 *)(ptr + 0x3F54);
+            if (v & 8) *(u16 *)(ptr + 0x3F54) = v | 0x20;
             *(u16 *)(ptr + 0x3F54) &= ~0xC;
         }
         ptr += 0x3F90;
