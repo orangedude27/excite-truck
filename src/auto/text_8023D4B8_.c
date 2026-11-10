@@ -475,14 +475,14 @@ void *fn_8023E078(void *arg0, int arg1) {
 
 void fn_8023E0DC(void *arg0, int arg1, int arg2) {
     int var_r31;
-    if (arg1 < 0 || arg1 >= *(int *)((char *)arg0 + 8)) {
+    if (arg1 < 0)
         return;
-    }
+    if (arg1 >= *(int *)((char *)arg0 + 8))
+        return;
     var_r31 = *(int *)((char *)arg0 + 4);
-    do {
+    while (var_r31-- > 0) {
         fn_8022D894(arg0, arg1, var_r31, fn_8022D850(arg0, arg1, var_r31, 0), 1);
-        var_r31--;
-    } while (var_r31 > 0);
+    }
 }
 
 void fn_8023E16C(void *arg0, int arg1) {
