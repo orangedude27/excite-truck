@@ -481,15 +481,12 @@ next_item:
 #pragma push
 #pragma scheduling invalid_target
 void fn_8027B60C(void *arg0) {
-    register int offset;
-    register int i;
+    int offset;
+    int i;
     if (*(int *)((char *)arg0 + 4) != 0) {
-        i = 0;
-        offset = 0;
-        do {
+        for (i = 0, offset = 0; i < *(int *)((char *)arg0 + 0xC); offset += 0x1F4, i++) {
             fn_8027B288((char *)*(void **)((char *)arg0 + 8) + offset);
-            offset += 0x1F4;
-        } while (++i < *(int *)((char *)arg0 + 0xC));
+        }
         offset = 0;
         *(int *)((char *)arg0 + 0xC) = 0;
         fn_80131818(*(int *)((char *)arg0 + 4));
