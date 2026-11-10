@@ -462,6 +462,7 @@ void DMAErrorHandler(u8 error, OSContext* ctx, u32 dsisr, u32 dar, ...) {
 }
 
 void __OSCacheInit(void) {
+    /* Initializes L1/L2 caches if disabled and installs the DMA/locked-cache machine check handler. */
     if (!(PPCMfhid0() & HID0_ICE)) {
         ICEnable();
         DBPrintf("L1 i-caches initialized\n");
