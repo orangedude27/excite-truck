@@ -1575,23 +1575,30 @@ void *fn_800079E4(void) {
     return lbl_802FB678;
 }
 
-void *fn_800079F0(void *arg0, s32 arg1) {
-    void *field;
+#pragma cplusplus on
+extern "C" void *fn_800079F0(void *arg0, s32 arg1) {
+    class Entry {
+    public:
+        virtual void destroy(s32);
+    };
+    void *entry;
     if (arg0 != 0) {
-        field = *(void **)((u8 *)arg0 + 0x1C);
+        entry = *(void **)((u8 *)arg0 + 0x1C);
         *(void **)arg0 = (void *)lbl_802FB478;
-        if (field != 0) {
-            if (field != 0) {
-                ((void (*)(void *, s32))((void **) *(void **)field)[2])(field, 1);
+        if (entry != 0) {
+            if (entry != 0) {
+                ((Entry *)entry)->destroy(1);
             }
         }
         fn_80235380(*(s32 *)((u8 *)arg0 + 0x18));
         fn_80235380(*(s32 *)((u8 *)arg0 + 0x14));
-        if (arg1 > 0) fn_80128668();
+        if (arg1 > 0) {
+            ((s32 (*)(void *))fn_80128668)(arg0);
+        }
     }
     return arg0;
 }
-
+#pragma cplusplus reset
 s32 fn_80007A84(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
