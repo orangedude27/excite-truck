@@ -46,7 +46,7 @@ void fn_801DDED0(s32 arg0, f32* arg1, s32 arg2, f32 farg0, f32 farg1, f32 farg2)
     *(f32*)&entry[6] = farg2;
 }
 #pragma pop
-extern s32 fn_8018A2C0(void **);
+extern void fn_8018A2C0();
 extern double lbl_80562BC8;
 extern f32 lbl_80562BC0;
 extern f32 lbl_80562BC4;
@@ -65,7 +65,7 @@ void fn_801DDF0C(void) {
     value = fn_801DDE78();
     if (value != (u32)lbl_8055E9C8) {
         lbl_8055E9C8 = (void *)value;
-        sp8 = &lbl_803394A4;
+        sp8 = lbl_803394A4;
         lbl_8055E9C4 = 0;
         fn_8018A2C0(&sp8);
         thr = lbl_80562BC4;
