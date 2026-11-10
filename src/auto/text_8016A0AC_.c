@@ -134,6 +134,36 @@ void fn_8016A0D4(void) {
             goto second_loop;
     }
 }
+
+s32 fn_8016A15C(const char *arg0) {
+    register s32 i = 0;
+    register s32 offset = 0;
+    register s32 found = 0;
+    register f32 fval = lbl_80561958;
+    s32 j;
+    u8 *entry;
+    u8 *record;
+    while (i < lbl_80430340.unk_0x4) {
+        if (stricmp(lbl_80430340.unk_0x0 + offset + 1, arg0) == 0) {
+            entry = (u8 *)lbl_80430340.unk_0x0 + offset;
+            entry[0x28] = 1;
+            j = 0;
+            while (j < *(s32 *)(entry + 0x24)) {
+                record = (u8 *)*(s32 *)lbl_80430318 + ((*(s32 *)(entry + 0x20) + j) * 0x48);
+                record[0x3d] = 0;
+                *(f32 *)(record + 0x40) = fval;
+                record[0x3c] = 1;
+                *(f32 *)(record + 0x44) = lbl_8055E3C8;
+                j++;
+            }
+            found = 1;
+        }
+        offset += 0x2c;
+        i++;
+    }
+    return found;
+}
+
 #pragma scheduling on
 #pragma small_data on
 extern f32 lbl_8055E3C8;
@@ -279,6 +309,45 @@ FloatPair8016A6B0 fn_8016A6B0(const char *arg0, s32 arg1) {
         return result;
     }
 }
+
+#pragma push
+#pragma use_lmw_stmw off
+#pragma processor 750
+s32 fn_8016A780(const char *arg0, s32 arg1) {
+    register void *veh;
+    register s32 nameOff;
+    register s32 itemOff;
+    register s32 count;
+    register s32 i;
+    register const char *name;
+    register f32 thresh;
+    name = arg0;
+    count = 0;
+    veh = ((void*(*)(s32))fn_8017960C)(arg1);
+    if (veh != 0) {
+        thresh = lbl_80561970;
+        i = 0;
+        nameOff = 0;
+        itemOff = 0;
+        while (i < lbl_80430340.unk_0x4) {
+            if (stricmp(lbl_80430340.unk_0x0 + nameOff + 1, name) == 0) {
+                char *rec = *(char **)lbl_80430318 + itemOff;
+                f32 d[3];
+                d[0] = *(f32 *)(rec + 0x30) - *(f32 *)((char *)veh + 0x60);
+                d[1] = *(f32 *)(rec + 0x34) - *(f32 *)((char *)veh + 0x64);
+                d[2] = *(f32 *)(rec + 0x38) - *(f32 *)((char *)veh + 0x68);
+                if (((f32(*)(f32*, f32*))PSVECDotProduct)(d, (f32 *)(rec + 0x24)) < thresh) {
+                    count++;
+                }
+            }
+            nameOff += 0x2c;
+            itemOff += 0x48;
+            i++;
+        }
+    }
+    return count;
+}
+#pragma pop
 
 #pragma use_lmw_stmw off
 s32 fn_8016A878(const char* arg0) {
