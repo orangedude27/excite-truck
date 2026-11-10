@@ -518,43 +518,50 @@ void fn_80117330(void* arg0) {
 }
 
 void fn_80117380(void *arg0, s32 arg1) {
-    s32 var_r31;
-    s32 temp_r3;
-    s32 *p;
-    s32 temp_r5;
-    u32 offset0;
-    u32 offset1;
-    s32 a;
-    s32 b;
-    s32 (*fn)(void *, s32, s32, s32, s32);
-    var_r31 = arg1;
-    if (arg1 != 0) var_r31 = arg1 - 1;
+    s32 index;
+    s32 now;
+    s32 *entryOffsets;
+    s32 baseOffset;
+    u32 startOffsetField;
+    u32 endOffsetField;
+    s32 startOffset;
+    s32 endOffset;
+    s32 (*seekCallback)(void *, s32, s32, s32, s32);
+
+    /* Seek to the requested block: update the current offset, refresh stream state, and run timeout checks. */
+    index = arg1;
+    if (arg1 != 0) index = arg1 - 1;
+
     *(s32 *)((u8 *)arg0 + 0x2F8) = 0;
     if (*(s32 *)((u8 *)arg0 + 0x2E8) != 0) fn_80117074(arg0);
+
     *(s32 *)((u8 *)arg0 + 0x10) = *(s32 *)((u8 *)arg0 + 0xC);
-    if (var_r31 == 0) {
-        temp_r3 = fn_80116D30();
-        if (*(s32 *)((u8 *)arg0 + 0x2D8) == 0) *(s32 *)((u8 *)arg0 + 0x2D8) = temp_r3;
-        if ((u32)(temp_r3 - *(u32 *)((u8 *)arg0 + 0x2D8)) > 0x493E0U) {
-            *(s32 *)((u8 *)arg0 + 0x2D8) = temp_r3;
+
+    if (index == 0) {
+        now = fn_80116D30();
+        if (*(s32 *)((u8 *)arg0 + 0x2D8) == 0) *(s32 *)((u8 *)arg0 + 0x2D8) = now;
+        if ((u32)(now - *(u32 *)((u8 *)arg0 + 0x2D8)) > 0x493E0U) {
+            *(s32 *)((u8 *)arg0 + 0x2D8) = now;
             *(s32 *)((u8 *)arg0 + 0x2DC) = 1;
         }
     }
-    temp_r5 = *(s32 *)((u8 *)arg0 + 0xE8);
-    if (temp_r5 != 0) {
-        p = *(s32 **)((u8 *)arg0 + 0xEC);
-        *(s32 *)((u8 *)arg0 + 0xE4) = temp_r5 + ((p[var_r31] & ~1) - (p[0] & ~1));
+
+    baseOffset = *(s32 *)((u8 *)arg0 + 0xE8);
+    if (baseOffset != 0) {
+        entryOffsets = *(s32 **)((u8 *)arg0 + 0xEC);
+        *(s32 *)((u8 *)arg0 + 0xE4) = baseOffset + ((entryOffsets[index] & ~1) - (entryOffsets[0] & ~1));
     } else {
-        p = *(s32 **)((u8 *)arg0 + 0xEC);
-        offset0 = var_r31 << 2;
-        offset1 = (var_r31 + 1) << 2;
-        a = *(s32 *)((u8 *)p + offset0) & ~1;
-        b = *(s32 *)((u8 *)p + offset1) & ~1;
-        fn = *(s32 (**)(void *, s32, s32, s32, s32))((u8 *)arg0 + 0xF4);
-        fn((u8 *)arg0 + 0xF0, var_r31, a, *(s32 *)((u8 *)arg0 + 0xE4), b - a);
+        entryOffsets = *(s32 **)((u8 *)arg0 + 0xEC);
+        startOffsetField = index << 2;
+        endOffsetField = (index + 1) << 2;
+        startOffset = *(s32 *)((u8 *)entryOffsets + startOffsetField) & ~1;
+        endOffset = *(s32 *)((u8 *)entryOffsets + endOffsetField) & ~1;
+        seekCallback = *(s32 (**)(void *, s32, s32, s32, s32))((u8 *)arg0 + 0xF4);
+        seekCallback((u8 *)arg0 + 0xF0, index, startOffset, *(s32 *)((u8 *)arg0 + 0xE4), endOffset - startOffset);
     }
+
     if (*(s32 *)((u8 *)arg0 + 0x2E8) != 0) fn_80117074(arg0);
-    *(s32 *)((u8 *)arg0 + 0xC) = var_r31 + 1;
+    *(s32 *)((u8 *)arg0 + 0xC) = index + 1;
 }
 
 u32 fn_80116BD4(s32, s32, s32);
