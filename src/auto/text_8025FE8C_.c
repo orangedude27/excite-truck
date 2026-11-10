@@ -54,6 +54,10 @@ extern u8 lbl_80345B40[];
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 extern "C" s32 fn_8025FECC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    /* If a global state flag is set, returns success early. Otherwise looks up an
+     * object by arg2, queries it for a resource/value (logging errors via
+     * fn_802E317C on failure), wraps a valid value in a temporary handle, passes
+     * it to fn_8024DAE0, then deletes the handle and returns the result. */
     struct Inner3 {
         virtual void v0();
         virtual void v1();
