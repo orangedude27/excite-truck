@@ -482,27 +482,23 @@ extern char lbl_8034E130[];
 extern char lbl_8034E108[];
 #pragma scheduling invalid_target
 void fn_802E91D8(void *arg0, const char *arg1, int arg2, int arg3) {
-    const char *original;
-    const char *src;
-    char *dst;
-    int count;
-    char c;
-    original = arg1;
+    const char *original = arg1;
+    const char *src = arg1;
+    char *dst = (char *)arg0 + 0xC;
+    int count = 0x100;
     *(int *)((char *)arg0 + 8) = arg2;
-    src = original;
     *(int *)((char *)arg0 + 4) = arg3;
-    dst = (char *)arg0 + 0xC;
-    count = 0x100;
     goto copy;
 dec_count:
     count--;
     if (count > 0) goto copy;
     dst[-1] = 0;
     goto after_copy;
-copy:
-    c = *src++;
-    *dst++ = c;
-    if (c != 0) goto dec_count;
+copy: {
+        char c = *src++;
+        *dst++ = c;
+        if (c != 0) goto dec_count;
+    }
 after_copy:
     *(void **)((char *)arg0 + 0x198) = arg0;
     *(int *)((char *)arg0 + 0x258) = 0;
@@ -666,25 +662,28 @@ void fn_802E9254(void *ctx) {
 #pragma scheduling on
 void fn_802E95CC(int arg0, void **arg1) { void *obj=*arg1; *(int*)((char*)obj+0x254)=arg0; *(char*)((char*)obj+0x250)=1; }
 
-#pragma dont_inline on
+#pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 int fn_802E95E0(void *arg0, void (*callback)(void), int arg2) {
-    void *log_arg = arg0;
-    void (*loop_callback)(void) = callback;
-    int base = fn_802E2C20();
-    volatile int *state_page = (volatile int *)((unsigned int)&lbl_80507288 & 0xFFFF0000);
-    goto check_state;
-loop_body:
+    int base;
+    void *log_arg;
+    void (*loop_cb)(void);
+    log_arg = arg0;
+    loop_cb = callback;
+    base = fn_802E2C20();
+    goto check;
+loop:
     {
         int value = fn_802E2C20();
         if (value < base || value > base + 0xFA0) {
             fn_802E30C8(lbl_8034E024, log_arg, value - base);
             return 0;
         }
-        loop_callback();
+        loop_cb();
     }
-check_state:
-    if (state_page[0x1CA2] >= 2) goto loop_body;
+check:
+    if (lbl_80507288 >= 2)
+        goto loop;
     return 1;
 }
 #pragma scheduling on
