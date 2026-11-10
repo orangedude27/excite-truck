@@ -53,12 +53,11 @@ void fn_802E1780(void *arg0, unsigned int arg1, int arg2) {
     unsigned int count = arg1 >> 3;
     int x = 0;
     int y = 0;
-    int row;
-
+    register int row;
     for (row = 0; row < 4; row++) {
         int rowOffset = row * arg2;
         int i;
-        for (i = 0; i < count; i++) {
+        for (i = 0; i < (int)count; i++) {
             int offset = (i + rowOffset) * 2;
             int yMinusRow = y - row;
             ((unsigned char *)arg0)[offset] = (unsigned char)(x - i + 0x80);
@@ -312,11 +311,10 @@ extern void fn_802E2CFC(void *);
 extern void fn_802E27F0(void);
 extern void fn_80127C90(void *, void *);
 extern char lbl_8034CCE0[];
-#pragma scheduling invalid_target
+#pragma scheduling on
 int fn_802E2A5C(void) {
     unsigned short local[12];
-    register char *base;
-    base = lbl_8034CCE0;
+    char * const base = lbl_8034CCE0;
     OSInit(); fn_8005954C(); LCEnable(); fn_802E77A8(); fn_802E3498();
     fn_801293B4(); fn_802E302C(); fn_802E2A54(); fn_8012820C(0x02000000);
     fn_802E98D0(); fn_802E7318(); fn_802E46B0(); fn_80127C8C();
@@ -455,9 +453,12 @@ u64 fn_802E2D74(int arg0) {
     long long limit = (long long)arg0 * 1000;
     u64 start = fn_802E2C9C();
     u64 now;
-    do {
+    for (;;) {
         now = fn_802E2C9C();
-    } while ((long long)(now - start) < limit && (long long)now >= (long long)start);
+        if ((long long)(now - start) >= limit || (long long)now < (long long)start) {
+            break;
+        }
+    }
     return now;
 }
 #pragma scheduling on
