@@ -300,6 +300,7 @@ s32 ISFS_CreateDirAsync(const char* path, u32 attr, u32 ownerPerm,
 }
 
 s32 ISFS_ReadDir(const char* path, char* filesOut, u32* fileCountOut) {
+    /* Reads directory entries synchronously via IOS FS ioctl, returning file names and optionally updating the file count on success. */
     s32 ret;
     FSCommandBlock* block;
     char* pathWork;
