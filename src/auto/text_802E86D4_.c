@@ -67,9 +67,15 @@ extern "C" void fn_802E870C(void) {
 }
 #pragma cplusplus off
 extern int fn_80131234(int, int, int, int, int, int, int, int);
+#pragma cplusplus on
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-int fn_802E8744(void *arg0) {
+extern "C" int fn_802E8744(void *arg0) {
+    struct Dummy {
+        virtual void f0();
+        virtual void f1();
+        virtual int f2(int *);
+    };
     volatile int *p = (volatile int *)arg0;
     int v13, v12, v11, v10, v9, v8, v7, v6, v5, v4, v3, v2, v1, v0;
     int values[14];
@@ -92,10 +98,9 @@ int fn_802E8744(void *arg0) {
         p += 2;
         out += 2;
     }
-    return ((int (*)(void *, int *))(*(void ***)((void *)lbl_80560024))[4])(lbl_80560024, values);
+    return ((Dummy *)lbl_80560024)->f2(values);
 }
-#pragma scheduling on
-#pragma use_lmw_stmw reset
+#pragma cplusplus off
 void fn_802E8838(void) {
     fn_80127464();
 }
