@@ -436,19 +436,19 @@ extern "C" int lbl_803499F4[];
 extern "C" s32 lbl_8055D430;
 extern "C" f32 lbl_80564738, lbl_8056473C;
 extern "C" void fn_802A1CC4(void) {
-    s32 enabled = 0;
-    register int *name = lbl_803499E8;
     u8 config[0x90];
+    register void *name = lbl_803499E8;
+    register int enabled = 0;
     if ((lbl_8055D430 & 1) != 0) {
         if ((lbl_8055D430 & 8) != 0)
             enabled = 1;
     }
     if (enabled != 0) {
         fn_8028E61C(config);
-        *(s32 *)(config + 0x04) = 0x80;
+        *(int *)(config + 0x04) = 0x80;
         *(f32 *)(config + 0x08) = lbl_8056472C;
         *(f32 *)(config + 0x0C) = lbl_80564730;
-        *(s32 *)(config + 0x00) = 0;
+        *(int *)(config + 0x00) = 0;
         *(f32 *)(config + 0x10) = lbl_80564730;
         *(f32 *)(config + 0x14) = lbl_80564730;
         *(f32 *)(config + 0x18) = lbl_80564730;
@@ -456,7 +456,7 @@ extern "C" void fn_802A1CC4(void) {
         *(f32 *)(config + 0x20) = lbl_80564730;
         *(f32 *)(config + 0x24) = lbl_80564730;
         *(f32 *)(config + 0x30) = lbl_80564734;
-        *(s32 *)(config + 0x44) = 5;
+        *(int *)(config + 0x44) = 5;
         *(f32 *)(config + 0x50) = lbl_80564730;
         *(f32 *)(config + 0x54) = lbl_80564738;
         *(f32 *)(config + 0x58) = lbl_8056473C;
@@ -467,7 +467,7 @@ extern "C" void fn_802A1CC4(void) {
         *(f32 *)(config + 0x6C) = lbl_80564730;
         *(f32 *)(config + 0x64) = lbl_80564730;
         *(f32 *)(config + 0x74) = lbl_80564744;
-        lbl_8055F870 = ((s32 (*)(void *, void *, void *, s32, f32, f32, f32, f32, f32, f32))fn_8028E2F8)(
+        lbl_8055F870 = ((int (*)(void *, void *, void *, int, f32, f32, f32, f32, f32, f32))fn_8028E2F8)(
             config, lbl_803499F4, name, 0,
             lbl_80564740, lbl_8056473C, lbl_80564738,
             lbl_80564734, lbl_80564730, lbl_8056472C);
@@ -906,16 +906,16 @@ extern "C" void fn_802A2FCC(void *arg0, void *arg1, s32 arg2) {
     f32 factor;
     f64 converted;
     f32 adjustment;
-    if (*(f32 *)((char *)arg1 + 8) > lbl_8056476C)
-        return;
     base = *(unsigned char **)arg1;
     entry = base + arg2 * 0x3C;
+    if (*(f32 *)((char *)arg1 + 8) > lbl_8056476C)
+        return;
     if (*(f32 *)(entry + 0x98) < lbl_805647DC)
         return;
     if (*(f32 *)(entry + 0x70) < lbl_80564744)
-        sign = -1;
-    else
         sign = 1;
+    else
+        sign = -1;
     vec.x = *(u32 *)(entry + 0x7C);
     vec.y = *(f32 *)(entry + 0x80) + lbl_80564740;
     vec.z = *(u32 *)(entry + 0x84);
@@ -983,7 +983,8 @@ struct Fn802A31DCConfig {
     f32 f80, f84, f88, f8c, f90, f94, f98, f9c, fa0, fa4;
 };
 
-extern "C" void fn_802A31DC(void *arg0, s32 arg1) {
+/* Initializes a "large trail smoke" particle emitter config and stores the created emitter handle at offset 8 of the owner. */
+extern "C" void fn_802A31DC(void *owner, s32 param) {
     Fn802A31DCConfig cfg;
     fn_8028E61C(&cfg.f18);
     cfg.f1c = 0x40;
@@ -1020,9 +1021,9 @@ extern "C" void fn_802A31DC(void *arg0, s32 arg1) {
     cfg.f6c = lbl_805647B4;
     cfg.f90 = lbl_8056475C;
     cfg.f94 = lbl_80564730;
-    *(s32 *)((char *)arg0 + 8) =
+    *(s32 *)((char *)owner + 8) =
         ((s32 (*)(void *, void *, s32))fn_8028E2F8)(
-            &cfg.f18, lbl_80349A54, arg1);
+            &cfg.f18, lbl_80349A54, param);
 }
 #pragma paired_single reset
 #pragma paired reset
@@ -1150,28 +1151,22 @@ extern "C" void fn_802A36D0(void *arg0, void *arg1, s32 arg2) {
         }
         {
             f32 sp[6];
-            f32 temp_f6;
-            f32 temp_f5;
-            f32 temp_f4;
-            f32 temp_f3;
-            f32 temp_f2;
-            f32 temp_f7;
+            f32 t7;
             if (*(f32 *)(p + 0x70) > lbl_80564744)
-                temp_f7 = lbl_80564730;
+                t7 = lbl_80564730;
             else
-                temp_f7 = lbl_8056475C;
-            temp_f6 = *(f32 *)(base + 0x34) * lbl_805647C4;
-            sp[0] = temp_f6;
-            temp_f5 = *(f32 *)(base + 0x38) * lbl_805647C4;
-            sp[1] = temp_f5;
-            temp_f4 = *(f32 *)(base + 0x3C) * lbl_805647C4;
-            sp[2] = temp_f4;
-            temp_f3 = temp_f7 * *(f32 *)(base + 0x50);
-            temp_f2 = lbl_8056481C * temp_f3;
-            sp[0] = temp_f6 + *(f32 *)base * temp_f2;
-            sp[1] = temp_f5 + *(f32 *)(base + 4) * temp_f2;
-            sp[2] = temp_f4 + *(f32 *)(base + 8) * temp_f2;
-            fn_8028E590(*(s32 *)((char *)arg0 + 4), (f32 *)(p + 0x7C), sp, lbl_805647DC);
+                t7 = lbl_8056475C;
+            sp[0] = *(f32 *)(base + 0x34) * lbl_805647C4;
+            sp[1] = *(f32 *)(base + 0x38) * lbl_805647C4;
+            sp[2] = *(f32 *)(base + 0x3C) * lbl_805647C4;
+            {
+                f32 t3 = t7 * *(f32 *)(base + 0x50);
+                f32 t2 = lbl_8056481C * t3;
+                sp[0] += *(f32 *)base * t2;
+                sp[1] += *(f32 *)(base + 4) * t2;
+                sp[2] += *(f32 *)(base + 8) * t2;
+            }
+            fn_8028E590(*(int *)((char *)arg0 + 4), (float *)(p + 0x7C), (float *)sp, (float)lbl_805647DC);
         }
     }
 }
@@ -1359,8 +1354,8 @@ extern "C" u8 lbl_80349A8C[];
 extern "C" void fn_802A41D8(void *arg0, s32 arg1) {
     u8 config[0xB0];
     fn_8028E61C(config + 0x18);
-    register s32 mode = 2;
-    register s32 size = 0x100;
+    s32 mode = 2;
+    s32 size = 0x100;
     *(s32 *)(config + 0x18) = mode;
     *(s32 *)(config + 0x1C) = size;
     *(f32 *)(config + 0x20) = lbl_80564734;
