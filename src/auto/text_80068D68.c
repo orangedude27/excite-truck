@@ -22780,6 +22780,9 @@ void rfc_sec_check_complete(void *unused, void *arg0, s8 arg1) {
 }
 
 void rfc_port_closed(void *arg0) {
+    /* RFCOMM port close handler: stops the port timer, detaches/clears the port's DLCI from
+       its MCB (and tears down the MCB if no DLCIs remain), then notifies the upper layer that
+       the RFC port closed (reason 0x13). */
     extern unsigned char lbl_803C4828[];
     extern char lbl_80319EB0[];
     register char *messages = lbl_80319EB0;
