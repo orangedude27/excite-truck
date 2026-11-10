@@ -125,7 +125,7 @@ extern "C" s32 fn_80029004(const char *, s32);
 extern "C" s32 fn_801345D8(void *, s32, const char *, s32, s32, const char *);
 extern "C" unsigned long strlen(const char *);
 #pragma small_data on
-extern "C" char lbl_8055B808[];
+extern "C" char lbl_8055B808[8];
 extern "C" const char lbl_8055B724[], lbl_8055B728[], lbl_8055B720[], lbl_8055B730[];
 extern "C" const char lbl_8055B738[], lbl_8055B73C[], lbl_8055B744[], lbl_8055B748[];
 #pragma small_data off
@@ -1731,7 +1731,7 @@ extern "C" s32 fn_80214934(const void* arg0, s32 arg1, void* arg2, s32 arg3) {
     if (end == 0) {
         end = (s32)((const char*)arg1 + strlen((const char*)arg1));
     }
-    return ((s32 (*)(void*, s32, const char*, ...))fn_801345D8)(arg2, arg3, &lbl_8055B808[0], (s32)arg0, end - arg1, (const char*)arg1);
+    return ((s32 (*)(void*, s32, const char*, ...))fn_801345D8)(arg2, arg3, lbl_8055B808, (s32)arg0, end - arg1, (const char*)arg1);
 }
 #pragma small_data off
 #pragma pop
