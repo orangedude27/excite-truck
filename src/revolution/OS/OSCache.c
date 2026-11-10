@@ -428,6 +428,7 @@ void L2GlobalInvalidate(void) {
 }
 
 void DMAErrorHandler(u8 error, OSContext* ctx, u32 dsisr, u32 dar, ...) {
+    /* Handles DMA/locked-cache machine-check exceptions: reports HID2/SRR1 and specific DMA errors, halting on non-DMA MCEs. */
     u32 hid2 = PPCMfhid2();
 
     OSReport("Machine check received\n");
