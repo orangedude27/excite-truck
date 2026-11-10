@@ -303,8 +303,8 @@ static inline int is_close(float a, float b) {
 extern void fn_802C8DB8(void *, int, unsigned short *, int);
 extern void fn_802C8D74(void);
 extern void fn_802C8B98(int, int);
-#pragma paired off
-#pragma paired_single off
+#pragma push
+#pragma processor 750
 void fn_802353F4(int arg0, int arg1, float arg2, float arg3, float arg4) {
     void *node;
     if (arg1 < 0) return;
@@ -653,14 +653,11 @@ void fn_80236134(void *arg0, int arg1, const char *arg2) {
     unsigned char ch;
     char *dst;
     char *entry;
-    register int count;
+    int count;
     int id;
-
     if (fn_8012C33C(arg2) != 0) {
         id = fn_802CAC28(arg2, 0);
-        count = *(int *)((char *)arg0 + 0xC);
-        entry = *(char **)((char *)arg0 + 4) + count * 0x2C;
-        *(int *)((char *)arg0 + 0xC) = count + 1;
+        entry = *(char **)((char *)arg0 + 4) + (*(int *)((char *)arg0 + 0xC))++ * 0x2C;
         dst = entry;
         count = 0x21;
         goto loop_body;
