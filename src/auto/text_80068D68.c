@@ -23358,18 +23358,19 @@ BOOLEAN SDP_AddUuidSequence(UINT32 handle, UINT16 attr_id, UINT16 num_uuids, UIN
     return SDP_AddAttribute(handle, attr_id, 6, (UINT32)(p - buff), buff);
 }
 
-BOOLEAN SDP_AddServiceClassIdList(UINT32 handle, UINT16 num_services, UINT16 *p_service_uuids) {
-    UINT16 xx;
-    UINT8 buff[0xA8];
-    UINT8 *p = buff;
+/* Add the ServiceClassIDList attribute (0x0001): a Data Element Sequence of 16-bit UUIDs. */
+BOOLEAN SDP_AddServiceClassIdList(UINT32 handle, UINT16 num_services, UINT16 *service_uuids) {
+    UINT16 index;
+    UINT8 uuid_buffer[0xA8];
+    UINT8 *cursor = uuid_buffer;
 
-    for (xx = 0; xx < num_services; xx++, p_service_uuids++) {
-        *p++ = 0x19;
-        *p++ = (UINT8)(*p_service_uuids >> 8);
-        *p++ = (UINT8)*p_service_uuids;
+    for (index = 0; index < num_services; index++, service_uuids++) {
+        *cursor++ = 0x19;
+        *cursor++ = (UINT8)(*service_uuids >> 8);
+        *cursor++ = (UINT8)*service_uuids;
     }
 
-    return SDP_AddAttribute(handle, 1, 6, (UINT32)(p - buff), buff);
+    return SDP_AddAttribute(handle, 1, 6, (UINT32)(cursor - uuid_buffer), uuid_buffer);
 }
 
 extern char lbl_8031A000[];
