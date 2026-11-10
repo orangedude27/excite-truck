@@ -521,34 +521,36 @@ extern f64 lbl_80560C10;
 extern f32 lbl_80560BD8, lbl_80560BE4;
 static void clamp_stick_circle(Vec2*, s32, s32, s32, s32);
 void clamp_stick_cross(void *arg0, void *arg1) {
-    u8 *obj = (u8 *)arg0;
+    /* Update KPAD stick/trigger values for classic or nunchuk-style WPAD input, resetting on disconnect. */
+    u8 *kpad = (u8 *)arg0;
     u8 *input = (u8 *)arg1;
-    register s16 chan = *(s16 *)(obj + 0x114);
+    register s16 chan = *(s16 *)(kpad + 0x114);
     s32 devType;
     s32 ret;
     double bias = lbl_80560C10;
+
     if (chan < 0) return;
     ret = WPADProbe(chan, &devType);
-    if (*(u32 *)(obj + 0x5C) == 1) {
+    if (*(u32 *)(kpad + 0x5C) == 1) {
         if (ret != 0 && ret == -1) {
-            *(s16 *)(obj + 0x114) -= 4;
-            reset_kpad(obj);
+            *(s16 *)(kpad + 0x114) -= 4;
+            reset_kpad(kpad);
             return;
         }
         {
             volatile s8 *stick = (volatile s8 *)(input + 0x30);
-            clamp_stick_circle((Vec2 *)(obj + 0x60), stick[0], stick[1], lbl_80558ED4, lbl_80558ED8);
+            clamp_stick_circle((Vec2 *)(kpad + 0x60), stick[0], stick[1], lbl_80558ED4, lbl_80558ED8);
         }
         return;
     }
-    if (*(u32 *)(obj + 0x5C) != 2) return;
+    if (*(u32 *)(kpad + 0x5C) != 2) return;
     if (ret != 0 && ret == -1) {
-        *(s16 *)(obj + 0x114) -= 4;
-        reset_kpad(obj);
+        *(s16 *)(kpad + 0x114) -= 4;
+        reset_kpad(kpad);
         return;
     }
-    clamp_stick_circle((Vec2 *)(obj + 0x6C), *(s16 *)(input + 0x2C), *(s16 *)(input + 0x2E), lbl_80558EDC, lbl_80558EE0);
-    clamp_stick_circle((Vec2 *)(obj + 0x74), *(s16 *)(input + 0x30), *(s16 *)(input + 0x32), lbl_80558EDC, lbl_80558EE0);
+    clamp_stick_circle((Vec2 *)(kpad + 0x6C), *(s16 *)(input + 0x2C), *(s16 *)(input + 0x2E), lbl_80558EDC, lbl_80558EE0);
+    clamp_stick_circle((Vec2 *)(kpad + 0x74), *(s16 *)(input + 0x30), *(s16 *)(input + 0x32), lbl_80558EDC, lbl_80558EE0);
     {
         register s32 value;
         register s32 high;
@@ -556,9 +558,9 @@ void clamp_stick_cross(void *arg0, void *arg1) {
         low = *(volatile s32 *)&lbl_80558EE4;
         value = input[0x34];
         high = *(volatile s32 *)&lbl_80558EE8;
-        if (value <= low) *(f32 *)(obj + 0x7C) = lbl_80560BD8;
-        else if (value >= high) *(f32 *)(obj + 0x7C) = lbl_80560BE4;
-        else *(f32 *)(obj + 0x7C) = (f32)(value - low) / (f32)(high - low);
+        if (value <= low) *(f32 *)(kpad + 0x7C) = lbl_80560BD8;
+        else if (value >= high) *(f32 *)(kpad + 0x7C) = lbl_80560BE4;
+        else *(f32 *)(kpad + 0x7C) = (f32)(value - low) / (f32)(high - low);
     }
     {
         register s32 value;
@@ -567,9 +569,9 @@ void clamp_stick_cross(void *arg0, void *arg1) {
         low = *(volatile s32 *)&lbl_80558EE4;
         value = input[0x35];
         high = *(volatile s32 *)&lbl_80558EE8;
-        if (value <= low) *(f32 *)(obj + 0x80) = lbl_80560BD8;
-        else if (value >= high) *(f32 *)(obj + 0x80) = lbl_80560BE4;
-        else *(f32 *)(obj + 0x80) = (f32)(value - low) / (f32)(high - low);
+        if (value <= low) *(f32 *)(kpad + 0x80) = lbl_80560BD8;
+        else if (value >= high) *(f32 *)(kpad + 0x80) = lbl_80560BE4;
+        else *(f32 *)(kpad + 0x80) = (f32)(value - low) / (f32)(high - low);
     }
 }
 
