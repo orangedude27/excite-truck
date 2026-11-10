@@ -19351,7 +19351,7 @@ void *l2cu_allocate_ccb(void *arg0, u16 arg1) {
     return ccb;
 }
 
-/* Match note: direct head/tail list updates and a signed state comparison reproduce the target branches and registers. */
+/* Releases an L2CAP channel control block from its connection, frees queued buffers, returns it to the free CCB list, and may schedule disconnect cleanup. */
 void l2cu_release_ccb(void *arg0) {
     u8 *ccb=arg0; u8 *conn=*(u8**)(ccb+0x10); u32 zero=0;
     if(ccb[0]==0)return;
