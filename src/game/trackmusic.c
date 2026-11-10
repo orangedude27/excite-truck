@@ -829,13 +829,14 @@ long fn_802111E4(long arg0) {
 
 void fn_802112AC(void) {
     long mode;
-    long n;
+    long trackIndex;
     long quotient;
     long remainder;
-    long count;
+    long trackCount;
     void *base;
     struct Dummy_802113D8 *object;
 
+    /* Initialize track selection state and update display counters from current track data. */
     if (lbl_8055EEC0 != 0) {
         lbl_8055EEE0 = -2;
         if (lbl_8055EEBC > 0) {
@@ -847,23 +848,23 @@ void fn_802112AC(void) {
             if (mode == 1) {
                 lbl_8055EEE0 = -1;
             } else if (mode == 2) {
-                n = lbl_8055B658;
-                if (n >= 0) {
-                    quotient = n / 10;
-                    remainder = n % 10;
+                trackIndex = lbl_8055B658;
+                if (trackIndex >= 0) {
+                    quotient = trackIndex / 10;
+                    remainder = trackIndex % 10;
                     lbl_8055EEE4 = quotient;
                     lbl_8055EEE0 = remainder;
                 }
             }
         }
     }
-    count = lbl_8055EEBC / 10;
-    lbl_8055EEE8 = count;
+    trackCount = lbl_8055EEBC / 10;
+    lbl_8055EEE8 = trackCount;
     if ((lbl_8055EEBC % 10) != 0 || lbl_8055EEBC == 0) {
-        count++;
-        lbl_8055EEE8 = count;
+        trackCount++;
+        lbl_8055EEE8 = trackCount;
     }
-    if (lbl_8055EEE4 >= count) {
+    if (lbl_8055EEE4 >= trackCount) {
         lbl_8055EEE4 = 0;
     }
 }
