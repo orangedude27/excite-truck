@@ -2521,6 +2521,7 @@ void __VISetMacrovision(void) {
 
 void __VISetGammaImm(u8* dataIn)
 {
+    /* Pack gamma table/coefficients into I2C payload (cmd 0x10) and send to AVE. */
     u8 data[0x22];
 
     data[0] = 0x10;
