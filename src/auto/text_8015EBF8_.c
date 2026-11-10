@@ -294,26 +294,26 @@ report:
 #pragma inline_depth 0
 #pragma use_lmw_stmw off
 int fn_8015F148(void **arg0, int arg1) {
+    void **ptr = arg0;
+    int off;
     int count = 0;
     int i;
-    int j;
-    int off;
     int *child;
+    int j;
+    int n = arg1;
     void *item;
     void *entry;
-    for (i = 0; i < arg1; i++) {
-        child = *(int **)arg0;
+    for (i = 0; i < n; i++) {
+        child = *(int **)ptr;
         if (child != 0) {
-            off = 0;
-            for (j = 0; j < child[0]; j++) {
+            for (j = 0, off = 0; j < child[0]; off += 4, j++) {
                 item = *(void **)((char *)((void **)child)[1] + off);
                 entry = *(void **)((char *)item + 0x3C);
                 if (fn_8015ECC0(entry))
                     count++;
-                off += 4;
             }
         }
-        arg0++;
+        ptr++;
     }
     return count;
 }
