@@ -990,7 +990,8 @@ void fn_802D6170(void *arg0) {
 
 #pragma pop
 
-void fn_802D61BC(void *arg0) {
+/* Update surface state/mode flags from a command packet and apply cache-related side effects. */
+void fn_802D61BC(void *packet) {
     extern u8 lbl_804C5700[16];
     extern s32 lbl_8055FD20;
     extern volatile u8 lbl_8055FD25;
@@ -998,14 +999,16 @@ void fn_802D61BC(void *arg0) {
     extern u8 lbl_8055FDFC;
     extern void fn_802D2614(void);
     extern void fn_802D2B0C(void);
-    u8 *object = (u8 *)arg0;
+    u8 *packetBytes = (u8 *)packet;
     u8 flags;
     u8 modeFlag;
-    lbl_8055FD25 = (*(u8 *)(object + 0xA) >> 3) & 1;
-    modeFlag = (*(u8 *)(object + 0xA) >> 4) & 1;
+
+    lbl_8055FD25 = (*(u8 *)(packetBytes + 0xA) >> 3) & 1;
+    modeFlag = (*(u8 *)(packetBytes + 0xA) >> 4) & 1;
     *(volatile s32 *)(lbl_804C5700 + 4) = 6;
     lbl_804C5700[9] = modeFlag;
-    switch (*(u8 *)(object + 8)) {
+
+    switch (*(u8 *)(packetBytes + 8)) {
     case 16:
         *(s32 *)(lbl_804C5700 + 4) = 2;
         break;
@@ -1013,7 +1016,7 @@ void fn_802D61BC(void *arg0) {
         *(s32 *)(lbl_804C5700 + 4) = 1;
         break;
     default:
-        flags = *(u8 *)(object + 0xA);
+        flags = *(u8 *)(packetBytes + 0xA);
         if (flags & 1) {
             *(s32 *)(lbl_804C5700 + 4) = 3;
         } else if (flags & 2) {
@@ -1026,11 +1029,13 @@ void fn_802D61BC(void *arg0) {
         }
         break;
     }
-    if (*(u8 *)(object + 0xA) & 4) {
-        if (lbl_8055FD28 != *(u32 *)(object + 0x14))
+
+    if (*(u8 *)(packetBytes + 0xA) & 4) {
+        if (lbl_8055FD28 != *(u32 *)(packetBytes + 0x14))
             lbl_8055FD20 |= 0x20;
-        lbl_8055FD28 = *(u32 *)(object + 0x14);
+        lbl_8055FD28 = *(u32 *)(packetBytes + 0x14);
     }
+
     fn_802D2614();
     fn_802D2B0C();
 }
@@ -1043,7 +1048,7 @@ s32 fn_802D62E4(void *arg0) {
     return (s32)arg0;
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802D62FC(void *arg0, s32 *arg1, s32 *arg2) {
     extern s32 lbl_8055FDF0;
     extern s32 lbl_8055FDF4;
@@ -1051,14 +1056,17 @@ void fn_802D62FC(void *arg0, s32 *arg1, s32 *arg2) {
     extern void GXBeginDisplayList(void *, u32);
     extern u32 GXEndDisplayList(void);
     extern void fn_802D5DE8(u32);
-    register CacheEntry *scan = (CacheEntry *)lbl_804CA438;
-    register u32 key = *(u8 *)((u8 *)arg0 + 9);
-    register u32 id = *(volatile u32 *)((u8 *)arg0 + 0xC);
-    s32 count = *(volatile s32 *)&lbl_8055FDF0;
+    register CacheEntry *scan;
+    register u8 key;
+    register u32 id;
+    s32 count;
     s32 i;
     CacheEntry *write;
     s32 size;
-
+    scan = (CacheEntry *)lbl_804CA438;
+    key = *(u8 *)((u8 *)arg0 + 9);
+    id = *(u32 *)((u8 *)arg0 + 0xC);
+    count = lbl_8055FDF0;
     for (i = 0; i < count; i++, scan++) {
         if (scan->id == id && scan->key == key) {
             *arg1 = scan->start;
@@ -1066,7 +1074,6 @@ void fn_802D62FC(void *arg0, s32 *arg1, s32 *arg2) {
             return;
         }
     }
-
     count = lbl_8055FDF0;
     write = (CacheEntry *)lbl_804CA438 + count;
     write->id = id;
@@ -1081,9 +1088,6 @@ void fn_802D62FC(void *arg0, s32 *arg1, s32 *arg2) {
     *arg1 = write->start;
     *arg2 = write->size;
 }
-
-#pragma use_lmw_stmw off
-#pragma scheduling invalid_target
 void fn_802D63FC(void *arg0, s32 arg1) {
     extern void fn_802D62FC(void *, s32 *, s32 *);
     extern void fn_802D657C(s32 *, s32);
@@ -1304,12 +1308,11 @@ extern void fn_802E317C(const char *, ...);
 extern const char lbl_8034C440[];
 #pragma scheduling invalid_target
 void fn_802D6B80(u8 *arg0, s32 arg1, s32 arg2) {
-    u8 d;
-    u8 c;
-    u8 b;
     u8 a;
+    u8 b;
+    u8 c;
+    u8 d;
     s32 result;
-
     a = arg0[0];
     b = arg0[3];
     c = arg0[1];
@@ -1325,13 +1328,12 @@ void fn_802D6B80(u8 *arg0, s32 arg1, s32 arg2) {
         s32 sp8 = *(s32 *)arg0;
         u8 *p = (u8 *)&sp8;
         u8 x = p[0];
-        u8 zero = 0;
         p[0] = p[3];
         p[3] = x;
         x = p[1];
         p[1] = p[2];
         p[2] = x;
-        p[4] = zero;
+        p[4] = 0;
         fn_802E317C(lbl_8034C440, arg2, &sp8);
     }
 }
