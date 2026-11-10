@@ -937,41 +937,42 @@ extern "C" void* fn_801582A4(void* self, void* arg1, void* arg2) {
 extern "C" void *fn_802076A0(void *, s32, s32, s32);
 extern "C" f32 lbl_80561778;
 extern "C" void *fn_80158374(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    /* Initializes a two-slot object holder at arg0: if the slot type (arg3) is not the special "ACAR" case, allocates two objects and sets their default scale/speed fields (1.2f at +4, 1.0f at +8) with dirty flags (+0x4E/+0x4D) when changed; then marks the holder active (+8 = 1). */
     s32 should_allocate = (fn_80157278(arg3) == 0);
-    void *first;
-    void *second;
+    void *firstObj;
+    void *secondObj;
 
     *(void **)((u8 *)arg0 + 4) = 0;
     *(void **)arg0 = 0;
     if (should_allocate) {
-        first = fn_802076A0((void *)(u32)arg1, 1, arg3, 0);
-        *(void **)arg0 = first;
-        if (first != 0) {
+        firstObj = fn_802076A0((void *)(u32)arg1, 1, arg3, 0);
+        *(void **)arg0 = firstObj;
+        if (firstObj != 0) {
             f32 value = lbl_80561778;
-            if (value != *(f32 *)((u8 *)first + 4)) {
-                *((u8 *)first + 0x4e) = 1;
-                *(f32 *)((u8 *)first + 4) = value;
+            if (value != *(f32 *)((u8 *)firstObj + 4)) {
+                *((u8 *)firstObj + 0x4e) = 1;
+                *(f32 *)((u8 *)firstObj + 4) = value;
             }
-            first = *(void **)arg0;
+            firstObj = *(void **)arg0;
             value = lbl_80561750;
-            if (value != *(f32 *)((u8 *)first + 8)) {
-                *((u8 *)first + 0x4d) = 1;
-                *(f32 *)((u8 *)first + 8) = value;
+            if (value != *(f32 *)((u8 *)firstObj + 8)) {
+                *((u8 *)firstObj + 0x4d) = 1;
+                *(f32 *)((u8 *)firstObj + 8) = value;
             }
         }
-        second = fn_802076A0((void *)(u32)arg2, 1, arg3, 0);
-        *(void **)((u8 *)arg0 + 4) = second;
-        if (second != 0) {
+        secondObj = fn_802076A0((void *)(u32)arg2, 1, arg3, 0);
+        *(void **)((u8 *)arg0 + 4) = secondObj;
+        if (secondObj != 0) {
             f32 value = lbl_80561778;
-            if (value != *(f32 *)((u8 *)second + 4)) {
-                *((u8 *)second + 0x4e) = 1;
-                *(f32 *)((u8 *)second + 4) = value;
+            if (value != *(f32 *)((u8 *)secondObj + 4)) {
+                *((u8 *)secondObj + 0x4e) = 1;
+                *(f32 *)((u8 *)secondObj + 4) = value;
             }
-            second = *(void **)((u8 *)arg0 + 4);
+            secondObj = *(void **)((u8 *)arg0 + 4);
             value = lbl_80561750;
-            if (value != *(f32 *)((u8 *)second + 8)) {
-                *((u8 *)second + 0x4d) = 1;
-                *(f32 *)((u8 *)second + 8) = value;
+            if (value != *(f32 *)((u8 *)secondObj + 8)) {
+                *((u8 *)secondObj + 0x4d) = 1;
+                *(f32 *)((u8 *)secondObj + 8) = value;
             }
         }
     }
