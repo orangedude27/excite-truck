@@ -1996,6 +1996,7 @@ extern "C" const char lbl_80323750[];
 extern "C" const char lbl_803237B8[];
 extern "C" void RegisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(void *, void *);
 extern "C" void *__ct__Q36nw4hbm3snd18SoundArchivePlayerFv(void *self) {
+    /* Constructs a SoundArchivePlayer, initializing embedded subobjects, lists, mutexes, and dispose callback. */
     *(s32 *)((u8 *)self + 0x00) = 0;
     *(s32 *)((u8 *)self + 0x04) = 0;
     *(void **)((u8 *)self + 0x08) = (void *)lbl_80325640;
