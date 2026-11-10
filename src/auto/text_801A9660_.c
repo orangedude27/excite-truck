@@ -934,9 +934,9 @@ void fn_801A9AB0(void *self, void *cfg) {
 void fn_801ABB54(void *arg0) {
     extern float lbl_80562478, lbl_8056247C, lbl_805624A4, lbl_805624AC, lbl_805624D8;
     float dot, magnitude, sign, limit;
-    float unused, scale;
     double absolute;
-    float z, y, x;
+    float x, y, z;
+    float unused, scale;
     char *p = arg0;
     dot = PSVECDotProduct((Vec *)(p + 0x124), (Vec *)(p + 0x54));
     limit = *(float *)(p + 0x238);
@@ -951,14 +951,11 @@ void fn_801ABB54(void *arg0) {
     } else if (magnitude > lbl_805624D8) {
         scale = -dot * lbl_80562478;
     }
-    x = *(float *)(p + 0x54) * scale;
-    y = *(float *)(p + 0x58) * scale;
-    z = *(float *)(p + 0x5C) * scale;
-    y = *(float *)(p + 0x128) + y;
-    x = *(float *)(p + 0x124) + x;
-    z = *(float *)(p + 0x12C) + z;
-    *(float *)(p + 0x128) = y;
+    x = *(float *)(p + 0x124) + *(float *)(p + 0x54) * scale;
+    y = *(float *)(p + 0x128) + *(float *)(p + 0x58) * scale;
+    z = *(float *)(p + 0x12C) + *(float *)(p + 0x5C) * scale;
     *(float *)(p + 0x124) = x;
+    *(float *)(p + 0x128) = y;
     *(float *)(p + 0x12C) = z;
 }
 
@@ -1147,7 +1144,6 @@ void fn_801ABFF8(void *self, int **manager) {
         struct CallbackTable *vtable;
     };
     void *node;
-    register struct CallbackTable *table;
 
     node = *(void **)((char *)self + 0x224);
     if (node != 0 &&
@@ -1155,8 +1151,7 @@ void fn_801ABFF8(void *self, int **manager) {
         lbl_8055E3C4 > 1) {
         while (node != self) {
             *(unsigned char *)((char *)node + 0x223) = 0;
-            table = ((struct CallbackObject *)manager)->vtable;
-            table->call(manager, node);
+            ((struct CallbackObject *)manager)->vtable->call(manager, node);
             node = *(void **)((char *)node + 0x224);
         }
         *(unsigned char *)((char *)self + 0x223) = 0;
@@ -1618,14 +1613,14 @@ extern float lbl_8056250C;
 extern float lbl_80562514;
 #pragma scheduling off
 void fn_801AD0E0(void *arg0, void *arg1, void *arg2, void *arg3, float farg0, float farg1) {
-    float a, b, c, d, x, e, y, z, p, q, r;
-    a = lbl_80562514;
-    *(volatile int *)((char *)arg0 + 0x0C) = 0;
+    float t, c, r, q, p, z, y, x, b;
+    t = lbl_80562514;
+    *(int *)((char *)arg0 + 0x0C) = 0;
     b = lbl_8056247C;
-    c = a * farg0;
-    d = lbl_8056250C;
+    c = t * farg0;
+    t = lbl_8056250C;
     x = *(float *)((char *)arg1 + 0x00);
-    e = d * c;
+    t = t * c;
     y = *(float *)((char *)arg1 + 0x04);
     z = *(float *)((char *)arg1 + 0x08);
     p = *(float *)((char *)arg3 + 0x00);
@@ -1642,7 +1637,7 @@ void fn_801AD0E0(void *arg0, void *arg1, void *arg2, void *arg3, float farg0, fl
     *(float *)((char *)arg0 + 0x18) = r;
     *(float *)((char *)arg0 + 0x1C) = farg0;
     *(float *)((char *)arg0 + 0x24) = farg1;
-    *(float *)((char *)arg0 + 0x20) = e;
+    *(float *)((char *)arg0 + 0x20) = t;
 }
 
 #pragma processor 750
@@ -1876,50 +1871,46 @@ extern void fn_801D08C0(void *);
 extern void fn_801D0934(void *);
 void *fn_801AD6B0(void *arg0, int arg1) {
     void *initArg;
-
-    if (arg0 == 0) {
-        goto done;
-    }
-    *(void **)arg0 = &lbl_80335744;
-    initArg = arg0;
-    *(void **)((char *)arg0 + 0x23C) = (char *)&lbl_80335744 + 0x54;
-    if (arg0 == 0) {
-        goto init_call;
-    }
-    initArg = (char *)arg0 + 0x23C;
-init_call:
-    fn_801D0934(initArg);
-    *(int *)((char *)arg0 + 0x240) = 0;
     if (arg0 != 0) {
-        lbl_8055E5E4 = 0;
+        *(void **)arg0 = &lbl_80335744;
+        initArg = arg0;
+        *(void **)((u8 *)arg0 + 0x23C) = (char *)&lbl_80335744 + 0x54;
+        if (initArg != 0) {
+            initArg = (u8 *)arg0 + 0x23C;
+        }
+        fn_801D0934(initArg);
+        *(int *)((u8 *)arg0 + 0x240) = 0;
         if (arg0 != 0) {
+            lbl_8055E5E4 = 0;
             if (arg0 != 0) {
-                fn_80179EE8(arg0, 0);
+                if (arg0 != 0) {
+                    fn_80179EE8(arg0, 0);
+                }
             }
         }
+        if (arg1 > 0) {
+            ((void (*)(void *))fn_80128668)(arg0);
+        }
     }
-    if (arg1 > 0) {
-        fn_80128668(arg0);
-    }
-done:
     return arg0;
 }
 
 #pragma scheduling invalid_target
 void fn_801AD750(void *arg0, void *arg1) {
-    void *var_r30 = arg0;
     fn_801A9AB0(arg0, arg1);
-    *(int *)((char *)var_r30 + 0x240) = *(int *)((char *)arg1 + 0x80);
-    if (var_r30 != 0) {
-        var_r30 = (char *)var_r30 + 0x23C;
-        fn_801D08C0(var_r30);
+    *(int *)((char *)arg0 + 0x240) = *(int *)((char *)arg1 + 0x80);
+    if (arg0 != 0) {
+        arg0 = (char *)arg0 + 0x23C;
+        fn_801D08C0(arg0);
     }
 }
-#pragma scheduling on
+#pragma scheduling off
 void fn_801AD7A4(void *arg0, void *arg1, void *arg2, int arg3) {
     void *obj;
-    if (arg3 >= 8) return;
-    if (arg0 == 0) return;
+    if (arg3 >= 8)
+        return;
+    if (arg0 == 0)
+        return;
     obj = (char *)arg0 + 0x23C;
     fn_801D0A24(obj, arg2);
 }
@@ -1988,8 +1979,8 @@ void fn_801AD8C8(void *arg0, int *arg1, float *arg2, float *arg3) {
 
 #pragma push
 #pragma cplusplus on
-extern "C" void fn_801AD99C(void *arg0, float *arg1, float *arg2) {
-    class Obj {
+extern "C" void fn_801AD99C(void *r0, float *r1, float *r2) {
+    class Obj3 {
     public:
         virtual void v0();
         virtual void v1();
@@ -2009,17 +2000,17 @@ extern "C" void fn_801AD99C(void *arg0, float *arg1, float *arg2) {
         virtual void v15();
         virtual void v16(float *, float *, int, int);
     };
-    float scale;
-    float sp14[3];
-    float sp8[3];
-    scale = *(float *)((char *)arg0 + 0xD4) / lbl_805624D0;
-    sp14[0] = arg1[0] * scale;
-    sp14[1] = arg1[1] * scale;
-    sp14[2] = arg1[2] * scale;
-    sp8[0] = *(float *)((char *)arg0 + 0x60) + arg2[0];
-    sp8[1] = *(float *)((char *)arg0 + 0x64) + arg2[1];
-    sp8[2] = *(float *)((char *)arg0 + 0x68) + arg2[2];
-    ((Obj *)arg0)->v16(sp14, sp8, 100, 0);
+    float s;
+    float x[3];
+    float y[3];
+    s = *(float *)((char *)r0 + 0xD4) / lbl_805624D0;
+    x[0] = r1[0] * s;
+    x[1] = r1[1] * s;
+    x[2] = r1[2] * s;
+    y[0] = *(float *)((char *)r0 + 0x60) + r2[0];
+    y[1] = *(float *)((char *)r0 + 0x64) + r2[1];
+    y[2] = *(float *)((char *)r0 + 0x68) + r2[2];
+    ((Obj3 *)r0)->v16(x, y, 0x64, 0);
 }
 #pragma pop
 void fn_801ADA38(void *arg0, int arg1) {
