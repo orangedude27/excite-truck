@@ -89,7 +89,9 @@ extern s32 lbl_8055FBFC;
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_801E4BEC(s32 fontArg, s32 drawFlags, s32 alignFlags, s32 x, s32 y, const char *format, ...) {
+/* Draws formatted text using a bitmap font, applying alignment flags to position it;
+ * falls back to a plain shadowed string draw when no font is provided. */
+void fn_801E4BEC(s32 font, s32 drawFlags, s32 align, s32 x, s32 y, const char *format, ...) {
     char text[0x1000];
     va_list args;
     s32 value;
@@ -100,40 +102,40 @@ void fn_801E4BEC(s32 fontArg, s32 drawFlags, s32 alignFlags, s32 x, s32 y, const
     vsprintf(text, format, args);
     va_end(args);
 
-    value = fn_801E4A6C((s32 *)fontArg, (u8 *)text);
-    if (alignFlags & 2) {
+    value = fn_801E4A6C((s32 *)font, (u8 *)text);
+    if (align & 2) {
         x -= value;
-    } else if (alignFlags & 4) {
+    } else if (align & 4) {
         half = (unsigned int)value >> 31;
         half += value;
         half >>= 1;
         x -= half;
     }
-    if (alignFlags & 8) {
-        y += fn_801E4B00((s32 *)fontArg);
-    } else if (alignFlags & 0x10) {
-        value = fn_801E4B00((s32 *)fontArg);
-        half = fn_801E4B48((s32 *)fontArg);
+    if (align & 8) {
+        y += fn_801E4B00((s32 *)font);
+    } else if (align & 0x10) {
+        value = fn_801E4B00((s32 *)font);
+        half = fn_801E4B48((s32 *)font);
         half = value - half;
         half = ((unsigned int)half >> 31) + half;
         half >>= 1;
         y += half;
-    } else if (alignFlags & 0x40) {
-        y -= fn_801E4B48((s32 *)fontArg);
+    } else if (align & 0x40) {
+        y -= fn_801E4B48((s32 *)font);
     }
-    if (fontArg) {
+    if (font) {
         p = (u8 *)text;
         while (*p != 0) {
             register u8 *glyph;
-            glyph = (u8 *)fontArg + ((unsigned int)*p << 1);
+            glyph = (u8 *)font + ((unsigned int)*p << 1);
             if (*(s16 *)(glyph + 4) >= 0) {
-                fn_802C4C90(*(s32 *)fontArg,
+                fn_802C4C90(*(s32 *)font,
                     x + *(s16 *)(glyph + 0x404),
                     y,
                     *(s16 *)(glyph + 4),
                     drawFlags);
             }
-            x += *(s16 *)((u8 *)fontArg + ((unsigned int)*p << 1) + 0x204);
+            x += *(s16 *)((u8 *)font + ((unsigned int)*p << 1) + 0x204);
             ++p;
         }
     } else {
