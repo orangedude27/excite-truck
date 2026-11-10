@@ -753,25 +753,34 @@ void fn_802C00A0(void) {
 extern void *fn_801284F8(int, const char *);
 extern void *fn_802C0138(void *);
 extern char lbl_8034ADC8[];
-int fn_802C00A4(void) {
+#pragma cplusplus on
+extern "C" int fn_802C00A4(void) {
+    class Obj {
+    public:
+        virtual void f0(int);
+        virtual void f1();
+        virtual void f2();
+        virtual int f3();
+    };
     extern void *fn_801284F8(int, const char *);
     extern void *fn_802C0138(void *);
     extern char lbl_8034ADC8[];
-    void *obj;
-    obj = fn_801284F8(0x2c60, lbl_8034ADC8);
-    if (obj == 0)
-        return 0;
-    obj = fn_802C0138(obj);
+    void *raw = fn_801284F8(0x2c60, lbl_8034ADC8);
+    void *obj = raw;
     if (obj != 0) {
-        if (((int (*)(void *))(*(void ***)obj)[5])(obj) == 0) {
-            if (obj != 0)
-                ((void (*)(void *, int))(*(void ***)obj)[2])(obj, 1);
+        obj = fn_802C0138(obj);
+    }
+    if (obj != 0) {
+        if (((Obj *)obj)->f3() == 0) {
+            if (obj != 0) {
+                ((Obj *)obj)->f0(1);
+            }
             obj = 0;
         }
     }
     return (int)obj;
 }
-
+#pragma cplusplus reset
 void *fn_802C0138(void *arg0) {
     register char *resourceB = lbl_8034ACA0 + 0x144;
     register char *resourceA = lbl_8034ACA0 + 0x134;
