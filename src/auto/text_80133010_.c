@@ -140,10 +140,8 @@ void fn_801330E8(int arg0) {
 void fn_80133144(void) {
  int *entry=&lbl_8042F718[0];
  int i;
- int flag;
  for(i=0;i<8;i++){
-  flag = entry[1];
-  if(flag!=0) fn_802E317C(lbl_8032B8D0, entry[0]);
+  if(*(entry+1)!=0) fn_802E317C(lbl_8032B8D0, *entry);
   entry+=2;
  }
  fn_80128668(lbl_8055E07C);
@@ -272,19 +270,21 @@ int fn_8013358C(int arg0, int arg1, char *arg2) {
 
 #pragma scheduling invalid_target
 int fn_8013365C(int arg0, int arg1) {
-    int *p = lbl_8042F718;
+    typedef struct { int a; int b; } Pair;
+    Pair *p = (Pair *)lbl_8042F718;
     int i = 0;
     int count;
     for (count = 8; count != 0; count--) {
-        if (p[1] == 0) {
-            *p = arg1;
-            p[1] = arg0;
+        if (p->b == 0) {
+            Pair *q = &((Pair *)lbl_8042F718)[i];
+            q->b = arg1;
+            q->a = arg0;
             return i;
         }
-        p += 2;
+        p++;
         i++;
     }
-    fn_802E317C(lbl_8032B920, i);
+    fn_802E317C(lbl_8032B920, arg0);
     return -1;
 }
 
@@ -333,6 +333,7 @@ extern int fn_8002B1D8(void *, void *, int);
 extern int atoi(const char *);
 extern int stricmp(const char *, const char *);
 #pragma peephole off
+#pragma dont_inline on
 char *fn_801337E4(char *arg0) {
     char *p = arg0;
     unsigned char byte;
