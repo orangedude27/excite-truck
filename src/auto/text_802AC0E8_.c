@@ -14,8 +14,8 @@ extern int fn_802E2C20(void);
 extern int sscanf(const char *, const char *, ...);
 void *fn_802AC0E8(void *arg0, const char *arg1, int arg2) {
     char *node = (char *)arg0;
-    int key = arg2;
     const char *name = arg1;
+    int key = arg2;
     if (node == 0)
         return 0;
     while (*(int *)node != 0) {
@@ -560,7 +560,7 @@ void fn_802AE02C(void *arg0, int arg1) {
     entry = (unsigned char *)base + arg1 * 0x74;
     if (!entry[0x69]) {
         if (!entry[0x68]) {
-            fn_802E30C8(lbl_80349FB0, arg1);
+            fn_802E30C8(lbl_80349FB0, arg1, arg1);
             entry[0x68] = 1;
             *(float *)(entry + 0x6c) = *(float *)((char *)arg0 + 4);
         }
