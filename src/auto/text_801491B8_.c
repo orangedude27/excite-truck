@@ -1619,6 +1619,7 @@ extern s32 lbl_80559F4C;
 #pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" f32 fn_8014E7DC(s32 arg0, s32 arg1) {
+    /* Look up a per-entry score/value: try the file's direct getter, else load a resource by formatted path and compute a rounded rate. */
     class MainInterface {
     public:
         virtual void d0();
@@ -1643,59 +1644,59 @@ extern "C" f32 fn_8014E7DC(s32 arg0, s32 arg1) {
         virtual f32 value(char *);
     };
 
-    char sp8[0x104];
+    char pathBuffer[0x104];
     void *file;
-    char *text;
-    void *name;
+    char *fileText;
+    void *entryName;
     void *resource;
-    void *resultObj;
-    s32 temp;
+    void *resourceEntry;
+    s32 fileCountInt;
     f32 value;
-    f32 count;
+    f32 fileCount;
     f32 scaled;
     f32 rate;
 
     fn_8012E81C(lbl_8032D358 + 0x5A4);
     file = fn_8001285C((void *)arg0);
-    text = fn_80012820(*(s32 *)((u8 *)file + 4));
-    name = fn_80205268(lbl_8032D358 + 0x5B8, arg1, arg0);
+    fileText = fn_80012820(*(s32 *)((u8 *)file + 4));
+    entryName = fn_80205268(lbl_8032D358 + 0x5B8, arg1, arg0);
     register u8 *strings = lbl_8032D358;
 
-    if (((MainInterface *)*(void **)((u8 *)file + 0x20))->check(name) == 0) {
+    if (((MainInterface *)*(void **)((u8 *)file + 0x20))->check(entryName) == 0) {
         value = ((MainInterface *)*(void **)((u8 *)file + 0x20))->evaluate(
             (char *)(strings + 0x344), lbl_805616CC);
-        name = ((MainInterface *)*(void **)((u8 *)file + 0x20))->lookup(
+        entryName = ((MainInterface *)*(void **)((u8 *)file + 0x20))->lookup(
             (char *)(strings + 0x5D0), &lbl_80559F48);
 
         fn_8012E81C(strings + 0x5A4);
         ((s32 (*)(char *, s32, char *, ...))fn_801345D8)(
-            sp8, 0x104, (char *)(strings + 0x5DC), name, text + 8);
-        if (fn_8012C33C(sp8) == 0) {
+            pathBuffer, 0x104, (char *)(strings + 0x5DC), entryName, fileText + 8);
+        if (fn_8012C33C(pathBuffer) == 0) {
             ((s32 (*)(char *, s32, char *, ...))fn_801345D8)(
-                sp8, 0x104, (char *)(strings + 0x5E8), name, text + 8);
+                pathBuffer, 0x104, (char *)(strings + 0x5E8), entryName, fileText + 8);
         }
 
-        resource = fn_80131810(sp8);
+        resource = fn_80131810(pathBuffer);
         if (resource != 0) {
-            resultObj = ((ResourceInterface *)resource)->next((char *)&lbl_80559F4C);
-            value = ((ResourceInterface *)resultObj)->value(
+            resourceEntry = ((ResourceInterface *)resource)->next((char *)&lbl_80559F4C);
+            value = ((ResourceInterface *)resourceEntry)->value(
                 (char *)(strings + 0x5F4));
             fn_80131818(resource);
 
-            temp = *(s32 *)((u8 *)file + 0xC);
-            count = (f32)temp;
-            scaled = value * count;
+            fileCountInt = *(s32 *)((u8 *)file + 0xC);
+            fileCount = (f32)fileCountInt;
+            scaled = value * fileCount;
             rate = lbl_80559EB0 * scaled;
             rate = rate / lbl_805616D0;
             value = lbl_805616D0 * (f32)ceil((double)rate);
         } else {
             ((void (*)(char *, ...))fn_802E30C8)(
-                (char *)(strings + 0x600), sp8);
+                (char *)(strings + 0x600), pathBuffer);
         }
         return value;
     }
 
-    return ((MainInterface *)*(void **)((u8 *)file + 0x20))->finish(name);
+    return ((MainInterface *)*(void **)((u8 *)file + 0x20))->finish(entryName);
 }
 
 extern s32 lbl_8055E258, lbl_80559ED0, lbl_80559ED4, lbl_80559ED8, lbl_80559EDC, lbl_80559ECC, lbl_8055E254;
