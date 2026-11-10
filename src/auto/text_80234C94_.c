@@ -103,7 +103,7 @@ void fn_80234D44(int arg0) {
     if (arg0 != 0) {
         node = (int *)lbl_8055F084;
         if (node == 0) {
-            node = fn_801284F8(8, (const char *)lbl_80340670);
+            node = fn_801284F8(8, lbl_80340670);
             lbl_8055F084 = node;
             *node = arg0;
             node = (int *)lbl_8055F084;
@@ -111,13 +111,14 @@ void fn_80234D44(int arg0) {
         } else {
             while (node[1] != 0)
                 node = (int *)node[1];
-            node[1] = (int)fn_801284F8(8, (const char *)lbl_80340670);
+            node[1] = (int)fn_801284F8(8, lbl_80340670);
             node = (int *)node[1];
             node[0] = arg0;
             node[1] = 0;
         }
     }
 }
+#pragma scheduling reset
 
 void fn_80234DE4(unsigned int arg0) {
     unsigned int *node;
