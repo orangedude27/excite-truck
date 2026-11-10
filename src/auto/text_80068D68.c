@@ -6018,35 +6018,39 @@ extern char lbl_80315230[];
 extern char lbl_80315260[];
 extern s32 HID_HostGetSDPRecord(void *, void *, u32, void *);
 void bta_hh_start_sdp(void *arg0, void *arg1) {
+    /* Start SDP for an incoming HID connection, or skip SDP and add a known device. */
     u8 status = 0x10;
-    u8 handle;
-    void *buffer;
-    u8 *dev = (u8 *)arg0;
-    u8 *data = (u8 *)arg1;
+    u8 hidHandle;
+    void *sdpBuf;
+    u8 *devCb = (u8 *)arg0;
+    u8 *eventData = (u8 *)arg1;
 
-    dev[0x14] = data[0xE];
-    dev[0x1B] = data[0xF];
-    if (dev[0x15] != 0) {
+    devCb[0x14] = eventData[0xE];
+    devCb[0x1B] = eventData[0xF];
+
+    if (devCb[0x15] != 0) {
         status = 0;
         if (lbl_8055DC80 >= 5)
             fn_8007093C(0x504, lbl_80315230);
-        if (dev[0x16] == 0xFF) {
-            status = HID_HostAddDev(dev + 8, *(u16 *)(dev + 0xE), &handle);
+
+        if (devCb[0x16] == 0xFF) {
+            status = HID_HostAddDev(devCb + 8, *(u16 *)(devCb + 0xE), &hidHandle);
             if (status == 0) {
                 ((void (*)(void *, u8, u16, s32, u8, u8))bta_hh_add_device_to_list)(
-                    arg0, handle, *(u16 *)(dev + 0xE), 0, dev[0x13], dev[0x15]);
-                ((u8 *)lbl_803C0D48 + handle)[0x214] = dev[0x12];
+                    arg0, hidHandle, *(u16 *)(devCb + 0xE), 0, devCb[0x13], devCb[0x15]);
+                ((u8 *)lbl_803C0D48 + hidHandle)[0x214] = devCb[0x12];
             }
         }
+
         bta_hh_sm_execute(arg0, 0x1707, &status);
         return;
     }
 
     if (*(void **)(lbl_803C0D48 + 0x228) == 0) {
-        buffer = GKI_getbuf(*(u16 *)(lbl_80559030 + 8));
-        *(void **)(lbl_803C0D48 + 0x228) = buffer;
+        sdpBuf = GKI_getbuf(*(u16 *)(lbl_80559030 + 8));
+        *(void **)(lbl_803C0D48 + 0x228) = sdpBuf;
         *(void **)(lbl_803C0D48 + 0x210) = arg0;
-        status = (u8)HID_HostGetSDPRecord(data + 8, buffer,
+        status = (u8)HID_HostGetSDPRecord(eventData + 8, sdpBuf,
                                           *(u16 *)(lbl_80559030 + 8),
                                           bta_hh_sdp_cback);
         if (status != 0) {
@@ -6056,6 +6060,7 @@ void bta_hh_start_sdp(void *arg0, void *arg1) {
             fn_800716F0(lbl_803C0D48 + 0x228);
         }
     }
+
     if (status != 0)
         bta_hh_sm_execute(arg0, 0x1707, &status);
 }
