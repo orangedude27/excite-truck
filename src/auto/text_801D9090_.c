@@ -92,6 +92,7 @@ void fn_801D9120(float *out, float *values, int count, float weight) {
         fn_801D9120(out + (1 << (count - 1)), values, count - 1, weight * value);
     }
 }
+#pragma pop
 #pragma dont_inline off
 #pragma scheduling default
 void fn_801D91D8(void) {
