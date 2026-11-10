@@ -135,8 +135,8 @@ void fn_8022F364(void *arg0) {
         node = fn_801284F8(0xc, lbl_803403CC);
         lbl_8055F014 = node;
         *(void **)node = arg0;
-        *(int *)((char *)node + 4) = 1;
-        *(void **)((char *)node + 8) = 0;
+        *(int *)((char *)lbl_8055F014 + 4) = 1;
+        *(void **)((char *)lbl_8055F014 + 8) = 0;
     } else {
         while (*(void **)((char *)node + 8) != 0) node = *(void **)((char *)node + 8);
         *(void **)((char *)node + 8) = fn_801284F8(0xc, lbl_803403CC);
