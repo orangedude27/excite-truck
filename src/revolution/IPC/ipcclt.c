@@ -579,6 +579,7 @@ s32 IOS_IoctlAsync(s32 fd, s32 type, void* in, s32 inSize, void* out,
     return ret;
 }
 
+/* Issues a synchronous IOS ioctl request and returns the resulting status. */
 s32 IOS_Ioctl(s32 fd, s32 type, void* in, s32 inSize, void* out, s32 outSize) {
     IPCRequestEx* req;
     s32 ret = __ios_Ipc1(fd, IPC_REQ_IOCTL, NULL, NULL, &req);
