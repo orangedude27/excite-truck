@@ -53,7 +53,6 @@ extern float lbl_80564D7C;
 extern float lbl_80564D80;
 extern float PSVECMag(void *);
 extern char lbl_8034ACC0[];
-extern char lbl_8055CF78[];
 extern unsigned char lbl_8055CF71;
 extern int fn_801E85B4(void);
 extern void fn_802BF160(void);
