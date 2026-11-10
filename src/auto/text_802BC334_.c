@@ -262,6 +262,7 @@ void *fn_802BC9B0(void *arg0, int arg1, float scale) {
     ((void (*)(void *, int))(*(void (**)(void *, int))((char *)*(void **)obj + 0x40)))(obj, arg1);
     return obj;
 }
+#pragma pop
 
 struct CurveData {
     int w0, w1, w2, w3, w4, w5;
