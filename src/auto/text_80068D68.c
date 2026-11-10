@@ -9430,6 +9430,44 @@ static tBTM_STATUS btm_set_inq_event_filter(UINT8 filter_cond_type, UINT8 *p_fil
     return 3;
 }
 
+/*
+ * btm_cb.btm_inq_vars - the inquiry variables inside the BTM control block
+ * (lbl_803C0F78) - as this build lays them out.  btm_int.h's
+ * tBTM_INQUIRY_VAR_ST describes a newer stack (inq_db[BTM_INQ_DB_SIZE] with
+ * 40 entries, an extra tBTM_INQ_PARMS.report_dup, other inq_active masks),
+ * while this one has 12 inquiry database entries of 0x1C bytes (see
+ * btm_inq_db_new) and an inqparms without report_dup, starting at 0x1834:
+ * mode, duration, max_resps, filter_cond_type and the 3-byte filter_cond.
+ * So the members are named by offset and read through a byte pointer; reading
+ * them through a struct view changes how the compiler allocates registers.
+ */
+#define BTM_INQ_DB_SIZE_HERE      12  /* inq_db[] entries in this build */
+#define btm_cb_inqfilter_cmpl_cb  (*(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x16B8))
+#define btm_cb_inq_p_bd_db        (*(tINQ_BDADDR **)(lbl_803C0F78 + 0x16DC))
+#define btm_cb_inq_num_bd_entries (*(UINT16 *)(lbl_803C0F78 + 0x16E0))
+#define btm_cb_inq_max_bd_entries (*(UINT16 *)(lbl_803C0F78 + 0x16E2))
+#define btm_cb_inq_mode           (lbl_803C0F78[0x1834]) /* tBTM_INQ_PARMS.mode */
+#define btm_cb_inq_duration       (lbl_803C0F78[0x1835])
+#define btm_cb_inq_max_resps      (lbl_803C0F78[0x1836])
+#define btm_cb_inq_filter_type    (lbl_803C0F78[0x1837])
+#define btm_cb_inq_filter_cond    (lbl_803C0F78 + 0x1838)
+#define btm_cb_per_inq_min_delay  (*(UINT16 *)(lbl_803C0F78 + 0x1840))
+#define btm_cb_per_inq_max_delay  (*(UINT16 *)(lbl_803C0F78 + 0x1842))
+#define btm_cb_inqfilt_active     (lbl_803C0F78[0x1844])
+#define btm_cb_pending_filt_cmpl  (lbl_803C0F78[0x1845])
+#define btm_cb_inq_state          (lbl_803C0F78[0x1847])
+#define btm_cb_inq_active         (lbl_803C0F78[0x1848])
+
+/* btm_inq.c's two static inquiry access codes; the game's symbols still carry
+   their lbl_ names, so they are aliased here (0x9e8b33 / 0x9e8b00). */
+#define general_inq_lap           lbl_80560D30
+#define limited_inq_lap           lbl_80560D34
+
+/* inq_active masks as this build numbers them; btm_api.h's are the newer
+   stack's (LIMITED 0x2, SSP 0x4, PERIODIC 0x8). */
+#define BTM_LIMITED_INQUIRY_ACTIVE_HERE   0x1
+#define BTM_PERIODIC_INQUIRY_ACTIVE_HERE  0x4
+
 void btm_event_filter_complete(UINT8 *p) {
     u8 *cleanup;
     u8 *base=lbl_803C0F78;
