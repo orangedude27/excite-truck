@@ -566,57 +566,51 @@ extern "C" void fn_80217874(void *arg0, int arg1) {
 #pragma scheduling invalid_target
 #pragma paired_single off
 #pragma cplusplus on
-extern "C" void fn_802179A0(void *arg0) {
-    class Dummy {
-    public:
-        virtual int f0(); virtual int f1(); virtual int f2(); virtual int f3();
-        virtual int f4(); virtual int f5(); virtual int f6(); virtual int f7();
-        virtual int f8(); virtual int f9(); virtual int f10(); virtual int f11();
-        virtual int f12(); virtual int f13(); virtual int f14(); virtual int f15();
-        virtual int f16(); virtual int f17(); virtual int f18(); virtual int f19();
-        virtual int f20(); virtual int f21(); virtual int f22(); virtual int f23();
-        virtual int f24();
-    };
-    char *base = (char *)arg0;
-    int scan;
-    int i;
-    float threshold;
-    char *entry;
-    Dummy *obj;
-    if (*(void **)(base + 0x450) != 0) scan = fn_802182F0(arg0, *(void **)(base + 0x450));
-    else scan = 0;
-    if (scan < 0) goto error;
-    threshold = lbl_80563490;
-    i = 0;
+/* Move the menu onto the next selectable widget after the current one, wrapping round
+   the group's widget array.  A widget is passed over unless it is showing (its `shown`
+   flag set, or its off-timer not run down yet -- see fn_80219044), answers yes to
+   IsSelectable() and is enabled. */
+extern "C" void fn_802179A0(void *menuGroup) {
+    UiMenuGroup *group = (UiMenuGroup *)menuGroup;
+    int index;
+    int step;
+    float timerLimit;
+    char *slot;
+    UiWidget *widget;
+    if (group->current != 0) index = fn_802182F0(menuGroup, group->current);
+    else index = 0;
+    if (index < 0) goto error;
+    timerLimit = lbl_80563490; /* 0.0f */
+    step = 0;
     goto check;
 loop:
-    scan++;
-    entry = base + (scan % *(int *)(base + 0x430)) * 4;
-    obj = (Dummy *)*(void **)(entry + 0x30);
+    index++;
+    slot = (char *)group + (index % group->widgetCount) * 4;
+    widget = (UiWidget *)*(void **)(slot + 0x30); /* group->widgets[] */
     {
         int eligible = 0;
-        if (*(unsigned char *)((char *)obj + 0x1A) != 0) goto eligible_yes;
-        if (*(float *)((char *)obj + 0x20) >= threshold) goto eligible_yes;
+        if (widget->shown != 0) goto eligible_yes;
+        if (widget->offTimer >= timerLimit) goto eligible_yes;
         goto eligible_check;
     eligible_yes:
         eligible = 1;
     eligible_check:
         if (eligible != 0 &&
-            obj->f24() != 0 &&
-            *(unsigned char *)((char *)obj + 0x1B) != 0) {
-            fn_80218198(arg0, (void **)obj);
+            widget->IsSelectable() != 0 &&
+            widget->enabled != 0) {
+            fn_80218198(menuGroup, (void **)widget);
             return;
         }
     }
-    i++;
+    step++;
 check:
-    if (i < *(int *)(base + 0x430) - 1) goto loop;
+    if (step < group->widgetCount - 1) goto loop;
     return;
 error:
     {
         extern void fn_802E30C8(const char *, ...);
         extern char lbl_8033D824[];
-        fn_802E30C8(lbl_8033D824);
+        fn_802E30C8(lbl_8033D824); /* "Couldn't find widget." */
     }
 }
 #pragma cplusplus reset
