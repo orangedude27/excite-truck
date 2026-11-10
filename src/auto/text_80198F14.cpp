@@ -2148,7 +2148,7 @@ extern "C" void fn_8019F03C(void* arg0) {
 }
 
 extern "C" void fn_8019F064(void *arg0, void *arg1) {
-    // Dispatch a collision query to the handler for the shape type stored at arg1+0x18.
+    /* Dispatch a collision/shape query by the 4-character type tag stored at arg1+0x18. */
     struct DispatchA { virtual void v0(); virtual void v1(); virtual void Call(void *); };
     struct DispatchB { virtual void u0(); virtual void u1(); virtual void Call(void *); };
     struct DispatchC { virtual void w0(); virtual void w1(); virtual void Call(void *); };
