@@ -356,6 +356,7 @@ loop_19:
     return (unsigned int) ((-1 - var_r16) | (var_r16 + 1)) >> 0x1FU;
 }
 void fn_8024CAAC(int arg0) {
+    /* Initialize 4 player/slot entries: copy a resource name (0x12 bytes) into lbl_80498A58, fill/clear per-slot data in lbl_80498AA0, and set the per-slot flag in lbl_8055F2D0. */
     extern char lbl_80498A58[];
     extern char lbl_80498AA0[];
     extern const char lbl_80343FA0[];
@@ -365,20 +366,20 @@ void fn_8024CAAC(int arg0) {
     extern void fn_801308F4(void *, int, int);
     extern void *memset(void *, int, unsigned int);
 
-    char sp8[0x64];
-    char *p27 = lbl_80498A58;
-    char *p26 = lbl_80498AA0;
-    unsigned char *p25;
-    int i;
+    char nameFormatBuf[0x64];
+    char *nameDest = lbl_80498A58;
+    char *dataDest = lbl_80498AA0;
+    unsigned char *flagDest;
+    int slotIndex;
 
-    i = 0;
-    p25 = &lbl_8055F2D0;
+    slotIndex = 0;
+    flagDest = &lbl_8055F2D0;
 
     do {
-        if (fn_8000DBAC(i) != 0) {
+        if (fn_8000DBAC(slotIndex) != 0) {
             const char *src = (const char *)fn_80131234(lbl_80343FA0);
             int count = 0x12;
-            char *dst = p27;
+            char *dst = nameDest;
             goto copy_char1;
         count_more1:
             count--;
@@ -390,16 +391,16 @@ void fn_8024CAAC(int arg0) {
             if ((signed char)(*dst++ = *src++) != 0)
                 goto count_more1;
         copy_done1:
-            memset(p26, 0, 0x64);
-            *p25 = arg0;
+            memset(dataDest, 0, 0x64);
+            *flagDest = arg0;
         } else {
             const char *src;
             int count;
             char *dst;
-            fn_801345D8(sp8, 0x64, lbl_80343FB4, i + 1);
-            src = (const char *)fn_80131234(sp8);
+            fn_801345D8(nameFormatBuf, 0x64, lbl_80343FB4, slotIndex + 1);
+            src = (const char *)fn_80131234(nameFormatBuf);
             count = 0x12;
-            dst = p27;
+            dst = nameDest;
             goto copy_char2;
         count_more2:
             count--;
@@ -411,14 +412,14 @@ void fn_8024CAAC(int arg0) {
             if ((signed char)(*dst++ = *src++) != 0)
                 goto count_more2;
         copy_done2:
-            fn_801308F4(p26, 0x64, ((int (*)(int, int))fn_8001EF98)(0, i));
-            *p25 = 1;
+            fn_801308F4(dataDest, 0x64, ((int (*)(int, int))fn_8001EF98)(0, slotIndex));
+            *flagDest = 1;
         }
-        i++;
-        p27 += 0x12;
-        p26 += 0x64;
-        p25++;
-    } while (i < 4);
+        slotIndex++;
+        nameDest += 0x12;
+        dataDest += 0x64;
+        flagDest++;
+    } while (slotIndex < 4);
 }
 
 #pragma dont_inline reset
