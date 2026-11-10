@@ -232,6 +232,9 @@ arg0[8] *= scale;
 }
 }
 #pragma pop
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void *fn_802BC9B0(void *arg0, int arg1, float scale) {
     extern void *fn_801284F8(int, int);
     extern float lbl_80564D1C, lbl_80564D20;
@@ -672,11 +675,12 @@ void fn_802BD4DC(void *arg0, int arg1) {
     char *entry;
     int offset;
     unsigned int i;
-    unsigned char b2, b6, b3, b0, b1, b4, b5;
+    unsigned char b6, b2, b3, b0, b1, b4, b5, b7;
     b4 = p[4];
+    b7 = p[7];
     b5 = p[5];
     b6 = p[6];
-    p[4] = p[7];
+    p[4] = b7;
     b0 = p[0];
     b3 = p[3];
     p[7] = b4;
