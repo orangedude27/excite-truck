@@ -32,8 +32,9 @@ int fn_801B7688(int arg0) {
         goto done;
 
 middle:
-        if (zero != 0) goto shared;
-        if (state == 1) result = 0;
+        if (zero == 0) {
+            if (state == 1) result = 0;
+        }
         goto done;
 
 shared:
@@ -112,6 +113,8 @@ void fn_801B7760(int arg0, int arg1, float farg0, float farg1) {
 #pragma scheduling on
 extern void fn_80135B24(void *, float);
 extern void fn_80136468(void *, float);
+#pragma push
+#pragma processor 750
 void fn_801B78EC(int arg0, int arg1, int arg2, float farg0, float farg1, float farg2) {
     struct Triple {
         int first;
@@ -173,62 +176,72 @@ void fn_801E9E78(void *, float *, float *, int *);
 void fn_801B7BA8(float *, float *, float *);
 extern float lbl_80562710, lbl_80562724, lbl_80562728, lbl_8056272C;
 void fn_801B7C8C(int arg0, float *arg1, float *arg2) {
-    float base[3];
-    float points[9];
-    float matrix[12];
-    float out[9];
+    struct XF { float m[9]; float p[3]; } xf;
+    struct V2 { float x, y; };
+    float pts[9];
     float normal[3];
-    float cross[3];
     float delta1[3];
     float delta2[3];
-    int flags;
-    int i;
-    float x = arg2[0];
-    float y = arg2[1];
-    float nx = -x;
-    float a = arg1[0];
-    float b = arg1[1];
-    float z = (float)nx;
+    struct V2 d;
+    int sp8;
+    int i, found;
+    float a, b, z;
+    float t1, t2;
 
-    base[0] = a;
-    base[1] = lbl_80562708;
-    base[2] = b;
-
-    points[0] = a + x * lbl_80562724;
-    points[1] = lbl_80562708;
-    points[2] = b + y * lbl_80562724;
-    points[3] = a + x * lbl_80562710 + y * lbl_80562710;
-    points[4] = lbl_80562708;
-    points[5] = b + y * lbl_80562710 + z * lbl_80562710;
-    points[6] = a + y * lbl_80562728;
-    points[7] = lbl_80562708;
-    points[8] = b + z * lbl_80562728;
-
-    fn_801E9DC4((char *)arg0 + 0x40, arg1, arg2);
+    d = *(struct V2 *)arg2;
+    a = arg1[0];
+    b = arg1[1];
+    z = -d.x;
+    xf.p[0] = a;
+    xf.p[1] = lbl_80562708;
+    xf.p[2] = b;
+    normal[0] = lbl_80562708;
+    normal[1] = lbl_80562704;
+    normal[2] = lbl_80562708;
+    pts[0] = a + arg2[0] * lbl_80562724;
+    pts[1] = lbl_80562708;
+    pts[2] = b + arg2[1] * lbl_80562724;
+    t1 = a + arg2[0] * lbl_80562710 + d.y * lbl_80562710;
+    t2 = b + arg2[1] * lbl_80562710 + z * lbl_80562710;
+    pts[3] = t1;
+    pts[4] = lbl_80562708;
+    pts[5] = t2;
+    pts[6] = t1 + d.y * lbl_80562728;
+    pts[7] = lbl_80562708;
+    pts[8] = t2 + z * lbl_80562728;
+    d.x = d.y;
+    d.y = z;
+    ((void (*)(void *))fn_801E9DC4)((char *)arg0 + 0x40);
+    found = 0;
     for (i = 0; i < 3; i++) {
-        if (fn_801E9E30((char *)arg0 + 0x40, &points[i * 3]) == 0)
+        if (fn_801E9E30((char *)arg0 + 0x40, &pts[i * 3]) == 0) {
+            found = 1;
             break;
+        }
     }
-    flags = i < 3;
-    if (!flags) {
-        fn_801E9E78((char *)arg0 + 0x40, base, matrix, (int *)0);
-        delta1[0] = points[3] - points[0];
-        delta1[1] = points[4] - points[1];
-        delta1[2] = points[5] - points[2];
-        delta2[0] = points[6] - points[0];
-        delta2[1] = points[7] - points[1];
-        delta2[2] = points[8] - points[2];
-        PSVECCrossProduct(delta2, delta1, matrix);
-        PSVECNormalize(matrix, matrix);
+    if (found == 0) {
+        fn_801E9E78((char *)arg0 + 0x40, xf.p, normal, &sp8);
+        delta1[0] = pts[3] - pts[0];
+        delta1[1] = pts[4] - pts[1];
+        delta1[2] = pts[5] - pts[2];
+        delta2[0] = pts[6] - pts[0];
+        delta2[1] = pts[7] - pts[1];
+        delta2[2] = pts[8] - pts[2];
+        PSVECCrossProduct(delta2, delta1, normal);
+        PSVECNormalize(normal, normal);
     } else {
-        fn_801E9DC4((char *)arg0 + 0x40, arg1, arg2);
-        fn_801E9E78((char *)arg0 + 0x40, base, matrix, (int *)0);
+        ((void (*)(void *))fn_801E9DC4)((char *)arg0 + 0x40);
+        fn_801E9E78((char *)arg0 + 0x40, xf.p, normal, &sp8);
     }
-    fn_801B7BA8(out, matrix, arg2);
-    base[0] += out[3] * lbl_8056272C;
-    base[1] += out[4] * lbl_8056272C;
-    base[2] += out[5] * lbl_8056272C;
-    *(float **)(arg0) = (float *)0;
+    fn_801B7BA8(xf.m, normal, arg2);
+    xf.p[0] += xf.m[3] * lbl_8056272C;
+    xf.p[1] += xf.m[4] * lbl_8056272C;
+    xf.p[2] += xf.m[5] * lbl_8056272C;
+    *(struct XF *)arg0 = xf;
+    ((int *)arg0)[0xF] = 0;
+    ((float *)arg0)[0xC] = lbl_80562708;
+    ((float *)arg0)[0xD] = lbl_80562708;
+    ((float *)arg0)[0xE] = lbl_80562708;
 }
 
 extern void *fn_80178C9C(void);
