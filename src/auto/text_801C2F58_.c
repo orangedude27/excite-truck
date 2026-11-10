@@ -1289,40 +1289,41 @@ void fn_801C7524(void) {
 #pragma paired_single reset
 #pragma scheduling reset
 void fn_801C756C(void) {
-    register f64 value;
-    register u32 offset;
-    register s32 maxRank;
+    /* Parse the input string into a time, update the selected entry's score/rank, sort entries, then refresh display. */
+    register f64 parsedValue;
+    register u32 entryOffset;
+    register s32 highestRank;
     register s32 i;
     if (lbl_8055E7F0 <= 0)
         goto done;
-    value = (f64)(f32)atof(lbl_804380F0);
-    maxRank = 0;
+    parsedValue = (f64)(f32)atof(lbl_804380F0);
+    highestRank = 0;
     i = 0;
-    offset = 0;
+    entryOffset = 0;
     goto check;
 loop:
-    if (fn_801C34CC(*(f32*)((u8*)lbl_8055E7F8 + offset), (f32)value)) {
-        s32 rank = *(s32*)((u8*)lbl_8055E7F8 + offset + 4);
-        if (rank > maxRank)
-            maxRank = rank;
+    if (fn_801C34CC(*(f32*)((u8*)lbl_8055E7F8 + entryOffset), (f32)parsedValue)) {
+        s32 rank = *(s32*)((u8*)lbl_8055E7F8 + entryOffset + 4);
+        if (rank > highestRank)
+            highestRank = rank;
     }
-    offset += 0x30C;
+    entryOffset += 0x30C;
     i++;
 check:
     if (i < lbl_8055E7F0)
         goto loop;
     {
-        register s32 index = lbl_8055E828;
-        register u8 *base = (u8*)lbl_8055E7F8;
-        if (*(s32*)(base + index * 0x30C + 8) == 1) {
-            *(f32*)(base + index * 0x30C + 0x58) =
-                (f32)value + (*(f32*)(base + index * 0x30C + 0x58) -
-                              ((f32*)base)[index * 195]);
+        register s32 selectedIndex = lbl_8055E828;
+        register u8 *entryBase = (u8*)lbl_8055E7F8;
+        if (*(s32*)(entryBase + selectedIndex * 0x30C + 8) == 1) {
+            *(f32*)(entryBase + selectedIndex * 0x30C + 0x58) =
+                (f32)parsedValue + (*(f32*)(entryBase + selectedIndex * 0x30C + 0x58) -
+                                    ((f32*)entryBase)[selectedIndex * 195]);
         }
     }
     *(f32*)((u8*)lbl_8055E7F8 + lbl_8055E828 * 0x30C) =
-        fn_801C3450((f32)value);
-    *(s32*)((u8*)lbl_8055E7F8 + lbl_8055E828 * 0x30C + 4) = maxRank + 1;
+        fn_801C3450((f32)parsedValue);
+    *(s32*)((u8*)lbl_8055E7F8 + lbl_8055E828 * 0x30C + 4) = highestRank + 1;
     qsort((void*)lbl_8055E7F8, lbl_8055E7F0, 0x30C,
           (int (*)(const void*, const void*))fn_801C3B7C);
 done:
