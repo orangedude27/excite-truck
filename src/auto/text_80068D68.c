@@ -12118,6 +12118,8 @@ void btm_sec_conn_req(u8 *bd_addr, u8 *dev_class) {
     void *buf;
     u8 *base;
     u8 (*callback)(u8 *, u8 *);
+
+    /* Handle incoming HCI connection request: reject if pairing is required or app callback declines, else cache address/class and accept via L2CAP. */
     if (lbl_803C0F78[0x197A] != 0 &&
         ((dev = (u8 *)btm_find_dev(bd_addr)) == 0 || (dev[0x76] & 0x10) == 0)) {
         if (lbl_803C0F78[0x27C0] >= 4)
@@ -12126,12 +12128,14 @@ void btm_sec_conn_req(u8 *bd_addr, u8 *dev_class) {
         if (buf != 0) ((void (*)(void *, u8 *, u8))btsnd_hcic_reject_conn)(buf, bd_addr, 0xF);
         return;
     }
+
     callback = *(u8 (**)(u8 *, u8 *))(lbl_803C0F78 + 0x1934);
     if (callback != 0 && callback(bd_addr, dev_class) == 0) {
         buf = GKI_getpoolbuf(2);
         if (buf != 0) ((void (*)(void *, u8 *, u8))btsnd_hcic_reject_conn)(buf, bd_addr, 0xF);
         return;
     }
+
     base = lbl_803C0F78;
     memcpy(base + 0x27B4, bd_addr, 6);
     memcpy(base + 0x27BA, dev_class, 3);
