@@ -586,12 +586,13 @@ void fn_802C92D8(void) {
     fn_802C8D74();
 }
 
-void fn_802C92DC(int x0, int y0, int x1, int y1, int screen) {
+/* Draws an axis-aligned quad outline/strip on the given screen if fn_801E4F20(4) succeeds. */
+void fn_802C92DC(int left, int top, int right, int bottom, int screen) {
     if (((int (*)(int))fn_801E4F20)(4) != 0) {
-        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 0, (float)x1, (float)y0, 0.0f, 0.0f, 0.0f);
-        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 0, (float)x0, (float)y0, 0.0f, 0.0f, 0.0f);
-        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 1, (float)x1, (float)y1, 0.0f, 0.0f, 0.0f);
-        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 1, (float)x0, (float)y1, 0.0f, 0.0f, 0.0f);
+        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 0, (float)right, (float)top, 0.0f, 0.0f, 0.0f);
+        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 0, (float)left, (float)top, 0.0f, 0.0f, 0.0f);
+        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 1, (float)right, (float)bottom, 0.0f, 0.0f, 0.0f);
+        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 1, (float)left, (float)bottom, 0.0f, 0.0f, 0.0f);
         fn_801E4FF4();
     }
 }
