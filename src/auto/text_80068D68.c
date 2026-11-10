@@ -10598,6 +10598,72 @@ void bta_dm_discover(void *arg0) {
     }
 }
 
+/* BTA device-manager search: SDK names for this (older) BTE revision's DM
+ * search control block and the BTA system helpers around it.  bta_dm_int.h and
+ * bd.h declare these names for the newer stack the reference sources use, so
+ * alias them to the labels this unit was given.
+ *
+ * bta_dm_search_cb is the SDK's tBTA_DM_SEARCH_CB; the field offsets below are
+ * the ones this revision uses.
+ */
+#define bta_dm_search_cb                        lbl_803C0B98
+#define bdcpy                                   fn_80070FA4  /* copy a BD_ADDR */
+#define bta_sys_sendmsg                         fn_80071450  /* -> BTA task */
+#define bta_sys_start_timer                     fn_8007146C
+#define bta_sys_stop_timer                      fn_8007148C
+#define bta_dm_service_search_remname_cback     fn_80072AE4
+
+/* bta_dm_search_cb fields */
+#define DM_SCB_P_SEARCH_CBACK                   ((void (*)(int, void *))*(u32 *)bta_dm_search_cb)
+#define DM_SCB_P_INQ_INFO                       (*(void **)(bta_dm_search_cb + 4))
+#define DM_SCB_SERVICES                         (*(u32 *)(bta_dm_search_cb + 8))
+#define DM_SCB_SERVICES_TO_SEARCH               (*(u32 *)(bta_dm_search_cb + 0xC))
+#define DM_SCB_SERVICES_FOUND                   (*(u32 *)(bta_dm_search_cb + 0x10))
+#define DM_SCB_PEER_BDADDR                      (bta_dm_search_cb + 0x1A)
+#define DM_SCB_PEER_NAME                        (bta_dm_search_cb + 0x20)
+#define DM_SCB_SDP_DB_TIMER                     (bta_dm_search_cb + 0x58)
+#define DM_SCB_SERVICE_INDEX                    (bta_dm_search_cb[0x70])
+#define DM_SCB_WAIT_LINK                        (bta_dm_search_cb[0x78])
+#define DM_SCB_LINK_TOUT_PENDING                (bta_dm_search_cb[0x79])
+
+/* tBTM_INQ_INFO of this revision: the peer's address, and the flag saying
+ * whether its remote name is already known. */
+#define INQ_INFO_BD_ADDR(p)                     ((u8 *)(p) + 2)
+#define INQ_INFO_KNOWS_REM_NAME(p)              (((u8 *)(p))[0x10])
+
+/* btm_cb.page_timeout, in 0.625 ms slots (set by BTM_WritePageTimeout). */
+#define BTM_CB_PAGE_TIMEOUT                     (*(u16 *)(lbl_803C0F78 + 0x64C))
+
+/* tBTA_DM_MSG: BT_HDR followed by the event's payload. */
+#define DM_MSG_EVENT(p)                         (*(u16 *)(p))
+#define DM_MSG_BD_ADDR(p)                       ((u8 *)(p) + 8)
+#define DM_MSG_BD_NAME(p)                       ((u8 *)(p) + 0xE)
+#define BTA_DM_MSG_SIZE                         0x110
+
+/* tBTA_DM_MSG events (bta_dm_int.h's DM search events). */
+#ifndef BTA_DM_REMT_NAME_EVT
+#define BTA_DM_REMT_NAME_EVT                    0x204
+#define BTA_DM_SDP_RESULT_EVT                   0x205
+#define BTA_DM_DISCOVERY_RESULT_EVT             0x207
+#endif
+
+/* tBTA_DM_SEARCH_EVT codes for the application's search callback. */
+#ifndef BTA_DM_INQ_CMPL_EVT
+#define BTA_DM_INQ_CMPL_EVT                     1
+#define BTA_DM_DISC_RES_EVT                     2
+#endif
+
+/* tBTA_DM_SEARCH: what the search callback is handed with each event. */
+typedef union {
+    u8  num_resps;                              /* BTA_DM_INQ_CMPL_EVT */
+    struct {
+        u8  bd_addr[6];                         /* 0x00 */
+        u8  bd_name[0xFA];                      /* 0x06 */
+        u32 db_search_time;                     /* 0x100 */
+        u8  _tail[4];                           /* 0x104 */
+    } disc_res;                                 /* BTA_DM_DISC_RES_EVT */
+} BtaDmSearch;
+
 void bta_dm_inq_cmpl(void *arg0) {
     extern void bta_dm_remname_cback(u8 *);
     u8 result[0x108], info[0x108];
@@ -11202,26 +11268,26 @@ BOOLEAN btm_is_sco_active_by_bdaddr(BD_ADDR addr) {
 }
 
 BOOLEAN BTM_SecRegister(tBTM_APPL_INFO *arg0) {
-    volatile u32 *dest = (volatile u32 *)(lbl_803C0F78 + 0x190C);
+    u8 *p = lbl_803C0F78;
     volatile u32 *src = (volatile u32 *)arg0;
     u32 first = src[0];
     u32 second = src[1];
-    u8 level = lbl_803C0F78[0x27C0];
-    u32 third;
+    u8 level = p[0x27C0];
     u32 fourth;
-    u32 fifth;
+    u32 third;
     u32 sixth;
+    register u32 fifth;
 
-    dest[0] = first;
-    dest[1] = second;
+    *(u32 *)(p + 0x190C) = first;
+    *(u32 *)(p + 0x1910) = second;
     third = src[2];
     fourth = src[3];
-    dest[2] = third;
-    dest[3] = fourth;
+    *(u32 *)(p + 0x1914) = third;
+    *(u32 *)(p + 0x1918) = fourth;
     fifth = src[4];
     sixth = src[5];
-    dest[4] = fifth;
-    dest[5] = sixth;
+    *(u32 *)(p + 0x191C) = fifth;
+    *(u32 *)(p + 0x1920) = sixth;
     if (level >= 4)
         fn_8007093C(0xD0003, lbl_80316870);
     return TRUE;
