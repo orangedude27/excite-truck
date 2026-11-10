@@ -6158,6 +6158,8 @@ void bta_hh_open_cmpl_act(void *arg0, void *arg1) {
     u8 *cb;
     u8 handle;
     u8 status;
+    /* HID host open completion: build open event, register connection, then
+     * send queued virtual-cable setup or report open-complete. */
     if (arg1 != 0) handle = (u8)*(u16 *)((u8 *)arg1 + 6);
     else handle = dev[0x16];
     memset(local, 0, 8);
