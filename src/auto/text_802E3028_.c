@@ -42,6 +42,13 @@ void fn_802E3090(void) {
     }
 }
 
+void fn_802E30C8(const char *fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+    fn_802E3028(fmt, args, 0);
+    va_end(args);
+}
+
 extern void fn_802E30C8(const char *, ...);
 extern char lbl_8034CF34[];
 extern void fn_802E3150(void *);
