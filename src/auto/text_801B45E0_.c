@@ -264,6 +264,7 @@ extern void fn_801B4C9C(int, int);
 extern void fn_801B4C58();
 extern void fn_801B4C60();
 extern float fn_801B4D10(int, int);
+#pragma use_lmw_stmw off
 int fn_801B49D4(void *arg0, void **arg1, void **arg2, float *arg3, int arg4) {
     int index;
     int value;
