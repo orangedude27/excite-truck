@@ -2113,21 +2113,22 @@ void fn_8011A4F8(u32 arg0, void *arg1) {
 }
 
 void fn_8011A6A0(void* arg0) {
-    s32 status = DVDGetDriveStatus();
-    s32 remaining = *(s32*)((u8*)arg0 + 0xB8) - *(s32*)((u8*)arg0 + 0x90);
-    if (status == 10)
+    /* Pump DVD streaming reads: check drive status, flag errors/cancel, and queue the next async read chunk when ready. */
+    s32 driveStatus = DVDGetDriveStatus();
+    s32 bytesRemaining = *(s32*)((u8*)arg0 + 0xB8) - *(s32*)((u8*)arg0 + 0x90);
+    if (driveStatus == 10)
         goto check_read;
-    if (status >= 10)
+    if (driveStatus >= 10)
         goto status_high;
-    if (status == -1)
+    if (driveStatus == -1)
         goto set_flag;
-    if (status < -1)
+    if (driveStatus < -1)
         goto check_read;
-    if (status < 3)
+    if (driveStatus < 3)
         goto check_read;
     goto set_flag;
 status_high:
-    if (status >= 12)
+    if (driveStatus >= 12)
         goto check_read;
 set_flag:
     *(s32*)((u8*)arg0 + 0x20) = 1;
@@ -2135,26 +2136,26 @@ set_flag:
 check_read:
     if (*(s32*)((u8*)arg0 + 0xC4) != 0)
         goto done;
-    if (status == 0)
+    if (driveStatus == 0)
         goto read_valid;
-    if (status == 10)
+    if (driveStatus == 10)
         goto read_valid;
     goto done;
 done:
     return;
 read_valid:
-    if (*(u32*)((u8*)arg0 + 0xA0) >= 0x8000 && remaining != 0) {
+    if (*(u32*)((u8*)arg0 + 0xA0) >= 0x8000 && bytesRemaining != 0) {
         *(s32*)((u8*)arg0 + 0xC8) = *(s32*)((u8*)arg0 + 0x2C);
         *(s32*)((u8*)arg0 + 0xCC) = fn_80116D30();
         *(s32*)((u8*)arg0 + 0x24) = 1;
-        if ((u32)remaining > 0x8000)
-            remaining = 0x8000;
-        else if (remaining & 0x1F) {
-            s32 pad = (-remaining) & 0x1F;
+        if ((u32)bytesRemaining > 0x8000)
+            bytesRemaining = 0x8000;
+        else if (bytesRemaining & 0x1F) {
+            s32 pad = (-bytesRemaining) & 0x1F;
             *(s32*)((u8*)arg0 + 0x94) = pad;
-            remaining += pad;
+            bytesRemaining += pad;
         }
-        DVDReadAsyncPrio((u8*)arg0 + 0x54, *(s32*)((u8*)arg0 + 0xAC), remaining,
+        DVDReadAsyncPrio((u8*)arg0 + 0x54, *(s32*)((u8*)arg0 + 0xAC), bytesRemaining,
             *(s32*)((u8*)arg0 + 0xB4) + (*(s32*)((u8*)arg0 + 0x90) - *(s32*)((u8*)arg0 + 0x94)),
             fn_8011A4F8, 0);
         goto done;
