@@ -2503,12 +2503,11 @@ void fn_80192F74(void *arg0) {
 extern void *__AXGetStudio_80178C90(void);
 extern s32 fn_801B2F54(s32);
 extern f32 fn_8018AE3C(void *);
-#pragma scheduling invalid_target
-#pragma use_lmw_stmw off
+#pragma push
+#pragma processor 750
 void fn_80192F80(void *arg0) {
     s32 result;
     f32 value;
-
     *(s32 *)__AXGetStudio_80178C90() = 0;
     result = fn_801B2F54(*(s32 *)((u8 *)arg0 + 0x3C));
     *(s32 *)((u8 *)__AXGetStudio_80178C90() + 4) = result;
@@ -2519,8 +2518,7 @@ void fn_80192F80(void *arg0) {
     value = ((f32 (*)(void *))fn_8018AE4C)(*(void **)((u8 *)arg0 + 0x34));
     *(f32 *)((u8 *)__AXGetStudio_80178C90() + 0x10) = value;
 }
-#pragma use_lmw_stmw reset
-#pragma scheduling on
+#pragma pop
 int fn_80193010(void) { return 0x20; }
 
 void fn_80193018(void *arg0, void *arg1) {
