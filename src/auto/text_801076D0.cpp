@@ -5449,6 +5449,25 @@ extern "C" f32 fn_80111C10(s32 arg0) {
     return *(f32*)(arg0 + 0x50) + (f32)var_r30 * GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80104F90(arg0);
 }
 
+// Panic strings of nw4hbm's ut_TextWriterBase.cpp (the TextWriter copy this unit holds).
+#define UT_TEXTWRITERBASE_CPP lbl_80329560 /* "ut_TextWriterBase.cpp" */
+#define UT_TEXTWRITERBASE_PTR_ERROR lbl_80329578 /* "NW4HBM:Pointer Error\nthis(=%p) is not valid pointer." */
+// NW4HBM_ASSERT_VALID_PTR(this) as expanded in ut_TextWriterBase.cpp: nw4hbm::db::Panic
+// unless the pointer lies in one of the Wii's mapped windows (MEM1, MEM2, IO, ...).
+#define TWB_CHECK_THIS(self, line) \
+    { \
+        unsigned int twb_addr = (unsigned int)(self); \
+        int twb_r4 = 1, twb_r5 = 1, twb_r6 = 1, twb_r7 = 1, twb_r8 = 1, twb_r9 = 1; \
+        unsigned int twb_top = twb_addr & 0xFF000000U; \
+        if (twb_top != 0x80000000U && (twb_addr & 0xFF800000U) != 0x81000000U) twb_r9 = 0; \
+        if (twb_r9 == 0 && (twb_addr & 0xF8000000U) != 0x90000000U) twb_r8 = 0; \
+        if (twb_r8 == 0 && twb_top != 0xC0000000U) twb_r7 = 0; \
+        if (twb_r7 == 0 && (twb_addr & 0xFF800000U) != 0xC1000000U) twb_r6 = 0; \
+        if (twb_r6 == 0 && (twb_addr & 0xF8000000U) != 0xD0000000U) twb_r5 = 0; \
+        if (twb_r5 == 0 && (twb_addr & 0xFFFFC000U) != 0xE0000000U) twb_r4 = 0; \
+        if (twb_r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(UT_TEXTWRITERBASE_CPP, line, UT_TEXTWRITERBASE_PTR_ERROR, self); \
+    }
+
 /* nw4hbm::ut::CharWriter::SetCursorX(f32) (ut_TextWriterBase.cpp): put the
    writer's cursor at this absolute X. The writer pointer is first checked
    against the Wii's memory windows; one outside them panics. */
