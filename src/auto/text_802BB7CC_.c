@@ -90,6 +90,140 @@ void fn_802BB958(short arg0, int arg1, unsigned char *arg2, unsigned char *arg3)
         arg2++;
     } while (var_r28 < 6);
 }
+
+extern void *fn_802B51E4(int, int);
+extern void fn_802B52B4(void *);
+extern int fn_802B52C0(int, void *);
+extern char *strchr(const char *, int);
+extern char lbl_8055CF18[];
+int fn_802BBA08(void *arg0, int arg1) {
+    struct Image {
+        int width;
+        int height;
+        int *pixels;
+    };
+    char *var_r27;
+    struct Image *image;
+    int *var_r25;
+    int *var_r24;
+    int var_r22;
+    int var_r23;
+    int var_r26;
+    int var_r28;
+    int var_r29;
+    int var_r30;
+    int temp_r0;
+    int width;
+    int height;
+    int row;
+    int *pixels;
+    char filename[0x80];
+    char *var_r5;
+    char *var_r6;
+    char *var_r4;
+    int var_r4_2;
+    signed char temp_r3_2;
+    signed char temp_r3_3;
+
+    var_r27 = (char *)arg0;
+    image = (struct Image *)fn_802B51E4(0x200, 0x200);
+    if (image != 0) {
+        var_r25 = &lbl_804C00B0[arg1];
+        var_r30 = 0;
+        var_r26 = 0;
+        var_r29 = 0;
+        var_r24 = var_r25;
+        var_r28 = 0;
+        var_r22 = 0;
+        var_r23 = 0;
+loop_y:
+        var_r24 = var_r25;
+        var_r28 = 0;
+        var_r22 = 0;
+        var_r23 = 0;
+loop_layer:
+        if (*var_r24 != 0) {
+            var_r28 |= (((unsigned int)fn_802D972C(
+                (void *)*var_r24, var_r30, var_r29) >> 8) & 0xFF) << var_r23;
+        }
+        var_r22++;
+        var_r24++;
+        var_r23 += 8;
+        if (var_r22 < 3)
+            goto loop_layer;
+
+        height = image->height;
+        width = image->width;
+        row = height - 1;
+        pixels = image->pixels;
+        row -= var_r29;
+        temp_r0 = row * width;
+        var_r29++;
+        *(int *)((char *)pixels + (temp_r0 << 2) + var_r26) = var_r28;
+        if (var_r29 < 0x200)
+            goto loop_y;
+
+        var_r30++;
+        var_r26 += 4;
+        if (var_r30 < 0x200) {
+            var_r29 = 0;
+            goto loop_y;
+        }
+
+        var_r5 = filename;
+        var_r4_2 = 0x80;
+        goto copy_char;
+copy_check:
+        var_r4_2--;
+        if (var_r4_2 > 0)
+            goto copy_char;
+        *--var_r5 = 0;
+        goto after_copy;
+copy_char:
+        temp_r3_2 = (signed char)*var_r27++;
+        *var_r5++ = (char)temp_r3_2;
+        if (temp_r3_2 != 0)
+            goto copy_check;
+after_copy:
+        {
+            char *dot = strchr(filename, '.');
+            if (dot != 0) {
+                dot = strchr(filename, '.');
+                *dot = 0;
+            }
+        }
+
+        var_r6 = filename;
+        var_r4_2 = 0x80;
+scan_name:
+        if ((signed char)*var_r6 != 0)
+            goto scan_step;
+        goto append_check;
+scan_step:
+        var_r4_2--;
+        var_r6++;
+        goto scan_name;
+append_check:
+        if (var_r4_2 <= 0)
+            goto finish;
+        var_r4 = lbl_8055CF18;
+append_char:
+        temp_r3_3 = (signed char)*var_r4++;
+        *var_r6++ = (char)temp_r3_3;
+        if (temp_r3_3 != 0)
+            goto append_limit;
+        goto finish;
+append_limit:
+        var_r4_2--;
+        if (var_r4_2 > 0)
+            goto append_char;
+        *--var_r6 = 0;
+finish:
+        fn_802B52C0((int)filename, image);
+        fn_802B52B4(image);
+    }
+}
+
 #pragma pop
 #pragma push
 #pragma scheduling invalid_target
@@ -206,6 +340,8 @@ extern int fn_802D972C(void *, int, int);
 extern int fn_802E30C8(const char*, ...);
 extern char lbl_8034AAF0[];
 #pragma scheduling invalid_target
+#pragma push
+#pragma use_lmw_stmw off
 void fn_802BBE34(void) {
     int var_r28 = 0;
     do {
@@ -350,6 +486,70 @@ void fn_802BBFA4(unsigned char *arg0, int arg1, int arg2, int arg3) {
             base++;
         } while (sum != 0xFF && j < 6);
     }
+}
+
+extern int fn_802B05DC(void);
+extern void *memset(void *, int, unsigned long);
+extern float lbl_80564D00;
+extern float lbl_80564D04;
+#pragma push
+#pragma processor 750
+int fn_802BC09C(short arg0, int arg1, int arg2, signed char arg3, float farg0) {
+    unsigned char sp10[6];
+    unsigned char sp8[6];
+    int result = 0;
+    int cur = fn_802B05DC();
+    if (arg2 != cur) {
+        int bad;
+        int x = fn_802BB928(arg0);
+        short y = fn_802BB93C(arg1);
+        int i;
+        float f, a, b;
+        unsigned char base, old;
+        unsigned char *d;
+        unsigned char *s;
+        bad = 0;
+        if ((short)x < 0 || (short)x >= 0x200 || y < 0 || y >= 0x200) bad = 1;
+        if (bad == 0) {
+            unsigned char *w = sp10;
+            for (i = 0; i < 6; i++) { *w = fn_802BBD38(arg0, arg1, i); w++; }
+            if (cur == -1 || sp10[cur] < 0x80) {
+                if (cur == -1) base = 0;
+                else base = sp10[cur];
+                memset(sp8, 0, 6);
+                sp8[arg2] = arg3;
+                d = sp8;
+                s = sp10;
+                for (i = 0; i < 3; i++) {
+                    a = (float)s[0];
+                    b = (float)d[0];
+                    f = a + farg0 * (b - a);
+                    if (f < lbl_80564D00) f = f - lbl_80564D04;
+                    else f = lbl_80564D04 + f;
+                    d[0] = (unsigned char)(int)f;
+                    a = (float)s[1];
+                    b = (float)d[1];
+                    f = a + farg0 * (b - a);
+                    if (f < lbl_80564D00) f = f - lbl_80564D04;
+                    else f = lbl_80564D04 + f;
+                    d[1] = (unsigned char)(int)f;
+                    s += 2;
+                    d += 2;
+                }
+                if (cur != -1) {
+                    old = sp8[cur];
+                    sp8[cur] = base;
+                    if (old > base) sp8[arg2] = sp8[arg2] - (old - base);
+                    else sp8[arg2] = sp8[arg2] - (base - old);
+                }
+                ((void (*)(unsigned char *, int, int))fn_802BBFA4)(sp8, arg2, cur);
+                fn_802BBF44(sp8, arg2);
+                fn_802BB958(arg0, arg1, sp8, sp10);
+                result = 1;
+            }
+        }
+    }
+    return result;
 }
 #pragma pop
 extern int lbl_804C0098[4];
