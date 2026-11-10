@@ -424,22 +424,27 @@ struct ContestEntry {
 };
 
 #pragma cplusplus on
-void fn_8023C0EC(void *arg0, s32 arg1, s32 arg2) {
-    struct StringObject {
+void fn_8023C0EC(void *setup, s32 eventId, s32 contestIdx) {
+    /* A contest's parameter table object (ContestEntry+0x20): slot 0xC asks
+     * whether the table holds an element, slot 0x14 reads one as a string. */
+    struct TableObject {
         virtual void f0();
-        virtual s32 check(const char *);
+        virtual s32 hasElement(const char *elementName);
         virtual void f2();
-        virtual const char *get(const char *);
+        virtual const char *getString(const char *elementName);
     };
-    void *temp_r30 = fn_80012820(arg1);
-    s32 *temp_r31 = fn_80012870(arg1, arg2);
-    char *source;
+    struct EventRecord *event = (struct EventRecord *)fn_80012820(eventId);
+    struct ContestEntry *contest = (struct ContestEntry *)fn_80012870(eventId, contestIdx);
+    const char *source;
     s32 count;
     char *dest;
-    if (((StringObject *)*(void **)((u8 *)temp_r31 + 0x20))->check((const char *)&lbl_8055BB3C) != 0) {
-        source = (char *)((StringObject *)*(void **)((u8 *)temp_r31 + 0x20))->get((const char *)&lbl_8055BB3C);
+
+    /* The contest's own "track" element when its table has one, otherwise the
+     * track its event was defined with. */
+    if (((struct TableObject *)contest->table)->hasElement((const char *)&lbl_8055BB3C) != 0) {
+        source = ((struct TableObject *)contest->table)->getString((const char *)&lbl_8055BB3C);
         count = 0x20;
-        dest = (char *)arg0;
+        dest = (char *)setup;
         while ((s8)(*dest++ = *source++) != 0) {
             if (--count <= 0) {
                 dest[-1] = 0;
@@ -447,9 +452,9 @@ void fn_8023C0EC(void *arg0, s32 arg1, s32 arg2) {
             }
         }
     } else {
-        source = (char *)temp_r30 + 8;
+        source = event->track;
         count = 0x20;
-        dest = (char *)arg0;
+        dest = (char *)setup;
         while ((s8)(*dest++ = *source++) != 0) {
             if (--count <= 0) {
                 dest[-1] = 0;
@@ -457,7 +462,8 @@ void fn_8023C0EC(void *arg0, s32 arg1, s32 arg2) {
             }
         }
     }
-    fn_8000824C((u8 *)arg0 + 0x3e4, *temp_r31);
+    /* which contest of which event this setup was built for */
+    fn_8000824C((char *)setup + 0x3e4, contest->index);
 }
 #pragma cplusplus reset
 
