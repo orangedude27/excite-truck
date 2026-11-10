@@ -19722,11 +19722,12 @@ void PORT_StartInd(void *arg0) {
 }
 
 void PORT_ParNegInd(void *mcb, u8 dlci, u16 mtu, u8 mode, u8 param) {
+    /* Handles RFCOMM parameter-negotiation indication: selects/updates the port, negotiates MTU/mode, and replies. */
     u8 *port;
     register u32 value;
     u32 limit;
-    register u8 send_mode;
-    register u8 send_param;
+    register u8 sendMode;
+    register u8 sendParam;
 
     port = (u8 *)port_find_mcb_dlci_port(mcb, dlci);
     if (lbl_803C4828[0x414] >= 4)
@@ -19762,25 +19763,25 @@ set_state_two:
     }
 state_ready:
     if (mode == 0) {
-        send_mode = 0;
-        send_param = 0;
+        sendMode = 0;
+        sendParam = 0;
         goto send_reply;
     }
     if (((u8 *)mcb)[0x72] == 2) {
         *(s16 *)(port + 0x98) = param;
         if (param == 0)
             port[0x24] = 1;
-        send_mode = 0xE0;
+        sendMode = 0xE0;
         value = *(u16 *)(port + 0x9C);
         limit = value < 7 ? value : 7;
-        send_param = limit;
-        *(u16 *)(port + 0x9A) = send_param;
+        sendParam = limit;
+        *(u16 *)(port + 0x9A) = sendParam;
     } else {
-        send_mode = 0;
-        send_param = 0;
+        sendMode = 0;
+        sendParam = 0;
     }
 send_reply:
-    ((void (*)(void *, u16, u16, u16, u16))fn_800936BC)(mcb, dlci, *(u16 *)(port + 0x12), send_mode, send_param);
+    ((void (*)(void *, u16, u16, u16, u16))fn_800936BC)(mcb, dlci, *(u16 *)(port + 0x12), sendMode, sendParam);
 }
 
 extern void RFCOMM_DlcEstablishReq(void *, u8);
