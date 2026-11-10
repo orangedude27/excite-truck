@@ -14002,62 +14002,63 @@ void fn_800833F4(void *arg0) { btm_cback(1, arg0); }
 
 extern char lbl_80317558[];
 extern char lbl_8031759C[];
+/* GAP find-address-by-name callback: processes remote name read results during inquiry, updates the output record/status, invokes the completion callback, and clears the in-progress state. */
 void gap_find_addr_name_cb(void *param) {
-    u8 *state = lbl_803C3740;
-    u16 *out = (u16 *)(state + 0x34);
-    u8 *p = (u8 *)param;
-    void *info;
-    u16 val;
+    u8 *cb = lbl_803C3740;
+    u16 *result = (u16 *)(cb + 0x34);
+    u8 *evt = (u8 *)param;
+    void *inqRec;
+    u16 status;
 
-    if (state[0x7E] == 0) return;
-    if (*(u16 *)p == 0) {
-        if (state[0x28] >= 4)
-            ((void (*)(u32, void *, u16, void *))fn_8007096C)(0xE0003, lbl_80317558, *(u16 *)p, p + 4);
-        if (strncmp((char *)(out + 4), (char *)(p + 4), strlen((char *)(out + 4))) == 0) {
-            memcpy((u8 *)out + 2, (u8 *)*(void **)(state + 0x30) + 2, 6);
-            *out = 0;
+    if (cb[0x7E] == 0) return;
+    if (*(u16 *)evt == 0) {
+        if (cb[0x28] >= 4)
+            ((void (*)(u32, void *, u16, void *))fn_8007096C)(0xE0003, lbl_80317558, *(u16 *)evt, evt + 4);
+        if (strncmp((char *)(result + 4), (char *)(evt + 4), strlen((char *)(result + 4))) == 0) {
+            memcpy((u8 *)result + 2, (u8 *)*(void **)(cb + 0x30) + 2, 6);
+            *result = 0;
         } else {
-            info = BTM_InqDbNext(*(void **)(state + 0x30));
-            *(void **)(state + 0x30) = info;
-            if (info != 0) {
-                if ((u8)BTM_ReadRemoteDeviceName((u8 *)info + 2, gap_find_addr_name_cb) == 1)
+            inqRec = BTM_InqDbNext(*(void **)(cb + 0x30));
+            *(void **)(cb + 0x30) = inqRec;
+            if (inqRec != 0) {
+                if ((u8)BTM_ReadRemoteDeviceName((u8 *)inqRec + 2, gap_find_addr_name_cb) == 1)
                     return;
-                switch (*(u16 *)p & 0xFF) {
-                case 0: val = 0; break;
-                case 1: val = 0x10B; break;
-                case 2: val = 0x103; break;
+                switch (*(u16 *)evt & 0xFF) {
+                case 0: status = 0; break;
+                case 1: status = 0x10B; break;
+                case 2: status = 0x103; break;
                 case 4:
-                case 5: val = 0x109; break;
-                case 6: val = 0x10C; break;
-                case 7: val = 0x10D; break;
-                case 8: val = 0x115; break;
-                default: val = 0x114; break;
+                case 5: status = 0x109; break;
+                case 6: status = 0x10C; break;
+                case 7: status = 0x10D; break;
+                case 8: status = 0x115; break;
+                default: status = 0x114; break;
                 }
-                *out = val;
+                *result = status;
             } else {
-                *out = 0x102;
+                *result = 0x102;
             }
         }
     } else {
-        if (state[0x28] >= 4)
+        if (cb[0x28] >= 4)
             ((void (*)(u32, void *))fn_80070954)(0xE0003, lbl_8031759C);
-        switch (*(u16 *)p & 0xFF) {
-        case 0: val = 0; break;
-        case 1: val = 0x10B; break;
-        case 2: val = 0x103; break;
+        switch (*(u16 *)evt & 0xFF) {
+        case 0: status = 0; break;
+        case 1: status = 0x10B; break;
+        case 2: status = 0x103; break;
         case 4:
-        case 5: val = 0x109; break;
-        case 6: val = 0x10C; break;
-        case 7: val = 0x10D; break;
-        case 8: val = 0x115; break;
-        default: val = 0x114; break;
+        case 5: status = 0x109; break;
+        case 6: status = 0x10C; break;
+        case 7: status = 0x10D; break;
+        case 8: status = 0x115; break;
+        default: status = 0x114; break;
         }
-        *out = val;
+        *result = status;
     }
-    if (*(void (**)(u32, u16 *))(state + 0x2C) != 0)
-        (*(void (**)(u32, u16 *))(state + 0x2C))(5, out);
-    state[0x7E] = 0;
-    *(void **)(state + 0x2C) = 0;
+    if (*(void (**)(u32, u16 *))(cb + 0x2C) != 0)
+        (*(void (**)(u32, u16 *))(cb + 0x2C))(5, result);
+    cb[0x7E] = 0;
+    *(void **)(cb + 0x2C) = 0;
 }
 
 extern char lbl_80317620[];
