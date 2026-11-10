@@ -255,15 +255,20 @@ void fn_802BE8B4(s16 arg0, s16 arg1, s32 arg2) {
 }
 #pragma use_lmw_stmw off
 void fn_802BEAB0(void) {
-    s16 size, y, x;
-    s32 value, step;
+    s32 step;
+    s32 start;
+    s32 value;
+    s16 size;
+    s16 x;
+    s16 y;
     void *p;
     if (lbl_8055FACC == 0) {
-        for (size = 4; size <= 0x40; size <<= 1) {
-            x = size - 0x200;
+        for (size = 4; size <= 0x40; size *= 2) {
+            start = size - 0x200;
+            x = start;
             step = size * 2;
             for (; x < 0x200; x += step) {
-                for (y = size - 0x200; y < 0x200; y += step) {
+                for (y = start; y < 0x200; y += step) {
                     fn_802BE844(x, y, size);
                     p = fn_802BE844(x, y, size);
                     value = *(s32 *)((char *)p + 8);
