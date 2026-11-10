@@ -148,23 +148,19 @@ void *fn_801EAD6C(void *arg0, s32 arg1) {
 }
 void fn_801EADD8(void *arg0) {
     s32 value;
-    s32 sp8;
-    s32 spC;
-
-    if (*(s32 *)((u8 *)arg0 + 0x70) == -1) {
+    s32 sp[2];
+    if (*(s32 *)((char *)arg0 + 0x70) == -1) {
         return;
     }
-
-    if (*(s32 *)((u8 *)arg0 + 0x78) == 0) {
+    if (*(s32 *)((char *)arg0 + 0x78) == 0) {
         value = 0;
     } else {
         fn_802DAC54();
-        sp8 = *(s32 *)((u8 *)arg0 + 0x78);
-        spC = -0x100;
-        value = fn_802C7A40(1, lbl_80488228, 0x50, 1, &sp8, 2);
+        sp[0] = *(s32 *)((char *)arg0 + 0x78);
+        sp[1] = -0x100;
+        value = fn_802C7A40(1, lbl_80488228, 0x50, 1, sp, 2);
     }
-    fn_802C70AC(*(s32 *)((u8 *)arg0 + 0x70), (u8 *)arg0 + 4,
-                value, *(s32 *)((u8 *)arg0 + 0x74));
+    fn_802C70AC(*(s32 *)((char *)arg0 + 0x70), (char *)arg0 + 4, value, *(s32 *)((char *)arg0 + 0x74));
 }
 
 #pragma dont_inline fn_801EABA8
