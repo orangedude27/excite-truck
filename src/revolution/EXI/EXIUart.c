@@ -5,47 +5,48 @@ static BOOL BarnacleEnabled = FALSE;
 static u32 Dev = EXI_DEV_EXT;
 static EXIChannel Chan = EXI_CHAN_0;
 
-static BOOL ProbeBarnacle(EXIChannel chan, u32 dev, u32* id) {
-    BOOL error;
-    u32 cmd;
+/* Probe for a Barnacle (UART) device on an EXI channel/device by reading its ID; returns TRUE if a valid ID is present. */
+static BOOL ProbeBarnacle(EXIChannel channel, u32 device, u32* outId) {
+    BOOL failed;
+    u32 idCommand;
 
-    if (chan != EXI_CHAN_2 && dev == EXI_DEV_EXT) {
-        if (!EXIAttach(chan, NULL)) {
+    if (channel != EXI_CHAN_2 && device == EXI_DEV_EXT) {
+        if (!EXIAttach(channel, NULL)) {
             return FALSE;
         }
     }
 
-    error = !EXILock(chan, dev, NULL);
-    if (error) {
+    failed = !EXILock(channel, device, NULL);
+    if (failed) {
         goto _detach;
     }
 
-    error = !EXISelect(chan, dev, EXI_FREQ_1MHZ);
-    if (error) {
+    failed = !EXISelect(channel, device, EXI_FREQ_1MHZ);
+    if (failed) {
         goto _unlock;
     }
 
-    cmd = 0x20011300;
-    error = !EXIImm(chan, &cmd, sizeof(u32), EXI_WRITE, NULL);
-    error |= !EXISync(chan);
+    idCommand = 0x20011300;
+    failed = !EXIImm(channel, &idCommand, sizeof(u32), EXI_WRITE, NULL);
+    failed |= !EXISync(channel);
 
-    error |= !EXIImm(chan, id, sizeof(u32), EXI_READ, NULL);
-    error |= !EXISync(chan);
-    error |= !EXIDeselect(chan);
+    failed |= !EXIImm(channel, outId, sizeof(u32), EXI_READ, NULL);
+    failed |= !EXISync(channel);
+    failed |= !EXIDeselect(channel);
 
 _unlock:
-    EXIUnlock(chan);
+    EXIUnlock(channel);
 
 _detach:
-    if (chan != EXI_CHAN_2 && dev == EXI_DEV_EXT) {
-        EXIDetach(chan);
+    if (channel != EXI_CHAN_2 && device == EXI_DEV_EXT) {
+        EXIDetach(channel);
     }
 
-    if (error) {
+    if (failed) {
         return FALSE;
     }
 
-    return *id != EXI_ID_INVALID;
+    return *outId != EXI_ID_INVALID;
 }
 
 void __OSEnableBarnacle(EXIChannel chan, u32 dev) {
