@@ -10,6 +10,41 @@ struct Fn8021734CEntry {
     virtual void m0();
     virtual void update();
 };
+/* A widget (menu item) of the UI menu groups in this file.  This ABI keeps two
+   destructor slots ahead of the first declared method, so declared method N sits
+   at vtable + 0x8 + N * 4. */
+struct UiWidget {
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+    virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+    virtual void v8(); virtual void v9(); virtual void v10();
+    virtual void OnSelected();   /* 0x34: became the group's current widget */
+    virtual void OnDeselected(); /* 0x38: no longer the group's current widget */
+    virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16();
+    virtual void v17(); virtual void v18(); virtual void v19(); virtual void v20();
+    virtual void v21(); virtual void v22(); virtual void v23();
+    virtual int IsSelectable();  /* 0x68: the menu can be moved onto this widget */
+    virtual void v25();
+    virtual int HitTest(int, int); /* 0x70: is this group-local (x, y) on the widget */
+    unsigned char gap0[0x16];
+    unsigned char shown;   /* 0x1A: on state; fn_80219044 flips it as the timers run out */
+    unsigned char enabled; /* 0x1B: cleared while the group holds this widget's mask bit */
+    unsigned char gap1[4];
+    float offTimer;        /* 0x20: runs down while `shown` is clear */
+};
+
+/* The UI menu group most of this file's functions take as their first argument
+   (built by fn_80216D40).  Widgets are added to the array at +0x30. */
+struct UiMenuGroup {
+    unsigned char gap0[0x30];
+    void *widgets[1];  /* 0x30: widgetCount widget pointers */
+    unsigned char gap1[0x3FC];
+    int widgetCount;   /* 0x430 */
+    unsigned char gap2[0x14];
+    void *hovered;     /* 0x448: widget the pointer is over (fn_80217734) */
+    void *pressed;     /* 0x44C: widget the pointer went down on (fn_8021749C) */
+    void *current;     /* 0x450: the widget the menu is on (fn_80218198) */
+};
+
 struct Fn8021832CObj {
     virtual void s0(); virtual void s1(); virtual void s2(); virtual void s3();
     virtual void s4(); virtual void s5(); virtual void s6(); virtual void s7();
