@@ -465,12 +465,10 @@ found:
 #pragma pop
 s32 fn_80019438(void) {
     s32 i = 0;
-
-    while (i < (fn_80019088)()) {
+    while (i < fn_80019088()) {
         void *entry = fn_80019054(i);
-        if (stricmp((char *)entry, lbl_80558C54) == 0) {
-            s32 val = ((s32 *)entry)[1];
-            if (fn_80019098(val) != 0 && fn_80019144(val) == 0) {
+        if (stricmp(*(const char **)entry, lbl_80558C54) == 0) {
+            if (fn_80019098(((s32 *)entry)[1]) != 0 && fn_80019144(((s32 *)entry)[1]) == 0) {
                 return 0;
             }
         }
