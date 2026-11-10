@@ -1,5 +1,6 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+#pragma dont_inline fn_802920D0
 
 #pragma cplusplus on
 struct QueryObject_80292114 {
@@ -174,18 +175,15 @@ void fn_802919AC(void *arg0) {
         i++;
     }
 }
-#pragma scheduling on
+#pragma push
+#pragma processor 750
 void fn_80291A1C(void) {
-    /* Fix note: initialize settings using either the virtual query result or the default value. */
     struct QueryObject_80291A1C *obj;
-    float value;
+    float value = lbl_805644A0;
     int *settings;
-
     obj = (struct QueryObject_80291A1C *)fn_802AE414(&lbl_8055C948);
     if (obj != 0) {
         value = obj->f8(&lbl_8055C938, lbl_805644A0);
-    } else {
-        value = lbl_805644A0;
     }
     *(float *)&lbl_804B4010 = lbl_80564484;
     settings = (int *)&lbl_804B4010;
@@ -198,7 +196,7 @@ void fn_80291A1C(void) {
     settings[6] = -1;
     ((float *)settings)[7] = value;
 }
-
+#pragma pop
 void fn_80291AC8(void) {
     int *settings = (int *)&lbl_804B4010;
     fn_802CAC54(settings[3]);
