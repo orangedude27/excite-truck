@@ -1346,59 +1346,63 @@ s32 fn_8016DE10(s32 *arg0, s32 arg1) {
     return *arg0 + (arg1 * 0x10);
 }
 
-void fn_8016DE20(void *arg0) {
-    char sp20[0x20];
-    register char *format = lbl_803306D0;
-    register void *object = arg0;
-    s32 value;
-    s32 mode;
+/* Refreshes an object's display text/resource handle based on its mode/index.
+ * Frees any existing handle, formats mode-specific label text, resolves display
+ * metrics for that label, then allocates/updates the active handle; logs an
+ * error for unknown modes. */
+void fn_8016DE20(void *obj) {
+    char textBuffer[0x20];
+    register char *formatBase = lbl_803306D0;
+    register void *object = obj;
+    s32 activeId;
+    s32 displayMode;
 
-    value = *(s32 *)((u8 *)object + 0x24);
-    if (value != -1) {
-        if (value != -1) {
-            fn_8001B450(value);
+    activeId = *(s32 *)((u8 *)object + 0x24);
+    if (activeId != -1) {
+        if (activeId != -1) {
+            fn_8001B450(activeId);
             *(s32 *)((u8 *)object + 0x24) = -1;
         }
     }
 
-    mode = *(s32 *)((u8 *)object + 0x44);
-    switch (mode) {
+    displayMode = *(s32 *)((u8 *)object + 0x44);
+    switch (displayMode) {
     case 0:
-        fn_801345D8(sp20, 0x1E, format + 0x264, *(s32 *)((u8 *)object + 0x2C));
+        fn_801345D8(textBuffer, 0x1E, formatBase + 0x264, *(s32 *)((u8 *)object + 0x2C));
         break;
     case 1:
-        fn_801345D8(sp20, 0x1E, format + 0x270, *(s32 *)((u8 *)object + 0x2C));
+        fn_801345D8(textBuffer, 0x1E, formatBase + 0x270, *(s32 *)((u8 *)object + 0x2C));
         break;
     case 2:
-        fn_801345D8(sp20, 0x1E, format + 0x27C, *(s32 *)((u8 *)object + 0x2C));
+        fn_801345D8(textBuffer, 0x1E, formatBase + 0x27C, *(s32 *)((u8 *)object + 0x2C));
         break;
     default:
-        fn_802E317C(format + 0x288);
+        fn_802E317C(formatBase + 0x288);
         break;
     }
 
-    mode = *(s32 *)((u8 *)object + 0x44);
-    switch (mode) {
+    displayMode = *(s32 *)((u8 *)object + 0x44);
+    switch (displayMode) {
     case 0: {
-        FloatPair8016A6B0 result = fn_8016A6B0(sp20, 0xC);
+        FloatPair8016A6B0 result = fn_8016A6B0(textBuffer, 0xC);
         *(s32 *)((u8 *)object + 0x24) =
             fn_8001B308(&result, *(s32 *)((u8 *)object + 0x20), 2);
         break;
     }
     case 1: {
-        FloatPair8016A6B0 result = fn_8016A6B0(sp20, 9);
+        FloatPair8016A6B0 result = fn_8016A6B0(textBuffer, 9);
         *(s32 *)((u8 *)object + 0x24) =
             fn_8001B308(&result, *(s32 *)((u8 *)object + 0x20), 2);
         break;
     }
     case 2: {
-        FloatPair8016A6B0 result = fn_8016A6B0(sp20, 6);
+        FloatPair8016A6B0 result = fn_8016A6B0(textBuffer, 6);
         *(s32 *)((u8 *)object + 0x24) =
             fn_8001B308(&result, *(s32 *)((u8 *)object + 0x20), 2);
         break;
     }
     default:
-        fn_802E317C(format + 0x288);
+        fn_802E317C(formatBase + 0x288);
         break;
     }
 }
@@ -1690,8 +1694,9 @@ void fn_8016E918(void *arg0) {
     s32 result;
     *(void **)((u8 *)arg0 + 0x98) = fn_80145E70(lbl_80330BC8);
     result = fn_801284F8(8, lbl_80330BD8);
-    if (result)
-        *(void **)((u8 *)arg0 + 0xB8) = ((void *(*)(s32, s32))fn_802ADDD8)(result, 1);
+    if (result == 0) goto skip;
+    *(void **)((u8 *)arg0 + 0xB8) = ((void *(*)(s32, s32))fn_802ADDD8)(result, 1);
+skip:
     {
         volatile u8 *p = (volatile u8 *)arg0;
         fn_8016EA9C((void *)(p + 0xAC));
@@ -2023,7 +2028,7 @@ void fn_8016FD9C(f32 *arg0, void *arg1) {
     f32 input = *arg0;
     char sp8[0x20];
     f32 value = lbl_80561980;
-    value = (input < value) ? input : value;
+    value = (input <= value) ? input : value;
     fn_80130978(sp8, 0x20, value);
     fn_8014784C(arg1, lbl_80330B7C, lbl_80330B8C, 0);
     fn_801475D0(arg1, (const char *)&lbl_8055A248, (const char *)&lbl_8055A268, sp8);
