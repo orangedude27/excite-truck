@@ -3764,20 +3764,21 @@ extern "C" void fn_801A2D50(s32 arg0, void *arg1) {
     extern u8 lbl_8055E5A5;
     extern char lbl_80333448[];
     extern char lbl_8055A4C4[];
-    char *messages = lbl_80333448;
-    s32 kind = *(s32 *)((u8 *)arg1 + 0x18);
-    switch (kind) {
+    /* Dispatches collision/shape node handling based on the node's 4CC type tag. */
+    char *messageBase = lbl_80333448;
+    s32 nodeType = *(s32 *)((u8 *)arg1 + 0x18);
+    switch (nodeType) {
     case 0x504F4C59:
         break;
     case 0x53504852:
         fn_8019C854(arg1, (void *)arg0);
         break;
     case 0x47525550: {
-        u8 *entry = (u8 *)arg1;
+        u8 *groupEntry = (u8 *)arg1;
         s32 i = 0;
         while (i < *(s32 *)((u8 *)arg1 + 0x174)) {
-            fn_8019C854(*(void **)(entry + 0x24), (void *)arg0);
-            entry += 4;
+            fn_8019C854(*(void **)(groupEntry + 0x24), (void *)arg0);
+            groupEntry += 4;
             i++;
         }
         break;
@@ -3785,20 +3786,20 @@ extern "C" void fn_801A2D50(s32 arg0, void *arg1) {
     case 0x424F5820:
         if (!lbl_8055E5A4) {
             lbl_8055E5A4 = 1;
-            fn_802E30C8(lbl_8055A4C4, messages + 0x22C);
+            fn_802E30C8(lbl_8055A4C4, messageBase + 0x22C);
         }
         break;
     case 0x52414744:
         if (!lbl_8055E5A5) {
             lbl_8055E5A5 = 1;
-            fn_802E30C8(lbl_8055A4C4, messages + 0x254);
+            fn_802E30C8(lbl_8055A4C4, messageBase + 0x254);
         }
         break;
     case 0x464C5352:
         fn_8019D378(arg1, (void *)arg0);
         break;
     default:
-        fn_802E317C(messages + 0x280, kind);
+        fn_802E317C(messageBase + 0x280, nodeType);
         break;
     }
 }
