@@ -40,6 +40,22 @@ extern "C" void *fn_800FDA20(void *arg0, void *arg1) {
     return arg0;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" s32 Prepare__Q46nw4hbm3snd6detail9StrmSoundFPQ46nw4hbm3snd6detail14StrmBufferPoolQ56nw4hbm3snd6detail10StrmPlayer15StartOffsetTypeliPQ56nw4hbm3snd6detail10StrmPlayer12StrmCallbackUl(void* self, void* pool, s32 start, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+    struct V { virtual void a(); virtual void b(); virtual void c(); virtual void d(); virtual void e(); virtual void f(); virtual void g(); virtual void h(); virtual void i(); virtual void j(); virtual void k(); virtual void l(); virtual void m(); virtual void n(); virtual void o(); virtual void p(); virtual void q(); virtual void r(); virtual void s(); virtual void t(); virtual void u(); };
+    const char* file = lbl_80326C88;
+    if (*(s32*)((u8*)self + 0x10) == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x42, file + 0x14);
+    }
+    if (pool == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x43, file + 0x48);
+    }
+    if (pool == 0) return 0;
+    ((V*)self)->u();
+    return Prepare__Q46nw4hbm3snd6detail10StrmPlayerFPQ46nw4hbm3snd6detail14StrmBufferPoolQ56nw4hbm3snd6detail10StrmPlayer15StartOffsetTypeliPQ56nw4hbm3snd6detail10StrmPlayer12StrmCallbackUl((u8*)self + 0xD8, pool, start, arg3, arg4, arg5, arg6);
+}
+#pragma pop
 extern "C" void* __dt__Q46nw4hbm3snd6detail9StrmSoundFv(void* arg0, s32 arg1) {
     void* temp_r3;
     void* temp_r3_2;
@@ -72,49 +88,56 @@ extern "C" char lbl_80325894[];
 extern "C" char lbl_803258A0[];
 extern "C" char lbl_803258C4[];
 extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail9StrmSoundFi_800FDCB8(void* arg0, int arg1) {
-    int priority;
-    void* list;
-    void* node;
-    void* end;
+    struct LinkListImpl {
+        void* unused;
+        void* head;
+    };
+    struct PriorityList {
+        void* unused;
+        LinkListImpl list;
+    };
     void* soundNode;
-    void* iterator;
-    int otherPriority;
+    int priority;
+    PriorityList* list;
+    void* end;
+    void* cursor;
+    int value;
 
     SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(arg0, arg1);
-    priority = *(u8*)((u8*)arg0 + 0x74) + *(int*)((u8*)arg0 + 0x40);
-    if (priority > 0x7f) {
+    value = *(u8*)((u8*)arg0 + 0x74) + *(s32*)((u8*)arg0 + 0x40);
+    if (value > 0x7f) {
         priority = 0x7f;
-    } else if (priority < 0) {
-        priority = 0;
+    } else {
+        priority = value & ~(value >> 31);
     }
-    list = *(void**)((u8*)arg0 + 0x5f8);
+    list = *(PriorityList**)((u8*)arg0 + 0x5f8);
     if (arg0 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325894, 0x233, lbl_80325870);
     }
     soundNode = (u8*)arg0 + 0xb8;
-    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((u8*)list + 4, soundNode);
-    end = (u8*)list + 8;
-    node = *(void**)end;
-    iterator = end;
-    while (node != iterator) {
-        if (node == 0) {
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(&list->list, soundNode);
+    end = &list->list.head;
+    cursor = list->list.head;
+    while (cursor != end) {
+        if (cursor == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_803258C4, 0x23d, lbl_803258A0);
         }
-        otherPriority = *(u8*)((u8*)node - 0x44) + *(int*)((u8*)node - 0x78);
-        if (otherPriority > 0x7f) {
-            otherPriority = 0x7f;
-        } else if (otherPriority < 0) {
-            otherPriority = 0;
+        value = *(u8*)((u8*)cursor - 0x44) + *(s32*)((u8*)cursor - 0x78);
+        if (value > 0x7f) {
+            value = 0x7f;
+        } else {
+            value &= ~(value >> 31);
         }
-        if (priority < otherPriority) {
+        if (priority < value) {
             break;
         }
-        node = *(void**)node;
+        cursor = *(void**)cursor;
     }
     if (arg0 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325894, 0x233, lbl_80325870);
     }
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((u8*)list + 4, &node, soundNode);
+    void* node = cursor;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(&list->list, &node, soundNode);
 }
 
 extern "C" s32 fn_800FDDE8(void* arg0) {
@@ -136,4 +159,12 @@ extern "C" s32 fn_800FDE0C(s8* arg0) {
 extern "C" u32* fn_800FDE14(void) {
     return &lbl_8055DE70;
 }
+extern "C" void Shutdown__Q46nw4hbm3snd6detail10BasicSoundFv(void *);
+extern "C" int OSDisableInterrupts(void);
+extern "C" void OSRestoreInterrupts(int);
+extern "C" void fn_800EC848(void *, void *);
+extern "C" char lbl_80326DF0[];
+extern "C" char lbl_80326DC8[];
+extern "C" char lbl_80325870[];
+extern "C" char lbl_80325894[];
 
