@@ -356,6 +356,7 @@ int fn_80133844(const char *arg0) {
     if (c >= 0 && c < 0x100 && (*(unsigned short *)(*(int *)(table + 8) + c * 2) & 8)) return atoi(arg0) != 0;
     return stricmp(arg0, "true") == 0;
 }
+#pragma dont_inline off
 
 int fn_801338D8(const char *arg0) {
     char *p = fn_801337E4((char *)arg0);
