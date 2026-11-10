@@ -19301,43 +19301,44 @@ extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ..
 extern "C" void fn_800D2E3C(s32, s32, s32, s32);
 extern "C" const char *fn_800D3260(s32, s32, const char *, s32);
 extern "C" char *strchr(const char *, int);
-extern "C" void fn_800D30E8(s32 x, s32 y, const char *str, s32 arg3, s32 arg4) {
+/* Draw multi-line debug/text on screen, optionally drawing a background box per line and handling wrapping. */
+extern "C" void fn_800D30E8(s32 x, s32 y, const char *str, s32 wrapLongLines, s32 drawBackground) {
     s32 startX = x;
-    u16 width = *(u16 *)((u8 *)lbl_80407BD8 + 8);
-    s32 scaleX = width < 400 ? 1 : 2;
-    s32 maxCols = width / scaleX;
+    u16 screenWidth = *(u16 *)((u8 *)lbl_80407BD8 + 8);
+    s32 charScale = screenWidth < 400 ? 1 : 2;
+    s32 maxColumns = screenWidth / charScale;
 
     while ((s8)*str != 0) {
-        if (arg4 != 0) {
-            const char *p = str;
-            s32 len = 0;
+        if (drawBackground != 0) {
+            const char *scan = str;
+            s32 lineLen = 0;
             if (str == NULL) {
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EBA0, 0x132, lbl_8031EBF4);
             }
             for (;;) {
-                s8 c = *p++;
-                if (c == 0 || c == '\n') {
+                s8 ch = *scan++;
+                if (ch == 0 || ch == '\n') {
                     break;
                 }
-                if (c == '\t') {
-                    len = (len + 4) & ~3;
+                if (ch == '\t') {
+                    lineLen = (lineLen + 4) & ~3;
                 } else {
-                    len++;
+                    lineLen++;
                 }
             }
-            fn_800D2E3C(x - 6, y - 3, (len + 2) * 6, 13);
+            fn_800D2E3C(x - 6, y - 3, (lineLen + 2) * 6, 13);
         }
 
-        const char *next = fn_800D3260(x, y, str, (maxCols - x) / 6);
-        s8 c = *next;
+        const char *next = fn_800D3260(x, y, str, (maxColumns - x) / 6);
+        s8 ch = *next;
         str = next;
         y += 10;
-        if (c == '\n') {
+        if (ch == '\n') {
             x = startX;
             str++;
-        } else if (c != 0) {
+        } else if (ch != 0) {
             str++;
-            if (arg3 == 0) {
+            if (wrapLongLines == 0) {
                 const char *newline = strchr(str, '\n');
                 if (newline == NULL) {
                     break;
