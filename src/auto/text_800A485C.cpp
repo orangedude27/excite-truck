@@ -4908,63 +4908,85 @@ extern "C" s32 VFiPFFAT_ReadClusterPage(void *arg0, u32 arg1, s32 arg2, s32 *arg
 extern "C" s32 fn_800AF734(void *, s32, s32);
 extern "C" s32 fn_800AFF28(void *, s32, u16);
 extern "C" s32 fn_800B037C(void *, s32, s32);
-extern "C" s32 VFiPFFAT_WriteCluster(void *object, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
- u8 *p=(u8 *)object;
- u32 cluster=arg2, value=arg3, entry=arg1;
- u32 unused, flag=arg4;
- s32 result;
- u32 index, n, count, *table;
- { u8 *context = *(u8 **)(p+0x34);
- switch (*(s32 *)(context+0x1c)) {
- case 0:
-  if (value>0xfff) result=0x10;
-  else result=fn_800AF734(context,(u16)entry,(u16)value);
-  break;
- case 1:
-  if (value>0xffff) result=0x10;
-  else result=((s32 (*)(void *,s32,s32))fn_800AFF28)(context,entry,value);
-  break;
- case 2:
-  if (value>0xfffffff) result=0x10;
-  else result=fn_800B037C(context,entry,value);
-  break;
- default: result=0xf; break;
- }
- }
- if (result) return result;
- table=*(u32 **)(p+0x1c);
- if (table && flag==1) {
-  if (!value) {
-   n=*(u16 *)(p+0x20)+1;
-   index=cluster/n;
-   if (*(u32 *)(p+0x28)>=index) {
-    if (cluster%n==0) table[index]=0;
-    if (*(u32 *)(p+0x2c)>=cluster) {
-     count=cluster-1;
-     *(u32 *)(p+0x2c)=count;
-     n=*(u16 *)(p+0x20)+1;
-     *(u32 *)(p+0x24)=count/n;
-     *(u16 *)(p+0x22)=count%n;
+extern "C" s32 VFiPFFAT_WriteCluster(void *object, s32 clusterNum, s32 chainPos, s32 newValue, s32 keepCache) {
+    u8 *p = (u8 *)object;
+    u32 position = chainPos, value = newValue, entry = clusterNum;
+    u32 unused, flag = keepCache;
+    s32 result;
+    u32 index, pageSize, count, *table;
+
+    { u8 *volume = VF_CHAIN_VOLUME(p);
+    switch (VF_VOL_FAT_TYPE(volume)) {
+    case VF_FAT_TYPE_12:
+        if (value > 0xfff)
+            result = 0x10; /* no room for it in a 12-bit entry */
+        else
+            result = VFiPFFAT_SetEntry12NoPage(volume, (u16)entry, (u16)value);
+        break;
+
+    case VF_FAT_TYPE_16:
+        if (value > 0xffff)
+            result = 0x10;
+        else
+            result = ((s32 (*)(void *, s32, s32))VFiPFFAT_SetEntry16NoPage)(volume, entry, value);
+        break;
+
+    case VF_FAT_TYPE_32:
+        if (value > 0xfffffff)
+            result = 0x10;
+        else
+            result = VFiPFFAT_SetEntry32NoPage(volume, entry, value);
+        break;
+
+    default:
+        result = 0xF; /* the volume holds no FAT the code knows */
+        break;
     }
-   }
-  } else if (entry!=lbl_802EEF40[*(s32 *)(*(u8 **)(p+0x34)+0x1c)*5+2]) {
-   result=fn_800ACF20(object,cluster,&unused,&flag);
-   if (result) return result;
-   if (flag==0) {
-    index=*(u32 *)(p+0x24);
-    count=*(u32 *)(p+0x28);
-    if (count>index && count!=0) {
-     if (cluster==index*(*(u16 *)(p+0x20)+1)) {
-      *(u16 *)(p+0x22)=0;
-      (*(u32 **)(p+0x1c))[index]=entry;
-      *(u32 *)(p+0x24)+=1;
-     } else *(u16 *)(p+0x22)+=1;
-     *(u32 *)(p+0x2c)=cluster;
     }
-   }
-  }
- }
- return 0;
+
+    if (result)
+        return result;
+
+    table = VF_CHAIN_TABLE(p);
+    if (table && flag == 1) {
+        if (!value) { /* the cluster is free now: the chain stops short of it */
+            pageSize = VF_CHAIN_PAGE_SIZE(p) + 1;
+            index = position / pageSize;
+            if (VF_CHAIN_PAGES(p) >= index) {
+                if (position % pageSize == 0)
+                    table[index] = 0; /* that page of the chain no longer starts here */
+                if (VF_CHAIN_LAST(p) >= position) { /* the file's last cluster moves back */
+                    count = position - 1;
+                    VF_CHAIN_LAST(p) = count;
+                    pageSize = VF_CHAIN_PAGE_SIZE(p) + 1;
+                    VF_CHAIN_PAGE(p) = count / pageSize;
+                    VF_CHAIN_PAGE_POS(p) = count % pageSize;
+                }
+            }
+        } else if (entry != VF_FAT_END_OF_CHAIN(VF_VOL_FAT_TYPE(VF_CHAIN_VOLUME(p)))) {
+            /* the chain goes on past this entry: follow it to the new position */
+            result = VFiPFFAT_GetChainEntry(object, position, &unused, &flag);
+            if (result)
+                return result;
+            if (flag == 0) { /* the cache does not reach it yet: take it on */
+                index = VF_CHAIN_PAGE(p);
+                count = VF_CHAIN_PAGES(p);
+                if (count > index && count != 0) {
+                    if (position == index * (VF_CHAIN_PAGE_SIZE(p) + 1)) {
+                        /* a new page of entries starts with this cluster */
+                        VF_CHAIN_PAGE_POS(p) = 0;
+                        VF_CHAIN_TABLE(p)[index] = entry;
+                        VF_CHAIN_PAGE(p) += 1;
+                    } else {
+                        VF_CHAIN_PAGE_POS(p) += 1;
+                    }
+                    VF_CHAIN_LAST(p) = position;
+                }
+            }
+        }
+    }
+
+    return 0;
 }
 
 extern "C" s32 fn_800AF8EC(void *, s32, u32, void *);
