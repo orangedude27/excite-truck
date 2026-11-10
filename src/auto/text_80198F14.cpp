@@ -2240,40 +2240,41 @@ extern u8 lbl_80562375;
 extern u8 lbl_80562376;
 extern u8 lbl_80562377;
 extern u8 lbl_80562378;
-extern "C" void fn_8019F26C(s32 arg0, void *arg1) {
-    u32 value = *(u32 *)((u8 *)arg1 + 0x18);
-    switch (value) {
+extern "C" void fn_8019F26C(s32 context, void *shape) {
+    /* Dispatch collision handling for a shape based on its 4-char type tag. */
+    u32 shapeType = *(u32 *)((u8 *)shape + 0x18);
+    switch (shapeType) {
     case 'FLSR':
-        fn_8019D19C((void *)arg0, arg1);
+        fn_8019D19C((void *)context, shape);
         return;
     case 'SPHR':
-        fn_8019CE4C(arg1, (void *)arg0);
+        fn_8019CE4C(shape, (void *)context);
         return;
     case 'TUBE':
-        fn_8019CF60(arg1, (void *)arg0);
+        fn_8019CF60(shape, (void *)context);
         return;
     case 'BOX ':
-        fn_8019D06C((void *)arg0, arg1, 0, 0);
+        fn_8019D06C((void *)context, shape, 0, 0);
         return;
     case 'GRUP':
     case 'POLY':
-        ((Fn801A401CDispatch *)arg1)->Call((void *)arg0);
+        ((Fn801A401CDispatch *)shape)->Call((void *)context);
         return;
     case 'RING':
-        fn_8019D378((void *)arg0, arg1);
+        fn_8019D378((void *)context, shape);
         return;
     case 'RAGD':
         break;
     default: {
-        u8 buffer[5] = {
+        u8 tagText[5] = {
             lbl_80562374,
             lbl_80562375,
             lbl_80562376,
             lbl_80562377,
             lbl_80562378
         };
-        *(u32 *)buffer = *(u32 *)((u8 *)arg1 + 0x18);
-        fn_802E30C8(lbl_80333614, buffer);
+        *(u32 *)tagText = *(u32 *)((u8 *)shape + 0x18);
+        fn_802E30C8(lbl_80333614, tagText);
         return;
     }
     }
