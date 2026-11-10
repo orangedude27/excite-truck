@@ -181,23 +181,19 @@ extern void fn_8028C92C(void *);
 #pragma cplusplus on
 #pragma scheduling invalid_target
 extern "C" void fn_8028A89C(void) {
-    void *obj;
-    s32 i;
-    void **p;
+    class Dummy { public: virtual void v0(); virtual void v1(); };
     fn_8028BC88(lbl_8055F6F0);
     fn_8028BC88(lbl_8055F6F4);
     fn_8028C92C((void *)lbl_8055F6F8);
-    ((void (*)(void *))(*(void ***)lbl_8055F6FC)[3])(lbl_8055F6FC);
-    p = (void **)lbl_804B3238;
-    i = 0;
+    ((Dummy *)lbl_8055F6FC)->v1();
+    void **p = (void **)lbl_804B3238;
+    s32 i = 0;
     do {
-        obj = *p;
-        if (obj != 0)
-            ((void (*)(void *))(*(void ***)obj)[3])(obj);
+        void *obj = *p;
+        if (obj) ((Dummy *)obj)->v1();
         i++;
-        if (i >= 8) break;
         p = (void **)((u8 *)p + 0x10);
-    } while (1);
+    } while (i < 8);
 }
 
 #pragma cplusplus on
