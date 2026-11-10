@@ -335,14 +335,16 @@ done:
     fn_802C9904();
 }
 
-extern "C" s32 fn_8000D540(s32 arg0) {
+extern "C" s32 fn_8000D540(s32 input) {
+    /* Handle menu/controller input: dispatch to alternate handler when active,
+       cycle/select the current slot for navigation keys, and run the confirm callback. */
     if (lbl_8055D405 != 0) {
-        return fn_8000C848(arg0);
+        return fn_8000C848(input);
     }
     if (lbl_8055D407 != 0) {
         return 0;
     }
-    switch (arg0) {
+    switch (input) {
     case 0x1B:
         lbl_8055D404 = 0;
         if (((s32 (*)(s32))lbl_8055D408)(0) == 0) {
