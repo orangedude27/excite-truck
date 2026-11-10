@@ -1337,13 +1337,14 @@ struct VSingle {
 extern "C" void fn_8002F6AC(void *, void (*)(void));
 extern "C" void fn_801B2118(void);
 extern "C" void fn_80139E18(void *);
+#pragma cplusplus on
 extern "C" void fn_801B228C(void) {
     fn_8002F6AC(lbl_8055E684, fn_801B2118);
     lbl_8055E684 = 0;
     lbl_8055E678 = 0;
     if (lbl_8055E68C != 0) {
         if (lbl_8055E68C != 0) {
-            ((VTable68C *)lbl_8055E68C)->d2(1);
+            ((VSingle *)lbl_8055E68C)->m(1);
         }
         lbl_8055E68C = 0;
     }
