@@ -435,37 +435,38 @@ extern char lbl_80558BEC, lbl_80558BF4, lbl_80558BFC;
 extern char lbl_802FCF10[];
 extern void fn_801345D8(char *, int, const char *, int);
 #pragma cplusplus on
-extern "C" void fn_80016ED4(void *arg0) {
-    struct Interface {
+/* Registers a car definition from an interface object into the car definition table (lbl_8055D540) at the current count (lbl_8055D54C). */
+extern "C" void fn_80016ED4(void *carDefObj) {
+    struct CarDefInterface {
         virtual void m0();
         virtual void m1();
         virtual void m2();
         virtual void m3();
-        virtual char *m4(const char *, int);
+        virtual char *GetString(const char *key, int defaultValue);
         virtual void m5();
-        virtual int m6(const char *, int);
+        virtual int GetInt(const char *key, int defaultValue);
     };
-    struct Entry {
+    struct CarDefEntry {
         int id;
         int value;
         char name[0x40];
-        int unk48;
+        int rank;
         int unk4C;
         int unk50;
         int unk54;
         void *obj;
     };
-    Entry *entry;
+    CarDefEntry *entry;
     int value;
     char *name;
     int n;
     char *dst;
 
-    entry = (Entry *)(lbl_8055D540 + (int)lbl_8055D54C * 0x5C);
-    entry->obj = arg0;
+    entry = (CarDefEntry *)(lbl_8055D540 + (int)lbl_8055D54C * 0x5C);
+    entry->obj = carDefObj;
     entry->id = (int)lbl_8055D54C;
-    value = ((Interface *)arg0)->m6(&lbl_80558BEC, (int)lbl_8055D54C);
-    name = ((Interface *)arg0)->m4(&lbl_80558BF4, 0);
+    value = ((CarDefInterface *)carDefObj)->GetInt(&lbl_80558BEC, (int)lbl_8055D54C);
+    name = ((CarDefInterface *)carDefObj)->GetString(&lbl_80558BF4, 0);
     if (name != 0) {
         n = 0x40;
         dst = entry->name;
@@ -480,7 +481,7 @@ extern "C" void fn_80016ED4(void *arg0) {
     }
     entry->value = value;
     entry->unk54 = -1;
-    entry->unk48 = ((Interface *)arg0)->m6(&lbl_80558BFC, value);
+    entry->rank = ((CarDefInterface *)carDefObj)->GetInt(&lbl_80558BFC, value);
     entry->unk4C = -1;
     entry->unk50 = 0xFF008040;
     lbl_8055D54C = (void *)((int)lbl_8055D54C + 1);
