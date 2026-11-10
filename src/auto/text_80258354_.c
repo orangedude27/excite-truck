@@ -35,31 +35,94 @@ void fn_80258354(void) {
 }
 #pragma scheduling on
 
-void *fn_802583CC(void *o, int arg1, int arg2) {
- int i;
- char *p=(char *)o;
- if (o != 0) {
-  *(void **)p = &lbl_80344D98;
-  for (i=0;i<*(int *)(p+8);i++) fn_80235380(*(int *)(*(char **)(p+4)+i*0x48+0x40));
-  *(int *)(p+8)=0;
-  for (i=0;i<*(int *)(p+0x914);i++) {
-   void *v=*(void **)(*(char **)(p+0x910)+i*0x24+0x20);
-   if(v) { fn_802328D4(*(int *)v); *(int *)v=0; fn_80128668(v); }
-  }
-  *(int *)(p+0x914)=0;
-  for (i=0;i<*(int *)(p+0xda0);i++) {
-   void *v=*(void **)(*(char **)(p+0xd9c)+i*0x2c+0x20);
-   if(v) ((void (*)(void *,int))(*(void ***)v)[1])(v,1);
-  }
-  *(int *)(p+0xda0)=0;
-  if (*(char **)(p+0xd9c)!=0) { *(int *)(p+0xd9c)=0; *(int *)(p+0xda0)=0; *(int *)(p+0xda4)=0; }
-  if (*(char **)(p+0x910)!=0) { *(int *)(p+0x910)=0; *(int *)(p+0x914)=0; *(int *)(p+0x918)=0; }
-  if (*(char **)(p+4)!=0) { *(int *)(p+4)=0; *(int *)(p+8)=0; *(int *)(p+0xc)=0; }
-  if(arg1>0) fn_80128668(o);
- }
- return o;
-}
+#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+extern "C" void *fn_802583CC(void *o, int arg1, int arg2) {
+    struct Release { virtual void release(int); };
+    char *p = (char *)o;
+    int zero;
+    int idx;
+    int offset;
+    int scan;
+    int index3;
+    int offset3;
 
+    if (o != 0) {
+        *(void **)p = &lbl_80344D98;
+        offset = 0;
+        idx = 0;
+        goto L_check1;
+L_loop1:
+        fn_80235380(*(int *)(*(char **)(p + 4) + idx + 0x40));
+        idx += 0x48;
+        offset++;
+L_check1:
+        if (offset < *(int *)(p + 8))
+            goto L_loop1;
+        zero = 0;
+        *(int *)(p + 8) = zero;
+        scan = 0;
+        idx = 0;
+        goto L_check2;
+L_loop2:
+        offset = *(int *)(*(char **)(p + 0x910) + idx + 0x20);
+        if (offset != 0) {
+            fn_802328D4(*(int *)offset);
+            *(int *)offset = zero;
+            fn_80128668((void *)offset);
+        }
+        idx += 0x24;
+        scan++;
+L_check2:
+        if (scan < *(int *)(p + 0x914))
+            goto L_loop2;
+        zero = 0;
+        *(int *)(p + 0x914) = zero;
+        index3 = 0;
+        offset3 = 0;
+        goto L_check3;
+L_loop3:
+        if (*(void **)(*(char **)(p + 0xd9c) + offset3 + 0x20) != 0) {
+            void *item = *(void **)(*(char **)(p + 0xd9c) + offset3 + 0x20);
+            ((Release *)item)->release(1);
+        }
+        offset3 += 0x2c;
+        index3++;
+L_check3:
+        if (index3 < *(int *)(p + 0xda0))
+            goto L_loop3;
+        zero = 0;
+        *(int *)(p + 0xda0) = zero;
+        if ((unsigned int)p + 0xd9c != 0) {
+            if ((unsigned int)p + 0xd9c != 0) {
+                *(int *)(p + 0xd9c) = 0;
+                *(int *)(p + 0xda0) = 0;
+                *(int *)(p + 0xda4) = 0;
+            }
+        }
+        if ((unsigned int)p + 0x910 != 0) {
+            if ((unsigned int)p + 0x910 != 0) {
+                *(int *)(p + 0x910) = zero;
+                *(int *)(p + 0x914) = zero;
+                *(int *)(p + 0x918) = zero;
+            }
+        }
+        if ((unsigned int)p + 4 != 0) {
+            if ((unsigned int)p + 4 != 0) {
+                *(int *)(p + 4) = zero;
+                *(int *)(p + 8) = zero;
+                *(int *)(p + 0xc) = zero;
+            }
+        }
+        if (arg1 > 0)
+            fn_80128668(o);
+    }
+    return o;
+}
+#pragma cplusplus reset
+#pragma use_lmw_stmw on
+#pragma scheduling on
 extern int fn_8023512C(void *);
 #pragma scheduling invalid_target
 void fn_80258550(void *arg0, const char *arg1, const char *arg2, int arg3) {
@@ -135,30 +198,27 @@ extern float lbl_80563AC8;
 #pragma scheduling invalid_target
 void fn_802586F0(void *arg0, void *arg1, int arg2, int arg3) {
     char *base = (char *)arg0;
-    int index;
+    int count = 0x20;
     char *entry;
     char *dst;
     char *ptr = (char *)arg1;
-    int count = 0x20;
-    char c;
-    index = *(int *)(base + 0xDA0);
-    entry = *(char **)(base + 0xD9C) + index * 0x2C;
-    *(int *)(base + 0xDA0) = index + 1;
+    entry = *(char **)(base + 0xD9C) + (*(int *)(base + 0xDA0))++ * 0x2C;
     dst = entry;
-    while (1) {
-        count--;
-        if (count <= 0) {
-            dst[-1] = 0;
-            break;
-        }
-        do {
-            c = *ptr++;
-            *dst++ = c;
-        } while (c != 0);
+    goto copy;
+check:
+    if (--count > 0) {
+        goto copy;
     }
+    dst[-1] = 0;
+    goto done;
+copy:
+    if ((*dst++ = *ptr++) != 0) {
+        goto check;
+    }
+done:
     *(void **)(entry + 0x20) = fn_80207848(arg2, 0);
     *(float *)(entry + 0x28) = lbl_80563AC8;
-    *(char *)(entry + 0x24) = arg3;
+    *(char *)(entry + 0x24) = (char)arg3;
 }
 #pragma scheduling invalid_target
 void fn_8025878C(void *arg0, const char *arg1, int flags, int arg3, float x, float y) {
