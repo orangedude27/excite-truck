@@ -66,6 +66,7 @@ extern "C" void *fn_802971B0(void *arg0) {
     return obj;
 }
 
+#pragma dont_inline on
 extern "C" void *fn_802972A4(void *arg0) {
     struct Dummy {
         virtual void v0();
