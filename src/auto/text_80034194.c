@@ -1148,7 +1148,7 @@ void fn_80035C64(void) {
 
 extern s32 lbl_8055D890;
 #pragma small_data off
-extern u8 lbl_8037B580;
+extern __declspec(section ".data") u8 lbl_8037B580;
 #pragma small_data on
 extern s32 fn_8003BE40(void);
 extern s32 lbl_8055D880;
