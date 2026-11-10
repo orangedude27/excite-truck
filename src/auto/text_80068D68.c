@@ -24228,6 +24228,7 @@ stored:
 }
 
 void sdp_config_cfm(u16 cid, u16 *p_cfg_result) {
+    /* L2CAP config-confirm callback for SDP: find connection control block, mark configured or fail/disconnect with status, and start/notify as needed. */
     register char *messages = lbl_8031A188;
     tCONN_CB *ccb;
     u8 flags;
