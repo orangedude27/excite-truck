@@ -144,6 +144,7 @@ s32 fn_802A7E08(s32 *arg0, s32 *arg1) {
     }
     return 1;
 }
+#pragma pop
 
 #pragma push
 #pragma processor 750
