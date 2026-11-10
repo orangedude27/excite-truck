@@ -119,8 +119,7 @@ void *fn_801717B4(void *arg0, int arg1) {
     return obj;
 }
 
-  #pragma use_lmw_stmw off
-void fn_8017188C(void *arg0) {
+  void fn_8017188C(void *arg0) {
     int i = 0;
     int offset = 0;
     while (i < *(int *)((char *)arg0 + 0xC)) {
