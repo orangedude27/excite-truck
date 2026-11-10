@@ -44,6 +44,7 @@ s32 fn_80018B7C(void *arg0, void *arg1) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma cplusplus on
+/* Collect entries for manager items whose name matches the target and sort them. */
 extern "C" void fn_80018BA4(void) {
     struct Manager { virtual void unused(); virtual void *get(int); };
     struct Item {
@@ -62,27 +63,27 @@ extern "C" void fn_80018BA4(void) {
     extern const char lbl_80558C30[] __attribute__((section(".sdata")));
     extern const char lbl_80558C38[] __attribute__((section(".sdata")));
     extern const char lbl_80558C40[] __attribute__((section(".sdata")));
-    int *entry;
-    register int found = 0;
-    register int index = 0;
-    register int zero = 0;
-    Item *object;
+    int *record;
+    register int matchCount = 0;
+    register int itemIndex = 0;
+    register int zeroValue = 0;
+    Item *item;
 
     for (;;) {
-        object = (Item *)((Manager *)lbl_8055D58C)->get(index);
-        if (object == 0)
+        item = (Item *)((Manager *)lbl_8055D58C)->get(itemIndex);
+        if (item == 0)
             break;
-        if (strcmp(object->name(), (const char *)&lbl_802FD2A0) == 0) {
-            entry = (int *)((char *)*(void **)lbl_80357E0C +
+        if (strcmp(item->name(), (const char *)&lbl_802FD2A0) == 0) {
+            record = (int *)((char *)*(void **)lbl_80357E0C +
                             *(int *)(lbl_80357E0C + 4) * 0x14);
             *(int *)(lbl_80357E0C + 4) = *(int *)(lbl_80357E0C + 4) + 1;
-            entry[0] = (int)object->value(lbl_80558C30);
-            entry[1] = (int)object->value(lbl_80558C38);
-            entry[2] = (int)object->other(lbl_80558C40);
-            *((char *)entry + 0xC) = (char)zero;
-            entry[4] = found++;
+            record[0] = (int)item->value(lbl_80558C30);
+            record[1] = (int)item->value(lbl_80558C38);
+            record[2] = (int)item->other(lbl_80558C40);
+            *((char *)record + 0xC) = (char)zeroValue;
+            record[4] = matchCount++;
         }
-        ++index;
+        ++itemIndex;
     }
     fn_80265DCC(*(void **)lbl_80357E0C, *(int *)(lbl_80357E0C + 4), 0x14, fn_80018B7C);
 }
@@ -321,19 +322,20 @@ s32 fn_80019098(s32 arg0) {
     register s32 offset;
     register const char *name;
     char *entry;
-
     name = (const char *)arg0;
     index = 0;
     offset = 0;
-    goto loop;
+    goto check;
 loop:
-    if (stricmp(*(const char **)((char *)lbl_803580A4 + offset), name) != 0)
+    if (stricmp(*(const char **)((char *)lbl_803580A4 + offset), name) != 0) {
         goto advance;
+    }
     goto found;
 advance:
     offset += 0x10;
     index++;
-    if (index < *(s32 *)((char *)&lbl_803580A4 + 4))
+check:
+    if (index < *(volatile s32 *)((char *)&lbl_803580A4 + 4))
         goto loop;
     index = -1;
 found:
@@ -397,22 +399,16 @@ int fn_80019258(const char *name, int *out0, int *out1, int unused) {
     register s32 offset;
     register const char *name_r;
     register char *p;
-
     name_r = name;
-    i = 0;
-    offset = 0;
-    while (1) {
+    for (i = 0, offset = 0; i < *(volatile s32 *)((char *)&lbl_803580A4 + 4); offset += 0x10, i++) {
         if (stricmp(*(const char **)((char *)lbl_803580A4 + offset), name_r) == 0)
-            break;
-        offset += 0x10;
-        i++;
-        if (i >= *(volatile s32 *)((char *)&lbl_803580A4 + 4)) {
-            i = -1;
-            break;
-        }
+            goto found;
     }
+    i = -1;
+found:
     p = (char *)lbl_803580A4 + i * 0x10 + 4;
-    if (i < 0) p = 0;
+    if (i < 0)
+        p = 0;
     if (p != 0) {
         *out0 = *(s32 *)p;
         *out1 = *(s32 *)(p + 4);
