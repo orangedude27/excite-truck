@@ -397,18 +397,17 @@ void fn_80230B5C(void *arg0) {
 s32 fn_80230B9C(u32 arg0) {
     u8 spB, spA, sp9, sp8;
     void *object;
-    f32 scaled;
-    u32 encoded;
+    f32 scale;
+    s32 encoded;
     spB = 0;
     spA = 0;
     sp9 = 0;
     sp8 = 0;
     fn_80230AB8(arg0, &spB, &spA, &sp9, &sp8);
     object = fn_8022EDC4();
-    scaled = *(f32 *)((u8 *)object + 0x30) * (f32)spB;
-    encoded = (u32)(s32)scaled;
-    return (sp8 & ~0xFF00) | ((sp9 << 8) & 0xFF00) |
-           (((spA << 16) & ~0xFF000000) | (encoded << 24));
+    scale = *(f32 *)((u8 *)object + 0x30);
+    encoded = (s32)((f32)spB * scale);
+    return (s32)(((u32)encoded << 24) | ((u32)spA << 16) | ((u32)sp9 << 8) | sp8);
 }
 #pragma dont_inline reset
 #pragma scheduling on
