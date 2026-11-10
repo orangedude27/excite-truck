@@ -43,15 +43,14 @@ void fn_802C2CDC(void *arg0, s32 arg1, s32 arg2) {
 }
 
 void fn_802C2CE8(void *arg0, s32 arg1, s32 arg2, s8 arg3) {
-    s32 scale;
+    int prod = arg1 * arg2;
+    int c82 = 0x82;
     *(s8 *)arg0 = arg3;
-    ((u8 *)arg0)[1] = 0x82;
-    scale = (arg3 == 5) ? 4 : 2;
-    *(void **)((u8 *)arg0 + 4) = fn_801284E8(&lbl_8055D000, arg1 * arg2 * scale);
+    ((u8 *)arg0)[1] = c82;
+    *(void **)((u8 *)arg0 + 4) = fn_801284E8(&lbl_8055D000, prod * ((arg3 == 5) ? 4 : 2));
     *(s32 *)((u8 *)arg0 + 8) = arg1;
     *(s32 *)((u8 *)arg0 + 0xC) = arg2;
-    if (arg3 == 5)
-        *(s32 *)((u8 *)arg0 + 0x10) = arg1 * scale;
+    *(s32 *)((u8 *)arg0 + 0x10) = arg1 * ((arg3 == 5) ? 4 : 2);
     fn_802C3014(arg0);
 }
 
@@ -324,7 +323,8 @@ void fn_802C3478(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
 #pragma pop
 
 #pragma push
-#pragma optimize_for_size on
+#pragma optimize_for_size off
+#pragma use_lmw_stmw off
 #pragma inline_depth(0)
 void fn_802C356C(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
     u32 pixel;
