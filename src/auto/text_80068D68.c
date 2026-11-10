@@ -556,6 +556,10 @@ typedef struct t_l2c_ccb_view {
     u8              config_done;  /* +0x34  IB_CFG_DONE / OB_CFG_DONE flags */
     u8              local_id;     /* +0x35  identifier of the last command we sent */
     u8              remote_id;    /* +0x36  identifier of the peer's last command */
+    u8              pad_37;
+    u16             our_mtu;      /* +0x38  MTU our configuration asked for (l2cu_process_our_cfg_req) */
+    u16             peer_mtu;     /* +0x3A  MTU the peer's configuration allows us to send
+                                     (l2cu_process_peer_cfg_req, clamped to 0x69B) */
 } tL2C_CCB_VIEW;
 
 /* Events l2c_csm_execute() (fn_80089E40) feeds the state handlers. This stack
