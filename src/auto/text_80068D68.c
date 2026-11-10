@@ -12682,36 +12682,37 @@ tBTM_STATUS btm_sec_disconnect(UINT16 handle, UINT8 reason) {
     return (tBTM_STATUS)3;
 }
 
+/* Handles security-manager cleanup on HCI disconnect: notifies the auth-complete callback (lbl_803C0F78+0x191C) for the device (found by handle) on disconnect/pair-timeout, cancels a pending PIN-code timer for that BD_ADDR, and resets the device record's connection/security state. */
 void btm_sec_disconnected(UINT16 handle, UINT8 reason) {
-    register UINT8 saved_reason = reason;
-    tBTM_SEC_DEV_REC_DISCONNECT_VIEW *p_dev_rec =
+    register UINT8 disconnectReason = reason;
+    tBTM_SEC_DEV_REC_DISCONNECT_VIEW *deviceRec =
         (tBTM_SEC_DEV_REC_DISCONNECT_VIEW *)btm_find_dev_by_handle(handle);
-    if (p_dev_rec == NULL)
+    if (deviceRec == NULL)
         return;
-    if ((p_dev_rec->sm4 & 0x40) &&
+    if ((deviceRec->sm4 & 0x40) &&
         *(void **)(lbl_803C0F78 + 0x191C) != NULL) {
-        if (saved_reason == 0x17) {
+        if (disconnectReason == 0x17) {
             ((void (*)(u8 *, u8 *, u8 *, u32))*(void **)(lbl_803C0F78 + 0x191C))
-                (p_dev_rec->bd_addr, p_dev_rec->dev_class, p_dev_rec->sec_bd_name, 0x17);
+                (deviceRec->bd_addr, deviceRec->dev_class, deviceRec->sec_bd_name, 0x17);
         } else {
             ((void (*)(u8 *, u8 *, u8 *, u32))*(void **)(lbl_803C0F78 + 0x191C))
-                (p_dev_rec->bd_addr, p_dev_rec->dev_class, p_dev_rec->sec_bd_name, 5);
+                (deviceRec->bd_addr, deviceRec->dev_class, deviceRec->sec_bd_name, 5);
         }
     }
     if (*(u32 *)(lbl_803C0F78 + 0x194C) != 0 &&
-        memcmp(lbl_803C0F78 + 0x1954, p_dev_rec->bd_addr, 6) == 0) {
+        memcmp(lbl_803C0F78 + 0x1954, deviceRec->bd_addr, 6) == 0) {
         fn_80070F90(lbl_803C0F78 + 0x193C);
         *(u32 *)(lbl_803C0F78 + 0x194C) = 0;
         memset(lbl_803C0F78 + 0x1954, 0xFF, 6);
         if (*(void **)(lbl_803C0F78 + 0x191C) != NULL)
             ((void (*)(u8 *, u8 *, u8 *, u32))*(void **)(lbl_803C0F78 + 0x191C))
-                (p_dev_rec->bd_addr, p_dev_rec->dev_class, p_dev_rec->sec_bd_name, 0xE);
+                (deviceRec->bd_addr, deviceRec->dev_class, deviceRec->sec_bd_name, 0xE);
     }
-    p_dev_rec->hci_handle = 0xFFFF;
-    p_dev_rec->sec_state = 0;
-    p_dev_rec->sec_flags &= 0xF8;
-    p_dev_rec->sm4 &= 0x80;
-    p_dev_rec->unk_0x04 = 0;
+    deviceRec->hci_handle = 0xFFFF;
+    deviceRec->sec_state = 0;
+    deviceRec->sec_flags &= 0xF8;
+    deviceRec->sm4 &= 0x80;
+    deviceRec->unk_0x04 = 0;
 }
 
 /* Match note: initialize the callback table at its base, then walk two entries by four bytes.
