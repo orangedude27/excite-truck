@@ -688,6 +688,8 @@ copyNameLoop:
 
 __declspec(section ".sdata") extern const char lbl_8055B2A8[], lbl_8055B2B0[], lbl_8055B2B8[], lbl_8055B2C0[], lbl_8055B2E4[], lbl_8055B2EC[];
 extern "C" int sprintf(char *, const char *, ...);
+// Allocates and initializes a 0x168-byte object: sets vtables/default fields, resolves
+// named resources and flags from the manager, and returns the initialized object.
 extern "C" void *fn_801F83E4(void *arg0) {
     class Manager {
     public:
@@ -704,38 +706,38 @@ extern "C" void *fn_801F83E4(void *arg0) {
         virtual u8 flag(const char *, s32);
     };
     register const char *base = lbl_8033AF80;
-    u8 *obj = (u8 *)fn_801284F8(0x168, (void *)lbl_8055B2E4);
-    char name[0x20];
-    if (obj != 0) {
-        *(void **)(obj + 0x108) = lbl_8033B468;
-        *(s32 *)(obj + 0x78) = 0;
-        *(f32 *)(obj + 0x7C) = lbl_80562FF0;
-        *(f32 *)(obj + 0x80) = lbl_80562FF0;
-        *(s32 *)(obj + 0x104) = 0;
-        *(s32 *)(obj + 0x24) = 0;
-        *(s32 *)(obj + 0x20) = 0;
-        *(f32 *)(obj + 0x28) = lbl_80563000;
-        obj[0x60] = 1;
-        memset(obj, 0x61, 0x20);
-        memset(obj + 0x61, 0x61, 0x10);
-        *(s32 *)(obj + 0x74) = -1;
-        *(void **)(obj + 0x108) = lbl_8033B418;
-        *(void **)(obj + 0x13C) = ((Manager *)arg0)->combine(base + 0xC0, ((Manager *)arg0)->get(lbl_8055B2A8));
-        *(void **)(obj + 0x140) = ((Manager *)arg0)->get(base + 0xCC);
-        *(s32 *)(obj + 0x160) = 1;
-        while (*(s32 *)(obj + 0x160) < 8) {
-            sprintf(name, base + 0xD8, *(s32 *)(obj + 0x160) + 1);
-            if (((Manager *)arg0)->has(name) == 0) {
+    u8 *object = (u8 *)fn_801284F8(0x168, (void *)lbl_8055B2E4);
+    char resourceName[0x20];
+    if (object != 0) {
+        *(void **)(object + 0x108) = lbl_8033B468;
+        *(s32 *)(object + 0x78) = 0;
+        *(f32 *)(object + 0x7C) = lbl_80562FF0;
+        *(f32 *)(object + 0x80) = lbl_80562FF0;
+        *(s32 *)(object + 0x104) = 0;
+        *(s32 *)(object + 0x24) = 0;
+        *(s32 *)(object + 0x20) = 0;
+        *(f32 *)(object + 0x28) = lbl_80563000;
+        object[0x60] = 1;
+        memset(object, 0x61, 0x20);
+        memset(object + 0x61, 0x61, 0x10);
+        *(s32 *)(object + 0x74) = -1;
+        *(void **)(object + 0x108) = lbl_8033B418;
+        *(void **)(object + 0x13C) = ((Manager *)arg0)->combine(base + 0xC0, ((Manager *)arg0)->get(lbl_8055B2A8));
+        *(void **)(object + 0x140) = ((Manager *)arg0)->get(base + 0xCC);
+        *(s32 *)(object + 0x160) = 1;
+        while (*(s32 *)(object + 0x160) < 8) {
+            sprintf(resourceName, base + 0xD8, *(s32 *)(object + 0x160) + 1);
+            if (((Manager *)arg0)->has(resourceName) == 0) {
                 break;
             }
-            *(void **)(obj + 0x140 + (*(s32 *)(obj + 0x160) * 4)) = ((Manager *)arg0)->get(name);
-            *(s32 *)(obj + 0x160) = *(s32 *)(obj + 0x160) + 1;
+            *(void **)(object + 0x140 + (*(s32 *)(object + 0x160) * 4)) = ((Manager *)arg0)->get(resourceName);
+            *(s32 *)(object + 0x160) = *(s32 *)(object + 0x160) + 1;
         }
-        obj[0x164] = ((Manager *)arg0)->flag(lbl_8055B2EC, 1);
-        obj[0x165] = ((Manager *)arg0)->flag(base + 0xE8, 1);
+        object[0x164] = ((Manager *)arg0)->flag(lbl_8055B2EC, 1);
+        object[0x165] = ((Manager *)arg0)->flag(base + 0xE8, 1);
         ((Manager *)arg0)->get((const char *)lbl_8055B2DC);
     }
-    return obj;
+    return object;
 }
 
 extern "C" s32 fn_801F85DC(s32 arg0, s32 arg1) {
@@ -2237,9 +2239,8 @@ extern "C" void fn_801FBF48(void *arg0) {
 #pragma push
 #pragma processor 750
 extern "C" void fn_801FBFE8(void* arg0) {
-    void *heap = (void *)lbl_8033B53C;
     register f32 value = lbl_80563010;
-    void *obj = fn_801284F8(0xE0, heap);
+    void* obj = fn_801284F8(0xE0, lbl_8033B53C);
     if (obj != 0) fn_801A324C(obj, 0, (char*)arg0 + 0x58, value, *(f32*)((char*)arg0 + 0x4C));
 }
 #pragma pop
