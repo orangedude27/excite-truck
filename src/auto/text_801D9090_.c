@@ -80,6 +80,7 @@ void fn_801D9118(int arg0) { fn_801D89C0(arg0 - 4); }
 #pragma dont_inline on
 #pragma push
 #pragma processor 750
+#pragma scheduling default
 void fn_801D9120(float *out, float *values, int count, float weight) {
     float value = values[count - 1];
     if (count == 1) {
@@ -87,8 +88,7 @@ void fn_801D9120(float *out, float *values, int count, float weight) {
         out[1] = weight * value;
         out[0] = weight * inv;
     } else {
-        float inv = lbl_80562B28 - value;
-        fn_801D9120(out, values, count - 1, weight * inv);
+        fn_801D9120(out, values, count - 1, weight * (lbl_80562B28 - value));
         fn_801D9120(out + (1 << (count - 1)), values, count - 1, weight * value);
     }
 }
