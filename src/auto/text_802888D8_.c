@@ -1063,9 +1063,8 @@ int fn_8028A084(int slot) {
     frame.sp98 = negHalf;
     frame.sp9C = one;
     *(int *)((char *)slot + 4) =
-        ((int (*)(int *, int *, int, float, float, float, float, float, float, float))fn_8028E2F8)(
-            (int *)&frame.sp20, (int *)(void *)lbl_80348B6C, lbl_8055C880,
-            twoPoint5, negHalf, point85, point15, onePoint05, negPoint05, five);
+        ((int (*)(int *, const char *, int))fn_8028E2F8)(
+            (int *)&frame.sp20, lbl_80348B6C, lbl_8055C880);
 }
 
 #pragma scheduling on
