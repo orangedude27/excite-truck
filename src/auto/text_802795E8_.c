@@ -14,6 +14,90 @@ extern void fn_802E30C8(const char *, ...);
 extern char lbl_80347818[];
 extern char lbl_80347824[];
 extern void *memset(void *, int, u32);
+void fn_802795E8(arg0)
+void *arg0;
+{
+    extern f32 lbl_805640F0;
+    register unsigned char *p asm("r3");
+    register int offset asm("r4");
+    register int count asm("r0");
+    f32 value;
+
+    memset(arg0, 0, 0x2B4);
+    value = lbl_805640F0;
+    *(s32 *)((char *)arg0 + 0x298) = 0;
+    *(f32 *)((char *)arg0 + 0x290) = value;
+    p = (unsigned char *)arg0;
+    offset = 0;
+    for (count = 10; count != 0; --count) {
+        p[0] = 0x80;
+        p[1] = 0x80;
+        p[2] = 0x80;
+        p[4] = 0x80;
+        p[5] = 0x80;
+        p[6] = 0x80;
+        p[8] = 0x80;
+        p[9] = 0x80;
+        p[10] = 0x80;
+        p[12] = 0x80;
+        p[13] = 0x80;
+        p[14] = 0x80;
+        p[16] = 0x80;
+        p[17] = 0x80;
+        p[18] = 0x80;
+        p[20] = 0x80;
+        p[21] = 0x80;
+        p[22] = 0x80;
+        p[24] = 0x80;
+        p[25] = 0x80;
+        p[26] = 0x80;
+        p[28] = 0x80;
+        p[29] = 0x80;
+        p[30] = 0x80;
+        p[32] = 0x80;
+        p[33] = 0x80;
+        p[34] = 0x80;
+        p[36] = 0x80;
+        p[37] = 0x80;
+        p[38] = 0x80;
+        p[40] = 0x80;
+        p[41] = 0x80;
+        p[42] = 0x80;
+        p[44] = 0x80;
+        p[45] = 0x80;
+        p[46] = 0x80;
+        p[48] = 0x80;
+        p[49] = 0x80;
+        p[50] = 0x80;
+        p[52] = 0x80;
+        p[53] = 0x80;
+        p[54] = 0x80;
+        p[56] = 0x80;
+        p[57] = 0x80;
+        p[58] = 0x80;
+        p[60] = 0x80;
+        p[61] = 0x80;
+        p[62] = 0x80;
+        p += 0x40;
+        offset += 0x10;
+    }
+    *(f32 *)((char *)arg0 + 0x294) = value;
+    p = (unsigned char *)arg0 + (offset << 2);
+    p[0] = 0x80;
+    p[1] = 0x80;
+    p[2] = 0x80;
+    p[4] = 0x80;
+    p[5] = 0x80;
+    p[6] = 0x80;
+    p[8] = 0x80;
+    p[9] = 0x80;
+    p[10] = 0x80;
+    p[12] = 0x80;
+    p[13] = 0x80;
+    p[14] = 0x80;
+}
+
+#pragma dont_inline on
 void fn_8027974C(void) {
     s32 offset;
     s32 i;
@@ -28,6 +112,7 @@ check:
     if (i < lbl_8055F61C) goto loop;
 }
 
+#pragma scheduling invalid_target
 void fn_802797A8(s32 *arg0, s32 arg1) {
     s32 offset;
     s32 i;
@@ -44,12 +129,12 @@ void fn_802797A8(s32 *arg0, s32 arg1) {
         value = *arg0;
         i++;
         offset += 0x2B8;
-        arg0++;
         *(s32 *)entry = value;
+        arg0++;
     }
     fn_802795E8();
 }
-
+#pragma scheduling reset
 void fn_80279848(void) {
     fn_80128670((s32)lbl_8055F618);
     lbl_8055F618 = 0;
