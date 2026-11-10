@@ -270,6 +270,150 @@ extern "C" s32 fn_80211678(u8 *arg0) {
     return ((s8) *arg0 - 0x24) == 0;
 }
 
+extern "C" void fn_80211690(s32 arg0) {
+    const char *base = (const char *)lbl_8033CAE8;
+    S12Ptr tbl;
+    S3Word w3;
+    char buf58[0x40];
+    char buf38[0x20];
+    char buf18[0x20];
+    s32 sp8;
+    s32 isZero;
+    s32 notZero;
+    s32 i, j;
+    s32 zero = 0;
+    Ent18 *e;
+    const char *r25;
+    char **srow;
+    s32 *drow;
+    fn_802E0F98();
+    lbl_8055EF40 = arg0;
+    isZero = arg0 == 0;
+    notZero = isZero == 0;
+    lbl_8055EF18 = fn_80128314(0);
+    lbl_8055EF08 = 1;
+    if (isZero == 0) {
+        fn_8012BEF0(base + 0x128);
+        if (notZero != 0) fn_800125C4();
+    }
+    fn_8020A47C();
+    if (isZero == 0) fn_8023889C();
+    tbl = lbl_802F9E68;
+    srow = tbl.v;
+    drow = lbl_80490528;
+    for (i = 0; i < 3; i++) {
+        char **s = srow;
+        s32 *d = drow;
+        for (j = 0; j < 4; j++) {
+            if (isZero != 0) {
+                if (i == 2 && (u32)j <= 1)
+                    *d = fn_802C5130(*s);
+                else
+                    *d = zero;
+            } else {
+                *d = fn_802C5130(*s);
+            }
+            s++;
+            d++;
+        }
+        srow += 4;
+        drow += 4;
+    }
+    if (isZero == 0) {
+        lbl_8055EF1C = fn_8023512C(base + 0x138);
+        lbl_8055EF20 = fn_8023512C(base + 0x148);
+    }
+    lbl_8055EF10 = lbl_80563434;
+    fn_8022A5E4();
+    fn_80216710();
+    if (isZero == 0) {
+        void *p = fn_801284F8(0x14, base + 0x158);
+        if (p != 0) p = fn_8022D228(p, 0x20, 0x40);
+        lbl_8055EF24 = (s32)p;
+        p = fn_801284F8(0x14, base + 0x168);
+        if (p != 0) p = fn_8022D228(p, 8, 0x40);
+        lbl_8055EF28 = (s32)p;
+        for (i = 0; i < 0x20; i++) {
+            s32 k;
+            sprintf(buf58, base + 0x17C, i + 1);
+            k = (i % 4) - 1;
+            if (k < 0) k = 0;
+            fn_8022D350(lbl_8055EF24, buf58, k);
+        }
+        for (i = 0; i < 8; i++) {
+            sprintf(buf38, base + 0x188, i);
+            fn_8022D350(lbl_8055EF28, buf38, i * 4);
+        }
+        sp8 = lbl_80563430;
+        p = fn_801284F8(0x30, base + 0x194);
+        if (p != 0) p = fn_8022D458(p, 0x14, 1, &sp8);
+        lbl_8055EF2C = (s32)p;
+        for (i = 0; i < *(s32 *)(lbl_8055EF2C + 0xC); i++) {
+            sprintf(buf18, base + 0x1A4, i + 1);
+            fn_8022D894(lbl_8055EF2C, i, 0, buf18, i % 3);
+        }
+        p = fn_801284F8(0x1C, base + 0x1B0);
+        if (p != 0) p = fn_8022DB50(p, base + 0xE8, base + 0x108, 8, 0);
+        lbl_8055EF30 = (s32)p;
+        w3 = lbl_802F9E98;
+        p = fn_801284F8(0x48, base + 0x1C4);
+        if (p != 0) p = fn_8022DCC4(p, w3.w, 3, 0);
+        lbl_8055EF34 = (s32)p;
+    } else {
+        lbl_8055EF24 = 0;
+        lbl_8055EF28 = 0;
+    }
+    memset(lbl_80490558, 0, 0xC0);
+    e = (Ent18 *)lbl_80490558;
+    if (arg0 == 1) {
+        const char *s = base + 0x1D8;
+        e[0].name = base + 0x1E8; e[0].f = lbl_80563438; memset(e[0].v, 0, 0x10);
+        e[2].name = s;            e[2].f = lbl_80563438; memset(e[2].v, 0, 0x10);
+        e[3].name = base + 0x1F4; e[3].f = lbl_80563438; memset(e[3].v, 0, 0x10);
+        e[1].name = base + 0x200; e[1].f = lbl_8056343C; memset(e[1].v, 0, 0x10);
+        e[4].name = base + 0x20C; e[4].f = lbl_80563438; memset(e[4].v, 0, 0x10);
+        e[5].name = base + 0x21C; e[5].f = lbl_8056343C; memset(e[5].v, 0, 0x10);
+        e[6].name = s;            e[6].f = lbl_80563438; memset(e[6].v, 0, 0x10);
+        e[7].name = s;            e[7].f = lbl_80563438; memset(e[7].v, 0, 0x10);
+    } else {
+        const char *s = base + 0x238;
+        e[0].name = base + 0x228; e[0].f = lbl_80563438; memset(e[0].v, 0, 0x10);
+        e[2].name = s;            e[2].f = lbl_80563438; memset(e[2].v, 0, 0x10);
+        e[3].name = s;            e[3].f = lbl_80563438; memset(e[3].v, 0, 0x10);
+        e[1].name = s;            e[1].f = lbl_80563438; memset(e[1].v, 0, 0x10);
+        e[4].name = base + 0x248; e[4].f = lbl_80563438; memset(e[4].v, 0, 0x10);
+        e[5].name = 0;            e[5].f = lbl_80563438; memset(e[5].v, 0, 0x10);
+        e[6].name = base + 0x258; e[6].f = lbl_80563438; memset(e[6].v, 0, 0x10);
+        e[7].name = base + 0x264; e[7].f = lbl_80563438; memset(e[7].v, 0, 0x10);
+    }
+    e = (Ent18 *)lbl_80490558;
+    for (i = 0; i < 8; i++, e++) {
+        if (e->name != 0) {
+            for (j = 0; j < 4; j++)
+                e->v[j] = fn_80207848(e->name, 0);
+        }
+    }
+    lbl_8055EF3C = -1;
+    lbl_8055EF38 = (void *)-1;
+    if (notZero != 0) fn_800125D4(base + 0x274, 0);
+    {
+        const char *src = lbl_8055B6B0;
+        char *dst = (char *)lbl_8033CAE8;
+        s32 n = 0x64;
+        while (1) {
+            char c = *src++;
+            *dst++ = c;
+            if (c != 0) {
+                if (--n <= 0) { dst[-1] = 0; break; }
+            } else break;
+        }
+    }
+    r25 = lbl_8055B718;
+    if (isZero != 0) r25 = base + 0x280;
+    fn_802E30C8(base + 0x28C, r25, (fn_80128314(0) - lbl_8055EF18) / 1024);
+    fn_802ECC18(1);
+}
+
 #pragma use_lmw_stmw off
 extern "C" void fn_80211D24(int arg0) {
     struct Obj { virtual ~Obj(); };
@@ -494,15 +638,15 @@ extern "C" void *fn_8021227C(void *arg0, char *arg1, s32 arg2) {
 }
 extern "C" s32 fn_80212338(void) { return 0; }
 
+#pragma dont_inline on
 extern "C" void fn_80212340(void *arg0) {
-    s32 first = *(s32 *)((char *)arg0 + 0x10);
     s32 *p = (s32 *)arg0;
-    if (first != 0) {
-        fn_8022E4BC(first);
+    if (p[4] != 0) {
+        fn_8022E4BC(p[4]);
         p[4] = 0;
     }
-    if (*(s32 *)arg0 != 0) {
-        if (fn_80211678((u8 *)arg0) == 0) {
+    if ((u8 *)p[0] != 0) {
+        if (fn_80211678((u8 *)p[0]) == 0) {
             fn_8022E4BC(p[3]);
         } else {
             fn_8022E960(p[3]);
@@ -510,7 +654,7 @@ extern "C" void fn_80212340(void *arg0) {
         p[3] = 0;
     }
 }
-
+#pragma dont_inline off
 extern "C" s32 fn_8021B2B0(void *, s32, s32, s32, s32, s32, s32);
 extern "C" s32 fn_8021D044(void *, s32, s32, s32, s32, s32, s32, s32, s32);
 extern "C" void fn_802168EC(void *, void *, s32);
@@ -2390,14 +2534,33 @@ extern "C" void fn_80215A48(void *arg0) {
 extern "C" s32 fn_80215AA4(void *, s32);
 #pragma scheduling invalid_target
 extern "C" s32 fn_80215A74(void *arg0, s32 arg1) {
+    struct Iface {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual void v13();
+        virtual void v14();
+        virtual void v15();
+        virtual void v16();
+        virtual void v17();
+        virtual s32 v18();
+    };
     u8 *self = (u8 *)arg0;
     self[0x19] = 0;
     if (self[0x1A] != 0) {
         self[0x234] = 1;
-        ((VfObj *)*(void **)(self + 0x244))->vf18();
-    } else {
-        return fn_80215AA4(arg0, arg1);
     }
+    return ((Iface *)*(void **)(self + 0x244))->v18();
 }
 #pragma scheduling on
 extern "C" s32 fn_80215AA4(void *arg0, s32 arg1) {
