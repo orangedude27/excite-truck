@@ -117,6 +117,7 @@ return_null:
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_802E4F98(void) {
+    // Refill the 0x20 SPU voice buffers: stream each half, wrap at the loop end, flag completion.
     extern char lbl_8055FFA4;
     extern char lbl_8055FFA5;
     extern char lbl_8055FFA6;
@@ -124,71 +125,71 @@ void fn_802E4F98(void) {
     extern int OSEnableInterrupts(int);
     extern int fn_802D9BF0(void);
     extern void fn_80033AAC(void *, void *);
-    register int offset;
-    register int interruptState;
-    register int count;
-    int motor;
-    unsigned char *entry;
-    unsigned char *object;
-    unsigned int span;
-    unsigned int sampleCount;
-    unsigned int end;
-    short samples[3];
+    register int byteOff;
+    register int savedInts;
+    register int voiceIdx;
+    int silent;
+    unsigned char *voice;
+    unsigned char *stream;
+    unsigned int playPos;
+    unsigned int halfSize;
+    unsigned int wrapPos;
+    short initSamp[3];
 
     if ((unsigned char)lbl_8055FFA5 != 0 &&
         (unsigned char)lbl_8055FFA6 == 0) {
-        interruptState = ((int (*)(void))OSEnableInterrupts)();
-        motor = fn_802D9BF0();
+        savedInts = ((int (*)(void))OSEnableInterrupts)();
+        silent = fn_802D9BF0();
         lbl_8055FFB4 = 1;
-        count = 0;
-        offset = 0;
+        voiceIdx = 0;
+        byteOff = 0;
         do {
-            entry = lbl_8055FF94 + offset;
-            object = *(unsigned char **)(entry + 0x1C);
-            if (entry[0x20] != 0 && object != 0 &&
-                *(int *)(object + 0x20) == 1 && entry[0x21] == 0) {
-                span = *(unsigned int *)(*(unsigned char **)(entry + 4) + 0x1BC);
-                if (object[0x24] != 0) {
-                    span >>= 1;
+            voice = lbl_8055FF94 + byteOff;
+            stream = *(unsigned char **)(voice + 0x1C);
+            if (voice[0x20] != 0 && stream != 0 &&
+                *(int *)(stream + 0x20) == 1 && voice[0x21] == 0) {
+                playPos = *(unsigned int *)(*(unsigned char **)(voice + 4) + 0x1BC);
+                if (stream[0x24] != 0) {
+                    playPos >>= 1;
                 } else {
-                    span <<= 1;
+                    playPos <<= 1;
                 }
-                sampleCount = *(unsigned int *)(object + 0xA0) >> 1;
-                end = *(unsigned int *)(object + 0x9C) + sampleCount;
-                if (span < *(unsigned int *)(entry + 0x28)) {
-                    if (motor == 0) {
-                        ((void (*)(void *, unsigned int, void *))*(void **)(object + 0x88))(
-                            (unsigned char *)*(void **)(object + 0x90) + sampleCount,
-                            sampleCount, *(void **)(object + 0x8C));
+                halfSize = *(unsigned int *)(stream + 0xA0) >> 1;
+                wrapPos = *(unsigned int *)(stream + 0x9C) + halfSize;
+                if (playPos < *(unsigned int *)(voice + 0x28)) {
+                    if (silent == 0) {
+                        ((void (*)(void *, unsigned int, void *))*(void **)(stream + 0x88))(
+                            (unsigned char *)*(void **)(stream + 0x90) + halfSize,
+                            halfSize, *(void **)(stream + 0x8C));
                     } else {
-                        memset((unsigned char *)*(void **)(object + 0x90) + sampleCount, 0, sampleCount);
+                        memset((unsigned char *)*(void **)(stream + 0x90) + halfSize, 0, halfSize);
                     }
-                    DCFlushRange((unsigned char *)*(void **)(object + 0x90) + sampleCount, sampleCount);
+                    DCFlushRange((unsigned char *)*(void **)(stream + 0x90) + halfSize, halfSize);
                 }
-                if (span >= end && *(unsigned int *)(entry + 0x28) < end) {
-                    if (motor == 0) {
-                        ((void (*)(void *, unsigned int, void *))*(void **)(object + 0x88))(
-                            *(void **)(object + 0x90),
-                            sampleCount, *(void **)(object + 0x8C));
+                if (playPos >= wrapPos && *(unsigned int *)(voice + 0x28) < wrapPos) {
+                    if (silent == 0) {
+                        ((void (*)(void *, unsigned int, void *))*(void **)(stream + 0x88))(
+                            *(void **)(stream + 0x90),
+                            halfSize, *(void **)(stream + 0x8C));
                     } else {
-                        memset(*(void **)(object + 0x90), 0, sampleCount);
+                        memset(*(void **)(stream + 0x90), 0, halfSize);
                     }
-                    if (object[0x24] != 0) {
-                        samples[0] = (short)*((unsigned char *)*(void **)(object + 0x90));
-                        samples[1] = 0;
-                        samples[2] = 0;
-                        fn_80033AAC(*(void **)(entry + 4), samples);
+                    if (stream[0x24] != 0) {
+                        initSamp[0] = (short)*((unsigned char *)*(void **)(stream + 0x90));
+                        initSamp[1] = 0;
+                        initSamp[2] = 0;
+                        fn_80033AAC(*(void **)(voice + 4), initSamp);
                     }
-                    DCFlushRange(*(void **)(object + 0x90), sampleCount);
+                    DCFlushRange(*(void **)(stream + 0x90), halfSize);
                 }
-                *(unsigned int *)(entry + 0x28) = span;
+                *(unsigned int *)(voice + 0x28) = playPos;
             }
-            ++count;
-            offset += 0x2C;
-        } while (count < 0x20);
+            ++voiceIdx;
+            byteOff += 0x2C;
+        } while (voiceIdx < 0x20);
         *(volatile unsigned char *)&lbl_8055FFA4 = 1;
         *(volatile unsigned char *)&lbl_8055FFB4 = 0;
-        OSRestoreInterrupts(interruptState);
+        OSRestoreInterrupts(savedInts);
     }
 }
 #pragma scheduling on
