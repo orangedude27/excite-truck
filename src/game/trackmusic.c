@@ -77,31 +77,32 @@ long fn_8020F400(long arg0, long arg1, long arg2) {
 
 #pragma dont_inline on
 void fn_8020F444(void) {
-    char temp[0x40];
+    /* Load and register track music paths into three slots once each, logging the loaded path. */
+    char pathBuffer[0x40];
     if ((unsigned char)lbl_8055EEF4 == 0) {
-        if (fn_8012E938(fn_8020F400((long)lbl_804904D0, (long)temp, 0x40)) != 0) {
-            fn_8020F400((long)lbl_804904D0, (long)temp, 0x40);
+        if (fn_8012E938(fn_8020F400((long)lbl_804904D0, (long)pathBuffer, 0x40)) != 0) {
+            fn_8020F400((long)lbl_804904D0, (long)pathBuffer, 0x40);
             fn_8012E81C();
-            fn_802EC294(0, fn_8020F3BC((int)lbl_804904D0, (int)temp, 0x40));
-            fn_802E30C8(lbl_8033C95C, temp);
+            fn_802EC294(0, fn_8020F3BC((int)lbl_804904D0, (int)pathBuffer, 0x40));
+            fn_802E30C8(lbl_8033C95C, pathBuffer);
             lbl_8055EEF4 = 1;
         }
     }
     if ((unsigned char)lbl_8055EEF5 == 0) {
-        if (fn_8012E938(fn_8020F400((long)lbl_8055B650, (long)temp, 0x40)) != 0) {
-            fn_8020F400((long)lbl_8055B650, (long)temp, 0x40);
+        if (fn_8012E938(fn_8020F400((long)lbl_8055B650, (long)pathBuffer, 0x40)) != 0) {
+            fn_8020F400((long)lbl_8055B650, (long)pathBuffer, 0x40);
             fn_8012E81C();
-            fn_802EC294(1, fn_8020F3BC((int)lbl_8055B650, (int)temp, 0x40));
-            fn_802E30C8(lbl_8033C95C, temp);
+            fn_802EC294(1, fn_8020F3BC((int)lbl_8055B650, (int)pathBuffer, 0x40));
+            fn_802E30C8(lbl_8033C95C, pathBuffer);
             lbl_8055EEF5 = 1;
         }
     }
     if ((unsigned char)lbl_8055EEF6 == 0) {
-        if (fn_8012E938(fn_8020F400((long)lbl_8055B654, (long)temp, 0x40)) != 0) {
-            fn_8020F400((long)lbl_8055B654, (long)temp, 0x40);
+        if (fn_8012E938(fn_8020F400((long)lbl_8055B654, (long)pathBuffer, 0x40)) != 0) {
+            fn_8020F400((long)lbl_8055B654, (long)pathBuffer, 0x40);
             fn_8012E81C();
-            fn_802EC294(2, fn_8020F3BC((int)lbl_8055B654, (int)temp, 0x40));
-            fn_802E30C8(lbl_8033C95C, temp);
+            fn_802EC294(2, fn_8020F3BC((int)lbl_8055B654, (int)pathBuffer, 0x40));
+            fn_802E30C8(lbl_8033C95C, pathBuffer);
             lbl_8055EEF6 = 1;
         }
     }
@@ -319,19 +320,20 @@ null_result:
 
 extern int fn_8020FB80(void *);
 #pragma scheduling invalid_target
-void fn_8020FC6C(void) {
-    void *data;
+long fn_8020FC6C(void) {
+    extern int fn_8020FB80();
+    extern void *fn_8020FC04();
+    extern long fn_8020F3B4();
     long zero = 0;
-    long *base = (long *)((char *)&lbl_804900AC + 4);
-    if (*base == zero) {
-        ((long (*)(long))fn_8020F3B4)(zero);
+    void *p;
+    if (lbl_804900AC.m_count == 0) {
+        return ((long (*)(long))fn_8020F3B4)(zero);
+    }
+    p = fn_8020FC04();
+    if (p != 0) {
+        return ((int (*)(void *))fn_8020FB80)(p);
     } else {
-        data = fn_8020FC04();
-        if (data != 0) {
-            fn_8020FB80(data);
-        } else {
-            ((long (*)(long))fn_8020F3B4)(zero);
-        }
+        return ((long (*)(long))fn_8020F3B4)(zero);
     }
 }
 
