@@ -549,12 +549,11 @@ void fn_80014A98(void *arg0) {
 s32 fn_80014ADC(void) { return 0; }
 
 s32 fn_80014AE4(void) {
-    s32 var_r6;
-    s32 var_r7;
-    s32 var_r8;
-    s32 var_r9;
+    register s32 var_r6 = 0;
+    register s32 var_r7 = 0;
+    register s32 var_r8 = 1;
+    register s32 var_r9 = 1;
     void *temp_r11;
-    var_r6 = 0;
     if (*(s32 *)((u8 *)lbl_8055D350 + 4) == 1 && *(s32 *)((u8 *)*(void **)((u8 *)lbl_8055D350 + 0x30) + 0x10) > 0) {
         var_r6 = 1;
     }
@@ -795,14 +794,21 @@ extern "C" void fn_80014D04(void *arg0) {
 
 s32 fn_800151D4(void) { return 1; }
 
-s32 fn_800151DC(void *arg0) {
+#pragma push
+#pragma cplusplus on
+extern "C" s32 fn_800151DC(void *arg0) {
+    class Obj {
+    public:
+        virtual void v0();
+        virtual void v3(void *);
+    };
     s32 result;
     void *manager = lbl_8055D350;
     void *obj;
     if ((*(u32 *)((u8 *)manager + 0x20) & 0x400) &&
         (*(u32 *)((u8 *)*(void **)((u8 *)manager + 0x2C) + 0x2C0) & 0x10)) {
         obj = *(void **)((u8 *)arg0 + 0x50);
-        (*(void (**)(void *, void *))((u8 *)*(void ***)obj + 0xC))(obj, lbl_80558BBC);
+        ((Obj *)obj)->v3(lbl_80558BBC);
         fn_801476C4();
     }
     manager = lbl_8055D350;
@@ -810,12 +816,12 @@ s32 fn_800151DC(void *arg0) {
     if ((*(u32 *)((u8 *)*(void **)((u8 *)manager + 0x30)) & 4) && (*(u32 *)((u8 *)manager + 0x20) & 0x200)) result = 1;
     if (result) {
         obj = *(void **)((u8 *)arg0 + 0x50);
-        (*(void (**)(void *, void *))((u8 *)*(void ***)obj + 0xC))(obj, lbl_802FCDB4);
+        ((Obj *)obj)->v3(lbl_802FCDB4);
         fn_801476C4();
     }
     return result;
 }
-
+#pragma pop
 extern f32 fn_80235EF0(void *, s32);
 extern f32 fn_80235F64(void *, s32);
 extern void fn_80010E94(void *, s32, f32, f32, f32, f32);
