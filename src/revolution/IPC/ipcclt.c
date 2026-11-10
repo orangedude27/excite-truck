@@ -387,6 +387,15 @@ s32 IOS_OpenAsync(const char* path, IPCOpenMode mode, IPCAsyncCallback callback,
     return ret;
 }
 
+/**
+ * Open an IOS device or file by path and wait for the ARM's reply.
+ *
+ * Builds an IPC_REQ_OPEN request for @path (fd 0, no callback), fills in the
+ * path and mode and hands it to the ARM (Starlet IOS), sleeping until
+ * IpcReplyHandler() wakes this thread. Returns the new file descriptor the
+ * ARM reports on success, or the IPCResult error (< 0) of whichever step
+ * failed: allocating the request, setting it up, or the open itself.
+ */
 s32 IOS_Open(const char* path, IPCOpenMode mode) {
     IPCRequestEx* req;
     s32 ret = __ios_Ipc1(0, IPC_REQ_OPEN, NULL, NULL, &req);
