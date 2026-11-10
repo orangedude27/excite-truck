@@ -20,8 +20,8 @@ Running the updater manually refreshes the section without committing.
 
 | Metric | Current progress |
 | :--- | :--- |
-| **Exactly matched functions** | 9,653 / 13,779 (70.1%) |
-| **Exactly matched code** | 937,008 / 3,050,236 bytes (30.7%) |
+| **Exactly matched functions** | 9,675 / 13,779 (70.2%) |
+| **Exactly matched code** | 941,128 / 3,050,236 bytes (30.9%) |
 
 <!-- END AUTO-GENERATED PROGRESS -->
 
