@@ -78,7 +78,7 @@ extern "C" void *fn_8024E6E4(void *self, s32 shouldDelete) {
     extern s32 fn_80128668(void *);
     class V { public: virtual void f2(int); };
     V *ownedObject;
-    /* Destroy this object: tear down owned subobjects/resources across its base vtables, release shared state when refcount hits zero, and optionally free it. */
+    /* Destructor-like cleanup: tear down owned virtual object, run base/resource releases, drop the shared table refcount, and optionally delete self. */
     if (self != 0) {
         ownedObject = *(V **)((u8 *)self + 0xD4);
         *(void **)self = lbl_80344410;
