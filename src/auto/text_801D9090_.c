@@ -78,13 +78,17 @@ void fn_801D9118(int arg0) { fn_801D89C0(arg0 - 4); }
 
 #pragma scheduling invalid_target
 #pragma dont_inline on
+#pragma push
+#pragma processor 750
 void fn_801D9120(float *out, float *values, int count, float weight) {
     float value = values[count - 1];
     if (count == 1) {
+        float inv = lbl_80562B28 - value;
         out[1] = weight * value;
-        out[0] = weight * (lbl_80562B28 - value);
+        out[0] = weight * inv;
     } else {
-        fn_801D9120(out, values, count - 1, weight * (lbl_80562B28 - value));
+        float inv = lbl_80562B28 - value;
+        fn_801D9120(out, values, count - 1, weight * inv);
         fn_801D9120(out + (1 << (count - 1)), values, count - 1, weight * value);
     }
 }
@@ -98,23 +102,22 @@ void fn_801D91D8(void) {
     int count;
     int i;
     void **entries;
-    int found;
     for (node = lbl_8055E96C; node != 0; node = *(void **)((char *)node + 0x54)) {
         for (item = lbl_8055E964; item != 0; item = *(void **)((char *)item + 0x34)) {
             entries = *(void ***)item;
             count = *(int *)((char *)item + 4);
-            found = -1;
-            for (i = 0; i < count; i++) {
-                if (entries[i] == node) {
-                    found = i;
-                    break;
-                }
+            i = 0;
+            for (; i < count; i++) {
+                if (entries[i] == node)
+                    goto have_it;
             }
-            if (found != -1) {
+            i = -1;
+        have_it:
+            if (i != -1) {
                 int used = *(int *)((char *)node + 0x2C);
                 int base = *(int *)((char *)node + 0x28);
                 *(int *)((char *)node + 0x2C) = used + 1;
-                *(void **)((char *)base + used * 4) = item;
+                *(void **)((char *)base + (used << 2)) = item;
             }
         }
     }
@@ -365,23 +368,21 @@ int fn_801D985C(int *arg0) {
     register s32 zero = 0;
     register void *node = *(void **)arg0;
     register void *next;
-
     goto check;
 loop:
     next = *(void **)((char *)node + 0x54);
     fn_801D98F0((void **)((char *)node + 0x24));
     if ((char *)node + 0x28 != 0) {
         if ((char *)node + 0x28 != 0) {
-            *(s32 *)((char *)node + 0x28) = zero;
-            *(s32 *)((char *)node + 0x2C) = zero;
-            *(s32 *)((char *)node + 0x30) = zero;
+            ((s32 *)node)[10] = zero;
+            ((s32 *)node)[11] = zero;
+            ((s32 *)node)[12] = zero;
         }
     }
     fn_80128668(node);
     node = next;
 check:
-    if (node != 0)
-        goto loop;
+    if (node != 0) goto loop;
     *arg0 = 0;
 }
 
@@ -395,8 +396,8 @@ void fn_801D98F0(void **arg0) {
     *arg0 = 0;
 }
 
+#pragma use_lmw_stmw off
 int fn_801D9948(int *arg0) {
-    /* Fix note: walk and release each node, clear its embedded arrays, then reset the head. */
     struct Node {
         int field0, field4, field8, fieldC, field10;
         int *items;
@@ -404,11 +405,11 @@ int fn_801D9948(int *arg0) {
         int field1C, field20, field24, field28, field2C, field30;
         struct Node *next;
     };
-    register struct Node *node = (struct Node *)*arg0;
     register int *head = arg0;
-    register int zero = 0;
     register int i;
     register int offset;
+    register struct Node *node = (struct Node *)*head;
+    register int zero = 0;
     while (node != 0) {
         register struct Node *next = node->next;
         if (node == 0) break;
@@ -438,7 +439,7 @@ int fn_801D9948(int *arg0) {
     }
     *head = zero;
 }
-
+#pragma use_lmw_stmw on
 void fn_801D9A08(void) {
     void *node = lbl_8055E96C;
     while (node != 0) {
