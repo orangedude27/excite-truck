@@ -86,16 +86,17 @@ long fn_80177988(void) {
 }
 
 #pragma push
+#pragma scheduling invalid_target
 #pragma processor 750
 void fn_80177990(void) {
-    float tmp3 = lbl_80561B48;
+    float tmp5 = lbl_80561B48;
     float *p1 = &lbl_80430700[0];
     float *p2 = &lbl_804305D4[0];
     int i;
     for (i = 0; i < 0x4b; i++) {
-        *p1 = tmp3;
-        *p2 = tmp3;
-        fn_801DCEC8(i, tmp3);
+        *p1 = tmp5;
+        *p2 = tmp5;
+        fn_801DCEC8(i, tmp5);
         fn_801DCEDC(i, lbl_80561B48);
         p1++;
         p2++;
