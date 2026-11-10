@@ -8128,7 +8128,7 @@ found:
     return name;
 }
 
-tBTM_SEC_DEV_REC *btm_sec_alloc_dev(BD_ADDR arg0) {
+tBTM_SEC_DEV_REC *btm_sec_alloc_dev(BD_ADDR bd_addr) {
     struct tBTM_SEC_DEV_SLOT_VIEW {
         u8 pad0[0x76];
         u8 in_use;
@@ -8139,35 +8139,36 @@ tBTM_SEC_DEV_REC *btm_sec_alloc_dev(BD_ADDR arg0) {
         struct tBTM_SEC_DEV_SLOT_VIEW dev[0x10];
     };
     u8 *base;
-    u8 *dev;
-    u8 *inq;
+    u8 *devRec;
+    u8 *inqInfo;
     s32 i;
 
     base = lbl_803C0F78;
-    dev = 0;
+    devRec = 0;
     for (i = 0; i < 0x10; i++) {
         if ((base[0x1FA6] & 0x80) == 0) {
-            dev = (u8 *)&((struct tBTM_SEC_CB_VIEW *)lbl_803C0F78)->dev[i];
+            devRec = (u8 *)&((struct tBTM_SEC_CB_VIEW *)lbl_803C0F78)->dev[i];
             break;
         }
         base += 0x88;
     }
 
-    if (dev == 0)
-        dev = (u8 *)btm_find_oldest_dev();
+    if (devRec == 0)
+        devRec = (u8 *)btm_find_oldest_dev();
 
-    memset(dev, 0, 0x88);
-    dev[0x76] = 0x80;
-    dev[0x85] = 0;
-    inq = (u8 *)BTM_InqDbRead(arg0);
-    if (inq != 0)
-        memcpy(dev + 0x22, inq + 8, 3);
+    /* Allocate/initialize a security device record for bd_addr, copying inquiry page-scan data if known and assigning the next device timestamp/handle. */
+    memset(devRec, 0, 0x88);
+    devRec[0x76] = 0x80;
+    devRec[0x85] = 0;
+    inqInfo = (u8 *)BTM_InqDbRead(bd_addr);
+    if (inqInfo != 0)
+        memcpy(devRec + 0x22, inqInfo + 8, 3);
     else
-        memcpy(dev + 0x22, lbl_803C0F78 + 0x27BA, 3);
-    memcpy(dev + 0x1C, arg0, 6);
-    *(u16 *)(dev + 0x18) = BTM_GetHCIConnHandle(arg0);
-    *(u32 *)(dev + 0xC) = (*(u32 *)(lbl_803C0F78 + 0x1974))++;
-    return (tBTM_SEC_DEV_REC *)dev;
+        memcpy(devRec + 0x22, lbl_803C0F78 + 0x27BA, 3);
+    memcpy(devRec + 0x1C, bd_addr, 6);
+    *(u16 *)(devRec + 0x18) = BTM_GetHCIConnHandle(bd_addr);
+    *(u32 *)(devRec + 0xC) = (*(u32 *)(lbl_803C0F78 + 0x1974))++;
+    return (tBTM_SEC_DEV_REC *)devRec;
 }
 
 tBTM_SEC_DEV_REC *btm_find_dev_by_handle(UINT16 handle) {
