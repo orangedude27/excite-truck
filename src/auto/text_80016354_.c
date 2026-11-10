@@ -25,6 +25,21 @@ extern void *fn_80016BC8(void *, int);
 extern void *lbl_8055D54C;
 extern void fn_80128670(void *);
 extern void fn_80131818(void);
+void fn_80016354(void) {
+    int i;
+    lbl_8055D538 = (void *)fn_80131808(&lbl_802FCEA8[0xC]);
+    lbl_8055D540 = (void *)fn_8012850C(0x11F8, &lbl_802FCEA8[0x18]);
+    lbl_8055D544 = (void *)fn_8012850C(0x20D0, &lbl_802FCEA8[0x28]);
+    fn_80016C1C();
+    lbl_8055D554 = 0;
+    i = 0;
+    do {
+        fn_8001766C(i);
+        i++;
+    } while (i < 4);
+    fn_8000D884(0x44727672, 1, &lbl_8055D548, 0x960, fn_800177B8);
+}
+
 void fn_800163F0(void) {
     extern void *lbl_8055D538;
     extern void *lbl_8055D53C;
@@ -49,30 +64,27 @@ void *fn_80016464(int arg0) {
 }
 
 #pragma scheduling invalid_target
-void *fn_80016474(void) {
-    register int j;
-    register int i;
-    unsigned char *base;
-    register unsigned char *entry1;
-    register unsigned char *entry2;
-    int key = 0;
-
-    for (i = 0, entry1 = lbl_803577F0; i < (int)lbl_8055D554; entry1 += 0x5C, i++) {
-        if (key == *(int *)(entry1 + 4)) {
+void *fn_80016474(int arg0) {
+    unsigned char *entry;
+    int i;
+    for (i = 0, entry = lbl_803577F0; i < (int)lbl_8055D554; entry += 0x5C, i++) {
+        if (arg0 == *(int *)(entry + 4)) {
             return lbl_803577F0 + i * 0x5C;
         }
     }
-    j = 0;
-    base = lbl_8055D540;
-    entry2 = base;
-    for (; j < (int)lbl_8055D54C; entry2 += 0x5C, j++) {
-        if (key == *(int *)(entry2 + 4)) {
-            return base + j * 0x5C;
+    {
+        unsigned char *e2;
+        unsigned char *b2;
+        int k = 0;
+        e2 = b2 = lbl_8055D540;
+        for (k = 0; k < (int)lbl_8055D54C; e2 += 0x5C, k++) {
+            if (arg0 == *(int *)(e2 + 4)) {
+                return b2 + k * 0x5C;
+            }
         }
+        return lbl_803577F0;
     }
-    return lbl_803577F0;
 }
-#pragma scheduling on
 
 void* fn_80016508(void) {
     return lbl_8055D54C;
