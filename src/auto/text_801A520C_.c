@@ -664,7 +664,7 @@ extern "C" void fn_801A5F7C(void *arg0, int arg1, int arg2, int *arg3, int *arg4
     };
     int x, y, a, b;
     Obj *obj;
-    ((void (*)(void *, int, int, int *, int *, float))fn_8018B0D8)(arg0, arg1, arg2, &x, &y, farg0);
+    fn_8018B0D8(arg0, arg1, arg2, &x, &y, farg0);
     obj = (Obj *)*(void **)((char *)arg0 + 0x270C);
     obj->f5(arg1 + x, arg2 + y, &a, &b, farg0);
     *arg3 = x + a;
