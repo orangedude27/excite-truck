@@ -73,6 +73,28 @@ extern s32 fn_8002F6AC(s32, void *(*)(void *, s32));
 extern void *fn_80287C80(void *, s32);
 extern void fn_802E317C(const char *, ...);
 extern const char lbl_80348A4C[];
+extern s32 fn_801E7DF0(s32);
+extern void fn_8028777C(void);
+extern void fn_80288218(s32);
+extern void fn_802880F4(void);
+extern void fn_802A81F0(void);
+extern void fn_802888D8(void);
+extern void fn_802A1590(void);
+extern void fn_8028A664(void);
+extern void fn_8028CED8(void);
+extern void fn_80294970(void);
+extern void fn_80297ED8(void);
+extern void fn_8029C1C4(void);
+extern void fn_8029EF70(void);
+extern void fn_802924F4(void);
+extern void fn_802A09B0(void);
+extern void fn_802A1290(void);
+extern void fn_802A4ADC(void);
+extern void fn_80292114(void);
+extern void fn_802A7BE8(void);
+extern void fn_8029F03C(void);
+extern void fn_802AB21C(void);
+extern void fn_8028DFB0(void);
 typedef struct Obj { void **vtable; } Obj;
 void* fn_802875B8(void* arg0, s32 arg1) {
     if (arg0 != 0) {
