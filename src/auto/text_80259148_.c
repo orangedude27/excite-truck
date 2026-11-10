@@ -43,7 +43,6 @@ extern float PSVECDotProduct();
 #pragma cplusplus on
 #pragma scheduling invalid_target
 extern "C" void fn_80259148(void) {
-    struct Row { int first; char rest[0xC]; };
     class Obj {
     public:
         virtual void f0();
@@ -51,13 +50,12 @@ extern "C" void fn_80259148(void) {
         virtual void f2();
         virtual void apply(void *, void *, int);
     };
-    register Row *base asm("r31") = (Row *)lbl_80344DE0;
-    register void *first asm("r4") = &base[0].first;
+    register int base asm("r31") = (int)lbl_80344DE0;
     Obj *obj = (Obj *)fn_80258354();
     lbl_8055F394 = obj;
-    obj->apply(first, &base[1].first, 0);
-    ((Obj *)lbl_8055F394)->apply(&base[2].first, &base[3].first, 0);
-    ((Obj *)lbl_8055F394)->apply(&base[4].first, &base[5].first, 1);
+    obj->apply((void *)(base + 0), (void *)(base + 0x10), 0);
+    ((Obj *)lbl_8055F394)->apply((void *)(base + 0x20), (void *)(base + 0x30), 0);
+    ((Obj *)lbl_8055F394)->apply((void *)(base + 0x40), (void *)(base + 0x50), 1);
 }
 #pragma scheduling on
 #pragma cplusplus reset
@@ -1547,31 +1545,44 @@ extern unsigned char *fn_8001EFAC(int, int);
 extern int fn_801345D8(char *, int, const char *, int);
 extern const char lbl_80344F08[];
 void fn_8025BE0C(void *arg0) {
-    void *arg1;
-    int size;
+    typedef void (*Fmt)(char *, int, const char *, ...);
+    void *tmp = arg0;
     void *obj;
-    unsigned char *src;
-    unsigned char *dst;
+    int size;
+    int res;
+    unsigned char c;
     int count;
-    arg1 = arg0;
+    unsigned char *dst;
+    unsigned char *src;
     size = *(int *)((char *)arg0 + 0x24);
-    obj = *(void **)((char *)arg1 + 0x18);
+    res = *(int *)((char *)arg0 + 0x20);
+    obj = *(void **)((char *)tmp + 0x18);
     *(int *)((char *)obj + 0x4C) = size;
-    src = fn_8001EFAC(*(int *)((char *)arg0 + 0x20), size);
-    if (src != 0) {
-        dst = (unsigned char *)obj + 4;
-        count = 0x32;
-        do { count--; } while (count > 0);
-        dst[-1] = 0;
-        do {
-            unsigned char c = *src++;
-            *dst++ = c;
-            if ((signed char)c == 0) break;
-        } while (1);
-    } else *((unsigned char *)obj + 4) = 0;
+    src = fn_8001EFAC(res, size);
+    if (src == 0)
+        goto else_copy;
+    dst = (unsigned char *)obj + 4;
+    count = 0x32;
+    goto copy;
+next:
+    count--;
+    if (count > 0)
+        goto copy;
+    dst[-1] = 0;
+    goto done;
+copy:
+    c = *src++;
+    *dst++ = c;
+    if ((signed char)c == 0)
+        goto done;
+    goto next;
+else_copy:
+    *((unsigned char *)obj + 4) = 0;
+done:
     if (size > 0)
-        fn_801345D8((char *)obj + 0x36, 0x14, lbl_80344F08, size);
-    else *((unsigned char *)obj + 0x36) = 0;
+        ((Fmt)fn_801345D8)((char *)obj + 0x36, 0x14, lbl_80344F08, size);
+    else
+        *((unsigned char *)obj + 0x36) = 0;
 }
 
 void fn_8025BED0(void *arg0) {
