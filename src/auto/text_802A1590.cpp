@@ -30,7 +30,7 @@ extern "C" void* lbl_804BCF88[];
 extern "C" int fn_801EF024(void*);
 extern "C" s32 fn_802A1C30(void*);
 extern "C" void fn_802A1DC0(void);
-extern "C" f32 lbl_80564728; extern "C" f32 lbl_8056472C, lbl_80564750, lbl_80564788, lbl_805647E8, lbl_805647EC, lbl_805647F0, lbl_805647C4; extern "C" const char lbl_80349A40[]; 
+extern "C" f32 lbl_80564728; extern "C" f32 lbl_8056472C, lbl_80564750, lbl_80564788, lbl_805647E8, lbl_805647EC, lbl_805647F0, lbl_805647C4; extern "C" char lbl_80349A40[]; 
 extern "C" const char lbl_80349A28[];
 extern "C" const char lbl_80349A68[];
 extern "C" f32 lbl_80564808, lbl_8056480C, lbl_80564810, lbl_80564814;
