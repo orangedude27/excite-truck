@@ -25095,6 +25095,7 @@ UINT8 *sdpu_build_attrib_entry(UINT8 *p_out, tSDP_ATTRIBUTE *p_attr)
 extern char lbl_8031A56C[];
 extern char lbl_8031A5A4[];
 void sdpu_build_n_send_error(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 error_code, char *p_error_text) {
+    /* Build and send an SDP Error Response PDU (optionally with an error text string) over the L2CAP connection. */
     UINT8 *p_rsp, *p_rsp_start, *p_rsp_param_len;
     UINT16 rsp_param_len;
     UINT8 *p_buf;
