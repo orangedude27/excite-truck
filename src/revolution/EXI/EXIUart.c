@@ -49,13 +49,15 @@ _detach:
 }
 
 void __OSEnableBarnacle(EXIChannel chan, u32 dev) {
-    u32 id;
+    u32 deviceId;
 
-    if (!EXIGetID(chan, dev, &id)) {
+    /* If the attached EXI device ID is not a known type, probe for barnacle debug
+     * support and enable it by recording the channel/device and setting magic flags. */
+    if (!EXIGetID(chan, dev, &deviceId)) {
         return;
     }
 
-    switch (id) {
+    switch (deviceId) {
     case EXI_ID_MEMCARD_59:
     case EXI_ID_MEMCARD_123:
     case EXI_ID_MEMCARD_251:
@@ -79,7 +81,7 @@ void __OSEnableBarnacle(EXIChannel chan, u32 dev) {
     case EXI_ID_INVALID:
         break;
     default:
-        if (ProbeBarnacle(chan, dev, &id)) {
+        if (ProbeBarnacle(chan, dev, &deviceId)) {
             Chan = chan;
             Dev = dev;
             BarnacleEnabled = 0xA5FF005A;
