@@ -238,6 +238,7 @@ struct Node1D94DC {
 };
 #pragma use_lmw_stmw off
 extern "C" int fn_801D94DC(void *head, void *list, const char *name, int object) {
+    /* Build a linked list of morph entries matching name from the DTB list, resolving each terr_region against the region database. */
     Node1D94DC *node;
     DtbItem801D94DC *item;
     int index = 0;
