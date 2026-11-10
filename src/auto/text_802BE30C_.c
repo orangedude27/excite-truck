@@ -133,6 +133,7 @@ void fn_802BE694(void) {
     }
     fn_802BE38C();
 }
+#pragma use_lmw_stmw on
 #pragma scheduling on
 #pragma dont_inline off
 extern void fn_802BE780(void *);
