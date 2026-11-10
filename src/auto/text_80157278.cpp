@@ -3575,6 +3575,7 @@ extern "C" s32 fn_8015E108(void) {
 }
 
 extern "C" void *fn_8015E110(void *arg0, s32 arg1) {
+    /* Destructor: destroy items in the owned list, destroy/free subobject at +0x50, clear fields, optionally free self. */
     struct Item { virtual void destroy(s32); };
     extern char lbl_8032EB0C[];
     void *obj = arg0;
@@ -4156,12 +4157,14 @@ extern "C" void fn_80159624(void *arg0, void *arg1) {
         obj[0x4C] = 0;
     }
 }
-#pragma scheduling on
-extern "C" s32 fn_80159708(void *arg0) {
-    double v = *(f32 *)((char *)arg0 + 0x25C);
-    return (s32)v;
+#pragma push
+#pragma processor 750
+#pragma scheduling 750
+extern "C" int fn_80159708(void *arg0) {
+    float f = *(float *)((char *)arg0 + 0x25C);
+    return (int)f;
 }
-#pragma scheduling off
+#pragma pop
 class Fn8015E338Item {
 public:
  virtual void v0(); virtual void v1(); virtual void v2(); virtual f32 v3(void*);
