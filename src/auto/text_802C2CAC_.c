@@ -30,7 +30,7 @@ s32 fn_802C2CAC(s32 arg0) {
     unsigned int a = __rlwinm(arg0, 9, 8, 12);
     unsigned int b;
     a |= 0xFF000000;
-    b = __rlwinm(arg0, 27, 3, 30);
+    b = __rlwinm(arg0, 3, 24, 28);
     a = __rlwimi(a, arg0, 6, 16, 20);
     return (s32)(b | a);
 }
