@@ -191,45 +191,72 @@ void* fn_801D4B34(void* arg0) {
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void *fn_801D4B60(void *arg0, int arg1) {
- extern char lbl_80338D80[], lbl_80338490[];
- struct Ref { virtual void release(int); };
- struct ResetFields { char pad[0x30]; int buffer; int count; int capacity; };
- char *src; int i; char *dst; int count, offset; void **items; Ref *entry;
- if(arg0) {
-  *(void **)arg0=lbl_80338D80;
-  if(*(int *)((char *)arg0+4)) {
-   count=*(int *)((char *)arg0+0x34); *(int *)((char *)arg0+4)=0; offset=count*4;
-   goto cleanup_check;
+    extern char lbl_80338D80[], lbl_80338490[];
+    struct Ref { virtual void release(int); };
+    struct ResetFields { char pad[0x30]; int buffer; int count; int capacity; };
+    char *src;
+    int i;
+    char *dst;
+    int count;
+    int offset;
+    void **items;
+    Ref *entry;
+
+    /* Destructor/cleanup: clear owned refs, reset to "UNLOADED_SEQUENCE", and optionally delete. */
+    if (arg0) {
+        *(void **)arg0 = lbl_80338D80;
+        if (*(int *)((char *)arg0 + 4)) {
+            count = *(int *)((char *)arg0 + 0x34);
+            *(int *)((char *)arg0 + 4) = 0;
+            offset = count * 4;
+            goto cleanup_check;
 cleanup_body:
-   items=*(void ***)((char *)arg0+0x30); entry=(Ref *)items[count];
-   if(count>=0 && count<*(int *)((char *)arg0+0x34)) {
-    if(count!=*(int *)((char *)arg0+0x34)-1) items[count]=items[*(int *)((char *)arg0+0x34)-1];
-    *(int *)((char *)arg0+0x34)=*(int *)((char *)arg0+0x34)-1;
-   }
-   if(entry) entry->release(1);
+            items = *(void ***)((char *)arg0 + 0x30);
+            entry = (Ref *)items[count];
+            if (count >= 0 && count < *(int *)((char *)arg0 + 0x34)) {
+                if (count != *(int *)((char *)arg0 + 0x34) - 1) {
+                    items[count] = items[*(int *)((char *)arg0 + 0x34) - 1];
+                }
+                *(int *)((char *)arg0 + 0x34) = *(int *)((char *)arg0 + 0x34) - 1;
+            }
+            if (entry) {
+                entry->release(1);
+            }
 cleanup_check:
-   if(count-- > 0) { offset-=4; goto cleanup_body; }
-  }
-  src=lbl_80338490; dst=(char *)arg0+8; i=0x14; goto copy_body;
+            if (count-- > 0) {
+                offset -= 4;
+                goto cleanup_body;
+            }
+        }
+        src = lbl_80338490;
+        dst = (char *)arg0 + 8;
+        i = 0x14;
+        goto copy_body;
 copy_check:
-  i--;
-  if(i>0) goto copy_body;
-  dst[-1]=0;
-  goto copied;
+        i--;
+        if (i > 0) {
+            goto copy_body;
+        }
+        dst[-1] = 0;
+        goto copied;
 copy_body:
-  *dst++=*src++;
-  if((signed char)dst[-1]!=0) goto copy_check;
+        *dst++ = *src++;
+        if ((signed char)dst[-1] != 0) {
+            goto copy_check;
+        }
 copied:
-  if((int)arg0+0x30) {
-   if((int)arg0+0x30) {
-    ((ResetFields *)arg0)->buffer=0;
-    ((ResetFields *)arg0)->count=0;
-    ((ResetFields *)arg0)->capacity=0;
-   }
-  }
-  if(arg1>0) ((void (*)(void *))fn_80128668)(arg0);
- }
- return arg0;
+        if ((int)arg0 + 0x30) {
+            if ((int)arg0 + 0x30) {
+                ((ResetFields *)arg0)->buffer = 0;
+                ((ResetFields *)arg0)->count = 0;
+                ((ResetFields *)arg0)->capacity = 0;
+            }
+        }
+        if (arg1 > 0) {
+            ((void (*)(void *))fn_80128668)(arg0);
+        }
+    }
+    return arg0;
 }
 #pragma cplusplus reset
 #pragma pop
