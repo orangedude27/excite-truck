@@ -4,7 +4,7 @@
 typedef signed int s32;
 typedef unsigned char u8;
 typedef struct { int pad[4]; char *base; int stride; int count; int head; } PoolList_8012A218;
-extern int lbl_8032A5FC;
+extern char lbl_8032A5FC[];
 extern char lbl_8032A620[];
 extern int lbl_8055E174;
 extern float lbl_80561474;
