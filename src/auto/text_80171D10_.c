@@ -182,7 +182,7 @@ unsigned long long fn_80171FF0(void *arg0, int arg1, float angle, float step) {
 
 #pragma dont_inline on
 unsigned int fn_801720E0(unsigned int arg0) {
-    return (arg0 & 0xFF000000) | ((arg0 >> 1) & 0x7F7F7F);
+    return (arg0 & 0xFF000000) | ((arg0 & 0xFEFEFE) >> 1);
 }
 #pragma dont_inline reset
 
@@ -640,6 +640,9 @@ extern float lbl_80561A54;
 
 #pragma push
 #pragma scheduling invalid_target
+// Allocates and initializes a 0x2BC-byte object: sets vtable/data fields and counters,
+// initializes several float/word fields, clears/initializes fixed-size byte/string regions,
+// caches related resource IDs/handles, and returns the object (or NULL on allocation failure).
 void *fn_80172C28(void) {
     extern void *fn_801284F8(unsigned int, void *);
     extern void fn_8001DAE0(void *, float);
@@ -650,60 +653,60 @@ void *fn_80172C28(void) {
     extern void *memset(void *, int, unsigned long);
     extern char lbl_80330F48[];
     extern char lbl_80331018[];
-    extern float lbl_80561A44, lbl_80561A90, lbl_8055E3A8;
+    extern float lbl_80561A44, lbl_80561A80, lbl_80561A90, lbl_8055E3A8;
     extern int lbl_8055E3A4;
     char *base = lbl_80330F48;
     unsigned int zero = 0;
     void *object = fn_801284F8(0x2BC, base + 0x2C);
     if (object != 0) {
-        unsigned char *p = (unsigned char *)object;
-        void *data = p + 0x10;
+        unsigned char *bytes = (unsigned char *)object;
+        void *data = bytes + 0x10;
         void *vtable = lbl_80331018;
         float firstValue = lbl_80561A44;
-        *(void **)p = vtable;
-        *(void **)(p + 4) = data;
-        *(int *)(p + 0xC) = 0x10;
-        *(int *)(p + 8) = zero;
-        fn_8001DAE0(p + 0x174, firstValue);
-        fn_8001DAE0(p + 0x17C, lbl_80561A80);
-        fn_8001DAE0(p + 0x184, lbl_80561A90);
-        fn_8001DAE0(p + 0x18C, lbl_80561A90);
-        *(int *)(p + 0x1B8) = zero;
-        *(int *)(p + 0x1C0) = zero;
-        *(int *)(p + 0x1C4) = zero;
-        *(int *)(p + 0x1C8) = zero;
-        *(int *)(p + 0x1D0) = zero;
-        *(int *)(p + 0x1D4) = zero;
-        *(int *)(p + 0x1D8) = zero;
-        memset(p + 0x1DC, 0x30, 3);
-        p[0x1DF] = (unsigned char)zero;
-        memset(p + 0x1F0, 0x30, 3);
-        p[0x1F3] = (unsigned char)zero;
-        memset(p + 0x204, 0x30, 3);
-        p[0x207] = (unsigned char)zero;
-        memset(p + 0x218, 0x30, 3);
-        p[0x21B] = (unsigned char)zero;
-        memset(p + 0x22C, 0x30, 3);
-        p[0x22F] = (unsigned char)zero;
-        memset(p + 0x236, 0x30, 3);
-        p[0x239] = (unsigned char)zero;
-        memset(p + 0x24A, 0x30, 3);
-        p[0x24D] = (unsigned char)zero;
-        memset(p + 0x25E, 0x30, 3);
-        p[0x261] = (unsigned char)zero;
-        memset(p + 0x272, 0x30, 3);
-        p[0x275] = (unsigned char)zero;
-        memset(p + 0x286, 0x30, 3);
+        *(void **)bytes = vtable;
+        *(void **)(bytes + 4) = data;
+        *(int *)(bytes + 0xC) = 0x10;
+        *(int *)(bytes + 8) = zero;
+        fn_8001DAE0(bytes + 0x174, firstValue);
+        fn_8001DAE0(bytes + 0x17C, lbl_80561A80);
+        fn_8001DAE0(bytes + 0x184, lbl_80561A90);
+        fn_8001DAE0(bytes + 0x18C, lbl_80561A90);
+        *(int *)(bytes + 0x1B8) = zero;
+        *(int *)(bytes + 0x1C0) = zero;
+        *(int *)(bytes + 0x1C4) = zero;
+        *(int *)(bytes + 0x1C8) = zero;
+        *(int *)(bytes + 0x1D0) = zero;
+        *(int *)(bytes + 0x1D4) = zero;
+        *(int *)(bytes + 0x1D8) = zero;
+        memset(bytes + 0x1DC, 0x30, 3);
+        bytes[0x1DF] = (unsigned char)zero;
+        memset(bytes + 0x1F0, 0x30, 3);
+        bytes[0x1F3] = (unsigned char)zero;
+        memset(bytes + 0x204, 0x30, 3);
+        bytes[0x207] = (unsigned char)zero;
+        memset(bytes + 0x218, 0x30, 3);
+        bytes[0x21B] = (unsigned char)zero;
+        memset(bytes + 0x22C, 0x30, 3);
+        bytes[0x22F] = (unsigned char)zero;
+        memset(bytes + 0x236, 0x30, 3);
+        bytes[0x239] = (unsigned char)zero;
+        memset(bytes + 0x24A, 0x30, 3);
+        bytes[0x24D] = (unsigned char)zero;
+        memset(bytes + 0x25E, 0x30, 3);
+        bytes[0x261] = (unsigned char)zero;
+        memset(bytes + 0x272, 0x30, 3);
+        bytes[0x275] = (unsigned char)zero;
+        memset(bytes + 0x286, 0x30, 3);
         {
             void *name = base + 0x38;
-            p[0x289] = (unsigned char)zero;
+            bytes[0x289] = (unsigned char)zero;
             lbl_8055E3A4 = fn_80139D4C(name);
             *(int *)&lbl_8055E3A8 = fn_802CAC28(base + 0x48, 0);
-            *(int *)(p + 0x198) = fn_802CAC28(base + 0x58, 0);
+            *(int *)(bytes + 0x198) = fn_802CAC28(base + 0x58, 0);
             if (lbl_8055E3A4 != 0)
                 fn_802E30C8(base + 0x64, name);
-            *(int *)(p + 0x2B4) = fn_80207848(base + 0x8C, 1);
-            p[0x2B8] = (unsigned char)zero;
+            *(int *)(bytes + 0x2B4) = fn_80207848(base + 0x8C, 1);
+            bytes[0x2B8] = (unsigned char)zero;
         }
     }
     return object;
