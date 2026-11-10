@@ -464,23 +464,26 @@ extern "C" int fn_801DF110(void) {
 }
 #pragma cplusplus reset
 
-int fn_801DF238(int arg0) {
+int fn_801DF238(int eventId) {
     extern int fn_801769F8(void);
     extern void fn_800121A4(void);
     extern void fn_801331C4(int, int *, float *);
     extern int lbl_804874A8[];
     extern int lbl_8055E9F4;
     extern float lbl_80562BF4;
-    // Fix note: isolate the 0xD case in a bounded switch while keeping output conversion and object updates matched.
+    /* Handles popup/input events 0x0D and 0x58 while the UI is active: advances or resets
+       popup state, samples a value into the current queued object (or advances the queue on
+       failure), marks it updated, and rotates the active object index. Returns 1 if active,
+       0 otherwise. */
     float value;
     register float sampled;
     int *object;
     if (lbl_8055E9E8 != 0) {
         if (fn_801769F8() != 0) {
-            if (arg0 == 0x58) {
+            if (eventId == 0x58) {
                 goto handle;
-            } else if (arg0 < 0x58) {
-                switch (arg0) {
+            } else if (eventId < 0x58) {
+                switch (eventId) {
                 case 0xD:
                     goto handle;
                 default:
