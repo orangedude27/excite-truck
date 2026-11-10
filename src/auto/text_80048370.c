@@ -364,21 +364,21 @@ void* AllocFromHead_(MEMiHeapHead* heap, u32 size, s32 align) {
     u32 bestBlkSize;
     void* bestBlkMemPtr;
     exp = (MEMiExpHeapHead*)(heap + 1);
-    isFastAlloc = exp->allocMode == MEM_EXP_HEAP_ALLOC_FAST;
+    isFastAlloc = (exp->allocMode == MEM_EXP_HEAP_ALLOC_FAST);
     bestBlk = 0;
     bestBlkSize = 0xFFFFFFFF;
     bestBlkMemPtr = 0;
     for (it = exp->freeMBlocks.head; it != 0; it = it->next) {
-        void* start = it + 1;
-        void* end = (void*)((align + (u32)start - 1) & ~(align - 1));
-        if (it->size >= size + ((u32)end - (u32)start) && bestBlkSize > it->size) {
+        void* start = (it + 1);
+        void* end = (void*)(((u32)align + (u32)start - 1) & ~(align - 1));
+        if ((it->size >= (size + ((u32)end - (u32)start))) && (bestBlkSize > it->size)) {
             bestBlk = it;
             bestBlkSize = it->size;
             bestBlkMemPtr = end;
-            if (isFastAlloc || bestBlkSize == size) break;
+            if ((isFastAlloc) || (bestBlkSize == size)) break;
         }
     }
-    return bestBlk != 0 ? AllocUsedBlockFromFreeBlock_(exp, bestBlk, bestBlkMemPtr, size, 0) : 0;
+    return (bestBlk != 0) ? AllocUsedBlockFromFreeBlock_(exp, bestBlk, bestBlkMemPtr, size, 0) : 0;
 }
 
 #pragma pop
@@ -442,6 +442,7 @@ static inline MEMiExpHeapMBlock* InitFreeMBlock_(void** region) {
     return InitMBlock_(region, 0x4652);
 }
 
+/* Coalesces a recycled region with adjacent free blocks in an MEMiExpHeap and inserts it into the free list; returns 1 if a free block was created, 0 if too small. */
 s32 RecycleRegion_(MEMiExpHeapHead *exp, void **region) {
     void *reg[2];
     void **p;
@@ -907,13 +908,31 @@ void *MEMGetNextListObject(MEMList *list, void *object) {
 #pragma push
 #pragma paired on
 #pragma paired_single on
-void PSMTXConcat(register const Mtx a, register const Mtx b, register Mtx out) {
-    register int i;
+void PSMTXConcat(const Mtx a, const Mtx b, Mtx out) {
+    int i;
     for (i = 0; i < 3; i++) {
         out[i][0] = a[i][0] * b[0][0] + a[i][1] * b[1][0] + a[i][2] * b[2][0];
         out[i][1] = a[i][0] * b[0][1] + a[i][1] * b[1][1] + a[i][2] * b[2][1];
         out[i][2] = a[i][0] * b[0][2] + a[i][1] * b[1][2] + a[i][2] * b[2][2];
         out[i][3] = a[i][0] * b[0][3] + a[i][1] * b[1][3] + a[i][2] * b[2][3] + a[i][3];
+    }
+}
+
+void PSMTXConcatArray(const float a[3][4], const float b[3][4], float c[3][4], unsigned long n) {
+    unsigned long i;
+    for (i = 0; i < n; ++i) {
+        c[0][0] = a[0][0]*b[0][0] + a[0][1]*b[1][0] + a[0][2]*b[2][0];
+        c[0][1] = a[0][0]*b[0][1] + a[0][1]*b[1][1] + a[0][2]*b[2][1];
+        c[0][2] = a[0][0]*b[0][2] + a[0][1]*b[1][2] + a[0][2]*b[2][2];
+        c[0][3] = a[0][0]*b[0][3] + a[0][1]*b[1][3] + a[0][2]*b[2][3] + a[0][3];
+        c[1][0] = a[1][0]*b[0][0] + a[1][1]*b[1][0] + a[1][2]*b[2][0];
+        c[1][1] = a[1][0]*b[0][1] + a[1][1]*b[1][1] + a[1][2]*b[2][1];
+        c[1][2] = a[1][0]*b[0][2] + a[1][1]*b[1][2] + a[1][2]*b[2][2];
+        c[1][3] = a[1][0]*b[0][3] + a[1][1]*b[1][3] + a[1][2]*b[2][3] + a[1][3];
+        c[2][0] = a[2][0]*b[0][0] + a[2][1]*b[1][0] + a[2][2]*b[2][0];
+        c[2][1] = a[2][0]*b[0][1] + a[2][1]*b[1][1] + a[2][2]*b[2][1];
+        c[2][2] = a[2][0]*b[0][2] + a[2][1]*b[1][2] + a[2][2]*b[2][2];
+        c[2][3] = a[2][0]*b[0][3] + a[2][1]*b[1][3] + a[2][2]*b[2][3] + a[2][3];
     }
 }
 
@@ -949,19 +968,17 @@ x_axis:
     m[1][1] = cosA; m[1][2] = negSin;
     return (u32)m;
 y_axis:
-    *(double *)&m[1][2] = (double)zero;
-    m[0][0] = cosA; m[0][1] = zero;
-    m[2][2] = cosA; m[2][3] = zero;
+    m[0][0] = cosA; m[0][1] = zero; m[0][2] = sinA; m[0][3] = zero;
     m[1][0] = zero; m[1][1] = one;
-    m[0][2] = sinA; m[0][3] = zero;
-    m[2][0] = negSin; m[2][1] = zero;
+    *(double *)&m[1][2] = (double)zero;
+    m[2][0] = negSin; m[2][1] = zero; m[2][2] = cosA; m[2][3] = zero;
     return (u32)m;
 z_axis:
+    m[0][0] = cosA; m[0][1] = negSin;
     *(double *)&m[0][2] = (double)zero;
+    m[1][0] = sinA; m[1][1] = cosA;
     *(double *)&m[1][2] = (double)zero;
     *(double *)&m[2][0] = (double)zero;
-    m[1][0] = sinA; m[1][1] = cosA;
-    m[0][0] = cosA; m[0][1] = negSin;
     m[2][2] = one; m[2][3] = zero;
     return (u32)m;
 }
