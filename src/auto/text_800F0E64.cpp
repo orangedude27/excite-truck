@@ -1250,7 +1250,7 @@ extern "C" char lbl_805598D0;
 #pragma push
 #pragma scheduling on
 s32 nw4hbm::snd::detail::SoundArchiveFileReader::GetSoundType(u32 soundId) const {
-    // Look up the sound type for a sound id in the archive file; returns 1/2/3 or 0 if missing.
+    /* Returns the sound type for soundId from the sound archive info: 1, 2, or 3 on success, or 0 if the entry is missing/invalid. */
     register u8 *dataRef = *(u8 **)((u8 *)this + 0x28);
     u8 soundType;
     u8 *soundInfo;
