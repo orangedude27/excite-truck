@@ -390,27 +390,36 @@ extern "C" void fn_802176D4(void *arg0, int arg1, int arg2) {
     }
     *(void **)(base + 0x44C) = 0;
 }
-#pragma cplusplus off
-void fn_80217734(void *arg0, int arg1, int arg2) {
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_80217734(void *arg0, int arg1, int arg2) {
+    class Dummy {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(int, int); virtual void v18();
+        virtual void v19(); virtual void v20(); virtual void v21();
+    };
     char *base = (char *)arg0;
     int x = arg1 - *(int *)(base + 0x454);
     int y = arg2 - *(int *)(base + 0x458);
     int index = fn_80218214(arg0, x, y);
-    void *obj = 0;
-    void *current;
-    if (index >= 0) obj = *(void **)(base + index * 4 + 0x30);
-    if (*(void **)(base + 0x44C) != 0 && obj != *(void **)(base + 0x44C)) obj = 0;
-    current = *(void **)(base + 0x448);
+    Dummy *obj = 0;
+    Dummy *current;
+    if (index >= 0) obj = *(Dummy **)(base + index * 4 + 0x30);
+    if (*(Dummy **)(base + 0x44C) != 0 && obj != *(Dummy **)(base + 0x44C)) obj = 0;
+    current = *(Dummy **)(base + 0x448);
     if (obj != current) {
-        if (current) ((void (*)(void *))(*(void ***)current)[0x5C / 4])(current);
-        *(void **)(base + 0x448) = obj;
-        if (obj) ((void (*)(void *))(*(void ***)obj)[0x58 / 4])(obj);
+        if (current != 0) current->v21();
+        *(Dummy **)(base + 0x448) = obj;
+        if (obj != 0) obj->v20();
     }
-    if (!obj) obj = *(void **)(base + 0x44C);
-    if (obj) ((void (*)(void *, int, int))(*(void ***)obj)[0x4C / 4])(obj, x, y);
+    if (obj == 0) obj = *(Dummy **)(base + 0x44C);
+    if (obj != 0) obj->v17(x, y);
 }
-
-#pragma cplusplus on
+#pragma pop
 extern "C" void fn_80217834(void *arg0) {
     class Dummy_80217834 {
     public:
