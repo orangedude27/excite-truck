@@ -399,17 +399,27 @@ void fn_80247174(void) {
 #pragma dont_inline on
 #pragma cplusplus on
 extern "C" void fn_80247210(void) {
-    struct Dummy {
+    /* Runs the kiosk/demo selection flow: initializes demo state, waits for a valid
+       demo selection (retrying and showing "attract.avi" on -0xEA), resolves the
+       selected item's resource by "demo_idx"/"song_id", then enters the game. */
+    struct DemoResourceNode {
         virtual void v0() = 0;
         virtual void v1() = 0;
         virtual void v2() = 0;
         virtual void v3() = 0;
         virtual void v4() = 0;
         virtual void v5() = 0;
-        virtual s32 find(const char *, s32) = 0;
+        virtual s32 find(const char *name, s32 index) = 0;
     };
-    s32 retry, code, foundIndex, resource, i, candidate;
-    void *root, *subobject;
+    s32 demoIndex;
+    s32 selectResult;
+    s32 selectedRootIndex;
+    s32 selectedResource;
+    s32 rootIndex;
+    s32 candidateDemoIndex;
+    void *root;
+    void *demoSubobject;
+
     if (lbl_8055F268 == 0) {
         lbl_8055F264 = fn_8020A5F0();
         lbl_8055F268 = 1;
@@ -419,50 +429,63 @@ extern "C" void fn_80247210(void) {
     fn_80129AFC();
     fn_802E47E8();
     fn_8023D7CC();
-    retry = 0;
+
+    demoIndex = 0;
     for (;;) {
-        if (retry != 0) retry = 0;
-        else {
+        if (demoIndex != 0) {
+            demoIndex = 0;
+        } else {
             fn_80246DE8();
             fn_80246DF4();
             fn_80246E00();
         }
-        code = ((s32 (*)(void))fn_80248668)();
-        if (code == -0xEA) {
-            if (fn_80278A1C(lbl_8034333C) == 0) retry = 1;
-            if (retry == 0) fn_80247174();
+        selectResult = ((s32 (*)(void))fn_80248668)();
+        if (selectResult == -0xEA) {
+            if (fn_80278A1C(lbl_8034333C) == 0) {
+                demoIndex = 1;
+            }
+            if (demoIndex == 0) {
+                fn_80247174();
+            }
             continue;
         }
-        retry = fn_80246E4C();
-        if (retry < 0) {
-            retry = 1;
+        demoIndex = fn_80246E4C();
+        if (demoIndex < 0) {
+            demoIndex = 1;
             continue;
         }
         break;
     }
+
     fn_802E317C(lbl_8034397C);
-    foundIndex = -1;
-    resource = -1;
-    i = 0;
+
+    selectedRootIndex = -1;
+    selectedResource = -1;
+    rootIndex = 0;
     goto loop_check;
+
 loop_items:
-    root = fn_80012820(i);
-    subobject = *(void **)((char *)root + 0x80);
-    candidate = ((Dummy *)subobject)->find(lbl_80343348, -1);
-    if (retry == candidate) {
-        foundIndex = i;
-        root = fn_80012820(i);
-        subobject = *(void **)((char *)root + 0x80);
-        resource = ((Dummy *)subobject)->find(&lbl_8055BE98, -1);
+    root = fn_80012820(rootIndex);
+    demoSubobject = *(void **)((char *)root + 0x80);
+    candidateDemoIndex = ((DemoResourceNode *)demoSubobject)->find(lbl_80343348, -1);
+    if (demoIndex == candidateDemoIndex) {
+        selectedRootIndex = rootIndex;
+        root = fn_80012820(rootIndex);
+        demoSubobject = *(void **)((char *)root + 0x80);
+        selectedResource = ((DemoResourceNode *)demoSubobject)->find(&lbl_8055BE98, -1);
         goto loop_done;
     }
-    i++;
+    rootIndex++;
+
 loop_check:
-    if (i < fn_80012818()) goto loop_items;
+    if (rootIndex < fn_80012818()) {
+        goto loop_items;
+    }
+
 loop_done:
-    fn_8020C91C(resource);
+    fn_8020C91C(selectedResource);
     fn_8020A634();
-    fn_8023BFBC(foundIndex, 0);
+    fn_8023BFBC(selectedRootIndex, 0);
     fn_802483E0();
     fn_8020C91C(-1);
     lbl_8055F260 = 0;
