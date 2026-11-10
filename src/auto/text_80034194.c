@@ -1011,11 +1011,12 @@ void DVDInit(void) {
 
 #pragma push
 #pragma use_lmw_stmw off
+/* Start a DVD read for boot data into the boot info buffer after validating size, and record read metadata in error info. */
 void fn_8003588C(void) {
     u32 discOffset;
-    u32 formattedSize;
+    u32 readLength;
     s32 interrupts;
-    u8 *info;
+    u8 *errorInfoBase;
     u32 tick;
 
     lbl_8055D8CC = (s32)fn_8003588C;
@@ -1024,18 +1025,18 @@ void fn_8003588C(void) {
     }
     fn_8003BCDC(0);
 
-    formattedSize = ((*(u32 *)(lbl_80376A80 + 8) << (~(*(volatile u32 *)&__DVDLayoutFormat) & 2)) + 0x1F) & ~0x1F;
+    readLength = ((*(u32 *)(lbl_80376A80 + 8) << (~(*(volatile u32 *)&__DVDLayoutFormat) & 2)) + 0x1F) & ~0x1F;
     discOffset = *(u32 *)(lbl_80376A80 + 4) >> *(volatile u32 *)&__DVDLayoutFormat;
 
     interrupts = OSDisableInterrupts();
     if (*(volatile u32 *)&lbl_8055D848 >= 5)
         *(volatile u32 *)&lbl_8055D848 = 0;
-    info = (u8 *)__ErrorInfo;
-    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 1;
-    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = discOffset;
-    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = formattedSize;
+    errorInfoBase = (u8 *)__ErrorInfo;
+    *(s32 *)(errorInfoBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 1;
+    *(s32 *)(errorInfoBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = discOffset;
+    *(s32 *)(errorInfoBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = readLength;
     tick = OSGetTick();
-    *(s32 *)(info + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = tick;
+    *(s32 *)(errorInfoBase + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = tick;
     *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
     OSRestoreInterrupts(interrupts);
 
