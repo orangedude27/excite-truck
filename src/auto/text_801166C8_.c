@@ -309,7 +309,47 @@ u32 fn_80116BD4(s32 arg0, s32 arg1, s32 arg2) {
     return (var_r4 << 16) | var_r3;
 }
 
-void fn_80116CC4(s32* arg0, u16 arg1, u32 arg2) { s32* ptr = arg0; u32 words = arg2 >> 1; u32 fill = ((u32)arg1 << 16) | arg1; if (words != 0) { u32 blocks = words >> 3; if (blocks != 0) { do { ptr[0] = fill; ptr[1] = fill; ptr[2] = fill; ptr[3] = fill; ptr[4] = fill; ptr[5] = fill; ptr[6] = fill; ptr[7] = fill; ptr += 8; } while (--blocks != 0); words &= 7; if (words == 0) goto odd; goto tail; } else { tail: do { *ptr++ = (s32)fill; } while (--words != 0); } } odd: if (arg2 & 1) *(u16*)ptr = arg1; }
+void fn_80116CC4(s32* arg0, u16 arg1, u32 arg2) {
+    s32* ptr;
+    s32 fill;
+    u32 blocks;
+    u32 count;
+    u32 words;
+    ptr = arg0;
+    words = arg2 >> 1;
+    fill = (arg1 & ~0xFFFF0000) | (arg1 << 16);
+    if (words != 0) {
+        blocks = words >> 3;
+        count = blocks;
+        if (blocks != 0) {
+            do {
+                ptr[0] = fill;
+                ptr[1] = fill;
+                ptr[2] = fill;
+                ptr[3] = fill;
+                ptr[4] = fill;
+                ptr[5] = fill;
+                ptr[6] = fill;
+                ptr[7] = fill;
+                ptr += 8;
+                count -= 1;
+            } while (count != 0);
+            words &= 7;
+            if (words != 0)
+                goto tail;
+        } else {
+tail:
+            count = words;
+            do {
+                *ptr = fill;
+                ptr += 1;
+                count -= 1;
+            } while (count != 0);
+        }
+    }
+    if (arg2 & 1)
+        *(s16*)ptr = arg1;
+}
 
 extern s64 OSGetTime(void);
 extern s32 lbl_8055DEC0;
@@ -4464,50 +4504,51 @@ void fn_80120CA4(s32, void *, s32, s32, void *);
 void fn_80120E14(s32, void *, s32, s32, void *);
 void fn_801250CC(s32, s32, s32, s32);
 void fn_801252D8(s32, f32 *, s32, f32 *);
-void fn_801200BC(s32 arg0, s32 arg1, f32 *arg2, s32 arg3, s32 arg4) {
-    s32 var_r31;
-    s32 var_r30;
+void fn_801200BC(s32 length, s32 direction, f32 *data, s32 table, s32 work) {
+    /* Dispatch FFT-like forward/inverse passes: ensure twiddle/work sizes, run stage routines by length/direction, and apply final 2-point combine. */
+    s32 size1;
+    s32 size2;
     f32 temp_f1;
     f32 temp_f2;
 
-    var_r31 = *(s32 *)arg3;
-    if (arg0 > var_r31 * 4) {
-        var_r31 = arg0 >> 2;
-        fn_80120834(var_r31, (s32 *)arg3, (f32 *)arg4);
+    size1 = *(s32 *)table;
+    if (length > size1 * 4) {
+        size1 = length >> 2;
+        fn_80120834(size1, (s32 *)table, (f32 *)work);
     }
-    var_r30 = *(s32 *)(arg3 + 4);
-    if (arg0 > var_r30 * 4) {
-        var_r30 = arg0 >> 2;
-        fn_80120B6C(var_r30, (s32 *)arg3, (f32 *)((u8 *)arg4 + var_r31 * 4));
+    size2 = *(s32 *)(table + 4);
+    if (length > size2 * 4) {
+        size2 = length >> 2;
+        fn_80120B6C(size2, (s32 *)table, (f32 *)((u8 *)work + size1 * 4));
     }
-    if (arg1 >= 0) {
-        if (arg0 > 4) {
-            fn_80120CA4(arg0, arg2, arg3 + 8, var_r31, (void *)arg4);
-            fn_801250CC(arg0, (s32)arg2, var_r30, (s32)((u8 *)arg4 + var_r31 * 4));
-        } else if (arg0 == 4) {
-            fn_80120CA4(arg0, arg2, arg3 + 8, var_r31, (void *)arg4);
+    if (direction >= 0) {
+        if (length > 4) {
+            fn_80120CA4(length, data, table + 8, size1, (void *)work);
+            fn_801250CC(length, (s32)data, size2, (s32)((u8 *)work + size1 * 4));
+        } else if (length == 4) {
+            fn_80120CA4(length, data, table + 8, size1, (void *)work);
         }
         {
             f32 second;
             f32 first;
             f32 difference;
-            first = arg2[0];
-            second = arg2[1];
+            first = data[0];
+            second = data[1];
             difference = first - second;
-            arg2[1] = difference;
-            arg2[0] = first + second;
+            data[1] = difference;
+            data[0] = first + second;
         }
         return;
     }
-    temp_f2 = arg2[0];
-    temp_f1 = lbl_80561210 * (temp_f2 - arg2[1]);
-    arg2[1] = temp_f1;
-    arg2[0] = temp_f2 - temp_f1;
-    if (arg0 > 4) {
-        fn_801252D8(arg0, arg2, var_r30, (f32 *)((u8 *)arg4 + var_r31 * 4));
-        fn_80120E14(arg0, arg2, arg3 + 8, var_r31, (void *)arg4);
-    } else if (arg0 == 4) {
-        fn_80120E14(arg0, arg2, arg3 + 8, var_r31, (void *)arg4);
+    temp_f2 = data[0];
+    temp_f1 = lbl_80561210 * (temp_f2 - data[1]);
+    data[1] = temp_f1;
+    data[0] = temp_f2 - temp_f1;
+    if (length > 4) {
+        fn_801252D8(length, data, size2, (f32 *)((u8 *)work + size1 * 4));
+        fn_80120E14(length, data, table + 8, size1, (void *)work);
+    } else if (length == 4) {
+        fn_80120E14(length, data, table + 8, size1, (void *)work);
     }
 }
 
