@@ -357,44 +357,35 @@ void fn_8015F1E4();
 extern f64 fn_8002F234(f32, f32, f32);
 void fn_8015EC50(unsigned short *, void *);
 int fn_8015ECC0(void *);
+void fn_8015F1E4(void *, void *);
+#pragma scheduling invalid_target
 void fn_8015F320(void **arg0, int arg1, void *arg2) {
+    void *e;
+    void **ptr = arg0;
+    int off;
     int outer;
+    int *child;
     int inner;
-    int offset;
-    void **list;
-    void *child;
-    void *item;
-    void *entry;
-    int (*predicate)(void *);
-    void (*apply)(unsigned short *, void *);
-
-    predicate = fn_8015ECC0;
-    apply = fn_8015EC50;
-    list = arg0;
-    outer = 0;
-    while (outer < arg1) {
-        child = *list;
+    void *ctx = arg2;
+    int lim = arg1;
+    for (outer = 0; outer < lim; ptr++, outer++) {
+        child = *(int **)ptr;
         if (child != 0) {
-            inner = 0;
-            offset = 0;
-            while (inner < *(int *)child) {
-                item = *(void **)((char *)*((void ***)((char *)child + 4)) + offset);
-                entry = *(void **)((char *)item + 0x3C);
-                if (predicate(entry)) {
-                    volatile int *registry = (volatile int *)lbl_8055E29C;
-                    int count = registry[1];
-                    void *array = (void *)registry[0];
-                    registry[1] = count + 1;
+            for (inner = 0, off = 0; inner < child[0]; off += 4, inner++) {
+                void *item = *(void **)((char *)((void **)child)[1] + off);
+                e = *(void **)((char *)item + 0x3C);
+                if (fn_8015ECC0(e)) {
+                    int count;
+                    void *array;
+                    volatile int *reg = (volatile int *)lbl_8055E29C;
+                    array = (void *)reg[0];
+                    count = reg[1]++;
                     item = (char *)array + count * 0x10;
-                    fn_8015F1E4(item, entry);
-                    apply((unsigned short *)item, arg2);
+                    fn_8015F1E4(item, e);
+                    fn_8015EC50((unsigned short *)item, ctx);
                 }
-                offset += 4;
-                inner++;
             }
         }
-        list++;
-        outer++;
     }
 }
 
@@ -544,16 +535,18 @@ extern f32 lbl_805617D4, lbl_805617E4, lbl_805617E8, lbl_805617EC, lbl_805617F0;
 extern f32 lbl_8056182C;
 extern f64 fn_8002F234(f32, f32, f32);
 f32 PSVECDotProduct(void *, void *);
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
 s32 fn_8015F7A0(s32 arg0, void *arg1, void *arg2) {
-    register f32 scale = (f32)arg0 * lbl_805617E4;
-    register f32 t = (PSVECDotProduct(arg1, arg2) - lbl_805617EC) / lbl_805617F0;
-    register f32 clamp = lbl_805617E8;
-    if (clamp >= t) clamp = t;
-    if (clamp <= lbl_805617D4) clamp = lbl_805617D4;
+    f32 scale = (f32)arg0 * lbl_805617E4;
+    f32 dot = PSVECDotProduct(arg1, arg2);
+    f32 t = (dot - lbl_805617EC) / lbl_805617F0;
+    f32 clamp = lbl_805617E8;
+    clamp = (clamp > t) ? t : clamp;
+    clamp = (lbl_805617D4 > clamp) ? lbl_805617D4 : clamp;
     return (s32)(-scale + clamp * (scale - -scale));
 }
-#pragma scheduling on
+#pragma pop
 extern f32 lbl_8055E2A4;
 extern f32 lbl_805617DC;
 extern f32 lbl_80561808;
@@ -901,12 +894,12 @@ f32 fn_801605C8(void *arg0, void *arg1, void *arg2) {
 }
 #pragma scheduling on
 void *fn_8016060C(void *arg0, void *arg1) {
-    volatile f32 *dst = (volatile f32 *)arg0;
-    volatile f32 *src = (volatile f32 *)arg1;
+    f32 *dst = (f32 *)arg0;
+    f32 *src = (f32 *)arg1;
     f32 x = src[6];
     f32 y = src[8];
-    register f32 magnitude;
-    register f32 limit;
+    f32 magnitude;
+    f32 limit;
     f32 clamped;
     f32 inputX;
     f32 outputX;
@@ -914,8 +907,7 @@ void *fn_8016060C(void *arg0, void *arg1) {
     f32 outputY;
     f32 normalizedX;
     f32 normalizedY;
-    register f32 scale;
-
+    f32 scale;
     dst[0] = x;
     dst[1] = y;
     magnitude = (f32)fn_8002F234(x * x + y * y, y, x);
