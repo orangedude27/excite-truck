@@ -6325,6 +6325,7 @@ data_done:
 
 extern void fn_8006CF90();
 void bta_hh_close_act(u8 *p_cb, u8 *p_data) {
+    /* Handle HID host close: report close/error events and clean up or disable as needed. */
     u8 conn[8];
     u8 status[2] = {0, 0};
     u8 disc[2];
