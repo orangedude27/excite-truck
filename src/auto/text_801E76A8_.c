@@ -8,6 +8,7 @@ extern void fn_80128670(void *);
 extern void fn_80128668(void *);
 #pragma small_data off
 extern char lbl_80339B90[];
+typedef struct { void *a; int b; int c; void *d; int e; int f; } S76;
 void fn_801E7828();
 void fn_801E7790();
 #pragma dont_inline on
@@ -15,19 +16,16 @@ extern void *fn_8012850C(int, void *);
 extern char lbl_80339B70[];
 extern char lbl_80339B80[];
 void *fn_801E76A8(void *arg0, int arg1) {
-    void *first;
-    int count = arg1;
-    int remainder;
-
-    first = fn_8012850C(count * 0x18, lbl_80339B70);
-    remainder = count - 2;
-    *(void **)arg0 = first;
-    *(int *)((char *)arg0 + 8) = count;
-    count = (remainder * 4) - remainder;
-    *(int *)((char *)arg0 + 4) = 0;
-    *(void **)((char *)arg0 + 0xC) = fn_8012850C(count * 2, lbl_80339B80);
-    *(int *)((char *)arg0 + 0x10) = 0;
-    *(int *)((char *)arg0 + 0x14) = count;
+    int rem;
+    int zero = 0;
+    *(void **)arg0 = fn_8012850C(arg1 * 0x18, lbl_80339B70);
+    rem = arg1 - 2;
+    *(int *)((char *)arg0 + 8) = arg1;
+    arg1 = (rem * 4) - rem;
+    *(int *)((char *)arg0 + 4) = zero;
+    *(void **)((char *)arg0 + 0xC) = fn_8012850C(arg1 * 2, lbl_80339B80);
+    *(int *)((char *)arg0 + 0x10) = zero;
+    *(int *)((char *)arg0 + 0x14) = arg1;
     return arg0;
 }
 
