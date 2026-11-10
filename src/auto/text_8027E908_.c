@@ -2662,7 +2662,8 @@ extern "C" int lbl_8055C860;
 #pragma push
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" void fn_80284580(int arg0, int arg1, void *arg2, int arg3) {
+extern "C" void fn_80284580(int oldPos, int newPos, void *srcSeq, int param) {
+    // Build a playback buffer from srcSeq plus "CAR" entries crossed between oldPos/newPos, play it, then free it.
     class Source {
     public:
         virtual void f0(); virtual void f1(); virtual void f2();
@@ -2678,38 +2679,38 @@ extern "C" void fn_80284580(int arg0, int arg1, void *arg2, int arg3) {
         virtual void insert(int, int);
         virtual int getCount();
     };
-    int offset;
-    if (arg2 != 0)
-        offset = ((Source *)arg2)->getCount();
+    int srcCount;
+    if (srcSeq != 0)
+        srcCount = ((Source *)srcSeq)->getCount();
     else
-        offset = 0;
-    int base = fn_80019088();
-    base += offset;
-    Buffer *buffer = (Buffer *)fn_8025007C(base);
-    if (arg2 != 0) {
-        int type;
+        srcCount = 0;
+    int total = fn_80019088();
+    total += srcCount;
+    Buffer *dst = (Buffer *)fn_8025007C(total);
+    if (srcSeq != 0) {
+        int itemType;
         int i = 0;
-        while (i < ((Source *)arg2)->getCount()) {
-            buffer->set(((Source *)arg2)->getAt(i), 1, 0);
-            type = ((Source *)arg2)->getType(i);
-            buffer->insert(buffer->getCount() - 1, type);
+        while (i < ((Source *)srcSeq)->getCount()) {
+            dst->set(((Source *)srcSeq)->getAt(i), 1, 0);
+            itemType = ((Source *)srcSeq)->getType(i);
+            dst->insert(dst->getCount() - 1, itemType);
             ++i;
         }
     }
-    int i = 0;
-    while (i < fn_80019088()) {
-        char **entry = (char **)fn_80019054(i);
+    int j = 0;
+    while (j < fn_80019088()) {
+        char **entry = (char **)fn_80019054(j);
         if (((int (*)(const char *, const char *))stricmp)(entry[0], (const char *)&lbl_8055C860) == 0) {
-            int boundary = *(int *)((char *)entry + 8);
-            if (arg0 < boundary && arg1 >= boundary)
-                buffer->set(*(void **)((char *)entry + 4), 1, 0);
+            int trigger = *(int *)((char *)entry + 8);
+            if (oldPos < trigger && newPos >= trigger)
+                dst->set(*(void **)((char *)entry + 4), 1, 0);
         }
-        ++i;
+        ++j;
     }
-    if (buffer->getCount() > 0)
-        fn_8024FBD8(buffer, arg3);
-    if (buffer != 0)
-        buffer->destroy(1);
+    if (dst->getCount() > 0)
+        fn_8024FBD8(dst, param);
+    if (dst != 0)
+        dst->destroy(1);
 }
 
 extern "C" int fn_80221EA8(void);
