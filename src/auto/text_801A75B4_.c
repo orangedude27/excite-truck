@@ -853,24 +853,30 @@ int fn_801A8E38(void) {
     return fn_801A7F98() > lbl_80562470;
 }
 
-int fn_801A8E68(void *arg0) {
-    int state = *(int *)arg0;
-    if (state >= 7)
-        return 0;
-    if (state < 1)
-        return 0;
-    if (fn_801A8E38() == 0) {
-        *(unsigned char *)((char *)arg0 + 0xC) = 0;
-        return 0;
-    }
-    if (*(unsigned char *)((char *)arg0 + 0xC) != 0)
-        return 0;
-    *(unsigned char *)((char *)arg0 + 0xC) = 1;
-    return 1;
-}
-
 #pragma push
 #pragma scheduling invalid_target
+#pragma dont_inline on
+int fn_801A8E68(void *arg0) {
+    int state = *(int *)arg0;
+    unsigned char *flag = (unsigned char *)((char *)arg0 + 0xC);
+    if (state >= 7)
+        goto done;
+    if (state >= 1) {
+        if (fn_801A8E38() != 0) {
+            if (*flag == 0) {
+                *flag = 1;
+                return 1;
+            }
+            goto done;
+        }
+        *flag = 0;
+        return 0;
+    }
+done:
+    return 0;
+}
+#pragma dont_inline reset
+#pragma pop
 int fn_801A8EE4(unsigned int *arg0) {
     unsigned int value = *arg0 - 1;
     int result = 0;
@@ -1015,14 +1021,22 @@ void fn_801A91B0(void *arg0, const void *arg1) {
     *(int *)arg0 = state;
     switch (state) {
     case 2:
+        *(int *)((char *)arg0 + 8) = *(const int *)((const char *)arg1 + 0xC);
+        return;
     case 3:
+        *(int *)((char *)arg0 + 8) = *(const int *)((const char *)arg1 + 0xC);
+        return;
     case 5:
+        *(int *)((char *)arg0 + 8) = *(const int *)((const char *)arg1 + 0xC);
+        return;
     case 6:
+        *(int *)((char *)arg0 + 8) = *(const int *)((const char *)arg1 + 0xC);
+        return;
     case 4:
         *(int *)((char *)arg0 + 8) = *(const int *)((const char *)arg1 + 0xC);
         return;
     case 1:
-        *(unsigned char *)((char *)arg0 + 8) = *(const unsigned char *)((const char *)arg1 + 0xC);
+        *(unsigned char *)((char *)arg0 + 8) = *(const int *)((const char *)arg1 + 0xC);
         return;
     }
 }
