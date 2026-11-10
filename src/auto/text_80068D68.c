@@ -19982,48 +19982,49 @@ void PORT_PortNegCnf(void *mcb, u8 dlci, void *p_pars, u16 result) {
 extern int port_get_signal_changes();
 extern char lbl_803193E0[];
 extern char lbl_803193F0[];
-void PORT_ControlInd(void *p_mcb, u8 dlci, u8 *p_pars) {
-    void *port;
-    u32 event;
-    u8 signals;
-    void (*callback)(u32, u8);
+/* Handle an RFCOMM modem/control signal indication for a port and dispatch any resulting events to its callback. */
+void PORT_ControlInd(void *rfcommMcb, u8 dlci, u8 *params) {
+    void *portCb;
+    u32 eventMask;
+    u8 signalState;
+    void (*eventCallback)(u32, u8);
 
-    port = port_find_mcb_dlci_port(p_mcb, dlci);
+    portCb = port_find_mcb_dlci_port(rfcommMcb, dlci);
     if (lbl_803C4828[0x414] >= 4)
         fn_8007093C(0x90003, lbl_803193E0);
-    if (port != 0) {
-        event = port_get_signal_changes(port, *((u8 *)port + 0x5F), p_pars[0]);
-        *((u8 *)port + 0x5F) = p_pars[0];
-        *((u8 *)port + 0x60) = p_pars[1];
-        *((u8 *)port + 0x61) = p_pars[2];
-        *((u8 *)port + 0x62) = p_pars[3];
-        *((u8 *)port + 0x63) = p_pars[4];
-        signals = *((u8 *)port + 0x64);
-        if ((signals & 1) == 0) {
-            RFCOMM_ControlReq(*(void **)((u8 *)port + 0x6C),
-                              *((u8 *)port + 0xD), (u8 *)port + 0x5A);
+    if (portCb != 0) {
+        eventMask = port_get_signal_changes(portCb, *((u8 *)portCb + 0x5F), params[0]);
+        *((u8 *)portCb + 0x5F) = params[0];
+        *((u8 *)portCb + 0x60) = params[1];
+        *((u8 *)portCb + 0x61) = params[2];
+        *((u8 *)portCb + 0x62) = params[3];
+        *((u8 *)portCb + 0x63) = params[4];
+        signalState = *((u8 *)portCb + 0x64);
+        if ((signalState & 1) == 0) {
+            RFCOMM_ControlReq(*(void **)((u8 *)portCb + 0x6C),
+                              *((u8 *)portCb + 0xD), (u8 *)portCb + 0x5A);
         } else {
-            if ((signals & 4) == 0)
-                event |= *(u32 *)((u8 *)port + 0x88) & 0x200;
-            if (signals & 2)
-                event |= port_rfc_send_tx_data(port);
+            if ((signalState & 4) == 0)
+                eventMask |= *(u32 *)((u8 *)portCb + 0x88) & 0x200;
+            if (signalState & 2)
+                eventMask |= port_rfc_send_tx_data(portCb);
         }
-        *((u8 *)port + 0x64) |= 0xC;
-        if (p_pars[1] != 0)
-            event |= *(u32 *)((u8 *)port + 0x88) & 0x40;
-        if (event != 0) {
-            callback = *(void (**)(u32, u8))((u8 *)port + 0x8C);
-            if (callback != 0)
-                callback(event, *((u8 *)port));
+        *((u8 *)portCb + 0x64) |= 0xC;
+        if (params[1] != 0)
+            eventMask |= *(u32 *)((u8 *)portCb + 0x88) & 0x40;
+        if (eventMask != 0) {
+            eventCallback = *(void (**)(u32, u8))((u8 *)portCb + 0x8C);
+            if (eventCallback != 0)
+                eventCallback(eventMask, *((u8 *)portCb));
         }
         if (lbl_803C4828[0x414] >= 4) {
-            signals = *((u8 *)port + 0x5F);
+            signalState = *((u8 *)portCb + 0x5F);
             ((void (*)(u32, void *, u8, u8, u8, u8))fn_8007099C)(
                 0x90003, lbl_803193F0,
-                (signals & 1) ? 1 : 0,
-                (signals & 2) ? 1 : 0,
-                (signals & 4) ? 1 : 0,
-                (signals & 8) ? 1 : 0);
+                (signalState & 1) ? 1 : 0,
+                (signalState & 2) ? 1 : 0,
+                (signalState & 4) ? 1 : 0,
+                (signalState & 8) ? 1 : 0);
         }
     }
 }
