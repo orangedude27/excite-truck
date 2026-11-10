@@ -1471,10 +1471,11 @@ extern "C" void SetCursorX__Q36nw4hbm2ut10CharWriterFf(void *arg0, float farg0) 
     *(float *)((char *)arg0 + 0x2C) = farg0;
 }
 
+/* nw4hbm::ut::CharWriter::SetCursorX(f32). This is the game's second copy of nw4hbm's
+   text writer (the one built from ut_CharWriter.cpp), whose cursor sits one word later
+   than the other copy's: +0x30 is the X the next glyph is drawn at. */
 extern "C" void SetCursorX__Q36nw4hbm2ut10CharWriterFf_801062CC(void *writer, float x) {
-    // NW4HBM_ASSERT_VALID_PTR(this): nw4hbm::db::Panic unless `writer` sits in a
-    // mapped region (MEM1/MEM2/IO windows).
-    CW_CHECK_THIS(writer, 0x3D5);
+    CW_CHECK_THIS(writer, 0x3D5); // NW4HBM_ASSERT_VALID_PTR(this)
     *(float *)((char *)writer + 0x30) = x;
 }
 
