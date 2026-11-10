@@ -18368,6 +18368,7 @@ extern "C" void draw__Q310homebutton3gui13PaneComponentFv(void *arg0) {
     f32 f31, f30;
     u8 color[4];
     PaneDrawDispatch *dispatch = (PaneDrawDispatch *)*(void **)((u8 *)arg0 + 0x28);
+    /* Draws a debug rectangle outline for the pane component when visible, using the pane's center/size and optional highlight color. */
     if (dispatch->isVisible() != 0) {
         u8 *pane = *(u8 **)((u8 *)arg0 + 0x2C);
         sz.x=*(f32 *)(pane+0x4C); sz.y=*(f32 *)(pane+0x50);
