@@ -21152,6 +21152,7 @@ void rfc_port_sm_state_closed(void *p_port, u16 event, void *p_data) {
         fn_80070954(0x90001, lbl_80319AE4, event);
 }
 
+/* RFCOMM port state machine: handle events while waiting for UA after SABME. */
 void rfc_port_sm_sabme_wait_ua(void *p_port, u16 event, void *p_data) {
     extern u8 lbl_803C4828[];
     extern char lbl_80319AC4[];
@@ -21160,20 +21161,20 @@ void rfc_port_sm_sabme_wait_ua(void *p_port, u16 event, void *p_data) {
     extern void rfc_port_timer_stop(void *);
     extern void rfc_send_disc();
     extern void rfc_send_ua();
-    u8 *port = (u8 *)p_port;
+    u8 *portCb = (u8 *)p_port;
 
     switch (event) {
     case 9:
     case 11:
     log_event:
         if (lbl_803C4828[0x414] >= 1)
-            fn_8007096C(0x90000, lbl_80319AC4, port[0x68], event);
+            fn_8007096C(0x90000, lbl_80319AC4, portCb[0x68], event);
         return;
     case 12:
         rfc_port_timer_start(p_port, 3);
-        ((void (*)(void *, u8))rfc_send_disc)(*(void **)(port + 0x6C), port[0xD]);
-        port[0x69] = 0;
-        port[0x68] = 5;
+        ((void (*)(void *, u8))rfc_send_disc)(*(void **)(portCb + 0x6C), portCb[0xD]);
+        portCb[0x69] = 0;
+        portCb[0x68] = 5;
         return;
     case 13:
         rfc_port_closed(p_port);
@@ -21183,31 +21184,31 @@ void rfc_port_sm_sabme_wait_ua(void *p_port, u16 event, void *p_data) {
         goto log_default;
     case 2:
         rfc_port_timer_stop(p_port);
-        port[0x68] = 4;
-        PORT_DlcEstablishCnf(*(void **)(port + 0x6C), port[0xD],
-                             *(u16 *)(*(u8 **)(port + 0x6C) + 0x6A), 0);
+        portCb[0x68] = 4;
+        PORT_DlcEstablishCnf(*(void **)(portCb + 0x6C), portCb[0xD],
+                             *(u16 *)(*(u8 **)(portCb + 0x6C) + 0x6A), 0);
         return;
     case 3:
-        PORT_DlcEstablishCnf(*(void **)(port + 0x6C), port[0xD],
-                             *(u16 *)(*(u8 **)(port + 0x6C) + 0x6A), 1);
+        PORT_DlcEstablishCnf(*(void **)(portCb + 0x6C), portCb[0xD],
+                             *(u16 *)(*(u8 **)(portCb + 0x6C) + 0x6A), 1);
         rfc_port_closed(p_port);
         return;
     case 4:
-        ((void (*)(void *, u8))rfc_send_ua)(*(void **)(port + 0x6C), port[0xD]);
-        PORT_DlcEstablishCnf(*(void **)(port + 0x6C), port[0xD],
-                             *(u16 *)(*(u8 **)(port + 0x6C) + 0x6A), 1);
+        ((void (*)(void *, u8))rfc_send_ua)(*(void **)(portCb + 0x6C), portCb[0xD]);
+        PORT_DlcEstablishCnf(*(void **)(portCb + 0x6C), portCb[0xD],
+                             *(u16 *)(*(u8 **)(portCb + 0x6C) + 0x6A), 1);
         rfc_port_closed(p_port);
         return;
     case 5:
-        ((void (*)(void *, u8))rfc_send_ua)(*(void **)(port + 0x6C), port[0xD]);
+        ((void (*)(void *, u8))rfc_send_ua)(*(void **)(portCb + 0x6C), portCb[0xD]);
         return;
     case 1:
         GKI_freebuf(p_data);
         return;
     case 0:
-        port[0x68] = 0;
-        PORT_DlcEstablishCnf(*(void **)(port + 0x6C), port[0xD],
-                             *(u16 *)(*(u8 **)(port + 0x6C) + 0x6A), 1);
+        portCb[0x68] = 0;
+        PORT_DlcEstablishCnf(*(void **)(portCb + 0x6C), portCb[0xD],
+                             *(u16 *)(*(u8 **)(portCb + 0x6C) + 0x6A), 1);
         return;
     default:
     log_default:
