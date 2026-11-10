@@ -45,7 +45,6 @@ extern int NANDCloseAsync(void *, void *, void *);
 extern int NANDWriteAsync(void *, void *, int, void *, void *);
 extern int NANDPrivateOpenAsync(const char *, void *, int, void *, void *);
 extern char lbl_8037B640[], lbl_80302368[];
-typedef struct NANDTmpBuf { char data[0x200]; } NANDTmpBuf;
 extern void fn_80039F3C(int);
 extern void fn_80039F68(int);
 extern void fn_80039FC4(int);
@@ -54,10 +53,10 @@ void fn_80039F3C(int arg0) { if (lbl_8055D8D0 != 0) { lbl_8055D8D0(arg0 == 0 ? 1
 void fn_80039F68(int arg0) { if (NANDCloseAsync(lbl_8037B640, fn_80039F3C, lbl_8037B6D0) != 0 && lbl_8055D8D0 != 0) lbl_8055D8D0(2, 0); }
 
 void fn_80039FC4(int arg0) {
- char *base = lbl_8037B640;
+ unsigned long base = (unsigned long)lbl_8037B640;
  if (arg0 == 0) {
-  if (NANDWriteAsync(&base[0], base+0x160, 0x80, fn_80039F68, base+0x90) != 0 &&
-      NANDCloseAsync(&base[0], fn_80039F3C, base+0x90) != 0 && lbl_8055D8D0 != 0) lbl_8055D8D0(2,0);
+  if (NANDWriteAsync((void *)base, (void *)(base+0x160), 0x80, fn_80039F68, (void *)(base+0x90)) != 0 &&
+      NANDCloseAsync((void *)base, fn_80039F3C, (void *)(base+0x90)) != 0 && lbl_8055D8D0 != 0) lbl_8055D8D0(2,0);
  } else if (lbl_8055D8D0 != 0) lbl_8055D8D0(2,0);
 }
 
