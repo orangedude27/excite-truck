@@ -55,7 +55,6 @@ float fn_80144514(float farg0, float farg1, float farg2, float farg3, float farg
 
 #pragma push
 #pragma processor 750
-#pragma dont_inline on
 void fn_8014452C(f32 *m, f32 ax, f32 ay, f32 az) {
     f32 b[9];
     f32 c, s;
@@ -81,7 +80,7 @@ void fn_8014452C(f32 *m, f32 ax, f32 ay, f32 az) {
     b[6] = lbl_805615BC;
     b[7] = -s;
     b[8] = c;
-    M33CAT(m, b, m)
+    M33Cat(m, b, m);
     c = cos(az);
     s = sin(az);
     b[0] = c;
@@ -93,7 +92,7 @@ void fn_8014452C(f32 *m, f32 ax, f32 ay, f32 az) {
     b[6] = lbl_805615BC;
     b[7] = lbl_805615BC;
     b[8] = lbl_805615B8;
-    M33CAT(m, b, m)
+    M33Cat(m, b, m);
 }
 #pragma pop
 
@@ -104,19 +103,20 @@ void GXInitLightAttnA_80144B44(void *arg0, f32 farg0, f32 farg1, f32 farg2) {
 }
 
 void fn_80144B54(void *dst, void *src) {
-    s32 a, b, c, d, e, f, g, h, i, j, k, l;
-    d = ((s32 *)src)[3];
-    c = ((s32 *)src)[2];
-    b = ((s32 *)src)[1];
-    a = ((s32 *)src)[0];
-    e = ((s32 *)src)[4];
-    f = ((s32 *)src)[5];
-    g = ((s32 *)src)[6];
-    h = ((s32 *)src)[7];
-    i = ((s32 *)src)[8];
-    j = ((s32 *)src)[9];
-    k = ((s32 *)src)[10];
-    l = ((s32 *)src)[11];
+    int l, k, j, i, h, g, f, e, d, c, b, a;
+    volatile s32 *vs = (volatile s32 *)src;
+    d = vs[3];
+    c = vs[2];
+    b = vs[1];
+    a = vs[0];
+    e = vs[4];
+    f = vs[5];
+    g = vs[6];
+    h = vs[7];
+    i = vs[8];
+    j = vs[9];
+    k = vs[10];
+    l = vs[11];
     ((s32 *)dst)[0] = a;
     ((s32 *)dst)[1] = b;
     ((s32 *)dst)[2] = c;
@@ -160,15 +160,7 @@ void fn_80144C54(void *arg0) {
     ((u8 *)arg0)[0x4C] = 0;
 }
 
-unsigned int fn_80144C68(unsigned int arg0, unsigned int arg1, unsigned int arg2, unsigned int arg3) {
-    unsigned int y = arg1;
-    unsigned int x = arg2;
-    x = (x << 8) & 0xFF00;
-    y = (y << 16) & 0xFF0000;
-    x |= arg3;
-    y |= arg0 >> 24;
-    return x | y;
-}
+unsigned int fn_80144C68(unsigned int arg0, unsigned int arg1, unsigned int arg2, unsigned int arg3) { unsigned int a = (arg3 & 0xFF) | ((arg2 << 8) & 0xFF00); unsigned int b = (arg0 << 24) | ((arg1 << 16) & 0xFF0000); return a | b; }
 #pragma scheduling invalid_target
 #pragma scheduling on
 float fn_80144C80(float farg0, float farg1, float farg2) {
@@ -177,11 +169,10 @@ float fn_80144C80(float farg0, float farg1, float farg2) {
 
 extern f32 lbl_805615C0;
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling off
 s32 fn_80144C90(f32 farg0) {
     f32 x;
-    f32 t = lbl_805615BC;
-    if (farg0 < t) {
+    if (farg0 < lbl_805615BC) {
         x = farg0 - lbl_805615C0;
     } else {
         x = lbl_805615C0 + farg0;
@@ -195,16 +186,26 @@ f32 fn_80144CC8(f32 farg0) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_80144CD0(f32 *out, f32 *vec, f32 (*m)[4]) {
-    f32 x = vec[0] - m[2][1];
-    f32 y = vec[1] - m[2][2];
-    f32 o0 = x * m[0][0] + y * m[0][1];
-    f32 o1 = x * m[0][3] + y * m[1][0];
-    f32 o2 = x * m[1][2] + y * m[1][3];
-    f32 z = vec[2] - m[2][3];
-    o1 += z * m[1][1];
-    o0 += z * m[0][2];
-    o2 += z * m[2][0];
+void fn_80144CD0(float *out, float *vec, float (*m)[4]) {
+    float x = vec[0] - m[2][1];
+    float y = vec[1] - m[2][2];
+    float a0 = x * m[0][0];
+    float b0 = y * m[0][1];
+    float a1 = x * m[0][3];
+    float b1 = y * m[1][0];
+    float a2 = x * m[1][2];
+    float b2 = y * m[1][3];
+    float o0 = a0 + b0;
+    float o1 = a1 + b1;
+    float m5v = m[1][1];
+    float z = vec[2] - m[2][3];
+    float o2 = a2 + b2;
+    float c1 = z * m5v;
+    float c0 = z * m[0][2];
+    float c2 = z * m[2][0];
+    o1 += c1;
+    o0 += c0;
+    o2 += c2;
     out[1] = o1;
     out[0] = o0;
     out[2] = o2;
