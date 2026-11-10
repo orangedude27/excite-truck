@@ -20678,7 +20678,7 @@ void fn_800916F4(void *arg0, s32 arg1, s16 *arg2) {
     }
 }
 
-void rfc_mx_sm_state_idle(void *p_mcb, s32 event, void *p_data) {
+void rfc_mx_sm_state_idle(void *muxControlBlock, s32 event, void *eventData) {
     /* RFCOMM multiplexer state machine: IDLE state. Handles incoming events to
        initiate/accept an L2CAP channel, respond to connection indications, and
        transition the multiplexer control state. */
@@ -20689,7 +20689,7 @@ void rfc_mx_sm_state_idle(void *p_mcb, s32 event, void *p_data) {
     extern void PORT_StartCnf(void *, u16);
     extern void rfc_timer_start(void *, u16);
     char *traceStrings = jumptable_803197F8;
-    u8 *mcb = (u8 *)p_mcb;
+    u8 *mcb = (u8 *)muxControlBlock;
     u8 config[0x3C];
 
     if (lbl_803C4828[0x414] >= 4)
@@ -20702,10 +20702,10 @@ void rfc_mx_sm_state_idle(void *p_mcb, s32 event, void *p_data) {
         lcid = L2CA_ConnectReq(3, mcb + 0x62);
         *(u16 *)(mcb + 0x68) = lcid;
         if (lcid == 0) {
-            PORT_StartCnf(p_mcb, 1);
+            PORT_StartCnf(muxControlBlock, 1);
             return;
         }
-        fn_800916D8(p_mcb, lcid);
+        fn_800916D8(muxControlBlock, lcid);
         mcb[0x6C] = 1;
         break;
     }
@@ -20718,11 +20718,11 @@ void rfc_mx_sm_state_idle(void *p_mcb, s32 event, void *p_data) {
         break;
     case 10:
         if (mcb[0x6D] != 0) {
-            L2CA_ConnectRsp(mcb + 0x62, *(u8 *)p_data, *(u16 *)(mcb + 0x68), 1, 0);
+            L2CA_ConnectRsp(mcb + 0x62, *(u8 *)eventData, *(u16 *)(mcb + 0x68), 1, 0);
             break;
         }
-        rfc_timer_start(p_mcb, 0x78);
-        L2CA_ConnectRsp(mcb + 0x62, *(u8 *)p_data, *(u16 *)(mcb + 0x68), 0, 0);
+        rfc_timer_start(muxControlBlock, 0x78);
+        L2CA_ConnectRsp(mcb + 0x62, *(u8 *)eventData, *(u16 *)(mcb + 0x68), 0, 0);
         if (lbl_803C4828[0x414] >= 4)
             fn_8007093C(0x90003, traceStrings + 0x58);
         memset(config, 0, sizeof(config));
@@ -20737,10 +20737,10 @@ void rfc_mx_sm_state_idle(void *p_mcb, s32 event, void *p_data) {
     case 2:
         return;
     case 3:
-        rfc_send_dm(p_mcb, 0, 1);
+        rfc_send_dm(muxControlBlock, 0, 1);
         break;
     case 4:
-        rfc_send_dm(p_mcb, 0, 0);
+        rfc_send_dm(muxControlBlock, 0, 0);
         break;
     default:
         if (lbl_803C4828[0x414] >= 4)
