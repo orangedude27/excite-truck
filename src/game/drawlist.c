@@ -545,6 +545,7 @@ int fn_802C8FF4(float *arg0, float arg1) {
     }
     return result;
 }
+#pragma scheduling on
 int fn_802C90E0(void) {
     return lbl_8055FC70 == 0;
 }
