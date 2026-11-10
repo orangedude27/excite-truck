@@ -2745,66 +2745,67 @@ u32 fn_80170FDC(void *arg0) {
 
 extern s32 fn_802AE118(void);
 #pragma cplusplus on
-extern "C" s32 fn_80171094(void *arg0, s32 unused, s32 arg2) {
-    struct Dummy {
+extern "C" s32 fn_80171094(void *obj, s32 unused, s32 actionId) {
+    /* Handle action 0x58 or advance timed state and trigger child activation near timeout. */
+    struct Query {
         virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
         virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
         virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
         virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15();
         virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19();
         virtual void f20(); virtual void f21(); virtual void f22(); virtual void f23();
-        virtual s32 f24();
+        virtual s32 query();
     };
     s32 mode;
-    f32 value;
-    f32 endTime;
+    f32 startTime;
+    f32 currentTime;
 
-    if (((Dummy *)arg0)->f24() != 0 && arg2 == 0x58) {
-        if (*(volatile s32 *)((u8 *)arg0 + 0xAC) == 2)
-            *(u8 *)((u8 *)arg0 + 0xB5) = 1;
+    if (((Query *)obj)->query() != 0 && actionId == 0x58) {
+        if (*(volatile s32 *)((u8 *)obj + 0xAC) == 2)
+            *(u8 *)((u8 *)obj + 0xB5) = 1;
         return 1;
     }
-    if (*(volatile s32 *)((u8 *)arg0 + 0xAC) != 0) {
-        endTime = lbl_8055E3C8;
-        mode = *(volatile s32 *)((u8 *)arg0 + 0xAC);
-        if (mode == 1 && *(u8 *)((u8 *)arg0 + 0xBC) == 0) {
-            value = *(f32 *)((u8 *)arg0 + 0xB0);
-            if (value > lbl_80561980 && endTime - value < lbl_80561984) {
-                register void *handle;
-                void *node;
-                handle = *(void **)((u8 *)arg0 + 0xB8);
-                *(u8 *)((u8 *)arg0 + 0xBC) = 1;
-                if (handle != 0)
+    if (*(volatile s32 *)((u8 *)obj + 0xAC) != 0) {
+        currentTime = lbl_8055E3C8;
+        mode = *(volatile s32 *)((u8 *)obj + 0xAC);
+        if (mode == 1 && *(u8 *)((u8 *)obj + 0xBC) == 0) {
+            startTime = *(f32 *)((u8 *)obj + 0xB0);
+            if (startTime > lbl_80561980 && currentTime - startTime < lbl_80561984) {
+                register void *timerHandle;
+                void *child;
+                timerHandle = *(void **)((u8 *)obj + 0xB8);
+                *(u8 *)((u8 *)obj + 0xBC) = 1;
+                if (timerHandle != 0)
                     fn_802AE118();
-                node = *(void **)((u8 *)arg0 + 0xC0);
-                if (node != 0) {
-                    *(u8 *)((u8 *)node + 0x4A) = 1;
-                    *(u8 *)((u8 *)node + 0x4C) = 0;
+                child = *(void **)((u8 *)obj + 0xC0);
+                if (child != 0) {
+                    *(u8 *)((u8 *)child + 0x4A) = 1;
+                    *(u8 *)((u8 *)child + 0x4C) = 0;
                 }
-                node = *(void **)((u8 *)arg0 + 0xC4);
-                if (node != 0) {
-                    *(u8 *)((u8 *)node + 0x4A) = 1;
-                    *(u8 *)((u8 *)node + 0x4C) = 0;
+                child = *(void **)((u8 *)obj + 0xC4);
+                if (child != 0) {
+                    *(u8 *)((u8 *)child + 0x4A) = 1;
+                    *(u8 *)((u8 *)child + 0x4C) = 0;
                 }
-                node = *(void **)((u8 *)arg0 + 0xD4);
-                if (node != 0) {
-                    *(u8 *)((u8 *)node + 0x4A) = 1;
-                    *(u8 *)((u8 *)node + 0x4C) = 0;
+                child = *(void **)((u8 *)obj + 0xD4);
+                if (child != 0) {
+                    *(u8 *)((u8 *)child + 0x4A) = 1;
+                    *(u8 *)((u8 *)child + 0x4C) = 0;
                 }
-                node = *(void **)((u8 *)arg0 + 0xD8);
-                if (node != 0) {
-                    *(u8 *)((u8 *)node + 0x4A) = 1;
-                    *(u8 *)((u8 *)node + 0x4C) = 0;
+                child = *(void **)((u8 *)obj + 0xD8);
+                if (child != 0) {
+                    *(u8 *)((u8 *)child + 0x4A) = 1;
+                    *(u8 *)((u8 *)child + 0x4C) = 0;
                 }
                 {
                     f32 floorValue;
-                    f32 finalEnd;
+                    f32 finalTime;
                     s32 zero;
-                    finalEnd = lbl_8055E3C8;
+                    finalTime = lbl_8055E3C8;
                     zero = 0;
                     floorValue = lbl_80561984;
-                    if ((*(volatile u8 *)((u8 *)arg0 + 0xB4) = zero) == 0)
-                        *(f32 *)((u8 *)arg0 + 0xB0) = finalEnd - floorValue;
+                    if ((*(volatile u8 *)((u8 *)obj + 0xB4) = zero) == 0)
+                        *(f32 *)((u8 *)obj + 0xB0) = finalTime - floorValue;
                 }
             }
         }
