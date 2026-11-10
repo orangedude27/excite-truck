@@ -599,6 +599,7 @@ extern "C" s32 GetBaselinePos__Q46nw4hbm2ut6detail11ResFontBaseCFv(void *self) {
     return *(s8*)(*(u32*)(*(u32*)((char*)self + 0x14) + 8) + 2);
 }
 
+/* Returns the font resource's cell height after validating this and its resource pointer. */
 u8 nw4hbm::ut::detail::ResFontBase::GetCellHeight() const {
     const char* file=lbl_80329140;
     u32 value=(u32)this;
