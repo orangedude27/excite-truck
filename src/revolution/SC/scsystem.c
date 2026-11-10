@@ -347,6 +347,7 @@ static void CloseCallbackFromReload(s32 result, NANDCommandBlock* block) {
     }
 }
 
+/* Completes SYSCONF reload by opening remaining files or finalizing parse status. */
 static void FinishFromReload(void) {
     SCStatus status;
 
