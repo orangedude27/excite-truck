@@ -1221,11 +1221,12 @@ void fn_8022CAA8(void *arg0, void *arg1) {
     unsigned char *src;
     unsigned char *dest;
     char *name;
-    char *resource;
+    char *resourceName;
     int converted;
-    int value48, value54, value40, value3C, value24, value20, value38, value1C, value8;
-    float value4, value50, value4C;
+    int src48, src54, src40, src3C, src24, src20, src38, src1C, src8;
+    float src4, src50, src4C;
 
+    /* Convert/init a UI/text record from a source descriptor: resolve font/texture ids and copy/normalize fields. */
     src = (unsigned char *)arg1;
     dest = (unsigned char *)arg0;
     dest[0] = 1;
@@ -1239,9 +1240,9 @@ void fn_8022CAA8(void *arg0, void *arg1) {
     if (strstr(name, lbl_8055B920) != 0) {
         *(int *)(dest + 8) = fn_80232578(name);
     }
-    value4 = *(float *)(src + 4);
+    src4 = *(float *)(src + 4);
     converted = *(int *)(src + 0x0C);
-    *(float *)(dest + 0x34) = value4;
+    *(float *)(dest + 0x34) = src4;
     *(int *)(dest + 0x0C) = fn_8022A834(converted);
     *(int *)(dest + 0x10) = fn_8022A834(*(int *)(src + 0x28));
     *(int *)(dest + 0x14) = fn_8022A834(*(int *)(src + 0x10));
@@ -1253,42 +1254,42 @@ void fn_8022CAA8(void *arg0, void *arg1) {
     *(int *)(dest + 0x2C) = fn_8022A834(*(int *)(src + 0x34));
     converted = fn_8022A834(*(int *)(src + 0x14));
 
-    resource = *(char **)(src + 0x44);
-    value8 = *(int *)(src + 8);
-    value1C = *(int *)(src + 0x1C);
-    value38 = *(int *)(src + 0x38);
-    value20 = *(int *)(src + 0x20);
-    value24 = *(int *)(src + 0x24);
-    value3C = *(int *)(src + 0x3C);
-    value40 = *(int *)(src + 0x40);
-    value54 = *(int *)(src + 0x54);
-    value48 = *(int *)(src + 0x48);
-    value4C = *(float *)(src + 0x4C);
-    value50 = *(float *)(src + 0x50);
+    resourceName = *(char **)(src + 0x44);
+    src8 = *(int *)(src + 8);
+    src1C = *(int *)(src + 0x1C);
+    src38 = *(int *)(src + 0x38);
+    src20 = *(int *)(src + 0x20);
+    src24 = *(int *)(src + 0x24);
+    src3C = *(int *)(src + 0x3C);
+    src40 = *(int *)(src + 0x40);
+    src54 = *(int *)(src + 0x54);
+    src48 = *(int *)(src + 0x48);
+    src4C = *(float *)(src + 0x4C);
+    src50 = *(float *)(src + 0x50);
     *(int *)(dest + 0x30) = converted;
-    *(int *)(dest + 0x38) = value8;
-    *(int *)(dest + 0x3C) = value1C;
-    *(int *)(dest + 0x40) = value38;
-    *(int *)(dest + 0x44) = value20;
-    *(int *)(dest + 0x48) = value24;
-    *(int *)(dest + 0x4C) = value3C;
-    *(int *)(dest + 0x50) = value40;
-    *(int *)(dest + 0x54) = value54;
-    *(int *)(dest + 0x58) = value48;
-    *(float *)(dest + 0x5C) = value4C;
-    *(float *)(dest + 0x60) = value50;
+    *(int *)(dest + 0x38) = src8;
+    *(int *)(dest + 0x3C) = src1C;
+    *(int *)(dest + 0x40) = src38;
+    *(int *)(dest + 0x44) = src20;
+    *(int *)(dest + 0x48) = src24;
+    *(int *)(dest + 0x4C) = src3C;
+    *(int *)(dest + 0x50) = src40;
+    *(int *)(dest + 0x54) = src54;
+    *(int *)(dest + 0x58) = src48;
+    *(float *)(dest + 0x5C) = src4C;
+    *(float *)(dest + 0x60) = src50;
     *(int *)(dest + 0x64) = 0;
     *(int *)(dest + 0x68) = 0;
     *(int *)(dest + 0x6C) = 0;
     *(int *)(dest + 0x70) = 0;
 
-    if (resource != 0) {
-        if (fn_8022A7D4(resource) != 0) {
-            *(int *)(dest + 0x68) = fn_802C5130(resource);
-        } else if (fn_8022A804(resource) != 0) {
-            *(int *)(dest + 0x6C) = fn_8023512C(resource);
+    if (resourceName != 0) {
+        if (fn_8022A7D4(resourceName) != 0) {
+            *(int *)(dest + 0x68) = fn_802C5130(resourceName);
+        } else if (fn_8022A804(resourceName) != 0) {
+            *(int *)(dest + 0x6C) = fn_8023512C(resourceName);
         } else {
-            *(int *)(dest + 0x64) = fn_802C49E8(resource);
+            *(int *)(dest + 0x64) = fn_802C49E8(resourceName);
         }
     }
     *(int *)(dest + 0x58) = -1;
@@ -1315,6 +1316,8 @@ __declspec(section ".sdata") extern char lbl_8055B928[];
 extern char lbl_80340070[];
 extern int sscanf(const char *, const char *, ...);
 int fn_8022CD0C(char *arg0) {
+    extern int __rlwimi(int, int, int, int, int);
+    extern int __rlwinm(int, int, int, int);
     volatile int sp18;
     int sp14;
     int sp10;
@@ -1322,18 +1325,18 @@ int fn_8022CD0C(char *arg0) {
     int sp8;
     int result;
     int high;
-    int low;
+    unsigned low;
 
     if (sscanf(arg0, lbl_8055B928, (int *)&sp18) == 1)
         return sp18;
 
     result = sscanf(arg0, lbl_80340070, &sp14, &sp10, &spC, &sp8);
     if (result == 3) {
-        high = (sp14 & 0xFF) << 16;
-        low = (sp10 & 0xFF) << 8;
-        low |= spC & 0xFF;
+        high = __rlwinm(sp14, 16, 8, 15);
         high |= 0xFF000000;
-        result = low | high;
+        low = (unsigned)__rlwinm(sp10, 8, 16, 23);
+        low = (unsigned)__rlwimi((int)low, spC, 0, 24, 31);
+        result = (int)(low | (unsigned)high);
         sp18 = result;
         return result;
     }
