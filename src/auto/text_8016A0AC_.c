@@ -115,10 +115,10 @@ void fn_8016A0D4(void) {
 
         value2 = lbl_80561958;
         value1 = lbl_8056195C;
+        clear = 0;
         recordCount = (s32 *)(lbl_80430318 + 4);
         count = 0;
         recordOffset = 0;
-        clear = 0;
 
         goto check_second;
     second_loop:
@@ -386,6 +386,174 @@ void* fn_8016AC24(void* arg0, s32 arg1) {
     return arg0;
 }
 
+s32 fn_8016AC90(s32 unused) {
+    typedef struct AEntry { u8 flag; u8 pad1[3]; void *ptr4; void *ptr8; float data[11]; u8 b3c; u8 b3d; u8 pad3e[2]; float f40; float f44; } AEntry;
+    typedef struct BEntry { u8 flag; char name[31]; s32 first; s32 count; u8 last; } BEntry;
+    Ctr804302F0 *aMgr;
+    Ctr804302F0 *bMgr;
+    void *obj;
+    void *cfg;
+    void *iter;
+    void *item;
+    void *sub;
+    s32 i;
+    s32 j;
+    s32 k2;
+    AEntry *aEnt;
+    BEntry *bEnt;
+    float floats[12];
+    float v1[3];
+    float v2[3];
+    float limit;
+    float base;
+    aMgr = (Ctr804302F0 *)&lbl_80430318;
+    bMgr = (Ctr804302F0 *)&lbl_80430340;
+    if (aMgr->ptr10 != 0) {
+        fn_8002F6AC(aMgr->ptr10, fn_8016B550);
+        aMgr->ptr10 = 0;
+        aMgr->cap = 0;
+        aMgr->data = 0;
+        aMgr->count = 0;
+        aMgr->limit = 0;
+    }
+    aMgr->cap = 0xb4;
+    aMgr->ptr10 = (void*)fn_8002F37C((void*)fn_8012850C(aMgr->cap * 0x48 + 0x10, &lbl_80330510), fn_8016B544, fn_8016B550, 0x48, aMgr->cap);
+    aMgr->data = aMgr->ptr10;
+    aMgr->limit = aMgr->cap;
+    aMgr->count = 0;
+    if (bMgr->ptr10 != 0) {
+        fn_8002F6AC(bMgr->ptr10, (void*(*)(void*,s32))fn_8016B4FC);
+        bMgr->ptr10 = 0;
+        bMgr->cap = 0;
+        bMgr->data = 0;
+        bMgr->count = 0;
+        bMgr->limit = 0;
+    }
+    bMgr->cap = 0x24;
+    bMgr->ptr10 = (void*)fn_8002F37C((void*)fn_8012850C(bMgr->cap * 0x2c + 0x10, &lbl_803304F8), fn_8016B4F0, (void*)fn_8016B4FC, 0x2c, bMgr->cap);
+    bMgr->data = bMgr->ptr10;
+    bMgr->limit = bMgr->cap;
+    bMgr->count = 0;
+    obj = *(void **)((char *)fn_8000AC38() + 0x20);
+    cfg = fn_80204EA0(&lbl_80330460[0x14]);
+    if (((s32 (*)(void*, void*, s32))(*(void ***)obj)[3])(obj, cfg, 0) != 0) {
+        ((void *(*)(void*, void*))(*(void ***)obj)[5])(obj, cfg);
+        iter = fn_80131810();
+        if (iter != 0) {
+            limit = lbl_80561970;
+            base = lbl_8056195C;
+            for (i = 0; ; i++) {
+                item = ((void *(*)(void*, s32))(*(void ***)iter)[2])(iter, i);
+                if (item == 0) break;
+                ((void (*)(void*))(*(void ***)item)[2])(item);
+                if (strcmp((char *)((void *(*)(void*))(*(void ***)item)[2])(item), &lbl_80330460[0x24]) == 0) {
+                    bEnt = &((BEntry *)bMgr->data)[bMgr->count];
+                    bMgr->count++;
+                    bEnt->flag = 0;
+                    if (((void *(*)(void*, char*))(*(void ***)item)[2])(item, lbl_8055A1E0) != 0) {
+                        char *nm = ((char *(*)(void*, void*))(*(void ***)item)[5])(item, lbl_8055A1D8);
+                        s32 k = 0x1e;
+                        char *dst = bEnt->name;
+                        while (k-- > 0) {
+                            char c = *nm++;
+                            *dst++ = c;
+                            if (c == 0) break;
+                        }
+                        dst[-1] = 0;
+                        bEnt->first = aMgr->count;
+                        bEnt->count = 0;
+                        for (j = 0; ; j++) {
+                            sub = ((void *(*)(void*, s32))(*(void ***)iter)[24])(item, j);
+                            if (sub == 0) break;
+                            ((void (*)(void*))(*(void ***)sub)[2])(sub);
+                            if (strcmp((char *)((void *(*)(void*))(*(void ***)sub)[2])(sub), lbl_8055A1D0) == 0) {
+                                aEnt = &((AEntry *)aMgr->data)[aMgr->count];
+                                aMgr->count++;
+                                aEnt->flag = 0;
+                                if (((s32 (*)(void*, void*, s32, void*))(*(void ***)sub)[3])(sub, lbl_8055A200, aMgr->count, aMgr->data) != 0) {
+                                    if (((s32 (*)(void*, void*, s32, void*))(*(void ***)sub)[3])(sub, lbl_8055A1F8, aMgr->count, aMgr->data) == 0) {
+                                        fn_802E30C8(&lbl_8033062C);
+                                    } else {
+                                        aEnt->ptr4 = ((void *(*)(void*, void*))(*(void ***)sub)[7])(sub, lbl_8055A1F0);
+                                        ((void (*)(void*, void*, void*))(*(void ***)sub)[17])(floats, sub, lbl_8055A1E8);
+                                        aEnt->data[0] = floats[0];
+                                        aEnt->data[1] = floats[1];
+                                        aEnt->data[2] = floats[2];
+                                        aEnt->data[3] = floats[3];
+                                        aEnt->data[4] = floats[4];
+                                        aEnt->data[5] = floats[5];
+                                        aEnt->data[6] = floats[6];
+                                        aEnt->data[7] = floats[7];
+                                        aEnt->data[8] = floats[8];
+                                        aEnt->data[9] = floats[9];
+                                        aEnt->data[10] = floats[10];
+                                        {
+                                            s32 found = -1;
+                                            s32 ctr = ((Ctr804302F0 *)&lbl_804302F0)->count;
+                                            AEntry *p2;
+                                            for (p2 = (AEntry *)((Ctr804302F0 *)&lbl_804302F0)->data; ctr > 0; p2++, ctr--) {
+                                                if (p2->ptr4 == aEnt->ptr4) { found = (s32)(p2 - (AEntry *)((Ctr804302F0 *)&lbl_804302F0)->data); break; }
+                                            }
+                                            if (found >= 0) {
+                                                aEnt->ptr8 = &((AEntry *)((Ctr804302F0 *)&lbl_804302F0)->data)[found];
+                                                aEnt->b3c = 0;
+                                                aEnt->f44 = base;
+                                                aEnt->flag = 1;
+                                            } else {
+                                                fn_802E30C8(&lbl_80330654, aEnt->ptr4);
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    fn_802E30C8(&lbl_80330604);
+                                }
+                                if (aEnt->flag != 0) {
+                                    bEnt->count++;
+                                } else {
+                                    if (aMgr->count > 0) {
+                                        aMgr->count--;
+                                    }
+                                }
+                            }
+                        }
+                        if (bEnt->count > 2) {
+                            AEntry *firstEnt = &((AEntry *)aMgr->data)[bEnt->first];
+                            AEntry *secondEnt = &((AEntry *)aMgr->data)[bEnt->first + 1];
+                            v1[0] = secondEnt->data[9] - firstEnt->data[9];
+                            v1[1] = secondEnt->data[10] - firstEnt->data[10];
+                            v1[2] = secondEnt->data[11] - firstEnt->data[11];
+                            for (k2 = bEnt->first + 2; k2 < bEnt->first + bEnt->count; k2++) {
+                                AEntry *cur = &((AEntry *)aMgr->data)[k2];
+                                AEntry *prev = &((AEntry *)aMgr->data)[k2 - 1];
+                                v2[0] = cur->data[9] - prev->data[9];
+                                v2[1] = cur->data[10] - prev->data[10];
+                                if (PSVECDotProduct(v2, v1, cur->data[11] - prev->data[11]) < limit) {
+                                    fn_802E30C8(&lbl_803305A0);
+                                    fn_802E30C8(&lbl_80330578, bEnt->name + 1);
+                                    fn_802E30C8(&lbl_80330540);
+                                }
+                            }
+                        }
+                        bEnt->last = 0;
+                        bEnt->flag = 1;
+                    } else {
+                        fn_802E30C8(&lbl_803305D8);
+                    }
+                    if (bEnt->flag == 0 && bMgr->count > 0) {
+                        bMgr->count--;
+                    }
+                }
+            }
+            fn_80131818(iter);
+            return 0;
+        }
+        fn_802E30C8(&lbl_80330460[0x30], ((void *(*)(void*, void*))(*(void ***)obj)[5])(obj, &lbl_80330460[0x58]));
+        return 0;
+    }
+    fn_802E30C8(&lbl_80330460[0x64]);
+    return 0;
+}
+
 void fn_8016B4F0(u8* arg0) { *arg0 = 0; }
 
 u8* fn_8016B4FC(u8* arg0, s32 arg1) { if(arg0) { *arg0=0; if(arg1>0) fn_80128668(arg0); } return arg0; }
@@ -421,9 +589,11 @@ int fn_8016B598(void) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_8016B634(s32 arg0) {
-    register s32 count = 0;
-    register s32 offset = 0;
-    register void* entry;
+    register void *entry;
+    register s32 offset;
+    register s32 count;
+    count = 0;
+    offset = 0;
 
     while (count < lbl_804302F0.count) {
         entry = (void*)((u8*)lbl_804302F0.data + offset);
@@ -444,4 +614,3 @@ void fn_8016B634(s32 arg0) {
     }
 }
 #pragma scheduling on
-#pragma use_lmw_stmw on
