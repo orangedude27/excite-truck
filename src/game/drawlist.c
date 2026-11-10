@@ -234,7 +234,6 @@ void fn_802C8588(float *arg0, float *arg1, float *arg2) {
     PSVECNormalize(arg0, arg0);
     PSVECCrossProduct(arg0 + 6, arg0, arg0 + 3);
 }
-#pragma scheduling on
 extern void fn_802D03F4(unsigned int *, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int);
 #pragma scheduling invalid_target
 void fn_802C8638(unsigned int *arg0) {
