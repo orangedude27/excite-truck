@@ -11618,43 +11618,44 @@ void BTM_PINCodeReply(BD_ADDR bd_addr, UINT8 res, UINT8 pin_len, UINT8 *p_pin, U
 extern u8 btm_sec_execute_procedure(void *);
 extern u8 lbl_80316A10[];
 extern u8 lbl_80316A70[];
-void BTM_DeviceAuthorized(u8 *bd_addr, u8 res, u32 *trusted_mask) {
-    tBTM_SEC_DEV_REC *record = btm_find_dev(bd_addr);
-    u8 *dev = (u8 *)record;
-    if (record == 0) {
-        if (lbl_803C0F78[0x27c0] >= 2) {
-            fn_800709CC(0xD0001, lbl_80316A10, bd_addr[0], bd_addr[1], bd_addr[2],
+/* Records the application's authorization verdict for bd_addr: on success marks the device authorized and saves its trusted services, then if the record was waiting in AUTHORIZING state clears it to IDLE and either reports a denial or runs the pending security procedure and reports its result through the stored callback. */
+void BTM_DeviceAuthorized(BD_ADDR bd_addr, UINT8 res, UINT32 trusted_mask[]) {
+    tBTM_SEC_DEV_REC_FULL_VIEW *p_dev_rec = (tBTM_SEC_DEV_REC_FULL_VIEW *)btm_find_dev(bd_addr);
+    tBTM_SEC_DEV_REC_FULL_VIEW *dev = p_dev_rec;
+    if (p_dev_rec == 0) {
+        if (btm_cb_trace_level >= BTM_TRACE_LEVEL_WARNING) {
+            fn_800709CC(0xD0001 /* TRACE_LAYER_BTM | TRACE_TYPE_WARNING */, lbl_80316A10, bd_addr[0], bd_addr[1], bd_addr[2],
                         bd_addr[3], bd_addr[4], bd_addr[5]);
         }
     } else {
-        if (lbl_803C0F78[0x27c0] >= 4)
-            fn_8007096C(0xD0003, lbl_80316A70, res,
-                        (u8)(dev[0x7f] * (record != 0)));
+        if (btm_cb_trace_level >= BTM_TRACE_LEVEL_EVENT)
+            fn_8007096C(0xD0003 /* TRACE_LAYER_BTM | TRACE_TYPE_EVENT */, lbl_80316A70, res,
+                        (UINT8)(dev->sec_state * (p_dev_rec != 0)));
         if (res == 0) {
-            dev[0x76] |= 1;
-            *(u32 *)(dev + 0x10) = trusted_mask[0];
-            *(u32 *)(dev + 0x14) = trusted_mask[1];
+            dev->sec_flags |= BTM_SEC_AUTHORIZED;
+            dev->trusted_mask[0] = trusted_mask[0];
+            dev->trusted_mask[1] = trusted_mask[1];
         }
-        if (dev[0x7f] == 4) {
-            dev[0x7f] = 0;
+        if (dev->sec_state == BTM_SEC_STATE_AUTHORIZING) {
+            dev->sec_state = BTM_SEC_STATE_IDLE;
             if (res != 0) {
-                if (*(void **)(dev + 4) != 0) {
-                    if (dev[0x80] != 0) {
-                        void *p = *(void **)dev;
-                        if (p != 0 && *(u32 *)p == 3) *(u32 *)((u8 *)p + 4) = 0;
+                if (dev->p_callback != 0) {
+                    if (dev->is_originator != 0) {
+                        tBTM_SEC_SERV_REC *p_service = dev->p_cur_service;
+                        if (p_service != 0 && p_service->mx_proto_id == BTM_SEC_PROTO_RFCOMM) p_service->orig_mx_chan_id = 0;
                     }
-                    ((void (*)(u8 *, u32, u8))*(void **)(dev + 4))(bd_addr, *(u32 *)(dev + 8), res);
-                    *(u32 *)(dev + 4) = 0;
+                    ((void (*)(u8 *, u32, u8))dev->p_callback)(bd_addr, (u32)dev->p_ref_data, res);
+                    dev->p_callback = 0;
                 }
             } else {
                 res = btm_sec_execute_procedure(dev);
-                if (res != 1 && *(void **)(dev + 4) != 0) {
-                    if (dev[0x80] != 0) {
-                        void *p = *(void **)dev;
-                        if (p != 0 && *(u32 *)p == 3) *(u32 *)((u8 *)p + 4) = 0;
+                if (res != BTM_CMD_STARTED && dev->p_callback != 0) {
+                    if (dev->is_originator != 0) {
+                        tBTM_SEC_SERV_REC *p_service = dev->p_cur_service;
+                        if (p_service != 0 && p_service->mx_proto_id == BTM_SEC_PROTO_RFCOMM) p_service->orig_mx_chan_id = 0;
                     }
-                    ((void (*)(u8 *, u32, u8))*(void **)(dev + 4))(bd_addr, *(u32 *)(dev + 8), res);
-                    *(u32 *)(dev + 4) = 0;
+                    ((void (*)(u8 *, u32, u8))dev->p_callback)(bd_addr, (u32)dev->p_ref_data, res);
+                    dev->p_callback = 0;
                 }
             }
         }
