@@ -292,7 +292,6 @@ long fn_8017EB04(long);
 void fn_8017DEE0(void *, long, long, short, float);
 void fn_8017DA8C(void *arg0) {
     float sp[3];
-    int g;
     int flags;
     fn_8017B164();
     fn_8017D380(sp, *(int *)((char *)arg0 + 0x1F8));
@@ -301,9 +300,8 @@ void fn_8017DA8C(void *arg0) {
     *(float *)((char *)arg0 + 0x68) = sp[2];
     fn_8017A580(arg0);
     *((char *)arg0 + 0x1E9) = 0;
-    g = lbl_8055D430;
     flags = 0;
-    if ((g & 1) && (g & 8)) flags = 1;
+    if ((lbl_8055D430 & 1) && (lbl_8055D430 & 8)) flags = 1;
     if (flags != 0) {
         *(int *)((char *)arg0 + 0x1F0) = 0;
         *(float *)((char *)arg0 + 0x1F4) = lbl_80561C0C + fn_8017D378();
@@ -318,49 +316,50 @@ void fn_8017DB34(void *arg0, int arg1, int arg2, int arg3, int arg4) {
     extern float lbl_80561BF4, lbl_80561C10, lbl_80561C14;
     extern void fn_801796EC(int, void *, int);
     extern void fn_8017D2C8(void *, int, int, int, int);
-    float sp[6];
+    float savedPos[6];
     float z, x, y;
-    int var_r4;
+    int allow;
     int flags;
-    void *p;
-    void *q;
+    void *node;
+    void *node2;
     volatile float *values;
     unsigned char *object = (unsigned char *)arg0;
 
+    /* If active, optionally update position-related state based on global flags/arg3, sync linked nodes, then always forward to fn_8017D2C8. */
     if (object[0x1FE] == 0)
         goto done;
     if (object[0x1FD] == 0)
         goto done;
     if (arg3 < 100) {
         flags = lbl_8055D430;
-        var_r4 = 0;
+        allow = 0;
         if (flags & 1) {
             if (flags & 0x90)
-                var_r4 = 1;
+                allow = 1;
         }
-        if (var_r4 == 0)
+        if (allow == 0)
             goto done;
     }
     if (arg3 >= 1000)
         goto done;
 
-    sp[0] = *(float *)(object + 0x60);
-    sp[1] = *(float *)(object + 0x64);
-    sp[2] = *(float *)(object + 0x68);
-    sp[3] = *(float *)(object + 0x118);
-    sp[4] = *(float *)(object + 0x11C);
-    sp[5] = *(float *)(object + 0x120);
-    fn_801796EC(8, sp, 0x18);
+    savedPos[0] = *(float *)(object + 0x60);
+    savedPos[1] = *(float *)(object + 0x64);
+    savedPos[2] = *(float *)(object + 0x68);
+    savedPos[3] = *(float *)(object + 0x118);
+    savedPos[4] = *(float *)(object + 0x11C);
+    savedPos[5] = *(float *)(object + 0x120);
+    fn_801796EC(8, savedPos, 0x18);
     fn_8017D404((float *)(object + 0x60), arg4,
                 lbl_80561C10, lbl_80561C14, *(int *)(object + 0x1F8));
 
-    p = *(void **)(object + 0x21C);
-    if (p != 0) {
-        *((unsigned char *)p + 0x4A) = 1;
-        *((unsigned char *)p + 0x4C) = 0;
+    node = *(void **)(object + 0x21C);
+    if (node != 0) {
+        *((unsigned char *)node + 0x4A) = 1;
+        *((unsigned char *)node + 0x4C) = 0;
     }
-    p = *(void **)(object + 0x220);
-    if (p != 0) {
+    node = *(void **)(object + 0x220);
+    if (node != 0) {
         values = (volatile float *)(object + 0x60);
         x = values[0];
         y = values[1];
@@ -369,14 +368,14 @@ void fn_8017DB34(void *arg0, int arg1, int arg2, int arg3, int arg4) {
         x = lbl_80561BF4;
         *(volatile float *)(object + 0x210) = y;
         *(volatile float *)(object + 0x214) = z;
-        if (x != *(float *)((char *)p + 8)) {
-            *((unsigned char *)p + 0x4D) = 1;
-            *(float *)((char *)p + 8) = x;
+        if (x != *(float *)((char *)node + 8)) {
+            *((unsigned char *)node + 0x4D) = 1;
+            *(float *)((char *)node + 8) = x;
         }
-        q = *(void * volatile *)(object + 0x220);
-        *((unsigned char *)q + 0x49) = 1;
-        *((unsigned char *)q + 0x4B) = 0;
-        *((unsigned char *)q + 0x4A) = 0;
+        node2 = *(void * volatile *)(object + 0x220);
+        *((unsigned char *)node2 + 0x49) = 1;
+        *((unsigned char *)node2 + 0x4B) = 0;
+        *((unsigned char *)node2 + 0x4A) = 0;
     }
     object[0x1FE] = 0;
     object[0x1FC] = 1;
