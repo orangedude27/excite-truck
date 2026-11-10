@@ -241,38 +241,39 @@ extern "C" int fn_8028F7AC(void *, void *, int);
 extern "C" void fn_8028EEB4(void *, int, const char *);
 extern "C" void fn_8028ED8C(void *, int);
 extern "C" void fn_8028F5A0(int, int);
-extern "C" int fn_8028E3F4(const char *arg0) {
-    class Object {
+extern "C" int fn_8028E3F4(const char *tableName) {
+    class TableObject {
     public:
         virtual void v0();
         virtual void v1();
         virtual void v2();
-        virtual int method(const char *);
+        virtual int GetResourceId(const char *name);
     };
-    int result;
-    Object *object;
-    volatile int index = -1;
-    if (fn_8028EE34(lbl_804B36B8, (int)arg0, (int *)&index) != 0) {
-        char *entry = (char *)&lbl_804B36B8[0] + index * 0x18;
+    int instance;
+    TableObject *tableObject;
+    volatile int cachedIndex = -1;
+    /* Look up a named table entry in the cache, or load and register a new instance if it is not found. */
+    if (fn_8028EE34(lbl_804B36B8, (int)tableName, (int *)&cachedIndex) != 0) {
+        char *entry = (char *)&lbl_804B36B8[0] + cachedIndex * 0x18;
         *(int *)(entry + 0x14) += 1;
         return *(int *)(entry + 0x10);
     }
-    int state[35];
-    fn_8028E61C(state);
-    object = (Object *)fn_802AE414(arg0);
-    if (object == 0) {
-        fn_802E317C(lbl_80348D04, arg0);
+    int loadState[35];
+    fn_8028E61C(loadState);
+    tableObject = (TableObject *)fn_802AE414(tableName);
+    if (tableObject == 0) {
+        fn_802E317C(lbl_80348D04, tableName);
     }
-    fn_8028E654(state, object);
-    result = fn_801284F8(0xB0, &lbl_8055C8E0);
-    if (result != 0) {
-        int value = object->method((const char *)&lbl_8055C8E8);
-        result = fn_8028F7AC((void *)result, state, value);
+    fn_8028E654(loadState, tableObject);
+    instance = fn_801284F8(0xB0, &lbl_8055C8E0);
+    if (instance != 0) {
+        int resourceId = tableObject->GetResourceId((const char *)&lbl_8055C8E8);
+        instance = fn_8028F7AC((void *)instance, loadState, resourceId);
     }
-    fn_8028EEB4(lbl_804B36B8, result, arg0);
-    fn_8028ED8C(&lbl_804B34B0, result);
-    fn_8028F5A0((int)arg0, result);
-    return result;
+    fn_8028EEB4(lbl_804B36B8, instance, tableName);
+    fn_8028ED8C(&lbl_804B34B0, instance);
+    fn_8028F5A0((int)tableName, instance);
+    return instance;
 }
 #pragma cplusplus off
 #pragma pop
