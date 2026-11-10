@@ -246,42 +246,43 @@ extern "C" void Init__Q46nw4hbm3snd6detail8WsdTrackFPQ46nw4hbm3snd6detail9WsdPla
 extern "C" void NWC24Data_SetDataP(void *, const void *, unsigned long);
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" int Prepare__Q46nw4hbm3snd6detail9WsdPlayerFPCviiPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUl(void *arg0, const void *arg1, int arg2, int arg3, const void *arg4, unsigned long arg5) {
-    int level1;
-    int level2;
-    level1 = OSDisableInterrupts();
+extern "C" int Prepare__Q46nw4hbm3snd6detail9WsdPlayerFPCviiPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUl(void *player, const void *data, int dataSize, int param, const void *callback, unsigned long userData) {
+    /* Prepare the WSD player for playback: if already active, detach/close current track, then initialize params/track with new data and register for dispose callbacks. */
+    int savedIrq;
+    int nestedIrq;
+    savedIrq = OSDisableInterrupts();
 
-    if (*(unsigned char *)((char *)arg0 + 0x1D) != 0) {
-        level2 = OSDisableInterrupts();
-        if (*(unsigned char *)((char *)arg0 + 0x1F) != 0) {
-            if (arg0 == 0)
+    if (*(unsigned char *)((char *)player + 0x1D) != 0) {
+        nestedIrq = OSDisableInterrupts();
+        if (*(unsigned char *)((char *)player + 0x1F) != 0) {
+            if (player == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327CAC, 0x233, lbl_80327C88);
-            Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(lbl_8041D4C4, (char *)arg0 + 0x14);
+            Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(lbl_8041D4C4, (char *)player + 0x14);
         }
-        if (*(unsigned char *)((char *)arg0 + 0x1D) != 0) {
-            void *node = arg0;
-            if (arg0 != 0)
-                node = (char *)arg0 + 8;
+        if (*(unsigned char *)((char *)player + 0x1D) != 0) {
+            void *disposeNode = player;
+            if (player != 0)
+                disposeNode = (char *)player + 8;
             UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(
-                GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(), node);
+                GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(), disposeNode);
         }
-        OSRestoreInterrupts(level2);
-        Close__Q46nw4hbm3snd6detail8WsdTrackFv((char *)arg0 + 0x9C);
-        *(unsigned char *)((char *)arg0 + 0x1D) = 0;
+        OSRestoreInterrupts(nestedIrq);
+        Close__Q46nw4hbm3snd6detail8WsdTrackFv((char *)player + 0x9C);
+        *(unsigned char *)((char *)player + 0x1D) = 0;
     }
 
-    InitParam__Q46nw4hbm3snd6detail9WsdPlayerFiPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUl(arg0, arg3, arg4, arg5);
-    Init__Q46nw4hbm3snd6detail8WsdTrackFPQ46nw4hbm3snd6detail9WsdPlayer((char *)arg0 + 0x9C, arg0);
-    NWC24Data_SetDataP((void *)((unsigned int)arg0 + 0x9C), arg1, arg2);
+    InitParam__Q46nw4hbm3snd6detail9WsdPlayerFiPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUl(player, param, callback, userData);
+    Init__Q46nw4hbm3snd6detail8WsdTrackFPQ46nw4hbm3snd6detail9WsdPlayer((char *)player + 0x9C, player);
+    NWC24Data_SetDataP((void *)((unsigned int)player + 0x9C), data, dataSize);
 
-    void *node = arg0;
-    if (arg0 != 0)
-        node = (char *)arg0 + 8;
+    void *disposeNode = player;
+    if (player != 0)
+        disposeNode = (char *)player + 8;
     RegisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(
-        GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(), node);
-    *(unsigned char *)((char *)arg0 + 0x1D) = 1;
-    *(unsigned char *)((char *)arg0 + 0x1E) = 1;
-    OSRestoreInterrupts(level1);
+        GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(), disposeNode);
+    *(unsigned char *)((char *)player + 0x1D) = 1;
+    *(unsigned char *)((char *)player + 0x1E) = 1;
+    OSRestoreInterrupts(savedIrq);
     return 1;
 }
 #pragma pop
