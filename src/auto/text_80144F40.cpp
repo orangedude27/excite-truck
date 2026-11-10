@@ -1410,18 +1410,20 @@ extern "C" void fn_802C8D74(void);
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-extern "C" void fn_801470B0(s32 arg0, s32 arg1, s32 arg2, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, f32 farg5, f32 farg6, f32 farg7) {
+extern "C" void fn_801470B0(s32 arg0, s32 arg1, s32 arg2, f32 x, f32 y, f32 width, f32 height, f32 u0, f32 v0, f32 u1, f32 v1) {
     f32 temp;
+
+    /* Draw an axis-aligned quad as four vertices (two triangles/strip) when the draw state is ready. */
     fn_802C8BD0(arg1);
     if (fn_802C8DBC(4) != 0) {
-        temp = fn_801452B4(farg1);
-        fn_802C8E00(arg0, 0, ((f32 (*)(s32, f32))fn_801451DC)(arg2, farg0), temp, lbl_805615D4, farg4, farg5);
-        temp = fn_801452B4(farg1);
-        fn_802C8E00(arg0, 0, ((f32 (*)(s32, f32))fn_801451DC)(arg2, farg0 + farg2), temp, lbl_805615D4, farg6, farg5);
-        temp = fn_801452B4(farg1 + farg3);
-        fn_802C8E00(arg0, 1, ((f32 (*)(s32, f32))fn_801451DC)(arg2, farg0), temp, lbl_805615D4, farg4, farg7);
-        temp = fn_801452B4(farg1 + farg3);
-        fn_802C8E00(arg0, 1, ((f32 (*)(s32, f32))fn_801451DC)(arg2, farg0 + farg2), temp, lbl_805615D4, farg6, farg7);
+        temp = fn_801452B4(y);
+        fn_802C8E00(arg0, 0, ((f32 (*)(s32, f32))fn_801451DC)(arg2, x), temp, lbl_805615D4, u0, v0);
+        temp = fn_801452B4(y);
+        fn_802C8E00(arg0, 0, ((f32 (*)(s32, f32))fn_801451DC)(arg2, x + width), temp, lbl_805615D4, u1, v0);
+        temp = fn_801452B4(y + height);
+        fn_802C8E00(arg0, 1, ((f32 (*)(s32, f32))fn_801451DC)(arg2, x), temp, lbl_805615D4, u0, v1);
+        temp = fn_801452B4(y + height);
+        fn_802C8E00(arg0, 1, ((f32 (*)(s32, f32))fn_801451DC)(arg2, x + width), temp, lbl_805615D4, u1, v1);
         fn_802C8E48();
     }
     fn_802C8D74();
