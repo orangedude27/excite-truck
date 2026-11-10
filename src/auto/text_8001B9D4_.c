@@ -530,9 +530,9 @@ s32 *fn_8001C4E0(s32 arg0) {
         if (*(s32 *)entry == arg0) {
             return (s32 *)entry;
         }
-        entry += 0xC;
+        entry = entry + 0xC;
         if (*(s32 *)entry == 0) {
-            fn_802E317C(lbl_802FD85C);
+            ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD85C, arg0);
             return 0;
         }
     }
@@ -723,56 +723,69 @@ extern void *lbl_8055E050;
 #pragma dont_inline on
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" s32 fn_8001CB8C(s32 flags, const char *name, void *out) {
-    struct Node {
+extern "C" s32 fn_8001CB8C(s32 flags, const char *name, void *outValue) {
+    struct ConfigNode {
         virtual const char *GetName();
-        virtual s32 IsValid(s32);
+        virtual s32 IsValid(s32 context);
         virtual void Unused2();
         virtual void Unused3();
-        virtual const char *GetParam(const char *, void *);
-        virtual s32 GetInt(s32);
+        virtual const char *GetParam(const char *key, void *dst);
+        virtual s32 GetInt(s32 context);
         virtual void Unused6();
-        virtual f32 GetFloat(s32);
+        virtual f32 GetFloat(s32 context);
     };
-    struct Manager {
-        virtual Node *GetFallback(const char *);
-        virtual Node *GetAt(s32);
+    struct ConfigManager {
+        virtual ConfigNode *GetFallback(const char *name);
+        virtual ConfigNode *GetAt(s32 index);
     };
     s32 *archive;
-    char *strings;
-    Node *node;
+    char *stringBase;
+    ConfigNode *node;
     s32 index;
-    f32 value;
-    /* Fix note: preserve virtual slots and use a switch for the unit conversion flag. */
-    strings = lbl_802FD6D8;
-    if (name == 0) return 0;
+    f32 floatValue;
+
+    /* Look up a named config node and read its int/float value for the archive context. */
+    stringBase = lbl_802FD6D8;
+    if (name == 0) {
+        return 0;
+    }
+
     archive = fn_8001C4E0(flags);
-    if (archive[1] == 0) return 0;
+    if (archive[1] == 0) {
+        return 0;
+    }
+
     index = 0;
-    while ((node = ((Manager *)lbl_8055D5D4)->GetAt(index)) != 0) {
-        if (stricmp(node->GetName(), strings + 0x39C) == 0 &&
-            stricmp(node->GetParam(strings + 0x3AC, &lbl_80558CD8), name) == 0 &&
-            node->IsValid(archive[1]) != 0) break;
+    while ((node = ((ConfigManager *)lbl_8055D5D4)->GetAt(index)) != 0) {
+        if (stricmp(node->GetName(), stringBase + 0x39C) == 0 &&
+            stricmp(node->GetParam(stringBase + 0x3AC, &lbl_80558CD8), name) == 0 &&
+            node->IsValid(archive[1]) != 0) {
+            break;
+        }
         index++;
     }
-    if (node == 0)
-        node = ((Manager *)lbl_8055D5D4)->GetFallback(strings + 0x3BC);
-    if (out != 0) {
+
+    if (node == 0) {
+        node = ((ConfigManager *)lbl_8055D5D4)->GetFallback(stringBase + 0x3BC);
+    }
+
+    if (outValue != 0) {
         switch (flags & 0x300) {
         case 0x200:
-            *(s32 *)out = node->GetInt(archive[1]);
+            *(s32 *)outValue = node->GetInt(archive[1]);
             break;
         case 0x100:
-            value = node->GetFloat(archive[1]);
+            floatValue = node->GetFloat(archive[1]);
             switch (flags & 0x1FC00) {
             case 0x800:
-                value /= *(f32 *)((char *)lbl_8055E050 + 0x10);
+                floatValue /= *(f32 *)((char *)lbl_8055E050 + 0x10);
                 break;
             }
-            *(s32 *)out = *(s32 *)&value;
+            *(s32 *)outValue = *(s32 *)&floatValue;
             break;
         }
     }
+
     return 1;
 }
 #pragma cplusplus reset
