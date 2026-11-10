@@ -32,8 +32,10 @@ void fn_802090BC(void);
 extern s32 lbl_8055F144, lbl_8055F148, lbl_8055F14C, lbl_8055F150, lbl_8055F154;
 extern char lbl_8055BB48[];
 __declspec(section ".sdata") extern char lbl_8055BB48[];
+#pragma scheduling invalid_target
 s32 fn_8023C308(s32 arg0) {
-    s32 val, cur, diff, mode;
+    s32 val, cur, mode;
+    register s32 diff;
     if (arg0) {
         mode = (u32)(fn_80214D04() - 2) == 0;
         cur = lbl_8055F154;
@@ -41,8 +43,11 @@ s32 fn_8023C308(s32 arg0) {
             val = cur - 5;
             val = val & ~(val >> 31);
         } else {
-            val = cur + 5;
-            if (val > 0x46) val = 0x46;
+            s32 tmp = cur + 5;
+            if (tmp > 0x46)
+                val = 0x46;
+            else
+                val = tmp;
         }
         diff = val - cur;
         lbl_8055F154 += diff;
@@ -50,7 +55,7 @@ s32 fn_8023C308(s32 arg0) {
     }
     if (lbl_8055F148 != lbl_8055F150) {
         lbl_8055F150 = lbl_8055F148;
-        fn_802E30C8(lbl_8055BB48);
+        ((void (*)(void *, ...))fn_802E30C8)(lbl_8055BB48);
         fn_802C82C4(lbl_8055F148);
     }
     if (lbl_8055F144 != lbl_8055F14C) {
@@ -59,7 +64,7 @@ s32 fn_8023C308(s32 arg0) {
     }
     return 0;
 }
-
+#pragma scheduling on
 s32 fn_80236914(void*); /* extern */
 void fn_8023C55C(void*); /* extern */
 int fn_8027AA48(void); /* extern */
@@ -145,6 +150,75 @@ void fn_8023C3D4(void) {
     data[39] = 0;
     fn_802146BC(data, -0x3E7, -0x3E7, 1, v[3], v[2], v[0], lbl_80498788[4]);
 }
+
+void fn_8023C55C(void *arg0) {
+    char *base = lbl_803413C0;
+    char obj1[0x1C];
+    char obj2[0x1C];
+    s32 hdr[5];
+    s32 data[35];
+    s32 *v = lbl_802FA07C;
+
+    lbl_8055F148 = fn_802C83C4();
+    lbl_8055F150 = lbl_8055F148;
+    fn_8023C800(obj1, (s32)&lbl_8055F148, fn_80131234(base + 0x10), fn_80131234(base + 0x24), 0);
+    lbl_8055F144 = fn_802090CC();
+    lbl_8055F14C = lbl_8055F144;
+    fn_8023C800(obj2, (s32)&lbl_8055F144, fn_80131234(base + 0x38), fn_80131234(base + 0x44), fn_80131234(base + 0x54), 0);
+
+    data[0] = (s32)lbl_8055BB50;
+    data[1] = 0x10;
+    data[2] = 0;
+    data[3] = (s32)obj1;
+    data[4] = 0x10;
+    data[5] = (s32)lbl_8055BB58;
+    data[6] = 0x10;
+    data[7] = 0;
+    data[8] = (s32)obj2;
+    data[9] = 0;
+    data[10] = (s32)&lbl_8055B860;
+    data[11] = 6;
+    data[12] = (s32)fn_8023C2E4;
+    data[13] = -1;
+    data[14] = 0x1B;
+    data[15] = (s32)lbl_8055BB60;
+    data[16] = 0;
+    data[17] = 0;
+    data[18] = 3;
+    data[19] = 0;
+    data[20] = (s32)&lbl_8055BAB8;
+    data[21] = 8;
+    data[22] = (s32)fn_80236914;
+    data[23] = 2;
+    data[24] = 0;
+    data[25] = (s32)&lbl_8055BAC0;
+    data[26] = 8;
+    data[27] = (s32)fn_8023C2B4;
+    data[28] = 0;
+    data[29] = 0;
+    data[30] = lbl_80498788[0];
+    data[31] = lbl_80498788[1];
+    data[32] = lbl_80498788[2];
+    data[33] = lbl_80498788[3];
+    data[34] = lbl_80498788[4];
+    hdr[0] = v[0];
+    hdr[2] = v[2];
+    hdr[3] = v[3];
+    hdr[4] = v[4];
+    hdr[0] = (s32)arg0;
+    hdr[1] = (s32)data;
+    lbl_8055F154 = 0;
+    while (((s32 (*)(s32 *, s32, s32, s32))fn_802146BC)(hdr, -0x3E7, -0x3E7, 1) == 3) {
+        fn_8023C3D4();
+        lbl_8055F154 = 0;
+    }
+    fn_8023C308(0);
+    *(s32 **)(obj2 + 0xC) = &lbl_80341448;
+    fn_80128670(*(s32 *)(obj2 + 0x10));
+    *(s32 **)(obj1 + 0xC) = &lbl_80341448;
+    fn_80128670(*(s32 *)(obj1 + 0x10));
+}
+
 #pragma pop
 extern s32 fn_80128668();
 extern s32 fn_80128670(s32);
@@ -164,30 +238,31 @@ void *__dt__Q28PSSystem7SeqHeapFv_8023C79C(void *arg0, s32 arg1) {
 extern void *fn_8012850C(s32, s32 *);
 #pragma push
 #pragma scheduling invalid_target
-void *fn_8023C800(register void *arg0, register s32 arg1, register s32 arg2, ...) {
+void *fn_8023C800(register void *obj, register s32 value, register s32 firstItem, ...) {
   va_list ap;
   s32 offset;
-  *(unsigned char *)arg0=0;
-  *(s32 *)((char *)arg0+4)=-1;
-  *(unsigned char *)((char *)arg0+8)=0;
-  *(s32 **)((char *)arg0+0xC)=&lbl_80341448;
-  va_start(ap,arg2);
-  *(s32 *)((char *)arg0+0x14)=0;
+  /* Initialize a variadic item-list object: set vtable, count items until 0 sentinel, allocate and copy them, and store value. */
+  *(unsigned char *)obj = 0;
+  *(s32 *)((char *)obj + 4) = -1;
+  *(unsigned char *)((char *)obj + 8) = 0;
+  *(s32 **)((char *)obj + 0xC) = &lbl_80341448;
+  va_start(ap, firstItem);
+  *(s32 *)((char *)obj + 0x14) = 0;
   do {
-   (*(s32 *)((char *)arg0+0x14))++;
-  } while(va_arg(ap,s32)!=0);
+    (*(s32 *)((char *)obj + 0x14))++;
+  } while (va_arg(ap, s32) != 0);
   va_end(ap);
-  *(s32 **)((char *)arg0+0x10)=fn_8012850C(*(s32 *)((char *)arg0+0x14)*4,&lbl_803414C0);
-  va_start(ap,arg2);
-  offset=0;
+  *(s32 **)((char *)obj + 0x10) = fn_8012850C(*(s32 *)((char *)obj + 0x14) * 4, &lbl_803414C0);
+  va_start(ap, firstItem);
+  offset = 0;
   do {
-   *(s32 *)((char *)*(s32 **)((char *)arg0+0x10)+offset)=arg2;
-   offset+=4;
-   arg2=va_arg(ap,s32);
-  } while(arg2!=0);
+    *(s32 *)((char *)*(s32 **)((char *)obj + 0x10) + offset) = firstItem;
+    offset += 4;
+    firstItem = va_arg(ap, s32);
+  } while (firstItem != 0);
   va_end(ap);
-  *(s32 *)((char *)arg0+0x18)=arg1;
-  return arg0;
+  *(s32 *)((char *)obj + 0x18) = value;
+  return obj;
 }
 #pragma pop
 
