@@ -93,7 +93,7 @@ int fn_80171DE4(void *arg0) {
 }
 
 #pragma push
-#pragma processor 750
+#pragma processor gekko
 #pragma dont_inline on
 int fn_80171E3C(void *arg0) {
     extern int fn_802B04D4(float *);
