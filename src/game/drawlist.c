@@ -197,35 +197,18 @@ extern float lbl_80564EF8, lbl_80564F00;
 extern void PSVECNormalize(void *, void *);
 extern void PSVECCrossProduct(void *, void *, void *);
 void fn_802C8588(float *arg0, float *arg1, float *arg2) {
-    float x0;
-    float x2;
-    float dx;
-    float y0;
-    float y2;
-    float up;
-    float dy;
-    float right;
-    float z0;
-    float z2;
-    float dz;
+    float dx = arg2[0] - arg1[0];
+    float up = lbl_80564F00;
+    float dy = arg2[1] - arg1[1];
+    float right = lbl_80564EF8;
+    float dz = arg2[2] - arg1[2];
     float sp[3];
-    x0 = arg1[0];
-    x2 = arg2[0];
-    dx = x2 - x0;
-    y0 = arg1[1];
-    y2 = arg2[1];
-    up = lbl_80564F00;
-    dy = y2 - y0;
-    right = lbl_80564EF8;
-    z0 = arg1[2];
-    z2 = arg2[2];
     sp[0] = up;
-    dz = z2 - z0;
     sp[1] = right;
     sp[2] = up;
-    arg0[9] = x0;
-    arg0[10] = y0;
-    arg0[11] = z0;
+    arg0[9] = arg1[0];
+    arg0[10] = arg1[1];
+    arg0[11] = arg1[2];
     arg0[6] = dx;
     arg0[7] = dy;
     arg0[8] = dz;
@@ -540,7 +523,6 @@ float fn_802C8FEC(void) { return lbl_8055FC6C; }
 
 extern char lbl_80558DC4[];
 extern float lbl_8055FC38, lbl_8055FC3C;
-#pragma scheduling off
 int fn_802C8FF4(float *arg0, float arg1) {
     float x;
     float y;
