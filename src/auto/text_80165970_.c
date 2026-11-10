@@ -384,19 +384,31 @@ int fn_8016616C(void) {
     return lbl_8055E320 > *(float *)((char *)&lbl_8042FE38 + 0x48);
 }
 
+#pragma push
+#pragma cplusplus on
 #pragma processor 750
-#pragma dont_inline on
-float fn_8016618C(void *arg0) {
+extern "C" float fn_8016618C(void *arg0);
+extern "C" float fn_8016618C(void *arg0) {
+    class Obj {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void *v2();
+        virtual void v3();
+        virtual void *v4();
+        virtual void v5();
+        virtual void *v6();
+    };
     float result;
     float a;
     float b;
     int index;
     void *other;
     other = ((void *(*)(void))fn_80166098)();
-    a = *(float *)((char *)(*(void *(***)(void *))other)[6](other) + 0x48);
-    b = *(float *)((char *)(*(void *(***)(void *))arg0)[6](arg0) + 0x48);
-    index = *(int *)((char *)(*(void *(***)(void *))arg0)[4](arg0) + 4);
-    if (*(int *)((char *)(*(void *(***)(void *))other)[4](other) + 4) < index) {
+    a = *(float *)((char *)((Obj *)other)->v4() + 0x48);
+    b = *(float *)((char *)((Obj *)arg0)->v4() + 0x48);
+    index = *(int *)((char *)((Obj *)arg0)->v2() + 4);
+    if (*(int *)((char *)((Obj *)other)->v2() + 4) < index) {
         if (a < b) a += ((float (*)(void))fn_8013672C)();
         result = b - a;
     } else {
@@ -405,7 +417,9 @@ float fn_8016618C(void *arg0) {
     }
     return result + *(float *)((char *)&lbl_8042FE38 + 0x58);
 }
-#pragma dont_inline reset
+#pragma cplusplus reset
+#pragma processor reset
+#pragma pop
 
 extern void fn_80128668(void *);
 extern void fn_80163550(int);
@@ -457,9 +471,11 @@ extern char lbl_8032FF08[];
 #pragma push
 void fn_801662FC(void) {
     int flag;
-    int count = lbl_8055E330;
-    lbl_8055E329 = flag = ((unsigned char)count == 255);
+    int count;
+    count = lbl_8055E330;
+    flag = ((unsigned char)count == 255);
     lbl_8055E330 = count + 1;
+    lbl_8055E329 = (unsigned char)flag;
     if (flag && lbl_8055E328) {
         if (!((float)__fabs(lbl_8055E31C - lbl_805618D0) <= lbl_80558DC4)) {
             fn_802E30C8(lbl_8032FEC0, lbl_8055E31C, lbl_8055E320, *(float *)((char *)&lbl_8042FE38 + 0x48), fn_80166274());
@@ -802,33 +818,40 @@ void fn_80166E54(void *arg0) {
     *(float *)((char *)arg0 + 0xC) += lbl_805618F0;
 }
 
-void fn_80166E68(float *arg0, float arg1) {
-    float value;
-    float factor;
-    float start;
-    float end;
-    if ((float)__fabs(arg1 - arg0[1]) <= lbl_80558DC4) return;
-    start = arg0[2];
-    end = arg0[3];
-    if ((float)__fabs(start - end) <= lbl_80558DC4) {
-        value = arg0[0];
-    } else {
-        float oldValue = arg0[0];
-        float oldTarget = ((volatile float *)arg0)[1];
-        float ratio = (lbl_8055E318 - start) / (end - start);
-        factor = lbl_805618D0;
-        factor = factor < ratio ? factor : ratio;
-        factor = factor > lbl_8056189C ? factor : lbl_8056189C;
-        value = oldValue + factor * (oldTarget - oldValue);
-    }
-    arg0[1] = arg1;
-    arg0[0] = value;
-    arg0[2] = lbl_8055E318;
-    {
-        double target = arg1;
-        double current = value;
-        arg0[3] = lbl_8055E318 + (float)__fabs((float)current - (float)target) / arg0[4];
-    }
+void fn_80166E68(float *arg0, float arg1)
+{
+  float value;
+  float factor;
+  float start;
+  float end;
+  if (((float) __fabs(arg1 - arg0[1])) <= lbl_80558DC4)
+  {
+    return;
+  }
+  start = arg0[2];
+  end = arg0[3];
+  if (((float) __fabs(arg0[2] - end)) <= lbl_80558DC4)
+  {
+    value = arg0[0];
+  }
+  else
+  {
+    float oldValue = arg0[0];
+    float oldTarget = ((volatile float *) arg0)[1];
+    float ratio = (lbl_8055E318 - arg0[2]) / (end - arg0[2]);
+    factor = lbl_805618D0;
+    factor = (factor < ratio) ? (factor) : (ratio);
+    factor = (factor > lbl_8056189C) ? (factor) : (lbl_8056189C);
+    value = oldValue + (factor * (oldTarget - oldValue));
+  }
+  arg0[1] = arg1;
+  arg0[0] = value;
+  arg0[2] = lbl_8055E318;
+  {
+    double target = arg1;
+    double current = value;
+    arg0[3] = lbl_8055E318 + (((float) __fabs(((float) current) - ((float) target))) / arg0[4]);
+  }
 }
 
 void fn_80166F3C(float *arg0) {
@@ -845,15 +868,11 @@ extern float lbl_805618A0, lbl_805618F4, lbl_805618F8, lbl_805618FC;
 #pragma optimization_level 2
 #pragma scheduling on
 float fn_80166F90(float *arg0) {
-    register float f3 = lbl_805618A0;
-    register float f2 = arg0[2];
-    register float f0 = arg0[3];
-    register float f1 = lbl_8055E318;
     float x;
     float value;
     float start;
     float end;
-    x = (float)fn_8002EFB4(f1 - f0, f3 * f2, f3);
+    x = (float)fn_8002EFB4(lbl_8055E318 - arg0[3], lbl_805618A0 * arg0[2], lbl_805618A0);
     if (x > arg0[2]) {
         x = lbl_805618A0 * arg0[2] - x;
     }
@@ -864,9 +883,9 @@ float fn_80166F90(float *arg0) {
         if (x > lbl_805618D0) {
             value = lbl_805618D0;
         } else if (x > lbl_8056189C) {
-            value = x * (x * (lbl_805618F8 * x)) + x * (lbl_805618FC * x);
+            value = x * ((lbl_805618F8 * x) * x) + (lbl_805618FC * x) * x;
         } else {
-            value = x * (x * (lbl_805618F8 * x)) - x * (lbl_805618FC * x);
+            value = x * ((lbl_805618F8 * x) * x) - (lbl_805618FC * x) * x;
         }
     }
     end = arg0[1];
