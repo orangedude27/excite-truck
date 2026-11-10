@@ -8,8 +8,6 @@ void fn_801DA198(int, float);
 #pragma cplusplus on
 struct Obj801DACA0 {
     virtual float f0();
-    virtual float f1();
-    virtual float f2();
     virtual float get();
 };
 struct Ctx801DACA0 {
@@ -264,20 +262,21 @@ void fn_801DACA0(void *arg0, float arg1) {
     int count;
     int offset;
     void *entry;
+    struct Ctx801DACA0 *ctx = (struct Ctx801DACA0 *)arg0;
 
     value = lbl_80562B54;
     if (!(arg1 >= value))
-        value = ((float (*)(void *))(*(void ***)arg0)[3])(arg0);
+        value = ((struct Obj801DACA0 *)arg0)->get();
 
     count = 0;
     offset = 0;
-    while (count < *(int *)((char *)arg0 + 8)) {
-        entry = *(void **)((char *)*(void ***)((char *)arg0 + 4) + offset);
+    while (count < ctx->count) {
+        entry = *(void **)((char *)ctx->items + offset);
         if (*((unsigned char *)entry + 0x18) != 0)
-            ((void (*)(char *, ...))fn_802E30C8)((char *)lbl_803392F0, count, (char *)arg0 + 0x10);
+            ((void (*)(char *, ...))fn_802E30C8)((char *)lbl_803392F0, count, ctx->info);
         *((unsigned char *)entry + 0x18) = 1;
         *((float *)((char *)entry + 0x1C)) = arg1;
-        fn_801DA064(*(int *)((char *)entry + 0x28), (char *)arg0 + 0x10);
+        fn_801DA064(*(int *)((char *)entry + 0x28), ctx->info);
         fn_801DA198(*(int *)((char *)entry + 0x28), value);
         offset += 4;
         count += 1;
