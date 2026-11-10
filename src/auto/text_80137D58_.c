@@ -122,7 +122,6 @@ void fn_80137FF0(void *arg0) {
     unsigned char b, d, f;
     unsigned char x, y;
     int i;
-
     p = base + 0x14;
     i = 0;
     a = base[8];
@@ -143,29 +142,26 @@ void fn_80137FF0(void *arg0) {
     base[0x13] = e;
     base[0x11] = base[0x12];
     base[0x12] = f;
-    if (i == 0)
-        goto loop;
-loop:
-    y = p[0];
-    i++;
-    x = p[1];
-    p[0] = x;
-    p[1] = y;
-    x = p[2];
-    y = p[3];
-    p[2] = y;
-    p[3] = x;
-    y = p[4];
-    x = p[7];
-    p[4] = x;
-    p[7] = y;
-    y = p[5];
-    x = p[6];
-    p[5] = x;
-    p[6] = y;
-    p += 8;
-    if (i < *(int *)(base + 8))
-        goto loop;
+    while (i < *(int *)(base + 8)) {
+        y = p[0];
+        i++;
+        x = p[1];
+        p[0] = x;
+        p[1] = y;
+        x = p[2];
+        y = p[3];
+        p[2] = y;
+        p[3] = x;
+        y = p[4];
+        x = p[7];
+        p[4] = x;
+        p[7] = y;
+        y = p[5];
+        x = p[6];
+        p[5] = x;
+        p[6] = y;
+        p += 8;
+    }
 }
 
 void fn_801380DC(void *arg0) {
@@ -468,24 +464,18 @@ int fn_801386D0(void *arg0, float farg0, float farg1, float farg2) {
 
 extern float lbl_805613A4;
 int fn_801388F4(void *arg0) {
+    struct V { float x; float y; } v;
     void *p;
-    volatile float sp8, spC;
-    double neg;
-    float rounded, product0, product1, value;
+    float t;
+    int result;
+    v = *(struct V *)((char *)arg0 + 8);
     p = *(void **)((char *)arg0 + 0x14);
-    sp8 = *(float *)((char *)arg0 + 8);
-    spC = *(float *)((char *)arg0 + 0xC);
-    neg = -(double)sp8;
-    rounded = (float)neg;
-    product0 = spC * *(float *)((char *)p + 8);
-    sp8 = spC;
-    spC = (float)neg;
-    product1 = rounded * *(float *)((char *)p + 0xC);
-    value = product0 + product1;
-    if (value >= lbl_805613A4) goto done;
-    return 1;
-done:
-    return 0;
+    t = (float)(-(double)v.x);
+    v.x = v.y;
+    v.y = t;
+    result = 0;
+    if (v.x * *(float *)((char *)p + 8) + t * *(float *)((char *)p + 0xC) < lbl_805613A4) result = 1;
+    return result;
 }
 
 void fn_80138958(void *arg0, float *arg1) { fn_801386D0(arg0, arg1[0], arg1[1], arg1[2]); }
