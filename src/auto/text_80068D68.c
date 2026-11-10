@@ -25531,6 +25531,8 @@ u32 fn_8009B0E0(void) {
     return 0;
 }
 
+// USB interrupt/bulk control completion callback: logs status/count, frees per-entry buffers
+// for valid nclean counts (0,3,7), invokes stored completion callback, then frees the block.
 s32 _intBlkCtrlCb(s32 arg0, void *arg1) {
     extern s32 iosFree(s32, void *);
     extern s32 lbl_805590A0;
