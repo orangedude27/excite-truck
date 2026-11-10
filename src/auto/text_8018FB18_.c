@@ -746,6 +746,22 @@ f32 fn_80190B7C(void *arg0) {
     value = value > lbl_8056208C ? value : lbl_8056208C;
     return lbl_8056208C + value * lbl_80562090;
 }
+
+#pragma scheduling invalid_target
+f32 fn_80190C04(void *arg0) {
+    u8 raw = *(u8 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 3);
+    f32 normalized = ((f32)raw - lbl_8056208C) / lbl_805620AC;
+    f32 value;
+    if (lbl_80562090 < normalized) {
+        value = lbl_80562090;
+    } else {
+        value = ((f32)raw - lbl_8056208C) / lbl_805620AC;
+    }
+    value = value > lbl_8056208C ? value : lbl_8056208C;
+    return lbl_8056208C + value * lbl_80562090;
+}
+#pragma scheduling on
+
 #pragma scheduling on
 
 s32 fn_80190C8C(void *arg0) {
