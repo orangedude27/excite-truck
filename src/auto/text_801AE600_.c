@@ -161,23 +161,21 @@ void fn_801AE874(unsigned short *arg0, int arg1) {
 }
 
 #pragma scheduling invalid_target
-void fn_801AE894(void *arg0) {
-    float temp_f2;
-    float temp_f4;
-    register int temp_r0;
-
-    temp_r0 = *(short *)((char *)arg0 + 0x18);
-    if (temp_r0 > 0) {
-        temp_f4 = *(float *)arg0;
-        if (temp_f4 > lbl_8056255C) {
-            temp_f2 = (lbl_8055E630 * (float)temp_r0) / temp_f4;
-            *(float *)((char *)arg0 + 4) = temp_f2;
-            *(float *)((char *)arg0 + 4) =
-                temp_f2 * ((float)temp_r0 / (float)lbl_8055E62C);
+void fn_801AE894(void *q) {
+    int c;
+    float s;
+    float v;
+    c = *(short *)((char *)q + 0x18);
+    if (c > 0) {
+        s = *(float *)q;
+        if (s > lbl_8056255C) {
+            v = (lbl_8055E630 * (float)c) / s;
+            *(float *)((char *)q + 4) = v;
+            *(float *)((char *)q + 4) = v * ((float)c / (float)lbl_8055E62C);
             return;
         }
     }
-    *(float *)((char *)arg0 + 4) = lbl_80562560;
+    *(float *)((char *)q + 4) = lbl_80562560;
 }
 
 #pragma processor 750
@@ -498,7 +496,8 @@ void fn_801AF598(void) {
     lbl_8055E628 = zero;
     if (array != 0) {
         slot = array;
-        for (i = 0; i < 8U; i++, slot++) {
+        i = 0;
+        while (i < 8U) {
             entry = *slot;
             if (entry == 0)
                 goto clear;
@@ -509,6 +508,8 @@ void fn_801AF598(void) {
             fn_80128668(entry);
         clear:
             *(volatile int **)slot = 0;
+            i++;
+            slot++;
         }
         fn_80128668(array);
     }
@@ -653,8 +654,8 @@ void fn_801AF92C(void *arg0) {
     char *entry;
     int count;
     register int i;
-    register int zero = 0;
-    register int minusOne = -1;
+    register int zero;
+    register int minusOne;
 
     if (fn_801B8728() != 0)
         goto done;
@@ -662,12 +663,14 @@ void fn_801AF92C(void *arg0) {
         goto done;
 
     count = lbl_80435780[0x3C0 / 4];
+    zero = 0;
     *(int *)base = count;
     entry = (char *)base + 0x10;
-    i = 0;
     *(int *)((char *)base + 4) = zero;
+    minusOne = -1;
     *((signed char *)base + 0xC) = zero;
     *((signed char *)base + 0xD) = 1;
+    i = 0;
 
     for (; i < count; entry += 0x14, i++) {
         void *item = fn_801AF8D0(i);
