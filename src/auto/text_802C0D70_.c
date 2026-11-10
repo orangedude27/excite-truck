@@ -20,7 +20,6 @@ extern void fn_802C0FD4(int *queue);
 #pragma dont_inline on
 #pragma push
 #pragma processor 750
-#pragma scheduling off
 void fn_802C0D70(float *arg0) {
     float length;
     float y;
