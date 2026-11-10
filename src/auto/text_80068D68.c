@@ -2967,7 +2967,7 @@ void *GKI_getpoolbuf(UINT8 pool_id) {
  */
 void GKI_freebuf(void *p_buf)
 {
-    char *p_str = lbl_80314110;   /* GKI_exception() message strings */
+    char *p_err_str = lbl_80314110;   /* GKI_exception() message strings */
     BUFFER_HDR_T *p_hdr;
     UINT16 size;
     UINT8 pool_id;
@@ -3003,19 +3003,22 @@ void GKI_freebuf(void *p_buf)
         goto valid_buffer;
 
 bad_buffer:
+    /* GKI_exception(GKI_ERROR_BUF_CORRUPTED, "Free - Buf Corrupted") */
     ((void (*)(u16, const char *))fn_8006EBF0)(GKI_ERROR_BUF_CORRUPTED,
-                                               p_str + GKI_STR_FREE_BUF_CORRUPTED);
+                                               p_err_str + GKI_STR_FREE_BUF_CORRUPTED);
     return;
 
 valid_buffer:
+    /* GKI_exception(GKI_ERROR_FREEBUF_BUF_LINKED, "Freeing Linked Buf") */
     if (p_hdr->status != BUF_STATUS_UNLINKED) {
         ((void (*)(u16, const char *))fn_8006EBF0)(GKI_ERROR_FREEBUF_BUF_LINKED,
-                                                   p_str + GKI_STR_FREEING_LINKED_BUF);
+                                                   p_err_str + GKI_STR_FREEING_LINKED_BUF);
         return;
     }
+    /* GKI_exception(GKI_ERROR_FREEBUF_BAD_QID, "Bad Buf QId") */
     if (p_hdr->q_id >= GKI_NUM_TOTAL_BUF_POOLS) {
         ((void (*)(u16, const char *))fn_8006EBF0)(GKI_ERROR_FREEBUF_BAD_QID,
-                                                   p_str + GKI_STR_BAD_BUF_QID);
+                                                   p_err_str + GKI_STR_BAD_BUF_QID);
         return;
     }
 
