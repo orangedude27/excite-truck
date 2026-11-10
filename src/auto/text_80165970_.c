@@ -1106,6 +1106,8 @@ extern float lbl_8055E324;
 
 extern char lbl_8032FF8C[];
 extern char lbl_8032FFC4[];
+#pragma push
+#pragma processor 750
 void fn_80167684(float arg0) {
     float temp_f31;
     if (!lbl_8055E32B && arg0 < *(float *)((char *)&lbl_8042FE38 + 0x5C)) {
@@ -1117,9 +1119,7 @@ void fn_80167684(float arg0) {
         }
     }
 }
-
-#pragma push
-#pragma scheduling invalid_target
+#pragma pop
 int fn_80167728(int arg0) {
     unsigned char **entries = *(unsigned char ***)&lbl_8055E32C;
     int offset = arg0 * 0x88;
