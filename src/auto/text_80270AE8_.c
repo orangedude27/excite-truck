@@ -101,40 +101,40 @@ int fn_80270B50(void) {
 #pragma push
 #pragma small_data off
 void fn_80270B74(void) {
-    int *p = (int *)lbl_8049F9D8;
+    volatile int *p = (volatile int *)lbl_8049F9D8;
     *p = 0;
-    *(int *)((char *)p + 0x1C) = 0;
-    *(int *)((char *)p + 0x38) = 0;
-    *(int *)((char *)p + 0x54) = 0;
-    *(int *)((char *)p + 0x70) = 0;
-    *(int *)((char *)p + 0x8C) = 0;
-    *(int *)((char *)p + 0xA8) = 0;
-    *(int *)((char *)p + 0xC4) = 0;
-    *(int *)((char *)p + 0xE0) = 0;
-    *(int *)((char *)p + 0xFC) = 0;
-    *(int *)((char *)p + 0x118) = 0;
-    *(int *)((char *)p + 0x134) = 0;
-    *(int *)((char *)p + 0x150) = 0;
-    *(int *)((char *)p + 0x16C) = 0;
-    *(int *)((char *)p + 0x188) = 0;
-    *(int *)((char *)p + 0x1A4) = 0;
-    *(int *)((char *)p + 0x1C0) = 0;
-    *(int *)((char *)p + 0x1DC) = 0;
-    *(int *)((char *)p + 0x1F8) = 0;
-    *(int *)((char *)p + 0x214) = 0;
-    *(int *)((char *)p + 0x230) = 0;
-    *(int *)((char *)p + 0x24C) = 0;
-    *(int *)((char *)p + 0x268) = 0;
-    *(int *)((char *)p + 0x284) = 0;
-    *(int *)((char *)p + 0x2A0) = 0;
-    *(int *)((char *)p + 0x2BC) = 0;
-    *(int *)((char *)p + 0x2D8) = 0;
-    *(int *)((char *)p + 0x2F4) = 0;
-    *(int *)((char *)p + 0x310) = 0;
-    *(int *)((char *)p + 0x32C) = 0;
-    *(int *)((char *)p + 0x348) = 0;
-    lbl_8055F554 = 0;
-    *(int *)((char *)p + 0x364) = 0;
+    *(volatile int *)((char *)p + 0x1C) = 0;
+    *(volatile int *)((char *)p + 0x38) = 0;
+    *(volatile int *)((char *)p + 0x54) = 0;
+    *(volatile int *)((char *)p + 0x70) = 0;
+    *(volatile int *)((char *)p + 0x8C) = 0;
+    *(volatile int *)((char *)p + 0xA8) = 0;
+    *(volatile int *)((char *)p + 0xC4) = 0;
+    *(volatile int *)((char *)p + 0xE0) = 0;
+    *(volatile int *)((char *)p + 0xFC) = 0;
+    *(volatile int *)((char *)p + 0x118) = 0;
+    *(volatile int *)((char *)p + 0x134) = 0;
+    *(volatile int *)((char *)p + 0x150) = 0;
+    *(volatile int *)((char *)p + 0x16C) = 0;
+    *(volatile int *)((char *)p + 0x188) = 0;
+    *(volatile int *)((char *)p + 0x1A4) = 0;
+    *(volatile int *)((char *)p + 0x1C0) = 0;
+    *(volatile int *)((char *)p + 0x1DC) = 0;
+    *(volatile int *)((char *)p + 0x1F8) = 0;
+    *(volatile int *)((char *)p + 0x214) = 0;
+    *(volatile int *)((char *)p + 0x230) = 0;
+    *(volatile int *)((char *)p + 0x24C) = 0;
+    *(volatile int *)((char *)p + 0x268) = 0;
+    *(volatile int *)((char *)p + 0x284) = 0;
+    *(volatile int *)((char *)p + 0x2A0) = 0;
+    *(volatile int *)((char *)p + 0x2BC) = 0;
+    *(volatile int *)((char *)p + 0x2D8) = 0;
+    *(volatile int *)((char *)p + 0x2F4) = 0;
+    *(volatile int *)((char *)p + 0x310) = 0;
+    *(volatile int *)((char *)p + 0x32C) = 0;
+    *(volatile int *)((char *)p + 0x348) = 0;
+    *(volatile int *)&lbl_8055F554 = 0;
+    *(volatile int *)((char *)p + 0x364) = 0;
 }
 
 #pragma push
