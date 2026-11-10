@@ -641,33 +641,34 @@ check:
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma scheduling on
+/* Initializes the statistics memory-card save system: allocates the stats buffer, sets up per-slot descriptors and the archive descriptor, registers them for async load/save, and marks the system active. */
 void fn_8001C9C4(void) {
     char *base = lbl_802FD6D8;
-    s32 var_r28;
-    void **var_r27;
-    s32 var_r26;
-    s32 var_r30 = 0x280;
-    s32 var_r31 = 0;
+    s32 slotOffset;
+    void **slotDescPtr;
+    s32 slotIndex;
+    s32 slotUnk8 = 0x280;
+    s32 slotUnk4 = 0;
     void *descriptor;
 
     fn_802E30C8(base + 0x344, 0x3E7D0);
     lbl_8055D5CC = fn_801284F8(0x3E7D0, (const char *)&lbl_80558CD0);
     memset(lbl_8055D5CC, 0, 0x3E7D0);
-    var_r27 = lbl_80358658;
-    var_r26 = 0;
-    var_r28 = 0;
+    slotDescPtr = lbl_80358658;
+    slotIndex = 0;
+    slotOffset = 0;
     do {
         descriptor = fn_801284F8(0xC, base + 0x374);
         if (descriptor != 0) {
-            *(u8 **)descriptor = lbl_8055D5CC + var_r28;
-            *(s32 *)((u8 *)descriptor + 8) = var_r30;
-            *(s32 *)((u8 *)descriptor + 4) = var_r31;
+            *(u8 **)descriptor = lbl_8055D5CC + slotOffset;
+            *(s32 *)((u8 *)descriptor + 8) = slotUnk8;
+            *(s32 *)((u8 *)descriptor + 4) = slotUnk4;
         }
-        var_r26++;
-        *var_r27 = descriptor;
-        var_r28 += 0xDAC4;
-        var_r27++;
-    } while (var_r26 < 4);
+        slotIndex++;
+        *slotDescPtr = descriptor;
+        slotOffset += 0xDAC4;
+        slotDescPtr++;
+    } while (slotIndex < 4);
     descriptor = fn_801284F8(0x14, base + 0x380);
     if (descriptor != 0) {
         *(u8 **)descriptor = lbl_8055D5CC + 0x3D7D0;
