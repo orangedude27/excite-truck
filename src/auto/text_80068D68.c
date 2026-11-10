@@ -9743,6 +9743,9 @@ tBTM_STATUS btm_initiate_rem_name(BD_ADDR remote_bda, tBTM_INQ_INFO *p_cur, UINT
 }
 
 void btm_process_remote_name(u8 *arg0, u8 *arg1, u16 arg2, u8 arg3) {
+    /* Completes a remote device name request: copies the reported name (or sets error status)
+       into a result record, clears the pending request state/timer, and invokes the saved
+       completion callback when one is registered. */
     tBTM_REMOTE_DEV_NAME rem_name;
     u8 *base = lbl_803C0F78;
     tBTM_CMPL_CB *callback;
