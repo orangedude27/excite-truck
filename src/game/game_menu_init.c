@@ -263,6 +263,8 @@ int fn_80004D64(char* args) {
 }
 
 void fn_80004B5C(void) {
+    /* Runs the main game/menu initialization sequence: core subsystems, resources/UI,
+       audio/DSP, game modules, then registers scene/callback handlers and finalizes setup. */
     void* data = lbl_802FAEA0;
     fn_802E2C20();
     fn_80004ACC();
