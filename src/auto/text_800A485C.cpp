@@ -11821,45 +11821,47 @@ extern "C" s32 fn_800B9DCC(void *arg0) {
     return ret;
 }
 
-extern "C" s32 fn_800B9FCC(s32 arg0) {
-    s32 spC;
-    s32 sp10[4];
-    s16 sp8;
-    s32 res;
-    u32 retry;
-    const char *str = lbl_8031B2B0;
+/* Initialize/query an IOS device state with retries and a sequence of control
+ * commands, returning 0 on success or a status/error code on failure. */
+extern "C" s32 fn_800B9FCC(s32 shouldInit) {
+    s32 ioctlParam;
+    s32 ioctlBuffer[4];
+    s16 ioctlShortParam;
+    s32 result;
+    u32 retryCount;
+    const char *logBase = lbl_8031B2B0;
 
-    if (arg0 == 0)
+    if (shouldInit == 0)
         return 1;
     if (*(s32 *)(lbl_80407300 + 0x10) == 0)
         return 6;
     if (*(u32 *)lbl_80407300 & 2) {
-        OSReport(str + 0x174);
+        OSReport(logBase + 0x174);
         return 0;
     }
-    retry = 0;
+    retryCount = 0;
     do {
-        res = fn_800BB2C4(*(void **)(lbl_80407300 + 8));
-        if (res == 0)
+        result = fn_800BB2C4(*(void **)(lbl_80407300 + 8));
+        if (result == 0)
             break;
-        OSReport(str + 0x1A4, res);
-        retry++;
-    } while (retry < 5);
-    if (retry == 5)
+        OSReport(logBase + 0x1A4, result);
+        retryCount++;
+    } while (retryCount < 5);
+    if (retryCount == 5)
         return 0x15;
-    spC = 0;
-    if (fn_800BBEA4(*(IosDevice **)(lbl_80407300 + 8), 0x29, &spC, 4) != 0) {
-        OSReport(str + 0x1E4);
-        return 0x15;
-    }
-    fn_800A499C((const char *)sp10, 0, 0x10);
-    if (fn_800BBEA4(*(IosDevice **)(lbl_80407300 + 8), 0xA, sp10, 0x10) != 0) {
-        OSReport(str + 0x214);
+    ioctlParam = 0;
+    if (fn_800BBEA4(*(IosDevice **)(lbl_80407300 + 8), 0x29, &ioctlParam, 4) != 0) {
+        OSReport(logBase + 0x1E4);
         return 0x15;
     }
-    sp8 = 0;
-    if (fn_800BBEA4(*(IosDevice **)(lbl_80407300 + 8), 3, (s32 *)&sp8, 2) != 0) {
-        OSReport(str + 0x244);
+    fn_800A499C((const char *)ioctlBuffer, 0, 0x10);
+    if (fn_800BBEA4(*(IosDevice **)(lbl_80407300 + 8), 0xA, ioctlBuffer, 0x10) != 0) {
+        OSReport(logBase + 0x214);
+        return 0x15;
+    }
+    ioctlShortParam = 0;
+    if (fn_800BBEA4(*(IosDevice **)(lbl_80407300 + 8), 3, (s32 *)&ioctlShortParam, 2) != 0) {
+        OSReport(logBase + 0x244);
         return 0x15;
     }
     *(u32 *)lbl_80407300 |= 2;
