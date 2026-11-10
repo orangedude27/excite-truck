@@ -15652,25 +15652,26 @@ extern "C" void fn_800C1F6C(volatile u32 *dst, const volatile u32 *a, const vola
     dst[0x440] = a[17] + b[17];
 }
 
-extern "C" void fn_800C2090(volatile s32 *dst, const volatile s32 *a, const volatile s32 *b) {
-    dst[0x000] = a[0] + b[0];
-    dst[0x040] = -(a[1] + b[1]);
-    dst[0x080] = a[2] + b[2];
-    dst[0x0C0] = -(a[3] + b[3]);
-    dst[0x100] = a[4] + b[4];
-    dst[0x140] = -(a[5] + b[5]);
-    dst[0x180] = a[6] + b[6];
-    dst[0x1C0] = -(a[7] + b[7]);
-    dst[0x200] = a[8] + b[8];
-    dst[0x240] = -(a[9] + b[9]);
-    dst[0x280] = a[10] + b[10];
-    dst[0x2C0] = -(a[11] + b[11]);
-    dst[0x300] = a[12] + b[12];
-    dst[0x340] = -(a[13] + b[13]);
-    dst[0x380] = a[14] + b[14];
-    dst[0x3C0] = -(a[15] + b[15]);
-    dst[0x400] = a[16] + b[16];
-    dst[0x440] = -(a[17] + b[17]);
+extern "C" void fn_800C2090(volatile s32 *output, const volatile s32 *left, const volatile s32 *right) {
+    /* Add 18 input pairs and store results at 0x40-s32 strides, negating every odd-indexed sum. */
+    output[0x000] = left[0] + right[0];
+    output[0x040] = -(left[1] + right[1]);
+    output[0x080] = left[2] + right[2];
+    output[0x0C0] = -(left[3] + right[3]);
+    output[0x100] = left[4] + right[4];
+    output[0x140] = -(left[5] + right[5]);
+    output[0x180] = left[6] + right[6];
+    output[0x1C0] = -(left[7] + right[7]);
+    output[0x200] = left[8] + right[8];
+    output[0x240] = -(left[9] + right[9]);
+    output[0x280] = left[10] + right[10];
+    output[0x2C0] = -(left[11] + right[11]);
+    output[0x300] = left[12] + right[12];
+    output[0x340] = -(left[13] + right[13]);
+    output[0x380] = left[14] + right[14];
+    output[0x3C0] = -(left[15] + right[15]);
+    output[0x400] = left[16] + right[16];
+    output[0x440] = -(left[17] + right[17]);
 }
 
 extern s32 lbl_8031D5E0[];
