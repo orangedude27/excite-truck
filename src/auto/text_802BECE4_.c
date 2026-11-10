@@ -43,7 +43,7 @@ extern float lbl_80564D84;
 extern char lbl_8034ACA0[];
 #pragma small_data on
 extern char lbl_8055CF80;
-extern char lbl_8055CF78[];
+__declspec(section ".sdata") extern char lbl_8055CF78[];
 #pragma small_data off
 extern void *fn_80131808(void *, int, int);
 extern int fn_80131818(void *);
@@ -64,12 +64,12 @@ extern int lbl_8055FADC;
 extern int lbl_8055CF6C;
 #pragma dont_inline on
 int fn_802BECE4(const char *arg0, int arg1) {
-    int d, c, b, a;
+    int a, b, c, d;
     int result = arg1;
-    a = b = c = d = 0;
-    if (sscanf(arg0, lbl_8034ACC0, &d, &c, &b, &a) == 4) {
-        result = ((d & 0xff) << 24) | ((c & 0xff) << 16) |
-                 ((b & 0xff) << 8) | (a & 0xff);
+    d = c = b = a = 0;
+    if (sscanf(arg0, lbl_8034ACC0, &a, &b, &c, &d) == 4) {
+        result = ((a & 0xff) << 24) | ((b & 0xff) << 16) |
+                 ((c & 0xff) << 8) | (d & 0xff);
     } else {
         sscanf(arg0, lbl_8055CF78, &result);
     }
