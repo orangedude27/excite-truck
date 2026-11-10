@@ -683,30 +683,32 @@ extern "C" u8 fn_8010A33C(void) {
     return 2;
 }
 
+// Returns the texture format from this resource font's texture data.
+// Also validates that this and its referenced data pointers are in valid address ranges.
 u16 nw4hbm::ut::detail::ResFontBase::GetTextureFormat() const {
-    const char* file=lbl_80329140;
-    u32 value=(u32)this;
-    int a=1,b=1,c=1,d=1,e=1,f=1;
-    u32 t=value&0xFF000000U;
-    if (t!=0x80000000U && (value&0xFF800000U)!=0x81000000U) f=0;
-    if (f==0 && (value&0xF8000000U)!=0x90000000U)e=0;
-    if (e==0 && t!=0xC0000000U)d=0;
-    if (d==0 && (value&0xFF800000U)!=0xC1000000U)c=0;
-    if (c==0 && (value&0xF8000000U)!=0xD0000000U)b=0;
-    if (b==0 && (value&0xFFFFC000U)!=0xE0000000U)a=0;
-    if(a==0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x117,file+0xF0,this);
-    int g=1,h=1;
-    u32 v=*(u32*)((char*)this+0x14);
-    int i=1,j=1,k=1,l=1;
-    u32 t2=v&0xFF000000U;
-    if(t2!=0x80000000U&&(v&0xFF800000U)!=0x81000000U)l=0;
-    if(l==0&&(v&0xF8000000U)!=0x90000000U)k=0;
-    if(k==0&&t2!=0xC0000000U)j=0;
-    if(j==0&&(v&0xFF800000U)!=0xC1000000U)i=0;
-    if(i==0&&(v&0xF8000000U)!=0xD0000000U)h=0;
-    if(h==0&&(v&0xFFFFC000U)!=0xE0000000U)g=0;
-    if(g==0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x118,file+0x128);
-    return *(u16*)(*(u32*)(*(u32*)((char*)this+0x14)+8)+0xA);
+    const char* fileName = lbl_80329140;
+    u32 address = (u32)this;
+    int validA = 1, validB = 1, validC = 1, validD = 1, validE = 1, validF = 1;
+    u32 highByte = address & 0xFF000000U;
+    if (highByte != 0x80000000U && (address & 0xFF800000U) != 0x81000000U) validF = 0;
+    if (validF == 0 && (address & 0xF8000000U) != 0x90000000U) validE = 0;
+    if (validE == 0 && highByte != 0xC0000000U) validD = 0;
+    if (validD == 0 && (address & 0xFF800000U) != 0xC1000000U) validC = 0;
+    if (validC == 0 && (address & 0xF8000000U) != 0xD0000000U) validB = 0;
+    if (validB == 0 && (address & 0xFFFFC000U) != 0xE0000000U) validA = 0;
+    if (validA == 0) Panic__Q26nw4hbm2dbFPCciPCce(fileName + 0xC, 0x117, fileName + 0xF0, this);
+    int refValidA = 1, refValidB = 1;
+    u32 refAddress = *(u32*)((char*)this + 0x14);
+    int refValidC = 1, refValidD = 1, refValidE = 1, refValidF = 1;
+    u32 refHighByte = refAddress & 0xFF000000U;
+    if (refHighByte != 0x80000000U && (refAddress & 0xFF800000U) != 0x81000000U) refValidF = 0;
+    if (refValidF == 0 && (refAddress & 0xF8000000U) != 0x90000000U) refValidE = 0;
+    if (refValidE == 0 && refHighByte != 0xC0000000U) refValidD = 0;
+    if (refValidD == 0 && (refAddress & 0xFF800000U) != 0xC1000000U) refValidC = 0;
+    if (refValidC == 0 && (refAddress & 0xF8000000U) != 0xD0000000U) refValidB = 0;
+    if (refValidB == 0 && (refAddress & 0xFFFFC000U) != 0xE0000000U) refValidA = 0;
+    if (refValidA == 0) Panic__Q26nw4hbm2dbFPCciPCce(fileName + 0xC, 0x118, fileName + 0x128);
+    return *(u16*)(*(u32*)(*(u32*)((char*)this + 0x14) + 8) + 0xA);
 }
 
 s8 nw4hbm::ut::detail::ResFontBase::GetLineFeed() const {
