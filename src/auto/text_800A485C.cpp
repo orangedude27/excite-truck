@@ -9095,6 +9095,7 @@ extern "C" s32 VFiPFPATH_parseShortNameNumeric(char *name, u32 num) {
     char c;
     s32 i, digits, k, k2, j;
     u32 end, n;
+    /* Insert numeric suffix (~NNN...) into VF short filename when num != 0. */
     if (num == 0) return 0;
     i = 1;
     p = name + 1;
