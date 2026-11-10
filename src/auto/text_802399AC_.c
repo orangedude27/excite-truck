@@ -288,6 +288,8 @@ extern void *fn_8012850C(s32,s32 *);
 void *fn_8023A8D8(register void *arg0, register s32 arg1, register s32 arg2, ...) {
     va_list ap;
     s32 offset;
+
+    /* Initialize an object with a vtable and a variadic 0-terminated list of s32 items. */
     *(unsigned char *)arg0 = 0;
     *(s32 *)((char *)arg0 + 4) = -1;
     *(unsigned char *)((char *)arg0 + 8) = 0;
