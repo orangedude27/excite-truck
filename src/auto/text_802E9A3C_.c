@@ -317,7 +317,8 @@ void fn_802E9EB8(void) {
 }
 
 #pragma use_lmw_stmw off
-int fn_802EA5D4(void *arg0, int arg1) {
+// Recursively scans a directory for .brf files (up to maxDepth), recording matching paths/names into lbl_80508818 entries.
+int fn_802EA5D4(void *dirPath, int maxDepth) {
     extern void fn_801345D8(char *, long, const char *, ...);
     extern int fn_800B7C90(char *, int, char *);
     extern int fn_800B7CBC(char *);
@@ -328,41 +329,41 @@ int fn_802EA5D4(void *arg0, int arg1) {
     extern char *strncpy(char *, const char *, unsigned long);
     extern char lbl_8055D284, lbl_8055D28C, lbl_8055D290, lbl_8055D294, lbl_8055D29C;
     extern char lbl_80508818[];
-    char buf[0x100];
-    char path[0x200];
-    char it[0x448];
+    char pattern[0x100];
+    char childPath[0x200];
+    char findData[0x448];
     char *strings = (char *)&lbl_8034E260;
-    char *name;
-    char *cur;
+    char *baseName;
+    char *entryName;
     char *ext;
-    char *entry;
-    int r;
+    char *destEntry;
+    int result;
 
-    fn_801345D8(buf, 0x100, &lbl_8055D284, (char *)arg0);
-    r = fn_800B7C90(buf, 0x71, it);
-    if (r == 0) {
-        name = it + 0x22D;
+    fn_801345D8(pattern, 0x100, &lbl_8055D284, (char *)dirPath);
+    result = fn_800B7C90(pattern, 0x71, findData);
+    if (result == 0) {
+        baseName = findData + 0x22D;
         do {
             if (lbl_8056007C < 100) {
-                cur = it + 0x22D;
-                if (it[0x23A] != 0) cur = it + 0x23A;
-                if ((it[0x22C] & 0x10) && arg1 > 0) {
-                    if (*cur != 0 && strcmp(cur, &lbl_8055D28C) != 0 && strcmp(cur, &lbl_8055D290) != 0) {
-                        if (strlen(name) + strlen((char *)arg0) + 1 < 0x200) {
-                            fn_801345D8(path, 0x200, &lbl_8055D294, (char *)arg0, name);
-                            fn_802EA5D4(path, arg1 - 1);
+                entryName = findData + 0x22D;
+                if (findData[0x23A] != 0) entryName = findData + 0x23A;
+                if ((findData[0x22C] & 0x10) && maxDepth > 0) {
+                    if (*entryName != 0 && strcmp(entryName, &lbl_8055D28C) != 0 && strcmp(entryName, &lbl_8055D290) != 0) {
+                        if (strlen(baseName) + strlen((char *)dirPath) + 1 < 0x200) {
+                            fn_801345D8(childPath, 0x200, &lbl_8055D294, (char *)dirPath, baseName);
+                            fn_802EA5D4(childPath, maxDepth - 1);
                         } else {
                             ((long (*)(char *, ...))fn_802E30C8)(strings + 0x230);
                         }
                     }
-                } else if ((ext = fn_80029004(cur, 0x2E)) != 0 && stricmp(ext, &lbl_8055D29C) == 0) {
-                    entry = lbl_80508818 + lbl_8056007C * 0x610;
-                    if (strlen(it + 0x22D) < 0x208 && strlen((char *)arg0) < 0x200) {
-                        strncpy(entry + 0x200, it + 0x22D, 0x207);
-                        entry[0x407] = 0;
-                        fn_802E9E54((unsigned char *)(entry + 0x408), (unsigned char *)cur, 0x208);
-                        strncpy(entry, (char *)arg0, 0x1FF);
-                        entry[0x1FF] = 0;
+                } else if ((ext = fn_80029004(entryName, 0x2E)) != 0 && stricmp(ext, &lbl_8055D29C) == 0) {
+                    destEntry = lbl_80508818 + lbl_8056007C * 0x610;
+                    if (strlen(findData + 0x22D) < 0x208 && strlen((char *)dirPath) < 0x200) {
+                        strncpy(destEntry + 0x200, findData + 0x22D, 0x207);
+                        destEntry[0x407] = 0;
+                        fn_802E9E54((unsigned char *)(destEntry + 0x408), (unsigned char *)entryName, 0x208);
+                        strncpy(destEntry, (char *)dirPath, 0x1FF);
+                        destEntry[0x1FF] = 0;
                         lbl_8056007C++;
                     } else {
                         ((long (*)(char *, ...))fn_802E30C8)(strings + 0x250);
@@ -371,9 +372,9 @@ int fn_802EA5D4(void *arg0, int arg1) {
             } else {
                 return OSReport(strings + 0x268);
             }
-        } while ((r = fn_800B7CBC(it)) == 0);
+        } while ((result = fn_800B7CBC(findData)) == 0);
     }
-    return r;
+    return result;
 }
 void fn_802EA7E0(void) {
     lbl_8056007C = 0;
@@ -479,7 +480,6 @@ int fn_802EAA58(int *arg0, int arg1) {
     int channels;
     int valid;
     int result;
-    int rateOk;
     int rate;
     int size;
     if (arg1 != 0) {
@@ -494,9 +494,12 @@ int fn_802EAA58(int *arg0, int arg1) {
     channelOk = 1;
     if (channels != 1 && channels != 2) channelOk = 0;
     if (channelOk) {
+        int rateOk;
         rate = arg0[1];
         rateOk = 0;
-        if (rate >= 8000 && rate <= 60000) rateOk = 1;
+        if (rate >= 8000) {
+            if (rate <= 60000) rateOk = 1;
+        }
         if (rateOk) valid = 1;
     }
     if (valid) {
@@ -588,24 +591,25 @@ int fn_802EB7D4(void *arg0, int arg1, int arg2, int arg_sp0) {
 int fn_802EBD40(void) {
     extern void OSSleepTicks(unsigned long long);
     char *base = (char *)&lbl_8034E260;
-    int zero = 0;
-    register unsigned int multiplier = 0x10624DD3;
+    register unsigned int *tb;
+    register unsigned int multiplier;
     register int elapsed;
     unsigned int clock;
-
-    lbl_80560062 = zero;
+    lbl_80560062 = 0;
     ((void (*)(char *, ...))fn_802E30C8)(base + 0x65C);
     elapsed = 0;
-    do {
-        clock = *(volatile unsigned int *)0x800000F8 >> 2;
-        ((void (*)(int, int))OSSleepTicks)(
-            0, (clock / 1000) + ((clock / 250) & 0x0FFFFFFC));
+    multiplier = 0x10624DD3;
+    tb = (unsigned int *)0x80000000;
+    while ((unsigned char)lbl_80560063 == 0) {
+        clock = tb[0x3E] >> 2;
+        ((void (*)(int, int))OSSleepTicks)(0, (clock / 1000) + ((clock / 250) & 0x0FFFFFFC));
         elapsed += 5;
-    } while (elapsed <= 0x3E8);
-    ((void (*)(char *, ...))fn_802E30C8)(base + 0x67C);
-    if ((unsigned char)lbl_80560063 != 0) {
-        ((void (*)(char *, ...))fn_802E30C8)(base + 0x6A8);
+        if (elapsed > 0x3E8) {
+            ((void (*)(char *, ...))fn_802E30C8)(base + 0x67C);
+            break;
+        }
     }
+    ((void (*)(char *, ...))fn_802E30C8)(base + 0x6A8);
 }
 #pragma dont_inline reset
 #pragma scheduling on
@@ -783,24 +787,25 @@ extern void OSSleepTicks(unsigned long long);
 #pragma push
 #pragma dont_inline on
 void fn_802EC1E4(void) {
-    register unsigned int *timebase;
     register int start;
-    unsigned int tick;
+    register unsigned int multiplier;
+    register unsigned int *timebase;
+    unsigned int clock;
     int current;
-
     fn_802EC1D8();
     ((long (*)(char *, ...))fn_802E30C8)((char *)&lbl_8034E95C);
     start = fn_802E2C20();
+    multiplier = 0x10624DD3;
     timebase = (unsigned int *)0x80000000;
-    do {
+    while ((unsigned char)lbl_805600C8 != 0) {
         current = fn_802E2C20();
         if (current - start > 0xBB8) {
             ((long (*)(char *, ...))fn_802E30C8)((char *)&lbl_8034E980);
             break;
         }
-        tick = timebase[0x3E];
-        OSSleepTicks((unsigned long long)(((tick / 1000) & 0x0FFFFFFC) + tick / 4000));
-    } while ((unsigned char)lbl_805600C8 != 0);
+        clock = timebase[0x3E] >> 2;
+        ((void (*)(int, int))OSSleepTicks)(0, (clock / 1000) + ((clock / 250) & 0x0FFFFFFC));
+    }
 }
 #pragma pop
 extern long fn_800B7C64(long, long);
