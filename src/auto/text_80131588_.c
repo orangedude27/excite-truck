@@ -551,7 +551,7 @@ extern unsigned long strlen(const char*);
 extern char lbl_8032B790[];
 #pragma push
 #pragma scheduling invalid_target
-s32 fn_80132290(void* arg0, const char* arg1, const char* arg2) {
+s32 fn_80132290(void *arg0, const char *arg1, const char *arg2) {
     void **vtable = *(void ***)arg0;
     const char *value = ((char *(*)(void *))vtable[5])(arg0);
     s32 index = 0;
@@ -560,8 +560,7 @@ s32 fn_80132290(void* arg0, const char* arg1, const char* arg2) {
         arg2 = strlen(arg2) + arg2 + 1;
         index++;
     }
-    fn_802E317C(lbl_8032B790, value, arg1,
-        ((char *(*)(void *))(*(void ***)((char *)*(void **)arg0 + 8)))(arg0));
+    fn_802E317C(lbl_8032B790, value, arg1, ((char *(*)(void *))(*(void ***)((char *)*(void **)arg0 + 8)))(arg0));
     return -1;
 }
 #pragma processor 750
@@ -586,6 +585,7 @@ extern "C" f32 fn_80132354(void *arg0, s32 arg1, f32 farg0) {
 extern char lbl_8032B80C[], lbl_8032B7E4[];
 #pragma push
 #pragma scheduling invalid_target
+#pragma cplusplus on
 void fn_80132410(void *arg0, void *arg1, const char *arg2) {
     typedef struct { s32 x, y, z; } Vector;
     Vector values;
