@@ -2946,31 +2946,32 @@ void *GKI_getpoolbuf(UINT8 pool_id) {
     return GKI_getbuf(p_cb->freeq[pool_id].size);
 }
 
-void GKI_freebuf(void *p_buf)
+/* Frees a GKI buffer back to its pool: validates header/magic, logs errors for bad/unlinked/invalid-pool buffers, otherwise enqueues the header on the free queue and clears state. */
+void GKI_freebuf(void *buffer)
 {
-    char *p_str = lbl_80314110;
-    BUFFER_HDR_T *p_hdr;
-    u16 size;
-    u8 pool_id;
+    char *errorStrings = lbl_80314110;
+    BUFFER_HDR_T *header;
+    u16 bufferSize;
+    u8 poolId;
     u32 *magic;
     u8 damaged;
-    FREE_QUEUE_T *Q;
+    FREE_QUEUE_T *freeQueue;
 
-    if (p_buf == 0)
+    if (buffer == 0)
         goto bad_buffer;
 
-    p_hdr = (BUFFER_HDR_T *)((u8 *)p_buf - 8);
-    if (((u32)p_hdr & 1) != 0) {
-        size = 0;
+    header = (BUFFER_HDR_T *)((u8 *)buffer - 8);
+    if (((u32)header & 1) != 0) {
+        bufferSize = 0;
     } else {
-        pool_id = p_hdr->q_id;
-        if (pool_id < 9)
-            size = *(u16 *)((u8 *)lbl_803946C0 + 0x289E8 + (pool_id << 4));
+        poolId = header->q_id;
+        if (poolId < 9)
+            bufferSize = *(u16 *)((u8 *)lbl_803946C0 + 0x289E8 + (poolId << 4));
         else
-            size = 0;
+            bufferSize = 0;
     }
 
-    magic = (u32 *)((u8 *)p_buf + size);
+    magic = (u32 *)((u8 *)buffer + bufferSize);
     if (((u32)magic & 1) != 0) {
         damaged = 1;
     } else if (*magic == 0xDDBADDBA) {
@@ -2982,31 +2983,31 @@ void GKI_freebuf(void *p_buf)
         goto valid_buffer;
 
 bad_buffer:
-    ((void (*)(u16, const char *))fn_8006EBF0)(0xFFFF, p_str + 0x30);
+    ((void (*)(u16, const char *))fn_8006EBF0)(0xFFFF, errorStrings + 0x30);
     return;
 
 valid_buffer:
-    if (p_hdr->status != BUF_STATUS_UNLINKED) {
-        ((void (*)(u16, const char *))fn_8006EBF0)(0xFFFC, p_str + 0x48);
+    if (header->status != BUF_STATUS_UNLINKED) {
+        ((void (*)(u16, const char *))fn_8006EBF0)(0xFFFC, errorStrings + 0x48);
         return;
     }
-    if (p_hdr->q_id >= 9) {
-        ((void (*)(u16, const char *))fn_8006EBF0)(0xFFFD, p_str + 0x5C);
+    if (header->q_id >= 9) {
+        ((void (*)(u16, const char *))fn_8006EBF0)(0xFFFD, errorStrings + 0x5C);
         return;
     }
 
     fn_8006EBAC();
-    Q = (FREE_QUEUE_T *)((u8 *)lbl_803946C0 + 0x289E0 + (p_hdr->q_id << 4));
-    if (Q->p_last != 0)
-        Q->p_last->p_next = p_hdr;
+    freeQueue = (FREE_QUEUE_T *)((u8 *)lbl_803946C0 + 0x289E0 + (header->q_id << 4));
+    if (freeQueue->p_last != 0)
+        freeQueue->p_last->p_next = header;
     else
-        Q->p_first = p_hdr;
-    Q->p_last = p_hdr;
-    p_hdr->p_next = 0;
-    p_hdr->status = BUF_STATUS_FREE;
-    p_hdr->task_id = GKI_INVALID_TASK;
-    if (Q->cur_cnt != 0)
-        Q->cur_cnt--;
+        freeQueue->p_first = header;
+    freeQueue->p_last = header;
+    header->p_next = 0;
+    header->status = BUF_STATUS_FREE;
+    header->task_id = GKI_INVALID_TASK;
+    if (freeQueue->cur_cnt != 0)
+        freeQueue->cur_cnt--;
     fn_8006EB88();
 }
 
