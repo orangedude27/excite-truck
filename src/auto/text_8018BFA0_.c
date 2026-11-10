@@ -967,13 +967,15 @@ public:
 };
 #pragma cplusplus reset
 #pragma cplusplus on
+#pragma scheduling invalid_target
 extern "C" void fn_8018E330(void *arg0) {
     void *manager;
     void *object;
+    int tmp;
     register float f0;
     register float f1;
     manager = (void *)fn_801B83A0();
-    ((void (*)(void *, void *))(*(void **)((char *)*(void **)manager + 0xA4)))(manager, arg0);
+    ((Mgr_8018E330 *)manager)->v39(arg0);
     fn_80161A38(0, *(int *)((char *)arg0 + 0x1EC), 0);
     fn_801DFF1C(*(int *)((char *)arg0 + 0x1EC));
     f0 = lbl_80561F74;
@@ -983,9 +985,10 @@ extern "C" void fn_8018E330(void *arg0) {
     *(float *)((char *)arg0 + 0x2690) = f1;
     *(float *)((char *)arg0 + 0x25BC) = f0;
     *(float *)((char *)arg0 + 0x26A0) = lbl_8055E3C8;
-    object = ((void *(*)(void *))(*(void **)((char *)*(void **)object + 0x10)))(object);
-    *(int *)((char *)arg0 + 0x26A4) = *(int *)((char *)object + 4);
+    object = ((Mgr_8018E330 *)object)->v2();
+    tmp = *(int *)((char *)object + 4);
     f0 = lbl_80561F74;
+    *(int *)((char *)arg0 + 0x26A4) = tmp;
     *(float *)((char *)arg0 + 0x2588) = f0;
     *(float *)((char *)arg0 + 0x25A0) = f0;
     *(char *)((char *)arg0 + 0x259D) = 0;
