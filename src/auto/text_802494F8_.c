@@ -753,47 +753,48 @@ extern int stricmp(const char *, const char *);
 extern void *memset(void *, int, unsigned int);
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
-void *fn_8024B3E8(void *arg0, void *arg1, int arg2) {
+void *fn_8024B3E8(void *archiveList, void *archiveRoot, int unused) {
+    /* Build sorted unique archive entry list from archiveRoot into archiveList. */
     typedef struct ArchiveEntry {
         char pad0[0xC];
         char *name;
         unsigned char pad10[8];
     } ArchiveEntry;
-    register int active = 1;
+    register int hasSpecialEntry = 1;
     register ArchiveEntry *entry;
     register int itemOffset;
-    register int found;
+    register int isUnique;
     register int innerIndex;
     register int outerOffset;
     register int outerIndex;
-    volatile int *itemCount = (volatile int *)((char *)arg0 + 0x1C);
-    (void)arg2;
-    *(void **)((char *)arg0 + 0x74) = arg1;
-    *(int *)((char *)arg0 + 0x14) = 0;
-    *(char **)arg0 = lbl_80343BD0;
-    *(void **)((char *)arg0 + 0x18) = (char *)arg0 + 0x24;
-    *(int *)((char *)arg0 + 0x20) = 10;
+    volatile int *itemCount = (volatile int *)((char *)archiveList + 0x1C);
+    (void)unused;
+    *(void **)((char *)archiveList + 0x74) = archiveRoot;
+    *(int *)((char *)archiveList + 0x14) = 0;
+    *(char **)archiveList = lbl_80343BD0;
+    *(void **)((char *)archiveList + 0x18) = (char *)archiveList + 0x24;
+    *(int *)((char *)archiveList + 0x20) = 10;
     *itemCount = 0;
-    *((unsigned char *)arg0 + 0x284) = 0;
+    *((unsigned char *)archiveList + 0x284) = 0;
     outerIndex = 0;
     outerOffset = 0;
-    while (outerIndex < *(int *)((char *)arg1 + 4)) {
-        entry = (ArchiveEntry *)((char *)*(void **)arg1 + outerOffset);
-        found = 1;
+    while (outerIndex < *(int *)((char *)archiveRoot + 4)) {
+        entry = (ArchiveEntry *)((char *)*(void **)archiveRoot + outerOffset);
+        isUnique = 1;
         innerIndex = 0;
         itemOffset = 0;
         while (innerIndex < *itemCount) {
             if (((unsigned char *)entry)[0x14] == 0 ||
-                stricmp(*(char **)(*(char **)((char *)arg0 + 0x18) + itemOffset),
+                stricmp(*(char **)(*(char **)((char *)archiveList + 0x18) + itemOffset),
                         entry->name) == 0)
-                found = 0;
+                isUnique = 0;
             itemOffset += 8;
             innerIndex++;
         }
-        if (found) {
+        if (isUnique) {
             int n = *itemCount;
             void * volatile *itemsField =
-                (void * volatile *)((char *)arg0 + 0x18);
+                (void * volatile *)((char *)archiveList + 0x18);
             void *items = *itemsField;
             void *slot;
             *itemCount = n + 1;
@@ -803,15 +804,15 @@ void *fn_8024B3E8(void *arg0, void *arg1, int arg2) {
         }
         if (((unsigned char *)entry)[0x14] != 0 &&
             ((unsigned char *)entry)[0x15] != 0)
-            *((unsigned char *)arg0 + 0x284) = active;
+            *((unsigned char *)archiveList + 0x284) = hasSpecialEntry;
         outerOffset += 0x18;
         outerIndex++;
     }
-    fn_80265DCC(*(void **)((char *)arg0 + 0x18),
+    fn_80265DCC(*(void **)((char *)archiveList + 0x18),
                 *itemCount, 8, fn_8024B214);
-    memset((char *)arg0 + 0x78, 0, 0x208);
-    *(int *)((char *)arg0 + 0x280) = -1;
-    return arg0;
+    memset((char *)archiveList + 0x78, 0, 0x208);
+    *(int *)((char *)archiveList + 0x280) = -1;
+    return archiveList;
 }
 #pragma scheduling reset
 #pragma use_lmw_stmw reset
