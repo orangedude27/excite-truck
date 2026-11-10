@@ -124,7 +124,6 @@ s32 fn_801B06D8(void *arg0, void *arg1, s32 arg2) {
     register f32 increment;
     register f32 start;
     register f32 step;
-    register s32 enabled asm("r3");
     step = lbl_805625BC;
     increment = lbl_805625C0;
     start = step;
@@ -140,8 +139,7 @@ s32 fn_801B06D8(void *arg0, void *arg1, s32 arg2) {
         sp10 = x;
         sp18 = y;
         if (fn_802B04D4((f32 *)&sp10, dy, x, dx)) return 1;
-        enabled = lbl_8055E66C;
-        if (enabled && fn_80139EC4(sp8, spC)) return 1;
+        if (*(volatile s32 *)&lbl_8055E66C && fn_80139EC4(sp8, spC)) return 1;
         step += increment;
     }
     return 0;
@@ -292,7 +290,6 @@ void fn_801B0BB0(void *arg0, void *arg1) {
     f32 threshold = lbl_805625F4;
     f32 value;
     f32 temp_f31;
-
     temp_r5 = *(void **)((u8 *)arg1 + 4);
     *(void **)arg0 = temp_r5;
     *(f32 *)((u8 *)arg0 + 4) = *(f32 *)((u8 *)arg1 + 8);
@@ -302,15 +299,14 @@ void fn_801B0BB0(void *arg0, void *arg1) {
     if (*(f32 *)((u8 *)temp_r5 + 0x1C) > temp_f31) {
         fn_802E30C8(lbl_80335A58);
         var_r3 = *(void **)((u8 *)*(void **)((u8 *)arg1 + 0x2C) + 0x1C);
-        var_r0 = 0;
         var_r4 = 0;
+        var_r0 = 0;
         do {
-            var_r0 = var_r3;
-            var_r4++;
-            if (var_r4 > 0xBB8) {
+            if (var_r4++ > 0xBB8) {
                 var_r0 = 0;
                 break;
             }
+            var_r0 = var_r3;
             var_r3 = *(void **)((u8 *)var_r3 + 0x14);
         } while (*(f32 *)((u8 *)var_r3 + 0x1C) < temp_f31);
         if (var_r0 != 0) *(void **)arg0 = var_r0;
@@ -406,33 +402,33 @@ extern "C" s32 fn_801B0E40(s32 arg0, s32 *arg1) {
         virtual void *d1();
         virtual void *d2();
     };
-    s32 temp_r31;
-    s32 var_r30;
-    s32 var_r31;
-    s32 temp_r0;
+    s32 temp;
+    s32 loop1;
+    s32 loop2;
+    s32 bound;
+    s32 lim;
     void *base = lbl_8055E684;
     Dummy *obj = (Dummy *)((u8 *)base + (arg0 << 7));
-
     base = obj->d2();
-    temp_r31 = *(s32 *)((u8 *)base + 4);
-    var_r30 = temp_r31;
-    while (var_r30 <= (s32)lbl_8055E678) {
-        fn_801B2F40(var_r30 - 1);
+    temp = *(s32 *)((u8 *)base + 4);
+    loop1 = temp;
+    while (loop1 <= (s32)lbl_8055E678) {
+        fn_801B2F40(loop1 - 1);
         if (((s32 (*)(void))fn_801B0DF0)() != 0) return 0;
-        var_r30++;
+        loop1++;
     }
-    temp_r0 = *arg1;
-    var_r30 = temp_r31 - 1;
-    var_r31 = 1;
-    if (temp_r0 > 1)
-        var_r31 = temp_r0;
-    while (var_r30 >= var_r31) {
-        fn_801B2F40(var_r30 - 1);
+    lim = *arg1;
+    loop2 = temp - 1;
+    bound = 1;
+    if (lim > 1)
+        bound = lim;
+    while (loop2 >= bound) {
+        fn_801B2F40(loop2 - 1);
         if (((s32 (*)(void))fn_801B0DF0)() != 0) {
-            *arg1 = var_r30 + 1;
+            *arg1 = loop2 + 1;
             break;
         }
-        var_r30--;
+        loop2--;
     }
     return 1;
 }
@@ -1712,6 +1708,10 @@ void fn_801B2C6C(void) {
 
 #pragma scheduling invalid_target
 s32 fn_801B2C70(void *arg0) {
+    s32 x;
+    unsigned int y;
+    unsigned int shifted;
+    s32 mask;
     struct Entry {
         s32 unknown0;
         s32 value;
@@ -1720,29 +1720,22 @@ s32 fn_801B2C70(void *arg0) {
         u8 flag;
         u8 unknown11[3];
     } *entry;
-    s32 i;
+    unsigned int zero;
     s32 offset;
-    s32 zero;
-    s32 x;
-    s32 y;
-    s32 shifted;
-    s32 mask;
-
+    s32 i;
     memset(arg0, 0, 0xB0);
     *(s32 *)arg0 = (s32)lbl_8055E678;
     *(s32 *)((u8 *)arg0 + 4) = lbl_8055E67C;
     zero = 0;
     *(u8 *)((u8 *)arg0 + 0xC) = zero;
     *(u8 *)((u8 *)arg0 + 0xD) = lbl_8055E698;
-
-    x = lbl_8055E69C;
+    x = (unsigned)lbl_8055E69C;
     y = lbl_8055E67C;
     x = x ^ y;
     shifted = x >> 1;
     mask = x & y;
     shifted = shifted - mask;
     *(u8 *)((u8 *)arg0 + 0xE) = (u32)shifted >> 31;
-
     entry = (struct Entry *)((u8 *)arg0 + 0x10);
     i = 0;
     offset = 0;
@@ -1899,8 +1892,11 @@ f32 fn_801B2F90(s32 arg0, s32 arg1) {
     void *obj1 = (u8 *)base + (arg1 << 7);
     void *first;
     void *second;
+    s32 f74;
+    s32 s74;
+    s32 s14;
+    s32 f14;
     s32 difference;
-
     if (*(s32 *)((u8 *)obj0 + 8) - 1 < *(s32 *)((u8 *)obj1 + 8) - 1) {
         first = obj0;
         second = obj1;
@@ -1908,10 +1904,11 @@ f32 fn_801B2F90(s32 arg0, s32 arg1) {
         first = obj1;
         second = obj0;
     }
-    difference = (*(s32 *)((u8 *)first + 0x14) -
-                  *(s32 *)((u8 *)second + 0x14)) -
-                 ((u32)*(u32 *)((u8 *)first + 0x74) <
-                  (u32)*(u32 *)((u8 *)second + 0x74));
+    f74 = *(s32 *)((u8 *)first + 0x74);
+    s74 = *(s32 *)((u8 *)second + 0x74);
+    s14 = *(s32 *)((u8 *)second + 0x14);
+    f14 = *(s32 *)((u8 *)first + 0x14);
+    difference = (f14 - s14) - ((u32)f74 < (u32)s74);
     if (difference != 0)
         return lbl_8056261C * (f32)difference;
     {
