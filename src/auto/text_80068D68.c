@@ -15974,37 +15974,38 @@ void hidh_proc_repage_timeout(TIMER_LIST_ENT *p_tle) {
     UINT32 handle = p_tle->param;
     UINT8 index = (UINT8)handle;
     UINT8 one = 1;
-    UINT8 *base = lbl_803C3C38;
-    UINT8 *dev = base + index * 0x34;
+    UINT8 *callbackBase = lbl_803C3C38;
+    UINT8 *device = callbackBase + index * 0x34;
     UINT16 cid;
-    UINT32 dhandle;
+    UINT32 deviceHandle;
     void (**callback)(UINT8, UINT32, UINT8, void *);
 
-    if (dev[0x10] == 0) {
-        *(UINT16 *)(dev + 0x14) = 0;
-        *(UINT16 *)(dev + 0x16) = 0;
-        *(UINT16 *)(dev + 0x1A) = 0x100;
-        dev[0x11] = one;
-        cid = L2CA_ConnectReq(0x11, dev + 1);
-        *(UINT16 *)(dev + 0x14) = cid;
+    /* Handles HID host repage timeout: retries L2CAP connect if needed, then bumps retry count and notifies callback. */
+    if (device[0x10] == 0) {
+        *(UINT16 *)(device + 0x14) = 0;
+        *(UINT16 *)(device + 0x16) = 0;
+        *(UINT16 *)(device + 0x1A) = 0x100;
+        device[0x11] = one;
+        cid = L2CA_ConnectReq(0x11, device + 1);
+        *(UINT16 *)(device + 0x14) = cid;
         if (cid == 0) {
             if (lbl_803C3C38[0x401] >= 2)
                 fn_8007093C(0x1E0001, lbl_8031799C);
-            base = lbl_803C3C38;
-            dhandle = (dev - base) / 0x34;
-            dhandle = dhandle / 0x34;
-            (*((void (**)(UINT8, UINT32, UINT8, void *))(base + 0x340)))(
-                (UINT8)dhandle, 1, 0xE, 0);
+            callbackBase = lbl_803C3C38;
+            deviceHandle = (device - callbackBase) / 0x34;
+            deviceHandle = deviceHandle / 0x34;
+            (*((void (**)(UINT8, UINT32, UINT8, void *))(callbackBase + 0x340)))(
+                (UINT8)deviceHandle, 1, 0xE, 0);
         } else {
-            dev[0x10] = one;
+            device[0x10] = one;
         }
     }
 
-    base = lbl_803C3C38;
-    *(UINT8 *)(base + p_tle->param * 0x34 + 0xC) += 1;
-    callback = (void (**)(UINT8, UINT32, UINT8, void *))(base + 0x340);
+    callbackBase = lbl_803C3C38;
+    *(UINT8 *)(callbackBase + p_tle->param * 0x34 + 0xC) += 1;
+    callback = (void (**)(UINT8, UINT32, UINT8, void *))(callbackBase + 0x340);
     (*callback)((UINT8)p_tle->param, 2,
-                *(UINT8 *)(base + p_tle->param * 0x34 + 0xC), 0);
+                *(UINT8 *)(callbackBase + p_tle->param * 0x34 + 0xC), 0);
 }
 
 void hidh_sec_check_complete_orig(BD_ADDR bd_addr, void *p_ref_data, UINT8 res) {
