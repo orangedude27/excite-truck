@@ -1334,7 +1334,6 @@ struct VSingle {
 };
 #pragma cplusplus on
 extern "C" void fn_8002F6AC(void *, void (*)(void));
-extern "C" void fn_801B2118(void);
 extern "C" void fn_80139E18(void *);
 #pragma cplusplus on
 extern "C" void fn_801B228C(void) {
