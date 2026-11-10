@@ -28,10 +28,10 @@ extern int fn_802CAC54(int);
 extern int fn_802C6CF8(int);
 extern int lbl_8055EA6C, lbl_8055EA64;
 extern float lbl_8055EA68, lbl_80562D08;
-extern int lbl_80339910, lbl_80339920;
-extern int fn_802CAC28(int *, int);
-extern int fn_802C6FC0(int *, int, int);
-extern int fn_802C7760(int *, float *, int *, int *, float *, int *);
+extern char lbl_80339910[], lbl_80339920[];
+extern int fn_802CAC28(char *, int);
+extern int fn_802C6FC0(char *, int, int);
+extern int fn_802C7760(void *, float *, float *, float *, float *, float *, float *);
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
@@ -61,6 +61,8 @@ void fn_801E3640(void *arg0, float *arg1) {
     PSVECCrossProduct(basis, arg1 + 6, arg1);
     PSVECCrossProduct(arg1 + 6, arg1, arg1 + 3);
 }
+#pragma push
+#pragma processor 750
 #pragma scheduling invalid_target
 void fn_801E370C(float *arg0, int arg1, int arg2) {
     float out[3];
@@ -97,7 +99,7 @@ void fn_801E370C(float *arg0, int arg1, int arg2) {
             out[1] += arg0[7] * half;
             out[2] += arg0[8] * half;
             fn_802C8E00(arg2, 1, out[0], out[1], out[2], lbl_80562CF4, lbl_80562CF4);
-            i = i + 1;
+            ++i;
         } while (i < 5);
         out[1] += arg0[1] * lbl_80562D00;
         out[0] += arg0[0] * lbl_80562D00;
@@ -138,12 +140,14 @@ void fn_801E370C(float *arg0, int arg1, int arg2) {
 #pragma scheduling on
 #pragma pop
 void fn_801E3C04(void) {
-    int a, c, d, f;
-    float b, e;
-    lbl_8055EA6C = fn_802CAC28(&lbl_80339910, 0);
-    lbl_8055EA64 = fn_802C6FC0(&lbl_80339920, 0, 0);
-    fn_802C7760(&a, &b, &c, &d, &e, &f);
-    lbl_8055EA68 = __fabsf(e - b) * lbl_80562D08;
+    float a, b, d, e, c, f;
+    int tmp;
+    tmp = ((int (*)(void *, int))fn_802CAC28)((void *)&lbl_80339910, 0);
+    lbl_8055EA6C = tmp;
+    tmp = ((int (*)(void *, int, int))fn_802C6FC0)((void *)&lbl_80339920, 0, 0);
+    lbl_8055EA64 = tmp;
+    ((void (*)(void *, float *, float *, float *, float *, float *, float *))fn_802C7760)((void *)tmp, &a, &b, &c, &d, &e, &f);
+    lbl_8055EA68 = lbl_80562D08 * (float)fabs(e - b);
 }
 
 void fn_801E3C88(void) {
@@ -153,6 +157,7 @@ void fn_801E3C88(void) {
 
 #pragma push
 #pragma processor 750
+#pragma scheduling invalid_target
 void fn_801E3CB4(void *arg0, void *arg1, int arg2, float farg0) {
     extern float lbl_80558DC4[];
     extern float lbl_80562CF4;
@@ -176,6 +181,7 @@ void fn_801E3CB4(void *arg0, void *arg1, int arg2, float farg0) {
     float s;
     int i;
     int result;
+    float ax, ay, az;
 
     fn_801E3640(arg1, vec);
     scale = lbl_80562D0C * farg0;
@@ -216,54 +222,59 @@ void fn_801E3CB4(void *arg0, void *arg1, int arg2, float farg0) {
     pts[4].y = vec[7] + vec[4] * lbl_80562CF8;
     pts[4].z = vec[8] + vec[5] * lbl_80562CF8;
     result = fn_801E36F0(arg2);
+    ax = *(float *)((char *)arg0 + 0x0);
+    ay = *(float *)((char *)arg0 + 0x4);
+    az = *(float *)((char *)arg0 + 0x8);
     for (i = 0; i < 5; i++) {
         pts[i].id = arg2;
         pts[i].u = lbl_80562D10 * i;
         pts[i].v = lbl_80562D10 * i;
-        pts[i].x = pts[i].x + *(float *)((char *)arg0 + 0x0);
-        pts[i].y = pts[i].y + *(float *)((char *)arg0 + 0x4);
-        pts[i].z = pts[i].z + *(float *)((char *)arg0 + 0x8);
+        pts[i].x = pts[i].x + ax;
+        pts[i].y = pts[i].y + ay;
+        pts[i].z = pts[i].z + az;
     }
     pts[0].id = result;
-    for (i = 0; i < 6; i++) {
-        frame[i] = lbl_802F99E8[i];
+    {
+        unsigned short *p = lbl_802F99E8;
+        for (i = 0; i < 6; i++) {
+            frame[i] = *p++;
+        }
     }
     fn_802C8BD0(lbl_8055EA6C);
     fn_802C8DB8(pts, 5, frame, 6);
     fn_802C8D74();
     fn_802C9904();
 }
-
-#pragma push
-#pragma processor 750
-#pragma scheduling invalid_target
+#pragma pop
 void fn_801E3FC8(void *arg0, float farg0) {
-    float sp[12];
+    f32 sp[12];
     float zero;
-    float temp_f1;
-    float temp_f2;
-    float temp_f4;
+    float tx;
+    float tz;
+    float s;
+    float ty;
     int handle;
 
     zero = lbl_80562CF4;
-    temp_f2 = *(float *)((char *)arg0 + 0);
     sp[9] = zero;
-    temp_f4 = farg0 / lbl_8055EA68;
-    temp_f1 = *(float *)((char *)arg0 + 4);
+    tx = ((f32 *)arg0)[0];
+    tz = ((f32 *)arg0)[2];
+    s = farg0 / lbl_8055EA68;
+    ty = ((f32 *)arg0)[1];
     sp[10] = zero;
     handle = lbl_8055EA64;
-    sp[0] = temp_f4;
+    sp[0] = s;
     sp[1] = zero;
     sp[2] = zero;
     sp[3] = zero;
-    sp[4] = temp_f4;
+    sp[4] = s;
     sp[5] = zero;
     sp[6] = zero;
     sp[7] = zero;
-    sp[8] = temp_f4;
-    sp[9] = temp_f2;
-    sp[10] = temp_f1;
-    sp[11] = *(float *)((char *)arg0 + 8);
+    sp[8] = s;
+    sp[9] = tx;
+    sp[10] = ty;
+    sp[11] = tz;
     fn_802C744C(handle, sp);
 }
 
@@ -318,6 +329,83 @@ void fn_801E41D8(void *arg0, void *arg1, int arg2, float farg0);
 #pragma dont_inline fn_801E41D8
 void fn_801E41D8(void *arg0, void *arg1, int arg2, float farg0) {
     fn_801E4040(arg0, arg1, arg2, arg2, farg0);
+}
+
+void fn_801E41E0(void *arg0, int arg1, float farg0) {
+    struct LocalData {
+        unsigned short frame[3];
+        unsigned short padding;
+        TrailPt seed;
+        TrailPt points[3];
+    };
+    volatile struct LocalData local;
+    float *base = (float *)arg0;
+    float *matrix;
+    register float zero;
+    register f64 seedXY;
+    register s32 seedZ;
+    float x, y, z;
+    float negScale;
+    float sidePositive;
+    float depthNegative;
+    float sideNegative;
+
+    zero = lbl_80562CF4;
+    seedXY = *(volatile f64 *)&local.seed.x;
+    seedZ = *(volatile s32 *)&local.seed.z;
+    local.seed.id = arg1;
+    local.seed.u = zero;
+    local.seed.v = zero;
+    *(volatile f64 *)&local.points[0].x = seedXY;
+    *(volatile s32 *)&local.points[0].z = seedZ;
+    local.points[0].id = arg1;
+    local.points[0].u = zero;
+    local.points[0].v = zero;
+    *(volatile f64 *)&local.points[1].x = seedXY;
+    *(volatile s32 *)&local.points[1].z = seedZ;
+    local.points[1].id = arg1;
+    local.points[1].u = zero;
+    local.points[1].v = zero;
+    *(volatile f64 *)&local.points[2].x = seedXY;
+    *(volatile s32 *)&local.points[2].z = seedZ;
+    local.points[2].id = arg1;
+    local.points[2].u = zero;
+    local.points[2].v = zero;
+    local.frame[0] = lbl_80562D20;
+    local.frame[1] = lbl_80562D22;
+    local.frame[2] = lbl_80562D24;
+
+    matrix = (float *)fn_802C86DC();
+    negScale = -farg0;
+    sidePositive = lbl_80562D28 * farg0;
+    depthNegative = lbl_80562D08 * negScale;
+    sideNegative = lbl_80562D28 * negScale;
+    x = base[0];
+    y = base[1];
+    z = base[2];
+
+    local.points[0].x = x + matrix[3] * farg0;
+    local.points[0].y = y + matrix[4] * farg0;
+    local.points[0].z = z + matrix[5] * farg0;
+
+    local.points[1].x = x + matrix[3] * depthNegative;
+    local.points[1].y = y + matrix[4] * depthNegative;
+    local.points[1].z = z + matrix[5] * depthNegative;
+    local.points[1].x += matrix[0] * sidePositive;
+    local.points[1].y += matrix[1] * sidePositive;
+    local.points[1].z += matrix[2] * sidePositive;
+
+    local.points[2].x = x + matrix[3] * depthNegative;
+    local.points[2].y = y + matrix[4] * depthNegative;
+    local.points[2].z = z + matrix[5] * depthNegative;
+    local.points[2].x += matrix[0] * sideNegative;
+    local.points[2].y += matrix[1] * sideNegative;
+    local.points[2].z += matrix[2] * sideNegative;
+
+    fn_802C8BD0(lbl_8055EA6C);
+    fn_802C8DB8((void *)local.points, 3, (void *)local.frame, 3);
+    fn_802C8D74();
+    fn_802C9904();
 }
 
 #pragma push
