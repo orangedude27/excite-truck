@@ -10367,64 +10367,65 @@ void btm_sco_conn_req(BD_ADDR bda, DEV_CLASS dev_class, tBTM_SCO_TYPE link_type)
     btm_esco_conn_rsp(3, 0x0D, p_bda, NULL);
 }
 
+/* Handle HCI SCO/eSCO connection complete: update the matching SCO control block and invoke its callback. */
 void btm_sco_connected(u8 status, u8 *addr, u16 handle, tBTM_ESCO_DATA *params) {
-    u8 *cb = lbl_803C0F78 + 0x1854;
-    u16 state;
-    u8 change = 0;
-    u32 index = 0;
+    u8 *scoCb = lbl_803C0F78 + 0x1854;
+    u16 scoState;
+    u8 needsParamChange = 0;
+    u32 scoIndex = 0;
     u16 p1, p0;
     u16 p3, p2;
 
     *(u16 *)(lbl_803C0F78 + 0x18F6) = status;
     for (;;) {
-        state = *(u16 *)(cb + 8);
-        if ((u16)(state + 0xFFFF) <= 2 && cb[0xD] && (addr == 0 || memcmp(cb + 0x28, addr, 6) == 0)) {
+        scoState = *(u16 *)(scoCb + 8);
+        if ((u16)(scoState + 0xFFFF) <= 2 && scoCb[0xD] && (addr == 0 || memcmp(scoCb + 0x28, addr, 6) == 0)) {
             if (status != 0) {
-                if (state == 3) {
+                if (scoState == 3) {
                     if (status != 0x23) {
-                        *(u16 *)(cb + 8) = 0;
-                        ((void (*)(u16))*(u32 *)(cb + 4))(index);
+                        *(u16 *)(scoCb + 8) = 0;
+                        ((void (*)(u16))*(u32 *)(scoCb + 4))(scoIndex);
                     }
                 } else {
-                    *(u16 *)(cb + 8) = 1;
+                    *(u16 *)(scoCb + 8) = 1;
                 }
             } else {
-                if (state == 1)
-                    change = 1;
-                *(u16 *)(cb + 8) = 4;
-                *(u16 *)(cb + 0xA) = handle;
+                if (scoState == 1)
+                    needsParamChange = 1;
+                *(u16 *)(scoCb + 8) = 4;
+                *(u16 *)(scoCb + 0xA) = handle;
                 if (lbl_803C0F78[0x1908] == 0) {
                     tBTM_CHG_ESCO_PARAMS new_params;
-                    cb[0x2E] = 0;
-                    if (change) {
-                        new_params.packet_types = *(u16 *)(cb + 0x20);
-                        new_params.max_latency = *(u16 *)(cb + 0x1C);
-                        new_params.retrans_effort = cb[0x22];
-                        BTM_ChangeEScoLinkParms(index, &new_params);
+                    scoCb[0x2E] = 0;
+                    if (needsParamChange) {
+                        new_params.packet_types = *(u16 *)(scoCb + 0x20);
+                        new_params.max_latency = *(u16 *)(scoCb + 0x1C);
+                        new_params.retrans_effort = scoCb[0x22];
+                        BTM_ChangeEScoLinkParms(scoIndex, &new_params);
                     }
                 } else if (params != 0) {
                     p0 = *(volatile u16 *)((u8 *)params + 0);
                     p1 = *(volatile u16 *)((u8 *)params + 2);
-                    *(u16 *)(cb + 0x24) = p0;
-                    *(u16 *)(cb + 0x26) = p1;
+                    *(u16 *)(scoCb + 0x24) = p0;
+                    *(u16 *)(scoCb + 0x26) = p1;
                     p2 = *(volatile u16 *)((u8 *)params + 4);
                     p3 = *(volatile u16 *)((u8 *)params + 6);
-                    *(u16 *)(cb + 0x28) = p2;
-                    *(u16 *)(cb + 0x2A) = p3;
+                    *(u16 *)(scoCb + 0x28) = p2;
+                    *(u16 *)(scoCb + 0x2A) = p3;
                     p0 = *(volatile u16 *)((u8 *)params + 8);
-                    *(u16 *)(cb + 0x2C) = p0;
+                    *(u16 *)(scoCb + 0x2C) = p0;
                     p0 = *(volatile u16 *)((u8 *)params + 0xA);
-                    *(u16 *)(cb + 0x2E) = p0;
+                    *(u16 *)(scoCb + 0x2E) = p0;
                     p0 = *(volatile u16 *)((u8 *)params + 0xC);
-                    *(u16 *)(cb + 0x30) = p0;
+                    *(u16 *)(scoCb + 0x30) = p0;
                 }
-                ((void (*)(u16))*(u32 *)cb)(index);
+                ((void (*)(u16))*(u32 *)scoCb)(scoIndex);
             }
             return;
         }
-        index++;
-        cb += 0x34;
-        if (index >= 3)
+        scoIndex++;
+        scoCb += 0x34;
+        if (scoIndex >= 3)
             return;
     }
 }
