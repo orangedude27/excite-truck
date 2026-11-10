@@ -4455,6 +4455,7 @@ extern "C" void fn_80220E08(void *arg0, s32 arg1) {
     fn_802C40B8(*(s32 *)((u8 *)arg0 + 0x244), *(s32 *)((u8 *)arg0 + 4), *(s32 *)((u8 *)arg0 + 8));
 }
 
+/* Initializes a UI panel with textures based on mode. */
 extern "C" void *fn_80220E48(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     struct Dispatch {
         virtual void method0();
@@ -4462,20 +4463,20 @@ extern "C" void *fn_80220E48(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
         virtual void method2();
         virtual void method3();
         virtual void method4();
-        virtual void set(s32, s32);
+        virtual void set(s32 x, s32 y);
     };
     u8 *p = (u8 *)arg0;
-    char *base = lbl_8033D878;
+    char *strBase = lbl_8033D878;
     s32 value = arg5;
     s32 mode = arg6;
     fn_80218F34(arg0, arg1, arg2, arg1 + arg3, arg2 + arg4, 0);
     *(void **)p = lbl_8033E770;
     if (mode == 0) {
-        *(s32 *)(p + 0x248) = ((s32 (*)(void *))fn_802C5130)(base + 0x150);
-        *(s32 *)(p + 0x24C) = ((s32 (*)(void *))fn_802C5130)(base + 0x15C);
+        *(s32 *)(p + 0x248) = ((s32 (*)(void *))fn_802C5130)(strBase + 0x150);
+        *(s32 *)(p + 0x24C) = ((s32 (*)(void *))fn_802C5130)(strBase + 0x15C);
     } else {
-        *(s32 *)(p + 0x248) = ((s32 (*)(void *))fn_802C5130)(base + 0x168);
-        *(s32 *)(p + 0x24C) = ((s32 (*)(void *))fn_802C5130)(base + 0x174);
+        *(s32 *)(p + 0x248) = ((s32 (*)(void *))fn_802C5130)(strBase + 0x168);
+        *(s32 *)(p + 0x24C) = ((s32 (*)(void *))fn_802C5130)(strBase + 0x174);
     }
     ((Dispatch *)arg0)->set(*(s32 *)(p + 4), *(s32 *)(p + 8));
     if (mode == 0) {
