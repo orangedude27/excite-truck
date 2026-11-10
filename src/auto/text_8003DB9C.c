@@ -3195,6 +3195,7 @@ unsigned int GXGetTexBufferSize(unsigned short width, unsigned short height, uns
     unsigned int ny;
     unsigned int level;
 
+    /* Computes the GX texture buffer size in bytes for a format, dimensions, and mip levels. */
     __GXGetTexTileShift_8003DB9C(format, &tileShiftX, &tileShiftY);
     if (format == 0x6 || format == 0x16) {
         tileBytes = 64;
