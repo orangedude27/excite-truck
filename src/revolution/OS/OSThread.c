@@ -599,25 +599,37 @@ void OSExitThread(OSThread* thread) {
     OSRestoreInterrupts(enabled);
 }
 
+/**
+ * Stops a thread for good without waiting for it to finish.
+ *
+ * The thread comes off whichever queue held it - its priority's ready queue, or the
+ * sleep queue it was blocked on, in which case the thread owning its mutex also gets
+ * its inherited priority recomputed - and its context is cleared so it can never be
+ * resumed. A detached thread leaves the active-thread list and is EXITED right away;
+ * one that may still be joined stays on the list as MORIBUND until OSJoinThread
+ * collects it. Mutexes it held are released, threads waiting on its join queue wake
+ * up, and the scheduler picks who runs next.
+ */
 void OSCancelThread(OSThread* thread) {
     BOOL enabled;
     OSThread* next;
     OSThread* prev;
 
-    /* Cancel a thread: remove it from scheduling/wait queues, unlock its mutexes,
-     * wake joiners, mark it exited or moribund, then reschedule. */
     enabled = OSDisableInterrupts();
 
     switch (thread->state) {
     case OS_THREAD_STATE_READY:
+        // A suspended ready thread is not on its run queue yet.
         if (thread->suspend <= 0) {
             UnsetRun(thread);
         }
         break;
     case OS_THREAD_STATE_RUNNING:
-        RunQueueHint = 1;
+        // Cancelling the running thread: SelectThread takes the CPU away from it.
+        RunQueueHint = TRUE;
         break;
     case OS_THREAD_STATE_SLEEPING:
+        // Take it out of the queue it was sleeping on.
         next = thread->next;
         prev = thread->prev;
         if (next == NULL) {
@@ -633,11 +645,13 @@ void OSCancelThread(OSThread* thread) {
         }
 
         thread->queue = NULL;
+        // Give back the priority it lent to whoever holds the mutex it waited on.
         if (thread->suspend <= 0 && thread->mutex != NULL) {
             UpdatePriority(thread->mutex->thread);
         }
         break;
     default:
+        // Already EXITED or MORIBUND; leave it alone.
         OSRestoreInterrupts(enabled);
         return;
         break;
@@ -645,6 +659,7 @@ void OSCancelThread(OSThread* thread) {
 
     OSClearContext(&thread->context);
     if (thread->flags & OS_THREAD_DETACHED) {
+        // Nobody can join it, so unlink it from the active-thread list and let go.
         next = thread->nextActive;
         prev = thread->prevActive;
 
@@ -662,6 +677,7 @@ void OSCancelThread(OSThread* thread) {
 
         thread->state = OS_THREAD_STATE_EXITED;
     } else {
+        // Kept alive for OSJoinThread, which reads its return value in thread->val.
         thread->state = OS_THREAD_STATE_MORIBUND;
     }
 
