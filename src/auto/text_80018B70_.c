@@ -492,25 +492,21 @@ s32 fn_800194CC(void) {
 
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling on
-#pragma dont_inline on
-s32 fn_80018FB4(s32 arg0) {
+#pragma small_data off
+#pragma scheduling invalid_target
+int fn_80018FB4(s32 arg0) {
     register s32 offset;
     register const char *target;
     register s32 i;
     register const char *entry;
 
     target = lbl_802FD2F4;
-    i = 0;
-    offset = 0;
-    do {
+    for (i = 0, offset = 0; i < *(volatile s32 *)(lbl_80357E0C + 4); offset += 0x14, i++) {
         entry = *(const char **)((u8 *)*(void **)lbl_80357E0C + offset);
         if (stricmp(entry, target) == 0) {
             return *(s32 *)((u8 *)*(void **)lbl_80357E0C + i * 0x14 + 8);
         }
-        offset += 0x14;
-        i++;
-    } while (i < *(s32 *)(lbl_80357E0C + 4));
+    }
     ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD308, target);
     return 0;
 }
