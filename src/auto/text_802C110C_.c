@@ -139,27 +139,20 @@ void fn_802C13A4(void) {
     int address_check;
     char *base;
     int i;
-    int value;
-
     fn_801D05B4(&lbl_8055FB40);
     address_check = (int)&lbl_8055FB40;
     base = (char *)&lbl_8055FB40;
-    if (address_check != 0)
+    if (address_check != 0) {
         fn_801D0824(base + 4);
-
+    }
     entry = lbl_804C0810;
-    i = 0;
-    goto check;
-loop:
-    value = *(int *)(entry + 0x34);
-    if (value != 0)
-        fn_80128670(value);
-    entry += 0x60;
-    i += 1;
-check:
-    if (i < lbl_8055FB28)
-        goto loop;
-
+    for (i = 0; i < lbl_8055FB28; i++) {
+        int value = *(int *)(entry + 0x34);
+        if (value != 0) {
+            fn_80128670(value);
+        }
+        entry += 0x60;
+    }
     fn_80128670(lbl_8055FB30);
     lbl_8055FB30 = 0;
     lbl_8055FB2C = 0;
@@ -169,6 +162,9 @@ check:
 extern int fn_801345D8(char *, int, const char *, ...);
 extern char lbl_8034AF14[];
 
+#pragma cplusplus on
+struct VCls_802C143C { virtual int m0(); virtual int m1(); virtual int m2(); virtual int m3(); virtual int m4(); virtual int m5(); virtual int m6(char *, int); };
+#pragma cplusplus reset
 extern int lbl_8055FB28;
 #pragma use_lmw_stmw off
 int fn_802C143C(void *arg0) {
@@ -176,14 +172,14 @@ int fn_802C143C(void *arg0) {
     int index;
     int *entry;
     u32 i;
-
+    int next;
     index = lbl_8055FB28;
     entry = (int *)((char *)&lbl_804C0810 + index * 0x60);
     entry[0] = -1;
+    next = index + 1;
+    lbl_8055FB28 = next;
     *((u8 *)entry + 0x28) = 1;
-    lbl_8055FB28 = index + 1;
     entry[0x30 / 4] = (int)arg0;
-
     i = 0;
     do {
         if (arg0 != NULL) {
@@ -198,7 +194,6 @@ int fn_802C143C(void *arg0) {
     } while (i < 8);
     return index;
 }
-#pragma use_lmw_stmw reset
 int fn_802C1500(int arg0, int arg1) {
     struct Entry {
         int first;
