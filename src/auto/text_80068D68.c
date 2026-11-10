@@ -13586,24 +13586,25 @@ void btu_hcif_command_status_evt(UINT8 *p, UINT16 len) {
 }
 
 void btu_hcif_cmd_timeout(void) {
+    /* Handle HCI command timeout: fail pending command, dispatch status/complete, and send next command. */
     extern unsigned char lbl_803C0A50[];
     extern char lbl_803172C0[];
     extern char lbl_803172E0[];
-    void *buf;
-    register unsigned char *cmd;
+    void *cmdBuf;
+    register unsigned char *cmdData;
     register s32 opcode;
     UINT8 status;
 
     *(UINT16 *)(lbl_803C0A50 + 0x80) = 1;
-    buf = GKI_dequeue((BUFFER_Q *)(lbl_803C0A50 + 0x70));
-    if (buf == 0) {
+    cmdBuf = GKI_dequeue((BUFFER_Q *)(lbl_803C0A50 + 0x70));
+    if (cmdBuf == 0) {
         fn_8007093C(0x70001, lbl_803172C0);
         return;
     }
     if (fn_8006DF84(lbl_803C0A50 + 0x70) == 0)
         btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0A50 + 0x4C), 0x3C, 8);
-    cmd = (unsigned char *)buf + *(UINT16 *)((unsigned char *)buf + 4);
-    opcode = (UINT16)(cmd[8] + (cmd[9] << 8));
+    cmdData = (unsigned char *)cmdBuf + *(UINT16 *)((unsigned char *)cmdBuf + 4);
+    opcode = (UINT16)(cmdData[8] + (cmdData[9] << 8));
     fn_80070954(0x70001, lbl_803172E0, opcode);
     if (opcode != 0x419) {
         if (opcode < 0x419) {
@@ -13626,13 +13627,13 @@ void btu_hcif_cmd_timeout(void) {
         goto complete;
     }
 command_status:
-    btu_hcif_hdl_command_status(opcode, 0x1F, cmd + 0xA);
+    btu_hcif_hdl_command_status(opcode, 0x1F, cmdData + 0xA);
     goto done;
 complete:
     status = 0x1F;
     btu_hcif_hdl_command_complete(opcode, &status, 1);
 done:
-    GKI_freebuf(buf);
+    GKI_freebuf(cmdBuf);
     fn_8007ABE8((void *)2);
     btu_hcif_send_cmd(0);
 }
