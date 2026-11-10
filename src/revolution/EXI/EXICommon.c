@@ -5,17 +5,18 @@ const u32 __EXIFreq = EXI_FREQ_16MHZ;
 
 BOOL EXIWriteReg(EXIChannel chan, u32 dev, u32 cmd, const void* buf, s32 len) {
     BOOL error = FALSE;
-    u32 write_val;
+    u32 writeVal;
 
+    /* Writes a 1/2/4-byte value to an EXI device register for the given channel/device/command. */
     switch (len) {
     case 1:
-        write_val = *(u8*)buf << 24;
+        writeVal = *(u8*)buf << 24;
         break;
     case 2:
-        write_val = *(u16*)buf << 24 | (*(u16*)buf & 0xFF00) << 8;
+        writeVal = *(u16*)buf << 24 | (*(u16*)buf & 0xFF00) << 8;
         break;
     default:
-        write_val = __EXISwap32(*(u32*)buf);
+        writeVal = __EXISwap32(*(u32*)buf);
         break;
     }
 
@@ -32,7 +33,7 @@ BOOL EXIWriteReg(EXIChannel chan, u32 dev, u32 cmd, const void* buf, s32 len) {
 
     error |= !EXIImm(chan, &cmd, sizeof(cmd), EXI_WRITE, NULL);
     error |= !EXISync(chan);
-    error |= !EXIImm(chan, &write_val, sizeof(write_val), EXI_WRITE, NULL);
+    error |= !EXIImm(chan, &writeVal, sizeof(writeVal), EXI_WRITE, NULL);
     error |= !EXISync(chan);
     error |= !EXIDeselect(chan);
     error |= !EXIUnlock(chan);
