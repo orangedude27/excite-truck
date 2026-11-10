@@ -865,7 +865,7 @@ int fn_80166F78(float *arg0) {
 extern double fn_8002EFB4(float, float, float);
 extern float lbl_805618A0, lbl_805618F4, lbl_805618F8, lbl_805618FC;
 #pragma push
-#pragma optimization_level 4
+#pragma optimization_level 2
 #pragma scheduling on
 float fn_80166F90(float *arg0) {
     register float prod = lbl_805618A0 * arg0[2];
