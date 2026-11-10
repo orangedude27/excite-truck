@@ -2,7 +2,7 @@
 extern u32 lbl_8055D6E8;
 extern s32 lbl_8055D6AC;
 extern s32 lbl_8055D6DC;
-extern void (*lbl_8055D6E0)(void);
+extern void *lbl_8055D6E0;
 extern void TRKInitializeEventQueue(void);
 extern u32 lbl_80558DD8;
 extern u32 lbl_8035BF20[];
@@ -132,7 +132,7 @@ void TRKGetNextEvent(void *arg0, void *restoreContext) {
         value = lbl_8055D6DC;
         lbl_8055D6AC = 1;
         if (value != 0) TRKInitializeEventQueue();
-        else lbl_8055D6E0();
+        else ((void (*)(void))lbl_8055D6E0)();
         lbl_8055D6AC = 0;
     }
     OSClearContext(context);
