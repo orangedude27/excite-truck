@@ -210,9 +210,9 @@ void fn_80012984(int arg0) {
 
 #pragma cplusplus on
 #pragma dont_inline on
-extern int fn_80019B3C(void);
+extern "C" int fn_80019B3C(void);
 extern int lbl_80558AFC;
-extern char *strstr(const char *, const char *);
+extern "C" char *strstr(const char *, const char *);
 extern "C" int fn_80012AB4(void *arg0) {
     struct Dummy {
         virtual int f0();
