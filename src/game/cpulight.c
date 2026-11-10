@@ -256,20 +256,22 @@ void fn_802DBA1C(unsigned char arg0) {
     extern void *lbl_804DB468[];
     extern void fn_802DEAC4(void);
     extern void fn_802E0684(void);
-    int first[8];
-    int second[8];
-    int *matrix;
+    int texMtx0[8];
+    int texMtx1[8];
+    int *mtxSrc;
     int i;
 
-    matrix = (int *)lbl_802FAD18;
+    /* Loads two texture matrices and sets up GX texture/alpha state, then binds
+     * one of two texture-object sets and draws based on arg0. */
+    mtxSrc = (int *)lbl_802FAD18;
     for (i = 0; i < 8; i++)
-        first[i] = matrix[i];
-    GXLoadTexMtxImm((float *)first, 0x24, 1);
+        texMtx0[i] = mtxSrc[i];
+    GXLoadTexMtxImm((float *)texMtx0, 0x24, 1);
 
-    matrix = (int *)lbl_802FAD38;
+    mtxSrc = (int *)lbl_802FAD38;
     for (i = 0; i < 8; i++)
-        second[i] = matrix[i];
-    GXLoadTexMtxImm((float *)second, 0x27, 1);
+        texMtx1[i] = mtxSrc[i];
+    GXLoadTexMtxImm((float *)texMtx1, 0x27, 1);
 
     GXSetAlphaCompare(7, 0, 1, 7, 0);
     fn_802DB4E4();
