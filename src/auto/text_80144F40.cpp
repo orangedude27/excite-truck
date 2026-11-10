@@ -446,7 +446,8 @@ extern "C" void fn_8014595C(void *arg0, const char *arg1) {
 #pragma use_lmw_stmw reset
 #pragma dont_inline on
 extern "C" f32 fn_80145A08(f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
-    return farg2 + ((farg3 - farg2) * ((farg4 - farg0) / (farg1 - farg0)));
+    f32 num = farg4 - farg0;
+    return farg2 + ((num / (farg1 - farg0)) * (farg3 - farg2));
 }
 #pragma dont_inline reset
 
