@@ -2031,69 +2031,69 @@ extern "C" s32 fn_800A7B34(void *arg0, void *arg1) {
 
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" s32 fn_800A7C20(void *arg0, void **arg1, u32 arg2, void **arg3, s32 *arg4) {
+extern "C" s32 fn_800A7C20(void *volume, void **list, u32 sector, void **outPage, s32 *outCached) {
     u8 *page;
     s32 r;
-    r = VFiPFCACHE_SearchForPage((s32)arg0, (s32)*arg1, (s32)arg2);
-    *arg3 = (void *)r;
+    r = VFiPFCACHE_SearchForPage((s32)volume, (s32)*list, (s32)sector);
+    *outPage = (void *)r;
     if (r != 0) {
-        *arg4 = 1;
+        *outCached = 1;
     } else {
-        *arg4 = 0;
-        if (VFiPFCACHE_SearchForFreePage(*arg1, arg3) == 0) {
-            if (*arg3 == 0) {
-                *arg3 = 0;
-                return 0x1E;
+        *outCached = 0;
+        if (VFiPFCACHE_SearchForFreePage(*list, outPage) == 0) {
+            if (*outPage == 0) {
+                *outPage = 0;
+                return VF_ERR_NO_FREE_PAGE;
             }
-            r = fn_800A7B34(arg0, *arg3);
+            r = fn_800A7B34(volume, *outPage);
             if (r != 0) {
-                *arg3 = 0;
+                *outPage = 0;
                 return r;
             }
-            *(u32 *)((u8 *)*arg3 + 0xC) = 0;
-            *(u32 *)((u8 *)*arg3 + 0x10) = 0;
+            VF_PAGE_CHANGED_FROM(*outPage) = 0;
+            VF_PAGE_CHANGED_TO(*outPage) = 0;
         }
-        if (arg2 + 0x10000 != 0xFFFF) {
-            page = (u8 *)*arg3;
-            if (*(u16 *)page & 4) {
-                *(u32 *)(page + 0x18) = arg2 - arg2 % *(u32 *)(page + 0x14);
-                page = (u8 *)*arg3;
-                *(u32 *)(page + 8) = *(u32 *)(page + 4) + ((arg2 % *(u32 *)(page + 0x14)) << *(u8 *)((u8 *)arg0 + 0x20));
+        if (!VF_SECTOR_IS_END(sector)) {
+            page = (u8 *)*outPage;
+            if (VF_PAGE_FLAGS(page) & VF_PAGE_FAT) {
+                VF_PAGE_FIRST(page) = sector - sector % VF_PAGE_SECTORS(page);
+                page = (u8 *)*outPage;
+                VF_PAGE_DATA(page) = VF_PAGE_BUFFER(page) + ((sector % VF_PAGE_SECTORS(page)) << VF_VOL_SECTOR_SHIFT((u8 *)volume));
             } else {
-                if (*(s32 *)((u8 *)arg0 + 0x1C) == 2 &&
-                    (arg2 < *(u32 *)((u8 *)arg0 + 0x30) || arg2 >= *(u32 *)((u8 *)arg0 + 8)) &&
-                    arg2 == *(u16 *)((u8 *)arg0 + 0x14)) {
-                    *(u32 *)(page + 0x14) = 1;
+                if (VF_VOL_FAT_TYPE((u8 *)volume) == VF_FAT_TYPE_32 &&
+                    (sector < VF_VOL_DATA_START((u8 *)volume) || sector >= VF_VOL_TOTAL_SECTORS((u8 *)volume)) &&
+                    sector == VF_VOL_FSINFO_SECTOR((u8 *)volume)) {
+                    VF_PAGE_SECTORS(page) = 1;
                 }
-                page = (u8 *)*arg3;
-                *(u32 *)(page + 0x18) = arg2 - arg2 % *(u32 *)(page + 0x14);
-                page = (u8 *)*arg3;
-                *(u32 *)(page + 8) = *(u32 *)(page + 4) + ((arg2 % *(u32 *)(page + 0x14)) << *(u8 *)((u8 *)arg0 + 0x20));
+                page = (u8 *)*outPage;
+                VF_PAGE_FIRST(page) = sector - sector % VF_PAGE_SECTORS(page);
+                page = (u8 *)*outPage;
+                VF_PAGE_DATA(page) = VF_PAGE_BUFFER(page) + ((sector % VF_PAGE_SECTORS(page)) << VF_VOL_SECTOR_SHIFT((u8 *)volume));
             }
         } else {
-            page = (u8 *)*arg3;
-            *(u32 *)(page + 0x18) = arg2;
-            page = (u8 *)*arg3;
-            *(u32 *)(page + 8) = *(u32 *)(page + 4);
+            page = (u8 *)*outPage;
+            VF_PAGE_FIRST(page) = sector;
+            page = (u8 *)*outPage;
+            VF_PAGE_DATA(page) = VF_PAGE_BUFFER(page);
         }
-        page = (u8 *)*arg3;
-        *(u16 *)page |= 1;
+        page = (u8 *)*outPage;
+        VF_PAGE_FLAGS(page) |= VF_PAGE_IN_USE;
     }
     {
-        u8 *p = (u8 *)*arg3;
-        u8 *head = (u8 *)*arg1;
-        if (p != head) {
-            if (p == *(u8 **)(head + 0x24)) {
-                *arg1 = p;
+        u8 *taken = (u8 *)*outPage;
+        u8 *head = (u8 *)*list;
+        if (taken != head) {
+            if (taken == VF_PAGE_PREV(head)) {
+                *list = taken;
             } else {
-                *(u32 *)(*(u8 **)(p + 0x24) + 0x20) = *(u32 *)(p + 0x20);
-                *(u32 *)(*(u8 **)(p + 0x20) + 0x24) = *(u32 *)(p + 0x24);
-                head = (u8 *)*arg1;
-                *(u8 **)(p + 0x20) = head;
-                *(u32 *)(p + 0x24) = *(u32 *)((u8 *)*arg1 + 0x24);
-                *(u8 **)(head + 0x24) = p;
-                *(u8 **)(*(u8 **)(p + 0x24) + 0x20) = p;
-                *arg1 = p;
+                VF_PAGE_NEXT(VF_PAGE_PREV(taken)) = VF_PAGE_NEXT(taken);
+                VF_PAGE_PREV(VF_PAGE_NEXT(taken)) = VF_PAGE_PREV(taken);
+                head = (u8 *)*list;
+                VF_PAGE_NEXT(taken) = head;
+                VF_PAGE_PREV(taken) = VF_PAGE_PREV(*list);
+                VF_PAGE_PREV(head) = taken;
+                VF_PAGE_NEXT(VF_PAGE_PREV(taken)) = taken;
+                *list = taken;
             }
         }
     }
