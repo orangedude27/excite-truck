@@ -5774,21 +5774,22 @@ extern "C" s32 SetupPlayer__Q46nw4hbm3snd6detail10StrmPlayerFPCQ56nw4hbm3snd6det
 extern "C" const char lbl_8032692C[];
 extern "C" void *fn_800E3954(void *, s32, s32, s32, void (*)(void *, s32, void *), void *);
 extern "C" void VoiceCallbackFunc__Q46nw4hbm3snd6detail10StrmPlayerFPQ46nw4hbm3snd6detail7AxVoiceQ56nw4hbm3snd6detail7AxVoice14CallbackStatusPv(void *, s32, void *);
-extern "C" s32 AllocChannels__Q46nw4hbm3snd6detail10StrmPlayerFii(void *self, s32 channelCount, s32 columns) {
-    if (*(void **)((u8 *)self + 0x42C) == 0)
+extern "C" s32 AllocChannels__Q46nw4hbm3snd6detail10StrmPlayerFii(void *player, s32 channelCount, s32 channelParam) {
+    // Allocate per-channel stream buffers and an AxVoice set for this StrmPlayer; frees partial allocations on failure.
+    if (*(void **)((u8 *)player + 0x42C) == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x45C, lbl_8032692C);
 
-    u8 *channel = (u8 *)self;
+    u8 *channel = (u8 *)player;
     s32 allocated = 0;
     goto allocate_check;
     do {
-        void *buffer = Alloc__Q44nw4r3snd6detail14StrmBufferPoolFv(*(void **)((u8 *)self + 0x42C));
+        void *buffer = Alloc__Q44nw4r3snd6detail14StrmBufferPoolFv(*(void **)((u8 *)player + 0x42C));
         if (buffer == 0) {
-            channel = (u8 *)self;
+            channel = (u8 *)player;
             s32 freed = 0;
             goto alloc_free_check;
             do {
-                Free__Q44nw4r3snd6detail14StrmBufferPoolFPv(*(void **)((u8 *)self + 0x42C), *(void **)(channel + 0x4A8));
+                Free__Q44nw4r3snd6detail14StrmBufferPoolFPv(*(void **)((u8 *)player + 0x42C), *(void **)(channel + 0x4A8));
                 channel += 0x38;
                 ++freed;
             alloc_free_check:
@@ -5798,22 +5799,22 @@ extern "C" s32 AllocChannels__Q46nw4hbm3snd6detail10StrmPlayerFii(void *self, s3
         }
         *(void **)(channel + 0x4A8) = buffer;
         ++allocated;
-        *(u32 *)(channel + 0x4AC) = *(u32 *)((u8 *)(*(void **)((u8 *)self + 0x42C)) + 8);
+        *(u32 *)(channel + 0x4AC) = *(u32 *)((u8 *)(*(void **)((u8 *)player + 0x42C)) + 8);
         channel += 0x38;
     allocate_check:
         ;
     } while (allocated < channelCount);
 
     void *manager = Instance__15EmissionManagerFv();
-    void *voice = ::fn_800E3954(manager, channelCount, columns, 0xFF,
+    void *voice = ::fn_800E3954(manager, channelCount, channelParam, 0xFF,
                                VoiceCallbackFunc__Q46nw4hbm3snd6detail10StrmPlayerFPQ46nw4hbm3snd6detail7AxVoiceQ56nw4hbm3snd6detail7AxVoice14CallbackStatusPv,
-                               self);
+                               player);
     if (voice == 0) {
-        channel = (u8 *)self;
+        channel = (u8 *)player;
         s32 freed = 0;
         goto voice_free_check;
         do {
-            Free__Q44nw4r3snd6detail14StrmBufferPoolFPv(*(void **)((u8 *)self + 0x42C), *(void **)(channel + 0x4A8));
+            Free__Q44nw4r3snd6detail14StrmBufferPoolFPv(*(void **)((u8 *)player + 0x42C), *(void **)(channel + 0x4A8));
             channel += 0x38;
             ++freed;
         voice_free_check:
@@ -5821,7 +5822,7 @@ extern "C" s32 AllocChannels__Q46nw4hbm3snd6detail10StrmPlayerFii(void *self, s3
         } while (freed < channelCount);
         return 0;
     }
-    *(void **)((u8 *)self + 0x438) = voice;
+    *(void **)((u8 *)player + 0x438) = voice;
     return 1;
 }
 
