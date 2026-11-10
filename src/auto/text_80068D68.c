@@ -8896,22 +8896,22 @@ void btm_delete_stored_link_key_complete(u8 *p) {
     }
 }
 
-/* Reverses each returned address and link key in place before invoking the callback. */
+/* Reverses each returned BD address and link key in place, then invokes the registered completion callback. */
 void btm_return_link_keys_evt(tBTM_RETURN_LINK_KEYS_EVT *result) {
-    tBTM_CMPL_CB *p_cb = *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x570);
-    UINT8 i, *p, *p1;
-    UINT8 bd_addr[BD_ADDR_LEN];
-    UINT8 link_key[LINK_KEY_LEN];
-    if (p_cb) {
-        p = (UINT8 *)(result + 1);
-        for (i = 0; i < result->num_keys; i++) {
-            p1 = p;
-            REVERSE_STREAM_TO_ARRAY(bd_addr, p1, BD_ADDR_LEN);
-            REVERSE_STREAM_TO_ARRAY(link_key, p1, LINK_KEY_LEN);
-            ARRAY_TO_STREAM(p, bd_addr, BD_ADDR_LEN);
-            ARRAY_TO_STREAM(p, link_key, LINK_KEY_LEN);
+    tBTM_CMPL_CB *completionCb = *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x570);
+    UINT8 keyIndex, *recordPtr, *readPtr;
+    UINT8 bdAddr[BD_ADDR_LEN];
+    UINT8 linkKey[LINK_KEY_LEN];
+    if (completionCb) {
+        recordPtr = (UINT8 *)(result + 1);
+        for (keyIndex = 0; keyIndex < result->num_keys; keyIndex++) {
+            readPtr = recordPtr;
+            REVERSE_STREAM_TO_ARRAY(bdAddr, readPtr, BD_ADDR_LEN);
+            REVERSE_STREAM_TO_ARRAY(linkKey, readPtr, LINK_KEY_LEN);
+            ARRAY_TO_STREAM(recordPtr, bdAddr, BD_ADDR_LEN);
+            ARRAY_TO_STREAM(recordPtr, linkKey, LINK_KEY_LEN);
         }
-        (*p_cb)(result);
+        (*completionCb)(result);
     }
 }
 
