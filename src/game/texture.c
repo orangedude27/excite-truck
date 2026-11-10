@@ -496,11 +496,11 @@ extern char lbl_8034B8E0[];
 #pragma scheduling invalid_target
 void fn_802CAC54(int arg0) {
     int *entry;
-
     if (arg0 == -1)
         return;
     if (arg0 >= 0 && arg0 < 0x200) {
-        if (*(int *)((char *)lbl_8055FCB0 + arg0 * 0x4C) <= 0)
+        int v = *(int *)((char *)lbl_8055FCB0 + arg0 * 0x4C);
+        if (v <= 0)
             fn_802E317C(lbl_8034B8E0, (char *)lbl_8055FCB0 + arg0 * 0x4C + 4);
     }
     entry = (int *)((char *)lbl_8055FCB0 + arg0 * 0x4C);
@@ -712,6 +712,25 @@ void fn_802CB29C(int arg0) {
     }
     fn_802D9418();
     lbl_8055D06C = -2;
+}
+
+#pragma use_lmw_stmw off
+extern int lbl_8055D070;
+int fn_802CB2FC(int arg0, int arg1, int arg2, unsigned char arg3, unsigned short arg4, unsigned char arg5) {
+    unsigned char *p = (unsigned char *)fn_801284F8(0x18, &lbl_8055D070);
+    *(unsigned short *)(p + 0) = arg0;
+    *(unsigned short *)(p + 2) = arg1;
+    p[4] = arg2;
+    p[5] = arg3;
+    *(unsigned short *)(p + 0xC) = arg4;
+    p[6] = 0;
+    p[8] = 5;
+    p[9] = 0x32;
+    p[7] = arg5;
+    p[0xB] = 2;
+    *(int *)(p + 0x14) = 0;
+    p[0xA] = 0;
+    return (int)p;
 }
 
 char fn_802CAFC8(int arg0) {
