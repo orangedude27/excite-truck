@@ -1001,6 +1001,7 @@ void fn_801F6A98(void *arg0, int arg1) {
     int enabled;
     void *entry;
     int i;
+
     enabled = !((float)__fabs((double)fn_801E7E24()) <= lbl_80558DC4);
     entry = arg0;
     i = 0;
@@ -1021,7 +1022,8 @@ loop:
     }
     fn_801F65D0(entry);
     fn_801F6728(entry);
-    *(unsigned char *)((char *)entry + 0x38) = fn_802CDB20(arg1, *(int *)((char *)entry + 0x34));
+    *(unsigned char *)((char *)entry + 0x38) =
+        fn_802CDB20(arg1, *(int *)((char *)entry + 0x34));
     entry = (char *)entry + 0x48;
     i++;
 check:
@@ -1153,27 +1155,29 @@ extern "C" void fn_801F6F3C(void *arg0, int arg1, int arg2, void *arg3, int arg4
     };
 
     char *slot;
-    int old, got;
-    Vec3_801F4F9C sp;
+    int anchorId;
+    int resolvedId;
+    Vec3_801F4F9C vec;
 
+    /* Append a non-uniform fabric entry (max 8) from source properties: id, params, and transform values. */
     if (*(int *)((char *)arg0 + 0x2A0) >= 8) {
         fn_802E317C(lbl_8033AE20);
     }
     slot = (char *)arg0 + *(int *)((char *)arg0 + 0x2A0) * 0x54;
-    old = ((int (*)(const char *))fn_801F4E44)(
+    anchorId = ((int (*)(const char *))fn_801F4E44)(
         ((DummyDispatch *)arg3)->getName(lbl_8055B19C));
-    got = ((int (*)(void *))fn_801F4ECC)(arg3);
-    fn_801F602C(slot, arg1, arg2, old, got);
+    resolvedId = ((int (*)(void *))fn_801F4ECC)(arg3);
+    fn_801F602C(slot, arg1, arg2, anchorId, resolvedId);
     *(int *)(slot + 0x34) = arg4;
     slot[0x38] = 1;
     *(float *)(slot + 0x3C) =
         lbl_80562FE8 * ((DummyDispatch *)arg3)->getFloat(lbl_8055B1A8);
     *(float *)(slot + 0x40) = ((DummyDispatch *)arg3)->getFloat(lbl_8055B1B0);
     *(float *)(slot + 0x44) = ((DummyDispatch *)arg3)->getFloat(lbl_8055B1B8);
-    sp = ((DummyDispatch *)arg3)->getVector(lbl_8033AE48);
-    *(float *)(slot + 0x48) = sp.x;
-    *(float *)(slot + 0x4C) = sp.y;
-    *(float *)(slot + 0x50) = sp.z;
+    vec = ((DummyDispatch *)arg3)->getVector(lbl_8033AE48);
+    *(float *)(slot + 0x48) = vec.x;
+    *(float *)(slot + 0x4C) = vec.y;
+    *(float *)(slot + 0x50) = vec.z;
     *(int *)((char *)arg0 + 0x2A0) =
         *(int *)((char *)arg0 + 0x2A0) + 1;
 }
