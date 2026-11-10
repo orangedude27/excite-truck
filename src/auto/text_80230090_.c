@@ -591,7 +591,9 @@ void fn_80231094(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
 
 #pragma push
 #pragma processor 750
-void fn_80231220(void *arg0, s32 arg1, f32 x, f32 y, f32 w, f32 h, f32 u0, f32 v0, f32 u1, f32 v1) {
+// Draws a textured axis-aligned quad: builds four vertices (x/y/w/h with uv corners
+// u0,v0,u1,v1 and z = 0), copies the standard quad index list, submits them, then ends draw.
+void fn_80231220(void *drawCtx, s32 texParam, f32 x, f32 y, f32 w, f32 h, f32 u0, f32 v0, f32 u1, f32 v1) {
     extern void fn_802C8B98(s32, s32);
     extern void fn_802C8D74(void);
     extern void fn_802C8DB8(void *, s32, u16 *, s32);
@@ -613,8 +615,8 @@ void fn_80231220(void *arg0, s32 arg1, f32 x, f32 y, f32 w, f32 h, f32 u0, f32 v
     s32 state;
     f32 zero;
 
-    fn_802C8B98((s32)arg0, (s32)fn_8022EDC4());
-    state = fn_80230B9C((u32)arg1);
+    fn_802C8B98((s32)drawCtx, (s32)fn_8022EDC4());
+    state = fn_80230B9C((u32)texParam);
     zero = lbl_80563614;
     fn_80231380(frame.sp20, state, x, y, zero, u0, v0);
     fn_80231380(frame.sp38, state, x + w, y, zero, u1, v0);
