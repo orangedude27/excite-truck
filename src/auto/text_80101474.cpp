@@ -36,7 +36,11 @@ extern "C" int fn_800EAD00(void *);
 extern "C" const char lbl_80328178[];
 extern "C" const char lbl_8032818C[];
 extern "C" unsigned char lbl_8041D4E0[];
-// NW4HBM_ASSERT_VALID_PTR(this) as expanded in CharWriter.cpp
+// Panic strings of the second nw4hbm "ut" library copy (built from ut_CharWriter.cpp).
+#define UT_CHARWRITER_CPP lbl_80328178 /* "ut_CharWriter.cpp" */
+#define UT_PTR_ERROR_MSG lbl_8032818C  /* "NW4HBM:Pointer Error\nthis(=%p) is not valid pointer." */
+// NW4HBM_ASSERT_VALID_PTR(this) as expanded in CharWriter.cpp: nw4hbm::db::Panic unless
+// the pointer lies in one of the Wii's mapped windows (MEM1, MEM2, IO, ...).
 #define CW_CHECK_THIS(self, line) \
     { \
         unsigned int cw_addr = (unsigned int)(self); \
@@ -48,7 +52,7 @@ extern "C" unsigned char lbl_8041D4E0[];
         if (cw_r7 == 0 && (cw_addr & 0xFF800000U) != 0xC1000000U) cw_r6 = 0; \
         if (cw_r6 == 0 && (cw_addr & 0xF8000000U) != 0xD0000000U) cw_r5 = 0; \
         if (cw_r5 == 0 && (cw_addr & 0xFFFFC000U) != 0xE0000000U) cw_r4 = 0; \
-        if (cw_r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, line, lbl_8032818C, self); \
+        if (cw_r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(UT_CHARWRITER_CPP, line, UT_PTR_ERROR_MSG, self); \
     }
 extern "C" void __register_global_object(void *, void *, void *);
 extern "C" void fn_800D2DD4(void);
