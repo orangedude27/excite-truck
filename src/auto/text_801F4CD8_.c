@@ -1191,12 +1191,16 @@ void fn_801F7160(void *arg0) {
     entry = arg0;
     i = 0;
     while (i < *(int *)((char *)arg0 + 0x120)) {
+        float c, b, a;
         scale = *(float *)((char *)entry + 0x40);
         offset = *(float *)((char *)entry + 0x3C);
         fn_801E8C84(&sp[0]);
-        sp[3] = sp[0] * scale;
-        sp[5] = sp[2] * scale;
-        sp[4] = sp[1] * scale - offset;
+        a = sp[0] * scale;
+        b = sp[1] * scale;
+        c = sp[2] * scale;
+        sp[3] = a;
+        sp[4] = b - offset;
+        sp[5] = c;
         fn_801F63F0(entry, &sp[3], *(float *)((char *)entry + 0x44));
         fn_801F65D0(entry);
         fn_801F6728(entry);
