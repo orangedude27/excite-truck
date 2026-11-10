@@ -499,8 +499,8 @@ extern "C" void fn_801A5C4C(void *arg0, unsigned int key) {
         obj->f12(values, values, 0x3EA, 0);
     }
 }
-#pragma cplusplus off
-void fn_801A5D80(void *arg0, int arg1, int arg2, int arg3, int arg4) {
+#pragma cplusplus on
+extern "C" void fn_801A5D80(void *arg0, int arg1, int arg2, int arg3, int arg4) {
     void *obj;
     float zero;
     fn_8018B09C();
