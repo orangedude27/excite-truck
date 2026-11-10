@@ -363,6 +363,8 @@ s32 fn_80246E4C(void) {
 }
 #pragma pop
 
+#pragma push
+#pragma scheduling invalid_target
 Obj_802470D4 *fn_802470D4(Obj_802470D4 *arg0, s32 arg1) {
     s32 *p;
     if (arg0 != 0) {
@@ -374,21 +376,21 @@ Obj_802470D4 *fn_802470D4(Obj_802470D4 *arg0, s32 arg1) {
         if (p != 0) {
             fn_802328D4(*p);
             *p = 0;
-            fn_80128668(((*p = 0), p));
+            fn_80128668(p);
         }
         if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
 }
-
+#pragma pop
 void fn_80247174(void) {
     s32 i = 0;
     do {
         fn_80246CAC(lbl_80563898 - ((float)i / lbl_805638A8));
         fn_80127464();
-        fn_802E2D74(0x10);
+        fn_802E2D74(16);
         i++;
-    } while (i < 0x32);
+    } while (i < 50);
     fn_8020A634();
     fn_80246CAC(lbl_80563898);
 }
