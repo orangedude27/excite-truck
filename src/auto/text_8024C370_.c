@@ -74,6 +74,7 @@ void *fn_8024C3FC(void *arg0, int arg1) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
+__declspec(section ".sdata") extern char lbl_8055C018[];
 void fn_8024C464(void) {
     char *buffer = lbl_80498A00;
     int *state = lbl_80498A48;
