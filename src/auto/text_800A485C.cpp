@@ -4613,7 +4613,7 @@ extern "C" s32 fn_800ACDF8(void *arg0, s32 arg1) {
 
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" s32 fn_800ACF20(void *arg0, u32 arg1, u32 *arg2, u32 *arg3)
+extern "C" s32 fn_800ACF20(void *fileInfo, u32 clusterIndex, u32 *outCluster, u32 *outFromCache)
 {
     volatile s32 end = -1;
     s32 result;
@@ -4624,27 +4624,28 @@ extern "C" s32 fn_800ACF20(void *arg0, u32 arg1, u32 *arg2, u32 *arg3)
     u32 finalValue;
     void *context;
 
-    *arg3 = 0;
-    if (*(u32 *)((u8 *)arg0 + 0x24) == 0) {
+    /* Resolves a FAT cluster index for a file, using cached cluster map entries when possible and walking the FAT chain otherwise. */
+    *outFromCache = 0;
+    if (*(u32 *)((u8 *)fileInfo + 0x24) == 0) {
         return 0;
     }
-    if (*(u32 *)((u8 *)arg0 + 0x2C) < arg1) {
+    if (*(u32 *)((u8 *)fileInfo + 0x2C) < clusterIndex) {
         goto return_zero;
     }
 
-    chunkSize = *(u16 *)((u8 *)arg0 + 0x20) + 1;
-    quotient = arg1 / chunkSize;
-    remaining = arg1 - quotient * chunkSize;
+    chunkSize = *(u16 *)((u8 *)fileInfo + 0x20) + 1;
+    quotient = clusterIndex / chunkSize;
+    remaining = clusterIndex - quotient * chunkSize;
     if (remaining == 0) {
-        *arg2 = *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 0x1C) + quotient * 4);
-        *arg3 = 1;
+        *outCluster = *(u32 *)((u8 *)*(void **)((u8 *)fileInfo + 0x1C) + quotient * 4);
+        *outFromCache = 1;
         goto done;
     }
 
-    current = *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 0x1C) + quotient * 4);
+    current = *(u32 *)((u8 *)*(void **)((u8 *)fileInfo + 0x1C) + quotient * 4);
     goto check_remaining;
 loop_body:
-    context = *(void **)((u8 *)arg0 + 0x34);
+    context = *(void **)((u8 *)fileInfo + 0x34);
     switch (*(s32 *)((u8 *)context + 0x1C)) {
     case 0:
         result = fn_800AF5A0(context, (u16)current, (s32 *)&end);
@@ -4677,11 +4678,11 @@ check_remaining:
     if (finalValue == 0) {
         return 0xD;
     }
-    if (finalValue == lbl_802EEF40[*(s32 *)(*(u8 **)((u8 *)arg0 + 0x34) + 0x1C) * 5 + 2]) {
+    if (finalValue == lbl_802EEF40[*(s32 *)(*(u8 **)((u8 *)fileInfo + 0x34) + 0x1C) * 5 + 2]) {
         return 0;
     }
-    *arg2 = finalValue;
-    *arg3 = 1;
+    *outCluster = finalValue;
+    *outFromCache = 1;
     goto done;
 return_zero:
     return 0;
