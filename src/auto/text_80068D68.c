@@ -9029,57 +9029,67 @@ extern u8 lbl_8031637C[];
 extern void fn_80085384(u8 *, u8);
 extern void fn_800853B4(u8 *, u16, u16);
 tBTM_STATUS BTM_SetConnectability(UINT16 page_mode, UINT16 window, UINT16 interval) {
-    register s32 mode = page_mode;
-    register u8 *base = lbl_803C0F78;
-    register u8 flags = 0;
-    register s32 page_interval = interval;
-    register s32 page_window = window;
-    if (mode == 0 || (u32)mode == 1U)
+    /* Sets BR/EDR page scan connectability (mode 0/1), updating page scan
+       window/interval and HCI scan enable as needed; returns BTM status. */
+    register s32 connectableMode = page_mode;
+    register u8 *btmCb = lbl_803C0F78;
+    register u8 scanEnable = 0;
+    register s32 pageInterval = interval;
+    register s32 pageWindow = window;
+
+    if (connectableMode == 0 || (u32)connectableMode == 1U)
         goto valid_mode;
     return 5;
+
 valid_mode:
     if (lbl_803C0F78[0x64E] < 3)
         return 0xC;
-    if (page_window == 0)
-        page_window = 0x12;
-    if (page_interval == 0)
-        page_interval = 0x800;
+
+    if (pageWindow == 0)
+        pageWindow = 0x12;
+    if (pageInterval == 0)
+        pageInterval = 0x800;
+
     if (lbl_803C0F78[0x27C0] >= 3)
         ((void (*)(u32, void *, u16, u16, u16))fn_80070984)(
-            0xD0002, lbl_8031637C, (u16)mode, (u16)page_window, (u16)page_interval);
-    if ((u32)mode == 1U) {
-        if ((u32)page_window < 0x12U || (u32)page_window > 0x1000U ||
-            (u32)page_interval < 0x12U || (u32)page_interval > 0x1000U ||
-            (u32)page_window > (u32)page_interval)
+            0xD0002, lbl_8031637C, (u16)connectableMode, (u16)pageWindow, (u16)pageInterval);
+
+    if ((u32)connectableMode == 1U) {
+        if ((u32)pageWindow < 0x12U || (u32)pageWindow > 0x1000U ||
+            (u32)pageInterval < 0x12U || (u32)pageInterval > 0x1000U ||
+            (u32)pageWindow > (u32)pageInterval)
             return 5;
-        flags |= 2;
+        scanEnable |= 2;
     }
-    if ((u32)page_window != *(u16 *)(base + 0x169C) ||
-        (u32)page_interval != *(u16 *)(base + 0x169E)) {
-        u8 *buf = GKI_getpoolbuf(2);
-        if (buf == 0)
+
+    if ((u32)pageWindow != *(u16 *)(btmCb + 0x169C) ||
+        (u32)pageInterval != *(u16 *)(btmCb + 0x169E)) {
+        u8 *cmdBuf = GKI_getpoolbuf(2);
+        if (cmdBuf == 0)
             goto no_buffer_first;
-        *(u16 *)(base + 0x169C) = (u16)page_window;
-        *(u16 *)(base + 0x169E) = (u16)page_interval;
-        fn_800853B4(buf, (u16)page_interval, (u16)page_window);
+        *(u16 *)(btmCb + 0x169C) = (u16)pageWindow;
+        *(u16 *)(btmCb + 0x169E) = (u16)pageInterval;
+        fn_800853B4(cmdBuf, (u16)pageInterval, (u16)pageWindow);
         goto after_first_error;
 no_buffer_first:
         return 3;
 after_first_error:
         ;
     }
+
     {
-        u8 *buf = GKI_getpoolbuf(2);
-        if (buf == 0)
+        u8 *cmdBuf = GKI_getpoolbuf(2);
+        if (cmdBuf == 0)
             goto no_buffer_second;
-        if (*(u16 *)(base + 0x1698) != 0)
-            flags |= 1;
-        *(u16 *)(base + 0x169A) = (u16)mode;
-        fn_80085384(buf, flags);
+        if (*(u16 *)(btmCb + 0x1698) != 0)
+            scanEnable |= 1;
+        *(u16 *)(btmCb + 0x169A) = (u16)connectableMode;
+        fn_80085384(cmdBuf, scanEnable);
         goto done;
 no_buffer_second:
         return 3;
     }
+
 done:
     return 0;
 }
