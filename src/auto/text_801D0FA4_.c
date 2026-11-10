@@ -29,7 +29,9 @@ void *fn_801D1008(void *arg0, s32 arg1) {
             *(void **)arg0 = lbl_803381C0;
             fn_801D0DFC(arg0);
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
     }
     return arg0;
 }
