@@ -158,8 +158,7 @@ void fn_801331C4(int arg0,int arg1,float *arg2) {
 
 __declspec(section ".sdata") extern const char lbl_80559B5C[];
 #pragma push
-#pragma optimize_for_size on
-#pragma scheduling invalid_target
+#pragma processor 750
 int fn_8013323C(int arg0, int arg1, float arg2) {
     extern float lbl_805612D0;
     extern int sprintf(char *, const char *, ...);
@@ -170,7 +169,7 @@ int fn_8013323C(int arg0, int arg1, float arg2) {
     *(float *)((char *)sp8 + 0x10) = arg2;
     *(unsigned char *)((char *)sp8 + 8) = lbl_805612D0 != arg2;
     *(int *)((char *)sp8 + 0x0C) = intValue;
-    ((int (*)(char *, const char *, float))sprintf)((char *)sp8 + 0x14, lbl_80559B5C, arg2);
+    sprintf((char *)sp8 + 0x14, lbl_80559B5C, arg2);
     *(int *)sp8 = 4;
 }
 #pragma pop
@@ -201,20 +200,16 @@ void fn_801332D0(int arg0, int arg1, int *arg2) {
 #pragma scheduling on
 __declspec(section ".sdata") extern const char lbl_80559B60[];
 int fn_80133348(int arg0, int arg1, int arg2) {
-    union Conv {
-        double value;
-        unsigned int words[2];
-    } conv;
-    void *sp8;
-    fn_80133E10(&sp8, arg0, arg1);
-    conv.words[0] = 0x43300000;
-    conv.words[1] = ((unsigned int)arg2) ^ 0x80000000;
-    *(float *)((char *)sp8 + 0x10) = (float)(conv.value - lbl_805612D8);
-    *(int *)((char *)sp8 + 0xC) = arg2;
-    *(unsigned char *)((char *)sp8 + 8) = arg2 != 0;
-    sprintf((char *)sp8 + 0x14, lbl_80559B60, arg2);
-    *(int *)sp8 = 2;
-    return 0;
+    char *sp8;
+    char *p;
+    fn_80133E10((void **)&sp8, arg0, arg1);
+    *(int *)(sp8 + 0xC) = arg2;
+    *(float *)(sp8 + 0x10) = (float)arg2;
+    *(unsigned char *)(sp8 + 8) = arg2 != 0;
+    sprintf(sp8 + 0x14, lbl_80559B60, arg2);
+    p = sp8;
+    *(int *)p = 2;
+    return (int)p;
 }
 
 #pragma scheduling invalid_target
@@ -226,18 +221,17 @@ void fn_801333E8(int arg0, int arg1, unsigned char *arg2) {
         fn_80133460(arg0, arg1, *arg2);
     }
 }
+__declspec(section ".sdata") extern const char lbl_80559B64[];
+__declspec(section ".sdata") extern const char lbl_80559B68[];
 #pragma scheduling invalid_target
 int fn_80133460(int arg0, int arg1, unsigned char arg2) {
     void *sp8;
-    int result;
     fn_80133E10(&sp8, arg0, arg1);
     *(unsigned char *)((char *)sp8 + 8) = arg2;
     *(int *)((char *)sp8 + 0xC) = arg2;
     *(float *)((char *)sp8 + 0x10) = (float)arg2;
-    strcpy((char *)sp8 + 0x14, arg2 ? lbl_80559B68 : lbl_80559B64);
+    strcpy((char *)sp8 + 0x14, arg2 ? lbl_80559B64 : lbl_80559B68);
     *(int *)sp8 = 1;
-    result = 0;
-    return result;
 }
 #pragma scheduling on
 void fn_801334F4(int arg0, int arg1, char *arg2, int arg3) {
@@ -351,18 +345,36 @@ char *fn_801337E4(char *arg0) {
 #pragma dont_inline off
 #pragma dont_inline on
 int fn_80133844(const char *arg0) {
-    int c = (signed char)*fn_801337E4((char *)arg0);
-    int table = *(int *)(lbl_802FE850 + 0x38);
-    if (c >= 0 && c < 0x100 && (*(unsigned short *)(*(int *)(table + 8) + c * 2) & 8)) return atoi(arg0) != 0;
-    return stricmp(arg0, "true") == 0;
+    char *p = fn_801337E4((char *)arg0);
+    int invalid = 0;
+    int c = (signed char)*p;
+    int table;
+    int isnum;
+    if (c < 0)
+        goto set_invalid;
+    if (c < 0x100)
+        goto check_invalid;
+set_invalid:
+    invalid = 1;
+check_invalid:
+    if (invalid != 0)
+        isnum = 0;
+    else {
+        table = *(int *)((char *)&lbl_802FE850 + 0x38);
+        isnum = (*(unsigned short *)(*(int *)(table + 8) + (c * 2)) & 8);
+    }
+    if (isnum != 0)
+        return atoi(p) != 0;
+    return stricmp(p, lbl_80559B64) == 0;
 }
 #pragma dont_inline off
 
 int fn_801338D8(const char *arg0) {
     char *p = fn_801337E4((char *)arg0);
-    int c = (signed char)*p;
+    unsigned char b = *p;
+    int isnum = 0;
+    int c = (signed char)b;
     int table;
-    int isnum;
     if (c < 0)
         isnum = 0;
     else if (c < 0x100) {
@@ -370,12 +382,10 @@ int fn_801338D8(const char *arg0) {
         isnum = (*(unsigned short *)(*(int *)(table + 8) + c * 2) & 8) != 0;
     } else
         isnum = 1;
-    if (isnum == 0) {
-        if (c == '-') {}
-        else
-            return fn_80133844(p);
+    if (isnum != 0)
         return atoi(p);
-    }
+    if (c != '-')
+        return fn_80133844(p);
     return atoi(p);
 }
 
@@ -618,15 +628,13 @@ check:
 
 #pragma dont_inline on
 int fn_80133F3C(int arg0) {
-    unsigned int offset;
     int i = 0;
     int *p;
-    int *entry;
+    int offset;
     goto check;
 loop:
-    offset = (unsigned int)i * 0x38;
-    entry = (int *)((char *)p + offset);
-    if (arg0 == entry[3]) {
+    offset = i * 0x38;
+    if (arg0 == *(int *)((char *)p + offset + 0xC)) {
         p[1] = p[1] - 1;
         p = (int *)lbl_8055E07C;
         memmove((char *)p + offset + 8,
