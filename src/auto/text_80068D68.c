@@ -20076,6 +20076,9 @@ extern void port_flow_control_peer(void *, s32, u16);
 extern void RFCOMM_LineStatusReq(void *, u8, u8);
 extern char lbl_80319490[];
 extern char lbl_803194B4[];
+// Handles an inbound RFCOMM data indication for a port: dispatches to a data callback if
+// present, otherwise queues the buffer (checking overflow and scanning for the event char),
+// updates flow control, and signals data/event callbacks when not holding events.
 void PORT_DataInd(void *p_mcb, u8 dlci, BT_HDR *p_buf) {
     u8 *p_port = (u8 *)port_find_mcb_dlci_port(p_mcb, dlci);
     u8 rx_char1;
