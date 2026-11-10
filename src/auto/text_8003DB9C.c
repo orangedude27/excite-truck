@@ -1029,47 +1029,50 @@ void GXSetVtxDesc(unsigned int attr, unsigned int type) {
     gxdata->dirtyState |= DIRTY_VCD;
 }
 
-void GXSetVtxDescv(unsigned int *desc) {
-    unsigned int *data = __GXData;
-    while ((int)desc[0] != 0xff) {
-        unsigned int attr = *(volatile unsigned int *)desc;
-        unsigned int type = *(volatile unsigned int *)(desc + 1);
+/* Walk a GX_VA_NULL-terminated vertex descriptor list and update GX vtx-desc
+ * (VCD lo/hi), normal/binormal flags, and direct/normal-type fields in __GXData.
+ * Marks VCD dirty when done. */
+void GXSetVtxDescv(unsigned int *list) {
+    unsigned int *gxData = __GXData;
+    while ((int)list[0] != 0xff) {
+        unsigned int attr = *(volatile unsigned int *)list;
+        unsigned int type = *(volatile unsigned int *)(list + 1);
         switch (attr) {
-        case 0: data[5] = __rlwimi(data[5],type,0,31,31); break;
-        case 1: data[5] = __rlwimi(data[5],type,1,30,30); break;
-        case 2: data[5] = __rlwimi(data[5],type,2,29,29); break;
-        case 3: data[5] = __rlwimi(data[5],type,3,28,28); break;
-        case 4: data[5] = __rlwimi(data[5],type,4,27,27); break;
-        case 5: data[5] = __rlwimi(data[5],type,5,26,26); break;
-        case 6: data[5] = __rlwimi(data[5],type,6,25,25); break;
-        case 7: data[5] = __rlwimi(data[5],type,7,24,24); break;
-        case 8: data[5] = __rlwimi(data[5],type,8,23,23); break;
-        case 9: data[5] = __rlwimi(data[5],type,9,21,22); break;
+        case 0: gxData[5] = __rlwimi(gxData[5],type,0,31,31); break;
+        case 1: gxData[5] = __rlwimi(gxData[5],type,1,30,30); break;
+        case 2: gxData[5] = __rlwimi(gxData[5],type,2,29,29); break;
+        case 3: gxData[5] = __rlwimi(gxData[5],type,3,28,28); break;
+        case 4: gxData[5] = __rlwimi(gxData[5],type,4,27,27); break;
+        case 5: gxData[5] = __rlwimi(gxData[5],type,5,26,26); break;
+        case 6: gxData[5] = __rlwimi(gxData[5],type,6,25,25); break;
+        case 7: gxData[5] = __rlwimi(gxData[5],type,7,24,24); break;
+        case 8: gxData[5] = __rlwimi(gxData[5],type,8,23,23); break;
+        case 9: gxData[5] = __rlwimi(gxData[5],type,9,21,22); break;
         case 10:
-            if (type) { ((u8 *)data)[0x524]=1; ((u8 *)data)[0x525]=0; data[0x520/4]=type; }
-            else ((u8 *)data)[0x524]=0;
+            if (type) { ((u8 *)gxData)[0x524]=1; ((u8 *)gxData)[0x525]=0; gxData[0x520/4]=type; }
+            else ((u8 *)gxData)[0x524]=0;
             break;
         case 25:
-            if (type) { ((u8 *)data)[0x525]=1; ((u8 *)data)[0x524]=0; data[0x520/4]=type; }
-            else ((u8 *)data)[0x525]=0;
+            if (type) { ((u8 *)gxData)[0x525]=1; ((u8 *)gxData)[0x524]=0; gxData[0x520/4]=type; }
+            else ((u8 *)gxData)[0x525]=0;
             break;
-        case 11: data[5] = __rlwimi(data[5],type,13,17,18); break;
-        case 12: data[5] = __rlwimi(data[5],type,15,15,16); break;
-        case 13: data[6] = __rlwimi(data[6],type,0,30,31); break;
-        case 14: data[6] = __rlwimi(data[6],type,2,28,29); break;
-        case 15: data[6] = __rlwimi(data[6],type,4,26,27); break;
-        case 16: data[6] = __rlwimi(data[6],type,6,24,25); break;
-        case 17: data[6] = __rlwimi(data[6],type,8,22,23); break;
-        case 18: data[6] = __rlwimi(data[6],type,10,20,21); break;
-        case 19: data[6] = __rlwimi(data[6],type,12,18,19); break;
-        case 20: data[6] = __rlwimi(data[6],type,14,16,17); break;
+        case 11: gxData[5] = __rlwimi(gxData[5],type,13,17,18); break;
+        case 12: gxData[5] = __rlwimi(gxData[5],type,15,15,16); break;
+        case 13: gxData[6] = __rlwimi(gxData[6],type,0,30,31); break;
+        case 14: gxData[6] = __rlwimi(gxData[6],type,2,28,29); break;
+        case 15: gxData[6] = __rlwimi(gxData[6],type,4,26,27); break;
+        case 16: gxData[6] = __rlwimi(gxData[6],type,6,24,25); break;
+        case 17: gxData[6] = __rlwimi(gxData[6],type,8,22,23); break;
+        case 18: gxData[6] = __rlwimi(gxData[6],type,10,20,21); break;
+        case 19: gxData[6] = __rlwimi(gxData[6],type,12,18,19); break;
+        case 20: gxData[6] = __rlwimi(gxData[6],type,14,16,17); break;
         }
-        desc += 2;
+        list += 2;
     }
-    if (((u8 *)data)[0x524] || ((u8 *)data)[0x525])
-        data[5] = __rlwimi(data[5], data[0x520/4], 11, 19, 20);
-    else data[5] &= 0xffffe7ff;
-    data[0x5fc/4] |= 8;
+    if (((u8 *)gxData)[0x524] || ((u8 *)gxData)[0x525])
+        gxData[5] = __rlwimi(gxData[5], gxData[0x520/4], 11, 19, 20);
+    else gxData[5] &= 0xffffe7ff;
+    gxData[0x5fc/4] |= 8;
 }
 
 void __GXSetVCD(void) {
