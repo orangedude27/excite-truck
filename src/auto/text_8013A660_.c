@@ -80,12 +80,14 @@ char *fn_8013A708(char *arg0, int arg1, int arg2) {
 int fn_8013A760(unkVtable **arg0, int arg1) {
     char buffer[0x20];
     int i = 0;
-    do {
+    while (1) {
         char *name = ((char *(*)(char *, int, int))fn_8013A708)(buffer, i, arg1);
-        if (((int (*)(unkVtable *, char *))(*arg0)->m_fn)(*arg0, name) != 0)
+        if (((int (*)(unkVtable **, char *))(*arg0)->m_fn)(arg0, name) != 0)
             return 1;
         i++;
-    } while (i < 3);
+        if (i >= 3)
+            break;
+    }
     return 0;
 }
 #pragma push
@@ -427,3 +429,15 @@ float fn_8013B744(int arg0) {
     return v * lbl_80559C98;
 }
 #pragma dont_inline reset
+
+float fn_8013AA68(void *arg0, void *arg1, void *arg2, void *arg3) {
+    int spC;
+    float sp8;
+    float result = lbl_80561434;
+    if (fn_8013A760((unkVtable **)arg0, (int)arg1) != 0) {
+        fn_8013B6C0(&spC, &sp8, *(int *)((char *)arg3 + 0xC));
+        fn_8013A7E8((unkVtable **)arg0, (char *)arg1, (char *)arg2);
+        result = fn_8013A90C(arg0, (int)arg1, spC, sp8);
+    }
+    return result;
+}
