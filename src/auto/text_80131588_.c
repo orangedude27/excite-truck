@@ -227,25 +227,24 @@ s32 fn_80131B10(s32 arg0, s32 arg1) {
 }
 
 s32 fn_80131B50(void *arg0) {
-    struct Entry {
-        char *first;
-        char *second;
-    };
     s32 count = *(s32 *)((char *)arg0 + 0xC);
-    struct Entry *entries = *(struct Entry **)((char *)arg0 + 0x10);
+    char *base = *(char **)((char *)arg0 + 0x10);
     s32 hash = 0xBABBA;
+    s32 off = 0;
     s32 i;
     for (i = 0; i < count; i++) {
-        char *s = entries[i].first;
+        char *s = *(char **)(base + off);
         while (*s != 0) {
             hash += (s8)*s + 0xBAF;
             s++;
         }
-        s = entries[i].second;
+        s = *(char **)(base + off + 4);
         while (*s != 0) {
-            hash += (s8)*s + 0xBAF;
+            hash += (s8)*s;
+            hash += 0xFABFACAB;
             s++;
         }
+        off += 8;
     }
     return hash;
 }
@@ -536,7 +535,7 @@ extern "C" s32 fn_80132220(void **arg0) {
     };
     char *value = ((Dummy *)arg0)->v3();
     s32 result = 0;
-    if (stricmp(value, lbl_80559B18) != 0 && stricmp(value, lbl_80559B10) == 0)
+    if (stricmp(value, lbl_80559B10) != 0 && stricmp(value, lbl_80559B18) == 0)
         result = 1;
     return result;
 }
@@ -658,36 +657,45 @@ f32 fn_8013278C(void *arg0, s32 arg1) {
 }
 #pragma pop
 
-#pragma push
-#pragma scheduling invalid_target
-s32 fn_8013284C(void *arg0, s32 arg1) {
+#pragma cplusplus on
+extern "C" s32 fn_8013284C(void *arg0, s32 arg1) {
+    class Obj2 {
+    public:
+        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4();
+        virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9();
+        virtual void f10(); virtual void f11(); virtual void f12(); virtual void f13(); virtual void f14();
+        virtual void f15(); virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19();
+        virtual void f20(); virtual void f21(); virtual s32 f22();
+    };
+    class Obj {
+    public:
+        virtual s32 f0(void*);
+    };
     s32 count = *(s32*)((char*)arg0 + 0xC);
-    if (count > 0) {
-        void **entries = *(void***)((char*)arg0 + 0x10);
-        s32 i = 0;
-        do {
-            char *name = (char*)entries[i];
-            if (*name == '@') {
-                if (arg1-- == 0) {
-                    void *obj = *(void**)((char*)arg0 + 0x18);
-                    void **vt = *(void**)obj;
-                    return ((s32 (*)(void*, void*))vt[2])(obj, entries[2*i + 1]);
-                }
+    s32 off;
+    s32 i;
+    i = 0;
+    off = 0;
+    while (i < count) {
+        char *name = *(char**)(*(char**)((char*)arg0 + 0x10) + off);
+        if (*name == '@') {
+            if (arg1-- == 0) {
+                void *obj = *(void**)((char*)arg0 + 0x18);
+                return ((Obj*)obj)->f0(*(void**)(*(char**)((char*)arg0 + 0x10) + i * 8 + 4));
             }
-            i++;
-        } while (--count);
+        }
+        off += 8;
+        i++;
     }
     {
         void *obj = *(void**)((char*)arg0 + 0x14);
-        if (obj != NULL) {
-            void **vt = *(void**)obj;
-            return ((s32 (*)(void*))vt[0x18])(obj);
+        if (obj != 0) {
+            return ((Obj2*)obj)->f22();
         }
     }
     return 0;
 }
-#pragma push
-#pragma scheduling on
+#pragma cplusplus off
 s32 fn_801328D4(void *arg0, s32 arg1) {
     char buf[0x40];
     sprintf(buf, lbl_80559B50, arg1);
