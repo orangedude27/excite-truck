@@ -765,19 +765,24 @@ MEMiHeapHead *MEMRecordStateForFrmHeap(void *start, u32 size, u32 unitSize, u32 
 }
 #pragma pop
 BOOL MEMFreeByStateToFrmHeap(MEMiHeapHead* heap, u32 id) {
-    u8 *base = (u8 *)heap;
-    u32 size;
     MEMiFrmHeapState *state;
+    u32 size;
     #pragma unused(id)
-    size = *(u32 *)(base + 0x40);
-    LockHeap(heap);
-    state = *(MEMiFrmHeapState **)(base + 0x3C);
-    if (state != 0) {
-        *(void **)(base + 0x3C) = *(void **)(state);
+    if (*(u32 *)((u8 *)heap + 0x38) & 4) {
+        OSLockMutex((OSMutex *)((u8 *)heap + 0x20));
     }
-    UnlockHeap(heap);
-    if (state != 0 && (GetOptForHeap(heap) & MEM_HEAP_OPT_CLEAR_ALLOC)) {
-        memset((void *)state, 0, size);
+    state = *(MEMiFrmHeapState **)((u8 *)heap + 0x3C);
+    if (state != 0) {
+        *(void **)((u8 *)heap + 0x3C) = *(void **)state;
+    }
+    if (*(u32 *)((u8 *)heap + 0x38) & 4) {
+        OSUnlockMutex((OSMutex *)((u8 *)heap + 0x20));
+    }
+    if (state != 0) {
+        size = *(u32 *)((u8 *)heap + 0x40);
+        if (*(u32 *)((u8 *)heap + 0x38) & 1) {
+            memset((void *)state, 0, size);
+        }
     }
     return (BOOL)state;
 }
