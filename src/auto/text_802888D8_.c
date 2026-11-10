@@ -23,6 +23,19 @@ typedef struct {
       char tail[0x18];
 } fn_802897E0Frame;
 
+/* Stack block the smoke-effect creators (fn_80289154 .. fn_8028A084) fill in.
+ * The nw4r::ef create-args start at sp20: fn_8028E61C clears the 0x8C bytes
+ * there and fn_8028E2F8 hands them to the new effect, which copies them field
+ * by field in fn_8028FD00.  Offsets into that block:
+ *   +0x00 (sp20) effect type   +0x04 (sp24) emitter count (0x28 bytes each)
+ *   +0x08 (sp28) value the effect caches 1.0f/it at effect+0xA0
+ *   +0x10 (sp30) and +0x1C (sp3C) two three-float colour/scale triples,
+ *   which the creators also store again at sp14 and sp8 (below the block)
+ *   +0x24 (sp44) clamped to [1.0f, ...] by fn_8028FD00
+ *   +0x44 (sp64) an int and +0x48 (sp68) a float, then +0x50 (sp70) ..
+ *   +0x7C (sp9C) the effect's motion and colour parameters.
+ * The game's own names for these fields are not known yet.
+ */
 typedef struct {
     float sp8, spC, sp10, sp14, sp18, sp1C;
     int sp20, sp24;
