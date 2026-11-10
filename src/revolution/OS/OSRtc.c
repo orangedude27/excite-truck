@@ -93,6 +93,7 @@ static BOOL WriteSram(const void* src, u32 pos, s32 size) {
 }
 
 void __OSInitSram(void) {
+    /* Initialize the SRAM control block and load SRAM into the cache. */
     Scb.enabled = FALSE;
     Scb.locked = FALSE;
     Scb.sync = ReadSram(&Scb);
