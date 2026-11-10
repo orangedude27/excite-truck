@@ -69,7 +69,7 @@ static inline void CatStrC_8023512C(const char *src, int n, char *dst) {
 }
 extern void *fn_801284F8(int, const char *);
 extern void fn_802E317C(const char *, ...);
-extern unsigned char lbl_80340670[];
+extern char lbl_80340670[];
 extern unsigned char lbl_80340680[];
 extern void *lbl_8055F084;
 void *fn_80234C94(void *arg0, int arg1) {
