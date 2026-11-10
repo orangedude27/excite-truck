@@ -264,20 +264,16 @@ s32 fn_80263998(void *arg0, s32 arg1) {
 #pragma scheduling invalid_target
 #pragma fp_contract on
 void fn_80263AB4(void *arg0) {
-    union {
-        double value;
-        unsigned int words[2];
-    } converted;
-    double raw;
-    double bias;
+    f32 t = (f32)fn_802E2C20();
+    f32 b;
+    f32 c;
+    s32 v;
 
-    converted.words[1] = (unsigned int)fn_802E2C20() ^ 0x80000000;
-    converted.words[0] = 0x43300000;
-    raw = converted.value;
-    bias = lbl_80563BE0;
-
-    if ((f32)(raw - bias) / lbl_80563BD8 - *(f32 *)((u8 *)arg0 + 0x2C) < lbl_80563BE8) {
-        fn_802E8528(*(s32 *)((u8 *)arg0 + 0x24), lbl_80563BD4, lbl_80563BEC);
+    if (t / lbl_80563BD8 - *(f32 *)((u8 *)arg0 + 0x2C) < lbl_80563BE8) {
+        b = lbl_80563BD4;
+        c = lbl_80563BEC;
+        v = *(s32 *)((u8 *)arg0 + 0x24);
+        ((s32 (*)(s32, f32, f32))fn_802E8528)(v, b, c);
     } else {
         ((s32 (*)(s32, f32, f32))fn_802E8528)(
             *(s32 *)((u8 *)arg0 + 0x24), lbl_80563BEC, lbl_80563BEC);
