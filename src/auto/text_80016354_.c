@@ -13,6 +13,13 @@ extern unsigned char *lbl_8055D544;
 extern int stricmp(const char *, const char *);
 extern int fn_80016510(int);
 extern void *lbl_8055D548;
+extern char lbl_802FCEA8[];
+extern void *lbl_8055D538;
+extern int fn_80131808(void *);
+extern int fn_8012850C(int, void *);
+extern void fn_80016C1C(void);
+extern void fn_8000D884(int, int, void *, int, void *);
+extern void fn_800177B8(void);
 extern void *fn_80016BC8(void *, int);
 
 extern void *lbl_8055D54C;
