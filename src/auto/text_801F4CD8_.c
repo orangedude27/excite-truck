@@ -1102,18 +1102,23 @@ void *fn_801F6D60(void *arg0, int arg1) {
 }
 
 #pragma push
-#pragma scheduling on
+#pragma scheduling invalid_target
+// fn_801F6DF0: 0x2A0-count/0x54-stride variant of fn_801F6A98 (0x900/0x48).
+// Global enable = !(fabs(fn_801E7E24()) <= lbl_80558DC4); when enabled,
+// build angles via fn_801F6778 (5 args, NOT 6 - fixed prototype) + fn_801F64E4,
+// always fn_801F65D0/fn_801F6728 + fn_802CDB20. sp[96] gives 0x1a0 frame.
+// Thunk fn_801F73F0 needs empty extern () to keep tail-call match.
 void fn_801F6DF0(void *arg0, int arg1) {
     extern float lbl_80558DC4;
     float sp[96];
-    int enabled7;
+    int enabled8;
     void *entry;
     int i;
-    enabled7 = !((float)__fabs((double)fn_801E7E24()) <= lbl_80558DC4);
+    enabled8 = !((float)__fabs((double)fn_801E7E24()) <= lbl_80558DC4);
     entry = arg0;
     for (i = 0; i < *(int *)((char *)arg0 + 0x2A0); entry = (char *)entry + 0x54, i++) {
-        if (enabled7) {
-            ((void (*)(float *, int, float *, float, float))fn_801F6778)(&sp[0], *(int *)((char *)entry + 0x10), (float *)((char *)entry + 0x48), *(float *)((char *)entry + 0x3C), *(float *)((char *)entry + 0x40));
+        if (enabled8) {
+            fn_801F6778(&sp[0], *(int *)((char *)entry + 0x10), (float *)((char *)entry + 0x48), *(float *)((char *)entry + 0x3C), *(float *)((char *)entry + 0x40));
             fn_801F64E4(entry, &sp[0], *(float *)((char *)entry + 0x44));
         }
         fn_801F65D0(entry);
