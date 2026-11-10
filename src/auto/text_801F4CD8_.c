@@ -1155,7 +1155,7 @@ void *fn_801F7090(void *arg0) {
 
 extern void fn_801F639C(void *);
 extern void fn_801F6880(void *);
-void fn_801F70D0(void *arg0, int arg1) {
+FN_801F70D0_RETURN fn_801F70D0(void *arg0, int arg1) {
     int i;
     void *entry;
     if (arg0 != 0) {
