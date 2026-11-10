@@ -15638,6 +15638,7 @@ extern "C" void fn_800C1E88(const s32 *a, const s32 *b, s32 *out) {
 }
 
 extern "C" void fn_800C1F6C(volatile u32 *dst, const volatile u32 *a, const volatile u32 *b) {
+    /* Adds 18 input values and stores results at 0x40-word strides in the destination buffer. */
     dst[0] = a[0] + b[0];
     dst[0x40] = a[1] + b[1];
     dst[0x80] = a[2] + b[2];
