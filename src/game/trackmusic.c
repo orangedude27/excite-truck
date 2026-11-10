@@ -135,47 +135,48 @@ void *fn_8020F5F0(long arg0) {
 #pragma dont_inline reset
 extern void *memset(void *, int, unsigned long);
 #pragma dont_inline on
+#pragma unroll off
 long fn_8020F608(long arg0, long arg1) {
-    long i;
+    long i = 2;
     char *ptr;
-
     ptr = (char *)fn_8020F5F0(arg1);
     memset(ptr, 0, 0x1900);
-    for (i = 0; i < 2; i++) {
-        *(long *)(ptr + 0x000) = arg0;
-        *(long *)(ptr + 0x064) = arg0;
-        *(long *)(ptr + 0x0C8) = arg0;
-        *(long *)(ptr + 0x12C) = arg0;
-        *(long *)(ptr + 0x190) = arg0;
-        *(long *)(ptr + 0x1F4) = arg0;
-        *(long *)(ptr + 0x258) = arg0;
-        *(long *)(ptr + 0x2BC) = arg0;
-        *(long *)(ptr + 0x320) = arg0;
-        *(long *)(ptr + 0x384) = arg0;
-        *(long *)(ptr + 0x3E8) = arg0;
-        *(long *)(ptr + 0x44C) = arg0;
-        *(long *)(ptr + 0x4B0) = arg0;
-        *(long *)(ptr + 0x514) = arg0;
-        *(long *)(ptr + 0x578) = arg0;
-        *(long *)(ptr + 0x5DC) = arg0;
-        *(long *)(ptr + 0x640) = arg0;
-        *(long *)(ptr + 0x6A4) = arg0;
-        *(long *)(ptr + 0x708) = arg0;
-        *(long *)(ptr + 0x76C) = arg0;
-        *(long *)(ptr + 0x7D0) = arg0;
-        *(long *)(ptr + 0x834) = arg0;
-        *(long *)(ptr + 0x898) = arg0;
-        *(long *)(ptr + 0x8FC) = arg0;
-        *(long *)(ptr + 0x960) = arg0;
-        *(long *)(ptr + 0x9C4) = arg0;
-        *(long *)(ptr + 0xA28) = arg0;
-        *(long *)(ptr + 0xA8C) = arg0;
-        *(long *)(ptr + 0xAF0) = arg0;
-        *(long *)(ptr + 0xB54) = arg0;
-        *(long *)(ptr + 0xBB8) = arg0;
-        *(long *)(ptr + 0xC1C) = arg0;
-        ptr += 0xC80;
-    }
+loop:
+    *(long *)(ptr + 0x000) = arg0;
+    *(long *)(ptr + 0x064) = arg0;
+    *(long *)(ptr + 0x0C8) = arg0;
+    *(long *)(ptr + 0x12C) = arg0;
+    *(long *)(ptr + 0x190) = arg0;
+    *(long *)(ptr + 0x1F4) = arg0;
+    *(long *)(ptr + 0x258) = arg0;
+    *(long *)(ptr + 0x2BC) = arg0;
+    *(long *)(ptr + 0x320) = arg0;
+    *(long *)(ptr + 0x384) = arg0;
+    *(long *)(ptr + 0x3E8) = arg0;
+    *(long *)(ptr + 0x44C) = arg0;
+    *(long *)(ptr + 0x4B0) = arg0;
+    *(long *)(ptr + 0x514) = arg0;
+    *(long *)(ptr + 0x578) = arg0;
+    *(long *)(ptr + 0x5DC) = arg0;
+    *(long *)(ptr + 0x640) = arg0;
+    *(long *)(ptr + 0x6A4) = arg0;
+    *(long *)(ptr + 0x708) = arg0;
+    *(long *)(ptr + 0x76C) = arg0;
+    *(long *)(ptr + 0x7D0) = arg0;
+    *(long *)(ptr + 0x834) = arg0;
+    *(long *)(ptr + 0x898) = arg0;
+    *(long *)(ptr + 0x8FC) = arg0;
+    *(long *)(ptr + 0x960) = arg0;
+    *(long *)(ptr + 0x9C4) = arg0;
+    *(long *)(ptr + 0xA28) = arg0;
+    *(long *)(ptr + 0xA8C) = arg0;
+    *(long *)(ptr + 0xAF0) = arg0;
+    *(long *)(ptr + 0xB54) = arg0;
+    *(long *)(ptr + 0xBB8) = arg0;
+    *(long *)(ptr + 0xC1C) = arg0;
+    ptr += 0xC80;
+    if (--i != 0)
+        goto loop;
     return 0;
 }
 #pragma dont_inline reset
@@ -278,6 +279,26 @@ long fn_8020F9F4(void) {
     } while (i < 8);
     return 0;
 }
+
+#pragma push
+#pragma dont_inline on
+void *fn_8020FAF0(void) {
+    char *base = (char *)fn_8020F5F0(fn_8000DA10());
+    char *entry = base;
+    long i = 0;
+    for (;;) {
+        if (stricmp(entry + 4, entry) == 0) {
+            return base + i * 0x64;
+        }
+        i++;
+        entry += 0x64;
+        if (i >= 0x40) break;
+    }
+    return base + fn_8020F9F4() * 0x64;
+}
+#pragma dont_inline reset
+#pragma pop
+
 #pragma scheduling on
 
 #pragma use_lmw_stmw off
@@ -390,7 +411,7 @@ void fn_8020FDE4(long arg0, const char *arg1, register char *arg2) {
     strncpy(block + 0x24, arg1, 0x3F);
     dst = block + 4;
     remaining = 0x20;
-    do {
+    while (1) {
         remaining--;
         if (remaining <= 0) {
             dst[-1] = 0;
@@ -400,7 +421,10 @@ void fn_8020FDE4(long arg0, const char *arg1, register char *arg2) {
         arg2++;
         *dst = value;
         dst++;
-    } while ((signed char)value != 0);
+        if ((signed char)value == 0) {
+            return;
+        }
+    }
 }
 
 #pragma dont_inline on
@@ -614,25 +638,28 @@ void fn_802103B8(void) {
     fn_8020F5C8();
 }
 
+#pragma push
+#pragma cplusplus on
 #pragma dont_inline on
-void fn_802103BC(void) {
-    struct VTable { void *pad[2]; void (*call)(void *, long); };
-    struct Object { struct VTable *vtable; };
+extern "C" void fn_802103BC(void) {
+    class Obj { public: virtual void f(int); };
     fn_802EC1C0(lbl_80563400);
     fn_802EC12C();
     fn_802EC1E4();
     if (lbl_8055EED4 != 0) {
-        ((struct Object *)lbl_8055EED4)->vtable->call((struct Object *)lbl_8055EED4, 1);
+        ((Obj *)lbl_8055EED4)->f(1);
     }
     lbl_8055EED4 = 0;
     lbl_8055B658 = -1;
     fn_8020F5DC();
     if (lbl_8055EED0 != 0) {
-        ((struct Object *)lbl_8055EED0)->vtable->call((struct Object *)lbl_8055EED0, 1);
+        ((Obj *)lbl_8055EED0)->f(1);
     }
     lbl_8055EED0 = 0;
 }
 #pragma dont_inline reset
+#pragma cplusplus off
+#pragma pop
 extern long fn_80009C84(void);
 extern unsigned char lbl_8055EEC0;
 extern signed char lbl_8055EEC8, lbl_8055B660;
