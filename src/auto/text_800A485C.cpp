@@ -5146,56 +5146,57 @@ extern s32 fn_800B5618(void *, s32, s32, s32, u16);
 #pragma use_lmw_stmw off
 #pragma pop
 #pragma dont_inline fn_800AF144
-extern "C" s32 fn_800AF144(void *arg0) {
-    void *sp10;
-    s32 spC;
-    u32 sp8;
-    s32 var_r30 = 0;
-    s32 temp_r3;
-    u8 *temp_r4;
+extern "C" s32 fn_800AF144(void *volume) {
+    /* If the volume has a dirty FS info/cache sector, reload it, update the FS info field, and write it back. */
+    void *pageHandle;
+    s32 pageIndex;
+    u32 bytesTransferred;
+    s32 result = 0;
+    s32 readResult;
+    u8 *pageData;
     u8 *entry;
-    u32 temp_r5;
+    u32 fsInfoValue;
     typedef s32 (*A8D08Full)(s32, void **, s32 *, s32, s32 *);
     typedef s32 (*A8D08Call)(void *, s32, void **, s32 *);
     A8D08Full fnRead;
-    if (*(u16 *)((u8 *)arg0 + 0x1FAC) & 4) {
+    if (*(u16 *)((u8 *)volume + 0x1FAC) & 4) {
         fnRead = fn_800A8D08;
-        temp_r3 = ((A8D08Call)fnRead)(arg0, -1, &sp10, &spC);
-        if (temp_r3 != 0)
-            return temp_r3;
-        temp_r3 = ((s32 (*)(void *, u8 *, u32, u32, u32, u32 *, s32))fn_800B5324)(
-            arg0, (u8 *)*(void **)((u8 *)sp10 + 8), *(u16 *)((u8 *)arg0 + 0x14),
-            0, *(u16 *)arg0, &sp8, 0);
-        var_r30 = temp_r3;
-        if (temp_r3 == 0 && sp8 != *(u16 *)arg0)
-            var_r30 = 0x11;
-        if (var_r30 == 0) {
-            temp_r4 = *(u8 **)((u8 *)sp10 + 8);
-            entry = temp_r4 + 0x1E8;
+        readResult = ((A8D08Call)fnRead)(volume, -1, &pageHandle, &pageIndex);
+        if (readResult != 0)
+            return readResult;
+        readResult = ((s32 (*)(void *, u8 *, u32, u32, u32, u32 *, s32))fn_800B5324)(
+            volume, (u8 *)*(void **)((u8 *)pageHandle + 8), *(u16 *)((u8 *)volume + 0x14),
+            0, *(u16 *)volume, &bytesTransferred, 0);
+        result = readResult;
+        if (readResult == 0 && bytesTransferred != *(u16 *)volume)
+            result = 0x11;
+        if (result == 0) {
+            pageData = *(u8 **)((u8 *)pageHandle + 8);
+            entry = pageData + 0x1E8;
             if (((u32)entry & 3) != 0) {
-                *entry = (u8)*(u32 *)((u8 *)arg0 + 0x38);
-                *(u8 *)(*(u8 **)((u8 *)sp10 + 8) + 0x1E9) =
-                    (u8)(*(u32 *)((u8 *)arg0 + 0x38) >> 8);
-                *(u8 *)(*(u8 **)((u8 *)sp10 + 8) + 0x1EA) =
-                    (u8)(*(u32 *)((u8 *)arg0 + 0x38) >> 16);
-                *(s8 *)(*(u8 **)((u8 *)sp10 + 8) + 0x1EB) =
-                    (s8)(*(u32 *)((u8 *)arg0 + 0x38) >> 24);
+                *entry = (u8)*(u32 *)((u8 *)volume + 0x38);
+                *(u8 *)(*(u8 **)((u8 *)pageHandle + 8) + 0x1E9) =
+                    (u8)(*(u32 *)((u8 *)volume + 0x38) >> 8);
+                *(u8 *)(*(u8 **)((u8 *)pageHandle + 8) + 0x1EA) =
+                    (u8)(*(u32 *)((u8 *)volume + 0x38) >> 16);
+                *(s8 *)(*(u8 **)((u8 *)pageHandle + 8) + 0x1EB) =
+                    (s8)(*(u32 *)((u8 *)volume + 0x38) >> 24);
             } else {
-                temp_r5 = *(u32 *)((u8 *)arg0 + 0x38);
-                *(u32 *)(temp_r4 + 0x1E8) =
-                    (temp_r5 >> 24) | ((temp_r5 >> 8) & 0x0000FF00) |
-                    ((temp_r5 << 8) & 0x00FF0000) | (temp_r5 << 24);
+                fsInfoValue = *(u32 *)((u8 *)volume + 0x38);
+                *(u32 *)(pageData + 0x1E8) =
+                    (fsInfoValue >> 24) | ((fsInfoValue >> 8) & 0x0000FF00) |
+                    ((fsInfoValue << 8) & 0x00FF0000) | (fsInfoValue << 24);
             }
-            temp_r3 = ((s32 (*)(s32, void *, s32, u16, u32, u32 *, u32))fn_800B5700)(
-                (s32)arg0, *(void **)((u8 *)sp10 + 8), *(u16 *)((u8 *)arg0 + 0x14),
-                0, *(u16 *)arg0, &sp8, 0);
-            var_r30 = temp_r3;
-            if (temp_r3 == 0 && sp8 != *(u16 *)arg0)
-                var_r30 = 0x11;
+            readResult = ((s32 (*)(s32, void *, s32, u16, u32, u32 *, u32))fn_800B5700)(
+                (s32)volume, *(void **)((u8 *)pageHandle + 8), *(u16 *)((u8 *)volume + 0x14),
+                0, *(u16 *)volume, &bytesTransferred, 0);
+            result = readResult;
+            if (readResult == 0 && bytesTransferred != *(u16 *)volume)
+                result = 0x11;
         }
-        VFiPFCACHE_FreeFATPage_800A8E10(arg0, sp10);
+        VFiPFCACHE_FreeFATPage_800A8E10(volume, pageHandle);
     }
-    return var_r30;
+    return result;
 }
 extern "C" s32 fn_800ADA24(void *arg0, s32 arg1, u32 arg2, u32 *arg3, u32 *arg4, s32 arg5, s32 arg6) {
     void *context = *(void **)((u8 *)arg0 + 0x34);
