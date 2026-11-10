@@ -1486,50 +1486,53 @@ rank_done:
 }
 #pragma cplusplus reset
 
-int fn_8025BBFC(void *arg0, int arg1) {
-    char *o = (char *)arg0;
-    if (*(unsigned char *)(o + 0x58) != 0 || IsLowAndFlagged_(o) != 0) {
+int fn_8025BBFC(void *self, int input) {
+    /* Handle menu input/state transitions for this UI object: reject blocked
+       states, process confirm/cancel/navigation cases, and trigger the
+       corresponding follow-up actions. */
+    char *obj = (char *)self;
+    if (*(unsigned char *)(obj + 0x58) != 0 || IsLowAndFlagged_(obj) != 0) {
         fn_80216D28();
     }
-    switch (arg1) {
+    switch (input) {
     case 0xD:
-        if (*(unsigned char *)(o + 0xC4) != 0) {
-            if (*(unsigned char *)(o + 0x58) != 0) {
-                *(float *)(o + 0x28) = (float)*(int *)(o + 0x20);
-            } else if (IsLowAndFlagged_(o) == 0) {
-                *(unsigned char *)(o + 0x59) = 1;
-                *(int *)(o + 0x5C) = -2;
+        if (*(unsigned char *)(obj + 0xC4) != 0) {
+            if (*(unsigned char *)(obj + 0x58) != 0) {
+                *(float *)(obj + 0x28) = (float)*(int *)(obj + 0x20);
+            } else if (IsLowAndFlagged_(obj) == 0) {
+                *(unsigned char *)(obj + 0x59) = 1;
+                *(int *)(obj + 0x5C) = -2;
             }
             break;
         }
-        if (*(int *)(o + 0xC8) > 1 || fn_8025921C() != 0) {
-            if (IsLowAndFlagged_(o) == 0) {
-                *(int *)(o + 0x5C) = 3;
-                *(unsigned char *)(o + 0x59) = 1;
+        if (*(int *)(obj + 0xC8) > 1 || fn_8025921C() != 0) {
+            if (IsLowAndFlagged_(obj) == 0) {
+                *(int *)(obj + 0x5C) = 3;
+                *(unsigned char *)(obj + 0x59) = 1;
                 break;
             }
         }
         fn_80214D50(1);
         return 0;
     case 0x1B:
-        if (*(unsigned char *)(o + 0xC4) == 0) {
-            *(unsigned char *)(o + 0x59) = 1;
-            *(int *)(o + 0x5C) = -1;
+        if (*(unsigned char *)(obj + 0xC4) == 0) {
+            *(unsigned char *)(obj + 0x59) = 1;
+            *(int *)(obj + 0x5C) = -1;
             break;
         }
         return 0;
     case 0x126:
-        if (*(unsigned char *)(o + 0xC4) == 0) {
-            *(unsigned char *)(o + 0x59) = 1;
-            *(int *)(o + 0x5C) = 1;
+        if (*(unsigned char *)(obj + 0xC4) == 0) {
+            *(unsigned char *)(obj + 0x59) = 1;
+            *(int *)(obj + 0x5C) = 1;
             fn_80216CA8();
             break;
         }
         return 0;
     case 0x128:
-        if (*(unsigned char *)(o + 0xC4) == 0) {
-            *(unsigned char *)(o + 0x59) = 1;
-            *(int *)(o + 0x5C) = 2;
+        if (*(unsigned char *)(obj + 0xC4) == 0) {
+            *(unsigned char *)(obj + 0x59) = 1;
+            *(int *)(obj + 0x5C) = 2;
             fn_80216CA8();
             break;
         }
