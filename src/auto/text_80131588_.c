@@ -251,23 +251,29 @@ s32 fn_80131B50(void *arg0) {
 
 #pragma push
 #pragma use_lmw_stmw off
+extern s32 fn_80131C88(void*, const char*);
 s32 fn_80131BD0(void* arg0, const char* name) {
-    s32 index = 0;
-    char* found = NULL;
-    s32 offset = 0;
+    volatile struct { const char *n; s32 v; } key;
+    s32 index;
+    char *found;
+    s32 offset;
+    key.n = name;
+    key.v = 0;
+    found = 0;
+    index = 0;
+    offset = 0;
     while (index < *(s32*)((char*)arg0 + 0xC)) {
-        char* t = *(char**)((char*)arg0 + 0x10);
-        if (stricmp(name, t + offset) == 0) {
+        if (stricmp(name, *(char**)(*(char**)((char*)arg0 + 0x10) + offset)) == 0) {
             found = *(char**)((char*)arg0 + 0x10) + index * 8;
             break;
         }
         offset += 8;
         index++;
     }
-    if (found == NULL && *(void**)((char*)arg0 + 0x14) != NULL) {
-        found = ((char *(*)(void *, const char *))fn_80131C88)(*(void **)((char *)arg0 + 0x14), name);
+    if (found == 0 && *(void**)((char*)arg0 + 0x14) != 0) {
+        found = (char*)fn_80131C88(*(void**)((char*)arg0 + 0x14), name);
     }
-    return found != NULL;
+    return found != 0;
 }
 
 #pragma push
