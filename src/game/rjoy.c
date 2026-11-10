@@ -527,10 +527,11 @@ void fn_802E830C(int *p) {
     p[6] = 6;
 }
 #pragma scheduling on
-unsigned char fn_802E8364(void *arg0, int arg1) {
+/* Copy an indexed rjoy input/state record (0x638 bytes per entry) into an output buffer and return its status byte. */
+unsigned char fn_802E8364(void *out, int index) {
     extern unsigned char lbl_80505978[];
-    unsigned char *src = lbl_80505978 + arg1 * 0x638;
-    unsigned char *dst = (unsigned char *)arg0;
+    unsigned char *src = lbl_80505978 + index * 0x638;
+    unsigned char *dst = (unsigned char *)out;
     unsigned char a, b;
     unsigned int x, y;
 
