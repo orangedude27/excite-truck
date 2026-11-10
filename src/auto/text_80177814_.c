@@ -191,6 +191,42 @@ extern "C" void fn_80177CEC(void) {
     }
     lbl_8055E43C++;
 }
+
+#pragma cplusplus on
+extern "C" int fn_801B526C(void);
+extern "C" void fn_801AD5F0(void);
+extern "C" void fn_80186DE8(void);
+extern "C" void fn_801D0F38(void);
+extern "C" void fn_801B535C(void**, int);
+extern "C" void fn_801B50B4(void**, int);
+#pragma cplusplus on
+extern "C" void fn_80177E14(void) {
+    class Element {
+    public:
+        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+        virtual void f4(); virtual void f5(); virtual void f6();
+    };
+    int i;
+    Element **p;
+    if (fn_801B526C() == 0) {
+        fn_801AD5F0();
+        fn_80186DE8();
+        fn_801D0F38();
+        p = (Element **)lbl_804340C0;
+        for (i = 0; i < lbl_8055E468; p++, i++) {
+            (*p)->f5();
+        }
+        fn_801B535C(lbl_8055E434, lbl_8055E438);
+    } else {
+        fn_801B50B4(lbl_8055E434, lbl_8055E438);
+    }
+    p = (Element **)lbl_804340C0;
+    for (i = 0; i < lbl_8055E468; p++, i++) {
+        (*p)->f6();
+    }
+}
+#pragma cplusplus off
+
 #pragma cplusplus off
 #pragma dont_inline on
 void fn_80177EE4(void) {
@@ -998,21 +1034,22 @@ extern "C" void fn_801791A8(void) {
     public:
         virtual void destroy(int);
     };
-    int offset;
-    int i;
-    Element *object;
+    int elementOffset;
+    int index;
+    Element *element;
+    /* Global shutdown/teardown: stops subsystems, frees arrays/objects, and clears related globals. */
     fn_80177A18();
     fn_801B537C(fn_80178C4C);
     fn_801E1D9C(); fn_8026785C(); fn_8017D334();
     fn_80128658(lbl_8055E450);
     lbl_8055E450 = 0;
-    i = 0;
-    offset = 0;
-    while (i < lbl_8055E438) {
-        object = (Element *)*(void **)((char *)lbl_8055E434 + offset);
-        if (object != 0) object->disable(1);
-        offset += 4;
-        i++;
+    index = 0;
+    elementOffset = 0;
+    while (index < lbl_8055E438) {
+        element = (Element *)*(void **)((char *)lbl_8055E434 + elementOffset);
+        if (element != 0) element->disable(1);
+        elementOffset += 4;
+        index++;
     }
     fn_80128670(lbl_8055E434);
     lbl_8055E434 = 0;
