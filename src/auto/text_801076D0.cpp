@@ -571,30 +571,32 @@ s32 nw4hbm::ut::detail::ResFontBase::GetDescent() const {
     return data[0x14] - data[0x16];
 }
 
-extern "C" s32 GetBaselinePos__Q46nw4hbm2ut6detail11ResFontBaseCFv(void* self) {
-    const char* file=lbl_80329140;
-    u32 value=(u32)self;
-    int a=1,b=1,c=1,d=1,e=1,f=1;
-    u32 t=value&0xFF000000U;
-    if(t!=0x80000000U&&(value&0xFF800000U)!=0x81000000U)f=0;
-    if(f==0&&(value&0xF8000000U)!=0x90000000U)e=0;
-    if(e==0&&t!=0xC0000000U)d=0;
-    if(d==0&&(value&0xFF800000U)!=0xC1000000U)c=0;
-    if(c==0&&(value&0xF8000000U)!=0xD0000000U)b=0;
-    if(b==0&&(value&0xFFFFC000U)!=0xE0000000U)a=0;
-    if(a==0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0xC4,file+0xF0,self);
-    int g=1,h=1;
-    u32 v=*(u32*)((char*)self+0x14);
-    int i=1,j=1,k=1,l=1;
-    u32 t2=v&0xFF000000U;
-    if(t2!=0x80000000U&&(v&0xFF800000U)!=0x81000000U)l=0;
-    if(l==0&&(v&0xF8000000U)!=0x90000000U)k=0;
-    if(k==0&&t2!=0xC0000000U)j=0;
-    if(j==0&&(v&0xFF800000U)!=0xC1000000U)i=0;
-    if(i==0&&(v&0xF8000000U)!=0xD0000000U)h=0;
-    if(h==0&&(v&0xFFFFC000U)!=0xE0000000U)g=0;
-    if(g==0)Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0xC5,file+0x128);
-    return *(s8*)(*(u32*)(*(u32*)((char*)self+0x14)+8)+2);
+extern "C" s32 GetBaselinePos__Q46nw4hbm2ut6detail11ResFontBaseCFv(void *self) {
+    /* Return the font baseline position from the referenced font data after
+       validating the this pointer and the data pointer against expected MEM1/MEM2 ranges. */
+    const char *file = lbl_80329140;
+    u32 thisValue = (u32)self;
+    int validAll = 1, validD = 1, validC = 1, validB = 1, validA = 1, validMem1 = 1;
+    u32 top = thisValue & 0xFF000000U;
+    if (top != 0x80000000U && (thisValue & 0xFF800000U) != 0x81000000U) validMem1 = 0;
+    if (validMem1 == 0 && (thisValue & 0xF8000000U) != 0x90000000U) validA = 0;
+    if (validA == 0 && top != 0xC0000000U) validB = 0;
+    if (validB == 0 && (thisValue & 0xFF800000U) != 0xC1000000U) validC = 0;
+    if (validC == 0 && (thisValue & 0xF8000000U) != 0xD0000000U) validD = 0;
+    if (validD == 0 && (thisValue & 0xFFFFC000U) != 0xE0000000U) validAll = 0;
+    if (validAll == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0xC4, file + 0xF0, self);
+    int dataValidAll = 1, dataValidD = 1;
+    u32 dataPtrValue = *(u32*)((char*)self + 0x14);
+    int dataValidC = 1, dataValidB = 1, dataValidA = 1, dataValidMem1 = 1;
+    u32 dataTop = dataPtrValue & 0xFF000000U;
+    if (dataTop != 0x80000000U && (dataPtrValue & 0xFF800000U) != 0x81000000U) dataValidMem1 = 0;
+    if (dataValidMem1 == 0 && (dataPtrValue & 0xF8000000U) != 0x90000000U) dataValidA = 0;
+    if (dataValidA == 0 && dataTop != 0xC0000000U) dataValidB = 0;
+    if (dataValidB == 0 && (dataPtrValue & 0xFF800000U) != 0xC1000000U) dataValidC = 0;
+    if (dataValidC == 0 && (dataPtrValue & 0xF8000000U) != 0xD0000000U) dataValidD = 0;
+    if (dataValidD == 0 && (dataPtrValue & 0xFFFFC000U) != 0xE0000000U) dataValidAll = 0;
+    if (dataValidAll == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0xC5, file + 0x128);
+    return *(s8*)(*(u32*)(*(u32*)((char*)self + 0x14) + 8) + 2);
 }
 
 u8 nw4hbm::ut::detail::ResFontBase::GetCellHeight() const {
