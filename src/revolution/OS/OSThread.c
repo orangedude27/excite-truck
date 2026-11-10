@@ -246,6 +246,9 @@ s32 __OSGetEffectivePriority(OSThread* thread) {
     return prio;
 }
 
+/* Update a thread's effective priority and reposition it in run/ready queues,
+ * or mark a reschedule hint for the running thread; returns mutex owner to boost.
+ */
 static OSThread* SetEffectivePriority(OSThread* thread, s32 prio) {
     OSThread* iter;
     OSThread* iterPrev;
