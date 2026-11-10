@@ -116,26 +116,30 @@ extern s32 fn_8027AC80(void);
 extern s32 fn_800122B4(u32, void *);
 void qsort(void *, u32, u32, s32 (*)(s32 *, s32 *));
 void fn_802339A8(s32 a, f32 b, s32 c, f32 d, ...);
+#pragma push
+#pragma processor 750
 s32 fn_802A7E08(s32 *arg0, s32 *arg1) {
-    f32 a[3];
-    f32 dist;
+    unsigned int a[3];
+    float dist;
     s32 manager;
     void *obj;
-
+    float f;
     fn_801E85B4();
     manager = (s32)fn_802678C0();
-    obj = *(void **)((u8 *)((s32 (*)(s32))fn_801EA9A0)(*arg0) + 8);
-    *(u32 *)&a[1] = *(u32 *)((u8 *)obj + 0x28);
-    a[0] = *(f32 *)((u8 *)obj + 0x24);
-    a[1] = a[1] + lbl_80564910;
-    *(u32 *)&a[2] = *(u32 *)((u8 *)obj + 0x2C);
-    dist = PSVECSquareDistance((Vec *)a, (Vec *)((u8 *)manager + 0x24));
-    obj = *(void **)((u8 *)((s32 (*)(s32))fn_801EA9A0)(*arg1) + 8);
-    a[0] = *(f32 *)((u8 *)obj + 0x24);
-    a[1] = *(f32 *)((u8 *)obj + 0x28);
-    a[2] = *(f32 *)((u8 *)obj + 0x2C);
-    a[1] = a[1] + lbl_80564910;
-    if (dist > PSVECSquareDistance((Vec *)a, (Vec *)((u8 *)manager + 0x24))) {
+    obj = *(void **)((char *)((void *(*)(int))fn_801EA9A0)(*arg0) + 8);
+    a[0] = *(unsigned int *)((char *)obj + 0x24);
+    a[1] = *(unsigned int *)((char *)obj + 0x28);
+    f = *(float *)&a[1];
+    f = f + lbl_80564910;
+    a[2] = *(unsigned int *)((char *)obj + 0x2C);
+    *(float *)&a[1] = f;
+    dist = PSVECSquareDistance((Vec *)a, (Vec *)(manager + 0x24));
+    obj = *(void **)((char *)((void *(*)(int))fn_801EA9A0)(*arg1) + 8);
+    ((float *)a)[0] = *(float *)((char *)obj + 0x24);
+    ((float *)a)[1] = *(float *)((char *)obj + 0x28);
+    ((float *)a)[2] = *(float *)((char *)obj + 0x2C);
+    ((float *)a)[1] = ((float *)a)[1] + lbl_80564910;
+    if (dist > PSVECSquareDistance((Vec *)a, (Vec *)(manager + 0x24))) {
         return -1;
     }
     return 1;
@@ -144,18 +148,19 @@ s32 fn_802A7E08(s32 *arg0, s32 *arg1) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_802A7EEC(void) {
     char sp8[8];
     unsigned int position[3];
     float screen[3];
     int array[8];
+    int j;
     void *truck;
     int *p;
-    int j;
     int id;
     int i;
-    void *obj;
     unsigned int xbits;
+    void *obj;
     float inverse;
     float opacity;
     float scaledAlpha;
@@ -174,10 +179,8 @@ void fn_802A7EEC(void) {
         return;
     }
 
-    p = array;
-    for (j = 0; j < fn_801EA994(); j++) {
+    for (j = 0, p = array; j < fn_801EA994(); j++, p++) {
         *p = j;
-        p++;
     }
 
     qsort(array, fn_801EA994(), 4, fn_802A7E08);
@@ -228,7 +231,7 @@ void fn_802A7EEC(void) {
             scaledAlpha = c27 * opacity;
             j = ((unsigned int)(int)scaledAlpha << 24) | 0x00FFFFFF;
 
-            fn_802339A8(screen[0], lbl_8055F8BC, screen[1], j, lbl_805648FC, lbl_8056491C, 0x44, lbl_805648F4, lbl_8055CC30, fn_800122B4(*(u32 *)((char *)truck + 0x10), sp8));
+            fn_802339A8(lbl_8055F8BC, screen[0], j, screen[1], lbl_805648FC, lbl_8056491C, 0x44, lbl_805648F4, lbl_8055CC30, fn_800122B4(*(u32 *)((char *)truck + 0x10), sp8));
         }
 
         if (fn_8027AA48() != 0) {
