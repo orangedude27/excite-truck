@@ -1308,56 +1308,57 @@ extern "C" void *__dt__Q46nw4hbm3snd6detail7AxVoiceFv(void *this_, int arg1) {
     return this_;
 }
 #pragma use_lmw_stmw reset
-extern "C" void InitParam__Q46nw4hbm3snd6detail7AxVoiceFiiPFPQ46nw4hbm3snd6detail7AxVoiceQ56nw4hbm3snd6detail7AxVoice14CallbackStatusPv_vPv(void *self, int count, int arg2, void (*callback)(void *, int, void *), void *arg4) {
+/* Initializes AxVoice parameters: clears per-voice slots, stores channel/callback settings, and sets default mix/volume/pan state (lbl_80560F38=1.0f, lbl_80560F3C=0.0f). */
+extern "C" void InitParam__Q46nw4hbm3snd6detail7AxVoiceFiiPFPQ46nw4hbm3snd6detail7AxVoiceQ56nw4hbm3snd6detail7AxVoice14CallbackStatusPv_vPv(void *axVoice, int voiceCount, int channelCount, void (*callback)(void *, int, void *), void *callbackArg) {
     struct VoiceSlot { char pad[0x2C]; int value; char tail[4]; };
-    VoiceSlot *voices = (VoiceSlot *)self;
-    for (int i = 0; i < count; i++) voices[i].value = 0;
+    VoiceSlot *voices = (VoiceSlot *)axVoice;
+    for (int i = 0; i < voiceCount; i++) voices[i].value = 0;
     float zero;
     float one;
     one = lbl_80560F38;
     zero = lbl_80560F3C;
-    *(int *)((char *)self + 0x104) = count;
-    *(int *)((char *)self + 0x108) = arg2;
-    *(void (**)(void *, int, void *))((char *)self + 0x10C) = callback;
-    *(void **)((char *)self + 0x110) = arg4;
-    *((char *)self + 0x123) = 0;
-    *((char *)self + 0x11F) = 0;
-    *((char *)self + 0x120) = 0;
-    *((char *)self + 0x11E) = 0;
-    *((char *)self + 0x121) = 1;
-    *((char *)self + 0x122) = 0;
-    *(float *)((char *)self + 0x188) = one;
-    *(float *)((char *)self + 0x18C) = one;
-    *(float *)((char *)self + 0x190) = one;
-    *(float *)((char *)self + 0x194) = one;
-    *(float *)((char *)self + 0x198) = one;
-    *(float *)((char *)self + 0x19C) = zero;
-    *(float *)((char *)self + 0x1A0) = one;
-    *(short *)((char *)self + 0x1A4) = 0;
-    *(float *)((char *)self + 0x138) = one;
-    *(float *)((char *)self + 0x128) = zero;
-    *(float *)((char *)self + 0x12C) = zero;
-    *(float *)((char *)self + 0x130) = zero;
-    *(float *)((char *)self + 0x134) = zero;
-    *(int *)((char *)self + 0x13C) = 1;
-    *(float *)((char *)self + 0x140) = one;
-    *(float *)((char *)self + 0x144) = one;
-    *(float *)((char *)self + 0x148) = zero;
-    *(float *)((char *)self + 0x14C) = zero;
-    *(float *)((char *)self + 0x150) = zero;
-    *(float *)((char *)self + 0x154) = one;
-    *(float *)((char *)self + 0x164) = one;
-    *(float *)((char *)self + 0x174) = zero;
-    *(float *)((char *)self + 0x158) = one;
-    *(float *)((char *)self + 0x168) = one;
-    *(float *)((char *)self + 0x178) = zero;
-    *(float *)((char *)self + 0x15C) = one;
-    *(float *)((char *)self + 0x16C) = one;
-    *(float *)((char *)self + 0x17C) = zero;
-    *(float *)((char *)self + 0x160) = one;
-    *(float *)((char *)self + 0x170) = one;
-    *(float *)((char *)self + 0x180) = zero;
-    *(float *)((char *)self + 0x184) = one;
+    *(int *)((char *)axVoice + 0x104) = voiceCount;
+    *(int *)((char *)axVoice + 0x108) = channelCount;
+    *(void (**)(void *, int, void *))((char *)axVoice + 0x10C) = callback;
+    *(void **)((char *)axVoice + 0x110) = callbackArg;
+    *((char *)axVoice + 0x123) = 0;
+    *((char *)axVoice + 0x11F) = 0;
+    *((char *)axVoice + 0x120) = 0;
+    *((char *)axVoice + 0x11E) = 0;
+    *((char *)axVoice + 0x121) = 1;
+    *((char *)axVoice + 0x122) = 0;
+    *(float *)((char *)axVoice + 0x188) = one;
+    *(float *)((char *)axVoice + 0x18C) = one;
+    *(float *)((char *)axVoice + 0x190) = one;
+    *(float *)((char *)axVoice + 0x194) = one;
+    *(float *)((char *)axVoice + 0x198) = one;
+    *(float *)((char *)axVoice + 0x19C) = zero;
+    *(float *)((char *)axVoice + 0x1A0) = one;
+    *(short *)((char *)axVoice + 0x1A4) = 0;
+    *(float *)((char *)axVoice + 0x138) = one;
+    *(float *)((char *)axVoice + 0x128) = zero;
+    *(float *)((char *)axVoice + 0x12C) = zero;
+    *(float *)((char *)axVoice + 0x130) = zero;
+    *(float *)((char *)axVoice + 0x134) = zero;
+    *(int *)((char *)axVoice + 0x13C) = 1;
+    *(float *)((char *)axVoice + 0x140) = one;
+    *(float *)((char *)axVoice + 0x144) = one;
+    *(float *)((char *)axVoice + 0x148) = zero;
+    *(float *)((char *)axVoice + 0x14C) = zero;
+    *(float *)((char *)axVoice + 0x150) = zero;
+    *(float *)((char *)axVoice + 0x154) = one;
+    *(float *)((char *)axVoice + 0x164) = one;
+    *(float *)((char *)axVoice + 0x174) = zero;
+    *(float *)((char *)axVoice + 0x158) = one;
+    *(float *)((char *)axVoice + 0x168) = one;
+    *(float *)((char *)axVoice + 0x178) = zero;
+    *(float *)((char *)axVoice + 0x15C) = one;
+    *(float *)((char *)axVoice + 0x16C) = one;
+    *(float *)((char *)axVoice + 0x17C) = zero;
+    *(float *)((char *)axVoice + 0x160) = one;
+    *(float *)((char *)axVoice + 0x170) = one;
+    *(float *)((char *)axVoice + 0x180) = zero;
+    *(float *)((char *)axVoice + 0x184) = one;
 }
 
 extern "C" void UpdateAxSrc__Q46nw4hbm3snd6detail7AxVoiceFb(void *, int);
@@ -3493,7 +3494,8 @@ extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(void *this
 }
 
 void nw4hbm::snd::detail::BasicSound::SetInitialVolume(float vol) {
-    if (!(vol >= lbl_80560FB0)) {
+    float thresh = lbl_80560FB0;
+    if (!(vol >= thresh)) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x216, lbl_80322830);
     }
     initialVolume = vol;
