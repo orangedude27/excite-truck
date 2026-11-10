@@ -364,6 +364,7 @@ void *fn_801EC9CC(void *arg0, int arg1) {
     char *entry;
     long value;
 
+    /* Destructor-like cleanup: release owned resources/subobjects and optionally delete storage. */
     if (arg0 != 0) {
         *(void **)arg0 = lbl_8033A300;
         fn_801EEC68(arg0);
