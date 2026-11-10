@@ -10967,32 +10967,82 @@ extern "C" s32 fn_800B814C(void *arg0) {
 
 #pragma push
 #pragma global_optimizer off
+// Create/open NAND file from path in arg0+0x4, writing handle to arg0+0x58.
 extern "C" s32 fn_800B8318(void *arg0, s32 arg1) {
- extern s32 NANDCreate(void*,s32,s32); extern s32 NANDGetType(void*); extern s32 NANDOpen(void*,void*,s32); extern s32 NANDPrivateCreateDir(void*,s32,s32); extern s32 fn_800A499C(void*,s32,s32); extern s32 fn_800A4AD0(void*,void*); extern s32 lbl_80559244, lbl_80559240;
- u8 path[0x10]; u16 part=0; u8 *src; u16 total=0; s32 result; u8 *dst;
- if(*(u32*)((u8*)arg0+0xE4)&4)return 0;
- src=(u8*)arg0+4;
- fn_800A499C(path,0,0x10); dst=path;
+    extern s32 NANDCreate(void*,s32,s32);
+    extern s32 NANDGetType(void*);
+    extern s32 NANDOpen(void*,void*,s32);
+    extern s32 NANDPrivateCreateDir(void*,s32,s32);
+    extern s32 fn_800A499C(void*,s32,s32);
+    extern s32 fn_800A4AD0(void*,void*);
+    extern s32 lbl_80559244;
+    extern s32 lbl_80559240;
+    u8 path[0x10];
+    u16 part = 0;
+    u8 *src;
+    u16 total = 0;
+    s32 result;
+    u8 *dst;
+
+    if (*(u32*)((u8*)arg0 + 0xE4) & 4) return 0;
+    src = (u8*)arg0 + 4;
+    fn_800A499C(path, 0, 0x10);
+    dst = path;
+
 loop:
- switch((s8)*src){
- case '/':
-  if(part==0){if(total==0){result=NANDGetType(&lbl_80559240);if(result)return result;}src++;goto copy;}
-  if((s8)src[1]==0){if(part>0xC)return -20;result=NANDCreate(path,0x30,0);if(result==0||result==-6){NANDOpen(path,(u8*)arg0+0x58,3);result=NANDGetType(&lbl_80405D18);}goto done;}
-  if(part>0xB)return -20;
-  result=fn_800A4AD0(path,&lbl_80559244);if(result)result=NANDPrivateCreateDir(path,0x30,0);else result=0;
-  if(result==0||result==-6||result==-1) {
-   result=NANDGetType(path);if(result==0)goto valid;return result;
-  }
-  return result;
+    switch ((s8)*src) {
+    case '/':
+        if (part == 0) {
+            if (total == 0) {
+                result = NANDGetType(&lbl_80559240);
+                if (result) return result;
+            }
+            src++;
+            goto copy;
+        }
+        if ((s8)src[1] == 0) {
+            if (part > 0xC) return -20;
+            result = NANDCreate(path, 0x30, 0);
+            if (result == 0 || result == -6) {
+                NANDOpen(path, (u8*)arg0 + 0x58, 3);
+                result = NANDGetType(&lbl_80405D18);
+            }
+            goto done;
+        }
+        if (part > 0xB) return -20;
+        result = fn_800A4AD0(path, &lbl_80559244);
+        if (result) result = NANDPrivateCreateDir(path, 0x30, 0);
+        else result = 0;
+        if (result == 0 || result == -6 || result == -1) {
+            result = NANDGetType(path);
+            if (result == 0) goto valid;
+            return result;
+        }
+        return result;
 valid:
-  src++;fn_800A499C(path,0,0x10);dst=path;part=0;goto copy;
- case 0:
-  if(part>0xC)return -20;result=NANDCreate(path,0x30,0);
-  if(result==0||result==-6){NANDOpen(path,(u8*)arg0+0x58,3);result=NANDGetType(&lbl_80405D18);}goto done;
- default: break;
- }
-copy: *dst++=*src++;part++;total++;goto loop;
-done: return result;
+        src++;
+        fn_800A499C(path, 0, 0x10);
+        dst = path;
+        part = 0;
+        goto copy;
+    case 0:
+        if (part > 0xC) return -20;
+        result = NANDCreate(path, 0x30, 0);
+        if (result == 0 || result == -6) {
+            NANDOpen(path, (u8*)arg0 + 0x58, 3);
+            result = NANDGetType(&lbl_80405D18);
+        }
+        goto done;
+    default:
+        break;
+    }
+copy:
+    *dst++ = *src++;
+    part++;
+    total++;
+    goto loop;
+done:
+    return result;
 }
 #pragma pop
 s32 fn_800B8520(void *arg0, u32 *arg1) {
