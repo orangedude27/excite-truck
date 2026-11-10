@@ -189,11 +189,12 @@ BOOL __OSSyncSram(void) {
     return Scb.sync;
 }
 
-BOOL __OSReadROM(void* dst, s32 size, const void* src) {
-    u32 imm;
-    BOOL error = FALSE;
+/* Read data from ROM over EXI channel 0 into the provided buffer. */
+BOOL __OSReadROM(void* buffer, s32 length, const void* romAddress) {
+    u32 command;
+    BOOL hadError = FALSE;
 
-    DCInvalidateRange(dst, size);
+    DCInvalidateRange(buffer, length);
 
     if (!EXILock(EXI_CHAN_0, EXI_DEV_INT, NULL)) {
         return FALSE;
@@ -204,15 +205,15 @@ BOOL __OSReadROM(void* dst, s32 size, const void* src) {
         return FALSE;
     }
 
-    imm = (u32)src << 6;
-    error |= !EXIImm(EXI_CHAN_0, &imm, sizeof(imm), EXI_WRITE, NULL);
-    error |= !EXISync(EXI_CHAN_0);
-    error |= !EXIDma(EXI_CHAN_0, dst, size, EXI_READ, NULL);
-    error |= !EXISync(EXI_CHAN_0);
-    error |= !EXIDeselect(EXI_CHAN_0);
+    command = (u32)romAddress << 6;
+    hadError |= !EXIImm(EXI_CHAN_0, &command, sizeof(command), EXI_WRITE, NULL);
+    hadError |= !EXISync(EXI_CHAN_0);
+    hadError |= !EXIDma(EXI_CHAN_0, buffer, length, EXI_READ, NULL);
+    hadError |= !EXISync(EXI_CHAN_0);
+    hadError |= !EXIDeselect(EXI_CHAN_0);
     EXIUnlock(EXI_CHAN_0);
 
-    return error == FALSE;
+    return hadError == FALSE;
 }
 
 u16 OSGetWirelessID(s32 pad) {
