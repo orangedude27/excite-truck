@@ -5911,22 +5911,23 @@ void fn_80074A4C(s32 arg0) {
 
 extern u8 HID_HostRegister(void *);
 extern void bta_hh_cback(u8, u8, u32, BT_HDR *);
-void bta_hh_api_enable(void *arg0) {
+/* Enables the HID host: initializes the HID host control block, sets security level, registers the host callback, resets device slots on success, and invokes the stored completion callback with status. */
+void bta_hh_api_enable(void *enableRequest) {
     s8 status = 6;
-    u8 xx;
+    u8 deviceIndex;
 
     fn_800869CC();
     memset(lbl_803C0D48, 0, sizeof(tBTA_HH_CB_MATCH));
-    HID_HostSetSecurityLevel(&lbl_80559058, *((u8 *)arg0 + 8));
+    HID_HostSetSecurityLevel(&lbl_80559058, *((u8 *)enableRequest + 8));
     if (HID_HostRegister(bta_hh_cback) == 0) {
         ((tBTA_HH_CB_MATCH *)lbl_803C0D48)->p_cback =
-            *(void **)((u8 *)arg0 + 0x30);
+            *(void **)((u8 *)enableRequest + 0x30);
         status = 0;
-        for (xx = 0; xx < 0x10; xx++) {
-            ((tBTA_HH_CB_MATCH *)lbl_803C0D48)->kdev[xx].state = 1;
-            ((tBTA_HH_CB_MATCH *)lbl_803C0D48)->kdev[xx].hid_handle = 0xFF;
-            ((tBTA_HH_CB_MATCH *)lbl_803C0D48)->kdev[xx].index = xx;
-            ((tBTA_HH_CB_MATCH *)lbl_803C0D48)->cb_index[xx] = 0x10;
+        for (deviceIndex = 0; deviceIndex < 0x10; deviceIndex++) {
+            ((tBTA_HH_CB_MATCH *)lbl_803C0D48)->kdev[deviceIndex].state = 1;
+            ((tBTA_HH_CB_MATCH *)lbl_803C0D48)->kdev[deviceIndex].hid_handle = 0xFF;
+            ((tBTA_HH_CB_MATCH *)lbl_803C0D48)->kdev[deviceIndex].index = deviceIndex;
+            ((tBTA_HH_CB_MATCH *)lbl_803C0D48)->cb_index[deviceIndex] = 0x10;
         }
     }
     (*(void (**)(u32, void *, void *))(lbl_803C0D48 + 0x224))(0, &status, lbl_803C0D48);
