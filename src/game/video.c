@@ -320,6 +320,8 @@ void fn_802DFCC0(void) {
 }
 #pragma scheduling on
 void fn_802DFD00(void) {
+    /* Configures GX texture coordinate generation and a 2-stage TEV combiner
+       (texcoord1/texmap1 modulated by texmap0, with constant alpha on stage 0). */
     GXSetTexCoordGen2(0, 1, 0, 0x1E, 0, 0x7D);
     GXSetTexCoordGen2(1, 1, 4, 0x3C, 0, 0x7D);
     GXSetNumTexGens(2);
