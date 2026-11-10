@@ -21990,46 +21990,49 @@ void rfc_send_disc(void *arg0, s32 arg1, void *arg2) {
     rfc_check_send_cmd(arg0, p_buf);
 }
 
+/* Builds and sends an RFCOMM UIH frame for a DLCI, prepending address/control,
+ * length (and credits when present), appending FCS, then dispatching control
+ * frames (DLCI 0) via RFCOMM or data frames via L2CAP. */
 void rfc_send_buf_uih(p_mcb, dlci, p_buf)
 tRFC_MCB *p_mcb;
 UINT8 dlci;
 BT_HDR *p_buf;
 {
-    UINT8 *p_data;
-    UINT8 cr;
-    UINT8 credits;
+    UINT8 *headerPtr;
+    UINT8 commandResponse;
+    UINT8 creditCount;
 
-    cr = (UINT8)((((*(u8 *)((u8 *)p_mcb + 0x6D) && 1)
+    commandResponse = (UINT8)((((*(u8 *)((u8 *)p_mcb + 0x6D) && 1)
         || (!*(u8 *)((u8 *)p_mcb + 0x6D) && !1)) << 1));
 
     p_buf->offset -= 3;
     if (p_buf->len > 127)
         p_buf->offset--;
     if (dlci)
-        credits = (u8)p_buf->layer_specific;
+        creditCount = (u8)p_buf->layer_specific;
     else
-        credits = 0;
-    if (credits)
+        creditCount = 0;
+    if (creditCount)
         p_buf->offset--;
 
-    p_data = (u8 *)(p_buf + 1) + p_buf->offset;
-    *p_data++ = (u8)(cr | 1 | (dlci << 2));
-    *p_data++ = (u8)(0xEF | (credits ? 0x10 : 0));
+    headerPtr = (u8 *)(p_buf + 1) + p_buf->offset;
+    *headerPtr++ = (u8)(commandResponse | 1 | (dlci << 2));
+    *headerPtr++ = (u8)(0xEF | (creditCount ? 0x10 : 0));
     if (p_buf->len <= 127) {
-        *p_data++ = (u8)(1 | (p_buf->len << 1));
+        *headerPtr++ = (u8)(1 | (p_buf->len << 1));
         p_buf->len += 3;
     } else {
-        *p_data++ = (u8)((p_buf->len & 0x7F) << 1);
-        *p_data++ = (u8)(p_buf->len >> 7);
+        *headerPtr++ = (u8)((p_buf->len & 0x7F) << 1);
+        *headerPtr++ = (u8)(p_buf->len >> 7);
         p_buf->len += 4;
     }
-    if (credits) {
-        *p_data++ = credits;
+    if (creditCount) {
+        *headerPtr++ = creditCount;
         p_buf->len++;
     }
 
-    p_data = (u8 *)(p_buf + 1) + p_buf->offset + p_buf->len++;
-    *p_data = fn_8009504C(2, (u8 *)(p_buf + 1) + p_buf->offset);
+    headerPtr = (u8 *)(p_buf + 1) + p_buf->offset + p_buf->len++;
+    *headerPtr = fn_8009504C(2, (u8 *)(p_buf + 1) + p_buf->offset);
 
     if (dlci == 0)
         rfc_check_send_cmd(p_mcb, p_buf);
