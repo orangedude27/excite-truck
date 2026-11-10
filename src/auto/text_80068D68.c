@@ -13433,6 +13433,8 @@ void btu_hcif_esco_connection_comp_evt(u8 *p) {
 }
 
 void btu_hcif_hdl_command_complete(s32 opcode, UINT8 *param2, UINT16 param3) {
+    /* Dispatches HCI Command Complete events by opcode to the corresponding BTM handler
+       (reset, inquiry, link keys, local info, VSC, etc.). */
     register s32 saved_opcode = opcode;
 
     switch (opcode) {
