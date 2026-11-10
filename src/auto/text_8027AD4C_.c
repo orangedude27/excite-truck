@@ -649,7 +649,8 @@ extern "C" long fn_8027BA24(void *arg0) {
     return 1;
 }
 #pragma cplusplus reset
-long fn_8027BAB8(void *arg0) {
+#pragma cplusplus on
+extern "C" long fn_8027BAB8(void *arg0) {
     long i;
     for (i = 0; i < ((long (*)(void *))(*(void ***)arg0)[3])(arg0); i++) {
         void *item = ((void *(*)(void *, long))(*(void ***)arg0)[4])(arg0, i);
@@ -657,6 +658,7 @@ long fn_8027BAB8(void *arg0) {
     }
     return 1;
 }
+#pragma cplusplus reset
 
 #pragma push
 #pragma use_lmw_stmw off
