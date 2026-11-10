@@ -140,6 +140,7 @@ void fn_80177A54(void) {
 
 #pragma cplusplus on
 extern "C" void fn_80177CEC(void) {
+    /* Orthonormalize one object's basis vectors (forward/right/up) from the rotating list. */
     class RotationObject {
     public:
         virtual void f0();
