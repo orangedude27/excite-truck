@@ -67,6 +67,8 @@ int fn_8024958C(int *arg0) {
 }
 int fn_80249660(void) { return 1; }
 
+#pragma push
+#pragma scheduling invalid_target
 int fn_80249668(int *arg0) {
     extern char *lbl_802FA4C8[3];
     extern unsigned char lbl_8055F290;
@@ -74,12 +76,11 @@ int fn_80249668(int *arg0) {
     extern int fn_802411D4(void);
     char *strings[3];
     char **stringPtr = lbl_802FA4C8;
+    int index;
     char *src;
+    int count;
     unsigned char *dst;
     unsigned char c;
-    int index;
-    int count;
-
     strings[0] = *stringPtr++;
     strings[1] = *stringPtr++;
     strings[2] = *stringPtr;
@@ -630,31 +631,40 @@ extern char lbl_804989AC[];
 #pragma scheduling invalid_target
 #pragma inline no fn_8024B178
 extern s32 fn_8024B178(s32);
-#pragma inline no fn_8024B178
+#pragma cplusplus on
 s32 fn_8024B178(s32 arg0) {
+    class Obj {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual char *get(const char *);
+    };
     void *manager;
     void *object;
-    register char *result;
-    register char *prefix;
+    char *result;
+    char *prefix;
     s32 comparison;
     char *buffer;
+    char *suffix;
 
     manager = ((void *(*)(s32))fn_8001285C)(arg0);
     object = *(void **)((char *)manager + 0x20);
-    result = ((char *(*)(void *, const char *))(*(void **)((char *)*(void **)object + 0x14)))(
-        object, (const char *)&lbl_8055BFC0);
+    result = ((Obj *)object)->get((const char *)&lbl_8055BFC0);
     prefix = (char *)&lbl_8055BFC8;
     comparison = strncmp(result, prefix, strlen(prefix));
     if (comparison != 0)
         goto mismatch;
     result += strlen(prefix);
+    suffix = result;
     buffer = lbl_804989AC;
     ((void (*)(void *, int, const char *, ...))fn_801345D8)(
-        buffer, 0x21, (const char *)&lbl_8055BFD0, result);
+        buffer, 0x21, (const char *)&lbl_8055BFD0, suffix);
     return (s32)buffer;
 mismatch:
     return comparison;
 }
+#pragma cplusplus off
 int fn_8024B214(char *arg0, char *arg1) {
     unsigned char first = ((unsigned char *)arg0)[4];
     if (first != 0 && ((unsigned char *)arg1)[4] == 0) return 1;
@@ -1071,14 +1081,10 @@ void fn_8024BA00(void *arg0) {
 
 #pragma scheduling invalid_target
 void fn_8024BAA0(void *arg0) {
-    s32 index = *(s32 *)((char *)arg0 + 0x11C);
-    s32 count = *(s32 *)((char *)arg0 + 0x14);
-    s32 *items = *(s32 **)((char *)arg0 + 0x10);
-    void *object = *(void **)((char *)arg0 + 0x124);
-    s32 next = (index + 1) % count;
-    *(s32 *)((char *)arg0 + 0x11C) = next;
-    ((void (*)(void *, s32, s32, s32, s32))(*(void ***)((char *)object + 0xC))[12])(object, *(s32 *)((char *)arg0 + 0x120), items[next * 2 + 1], count, index + 1);
-    fn_801345D8((char *)arg0 + 0x128, 0x20, &lbl_80343E70, items[next * 2 + 1], &lbl_8055BFF8);
+    int plus1 = *(int *)((char *)arg0 + 0x11C) + 1;
+    *(int *)((char *)arg0 + 0x11C) = plus1 % *(int *)((char *)arg0 + 0x14);
+    ((void (*)(void *, int, int, int, int))(*(void ***)((char *)*(void **)((char *)arg0 + 0x124) + 0xC))[12])(*(void **)((char *)arg0 + 0x124), *(int *)((char *)arg0 + 0x120), *(*(int **)((char *)arg0 + 0x10) + *(int *)((char *)arg0 + 0x11C) * 2 + 1), *(int *)((char *)arg0 + 0x14), plus1);
+    fn_801345D8((char *)arg0 + 0x128, 0x20, &lbl_80343E70, *(*(int **)((char *)arg0 + 0x10) + *(int *)((char *)arg0 + 0x11C) * 2 + 1), &lbl_8055BFF8);
 }
 #pragma scheduling on
 void fn_8024BB3C(void *arg0) {
