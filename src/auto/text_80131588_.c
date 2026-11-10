@@ -551,7 +551,7 @@ extern unsigned long strlen(const char*);
 extern char lbl_8032B790[];
 #pragma push
 #pragma scheduling invalid_target
-s32 fn_80132290(void *arg0, const char *arg1, const char *arg2) {
+s32 fn_80132290(void* arg0, const char* arg1, const char* arg2) {
     void **vtable = *(void ***)arg0;
     const char *value = ((char *(*)(void *))vtable[5])(arg0);
     s32 index = 0;
@@ -560,7 +560,8 @@ s32 fn_80132290(void *arg0, const char *arg1, const char *arg2) {
         arg2 = strlen(arg2) + arg2 + 1;
         index++;
     }
-    fn_802E317C(lbl_8032B790, value, arg1, ((char *(*)(void *))(*(void ***)((char *)*(void **)arg0 + 8)))(arg0));
+    fn_802E317C(lbl_8032B790, value, arg1,
+        ((char *(*)(void *))(*(void ***)((char *)*(void **)arg0 + 8)))(arg0));
     return -1;
 }
 #pragma processor 750
@@ -586,15 +587,20 @@ extern char lbl_8032B80C[], lbl_8032B7E4[];
 #pragma push
 #pragma scheduling invalid_target
 #pragma cplusplus on
-void fn_80132410(void *arg0, void *arg1, const char *arg2) {
+extern "C" void fn_80132410(void *arg0, void *arg1, const char *arg2) {
+    class A {
+    public:
+        virtual char *f0(); virtual void f1(); virtual void f2(); virtual char *f3(const char *);
+    };
     typedef struct { s32 x, y, z; } Vector;
     Vector values;
-    const char *value = ((char *(**)(void *, const char *))(*(void **)arg1))[5](arg1, arg2);
+    char *value = ((A *)arg1)->f3(arg2);
     if (sscanf(value, lbl_8032B80C, &values.x, &values.y, &values.z) != 3) {
-        fn_802E317C(lbl_8032B7E4, value, arg2,
-            ((char *(**)(void *))(*(void **)arg1))[2](arg1));
+        fn_802E317C(lbl_8032B7E4, value, arg2, ((A *)arg1)->f0());
     }
-    *(Vector *)arg0 = values;
+    ((Vector *)arg0)->x = values.x;
+    ((Vector *)arg0)->y = values.y;
+    ((Vector *)arg0)->z = values.z;
 }
 #pragma small_data on
 #pragma cplusplus on
@@ -744,7 +750,8 @@ extern "C" s32 fn_801328D4(void *arg0, s32 arg1) {
 }
 #pragma cplusplus off
 #pragma small_data off
-struct Unk80132968Vector { s32 x, y, z; } fn_80132968(void *arg1, s32 arg2, struct Unk80132968Vector *arg3) {
+struct Unk80132968Vector { s32 x, y, z; };
+struct Unk80132968Vector fn_80132968(void *arg1, s32 arg2, struct Unk80132968Vector *arg3) {
     struct Unk80132968Vector copy;
     struct Unk80132968Vector result;
     struct Unk80132968Vector value;
