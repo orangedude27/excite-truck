@@ -209,15 +209,17 @@ s32 fn_8001F2C8(void* alarm) {
         void* zero = NULL;
         do {
             c = p->unkC;
-            if (c != NULL && c != NULL) {
-                if (*(s32*)c != 0) {
-                    fn_80128670(*(s32*)c);
+            if (c != NULL) {
+                if (c != NULL) {
+                    if (*(s32*)c != 0) {
+                        fn_80128670(*(s32*)c);
+                    }
+                    *(s32*)c = (s32)zero;
+                    ((s32*)c)[1] = (s32)zero;
+                    fn_80128668(c);
                 }
-                *(s32*)c = (s32)zero;
-                ((s32*)c)[1] = (s32)zero;
-                fn_80128668(c);
+                p->unkC = zero;
             }
-            p->unkC = zero;
             i++;
             p++;
         } while (i < 8);
@@ -250,16 +252,16 @@ null_result:
 s32 fn_8001F41C(const char* arg) {
     SrcCoef* p = lbl_802FDF30;
     u32 idx = 0;
-    for (;;) {
+    while (idx < 8) {
         if (stricmp((const char*)p->unk0, arg) == 0) {
             return idx;
         }
+#pragma scheduling off
         idx++;
         p++;
-        if (idx >= 8) {
-            return -1;
-        }
+#pragma scheduling on
     }
+    return -1;
 }
 
 #pragma scheduling off
@@ -395,20 +397,15 @@ s32 fn_8001F89C(s32 arg0, s32 arg1) {
 }
 
 void fn_8001F908(void *arg0) {
-    s32 index = fn_8000DA10();
-
-    if (index >= 0 && (u32)index < 4U) {
-        *(s32 *)((u8 *)arg0 + 4) =
-            *((s32 *)&lbl_80358698 +
-              index * 0x208 + *(s32 *)arg0);
+    int *p = (int *)arg0;
+    int *tbl = (int *)lbl_80358698;
+    int idx = fn_8000DA10();
+    if (idx >= 0 && (u32)idx < 4U) {
+        p[1] = tbl[idx * 0x208 + p[0]];
     } else {
-        *(s32 *)((u8 *)arg0 + 4) = 0;
+        p[1] = 0;
     }
-
-    *(s32 *)((u8 *)arg0 + 8) =
-        *((s32 *)&lbl_80358698 + 0xA28 + *(s32 *)arg0) +
-        (*(s32 *)((u8 *)arg0 + 4) +
-         *((s32 *)&lbl_80358698 + 0x820 + *(s32 *)arg0));
+    p[2] = p[1] + tbl[0x820 + p[0]] + tbl[0xA29 + p[0]];
 }
 
 #pragma scheduling invalid_target
