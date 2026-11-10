@@ -736,6 +736,7 @@ int fn_8022B620(int styleIndex, const char *text) {
     return max;
 }
 #pragma pop
+/* Draws a UI style's picture/text at (x, y): renders the picture or animation, then draws the bitmap-font text lines with alignment and offsets unless a vector font is active. */
 void fn_8022B91C(void *unused, int x, int y, char *text, unsigned int flagsArg) {
     extern int fn_802C4F14(int);
     extern int fn_802C4C90(int, int, int, int, int);
