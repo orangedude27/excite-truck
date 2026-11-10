@@ -348,6 +348,7 @@ char *fn_801337E4(char *arg0) {
         return p;
     } while (1);
 }
+#pragma dont_inline off
 int fn_80133844(const char *arg0) {
     int c = (signed char)*fn_801337E4((char *)arg0);
     int table = *(int *)(lbl_802FE850 + 0x38);
