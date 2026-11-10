@@ -73,10 +73,9 @@ void fn_802B0710(void) {
     void *obj;
     int *fields;
     int n = 0x54;
-    register int i;
     register int offset;
+    register int i;
     int *entry;
-
     obj = fn_801284F8(0x14, lbl_8034A0A8);
     if (obj != 0) {
         fields = (int *)fn_8002F37C(fn_8012850C(0x550, &lbl_8055CD88),
@@ -85,7 +84,7 @@ void fn_802B0710(void) {
         ((int *)obj)[3] = n;
         ((int *)obj)[2] = 0;
         ((int **)obj)[4] = fields;
-        ((void **)obj)[0] = fn_8012850C(n << 10, lbl_8034A27C);
+        ((void **)obj)[0] = fn_8012850C(((int *)obj)[3] << 10, lbl_8034A27C);
         i = 0;
         offset = 0;
         while (i < ((int *)obj)[3]) {
@@ -285,33 +284,38 @@ void *fn_802B1138(const char *name) {
     }
     return result;
 }
-#pragma use_lmw_stmw on
+#pragma optimize_for_size on
+#pragma dont_inline on
 void fn_802B11BC(void *arg0) {
+    int *p;
     int i;
-    char found = 0;
+    int found;
     lbl_8055F99C = 0;
     lbl_8055F998 = 0;
-    ((int *)arg0)[0x318 / 4] = fn_802CFFA0();
+    ((int *)arg0)[0x318 / 4] = ((int (*)(int))fn_802CFFA0)(0x24000);
     ((int *)arg0)[0x320 / 4] = 0x3000;
     ((int *)arg0)[0x31c / 4] = 0;
     fn_802BAFA0();
     fn_802B0904();
-    for (i = 0; i < 0xd; i++) {
-        int *p = (int *)((char *)arg0 + 0x934 + i * 0x14);
-        p[0] = 0;
-        p[1] = 0;
-        p[2] = 0;
-        p[3] = 0;
-        p[4] = 0;
+    p = (int *)arg0;
+    for (i = 0; i < 13; i++) {
+        ((int *)((char *)p + 0x934))[0] = 0;
+        ((int *)((char *)p + 0x934))[1] = 0;
+        ((int *)((char *)p + 0x934))[2] = 0;
+        ((int *)((char *)p + 0x934))[3] = 0;
+        ((int *)((char *)p + 0x934))[4] = 0;
+        p = (int *)((char *)p + 0x14);
     }
+    found = 0;
     ((int *)arg0)[0xa38 / 4] = 0;
     ((int *)arg0)[0x328 / 4] = 0;
-    if (((int *)arg0)[1] == -2 || fn_802B05E4() != 0 || fn_802B05EC() != 0) {
+    if (((int *)arg0)[1] == -2 || ((int (*)(void))fn_802B05E4)() != 0 || ((int (*)(void))fn_802B05EC)() != 0) {
         found = 1;
     }
-    ((char *)arg0)[1] = found;
+    ((char *)arg0)[1] = (char)found;
 }
-
+#pragma dont_inline reset
+#pragma optimize_for_size off
 int fn_802B127C(void *arg0, Vec3_802B *src) {
     volatile int *self = (volatile int *)arg0;
     int next;
