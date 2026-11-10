@@ -10664,70 +10664,79 @@ typedef union {
     } disc_res;                                 /* BTA_DM_DISC_RES_EVT */
 } BtaDmSearch;
 
-void bta_dm_inq_cmpl(void *arg0) {
+/* Process the inquiry-complete event from BTM: report the number of inquiry
+ * results to the application's search callback, then start name and service
+ * discovery on the devices the inquiry found.  With services to search for,
+ * discovery starts on the first device (waiting for its ACL link when it is
+ * down); otherwise the devices whose name is already known are reported one by
+ * one and a remote name request is made for the first one that needs it.  When
+ * there is nothing left to do the DM state machine gets a search-complete
+ * message instead. */
+void bta_dm_inq_cmpl(void *p_data) {
     extern void bta_dm_remname_cback(u8 *);
-    u8 result[0x108], info[0x108];
-    u8 *entry, *addr;
-    void *buf;
-    int done = 1;
-    entry = (u8 *)BTM_InqDbFirst();
-    *(void **)(lbl_803C0B98 + 4) = entry;
-    if (entry != 0) {
-        done = 0;
-        if (*(u32 *)(lbl_803C0B98 + 8) != 0) {
-            if (BTM_IsAclConnectionUp(entry + 2)) lbl_803C0B98[0x78] = 0;
-            else lbl_803C0B98[0x78] = 1;
-            lbl_803C0B98[0x79] = 0;
-            BTM_SecAddRmtNameNotifyCallback(fn_80072AE4);
-            lbl_803C0B98[0x70] = 0;
-            *(u32 *)(lbl_803C0B98 + 0x10) = 0;
-            *(u32 *)(lbl_803C0B98 + 0xC) = *(u32 *)(lbl_803C0B98 + 8);
-            lbl_803C0B98[0x20] = 0;
-            fn_80070FA4(lbl_803C0B98 + 0x1A, (u8 *)*(void **)(lbl_803C0B98 + 4) + 2);
-            bta_dm_find_services((u8 *)*(void **)(lbl_803C0B98 + 4) + 2);
+    BtaDmSearch result, info;
+    tBTM_INQ_INFO *p_inq_info;
+    u8 *peer_addr;
+    void *p_msg;
+    int search_complete = 1;
+    p_inq_info = BTM_InqDbFirst();
+    DM_SCB_P_INQ_INFO = p_inq_info;
+    if (p_inq_info != 0) {
+        search_complete = 0;
+        if (DM_SCB_SERVICES != 0) {
+            if (BTM_IsAclConnectionUp(INQ_INFO_BD_ADDR(p_inq_info))) DM_SCB_WAIT_LINK = 0;
+            else DM_SCB_WAIT_LINK = 1;
+            DM_SCB_LINK_TOUT_PENDING = 0;
+            BTM_SecAddRmtNameNotifyCallback(bta_dm_service_search_remname_cback);
+            DM_SCB_SERVICE_INDEX = 0;
+            DM_SCB_SERVICES_FOUND = 0;
+            DM_SCB_SERVICES_TO_SEARCH = DM_SCB_SERVICES;
+            DM_SCB_PEER_NAME[0] = 0;
+            bdcpy(DM_SCB_PEER_BDADDR, INQ_INFO_BD_ADDR(DM_SCB_P_INQ_INFO));
+            bta_dm_find_services(INQ_INFO_BD_ADDR(DM_SCB_P_INQ_INFO));
         } else {
-            done = 1;
+            search_complete = 1;
             goto check_entry;
             do {
-                if (entry[0x10] != 0) {
-                    fn_80070FA4(info, entry + 2);
-                    info[6] = 0;
-                    *(u32 *)(info + 0x100) = 0;
-                    ((void (*)(int, void *))*(u32 *)lbl_803C0B98)(2, info);
+                if (INQ_INFO_KNOWS_REM_NAME(p_inq_info) != 0) {
+                    bdcpy(info.disc_res.bd_addr, INQ_INFO_BD_ADDR(p_inq_info));
+                    info.disc_res.bd_name[0] = 0;
+                    info.disc_res.db_search_time = 0;
+                    DM_SCB_P_SEARCH_CBACK(BTA_DM_DISC_RES_EVT, &info);
 
                 } else {
-                    if (*(u16 *)(lbl_803C0F78 + 0x64C) < 0x7530)
-                        fn_8007146C((s32)(lbl_803C0B98 + 0x58), 0x205, *(u16 *)(lbl_803C0F78 + 0x64C) + 0x64);
-                    if (BTM_ReadRemoteDeviceName((u8 *)*(void **)(lbl_803C0B98 + 4) + 2, (tBTM_CMPL_CB *)bta_dm_remname_cback) != 1) {
-                        fn_8007148C((s32)(lbl_803C0B98 + 0x58));
-                        addr = (u8 *)*(void **)(lbl_803C0B98 + 4) + 2;
-                        buf = GKI_getbuf(0x110);
-                        if (buf != 0) {
-                            fn_80070FA4((u8 *)buf + 8, addr);
-                            *((u8 *)buf + 0xE) = 0;
-                            *(u16 *)buf = 0x204;
-                            fn_80071450(buf);
+                    if (BTM_CB_PAGE_TIMEOUT < 0x7530)
+                        bta_sys_start_timer((s32)DM_SCB_SDP_DB_TIMER, BTA_DM_SDP_RESULT_EVT, BTM_CB_PAGE_TIMEOUT + 0x64);
+                    if (BTM_ReadRemoteDeviceName(INQ_INFO_BD_ADDR(DM_SCB_P_INQ_INFO), (tBTM_CMPL_CB *)bta_dm_remname_cback) != 1) {
+                        bta_sys_stop_timer((s32)DM_SCB_SDP_DB_TIMER);
+                        peer_addr = INQ_INFO_BD_ADDR(DM_SCB_P_INQ_INFO);
+                        p_msg = GKI_getbuf(BTA_DM_MSG_SIZE);
+                        if (p_msg != 0) {
+                            bdcpy(DM_MSG_BD_ADDR(p_msg), peer_addr);
+                            DM_MSG_BD_NAME(p_msg)[0] = 0;
+                            DM_MSG_EVENT(p_msg) = BTA_DM_REMT_NAME_EVT;
+                            bta_sys_sendmsg(p_msg);
                         }
                     }
-                    done = 0;
+                    search_complete = 0;
                     break;
                 }
-                *(void **)(lbl_803C0B98 + 4) = BTM_InqDbNext(*(tBTM_INQ_INFO **)(lbl_803C0B98 + 4));
+                DM_SCB_P_INQ_INFO = BTM_InqDbNext(*(tBTM_INQ_INFO **)(bta_dm_search_cb + 4));
             check_entry:
-                entry = *(u8 **)(lbl_803C0B98 + 4);
-            } while (entry != 0);
+                p_inq_info = (tBTM_INQ_INFO *)*(u8 **)(bta_dm_search_cb + 4);
+            } while (p_inq_info != 0);
         }
     }
-    if (done) {
-        *(u32 *)(lbl_803C0B98 + 8) = 0;
-        buf = GKI_getbuf(0x110);
-        if (buf != 0) {
-            *(u16 *)buf = 0x207;
-            fn_80071450(buf);
+    if (search_complete) {
+        DM_SCB_SERVICES = 0;
+        p_msg = GKI_getbuf(BTA_DM_MSG_SIZE);
+        if (p_msg != 0) {
+            DM_MSG_EVENT(p_msg) = BTA_DM_DISCOVERY_RESULT_EVT;
+            bta_sys_sendmsg(p_msg);
         }
     }
-    result[0] = *((u8 *)arg0 + 8);
-    ((void (*)(int, void *))*(u32 *)lbl_803C0B98)(1, result);
+    result.num_resps = *((u8 *)p_data + 8);
+    DM_SCB_P_SEARCH_CBACK(BTA_DM_INQ_CMPL_EVT, &result);
 }
 
 void bta_dm_rmt_name(s32 arg0) {
