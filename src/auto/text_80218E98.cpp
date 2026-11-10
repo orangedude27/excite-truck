@@ -2247,41 +2247,42 @@ extern "C" s32 fn_8021C318(void *arg0) {
     return *p == *(s32 *)((u8 *)arg0 + 0x2AC);
 }
 
-extern "C" void *fn_8021C344(void *arg0, s32 arg1, s32 arg2, void *arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8, s32 arg9) {
+extern "C" void *fn_8021C344(void *self, s32 x, s32 y, void *callbackObj, s32 param4, s32 lineHeight, s32 textY, s32 flags, s32 textId, s32 mode) {
     struct Callback {
         virtual void v0();
         virtual void Call(s32 *, s32 *);
     };
-    s32 spC;
-    s32 sp8;
-    s32 temp_r31;
+    s32 textPtr;
+    s32 textLen;
+    s32 lineBottom;
 
-    fn_80219568(arg0, arg1, arg2, 0, arg4, 0, 0, arg7);
-    *(void **)((u8 *)arg0 + 0x2A4) = arg3;
-    *(void **)arg0 = lbl_8033EE50;
-    *(s32 *)((u8 *)arg0 + 0x2B0) = arg5;
-    *(s32 *)((u8 *)arg0 + 0x2B4) = arg6;
-    *(s32 *)((u8 *)arg0 + 0x2B8) = arg7;
-    *(s32 *)((u8 *)arg0 + 0x2C8) = arg8;
-    if (arg9 == 1) {
-        *(s32 *)((u8 *)arg0 + 0x2CC) = 0;
+    /* Initialize a scrollable text/list widget: configure layout and callback, fetch initial text via callback, and cache its placement. */
+    fn_80219568(self, x, y, 0, param4, 0, 0, flags);
+    *(void **)((u8 *)self + 0x2A4) = callbackObj;
+    *(void **)self = lbl_8033EE50;
+    *(s32 *)((u8 *)self + 0x2B0) = lineHeight;
+    *(s32 *)((u8 *)self + 0x2B4) = textY;
+    *(s32 *)((u8 *)self + 0x2B8) = flags;
+    *(s32 *)((u8 *)self + 0x2C8) = textId;
+    if (mode == 1) {
+        *(s32 *)((u8 *)self + 0x2CC) = 0;
     } else {
-        *(s32 *)((u8 *)arg0 + 0x2CC) = 1;
+        *(s32 *)((u8 *)self + 0x2CC) = 1;
     }
-    *(s32 *)((u8 *)arg0 + 0x2BC) = arg5;
-    *(s32 *)((u8 *)arg0 + 0x2C4) = 8;
-    temp_r31 = arg6 + fn_802C51C0(fn_8021165C(1, 2));
-    *(s32 *)((u8 *)arg0 + 0x2C0) =
-        temp_r31 - fn_8022B498(*(s32 *)((u8 *)arg0 + 0x2C4), arg8);
-    *(u8 *)((u8 *)arg0 + 0x2D0) = 0;
-    ((Callback *)arg3)->Call(&spC, &sp8);
-    if (sp8 > 0) {
-        fn_80219440(arg0, 0, (void *)spC, sp8);
+    *(s32 *)((u8 *)self + 0x2BC) = lineHeight;
+    *(s32 *)((u8 *)self + 0x2C4) = 8;
+    lineBottom = textY + fn_802C51C0(fn_8021165C(1, 2));
+    *(s32 *)((u8 *)self + 0x2C0) =
+        lineBottom - fn_8022B498(*(s32 *)((u8 *)self + 0x2C4), textId);
+    *(u8 *)((u8 *)self + 0x2D0) = 0;
+    ((Callback *)callbackObj)->Call(&textPtr, &textLen);
+    if (textLen > 0) {
+        fn_80219440(self, 0, (void *)textPtr, textLen);
     }
-    fn_8021C6D0(arg0);
-    *(s32 *)((u8 *)arg0 + 0x2A8) = 0;
-    *(s32 *)((u8 *)arg0 + 0x2AC) = fn_80228F40(arg1, arg2);
-    return arg0;
+    fn_8021C6D0(self);
+    *(s32 *)((u8 *)self + 0x2A8) = 0;
+    *(s32 *)((u8 *)self + 0x2AC) = fn_80228F40(x, y);
+    return self;
 }
 
 extern "C" void fn_8021C478(void *arg0) {
