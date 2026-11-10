@@ -7752,47 +7752,48 @@ extern "C" s32 fn_800B1FF4(void *file, u32 offset, s32 whence) {
     return status;
 }
 
-extern "C" void *fn_800B224C(void *arg0, void *arg1) {
+extern "C" void *fn_800B224C(void *fileObj, void *info) {
+    /* Retrieves file info under the volume lock, preserving/restoring cursor state and propagating errors. */
     s32 result;
-    FatCopyA sa;
-    FatCopyB sb;
-    void *file;
+    FatCopyA savedCursorA;
+    FatCopyB savedCursorB;
+    void *volume;
     void *fs;
     s32 flags;
 
-    file = arg0 == 0 ? 0 : *(void **)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x268);
-    fn_800B77C0((u8 *)file + 0x1F90);
-    result = fn_800B5E14(file);
+    volume = fileObj == 0 ? 0 : *(void **)((u8 *)*(void **)((u8 *)fileObj + 8) + 0x268);
+    fn_800B77C0((u8 *)volume + 0x1F90);
+    result = fn_800B5E14(volume);
     if (result != 0) {
-        fn_800B783C((void *)((volatile u8 *)file + 0x1F90));
+        fn_800B783C((void *)((volatile u8 *)volume + 0x1F90));
         lbl_803D2140[16] = result;
-        *(s32 *)(*(u8 **)((u8 *)*(u8 **)((u8 *)arg0 + 8) + 0x38) + 0x1F80) = result;
-        *(s32 *)((u8 *)arg0 + 0x18) = result;
+        *(s32 *)(*(u8 **)((u8 *)*(u8 **)((u8 *)fileObj + 8) + 0x38) + 0x1F80) = result;
+        *(s32 *)((u8 *)fileObj + 0x18) = result;
         return (void *)result;
     }
-    fs = *(void **)((u8 *)arg0 + 8);
+    fs = *(void **)((u8 *)fileObj + 8);
     flags = *(s32 *)fs;
     if ((flags & 1) == 0 || (flags & 2) == 0) {
-        fn_800B783C((void *)((volatile u8 *)file + 0x1F90));
+        fn_800B783C((void *)((volatile u8 *)volume + 0x1F90));
         lbl_803D2140[16] = 0x26;
-        *(s32 *)((u8 *)file + 0x1F80) = 0x26;
+        *(s32 *)((u8 *)volume + 0x1F80) = 0x26;
         return (void *)0x26;
     }
-    *(void **)((u8 *)file + 0x1644) = arg0;
-    sa = *(FatCopyA *)((u8 *)arg0 + 0x1C);
-    sb = *(FatCopyB *)((u8 *)arg0 + 0xC);
-    result = VFiPFFILE_p_finfo(arg0, arg1);
-    *(FatCopyA *)((u8 *)arg0 + 0x1C) = sa;
-    *(FatCopyB *)((u8 *)arg0 + 0xC) = sb;
-    *(s32 *)((u8 *)file + 0x1644) = 0;
+    *(void **)((u8 *)volume + 0x1644) = fileObj;
+    savedCursorA = *(FatCopyA *)((u8 *)fileObj + 0x1C);
+    savedCursorB = *(FatCopyB *)((u8 *)fileObj + 0xC);
+    result = VFiPFFILE_p_finfo(fileObj, info);
+    *(FatCopyA *)((u8 *)fileObj + 0x1C) = savedCursorA;
+    *(FatCopyB *)((u8 *)fileObj + 0xC) = savedCursorB;
+    *(s32 *)((u8 *)volume + 0x1644) = 0;
     if (result != 0) {
         lbl_803D2140[16] = result;
-        *(s32 *)(*(u8 **)((u8 *)*(u8 **)((u8 *)arg0 + 8) + 0x38) + 0x1F80) = result;
-        *(s32 *)((u8 *)arg0 + 0x18) = result;
-        fn_800B783C((void *)((volatile u8 *)file + 0x1F90));
+        *(s32 *)(*(u8 **)((u8 *)*(u8 **)((u8 *)fileObj + 8) + 0x38) + 0x1F80) = result;
+        *(s32 *)((u8 *)fileObj + 0x18) = result;
+        fn_800B783C((void *)((volatile u8 *)volume + 0x1F90));
         return (void *)result;
     }
-    fn_800B783C((void *)((volatile u8 *)file + 0x1F90));
+    fn_800B783C((void *)((volatile u8 *)volume + 0x1F90));
     return 0;
 }
 
