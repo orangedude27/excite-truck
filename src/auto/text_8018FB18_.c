@@ -2477,10 +2477,8 @@ f32 fn_80192ED0(void *arg0) {
         value = lbl_80562090;
     } else {
         value = ((f32)angle - lbl_8056208C) / lbl_805620B8;
-        if (value > lbl_8056208C) {
-            value = lbl_8056208C;
-        }
     }
+    value = value > lbl_8056208C ? value : lbl_8056208C;
     return lbl_80562084 + value * lbl_805620A4;
 }
 
