@@ -4686,23 +4686,25 @@ extern f32 lbl_80561210;
 extern f32 lbl_80561214;
 extern f64 lbl_80561228;
 void fn_80120B6C(s32 arg0, s32 *arg1, f32 *arg2) {
+    /* Builds a trig lookup table for length arg0: stores cos(π/2*i/half)*0.5
+       in arg2[i] and sin(π/2*i/half)*0.5 in arg2[arg0-i] for i in [1,half). */
     s32 i;
     s32 half;
     f32 scale;
-    f32 angle;
-    f32 result;
+    f32 angleStep;
+    f32 cosHalf;
 
     arg1[1] = arg0;
     if (arg0 <= 1) return;
     half = arg0 >> 1;
-    angle = lbl_80561214 / (f32)half;
-    result = (f32)cos((f64)(angle * (f32)half));
+    angleStep = lbl_80561214 / (f32)half;
+    cosHalf = (f32)cos((f64)(angleStep * (f32)half));
     scale = lbl_80561210;
-    arg2[0] = result;
-    arg2[half] = scale * result;
+    arg2[0] = cosHalf;
+    arg2[half] = scale * cosHalf;
     for (i = 1; i < half; i++) {
-        arg2[i] = scale * (f32)cos((f64)(angle * (f32)i));
-        arg2[arg0 - i] = scale * (f32)sin((f64)(angle * (f32)i));
+        arg2[i] = scale * (f32)cos((f64)(angleStep * (f32)i));
+        arg2[arg0 - i] = scale * (f32)sin((f64)(angleStep * (f32)i));
     }
 }
 
