@@ -979,27 +979,29 @@ extern "C" void SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif(s32, s32, f3
 extern "C" void SetRemoteSend__Q46nw4hbm3snd6detail7AxVoiceFif(s32, s32, f32);
 extern "C" void SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif_800E58CC(s32, s32, f32);
 extern f32 lbl_80561110;
-extern "C" void fn_800FF708(void *arg0) {
+extern "C" void fn_800FF708(void *voiceParams) {
+    // Apply cached voice parameters to the active AxVoice handle (at +0x18):
+    // core params, then remote out volumes (3 buses) and remote/send volumes (4).
     s32 i;
     u8 *ptr;
-    if (*(s32 *)((u8 *)arg0 + 0x18) == 0) return;
-    fn_800E5338(*(s32 *)((u8 *)arg0 + 0x18), *(f32 *)((u8 *)arg0 + 0x30));
-    fn_800E5444(*(s32 *)((u8 *)arg0 + 0x18), *(f32 *)((u8 *)arg0 + 0x3C));
-    fn_800E5464(*(s32 *)((u8 *)arg0 + 0x18), *(f32 *)((u8 *)arg0 + 0x34));
-    fn_800E54A8(*(s32 *)((u8 *)arg0 + 0x18), *(f32 *)((u8 *)arg0 + 0x38));
-    fn_800E5550(*(s32 *)((u8 *)arg0 + 0x18), lbl_80561110 + *(f32 *)((u8 *)arg0 + 0x40));
-    fn_800E5594(*(s32 *)((u8 *)arg0 + 0x18), *(s32 *)((u8 *)arg0 + 0x44));
-    fn_800E55B4(*(s32 *)((u8 *)arg0 + 0x18), *(f32 *)((u8 *)arg0 + 0x48));
-    fn_800E56D0(*(s32 *)((u8 *)arg0 + 0x18), *(f32 *)((u8 *)arg0 + 0x5C));
-    ptr = (u8 *)arg0;
+    if (*(s32 *)((u8 *)voiceParams + 0x18) == 0) return;
+    fn_800E5338(*(s32 *)((u8 *)voiceParams + 0x18), *(f32 *)((u8 *)voiceParams + 0x30));
+    fn_800E5444(*(s32 *)((u8 *)voiceParams + 0x18), *(f32 *)((u8 *)voiceParams + 0x3C));
+    fn_800E5464(*(s32 *)((u8 *)voiceParams + 0x18), *(f32 *)((u8 *)voiceParams + 0x34));
+    fn_800E54A8(*(s32 *)((u8 *)voiceParams + 0x18), *(f32 *)((u8 *)voiceParams + 0x38));
+    fn_800E5550(*(s32 *)((u8 *)voiceParams + 0x18), lbl_80561110 + *(f32 *)((u8 *)voiceParams + 0x40));
+    fn_800E5594(*(s32 *)((u8 *)voiceParams + 0x18), *(s32 *)((u8 *)voiceParams + 0x44));
+    fn_800E55B4(*(s32 *)((u8 *)voiceParams + 0x18), *(f32 *)((u8 *)voiceParams + 0x48));
+    fn_800E56D0(*(s32 *)((u8 *)voiceParams + 0x18), *(f32 *)((u8 *)voiceParams + 0x5C));
+    ptr = (u8 *)voiceParams;
     for (i = 0; i < 3; i++, ptr += 4) {
-        SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif_800E5718(*(s32 *)((u8 *)arg0 + 0x18), i, *(f32 *)(ptr + 0x60));
+        SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif_800E5718(*(s32 *)((u8 *)voiceParams + 0x18), i, *(f32 *)(ptr + 0x60));
     }
-    ptr = (u8 *)arg0;
+    ptr = (u8 *)voiceParams;
     for (i = 0; i < 4; i++, ptr += 4) {
-        SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif(*(s32 *)((u8 *)arg0 + 0x18), i, *(f32 *)(ptr + 0x4C));
-        SetRemoteSend__Q46nw4hbm3snd6detail7AxVoiceFif(*(s32 *)((u8 *)arg0 + 0x18), i, *(f32 *)(ptr + 0x6C));
-        SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif_800E58CC(*(s32 *)((u8 *)arg0 + 0x18), i, *(f32 *)(ptr + 0x6C));
+        SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif(*(s32 *)((u8 *)voiceParams + 0x18), i, *(f32 *)(ptr + 0x4C));
+        SetRemoteSend__Q46nw4hbm3snd6detail7AxVoiceFif(*(s32 *)((u8 *)voiceParams + 0x18), i, *(f32 *)(ptr + 0x6C));
+        SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif_800E58CC(*(s32 *)((u8 *)voiceParams + 0x18), i, *(f32 *)(ptr + 0x6C));
     }
 }
 
