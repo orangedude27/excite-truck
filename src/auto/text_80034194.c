@@ -2141,33 +2141,35 @@ void fn_80037A8C(void) {
 
 #pragma push
 #pragma dont_inline on
-void fn_80037B54(u32 arg0) {
-    register s32 state;
-    s32 firstInterrupts;
+/* Record a DVD/error status event and dispatch the matching follow-up action
+ * (direct callback, async read request, or generic error path). */
+void fn_80037B54(u32 status_code) {
+    register s32 saved_interrupts_async;
+    s32 saved_interrupts;
 
-    firstInterrupts = OSDisableInterrupts();
+    saved_interrupts = OSDisableInterrupts();
     if (*(volatile u32 *)&lbl_8055D848 == 0) {
-        *(u32 *)(__ErrorInfo + 0x78) = arg0;
+        *(u32 *)(__ErrorInfo + 0x78) = status_code;
     } else {
         *(u32 *)(__ErrorInfo + 0x28 +
-                 (*(volatile u32 *)&lbl_8055D848 - 1) * 0x14) = arg0;
+                 (*(volatile u32 *)&lbl_8055D848 - 1) * 0x14) = status_code;
     }
-    OSRestoreInterrupts(firstInterrupts);
+    OSRestoreInterrupts(saved_interrupts);
 
-    if (arg0 == 0x10) {
+    if (status_code == 0x10) {
         fn_8003A1A0(0x1234568, fn_80035C78);
         return;
     }
-    if (arg0 == 0x20) {
+    if (status_code == 0x20) {
         fn_8003A1A0(0x1234569, fn_80035C78);
         return;
     }
-    if (arg0 & 1) {
+    if (status_code & 1) {
         DCInvalidateRange(lbl_80376B00, 0x20);
         lbl_8055D8CC = (s32)fn_80037CEC;
         fn_8003BCDC(0);
 
-        state = OSDisableInterrupts();
+        saved_interrupts_async = OSDisableInterrupts();
         if (*(volatile u32 *)&lbl_8055D848 >= 5)
             *(volatile u32 *)&lbl_8055D848 = 0;
         *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 5;
@@ -2175,7 +2177,7 @@ void fn_80037B54(u32 arg0) {
         *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0x20;
         *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
         *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
-        OSRestoreInterrupts(state);
+        OSRestoreInterrupts(saved_interrupts_async);
         fn_8003A834(lbl_80376B00, fn_80037DBC);
         return;
     }
