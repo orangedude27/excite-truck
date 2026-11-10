@@ -284,30 +284,31 @@ void fn_8001BF0C(s32 arg0, f32 arg1) {
 #pragma dont_inline on
 #pragma paired off
 #pragma paired_single off
-s32 fn_8001BF34(s32 arg0, f32 arg1) {
-    f32 var_f31;
+/* Compares a threshold against a value derived from ARC data. */
+s32 fn_8001BF34(s32 arg0, f32 threshold) {
+    f32 limit;
     s32 temp_r3;
-    s32 var_r31;
+    s32 mode;
 
     if (fn_8001BCF0((void *)arg0) == 0 &&
         ((s32 (*)(void *))fn_8001BD30)((void *)arg0) == 0) {
         goto return_one;
     }
     if (fn_8001BCF0((void *)arg0) != 0) {
-        var_f31 = fn_8001BEE8(arg0);
+        limit = fn_8001BEE8(arg0);
     } else {
-        var_f31 = fn_8001BEC4(arg0);
+        limit = fn_8001BEC4(arg0);
     }
     temp_r3 = fn_8001BD28((void *)arg0);
-    var_r31 = temp_r3 & 0x60000;
+    mode = temp_r3 & 0x60000;
     if ((u32)(temp_r3 - 0x20000) == 0x507 && ARCGetStartOffset((void *)arg0) >= 0) {
         if (*(u32 *)((u8 *)fn_8001285C() + 8) == 0x180302) {
-            var_r31 = 0x20000;
+            mode = 0x20000;
         } else {
-            var_r31 = 0x40000;
+            mode = 0x40000;
         }
     }
-    switch (var_r31) {
+    switch (mode) {
     case 0x40000:
         goto compare_greater;
     case 0x20000:
@@ -321,9 +322,9 @@ s32 fn_8001BF34(s32 arg0, f32 arg1) {
         ((void (*)(const char *, ...))fn_802E317C)(lbl_802FD6D8, logValue, logBits);
     }
 compare_greater:
-    return arg1 > var_f31;
+    return threshold > limit;
 compare_less:
-    return arg1 < var_f31;
+    return threshold < limit;
 return_one:
     return 1;
 }
