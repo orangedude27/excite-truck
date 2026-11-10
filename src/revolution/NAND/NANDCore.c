@@ -495,18 +495,21 @@ s32 NANDPrivateGetTypeAsync(const char* path, u8* type,
     return nandConvertErrorCode(nandGetType(path, type, block, TRUE, TRUE));
 }
 
-static void nandGetTypeCallback(s32 result, void* arg) {
+static void nandGetTypeCallback(s32 ipcResult, void* arg) {
     NANDCommandBlock* block = (NANDCommandBlock*)arg;
 
-    if (result == IPC_RESULT_OK || result == IPC_RESULT_ACCESS) {
+    /* ISFS_ReadDir completion for NANDGetType: treat OK/ACCESS as a directory
+     * and INVALID as a file, normalize to IPC_RESULT_OK, convert the IPC result
+     * to a NAND result, then invoke the caller's callback. */
+    if (ipcResult == IPC_RESULT_OK || ipcResult == IPC_RESULT_ACCESS) {
         *block->type = NAND_FILE_TYPE_DIR;
-        result = IPC_RESULT_OK;
-    } else if (result == IPC_RESULT_INVALID) {
+        ipcResult = IPC_RESULT_OK;
+    } else if (ipcResult == IPC_RESULT_INVALID) {
         *block->type = NAND_FILE_TYPE_FILE;
-        result = IPC_RESULT_OK;
+        ipcResult = IPC_RESULT_OK;
     }
 
-    block->callback(nandConvertErrorCode(result), block);
+    block->callback(nandConvertErrorCode(ipcResult), block);
 }
 
 const char* nandGetHomeDir(void) {
