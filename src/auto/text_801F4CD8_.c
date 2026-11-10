@@ -1156,19 +1156,27 @@ void *fn_801F7090(void *arg0) {
 extern void fn_801F639C(void *);
 extern void fn_801F6880(void *);
 FN_801F70D0_RETURN fn_801F70D0(void *arg0, int arg1) {
-    int i;
     void *entry;
+    int i;
+
     if (arg0 != 0) {
         entry = arg0;
         i = 0;
-        do {
-            fn_801F639C(entry);
-            entry = (char *)entry + 0x48;
-            i++;
-        } while (i < *(int *)((char *)arg0 + 0x120));
+        goto check;
+    loop:
+        fn_801F639C(entry);
+        entry = (char *)entry + 0x48;
+        i++;
+    check:
+        if (i < *(int *)((char *)arg0 + 0x120)) {
+            goto loop;
+        }
         *(int *)((char *)arg0 + 0x120) = 0;
-        if (arg1 > 0) fn_80128668(arg0);
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
     }
+    return arg0;
 }
 
 extern void fn_801E8C84(float *);
