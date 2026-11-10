@@ -938,11 +938,16 @@ extern "C" void fn_8027C0D0(void *arg0, long arg1, void *arg2) {
 long *fn_8027C120(long arg0, long arg1) {
     long index = 0;
     long offset = 0;
+    long len;
     goto check;
 loop:
-    if (((unsigned int)__cntlzw(stricmp((char *)arg1, *(char **)((char *)(*(long *)arg0) + offset + 0xC))) >> 5) == 0)
+    len = stricmp((char *)arg1, *(char **)((char *)(*(long *)arg0) + offset + 0xC));
+    switch (((unsigned int)__cntlzw(len) >> 5)) {
+    case 0:
         goto advance;
-    goto found;
+    default:
+        goto found;
+    }
 advance:
     offset += 0x14;
     index++;
@@ -1059,10 +1064,10 @@ extern void fn_8027C2B8();
 #pragma push
 #pragma scheduling invalid_target
 void *fn_8027C41C(void *arg0, long arg1) {
+    long base = (long)arg0 + 0x10000;
     long zero = 0;
-    char *base = (char *)arg0 + 0x10000;
-    char *temp_r7 = base - 0x50E8;
-    char *temp_r6 = base - 0x4FEC;
+    char *temp_r7 = (char *)(base - 0x50E8);
+    char *temp_r6 = (char *)(base - 0x4FEC);
     *(long *)(base - 0x4FE4) = arg1;
     *(void **)arg0 = (char *)arg0 + 0xC;
     *(long *)((char *)arg0 + 8) = 0x8C0;
@@ -1295,23 +1300,32 @@ done:
 }
 #pragma cplusplus reset
 
-long fn_8027CA1C(void *arg0) {
-    long temp_r30;
-    long var_r31;
-    void *temp_r3;
-
-    temp_r30 = fn_8027D1F4();
-    fn_8000DA10();
-    temp_r3 = fn_8001BB58(0, *(long *)((char *)arg0 + 4), temp_r30, 0);
-    var_r31 = 0;
-    if (temp_r3 != 0) {
-        (*(void (**)(void *, char *))(*(void ***)*(void **)((char *)arg0 + 0x10))[5])(*(void **)((char *)arg0 + 0x10), lbl_80347BD0);
-        if (*(long *)((char *)temp_r3 + 8) <= fn_8001D7EC())
-            var_r31 = 1;
+#pragma cplusplus on
+extern "C" long fn_8027D1F4(void);
+extern "C" long fn_8000DA10(void);
+extern "C" void *fn_8001BB58(long, long, long, long);
+extern "C" long fn_8001D7EC(void);
+#pragma cplusplus on
+extern "C" long fn_8027CA1C(void *arg0) {
+    long v;
+    void *o;
+    struct Iface {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual long f3(char *);
+    };
+    v = fn_8027D1F4();
+    o = fn_8001BB58(fn_8000DA10(), *(long *)((char *)arg0 + 4), v, 0);
+    v = 0;
+    if (o != 0) {
+        ((struct Iface *)(*(void **)((char *)arg0 + 0x10)))->f3(lbl_80347BD0);
+        if (*(long *)((char *)o + 8) <= fn_8001D7EC())
+            v = 1;
     }
-    return var_r31;
+    return v;
 }
-
+#pragma cplusplus off
 long fn_8027CAB4(void *arg0) {
     long value;
     void *result;
