@@ -255,7 +255,7 @@ void fn_80291B9C(void *arg0, float *arg1, float arg2) {
         } while (i < *((int *)((char *)arg0 + 0x120)));
     }
 }
-#pragma processor reset
+#pragma pop
 extern double fabs(double);
 extern double sin(double);
 extern double cos(double);
