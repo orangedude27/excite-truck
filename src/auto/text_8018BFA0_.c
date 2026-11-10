@@ -167,8 +167,8 @@ void fn_8018C5A0(char *arg0, char *arg1) {
     char *p19;
     char *p20;
     int i;
-    int j;
     char *p30;
+    int j;
     Vec_8018 v;
     Vec_8018 zero;
     void *sp8;
@@ -201,8 +201,8 @@ void fn_8018C5A0(char *arg0, char *arg1) {
     }
     M2C_FIELD(arg0, int *, 0x5F8) = *M2C_FIELD(arg0, int **, 0x26C);
     {
-        float a = M2C_FIELD(arg0, float *, 0x314);
         float r = lbl_80561F7C / (lbl_80561F80 * M2C_FIELD(arg1, float *, 8));
+        float a = M2C_FIELD(arg0, float *, 0x314);
         M2C_FIELD(arg0, float *, 0x5F4) = r;
         if (a >= lbl_80561F84) {
             M2C_FIELD(arg0, float *, 0x5F4) = r * a;
@@ -235,9 +235,22 @@ void fn_8018C5A0(char *arg0, char *arg1) {
         d->e12 = s->e12; d->e13 = s->e13; d->e14 = s->e14; d->e15 = s->e15;
         d->e16 = s->e16; d->e17 = s->e17;
     }
-    for (j = 0; j < 16; j++) {
-        M2C_FIELD(arg0, unsigned char *, 0x1E2C + j) = 0xFF;
-    }
+    M2C_FIELD(arg0, unsigned char *, 0x1E2C) = 0xFF;
+    M2C_FIELD(arg0, unsigned char *, 0x1E2D) = 0xFF;
+    M2C_FIELD(arg0, unsigned char *, 0x1E2E) = 0xFF;
+    M2C_FIELD(arg0, unsigned char *, 0x1E2F) = 0xFF;
+    M2C_FIELD(arg0, unsigned char *, 0x1E30) = 0xFF;
+    M2C_FIELD(arg0, unsigned char *, 0x1E31) = 0xFF;
+    M2C_FIELD(arg0, unsigned char *, 0x1E32) = 0xFF;
+    M2C_FIELD(arg0, unsigned char *, 0x1E33) = 0xFF;
+    M2C_FIELD(arg0, unsigned char *, 0x1E34) = 0xFF;
+    M2C_FIELD(arg0, unsigned char *, 0x1E35) = 0xFF;
+    M2C_FIELD(arg0, unsigned char *, 0x1E36) = 0xFF;
+    M2C_FIELD(arg0, unsigned char *, 0x1E37) = 0xFF;
+    M2C_FIELD(arg0, unsigned char *, 0x1E38) = 0xFF;
+    M2C_FIELD(arg0, unsigned char *, 0x1E39) = 0xFF;
+    M2C_FIELD(arg0, unsigned char *, 0x1E3A) = 0xFF;
+    M2C_FIELD(arg0, unsigned char *, 0x1E3B) = 0xFF;
     p30 = base + 0x5B0;
     for (j = 0; j < 0xD; j++, p30 += 0x10) {
         char *s4;
@@ -941,7 +954,7 @@ void fn_8018E330(void *arg0) {
     register float f0;
     register float f1;
     manager = (void *)fn_801B83A0();
-    ((void (*)(void *))(*(void **)((char *)*(void **)manager + 0xA4)))(arg0);
+    ((void (*)(void *, void *))(*(void **)((char *)*(void **)manager + 0xA4)))(manager, arg0);
     fn_80161A38(0, *(int *)((char *)arg0 + 0x1EC), 0);
     fn_801DFF1C(*(int *)((char *)arg0 + 0x1EC));
     f0 = lbl_80561F74;
@@ -964,6 +977,7 @@ void fn_8018E330(void *arg0) {
     *(float *)((char *)arg0 + 0x262C) = f0;
     *(float *)((char *)arg0 + 0x2628) = f0;
 }
+#pragma cplusplus reset
 #pragma scheduling on
 float PSVECSquareDistance(float *, float *);         /* extern */
 void *__AXFXGetLfoSinTable_801769CC();              /* extern */
