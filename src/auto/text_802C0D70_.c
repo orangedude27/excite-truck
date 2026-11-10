@@ -18,6 +18,8 @@ extern char lbl_8055FB18[4];
 extern void fn_802C0FD4(int *queue);
 #pragma push
 #pragma dont_inline on
+#pragma push
+#pragma processor 750
 void fn_802C0D70(float *arg0) {
     float length;
     float y;
