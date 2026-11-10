@@ -21,8 +21,7 @@ extern int fn_802E721C(unsigned int, unsigned int, int);
 extern int fn_802E8D8C(void *, void *, int);
 extern unsigned int lbl_8034D7B0[];
 void fn_802E6B50(void) {
-    unsigned int size = 0xC8;
-    memset(lbl_804FC8B0, 0, size);
+    memset(&lbl_804FC8B0[0], 0, 200);
     lbl_8055FFC0 = 0;
     lbl_8055FFC4 = 1;
     lbl_8055FFC5 = 0;
@@ -280,5 +279,25 @@ int fn_802E7130(void) {
     }
     return (total + 0x1FFF) & 0xFFFFE000;
 }
+
+int fn_802E721C(unsigned int arg0, unsigned int arg1, int arg2) {
+    unsigned char *entry = lbl_804FC8B0;
+    int count = lbl_8055FFC0;
+    int i = 0;
+    while (count > 0) {
+        if (*(unsigned int *)entry == arg0) {
+            if (*(unsigned int *)(entry + 4) != arg1 || *(int *)(entry + 0xC) != arg2) {
+                fn_802E30C8((const char *)lbl_8034D7B0, arg0);
+                return -1;
+            }
+            return i;
+        }
+        entry += 0x14;
+        i++;
+        count--;
+    }
+    return -1;
+}
+
 #pragma scheduling on
 
