@@ -135,7 +135,6 @@ void *fn_8020F5F0(long arg0) {
 #pragma dont_inline reset
 extern void *memset(void *, int, unsigned long);
 #pragma dont_inline on
-#pragma dont_unroll on
 long fn_8020F608(long arg0, long arg1) {
     long i = 2;
     char *ptr;
