@@ -16,6 +16,26 @@ int fn_802B4FB0(unsigned char arg0) {
     }
     return result;
 }
+
+#pragma dont_inline on
+int fn_802B4FD0(void *arg0, int *arg1, int *arg2) {
+    int result = 0;
+    int handle;
+    char header[0x12];
+    handle = fn_802E3D04();
+    if (handle != -1) {
+        if (fn_802E39D0(handle, header, 0x12) != 0 &&
+            (unsigned char)header[2] == 2 &&
+            fn_802B4FB0((unsigned char)header[0x10]) != 0) {
+            result = 1;
+            *arg1 = *(unsigned short *)(header + 0xC);
+            *arg2 = *(unsigned short *)(header + 0xE);
+        }
+        fn_802E3734(&handle);
+    }
+    return result;
+}
+#pragma dont_inline reset
 typedef struct { unsigned char pad0[2]; unsigned char kind; unsigned char pad3[9]; unsigned short w; unsigned short h; unsigned char idx; } Fn802B5070Arg;
 extern char lbl_8034A4E0[];
 extern int fn_802E3D04(void);
