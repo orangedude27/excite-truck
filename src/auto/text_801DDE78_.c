@@ -50,32 +50,35 @@ extern s32 fn_8018A2C0(void **);
 extern double lbl_80562BC8;
 extern f32 lbl_80562BC0;
 extern f32 lbl_80562BC4;
-extern u32 lbl_803394A4;
+extern u8 lbl_803394A4[];
 extern void *lbl_8055E9C8;
 void fn_801DDF0C(void) {
     void *sp8;
     u32 value;
-    s32 i;
     u8 *entry;
+    s32 i;
     f32 x;
     f32 rounded;
     f32 *ptr;
-
+    f32 off;
+    f32 thr;
     value = fn_801DDE78();
     if (value != (u32)lbl_8055E9C8) {
         lbl_8055E9C8 = (void *)value;
         sp8 = &lbl_803394A4;
         lbl_8055E9C4 = 0;
         fn_8018A2C0(&sp8);
+        thr = lbl_80562BC4;
+        off = lbl_80562BC0;
         entry = (u8 *)lbl_80486F30;
         i = 0;
         while (i < lbl_8055E9C4) {
             ptr = *(f32 **)(entry + 8);
             x = *ptr / *(f32 *)(entry + 0x18);
-            if (x < lbl_80562BC4) {
-                rounded = x - lbl_80562BC0;
+            if (x < thr) {
+                rounded = x - off;
             } else {
-                rounded = lbl_80562BC0 + x;
+                rounded = off + x;
             }
             *ptr = *(f32 *)(entry + 0x18) * (f32)(s32)rounded;
             *(f32 *)(entry + 0xC) = **(f32 **)(entry + 8);
