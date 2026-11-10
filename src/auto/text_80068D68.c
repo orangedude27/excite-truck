@@ -14905,6 +14905,7 @@ s32 btsnd_hcic_switch_role_8008515C(BD_ADDR bd_addr, UINT8 role) {
     return 1;
 }
 
+/* Send HCI Change Local Name command with the provided device name */
 BOOLEAN btsnd_hcic_change_name(void *p_buf, BD_NAME name) {
     BT_HDR *p = (BT_HDR *)p_buf;
     UINT8 *pp;
