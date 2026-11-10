@@ -266,10 +266,12 @@ void fn_802B111C(void *arg0) {
 __declspec(section ".data") extern void *lbl_804BE104;
 #pragma use_lmw_stmw off
 void *fn_802B1138(const char *name) {
-    int offset = 0;
-    void *result = 0;
-    int count = 0;
-
+    int offset;
+    void *result;
+    int count;
+    result = 0;
+    count = 0;
+    offset = 0;
     while (count < *(int *)((char *)&lbl_804BE104 + 4)) {
         void **entries = *(void ***)&lbl_804BE104;
         void *entry = *(void **)((char *)entries + offset);
@@ -700,19 +702,19 @@ extern int fn_802DA704(int, void *, int);
 extern void fn_802DAA18(void);
 void fn_802B1B60(void *arg0) {
     float sp8[3];
+    float val = lbl_80564BF8;
     char *list = *(char **)((char *)arg0 + 0xC);
     float *out = sp8;
     int count = 0;
     int offset = 0;
-    float val = lbl_80564BF8;
     while (count < *(int *)(list + 8)) {
-        char *entry = *(char **)(list + 4) + offset;
-        *out = *(float *)(entry + 4);
-        out[1] = *(float *)(entry + 8);
+        char *base = *(char **)(list + 4);
+        *out = *(float *)(base + offset + 4);
+        out[1] = *(float *)(*(char **)(list + 4) + offset + 8);
         out[2] = val;
-        out += 3;
-        offset += 0x10;
         count++;
+        offset += 0x10;
+        out += 3;
     }
     fn_802DA704(1, sp8, 2);
     fn_802DAA18();
