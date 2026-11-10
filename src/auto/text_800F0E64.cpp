@@ -4335,6 +4335,13 @@ extern "C" s32 OSJoinThread(void *, s32);
 extern "C" const char lbl_80326450[];
 extern "C" const char lbl_80326488[];
 extern "C" void Shutdown__Q36nw4hbm3snd18SoundArchivePlayerFv(void *self) {
+    /* Shut down nw4hbm SoundArchivePlayer: clear archive/source pointers
+       (+0x10,+0x14,+0x6C), destroy all SoundPlayer instances in array at
+       (+0x74, count +0x70, stride 0x48) via __dt__Q36nw4hbm3snd11SoundPlayerFv,
+       reset subobject at +0xA8 (fn_800FA9E8), destroy pool impls at +0x78/+0x88/
+       +0x98 from buffer (+0xD0,size +0xD4) with Panic if null (SoundInstance-
+       Manager.h "Pointer must not be NULL (buffer)"), tear down +0xC4 via
+       fn_800EE434, and clear buffer/size. */
     u8 *obj = (u8 *)self;
     *(u32 *)(obj + 0x10) = 0;
     *(u32 *)(obj + 0x14) = 0;
