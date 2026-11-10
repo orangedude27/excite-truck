@@ -7699,21 +7699,23 @@ extern "C" void *fn_8022855C(void *p,s32 unused,s32 a,s32 b){fn_80218F80();*(s32
 extern "C" void fn_802361E8(s32, s32, s32, s32, s32, s32);
 extern "C" void fn_80230924(s32, s32, f32, f32, f32, f32, f32);
 extern "C" void fn_802285B8(void *arg0) {
-    f32 spC, sp8;
-    s32 value;
-    s32 *ptr;
-    fn_80230C30(&spC, &sp8, *(s32 *)((u8 *)arg0 + 4), *(s32 *)((u8 *)arg0 + 8));
-    ptr = *(s32 **)((u8 *)arg0 + 0x248);
-    value = ptr ? *ptr : 0;
+    /* Compute screen bounds for this element and draw via object-specific or
+     * default rectangle rendering depending on whether a target handle is set. */
+    f32 x, y;
+    s32 stateValue;
+    s32 *statePtr;
+    fn_80230C30(&x, &y, *(s32 *)((u8 *)arg0 + 4), *(s32 *)((u8 *)arg0 + 8));
+    statePtr = *(s32 **)((u8 *)arg0 + 0x248);
+    stateValue = statePtr ? *statePtr : 0;
     if (*(s32 *)((u8 *)arg0 + 0x244) != 0) {
-        fn_802361E8(*(s32 *)((u8 *)arg0 + 0x244), value, (s32)spC, (s32)sp8,
+        fn_802361E8(*(s32 *)((u8 *)arg0 + 0x244), stateValue, (s32)x, (s32)y,
                     ((Vf78 *)arg0)->get(),
                     *(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8));
         return;
     }
-    fn_80230924(0x8FAFBFCF, *(s32 *)((u8 *)arg0 + 8), spC, sp8,
-                spC + (f32)((Vf78 *)arg0)->get(),
-                sp8 - (f32)(*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8)),
+    fn_80230924(0x8FAFBFCF, *(s32 *)((u8 *)arg0 + 8), x, y,
+                x + (f32)((Vf78 *)arg0)->get(),
+                y - (f32)(*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8)),
                 lbl_805634A8);
 }
 
