@@ -216,6 +216,7 @@ void fn_80176610(void) {
 }
 #pragma dont_inline reset
 
+#pragma scheduling invalid_target
 void fn_80176614(void) {
     s32 i;
     lbl_8055E3F4 = 1;
@@ -234,7 +235,7 @@ loop_test:
     lbl_8055E3F0 = fn_802090D4((s32)&lbl_8055A2F8);
     fn_8017779C();
 }
-
+#pragma scheduling on
 extern char lbl_803315E8[];
 extern s32 fn_80209110(s32 *);
 void fn_801766C4(void) {
@@ -661,27 +662,22 @@ void fn_80176BA8(void) {
 
 }
 
+#pragma push
+#pragma processor 750
 void fn_80176BAC(void) {
     f32 now;
-    f32 delta;
-    f32 upper;
-    f32 lower;
+    f32 value;
     now = lbl_8055E3C8;
-    delta = now - lbl_8055E3FC;
-    upper = lbl_80561B38;
-    upper = (upper < delta) ? delta : upper;
-    lower = *(volatile f32 *)&lbl_80561B3C;
-    lower = (lower < upper) ? lower : upper;
-    fn_8017ED00(lower);
+    value = lbl_80561B38;
+    value = (value < (now - lbl_8055E3FC)) ? (now - lbl_8055E3FC) : value;
+    fn_8017ED00((value > lbl_80561B3C) ? value : lbl_80561B3C);
     lbl_8055E3FC = now;
 }
-
-#pragma scheduling invalid_target
-s32 *fn_80176C0C(s32 *arg0, s32 *arg1) {
-    register s32 length = *arg1;
-    register s32 *source = arg1 + 1;
+#pragma pop
+s32 *fn_80176C0C(register s32 *arg0, s32 *arg1) {
+    s32 length = *arg1;
     *arg0 = length;
-    memcpy(arg0 + 1, source, length);
+    memcpy(arg0 + 1, arg1 + 1, length);
     return arg0;
 }
 #pragma scheduling on
@@ -884,12 +880,12 @@ void fn_801776C4(u32 arg0) {
 }
 
 void fn_80177720(u32 arg0) {
-    s32 i;
-    for (i = 0; i < lbl_8055E400; i++) {
-        if (arg0 == (u32)lbl_80430570[i]) {
+    u32 *entry = (u32 *)lbl_80430570;
+    s32 i = 0;
+    for (; i < lbl_8055E400; i++, entry++) {
+        if (arg0 == *entry) {
             lbl_8055E400--;
-            memmove(&lbl_80430570[i], &lbl_80430570[i + 1],
-                    (lbl_8055E400 - i) * sizeof(s32));
+            memmove(entry, entry + 1, (lbl_8055E400 - i) * sizeof(s32));
             return;
         }
     }
