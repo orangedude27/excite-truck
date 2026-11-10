@@ -5164,21 +5164,27 @@ void bta_dm_pinname_cback(u8 *arg0) {
     callback(2, local, lbl_803C0C14);
 }
 
+/* Handle a PIN code request: if no device name is known, cache the request and
+ * ask BTM for the remote name; otherwise deliver the PIN event to the DM callback. */
 u8 bta_dm_pin_cback(u8 *bd_addr, u8 *pin_info, u8 *pin_name) {
     u8 sec_event[0x110];
 
     if (*(void **)(lbl_803C0C14 + 0x50) == 0)
         return 0xB;
+
     if (pin_name[0] == 0) {
         fn_80070FA4(lbl_803C0C14 + 0xF8, bd_addr);
         lbl_803C0C14[0xFE] = pin_info[0];
         lbl_803C0C14[0xFF] = pin_info[1];
         lbl_803C0C14[0x100] = pin_info[2];
+
         if (BTM_ReadRemoteDeviceName(bd_addr, (tBTM_CMPL_CB *)bta_dm_pinname_cback) == 1)
             return 1;
+
         if (lbl_8055DC80 >= 2)
             fn_8007093C(0x501, lbl_80315088);
     }
+
     fn_80070FA4(sec_event, bd_addr);
     sec_event[0xFE] = pin_info[0];
     sec_event[0xFF] = pin_info[1];
@@ -5186,6 +5192,7 @@ u8 bta_dm_pin_cback(u8 *bd_addr, u8 *pin_info, u8 *pin_name) {
     strncpy((char *)sec_event + 6, (const char *)pin_name, 0x20);
     sec_event[0x26] = 0;
     (*(void (**)(int, void *))(lbl_803C0C14 + 0x50))(2, sec_event);
+
     return 1;
 }
 
