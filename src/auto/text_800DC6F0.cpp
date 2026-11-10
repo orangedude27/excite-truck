@@ -139,65 +139,66 @@ extern "C" void SetSize__Q46nw4hbm3lyt6detail11TexCoordAryFUc(void*, u8);
 extern "C" void GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(f32*, void*, u8);
 extern "C" u8 lbl_8032036C[], lbl_80320504[], lbl_80320538[];
 extern f32 lbl_80560EC8;
-extern "C" void Append__Q36nw4hbm3lyt7PictureFRC9_GXTexObj(void* this_, const void* texObj) {
-    u8* self = (u8*)this_;
-    u32 n;
-    void* mat = *(void**)(self + 0x28);
-    u32 count = *(volatile u32*)((u8*)mat + 0x4C);
-    n = *(volatile u32*)((u8*)mat + 0x50) >> 28;
+extern "C" void Append__Q36nw4hbm3lyt7PictureFRC9_GXTexObj(void *picture, const void *texObj) {
+    u8 *self = (u8 *)picture;
+    u32 texIndex;
+    void *material = *(void **)(self + 0x28);
+    u32 matCounts = *(volatile u32 *)((u8 *)material + 0x4C);
+    texIndex = *(volatile u32 *)((u8 *)material + 0x50) >> 28;
     u32 packed;
     u8 coords[4];
     volatile f32 defaults[2];
     f32 size[2];
 
-    if (n >= (count >> 28) || n >= ((count >> 20) & 15)) {
+    /* Append a texture to the picture's material and ensure tex coord/size state. */
+    if (texIndex >= (matCounts >> 28) || texIndex >= ((matCounts >> 20) & 15)) {
         Warning__Q26nw4hbm2dbFPCciPCce(
-            (const char*)lbl_80320320, 0xC0, (const char*)lbl_8032036C,
-            n, count >> 28, (*(volatile u32*)((u8*)mat + 0x4C) >> 20) & 15);
+            (const char *)lbl_80320320, 0xC0, (const char *)lbl_8032036C,
+            texIndex, matCounts >> 28, (*(volatile u32 *)((u8 *)material + 0x4C) >> 20) & 15);
         return;
     }
 
-    SetTextureNum__Q36nw4hbm3lyt8MaterialFUc(mat, (u8)(n + 1));
+    SetTextureNum__Q36nw4hbm3lyt8MaterialFUc(material, (u8)(texIndex + 1));
     SetTexture__Q36nw4hbm3lyt8MaterialFUcRC9_GXTexObj(
-        *(void**)(self + 0x28), (u8)n, texObj);
+        *(void **)(self + 0x28), (u8)texIndex, texObj);
     SetTexCoordGenNum__Q36nw4hbm3lyt8MaterialFUc(
-        *(void**)(self + 0x28),
-        (u8)(*(u32*)((u8*)*(void**)(self + 0x28) + 0x50) >> 28));
+        *(void **)(self + 0x28),
+        (u8)(*(u32 *)((u8 *)*(void **)(self + 0x28) + 0x50) >> 28));
 
-    mat = *(void**)(self + 0x28);
+    material = *(void **)(self + 0x28);
     coords[3] = 0;
     coords[0] = 1;
     coords[1] = 4;
     coords[2] = 0x3C;
-    packed = *(u32*)coords;
-    if (n >= ((*(u32*)((u8*)mat + 0x50) >> 20) & 15)) {
+    packed = *(u32 *)coords;
+    if (texIndex >= ((*(u32 *)((u8 *)material + 0x50) >> 20) & 15)) {
         Panic__Q26nw4hbm2dbFPCciPCce(
-            (const char*)lbl_80320538, 0xB4, (const char*)lbl_80320504);
+            (const char *)lbl_80320538, 0xB4, (const char *)lbl_80320504);
     }
     {
-        u8* tc = (u8*)fn_800D9344(mat) + (u8)n * 4;
-        tc[0] = ((u8*)&packed)[0];
-        tc[1] = ((u8*)&packed)[1];
-        tc[2] = ((u8*)&packed)[2];
-        tc[3] = ((u8*)&packed)[3];
+        u8 *tc = (u8 *)fn_800D9344(material) + (u8)texIndex * 4;
+        tc[0] = ((u8 *)&packed)[0];
+        tc[1] = ((u8 *)&packed)[1];
+        tc[2] = ((u8 *)&packed)[2];
+        tc[3] = ((u8 *)&packed)[3];
     }
     SetSize__Q46nw4hbm3lyt6detail11TexCoordAryFUc(
         self + 0xE4,
-        (u8)(*(u32*)((u8*)*(void**)(self + 0x28) + 0x50) >> 28));
+        (u8)(*(u32 *)((u8 *)*(void **)(self + 0x28) + 0x50) >> 28));
 
     defaults[0] = lbl_80560EC8;
     defaults[1] = lbl_80560EC8;
     int init = 0;
-    if (*(f32*)(self + 0x4C) == lbl_80560EC8 &&
-        *(f32*)(self + 0x50) == lbl_80560EC8) {
+    if (*(f32 *)(self + 0x4C) == lbl_80560EC8 &&
+        *(f32 *)(self + 0x50) == lbl_80560EC8) {
         init = 1;
     }
     if (init != 0 &&
-        ((*(u32*)((u8*)*(void**)(self + 0x28) + 0x50) >> 28) == 1)) {
+        ((*(u32 *)((u8 *)*(void **)(self + 0x28) + 0x50) >> 28) == 1)) {
         GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(
-            size, *(void**)(self + 0x28), 0);
-        *(f32*)(self + 0x4C) = size[0];
-        *(f32*)(self + 0x50) = size[1];
+            size, *(void **)(self + 0x28), 0);
+        *(f32 *)(self + 0x4C) = size[0];
+        *(f32 *)(self + 0x50) = size[1];
     }
 }
 
@@ -258,28 +259,27 @@ extern "C" void* GetVtxPos__Q34nw4r3lyt4PaneCFv(void*);
 extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(void*, void*, u8, s32, void*, u8);
 extern "C" void DrawSelf__Q36nw4hbm3lyt7PictureFRCQ36nw4hbm3lyt8DrawInfo(void* this_) {
     u8* self = (u8*)this_;
-    void* tex;
+    void* tex = *(void**)(self + 0x28);
     u8 color;
-    u8 format;
-    s32 modulate;
-    void* colors;
+    s32 modret;
+    u8 fmt;
+    s32 sz;
+    u8 fmt2;
     void* pos;
-    s32 size;
-
-    tex = *(void**)(self + 0x28);
+    void* cols;
     if (tex == 0) return;
     ((void (*)(void*))(*(void***)this_)[0x60 / 4])(this_);
     color = self[0xCE];
-    modulate = IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(self + 0xD4, color);
+    modret = IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(self + 0xD4, color);
     tex = *(void**)(self + 0x28);
-    modulate = ((s32 (*)(void*, s32, u8))(*(void***)tex)[0x0C / 4])(tex, modulate, color);
-    format = self[0xE5];
-    SetVertexFormat__Q34nw4r3lyt6detailFbUc(modulate, format);
-    colors = modulate ? self + 0xD4 : 0;
-    size = *(s32*)(self + 0xE8);
-    format = self[0xE5];
+    modret = ((s32 (*)(void*, s32, u8))(*(void***)tex)[0x0C / 4])(tex, modret, color);
+    fmt = self[0xE5];
+    SetVertexFormat__Q34nw4r3lyt6detailFbUc(modret, fmt);
+    cols = modret ? self + 0xD4 : 0;
+    sz = *(s32*)(self + 0xE8);
+    fmt2 = self[0xE5];
     pos = GetVtxPos__Q34nw4r3lyt4PaneCFv(this_);
-    DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(&pos, self + 0x4C, format, size, colors, color);
+    DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(&pos, self + 0x4C, fmt2, sz, cols, color);
 }
 
 extern "C" u32* fn_800DCDFC(void) {
