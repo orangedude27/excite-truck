@@ -23,6 +23,7 @@ static SCRegion lbl_8031B120[] = {{SC_AREA_JPN, "JPN"},
                                              {SC_AREA_SAF, "SAF"},
                                              {-1, ""}};
 
+/* Looks up a key in SC product info and copies its value into buf if found. */
 BOOL __SCF1(const char* type, char* buf, u32 sz) {
     u8 ptext;
     BOOL found = FALSE;
