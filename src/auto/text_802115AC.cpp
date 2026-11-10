@@ -125,7 +125,7 @@ extern "C" s32 fn_80029004(const char *, s32);
 extern "C" s32 fn_801345D8(void *, s32, const char *, s32, s32, const char *);
 extern "C" unsigned long strlen(const char *);
 #pragma small_data on
-extern "C" const char lbl_8055B808[];
+extern "C" char lbl_8055B808[];
 extern "C" const char lbl_8055B724[], lbl_8055B728[], lbl_8055B720[], lbl_8055B730[];
 extern "C" const char lbl_8055B738[], lbl_8055B73C[], lbl_8055B744[], lbl_8055B748[];
 #pragma small_data off
@@ -614,17 +614,17 @@ extern "C" int stricmp(const char *, const char *);
 #pragma small_data on
 #pragma small_data off
 extern "C" void *fn_8021227C(void *arg0, char *arg1, s32 arg2) {
-    char first = *arg1;
-    char buf[0x100];
+    s32 id = arg2;
     char *name = arg1;
     void *entry = arg0;
-
+    char first = *arg1;
+    char buf[0x100];
     if (first == '#') {
         name = arg1 + 1;
         sprintf(buf, lbl_8055B750, name);
     }
     for (;;) {
-        if (*(s32 *)((char *)entry + 4) == arg2 &&
+        if (*(s32 *)((char *)entry + 4) == id &&
             *(char **)entry != 0 &&
             (stricmp(*(char **)entry, name) == 0 ||
              stricmp(*(char **)entry, buf) == 0)) {
@@ -1731,7 +1731,7 @@ extern "C" s32 fn_80214934(const void* arg0, s32 arg1, void* arg2, s32 arg3) {
     if (end == 0) {
         end = (s32)((const char*)arg1 + strlen((const char*)arg1));
     }
-    return ((s32 (*)(void*, s32, const char*, ...))fn_801345D8)(arg2, arg3, lbl_8055B808, (s32)arg0, end - arg1, (const char*)arg1);
+    return ((s32 (*)(void*, s32, const char*, ...))fn_801345D8)(arg2, arg3, &lbl_8055B808[0], (s32)arg0, end - arg1, (const char*)arg1);
 }
 #pragma small_data off
 #pragma pop
