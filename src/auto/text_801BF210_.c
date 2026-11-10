@@ -30,14 +30,13 @@ void *fn_801BF214(void) {
     extern int lbl_8055E7BC;
     void *p = fn_801284F8(0x278, &lbl_8055A948);
     if (p != 0) {
-        int offset;
+        int index;
         fn_8017B0B0();
         *(char **)p = lbl_80336A90;
         *(int *)((char *)p + 0x1EC) = 0;
         *(int *)((char *)p + 0x1F0) = -1;
-        offset = lbl_8055E7BC * 4;
-        lbl_8055E7BC = lbl_8055E7BC + 1;
-        *(void **)(lbl_80437D48 + offset) = p;
+        index = lbl_8055E7BC++;
+        *(void **)(lbl_80437D48 + index * 4) = p;
         *(int *)((char *)p + 0x214) = fn_801C1BA4(4, 6, 2, lbl_80437D48, lbl_8055E7BC);
     }
     return p;
@@ -338,50 +337,55 @@ void fn_801BF75C(float *arg0, const float *arg1, const float *arg2, int arg3) {
 }
 #pragma pop
 void fn_801BFD34(float *, float *, const float *);
-void fn_801BFB2C(char *arg0, float *arg1, FV3 *arg2) {
-    float n[3], q1[3], q0[3];
-    float m[12];
-    FV3 *a, *b;
+/* Builds an orthonormal basis from four indexed points in the point array:
+ * origin at index *(int*)(base+0x21C), axes from (idx 0x224-0x220) and
+ * (idx 0x22C-0x228). Falls back to identity axes when the cross product is
+ * degenerate (dot <= lbl_805628CC), then stores the resulting transform parts
+ * via fn_801BFD34/fn_80015B20. */
+void fn_801BFB2C(char *base, float *out, FV3 *points) {
+    float normal[3], axis1[3], axis0[3];
+    float basis[12];
+    FV3 *pA, *pB;
     float z, y, x;
 
-    a = &arg2[*(int *)(arg0 + 0x21C)];
-    x = a->x; y = a->y; z = a->z;
-    m[9] = x; m[10] = y; m[11] = z;
-    a = &arg2[*(int *)(arg0 + 0x220)];
-    b = &arg2[*(int *)(arg0 + 0x224)];
-    x = b->x - a->x; y = b->y - a->y; z = b->z - a->z;
-    m[0] = x; m[1] = y; m[2] = z;
-    a = &arg2[*(int *)(arg0 + 0x228)];
-    b = &arg2[*(int *)(arg0 + 0x22C)];
-    x = b->x - a->x; y = b->y - a->y; z = b->z - a->z;
-    m[3] = x; m[4] = y; m[5] = z;
-    PSVECCrossProduct(&m[0], &m[3], &m[6]);
-    if (PSVECDotProduct(&m[6], &m[6]) > lbl_805628CC) {
+    pA = &points[*(int *)(base + 0x21C)];
+    x = pA->x; y = pA->y; z = pA->z;
+    basis[9] = x; basis[10] = y; basis[11] = z;
+    pA = &points[*(int *)(base + 0x220)];
+    pB = &points[*(int *)(base + 0x224)];
+    x = pB->x - pA->x; y = pB->y - pA->y; z = pB->z - pA->z;
+    basis[0] = x; basis[1] = y; basis[2] = z;
+    pA = &points[*(int *)(base + 0x228)];
+    pB = &points[*(int *)(base + 0x22C)];
+    x = pB->x - pA->x; y = pB->y - pA->y; z = pB->z - pA->z;
+    basis[3] = x; basis[4] = y; basis[5] = z;
+    PSVECCrossProduct(&basis[0], &basis[3], &basis[6]);
+    if (PSVECDotProduct(&basis[6], &basis[6]) > lbl_805628CC) {
         float a0, a1, a2, b0, b1, b2;
-        a2 = m[2]; a1 = m[1]; a0 = m[0]; b2 = m[8]; b1 = m[7]; b0 = m[6];
-        q0[0] = a0; q0[1] = a1; q0[2] = a2;
-        n[0] = b0; n[1] = b1; n[2] = b2;
-        PSVECCrossProduct(n, q0, q1);
-        PSVECNormalize(q0, q0);
-        PSVECNormalize(q1, q1);
-        PSVECCrossProduct(q0, q1, n);
-        m[0] = q0[0]; m[1] = q0[1]; m[2] = q0[2];
-        m[3] = q1[0]; m[4] = q1[1]; m[5] = q1[2];
-        m[6] = n[0]; m[7] = n[1]; m[8] = n[2];
+        a2 = basis[2]; a1 = basis[1]; a0 = basis[0]; b2 = basis[8]; b1 = basis[7]; b0 = basis[6];
+        axis0[0] = a0; axis0[1] = a1; axis0[2] = a2;
+        normal[0] = b0; normal[1] = b1; normal[2] = b2;
+        PSVECCrossProduct(normal, axis0, axis1);
+        PSVECNormalize(axis0, axis0);
+        PSVECNormalize(axis1, axis1);
+        PSVECCrossProduct(axis0, axis1, normal);
+        basis[0] = axis0[0]; basis[1] = axis0[1]; basis[2] = axis0[2];
+        basis[3] = axis1[0]; basis[4] = axis1[1]; basis[5] = axis1[2];
+        basis[6] = normal[0]; basis[7] = normal[1]; basis[8] = normal[2];
     } else {
         float zero = lbl_805628B8, one = lbl_805628BC;
-        m[1] = zero;
-        m[0] = one;
-        m[2] = zero;
-        m[3] = zero;
-        m[4] = one;
-        m[5] = zero;
-        m[6] = zero;
-        m[7] = zero;
-        m[8] = one;
+        basis[1] = zero;
+        basis[0] = one;
+        basis[2] = zero;
+        basis[3] = zero;
+        basis[4] = one;
+        basis[5] = zero;
+        basis[6] = zero;
+        basis[7] = zero;
+        basis[8] = one;
     }
-    fn_801BFD34(arg1 + 9, (float *)(arg0 + 0x254), m);
-    fn_80015B20(arg1, arg0 + 0x230, m);
+    fn_801BFD34(out + 9, (float *)(base + 0x254), basis);
+    fn_80015B20(out, base + 0x230, basis);
 }
 
 #pragma dont_inline off
@@ -449,7 +453,7 @@ void GXInitLightAttnA_801BFEBC(void *arg0, float farg0, float farg1, float farg2
 
 #pragma scheduling on
 void fn_801BFECC(void *arg0, void *arg1) {
-    register int a11, a10, a9, a8, a7, a6, a5, a4, a3, a2, a1, a0;
+    int a11, a10, a9, a8, a7, a6, a5, a4, a3, a2, a1, a0;
     a3 = *(volatile int *)((char *)arg1 + 0x0C);
     a4 = *(volatile int *)((char *)arg1 + 0x10);
     a2 = *(volatile int *)((char *)arg1 + 0x08);
@@ -537,12 +541,12 @@ extern void fn_8019EECC(void *, void *);
 void fn_801C00B8(void *arg0, float *arg1) {
     void *callback = *(void **)((char *)arg0 + 4);
     void *self = arg0;
-    float x = arg1[0];
-    float y = arg1[1];
     float z = arg1[2];
-    *(float *)((char *)self + 0x28) = x;
-    *(float *)((char *)self + 0x2C) = y;
-    *(float *)((char *)self + 0x30) = z;
+    float y = arg1[1];
+    float x = arg1[0];
+    *(float *)((char *)arg0 + 0x28) = x;
+    *(float *)((char *)arg0 + 0x2C) = y;
+    *(float *)((char *)arg0 + 0x30) = z;
     if (callback == 0) return;
     fn_8019EECC(callback, (char *)self + 0x28);
 }
