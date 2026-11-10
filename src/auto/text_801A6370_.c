@@ -8,6 +8,9 @@ extern void *fn_8002F37C(void *, int, int, int);
 extern void fn_801A6520(void);
 extern char lbl_80333CA8[];
 extern char lbl_80333CB8[];
+extern int lbl_8055E3C4;
+extern float lbl_80562434;
+extern int fn_801E89EC(void);
 
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((char *)(expr) + (offset)))
 
@@ -612,8 +615,8 @@ extern "C" void fn_801A6C14(void *arg0) {
 float fn_801A70EC(int arg0, void *arg1, void *arg2, int arg3) {
     float ratio;
     float denominator;
-    denominator = fn_801A63C4(*(int *)((char *)arg2 + 4), *(int *)((char *)arg1 + 4));
-    ratio = fn_801A63C4(arg3, *(int *)((char *)arg1 + 4));
+    denominator = fn_801A63C4(((int *)arg2)[1], ((int *)arg1)[1]);
+    ratio = fn_801A63C4(arg3, ((int *)arg1)[1]);
     ratio /= denominator;
     fn_8012F57C(arg0, (char *)arg1 + 0x2A, (char *)arg2 + 0x2A, ratio);
     return ratio;
