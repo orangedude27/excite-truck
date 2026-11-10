@@ -2458,6 +2458,8 @@ extern "C" void fn_801FC4D8(void **arg0, void *arg1) {
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
+// Creates an EWSound data entry from resource fields, resolves/instantiates its sound item,
+// syncs volume/update params onto the item when present, tags it, and appends it to the list.
 extern "C" void fn_801FC4E8(void *self, void *arg1) {
     struct ManagerLookup { virtual void a0(); virtual void a1(); virtual void a2(); virtual s32 lookup(const char *, s32); };
     struct ManagerFinish { virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3(); virtual void a4(); virtual void a5(); virtual void a6(); virtual void finish(const char *); };
