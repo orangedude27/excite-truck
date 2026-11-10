@@ -2863,6 +2863,7 @@ unsigned char fn_80165050(void *arg0) {
 s32 fn_80165058(void *arg0, s32 arg1) {
     s32 temp_r30;
     s32 temp_r29;
+    /* Handle menu/navigation input (up/down/select/back/cancel) when not blocked; updates selection at +8. */
     if ((s32)*(u32 *)((u8 *)fn_801E7E34() + 0xDB0) == 0) {
         if (*(u8 *)((u8 *)arg0 + 6) == 0) {
             switch (arg1) {
