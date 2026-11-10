@@ -267,6 +267,7 @@ void OSSetGbsMode(u16 gbs) {
 }
 
 BOOL __OSGetRTCFlags(u32* out) {
+    // Read the RTC flags word from the SRAM/RTC device over EXI channel 0.
     u32 imm;
     BOOL error = FALSE;
 
