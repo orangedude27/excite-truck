@@ -606,16 +606,20 @@ static BOOL ParseGetBEValue(const u8* start, const u8* end, u32* out,
     return TRUE;
 }
 
-static BOOL UnpackItem(const SCConfItem* raw, SCItem* item) {
-    u8 type;
+/* Unpacks a raw SYSCONF item record into the parsed SCItem form used by lookups.
+ * Decodes the descriptor/type, locates name/data payloads, computes lengths, and
+ * copies primitive values into item storage. Returns TRUE when a non-empty data
+ * payload was decoded. */
+static BOOL UnpackItem(const SCConfItem* rawItem, SCItem* item) {
+    u8 itemType;
 
     memset(item, 0, sizeof(SCItem));
-    type = raw->desc & 0b11100000;
-    item->name = raw->name;
-    item->nameLen = (raw->desc & 0b00011111) + 1;
-    item->data = (u8*)raw + item->nameLen + 1;
+    itemType = rawItem->desc & 0b11100000;
+    item->name = rawItem->name;
+    item->nameLen = (rawItem->desc & 0b00011111) + 1;
+    item->data = (u8*)rawItem + item->nameLen + 1;
 
-    switch (type) {
+    switch (itemType) {
     case SC_ITEM_BYTE:
     case SC_ITEM_BOOL:
         item->dataLen = sizeof(u8);
@@ -643,10 +647,10 @@ static BOOL UnpackItem(const SCConfItem* raw, SCItem* item) {
         goto _exit;
     }
 
-    if (type == SC_ITEM_SMALLARRAY || type == SC_ITEM_BIGARRAY) {
+    if (itemType == SC_ITEM_SMALLARRAY || itemType == SC_ITEM_BIGARRAY) {
         item->arrayType = SC_ITEM_SMALLARRAY;
     } else {
-        item->primType = type;
+        item->primType = itemType;
         memcpy(item, item->data, item->dataLen);
     }
 
