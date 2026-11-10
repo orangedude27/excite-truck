@@ -35,7 +35,9 @@ ok:
     return TRUE;
 }
 
-BOOL __OSReadStateFlags(OSStateFlags* state) {
+/* Read the saved OS state flags from NAND into outState.
+ * Returns FALSE and clears outState on open/read/checksum failure. */
+BOOL __OSReadStateFlags(OSStateFlags* outState) {
     NANDFileInfo file;
 
     if (NANDOpen("/title/00000001/00000002/data/state.dat", &file,
@@ -46,19 +48,19 @@ BOOL __OSReadStateFlags(OSStateFlags* state) {
 
         if (bytesRead != sizeof(OSStateFlags)) {
             NANDDelete("/title/00000001/00000002/data/state.dat");
-            memset(state, 0, sizeof(OSStateFlags));
+            memset(outState, 0, sizeof(OSStateFlags));
             return FALSE;
         }
     } else {
-        memset(state, 0, sizeof(OSStateFlags));
+        memset(outState, 0, sizeof(OSStateFlags));
         return FALSE;
     }
 
     if (CheckSum(&StateFlags) != StateFlags.checksum) {
-        memset(state, 0, sizeof(OSStateFlags));
+        memset(outState, 0, sizeof(OSStateFlags));
         return FALSE;
     }
 
-    memcpy(state, &StateFlags, sizeof(OSStateFlags));
+    memcpy(outState, &StateFlags, sizeof(OSStateFlags));
     return TRUE;
 }
