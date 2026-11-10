@@ -20763,7 +20763,7 @@ void rfc_mx_sm_state_idle(void *muxControlBlock, s32 event, void *eventData) {
     }
 }
 
-void rfc_mx_sm_state_wait_conn_cnf(void *p_mcb, s32 event, void *p_data) {
+void rfc_mx_sm_state_wait_conn_cnf(void *muxCb, s32 event, void *eventData) {
     extern u8 lbl_803C4828[];
     extern char jumptable_803197F8[];
     extern void fn_80070954(u32, void *, u16);
@@ -20771,20 +20771,21 @@ void rfc_mx_sm_state_wait_conn_cnf(void *p_mcb, s32 event, void *p_data) {
     char *trace = jumptable_803197F8;
     u8 config[0x3C];
 
+    /* RFCOMM multiplexer state: waiting for L2CAP connection/config confirmation. */
     if (lbl_803C4828[0x414] >= 4)
         ((void (*)(u32, void *, s32))fn_80070954)(0x90003, trace + 0xCC, event);
 
     switch (event) {
     case 6:
         if (lbl_803C4828[0x414] >= 1)
-            ((void (*)(u32, void *, u8, s32))fn_8007096C)(0x90000, trace + 0x3C, *(u8 *)((u8 *)p_mcb + 0x6C), event);
+            ((void (*)(u32, void *, u8, s32))fn_8007096C)(0x90000, trace + 0x3C, *(u8 *)((u8 *)muxCb + 0x6C), event);
         break;
     case 9:
-        if (*(u16 *)p_data != 0) {
-            *(u8 *)((u8 *)p_mcb + 0x6C) = 0;
-            PORT_StartCnf(p_mcb, *(u16 *)p_data);
+        if (*(u16 *)eventData != 0) {
+            *(u8 *)((u8 *)muxCb + 0x6C) = 0;
+            PORT_StartCnf(muxCb, *(u16 *)eventData);
         } else {
-            *(u8 *)((u8 *)p_mcb + 0x6C) = 2;
+            *(u8 *)((u8 *)muxCb + 0x6C) = 2;
             if (lbl_803C4828[0x414] >= 4)
                 fn_8007093C(0x90003, trace + 0x58);
             memset(config, 0, sizeof(config));
@@ -20792,21 +20793,21 @@ void rfc_mx_sm_state_wait_conn_cnf(void *p_mcb, s32 event, void *p_data) {
             *(u16 *)(config + 4) = 0x69B;
             config[0x20] = 0;
             config[6] = 0;
-            ((void (*)(u32, void *))L2CA_ConfigReq)(*(u16 *)((u8 *)p_mcb + 0x68), config);
+            ((void (*)(u32, void *))L2CA_ConfigReq)(*(u16 *)((u8 *)muxCb + 0x68), config);
         }
         break;
     case 14:
-        *(u8 *)((u8 *)p_mcb + 0x6C) = 0;
-        PORT_CloseInd(p_mcb);
+        *(u8 *)((u8 *)muxCb + 0x6C) = 0;
+        PORT_CloseInd(muxCb);
         break;
     case 5:
-        *(u8 *)((u8 *)p_mcb + 0x6C) = 0;
-        L2CA_DisconnectReq(*(u16 *)((u8 *)p_mcb + 0x68));
-        PORT_CloseInd(p_mcb);
+        *(u8 *)((u8 *)muxCb + 0x6C) = 0;
+        L2CA_DisconnectReq(*(u16 *)((u8 *)muxCb + 0x68));
+        PORT_CloseInd(muxCb);
         break;
     default:
         if (lbl_803C4828[0x414] >= 4)
-            ((void (*)(u32, void *, s32, u8))fn_8007096C)(0x90003, trace + 0x70, event, *(u8 *)((u8 *)p_mcb + 0x6C));
+            ((void (*)(u32, void *, s32, u8))fn_8007096C)(0x90003, trace + 0x70, event, *(u8 *)((u8 *)muxCb + 0x6C));
         break;
     }
 }
