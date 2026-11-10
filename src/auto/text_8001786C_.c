@@ -108,13 +108,14 @@ extern void fn_80017AC8(void *);
 #pragma dont_inline on
 void fn_80017A2C(void *arg0, s32 arg1) {
     s32 i = 0;
-    s32 *p = (s32 *)(arg1 + 4);
     while (i < fn_80016508()) {
         void *obj = fn_80016464(i);
-        if (!*p) {
+        s32 field = *(s32 *)((char *)obj + 4);
+        if (fn_80017A20((void *)field, (s32 *)arg1) == 0) {
             s32 n = *(s32 *)((char *)arg0 + 4);
+            void *items = *(void **)arg0;
             *(s32 *)((char *)arg0 + 4) = n + 1;
-            *(s32 **)((char *)*(s32 *)arg0 + n * 4) = obj;
+            ((s32 *)items)[n] = field;
         }
         i++;
     }
