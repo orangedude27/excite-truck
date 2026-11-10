@@ -4883,7 +4883,7 @@ void fn_80120F84(s32 n, s32 ip_arg, void *a_arg) {
 
 #pragma push
 #pragma use_lmw_stmw off
-void fn_80121400(s32 n, s32 *map, f32 *data, s32 unused) {
+void fn_80121400(s32 n, s32 *map, f32 *data FN1400_TAIL) {
     s32 i, j, half, a, b;
     s32 size = 1;
     *map = 0;
