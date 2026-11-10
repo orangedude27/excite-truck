@@ -120,23 +120,18 @@ int stricmp(unsigned char *a, unsigned char *b) {
     register signed char c1;
     register signed char c2;
     register int skip;
-
     locale = *(int *)(base + 0x38);
     for (;;) {
-        skip = 0;
         c1 = (signed char)*a;
         a++;
-        if (c1 < 0 || c1 >= 256) skip = 1;
-        if (skip != 0) goto cont;
-        c1 = (signed char)*(unsigned char *)(*(int *)(locale + 0x10) + c1);
-    cont:
         skip = 0;
+        if (c1 < 0 || c1 >= 256) skip = 1;
+        c1 = (skip != 0) ? c1 : (signed char)*(unsigned char *)(*(int *)(locale + 0x10) + c1);
         c2 = (signed char)*b;
         b++;
+        skip = 0;
         if (c2 < 0 || c2 >= 256) skip = 1;
-        if (skip != 0) goto cont2;
-        c2 = (signed char)*(unsigned char *)(*(int *)(locale + 0x10) + c2);
-    cont2:
+        c2 = (skip != 0) ? c2 : (signed char)*(unsigned char *)(*(int *)(locale + 0x10) + c2);
         if (c1 < c2) return -1;
         if (c1 > c2) return 1;
         if (c1 == 0) return 0;
@@ -1234,12 +1229,11 @@ extern double __kernel_cos(double, double);
 extern double __kernel_sin(int, double, double);
 __declspec(section ".sdata") extern double lbl_80560A80;
 #pragma push
+#pragma processor 750
 #pragma dont_inline on
-#pragma scheduling 750
 double cos(double x) {
     double y[2];
     int n, ix;
-
     ix = *(int *)&x;
     ix &= 0x7fffffff;
     if (ix <= 0x3fe921fb) return __kernel_cos(x, lbl_80560A80);
@@ -1317,7 +1311,8 @@ double frexp(double x, int *eptr) {
         if (absHigh < 0x00100000) {
             double scale = lbl_80560A98;
             *(volatile int *)eptr = -54;
-            u.d *= scale;
+            x = x * scale;
+            u.d = x;
             highWord = u.i[0];
             absHigh = highWord & 0x7fffffff;
         }
@@ -1332,6 +1327,7 @@ extern int __fpclassifyd(double);
 extern double copysign(double, double);
 extern double lbl_80560AA0, lbl_80560AA8, lbl_80560AB0, lbl_80560AB8, lbl_80560AC0;
 #pragma dont_inline copysign
+/* Scales a floating-point value by an integer power of two (C ldexp). */
 double ldexp(double x, int n) {
     int exp;
     int hx, lx;
@@ -1381,11 +1377,11 @@ __declspec(section ".sdata") extern double lbl_80560AC8;
 #pragma scheduling invalid_target
 double sin(double x) {
     double y[2];
+    double z = lbl_80560AC8;
     int n, ix;
-
     ix = *(int *)&x;
     ix &= 0x7fffffff;
-    if (ix <= 0x3fe921fb) return __kernel_sin(0, x, lbl_80560AC8);
+    if (ix <= 0x3fe921fb) return __kernel_sin(0, x, z);
     else if (ix >= 0x7ff00000) return x - x;
     else {
         n = __ieee754_rem_pio2(x, y);
