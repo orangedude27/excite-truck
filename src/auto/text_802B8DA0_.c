@@ -128,7 +128,7 @@ void *fn_802B8EB8(s32 arg0, s32 arg1, u32 arg2, s32 arg3) {
 }
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling off
 #pragma use_lmw_stmw off
 void *fn_802B8EF0(int arg0, void *arg1) {
     struct Entry {
@@ -143,18 +143,21 @@ void *fn_802B8EF0(int arg0, void *arg1) {
     };
     void **table = (void **)lbl_804C0088;
     struct Entry *entry = (struct Entry *)table[arg0];
-    char *name;
     void *data;
+    char *name;
     int state;
     struct List *list;
     int count;
+    void **items;
     if (entry == 0) {
-        name = &lbl_8055CEC8;
-        entry = (struct Entry *)fn_801284F8(0x10, &lbl_8055CECC);
+        name = (char *)&lbl_8055CEC8;
+        entry = (struct Entry *)fn_801284F8(0x10, (void *)&lbl_8055CECC);
         if (entry != 0) {
+            s32 tmp;
             entry->name = name;
+            tmp = *(char *)name;
             data = *(void **)((char *)arg1 + 8);
-            if ((signed char)*name != 0)
+            if ((signed char)tmp != 0)
                 state = fn_802B110C((void *)fn_802B8E50, name);
             else
                 state = -2;
@@ -167,8 +170,9 @@ void *fn_802B8EF0(int arg0, void *arg1) {
         table[arg0] = entry;
         list = (struct List *)lbl_804BFFF4;
         count = list->count;
+        items = list->items;
         list->count = count + 1;
-        list->items[count] = (void *)entry;
+        items[count] = (void *)entry;
     }
     return table[arg0];
 }
