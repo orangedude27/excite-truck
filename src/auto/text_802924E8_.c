@@ -294,23 +294,24 @@ extern "C" int fn_802929F8(const char *name, int unused) {
         virtual int getSize(const char *, int);
     };
     register char *strings = lbl_80349170;
-    volatile int index = -1;
-    if (((int (*)(void *, const char *, int *))fn_80292EC0)(lbl_804B4168, name, (int *)&index) != 0) {
-        unsigned char *entry = lbl_804B4168 + index * 0x18;
-        int count = *(int *)(entry + 0x14);
-        *(int *)(entry + 0x14) = count + 1;
+    volatile int cacheIndex = -1;
+    if (((int (*)(void *, const char *, int *))fn_80292EC0)(lbl_804B4168, name, (int *)&cacheIndex) != 0) {
+        unsigned char *entry = lbl_804B4168 + cacheIndex * 0x18;
+        int refCount = *(int *)(entry + 0x14);
+        *(int *)(entry + 0x14) = refCount + 1;
         return *(int *)(entry + 0x10);
     }
-    Object *object = (Object *)fn_802AE414((void *)name);
-    if (object == 0) {
+    /* Looks up a named resource in the cache, or loads/registers it if missing. */
+    Object *resource = (Object *)fn_802AE414((void *)name);
+    if (resource == 0) {
         fn_802E317C(strings + 0x50, name);
     }
-    const char *key = object->getName(&lbl_8055C968);
-    int id = fn_80292DE8(key);
-    int type = (int)object->getName(strings + 0x70);
-    int size = object->getSize(strings + 0x7C, 0);
-    int flag = object->getType(strings + 0x88, 0);
-    int result = ((int (*)(int, int, int, int, int))fn_802928D4)((int)object, id, type, size, flag);
+    const char *key = resource->getName(&lbl_8055C968);
+    int resourceId = fn_80292DE8(key);
+    int resourceType = (int)resource->getName(strings + 0x70);
+    int resourceSize = resource->getSize(strings + 0x7C, 0);
+    int resourceFlags = resource->getType(strings + 0x88, 0);
+    int result = ((int (*)(int, int, int, int, int))fn_802928D4)((int)resource, resourceId, resourceType, resourceSize, resourceFlags);
     fn_80292F40(lbl_804B4168, (void *)result, name);
     return result;
 }
@@ -541,7 +542,7 @@ extern "C" void *fn_80293034(void *arg0, void *arg1, int arg2) {
     fn_80293374(arg0, (void *)arg2);
     fn_802935A0(arg0);
     *(float *)((char *)arg0 + 4) = lbl_805644D4;
-    if (arg1 != 0) {
+    if (arg1) {
         *(float *)((char *)arg0 + 4) =
             ((EffectArg *)arg1)->value((const char *)&lbl_8055C988);
     }
@@ -963,9 +964,11 @@ extern "C" void *fn_80293A00(void *arg0, void *arg1, int arg2, int arg3, int arg
         virtual void v7();
         virtual float value(const char *);
     };
+    register float f1reg;
     *(void **)arg0 = lbl_80349278;
     fn_80293CD0(arg0, arg2, arg3, arg4);
-    *(float *)((char *)arg0 + 4) = lbl_8056450C;
+    f1reg = lbl_8056450C;
+    *(float *)((char *)arg0 + 4) = f1reg;
     if (arg1 != 0) {
         *(float *)((char *)arg0 + 4) =
             ((EffectArg *)arg1)->value((const char *)&lbl_8055C988);
@@ -1119,9 +1122,9 @@ extern "C" void *fn_80294254(void *arg0, void *arg1, int arg2, int arg3, int arg
         virtual void v7();
         virtual float value(const char *);
     };
-    float initialValue;
+    register float initialValue;
     *(void **)arg0 = lbl_8034925C;
-    initialValue = ((float (*)(void *, int, int, int))fn_80294530)(arg0, arg2, arg3, arg4);
+    fn_80294530(arg0, arg2, arg3, arg4);
     initialValue = lbl_805644D4;
     *(float *)((char *)arg0 + 4) = initialValue;
     if (arg1 != 0) {
