@@ -24284,29 +24284,30 @@ void sdp_connect_cfm(u16 cid, u16 result) {
 }
 
 extern tCONN_CB *l2cu_find_lcb_by_handle_80099E54(UINT16);
-void sdp_config_ind(u16 cid, void *p_cfg) {
+/* Handles an L2CAP configuration indication for SDP: validates the CID, clamps/stores MTU, responds with L2CA_ConfigRsp, and advances the SDP connection state/timers. */
+void sdp_config_ind(u16 cid, void *config) {
     tCONN_CB *lcb = l2cu_find_lcb_by_handle_80099E54(cid);
-    u16 value;
+    u16 mtu;
     if (lcb == NULL) {
         if (lbl_803C4C40[0x4630] >= 2) fn_80070954(0xA0001, lbl_8031A2C0, cid);
         return;
     }
-    if (((u8 *)p_cfg)[2] == 0) {
+    if (((u8 *)config)[2] == 0) {
         *(u16 *)((u8 *)lcb + 0x20) = 0x100;
     } else {
-        value = *(u16 *)((u8 *)p_cfg + 4);
-        if (value <= 0x100) goto store_value;
+        mtu = *(u16 *)((u8 *)config + 4);
+        if (mtu <= 0x100) goto store_mtu;
         *(u16 *)((u8 *)lcb + 0x20) = 0x100;
         goto stored;
-store_value:
-        *(u16 *)((u8 *)lcb + 0x20) = value;
+store_mtu:
+        *(u16 *)((u8 *)lcb + 0x20) = mtu;
 stored:
         ;
     }
-    ((u8 *)p_cfg)[0x20] = 0;
-    ((u8 *)p_cfg)[2] = 0;
-    *(u16 *)p_cfg = 0;
-    L2CA_ConfigRsp(cid, p_cfg);
+    ((u8 *)config)[0x20] = 0;
+    ((u8 *)config)[2] = 0;
+    *(u16 *)config = 0;
+    L2CA_ConfigRsp(cid, config);
     if (lbl_803C4C40[0x4630] >= 4) fn_80070954(0xA0003, lbl_8031A2EC, cid);
     ((u8 *)lcb)[1] |= 2;
     if (((u8 *)lcb)[1] & 4) {
