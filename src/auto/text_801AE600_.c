@@ -239,6 +239,39 @@ int fn_801AEA64(float arg0, float arg1) {
 }
 
 #pragma push
+#pragma dont_inline on
+int fn_801AEAA4(const void *arg0, const void *arg1) {
+    int a0 = *(int *)arg0;
+    int a1 = *(int *)arg1;
+    void *r31 = fn_801AF8D0(a0);
+    void *r3 = fn_801AF8D0(a1);
+    int ret;
+    if (r31 != 0 && r3 != 0) {
+        unsigned short f1 = *(unsigned short *)((char *)r31 + 0xE);
+        unsigned short f2 = *(unsigned short *)((char *)r3 + 0xE);
+        if (((f1 | f2) & 8) == 0) {
+            short s2 = *(short *)((char *)r3 + 0x16);
+            short s1 = *(short *)((char *)r31 + 0x16);
+            if (s1 == s2) {
+                return fn_801AEA64(*(float *)r31, *(float *)r3);
+            }
+            return s1 - s2;
+        }
+        ret = -1;
+        if ((f1 & 8) != 0) {
+            ret = 1;
+        }
+        return ret;
+    }
+    ret = -1;
+    if (r31 == 0) {
+        ret = 1;
+    }
+    return ret;
+}
+#pragma pop
+
+#pragma push
 #pragma processor 750
 #pragma dont_inline on
 int fn_801AEB58(const void *arg0, const void *arg1) {
