@@ -331,21 +331,17 @@ table_loop:
     if (stricmp(name, entry) == 0) {
         if (id == *(int *)(entry + 0x10)) {
             src = (const unsigned char *)(entry + 0x14);
-            goto matched_copy;
-        }
-    }
-    goto table_next;
-
-matched_copy:
-    do {
-        if (--size <= 0) {
-            dst[-1] = 0;
+            do {
+                if (--size <= 0) {
+                    dst[-1] = 0;
+                    goto done;
+                }
+                c = *src++;
+                *dst++ = c;
+            } while ((signed char)c != 0);
             goto done;
         }
-        c = *src++;
-        *dst++ = c;
-    } while ((signed char)c != 0);
-    goto done;
+    }
 
 table_next:
     offset += 0x2C;
@@ -481,6 +477,7 @@ void fn_802C5CC4(void *arg0, int arg1, int arg2, int arg3) {
     int index;
     u16 result;
 
+    /* Resolve a resource name (optionally with a numbered suffix) to an object handle and store it at arg0 + arg1*4 + 0x14. */
     fn_802C595C(name, 0x100, (char *)arg0 + 4, arg1);
     if (arg3 != 0) {
         fn_801345D8(temp, 0x100, lbl_8055D010, arg3, name);
@@ -806,7 +803,7 @@ void *fn_802C6C34(int arg0) { return (void *)fn_802C53A8(arg0); }
 void fn_802C6C38(int arg0) {
     void *manager = fn_802C5390(arg0);
     int *count = *(int **)manager;
-    if (*count-- > 0) {
+    if (--*count > 0) {
         int *outer_info = *(int **)((char *)manager + 4);
         int *outer_count = *(int **)((char *)outer_info + 8);
         int *outer_table = *(int **)((char *)outer_info + 4);
