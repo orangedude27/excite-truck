@@ -2056,43 +2056,44 @@ void fn_8006A7D0(s32 arg0, s32 arg1) {
 
 void fn_8006A81C(void) {
     extern char lbl_80313490[];
-    u8 *base = lbl_80392960;
-    BOOL interrupt;
-    BOOL saved;
-    BOOL cancel;
-    OSTime now;
-    u32 period;
+    u8 *wudControl = lbl_80392960;
+    BOOL interrupts;
+    BOOL savedInterrupts;
+    BOOL shouldCancel;
+    OSTime currentTime;
+    u32 periodTicks;
 
+    /* Shut down WUD: log, clear visibility flags, stop discovery, and schedule the shutdown alarm. */
     DBPrintf_8006CFA8(lbl_80313490);
 
-    interrupt = OSDisableInterrupts();
-    base[0x66B] = 0;
-    base[0x66A] = 0;
-    OSRestoreInterrupts(interrupt);
+    interrupts = OSDisableInterrupts();
+    wudControl[0x66B] = 0;
+    wudControl[0x66A] = 0;
+    OSRestoreInterrupts(interrupts);
 
     BTA_DmSetVisibility(0, 0);
 
-    saved = OSDisableInterrupts();
-    interrupt = OSDisableInterrupts();
-    if (base[0xC] == 0 && base[0xD] == 0 &&
-        base[0xF] == 4 && base[0x10] == 4) {
-        OSRestoreInterrupts(interrupt);
-        cancel = 0;
+    savedInterrupts = OSDisableInterrupts();
+    interrupts = OSDisableInterrupts();
+    if (wudControl[0xC] == 0 && wudControl[0xD] == 0 &&
+        wudControl[0xF] == 4 && wudControl[0x10] == 4) {
+        OSRestoreInterrupts(interrupts);
+        shouldCancel = 0;
     } else {
-        OSRestoreInterrupts(interrupt);
-        cancel = 1;
+        OSRestoreInterrupts(interrupts);
+        shouldCancel = 1;
     }
-    if (cancel != 0)
-        OSCancelAlarm((OSAlarm *)(base + 0x690));
+    if (shouldCancel != 0)
+        OSCancelAlarm((OSAlarm *)(wudControl + 0x690));
 
-    base[0x11] = 1;
-    OSCreateAlarm((OSAlarm *)(base + 0x690));
-    now = __OSGetSystemTime();
-    period = ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 10;
-    OSSetPeriodicAlarm((OSAlarm *)(base + 0x690), now, (s64)period,
+    wudControl[0x11] = 1;
+    OSCreateAlarm((OSAlarm *)(wudControl + 0x690));
+    currentTime = __OSGetSystemTime();
+    periodTicks = ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 10;
+    OSSetPeriodicAlarm((OSAlarm *)(wudControl + 0x690), currentTime, (s64)periodTicks,
                        (OSAlarmHandler)fn_8006A440);
-    base[0x688] = 4;
-    OSRestoreInterrupts(saved);
+    wudControl[0x688] = 4;
+    OSRestoreInterrupts(savedInterrupts);
 }
 
 s8 fn_8006A940(void) {
