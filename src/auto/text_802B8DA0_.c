@@ -188,73 +188,80 @@ extern char lbl_8055CEDC;
 extern char lbl_8055CEE4;
 extern char lbl_8034A990[];
 #pragma cplusplus on
-extern "C" void *fn_802B8FE0(int arg0) {
-    struct Record {
-        float value;
-        float parameter;
-        int flags;
+/* Takes the next free record out of the road-record pool at lbl_804C004C
+ * ({ records, count }) and fills it in from the game's config access
+ * (fn_802B59CC): the entry named "road<road+1>", or plain "road" when that one
+ * is missing, supplies this road's texture scale ("tex_scale_v", default
+ * lbl_80564CC0) and draw priority ("prio", default 0).  The record's first
+ * word is a placeholder the caller replaces.
+ */
+extern "C" void *fn_802B8FE0(int road) {
+    struct RoadRecord {
+        float value;    /* set to lbl_80564CC4 here, overwritten by the caller */
+        float texScaleV;
+        int prio;
     };
-    class Dummy {
+    /* The game's config/parameter access object; slots the record uses are
+       named, the rest only hold the vtable open (first method = 0x8). */
+    class ETConfigAccess {
     public:
-        virtual void method0();
-        virtual void method1();
-        virtual void method2();
-        virtual void method3();
-        virtual void method4();
-        virtual void method5();
-        virtual int setInteger(const char *, int);
-        virtual void method7();
-        virtual float setFloat(const char *, float);
-        virtual void method9();
-        virtual void method10();
-        virtual void method11();
-        virtual void method12();
-        virtual void method13();
-        virtual void method14();
-        virtual void method15();
-        virtual void method16();
-        virtual void method17();
-        virtual void method18();
-        virtual void method19();
-        virtual void method20();
-        virtual char *find(const char *);
+        virtual void unused08();
+        virtual void unused0C();
+        virtual void unused10();
+        virtual void unused14();
+        virtual void unused18();
+        virtual void unused1C();
+        virtual int getInteger(const char *, int);
+        virtual void unused24();
+        virtual float getFloat(const char *, float);
+        virtual void unused2C();
+        virtual void unused30();
+        virtual void unused34();
+        virtual void unused38();
+        virtual void unused3C();
+        virtual void unused40();
+        virtual void unused44();
+        virtual void unused48();
+        virtual void unused4C();
+        virtual void unused50();
+        virtual void unused54();
+        virtual void unused58();
+        virtual ETConfigAccess *find(const char *);
     };
-    float initial = lbl_80564CC0;
-    int zero = 0;
-    int *state;
-    void *base;
+    float defaultTexScaleV = lbl_80564CC0;
+    int defaultPrio = 0;
+    int *pool;
+    void *records;
     int index;
     int offset;
-    int next;
-    struct Record *record;
-    void *rawObject;
-    char buffer[0x20];
-    Dummy *finder;
-    char *found;
-    Dummy *settings;
+    int count;
+    struct RoadRecord *record;
+    void *rawConfig;
+    char name[0x20];
+    ETConfigAccess *config;
+    ETConfigAccess *roadConfig;
 
-    state = lbl_804C004C;
-    base = (void *)state[0];
-    index = state[1];
+    pool = lbl_804C004C;
+    records = (void *)pool[0];
+    index = pool[1];
     offset = index * 12;
-    next = index + 1;
-    state[1] = next;
-    record = (struct Record *)((char *)base + offset);
-    record->flags = zero;
-    record->parameter = initial;
+    count = index + 1;
+    pool[1] = count;
+    record = (struct RoadRecord *)((char *)records + offset);
+    record->prio = defaultPrio;
+    record->texScaleV = defaultTexScaleV;
 
-    rawObject = fn_802B59CC(offset, next, state, base);
-    fn_801345D8(buffer, 0x20, (const char *)&lbl_8055CED4, arg0 + 1);
+    rawConfig = fn_802B59CC();
+    fn_801345D8(name, 0x20, (const char *)&lbl_8055CED4, road + 1);
 
-    finder = (Dummy *)rawObject;
-    found = finder->find(buffer);
-    if (found == 0)
-        found = finder->find((const char *)&lbl_8055CEDC);
+    config = (ETConfigAccess *)rawConfig;
+    roadConfig = config->find(name);
+    if (roadConfig == 0)
+        roadConfig = config->find((const char *)&lbl_8055CEDC);
 
-    if (found != 0) {
-        settings = (Dummy *)found;
-        record->parameter = settings->setFloat(lbl_8034A990, record->parameter);
-        record->flags = settings->setInteger((const char *)&lbl_8055CEE4, record->flags);
+    if (roadConfig != 0) {
+        record->texScaleV = roadConfig->getFloat(lbl_8034A990, record->texScaleV);
+        record->prio = roadConfig->getInteger((const char *)&lbl_8055CEE4, record->prio);
     }
 
     record->value = lbl_80564CC4;
