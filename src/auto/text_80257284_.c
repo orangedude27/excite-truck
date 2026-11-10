@@ -263,9 +263,10 @@ extern "C" void fn_802576EC(void *arg0) {
 
 #pragma cplusplus reset
 
-int fn_80257904(void *arg0, int arg1) {
-    char *self = (char *)arg0;
-    switch (arg1) {
+int fn_80257904(void *menu, int eventId) {
+    /* Handle menu navigation/selection events for a two-group selector object. */
+    char *self = (char *)menu;
+    switch (eventId) {
     case 0x125:
         if (*(int *)(self + 0x18) == 1)
             *(int *)(self + 0x18) = 0;
@@ -278,22 +279,22 @@ int fn_80257904(void *arg0, int arg1) {
     case 0x128:
         switch (*(int *)(self + 0x18)) {
         case 0: {
-            int use = (unsigned int)arg1 == 0x128u;
-            int value;
+            int increment = (unsigned int)eventId == 0x128u;
+            int itemCount;
             fn_8022D894(self + 0x1C, *(int *)(self + 0x4C), 0,
                         fn_8022D850(self + 0x1C, *(int *)(self + 0x4C), 0, 0), 0);
-            value = *(int *)(self + 0x24);
-            fn_80257A6C((int *)(self + 0x4C), use ? 1 : -1, value);
+            itemCount = *(int *)(self + 0x24);
+            fn_80257A6C((int *)(self + 0x4C), increment ? 1 : -1, itemCount);
             *(char *)(self + 0x50) = 1;
             goto return_one;
         }
         case 1: {
-            int use = (unsigned int)arg1 == 0x128u;
-            int value;
+            int increment = (unsigned int)eventId == 0x128u;
+            int itemCount;
             fn_8022D894(self + 0x54, *(int *)(self + 0x84), 0,
                         fn_8022D850(self + 0x54, *(int *)(self + 0x84), 0, 0), 0);
-            value = *(int *)(self + 0x5C);
-            fn_80257A6C((int *)(self + 0x84), use ? 1 : -1, value);
+            itemCount = *(int *)(self + 0x5C);
+            fn_80257A6C((int *)(self + 0x84), increment ? 1 : -1, itemCount);
             *(char *)(self + 0x88) = 1;
             goto return_one;
         }
