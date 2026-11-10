@@ -833,6 +833,9 @@ extern f32 fn_802C9A4C(f32);
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_8028BD60(s32 arg0) {
+    /* Copies the current 0x30-byte transform snapshot into the caller's slot for
+     * the active index, optionally running fn_8028C11C against the saved or
+     * current snapshot while temporarily swapping render state. */
     struct Pair { s32 first, second; };
     struct State {
         struct Pair p0, p1, p2, p3;
