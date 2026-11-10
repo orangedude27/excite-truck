@@ -292,20 +292,25 @@ report:
 
 #pragma push
 #pragma inline_depth 0
+#pragma use_lmw_stmw off
 int fn_8015F148(void **arg0, int arg1) {
     int count = 0;
     int i;
     int j;
-    void **child;
-    int (*predicate)(void *) = fn_8015ECC0;
-
+    int off;
+    int *child;
+    void *item;
+    void *entry;
     for (i = 0; i < arg1; i++) {
-        child = *(void ***)arg0;
+        child = *(int **)arg0;
         if (child != 0) {
-            for (j = 0; j < ((int *)child)[0]; j++) {
-                void *item = *(void **)((char *)child[1] + j * 4);
-                if (predicate((char *)item + 0x3C))
+            off = 0;
+            for (j = 0; j < child[0]; j++) {
+                item = *(void **)((char *)((void **)child)[1] + off);
+                entry = *(void **)((char *)item + 0x3C);
+                if (fn_8015ECC0(entry))
                     count++;
+                off += 4;
             }
         }
         arg0++;
