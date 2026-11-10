@@ -14274,21 +14274,21 @@ int btsnd_hcic_reject_conn(void *p_buf, u8 *bd_addr, u8 reason) {
     return btu_hcif_send_cmd(buf);
 }
 
-/* Match note: allocate pool 2 directly and send the completed packet with the one-argument helper call. */
+/* Send an HCI Link Key Request Reply command for a device address and link key. */
 BOOLEAN btsnd_hcic_link_key_req_reply(BD_ADDR bd_addr, LINK_KEY link_key) {
-    BT_HDR *p;
-    UINT8 *pp;
+    BT_HDR *cmdBuf;
+    UINT8 *payload;
 
-    if ((p = (BT_HDR *)GKI_getpoolbuf(2)) == NULL)
+    if ((cmdBuf = (BT_HDR *)GKI_getpoolbuf(2)) == NULL)
         return FALSE;
-    pp = (UINT8 *)(p + 1);
-    p->len = 0x19;
-    p->offset = 0;
-    UINT16_TO_STREAM(pp, HCI_LINK_KEY_REQUEST_REPLY);
-    UINT8_TO_STREAM(pp, HCIC_PARAM_SIZE_LINK_KEY_REQ_REPLY);
-    BDADDR_TO_STREAM(pp, bd_addr);
-    ARRAY16_TO_STREAM(pp, link_key);
-    btu_hcif_send_cmd(p);
+    payload = (UINT8 *)(cmdBuf + 1);
+    cmdBuf->len = 0x19;
+    cmdBuf->offset = 0;
+    UINT16_TO_STREAM(payload, HCI_LINK_KEY_REQUEST_REPLY);
+    UINT8_TO_STREAM(payload, HCIC_PARAM_SIZE_LINK_KEY_REQ_REPLY);
+    BDADDR_TO_STREAM(payload, bd_addr);
+    ARRAY16_TO_STREAM(payload, link_key);
+    btu_hcif_send_cmd(cmdBuf);
     return TRUE;
 }
 
