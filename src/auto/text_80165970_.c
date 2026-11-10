@@ -492,7 +492,7 @@ void fn_801663C8(int count, void *records, void *config) {
     fn_802E30C8(strings + 0x280, *(float *)((char *)&lbl_8042FE38 + 8), (float)(double)value, *(float *)((char *)&lbl_8042FE38 + 4), *(float *)&lbl_8042FE38);
     holder = fn_801284F8(16, strings + 0x2A0);
     if (holder) {
-        array = fn_8002F37C(fn_8012850C(count * 0x88 + 16, &lbl_8055A190), (void (*)(void *))fn_80166754, 0, 0x88, count);
+        array = fn_8002F37C(fn_8012850C(count * 0x88 + 16, &lbl_8055A190), (void (*)(void *))0, 0, 0x88, count);
         *(void **)holder = array;
         *(int *)((char *)holder + 8) = count;
         *(int *)((char *)holder + 4) = 0;
