@@ -15824,33 +15824,34 @@ s32 HID_HostSetSecurityLevel(void *serv_name, u8 sec_lvl) {
 }
 
 u8 hidh_conn_reg(void) {
+    /* Register HID control/interrupt L2CAP PSMs and initialize HID control block state. */
     extern unsigned char lbl_803C3C38[];
     extern unsigned char lbl_802EEC18[];
     extern char lbl_80317838[];
     extern char lbl_80317858[];
-    unsigned char *cb = lbl_803C3C38;
+    unsigned char *hidhCb = lbl_803C3C38;
 
-    cb[0x346] = 1;
-    *(UINT16 *)(cb + 0x348) = 0x280;
-    cb[0x364] = 1;
-    *(UINT16 *)(cb + 0x366) = 0xFFFF;
+    hidhCb[0x346] = 1;
+    *(UINT16 *)(hidhCb + 0x348) = 0x280;
+    hidhCb[0x364] = 1;
+    *(UINT16 *)(hidhCb + 0x366) = 0xFFFF;
     if ((u8)L2CA_Register(0x11, (tL2CAP_APPL_INFO *)lbl_802EEC18) == 0) {
-        if (cb[0x401] >= 1) fn_8007093C(0x1E0000, lbl_80317838);
+        if (hidhCb[0x401] >= 1) fn_8007093C(0x1E0000, lbl_80317838);
         return 0xE;
     }
     if ((u8)L2CA_Register(0x13, (tL2CAP_APPL_INFO *)lbl_802EEC18) == 0) {
         L2CA_Deregister(0x11);
-        if (cb[0x401] >= 1) fn_8007093C(0x1E0000, lbl_80317858);
+        if (hidhCb[0x401] >= 1) fn_8007093C(0x1E0000, lbl_80317858);
         return 0xE;
     }
-    cb[0] = 0; cb[0x10] = 0; cb[0x34] = 0; cb[0x44] = 0;
-    cb[0x68] = 0; cb[0x78] = 0; cb[0x9C] = 0; cb[0xAC] = 0;
-    cb[0xD0] = 0; cb[0xE0] = 0; cb[0x104] = 0; cb[0x114] = 0;
-    cb[0x138] = 0; cb[0x148] = 0; cb[0x16C] = 0; cb[0x17C] = 0;
-    cb[0x1A0] = 0; cb[0x1B0] = 0; cb[0x1D4] = 0; cb[0x1E4] = 0;
-    cb[0x208] = 0; cb[0x218] = 0; cb[0x23C] = 0; cb[0x24C] = 0;
-    cb[0x270] = 0; cb[0x280] = 0; cb[0x2A4] = 0; cb[0x2B4] = 0;
-    cb[0x2D8] = 0; cb[0x2E8] = 0; cb[0x30C] = 0; cb[0x31C] = 0;
+    hidhCb[0] = 0; hidhCb[0x10] = 0; hidhCb[0x34] = 0; hidhCb[0x44] = 0;
+    hidhCb[0x68] = 0; hidhCb[0x78] = 0; hidhCb[0x9C] = 0; hidhCb[0xAC] = 0;
+    hidhCb[0xD0] = 0; hidhCb[0xE0] = 0; hidhCb[0x104] = 0; hidhCb[0x114] = 0;
+    hidhCb[0x138] = 0; hidhCb[0x148] = 0; hidhCb[0x16C] = 0; hidhCb[0x17C] = 0;
+    hidhCb[0x1A0] = 0; hidhCb[0x1B0] = 0; hidhCb[0x1D4] = 0; hidhCb[0x1E4] = 0;
+    hidhCb[0x208] = 0; hidhCb[0x218] = 0; hidhCb[0x23C] = 0; hidhCb[0x24C] = 0;
+    hidhCb[0x270] = 0; hidhCb[0x280] = 0; hidhCb[0x2A4] = 0; hidhCb[0x2B4] = 0;
+    hidhCb[0x2D8] = 0; hidhCb[0x2E8] = 0; hidhCb[0x30C] = 0; hidhCb[0x31C] = 0;
     return 0;
 }
 
