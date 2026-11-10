@@ -339,7 +339,8 @@ extern "C" void fn_80018030(void *arg0, s32 arg1) {
 #pragma cplusplus on
 #pragma scheduling invalid_target
 extern "C" void fn_800180FC(void *arg0, s32 arg1) {
-    struct V1 {
+    /* Resolve per-entry car name overrides from a DAV map data interface and patch each entry's linked id. */
+    struct DavMapInterface {
         virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
         virtual void m4(); virtual void m5(); virtual void m6(); virtual void m7();
         virtual void m8(); virtual void m9(); virtual void m10(); virtual void m11();
@@ -348,49 +349,49 @@ extern "C" void fn_800180FC(void *arg0, s32 arg1) {
         virtual void m20();
         virtual void *get(const char *);
     };
-    struct V2 {
+    struct DavMapNameInterface {
         virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
         virtual char *get(const char *, void *);
     };
-    struct H { char pad[0x80]; V1 *iface; };
+    struct DavMapHolder { char pad[0x80]; DavMapInterface *iface; };
     extern char lbl_80558C18;
     extern char lbl_80558C1C;
     extern void fn_801345D8(void *, s32, const char *, ...);
     extern int stricmp(const char *, const char *);
     register const char *strings;
-    register s32 *out;
-    register V2 *names;
-    register char *typeName;
-    register char *mapped;
+    register s32 *entry;
+    register DavMapNameInterface *nameIface;
+    register char *carTypeName;
+    register char *mappedName;
     register s32 i;
     register s32 found;
     register s32 j;
     strings = lbl_802FD088;
-    names = (V2 *)((H *)fn_80012820(arg1))->iface->get(strings + 0x74);
-    if (names == 0) return;
+    nameIface = (DavMapNameInterface *)((DavMapHolder *)fn_80012820(arg1))->iface->get(strings + 0x74);
+    if (nameIface == 0) return;
     fn_802E30C8(strings + 0x80);
-    typeName = names->get(strings + 0xB0, 0);
-    mapped = names->get(strings + 0xC0, 0);
-    out = (s32 *)arg0;
-    for (i = 0; i < *(s32 *)((char *)arg0 + 0x24); out++, i++) {
+    carTypeName = nameIface->get(strings + 0xB0, 0);
+    mappedName = nameIface->get(strings + 0xC0, 0);
+    entry = (s32 *)arg0;
+    for (i = 0; i < *(s32 *)((char *)arg0 + 0x24); entry++, i++) {
         found = 0;
         for (j = 0; j < fn_800167F4(); j++) {
-            if (*(s32 *)((char *)fn_800167B8(j) + 4) == out[1]) {
+            if (*(s32 *)((char *)fn_800167B8(j) + 4) == entry[1]) {
                 found = 1;
                 break;
             }
         }
-        if (mapped != 0 && found != 0) {
-            if (stricmp(mapped, &lbl_80558C18) != 0) {
-                out[10] = *(s32 *)((char *)fn_8001668C(mapped, 0) + 4);
+        if (mappedName != 0 && found != 0) {
+            if (stricmp(mappedName, &lbl_80558C18) != 0) {
+                entry[10] = *(s32 *)((char *)fn_8001668C(mappedName, 0) + 4);
             }
         } else {
-            char buffer[0x20];
-            char *result;
-            fn_801345D8(buffer, 0x20, &lbl_80558C1C, i + 1);
-            result = names->get(buffer, typeName);
-            if (stricmp(result, &lbl_80558C18) != 0) {
-                out[10] = *(s32 *)((char *)fn_8001668C(result, 0) + 4);
+            char carKey[0x20];
+            char *resultName;
+            fn_801345D8(carKey, 0x20, &lbl_80558C1C, i + 1);
+            resultName = nameIface->get(carKey, carTypeName);
+            if (stricmp(resultName, &lbl_80558C18) != 0) {
+                entry[10] = *(s32 *)((char *)fn_8001668C(resultName, 0) + 4);
             }
         }
     }
