@@ -675,62 +675,39 @@ extern float lbl_805642B0, lbl_805642F8, lbl_805642FC, lbl_80564300;
 #pragma push
 #pragma scheduling invalid_target
 int fn_802897E0(int arg0) {
-    fn_802897E0Frame frame;
-    register float f6;
-    register float f4;
-    register float f1;
-    register float f2;
-    register float f7;
-    register float f5;
-    register float f3;
-    register float f0;
-    register int size;
-    register int zero;
-
-    fn_8028E61C((int *)&frame.sp20);
-    f6 = lbl_8056428C;
-    size = 0x60;
-    f4 = lbl_805642B0;
-    zero = 0;
-    f1 = lbl_80564300;
-    f2 = lbl_8056427C;
-    f7 = lbl_805642FC;
-    f5 = lbl_80564284;
-    f3 = lbl_8056429C;
-    f0 = lbl_805642F8;
-    frame.sp28 = f7;
-    frame.sp2C = f6;
-    frame.sp20 = zero;
-    frame.sp68 = f5;
-    frame.sp64 = 6;
-    frame.sp14 = f4;
-    frame.sp18 = f4;
-    frame.sp1C = f4;
-    frame.sp30 = f4;
-    frame.sp34 = f4;
-    frame.sp38 = f4;
-    frame.sp8 = f6;
-    frame.spC = f6;
-    frame.sp10 = f6;
-    frame.sp3C = f6;
-    frame.sp40 = f6;
-    frame.sp44 = f6;
-    frame.sp50 = f3;
-    frame.sp54 = f2;
-    frame.sp8C = f1;
-    frame.sp94 = f1;
-    frame.sp84 = f1;
-    frame.sp90 = f1;
-    frame.sp88 = f1;
-    frame.sp80 = f1;
-    frame.sp78 = f0;
-    frame.sp7C = f4;
-    frame.sp70 = f2;
-    frame.sp74 = f1;
-    frame.sp24 = size;
-    return *(int *)((char *)arg0 + 0xA4) =
-        fn_8028E2F8((int *)&frame.sp20, &lbl_80348B34, lbl_8055C880, zero,
-                    f1, f2, f3, f4, f5, f6, f7);
+    char stack[0xA8];
+    fn_8028E61C((int *)&stack[0x18]);
+    *(int *)(stack+0x1c)=0x60;
+    *(float *)(stack+0x20)=lbl_805642FC;
+    *(float *)(stack+0x24)=lbl_8056428C;
+    *(int *)(stack+0x18)=0;
+    *(float *)(stack+0x60)=lbl_80564284;
+    *(int *)(stack+0x5c)=6;
+    *(float *)(stack+0x0c)=lbl_805642B0;
+    *(float *)(stack+0x10)=lbl_805642B0;
+    *(float *)(stack+0x14)=lbl_805642B0;
+    *(float *)(stack+0x28)=lbl_805642B0;
+    *(float *)(stack+0x2c)=lbl_805642B0;
+    *(float *)(stack+0x30)=lbl_805642B0;
+    *(float *)(stack+0x00)=lbl_8056428C;
+    *(float *)(stack+0x04)=lbl_8056428C;
+    *(float *)(stack+0x08)=lbl_8056428C;
+    *(float *)(stack+0x34)=lbl_8056428C;
+    *(float *)(stack+0x38)=lbl_8056428C;
+    *(float *)(stack+0x3c)=lbl_8056428C;
+    *(float *)(stack+0x48)=lbl_8056429C;
+    *(float *)(stack+0x4c)=lbl_8056427C;
+    *(float *)(stack+0x84)=lbl_80564300;
+    *(float *)(stack+0x8c)=lbl_80564300;
+    *(float *)(stack+0x7c)=lbl_80564300;
+    *(float *)(stack+0x88)=lbl_80564300;
+    *(float *)(stack+0x80)=lbl_80564300;
+    *(float *)(stack+0x78)=lbl_80564300;
+    *(float *)(stack+0x70)=lbl_805642F8;
+    *(float *)(stack+0x74)=lbl_805642B0;
+    *(float *)(stack+0x68)=lbl_8056427C;
+    *(float *)(stack+0x6c)=lbl_80564300;
+    return *(int *)((char *)arg0+0xa4)=((int (*)(void *, void *, int))fn_8028E2F8)(&stack[0x18],(void *)&lbl_80348B34,lbl_8055C880);
 }
 #pragma scheduling invalid_target
 void fn_802898CC(void *self, int arg0, int arg1, int arg2) {
