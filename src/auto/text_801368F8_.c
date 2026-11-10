@@ -10,7 +10,7 @@ extern s32 lbl_8055E0D4;
 extern s32 lbl_8055E0D0;
 extern s32 lbl_80559BF8;
 extern void fn_80136AA8(void*);
-extern void fn_80136A18(s32, s32);
+extern s32 fn_80136A18(s32, s32);
 extern s32 fn_801284F8(s32, s32*);
   extern s32 fn_801368F8(s32, s32);
 extern f32 lbl_80561368;
@@ -74,7 +74,7 @@ void fn_801369EC(void *arg0) {
 }
 
 #pragma dont_inline on
-void fn_80136A18(s32 arg0, s32 arg1) {
+s32 fn_80136A18(s32 arg0, s32 arg1) {
     if (arg0 != 0) {
         if (*(s32 *)(arg0 + 0x10) != 0) {
             fn_80128658();
@@ -90,6 +90,32 @@ void fn_80136A18(s32 arg0, s32 arg1) {
             fn_80128668((void *)arg0);
     }
 }
+
+void fn_80136AA8(void *g) {
+    int i, j;
+    int k = 0;
+    int zero = 0;
+    for (i = 0; i < I(g, 0); i++) {
+        short si = i;
+        B(I(g, 0x10) + i * I(g, 0xC), 0x15) = 1;
+        I(i * I(g, 0xC) + (i * 4 + I(g, 0x10)), 0x18) = zero;
+        I((I(g, 0) + i) * 4 + (I(g, 0x10) + i * I(g, 0xC)), 0x18) = zero;
+        I((i + I(g, 0) * 2) * 4 + (I(g, 0x10) + i * I(g, 0xC)), 0x18) = zero;
+        for (j = i + 1; j < I(g, 0); j++) {
+            short sj = j;
+            I(i * I(g, 0xC) + (j * 4 + I(g, 0x10)), 0x18) = I(g, 8) + k;
+            I((j + I(g, 0)) * 4 + (I(g, 0x10) + i * I(g, 0xC)), 0x18) = I(g, 8) + k;
+            I((j + I(g, 0) * 2) * 4 + (I(g, 0x10) + i * I(g, 0xC)), 0x18) = I(g, 8) + k;
+            I(j * I(g, 0xC) + (i * 4 + I(g, 0x10)), 0x18) = I(g, 8) + k;
+            I(I(g, 0) * 4 + (j * I(g, 0xC) + (i * 4 + I(g, 0x10))), 0x18) = I(g, 8) + k;
+            I(I(g, 0) * 8 + (j * I(g, 0xC) + (i * 4 + I(g, 0x10))), 0x18) = I(g, 8) + k;
+            I(I(g, 8) + k, 0xC) = si;
+            I(I(g, 8) + k, 0x14) = sj;
+            k += 0x2C;
+        }
+    }
+}
+
 #pragma dont_inline reset
 
 void fn_80136CB8(void *arg0, s32 arg1) {
@@ -321,7 +347,111 @@ s32 fn_80137140(s32 arg0, s32 arg1) {
     }
     return p31;
 }
-#pragma dont_inline reset
+
+extern void *fn_80137C54(int);
+extern float lbl_80561378, lbl_8056137C, lbl_80561380, lbl_80561384, lbl_80561388, lbl_8056138C, lbl_80561390;
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+void fn_801371E0(void *arg0) {
+    register float c90, c8c, c68, c88, c84, threshold, c78, radius, limit;
+    float dy, sign, velocity, distance, t, ya, yb;
+    register void *a, *b;
+    register int offset, i, count;
+    int flag;
+    int stride;
+    void *pair, *base;
+    radius = F(fn_80137C54(-1), 4);
+    fn_80137C54(-1);
+    count = I(arg0, 0) * (I(arg0, 0) - 1) / 2;
+    threshold = radius * lbl_80561380;
+    c90 = lbl_80561390; c8c = lbl_8056138C; c68 = lbl_80561368;
+    c88 = lbl_80561388; c78 = lbl_80561378; c84 = lbl_80561384;
+    i = 0;
+    offset = 0;
+    for (; i < count; offset += 0x2c, i++) {
+        stride = I(arg0, 0xc);
+        pair = (char *)I(arg0, 8) + offset;
+        base = (void *)I(arg0, 0x10);
+        a = (char *)base + I(pair, 0xc) * stride;
+        b = (char *)base + I(pair, 0x14) * stride;
+        F(pair, 0x24) = F(b, 8) - F(a, 8);
+        F(pair, 0x28) = F(b, 0xc) - F(a, 0xc);
+        pair = (char *)I(arg0, 8) + offset;
+        F(pair, 0x1c) = F(b, 0) - F(a, 0);
+        F(pair, 0x20) = F(b, 4) - F(a, 4);
+        ya = F(a, 4);
+        yb = F(b, 4);
+        dy = yb - ya;
+        if ((float)__fabs(dy) > F(arg0, 0x14) * c78 && !((B(a, 0x16) | B(b, 0x16)) & 8)) {
+            sign = dy > c68 ? lbl_8056137C : lbl_8056136C;
+            dy += F(arg0, 0x14) * -sign;
+        }
+        flag = 0;
+        F((char *)I(arg0, 8) + offset, 0x20) = dy;
+        if ((float)__fabs(dy) < threshold && fn_80137140(I((char *)I(arg0, 8) + offset, 0xc), I((char *)I(arg0, 8) + offset, 0x14)))
+            flag = 1;
+        B((char *)I(arg0, 8) + offset, 0) = flag;
+        F((char *)I(arg0, 8) + offset, 4) = c84;
+        if (B(a, 0x16) & B(b, 0x16)) {
+            pair = (char *)I(arg0, 8) + offset;
+            if (!B(pair, 0)) {
+                limit = c88 * radius;
+                if (fn_8013705C(F(a, 0xc), F(b, 0xc))) {
+                    sign = F(a, 0xc) > c68 ? lbl_8056137C : lbl_8056136C;
+                    if (sign * F(pair, 0x20) > c68) {
+                        B(pair, 0x10) = 0;
+                        velocity = sign * F(pair, 0x28);
+                        if (velocity < c8c) {
+                            distance = sign * F(pair, 0x20);
+                            t = -((distance - radius) / velocity);
+                            if (t < c90 || distance <= limit) {
+                                B(pair, 8) = 1;
+                                F(pair, 4) = t;
+                            } else B(pair, 8) = 0;
+                        } else if (sign * F(pair, 0x20) <= limit) {
+                            F(pair, 4) = c90;
+                            B(pair, 8) = 1;
+                        } else B(pair, 8) = 0;
+                    } else {
+                        B(pair, 8) = 0;
+                        velocity = F(pair, 0x28);
+                        if (sign * -velocity < c8c) {
+                            distance = F(pair, 0x20);
+                            t = -((radius + sign * distance) / (sign * velocity));
+                            if (t < c90 || sign * -distance <= limit) {
+                                B(pair, 0x10) = 1;
+                                F(pair, 4) = t;
+                            } else B(pair, 0x10) = 0;
+                        } else if (sign * -F(pair, 0x20) <= limit) {
+                            F(pair, 4) = c90;
+                            B(pair, 0x10) = 1;
+                        } else B(pair, 0x10) = 0;
+                    }
+                } else if (!fn_8013705C(F(pair, 0x28), F(pair, 0x20))) {
+                    velocity = F(pair, 0x28);
+                    distance = F(pair, 0x20);
+                    distance = (float)__fabs(distance);
+                    velocity = (float)__fabs(velocity);
+                    F(pair, 4) = (distance - radius) / velocity;
+                    B(pair, 0x10) = 1;
+                    B(pair, 8) = 1;
+                } else {
+                    B(pair, 0x10) = 0;
+                    B(pair, 8) = 0;
+                }
+            } else {
+                B(pair, 0x10) = 1;
+                B(pair, 8) = 1;
+            }
+        } else {
+            B((char *)I(arg0, 8) + offset, 0x10) = 0;
+            B((char *)I(arg0, 8) + offset, 8) = 0;
+        }
+        fn_8013776C((char *)I(arg0, 8) + offset);
+    }
+}
+#pragma pop
 extern float lbl_80561368;
 extern float lbl_80561394;
 extern float __fabsf(float);
@@ -436,12 +566,12 @@ void fn_80137788(void *arg0, s32 arg1, void *arg2) {
     extern f32 lbl_8056136C;
     s32 state;
     s32 stride;
-    s32 id;
+    long id;
     s32 difference;
     s32 entries;
     s32 entry;
-    s32 equal;
-    unsigned char flag;
+    unsigned int equal;
+    register unsigned char flag;
     f32 x;
     f32 y;
     f32 scale;
@@ -457,27 +587,28 @@ void fn_80137788(void *arg0, s32 arg1, void *arg2) {
     if ((equal ^ flag) != 0) {
         x = *(f32 *)((char *)arg0 + 0x1C);
         scale = lbl_8056136C;
-        y = *(f32 *)((char *)arg0 + 0x20);
         x = x * scale;
-        y = y * scale;
+        y = *(f32 *)((char *)arg0 + 0x20);
         *(f32 *)arg2 = x;
+        y = y * scale;
         *(f32 *)((char *)arg2 + 4) = y;
         return;
     }
-    x = *(f32 *)((char *)arg0 + 0x1C);
     y = *(f32 *)((char *)arg0 + 0x20);
-    *(f32 *)arg2 = x;
+    x = *(f32 *)((char *)arg0 + 0x1C);
     *(f32 *)((char *)arg2 + 4) = y;
+    *(f32 *)arg2 = x;
 }
 
 void fn_801377EC(void *arg0, s32 arg1, void *arg2) {
     extern f32 lbl_8056136C;
     s32 state;
     s32 stride;
-    s32 id;
-    s32 difference;
     s32 entries;
+    s32 difference;
+    s32 id;
     s32 entry;
+    register s32 equal;
     unsigned char flag;
     f32 x;
     f32 y;
@@ -490,7 +621,8 @@ void fn_801377EC(void *arg0, s32 arg1, void *arg2) {
     entries = *(s32 *)((char *)state + 0x10);
     entry = entries + arg1 * stride;
     flag = *(unsigned char *)((char *)entry + 0x14);
-    if (((difference == 0) ^ flag) != 0) {
+    equal = difference == 0;
+    if ((equal ^ flag) != 0) {
         x = *(f32 *)((char *)arg0 + 0x24);
         scale = lbl_8056136C;
         y = *(f32 *)((char *)arg0 + 0x28);
@@ -500,10 +632,10 @@ void fn_801377EC(void *arg0, s32 arg1, void *arg2) {
         *(f32 *)((char *)arg2 + 4) = y;
         return;
     }
-    x = *(f32 *)((char *)arg0 + 0x24);
     y = *(f32 *)((char *)arg0 + 0x28);
-    *(f32 *)arg2 = x;
+    x = *(f32 *)((char *)arg0 + 0x24);
     *(f32 *)((char *)arg2 + 4) = y;
+    *(f32 *)arg2 = x;
 }
 
 float fn_80137850(void *arg0)
