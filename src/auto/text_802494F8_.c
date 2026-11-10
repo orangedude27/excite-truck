@@ -994,21 +994,21 @@ s32 fn_8024B8D4(s32 arg0) {
 }
 
 void fn_8024B8DC(void *arg0) {
-    unsigned offset;
-    long index;
-    fn_80214CB4(*(s32 *)((char *)arg0 + 0x9C));
+    int offset;
+    int index;
+    fn_80214CB4(*(int *)((char *)arg0 + 0x9C));
     index = 0;
     offset = 0;
-    while (index < *(s32 *)((char *)arg0 + 0x20)) {
-        if (index < *(s32 *)((char *)arg0 + 0x1C)) {
-            if (*(unsigned char *)((char *)*(s32 *)((char *)*(s32 **)((char *)arg0 + 0x18) + offset) + 0x14) == 0) {
+    while (index < *(int *)((char *)arg0 + 0x20)) {
+        if (index < *(int *)((char *)arg0 + 0x1C)) {
+            if (*(unsigned char *)((char *)*(int *)((char *)*(int **)((char *)arg0 + 0x18) + offset) + 0x14) == 0) {
                 fn_80214B44(index + 1);
             }
         } else {
             fn_80214A9C(index + 1);
         }
-        index += 1;
         offset += 4;
+        index++;
     }
 }
 
