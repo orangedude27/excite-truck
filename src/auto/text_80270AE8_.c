@@ -1219,6 +1219,33 @@ void fn_802733C8(void) {
 void fn_802733F0(void) {
 }
 
+void fn_802733F4(void *arg0) {
+    unsigned char *rec;
+    s32 idx;
+    s32 v;
+    s32 lim;
+    if (*(unsigned char *)((char *)arg0 + 0x138) != 0)
+        goto clear;
+    if (*(unsigned char *)&lbl_8055F558 == 0)
+        goto clear;
+    idx = fn_80273494(*(int *)((char *)arg0 + 0x10));
+    if (idx == 6)
+        goto clear;
+    rec = lbl_8049A258 + idx * 0x14;
+    v = *(int *)(rec + 0xC) + 1;
+    *(int *)(rec + 0xC) = v;
+    lim = *(int *)(rec + 0x8);
+    if (v < lim)
+        goto check;
+    *(int *)(rec + 0xC) = 0;
+check:
+    if (*(int *)(rec + 0x8) <= 1)
+        goto clear;
+    *(unsigned char *)((char *)arg0 + 0x138) = 1;
+clear:
+    lbl_8055F558 = 0;
+}
+
 void fn_80273490(void) {
     fn_80271624();
 }
