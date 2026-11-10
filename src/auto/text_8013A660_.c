@@ -403,19 +403,23 @@ extern char lbl_8055E161;
 extern float fn_80134B58(float *, float);
 extern float fn_8013B5DC(int, int);
 extern void *fn_8013B578(int);
+#pragma push
+#pragma scheduling invalid_target
 void fn_8013B6C0(int *arg0, float *arg1, int arg2) {
     if (arg2 <= 4) {
         *arg0 = lbl_802F9360[arg2 * 2];
         *arg1 = *(float *)((char *)lbl_802F9360 + arg2 * 8 + 4);
     } else {
+        int zero;
+        float tf;
         fn_802E317C(lbl_8032C374, arg2);
-        {
-            float fallback = lbl_80561434;
-            *arg0 = 0;
-            *arg1 = fallback;
-        }
+        zero = 0;
+        tf = lbl_80561434;
+        *arg0 = zero;
+        *arg1 = tf;
     }
 }
+#pragma pop
 
 #pragma dont_inline on
 float fn_8013B744(int arg0) {
