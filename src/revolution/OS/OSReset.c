@@ -70,12 +70,13 @@ BOOL __OSCallShutdownFunctions(u32 arg0, u32 arg1) {
     return !failure;
 }
 
-void __OSShutdownDevices(u32 arg0) {
+void __OSShutdownDevices(u32 event) {
     BOOL padIntr;
     BOOL osIntr;
     BOOL keepEnable;
 
-    switch (arg0) {
+    /* Shut down OS devices/subsystems for a reset or power event, optionally preserving PAD recalibration state. */
+    switch (event) {
     case 0:
     case 4:
     case 5:
@@ -96,7 +97,7 @@ void __OSShutdownDevices(u32 arg0) {
         padIntr = __PADDisableRecalibration(TRUE);
     }
 
-    while (!__OSCallShutdownFunctions(0, arg0)) {
+    while (!__OSCallShutdownFunctions(0, event)) {
         ;
     }
 
@@ -105,7 +106,7 @@ void __OSShutdownDevices(u32 arg0) {
     }
 
     osIntr = OSDisableInterrupts();
-    __OSCallShutdownFunctions(1, arg0);
+    __OSCallShutdownFunctions(1, event);
     LCDisable();
 
     if (!keepEnable) {
