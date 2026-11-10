@@ -498,14 +498,15 @@ extern "C" void fn_8012F57C(float*, void*, void*, float);
 extern "C" float lbl_80563030;
 #pragma scheduling invalid_target
 extern "C" void fn_801FD320(void* arg0, float t) {
-    volatile float q[4];
-    fn_8012F57C((float*)q, (char*)arg0 + 0x44, (char*)arg0 + 0x54, t);
-    float x = q[0];
-    float y = q[1];
-    float z = q[2];
+    float q[4];
+    fn_8012F57C(q, (char*)arg0 + 0x44, (char*)arg0 + 0x54, t);
+    volatile float* pq = q;
+    float x = pq[0];
+    float y = pq[1];
+    float z = pq[2];
     float x2 = x + x;
     float y2 = y + y;
-    float w = q[3];
+    float w = pq[3];
     float z2 = z + z;
     float xx = x * x2;
     float yy = y * y2;
@@ -892,9 +893,11 @@ __declspec(section ".data") extern float lbl_80558DC4;
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void fn_801FE448(void *arg0) {
-    float delta = fn_801E7E24();
+    float delta;
+    delta = fn_801E7E24();
     if (!((float)__fabs((double)delta) <= lbl_80558DC4)) {
-        float threshold = lbl_80563034;
+        float threshold;
+        threshold = lbl_80563034;
         char *item = (char *)arg0 + 4;
         int i = 0;
         while (i < *(int *)((char *)arg0 + 0x34)) {
@@ -1011,7 +1014,6 @@ extern "C" void fn_801FE7E8(void* arg0) {
         ++i;
     }
 }
-#pragma scheduling on
 extern const char lbl_8055B3C8[5];
 extern const char lbl_8055B3D0[6];
 extern const char lbl_8055B3D8[7];
@@ -1078,44 +1080,47 @@ extern "C" void* fn_801FE9E8(void* arg0, int arg1) {
     return arg0;
 }
 
-extern "C" void fn_801FEA28(void* arg) {
-    char* base = (char*)lbl_8055EC94;
-    char* name = *(char**)arg;
-    int i = 0;
-    char* item = base;
-    while (i < *(int*)(base + 0x4C0)) {
-        if (stricmp(name, item) == 0) {
-            base += i * 0x98;
-            goto found;
+extern "C" void fn_801FEA28(void* pEntry) {
+    /* Remove an object from the menu's object pool list */
+    char* poolBase = (char*)lbl_8055EC94;
+    char* name = *(char**)pEntry;
+    int entryIdx = 0;
+    char* poolEntry = poolBase;
+    while (entryIdx < *(int*)(poolBase + 0x4C0)) {
+        if (stricmp(name, poolEntry) == 0) {
+            poolBase += entryIdx * 0x98;
+            goto foundEntry;
         }
-        item += 0x98;
-        i++;
+        poolEntry += 0x98;
+        entryIdx++;
     }
-    base = 0;
-found:
-    if (base == 0) {
-        fn_802E317C(lbl_8033B7F0, *(char**)arg);
+    poolBase = NULL;
+foundEntry:
+    if (poolBase == NULL) {
+        fn_802E317C(lbl_8033B7F0, *(char**)pEntry);
     }
-    int count = *(int*)(base + 0x94);
-    int index = 0;
-    void* p = base;
-    for (int k = count; k > 0; k--) {
-        if (*(void**)((char*)p + 0x50) == arg) break;
-        p = (char*)p + 4;
-        index++;
+    int usedCount = *(int*)(poolBase + 0x94);
+    int foundIdx = 0;
+    void* searchPtr = poolBase;
+    for (int k = usedCount; k > 0; k--) {
+        if (*(void**)((char*)searchPtr + 0x50) == pEntry) {
+            break;
+        }
+        searchPtr = (char*)searchPtr + 4;
+        foundIdx++;
     }
-    if (index >= count) {
-        fn_802E317C(lbl_8033B820, count, *(int*)(base + 0x90));
+    if (foundIdx >= usedCount) {
+        fn_802E317C(lbl_8033B820, usedCount, *(int*)(poolBase + 0x90));
     }
-    int* q = (int*)(base + (index + 1) * 4);
-    int j = index + 1;
-    for (; j < *(int*)(base + 0x94); j++, q++) {
-        q[19] = q[20];
+    int* shiftPtr = (int*)(poolBase + (foundIdx + 1) * 4);
+    int j = foundIdx + 1;
+    for (; j < *(int*)(poolBase + 0x94); j++, shiftPtr++) {
+        shiftPtr[19] = shiftPtr[20];
     }
-    *(int*)(base + 0x94) -= 1;
-    int count2 = *(int*)(base + 0x90);
-    *(void**)(base + 0x10 + count2 * 4) = arg;
-    *(int*)(base + 0x90) = count2 + 1;
+    *(int*)(poolBase + 0x94) -= 1;
+    int freeCount = *(int*)(poolBase + 0x90);
+    *(void**)(poolBase + 0x10 + freeCount * 4) = pEntry;
+    *(int*)(poolBase + 0x90) = freeCount + 1;
 }
 
 extern const char lbl_8033B84C[];
