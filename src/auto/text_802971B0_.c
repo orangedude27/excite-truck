@@ -62,8 +62,8 @@ extern "C" void *fn_802971B0(void *arg0) {
 }
 #pragma cplusplus reset
 #pragma scheduling on
-extern char lbl_8055CA40[];
-extern char *lbl_8055CA38[];
+__declspec(section ".sdata") extern char lbl_8055CA40[];
+__declspec(section ".sdata") extern char *lbl_8055CA38[];
 extern char lbl_80349384[];
 extern int stricmp(const char *, const char *);
 extern int fn_802E317C(char *, ...);
