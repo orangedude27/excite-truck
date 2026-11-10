@@ -17147,6 +17147,7 @@ extern void l2c_csm_config(void *, u16, void *);
 extern void l2c_csm_w4_l2cap_disconnect_rsp(void *, u16, void *);
 void l2c_csm_term_w4_sec_comp(void *p_ccb, s32 event, void *p_data)
 {
+    /* L2CAP CSM handler for terminator waiting-for-security-complete: logs the event and handles abort, security complete, reject, data free, timeout, and peer disconnect. */
     if (lbl_803C4040[0] >= 4) {
         ((void (*)(u32, void *, u32))fn_80070954)(0x80003, lbl_80318580, event);
     }
@@ -17162,10 +17163,10 @@ void l2c_csm_term_w4_sec_comp(void *p_ccb, s32 event, void *p_data)
             fn_80070954(0x80002, lbl_803185A8, *(u16 *)((u8 *)p_ccb + 0x14));
         }
         {
-            u8 *p = *(u8 **)((u8 *)p_ccb + 0x30);
-            void (*fn)(void *, u16, u16, u8) = *(void (**)(void *, u16, u16, u8))(p + 4);
-            fn((u8 *)*(void **)((u8 *)p_ccb + 0x10) + 0x2A,
-               *(u16 *)((u8 *)p_ccb + 0x14), *(u16 *)(p + 2),
+            u8 *p_rcb = *(u8 **)((u8 *)p_ccb + 0x30);
+            void (*connect_ind_cb)(void *, u16, u16, u8) = *(void (**)(void *, u16, u16, u8))(p_rcb + 4);
+            connect_ind_cb((u8 *)*(void **)((u8 *)p_ccb + 0x10) + 0x2A,
+               *(u16 *)((u8 *)p_ccb + 0x14), *(u16 *)(p_rcb + 2),
                *((u8 *)p_ccb + 0x36));
         }
         break;
