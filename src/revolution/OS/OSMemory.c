@@ -454,6 +454,7 @@ static asm void RealMode(register void* config) {
     // clang-format on
 }
 
+/* Configures DBATs for the simulated/physical MEM1 and MEM2 layout. */
 static void BATConfig(void) {
     u32 mem1sim;
     u32 mem1phys;
