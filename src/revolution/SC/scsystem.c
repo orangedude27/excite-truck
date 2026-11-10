@@ -681,7 +681,7 @@ static BOOL FindItemByID(SCItemID id, SCItem* item) {
     return FALSE;
 }
 
-static void DeleteItemByID(SCItemID id) {
+static void DeleteItemByID(SCItemID itemId) {
     u8* conf;
     u16* itemOfs;
     u32 itemOfsOfs;
@@ -694,9 +694,10 @@ static void DeleteItemByID(SCItemID id) {
     u16* it;
     int i;
 
+    /* Removes an SC config item by ID, compacts item data/offsets, updates the ID lookup table, and marks the config dirty. */
     conf = __SCGetConfBuf();
 
-    if (id >= ItemIDMaxPlus1) {
+    if (itemId >= ItemIDMaxPlus1) {
         return;
     }
 
@@ -706,7 +707,7 @@ static void DeleteItemByID(SCItemID id) {
 
     confLut = (u16*)(conf + ItemIDOffsetTblOffset);
     // LUT items are in reverse order
-    itemOfsOfs = confLut[-id];
+    itemOfsOfs = confLut[-itemId];
 
     if (itemOfsOfs == 0) {
         return;
