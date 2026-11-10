@@ -249,40 +249,41 @@ extern "C" void fn_8020AAC0(int unused, int arg1) {
         virtual void dummy7();
         virtual float getValue(const char *, float);
     };
-    char *base;
+    char *recordBase;
     List *list = (List *)fn_80131808(lbl_8033C3B4);
     if (list != 0) {
-        base = lbl_804892D0;
-        Entry *item;
+        recordBase = lbl_804892D0;
+        Entry *entry;
         int index = 0;
-        while ((item = (Entry *)list->getAt(index)) != 0) {
-            const char *name = item->getName();
+        /* Scans list entries named lbl_8055B5A0, copies their string/value into records, then finalizes. */
+        while ((entry = (Entry *)list->getAt(index)) != 0) {
+            const char *name = entry->getName();
             if (strcmp(name, lbl_8055B5A0) == 0) {
-                int n = (int)lbl_8055EE08;
-                char *record = base + n * 0x24;
-                const char *s;
-                lbl_8055EE08 = (void *)(n + 1);
-                s = item->getString(lbl_8055B5A8, n);
+                int recordIndex = (int)lbl_8055EE08;
+                char *record = recordBase + recordIndex * 0x24;
+                const char *source;
+                lbl_8055EE08 = (void *)(recordIndex + 1);
+                source = entry->getString(lbl_8055B5A8, recordIndex);
                 {
-                    int left = 0x20;
+                    int remaining = 0x20;
                     char *dest = record;
                     goto copy_check;
 copy_loop:
-                    if (--left > 0)
+                    if (--remaining > 0)
                         goto copy_check;
                     dest[-1] = 0;
                     goto copy_done;
 copy_check:
                     {
-                        unsigned char c = *s++;
-                        *dest++ = c;
-                        if ((signed char)c != 0)
+                        unsigned char ch = *source++;
+                        *dest++ = ch;
+                        if ((signed char)ch != 0)
                             goto copy_loop;
                     }
 copy_done:
                     ;
                 }
-                *((float *)(record + 0x20)) = item->getValue(lbl_8055B5B0, lbl_805632B4);
+                *((float *)(record + 0x20)) = entry->getValue(lbl_8055B5B0, lbl_805632B4);
             }
             ++index;
         }
