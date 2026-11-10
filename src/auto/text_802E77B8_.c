@@ -45,8 +45,9 @@ void *fn_802E77C0(int x) {
 #pragma scheduling invalid_target
 #pragma processor 750
 float fn_802E7824(float arg0, float arg1) {
+    float c = lbl_80565164;
     float t = lbl_80565160 / (lbl_80565160 - arg1);
-    if (arg0 >= lbl_80565164) {
+    if (arg0 >= c) {
         float v = t * (arg0 - arg1);
         if (v < lbl_80565168) v = lbl_80565168;
         if (v > lbl_80565164) v = lbl_80565164;
@@ -146,7 +147,7 @@ int fn_802E7A70(unsigned int value) {
     lbl_8056000C--;
     removed = lbl_80507258[lbl_8056000C];
     lbl_80507258[found] = removed;
-    fn_80128658(removed, lbl_80507258);
+    ((void (*)(unsigned int, int))fn_80128658)(value, removed);
     return 1;
 }
 #pragma pop
@@ -597,6 +598,7 @@ void fn_802E8528(int index, float value, float unused) {
     int result;
     int converted;
     int magnitude;
+
     scaled = (value - lbl_80565198) * lbl_8056519C;
     if (scaled < lbl_80565164)
         rounded = scaled - lbl_80565170;
