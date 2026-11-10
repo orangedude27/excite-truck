@@ -78,6 +78,12 @@ extern "C" void fn_80209E94(void *arg0) {
         virtual void v0();
         virtual void v1();
     };
+    /* Accumulate input/trigger contribution from 4 Records at (arg0+4)->+0x23AC:
+       for each enabled==0 record, add clamp(value - 0.8f, 0, 0.25f) to total.
+       Write into state object at *(arg0+8): set flag +0x4e and force field +4
+       to 1.0f if changed, set flag +0x4d and store total at +8 if changed; if
+       total > 0.001f set flags (+0x49,+0x4b)=1, +0x4a=0 else set +0x4a=1,
+       +0x4c=0. Then call notifier v1() on *(arg0+0xc) if present. */
     Record *records = (Record *)(*(char **)((char *)arg0 + 4) + 0x23AC);
     float value;
     float total = 0.0f;
