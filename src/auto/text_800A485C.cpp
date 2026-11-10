@@ -1221,6 +1221,7 @@ extern "C" s32 fn_800A62A8(void *arg0) {
 #pragma dont_inline reset
 
 extern "C" s32 fn_800A6358(void *arg0) {
+    /* Advance async operation in state 0: run callbacks, handle errors, update flags/state. */
     s16 state = *(s16 *)((u8 *)arg0 + 0xE);
     s32 result;
 
