@@ -157,11 +157,12 @@ void *fn_8024E920(void *arg0, s32 arg1) {
 #pragma push
 #pragma opt_common_subs off
 #pragma scheduling invalid_target
+/* Update selection-dependent value and label text for a UI/menu entry. */
 void fn_8024EA1C(s32 arg0) {
     s32 base = fn_8001668C(arg0 + 0x60, 0);
     s32 *secondary;
     s32 choiceBase;
-    s32 selected;
+    s32 selectedIndex;
     register u8 *src;
     register u8 c;
     register s32 count;
@@ -182,23 +183,23 @@ void fn_8024EA1C(s32 arg0) {
     secondary = (s32 *)fn_8001668C(arg0 + 0x60, 0);
     choiceBase = fn_8001668C(arg0 + 0x60, 0);
     if (lbl_80498C48[4] != 0) {
-        selected = ((s32 *(*)(s32, s32))fn_80016BC8)(choiceBase, 0)[0];
+        selectedIndex = ((s32 *(*)(s32, s32))fn_80016BC8)(choiceBase, 0)[0];
     } else {
-        selected = ((s32 *(*)(s32, s32))fn_80016BC8)(choiceBase, 0)[1];
+        selectedIndex = ((s32 *(*)(s32, s32))fn_80016BC8)(choiceBase, 0)[1];
     }
 
     {
-        void *object = *(void **)((u8 *)arg0 + 0x4C);
+        void *targetObject = *(void **)((u8 *)arg0 + 0x4C);
         s32 value = *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0xCC) +
                              *(s32 *)((u8 *)arg0 + 0x2C) * 0x14 + 0x10);
         switch (value) {
         case 0:
-            value = *(s32 *)((u8 *)secondary + selected * 4 + 0x64);
+            value = *(s32 *)((u8 *)secondary + selectedIndex * 4 + 0x64);
             break;
         default:
             break;
         }
-        fn_80255918(object, value);
+        fn_80255918(targetObject, value);
     }
 
     fn_801345D8((u8 *)arg0 + 0xE0, 0x100, lbl_8034287C,
@@ -1166,13 +1167,16 @@ extern "C" void fn_8024FBD8(void *arg0, s32 arg1) {
 #pragma cplusplus reset
 void *fn_8024FFF8(void *arg0, s32 arg1) {
     extern char lbl_803443B0[];
-    if (arg0) {
-        register void *child = *(void **)((char *)arg0 + 0x188);
-        *(void **)arg0 = lbl_803443B0;
-        if (child) {
-            ((void (*)(void *, s32))(*(void ***)child)[2])(child, 1);
+    char *child;
+    if (arg0 != 0) {
+        child = *(char **)((u8 *)arg0 + 0x188);
+        *(char **)arg0 = lbl_803443B0;
+        if (child != 0) {
+            if (child != 0)
+                ((void (*)(char *, s32))(*(void ***)child)[2])(child, 1);
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (arg1 > 0)
+            ((s32 (*)(void *))fn_80128668)(arg0);
     }
     return arg0;
 }
@@ -2287,23 +2291,24 @@ extern char lbl_8055C0E0[];
 extern char lbl_80344378[], lbl_80344384[], lbl_80344690[], lbl_803443B0[];
 #pragma scheduling off
 void fn_80251D0C(void *arg0) {
+#pragma scheduling on
     float value1;
     int zero;
     float value0;
-
-    fn_80255904(*(s32 *)((char *)arg0 + 0x20));
+    u8 *base = (u8 *)arg0;
+    fn_80255904(*(s32 *)(base + 0x20));
     value1 = lbl_80563960;
     zero = 0;
     value0 = lbl_805639C0;
-    *(s32 *)((char *)arg0 + 0x190) = -1;
-    *(u8 *)((char *)arg0 + 0x28) = zero;
-    *(u8 *)((char *)arg0 + 0x48) = zero;
-    *(u8 *)((char *)arg0 + 0x88) = zero;
-    *(u8 *)((char *)arg0 + 0x108) = zero;
-    *(f32 *)((char *)arg0 + 0x194) = value1;
-    *(f32 *)((char *)arg0 + 0x198) = value0;
+    *(u8 *)(base + 0x28) = zero;
+    *(u8 *)(base + 0x48) = zero;
+    *(u8 *)(base + 0x88) = zero;
+    *(u8 *)(base + 0x108) = zero;
+    *(s32 *)(base + 0x190) = -1;
+    *(f32 *)(base + 0x194) = value1;
+    *(f32 *)(base + 0x198) = value0;
     fn_80214A9C(0x1F, value1);
-    *(u8 *)((char *)arg0 + 0x19C) = zero;
+    *(u8 *)(base + 0x19C) = zero;
 }
 
 #pragma push
