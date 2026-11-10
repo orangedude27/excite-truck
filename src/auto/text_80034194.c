@@ -1046,43 +1046,59 @@ void fn_8003588C(void) {
                 (s32)fn_80035A04);
 }
 #pragma dont_inline on
-void fn_80035A04(u32 arg0) {
-    /* DVD error/status handler: record the error code, handle fatal/cover-open/reset cases,
-     * or log an error record (type 0x27) and dispatch the error callback. */
-    register s32 state;
-    s32 firstInterrupts;
+/* Completion callback of the boot read started by fn_8003588C(); `result` is the
+ * state the drive finished the read with.
+ *
+ * The state goes into the driver's error log first (dvderror.h's DVDErrorInfo at
+ * __ErrorInfo: the dicr word of the entry the log count lbl_8055D848 points at, or
+ * the spare word at 0x78 while no command has been logged), so a dump of that log
+ * shows how the read ended. Then, by state:
+ *   0x10 / 0x20 - the boot is over and the drive needs no reset: hand the log to
+ *     NAND with the reason code 0x1234568 / 0x1234569 (fn_8003A1A0), and let
+ *     fn_80035C78() re-arm the drive if NAND cannot take it.
+ *   bit 0 set - the read was cancelled rather than failed: clear the drive-error
+ *     count, rebuild the file system from the disc's FST, make the dummy block the
+ *     executing one again, finish the real block (its state and its own callback,
+ *     with the good result 0) and start whatever is queued behind it.
+ *   anything else - log a fatal entry (0x27) and queue a drive reset transaction,
+ *     which reports back through fn_80035E6C().
+ */
+void fn_80035A04(u32 result) {
+    register s32 interrupts;
+    s32 enabled;
     s32 *block;
     void (*callback)(s32);
 
-    firstInterrupts = OSDisableInterrupts();
+    enabled = OSDisableInterrupts();
     if (*(volatile u32 *)&lbl_8055D848 == 0)
-        *(u32 *)(__ErrorInfo + 0x78) = arg0;
+        *(u32 *)(__ErrorInfo + 0x78) = result;
     else
-        *(u32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x14) = arg0;
-    OSRestoreInterrupts(firstInterrupts);
+        *(u32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x14) = result;
+    OSRestoreInterrupts(enabled);
 
-    if (arg0 == 0x10) {
-        fn_8003A1A0(0x1234568, fn_80035C78);
+    if (result == 0x10) {
+        fn_8003A1A0(0x1234568, fn_80035C78); /* save the error log to NAND */
         return;
     }
-    if (arg0 == 0x20) {
-        fn_8003A1A0(0x1234569, fn_80035C78);
+    if (result == 0x20) {
+        fn_8003A1A0(0x1234569, fn_80035C78); /* same, other reason */
         return;
     }
-    if (arg0 & 1) {
-        lbl_8055D860 = 0;
+    if (result & 1) {
+        lbl_8055D860 = 0;   /* no drive errors seen any more */
         __DVDFSInit();
-        block = (s32 *)executing_8055D8C8;
+        block = (s32 *)executing_8055D8C8; /* the DVDCommandBlock we were running */
         executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
-        block[3] = 0;
-        callback = *(void (**)(s32))((u8 *)block + 0x28);
+        block[3] = 0;                       /* block->state = 0 */
+        callback = *(void (**)(s32))((u8 *)block + 0x28); /* block->callback */
         if (callback != 0)
-            callback(0);
-        fn_80038040();
+            callback(0);                    /* DVD_RESULT_GOOD */
+        fn_80038040();                      /* start the next queued command */
         return;
     }
 
-    state = OSDisableInterrupts();
+    interrupts = OSDisableInterrupts();
+    /* a new log entry: code 0x27, no parameters, taken now */
     if (*(volatile u32 *)&lbl_8055D848 >= 5)
         *(volatile u32 *)&lbl_8055D848 = 0;
     *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x27;
@@ -1090,8 +1106,8 @@ void fn_80035A04(u32 arg0) {
     *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0;
     *(s32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
     *(volatile u32 *)&lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
-    OSRestoreInterrupts(state);
-    fn_8003B218(fn_80035E6C);
+    OSRestoreInterrupts(interrupts);
+    fn_8003B218(fn_80035E6C); /* queue a drive reset */
 }
 #pragma dont_inline off
 extern void __DVDPrintFatalMessage(void);
