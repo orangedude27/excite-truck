@@ -160,8 +160,9 @@ int fn_801B81E0(void *arg0) {
     extern int fn_80172C28(void);
     extern void fn_802E317C(const char *, ...);
     extern char lbl_80336740[];
-
-    switch (*(volatile int *)((char *)arg0 + 0x3E8)) {
+    int value = *(int *)((char *)arg0 + 0x3E8);
+    int v = value;
+    switch (v) {
     case 0x180201:
         return fn_8014145C();
     case 0x180303:
@@ -178,13 +179,12 @@ int fn_801B81E0(void *arg0) {
 
 #pragma push
 #pragma cplusplus on
-#pragma scheduling invalid_target
+#pragma scheduling on
 #pragma dont_inline on
-extern "C" void fn_801B826C(register void *arg0) {
+extern "C" void fn_801B826C(void *arg0) {
     int value;
     void *object;
     void *manager;
-
     value = *(int *)((char *)arg0 + 0x3E8);
     lbl_8055E74C = value;
     if (value & 0x200) {
