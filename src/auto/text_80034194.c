@@ -1802,26 +1802,27 @@ void fn_80036D24(u32 arg0) {
 }
 
 extern void fn_800375A8(u32);
-void fn_800370F4(u32 arg0) {
-    register u32 value = arg0;
+/* Record DVD error status into the global error info ring and dispatch the corresponding recovery path. */
+void fn_800370F4(u32 errorCode) {
+    register u32 status = errorCode;
     s32 interrupts;
     u8 *info;
     u32 tick;
 
     interrupts = OSDisableInterrupts();
     if (*(volatile u32 *)&lbl_8055D848 == 0) {
-        *(u32 *)(__ErrorInfo + 0x78) = value;
+        *(u32 *)(__ErrorInfo + 0x78) = status;
     } else {
         *(u32 *)(__ErrorInfo + 0x28 +
-                 (*(volatile u32 *)&lbl_8055D848 - 1) * 0x14) = value;
+                 (*(volatile u32 *)&lbl_8055D848 - 1) * 0x14) = status;
     }
     OSRestoreInterrupts(interrupts);
 
-    if (value == 0x10) {
+    if (status == 0x10) {
         fn_8003A1A0(0x1234568, fn_80035C78);
-    } else if (value == 0x20) {
+    } else if (status == 0x20) {
         fn_8003A1A0(0x1234569, fn_80035C78);
-    } else if (value & 1) {
+    } else if (status & 1) {
         lbl_8055D860 = 0;
         fn_8003BCDC(0);
         interrupts = OSDisableInterrupts();
