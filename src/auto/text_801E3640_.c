@@ -141,13 +141,15 @@ void fn_801E370C(float *arg0, int arg1, int arg2) {
 #pragma pop
 void fn_801E3C04(void) {
     float a, b, d, e, c, f;
+    float t;
     int tmp;
-    tmp = ((int (*)(void *, int))fn_802CAC28)((void *)&lbl_80339910, 0);
+    tmp = fn_802CAC28(lbl_80339910, 0);
     lbl_8055EA6C = tmp;
-    tmp = ((int (*)(void *, int, int))fn_802C6FC0)((void *)&lbl_80339920, 0, 0);
+    tmp = fn_802C6FC0(lbl_80339920, 0, 0);
     lbl_8055EA64 = tmp;
-    ((void (*)(void *, float *, float *, float *, float *, float *, float *))fn_802C7760)((void *)tmp, &a, &b, &c, &d, &e, &f);
-    lbl_8055EA68 = lbl_80562D08 * (float)fabs(e - b);
+    fn_802C7760((void *)tmp, &a, &b, &c, &d, &e, &f);
+    t = (float)fabs(e - b);
+    lbl_8055EA68 = t * lbl_80562D08;
 }
 
 void fn_801E3C88(void) {
