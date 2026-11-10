@@ -21134,6 +21134,8 @@ void rfc_port_sm_execute(void *p_port, u16 event, void *p_data) {
 }
 
 void rfc_port_sm_state_closed(void *p_port, u16 event, void *p_data) {
+    /* RFCOMM port state machine (CLOSED): handle open/security/connect/close/timeout
+     * events, requesting security checks or sending DM/freeing buffers as needed. */
     extern char lbl_80319AC4[];
     extern char lbl_80319AE4[];
     extern void rfc_sec_check_complete(void *, void *, s8);
