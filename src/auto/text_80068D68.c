@@ -10311,12 +10311,14 @@ void btm_sco_chk_pend_unpark(UINT8 hci_status, UINT16 hci_handle) {
 
 void btm_sco_conn_req(BD_ADDR bda, DEV_CLASS dev_class, tBTM_SCO_TYPE link_type)
 {
+    /* Handle an incoming SCO/eSCO connection request: match/reuse an existing SCO entry, notify or auto-accept via callback, or reject if no one wants it. */
     tBTM_ESCO_CONN_REQ_EVT_DATA event_data;
     register UINT8 *p_bda = bda;
     register UINT8 *p_dev_class = dev_class;
     register UINT8 type = link_type;
     UINT8 *entry;
     UINT16 i;
+
     entry = lbl_803C0F78 + 0x1854;
     i = 0;
     for (; i < 3; i++, entry += 0x34) {
