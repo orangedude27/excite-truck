@@ -269,6 +269,7 @@ static void __OSDefaultResetCallback(void) {}
 
 static void __OSDefaultPowerCallback(void) {}
 
+/* Handles STM state events and dispatches reset/power callbacks. */
 static s32 __OSStateEventHandler(s32 result, void* arg) {
 #pragma unused(result)
 #pragma unused(arg)
