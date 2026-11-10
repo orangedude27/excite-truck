@@ -12576,6 +12576,7 @@ extern "C" void IPCSetBufferLo(void *);
 extern "C" s32 iosCreateHeap(void *, s32);
 extern "C" void OSInitMutex(void *);
 extern "C" void *lbl_8055DD84;
+/* Initializes the IPC/IOS heap and allocates shared buffers/mutex and device path strings for this subsystem; returns 0 on success or -22 on failure. */
 extern "C" s32 fn_800BBCF4(void) {
     const char *str = lbl_8031B838;
     s32 result = 0;
