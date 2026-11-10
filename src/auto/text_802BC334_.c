@@ -439,7 +439,9 @@ extern "C" void fn_802BCBDC(void) {
     }
 }
 
-void fn_802BCF04(void) {
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" void fn_802BCF04(void) {
     void *base;
     char *entry;
     int i;
@@ -467,6 +469,7 @@ check:
         lbl_8055FAB4 = 0;
     }
 }
+#pragma pop
 void fn_802BCFB0(int *arg0) {
     int temp_r31;
     temp_r31 = *arg0;
@@ -669,7 +672,7 @@ void fn_802BD4DC(void *arg0, int arg1) {
     char *entry;
     int offset;
     unsigned int i;
-    unsigned char b5, b4, b1, b0, b3, b2, b6;
+    unsigned char b2, b6, b3, b0, b1, b4, b5;
     b4 = p[4];
     b5 = p[5];
     b6 = p[6];
