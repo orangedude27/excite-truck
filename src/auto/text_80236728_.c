@@ -759,35 +759,37 @@ extern void *fn_801284F8(int, char *);
   }
   
   void fn_80128668(void*);
+#pragma push
+#pragma cplusplus on
 void fn_80237D00(void *arg0) {
+    class D {
+    public:
+        virtual void m2(int);
+    };
     void *p = *(void **)((char *)arg0 + 0x28);
     if (p != 0) {
         volatile void *q = p;
         if (q != 0) {
-            void **vt = *(void ***)p;
-            ((void (*)(void *, int))vt[2])(p, 1);
+            ((D *)p)->m2(1);
         }
     }
     p = *(void **)((char *)arg0 + 0x2c);
     if (p != 0) {
         volatile void *q = p;
         if (q != 0) {
-            void **vt = *(void ***)p;
-            ((void (*)(void *, int))vt[2])(p, 1);
+            ((D *)p)->m2(1);
         }
     }
     p = *(void **)((char *)arg0 + 0x30);
     if (p != 0) {
         volatile void *q = p;
         if (q != 0) {
-            void **vt = *(void ***)p;
-            ((void (*)(void *, int))vt[2])(p, 1);
+            ((D *)p)->m2(1);
         }
     }
     fn_80128668(arg0);
 }
-
-#pragma use_lmw_stmw off
+#pragma pop
 extern float fn_8023659C();
 #pragma use_lmw_stmw off
 void fn_80237DA0(char *name, void *unused) {
