@@ -185,42 +185,43 @@ s32 fn_802C3130(void *arg0, s32 arg1, s32 arg2) {
     return 0;
 }
 
-s32 fn_802C3170(void *arg0, s32 *arg1, s32 *arg2, s32 *arg3, s32 *arg4, s32 *arg5, s32 *arg6) {
-    s32 temp_r0, temp_r0_2, temp_r10, temp_r10_2, temp_r11, temp_r12, temp_r31;
-    s32 temp_r3, temp_r4, temp_r4_2, temp_r6, temp_r6_2, temp_r6_3;
-    temp_r11 = *arg1;
-    temp_r31 = *(s32 *)((u8 *)arg0 + 0x14);
-    if (temp_r11 + *arg5 < temp_r31) return 0;
-    temp_r12 = *arg2;
-    if (temp_r12 + *arg6 < *(s32 *)((u8 *)arg0 + 0x18)) return 0;
-    if (temp_r11 >= *(s32 *)((u8 *)arg0 + 0x1C)) return 0;
-    if (temp_r12 >= *(s32 *)((u8 *)arg0 + 0x20)) return 0;
-    if (temp_r11 < temp_r31) {
-        temp_r10 = temp_r31 - temp_r11;
-        *arg3 += temp_r10;
-        *arg5 -= temp_r10;
-        *arg1 = *(s32 *)((u8 *)arg0 + 0x14);
+s32 fn_802C3170(void *bounds, s32 *x, s32 *y, s32 *srcX, s32 *srcY, s32 *w, s32 *h) {
+    /* Clip a source/destination rectangle to the bounds at bounds+0x14/18/1C/20, adjusting positions and sizes; returns nonzero if anything remains. */
+    s32 temp_r0, temp_r0_2, deltaX, rectY2, rectX, rectY, leftBound;
+    s32 bottomBound, width, height2, topBound, topDelta, rightBound;
+    rectX = *x;
+    leftBound = *(s32 *)((u8 *)bounds + 0x14);
+    if (rectX + *w < leftBound) return 0;
+    rectY = *y;
+    if (rectY + *h < *(s32 *)((u8 *)bounds + 0x18)) return 0;
+    if (rectX >= *(s32 *)((u8 *)bounds + 0x1C)) return 0;
+    if (rectY >= *(s32 *)((u8 *)bounds + 0x20)) return 0;
+    if (rectX < leftBound) {
+        deltaX = leftBound - rectX;
+        *srcX += deltaX;
+        *w -= deltaX;
+        *x = *(s32 *)((u8 *)bounds + 0x14);
     }
-    temp_r6 = *(s32 *)((u8 *)arg0 + 0x18);
-    temp_r10_2 = *arg2;
-    if (temp_r10_2 < temp_r6) {
-        temp_r6_2 = temp_r6 - temp_r10_2;
-        *arg4 += temp_r6_2;
-        *arg6 -= temp_r6_2;
-        *arg2 = *(s32 *)((u8 *)arg0 + 0x18);
+    topBound = *(s32 *)((u8 *)bounds + 0x18);
+    rectY2 = *y;
+    if (rectY2 < topBound) {
+        topDelta = topBound - rectY2;
+        *srcY += topDelta;
+        *h -= topDelta;
+        *y = *(s32 *)((u8 *)bounds + 0x18);
     }
-    temp_r0 = *arg1;
-    temp_r4 = *arg5;
-    temp_r6_3 = *(s32 *)((u8 *)arg0 + 0x1C);
-    temp_r0 += temp_r4;
-    if (temp_r0 > temp_r6_3) *arg5 = temp_r4 - (temp_r0 - temp_r6_3);
-    temp_r0_2 = *arg2;
-    temp_r4_2 = *arg6;
-    temp_r3 = *(s32 *)((u8 *)arg0 + 0x20);
-    temp_r0_2 += temp_r4_2;
-    if (temp_r0_2 > temp_r3) *arg6 = temp_r4_2 - (temp_r0_2 - temp_r3);
-    if (*arg5 <= 0) return 0;
-    return *arg6 > 0;
+    temp_r0 = *x;
+    width = *w;
+    rightBound = *(s32 *)((u8 *)bounds + 0x1C);
+    temp_r0 += width;
+    if (temp_r0 > rightBound) *w = width - (temp_r0 - rightBound);
+    temp_r0_2 = *y;
+    height2 = *h;
+    bottomBound = *(s32 *)((u8 *)bounds + 0x20);
+    temp_r0_2 += height2;
+    if (temp_r0_2 > bottomBound) *h = height2 - (temp_r0_2 - bottomBound);
+    if (*w <= 0) return 0;
+    return *h > 0;
 }
 
 extern const char lbl_8034B060[];
