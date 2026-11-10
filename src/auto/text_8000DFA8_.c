@@ -759,7 +759,7 @@ extern s32 lbl_8055D494;
 #pragma push
 #pragma processor 750
 #pragma paired_single off
-void fn_80010724(s32 arg0, s32 arg1, s32 arg2) {
+void fn_80010724(s32 x, s32 y, s32 arg2) {
     extern s32 fn_8001084C();
     extern s32 fn_80010964(s32);
     extern f32 fn_800109A0(s32);
@@ -777,13 +777,14 @@ void fn_80010724(s32 arg0, s32 arg1, s32 arg2) {
     f32 temp_f6;
     f32 result;
 
+    /* Computes layout coordinates from scaled metrics and draws/formats a UI element. */
     temp_f1 = (f32)((s32 (*)(s32, s32))fn_8001084C)(0x10, arg2);
     temp_f31 = lbl_80560310 + temp_f1;
     temp_f4 = lbl_8056031C + (f32)fn_80010964(0x10);
-    temp_f6 = (f32)arg0;
+    temp_f6 = (f32)x;
     temp_f5 = temp_f6 - lbl_80560320;
     temp_f30 = temp_f5 - (temp_f31 * lbl_8056025C);
-    temp_f31_2 = (lbl_805602F4 - (f32)arg1) + (temp_f4 * lbl_8056025C);
+    temp_f31_2 = (lbl_805602F4 - (f32)y) + (temp_f4 * lbl_8056025C);
     ((void (*)(s32, f32, f32, f32, f32, f32, f32))fn_80010B80)(0x80000000, temp_f30, temp_f31_2, temp_f31, temp_f4, temp_f5, temp_f6);
     result = fn_800109A0(lbl_80558A90);
     ((void (*)(s32, s32, const char *, f32, ...))fn_8000FF88)(-1, 0x14, (const char *)&lbl_80558AA4, result, arg2, temp_f30, temp_f31_2);
