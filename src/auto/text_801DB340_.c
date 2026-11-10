@@ -337,6 +337,96 @@ int fn_801DB74C(int arg0, int arg1, float *arg2, int *arg3, void *arg4, void *ar
     return 1;
 }
 
+#pragma use_lmw_stmw off
+void fn_801DC32C(void *base) {
+    unsigned char *arg0 = base;
+    int i, j, k;
+    int minX, minZ, maxX, maxZ;
+    unsigned char *node;
+    unsigned char *p;
+    unsigned char *q;
+
+    p = arg0;
+    i = 13;
+    do {
+        swap32(p);
+        p += 4;
+    } while (--i);
+    *(int *)(arg0 + 0x18) += (int)arg0;
+    *(int *)(arg0 + 0x20) += (int)arg0;
+    *(int *)(arg0 + 0x28) += (int)arg0;
+    *(int *)(arg0 + 0x30) += (int)arg0;
+    memset(lbl_80442708, -1, 0x4800);
+    lbl_8055E9A0 = 0;
+    lbl_8055E99C = 0;
+    minX = 0; minZ = 0; maxX = 0; maxZ = 0;
+    for (i = 0; i < *(int *)(arg0 + 0x14); i++) {
+        node = *(unsigned char **)(arg0 + 0x18) + i * 0x894;
+        swap32(node);
+        swap32(node + 4);
+        for (j = 0; j < 32; j++) {
+            q = node + 8;
+            for (k = 0; k < 32; k++) {
+                swap16(q + j * 2);
+                q += 0x40;
+            }
+        }
+        swap32(node + 0x808);
+        swap32(node + 0x80C);
+        p = node + 0x810;
+        for (k = 0; k < 8; k++) {
+            swap32(p);
+            swap32(p + 4);
+            swap32(p + 8);
+            swap32(p + 12);
+            p += 16;
+        }
+        swap32(node + 0x890);
+        if (i == 0) {
+            lbl_8055E99C = minX = maxX = *(int *)(node + 0x808);
+            lbl_8055E9A0 = minZ = maxZ = *(int *)(node + 0x80C);
+        } else {
+            minX = lbl_8055E99C;
+            if (*(int *)(node + 0x808) < minX) minX = *(int *)(node + 0x808);
+            lbl_8055E99C = minX;
+            minZ = lbl_8055E9A0;
+            if (*(int *)(node + 0x80C) < minZ) minZ = *(int *)(node + 0x80C);
+            lbl_8055E9A0 = minZ;
+            if (*(int *)(node + 0x808) > maxX) maxX = *(int *)(node + 0x808);
+            if (*(int *)(node + 0x80C) > maxZ) maxZ = *(int *)(node + 0x80C);
+        }
+    }
+    fn_802E30C8(lbl_803393B8, maxX - minX, maxZ - minZ);
+    for (i = 0; i < *(int *)(arg0 + 0x14); i++) {
+        node = *(unsigned char **)(arg0 + 0x18) + i * 0x894;
+        if (*(int *)(node + 0x808) < lbl_8055E99C || *(int *)(node + 0x80C) < lbl_8055E9A0
+            || *(int *)(node + 0x808) - lbl_8055E99C >= 0x60 || *(int *)(node + 0x80C) - lbl_8055E9A0 >= 0x60) {
+            fn_802E317C(lbl_803393E0, *(int *)(node + 0x808) - lbl_8055E99C, *(int *)(node + 0x80C) - lbl_8055E9A0, 0x60, 0x60);
+        }
+        ((unsigned short (*)[0x60])lbl_80442708)[*(int *)(node + 0x808) - lbl_8055E99C][*(int *)(node + 0x80C) - lbl_8055E9A0] = i;
+    }
+    for (i = 0; i < *(int *)(arg0 + 0x1C); i++) {
+        node = *(unsigned char **)(arg0 + 0x20) + i * 0x810;
+        swap32(node);
+        swap32(node + 4);
+        for (j = 0; j < 32; j++) {
+            q = node + 8;
+            for (k = 0; k < 32; k++) {
+                swap16(q + j * 2);
+                q += 0x40;
+            }
+        }
+        swap32(node + 0x808);
+        swap32(node + 0x80C);
+    }
+    for (i = 0; i < *(int *)(arg0 + 0x24); i++) {
+        p = *(unsigned char **)(arg0 + 0x28) + i * 16;
+        swap32(p);
+        swap32(p + 4);
+        swap32(p + 8);
+        swap32(p + 12);
+    }
+}
 extern void *fn_8012E96C(const char *);
 extern void *fn_8012C370(const char *, u32, s32 *, void *, void *, u8 *);
 extern void fn_802E317C(const char *, ...);
@@ -546,10 +636,8 @@ void fn_801DCF00(void) {
 #pragma scheduling invalid_target
 #pragma dont_inline on
 float fn_801DCF0C(void) {
-    float sp8;
-    float *p = &sp8;
-    sp8 = lbl_80562BB8;
-    ((int (*)(float *, int, int, int))fn_801DC258)(p, 0, 0, 0);
+    float sp8 = lbl_80562BB8;
+    ((int (*)(float *, int, int, int))fn_801DC258)(&sp8, 0, 0, 0);
     return sp8;
 }
 #pragma dont_inline reset
@@ -792,7 +880,7 @@ extern int fn_801DCA60(void);
 void fn_801DD808(void) {
     unsigned char *entry = lbl_80446F18;
     int i = 0;
-    do {
+    while (i < (int)lbl_8055E9A8) {
         int index0 = *(int *)(entry + 8);
         int index1 = *(int *)(entry + 0x10);
         int index2 = *(int *)(entry + 0x18);
@@ -803,7 +891,7 @@ void fn_801DD808(void) {
         *(float *)*(int *)entry = value;
         entry += 0x20;
         i++;
-    } while (i < (int)lbl_8055E9A8);
+    }
 }
 
 extern float lbl_80562B84;
