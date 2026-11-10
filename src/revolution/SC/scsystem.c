@@ -950,6 +950,7 @@ BOOL SCReplaceByteArrayItem(const void* src, u32 len, SCItemID id) {
     BOOL enabled;
     SCItem item;
 
+    /* Replaces an existing small byte-array SC item with new data, creating it if missing. */
     success = FALSE;
     enabled = OSDisableInterrupts();
 
