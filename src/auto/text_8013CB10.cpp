@@ -2397,9 +2397,9 @@ extern "C" s32 fn_80141F28(void *arg0, s32 arg1) {
     s32 count = capacity + (((s32 *)arg0)[2] - head);
     if (arg1 >= count % capacity)
         return 0;
-    s32 *base = (s32 *)((s32 *)arg0)[0];
     s32 tmp = capacity + head;
-    s32 index = (tmp + arg1) % capacity;
+    s32 *base = (s32 *)((s32 *)arg0)[0];
+    s32 index = (arg1 + tmp) % capacity;
     return (s32)base + index * 12;
 }
 
@@ -3691,21 +3691,22 @@ loop_13_done:
 extern "C" void fn_802ADE60(int, int);
 extern "C" void fn_80144184(void *arg0) {
  class VObj { public: virtual void destroy(int); };
- int value=*(int*)((char*)arg0+0x140);
- if(value){fn_802ADE60(value,1);*(int*)((char*)arg0+0x140)=0;}
- VObj *p;
- p=*(VObj**)((char*)arg0+0x148);
- if(p){if(p)p->destroy(1);*(VObj**)((char*)arg0+0x148)=0;}
- p=*(VObj**)((char*)arg0+0x14C);
- if(p){if(p)p->destroy(1);*(VObj**)((char*)arg0+0x14C)=0;}
- p=*(VObj**)((char*)arg0+0x150);
- if(p){if(p)p->destroy(1);*(VObj**)((char*)arg0+0x150)=0;}
- p=*(VObj**)((char*)arg0+0x158);
- if(p){if(p)p->destroy(1);*(VObj**)((char*)arg0+0x158)=0;}
- p=*(VObj**)((char*)arg0+0x15C);
- if(p){if(p)p->destroy(1);*(VObj**)((char*)arg0+0x15C)=0;}
- p=*(VObj**)((char*)arg0+0x160);
- if(p){if(p)p->destroy(1);*(VObj**)((char*)arg0+0x160)=0;}
+ /* Frees the resource at +0x140 and destroys owned objects at +0x148..+0x160. */
+ int resource = *(int*)((char*)arg0+0x140);
+ if(resource){fn_802ADE60(resource,1);*(int*)((char*)arg0+0x140)=0;}
+ VObj *object;
+ object=*(VObj**)((char*)arg0+0x148);
+ if(object){if(object)object->destroy(1);*(VObj**)((char*)arg0+0x148)=0;}
+ object=*(VObj**)((char*)arg0+0x14C);
+ if(object){if(object)object->destroy(1);*(VObj**)((char*)arg0+0x14C)=0;}
+ object=*(VObj**)((char*)arg0+0x150);
+ if(object){if(object)object->destroy(1);*(VObj**)((char*)arg0+0x150)=0;}
+ object=*(VObj**)((char*)arg0+0x158);
+ if(object){if(object)object->destroy(1);*(VObj**)((char*)arg0+0x158)=0;}
+ object=*(VObj**)((char*)arg0+0x15C);
+ if(object){if(object)object->destroy(1);*(VObj**)((char*)arg0+0x15C)=0;}
+ object=*(VObj**)((char*)arg0+0x160);
+ if(object){if(object)object->destroy(1);*(VObj**)((char*)arg0+0x160)=0;}
 }
 
 extern "C" void fn_801442D4(void) {
