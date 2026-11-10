@@ -611,30 +611,38 @@ extern "C" f32 fn_802072DC(void) {
 }
 
 extern "C" void *fn_802072E4(void *arg0, int arg1, int arg2) {
+    void *vtable;
     float value;
-    struct Callback {
-        virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
-        virtual void m4(); virtual void m5(); virtual void m6(); virtual void m7();
-        virtual void m8(); virtual void m9(); virtual void m10(); virtual void m11();
-        virtual void m12(); virtual void m13(); virtual void m14(); virtual void m15();
-        virtual void m16(); virtual void m17(); virtual void m18(); virtual void m19();
-        virtual void m20(); virtual void m21(); virtual void m22(); virtual void m23();
-        virtual float get();
-    };
+    float value2;
+    void *obj;
     fn_802065F8();
-    value = lbl_805631FC;
-    *(void **)arg0 = &lbl_8033BD90;
+    value = *(volatile float *)&lbl_805631FC;
+    vtable = &lbl_8033BD90;
+    value2 = *(volatile float *)&lbl_805631F8;
+    *(volatile void **)arg0 = vtable;
     *(float *)((char *)arg0 + 0x64) = value;
     *(char *)((char *)arg0 + 0x6C) = 1;
-    *(float *)((char *)arg0 + 0x68) = lbl_805631F8;
+    *(float *)((char *)arg0 + 0x68) = value2;
     *(char *)((char *)arg0 + 0x6D) = 1;
-    *(void **)((char *)arg0 + 0xC) = fn_80208994(lbl_8055ED80, arg1, arg2, lbl_805631FC);
-    if (*(void **)((char *)arg0 + 0xC))
+    obj = fn_80208994(lbl_8055ED80, arg1, arg2, value);
+    *(void **)((char *)arg0 + 0xC) = obj;
+    if (obj != 0)
         fn_802085E8(lbl_8055ED80, arg0);
-    if (*(void **)((char *)arg0 + 0xC))
-        value = ((Callback *)*(void **)((char *)arg0 + 0xC))->get();
-    else
+    obj = *(void **)((char *)arg0 + 0xC);
+    if (obj != 0) {
+        struct Cb {
+            virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
+            virtual void m4(); virtual void m5(); virtual void m6(); virtual void m7();
+            virtual void m8(); virtual void m9(); virtual void m10(); virtual void m11();
+            virtual void m12(); virtual void m13(); virtual void m14(); virtual void m15();
+            virtual void m16(); virtual void m17(); virtual void m18(); virtual void m19();
+            virtual void m20(); virtual void m21();
+            virtual float get();
+        };
+        value = ((Cb *)obj)->get();
+    } else {
         value = lbl_805631FC;
+    }
     *(float *)((char *)arg0 + 0x24) = value;
     return arg0;
 }
@@ -668,7 +676,7 @@ extern "C" void *fn_802072E4(void *, int, int);
 extern void fn_802085E8(int, void *);
 extern void *fn_80208994(int, int, int, float);
 extern float lbl_805631F8;
-extern char lbl_8033BD90;
+__declspec(section ".rodata") extern char lbl_8033BD90;
 extern char lbl_8033BD78;
 #pragma dont_inline on
 __declspec(section ".rodata") extern char lbl_8033BD78;
