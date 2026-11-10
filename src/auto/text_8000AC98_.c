@@ -443,6 +443,21 @@ int fn_8000B53C(int arg0) {
     return 0;
 }
 
+int fn_8000B5A8(int arg0, int arg1) {
+    if (arg0 == 2 && (arg1 == 0x58 || arg1 == 0xd)) {
+        ((void (*)(int))fn_8000ADE0)(0x18);
+        AXFXSetHooks_80210950((void *)fn_8000B53C, 0);
+        return 1;
+    }
+    if (lbl_8055D3EC != 0) {
+        ((void (*)(int))fn_8000ADE0)(1);
+        fn_8000D000((void *)fn_8000B42C, (void *)fn_8000B3B4, 2);
+    } else {
+        ((void (*)(int))fn_8000ADE0)(lbl_8055D3DC);
+    }
+    return arg0 == 5;
+}
+
 extern int fn_80137C98(int);
 extern int fn_801DF238(int);
 extern int fn_800075A0(int);
