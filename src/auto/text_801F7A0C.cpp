@@ -462,6 +462,8 @@ done:
     return ret;
 }
 
+// Reads a parent descriptor into output: stores model/extend_dist/cutoff_dist, then copies
+// each child named "offset" as (vector xyz, value) records and writes the record count.
 extern "C" void fn_801F7FA0(void *output, void *input, void *unused) {
     struct Vector {
         f32 x;
