@@ -66,20 +66,19 @@ extern char lbl_8032A01C[];
 extern u32 lbl_802F8E40;
 extern u32 lbl_80559968;
 extern char lbl_8032A430[];
-void fn_8012820C(void) {
-    s32 sp14, sp10, spC, sp8;
-    s32 zero, one;
+int fn_8012820C(void) {
+    s32 a, b, c, d;
     ((void (*)(char *))fn_80128208)(lbl_8032A01C);
-    zero = 0; one = 1;
-    lbl_8055DF8C = zero;
-    sp10 = zero; sp8 = zero;
-    lbl_8055DF90 = one;
-    fn_802E3DF8(0, &sp14, &spC);
-    fn_802E3DF8(1, &sp10, &sp8);
-    fn_80128714(&lbl_8041E140, sp14, spC);
-    fn_80128714(&lbl_8041E160, sp10, sp8);
-    lbl_8055DF94 = sp14;
-    (void)one;
+    lbl_8055DF8C = 0;
+    b = 0;
+    d = 0;
+    lbl_8055DF90 = 1;
+    fn_802E3DF8(0, &a, &c);
+    fn_802E3DF8(1, &b, &d);
+    fn_80128714(&lbl_8041E140, a, c);
+    fn_80128714(&lbl_8041E160, b, d);
+    lbl_8055DF94 = a;
+    return 1;
 }
 
 extern void fn_80128710(void);
@@ -375,51 +374,56 @@ void fn_80128714(void *arg0, s32 arg1, s32 arg2) {
     s32 *obj = (s32 *)arg0;
     char *base = lbl_8032A000;
     s32 zero = 0;
-
     obj[2] = arg2;
     obj[1] = zero;
     obj[4] = zero;
     obj[3] = arg1;
-
     if (arg1 != 0) {
         fn_802E30C8(base + 0xE8, (void *)arg1, (void *)arg2);
-        fn_802E30C8(base + 0x10C, &obj[3], (void *)(obj[3] + obj[2]));
+        fn_802E30C8(base + 0x10C, (void *)obj[3], (void *)(obj[3] + obj[2]));
         obj[7] = zero;
-        obj[6] = zero;
-        obj[5] = 0x200;
+        obj[5] = zero;
+        obj[6] = 0x02000000;
         return;
     }
-
     if (arg2 == 0) {
         obj[7] = zero;
-        obj[6] = zero;
+        obj[5] = zero;
         return;
     }
-
-    {
-        s32 shifted = arg2 >> 10;
-        fn_802E317C(base + 0x130, (void *)(shifted + (shifted >> 31)));
-    }
-    obj[7] = zero;
-    obj[6] = zero;
+    fn_802E317C(base + 0x130, (void *)(arg2 / 1024));
 }
 
-void fn_801287D0(void *arg0) {
-    u32 *p = (u32 *)arg0;
-    u32 *vtable;
-    s32 value;
-
-    fn_802E30C8(lbl_8032A000 + 0x140, (void *)((*(s32 *)(p + 5)) >> 10), (void *)p[7]);
-    fn_802E30C8(lbl_8032A000 + 0x178, (void *)p[6], (void *)((p[7] - p[6]) >> 10));
-    fn_802E30C8(lbl_8032A000 + 0x1AC, (void *)((*(s32 *)(p + 2) - *(s32 *)(p + 5)) >> 10), 0);
-    if (p[1] != 0) {
-        vtable = *(u32 **)arg0;
-        ((void (*)(void *, s32))vtable[14])(arg0, 1);
-        fn_802E317C(lbl_8032A000 + 0x1C8, (void *)p[1]);
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_801287D0(void *arg0) {
+    struct Obj {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void m14(s32);
+    };
+    struct S {
+        void *vtable;
+        s32 f4;
+        s32 f8;
+        s32 fc;
+        s32 f10;
+        s32 s14;
+        u32 u18;
+        u32 u1c;
+    };
+    struct S *s = (struct S *)arg0;
+    fn_802E30C8(lbl_8032A000 + 0x140, (void *)(s->s14 / 1024), (void *)s->u1c, (void *)(s->u1c >> 10));
+    fn_802E30C8(lbl_8032A000 + 0x178, (void *)s->u18, (void *)(s->u18 >> 10), (void *)((s->u1c - s->u18) >> 10));
+    ((void (*)(void *, ...))fn_802E30C8)(lbl_8032A000 + 0x1AC, (void *)((s->f8 - s->s14) / 1024));
+    if (s->f4 != 0) {
+        ((Obj *)arg0)->m14(1);
+        ((s32 (*)(void *, ...))fn_802E317C)(lbl_8032A000 + 0x1C8, (void *)s->f4);
     }
-    p[3] = 0;
+    s->fc = 0;
 }
-
+#pragma pop
 s32 fn_801288A4(void) {
     return 0;
 }
