@@ -356,6 +356,7 @@ extern s32 lbl_803412C8;
 #pragma small_data off
 #pragma scheduling invalid_target
 void *fn_8023AB78(register void *arg0, register s32 arg1, register s32 arg2, ...) {
+    /* Variadic constructor: initializes fields/vtable, counts and copies trailing s32 args until 0 into an allocated array, then stores arg1 and returns arg0. */
     va_list ap;
     s32 offset;
     *(s32 *)((char *)arg0 + 0x14) = 0;
@@ -774,7 +775,8 @@ void fn_8023B40C(void *arg0) {
     s32 result;
     register s32 (**method)(void *, s32);
 
-    if ((unsigned int)(state = fn_802104D0()) == 1) {
+    state = fn_802104D0();
+    if ((unsigned int)state == 1) {
         fn_80214B94(3);
     } else {
         obj = *(void **)((char *)arg0 + 0x1C);
