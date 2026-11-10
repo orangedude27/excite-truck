@@ -25025,6 +25025,7 @@ UINT8 *sdpu_build_attrib_seq(UINT8 *out, UINT16 *attribs, UINT16 count) {
 #pragma unroll reset
 UINT8 *sdpu_build_attrib_entry(UINT8 *p_out, tSDP_ATTRIBUTE *p_attr)
 {
+    /* Serialize one SDP attribute (id + value data element) into the output buffer and return the next write position. */
     UINT8_TO_BE_STREAM(p_out, (UINT_DESC_TYPE << 3) | SIZE_TWO_BYTES);
     UINT16_TO_BE_STREAM(p_out, p_attr->id);
     switch (p_attr->type) {
