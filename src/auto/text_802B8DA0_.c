@@ -153,11 +153,9 @@ void *fn_802B8EF0(int arg0, void *arg1) {
         name = (char *)&lbl_8055CEC8;
         entry = (struct Entry *)fn_801284F8(0x10, (void *)&lbl_8055CECC);
         if (entry != 0) {
-            s32 tmp;
             entry->name = name;
-            tmp = *(char *)name;
             data = *(void **)((char *)arg1 + 8);
-            if ((signed char)tmp != 0)
+            if ((signed char)*name != 0)
                 state = fn_802B110C((void *)fn_802B8E50, name);
             else
                 state = -2;
@@ -169,8 +167,8 @@ void *fn_802B8EF0(int arg0, void *arg1) {
         }
         table[arg0] = entry;
         list = (struct List *)lbl_804BFFF4;
-        count = list->count;
         items = list->items;
+        count = list->count;
         list->count = count + 1;
         items[count] = (void *)entry;
     }
@@ -180,7 +178,7 @@ void *fn_802B8EF0(int arg0, void *arg1) {
 #pragma push
 #pragma scheduling invalid_target
 
-extern void *fn_802B59CC(int, int, void *, void *);
+extern void *fn_802B59CC();
 extern void fn_801345D8(void *, int, const char *, ...);
 extern int lbl_804C004C[];
 extern const float lbl_80564CC0;
@@ -750,34 +748,37 @@ void fn_802B9CF4(void *arg0) {
 #pragma push
 #pragma use_lmw_stmw off
 void fn_802B9D08(void) {
-    register long i;
+    register volatile void **list;
+    register unsigned long zero;
+    register char *base;
     register void *node;
     register int offset;
-    register char *base = lbl_804BFFE8;
-    register unsigned long zero;
-    void **list;
+    register long i;
+    base = lbl_804BFFE8;
     fn_802B9DD0(&lbl_8055FA7C);
     fn_802B9E4C(&lbl_8055FA78);
-    list = (void **)(base + 0x0C);
-    offset = 0;
+    list = (volatile void **)(base + 0x0C);
     i = 0;
+    offset = 0;
     zero = 0;
-    while (i < ((int *)list)[1]) {
+    while (i < ((volatile int *)list)[1]) {
         node = *(void **)((char *)list[0] + offset);
         if (node) {
+            int v;
             *(int *)((char *)node + 0x0C) = zero;
-            if (*(int *)((char *)node + 4) != -2) {
-                fn_802CAC54();
+            v = *(int *)((char *)node + 4);
+            if (v != -2) {
+                ((int (*)(int))fn_802CAC54)(v);
             }
             fn_80128668(node);
         }
         offset += 4;
         i += 1;
     }
-    ((int *)list)[1] = zero;
+    ((volatile int *)list)[1] = 0;
     {
         char *clear = base + 0x64;
-        *(int *)(clear + 4) = zero;
+        *(volatile int *)(clear + 4) = 0;
         ((void (*)(void *, void *))fn_802B9EC8)(&lbl_8055FA80, clear);
     }
     memset(base + 0xA0, 0, 0x10);
