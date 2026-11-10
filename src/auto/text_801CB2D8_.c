@@ -1208,58 +1208,59 @@ extern int fn_8001BBB8(int, int, int, float);
 extern void fn_8001EFC4(int, void *, int);
 extern char lbl_80337D5C[];
 extern void fn_8001EFC4();
+/* Handles an award/grade push for an object, storing ids/data and starting playback if idle. */
 void fn_801CD5B4(int arg0, int arg1, int arg2) {
-    unsigned char *base;
+    unsigned char *awardsBase;
     unsigned char *object;
-    int index;
-    int status;
-    void *data;
+    int slotIndex;
+    int slotStatus;
+    void *objectData;
     int current;
 
     if (fn_801CE898() != 0)
         return;
-    base = (unsigned char *)lbl_8055E884;
-    if (base[0x10] != 0)
+    awardsBase = (unsigned char *)lbl_8055E884;
+    if (awardsBase[0x10] != 0)
         return;
 
     object = ((unsigned char *(*)(int))fn_801EA9A0)(arg0);
     if (object[0] != 0)
-        index = object[0xB4] & 3;
+        slotIndex = object[0xB4] & 3;
     else
-        index = -1;
-    if (index >= 0)
-        status = (base + index)[0x11];
+        slotIndex = -1;
+    if (slotIndex >= 0)
+        slotStatus = (awardsBase + slotIndex)[0x11];
     else
-        status = 1;
-    if (status != 0)
+        slotStatus = 1;
+    if (slotStatus != 0)
         return;
 
     object = ((unsigned char *(*)(int))fn_801EA9A0)(arg0);
     if (object[0] == 0)
         return;
-    if (*(int *)(base + 0x2AC) != 0)
+    if (*(int *)(awardsBase + 0x2AC) != 0)
         goto warning;
 
-    *(int *)(base + 0x2AC) = arg1;
-    *(int *)(base + 0x2B0) = arg2;
+    *(int *)(awardsBase + 0x2AC) = arg1;
+    *(int *)(awardsBase + 0x2B0) = arg2;
     fn_8001EF5C(0, arg1);
-    if (*(int *)(base + 0x2B0) == 0)
+    if (*(int *)(awardsBase + 0x2B0) == 0)
         fn_8001EF5C(2, 1);
 
     object = ((unsigned char *(*)(int))fn_801EA9A0)(arg0);
-    data = object + 0x88;
-    ((void (*)(int, void *, int))fn_8001EFC4)(0, data, 1);
+    objectData = object + 0x88;
+    ((void (*)(int, void *, int))fn_8001EFC4)(0, objectData, 1);
     if (arg2 == 0)
-        ((void (*)(int, void *, int))fn_8001EFC4)(1, data, 1);
+        ((void (*)(int, void *, int))fn_8001EFC4)(1, objectData, 1);
 
-    if (*(int *)(base + 0x2B4) < 0 && base[0x2BC] != 0) {
-        index = *(int *)(base + 0x2AC);
-        if (index >= 0) {
+    if (*(int *)(awardsBase + 0x2B4) < 0 && awardsBase[0x2BC] != 0) {
+        slotIndex = *(int *)(awardsBase + 0x2AC);
+        if (slotIndex >= 0) {
             current = fn_8000DA10();
-            *(int *)(base + 0x2B4) =
+            *(int *)(awardsBase + 0x2B4) =
                 ((int (*)(int, int, int, int, float))fn_8001BBB8)(
-                    current, *(int *)base, *((int *)base + 1), index,
-                    *(float *)(base + 0x2B8));
+                    current, *(int *)awardsBase, *((int *)awardsBase + 1), slotIndex,
+                    *(float *)(awardsBase + 0x2B8));
         }
     }
     goto done;
