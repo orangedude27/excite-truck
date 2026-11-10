@@ -1467,17 +1467,11 @@ extern "C" void SetCursorX__Q36nw4hbm2ut10CharWriterFf(void *arg0, float farg0) 
     *(float *)((char *)arg0 + 0x2C) = farg0;
 }
 
-extern "C" void SetCursorX__Q36nw4hbm2ut10CharWriterFf_801062CC(void *arg0, float farg0) {
-    int var_r5 = 1; int var_r6 = 1; int var_r7 = 1; int var_r8 = 1; int var_r9 = 1; int var_r10 = 1;
-    unsigned int temp_r11 = (unsigned int)arg0 & 0xFF000000U;
-    if (temp_r11 != 0x80000000U && (((unsigned int)arg0 & 0xFF800000U) != 0x81000000U)) var_r10 = 0;
-    if (var_r10 == 0 && (((unsigned int)arg0 & 0xF8000000U) != 0x90000000U)) var_r9 = 0;
-    if (var_r9 == 0 && temp_r11 != 0xC0000000U) var_r8 = 0;
-    if (var_r8 == 0 && (((unsigned int)arg0 & 0xFF800000U) != 0xC1000000U)) var_r7 = 0;
-    if (var_r7 == 0 && (((unsigned int)arg0 & 0xF8000000U) != 0xD0000000U)) var_r6 = 0;
-    if (var_r6 == 0 && (((unsigned int)arg0 & 0xFFFFC000U) != 0xE0000000U)) var_r5 = 0;
-    if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x3D5, lbl_8032818C, arg0);
-    *(float*)((char*)arg0 + 0x30) = farg0;
+extern "C" void SetCursorX__Q36nw4hbm2ut10CharWriterFf_801062CC(void *writer, float x) {
+    // NW4HBM_ASSERT_VALID_PTR(this): nw4hbm::db::Panic unless `writer` sits in a
+    // mapped region (MEM1/MEM2/IO windows).
+    CW_CHECK_THIS(writer, 0x3D5);
+    *(float *)((char *)writer + 0x30) = x;
 }
 
 extern "C" void MoveCursorX__Q36nw4hbm2ut10CharWriterFf(void *arg0, float dx) {
