@@ -840,10 +840,9 @@ s32 fn_8001CE74(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 #pragma processor 750
 s32 fn_8001CED4(void *arg0, s32 arg1, s32 arg2, f32 arg3) {
     void *ptr = (void *)fn_8001285C(arg1);
-    s32 count = *(s32 *)((u8 *)arg0 + 0x6C);
+    u32 count = *(u32 *)((u8 *)arg0 + 0x6C);
     s32 result = 0;
-    if (count > 0 && *(s32 *)((u8 *)arg0 + 8) != 0 &&
-        *(s32 *)((u8 *)arg0 + 0xC) >= arg2) {
+    if ((s32)count > 0 && *(s32 *)((u8 *)arg0 + 8) != 0 && *(s32 *)((u8 *)arg0 + 0xC) >= arg2) {
         do {
             if (*(s32 *)((u8 *)arg0 + 0xC) == arg2) {
                 if (*(u32 *)((u8 *)ptr + 8) == 0x00180302) {
@@ -1019,41 +1018,42 @@ void fn_8001D298(s32 arg0) {
 
 extern const char lbl_802FDAAC[];
 extern const char lbl_802FDAD8[];
+/* Compares two 0xC-byte stat entries by index; returns -1/0/1 for sorting. */
 s32 fn_8001D2E4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    u8 *a = (u8 *)(arg0 + arg1 * 0xC);
-    u8 *b;
-    s32 type;
-    s32 kind;
+    u8 *entryA = (u8 *)(arg0 + arg1 * 0xC);
+    u8 *entryB;
+    s32 dataType;
+    s32 sortMode;
 
-    if (*(u8 *)(a + 0x10) != 0) {
-        b = (u8 *)(arg2 + arg3 * 0xC);
-        if (*(u8 *)(b + 0x10) != 0) {
-            type = *(s32 *)arg0 & 0x300;
-            switch (type) {
+    if (*(u8 *)(entryA + 0x10) != 0) {
+        entryB = (u8 *)(arg2 + arg3 * 0xC);
+        if (*(u8 *)(entryB + 0x10) != 0) {
+            dataType = *(s32 *)arg0 & 0x300;
+            switch (dataType) {
             case 0x100:
-                kind = *(s32 *)arg0 & 0x60000;
-                switch (kind) {
+                sortMode = *(s32 *)arg0 & 0x60000;
+                switch (sortMode) {
                 case 0x20000:
-                    return *(f32 *)(a + 8) < *(f32 *)(b + 8) ? -1 : 1;
+                    return *(f32 *)(entryA + 8) < *(f32 *)(entryB + 8) ? -1 : 1;
                 case 0x40000:
-                    return *(f32 *)(a + 8) > *(f32 *)(b + 8) ? -1 : 1;
+                    return *(f32 *)(entryA + 8) > *(f32 *)(entryB + 8) ? -1 : 1;
                 default:
-                    ((void (*)(const char *, ...))fn_802E317C)(lbl_802FDAAC, kind);
+                    ((void (*)(const char *, ...))fn_802E317C)(lbl_802FDAAC, sortMode);
                     return 0;
                 }
             case 0x200:
-                kind = *(s32 *)arg0 & 0x60000;
-                switch (kind) {
+                sortMode = *(s32 *)arg0 & 0x60000;
+                switch (sortMode) {
                 case 0x20000:
-                    return *(s32 *)(a + 8) < *(s32 *)(b + 8) ? -1 : 1;
+                    return *(s32 *)(entryA + 8) < *(s32 *)(entryB + 8) ? -1 : 1;
                 case 0x40000:
-                    return *(s32 *)(a + 8) > *(s32 *)(b + 8) ? -1 : 1;
+                    return *(s32 *)(entryA + 8) > *(s32 *)(entryB + 8) ? -1 : 1;
                 default:
-                    ((void (*)(const char *, ...))fn_802E317C)(lbl_802FDAAC, kind);
+                    ((void (*)(const char *, ...))fn_802E317C)(lbl_802FDAAC, sortMode);
                     return 0;
                 }
             default:
-                ((void (*)(const char *, ...))fn_802E317C)(lbl_802FDAD8, type);
+                ((void (*)(const char *, ...))fn_802E317C)(lbl_802FDAD8, dataType);
                 return 0;
             }
         }
