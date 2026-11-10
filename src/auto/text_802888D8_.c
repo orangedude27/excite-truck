@@ -985,82 +985,87 @@ void fn_80289FC4(int **arg0, int arg1, int arg2) {
     }
 }
 #pragma scheduling on
-int fn_8028A084(int arg0) {
+/* Creates the "radiator smoke" effect: fills a cleared nw4r::ef create-arg
+ * block (frame.sp20, 0x8C bytes; see fn_8028FD00, which copies it into the new
+ * effect) with this effect's parameters and lets fn_8028E2F8 allocate the
+ * effect from smoke.tex (lbl_8055C880) and link it; the handle goes in slot+4.
+ */
+int fn_8028A084(int slot) {
     fn_80289394Frame frame;
-    register float f0;
-    register float f1;
-    register float f2;
-    register float f3;
-    register float f4;
-    register float f5;
-    register float f6;
-    register float f7;
-    register float f8;
-    register float f9;
-    register float f10;
-    register float f11;
-    register float f12;
-    register float f13;
-    register float f31;
-    register int size;
-    register int six;
+    register float point25;
+    register float twoPoint5;
+    register float negHalf;
+    register float point85;
+    register float point15;
+    register float onePoint05;
+    register float negPoint05;
+    register float five;
+    register float zero;
+    register float one;
+    register float point6;
+    register float point8;
+    register float half;
+    register float point4;
+    register float onePoint7;
+    register int emitterNum;
+    register int param44;
 
     fn_8028E61C((int *)&frame.sp20);
-    f9 = *(volatile float *)&lbl_8056428C;
-    size = 0x80;
-    f11 = *(volatile float *)&lbl_80564298;
-    f4 = *(volatile float *)&lbl_80564300;
-    f3 = *(volatile float *)&lbl_80564324;
-    six = 6;
-    f12 = *(volatile float *)&lbl_80564284;
-    f10 = *(volatile float *)&lbl_80564314;
-    f2 = *(volatile float *)&lbl_805642AC;
-    f31 = *(volatile float *)&lbl_805642D4;
-    f13 = *(volatile float *)&lbl_805642A4;
-    f8 = *(volatile float *)&lbl_80564274;
-    f7 = *(volatile float *)&lbl_80564318;
-    f6 = *(volatile float *)&lbl_8056431C;
-    f5 = *(volatile float *)&lbl_80564320;
-    f1 = *(volatile float *)&lbl_805642C4;
-    f0 = *(volatile float *)&lbl_805642B0;
-    frame.sp24 = size;
-    frame.sp28 = f31;
-    frame.sp2C = f13;
+    one = *(volatile float *)&lbl_8056428C;
+    emitterNum = 0x80;
+    point8 = *(volatile float *)&lbl_80564298;
+    point15 = *(volatile float *)&lbl_80564300;
+    point85 = *(volatile float *)&lbl_80564324;
+    param44 = 6;
+    half = *(volatile float *)&lbl_80564284;
+    point6 = *(volatile float *)&lbl_80564314;
+    negHalf = *(volatile float *)&lbl_805642AC;
+    onePoint7 = *(volatile float *)&lbl_805642D4;
+    point4 = *(volatile float *)&lbl_805642A4;
+    zero = *(volatile float *)&lbl_80564274;
+    five = *(volatile float *)&lbl_80564318;
+    negPoint05 = *(volatile float *)&lbl_8056431C;
+    onePoint05 = *(volatile float *)&lbl_80564320;
+    twoPoint5 = *(volatile float *)&lbl_805642C4;
+    point25 = *(volatile float *)&lbl_805642B0;
+    frame.sp24 = emitterNum;
+    frame.sp28 = onePoint7;
+    frame.sp2C = point4;
     frame.sp20 = 2;
-    frame.sp68 = f12;
-    frame.sp64 = six;
-    frame.sp14 = f11;
-    frame.sp18 = f10;
-    frame.sp1C = f11;
-    frame.sp30 = f11;
-    frame.sp34 = f10;
-    frame.sp38 = f11;
-    frame.sp8 = f9;
-    frame.spC = f9;
-    frame.sp10 = f9;
-    frame.sp3C = f9;
-    frame.sp40 = f9;
-    frame.sp44 = f9;
-    frame.sp48 = f8;
-    frame.sp4C = f7;
-    frame.sp50 = f6;
-    frame.sp54 = f5;
-    frame.sp90 = f4;
-    frame.sp88 = f4;
-    frame.sp80 = f4;
-    frame.sp94 = f3;
-    frame.sp8C = f3;
-    frame.sp84 = f3;
-    frame.sp78 = f2;
-    frame.sp7C = f12;
-    frame.sp70 = f1;
-    frame.sp74 = f0;
-    frame.sp98 = f2;
-    frame.sp9C = f9;
-    *(int *)((char *)arg0 + 4) =
+    frame.sp68 = half;
+    frame.sp64 = param44;
+    frame.sp14 = point8;
+    frame.sp18 = point6;
+    frame.sp1C = point8;
+    frame.sp30 = point8;
+    frame.sp34 = point6;
+    frame.sp38 = point8;
+    frame.sp8 = one;
+    frame.spC = one;
+    frame.sp10 = one;
+    frame.sp3C = one;
+    frame.sp40 = one;
+    frame.sp44 = one;
+    frame.sp48 = zero;
+    frame.sp4C = five;
+    frame.sp50 = negPoint05;
+    frame.sp54 = onePoint05;
+    frame.sp90 = point15;
+    frame.sp88 = point15;
+    frame.sp80 = point15;
+    frame.sp94 = point85;
+    frame.sp8C = point85;
+    frame.sp84 = point85;
+    frame.sp78 = negHalf;
+    frame.sp7C = half;
+    frame.sp70 = twoPoint5;
+    frame.sp74 = point25;
+    frame.sp98 = negHalf;
+    frame.sp9C = one;
+    *(int *)((char *)slot + 4) =
         ((int (*)(int *, int *, int, float, float, float, float, float, float, float))fn_8028E2F8)(
             (int *)&frame.sp20, (int *)(void *)lbl_80348B6C, lbl_8055C880,
-            f1, f2, f3, f4, f5, f6, f7);
+            twoPoint5, negHalf, point85, point15, onePoint05, negPoint05, five);
 }
 
 #pragma scheduling on
