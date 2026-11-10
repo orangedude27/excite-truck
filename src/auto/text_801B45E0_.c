@@ -213,15 +213,21 @@ int fn_801B47F0(int arg0) {
 
 int fn_801B4818(void) { return 0x100000; }
 
+#pragma push
+#pragma small_data off
 void fn_801B4820(int unused, int *arg0, int *arg1, unsigned int arg2) {
     unsigned int value;
     unsigned int limit;
     value = arg2 / ((fn_801B2F24() + 1) * 0x44 + 0xC);
-    limit = (int)value < 0x7E90 ? value : 0x7E90;
+    limit = 0x7E90;
+    if ((int)value < 0x7E90) {
+        limit = value;
+    }
     *arg0 = 0x5000;
     *arg1 = 0x32;
     fn_802E30C8(&lbl_80335DCC, (limit / 9) / 60, (limit / 9) % 60, (0x32 * 0xC) >> 10, *arg0 / 1024, arg2 >> 10);
 }
+#pragma pop
 
 #pragma push
 #pragma scheduling invalid_target
