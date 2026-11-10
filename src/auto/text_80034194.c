@@ -2808,27 +2808,28 @@ extern void fn_80039838(void);
 
 #pragma push
 #pragma use_lmw_stmw off
-s32 DVDReadPrio(void *block, void *addr, s32 length, s32 offset, s32 prio) {
+s32 DVDReadPrio(void *fileInfo, void *buffer, s32 length, s32 offset, s32 priority) {
     s32 end;
     s32 enabled;
     s32 state;
     s32 result;
 
-    if (offset < 0 || (u32)offset > *(u32 *)((u8 *)block + 0x34))
+    /* Synchronously read from an open DVD file at a byte offset, with priority. */
+    if (offset < 0 || (u32)offset > *(u32 *)((u8 *)fileInfo + 0x34))
         ((void (*)(const char *, s32, const char *, ...))OSPanic)(lbl_80558DF8, 0x36B, lbl_803020A4);
     end = offset + length;
-    if (end < 0 || (u32)end >= *(u32 *)((u8 *)block + 0x34) + 0x20)
+    if (end < 0 || (u32)end >= *(u32 *)((u8 *)fileInfo + 0x34) + 0x20)
         ((void (*)(const char *, s32, const char *, ...))OSPanic)(lbl_80558DF8, 0x371, lbl_803020A4);
-    if (DVDReadAbsAsyncPrio(block, addr, length,
-                            *(s32 *)((u8 *)block + 0x30) + (offset >> 2),
-                            cbForCancelSync, prio) == 0)
+    if (DVDReadAbsAsyncPrio(fileInfo, buffer, length,
+                            *(s32 *)((u8 *)fileInfo + 0x30) + (offset >> 2),
+                            cbForCancelSync, priority) == 0)
         return -1;
 
     enabled = OSDisableInterrupts();
     for (;;) {
-        state = *(s32 *)((u8 *)block + 0xC);
+        state = *(s32 *)((u8 *)fileInfo + 0xC);
         if (state == 0) {
-            result = *(s32 *)((u8 *)block + 0x20);
+            result = *(s32 *)((u8 *)fileInfo + 0x20);
             break;
         }
         if (state == -1) {
