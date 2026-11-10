@@ -126,7 +126,7 @@ void *fn_802A1040(void *arg0, void *arg1, void *arg2) {
     }
     return entry;
 }
-#pragma scheduling on
+#pragma pop
 
 void fn_802A1548(void) {
     if (lbl_8055F840 != 0) {
