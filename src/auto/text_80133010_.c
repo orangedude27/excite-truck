@@ -349,6 +349,7 @@ char *fn_801337E4(char *arg0) {
     } while (1);
 }
 #pragma dont_inline off
+#pragma dont_inline on
 int fn_80133844(const char *arg0) {
     int c = (signed char)*fn_801337E4((char *)arg0);
     int table = *(int *)(lbl_802FE850 + 0x38);
@@ -359,10 +360,22 @@ int fn_80133844(const char *arg0) {
 int fn_801338D8(const char *arg0) {
     char *p = fn_801337E4((char *)arg0);
     int c = (signed char)*p;
-    int table = *(int *)(lbl_802FE850 + 0x38);
-    if (c >= 0 && c < 0x100 && (*(unsigned short *)(*(int *)(table + 8) + c * 2) & 8)) return atoi(arg0);
-    if (c != '-') return fn_80133844(arg0);
-    return atoi(arg0);
+    int table;
+    int isnum;
+    if (c < 0)
+        isnum = 0;
+    else if (c < 0x100) {
+        table = *(int *)(lbl_802FE850 + 0x38);
+        isnum = (*(unsigned short *)(*(int *)(table + 8) + c * 2) & 8) != 0;
+    } else
+        isnum = 1;
+    if (isnum == 0) {
+        if (c == '-') {}
+        else
+            return fn_80133844(p);
+        return atoi(p);
+    }
+    return atoi(p);
 }
 
 extern int fn_802E30C8(const char *, ...);
