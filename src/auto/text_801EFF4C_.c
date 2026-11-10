@@ -781,13 +781,13 @@ int fn_801F1394(int *arg0, int arg1) {
 
     fn_802C70AC(*(int *)((char *)element + 0x28), arg1, 0, frame);
 }
-#pragma pop
+#pragma scheduling invalid_target
 void fn_801F13F4(int *arg0, float arg1, float arg2) {
     char *base = (char *)*(int *)arg0 + 0xEC;
     char *entry;
     int count;
     if (arg1 > *(float *)(base + 0x48)) return;
-    if (*(unsigned int *)(arg0 + 1) == 3) return;
+    if (*(unsigned int *)(arg0 + 1) == 3) goto done;
     count = *(int *)(base + 0x40) - 1;
     entry = base + count * 8;
     while (count >= 0 && arg1 < *(float *)(entry + 4)) {
@@ -796,8 +796,11 @@ void fn_801F13F4(int *arg0, float arg1, float arg2) {
     }
     if (count < 0) return;
     fn_802C7AE0(*(int *)(base + count * 8), (char *)arg0 + 0x18, -1, *(float *)(base + 0x44) + arg2);
+    return;
+done:
+    return;
 }
-
+#pragma scheduling on
 void fn_801F1474(int *arg0, void *arg1) {
     int base = *arg0;
     if (*(int *)(base + 0x12C) <= 0) return;
@@ -851,32 +854,34 @@ float fn_801F159C(void **arg0) {
     return *(float *)((char *)*arg0 + 0x18);
 }
 
+#pragma push
+#pragma processor 750
 int fn_801F15A8(void **arg0, int arg1) {
     float scale;
     float threshold;
-    void *base;
+    int offset;
+    unsigned long base;
     int count;
     int i;
-    int offset;
 
     scale = fn_801E88F0(-1);
     scale = scale * scale;
     threshold = fn_802C88E8(arg1);
     threshold = threshold * scale;
 
-    base = *arg0;
+    base = (unsigned long)*arg0;
     i = 0;
-    count = *(int *)((char *)base + 0xE8);
+    count = *(int *)(base + 0xE8);
     offset = 0;
     while (i < count) {
-        if (threshold < *(volatile float *)((char *)base + offset + 0x38))
+        if (threshold < *(volatile float *)(base + offset + 0x38))
             return i;
         offset += 0x18;
         i++;
     }
     return count - 1;
 }
-
+#pragma pop
 void fn_801F17C8(int unused) {
     memset(lbl_80488798, 0, 0x100);
 }
