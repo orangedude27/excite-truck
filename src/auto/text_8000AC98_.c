@@ -1,5 +1,6 @@
 extern void __AXDSPInitCallback_801769E0(void);
 extern void fn_8000D000(void *, void *, int);
+extern void AXFXSetHooks_80210950(void *, int);
 extern float lbl_805601FC, lbl_80560204;
 extern unsigned char lbl_8055D3EC;
 extern int fn_8000B5A8(int, int);
