@@ -24905,26 +24905,27 @@ done:
 #pragma pop
 
 extern "C" s32 fn_800BB2C4(void *arg0) {
+    /* Reads 4 bytes from IOS device ioctl 4 into the shared buffer and stores the value/status on arg0 while serializing access with the mutex/busy flag. */
     /* Fix note: preserve the device-read result while clearing the shared busy flag on every completed ioctl. */
-    const char *str = lbl_8031B838;
-    s32 result;
+    const char *logStrings = lbl_8031B838;
+    s32 ioctlStatus;
 
     if (lbl_80559248 < 0) {
-        result = (s32)0xC1000000;
+        ioctlStatus = (s32)0xC1000000;
     } else {
         OSLockMutex(lbl_80407560);
         if (lbl_8055DD6C != 0) {
             OSUnlockMutex(lbl_80407560);
-            result = (s32)0xC1000000;
+            ioctlStatus = (s32)0xC1000000;
         } else {
             lbl_8055DD6C = 1;
             OSUnlockMutex(lbl_80407560);
-            result = IOS_Ioctl(*(s32 *)arg0, 4, 0, 0, lbl_8055DD70, 4);
-            if (result != 0) {
-                if ((u32)(result + 0x3F000000) == 0x20)
-                    OSReport(str + 0x240);
+            ioctlStatus = IOS_Ioctl(*(s32 *)arg0, 4, 0, 0, lbl_8055DD70, 4);
+            if (ioctlStatus != 0) {
+                if ((u32)(ioctlStatus + 0x3F000000) == 0x20)
+                    OSReport(logStrings + 0x240);
                 else
-                    OSReport(str + 0x26C, result);
+                    OSReport(logStrings + 0x26C, ioctlStatus);
                 *(u32 *)((u8 *)arg0 + 0x10) = 0;
                 lbl_8055DD6C = 0;
             } else {
@@ -24936,9 +24937,9 @@ extern "C" s32 fn_800BB2C4(void *arg0) {
         }
     }
 
-    if (result != 0)
-        OSReport(str + 0x290, result);
-    return result;
+    if (ioctlStatus != 0)
+        OSReport(logStrings + 0x290, ioctlStatus);
+    return ioctlStatus;
 }
 
 extern "C" s32 fn_800B3304(void *, void *);
