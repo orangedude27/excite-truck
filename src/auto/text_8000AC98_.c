@@ -737,29 +737,38 @@ exit:
     return 0;
 }
 
+/* One pass of the game loop (fn_8000C000 calls it while the running flag
+ * lbl_8055D3D4 stays set): gives every player the game value in its record --
+ * the one-shot override queued by fn_8000C630 when there is one, otherwise the
+ * record's own value, which the override is then cleared back to -- runs the
+ * per-frame subsystems, the current game mode's frame callback and the
+ * menu/pause and key handling, and finally clears the running flag when the
+ * race is over, when it has been finished off or when the player has been idle
+ * for a minute. */
 void fn_8000BC44(void) {
     extern char lbl_802FBFDC[], lbl_802FBFF8[];
-    int *p = (int *)&lbl_8034F5B8;
-    int i = 0;
+    struct PlayerRecord *record = (struct PlayerRecord *)&lbl_8034F5B8;
+    int player = 0;
 
     goto check;
 loop:
-    if (p[1] == 0x22) {
-        fn_8026A1F0(p[0], i, 0);
+    if (record->override == NO_OVERRIDE) {
+        fn_8026A1F0(record->value, player, 0);
     } else {
-        fn_8026A1F0(p[1], i, 0);
-        p[1] = 0x22;
+        fn_8026A1F0(record->override, player, 0);
+        record->override = NO_OVERRIDE;
     }
-    p += 2;
-    i++;
+    record++;
+    player++;
 check:
-    if (i < fn_801E85AC())
+    if (player < fn_801E85AC())
         goto loop;
 
     fn_800207B0();
     fn_801E7E48();
     fn_80176BAC();
     ((void (*)(int))fn_8000AE78)(fn_8000D75C() == 0);
+    /* the current game mode's (lbl_8055D3D0) per-frame callback */
     if (*(void (**)(void))((char *)lbl_8055D3D0 + 8))
         (*(void (**)(void))((char *)lbl_8055D3D0 + 8))();
     fn_8000B950();
