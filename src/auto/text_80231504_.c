@@ -1600,13 +1600,9 @@ void fn_8023423C(s32 arg0, s32 arg1) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_8023441C(const char *arg0) {
-    s32 res;
-    s32 *p;
     lbl_8055F06C = (s32)((void *(*)(s32, const char *))fn_8012850C)(0x2100, lbl_80340614);
-    res = fn_80232578(arg0);
-    p = (s32 *)&lbl_8055F058;
-    lbl_8055F058 = res;
-    p[1] = 0;
+    lbl_8055F058 = fn_80232578(arg0);
+    *(s32 *)((u8 *)&lbl_8055F058 + 4) = 0;
 }
 #pragma pop
 void fn_80234470(void) {
@@ -1641,34 +1637,36 @@ extern f32 lbl_805636A8;
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma dont_inline on
-void fn_802344CC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1, f32 farg2) {
-    s32 spC;
-    s32 sp8;
+void fn_802344CC(s32 text, s32 fontSet, s32 color, s32 fontId, f32 x, f32 y, f32 scale) {
+    /* Queues an on-screen text draw: copies the string/font-set pair into the next
+       slot, records position/scale/color/font, flushes if the queue is full. */
+    s32 resolvedFontSet;
+    s32 resolvedText;
 
-    sp8 = arg0;
-    spC = arg1;
-    ((void (*)(u8 **, u8 **))fn_80232024)((u8 **)&sp8, (u8 **)&spC);
+    resolvedText = text;
+    resolvedFontSet = fontSet;
+    ((void (*)(u8 **, u8 **))fn_80232024)((u8 **)&resolvedText, (u8 **)&resolvedFontSet);
     if (*(s32 *)((u8 *)&lbl_8055F058 + 4) >= 0x60)
         fn_802346C8();
 
     {
-        register s32 *counter = (s32 *)&lbl_8055F058;
+        register s32 *queueState = (s32 *)&lbl_8055F058;
 
-        strncpy((char *)((u8 *)lbl_8055F06C + counter[1] * 0x58), (char *)sp8, 0x40);
-        *((u8 *)lbl_8055F06C + counter[1] * 0x58 + 0x3F) = 0;
-        *(s32 *)((u8 *)lbl_8055F06C + counter[1] * 0x58 + 0x48) = spC;
-        *(s32 *)((u8 *)lbl_8055F06C + counter[1] * 0x58 + 0x4C) = fn_80231718(spC);
-        *(f32 *)((u8 *)lbl_8055F06C + counter[1] * 0x58 + 0x40) = farg0;
-        *(f32 *)((u8 *)lbl_8055F06C + counter[1] * 0x58 + 0x44) = farg1;
-        *(f32 *)((u8 *)lbl_8055F06C + counter[1] * 0x58 + 0x50) = farg2;
-        if (arg3 != 0)
-            *(f32 *)((u8 *)lbl_8055F06C + counter[1] * 0x58 + 0x54) = lbl_805636A8 * farg2;
+        strncpy((char *)((u8 *)lbl_8055F06C + queueState[1] * 0x58), (char *)resolvedText, 0x40);
+        *((u8 *)lbl_8055F06C + queueState[1] * 0x58 + 0x3F) = 0;
+        *(s32 *)((u8 *)lbl_8055F06C + queueState[1] * 0x58 + 0x48) = resolvedFontSet;
+        *(s32 *)((u8 *)lbl_8055F06C + queueState[1] * 0x58 + 0x4C) = fn_80231718(resolvedFontSet);
+        *(f32 *)((u8 *)lbl_8055F06C + queueState[1] * 0x58 + 0x40) = x;
+        *(f32 *)((u8 *)lbl_8055F06C + queueState[1] * 0x58 + 0x44) = y;
+        *(f32 *)((u8 *)lbl_8055F06C + queueState[1] * 0x58 + 0x50) = scale;
+        if (fontId != 0)
+            *(f32 *)((u8 *)lbl_8055F06C + queueState[1] * 0x58 + 0x54) = lbl_805636A8 * scale;
         else
-            *(f32 *)((u8 *)lbl_8055F06C + counter[1] * 0x58 + 0x54) = farg2;
-        fn_8023423C(counter[1], arg2);
+            *(f32 *)((u8 *)lbl_8055F06C + queueState[1] * 0x58 + 0x54) = scale;
+        fn_8023423C(queueState[1], color);
         {
-            register s32 *nextCounter = (s32 *)&lbl_8055F058;
-            nextCounter[1] = nextCounter[1] + 1;
+            register s32 *nextQueueState = (s32 *)&lbl_8055F058;
+            nextQueueState[1] = nextQueueState[1] + 1;
         }
     }
 }
