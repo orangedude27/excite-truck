@@ -798,6 +798,7 @@ BOOL SIGetResponse(s32 chan, void* data) {
  * ------------------------------------------------------------------- */
 
 void UpdateOrigin(s32 chan) {
+    /* Normalizes a controller's origin/calibration values for the current analog mode and applies platform-specific stick fixes. */
     PADStatus* origin;
     u32 chanBit = PAD_CHAN0_BIT >> chan;
 
