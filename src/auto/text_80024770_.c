@@ -4,6 +4,9 @@
 #include "ansi_files.h"
 #include "buffer_io.h"
 
+// MSL's fflush calls ftell(); this game links that through the stub at
+// 0x80024A0C, which is just `b _ftell`.
+#define ftell fn_80024A0C
 int fn_80024A0C(void *);
 /* Flush a stream's output buffer; if stream is NULL, flush all open streams. */
 int fflush(FILE *stream) {
