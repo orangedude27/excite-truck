@@ -165,6 +165,7 @@ void fn_802640A0(void *arg0) {
 #pragma push
 #pragma processor 750
 #pragma dont_inline on
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_802640C4(void *arg0, void *arg1) {
     extern char lbl_8055C45C[4], lbl_8055C464[4], lbl_8055C46C[4], lbl_8055C474[4], lbl_8055C47C[4], lbl_8055C484[4];
@@ -172,9 +173,9 @@ extern "C" void fn_802640C4(void *arg0, void *arg1) {
     extern void *fn_801284F8(unsigned int, void *);
     extern void fn_8026523C(void *), fn_80265558(void *), fn_802655A4(void *);
     extern void fn_80265268(void *, int, char *, float), fn_8026557C(void *, float), fn_80265610(void *, float);
-    PropertyReader802640C4 *properties = (PropertyReader802640C4 *)arg1;
     char *base=lbl_80346338;
     char *kind;
+    PropertyReader802640C4 *properties = (PropertyReader802640C4 *)arg1;
     void *obj;
     int count;
     void **items;
@@ -189,42 +190,39 @@ extern "C" void fn_802640C4(void *arg0, void *arg1) {
         *(int *)((char *)arg0+12)=0;
     } else if (stricmp(kind,base+0xf0)==0) {
         obj=fn_801284F8(0xbc,base+0xfc);
-        if (obj) fn_8026523C(obj);
+        if (obj) obj=((void *(*)(void *))fn_8026523C)(obj);
         value=properties->getFloat(lbl_8055C484,lbl_80563BF0);
         name=properties->getString(lbl_8055C474);
         val=properties->getInt(lbl_8055C47C);
         fn_80265268(obj,val,name,value);
-        count=*(int *)(lbl_80498F78+4);
         items=*(void ***)lbl_80498F78;
-        *(int *)(lbl_80498F78+4)=count+1;
+        count=(*(int *)(lbl_80498F78+4))++;
         items[count]=obj;
         *(char **)arg0=properties->getString(lbl_8055C46C);
         fn_80264098(arg0,5);
         *(void **)((char *)arg0+8)=obj;
     } else if (stricmp(kind,base+0x108)==0) {
-        obj=fn_801284F8(0x20,base+0x114);
-        if(obj) fn_80265558(obj);
+        kind=(char *)fn_801284F8(0x20,base+0x114);
+        if(kind) kind=(char *)((void *(*)(void *))fn_80265558)(kind);
         value=properties->getFloat(lbl_8055C484,lbl_80563BF0);
-        fn_8026557C(obj,value);
-        count=*(int *)(lbl_80498F78+4);
+        fn_8026557C(kind,value);
         items=*(void ***)lbl_80498F78;
-        *(int *)(lbl_80498F78+4)=count+1;
-        items[count]=obj;
+        count=(*(int *)(lbl_80498F78+4))++;
+        items[count]=kind;
         *(int *)arg0=0;
         fn_80264098(arg0,5);
-        *(void **)((char *)arg0+8)=obj;
+        *(void **)((char *)arg0+8)=kind;
     } else if (stricmp(kind,base+0x120)==0) {
-        obj=fn_801284F8(0x24,base+0x12c);
-        if(obj) fn_802655A4(obj);
+        kind=(char *)fn_801284F8(0x24,base+0x12c);
+        if(kind) kind=(char *)((void *(*)(void *))fn_802655A4)(kind);
         value=properties->getFloat(lbl_8055C484,lbl_80563BF0);
-        fn_80265610(obj,value);
-        count=*(int *)(lbl_80498F78+4);
+        fn_80265610(kind,value);
         items=*(void ***)lbl_80498F78;
-        *(int *)(lbl_80498F78+4)=count+1;
-        items[count]=obj;
+        count=(*(int *)(lbl_80498F78+4))++;
+        items[count]=kind;
         *(int *)arg0=0;
         fn_80264098(arg0,5);
-        *(void **)((char *)arg0+8)=obj;
+        *(void **)((char *)arg0+8)=kind;
     } else {
         fn_802E317C(base+0x138,kind);
     }
@@ -322,8 +320,10 @@ void fn_802645FC(void *arg0) {
     extern float lbl_80563BF8;
     extern float lbl_8055C454;
     extern float lbl_80563BF0;
-    float b = lbl_80563BF0;
-    float a = lbl_80563BF8;
+    float a;
+    float b;
+    a = lbl_80563BF8;
+    b = lbl_80563BF0;
     *(float *)((char *)arg0 + 0x18) = a;
     *(float *)((char *)arg0 + 0x1C) = lbl_8055C454;
     *(float *)((char *)arg0 + 0x20) = b;
@@ -509,7 +509,7 @@ void* fn_80264A54(void) {
 void fn_80264A5C(float farg0, float farg1) {
     extern float lbl_80558DC4[];
     extern float lbl_80563BF0;
-    extern float lbl_80563C00;
+    
     extern float lbl_80563C08;
     extern float lbl_80563C0C;
     extern float fn_80214D48(void);
@@ -519,10 +519,10 @@ void fn_80264A5C(float farg0, float farg1) {
     extern int fn_80235FD8(int);
     extern double cos(double);
     extern double sin(double);
-    float sp18;
-    float sp1C;
-    float sp10;
-    float sp14;
+    volatile float sp1C;
+    volatile float sp18;
+    volatile float sp14;
+    volatile float sp10;
     float spC;
     float sp8;
     float temp_f0;
@@ -555,11 +555,12 @@ void fn_80264A5C(float farg0, float farg1) {
         sp8 = temp_f3;
         sp18 = temp_f4;
         temp_r31 = lbl_8055F448;
+        temp_f0 = 1.0f;
         temp_f0 = *(float *)((char *)temp_r31 + 0x74) + *(float *)((char *)temp_r31 + 0x40);
         sp1C = temp_f3;
         *(float *)((char *)temp_r31 + 0x74) = temp_f0;
-        if (temp_f0 > lbl_80563C00 && *(int *)((char *)temp_r31 + 0x5C) + 1 <= *(int *)((char *)temp_r31 + 0x60)) {
-            *(float *)((char *)temp_r31 + 0x74) = *(float *)((char *)temp_r31 + 0x74) - lbl_80563C00;
+        if (temp_f0 > 1.0f && *(int *)((char *)temp_r31 + 0x5C) + 1 <= *(int *)((char *)temp_r31 + 0x60)) {
+            *(float *)((char *)temp_r31 + 0x74) = *(float *)((char *)temp_r31 + 0x74) - 1.0f;
             temp_r5 = *(int *)((char *)temp_r31 + 0x5C);
             temp_r6 = *(int *)((char *)temp_r31 + 0x58);
             temp_r4 = temp_r5 + 1;
@@ -581,11 +582,11 @@ void fn_80264A5C(float farg0, float farg1) {
         temp_f4 = spC;
         temp_f0_2 = *(float *)((char *)temp_r31_2 + 0xD4) + *(float *)((char *)temp_r31_2 + 0xA0);
         temp_f2 = lbl_80563C0C + sp8;
-        sp10 = temp_f4;
+        sp10 = spC;
         *(float *)((char *)temp_r31_2 + 0xD4) = temp_f0_2;
         sp14 = temp_f2;
-        if (temp_f0_2 > lbl_80563C00 && *(int *)((char *)temp_r31_2 + 0xBC) + 1 <= *(int *)((char *)temp_r31_2 + 0xC0)) {
-            *(float *)((char *)temp_r31_2 + 0xD4) = *(float *)((char *)temp_r31_2 + 0xD4) - lbl_80563C00;
+        if (temp_f0_2 > 1.0f && *(int *)((char *)temp_r31_2 + 0xBC) + 1 <= *(int *)((char *)temp_r31_2 + 0xC0)) {
+            *(float *)((char *)temp_r31_2 + 0xD4) = *(float *)((char *)temp_r31_2 + 0xD4) - 1.0f;
             temp_r5_2 = *(int *)((char *)temp_r31_2 + 0xBC);
             temp_r6_2 = *(int *)((char *)temp_r31_2 + 0xB8);
             temp_r4_2 = temp_r5_2 + 1;
@@ -605,7 +606,7 @@ void fn_80264A5C(float farg0, float farg1) {
         }
     }
 }
-
+#pragma pop
 void fn_80264D5C(void *arg0) {
     SparkList *l;
     SparkParticle *p, *last;
