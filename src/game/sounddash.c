@@ -27,8 +27,11 @@ void fn_8020BF58(void) {
     unsigned int temp_r4;
     char *var_r3_2, *var_r6;
     unsigned char temp_r4_2;
+
+    /* Draw the "SOUND DASH" debug overlay: sound-name grid in mode 1, sound/value list in mode 0. */
     fn_8023895C();
     fn_80238A74(0xC, 0xC, lbl_8033C5CC, 0xFF2D2DC8);
+
     if (lbl_8055EE24 == 1) {
         fn_80238B44(7, 7, 0x15E, 0x1C0, 0x8C000000);
         var_r29 = 0;
@@ -85,6 +88,7 @@ void fn_8020BF58(void) {
             fn_80238A74(var_r3_3, (temp_r26 * 0xE) + 0x1A, scratch.sp8, var_r6_2);
         }
     }
+
     fn_802389E4();
 }
 #pragma scheduling on
