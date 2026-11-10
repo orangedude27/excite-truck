@@ -43,6 +43,7 @@ void fn_80019BBC(void) {
     ((float *)lbl_803582C0)[61] = lbl_80560418;
     ((float *)lbl_803582C0)[62] = lbl_80560418;
 }
+#pragma pop
 
 #pragma cplusplus on
 extern "C" float fn_80019FD4(void *arg0, int arg1, float farg0) {
