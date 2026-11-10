@@ -1270,31 +1270,36 @@ void fn_80218ADC(void *arg0, int arg1) {
 }
 #pragma push
 #pragma use_lmw_stmw off
-void fn_80218B88(void *arg0, int arg1, int arg2, int arg3, int arg4) {
-    int mask=fn_80216D14(arg1);
-    void **cursor=(void **)arg0;
-    int i=0;
-    for (; i < *(int *)((char *)arg0+0x430); ++i, ++cursor) {
-        void *obj=*(void **)((char *)cursor+0x30);
-        if (mask & *(int *)((char *)obj+0x238)) {
-            ((void (*)(void *,int,int))(*(void ***)obj)[8])(obj,arg2,arg3);
+#pragma cplusplus on
+extern "C" void fn_80218B88(void *arg0, int arg1, int arg2, int arg3, int arg4) {
+    class Obj {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5();
+        virtual void v8(int, int);
+    };
+    int mask = fn_80216D14(arg1);
+    void **cursor = (void **)arg0;
+    int i = 0;
+    for (; i < *(int *)((char *)arg0 + 0x430); cursor++, i++) {
+        void *obj = *(void **)((char *)cursor + 0x30);
+        if (mask & *(int *)((char *)obj + 0x238)) {
+            ((Obj *)obj)->v8(arg2, arg3);
         }
     }
 }
-#pragma push
-#pragma scheduling on
+#pragma cplusplus off
+#pragma pop
 void fn_80218C14(void *arg0, int arg1, void *arg2) {
     register const unsigned int *src = (const unsigned int *)arg2;
     register unsigned int a;
     register unsigned int b;
-    register unsigned int c;
-    register int offset = arg1 * 0x3C;
-    register unsigned int *dst = (unsigned int *)((char *)arg0 + offset + 0x6A0);
+    unsigned int c;
+    register unsigned int *dst = (unsigned int *)((char *)arg0 + arg1 * 0x3C + 0x6A0);
     register float z;
     register float y;
     register float x;
     float *fsrc = (float *)arg2;
-
     a = src[0];
     b = src[1];
     c = src[2];
