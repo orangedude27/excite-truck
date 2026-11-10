@@ -98,6 +98,7 @@ void *fn_80234CEC(void *arg0, int arg1) {
     return arg0;
 }
 
+#pragma scheduling off
 void fn_80234D44(int arg0) {
     int *node;
     if (arg0 != 0) {
