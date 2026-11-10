@@ -100,6 +100,7 @@ int fn_80270B50(void) {
 
 #pragma push
 #pragma small_data off
+#pragma scheduling off
 void fn_80270B74(void) {
     int *p = (int *)lbl_8049F9D8;
     *p = 0;
@@ -694,8 +695,8 @@ void fn_80272354(void *arg0) {
 void fn_802723B4(void *arg0, void *arg1) {
     void *slot;
     void *object;
-    float factor;
-    float base;
+    register float factor;
+    register float base;
     ((void (*)(void **, void *))fn_80136468)(&slot, arg0);
     object = slot;
     factor = *(float *)((char *)&slot + 4);
@@ -1196,17 +1197,17 @@ extern "C" int fn_80272DCC(void *arg0, Parser2 *arg1) {
 #pragma cplusplus reset
 
 void fn_80273354(void) {
-    int *ptr = (int *)lbl_8049A258;
+    unsigned char *ptr = lbl_8049A258;
     memset(ptr, 0, 0x64);
-    *(int *)((char *)ptr + 0x1C) = 1;
-    *(int *)((char *)ptr + 0x18) = 0;
-    *(int *)((char *)ptr + 0x2C) = 1;
-    *(int *)((char *)ptr + 0x30) = 1;
-    *(int *)((char *)ptr + 0x40) = 2;
-    *(int *)((char *)ptr + 0x44) = 3;
-    *(int *)((char *)ptr + 0x54) = 5;
-    *(int *)((char *)ptr + 0x58) = 3;
-    ((void (*)(int, int, int, void *))fn_8027156C)(3, 2, 1, ptr);
+    *(int *)(ptr + 0x1C) = 1;
+    *(int *)(ptr + 0x18) = 0;
+    *(int *)(ptr + 0x2C) = 1;
+    *(int *)(ptr + 0x30) = 1;
+    *(int *)(ptr + 0x40) = 2;
+    *(int *)(ptr + 0x44) = 3;
+    *(int *)(ptr + 0x54) = 5;
+    *(int *)(ptr + 0x58) = 3;
+    ((void (*)(int, int, int, unsigned char *))fn_8027156C)(3, 2, 1, ptr);
 }
 
 extern int lbl_8055F54C;
