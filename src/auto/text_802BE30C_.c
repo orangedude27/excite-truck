@@ -66,12 +66,12 @@ void fn_802BE38C(void) {
     u32 size;
     u32 length;
     u8 flag;
-    u8 *p;
-    u32 i;
-    s32 j;
     u32 *data;
     u32 index;
     u32 n;
+    u8 *p;
+    u32 i;
+    s32 j;
 
     name = (u32)lbl_8034AC68;
     fn_8012E96C(name);
@@ -92,9 +92,10 @@ void fn_802BE38C(void) {
                     p += 4;
                 }
             }
-            while (data[0] != 0) {
-                n = data[1];
-                index = data[0];
+            while (((FanHeader *)data)->index != 0) {
+                FanHeader *h = (FanHeader *)data;
+                n = h->count;
+                index = h->index;
                 data += 2;
                 for (j = 0; j < (s32)n; j++) {
                     FanEntry *e = (FanEntry *)lbl_804C06E0[index] + j;
@@ -113,21 +114,27 @@ extern void *fn_8012850C(s32, void *);
 extern s32 fn_802BE378(s32);
 extern void fn_802BE364(void *);
 extern s32 fn_802BE7C4(s32, s32, s32);
-extern void *lbl_8034AC90;
-extern void *lbl_804C06E0[];
-extern u8 lbl_8055FACC;
+extern char lbl_8034AC90[];
+#pragma scheduling invalid_target
+#pragma dont_inline on
+#pragma use_lmw_stmw off
 void fn_802BE694(void) {
     s32 size;
-    s32 i;
+    u32 i;
     s32 j;
-    for (i = 4; i < 0x41; i <<= 1) {
-        size = fn_802BE378(i);
+    s32 off;
+    for (i = 4; i < 0x41U; i <<= 1) {
+        size = fn_802BE378((s16)i);
         lbl_804C06E0[i] = fn_8012850C(size * 0xC, &lbl_8034AC90);
-        for (j = 0; j < size; j++)
-            fn_802BE364((char *)lbl_804C06E0[i] + j * 0xC);
+        off = 0;
+        for (j = 0; j < size; j++, off += 0xC) {
+            fn_802BE364((char *)lbl_804C06E0[i] + off);
+        }
     }
+    fn_802BE38C();
 }
-
+#pragma scheduling on
+#pragma dont_inline off
 extern void fn_802BE780(void *);
 void fn_802BE72C(void) {
     u32 i;
@@ -179,86 +186,77 @@ void *fn_802BE844(s32 arg0, s32 arg1, s32 arg2) {
 }
 
 extern s32 fn_802BBD38(s16, s16, s32);
+#pragma use_lmw_stmw off
 void fn_802BE8B4(s16 arg0, s16 arg1, s32 arg2) {
-    s32 sp8[6];
-    s16 var_r21;
-    s16 var_r22;
-    s32 *var_r23;
-    s32 temp_r24;
-    s32 temp_r25;
-    s32 temp_r3;
-    s32 var_r0;
-    s32 var_r20;
-    s32 var_r20_2;
-    s32 var_r30;
-    s32 var_r31;
-    s32 var_r3;
-    u32 temp_r0;
-    void *temp_r3_2;
+    s32 counts[6];
+    s32 *countPtr;
+    s32 flags;
+    s16 x;
+    s16 y;
+    s32 i;
+    s32 value;
+    s32 half;
+    s32 xOffset;
+    s32 yOffset;
+    s32 best;
+    void *entry;
 
-    var_r31 = 0;
-    memset(sp8, 0, 0x18);
+    flags = 0;
+    memset(counts, 0, 0x18);
     if (arg2 == 4) {
-        var_r22 = arg0 - arg2;
-loop_10:
-        if (var_r22 <= (s32)(arg0 + arg2)) {
-            var_r21 = arg1 - arg2;
-loop_8:
-            if (var_r21 <= (s32)(arg1 + arg2)) {
-                var_r23 = sp8;
-                var_r20 = 0;
+        x = arg0 - arg2;
+        while (x <= arg0 + arg2) {
+            y = arg1 - arg2;
+            while (y <= arg1 + arg2) {
+                i = 0;
                 do {
-                    temp_r3 = fn_802BBD38(var_r22, var_r21, var_r20);
-                    *var_r23 += temp_r3;
-                    if (temp_r3 != 0)
-                        var_r31 |= 1 << var_r20;
-                    var_r20++;
-                    var_r23++;
-                } while (var_r20 < 6);
-                var_r21 += 2;
-                goto loop_8;
+                    value = fn_802BBD38(x, y, i);
+                    counts[i] += value;
+                    if (value != 0)
+                        flags |= 1 << i;
+                    i++;
+                } while (i < 6);
+                y += 2;
             }
-            var_r22 += 2;
-            goto loop_10;
+            x += 2;
         }
     } else {
-        temp_r25 = (s32)(((u32)arg2 >> 31) + arg2) >> 1;
-        temp_r24 = -temp_r25;
-        var_r30 = 0;
+        half = (s32)(((u32)arg2 >> 31) + arg2) >> 1;
+        i = 0;
         do {
-            var_r3 = temp_r24;
-            if (var_r30 & 1)
-                var_r3 = temp_r25;
-            var_r0 = temp_r24;
-            if (var_r30 & 2)
-                var_r0 = temp_r25;
-            temp_r0 = *(u32 *)((char *)fn_802BE844((s16)(arg0 + var_r3),
-                      (s16)(arg1 + var_r0), temp_r25) + 8);
-            var_r30++;
-            var_r31 |= temp_r0 & 0x3F;
-            sp8[(temp_r0 >> 4) & 7]++;
-        } while (var_r30 < 4);
+            xOffset = (i & 1) ? half : -half;
+            yOffset = (i & 2) ? half : -half;
+            entry = fn_802BE844((s16)(arg0 + xOffset), (s16)(arg1 + yOffset), half);
+            value = *(u32 *)((char *)entry + 8);
+            i++;
+            countPtr = counts + ((value >> 6) & 7);
+            (*countPtr)++;
+            flags |= value & 0x3f;
+        } while (i < 4);
     }
-    var_r20_2 = 0;
-    if (sp8[0] < sp8[1])
-        var_r20_2 = 1;
-    if (sp8[var_r20_2] < sp8[2])
-        var_r20_2 = 2;
-    if (sp8[var_r20_2] < sp8[3])
-        var_r20_2 = 3;
-    if (sp8[var_r20_2] < sp8[4])
-        var_r20_2 = 4;
-    if (sp8[var_r20_2] < sp8[5])
-        var_r20_2 = 5;
-    temp_r3_2 = fn_802BE844(arg0, arg1, arg2);
-    *(u32 *)((char *)temp_r3_2 + 8) =
-        ((*(u32 *)((char *)temp_r3_2 + 8) & ~0x3FU) | var_r31) & ~0x1C0U
-        | (var_r20_2 << 6);
+    countPtr = counts;
+    best = 0;
+    if (countPtr[0] < countPtr[1])
+        best = 1;
+    if (countPtr[best] < countPtr[2])
+        best = 2;
+    if (countPtr[best] < countPtr[3])
+        best = 3;
+    if (countPtr[best] < countPtr[4])
+        best = 4;
+    if (countPtr[best] < countPtr[5])
+        best = 5;
+    entry = fn_802BE844(arg0, arg1, arg2);
+    value = *(u32 *)((char *)entry + 8);
+    value = (value & ~0x3fU) | flags;
+    value &= ~0x1c0U;
+    value |= best << 6;
+    *(u32 *)((char *)entry + 8) = value;
 }
-
+#pragma use_lmw_stmw on
 void fn_802BEAB0(void) {
-    s16 x, y, size;
-    s32 step, value;
+    s16 size, y, x;
+    s32 value, step;
     void *p;
     if (lbl_8055FACC == 0) {
         for (size = 4; size <= 0x40; size <<= 1) {
@@ -274,5 +272,88 @@ void fn_802BEAB0(void) {
             }
         }
     }
+}
+
+extern f32 fn_801DCF48(s32, f32, f32);
+extern f64 ceil(f64);
+extern f64 lbl_80564D70;
+extern f32 lbl_80564D50;
+extern f32 lbl_80564D54;
+extern f32 lbl_80564D5C;
+extern f32 lbl_80564D58;
+extern f64 lbl_80564D60;
+extern f32 lbl_80564D68;
+void fn_802BEB70(void) {
+    s32 size;
+    s32 start;
+    s32 step;
+    s16 x;
+    s16 y;
+    s32 *field;
+    s32 raw;
+    f64 convert_bias;
+    f32 scale;
+    f32 offset;
+    f32 threshold;
+    f32 correction;
+    f32 subtract_value;
+    f32 rounded;
+
+    if (lbl_8055FACC != 0)
+        return;
+
+    convert_bias = lbl_80564D70;
+    scale = lbl_80564D50;
+    offset = lbl_80564D54;
+    threshold = lbl_80564D5C;
+    correction = lbl_80564D58;
+    subtract_value = lbl_80564D68;
+    size = 4;
+    goto size_check;
+
+size_loop:
+    start = size - 0x200;
+    x = (s16)start;
+    step = size * 2;
+    goto x_check;
+
+x_loop:
+    y = (s16)start;
+    goto y_check;
+
+y_loop:
+    {
+        void *cell = fn_802BE844(x, y, size);
+        f32 height = fn_801DCF48(0, (f32)x * scale, (f32)y * scale) - offset;
+        if (height < threshold)
+            height -= correction;
+        else
+            height += correction;
+
+        raw = *(s32 *)((char *)cell + 8);
+        *(s32 *)((char *)cell + 8) = (raw & 0xFF803FFF) | ((s32)height << 14);
+
+        rounded = (f32)ceil(lbl_80564D60) - subtract_value;
+        raw = *(s32 *)((char *)cell + 8);
+        *(s32 *)((char *)cell + 8) =
+            (raw & 0xFFFFC3FF) | ((s32)rounded << 10);
+    }
+
+    y = (s16)(y + step);
+y_check:
+    if (y < 0x200)
+        goto y_loop;
+
+    x = (s16)(x + step);
+x_check:
+    if (x < 0x200)
+        goto x_loop;
+
+    size *= 2;
+size_check:
+    if (size <= 0x40)
+        goto size_loop;
+
+    fn_802BE7F4();
 }
 
