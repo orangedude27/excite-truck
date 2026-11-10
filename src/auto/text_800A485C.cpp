@@ -4691,7 +4691,7 @@ done:
 
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" s32 fn_800AD0B0(void *arg0, u32 arg1, u32 *arg2, u32 *arg3, void *arg4)
+extern "C" s32 fn_800AD0B0(void *arg0, u32 offset, u32 *outCluster, u32 *outFound, void *userData)
 {
     volatile s32 end = -1;
     s32 result;
@@ -4702,20 +4702,20 @@ extern "C" s32 fn_800AD0B0(void *arg0, u32 arg1, u32 *arg2, u32 *arg3, void *arg
     u32 finalValue;
     void *context;
 
-    *arg3 = 0;
+    *outFound = 0;
     if (*(u32 *)((u8 *)arg0 + 0x24) == 0) {
         return 0;
     }
-    if (*(u32 *)((u8 *)arg0 + 0x2C) < arg1) {
+    if (*(u32 *)((u8 *)arg0 + 0x2C) < offset) {
         goto return_zero;
     }
 
     chunkSize = *(u16 *)((u8 *)arg0 + 0x20) + 1;
-    quotient = arg1 / chunkSize;
-    remaining = arg1 - quotient * chunkSize;
+    quotient = offset / chunkSize;
+    remaining = offset - quotient * chunkSize;
     if (remaining == 0) {
-        *arg2 = *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 0x1C) + quotient * 4);
-        *arg3 = 1;
+        *outCluster = *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 0x1C) + quotient * 4);
+        *outFound = 1;
         goto done;
     }
 
@@ -4725,13 +4725,13 @@ loop_body:
     context = *(void **)((u8 *)arg0 + 0x34);
     switch (*(s32 *)((u8 *)context + 0x1C)) {
     case 0:
-        result = ((s32 (*)(void *, u16, s32 *, void *))fn_800AFBA8)(context, (u16)current, (s32 *)&end, arg4);
+        result = ((s32 (*)(void *, u16, s32 *, void *))fn_800AFBA8)(context, (u16)current, (s32 *)&end, userData);
         break;
     case 1:
-        result = fn_800B00E8(context, current, (u32 *)&end, arg4);
+        result = fn_800B00E8(context, current, (u32 *)&end, userData);
         break;
     case 2:
-        result = fn_800B05C8(context, current, (u32 *)&end, arg4);
+        result = fn_800B05C8(context, current, (u32 *)&end, userData);
         break;
     default:
         result = 0xF;
@@ -4757,8 +4757,8 @@ check_remaining:
     if (finalValue == lbl_802EEF40[*(s32 *)(*(u8 **)((u8 *)arg0 + 0x34) + 0x1C) * 5 + 2]) {
         return 0;
     }
-    *arg2 = finalValue;
-    *arg3 = 1;
+    *outCluster = finalValue;
+    *outFound = 1;
     goto done;
 return_zero:
     return 0;
