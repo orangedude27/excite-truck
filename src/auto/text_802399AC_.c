@@ -11,6 +11,14 @@ extern s32 fn_80128668();
 extern s32 fn_80128670(s32);
 extern s32 lbl_80340B58;
 extern s32 fn_8027B9EC(s32);
+extern s32 fn_80214CB4(void *);
+extern s32 fn_80214A38(s32);
+extern s32 fn_80214A9C(s32);
+extern s32 fn_80214AF0(s32);
+extern s32 fn_80131234(void *);
+extern s32 fn_8000DA10(void);
+extern s32 fn_8000DB34(void);
+extern s32 fn_8021521C(s32, s32, s32);
 #pragma push
 #pragma small_data off
 extern s32 lbl_8034109C;
