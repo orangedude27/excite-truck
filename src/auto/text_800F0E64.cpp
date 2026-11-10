@@ -2722,30 +2722,31 @@ extern "C" s32 detail_GetFileAddress__Q36nw4hbm3snd18SoundArchivePlayerCFUl(void
     u32 filePos[2];
     u32 wavePos[4];
     u32 fileInfo[4];
-    u8 *obj = (u8 *)self;
-    s32 result = ((DummySoundArchiveLookup2 *)*(void **)(obj + 0x10))->f1();
-    if (result != 0)
-        return result;
+    /* Resolve the memory/file address for a sound archive file id. */
+    u8 *player = (u8 *)self;
+    s32 address = ((DummySoundArchiveLookup2 *)*(void **)(player + 0x10))->f1();
+    if (address != 0)
+        return address;
 
-    void *source = *(void **)(obj + 0x6C);
-    if (source != 0) {
-        result = ((DummySoundArchiveLookup2 *)source)->f0(fileId);
-        if (result != 0)
-            return result;
+    void *altSource = *(void **)(player + 0x6C);
+    if (altSource != 0) {
+        address = ((DummySoundArchiveLookup2 *)altSource)->f0(fileId);
+        if (address != 0)
+            return address;
     }
 
     typedef s32 (*ReadFileInfoFn)(void *, u32, void *);
     typedef s32 (*ReadFilePosFn)(void *, u32, u32, void *);
     typedef s32 (*ReadGroupItemInfoFn)(void *, u32, u32, void *);
-    if (((ReadFileInfoFn)fn_800F2834)(*(void **)(obj + 0x10), fileId, fileInfo) == 0)
+    if (((ReadFileInfoFn)fn_800F2834)(*(void **)(player + 0x10), fileId, fileInfo) == 0)
         return 0;
 
     u32 groupBase;
     u32 index = 0;
     while (index < fileInfo[3]) {
-        if (((ReadFilePosFn)fn_800F283C)(*(void **)(obj + 0x10), fileId, index, filePos) != 0) {
+        if (((ReadFilePosFn)fn_800F283C)(*(void **)(player + 0x10), fileId, index, filePos) != 0) {
             u32 groupIndex = filePos[0];
-            u32 *waveTable = *(u32 **)(obj + 0x14);
+            u32 *waveTable = *(u32 **)(player + 0x14);
             if (waveTable == 0) {
                 if (waveTable == 0)
                     Warning__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x333, lbl_80325158);
@@ -2756,7 +2757,7 @@ extern "C" s32 detail_GetFileAddress__Q36nw4hbm3snd18SoundArchivePlayerCFUl(void
                 groupBase = *(u32 *)((u8 *)waveTable + groupIndex * 8 + 4);
             }
             if (groupBase != 0 &&
-                ((ReadGroupItemInfoFn)fn_800F282C)(*(void **)(obj + 0x10), filePos[0], filePos[1], wavePos) != 0)
+                ((ReadGroupItemInfoFn)fn_800F282C)(*(void **)(player + 0x10), filePos[0], filePos[1], wavePos) != 0)
                 return groupBase + wavePos[1];
         }
         index++;
