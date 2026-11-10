@@ -23385,47 +23385,57 @@ s32 homebutton::HomeButton::getPaneNo(const char *name) {
 
 extern "C" f32 lbl_80560DCC;
 extern "C" void GXSetCullMode(s32);
-extern "C" void fn_800CEBE0(void *arg0, s32 arg1) {
-    s32 bits = -arg1; bits |= arg1;
-    u32 active = (u32)bits >> 31;
-    struct State { unsigned char pad0 : 2; unsigned char flag : 1; unsigned char pad1 : 5; };
-    ((State *)((u8 *)arg0 + 0x250))->flag = (unsigned char)active;
-    *(u8 *)((u8 *)arg0 + 0x87) = (u8)active;
-    volatile f32 sp[6];
-    void *obj;
-    if (active) {
-        void *src = *(void **)((u8 *)arg0 + 4);
-        f32 y;
-        f32 x;
-        x = *(volatile f32 *)((u8 *)src + 0x30);
-        y = *(volatile f32 *)((u8 *)src + 0x2C);
-        obj = *(void **)((u8 *)*(void **)((u8 *)arg0 + 0x1E0) + 0x10);
-        sp[2] = y; sp[3] = x; sp[4] = y; sp[5] = x;
-        *(f32 *)((u8 *)obj + 0x44) = y; *(f32 *)((u8 *)obj + 0x48) = x;
-        if (*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 4) + 0x20) == 0) {
-            obj = *(void **)((u8 *)*(void **)((u8 *)arg0 + 0x1E4) + 0x10);
-            *(f32 *)((u8 *)obj + 0x44) = y; *(f32 *)((u8 *)obj + 0x48) = x;
-            obj = *(void **)((u8 *)*(void **)((u8 *)arg0 + 0x1E8) + 0x10);
-            *(f32 *)((u8 *)obj + 0x44) = y; *(f32 *)((u8 *)obj + 0x48) = x;
-            obj = *(void **)((u8 *)*(void **)((u8 *)arg0 + 0x1EC) + 0x10);
-            *(f32 *)((u8 *)obj + 0x44) = y; *(f32 *)((u8 *)obj + 0x48) = x;
-            obj = *(void **)((u8 *)*(void **)((u8 *)arg0 + 0x1F0) + 0x10);
-            *(f32 *)((u8 *)obj + 0x44) = y; *(f32 *)((u8 *)obj + 0x48) = x;
+extern "C" void fn_800CEBE0(void *homeButton, s32 on) {
+    /* HomeButton::applyLayoutScale(homeButton, on) -- stretch the home-button
+     * overlay or put it back at 1:1.  The scale comes from the two f32s the
+     * init info block (HomeButton+4) carries at +0x2C/+0x30 (1.36842, 1.0 in
+     * this game) when `on`, and from 1.0 (lbl_80560DCC) when it is off.  The
+     * main layout at +0x1E0 always takes it; the four player layouts at
+     * +0x1E4..+0x1F0 only when the info block's +0x20 field is zero.  Each
+     * layout's +0x10 is its root group, whose m_scale.x/.y sit at +0x44/+0x48.
+     * The choice is remembered in HomeButton+0x87 and in bit 0x20 of the byte
+     * at +0x250; culling is then switched off.  The volatile f32 stores are
+     * the compiler's spills of the two scale values, not game code. */
+    s32 signBits = -on; signBits |= on;
+    u32 scaled = (u32)signBits >> 31;
+    struct ByteFlags { unsigned char pad0 : 2; unsigned char layoutScaled : 1; unsigned char pad1 : 5; };
+    ((ByteFlags *)((u8 *)homeButton + 0x250))->layoutScaled = (unsigned char)scaled;
+    *(u8 *)((u8 *)homeButton + 0x87) = (u8)scaled;
+    volatile f32 spill[6];
+    void *rootGroup;
+    if (scaled) {
+        void *info = *(void **)((u8 *)homeButton + 4);
+        f32 scaleX;
+        f32 scaleY;
+        scaleY = *(volatile f32 *)((u8 *)info + 0x30);
+        scaleX = *(volatile f32 *)((u8 *)info + 0x2C);
+        rootGroup = *(void **)((u8 *)*(void **)((u8 *)homeButton + 0x1E0) + 0x10);
+        spill[2] = scaleX; spill[3] = scaleY; spill[4] = scaleX; spill[5] = scaleY;
+        *(f32 *)((u8 *)rootGroup + 0x44) = scaleX; *(f32 *)((u8 *)rootGroup + 0x48) = scaleY;
+        if (*(s32 *)((u8 *)*(void **)((u8 *)homeButton + 4) + 0x20) == 0) {
+            rootGroup = *(void **)((u8 *)*(void **)((u8 *)homeButton + 0x1E4) + 0x10);
+            *(f32 *)((u8 *)rootGroup + 0x44) = scaleX; *(f32 *)((u8 *)rootGroup + 0x48) = scaleY;
+            rootGroup = *(void **)((u8 *)*(void **)((u8 *)homeButton + 0x1E8) + 0x10);
+            *(f32 *)((u8 *)rootGroup + 0x44) = scaleX; *(f32 *)((u8 *)rootGroup + 0x48) = scaleY;
+            rootGroup = *(void **)((u8 *)*(void **)((u8 *)homeButton + 0x1EC) + 0x10);
+            *(f32 *)((u8 *)rootGroup + 0x44) = scaleX; *(f32 *)((u8 *)rootGroup + 0x48) = scaleY;
+            rootGroup = *(void **)((u8 *)*(void **)((u8 *)homeButton + 0x1F0) + 0x10);
+            *(f32 *)((u8 *)rootGroup + 0x44) = scaleX; *(f32 *)((u8 *)rootGroup + 0x48) = scaleY;
         }
     } else {
-        f32 zero = lbl_80560DCC;
-        obj = *(void **)((u8 *)*(void **)((u8 *)arg0 + 0x1E0) + 0x10);
-        sp[0] = zero; sp[1] = zero; sp[4] = zero; sp[5] = zero;
-        *(f32 *)((u8 *)obj + 0x44) = zero; *(f32 *)((u8 *)obj + 0x48) = zero;
-        if (*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 4) + 0x20) == 0) {
-            obj = *(void **)((u8 *)*(void **)((u8 *)arg0 + 0x1E4) + 0x10);
-            *(f32 *)((u8 *)obj + 0x44) = zero; *(f32 *)((u8 *)obj + 0x48) = zero;
-            obj = *(void **)((u8 *)*(void **)((u8 *)arg0 + 0x1E8) + 0x10);
-            *(f32 *)((u8 *)obj + 0x44) = zero; *(f32 *)((u8 *)obj + 0x48) = zero;
-            obj = *(void **)((u8 *)*(void **)((u8 *)arg0 + 0x1EC) + 0x10);
-            *(f32 *)((u8 *)obj + 0x44) = zero; *(f32 *)((u8 *)obj + 0x48) = zero;
-            obj = *(void **)((u8 *)*(void **)((u8 *)arg0 + 0x1F0) + 0x10);
-            *(f32 *)((u8 *)obj + 0x44) = zero; *(f32 *)((u8 *)obj + 0x48) = zero;
+        f32 unity = lbl_80560DCC;
+        rootGroup = *(void **)((u8 *)*(void **)((u8 *)homeButton + 0x1E0) + 0x10);
+        spill[0] = unity; spill[1] = unity; spill[4] = unity; spill[5] = unity;
+        *(f32 *)((u8 *)rootGroup + 0x44) = unity; *(f32 *)((u8 *)rootGroup + 0x48) = unity;
+        if (*(s32 *)((u8 *)*(void **)((u8 *)homeButton + 4) + 0x20) == 0) {
+            rootGroup = *(void **)((u8 *)*(void **)((u8 *)homeButton + 0x1E4) + 0x10);
+            *(f32 *)((u8 *)rootGroup + 0x44) = unity; *(f32 *)((u8 *)rootGroup + 0x48) = unity;
+            rootGroup = *(void **)((u8 *)*(void **)((u8 *)homeButton + 0x1E8) + 0x10);
+            *(f32 *)((u8 *)rootGroup + 0x44) = unity; *(f32 *)((u8 *)rootGroup + 0x48) = unity;
+            rootGroup = *(void **)((u8 *)*(void **)((u8 *)homeButton + 0x1EC) + 0x10);
+            *(f32 *)((u8 *)rootGroup + 0x44) = unity; *(f32 *)((u8 *)rootGroup + 0x48) = unity;
+            rootGroup = *(void **)((u8 *)*(void **)((u8 *)homeButton + 0x1F0) + 0x10);
+            *(f32 *)((u8 *)rootGroup + 0x44) = unity; *(f32 *)((u8 *)rootGroup + 0x48) = unity;
         }
     }
     GXSetCullMode(0);
