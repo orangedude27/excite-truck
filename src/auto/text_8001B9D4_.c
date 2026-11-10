@@ -235,20 +235,15 @@ void fn_8001BDA8(void *arg0) {
     s32 index;
     void *result;
     void *temp;
-
     if (base[0x20] != 0) {
         if (*(void **)(base + 0x18) != &lbl_80358628) {
             index = *(s32 *)(base + 0xC);
-            *(s32 *)((u8 *)*(void **)(base + 0x18) + index * 0xC + 8) =
-                *(s32 *)(base + 0x1C);
+            *(s32 *)((u8 *)*(void **)(base + 0x18) + index * 0xC + 8) = *(s32 *)(base + 0x1C);
             index = *(s32 *)(base + 0xC);
             *(u8 *)((u8 *)*(void **)(base + 0x18) + index * 0xC + 0x10) = 1;
             result = fn_800167CC(0);
-            temp = fn_80016BC8((void *)0, 0);
-            *(s32 *)((u8 *)*(void **)(base + 0x18) +
-                     *(s32 *)(base + 0xC) * 0xC + 0xC) =
-                fn_8001D220(*(u32 *)result, *(u32 *)((u8 *)temp + 4),
-                            *(u8 *)((u8 *)temp + 8));
+            temp = fn_80016BC8(result, 0);
+            *(s32 *)((u8 *)*(void **)(base + 0x18) + *(s32 *)(base + 0xC) * 0xC + 0xC) = fn_8001D220(*(u32 *)result, *(u32 *)((u8 *)temp + 4), *(u8 *)((u8 *)temp + 8));
             fn_8001D298(*(s32 *)arg0);
         }
     }
