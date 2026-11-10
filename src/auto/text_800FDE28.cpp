@@ -118,21 +118,16 @@ extern "C" void *fn_800FDE60(void) {
         u8 pad[0x1C];
         volatile s32 unk_0x1C;
     };
-    u8 *base = lbl_804190A0;
+    register u8 *base = lbl_804190A0;
     if ((s8)lbl_8055DE78 == 0) {
-        Manager *manager = (Manager *)(base + 0x2050);
+        register Manager *manager = (Manager *)(base + 0x2050);
         manager->unk_0x1C = 0;
-        fn_8002F53C((u8 *)manager + 0x20, (void *)fn_800FDFF8,
-                    (void *)__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FDFA0, 0xC, 3);
+        fn_8002F53C((u8 *)manager + 0x20, (void *)fn_800FDFF8, (void *)__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FDFA0, 0xC, 3);
         OSInitMutex((void *)manager);
-        *(void **)((u8 *)manager + 0x18) =
-            MEMRecordStateForFrmHeap((void *)(base + 0), 0x2044, 0x40, 4, 0);
+        *(void **)((u8 *)manager + 0x18) = MEMRecordStateForFrmHeap((void *)(base + 0x0), 0x2044, 0x40, 4, 0);
         if (MEMResizeForMBlockFrmHeap() < 0x80)
-            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326E08, 0x37,
-                                        (const char *)lbl_80326E20);
-        __register_global_object(base + 0x2050,
-                                 (void *)__dt__Q46nw4hbm3snd6detail11TaskManagerFv,
-                                 base + 0x2044);
+            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326E08, 0x37, (const char *)lbl_80326E20);
+        __register_global_object(base + 0x2050, (void *)__dt__Q46nw4hbm3snd6detail11TaskManagerFv, base + 0x2044);
         lbl_8055DE78 = 1;
     }
     return base + 0x2050;
@@ -844,27 +839,28 @@ extern "C" u32 GetSampleByByte__Q46nw4hbm3snd6detail7AxVoiceFUlQ56nw4hbm3snd6det
 extern "C" s32 IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(void *);
 extern u8 lbl_8032737C[], lbl_803273A0[], lbl_803273AC[], lbl_803273D0[], lbl_803273DC[], lbl_80327400[];
 #pragma use_lmw_stmw off
-extern "C" s32 IsNextWavePacket__Q36nw4hbm3snd10WavePlayerCFv(void *arg0) {
+/* Checks whether the next wave packet is within the current voice's playback range. */
+extern "C" s32 IsNextWavePacket__Q36nw4hbm3snd10WavePlayerCFv(void *wavePlayer) {
     void *rawWave;
     void *wave;
-    u32 current, format, start, end;
-    s32 sample;
-    if (!*(void **)((u8 *)arg0 + 0x18)) return 0;
-    if (IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(*(void **)((u8 *)arg0 + 0x18))) return 0;
-    if (*(s32 *)((u8 *)arg0 + 4) == 0) return 0;
-    if (*(s32 *)((u8 *)arg0 + 4) == 0)
+    u32 currentDspAddr, format, startDspAddr, endDspAddr;
+    s32 sampleCount;
+    if (!*(void **)((u8 *)wavePlayer + 0x18)) return 0;
+    if (IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(*(void **)((u8 *)wavePlayer + 0x18))) return 0;
+    if (*(s32 *)((u8 *)wavePlayer + 4) == 0) return 0;
+    if (*(s32 *)((u8 *)wavePlayer + 4) == 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327400, 0x1f6, (const char *)lbl_803273DC);
-    rawWave = *(void **)((u8 *)arg0 + 8);
+    rawWave = *(void **)((u8 *)wavePlayer + 8);
     if (!rawWave) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803273A0, 0x242, (const char *)lbl_8032737C);
     wave = (u8 *)rawWave - 0x18;
     if (!wave) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803273D0, 0x1bf, (const char *)lbl_803273AC);
-    current = GetCurrentPlayingDspAddress__Q46nw4hbm3snd6detail7AxVoiceCFv(*(void **)((u8 *)arg0 + 0x18));
-    format = *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 0x18) + 0x118);
-    sample = GetSampleByByte__Q46nw4hbm3snd6detail7AxVoiceFUlQ56nw4hbm3snd6detail7AxVoice6Format(*(u32 *)((u8 *)wave + 0x10), format);
-    start = GetDspAddressBySample__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hbm3snd6detail7AxVoice6Format(*(void **)((u8 *)wave + 8), 0, format);
-    end = GetDspAddressBySample__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hbm3snd6detail7AxVoice6Format(*(void **)((u8 *)wave + 8), sample, format);
-    if (current < start) goto yes;
-    if (end > current) goto no;
+    currentDspAddr = GetCurrentPlayingDspAddress__Q46nw4hbm3snd6detail7AxVoiceCFv(*(void **)((u8 *)wavePlayer + 0x18));
+    format = *(u32 *)((u8 *)*(void **)((u8 *)wavePlayer + 0x18) + 0x118);
+    sampleCount = GetSampleByByte__Q46nw4hbm3snd6detail7AxVoiceFUlQ56nw4hbm3snd6detail7AxVoice6Format(*(u32 *)((u8 *)wave + 0x10), format);
+    startDspAddr = GetDspAddressBySample__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hbm3snd6detail7AxVoice6Format(*(void **)((u8 *)wave + 8), 0, format);
+    endDspAddr = GetDspAddressBySample__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hbm3snd6detail7AxVoice6Format(*(void **)((u8 *)wave + 8), sampleCount, format);
+    if (currentDspAddr < startDspAddr) goto yes;
+    if (endDspAddr > currentDspAddr) goto no;
 yes:
     return 1;
 no:
@@ -1031,23 +1027,21 @@ extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FF824(void
         fn_800FF708((u8 *)item - 0x94);
     }
 }
-#pragma use_lmw_stmw reset
-#pragma push
-#pragma small_data off
-#pragma pop
+#pragma use_lmw_stmw off
 extern "C" void detail_StopAllPlayers__Q36nw4hbm3snd10WavePlayerFv(void) {
-    void *cur = *(void **)(lbl_8041D4AC + 4);
-    void *end = (u8 *)lbl_8041D4AC + 4;
+    unsigned long cur = *(unsigned long *)(lbl_8041D4AC + 4);
+    unsigned long end = (unsigned long)(lbl_8041D4AC + 4);
     while (cur != end) {
-        void *item = cur;
-        cur = *(void **)cur;
+        unsigned long item = cur;
+        cur = *(unsigned long *)cur;
         if (item == 0)
             Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80327370, 0x23D, (char *)lbl_8032734C);
-        Stop__Q36nw4hbm3snd10WavePlayerFv((u8 *)item - 0x94);
+        Stop__Q36nw4hbm3snd10WavePlayerFv((u8 *)(item - 0x94));
     }
-    if (*(u32 *)lbl_8041D4AC != 0)
+    if (*(unsigned long *)lbl_8041D4AC != 0)
         Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80327040, 0x319, (char *)lbl_80327304);
 }
+#pragma use_lmw_stmw reset
 extern "C" s32 fn_80128668(void *);
 
 #pragma push
