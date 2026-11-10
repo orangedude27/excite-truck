@@ -209,13 +209,16 @@ extern char lbl_8055C638, lbl_8055C63C, lbl_8055C644;
 extern void fn_80277F84(void *, void *, int);
 extern int stricmp(const char *, const char *);
 extern char *strncpy(char *, const char *, unsigned int);
-void fn_80276ACC(void *arg0, int arg1) {
-    struct NameVtable {
-        void *reserved[6];
-        char *(*GetName)(void *, const char *, int);
+#pragma cplusplus on
+extern "C" void fn_80276ACC(void *arg0, int arg1) {
+    struct Iface {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual char *GetName(const char *, int);
     };
-    char *name = ((struct NameVtable *)*(void **)arg0)->GetName(
-        arg0, &lbl_8055C63C, arg1);
+    char *name = ((Iface *)arg0)->GetName(&lbl_8055C63C, arg1);
     int i = lbl_8055F5A0;
     unsigned char *entry = &lbl_8049FEE0 + i * 0x48;
     lbl_8055F5A0 = i + 1;
@@ -228,8 +231,7 @@ void fn_80276ACC(void *arg0, int arg1) {
     if (stricmp(name, *(char **)&lbl_8055C638) == 0)
         lbl_8055F598 = (int)entry;
 }
-
-#pragma scheduling invalid_target
+#pragma cplusplus reset
 void fn_80276B8C(void) {
     unsigned char *entry = lbl_8049FD58;
     int i = 0;
@@ -570,11 +572,10 @@ void fn_80277828(void) {
 int fn_80277960(void *arg0, void *arg1, float *arg2) {
     unsigned char *p = (unsigned char *)fn_80276A44(arg0);
     if (p != 0) {
-        unsigned int *dst = (unsigned int *)arg1;
-        unsigned int *src = (unsigned int *)(p + 4);
-        unsigned int a;
-        unsigned int b;
-
+        int *dst = (int *)arg1;
+        int *src = (int *)(p + 4);
+        int a;
+        int b;
         b = src[0]; a = src[1]; dst[0] = b; dst[1] = a;
         a = src[2]; b = src[3]; dst[2] = a; dst[3] = b;
         a = src[4]; b = src[5]; dst[4] = a; dst[5] = b;
