@@ -1036,6 +1036,7 @@ void fn_80181480(void *arg0, int arg1) {
 
 #pragma push
 #pragma cplusplus on
+#pragma processor 750
 #pragma paired_single off
 #pragma scheduling invalid_target
 extern "C" float fn_80181498(void *arg0) {
