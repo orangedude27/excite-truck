@@ -686,6 +686,7 @@ static void GetTypeCallback(s32 chan, u32 status) {
     }
 }
 
+/* Returns the cached controller type for a channel, refreshing it over SI if the cached value is stale or polling is active. */
 u32 SIGetType(s32 chan) {
     static u32 cmdTypeAndStatus;
     BOOL enabled;
