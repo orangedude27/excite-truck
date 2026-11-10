@@ -267,13 +267,13 @@ void fn_8017677C(void) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_80176780(u32 arg0, u8 *arg1) {
+void fn_80176780(int arg0, u8 *arg1) {
     s32 flags;
-    u32 masked;
+    s32 masked;
     masked = arg0 & 0x1FF00;
     arg0 = (u8)arg0;
     flags = masked & ~(((s32)(-(s32)lbl_8055E3E4 | (s32)lbl_8055E3E4) >> 31) & 0x100);
-    ((void (*)(u32, u32, u32, u32))fn_8017677C)(arg0, flags, lbl_8055E3E4, masked);
+    ((void (*)(int, int, int, int))fn_8017677C)(arg0, flags, lbl_8055E3E4, masked);
     if (fn_80176F9C()) fn_802E30C8(lbl_803316B4);
     lbl_804303D4[0] = arg0;
     lbl_804303D4[1] = flags;
