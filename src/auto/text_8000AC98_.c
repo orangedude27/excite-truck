@@ -286,10 +286,11 @@ extern int fn_802E30C8();
 extern unsigned char lbl_8055D3D5;
 extern int lbl_8055D3E8;
 extern char lbl_802FBF38[];
+#pragma scheduling invalid_target
 void fn_8000B150(void *arg0) {
+    char *entry;
     int i;
     int value;
-    char *entry;
 
     fn_8017685C(1);
     fn_801AF6FC();
@@ -298,13 +299,12 @@ void fn_8000B150(void *arg0) {
     fn_801AF92C(arg0);
     *(unsigned char *)((char *)arg0 + 0xE) = lbl_8055D3D5;
     if (lbl_8055D3D5 == 0) {
-        int counter = lbl_8055D3E8 + 1;
-        lbl_8055D3E8 = counter;
-        *(int *)((char *)arg0 + 8) = counter;
+        lbl_8055D3E8++;
+        *(int *)((char *)arg0 + 8) = lbl_8055D3E8;
         ((void (*)(char *, ...))fn_802E30C8)(lbl_802FBF38, lbl_8055D3E8);
     }
-    entry = (char *)arg0;
     i = 0;
+    entry = (char *)arg0;
     while (i < *(int *)arg0) {
         value = *(int *)((char *)((void *(*)(int))fn_801EA9A0)(i) + 0xAC);
         i++;
@@ -312,8 +312,6 @@ void fn_8000B150(void *arg0) {
         entry += 0x14;
     }
 }
-
-#pragma scheduling on
 int fn_8000B210(void *arg0) {
     extern int fn_80231504(int);
     if (*(void **)lbl_8055D3D0 != 0) {
@@ -472,49 +470,50 @@ extern void fn_8000BF10(int, int);
 extern char lbl_802FBFB0[];
 #pragma push
 #pragma dont_inline on
-void fn_8000B64C(int arg0, int arg1) {
-    int state;
-    int (*callback)(int);
-    int result;
+/* Dispatch a UI/menu event for a context, gating by current screen state and invoking event-specific handlers. */
+void fn_8000B64C(int eventId, int contextId) {
+    int playerState;
+    int (*eventFilter)(int);
+    int selectedValue;
 
-    state = fn_80137C98(arg1);
-    if (state < 0) goto done;
-    if (fn_801DF238(arg0) != 0) goto done;
-    if (fn_8000AD84() != 0 && arg1 != lbl_8055D3E4) goto done;
+    playerState = fn_80137C98(contextId);
+    if (playerState < 0) goto done;
+    if (fn_801DF238(eventId) != 0) goto done;
+    if (fn_8000AD84() != 0 && contextId != lbl_8055D3E4) goto done;
 
-    callback = *(int (**)(int))((char *)lbl_8055D3D0 + 4);
-    if (callback != 0 && callback(arg0) != 0) goto done;
-    if (arg0 == 0x60) goto done;
+    eventFilter = *(int (**)(int))((char *)lbl_8055D3D0 + 4);
+    if (eventFilter != 0 && eventFilter(eventId) != 0) goto done;
+    if (eventId == 0x60) goto done;
 
-    if (arg0 >= 0x60) goto high_event;
-    if (arg0 == 0x50) goto event_50;
-    if (arg0 >= 0x50) goto check_5c;
-    if (arg0 == 0x1B) goto event_1b;
-    if (arg0 >= 0x1B) goto default_event;
-    if (arg0 != 0x0A) goto default_event;
+    if (eventId >= 0x60) goto high_event;
+    if (eventId == 0x50) goto event_50;
+    if (eventId >= 0x50) goto check_5c;
+    if (eventId == 0x1B) goto event_1b;
+    if (eventId >= 0x1B) goto default_event;
+    if (eventId != 0x0A) goto default_event;
     goto done;
 
 check_5c:
-    if (arg0 != 0x5C) goto default_event;
+    if (eventId != 0x5C) goto default_event;
     goto event_5c;
 
 high_event:
-    if (arg0 >= 0x121) goto check_124;
-    if (arg0 == 0x7E) goto done;
-    if (arg0 >= 0x7E) goto default_event;
-    if (arg0 != 0x70) goto default_event;
+    if (eventId >= 0x121) goto check_124;
+    if (eventId == 0x7E) goto done;
+    if (eventId >= 0x7E) goto default_event;
+    if (eventId != 0x70) goto default_event;
     goto event_50;
 
 check_124:
-    if (arg0 == 0x124) goto event_124;
-    if (arg0 >= 0x124) goto default_event;
-    if (arg0 < 0x123) goto done;
+    if (eventId == 0x124) goto event_124;
+    if (eventId >= 0x124) goto default_event;
+    if (eventId < 0x123) goto done;
     goto default_event;
 
 event_1b:
     if (fn_8000D75C() == 0 &&
         fn_801E8838() == 0 &&
-        fn_800075A0(state) != 0) {
+        fn_800075A0(playerState) != 0) {
         fn_8000D000((void *)fn_8000B42C, (void *)fn_8000B3B4, 0);
         fn_8000ADE0(1);
     }
@@ -533,10 +532,10 @@ event_50:
     goto done;
 
 event_124:
-    result = fn_801E86F8(state);
-    if (result != -1) {
-        result = fn_801E86F8(state);
-        fn_801E86E8(result, state);
+    selectedValue = fn_801E86F8(playerState);
+    if (selectedValue != -1) {
+        selectedValue = fn_801E86F8(playerState);
+        fn_801E86E8(selectedValue, playerState);
     }
     goto done;
 
@@ -547,7 +546,7 @@ event_5c:
     goto done;
 
 default_event:
-    fn_8000BF10(arg0, (int)lbl_8034F5B8);
+    fn_8000BF10(eventId, (int)lbl_8034F5B8);
 
 done:
     return;
