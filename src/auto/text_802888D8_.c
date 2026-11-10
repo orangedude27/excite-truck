@@ -406,6 +406,8 @@ int fn_80289154(int arg0) {
                     f1, f2, f3, f4, f5, f6, f7);
 }
 
+/* Initialize a parameter frame from global constants and create/store a sub-object
+ * handle for arg0 at offset 0x64 via fn_8028E2F8. */
 int fn_80289268(int arg0) {
     fn_802897E0Frame frame;
     register float f0;
