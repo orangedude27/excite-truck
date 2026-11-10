@@ -372,9 +372,10 @@ extern "C" s32 fn_8012ABB0(s32 arg0, s32 arg1) {
 
 extern "C" s32 fn_8012AC28(s32 arg0, s32 arg1) {
     u8 buffer[0x104];
-    s32 spC = -1;
+    s32 spC;
     s32 sp8;
     s32 result;
+    spC = -1;
     fn_802E4CA8(buffer, arg0, 0x104);
     result = fn_802E7354(buffer);
     if (result != -1) {
@@ -712,6 +713,8 @@ extern "C" void fn_8012D908(s32);
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 #pragma scheduling invalid_target
+/* Finds a resource manager/entry by parsed path and name, handling wildcards, duplicate-name
+ * warnings, and flags controlling "not ready" and missing-resource behavior. */
 extern "C" void *fn_8012B534(char *arg0, s32 *arg1, u32 arg2) {
     u8 wildcard;
     char name[0x100];
@@ -759,7 +762,6 @@ extern "C" void *fn_8012B534(char *arg0, s32 *arg1, u32 arg2) {
     }
     return result;
 }
-#pragma pop
 
 #pragma push
 #pragma use_lmw_stmw off
@@ -771,7 +773,6 @@ extern "C" s32 fn_8012B6FC(void *arg0, s32 arg1) {
     void *object;
     s32 handle;
     s32 startTime;
-    s32 bufferSize;
     register s32 allocSize;
     u32 flags;
     register const char *strings;
@@ -780,9 +781,8 @@ extern "C" s32 fn_8012B6FC(void *arg0, s32 arg1) {
     flags = *(u32 *)(entry + 0x34);
     strings = lbl_8032A630;
     if (!(flags & 8)) {
-        bufferSize = *(s32 *)(entry + 0x28);
-        allocSize = bufferSize + 0x80;
-        ((void (*)(s32))fn_801282F4)(bufferSize);
+        allocSize = *(s32 *)(entry + 0x28) + 0x80;
+        ((void (*)(s32))fn_801282F4)(allocSize - 0x80);
         fn_801282EC(0x80);
         object = ((void *(*)(void *, s32))fn_801284F0)(entry, allocSize);
         if (object != 0) {
@@ -3142,14 +3142,13 @@ extern "C" void fn_8012C958(void *arg0) {
 }
 
 extern "C" void fn_8012C9C8(void) {
-    void *p;
     if (lbl_8055E00C == 0) {
-        p = fn_801284F8(0x20, lbl_8032AC88);
+        void *p = fn_801284F8(0x20, lbl_8032AC88);
         if (p) p = fn_8012A13C(p, lbl_8032AC88, 0x20, 0xD0);
         lbl_8055E010 = (void **)p;
     }
     if (fn_8012A2D8(lbl_8055E010) != 0) {
-        lbl_8055E00C += 1;
+        lbl_8055E00C = lbl_8055E00C + 1;
     }
 }
   
