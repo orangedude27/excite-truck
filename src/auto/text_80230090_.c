@@ -161,6 +161,7 @@ void fn_80230150(s32 colorId, u32 flags, f32 x, f32 y, f32 z, f32 w, f32 h, f32 
 #pragma scheduling invalid_target
 #pragma paired off
 #pragma paired_single off
+/* Draws text (fn_80232BA4) with horizontal scroll/wrap: measures text, wraps X range within margin-expanded screen bounds, and draws an overflow copy when clipped. */
 void fn_802304EC(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
                  f32 farg0, f32 farg1, f32 farg2, f32 farg3,
                  f32 farg4, f32 farg5, f32 farg6, s32 arg_sp0) {
