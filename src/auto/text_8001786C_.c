@@ -97,8 +97,8 @@ s32 fn_80017A14(s32 arg0, s32 arg1) {
 #pragma dont_inline off
 
 extern s32 fn_800179E4(void *, s32, s32);
-void fn_80017A20(void *arg0, s32 *arg1) {
-    fn_800179E4(arg0, (s32)(arg1 + 1), arg1[0]);
+s32 fn_80017A20(void *arg0, s32 *arg1) {
+    return fn_800179E4(arg0, (s32)(arg1 + 1), arg1[0]);
 }
 
 extern void *fn_80016464(s32);
@@ -397,22 +397,19 @@ extern "C" void fn_800180FC(void *arg0, s32 arg1) {
 #pragma cplusplus reset
 
 #pragma cplusplus reset
-void fn_800182A0(void* arg0, void* arg1) {
+void fn_800182A0(s32* arg0, s32* arg1) {
     s32 index;
     s32 i;
-    s32 value;
 
-    for (i = 0; i < *(s32*)((char*)arg1); i++) {
-        index = *(s32*)((char*)arg0);
-        value = *(s32*)((char*)arg1 + i * 4 + 4);
-        *(s32*)((char*)arg0 + index * 4 + 4) = value;
-        *(s32*)((char*)arg0) = index + 1;
+    for (i = 0; i < arg1[0]; i++) {
+        index = arg0[0];
+        arg0[index + 1] = arg1[i + 1];
+        arg0[0] = index + 1;
     }
-    for (i = 0; i < *(s32*)((char*)arg1 + 0x24); i++) {
-        index = *(s32*)((char*)arg0 + 0x24);
-        value = *(s32*)((char*)arg1 + i * 4 + 0x28);
-        *(s32*)((char*)arg0 + index * 4 + 0x28) = value;
-        *(s32*)((char*)arg0 + 0x24) = index + 1;
+    for (i = 0; i < arg1[9]; i++) {
+        index = arg0[9];
+        arg0[index + 10] = arg1[i + 10];
+        arg0[9] = index + 1;
     }
 }
 
