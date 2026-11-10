@@ -412,11 +412,11 @@ void fn_80014820(void *arg0) {
     data = lbl_8055D350;
     current = *(f32 *)((u8 *)arg0 + 0x10);
     data = *(void **)((u8 *)data + 0x2C);
+    scale = lbl_805603A8;
     divisor = lbl_805603A0;
     value34 = *(f32 *)((u8 *)data + 0x34);
-    scale = lbl_805603A8;
-    *(f32 *)((u8 *)arg0 + 0xC) = value34;
     factor = lbl_80560368;
+    *(f32 *)((u8 *)arg0 + 0xC) = value34;
     data = *(void **)((u8 *)lbl_8055D350 + 0x2C);
     target = *(f32 *)((u8 *)data + 0x4C);
     delta = current - target;
@@ -554,6 +554,7 @@ extern s32 fn_80014ADC(void);
 #pragma push
 #pragma dont_inline on
 #pragma scheduling invalid_target
+/* Updates a UI/progress object's fade state (+0x24) and value (+0x2C) based on reverse/active conditions (fn_80014ADC/fn_80014AE4), ramping toward lbl_80560360 (0.0f) or lbl_80560368 (1.0f). */
 void fn_80014B9C(void *arg0) {
     struct Obj {
         u8 pad0[0x24];
@@ -1002,12 +1003,13 @@ void fn_80015770(void *arg0, f64 x, f64 y, f32 a, f32 b, f32 c) {
 #pragma pop
 void fn_80015AA0(void *, f32);
 void fn_80015EB0(void *, f32);
-#pragma scheduling invalid_target
-void fn_80015A20(void *arg0, volatile f32 *arg1) {
+#pragma scheduling on
+void fn_80015A20(void *arg0, f32 *arg1) {
     f32 matrix[9];
+    f32 angle1 = arg1[1];
     f32 angle0 = arg1[0];
     f32 angle2 = arg1[2];
-    fn_80015EB0(arg0, arg1[1]);
+    fn_80015EB0(arg0, angle1);
     fn_80015E30(matrix, angle0);
     fn_80015B20(arg0, matrix, arg0);
     fn_80015AA0(matrix, angle2);
@@ -1079,9 +1081,9 @@ void fn_80015B20(void *arg0, void *arg1, void *arg2) {
         out[8] = (b[8] * a[8]) + ((b[2] * a[6]) + (b[5] * a[7]));
     }
 }
-#pragma pop
+#pragma push
+#pragma scheduling on
 void fn_80015E30(void *arg0, f32 angle) {
-    f32 negative;
     f32 zero;
     f32 one;
     f32 sine;
@@ -1091,25 +1093,26 @@ void fn_80015E30(void *arg0, f32 angle) {
     zero = lbl_80560360;
     one = lbl_80560368;
     *(f32 *)((u8 *)arg0 + 4) = zero;
-    negative = -sine;
     *(f32 *)((u8 *)arg0 + 0) = one;
     *(f32 *)((u8 *)arg0 + 8) = zero;
     *(f32 *)((u8 *)arg0 + 0xC) = zero;
     *(f32 *)((u8 *)arg0 + 0x10) = cosine;
     *(f32 *)((u8 *)arg0 + 0x14) = sine;
     *(f32 *)((u8 *)arg0 + 0x18) = zero;
-    *(f32 *)((u8 *)arg0 + 0x1C) = negative;
+    *(f32 *)((u8 *)arg0 + 0x1C) = -sine;
     *(f32 *)((u8 *)arg0 + 0x20) = cosine;
 }
 #pragma pop
 void fn_80015EB0(void *arg0, f32 angle) {
     f32 c;
+    f32 a;
     f32 s;
     f32 zero;
     f32 neg;
     f32 *m;
+    a = angle;
     c = (f32)cos();
-    s = (f32)sin(angle);
+    s = (f32)sin(a);
     zero = lbl_80560360;
     m = (f32 *)arg0;
     m[0] = c;
