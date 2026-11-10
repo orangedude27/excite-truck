@@ -19274,6 +19274,7 @@ done:
     ;
 }
 
+/* Sends an L2CAP echo request to a peer, or logs an error if no buffer is available. */
 void l2cu_send_peer_echo_req(void *p_lcb, u8 *p_data, s32 data_len)
 {
     BT_HDR *p_buf;
