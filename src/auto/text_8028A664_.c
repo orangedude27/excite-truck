@@ -178,7 +178,9 @@ s32 fn_8028A85C(s32 arg0, s32 arg1) {
 }
 
 extern void fn_8028C92C(void *);
-void fn_8028A89C(void) {
+#pragma cplusplus on
+#pragma scheduling invalid_target
+extern "C" void fn_8028A89C(void) {
     void *obj;
     s32 i;
     void **p;
