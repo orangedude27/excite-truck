@@ -34,6 +34,7 @@ extern char lbl_8055B1C0[];
 typedef int (*GetterI)(void *, const char *);
 typedef void (*SetterV)(void *, const char *);
 extern void fn_801F5344(void *, void *, void *);
+typedef void FN_801F70D0_RETURN;
 extern void fn_801F70D0(void *, int);
 extern void *fn_801F6D60(void *, int);
 typedef void *FN_801F6A08_RETURN;
