@@ -256,6 +256,9 @@ void __OSStopPlayRecord(void) {
     BOOL enabled;
     s64 start;
 
+    /* Requests the async play-record log to stop, waiting briefly for in-flight
+     * NAND operations to finish or completing/cancelling as needed, then closes
+     * the file when appropriate. */
     enabled = OSDisableInterrupts();
 
     PlayRecordTerminate = TRUE;
