@@ -557,9 +557,9 @@ void fn_801E85CC(long arg0) {
 }
 
 void fn_801E85DC(long arg0) {
-    long var_r29;
     long var_r31;
     long temp_r30;
+    long var_r29;
     long count;
     var_r29 = arg0;
     if (arg0 < 0) var_r29 = (long)lbl_8055AF0C;
@@ -568,7 +568,7 @@ void fn_801E85DC(long arg0) {
 loop:
     var_r31 = var_r31 + 1;
     count = fn_8026A2C8();
-    var_r31 = var_r31 - (var_r31 / count) * count;
+    var_r31 = var_r31 % count;
     if (*fn_801EA9A0(var_r31) == 0 && var_r31 != temp_r30) goto loop;
     fn_8026A248(var_r31, var_r29);
 }
@@ -644,7 +644,7 @@ void *fn_801E87A8(void) {
 }
 
 #pragma dont_inline on
-void fn_801E87B8(long arg0) { long *base = lbl_8055EB3C; long i = lbl_8055EB34; base[i] = arg0; lbl_8055EB34 = i + 1; }
+void fn_801E87B8(long arg0) { unsigned long i = lbl_8055EB34; unsigned long *base = (unsigned long *)lbl_8055EB3C; base[i] = arg0; lbl_8055EB34 = i + 1; }
 void fn_801E87D4(long arg0) {
     long value2 = arg0;
     int index;
@@ -745,15 +745,19 @@ void fn_801E89F4(void *arg0) {
     lbl_8055AF08 = arg0;
 }
 
+#pragma scheduling invalid_target
 void fn_801E89FC(void) {
+    extern float fn_80129DC4(long, float, float);
+    extern float lbl_804881D8[];
+    extern float lbl_80562DBC, lbl_80562DC0, lbl_80562DD4, lbl_80562DD8;
+    extern float lbl_80562DDC, lbl_80562DE0;
+    extern void PSVECNormalize(float *, float *);
     lbl_804881D8[0] = fn_80129DC4(0, lbl_80562DC0, lbl_80562DD4);
     lbl_804881D8[1] = fn_80129DC4(0, lbl_80562DD8, lbl_80562DDC);
     lbl_804881D8[2] = fn_80129DC4(0, lbl_80562DC0, lbl_80562DD4);
     PSVECNormalize(lbl_804881D8, lbl_804881D8);
     lbl_804881D8[3] = fn_80129DC4(0, lbl_80562DBC, lbl_80562DE0);
 }
-
-#pragma scheduling invalid_target
 void fn_801E8A84(void) {
     extern float lbl_80562DE4, lbl_80562DE8;
     extern float lbl_80562DEC, lbl_80562DF0;
