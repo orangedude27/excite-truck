@@ -946,44 +946,50 @@ struct EffectDesc {
     /* 0x80 */ f32 f80, f84, f88, f8c, f90, f94, f98, f9c, fa0, fa4;
 };
 
-extern "C" void fn_802A30BC(void* arg0, s32 arg1) {
-    char stack[0xA8];
-    fn_8028E61C(&stack[0x18]);
-    *(s32*)(stack + 0x1C) = 0x80;
-    *(f32*)(stack + 0x20) = lbl_80564730;
-    *(f32*)(stack + 0x24) = lbl_80564734;
-    *(s32*)(stack + 0x18) = 2;
-    *(f32*)(stack + 0x60) = lbl_80564734;
-    *(s32*)(stack + 0x5C) = 4;
-    *(f32*)(stack + 0x0C) = lbl_80564798;
-    *(f32*)(stack + 0x10) = lbl_80564760;
-    *(f32*)(stack + 0x14) = lbl_80564798;
-    *(f32*)(stack + 0x28) = lbl_80564798;
-    *(f32*)(stack + 0x2C) = lbl_80564760;
-    *(f32*)(stack + 0x30) = lbl_80564798;
-    *(f32*)(stack + 0x00) = lbl_8056479C;
-    *(f32*)(stack + 0x04) = lbl_8056479C;
-    *(f32*)(stack + 0x08) = lbl_8056479C;
-    *(f32*)(stack + 0x34) = lbl_8056479C;
-    *(f32*)(stack + 0x38) = lbl_8056479C;
-    *(f32*)(stack + 0x3C) = lbl_8056479C;
-    *(f32*)(stack + 0x40) = lbl_8056472C;
-    *(f32*)(stack + 0x44) = lbl_805647E8;
-    *(f32*)(stack + 0x48) = lbl_805647EC;
-    *(f32*)(stack + 0x4C) = lbl_805647AC;
-    *(f32*)(stack + 0x88) = lbl_80564750;
-    *(f32*)(stack + 0x80) = lbl_80564750;
-    *(f32*)(stack + 0x78) = lbl_80564750;
-    *(f32*)(stack + 0x8C) = lbl_80564798;
-    *(f32*)(stack + 0x84) = lbl_80564798;
-    *(f32*)(stack + 0x7C) = lbl_80564798;
-    *(f32*)(stack + 0x70) = lbl_805647F0;
-    *(f32*)(stack + 0x74) = lbl_805647C4;
-    *(f32*)(stack + 0x68) = lbl_805647A4;
-    *(f32*)(stack + 0x6C) = lbl_80564734;
-    *(f32*)(stack + 0x90) = lbl_80564788;
-    *(f32*)(stack + 0x94) = lbl_80564730;
-    *(s32*)((char*)arg0 + 4) = ((s32 (*)(void*, void*, s32))fn_8028E2F8)(&stack[0x18], (void*)lbl_80349A40, arg1);
+extern "C" void fn_802A30BC(void *effectGroup, s32 effectRes) {
+    // "small trail smoke": fill this effect's creation descriptor, hand it to
+    // the effect builder (which allocates the effect, copies the descriptor in,
+    // resolves effectRes and registers the effect under this name) and keep the
+    // new effect handle in the group object at +4.
+    EffectDesc desc;
+    fn_8028E61C(&desc.mode);
+    desc.emitterCount = 0x80;
+    desc.emitRate = lbl_80564730;
+    desc.phaseStep = lbl_80564734;
+    desc.mode = 2;
+    desc.f60 = lbl_80564734;
+    desc.f5c = 4;
+    desc.f0c = lbl_80564798;
+    desc.f10 = lbl_80564760;
+    desc.f14 = lbl_80564798;
+    desc.f28 = lbl_80564798;
+    desc.f2c = lbl_80564760;
+    desc.f30 = lbl_80564798;
+    desc.f00 = lbl_8056479C;
+    desc.f04 = lbl_8056479C;
+    desc.f08 = lbl_8056479C;
+    desc.f34 = lbl_8056479C;
+    desc.f38 = lbl_8056479C;
+    desc.f3c = lbl_8056479C;
+    desc.f40 = lbl_8056472C;
+    desc.f44 = lbl_805647E8;
+    desc.f48 = lbl_805647EC;
+    desc.f4c = lbl_805647AC;
+    desc.f88 = lbl_80564750;
+    desc.f80 = lbl_80564750;
+    desc.f78 = lbl_80564750;
+    desc.f8c = lbl_80564798;
+    desc.f84 = lbl_80564798;
+    desc.f7c = lbl_80564798;
+    desc.f70 = lbl_805647F0;
+    desc.f74 = lbl_805647C4;
+    desc.f68 = lbl_805647A4;
+    desc.f6c = lbl_80564734;
+    desc.f90 = lbl_80564788;
+    desc.f94 = lbl_80564730;
+    *(s32 *)((char *)effectGroup + 4) =
+        ((s32 (*)(void *, void *, s32))fn_8028E2F8)(
+            &desc.mode, lbl_80349A40, effectRes);
 }
 
 #pragma push
