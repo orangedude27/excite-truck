@@ -391,7 +391,7 @@ void fn_80128714(void *arg0, s32 arg1, s32 arg2) {
         obj[5] = zero;
         return;
     }
-    fn_802E317C(base + 0x130, (void *)(arg2 / 1024));
+    ((s32 (*)(const char *, ...))fn_802E317C)(base + 0x130, (void *)(arg2 / 1024));
 }
 
 #pragma push
@@ -668,8 +668,8 @@ extern s32 fn_801281F4(s32, s32);
 extern s32 fn_802E317C(void *, void *);
 extern char lbl_8032A470[];
 void *fn_80128F94(void *arg0, s32 arg1, void *arg2, s32 arg3) {
-    register u32 *header = (u32 *)arg0;
-    register void *logArg = arg2;
+    u32 *header = (u32 *)arg0;
+    void *logArg = arg2;
     s32 size = ((s32 (*)(s32, s32))fn_801281F4)(arg1, 0x10);
     s32 total = size + 0x20;
     if (header[2] + total > header[3]) {
