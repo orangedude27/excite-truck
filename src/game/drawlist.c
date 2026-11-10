@@ -228,14 +228,19 @@ void fn_802C8588(float *arg0, float *arg1, float *arg2) {
 extern void fn_802D03F4(unsigned int *, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int);
 #pragma scheduling invalid_target
 void fn_802C8638(unsigned int *arg0) {
-    int *src = (int *)arg0;
-    register int v2, v3, v1, v0;
-    int v4, v5, v6, v7, v8, v9, v10, v11;
-    volatile int *dst;
-    v2 = src[2]; v3 = src[3]; v1 = src[1]; v0 = src[0];
-    dst = (volatile int *)lbl_804C1410;
-    v4 = src[4]; v5 = src[5]; v6 = src[6]; v7 = src[7];
-    v8 = src[8]; v9 = src[9]; v10 = src[10]; v11 = src[11];
+    unsigned int v0 = arg0[0];
+    unsigned int v1 = arg0[1];
+    unsigned int v2 = arg0[2];
+    unsigned int v3 = arg0[3];
+    unsigned int v4 = arg0[4];
+    unsigned int v5 = arg0[5];
+    unsigned int v6 = arg0[6];
+    unsigned int v7 = arg0[7];
+    unsigned int v8 = arg0[8];
+    unsigned int v9 = arg0[9];
+    unsigned int v10 = arg0[10];
+    unsigned int v11 = arg0[11];
+    volatile unsigned int *dst = (volatile unsigned int *)lbl_804C1410;
     dst[0] = v0; dst[1] = v1; dst[2] = v2; dst[3] = v3;
     dst[4] = v4; dst[5] = v5; dst[6] = v6; dst[7] = v7;
     dst[8] = v8; dst[9] = v9; dst[10] = v10; dst[11] = v11;
@@ -918,34 +923,38 @@ char fn_802C9A68(void) {
 extern int lbl_8055CFF0, lbl_8055CFF4;
 extern float lbl_80564F18, lbl_80564F28;
 #pragma dont_inline on
-void fn_802C9A70(int arg0) {
-    int temp_r31;
-    int temp_r31_2;
-    int temp_r3;
-    int temp_r3_2;
+/* Draw letterbox/pillarbox bars when viewport scaling flags are set.
+ * Sets a draw-guard flag, updates viewport/projection if needed, then draws
+ * left/right and/or top/bottom black bars based on scaled view dimensions.
+ */
+void fn_802C9A70(int drawBars) {
+    int barWidth;
+    int barHeight;
+    int hDelta;
+    int vDelta;
     lbl_8055FC74 = 1;
     if ((unsigned char)lbl_8055FC8D != 0) {
         fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
         fn_802C88BC(2);
         fn_802C974C(lbl_8055FC38, lbl_8055FC3C, lbl_80564F28);
     }
-    if (((unsigned char)lbl_8055FC8C != 0 || (unsigned char)lbl_8055FC8D != 0) && arg0 != 0) {
-        temp_r3 = lbl_8055CFF0 - (int)(lbl_80564F18 + ((float)lbl_8055CFF0 * lbl_8055D020));
-        temp_r31 = temp_r3 / 2;
-        if (temp_r31 > 1) {
+    if (((unsigned char)lbl_8055FC8C != 0 || (unsigned char)lbl_8055FC8D != 0) && drawBars != 0) {
+        hDelta = lbl_8055CFF0 - (int)(lbl_80564F18 + ((float)lbl_8055CFF0 * lbl_8055D020));
+        barWidth = hDelta / 2;
+        if (barWidth > 1) {
             fn_802C92D0();
-            fn_802C92DC(0, 0, temp_r31, lbl_8055CFF4, 0xFF000000);
-            fn_802C92DC(lbl_8055CFF0 - temp_r31, 0, lbl_8055CFF0, lbl_8055CFF4, 0xFF000000);
+            fn_802C92DC(0, 0, barWidth, lbl_8055CFF4, 0xFF000000);
+            fn_802C92DC(lbl_8055CFF0 - barWidth, 0, lbl_8055CFF0, lbl_8055CFF4, 0xFF000000);
             fn_802C92D8();
         }
     }
     if ((unsigned char)lbl_8055FC8D != 0) {
-        temp_r3_2 = lbl_8055CFF4 - (int)(lbl_80564F18 + ((float)lbl_8055CFF4 * lbl_8055D024));
-        temp_r31_2 = temp_r3_2 / 2;
-        if (temp_r31_2 > 1) {
+        vDelta = lbl_8055CFF4 - (int)(lbl_80564F18 + ((float)lbl_8055CFF4 * lbl_8055D024));
+        barHeight = vDelta / 2;
+        if (barHeight > 1) {
             fn_802C92D0();
-            fn_802C92DC(0, 0, lbl_8055CFF0, temp_r31_2, 0xFF000000);
-            fn_802C92DC(0, lbl_8055CFF4 - temp_r31_2, lbl_8055CFF0, lbl_8055CFF4, 0xFF000000);
+            fn_802C92DC(0, 0, lbl_8055CFF0, barHeight, 0xFF000000);
+            fn_802C92DC(0, lbl_8055CFF4 - barHeight, lbl_8055CFF0, lbl_8055CFF4, 0xFF000000);
             fn_802C92D8();
         }
     }
