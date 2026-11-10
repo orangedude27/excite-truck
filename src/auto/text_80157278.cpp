@@ -4153,11 +4153,7 @@ extern "C" void fn_80159624(void *arg0, void *arg1) {
         obj[0x4C] = 0;
     }
 }
-#pragma scheduling on
-extern "C" s32 fn_80159708(void* arg0) {
-    return (s32)*(f32*)((char*)arg0 + 0x25c);
-}
-#pragma scheduling on
+extern "C" s32 fn_80159708(void *arg0) { f32 f = *(f32 *)((char *)arg0 + 0x25C); return (s32)f; }
 class Fn8015E338Item {
 public:
  virtual void v0(); virtual void v1(); virtual void v2(); virtual f32 v3(void*);
