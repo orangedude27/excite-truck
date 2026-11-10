@@ -105,6 +105,7 @@ extern void *fn_80016464(s32);
 extern s32 fn_80016508(void);
 extern void fn_80017AC8(void *);
 #pragma scheduling invalid_target
+#pragma dont_inline fn_80017A20
 void fn_80017A2C(void *arg0, s32 arg1) {
     s32 i = 0;
     s32 *p = (s32 *)(arg1 + 4);
