@@ -313,49 +313,36 @@ void fn_80263BCC(void *arg0) {
 #pragma scheduling invalid_target
 s32 fn_80263BE4(void *arg0, s32 arg1) {
     u8 *self = (u8 *)arg0;
-
     if (self[0x29] != 0) {
-        if (arg1 == 0x126)
-            goto first_done;
-        if (arg1 < 0x126) {
-            if (arg1 >= 0x125)
-                goto first_low;
-            goto first_done;
+        switch (arg1) {
+        case 0x125:
+            if (self[0x28] == 0) {
+                self[0x28] = 1;
+                self[0x2A] = 1;
+            }
+            break;
+        case 0x126:
+            break;
+        case 0x127:
+            if (self[0x28] != 0)
+                self[0x28] = 0;
+            break;
         }
-        if (arg1 < 0x128)
-            goto first_high;
-        goto first_done;
-first_low:
-        if (self[0x28] == 0) {
-            self[0x28] = 1;
-            self[0x2A] = 1;
-        }
-        goto first_done;
-first_high:
-        if (self[0x28] != 0)
-            self[0x28] = 0;
     }
-first_done:
     if (self[0x29] != 0) {
-        if (arg1 == 0x126)
-            goto second_done;
-        if (arg1 < 0x126) {
-            if (arg1 >= 0x125)
-                goto second_low;
-            goto second_done;
+        switch (arg1) {
+        case 0x125:
+            if (self[0x28] == 0)
+                self[0x28] = 1;
+            break;
+        case 0x126:
+            break;
+        case 0x127:
+            if (self[0x28] != 0)
+                self[0x28] = 0;
+            break;
         }
-        if (arg1 < 0x128)
-            goto second_high;
-        goto second_done;
-second_low:
-        if (self[0x28] == 0)
-            self[0x28] = 1;
-        goto second_done;
-second_high:
-        if (self[0x28] != 0)
-            self[0x28] = 0;
     }
-second_done:
     return 0;
 }
 #pragma scheduling on
