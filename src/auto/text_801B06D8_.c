@@ -324,52 +324,55 @@ extern void fn_801B0BB0(void *, void *);
 extern void fn_801B07B4(void *, void *);
 extern void fn_801B08FC(void *, void *);
 #pragma cplusplus on
-extern "C" void fn_801B0C78(s32 arg0) {
-    struct Item {
+extern "C" void fn_801B0C78(s32 slotIndex) {
+    struct SlotObject {
         virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
         virtual void d4(); virtual void *getPayload(); virtual void *getMetadata();
     };
-    struct Context {
+    struct RequestValidator {
         virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
         virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
-        virtual s32 check(void *, s32, s32, s32);
+        virtual s32 validate(void *request, s32 slotIndex, s32 tableParam, s32 flags);
     };
-    struct Scratch {
+    struct RequestScratch {
         u32 raw[3]; s32 value; f32 weight; s32 limit;
         u8 request[0x20]; u8 pad[0x20]; s16 marker;
     } scratch;
-    void *base = lbl_8055E684;
-    Item *obj = (Item *)((u8 *)base + (arg0 << 7));
-    void *meta;
-    bool isResource;
+    /* Build/apply a per-slot request: for PCAR-tagged metadata run slot setup and
+     * source value/weight/limit from payload, otherwise from inline fields; validate
+     * via optional global validator, then process and finalize the request. */
+    void *slotTable = lbl_8055E684;
+    SlotObject *slot = (SlotObject *)((u8 *)slotTable + (slotIndex << 7));
+    void *metadata;
+    bool isPcarResource;
 
     scratch.marker = -1;
-    meta = obj->getMetadata();
-    isResource = *(u32 *)((u8 *)meta + 0x10) == 0x50434152;
-    if (isResource) {
-        fn_801B30D0(arg0);
-        fn_801B30E0(arg0);
+    metadata = slot->getMetadata();
+    isPcarResource = *(u32 *)((u8 *)metadata + 0x10) == 0x50434152;
+    if (isPcarResource) {
+        fn_801B30D0(slotIndex);
+        fn_801B30E0(slotIndex);
     }
-    if (fn_801B8928(arg0, scratch.request, 0) != 0) goto done;
+    if (fn_801B8928(slotIndex, scratch.request, 0) != 0) goto done;
     if (lbl_8055E68C != 0 &&
-        ((Context *)lbl_8055E68C)->check(scratch.request, arg0,
+        ((RequestValidator *)lbl_8055E68C)->validate(scratch.request, slotIndex,
             *(s32 *)((u8 *)*(void * volatile *)&lbl_8055E684 + 0x7C), 0) != 0) goto done;
     scratch.value = 0;
     scratch.limit = 0x2710;
     scratch.weight = lbl_805625BC;
-    if (isResource) {
-        fn_801B0BB0(scratch.raw, obj->getPayload());
+    if (isPcarResource) {
+        fn_801B0BB0(scratch.raw, slot->getPayload());
         scratch.value = scratch.raw[0];
         scratch.weight = *(f32 *)&scratch.raw[1];
         scratch.limit = scratch.raw[2];
     } else {
-        scratch.value = *(s32 *)((u8 *)obj + 0x4C);
-        scratch.weight = *(f32 *)((u8 *)obj + 0x50);
-        scratch.limit = *(s32 *)((u8 *)obj + 0x54);
+        scratch.value = *(s32 *)((u8 *)slot + 0x4C);
+        scratch.weight = *(f32 *)((u8 *)slot + 0x50);
+        scratch.limit = *(s32 *)((u8 *)slot + 0x54);
     }
     fn_801B07B4(scratch.request, &scratch.value);
 done:
-    fn_801B08FC(obj, scratch.request);
+    fn_801B08FC(slot, scratch.request);
 }
 #pragma cplusplus off
 s32 fn_801B0DE0(void *arg0) {
