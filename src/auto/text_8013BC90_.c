@@ -29,19 +29,30 @@ extern void fn_8013A264(void *);
 extern void fn_8013BF3C(void);
 extern const char lbl_8032C414[];
 char *fn_8013BC90(char *arg0, int arg1, const char *arg2) {
-    char *base=arg0, *dst=arg0;
-    const char *src=arg2;
-    int n=arg1;
-    char c;
-    while (--n > 0) {
-        c=*src++;
-        *dst++=c;
-        if (!c) goto copied;
-    }
-    dst[-1]=0;
+    char *base = arg0;
+    char *dst = base;
+    const unsigned char *src = (const unsigned char *)arg2;
+    int n = arg1;
+    unsigned char c;
+    goto copy;
+count_check:
+    if (--n > 0)
+        goto copy;
+    dst[-1] = 0;
+    goto copied;
+copy:
+    c = *src++;
+    *dst++ = (char)c;
+    if ((signed char)c != 0)
+        goto count_check;
 copied:
-    if (strchr(base, '/') != 0) base=strchr(base, '/')+1;
-    { char *p=fn_80029004(base,'.'); if(p) *p=0; }
+    if (strchr(base, '/') != 0)
+        base = strchr(base, '/') + 1;
+    {
+        char *p = fn_80029004(base, '.');
+        if (p)
+            *p = 0;
+    }
     return base;
 }
 
