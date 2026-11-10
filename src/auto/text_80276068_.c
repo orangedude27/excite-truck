@@ -307,19 +307,23 @@ extern float lbl_802FA818[];
 extern float lbl_80564064, lbl_80564068, lbl_8056406C;
   u32 fn_8027656C(void *, void *, u32);
   extern u8 lbl_8049FE98[];
-void fn_80276BE4(u32 *arg0, f32 *arg1) {
+void fn_80276BE4(void *arg0, void *arg1) {
+    u32 *dst = (u32 *)arg0;
     u32 *src;
+    unsigned int a;
+    unsigned int b;
     if (*(unsigned char *)&lbl_8049FD58 != 0) {
         fn_8027656C(lbl_8049FE98 + 4, lbl_8049FE98 + 0x34, 0);
     }
     src = (u32 *)(lbl_8049FE98 + 4);
-    arg0[0] = src[0]; arg0[1] = src[1];
-    arg0[2] = src[2]; arg0[3] = src[3];
-    arg0[4] = src[4]; arg0[5] = src[5];
-    arg0[6] = src[6]; arg0[7] = src[7];
-    arg0[8] = src[8]; arg0[9] = src[9];
-    arg0[10] = src[10]; arg0[11] = src[11];
-    *arg1 = *(f32 *)(lbl_8049FE98 + 0x34);
+    b = src[0]; a = src[1]; dst[0] = b; dst[1] = a;
+    a = src[2]; b = src[3]; dst[2] = a; dst[3] = b;
+    a = src[4]; b = src[5]; dst[4] = a; dst[5] = b;
+    a = src[6]; b = src[7]; dst[6] = a; dst[7] = b;
+    a = src[8]; dst[8] = a;
+    b = src[9]; a = src[10]; dst[9] = b; dst[10] = a;
+    b = src[11]; dst[11] = b;
+    *(f32 *)arg1 = *(f32 *)(lbl_8049FE98 + 0x34);
 }
 
 void fn_80276CB0(void *arg0, int arg1) {
@@ -595,6 +599,7 @@ void fn_80277A14(void *arg0, int arg1) {
 
 #pragma cplusplus on
 extern "C" void fn_80277F84(void *arg0, void *arg1, int arg2) {
+    /* Initialize a camera/entry record by reading named float fields and a name string from a config object. */
     class FloatDummy {
     public:
         virtual void f0();
@@ -617,23 +622,24 @@ extern "C" void fn_80277F84(void *arg0, void *arg1, int arg2) {
     extern unsigned char lbl_80347378[];
     extern unsigned char lbl_8055C658;
     extern char lbl_8055C65C;
-    FloatDummy *obj = (FloatDummy *)arg1;
-    char *name;
-    *(float *)((char *)arg0 + 0x28) = obj->get((char *)lbl_80347378 + 0x178);
-    *(float *)((char *)arg0 + 0x2C) = obj->get((char *)lbl_80347378 + 0x184);
-    *(float *)((char *)arg0 + 0x30) = obj->get((char *)lbl_80347378 + 0x190);
-    *(float *)((char *)arg0 + 0x04) = obj->get((char *)lbl_80347378 + 0x19C);
-    *(float *)((char *)arg0 + 0x08) = obj->get((char *)lbl_80347378 + 0x1A8);
-    *(float *)((char *)arg0 + 0x0C) = obj->get((char *)lbl_80347378 + 0x1B4);
-    *(float *)((char *)arg0 + 0x10) = obj->get((char *)lbl_80347378 + 0x1C0);
-    *(float *)((char *)arg0 + 0x14) = obj->get((char *)lbl_80347378 + 0x1CC);
-    *(float *)((char *)arg0 + 0x18) = obj->get((char *)lbl_80347378 + 0x1D8);
-    *(float *)((char *)arg0 + 0x1C) = obj->get((char *)lbl_80347378 + 0x1E4);
-    *(float *)((char *)arg0 + 0x20) = obj->get((char *)lbl_80347378 + 0x1F0);
-    *(float *)((char *)arg0 + 0x24) = obj->get((char *)lbl_80347378 + 0x1FC);
-    *(float *)((char *)arg0 + 0x34) = obj->get((char *)&lbl_8055C658);
-    name = ((NameDummy *)arg1)->getName(&lbl_8055C63C, &lbl_8055C65C);
-    strncpy((char *)arg0 + 0x38, name, 0x10);
+    FloatDummy *config = (FloatDummy *)arg1;
+    char *entryName;
+
+    *(float *)((char *)arg0 + 0x28) = config->get((char *)lbl_80347378 + 0x178);
+    *(float *)((char *)arg0 + 0x2C) = config->get((char *)lbl_80347378 + 0x184);
+    *(float *)((char *)arg0 + 0x30) = config->get((char *)lbl_80347378 + 0x190);
+    *(float *)((char *)arg0 + 0x04) = config->get((char *)lbl_80347378 + 0x19C);
+    *(float *)((char *)arg0 + 0x08) = config->get((char *)lbl_80347378 + 0x1A8);
+    *(float *)((char *)arg0 + 0x0C) = config->get((char *)lbl_80347378 + 0x1B4);
+    *(float *)((char *)arg0 + 0x10) = config->get((char *)lbl_80347378 + 0x1C0);
+    *(float *)((char *)arg0 + 0x14) = config->get((char *)lbl_80347378 + 0x1CC);
+    *(float *)((char *)arg0 + 0x18) = config->get((char *)lbl_80347378 + 0x1D8);
+    *(float *)((char *)arg0 + 0x1C) = config->get((char *)lbl_80347378 + 0x1E4);
+    *(float *)((char *)arg0 + 0x20) = config->get((char *)lbl_80347378 + 0x1F0);
+    *(float *)((char *)arg0 + 0x24) = config->get((char *)lbl_80347378 + 0x1FC);
+    *(float *)((char *)arg0 + 0x34) = config->get((char *)&lbl_8055C658);
+    entryName = ((NameDummy *)arg1)->getName(&lbl_8055C63C, &lbl_8055C65C);
+    strncpy((char *)arg0 + 0x38, entryName, 0x10);
     *(unsigned char *)arg0 = 1;
 }
 #pragma cplusplus reset
