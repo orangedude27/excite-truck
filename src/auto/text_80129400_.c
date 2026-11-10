@@ -40,30 +40,26 @@ void fn_80129400(void) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_80129458(void) {
-    u32 zero = 0;
-    u32 one = 1;
-    u8 *b = lbl_804223A0;
-    u8 *a = lbl_80422380;
-    a[0] = one;
-    *(u16 *)(a + 6) = 0x58;
-    *(u16 *)(a + 4) = 0x54;
-    a[2] = zero;
-    *(u16 *)(a + 12) = 0x1B;
-    *(u16 *)(a + 8) = 0x43;
-    *(u16 *)(a + 10) = 0x53;
-    b[0] = one;
-    b[2] = one;
-    b[1] = zero;
-    *(u16 *)(b + 6) = 0xD;
-    *(u16 *)(b + 12) = 0x113;
-    *(u16 *)(b + 4) = 0x20;
-    *(u16 *)(b + 8) = 0x6F;
-    *(u16 *)(b + 10) = 0x1B;
-    *(u16 *)(b + 0x1C) = 0x121;
-    *(u16 *)(b + 0xE) = zero;
-    *(u16 *)(b + 0x12) = zero;
-    *(u16 *)(b + 0x10) = zero;
-    *(u16 *)(b + 0x14) = zero;
+    lbl_80422380[0] = 1;
+    *(u16 *)(lbl_80422380 + 6) = 0x58;
+    *(u16 *)(lbl_80422380 + 4) = 0x54;
+    lbl_80422380[2] = 0;
+    *(u16 *)(lbl_80422380 + 12) = 0x1B;
+    *(u16 *)(lbl_80422380 + 8) = 0x43;
+    *(u16 *)(lbl_80422380 + 10) = 0x53;
+    lbl_804223A0[0] = 1;
+    lbl_804223A0[2] = 1;
+    lbl_804223A0[1] = 0;
+    *(u16 *)(lbl_804223A0 + 6) = 0xD;
+    *(u16 *)(lbl_804223A0 + 12) = 0x113;
+    *(u16 *)(lbl_804223A0 + 4) = 0x20;
+    *(u16 *)(lbl_804223A0 + 8) = 0x6F;
+    *(u16 *)(lbl_804223A0 + 10) = 0x1B;
+    *(u16 *)(lbl_804223A0 + 0x1C) = 0x121;
+    *(u16 *)(lbl_804223A0 + 0xE) = 0;
+    *(u16 *)(lbl_804223A0 + 0x12) = 0;
+    *(u16 *)(lbl_804223A0 + 0x10) = 0;
+    *(u16 *)(lbl_804223A0 + 0x14) = 0;
 }
 #pragma pop
 void fn_801294FC(s32 arg0, s32 arg1);
@@ -125,13 +121,15 @@ void fn_8012960C(void *arg0) {
     u8 *p = (u8 *)arg0;
     s32 now = fn_802E2C20();
     s32 count;
-    s32 limit;
+    s32 old;
     s32 elapsed;
+    s32 limit;
 
     if (p[8] != 0) {
         count = *(s32 *)(p + 4);
         limit = 0xFA;
-        elapsed = now - *(volatile s32 *)p;
+        old = *(s32 *)p;
+        elapsed = now - old;
         if (count != 0)
             limit = 0x7D;
         if (elapsed > limit) {
@@ -146,8 +144,7 @@ void fn_8012960C(void *arg0) {
 }
 
 extern void fn_80129508(void *, s32, void *);
-#pragma push
-#pragma inline_depth 0
+#pragma dont_inline fn_801294FC
 void fn_80129690(void *arg0, s32 arg1, void *arg2) {
     u8 *dst = (u8 *)arg0;
     u8 *params = (u8 *)arg2;
@@ -157,7 +154,6 @@ void fn_80129690(void *arg0, s32 arg1, void *arg2) {
     s32 active;
     u8 value;
     u16 type;
-
     active = 0;
     if (params[2] != 0 && (s32)lbl_8055DFD4 != -1 && (s32)lbl_8055DFD4 == arg1) {
         active = 1;
@@ -186,7 +182,6 @@ void fn_80129690(void *arg0, s32 arg1, void *arg2) {
     } while (i < 0xE);
     fn_8012960C(arg0);
 }
-#pragma pop
 void fn_80129790(void) {
     fn_802E7C64();
     fn_80127C90(fn_80129400, lbl_8032A5B0);
@@ -225,6 +220,8 @@ s32 fn_80129890(void) {
     return count;
 }
 
+// Copies a 0x64-byte record for the given index from the table at lbl_80422180 (stride 0x80)
+// into dst when present, otherwise clears dst; returns nonzero if found.
 void *fn_801298E8(void *dst, int index) {
     s32 found;
     volatile u8 *src;
