@@ -49,47 +49,37 @@ extern int stricmp(const char *, const char *);
 extern char lbl_80559C18, lbl_80559C20, lbl_80559C28, lbl_80559C30;
 #pragma inline_depth(0)
 #pragma scheduling invalid_target
-void fn_80137A18(void) {
-    struct ItemListVTable {
-        void *reserved[3];
-        void *(*get_item)(void *, int);
-    };
-    struct ItemVTable {
-        void *reserved0;
-        void *reserved1;
-        const char *(*get_name)(void *);
-        void *reserved3[6];
-        float (*get_float)(void *, const char *);
-    };
-    struct ItemList {
-        struct ItemListVTable *vtable;
-    };
-    struct Item {
-        struct ItemVTable *vtable;
+#pragma cplusplus on
+extern "C" void fn_80137A18(void) {
+    struct ListDummy { virtual void v0(); virtual void *get(int); };
+    struct ItemDummy {
+        virtual const char *getName();
+        virtual void f1(); virtual void f2(); virtual void f3();
+        virtual void f4(); virtual void f5(); virtual void f6();
+        virtual float getF(const char *);
     };
     char name[0x100];
     char *result = (char *)fn_801379CC();
-    struct ItemList *list;
+    void *list;
     int index;
-    struct Item *item;
+    void *item;
     const char *item_name;
-
     sprintf(name, (const char *)(void *)&lbl_80559C18, result + 8);
-    list = (struct ItemList *)fn_80131808(name);
+    list = fn_80131808(name);
     index = 0;
     for (;;) {
-        item = (struct Item *)list->vtable->get_item(list, index++);
-        if (item == 0) {
+        item = ((ListDummy *)list)->get(index++);
+        if (item == 0)
             break;
-        }
-        item_name = item->vtable->get_name(item);
+        item_name = ((ItemDummy *)item)->getName();
         if (stricmp(item_name, (const char *)(void *)&lbl_80559C20) == 0) {
-            *(float *)result = item->vtable->get_float(item, (const char *)(void *)&lbl_80559C28);
-            *(float *)(result + 4) = item->vtable->get_float(item, (const char *)(void *)&lbl_80559C30);
+            *(float *)result = ((ItemDummy *)item)->getF((const char *)(void *)&lbl_80559C28);
+            *(float *)(result + 4) = ((ItemDummy *)item)->getF((const char *)(void *)&lbl_80559C30);
         }
     }
     fn_80131818(list);
 }
+#pragma cplusplus reset
 #pragma scheduling on
 void fn_80137B0C(void* hi) {
     lbl_80559C00 = hi;
@@ -108,27 +98,31 @@ extern void fn_80137A18(void);
 extern void fn_80137B14(void);
 extern void *memset(void *, int, unsigned long);
 extern char *strcpy(char *, const char *);
+#pragma use_lmw_stmw off
 void fn_80137B20(void) {
+    int *q = lbl_8042F798;
+    int four = 4;
+    void **pp = lbl_8042F788;
     int i = 0;
     lbl_8055E0E0 = 1;
     lbl_80559C00 = (void *)-1;
     do {
-        lbl_8042F788[i] = fn_801284F8(0x28, lbl_80559C38);
-        memset(lbl_8042F788[i], 0, 0x28);
-        strcpy((char *)lbl_8042F788[i] + 8, fn_80137950(i));
+        *pp = fn_801284F8(0x28, lbl_80559C38);
+        memset(*pp, 0, 0x28);
+        strcpy((char *)*pp + 8, fn_80137950(i));
         fn_80137B0C((void *)i);
         fn_801379CC();
-        lbl_8042F798[0] = 4;
-        lbl_8042F798[1] = 4;
-        lbl_8042F798[2] = 4;
-        lbl_8042F798[3] = 4;
+        lbl_8042F798[0] = four;
+        q[1] = four;
+        q[2] = four;
+        q[3] = four;
         fn_80137A18();
         fn_80137B14();
         i++;
+        pp++;
     } while (i < 4);
     fn_80137B0C((void *)0);
 }
-
 void fn_80137BE4(void) {
     void **p = lbl_8042F788;
     int i = 0;
