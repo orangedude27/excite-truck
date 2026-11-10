@@ -9,6 +9,7 @@ extern s32 fn_802C82C4(s32);
 extern s32 fn_802E30C8(s32, s32);
 extern s32 fn_80128668();
 extern s32 fn_80128670(s32);
+extern s32 lbl_80340B58;
 extern s32 fn_8027B9EC(s32);
 #pragma push
 #pragma small_data off
@@ -736,19 +737,17 @@ void fn_8023B368(void) {}
 s32 fn_8023B36C(void) { return 0; }
 
 void fn_8023B374(void *arg0) {
-    typedef struct { unsigned char pad[0xC]; void ** volatile dispatch; } Obj8023B374;
-    typedef s32 (*Fn8023B374)(void *, s32);
     s32 mode = fn_80210570();
     void *obj;
     if (mode == 2) {
         obj = *(void **)((char *)arg0 + 0x1C);
-        ((Fn8023B374)((Obj8023B374 *)obj)->dispatch[12])(obj, 3);
+        ((s32 (**)(void *, s32))*(void **)((char *)obj + 0xC))[12](obj, 3);
     } else {
         obj = *(void **)((char *)arg0 + 0x1C);
-        ((Fn8023B374)((Obj8023B374 *)obj)->dispatch[12])(obj, 2);
+        ((s32 (**)(void *, s32))*(void **)((char *)obj + 0xC))[12](obj, 2);
     }
     obj = *(void **)((char *)arg0 + 0x1C);
-    ((Fn8023B374)((Obj8023B374 *)obj)->dispatch[13])(obj, mode);
+    ((s32 (**)(void *, s32))*(void **)((char *)obj + 0xC))[13](obj, mode);
 }
 
 void fn_8023B400(void) {}
