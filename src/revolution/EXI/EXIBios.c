@@ -495,6 +495,8 @@ static void EXIIntrruptHandler(s16 intr, OSContext* ctx) {
     }
 }
 
+/* Handles a transfer-complete interrupt for an EXI channel, completing the transfer
+ * and invoking the channel's transfer-complete callback on a temporary context. */
 static void TCIntrruptHandler(s16 intr, OSContext* ctx) {
     EXIData* exi;
     EXIChannel chan;
