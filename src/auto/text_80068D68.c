@@ -17092,6 +17092,9 @@ void l2c_csm_closed(void *p_ccb, u16 event, void *p_msg) {
 
 void l2c_csm_orig_w4_sec_comp(void *p_ccb, u16 event, void *p_data)
 {
+    /* Originator L2CAP channel state machine handler for "waiting for security
+     * complete": logs the event, handles disconnect/security-complete/failure/
+     * free/disconnect-abort cases, and updates CCB state/callbacks accordingly. */
     char *p_str = (char *)jumptable_803183B0;
     void *p_rcb = *(void **)((u8 *)p_ccb + 0x30);
     void (*disconnect_ind)(u16, u8) = *(void (**)(u16, u8))((u8 *)p_rcb + 0x18);
