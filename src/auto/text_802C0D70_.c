@@ -34,6 +34,7 @@ void fn_802C0D70(float *arg0) {
         arg0[2] *= (float)cos(lbl_8055FB10) / length;
     }
 }
+#pragma scheduling on
 #pragma pop
 
 #pragma scheduling invalid_target
