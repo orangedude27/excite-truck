@@ -1291,8 +1291,29 @@ extern "C" void fn_801B2024(void *arg0) {
     }
     lbl_8055E674 = 0;
 }
-#pragma scheduling on
-#pragma cplusplus reset
+
+#pragma cplusplus on
+extern "C" void *fn_801B2118(void *arg0, s32 arg1) {
+    struct V { virtual void c(s32); };
+    void *tmp0;
+    void *tmp1;
+    if (arg0 != 0) {
+        tmp0 = *(void **)((u8 *)arg0 + 0x58);
+        *(void **)arg0 = (void *)lbl_80335BFC;
+        if (tmp0 != 0) {
+            ((struct V *)tmp0)->c(1);
+        }
+        tmp1 = *(void **)((u8 *)arg0 + 0x3C);
+        if (tmp1 != 0) {
+            ((struct V *)tmp1)->c(1);
+        }
+        if (arg1 > 0) {
+            ((s32 (*)(void *))fn_80128668)(arg0);
+        }
+    }
+    return arg0;
+}
+#pragma cplusplus off
 
 /* fn_801B2118 stub removed for prototype fix */
 
