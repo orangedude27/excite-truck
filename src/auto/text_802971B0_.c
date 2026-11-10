@@ -97,8 +97,8 @@ extern void *fn_802972A4(void *);
 __declspec(section ".sdata") extern char lbl_8055CA48[];
 __declspec(section ".sdata") extern char lbl_8055CA50[];
 #pragma scheduling invalid_target
-#pragma cplusplus on
 struct Vec97354 { float x; float y; float z; };
+#pragma cplusplus on
 struct Arg1Dummy97354 {
     virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
     virtual void v4(); virtual void v5(); virtual void v6();
