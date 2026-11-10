@@ -562,30 +562,33 @@ extern int vsprintf(char *, const char *, va_list);
 extern int stricmp(const char *, const char *);
 extern void fn_80147230(void *, const char *, ...);
 #pragma scheduling invalid_target
+// Formats a UI/debug text entry, updates its highlight/state color and selection fields in
+// the shared UI state (lbl_804BFF80) based on the formatted text/name, then forwards the
+// formatted string for rendering.
 void fn_802B6568(void *arg0, const char *fmt, ...) {
-    char buf[256];
+    char formattedText[256];
     va_list args;
-    Struct804BFF80 *s;
+    Struct804BFF80 *uiState;
 
     va_start(args, fmt);
-    vsprintf(buf, fmt, args);
+    vsprintf(formattedText, fmt, args);
 
-    s = (Struct804BFF80 *)&lbl_804BFF80;
+    uiState = (Struct804BFF80 *)&lbl_804BFF80;
     *(s32 *)((char *)arg0 + 0x18) = 0xFFD8D8D8;
 
-    if (s->str1[0] != 0) {
-        if (stricmp(s->str1, *(char **)arg0) == 0) {
+    if (uiState->str1[0] != 0) {
+        if (stricmp(uiState->str1, *(char **)arg0) == 0) {
             *(s32 *)((char *)arg0 + 0x18) = -0x100;
         }
-    } else if (s->str2[0] != 0) {
-        if (stricmp(s->str2, *(char **)arg0) == 0) {
+    } else if (uiState->str2[0] != 0) {
+        if (stricmp(uiState->str2, *(char **)arg0) == 0) {
             *(s32 *)((char *)arg0 + 0x18) = -1;
         }
-    } else if (fn_802B640C(arg0, (s32)buf) != 0) {
+    } else if (fn_802B640C(arg0, (s32)formattedText) != 0) {
         {
             char *src = *(char **)arg0;
             s32 n = 32;
-            char *dst = s->str2;
+            char *dst = uiState->str2;
             while ((*dst++ = *src++) != 0) {
                 if (--n <= 0) {
                     dst[-1] = 0;
@@ -615,7 +618,7 @@ void fn_802B6568(void *arg0, const char *fmt, ...) {
             *(s32 *)((char *)&lbl_804BFF80 + 0x64) = *(s32 *)((char *)&lbl_804BFF80 + 0x10);
         }
     }
-    fn_80147230(arg0, lbl_8055CE70, buf);
+    fn_80147230(arg0, lbl_8055CE70, formattedText);
 }
 
 #pragma cplusplus on
