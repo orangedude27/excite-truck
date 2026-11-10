@@ -520,33 +520,36 @@ extern "C" s32 fn_80260E30(void) {
     }
     return ret;
 }
-#pragma pop
-s32 fn_802610C8(void) {
+#pragma push
+#pragma cplusplus on
+extern "C" s32 fn_802610C8(void) {
+    struct Obj {
+        virtual void v0(); virtual void v1(); virtual void v2();
+        virtual void v3(); virtual void v4(); virtual void v5();
+        virtual s32 m8(u8 *);
+        virtual s32 m9();
+    };
     s32 result = 0;
     u32 *base;
-    void *object;
-    void **vtable;
+    Obj *object;
+    s32 second;
     if (lbl_8055F3EB != 0) {
         lbl_8055F3EA = 1;
         fn_80214A9C(30);
         base = (u32 *)lbl_8055F420;
-        object = *(void **)(base + base[0] + 0x18);
-        vtable = *(void ***)object;
-        result = ((s32 (*)(void *))vtable[9])(object);
+        object = *(Obj **)(base + base[0] + 0x18);
+        result = object->m9();
         base = (u32 *)lbl_8055F420;
-        object = *(void **)(base + base[0] + 0x18);
-        vtable = *(void ***)object;
-        ((void (*)(void *, u32 *))vtable[8])(object, base);
-        fn_8025C204(result);
+        object = *(Obj **)(base + base[0] + 0x18);
+        second = object->m8((u8 *)base);
+        ((s32 (*)(s32, s32))fn_8025C204)(second, result);
         fn_80214AF0(30);
         fn_80230E90(0);
         lbl_8055F3EA = 0;
     }
     return 0;
 }
-
-#pragma push
-#pragma cplusplus on
+#pragma pop
 /* --- the two-level selector of the challenge-difficulty screen --------- */
 /* lbl_8055F420 points at the frame header the screen loop (fn_80260954)
    builds on its stack, which carries the state of its cursor: a list of
@@ -863,11 +866,7 @@ void fn_80261A18(void *arg0, s32 arg1) {
 
 void fn_80261A40(s32 arg0) {
     fn_80236914();
-    if (arg0 == 2) {
-        lbl_8055F3E9 = 1;
-    } else {
-        lbl_8055F3E9 = 0;
-    }
+    lbl_8055F3E9 = arg0 == 2;
 }
 
 void fn_80261A7C(void *arg0, s32 arg1) {
