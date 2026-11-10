@@ -10,7 +10,7 @@ extern double fn_8002F234(double);
 extern double atan(double);
 extern double cos(double);
 extern double sin(double);
-extern void fn_802E30C8(char *, float, float, float);
+extern void fn_802E30C8(char *, ...);
 
 extern void fn_802C6CF8(int);
 
