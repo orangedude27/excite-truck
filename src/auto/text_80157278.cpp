@@ -2885,7 +2885,7 @@ extern "C" s32 fn_8015C684(void) {
 extern "C" s32 fn_8015C68C(void) { return 0xD; }
 
 #pragma cplusplus on
-extern "C" void fn_8015C694(void *arg0) {
+extern "C" void fn_8015C694(void *objPtr) {
     struct Obj {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
@@ -2901,21 +2901,22 @@ extern "C" void fn_8015C694(void *arg0) {
         virtual void v3(int, ...); virtual void v4(); virtual void v5(int);
         virtual void v6(int); virtual void v7(); virtual void v8(int); virtual void v9();
     };
-    Obj *obj = (Obj *)arg0;
+    Obj *obj = (Obj *)objPtr;
     int limit, current;
-    if (*(void **)((char *)arg0 + 0x248) != 0) {
-        (*(Adaptor **)((char *)arg0 + 0x248))->v2((int)&lbl_8055A058[0], obj->v23());
-        (*(Adaptor **)((char *)arg0 + 0x248))->v6(obj->v29());
+    /* Updates the attached adaptor at +0x248 with the object's current state/limits when present. */
+    if (*(void **)((char *)objPtr + 0x248) != 0) {
+        (*(Adaptor **)((char *)objPtr + 0x248))->v2((int)&lbl_8055A058[0], obj->v23());
+        (*(Adaptor **)((char *)objPtr + 0x248))->v6(obj->v29());
         obj->v22();
-        (*(Adaptor **)((char *)arg0 + 0x248))->v4();
+        (*(Adaptor **)((char *)objPtr + 0x248))->v4();
         limit = obj->v17();
         current = obj->v21();
-        if (current >= limit) (*(Adaptor **)((char *)arg0 + 0x248))->v8(1);
+        if (current >= limit) (*(Adaptor **)((char *)objPtr + 0x248))->v8(1);
     }
-    if (*(void **)((char *)arg0 + 0x248) != 0)
-        (*(Adaptor **)((char *)arg0 + 0x248))->v2((int)&lbl_8055A058[0], obj->v23());
-    if (*(void **)((char *)arg0 + 0x248) != 0)
-        (*(Adaptor **)((char *)arg0 + 0x248))->v2((int)&lbl_8055A058[0], obj->v23());
+    if (*(void **)((char *)objPtr + 0x248) != 0)
+        (*(Adaptor **)((char *)objPtr + 0x248))->v2((int)&lbl_8055A058[0], obj->v23());
+    if (*(void **)((char *)objPtr + 0x248) != 0)
+        (*(Adaptor **)((char *)objPtr + 0x248))->v2((int)&lbl_8055A058[0], obj->v23());
 }
 #pragma cplusplus reset
 
@@ -4153,7 +4154,8 @@ extern "C" void fn_80159624(void *arg0, void *arg1) {
         obj[0x4C] = 0;
     }
 }
-extern "C" s32 fn_80159708(void *arg0) { f32 f = *(f32 *)((char *)arg0 + 0x25C); return (s32)f; }
+#pragma scheduling on
+extern "C" s32 fn_80159708(void *arg0) { return (s32)*(f32 *)((char *)arg0 + 0x25C); }
 class Fn8015E338Item {
 public:
  virtual void v0(); virtual void v1(); virtual void v2(); virtual f32 v3(void*);
