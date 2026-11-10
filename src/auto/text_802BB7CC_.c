@@ -367,6 +367,7 @@ void fn_802BBE34(void) {
         var_r28 += 1;
     } while (var_r28 < 0x200);
 }
+#pragma pop
 #pragma scheduling on
 extern int fn_80128690(void);
 extern void fn_80128684(void);
