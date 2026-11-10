@@ -652,6 +652,7 @@ extern "C" u8 GetCellHeight__Q46nw4hbm2ut6detail11ResFontBaseCFv_80109F24(void* 
     return *(u8*)(*(u32*)(*(u32*)((char*)self+0x14)+8));
 }
 
+/* Returns a font resource height byte at +3 after validating this and its resource pointer. */
 extern "C" u8 GetCellHeight__Q46nw4hbm2ut6detail11ResFontBaseCFv_8010A130(void* self) {
     const char* file=lbl_80329140;
     u32 value=(u32)self;
