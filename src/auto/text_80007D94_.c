@@ -62,6 +62,11 @@ extern "C" void fn_80007DA0(void) {
     void *initialConfig;
     u32 index;
 
+    /* Load track entries from the "excite_beta_race" config (base+0x68) into
+       gRaceEventTable (lbl_8034EF38): for each "track" item store {name,
+       display string (base+0x74 key, default ""), environ (default "")} in
+       0xC-byte slots (max 0x28, overflows -> abend base+0x84), then qsort by
+       name with fn_80007D94. global[0x78]=count, global[0x79]=config ptr. */
     base = lbl_802FB6E0;
     initialConfig = fn_80131808(base + 0x68);
     global = (volatile u32 *)&lbl_8034EF38;
