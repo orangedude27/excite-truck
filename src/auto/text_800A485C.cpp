@@ -12292,6 +12292,33 @@ struct IosDevice {
 #define SD_CMD_READ         0x12  /* MMC READ_MULTIPLE_BLOCK */
 #define SD_CMD_WRITE        0x19  /* MMC WRITE_MULTIPLE_BLOCK */
 
+/* The 0x24 byte request block ioctl 7 takes: one card command, how the SD
+   module is to run it and, for a command that moves data, which data.  The
+   0x40 byte allocation is what the module reads past 0x24 for. */
+struct SDCmdBlock {
+    s32 command;     /* 0x00 the MMC/SD command to run */
+    s32 type;        /* 0x04 how it is run: callers pass 3, and 0 for 0x40 */
+    s32 responseKind; /* 0x08 2 for the 16 byte CSD answer, 1 or 3 otherwise */
+    s32 argument;    /* 0x0C the command's argument (card address, block length, ...) */
+    s32 count;       /* 0x10 blocks of data */
+    s32 blockSize;   /* 0x14 size of one block of data */
+    s32 buffer;      /* 0x18 the data itself */
+    s32 writeFlag;   /* 0x1C 1: the card reads "buffer" (a write to the card) */
+    s32 field20;     /* 0x20 */
+};
+
+/* The 0x1c byte block fn_800BAA8C is called back with when a request was left
+   running: what to report, what to copy out and what to free. */
+struct SDCmdRequest {
+    s32 callback;    /* 0x00 called with (result, callbackArg) */
+    s32 callbackArg; /* 0x04 */
+    s32 field8;      /* 0x08 the device block, used by the status command 4 */
+    s32 command;     /* 0x0C the command that was run */
+    s32 flag10;      /* 0x10 1, not read back */
+    s32 response;    /* 0x14 where the caller wants the card's response */
+    SDCmdBlock *cmd; /* 0x18 the request block, freed once the card is done */
+};
+
 /*
  * fn_800BB4E0 - read "length" bytes of the SD card opened in "device" starting
  * at the byte "offset".  Both have to be whole numbers of the card's 0x200 byte
