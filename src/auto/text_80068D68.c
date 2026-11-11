@@ -6962,7 +6962,7 @@ extern void *GKI_getbuf(u16);
 extern void fn_800716F0(void *);
 void bta_hh_add_device_to_list(void *arg0, s8 arg1, s16 arg2, void *arg3, s32 arg4, s32 arg5) {
     if (lbl_8055DC80 >= 5) {
-        fn_80070954(0x504, lbl_80315A64, arg4);
+        ((void (*)(u32, void *, s32))fn_80070954)(0x504, lbl_80315A64, arg4);
     }
     *((u8 *)arg0 + 0x16) = arg1;
     *((u8 *)arg0 + 0x18) = 1;
@@ -6970,13 +6970,13 @@ void bta_hh_add_device_to_list(void *arg0, s8 arg1, s16 arg2, void *arg3, s32 ar
     *((u8 *)arg0 + 0x13) = arg4;
     *((u8 *)arg0 + 0x15) = arg5;
     if (arg3 != 0) {
-        fn_800716F0((u8 *)arg0 + 4);
+        fn_800716F0(&((void **)arg0)[1]);
         if (*(u16 *)arg3 != 0) {
             void *p = GKI_getbuf(*(u16 *)arg3);
-            *(void **)((u8 *)arg0 + 4) = p;
+            ((void **)arg0)[1] = p;
             if (p != 0) {
                 *(u16 *)arg0 = *(u16 *)arg3;
-                memcpy(p, *(void **)((u8 *)arg3 + 4), *(u16 *)arg3);
+                memcpy(p, ((void **)arg3)[1], *(u16 *)arg3);
             }
         }
     }
@@ -7921,30 +7921,18 @@ tBTM_STATUS btm_remove_acl(BD_ADDR bd_addr) {
     u32 i = 0;
     u8 *entry = lbl_803C0F78 + 0x34;
     u16 handle;
-
-loop:
-    if (entry[0x119] == 0)
-        goto next;
-
-    if (memcmp(entry + 8, bd_addr, 6) != 0) {
-        goto next;
-    } else {
-        goto found;
+    while (i < 4) {
+        if (entry[0x119] != 0 && memcmp(entry + 8, bd_addr, 6) == 0)
+            goto found;
+        i++;
+        entry += 0x11C;
     }
-
-next:
-    i++;
-    entry += 0x11C;
-    if (i < 4)
-        goto loop;
     entry = 0;
-
 found:
     if (entry != 0)
         handle = *(u16 *)entry;
     else
         handle = 0xFFFF;
-
     if (btsnd_hcic_disconnect(handle, 0x13) == 0)
         return 3;
     return 0;
@@ -8519,10 +8507,10 @@ void btm_read_local_version_complete(UINT8 *p, UINT16 evt_len) {
     UINT8 status = p[0];
     if (status == 0) {
         base[0x636] = p[1];
-        *(u16 *)(base + 0x638) = p[2] + (p[3] << 8);
+        *(u16 *)(base + 0x638) = (p[3] << 8) + p[2];
         base[0x63A] = p[4];
-        *(u16 *)(base + 0x63C) = p[5] + (p[6] << 8);
-        *(u16 *)(base + 0x63E) = p[7] + (p[8] << 8);
+        *(u16 *)(base + 0x63C) = (p[6] << 8) + p[5];
+        *(u16 *)(base + 0x63E) = (p[8] << 8) + p[7];
         lbl_803C0F78[0x64E] = 4;
         lbl_803C0F78[0x64F] = 4;
     } else {
