@@ -46,7 +46,7 @@ struct Locals {
     float sp20, sp24, sp28, sp2C;
 };
 extern "C" void fn_8029C084(void*, int);
-extern "C" char lbl_8055CA90[];
+extern "C" u32 lbl_8055CA90;
 extern "C" char lbl_8055CA98[];
 extern "C" char lbl_8055CA9C[];
 extern "C" float lbl_8056459C;
