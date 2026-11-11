@@ -335,6 +335,8 @@ extern "C" void SetSize__Q46nw4hbm3lyt6detail11TexCoordAryFUc(void *self, u8 siz
 }
 #pragma unroll reset
 #pragma optimize_for_size reset
+#pragma optimize_for_size on
+#pragma unroll off
 extern "C" void Copy__Q46nw4hbm3lyt6detail11TexCoordAryFPCvUc(void* self, const void* src, u8 count) {
     u8* p = (u8*)self;
     if (count > p[0])
@@ -366,6 +368,8 @@ extern "C" void Copy__Q46nw4hbm3lyt6detail11TexCoordAryFPCvUc(void* self, const 
         } while (--n != 0);
     }
 }
+#pragma unroll reset
+#pragma optimize_for_size reset
 
 extern "C" int IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(unsigned int *color, unsigned char alpha) {
     if (alpha != 0xff) return 1;
@@ -581,16 +585,16 @@ extern "C" void* __dt__Q36nw4hbm3lyt5GroupFv(void* arg0, int arg1) {
     extern const char lbl_8031F6F4[];
     GroupLayout* group = (GroupLayout*)arg0;
     void* slot;
-    unsigned int end;
-    unsigned int node;
+    GroupListNode* node;
+    void* end;
     unsigned int current;
     if (group != 0) {
-        node = *(unsigned int*)((char*)group + 0x10);
-        end = (unsigned int)((char*)group + 0x10);
+        node = group->children.first;
+        end = &group->children.first;
         group->vtable = lbl_8031F628;
         while (node != end) {
-            current = node;
-            node = *(unsigned int*)current;
+            current = (unsigned int)node;
+            node = node->next;
             slot = (void*)current;
             Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(&group->children, &slot);
             if (current == 0)
@@ -3640,29 +3644,31 @@ extern "C" void PSMTXConcat(const f32*, const f32*, f32*);
 extern "C" void PSMTXCopy(const f32*, f32*);
 extern "C" void GXLoadPosMtxImm(const f32*, u32);
 extern "C" void GXSetCurrentMtx(u32);
-extern "C" void LoadMtx__Q34nw4r3lyt4PaneFRCQ34nw4r3lyt8DrawInfo(void* self, void* info) {
-    extern f32 lbl_80560EA8;
-    Mtx mtx;
-    f32* result;
-    if ((((u8*)info)[0x50] >> 7) & 1) {
-        PSMTXConcat((f32*)((u8*)info + 4), (f32*)((u8*)self + 0x84), &mtx[0][0]);
-        BOOL flip = (*(f32*)((u8*)info + 0x40) - *(f32*)((u8*)info + 0x38)) < lbl_80560EA8;
+extern "C" void LoadMtx__Q34nw4r3lyt4PaneFRCQ34nw4r3lyt8DrawInfo(void* self_, void* info_) {
+    extern float lbl_80560EA8;
+    unsigned char* ip = (unsigned char*)info_;
+    unsigned char* sp = (unsigned char*)self_;
+    float mtx[3][4];
+    float* result;
+    if ((ip[0x50] >> 7) & 1) {
+        PSMTXConcat((float*)(ip + 4), (float*)(sp + 0x84), (float*)mtx);
+        int flip = (*(float*)(ip + 0x40) - *(float*)(ip + 0x38)) < lbl_80560EA8;
         if (flip) {
-            mtx[0][3] = -mtx[0][3];
-            mtx[1][3] = -mtx[1][3];
-            mtx[2][3] = -mtx[2][3];
+            mtx[0][1] = -mtx[0][1];
+            mtx[1][1] = -mtx[1][1];
+            mtx[2][1] = -mtx[2][1];
         }
-        result = &mtx[0][0];
+        result = (float*)mtx;
     } else {
-        BOOL flip = (*(f32*)((u8*)info + 0x40) - *(f32*)((u8*)info + 0x38)) < lbl_80560EA8;
+        int flip = (*(float*)(ip + 0x40) - *(float*)(ip + 0x38)) < lbl_80560EA8;
         if (flip) {
-            PSMTXCopy((f32*)((u8*)self + 0x84), &mtx[0][0]);
-            mtx[0][3] = -mtx[0][3];
-            mtx[1][3] = -mtx[1][3];
-            mtx[2][3] = -mtx[2][3];
-            result = &mtx[0][0];
+            PSMTXCopy((float*)(sp + 0x84), (float*)mtx);
+            mtx[0][1] = -mtx[0][1];
+            mtx[1][1] = -mtx[1][1];
+            mtx[2][1] = -mtx[2][1];
+            result = (float*)mtx;
         } else {
-            result = (f32*)((u8*)self + 0x84);
+            result = (float*)(sp + 0x84);
         }
     }
     GXLoadPosMtxImm(result, 0);
