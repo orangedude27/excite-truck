@@ -1672,20 +1672,26 @@ extern "C" int strcmp(const char *, const char *);
 extern "C" const char lbl_80324A8C[];
 #pragma push
 #pragma scheduling on
-s32 nw4hbm::snd::detail::SoundArchiveFileReader::ConvertLabelStringToId(const nw4hbm::snd::SoundArchive::StringTree *arg1, const char *arg2) const {
-    const char *str = arg2;
-    const StringTreeLayout *tree = (const StringTreeLayout *)arg1;
+/* Looks a label string up in the archive's string trie and returns the sound id stored
+   at the leaf it leads to, or InvalidSoundId when the archive holds no such sound: the
+   tree is missing or its root index is out of range, the leaf carries no label, or the
+   string the archive stores for the leaf's label id is not the one asked for.
+   The trie holds one node per bit of the labels it was built from: an inner node tests
+   that bit of `labelString' and walks to the child for 0 or for 1. */
+s32 nw4hbm::snd::detail::SoundArchiveFileReader::ConvertLabelStringToId(const nw4hbm::snd::SoundArchive::StringTree *stringTree, const char *labelString) const {
+    const char *str = labelString;
+    const StringTreeLayout *tree = (const StringTreeLayout *)stringTree;
     const SoundArchiveFileReaderLayout *reader = (const SoundArchiveFileReaderLayout *)this;
     const StringTreeNodeLayout *node;
-    if (tree == 0) return -1;
-    u32 index = tree->nodeCount;
-    if (index >= tree->maxNodeCount) return -1;
-    node = &tree->nodes[index];
+    if (tree == 0) return InvalidSoundId;
+    u32 rootIndex = tree->nodeCount;
+    if (rootIndex >= tree->maxNodeCount) return InvalidSoundId;
+    node = &tree->nodes[rootIndex];
     s32 length = strlen(str);
-    while ((node->flags & 1) == 0) {
-        s32 bits = node->bitIndex;
-        s32 byteIndex = bits >> 3;
-        s32 bitIndex = bits & 7;
+    while ((node->flags & StringTreeNodeIsLeaf) == 0) {
+        s32 bitPos = node->bitIndex;
+        s32 byteIndex = bitPos >> 3;
+        s32 bitIndex = bitPos & 7;
         s32 child;
         if (byteIndex < length && (((s8)str[byteIndex] & (1 << (7 - bitIndex))) != 0))
             child = node->oneChild;
@@ -1693,10 +1699,13 @@ s32 nw4hbm::snd::detail::SoundArchiveFileReader::ConvertLabelStringToId(const nw
             child = node->zeroChild;
         node = &tree->nodes[child];
     }
+    /* The walk is over; `tree' now holds the leaf's label id, kept in the same variable.
+       InvalidLabelId, and a label id past the string table's count (asserted below),
+       mean the string is not a label of this archive. */
     tree = (const StringTreeLayout *)node->labelId;
     const char *label;
-    u32 sentinel = (u32)tree + 0x10000;
-    if (sentinel == 0xFFFF) {
+    u32 labelIdTest = (u32)tree + 0x10000; /* 0xFFFF for InvalidLabelId */
+    if (labelIdTest == 0xFFFF) {
         label = 0;
     } else {
         SoundArchiveLabelTableLayout *table = reader->labelTable;
@@ -1717,7 +1726,7 @@ s32 nw4hbm::snd::detail::SoundArchiveFileReader::ConvertLabelStringToId(const nw
     }
     if (strcmp(str, label) == 0)
         return node->soundId;
-    return -1;
+    return InvalidSoundId;
 }
 #pragma pop
 
