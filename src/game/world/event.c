@@ -56,30 +56,38 @@ extern char lbl_8033A354[];
 #pragma push
 #pragma optimize_for_size on
 #pragma use_lmw_stmw off
-void fn_801EF0AC(unsigned char *arg0) {
-    char buf[0x400];
+void fn_801EF0AC(unsigned char *script) {
+    char payloadCopy[0x400];
     unsigned int *slot;
-    unsigned char *data;
-    int index = 0;
-    int ret;
-    signed char id;
-    unsigned int i;
+    unsigned char *payload;
+    int offset = 0;
+    int consumed;
+    signed char evtType;
+    unsigned int slotIdx;
 
-    while (index < (int)*(unsigned int *)arg0) {
-        id = (signed char)arg0[index + 4];
-        data = arg0 + index + 5;
-        ret = -1;
-        slot = (unsigned int *)(lbl_80488678 + id * 16);
-        for (i = 0; i < 4; i++, slot++) {
+    /* Runs one event script: a u32 byte count followed by records laid out as
+     *   signed char evtType | payload bytes ...
+     * Each record's payload is copied into a private 0x400-byte buffer and handed
+     * to every handler registered for its type in lbl_80488678 (18 event types x
+     * 4 handler slots, see fn_801EEFDC / fn_801EF024); the last handler run
+     * returns how many payload bytes it consumed, and the walk advances past
+     * those plus the type byte. A type with no handler is reported
+     * ("No handler for evt type %d") and aborts the script. */
+    while (offset < (int)*(unsigned int *)script) {
+        evtType = (signed char)script[offset + 4];
+        payload = script + offset + 5;
+        consumed = -1;
+        slot = (unsigned int *)(lbl_80488678 + evtType * 16);
+        for (slotIdx = 0; slotIdx < 4; slotIdx++, slot++) {
             if (*slot != 0) {
-                memcpy(buf, data, 0x400);
-                ret = ((int (*)(char *))*slot)(buf);
+                memcpy(payloadCopy, payload, 0x400);
+                consumed = ((int (*)(char *))*slot)(payloadCopy);
             }
         }
-        if (ret != -1) {
-            index = index + ret + 1;
+        if (consumed != -1) {
+            offset = offset + consumed + 1;
         } else {
-            fn_802E317C(lbl_8033A354, *((volatile unsigned char *)arg0 + index + 4));
+            fn_802E317C(lbl_8033A354, *((volatile unsigned char *)script + offset + 4));
             return;
         }
     }
