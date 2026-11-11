@@ -1615,7 +1615,7 @@ extern "C" int fn_8029ADCC(void *arg0) {
     while (i < count) {
         obj = fn_80288208(i);
         *(float *)((char *)cursor + 0x1C0) = c;
-        if (fn_80287E20(obj, (const char *)lbl_8055CA90) != 0) {
+        if (fn_80287E20(obj, (const char *)&lbl_8055CA90) != 0) {
             obj = fn_80287E80(obj, (const char *)&lbl_8055CA90);
             *(float *)((char *)cursor + 0x1C0) = ((Dummy *)obj)->apply(lbl_80349508, *(float *)((char *)cursor + 0x1C0));
         }
