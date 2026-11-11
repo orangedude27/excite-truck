@@ -320,6 +320,7 @@ static void OpenCallbackFromReload(s32 result, NANDCommandBlock* block) {
     ErrorFromReload(result);
 }
 
+/* NAND read callback during config reload: on a full read, record size and close the file. */
 static void ReadCallbackFromReload(s32 result, NANDCommandBlock* block) {
 #pragma unused(block)
 
