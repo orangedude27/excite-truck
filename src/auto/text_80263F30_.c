@@ -75,9 +75,28 @@ struct PropertyReader802640C4 {
 };
 #pragma pop
 
-extern char lbl_80346338[];
-extern int lbl_8055C450;
-extern unsigned char lbl_8055F450;
+/* lbl_80346338 is the credits module's string/descriptor table (.data):
+ *   +0x000 "credits.bik"  - the credits movie; lbl_8055C450 is a char* pointing at it
+ *   +0x02C a 15-word float descriptor (the symbol lbl_80346364, copied by fn_802646D0)
+ *   +0x068 "credits.val"   - the value table holding the credits page
+ *   +0x074 "credits: failed to push my movie (%s) onto the stack!"
+ *   +0x0AC "credits_page"  - the .val entry fn_80263F30 looks for
+ *   +0x0C0 "credits: failed to pop my movie from the stack!"
+ *   +0x0F0 "firetext",  +0x0FC "TextWoot"    - item types fn_802640C4 builds
+ *   +0x108 "extra_delay", +0x114 "ExtraDelay"
+ *   +0x120 "allow_keys",  +0x12C "KeyEnabler"
+ *   +0x138 "ValTable_UIDialogMapping: can't handle item type '%s'"
+ */
+enum {
+    CREDITS_VAL_NAME = 0x68,      /* "credits.val" */
+    CREDITS_PAGE_NAME = 0xAC,     /* "credits_page" */
+    CREDITS_PUSH_FAIL_MSG = 0x74, /* "credits: failed to push my movie (%s) onto the stack!" */
+    CREDITS_POP_FAIL_MSG = 0xC0   /* "credits: failed to pop my movie from the stack!" */
+};
+
+extern char lbl_80346338[];      /* credits string table, see above */
+extern int lbl_8055C450;         /* char *creditsMovieName -> "credits.bik" */
+extern unsigned char lbl_8055F450; /* set while the credits may be skipped (read by fn_80265B5C) */
 
 extern int fn_8020A69C(void);
 extern void fn_8020A648(int);
