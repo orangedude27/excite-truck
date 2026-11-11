@@ -226,30 +226,27 @@ void fn_801301E0(unsigned char *arg0) {
     unsigned char *base;
     unsigned char *p;
     unsigned char *q;
-    unsigned char a, b, c, d;
+    int a, b, c, d;
     int i;
-
     a = arg0[0x40];
+    base = arg0;
     b = arg0[0x43];
+    p = arg0 + 0x44;
     c = arg0[0x41];
     d = arg0[0x42];
-    arg0[0x40] = b;
-    arg0[0x43] = a;
-    arg0[0x41] = d;
-    arg0[0x42] = c;
-
-    p = arg0 + 0x44;
     q = arg0 + 0x48;
-    base = arg0;
-    for (i = 0; i < *(int *)(arg0 + 0x40); i++) {
-        a = p[0]; b = p[3]; p[0] = b; p[3] = a;
-        a = p[1]; b = p[2]; p[1] = b; p[2] = a;
+    arg0[0x40] = (unsigned char)b;
+    i = 0;
+    arg0[0x43] = (unsigned char)a;
+    arg0[0x41] = (unsigned char)d;
+    arg0[0x42] = (unsigned char)c;
+    for (; i < *(int *)(arg0 + 0x40); i++) {
+        a = p[0]; b = p[3]; p[0] = (unsigned char)b; p[3] = (unsigned char)a;
+        a = p[1]; b = p[2]; p[1] = (unsigned char)b; p[2] = (unsigned char)a;
         p += 8;
-
-        a = q[0]; b = q[3]; q[0] = b; q[3] = a;
-        a = q[1]; b = q[2]; q[1] = b; q[2] = a;
+        a = q[0]; b = q[3]; q[0] = (unsigned char)b; q[3] = (unsigned char)a;
+        a = q[1]; b = q[2]; q[1] = (unsigned char)b; q[2] = (unsigned char)a;
         q += 8;
-
         *(unsigned int *)(base + 0x44) += (unsigned int)arg0;
         *(unsigned int *)(base + 0x48) += (unsigned int)arg0;
         base += 8;
@@ -265,6 +262,38 @@ void fn_8013028C(void) {
     }
     lbl_804230D0 = -1;
 }
+
+int fn_801302E0(void *arg0) {
+    int offset;
+    int index;
+    char *tbl;
+    char *ena;
+    if (*(void **)((char *)&lbl_804230D0 + 4) != 0) {
+        goto have_table;
+    }
+    goto done;
+have_table:
+    index = 0;
+    offset = 0;
+    goto check;
+loop:
+    tbl = *(char **)((char *)&lbl_804230D0 + 4);
+    ena = *(char **)(tbl + offset + 0x44);
+    if (stricmp((const char *)arg0, (const char *)ena) != 0) {
+        goto increment;
+    }
+    return *(int *)(*(char **)((char *)&lbl_804230D0 + 4) + index * 8 + 0x48);
+increment:
+    offset += 8;
+    index++;
+check:
+    if (index < *(int *)(*(char **)((char *)&lbl_804230D0 + 4) + 0x40)) {
+        goto loop;
+    }
+done:
+    return 0;
+}
+
 #pragma dont_inline reset
 
 int fn_80130390(void) {
@@ -649,7 +678,8 @@ extern void *memcpy(void *, const void *, unsigned int);
 extern char lbl_8032B028[];
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
-void fn_8013111C(int index) {
+/* Load language resource for the specified language index (0 or 1). */
+void fn_8013111C(int langIndex) {
     int size;
     unsigned int status;
     void *out;
@@ -657,13 +687,13 @@ void fn_8013111C(int index) {
     char *strings = lbl_8032B028;
     char *path;
     void *buffer;
-    if (index < 0)
+    if (langIndex < 0)
         return;
-    if ((unsigned int)index >= 2)
+    if ((unsigned int)langIndex >= 2)
         return;
     fn_8013028C();
     fn_80131308();
-    fn_8012BEF0(*(void **)((char *)lbl_802F8E60 + index * 0xC));
+    fn_8012BEF0(*(void **)((char *)lbl_802F8E60 + langIndex * 0xC));
     path = strings + 0x2E8;
     size = 0;
     buffer = fn_8012C370(path, 0x4C414E47, &status, &size, 0, &out);
@@ -681,7 +711,7 @@ void fn_8013111C(int index) {
         fn_802E30C8(strings + 0x1D4, path);
     }
     fn_8012FAB8(strings + 0x2F4);
-    lbl_804230D0 = index;
+    lbl_804230D0 = langIndex;
 }
 #pragma scheduling on
 #pragma use_lmw_stmw on
@@ -729,13 +759,12 @@ extern int strlen(const char *);
 extern int fn_8002B1D8(const char *, const char *, int);
 #pragma scheduling invalid_target
 void fn_80131368(char *arg0) {
-    int flag = 0;
     int c;
     int signedC;
+    int flag = 0;
     int isNumber;
     int *p;
     unsigned int i;
-
     c = *(unsigned char *)arg0;
     signedC = (signed char)c;
     if (signedC < 0 || signedC >= 0x100)
@@ -744,12 +773,10 @@ void fn_80131368(char *arg0) {
         isNumber = 0;
     else
         isNumber = *(unsigned short *)(*(int *)(*(int *)((char *)&lbl_802FE850 + 0x38) + 8) + signedC * 2) & 8;
-
     if (isNumber) {
         lbl_8055E04C = atoi(arg0);
         return;
     }
-
     p = lbl_802F8E60;
     i = 0;
     do {
