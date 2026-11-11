@@ -3562,69 +3562,47 @@ extern "C" void Update__Q46nw4hbm3snd6detail10BasicSoundFv(void *self) {
     }
 }
 
-extern "C" void Shutdown__Q46nw4hbm3snd6detail10BasicSoundFv(void *self) {
+void nw4hbm::snd::detail::BasicSound::Shutdown() {
     extern void DetachSound__Q34nw4r3snd11SoundHandleFv(void *);
     extern void detail_FreePlayerHeap__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *, void *);
     extern void detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *, void *);
     extern void detail_RemoveSoundList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound_800F8880(void *, void *);
     extern void RemoveSoundList__Q46nw4hbm3snd6detail19ExternalSoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *, void *);
     extern float lbl_80560FB0;
-    class Ext {
-    public:
-        virtual void e0(); virtual void notify(int, void *);
-    };
-    class Handle {
-    public:
-        virtual void h0(); virtual void h1(); virtual void stop(); virtual void h3();
-        virtual int isValid(); virtual void h5(); virtual void h6(); virtual void h7();
-        virtual void setVolume(float);
-    };
-    class Self {
-    public:
-        virtual void s0(); virtual void s1(); virtual void s2(); virtual void s3();
-        virtual void s4(); virtual void s5(); virtual void s6(); virtual void s7();
-        virtual void s8(); virtual void s9(); virtual void s10(); virtual void s11();
-        virtual void s12(); virtual void s13(); virtual void s14(); virtual void s15();
-        virtual void s16(); virtual void s17();
-        virtual int check();
-        virtual void release();
-        virtual void s20();
-        virtual Handle *getHandle();
-    };
-    Self *s = (Self *)self;
-    Handle *h = s->getHandle();
-    if (h->isValid() != 0) {
-        if (*(unsigned char *)((char *)self + 0x69) != 0) {
-            h->setVolume(lbl_80560FB0);
+    BasicSoundVt *sound = (BasicSoundVt *)this;
+    SoundPlayerVt *player = sound->GetPlayer();
+    if (player->IsValid() != 0) {
+        if (stopWhenFaded != 0) {
+            player->SetVolume(lbl_80560FB0);
         }
-        h->stop();
+        player->Stop();
     }
-    *(int *)((char *)self + 0x78) = -1;
-    *(int *)((char *)s->getHandle() + 4) = -1;
-    if (*(void **)((char *)self + 8) != 0) {
-        DetachSound__Q34nw4r3snd11SoundHandleFv(*(void **)((char *)self + 8));
+    soundId = -1;
+    sound->GetPlayer()->soundId = -1;
+    if (primaryHandle != 0) {
+        DetachSound__Q34nw4r3snd11SoundHandleFv(primaryHandle);
     }
-    if (*(void **)((char *)self + 0xC) != 0) {
-        DetachSound__Q34nw4r3snd11SoundHandleFv(*(void **)((char *)self + 0xC));
+    if (secondaryHandle != 0) {
+        DetachSound__Q34nw4r3snd11SoundHandleFv(secondaryHandle);
     }
-    if (s->check() != 0) {
-        s->release();
+    if (sound->HasResource() != 0) {
+        sound->ReleaseResource();
     }
-    if (*(int *)((char *)self + 4) != 0) {
-        detail_FreePlayerHeap__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(*(void **)((char *)self + 0x10), self);
+    if (fromPlayerHeap != 0) {
+        detail_FreePlayerHeap__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(soundPlayer, this);
     }
-    detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(*(void **)((char *)self + 0x10), self);
-    detail_RemoveSoundList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound_800F8880(*(void **)((char *)self + 0x10), self);
-    if (*(void **)((char *)self + 0x14) != 0) {
-        RemoveSoundList__Q46nw4hbm3snd6detail19ExternalSoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(*(void **)((char *)self + 0x14), self);
+    detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(soundPlayer, this);
+    detail_RemoveSoundList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound_800F8880(soundPlayer, this);
+    if (externalPlayer != 0) {
+        RemoveSoundList__Q46nw4hbm3snd6detail19ExternalSoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(externalPlayer, this);
     }
-    Ext *ext = *(Ext **)((char *)self + 0x20);
-    if (ext != 0) {
-        ext->notify(*(int *)((char *)self + 0x24), self);
-        *(int *)((char *)self + 0x24) = 0;
+    ShutdownHookVt *hook = shutdownHook;
+    if (hook != 0) {
+        hook->Notify(hookId, this);
+        hookId = 0;
     }
-    *(unsigned char *)((char *)self + 0x65) = 0;
-    *(unsigned char *)((char *)self + 0x69) = 0;
+    started = 0;
+    stopWhenFaded = 0;
 }
 
 #pragma dont_inline on
