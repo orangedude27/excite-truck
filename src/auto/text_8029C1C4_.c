@@ -158,7 +158,7 @@ void *__dt__Q34nw4r2ef6EffectFv_8029C3F0(void *arg0, int arg1) {
 }
 
 #pragma push
-#pragma ppc_psq_save on
+#pragma processor 750
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 void fn_8029C450(void *arg0, int arg1) {
@@ -170,12 +170,14 @@ void fn_8029C450(void *arg0, int arg1) {
     extern int lbl_8055F7F0, lbl_8055F7F4;
     extern int lbl_804B5010[], lbl_804B5030[];
     extern float lbl_80558DC4, lbl_80564638, lbl_8056463C;
-    float f31, f30;
+    float f30;
+    float tmp;
+    float f31;
     void **p;
     int n, i;
-
     f30 = lbl_80564638;
-    if ((float)__fabs((double)fn_801E7E24()) > lbl_80558DC4) {
+    tmp = fn_801E7E24();
+    if (!((float)__fabs((double)tmp) <= lbl_80558DC4)) {
         f31 = lbl_8056463C;
         n = 0;
         p = (void **)arg0;
@@ -1291,10 +1293,51 @@ void fn_8029E49C(int unused, void *arg1, int arg2) {
     }
 }
 
-#pragma push
-#pragma cplusplus on
-#pragma dont_inline on
 void *fn_8029E754(void *arg0, void *arg1, int arg2) {
+    float *out;
+    float *in;
+    float half;
+    float scale;
+    float x, y, z, w, xx, yy, zz;
+    float a, b, c, d, e, f;
+    float qx, qy, qz;
+    out = (float *)arg0;
+    in = (float *)arg1;
+    half = lbl_80564628;
+    scale = lbl_8056465C;
+    w = in[3];
+    x = in[0];
+    xx = in[4];
+    a = x + w;
+    y = in[1];
+    z = in[2];
+    b = y + half;
+    zz = in[5];
+    c = z + xx;
+    yy = in[6];
+    d = b + half;
+    e = a + zz;
+    f = c + yy;
+    qx = scale * (d - y);
+    qy = scale * (e - x);
+    qz = scale * (f - z);
+    out[0] = x;
+    out[1] = y;
+    out[2] = z;
+    out[3] = a;
+    out[4] = b;
+    out[5] = c;
+    out[6] = x + zz;
+    out[7] = b;
+    out[8] = z + yy;
+    out[9] = e;
+    out[10] = d;
+    out[11] = f;
+    out[12] = x + qy;
+    out[13] = y + qx;
+    out[14] = z + qz;
+    out[15] = PSQUATMultiply(out, out + 12);
+    ((int *)arg0)[16] = (int)fn_802CAC28(arg2, 0);
     return arg0;
 }
 #pragma dont_inline reset
