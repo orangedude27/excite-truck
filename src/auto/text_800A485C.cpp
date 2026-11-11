@@ -19217,31 +19217,44 @@ extern "C" void fn_800D1AEC(void) {
     fn_80060CC0(r3, 1, (u32)&fn_800D1B1C);
 }
 
-extern "C" void fn_800D1B1C(s32 index, s32 mode) {
-    u8 *base = (u8 *)lbl_8055DDB0;
-    if (base == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E960, 0xA3, lbl_8031E9A0);
+/* WPAD's answer to "turn this slot's Wii Remote speaker on" - the callback
+ * Connect() and the retry alarm hand to WPADControlSpeaker (fn_80060CC0) with
+ * the command, and it comes back here with the status that command ended
+ * with.
+ *
+ * With the speaker on (WPAD_ERR_OK) the slot's run of bytes is marked as
+ * streaming and the play command that starts it is queued behind, answered by
+ * fn_800D1C48.  WPAD_ERR_BUSY means the command could not go out at all: the
+ * slot's own alarm is armed - for the same command again, through
+ * fn_800D1AEC - on a delay taken from how long the system has been running.
+ * Any other status, a controller that is not there or an error there is no
+ * point retrying, leaves the slot alone.
+ */
+extern "C" void fn_800D1B1C(s32 slot, s32 status) {
+    u8 *spk = (u8 *)pRmtSpk;
+    if (spk == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E960, 0xA3 /* HBMRemoteSpk.cpp */, lbl_8031E9A0);
     }
-    if (mode == -1)
+    if (status == WPAD_ERR_NO_CONTROLLER)
         goto done;
-    if (mode >= -1)
+    if (status >= WPAD_ERR_NO_CONTROLLER)
         goto play;
-    if (mode < -2)
+    if (status < WPAD_ERR_COMMUNICATION_ERROR)
         goto done;
     goto rearm;
 play:
-    if (mode >= 1)
+    if (status >= 1) /* WPAD answers no status above OK */
         goto done;
     {
-        u8 *entry = base + index * 0x68;
-        entry[0x5C] = 1;
-        fn_80060CC0((void *)index, 4, (u32)&fn_800D1C48);
+        u8 *entry = spk + slot * RMTSPK_SLOT_SIZE;
+        RMTSPK_SLOT_STREAMING(entry) = 1;
+        fn_80060CC0((void *)slot, WPAD_SPEAKER_PLAY, (u32)&fn_800D1C48);
     }
     goto done;
 rearm:
     {
-        void *alarm = base + index * 0x68;
-        OSSetAlarmUserData((OSAlarm *)alarm, (void *)index);
+        void *alarm = spk + slot * RMTSPK_SLOT_SIZE;
+        OSSetAlarmUserData((OSAlarm *)alarm, (void *)slot);
         OSCancelAlarm((OSAlarm *)alarm);
         u32 ticks = *(volatile u32 *)0x800000F8;
         u32 delay = ((ticks >> 2) / 1000U) * 0x32U;
