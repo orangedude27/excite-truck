@@ -222,37 +222,39 @@ void fn_80263980(void *arg0) {
 }
 
 extern double lbl_80563BE0;
-s32 fn_80263998(void *arg0, s32 arg1) {
-    u8 *self = (u8 *)arg0;
+s32 fn_80263998(void *obj, s32 event) {
+    /* Handles events 0x125/0x126/0x127: when enabled, latches state at +0x28
+     * and records a start time at +0x2C (ms) on event 0x125. */
+    u8 *objBytes = (u8 *)obj;
 
-    if (self[0x29] != 0) {
-        switch (arg1) {
+    if (objBytes[0x29] != 0) {
+        switch (event) {
         case 0x125:
-            if (self[0x28] == 0) {
-                self[0x28] = 1;
-                *(f32 *)(self + 0x2C) = (f32)fn_802E2C20() / lbl_80563BD8;
+            if (objBytes[0x28] == 0) {
+                objBytes[0x28] = 1;
+                *(f32 *)(objBytes + 0x2C) = (f32)fn_802E2C20() / lbl_80563BD8;
             }
             break;
         case 0x126:
             break;
         case 0x127:
-            if (self[0x28] != 0)
-                self[0x28] = 0;
+            if (objBytes[0x28] != 0)
+                objBytes[0x28] = 0;
             break;
         }
     }
 
-    if (self[0x29] != 0) {
-        switch (arg1) {
+    if (objBytes[0x29] != 0) {
+        switch (event) {
         case 0x125:
-            if (self[0x28] == 0)
-                self[0x28] = 1;
+            if (objBytes[0x28] == 0)
+                objBytes[0x28] = 1;
             break;
         case 0x126:
             break;
         case 0x127:
-            if (self[0x28] != 0)
-                self[0x28] = 0;
+            if (objBytes[0x28] != 0)
+                objBytes[0x28] = 0;
             break;
         }
     }
