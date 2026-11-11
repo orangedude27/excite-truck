@@ -11411,31 +11411,32 @@ extern "C" s32 fn_800B90A8(s32 arg0) {
 }
 
 extern "C" s32 NANDClose(void *);
-extern "C" s32 fn_800B92A8(s32 arg0) {
-    u8 *entry;
-    s32 closeResult = 0;
-    u16 index;
+/* Close a NAND file slot by handle ID, clearing its slot state on success. */
+extern "C" s32 fn_800B92A8(s32 fileId) {
+    u8 *slot;
+    s32 nandCloseResult = 0;
+    u16 slotIndex;
 
     fn_800B8004(lbl_8055DD30);
-    if (arg0 == 0) {
+    if (fileId == 0) {
         fn_800B8048(lbl_8055DD30);
         return -0x14;
     }
 
-    for (index = 0; index < 0x17; index++) {
-        entry = (u8 *)lbl_80405D58 + index * 0xF0;
-        if (*(u32 *)entry == (u32)arg0) {
-            closeResult = NANDClose(entry + 0x58);
-            fn_800A499C((const char *)entry, 0, 0xF0);
+    for (slotIndex = 0; slotIndex < 0x17; slotIndex++) {
+        slot = (u8 *)lbl_80405D58 + slotIndex * 0xF0;
+        if (*(u32 *)slot == (u32)fileId) {
+            nandCloseResult = NANDClose(slot + 0x58);
+            fn_800A499C((const char *)slot, 0, 0xF0);
             break;
         }
     }
 
     fn_800B8048(lbl_8055DD30);
-    if (closeResult != 0) {
+    if (nandCloseResult != 0) {
         return -0x14;
     }
-    return index == 0x17 ? -0x16 : 0;
+    return slotIndex == 0x17 ? -0x16 : 0;
 }
 
 extern "C" u8 lbl_80405D58[];
