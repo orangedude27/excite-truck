@@ -133,13 +133,15 @@ s32 fn_801B06D8(void *arg0, void *arg1, s32 arg2) {
         f32 dy = *(f32 *)((u8 *)arg1 + 4) * step;
         f32 x = *(f32 *)arg0 + dx;
         f32 y = *(f32 *)((u8 *)arg0 + 4) + dy;
+        register s32 enabled;
         sp14 = start;
         sp8 = x;
         spC = y;
         sp10 = x;
         sp18 = y;
         if (fn_802B04D4((f32 *)&sp10, dy, x, dx)) return 1;
-        if (*(volatile s32 *)&lbl_8055E66C && fn_80139EC4(sp8, spC)) return 1;
+        enabled = lbl_8055E66C;
+        if (enabled && fn_80139EC4(sp8, spC)) return 1;
         step += increment;
     }
     return 0;
@@ -821,7 +823,9 @@ extern "C" void fn_801B15A8(s32 arg0, f32 farg0) {
 
 #pragma cplusplus on
 #pragma use_lmw_stmw off
-extern "C" void fn_801B179C(void *arg0, s32 arg1, s32 arg2) {
+extern "C" void fn_801B179C(void *self, s32 index, s32 data) {
+    // Initialize this object's fields and create/attach related subobjects from
+    // manager-provided resources; increments a global counter for a specific tag.
     struct Manager {
         virtual void d0();
         virtual void d1();
@@ -836,25 +840,25 @@ extern "C" void fn_801B179C(void *arg0, s32 arg1, s32 arg2) {
     void *obj;
     void *second;
     void *value;
-    s32 size = arg1 + 1;
-    *(s32*)((u8*)arg0 + 0x60) = arg1;
-    *(s32*)((u8*)arg0 + 0x5C) = arg2;
-    *(s32*)((u8*)arg0 + 0x6C) = arg1;
-    *(s32*)((u8*)arg0 + 8) = size;
+    s32 size = index + 1;
+    *(s32*)((u8*)self + 0x60) = index;
+    *(s32*)((u8*)self + 0x5C) = data;
+    *(s32*)((u8*)self + 0x6C) = index;
+    *(s32*)((u8*)self + 8) = size;
     obj = fn_80156A40();
     first = fn_801284F8(0x68, lbl_80335B28);
     if (first != 0) {
-        value = ((Manager *)obj)->getFirst(arg1);
+        value = ((Manager *)obj)->getFirst(index);
         first = fn_80135DC4(first, 1, value);
     }
-    *(void**)((u8*)arg0 + 0x58) = first;
+    *(void**)((u8*)self + 0x58) = first;
     second = fn_801284F8(0x34, lbl_80335B3C);
     if (second != 0) second = fn_801352B8();
-    *(void**)((u8*)arg0 + 0x3C) = second;
-    *(void**)((u8*)second + 0x30) = *(void**)((u8*)arg0 + 0x58);
-    value = ((Manager *)obj)->getSecond(arg1);
-    ((Target *)*(void**)((u8*)arg0 + 0x3C))->set(value);
-    if ((u32)(*(u32*)((u8*)arg2 + 0x10) + 0xAFBD0000U) == 0x4152U) {
+    *(void**)((u8*)self + 0x3C) = second;
+    *(void**)((u8*)second + 0x30) = *(void**)((u8*)self + 0x58);
+    value = ((Manager *)obj)->getSecond(index);
+    ((Target *)*(void**)((u8*)self + 0x3C))->set(value);
+    if ((u32)(*(u32*)((u8*)data + 0x10) + 0xAFBD0000U) == 0x4152U) {
         lbl_8055E67C += 1;
     }
 }
@@ -922,32 +926,46 @@ extern "C" void fn_801B196C(s32 arg0, s32 arg1) {
     Manager *manager;
     Object *object;
     f32 *data;
-    f32 scale, dx, dy, x, dz, y, z;
+    f32 scale;
+    f32 bx54;
+    f32 bx58;
+    f32 bx5c;
+    f32 dx;
+    f32 dy;
+    f32 bx94;
+    f32 bx98;
+    f32 x;
+    f32 bx9c;
+    f32 dz;
+    f32 y;
+    f32 z;
     f32 points[5];
     void *result;
-
     manager = (Manager *)fn_80156A40();
     manager->d4(*(s32 *)((u8 *)entity + 0x1EC), (u8 *)entity + 0x60);
-
     data = *(f32 **)((u8 *)self + 0x5C);
     scale = *(f32 *)((u8 *)data + 0x5BC);
-    dx = *(f32 *)((u8 *)data + 0x54) * scale;
-    dy = *(f32 *)((u8 *)data + 0x58) * scale;
-    x = *(f32 *)((u8 *)data + 0x94) + dx;
-    dz = *(f32 *)((u8 *)data + 0x5C) * scale;
-    y = *(f32 *)((u8 *)data + 0x98) + dy;
+    bx54 = *(f32 *)((u8 *)data + 0x54);
+    bx58 = *(f32 *)((u8 *)data + 0x58);
+    bx5c = *(f32 *)((u8 *)data + 0x5C);
+    dx = bx54 * scale;
+    dy = bx58 * scale;
+    bx94 = *(f32 *)((u8 *)data + 0x94);
+    bx98 = *(f32 *)((u8 *)data + 0x98);
+    x = bx94 + dx;
+    bx9c = *(f32 *)((u8 *)data + 0x9C);
+    dz = bx5c * scale;
+    y = bx98 + dy;
+    z = bx9c + dz;
     points[2] = x;
-    z = *(f32 *)((u8 *)data + 0x9C) + dz;
     points[0] = x;
     points[3] = y;
     points[4] = z;
     points[1] = z;
-
     manager = (Manager *)fn_80156A40();
     result = manager->d3(*(s32 *)((u8 *)self + 0x60));
     object = *(Object **)((u8 *)self + 0x3C);
     object->d2(result, points, 0);
-
     object = *(Object **)((u8 *)self + 0x3C);
     *(s32 *)((u8 *)self + 0x4C) = *(s32 *)((u8 *)object + 4);
     *(f32 *)((u8 *)self + 0x50) = *(f32 *)((u8 *)object + 8);
