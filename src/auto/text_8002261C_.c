@@ -1,54 +1,60 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-extern char lbl_8035BB58[];
+extern unsigned char lbl_8035BB58[];
 extern unsigned char lbl_8055D678;
 extern void *memset(void *, int, unsigned int);
-extern void deallocate_from_fixed_pools(void *, void *);
-extern void Block_link(unsigned int, void *);
-extern void __sys_free(unsigned int);
+extern void deallocate_from_fixed_pools(void ***, unsigned char *, unsigned int);
+extern void Block_link(void *, void *);
+extern void __sys_free(void *);
 void free(void *arg0) {
-    unsigned int size, block, flags;
-    unsigned int *p;
-    void **pool;
-    void *linkArg;
-    void *prev;
-    void *next;
+    unsigned int size;
+    unsigned int block;
+    void ***pool;
+    unsigned char *heapBlock;
+    unsigned int flags;
+    unsigned int *canFree;
+    unsigned char *prev;
+    unsigned char *next;
     if (lbl_8055D678 == 0) {
         memset(lbl_8035BB58, 0, 0x34);
         lbl_8055D678 = 1;
     }
-    pool = (void **)lbl_8035BB58;
+    pool = (void ***)lbl_8035BB58;
     if (arg0 != 0) {
-        block = *(unsigned int *)((char *)arg0 - 4);
+        block = *(unsigned int *)((unsigned char *)arg0 - 4);
         if ((block & 1) == 0) {
             size = *(unsigned int *)(block + 8);
         } else {
-            size = (*(unsigned int *)((char *)arg0 - 8) & 0xFFFFFFF8) - 8;
+            size = (*(unsigned int *)((unsigned char *)arg0 - 8) & ~7u) - 8;
         }
-        if (size <= 0x44) {
-            deallocate_from_fixed_pools(pool, arg0);
+        if (size <= 68) {
+            deallocate_from_fixed_pools(pool, (unsigned char *)arg0, size);
             return;
         }
-        linkArg = (char *)arg0 - 8;
-        arg0 = (void *)(*(volatile unsigned int *)((char *)arg0 - 4) & 0xFFFFFFFE);
-        Block_link((unsigned int)arg0, linkArg);
-        p = (unsigned int *)arg0;
-        flags = p[4];
-        size = 0;
-        if ((flags & 2) == 0 && (flags & 0xFFFFFFF8) == ((p[3] & 0xFFFFFFF8) - 0x18)) size = 1;
-        if (size != 0) {
-            prev = (void *)p[1];
-            if (prev == p) prev = 0;
-            if (pool[0] == p) pool[0] = prev;
-            if (prev != 0) {
-                next = *(void **)p;
-                *(void **)prev = next;
-                *((void **)next + 1) = prev;
+        heapBlock = (unsigned char *)(*(unsigned int *)((unsigned char *)arg0 - 4) & ~1u);
+        Block_link(heapBlock, (unsigned char *)arg0 - 8);
+        flags = *(unsigned int *)(heapBlock + 0x10);
+        canFree = (unsigned int *)0;
+        if ((flags & 2) == 0 && ((flags & ~7u) == ((*(unsigned int *)(heapBlock + 0xC) & ~7u) - 0x18))) {
+            canFree = (unsigned int *)1;
+        }
+        if (canFree != 0) {
+            prev = *(unsigned char **)(heapBlock + 4);
+            if (prev == heapBlock) {
+                prev = 0;
             }
-            p[1] = 0;
-            p[0] = 0;
-            __sys_free((unsigned int)p);
+            if ((unsigned char *)*pool == heapBlock) {
+                *pool = (void **)prev;
+            }
+            if (prev != 0) {
+                next = *(unsigned char **)heapBlock;
+                *(unsigned char **)prev = next;
+                *(unsigned char **)(next + 4) = prev;
+            }
+            *(unsigned char **)(heapBlock + 4) = 0;
+            *(unsigned char **)heapBlock = 0;
+            __sys_free(heapBlock);
         }
     }
 }
