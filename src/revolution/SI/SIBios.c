@@ -1026,6 +1026,7 @@ void SPEC0_MakeStatus(s32 chan, PADStatus* status, u32 data[2]) {
     status->substickY -= 128;
 }
 
+/* Decode controller report words for PAD spec type 1 into a PADStatus. */
 void SPEC1_MakeStatus(s32 chan, PADStatus* status, u32 data[2]) {
     (void)chan;
 
