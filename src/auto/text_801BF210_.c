@@ -608,8 +608,8 @@ void *fn_801C0180(void *arg0, int arg1) {
     return arg0;
 }
 
-/* The frame places Setup at sp+0x30; reversed float locals preserve the target FPR order. */
-void fn_801C0204(void *arg0, int *arg1) {
+/* Initializes an object (arg0) with setup params from arg1, sets default transform/volume fields, creates a "panelvol" subobject, attaches it, and clears a flag at 0x1E8. */
+void fn_801C0204(void *obj, int *param) {
     struct Setup {
         int value;
         int size;
@@ -645,28 +645,29 @@ void fn_801C0204(void *arg0, int *arg1) {
     {
         float next, first;
         int value;
+        /* lbl_805628D0 = 45.45, lbl_805628D4 = 4.22799 */
         first = *(volatile float *)&lbl_805628D0;
         frame.setup.size = 0x18;
         next = *(volatile float *)&lbl_805628D4;
-        value = *(volatile int *)arg1;
+        value = *(volatile int *)param;
         frame.setup.value = value;
         frame.setup.first = first;
         frame.setup.second = next;
         frame.setup.third = next;
         frame.setup.fourth = next;
     }
-    fn_8017B0F8(arg0, (void *)&frame.setup);
+    fn_8017B0F8(obj, (void *)&frame.setup);
     {
         float f3 = lbl_805628B8;
         float f2 = lbl_805628D8;
         float f1 = lbl_805628DC;
         float f0 = lbl_805628E0;
-        *(float *)((char *)arg0 + 0x1FC) = f3;
-        *(float *)((char *)arg0 + 0x200) = f3;
-        *(float *)((char *)arg0 + 0x204) = f2;
-        *(float *)((char *)arg0 + 0x208) = f3;
-        *(float *)((char *)arg0 + 0x20C) = f1;
-        *(float *)((char *)arg0 + 0x210) = f0;
+        *(float *)((char *)obj + 0x1FC) = f3;
+        *(float *)((char *)obj + 0x200) = f3;
+        *(float *)((char *)obj + 0x204) = f2;
+        *(float *)((char *)obj + 0x208) = f3;
+        *(float *)((char *)obj + 0x20C) = f1;
+        *(float *)((char *)obj + 0x210) = f0;
         frame.stack6 = f3;
         frame.stack1 = f3;
         frame.stack5 = f3;
@@ -675,11 +676,11 @@ void fn_801C0204(void *arg0, int *arg1) {
     }
     if (result != 0) {
         float value = lbl_805628E4;
-        int field = *(int *)((char *)arg0 + 0x214);
-        result = fn_801A25F8(result, (char *)arg0 + 0x3C, field, arg0, value);
+        int field = *(int *)((char *)obj + 0x214);
+        result = fn_801A25F8(result, (char *)obj + 0x3C, field, obj, value);
     }
-    fn_80179F94(arg0, result);
-    *(unsigned char *)((char *)arg0 + 0x1E8) = 0;
+    fn_80179F94(obj, result);
+    *(unsigned char *)((char *)obj + 0x1E8) = 0;
 }
 
 static inline void helper_801C02F4(void *self, int flag) {
