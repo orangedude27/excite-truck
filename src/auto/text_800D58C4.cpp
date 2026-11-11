@@ -402,6 +402,11 @@ extern "C" void MultipleAlpha__Q34nw4r3lyt6detailFQ34nw4r2ut5ColorUc(void* out, 
 #pragma pop
 
 extern "C" void SetVertexFormat__Q34nw4r3lyt6detailFbUc(bool hasColor, unsigned char texCoordCount) {
+    /* Configure the GX vertex format for nw4r layout drawing: always enable
+       position (GX_VA_POS, direct); optionally enable color (GX_VA_CLR0), and
+       enable texCoordCount texture coordinate sets (GX_VA_TEX0 onward). Then
+       set attribute formats for vtxfmt 0: position (1 comp, F32), color
+       (RGBA8) if enabled, and each texcoord (2 comp, F32). */
     GXClearVtxDesc();
     GXSetVtxDesc((GXAttr)9, (GXAttrType)1);
     if (hasColor) GXSetVtxDesc((GXAttr)0xB, (GXAttrType)1);
