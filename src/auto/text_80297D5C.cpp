@@ -1334,31 +1334,21 @@ extern "C" void *fn_8029A6F4(void *arg0) {
         volatile float extra[6];
         unsigned char config[0x8C];
     } local;
-    int one;
-    int size;
-    int two;
-    int forty;
-    float value90;
-    float value9C;
-    float valueB8;
-    float value98;
-    float valueC0;
-    float value6460C;
 
     fn_8029A8B8(arg0);
     fn_8028E61C(local.config);
     memset(local.config, 0, 0x8C);
 
-    value90 = lbl_80564590;
-    value9C = lbl_8056459C;
-    valueB8 = lbl_805645B8;
-    value98 = lbl_80564598;
-    valueC0 = lbl_805645C0;
-    value6460C = lbl_8056460C;
-    one = 1;
-    size = 0x1F4;
-    two = 2;
-    forty = 0x40;
+    float value90 = lbl_80564590;
+    int one = 1;
+    float valueB8 = lbl_805645B8;
+    int size = 0x1F4;
+    float value9C = lbl_8056459C;
+    float value98 = lbl_80564598;
+    int two = 2;
+    float valueC0 = lbl_805645C0;
+    int forty = 0x40;
+    float value6460C = lbl_8056460C;
 
     *(int *)local.config = one;
     *(int *)(local.config + 0x04) = size;
@@ -1391,11 +1381,11 @@ extern "C" void *fn_8029A6F4(void *arg0) {
     *(float *)(local.config + 0x64) = value90;
     *(float *)(local.config + 0x80) = value6460C;
     *(int *)(local.config + 0x84) = forty;
-    local.config[0x88] = one;
-    local.config[0x89] = one;
+    local.config[0x88] = (unsigned char)one;
+    local.config[0x89] = (unsigned char)one;
 
     *(void **)((char *)arg0 + 0x160) =
-        ((void *(*)(void *, const char *, unsigned int, int, int, int,
+        ((void *(*)(void *, const char *, int, int, int, int,
                     float, float, float, float, float))fn_8028E2F8)(
             local.config, lbl_803494FC, lbl_8055CA8C, two, size, one,
             valueC0, valueB8, value9C, value90, value98);
@@ -1642,8 +1632,9 @@ extern "C" int fn_8029AEE8(void *arg0) {
     *(int *)((char *)arg0 + 0x1E0) = 0;
 }
 
-#pragma paired_single off
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 extern "C" int fn_8029AF24(int arg0) {
     if (*(int *)((char *)arg0 + 0x1E0) >= 1) {
         register void *obj = (void *)arg0;
@@ -1660,7 +1651,7 @@ extern "C" int fn_8029AF24(int arg0) {
         }
         int value = *(int *)((char *)obj + 0x1EC);
         float ratio = (float)(-value) / lbl_80564618;
-        float temp_f31 = fn_802C9A4C(ratio);
+        float temp_f31 = ((float (*)(float))fn_802C9A4C)(ratio);
         fn_802C8BD0(*(int *)((char *)obj + 0x1E8));
         if (fn_802C8DBC(total * 4) != 0) {
             fn_8029B6E4(obj);
@@ -1673,11 +1664,10 @@ extern "C" int fn_8029AF24(int arg0) {
             fn_802C8E48();
             fn_802C8D74();
         }
-        fn_802C9A4C(temp_f31);
+        ((float (*)(float))fn_802C9A4C)(temp_f31);
     }
 }
-#pragma scheduling on
-#pragma paired_single reset
+#pragma pop
 extern "C" int fn_80287B24(int);
 extern "C" void fn_801BFD34(void*, void*, int);
 extern "C" void fn_80015B20(void*, void*, int);
@@ -1874,13 +1864,12 @@ extern "C" void fn_8029B43C(void *arg0, void *entry, unsigned char arg2, float f
 #pragma pop
 extern "C" void *fn_802C86DC(void);
 extern "C" void fn_8029B274(void *arg0, float *arg1, unsigned char arg2, void *arg3, void *arg4, float farg0, float arg6);
-#pragma paired_single off
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 extern "C" void fn_8029B6E4(void *arg0) {
-    struct Vec3 {
-        float x;
-        float y;
-        float z;
-    } vector;
+    float vector[3];
     int value;
     char *entry;
     char *item;
@@ -1891,33 +1880,31 @@ extern "C" void fn_8029B6E4(void *arg0) {
     int count;
     int j;
     void *object;
-
+    float scaleFactor;
+    float scale;
+    float finalScale;
     context = fn_802C86DC();
     transform = (char *)fn_802C86DC() + 0xC;
-    float scaleFactor = lbl_805645C8;
+    scaleFactor = lbl_805645C8;
     entry = (char *)arg0;
     item = (char *)arg0;
     i = 0;
-
     while (i < fn_80287B14()) {
         if (*(unsigned char *)(entry + 0x35) != 0) {
             info = fn_80288208(i);
             count = *(int *)((char *)info + 0x24);
             j = 0;
-
             while (j < count) {
                 object = fn_80288060(info, j);
                 value = fn_80287B24(i);
                 fn_801BFD34(item + 0x24, (char *)object + 0x24, value);
                 fn_80015B20(item, object, value);
-
-                float scale = *(volatile float *)(entry + 0x30);
-                vector.x = *(float *)(item + 0x24) + *(float *)(item + 0x0C) * scale;
-                vector.y = *(float *)(item + 0x28) + *(float *)(item + 0x10) * scale;
-                vector.z = *(float *)(item + 0x2C) + *(float *)(item + 0x14) * scale;
-                float finalScale = *(volatile float *)(entry + 0x30);
-                fn_8029B274(arg0, &vector.x, *(unsigned char *)(entry + 0x34),
-                            context, transform, scaleFactor * finalScale, scale);
+                scale = *(volatile float *)(entry + 0x30);
+                vector[0] = *(float *)(item + 0x24) + *(float *)(item + 0x0C) * scale;
+                vector[1] = *(float *)(item + 0x28) + *(float *)(item + 0x10) * scale;
+                vector[2] = *(float *)(item + 0x2C) + *(float *)(item + 0x14) * scale;
+                finalScale = *(volatile float *)(entry + 0x30);
+                fn_8029B274(arg0, vector, *(unsigned char *)(entry + 0x34), context, transform, scaleFactor * finalScale, scale);
                 ++j;
             }
         }
@@ -1926,14 +1913,17 @@ extern "C" void fn_8029B6E4(void *arg0) {
         ++i;
     }
 }
-#pragma paired_single reset
+#pragma pop
 extern "C" void* fn_80288060(void*, int);
 extern "C" void fn_8029B43C(void*, void*, unsigned char, float, float, float, float, float);
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 extern "C" void fn_8029B824(void *arg0) {
     int i = 0;
     char *entry = (char *)arg0;
     char *item = (char *)arg0;
-
     while (i < fn_80287B14()) {
         if (*(unsigned char *)(entry + 0x35) != 0) {
             void *info = fn_80288208(i);
@@ -1944,14 +1934,11 @@ extern "C" void fn_8029B824(void *arg0) {
                 int value = fn_80287B24(i);
                 fn_801BFD34(item + 0x24, (char *)object + 0x24, value);
                 fn_80015B20(item, object, value);
-
                 float scale = *(float *)(entry + 0x30);
                 float x = *(float *)(item + 0x24) + *(float *)(item + 0x0C) * scale;
                 float y = *(float *)(item + 0x28) + *(float *)(item + 0x10) * scale;
                 float z = *(float *)(item + 0x2C) + *(float *)(item + 0x14) * scale;
-                fn_8029B43C(arg0, entry, *(unsigned char *)(entry + 0x34), scale,
-                            *(float *)(item + 0x14) * scale, y, x,
-                            *(float *)(item + 0x0C) * scale);
+                fn_8029B43C(arg0, entry, *(unsigned char *)(entry + 0x34), scale, *(float *)(item + 0x14) * scale, y, x, *(float *)(item + 0x0C) * scale);
                 ++j;
             }
         }
@@ -1960,8 +1947,7 @@ extern "C" void fn_8029B824(void *arg0) {
         ++i;
     }
 }
-
-#pragma dont_inline reset
+#pragma pop
 extern "C" void* fn_8029B938(void* arg0) {
     int result = fn_801284F8(0x1FC, lbl_80349550);
     if (result != 0) {
