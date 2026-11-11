@@ -1179,13 +1179,11 @@ void fn_80010F38(char *name, s32 a2, s32 a3, s32 a4, f32 f1) {
     s32 idx;
     Unk80350F88 *base;
     volatile Unk80350F88Entry *entry;
-    char *n;
     base = (Unk80350F88 *)&lbl_80350F88;
     idx = base->unk_0x288;
-    n = name;
     base->unk_0x288 = idx + 1;
     entry = &base->entries[idx];
-    strncpy((char *)entry->name, n, 0x28);
+    strncpy((char *)entry->name, name, 0x28);
     entry->unk_0x28 = 0;
     entry->unk_0x2C = a2;
     entry->unk_0x30 = a3;
@@ -1276,11 +1274,9 @@ void fn_800111A4(char *name, s32 a1, s32 a2, s32 a3, s32 a4, f32 f) {
     s32 idx;
     Unk80350F88 *base;
     volatile Unk80350F88Entry *entry;
-    char *n;
-
+    char *n = name;
     base = (Unk80350F88 *)&lbl_80350F88;
     idx = base->unk_0x288;
-    n = name;
     base->unk_0x288 = idx + 1;
     entry = &base->entries[idx];
     strncpy((char *)entry->name, n, 0x28);
@@ -2155,6 +2151,7 @@ s32 fn_8000EE54(s32 arg0) {
 f32 fn_8000EEC8(s32 arg0, f32 arg1) {
     f32 f1;
     f32 f31;
+    f32 tmp;
     if (fn_801E85A4() == 1) {
         if (arg0 < 0) f1 = fn_80011E54();
         else f1 = fn_80011DC0(arg0);
@@ -2163,7 +2160,8 @@ f32 fn_8000EEC8(s32 arg0, f32 arg1) {
     if (arg0 < 0) f1 = fn_80011E90();
     else {
         f31 = lbl_805602C4 * fn_80011DC0(arg0);
-        f1 = (fn_80011E1C(arg0) * lbl_805602C0) + f31;
+        tmp = fn_80011E1C(arg0) * lbl_805602C0;
+        f1 = tmp + f31;
     }
     return f1 + (lbl_8056025C * arg1);
 }
