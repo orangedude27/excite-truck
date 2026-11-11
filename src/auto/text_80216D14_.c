@@ -427,32 +427,36 @@ extern "C" void fn_802176D4(void *arg0, int arg1, int arg2) {
 }
 #pragma push
 #pragma cplusplus on
-extern "C" void fn_80217734(void *arg0, int arg1, int arg2) {
-    class Dummy {
+extern "C" void fn_80217734(void *menuGroup, int screenX, int screenY) {
+    /* Convert screen-space pointer position to group-local coordinates, track which
+       widget the pointer is over (hovered, 0x448) with OnDeselected/OnSelected
+       callbacks (v21/v20), constrained to the pressed widget (0x44C) while held, and
+       deliver the move to that widget or the pressed one (v17). */
+    class UiHoverWidget {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
         virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
         virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
-        virtual void v16(); virtual void v17(int, int); virtual void v18();
-        virtual void v19(); virtual void v20(); virtual void v21();
+        virtual void v16(); virtual void OnPointerMove(int x, int y); virtual void v18();
+        virtual void v19(); virtual void OnHoverEnter(); virtual void OnHoverLeave();
     };
-    char *base = (char *)arg0;
-    int x = arg1 - *(int *)(base + 0x454);
-    int y = arg2 - *(int *)(base + 0x458);
-    int index = fn_80218214(arg0, x, y);
-    Dummy *obj = 0;
-    Dummy *current;
-    if (index >= 0) obj = *(Dummy **)(base + index * 4 + 0x30);
-    if (*(Dummy **)(base + 0x44C) != 0 && obj != *(Dummy **)(base + 0x44C)) obj = 0;
-    current = *(Dummy **)(base + 0x448);
-    if (obj != current) {
-        if (current != 0) current->v21();
-        *(Dummy **)(base + 0x448) = obj;
-        if (obj != 0) obj->v20();
+    UiMenuGroup *group = (UiMenuGroup *)menuGroup;
+    int localX = screenX - *(int *)((char *)group + 0x454);
+    int localY = screenY - *(int *)((char *)group + 0x458);
+    int hitIndex = fn_80218214(menuGroup, localX, localY);
+    UiHoverWidget *hitWidget = 0;
+    UiHoverWidget *hoveredWidget;
+    if (hitIndex >= 0) hitWidget = *(UiHoverWidget **)((char *)group + hitIndex * 4 + 0x30);
+    if (*(UiHoverWidget **)((char *)group + 0x44C) != 0 && hitWidget != *(UiHoverWidget **)((char *)group + 0x44C)) hitWidget = 0;
+    hoveredWidget = *(UiHoverWidget **)((char *)group + 0x448);
+    if (hitWidget != hoveredWidget) {
+        if (hoveredWidget != 0) hoveredWidget->OnHoverLeave();
+        *(UiHoverWidget **)((char *)group + 0x448) = hitWidget;
+        if (hitWidget != 0) hitWidget->OnHoverEnter();
     }
-    if (obj == 0) obj = *(Dummy **)(base + 0x44C);
-    if (obj != 0) obj->v17(x, y);
+    if (hitWidget == 0) hitWidget = *(UiHoverWidget **)((char *)group + 0x44C);
+    if (hitWidget != 0) hitWidget->OnPointerMove(localX, localY);
 }
 #pragma pop
 extern "C" void fn_80217834(void *arg0) {
