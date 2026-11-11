@@ -1456,61 +1456,62 @@ void fn_801B2364(void) {
 }
 #pragma pop
 extern void fn_801B15A8(s32, f32);
+// Processes pending timed object updates and dispatches completion callbacks for queued entries.
 void fn_801B24B8(void) {
     struct Table {
         s32 entries[16];
         volatile s32 count;
     };
-    register struct Table *table;
-    register s32 value;
-    register void *obj;
-    register s32 *entry;
+    register struct Table *pendingTable;
+    register s32 baseTime;
+    register void *object;
+    register s32 *entryPtr;
     register s32 i;
-    register s32 newValue;
-    register s32 index;
-    register s32 *table2;
+    register s32 scheduledTime;
+    register s32 objectIndex;
+    register s32 *tableBase;
     register s32 j;
 
     if (fn_801769F8() != 0)
         return;
-    entry = (s32 *)&lbl_80435BE8;
-    table = (struct Table *)entry;
+    entryPtr = (s32 *)&lbl_80435BE8;
+    pendingTable = (struct Table *)entryPtr;
     i = 0;
     goto check_first;
 first_loop:
-    index = entry[0];
-    value = *(volatile s32 *)&lbl_8055E688;
-    obj = (u8 *)lbl_8055E684 + (index << 7);
-    newValue = value - i + 9;
-    if (*(u8 *)((u8 *)obj + 0x78) == 0)
-        *(s32 *)((u8 *)obj + 0x74) = newValue;
-    entry = (s32 *)((u8 *)entry + 8);
+    objectIndex = entryPtr[0];
+    baseTime = *(volatile s32 *)&lbl_8055E688;
+    object = (u8 *)lbl_8055E684 + (objectIndex << 7);
+    scheduledTime = baseTime - i + 9;
+    if (*(u8 *)((u8 *)object + 0x78) == 0)
+        *(s32 *)((u8 *)object + 0x74) = scheduledTime;
+    entryPtr = (s32 *)((u8 *)entryPtr + 8);
     i++;
 check_first:
-    if (i < table->count)
+    if (i < pendingTable->count)
         goto first_loop;
 
     fn_801B1318();
 
-    table2 = (s32 *)&lbl_80435BE8;
+    tableBase = (s32 *)&lbl_80435BE8;
     j = 0;
     goto check_second;
 second_loop:
     {
-        s32 index2 = table->entries[0];
-        f32 amount = *(f32 *)((u8 *)table + 4);
-        obj = (u8 *)lbl_8055E684 + (index2 << 7);
-        fn_801B15A8((s32)obj, amount);
+        s32 queuedIndex = pendingTable->entries[0];
+        f32 amount = *(f32 *)((u8 *)pendingTable + 4);
+        object = (u8 *)lbl_8055E684 + (queuedIndex << 7);
+        fn_801B15A8((s32)object, amount);
     }
-    table = (struct Table *)((u8 *)table + 8);
+    pendingTable = (struct Table *)((u8 *)pendingTable + 8);
     j++;
 check_second:
-    if (j < *(volatile s32 *)((u8 *)table2 + 0x40))
+    if (j < *(volatile s32 *)((u8 *)tableBase + 0x40))
         goto second_loop;
 
-    *(volatile s32 *)((u8 *)table2 + 0x40) = 0;
-    obj = lbl_8055E68C;
-    if (obj != 0) {
+    *(volatile s32 *)((u8 *)tableBase + 0x40) = 0;
+    object = lbl_8055E68C;
+    if (object != 0) {
 #pragma cplusplus on
         struct Dummy {
             virtual void d0();
@@ -1521,7 +1522,7 @@ check_second:
             virtual void d5();
             virtual void call();
         };
-        ((Dummy *)obj)->call();
+        ((Dummy *)object)->call();
 #pragma cplusplus reset
     }
 }
