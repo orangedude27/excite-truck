@@ -3,10 +3,6 @@ extern "C" s32 OSWaitSemaphore(void *);
 extern "C" s32 OSInitSemaphore(void *, s32);
 extern "C" const char lbl_8031B1E4[];
 typedef u16 *Fn800A4B78Ret;
-struct D56FCNode {
-    struct D56FCNode *next;
-    char name[4];
-};
 struct Fn800B10E0Ent {
     u16 first;
     u8 pad2[0x20A - 2];
@@ -3200,9 +3196,9 @@ extern "C" void fn_800AA4EC(u8 *p_ent, u8 *p_buf) {
 }
 #pragma pop
 extern "C" void VFiPFENT_loadEntryNumericFieldsFromBuf(u8 *p_ent, u8 *p_buf) {
+    register u32 h1A = *(u16 *)(p_buf + 0x1A);
+    register u32 h14 = *(u16 *)(p_buf + 0x14);
     u32 word = *(u32 *)(p_buf + 0x1C);
-    u32 h1A = *(u16 *)(p_buf + 0x1A);
-    u32 h14 = *(u16 *)(p_buf + 0x14);
     p_ent[0x21C] = p_buf[0xB];
     p_ent[0x21B] = p_buf[0xC];
     p_ent[0x21D] = p_buf[0xD];
@@ -20556,9 +20552,9 @@ extern "C" s32 fn_800D5640(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 #pragma pop
 extern "C" s32 fn_800D56FC(void *obj, const char *name, s32 unused) {
-    u32 node;
+    register u32 node = *(u32 *)((u8 *)obj + 0x14);
     u32 end = (u32)obj + 0x14;
-    for (node = *(u32 *)((u8 *)obj + 0x14); node != end; node = *(u32 *)node) {
+    while (node != end) {
         if (node == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F534, 0x23d, lbl_8031F510);
         if (strcmp(name, (char *)(node + 8)) == 0) {
@@ -20566,6 +20562,7 @@ extern "C" s32 fn_800D56FC(void *obj, const char *name, s32 unused) {
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F534, 0x23d, lbl_8031F510);
             return *(s32 *)(node + 0x88);
         }
+        node = *(u32 *)node;
     }
     return 0;
 }
