@@ -73,6 +73,58 @@ s32 fn_801B54A8(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x3C);
 }
 
+extern float lbl_80562694;
+extern float PSVECSquareDistance(void *, void *);
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma dont_inline on
+void fn_801B54B0(s32 arg0) {
+    s32 sp2C[3];
+    s32 sp20[3];
+    s32 sp14[3];
+    s32 sp8[3];
+    f32 threshold;
+    void *outer;
+    void *inner;
+    void *a;
+    void *b;
+    threshold = lbl_80562694;
+    outer = (void *)arg0;
+    while (outer != NULL) {
+        if (fn_801B53E4(*(void **)((u8 *)outer + 0x3C)) != 0) {
+            a = (void *)fn_801B54A8(outer);
+            fn_801B5410(*(void **)((u8 *)outer + 0x3C), sp2C, sp20);
+            inner = (void *)arg0;
+            while (inner != NULL) {
+                if (fn_801B53E4(*(void **)((u8 *)inner + 0x3C)) != 0) {
+                    b = (void *)fn_801B54A8(inner);
+                    fn_801B5410(*(void **)((u8 *)inner + 0x3C), sp14, sp8);
+                    if (PSVECSquareDistance(sp2C, sp14) < threshold) {
+                        *(s32 *)((u8 *)a + 0x34) |= 1;
+                        *(s32 *)((u8 *)b + 0x34) |= 1;
+                    }
+                    if (PSVECSquareDistance(sp2C, sp8) < threshold) {
+                        *(s32 *)((u8 *)a + 0x34) |= 1;
+                        *(s32 *)((u8 *)b + 0x34) |= 2;
+                    }
+                    if (PSVECSquareDistance(sp20, sp14) < threshold) {
+                        *(s32 *)((u8 *)a + 0x34) |= 2;
+                        *(s32 *)((u8 *)b + 0x34) |= 1;
+                    }
+                    if (PSVECSquareDistance(sp20, sp8) < threshold) {
+                        *(s32 *)((u8 *)a + 0x34) |= 2;
+                        *(s32 *)((u8 *)b + 0x34) |= 2;
+                    }
+                }
+                inner = *(void **)((u8 *)inner + 0x44);
+            }
+        }
+        outer = *(void **)((u8 *)outer + 0x44);
+    }
+}
+#pragma pop
+
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_801B561C(void *arg0, s32 arg1, void *arg2, s32 arg3, f32 x0, f32 y0, f32 x1, f32 y1, f32 u1, f32 u2) {
@@ -172,59 +224,31 @@ void *fn_801B5984(void *arg0) {
 }
 
 void fn_801B59A4(void *arg0, s32 arg1, s32 arg2) {
-    struct State {
-        s32 total;
-        s32 max;
-        s32 unk8;
-        u16 *records;
-        s32 used;
-        s32 unk14;
-        u16 *values;
-    } *state = (struct State *)lbl_80435EC8;
-    struct Entry {
-        struct Entry *nodes;
-        s32 count;
-        struct Entry *children;
-    } *entry = (struct Entry *)arg0;
-    volatile u16 *record;
-    struct Entry *node;
-    s32 childStart;
-    s32 i;
-    s32 offset;
-
-    if (arg2 >= state->max) {
-        state->max = arg2 + 1;
-    }
-
-    record = state->records + arg2 * 4;
-    record[0] = (u16)state->total;
-    record[1] = (u16)(state->total + (u16)entry->count);
+    extern u8 lbl_80435EC8[];
+    struct Entry { struct Entry *nodes; s32 count; struct Entry *children; } *entry = (struct Entry *)arg0;
+    u16 *records; u16 *record; struct Entry *node; s32 childStart; s32 offset; s32 w;
+    s32 max = *(s32 *)(lbl_80435EC8 + 4);
+    if (arg2 >= max) { *(s32 *)(lbl_80435EC8 + 4) = arg2 + 1; }
+    records = *(u16 **)(lbl_80435EC8 + 0xC);
+    record = records + arg2 * 4;
+    record[0] = *(u16 *)lbl_80435EC8;
+    record[1] = *(u16 *)lbl_80435EC8 + (u16)entry->count;
     record[3] = 0;
-    if (entry->children != NULL) {
-        record[2] = (u16)state->max;
-    } else {
-        record[2] = 0;
-    }
-
+    if (entry->children != NULL) { record[2] = *(u16 *)(lbl_80435EC8 + 4); } else { record[2] = 0; }
     node = entry->nodes;
     while (node != NULL) {
-        state->values[state->used] = (u16)node->count;
-        state->used++;
+        (*(u16 **)(lbl_80435EC8 + 0x18))[*(s32 *)(lbl_80435EC8 + 0x10)] = (u16)node->count;
+        (*(s32 *)(lbl_80435EC8 + 0x10))++;
         node = *(struct Entry **)((u8 *)node + 8);
     }
-
     *(s32 *)lbl_80435EC8 = *(s32 *)lbl_80435EC8 + entry->count;
     if (entry->children != NULL) {
-        state->max += 4;
-        childStart = record[2];
-        i = 0;
-        offset = 0;
+        *(s32 *)(lbl_80435EC8 + 4) += 4;
+        childStart = record[2]; offset = 0; w = 0;
         do {
             fn_801B59A4((u8 *)entry->children + offset, arg1 + 1, childStart);
-            childStart++;
-            i++;
-            offset += 0xC;
-        } while (i < 4);
+            childStart++; w++; offset += 0xC;
+        } while (w < 4);
     }
 }
 
@@ -238,33 +262,38 @@ void fn_801B5AE4(void) {
 }
 #pragma dont_inline reset
 
-void fn_801B5B04(void *arg0, void **arg1, s32 arg2) {
-    f32 out[3];
+#pragma push
+#pragma processor 750
+#pragma cplusplus on
+extern "C" void fn_801B5B04(void *arg0, void **arg1, s32 arg2) {
+    class V {
+    public:
+        virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
+        virtual void m4(); virtual void m5(); virtual void m6(); virtual void m7();
+        virtual void m8(); virtual void m9(); virtual void m10(); virtual void m11();
+        virtual void m12(float *, float *);
+    };
+    f32 out[6];
     f32 base;
-    s32 i;
     void **item;
+    s32 i;
     void *obj;
-    void **vtbl;
 
     base = lbl_805626A0;
     item = arg1;
-    i = 0;
-    do {
+    for (i = 0; i < arg2; i++) {
         obj = *item;
         obj = *(void **)((u8 *)obj + 0x3C);
-        vtbl = *(void ***)obj;
-        ((void (*)(void *, f32 *, f32 *))vtbl[14])(obj, &out[1], &out[0]);
-        lbl_80435EB8[0] = out[1] - base;
-        lbl_80435EB8[1] = out[2] - base;
+        ((V *)obj)->m12(&out[3], &out[0]);
+        lbl_80435EB8[1] = out[5] - base;
+        lbl_80435EB8[0] = out[3] - base;
         lbl_80435EB8[2] = base + out[0];
         lbl_80435EB8[3] = base + out[2];
-        fn_801B561C(*item, i, arg0, 0, lbl_805626A4, lbl_805626A4, lbl_805626A8, lbl_805626A8, base + out[0], out[2] - base);
-        item = (void **)((u8 *)item + 4);
-        i++;
-    } while (i < arg2);
+        fn_801B561C(*item, i, arg0, 0, lbl_805626A4, lbl_805626A4, lbl_805626A8, lbl_805626A8, base + out[0], out[5] - base);
+        item++;
+    }
 }
-
-#pragma scheduling on
+#pragma pop
 void fn_801B5BDC(void **arg0, s32 arg1, void *arg2) {
     void **dst = arg0;
     void *node = arg2;
