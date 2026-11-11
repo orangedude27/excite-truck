@@ -290,10 +290,15 @@ extern "C" void Reserve__Q46nw4hbm3lyt6detail11TexCoordAryFUc(void *arg0, u8 arg
     }
 }
 
-extern "C" f32 lbl_80560E68;
-extern "C" f32 lbl_80560E6C;
+extern "C" f32 lbl_80560E68;  // 0.0f
+extern "C" f32 lbl_80560E6C;  // 1.0f
+// SetSize's function-local statics: the default corner coordinates and the
+// flag saying they have been built. The game's symbols still carry their
+// addresses, so the names live here.
 extern "C" signed char lbl_8055DDE8;
 extern "C" f32 lbl_80407E40[8];
+#define sTexCoordReady lbl_8055DDE8
+#define sTexCoordTemplate lbl_80407E40
 #pragma optimize_for_size on
 #pragma unroll off
 extern "C" void SetSize__Q46nw4hbm3lyt6detail11TexCoordAryFUc(void *self, u8 size) {
