@@ -5374,6 +5374,7 @@ extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FC508(void) 
     }
 }
 #pragma cplusplus reset
+#pragma pop
 extern "C" void fn_800FC5B8(void *arg0, f32 value) {
     u32 token = OSDisableInterrupts();
     *(f32 *)((u8 *)arg0 + 0x45C) = value;
