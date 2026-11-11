@@ -398,7 +398,7 @@ void fn_80193878(void *arg0) {
 class Dummy_801938F4 {
 public:
     virtual void d0();
-    virtual void d1();
+    virtual void d1(int);
     virtual void d2();
     virtual void d3(int);
 };
@@ -406,7 +406,8 @@ public:
 extern void fn_801352B8(void *);
 extern float lbl_80562144, lbl_80562180;
 extern const char lbl_80333348[];
-void *fn_801938F4(void *arg0) {
+#pragma cplusplus on
+extern "C" void *fn_801938F4(void *arg0) {
     int minusOne = -1;
     int zero = 0;
     int limit = 0x2710;
@@ -425,13 +426,13 @@ void *fn_801938F4(void *arg0) {
     fn_801352B8(obj);
     fn_801352B8(obj + 0x34);
     *(float *)(obj + 0x68) = lbl_80562180;
-    ((void (**)(void *, int))*(void **)(obj + 0x34))[3](obj + 0x34, 0);
-    ((void (**)(void *, int))*(void **)obj)[3](obj, 0);
+    ((Dummy_801938F4 *)(obj + 0x34))->d3(0);
+    ((Dummy_801938F4 *)obj)->d3(0);
     *(int *)((char *)arg0 + 0x294) = zero;
     *(int *)((char *)arg0 + 0x290) = -1000;
     return arg0;
 }
-
+#pragma cplusplus reset
 extern void fn_801945F8(void *);
 extern float lbl_80562140, lbl_80562144, lbl_80562178, lbl_8056217C;
 extern void fn_8017B4E0(void *, float *, float *, float);
