@@ -23410,8 +23410,9 @@ u32 SDP_CreateRecord(void) {
     return 0;
 }
 
+/* Delete a service record from the SDP server database by handle, compacting the record array and fixing attribute value pointers; handle 0 clears the database. */
 BOOLEAN SDP_DeleteRecord(UINT32 handle) {
-    UINT16 xx, yy, zz;
+    UINT16 recordIndex, shiftIndex, attrIndex;
     tSDP_RECORD_VIEW *record = (tSDP_RECORD_VIEW *)(lbl_803C4C40 + 0x1224);
 
     if (handle == 0 || *(UINT16 *)(lbl_803C4C40 + 0x1222) == 0) {
@@ -23421,12 +23422,12 @@ BOOLEAN SDP_DeleteRecord(UINT32 handle) {
         return TRUE;
     }
 
-    for (xx = 0; xx < *(UINT16 *)(lbl_803C4C40 + 0x1222); xx++, record++) {
+    for (recordIndex = 0; recordIndex < *(UINT16 *)(lbl_803C4C40 + 0x1222); recordIndex++, record++) {
         if (record->record_handle == handle) {
-            for (yy = xx; yy < *(UINT16 *)(lbl_803C4C40 + 0x1222); yy++, record++) {
+            for (shiftIndex = recordIndex; shiftIndex < *(UINT16 *)(lbl_803C4C40 + 0x1222); shiftIndex++, record++) {
                 *record = *(record + 1);
-                for (zz = 0; zz < record->num_attributes; zz++) {
-                    record->attribute[zz].value_ptr -= sizeof(tSDP_RECORD_VIEW);
+                for (attrIndex = 0; attrIndex < record->num_attributes; attrIndex++) {
+                    record->attribute[attrIndex].value_ptr -= sizeof(tSDP_RECORD_VIEW);
                 }
             }
 
