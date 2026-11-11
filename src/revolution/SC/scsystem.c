@@ -237,6 +237,7 @@ u32 SCCheckStatus(void) {
     BOOL enabled;
     u32 status;
 
+    /* Poll background SC job status; when parse is pending, parse/copy or clear the system config buffer. */
     enabled = OSDisableInterrupts();
     status = BgJobStatus;
 
