@@ -7556,29 +7556,30 @@ extern "C" void *fn_80227D64(void *arg0, s32 arg1) {
     return arg0;
 }
 
-extern "C" void *fn_80227E84(void *arg0, s32 arg1, void *arg2, s32 arg3) {
+extern "C" void *fn_80227E84(void *self, s32 arg1, void *arg2, s32 arg3) {
+    /* Initialize this UI widget: run base setup, store vtable/config fields, load resources and log on failure. */
     char *base = lbl_8033D878;
-    s32 value;
+    s32 resource;
 
-    ((void *(*)(void *, void *))fn_80218F80)(arg0, arg2);
-    *(s32 *)((u8 *)arg0 + 0x248) = arg1;
-    *(void **)arg0 = lbl_8033DF30;
-    *(s32 *)((u8 *)arg0 + 0x24C) = arg3;
-    value = *(s32 *)((u8 *)arg2 + 0xB0);
-    *(u8 *)((u8 *)arg0 + 0x244) = (s8)((value - 1) == 0);
-    value = ((s32 (*)(const char *, s32))fn_80232578)(base + 0x20C, value);
-    *(s32 *)((u8 *)arg0 + 0x250) = value;
-    if (value == 0)
+    ((void *(*)(void *, void *))fn_80218F80)(self, arg2);
+    *(s32 *)((u8 *)self + 0x248) = arg1;
+    *(void **)self = lbl_8033DF30;
+    *(s32 *)((u8 *)self + 0x24C) = arg3;
+    resource = *(s32 *)((u8 *)arg2 + 0xB0);
+    *(u8 *)((u8 *)self + 0x244) = (s8)((resource - 1) == 0);
+    resource = ((s32 (*)(const char *, s32))fn_80232578)(base + 0x20C, resource);
+    *(s32 *)((u8 *)self + 0x250) = resource;
+    if (resource == 0)
         fn_802E30C8(base + 0x408);
-    value = ((s32 (*)(const char *))fn_8023512C)(base + 0x42C);
-    *(s32 *)((u8 *)arg0 + 0x254) = value;
-    if (value == 0)
+    resource = ((s32 (*)(const char *))fn_8023512C)(base + 0x42C);
+    *(s32 *)((u8 *)self + 0x254) = resource;
+    if (resource == 0)
         fn_802E30C8(base + 0x438);
-    value = ((s32 (*)(const char *))fn_8023512C)(base + 0x3D4);
-    *(s32 *)((u8 *)arg0 + 0x258) = value;
-    if (value == 0)
+    resource = ((s32 (*)(const char *))fn_8023512C)(base + 0x3D4);
+    *(s32 *)((u8 *)self + 0x258) = resource;
+    if (resource == 0)
         fn_802E30C8(base + 0x3E0);
-    return arg0;
+    return self;
 }
 
 extern "C" s32 fn_8022DD80(s32);
