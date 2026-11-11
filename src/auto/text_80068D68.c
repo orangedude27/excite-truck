@@ -11450,6 +11450,7 @@ tBTM_STATUS BTM_ChangeEScoLinkParms(u16 sco_inx, tBTM_CHG_ESCO_PARAMS *p_parms) 
 }
 
 extern u8 lbl_80316834[];
+// Handle eSCO connection change for the matching SCO/eSCO link entry.
 void btm_esco_proc_conn_chg(UINT8 status, UINT16 handle, UINT8 tx_interval, UINT8 retrans_window, UINT16 rx_pkt_len, UINT16 tx_pkt_len) {
     u8 *p = lbl_803C0F78 + 0x1854;
     u8 data[16];
