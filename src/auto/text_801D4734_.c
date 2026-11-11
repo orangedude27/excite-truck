@@ -635,13 +635,15 @@ void fn_801D5454(void *self, void *arg0) {
 
 extern float lbl_80562AE0;
 extern float lbl_80562B08;
+#pragma push
+#pragma scheduling invalid_target
 void fn_801D5488(void) {
     extern char lbl_804422F0[];
     extern float lbl_80562ADC;
     extern float lbl_80562AE0;
     extern float lbl_80562B08;
-    register char *obj = *(char **)lbl_804422F0;
-    register char *base;
+    char *base;
+    unsigned char *obj = *(unsigned char **)lbl_804422F0;
     if (obj == 0) return;
     base = lbl_804422F0;
     if (*(float *)(base + 4) > lbl_80562ADC) {
@@ -649,20 +651,21 @@ void fn_801D5488(void) {
         float f0 = *(float *)(base + 4) - lbl_80562B08;
         *(float *)(base + 4) = f0;
         f2 = (f2 < f0) ? f2 : f0;
-        obj = *(char **)lbl_804422F0;
+        obj = *(unsigned char **)lbl_804422F0;
         if (f2 != *(float *)(obj + 8)) {
             obj[0x4d] = 1;
             *(float *)(obj + 8) = f2;
         }
-        obj = *(char **)lbl_804422F0;
-        *(char *)(obj + 0x4a) = 0;
-        *(char *)(obj + 0x4b) = 1;
-        *(char *)(obj + 0x49) = 1;
+        obj = *(unsigned char **)lbl_804422F0;
+        obj[0x4a] = 0;
+        obj[0x4b] = 1;
+        obj[0x49] = 1;
         return;
     }
-    *(char *)(obj + 0x4a) = 1;
-    *(char *)(obj + 0x4c) = 0;
+    obj[0x4a] = 1;
+    obj[0x4c] = 0;
 }
+#pragma pop
 
 #pragma push
 #pragma use_lmw_stmw off
