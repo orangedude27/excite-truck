@@ -1021,6 +1021,32 @@ status_done:
     }
     return var_r30;
 }
+/* ---------------------------------------------------------------------
+ * The FSInfo sector of a FAT32 volume - the sector right after the boot
+ * sector - keeps how much of its heap is still free.  Like the rest of the FAT
+ * structures it is little-endian, so every word is byte-swapped before use:
+ *
+ *   0x000  0x41615252  "RRaA"  leading signature
+ *   0x1E4  0x61417272  "rrAa"  structure signature
+ *   0x1E8  free cluster count, 0xFFFFFFFF when unknown
+ *   0x1EC  next free cluster,   0xFFFFFFFF when unknown
+ *   0x1FE  0x55AA              trailing signature
+ *
+ * fn_800B865C stamps that sector out when a volume is formatted.
+ * ------------------------------------------------------------------- */
+#define VF_FSINFO_SIG1    0x41615252 /* "RRaA" at 0x000 */
+#define VF_FSINFO_SIG2    0x61417272 /* "rrAa" at 0x1E4 */
+#define VF_FSINFO_TRAILER 0xAA550000 /* the 0x55AA at 0x1FE, swapped with the rest */
+
+/* One little-endian word of a FAT sector, in the console's own byte order. */
+#define VF_SWAP32(w) \
+    (((w) >> 24) | (((w) >> 8) & 0xFF00) | (((w) << 8) & 0xFF0000) | ((w) << 24))
+
+/* The volume field the FSInfo counts are checked against (VFiPFVolume is
+ * described further down this file); as elsewhere here, by offset. */
+#define VF_VOL_CLUSTER_COUNT(v) (*(u32 *)((u8 *)(v) + 0x34)) /* clusters the volume holds */
+#define VF_FAT_FIRST_CLUSTER    2                            /* first cluster a file may hold */
+
 extern "C" s32 fn_800A5E00(void *arg0, void *arg1, u32 *arg2, u32 *arg3) {
  u32 a,b,c,x,y;
  *arg2=-1; *arg3=-1;
