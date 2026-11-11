@@ -39,6 +39,42 @@ extern void *fn_802B4014(void *);
 #define GRID (*(int **)lbl_8055F9D0)
 typedef int (*VFn)(void *, void *);
 #define VT(o, i) ((VFn)(*(void ***)(o))[i])
+
+/* One block of skag records: fn_8002F37C's record array plus its header, as
+ * fn_802B40F8 and fn_802B47A0 build them.  All four fields are kept as words
+ * because the shutdown code clears them with one zero register. */
+typedef struct SkagBlock_802B4BDC {
+    int records;   /* +0x00 void *records: the array of 0x24-byte skag records */
+    int used;      /* +0x04 records taken from the array */
+    int capacity;  /* +0x08 records the array holds */
+    int end;       /* +0x0C void *end: delete[]'d when the block goes away */
+} SkagBlock_802B4BDC;
+
+/* The list of those blocks that lbl_8055F9D0 points at. */
+typedef struct SkagList_802B4BDC {
+    int blocks;    /* +0x00 void **blocks: array of SkagBlock pointers */
+    int count;     /* +0x04 blocks in the array */
+    int capacity;  /* +0x08 */
+    int base;      /* +0x0C void *base: the blocks array, as fn_802B4DC0 frees it */
+} SkagList_802B4BDC;
+
+/* Read through volatile: the game reloads the list pointer on every test. */
+#define SKAG_LIST (*(SkagList_802B4BDC * volatile *)lbl_8055F9D0)
+
+/* One cell of a skagbag lookup table: what is at a (x, y) point (fn_802B4BC0
+ * indexes them) and how many records it holds (fn_802B4F10 checks it). */
+typedef struct SkagCell_802B4BDC {
+    int object;    /* +0x00 void *object */
+    int count;     /* +0x04 */
+} SkagCell_802B4BDC;
+
+/* A 32x32 lookup table, allocated 0x2004 bytes: the byte at +0x2000 says the
+ * cells hold objects that fn_802B4CB4 has to delete first.  The 128 tables of
+ * lbl_804BE248 are indexed by the size of the skagbag they cover. */
+typedef struct SkagTable_802B4BDC {
+    SkagCell_802B4BDC cells[0x400];
+    unsigned char holdsObjects;  /* +0x2000 */
+} SkagTable_802B4BDC;
 void *fn_802B3F6C(void *arg0, int arg1) {
     if (arg0 != NULL) {
         if (arg0 != NULL) {
@@ -142,7 +178,18 @@ int fn_802B40B0(int arg0, int arg1) {
     return 0;
 }
 
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma dont_inline on
 void fn_802B40F8(void) {
+    float st[2];
+    unsigned short sel[4];
+    float d[2];
+    int sp20[4];
+    int *sp30[4];
+    char *cb = lbl_8034A408;
+    float *tab = lbl_802FAAD0;
     void *obj;
     void *list;
     int *grid;
@@ -154,13 +201,14 @@ void fn_802B40F8(void) {
     int sz;
     void *m;
     char *rec;
-    int tries, hit;
+    int tries;
+    int hit;
 
-    obj = fn_80131810(lbl_8034A408 + 0x4C);
-    list = (void *)VT(obj, 2)(obj, lbl_8034A408 + 0x58);
+    obj = fn_80131810(cb + 0x4C);
+    list = (void *)VT(obj, 2)(obj, cb + 0x58);
     if (list != NULL) {
-        n = VT(list, 7)(list, lbl_8034A408 + 0x68);
-        grid = (int *)fn_801284F8(0x10, lbl_8034A408 + 0x78);
+        n = VT(list, 7)(list, cb + 0x68);
+        grid = (int *)fn_801284F8(0x10, cb + 0x78);
         if (grid != NULL) {
             void *p = fn_8012850C(n * 4, lbl_8055CE08);
             grid[0] = (int)p;
@@ -175,48 +223,55 @@ void fn_802B40F8(void) {
         f31 = lbl_80564C44;
         f28 = lbl_80564C48;
         for (i = 0; i < GRID[2]; i++) {
-            blk = (int *)fn_801284F8(0x10, lbl_8034A408 + 0x88);
+            blk = (int *)fn_801284F8(0x10, cb + 0x88);
             if (blk != NULL) {
                 int w, h, cnt;
-                w = VT(sub, 7)(sub, lbl_8034A408 + 0x98);
-                h = VT(sub, 7)(sub, lbl_8034A408 + 0xA4);
+                w = VT(sub, 7)(sub, cb + 0x98);
+                h = VT(sub, 7)(sub, cb + 0xA4);
                 cnt = fn_80129D90(0, (w * 2 - w) / 10, (h * 2 - h) / 10 + 1);
                 fn_8012850C(cnt * 0x24 + 0x10, lbl_8055CE08);
                 blk[0] = (int)fn_8002F37C(fn_802B4BD8, 0, 0x24, cnt);
                 blk[2] = cnt;
                 blk[1] = 0;
                 blk[3] = blk[0];
-                for (k = 0; k < cnt; k++) {
-                    rec = (char *)blk[0] + blk[1] * 0x24;
-                    blk[1]++;
-                    tries = 0;
-                    do {
-                        int j;
-                        *(float *)rec = fn_80129DC4(0, f31, f29);
-                        *(float *)(rec + 4) = fn_80129DC4(0, f31, f29);
-                        hit = 0;
-                        for (j = 0; !hit && j < blk[1] - 1; j++) {
-                            float dx = *(float *)((char *)blk[0] + j * 0x24) - *(float *)rec;
-                            float dy = *(float *)((char *)blk[0] + j * 0x24 + 4) - *(float *)(rec + 4);
-                            hit = dx * dx + dy * dy > f28;
-                        }
-                    } while (hit && tries++ < 500);
-                    *(short *)(rec + 8) = ((short (*)(void))fn_802B4004)();
-                    memset(rec + 0xC, 0, 0x18);
+                if (cnt > 0) {
+                    for (k = 0; k < blk[2]; k++) {
+                        rec = (char *)blk[0] + blk[1] * 0x24;
+                        blk[1]++;
+                        tries = 0;
+                        do {
+                            int j;
+                            *(float *)rec = fn_80129DC4(0, lbl_80564C44, lbl_80564C30);
+                            *(float *)(rec + 4) = fn_80129DC4(0, lbl_80564C44, lbl_80564C30);
+                            hit = 0;
+                            for (j = 0; !hit && j < blk[1] - 1; j++) {
+                                float dx, dy;
+                                dy = *(float *)((char *)blk[0] + j * 0x24 + 4) - *(float *)(rec + 4);
+                                dx = *(float *)((char *)blk[0] + j * 0x24) - *(float *)rec;
+                                d[0] = dx;
+                                d[1] = dy;
+                                hit = dx * dx + dy * dy > f28;
+                            }
+                        } while (hit && tries++ < 500);
+                        *(short *)(rec + 8) = ((short (*)(void))fn_802B4004)();
+                        memset(rec + 0xC, 0, 0x18);
+                    }
                 }
                 {
                     float f4 = f29 * f30;
                     for (k = 0; k < blk[1]; k++) {
-                        unsigned short sel[4];
                         unsigned short code = 0;
                         float u, v, ax, ay;
                         char *t = (char *)blk[0] + k * 0x24;
-                        float *mx = (float *)lbl_802FAAD0 + 8;
+                        float *mx = tab + 8;
                         unsigned short s;
+                        int c1, c2;
                         ax = *(float *)t - f4;
                         ay = *(float *)(t + 4) - f4;
-                        if (ax + ay > f31) code |= 1;
-                        if (-ax + ay > f31) code |= 2;
+                        c1 = ax + ay > f31;
+                        c2 = -ax + ay > f31;
+                        if (c1) code |= 1;
+                        if (c2) code |= 2;
                         sel[0] = lbl_80564C38;
                         sel[1] = lbl_80564C3A;
                         sel[2] = lbl_80564C3C;
@@ -225,14 +280,21 @@ void fn_802B40F8(void) {
                         *(unsigned short *)(t + 0xA) = s;
                         u = (*(float *)t - f4) / f29;
                         v = (*(float *)(t + 4) - f4) / f29;
+                        st[0] = u;
+                        st[1] = v;
                         *(float *)t = mx[s * 2] * u + mx[s * 2 + 1] * v;
                         *(float *)(t + 4) = mx[((s + 1) & 3) * 2] * u + mx[((s + 1) & 3) * 2 + 1] * v;
                     }
                 }
             }
-            ((int *)GRID[0])[GRID[1]++] = (int)blk;
+            {
+                int c = GRID[1];
+                int *arr = (int *)GRID[0];
+                GRID[1] = c + 1;
+                arr[c] = (int)blk;
+            }
         }
-        arr2 = (int *)fn_801284F8(0x2004, lbl_8034A408 + 0xB0);
+        arr2 = (int *)fn_801284F8(0x2004, cb + 0xB0);
         if (arr2 != NULL) {
             void *g = GRID;
             for (a = 0; a < 0x20; a++) {
@@ -250,28 +312,26 @@ void fn_802B40F8(void) {
             if (fn_802B3FC4(m) != 0) {
                 sz = VT(m, 7)(m, &lbl_8055CE00);
                 if (sz >= 0 && (unsigned)sz < 0x80 && sz != 1) {
-                    int *t = (int *)fn_801284F8(0x2004, lbl_8034A408 + 0xBC);
+                    int *t = (int *)fn_801284F8(0x2004, cb + 0xBC);
                     if (t != NULL) {
                         int base = lbl_804BE248[sz / 2];
-                        short x, y;
+                        int x, y;
                         memset(t, 0, 0x2000);
                         for (x = 0; x < 0x20; x += sz) {
                             for (y = 0; y < 0x20; y += sz) {
-                                int sp20[4];
-                                int *sp30[4];
                                 void *res;
                                 for (q = 0; q < 4; q++) {
                                     int *c = (int *)fn_802B4BC0(base,
-                                        x + sz * ((int *)lbl_802FAAD0)[q] / 2,
-                                        y + sz * ((int *)lbl_802FAAD0)[q + 4] / 2);
+                                        (short)(x + sz * ((int *)tab)[q] / 2),
+                                        (short)(y + sz * ((int *)tab)[q + 4] / 2));
                                     sp20[q] = c[0];
                                     sp30[q] = c + 1;
                                 }
-                                res = fn_801284F8(0x10, lbl_8034A408 + 0xC8);
+                                res = fn_801284F8(0x10, cb + 0xC8);
                                 if (res != NULL)
                                     res = fn_802B47A0(res, sp20, m, sz, sp30);
-                                *(int *)fn_802B4BC0((int)t, x, y) = (int)res;
-                                ((int *)fn_802B4BC0((int)t, x, y))[1] = 0;
+                                *(int *)fn_802B4BC0((int)t, (short)x, (short)y) = (int)res;
+                                ((int *)fn_802B4BC0((int)t, (short)x, (short)y))[1] = 0;
                             }
                         }
                         *((char *)t + 0x2000) = 1;
@@ -285,14 +345,18 @@ void fn_802B40F8(void) {
     fn_80131818(obj);
     lbl_8055F9C8 = (void *)-1;
 }
-
+#pragma pop
 int fn_80129D90(int, int, int);
-#pragma scheduling off
+#pragma push
+#pragma scheduling on
 int fn_802B475C(void* arg0) {
-    int index = fn_80129D90(0, 0, *(int*)((char*)arg0 + 4));
+    int count;
+    int index;
+    count = *(volatile int*)((char*)arg0 + 4);
+    index = fn_80129D90(0, 0, count);
     return ((int*)*(void**)arg0)[index];
 }
-
+#pragma pop
 extern void fn_802B4BD8(void);
 extern void *memcpy(void *, const void *, unsigned int);
 extern int fn_80129D90(int, int, int);
