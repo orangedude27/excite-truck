@@ -169,8 +169,13 @@ void fn_800057BC(void) {
 #pragma cplusplus on
 #pragma push
 #pragma scheduling invalid_target
+/* Chooses the HUD overlay every player sees this frame: one of the scene's own
+ * overlays for all of them while that overlay is not finished yet (vtable slot
+ * 0x38 answers its "I'm done" byte), otherwise each player's own overlay -
+ * or the race's ClosureOverlay for the players already out of it.  fn_80005930
+ * then updates the overlays picked here. */
 extern "C" void fn_800057D0(void) {
-    struct Obj {
+    struct Overlay {
         virtual s32 v0() = 0;
         virtual s32 v1() = 0;
         virtual s32 v2() = 0;
@@ -183,41 +188,42 @@ extern "C" void fn_800057D0(void) {
         virtual s32 v9() = 0;
         virtual s32 v10() = 0;
         virtual s32 v11() = 0;
-        virtual s32 check() = 0;
+        virtual s32 isDone() = 0; /* the overlays' finished byte */
     };
-    s32 *base;
-    s32 *cursor;
-    s32 count, i;
-    if (fn_801769A8() & 0x4000) {
-        fn_800056E0(lbl_8034EEB8[0]);
+    OverlayManager *mgr;
+    OverlayCursor *cursor;
+    s32 playerCount, player;
+    if (fn_801769A8() & 0x4000) { /* physics asks for an interlude */
+        fn_800056E0((s32)OVERLAY_MGR->interlude);
         return;
     }
-    if (lbl_8034EEB8[1] != 0 &&
-        ((Obj *)lbl_8034EEB8[1])->check() == 0) {
-        fn_800056E0(lbl_8034EEB8[1]);
+    if (OVERLAY_MGR->preRace != 0 &&
+        ((Overlay *)OVERLAY_MGR->preRace)->isDone() == 0) {
+        fn_800056E0((s32)OVERLAY_MGR->preRace);
         return;
     }
-    if (fn_80005694() != 0) {
-        fn_800056E0(lbl_8034EEB8[3]);
+    if (fn_80005694() != 0) { /* the race has not gone green yet */
+        fn_800056E0((s32)OVERLAY_MGR->intro);
         return;
     }
-    if (fn_80005678() != 0) {
-        if (lbl_8034EEB8[2] != 0 &&
-            ((Obj *)lbl_8034EEB8[2])->check() == 0) {
-            fn_800056E0(lbl_8034EEB8[2]);
+    if (fn_80005678() != 0) { /* ClosureOverlay->isDone() */
+        if (OVERLAY_MGR->postRace != 0 &&
+            ((Overlay *)OVERLAY_MGR->postRace)->isDone() == 0) {
+            fn_800056E0((s32)OVERLAY_MGR->postRace);
             return;
         }
-        fn_800056E0(lbl_8034EEB8[23]);
+        fn_800056E0((s32)OVERLAY_MGR->results);
         return;
     }
-    count = ((s32 *)lbl_8055D350)[5];
-    cursor = lbl_8034EEB8;
-    base = cursor;
-    for (i = 0; i < count; cursor += 4, i++) {
-        if (fn_80005580(i) != 0) {
-            fn_800056C8(i, base[0x58 / 4]);
+    playerCount = SESSION->playerCount;
+    cursor = (OverlayCursor *)OVERLAY_MGR;
+    mgr = (OverlayManager *)cursor;
+    for (player = 0; player < playerCount;
+         cursor = (OverlayCursor *)((u8 *)cursor + sizeof(OverlayEntry)), player++) {
+        if (fn_80005580(player) != 0) { /* this player is out of the race */
+            fn_800056C8(player, (s32)mgr->closure);
         } else {
-            fn_800056C8(i, cursor[0x1C / 4]);
+            fn_800056C8(player, (s32)cursor->fallback);
         }
     }
 }
