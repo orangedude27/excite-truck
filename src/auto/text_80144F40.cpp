@@ -2058,7 +2058,8 @@ extern "C" s32 fn_80148464(void *arg0, const char *arg1) {
 }
 
 extern "C" int stricmp(const char *, const char *);
-#pragma scheduling off
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void *fn_801484A4(const char *arg0, void *arg1) {
     s32 offset = 0;
     s32 i = 0;
@@ -2071,7 +2072,7 @@ extern "C" void *fn_801484A4(const char *arg0, void *arg1) {
     }
     return NULL;
 }
-#pragma scheduling on
+#pragma pop
 extern "C" {
 char *fn_80029004(char *, int);
 char *strcpy(char *, const char *);
