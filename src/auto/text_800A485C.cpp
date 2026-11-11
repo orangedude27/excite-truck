@@ -18522,20 +18522,21 @@ void wpadConnectCallback__Q210homebutton10ControllerFll(s32 chan, s32 status) {
 
 extern "C" u8 lbl_804076C0[];
 extern "C" void soundOnCallback__Q210homebutton10ControllerFP7OSAlarmP9OSContext(OSAlarm *, OSContext *);
-extern "C" void wpadExtensionCallback__Q210homebutton10ControllerFll(s32 arg0, s32 arg1) {
-    void *entry;
-    void *sound;
+extern "C" void wpadExtensionCallback__Q210homebutton10ControllerFll(s32 chan, s32 status) {
+    void *controllerEntry;
+    void *soundHandle;
     OSAlarm *alarm;
-    void (*callback)(s32, s32);
+    void (*extensionCallback)(s32, s32);
 
-    switch (arg1) {
+    /* Handle WPAD extension status changes for a HomeButton controller slot. */
+    switch (status) {
     case 0xFF:
-        entry = lbl_80407780[arg0];
-        sound = *(void **)entry;
-        if (fn_80060C7C(sound) != 0) {
-            fn_80060CC0(sound, 2, 0);
-            alarm = (OSAlarm *)((u8 *)lbl_804076C0 + (s32)sound * 0x30);
-            OSSetAlarmUserData(alarm, sound);
+        controllerEntry = lbl_80407780[chan];
+        soundHandle = *(void **)controllerEntry;
+        if (fn_80060C7C(soundHandle) != 0) {
+            fn_80060CC0(soundHandle, 2, 0);
+            alarm = (OSAlarm *)((u8 *)lbl_804076C0 + (s32)soundHandle * 0x30);
+            OSSetAlarmUserData(alarm, soundHandle);
             OSCancelAlarm(alarm);
             {
                 u32 ticks = *(volatile u32 *)0x800000F8;
@@ -18544,16 +18545,16 @@ extern "C" void wpadExtensionCallback__Q210homebutton10ControllerFll(s32 arg0, s
                     alarm, 0x10624DD3, 0, delay,
                     soundOnCallback__Q210homebutton10ControllerFP7OSAlarmP9OSContext);
             }
-            *((u8 *)entry + 0x41) = 1;
+            *((u8 *)controllerEntry + 0x41) = 1;
         }
         break;
     default:
         break;
     }
 
-    entry = lbl_80407780[arg0];
-    callback = *(void (**)(s32, s32))((u8 *)entry + 0x2C);
-    if (callback != 0) callback(arg0, arg1);
+    controllerEntry = lbl_80407780[chan];
+    extensionCallback = *(void (**)(s32, s32))((u8 *)controllerEntry + 0x2C);
+    if (extensionCallback != 0) extensionCallback(chan, status);
 }
 
 extern "C" void soundOnCallback__Q210homebutton10ControllerFP7OSAlarmP9OSContext(OSAlarm *alarm, OSContext *) {
