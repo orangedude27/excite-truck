@@ -701,11 +701,12 @@ void fn_80176C4C(void) {
 }
 
 #pragma dont_inline fn_80176C4C
+/* Updates the physics/system state each tick: consumes a pending command (if set), dispatches the current state (lbl_8055E3F4) to its handler(s), logs unknown states, and applies deferred flags. */
 void fn_80176CC8(void) {
     fn_802E4C14(1);
     if (lbl_80430418 != 0) {
-        u8 *data = (u8 *)&lbl_80430418;
-        fn_80178CAC(*(u32 *)(data + 4), *(u32 *)(data + 8));
+        u8 *pending = (u8 *)&lbl_80430418;
+        fn_80178CAC(*(u32 *)(pending + 4), *(u32 *)(pending + 8));
         lbl_80430418 = 0;
     }
     switch ((u32)lbl_8055E3F4) {
