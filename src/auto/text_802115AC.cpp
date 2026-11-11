@@ -608,7 +608,7 @@ extern "C" float fn_80212248(s32 arg0) {
 extern "C" void fn_8022E4BC(s32);
 extern "C" void fn_8022E960(s32);
 extern "C" s32 fn_80211678(u8 *);
-extern "C" char lbl_8055B750[];
+extern "C" char lbl_8055B750[4];
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" int stricmp(const char *, const char *);
 #pragma small_data on
@@ -640,9 +640,10 @@ extern "C" s32 fn_80212338(void) { return 0; }
 
 #pragma dont_inline on
 extern "C" void fn_80212340(void *arg0) {
+    long first = *(long *)((char *)arg0 + 0x10);
     s32 *p = (s32 *)arg0;
-    if (p[4] != 0) {
-        fn_8022E4BC(p[4]);
+    if (first != 0) {
+        fn_8022E4BC(first);
         p[4] = 0;
     }
     if ((u8 *)p[0] != 0) {
@@ -1691,34 +1692,15 @@ extern "C" u8 lbl_8055B860;
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 extern "C" s32 fn_8021481C(void *arg0) {
-    u8 *base = lbl_8033CAE8;
-    s32 *values;
-    s32 *map;
-    s32 args[20];
+    u8 *base = lbl_8033CAE8; s32 *values; s32 *map; s32 args[20];;;
     if (fn_802ECEEC() == 0) {
         fn_802E30C8((const char *)(base + 0x72C), arg0);
-        values = lbl_80490510;
-        map = lbl_802F9EA4;
-        args[0] = map[0];
-        args[1] = 0;
-        args[2] = map[2];
-        args[3] = map[3];
-        args[4] = map[4];
-        args[5] = (s32)(base + 0x750);
-        args[6] = 3;
-        args[7] = (s32)arg0;
-        args[8] = 0;
-        args[9] = 0;
-        args[10] = (s32)&lbl_8055B860;
-        args[11] = 6;
-        args[12] = 0;
-        args[13] = -2;
-        args[14] = 0xD;
-        args[15] = values[0];
-        args[16] = values[1];
-        args[17] = values[2];
-        args[18] = values[3];
-        args[19] = values[4];
+        values = lbl_80490510; map = lbl_802F9EA4;
+        args[0] = map[0]; args[1] = 0; args[2] = map[2]; args[3] = map[3]; args[4] = map[4];
+        args[5] = (s32)(base + 0x750); args[6] = 3; args[7] = (s32)arg0;
+        args[8] = 0; args[9] = 0; args[10] = (s32)&lbl_8055B860; args[11] = 6;
+        args[12] = 0; args[13] = -2; args[14] = 0xD;
+        args[15] = values[0]; args[16] = values[1]; args[17] = values[2]; args[18] = values[3]; args[19] = values[4];
         args[1] = (s32)&args[5];
         fn_802146BC(args, -0x3E7, -0x3E7, 1, map[4], map[3], map[2], map[0]);
         fn_802E30C8((const char *)(base + 0x760), arg0);
@@ -1871,8 +1853,8 @@ extern "C" void fn_80214D50(s32 arg0) {
         f32 scale;
         void *objects[4];
     };
-    struct Entry *table;
     s32 index;
+    struct Entry *table;
     void *obj;
     f32 value;
     if (fn_80206430() == 0)
@@ -2303,8 +2285,7 @@ extern "C" void fn_80215500(void) {
 #pragma scheduling off
 extern "C" void fn_80215504(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     f32 rate = lbl_80563450;
-    fn_8022BAD0(*(s32 *)((u8 *)arg0 + 8), arg1, arg2, 0, arg4, arg5,
-                *(s32 *)((u8 *)arg0 + 4), arg6, 0, rate);
+    fn_8022BAD0(*(s32 *)((u8 *)arg0 + 8), arg1, arg2, 0, arg4, arg5, *(s32 *)((u8 *)arg0 + 4), arg6, 0, rate);
 }
 #pragma scheduling on
 extern "C" void fn_80215544(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
