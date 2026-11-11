@@ -2823,6 +2823,24 @@ second_test:
     if (flags & 1) goto second_body;
 }
 
+/* The file handle and the stream it reads through, the two objects that hold
+ * where a file is being read from (they are described with the file code
+ * further down this file, where these names are given again with the same
+ * text). */
+#define VF_HANDLE_STREAM(f)   (*(u8 **)((u8 *)(f) + 8))     /* 0x08 the stream it is on */
+#define VF_HANDLE_POS(f)      (*(u32 *)((u8 *)(f) + 0x1C))  /* 0x1C byte position in the file */
+#define VF_HANDLE_SECTOR(f)   (*(u32 *)((u8 *)(f) + 0x24))  /* 0x24 which sector of the file that is */
+#define VF_STREAM_VOLUME(s)   (*(u8 **)((u8 *)(s) + 0x268)) /* 0x268 the volume the file is on */
+#define VF_VOL_SECTOR_SIZE(v) (*(u16 *)((u8 *)(v)))         /* 0x0000 bytes in one sector */
+
+/* Where the read position was last, kept on the stream just in front of its
+ * cluster-chain cache (the VF_CHAIN_* fields further down are these same two
+ * words at +0x14 and +0x18): which cluster of the file the position is at, and
+ * the number that cluster has on the volume.  Following the chain starts from
+ * them instead of from the file's first cluster (fn_800ADD84). */
+#define VF_STREAM_LAST_CLUSTER_INDEX(s) (*(u32 *)((u8 *)(s) + 0x18)) /* which cluster of the file */
+#define VF_STREAM_LAST_CLUSTER(s)       (*(s32 *)((u8 *)(s) + 0x1C)) /* its number on the volume */
+
 extern "C" void VFiPFCLUSTER_UpdateLastAccessCluster(void *arg0, s32 arg1) {
     s32 temp_r6;
     s32 temp_r6_2;
