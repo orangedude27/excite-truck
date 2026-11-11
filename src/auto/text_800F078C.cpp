@@ -4,7 +4,60 @@
 #include <types.h>
 
 namespace nw4hbm { namespace snd { namespace detail {
-struct SeqSound { void Shutdown(); void SetPlayerPriority(int); };
+
+/* nw4hbm::ut::LinkListNode: intrusive list node; it lives inside the object
+ * on the list, so a sound is reached from its node at node - 0xB8. */
+struct LinkNode {
+    struct LinkNode *next; /* 0x00 */
+    void *data;            /* 0x04 */
+};
+
+/* nw4hbm::ut::detail::LinkListImpl: list walked until the cursor equals
+ * &tail, so an empty list is the one with head == NULL. */
+struct LinkList {
+    struct LinkNode *head; /* 0x00 */
+    struct LinkNode *tail; /* 0x04 */
+};
+
+/* nw4hbm::snd::detail::SoundInstanceManager (SoundInstanceManager.h): the
+ * fixed pool of sounds one player can play at a time. */
+struct SoundInstanceManager {
+    void *freeList;             /* 0x00 shut-down sounds, ready to be reused */
+    struct LinkList activeList; /* 0x04 sounds now playing, best priority first */
+};
+
+/* nw4hbm::snd::detail::SeqSound::SeqLoadCallback: the SoundArchivePlayer's
+ * hook that finishes an asynchronous sequence-data load.  Prepare() hands it
+ * the sound and the completion function; a sound that goes away first uses
+ * the 0x10 slot to drop its pending request. */
+struct SeqLoadCallback {
+    virtual void v0() = 0; /* 0x08 */
+    virtual void Bind(void (*func)(int, const void *, unsigned long, void *),
+                      void *sound, unsigned long arg) = 0;   /* 0x0C */
+    virtual void Cancel(unsigned long arg) = 0;               /* 0x10 */
+};
+
+/* Virtual interface carried by every sound object; the two leading
+ * destructor slots put the first method at 0x08. */
+struct SoundInterface {
+    virtual void v0() = 0;                                /* 0x08 */
+    virtual void DetachFromPlayer(int playerIndex) = 0;   /* 0x0C */
+};
+
+/* nw4hbm::snd::detail::SeqSound: a sequence (BGM) sound playing through a
+ * SeqPlayer (at 0xD8); only the fields this file touches are named. */
+struct SeqSound {
+    void *vtable;                                   /* 0x000 */
+    struct LinkNode link;                           /* 0x0B8 node in activeList */
+    u8 pad_0C0[0x1E4 - 0x0C0];
+    struct SoundInstanceManager *instanceManager;   /* 0x1E4 owner's sound pool */
+    u8 isAsyncLoading;                              /* 0x1E8 sequence data still being read */
+    struct SeqLoadCallback *asyncCallback;          /* 0x1EC */
+    unsigned long asyncCallbackArg;                 /* 0x1F0 argument for that callback */
+    void Shutdown();
+    void SetPlayerPriority(int);
+};
+
 }}}
 namespace nw4hbm { namespace ut { struct LinkListNode; }}
 namespace nw4hbm { namespace ut { namespace detail {
@@ -239,14 +292,16 @@ extern "C" const char lbl_803242F0[];
 extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail8SeqSoundFi(void *arg0, int arg1) {
     int priority;
     void *list;
+    void *soundNode;
     void *node;
     void *sentinel;
-    void *soundNode;
 
     SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(arg0, arg1);
-    priority = *(u8 *)((u8 *)arg0 + 0x74) + *(s32 *)((u8 *)arg0 + 0x40);
-    if (priority <= 0x7F) priority &= ~(priority >> 31);
-    else priority = 0x7F;
+    priority = *(u8 *)((u8 *)arg0 + 0x74) + *(int *)((u8 *)arg0 + 0x40);
+    if (priority > 0x7F)
+        priority = 0x7F;
+    else
+        priority &= ~(priority >> 31);
     list = *(void **)((u8 *)arg0 + 0x1E4);
     if (arg0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324344, 0x233, lbl_80324320);
     soundNode = (u8 *)arg0 + 0xB8;
@@ -256,9 +311,11 @@ extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail8SeqSoundFi(void *arg0, i
     while (node != sentinel) {
         int nodePriority;
         if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324314, 0x23D, lbl_803242F0);
-        nodePriority = *(u8 *)((u8 *)node - 0x44) + *(s32 *)((u8 *)node - 0x78);
-        if (nodePriority <= 0x7F) nodePriority &= ~(nodePriority >> 31);
-        else nodePriority = 0x7F;
+        nodePriority = *(u8 *)((u8 *)node - 0x44) + *(int *)((u8 *)node - 0x78);
+        if (nodePriority > 0x7F)
+            nodePriority = 0x7F;
+        else
+            nodePriority &= ~(nodePriority >> 31);
         if (priority < nodePriority) break;
         node = *(void **)node;
     }
