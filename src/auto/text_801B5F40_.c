@@ -45,22 +45,23 @@ extern void fn_801B608C(s32 *);
 extern s32 lbl_8055A8D0;
 #pragma scheduling invalid_target
 void fn_801B5FA0(void) {
-    s32 num;
+    /* Initialize the Phob (physics object) node pools and free list. */
+    s32 count;
     s32 offset;
     s32 i;
     void *node;
     void *memory;
 
-    num = lbl_8055A8D0;
-    memory = fn_8012850C((num << 3) + 0x10, lbl_80335EE0 + 0x18);
-    lbl_8055E708 = fn_8002F37C(memory, (void *)NWC24Data_Init_801B6098, 0, 8, num);
+    count = lbl_8055A8D0;
+    memory = fn_8012850C((count << 3) + 0x10, lbl_80335EE0 + 0x18);
+    lbl_8055E708 = fn_8002F37C(memory, (void *)NWC24Data_Init_801B6098, 0, 8, count);
     memory = fn_8012850C(0x9C50, lbl_80335EE0 + 0x28);
     lbl_8055E70C = fn_8002F37C(memory, (void *)fn_801B608C, 0, 4, 0x2710);
-    num = 0;
+    count = 0;
     lbl_8055E710 = 0;
     node = fn_801284F8(4, lbl_80335EE0 + 0x34);
     if (node != 0) {
-        *(s32 *)node = num;
+        *(s32 *)node = count;
     }
     lbl_8055E714 = (s32)node;
     i = 0;
