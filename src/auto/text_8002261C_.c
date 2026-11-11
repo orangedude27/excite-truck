@@ -8,13 +8,11 @@ extern void deallocate_from_fixed_pools(void ***, unsigned char *, unsigned int)
 extern void Block_link(void *, void *);
 extern void __sys_free(void *);
 void free(void *arg0) {
+    void ***pool;
     unsigned int size;
     unsigned int block;
-    void ***pool;
-    unsigned char *heapBlock;
     unsigned int flags;
-    unsigned int *canFree;
-    unsigned char *prev;
+    unsigned char *sb;
     unsigned char *next;
     if (lbl_8055D678 == 0) {
         memset(lbl_8035BB58, 0, 0x34);
@@ -32,29 +30,31 @@ void free(void *arg0) {
             deallocate_from_fixed_pools(pool, (unsigned char *)arg0, size);
             return;
         }
-        heapBlock = (unsigned char *)(*(unsigned int *)((unsigned char *)arg0 - 4) & ~1u);
-        Block_link(heapBlock, (unsigned char *)arg0 - 8);
-        flags = *(unsigned int *)(heapBlock + 0x10);
-        canFree = (unsigned int *)0;
-        if ((flags & 2) == 0 && ((flags & ~7u) == ((*(unsigned int *)(heapBlock + 0xC) & ~7u) - 0x18))) {
-            canFree = (unsigned int *)1;
+        sb = (unsigned char *)arg0 - 8;
+        arg0 = (void *)(*(volatile unsigned int *)((unsigned char *)arg0 - 4) & ~1u);
+        Block_link(arg0, sb);
+        flags = *(unsigned int *)((unsigned char *)arg0 + 0x10);
+        size = 0;
+        if ((flags & 2) == 0 && ((flags & ~7u) == ((*(unsigned int *)((unsigned char *)arg0 + 0xC) & ~7u) - 0x18))) {
+            size = 1;
         }
-        if (canFree != 0) {
-            prev = *(unsigned char **)(heapBlock + 4);
-            if (prev == heapBlock) {
+        if (size != 0) {
+            unsigned char *prev;
+            prev = *(unsigned char **)((unsigned char *)arg0 + 4);
+            if (prev == (unsigned char *)arg0) {
                 prev = 0;
             }
-            if ((unsigned char *)*pool == heapBlock) {
+            if ((unsigned char *)*pool == (unsigned char *)arg0) {
                 *pool = (void **)prev;
             }
             if (prev != 0) {
-                next = *(unsigned char **)heapBlock;
+                next = *(unsigned char **)arg0;
                 *(unsigned char **)prev = next;
                 *(unsigned char **)(next + 4) = prev;
             }
-            *(unsigned char **)(heapBlock + 4) = 0;
-            *(unsigned char **)heapBlock = 0;
-            __sys_free(heapBlock);
+            *(unsigned char **)((unsigned char *)arg0 + 4) = 0;
+            *(unsigned char **)arg0 = 0;
+            __sys_free(arg0);
         }
     }
 }
