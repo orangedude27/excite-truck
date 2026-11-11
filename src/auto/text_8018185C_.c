@@ -430,7 +430,7 @@ void fn_801836DC(void) {
 
 }
 
-extern void fn_801D1100(int, void *);
+extern void fn_801D1100(); /* tells every registered object that this one dies */
 extern void fn_8018A6F4(void *);
 extern void fn_80179EE8(void *, int);
 extern void fn_802792EC(int);
