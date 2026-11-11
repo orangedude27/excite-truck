@@ -19313,29 +19313,32 @@ extern "C" const char lbl_8031EBA0[];
 extern "C" const char lbl_8031EBB4[];
 extern "C" void fn_800D30E8(s32, s32, const char *, s32, s32);
 extern "C" void fn_800D2FDC(void *arg0, void *arg1, s32 arg2, const char *fmt, ...) {
-    va_list vlist;
-    char buffer[0x100];
+    /* Format a debug/direct-print message into a stack buffer and, when the debug print
+       system is enabled, forward it to the text drawing routine. Panics if formatting is
+       attempted while the required frame buffer/state is unavailable. */
+    va_list fmtArgs;
+    char formatted[0x100];
     u32 enabled = lbl_80407BD8[0];
 
     if (enabled == 0) {
         goto done;
     }
 
-    va_start(vlist, fmt);
+    va_start(fmtArgs, fmt);
     if (enabled != 0) {
         goto format;
     }
     Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EBA0, 0x287, lbl_8031EBB4);
 
 format:
-    if (vsnprintf(buffer, sizeof(buffer), fmt, vlist) <= 0) {
+    if (vsnprintf(formatted, sizeof(formatted), fmt, fmtArgs) <= 0) {
         goto done;
     }
 
-    fn_800D30E8((s32)arg0, (s32)arg1, buffer, (s32)arg2, 0);
+    fn_800D30E8((s32)arg0, (s32)arg1, formatted, (s32)arg2, 0);
 
 done:
-    va_end(vlist);
+    va_end(fmtArgs);
 }
 
 extern "C" const char lbl_8031EBF4[];
