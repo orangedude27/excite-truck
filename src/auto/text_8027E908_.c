@@ -2917,6 +2917,12 @@ extern "C" void fn_80286788(void* arg0) {
     ((ebi::title::TPlaneObj*)arg0)->m_sub->v6();
 }
 #pragma cplusplus on
+struct Fn867B0Iface {
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+    virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+    virtual int v8();
+};
+#pragma cplusplus on
 extern "C" void fn_8028679C(void *arg0) {
     ((ebi::title::TPlaneObj*)arg0)->m_sub->v7();
 }
