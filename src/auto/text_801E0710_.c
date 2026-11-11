@@ -583,7 +583,7 @@ void fn_801E12A4(void) {
     BoostColors_801E12A4 *colors;
     if (man != 0) {
         slot = fn_801E85B4();
-        man->slotArea[slot] = fn_801E866C();
+        man->slotArea[slot] = ((s32 (*)(s32))fn_801E866C)(slot);
         fn_802C8BD0(man->lineList);
         colors = (BoostColors_801E12A4 *)((u8 *)man + slot * 0x18);
         for (i = 0; i < fn_801E137C(&man->areas); i++) {
