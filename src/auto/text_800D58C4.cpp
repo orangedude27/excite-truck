@@ -550,11 +550,11 @@ extern "C" s32 fn_800D67B8(s32 arg0, s32 arg1) {
 #pragma use_lmw_stmw off
 extern "C" void *__ct__Q36nw4hbm3lyt5GroupFPCQ46nw4hbm3lyt3res5GroupPQ36nw4hbm3lyt4Pane(void *self, const void *resource, void *pane) {
     GroupLayout *group = (GroupLayout *)self;
-    register GroupListNode *head = (GroupListNode *)((u8 *)self + 0x10);
     register void *node;
     register s32 offset;
     register const u8 *items;
     register s32 index;
+    GroupListNode *head = (GroupListNode *)&group->children.first;
     *(volatile u32 *)&group->children.first = 0;
     *(volatile u32 *)&group->children.last = 0;
     group->vtable = lbl_8031F628;
@@ -565,7 +565,6 @@ extern "C" void *__ct__Q36nw4hbm3lyt5GroupFPCQ46nw4hbm3lyt3res5GroupPQ36nw4hbm3l
     *(volatile GroupListNode **)&group->children.last = head;
     *(volatile u8 *)((u8 *)self + 0x28) = 0;
     memcpy((u8 *)self + 0x18, (const u8 *)resource + 8, 0x10);
-
     items = (const u8 *)resource + 0x1C;
     index = 0;
     offset = 0;
@@ -635,29 +634,28 @@ extern "C" void* __dt__Q36nw4hbm3lyt14GroupContainerFv(void* arg0, s32 arg1) {
     extern const char lbl_8031F664[];
     struct GroupContainerDispatch { virtual void Destroy(s32); };
     struct GroupContainerObject : GroupContainerDispatch, GroupListNode {};
-    void* slot;
-    register u32 current;
-    register u32 node;
-    register u32 end;
+    struct ListHead { int pad; GroupListNode* first; };
     if (arg0 != 0) {
-        node = *(u32*)((char*)arg0 + 4);
-        end = (u32)arg0 + 4;
+        GroupListNode* node = ((ListHead*)arg0)->first;
+        void* end = &((ListHead*)arg0)->first;
         while (node != end) {
-            current = node;
-            node = *(u32*)node;
-            slot = (void*)current;
+            GroupListNode* current = node;
+            void* slot;
+            node = node->next;
+            slot = current;
             Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(arg0, &slot);
             if (current == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F6B8, 0x23D, lbl_8031F694);
-            if (*(u8*)(current + 0x24) == 0) {
+            if (*(u8*)((char*)current + 0x24) == 0) {
                 if (current == 0)
                     Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F6B8, 0x23D, lbl_8031F694);
-                static_cast<GroupContainerObject&>(*(GroupListNode*)(void*)current).Destroy(-1);
+                static_cast<GroupContainerObject&>(*current).Destroy(-1);
                 if (current == 0)
                     Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F6B8, 0x23D, lbl_8031F694);
-                if ((current -= 4) == 0)
+                char* p = (char*)current - 4;
+                if (p == 0)
                     Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F688, 0x193, lbl_8031F664);
-                MEMFreeToAllocator(lbl_8055DDF0, (void*)current);
+                MEMFreeToAllocator(lbl_8055DDF0, p);
             }
         }
         if (arg0 != 0)
@@ -778,6 +776,7 @@ extern "C" void fn_800D6EEC(void* arg0) {
     *(volatile f32*)(p + 0x1C) = f;
     *(volatile u8*)(p + 0x20) = zero;
 }
+#pragma scheduling on
 
 extern "C" void *__dt__Q36nw4hbm3lyt6LayoutFv(void *self, s32 shouldDelete) {
     extern char lbl_8031F868[];
@@ -789,12 +788,10 @@ extern "C" void *__dt__Q36nw4hbm3lyt6LayoutFv(void *self, s32 shouldDelete) {
     struct ResourceDispatch { virtual void Destroy(s32); };
     struct LayoutNodeDispatch { virtual void Destroy(s32); };
     struct LayoutObject : LayoutNodeDispatch, GroupListNode {};
-
-    void *slot;
-    register GroupListNode *current;
-    register GroupListNode *node;
-    register void *end;
     LayoutFields *layout = (LayoutFields *)self;
+    register u32 node;
+    register u32 end;
+    register u32 current;
     if (layout != 0) {
         void *container = *(void **)((u8 *)layout + 0x14);
         layout->vtable = (u32)lbl_8031F868;
@@ -802,30 +799,27 @@ extern "C" void *__dt__Q36nw4hbm3lyt6LayoutFv(void *self, s32 shouldDelete) {
             __dt__Q36nw4hbm3lyt14GroupContainerFv(container, -1);
             MEMFreeToAllocator(lbl_8055DDF0, *(void **)((u8 *)layout + 0x14));
         }
-
         void *resource = *(void **)((u8 *)layout + 0x10);
         if (resource != 0 && *(u8 *)((u8 *)resource + 0xD0) == 0) {
             ((ResourceDispatch *)resource)->Destroy(-1);
             MEMFreeToAllocator(lbl_8055DDF0, *(void **)((u8 *)layout + 0x10));
         }
-
-        node = *(GroupListNode **)((u8 *)layout + 8);
-        end = (u8 *)layout + 8;
+        node = *(u32*)((u8 *)layout + 8);
+        end = (u32)((u8 *)layout + 8);
         while (node != end) {
             current = node;
-            node = node->next;
-            slot = current;
+            node = *(u32*)node;
+            void *slot = (void*)current;
             Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(&layout->link, &slot);
             if (current == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F920, 0x23D, lbl_8031F8FC);
             static_cast<LayoutObject &>(*(GroupListNode *)current).Destroy(-1);
             if (current == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F920, 0x23D, lbl_8031F8FC);
-            if ((current = (GroupListNode *)((u8 *)current - 4)) == 0)
+            if ((current = current - 4) == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F8F0, 0x193, lbl_8031F8CC);
-            MEMFreeToAllocator(lbl_8055DDF0, current);
+            MEMFreeToAllocator(lbl_8055DDF0, (void*)current);
         }
-
         if (&layout->link != 0)
             __dt__Q46nw4hbm2ut6detail12LinkListImplFv(&layout->link, 0);
         if (shouldDelete > 0)
@@ -2971,7 +2965,6 @@ extern "C" void GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(f
     f32 wrapT;
     u16 wrapS;
     GetTextureSizeStringBase_800D58C4 *file = (GetTextureSizeStringBase_800D58C4 *)&lbl_8031F990;
-
     count = *(u32 *)((u8 *)material + 0x50) >> 28;
     if (index >= count) {
         defaultValue = lbl_80560E90;
@@ -2979,16 +2972,13 @@ extern "C" void GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(f
         out[1] = defaultValue;
         return;
     }
-
     if ((void *)texObj == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file->text, 0x3DC, file->text + 0x42C);
+        Panic__Q26nw4hbm2dbFPCciPCce(file->text + 0, 0x3DC, file->text + 0x42C);
     }
-
     count = *(u32 *)((u8 *)material + 0x50) >> 28;
     if (index >= count) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file->text, 0x3DD, file->text + 0x458);
+        Panic__Q26nw4hbm2dbFPCciPCce(file->text + 0, 0x3DD, file->text + 0x458);
     }
-
     u32 *base = (u32 *)*(void **)((u8 *)material + 0x58);
     u32 *src = base + (((u32)index << 5) / 4);
     word0 = ((volatile u32 *)src)[0];
@@ -3007,7 +2997,6 @@ extern "C" void GetTextureSize__Q36nw4hbm3lyt6detailFPQ36nw4hbm3lyt8MaterialUc(f
     word7 = ((volatile u32 *)src)[7];
     texObj[6] = word6;
     texObj[7] = word7;
-
     ((void (*)(void *, int, u32, void *))GXGetTexObjWidth)(texObj, 0, word6, src);
     wrapT = (f32)GXGetTexObjWrapT(texObj);
     wrapS = GXGetTexObjWrapS(texObj);
@@ -3442,24 +3431,31 @@ extern "C" void Animate__Q36nw4hbm3lyt4PaneFUl(void *self, u32 flags) {
 
 extern "C" void AnimateSelf__Q36nw4hbm3lyt4PaneFUl(void* self, unsigned long flags) {
     struct AnimCallback {
-        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+        virtual void d0();
+        virtual void d1();
+        virtual void d2();
+        virtual void d3();
         virtual void call(u16, void*);
     };
     struct UpdateCallback {
-        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4();
+        virtual void d0();
+        virtual void d1();
+        virtual void d2();
+        virtual void d3();
+        virtual void d4();
         virtual void call();
     };
-    PaneAnimLink* head = (PaneAnimLink*)((u8*)self + 0x20);
-    PaneAnimLink* link = *(PaneAnimLink**)((u8*)self + 0x20);
+    u8* head = (u8*)self + 0x20;
+    u8* link = *(u8**)((u8*)self + 0x20);
     while (link != head) {
         if (!link) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
-        if (!link->disabled) {
+        if (!*(u8*)(link + 0xE)) {
             if (!link) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
-            AnimCallback* anim = (AnimCallback*)link->animation;
+            AnimCallback* anim = (AnimCallback*)*(void**)(link + 8);
             if (!link) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
-            anim->call(link->index, self);
+            anim->call(*(u16*)(link + 0xC), self);
         }
-        link = link->next;
+        link = *(u8**)link;
     }
     if ((*(u8*)((u8*)self + 0xCF) & 1) == 0 && (flags & 1)) return;
     UpdateCallback* obj = (UpdateCallback*)*(void**)((u8*)self + 0x28);
