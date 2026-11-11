@@ -1683,7 +1683,8 @@ void fn_80191860(void *arg0, void *arg1) {
     ((void (*)(void *, void *))((void **)*(void ***)arg1)[2])(arg1, buf);
 }
 
-#pragma ppc_psq_save off
+#pragma push
+#pragma processor 750
 #pragma cplusplus on
 extern "C" void fn_80191928(void *arg0) {
     class Interface {
@@ -1699,11 +1700,10 @@ extern "C" void fn_80191928(void *arg0) {
         virtual void f8();
         virtual s32 result();
     };
-    /* Match note: local virtual interface emits the calls at vtable offsets 0x14 and 0x2C. */
+    s32 combined;
     s32 state;
     bool hit;
     s32 result;
-    s32 combined;
     s32 nextState;
     f32 speed;
     f32 dot;
@@ -1746,7 +1746,7 @@ extern "C" void fn_80191928(void *arg0) {
     }
 }
 #pragma cplusplus off
-#pragma ppc_psq_save reset
+#pragma pop
 
 #pragma scheduling on
 int fn_80191A98(void *arg0) {
