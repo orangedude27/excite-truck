@@ -1325,6 +1325,7 @@ extern "C" void fn_8019CF60(void *arg0, void *arg1) {
     delta[2] = origin->point.z - target->point.z;
     f32 distance = PSVECSquareDistance(&origin->point, &target->point);
     f32 result;
+    /* Computes a distance/axis-based weight into target+0x24, falling back to max of bounds when very close. */
     if (distance > lbl_8056232C) {
         f32 scale = lbl_805622E0 / (f32)fn_8002F234(distance);
         delta[0] *= scale;
