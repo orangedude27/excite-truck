@@ -1,5 +1,21 @@
 #include <types.h>
 #include <string.h>
+
+/* Debug event timeline drawn by this unit: 0x30C-byte entries appended by
+ * fn_801C3C80 and kept sorted by fn_801C3B7C on the time at entry+0x0.
+ * entry+0x4 is the rank among entries sharing a time, entry+0x8 the event type
+ * (0..7, which selects the fields fn_801CA1C4 prints). */
+#define sTimelineEntries   lbl_8055E7F8 /* entry table, 0xC300 bytes = 100 entries */
+#define sTimelineCount     lbl_8055E7F0 /* entries in sTimelineEntries */
+#define sTimelineSelection lbl_8055E828 /* entry the overlay shows details for */
+#define sTimelineTypeNames lbl_80562950 /* '\\0'-separated name per event type */
+#define STR_TIMELINE_TYPE  lbl_80337944 /* "type: %s" */
+#define STR_TIMELINE_TIME  lbl_8055AB10 /* "t: %.2f" */
+#define text_line_height   fn_80238A20  /* overlay line advance: (int)(0.4f * font height) */
+#define debug_draw_text    fn_801C94B8  /* x, y, text, color (-1 = default) */
+#define nth_string         fn_801C98F4  /* string blob, index -> index-th string */
+#define draw_entry_details fn_801CA1C4  /* entry, x, y, line advance */
+
 __declspec(section ".sdata") extern char lbl_8055AAF0[], lbl_8055AAF4[], lbl_8055AAF8[];
 extern void fn_802E3AD0(s32, const char *, ...);
 extern double fn_8002EFA8(double);
