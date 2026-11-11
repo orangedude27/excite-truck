@@ -29,26 +29,30 @@ int fn_801BD628(float *arg0) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_801BD694(int arg0) {
+/* Initializes object pool lists/buffers for count entries and marks system initialized. */
+void fn_801BD694(int count) {
     extern int lbl_8055E78C, lbl_8055E790, lbl_8055E794, lbl_8055E798, lbl_8055E79C, lbl_8055E7A0, lbl_8055E7A4;
     extern signed char lbl_8055E7A8;
     extern char lbl_80336A50[], lbl_8055A924[], lbl_8055A92C[], lbl_8055A934[], lbl_8055A93C[];
     extern void fn_801BD78C(void), fn_801BD788(void), fn_801BD784(void);
     extern void *fn_8012850C(int, const char *);
     extern void *fn_8002F37C(void *, void (*)(void), int, int, int);
-    int temp;
+    int poolCount;
     void *memory;
 
-    *(volatile int *)&lbl_8055E790 = arg0;
+    /* lbl_8055E790 = pool count, lbl_8055E78C = current index */
+    *(volatile int *)&lbl_8055E790 = count;
     *(volatile int *)&lbl_8055E78C = 0;
-    memory = fn_8012850C(arg0 * 0xB0 + 0x10, lbl_80336A50);
-    lbl_8055E794 = (int)fn_8002F37C(memory, fn_801BD78C, 0, 0xB0, arg0);
-    temp = lbl_8055E790;
-    memory = fn_8012850C(temp * 0x1F0 + 0x10, lbl_8055A924);
-    lbl_8055E798 = (int)fn_8002F37C(memory, fn_801BD788, 0, 0x1F0, temp);
-    temp = lbl_8055E790;
-    memory = fn_8012850C(temp * 0x190 + 0x10, lbl_8055A92C);
-    lbl_8055E79C = (int)fn_8002F37C(memory, fn_801BD784, 0, 0x190, temp);
+    /* Allocate and build mass/cs/cc lists (element sizes 0xB0, 0x1F0, 0x190) */
+    memory = fn_8012850C(count * 0xB0 + 0x10, lbl_80336A50);
+    lbl_8055E794 = (int)fn_8002F37C(memory, fn_801BD78C, 0, 0xB0, count);
+    poolCount = lbl_8055E790;
+    memory = fn_8012850C(poolCount * 0x1F0 + 0x10, lbl_8055A924);
+    lbl_8055E798 = (int)fn_8002F37C(memory, fn_801BD788, 0, 0x1F0, poolCount);
+    poolCount = lbl_8055E790;
+    memory = fn_8012850C(poolCount * 0x190 + 0x10, lbl_8055A92C);
+    lbl_8055E79C = (int)fn_8002F37C(memory, fn_801BD784, 0, 0x190, poolCount);
+    /* Allocate cx/alist buffers and set initialized flag (lbl_8055E7A8) */
     lbl_8055E7A4 = (int)fn_8012850C(lbl_8055E790 * 0x14, lbl_8055A934);
     lbl_8055E7A0 = (int)fn_8012850C(lbl_8055E790, lbl_8055A93C);
     lbl_8055E7A8 = 1;
