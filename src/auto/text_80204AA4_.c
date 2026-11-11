@@ -1,6 +1,9 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern char lbl_8033BBD8[];
+extern void *fn_801E87A8(void);
+extern void *fn_801284F8(int, void *);
 extern char lbl_802F9D68[];
 extern int lbl_8033BBA0;
 extern int *lbl_8055ED5C;
@@ -251,11 +254,11 @@ int fn_80205268(const char *arg0, int arg1, int arg2) {
 extern "C" int fn_802054EC(const char *arg0, int arg1, int arg2) {
     class Manager { public: virtual void *get(int); };
     class Stage { public: virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11(); virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15(); virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19(); virtual void f20(); virtual void *get(int); };
-    class Resource { public: virtual void f0(); virtual int has(const char *); virtual void f2(); virtual int get(const char *); };
+    class Resource { public: virtual void f0(); virtual int has(const char *); virtual void f2(); virtual const char *get(const char *); };
     volatile struct { int arg1; void *mgr; void *cur; void *val; void *sel; } s;
     char buf[0x64];
     char *entry;
-    int result;
+    const char *result;
     void *o;
     s.arg1 = arg1;
     s.mgr = 0;
@@ -264,8 +267,7 @@ extern "C" int fn_802054EC(const char *arg0, int arg1, int arg2) {
     s.sel = 0;
     s.mgr = fn_80131808(lbl_8033BBE4);
     entry = (char *)fn_80204B18(arg1);
-    o = s.mgr;
-    s.cur = ((Manager *)o)->get(*(int *)(entry + 8));
+    s.cur = ((Manager *)s.mgr)->get(*(int *)(entry + 8));
     if (arg2 >= 0 && arg2 < fn_80012854()) {
         void *stage = *(void **)((char *)((void *(*)(int))fn_8001285C)(arg2) + 0x20);
         int ok = ((Stage *)stage)->get(*(int *)(entry + 8)) != 0;
@@ -276,7 +278,7 @@ extern "C" int fn_802054EC(const char *arg0, int arg1, int arg2) {
     }
     result = 0;
     if (s.sel != 0) {
-        fn_801345D8(buf, 0x64, lbl_8055B4AC, arg0);
+        ((int (*)(void *, int, const char *, ...))fn_801345D8)(buf, 0x64, lbl_8055B4AC, s.sel, arg0);
         o = s.val;
         if (o != 0 && ((Resource *)o)->has(buf) != 0) {
             o = s.val;
@@ -307,12 +309,13 @@ extern "C" int fn_802054EC(const char *arg0, int arg1, int arg2) {
         }
     }
     if (result == 0) fn_802E317C(lbl_8033BBF4, arg0);
-    result = stricmp((const char *)result, lbl_8055B4B4) == 0 || stricmp((const char *)result, lbl_8055B4B8) == 0;
+    { int answer = 1;
+    if (stricmp(result, lbl_8055B4B4) != 0 && stricmp((const char *)result, lbl_8055B4B8) != 0) answer = 0;
     s.sel = 0;
     s.cur = 0;
     s.val = 0;
     fn_80131818((int)s.mgr);
     s.mgr = 0;
-    return result;
+    return answer; }
 }
 #pragma pop
