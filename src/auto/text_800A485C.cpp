@@ -10932,6 +10932,21 @@ extern "C" s32 fn_800B7EAC(s32 *arg0) {
     return 0;
 }
 
+extern "C" s32 fn_800B7F28(void *arg0) {
+    s32 count;
+    if (arg0 == 0 || *(void **)((u8 *)arg0 + 8) == 0 || *(u32 *)arg0 > *(u32 *)((u8 *)arg0 + 4)) {
+        OSReport(lbl_8031B1E4);
+        return 0;
+    }
+    OSInitSemaphore(*(void **)((u8 *)arg0 + 8), *(u32 *)((u8 *)arg0 + 4));
+    count = (s32)(*(u32 *)((u8 *)arg0 + 4) - *(u32 *)arg0);
+    while (count != 0) {
+        OSWaitSemaphore(*(void **)((u8 *)arg0 + 8));
+        count -= 1;
+    }
+    return *(s32 *)((u8 *)arg0 + 8);
+}
+
 #pragma dont_inline reset
 extern "C" const char lbl_8031B218[];
 extern "C" s32 fn_800B7FC4(s32 arg0) {
@@ -13650,14 +13665,12 @@ extern "C" void fn_800BD970(s32 arg0, s32 arg1, s8 arg2, s32 arg3, s32 *arg4) {
 }
 #pragma pop
 extern "C" s16 fn_800BDD7C(s32 arg0, s32 arg1, s32 *arg2) {
-    s32 *a2 = arg2;
-    u32 value = ((s32 (*)(s32, s32, s32, s32 *))fn_800BDE18)(arg0, arg1, 0xC, a2);
+    u32 value = ((s32 (*)(s32, s32, s32, s32 *))fn_800BDE18)(arg0, arg1, 0xC, arg2);
     while ((value & 0xFFFFU) != 0xFFFU) {
-        value = (value << 1) & 0xFFFEU;
-        value |= ((s32 (*)(s32, s32, s32, s32 *))fn_800BDE18)(arg0, arg1, 1, a2);
-        if (*a2 > 0x3FFF) {
+        value = (value * 2) & 0xFFFEU;
+        value |= ((s32 (*)(s32, s32, s32, s32 *))fn_800BDE18)(arg0, arg1, 1, arg2);
+        if (*arg2 > 0x3FFF)
             return 0;
-        }
     }
     return 1;
 }
