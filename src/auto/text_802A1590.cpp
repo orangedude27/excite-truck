@@ -1204,41 +1204,45 @@ extern "C" void fn_802A36D0(void *arg0, void *arg1, s32 arg2) {
 }
 
 extern "C" void fn_802A37C8(void* arg0, s32 arg1) {
-    u8 space[0xA8];
-    u8* cfg = space;
-    fn_8028E61C(cfg + 0x18);
-    *(s32*)(cfg + 0x1C) = 0xC0;
-    *(f32*)(cfg + 0x20) = lbl_80564820;
-    *(f32*)(cfg + 0x24) = lbl_8056479C;
-    *(s32*)(cfg + 0x18) = 2;
-    *(f32*)(cfg + 0x60) = lbl_80564734;
-    *(s32*)(cfg + 0x5C) = 4;
-    *(f32*)(cfg + 0x0C) = lbl_80564824;
-    *(f32*)(cfg + 0x10) = lbl_80564738;
-    *(f32*)(cfg + 0x14) = lbl_80564824;
-    *(f32*)(cfg + 0x28) = lbl_80564824;
-    *(f32*)(cfg + 0x2C) = lbl_80564738;
-    *(f32*)(cfg + 0x30) = lbl_80564824;
-    *(f32*)(cfg + 0x00) = lbl_80564730;
-    *(f32*)(cfg + 0x04) = lbl_80564730;
-    *(f32*)(cfg + 0x08) = lbl_80564730;
-    *(f32*)(cfg + 0x34) = lbl_80564730;
-    *(f32*)(cfg + 0x38) = lbl_80564730;
-    *(f32*)(cfg + 0x3C) = lbl_80564730;
-    *(f32*)(cfg + 0x40) = lbl_80564828;
-    *(f32*)(cfg + 0x44) = lbl_805647A0;
-    *(f32*)(cfg + 0x48) = lbl_80564734;
-    *(f32*)(cfg + 0x4C) = lbl_80564734;
-    *(f32*)(cfg + 0x8C) = lbl_80564730;
-    *(f32*)(cfg + 0x84) = lbl_80564730;
-    *(f32*)(cfg + 0x7C) = lbl_80564730;
-    *(f32*)(cfg + 0x70) = lbl_805647F0;
-    *(f32*)(cfg + 0x74) = lbl_805647C4;
-    *(f32*)(cfg + 0x68) = lbl_80564828;
-    *(f32*)(cfg + 0x6C) = lbl_80564730;
-    *(f32*)(cfg + 0x90) = lbl_805647B8;
-    *(f32*)(cfg + 0x94) = lbl_80564730;
-    *(s32*)((char*)arg0 + 4) = ((s32 (*)(void*, void*, s32))fn_8028E2F8)(cfg + 0x18, lbl_80349A74, arg1);
+    /* Build an effect descriptor on the stack, initialize it, and create/store the
+       "trail sand" effect instance in the target object. */
+    u8 descBuf[0xA8];
+    u8* desc = descBuf;
+
+    fn_8028E61C(desc + 0x18);
+    *(s32*)(desc + 0x1C) = 0xC0;
+    *(f32*)(desc + 0x20) = lbl_80564820;
+    *(f32*)(desc + 0x24) = lbl_8056479C;
+    *(s32*)(desc + 0x18) = 2;
+    *(f32*)(desc + 0x60) = lbl_80564734;
+    *(s32*)(desc + 0x5C) = 4;
+    *(f32*)(desc + 0x0C) = lbl_80564824;
+    *(f32*)(desc + 0x10) = lbl_80564738;
+    *(f32*)(desc + 0x14) = lbl_80564824;
+    *(f32*)(desc + 0x28) = lbl_80564824;
+    *(f32*)(desc + 0x2C) = lbl_80564738;
+    *(f32*)(desc + 0x30) = lbl_80564824;
+    *(f32*)(desc + 0x00) = lbl_80564730;
+    *(f32*)(desc + 0x04) = lbl_80564730;
+    *(f32*)(desc + 0x08) = lbl_80564730;
+    *(f32*)(desc + 0x34) = lbl_80564730;
+    *(f32*)(desc + 0x38) = lbl_80564730;
+    *(f32*)(desc + 0x3C) = lbl_80564730;
+    *(f32*)(desc + 0x40) = lbl_80564828;
+    *(f32*)(desc + 0x44) = lbl_805647A0;
+    *(f32*)(desc + 0x48) = lbl_80564734;
+    *(f32*)(desc + 0x4C) = lbl_80564734;
+    *(f32*)(desc + 0x8C) = lbl_80564730;
+    *(f32*)(desc + 0x84) = lbl_80564730;
+    *(f32*)(desc + 0x7C) = lbl_80564730;
+    *(f32*)(desc + 0x70) = lbl_805647F0;
+    *(f32*)(desc + 0x74) = lbl_805647C4;
+    *(f32*)(desc + 0x68) = lbl_80564828;
+    *(f32*)(desc + 0x6C) = lbl_80564730;
+    *(f32*)(desc + 0x90) = lbl_805647B8;
+    *(f32*)(desc + 0x94) = lbl_80564730;
+
+    *(s32*)((char*)arg0 + 4) = ((s32 (*)(void*, void*, s32))fn_8028E2F8)(desc + 0x18, lbl_80349A74, arg1);
 }
 
 extern "C" void* fn_802A38D0(void* arg0, DummyReceiver_802A3314* arg1) {
