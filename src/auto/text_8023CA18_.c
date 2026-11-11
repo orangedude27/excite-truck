@@ -357,55 +357,59 @@ typedef struct SoundOptions {
 #define speaker_mode_set    fn_80209090 /* 0..2, else 0 */
 #define music_volume_set    fn_8020A5F8 /* f32 music volume */
 #define STR_N_A             lbl_8055BB98 /* "N/A" */
-void fn_8023D304(void *arg0, int arg1) {
-    float *tmp;
-    float f;
-    int idx;
-    void *item;
-    void *o38;
-    switch (arg1) {
+/* Sound-options panel's "field changed" method (vtable lbl_803415E8 slot 0x18):
+ * pushes the value of the field the player moved into the sound code.  Field 2
+ * is the sound device: its index is clamped to the device list, selected, and
+ * the device's name (or "N/A") is copied into the panel's name buffer. */
+void fn_8023D304(SoundOptions *panel, s32 field) {
+    f32 *value;
+    f32 level;
+    s32 idx;
+    void *device;
+    void *widget;
+    switch (field) {
     case 2:
-        if (*(int *)(*(int *)((char *)arg0 + 0x24)) >= (int)fn_80208D3C()) {
-            *(int *)(*(int *)((char *)arg0 + 0x24)) = (int)fn_80208D3C() - 1;
+        if (*panel->deviceIndex >= sound_device_count()) {
+            *panel->deviceIndex = sound_device_count() - 1;
         }
-        fn_80208D60(*(int *)(*(int *)((char *)arg0 + 0x24)));
-        idx = *(int *)(*(int *)((char *)arg0 + 0x24));
-        if (idx >= 0 && idx < (int)fn_80208D3C()) {
+        sound_device_select(*panel->deviceIndex);
+        idx = *panel->deviceIndex;
+        if (idx >= 0 && idx < sound_device_count()) {
 #pragma cplusplus on
-            struct IV1 { virtual void u0(); virtual const char *getName(); };
-            item = fn_80208D4C(idx);
-            strcpy(*(char **)((char *)arg0 + 0x28), ((struct IV1 *)item)->getName());
+            struct DeviceView { virtual void u0(); virtual const char *getName(); };
+            device = sound_device_get(idx);
+            strcpy(panel->deviceName, ((struct DeviceView *)device)->getName());
 #pragma cplusplus reset
             return;
         }
-        strcpy(*(char **)((char *)arg0 + 0x28), (const char *)&lbl_8055BB98);
+        strcpy(panel->deviceName, (const char *)&STR_N_A);
         return;
     case 3:
-        tmp = *(float **)((char *)arg0 + 0x1C);
-        fn_8020A5F8(tmp, *tmp);
+        value = panel->musicVolume;
+        music_volume_set(value, *value);
         return;
     case 0:
-        tmp = *(float **)((char *)arg0 + 0x18);
-        ((void (*)(float *, float))fn_80209030)(tmp, *tmp);
+        value = panel->effectsVolume;
+        ((void (*)(f32 *, f32))effects_volume_set)(value, *value);
         return;
     case 1:
-        fn_80209090(*(int *)(*(int *)((char *)arg0 + 0x20)));
+        speaker_mode_set(*panel->speakerMode);
         return;
     case 4:
-        o38 = *(void **)((char *)arg0 + 0x38);
-        if (o38 != 0) {
-            f = *(float *)(*(int *)((char *)arg0 + 0x2C));
-            if (f != *(float *)((char *)o38 + 8)) {
-                *(char *)((char *)o38 + 0x4D) = 1;
-                *(float *)((char *)o38 + 8) = f;
+        widget = panel->widget;
+        if (widget != 0) {
+            level = *panel->level;
+            if (level != *(f32 *)((char *)widget + 8)) {
+                *(char *)((char *)widget + 0x4D) = 1;
+                *(f32 *)((char *)widget + 8) = level;
             }
-            o38 = *(void **)((char *)arg0 + 0x38);
-            *(char *)((char *)o38 + 0x4A) = 1;
-            *(char *)((char *)o38 + 0x4C) = 0;
-            o38 = *(void **)((char *)arg0 + 0x38);
-            *(char *)((char *)o38 + 0x49) = 1;
-            *(char *)((char *)o38 + 0x4B) = 0;
-            *(char *)((char *)o38 + 0x4A) = 0;
+            widget = panel->widget;
+            *(char *)((char *)widget + 0x4A) = 1;
+            *(char *)((char *)widget + 0x4C) = 0;
+            widget = panel->widget;
+            *(char *)((char *)widget + 0x49) = 1;
+            *(char *)((char *)widget + 0x4B) = 0;
+            *(char *)((char *)widget + 0x4A) = 0;
         }
         return;
     case 5:
