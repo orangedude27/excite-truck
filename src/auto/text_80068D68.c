@@ -5533,7 +5533,6 @@ u8 BTA_DmAddDevice(u8 *bd_addr, u8 *link_key, u32 trusted_mask, u8 is_trusted) {
     u32 bit_index;
     u8 index = 0;
     u8 result;
-
     memset(service_mask, 0, 8);
     if (is_trusted != 0) {
         do {
@@ -5546,7 +5545,9 @@ u8 BTA_DmAddDevice(u8 *bd_addr, u8 *link_key, u32 trusted_mask, u8 is_trusted) {
                 *(u32 *)((u8 *)service_mask + offset) |= 1 << bit_index;
             }
             index++;
-        } while (trusted_mask != 0 && index < 0x17);
+            if (trusted_mask == 0)
+                break;
+        } while (index < 0x17);
     }
     fn_8006EAD0();
     result = ((BOOLEAN (*)(BD_ADDR, DEV_CLASS, BD_NAME, BD_FEATURES,
@@ -15694,7 +15695,7 @@ u8 HID_HostDeregister(void) {
     if (lbl_803C3C38[0x400] == 0)
         return 1;
     for (i = 0; i < 0x10; i++) {
-        u8 flag = base[0x400];
+        u8 flag = lbl_803C3C38[0x400];
         u8 active;
         if (flag == 0)
             continue;
@@ -21368,6 +21369,35 @@ void rfc_mx_conf_cnf(void *arg0, u16 *arg1) {
     }
 }
 
+void rfc_mx_conf_ind(void *arg0, void *arg1) {
+    extern u8 lbl_803C4828[];
+    extern char lbl_803199B8[];
+    extern void rfc_send_sabme();
+    u8 *mcb = (u8 *)arg0;
+    u8 *info = (u8 *)arg1;
+    if (lbl_803C4828[0x414] >= 4)
+        ((void (*)(u32, void *, void *))fn_80070954)(0x90003, lbl_803199B8, arg1);
+    if (info[2] != 0) {
+        *(s16 *)(mcb + 0x6A) = (s16)(*(u16 *)(info + 4) - 6);
+    } else {
+        *(s16 *)(mcb + 0x6A) = 0x29A;
+    }
+    info[2] = 0;
+    info[0x20] = 0;
+    info[6] = 0;
+    *(u16 *)info = 0;
+    L2CA_ConfigRsp(*(u16 *)(mcb + 0x68), (tL2CAP_CFG_INFO *)info);
+    mcb[0x6F] = 1;
+    if (mcb[0x6C] == 2 && mcb[0x6E] != 0) {
+        if (mcb[0x6D] != 0) {
+            mcb[0x6C] = 3;
+            ((void (*)(void *, u8))rfc_send_sabme)(arg0, 0);
+            return;
+        }
+        mcb[0x6C] = 4;
+    }
+}
+
 void rfc_port_sm_execute(void *p_port, u16 event, void *p_data) {
     if (p_port == 0) {
         if (lbl_803C4828[0x414] >= 2)
@@ -23720,29 +23750,33 @@ BOOLEAN SDP_DeleteAttribute(UINT32 handle, UINT16 attr_id) {
 }
 
 u8 *sdpu_build_uuid_seq(u8 *out, u32 count, u8 *uuid) {
-    u8 *start = out + 1;
+    u8 *start;
     u8 *p;
-    u32 i;
+    u32 i = 0;
     s32 j;
     u16 len;
-
-    *out = 0x35;
-    p = start;
+    u8 c19 = 0x19;
+    u8 c1A = 0x1A;
+    u8 c1C = 0x1C;
+    u8 *q = out;
+    p = q + 1;
+    start = p;
+    *q = 0x35;
     p++;
-    for (i = 0; i < count; i++) {
+    for (; i < count; i++) {
         len = *(u16 *)uuid;
         if (len == 2) {
-            *p++ = 0x19;
+            *p++ = c19;
             *p++ = (u8)(*(u16 *)(uuid + 4) >> 8);
             *p++ = (u8)*(u16 *)(uuid + 4);
         } else if (len == 4) {
-            *p++ = 0x1A;
+            *p++ = c1A;
             *p++ = (u8)(*(u32 *)(uuid + 4) >> 24);
             *p++ = (u8)(*(u32 *)(uuid + 4) >> 16);
             *p++ = (u8)(*(u32 *)(uuid + 4) >> 8);
             *p++ = (u8)*(u32 *)(uuid + 4);
         } else {
-            *p++ = 0x1C;
+            *p++ = c1C;
             j = 0;
             while (j < (s32)len) {
                 *p++ = uuid[j + 4];
@@ -23753,7 +23787,7 @@ u8 *sdpu_build_uuid_seq(u8 *out, u32 count, u8 *uuid) {
         uuid += 0x14;
     }
     *start = (u8)(p - start - 1);
-    return start + (p - start);
+    return p;
 }
 
 void sdp_snd_service_search_req(tCONN_CB *p_ccb, u8 num_uuid, u8 *p_uuid_list) {
