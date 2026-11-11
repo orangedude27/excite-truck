@@ -3189,23 +3189,28 @@ static inline void fn_80286A34_select(int idx) {
 #pragma dont_inline on
 void fn_80287238(void *arg0) {
     extern float lbl_80564200, lbl_805641FC;
-    extern int lbl_80347FB4;
+    extern char lbl_80347FB4[];
     extern int fn_80214A9C(int);
     extern void *fn_8027ED70(void);
-    void *temp_r4 = *(void **)((char *)arg0 + 0x20);
-    if (temp_r4 != 0) {
-        *(float *)((char *)temp_r4 + 0x10) = lbl_80564200;
+    void *temp = *(void **)((char *)arg0 + 0x20);
+    if (temp != 0) {
+        *(float *)((char *)temp + 0x10) = lbl_80564200;
         *(unsigned char *)((char *)arg0 + 0x29) = 0;
-        *(unsigned char *)((char *)arg0 + 0x2A) = 0;
-        *(unsigned char *)((char *)arg0 + 0x28) = ((unsigned char (*)(void))(*(void ***)arg0)[16])();
-        ((void (*)(void *))(*(void ***)fn_8027ED70())[14])(&lbl_80347FB4);
-        fn_80214A9C(0x1F);
+        *(unsigned char *)((char *)arg0 + 0x2a) = 0;
+#pragma cplusplus on
+        *(unsigned char *)((char *)arg0 + 0x28) = (unsigned char)((struct Fn87238A *)arg0)->v14();
+        ((struct Fn87238B *)fn_8027ED70())->v12(lbl_80347FB4);
+#pragma cplusplus reset
+        fn_80214A9C(0x1f);
         *(float *)((char *)arg0 + 0x178) = lbl_805641FC;
         return;
     }
+    {
+    float f = lbl_80564200;
     *(unsigned char *)((char *)arg0 + 0x29) = 1;
-    *(unsigned char *)((char *)arg0 + 0x2A) = 0;
-    *(float *)((char *)arg0 + 0x178) = lbl_80564200;
+    *(unsigned char *)((char *)arg0 + 0x2a) = 0;
+    *(float *)((char *)arg0 + 0x178) = f;
+    }
 }
 #pragma dont_inline reset
 extern float lbl_80564200;
