@@ -140,6 +140,7 @@ void fn_80270B74(void) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma small_data off
+#pragma scheduling invalid_target
 void fn_80270C04(void *arg0, int arg1) {
     extern char lbl_80346B00[];
     extern char lbl_8049EDC8[];
