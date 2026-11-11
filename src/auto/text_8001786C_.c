@@ -151,14 +151,15 @@ extern void fn_80017AC8(void*);
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_80017B40(void *arg0, s32 arg1) {
+    /* Collect object IDs whose flags allow selection and whose endpoint IDs are absent from the exclusion set, then shuffle the collected list. */
     register s32 i;
-    register s32 a;
-    register s32 b;
+    register s32 objectIdA;
+    register s32 objectIdB;
     register s32 skip;
     register unsigned long flags;
     register s32 bit2;
     register s32 bit3;
-    register s32 n;
+    register s32 count;
     register void **items;
     void *obj;
 
@@ -167,16 +168,16 @@ void fn_80017B40(void *arg0, s32 arg1) {
         obj = fn_80016510(i);
         flags = *(unsigned long *)((char *)obj + 0xA0);
         skip = 0;
-        a = *(s32 *)((char *)obj + 4);
-        b = *(s32 *)((char *)obj + 8);
+        objectIdA = *(s32 *)((char *)obj + 4);
+        objectIdB = *(s32 *)((char *)obj + 8);
         bit2 = (flags >> 2) & 1;
         bit3 = (flags >> 3) & 1;
         if ((flags & 2) || bit2 || bit3) skip = 1;
-        if (!skip && fn_80017A14(a, arg1) == 0 && fn_80017A14(b, arg1) == 0) {
-            n = *(s32 *)((char *)arg0 + 4);
+        if (!skip && fn_80017A14(objectIdA, arg1) == 0 && fn_80017A14(objectIdB, arg1) == 0) {
+            count = *(s32 *)((char *)arg0 + 4);
             items = *(void ***)arg0;
-            *(s32 *)((char *)arg0 + 4) = n + 1;
-            items[n] = (void *)a;
+            *(s32 *)((char *)arg0 + 4) = count + 1;
+            items[count] = (void *)objectIdA;
         }
         i++;
     }
