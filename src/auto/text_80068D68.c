@@ -22159,17 +22159,17 @@ void rfc_send_ua(void *arg0, s32 arg1, void *arg2) {
     BT_HDR *p_buf;
     u8 *p_data;
     u8 cr;
-
-    cr = (u8)((((*(u8 *)((u8 *)arg0 + 0x6D) == 0) ? 1 : 0) << 1));
+    u8 command = 0x73;
+    u8 initiator = *(u8 *)((u8 *)arg0 + 0x6D);
+    cr = (u8)((((!initiator && 1) || (initiator && !1)) << 1));
     if ((p_buf = (BT_HDR *)GKI_getpoolbuf(2)) == 0)
         return;
-
-    p_buf->offset = 9;
     p_data = (u8 *)(p_buf + 1) + 9;
-    *p_data++ = 1 | cr | (arg1 << 2);
-    *p_data++ = 0x73;
-    *p_data++ = 1;
-    *p_data = fn_8009504C(3, p_data);
+    p_buf->offset = 9;
+    p_data[0] = (u8)(1 | cr | ((u8)arg1 << 2));
+    p_data[1] = command;
+    p_data[2] = 1;
+    p_data[3] = fn_8009504C(3, (u8 *)(p_buf + 1) + 9);
     p_buf->len = 4;
     rfc_check_send_cmd(arg0, p_buf);
 }
