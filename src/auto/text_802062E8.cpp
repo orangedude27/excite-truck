@@ -233,16 +233,14 @@ extern "C" void *fn_802065F8(void *arg0, int arg1, int arg2) {
     char *self = (char *)arg0;
     *(void **)self = &lbl_8033BDC0;
     strncpy(self + 0x37, (const char *)arg1, 0xC);
-    float zero = lbl_805631FC;
-    register int zeroInt = 0;
-    register int oneInt = 1;
-    float one = lbl_805631F8;
+    int zeroInt = 0;
+    int oneInt = 1;
     int neg = -0x64;
     self[0x43] = zeroInt;
     *(int *)(self + 0xC) = zeroInt;
     *(int *)(self + 0x44) = arg2;
-    *(float *)(self + 4) = one;
-    *(float *)(self + 8) = one;
+    *(float *)(self + 4) = 1.0f;
+    *(float *)(self + 8) = 1.0f;
     self[0x49] = zeroInt;
     self[0x48] = zeroInt;
     self[0x4A] = oneInt;
@@ -255,15 +253,15 @@ extern "C" void *fn_802065F8(void *arg0, int arg1, int arg2) {
     *(int *)(self + 0x14) = zeroInt;
     self[0x18] = zeroInt;
     self[0x19] = zeroInt;
-    *(float *)(self + 0x20) = zero;
-    *(float *)(self + 0x1C) = one;
-    *(float *)(self + 0x24) = zero;
+    *(float *)(self + 0x20) = 0.0f;
+    *(float *)(self + 0x1C) = 1.0f;
+    *(float *)(self + 0x24) = 0.0f;
     *(int *)(self + 0x50) = zeroInt;
-    *(float *)(self + 0x28) = zero;
+    *(float *)(self + 0x28) = 0.0f;
     self[0x34] = oneInt;
-    *(float *)(self + 0x2C) = zero;
+    *(float *)(self + 0x2C) = 0.0f;
     self[0x35] = oneInt;
-    *(float *)(self + 0x30) = zero;
+    *(float *)(self + 0x30) = 0.0f;
     self[0x36] = oneInt;
     return arg0;
 }
@@ -592,21 +590,22 @@ extern "C" f32 fn_802072DC(void) {
     return lbl_805631FC;
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void *fn_802072E4(void *arg0, int arg1, int arg2) {
     void *vtable;
     float value;
     float value2;
     void *obj;
+    int one = 1;
     fn_802065F8();
     value = *(volatile float *)&lbl_805631FC;
     vtable = &lbl_8033BD90;
     value2 = *(volatile float *)&lbl_805631F8;
     *(void **)arg0 = vtable;
     *(float *)((char *)arg0 + 0x64) = value;
-    *(char *)((char *)arg0 + 0x6C) = 1;
+    *(char *)((char *)arg0 + 0x6C) = one;
     *(float *)((char *)arg0 + 0x68) = value2;
-    *(char *)((char *)arg0 + 0x6D) = 1;
+    *(char *)((char *)arg0 + 0x6D) = one;
     obj = fn_80208994(lbl_8055ED80, arg1, arg2, value);
     *(void **)((char *)arg0 + 0xC) = obj;
     if (obj != 0)
@@ -629,7 +628,6 @@ extern "C" void *fn_802072E4(void *arg0, int arg1, int arg2) {
     *(float *)((char *)arg0 + 0x24) = value;
     return arg0;
 }
-#pragma scheduling on
 extern "C" void fn_802073A4(void* arg0, int arg1, int arg2) {
     class Dispatch {
     public:
