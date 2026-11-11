@@ -5875,35 +5875,36 @@ void bta_dm_pm_btm_cback(void *arg0, s8 arg1, s16 arg2, s8 arg3) {
     }
 }
 
-void bta_dm_pm_timer_cback(void *arg) {
-    u8 *base = lbl_803C0C14;
-    register void *buf;
-    register u8 idx = 0;
+/* Handles a BTA device-manager power-mode timer expiry: finds which PM timer slot fired, clears it, and posts a PM timer event with the slot's peer address. */
+void bta_dm_pm_timer_cback(void *expiredTimer) {
+    u8 *dmControlBlock = lbl_803C0C14;
+    register void *eventMsg;
+    register u8 slotIndex = 0;
 
-    if (base[0xB6] != 0 && (void *)(base + 0x98) == arg) {
-        base[0xB6] = 0;
+    if (dmControlBlock[0xB6] != 0 && (void *)(dmControlBlock + 0x98) == expiredTimer) {
+        dmControlBlock[0xB6] = 0;
         goto done;
     }
-    idx = 1;
-    if (base[0xD6] != 0 && (void *)(base + 0xB8) == arg) {
-        base[0xD6] = 0;
+    slotIndex = 1;
+    if (dmControlBlock[0xD6] != 0 && (void *)(dmControlBlock + 0xB8) == expiredTimer) {
+        dmControlBlock[0xD6] = 0;
         goto done;
     }
-    idx = 2;
-    if (base[0xF6] != 0 && (void *)(base + 0xD8) == arg) {
-        base[0xF6] = 0;
+    slotIndex = 2;
+    if (dmControlBlock[0xF6] != 0 && (void *)(dmControlBlock + 0xD8) == expiredTimer) {
+        dmControlBlock[0xF6] = 0;
         goto done;
     }
-    idx = 3;
+    slotIndex = 3;
 
 done:
-    if (idx != 3) {
-        buf = GKI_getbuf(0xE);
-        if (buf != 0) {
-            *(u16 *)buf = 0x10A;
-            fn_80070FA4((u8 *)buf + 8,
-                         lbl_803C0C14 + 0xB0 + ((u32)idx << 5));
-            fn_80071450(buf);
+    if (slotIndex != 3) {
+        eventMsg = GKI_getbuf(0xE);
+        if (eventMsg != 0) {
+            *(u16 *)eventMsg = 0x10A;
+            fn_80070FA4((u8 *)eventMsg + 8,
+                         lbl_803C0C14 + 0xB0 + ((u32)slotIndex << 5));
+            fn_80071450(eventMsg);
         }
     }
 }
