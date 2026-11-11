@@ -3582,40 +3582,41 @@ UINT16 GKI_update_timer_list(TIMER_LIST_Q *p_timer_listq, INT32 num_units_since_
     return num_time_out;
 }
 
-void GKI_add_to_timer_list(TIMER_LIST_Q *p_timer_list, TIMER_LIST_ENT *p_tle) {
-    TIMER_LIST_ENT *p_entry;
-    INT32 ticks;
+/* Insert a timer entry into a delta-tick timer list queue. */
+void GKI_add_to_timer_list(TIMER_LIST_Q *p_timer_listq, TIMER_LIST_ENT *p_tle) {
+    TIMER_LIST_ENT *p_temp;
+    INT32 nr_ticks_total;
 
     if (p_tle->ticks < 0) return;
-    if (p_tle->ticks >= p_timer_list->last_ticks) {
-        if (p_timer_list->p_first == NULL) {
-            p_timer_list->p_first = p_tle;
+    if (p_tle->ticks >= p_timer_listq->last_ticks) {
+        if (p_timer_listq->p_first == NULL) {
+            p_timer_listq->p_first = p_tle;
         } else {
-            if (p_timer_list->p_last != NULL) p_timer_list->p_last->p_next = p_tle;
-            p_tle->p_prev = p_timer_list->p_last;
+            if (p_timer_listq->p_last != NULL) p_timer_listq->p_last->p_next = p_tle;
+            p_tle->p_prev = p_timer_listq->p_last;
         }
         p_tle->p_next = NULL;
-        p_timer_list->p_last = p_tle;
-        ticks = p_tle->ticks;
-        p_tle->ticks = ticks - p_timer_list->last_ticks;
-        p_timer_list->last_ticks = ticks;
+        p_timer_listq->p_last = p_tle;
+        nr_ticks_total = p_tle->ticks;
+        p_tle->ticks = nr_ticks_total - p_timer_listq->last_ticks;
+        p_timer_listq->last_ticks = nr_ticks_total;
     } else {
-        p_entry = p_timer_list->p_first;
-        while (p_tle->ticks > p_entry->ticks) {
-            if (p_entry->ticks > 0) p_tle->ticks -= p_entry->ticks;
-            p_entry = p_entry->p_next;
+        p_temp = p_timer_listq->p_first;
+        while (p_tle->ticks > p_temp->ticks) {
+            if (p_temp->ticks > 0) p_tle->ticks -= p_temp->ticks;
+            p_temp = p_temp->p_next;
         }
-        if (p_entry == p_timer_list->p_first) {
-            p_tle->p_next = p_timer_list->p_first;
-            p_timer_list->p_first->p_prev = p_tle;
-            p_timer_list->p_first = p_tle;
+        if (p_temp == p_timer_listq->p_first) {
+            p_tle->p_next = p_timer_listq->p_first;
+            p_timer_listq->p_first->p_prev = p_tle;
+            p_timer_listq->p_first = p_tle;
         } else {
-            p_entry->p_prev->p_next = p_tle;
-            p_tle->p_prev = p_entry->p_prev;
-            p_entry->p_prev = p_tle;
-            p_tle->p_next = p_entry;
+            p_temp->p_prev->p_next = p_tle;
+            p_tle->p_prev = p_temp->p_prev;
+            p_temp->p_prev = p_tle;
+            p_tle->p_next = p_temp;
         }
-        p_entry->ticks -= p_tle->ticks;
+        p_temp->ticks -= p_tle->ticks;
     }
     p_tle->in_use = 1;
 }
