@@ -75,26 +75,20 @@ void fn_802022A0(int *arg0) {
 #pragma scheduling invalid_target
 #pragma dont_inline on
 int fn_802022E4(const Vec *arg0) {
-    register float var_f31 = lbl_805630A0;
-    register int var_r31 = 0;
-    register int var_r30 = 0;
-    register int var_r29 = 0;
-    register const Vec *var_r28 = arg0;
-    goto test;
-loop:
-    {
-        float tmp = PSVECSquareDistance(var_r28, (const Vec *)((char *)lbl_8055ECC4 + var_r31));
-        if (tmp < var_f31) {
-            var_f31 = tmp;
-            var_r30 = var_r29;
+    float bestDist = lbl_805630A0;
+    int offset = 0;
+    int best = 0;
+    int i = 0;
+    while (i < lbl_8055ECC0) {
+        float d = PSVECSquareDistance(arg0, (const Vec *)((char *)lbl_8055ECC4 + offset));
+        if (d < bestDist) {
+            bestDist = d;
+            best = i;
         }
+        offset += 0x10;
+        i++;
     }
-    var_r31 += 0x10;
-    var_r29 += 1;
-test:
-    if (var_r29 < lbl_8055ECC0)
-        goto loop;
-    return var_r30;
+    return best;
 }
 #pragma pop
 
@@ -324,33 +318,33 @@ extern int fn_802CE4F4(int);
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_80202924(void) {
-    int temp, center, index, result;
-    int *data;
-    Vec local;
+    /* Refresh visible modpool slots around a requested position when enabled, then service the pool. */
+    int nearestIndex, baseIndex, iterIndex, slotIndex;
+    int *slotRecord;
+    Vec requestedPos;
 
     if (lbl_8055ECC0 <= 0)
         return;
     lbl_8055ECDC = -1;
     if (lbl_8055ECE0 != 0) {
-        local = *(Vec *)fn_802023C8();
-        temp = fn_802022E4(&local);
-        lbl_8055ECDC = temp;
-        center = fn_80202218();
-        index = 0;
+        requestedPos = *(Vec *)fn_802023C8();
+        nearestIndex = fn_802022E4(&requestedPos);
+        lbl_8055ECDC = nearestIndex;
+        baseIndex = fn_80202218();
+        iterIndex = 0;
         goto test;
 loop:
-        data = (int *)(lbl_8055ECC4 + (result << 4));
-        fn_802CE744(data[3], 0);
-        index++;
+        slotRecord = (int *)(lbl_8055ECC4 + (slotIndex << 4));
+        fn_802CE744(slotRecord[3], 0);
+        iterIndex++;
 test:
-        result = fn_80202378(temp, center, 1, index);
-        if (result >= 0)
+        slotIndex = fn_80202378(nearestIndex, baseIndex, 1, iterIndex);
+        if (slotIndex >= 0)
             goto loop;
     }
     lbl_8055ECE0 = 0;
     fn_802CE4F4(lbl_8055ECC8);
 }
-
 void fn_802029FC(void) {
     extern double lbl_805630A8;
     extern float lbl_805630A4, lbl_805630B0, lbl_805630B4;
@@ -417,13 +411,15 @@ void fn_802C7A50(void);
 #pragma peephole off
 void fn_80202AD4(float *arg0) {
     float c, b, a;
+    int flag;
     a = arg0[0];
+    flag = 1;
     b = arg0[1];
     c = arg0[2];
-    ((Vec *)lbl_80488964)->x = a;
-    ((Vec *)lbl_80488964)->y = b;
-    ((Vec *)lbl_80488964)->z = c;
-    lbl_8055ECE0 = 1;
+    ((float *)lbl_80488964)[0] = a;
+    ((float *)lbl_80488964)[1] = b;
+    ((float *)lbl_80488964)[2] = c;
+    lbl_8055ECE0 = flag;
 }
 #pragma pop
 int fn_80202B00(void) {
