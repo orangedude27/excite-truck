@@ -683,11 +683,15 @@ void fn_80017558(void) {
         register int outerOffset;
         register int i;
         register int j;
+        register int k1;
+        register int k2;
 
         for (i = 0, outerOffset = 0; i < (int)lbl_8055D54C; outerOffset += 0x5C, i++) {
             for (j = i + 1, innerOffset = j * 0x5C; j < (int)lbl_8055D54C; innerOffset += 0x5C, j++) {
-                if (*(int *)(lbl_8055D540 + innerOffset + 4) == *(int *)((u32)outerOffset + (u32)lbl_8055D540 + 4)) {
-                    fn_802E317C(lbl_802FD00C, (void *)((u32)outerOffset + (u32)lbl_8055D540 + 8), lbl_8055D540 + innerOffset + 8);
+                k1 = *(int *)(lbl_8055D540 + innerOffset + 4);
+                k2 = *(int *)((u32)outerOffset + (u32)lbl_8055D540 + 4);
+                if (k2 == k1) {
+                    fn_802E317C(lbl_802FD00C, (void *)((u32)outerOffset + (u32)lbl_8055D540 + 8), lbl_8055D540 + innerOffset + 8, k1);
                 }
             }
         }
@@ -698,11 +702,15 @@ void fn_80017558(void) {
         register int i;
         register int innerOffset;
         register int outerOffset;
+        register int k1;
+        register int k2;
 
         for (i = 0, outerOffset = 0; i < (int)lbl_8055D550; outerOffset += 0xA8, i++) {
             for (j = i + 1, innerOffset = j * 0xA8; j < (int)lbl_8055D550; innerOffset += 0xA8, j++) {
-                if (*(int *)((u32)outerOffset + (u32)lbl_8055D544 + 4) == *(int *)(lbl_8055D544 + innerOffset + 4)) {
-                    fn_802E317C(lbl_802FD040, (void *)((u32)outerOffset + (u32)lbl_8055D544 + 0x2C), lbl_8055D544 + innerOffset + 0x2C);
+                k1 = *(int *)((u32)outerOffset + (u32)lbl_8055D544 + 4);
+                k2 = *(int *)(lbl_8055D544 + innerOffset + 4);
+                if (k1 == k2) {
+                    fn_802E317C(lbl_802FD040, (void *)((u32)outerOffset + (u32)lbl_8055D544 + 0x2C), lbl_8055D544 + innerOffset + 0x2C, k1);
                 }
             }
         }
