@@ -1001,6 +1001,14 @@ extern "C" void fn_8013DF24(void *arg0, void *arg1, void *arg2) {
     } while (i < 2);
 }
 #pragma pop
+class TObjFn8013E054 {
+public:
+    virtual void d0(); virtual u8 vC(const char *); virtual void d2(); virtual void d3();
+    virtual void d4(); virtual void d5(); virtual void d6();
+    virtual f32 v24(const char *);
+    virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11(); virtual void d12();
+    virtual TVec2 v3C(const char *);
+};
 extern "C" void fn_8013E054(void *outPtr, void *objPtr, f32 angle) {
     u8 *out = (u8 *)outPtr;
     TVec2 center = ((TVec2 (*)(void *, const char *))(*(void ***)objPtr)[0x3C / 4])(objPtr, lbl_80559D58);
