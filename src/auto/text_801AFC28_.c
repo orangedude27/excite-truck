@@ -163,24 +163,31 @@ void fn_801AFDCC(void *arg0, void *arg1) {
 void fn_801AFF64(u8 *arg0, u8 *arg1) {
     u8 *dst = arg1 + *(s32 *)(arg0 + 8);
     f32 t = lbl_8055E460;
+    f32 c = lbl_80562588;
     Blend12 tmp;
     f32 *a;
     f32 *b;
     f32 *o;
     int i;
-    if ((f32)fabs(t - lbl_80562588) <= *(f32 *)&lbl_80558DC4) {
+    if ((f32)fabs(t - c) <= lbl_80558DC4[0]) {
         *(Blend12 *)dst = *(Blend12 *)(arg0 + 0x70);
     } else {
         a = (f32 *)(arg0 + 0x70);
         b = (f32 *)(arg0 + 0xA0);
         o = tmp.v;
         for (i = 0; i < 2; i++) {
-            o[0] = b[0] + t * (a[0] - b[0]);
-            o[1] = b[1] + t * (a[1] - b[1]);
-            o[2] = b[2] + t * (a[2] - b[2]);
-            o[3] = b[3] + t * (a[3] - b[3]);
-            o[4] = b[4] + t * (a[4] - b[4]);
-            o[5] = b[5] + t * (a[5] - b[5]);
+            f32 r0 = b[0] + t * (a[0] - b[0]);
+            f32 r1 = b[1] + t * (a[1] - b[1]);
+            f32 r2 = b[2] + t * (a[2] - b[2]);
+            f32 r3 = b[3] + t * (a[3] - b[3]);
+            f32 r4 = b[4] + t * (a[4] - b[4]);
+            f32 r5 = b[5] + t * (a[5] - b[5]);
+            o[0] = r0;
+            o[1] = r1;
+            o[2] = r2;
+            o[3] = r3;
+            o[4] = r4;
+            o[5] = r5;
             a += 6; b += 6; o += 6;
         }
         *(Blend12 *)dst = tmp;
@@ -196,31 +203,38 @@ void fn_801AFF64(u8 *arg0, u8 *arg1) {
 #pragma pop
 
 void fn_801B0174(void *this_) {
+    f32 threshold;
     u8 var0;
     f32 temp;
+    f32 k2590;
+    u8 flagval;
     s32 var3;
+    s32 v;
 
     fn_8017A57C(this_);
+    threshold = lbl_8055E3C8;
     var0 = 0;
     temp = *(f32 *)((u8 *)this_ + 0x1EC);
-    if ((lbl_8055E3C8 > temp) && (lbl_8055E3C8 < lbl_8056258C + temp)) {
+    if (threshold > temp && threshold < lbl_8056258C + temp) {
         var0 = 1;
     }
+    temp = *(f32 *)((u8 *)this_ + 0x64);
+    k2590 = lbl_80562590;
     *(u8 *)((u8 *)this_ + 0x1F8) = var0;
-    var3 = 0;
-    if (*(f32 *)((u8 *)this_ + 0x64) <= lbl_80562590) {
+    if (temp <= k2590) {
         *(u8 *)((u8 *)this_ + 0x1F8) = 0;
     }
-    if (*(u8 *)((u8 *)this_ + 0x1F8) != 0) {
-        if (lbl_8055E3C8 >= lbl_80562594 + temp) {
-            var3 = 1;
-        }
+    flagval = *(u8 *)((u8 *)this_ + 0x1F8);
+    var3 = 0;
+    if (flagval != 0 && threshold >= lbl_80562594 + *(f32 *)((u8 *)this_ + 0x1EC)) {
+        var3 = 1;
     }
     if (var3 != 0) {
-        *(s32 *)((u8 *)this_ + 0x24) = *(s32 *)((u8 *)this_ + 0x28);
+        v = *(s32 *)((u8 *)this_ + 0x28);
     } else {
-        *(s32 *)((u8 *)this_ + 0x24) = 0;
+        v = 0;
     }
+    *(s32 *)((u8 *)this_ + 0x24) = v;
 }
 
 extern s32 fn_8017D274(u8 *);
@@ -422,7 +436,10 @@ s32 fn_801B05A0(void *arg0, u8 *arg1) {
 
 extern void fn_8017D160(void *, u8 *, u8 *, s32 *, s32 *, f32);
 extern f32 lbl_805625B0;
+#pragma push
 #pragma cplusplus on
+#pragma processor 750
+#pragma use_lmw_stmw off
 extern "C" void fn_801B05E4(void *arg0, u8 *arg1, u8 *arg2, s32 *arg3, s32 *arg4, f32 arg5) {
     class Callback0 {
     public:
@@ -441,28 +458,27 @@ extern "C" void fn_801B05E4(void *arg0, u8 *arg1, u8 *arg2, s32 *arg3, s32 *arg4
     s32 spC;
     s32 sp8;
     s32 result;
-    u8 firstFlag;
+    s32 firstFlag;
     f32 zeroValue;
     f32 resetValue;
-
     *arg3 = ((Callback0 *)arg0)->get();
     result = ((Callback1 *)arg0)->get(arg2);
     firstFlag = *arg1;
     *arg4 = result;
     if (firstFlag != 0 && *arg2 != 0) {
-        *(volatile u8 *)((u8 *)arg0 + 0x1F8) = 1;
+        *(u8 *)((u8 *)arg0 + 0x1F8) = 1;
         fn_8017D160(arg0, arg1 + 1, arg2 + 1, &spC, &sp8, arg5);
     } else {
-        zeroValue = *(volatile f32 *)&lbl_80562578;
-        resetValue = *(volatile f32 *)&lbl_805625B0;
-        *(volatile u8 *)((u8 *)arg0 + 0x1F8) = 0;
-        *(volatile f32 *)((u8 *)arg0 + 0x64) = resetValue;
-        *(volatile f32 *)((u8 *)arg0 + 0x118) = zeroValue;
-        *(volatile f32 *)((u8 *)arg0 + 0x11C) = zeroValue;
-        *(volatile f32 *)((u8 *)arg0 + 0x120) = zeroValue;
+        zeroValue = lbl_80562578;
+        resetValue = lbl_805625B0;
+        *(u8 *)((u8 *)arg0 + 0x1F8) = 0;
+        *(f32 *)((u8 *)arg0 + 0x64) = resetValue;
+        *(f32 *)((u8 *)arg0 + 0x118) = zeroValue;
+        *(f32 *)((u8 *)arg0 + 0x11C) = zeroValue;
+        *(f32 *)((u8 *)arg0 + 0x120) = zeroValue;
     }
 }
-#pragma cplusplus reset
+#pragma pop
 void __AXDSPInitCallback_801AFC38(void) {
     lbl_8055E650 = 0;
 }
@@ -472,29 +488,31 @@ extern void *fn_8017960C(void *);
 extern void fn_801B04B0(void *, s32, s32, s32, void *);
 #pragma scheduling invalid_target
 void fn_801AFC44(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    void *obj;
-    void *base;
-    s32 n;
-    void *p;
+    /* Update the current lbl_80435BA8 effect object for arg0/arg1 with params from base+0x6C,
+       copy a per-arg1 float from base into its selected subobject, and advance/wrap lbl_8055E654. */
+    void *effectObject;
+    void *baseData;
+    s32 count;
+    void *subObject;
     f32 value;
 
     if ((s32)lbl_8055E650 < 1) return;
-    obj = lbl_80435BA8[(s32)lbl_8055E654];
-    base = fn_8017960C((void *)arg0);
-    fn_801B04B0(obj, arg2, arg3, arg4, (u8 *)base + 0x6C);
+    effectObject = lbl_80435BA8[(s32)lbl_8055E654];
+    baseData = fn_8017960C((void *)arg0);
+    fn_801B04B0(effectObject, arg2, arg3, arg4, (u8 *)baseData + 0x6C);
     value = lbl_8055E3C8;
-    *(s32 *)((u8 *)obj + 0x1F0) = arg0;
-    *(s32 *)((u8 *)obj + 0x1F4) = arg1;
-    *(f32 *)((u8 *)obj + 0x1EC) = value;
-    n = *(s32 *)((u8 *)obj + 0x28);
-    *(s32 *)((u8 *)obj + 0x24) = n;
-    if (n > 0) p = *(void **)((u8 *)obj + 0x14);
-    else p = 0;
-    value = *(f32 *)((u8 *)base + arg1 * 0x74 + 0x23E8);
-    *(f32 *)((u8 *)p + 0x24) = value;
-    n = (s32)lbl_8055E654 + 1;
-    lbl_8055E654 = (void *)n;
-    if (n < (s32)lbl_8055E650) return;
+    *(s32 *)((u8 *)effectObject + 0x1F0) = arg0;
+    *(s32 *)((u8 *)effectObject + 0x1F4) = arg1;
+    *(f32 *)((u8 *)effectObject + 0x1EC) = value;
+    count = *(s32 *)((u8 *)effectObject + 0x28);
+    *(s32 *)((u8 *)effectObject + 0x24) = count;
+    if (count > 0) subObject = *(void **)((u8 *)effectObject + 0x14);
+    else subObject = 0;
+    value = *(f32 *)((u8 *)baseData + arg1 * 0x74 + 0x23E8);
+    *(f32 *)((u8 *)subObject + 0x24) = value;
+    count = (s32)lbl_8055E654 + 1;
+    lbl_8055E654 = (void *)count;
+    if (count < (s32)lbl_8055E650) return;
     lbl_8055E654 = 0;
 }
 #pragma scheduling on
