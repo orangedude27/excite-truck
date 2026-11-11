@@ -16,9 +16,30 @@ int fn_8012C33C(void);
 int fn_802CAC28(int, int);
 extern void fn_80131818(int);
 extern void fn_802C6CF8(void);
-struct TplLike { void *entries; unsigned int count; };
-__declspec(section ".data") extern struct TplLike lbl_804BE4AC;
-__declspec(section ".data") extern struct TplLike lbl_804BE454;
+/* UMat ("unified material") resource lists: an array of `count` entries.
+ * lbl_804BE454 holds the archives fn_802B5510 opened (umat.val and the
+ * "include" archives it pulls in); lbl_804BE4AC holds the
+ * "unified_material_set" items fn_802B58E0 collected out of them. */
+struct UMatList { void *entries; unsigned int count; };
+#define TplLike UMatList /* old placeholder name, still used below */
+#define UMatArchives   lbl_804BE454 /* struct UMatList of archive managers */
+#define UMatSetList    lbl_804BE4AC /* struct UMatList of material sets */
+#define sGlobalParameters lbl_8055F9E8 /* the archive's "global_parameters" item */
+
+/* One "unified_material_set" item, filled in by fn_802B562C. */
+struct UMatSet {
+    const char *name;   /* 0x00: the set's own "name" */
+    void *texList;      /* 0x04: texture list of that name */
+    int w08;            /* 0x08: id of that name */
+    struct {            /* 0x0C: "ground_tex_params", then "road_tex1".."road_tex3" */
+        void *item;     /*       the texture item taken from the archive */
+        int load;       /*       its texture load handle, -2 when there is none */
+    } tex[4];
+    int modelId;        /* 0x2C: model built from those textures, -1 when none */
+};                      /* 0x30 bytes */
+
+__declspec(section ".data") extern struct UMatList lbl_804BE4AC;
+__declspec(section ".data") extern struct UMatList lbl_804BE454;
 void* fn_802B59A4(unsigned int);
 
 int fn_802B539C(int arg0) {
