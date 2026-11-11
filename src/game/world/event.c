@@ -4,6 +4,8 @@
 // The TU's static-init thunk fn_801EF188 (+ .ctors slot 0x802ED33C) remains in
 // auto/text_801EF188_.c pending a promotion pass.
 
+/* Event-handler registry: 18 event types, each a row of 4 handler function
+ * pointers (int handler(char *payload)), 0x120 bytes in all. */
 extern unsigned char lbl_80488678[];
 void *memset(void *, int, unsigned int);
 #pragma scheduling off
