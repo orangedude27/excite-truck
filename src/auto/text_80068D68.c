@@ -5438,18 +5438,7 @@ void bta_dm_rm_cback(s32 status, u8 addr_type, u8 addr, u8 *bd_addr, u32 unused)
     }
 }
 
-void bta_dm_keep_acl(void *arg0) {
-    extern u8 lbl_80560D48[];
-    u16 timeout = *(u16 *)((u8 *)arg0 + 6);
-    lbl_803C0C14[0x101] = timeout;
-    if ((u8)timeout != 0) {
-        L2CA_SetIdleTimeoutByBdAddr(lbl_80560D48, 0xFFFF);
-        L2CA_SetIdleTimeout(0, 0xFFFF, TRUE);
-    } else {
-        L2CA_SetIdleTimeoutByBdAddr(lbl_80560D48, 2);
-        L2CA_SetIdleTimeout(0, 2, TRUE);
-    }
-}
+extern const BD_ADDR BT_BD_ANY; void bta_dm_keep_acl(void *arg0) { u16 timeout = *(u16 *)((u8 *)arg0 + 6); lbl_803C0C14[0x101] = timeout; if ((u8)timeout != 0) { L2CA_SetIdleTimeoutByBdAddr((UINT8 *)BT_BD_ANY, 0xFFFF); L2CA_SetIdleTimeout(0, 0xFFFF, TRUE); } else { L2CA_SetIdleTimeoutByBdAddr((UINT8 *)BT_BD_ANY, 2); L2CA_SetIdleTimeout(0, 2, TRUE); } }
 
 void fn_80073A00(void) {
     ((void (**)(int, int)) (lbl_803C0C14 + 0x50))[0](1, 0);
@@ -22371,15 +22360,15 @@ void rfc_send_pn(void *p_mcb, s32 dlci, s32 is_command, s32 mtu, s32 cl, s32 k) 
 }
 
 void rfc_send_fcon(void *arg0, s32 arg1, void *arg2) {
-    u8 *buf = GKI_getpoolbuf(2);
+    u8 *buf = (u8 *)GKI_getpoolbuf(2);
     if (buf != 0) {
         s32 sign = (-arg1 | arg1) >> 31;
-        u16 field = 2;
-        u8 enabled = 1;
-        *(u16 *)(buf + 4) = 0xC;
-        buf[0x14] = (u8)((sign & 2) | 0xA1);
-        buf[0x15] = enabled;
-        *(u16 *)(buf + 2) = field;
+        u16 f = 2;
+        u8 e = 1;
+        *(u16 *)(buf + 4) = 12;
+        buf[20] = (u8)((sign & 2) | 161);
+        buf[21] = e;
+        *(u16 *)(buf + 2) = f;
         rfc_send_buf_uih(arg0, 0, buf, 2);
     }
 }
