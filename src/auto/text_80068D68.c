@@ -10663,6 +10663,7 @@ void fn_800716F0(void *arg0) {
 extern tBTM_APPL_INFO lbl_802EEA20;
 extern void bta_dm_compress_cback(s32, u8, u8, s32);
 extern void fn_80089E3C(void);
+/* Initializes BTA device manager state, sets device/security parameters and registers DM callbacks. */
 void bta_dm_enable(void *arg0) {
     u8 dev_class[3];
 
