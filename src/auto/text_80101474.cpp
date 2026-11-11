@@ -1473,22 +1473,12 @@ extern "C" void MoveCursorX__Q36nw4hbm2ut10CharWriterFf(CharWriterCursor *writer
     writer->x += dx;
 }
 
-extern "C" void MoveCursorX__Q36nw4hbm2ut10CharWriterFf_80106524(void *arg0, float dx) {
-    int v0 = 1;
-    int v1 = 1;
-    int v2 = 1;
-    int v3 = 1;
-    int v4 = 1;
-    int v5 = 1;
-    unsigned int top = (unsigned int)arg0 & 0xFF000000U;
-    if ((top != 0x80000000U) && (((unsigned int)arg0 & 0xFF800000U) != 0x81000000U)) v5 = 0;
-    if ((v5 == 0) && (((unsigned int)arg0 & 0xF8000000U) != 0x90000000U)) v4 = 0;
-    if ((v4 == 0) && (top != 0xC0000000U)) v3 = 0;
-    if ((v3 == 0) && (((unsigned int)arg0 & 0xFF800000U) != 0xC1000000U)) v2 = 0;
-    if ((v2 == 0) && (((unsigned int)arg0 & 0xF8000000U) != 0xD0000000U)) v1 = 0;
-    if ((v1 == 0) && (((unsigned int)arg0 & 0xFFFFC000U) != 0xE0000000U)) v0 = 0;
-    if (v0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x405, lbl_8032818C, arg0);
-    *(float *)((char *)arg0 + 0x30) += dx;
+/* nw4hbm::ut::CharWriter::MoveCursorX(f32) -- the unit's other build of ut_CharWriter.cpp,
+   whose cursor sits one word later.  Advances the print cursor's X by dx, after asserting
+   that this is a valid pointer. */
+extern "C" void MoveCursorX__Q36nw4hbm2ut10CharWriterFf_80106524(CharWriterCursor2 *writer, float dx) {
+    CW_CHECK_THIS(writer, 0x405); // NW4HBM_ASSERT_VALID_PTR(this)
+    writer->x += dx;
 }
 
 extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(void *arg0) {
