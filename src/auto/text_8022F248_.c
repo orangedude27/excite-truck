@@ -460,54 +460,62 @@ extern void PSVECCrossProduct(float *, float *, float *);
 extern void PSVECNormalize(float *, float *);
 extern void fn_8022FF10(void *, void *);
 extern void fn_80015B20(void *, void *, void *);
-void fn_8022FD9C(void *arg0, float farg0) {
-    float b[9];
-    float a[3];
-    float c[3];
-    float f[3];
-    float e[3];
-    float d[3];
-    float x0, x1, x2, y0, y1, y2;
-    a[0] = 0.0f;
-    a[1] = 0.0f;
-    a[2] = *(float *)((char *)arg0 + 0x8C) * farg0;
-    if (*((u8 *)arg0 + 0x9C)) {
-        fn_8022FF10(b, a);
-        fn_80015B20(arg0, arg0, b);
+/* One frame of a quad's scroll and drift, run by fn_8022FFE8 right after
+ * fn_8022FB6C has wandered the two values: the scroll offset becomes a turn
+ * about Z of scrollOffset * dt composed into the quad's transform, and the
+ * drift velocity moves the transform's translation row by driftVel * dt.
+ * Multiplying basis rows around like that lets them drift out of true, so the
+ * last step re-orthonormalises them (y comes from x and z, z again from x
+ * and y) and writes the three back. */
+void fn_8022FD9C(OverlayQuad *quad, float dt) {
+    float rot[9];      /* the scroll rotation fn_8022FF10 builds */
+    float eulers[3];   /* x, y, z turn; only the z scroll is set here */
+    float step[3];     /* this frame's drift, added to the translation row */
+    float zAxis[3];
+    float yAxis[3];
+    float xAxis[3];
+    float xx, xy, xz, zx, zy, zz;
+
+    eulers[0] = 0.0f;
+    eulers[1] = 0.0f;
+    eulers[2] = quad->scrollOffset * dt;
+    if (quad->scrollOn) {
+        fn_8022FF10(rot, eulers);
+        fn_80015B20(quad, quad, rot);
     }
-    c[0] = *(float *)((char *)arg0 + 0x94) * farg0;
-    c[1] = *(float *)((char *)arg0 + 0x98) * farg0;
-    c[2] = 0.0f;
-    if (*((u8 *)arg0 + 0x9D)) {
-        *(float *)((char *)arg0 + 0x24) += c[0];
-        *(float *)((char *)arg0 + 0x28) += c[1];
-        *(float *)((char *)arg0 + 0x2C) += c[2];
+    step[0] = quad->driftVelX * dt;
+    step[1] = quad->driftVelY * dt;
+    step[2] = 0.0f;
+    if (quad->driftOn) {
+        quad->mtx.m[3][0] += step[0];
+        quad->mtx.m[3][1] += step[1];
+        quad->mtx.m[3][2] += step[2];
     }
-    x2 = *(float *)((char *)arg0 + 8);
-    x1 = *(float *)((char *)arg0 + 4);
-    x0 = *(float *)arg0;
-    d[0] = x0;
-    d[1] = x1;
-    d[2] = x2;
-    y2 = *(float *)((char *)arg0 + 0x20);
-    y1 = *(float *)((char *)arg0 + 0x1C);
-    y0 = *(float *)((char *)arg0 + 0x18);
-    f[0] = y0;
-    f[1] = y1;
-    f[2] = y2;
-    PSVECCrossProduct(f, d, e);
-    PSVECNormalize(d, d);
-    PSVECNormalize(e, e);
-    PSVECCrossProduct(d, e, f);
-    *(float *)arg0 = d[0];
-    *(float *)((char *)arg0 + 4) = d[1];
-    *(float *)((char *)arg0 + 8) = d[2];
-    *(float *)((char *)arg0 + 0xC) = e[0];
-    *(float *)((char *)arg0 + 0x10) = e[1];
-    *(float *)((char *)arg0 + 0x14) = e[2];
-    *(float *)((char *)arg0 + 0x18) = f[0];
-    *(float *)((char *)arg0 + 0x1C) = f[1];
-    *(float *)((char *)arg0 + 0x20) = f[2];
+    xz = quad->mtx.m[0][2];
+    xy = quad->mtx.m[0][1];
+    xx = quad->mtx.m[0][0];
+    xAxis[0] = xx;
+    xAxis[1] = xy;
+    xAxis[2] = xz;
+    zz = quad->mtx.m[2][2];
+    zy = quad->mtx.m[2][1];
+    zx = quad->mtx.m[2][0];
+    zAxis[0] = zx;
+    zAxis[1] = zy;
+    zAxis[2] = zz;
+    PSVECCrossProduct(zAxis, xAxis, yAxis);
+    PSVECNormalize(xAxis, xAxis);
+    PSVECNormalize(yAxis, yAxis);
+    PSVECCrossProduct(xAxis, yAxis, zAxis);
+    quad->mtx.m[0][0] = xAxis[0];
+    quad->mtx.m[0][1] = xAxis[1];
+    quad->mtx.m[0][2] = xAxis[2];
+    quad->mtx.m[1][0] = yAxis[0];
+    quad->mtx.m[1][1] = yAxis[1];
+    quad->mtx.m[1][2] = yAxis[2];
+    quad->mtx.m[2][0] = zAxis[0];
+    quad->mtx.m[2][1] = zAxis[1];
+    quad->mtx.m[2][2] = zAxis[2];
 }
 
 #pragma push
