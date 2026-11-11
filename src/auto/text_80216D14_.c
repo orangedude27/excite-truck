@@ -62,6 +62,9 @@ struct Fn8021832CObj {
 #pragma cplusplus reset
 // split_file divides it into the game's real files (file_status shows its range).
 
+/* UI key-sound suppression.  fn_80217874 clears it at the head of every key and
+   the game's screens set it when they take the key themselves; while it is set
+   fn_80218E08 plays no UI key sound. */
 extern char lbl_8055EFAC;
 int fn_80216D14(int arg0) {
     return arg0 < 0 ? 0 : 1 << arg0;
