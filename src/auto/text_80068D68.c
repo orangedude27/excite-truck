@@ -4674,38 +4674,38 @@ extern void fn_80070B54();
 extern void fn_80082548();
 extern u8 fn_80073B30(void);
 void fn_800709FC(void) {
-    u64 time;
-    u32 time_lo;
-    u32 time_hi;
-
+    u64 now;
+    u32 hi;
+    u32 lo;
     lbl_8055DC74 = 0;
     GKI_init();
     fn_8006EB88();
     fn_80082548();
     lbl_8055DC6C = &lbl_80559048;
     lbl_8055DC68 = (hcisu_if *)lbl_802EE8D8;
-    ((void (*)(u32, void *))bte_hcisu_task)(0, lbl_802EE8D8);
-
+    ((void (*)(unsigned int, void *))bte_hcisu_task)(0u, lbl_802EE8D8);
     goto wait_check;
 wait_delay:
-    ((void (*)(s32))fn_8006EAD8)(0x64);
+    ((void (*)(s32))fn_8006EAD8)(100);
 wait_check:
     if (lbl_80558FF0 != 0) {
         goto wait_delay;
     }
-
     fn_80070B54();
-    time = __OSGetSystemTime();
-    time_lo = (u32)time;
-    time_hi = (u32)(time >> 32);
+    now = __OSGetSystemTime();
+    hi = (u32)(now >> 32u);
+    lo = (u32)now;
     OSCreateAlarm(&lbl_803C0A20);
     ((void (*)(void *, u32, u32, u32, u32, u32, void (*)(void)))OSSetPeriodicAlarm)(
-        &lbl_803C0A20, 0x80000000, time_hi, time_lo, 0,
-        ((*(u32 *)0x800000F8 >> 2) / 500) & 0x07FFFFFE, fn_800709E4);
+        &lbl_803C0A20, 0x80000000u, hi, lo, 0u,
+        ((*(u32 *)0x800000F8 >> 2) / 500u) & 0x07FFFFFEu, fn_800709E4);
     ((void (*)(s32))fn_8006EACC)(0);
-
-    while (fn_80073B30() == 0) {
-        ((void (*)(s32))fn_8006EAD8)(0x7D0);
+    goto poll_check;
+poll_delay:
+    ((void (*)(s32))fn_8006EAD8)(2000);
+poll_check:
+    if (fn_80073B30() == 0u) {
+        goto poll_delay;
     }
 }
 
@@ -15244,19 +15244,17 @@ BOOLEAN btsnd_hcic_set_afh_channels(u8 first_disabled, u8 last_disabled) {
 void btsnd_hcic_vendor_spec_cmd(void *buffer, u16 opcode, u8 len, u8 *p_data, void *p_cmd_cplt_cback) {
     BT_HDR *header = (BT_HDR *)buffer;
     u8 *p = (u8 *)buffer;
-    u8 *dst;
+    u8 *pp;
     u16 cmd = 0xfc00 | opcode;
-
+    register int ijk;
     header->len = len + 3;
-    dst = p + 0xb;
+    pp = p + 0xb;
     header->offset = 0;
     p[8] = (u8)cmd;
     p[9] = (u8)(cmd >> 8);
     p[10] = len;
-
-    if (len > 0)
-        memcpy(dst, p_data, len);
-
+    for (ijk = 0; ijk < len; ijk++)
+        *pp++ = p_data[ijk];
     btu_hcif_send_cmd(buffer);
 }
 
@@ -25804,17 +25802,14 @@ s32 IUSB_OpenLib(void) {
     extern s32 lbl_805590A0;
     extern s32 lbl_8055DC88;
     extern u32 lbl_8055DC8C;
-    union {
-        void *pointer;
-        s32 value;
-    } currentHeap;
     register char *base = lbl_8031A620;
     s32 result = 0;
     s32 interruptState;
+    s32 heapHandle;
 
     interruptState = OSDisableInterrupts();
-    currentHeap.pointer = (void *)lbl_805590A0;
-    if (currentHeap.value != -1) {
+    heapHandle = lbl_805590A0;
+    if (heapHandle != -1) {
         USB_LOG(base + 0xC);
         goto done;
     }
