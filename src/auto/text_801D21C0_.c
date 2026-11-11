@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+#include <revolution/MTX/mtxtypes.h> /* Vec */
 
 extern u8 lbl_80438958[];
 extern s32 lbl_8055E930;
