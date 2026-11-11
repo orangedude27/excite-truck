@@ -3201,6 +3201,8 @@ void fn_801D8B5C(void) {
 
 }
 
+#pragma push
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" int fn_801D8B60(void *arg0, void *arg1) {
     extern char lbl_80339070[];
@@ -3232,6 +3234,7 @@ extern "C" int fn_801D8B60(void *arg0, void *arg1) {
     return 1;
 }
 #pragma cplusplus reset
+#pragma pop
 
 void fn_801D8C0C(void *arg0) {
     *(int *)((char *)arg0 + 0x18) = -1;
@@ -3453,10 +3456,7 @@ void fn_801D8F30(void *arg0) {
     struct Obj { char pad[8]; char field; };
     float vec[3];
     int result;
-
-    if (*(int *)((char *)arg0 + 4) == 2 &&
-        lbl_8055E3C8 - *(float *)((char *)arg0 + 0x20) >=
-            *(float *)((char *)arg0 + 0x1C)) {
+    if (*(int *)((char *)arg0 + 4) == 2 && lbl_8055E3C8 - *(float *)((char *)arg0 + 0x20) >= *(float *)((char *)arg0 + 0x1C)) {
         result = ((int (*)(void *))fn_801D4888)((char *)arg0 + 8);
         if (result == 0) {
             ((void (*)(const char *, ...))fn_802E30C8)(lbl_803390C0, &((struct Obj *)arg0)->field);
@@ -3464,7 +3464,7 @@ void fn_801D8F30(void *arg0) {
             vec[0] = lbl_80562ADC;
             vec[1] = lbl_80562ADC;
             vec[2] = lbl_80562ADC;
-            fn_801D488C(result, 1, 0, vec);
+            ((void (*)(int, int, int, float *))fn_801D488C)(result, 1, 0, vec);
         }
         *(int *)((char *)arg0 + 4) = 3;
     }
