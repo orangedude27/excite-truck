@@ -10605,6 +10605,14 @@ extern "C" void fn_800B7504(OSAlarm *alarm, OSContext *ctx) {
     fn_800B73BC((s32)fn_800B224C(alarm, ctx));
 }
 
+s32 VFipf2_fopen(const char *arg0, const char *arg1) {
+    s32 mode = VFiPFAPI_ParseOpenModeString((char *)arg1);
+    if (mode == 0) {
+        return 0;
+    }
+    return 0;
+}
+
 extern "C" s32 fn_800B1EB8(s32, s32, s32, s32, s32 *);
 extern "C" s32 fn_800B75C4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 result;
@@ -13684,15 +13692,17 @@ extern "C" s32 fn_800BDEB4(const u8 *data, s32 bitCount, u32 *bitOffset) {
     register u16 result = 0;
     register s32 byteIndex;
     register s32 bitsInByte;
-    register s32 position;
+    register u32 position;
     register s32 startBit;
+    register u32 nextPosition;
     register s32 piece;
 
     if (remaining == 0)
         return 0;
     position = *bitOffset;
-    *bitOffset = position + remaining;
+    nextPosition = position + remaining;
     startBit = position & 7;
+    *bitOffset = nextPosition;
     byteIndex = (position >> 3) & 0x1FFF;
     bitsInByte = 8 - startBit;
     while (remaining > 0) {
@@ -18040,7 +18050,7 @@ extern "C" void calc__Q310homebutton3gui7ManagerFv_800CFDEC(void *arg0) {
     }
 }
 
-extern "C" void draw__Q310homebutton3gui7ManagerFv_800CFE88(void *arg0) {
+extern "C" void draw__Q310homebutton3gui7ManagerFv_800CFE88(u8 *arg0) {
     class ComponentDispatch {
     public:
         virtual void d0();
@@ -18049,18 +18059,23 @@ extern "C" void draw__Q310homebutton3gui7ManagerFv_800CFE88(void *arg0) {
         virtual void d3();
         virtual void draw();
     };
-    typedef void (*PanicFn)(const char *, s32, const char *, ...);
-    void *list = (u8 *)arg0 + 8;
+    u8 *list = arg0 + 8;
     s32 i = 0;
-
-    do {
-        void *entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs((u8 *)arg0 + 8, (u16)i);
+    goto check;
+loop:
+    {
+        void *entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(arg0 + 8, (u16)i);
         ComponentDispatch *obj = *(ComponentDispatch **)((u8 *)entry + 4);
         obj->draw();
         i++;
-        if (list == 0)
-            ((PanicFn)Panic__Q26nw4hbm2dbFPCciPCce)(lbl_805597D0, 0xCF, lbl_8031E938);
-    } while ((u32)i < *(u16 *)((u8 *)arg0 + 0x10));
+    }
+check:
+    if (list == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
+    }
+    if ((u32)i < *(u16 *)(arg0 + 0x10)) {
+        goto loop;
+    }
 }
 
 #pragma push
