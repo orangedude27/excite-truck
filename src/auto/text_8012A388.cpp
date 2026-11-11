@@ -2691,18 +2691,7 @@ mount_test:
     return (s32)matched;
 }
 
-// Double-buffered streaming reader over a resource file ("ResourceStream"), 0x2C
-// bytes. Two prefetch slots read the file ahead in chunks of `size` bytes into
-// the buffer of 2 * size bytes made by fn_8012EC90; fn_8012EE80 runs the machine
-// each frame and fn_8012EFB0 takes bytes out of a ready chunk at `boundary`.
-struct ResourceStream {
-    s32 size;                // +0x00 bytes of the file one slot holds
-    s32 entries[2][4];       // +0x04 the two prefetch slots, see ResourceStreamEntry
-    s32 limit;               // +0x24 size of the streamed file
-    s32 boundary;            // +0x28 offset the reader has reached
-};
-
-// One prefetch slot, 0x10 bytes.
+// One prefetch slot of a ResourceStream, 0x10 bytes.
 struct ResourceStreamEntry {
     s32 buffer;              // +0x00 where the chunk lands in the stream's buffer
     void *request;           // +0x04 async read of the chunk (fn_8012C720/fn_8012C7FC)
@@ -2718,6 +2707,17 @@ enum StreamSlotState {
 };
 
 #define STREAM_SLOT_COUNT 2  // prefetch slots in a ResourceStream
+
+// Double-buffered streaming reader over a resource file ("ResourceStream"), 0x2C
+// bytes. The slots read the file ahead in chunks of `size` bytes into the buffer
+// of 2 * size bytes made by fn_8012EC90; fn_8012EE80 runs the machine each frame
+// and fn_8012EFB0 takes bytes out of a ready chunk at `boundary`.
+struct ResourceStream {
+    s32 size;                                  // +0x00 bytes of the file one slot holds
+    ResourceStreamEntry entries[STREAM_SLOT_COUNT];  // +0x04 the prefetch slots
+    s32 limit;                                 // +0x24 size of the streamed file
+    s32 boundary;                              // +0x28 offset the reader has reached
+};
 
 extern "C" void *fn_8012EC90(s32 arg0) {
     s32 count = arg0;
