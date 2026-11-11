@@ -2684,7 +2684,9 @@ void fn_8019743C(void *p, void *arg1) {
 #pragma pop
 
 #pragma processor reset
-int fn_8019799C(void *arg0, void *arg1) {
+int fn_8019799C(void *self, void *candidate) {
+    // Check whether a candidate is within angular/distance bounds of self; if so,
+    // report it via fn_80197AB8 and return 1. Returns 0 when rejected/filtered out.
     int id;
     int result = 0;
     int valid;
@@ -2699,26 +2701,26 @@ int fn_8019799C(void *arg0, void *arg1) {
     extern double __fabs(double);
     extern void fn_80197AB8(void *, int, float, float, float);
 
-    if (*(int *)((char *)arg0 + 0x2D0) & 2) return 0;
+    if (*(int *)((char *)self + 0x2D0) & 2) return 0;
     allow = 1;
-    angle = -*(float *)((char *)arg1 + 0x10);
-    id = *(int *)((char *)arg1 + 0x18);
+    angle = -*(float *)((char *)candidate + 0x10);
+    id = *(int *)((char *)candidate + 0x18);
     if (!(angle > lbl_80562160)) {
         valid = 0;
-        if (id == *(int *)((char *)arg0 + 0x114) && angle > lbl_80562170)
+        if (id == *(int *)((char *)self + 0x114) && angle > lbl_80562170)
             valid = 1;
         if (!valid) allow = 0;
     }
-    if (allow && id != *(int *)((char *)arg0 + 0x2C4)) {
-        angle = fn_80137850(arg1);
+    if (allow && id != *(int *)((char *)self + 0x2C4)) {
+        angle = fn_80137850(candidate);
         absolute = __fabs((double)angle);
-        bound = *(float *)((char *)arg0 + 0x278) + *(float *)((char *)arg1 + 4);
+        bound = *(float *)((char *)self + 0x278) + *(float *)((char *)candidate + 4);
         distance = (float)absolute;
-        limit = lbl_80562184 + *(float *)((char *)arg0 + 0x274);
+        limit = lbl_80562184 + *(float *)((char *)self + 0x274);
         distance = distance < bound ? distance : bound;
         if (distance < limit) {
-            fn_80197AB8(arg0, id, *(float *)((char *)(*(void **)arg1) + 4), angle,
-                *(float *)((char *)arg1 + 0x10));
+            fn_80197AB8(self, id, *(float *)((char *)(*(void **)candidate) + 4), angle,
+                *(float *)((char *)candidate + 0x10));
             result = 1;
         }
     }
