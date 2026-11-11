@@ -107,7 +107,7 @@ s32 fn_801B60F4(void *arg0, f32 arg1) {
 
 extern float lbl_805626B8;
 static inline s32 GridCell(f32 v) {
-    s32 i = (s32)((v + lbl_805626B4) / lbl_805626B0);
+    s32 i = (s32)((lbl_805626B4 + v) / lbl_805626B0);
     if (i < 0)
         i = 0;
     else if (i >= 0x64)
@@ -120,7 +120,6 @@ void fn_801B619C(u32 *arg0, s32 *arg1, f32 *arg2) {
     s32 x1 = GridCell(lbl_805626B8 + arg2[0]);
     s32 y0 = GridCell(arg2[2] - lbl_805626B8);
     s32 y1 = GridCell(lbl_805626B8 + arg2[2]);
-    s32 count;
     if (x0 != x1) {
         if (y0 != y1) {
             *arg1 = 4;
@@ -141,9 +140,11 @@ void fn_801B619C(u32 *arg0, s32 *arg1, f32 *arg2) {
         *arg1 = 1;
         arg0[0] = lbl_8055E70C + ((x0 + y0 * 100) * 4);
     }
-    count = *arg1;
-    *(u32 *)((u8 *)arg0 + count * 4) = lbl_8055E714;
-    *arg1 = count + 1;
+    {
+        s32 count = *arg1;
+        arg0[count] = lbl_8055E714;
+        *arg1 = count + 1;
+    }
 }
 #pragma scheduling on
 extern void *fn_801B5F40(void);
