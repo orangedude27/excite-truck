@@ -62,7 +62,7 @@ extern char lbl_80434990[];
 extern float lbl_80561CDC;
 extern float lbl_80561DE0;
 extern float lbl_80561F28;
-extern float lbl_80558DC4;
+__declspec(section ".data") extern float lbl_80558DC4;
 extern void *__AXFXGetLfoSinTable_801769CC(void);
 extern int fn_8017D2C8();
 extern float lbl_8055E3C8;
