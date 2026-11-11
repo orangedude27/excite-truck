@@ -19918,6 +19918,7 @@ extern "C" s32 fn_800D40B4(s32 arg0, s32 arg1, s32 arg2, void *arg3, void *arg4)
 }
 extern "C" f32 lbl_80560E48;
 extern "C" f32 lbl_80560E4C;
+/* Binary-search an 8-byte {f32 key, u16 value} table for a key, preferring the next entry when very close. */
 extern "C" u16 fn_800D4138(const void *arg0, u32 arg1, f32 farg0) {
     const u8 *base = (const u8 *)arg0;
     if (arg1 == 1 || farg0 <= *(f32 *)base) {
