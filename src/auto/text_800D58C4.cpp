@@ -2848,32 +2848,29 @@ extern "C" void fn_800DAFA8(void *arg0, void *arg1) {
     ((Obj *)arg1)->f3(arg0);
 }
 
-extern "C" void fn_800DAFC4(void* arg0, u32 arg1) {
+extern "C" void fn_800DAFC4(void* arg0, void* arg1) {
     extern const char lbl_8031F1FC[];
     extern const char lbl_8031F1D8[];
     register void* pane = arg0;
-    register u32 key = arg1;
-    void* node;
+    register void* key = arg1;
+    register void* current;
     void* end;
-    void* current;
+    void* node;
     node = *(void**)((char*)pane + 0x1C);
     end = (char*)pane + 0x1C;
     while (node != end) {
         current = node;
         node = *(void**)node;
         if (key != 0) {
-            if (current == 0)
-                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
-            if (*(u32*)((char*)current + 8) != key)
-                continue;
+            if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
+            if (*(void**)((char*)current + 8) != key) continue;
         }
         {
             void* slot = current;
             Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator((char*)pane + 0x18, &slot);
         }
-        if (current == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
-        *(u32*)((char*)current + 8) = 0;
+        if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
+        *(void**)((char*)current + 8) = 0;
         *(u16*)((char*)current + 0xC) = 0;
     }
 }
@@ -3080,6 +3077,7 @@ extern "C" void *__dt__Q36nw4hbm3lyt4PaneFv(void *self, s32 del) {
     return self;
 }
 
+struct PaneMsgBlock_800D58C4 { char file[0x10]; char msg1[0x2C]; char msg2[]; };
 extern "C" const char lbl_8031FF90[];
 extern "C" const char lbl_80320250[];
 extern "C" const char lbl_8032022C[];
@@ -3102,7 +3100,7 @@ extern "C" void AppendChild__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt4Pane(void* arg0, 
 
 extern "C" f32 lbl_80560EA8;
 extern "C" void fn_800DB76C(f32 *out, void *self, f32 *arg2) {
-    struct Vec2Result {
+    struct VR2 {
         f32 x;
         f32 y;
     };
@@ -3111,19 +3109,24 @@ extern "C" void fn_800DB76C(f32 *out, void *self, f32 *arg2) {
     out[1] = c;
     out[2] = c;
     out[3] = c;
-    Vec2Result returned = ((Vec2Result (*)(void *))GetVtxPos__Q34nw4r3lyt4PaneCFv)(self);
-    Vec2Result pos;
+    VR2 pos;
+    VR2 returned = ((VR2 (*)(void *))GetVtxPos__Q34nw4r3lyt4PaneCFv)(self);
     *(volatile f64 *)&pos = *(volatile f64 *)&returned;
-    f32 diff = arg2[0x10] - arg2[0xE];
+    f32 w = arg2[0x10];
+    f32 h = arg2[0xE];
+    f32 diff = w - h;
     f32 x = pos.x;
     f32 y = pos.y;
-    f32 nx = x + *(f32 *)((u8 *)self + 0x4C);
-    f32 ny = y + *(f32 *)((u8 *)self + 0x50);
+    f32 sw = *(f32 *)((u8 *)self + 0x4C);
+    f32 sh = *(f32 *)((u8 *)self + 0x50);
+    f32 nx = x + sw;
+    f32 ny = y + sh;
     out[0] = x;
     out[1] = y;
     out[2] = nx;
     out[3] = ny;
-    if (diff < lbl_80560EA8) {
+    BOOL flip = diff < lbl_80560EA8;
+    if (flip) {
         out[1] = -y;
         out[3] = -ny;
     }
