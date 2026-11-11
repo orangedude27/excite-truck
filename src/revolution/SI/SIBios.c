@@ -892,6 +892,10 @@ void fn_800563C8(s32 chan, u32 status) {
 }
 
 BOOL fn_800567BC(u32 mask) {
+    /* Update PAD/SI channel/reset state for the given channel mask: fold in pending reset
+       bits, clear related masks, optionally mark a reset, disable polling for affected
+       channels, and if no channel scan is in progress start an async type query for the
+       next pending channel. */
     BOOL enabled;
     u32 disable;
 
