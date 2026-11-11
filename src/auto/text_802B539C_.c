@@ -242,56 +242,58 @@ extern "C" void fn_802B57B8(void) {
 #pragma cplusplus on
 #pragma dont_inline on
 #pragma use_lmw_stmw off
+/* fn_802B5808 - UMat shutdown: hands back everything the module loaded.
+ * Every material set gets its four ground/road texture loads released (each
+ * marked -2 so nothing frees them twice) and its model freed; then every
+ * archive fn_802B5510 opened is deleted and the two lists and the
+ * "global_parameters" item are cleared ready for the next load. */
 extern "C" void fn_802B5808(int arg0) {
-    register int var_r28;
-    register int var_r29;
-    register int var_r27;
-    register int var_r26;
-    register int var_r25;
-    register int var_r25_2;
-    register int status;
+    register int set;
+    register int offset;
+    register int texSlot;
+    register int setIndex;
+    register int texIndex;
+    register int archiveIndex;
+    register int modelId;
 
-    var_r26 = 0;
-    var_r29 = 0;
-    goto loop_6;
-loop_6_body:
-    var_r25 = 0;
-    var_r28 = (int)lbl_804BE4AC.entries + var_r29;
-    var_r27 = var_r28 + 0x10;
+    setIndex = 0;
+    offset = 0;
+    goto set_loop;
+set_loop_body:
+    texIndex = 0;
+    set = (int)UMatSetList.entries + offset;
+    texSlot = set + 0x10;
     do {
-        fn_802B5404((int *)var_r27);
-        var_r25 += 1;
-        var_r27 += 8;
-    } while (var_r25 < 4);
-    status = *(int *)(var_r28 + 0x2C);
-    if (status != -1) {
-        ((void (*)(int))fn_802C6CF8)(status);
+        fn_802B5404((int *)texSlot);
+        texIndex += 1;
+        texSlot += 8;
+    } while (texIndex < 4);
+    modelId = *(int *)(set + 0x2C);
+    if (modelId != -1) {
+        ((void (*)(int))fn_802C6CF8)(modelId);
     }
-    var_r29 += 0x30;
-    var_r26 += 1;
-loop_6:
-    if (var_r26 < (int)lbl_804BE4AC.count) {
-        goto loop_6_body;
+    offset += 0x30;
+    setIndex += 1;
+set_loop:
+    if (setIndex < (int)UMatSetList.count) {
+        goto set_loop_body;
     }
 
-    var_r25_2 = 0;
-    var_r29 = 0;
-    goto loop_9;
-loop_9_body:
-    fn_80131818(*(int *)((char *)lbl_804BE454.entries + var_r29));
-    var_r29 += 4;
-    var_r25_2 += 1;
-loop_9:
-    if (var_r25_2 < (int)lbl_804BE454.count) {
-        goto loop_9_body;
+    archiveIndex = 0;
+    offset = 0;
+    goto archive_loop;
+archive_loop_body:
+    fn_80131818(*(int *)((char *)UMatArchives.entries + offset));
+    offset += 4;
+    archiveIndex += 1;
+archive_loop:
+    if (archiveIndex < (int)UMatArchives.count) {
+        goto archive_loop_body;
     }
-    lbl_804BE454.count = 0;
-    lbl_804BE4AC.count = 0;
-    lbl_8055F9E8 = 0;
+    UMatArchives.count = 0;
+    UMatSetList.count = 0;
+    sGlobalParameters = 0;
 }
-#pragma dont_inline off
-#pragma use_lmw_stmw on
-#pragma cplusplus on
 extern "C" void fn_802B562C(void *, void *, void *);
 #pragma cplusplus on
 #pragma dont_inline on
