@@ -21371,12 +21371,12 @@ void rfc_mx_conf_cnf(void *arg0, u16 *arg1) {
 
 void rfc_mx_conf_ind(void *arg0, void *arg1) {
     extern u8 lbl_803C4828[];
-    extern char lbl_803199B8[];
+    extern char lbl_80319A94[];
     extern void rfc_send_sabme();
     u8 *mcb = (u8 *)arg0;
     u8 *info = (u8 *)arg1;
     if (lbl_803C4828[0x414] >= 4)
-        ((void (*)(u32, void *, void *))fn_80070954)(0x90003, lbl_803199B8, arg1);
+        ((void (*)(u32, void *, void *))fn_80070954)(0x90003, lbl_80319A94, arg1);
     if (info[2] != 0) {
         *(s16 *)(mcb + 0x6A) = (s16)(*(u16 *)(info + 4) - 6);
     } else {
