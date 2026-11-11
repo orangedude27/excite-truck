@@ -106,7 +106,14 @@ s32 fn_801B60F4(void *arg0, f32 arg1) {
 }
 
 extern float lbl_805626B8;
-#pragma scheduling on
+static inline s32 GridCell(f32 v) {
+    s32 i = (s32)(v / lbl_805626B0);
+    if (i < 0)
+        i = 0;
+    else if (i >= 0x64)
+        i = 0x63;
+    return i;
+}
 void fn_801B619C(u32 *arg0, s32 *arg1, f32 *arg2) {
     s32 x0, x1, y0, y1;
     f32 f;
@@ -152,6 +159,7 @@ void fn_801B619C(u32 *arg0, s32 *arg1, f32 *arg2) {
         *arg1 = count + 1;
     }
 }
+#pragma scheduling on
 extern void *fn_801B5F40(void);
 extern void __AXPushCallbackStack(void *);
 extern char lbl_80335F20[];
