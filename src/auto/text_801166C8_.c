@@ -1234,6 +1234,7 @@ typedef struct BinkFile {
  * list at tick+0x30, fn_8011BF4C unlinks it. */
 typedef struct BinkTickNode {
     /* +0x00 */ struct BinkTickNode *next;
+    /* +0x04 */ u8 pad04[0x8];
     /* +0x0C */ s32 registered;
     /* +0x10 */ s32 unknown_10;
     /* +0x14 */ s32 (*Check)(s32 node, s32 time);
