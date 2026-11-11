@@ -779,38 +779,39 @@ extern char lbl_8033BEB0[];
 #pragma push
 #pragma cplusplus on
 #pragma inline_depth(0)
-extern "C" void fn_80208858(void *arg0, signed long arg1, signed long arg2) {
-    struct Obj {
-        virtual void v0();
-        virtual void v1();
-        virtual void *get();
-        virtual void v3();
-        virtual void v4();
-        virtual int invoke(int, int, int);
+extern "C" void fn_80208858(void *soundMgr, signed long soundName, signed long sndClass) {
+    struct SoundDevice {
+        virtual void slot8();
+        virtual void slotC();
+        virtual struct SoundDevState *resetState();
+        virtual void slot14();
+        virtual void slot18();
+        virtual signed long createSound(signed long, signed long, signed long);
     };
-    signed long mode1 = fn_802085F0(arg0, arg2);
-    signed long mode2 = fn_80207964(arg2);
-    void *item = (*(Obj **)((char *)arg0 + 0x90))->get();
-    unsigned char active = *(unsigned char *)item;
-    signed long choice;
-    signed long res;
-    extern char lbl_8033BEB0[];
-    if (active == 0 || mode1 != 0) {
-        if (*(signed long *)((char *)item + 4) != 0 && mode1 != 0) {
-            choice = 0;
+    /* The positional classes may have a 3D voice; UI sounds are flagged. */
+    signed long positional = fn_802085F0(soundMgr, sndClass);
+    signed long uiFlag = fn_80207964(sndClass);
+    struct SoundDevState *state = (*(struct SoundDevice **)((char *)soundMgr + 0x90))->resetState();
+    unsigned char active = state->active;
+    signed long voice;
+    signed long sound;
+    /* Play it: a sound already on the device only gets the plain voice. */
+    if (active == 0 || positional != 0) {
+        if (state->allow3D != 0 && positional != 0) {
+            voice = SOUND_VOICE_3D;
         } else {
-            choice = 2;
-            if (*(signed long *)((char *)item + 8) != 0) {
-                choice = 1;
+            voice = SOUND_VOICE_PLAIN;
+            if (state->allow2D != 0) {
+                voice = SOUND_VOICE_2D;
             }
         }
-        res = (*(Obj **)((char *)arg0 + 0x90))->invoke(arg1, choice, mode2);
-        if (choice == 0 && res == 0) {
-            fn_802E30C8(lbl_8033BEB0);
-            (*(Obj **)((char *)arg0 + 0x90))->invoke(arg1, 1, mode2);
+        sound = (*(struct SoundDevice **)((char *)soundMgr + 0x90))->createSound(soundName, voice, uiFlag);
+        if (voice == SOUND_VOICE_3D && sound == 0) {
+            fn_802E30C8(STR_CREATE_3D_FAILED);
+            (*(struct SoundDevice **)((char *)soundMgr + 0x90))->createSound(soundName, SOUND_VOICE_2D, uiFlag);
         }
     } else {
-        (*(Obj **)((char *)arg0 + 0x90))->invoke(arg1, 2, mode2);
+        (*(struct SoundDevice **)((char *)soundMgr + 0x90))->createSound(soundName, SOUND_VOICE_PLAIN, uiFlag);
     }
 }
 #pragma pop
