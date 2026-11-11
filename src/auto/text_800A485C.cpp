@@ -3723,7 +3723,6 @@ extern "C" s32 VFiPFENT_AdjustSFN(void *arg0, s8 *arg1) {
     s8 *name = arg1;
     s8 *p = name + 1;
     u32 index = 1;
-
     while (*p != 0x7E && *p != 0 && index < 7) {
         index++;
         p++;
@@ -3740,10 +3739,9 @@ extern "C" s32 VFiPFENT_AdjustSFN(void *arg0, s8 *arg1) {
             if (result != 0) {
                 return result;
             }
-            if (sp8 == 1) {
-                return 0;
+            if (sp8 != 1) {
+                VFiPFPATH_parseShortNameNumeric((char *)name, sp8);
             }
-            VFiPFPATH_parseShortNameNumeric((char *)name, sp8);
         }
     }
     return 0;
@@ -7430,27 +7428,24 @@ extern "C" void VFiPFFILE_FinalizeAllFiles(u8 *arg0) {
 extern "C" s32 fn_800B1AFC(s32 arg0, s32 arg1, s32 *arg2, s32 arg3) {
     void *context;
     s32 result;
-
     *arg2 = 0;
     context = ((void *(*)(void))fn_800B36D4)();
     fn_800B77C0((u8 *)context + 0x1F90);
     result = fn_800B6004(context);
-
     if (result != 0 && (result != 0xB || arg1 != 2)) {
-        fn_800B783C((u8 *)context + 0x1F90);
+        fn_800B783C((void *)((volatile u8 *)context + 0x1F90));
+        lbl_803D2140[16] = result;
+        *(s32 *)((u8 *)context + 0x1F80) = result;
+        return result;
+    }
+    result = fn_800B143C(context, arg0, arg1, (void **)arg2);
+    if (result != 0) {
         lbl_803D2140[16] = result;
         *(s32 *)((u8 *)context + 0x1F80) = result;
     } else {
-        result = fn_800B143C(context, arg0, arg1, (void **)arg2);
-        if (result != 0) {
-            lbl_803D2140[16] = result;
-            *(s32 *)((u8 *)context + 0x1F80) = result;
-        } else {
-            ++*(s32 *)((u8 *)context + 0x161C);
-        }
+        ++*(s32 *)((u8 *)context + 0x161C);
     }
-
-    fn_800B783C((u8 *)context + 0x1F90);
+    fn_800B783C((void *)((volatile u8 *)context + 0x1F90));
     return result;
 }
 
@@ -16468,20 +16463,16 @@ extern "C" s32 fn_800C4E5C(s32 arg0, void *arg1) {
 }
 #pragma pop
 extern "C" void fn_800C51BC(s32 *arg0, s32 *arg1, s32 *arg2) {
-    s32 i;
+    u32 i;
     for (i = 0; i < 4; i++) {
-        s32 right0 = arg1[0], diff0 = arg0[0] - right0;
-        arg0[0] = right0 + arg0[0];
-        arg1[0] = (s32)(((s64)diff0 * arg2[0]) >> 24);
-        s32 right1 = arg1[1], diff1 = arg0[1] - right1;
-        arg0[1] = right1 + arg0[1];
-        arg1[1] = (s32)(((s64)diff1 * arg2[1]) >> 24);
-        s32 right2 = arg1[2], diff2 = arg0[2] - right2;
-        arg0[2] = right2 + arg0[2];
-        arg1[2] = (s32)(((s64)diff2 * arg2[2]) >> 24);
-        s32 right3 = arg1[3], diff3 = arg0[3] - right3;
-        arg0[3] = right3 + arg0[3];
-        arg1[3] = (s32)(((s64)diff3 * arg2[3]) >> 24);
+        s32 b0 = arg1[0]; s32 a0 = arg0[0];
+        arg0[0] = b0 + a0; arg1[0] = (s32)(((s64)(a0 - b0) * arg2[0]) >> 24);
+        s32 b1 = arg1[1]; s32 a1 = arg0[1];
+        arg0[1] = b1 + a1; arg1[1] = (s32)(((s64)(a1 - b1) * arg2[1]) >> 24);
+        s32 b2 = arg1[2]; s32 a2 = arg0[2];
+        arg0[2] = b2 + a2; arg1[2] = (s32)(((s64)(a2 - b2) * arg2[2]) >> 24);
+        s32 b3 = arg1[3]; s32 a3 = arg0[3];
+        arg0[3] = b3 + a3; arg1[3] = (s32)(((s64)(a3 - b3) * arg2[3]) >> 24);
         arg0 += 4;
         arg1 += 4;
         arg2 += 4;
@@ -16512,28 +16503,28 @@ void fn_800C5430(s32 *a, s32 *b, s32 *coeff) {
     s32 c2 = coeff[2];
     s32 c3 = coeff[3];
     for (; i != 0; i--) {
-        register s32 b0 = b[0];
-        register s32 a0 = a[0];
-        register s32 d0 = a0 - b0;
-        register s32 sum0 = a0 + b0;
+        s32 b0 = b[0];
+        s32 a0 = a[0];
+        s32 d0 = a0 - b0;
+        s32 sum0 = a0 + b0;
         a[0] = sum0;
         b[0] = (s32)(((s64)d0 * c0) >> 24);
-        register s32 b1 = b[1];
-        register s32 a1 = a[1];
-        register s32 d1 = a1 - b1;
-        register s32 sum1 = a1 + b1;
+        s32 b1 = b[1];
+        s32 a1 = a[1];
+        s32 d1 = a1 - b1;
+        s32 sum1 = a1 + b1;
         a[1] = sum1;
         b[1] = (s32)(((s64)d1 * c1) >> 24);
-        register s32 b2 = b[2];
-        register s32 a2 = a[2];
-        register s32 d2 = a2 - b2;
-        register s32 sum2 = a2 + b2;
+        s32 b2 = b[2];
+        s32 a2 = a[2];
+        s32 d2 = a2 - b2;
+        s32 sum2 = a2 + b2;
         a[2] = sum2;
         b[2] = (s32)(((s64)d2 * c2) >> 24);
-        register s32 b3 = b[3];
-        register s32 a3 = a[3];
-        register s32 d3 = a3 - b3;
-        register s32 sum3 = a3 + b3;
+        s32 b3 = b[3];
+        s32 a3 = a[3];
+        s32 d3 = a3 - b3;
+        s32 sum3 = a3 + b3;
         a[3] = sum3;
         b[3] = (s32)(((s64)d3 * c3) >> 24);
         a += 8;
@@ -24175,13 +24166,13 @@ extern "C" s32 fn_800A4D74(void *arg0, u32 arg1) {
 }
 
 extern "C" void VFiPFSTR_MoveStrPos(void *arg0, s16 arg1, s32 arg2) {
-    s16 count = 0;
     struct Data { u8 *pos; u8 *secondary; u32 unk; u32 mode; };
     struct Table { u8 pad[0x54]; s32 (*is_lead)(s8, s32); s32 (*length)(u8 *); };
     Data *data = (Data *)arg0;
+    s16 count = 0;
     if (data->mode == 1) {
-        Table *table = (Table *)lbl_803D2140;
         u8 *str = data->pos;
+        Table *table = (Table *)lbl_803D2140;
         while (arg1 != 0) {
             if (table->is_lead((s8)*str, 1) != 0)
                 count = (s16)(count + 1);
@@ -24189,8 +24180,8 @@ extern "C" void VFiPFSTR_MoveStrPos(void *arg0, s16 arg1, s32 arg2) {
             arg1--;
         }
     } else {
-        Table *table = (Table *)lbl_803D2140;
         u8 *str = data->pos;
+        Table *table = (Table *)lbl_803D2140;
         s16 i = 0;
         while (i < arg1) {
             s32 len = table->length(str);
