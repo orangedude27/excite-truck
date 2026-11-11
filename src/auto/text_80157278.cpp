@@ -695,7 +695,7 @@ extern "C" void* fn_80157B00(void* arg0, s32 arg1, s32 arg2) {
 extern "C" void* fn_80157CF0(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
     u8* ptr = (u8*)arg0 + 0x14;
     *(void**)((u8*)arg0 + 8) = ptr;
-    *(void**)arg0 = &lbl_8032F2BC;
+    *(void**)arg0 = lbl_8032F2BC;
     *(s32*)((u8*)arg0 + 0x10) = 10;
     *(s32*)((u8*)arg0 + 0xC) = 0;
     do {
@@ -710,7 +710,7 @@ extern "C" void* fn_80157CF0(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
     *(f32*)((u8*)arg0 + 0x250) = value;
     *(s32*)((u8*)arg0 + 0x268) = 0;
     *(s32*)((u8*)arg0 + 0x248) = 0;
-    *(void**)arg0 = &lbl_8032EE68;
+    *(void**)arg0 = lbl_8032EE68;
     return arg0;
 }
 #pragma scheduling on
@@ -770,8 +770,8 @@ extern "C" void* fn_80157F98(void* self, s32 arg1, s32 arg2) {
         ptr += 0x38;
     } while (ptr < (u8*)self + 0x244);
     f32 f0 = lbl_80561754;
-    void* vtable = lbl_8032EC98;
     s32 zero = 0;
+    void* vtable = lbl_8032EC98;
     f32 f1 = lbl_80561764;
     *(s32*)((u8*)self + 0xC) = zero;
     *(s32*)((u8*)self + 4) = arg2;
@@ -1926,11 +1926,11 @@ extern "C" s32 fn_8015A814(void) {
 
 #pragma scheduling invalid_target
 extern "C" void fn_8015A81C(Unk801577F0* arg0) {
-    // Note: loop zero is scoped to the 0x38 records; final resets use the target's separate zero value.
     f32 f = lbl_80561754;
     s32 r6 = 0;
     s32 r7 = 0;
     s32 r5 = 0;
+    s32 z = 0;
     for (; r6 < arg0->mCount; r6++) {
         *(s32*)(arg0->mData + r7) = r5;
         *(s32*)(arg0->mData + r7 + 4) = r5;
@@ -1940,13 +1940,13 @@ extern "C" void fn_8015A81C(Unk801577F0* arg0) {
     }
     f32 a = lbl_80561754;
     f = lbl_80561750;
-    arg0->m264 = 0;
-    arg0->m260 = 0;
+    arg0->m264 = z;
+    arg0->m260 = z;
     arg0->m254 = a;
     arg0->m25c = f;
     arg0->v31();
-    *(s32*)((u8*)arg0 + 0x26c) = 0;
-    *(u8*)((u8*)arg0 + 0x2f0) = 0;
+    *(s32*)((u8*)arg0 + 0x26c) = z;
+    *(u8*)((u8*)arg0 + 0x2f0) = (u8)z;
 }
 
 extern "C" s32 fn_801D48FC(s32);
@@ -2199,13 +2199,13 @@ extern "C" void fn_8015B0A4(Unk801577F0 *arg0) {
         self->m25c = f;
         self->v31();
     }
+    s32 count2 = *(s32*)((u8*)arg0 + 0x278);
     s32 zero = 0;
-    count = *(s32*)((u8*)arg0 + 0x278);
     f = lbl_80561754;
     *(u8*)((u8*)arg0 + 0x26C) = zero;
     *(f32*)((u8*)arg0 + 0x270) = f;
     *(s32*)((u8*)arg0 + 0x274) = zero;
-    if (count > 0) {
+    if (count2 > 0) {
         fn_801CB6E4((void*)0x50204, *(s32*)((u8*)arg0 + 4));
         *(s32*)((u8*)arg0 + 0x278) = zero;
     }
@@ -2270,14 +2270,14 @@ extern "C" s32 fn_8015B2E0(void* arg0) {
 extern "C" s32 fn_8015B338(void) { return 0xC; }
 
 extern "C" void fn_8015B340(Unk801577F0* self) {
-    register f32 entryZero = lbl_80561754;
+    f32 entryZero = lbl_80561754;
     s32 i = 0;
     s32 offset = 0;
-    while (i < self->mCount) {
-        ++i;
-        *(s32*)(self->mData + offset) = 0;
-        *(s32*)(self->mData + offset + 4) = 0;
-        *(s32*)(self->mData + offset + 8) = 0;
+    s32 value = 0;
+    for (; i < self->mCount; i++) {
+        *(s32*)(self->mData + offset) = value;
+        *(s32*)(self->mData + offset + 4) = value;
+        *(s32*)(self->mData + offset + 8) = value;
         *(f32*)(self->mData + offset + 0xC) = entryZero;
         offset += 0x38;
     }
@@ -3036,7 +3036,7 @@ extern "C" void fn_8015CD0C(void) {
 }
 
 extern "C" f32 lbl_805617C8;
-#pragma scheduling off
+#pragma scheduling on
 extern "C" f32 fn_8015CD10(Unk801577F0* arg0) {
     class LocalVtable {
     public:
