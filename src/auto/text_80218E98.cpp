@@ -5820,26 +5820,26 @@ struct MenuSoundList {
 // once, any other mode fades them over 0.3 (see fn_80219358 / fn_802193C8).
 #pragma push
 #pragma processor 750
-extern "C" void fn_802238D0(void *arg0, s32 arg1) {
-    register f32 value;
-    s32 texture;
-    s32 index = 0;
-    while (index < fn_802237E8(arg0)) {
-        if (index == **(s32 **)((u8 *)arg0 + 0x420)) {
-            if (arg1 == 2) value = lbl_805634A8;
-            else value = lbl_805634E8;
-            texture = *(s32 *)((u8 *)arg0 + 0x2C);
-            fn_80218968(texture, fn_802237F0((s32)arg0, index), value);
+extern "C" void fn_802238D0(MenuSoundList *list, s32 mode) {
+    register f32 level;
+    s32 soundMgr;
+    s32 row = 0;
+    while (row < fn_802237E8(list)) {
+        if (row == *list->selected) {
+            if (mode == 2) level = lbl_805634A8;
+            else level = lbl_805634E8;
+            soundMgr = list->soundMgr;
+            fn_80218968(soundMgr, fn_802237F0((s32)list, row), level);
         } else {
-            if (arg1 == 2) value = lbl_805634A8;
-            else value = lbl_805634E8;
-            texture = *(s32 *)((u8 *)arg0 + 0x2C);
-            fn_8021889C(texture, fn_802237F0((s32)arg0, index), value);
+            if (mode == 2) level = lbl_805634A8;
+            else level = lbl_805634E8;
+            soundMgr = list->soundMgr;
+            fn_8021889C(soundMgr, fn_802237F0((s32)list, row), level);
         }
-        index++;
+        row++;
     }
-    if (*(u8 *)((u8 *)arg0 + 0x1A))
-        *(u8 *)((u8 *)arg0 + 0x234) = 1;
+    if (list->active)
+        list->dirty = 1;
 }
 #pragma pop
 extern "C" s32 fn_802239C8(void *arg0, s32 arg1) {
