@@ -398,37 +398,38 @@ void fn_8027D9A4(int arg0, int arg1) {
 
 __declspec(section ".data") extern char lbl_804B2FD8[];
 void fn_8027DA08(void) {
-    int sp14, sp10, spC, sp8;
-    int *entry;
-    int value;
-    int i1;
+    /* Update the current player's 8-byte score entry in lbl_804B2FD8. */
+    int outA, unusedA, outB, outWeight;
+    int *playerEntry;
+    int score;
+    int i;
     int total;
     int weight;
-    int i2;
-    int index;
-    int capped;
-    index = fn_8000DA10() << 3;
-    entry = (int *)((char *)&lbl_804B2FD8 + index);
-    entry[0] = 0;
-    i1 = 0;
+    int j;
+    int playerIndex;
+    int clampedScore;
+    playerIndex = fn_8000DA10() << 3;
+    playerEntry = (int *)((char *)&lbl_804B2FD8 + playerIndex);
+    playerEntry[0] = 0;
+    i = 0;
     do {
-        fn_8027BCC0(i1, &sp14, &sp10);
-        entry[0] += sp14;
-        i1++;
-    } while (i1 < 3);
+        fn_8027BCC0(i, &outA, &unusedA);
+        playerEntry[0] += outA;
+        i++;
+    } while (i < 3);
     total = 0;
     weight = 0;
-    i2 = 0;
+    j = 0;
     do {
-        fn_8027BCC8(i2, &spC, &sp8);
-        i2++;
-        total += spC;
-        weight += sp8;
-    } while (i2 < 3);
-    value = total * 100 / weight;
-    value &= (-value & ~value) >> 31;
-    capped = value >= 100 ? 100 : value;
-    entry[1] = capped;
+        fn_8027BCC8(j, &outB, &outWeight);
+        j++;
+        total += outB;
+        weight += outWeight;
+    } while (j < 3);
+    score = total * 100 / weight;
+    score &= (-score & ~score) >> 31;
+    clampedScore = score >= 100 ? 100 : score;
+    playerEntry[1] = clampedScore;
 }
 
 extern int lbl_8055C784;
