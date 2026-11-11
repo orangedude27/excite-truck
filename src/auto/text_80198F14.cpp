@@ -2878,18 +2878,16 @@ extern "C" s32 fn_801A1148(void *arg0, const f32 *vec, s32 arg2, f32 *arg3, s32 
     f32 radius = *(f32 *)((u8 *)arg0 + 0x178);
     if (dot >= -radius && dot < *arg3 + radius) {
         fn_801A0160(arg0);
-        void *entry = arg0;
         s32 found = 0;
         s32 i = 0;
         while (i < *(s32 *)((u8 *)arg0 + 0x174)) {
+            void *entry = (u8 *)arg0 + i * 4;
             void *item = *(void **)((u8 *)entry + 0x24);
-            if (fn_8019DDFC((s32)vec, arg2, (s32)arg3, arg4,
+            if (((s32 (*)(s32, s32, s32, s32, void *, f32))fn_8019DDFC)((s32)vec, arg2, (s32)arg3, arg4,
                             (u8 *)item + 0x34,
-                            *(void **)((u8 *)arg0 + 0xC),
                             *(f32 *)((u8 *)item + 0x24)) != 0) {
                 found = 1;
             }
-            entry = (u8 *)entry + 4;
             i++;
         }
         return found;
