@@ -320,19 +320,31 @@ int fn_8015F148(void **arg0, int arg1) {
 
 extern f32 lbl_805617D4, lbl_805617D8, lbl_805617DC, lbl_805617E0;
 #pragma push
-#pragma scheduling invalid_target
+#pragma scheduling on
 #pragma use_lmw_stmw off
 #pragma processor 750
 void fn_8015F1E4(void *arg0, void *arg1) {
-    void *inputState = *(void **)((char *)arg1 + 0xC);
-    f32 base = *(f32 *)((char *)arg1 + 0x24);
-    f32 x = *(f32 *)((char *)inputState + 0x18);
-    f32 z = *(f32 *)((char *)inputState + 0x20);
-    f32 speed = (f32)((double (*)(f32))fn_8002F234)(x * x + z * z);
-    void *state = *(void **)((char *)arg1 + 0xC);
-    f32 threshold = lbl_805617D4;
-    f32 angle = base + lbl_805617DC * (lbl_805617D8 * speed);
+    void *inputState;
+    f32 base;
+    f32 x;
+    f32 z;
     f32 result[5];
+    f32 speed;
+    void *state;
+    f32 threshold;
+    f32 tmp;
+    f32 angle;
+    inputState = *(void **)((char *)arg1 + 0xC);
+    base = *(f32 *)((char *)arg1 + 0x24);
+    x = *(f32 *)((char *)inputState + 0x18);
+    z = *(f32 *)((char *)inputState + 0x20);
+    result[0] = x;
+    result[1] = z;
+    speed = (f32)((double (*)(f32))fn_8002F234)(x * x + z * z);
+    state = *(void **)((char *)arg1 + 0xC);
+    tmp = lbl_805617D8 * speed;
+    threshold = lbl_805617D4;
+    angle = base + lbl_805617DC * tmp;
     *(f32 *)((char *)arg0 + 0xC) = angle;
     {
         f32 y = *(f32 *)((char *)state + 0x1C);
@@ -612,34 +624,32 @@ s32 fn_8015F848(f32 *arg0, f32 farg0) {
 extern long lbl_8055E2A8;
 extern float lbl_8056180C;
 void fn_8015F92C(float *arg0, float farg0) {
-    s32 v = lbl_8055E2A8;
-    register s32 i = 0;
-    s32 count = (((s32)(v + ((u32)v >> 31))) >> 1) + 1;
+    long v = lbl_8055E2A8;
+    int i = 0;
+    int count = (int)(v / 2 + 1);
     float value = farg0;
     float temp;
-    register float *base = arg0;
+    float *base = arg0;
     for (; i < count; i++) {
         temp = base[64];
-        if (value < temp) value = temp;
+        value = value < temp ? value : temp;
         temp = arg0[(32 - i) * 2];
-        if (value < temp) value = temp;
+        value = value < temp ? value : temp;
         base += 2;
     }
     {
         float scale = lbl_8056180C;
-        float delta;
-        float result;
         float current0, current1, current2, current3;
         float current4, current5, current6, current7;
         for (i = 0; i < 8; i++) {
-            current0 = arg0[0]; delta = current0 - value; result = delta * scale; arg0[0] = current0 + result;
-            current1 = arg0[2]; delta = current1 - value; result = delta * scale; arg0[2] = current1 + result;
-            current2 = arg0[4]; delta = current2 - value; result = delta * scale; arg0[4] = current2 + result;
-            current3 = arg0[6]; delta = current3 - value; result = delta * scale; arg0[6] = current3 + result;
-            current4 = arg0[8]; delta = current4 - value; result = delta * scale; arg0[8] = current4 + result;
-            current5 = arg0[10]; delta = current5 - value; result = delta * scale; arg0[10] = current5 + result;
-            current6 = arg0[12]; delta = current6 - value; result = delta * scale; arg0[12] = current6 + result;
-            current7 = arg0[14]; delta = current7 - value; result = delta * scale; arg0[14] = current7 + result;
+            current0 = arg0[0]; arg0[0] = current0 + (current0 - value) * scale;
+            current1 = arg0[2]; arg0[2] = current1 + (current1 - value) * scale;
+            current2 = arg0[4]; arg0[4] = current2 + (current2 - value) * scale;
+            current3 = arg0[6]; arg0[6] = current3 + (current3 - value) * scale;
+            current4 = arg0[8]; arg0[8] = current4 + (current4 - value) * scale;
+            current5 = arg0[10]; arg0[10] = current5 + (current5 - value) * scale;
+            current6 = arg0[12]; arg0[12] = current6 + (current6 - value) * scale;
+            current7 = arg0[14]; arg0[14] = current7 + (current7 - value) * scale;
             arg0 += 16;
         }
     }
