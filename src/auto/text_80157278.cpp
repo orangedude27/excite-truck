@@ -4082,12 +4082,10 @@ extern "C" void fn_801593F0(Unk801577F0* arg0) {
 
 #pragma scheduling invalid_target
 extern "C" void fn_80159488(Unk801577F0* arg0) {
-#pragma scheduling invalid_target
-    f32 zero = lbl_80561754;
+    f32 zero = 0.0f;
     s32 i = 0;
     s32 offset = 0;
     s32 value = 0;
-#pragma scheduling on
     for (; i < arg0->mCount; ++i) {
         u8* base = (u8*)arg0->mData;
         *(s32*)(base + offset) = value;
@@ -4099,7 +4097,7 @@ extern "C" void fn_80159488(Unk801577F0* arg0) {
         *(f32*)((u8*)p + offset + 0xC) = zero;
         offset += 0x38;
     }
-    zero = lbl_80561754;
+    zero = 0.0f;
     *(f32*)((u8*)arg0 + 0x25C) = zero;
     *(f32*)((u8*)arg0 + 0x260) = zero;
     *(f32*)((u8*)arg0 + 0x258) = zero;
@@ -4107,7 +4105,7 @@ extern "C" void fn_80159488(Unk801577F0* arg0) {
     arg0->v31();
     void* child = *(void**)((u8*)arg0 + 0x278);
     s32 one = 1;
-    f32 finalZero = lbl_80561754;
+    f32 finalZero = 0.0f;
     bool hasChild = child != 0;
     *(volatile u8*)((u8*)arg0 + 0x274) = one;
     *(volatile f32*)((u8*)arg0 + 0x270) = finalZero;
