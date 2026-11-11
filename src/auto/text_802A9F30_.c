@@ -250,6 +250,9 @@ void fn_802AA9D4(UnkAA9D4 *arg0, void *arg1, float delta) {
 #pragma push
 #pragma processor 750
 void fn_802AAC80(void *arg0, void *arg1, float farg0) {
+    /* Update object m_value (+0xF0): after fn_801E86F8(0), ramp toward 1.0 (lbl_805649FC)
+       when m_flag (+0xEC) is set (and clear it), toward 0.0 (lbl_805649F0) when
+       state m_condition (+0x118) is clear, else set to 0.0; force 0.0 if state m_flags & 8. */
     struct Object {
         unsigned char pad0[0xEC];
         unsigned char m_flag;
@@ -266,16 +269,16 @@ void fn_802AAC80(void *arg0, void *arg1, float farg0) {
     extern float lbl_805649F0, lbl_805649FC, lbl_80564A04;
     struct Object *object = (struct Object *)arg0;
     struct State *state = (struct State *)arg1;
-    volatile unsigned char *flag = &object->m_flag;
-    volatile float *value = &object->m_value;
+    volatile unsigned char *triggerFlag = &object->m_flag;
+    volatile float *currentValue = &object->m_value;
     fn_801E86F8(0);
-    if (*flag) {
+    if (*triggerFlag) {
         float limit, current, delta, step;
         step = *(volatile float *)&lbl_80564A04;
-        current = *value;
+        current = *currentValue;
         delta = step * farg0;
         limit = *(volatile float *)&lbl_805649FC;
-        *flag = 0;
+        *triggerFlag = 0;
         current += delta;
         object->m_value = current < limit ? current : limit;
     } else if (state->m_condition) {
@@ -283,7 +286,7 @@ void fn_802AAC80(void *arg0, void *arg1, float farg0) {
     } else {
         float limit, current, delta, step;
         step = *(volatile float *)&lbl_80564A04;
-        current = *value;
+        current = *currentValue;
         delta = step * farg0;
         limit = *(volatile float *)&lbl_805649F0;
         current -= delta;
