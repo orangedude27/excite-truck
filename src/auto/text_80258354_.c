@@ -454,6 +454,24 @@ found:
 extern int stricmp(const char *, const char *);
 extern int fn_80232B70(int, int, int);
 extern double lbl_80563AD8;
+
+/* The per-text object UIObjects_impl keeps (0x14 bytes, alloc name "gText";
+ * created by fn_8025861C). */
+typedef struct UITextObject {
+    void *font;    /* +0x00 font block loaded by gText (fn_80232578) */
+    int value;     /* +0x04 -1 until a caller sets it */
+    unsigned int flags; /* +0x08 draw flags, 9 when created */
+    float scale;   /* +0x0C pixels per font unit */
+    float field10; /* +0x10 0 when created */
+} UITextObject;
+
+/* One entry of the manager's text table (array at +0x910, count at +0x914,
+ * 0x24 bytes each: a 0x20-byte name and the object drawn for it). */
+typedef struct UITextEntry {
+    char name[0x20];
+    UITextObject *text;
+} UITextEntry;
+
 void *fn_80258D58(void *arg0, int arg1, int arg2, int arg3, int arg4) {
     char *base = (char *)arg0;
     int index = 0;
