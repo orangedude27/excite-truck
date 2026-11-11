@@ -420,27 +420,28 @@ void fn_80230C30(float *arg0, float *arg1, s32 arg2, s32 arg3) {
     *arg1 = (float)((s32)lbl_8055FBA0 / 2 - arg3);
 }
 
-/* Match note: preserve the branch-specific min/max and truncating step count; this matches the target exactly. */
-void fn_80230C9C(float *arg0, float *arg1, float farg0, float farg1, float farg2) {
+/* Shift both values by whole multiples of step so they lie within [min, max] when
+   both are below min or both above max; preserves truncating step count/temps. */
+void fn_80230C9C(float *valueA, float *valueB, float min, float max, float step) {
     float var_f0, var_f0_2, var_f4, var_f5;
     int temp_r0, temp_r0_2;
-    var_f4 = *arg0;
-    var_f5 = *arg1;
-    if ((var_f4 < farg0) && (var_f5 < farg0)) {
+    var_f4 = *valueA;
+    var_f5 = *valueB;
+    if ((var_f4 < min) && (var_f5 < min)) {
         if (var_f4 > var_f5) var_f0 = var_f4;
         else var_f0 = var_f5;
-        temp_r0 = (int)((farg0 - var_f0) / farg2) + 1;
-        var_f4 += (float)temp_r0 * farg2;
-        var_f5 += (float)temp_r0 * farg2;
-    } else if ((var_f4 > farg1) && (var_f5 > farg1)) {
+        temp_r0 = (int)((min - var_f0) / step) + 1;
+        var_f4 += (float)temp_r0 * step;
+        var_f5 += (float)temp_r0 * step;
+    } else if ((var_f4 > max) && (var_f5 > max)) {
         if (var_f4 < var_f5) var_f0_2 = var_f4;
         else var_f0_2 = var_f5;
-        temp_r0_2 = (int)((var_f0_2 - farg1) / farg2) + 1;
-        var_f4 -= (float)temp_r0_2 * farg2;
-        var_f5 -= (float)temp_r0_2 * farg2;
+        temp_r0_2 = (int)((var_f0_2 - max) / step) + 1;
+        var_f4 -= (float)temp_r0_2 * step;
+        var_f5 -= (float)temp_r0_2 * step;
     }
-    *arg0 = var_f4;
-    *arg1 = var_f5;
+    *valueA = var_f4;
+    *valueB = var_f5;
 }
 
 void fn_80230DA0(void) {}
