@@ -26,25 +26,27 @@ extern "C" int fn_8013990C(void *arg0) {
         virtual int f3(void);
         virtual int check(char *, int);
     };
-    char buffer[0x0C];
-    int count = 0;
-    int result;
-    Object *obj = (Object *)arg0;
+    char nameBuffer[0x0C];
+    int slotIndex = 0;
+    int exists;
+    Object *namedObject = (Object *)arg0;
 
+    /* Find the first unused numbered slot name on the object by formatting names
+       until check() reports no match; warn if very many slots or none found. */
     do {
-        sprintf(buffer, lbl_80559C40, count++);
-        result = obj->check(buffer, 0);
-    } while (result != 0 && count < 0x2710);
+        sprintf(nameBuffer, lbl_80559C40, slotIndex++);
+        exists = namedObject->check(nameBuffer, 0);
+    } while (exists != 0 && slotIndex < 0x2710);
 
-    if (count > 0x400) {
-        char *name = obj->getName();
-        fn_802E30C8(lbl_8032BFD8, 0x400, name, count);
+    if (slotIndex > 0x400) {
+        char *name = namedObject->getName();
+        fn_802E30C8(lbl_8032BFD8, 0x400, name, slotIndex);
     }
-    if (result != 0) {
-        char *name = obj->getName();
+    if (exists != 0) {
+        char *name = namedObject->getName();
         fn_802E30C8(lbl_8032C018, name);
     }
-    return count;
+    return slotIndex;
 }
 #pragma dont_inline reset
 
@@ -66,9 +68,6 @@ extern "C" void *fn_801399FC(void *arg0) {
     };
     char buffer[12];
     int count;
-    int index;
-    int usedBytes;
-    int allocatedBytes;
     void *table;
     int *cursor;
     char *entry;
@@ -76,32 +75,29 @@ extern "C" void *fn_801399FC(void *arg0) {
 
     count = fn_8013990C(arg0);
     table = fn_801284E8(&lbl_8032C108, count * 8 + 8);
-    *(int *)table = count;
     *(int *)((char *)table + 4) = count;
+    *(int *)table = count;
     cursor = (int *)((char *)table + 8);
-    index = 0;
-    for (;;) {
-        sprintf(buffer, lbl_80559C40, index);
+    count = 0;
+    do {
+        sprintf(buffer, lbl_80559C40, count);
         entry = obj->check(buffer, 0);
-        if (entry == 0) {
-            break;
+        if (entry != 0) {
+            if (sscanf(entry, lbl_80559C48, cursor, cursor + 1) == 2) {
+                cursor += 2;
+                count++;
+            } else {
+                fn_802E30C8(lbl_8032C064, obj->getName(), entry);
+            }
         }
-        if (sscanf(entry, lbl_80559C48, cursor, cursor + 1) == 2) {
-            cursor += 2;
-            index++;
-        } else {
-            fn_802E30C8(lbl_8032C064, obj->getName(), entry);
-        }
-    }
-    if (index < 3) {
+    } while (entry != 0);
+    if (count < 3) {
         fn_802E30C8(lbl_8032C090, obj->getName(), *(int *)table);
-        index = 0;
+        count = 0;
     }
-    usedBytes = index * 8 + 8;
-    allocatedBytes = *(int *)table * 8 + 8;
-    fn_801286A0(table, allocatedBytes - usedBytes);
-    *(int *)((char *)table + 4) = index;
-    *(int *)table = index;
+    fn_801286A0(table, (*(int *)table * 8 + 8) - (count * 8 + 8));
+    *(int *)((char *)table + 4) = count;
+    *(int *)table = count;
     return table;
 }
 
@@ -120,17 +116,23 @@ int fn_80139B70(int arg0, float arg1, float arg2) {
     int count;
     int result;
     int i;
+    float th;
+    float v0;
+    float v1;
+    float v2;
+    float v3;
 
     count = *(int *)arg0;
     p = (volatile float *)(arg0 + 8);
     result = 0;
-    for (i = 0; i < count; i++, p += 2) {
+    th = lbl_80561410;
+    for (i = 0; i < count; p += 2, i++) {
         float y0 = p[1];
         int next = i + 1;
         int index = next % count;
         volatile float *q = (volatile float *)(arg0 + index * 8);
         float y1 = q[3];
-        int rising = y0 < y1;
+        unsigned int rising = y0 < y1;
 
         if (rising) {
             if (arg2 < y0 || arg2 > y1) continue;
@@ -139,14 +141,21 @@ int fn_80139B70(int arg0, float arg1, float arg2) {
         {
             float x0 = p[0];
             float x1 = q[2];
-            float vx = arg1 - x0;
+            float v[4];
             float dx = x1 - x0;
             float y0b = p[1];
             float y1b = q[3];
-            float vy = arg2 - y0b;
-            float dy = y1b - y0b;
-            float negdx = -dx;
-            if (rising == (dy * vx + negdx * vy < lbl_80561410)) result++;
+            float tth;
+            v[0] = arg1 - x0;
+            v[1] = arg2 - y0b;
+            v[2] = y1b - y0b;
+            v[3] = -dx;
+            v0 = v[0];
+            v1 = v[1];
+            v2 = v[2];
+            v3 = v[3];
+            tth = th;
+            if (rising == (v2 * v0 + v3 * v1 < tth)) result++;
         }
     }
     return result & 1;
@@ -156,25 +165,26 @@ extern float lbl_80561414;
 unsigned long long fn_80139C5C(void *arg0) {
     int count = *(int *)arg0;
     float *point = (float *)((char *)arg0 + 0x10);
-    volatile float bounds[4];
-    union { float f; unsigned int u; } x, y;
-    bounds[0] = *(float *)((char *)arg0 + 8);
-    bounds[1] = *(float *)((char *)arg0 + 12);
-    bounds[2] = bounds[0];
-    bounds[3] = bounds[1];
-    if (count > 1) {
-        do {
-            float px = point[0], py = point[1];
-            if (px < bounds[2]) bounds[2] = px;
-            if (py < bounds[3]) bounds[3] = py;
-            if (px > bounds[0]) bounds[0] = px;
-            if (py > bounds[1]) bounds[1] = py;
-            point += 2;
-        } while (--count > 1);
+    float b0 = *(float *)((char *)arg0 + 8);
+    float b1 = *(float *)((char *)arg0 + 12);
+    float b2 = b0;
+    float b3 = b1;
+    int i;
+    for (i = 0; i < count - 1; i++) {
+        float px = point[0];
+        float py = point[1];
+        b2 = (px < b2) ? px : b2;
+        b3 = (py < b3) ? py : b3;
+        b0 = (px > b0) ? px : b0;
+        b1 = (py > b1) ? py : b1;
+        point += 2;
     }
-    x.f = bounds[2] + lbl_80561414 * (bounds[0] - bounds[2]);
-    y.f = bounds[3] + lbl_80561414 * (bounds[1] - bounds[3]);
-    return ((unsigned long long)x.u << 32) | y.u;
+    {
+        union { float f; unsigned int u; } x, y;
+        x.f = b2 + lbl_80561414 * (b0 - b2);
+        y.f = b3 + lbl_80561414 * (b1 - b3);
+        return ((unsigned long long)x.u << 32) | y.u;
+    }
 }
 
 void *fn_80131810(void);
@@ -183,26 +193,16 @@ void *fn_801399FC();
 extern const char lbl_8032C0C8[];
 #pragma scheduling invalid_target
 void *fn_80139D4C(void) {
-    struct VTable {
-        int (*unused0)(void *, int);
-        int (*unused1)(void *, int);
-        int (*unused2)(void *, int);
-        int (*callback)(void *, int);
-    };
-    struct Source {
-        struct VTable *vtable;
-    };
     int count;
     void *object;
-    struct Source *source;
+    void *source;
     int n;
     void **items;
     void *item;
     const char *name;
-    register struct VTable *vtable;
 
     object = 0;
-    source = (struct Source *)fn_80131810();
+    source = fn_80131810();
     if (source != 0) {
         name = lbl_8032C0C8;
         object = fn_801284F8(0x90, name);
@@ -212,7 +212,8 @@ void *fn_80139D4C(void) {
             *(int *)((char *)object + 8) = 0;
             *(void **)object = source;
             count = 0;
-            while (count == 0 || (vtable = source->vtable)->callback(source, count) != 0) {
+            while (count == 0 ||
+                   ((int (*)(void *, int))(*(void ***)source)[3])(source, count) != 0) {
                 item = fn_801399FC();
                 n = *(int *)((char *)object + 8);
                 count++;
