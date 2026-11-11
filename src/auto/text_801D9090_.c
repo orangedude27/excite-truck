@@ -184,44 +184,44 @@ void *fn_801D9260(int count) {
 }
 
 #pragma cplusplus on
+// Start up the terrain morph / "wl model" system: build the morph group list
+// from mmorph.val's "morph_group" items (their regions resolved against
+// mregion.val), the "oml" model-set list from wlmodels.val, link the two
+// together, and load the wlmap.mod model they drive.
 extern "C" void fn_801D9284(void) {
-    extern char lbl_80339108[];
-    extern void *lbl_8055E96C;
-    extern int lbl_8055E960;
-    extern unsigned char lbl_8055E968;
-    extern void *lbl_8055E964;
-    extern void *lbl_8055AD60;
-    extern void *fn_80131810(void *);
-    extern void fn_80131818(void *);
-    extern void fn_801D9394(void **, void *, void *, void *);
-    extern void fn_801D9654(void *, void *, void *, int);
-    extern void fn_801D91D8(void);
-    extern int fn_802C6FC0(void *, int, int);
-    register char *base = lbl_80339108;
-    void *a;
-    void *b;
-    void *c;
-    void *v;
-    lbl_8055E96C = 0;
-    a = fn_80131810(base + 0x44);
-    if (a != 0) {
-        b = fn_80131810(base + 0x50);
-        if (b != 0) {
-            v = ((struct Getter801D9284 *)b)->get(base + 0x5C);
-            fn_801D9394((void **)&lbl_8055E96C, v, base + 0x6C, a);
-            c = fn_80131810(base + 0x78);
-            if (c != 0) {
-                v = ((struct Getter801D9284 *)c)->get(base + 0x88);
-                fn_801D9654(&lbl_8055E964, v, &lbl_8055AD60, 0);
+    extern char lbl_80339108[];        // wlDataNames: the table/model names
+    extern void *lbl_8055AD60;         // holds the start of "oml", the item type fn_801D9654 collects
+    extern void *fn_80131810(void *);  // open a DTB value table by name
+    extern void fn_80131818(void *);   // release a DTB value table again
+    extern void fn_801D9394(void **head, void *table, const char *name, void *regionTable);
+    extern void fn_801D9654(void *head, void *table, void *name, int);
+    extern int fn_802C6FC0(void *name, int, int); // mrmodel: load a model
+    register char *base = wlDataNames;
+    void *regionTable; // "mregion.val"
+    void *morphTable;  // "mmorph.val"
+    void *modelTable;  // "wlmodels.val"
+    void *subTable;    // the "morph_groups" / "oml_lists" sub-table of each
+
+    morphGroupList = 0;
+    regionTable = fn_80131810(base + nameRegionVal);
+    if (regionTable != 0) {
+        morphTable = fn_80131810(base + nameMorphVal);
+        if (morphTable != 0) {
+            subTable = ((struct DtbTable *)morphTable)->get(base + nameMorphGroups);
+            fn_801D9394((void **)&morphGroupList, subTable, base + nameMorphGroup, regionTable);
+            modelTable = fn_80131810(base + nameModelsVal);
+            if (modelTable != 0) {
+                subTable = ((struct DtbTable *)modelTable)->get(base + nameOmlLists);
+                fn_801D9654(&omlList, subTable, &lbl_8055AD60, 0);
                 fn_801D91D8();
-                fn_80131818(c);
+                fn_80131818(modelTable);
             }
-            fn_80131818(b);
+            fn_80131818(morphTable);
         }
-        fn_80131818(a);
+        fn_80131818(regionTable);
     }
-    lbl_8055E960 = fn_802C6FC0(base + 0x94, 0, 0);
-    lbl_8055E968 = 0;
+    wlMapModel = fn_802C6FC0(base + nameWlMapMod, 0, 0);
+    morphUpdateFrozen = 0;
 }
 #pragma cplusplus reset
 
