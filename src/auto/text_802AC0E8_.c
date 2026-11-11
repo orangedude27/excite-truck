@@ -440,32 +440,39 @@ void fn_802ADBB4(void) {
 #pragma pop
 
 #pragma scheduling on
-int fn_802ADCF8(int arg0) {
-    int var_r0;
-    int temp_r4;
-    int temp_r3;
+int fn_802ADCF8(int key) {
+    /* Debug menu key handler: D-pad/select/enter-like controls update animation index or timer state. */
+    int newIndex;
+    int maxIndexMinus1;
+    int nextIndex;
     int toggle;
-    switch (arg0) {
-    case 0x5B:
-        temp_r3 = lbl_8055F940 - 1;
-        lbl_8055F940 = temp_r3 < -1 ? -1 : temp_r3;
+
+    switch (key) {
+    case 0x5B: /* move up */
+        nextIndex = lbl_8055F940 - 1;
+        lbl_8055F940 = nextIndex < -1 ? -1 : nextIndex;
         return 1;
-    case 0x5D:
-        temp_r4 = (int)lbl_8055F93C - 1;
-        var_r0 = lbl_8055F940 + 1;
-        if (temp_r4 < var_r0) var_r0 = temp_r4;
-        lbl_8055F940 = var_r0;
+    case 0x5D: /* move down */
+        maxIndexMinus1 = (int)lbl_8055F93C - 1;
+        newIndex = lbl_8055F940 + 1;
+        if (maxIndexMinus1 < newIndex) {
+            newIndex = maxIndexMinus1;
+        }
+        lbl_8055F940 = newIndex;
         return 1;
-    case 0x22:
+    case 0x22: /* reset timer */
         lbl_8055F944 = fn_802E2C20();
         lbl_8055F948 = 0;
         return 1;
-    case 0x27:
+    case 0x27: /* toggle timer */
         toggle = ((unsigned char)lbl_8055F94C == 0);
         lbl_8055F94C = toggle;
-        if (toggle) lbl_8055F948 = fn_802E2C20() - lbl_8055F944;
+        if (toggle) {
+            lbl_8055F948 = fn_802E2C20() - lbl_8055F944;
+        }
         return 1;
-    default: return 0;
+    default:
+        return 0;
     }
 }
 
