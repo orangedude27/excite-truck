@@ -643,27 +643,28 @@ void fn_8017E96C(void *arg0, int **arg1, signed char *arg2) {
 extern float lbl_80561BF4;
 #pragma dont_inline on
 #pragma scheduling invalid_target
-void fn_8017E9FC(void *arg0, long arg1, unsigned char *arg2) {
-    long temp_r31;
-    short temp_r30;
+// Updates this object's sound/trigger state based on the current state and input flag.
+void fn_8017E9FC(void *obj, long param, unsigned char *triggerFlag) {
+    long shortData;
+    short soundId;
     long flags;
-    long var_r3;
-    long state = *(long *)((char *)arg0 + 0x1F0);
+    long isEnabled;
+    long state = *(long *)((char *)obj + 0x1F0);
     switch (state) {
     case 1:
-        if (*arg2 == 0) *(long *)((char *)arg0 + 0x1F0) = 2;
+        if (*triggerFlag == 0) *(long *)((char *)obj + 0x1F0) = 2;
         break;
     case 2:
-        if (*arg2 != 0) {
-            temp_r30 = *(short *)fn_8017EAF4(arg1);
-            temp_r31 = fn_8017EAFC(arg1);
-            fn_8017DEE0(arg0, fn_8017EB04(arg1), temp_r31, temp_r30, lbl_80561BF4);
+        if (*triggerFlag != 0) {
+            soundId = *(short *)fn_8017EAF4(param);
+            shortData = fn_8017EAFC(param);
+            fn_8017DEE0(obj, fn_8017EB04(param), shortData, soundId, lbl_80561BF4);
             flags = lbl_8055D430;
-            var_r3 = 0;
-            if ((flags & 1) && (flags & 8)) var_r3 = 1;
-            if (var_r3 != 0) {
-                *(long *)((char *)arg0 + 0x1F0) = 0;
-                *(float *)((char *)arg0 + 0x1F4) = lbl_80561C0C + fn_8017D378();
+            isEnabled = 0;
+            if ((flags & 1) && (flags & 8)) isEnabled = 1;
+            if (isEnabled != 0) {
+                *(long *)((char *)obj + 0x1F0) = 0;
+                *(float *)((char *)obj + 0x1F4) = lbl_80561C0C + fn_8017D378();
             }
         }
         break;
