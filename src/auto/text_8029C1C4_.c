@@ -255,7 +255,7 @@ void fn_8029C664(void) {
     margin = lbl_80564648;
     p = lbl_804B5010;
     base = p;
-    i = base == p ? 0 : 1;
+    i = 0;
     for (; i<lbl_8055F7F0; ++p, ++i) {
         fn_8029D550((void *)*p, a, &radiusA);
         j=i+1;
@@ -814,7 +814,6 @@ extern void fn_8029DF64(void *, int, int, float);
 extern void fn_8029DDB8(void *);
 #pragma push
 #pragma processor 750
-#pragma scheduling 7400
 void fn_8029D574(int arg0) {
     extern float lbl_80564658;
     extern float fn_80287BC8(float, float);
@@ -833,11 +832,7 @@ void fn_8029D574(int arg0) {
     }
     fn_8029DDB8(p);
 }
-
-#pragma push
-#pragma processor 750
-#pragma scheduling invalid_target
-#pragma use_lmw_stmw off
+#pragma pop
 void fn_8029D644(void *arg0) {
     int i;
     int offset;
@@ -1370,19 +1365,22 @@ void fn_8029E8E0(float *arg0, int arg1) {
 #pragma pop
 extern void fn_8029EC64(void *, int);
 extern float lbl_805646A8;
-void fn_8029EA34(void *arg0, void **arg1) {
+#pragma scheduling on
+void fn_8029EA34(void *arg0, void **__restrict arg1) {
     void *temp = *arg1;
-    register float radius = *(float *)((char *)arg0 + 0x3C);
-    register float z1 = *(float *)((char *)temp + 0x2C);
-    register float z0 = *(float *)((char *)arg0 + 0x38);
-    register float radius_sq = radius * radius;
-    register float x1 = *(float *)((char *)temp + 0x24);
-    register float x0 = *(float *)((char *)arg0 + 0x30);
-    register float dz = z1 - z0;
-    register float dx = x1 - x0;
-    register float distance_sq = dz * dz + dx * dx;
+    float radius, x0, x1, z0, z1, radius_sq, dz, dx, dz2, dx2, distance_sq;
     int offset, i;
-
+    radius = *(float *)((char *)arg0 + 0x3C);
+    z1 = *(float *)((char *)temp + 0x2C);
+    z0 = *(float *)((char *)arg0 + 0x38);
+    radius_sq = radius * radius;
+    x1 = *(float *)((char *)temp + 0x24);
+    x0 = *(float *)((char *)arg0 + 0x30);
+    dz = z1 - z0;
+    dx = x1 - x0;
+    dz2 = dz * dz;
+    dx2 = dx * dx;
+    distance_sq = dx2 + dz2;
     if (!(distance_sq > radius_sq)) {
         i = 0;
         offset = 0;
@@ -1395,9 +1393,6 @@ void fn_8029EA34(void *arg0, void **arg1) {
         } while (i < 4);
     }
 }
-
-#pragma push
-#pragma processor 750
 int fn_8029EAE8(void *arg0) {
     register float temp_f31 = *(volatile float *)&lbl_805646A8;
     int result = 0;
