@@ -10,6 +10,10 @@ struct D0E68Objs {
     struct D0E68Entry b[4];
     void *slots[4];
 };
+struct D0E68Tail {
+    u8 pad[0x180];
+    void *slots[4];
+};
 typedef u16 *Fn800A4B78Ret;
 struct Fn800B10E0Ent {
     u16 first;
@@ -17926,20 +17930,19 @@ extern "C" void *List_GetNext__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListPCv(const void *,
 extern "C" void List_Remove__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv(void *, void *);
 extern "C" void *__dt__Q310homebutton3gui7ManagerFv(void *arg0, s32 arg1) {
     void *node;
-    void *list;
+    void *list = (u8 *)arg0 + 8;
 
     if (arg0 != 0) {
         *(void **)arg0 = (void *)lbl_8031E83C;
-        list = (u8 *)arg0 + 8;
         node = List_GetNext__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListPCv(list, 0);
         while (node != 0) {
-            List_Remove__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv(list, node);
+            List_Remove__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv((u8 *)arg0 + 8, node);
             if (*(void **)((u8 *)arg0 + 0x14) != 0) {
                 MEMFreeToAllocator((MEMAllocator *)*(void **)((u8 *)arg0 + 0x14), node);
             } else {
                 ((void (*)(void *))fn_80128668)(node);
             }
-            node = List_GetNext__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListPCv(list, 0);
+            node = List_GetNext__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListPCv((u8 *)arg0 + 8, 0);
         }
         if (arg1 > 0)
             ((void (*)(void *))fn_80128668)(arg0);
@@ -18685,12 +18688,12 @@ extern "C" void soundOnCallback__Q210homebutton10ControllerFP7OSAlarmP9OSContext
 extern "C" void *fn_800D0E68(void *arg0, s32 arg1, s32 arg2) {
     u8 *base = lbl_80407600;
     s32 temp_r30;
-    s32 zero = 0;
-
+    register s32 zero = 0;
+    f32 f = lbl_80560E38;
     *(s32 *)((u8 *)arg0 + 0x20) = zero;
     *(s32 *)arg0 = arg1;
     *((u8 *)arg0 + 0x1C) = zero;
-    *(f32 *)((u8 *)arg0 + 4) = lbl_80560E38;
+    *(f32 *)((u8 *)arg0 + 4) = f;
     *(s32 *)((u8 *)arg0 + 0x24) = arg2;
     *(s32 *)((u8 *)arg0 + 0x28) = zero;
     *(s32 *)((u8 *)arg0 + 0x2C) = zero;
@@ -18700,14 +18703,8 @@ extern "C" void *fn_800D0E68(void *arg0, s32 arg1, s32 arg2) {
         temp_r30 = arg1 * 0x30;
         lbl_8055DDA8[arg1] = zero;
         OSCreateAlarm((OSAlarm *)(base + temp_r30));
-        {
-            u8 *secondBase = base + 0xC0;
-            OSCreateAlarm((OSAlarm *)(secondBase + temp_r30));
-        }
-        {
-            void **slots = (void **)(base + 0x180);
-            slots[arg1] = arg0;
-        }
+        OSCreateAlarm((OSAlarm *)(base + 0xC0 + temp_r30));
+        *(void **)(base + 0x180 + arg1 * 4) = arg0;
     }
     return arg0;
 }
@@ -20542,13 +20539,13 @@ extern "C" void* fn_800D55B0(void *self, s32 arg1) {
 }
 #pragma pop
 extern "C" s32 fn_800D5640(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
-    u32 end = (u32)arg0 + 8;
     u32 node = *(u32 *)((u8 *)arg0 + 8);
+    u32 end = (u32)arg0 + 8;
     while (node != end) {
         if (node == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F4A4, 0x23D, lbl_8031F480);
         }
-        u32 next = node + 8;
+        void *next = (void *)(node + 8);
         if (node == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F4A4, 0x23D, lbl_8031F480);
         }
