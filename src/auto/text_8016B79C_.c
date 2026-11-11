@@ -449,31 +449,33 @@ extern "C" void *fn_8016BF74(void *arg0, s32 arg1) {
 #pragma cplusplus reset
 
 void *fn_8016C168(void *arg0, s32 arg1) {
-    void *temp_r30;
-    void *temp_r30_2;
+    void *child;
+    void *child2;
+
+    /* Destroy this object and its two owned children when initialized, optionally freeing itself. */
     if (arg0 != 0) {
         if (*((u8 *)arg0 + 8) != 0) {
-            temp_r30 = *(void **)arg0;
+            child = *(void **)arg0;
             *((u8 *)arg0 + 8) = 0;
-            if (temp_r30 != 0) {
-                ((s32 (*)(s32, void *))fn_8002F6AC)(*(s32 *)((u8 *)temp_r30 + 0xC), fn_8016C29C);
-                if (temp_r30 != 0) {
-                    *(s32 *)temp_r30 = 0;
-                    *((s32 *)temp_r30 + 1) = 0;
-                    *((s32 *)temp_r30 + 2) = 0;
+            if (child != 0) {
+                ((s32 (*)(s32, void *))fn_8002F6AC)(*(s32 *)((u8 *)child + 0xC), fn_8016C29C);
+                if (child != 0) {
+                    *(s32 *)child = 0;
+                    *((s32 *)child + 1) = 0;
+                    *((s32 *)child + 2) = 0;
                 }
-                fn_80128668(temp_r30);
+                fn_80128668(child);
             }
-            temp_r30_2 = *((void **)arg0 + 1);
+            child2 = *((void **)arg0 + 1);
             *(void **)arg0 = 0;
-            if (temp_r30_2 != 0) {
-                ((s32 (*)(s32, void *))fn_8002F6AC)(*(s32 *)((u8 *)temp_r30_2 + 0xC), fn_8016C25C);
-                if (temp_r30_2 != 0) {
-                    *(s32 *)temp_r30_2 = 0;
-                    *((s32 *)temp_r30_2 + 1) = 0;
-                    *((s32 *)temp_r30_2 + 2) = 0;
+            if (child2 != 0) {
+                ((s32 (*)(s32, void *))fn_8002F6AC)(*(s32 *)((u8 *)child2 + 0xC), fn_8016C25C);
+                if (child2 != 0) {
+                    *(s32 *)child2 = 0;
+                    *((s32 *)child2 + 1) = 0;
+                    *((s32 *)child2 + 2) = 0;
                 }
-                fn_80128668(temp_r30_2);
+                fn_80128668(child2);
             }
             *((void **)arg0 + 1) = 0;
         }
