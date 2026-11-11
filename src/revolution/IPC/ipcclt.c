@@ -487,6 +487,19 @@ static s32 __ios_Write(IPCRequestEx* req, const void* buf, s32 len) {
     return ret;
 }
 
+/*
+ * Write len bytes of buf to an open device without waiting for the ARM: build
+ * an IPC_REQ_WRITE request for fd, point it at buf and hand it to __ios_Ipc2()
+ * with the caller's callback.
+ *
+ * __ios_Write() converts buf to a physical address and DCFlushRange()s it, so
+ * the ARM reads what the CPU has written to it rather than a stale copy in
+ * memory. Unlike IOS_Write() this returns as soon as the request is queued -
+ * IpcReplyHandler() runs the callback with the result when the ARM answers,
+ * and the request is freed there. Returns IPC_RESULT_OK, or the IPCResult
+ * error (< 0) of whichever step failed: allocating the request, filling it
+ * in, or queueing it.
+ */
 s32 IOS_WriteAsync(s32 fd, const void* buf, s32 len, IPCAsyncCallback callback,
                    void* callbackArg) {
     IPCRequestEx* req;
