@@ -221,44 +221,33 @@ extern "C" const char lbl_80324350[];
 extern "C" const char lbl_80324344[];
 extern "C" const char lbl_80324320[];
 void nw4hbm::snd::detail::SeqSound::Shutdown() {
-    struct SoundList { void *head; void *tail; };
-    struct SeqPlayer { int unk0; struct SoundList activeList; };
-    struct LinkNode { char pad[0]; };
-    struct SeqSoundVTable {
-        virtual void m0();
-        virtual void DetachFromPlayer(int playerIndex);
-    };
-    struct SeqSoundObj { void *vtable; char pad[0xB8 - 4]; struct LinkNode link; };
-    struct SeqLoadCallback {
-        virtual void unused0();
-        virtual void unused1();
-        virtual void Invoke(int);
-    };
-
-    struct SeqSoundObj *sound = (struct SeqSoundObj *)this;
     int interrupts;
-    struct SeqPlayer *player;
+    struct SoundInstanceManager *manager;
 
-    if (*(u8 *)((u8 *)this + 0x1E8) != 0) {
-        void *cb = *(void **)((u8 *)this + 0x1EC);
-        if (cb != 0) {
-            ((struct SeqLoadCallback *)cb)->Invoke(*(int *)((u8 *)this + 0x1F0));
+    /* Shut this sequence sound down: drop a sequence-data load that is still
+     * being read in, shut the base sound down, take the sound off its
+     * player's active list, detach it from the sequence player and hand it
+     * back to the player's sound pool. */
+    if (isAsyncLoading != 0) {
+        struct SeqLoadCallback *callback = asyncCallback;
+        if (callback != 0) {
+            callback->Cancel(asyncCallbackArg);
         }
     }
     Shutdown__Q46nw4hbm3snd6detail10BasicSoundFv(this);
-    player = *(struct SeqPlayer **)((u8 *)this + 0x1E4);
+    manager = instanceManager;
     if (this == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324378, 0x86, lbl_80324350);
     interrupts = OSDisableInterrupts();
-    if (player->activeList.head == 0) {
+    if (manager->activeList.head == 0) {
         OSRestoreInterrupts(interrupts);
         return;
     }
     if (this == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324344, 0x233, lbl_80324320);
-    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(&player->activeList, &sound->link);
-    ((struct SeqSoundVTable *)this)->DetachFromPlayer(-1);
-    fn_800EC848(player, this);
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(&manager->activeList, &link);
+    ((struct SoundInterface *)this)->DetachFromPlayer(-1);
+    fn_800EC848(manager, this);
     OSRestoreInterrupts(interrupts);
 }
 
