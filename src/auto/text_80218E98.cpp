@@ -5206,8 +5206,8 @@ extern "C" void fn_802229FC(void *arg0) {
     }
 }
 
-#pragma paired reset
-#pragma paired_single reset
+#pragma push
+#pragma processor 750
 extern "C" void fn_80222A3C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     f32 spC;
     f32 sp8;
@@ -5226,6 +5226,7 @@ extern "C" void fn_80222A3C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) 
         }
     }
 }
+#pragma pop
 extern "C" void fn_80222AFC(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg4, s32 *arg5, s32 *arg6) {
     *arg3 = arg1;
     *arg4 = arg2;
