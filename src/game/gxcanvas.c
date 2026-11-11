@@ -327,27 +327,28 @@ void fn_802C3478(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
 #pragma optimize_for_size off
 #pragma use_lmw_stmw off
 #pragma inline_depth(0)
-void fn_802C356C(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
+/* Fills a clipped x0,y0-x1,y1 rectangle on lbl_8055FC00 with 32-bit pixels converted from argbColor. */
+void fn_802C356C(s32 x0, s32 y0, s32 x1, s32 y1, u32 argbColor) {
     u32 pixel;
-    s32 width, height, skip, n;
-    u32 *p;
+    s32 width, height, rowSkip, colCount;
+    u32 *pixels;
     if (x1 == x0 || y1 == y0) return;
     if (!fn_802C307C((void *)lbl_8055FC00, &x0, &y0, &x1, &y1)) return;
-    pixel = ((color >> 8) & 0xF80000) | 0xFF000000;
-    pixel = (pixel & ~0xFC00) | ((color >> 11) & 0xFC00);
+    pixel = ((argbColor >> 8) & 0xF80000) | 0xFF000000;
+    pixel = (pixel & ~0xFC00) | ((argbColor >> 11) & 0xFC00);
     width = x1 - x0;
     height = y1 - y0;
-    pixel = (pixel & ~0xF8) | ((color >> 13) & 0xF8);
-    p = (u32 *)fn_802C3060((void *)lbl_8055FC00, x0, y0);
-    skip = (*(s32 *)((u8 *)lbl_8055FC00 + 0x10) - width * 4) / 4;
+    pixel = (pixel & ~0xF8) | ((argbColor >> 13) & 0xF8);
+    pixels = (u32 *)fn_802C3060((void *)lbl_8055FC00, x0, y0);
+    rowSkip = (*(s32 *)((u8 *)lbl_8055FC00 + 0x10) - width * 4) / 4;
     do {
-        n = width;
+        colCount = width;
         do {
-            --n;
-            *p++ = pixel;
-        } while (n > 0);
+            --colCount;
+            *pixels++ = pixel;
+        } while (colCount > 0);
         --height;
-        p += skip;
+        pixels += rowSkip;
     } while (height > 0);
 }
 
