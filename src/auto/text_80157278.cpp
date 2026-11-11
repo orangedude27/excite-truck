@@ -4142,6 +4142,31 @@ extern "C" f32 lbl_80561760;
 extern "C" f32 lbl_80561788;
 extern "C" f32 lbl_8056178C;
 extern "C" f32 lbl_80561790;
+
+// The drift tracker, one of the bonus trackers above.  Besides the record
+// table and the counters they all share it keeps, on the tracker:
+//
+//   +0x270 f32    seconds the truck has spent in its current ground state
+//                 (fn_80159124 adds one frame to it, or clears it)
+//   +0x274 u8     set while the truck is sliding sideways (fn_80159124)
+//   +0x278 void*  the drift sound; 1 at its +0x4A is the stop request the
+//                 trackers write, +0x4C is cleared with it
+//
+// and reads, on the truck:
+//
+//   +0x003C Vec   the sideways axis of the truck's body
+//   +0x0118 Vec   its velocity
+//   +0x25D4 f32   the speed, |velocity|
+//   +0x2690 f32   its spin, which has to be still for a drift to count
+//
+// The globals the drift test compares those against.
+#define DRIFT_EPSILON    lbl_80558DC4[0]  // .sdata: 2^-23, the "is zero" tolerance
+#define DRIFT_MIN_SPEED  lbl_80561788     // .sdata2: 5.0f, the least speed a drift counts at
+#define DRIFT_MAX_TIME   lbl_80561760     // .sdata2: 0.5f, the most the ground timer may read
+#define DRIFT_KEEP_SLIP  lbl_8056178C     // .sdata2: 0.15f, sideways share of the speed that
+                                          // keeps a drift going ...
+#define DRIFT_START_SLIP lbl_80561790     // .sdata2: 0.35f, ... and the share that starts one
+
 #pragma push
 #pragma processor 750
 extern "C" void fn_80159624(void *arg0, void *arg1) {
