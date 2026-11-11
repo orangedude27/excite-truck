@@ -351,7 +351,7 @@ extern "C" f32 lbl_80563510;
 extern "C" void fn_80219AB4(void *, s32, s32, s32, s32, s32, s32);
 extern "C" void fn_8021D61C(void *);
 extern "C" u8 lbl_8033EB14[];
-extern "C" char lbl_8055B87C[];
+extern "C" char lbl_8055B87C;
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" void fn_801E4BEC(s32, s32, s32, s32, s32, s32);
 extern "C" u8 lbl_8033F0FC[];
@@ -2892,7 +2892,7 @@ extern "C" void fn_8021D61C(void *arg0) {
         strcpy((char *)arg0 + 0x268,
                *(char **)(*(s32 *)((u8 *)arg0 + 0x2B8) + index * 4));
     } else {
-        strcpy((char *)arg0 + 0x268, &lbl_8055B87C[0]);
+        strcpy((char *)arg0 + 0x268, (char *)&lbl_8055B87C);
     }
     fn_80219718(arg0);
     if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
