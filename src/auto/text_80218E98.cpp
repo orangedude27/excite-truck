@@ -977,14 +977,9 @@ extern "C" void fn_80219660(void *arg0) {
     x = ((Dispatch *)self)->At84();
     y = ((Dispatch *)self)->At88();
     register s32 z = ((Dispatch *)self)->At78();
-    register u32 zero = 0;
+    register s32 zero = 0;
     f32 scale = lbl_805634A4;
-    ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, f32, u32))fn_8022BAD0)(
-        *(s32 *)((u8 *)self + 0x250),
-        *(s32 *)((u8 *)self + 0x244) + b,
-        *(s32 *)((u8 *)self + 0x248) + a,
-        *(s32 *)((u8 *)self + 0x24C),
-        z, diff, y, x, scale, zero);
+    ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, f32, s32))fn_8022BAD0)(*(s32 *)((u8 *)self + 0x250), *(s32 *)((u8 *)self + 0x244) + b, *(s32 *)((u8 *)self + 0x248) + a, *(s32 *)((u8 *)self + 0x24C), z, diff, y, x, scale, zero);
 }
 #pragma scheduling on
 #pragma pop
@@ -7608,12 +7603,12 @@ extern "C" void *fn_80227F5C(void *arg0, s32 arg1) {
         s32 tmp2 = *(s32 *)((u8 *)arg0 + 0x254);
         *(s32 *)((u8 *)arg0 + 0x250) = 0;
         if (tmp2 != 0) {
-            fn_80235380(tmp2);
+            fn_80235380((void *)tmp2);
         }
         s32 tmp3 = *(s32 *)((u8 *)arg0 + 0x258);
         *(s32 *)((u8 *)arg0 + 0x254) = 0;
         if (tmp3 != 0) {
-            fn_80235380(tmp3);
+            fn_80235380((void *)tmp3);
         }
         *(s32 *)((u8 *)arg0 + 0x258) = 0;
         fn_8021915C(arg0, 0);
