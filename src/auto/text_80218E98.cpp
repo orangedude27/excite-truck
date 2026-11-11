@@ -2741,29 +2741,31 @@ void fn_8021AC24(void *, int, int, int);
 extern "C" void fn_8021CF9C(void);
 extern "C" void fn_8021D040(void) { fn_8021CF9C(); }
 
-extern "C" void *fn_8021D044(void *arg0, s32 arg1, s32 arg2, s32 arg3, const char *arg4,
-                            s32 arg5, s32 arg6, s32 arg7, s32 arg8) {
-    fn_80219568(arg0, arg1, arg2, 0, arg5, 0, 0, arg7);
-    *(s32 *)((u8 *)arg0 + 0x25C) = arg6;
-    *(void **)arg0 = lbl_8033EBA0;
-    *(s32 *)((u8 *)arg0 + 0x260) = arg7;
-    *(s32 *)((u8 *)arg0 + 0x264) = arg8;
-    *(s32 *)((u8 *)arg0 + 0x254) = arg3;
-    *(s32 *)((u8 *)arg0 + 0x258) = 0;
-    *(s32 *)((u8 *)arg0 + 0x2B8) =
-        fn_8012850C((void *)(fn_8022D1B4(arg4) * 4), lbl_8033D940);
+/* Initializes a multi-choice list UI object: sets base fields/vtable, copies the packed
+ * string options into an allocated table, selects the initial string, and computes an id. */
+extern "C" void *fn_8021D044(void *obj, s32 x, s32 y, s32 selectedIndexPtr, const char *stringList,
+                             s32 width, s32 height, s32 param7, s32 param8) {
+    fn_80219568(obj, x, y, 0, width, 0, 0, param7);
+    *(s32 *)((u8 *)obj + 0x25C) = height;
+    *(void **)obj = lbl_8033EBA0;
+    *(s32 *)((u8 *)obj + 0x260) = param7;
+    *(s32 *)((u8 *)obj + 0x264) = param8;
+    *(s32 *)((u8 *)obj + 0x254) = selectedIndexPtr;
+    *(s32 *)((u8 *)obj + 0x258) = 0;
+    *(s32 *)((u8 *)obj + 0x2B8) =
+        fn_8012850C((void *)(fn_8022D1B4(stringList) * 4), lbl_8033D940);
 
     char *text;
-    for (text = (char *)arg4; *text != 0; text += strlen(text) + 1) {
-        void **table = *(void ***)((u8 *)arg0 + 0x2B8);
-        table[(*(u32 *)((u8 *)arg0 + 0x258))++] = text;
+    for (text = (char *)stringList; *text != 0; text += strlen(text) + 1) {
+        void **table = *(void ***)((u8 *)obj + 0x2B8);
+        table[(*(u32 *)((u8 *)obj + 0x258))++] = text;
     }
 
-    fn_80219440(arg0, 0, (void *)arg3, 4);
-    fn_8021D61C(arg0);
-    *(s32 *)((u8 *)arg0 + 0x2BC) = 0;
-    *(s32 *)((u8 *)arg0 + 0x2C0) = fn_80228F40(arg1, arg2);
-    return arg0;
+    fn_80219440(obj, 0, (void *)selectedIndexPtr, 4);
+    fn_8021D61C(obj);
+    *(s32 *)((u8 *)obj + 0x2BC) = 0;
+    *(s32 *)((u8 *)obj + 0x2C0) = fn_80228F40(x, y);
+    return obj;
 }
 
 extern "C" void fn_8021D154(void *arg0) {
