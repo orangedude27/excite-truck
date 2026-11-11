@@ -368,6 +368,7 @@ void fn_80181EAC(int arg0) {
     if ((temp_f1 > temp_f30) && (temp_f1 > temp_f31))
         fn_802799EC(arg0, temp_f1 - temp_f31);
 }
+#pragma dont_inline off
 #pragma push
 #pragma small_data off
 void fn_80181F30(void) {
