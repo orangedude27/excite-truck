@@ -30,50 +30,51 @@ int __equals_dec(void *a, void *b) {
     return 0;
 }
 
-int __less_dec(void *a, void *b)
+/* Returns 1 if the decimal value in lhs is less than rhs, 0 otherwise. */
+int __less_dec(void *lhs, void *rhs)
 {
-  unsigned char *x = (unsigned char *) a;
-  unsigned char *y = (unsigned char *) b;
-  int nx;
-  int ny;
+  unsigned char *lhs_bytes = (unsigned char *) lhs;
+  unsigned char *rhs_bytes = (unsigned char *) rhs;
+  int lhs_len;
+  int rhs_len;
   int i;
-  int n;
-  unsigned char *new_var;
-  if (x[5] == 0)
+  int min_len;
+  unsigned char *rhs_len_ptr;
+  if (lhs_bytes[5] == 0)
   {
-    return y[5] != 0;
+    return rhs_bytes[5] != 0;
   }
-  if (y[5] == 0)
+  if (rhs_bytes[5] == 0)
   {
     return 0;
   }
-  if ((*((short *) (x + 2))) == (*((short *) (y + 2))))
+  if ((*((short *) (lhs_bytes + 2))) == (*((short *) (rhs_bytes + 2))))
   {
-    nx = x[4];
-    ny = y[4];
-    new_var = &y[4];
-    n = nx;
-    if (nx > ny)
+    lhs_len = lhs_bytes[4];
+    rhs_len = rhs_bytes[4];
+    rhs_len_ptr = &rhs_bytes[4];
+    min_len = lhs_len;
+    if (lhs_len > rhs_len)
     {
-      n = ny;
+      min_len = rhs_len;
     }
-    for (i = 0; i < n; i++)
+    for (i = 0; i < min_len; i++)
     {
-      if (x[i + 5] < y[i + 5])
+      if (lhs_bytes[i + 5] < rhs_bytes[i + 5])
       {
         return 1;
       }
-      if (y[i + 5] < x[i + 5])
+      if (rhs_bytes[i + 5] < lhs_bytes[i + 5])
       {
         return 0;
       }
     }
 
-    if (n == nx)
+    if (min_len == lhs_len)
     {
-      for (; i < (*new_var); i++)
+      for (; i < (*rhs_len_ptr); i++)
       {
-        if (y[i + 5] != 0)
+        if (rhs_bytes[i + 5] != 0)
         {
           return 1;
         }
@@ -82,6 +83,6 @@ int __less_dec(void *a, void *b)
     }
     return 0;
   }
-  return (*((short *) (x + 2))) < (*((short *) (y + 2)));
+  return (*((short *) (lhs_bytes + 2))) < (*((short *) (rhs_bytes + 2)));
 }
 
