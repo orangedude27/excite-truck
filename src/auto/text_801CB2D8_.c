@@ -1668,6 +1668,18 @@ int fn_801CE75C(void) {
 
 extern unsigned int fn_801CE898(void);
 extern void fn_802ADE60(void *, int);
+/* The one stat/awards manager (0x618 bytes): made by fn_801CC470, reset by
+   fn_801CC594 / fn_801CC918 and freed by fn_801CCCAC.  Its stat block starts at
+   +0x2C0; the four pointers below the block's state word are the stat objects
+   the manager owns. */
+#define sStatManager lbl_8055E884
+struct StatBlock {
+    char pad0[0x2C0];
+    s32 state;            /* 0x2C0: block state, 3 once it is done (fn_801CE75C) */
+    f32 field2C4;         /* 0x2C4 */
+    void *entrySet;       /* 0x2C8: set of 0x74-byte stat entries, freed by fn_802ADE60 */
+    void *statObjects[3]; /* 0x2CC, 0x2D0, 0x2D4: stat objects with a virtual destroy */
+};
 #pragma cplusplus on
 extern "C" void fn_801CE7A0(void) {
     class VObj {
