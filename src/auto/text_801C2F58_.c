@@ -2974,7 +2974,7 @@ void fn_801CA5A8(void) {
 extern char lbl_8055E7E0;
 extern char lbl_8055E7E1;
 extern char lbl_8055E80C;
-extern s32 lbl_8033701C;
+extern char lbl_8033701C[]; /* "intrlude.txt" */
 s32 fn_801C9708();
 s32 fn_80176780(s32, s32);
 void fn_801C9514(void);
@@ -2985,7 +2985,7 @@ s32 fn_801CB114(s32 arg0) {
     switch (arg0) {
     case 0x63: lbl_8055E80C = (u8)lbl_8055E80C == 0; break;
     case 0x72: fn_80176780(0x4200, 0); lbl_8055E7E1 = 1; break;
-    case 0x6C: fn_801CA070(&lbl_8033701C); break;
+    case 0x6C: fn_801CA070(lbl_8033701C); break;
     case 0x69: fn_801C9514(); break;
     case 0x126: fn_801C968C(-1); break;
     case 0x128: fn_801C968C(1); break;
