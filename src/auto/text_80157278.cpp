@@ -787,40 +787,24 @@ extern "C" void* fn_80157F98(void* self, s32 arg1, s32 arg2) {
 }
 #pragma small_data off
 extern "C" void *fn_80158054(void *arg0, s32 arg1, s32 arg2) {
-    struct Tail {
-        u8 pad[0x244];
-        s32 field244;
-        s32 field248;
-        f32 field24C;
-        f32 field250;
-        f32 field254;
-        s32 field258;
-        s32 field25C;
-        s32 field260;
-        s32 field264;
-        s32 field268;
-        u8 pad26C[0x70];
-        void *field2DC;
-    };
-    u8 *end;
     u8 *ptr = (u8 *)arg0 + 0x14;
     s32 zero = 0;
     *(void **)arg0 = lbl_8032F2BC;
     *(void **)((u8 *)arg0 + 8) = ptr;
     *(s32 *)((u8 *)arg0 + 0x10) = 10;
     *(s32 *)((u8 *)arg0 + 0x0C) = 0;
-    end = (u8 *)arg0 + 0x244;
     do {
         memset(ptr, 0, 4);
         ptr += 0x38;
-    } while (ptr < end);
-    ((Tail *)arg0)->field250 = lbl_80561768;
+    } while (ptr < (u8 *)arg0 + 0x244);
+    f32 f0 = lbl_80561768;
     *(s32 *)((u8 *)arg0 + 4) = arg2;
     *(s32 *)((u8 *)arg0 + 0x0C) = zero;
-    ((Tail *)arg0)->field244 = arg1;
-    ((Tail *)arg0)->field258 = 0x41206;
-    ((Tail *)arg0)->field268 = zero;
-    ((Tail *)arg0)->field248 = zero;
+    *(s32 *)((u8 *)arg0 + 0x244) = arg1;
+    *(s32 *)((u8 *)arg0 + 0x258) = 0x41206;
+    *(f32 *)((u8 *)arg0 + 0x250) = f0;
+    *(s32 *)((u8 *)arg0 + 0x268) = zero;
+    *(s32 *)((u8 *)arg0 + 0x248) = zero;
     *(void **)arg0 = lbl_8032EFA8;
     *(void **)((u8 *)arg0 + 0x2D8) = fn_802076A0(&lbl_8032EAFC, 1, arg2, 0);
     *(s32 *)((u8 *)arg0 + 0x2CC) = zero;
@@ -904,11 +888,6 @@ extern "C" char lbl_8032F184[];
 extern "C" f32 lbl_80561774;
 extern "C" f32 lbl_80561770;
 extern "C" void* fn_801582A4(void* self, void* arg1, void* arg2) {
-    struct Tail {
-        u8 pad[0x244];
-        void* arg1;
-        s32 zero;
-    };
     u8* p = (u8*)self + 0x14;
     *(void**)((u8*)self + 8) = p;
     *(void**)self = &lbl_8032F2BC;
@@ -921,12 +900,11 @@ extern "C" void* fn_801582A4(void* self, void* arg1, void* arg2) {
     *(s32*)((u8*)self + 0x248) = 0;
     *(s32*)((u8*)self + 0xC) = 0;
     *(void**)((u8*)self + 4) = arg2;
-    ((Tail*)self)->arg1 = arg1;
-    ((Tail*)self)->zero = 0;
+    *(void**)((u8*)self + 0x244) = arg1;
     *(s32*)((u8*)self + 0x268) = 0x40901;
-    *(f32*)((u8*)self + 0x24C) = lbl_80561774;
-    *(f32*)((u8*)self + 0x250) = lbl_80561750;
-    *(f32*)((u8*)self + 0x254) = lbl_80561770;
+    *(f32*)((u8*)self + 0x24C) = 30.5f;
+    *(f32*)((u8*)self + 0x250) = 1.0f;
+    *(f32*)((u8*)self + 0x254) = 305.0f;
     *(s32*)((u8*)self + 0x248) = 0;
     *(s32*)((u8*)self + 0x26C) = 0;
     *(void**)self = &lbl_8032F184;
@@ -4142,15 +4120,13 @@ extern "C" f32 lbl_80561790;
 #pragma processor 750
 extern "C" void fn_80159624(void *arg0, void *arg1) {
     if (*(void **)((u8 *)arg0 + 0x278) != 0) {
-        register u32 result;
+        u32 result;
         f32 magnitude = (f32)__fabs((f64)*(f32 *)((u8 *)arg1 + 0x2690));
         u8 enabled = *(u8 *)((u8 *)arg0 + 0x274);
-        register f32 value = *(f32 *)((u8 *)arg1 + 0x25D4);
-        if (magnitude <= lbl_80558DC4[0] &&
-            value > lbl_80561788 &&
-            *(f32 *)((u8 *)arg0 + 0x270) < lbl_80561760) {
-            register f32 dot = (f32)__fabs((f64)PSVECDotProduct((const void *)((u8 *)arg1 + 0x118),
-                                                                (const void *)((u8 *)arg1 + 0x3C)));
+        f32 value = *(f32 *)((u8 *)arg1 + 0x25D4);
+        if (magnitude <= lbl_80558DC4[0] && value > lbl_80561788 && *(f32 *)((u8 *)arg0 + 0x270) < lbl_80561760) {
+            f64 dtmp = __fabs((f64)PSVECDotProduct((const void *)((u8 *)arg1 + 0x118), (const void *)((u8 *)arg1 + 0x3C)));
+            f32 dot = (f32)dtmp;
             f32 scale = enabled != 0 ? lbl_8056178C : lbl_80561790;
             result = dot > value * scale;
         } else {
