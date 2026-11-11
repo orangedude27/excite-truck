@@ -504,11 +504,11 @@ void fn_8027B60C(void *arg0) {
 #pragma use_lmw_stmw off
 void fn_8027B690(void) {
     register long state;
-    register char *base;
-    register char *row;
     register long outer;
     register unsigned long inner;
-    long newState;
+    register char *base;
+    register char *row;
+    register long newState;
 
     state = fn_80012810();
     if (state != 0x130) {
@@ -518,27 +518,24 @@ void fn_8027B690(void) {
     }
     base = lbl_804A4380;
     outer = 0;
-outer_loop:
-    row = base;
-    inner = 0;
-first_loop:
-    ((void (*)(long, long, long))fn_8027CCB4)((long)row, outer, inner);
-    inner++;
-    row += 0xBD0;
-    if (inner < 3)
-        goto first_loop;
-    row = base + 0x2370;
-    inner = 0;
-second_loop:
-    ((void (*)(long, long, long))fn_8027CD80)((long)row, outer, inner);
-    inner++;
-    row += 0xBD0;
-    if (inner < 2)
-        goto second_loop;
-    outer++;
-    base += 0x3B10;
-    if (outer < 4)
-        goto outer_loop;
+    do {
+        row = base;
+        inner = 0;
+        do {
+            ((void (*)(long, long, long))fn_8027CCB4)((long)row, outer, inner);
+            row += 0xBD0;
+            inner++;
+        } while (inner < 3);
+        row = base + 0x2370;
+        inner = 0;
+        do {
+            ((void (*)(long, long, long))fn_8027CD80)((long)row, outer, inner);
+            inner += 1;
+            row += 0xBD0;
+        } while (2 > inner);
+        base += 0x3B10;
+        outer += 1;
+    } while (outer < 4);
     lbl_8055F650 = 1;
     newState = fn_80012810();
     if (state != newState) {
@@ -551,7 +548,7 @@ second_loop:
 #pragma pop
 void fn_8027B77C(void) {
     char *base;
-    unsigned int outer;
+    int outer;
     if (fn_80019B3C() == 0 || lbl_8055F650 != 0) {
         base = lbl_804A4380;
         outer = 0;
@@ -576,7 +573,7 @@ void fn_8027B77C(void) {
             }
             outer++;
             base += 0x3B10;
-        } while (outer < 4);
+        } while ((unsigned int)outer < 4);
         lbl_8055F650 = 0;
     }
 }
@@ -856,31 +853,31 @@ extern float lbl_805641F0;
 extern char lbl_8055C768;
 #pragma scheduling invalid_target
 void fn_8027BF38(void) {
-    long state, j, i, now;
-    state = fn_80012810();
-    if (state != 0x130) {
-        if (state != 0x134)
+    long savedMode, row, col, currentMode;
+    savedMode = fn_80012810();
+    if (savedMode != 0x130) {
+        if (savedMode != 0x134)
             fn_80012794();
         fn_80012790(0x130);
     }
     fn_8001683C(0, 0);
-    j = 0;
-    while (j < 3) {
-        i = 0;
-        while (i < fn_80012854()) {
+    row = 0;
+    while (row < 3) {
+        col = 0;
+        while (col < fn_80012854()) {
             ((long (*)(float, long, long, long, long, long, long))fn_8001BBB4)(
-                lbl_805641F0, fn_8000DA10(), i, j, (long)&lbl_8055C768, 0x1F4, 0);
-            i++;
+                lbl_805641F0, fn_8000DA10(), col, row, (long)&lbl_8055C768, 0x1F4, 0);
+            col++;
         }
-        j++;
+        row++;
     }
     fn_80016A44(0);
-    now = fn_80012810();
-    if (state != now) {
-        if (now != 0x134)
+    currentMode = fn_80012810();
+    if (savedMode != currentMode) {
+        if (currentMode != 0x134)
             fn_80012794();
-        if (state != 0x134)
-            fn_80012790(state);
+        if (savedMode != 0x134)
+            fn_80012790(savedMode);
     }
 }
 #pragma cplusplus on
@@ -1085,12 +1082,10 @@ void *fn_8027C41C(void *arg0, long arg1) {
 #pragma scheduling on
 #pragma pop
 
-#pragma push
 #pragma use_lmw_stmw off
 long fn_8027C4B4(long arg0, long arg1) {
-    long offset;
-    long i;
-    long zero;
+    register long offset;
+    register long i;
     if (arg0 != 0) {
         *(long *)(arg0 + 4) = 0;
         i = 0;
@@ -1101,34 +1096,32 @@ long fn_8027C4B4(long arg0, long arg1) {
             offset += 4;
             i++;
         }
-        zero = 0;
+        *(long *)(arg0 + 0xB00C) = 0;
         if ((void *)(arg0 + 0xB008) != 0) {
-            *(long *)(arg0 + 0xB00C) = zero;
             if ((void *)(arg0 + 0xB008) != 0) {
-                *(long *)(arg0 + 0xB008) = zero;
-                *(long *)(arg0 + 0xB00C) = zero;
-                *(long *)(arg0 + 0xB010) = zero;
+                *(long *)(arg0 + 0xB008) = 0;
+                *(long *)(arg0 + 0xB00C) = 0;
+                *(long *)(arg0 + 0xB010) = 0;
             }
         }
         if ((void *)(arg0 + 0xAF0C) != 0) {
             if ((void *)(arg0 + 0xAF0C) != 0) {
-                *(long *)(arg0 + 0xAF0C) = zero;
-                *(long *)(arg0 + 0xAF10) = zero;
-                *(long *)(arg0 + 0xAF14) = zero;
+                *(long *)(arg0 + 0xAF0C) = 0;
+                *(long *)(arg0 + 0xAF10) = 0;
+                *(long *)(arg0 + 0xAF14) = 0;
             }
         }
         if (arg0 != 0) {
             if (arg0 != 0) {
-                *(long *)arg0 = zero;
-                *(long *)(arg0 + 4) = zero;
-                *(long *)(arg0 + 8) = zero;
+                *(long *)arg0 = 0;
+                *(long *)(arg0 + 4) = 0;
+                *(long *)(arg0 + 8) = 0;
             }
         }
         if (arg1 > 0) fn_80128668((void *)arg0);
     }
     return arg0;
 }
-#pragma pop
 void fn_8027C59C(long arg0) {
     long value;
 
