@@ -270,6 +270,8 @@ end:
     return ret;
 }
 
+/* Start an asynchronous ISFS directory creation request for the given path and
+ * permissions, returning the IPC/IOS status immediately. */
 s32 ISFS_CreateDirAsync(const char* path, u32 attr, u32 ownerPerm,
                         u32 groupPerm, u32 otherPerm, FSAsyncCallback callback,
                         void* callbackArg) {
