@@ -4384,31 +4384,32 @@ void UUSB_Register(tUUSB *uusb) {
     lbl_80558FF0 = 1;
 }
 
-void UUSB_Open(tUUSB *uusb, void *cback) {
+void UUSB_Open(tUUSB *uusb, void *callback) {
     extern char lbl_803142C8[];
     extern s32 lbl_80558FF0;
-    register uusb_cb_t *control = &lbl_803BD1E0;
-    register char *report = lbl_803142C8;
-    u8 *bytes = (u8 *)control;
+    register uusb_cb_t *controlBlock = &lbl_803BD1E0;
+    register char *logBase = lbl_803142C8;
+    u8 *controlBytes = (u8 *)controlBlock;
 
-    if (control->state == 4) goto validate;
-    if (control->at_0x28 != 0) OSReport(report + 0x7F0);
+    /* Open the USB device: validate state/IDs, store callback, start I/O, reset counter. */
+    if (controlBlock->state == 4) goto validate;
+    if (controlBlock->at_0x28 != 0) OSReport(logBase + 0x7F0);
     goto done;
 
 validate:
-    if (bytes[0x1C] == 0xFF) goto bad_ids;
-    if (bytes[0x1D] != 0xFF) goto open_device;
+    if (controlBytes[0x1C] == 0xFF) goto bad_ids;
+    if (controlBytes[0x1D] != 0xFF) goto open_device;
 
 bad_ids:
-    if (lbl_803BD1E0.at_0x28 != 0) OSReport(report + 0x838);
-    if (lbl_803BD1E0.at_0x28 != 0) OSReport(report + 0x870, ((u8 *)&lbl_803BD1E0)[0x1C]);
-    if (lbl_803BD1E0.at_0x28 != 0) OSReport(report + 0x8A0, ((u8 *)&lbl_803BD1E0)[0x1D]);
+    if (lbl_803BD1E0.at_0x28 != 0) OSReport(logBase + 0x838);
+    if (lbl_803BD1E0.at_0x28 != 0) OSReport(logBase + 0x870, ((u8 *)&lbl_803BD1E0)[0x1C]);
+    if (lbl_803BD1E0.at_0x28 != 0) OSReport(logBase + 0x8A0, ((u8 *)&lbl_803BD1E0)[0x1D]);
     goto done;
 
 open_device:
     fn_8006EBAC();
-    *(void **)(bytes + 0x20) = cback;
-    bytes[0x29] = 2;
+    *(void **)(controlBytes + 0x20) = callback;
+    controlBytes[0x29] = 2;
     fn_8006EB88();
     uusb_issue_intr_read();
     uusb_issue_bulk_read();
