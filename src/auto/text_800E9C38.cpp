@@ -99,7 +99,7 @@ extern "C" void *__ct__Q46nw4hbm3snd6detail7ChannelFv(void *arg0) {
 }
 
 extern "C" int __dt__Q46nw4hbm3snd6detail14ChannelManagerFv(int arg0, int arg1) {
-    if (arg0 != 0) {
+    if (arg0 != 0 && arg0 != 0) {
         if (arg0 + 0xC != 0) {
             __dt__Q46nw4hbm2ut6detail12LinkListImplFv((void *)(arg0 + 0xC), 0);
         }
@@ -126,20 +126,20 @@ extern "C" char lbl_80322AD8[];
 extern "C" int __dt__Q46nw4hbm3snd6detail7ChannelFv(void* arg0, int arg1) {
     if (arg0 != 0) {
         if ((signed char)lbl_8055DE28 == 0) {
-            void* manager = lbl_80412778;
-            *(volatile void**)((char*)manager + 4) = 0;
-            void* head = (char*)manager + 4;
-            void* tail = (char*)manager + 0x10;
-            *(volatile void**)((char*)manager + 8) = 0;
-            *(volatile void**)((char*)manager + 0x10) = 0;
-            *(volatile void**)((char*)manager + 0x14) = 0;
+            char* manager = lbl_80412778;
+            *(volatile void**)(manager + 4) = 0;
+            char* tail = manager + 0x10;
+            char* head = manager + 4;
+            *(volatile void**)(manager + 8) = 0;
+            *(volatile void**)(manager + 0x10) = 0;
+            *(volatile void**)(manager + 0x14) = 0;
             *(volatile int*)lbl_80412778 = 0;
-            *(void**)((char*)manager + 4) = head;
-            *(void**)((char*)manager + 8) = head;
-            *(int*)((char*)manager + 0xC) = 0;
-            *(void**)((char*)manager + 0x10) = tail;
-            *(void**)((char*)manager + 0x14) = tail;
-            __register_global_object(manager, &__dt__Q46nw4hbm3snd6detail14ChannelManagerFv, lbl_8040EC78, manager, tail, head);
+            *(void**)(manager + 4) = head;
+            *(void**)(manager + 8) = head;
+            *(int*)(manager + 0xC) = 0;
+            *(void**)(manager + 0x10) = tail;
+            *(void**)(manager + 0x14) = tail;
+            ((void (*)(void *, void *, void *))__register_global_object)(manager, &__dt__Q46nw4hbm3snd6detail14ChannelManagerFv, lbl_8040EC78);
             lbl_8055DE28 = 1;
         }
         void* list = lbl_80412778;
@@ -158,12 +158,13 @@ extern float lbl_80560FC0;
 extern float lbl_80560FC4;
 extern void fn_800EB3E4(void *, void *, unsigned long, float);
 extern void fn_800EC890(void *);
-extern "C" void InitParam__Q46nw4hbm3snd6detail7ChannelFPFPQ46nw4hbm3snd6detail7ChannelQ56nw4hbm3snd6detail7Channel21ChannelCallbackStatusUl_vUl(
-    void *arg0, void (*arg1)(void *, int, unsigned long), unsigned long arg2) {
-    // Fix note: resets channel callback/timing state and initializes both embedded voice helpers.
-    int zero = 0, one = 1, sixty = 0x3C;
+extern "C" void InitParam__Q46nw4hbm3snd6detail7ChannelFPFPQ46nw4hbm3snd6detail7ChannelQ56nw4hbm3snd6detail7Channel21ChannelCallbackStatusUl_vUl(void *arg0, void (*arg1)(void *, int, unsigned long), unsigned long arg2) {
+    float a = *(volatile float *)&lbl_80560FC0;
+    int one = 1;
+    int sixty = 0x3C;
+    float b = *(volatile float *)&lbl_80560FC4;
     unsigned char ff = 0xFF;
-    float a = lbl_80560FC0, b = lbl_80560FC4;
+    int zero = 0;
     *(int *)((char *)arg0 + 0xE4) = zero;
     *(void (**)(void *, int, unsigned long))((char *)arg0 + 0xD8) = arg1;
     *(unsigned long *)((char *)arg0 + 0xDC) = arg2;
