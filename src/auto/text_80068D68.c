@@ -8143,12 +8143,11 @@ tBTM_SEC_DEV_REC *btm_sec_alloc_dev(BD_ADDR bd_addr) {
 }
 
 tBTM_SEC_DEV_REC *btm_find_dev_by_handle(UINT16 handle) {
-    u8 *entry = lbl_803C0F78 + 0x1F30;
-    s32 i, j;
-    for (i = 0; i < 4; i++) {
-        for (j = 0; j < 4; j++, entry += 0x88) {
-            if ((entry[0x76] & 0x80) && *(u16 *)(entry + 0x18) == handle) return (tBTM_SEC_DEV_REC *)entry;
-        }
+    int xx;
+    u8 *p = lbl_803C0F78 + 0x1F30;
+    for (xx = 0; xx < 16; xx++, p += 0x88) {
+        if ((p[0x76] & 0x80) && *(u16 *)(p + 0x18) == handle)
+            return (tBTM_SEC_DEV_REC *)p;
     }
     return 0;
 }
