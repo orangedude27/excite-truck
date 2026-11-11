@@ -124,7 +124,7 @@ void fn_800057BC(void) {
 #pragma cplusplus on
 #pragma push
 #pragma scheduling invalid_target
-extern "C" s32 fn_800057D0(void) {
+extern "C" void fn_800057D0(void) {
     struct Obj {
         virtual s32 v0() = 0;
         virtual s32 v1() = 0;
@@ -140,8 +140,8 @@ extern "C" s32 fn_800057D0(void) {
         virtual s32 v11() = 0;
         virtual s32 check() = 0;
     };
-    u8 *base;
-    u8 *cursor;
+    s32 *base;
+    s32 *cursor;
     s32 count, i;
     if (fn_801769A8() & 0x4000) {
         fn_800056E0(lbl_8034EEB8[0]);
@@ -165,14 +165,14 @@ extern "C" s32 fn_800057D0(void) {
         fn_800056E0(lbl_8034EEB8[23]);
         return;
     }
-    cursor = (u8 *)lbl_8034EEB8;
-    base = cursor;
     count = ((s32 *)lbl_8055D350)[5];
-    for (i = 0; i < count; cursor += 0x10, i++) {
+    cursor = lbl_8034EEB8;
+    base = cursor;
+    for (i = 0; i < count; cursor += 4, i++) {
         if (fn_80005580(i) != 0) {
-            fn_800056C8(i, *(s32 *)(base + 0x58));
+            fn_800056C8(i, base[0x58 / 4]);
         } else {
-            fn_800056C8(i, *(s32 *)(cursor + 0x1C));
+            fn_800056C8(i, cursor[0x1C / 4]);
         }
     }
 }
