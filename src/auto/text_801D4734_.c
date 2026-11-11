@@ -46,6 +46,41 @@ extern char lbl_80338D80[];
 extern float fn_801D58DC();
 extern unsigned char fn_801D592C();
 extern void *fn_801D5860();
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_801D4734(void) {
+    struct Mgr { virtual void v0(); virtual int v1(void *); virtual void v2(); virtual char *v3(void *); };
+    extern char lbl_80338460;
+    extern char lbl_804422F0[];
+    extern signed char lbl_8055E954;
+    extern float lbl_80562AD8;
+    extern void *fn_802077A4(void *, int, void *, void *);
+    extern void fn_801D5520(char *);
+    extern void *fn_8001285C(void *);
+    extern void **__AXFXGetLfoSinTable_801769CC(void);
+    char *base = &lbl_80338460;
+    void *obj;
+    void *manager;
+    Mgr *m;
+    lbl_8055E954 = 1;
+    obj = fn_802077A4(&base[0], 5, lbl_804422F0 + 8, lbl_804422F0 + 0x14);
+    *(void **)lbl_804422F0 = obj;
+    if (obj != 0) {
+        *(float *)((char *)obj + 0x6C) = lbl_80562AD8;
+    }
+    fn_801D5520(base + 0xC);
+    manager = fn_8001285C(*__AXFXGetLfoSinTable_801769CC());
+    m = *(Mgr **)((char *)manager + 0x20);
+    if (m->v1(base + 0x18) != 0) {
+        char *r = m->v3(base + 0x18);
+        fn_801D5520(r);
+    }
+}
+#pragma cplusplus reset
+#pragma pop
+
 void fn_801D47F4(void) {
     fn_801D57F0();
 }
@@ -585,7 +620,7 @@ extern "C" void fn_801D52A4(void *arg0) {
 #pragma cplusplus on
 void fn_801D5328(int arg0, int arg1) {
  struct Dummy { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual int state(); virtual void v6(); virtual int apply(int); };
- int state, count, changed, mode, offset;
+ int state, mode, changed, count, offset;
  Dummy *item;
  state = *(int *)(arg0+4);
  if (state != 1) return;
@@ -966,17 +1001,15 @@ void fn_801D5AA8(void *arg0) {
 extern void fn_801D0824(void *);
 void *fn_801D5AF0(void *arg0, int arg1) {
     int field8;
-    char *table;
-    char *table2;
+    int has_field;
 
     if (arg0 != 0) {
         field8 = *(int *)((char *)arg0 + 8);
-        table2 = lbl_80338D20 + 0x38;
-        table = lbl_80338D20;
-        *(void **)arg0 = table;
-        *(void **)((char *)arg0 + 4) = table2;
+        *(void **)arg0 = lbl_80338D20;
+        has_field = field8 != 0;
+        *(void **)((char *)arg0 + 4) = lbl_80338D20 + 0x38;
 
-        if (field8 != 0) {
+        if (has_field) {
             *(int *)((char *)arg0 + 8) = 0;
             if (arg0 != 0) {
                 fn_801D0824((char *)arg0 + 4);
@@ -1150,8 +1183,8 @@ extern "C" void fn_801D6080(void *arg0) {
 #pragma cplusplus reset
 
 #pragma push
+#pragma processor 750
 #pragma scheduling invalid_target
-#pragma paired_single off
 #pragma cplusplus on
 extern "C" void fn_801D611C(void *arg0, void *arg1, void *arg2) {
     struct Dummy {
@@ -1173,23 +1206,34 @@ extern "C" void fn_801D611C(void *arg0, void *arg1, void *arg2) {
     extern float PSVECDotProduct(float *, float *);
     extern void fn_801796CC(int, void *, int);
     Data data;
-    register float temp_f2, temp_f1, temp_f0;
-    register float dot;
-    int offset, count, valid;
+    float t0;
+    float t1;
+    float t2;
+    float dot;
+    int offset;
+    int count;
+    int valid;
+    int fid;
     void *found;
     float *transformed;
     if (*(int *)((char *)arg0 + 0x14) <= 0) return;
     found = ((Dummy *)arg1)->get();
-    if (*(int *)((char *)arg0 + 0xC) < 0) return;
-    if (found == 0) return;
-    valid = ((Dummy *)found)->find(lbl_803385D0, -1) == *(int *)((char *)arg0 + 0xC);
+    if (*(int *)((char *)arg0 + 0xC) < 0) goto is_invalid;
+    if (found == 0) goto is_invalid;
+    fid = ((Dummy *)found)->find(lbl_803385D0, -1);
+    if (fid != *(int *)((char *)arg0 + 0xC)) goto is_invalid;
+    valid = 1;
+    goto check_valid;
+is_invalid:
+    valid = 0;
+check_valid:
     if (valid == 0) return;
-    temp_f2 = *(float *)arg2;
-    temp_f1 = *((float *)arg2 + 1);
-    temp_f0 = *((float *)arg2 + 2);
-    data.input[0] = temp_f2;
-    data.input[1] = temp_f1;
-    data.input[2] = temp_f0;
+    t2 = *(float *)arg2;
+    t1 = *((float *)arg2 + 1);
+    t0 = *((float *)arg2 + 2);
+    data.input[0] = t2;
+    data.input[1] = t1;
+    data.input[2] = t0;
     transformed = (float *)((Dummy *)arg1)->transform();
     data.output[0] = transformed[0];
     data.output[1] = transformed[1];
@@ -1202,17 +1246,15 @@ extern "C" void fn_801D611C(void *arg0, void *arg1, void *arg2) {
 loop:
     {
         char *entry = (char *)*(int *)((char *)arg0 + 0x10) + offset;
-        if (dot < *(float *)(entry + 4)) goto skip;
+        if (dot < *(float *)(entry + 4)) return;
         data.value = *(int *)entry;
         fn_801796CC(10, &data, 32);
     }
-skip:
     offset += 8;
     count += 1;
 test:
     if (count < *(int *)((char *)arg0 + 0x14)) goto loop;
 }
-#pragma cplusplus reset
 #pragma pop
 
 void fn_801D628C(void *arg0) {
@@ -1318,9 +1360,8 @@ int fn_801D6630(int arg0, int arg1) {
 }
 
 #pragma push
+#pragma processor 750
 #pragma scheduling invalid_target
-#pragma paired off
-#pragma paired_single off
 #pragma cplusplus on
 extern "C" int fn_801D6678(void *out, void *object) {
     extern char lbl_80338798[];
@@ -1349,11 +1390,10 @@ extern "C" int fn_801D6678(void *out, void *object) {
         virtual unsigned char flag(char *, int);
         virtual Vec3 vector(char *);
     };
-    Dummy *obj = (Dummy *)object;
+    register Dummy *obj = (register Dummy *)object;
     float first;
     float second;
     float scale;
-
     first = obj->value(&lbl_8055ACB0, lbl_80562ADC);
     second = obj->value(&lbl_8055ACB8, lbl_80562ADC);
     scale = lbl_80562B0C;
@@ -1376,8 +1416,6 @@ extern "C" int fn_801D6678(void *out, void *object) {
     *(int *)((char *)out + 4) = 1;
     return 1;
 }
-#pragma cplusplus reset
-#pragma scheduling reset
 #pragma pop
 
 int fn_801D67D4(void) {
@@ -1608,14 +1646,17 @@ void fn_801D6C68(void *arg0) {
             *(u8 *)((u8 *)obj + 0x4C) = 0;
         }
     } else {
-        int v;
-        obj = *(void **)((u8 *)arg0 + 0x30);
-        v = 1;
-        *(u8 *)((u8 *)obj + 0x49) = v;
-        v = 3;
-        *(u8 *)((u8 *)obj + 0x4B) = 0;
-        *(u8 *)((u8 *)obj + 0x4A) = 0;
-        *(s32 *)((u8 *)arg0 + 4) = v;
+        u8 *q;
+        int a;
+        int b;
+        q = *(u8 **)((u8 *)arg0 + 0x30);
+        a = 1;
+        b = 0;
+        q[0x49] = (u8)a;
+        a = 3;
+        q[0x4B] = (u8)b;
+        q[0x4A] = (u8)b;
+        *(s32 *)((u8 *)arg0 + 4) = a;
     }
 }
 
@@ -1661,16 +1702,15 @@ extern "C" int fn_801D6DC8(void *arg0, void *arg1) {
     extern char lbl_8055ACF0;
     extern char lbl_8055ACF4;
     extern float lbl_80562B14;
-    Dummy *obj = (Dummy *)arg1;
     float initial = lbl_80562B14;
+    Dummy *obj = (Dummy *)arg1;
     char *src;
     int remaining1;
     char *dst1;
     int remaining2;
     char *dst2;
-    float result;
-    result = obj->value(&lbl_8055ACB0, initial);
-    *(float *)((char *)arg0 + 8) = result;
+
+    *(float *)((char *)arg0 + 8) = obj->value(&lbl_8055ACB0, initial);
     src = obj->get(&lbl_8055ACE8, &lbl_8055ACF0);
     dst1 = (char *)arg0 + 0xC;
     remaining1 = 0x40;
@@ -1831,10 +1871,9 @@ extern "C" int fn_801D707C(void *arg0, void *arg1) {
     char *src;
     int remaining;
     char *dst;
-    volatile int *status;
+    float second;
 
     obj = (Dummy *)arg1;
-    status = (volatile int *)((char *)arg0 + 4);
     if (obj->check(&lbl_8055AC80) == 0) {
         ((void (*)(const char *, ...))fn_802E30C8)(lbl_80338888);
         return 0;
@@ -1853,8 +1892,9 @@ copy_body:
         goto copy_limit;
 copy_done:
     *(float *)((char *)arg0 + 0x28) = obj->value(&lbl_8055ACB8, lbl_80562ADC);
-    *(float *)((char *)arg0 + 0x30) = obj->value(&lbl_8055ACB0, lbl_80562AEC);
-    *status = 1;
+    second = lbl_80562AEC;
+    *(float *)((char *)arg0 + 0x30) = obj->value(&lbl_8055ACB0, second);
+    *(int *)((char *)arg0 + 4) = 1;
     *(float *)((char *)arg0 + 0x2C) = lbl_80562ADC;
     *((char *)arg0 + 0x34) = 0;
     *(int *)((char *)arg0 + 0x38) = fn_80207848(lbl_803388C8, 1);
@@ -2807,15 +2847,11 @@ int fn_801D83DC(int arg0, int arg1) {
 }
 
 #pragma push
+#pragma use_lmw_stmw off
+#pragma processor 750
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" int fn_801D8424(void *arg0, void *arg1) {
-    extern float lbl_80562ADC;
-    extern float lbl_80562B0C;
-    extern char lbl_8055ACB0;
-    extern char lbl_8055ACB8;
-    extern char lbl_8055AD48;
-    extern int fn_8029F3BC(void);
     struct Dummy {
         virtual void v0();
         virtual void v1();
@@ -2827,30 +2863,30 @@ extern "C" int fn_801D8424(void *arg0, void *arg1) {
         virtual void v7();
         virtual float get(char *, float);
     };
+    extern float lbl_80562ADC;
+    extern float lbl_80562B0C;
+    extern char lbl_8055ACB0;
+    extern char lbl_8055ACB8;
+    extern char lbl_8055AD48;
+    extern int fn_8029F3BC(void);
     Dummy *obj = (Dummy *)arg1;
-    register float temp_f31;
-    register float temp_f1;
-    register float temp_f2;
-    register float temp_f0;
-    register int temp_r5;
-    register int temp_r0;
-    temp_f31 = obj->get(&lbl_8055ACB0, lbl_80562ADC);
-    temp_f1 = obj->get(&lbl_8055ACB8, lbl_80562ADC);
-    temp_f2 = lbl_80562B0C * temp_f31;
-    temp_f0 = lbl_80562B0C * temp_f1;
-    temp_r5 = (int)temp_f2;
-    temp_r0 = (int)temp_f0;
-    *(int *)((char *)arg0 + 8) = temp_r5;
-    *(int *)((char *)arg0 + 0xC) = temp_r0;
-    obj->set(&lbl_8055AD48, temp_r5);
-    temp_r0 = fn_8029F3BC();
-    *(int *)((char *)arg0 + 0x14) = temp_r0;
-    if (temp_r0 < 0) return 0;
+    float f1_ = obj->get(&lbl_8055ACB0, lbl_80562ADC);
+    float f2_ = obj->get(&lbl_8055ACB8, lbl_80562ADC);
+    float s1_ = lbl_80562B0C * f1_;
+    float s2_ = lbl_80562B0C * f2_;
+    int r1_ = (int)s1_;
+    int r2_ = (int)s2_;
+    *(int *)((char *)arg0 + 8) = r1_;
+    *(int *)((char *)arg0 + 0xC) = r2_;
+    obj->set(&lbl_8055AD48, r1_);
+    int st_ = fn_8029F3BC();
+    *(int *)((char *)arg0 + 0x14) = st_;
+    if (st_ < 0) return 0;
     *(int *)((char *)arg0 + 4) = 1;
     return 1;
 }
-#pragma pop
 #pragma cplusplus reset
+#pragma pop
 
 void *fn_801D8504(void) {
     return lbl_80339038;
@@ -2970,10 +3006,9 @@ extern "C" int fn_801D8634(void *out, void *obj) {
         virtual float v7(void *);
         virtual float v8(void *, float);
     };
-    float initialRate = lbl_80562ADC;
     Dummy *thing = (Dummy *)obj;
     int result;
-    *(float *)((char *)out + 0xC) = thing->v8(&lbl_8055ACB8, initialRate);
+    *(float *)((char *)out + 0xC) = thing->v8(&lbl_8055ACB8, lbl_80562ADC);
     *(float *)((char *)out + 0x14) = thing->v7(&lbl_8055ACB0);
     *(int *)((char *)out + 8) = thing->v5(lbl_803385D0);
     thing->v3(lbl_80339050);
@@ -2984,9 +3019,9 @@ extern "C" int fn_801D8634(void *out, void *obj) {
         {
             float finalRate = lbl_80562ADC;
             *(int *)((char *)out + 0x18) = 1;
+            result = 1;
             *(float *)((char *)out + 0x10) = finalRate;
         }
-        result = 1;
     }
     return result;
 }
@@ -3158,6 +3193,7 @@ test:
 #pragma cplusplus reset
 
 #pragma push
+#pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_801D89C0(void *arg0, void *arg1) {
@@ -3186,10 +3222,12 @@ extern "C" void fn_801D89C0(void *arg0, void *arg1) {
     Request *request = (Request *)arg1;
     int *output = (int *)arg0;
     NameObject *object = (NameObject *)request->getObject();
+    volatile int first;
+    int second;
     if (object == 0) return;
     if (object->find(lbl_803385D0, -1) != output[2]) return;
-    volatile int first = request->getFirst();
-    int second = request->getSecond();
+    first = request->getFirst();
+    second = request->getSecond();
     int count = output[0x28 / 4];
     Record *records = (Record *)output[0x24 / 4];
     output[0x28 / 4] = count + 1;
@@ -3198,8 +3236,8 @@ extern "C" void fn_801D89C0(void *arg0, void *arg1) {
     records[count].second = second;
     request->finish(-1, (int)&records[count], count + 1, (int)records);
 }
-#pragma pop
 #pragma cplusplus reset
+#pragma pop
 int fn_801D8AA4(void *arg0) {
     extern float lbl_80562ADC;
     return *(float *)((char *)arg0 + 0x30) < lbl_80562ADC;
