@@ -250,21 +250,30 @@ extern "C" float fn_801452E0(void *arg0, const char *arg1) {
 #pragma push
 #pragma dont_inline on
 extern "C" void fn_80145368(void *arg0, void *arg1) {
-    extern char lbl_80559DD0[];
-    extern char lbl_80559DD8[];
-    extern char lbl_80559DDC[];
+    class Obj {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual s32 f3(const char *);
+        virtual void f4();
+        virtual void f5();
+        virtual s32 f6(const char *, s32);
+        virtual f32 f7(const char *);
+    };
     extern char lbl_8032CF18[];
     extern u8 lbl_8055E208;
     extern f32 fn_801452C8(f32);
     extern f32 fn_801452D4(f32);
-    *(s32 *)arg0 = ((s32 (*)(void *, const char *))(*(void ***)arg1)[5])(arg1, lbl_80559DD0);
-    *(f32 *)((u8 *)arg0 + 4) = ((f32 (*)(void *, const char *))(*(void ***)arg1)[9])(arg1, lbl_80559DD8);
-    *(f32 *)((u8 *)arg0 + 8) = ((f32 (*)(void *, const char *))(*(void ***)arg1)[9])(arg1, lbl_80559DDC);
+    Obj *obj = (Obj *)arg1;
+    *(s32 *)arg0 = obj->f3(lbl_80559DD0);
+    *(f32 *)((u8 *)arg0 + 4) = obj->f7(lbl_80559DD8);
+    *(f32 *)((u8 *)arg0 + 8) = obj->f7(lbl_80559DDC);
     if (lbl_8055E208) {
         *(f32 *)((u8 *)arg0 + 4) = fn_801452C8(*(f32 *)((u8 *)arg0 + 4));
         *(f32 *)((u8 *)arg0 + 8) = fn_801452D4(*(f32 *)((u8 *)arg0 + 8));
     }
-        *(s32 *)((u8 *)arg0 + 0xC) = ((s32 (*)(void *, const char *, s32))(*(void ***)arg1)[8])(arg1, lbl_8032CF18, 0);
+    *(s32 *)((u8 *)arg0 + 0xC) = obj->f6(lbl_8032CF18, 0);
 }
 #pragma dont_inline reset
 #pragma pop
