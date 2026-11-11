@@ -185,19 +185,19 @@ void *fn_801D9260(int count) {
 // Start up the terrain morph / "wl model" system: build the morph group list
 // from mmorph.val's "morph_group" items (their regions resolved against
 // mregion.val), the "oml" model-set list from wlmodels.val, link the two
-// together, and load the wlmap.mod model they drive.
+// together (fn_801D91D8), and load the wlmap.mod model they drive.
 extern "C" void fn_801D9284(void) {
-    extern char lbl_80339108[];        // wlDataNames: the table/model names
-    extern void *lbl_8055AD60;         // holds the start of "oml", the item type fn_801D9654 collects
+    extern char lbl_80339108[];        // wlDataNames: the table/model names below
+    extern void *lbl_8055AD60;         // the string "oml"; only its address is passed on
     extern void *fn_80131810(void *);  // open a DTB value table by name
     extern void fn_80131818(void *);   // release a DTB value table again
     extern void fn_801D9394(void **head, void *table, const char *name, void *regionTable);
     extern void fn_801D9654(void *head, void *table, void *name, int);
     extern int fn_802C6FC0(void *name, int, int); // mrmodel: load a model
     register char *base = wlDataNames;
-    void *regionTable; // "mregion.val"
-    void *morphTable;  // "mmorph.val"
-    void *modelTable;  // "wlmodels.val"
+    void *regionTable; // "mregion.val": the morph region table
+    void *morphTable;  // "mmorph.val": the morph group table
+    void *modelTable;  // "wlmodels.val": the wl model table
     void *subTable;    // the "morph_groups" / "oml_lists" sub-table of each
 
     morphGroupList = 0;
