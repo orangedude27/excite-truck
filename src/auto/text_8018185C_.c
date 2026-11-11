@@ -2577,7 +2577,7 @@ extern void fn_8017B164(void *);
 extern void fn_801838C8(void *);
 extern int fn_801769C4(void);
 extern void fn_80181EAC(int);
-extern void fn_8018F538(void *);
+extern void fn_8018F538();
 extern void fn_80279B28(int, void *);
 extern void fn_80279C00(int, void *);
 extern void fn_8017B0B0(void);
