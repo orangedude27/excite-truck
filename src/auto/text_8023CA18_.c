@@ -331,6 +331,32 @@ void fn_8023D1FC(void *obj) {
 
 extern void fn_80208D60(int);
 extern void fn_8020A5F8(float *, float);
+
+/* Sound-options panel (vtable lbl_803415E8: deleting destructor fn_8023D134,
+ * refresh fn_8023D1FC, apply-field fn_8023D304).  Its fields 0..6 are the value
+ * pointers fn_8023D1FC registers with fn_80221EA0; fn_8023D304 pushes the field
+ * the player changed into the sound code. */
+typedef struct SoundOptions {
+    u8 pad00[0x14];
+    void *fieldList;     /* 0x14 field list fn_80221EA0 passes on */
+    f32 *effectsVolume;  /* 0x18 field 0: "effects_volume" */
+    f32 *musicVolume;    /* 0x1C field 3: music volume */
+    s32 *speakerMode;    /* 0x20 field 1: 0..2 */
+    s32 *deviceIndex;    /* 0x24 field 2: chosen sound device */
+    char *deviceName;    /* 0x28 its name, STR_N_A when there is none */
+    f32 *level;          /* 0x2C field 4: level handed to `widget` */
+    s32 f30;             /* 0x30 field 5 */
+    s32 f34;             /* 0x34 field 6 */
+    void *widget;        /* 0x38 level (+0x8) and dirty flags (+0x49..+0x4D) */
+} SoundOptions;
+
+#define sound_device_count  fn_80208D3C /* size of the sound device list */
+#define sound_device_get    fn_80208D4C /* index -> device (getName at vtable +0xC) */
+#define sound_device_select fn_80208D60 /* index -> current device */
+#define effects_volume_set  fn_80209030 /* clamped, saved as "effects_volume" */
+#define speaker_mode_set    fn_80209090 /* 0..2, else 0 */
+#define music_volume_set    fn_8020A5F8 /* f32 music volume */
+#define STR_N_A             lbl_8055BB98 /* "N/A" */
 void fn_8023D304(void *arg0, int arg1) {
     float *tmp;
     float f;
