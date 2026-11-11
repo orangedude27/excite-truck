@@ -172,32 +172,33 @@ extern const char lbl_80339A64[];
 extern const char lbl_80339A78[];
 extern char lbl_8055AF00;
 void *fn_801E6BEC(char *arg0) {
+    /* Load an animation resource by path, validate its version, and derive its base name with ".an0". */
     struct {
-        unsigned char sp8;
-        unsigned char sp9;
+        unsigned char swapEndian;
+        unsigned char isNew;
         unsigned char pad[2];
-        int spC;
-        int sp10;
-    } local;
+        int version;
+        int dataSize;
+    } loadInfo;
     char *path = arg0;
-    char *result;
+    char *animData;
 
-    local.sp10 = 0;
-    local.sp9 = 0;
-    local.sp8 = 0;
-    result = (char *)fn_8012C370(path, 0x416e696d, &local.spC, &local.sp10, &local.sp9, &local.sp8);
-    if (result == 0)
+    loadInfo.dataSize = 0;
+    loadInfo.isNew = 0;
+    loadInfo.swapEndian = 0;
+    animData = (char *)fn_8012C370(path, 0x416e696d, &loadInfo.version, &loadInfo.dataSize, &loadInfo.isNew, &loadInfo.swapEndian);
+    if (animData == 0)
         fn_802E317C(lbl_80339A64, path);
-    if ((unsigned int)local.spC != 2)
-        fn_802E317C(lbl_80339A78, path, local.spC, 2);
-    strcpy(result + 0x10, path);
+    if ((unsigned int)loadInfo.version != 2)
+        fn_802E317C(lbl_80339A78, path, loadInfo.version, 2);
+    strcpy(animData + 0x10, path);
     {
-        char *dot = fn_80029004(result + 0x10, 0x2e);
+        char *dot = fn_80029004(animData + 0x10, 0x2e);
         if (dot != 0)
             *dot = 0;
     }
-    fn_80028E00(result + 0x10, &lbl_8055AF00);
-    return result;
+    fn_80028E00(animData + 0x10, &lbl_8055AF00);
+    return animData;
 }
 
 void fn_801E6CC8(void* arg0, s8 arg1) {
@@ -325,23 +326,38 @@ void fn_801E6CD0(void *arg0, void *arg1, float farg0) {
     }
 }
 
+#pragma push
+#pragma processor 750
 void fn_801E6E9C(AnimPlayer *obj, float dt) {
     AnimData *data = obj->data;
     float time = obj->time;
     float t;
     AnimKey key;
-    u64 raw;
+    struct {
+        u32 hi;
+        u32 lo;
+    } raw;
     AnimTrack *e;
     s32 i;
 
     if (data != 0) {
+        float cZero, cOne, cDiv, cBase, cScale, cTScale, cMul;
         if (obj->stream != 0) {
             fn_8012EE80(obj->stream);
         }
+        cScale = lbl_80562D8C;
+        cBase = lbl_80562D88;
+        cMul = lbl_80562D90;
+        cDiv = lbl_80562D80;
+        cTScale = lbl_80562D84;
+        cZero = lbl_80562D78;
+        cOne = lbl_80562D7C;
         while (obj->frame < data->count) {
             if (obj->cached != obj->frame) {
                 if (obj->frame < data->inlineCount) {
-                    raw = data->keys[obj->frame];
+                    u32 *src = (u32 *)&data->keys[obj->frame];
+                    raw.lo = src[1];
+                    raw.hi = src[0];
                 } else if (fn_8012EFB0(obj->stream, &raw, 8) == 0) {
                     if (lbl_8055EAD0 == 0) {
                         fn_802E30C8(lbl_80339B48, obj->frame, fn_8012EE78(obj->stream));
@@ -352,25 +368,25 @@ void fn_801E6E9C(AnimPlayer *obj, float dt) {
                     }
                     break;
                 }
-                key.n = (s32)(raw & 0x3f) - 1;
-                CLAMP((u32)((raw >> 6) & 0x3ff) << 6);
-                key.t = lbl_80562D78 + t * lbl_80562D84;
-                if ((raw & 0x3f) != 0) {
-                    CLAMP((u32)((raw >> 16) & 0xfff) << 4);
-                    key.v[0] = lbl_80562D88 + t * lbl_80562D8C;
-                    CLAMP((u32)((raw >> 28) & 0xfff) << 4);
-                    key.v[1] = lbl_80562D88 + t * lbl_80562D8C;
-                    CLAMP((u32)((raw >> 40) & 0xfff) << 4);
-                    key.v[2] = lbl_80562D88 + t * lbl_80562D8C;
-                    CLAMP((u32)((raw >> 52) & 0xfff) << 4);
-                    key.v[3] = lbl_80562D88 + t * lbl_80562D8C;
+                key.n = (s32)(raw.lo & 0x3f) - 1;
+                CLAMPC((((raw.lo >> 6) | (raw.hi << 26)) & 0x3ff) << 6);
+                key.t = cZero + t * cTScale;
+                if ((raw.lo & 0x3f) != 0) {
+                    CLAMPC((((raw.lo >> 16) | (raw.hi << 16)) & 0xfff) << 4);
+                    key.v[0] = cBase + t * cScale;
+                    CLAMPC((((raw.lo >> 28) | (raw.hi << 4)) & 0xfff) << 4);
+                    key.v[1] = cBase + t * cScale;
+                    CLAMPC(((raw.hi >> 8) & 0xfff) << 4);
+                    key.v[2] = cBase + t * cScale;
+                    CLAMPC(((raw.hi >> 20) & 0xfff) << 4);
+                    key.v[3] = cBase + t * cScale;
                 } else {
-                    CLAMP((unsigned short)(raw >> 16));
-                    key.v[0] = lbl_80562D90 * (lbl_80562D88 + t * lbl_80562D8C);
-                    CLAMP((unsigned short)(raw >> 32));
-                    key.v[1] = lbl_80562D90 * (lbl_80562D88 + t * lbl_80562D8C);
-                    CLAMP((u32)(raw >> 48));
-                    key.v[2] = lbl_80562D90 * (lbl_80562D88 + t * lbl_80562D8C);
+                    CLAMPC(((raw.lo >> 16) | (raw.hi << 16)) & 0xffff);
+                    key.v[0] = cMul * (cBase + t * cScale);
+                    CLAMPC(raw.hi & 0xffff);
+                    key.v[1] = cMul * (cBase + t * cScale);
+                    CLAMPC(raw.hi >> 16);
+                    key.v[2] = cMul * (cBase + t * cScale);
                 }
                 obj->cache = key;
                 obj->cached = obj->frame;
@@ -390,7 +406,7 @@ void fn_801E6E9C(AnimPlayer *obj, float dt) {
             e->b[2] = key.v[2];
             e->b[3] = key.v[3];
             e->t0 = e->t1;
-            e->t1 = key.t + ((e->t1 > lbl_80562D78) ? e->t1 : lbl_80562D78);
+            e->t1 = key.t + ((e->t1 > cZero) ? e->t1 : cZero);
             obj->frame++;
         }
         time = time + dt;
@@ -399,39 +415,43 @@ void fn_801E6E9C(AnimPlayer *obj, float dt) {
             fn_801E6CD0(obj, data, lbl_80562D78);
         }
     }
-    for (i = 0; i < obj->trackCount + 1; i++) {
-        AnimTrack *k = &obj->tr[i];
-        float *o = obj->out[i];
-        float t0 = k->t0;
-        float lim = k->t1 - lbl_80562D94;
-        float s, r;
-        t0 = (t0 < lim) ? t0 : lim;
-        s = (time - t0) / (k->t1 - t0);
-        if (lbl_80562D7C < s) s = lbl_80562D7C;
-        if (!(s > lbl_80562D78)) s = lbl_80562D78;
-        r = lbl_80562D7C - s;
-        if (i > 0) {
-            float len;
-            o[0] = k->a[0] * r + k->b[0] * s;
-            o[1] = k->a[1] * r + k->b[1] * s;
-            o[2] = k->a[2] * r + k->b[2] * s;
-            o[3] = k->a[3] * r + k->b[3] * s;
-            len = (float)fn_8002F234(o[0] * o[0] + (o[1] * o[1] + (o[3] * o[3] + o[2] * o[2])));
-            len = lbl_80562D7C / len;
-            o[0] = o[0] * len;
-            o[1] = o[1] * len;
-            o[2] = o[2] * len;
-            o[3] = o[3] * len;
-        } else {
-            o[0] = k->a[0] * r + k->b[0] * s;
-            o[1] = k->a[1] * r + k->b[1] * s;
-            o[2] = k->a[2] * r + k->b[2] * s;
-            o[3] = lbl_80562D78;
+    {
+        float zero = lbl_80562D7C;
+        float lo = lbl_80562D94;
+        float zz = lbl_80562D78;
+        for (i = 0; i < obj->trackCount + 1; i++) {
+            AnimTrack *k = &obj->tr[i];
+            float *o = obj->out[i];
+            float t0 = k->t0;
+            float lim = k->t1 - lo;
+            float s, r;
+            t0 = (t0 < lim) ? t0 : lim;
+            s = (time - t0) / (k->t1 - t0);
+            if (zero < s) s = zero;
+            if (!(s > zz)) s = zz;
+            r = zero - s;
+            if (i > 0) {
+                float len;
+                o[0] = k->a[0] * r + k->b[0] * s;
+                o[1] = k->a[1] * r + k->b[1] * s;
+                o[2] = k->a[2] * r + k->b[2] * s;
+                o[3] = k->a[3] * r + k->b[3] * s;
+                len = (float)fn_8002F234(o[0] * o[0] + (o[1] * o[1] + (o[3] * o[3] + o[2] * o[2])));
+                len = zero / len;
+                o[0] = o[0] * len;
+                o[1] = o[1] * len;
+                o[2] = o[2] * len;
+                o[3] = o[3] * len;
+            } else {
+                o[0] = k->a[0] * r + k->b[0] * s;
+                o[1] = k->a[1] * r + k->b[1] * s;
+                o[2] = k->a[2] * r + k->b[2] * s;
+                o[3] = zz;
+            }
         }
     }
 }
-
-#pragma dont_inline reset
+#pragma pop
 
 void fn_801E75C8(void* arg0, s32 arg1) {
     u8 sp[0x5c];
