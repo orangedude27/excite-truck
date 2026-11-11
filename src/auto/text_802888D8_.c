@@ -847,75 +847,83 @@ extern float lbl_80564300;
 extern float lbl_80564304;
 extern float lbl_80564308;
 void fn_80289C80(int *arg0) {
+    /* Create the "small fire smoke" effect and store its handle at *arg0.
+     * The 0x8C-byte create-args block at frame.sp20 is cleared by fn_8028E61C
+     * and filled here from fixed sdata2 constants (read through volatile so the
+     * lfs order below is kept); fn_8028E2F8 builds the effect from it, naming it
+     * lbl_80348B44 and taking its texture from lbl_8055C880 ("smoke.tex").
+     * arg0 is the first of the two effect slots of the "misc smoke man" object
+     * fn_80289BE8 creates (fn_80289D94 puts "large fire smoke" in the second). */
     fn_802897E0Frame frame;
-    register float f0;
-    register float f1;
-    register float f2;
-    register float f3;
-    register float f4;
-    register float f5;
-    register float f6;
-    register float f7;
-    register float f8;
-    register float f9;
-    register float f10;
-    register float f11;
-    register float f12;
-    register float f13;
-    register int emitterNum;
-    register int zero;
+    register float negPoint75;
+    register float point75;
+    register float two;
+    register float point65;
+    register float negPoint65;
+    register float point1;
+    register float zero;
+    register float negPoint15;
+    register float three;
+    register float one;
+    register float point35;
+    register float half;
+    register float point15;
+    register float onePoint5;
+    register int emitterCount;
+    register int effectType;
     fn_8028E61C((int *)&frame.sp20);
-    f9 = *(volatile float *)&lbl_8056428C;
-    emitterNum = 0x60;
-    f10 = *(volatile float *)&lbl_80564304;
-    zero = 0;
-    f6 = *(volatile float *)&lbl_80564274;
-    f5 = *(volatile float *)&lbl_805642C8;
-    f11 = *(volatile float *)&lbl_80564284;
-    f13 = *(volatile float *)&lbl_8056427C;
-    f12 = *(volatile float *)&lbl_80564300;
-    f8 = *(volatile float *)&lbl_80564290;
-    f7 = *(volatile float *)&lbl_80564294;
-    f4 = *(volatile float *)&lbl_80564308;
-    f3 = *(volatile float *)&lbl_805642B8;
-    f2 = *(volatile float *)&lbl_80564278;
-    f1 = *(volatile float *)&lbl_805642C0;
-    f0 = *(volatile float *)&lbl_805642D8;
-    frame.sp24 = emitterNum;
-    frame.sp28 = f13;
-    frame.sp2C = f12;
-    frame.sp20 = zero;
-    frame.sp68 = f11;
+    one = *(volatile float *)&lbl_8056428C;         /* 1.0f */
+    emitterCount = 0x60;
+    point35 = *(volatile float *)&lbl_80564304;     /* 0.35f */
+    effectType = 0;
+    zero = *(volatile float *)&lbl_80564274;        /* 0.0f */
+    point1 = *(volatile float *)&lbl_805642C8;      /* 0.1f */
+    half = *(volatile float *)&lbl_80564284;        /* 0.5f */
+    onePoint5 = *(volatile float *)&lbl_8056427C;   /* 1.5f */
+    point15 = *(volatile float *)&lbl_80564300;     /* 0.15f */
+    three = *(volatile float *)&lbl_80564290;       /* 3.0f */
+    negPoint15 = *(volatile float *)&lbl_80564294;  /* -0.15f */
+    negPoint65 = *(volatile float *)&lbl_80564308;  /* -0.65f */
+    point65 = *(volatile float *)&lbl_805642B8;     /* 0.65f */
+    two = *(volatile float *)&lbl_80564278;         /* 2.0f */
+    point75 = *(volatile float *)&lbl_805642C0;     /* 0.75f */
+    negPoint75 = *(volatile float *)&lbl_805642D8;  /* -0.75f */
+    frame.sp24 = emitterCount;                      /* args+0x04: emitters */
+    frame.sp28 = onePoint5;                         /* args+0x08: 1.0f/it -> effect+0xA0 */
+    frame.sp2C = point15;
+    frame.sp20 = effectType;                        /* args+0x00: effect type */
+    frame.sp68 = half;
     frame.sp64 = 1;
-    frame.sp14 = f10;
-    frame.sp18 = f10;
-    frame.sp1C = f10;
-    frame.sp30 = f10;
-    frame.sp34 = f10;
-    frame.sp38 = f10;
-    frame.sp8 = f9;
-    frame.spC = f9;
-    frame.sp10 = f9;
-    frame.sp3C = f9;
-    frame.sp40 = f9;
-    frame.sp44 = f9;
-    frame.sp48 = f9;
-    frame.sp4C = f8;
-    frame.sp50 = f7;
-    frame.sp54 = f11;
-    frame.sp90 = f6;
-    frame.sp88 = f6;
-    frame.sp80 = f6;
-    frame.sp94 = f5;
-    frame.sp8C = f5;
-    frame.sp84 = f5;
-    frame.sp78 = f4;
-    frame.sp7C = f3;
-    frame.sp70 = f2;
-    frame.sp74 = f1;
-    frame.sp98 = f0;
-    frame.sp9C = f9;
-    *arg0 = ((int (*)(int *, const char *, int))fn_8028E2F8)((int *)&frame.sp20, lbl_80348B44, lbl_8055C880);
+    frame.sp14 = point35;
+    frame.sp18 = point35;
+    frame.sp1C = point35;
+    frame.sp30 = point35;
+    frame.sp34 = point35;
+    frame.sp38 = point35;
+    frame.sp8 = one;
+    frame.spC = one;
+    frame.sp10 = one;
+    frame.sp3C = one;
+    frame.sp40 = one;
+    frame.sp44 = one;
+    frame.sp48 = one;
+    frame.sp4C = three;
+    frame.sp50 = negPoint15;
+    frame.sp54 = half;
+    frame.sp90 = zero;
+    frame.sp88 = zero;
+    frame.sp80 = zero;
+    frame.sp94 = point1;
+    frame.sp8C = point1;
+    frame.sp84 = point1;
+    frame.sp78 = negPoint65;
+    frame.sp7C = point65;
+    frame.sp70 = two;
+    frame.sp74 = point75;
+    frame.sp98 = negPoint75;
+    frame.sp9C = one;
+    *arg0 = ((int (*)(int *, const char *, int))fn_8028E2F8)(
+        (int *)&frame.sp20, lbl_80348B44 /* "small fire smoke" */, lbl_8055C880 /* "smoke.tex" */);
 }
 
 extern char lbl_80348B58[];
