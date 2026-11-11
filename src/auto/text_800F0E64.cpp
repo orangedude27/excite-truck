@@ -4018,28 +4018,17 @@ void detail_RemoveSoundList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10B
 
 #pragma use_lmw_stmw off
 extern "C" void detail_InsertPriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *self, void *sound) {
-    register void *node = *(void **)((char *)self + 0x10);
-    register void *head = (char *)self + 0x10;
-    while (node != head) {
+    void *head = (char *)self + 0x10;
+    void *node;
+    for (node = *(void **)((char *)self + 0x10); node != head; node = *(void **)node) {
         if (node == 0)
             Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326348, 0x23D, (const char *)lbl_80326324);
-        int raw = *(unsigned char *)((char *)node - 0x54) + *(int *)((char *)node - 0x88);
-        int priority;
-        if (raw > 127) {
-            priority = 127;
-        } else {
-            priority = raw < 0 ? 0 : raw;
-        }
-        int rawSound = *(unsigned char *)((char *)sound + 0x74) + *(int *)((char *)sound + 0x40);
-        int soundPriority;
-        if (rawSound > 127) {
-            soundPriority = 127;
-        } else {
-            soundPriority = rawSound < 0 ? 0 : rawSound;
-        }
+        int priority = *(unsigned char *)((char *)node - 0x54) + *(int *)((char *)node - 0x88);
+        priority = priority > 127 ? 127 : (priority < 0 ? 0 : priority);
+        int soundPriority = *(unsigned char *)((char *)sound + 0x74) + *(int *)((char *)sound + 0x40);
+        soundPriority = soundPriority > 127 ? 127 : (soundPriority < 0 ? 0 : soundPriority);
         if (soundPriority < priority)
             break;
-        node = *(void **)node;
     }
     if (sound == 0)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326288, 0x233, (const char *)lbl_80326264);
@@ -4338,6 +4327,34 @@ extern "C" s32 fn_800FA4C4(void *arg0, s32 arg1) {
     if (result != 0) OSResumeThread(arg0);
     return result != 0;
 }
+
+s32 nw4hbm::snd::detail::SoundThread::Shutdown() {
+    register u8 *thread = (u8 *)this;
+    if (*(u8 *)(thread + 0x2394) == 0)
+        return 0;
+    if ((s8)lbl_8055DE68 == 0) {
+        volatile u32 *base = (volatile u32 *)lbl_80412CC8;
+        register void *dtor = (void *)__dt__10TitleSceneFv;
+        base[0x2388 / 4] = 0;
+        register void *object = (void *)((u8 *)base + 0x2388);
+        base[0x238C / 4] = 0;
+        base[0x2378 / 4] = 0;
+        base[0x237C / 4] = 0;
+        base[0x2384 / 4] = 0;
+        base[0x2388 / 4] = (u32)object;
+        base[0x238C / 4] = (u32)object;
+        ((volatile u8 *)base)[0x2394] = 0;
+        __register_global_object((void *)base, dtor, (void *)&lbl_80412CB8, object);
+        lbl_8055DE68 = 1;
+    }
+    if (OSSendMessage((u8 *)lbl_80412CC8 + 0x2338, (void *)2, 0) == 0)
+        return 0;
+    if (OSJoinThread((void *)thread, 0) == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326450, 0x70, lbl_80326488);
+    *(u8 *)(thread + 0x2394) = 0;
+    return 1;
+}
+
 #pragma pop
 extern "C" s32 OSJoinThread(void *, s32);
 extern "C" const char lbl_80326450[];
@@ -4865,7 +4882,7 @@ extern "C" s32 Prepare__Q46nw4hbm3snd6detail10StrmPlayerFPQ46nw4hbm3snd6detail14
     class Callback {
     public:
         virtual void f0() {}
-virtual s32 Start(void *, void *, void *, u32) { return 0; }
+        virtual s32 Start(void *, void *, void *, u32) { return 0; }
     };
     if (pool == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x5A, lbl_8032677C);
@@ -4878,21 +4895,16 @@ virtual s32 Start(void *, void *, void *, u32) { return 0; }
     *(u32 *)((char *)self + 0x434) = arg6;
     *(void **)((char *)self + 0x42C) = pool;
     s32 result = ((Callback *)callback)->Start((void *)NotifyStrmHeaderAsyncEndCallback__Q46nw4hbm3snd6detail10StrmPlayerFbPCQ56nw4hbm3snd6detail10StrmPlayer10StrmHeaderPv, self, self, arg6);
-    if (result != 2) {
-        if (result < 2) {
-            if (result != 0) {
-                if (result >= 0)
-                    ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(self);
-            }
-        }
+    if (result == 2) {
+    } else if (result >= 2) {
+    } else if (result == 0) {
+    } else if (result >= 0) {
+        ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(self);
     }
     *((u8 *)self + 0x48) = 1;
     return 1;
 }
 #pragma pop
-#pragma push
-#pragma cplusplus on
-#pragma use_lmw_stmw off
 s32 nw4hbm::snd::detail::StrmPlayer::Start() {
     u8 *self = (u8 *)this;
     u32 outerIrq = OSDisableInterrupts();
@@ -5522,19 +5534,18 @@ extern "C" void InitParam__Q46nw4hbm3snd6detail10StrmPlayerFi(void* arg0, s32 ar
 extern "C" s32 SetupPlayer__Q46nw4hbm3snd6detail10StrmPlayerFPCQ56nw4hbm3snd6detail10StrmPlayer10StrmHeader(void *, const void *);
 extern "C" void UpdateLoadingBlockIndex__Q46nw4hbm3snd6detail10StrmPlayerFQ66nw4hbm3snd6detail10StrmPlayer11LoadCommand6Status(void *, s32);
 extern "C" void StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(s32, s32, const void *, unsigned long);
-#pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
 extern "C" void Setup__Q46nw4hbm3snd6detail10StrmPlayerFPCQ56nw4hbm3snd6detail10StrmPlayer10StrmHeader(void *playerArg, const void *header) {
-    register s32 retryCount;
-    register s32 channelIndex;
-    register s32 lastMode;
     register s32 token;
+    register s32 lastMode;
+    register s32 channelIndex;
+    register void *voice;
+    register s32 retryCount;
     if (SetupPlayer__Q46nw4hbm3snd6detail10StrmPlayerFPCQ56nw4hbm3snd6detail10StrmPlayer10StrmHeader(playerArg, header) == 0) {
         ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(playerArg);
     } else {
-        retryCount = 0;
         *(s32 *)((u8 *)playerArg + 0x58) = 0;
+        retryCount = 0;
         while (retryCount < *(s32 *)((u8 *)playerArg + 0x68)) {
             UpdateLoadingBlockIndex__Q46nw4hbm3snd6detail10StrmPlayerFQ66nw4hbm3snd6detail10StrmPlayer11LoadCommand6Status(playerArg, 0);
             ++*(s32 *)((u8 *)playerArg + 0x58);
@@ -5547,15 +5558,15 @@ extern "C" void Setup__Q46nw4hbm3snd6detail10StrmPlayerFPCQ56nw4hbm3snd6detail10
         if (mode <= 2 && *(u8 *)((u8 *)playerArg + 0x11) == 0) {
             lastMode = mode - 1;
             token = OSDisableInterrupts();
-            retryCount = (s32)playerArg;
+            voice = playerArg;
             channelIndex = 0;
             while (channelIndex < *(s32 *)((u8 *)playerArg + 0x4A0)) {
                 StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(
                     *(s32 *)((u8 *)playerArg + 0x438),
                     channelIndex,
-                    *(const void **)((u8 *)retryCount + 0x4A8),
+                    *(const void **)((u8 *)voice + 0x4A8),
                     *(u32 *)((u8 *)playerArg + 0x38) + lastMode * *(u32 *)((u8 *)playerArg + 0x30));
-                retryCount += 0x38;
+                voice = (u8 *)voice + 0x38;
                 ++channelIndex;
             }
             OSRestoreInterrupts(token);
@@ -5563,8 +5574,7 @@ extern "C" void Setup__Q46nw4hbm3snd6detail10StrmPlayerFPCQ56nw4hbm3snd6detail10
         }
     }
 }
-#pragma scheduling on
-#pragma pop
+#pragma use_lmw_stmw reset
 extern "C" s32 AllocChannels__Q46nw4hbm3snd6detail10StrmPlayerFii(void *, s32, s32);
 extern "C" u32 GetSampleByByte__Q46nw4hbm3snd6detail7AxVoiceFUlQ56nw4hbm3snd6detail7AxVoice6Format(u32, u32);
 extern "C" void Setup__Q46nw4hbm3snd6detail7AxVoiceFRCQ46nw4hbm3snd6detail8WaveData(void *, const void *);
