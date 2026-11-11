@@ -187,6 +187,9 @@ extern "C" void fn_801D9284(void) {
 
 #pragma dont_inline off
 
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" void fn_801D9394(void **head, DtbManager801D9394 *manager, const char *name, int arg3) {
     struct Node {
@@ -241,7 +244,7 @@ copy_done:
         ++index;
     }
 }
-#pragma cplusplus reset
+#pragma pop
 extern const char lbl_803391A8[];
 extern const char lbl_803391B4[];
 extern float lbl_8055AD68;
