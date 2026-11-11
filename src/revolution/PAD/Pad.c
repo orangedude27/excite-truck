@@ -259,9 +259,9 @@ BOOL fn_800568C4(u32 chanMask) {
     u32 pollingMask;
 
     chanMask |= lbl_8055DB00;
+    lbl_8055DB00 = 0;
     chanMask &= ~(lbl_8055DB08 | lbl_8055DB04);
     lbl_8055DB10 |= chanMask;
-    lbl_8055DB00 = 0;
     pollingMask = lbl_8055DB10 & lbl_8055DB14;
     lbl_8055DB14 &= ~chanMask;
     lbl_8055DAFC &= ~chanMask;
