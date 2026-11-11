@@ -19187,6 +19187,30 @@ extern "C" void fn_800D1AE4(OSAlarm *arg0) {
     OSCancelAlarm((OSAlarm *)((u8 *)arg0 + 0x1A0));
 }
 
+/* ---------------------------------------------------------------------
+ * nw4hbm's remote-speaker manager (HBMRemoteSpk.cpp), called pRmtSpk by its
+ * own assertion: one object of four slots of 0x68 bytes, each with an OSAlarm
+ * of its own at 0x00, the bytes waiting to go out at 0x30, how far that run
+ * has got at 0x50/0x54, and the two flags below.  The slots are plain byte
+ * pointers through this file, so their fields are named with macros.
+ *
+ * A slot talks to the Wii Remote's speaker through WPAD's speaker control,
+ * fn_80060CC0 = WPADControlSpeaker(chan, command, callback), and the
+ * callbacks below are answered with the status that command ended with.
+ * WPAD.h cannot be included in this unit - its OSCache.h clashes with this
+ * file's own DCInvalidateRange declaration - so the two enums it needs are
+ * spelled out here (WPADSpeakerCommand and WPADResult).
+ * ------------------------------------------------------------------- */
+#define pRmtSpk                  lbl_8055DDB0 /* the RemoteSpk object */
+#define RMTSPK_SLOT_SIZE         0x68
+#define RMTSPK_SLOT_STREAMING(s) (*(u8 *)((u8 *)(s) + 0x5C)) /* 0x5C its run is being streamed out */
+#define RMTSPK_SLOT_PLAYING(s)   (*(u8 *)((u8 *)(s) + 0x62)) /* 0x62 its play command is outstanding */
+
+#define WPAD_SPEAKER_ON              1
+#define WPAD_SPEAKER_PLAY            4
+#define WPAD_ERR_NO_CONTROLLER      -1 /* nothing to talk to; give up */
+#define WPAD_ERR_COMMUNICATION_ERROR -2 /* == WPAD_ERR_BUSY: the command could not go out */
+
 extern void* OSGetAlarmUserData(void);
 extern "C" void fn_800D1AEC(void) {
     void *r3 = OSGetAlarmUserData();
@@ -20280,20 +20304,17 @@ void nw4hbm::lyt::AnimTransformBasic::SetResource(const nw4hbm::lyt::res::Animat
 }
 
 void nw4hbm::lyt::AnimTransformBasic::Bind(nw4hbm::lyt::Pane *pane, bool bind) {
-    register u8 *target;
-    register u8 *offsets;
-    register u16 i;
-    register u8 *self;
-    self = (u8 *)this;
-    target = (u8 *)pane;
-    i = 0;
-    offsets = (u8 *)*(void **)(self + 0xC);
+    register u8 *paneCopy = (u8 *)pane;
+    register u8 *offsets = (u8 *)*(void **)((u8 *)this + 0xC);
+    register u16 i = 0;
+    register bool bindCopy = bind;
+    register u8 *self = (u8 *)this;
     offsets += *(s32 *)(offsets + 0x10);
     while (i < *(u16 *)(*(u8 **)(self + 0xC) + 0xE)) {
-        u8 *entry = target + *(s32 *)(offsets + i * 4);
+        u8 *entry = *(u8 **)(self + 0xC) + *(s32 *)(offsets + i * 4);
         void *boundObject;
         if (entry[0x15] == 0) {
-            boundObject = ((PaneAnimTransformDispatch *)target)->bindPane(entry, bind);
+            boundObject = ((PaneAnimTransformDispatch *)paneCopy)->bindPane(entry, bindCopy);
             if (boundObject != 0) {
                 u8 *link = (u8 *)*(void **)(self + 0x18) + i * 0x10;
                 *(void **)(link + 8) = self;
@@ -20302,7 +20323,7 @@ void nw4hbm::lyt::AnimTransformBasic::Bind(nw4hbm::lyt::Pane *pane, bool bind) {
                     boundObject, (u8 *)*(void **)(self + 0x18) + i * 0x10);
             }
         } else {
-            boundObject = ((PaneAnimTransformDispatch *)target)->bindMaterial(entry, bind);
+            boundObject = ((PaneAnimTransformDispatch *)paneCopy)->bindMaterial(entry, bindCopy);
             if (boundObject != 0) {
                 u8 *link = (u8 *)*(void **)(self + 0x18) + i * 0x10;
                 *(void **)(link + 8) = self;
