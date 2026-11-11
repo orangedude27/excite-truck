@@ -1118,8 +1118,12 @@ void __GXSetVCD(void) {
     unsigned int count;
     unsigned int value;
     unsigned int compCount;
+    unsigned int vatPart;
     unsigned int vatCount;
+    unsigned int masked;
     unsigned int sizeCount;
+    unsigned int sizePart;
+    unsigned int countPart;
 
     *fifo8 = 8;
     *fifo8 = 0x50;
@@ -1135,13 +1139,18 @@ void __GXSetVCD(void) {
         count = (unsigned int)(-(int)flag | (int)flag) >> 31;
     }
 
-    compCount = (data[0x14 / 4] >> 15) & 0xF;
-    vatCount = (0x21 - __cntlzw(compCount)) >> 1;
-    sizeCount = 0x21 - __cntlzw(data[0x18 / 4] & 0xFFFF);
-    value = vatCount | (count << 2) | ((sizeCount << 3) & 0xFFFFFFF0);
-
+    compCount = (data[0x14 / 4] >> 13) & 0xF;
+    vatPart = __cntlzw(compCount);
+    masked = data[0x18 / 4] & 0xFFFF;
     *fifo8 = 0x10;
+    vatPart = 0x21u - vatPart;
+    sizeCount = __cntlzw(masked);
+    countPart = count << 2;
+    sizeCount = 0x21u - sizeCount;
+    vatCount = vatPart >> 1;
+    sizePart = (sizeCount << 3) & 0xFFFFFFF0u;
     *fifo32 = 0x1008;
+    value = (sizePart | vatCount) | countPart;
     *fifo32 = value;
     *(unsigned short *)((char *)data + 2) = 1;
 }
@@ -1857,10 +1866,9 @@ void GXSetDrawSync(void) {
 }
 
 void GXSetDrawSyncCallback(void) {
-    s32 interruptState = OSDisableInterrupts();
+    s32 state1 = OSDisableInterrupts();
     volatile unsigned char *fifo8 = (volatile unsigned char *)0xCC008000;
     volatile unsigned int *fifo = (volatile unsigned int *)0xCC008000;
-
     *fifo8 = 0x61;
     *fifo = 0x45000002;
     if (__GXData[0x5FC / 4] != 0) {
@@ -1876,12 +1884,14 @@ void GXSetDrawSyncCallback(void) {
     *fifo = 0;
     PPCSync();
     lbl_8055D970 = 0;
-    ((void (*)(s32))OSRestoreInterrupts)(interruptState);
-    interruptState = OSDisableInterrupts();
-    while (lbl_8055D970 == 0) {
-        OSSleepThread(&lbl_8055D968);
+    ((void (*)(s32))OSRestoreInterrupts)(state1);
+    {
+        s32 state2 = OSDisableInterrupts();
+        while (lbl_8055D970 == 0) {
+            OSSleepThread(&lbl_8055D968);
+        }
+        ((void (*)(s32))OSRestoreInterrupts)(state2);
     }
-    ((void (*)(s32))OSRestoreInterrupts)(interruptState);
 }
 
 void __GXSetGenMode(void) {
@@ -4808,33 +4818,27 @@ extern void GXSetCPUFifo(void *);
 extern char lbl_8037C108[];
 #pragma optimize_for_size off
 u32 GXEndDisplayList(void) {
-    struct DisplayListStorage {
-        unsigned char display[0x28];
-        unsigned char padding[0x58];
-        unsigned char savedGXData[0x600];
-        unsigned char oldFifo[0x28];
-    };
-    struct DisplayListStorage *fifo = (struct DisplayListStorage *)lbl_8037C108;
+    void *fifo = lbl_8037C108;
     u8 wrap;
     void *data;
     void *data2;
     int interruptState;
     unsigned int saved;
-    GXGetCPUFifo(fifo->display);
-    wrap = GXGetFifoWrap(fifo->display);
-    GXSetCPUFifo(fifo->oldFifo);
+    GXGetCPUFifo((u8 *)fifo + 0);
+    wrap = GXGetFifoWrap((u8 *)fifo + 0);
+    GXSetCPUFifo((u8 *)fifo + 0x680);
     data = __GXData;
     if (*((u8 *)data + 0x5F9) != 0) {
         interruptState = OSDisableInterrupts();
         data2 = *(unsigned int * volatile *)&__GXData;
         saved = *(unsigned int *)((u8 *)data2 + 8);
-        memcpy(data2, fifo->savedGXData, 0x600);
+        memcpy(data2, (u8 *)fifo + 0x80, 0x600);
         *(unsigned int *)((u8 *)data2 + 8) = saved;
         ((void (*)(int))OSRestoreInterrupts)(interruptState);
     }
     *((u8 *)data + 0x5F8) = 0;
     if (wrap == 0) {
-        return GXGetFifoCount(fifo->display);
+        return GXGetFifoCount((u8 *)fifo + 0);
     }
     return 0;
 }
