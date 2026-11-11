@@ -1856,7 +1856,8 @@ extern "C" s32 fn_801634F0(void *arg0) {
     return result;
 }
 
-extern "C" void fn_80163550(TutorialLevel *level, s32 goalType, s32 carIndex, s32 amount) {
+extern "C" void fn_80163550(TutorialLevel *level, s32 eventType, s32 carIndex, s32 progressValue) {
+    /* Records tutorial goal progress for the player car when an event meets a goal's type/threshold. */
     s32 offset;
     s32 i;
     s32 type;
@@ -1879,10 +1880,10 @@ loop_body:
     goal = (TutorialGoal *)((char *)level->goals + offset);
     if (goal->met == 0) {
         type = goal->type;
-        if (type == goalType ||
-            (type == 4 && goalType == 5) ||
-            (type == 11 && goalType == 12)) {
-            if (goal->target <= amount) {
+        if (type == eventType ||
+            (type == 4 && eventType == 5) ||
+            (type == 11 && eventType == 12)) {
+            if (goal->target <= progressValue) {
                 goal->met = met;
                 level->metCount = level->metCount + 1;
             }
