@@ -26,14 +26,18 @@ typedef struct {
 /* Stack block the smoke-effect creators (fn_80289154 .. fn_8028A084) fill in.
  * The nw4r::ef create-args start at sp20: fn_8028E61C clears the 0x8C bytes
  * there and fn_8028E2F8 hands them to the new effect, which copies them field
- * by field in fn_8028FD00.  Offsets into that block:
- *   +0x00 (sp20) effect type   +0x04 (sp24) emitter count (0x28 bytes each)
- *   +0x08 (sp28) value the effect caches 1.0f/it at effect+0xA0
- *   +0x10 (sp30) and +0x1C (sp3C) two three-float colour/scale triples,
- *   which the creators also store again at sp14 and sp8 (below the block)
- *   +0x24 (sp44) clamped to [1.0f, ...] by fn_8028FD00
- *   +0x44 (sp64) an int and +0x48 (sp68) a float, then +0x50 (sp70) ..
- *   +0x7C (sp9C) the effect's motion and colour parameters.
+ * by field into itself in fn_8028FD00.  Offsets into that block:
+ *   +0x00 (sp20) int   effect type; fn_8028FD00 switches on it (type 1 looks up
+ *                      the resource given at +0x84 and caches 1.0f/it at +0xAC)
+ *   +0x04 (sp24) int   emitter count; fn_8028F7AC allocates count*0x28+0x10
+ *                      bytes of 0x28-byte emitters and keeps the count at +0x98
+ *   +0x08 (sp28) float value the effect caches 1.0f/it at effect+0xA0
+ *   +0x10 (sp30) .. +0x24 (sp44) two triples (copied as words by fn_8028FD00),
+ *   which the creators fill with one repeated float each and also store again
+ *   at sp14 and sp8 - below the block, where nothing reads them
+ *   +0x34 (sp54) float clamped to [1.0f, lbl_80564420] by fn_8028FD00
+ *   +0x44 (sp64) an int (1, 5 or 6) and +0x48 (sp68) a float, then +0x50 (sp70)
+ *   .. +0x7C (sp9C) the effect's motion and colour parameters.
  * The game's own names for these fields are not known yet.
  */
 typedef struct {
@@ -356,8 +360,11 @@ int fn_80289154(int arg0) {
     register int size;
     register int two;
     register int five;
-
+    register int *fp;
+    register int *np;
     fn_8028E61C((int *)&frame.sp20);
+    fp = (int *)&frame.sp20;
+    np = (int *)&lbl_80348AE8;
     f9 = *(volatile float *)&lbl_8056428C;
     size = 0x60;
     f10 = *(volatile float *)&lbl_80564288;
@@ -375,7 +382,6 @@ int fn_80289154(int arg0) {
     f2 = *(volatile float *)&lbl_805642A4;
     f1 = *(volatile float *)&lbl_805642A8;
     f0 = *(volatile float *)&lbl_805642AC;
-
     frame.sp24 = size;
     frame.sp28 = f13;
     frame.sp2C = f12;
@@ -410,9 +416,8 @@ int fn_80289154(int arg0) {
     frame.sp74 = f5;
     frame.sp98 = f0;
     frame.sp9C = f9;
-
     return *(int *)((char *)arg0 + 0x60) =
-        fn_8028E2F8((int *)&frame.sp20, (int *)&lbl_80348AE8, lbl_8055C880, two,
+        fn_8028E2F8(fp, np, lbl_8055C880, two,
                     f1, f2, f3, f4, f5, f6, f7);
 }
 
@@ -600,6 +605,39 @@ void *__dt__Q210JASDrumSet5TPercFv_802894F4(void *arg0, int arg1) {
 
 int fn_80289554(int arg0) {
     return fn_8028967C(arg0);
+}
+
+extern float lbl_80564284, lbl_8056428C, lbl_805642B0, lbl_805642C0, lbl_805642F0;
+extern int lbl_802FA978[];
+extern void fn_802898CC(void *, int, int, int);
+int fn_80289558(int arg0, int arg1) {
+    float *e = (float *)(arg0 + arg1 * 0x14);
+    int *ei = (int *)(arg0 + arg1 * 0x14);
+    if (ei[2] >= 1) {
+        if (e[3] > lbl_805642F0 && e[0] >= lbl_8056428C) {
+            float b;
+            float c3;
+            float t;
+            float c0;
+            fn_802898CC((void *)arg0, *(int *)(arg0 + 0xA4), arg1, ei[4]);
+            e[0] -= lbl_8056428C;
+            b = lbl_805642B0;
+            c3 = e[3];
+            t = b * c3;
+            c0 = lbl_805642C0;
+            e[0] += t;
+            e[3] *= c0;
+        } else {
+            if (e[0] >= lbl_8056428C) {
+                unsigned nv = (unsigned)(ei[1] + 1);
+                ei[1] = (int)nv;
+                if (nv >= 8) ei[1] = 0;
+                fn_802898CC((void *)arg0, *(int *)(arg0 + 0xA0), arg1, lbl_802FA978[ei[1]] % ei[2]);
+                e[0] -= lbl_8056428C;
+            }
+            e[0] += lbl_80564284;
+        }
+    }
 }
 
 int fn_8028967C(int arg0) {
