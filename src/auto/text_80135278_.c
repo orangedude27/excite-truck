@@ -401,6 +401,11 @@ extern void fn_80135F4C(void *);
 extern s32 lbl_8032BE6C[];
 #pragma cplusplus on
 extern "C" void *fn_80135DC4(void *arg0, s32 arg1, s32 arg2) {
+    /* Construct/init this object: run base init, set vtable/fields to defaults,
+       resolve a default resource via fn_80156A40/f0 when arg2 is 0, then if the
+       virtual setup (f1) succeeds either initialize the field50 buffer from data
+       at arg0+0x2C (count = *(s32*)(p+0x18) >> 16, +2 extra) when arg1 != 0 or
+       clear those fields, and finally run fn_80135F4C. */
     struct Dummy {
         virtual s32 f0(s32);
         virtual s32 f1(s32);
@@ -476,20 +481,22 @@ void fn_80135F64(int arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
  {
   Unk_80135278 *obj=(Unk_80135278 *)arg0;
   volatile float *v=(volatile float *)obj;
-  Unk_80135278 *p=(Unk_80135278 *)obj->unk_4;
-  float a,b,c,d,e,f,g,h,z;
-  a=-v[4]; z=lbl_80561320;
+  Unk_80135278 *p;
+  float a,z,c,e,d,f,g,h,b;
+  float t = v[4];
+  a = -t; z=lbl_80561320;
+  p=(Unk_80135278 *)obj->unk_4;
   obj->unk_44=z;
   b=v[6];
   obj->unk_4c=z;
   c=v[7]; d=*(volatile float *)((char *)p+0x18); e=*(volatile float *)((char *)p+0x1c);
-  a=a*c;
+  a*=c;
   f=v[2]; g=v[5];
-  d=d*f;
+  d*=f;
   obj->unk_5c=0;
   h=g*b;
   obj->unk_60=0;
-  e=e+d;
+  e+=d;
   a=h+a;
   obj->unk_48=e;
   obj->unk_40=a;
@@ -740,27 +747,27 @@ void fn_80136594(void *arg0, s32 arg1, s32 arg2) {
 #pragma scheduling invalid_target
 float fn_801365C4(Unk_80135278 *a, Unk_80135278 *b) {
     s32 same, offset, pos, count, i, j;
-    unsigned long length;
-    Unk_80135278 *p;
-    void *data;
+    s32 length;
+    s32 p_data;
+    s32 p;
     float value, result;
-    data = (void *)a->unk_2c;
-    if (data == 0 || b->unk_4 == 0 || a->unk_4 == 0 || b->unk_54 != a->unk_54)
+    p_data = a->unk_2c;
+    if (p_data == 0 || b->unk_4 == 0 || a->unk_4 == 0 || b->unk_54 != a->unk_54)
         return lbl_80561320;
-    p = (Unk_80135278 *)a->unk_4;
-    same = p == (Unk_80135278 *)b->unk_4;
+    p = a->unk_4;
+    same = (void *)p == (void *)b->unk_4;
     offset = ((-same | same) >> 31) - 1;
-    pos = *(s32 *)((char *)p + 0x10);
+    pos = *(s32 *)(p + 0x10);
     if (a->unk_34 != 0) {
-        length = *(unsigned long *)((char *)data + 0x18);
-        pos = (length + (pos - a->unk_34)) % length;
+        length = *(s32 *)(p_data + 0x18);
+        pos = ((unsigned long)length + (pos - a->unk_34)) % (unsigned long)length;
     }
     count = a->unk_54;
     i = ((pos >> 16) + (count + offset)) % count;
     j = (i + 1) % count;
-    value = a->unk_8 * (b->unk_50[j] - b->unk_50[i]) + b->unk_50[i];
+    value = b->unk_50[i] + a->unk_8 * (b->unk_50[j] - b->unk_50[i]);
     if (same)
-        result = a->unk_8 * (a->unk_50[j] - a->unk_50[i]) + a->unk_50[i];
+        result = a->unk_50[i] + a->unk_8 * (a->unk_50[j] - a->unk_50[i]);
     else
         result = lbl_8055E3C8;
     return result - value;
