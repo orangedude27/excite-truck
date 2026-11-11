@@ -500,6 +500,7 @@ s32 IOS_WriteAsync(s32 fd, const void* buf, s32 len, IPCAsyncCallback callback,
     return ret;
 }
 
+/* Issues a synchronous IPC write request for the given file descriptor and buffer. */
 s32 IOS_Write(s32 fd, const void* buf, s32 len) {
     IPCRequestEx* req;
     s32 ret = __ios_Ipc1(fd, IPC_REQ_WRITE, NULL, NULL, &req);
