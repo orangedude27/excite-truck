@@ -101,6 +101,13 @@ public:
     virtual void d9();
     virtual void d10();
 };
+class Vt30_801944C0 {
+public:
+    virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+    virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+    virtual void d8(); virtual void d9(); virtual void d10();
+    virtual void v30(int);
+};
 #pragma cplusplus reset
   
   extern unsigned char lbl_8055A4B8[8];
@@ -892,6 +899,7 @@ extern void fn_80193CD4(void *);
 extern unsigned int lbl_8055E540;
 extern float lbl_805621A4;
 extern char lbl_803332CC[];
+#pragma dont_inline on
 void fn_801944C0(void *arg0) {
     void *obj;
     obj = *(void **)((char *)arg0 + 0x288);
@@ -900,15 +908,15 @@ void fn_801944C0(void *arg0) {
         if (*(float *)((char *)arg0 + 0x1EC) < lbl_80562144)
             *(float *)((char *)arg0 + 0x1EC) = *(float *)((char *)arg0 + 0x26C);
         switch (lbl_8055E540) {
+        case 2:
+            fn_8018AF04(*(void **)((char *)arg0 + 0x294));
+            break;
         case 1:
             if ((*(int *)((char *)arg0 + 0x2D0) & 0x200) == 0)
                 ((void (*)(void *, const char *))fn_801945F8)(arg0, lbl_803332CC);
             break;
         case 0:
             fn_80193CD4(arg0);
-            break;
-        case 2:
-            fn_8018AF04(*(void **)((char *)arg0 + 0x294));
             break;
         }
         obj = *(void **)((char *)arg0 + 0x28C);
@@ -917,7 +925,7 @@ void fn_801944C0(void *arg0) {
         *(float *)((char *)arg0 + 0x1EC) = lbl_805621A4;
     }
 }
-
+#pragma dont_inline off
 void fn_80194590(void *arg0) {
     int v;
     if (*(int *)((char *)arg0 + 0x260) == 0) {
@@ -3042,11 +3050,12 @@ void *fn_80198DD0(void *arg0, int arg1) {
         scan = table->items;
         i = 0;
         loopCount = table->count;
+        table = 0;
         for (; loopCount > 0; loopCount--) {
             if (*scan == arg0) {
-                count = table->count - 1;
-                table->count = count;
-                table->items[i] = table->items[count];
+                count = ((struct Table *)lbl_804349E0)->count - 1;
+                ((struct Table *)lbl_804349E0)->count = count;
+                ((struct Table *)lbl_804349E0)->items[i] = ((struct Table *)lbl_804349E0)->items[count];
             } else {
                 scan++;
                 i++;
