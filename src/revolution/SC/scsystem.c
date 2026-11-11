@@ -1031,6 +1031,7 @@ _exit:
 }
 
 BOOL SCFindU8Item(u8* dst, SCItemID id) {
+    /* Read an 8-bit (unsigned byte) System Config item's value by ID into *dst. */
     return SCFindIntegerItem(dst, id, SC_ITEM_BYTE);
 }
 
