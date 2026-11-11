@@ -640,14 +640,16 @@ struct S8024D0EC {
     unsigned char unk48;
 };
 
+#pragma scheduling invalid_target
 void fn_8024D0EC(struct S8024D0EC *arg0) {
     float x, y;
     char buf[0x18];
     int count;
     int scale;
     float w;
+    float temp2;
     float temp;
-
+    float sx, sy;
     fn_80230C30(&x, &y, arg0->unk4, arg0->unk8);
     if (arg0->unk48 != 0) {
         arg0->unk38 = -1;
@@ -655,16 +657,19 @@ void fn_8024D0EC(struct S8024D0EC *arg0) {
         scale = arg0->unk10;
         arg0->unk38 = 0xFF000000;
         w = fn_8023293C(arg0->unk34, arg0->unk2C, arg0->unk44);
-        fn_80230924((void *)-1, x, y, x + arg0->unk40 * w, y - (float)scale, lbl_80563940);
+        temp2 = arg0->unk40 * w;
+        fn_80230924((void *)-1, x, y, x + temp2, y - (float)scale, lbl_80563940);
     }
-    fn_80232BA4(arg0->unk18, arg0->unk34, arg0->unk38, arg0->unk3C, x, y, arg0->unk40, lbl_80563930, arg0->unk44);
+    sy = y;
+    sx = x;
+    fn_80232BA4(arg0->unk18, arg0->unk34, arg0->unk38, arg0->unk3C, sx, sy, arg0->unk40, lbl_80563930, arg0->unk44);
     count = arg0->unk30;
     sprintf(buf, &lbl_8055C08C, count, count, arg0->unk2C);
     w = fn_8023293C(arg0->unk34, buf, arg0->unk44);
     temp = x + arg0->unk40 * w;
     fn_80230924((void *)-0x2FC1, temp - lbl_80563930, y, lbl_80563930 + temp, y - (float)arg0->unk10, lbl_80563940);
 }
-
+#pragma scheduling on
 extern float lbl_80563948, lbl_80563944, lbl_8056394C;
 extern char lbl_8055C094;
 extern char lbl_80343F38[], lbl_80343F20[];
