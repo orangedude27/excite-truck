@@ -27007,6 +27007,7 @@ void WUDStoredLinkKeyCallback(void *msg) {
 
 extern u8 lbl_803130C8[];
 extern u8 lbl_803935C8[];
+/* BTM power-manager callback: logs the transition, locates the device record for the address, updates its power/state byte (0x59) for success/timeout results, and logs the device. */
 void WUDPowerManagerCallback(u8 *addr, s32 result, s32 unused, s32 arg) {
     u8 *strings = lbl_803130C8;
     u8 *dev;
