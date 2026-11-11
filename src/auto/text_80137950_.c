@@ -51,33 +51,34 @@ extern char lbl_80559C18, lbl_80559C20, lbl_80559C28, lbl_80559C30;
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_80137A18(void) {
-    struct ListDummy { virtual void v0(); virtual void *get(int); };
-    struct ItemDummy {
+    /* Load "car_wid"/"car_len" for the current league's "Info" entry from "<name>.val". */
+    struct ValList { virtual void v0(); virtual void *get(int); };
+    struct ValItem {
         virtual const char *getName();
         virtual void f1(); virtual void f2(); virtual void f3();
         virtual void f4(); virtual void f5(); virtual void f6();
         virtual float getF(const char *);
     };
-    char name[0x100];
-    char *result = (char *)fn_801379CC();
-    void *list;
+    char valPath[0x100];
+    char *leagueData = (char *)fn_801379CC();
+    void *valList;
     int index;
     void *item;
-    const char *item_name;
-    sprintf(name, (const char *)(void *)&lbl_80559C18, result + 8);
-    list = fn_80131808(name);
+    const char *itemName;
+    sprintf(valPath, (const char *)(void *)&lbl_80559C18, leagueData + 8);
+    valList = fn_80131808(valPath);
     index = 0;
     for (;;) {
-        item = ((ListDummy *)list)->get(index++);
+        item = ((ValList *)valList)->get(index++);
         if (item == 0)
             break;
-        item_name = ((ItemDummy *)item)->getName();
-        if (stricmp(item_name, (const char *)(void *)&lbl_80559C20) == 0) {
-            *(float *)result = ((ItemDummy *)item)->getF((const char *)(void *)&lbl_80559C28);
-            *(float *)(result + 4) = ((ItemDummy *)item)->getF((const char *)(void *)&lbl_80559C30);
+        itemName = ((ValItem *)item)->getName();
+        if (stricmp(itemName, (const char *)(void *)&lbl_80559C20) == 0) {
+            *(float *)leagueData = ((ValItem *)item)->getF((const char *)(void *)&lbl_80559C28);
+            *(float *)(leagueData + 4) = ((ValItem *)item)->getF((const char *)(void *)&lbl_80559C30);
         }
     }
-    fn_80131818(list);
+    fn_80131818(valList);
 }
 #pragma cplusplus reset
 #pragma scheduling on
