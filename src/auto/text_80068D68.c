@@ -13450,31 +13450,32 @@ void *arg0;
         GKI_enqueue((BUFFER_Q *)(lbl_803C0A50 + 0x64), msg);
 }
 
-void btu_hcif_connection_comp_evt(u8 *p) {
+/* Handle HCI Connection Complete event: dispatch ACL links to security/L2CAP and SCO links to SCO manager. */
+void btu_hcif_connection_comp_evt(u8 *p_event) {
     u8 status;
     u16 handle;
     BD_ADDR bda;
     u8 link_type;
     u8 enc_mode;
-    tBTM_ESCO_DATA data;
+    tBTM_ESCO_DATA esco_data;
 
-    status = p[0];
-    handle = (u16)((p[1] + (p[2] << 8)) & 0x0fff);
-    bda[5] = p[3];
-    bda[4] = p[4];
-    bda[3] = p[5];
-    bda[2] = p[6];
-    bda[1] = p[7];
-    bda[0] = p[8];
-    link_type = p[9];
-    enc_mode = p[10];
+    status = p_event[0];
+    handle = (u16)((p_event[1] + (p_event[2] << 8)) & 0x0fff);
+    bda[5] = p_event[3];
+    bda[4] = p_event[4];
+    bda[3] = p_event[5];
+    bda[2] = p_event[6];
+    bda[1] = p_event[7];
+    bda[0] = p_event[8];
+    link_type = p_event[9];
+    enc_mode = p_event[10];
     if (link_type == 1) {
         btm_sec_connected(bda, handle, status, enc_mode);
         l2c_link_hci_conn_comp(status, handle, bda);
     } else {
-        memset(&data, 0, 0xE);
-        memcpy(data.bd_addr, bda, 6);
-        btm_sco_connected(status, bda, handle, &data);
+        memset(&esco_data, 0, 0xE);
+        memcpy(esco_data.bd_addr, bda, 6);
+        btm_sco_connected(status, bda, handle, &esco_data);
     }
 }
 
