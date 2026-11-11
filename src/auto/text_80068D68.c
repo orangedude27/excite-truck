@@ -20959,6 +20959,7 @@ typedef struct t_rfc_mcb_view {
 #define RFC_MX_EVENT_START_RSP      7  /* our start request finished; status word in p_data */
 #define RFC_MX_EVENT_DISC_IND       14 /* the L2CAP link under the multiplexer went down */
 #define RFCOMM_MX_DLCI              0  /* DLCI of the multiplexer control channel */
+#define RFCOMM_MIN_OFFSET           5  /* rfcdefs.h: ctrl 2, len 1 or 2 bytes, credit 1 byte */
 #define rfc_cb_trace_level          (lbl_803C4828[0x414]) /* RFCOMM_TRACE_LEVEL_* */
 
 extern void rfc_mx_sm_state_idle(void *, s32, void *);
