@@ -69,9 +69,7 @@ struct DtbItem801D9394 {
 struct DtbTable {
     virtual void *get(const char *);
 };
-struct Getter801D9284 {
-    virtual void *get(const char *);
-};
+
 #pragma cplusplus reset
 extern unsigned char lbl_8055E968;
 extern void *lbl_8055E96C;
