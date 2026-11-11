@@ -18465,6 +18465,21 @@ extern "C" void draw__Q310homebutton3gui13PaneComponentFv(void *arg0) {
 }
 #pragma cplusplus reset
 
+/* nw4r::lyt::Pane, as far as the visibility walk below cares: the link to the
+ * pane it sits inside, and the flag byte that says whether it is shown. */
+#define LYT_PANE_PARENT(p)      (*(void **)((u8 *)(p) + 0x0C))
+#define LYT_PANE_FLAGS(p)       (((u8 *)(p))[0xCF])
+#define LYT_PANE_SHOWN          1U                          /* LYT_PANE_FLAGS bit 0 */
+
+/* The two Pane accessors the compiler inlines into that walk. */
+#define LytPaneIsShown          fn_800D0AA8                 /* LYT_PANE_FLAGS(p) & LYT_PANE_SHOWN */
+#define LytPaneParent           fn_800D0AB4                 /* LYT_PANE_PARENT(p) */
+
+/* homebutton::gui::PaneComponent: the object drawn/queried through its vtable,
+ * and the nw4r::lyt::Pane it stands for. */
+#define PANE_COMP_DRAWEE(c)     (*(void **)((u8 *)(c) + 0x28))
+#define PANE_COMP_PANE(c)       (*(void **)((u8 *)(c) + 0x2C))
+
 extern "C" s32 fn_800D0AA8(void *pane);
 extern "C" s32 fn_800D0AB4(void *pane);
 /* Returns 1 if the pane and its parent chain (via child link at +0xC) are marked visible. */
