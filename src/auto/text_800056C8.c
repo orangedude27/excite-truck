@@ -530,10 +530,9 @@ extern "C" void fn_80006110(void *arg0) {
     extern u8 lbl_802FB69C[];
     f32 threshold;
     s32 flag;
-    register s32 *settings;
-    register s32 index;
+    s32 *settings;
+    s32 index;
     f32 f2;
-
     threshold = lbl_8056011C;
     flag = 0;
     settings = (s32 *)lbl_8055D350;
@@ -546,8 +545,8 @@ extern "C" void fn_80006110(void *arg0) {
     }
     if (flag == 0) {
         if (fn_80005564() == 0) {
-            register s32 *entries = (s32 *)lbl_8034EEB8;
-            register s32 *settings2 = (s32 *)lbl_8055D350;
+            s32 *settings2 = (s32 *)lbl_8055D350;
+            s32 *entries = (s32 *)lbl_8034EEB8;
             s32 index2 = settings2[7];
             s32 *p = entries + index2 * 4;
             void *obj = *(void **)(p + 7);
@@ -1268,9 +1267,7 @@ extern "C" void fn_800070DC(void) {
     u8 *cursor;
     s32 i;
     s32 zero;
-    register f32 factor = lbl_80560130;
-
-    ((void (*)(s32, f32))fn_80209190)(lbl_8055D354, factor);
+    fn_80209190(lbl_8055D354, 1.0f);
     base = lbl_8034EEB8;
     ((Item *)base[3])->dispatch();
     ((Item *)*(void **)((u8 *)base + 0x5C))->dispatch();
@@ -1284,7 +1281,6 @@ extern "C" void fn_800070DC(void) {
     if (lbl_8034EEB8[1] != 0) {
         ((Item *)lbl_8034EEB8[1])->dispatch();
     }
-
     cursor = (u8 *)lbl_8034EEB8;
     i = 0;
     zero = 0;
@@ -1296,7 +1292,6 @@ extern "C" void fn_800070DC(void) {
         cursor += 0x10;
         i++;
     }
-
     fn_8001DEA8();
     fn_80011A50();
     fn_80005464();
