@@ -4988,22 +4988,11 @@ void fn_80070FA4(void *arg0, const void *arg1) {
 }
 
 s32 bdcmp(u8 *arg0, u8 *arg1) {
-    u8 *p0;
-    u8 *p1;
-    if (arg0[0] != arg1[0]) return -1;
-    if (arg0[1] != arg1[1]) return -1;
-    p0 = arg0;
-    p1 = arg1;
-    p0 += 2;
-    p1 += 2;
-    if (p0[0] != p1[0]) return -1;
-    if (p0[1] != p1[1]) return -1;
-    if (p0[2] != p1[2]) return -1;
-    if (p0[3] == p1[3]) {
-        return 0;
-    } else {
-        return -1;
+    int i;
+    for (i = 0; i < 6; i++) {
+        if (arg0[i] != arg1[i]) return -1;
     }
+    return 0;
 }
 
 void fn_80071078(s32 arg0) { *(s32 *)(lbl_803C0AD8 + 0x80) = arg0; }
@@ -15843,7 +15832,7 @@ u8 HID_HostWriteDev(u8 dev_handle, u8 t_type, u8 param,
 
 u8 HID_HostCloseDev(u8 dev_handle) {
     extern u8 hidh_conn_disconnect(u32);
-    register tHID_HOST_DEV_VIEW *devices = (tHID_HOST_DEV_VIEW *)lbl_803C3C38;
+    tHID_HOST_DEV_VIEW *devices = (tHID_HOST_DEV_VIEW *)lbl_803C3C38;
     if (lbl_803C3C38[0x400] == 0) {
         return 1;
     }
@@ -19491,16 +19480,19 @@ extern void fn_8007093C(u32, void *);
 extern char lbl_80319174[];
 void l2cu_send_peer_info_rsp(void *arg0, s32 arg1, u16 arg2) {
     void *p;
-    u8 flag = 1;
+    extern void *l2cu_build_header(u16, u8, u8, s32);
+    extern void l2c_link_check_send_pkts(void *, u8, void *, u8);
+    extern void fn_8007093C(u32, void *);
+    extern char lbl_80319174[];
     p = l2cu_build_header(*(u16 *)((u8 *)arg0 + 0x28), 4, 0xb, arg1);
     if (p == 0) {
         if (lbl_803C4040[0] >= 2) fn_8007093C(0x80001, lbl_80319174);
     } else {
         *(u8 *)((u8 *)p + 0x14) = arg2;
         *((u8 *)p + 0x15) = arg2 >> 8;
-        *((u8 *)p + 0x16) = flag;
+        *((u8 *)p + 0x16) = 1;
         *((u8 *)p + 0x17) = 0;
-        l2c_link_check_send_pkts(arg0, 0, p, flag);
+        ((void (*)(void *, u8, void *))l2c_link_check_send_pkts)(arg0, 0, p);
     }
 }
 
