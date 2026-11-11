@@ -1543,23 +1543,25 @@ extern char lbl_8032D1A4[];
 
 void fn_80145B94(void *, const char *);
 extern "C" void fn_801473F8(void *arg0, s32 arg1, const char *format, ...) {
-    class V {
+    /* Format text and apply it to the UI element returned by arg0's vtable slot 1.
+     * Warns if the formatted string reaches the 0x200-byte buffer limit. */
+    class UIElementAccessor {
     public:
         virtual void f0();
-        virtual void *f1();
+        virtual void *getElement();
     };
-    char buffer[0x200];
+    char textBuffer[0x200];
     va_list args;
-    void *result = ((V *)arg0)->f1();
-    if (result != 0) {
+    void *element = ((UIElementAccessor *)arg0)->getElement();
+    if (element != 0) {
         va_start(args, format);
-        vsprintf(buffer, format, args);
+        vsprintf(textBuffer, format, args);
         va_end(args);
-        if (strlen(buffer) >= 0x200) {
-            s32 length = strlen(buffer);
-            fn_802E317C(lbl_8032D1A4, length, format);
+        if (strlen(textBuffer) >= 0x200) {
+            s32 textLength = strlen(textBuffer);
+            fn_802E317C(lbl_8032D1A4, textLength, format);
         }
-        fn_80145B94(result, (u32)buffer);
+        fn_80145B94(element, (u32)textBuffer);
     }
 }
 
