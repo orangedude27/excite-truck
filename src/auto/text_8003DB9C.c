@@ -2956,62 +2956,62 @@ typedef struct {
 } GXTexCopyData;
 #define GXRegs (*(GXTexCopyData *)__GXData)
 
-void GXCopyTex(u32 width, s32 clear) {
-    s32 changed;
-    u32 value;
+void GXCopyTex(void *dest, s32 clear) {
+    s32 changePeCtrl;
+    u32 reg;
     if (clear != 0) {
-        u32 marker = 0x61;
-        u32 a;
-        a = __GXData[0x228 / 4] | 0xF;
-        *(volatile unsigned char *)0xCC008000 = marker;
-        *(volatile unsigned int *)0xCC008000 = a;
-        value = __GXData[0x220 / 4];
-        *(volatile unsigned char *)0xCC008000 = marker;
-        *(volatile unsigned int *)0xCC008000 = value & 0xFFFFFFFC;
+        u32 marker = 0x61;   /* GP_RAS_REG: write one BP register */
+        u32 zmode;
+        zmode = GXRegs.zmode | 0xF;             /* depth test and write always on */
+        GXCopyWGFifo.u8 = marker;
+        GXCopyWGFifo.u32 = zmode;
+        reg = GXRegs.cmode0;
+        GXCopyWGFifo.u8 = marker;
+        GXCopyWGFifo.u32 = reg & 0xFFFFFFFC;    /* colour and alpha compare off */
     }
-    changed = 0;
-    value = __GXData[0x22C / 4];
-    if (*((unsigned char *)__GXData + 0x250) != 0 && (value & 7) != 3) {
-        changed = 1;
-        value = __rlwimi(value, 3, 0, 29, 31);
+    changePeCtrl = 0;
+    reg = GXRegs.peCtrl;
+    if (GXRegs.cpTexZ != 0 && (reg & 7) != 3) { /* a depth copy needs the Z pixel type */
+        changePeCtrl = 1;
+        reg = __rlwimi(reg, 3, 0, 29, 31);
     }
-    if ((clear != 0 || (value & 7) == 3) && ((value >> 6) & 1) == 1) {
-        changed = 1;
-        value &= 0xFFFFFFBF;
+    if ((clear != 0 || (reg & 7) == 3) && ((reg >> 6) & 1) == 1) {
+        changePeCtrl = 1;
+        reg &= 0xFFFFFFBF;                      /* let the copy write the depth */
     }
-    if (changed != 0) {
-        *(volatile unsigned char *)0xCC008000 = 0x61;
-        *(volatile unsigned int *)0xCC008000 = value;
+    if (changePeCtrl != 0) {
+        GXCopyWGFifo.u8 = 0x61;
+        GXCopyWGFifo.u32 = reg;
     }
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = __GXData[0x240 / 4];
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = __GXData[0x244 / 4];
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = __GXData[0x248 / 4];
-    value = __rlwimi(0, width, 27, 8, 31);
-    value = __rlwimi(value, 0x4B, 24, 0, 7);
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = value;
-    value = __GXData[0x24C / 4];
-    value = __rlwimi(value, clear, 11, 20, 20);
-    value &= 0xFFFFBFFF;
-    value = __rlwimi(value, 0x52, 24, 0, 7);
-    __GXData[0x24C / 4] = value;
-    *(volatile unsigned char *)0xCC008000 = 0x61;
-    value = *(volatile unsigned int *)((char *)__GXData + 0x24C);
-    *(volatile unsigned int *)0xCC008000 = value;
+    GXCopyWGFifo.u8 = 0x61;
+    GXCopyWGFifo.u32 = GXRegs.cpTexSrc;
+    GXCopyWGFifo.u8 = 0x61;
+    GXCopyWGFifo.u32 = GXRegs.cpTexSize;
+    GXCopyWGFifo.u8 = 0x61;
+    GXCopyWGFifo.u32 = GXRegs.cpTexStride;
+    reg = __rlwimi(0, (u32)dest, 27, 8, 31);    /* destination, in 32-byte units */
+    reg = __rlwimi(reg, 0x4B, 24, 0, 7);        /* CP_TEX_COPY_DEST */
+    GXCopyWGFifo.u8 = 0x61;
+    GXCopyWGFifo.u32 = reg;
+    reg = GXRegs.cpTex;
+    reg = __rlwimi(reg, clear, 11, 20, 20);     /* the clear-image bit */
+    reg &= 0xFFFFBFFF;                          /* a texture copy, not a display copy */
+    reg = __rlwimi(reg, 0x52, 24, 0, 7);        /* CP_TEX_COPY */
+    GXRegs.cpTex = reg;
+    GXCopyWGFifo.u8 = 0x61;
+    reg = *(volatile unsigned int *)((char *)__GXData + 0x24C);
+    GXCopyWGFifo.u32 = reg;
     if (clear != 0) {
-        *(volatile unsigned char *)0xCC008000 = 0x61;
-        *(volatile unsigned int *)0xCC008000 = __GXData[0x228 / 4];
-        *(volatile unsigned char *)0xCC008000 = 0x61;
-        *(volatile unsigned int *)0xCC008000 = __GXData[0x220 / 4];
+        GXCopyWGFifo.u8 = 0x61;
+        GXCopyWGFifo.u32 = GXRegs.zmode;
+        GXCopyWGFifo.u8 = 0x61;
+        GXCopyWGFifo.u32 = GXRegs.cmode0;
     }
-    if (changed != 0) {
-        *(volatile unsigned char *)0xCC008000 = 0x61;
-        *(volatile unsigned int *)0xCC008000 = __GXData[0x22C / 4];
+    if (changePeCtrl != 0) {
+        GXCopyWGFifo.u8 = 0x61;
+        GXCopyWGFifo.u32 = GXRegs.peCtrl;
     }
-    *(unsigned short *)((char *)__GXData + 2) = 0;
+    GXRegs.bpSent = 0;
 }
 
 void GXClearBoundingBox(void) {
