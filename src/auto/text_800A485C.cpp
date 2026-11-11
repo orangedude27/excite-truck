@@ -24097,17 +24097,18 @@ extern "C" u16 fn_800A4F08(void *arg0) {
     return (u16)(*(u32 *)((u8 *)arg0 + 4) - *(u32 *)arg0);
 }
 
-extern "C" u16 VFiPFSTR_StrNumChar(s32 arg0, s32 arg1) {
+/* Count characters in the selected string buffer of a PF string context, using single-byte or wide/multibyte traversal callbacks. */
+extern "C" u16 VFiPFSTR_StrNumChar(s32 context, s32 selector) {
     u8 *str;
     u16 count;
 
-    if ((u32)arg1 == 1U) {
-        str = *(u8 **)arg0;
+    if ((u32)selector == 1U) {
+        str = *(u8 **)context;
     } else {
-        str = *(u8 **)((u8 *)arg0 + 4);
+        str = *(u8 **)((u8 *)context + 4);
     }
 
-    if (*(u32 *)((u8 *)arg0 + 0xC) == 1U) {
+    if (*(u32 *)((u8 *)context + 0xC) == 1U) {
         count = 0;
         while ((s8)*str != 0) {
             if (((s32 (**)(s8, s32))((u8 *)lbl_803D2140 + 0x54))[0]((s8)*str, 1) != 0) {
