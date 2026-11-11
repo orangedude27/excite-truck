@@ -30,8 +30,6 @@ struct DtbItem801D9394 {
     virtual const char *getString(const char *);
 };
 struct Getter801D9284 {
-    virtual void f0();
-    virtual void f1();
     virtual void *get(const char *);
 };
 #pragma cplusplus reset
@@ -168,13 +166,11 @@ extern "C" void fn_801D9284(void) {
     if (a != 0) {
         b = fn_80131810(lbl_80339108 + 0x50);
         if (b != 0) {
-            v = (*(void ***)(b))[2];
-            v = ((void *(*)(void *, void *))v)(b, lbl_80339108 + 0x5C);
+            v = ((struct Getter801D9284 *)b)->get(lbl_80339108 + 0x5C);
             fn_801D9394((void **)&lbl_8055E96C, v, lbl_80339108 + 0x6C, a);
             c = fn_80131810(lbl_80339108 + 0x78);
             if (c != 0) {
-                v = (*(void ***)(c))[2];
-                v = ((void *(*)(void *, void *))v)(c, lbl_80339108 + 0x88);
+                v = ((struct Getter801D9284 *)c)->get(lbl_80339108 + 0x88);
                 fn_801D9654(&lbl_8055E964, v, &lbl_8055AD60, 0);
                 fn_801D91D8();
                 fn_80131818(c);
