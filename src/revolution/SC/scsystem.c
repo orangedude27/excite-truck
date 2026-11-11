@@ -995,14 +995,14 @@ static BOOL SCFindIntegerItem(void* dst, SCItemID id, u8 primType) {
     return success;
 }
 
-static BOOL SCReplaceIntegerItem(const void* src, SCItemID id, u8 primType)
-    DECOMP_DONT_INLINE {
+static BOOL SCReplaceIntegerItem(const void* src, SCItemID id, u8 primType) DECOMP_DONT_INLINE {
+    /* Replace a System Config item's integer value by ID; copies if changed, or recreates the item if its primitive type differs. */
     BOOL success;
-    BOOL enabled;
+    BOOL interrupts;
     SCItem item;
 
     success = FALSE;
-    enabled = OSDisableInterrupts();
+    interrupts = OSDisableInterrupts();
 
     if (FindItemByID(id, &item)) {
         if (item.primType == primType) {
@@ -1022,7 +1022,7 @@ static BOOL SCReplaceIntegerItem(const void* src, SCItemID id, u8 primType)
     success = CreateItemByID(id, primType, src, 0);
 
 _exit:
-    OSRestoreInterrupts(enabled);
+    OSRestoreInterrupts(interrupts);
     return success;
 }
 
