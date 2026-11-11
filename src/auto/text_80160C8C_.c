@@ -1856,36 +1856,35 @@ extern "C" s32 fn_801634F0(void *arg0) {
     return result;
 }
 
-extern "C" void fn_80163550(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+extern "C" void fn_80163550(TutorialLevel *level, s32 goalType, s32 carIndex, s32 amount) {
     s32 offset;
     s32 i;
     s32 type;
-    s32 *entry;
-    s32 active;
+    TutorialGoal *goal;
+    s32 met;
 
-    if (*(u32 *)(lbl_804348E8[arg2] + 0x10) != 0x50434152)
+    if (*(u32 *)(lbl_804348E8[carIndex] + 0x10) != CAR_TAG_PLAYER_CAR)
         return;
-    if (*(s32 *)((char *)arg0 + 0x5AC) >= *(s32 *)((char *)arg0 + 0x574))
+    if (level->metCount >= level->goalCount)
         return;
-    if (((Dummy_80163550 *)arg0)->f7() != 0)
+    if (level->f7() != 0)
         return;
 
     i = 0;
     offset = 0;
-    active = 1;
+    met = 1;
     goto loop_check;
 
 loop_body:
-    entry = (s32 *)(*(s32 *)((char *)arg0 + 0x570) + offset);
-    if (*(u8 *)((char *)entry + 8) == 0) {
-        type = entry[0];
-        if (type == arg1 ||
-            (type == 4 && arg1 == 5) ||
-            (type == 11 && arg1 == 12)) {
-            if (entry[1] <= arg3) {
-                *(u8 *)((char *)entry + 8) = active;
-                *(s32 *)((char *)arg0 + 0x5AC) =
-                    *(s32 *)((char *)arg0 + 0x5AC) + 1;
+    goal = (TutorialGoal *)((char *)level->goals + offset);
+    if (goal->met == 0) {
+        type = goal->type;
+        if (type == goalType ||
+            (type == 4 && goalType == 5) ||
+            (type == 11 && goalType == 12)) {
+            if (goal->target <= amount) {
+                goal->met = met;
+                level->metCount = level->metCount + 1;
             }
         }
     }
@@ -1893,7 +1892,7 @@ loop_body:
     i++;
 
 loop_check:
-    if (i < *(s32 *)((char *)arg0 + 0x574))
+    if (i < level->goalCount)
         goto loop_body;
 }
 
