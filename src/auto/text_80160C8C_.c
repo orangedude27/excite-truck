@@ -2136,20 +2136,15 @@ extern "C" void fn_801638A0(void *arg0) {
 #pragma processor 750
 #pragma cplusplus on
 extern "C" s32 fn_80163C38(void *arg0) {
-    s32 sp8;
-    s32 pad[4];
+    s32 sp8[3];
+    Dummy_80162800 *obj = (Dummy_80162800 *)arg0;
     f32 limit;
-    void **vtable;
-    pad[0] = 0;
     if (*((u8 *)arg0 + 0x56D) == 0) {
-        vtable = *(void ***)arg0;
         limit = lbl_8055E3C8;
-        if (limit > ((f32 (*)(void *))vtable[0x34 / 4])(arg0)) {
-            vtable = *(void ***)arg0;
-            if (((s32 (*)(void *))vtable[0x28 / 4])(arg0) == 0) {
-                ((void (*)(void *, void *))(*(void ***)lbl_8055E2E0)[0x10 / 4])(lbl_8055E2E0, &lbl_8032FA38);
-                fn_801476D8(0, -1, lbl_8055E2F8);
-                ((void (*)(void *, void *))(*(void ***)lbl_8055E2E0)[0xC / 4])(lbl_8055E2E0, &lbl_8032FA44);
+        if (limit > obj->f11()) {
+            if (obj->f8() == 0) {
+                fn_801476D8((s32)((Dummy_80162800 *)lbl_8055E2E0)->f2(lbl_8032FA38), -1, lbl_8055E2F8);
+                ((Dummy_80162800 *)lbl_8055E2E0)->f1(lbl_8032FA44);
                 fn_801476C4();
                 fn_80130980(&sp8, 0x14, 3, *(f32 *)((u8 *)arg0 + 0x84) - *(f32 *)((u8 *)arg0 + 0x98));
                 fn_801475D0(lbl_8055E2E0, &lbl_8055A0EC, &lbl_8055A0DC, &sp8);
