@@ -14753,9 +14753,6 @@ BOOLEAN btsnd_hcic_sniff_mode(BT_HDR *p, s16 handle, s16 max_sniff_period, s16 m
 
 s32 btsnd_hcic_exit_sniff_mode(void *arg0, u16 arg1) {
     u8 *p = (u8 *)arg0;
-    register u8 field8 = 4;
-    register u8 field9 = 8;
-    register u8 field10 = 2;
     if (p == NULL) {
         p = GKI_getpoolbuf(2);
         if (p == NULL)
@@ -14763,12 +14760,12 @@ s32 btsnd_hcic_exit_sniff_mode(void *arg0, u16 arg1) {
     }
     *(u16 *)(p + 2) = 5;
     *(u16 *)(p + 4) = 0;
-    p[8] = field8;
-    p[9] = field9;
-    p[10] = field10;
+    p[8] = 4;
+    p[9] = 8;
+    p[10] = 2;
     p[11] = arg1;
     p[12] = arg1 >> 8;
-    btu_hcif_send_cmd(p, field10, field9, field8);
+    btu_hcif_send_cmd(p);
     return 1;
 }
 
@@ -22373,21 +22370,7 @@ void rfc_send_fcon(void *arg0, s32 arg1, void *arg2) {
     }
 }
 
-void rfc_send_fcon_80093FDC(void *arg0, s32 arg1) {
-    u8 *buf;
-    s32 temp;
-    buf = GKI_getpoolbuf(2);
-    if (buf != 0) {
-        temp = -arg1;
-        temp |= arg1;
-        *(u16 *)(buf + 4) = 0xC;
-        temp >>= 31;
-        *(u16 *)(buf + 2) = 2;
-        buf[0x14] = (u8)((temp & 2) | 0x61);
-        buf[0x15] = 1;
-        rfc_send_buf_uih(arg0, 0, buf, 2);
-    }
-}
+void rfc_send_fcon_80093FDC(void *arg0, s32 arg1) { void *buf = GKI_getpoolbuf(2); if (buf != NULL) { *(s16 *)((u8 *)buf + 4) = 0xC; *(s8 *)((u8 *)buf + 0x14) = (s8)((((-arg1 | arg1) >> 31) & 2) | 0x61); *(s8 *)((u8 *)buf + 0x15) = 1; *(s16 *)((u8 *)buf + 2) = 2; rfc_send_buf_uih(arg0, 0, buf, 2); } }
 
 void rfc_send_msc(void *p_mcb, s32 dlci, s32 is_command, u8 *p_pars) {
     struct PORT_CTRL_VIEW {
