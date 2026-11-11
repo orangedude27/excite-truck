@@ -86,30 +86,34 @@ extern "C" void Shutdown__Q46nw4hbm3snd6detail9WaveSoundFv_800FFB80(void *self) 
     extern const char lbl_803257D4[];
     extern const char lbl_803257B0[];
     extern void Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(void*, void*);
-    struct List { void* head; void* tail; };
-    struct Player { int unk0; struct List list; };
-    struct Node { char pad[0]; };
-    struct WSoundV {
+
+    struct SoundList { void *head; void *tail; };
+    struct WaveSoundPlayer { int unk0; struct SoundList activeList; };
+    struct LinkNode { char pad[0]; };
+    struct WaveSoundVTable {
         virtual void m0();
-        virtual void m1(int);
+        virtual void DetachFromPlayer(int playerIndex);
     };
-    struct WSound { void* vtbl; char pad[0xB8-4]; struct Node node; };
-    struct WSound* ws = (struct WSound*)self;
+    struct WaveSoundObj { void *vtable; char pad[0xB8 - 4]; struct LinkNode link; };
+
+    struct WaveSoundObj *sound = (struct WaveSoundObj *)self;
     int interrupts;
-    struct Player* player;
+    struct WaveSoundPlayer *player;
+
+    /* Shut down this wave sound and remove it from its owning player's active sound list. */
     Shutdown__Q46nw4hbm3snd6detail10BasicSoundFv(self);
-    player = *(struct Player**)((char*)self + 0x1B0);
+    player = *(struct WaveSoundPlayer **)((char *)self + 0x1B0);
     if (self == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_803276D8, 0x86, lbl_803276B0);
     interrupts = OSDisableInterrupts();
-    if (player->list.head == 0) {
+    if (player->activeList.head == 0) {
         OSRestoreInterrupts(interrupts);
         return;
     }
     if (self == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_803257D4, 0x233, lbl_803257B0);
-    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(&player->list, &ws->node);
-    ((struct WSoundV*)self)->m1(-1);
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(&player->activeList, &sound->link);
+    ((struct WaveSoundVTable *)self)->DetachFromPlayer(-1);
     fn_800EC848(player, self);
     OSRestoreInterrupts(interrupts);
 }
