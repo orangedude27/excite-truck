@@ -1001,6 +1001,12 @@ extern "C" void fn_8013DF24(void *arg0, void *arg1, void *arg2) {
     } while (i < 2);
 }
 #pragma pop
+static inline TVec2 TVec2MulAdd8013E054(const TVec2 &base, const TVec2 &dir, f32 s) {
+    TVec2 r;
+    r.x = base.x + dir.x * s;
+    r.y = base.y + dir.y * s;
+    return r;
+}
 class TObjFn8013E054 {
 public:
     virtual void d0(); virtual u8 vC(const char *); virtual void d2(); virtual void d3();
