@@ -18,6 +18,25 @@ extern int fn_801D94DC(void *, void *, const char *, int);
 #define morphRegionKey lbl_803391EC /* "morph_region": the sub-table fn_801D94DC reads */
 #define dtbZeroWeight lbl_80562B2C  /* 0.0f: the weight every morph group starts at */
 
+// State of the terrain morph / "wl model" system. fn_801D9284 builds all of it
+// at startup and fn_801D9828 releases it again.
+#define morphGroupList lbl_8055E96C    /* MorphGroup * list, one node per "morph_group" item */
+#define omlList lbl_8055E964           /* fn_801D9654's list of "oml" model sets */
+#define wlMapModel lbl_8055E960        /* model handle of "wlmap.mod" (mrmodel) */
+#define morphUpdateFrozen lbl_8055E968 /* non-zero: fn_801D9AB8 skips weight changes */
+
+// The DTB/model names fn_801D9284 reads are one run of strings in .data
+// (lbl_80339108, whose first bytes are the "mgroups are ..." debug strings);
+// the code walks them as offsets from its start.
+#define wlDataNames lbl_80339108
+#define nameRegionVal 0x44   /* "mregion.val": the morph region table */
+#define nameMorphVal 0x50    /* "mmorph.val": the morph group table */
+#define nameMorphGroups 0x5C /* "morph_groups": its group sub-table */
+#define nameMorphGroup 0x6C  /* "morph_group": the item type to collect */
+#define nameModelsVal 0x78   /* "wlmodels.val": the wl model table */
+#define nameOmlLists 0x88    /* "oml_lists": its model-set sub-table */
+#define nameWlMapMod 0x94    /* "wlmap.mod": the model to load */
+
 #pragma cplusplus on
 // One "morph_group" item of the mmorph.val DTB, built by fn_801D9394 and linked
 // into the list at lbl_8055E96C; fn_801D9B58 walks the same nodes.
