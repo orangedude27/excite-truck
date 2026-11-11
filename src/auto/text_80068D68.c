@@ -14586,34 +14586,37 @@ s32 btsnd_hcic_auth_request_80084570(u16 handle) {
 }
 
 BOOLEAN btsnd_hcic_setup_esco_conn(UINT16 handle, UINT32 tx_bandwidth, UINT32 rx_bandwidth, UINT16 max_latency, UINT16 voice_setting, UINT8 retrans_effort, UINT16 packet_types) {
-    UINT8 *p = (UINT8 *)GKI_getpoolbuf(2);
+    /* Build and send HCI Setup_Synchronous_Connection (0x0428): allocate a cmd
+       buffer, fill the header/fields into the raw packet bytes, dispatch it, and
+       report success. */
+    UINT8 *cmd = (UINT8 *)GKI_getpoolbuf(2);
 
-    if (p == NULL) {
+    if (cmd == NULL) {
         return FALSE;
     }
-    *(UINT16 *)(p + 2) = 0x14;
-    *(UINT16 *)(p + 4) = 0;
-    p[8] = 0x28;
-    p[9] = 4;
-    p[10] = 0x11;
-    p[11] = handle;
-    p[12] = handle >> 8;
-    p[13] = tx_bandwidth;
-    p[14] = tx_bandwidth >> 8;
-    p[15] = tx_bandwidth >> 16;
-    p[16] = tx_bandwidth >> 24;
-    p[17] = rx_bandwidth;
-    p[18] = rx_bandwidth >> 8;
-    p[19] = rx_bandwidth >> 16;
-    p[20] = rx_bandwidth >> 24;
-    p[21] = max_latency;
-    p[22] = max_latency >> 8;
-    p[23] = voice_setting;
-    p[24] = voice_setting >> 8;
-    p[25] = retrans_effort;
-    p[26] = packet_types;
-    p[27] = packet_types >> 8;
-    btu_hcif_send_cmd(p);
+    *(UINT16 *)(cmd + 2) = 0x14;
+    *(UINT16 *)(cmd + 4) = 0;
+    cmd[8] = 0x28;
+    cmd[9] = 4;
+    cmd[10] = 0x11;
+    cmd[11] = handle;
+    cmd[12] = handle >> 8;
+    cmd[13] = tx_bandwidth;
+    cmd[14] = tx_bandwidth >> 8;
+    cmd[15] = tx_bandwidth >> 16;
+    cmd[16] = tx_bandwidth >> 24;
+    cmd[17] = rx_bandwidth;
+    cmd[18] = rx_bandwidth >> 8;
+    cmd[19] = rx_bandwidth >> 16;
+    cmd[20] = rx_bandwidth >> 24;
+    cmd[21] = max_latency;
+    cmd[22] = max_latency >> 8;
+    cmd[23] = voice_setting;
+    cmd[24] = voice_setting >> 8;
+    cmd[25] = retrans_effort;
+    cmd[26] = packet_types;
+    cmd[27] = packet_types >> 8;
+    btu_hcif_send_cmd(cmd);
     return TRUE;
 }
 
