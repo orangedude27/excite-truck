@@ -2811,7 +2811,7 @@ extern void fn_802E3734(s32 *);
 extern void fn_802E3AD0(s32, const char *, ...);
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" s32 fn_801CA070(s32 *arg0) {
+extern "C" s32 fn_801CA070(void *arg0) {
  struct Dummy {
   virtual void v0();
   virtual s32 v1(char *);
