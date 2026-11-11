@@ -166,24 +166,25 @@ BOOL __OSGetResetButtonStateRaw(void) {
     return (!(PI_HW_REGS[PI_INTSR] & PI_INTSR_RSWST)) ? TRUE : FALSE;
 }
 
+/* Sets the VI force-dimming state via the STM device; returns 0 if busy, -10 if STM not ready. */
 s32 __OSSetVIForceDimming(u32 arg0, u32 arg1, u32 arg2) {
 #define in_args ((u32*)StmVdInBuf)
 
-    BOOL enabled;
+    BOOL interrupts;
 
     if (!StmReady) {
         return -10;
     }
 
-    enabled = OSDisableInterrupts();
+    interrupts = OSDisableInterrupts();
 
     if (StmVdInUse) {
-        OSRestoreInterrupts(enabled);
+        OSRestoreInterrupts(interrupts);
         return 0;
     }
 
     StmVdInUse = TRUE;
-    OSRestoreInterrupts(enabled);
+    OSRestoreInterrupts(interrupts);
 
     // Screen brightness
     in_args[0] = arg1 << 3 | arg2 | arg0 << 7;
