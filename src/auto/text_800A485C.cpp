@@ -2844,32 +2844,43 @@ second_test:
 #define VF_STREAM_LAST_CLUSTER_INDEX(f) (*(u32 *)((u8 *)VF_HANDLE_STREAM_OF(f) + 0x18)) /* which cluster of the file */
 #define VF_STREAM_LAST_CLUSTER(f)       (*(s32 *)((u8 *)VF_HANDLE_STREAM_OF(f) + 0x1C)) /* its number on the volume */
 
-extern "C" void VFiPFCLUSTER_UpdateLastAccessCluster(void *arg0, s32 arg1) {
-    s32 temp_r6;
-    s32 temp_r6_2;
-    void *var_r7;
-    temp_r6 = M2C_FIELD(arg0, s32 *, 0x1C);
-    if (temp_r6 == 0) {
-        M2C_FIELD(M2C_FIELD(arg0, void **, 8), s32 *, 0x1C) = 0;
-        M2C_FIELD(M2C_FIELD(arg0, void **, 8), u32 *, 0x18) = 0U;
+/* Keep the stream's "which cluster of the file is being read" hint in step with
+ * the position a read has just reached.
+ *
+ * `diskSector` is the sector of the volume the position now reads from; the
+ * handle's own sector field says which sector of the file that is.  A position
+ * that lands exactly on a cluster boundary has just left the cluster before it,
+ * so the hint steps one sector back; a position at the start of the file has no
+ * cluster to remember and both words go back to 0.
+ */
+extern "C" void VFiPFCLUSTER_UpdateLastAccessCluster(void *handle, s32 diskSector) {
+    s32 pos;        /* byte position in the file */
+    s32 fileSector; /* which sector of the file that is */
+    u8 *vol;        /* the volume the file is read through */
+
+    pos = VF_HANDLE_POS(handle);
+    if (pos == 0) {
+        /* Nothing has been read yet, so there is no cluster to start from. */
+        VF_STREAM_LAST_CLUSTER(handle) = 0;
+        VF_STREAM_LAST_CLUSTER_INDEX(handle) = 0U;
         return;
     }
-    if (arg0 == 0) {
-        var_r7 = 0;
-    } else {
-        var_r7 = M2C_FIELD(M2C_FIELD(arg0, void **, 8), void **, 0x268);
-    }
-    if (!(temp_r6 & (M2C_FIELD(var_r7, u16 *, 0) - 1))) {
-        temp_r6_2 = M2C_FIELD(arg0, s32 *, 0x24);
-        if (!(temp_r6_2 & (M2C_FIELD(var_r7, u8 *, 6) - 1))) {
-            if (temp_r6_2 == 0) return;
-            M2C_FIELD(M2C_FIELD(arg0, void **, 8), u32 *, 0x18) = (u32)((u32)(temp_r6_2 - 1) >> M2C_FIELD(var_r7, u8 *, 0x21));
-            M2C_FIELD(M2C_FIELD(arg0, void **, 8), s32 *, 0x1C) = (s32)(((u32)((arg1 - 1) - M2C_FIELD(var_r7, s32 *, 0x30)) >> M2C_FIELD(var_r7, u8 *, 0x21)) + 2);
+    if (handle == 0) vol = 0;
+    else vol = VF_STREAM_VOLUME(VF_HANDLE_STREAM(handle));
+
+    /* On a sector boundary, and that sector starts a cluster: the read has just
+     * moved on, so the cluster touched last is the one before it. */
+    if (!(pos & (VF_VOL_SECTOR_SIZE(vol) - 1))) {
+        fileSector = VF_HANDLE_SECTOR(handle);
+        if (!(fileSector & (VF_VOL_SECTORS_PER_CLUSTER(vol) - 1))) {
+            if (fileSector == 0) return; /* the file's very first cluster */
+            VF_STREAM_LAST_CLUSTER_INDEX(handle) = (u32)((u32)(fileSector - 1) >> VF_VOL_CLUSTER_SHIFT(vol));
+            VF_STREAM_LAST_CLUSTER(handle) = (s32)(((u32)((diskSector - 1) - VF_VOL_DATA_START(vol)) >> VF_VOL_CLUSTER_SHIFT(vol)) + VF_FAT_FIRST_CLUSTER);
             return;
         }
     }
-    M2C_FIELD(M2C_FIELD(arg0, void **, 8), u32 *, 0x18) = (u32)((u32)M2C_FIELD(arg0, s32 *, 0x24) >> M2C_FIELD(var_r7, u8 *, 0x21));
-    M2C_FIELD(M2C_FIELD(arg0, void **, 8), s32 *, 0x1C) = (s32)(((u32)(arg1 - M2C_FIELD(var_r7, s32 *, 0x30)) >> M2C_FIELD(var_r7, u8 *, 0x21)) + 2);
+    VF_STREAM_LAST_CLUSTER_INDEX(handle) = (u32)((u32)VF_HANDLE_SECTOR(handle) >> VF_VOL_CLUSTER_SHIFT(vol));
+    VF_STREAM_LAST_CLUSTER(handle) = (s32)(((u32)(diskSector - VF_VOL_DATA_START(vol)) >> VF_VOL_CLUSTER_SHIFT(vol)) + VF_FAT_FIRST_CLUSTER);
 }
 
 extern "C" s32 VFiPFFAT_TraceClustersChain(void *, s32, s32 *);
