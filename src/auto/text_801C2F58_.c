@@ -1754,6 +1754,7 @@ void fn_801C82E0(void) {
     void *obj;
     f32 value = (f32)atof((char *)base + 0x368);
     lbl_8055E858 = lbl_805629D4 * value;
+    /* Create an AI-think interlude command entry, fill its fields, sort entries, and reset interlude state. */
     obj = fn_801C3C80();
     *(s32 *)((char *)obj + 8) = 5;
     *(s32 *)((char *)obj + 0x210) = lbl_8055E854;
