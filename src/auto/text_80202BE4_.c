@@ -102,6 +102,7 @@ extern void fn_802C8C04(s32);
 extern void fn_802C8DB8(f32*, s32, u16*, s32);
 #pragma push
 #pragma paired_single off
+#pragma processor 750
 void fn_80202BFC(s32 arg0) {
     typedef union { f32 f; s32 s; } WorkValue;
     typedef struct { s32 pair2[2]; s32 pair1[2]; u16 table[6]; u16 pad[2]; WorkValue values[24]; } Work;
@@ -193,7 +194,9 @@ void fn_80202D50(f32 *arg0) {
 }
 #pragma pop
 
-#pragma paired_single off
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 void fn_80202F58(void *arg0, void *arg1, void *arg2) {
     union { f32 f; u32 u; } work[28];
     f32 temp_f0, temp_f0_2, temp_f0_3;
@@ -203,7 +206,7 @@ void fn_80202F58(void *arg0, void *arg1, void *arg2) {
     f32 temp_f3, temp_f3_10, temp_f3_2, temp_f3_3, temp_f3_4, temp_f3_5, temp_f3_6, temp_f3_7, temp_f3_8, temp_f3_9;
     f32 temp_f4, temp_f4_2, temp_f4_3, temp_f5, temp_f5_2, temp_f6, temp_f6_2, temp_f7;
     f32 var_f1, var_f2;
-    f64 temp_f29;
+    f32 temp_f29;
     void *temp_r3;
     f32 scale, zero, one;
     u32 copy0, copy1;
@@ -338,11 +341,7 @@ void fn_80202F58(void *arg0, void *arg1, void *arg2) {
     }
     fn_802C8D74();
 }
-#pragma scheduling invalid_target
-#pragma scheduling invalid_target
-#pragma scheduling invalid_target
-#pragma scheduling invalid_target
-#pragma paired_single reset
+#pragma pop
 extern s32 fn_802C8DBC(s32, ...);
 extern void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
 extern void fn_802C8E48(void);
@@ -507,10 +506,13 @@ void fn_80203380(void *argp) {
 #pragma opt_strength_reduction off
 void fn_802036E4(s32 arg0, u8* arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1) {
     struct { f32 n[2]; f32 d[3]; f32 v[3]; f32 p[3]; } s;
-    f32 mag;
-    s32 i;
+    f32 f31, f28, f27, f26;
+    f32* g;
     s32 j;
+    s32 bit1, bit0;
+    s32 i;
     u8* e;
+    f32 mag;
     f32 dx, dy, dz;
     f32 inv;
     f32 den;
@@ -523,11 +525,11 @@ void fn_802036E4(s32 arg0, u8* arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1) {
         fn_802D3ECC(lbl_8055ECF0);
     }
     if (((s32 (*)(s32))fn_802C8DBC)(arg3 * 8) != 0) {
-        f32* g = (f32*)&lbl_80488B88;
-        f32 f26 = lbl_805630F8;
-        f32 f27 = lbl_805630D4;
-        f32 f28 = lbl_80563124;
-        f32 f31 = lbl_8056312C;
+        g = (f32*)&lbl_80488B88;
+        f26 = lbl_805630F8;
+        f27 = lbl_805630D4;
+        f28 = lbl_80563124;
+        f31 = lbl_8056312C;
         for (i = 0; i < arg3; i++) {
             e = arg1 + i * arg2;
             dx = *(f32*)e - g[9];
@@ -544,11 +546,10 @@ void fn_802036E4(s32 arg0, u8* arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1) {
                 s.n[0] *= inv;
                 s.n[1] *= inv;
                 for (j = 0; j < 4; j++) {
-                    s32 bit0 = j & 1;
-                    s32 bit1 = j & 2;
                     s.p[0] = ((f32*)e)[0];
                     s.p[1] = ((f32*)e)[1];
                     s.p[2] = ((f32*)e)[2];
+                    bit0 = j & 1;
                     if (bit0 != 0) {
                         s.p[0] = s.p[0] + s.n[0] * farg0;
                         s.p[2] = s.p[2] + s.n[1] * farg0;
@@ -556,6 +557,7 @@ void fn_802036E4(s32 arg0, u8* arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1) {
                         s.p[0] = s.p[0] - s.n[0] * farg0;
                         s.p[2] = s.p[2] - s.n[1] * farg0;
                     }
+                    bit1 = j & 2;
                     if (bit1 != 0) {
                         s.p[1] += farg1;
                     }
@@ -574,7 +576,7 @@ void fn_802036E4(s32 arg0, u8* arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1) {
                     s.d[1] = s.d[1] * inv;
                     s.d[2] = s.d[2] * inv;
                     den = f27 + s.d[1];
-                    fn_802C8E00((s32)0xFF404040, (s64)j >= 2, (f28 * s.d[0]) / den, lbl_805630CC, (f28 * s.d[2]) / den,
+                    fn_802C8E00((s32)0xFF404040, j >= 2, (f28 * s.d[0]) / den, lbl_805630CC, (f28 * s.d[2]) / den,
                                 bit1 != 0 ? f27 : lbl_805630CC, bit0 != 0 ? lbl_805630D4 : lbl_805630CC);
                 }
             }
@@ -653,7 +655,6 @@ void fn_80203A88(void* arg0, s32 arg1, unk_80203A88_dest* arg2) {
 }
 void fn_80203B20(void *arg0, void *arg1, s32 arg2) {
     u8 stack[0x60];
-
     fn_802CB274(lbl_8055ECFC);
     if (lbl_8055ED08 == 0)
         return;
@@ -679,7 +680,7 @@ void fn_80203B20(void *arg0, void *arg1, s32 arg2) {
     if (fn_80202BE4() == 0 && arg2 != 0)
         fn_80203A88(arg1, (s32)arg0, (unk_80203A88_dest *)stack);
     fn_802C9294(-1, 0);
-    lbl_8055ED08 = (u8)((u32)__cntlzw((u32)lbl_8055ED08) >> 5);
+    lbl_8055ED08 = !lbl_8055ED08;
 }
 #pragma pop
 extern s32 fn_8012C33C(char *);
