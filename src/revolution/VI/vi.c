@@ -122,9 +122,9 @@ static s16 displayOffsetH;
 static s16 displayOffsetV;
 static volatile u64 changed;
 static volatile u64 shdwChanged;
-static u16 shdwRegs[59];
-static SomeVIStruct HorVer;
 static u16 regs[59];
+static SomeVIStruct HorVer;
+static u16 shdwRegs[59];
 
 #define MARK_CHANGED(index) (changed |= 1LL << (63 - (index)))
 
