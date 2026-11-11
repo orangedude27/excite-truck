@@ -14633,6 +14633,7 @@ void btsnd_hcic_accept_esco_conn(BT_HDR *p, BD_ADDR bd_addr, UINT32 tx_bw,
                                      UINT32 rx_bw, UINT16 max_latency,
                                      UINT16 content_fmt, UINT8 retrans_effort,
                                      UINT16 packet_types) {
+    /* Build and send HCI Accept_Synchronous_Connection_Request command into the provided buffer. */
     UINT8 *pp = (UINT8 *)(p + 1);
 
     p->len = 0x18;
