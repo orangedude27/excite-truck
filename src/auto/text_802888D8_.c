@@ -877,7 +877,7 @@ void fn_80289C80(int *arg0) {
     frame.sp74 = f1;
     frame.sp98 = f0;
     frame.sp9C = f9;
-    *arg0 = ((int (*)(int *, const char *, int))fn_8028E2F8)((int *)&frame.sp20, (const char *)&lbl_80348B44, lbl_8055C880);
+    *arg0 = ((int (*)(int *, const char *, int))fn_8028E2F8)((int *)&frame.sp20, lbl_80348B44, lbl_8055C880);
 }
 
 extern char lbl_80348B58[];
