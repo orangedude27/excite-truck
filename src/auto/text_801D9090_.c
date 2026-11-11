@@ -207,55 +207,49 @@ extern "C" void fn_801D9284(void) {
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma cplusplus on
-extern "C" void fn_801D9394(void **head, DtbManager801D9394 *manager, const char *name, int arg3) {
-    struct Node {
-        char field00[0x20];
-        float value;
-        int field24;
-        char *textPtr;
-        int field2C;
-        int field30;
-        char field34[0x20];
-        char field54[4];
-    };
-    float value = lbl_80562B2C;
-    Node *node;
+extern "C" void fn_801D9394(void **head, DtbManager801D9394 *table, const char *name, int regionTable) {
+    // Build the morph group list: for every item of the DTB `table` whose type is
+    // `name` ("morph_group" of mmorph.val), allocate a MorphGroup, copy the item's
+    // own "name" into it, hang its "morph_region" sub-list off it and push it on
+    // the list headed by *head (the morph group list, lbl_8055E96C).
+    float zeroWeight = dtbZeroWeight;
+    MorphGroup *group;
     DtbItem801D9394 *item;
     int index = 0;
-    const char *text;
-    int left;
-    char *out;
-    while ((item = (DtbItem801D9394 *)manager->getAt(index)) != 0) {
+    const char *source;
+    int remaining;
+    char *dest;
+    while ((item = (DtbItem801D9394 *)table->getAt(index)) != 0) {
         if (strcmp(item->getName(), name) == 0) {
-            node = (Node *)fn_801284F8(0x58, name);
-            if (node != 0) {
-                node->textPtr = (char *)node + 0x34;
-                node->field30 = 8;
-                node->field2C = 0;
-                text = item->getString((const char *)&lbl_8055AD90);
-                out = (char *)node;
-                left = 0x20;
+            group = (MorphGroup *)fn_801284F8(sizeof(MorphGroup), name);
+            if (group != 0) {
+                group->children = group->childrenInline;
+                group->childLimit = 8;
+                group->childCount = 0;
+                source = item->getString((const char *)&dtbNameKey);
+                dest = (char *)group;
+                remaining = 0x20;
                 goto copy_check;
 copy_loop:
-                if (--left > 0)
+                if (--remaining > 0)
                     goto copy_check;
-                out[-1] = 0;
+                dest[-1] = 0;
                 goto copy_done;
 copy_check:
                 {
-                    unsigned char c = *text++;
-                    *out++ = c;
-                    if ((signed char)c != 0)
+                    unsigned char ch = *source++;
+                    *dest++ = ch;
+                    if ((signed char)ch != 0)
                         goto copy_loop;
                 }
 copy_done:
-                node->field24 = 0;
-                fn_801D94DC((char *)node + 0x24, item, lbl_803391EC, arg3);
-                *(int *)((char *)node + 0x54) = 0;
-                node->value = value;
+                group->morphRegions = 0;
+                fn_801D94DC(&group->morphRegions, item, morphRegionKey, regionTable);
+                group->next = 0;
+                group->weight = zeroWeight;
             }
-            *(void **)((char *)node + 0x54) = *head;
-            *head = node;
+            group->next = (MorphGroup *)*head;
+            *head = group;
         }
         ++index;
     }
