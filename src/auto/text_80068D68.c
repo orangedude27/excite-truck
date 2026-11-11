@@ -17110,7 +17110,7 @@ BOOLEAN L2CA_SetIdleTimeoutByBdAddr(BD_ADDR addr, UINT16 timeout) {
     }
     entry = lbl_803C4040;
     if (entry[8] != 0 && *(s32 *)(entry + 0xC) == 4) *(u16 *)(entry + 0x60) = timeout;
-    entry += 0x64;
+    entry = (u8 *)((u32)entry + 0x64);
     if (entry[0] != 0 && *(s32 *)(entry + 4) == 4) *(u16 *)(entry + 0x58) = timeout;
     if (entry[0x5C] != 0 && *(s32 *)(entry + 0x60) == 4) *(u16 *)(entry + 0xB4) = timeout;
     if (entry[0xB8] != 0 && *(s32 *)(entry + 0xBC) == 4) *(u16 *)(entry + 0x110) = timeout;
@@ -19086,29 +19086,29 @@ void l2cu_send_peer_cmd_reject(void *arg0, u16 arg1, u8 arg2, u16 arg3, u16 arg4
     u16 size;
     void *packet;
     u8 *p;
-    if (arg1 == 1) {
-        size = 2;
+    if (arg1 == (u16)1) {
+        size = (u16)2;
     } else {
-        size = ((s32)~((arg1 - 2) | (2 - arg1)) >> 31) & 4;
+        size = (u16)(((s32)~((arg1 - 2) | (2 - arg1)) >> 31) & 4);
     }
     packet = ((void *(*)(u16, u16, u8, s32))l2cu_build_header)(
-        *(u16 *)((u8 *)arg0 + 0x28), size + 2, 1, arg2);
-    if (packet == 0) {
+        *(u16 *)((u8 *)arg0 + 0x28), (u16)(size + 2), (u8)1, arg2);
+    if (packet == (void *)0) {
         if (lbl_803C4040[0] >= 2) {
             fn_8007093C(0x80001, lbl_80319158);
         }
     } else {
-        ((u8 *)packet)[0x14] = arg1;
-        ((u8 *)packet)[0x15] = arg1 >> 8;
+        ((u8 *)packet)[0x14] = (u8)arg1;
+        ((u8 *)packet)[0x15] = (u8)(arg1 >> 8);
         p = (u8 *)packet + 0x16;
-        if (size >= 2) {
-            p[0] = arg3;
-            p[1] = arg3 >> 8;
+        if (size >= (u16)2) {
+            p[0] = (u8)arg3;
+            p[1] = (u8)(arg3 >> 8);
             p += 2;
         }
-        if (size >= 4) {
-            p[0] = arg4;
-            p[1] = arg4 >> 8;
+        if (size >= (u16)4) {
+            p[0] = (u8)arg4;
+            p[1] = (u8)(arg4 >> 8);
         }
         ((void (*)(void *, u8, void *))l2c_link_check_send_pkts)(arg0, 0, packet);
     }
@@ -21334,30 +21334,45 @@ void rfc_mx_sm_state_disc_wait_ua(void *muxCb, s32 event, void *eventData) {
         ((void (*)(u32, void *, s32, u32))fn_8007096C)(0x90003, lbl_80319868, event, muxCbBytes[0x6c]);
 }
 
+/* Handle the L2CA_ConfigCnf event on the RFCOMM multiplexer channel. If L2CAP
+   refused our configuration, tell the port layer that the start failed (when we
+   opened the channel) and release the multiplexer channel; otherwise note that
+   our configuration is out and, once the peer's has arrived as well, send the
+   multiplexer SABME (initiator) or wait for the peer to send it (responder). */
 void rfc_mx_conf_cnf(void *arg0, u16 *arg1) {
     extern u8 lbl_803C4828[];
     extern char lbl_80319A70[];
     extern void rfc_send_sabme();
-    u8 *p = (u8 *)arg0;
-    if (lbl_803C4828[0x414] >= 4) {
-        ((void (*)(u32, void *, void *, u16))fn_8007096C)(0x90003, lbl_80319A70, arg1, arg1 ? *arg1 : 0);
+    tRFC_MCB_VIEW *mcb = (tRFC_MCB_VIEW *)arg0;
+    tL2CAP_CFG_INFO *p_cfg = (tL2CAP_CFG_INFO *)arg1;
+
+    if (rfc_cb_trace_level >= BT_TRACE_LEVEL_EVENT) {
+        /* "rfc_mx_conf_cnf p_cfg:%08x res:%d " - the cast keeps the pointer
+           whole in the third argument. */
+        ((void (*)(u32, void *, void *, u16))fn_8007096C)(
+            TRACE_LAYER_RFCOMM | TRACE_TYPE_EVENT, lbl_80319A70, p_cfg,
+            p_cfg ? p_cfg->result : 0);
     }
-    if (*arg1 != 0) {
-        if (p[0x6D] != 0) {
-            PORT_StartCnf(arg0, *arg1);
-            L2CA_DisconnectReq(*(u16 *)(p + 0x68));
+
+    if (p_cfg->result != L2CAP_CFG_OK) {
+        if (mcb->is_initiator) {
+            PORT_StartCnf(arg0, p_cfg->result);
+            L2CA_DisconnectReq(mcb->lcid);
         }
         rfc_release_multiplexer_channel(arg0);
         return;
     }
-    p[0x6E] = 1;
-    if (p[0x6C] == 2 && p[0x6F] != 0) {
-        if (p[0x6D] != 0) {
-            p[0x6C] = 3;
-            ((void (*)(void *, u8))rfc_send_sabme)(arg0, 0);
+
+    mcb->local_cfg_sent = TRUE;
+    if (mcb->state == RFC_MX_STATE_CONFIGURE && mcb->peer_cfg_rcvd) {
+        if (mcb->is_initiator) {
+            mcb->state = RFC_MX_STATE_SABME_WAIT_UA;
+            /* rfc_send_sabme() is defined in this unit with one argument too
+               many; the original symbol takes (p_mcb, dlci). */
+            ((void (*)(void *, u8))rfc_send_sabme)(arg0, RFCOMM_MX_DLCI);
             return;
         }
-        p[0x6C] = 4;
+        mcb->state = RFC_MX_STATE_WAIT_SABME;
     }
 }
 
