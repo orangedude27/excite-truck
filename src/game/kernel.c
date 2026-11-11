@@ -314,6 +314,26 @@ extern void fn_802E2CFC(void *);
 extern void fn_802E27F0(void);
 extern void fn_80127C90(void *, void *);
 extern char lbl_8034CCE0[];
+
+/* The halfword-packed calendar fn_802E2CFC writes (struct OSTimeCalendar above
+ * compressed into the 0x18 bytes the start-up log prints from). */
+struct StartupCalendar {
+    unsigned short year;     /* 0x00 */
+    unsigned short month;    /* 0x02, 1-12 */
+    unsigned short day;      /* 0x04 */
+    unsigned short hour;     /* 0x06 */
+    unsigned short minute;   /* 0x08 */
+    unsigned short second;   /* 0x0A */
+    int msec;                /* 0x0C */
+    int weekDay;             /* 0x10 */
+    unsigned short pad14[2]; /* 0x14 */
+};
+
+/* The strings of this file's block at lbl_8034CCE0 that start-up logs with. */
+#define KERNEL_DATE_FORMAT (base + 0x78) /* "date: %d/%d/%d (%d)" */
+#define KERNEL_TIME_FORMAT (base + 0x8C) /* "time: %d:%02d:%02d" */
+#define KERNEL_STACK_CHECK_NAME (base + 0xA0) /* "check_stack" */
+
 #pragma scheduling on
 int fn_802E2A5C(void) {
     unsigned short local[12];
