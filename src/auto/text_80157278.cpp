@@ -2405,9 +2405,11 @@ extern "C" void* fn_8017960C(s32);
 extern "C" f32 lbl_805617C0;
 #pragma push
 #pragma processor 750
+/* Updates a per-slot timer/value pair for arg1, tracking the max value while the source object remains valid. */
 extern "C" void fn_8015B788(void* arg0, s32 arg1, f32 farg0) {
     void* obj = fn_8017960C(arg1);
     BOOL invalid;
+
     if (obj != 0) {
         invalid = !((f32)__fabs(*(f32*)((u8*)obj + 0x2690)) <= lbl_80558DC4[0]);
     } else {
@@ -2416,6 +2418,7 @@ extern "C" void fn_8015B788(void* arg0, s32 arg1, f32 farg0) {
     if (invalid) {
         return;
     }
+
     u8* p = (u8*)arg0 + arg1 * 8;
     if ((f32)__fabs(*(f32*)(p + 0x24C)) <= lbl_80558DC4[0]) {
         *(f32*)(p + 0x250) = farg0;
