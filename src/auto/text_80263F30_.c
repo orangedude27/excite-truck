@@ -255,12 +255,11 @@ void fn_80264484(void *arg0) {
     extern char lbl_803464F8[];
     extern unsigned char lbl_80498F78[];
     void *result;
-    void **items;
     int count;
-
-    result = fn_801284F8(0x18, lbl_803464A8);
+    void **items;
+    result = fn_801284F8(24, lbl_803464A8);
     if (result != 0) {
-        *(int *)((char *)result + 0x14) = 0;
+        *(int *)((char *)result + 20) = 0;
         *(void **)result = lbl_803464F8;
     }
     count = *(int *)(lbl_80498F78 + 4);
@@ -320,10 +319,8 @@ void fn_802645FC(void *arg0) {
     extern float lbl_80563BF8;
     extern float lbl_8055C454;
     extern float lbl_80563BF0;
-    float a;
-    float b;
-    b = lbl_80563BF0;
-    a = lbl_80563BF8;
+    float b = lbl_80563BF0;
+    float a = lbl_80563BF8;
     *(float *)((char *)arg0 + 0x18) = a;
     *(float *)((char *)arg0 + 0x1C) = lbl_8055C454;
     *(float *)((char *)arg0 + 0x20) = b;
@@ -448,55 +445,57 @@ void *fn_802646D0(void *arg0) {
 #pragma pop
 
 #pragma dont_inline off
-void *fn_80264968(void *arg0, int arg1) {
-    struct Local {
+/* Destructor-like cleanup for the object at 0x802646D0: clears the current object pointer,
+ * releases two owned sub-objects/buffers, and optionally frees the object itself. */
+void *fn_80264968(void *obj, int freeFlag) {
+    struct ObjectView {
         char pad_00[0x54];
-        void *field_54;
-        void *field_58;
-        void *field_5C;
-        void *field_60;
-        void *field_64;
+        void *resource54;
+        void *buffer58;
+        void *bufferCount5C;
+        void *bufferCapacity60;
+        void *bufferStorage64;
         char pad_68[0x4C];
-        void *field_B4;
-        void *field_B8;
-        void *field_BC;
-        void *field_C0;
-        void *field_C4;
+        void *resourceB4;
+        void *bufferB8;
+        void *bufferCountBC;
+        void *bufferCapacityC0;
+        void *bufferStorageC4;
     };
-    struct Local *p = (struct Local *)arg0;
-    if (arg0 != 0) {
+    struct ObjectView *self = (struct ObjectView *)obj;
+    if (obj != 0) {
         lbl_8055F448 = 0;
-        if ((char *)arg0 + 0x78 != 0) {
-            if (p->field_B4 != 0) {
-                fn_80235380(p->field_B4);
-                p->field_B4 = 0;
+        if ((char *)obj + 0x78 != 0) {
+            if (self->resourceB4 != 0) {
+                fn_80235380(self->resourceB4);
+                self->resourceB4 = 0;
             }
-            if (&p->field_B8 != 0) {
-                fn_80128670(p->field_C4);
-                if (&p->field_B8 != 0) {
-                    p->field_B8 = 0;
-                    p->field_BC = 0;
-                    p->field_C0 = 0;
+            if (&self->bufferB8 != 0) {
+                fn_80128670(self->bufferStorageC4);
+                if (&self->bufferB8 != 0) {
+                    self->bufferB8 = 0;
+                    self->bufferCountBC = 0;
+                    self->bufferCapacityC0 = 0;
                 }
             }
         }
-        if ((char *)arg0 + 0x18 != 0) {
-            if (p->field_54 != 0) {
-                fn_80235380(p->field_54);
-                p->field_54 = 0;
+        if ((char *)obj + 0x18 != 0) {
+            if (self->resource54 != 0) {
+                fn_80235380(self->resource54);
+                self->resource54 = 0;
             }
-            if (&p->field_58 != 0) {
-                fn_80128670(p->field_64);
-                if (&p->field_58 != 0) {
-                    p->field_58 = 0;
-                    p->field_5C = 0;
-                    p->field_60 = 0;
+            if (&self->buffer58 != 0) {
+                fn_80128670(self->bufferStorage64);
+                if (&self->buffer58 != 0) {
+                    self->buffer58 = 0;
+                    self->bufferCount5C = 0;
+                    self->bufferCapacity60 = 0;
                 }
             }
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (freeFlag > 0) fn_80128668(obj);
     }
-    return arg0;
+    return obj;
 }
 
 extern void *lbl_8055F448;
