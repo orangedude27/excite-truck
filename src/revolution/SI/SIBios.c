@@ -990,6 +990,9 @@ BOOL fn_800569D0(void) {
 }
 
 void SPEC0_MakeStatus(s32 chan, PADStatus* status, u32 data[2]) {
+    /* Builds a PADStatus from raw SPEC0 report words in data[0]/data[1]:
+     * maps buttons/triggers, extracts stick/substick/trigger bytes, sets
+     * digital trigger buttons at 0xAA threshold, and centers sticks by -128. */
     (void)chan;
 
     status->button = 0;
