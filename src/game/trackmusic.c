@@ -174,8 +174,7 @@ loop:
     *(long *)(ptr + 0xBB8) = arg0;
     *(long *)(ptr + 0xC1C) = arg0;
     ptr += 0xC80;
-    if (--i != 0)
-        goto loop;
+    if (--i != 0) goto loop;
     return 0;
 }
 #pragma dont_inline reset
@@ -251,45 +250,52 @@ void fn_8020F950(void) {
 
 #pragma scheduling invalid_target
 long fn_8020F9F4(void) {
-    char *base;
-    long i;
+    char *b;
+    long k;
     long g;
-    long c;
-    base = (char *)fn_8020F5F0(fn_8000DA10());
-    i = 0;
+    long t0;
+    long t1;
+    long t2;
+    long t3;
+    long t4;
+    long t5;
+    long t6;
+    b = (char *)fn_8020F5F0(fn_8000DA10());
+    k = 0;
     for (g = 0; g < 8; g++) {
-        if ((signed char)base[4] == 0)
-            return i;
-        c = base[0x68];
-        i++;
-        if ((signed char)c == 0)
-            return i;
-        c = base[0xCC];
-        i++;
-        if ((signed char)c == 0)
-            return i;
-        c = base[0x130];
-        i++;
-        if ((signed char)c == 0)
-            return i;
-        c = base[0x194];
-        i++;
-        if ((signed char)c == 0)
-            return i;
-        c = base[0x1F8];
-        i++;
-        if ((signed char)c == 0)
-            return i;
-        c = base[0x25C];
-        i++;
-        if ((signed char)c == 0)
-            return i;
-        c = base[0x2C0];
-        i++;
-        if ((signed char)c == 0)
-            return i;
-        i++;
-        base += 0x320;
+        if ((signed char)b[4] == 0) {
+            return k;
+        }
+        t0 = k + 1;
+        if ((signed char)b[0x68] == 0) {
+            return t0;
+        }
+        t1 = t0 + 1;
+        if ((signed char)b[0xCC] == 0) {
+            return t1;
+        }
+        t2 = t1 + 1;
+        if ((signed char)b[0x130] == 0) {
+            return t2;
+        }
+        t3 = t2 + 1;
+        if ((signed char)b[0x194] == 0) {
+            return t3;
+        }
+        t4 = t3 + 1;
+        if ((signed char)b[0x1F8] == 0) {
+            return t4;
+        }
+        t5 = t4 + 1;
+        if ((signed char)b[0x25C] == 0) {
+            return t5;
+        }
+        t6 = t5 + 1;
+        if ((signed char)b[0x2C0] == 0) {
+            return t6;
+        }
+        b += 0x320;
+        k = t6 + 1;
     }
     return 0;
 }
@@ -297,9 +303,10 @@ long fn_8020F9F4(void) {
 #pragma push
 #pragma dont_inline on
 void *fn_8020FAF0(void) {
+    char *entry;
     char *base = (char *)fn_8020F5F0(fn_8000DA10());
-    char *entry = base;
     long i = 0;
+    entry = base;
     for (;;) {
         if (stricmp(entry + 4, entry) == 0) {
             return base + i * 0x64;
@@ -591,33 +598,37 @@ extern "C" void fn_802101F8(Dummy_802101F8 *arg0, long arg1, long arg2, struct R
     long temp_r31;
     struct Record_802101F8 rec;
     long i;
-
-    if (arg0 == 0 || arg3 == 0) {
-    } else {
-        temp_r31 = arg0->v4();
-        rec.f0 = arg3->f0;
-        {
-            long f4 = arg3->f4;
-            long f8 = arg3->f8;
-            rec.f4 = f4;
-            rec.f8 = f8;
-        }
-        rec.fC = arg3->fC;
-        rec.f10 = arg3->f10;
-        rec.f14 = arg3->f14;
-        rec.f18 = arg3->f18;
-        for (i = 0; i < 3; i++) {
-            long step = arg2 + i;
-            if (i == 1) {
-                float temp_f31 = fn_80235EF0(temp_r31, arg2 + 2);
-                rec.f10 = (arg3->f10 - fn_80235EF0(temp_r31, arg2)) - temp_f31;
-            } else {
-                rec.f10 = fn_80235EF0(temp_r31, step);
-            }
-            fn_80147940(arg0, &rec, arg1, step);
-            *(float *)&rec.f4 += rec.f10;
-        }
+    if (arg0 == 0) goto exit;
+    if (arg3 != 0) goto body;
+    goto exit;
+body:
+    temp_r31 = arg0->v4();
+    rec.f0 = arg3->f0;
+    {
+        long f4;
+        long f8;
+        f4 = arg3->f4;
+        f8 = arg3->f8;
+        rec.f4 = f4;
+        rec.f8 = f8;
     }
+    rec.fC = arg3->fC;
+    rec.f10 = arg3->f10;
+    rec.f14 = arg3->f14;
+    rec.f18 = arg3->f18;
+    for (i = 0; i < 3; i++) {
+        long step = arg2 + i;
+        if (i == 1) {
+            float temp_f31 = fn_80235EF0(temp_r31, arg2 + 2);
+            rec.f10 = (arg3->f10 - fn_80235EF0(temp_r31, arg2)) - temp_f31;
+        } else {
+            rec.f10 = fn_80235EF0(temp_r31, step);
+        }
+        fn_80147940(arg0, &rec, arg1, step);
+        *(float *)&rec.f4 += rec.f10;
+    }
+exit:
+    return;
 }
 #pragma cplusplus reset
  
