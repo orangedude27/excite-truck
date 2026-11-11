@@ -1300,29 +1300,31 @@ extern "C" s32 fn_800A6520(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s
     return 0;
 }
 
-extern "C" s32 fn_800A6624(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 *arg5) {
-    s32 sp10;
-    s32 spC;
-    s32 sp8;
+extern "C" s32 fn_800A6624(void *device, s32 arg1, s32 sector, s32 offset, s32 count, s32 *ioCount) {
+    s32 block;
+    s32 blockCount;
+    s32 outSector;
     s32 result;
     s32 (*convert)(void *, s32, s32, s32, s32 *, s32 *);
     s32 (*convert_back)(void *, s32, s32, s32, s32 *, s32 *);
     s32 (*callback)(void *, s32, s32, s32, s32 *);
 
+    /* Convert sector range to block range, run device callback, and convert back;
+       reports cancel/error conditions via fixed status codes. */
     convert = (s32 (*)(void *, s32, s32, s32, s32 *, s32 *))VFipdm_disk_convert_sector_into_block;
-    result = convert(arg0, arg2, arg3, arg4, &sp10, &spC);
+    result = convert(device, sector, offset, count, &block, &blockCount);
     if (result != 0)
         return result;
-    if (fn_800B8004(*(s32 *)((u8 *)arg0 + 0x14)) != 0)
+    if (fn_800B8004(*(s32 *)((u8 *)device + 0x14)) != 0)
         return 0x14;
-    callback = *(s32 (**)(void *, s32, s32, s32, s32 *))((u8 *)*(void **)((u8 *)arg0 + 4) + 0x18);
-    result = callback(arg0, arg1, sp10, spC, arg5);
-    if (fn_800B8048(*(s32 *)((u8 *)arg0 + 0x14)) != 0)
+    callback = *(s32 (**)(void *, s32, s32, s32, s32 *))((u8 *)*(void **)((u8 *)device + 4) + 0x18);
+    result = callback(device, arg1, block, blockCount, ioCount);
+    if (fn_800B8048(*(s32 *)((u8 *)device + 0x14)) != 0)
         return 0x14;
     convert_back = (s32 (*)(void *, s32, s32, s32, s32 *, s32 *))VFipdm_disk_convert_block_into_sector;
-    convert_back(arg0, sp10, *arg5, arg4, &sp8, arg5);
+    convert_back(device, block, *ioCount, count, &outSector, ioCount);
     if (result != 0) {
-        fn_800A71D0((void *)*(s32 *)((u8 *)arg0 + 0x2C), result);
+        fn_800A71D0((void *)*(s32 *)((u8 *)device + 0x2C), result);
         return 0x15;
     }
     return 0;
