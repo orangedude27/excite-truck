@@ -356,19 +356,19 @@ null_result:
 extern int fn_8020FB80(void *);
 #pragma scheduling invalid_target
 long fn_8020FC6C(void) {
-    extern int fn_8020FB80();
-    extern void *fn_8020FC04();
+    extern int fn_8020FB80(void *);
+    extern void *fn_8020FC04(void);
     extern long fn_8020F3B4();
-    long zero = 0;
+    long count = lbl_804900AC.m_count;
     void *p;
-    if (lbl_804900AC.m_count == 0) {
-        return ((long (*)(long))fn_8020F3B4)(zero);
+    if (count == 0) {
+        return ((long (*)(long))fn_8020F3B4)(0);
     }
     p = fn_8020FC04();
     if (p != 0) {
         return ((int (*)(void *))fn_8020FB80)(p);
     } else {
-        return ((long (*)(long))fn_8020F3B4)(zero);
+        return ((long (*)(long))fn_8020F3B4)(0);
     }
 }
 
@@ -655,6 +655,7 @@ void fn_802103B8(void) {
 #pragma push
 #pragma cplusplus on
 #pragma dont_inline on
+#pragma scheduling invalid_target
 extern "C" void fn_802103BC(void) {
     class Obj { public: virtual void f(int); };
     fn_802EC1C0(lbl_80563400);
