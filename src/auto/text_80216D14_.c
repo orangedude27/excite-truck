@@ -45,6 +45,8 @@ struct UiMenuGroup {
     void *hovered;     /* 0x448: widget the pointer is over (fn_80217734) */
     void *pressed;     /* 0x44C: widget the pointer went down on (fn_8021749C) */
     void *current;     /* 0x450: the widget the menu is on (fn_80218198) */
+    int originX;       /* 0x454: where the group is drawn; pointer coords are relative to it */
+    int originY;       /* 0x458 */
 };
 
 struct Fn8021832CObj {
