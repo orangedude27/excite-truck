@@ -22,6 +22,8 @@ extern unsigned int lbl_8055D954;
 extern unsigned int lbl_8055D950;
 extern unsigned char lbl_8055D948;
 extern unsigned int * const __GXData;
+typedef union { volatile unsigned char u8; volatile unsigned int u32; } GXCopyFifo;
+#define GXCopyWGFifo (*(GXCopyFifo *)0xCC008000)
 extern unsigned int lbl_8055D968;
 extern unsigned int lbl_8055D930;
 extern unsigned int lbl_8055D938;
@@ -315,52 +317,50 @@ int __GXShutdown(int shutdown) {
 }
 
 void __GXInitRevisionBits(void) {
-    unsigned char eight = 8;
-    volatile unsigned char *fifo = (volatile unsigned char *)0xCC008000;
     volatile unsigned int *p = __GXData;
     unsigned int n = 0;
+    volatile unsigned char *b = (volatile unsigned char *)0xCC008000;
+    volatile unsigned int *w = (volatile unsigned int *)0xCC008000;
     unsigned int i;
     unsigned int code;
-
     for (i = 0; i < 2; i++) {
         code = 0x80 | n++;
         p[7] |= 0x40000000;
         p[15] |= 0x80000000;
-        *fifo = eight;
-        *fifo = (unsigned char)code;
-
+        *b = 8;
+        *b = (unsigned char)code;
         code = 0x80 | n++;
-        *(volatile unsigned int *)fifo = p[15];
+        *w = p[15];
         p[8] |= 0x40000000;
         p[16] |= 0x80000000;
-        *fifo = eight;
-        *fifo = (unsigned char)code;
-
+        *b = 8;
+        *b = (unsigned char)code;
         code = 0x80 | n++;
-        *(volatile unsigned int *)fifo = p[16];
+        *w = p[16];
         p[9] |= 0x40000000;
         p[17] |= 0x80000000;
-        *fifo = eight;
-        *fifo = (unsigned char)code;
-
+        *b = 8;
+        *b = (unsigned char)code;
         code = 0x80 | n++;
-        *(volatile unsigned int *)fifo = p[17];
+        *w = p[17];
         p[10] |= 0x40000000;
         p[18] |= 0x80000000;
-        *fifo = eight;
-        *fifo = (unsigned char)code;
-        *(volatile unsigned int *)fifo = p[18];
+        *b = 8;
+        *b = (unsigned char)code;
+        *w = p[18];
         p += 4;
     }
-
-    *fifo = 0x10;
-    *(volatile unsigned int *)fifo = 0x1000;
-    *(volatile unsigned int *)fifo = 0x3F;
-    *fifo = 0x10;
-    *(volatile unsigned int *)fifo = 0x1012;
-    *(volatile unsigned int *)fifo = 1;
-    *fifo = 0x61;
-    *(volatile unsigned int *)fifo = 0x5800000F;
+    {
+        unsigned int zero = 0;
+        *b = 0x10;
+        *w = 0x1000;
+        *w = zero | 0x3F;
+        *b = 0x10;
+        *w = 0x1012;
+        *w = zero | 1;
+        *b = 0x61;
+        *w = (0x58 << 24) | (zero | 0xF);
+    }
 }
 
 void GXInitFifoBase(void *arg0, void *arg1, u32 arg2) {
@@ -1182,7 +1182,7 @@ void __GXCalculateVLim(void) {
     register unsigned char *table;
     register int sum;
     int term;
-    unsigned char tableValue;
+    int tableValue;
     int mode;
 
     if (*(unsigned short *)((char *)gx + 4) == 0) return;
@@ -2486,7 +2486,7 @@ void GXSetDispCopyDst(u16 value) {
 }
 
 void __GetImageTileCount(unsigned int, int, int, int *, int *, int *);
-void GXSetTexCopyDst(int width, int height, int format, int depth) {
+void GXSetTexCopyDst(u16 width, u16 height, int format, int depth) {
     typedef struct {
         u32 unusedTop : 15;
         u32 copyMode : 2;
@@ -2497,28 +2497,49 @@ void GXSetTexCopyDst(int width, int height, int format, int depth) {
         u32 formatHigh : 1;
         u32 unusedLow : 3;
     } CopyControlReg;
+    union {
+        u32 reg;
+        struct {
+            u32 constant : 8;
+            u32 pad : 14;
+            u32 stride : 10;
+        } f;
+    } data;
     int tilesX;
     int tilesY;
     int compressed;
-    register int fmt;
-    register unsigned int *gx;
+    int fmt;
+    unsigned int *gx = __GXData;
+    unsigned int *gx2;
     CopyControlReg *reg;
 
-    gx = __GXData;
+    *((u8 *)gx + 0x250) = 0;
     fmt = format & 0xF;
     if (format == 0x13)
         fmt = 0xB;
-    *((u8 *)gx + 0x250) = 0;
-    if (format == 0x26 || (format < 4 && format >= 0))
-        ((CopyControlReg *)((u8 *)gx + 0x24C))->copyMode = 3;
-    else
-        ((CopyControlReg *)((u8 *)gx + 0x24C))->copyMode = 2;
-    reg = (CopyControlReg *)((u8 *)gx + 0x24C);
+    switch (format) {
+    case 0x0:
+    case 0x1:
+    case 0x2:
+    case 0x3:
+    case 0x26:
+        reg = (CopyControlReg *)((u8 *)gx + 0x24C);
+        reg->copyMode = 3;
+        break;
+    default:
+        reg = (CopyControlReg *)((u8 *)gx + 0x24C);
+        reg->copyMode = 2;
+        break;
+    }
     *((u8 *)gx + 0x250) = (format >> 4) & 1;
     reg->formatHigh = (fmt >> 3) & 1;
+    gx2 = *(unsigned int *volatile *)&__GXData;
     __GetImageTileCount(format, width, height, &tilesX, &tilesY, &compressed);
-    __GXData[0x248 / 4] = 0;
-    __GXData[0x248 / 4] = (tilesX * compressed & 0x3FF) | 0x4D000000;
+    gx2[0x248 / 4] = 0;
+    data.reg = 0;
+    data.f.stride = tilesX * compressed;
+    data.f.constant = 0x4D;
+    gx2[0x248 / 4] = data.reg;
     reg->depthBit = depth;
     reg->formatLow = fmt;
 }
@@ -2816,7 +2837,7 @@ void GXCopyDisp(unsigned int source, int clear) {
     volatile unsigned int *reg;
     unsigned int value;
     unsigned int sourceValue;
-    register int changed;
+    int changed;
 
     if (clear != 0) {
         gx = __GXData;
