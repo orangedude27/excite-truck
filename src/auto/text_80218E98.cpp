@@ -1530,16 +1530,18 @@ fallback:
 }
 #pragma scheduling on
 #pragma pop
-extern "C" void fn_8021AC24(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    u8 *base = (u8 *)arg0;
+extern "C" void *fn_8021AC24(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     s32 a = fn_802C5220(arg3);
     s32 b = fn_802C51C0(arg3);
     fn_80218F34(arg0, arg1, arg2, arg1 + b, arg2 + a, 0);
-    *(void **)base = lbl_8033F6E0;
-    *(s32 *)(base + 0x250) = arg3;
-    *(u8 *)(base + 0x244) = 0;
-    *(f32 *)(base + 0x248) = lbl_805634A8;
-    *(f32 *)(base + 0x24C) = lbl_805634E8;
+    f32 fb = lbl_805634E8;
+    f32 fa = lbl_805634A8;
+    *(void **)arg0 = lbl_8033F6E0;
+    *(s32 *)((u8 *)arg0 + 0x250) = arg3;
+    *(u8 *)((u8 *)arg0 + 0x244) = 0;
+    *(f32 *)((u8 *)arg0 + 0x248) = fa;
+    *(f32 *)((u8 *)arg0 + 0x24C) = fb;
+    return arg0;
 }
 
 extern "C" void fn_8021ACC0(void *arg0, s32 arg1) {
@@ -2725,8 +2727,9 @@ extern "C" void fn_8021CF9C(void *arg0) {
     f32 scaled = value * *(f32 *)((u8 *)arg0 + 0x254);
     f32 total = *(f32 *)((u8 *)arg0 + 0x258) + scaled;
     s32 converted = (s32)(lbl_805634C4 + total);
-    sprintf((char *)arg0 + 0x264, *(const char **)((u8 *)arg0 + 0x260), converted);
-    fn_80130568((char *)arg0 + 0x264);
+    char *dst = (char *)arg0 + 0x264;
+    sprintf(dst, *(const char **)((u8 *)arg0 + 0x260), converted);
+    fn_80130568(dst);
     fn_80219718(arg0);
     if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
         *(u8 *)((u8 *)arg0 + 0x234) = 1;
@@ -2935,16 +2938,12 @@ extern "C" void *__dt__Q34Game10MemoryCard8ResourceFv(void *arg0, s32 arg1) {
 }
 
 extern "C" void *fn_8021D7C8(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
-    f32 time;
-    f32 base;
     f32 value;
     ((void *(*)(void *, s32, s32, s32, s32, s32, s32))fn_80219568)(arg0, arg1, arg2, 0, arg5, arg3, arg4);
     *(void **)arg0 = lbl_8033EC2C;
-    time = fn_8023659C();
-    base = lbl_805634E8;
-    *(volatile s32 *)((u8 *)arg0 + 0x254) = arg6;
-    value = time - base;
+    value = fn_8023659C() - lbl_805634E8;
     *(s32 *)((u8 *)arg0 + 0x268) = arg5;
+    *(s32 *)((u8 *)arg0 + 0x254) = arg6;
     *(f32 *)((u8 *)arg0 + 0x264) = value;
     *(f32 *)((u8 *)arg0 + 0x260) = value;
     *(s32 *)((u8 *)arg0 + 0x258) = 0;
@@ -5174,8 +5173,8 @@ extern "C" void fn_80222800(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg4
         *arg5 = arg1 + 10;
         *arg6 = arg2 + 10;
     } else {
-        *arg5 = arg1 + (s32)fn_80235EF0(0, 0);
-        *arg6 = arg1 + (s32)fn_80235F64(field, 0);
+        *arg5 = arg1 + (s32)fn_80235EF0(field, 0);
+        *arg6 = arg1 + (s32)fn_80235F64(*(s32 *)((u8 *)arg0 + 4), 0);
     }
 }
 #pragma pop
@@ -5902,6 +5901,8 @@ extern "C" void *fn_80223B94(void *arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma push
+#pragma processor 750
 extern "C" void fn_80223C20(void *arg0) {
     f32 temp_f31;
     u8 sp8[0x40];
@@ -5910,13 +5911,11 @@ extern "C" void fn_80223C20(void *arg0) {
     if (*(f32 *)((u8 *)*(void **)((u8 *)arg0 + 0x260) + 0x30) > temp_f31 && *(s32 *)((u8 *)arg0 + 0x250) != 0) {
         fn_8022EEF8(sp8, (s32)*(void **)((u8 *)arg0 + 0x260), fn_8022EDC4());
         fn_8022ED00(sp8);
-        fn_802C5320(*(s32 *)((u8 *)arg0 + 0x250), 0,
-            *(f32 *)((u8 *)arg0 + 0x244), *(f32 *)((u8 *)arg0 + 0x248), temp_f31,
-            *(f32 *)((u8 *)arg0 + 0x254), *(f32 *)((u8 *)arg0 + 0x258));
+        fn_802C5320(*(s32 *)((u8 *)arg0 + 0x250), 0, *(f32 *)((u8 *)arg0 + 0x244), *(f32 *)((u8 *)arg0 + 0x248), temp_f31, *(f32 *)((u8 *)arg0 + 0x254), *(f32 *)((u8 *)arg0 + 0x258));
         fn_8022EDB8();
     }
 }
-
+#pragma pop
 extern "C" void fn_80223CC4(void *arg0) {
     void *obj = *(void **)((u8 *)arg0 + 0x264);
     s32 a = *(s32 *)((u8 *)arg0 + 0x24C);
