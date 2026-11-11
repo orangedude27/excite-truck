@@ -8,16 +8,18 @@ extern void fn_802E317C(void *arg0, ...);
 extern char lbl_8032BBC0[];
 #pragma push
 #pragma scheduling invalid_target
-void fn_801345D8(char *dst, int len, const char *fmt, ...) {
+void fn_801345D8(char *buffer, int bufferSize, const char *fmt, ...) {
     va_list args;
-    int count;
+    int writtenChars;
+    /* Format into buffer and report fatal overflow if the result does not fit;
+     * always force a terminator at the end of the destination buffer. */
     va_start(args, fmt);
-    count = vsprintf(dst, fmt, args);
+    writtenChars = vsprintf(buffer, fmt, args);
     va_end(args);
-    if (count >= len) {
-        fn_802E317C(lbl_8032BBC0, count + 1, len);
+    if (writtenChars >= bufferSize) {
+        fn_802E317C(lbl_8032BBC0, writtenChars + 1, bufferSize);
     }
-    dst[len - 1] = 0;
+    buffer[bufferSize - 1] = 0;
 }
 #pragma pop
 void fn_801346B4(char *dst, int len, const unsigned char *src) {
