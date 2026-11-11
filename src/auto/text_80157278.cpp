@@ -3406,38 +3406,41 @@ void JStudio_JAudio::TAdaptor_sound::endSound_fadeOut_(u32 arg0) {
 }
 
 extern "C" s32 lbl_8055A058[1];
-extern "C" void fn_8015D8B0(void* arg0) {
+extern "C" void fn_8015D8B0(void *arg0) {
     struct Obj {
-        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
-        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
-        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
-        virtual void v16(); virtual int v17(); virtual void v18(); virtual void v19();
-        virtual void v20(); virtual int v21(); virtual void v22(); virtual int v23();
-        virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
-        virtual void v28(); virtual int v29();
+        virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4();
+        virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void p9();
+        virtual void p10(); virtual void p11(); virtual void p12(); virtual void p13(); virtual void p14();
+        virtual void p15(); virtual void p16(); virtual s32 lower();
+        virtual void p18(); virtual void p19(); virtual void p20(); virtual s32 upper();
+        virtual void noop(); virtual s32 progress();
+        virtual void p24(); virtual void p25(); virtual void p26(); virtual void p27(); virtual void p28();
+        virtual s32 type();
     };
     struct Adaptor {
-        virtual void v0();
-        virtual void v1(int, ...);
-        virtual void v2(int, ...);
-        virtual void v3(int, ...);
-        virtual void v4();
-        virtual void v5(int);
-        virtual void v6(int);
-        virtual void v7();
-        virtual void v8(int);
+        virtual void a0();
+        virtual void a1();
+        virtual void format(int, ...);
+        virtual void a3();
+        virtual void clear();
+        virtual void a5();
+        virtual void setProgress(s32);
+        virtual void a7();
+        virtual void setState(s32);
     };
-    Obj* obj = (Obj*)arg0;
-    if (*(void**)((char*)arg0 + 0x248) != 0) {
-        (*(Adaptor**)((char*)arg0 + 0x248))->v2((int)&lbl_8055A058[0], obj->v23());
-        (*(Adaptor**)((char*)arg0 + 0x248))->v6(obj->v29());
-        obj->v22();
-        (*(Adaptor**)((char*)arg0 + 0x248))->v4();
-        int limit = obj->v17();
-        int current = obj->v21();
-        if (current >= limit)
-            (*(Adaptor**)((char*)arg0 + 0x248))->v8(1);
+    Obj *obj = (Obj *)arg0;
+    s32 limit, current;
+    /* Updates the attached UI adaptor with progress/type and marks complete when upper >= lower. */
+    if (*(void **)((char *)arg0 + 0x248) != 0) {
+        (*(Adaptor **)((char *)arg0 + 0x248))->format((int)&lbl_8055A058[0], obj->progress());
+        (*(Adaptor **)((char *)arg0 + 0x248))->setProgress(obj->type());
+        obj->noop();
+        (*(Adaptor **)((char *)arg0 + 0x248))->clear();
+        limit = obj->lower();
+        current = obj->upper();
+        if (current >= limit) {
+            (*(Adaptor **)((char *)arg0 + 0x248))->setState(1);
+        }
     }
 }
 
