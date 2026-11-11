@@ -64,6 +64,11 @@ struct DtbItem801D9394 {
     virtual void f2();
     virtual const char *getString(const char *);
 };
+// A DTB value table as opened by fn_80131810: get() returns the named
+// sub-table inside it (fn_801D9394 walks the same objects item by item).
+struct DtbTable {
+    virtual void *get(const char *);
+};
 struct Getter801D9284 {
     virtual void *get(const char *);
 };
