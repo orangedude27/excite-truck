@@ -1,8 +1,10 @@
-typedef struct GridEdge_801F5508 {
-    short from;
-    short to;
-    float distance;
-} GridEdge_801F5508;
+// One cloth distance constraint ("edge") between two grid vertices, built by
+// fn_801F5508. restDistSq is the squared rest length (PSVECSquareDistance at build).
+typedef struct ClothEdge {
+    unsigned short from;
+    unsigned short to;
+    float restDistSq;
+} ClothEdge;
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 extern void *fn_8012850C();
@@ -314,21 +316,21 @@ extern "C" void fn_801F5344(void *out, void *arg1, void *arg2) {
 #pragma push
 #pragma use_lmw_stmw off
 void fn_801F5508(void *arg0) {
-    register int temp_r5 = *(int *)((char *)arg0 + 0x2C);
-    register int temp_r6 = *(int *)((char *)arg0 + 0x30);
-    register int temp_r30 = ((temp_r6 - 1) * temp_r5) + (temp_r6 * (temp_r5 - 1));
-    register char *temp_r31 = (char *)((void *(*)(int, void *))fn_8012850C)(
+    int temp_r5 = *(int *)((char *)arg0 + 0x2C);
+    int temp_r6 = *(int *)((char *)arg0 + 0x30);
+    int temp_r30 = ((temp_r6 - 1) * temp_r5) + (temp_r6 * (temp_r5 - 1));
+    char *temp_r31 = (char *)((void *(*)(int, void *))fn_8012850C)(
         temp_r30 * 8, lbl_8033AD94);
-    register int var_r29 = 0;
-    register int var_r24 = 0;
-    register int var_r25;
-    register int var_r23;
-    register int temp_r28;
+    int var_r29 = 0;
+    int var_r24 = 0;
+    int var_r25;
+    int var_r23;
+    int temp_r28;
     int temp_r5_2;
     int temp_r0;
     char *temp_r27;
     void *temp_r4;
-    register int var_r27;
+    int var_r27;
     char *temp_r24;
     int temp_r5_3;
     void *temp_r4_2;
