@@ -55,10 +55,10 @@ typedef struct OSFatalParam {
 #define FATAL_MARGIN 48     // wrap before this far from the right edge
 #define TEXEL_NIBBLE 0x0F   // one 4-bit texel
 #define YUV_MIN_LUMA 16     // black in the video-range Y channel
-extern unsigned short lbl_80558F58;
-extern void *lbl_8055DA48;
-extern int *lbl_8055DA50;
-extern int *lbl_8055DA54;
+extern unsigned short lbl_80558F58; // OSGetFontEncode()'s cached encoding; 0xFFFF until the font code is read
+extern void *lbl_8055DA48;          // the string parser the font functions call: ParseStringS or ParseStringW
+extern int *lbl_8055DA50;           // FontDataSjis: the SJIS font OSInitFont() loaded
+extern int *lbl_8055DA54;           // FontDataAnsi: the ANSI font OSInitFont() loaded
 extern unsigned short lbl_803049F0[];
 extern unsigned short lbl_80304B70[];
 extern int ReadFont();
