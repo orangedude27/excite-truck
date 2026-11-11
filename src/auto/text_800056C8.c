@@ -140,14 +140,9 @@ extern "C" s32 fn_800057D0(void) {
         virtual s32 v11() = 0;
         virtual s32 check() = 0;
     };
-    struct Manager {
-        u8 pad[0x14];
-        s32 count;
-    };
-    s32 *base;
-    s32 *cursor;
+    u8 *base;
+    u8 *cursor;
     s32 count, i;
-
     if (fn_801769A8() & 0x4000) {
         fn_800056E0(lbl_8034EEB8[0]);
         return;
@@ -170,14 +165,14 @@ extern "C" s32 fn_800057D0(void) {
         fn_800056E0(lbl_8034EEB8[23]);
         return;
     }
-    count = ((Manager *)lbl_8055D350)->count;
-    cursor = lbl_8034EEB8;
+    cursor = (u8 *)lbl_8034EEB8;
     base = cursor;
-    for (i = 0; i < count; cursor += 4, i++) {
+    count = ((s32 *)lbl_8055D350)[5];
+    for (i = 0; i < count; cursor += 0x10, i++) {
         if (fn_80005580(i) != 0) {
-            fn_800056C8(i, base[0x58 / 4]);
+            fn_800056C8(i, *(s32 *)(base + 0x58));
         } else {
-            fn_800056C8(i, cursor[0x1C / 4]);
+            fn_800056C8(i, *(s32 *)(cursor + 0x1C));
         }
     }
 }
@@ -508,7 +503,7 @@ extern "C" void fn_80006110(void *arg0) {
         virtual void v4();
         virtual void v5();
         virtual void v6();
-        virtual void v7(s32 *);
+        virtual void v7();
         virtual void v8();
         virtual void v9();
         virtual void v10();
@@ -526,7 +521,7 @@ extern "C" void fn_80006110(void *arg0) {
         virtual void v22();
         virtual s32 v23();
     };
-    extern void fn_8001071C(s32);
+    extern void fn_8001071C(void *, s32);
     extern u8 lbl_802FB69C[];
     f32 threshold;
     s32 flag;
@@ -550,7 +545,7 @@ extern "C" void fn_80006110(void *arg0) {
             s32 index2 = settings2[7];
             s32 *p = entries + index2 * 4;
             void *obj = *(void **)(p + 7);
-            ((VTable *)obj)->v7(p);
+            ((VTable *)obj)->v7();
         }
     } else {
         if (fn_80005564() != 0) {
@@ -572,7 +567,7 @@ extern "C" void fn_80006110(void *arg0) {
         if (*(u8 *)((u8 *)object + 0x28) != 0)
             p = lbl_802FB69C;
         if (p != 0)
-            ((void (*)(s32, s32))fn_8001071C)((s32)p, index3);
+            fn_8001071C(p, index3);
     }
 }
 #pragma cplusplus off
@@ -1306,7 +1301,6 @@ extern s32 fn_801E7E3C(void);
 extern s32 fn_801E85A4(void);
 extern f32 lbl_80560194;
 extern f32 lbl_80560198;
-extern s32 fn_800057D0(void);
 extern s32 fn_80161C18(void);
 extern s32 fn_80021258(void);
 extern s32 fn_801DF110(void);
