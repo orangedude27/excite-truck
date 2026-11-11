@@ -2896,6 +2896,7 @@ extern "C" s32 fn_801A1148(void *arg0, const f32 *vec, s32 arg2, f32 *arg3, s32 
     }
     return 0;
 }
+#pragma pop
 #pragma scheduling on
 extern "C" void fn_801A1250(void* arg0) {
     VTab1250** entries = (VTab1250**)arg0;
