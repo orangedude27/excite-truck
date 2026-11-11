@@ -717,13 +717,14 @@ void fn_802085EC(void) {
 	((void (*)(void))fn_80208408)();
 }
 
-signed long fn_802085F0(void* arg0, signed long x) {
-    switch (x) {
-        case 3:
-        case 4:
-        case 5:
-        case 6:
-        case 8:
+/* True for the positional sound classes, the ones fn_80208858 may voice in 3D. */
+signed long fn_802085F0(void* soundMgr, signed long sndClass) {
+    switch (sndClass) {
+        case SNDCLASS_ENGINE:
+        case SNDCLASS_TIRESQUEAL:
+        case SNDCLASS_CRASH:
+        case SNDCLASS_ENGINE_START:
+        case SNDCLASS_WIND:
             return 1;
         default:
             return 0;
