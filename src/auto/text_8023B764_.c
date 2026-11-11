@@ -472,34 +472,41 @@ extern const char lbl_8034137C[]; /* "GameDoEve: eve [%s] contest [%s] at %s" */
  * with (fn_8023BF68 rejects 0 and anything past 4).  A negative count gives
  * every player its own index instead of the currently selected player. */
 #define player_count lbl_8055BB30
-extern "C" void fn_8023BFBC(s32 arg0, s32 arg1) {
-    struct Dummy {
+extern "C" void fn_8023BFBC(s32 eventId, s32 contestIdx) {
+    /* The contest's parameter table object (ContestEntry+0x20).  Slot 0x18
+     * reads an element of the table as a string, falling back on the name it
+     * is handed when the table has no such element. */
+    struct ParamTable {
         virtual void f0();
-        virtual void f1(s32);
+        virtual s32 hasElement(const char *elementName);
         virtual void f2();
-        virtual void f3();
-        virtual s32 makeName(s32, s32);
+        virtual const char *getString(const char *elementName);
+        virtual const char *getName(const char *elementName, const char *fallback);
     };
-    s32 *temp_r30;
-    s32 *temp_r31;
-    s32 type;
-    s32 value;
+    struct EventRecord *event;
+    struct ContestEntry *contest;
+    const char *typeName;
+    s32 players;
     s32 sign;
-    s32 count;
-    s32 result;
-    temp_r30 = (s32 *)fn_80012820(arg0);
-    temp_r31 = fn_80012870(arg0, arg1);
-    type = fn_80007FF0(*(s32 *)((u8 *)temp_r31 + 8));
-    result = ((Dummy *)*(void **)((u8 *)temp_r31 + 0x20))->makeName((s32)&lbl_8055BB34, type);
-    fn_802E30C8(lbl_8034137C, (u8 *)temp_r30 + 0x28, result, (u8 *)temp_r30 + 8);
-    value = lbl_8055BB30;
-    sign = value >> 31;
-    count = (sign ^ value) - sign;
-    fn_80137C78(count);
+    s32 channelCount;
+    const char *contestName;
+
+    /* Log which event, contest and track this (event, contest) pair picked,
+     * then run it with as many players as the debug console asked for: every
+     * player channel is set up first and released again once the race ends. */
+    event = (struct EventRecord *)fn_80012820(eventId);
+    contest = (struct ContestEntry *)fn_80012870(eventId, contestIdx);
+    typeName = (const char *)fn_80007FF0(contest->type);
+    contestName = ((struct ParamTable *)contest->table)->getName((const char *)&contest_name_key, typeName);
+    fn_802E30C8(lbl_8034137C, event->name, contestName, event->track);
+    players = player_count;
+    sign = players >> 31;
+    channelCount = (sign ^ players) - sign;
+    fn_80137C78(channelCount);
     {
         s32 i;
-        for (i = 0; i < count; i++) {
-            if (lbl_8055BB30 >= 0) {
+        for (i = 0; i < channelCount; i++) {
+            if (player_count >= 0) {
                 fn_80137C84(fn_802E4A10(), i);
             } else {
                 fn_80137C84(i, i);
@@ -507,10 +514,10 @@ extern "C" void fn_8023BFBC(s32 arg0, s32 arg1) {
             fn_80137C7C(*(s32 *)((u8 *)fn_80016464(i) + 4), i);
         }
     }
-    fn_8023BEB8(arg0, arg1, 0);
+    fn_8023BEB8(eventId, contestIdx, 0);
     {
         s32 i;
-        for (i = 0; i < count; i++) {
+        for (i = 0; i < channelCount; i++) {
             fn_80137C80(i);
         }
     }
