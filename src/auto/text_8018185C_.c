@@ -459,7 +459,7 @@ extern "C" void *fn_801836E0(void *object, int deleteFlag) {
     SubObject *child2;
     if (object != 0) {
         *(void **)object = (void *)lbl_803326F8;
-        fn_801D1100(*(int *)((char *)object + 0x1EC), lbl_803326F8);
+        fn_801D1100(*(void **)((char *)object + 0x1EC));
         child0 = *(SubObject **)((char *)object + 0x257C);
         if (child0 != 0 && child0 != 0) {
             child0->deleteNow(1);
