@@ -1130,12 +1130,14 @@ extern "C" int stricmp(const char*, const char*);
 extern "C" int fn_80129D18(int, int = 0);
 void fn_801FCAE0(void*, void*);
 void fn_801FD024(void*, void*);
-extern "C" void fn_801FEB58(void* value) {
-    char* base = (char*)lbl_8055EC94;
+extern "C" void fn_801FEB58(void *poolName) {
+    // Find the named pool entry in the global pool table (lbl_8055EC94), pick a
+    // random free object from it, move that object to the used list, and initialize it.
+    char *base = (char *)lbl_8055EC94;
     int i = 0;
-    char* item = base;
-    char* name = (char*)value;
-    while (i < *(int*)(base + 0x4C0)) {
+    char *item = base;
+    char *name = (char *)poolName;
+    while (i < *(int *)(base + 0x4C0)) {
         if (stricmp(name, item) == 0) {
             base += i * 0x98;
             goto found;
@@ -1148,20 +1150,20 @@ found:
     if (base == 0) {
         fn_802E317C(lbl_8033B84C, name);
     }
-    int count = *(int*)(base + 0x90);
+    int count = *(int *)(base + 0x90);
     if (count > 0) {
         int index = fn_80129D18(0, count);
-        int selected = *(int*)(base + 0x10 + index * 4);
+        int selected = *(int *)(base + 0x10 + index * 4);
         int j = index + 1;
-        int* p = (int*)(base + j * 4);
-        for (; j < *(int*)(base + 0x90); j++, p++) {
+        int *p = (int *)(base + j * 4);
+        for (; j < *(int *)(base + 0x90); j++, p++) {
             p[3] = p[4];
         }
-        *(int*)(base + 0x90) -= 1;
-        fn_801FCAE0((void*)selected, name);
-        int c2 = *(int*)(base + 0x94);
-        *(int*)(base + 0x50 + c2 * 4) = selected;
-        *(int*)(base + 0x94) = c2 + 1;
+        *(int *)(base + 0x90) -= 1;
+        fn_801FCAE0((void *)selected, name);
+        int c2 = *(int *)(base + 0x94);
+        *(int *)(base + 0x50 + c2 * 4) = selected;
+        *(int *)(base + 0x94) = c2 + 1;
     }
 }
 
