@@ -1154,12 +1154,12 @@ extern "C" void UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv(void *this_) {
 }
 #pragma use_lmw_stmw reset
 extern "C" void fn_800E41EC(void) {
+    int one = 1;
     if ((s8)lbl_8055DE18 == 0) {
         fn_800E279C(&lbl_80407F6C);
         __register_global_object(&lbl_80407F6C, (void *)fn_800E2D74, &lbl_80407F60);
-        lbl_8055DE18 = 1;
+        lbl_8055DE18 = (s8)one;
     }
-
     void **sentinel = (void **)((char *)&lbl_80407F6C + 0xC);
     void *node = *sentinel;
     do {
@@ -1168,25 +1168,22 @@ extern "C" void fn_800E41EC(void) {
         if (current == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322034, 0x23D, lbl_80322010);
         (*(void (**)())((char *)current + 8))();
-
         if ((s8)lbl_8055DE18 == 0) {
             fn_800E279C(&lbl_80407F6C);
             __register_global_object(&lbl_80407F6C, (void *)fn_800E2D74, &lbl_80407F60);
-            lbl_8055DE18 = 1;
+            lbl_8055DE18 = (s8)one;
         }
     } while (node != sentinel);
-
     if ((s8)lbl_8055DE18 == 0) {
         fn_800E279C(&lbl_80407F6C);
         __register_global_object(&lbl_80407F6C, (void *)fn_800E2D74, &lbl_80407F60);
-        lbl_8055DE18 = 1;
+        lbl_8055DE18 = (s8)one;
     }
-
     if (*(void **)((char *)&lbl_80407F6C + 0x6C2C) != 0) {
         if ((s8)lbl_8055DE18 == 0) {
             fn_800E279C(&lbl_80407F6C);
             __register_global_object(&lbl_80407F6C, (void *)fn_800E2D74, &lbl_80407F60);
-            lbl_8055DE18 = 1;
+            lbl_8055DE18 = (s8)one;
         }
         (*(void (**)(void *))(*(void **)((char *)&lbl_80407F6C + 0x6C2C)))(&lbl_80407F6C);
     }
@@ -1212,8 +1209,8 @@ extern "C" void fn_800E4364(void *arg0, int arg1) {
     extern const char lbl_80322040[];
     unsigned int interrupt;
     int valid;
-    unsigned int sentinel;
-    unsigned int node;
+    void *sentinel;
+    void *node;
     void *list;
     unsigned int base;
 
@@ -1228,12 +1225,12 @@ extern "C" void fn_800E4364(void *arg0, int arg1) {
         OSRestoreInterrupts(interrupt);
         return;
     }
-    node = *(unsigned int *)((char *)list + 4);
-    sentinel = (unsigned int)((char *)list + 4);
+    node = *(void **)((char *)list + 4);
+    sentinel = (char *)list + 4;
     while (node != sentinel) {
         if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322064, 0x23D, lbl_80322040);
-        ((Dummy *)(node - 4))->third();
-        node = *(unsigned int *)node;
+        ((Dummy *)((char *)node - 4))->third();
+        node = *(void **)node;
     }
     Clear__Q46nw4hbm2ut6detail12LinkListImplFv(list);
     switch (arg1) {
@@ -2265,27 +2262,15 @@ public:
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, int arg1, const void *arg2, unsigned long arg3) {
-    int format;
-    unsigned int interrupt;
-    unsigned int value;
-    unsigned int temp;
+    unsigned int interrupt = OSDisableInterrupts();
+    int format = *(int *)((char *)arg0 + 0x118);
+    unsigned int value = (unsigned int)arg2;
     unsigned int start;
-    int offset;
-    int i;
-    unsigned int *voice;
-    unsigned int end;
-
-    interrupt = OSDisableInterrupts();
-    format = *(int *)((char *)arg0 + 0x118);
-    value = (unsigned int)arg2;
     if (arg2 != 0) value += 0x80000000;
     start = 0;
     switch (format) {
     case 0:
-        temp = arg3 / 7;
-        offset = (arg3 - temp) >> 1;
-        temp = offset + temp;
-        start = (arg3 - ((temp >> 3) * 0xE)) + (value * 2) + ((temp * 2) & 0xFFFFFFF0) + 2;
+        start = arg3 % 14 + value * 2 + (arg3 / 14) * 16 + 2;
         break;
     case 10:
         start = value + arg3;
@@ -2297,22 +2282,17 @@ extern "C" void SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, in
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x561, lbl_80322438);
         break;
     }
-    offset = arg1 * 0x10;
-    value = start >> 16;
-    end = start & 0xFFFF;
-    voice = (unsigned int *)((char *)arg0 + offset);
-    i = 0;
-    do {
-        unsigned int *channel = (unsigned int *)*(unsigned int **)((char *)voice + 0xC);
-        unsigned int innerInterrupt = OSDisableInterrupts();
-        *(unsigned short *)((char *)channel + 0x1B4) = value;
-        *(unsigned short *)((char *)channel + 0x1B6) = end;
-        temp = *(unsigned int *)((char *)channel + 0x1C);
-        if (!(temp & 0x800)) *(unsigned int *)((char *)channel + 0x1C) = temp | 0x2000;
-        OSRestoreInterrupts(innerInterrupt);
-        voice = (unsigned int *)((char *)voice + 4);
-        i++;
-    } while (i < *(int *)((char *)arg0 + 0x108));
+    unsigned int *voice = (unsigned int *)((char *)arg0 + arg1 * 0x10);
+    unsigned int hi = start >> 16;
+    unsigned int lo = start & 0xFFFF;
+    for (int i = 0; i < *(int *)((char *)arg0 + 0x108); i++, voice++) {
+        unsigned int ch = voice[3];
+        unsigned int inner = OSDisableInterrupts();
+        *(unsigned short *)(ch + 0x1B4) = hi;
+        *(unsigned short *)(ch + 0x1B6) = lo;
+        if (!(*(unsigned int *)(ch + 0x1C) & 0x800)) *(unsigned int *)(ch + 0x1C) |= 0x2000;
+        OSRestoreInterrupts(inner);
+    }
     OSRestoreInterrupts(interrupt);
 }
 #pragma pop
@@ -2320,55 +2300,52 @@ extern "C" void SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, in
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling reset
-void nw4hbm::snd::detail::AxVoice::SetLoopEnd(int arg1, const void *arg2, unsigned long arg3) {
-    int format;
-    unsigned int interrupt;
-    unsigned int value;
-    unsigned int temp;
+void nw4hbm::snd::detail::AxVoice::SetLoopEnd(int index, const void *address, unsigned long length) {
+    unsigned int irq;
     unsigned int start;
+    unsigned int loopEnd;
+    unsigned int temp;
+    unsigned int end;
+    int mode;
     int offset;
     int i;
     unsigned int *voice;
-    unsigned int end;
-
-    interrupt = OSDisableInterrupts();
-    format = *(int *)((char *)this + 0x118);
-    value = (unsigned int)arg2;
-    if (arg2 != 0) value += 0x80000000;
-    start = 0;
-    switch (format) {
+    irq = OSDisableInterrupts();
+    mode = *(int *)((char *)this + 0x118);
+    start = (unsigned int)address;
+    if (address != 0) start += 0x80000000;
+    loopEnd = 0;
+    switch (mode) {
     case 0:
-        end = (unsigned int)arg3 - 1;
+        end = (unsigned int)length - 1;
         temp = end / 14;
-        start = end % 14 + (value * 2) + (temp << 4) + 2;
+        loopEnd = end % 14 + (start << 1) + (temp << 4) + 2;
         break;
     case 25:
-        start = value + (unsigned int)arg3 - 1;
+        loopEnd = start + (unsigned int)length - 1;
         break;
     case 10:
-        start = (unsigned int)arg3 + (value >> 1) - 1;
+        loopEnd = (unsigned int)length + (start >> 1) - 1;
         break;
     default:
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x561, lbl_80322438);
         break;
     }
-    offset = arg1 * 0x10;
-    value = start >> 16;
-    end = start & 0xFFFF;
+    offset = index * 0x10;
+    start = loopEnd >> 16;
+    end = loopEnd & 0xFFFF;
     voice = (unsigned int *)((char *)this + offset);
-    i = 0;
-    do {
-        unsigned int *channel = (unsigned int *)*(unsigned int **)((char *)voice + 0xC);
-        unsigned int innerInterrupt = OSDisableInterrupts();
-        *(unsigned short *)((char *)channel + 0x1B8) = value;
-        *(unsigned short *)((char *)channel + 0x1BA) = end;
-        temp = *(unsigned int *)((char *)channel + 0x1C);
-        if (!(temp & 0x800)) *(unsigned int *)((char *)channel + 0x1C) = temp | 0x4000;
-        OSRestoreInterrupts(innerInterrupt);
+    for (i = 0; i < *(int *)((char *)this + 0x108); i++) {
+        unsigned int *obj = (unsigned int *)*(unsigned int **)((char *)voice + 0xC);
+        unsigned int inner = OSDisableInterrupts();
+        *(unsigned short *)((char *)obj + 0x1B8) = (unsigned short)start;
+        *(unsigned short *)((char *)obj + 0x1BA) = (unsigned short)end;
+        temp = *(unsigned int *)((char *)obj + 0x1C);
+        if ((temp & 0x800) == 0) *(unsigned int *)((char *)obj + 0x1C) = temp | 0x4000;
+        OSRestoreInterrupts(inner);
         voice = (unsigned int *)((char *)voice + 4);
-        i++;
-    } while (i < *(volatile int *)((char *)this + 0x108));
-    OSRestoreInterrupts(interrupt);
+    }
+    OSRestoreInterrupts(irq);
 }
 #pragma scheduling reset
 #pragma pop
@@ -2519,17 +2496,16 @@ extern "C" void *memcpy(void *, const void *, unsigned int);
 extern "C" void *memset(void *, int, unsigned int);
 extern "C" void fn_80033918(void *, void *);
 extern "C" void fn_800E68EC(void *arg0, int arg1, int arg2, void *arg3, int arg4) {
-    struct Message { const char bytes[1]; };
     unsigned char sp8[0x28];
-    const Message *message = (const Message *)lbl_803221A8;
+    unsigned int message = (unsigned int)lbl_803221A8;
     void **entry;
     int i;
     if (arg1 >= 2)
-        Panic__Q26nw4hbm2dbFPCciPCce(message->bytes, 0x434, message->bytes + 0x258);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)message, 0x434, (const char *)(message + 0x258));
     switch (arg2) {
     case 0:
         if (arg3 == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(message->bytes, 0x439, message->bytes + 0x2A0);
+            Panic__Q26nw4hbm2dbFPCciPCce((const char *)message, 0x439, (const char *)(message + 0x2A0));
         memcpy(sp8, arg3, 0x20);
         *(u16 *)(sp8 + 0x20) = *(u16 *)((char *)arg3 + 0x20);
         *(u16 *)(sp8 + 0x22) = *(u16 *)((char *)arg3 + 0x22);
@@ -2878,8 +2854,8 @@ extern "C" void InvalidateWaveData__Q46nw4hbm3snd6detail7AxVoiceFPCvPCv(void *se
     unsigned int irq = OSDisableInterrupts();
     if (*((u8 *)self + 0x11C) != 0) {
         char *voice = (char *)self;
-        int count = *(int *)((char *)self + 0x104);
         int found = 0;
+        int count = *(int *)((char *)self + 0x104);
         int i;
         for (i = count; i > 0; --i) {
             void *address = *(void **)(voice + 0x2C);
@@ -2892,7 +2868,7 @@ extern "C" void InvalidateWaveData__Q46nw4hbm3snd6detail7AxVoiceFPCvPCv(void *se
             if (*((u8 *)self + 0x11E) != 0) {
                 unsigned int nested = OSDisableInterrupts();
                 void *manager = *(void **)((char *)self + 0xC);
-                register int active;
+                int active;
                 if (manager == 0) {
                     OSRestoreInterrupts(nested);
                     active = 0;
@@ -3198,6 +3174,11 @@ extern "C" void InitParam__Q44nw4r3snd6detail10BasicSoundFv(void *self) {
     float base = lbl_80560FB0;
     float initialTarget = lbl_80560FB4;
     int zero = 0;
+    int current;
+    int total;
+    float baseAgain = 0;
+    float finalTarget = 0;
+    int one = 0;
     *((unsigned char *)self + 0x67) = zero;
     *((unsigned char *)self + 0x68) = zero;
     *((unsigned char *)self + 0x64) = zero;
@@ -3214,16 +3195,13 @@ extern "C" void InitParam__Q44nw4r3snd6detail10BasicSoundFv(void *self) {
     *(float *)((char *)self + 0x58) = initialTarget;
     *(int *)((char *)self + 0x5c) = zero;
     *(int *)((char *)self + 0x60) = zero;
-    int current = *(int *)((char *)self + 0x50);
-    int total = *(int *)((char *)self + 0x4c);
+    current = *(int *)((char *)self + 0x50);
+    total = *(int *)((char *)self + 0x4c);
     if (current >= total) {
         base = *(float *)((char *)self + 0x44);
     } else {
         base += (float)current * (*(float *)((char *)self + 0x48) - *(float *)((char *)self + 0x44)) / (float)total;
     }
-    float baseAgain;
-    float finalTarget;
-    int one;
     finalTarget = lbl_80560FB4;
     zero = 0;
     baseAgain = lbl_80560FB0;
@@ -3505,6 +3483,72 @@ extern "C" void Update__Q46nw4hbm3snd6detail10BasicSoundFv(void *self) {
         UF(unsigned char, 0x64) = 0;
     }
 }
+
+extern "C" void Shutdown__Q46nw4hbm3snd6detail10BasicSoundFv(void *self) {
+    extern void DetachSound__Q34nw4r3snd11SoundHandleFv(void *);
+    extern void detail_FreePlayerHeap__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *, void *);
+    extern void detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *, void *);
+    extern void detail_RemoveSoundList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound_800F8880(void *, void *);
+    extern void RemoveSoundList__Q46nw4hbm3snd6detail19ExternalSoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *, void *);
+    extern float lbl_80560FB0;
+    class Ext {
+    public:
+        virtual void e0(); virtual void notify(int, void *);
+    };
+    class Handle {
+    public:
+        virtual void h0(); virtual void h1(); virtual void stop(); virtual void h3();
+        virtual int isValid(); virtual void h5(); virtual void h6(); virtual void h7();
+        virtual void setVolume(float);
+    };
+    class Self {
+    public:
+        virtual void s0(); virtual void s1(); virtual void s2(); virtual void s3();
+        virtual void s4(); virtual void s5(); virtual void s6(); virtual void s7();
+        virtual void s8(); virtual void s9(); virtual void s10(); virtual void s11();
+        virtual void s12(); virtual void s13(); virtual void s14(); virtual void s15();
+        virtual void s16(); virtual void s17();
+        virtual int check();
+        virtual void release();
+        virtual void s20();
+        virtual Handle *getHandle();
+    };
+    Self *s = (Self *)self;
+    Handle *h = s->getHandle();
+    if (h->isValid() != 0) {
+        if (*(unsigned char *)((char *)self + 0x69) != 0) {
+            h->setVolume(lbl_80560FB0);
+        }
+        h->stop();
+    }
+    *(int *)((char *)self + 0x78) = -1;
+    *(int *)((char *)s->getHandle() + 4) = -1;
+    if (*(void **)((char *)self + 8) != 0) {
+        DetachSound__Q34nw4r3snd11SoundHandleFv(*(void **)((char *)self + 8));
+    }
+    if (*(void **)((char *)self + 0xC) != 0) {
+        DetachSound__Q34nw4r3snd11SoundHandleFv(*(void **)((char *)self + 0xC));
+    }
+    if (s->check() != 0) {
+        s->release();
+    }
+    if (*(int *)((char *)self + 4) != 0) {
+        detail_FreePlayerHeap__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(*(void **)((char *)self + 0x10), self);
+    }
+    detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(*(void **)((char *)self + 0x10), self);
+    detail_RemoveSoundList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound_800F8880(*(void **)((char *)self + 0x10), self);
+    if (*(void **)((char *)self + 0x14) != 0) {
+        RemoveSoundList__Q46nw4hbm3snd6detail19ExternalSoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(*(void **)((char *)self + 0x14), self);
+    }
+    Ext *ext = *(Ext **)((char *)self + 0x20);
+    if (ext != 0) {
+        ext->notify(*(int *)((char *)self + 0x24), self);
+        *(int *)((char *)self + 0x24) = 0;
+    }
+    *(unsigned char *)((char *)self + 0x65) = 0;
+    *(unsigned char *)((char *)self + 0x69) = 0;
+}
+
 #pragma dont_inline on
 extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(void *this_, int priority) {
     int valid = 0;
