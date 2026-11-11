@@ -695,7 +695,7 @@ extern "C" void* fn_80157B00(void* arg0, s32 arg1, s32 arg2) {
 extern "C" void* fn_80157CF0(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
     u8* ptr = (u8*)arg0 + 0x14;
     *(void**)((u8*)arg0 + 8) = ptr;
-    *(void**)arg0 = lbl_8032F2BC;
+    *(void**)arg0 = &lbl_8032F2BC;
     *(s32*)((u8*)arg0 + 0x10) = 10;
     *(s32*)((u8*)arg0 + 0xC) = 0;
     do {
@@ -710,7 +710,7 @@ extern "C" void* fn_80157CF0(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
     *(f32*)((u8*)arg0 + 0x250) = value;
     *(s32*)((u8*)arg0 + 0x268) = 0;
     *(s32*)((u8*)arg0 + 0x248) = 0;
-    *(void**)arg0 = lbl_8032EE68;
+    *(void**)arg0 = &lbl_8032EE68;
     return arg0;
 }
 #pragma scheduling on
@@ -1176,20 +1176,25 @@ extern "C" void fn_8015889C(void* arg0) {
     }
 }
 
-#pragma dont_inline on
+#pragma push
+#pragma processor 750
 extern "C" f32 fn_801589A8(Unk801577F0* self, s32 index) {
     struct V { virtual void a(); virtual void b(); virtual void c(); virtual void d(); virtual void e(); virtual void f(); virtual void g(); virtual void h(); virtual void i(); virtual void j(); virtual void k(); virtual void l(); virtual void m(); virtual void n(); virtual void o(); virtual void p(); virtual void q(); virtual s32 count(s32); };
     f32 value;
-    if (index >= ((V*)self)->count(index)) value = lbl_80561754;
-    else value = *(f32*)(*(u8**)((u8*)self + 8) + index * 0x38 + 0x10);
-    if (*((u32*)__AXFXGetLfoSinTable_801769CC() + 1) & 0x200000) {
-        if (!*((u8*)self + 0x271)) return lbl_80561754;
-        if (!*((u8*)self + 0x270)) return value * lbl_80561750;
-        return value * lbl_80561758;
+    f32 tmp;
+    if (index >= ((V*)self)->count(index)) value = *(f32*)(*(u8**)((u8*)self + 8) + index * 0x38 + 0x10);
+    else value = lbl_80561754;
+    if ((*((u32*)__AXFXGetLfoSinTable_801769CC() + 1) & 0x200000) != 0) {
+        if (*((u8*)self + 0x271) != 0) {
+            if (*((u8*)self + 0x270) != 0) tmp = lbl_80561758;
+            else tmp = lbl_80561750;
+            return value * tmp;
+        }
+        return lbl_80561754;
     }
     return value;
 }
-#pragma dont_inline reset
+#pragma pop
 extern "C" s32 fn_80158A5C(void *arg0, s32 *arg1) { return *(s32 *)((u8 *)arg1 + 0x2620) == 0; }
 
 extern "C" s32 fn_80158A6C(void) { return 0; }
@@ -1202,27 +1207,29 @@ extern "C" void fn_80158A74(void *arg0, f32 farg0) {
 extern "C" f32 lbl_80561754;
 #pragma scheduling on
 extern "C" void fn_80158A84(Unk801577F0 *arg0) {
-    s32 zeroWord = 0;
-    f32 zero = *(volatile f32*)&lbl_80561754;
-    *((volatile u8 *)arg0 + 0x273) = (u8)zeroWord;
-    s32 i = 0;
-    s32 offset = 0;
-    *((volatile u8 *)arg0 + 0x270) = (u8)zeroWord;
-    *((volatile u8 *)arg0 + 0x271) = (u8)zeroWord;
-    *((volatile u8 *)arg0 + 0x272) = (u8)zeroWord;
-    while (i < arg0->mCount) {
-        i++;
-        *(s32 *)(arg0->mData + offset) = zeroWord;
-        *(s32 *)(arg0->mData + offset + 4) = zeroWord;
-        *(s32 *)(arg0->mData + offset + 8) = zeroWord;
+    s32 value = 0;
+    f32 zero;
+    s32 i;
+    s32 offset;
+    *((u8 *)arg0 + 0x273) = (u8)value;
+    i = 0;
+    zero = lbl_80561754;
+    offset = 0;
+    *((u8 *)arg0 + 0x270) = (u8)value;
+    *((u8 *)arg0 + 0x271) = (u8)value;
+    *((u8 *)arg0 + 0x272) = (u8)value;
+    for (; i < arg0->mCount; i++) {
+        *(s32 *)(arg0->mData + offset) = value;
+        *(s32 *)(arg0->mData + offset + 4) = value;
+        *(s32 *)(arg0->mData + offset + 8) = value;
         *(f32 *)(arg0->mData + offset + 0xC) = zero;
         offset += 0x38;
     }
-    f32 finalZero = *(volatile f32*)&lbl_80561754;
-    *(f32 *)((u8 *)arg0 + 0x25C) = finalZero;
-    *(f32 *)((u8 *)arg0 + 0x260) = finalZero;
-    *(f32 *)((u8 *)arg0 + 0x258) = finalZero;
-    *(f32 *)((u8 *)arg0 + 0x264) = finalZero;
+    f32 zero2 = lbl_80561754;
+    *(f32 *)((u8 *)arg0 + 0x25C) = zero2;
+    *(f32 *)((u8 *)arg0 + 0x260) = zero2;
+    *(f32 *)((u8 *)arg0 + 0x258) = zero2;
+    *(f32 *)((u8 *)arg0 + 0x264) = zero2;
     arg0->v31();
 }
 
@@ -3005,22 +3012,22 @@ extern "C" void fn_8015CC6C(void* arg0, f32 farg0) {
 }
 
 extern "C" void fn_8015CC74(Unk801577F0* arg0) {
-    f32 zero = lbl_80561754;
-    s32 i = 0;
-    s32 offset = 0;
-    s32 value = 0;
-    for (; i < arg0->mCount; ++i) {
-        u8* base = arg0->mData;
-        *(s32*)(base + offset) = value;
-        s32* p = (s32*)arg0->mData;
-        *(s32*)((u8*)p + offset + 4) = value;
-        p = (s32*)arg0->mData;
-        *(s32*)((u8*)p + offset + 8) = value;
-        p = (s32*)arg0->mData;
-        *(f32*)((u8*)p + offset + 0xC) = zero;
+    f32 zero;
+    register s32 i;
+    register s32 offset;
+    register s32 value;
+    zero = lbl_80561754;
+    i = 0;
+    offset = 0;
+    value = 0;
+    for (; i < arg0->mCount; i++) {
+        *(s32*)(arg0->mData + offset) = value;
+        *(s32*)(arg0->mData + offset + 4) = value;
+        *(s32*)(arg0->mData + offset + 8) = value;
+        *(f32*)(arg0->mData + offset + 0xC) = zero;
         offset += 0x38;
     }
-    arg0->v32();
+    arg0->v31();
     *(f32*)((u8*)arg0 + 0x250) = lbl_805617C8;
 }
 
@@ -3635,16 +3642,14 @@ extern "C" void fn_8015E238(Unk801577F0V* arg0) {
         virtual void v0();
         virtual void Call();
     };
-    s32 offset;
-    s32 i;
-    offset = 0;
-    i = 0;
-    volatile u8* self = (volatile u8*)arg0;
+    s32 offset = 0;
+    s32 i = 0;
+    u8* self = (u8*)arg0;
     s32 valueIndex = *(s32*)(self + 0x58);
     *(u8*)(self + 0x54) = 1;
     lbl_8042FD08[valueIndex] = lbl_80561750;
-    while (i < *(volatile s32*)(self + 8)) {
-        void* item = *(void**)((u8*)*(void* volatile*)(self + 4) + offset);
+    while (i < *(s32*)(self + 8)) {
+        void* item = *(void**)((u8*)*(void**)(self + 4) + offset);
         ((Dummy*)item)->Call();
         offset += 4;
         i++;
