@@ -2348,7 +2348,7 @@ extern "C" f32 fn_8015B404(void* arg0) {
     return result;
 }
 #pragma pop
-extern "C" void fn_8015B618(void* arg0, void* arg1) {
+extern "C" void fn_8015B618(void *arg0, void *context) {
     class LocalVtable {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -2361,21 +2361,23 @@ extern "C" void fn_8015B618(void* arg0, void* arg1) {
         virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31();
         virtual void v32(); virtual void v33(f32*);
     };
-    f32 value;
-    s32 index;
-    s32 item;
+    f32 selectedValue;
+    s32 selectedIndex;
+    s32 itemId;
+
+    /* If the active timer/value at 0x28C is above threshold, refresh selection via vtable hooks. */
     if (*(f32*)((u8*)arg0 + 0x28C) > lbl_80558DC4[0]) {
-        index = ((LocalVtable*)arg0)->v21();
-        value = ((LocalVtable*)arg0)->v18(index);
-        ((LocalVtable*)arg0)->v33(&value);
+        selectedIndex = ((LocalVtable*)arg0)->v21();
+        selectedValue = ((LocalVtable*)arg0)->v18(selectedIndex);
+        ((LocalVtable*)arg0)->v33(&selectedValue);
         ((LocalVtable*)arg0)->v31();
     }
-    item = *(s32*)(*(u8**)((u8*)arg0 + 8) +
-                   (*(s32*)((u8*)arg0 + 0xC) - 1) * 0x38 + 4);
-    if (item > 0 && fn_80179650() == 1 &&
-        *(s32*)((u8*)arg1 + 0x1F0) == 0x50 &&
+    itemId = *(s32*)(*(u8**)((u8*)arg0 + 8) +
+                     (*(s32*)((u8*)arg0 + 0xC) - 1) * 0x38 + 4);
+    if (itemId > 0 && fn_80179650() == 1 &&
+        *(s32*)((u8*)context + 0x1F0) == 0x50 &&
         fn_801CF064() == 0) {
-        fn_8001EF5C(7, item);
+        fn_8001EF5C(7, itemId);
     }
 }
 
