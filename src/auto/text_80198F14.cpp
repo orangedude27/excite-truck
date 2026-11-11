@@ -4350,6 +4350,9 @@ extern "C" void *__dt__Q28PSSystem7SeqHeapFv_801A3FB8(void *arg0, s32 arg1) {
 }
 #pragma pop
 extern "C" void fn_801A401C(void *arg0, void *arg1) {
+    /* Dispatch by tag at +0x18: 0x47525550 -> virtual Call via Fn801A401CDispatch;
+       0x53504852 -> generate up to 0x40 0xC-byte points with fn_801CF080 into a local buffer
+       (scaled by lbl_8056234C * source->scale) and call fn_8019AA18 for each point. */
     extern f32 lbl_8056234C;
     struct SPHRArg {
         u8 pad0[0x18];
@@ -4365,21 +4368,21 @@ extern "C" void fn_801A401C(void *arg0, void *arg1) {
         return;
     }
     if ((u32)(tag + 0xACB00000) == 0x4852U) {
-        u8 buffer[0x300];
-        register u8 *current;
+        u8 pointBuffer[0x300];
+        register u8 *currentPoint;
         register SPHRArg *source = (SPHRArg *)arg1;
-        volatile s32 count = 0x40;
-        register f32 factor = lbl_8056234C;
-        register f32 scale = source->scale;
-        fn_801CF080(*(s32 *)((u8 *)arg0 + 0x24), source->data, buffer,
-                    (s32 *)&count, *(s32 *)((u8 *)arg0 + 0x0C),
-                    factor * scale);
-        current = buffer;
-        register s32 i = 0;
-        while (i < count) {
-            fn_8019AA18(source, (s32)current, 0x6E, (s32)arg0);
-            current += 0xC;
-            i++;
+        volatile s32 pointCount = 0x40;
+        register f32 scaleFactor = lbl_8056234C;
+        register f32 sourceScale = source->scale;
+        fn_801CF080(*(s32 *)((u8 *)arg0 + 0x24), source->data, pointBuffer,
+                    (s32 *)&pointCount, *(s32 *)((u8 *)arg0 + 0x0C),
+                    scaleFactor * sourceScale);
+        currentPoint = pointBuffer;
+        register s32 pointIndex = 0;
+        while (pointIndex < pointCount) {
+            fn_8019AA18(source, (s32)currentPoint, 0x6E, (s32)arg0);
+            currentPoint += 0xC;
+            pointIndex++;
         }
     }
 }
