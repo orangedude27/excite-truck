@@ -347,20 +347,16 @@ extern "C" void SetAttack__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
 extern "C" void SetDecay__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
 extern "C" void SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
 extern "C" void Start__Q46nw4hbm3snd6detail7ChannelFRCQ46nw4hbm3snd6detail8WaveDatal(void *, const void *, int);
-#pragma push
-#pragma optimization_level 4
 int nw4hbm::snd::detail::WsdTrack::Parse(const nw4hbm::snd::detail::WsdTrack::WsdCallback *callback, unsigned long arg2, bool arg3) {
     unsigned char sp8[0x10];
     unsigned char sp18[0x90];
-    const WsdCallback *saveCb = callback;
-    unsigned long saveArg2 = arg2;
     if (*(void **)((char *)this + 0x2C) == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327CB8, 0x189, lbl_80327CCC);
     if (*(int *)((char *)this + 8) == 0) {
         void *owner = *(void **)((char *)this + 0x2C);
         int pitch = *((unsigned char *)this + 0x1D) + *(unsigned char *)((char *)owner + 0x90);
-        if (!saveCb->GetWave((char *)this + 0x20, sp8, sp18,
-                               *(int *)this, *(int *)((char *)this + 4), 0, saveArg2))
+        if (!callback->GetWave((char *)this + 0x20, sp8, sp18,
+                               *(int *)this, *(int *)((char *)this + 4), 0, arg2))
             return -1;
         owner = *(void **)((char *)this + 0x2C);
         int maxVoices = *(int *)((char *)owner + 0x8C);
@@ -382,7 +378,6 @@ int nw4hbm::snd::detail::WsdTrack::Parse(const nw4hbm::snd::detail::WsdTrack::Ws
     } else if (*(void **)((char *)this + 0x30) == 0) return -1;
     return 0;
 }
-#pragma pop
 extern "C" const char lbl_80327CB8[];
 void nw4hbm::snd::detail::WsdTrack::ChannelCallbackFunc(nw4hbm::snd::detail::Channel *arg0, nw4hbm::snd::detail::Channel::ChannelCallbackStatus arg1, unsigned long arg2) {
     const char *base = lbl_80327CB8;
