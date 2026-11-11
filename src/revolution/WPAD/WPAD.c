@@ -5161,10 +5161,14 @@ void fn_80064278(s32 chan, s32 result) {
     }
 }
 
-void fn_80064740(s32 chan, s32 param_2) {
+/* Decode the 2-byte extension-type report read back from the controller: byte 0 is
+ * stored as the extension mode, byte 1 selects the extension type (0 -> 1,
+ * 1 -> 2, other -> 0xFB), and a type of 2 is rejected unless the mode is 1..3.
+ * On read failure the type is marked invalid and the mode cleared. */
+void fn_80064740(s32 chan, s32 result) {
     WPADCB* cb = lbl_8038F4F0[chan];
     u8* data = (u8*)cb->samplingBufSize;
-    if (param_2 == 0) {
+    if (result == 0) {
         WPADiDecode(chan, data, 2, 0xfe);
         cb->UNK_0x802 = data[0];
         switch (data[1]) {
