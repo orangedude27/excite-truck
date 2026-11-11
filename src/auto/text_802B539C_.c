@@ -21,7 +21,6 @@ extern void fn_802C6CF8(void);
  * "include" archives it pulls in); lbl_804BE4AC holds the
  * "unified_material_set" items fn_802B58E0 collected out of them. */
 struct UMatList { void *entries; unsigned int count; };
-#define TplLike UMatList /* old placeholder name, still used below */
 #define UMatArchives   lbl_804BE454 /* struct UMatList of archive managers */
 #define UMatSetList    lbl_804BE4AC /* struct UMatList of material sets */
 #define sGlobalParameters lbl_8055F9E8 /* the archive's "global_parameters" item */
