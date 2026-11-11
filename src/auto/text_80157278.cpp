@@ -1200,7 +1200,7 @@ extern "C" void fn_80158A74(void *arg0, f32 farg0) {
 }
 
 extern "C" f32 lbl_80561754;
-#pragma scheduling off
+#pragma scheduling on
 extern "C" void fn_80158A84(Unk801577F0 *arg0) {
     s32 zeroWord = 0;
     f32 zero = *(volatile f32*)&lbl_80561754;
