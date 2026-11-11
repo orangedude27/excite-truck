@@ -18916,51 +18916,52 @@ extern void *GKI_dequeue(BUFFER_Q *);
 extern void btm_remove_sco_links(u8 *);
 extern void btm_acl_removed(u8 *);
 extern void l2c_link_adjust_allocation(void);
+/* Release an L2CAP link control block: stop its timer, free any partial RX/queued TX buffers, release attached CCBs, remove SCO/ACL tracking, adjust controller buffer accounting, and invoke the echo-response callback if set. */
 void l2cu_release_lcb(void *arg0) {
-    u8 *lcb = (u8 *)arg0;
-    void *buf;
-    void *ccb;
-    u16 old_count;
-    void (*callback)(u8);
+    u8 *p_lcb = (u8 *)arg0;
+    void *p_buf;
+    void *p_ccb;
+    u16 old_num_lm_acl_bufs;
+    void (*p_echo_rsp_cb)(u8);
 
-    lcb[0] = 0;
-    fn_80070F90(lcb + 0x10);
+    p_lcb[0] = 0;
+    fn_80070F90(p_lcb + 0x10);
 
-    buf = *(void **)(lcb + 0x50);
-    if (buf != 0) {
-        GKI_freebuf(buf);
-        *(void **)(lcb + 0x50) = 0;
+    p_buf = *(void **)(p_lcb + 0x50);
+    if (p_buf != 0) {
+        GKI_freebuf(p_buf);
+        *(void **)(p_lcb + 0x50) = 0;
     }
 
-    btm_remove_sco_links(lcb + 0x2A);
+    btm_remove_sco_links(p_lcb + 0x2A);
 
-    ccb = *(void **)(lcb + 8);
-    while (ccb != 0) {
-        l2cu_release_ccb(ccb);
-        ccb = *(void **)(lcb + 8);
+    p_ccb = *(void **)(p_lcb + 8);
+    while (p_ccb != 0) {
+        l2cu_release_ccb(p_ccb);
+        p_ccb = *(void **)(p_lcb + 8);
     }
 
-    if (*(u32 *)(lcb + 4) - 4 <= 1) {
-        btm_acl_removed(lcb + 0x2A);
+    if (*(u32 *)(p_lcb + 4) - 4 <= 1) {
+        btm_acl_removed(p_lcb + 0x2A);
     }
 
-    while (*(void **)(lcb + 0x44) != 0) {
-        buf = GKI_dequeue((BUFFER_Q *)(lcb + 0x44));
-        GKI_freebuf(buf);
+    while (*(void **)(p_lcb + 0x44) != 0) {
+        p_buf = GKI_dequeue((BUFFER_Q *)(p_lcb + 0x44));
+        GKI_freebuf(p_buf);
     }
 
     if (*(u16 *)(lbl_803C4040 + 0x7B8) >= 1) {
         *(u16 *)(lbl_803C4040 + 0x7B8) -= 1;
     }
 
-    old_count = *(u16 *)(lbl_803C4040 + 4);
-    *(u16 *)(lbl_803C4040 + 4) = old_count + *(u16 *)(lcb + 0x38);
-    ((void (*)(u16, void *))l2c_link_adjust_allocation)(old_count, lbl_803C4040);
+    old_num_lm_acl_bufs = *(u16 *)(lbl_803C4040 + 4);
+    *(u16 *)(lbl_803C4040 + 4) = old_num_lm_acl_bufs + *(u16 *)(p_lcb + 0x38);
+    ((void (*)(u16, void *))l2c_link_adjust_allocation)(old_num_lm_acl_bufs, lbl_803C4040);
 
-    callback = *(void (**)(u8))(lcb + 0x54);
-    if (callback != 0) {
-        *(void (**)(u8))(lcb + 0x54) = 0;
-        callback(1);
+    p_echo_rsp_cb = *(void (**)(u8))(p_lcb + 0x54);
+    if (p_echo_rsp_cb != 0) {
+        *(void (**)(u8))(p_lcb + 0x54) = 0;
+        p_echo_rsp_cb(1);
     }
 }
 
