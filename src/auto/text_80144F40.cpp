@@ -1880,17 +1880,16 @@ extern "C" void fn_80147FF0(void * __restrict arg0, s32 arg1) {
 
 extern "C" void fn_80011280(s32, s32, f64, f64, f32, f32);
 #pragma scheduling invalid_target
-extern "C" void fn_80148070(void *arg0, s32 arg1, s32 arg2) {
+extern "C" void fn_80148070(void *__restrict arg0, s32 arg1, s32 arg2) {
     f32 temp_f31;
     f32 temp_f30;
-    temp_f30 = fn_801452A0(*(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 0x10));
+    f32 v10 = *(f32 *)((u8 *)arg0 + 0x10);
+    s32 v0c = *(s32 *)((u8 *)arg0 + 0xC);
+    temp_f30 = fn_801452A0(v0c, v10);
     temp_f31 = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
     f32 x = *(f32 *)((u8 *)arg0 + 4);
     s32 mode = *(s32 *)((u8 *)arg0 + 0xC);
-    ((void (*)(s32, s32, f64, f64, f32, f32))fn_80011280)(
-        arg1, arg2,
-        ((f64 (*)(s32, f32))fn_801451DC)(mode, x),
-        temp_f31, temp_f30, *(f32 *)((u8 *)arg0 + 0x14));
+    ((void (*)(s32, s32, f64, f64, f32, f32))fn_80011280)(arg1, arg2, ((f64 (*)(s32, f32))fn_801451DC)(mode, x), temp_f31, temp_f30, *(f32 *)((u8 *)arg0 + 0x14));
 }
 #pragma scheduling on
 
