@@ -681,6 +681,8 @@ s32 IOS_IoctlvAsync(s32 fd, s32 type, s32 inCount, s32 outCount,
 
 s32 IOS_Ioctlv(s32 fd, s32 type, s32 inCount, s32 outCount,
                IPCIOVector* vectors) {
+    /* Synchronous vectored IOCTL: set up the IPC request, submit it to IOS,
+     * then wait for and return the ARM's result. */
     IPCRequestEx* req;
     s32 ret = __ios_Ipc1(fd, IPC_REQ_IOCTLV, NULL, NULL, &req);
     if (ret == IPC_RESULT_OK) {
