@@ -551,6 +551,11 @@ test:
 }
 
 void fn_80161618(void) {
+    /* Initialize runtime state: read a base value via fn_8000DA10 and register
+       it (value+0xC) with fn_801332D0 using lbl_8055A0B0/lbl_8055A0B8, clear
+       flags, run fn_80160CF4, cache the first item/id from the list at
+       lbl_8042FDEC (or clear if count <= 1), then iterate all list items and
+       invoke virtual slot1() on each. */
     s32 offset;
     s32 i;
     s32 value;
