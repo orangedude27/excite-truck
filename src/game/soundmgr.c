@@ -741,6 +741,41 @@ void fn_80208620(void* arg0, void* arg1) {
     }
 }
 
+/* The sound device (mixer) this manager plays on lives at +0x90: it is the
+ * object fn_80207990 was handed, one of the devices of the mixer list
+ * (src/game/mixer.c).  Its vtable is +0x08 destroy, +0x0C getName,
+ * +0x10 resetState, +0x14 slot14, +0x18 isEnabled, +0x1C createSound.
+ * resetState clears the device's shared sound state and hands it back;
+ * fn_80208858 reads it to decide how the new sound is to be voiced: */
+struct SoundDevState {
+    unsigned char active; /* +0x00 device already holds a live sound */
+    signed long allow3D;  /* +0x04 positional classes may ask for a 3D voice */
+    signed long allow2D;  /* +0x08 otherwise a 2D voice, else the plain one */
+};
+
+/* Sound classes the manager keeps a list of (names: the table lbl_802F9DA0).
+ * fn_802085F0 calls 3,4,5,6,8 the positional ones; fn_80207964 singles out UI. */
+enum SndClass {
+    SNDCLASS_UI = 0,
+    SNDCLASS_COUNTDOWN = 1,
+    SNDCLASS_ENGINE_2D = 2,
+    SNDCLASS_ENGINE = 3,
+    SNDCLASS_TIRESQUEAL = 4,
+    SNDCLASS_CRASH = 5,
+    SNDCLASS_ENGINE_START = 6,
+    SNDCLASS_GEARCHANGE = 7,
+    SNDCLASS_WIND = 8,
+    SNDCLASS_COUNT = 9
+};
+
+/* 3rd argument of the device's createSound: 0 asks for a 3D voice (the
+ * manager's own message says so), 1 is what it retries with when that
+ * fails, 2 is the voice used for sounds that need no positioning. */
+enum SoundVoice { SOUND_VOICE_3D = 0, SOUND_VOICE_2D = 1, SOUND_VOICE_PLAIN = 2 };
+
+extern char lbl_8033BEB0[];
+#define STR_CREATE_3D_FAILED lbl_8033BEB0 /* "Creating 3d sound failed.  Supposed to be impossible." */
+
 #pragma push
 #pragma cplusplus on
 #pragma inline_depth(0)
