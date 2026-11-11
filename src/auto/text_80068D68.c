@@ -9250,6 +9250,7 @@ after_filter:
 
 #pragma push
 #pragma use_lmw_stmw off
+/* Reads a remote device's name, using cached inquiry info when available. */
 tBTM_STATUS BTM_ReadRemoteDeviceName(BD_ADDR remote_bda, tBTM_CMPL_CB *p_cb) {
     extern char lbl_80316424[];
     u8 *entry;
