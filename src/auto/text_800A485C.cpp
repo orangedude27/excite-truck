@@ -1869,17 +1869,14 @@ extern "C" s32 fn_800A76A0(void *arg0) {
 
 extern "C" void fn_800A76B4(void *arg0, s32 arg1) {
     u16 index;
-
     for (index = 0; index < 0x1A; index++) {
         u8 *entry = (u8 *)lbl_803D1640 + index * 0x28;
         s32 flags = *(s32 *)(entry + 0x61C);
-
         if ((flags & 1) == 0)
             continue;
         if (*(void **)(entry + 0x620) != arg0)
             continue;
-
-        *(s32 *)(entry + 0x61C) = flags | 2;
+        *(volatile s32 *)(entry + 0x61C) = flags | 2;
         if (arg1 == 0 && *(void (**)(void))(entry + 0x640) != 0) {
             (*(void (**)(void))(entry + 0x640))();
         } else if (*(void (**)(void))(entry + 0x63C) != 0) {
@@ -12910,18 +12907,24 @@ extern "C" const char lbl_8031BF54[];
 extern "C" const char lbl_8031BF74[];
 extern "C" s32 fn_800BC474(s32 *arg0, s32 arg1, s32 *arg2) {
     s32 result;
-
+    s32 v;
     if (lbl_80559248 < 0) {
         result = (s32)0xC1000000;
     } else if (arg1 == 0) {
         result = (s32)0xC1000000;
-    } else if (arg2 == 0) {
-        result = -4;
     } else {
-        result = fn_800BB0A8(*arg0, 0x40, 0, 0, *arg2, 0, 0, 0,
-                             0, lbl_8055DD78, arg1, (s32)arg2);
+        if (arg2 == 0)
+            goto neg4;
+        v = *arg2;
+        goto docall;
+neg4:
+        result = -4;
+        goto report;
+docall:
+        result = fn_800BB0A8(*arg0, 0x40, 0, 0, v, 0, 0, 0, 0, lbl_8055DD78, arg1, (s32)arg2);
+        goto report;
     }
-
+report:
     if (result != 0)
         OSReport(lbl_8031BF74, lbl_8031BF54, result);
     return result;
@@ -17784,8 +17787,8 @@ void homebutton::GroupAnmController::do_calc() {
     struct List { u8 pad[0x10]; Node *head; };
     Node *node;
     Node *end;
-    const char *message;
     const char *file;
+    const char *message;
     s32 active;
     if (*(s32 *)((u8 *)this + 0x14) == 1) {
         calc();
@@ -17803,8 +17806,7 @@ void homebutton::GroupAnmController::do_calc() {
             message = lbl_8031E740;
             Panic__Q26nw4hbm2dbFPCciPCce(file, 0x23D, message);
         }
-        void *object = node->object;
-        ((ComponentDispatch *)object)->apply(*(void **)((u8 *)this + 0x24), active, 0);
+        ((ComponentDispatch *)node->object)->apply(*(void **)((u8 *)this + 0x24), active, 0);
         node = node->next;
     }
 }
@@ -20221,13 +20223,14 @@ void nw4hbm::lyt::AnimTransformBasic::Bind(nw4hbm::lyt::Material *material) {
     register u16 i = 0;
     register u8 *materialPtr = (u8 *)material;
     while (i < *(u16 *)((u8 *)*(void **)(self + 0xC) + 0xE)) {
-        register u8 *entry = *(u8 **)(self + 0xC) + *(s32 *)(offsets + i * 4);
+        u8 *entry = *(u8 **)(self + 0xC) + *(s32 *)(offsets + i * 4);
         if (entry[0x15] == 1) {
             if (fn_800D58F0(materialPtr + 4) != 0) {
                 u8 *link = (u8 *)*(void **)(self + 0x18) + i * 0x10;
                 *(void **)(link + 8) = self;
                 *(u16 *)(link + 0xC) = i;
-                AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(materialPtr, (u8 *)*(void **)(self + 0x18) + i * 0x10);
+                AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(
+                    materialPtr, (u8 *)*(void **)(self + 0x18) + i * 0x10);
             }
         }
         i++;
