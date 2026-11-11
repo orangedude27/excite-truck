@@ -3173,30 +3173,31 @@ extern "C" void fn_8021DB58(u8 *self) {
 #pragma push
 #pragma scheduling on
 #pragma small_data on
-extern "C" void *fn_8021E0C0(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, void *arg5, void *arg6, void *arg7, s32 arg8) {
-    fn_80218F34(arg0, arg1, arg2, arg1 + arg3, arg2 + arg4, 0);
+extern "C" void *fn_8021E0C0(void *obj, s32 x, s32 y, s32 width, s32 height, void *table, void *indexPtr, void *valuePtr, s32 arg8) {
+    // Initialize a text/option list object and register its widgets.
+    fn_80218F34(obj, x, y, x + width, y + height, 0);
     f32 alpha = lbl_805634A8;
     void *vtable = lbl_8033EA90;
-    *(u8 *)((u8 *)arg0 + 0x268) = 0;
-    *(void **)arg0 = vtable;
-    *(s32 *)((u8 *)arg0 + 0x260) = 0;
-    *(f32 *)((u8 *)arg0 + 0x264) = alpha;
+    *(u8 *)((u8 *)obj + 0x268) = 0;
+    *(void **)obj = vtable;
+    *(s32 *)((u8 *)obj + 0x260) = 0;
+    *(f32 *)((u8 *)obj + 0x264) = alpha;
     s32 stride = fn_8022B620(7, (const char *)&lbl_8055B880) + 2;
-    *(void **)((u8 *)arg0 + 0x244) = arg5;
-    *(s32 *)((u8 *)arg0 + 0x258) = stride;
-    *(void **)((u8 *)arg0 + 0x25C) = arg6;
-    *(void **)((u8 *)arg0 + 0x248) = arg7;
-    *(s32 *)((u8 *)arg0 + 0x250) = arg3 / 8;
-    *(s32 *)((u8 *)arg0 + 0x254) = arg4 / stride;
-    if (arg7) {
-        *(u32 *)arg7 = *(u32 *)((u8 *)arg5 + 8);
-        *(s32 *)((u8 *)arg7 + 4) = *(s32 *)((u8 *)arg0 + 0x254);
-        fn_80219440(arg0, 0, arg7, 0xC);
-        fn_8021E7D4(arg0);
+    *(void **)((u8 *)obj + 0x244) = table;
+    *(s32 *)((u8 *)obj + 0x258) = stride;
+    *(void **)((u8 *)obj + 0x25C) = indexPtr;
+    *(void **)((u8 *)obj + 0x248) = valuePtr;
+    *(s32 *)((u8 *)obj + 0x250) = width / 8;
+    *(s32 *)((u8 *)obj + 0x254) = height / stride;
+    if (valuePtr) {
+        *(u32 *)valuePtr = *(u32 *)((u8 *)table + 8);
+        *(s32 *)((u8 *)valuePtr + 4) = *(s32 *)((u8 *)obj + 0x254);
+        fn_80219440(obj, 0, valuePtr, 0xC);
+        fn_8021E7D4(obj);
     }
-    fn_80219440(arg0, 0, (u8 *)arg6, 4);
-    fn_80219440(arg0, 0, (u8 *)arg5 + 0xC, 4);
-    return arg0;
+    fn_80219440(obj, 0, (u8 *)indexPtr, 4);
+    fn_80219440(obj, 0, (u8 *)table + 0xC, 4);
+    return obj;
 }
 #pragma pop
 
