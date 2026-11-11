@@ -1970,7 +1970,7 @@ main:
 extern "C" s32 fn_8019E874(void*, void**, void*, f32, f32, f32, f32);
 extern void fn_8019AA34(void*, void*, void*, s32, s32, void*, f32, f32);
 extern void fn_8019A820(void*, s32, s32, s32, f32);
-#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 extern "C" s32 fn_8019EA7C(void* arg0, void* arg1) {
     void* temp_r3;
     void* temp_r5;
@@ -1979,6 +1979,7 @@ extern "C" s32 fn_8019EA7C(void* arg0, void* arg1) {
     f32 temp_f3;
     f32 temp_f4;
     volatile f32 sp[9];
+    register s32 res;
 
     temp_r3 = ((Fn8019EA7CDispatch*)arg1)->Get();
     temp_r5 = *(void**)((u8*)arg0 + 0xC);
@@ -1989,9 +1990,10 @@ extern "C" s32 fn_8019EA7C(void* arg0, void* arg1) {
     sp[6] = temp_f4;
     sp[1] = temp_f2;
     sp[5] = temp_f1 - *(f32*)((u8*)temp_r3 + 0x2C);
-    return (s32)(bool)fn_8019E874(arg0, (void**)arg1, temp_r5, temp_f1, temp_f2, temp_f3, temp_f4);
+    res = fn_8019E874(arg0, (void**)arg1, temp_r5, temp_f1, temp_f2, temp_f3, temp_f4);
+    return res != 0;
 }
-#pragma scheduling on
+#pragma use_lmw_stmw on
 extern "C" void fn_8019EB14(s32 arg0_raw, s32 arg1) {
     u8 *arg0 = (u8 *)arg0_raw;
     u32 offset = arg1 * 8;
@@ -2024,15 +2026,14 @@ extern "C" void fn_8019EBC0(void* arg0) {
 
 #pragma scheduling invalid_target
 extern "C" void fn_8019EBE0(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f) {
-    s32 v1 = (s32)self;
-    s32 v2 = a;
-    s32 v3 = b;
-    s32 v4 = c;
-    s32 v5 = d;
-    s32 v6 = e;
-    s32 v7 = f;
     s32 obj = *(s32 *)((u8 *)self + 4);
-
+    s32 v7 = f;
+    s32 v6 = e;
+    s32 v5 = d;
+    s32 v4 = c;
+    s32 v3 = b;
+    s32 v2 = a;
+    s32 v1 = (s32)self;
     if (obj != 0) {
         fn_8017B5D4(obj, v1, v2, v3, v4, v5, v6);
     } else {
@@ -2324,16 +2325,15 @@ extern "C" s32 fn_8019F3D4(s32 arg0, s32 arg1) {
 
 extern "C" void fn_8019F414(void *arg0) {
     extern f32 lbl_8056237C;
-    extern void fn_8019EECC(void*, void*);
+    extern void fn_8019EECC(void*, Vec*);
     extern void fn_8019EF00(void*);
     u32 sp[3];
     void *temp_r6;
     void *temp_r4;
+    f32 ybase;
     f32 x;
     f32 y;
     f32 z;
-    f32 ybase;
-
     temp_r6 = *(void **)((u8*)arg0 + 0x54);
     temp_r4 = *(void **)((u8*)arg0 + 4);
     sp[0] = *(u32*)((u8*)temp_r6 + 0x30);
@@ -2352,31 +2352,22 @@ extern "C" void fn_8019F414(void *arg0) {
     *(f32*)((u8*)arg0 + 0x28) = x;
     *(f32*)((u8*)arg0 + 0x2C) = y;
     *(f32*)((u8*)arg0 + 0x30) = z;
-    if (temp_r4 != 0) fn_8019EECC(temp_r4, (u8*)arg0 + 0x28);
+    if (temp_r4 != 0) fn_8019EECC(temp_r4, (Vec*)((u8*)arg0 + 0x28));
     fn_8019EF00(arg0);
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void fn_8019F4D4(void *arg0, void *arg1) {
     fn_8019EC84(arg0);
     f32 scale = -PSVECDotProduct(
         (const Vec *)((u8 *)*(void **)((u8 *)arg0 + 0xC) + 0xC),
         (const Vec *)arg1);
     void *vector = *(void **)((u8 *)arg0 + 0xC);
-    struct Scratch {
-        f32 pad0;
-        f32 spC;
-        f32 pad8[3];
-        f32 sp1C;
-        f32 sp20;
-        f32 tail[3];
-    };
-    volatile Scratch scratch;
-    scratch.sp20 = ((f32 *)arg1)[0] + ((f32 *)vector)[3] * scale;
-    scratch.spC = ((f32 *)arg1)[1] + ((f32 *)vector)[4] * scale;
-    scratch.sp1C = ((f32 *)arg1)[2] + ((f32 *)vector)[5] * scale;
+    volatile f32 scratch[10];
+    scratch[6] = ((f32 *)arg1)[0] + ((f32 *)vector)[3] * scale;
+    scratch[1] = ((f32 *)arg1)[1] + ((f32 *)vector)[4] * scale;
+    scratch[5] = ((f32 *)arg1)[2] + ((f32 *)vector)[5] * scale;
 }
-#pragma scheduling on
 extern "C" void fn_8019F560(void) {
     fn_8019F1A4();
 }
@@ -3345,10 +3336,11 @@ extern "C" s32 fn_801A1E7C(void* arg0, s32 arg1, s32 arg2, s32 arg3, void* arg4)
     register f32 b = *(f32*)((u8*)arg0 + 0x28);
     register f32 a = *(f32*)((u8*)arg0 + 0x24);
     void* result = ((VTab1A1E7C*)arg0)->Call();
-
     if (fn_8019E2D0(arg1, arg2, arg3, result, a, b, c)) {
-        f32 middle = lbl_805622E0;
-        f32 same = lbl_805622D0;
+        f32 middle;
+        f32 same;
+        same = lbl_805622D0;
+        middle = lbl_805622E0;
         *(f32*)arg4 = same;
         *((f32*)arg4 + 1) = middle;
         *((f32*)arg4 + 2) = same;
@@ -3957,24 +3949,24 @@ extern "C" TagList *fn_80131808(void *, void *);
 extern "C" void fn_80131818(TagList *);
 #pragma scheduling invalid_target
 extern "C" void fn_801A3190(void *arg0, s32 arg1, void *arg2, s32 arg3, void *arg4, void *arg5, f32 farg0, f32 farg1) {
+    *(s32*)((u8*)arg0 + 4) = 0x0;
     *(void**)arg0 = lbl_80333778;
-    *(s32*)((u8*)arg0 + 4) = 0;
     *(s32*)((u8*)arg0 + 8) = 0;
     *(s32*)((u8*)arg0 + 0xC) = arg1;
     *(f32*)((u8*)arg0 + 0x10) = farg0;
     *(f32*)((u8*)arg0 + 0x14) = farg1;
     *(s32*)((u8*)arg0 + 0x18) = 0x504F4C59;
     *(s32*)((u8*)arg0 + 0x1C) = 0;
-    *(s32*)((u8*)arg0 + 0x20) = 100;
-    *(s32*)((u8*)arg0 + 0xBC) = arg3;
+    *(s32*)((u8*)arg0 + 0x20) = 0x64;
     *(s32*)((u8*)arg0 + 0xDC) = 0;
+    *(s32*)((u8*)arg0 + 0xBC) = arg3;
     u8 *dst = (u8*)arg0;
     u8 *src = (u8*)arg2;
     for (s32 i = 0; i < *(s32*)((u8*)arg0 + 0xBC); i++) {
+        u32 t1 = *(s32*)(src + 4);
         s32 t0 = *(s32*)src;
-        s32 t1 = *(s32*)(src + 4);
         *(s32*)(dst + 0x3C) = t0;
-        s32 t2 = *(s32*)(src + 8);
+        register unsigned int t2 = *(s32*)(src + 8);
         *(s32*)(dst + 0x40) = t1;
         f32 f = *(f32*)(src + 0xC);
         *(s32*)(dst + 0x44) = t2;
@@ -3982,12 +3974,18 @@ extern "C" void fn_801A3190(void *arg0, s32 arg1, void *arg2, s32 arg3, void *ar
         src += 0x10;
         dst += 0x10;
     }
-    f32 b2 = ((f32*)arg5)[2];
-    f32 b1 = ((f32*)arg5)[1];
-    f32 b0 = ((f32*)arg5)[0];
-    f32 a2 = ((f32*)arg4)[2];
-    f32 a1 = ((f32*)arg4)[1];
-    f32 a0 = ((f32*)arg4)[0];
+    f32 b2;
+    register f32 b1;
+    f32 b0;
+    register f32 a2;
+    f32 a1;
+    register f32 a0;
+    a0 = ((f32*)arg4)[0];
+    a1 = ((f32*)arg4)[1];
+    a2 = ((f32*)arg4)[2];
+    b0 = ((f32*)arg5)[0];
+    b1 = ((f32*)arg5)[1];
+    b2 = ((f32*)arg5)[2];
     *(f32*)((u8*)arg0 + 0x24) = a0;
     *(f32*)((u8*)arg0 + 0x28) = a1;
     *(f32*)((u8*)arg0 + 0x2C) = a2;
