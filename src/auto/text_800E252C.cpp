@@ -1018,8 +1018,7 @@ extern "C" void FreeVoice__Q46nw4hbm3snd6detail9AxManagerFPQ46nw4hbm3snd6detail7
     if (voice == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
     }
-    unsigned int linkAddress = (unsigned int)voice + 0x1A8;
-    void *link = (void *)linkAddress;
+    void *link = (char *)voice + 0x1A8;
     Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((char *)manager + 0x14, link);
     if (voice == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
@@ -1985,23 +1984,29 @@ extern "C" void SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif_800E5718(voi
     }
 }
 
-extern "C" void SetRemoteSend__Q46nw4hbm3snd6detail7AxVoiceFif(void *self, int index, float value) {
-    int valid = 0;
-    if (index >= 0 && index < 4) valid = 1;
-    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x2E5, lbl_803222F0, index, 0, 4);
-    value += lbl_80560F38;
-    float result;
-    if (value > lbl_80560F38) {
-        result = lbl_80560F38;
-    } else if (value < lbl_80560F3C) {
-        result = lbl_80560F3C;
+/* nw4hbm::snd::detail::AxVoice::SetRemoteSend(int, float) - one of the voice's
+ * four remote sends (+0x164 + remoteIndex * 4).  The request comes in biased
+ * by -1.0, so it is raised by 1.0 and clamped to [0.0, 1.0]; the slot is only
+ * written when the value actually changes, and a change sets the "mix needs
+ * pushing to the AX" flag bit 0x20 in the byte at +0x123. */
+extern "C" void SetRemoteSend__Q46nw4hbm3snd6detail7AxVoiceFif(void *voice, int remoteIndex, f32 send) {
+    int isValidIndex = 0;
+    if (remoteIndex >= 0 && remoteIndex < 4) isValidIndex = 1;
+    /* snd_AxVoice.cpp:0x2E5, "remoteIndex is out of bounds(%d)" */
+    if (isValidIndex == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x2E5, lbl_803222F0, remoteIndex, 0, 4);
+    send += lbl_80560F38;                          /* lbl_80560F38 = 1.0f */
+    f32 clampedSend;
+    if (send > lbl_80560F38) {                     /* upper bound 1.0f */
+        clampedSend = lbl_80560F38;
+    } else if (send < lbl_80560F3C) {              /* lbl_80560F3C = 0.0f */
+        clampedSend = lbl_80560F3C;
     } else {
-        result = value;
+        clampedSend = send;
     }
-    float *send = (float *)((unsigned char *)self + 0x164 + index * 4);
-    if (result != *send) {
-        *send = result;
-        *((unsigned char *)self + 0x123) |= 0x20;
+    f32 *slot = (f32 *)((unsigned char *)voice + 0x164 + remoteIndex * 4);
+    if (clampedSend != *slot) {
+        *slot = clampedSend;
+        *((unsigned char *)voice + 0x123) |= 0x20; /* remote mix dirty */
     }
 }
 
@@ -2555,17 +2560,17 @@ extern "C" void fn_800E68EC(void *arg0, int arg1, int arg2, void *arg3, int arg4
 }
 
 extern "C" void fn_800E6A44(void *arg0, int arg1, int arg2, void *arg3) {
-    const char (*file)[1] = (const char (*)[1])lbl_803221A8;
+    struct FileBase { char c; };
+    const struct FileBase *file = (const struct FileBase *)lbl_803221A8;
     unsigned short mix[3];
     unsigned char *voice;
     int i;
-
     if (arg1 >= 2) {
-        Panic__Q26nw4hbm2dbFPCciPCce(*file, 0x458, *file + 0x258);
+        Panic__Q26nw4hbm2dbFPCciPCce(&file->c, 0x458, &file->c + 0x258);
     }
     if (arg2 == 0) {
         if (arg3 == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(*file, 0x45C, *file + 0x2A0);
+            Panic__Q26nw4hbm2dbFPCciPCce(&file->c, 0x45C, &file->c + 0x2A0);
         }
         mix[0] = ((unsigned short *)arg3)[0];
         mix[1] = ((unsigned short *)arg3)[1];
@@ -2575,7 +2580,6 @@ extern "C" void fn_800E6A44(void *arg0, int arg1, int arg2, void *arg3) {
         mix[1] = 0;
         mix[2] = 0;
     }
-
     i = 0;
     voice = (unsigned char *)arg0 + (arg1 << 4);
     while (i < *(int *)((unsigned char *)arg0 + 0x108)) {
@@ -2757,24 +2761,25 @@ extern "C" void UpdateAxLpf__Q46nw4hbm3snd6detail7AxVoiceFv(char *self) {
     }
 }
 
+extern "C" unsigned int __mulhwu(unsigned int, unsigned int);
 extern "C" int GetDspAddressBySample__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hbm3snd6detail7AxVoice6Format(const void* arg0, unsigned long arg1, int arg2) {
-    u32 base = (u32)arg0;
-    if (base != 0) base += 0x80000000;
+    register unsigned long base = (unsigned long)arg0;
+    if (base != 0) base += 0x80000000UL;
     int result = 0;
     switch (arg2) {
     case 0: {
-        u32 sample = (u32)arg1;
-        u32 doubledBase = base << 1;
-        u32 quotient = sample / 7;
-        u32 block = quotient + ((sample - quotient) >> 1);
-        u32 remainder = sample - ((block >> 3) * 14);
-        result = (int)(remainder + doubledBase);
-        result += (int)((block << 1) & 0xFFFFFFF0);
+        register unsigned long sample = arg1;
+        register unsigned long doubled = base << 1;
+        register unsigned long q = __mulhwu(0x24924925U, (unsigned int)sample);
+        register unsigned long block = q + ((sample - q) >> 1);
+        unsigned long rem = sample - ((block >> 3) * 14U);
+        result = (int)(rem + doubled);
+        result += (int)((block << 1) & 0xFFFFFFF0UL);
         result += 2;
         break;
     }
-    case 25: result = base + arg1; break;
-    case 10: result = (base >> 1) + arg1; break;
+    case 25: result = (int)(base + arg1); break;
+    case 10: result = (int)((base >> 1) + arg1); break;
     default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x561, lbl_80322438); break;
     }
     return result;
@@ -3527,23 +3532,31 @@ void nw4hbm::snd::detail::BasicSound::SetInitialVolume(float vol) {
     initialVolume = vol;
 }
 
-void nw4hbm::snd::detail::BasicSound::SetVolume(float volume, int arg2) {
+extern "C" void SetVolume__Q46nw4hbm3snd6detail10BasicSoundFfi(void *this_, float volume, int arg2) {
+    struct SoundFields {
+        char pad[0x7C];
+        float current;
+        float target;
+        int total;
+        int elapsed;
+    };
     float current;
 
     if (!(volume >= lbl_80560FB0)) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x225, lbl_80322830);
     }
-    if (elapsed >= total) {
-        current = target;
+    SoundFields *sound = (SoundFields *)this_;
+    if (sound->elapsed >= sound->total) {
+        current = sound->target;
     } else {
-        current = this->current +
-                  ((float)elapsed * (target - this->current)) /
-                      (float)total;
+        current = sound->current +
+                  ((float)sound->elapsed * (sound->target - sound->current)) /
+                      (float)sound->total;
     }
-    this->current = current;
-    this->target = volume;
-    this->total = arg2;
-    this->elapsed = 0;
+    sound->current = current;
+    sound->target = volume;
+    sound->total = arg2;
+    sound->elapsed = 0;
 }
 
 extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800E9AAC(void *this_, float vol) {
