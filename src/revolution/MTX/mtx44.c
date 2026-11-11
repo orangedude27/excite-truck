@@ -33,6 +33,7 @@ void C_MTXFrustum(Mtx44 mtx, f32 t, f32 b, f32 l, f32 r, f32 n, f32 f) {
 
 DECOMP_FORCELITERAL(mtx44_c, 0.5f);
 
+/* Builds a perspective projection matrix from vertical FOV (degrees), aspect, near, and far. */
 void C_MTXPerspective(Mtx44 mtx, f32 fovy, f32 aspect, f32 n, f32 f) {
     f32 rad, cot;
     f32 invrange;
