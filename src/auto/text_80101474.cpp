@@ -124,25 +124,24 @@ extern "C" void fn_801014DC(s32 arg0) {
 extern int fn_800EC890(void *, void *, int, int, int);
 #pragma scheduling invalid_target
 extern "C" void Init__Q46nw4hbm3snd6detail8WsdTrackFPQ46nw4hbm3snd6detail9WsdPlayer(void *arg0, void *arg1) {
-    float defaultValue = lbl_80561128;
-    register int value7F = 0x7F;
-    register int valueMinus1 = -1;
-    register int value40 = 0x40;
-    register int value2 = 2;
-
+    register float f = lbl_80561128;
+    register int r40 = 0x40;
+    register int r2 = 2;
+    register int rMinus1 = -1;
+    register int r7F = 0x7F;
     *(void **)((char *)arg0 + 0x2C) = arg1;
     *(int *)((char *)arg0 + 0) = 0;
-    *(int *)((char *)arg0 + 4) = valueMinus1;
-    *(unsigned char *)((char *)arg0 + 0x1D) = value40;
-    *(unsigned char *)((char *)arg0 + 0x1C) = value2;
-    *(float *)((char *)arg0 + 0x20) = defaultValue;
-    *(unsigned char *)((char *)arg0 + 0x24) = value40;
+    *(int *)((char *)arg0 + 4) = rMinus1;
+    *(unsigned char *)((char *)arg0 + 0x1D) = (unsigned char)r40;
+    *(unsigned char *)((char *)arg0 + 0x1C) = (unsigned char)r2;
+    *(float *)((char *)arg0 + 0x20) = f;
+    *(unsigned char *)((char *)arg0 + 0x24) = (unsigned char)r40;
     *(unsigned char *)((char *)arg0 + 0x25) = 0;
     *(unsigned char *)((char *)arg0 + 0x26) = 0;
     *(unsigned char *)((char *)arg0 + 0x27) = 0;
     *(unsigned char *)((char *)arg0 + 0x28) = 0;
-    *(unsigned char *)((char *)arg0 + 0x29) = value7F;
-    fn_800EC890((char *)arg0 + 0xC, arg1, value2, value40, valueMinus1);
+    *(unsigned char *)((char *)arg0 + 0x29) = (unsigned char)r7F;
+    fn_800EC890((char *)arg0 + 0xC, arg1, r2, r40, rMinus1);
     *(int *)((char *)arg0 + 8) = 0;
     *(int *)((char *)arg0 + 0x30) = 0;
 }
@@ -166,45 +165,26 @@ check:
 }
 
 #pragma use_lmw_stmw off
-#pragma scheduling on
-int nw4hbm::snd::detail::WsdTrack::ParseNextTick(
-    const nw4hbm::snd::detail::WsdTrack::WsdCallback *callback,
-    unsigned long arg1,
-    bool arg2
-) {
-    register int valid = *(int *)((char *)this + 0x2C);
+#pragma scheduling off
+int nw4hbm::snd::detail::WsdTrack::ParseNextTick(const nw4hbm::snd::detail::WsdTrack::WsdCallback *callback, unsigned long arg1, bool arg2) {
+    int valid = *(int *)((char *)this + 0x2C);
     void *channel;
-
     if (valid == 0) {
-        const char *message = lbl_80327CCC;
-        const char *file = lbl_80327CB8;
-        int line = 0x6F;
-        Panic__Q26nw4hbm2dbFPCciPCce(file, line, message);
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327CB8, 0x6F, lbl_80327CCC);
     }
     channel = *(void **)((char *)this + 0x30);
     goto check;
-
 loop:
     if (*(int *)((char *)channel + 0xD4) > 0) {
         *(int *)((char *)channel + 0xD4) -= 1;
-        if (*(unsigned char *)((char *)channel + 0x3C) == 0) {
-            fn_800EA880(channel, 1);
-        }
-        if (*(int *)((char *)channel + 0xD4) == 0) {
-            Release__Q46nw4hbm3snd6detail7ChannelFv(channel);
-        }
+        if (*(unsigned char *)((char *)channel + 0x3C) == 0) fn_800EA880(channel, 1);
+        if (*(int *)((char *)channel + 0xD4) == 0) Release__Q46nw4hbm3snd6detail7ChannelFv(channel);
     }
     channel = *(void **)((char *)channel + 0xE4);
 check:
     if (channel != 0) goto loop;
-
-    if (*(int *)((char *)this + 8) != 0 &&
-        *(void **)((char *)this + 0x30) == 0) {
-        return -1;
-    }
-    return Parse__Q46nw4hbm3snd6detail8WsdTrackFPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUlb(
-        this, callback, arg1, arg2
-    );
+    if (*(int *)((char *)this + 8) != 0 && *(void **)((char *)this + 0x30) == 0) return -1;
+    return Parse__Q46nw4hbm3snd6detail8WsdTrackFPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUlb(this, callback, arg1, arg2);
 }
 #pragma scheduling reset
 #pragma use_lmw_stmw on
@@ -223,10 +203,11 @@ extern "C" const char lbl_80327D00[];
 #pragma optimization_level 3
 #pragma use_lmw_stmw off
 extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFi_801016C0(void *arg0, int arg1) {
+    struct WsdH { char pad[0x30]; void *first; };
     UpdateChannel__Q46nw4hbm3snd6detail8WsdTrackFv(arg0);
-    int interrupts = OSDisableInterrupts();
+    register int interrupts = OSDisableInterrupts();
     fn_800E402C(Instance__15EmissionManagerFv());
-    void *channel = *(void **)((char *)arg0 + 0x30);
+    register void *channel = ((struct WsdH *)arg0)->first;
     while (channel != 0) {
         if (*(unsigned char *)((char *)channel + 0x3A) != 0) {
             if (arg1 >= 0) {
@@ -404,8 +385,8 @@ extern "C" const char lbl_80327CB8[];
 void nw4hbm::snd::detail::WsdTrack::ChannelCallbackFunc(nw4hbm::snd::detail::Channel *arg0, nw4hbm::snd::detail::Channel::ChannelCallbackStatus arg1, unsigned long arg2) {
     const char *base = lbl_80327CB8;
     void *track = (void *)arg2;
-    register void *channel;
-    register void *next;
+    void *channel;
+    void *next;
     if (arg0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x1cf, base + 0x88);
     if (track == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x1d0, base + 0xb8);
     if ((int)arg1 == 2) fn_800EAD00(arg0);
@@ -1518,22 +1499,20 @@ extern "C" void MoveCursorX__Q36nw4hbm2ut10CharWriterFf_80106524(void *arg0, flo
 }
 
 extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(void *arg0) {
-    unsigned int temp_r11;
-    int var_r10;
-    int var_r5;
-    int var_r6;
-    int var_r7;
-    int var_r8;
-    int var_r9;
-    temp_r11 = (unsigned int)arg0 & 0xFF000000U;
-    var_r5 = 1; var_r6 = 1; var_r7 = 1; var_r8 = 1; var_r9 = 1; var_r10 = 1;
-    if (((unsigned int)(temp_r11 + 0x80000000U) > 0U) && ((unsigned int)(((unsigned int)arg0 & 0xFF800000U) + 0x7F000000U) > 0U)) var_r10 = 0;
-    if ((var_r10 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xF8000000U) + 0x70000000U) > 0U)) var_r9 = 0;
-    if ((var_r9 == 0) && ((unsigned int)(temp_r11 + 0x40000000U) > 0U)) var_r8 = 0;
-    if ((var_r8 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xFF800000U) + 0x3F000000U) > 0U)) var_r7 = 0;
-    if ((var_r7 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xF8000000U) + 0x30000000U) > 0U)) var_r6 = 0;
-    if ((var_r6 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xFFFFC000U) + 0x20000000U) > 0U)) var_r5 = 0;
-    if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x425, lbl_8032818C, arg0);
+    int v0 = 1;
+    int v1 = 1;
+    int v2 = 1;
+    int v3 = 1;
+    int v4 = 1;
+    int v5 = 1;
+    unsigned int top = (unsigned int)arg0 & 0xFF000000U;
+    if ((top != 0x80000000U) && (((unsigned int)arg0 & 0xFF800000U) != 0x81000000U)) v5 = 0;
+    if ((v5 == 0) && (((unsigned int)arg0 & 0xF8000000U) != 0x90000000U)) v4 = 0;
+    if ((v4 == 0) && (top != 0xC0000000U)) v3 = 0;
+    if ((v3 == 0) && (((unsigned int)arg0 & 0xFF800000U) != 0xC1000000U)) v2 = 0;
+    if ((v2 == 0) && (((unsigned int)arg0 & 0xF8000000U) != 0xD0000000U)) v1 = 0;
+    if ((v1 == 0) && (((unsigned int)arg0 & 0xFFFFC000U) != 0xE0000000U)) v0 = 0;
+    if (v0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x425, lbl_8032818C, arg0);
     return *(float *)((char *)arg0 + 0x2C);
 }
 
