@@ -18,6 +18,8 @@ extern BOOL lbl_8055DAF4;
 BOOL fn_800568C4(u32 mask);
 extern int __cntlzw(unsigned int);
 BOOL SIGetResponse(s32 chan, void* data);
+extern u8 lbl_80558F88;
+extern u8 lbl_80558F8C;
 void fn_8005649C(s32 chan, u32 status);
 u32 SIGetTypeAsync(s32 chan, SICallback callback);
 u32 SIEnablePolling(u32 chan);
@@ -670,7 +672,8 @@ static void GetTypeCallback(s32 chan, u32 status) {
                 return;
             }
         } else if (type & 0x40000000) {
-            id = (type & 0x00CFFF00) | 0x00100000;
+            id = type & 0x00CFFF00;
+            id |= 0x00100000;
             OSSetWirelessID(chan, (u16)(id >> 8));
             cmdFixDevice[chan] = (0x4E << 24) | id;
             Type[chan] = SI_ERROR_BUSY;
@@ -681,12 +684,14 @@ static void GetTypeCallback(s32 chan, u32 status) {
         }
     }
     type = Type[chan];
-    callback = (SICallback*)((u8*)TypeCallback + chan * 16);
-    for (i = 0; i < SI_MAX_TYPE; i++, callback++) {
-        cb = *callback;
-        if (cb != NULL) {
-            *callback = NULL;
-            cb(chan, type);
+    {
+        SICallback* cbPtr = (SICallback*)((u8*)TypeCallback + chan * 16);
+        for (i = 0; i < SI_MAX_TYPE; i++, cbPtr++) {
+            cb = *cbPtr;
+            if (cb != NULL) {
+                *cbPtr = NULL;
+                cb(chan, type);
+            }
         }
     }
 }
@@ -872,15 +877,29 @@ void fn_80056308(s32 chan, u32 status) {
     }
 }
 
+/* SI callback for the 8-byte origin transfer fn_8005649C() started on a channel that
+ * reported a plain GameCube controller type. The low nibble of status holds that
+ * channel's SI error bits; when the transfer came back clean the channel joins the
+ * polling mask lbl_8055DB14, its leftover response is drained into data, its SI
+ * output buffer is loaded with the origin command (lbl_80558F7C plus the 64-bit
+ * transfer bit 0x00400000) through fn_80057F2C, polling is re-enabled for the whole
+ * mask, and the channel is recorded in lbl_8055DB08 as origin-read - which is what
+ * keeps fn_800567BC()/fn_800568C4() from putting it back in the pending mask
+ * lbl_8055DB10. Unlike fn_80056308 it does not call UpdateOrigin().
+ * Either way the scan then moves to the next channel still pending in lbl_8055DB10
+ * (__cntlzw yields its number, or 32 when none is left): it is cleared from the
+ * mask, its PADStatus is zeroed and its type is requested again through
+ * fn_8005649C. The chan argument is the SI callback's channel; the driver works from
+ * the channel it is running on, lbl_80558F74. */
 void fn_800563C8(s32 chan, u32 status) {
     u32 data[2];
-    s32 enabledChan;
+    s32 runningChan;
 
-    if ((status & 0xF) == 0) {
-        enabledChan = lbl_80558F74;
-        lbl_8055DB14 |= PAD_CHAN0_BIT >> enabledChan;
-        SIGetResponse(enabledChan, data);
-        fn_80057F2C(enabledChan, lbl_80558F7C | 0x00400000);
+    if ((status & 0xF) == 0) { /* no SI error on this channel */
+        runningChan = lbl_80558F74;
+        lbl_8055DB14 |= PAD_CHAN0_BIT >> runningChan;
+        SIGetResponse(runningChan, data);
+        fn_80057F2C(runningChan, lbl_80558F7C | 0x00400000);
         SIEnablePolling(lbl_8055DB14);
         lbl_8055DB08 |= PAD_CHAN0_BIT >> lbl_80558F74;
     }
@@ -889,6 +908,83 @@ void fn_800563C8(s32 chan, u32 status) {
         lbl_8055DB10 &= ~(PAD_CHAN0_BIT >> lbl_80558F74);
         memset(&lbl_8038F080[lbl_80558F74], 0, sizeof(PADStatus));
         SIGetTypeAsync(lbl_80558F74, fn_8005649C);
+    }
+}
+
+void fn_8005649C(s32 chan, u32 type) {
+    u32 bit = 0x80000000;
+    u8* origin = (u8*)lbl_8038F080;
+    u32 chanMask;
+    s32 currentChan;
+    u32 resetMask;
+    u32 t;
+    s32 nextChan;
+    BOOL ret;
+    u32 data[2];
+
+    currentChan = lbl_80558F74;
+    resetMask = lbl_8055DB0C;
+    chanMask = bit >> currentChan;
+    lbl_8055DB0C = resetMask & ~chanMask;
+    resetMask &= chanMask;
+    ret = TRUE;
+
+    if (type & 0xF) {
+        nextChan = __cntlzw(lbl_8055DB10);
+        lbl_80558F74 = nextChan;
+        if (nextChan != 32) {
+            lbl_8055DB10 &= ~(bit >> nextChan);
+            memset(origin + nextChan * 12, 0, 12);
+            SIGetTypeAsync(lbl_80558F74, fn_8005649C);
+        }
+    } else {
+        t = type & ~0xFF;
+        *(u32*)(origin + 0x30 + currentChan * 4) = t;
+        if ((type & 0x18000000) != 0x08000000 || !(t & 0x01000000)) {
+            nextChan = __cntlzw(lbl_8055DB10);
+            lbl_80558F74 = nextChan;
+            if (nextChan != 32) {
+                lbl_8055DB10 &= ~(0x80000000 >> nextChan);
+                memset(origin + nextChan * 12, 0, 12);
+                SIGetTypeAsync(lbl_80558F74, fn_8005649C);
+            }
+        } else if (lbl_80558F80 < 2) {
+            lbl_8055DB14 |= chanMask;
+            SIGetResponse(currentChan, data);
+            fn_80057F2C(currentChan, lbl_80558F7C | 0x00400000);
+            SIEnablePolling(lbl_8055DB14);
+            nextChan = __cntlzw(lbl_8055DB10);
+            lbl_80558F74 = nextChan;
+            if (nextChan != 32) {
+                lbl_8055DB10 &= ~(bit >> nextChan);
+                memset(origin + nextChan * 12, 0, 12);
+                SIGetTypeAsync(lbl_80558F74, fn_8005649C);
+            }
+        } else {
+            if (!(t & 0x80000000) || (t & 0x04000000)) {
+                if (resetMask) {
+                    ret = SITransfer(lbl_80558F74, &lbl_80558F8C, 3, origin + lbl_80558F74 * 12, 10, (SICallback)fn_80056308, 0);
+                } else {
+                    ret = SITransfer(lbl_80558F74, &lbl_80558F88, 1, origin + lbl_80558F74 * 12, 10, (SICallback)fn_80056308, 0);
+                }
+            } else if ((t & 0x00100000) && !(t & 0x00080000) && !(t & 0x00040000)) {
+                if (t & 0x40000000) {
+                    ret = SITransfer(currentChan, &lbl_80558F88, 1, origin + currentChan * 12, 10, (SICallback)fn_80056308, 0);
+                } else {
+                    ret = SITransfer(currentChan, (void*)(origin + 0x40 + currentChan * 4), 3, origin + currentChan * 12, 8, (SICallback)fn_800563C8, 0);
+                }
+            }
+            if (!ret) {
+                nextChan = __cntlzw(lbl_8055DB10);
+                lbl_80558F74 = nextChan;
+                lbl_8055DB00 |= chanMask;
+                if (nextChan != 32) {
+                    lbl_8055DB10 &= ~(0x80000000 >> nextChan);
+                    memset(origin + nextChan * 12, 0, 12);
+                    SIGetTypeAsync(lbl_80558F74, fn_8005649C);
+                }
+            }
+        }
     }
 }
 
@@ -978,10 +1074,14 @@ BOOL fn_800569D0(void) {
         lbl_80558F80 = spec;
     }
     lbl_8055DB18 = TRUE;
-    if (lbl_8055DB2C) {
-        s64 time = OSGetTime();
-        *(u16*)0x800030E0 = ((time & 0xFFFF) + ((time >> 16) & 0xFFFF) + ((time >> 32) & 0xFFFF) + ((time >> 48) & 0xFFFF)) & 0x3FFF;
-        lbl_8055DB0C = 0xF0000000;
+    {
+        BOOL flag = lbl_8055DB2C;
+        lbl_8055DB18 = TRUE;
+        if (flag) {
+            s64 time = OSGetTime();
+            *(u16*)0x800030E0 = ((time & 0xFFFFLL) + ((time >> 16) & 0xFFFFLL) + ((time >> 32) & 0xFFFFLL) + ((time >> 48) & 0xFFFFLL)) & 0x3FFF;
+            lbl_8055DB0C = 0xF0000000;
+        }
     }
     {
         u32 id = (*(u16*)0x800030E0 & 0x3FFF) << 8;
@@ -1067,60 +1167,76 @@ void SPEC1_MakeStatus(s32 chan, PADStatus* status, u32 data[2]) {
     status->substickY -= 128;
 }
 
-void fn_80056D5C(s32 chan, PADStatus* status, u32 data[2]) {
-    u32 word;
-    s32 i;
+static inline s8 ClampS8(s8 var, s8 org) {
+    if (org > 0) {
+        s8 min = org - 128;
+        if (var < min) var = min;
+    } else if (org < 0) {
+        s8 max = org + 127;
+        if (max < var) var = max;
+    }
+    return var - org;
+}
 
-    status->button = (data[0] >> 2) & 0x3fff;
-    status->stickX = data[0] >> 8;
-    status->stickY = data[0];
+static inline u8 ClampU8(u8 var, u8 org) {
+    if (var < org) var = org;
+    return var - org;
+}
+
+#define SQR_DIFF(a, b) abs((s32)(a) * (a) - (s32)(b) * (b))
+
+void fn_80056D5C(s32 chan, PADStatus* status, u32 data[2]) {
+    u8* origin = (u8*)lbl_8038F080;
+    s32 chanOffset;
+    u8* chanOrigin;
+
+    status->button = (data[0] >> 16) & 0x3FFF;
+    status->stickX = (s8)(data[0] >> 8);
+    status->stickY = (s8)data[0];
 
     switch (lbl_80558F7C & 0x700) {
     case 0x000:
     case 0x500:
     case 0x600:
     case 0x700:
-        word = data[1];
-        status->substickX = word >> 24;
-        status->substickY = word >> 16;
-        status->triggerLeft = word >> 8;
-        status->triggerRight = word;
-        status->analogA = word >> 4;
-        status->analogB = 0;
+        status->substickX = (s8)(data[1] >> 24);
+        status->substickY = (s8)(data[1] >> 16);
+        status->triggerLeft = (u8)((data[1] >> 8) & 0xF0);
+        status->triggerRight = (u8)((data[1] >> 4) & 0xF0);
+        status->analogA = (u8)(data[1] & 0xF0);
+        status->analogB = (u8)((data[1] * 16) & 0xF0);
         break;
     case 0x100:
-        word = data[1];
-        status->substickX = word >> 24;
-        status->substickY = word >> 16;
-        status->triggerLeft = word >> 8;
-        status->triggerRight = word;
-        status->analogA = word >> 4;
-        status->analogB = word << 4;
+        status->substickX = (u8)((data[1] >> 24) & 0xF0);
+        status->substickY = (u8)((data[1] >> 20) & 0xF0);
+        status->triggerLeft = (u8)(data[1] >> 16);
+        status->triggerRight = (u8)(data[1] >> 8);
+        status->analogA = (u8)(data[1] & 0xF0);
+        status->analogB = (s8)((data[1] * 16) & 0xF0);
         break;
     case 0x200:
-        word = data[1];
-        status->substickX = word >> 24;
-        status->substickY = word >> 20;
-        status->triggerLeft = word >> 16;
-        status->triggerRight = word >> 12;
-        status->analogA = word >> 8;
-        status->analogB = word;
+        status->substickX = (u8)((data[1] >> 24) & 0xF0);
+        status->substickY = (u8)((data[1] >> 20) & 0xF0);
+        status->triggerLeft = (u8)((data[1] >> 16) & 0xF0);
+        status->triggerRight = (u8)((data[1] >> 12) & 0xF0);
+        status->analogA = (u8)(data[1] >> 8);
+        status->analogB = (s8)data[1];
         break;
     case 0x300:
-        word = data[1];
-        status->substickX = word >> 24;
-        status->substickY = word >> 16;
-        status->triggerLeft = word >> 8;
-        status->triggerRight = word;
-        status->analogA = status->analogB = 0;
+        status->substickX = (s8)(data[1] >> 24);
+        status->substickY = (s8)(data[1] >> 16);
+        status->triggerLeft = (u8)(data[1] >> 8);
+        status->triggerRight = (u8)data[1];
+        status->analogA = 0;
+        status->analogB = 0;
         break;
     case 0x400:
-        word = data[1];
-        status->substickX = word >> 24;
-        status->substickY = word >> 16;
-        status->triggerLeft = word >> 8;
-        status->triggerRight = word;
-        status->analogA = status->analogB = 0;
+        status->substickX = (s8)(data[1] >> 24);
+        status->substickY = (s8)(data[1] >> 16);
+        status->triggerLeft = 0;
+        status->triggerRight = 0;
+        status->analogA = (u8)(data[1] >> 8);
+        status->analogB = (s8)data[1];
         break;
     }
 
@@ -1128,33 +1244,42 @@ void fn_80056D5C(s32 chan, PADStatus* status, u32 data[2]) {
     status->stickY -= 128;
     status->substickX -= 128;
     status->substickY -= 128;
-    if ((lbl_8038F0C0[chan] & 0xffff0000) == 0x09000000 &&
-        (status->button & 0x80) != 0) {
+
+    if ((*(u32*)(origin + 0x30 + chan * 4) & 0xFFFF0000) == 0x09000000 && !(status->button & 0x80)) {
         lbl_8055DAFC |= 0x80000000 >> chan;
-        status->stickX = status->stickY = status->substickX = status->substickY = 0;
+        status->stickX = 0;
+        status->stickY = 0;
+        status->substickX = 0;
+        status->substickY = 0;
         return;
     }
+
+    chanOffset = chan * 12;
+    chanOrigin = origin + chanOffset;
     lbl_8055DAFC &= ~(0x80000000 >> chan);
 
-    for (i = 0; i < 4; ++i) {
-        s8 *v = &status->stickX + i;
-        s8 *o = (s8*)&lbl_8038F080[chan] + 2 + i;
-        s32 delta = *v - *o;
-        if (delta > 127) *v = *o + 127;
-        else if (delta < -128) *v = *o - 128;
-        *v -= *o;
+    status->stickX = ClampS8(status->stickX, *(s8*)(chanOrigin + 2));
+    status->stickY = ClampS8(status->stickY, *(s8*)(chanOrigin + 3));
+    status->substickX = ClampS8(status->substickX, *(s8*)(chanOrigin + 4));
+    status->substickY = ClampS8(status->substickY, *(s8*)(chanOrigin + 5));
+
+    status->triggerLeft = ClampU8(status->triggerLeft, *(u8*)(chanOrigin + 6));
+    status->triggerRight = ClampU8(status->triggerRight, *(u8*)(chanOrigin + 7));
+
+    {
+        u8* prev = origin + 0x50 + chanOffset;
+        if (SQR_DIFF(status->stickX, *(s8*)(prev + 2)) >= 9 ||
+            SQR_DIFF(status->stickY, *(s8*)(prev + 3)) >= 9 ||
+            SQR_DIFF(status->substickX, *(s8*)(prev + 4)) >= 9 ||
+            SQR_DIFF(status->substickY, *(s8*)(prev + 5)) >= 9 ||
+            SQR_DIFF(status->triggerLeft, *(u8*)(prev + 6)) >= 9 ||
+            SQR_DIFF(status->triggerRight, *(u8*)(prev + 7)) >= 9 ||
+            status->button != *(u16*)prev) {
+            fn_8005B01C();
+        }
     }
-    for (i = 0; i < 2; ++i) {
-        u8 *v = &status->triggerLeft + i;
-        u8 *o = (u8*)&lbl_8038F080[chan] + 6 + i;
-        if (*v < *o) *v = *o;
-        *v -= *o;
-    }
-    if ((status->button != lbl_8038F080[chan].button) ||
-        status->stickX * status->stickX - lbl_8038F080[chan].stickX * lbl_8038F080[chan].stickX >= 9 ||
-        status->stickY * status->stickY - lbl_8038F080[chan].stickY * lbl_8038F080[chan].stickY >= 9)
-        fn_8005B01C();
-    memcpy(&lbl_8038F080[chan], status, 0xc);
+
+    memcpy(origin + 0x50 + chanOffset, status, 12);
 }
 
 BOOL fn_800572DC(BOOL final) {
