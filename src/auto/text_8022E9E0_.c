@@ -28,6 +28,29 @@ extern void fn_80128668(void *);
 extern void *fn_8022EC7C(void);
 extern void *fn_8022ECC0(s32);
 
+/* Fixed-size object pool built by fn_8012A13C/fn_8012A17C: one block of
+ * `count` elements of `stride` bytes, threaded into a free list that starts
+ * at the block itself (fn_8012A218).  fn_8012A2D8 pops an element off it and
+ * fn_8012A364 pushes one back; `live` counts the elements handed out. */
+typedef struct ObjectPool {
+    void *vtbl;           /* 0x00 */
+    u8 warnWhenEmpty;     /* 0x04 */
+    u8 ownsBlock;         /* 0x05 */
+    const char *name;     /* 0x08 */
+    void *block;          /* 0x0C */
+    void *free;           /* 0x10 free list head */
+    s32 stride;           /* 0x14 element size */
+    s32 count;            /* 0x18 capacity */
+    s32 live;             /* 0x1C elements handed out */
+} ObjectPool;             /* 0x20 bytes */
+
+#define STR_CNODE_POOL      lbl_80340280 /* "cnode::pool" */
+#define STR_UICONTEXT_POOL  lbl_80340290 /* "UIContext::pool" */
+#define sCNodePool          lbl_8055EFF8 /* ObjectPool of 8-byte cnodes */
+#define sCNodeLiveCount     lbl_8055EFF4 /* cnodes handed out */
+#define sUIContextPool      lbl_8055F000 /* ObjectPool of 0x3c-byte UIContexts */
+#define sUIContextLiveCount lbl_8055EFFC /* UIContexts handed out */
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
