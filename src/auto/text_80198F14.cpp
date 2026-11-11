@@ -11,13 +11,12 @@ extern "C" s32 fn_8019C854(void*, void*);
 #include <revolution/MTX/vec.h>
 struct CornerV3 {
     f32 x, y, z;
-    inline CornerV3& operator=(const CornerV3& o) {
-        *(u32*)&x = *(const u32*)&o.x;
-        *(u32*)&y = *(const u32*)&o.y;
-        *(u32*)&z = *(const u32*)&o.z;
-        return *this;
-    }
 };
+static inline void CornerV3Copy(CornerV3* d, const CornerV3* s) {
+    ((u32*)d)[0] = ((const u32*)s)[0];
+    ((u32*)d)[1] = ((const u32*)s)[1];
+    ((u32*)d)[2] = ((const u32*)s)[2];
+}
 
 static inline void fn801A1F98Transform(volatile f32 *dst, volatile f32 *src, f32 *matrix) {
     f32 x = src[0];
