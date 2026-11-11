@@ -1578,7 +1578,9 @@ void fn_8017431C(int arg0, int arg1) {
 }
 
 #pragma cplusplus on
-void fn_801746D0(int *arg0, int *arg1, int arg2) {
+#pragma use_lmw_stmw off
+#pragma scheduling on
+extern "C" void fn_801746D0(int *arg0, int *arg1, int arg2) {
     extern float lbl_8043038C[];
     register int *src;
     register int *table;
@@ -1586,15 +1588,15 @@ void fn_801746D0(int *arg0, int *arg1, int arg2) {
     register int i;
     register int *dst;
     int is_zero;
-    dst = arg1;
     src = arg0;
-    table = (int *)lbl_8043038C;
-    row = (int *)((unsigned char *)dst + 0x10);
-    i = 0;
+    dst = arg1;
     dst[0] = src[0x170 / 4];
     dst[1] = 1;
     *(unsigned char *)((unsigned char *)dst + 0xD) = (unsigned char)((T746D0 *)src)->v9();
+    row = (int *)((unsigned char *)dst + 0x10);
     *(unsigned char *)((unsigned char *)dst + 0xC) = 0;
+    table = (int *)lbl_8043038C;
+    i = 0;
     while (i < dst[0]) {
         is_zero = !((int (*)(int))fn_80171EC0)(i);
         *(unsigned char *)((unsigned char *)row + 0x10) = (unsigned char)is_zero;
