@@ -401,7 +401,7 @@ extern void OSReport(void *, ...);
 extern char lbl_803036E0[];
 extern char lbl_803036F8[];
 int CPGPLinkCheck(void) {
-    int error = 0;
+    unsigned int error = 0;
     unsigned int first;
     unsigned int second;
     int diff1;
@@ -420,7 +420,7 @@ int CPGPLinkCheck(void) {
     if (first == second) {
         error++;
     }
-    if ((unsigned int)error == 2) {
+    if (error == 2) {
         return 1;
     }
     diff1 = (int)*(unsigned int *)(lbl_8037C0E4 + 4) -
@@ -2265,61 +2265,18 @@ void GXBegin(unsigned char prim, unsigned char vtxfmt, unsigned short nverts) {
     *(volatile unsigned short *)0xCC008000 = nverts;
 }
 
+#pragma dont_inline on
 void __GXSendFlushPrim(void) {
-    volatile u8 *fifo8 = (volatile u8 *)0xCC008000;
-    volatile u16 *fifo16 = (volatile u16 *)0xCC008000;
-    volatile u32 *fifo32 = (volatile u32 *)0xCC008000;
-    register u16 *gx = (u16 *)__GXData;
-    u32 written;
-    u32 size;
-    u32 end;
-    u32 tail;
-    u32 count;
-    u32 valid;
-    u16 height;
-    u16 width;
-
-    written = 0;
-    width = gx[2];
-    height = gx[3];
-    *fifo8 = 0x98;
-    size = width * height;
-    *fifo16 = gx[2];
-    if (size != 0) {
-        end = size + 3;
-        tail = size - 0x20;
-        if ((end >> 2) > 8) {
-            valid = 0;
-            if (end >= 3 && size <= end)
-                valid = 1;
-            if (valid != 0) {
-                count = (tail + 0x1F) >> 5;
-                if (tail <= 0) {
-                } else {
-                    do {
-                        *fifo32 = 0;
-                        written += 0x20;
-                        *fifo32 = 0;
-                        *fifo32 = 0;
-                        *fifo32 = 0;
-                        *fifo32 = 0;
-                        *fifo32 = 0;
-                        *fifo32 = 0;
-                        *fifo32 = 0;
-                    } while (--count != 0);
-                }
-            }
-        }
-        count = (size + 3 - written) >> 2;
-        if (written < size) {
-            do {
-                *fifo32 = 0;
-            } while (--count != 0);
-        }
+    u32 i;
+    u32 sz = ((u16 *)__GXData)[2] * ((u16 *)__GXData)[3];
+    WGPIPE.uc = 0x98;
+    WGPIPE.us = ((u16 *)__GXData)[2];
+    for (i = 0; i < sz; i += 4) {
+        WGPIPE.i = 0;
     }
-    gx[1] = 1;
+    ((u16 *)__GXData)[1] = 1;
 }
-
+#pragma dont_inline reset
 void GXSetLineWidth(s32 width, s32 format) {
     union {
         unsigned int value;
@@ -2655,12 +2612,13 @@ f32 GXGetYScaleFactor(u32 efbHeight, u32 xfbHeight) {
 extern f32 lbl_80560B40;
 unsigned int GXSetDispCopyYScale(f32 yScale) {
     unsigned int scale = (unsigned int)(lbl_80560B40 / yScale);
-    unsigned int height = scale & 0x1FF;
-    unsigned int small = height <= 0x80;
+    register unsigned int height = scale & 0x1FF;
     unsigned int width;
     unsigned int result;
     unsigned int value;
     unsigned int tmp;
+    volatile unsigned char *fifo8 = (volatile unsigned char *)0xCC008000;
+    volatile unsigned int *fifo = (volatile unsigned int *)0xCC008000;
     union {
         unsigned int value;
         struct {
@@ -2677,8 +2635,6 @@ unsigned int GXSetDispCopyYScale(f32 yScale) {
             unsigned int other : 10;
         } fields;
     } copyState;
-    volatile unsigned char *fifo8 = (volatile unsigned char *)0xCC008000;
-    volatile unsigned int *fifo = (volatile unsigned int *)0xCC008000;
 
     *fifo8 = 0x61;
     packet.value = 0;
@@ -2693,10 +2649,10 @@ unsigned int GXSetDispCopyYScale(f32 yScale) {
     width = (__GXData[0x234 / 4] >> 10) & 0x3FF;
     value = width + 1;
     result = (((value - 1) << 8) / height) + 1;
-    if (!small && height < 0x100) {
-        do {
+    if (height > 0x80 && height < 0x100) {
+        while ((height & 1) == 0) {
             height >>= 1;
-        } while ((height & 1) == 0);
+        }
         if (value % height == 0) result++;
     }
     if (result > 0x400) result = 0x400;
@@ -4974,7 +4930,7 @@ void GXSetCurrentMtx(s32 arg0) {
 void GXLoadTexMtxImm(const f32 *mtx, u32 id, s32 type) {
     u32 addr;
     u32 num;
-    volatile const f64 *src = (volatile const f64 *)mtx;
+    const f64 *src = (const f64 *)mtx;
     volatile f64 *fifo = (volatile f64 *)0xCC008000;
 
     addr = id >= 0x40 ? (id - 0x40) * sizeof(f32) + 0x500 : id * 4 + (u64)0;
@@ -4983,12 +4939,12 @@ void GXLoadTexMtxImm(const f32 *mtx, u32 id, s32 type) {
     *(volatile unsigned int *)0xCC008000 = ((num - 1) << 16) | addr;
 
     if (type == 0) {
-        f64 f0 = src[5];
-        f64 f1 = src[4];
-        f64 f2 = src[3];
-        f64 f3 = src[2];
-        f64 f4 = src[1];
         f64 f5 = src[0];
+        f64 f4 = src[1];
+        f64 f3 = src[2];
+        f64 f2 = src[3];
+        f64 f1 = src[4];
+        f64 f0 = src[5];
         fifo[0] = f5;
         fifo[0] = f4;
         fifo[0] = f3;
@@ -4996,10 +4952,10 @@ void GXLoadTexMtxImm(const f32 *mtx, u32 id, s32 type) {
         fifo[0] = f1;
         fifo[0] = f0;
     } else {
-        f64 f0 = src[3];
-        f64 f1 = src[2];
-        f64 f2 = src[1];
         f64 f3 = src[0];
+        f64 f2 = src[1];
+        f64 f1 = src[2];
+        f64 f0 = src[3];
         fifo[0] = f3;
         fifo[0] = f2;
         fifo[0] = f1;
