@@ -19267,7 +19267,7 @@ done:
 
 extern "C" void fn_800D1C18(void) {
     void *data = ((void *(*)())OSGetAlarmUserData)();
-    fn_80060CC0(data, 4, (u32)&fn_800D1C48);
+    fn_80060CC0(data, WPAD_SPEAKER_PLAY, (u32)&fn_800D1C48);
 }
 
 extern "C" void fn_800D1C48(s32 speakerIndex, s32 action) {
