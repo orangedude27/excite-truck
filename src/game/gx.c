@@ -1146,20 +1146,19 @@ void fn_802D0368(float arg0, float arg1, float arg2, float arg3) {
     extern unsigned char lbl_804C9778[];
     extern unsigned char lbl_804C97B0[];
     extern double fn_8002EF30(double);
+    register int one = 1;
+    register unsigned char *p = lbl_804C9778;
     float result;
-
-    *(float *)(lbl_804C9778 + 4) = arg0;
-    lbl_804C9778[0] = 1;
-    *(float *)(lbl_804C9778 + 8) = arg1;
-    *(float *)(lbl_804C9778 + 0xc) = arg2;
-    *(float *)(lbl_804C9778 + 0x14) = arg3;
-
+    *(float *)(p + 4) = arg0;
+    p[0] = one;
+    *(float *)(p + 8) = arg1;
+    *(float *)(p + 0xc) = arg2;
+    *(float *)(p + 0x14) = arg3;
     result = fn_8002EF30(arg2 * lbl_80564F94);
-
     *(float *)(lbl_804C97B0 + 0x14) = arg0;
-    *(float *)(lbl_804C9778 + 0x10) = result;
+    *(float *)(p + 0x10) = result;
     *(float *)(lbl_804C97B0 + 0x18) = arg1;
-    lbl_804C97B0[0x1c] = 1;
+    lbl_804C97B0[0x1c] = one;
 }
 
 extern unsigned long lbl_804C56C0[];
@@ -1638,6 +1637,7 @@ void fn_802D0E48(int arg0) {
     }
 }
 
+#pragma dont_inline fn_802D0EC8
 int fn_802D0EC8(int arg0) {
     switch (arg0) {
     case 8:
@@ -1648,6 +1648,8 @@ int fn_802D0EC8(int arg0) {
         return arg0;
     }
 }
+extern unsigned short lbl_8055FD08;
+extern unsigned short lbl_8055FD88;
 
 void fn_802D14D8(void)
 {
