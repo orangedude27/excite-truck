@@ -582,16 +582,14 @@ void *fn_802E0C04(u32 size) {
     void *next;
     char *p;
     int align2;
-
+    best = 0x7FFFFFFF;
+    bestLink = 0;
+    result = 0;
     head = (volatile int *)lbl_8055FEE8;
     align = head[1];
     link = (void **)&head[2];
     needed = size + align;
     needed &= ~align;
-    best = 0x7FFFFFFF;
-    bestLink = 0;
-    result = 0;
-
     while ((node = *link) != 0) {
         freeSize = *(int *)((char *)node + 4);
         if (freeSize >= needed && best > freeSize) {
@@ -600,7 +598,6 @@ void *fn_802E0C04(u32 size) {
         }
         link = (void **)((char *)node + 8);
     }
-
     if (bestLink != 0) {
         freeNode = *bestLink;
         split = 0;
@@ -608,7 +605,6 @@ void *fn_802E0C04(u32 size) {
         freeSize = *(int *)((char *)freeNode + 4);
         next = *(void **)((char *)freeNode + 8);
         left = freeSize - needed;
-
         if (left > ((align + 0x10) & ~align) + 0x20) {
             p = (char *)freeNode + align + needed;
             *(int *)(p + 1) = 0xABCFEED0;
@@ -619,19 +615,16 @@ void *fn_802E0C04(u32 size) {
             *(volatile int **)(p + 0xD) = head;
             *(int *)((char *)freeNode + 4) = needed;
         }
-
         if (split != 0) {
             *(void **)((char *)split + 8) = next;
             *bestLink = split;
         } else {
             *bestLink = next;
         }
-
         *(void **)((char *)freeNode + 8) = (void *)head[3];
         head[3] = (int)freeNode;
         result = (char *)freeNode + head[1] + 1;
     }
-
     if (result == 0 && *(volatile u8 *)head != 0) {
         fn_802E317C(lbl_8034BB28);
     }
@@ -642,8 +635,8 @@ void *fn_802E0C04(u32 size) {
 void fn_802E0D44(u32 size) {
     u8 *head = (u8 *)lbl_8055FEE8;
     u32 align0 = *(u32 *)(head + 4);
-    u8 *block = (u8 *)(size - (align0 + 1));
     u8 **link = (u8 **)(head + 12);
+    u8 *block = (u8 *)(size - (align0 + 1));
     u8 *node = (u8 *)size;
     do {
         if (node == block) {
@@ -768,33 +761,28 @@ void fn_802E0F98(void) {
 }
 
 void fn_802E1058(void) {
-    register u32 root;
+    register u32 total;
     register u32 node;
-    register unsigned int total;
+    register u32 root;
     register unsigned int otherTotal;
-
     root = (u32)lbl_8055FEE8;
     if (root != 0) {
         if (*(int *)(root + 0xC) != 0) {
             fn_802E30C8(lbl_8034BBA8, lbl_8034BB1C);
             fn_802E30C8(lbl_8034BB9C);
-
             node = *(u32 *)(root + 0xC);
             total = 0;
             while (node != 0) {
-                fn_802E30C8(lbl_8034BB88, (void *)(node + 0x10),
-                            *(int *)(node + 4));
+                fn_802E30C8(lbl_8034BB88, (void *)(node + 0x10), *(int *)(node + 4));
                 total += *(unsigned int *)(node + 4);
                 node = *(u32 *)(node + 8);
             }
             fn_802E30C8(lbl_8034BB7C, total >> 10);
-
             otherTotal = 0;
             fn_802E30C8((const char *)&lbl_8055D098);
             node = *(u32 *)(root + 8);
             while (node != 0) {
-                fn_802E30C8(lbl_8034BB68, (void *)(node + 0x10),
-                            *(int *)(node + 4));
+                fn_802E30C8(lbl_8034BB68, (void *)(node + 0x10), *(int *)(node + 4));
                 otherTotal += *(unsigned int *)(node + 4);
                 node = *(u32 *)(node + 8);
             }
