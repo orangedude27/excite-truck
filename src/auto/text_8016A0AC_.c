@@ -313,6 +313,7 @@ FloatPair8016A6B0 fn_8016A6B0(const char *arg0, s32 arg1) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma processor 750
+/* Counts entries in the named group whose projected offset from the vehicle is below the threshold. */
 s32 fn_8016A780(const char *arg0, s32 arg1) {
     register void *veh;
     register s32 nameOff;
