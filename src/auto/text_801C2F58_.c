@@ -1406,8 +1406,9 @@ extern u8 lbl_8055E840;
 extern char lbl_8055AA5C;
 extern char lbl_8055AA64;
 extern char lbl_80336F24[];
+/* Append a sound sample entry to the debug timeline (random or numbered), format a status message, and sort the timeline. */
 void fn_801C77FC(void) {
-    char name[0x10];
+    char sampleName[0x10];
     void *entry = fn_801C3C80();
     s32 flag;
 
@@ -1422,11 +1423,11 @@ void fn_801C77FC(void) {
     else
         *(s32 *)((char *)entry + 0xC) = lbl_8055E844;
     if (flag != 0) {
-        strcpy(name, (const char *)&lbl_8055AA5C);
+        strcpy(sampleName, (const char *)&lbl_8055AA5C);
     } else {
-        sprintf(name, (const char *)&lbl_8055AA64, lbl_8055E844);
+        sprintf(sampleName, (const char *)&lbl_8055AA64, lbl_8055E844);
     }
-    sprintf(lbl_80437FC0, lbl_80336F24, name, *(f32 *)entry);
+    sprintf(lbl_80437FC0, lbl_80336F24, sampleName, *(f32 *)entry);
     qsort((void *)lbl_8055E7F8, lbl_8055E7F0, 0x30C,
           (int (*)(const void *, const void *))fn_801C3B7C);
 }
