@@ -486,41 +486,42 @@ check:
 
 extern int fn_801E4A6C(int *, const char *);
 extern int fn_801E4BA8(int *);
-void fn_8022B390(const char *arg0, const char *arg1, int arg2, int *arg3, int *arg4) {
+/* Advances a cursor position over up to maxChars of text in the current UI font context, measuring glyph advance/newline height via the vector or bitmap font. */
+void fn_8022B390(const char *unusedLabel, const char *text, int maxChars, int *outX, int *outY) {
     union LocalChar {
         short half;
         char byte;
     } sp8;
-    void *p;
+    void *ctx;
     int x;
     int y;
     int i;
-    p = fn_8022CA2C();
+    ctx = fn_8022CA2C();
     sp8.half = 0;
     i = 0;
-    x = *(int *)((char *)p + 0x44);
-    y = *(int *)((char *)p + 0x48);
-    while (*arg1 != 0 && i < arg2) {
-        if (*arg1 != 10) {
-            sp8.byte = *arg1;
-            if (*(int *)((char *)p + 8) != 0) {
-                x += (int)((float (*)(void *, char *, float))fn_8023293C)(*(void **)((char *)p + 8), &sp8.byte, lbl_80563588);
-            } else if (*(int *)((char *)p + 4) != 0) {
-                x += fn_801E4A6C(*(int **)((char *)p + 4), &sp8.byte);
+    x = *(int *)((char *)ctx + 0x44);
+    y = *(int *)((char *)ctx + 0x48);
+    while (*text != 0 && i < maxChars) {
+        if (*text != 10) {
+            sp8.byte = *text;
+            if (*(int *)((char *)ctx + 8) != 0) {
+                x += (int)((float (*)(void *, char *, float))fn_8023293C)(*(void **)((char *)ctx + 8), &sp8.byte, lbl_80563588);
+            } else if (*(int *)((char *)ctx + 4) != 0) {
+                x += fn_801E4A6C(*(int **)((char *)ctx + 4), &sp8.byte);
             }
         } else {
-            if (*(int *)((char *)p + 8) != 0) {
-                y += fn_80232B70(*(int *)((char *)p + 8));
-            } else if (*(int *)((char *)p + 4) != 0) {
-                y += fn_801E4BA8(*(int **)((char *)p + 4));
+            if (*(int *)((char *)ctx + 8) != 0) {
+                y += fn_80232B70(*(int *)((char *)ctx + 8));
+            } else if (*(int *)((char *)ctx + 4) != 0) {
+                y += fn_801E4BA8(*(int **)((char *)ctx + 4));
             }
-            x = *(int *)((char *)p + 0x44);
+            x = *(int *)((char *)ctx + 0x44);
         }
         i++;
-        arg1++;
+        text++;
     }
-    *arg3 = x;
-    *arg4 = y;
+    *outX = x;
+    *outY = y;
 }
 
 #pragma scheduling invalid_target
