@@ -6364,28 +6364,32 @@ extern "C" void fn_802248FC(void *arg0) {
 #define ACTION_PREV    0x126  // step to the previous entry of the list
 #define ACTION_NEXT    0x128  // step to the next entry of the list
 
-extern "C" s32 fn_80224A38(void *arg0, s32 arg1) {
-    s32 *temp_r6 = *(s32 **)((u8 *)arg0 + 0x258);
-    s32 (*temp_r12)(s32);
-    if (temp_r6 == 0) {
+extern "C" s32 fn_80224A38(void *widget, s32 action) {
+    // One action of the widget, only while the tracking object it was given
+    // still carries the id it tracks: confirm answers the dialog with the
+    // widget's value, unless the confirm callback refuses it, and the two step
+    // actions move the tracked entry of the list back or forward one.
+    s32 *tracking = *(s32 **)((u8 *)widget + 0x258);
+    s32 (*confirm)(s32);
+    if (tracking == 0) {
         return 0;
     }
-    if (*(s32 *)((u8 *)arg0 + 0x254) != *temp_r6) {
+    if (*(s32 *)((u8 *)widget + 0x254) != *tracking) {
         return 0;
     }
-    switch (arg1) {
-    case 0xD:
-        temp_r12 = *(s32 (**)(s32))((u8 *)arg0 + 0x25C);
-        if (temp_r12 != 0 && temp_r12(*(s32 *)((u8 *)arg0 + 0x250)) == 0) {
+    switch (action) {
+    case ACTION_CONFIRM:
+        confirm = *(s32 (**)(s32))((u8 *)widget + 0x25C);
+        if (confirm != 0 && confirm(*(s32 *)((u8 *)widget + 0x250)) == 0) {
             return 1;
         }
-        fn_802168BC((void *)*(s32 *)((u8 *)arg0 + 0x250));
+        fn_802168BC((void *)*(s32 *)((u8 *)widget + 0x250));
         return 1;
-    case 0x126:
-        fn_80217D84(*(s32 *)((u8 *)arg0 + 0x2C));
+    case ACTION_PREV:
+        fn_80217D84(*(s32 *)((u8 *)widget + 0x2C));
         return 1;
-    case 0x128:
-        fn_80217C4C(*(s32 *)((u8 *)arg0 + 0x2C));
+    case ACTION_NEXT:
+        fn_80217C4C(*(s32 *)((u8 *)widget + 0x2C));
         return 1;
     default:
         return 0;
