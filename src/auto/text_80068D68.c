@@ -16725,27 +16725,28 @@ block_28:
 }
 
 u8 hidh_conn_initiate(u32 dev_handle) {
-    u8 *entry = lbl_803C3C38 + dev_handle * 0x34;
+    /* Initiates HID host control L2CAP connection for the given device handle, updating state and invoking the status callback on failure. */
+    u8 *device = lbl_803C3C38 + dev_handle * 0x34;
     u16 cid;
-    u32 dhandle;
+    u32 cbIndex;
 
-    if (entry[0x10] != 0)
+    if (device[0x10] != 0)
         return 9;
 
-    *(u16 *)(entry + 0x14) = 0;
-    *(u16 *)(entry + 0x16) = 0;
-    *(u16 *)(entry + 0x1a) = 0x100;
-    entry[0x11] = 1;
-    cid = L2CA_ConnectReq(0x11, entry + 1);
-    *(u16 *)(entry + 0x14) = cid;
+    *(u16 *)(device + 0x14) = 0;
+    *(u16 *)(device + 0x16) = 0;
+    *(u16 *)(device + 0x1a) = 0x100;
+    device[0x11] = 1;
+    cid = L2CA_ConnectReq(0x11, device + 1);
+    *(u16 *)(device + 0x14) = cid;
 
     if (cid == 0) {
         if (lbl_803C3C38[0x401] >= 2)
             fn_8007093C(0x1e0001, lbl_8031799C);
-        dhandle = (u32)((entry - lbl_803C3C38) / 0x34) / 0x34U;
-        ((void (*)(u8, u32, u8, void *))(*(void **)(lbl_803C3C38 + 0x340)))((u8)dhandle, 1, 0xe, 0);
+        cbIndex = (u32)((device - lbl_803C3C38) / 0x34) / 0x34U;
+        ((void (*)(u8, u32, u8, void *))(*(void **)(lbl_803C3C38 + 0x340)))((u8)cbIndex, 1, 0xe, 0);
     } else {
-        entry[0x10] = 1;
+        device[0x10] = 1;
     }
     return 0;
 }
