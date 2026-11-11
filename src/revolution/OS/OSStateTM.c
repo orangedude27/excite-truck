@@ -95,6 +95,8 @@ BOOL OSGetResetButtonState(void) {
     return state;
 }
 
+/* Initialize the STM (state transition manager): set default callbacks and open
+   the immediate/eventhook devices so state events can be registered. */
 BOOL __OSInitSTM(void) {
     BOOL success;
 
