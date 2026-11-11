@@ -177,12 +177,14 @@ void fn_802AD30C(void *arg0) {
         int pad4;
         void *ptr;
     };
-    int ref;
+    int refCount;
     int i;
 
-    ref = *(int *)((char *)arg0 + 0x18) - 1;
-    *(int *)((char *)arg0 + 0x18) = ref;
-    if (ref <= 0) {
+    /* Release a resource object: decrement its refcount, and on last reference
+       destroy child records/groups and free owned allocations. */
+    refCount = *(int *)((char *)arg0 + 0x18) - 1;
+    *(int *)((char *)arg0 + 0x18) = refCount;
+    if (refCount <= 0) {
         lbl_8055F93C = (char *)lbl_8055F93C - 1;
         for (i = 0; i < *(int *)((char *)arg0 + 0x1C); i++) {
             if ((*(struct Record **)((char *)arg0 + 0x20))[i].type == 1) {
