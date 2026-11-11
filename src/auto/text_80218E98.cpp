@@ -1577,6 +1577,26 @@ extern "C" void fn_8021AD10(void *arg0) {
 #pragma scheduling on
 #pragma pop
 extern "C" f32 lbl_805634EC;
+
+// View of the animated widget class fn_8021AE18 belongs to: +0x248 counts down
+// to the next update and +0x24C is how long one update step lasts (the
+// constructor fn_8021AC24 starts them at 0.0 and 0.3).
+struct AnimClock_8021AE18 {
+    void *vtable;                 // 0x00
+    u8 pad_0x04[0x18 - 0x04];
+    u8 visible;                   // 0x18 drawn this frame
+    u8 pad_0x19[0x244 - 0x19];
+    u8 animating;                 // 0x244 clock running
+    u8 pad_0x245[0x248 - 0x245];
+    f32 time;                     // 0x248 time left before the next update
+    f32 step;                     // 0x24C length of one update step
+};
+
+// Advances the widget's animation clock by the frame time and calls its
+// virtual Update (vtable slot 0x84) once per elapsed step, at most 11 catch-up
+// steps; every step run shortens itself to 1 / (2 + 1 / step), so a widget
+// that fell behind eases back onto the frame rate. A stopped or hidden clock
+// just restarts at 0.0 / 0.3.
 #pragma push
 #pragma processor 750
 extern "C" void fn_8021AE18(void *arg0) {
