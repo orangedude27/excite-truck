@@ -693,6 +693,7 @@ s32 IOS_Ioctlv(s32 fd, s32 type, s32 inCount, s32 outCount,
 
 s32 IOS_IoctlvReboot(s32 fd, s32 type, s32 inCount, s32 outCount,
                      IPCIOVector* vectors) {
+    /* Issue an ioctlv request that reboots IOS on completion. */
     IPCRequestEx* req;
     s32 ret = __ios_Ipc1(fd, IPC_REQ_IOCTLV, NULL, NULL, &req);
     if (ret == IPC_RESULT_OK) {
