@@ -125,30 +125,31 @@ extern f64 lbl_80562070;
 extern f32 lbl_80562078, lbl_8056207C, lbl_80562080;
 #pragma dont_inline fn_8018FC38
 #pragma scheduling invalid_target
+/* Initialize an object instance (vtable/registry/state), ensure related subsystems are ready, and seed timing/limit globals from a random value. */
 void* fn_8018FD88(void* arg0, s32 arg1, s32 arg2) {
-    f32 value;
-    f32 result;
-    f32 limit;
-    s32 zero = 0;
+    f32 randScaled;
+    f32 adjusted;
+    f32 minLimit;
+    s32 zeroInit = 0;
 
     *(void**)arg0 = lbl_80333018;
     if (lbl_8055E518 == 0) ((void (*)(void))fn_8018FC38)();
     lbl_804349A0[lbl_8055E518++] = arg0;
     ((u8*)arg0)[0x38] = 1;
-    lbl_8055E520 = (u8)zero;
-    lbl_8055E523 = (u8)zero;
+    lbl_8055E520 = (u8)zeroInit;
+    lbl_8055E523 = (u8)zeroInit;
     *(s32*)((u8*)arg0 + 8) = arg1;
     *(s32*)((u8*)arg0 + 0xC) = arg2;
-    *(s32*)((u8*)arg0 + 0x10) = zero;
-    *(s32*)((u8*)arg0 + 4) = zero;
+    *(s32*)((u8*)arg0 + 0x10) = zeroInit;
+    *(s32*)((u8*)arg0 + 4) = zeroInit;
     *(s32*)((u8*)arg0 + 0x28) = 0x10000;
     if (fn_801B6668() == 0) fn_801B664C();
-    value = lbl_80562078 * (f32)fn_801293A4();
-    result = value - lbl_8056207C;
-    limit = lbl_80562080;
-    lbl_8055A46C = value;
-    limit = (limit > result) ? limit : result;
-    lbl_8055A468 = limit;
+    randScaled = lbl_80562078 * (f32)fn_801293A4();
+    adjusted = randScaled - lbl_8056207C;
+    minLimit = lbl_80562080;
+    lbl_8055A46C = randScaled;
+    minLimit = (minLimit > adjusted) ? minLimit : adjusted;
+    lbl_8055A468 = minLimit;
     return arg0;
 }
 #pragma scheduling on
@@ -956,10 +957,9 @@ extern "C" void fn_80190EAC(void *arg0) {
     s32 zero = 0;
     s32 one = 1;
     void *sub;
-    s32 z;
+    s8 z;
     f32 f0;
     f32 f1;
-
     *(s8 *)((s8 *)arg0 + 0x25) = (s8)zero;
     *(s8 *)((s8 *)arg0 + 0x26) = (zero == 0);
     *(s8 *)((s8 *)arg0 + 0x24) = (s8)one;
@@ -978,7 +978,7 @@ extern "C" void fn_80190EAC(void *arg0) {
     z = 0;
     f1 = lbl_8056208C;
     f0 = lbl_805620BC;
-    *(volatile s8 *)((s8 *)arg0 + 0x34) = (s8)z;
+    *(volatile s8 *)((s8 *)arg0 + 0x34) = z;
     *(f32 *)((s8 *)arg0 + 0x30) = f1;
     *(s8 *)((s8 *)arg0 + 0x34) = 1;
     *(f32 *)((s8 *)arg0 + 0x2C) = f0;
@@ -1566,6 +1566,27 @@ void *arg0;
     row->value[27] = lbl_80562090;
     row->value[30] = lbl_80562090;
     row->value[31] = lbl_80562090;
+}
+
+void fn_80191860(void *arg0, void *arg1) {
+    extern int lbl_802F9550[];
+    int buf[9];
+    int v;
+    int *p = lbl_802F9550;
+    buf[0] = *p++;
+    buf[1] = *p++;
+    buf[2] = *p++;
+    buf[3] = *p++;
+    buf[4] = *p++;
+    buf[5] = *p++;
+    buf[6] = *p++;
+    buf[7] = *p++;
+    buf[8] = *p;
+    buf[0] = (int)((char *)arg0 + 4);
+    buf[3] = (int)((char *)arg0 + 5);
+    v = ((int (*)(int, int, int, int, int, int, int, int))fn_8018B06C)(*(int *)((char *)arg0 + 0x34), lbl_802F9550[8], (int)((char *)arg0 + 4), lbl_802F9550[7], lbl_802F9550[6], lbl_802F9550[5], lbl_802F9550[4], lbl_802F9550[2]);
+    ((void (*)(void *, int))((void **)*(void ***)((char *)arg0 + 0x38))[9])(*(void ***)((char *)arg0 + 0x38), v);
+    ((void (*)(void *, void *))((void **)*(void ***)arg1)[2])(arg1, buf);
 }
 
 #pragma ppc_psq_save off
