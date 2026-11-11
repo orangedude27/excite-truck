@@ -261,12 +261,10 @@ extern "C" void fn_80298160(void) {
     }
 
 extern "C" void fn_802981F8(void* self) {
-    register float f9C = lbl_8056459C;
-    register float f90 = lbl_80564590;
-    float sp8 = f9C;
-    float spC = f90;
-    float sp10 = f9C;
-    fn_8028E584(lbl_8055F7E0, self, &sp8, f9C);
+    float sp8 = lbl_8056459C;
+    float spC = lbl_80564590;
+    float sp10 = sp8;
+    fn_8028E584(lbl_8055F7E0, self, &sp8, sp8);
     fn_80288A40(self, &sp8);
 }
 
@@ -599,6 +597,8 @@ extern float lbl_805645D4;
 extern float lbl_805645CC;
 extern float lbl_805645D0;
 extern "C" void fn_802991BC(void *out) {
+    /* Build an effect descriptor on the stack and create/store the "engine fire"
+       effect instance (lbl_803494C4) in the target object. */
     struct Frame {
         float x00, x04, x08, x0C, x10, x14;
         int x18, x1C;
@@ -613,44 +613,44 @@ extern "C" void fn_802991BC(void *out) {
         float x98;
         int x9C;
         char xa0[8];
-    } frame;
+    } effectDesc;
 
-    fn_8028E61C(&frame.x18);
-    frame.x1C = 0x80;
-    frame.x20 = lbl_805645C8;
-    frame.x24 = lbl_80564598;
-    frame.x18 = 1;
-    frame.x5C = 2;
-    frame.x0C = lbl_805645C8;
-    frame.x10 = lbl_805645C8;
-    frame.x14 = lbl_805645C8;
-    frame.x28 = lbl_805645C8;
-    frame.x2C = lbl_805645C8;
-    frame.x30 = lbl_805645C8;
-    frame.x00 = lbl_80564590;
-    frame.x04 = lbl_80564590;
-    frame.x08 = lbl_80564590;
-    frame.x34 = lbl_80564590;
-    frame.x38 = lbl_80564590;
-    frame.x3C = lbl_80564590;
-    frame.x40 = lbl_805645CC;
-    frame.x48 = lbl_805645D0;
-    frame.x4C = lbl_8056459C;
-    frame.x68 = lbl_80564594;
-    frame.x6C = lbl_80564598;
-    frame.x70 = lbl_805645B8;
-    frame.x74 = lbl_80564590;
-    frame.x88 = lbl_805645B0;
-    frame.x80 = lbl_805645B0;
-    frame.x78 = lbl_805645B0;
-    frame.x8C = lbl_805645D4;
-    frame.x84 = lbl_805645D4;
-    frame.x7C = lbl_805645D4;
-    frame.x98 = lbl_80564598;
-    frame.x9C = 0x40;
-    frame.xa0[0] = 1;
-    frame.xa0[1] = 1;
-    *(void **)((char *)out + 4) = fn_8028E2F8(&frame.x18, lbl_803494C4, lbl_8055CA80);
+    fn_8028E61C(&effectDesc.x18);
+    effectDesc.x1C = 0x80;
+    effectDesc.x20 = lbl_805645C8;
+    effectDesc.x24 = lbl_80564598;
+    effectDesc.x18 = 1;
+    effectDesc.x5C = 2;
+    effectDesc.x0C = lbl_805645C8;
+    effectDesc.x10 = lbl_805645C8;
+    effectDesc.x14 = lbl_805645C8;
+    effectDesc.x28 = lbl_805645C8;
+    effectDesc.x2C = lbl_805645C8;
+    effectDesc.x30 = lbl_805645C8;
+    effectDesc.x00 = lbl_80564590;
+    effectDesc.x04 = lbl_80564590;
+    effectDesc.x08 = lbl_80564590;
+    effectDesc.x34 = lbl_80564590;
+    effectDesc.x38 = lbl_80564590;
+    effectDesc.x3C = lbl_80564590;
+    effectDesc.x40 = lbl_805645CC;
+    effectDesc.x48 = lbl_805645D0;
+    effectDesc.x4C = lbl_8056459C;
+    effectDesc.x68 = lbl_80564594;
+    effectDesc.x6C = lbl_80564598;
+    effectDesc.x70 = lbl_805645B8;
+    effectDesc.x74 = lbl_80564590;
+    effectDesc.x88 = lbl_805645B0;
+    effectDesc.x80 = lbl_805645B0;
+    effectDesc.x78 = lbl_805645B0;
+    effectDesc.x8C = lbl_805645D4;
+    effectDesc.x84 = lbl_805645D4;
+    effectDesc.x7C = lbl_805645D4;
+    effectDesc.x98 = lbl_80564598;
+    effectDesc.x9C = 0x40;
+    effectDesc.xa0[0] = 1;
+    effectDesc.xa0[1] = 1;
+    *(void **)((char *)out + 4) = fn_8028E2F8(&effectDesc.x18, lbl_803494C4, lbl_8055CA80);
 }
 
 extern "C" void* fn_802992C4(void* arg0, int arg1) {
