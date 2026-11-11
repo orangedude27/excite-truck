@@ -5533,24 +5533,21 @@ u8 BTA_DmAddDevice(u8 *bd_addr, u8 *link_key, u32 trusted_mask, u8 is_trusted) {
     u32 bit_index;
     u8 index = 0;
     u8 result;
+
     memset(service_mask, 0, 8);
-    if (is_trusted == 0)
-        goto done;
-loop:
-    bit = 1 << index;
-    if (trusted_mask & bit) {
-        trusted_mask &= ~bit;
-        mapped = lbl_802EE9C0[index];
-        offset = (mapped >> 3) & 0x3FC;
-        bit_index = mapped - (mapped & 0x1FE0);
-        *(u32 *)((u8 *)service_mask + offset) |= 1 << bit_index;
+    if (is_trusted != 0) {
+        do {
+            bit = 1 << index;
+            if (trusted_mask & bit) {
+                trusted_mask &= ~bit;
+                mapped = lbl_802EE9C0[index];
+                offset = (mapped >> 3) & 0x3FC;
+                bit_index = mapped - (mapped & 0x1FE0);
+                *(u32 *)((u8 *)service_mask + offset) |= 1 << bit_index;
+            }
+            index++;
+        } while (trusted_mask != 0 && index < 0x17);
     }
-    index++;
-    if (trusted_mask == 0)
-        goto done;
-    if (index < 0x17)
-        goto loop;
-done:
     fn_8006EAD0();
     result = ((BOOLEAN (*)(BD_ADDR, DEV_CLASS, BD_NAME, BD_FEATURES,
                            UINT32 *, LINK_KEY))BTM_SecAddDevice)(
