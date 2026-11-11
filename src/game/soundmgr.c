@@ -65,6 +65,23 @@ typedef struct Vt_80207960 {
     void (*f2)(void*);
 } Vt_80207960;
 
+/* The nine sound classes the manager keeps a list of, plus their count; the
+ * names are the ones in its assert table (lbl_802F9DA0).  fn_802085F0 calls
+ * ENGINE, TIRESQUEAL, CRASH, ENGINE_START and WIND the positional ones, and
+ * fn_80207964 singles out UI. */
+enum SndClass {
+    SNDCLASS_UI = 0,
+    SNDCLASS_COUNTDOWN = 1,
+    SNDCLASS_ENGINE_2D = 2,
+    SNDCLASS_ENGINE = 3,
+    SNDCLASS_TIRESQUEAL = 4,
+    SNDCLASS_CRASH = 5,
+    SNDCLASS_ENGINE_START = 6,
+    SNDCLASS_GEARCHANGE = 7,
+    SNDCLASS_WIND = 8,
+    SNDCLASS_COUNT = 9
+};
+
 #pragma dont_inline on
 void fn_80207960(void) {
 	return;
