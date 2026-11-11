@@ -403,6 +403,44 @@ void fn_802E5478(void) {
     fn_802E5438();
 }
 
+/* One of the 32 voice channels of the pool at lbl_8055FF94 (0x580 bytes),
+ * built by fn_802E5478 and walked by the per-frame mixer fn_802E5C2C. */
+struct SpuChannel {
+    int index;                  /* +0x00: channel number */
+    void *voice;                /* +0x04: voice object from the pool allocator */
+    unsigned char pad08[0x14];  /* +0x08 */
+    struct SpuSample *sample;   /* +0x1C: sample this channel plays, 0 when free */
+    unsigned char active;       /* +0x20: channel is handed out */
+    unsigned char playing;      /* +0x21: asked to play */
+    unsigned char started;      /* +0x22: voice was started for it */
+    unsigned char wantPlay;     /* +0x23: still wants to play */
+    unsigned char wasPlaying;   /* +0x24: playing last frame */
+    unsigned char adpcm;        /* +0x25: ADPCM (vs 16-bit) stream */
+    unsigned char pad26[2];
+    unsigned int playPos;       /* +0x28: DSP play position of the last frame */
+};
+
+/* One of the 256 sample slots of the pool at lbl_8055FF90 (0xB000 bytes),
+ * filled by fn_802E5AE8 and released by fn_802E5D5C. */
+struct SpuSample {
+    char name[0x20];            /* +0x00: file name, without its directory */
+    int streamState;            /* +0x20: 1 while the sample is streamed */
+    unsigned char unk24;        /* +0x24: ADPCM loop data present */
+    unsigned char unk25;        /* +0x25 */
+    unsigned char pad26[2];
+    unsigned char loop[0x60];   /* +0x28: loop/ADPCM info copied from the blob */
+    void *decode;               /* +0x88: decode(streamBuffer, len, decodeArg) */
+    void *decodeArg;            /* +0x8C */
+    void *streamBuffer;         /* +0x90: ring buffer fed to the DSP */
+    int refCount;               /* +0x94: channels holding this sample */
+    int unk98;                  /* +0x98: instances still playing */
+    unsigned int unk9C;         /* +0x9C: format/rate code of the blob */
+    unsigned int size;          /* +0xA0: byte size, 0x40-aligned */
+    float fA4;                  /* +0xA4 */
+    float fA8;                  /* +0xA8 */
+    void *res;                  /* +0xAC: the loaded SFX0 blob */
+};
+
 void fn_802E56F0(void) {
     extern void OSCancelAlarm(void *);
     extern void fn_802E6B34(void);
