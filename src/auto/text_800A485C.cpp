@@ -19214,7 +19214,7 @@ extern "C" void fn_800D1AE4(OSAlarm *arg0) {
 extern void* OSGetAlarmUserData(void);
 extern "C" void fn_800D1AEC(void) {
     void *r3 = OSGetAlarmUserData();
-    fn_80060CC0(r3, 1, (u32)&fn_800D1B1C);
+    fn_80060CC0(r3, WPAD_SPEAKER_ON, (u32)&fn_800D1B1C);
 }
 
 /* WPAD's answer to "turn this slot's Wii Remote speaker on" - the callback
@@ -20317,32 +20317,31 @@ void nw4hbm::lyt::AnimTransformBasic::SetResource(const nw4hbm::lyt::res::Animat
 }
 
 void nw4hbm::lyt::AnimTransformBasic::Bind(nw4hbm::lyt::Pane *pane, bool bind) {
-    register u8 *paneCopy = (u8 *)pane;
-    register u8 *offsets = (u8 *)*(void **)((u8 *)this + 0xC);
-    register u16 i = 0;
-    register bool bindCopy = bind;
-    register u8 *self = (u8 *)this;
+    u8 *paneCopy = (u8 *)pane;
+    u8 *offsets = (u8 *)*(void **)((u8 *)this + 0xC);
+    u16 i = 0;
+    bool bindCopy = bind;
     offsets += *(s32 *)(offsets + 0x10);
-    while (i < *(u16 *)(*(u8 **)(self + 0xC) + 0xE)) {
-        u8 *entry = *(u8 **)(self + 0xC) + *(s32 *)(offsets + i * 4);
+    while (i < *(u16 *)(*(u8 **)((u8 *)this + 0xC) + 0xE)) {
+        u8 *entry = *(u8 **)((u8 *)this + 0xC) + *(s32 *)(offsets + i * 4);
         void *boundObject;
         if (entry[0x15] == 0) {
             boundObject = ((PaneAnimTransformDispatch *)paneCopy)->bindPane(entry, bindCopy);
             if (boundObject != 0) {
-                u8 *link = (u8 *)*(void **)(self + 0x18) + i * 0x10;
-                *(void **)(link + 8) = self;
+                u8 *link = (u8 *)*(void **)((u8 *)this + 0x18) + i * 0x10;
+                *(void **)(link + 8) = (u8 *)this;
                 *(u16 *)(link + 0xC) = i;
                 AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLink(
-                    boundObject, (u8 *)*(void **)(self + 0x18) + i * 0x10);
+                    boundObject, (u8 *)*(void **)((u8 *)this + 0x18) + i * 0x10);
             }
         } else {
             boundObject = ((PaneAnimTransformDispatch *)paneCopy)->bindMaterial(entry, bindCopy);
             if (boundObject != 0) {
-                u8 *link = (u8 *)*(void **)(self + 0x18) + i * 0x10;
-                *(void **)(link + 8) = self;
+                u8 *link = (u8 *)*(void **)((u8 *)this + 0x18) + i * 0x10;
+                *(void **)(link + 8) = (u8 *)this;
                 *(u16 *)(link + 0xC) = i;
                 AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(
-                    boundObject, (u8 *)*(void **)(self + 0x18) + i * 0x10);
+                    boundObject, (u8 *)*(void **)((u8 *)this + 0x18) + i * 0x10);
             }
         }
         i++;
