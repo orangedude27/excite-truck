@@ -9452,35 +9452,38 @@ BOOLEAN btm_inq_find_bdaddr(BD_ADDR addr) {
     return FALSE;
 }
 
+/* Returns an inquiry DB entry for p_bda: uses the first free slot (cleared and
+ * marked in use) or evicts the oldest by time stamp, notifying the change
+ * callback before overwriting it. */
 tINQ_DB_ENT *btm_inq_db_new(BD_ADDR p_bda) {
-    UINT16 xx;
-    u8 *p_ent;
-    u8 *p_old;
-    UINT32 ot;
-    tBTM_INQ_DB_CHANGE_CB *callback;
+    UINT16 index;
+    u8 *entry;
+    u8 *oldest;
+    UINT32 oldestTime;
+    tBTM_INQ_DB_CHANGE_CB *changeCb;
 
-    p_ent = lbl_803C0F78 + 0x16E4;
-    p_old = p_ent;
-    ot = 0xFFFFFFFF;
-    for (xx = 0; xx < 0xC; xx++, p_ent += 0x1C) {
-        if (!p_ent[0x1A]) {
-            memset(p_ent, 0, 0x1C);
-            memcpy(p_ent + 0xA, p_bda, BD_ADDR_LEN);
-            p_ent[0x1A] = TRUE;
-            return (tINQ_DB_ENT *)p_ent;
+    entry = lbl_803C0F78 + 0x16E4;
+    oldest = entry;
+    oldestTime = 0xFFFFFFFF;
+    for (index = 0; index < 0xC; index++, entry += 0x1C) {
+        if (!entry[0x1A]) {
+            memset(entry, 0, 0x1C);
+            memcpy(entry + 0xA, p_bda, BD_ADDR_LEN);
+            entry[0x1A] = TRUE;
+            return (tINQ_DB_ENT *)entry;
         }
-        if (*(UINT32 *)p_ent < ot) {
-            p_old = p_ent;
-            ot = *(UINT32 *)p_ent;
+        if (*(UINT32 *)entry < oldestTime) {
+            oldest = entry;
+            oldestTime = *(UINT32 *)entry;
         }
     }
-    callback = *(tBTM_INQ_DB_CHANGE_CB **)(lbl_803C0F78 + 0x16BC);
-    if (callback)
-        (*callback)(p_old + 8, FALSE);
-    memset(p_old, 0, 0x1C);
-    memcpy(p_old + 0xA, p_bda, BD_ADDR_LEN);
-    p_old[0x1A] = TRUE;
-    return (tINQ_DB_ENT *)p_old;
+    changeCb = *(tBTM_INQ_DB_CHANGE_CB **)(lbl_803C0F78 + 0x16BC);
+    if (changeCb)
+        (*changeCb)(oldest + 8, FALSE);
+    memset(oldest, 0, 0x1C);
+    memcpy(oldest + 0xA, p_bda, BD_ADDR_LEN);
+    oldest[0x1A] = TRUE;
+    return (tINQ_DB_ENT *)oldest;
 }
 
 static tBTM_STATUS btm_set_inq_event_filter(UINT8 filter_cond_type, UINT8 *p_filt_cond) {
