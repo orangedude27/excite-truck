@@ -1928,31 +1928,33 @@ extern "C" s32 fn_800A7774(void *a, void *out, void *base, void *data, u16 count
 }
 
 extern "C" s32 VFiPFCACHE_SearchForPage(s32 arg0, s32 arg1, s32 arg2) {
-    u32 page = (u32)arg2;
-    u32 node;
-    u32 start;
+    /* Searches the page-cache list starting at listHead for targetPage; on hit, updates
+       the node's current data pointer from its base and page offset and returns the node. */
+    u32 targetPage = (u32)arg2;
+    u32 pageNode;
+    u32 pageStart;
 
-    if (page + 0x10000 == 0xFFFFU)
+    if (targetPage + 0x10000 == 0xFFFFU)
         return 0;
     if ((*(u16 *)arg1 & 1) == 0)
         return 0;
 
-    start = *(u32 *)(arg1 + 0x18);
-    if (start <= page && start + *(u32 *)(arg1 + 0x14) - 1 >= page) {
-        *(u32 *)(arg1 + 8) = *(u32 *)(arg1 + 4) + ((page - start) << *(u8 *)(arg0 + 0x20));
+    pageStart = *(u32 *)(arg1 + 0x18);
+    if (pageStart <= targetPage && pageStart + *(u32 *)(arg1 + 0x14) - 1 >= targetPage) {
+        *(u32 *)(arg1 + 8) = *(u32 *)(arg1 + 4) + ((targetPage - pageStart) << *(u8 *)(arg0 + 0x20));
         return arg1;
     }
 
-    node = *(u32 *)(arg1 + 0x20);
-    while (node != (u32)arg1) {
-        if ((*(u16 *)node & 1) == 0)
+    pageNode = *(u32 *)(arg1 + 0x20);
+    while (pageNode != (u32)arg1) {
+        if ((*(u16 *)pageNode & 1) == 0)
             return 0;
-        start = *(u32 *)(node + 0x18);
-        if (start <= page && start + *(u32 *)(node + 0x14) - 1 >= page) {
-            *(u32 *)(node + 8) = *(u32 *)(node + 4) + ((page - start) << *(u8 *)(arg0 + 0x20));
-            return node;
+        pageStart = *(u32 *)(pageNode + 0x18);
+        if (pageStart <= targetPage && pageStart + *(u32 *)(pageNode + 0x14) - 1 >= targetPage) {
+            *(u32 *)(pageNode + 8) = *(u32 *)(pageNode + 4) + ((targetPage - pageStart) << *(u8 *)(arg0 + 0x20));
+            return pageNode;
         }
-        node = *(u32 *)(node + 0x20);
+        pageNode = *(u32 *)(pageNode + 0x20);
     }
     return 0;
 }
