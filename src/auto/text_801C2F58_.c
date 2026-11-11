@@ -1756,16 +1756,16 @@ void fn_801C82E0(void) {
     lbl_8055E858 = lbl_805629D4 * value;
     obj = fn_801C3C80();
     *(s32 *)((char *)obj + 8) = 5;
-    strcpy((char *)obj + 0x10, (char *)base + 0x720);
     *(s32 *)((char *)obj + 0x210) = lbl_8055E854;
+    strcpy((char *)obj + 0x10, (char *)base + 0x720);
     strcpy((char *)obj + 0x110, (char *)base + 0x820);
     *(s32 *)((char *)obj + 0xC) = fn_801C3954((s32)obj + 0x10);
     *(s32 *)((char *)obj + 0xC) &= ~fn_801C3954((s32)obj + 0x110);
-    sprintf((char *)base + 0x238, lbl_80336FC4, *(f32 *)obj);
     *(f32 *)((char *)obj + 0x21C) = lbl_8055E85C;
     *(f32 *)((char *)obj + 0x220) = lbl_8055E860;
     *(f32 *)((char *)obj + 0x218) = lbl_8055E858;
     *(s32 *)((char *)obj + 0x214) = lbl_8055E864;
+    sprintf((char *)base + 0x238, lbl_80336FC4, *(f32 *)obj);
     qsort((void *)lbl_8055E7F8, lbl_8055E7F0, 0x30C, (int (*)(const void *, const void *))fn_801C3B7C);
     fn_801C8298();
 }
