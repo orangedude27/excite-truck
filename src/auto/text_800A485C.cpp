@@ -3,10 +3,6 @@ extern "C" s32 OSWaitSemaphore(void *);
 extern "C" s32 OSInitSemaphore(void *, s32);
 extern "C" const char lbl_8031B1E4[];
 typedef u16 *Fn800A4B78Ret;
-struct CBPair53F8 {
-    void *cb0;
-    void *cb1;
-};
 struct Fn800B10E0Ent {
     u16 first;
     u8 pad2[0x20A - 2];
@@ -3200,9 +3196,9 @@ extern "C" void fn_800AA4EC(u8 *p_ent, u8 *p_buf) {
 }
 #pragma pop
 extern "C" void VFiPFENT_loadEntryNumericFieldsFromBuf(u8 *p_ent, u8 *p_buf) {
+    u32 h14;
     u32 word;
     u32 h1A;
-    u32 h14;
     p_ent[0x21C] = p_buf[0xB];
     p_ent[0x21B] = p_buf[0xC];
     p_ent[0x21D] = p_buf[0xD];
