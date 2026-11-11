@@ -1,4 +1,6 @@
 #include <types.h>
+extern "C" void OSSetPeriodicAlarm(void*, u32, u32, u32, u32, u32, void*);
+extern "C" void fn_800EEBA8(void*, u64, u64);
 extern "C" void Close__Q46nw4hbm3snd6detail8SeqTrackFv(void *);
 extern "C" void* __dt__Q46nw4hbm3snd6detail9FrameHeapFv(void*, s32);
 extern u8 lbl_80323058[], lbl_80323070[];
@@ -591,8 +593,8 @@ extern void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void *GetLowestPrioritySound__Q46nw4hbm3snd6detail19ExternalSoundPlayerFv(void *self) {
-    register unsigned char *node = *(unsigned char **)((unsigned char *)self + 4);
-    register unsigned char *end = (unsigned char *)self + 4;
+    void *node = *(void **)((u8 *)self + 4);
+    void *end = (u8 *)self + 4;
     int candidate;
     int priority = 0x80;
     void *result = 0;
@@ -602,16 +604,16 @@ extern "C" void *GetLowestPrioritySound__Q46nw4hbm3snd6detail19ExternalSoundPlay
     extern const char lbl_80322D54[];
     while (node != end) {
         if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322D54, 0x23d, lbl_80322D30);
-        int value = *(unsigned char *)(node - 0x5c) + *(int *)(node - 0x90);
+        int value = *(u8 *)((u8 *)node - 0x5c) + *(int *)((u8 *)node - 0x90);
         if (value <= 0x7f) candidate = value & ~(value >> 31);
         else candidate = 0x7f;
         if (priority > candidate) {
             if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322D54, 0x23d, lbl_80322D30);
-            result = node - 0xd0;
+            result = (u8 *)node - 0xd0;
             if (result == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322CF4, 0x193, lbl_80322CD0);
             priority = candidate;
         }
-        node = *(unsigned char **)node;
+        node = *(void **)node;
     }
     return result;
 }
@@ -2707,23 +2709,22 @@ extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv(void) {
         virtual void Dummy1();
         virtual void Stop();
     };
-    void* pList = (void*)&lbl_80412A6C[0x04];
-    void* pHead = *(void**)pList;
-    void* pPlayer;
-
-    while (pHead != pList) {
-        pPlayer = pHead;
-        pHead = *(void**)pPlayer;
-        if (pPlayer == NULL) {
-            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80324024, 0x23D,
-                                         (const char*)lbl_80324000);
+    struct Iter { void *p; };
+    struct Iter it;
+    void *pList = &lbl_80412A6C[4];
+    void *pPlayer;
+    for (it.p = *(void **)pList; it.p != pList;) {
+        pPlayer = it.p;
+        it.p = *(void **)pPlayer;
+        if (pPlayer == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80324024, 0x23D,
+                                         (const char *)lbl_80324000);
         }
-        ((PlayerVTable*)((u8*)pPlayer - 0x100))->Stop();
+        ((PlayerVTable *)((u8 *)pPlayer - 0x100))->Stop();
     }
-
-    if (*(s32*)&lbl_80412A6C[0] != 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x3D7,
-                                     (const char*)lbl_80323E64);
+    if (*(s32 *)&lbl_80412A6C[0] != 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80323B28, 0x3D7,
+                                     (const char *)lbl_80323E64);
     }
 }
 #pragma pop
