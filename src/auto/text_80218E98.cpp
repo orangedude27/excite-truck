@@ -2786,6 +2786,7 @@ extern "C" s32 fn_8021D1B0(void *arg0) {
     return 4;
 }
 
+/* Handles input/navigation for a UI selection list: validates the active list state and updates the selected index or switches tabs. */
 extern "C" s32 fn_8021D1F0(void *arg0, s32 arg1) {
     s32 *temp_r6 = *(s32 **)((u8 *)arg0 + 0x2BC);
     if (temp_r6 == 0)
