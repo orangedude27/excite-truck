@@ -778,36 +778,39 @@ void fn_802E0F98(void) {
     lbl_8055FEE8 = object;
 }
 
+/* Destroys the SimpleHeap: dumps every allocated and every free block with its
+ * size, panics if any allocation is still outstanding, then returns the heap
+ * header and its backing memory to the system heap. */
 void fn_802E1058(void) {
     register u32 total;
-    register u32 node;
-    register u32 root;
-    register unsigned int otherTotal;
-    root = (u32)lbl_8055FEE8;
-    if (root != 0) {
-        if (*(int *)(root + 0xC) != 0) {
+    register SimpleHeapBlock *block;
+    register SimpleHeap *heap;
+    register unsigned int freeTotal;
+    heap = (SimpleHeap *)lbl_8055FEE8;
+    if (heap != 0) {
+        if (heap->allocList != 0) {
             fn_802E30C8(lbl_8034BBA8, lbl_8034BB1C);
             fn_802E30C8(lbl_8034BB9C);
-            node = *(u32 *)(root + 0xC);
+            block = heap->allocList;
             total = 0;
-            while (node != 0) {
-                fn_802E30C8(lbl_8034BB88, (void *)(node + 0x10), *(int *)(node + 4));
-                total += *(unsigned int *)(node + 4);
-                node = *(u32 *)(node + 8);
+            while (block != 0) {
+                fn_802E30C8(lbl_8034BB88, (void *)(block + 1), block->size);
+                total += block->size;
+                block = block->next;
             }
             fn_802E30C8(lbl_8034BB7C, total >> 10);
-            otherTotal = 0;
+            freeTotal = 0;
             fn_802E30C8((const char *)&lbl_8055D098);
-            node = *(u32 *)(root + 8);
-            while (node != 0) {
-                fn_802E30C8(lbl_8034BB68, (void *)(node + 0x10), *(int *)(node + 4));
-                otherTotal += *(unsigned int *)(node + 4);
-                node = *(u32 *)(node + 8);
+            block = heap->freeList;
+            while (block != 0) {
+                fn_802E30C8(lbl_8034BB68, (void *)(block + 1), block->size);
+                freeTotal += block->size;
+                block = block->next;
             }
-            fn_802E30C8(lbl_8034BB5C, otherTotal >> 10);
+            fn_802E30C8(lbl_8034BB5C, freeTotal >> 10);
             fn_802E317C(lbl_8034BAEC);
         }
-        fn_80128668((void *)root);
+        fn_80128668((void *)heap);
     }
     lbl_8055FEE8 = 0;
     fn_80128670(lbl_8055FEEC);
