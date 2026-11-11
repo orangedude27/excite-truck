@@ -2183,6 +2183,7 @@ void fn_8029BE54(void* arg0, void* arg1) {
     *(int*)((char*)arg0 + 0xA4) = *(int*)((char*)arg0 + 0xA4) + 1;
 }
 #pragma scheduling invalid_target
+/* Build and create the "torch fire" effect (lbl_80349450), storing the result in out. */
 extern "C" void fn_8029BEF8(void *out) {
     unsigned char raw[0xA8];
     float b4, b0, g, f, e, d, y, x, c;
