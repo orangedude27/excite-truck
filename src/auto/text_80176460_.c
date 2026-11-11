@@ -141,6 +141,7 @@ typedef struct PhysicsCommand {
 #define PHYS_FLAG_REFADE    0x10000 /* mark the fade done, then fade again */
 #define PHYS_FLAG_MASK      0x1FF00 /* the flag bits of a fn_80176780 request */
 #define sPendingCommand     lbl_804303D4 /* the PhysicsCommand waiting its turn */
+#define STR_PHYS_FADER_ACTIVE lbl_803316B4 /* "physics: hey, phys-fader was active! (new race mode)" */
 
 #pragma push
 #pragma scheduling invalid_target
