@@ -649,6 +649,8 @@ extern "C" char *fn_80029004(char *, int);
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void fn_8012B3D4(char *arg0, int arg1, char *arg2, int arg3, char *arg4) {
+    /* Splits path in arg4 at the last '/': copies directory part to arg0 (arg1 bytes max)
+       and filename part to arg2 (arg3 bytes max). If no '/', arg0 becomes empty and arg2 gets the whole path. */
     char *src;
     char *dst;
     char *slash;
