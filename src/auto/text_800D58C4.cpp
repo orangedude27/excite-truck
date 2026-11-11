@@ -22,6 +22,16 @@ namespace detail {
 struct Vec2 { f32 x, y; };
 struct Size { f32 x, y; };
 struct Color { u8 r, g, b, a; };
+// One entry of TexCoordAry (0x20 bytes): the (s,t) of a quad's four corners.
+struct TexCoord { f32 st[8]; };
+// Texture coordinates of a picture's entries; Reserve() allocates the array,
+// SetSize() puts entries into use and Copy() overwrites them.
+class TexCoordAry {
+public:
+    u8 mSize;              // 0x0: capacity in entries (Reserve allows at most 8)
+    u8 mTop;               // 0x1: entries in use
+    TexCoord* mpTexCoord;  // 0x4: mSize entries, 0x20 bytes each
+};
 }
 }
 }
