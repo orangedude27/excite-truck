@@ -359,8 +359,8 @@ extern void fn_802799EC(int, float);
 #pragma processor 750
 #pragma dont_inline on
 void fn_80181EAC(int arg0) {
-    float minA = lbl_80561D38;
-    float maxA = lbl_80561D3C;
+    register float minA = lbl_80561D38;
+    register float maxA = lbl_80561D3C;
     float temp_f1;
     float temp_f30;
     float temp_f31;
@@ -700,7 +700,7 @@ extern float PSVECDotProduct(const void *, const void *);
 extern float lbl_80561CAC, lbl_80561CD0, lbl_80561D9C;
 extern float lbl_80561CAC, lbl_80561CD0, lbl_80561D9C, lbl_8055E4E0;
 extern void fn_8017B4AC(void *, void *);
-extern float lbl_80558DC4, lbl_80561DA0, lbl_80561CDC, lbl_80561CD8;
+extern float lbl_80561DA0, lbl_80561CDC, lbl_80561CD8;
 extern float lbl_80561DA4, lbl_80561DA8, lbl_80561CE4, lbl_80561D98, lbl_80561DAC;
 extern void fn_801796CC(int, void *, int);
 extern int fn_80129D18(int, int);
