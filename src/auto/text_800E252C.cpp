@@ -2371,13 +2371,18 @@ void nw4hbm::snd::detail::AxVoice::SetLoopEnd(int arg1, const void *arg2, unsign
 #pragma use_lmw_stmw off
 extern "C" void SetLoopFlag__Q46nw4hbm3snd6detail7AxVoiceFb(void *self, bool loop) {
     unsigned int level = OSDisableInterrupts();
-    char *group = (char *)self;
+    void *voice;
+    char *group;
+    char *entry;
     int i;
-    for (i = 0; i < *(int *)((char *)self + 0x104); i++, group += 0x10) {
-        char *entry = group;
-        int j;
-        for (j = 0; j < *(int *)((char *)self + 0x108); j++, entry += 4) {
-            void *voice = *(void **)(entry + 0xC);
+    int j;
+    group = (char *)self;
+    i = 0;
+    for (; i < *(int *)((char *)self + 0x104); group += 0x10, ++i) {
+        entry = group;
+        j = 0;
+        for (; j < *(int *)((char *)self + 0x108); entry += 4, ++j) {
+            voice = *(void **)(entry + 0xC);
             unsigned int inner = OSDisableInterrupts();
             *(unsigned short *)((char *)voice + 0x1B0) = loop;
             unsigned int flags = *(unsigned int *)((char *)voice + 0x1C);
