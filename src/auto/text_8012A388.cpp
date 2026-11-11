@@ -137,7 +137,7 @@ extern "C" s32 fn_8012A388(void *arg0) {
     *(u32 *)((char *)arg0 + 0x38) = 0;
     *(u32 *)((char *)arg0 + 0x34) = 0;
     *(u32 *)((char *)arg0 + 0x24) &= 0xFFFF;
-    return 0;
+    return (s32)arg0;
 }
 #pragma use_lmw_stmw reset
 extern "C" const char lbl_8032A630[];
@@ -326,7 +326,7 @@ extern int __cntlzw(unsigned int);
 #pragma use_lmw_stmw off
 extern "C" s32 fn_8012AA60(void *arg0, s32 arg1, s32 arg2) {
     s32 count;
-    s32 result;
+    register s32 result;
     void *base;
     void *p;
     s32 i;
@@ -2161,32 +2161,27 @@ extern "C" void fn_8012DEE4(void *arg0) {
         entry = *(void **)(obj + 0xA18);
         if (entry != 0) {
             state = fn_8012D838(*(s32 *)((u8 *)entry + 0x4C));
-            if (state == 1) goto after_state;
-            if (state < 1) {
-                if (state >= 0) goto state_zero;
-                goto after_state;
-            }
-            if (state < 3) goto state_two;
-            goto after_state;
-        state_zero:
-            fn_8012CC24(*(void **)((u8 *)entry + 0x4C), (u8 *)entry + 0xC);
-            goto after_state;
-        state_two:
-            {
+            switch (state) {
+            case 0:
+                fn_8012CC24(*(void **)((u8 *)entry + 0x4C), (u8 *)entry + 0xC);
+                break;
+            case 2: {
                 void *node = fn_8012BD3C(lbl_8055E000, (const char *)((u8 *)entry + 0xC));
                 *(s32 *)((u8 *)node + 0x9C) = *(s32 *)((u8 *)entry + 8);
                 *(u8 *)((u8 *)node + 0xAD) = (u8)one;
+                entry = *(void **)(obj + 0xA18);
+                if (entry != 0) {
+                    void *next = *(void **)((u8 *)entry + 4);
+                    *(void **)(obj + 0xA18) = next;
+                    if (next == 0) *(void **)(obj + 0xA1C) = obj + 0xA18;
+                    *(void **)((u8 *)entry + 4) = (void *)zero;
+                }
+                done = 1;
+                break;
             }
-            entry = *(void **)(obj + 0xA18);
-            if (entry != 0) {
-                void *next = *(void **)((u8 *)entry + 4);
-                *(void **)(obj + 0xA18) = next;
-                if (next == 0) *(void **)(obj + 0xA1C) = obj + 0xA18;
-                *(void **)((u8 *)entry + 4) = (void *)zero;
+            default:
+                break;
             }
-            done = 1;
-        after_state:
-            ;
         }
     } while (done != 0);
     obj[0xA20] = 0;
@@ -3199,17 +3194,18 @@ extern "C" void *fn_8012CB44(void *arg0, s32 arg1) {
     void *base, *entry;
     if (arg0 != 0) {
         if (*(u8 *)((char *)arg0 + 0xAC) != 0) {
-            i = 0; offset = 0;
+            i = 0;
+            offset = 0;
             while (i < *(s32 *)((char *)arg0 + 0x88)) {
                 base = *(void **)((char *)arg0 + 0x60);
                 entry = (char *)base + offset;
                 flags = *(u32 *)((char *)entry + 0x34);
-                if (flags & 4) fn_802E317C(lbl_8032AE20);
+                if ((flags & 4) != 0) fn_802E317C(lbl_8032AE20);
                 base = *(void **)((char *)arg0 + 0x60);
                 entry = (char *)base + offset;
                 flags = *(u32 *)((char *)entry + 0x34);
-                ++i;
-                offset += 0x44;
+                i = i + 1;
+                offset = offset + 0x44;
                 *(u32 *)((char *)entry + 0x34) = flags & 0xFFFFFFF0;
             }
             base = *(void **)((char *)arg0 + 0x64);
