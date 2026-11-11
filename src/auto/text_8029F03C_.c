@@ -922,36 +922,40 @@ test:
 #pragma push
 #pragma use_lmw_stmw off
 int fn_802A0620(Unk802A0794Params *arg0) {
-    int h;
-    unsigned char *object;
-    int i;
-    short g;
-    Unk802A0794Params params;
-    int f,e,d,c,b,a;
-    object = (unsigned char *)fn_8029FE1C(arg0->unk_0x1C);
-    a = ((volatile int *)arg0)[0];
-    b = ((volatile int *)arg0)[1];
-    c = ((volatile int *)arg0)[2];
-    d = ((volatile int *)arg0)[3];
-    e = ((volatile int *)arg0)[4];
-    f = ((volatile int *)arg0)[5];
-    g = *(volatile short *)&arg0->unk_0x18;
-    h = *(volatile int *)&arg0->unk_0x1C;
-    ((int *)&params)[0] = a;
-    ((int *)&params)[1] = b;
-    ((int *)&params)[2] = c;
-    ((int *)&params)[3] = d;
-    ((int *)&params)[4] = e;
-    ((int *)&params)[5] = f;
-    params.unk_0x18 = (unsigned)g;
-    params.unk_0x1C = h;
-    if (object) {
-        for (i = 0; i < *(int *)(object + 0x50); i++) {
-            if (object[0x60] != 0) fn_802A01C8(object, &params);
-            if (object[0x6C] != 0) fn_802A02F4(object, &params);
-            params.values[0] += *(float *)(object + 0x54);
-            params.values[1] += *(float *)(object + 0x58);
-            params.values[2] += *(float *)(object + 0x5C);
+    /* Emit an effect record's bursts: copy the request params, look up the 0x78-byte
+       effect record by id, then for count (record+0x50) iterations optionally emit a
+       particle burst (flag 0x60 -> fn_802A01C8) and/or a spawned object (flag 0x6C ->
+       fn_802A02F4), advancing the copied position by the record's step vector (0x54..5C). */
+    int tailInt;
+    unsigned char *effectRecord;
+    int step;
+    short tailShort;
+    Unk802A0794Params paramsCopy;
+    int w5, w4, w3, w2, w1, w0;
+    effectRecord = (unsigned char *)fn_8029FE1C(arg0->unk_0x1C);
+    w0 = ((volatile int *)arg0)[0];
+    w1 = ((volatile int *)arg0)[1];
+    w2 = ((volatile int *)arg0)[2];
+    w3 = ((volatile int *)arg0)[3];
+    w4 = ((volatile int *)arg0)[4];
+    w5 = ((volatile int *)arg0)[5];
+    tailShort = *(volatile short *)&arg0->unk_0x18;
+    tailInt = *(volatile int *)&arg0->unk_0x1C;
+    ((int *)&paramsCopy)[0] = w0;
+    ((int *)&paramsCopy)[1] = w1;
+    ((int *)&paramsCopy)[2] = w2;
+    ((int *)&paramsCopy)[3] = w3;
+    ((int *)&paramsCopy)[4] = w4;
+    ((int *)&paramsCopy)[5] = w5;
+    paramsCopy.unk_0x18 = (unsigned)tailShort;
+    paramsCopy.unk_0x1C = tailInt;
+    if (effectRecord) {
+        for (step = 0; step < *(int *)(effectRecord + 0x50); step++) {
+            if (effectRecord[0x60] != 0) fn_802A01C8(effectRecord, &paramsCopy);
+            if (effectRecord[0x6C] != 0) fn_802A02F4(effectRecord, &paramsCopy);
+            paramsCopy.values[0] += *(float *)(effectRecord + 0x54);
+            paramsCopy.values[1] += *(float *)(effectRecord + 0x58);
+            paramsCopy.values[2] += *(float *)(effectRecord + 0x5C);
         }
     }
     return 0x20;
