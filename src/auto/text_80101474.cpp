@@ -1420,23 +1420,14 @@ float nw4hbm::ut::CharWriter::Print(unsigned short character) {
 
 extern "C" const char lbl_80328178[];
 extern "C" const char lbl_8032818C[];
-extern "C" void SetCursor__Q36nw4hbm2ut10CharWriterFff(void *arg0, float x, float y) {
-    int v0 = 1;
-    int v1 = 1;
-    int v2 = 1;
-    int v3 = 1;
-    int v4 = 1;
-    int v5 = 1;
-    unsigned int top = (unsigned int)arg0 & 0xFF000000U;
-    if ((top != 0x80000000U) && (((unsigned int)arg0 & 0xFF800000U) != 0x81000000U)) v5 = 0;
-    if ((v5 == 0) && (((unsigned int)arg0 & 0xF8000000U) != 0x90000000U)) v4 = 0;
-    if ((v4 == 0) && (top != 0xC0000000U)) v3 = 0;
-    if ((v3 == 0) && (((unsigned int)arg0 & 0xFF800000U) != 0xC1000000U)) v2 = 0;
-    if ((v2 == 0) && (((unsigned int)arg0 & 0xF8000000U) != 0xD0000000U)) v1 = 0;
-    if ((v1 == 0) && (((unsigned int)arg0 & 0xFFFFC000U) != 0xE0000000U)) v0 = 0;
-    if (v0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x36F, lbl_8032818C, arg0);
-    *(float *)((char *)arg0 + 0x2C) = x;
-    *(float *)((char *)arg0 + 0x30) = y;
+/* nw4hbm::ut::CharWriter::SetCursor(f32 x, f32 y). Second copy of nw4hbm's text
+   writer in this unit (the one built from ut_CharWriter.cpp); its drawing cursor
+   is the float pair at +0x2C (X) and +0x30 (Y), one word later than the other
+   copy's. */
+extern "C" void SetCursor__Q36nw4hbm2ut10CharWriterFff(void *writer, float x, float y) {
+    CW_CHECK_THIS(writer, 0x36F); // NW4HBM_ASSERT_VALID_PTR(this)
+    *(float *)((char *)writer + 0x2C) = x;
+    *(float *)((char *)writer + 0x30) = y;
 }
 
 extern "C" void SetCursorX__Q36nw4hbm2ut10CharWriterFf(void *arg0, float farg0) {
