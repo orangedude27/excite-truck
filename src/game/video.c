@@ -784,9 +784,12 @@ void fn_802E0F98(void) {
     lbl_8055FEE8 = object;
 }
 
-/* Destroys the SimpleHeap: dumps every allocated and every free block with its
- * size, panics if any allocation is still outstanding, then returns the heap
- * header and its backing memory to the system heap. */
+/* Destroys the SimpleHeap (lbl_8055FEE8): if any block is still handed out it
+ * first dumps the heap -- "SimpleHeap dump: ~SimpleHeap", then every allocated
+ * and every free block with its user pointer and size and the two totals in K
+ * -- and panics with "SimpleHeap Destroyed with pending allocations". Either
+ * way the heap header and its backing memory (lbl_8055FEEC) go back to the
+ * system heap and both globals are cleared. */
 void fn_802E1058(void) {
     register u32 total;
     register SimpleHeapBlock *block;
@@ -795,26 +798,26 @@ void fn_802E1058(void) {
     heap = (SimpleHeap *)lbl_8055FEE8;
     if (heap != 0) {
         if (heap->allocList != 0) {
-            fn_802E30C8(lbl_8034BBA8, lbl_8034BB1C);
-            fn_802E30C8(lbl_8034BB9C);
+            fn_802E30C8(lbl_8034BBA8, lbl_8034BB1C); /* "SimpleHeap dump: %s", "~SimpleHeap" */
+            fn_802E30C8(lbl_8034BB9C);               /* "Allocated:" */
             block = heap->allocList;
             total = 0;
             while (block != 0) {
-                fn_802E30C8(lbl_8034BB88, (void *)(block + 1), block->size);
+                fn_802E30C8(lbl_8034BB88, (void *)(block + 1), block->size); /* "\tuser ptr %8.8p: %d" */
                 total += block->size;
                 block = block->next;
             }
-            fn_802E30C8(lbl_8034BB7C, total >> 10);
+            fn_802E30C8(lbl_8034BB7C, total >> 10);  /* "\t%dK total" */
             freeTotal = 0;
-            fn_802E30C8((const char *)&lbl_8055D098);
+            fn_802E30C8((const char *)&lbl_8055D098); /* "Free:" */
             block = heap->freeList;
             while (block != 0) {
-                fn_802E30C8(lbl_8034BB68, (void *)(block + 1), block->size);
+                fn_802E30C8(lbl_8034BB68, (void *)(block + 1), block->size); /* "\tuser ptr %8.8p: %d" */
                 freeTotal += block->size;
                 block = block->next;
             }
-            fn_802E30C8(lbl_8034BB5C, freeTotal >> 10);
-            fn_802E317C(lbl_8034BAEC);
+            fn_802E30C8(lbl_8034BB5C, freeTotal >> 10); /* "\t%dK total" */
+            fn_802E317C(lbl_8034BAEC); /* panic: "SimpleHeap Destroyed with pending allocations" */
         }
         fn_80128668((void *)heap);
     }
