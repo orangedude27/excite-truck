@@ -1971,7 +1971,8 @@ extern "C" s32 VFiPFCACHE_SearchForFreePage(void *arg0, void **arg1) {
     return 0;
 }
 
-extern "C" s32 fn_800A7B34(void *arg0, void *arg1) {
+/* Flushes/validates a dirty block (arg1, flag bit 1) on arg0 via fn_800A58E0 and clears its dirty range/flag on success. */
+extern "C" s32 fn_800A7B34(void *volume, void *block) {
     u32 out;
     u8 shift;
     u32 base;
@@ -1981,19 +1982,19 @@ extern "C" s32 fn_800A7B34(void *arg0, void *arg1) {
     u32 blockEnd;
     s32 blockLength;
 
-    if (arg1 != 0) {
-        if ((*(u16 *)arg1 & 2) != 0) {
-            base = *(u32 *)((u8 *)arg1 + 0x18);
+    if (block != 0) {
+        if ((*(u16 *)block & 2) != 0) {
+            base = *(u32 *)((u8 *)block + 0x18);
             if (base != 0xFFFFFFFFU) {
-                blockLength = *(s32 *)((u8 *)arg1 + 0x0C);
+                blockLength = *(s32 *)((u8 *)block + 0x0C);
                 if (blockLength == 0) {
-                    expected = *(u32 *)((u8 *)arg1 + 0x14);
-                    result = fn_800A58E0(arg0, *(s32 *)((u8 *)arg1 + 4), (s32)base, (s32)expected, (s32)&out);
+                    expected = *(u32 *)((u8 *)block + 0x14);
+                    result = fn_800A58E0(volume, *(s32 *)((u8 *)block + 4), (s32)base, (s32)expected, (s32)&out);
                 } else {
-                    shift = *(u8 *)((u8 *)arg0 + 0x20);
-                    pageCount = (*(u32 *)((u8 *)arg1 + 0x10) >> shift) - ((u32)blockLength >> shift) + 1;
-                    blockEnd = base + (((u32)blockLength - *(u32 *)((u8 *)arg1 + 4)) >> shift);
-                    result = fn_800A58E0(arg0, blockLength, (s32)blockEnd, (s32)pageCount, (s32)&out);
+                    shift = *(u8 *)((u8 *)volume + 0x20);
+                    pageCount = (*(u32 *)((u8 *)block + 0x10) >> shift) - ((u32)blockLength >> shift) + 1;
+                    blockEnd = base + (((u32)blockLength - *(u32 *)((u8 *)block + 4)) >> shift);
+                    result = fn_800A58E0(volume, blockLength, (s32)blockEnd, (s32)pageCount, (s32)&out);
                     expected = pageCount;
                 }
                 if (result != 0) {
@@ -2002,10 +2003,10 @@ extern "C" s32 fn_800A7B34(void *arg0, void *arg1) {
                 if (out != expected) {
                     return 0x11;
                 }
-                u32 flags = *(u16 *)arg1;
-                *(u32 *)((u8 *)arg1 + 0x0C) = 0;
-                *(u32 *)((u8 *)arg1 + 0x10) = 0;
-                *(u16 *)arg1 = (u16)(flags & 0xFFFFFFFD);
+                u32 flags = *(u16 *)block;
+                *(u32 *)((u8 *)block + 0x0C) = 0;
+                *(u32 *)((u8 *)block + 0x10) = 0;
+                *(u16 *)block = (u16)(flags & 0xFFFFFFFD);
             }
         }
     }
