@@ -1682,22 +1682,27 @@ struct StatBlock {
 };
 #pragma cplusplus on
 extern "C" void fn_801CE7A0(void) {
-    class VObj {
+    /* Give back the four stat objects the manager owns and clear their slots:
+       the entry set at +0x2C8 is freed by fn_802ADE60(obj, 1), the three stat
+       objects after it through their virtual destroy(1).  Nothing to do while
+       the stat info tables are not loaded (fn_801CE898). */
+    class StatObject {
     public:
-        virtual void d0(s32);
+        virtual void destroy(s32);
     };
-    s32 *state;
-    VObj *ptr;
+    StatBlock *block;
+    StatObject *stat;
+
     if (fn_801CE898() != 0) return;
-    state = lbl_8055E884;
-    ptr = (VObj *)state[0x2C8 / 4];
-    if (ptr != 0) { fn_802ADE60(ptr, 1); state[0x2C8 / 4] = 0; }
-    ptr = (VObj *)state[0x2CC / 4];
-    if (ptr != 0) { if (ptr != 0) ptr->d0(1); state[0x2CC / 4] = 0; }
-    ptr = (VObj *)state[0x2D0 / 4];
-    if (ptr != 0) { if (ptr != 0) ptr->d0(1); state[0x2D0 / 4] = 0; }
-    ptr = (VObj *)state[0x2D4 / 4];
-    if (ptr != 0) { if (ptr != 0) ptr->d0(1); state[0x2D4 / 4] = 0; }
+    block = (StatBlock *)sStatManager;
+    stat = (StatObject *)block->entrySet;
+    if (stat != 0) { fn_802ADE60(stat, 1); block->entrySet = 0; }
+    stat = (StatObject *)block->statObjects[0];
+    if (stat != 0) { if (stat != 0) stat->destroy(1); block->statObjects[0] = 0; }
+    stat = (StatObject *)block->statObjects[1];
+    if (stat != 0) { if (stat != 0) stat->destroy(1); block->statObjects[1] = 0; }
+    stat = (StatObject *)block->statObjects[2];
+    if (stat != 0) { if (stat != 0) stat->destroy(1); block->statObjects[2] = 0; }
 }
 #pragma cplusplus reset
 int fn_801CE874(int arg0) {
