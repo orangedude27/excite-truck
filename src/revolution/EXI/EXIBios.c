@@ -145,6 +145,7 @@ BOOL EXIImmEx(EXIChannel chan, void* buf, s32 len, u32 type) {
     return TRUE;
 }
 
+// Starts a DMA transfer on the specified EXI channel, configuring hardware registers and transfer-complete interrupt if needed.
 BOOL EXIDma(EXIChannel chan, void* buf, s32 len, u32 type,
             EXICallback callback) {
     EXIData* exi = &Ecb[chan];
