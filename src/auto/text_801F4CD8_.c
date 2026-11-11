@@ -1057,25 +1057,26 @@ typedef float (*Getter)(void *, const char *);
 typedef void (*Setter)(void *, const char *);
 #pragma dont_inline on
 #pragma cplusplus on
-extern "C" void fn_801F6C04(void *self, int a, int b, void *object, int flags, int extra) {
-    int count, got;
-    unsigned char *slot;
-    int old;
-    DummyObj_801F7280 *object2;
+extern "C" void fn_801F6C04(void *self, int argA, int argB, void *sourceObj, int flags, int extra) {
+    int slotCount, valueFlags;
+    unsigned char *slotBase;
+    int anchorId;
+    DummyObj_801F7280 *obj;
 
-    count = *(int *)((char *)self + 0x900);
-    if (count >= 0x20) fn_802E317C(lbl_8033ADF8);
-    count = *(int *)((char *)self + 0x900);
-    slot = (unsigned char *)self + count * 0x48;
-    object2 = (DummyObj_801F7280 *)object;
-    old = fn_801F4E44(object2->d5(lbl_8055B19C));
-    got = fn_801F4ECC(object);
-    fn_801F602C(slot, a, b, old, got);
-    *(int *)(slot + 0x34) = flags;
-    slot[0x38] = 1;
-    *(float *)(slot + 0x3C) = lbl_80562FE8 * object2->d9(lbl_8055B1A8);
-    *(float *)(slot + 0x40) = object2->d9(lbl_8055B1B0);
-    *(float *)(slot + 0x44) = object2->d9(lbl_8055B1B8);
+    /* Append a uniform-fabric/mesh slot from sourceObj into self's 0x48-byte slot array (at +0x900 count), after validating capacity. */
+    slotCount = *(int *)((char *)self + 0x900);
+    if (slotCount >= 0x20) fn_802E317C(lbl_8033ADF8);
+    slotCount = *(int *)((char *)self + 0x900);
+    slotBase = (unsigned char *)self + slotCount * 0x48;
+    obj = (DummyObj_801F7280 *)sourceObj;
+    anchorId = fn_801F4E44(obj->d5(lbl_8055B19C));
+    valueFlags = fn_801F4ECC(sourceObj);
+    fn_801F602C(slotBase, argA, argB, anchorId, valueFlags);
+    *(int *)(slotBase + 0x34) = flags;
+    slotBase[0x38] = 1;
+    *(float *)(slotBase + 0x3C) = lbl_80562FE8 * obj->d9(lbl_8055B1A8);
+    *(float *)(slotBase + 0x40) = obj->d9(lbl_8055B1B0);
+    *(float *)(slotBase + 0x44) = obj->d9(lbl_8055B1B8);
     *(int *)((char *)self + 0x900) = *(int *)((char *)self + 0x900) + 1;
 }
 #pragma cplusplus reset
