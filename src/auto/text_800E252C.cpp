@@ -1997,10 +1997,16 @@ extern "C" void SetRemoteSend__Q46nw4hbm3snd6detail7AxVoiceFif(void *self, int i
     }
 }
 
-extern "C" void SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif_800E58CC(void *self, int channel, float volume) {
+extern "C" void SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif_800E58CC(void *voice, int channel, float volume) {
+    // Set remote output volume for channel (clamped to [0.0, 1.0]).
     int valid = 0;
-    if (channel >= 0 && channel < 4) valid = 1;
-    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x2F1, lbl_803222F0, channel, 0, 4);
+    if (channel >= 0 && channel < 4) {
+        valid = 1;
+    }
+    if (valid == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x2F1, lbl_803222F0, channel, 0, 4);
+    }
+
     float result;
     if (volume > lbl_80560F38) {
         result = lbl_80560F38;
@@ -2009,10 +2015,11 @@ extern "C" void SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif_800E58CC(voi
     } else {
         result = volume;
     }
-    float *slot = (float *)((unsigned char *)self + 0x174 + channel * 4);
+
+    float *slot = (float *)((unsigned char *)voice + 0x174 + channel * 4);
     if (result != *slot) {
         *slot = result;
-        *((unsigned char *)self + 0x123) |= 0x20;
+        *((unsigned char *)voice + 0x123) |= 0x20;
     }
 }
 
