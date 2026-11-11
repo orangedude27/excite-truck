@@ -19134,8 +19134,8 @@ void l2cu_send_peer_connect_rsp(void *p_ccb, u16 result, u16 status) {
 }
 
 void l2cu_reject_connection(void *p_lcb, u16 remote_cid, u8 rem_id, u16 result) {
-    void *p_buf;
     u8 *packet;
+    void *p_buf;
 
     p_buf = l2cu_build_header(*(u16 *)((u8 *)p_lcb + 0x28), 8, 3, rem_id);
     if (p_buf == NULL) {
@@ -19151,7 +19151,7 @@ void l2cu_reject_connection(void *p_lcb, u16 remote_cid, u8 rem_id, u16 result) 
     packet[0x16] = remote_cid;
     packet[0x17] = ((s32)remote_cid) >> 8;
     packet[0x18] = result;
-    packet[0x19] = ((u32)result) >> 8;
+    packet[0x19] = (result) >> 8;
     packet[0x1A] = 0;
     packet[0x1B] = 0;
     ((void (*)(void *, u8, void *, s32, u8))l2c_link_check_send_pkts)(
@@ -19425,27 +19425,19 @@ void l2cu_send_peer_disc_req(void *p_ccb) {
 
 int l2cu_send_peer_disc_rsp(void *p_lcb, int remote_id, int local_cid, int remote_cid) {
     void *p_buf = l2cu_build_header(*(u16 *)((u8 *)p_lcb + 0x28), 4, 7, remote_id);
-    u8 *packet;
-
-    if (p_buf == NULL) {
-        if (*(volatile u8 *)lbl_803C4040 < 2) {
-            goto done;
-        }
-        fn_8007093C(0x80001, lbl_80319174);
-        goto done;
+    if (p_buf == 0) {
+        if (lbl_803C4040[0] >= 2)
+            fn_8007093C(0x80001, lbl_80319174);
+    } else {
+        u8 *packet = p_buf;
+        packet[0x14] = local_cid;
+        packet[0x15] = local_cid >> 8;
+        packet[0x16] = remote_cid;
+        packet[0x17] = (u32)remote_cid >> 8;
+        *(u16 *)(packet + 6) = 0;
+        GKI_enqueue((BUFFER_Q *)((u8 *)p_lcb + 0x44), p_buf);
+        ((void (*)(void *, u8, void *))l2c_link_check_send_pkts)(p_lcb, 0, 0);
     }
-
-    packet = p_buf;
-    packet[0x14] = local_cid;
-    packet[0x15] = local_cid >> 8;
-    packet[0x16] = remote_cid;
-    packet[0x17] = (u32)remote_cid >> 8;
-    *(u16 *)(packet + 6) = 0;
-    GKI_enqueue((BUFFER_Q *)((u8 *)p_lcb + 0x44), p_buf);
-    ((void (*)(void *, u8, void *))l2c_link_check_send_pkts)(p_lcb, 0, 0);
-
-done:
-    ;
 }
 
 /* Sends an L2CAP echo request to a peer, or logs an error if no buffer is available. */
@@ -22475,29 +22467,20 @@ void rfc_send_test(s32 arg0, s32 arg1, void *p_buf) {
     rfc_send_buf_uih((void *)arg0, 0);
 }
 
-void rfc_send_credit(void *p_mcb, UINT8 credits, UINT8 arg2, u32 arg3) {
+void rfc_send_credit(void *p_mcb, UINT8 credits, UINT8 credit) {
     BT_HDR *p_buf;
-    UINT8 *data;
-    UINT8 *p_check;
-    UINT8 enabled = 1;
-    UINT8 state;
-
-    if (*((UINT8 *)p_mcb + 0x6D) == 0) {
-        enabled = 0;
-    }
-    state = enabled << 1;
-
-    p_buf = (BT_HDR *)GKI_getpoolbuf(2);
-    if (p_buf == NULL) return;
-
+    UINT8 *p_data;
+    UINT8 initiator = *(UINT8 *)((UINT8 *)p_mcb + 0x6D);
+    UINT8 cr = (UINT8)((((initiator && 1) || (!initiator && !1)) << 1));
+    if ((p_buf = (BT_HDR *)GKI_getpoolbuf(2)) == 0)
+        return;
     p_buf->offset = 9;
-    data = (UINT8 *)(p_buf + 1);
-    data[9] = state | 1 | (credits << 2);
-    p_check = data + 13;
-    data[10] = 0xFF;
-    data[11] = 1;
-    data[12] = arg2;
-    *p_check = fn_8009504C(2, (UINT8 *)p_buf + p_buf->offset + 8);
+    p_data = (UINT8 *)(p_buf + 1) + 9;
+    *p_data++ = (UINT8)(1 | cr | ((UINT8)credits << 2));
+    *p_data++ = 0xFF;
+    *p_data++ = 1;
+    *p_data++ = credit;
+    *p_data = fn_8009504C(2, (UINT8 *)p_buf + p_buf->offset + 8);
     p_buf->len = 5;
     rfc_check_send_cmd(p_mcb, p_buf);
 }
