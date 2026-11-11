@@ -1924,7 +1924,7 @@ extern "C" void fn_80148100(void *arg0) {
 #pragma dont_inline on
 extern "C" void fn_80148134(f32 *arg0, f32 *arg1, s32 arg2, f32 unused, f32 value) {
     if (arg0 == 0) goto second;
-    *arg0 = fn_801451DC(arg2);
+    *arg0 = ((f32 (*)(s32, f32))fn_801451DC)(arg2, unused);
 second:
     if (arg1 == 0) goto done;
     *arg1 = fn_801452B4(value);
