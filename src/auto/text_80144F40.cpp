@@ -120,10 +120,10 @@ extern "C" u8 lbl_80559DCC;
 #pragma scheduling invalid_target
 extern "C" s32 fn_80144FB0(void *arg0, s32 arg1, s32 arg2, const char *arg3) {
     struct Entry { const char *text; u32 mask; };
+    const char *separator = (const char *)&lbl_80559DCC;
     Entry *entry = (Entry *)arg3;
     char *dst = (char *)arg0;
     s32 zero = 0;
-    const char *separator = (const char *)&lbl_80559DCC;
     const char *src;
     s32 remaining;
     char *cursor;
@@ -214,8 +214,9 @@ done:
 #pragma push
 #pragma processor 750
 extern "C" f32 fn_801451DC(s32 arg0, f32 farg0) {
-    f32 var_f31 = farg0 - lbl_805615E0;
+    f32 var_f31;
     s32 var_r31 = arg0;
+    var_f31 = farg0 - lbl_805615E0;
     if ((fn_802C9A58() != 0) || (fn_802C9A60() != 0)) {
         if (var_r31 == 0) {
             if (var_f31 < lbl_805615E8) {
@@ -432,8 +433,7 @@ extern "C" void fn_801456E8(void *arg0, s32 arg1) {
         entry = (Entry *)((u8 *)list->entries + offset);
         value = fn_8013126C(result, entry->unk1C);
         s32 formatted = fn_80144FB0(buffer, 0x40, entry->unk14, base + 0x10);
-        fn_802E3AD0(arg1, base + 0xD4, entry->unk4, entry->unk8,
-                    entry->unkC, entry->unk18, formatted, entry->unk0, value, entry->unk10);
+        fn_802E3AD0(arg1, base + 0xD4, entry->unk4, entry->unk8, entry->unkC, entry->unk18, formatted, entry->unk10, entry->unk0, value);
         offset += 0x20;
         i++;
     }
