@@ -240,23 +240,101 @@ public:
       virtual VfObjF *vf22();   // vtable 0x5C
   virtual VfObjF *vf23();
 };
-// Minimal shapes matching the target's use of BasicSound/SoundPlayer (0x10 player
-// field, byte field at 0x74, and Remove/Insert calls taking the raw pointers).
 class BasicSound;
 class SoundPlayer;
+// Virtual views of the objects BasicSound::Shutdown() calls through.  MWCC puts
+// the first declared method at 0x08 (two leading destructor slots), so the
+// numbered fillers stand for the slots this file never calls.
+//
+// The object BasicSound::GetPlayer() returns: the SeqPlayer/WavePlayer/StrmPlayer
+// living inside the sound.  Its +0x04 is the player's copy of the sound's
+// archive id, -1 while no sound is playing.
+struct SoundPlayerVt {
+    virtual void v08();
+    virtual void v0C();
+    virtual void Stop();             /* 0x10 */
+    virtual void v14();
+    virtual int IsValid();           /* 0x18 still playing something */
+    virtual void v1C();
+    virtual void v20();
+    virtual void v24();
+    virtual void SetVolume(float);   /* 0x28 */
+    int soundId;                     /* 0x04 */
+};
+//
+// BasicSound's own vtable; the 0x50, 0x54 and 0x5C methods are pure in the base
+// class and filled in by SeqSound, StrmSound and WaveSound.
+struct BasicSoundVt {
+    virtual void v08();
+    virtual void v0C();
+    virtual void v10();
+    virtual void v14();
+    virtual void v18();
+    virtual void v1C();
+    virtual void v20();
+    virtual void v24();
+    virtual void v28();
+    virtual void v2C();
+    virtual void v30();
+    virtual void v34();
+    virtual void v38();
+    virtual void v3C();
+    virtual void v40();
+    virtual void v44();
+    virtual void v48();
+    virtual void v4C();
+    virtual int HasResource();            /* 0x50 still holding the track it plays */
+    virtual void ReleaseResource();       /* 0x54 hand that track back */
+    virtual void v58();
+    virtual SoundPlayerVt *GetPlayer();   /* 0x5C the player inside the sound */
+};
+//
+// The hook stored at BasicSound+0x20, told when its sound shuts down.
+struct ShutdownHookVt {
+    virtual void v08();
+    virtual void Notify(int id, void *sound); /* 0x0C */
+};
 namespace nw4hbm {
 namespace snd {
 namespace detail {
+/* nw4hbm::snd::detail::BasicSound: one playable sound, attached to up to two
+ * nw4r::snd::SoundHandles and played by a SoundPlayer.  Only the fields this
+ * file touches are named. */
 class BasicSound {
 public:
-    char pad[0x7C];
-    float current;
-    float target;
-    int total;
-    int elapsed;
-    float initialVolume;
+    void *vtable;                    /* 0x00 */
+    int fromPlayerHeap;              /* 0x04 its memory came from a player's heap */
+    void *primaryHandle;             /* 0x08 nw4r::snd::SoundHandle attached to it */
+    void *secondaryHandle;           /* 0x0C a second handle on the same sound */
+    void *soundPlayer;               /* 0x10 nw4hbm::snd::SoundPlayer playing it */
+    void *externalPlayer;            /* 0x14 nw4hbm::snd::detail::ExternalSoundPlayer */
+    void *mixHook;                   /* 0x18 update hook, handed the mix below */
+    void *updateHook;                /* 0x1C update hook, handed the id below */
+    ShutdownHookVt *shutdownHook;    /* 0x20 told when the sound shuts down */
+    int hookId;                      /* 0x24 id handed to those hooks */
+    float mix[6];                    /* 0x28 volume and mix given to the mix hook */
+    int pad_40;                      /* 0x40 */
+    float fadeStart;                 /* 0x44 volume fade: volume it started from */
+    float fadeEnd;                   /* 0x48 volume fade: volume it is going to */
+    int fadeFrames;                  /* 0x4C volume fade: length */
+    int fadeFrame;                   /* 0x50 volume fade: frames gone by */
+    unsigned char pad_54[0x64 - 0x54]; /* 0x54 second ramp, same shape as 0x44 */
+    unsigned char startRequested;    /* 0x64 asked to start; Update clears it */
+    unsigned char started;           /* 0x65 the sound is up and running */
+    unsigned char pad_66[0x69 - 0x66]; /* 0x66 pause flags and their counters */
+    unsigned char stopWhenFaded;     /* 0x69 shut down once the volume fade is over */
+    unsigned char pad_6A[0x74 - 0x6A];
+    signed char playerPriority;      /* 0x74 priority inside the player, 0-0x7F */
+    unsigned char pad_75[0x78 - 0x75];
+    int soundId;                     /* 0x78 archive sound id, -1 once shut down */
+    float current;                   /* 0x7C volume ramp: volume it started from */
+    float target;                    /* 0x80 volume ramp: volume it is going to */
+    int total;                       /* 0x84 volume ramp: length */
+    int elapsed;                     /* 0x88 volume ramp: frames gone by */
+    float initialVolume;             /* 0x8C volume a restarted sound starts from */
     void SetVolume(float, int);
     void SetInitialVolume(float);
+    void Shutdown();
 };
 }
 }
