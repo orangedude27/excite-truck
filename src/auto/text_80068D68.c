@@ -4298,24 +4298,25 @@ extern char lbl_80559008[4];
 extern s32 lbl_80558FF4;
 extern u32 lbl_8055DC54;
 extern u32 lbl_8055DC58;
-s32 uusb_get_devId(u32 arg0, u32 arg1) {
-    s32 result;
+s32 uusb_get_devId(u32 vendorId, u32 productId) {
+    /* Open a USB device by VID/PID on the selected host, store its fd on success, and log/report failures. */
+    s32 deviceId;
     if (lbl_8055DC58 == 1) {
         if (lbl_8055DC54 == 0) {
-            result = IUSB_OpenDeviceIds(lbl_80559004, (u16)arg0, (u16)arg1, (s32 *)&lbl_803BD1E0);
+            deviceId = IUSB_OpenDeviceIds(lbl_80559004, (u16)vendorId, (u16)productId, (s32 *)&lbl_803BD1E0);
         } else if (lbl_8055DC54 == 1) {
-            result = IUSB_OpenDeviceIds(lbl_80559008, (u16)arg0, (u16)arg1, (s32 *)&lbl_803BD1E0);
+            deviceId = IUSB_OpenDeviceIds(lbl_80559008, (u16)vendorId, (u16)productId, (s32 *)&lbl_803BD1E0);
         }
     } else {
-        result = IUSB_OpenDeviceIds(lbl_80559008, (u16)arg0, (u16)arg1, (s32 *)&lbl_803BD1E0);
+        deviceId = IUSB_OpenDeviceIds(lbl_80559008, (u16)vendorId, (u16)productId, (s32 *)&lbl_803BD1E0);
     }
-    if (result < 0) {
-        if (lbl_803BD1E0.at_0x28 != 0) OSReport(lbl_80314898, result, 0x57E, 0x305);
+    if (deviceId < 0) {
+        if (lbl_803BD1E0.at_0x28 != 0) OSReport(lbl_80314898, deviceId, 0x57E, 0x305);
         if (lbl_803BD1E0.at_0x28 != 0) OSReport(lbl_803148F8);
     } else {
-        lbl_80558FF4 = result;
+        lbl_80558FF4 = deviceId;
     }
-    return result;
+    return deviceId;
 }
 
 void UUSB_Register(tUUSB *uusb) {
