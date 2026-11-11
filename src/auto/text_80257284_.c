@@ -351,25 +351,28 @@ struct RecordValue {
     unsigned char changed;    /* 0x20 */
 };
 #pragma dont_inline on
-void fn_80257A8C(void *arg0) {
-    char sp1C[0x24];
-    char sp8[0x14];
-    int var_r30;
-    int temp_r29;
+/* Rebuild the seven-row record list for the set selected in table->recordSet:
+   column 0 gets the record's name and column 1 its value formatted into text,
+   or "Not set!" when the record has no value. */
+void fn_80257A8C(struct UITable *table) {
+    struct RecordValue recordValue;
+    char text[0x14];
+    int row;
+    int record;
 
-    fn_8022D76C();
-    var_r30 = 0;
+    ((void (*)(void *))fn_8022D76C)(table);
+    row = 0;
     do {
-        temp_r29 = fn_8001BA74(var_r30 + 1);
-        fn_8022D894(arg0, var_r30, 0, fn_8001BA6C(), 0);
-        fn_8001BC38(sp1C, fn_8000DA10(), temp_r29, *(int *)((char *)arg0 + 0x30), 0);
-        if (fn_8001BCF0(sp1C) != 0) {
-            fn_8022D894(arg0, var_r30, 1, fn_8001BD38(sp1C, sp8, 0x14), 0);
+        record = fn_8001BA74(row + 1);
+        fn_8022D894(table, row, 0, fn_8001BA6C(), 0);
+        fn_8001BC38(&recordValue, fn_8000DA10(), record, table->recordSet, 0);
+        if (fn_8001BCF0(&recordValue) != 0) {
+            fn_8022D894(table, row, 1, fn_8001BD38(&recordValue, text, 0x14), 0);
         } else {
-            fn_8022D894(arg0, var_r30, 1, &lbl_80344CE4, 0);
+            fn_8022D894(table, row, 1, &lbl_80344CE4, 0);
         }
-        var_r30 += 1;
-    } while (var_r30 < 7);
+        row += 1;
+    } while (row < 7);
 }
 #pragma dont_inline reset
 
