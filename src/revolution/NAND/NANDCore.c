@@ -419,6 +419,7 @@ static s32 NANDGetHomeDir(char* out) {
     return NAND_RESULT_OK;
 }
 
+/* ISFS async completion callback: converts the IPC result and invokes the NAND command block's callback. */
 void nandCallback(s32 result, void* arg) {
     NANDCommandBlock* block = (NANDCommandBlock*)arg;
     block->callback(nandConvertErrorCode(result), block);
