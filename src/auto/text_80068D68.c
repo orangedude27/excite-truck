@@ -25531,11 +25531,13 @@ UINT8 *sdpu_get_len_from_type (UINT8 *p, UINT8 type, UINT32 *p_len)
     return (p);
 }
 
-BOOLEAN sdpu_is_base_uuid(UINT8 *uuid) {
+/* Checks whether a 128-bit UUID uses the Bluetooth base UUID by comparing bytes 4..15. */
+BOOLEAN sdpu_is_base_uuid(UINT8 *p_uuid) {
     extern UINT8 lbl_802EED40[];
-    u16 i;
-    for (i = 4; i < 16; i++) {
-        if (lbl_802EED40[i] != uuid[i]) return FALSE;
+    u16 index;
+
+    for (index = 4; index < 16; index++) {
+        if (lbl_802EED40[index] != p_uuid[index]) return FALSE;
     }
     return TRUE;
 }
