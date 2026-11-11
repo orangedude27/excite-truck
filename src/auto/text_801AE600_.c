@@ -37,16 +37,42 @@ extern int fn_8012850C(int, const char *);
 extern int fn_802794AC(int, void *);
 extern float lbl_80562574;
 extern void fn_801AFA20(void);
+/* End-of-race bookkeeping.  One static block at lbl_80435740 holds
+ *   +0x000  one { score, spare } f32 pair per competitor (Pair8)
+ *   +0x040  lbl_80435780: the competitor table (CompetitorTable)
+ * and it points at the tables the race allocates on the heap:
+ *   lbl_8055E620 "CarLapTable"      8 slots, a LapResultTable (0x1F5 laps) each
+ *   lbl_8055E624 "RaceResultTable"  { RaceResult *records; s32 count; }
+ *   lbl_8055E628 "RecordMgr"        handle the stubbed event callbacks take.
+ */
 typedef struct {
     unsigned char b[0x60];
 } Blob60;
-typedef struct {
-    int id;
+typedef struct {              /* one competitor of the race, 0x78 bytes */
+    int id;                   /* 0x00 competitor id; 0x50 is one that sets laps */
     Blob60 b;
     int f64, f68, f6c;
-    unsigned char f70;
+    unsigned char f70;        /* 0x70 & 3: state; 0 = still to be placed */
     int f74;
 } Ent78;
+typedef struct {              /* what lbl_80435780 points at */
+    Ent78 entry[8];
+    s32 count;                /* 0x3C0 competitors in the table */
+    s32 order[8];             /* 0x3C8 entry indices, qsort'ed by placing */
+} CompetitorTable;
+typedef struct {              /* one RaceResultTable record, 0x1C bytes */
+    f32 time;                 /* 0x00 fn_801AE894 turns this into the speed */
+    f32 speed;                /* 0x04 */
+    f32 lapTime;              /* 0x08 the value the placing is sorted by */
+    s16 rank;                 /* 0x0C placing; 1 = first, 0 = unplaced */
+    u16 flags;                /* 0x0E & 1 took part, & 8 disqualified */
+    s16 points;               /* 0x10 for the placing (fn_801AE610, stubbed) */
+    s16 bonus;                /* 0x12 */
+    s16 score;                /* 0x14 shared out by fn_801AEBD0 */
+    s16 f16;                  /* 0x16 first sort key of fn_801AEAA4 */
+    s16 f18;
+    s16 carId;                /* 0x1A racer the record belongs to (fn_801B3050) */
+} RaceResult;
 typedef struct {
     char pad[0x20];
     Ent78 e[8];
