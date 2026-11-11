@@ -2832,8 +2832,6 @@ void GXSetDispCopyGamma(s32 arg0) {
 
 void GXCopyDisp(unsigned int source, int clear) {
     volatile unsigned int *gx;
-    volatile unsigned char *fifo8;
-    volatile unsigned int *fifo32;
     volatile unsigned int *reg;
     unsigned int value;
     unsigned int sourceValue;
@@ -2842,13 +2840,11 @@ void GXCopyDisp(unsigned int source, int clear) {
     if (clear != 0) {
         gx = __GXData;
         value = gx[0x228 / 4];
-        fifo8 = (volatile unsigned char *)0xCC010000;
-        fifo32 = (volatile unsigned int *)0xCC010000;
-        fifo8[-0x8000] = 0x61;
-        fifo32[-0x8000 / 4] = value | 0xF;
+        GXCopyWGFifo.u8 = 0x61;
+        GXCopyWGFifo.u32 = value | 0xF;
         value = gx[0x220 / 4];
-        fifo8[-0x8000] = 0x61;
-        fifo32[-0x8000 / 4] = value & ~3u;
+        GXCopyWGFifo.u8 = 0x61;
+        GXCopyWGFifo.u32 = value & ~3u;
     }
 
     changed = 0;
@@ -2861,49 +2857,45 @@ void GXCopyDisp(unsigned int source, int clear) {
             value = gx[0x22C / 4];
             reg = (volatile unsigned int *)((volatile unsigned char *)gx + 0x22C);
             if (((value >> 6) & 1) == 1) {
-                fifo8 = (volatile unsigned char *)0xCC010000;
-                fifo8[-0x8000] = 0x61;
+                GXCopyWGFifo.u8 = 0x61;
                 value &= ~0x40u;
-                fifo32 = (volatile unsigned int *)0xCC010000;
-                fifo32[-0x8000 / 4] = value;
+                GXCopyWGFifo.u32 = value;
                 changed = 1;
             }
         }
     }
 
     gx = __GXData;
-    fifo8 = (volatile unsigned char *)0xCC010000;
-    fifo32 = (volatile unsigned int *)0xCC010000;
-    fifo8[-0x8000] = 0x61;
-    fifo32[-0x8000 / 4] = gx[0x230 / 4];
-    fifo8[-0x8000] = 0x61;
-    fifo32[-0x8000 / 4] = gx[0x234 / 4];
-    fifo8[-0x8000] = 0x61;
-    fifo32[-0x8000 / 4] = gx[0x238 / 4];
+    GXCopyWGFifo.u8 = 0x61;
+    GXCopyWGFifo.u32 = gx[0x230 / 4];
+    GXCopyWGFifo.u8 = 0x61;
+    GXCopyWGFifo.u32 = gx[0x234 / 4];
+    GXCopyWGFifo.u8 = 0x61;
+    GXCopyWGFifo.u32 = gx[0x238 / 4];
 
     sourceValue = __rlwimi(0, source, 27, 8, 31);
     sourceValue = __rlwimi(sourceValue, 0x4B, 24, 0, 7);
-    fifo8[-0x8000] = 0x61;
-    fifo32[-0x8000 / 4] = sourceValue;
+    GXCopyWGFifo.u8 = 0x61;
+    GXCopyWGFifo.u32 = sourceValue;
 
     value = gx[0x23C / 4];
     value = __rlwimi(value, clear, 11, 20, 20);
     value |= 0x4000;
     value = __rlwimi(value, 0x52, 24, 0, 7);
     gx[0x23C / 4] = value;
-    fifo8[-0x8000] = 0x61;
+    GXCopyWGFifo.u8 = 0x61;
     value = gx[0x23C / 4];
-    fifo32[-0x8000 / 4] = value;
+    GXCopyWGFifo.u32 = value;
 
     if (clear != 0) {
-        fifo8[-0x8000] = 0x61;
-        fifo32[-0x8000 / 4] = gx[0x228 / 4];
-        fifo8[-0x8000] = 0x61;
-        fifo32[-0x8000 / 4] = gx[0x220 / 4];
+        GXCopyWGFifo.u8 = 0x61;
+        GXCopyWGFifo.u32 = gx[0x228 / 4];
+        GXCopyWGFifo.u8 = 0x61;
+        GXCopyWGFifo.u32 = gx[0x220 / 4];
     }
     if (changed != 0) {
-        fifo8[-0x8000] = 0x61;
-        fifo32[-0x8000 / 4] = *reg;
+        GXCopyWGFifo.u8 = 0x61;
+        GXCopyWGFifo.u32 = *reg;
     }
     *(volatile unsigned short *)((volatile unsigned char *)gx + 2) = 0;
 }
@@ -2913,9 +2905,10 @@ void GXCopyTex(u32 width, s32 clear) {
     u32 value;
     if (clear != 0) {
         u32 marker = 0x61;
-        value = __GXData[0x228 / 4];
+        u32 a;
+        a = __GXData[0x228 / 4] | 0xF;
         *(volatile unsigned char *)0xCC008000 = marker;
-        *(volatile unsigned int *)0xCC008000 = value | 0xF;
+        *(volatile unsigned int *)0xCC008000 = a;
         value = __GXData[0x220 / 4];
         *(volatile unsigned char *)0xCC008000 = marker;
         *(volatile unsigned int *)0xCC008000 = value & 0xFFFFFFFC;
@@ -2926,7 +2919,7 @@ void GXCopyTex(u32 width, s32 clear) {
         changed = 1;
         value = __rlwimi(value, 3, 0, 29, 31);
     }
-    if (clear == 0 && (value & 7) == 3 && ((value >> 6) & 1) == 1) {
+    if ((clear != 0 || (value & 7) == 3) && ((value >> 6) & 1) == 1) {
         changed = 1;
         value &= 0xFFFFFFBF;
     }
@@ -3844,15 +3837,13 @@ void GXSetTevIndirect(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5
 }
 
 void GXSetIndTexMtx(s32 type, f32 *matrix, s32 scale) {
-    s32 scaleField;
-    s32 index3;
-    u32 first;
-    u32 second;
-    u32 third;
+    register s32 index3;
+    register s32 scaleField;
+    register u32 first;
+    register u32 second;
+    register u32 third;
     volatile u8 *fifo8 = (volatile u8 *)0xCC010000;
     volatile u32 *fifo32 = (volatile u32 *)0xCC010000;
-    unsigned int *data;
-
     switch (type) {
     case 1: case 2: case 3:
         type -= 1;
@@ -3877,7 +3868,6 @@ void GXSetIndTexMtx(s32 type, f32 *matrix, s32 scale) {
     second = __rlwimi(second, (s32)(lbl_80560B88 * matrix[4]), 11, 10, 20);
     second = __rlwimi(second, scaleField, 20, 8, 9);
     second = __rlwimi(second, index3 + 7, 24, 0, 7);
-    data = __GXData;
     third = __rlwimi(0, (s32)(lbl_80560B88 * matrix[2]), 0, 21, 31);
     third = __rlwimi(third, (s32)(lbl_80560B88 * matrix[5]), 11, 10, 20);
     third = __rlwimi(third, scaleField, 18, 8, 9);
@@ -3888,7 +3878,7 @@ void GXSetIndTexMtx(s32 type, f32 *matrix, s32 scale) {
     fifo32[-0x8000 / 4] = second;
     fifo8[-0x8000] = 0x61;
     fifo32[-0x8000 / 4] = third;
-    *(volatile u16 *)((u8 *)data + 2) = 0;
+    *(volatile u16 *)((u8 *)__GXData + 2) = 0;
 }
 
 void GXSetIndTexCoordScale(s32 stage, s32 scaleS, s32 scaleT) {
