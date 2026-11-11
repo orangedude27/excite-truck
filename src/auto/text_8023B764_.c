@@ -153,26 +153,10 @@ extern char lbl_80341328[];
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-void fn_8023B9EC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    struct Context {
-        u8 pad[0x3E4];
-        s32 value;
-        s32 unk;
-        s32 arg3;
-        s32 zero;
-        s32 flags;
-        u8 trailing[0x50];
-    };
-    struct Frame {
-        const char *resource;
-        s32 resource0;
-        s32 resource1;
-        s32 resource2;
-        struct Context context;
-    } frame;
-    register const char *resource;
-    register s32 zero;
-    register s32 active;
+void fn_8023B9EC(s32 c0, s32 c1, s32 c2, s32 c3, s32 c4) {
+    struct Context { u8 pad[0x3E4]; s32 value; s32 unk; s32 arg3; s32 zero; s32 flags; u8 trailing[0x50]; };
+    struct Frame { const char *resource; s32 resource0; s32 resource1; s32 resource2; struct Context context; } frame;
+    s32 active; s32 zero; const char *resource;
     active = fn_802ECEEC();
     if (active != 0) {
         fn_802ECEC0();
@@ -182,23 +166,18 @@ void fn_8023B9EC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         frame.resource0 = fn_80128314(zero);
         frame.resource1 = fn_80128314(1);
         frame.resource2 = fn_80265D58();
-        if (fn_80204024() != 0)
-            fn_8012BF28();
+        if (fn_80204024() != 0) fn_8012BF28();
         do {
             fn_801E952C(&frame.context);
-            fn_8023B7EC(&frame.context, arg0, arg1, arg3);
-            frame.context.arg3 = arg3;
+            fn_8023B7EC(&frame.context, c0, c1, c3);
+            frame.context.arg3 = c3;
             frame.context.zero = zero;
-            if (fn_8023B764(arg3, frame.context.value) != 0) {
-                fn_802E30C8(resource + 0x14);
-                frame.context.flags |= 2;
-            }
-            fn_8023B904(&frame.context, (void *)arg2, arg4);
+            if (fn_8023B764(c3, frame.context.value) != 0) { fn_802E30C8(resource + 0x14); frame.context.flags |= 2; }
+            fn_8023B904(&frame.context, (void *)c2, c4);
             fn_8023B8AC((s32)&frame.context);
         } while (fn_80204024() != 0);
         fn_80129AEC(0);
-        if (active != 0)
-            fn_802ECEC4();
+        if (active != 0) fn_802ECEC4();
     }
 }
 #pragma dont_inline reset
@@ -499,31 +478,33 @@ extern "C" void fn_8023BFBC(s32 arg0, s32 arg1) {
     s32 value;
     s32 sign;
     s32 count;
-    s32 i;
     s32 result;
-
     temp_r30 = (s32 *)fn_80012820(arg0);
     temp_r31 = fn_80012870(arg0, arg1);
     type = fn_80007FF0(*(s32 *)((u8 *)temp_r31 + 8));
     result = ((Dummy *)*(void **)((u8 *)temp_r31 + 0x20))->makeName((s32)&lbl_8055BB34, type);
     fn_802E30C8(lbl_8034137C, (u8 *)temp_r30 + 0x28, result, (u8 *)temp_r30 + 8);
-
     value = lbl_8055BB30;
     sign = value >> 31;
     count = (sign ^ value) - sign;
     fn_80137C78(count);
-    for (i = 0; i < count; i++) {
-        if (lbl_8055BB30 >= 0) {
-            fn_80137C84(fn_802E4A10(), i);
-        } else {
-            fn_80137C84(i, i);
+    {
+        s32 i;
+        for (i = 0; i < count; i++) {
+            if (lbl_8055BB30 >= 0) {
+                fn_80137C84(fn_802E4A10(), i);
+            } else {
+                fn_80137C84(i, i);
+            }
+            fn_80137C7C(*(s32 *)((u8 *)fn_80016464(i) + 4), i);
         }
-        fn_80137C7C(*(s32 *)((u8 *)fn_80016464(i) + 4), i);
     }
-
     fn_8023BEB8(arg0, arg1, 0);
-    for (i = 0; i < count; i++) {
-        fn_80137C80(i);
+    {
+        s32 i;
+        for (i = 0; i < count; i++) {
+            fn_80137C80(i);
+        }
     }
 }
 #pragma cplusplus reset
