@@ -1146,8 +1146,7 @@ void VIConfigurePan(u16 xOrg, u16 yOrg, u16 width, u16 height)
 void VIFlush(void)
 {
     BOOL interrupts;
-    s32 regIndex;
-
+    register s32 regIndex;
     interrupts = OSDisableInterrupts();
     lbl_8055DB70 |= lbl_8055DB60;
     lbl_8055DB60 = 0;
@@ -1497,6 +1496,10 @@ u32 sendSlaveAddr(u32 addr)
 }
 
 extern u32 lbl_8055DBD8;
+// Cleared at boot; set by the first __VISendI2CData, which uses it to pick the
+// SDA polarity (viI2cSdaNonInverted, above) once and for all before touching
+// the bus. Nothing else in the game writes either of the two.
+#define viI2cBusUsed lbl_8055DBD8
 
 s32 __VISendI2CData(u8 addr, u8 *data, s32 size)
 {
