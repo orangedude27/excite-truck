@@ -187,6 +187,7 @@ s32 NANDSeekAsync(NANDFileInfo* info, s32 offset, NANDSeekMode whence,
         nandSeek(info->fd, offset, whence, block, TRUE));
 }
 
+// Creates a private NAND directory at the given path with the specified permissions and attributes.
 s32 NANDPrivateCreateDir(const char* path, u8 perm, u8 attr) {
     char absPath[64];
     u32 otherPerm, groupPerm, ownerPerm;
