@@ -636,10 +636,13 @@ void fn_801D5454(void *self, void *arg0) {
 extern float lbl_80562AE0;
 extern float lbl_80562B08;
 void fn_801D5488(void) {
-    char *base;
-    char *obj = *(char **)lbl_804422F0;
+    extern char lbl_804422F0[];
+    extern float lbl_80562ADC;
+    extern float lbl_80562AE0;
+    extern float lbl_80562B08;
+    register char *obj = *(char **)lbl_804422F0;
+    register char *base;
     if (obj == 0) return;
-
     base = lbl_804422F0;
     if (*(float *)(base + 4) > lbl_80562ADC) {
         float f2 = lbl_80562AE0;
@@ -652,13 +655,13 @@ void fn_801D5488(void) {
             *(float *)(obj + 8) = f2;
         }
         obj = *(char **)lbl_804422F0;
-        obj[0x4a] = 0;
-        obj[0x4b] = 1;
-        obj[0x49] = 1;
+        *(char *)(obj + 0x4a) = 0;
+        *(char *)(obj + 0x4b) = 1;
+        *(char *)(obj + 0x49) = 1;
         return;
     }
-    obj[0x4a] = 1;
-    obj[0x4c] = 0;
+    *(char *)(obj + 0x4a) = 1;
+    *(char *)(obj + 0x4c) = 0;
 }
 
 #pragma push
@@ -1819,6 +1822,31 @@ int fn_801D7214(int arg0) {
     }
     return 0;
 }
+
+#pragma dont_inline on
+void fn_801D7240(void *arg0) {
+    extern float lbl_80562ADC;
+    extern float lbl_8055E3C8;
+    float f2;
+    float f1;
+    if (*(int *)((char *)arg0 + 4) == 2) {
+        f2 = *(float *)((char *)arg0 + 0x30);
+        if (f2 < lbl_80562ADC) {
+            fn_801D6FB8((int)arg0);
+            *(int *)((char *)arg0 + 4) = 3;
+        } else {
+            f1 = *(float *)((char *)arg0 + 0x2C);
+            f1 += *(float *)((char *)arg0 + 0x28);
+            if (f2 + f1 < lbl_8055E3C8) {
+                fn_8016A240((char *)arg0 + 8);
+                *(int *)((char *)arg0 + 4) = 3;
+            } else if (f1 < lbl_8055E3C8) {
+                fn_801D6FB8((int)arg0);
+            }
+        }
+    }
+}
+#pragma dont_inline reset
 
 void fn_801D72D0(void *arg0) {
     char *p;
@@ -3258,6 +3286,49 @@ extern "C" s32 fn_801D8CAC(void *arg0) {
     }
     return 0;
 }
+
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+extern "C" void fn_801D8D00(void *arg0) {
+    extern float lbl_8055E3C8;
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual void m3C();
+        virtual void m40(float);
+        virtual void m44();
+    };
+    float f2;
+    float f1;
+    if (*(int *)((char *)arg0 + 4) == 2) {
+        f2 = *(float *)((char *)arg0 + 8);
+        f1 = lbl_8055E3C8 - *(float *)((char *)arg0 + 0x10);
+        if (f1 < f2) {
+            ((Dummy *)arg0)->m3C();
+            return;
+        }
+        if (f1 < f2 + *(float *)((char *)arg0 + 0xC)) {
+            ((Dummy *)arg0)->m40(f1 - f2);
+            return;
+        }
+        ((Dummy *)arg0)->m44();
+        *(int *)((char *)arg0 + 4) = 3;
+    }
+}
+#pragma cplusplus reset
+#pragma use_lmw_stmw reset
+
 #pragma cplusplus reset
 
 #pragma cplusplus on
