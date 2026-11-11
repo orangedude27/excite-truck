@@ -114,11 +114,13 @@ static inline s32 GridCell(f32 v) {
         i = 0x63;
     return i;
 }
+#pragma scheduling invalid_target
 void fn_801B619C(u32 *arg0, s32 *arg1, f32 *arg2) {
-    s32 x0 = GridCell(lbl_805626B4 + (arg2[0] - lbl_805626B8));
-    s32 x1 = GridCell(lbl_805626B4 + (lbl_805626B8 + arg2[0]));
-    s32 y0 = GridCell(lbl_805626B4 + (arg2[2] - lbl_805626B8));
-    s32 y1 = GridCell(lbl_805626B4 + (lbl_805626B8 + arg2[2]));
+    s32 x0 = GridCell(arg2[0] - lbl_805626B8);
+    s32 x1 = GridCell(lbl_805626B8 + arg2[0]);
+    s32 y0 = GridCell(arg2[2] - lbl_805626B8);
+    s32 y1 = GridCell(lbl_805626B8 + arg2[2]);
+    s32 count;
     if (x0 != x1) {
         if (y0 != y1) {
             *arg1 = 4;
@@ -139,11 +141,9 @@ void fn_801B619C(u32 *arg0, s32 *arg1, f32 *arg2) {
         *arg1 = 1;
         arg0[0] = lbl_8055E70C + ((x0 + y0 * 100) * 4);
     }
-    {
-        s32 count = *arg1;
-        arg0[count] = lbl_8055E714;
-        *arg1 = count + 1;
-    }
+    count = *arg1;
+    *(u32 *)((u8 *)arg0 + count * 4) = lbl_8055E714;
+    *arg1 = count + 1;
 }
 #pragma scheduling on
 extern void *fn_801B5F40(void);
