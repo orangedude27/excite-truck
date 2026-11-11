@@ -87,7 +87,10 @@ void fn_800054E0(void) {
     *(s32 *)(lbl_8034EC78 + 0x208) = 0;
 }
 #pragma unroll reset
-s32 fn_80005564(void) { return lbl_8034EEB8[0x50 / 4] != 0; }
+/* Returns non-zero if field at offset 0x50 in lbl_8034EEB8 is non-zero. */
+s32 fn_80005564(void) {
+    return lbl_8034EEB8[0x50 / 4] != 0;
+}
 
 #pragma dont_inline on
 s32 fn_80005580(s32 arg0) {
