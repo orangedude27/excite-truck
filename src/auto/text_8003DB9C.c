@@ -3372,8 +3372,13 @@ void GXInitTexObjCI(void *obj, void *image, unsigned short width, unsigned short
     *(unsigned char *)((char *)obj + 0x1F) &= ~2;
 }
 
-void GXInitTexObjLOD(void *obj, s32 min_filt, s32 mag_filt, f32 min_lod, f32 max_lod, f32 lod_bias, u8 bias_clamp, u8 do_edge_lod, s32 max_aniso) {
-    u32 *t = (u32 *)obj;
+// Level-of-detail half of a texture object: packs the min and mag filters, the LOD
+// bias, the min and max LODs, the anisotropy and the edge-LOD flag into the
+// object's two mode words. The bias is a x32 fixed-point number clamped to
+// [-4.0, 3.99] and the LODs are x16 fixed-point clamped to [0.0, 10.0], which is
+// all each field can hold.
+void GXInitTexObjLOD(void *obj, GXTexFilter min_filt, GXTexFilter mag_filt, f32 min_lod, f32 max_lod, f32 lod_bias, u8 bias_clamp, u8 do_edge_lod, GXAnisotropy max_aniso) {
+    __GXTexObjInt *t = (__GXTexObjInt *)obj;
     u32 mode0;
     u32 mode1;
     u8 lbias;
@@ -3386,16 +3391,18 @@ void GXInitTexObjLOD(void *obj, s32 min_filt, s32 mag_filt, f32 min_lod, f32 max
         lod_bias = 3.99f;
     }
     lbias = 32.0f * lod_bias;
-    mode0 = t[0];
-    mode0 = __rlwimi(mode0, lbias, 9, 15, 22);
-    mode0 = __rlwimi(mode0, __cntlzw(mag_filt - 1), 31, 27, 27);
-    t[0] = mode0;
-    mode0 = __rlwimi(mode0, GX2HWFiltConv[min_filt], 5, 24, 26);
-    mode0 = __rlwimi(mode0, __cntlzw(do_edge_lod), 3, 23, 23);
-    mode1 = mode0 & 0xFFF9FFFF;
-    mode1 = __rlwimi(mode1, max_aniso, 19, 11, 12);
-    mode1 = __rlwimi(mode1, bias_clamp, 21, 10, 10);
-    t[0] = mode1;
+    mode0 = t->mode0;
+    mode0 = GX_BITSET(mode0, TEXMODE0_LODBIAS_FIELD, 8, lbias);
+    // __cntlzw has bit 5 set only when its argument was zero, so these two insert
+    // the 1-bit tests without a branch; the rotate amount picks that bit out.
+    mode0 = __rlwimi(mode0, __cntlzw(mag_filt - GX_LINEAR), 31, TEXMODE0_MAGFILT_FIELD, TEXMODE0_MAGFILT_FIELD);
+    t->mode0 = mode0;
+    mode0 = GX_BITSET(mode0, TEXMODE0_MINFILT_FIELD, 3, GX2HWFiltConv[min_filt]);
+    mode0 = __rlwimi(mode0, __cntlzw(do_edge_lod), 3, TEXMODE0_EDGELOD_FIELD, TEXMODE0_EDGELOD_FIELD);
+    mode1 = mode0 & ~0x00060000; // the two bits below the anisotropy go with it
+    mode1 = GX_BITSET(mode1, TEXMODE0_ANISO_FIELD, 2, max_aniso);
+    mode1 = GX_BITSET(mode1, TEXMODE0_BIASCLAMP_FIELD, 1, bias_clamp);
+    t->mode0 = mode1;
 
     if (min_lod < 0.0f) {
         min_lod = 0.0f;
@@ -3409,10 +3416,10 @@ void GXInitTexObjLOD(void *obj, s32 min_filt, s32 mag_filt, f32 min_lod, f32 max
         max_lod = 10.0f;
     }
     lmax = 16.0f * max_lod;
-    mode1 = t[1];
-    mode1 = __rlwimi(mode1, lmin, 0, 24, 31);
-    mode1 = __rlwimi(mode1, lmax, 8, 16, 23);
-    t[1] = mode1;
+    mode1 = t->mode1;
+    mode1 = GX_BITSET(mode1, TEXMODE1_MINLOD_FIELD, 8, lmin);
+    mode1 = GX_BITSET(mode1, TEXMODE1_MAXLOD_FIELD, 8, lmax);
+    t->mode1 = mode1;
 }
 
 void GXInitTexObjWrapMode(int *obj, int wrap_s, int wrap_t) {
