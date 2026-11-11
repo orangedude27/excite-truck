@@ -1989,16 +1989,18 @@ extern "C" void SetRemoteSend__Q46nw4hbm3snd6detail7AxVoiceFif(void *self, int i
     int valid = 0;
     if (index >= 0 && index < 4) valid = 1;
     if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x2E5, lbl_803222F0, index, 0, 4);
-
     value += lbl_80560F38;
+    float result;
     if (value > lbl_80560F38) {
-        value = value;
+        result = lbl_80560F38;
     } else if (value < lbl_80560F3C) {
-        value = lbl_80560F3C;
+        result = lbl_80560F3C;
+    } else {
+        result = value;
     }
     float *send = (float *)((unsigned char *)self + 0x164 + index * 4);
-    if (value != *send) {
-        *send = value;
+    if (result != *send) {
+        *send = result;
         *((unsigned char *)self + 0x123) |= 0x20;
     }
 }
