@@ -5,10 +5,6 @@ extern float lbl_80560F20;
 static inline void FillTmp(ElemTmp* end, ElemTmp* q, float f) { if (q < end) { do { q->f1 = f; q->f2 = f; q->i1 = 0; q->i2 = 0; q++; } while (q < end); } }
 typedef unsigned int u32;
 typedef signed char s8;
-static inline float lerpCount(float lo, float hi, int cur, int max) {
-    if (cur >= max) return hi;
-    return lo + (float)cur * (hi - lo) / (float)max;
-}
 typedef int M2C_UNK;
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((char *)(expr) + (offset)))
 extern "C" void *GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(void);
