@@ -755,11 +755,29 @@ extern "C" s32 fn_801F85DC(s32 arg0, s32 arg1) {
 
 extern "C" void *lbl_8055B2F8;
 extern u8 lbl_8033B3F0[];
+#pragma scheduling invalid_target
 extern "C" void *fn_801F861C(void) {
- F92Obj *obj=(F92Obj*)fn_801284F8(0x10C,lbl_8055B2F8);
- if(obj){obj->w108=lbl_8033B468;obj->w78=0;obj->f7c=lbl_80562FF0;obj->f80=lbl_80562FF0;obj->w104=0;obj->f24=0;obj->f20=0;obj->f28=lbl_80563000;obj->b60=1;memset(obj,0x20,0x61);memset((u8*)obj+0x61,0x61,0x10);obj->w74=-1;obj->w108=lbl_8033B3F0;}return obj;
+    F92Obj *obj = (F92Obj *)fn_801284F8(0x10C, &lbl_8055B2F8);
+    if (obj) {
+        f32 b = lbl_80563000;
+        f32 a = lbl_80562FF0;
+        obj->w108 = lbl_8033B468;
+        obj->w78 = 0;
+        obj->f7c = a;
+        obj->f80 = a;
+        obj->w104 = 0;
+        obj->f24 = 0;
+        obj->f20 = 0;
+        obj->f28 = b;
+        obj->b60 = 1;
+        memset(obj, 0x61, 0x20);
+        memset((char *)obj + 0x61, 0x61, 0x10);
+        obj->w74 = -1;
+        obj->w108 = lbl_8033B3F0;
+    }
+    return obj;
 }
-
+#pragma scheduling on
 /* Keys the obstacle creator reads from the parameter node.  The strings sit in the pool at
  * lbl_8033AF80 ("polyhedra") unless they are named out of small data. */
 #define OBS_TAG_OBSTACLE      (base + 0xF4)   /* "ObstacleDI": what to call the allocation */
@@ -2205,32 +2223,8 @@ extern "C" void *fn_801FBE1C(void **arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4
     return (u8 *)obj + 4;
 }
 #pragma scheduling invalid_target
-extern "C" void fn_801FBEA8(void* arg0) {
- void* obj = fn_801284F8(0x2C, lbl_8033B51C);
- if (obj != 0) {
- f32 zero, one, x, y;
- one = lbl_80563010;
- zero = lbl_80562FFC;
- *(void**)obj = lbl_80333B98;
- x = *(f32*)((char*)arg0 + 0x58);
- *(s32*)((char*)obj + 0xC) = 0;
- y = *(f32*)((char*)arg0 + 0x5C);
- *(s32*)((char*)obj + 4) = 0;
- *(s32*)((char*)obj + 8) = 0;
- *(s32*)((char*)obj + 0x18) = 0x54554245;
- *(f32*)((char*)obj + 0x10) = one;
- *(f32*)((char*)obj + 0x14) = zero;
- *(s32*)((char*)obj + 0x20) = 100;
- *(s32*)((char*)obj + 0x1C) = 0;
- 
- *(f32*)((char*)obj + 0x24) = x;
- *(f32*)((char*)obj + 0x28) = y;
- *(void**)obj = lbl_80333918;
- }
-}
-#pragma scheduling invalid_target
-extern "C" void fn_801FBF48(void *arg0) {
-    void *obj = fn_801284F8(0x2C, lbl_8033B52C);
+extern "C" void fn_801FBEA8(void *arg0) {
+    void *obj = fn_801284F8(0x2C, lbl_8033B51C);
     if (obj != 0) {
         f32 zero, one, x, y;
         one = lbl_80563010;
@@ -2241,19 +2235,41 @@ extern "C" void fn_801FBF48(void *arg0) {
         y = *(f32 *)((char *)arg0 + 0x5C);
         *(volatile s32 *)((char *)obj + 4) = 0;
         *(volatile s32 *)((char *)obj + 8) = 0;
+        *(volatile s32 *)((char *)obj + 0x18) = 0x54554245;
+        *(volatile f32 *)((char *)obj + 0x10) = one;
+        *(volatile f32 *)((char *)obj + 0x14) = zero;
+        *(volatile s32 *)((char *)obj + 0x20) = 100;
+        *(volatile s32 *)((char *)obj + 0x1C) = 0;
+        *(volatile f32 *)((char *)obj + 0x24) = x;
+        *(volatile f32 *)((char *)obj + 0x28) = y;
+        *(volatile void **)obj = lbl_80333918;
+    }
+}
+#pragma scheduling on
+extern "C" void fn_801FBF48(void *arg0) {
+    void *obj = fn_801284F8(0x2C, lbl_8033B52C);
+    if (obj != 0) {
+        f32 zero, one, x, y;
+        void *vt1 = lbl_80333B98;
+        void *vt2 = lbl_803337C8;
+        one = lbl_80563010;
+        zero = lbl_80562FFC;
+        *(volatile void **)obj = vt1;
+        x = *(f32 *)((char *)arg0 + 0x58);
+        *(volatile s32 *)((char *)obj + 0xC) = 0;
+        y = *(f32 *)((char *)arg0 + 0x5C);
+        *(volatile s32 *)((char *)obj + 4) = 0;
+        *(volatile s32 *)((char *)obj + 8) = 0;
         *(volatile s32 *)((char *)obj + 0x18) = 0x52494E47;
         *(volatile f32 *)((char *)obj + 0x10) = one;
         *(volatile f32 *)((char *)obj + 0x14) = zero;
         *(volatile s32 *)((char *)obj + 0x20) = 100;
         *(volatile s32 *)((char *)obj + 0x1C) = 0;
-        *(volatile void **)obj = lbl_803337C8;
+        *(volatile void **)obj = vt2;
         *(volatile f32 *)((char *)obj + 0x24) = x;
         *(volatile f32 *)((char *)obj + 0x28) = y;
     }
 }
-#pragma scheduling on
-#pragma push
-#pragma processor 750
 extern "C" void fn_801FBFE8(void* arg0) {
     register f32 value = lbl_80563010;
     void* obj = fn_801284F8(0xE0, lbl_8033B53C);
