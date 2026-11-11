@@ -503,33 +503,34 @@ void fn_80230F6C(s32 *arg0) { *arg0 = -0x35BC; }
 extern float fn_80230EF4(long);
 extern float lbl_80563610, lbl_80563614, lbl_80563658, lbl_80563664, lbl_80563668, lbl_8056366C;
 #pragma dont_inline on
-void fn_80230F78(signed char *arg0, float *arg1, long arg2, long arg3) {
-    float value;
-    float max;
-    float min;
-    long val;
-    long n;
-    int clipped;
+/* Computes a clamped/scaled byte value and a clamped float output from fn_80230EF4(arg3) using constant factors, stores the byte in *outByte and the float in *outFloat, then calls fn_80230F6C(arg2). */
+void fn_80230F78(signed char *outByte, float *outFloat, long arg2, long arg3) {
+    float inputValue;
+    float clamped;
+    float normalized;
+    long scaled;
+    long nonNegative;
+    int byteValue;
 
-    value = fn_80230EF4(arg3);
+    inputValue = fn_80230EF4(arg3);
 
-    max = lbl_80563610;
-    min = (value - lbl_80563614) / lbl_80563658;
-    max = (max < min) ? max : min;
-    max = (max > lbl_80563614) ? max : lbl_80563614;
+    clamped = lbl_80563610;
+    normalized = (inputValue - lbl_80563614) / lbl_80563658;
+    clamped = (clamped < normalized) ? clamped : normalized;
+    clamped = (clamped > lbl_80563614) ? clamped : lbl_80563614;
 
-    n = (long)(lbl_80563664 + max * lbl_80563668);
-    val = n & ((-n & ~n) >> 31);
-    clipped = (val >= 0xFF) ? 0xFF : val;
+    scaled = (long)(lbl_80563664 + clamped * lbl_80563668);
+    nonNegative = scaled & ((-scaled & ~scaled) >> 31);
+    byteValue = (nonNegative >= 0xFF) ? 0xFF : nonNegative;
 
-    max = lbl_80563610;
-    min = (value - lbl_80563614) / lbl_80563658;
-    *arg0 = clipped;
+    clamped = lbl_80563610;
+    normalized = (inputValue - lbl_80563614) / lbl_80563658;
+    *outByte = byteValue;
 
-    max = (max < min) ? max : min;
-    max = (max > lbl_80563614) ? max : lbl_80563614;
+    clamped = (clamped < normalized) ? clamped : normalized;
+    clamped = (clamped > lbl_80563614) ? clamped : lbl_80563614;
 
-    *arg1 = lbl_80563614 + max * lbl_8056366C;
+    *outFloat = lbl_80563614 + clamped * lbl_8056366C;
     fn_80230F6C((s32 *)arg2);
 }
 #pragma dont_inline reset
