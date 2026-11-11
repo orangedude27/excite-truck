@@ -1634,12 +1634,12 @@ s32 WUDiTerminateDevice(void) {
 
 s32 WUDiDeleteDevice(void)
 {
-    s32 i;
-    u8 *entry;
-    s32 j;
-    u8 *entry2;
-    u32 interrupt_state;
     u8 busy;
+    register s32 i;
+    register u8 *entry;
+    register s32 j;
+    register u8 *entry2;
+    u32 interrupt_state;
     register u8 *base = lbl_80392960;
 
     interrupt_state = OSDisableInterrupts();
@@ -8059,12 +8059,12 @@ BOOLEAN BTM_SecDeleteDevice(BD_ADDR bd_addr) {
     i = 0;
     entry = lbl_803C0F78 + 0x1F30;
     do {
-        if (((entry[0x76] & 0x80) == 0) || (memcmp(entry + 0x1C, bd_addr, 6) != 0)) {
-            i++;
-            entry += 0x88;
-        } else {
-            goto found;
+        if (entry[0x76] & 0x80) {
+            if (memcmp(entry + 0x1C, bd_addr, 6) == 0)
+                goto found;
         }
+        i++;
+        entry += 0x88;
     } while (i < 16);
     entry = 0;
 found:
@@ -10734,6 +10734,31 @@ void bta_dm_pin_reply(u8 *arg0) {
     }
 }
 
+/* tBTA_DM_MSG's auth_reply event (BTA device manager, bta_dm_int.h's
+ * tBTA_DM_AUTH_REPLY): the peer asking to be authorized, the BTA service id it
+ * asked for, and the answer the application gave. */
+typedef struct {
+    u16 event;          /* BT_HDR: BTA_DM_API_AUTH_REPLY_EVT */
+    u16 len;            /* BT_HDR */
+    u8  bd_addr[6];     /* BD_ADDR of the peer */
+    u8  service;        /* BTA service id, an index into the table below */
+    u8  response;       /* one of BTA_DM_AUTH_* / BTA_DM_NOT_AUTH */
+} tBTA_DM_AUTH_REPLY;
+
+/* The application's answer to an authorization request. */
+#define BTA_DM_AUTH_PERM        0   /* allow, and remember the service from now on */
+#define BTA_DM_AUTH_TEMP        1   /* allow for this connection only */
+#define BTA_DM_NOT_AUTH         2   /* refuse */
+
+/* This BTE revision keeps BTM_SEC_MAX_SERVICES authorization bits per device
+ * in BTM's device record (2 words here), and BTA knows this many service ids;
+ * the table maps a BTA service id onto the BTM_SEC_SERVICE_* bit it grants. */
+#define BTM_TRUSTED_MASK_WORDS  2
+#define BTA_DM_LAST_SERVICE_ID  0x17
+
+#define bta_service_id_to_btm_srv_id_lkup_tbl   lbl_802EE9C0
+#define BTM_ReadTrustedMask                     fn_8008128C  /* -> device record + 0x10 */
+
 void bta_dm_auth_reply(u8 *arg0) {
     u32 trusted_mask[2];
     u32 service_id;
@@ -12155,30 +12180,31 @@ void fn_8007F5A4(void) {
 }
 
 void btm_sec_abort_access_req(BD_ADDR arg0) {
-    tBTM_SEC_DEV_REC *dev;
-    void (*cb)(BD_ADDR, void *, void *);
-    u8 state;
+    u32 zero = 0;
     u32 *p;
-    u32 zero;
-    dev = btm_find_dev(arg0);
-    if (dev != 0) {
-        cb = *(void (**)(BD_ADDR, void *, void *))((u8 *)lbl_803C0F78 + 0x1920);
-        if (cb != 0) cb(arg0, (u8 *)dev + 0x22, (u8 *)dev + 0x35);
-        state = *((u8 *)dev + 0x7f);
-        if (state == 4) goto done;
-        if (state != 1) goto done;
-        zero = 0;
-        *((u8 *)dev + 0x7f) = zero;
-        if (*((u8 *)dev + 0x80) != 0) {
-            p = *(u32 **)dev;
-            if (p != 0 && *p == 3) {
-                p[1] = zero;
-                *(u32 *)((u8 *)dev + 4) = zero;
-            }
-        }
-    }
-done:
-    return;
+    u8 state;
+    void (*cb)(BD_ADDR, void *, void *);
+    tBTM_SEC_DEV_REC *dev = btm_find_dev(arg0);
+    if (dev == 0)
+        return;
+    cb = *(void (**)(BD_ADDR, void *, void *))((u8 *)lbl_803C0F78 + 0x1920);
+    if (cb != 0)
+        cb(arg0, (u8 *)dev + 0x22, (u8 *)dev + 0x35);
+    state = *((u8 *)dev + 0x7f);
+    if (state == 4)
+        return;
+    if (state != 1)
+        return;
+    *((u8 *)dev + 0x7f) = (u8)zero;
+    if (*((u8 *)dev + 0x80) == 0)
+        return;
+    p = *(u32 **)dev;
+    if (p == 0)
+        return;
+    if (*p != 3)
+        return;
+    p[1] = zero;
+    *(u32 *)((u8 *)dev + 4) = zero;
 }
 
 extern char lbl_80316E44[];
@@ -17825,23 +17851,13 @@ BOOLEAN l2c_link_hci_conn_comp(UINT8 status, UINT16 handle, UINT8 *p_bda) {
 
 void l2c_link_sec_comp(BD_ADDR bd_addr, void *ref_data, UINT8 status)
 {
-    typedef struct {
-        UINT8 bd_addr[6];
-        UINT8 status;
-        UINT8 pad;
-        UINT16 psm;
-        UINT16 l2cap_result;
-        UINT16 l2cap_status;
-        UINT16 remote_cid;
-    } tL2C_CONN_INFO_LOCAL;
-    tL2C_CONN_INFO_LOCAL ci;
+    u8 ci[7];
     void *lcb;
     void *ccb;
     void *next;
-    register s32 event;
-
-    ci.status = status;
-    memcpy(ci.bd_addr, bd_addr, 6);
+    s8 event;
+    ci[6] = status;
+    memcpy(ci, bd_addr, 6);
     lcb = l2cu_find_lcb_by_bd_addr(bd_addr);
     if (lcb == 0) {
         if (lbl_803C4040[0] >= 2)
@@ -17849,9 +17865,10 @@ void l2c_link_sec_comp(BD_ADDR bd_addr, void *ref_data, UINT8 status)
     } else {
         event = -(status == 0);
         ccb = *(void **)((u8 *)lcb + 8);
-        for (; ccb != 0; ccb = next) {
+        while (ccb != 0) {
             next = *(void **)((u8 *)ccb + 8);
-            fn_80089E40(ccb, event + 8, &ci);
+            fn_80089E40(ccb, (u8)(event + 8), ci);
+            ccb = next;
         }
     }
 }
