@@ -742,56 +742,60 @@ extern void deleteThreads__6SystemFv(void *);
 #pragma cplusplus on
 #pragma scheduling invalid_target
 extern "C" void fn_801CCCAC(void) {
+    /* Tear down the global manager state (lbl_8055E884): release active/ref-counted
+       handle, destroy owned first/element objects via vtable slot 2, delete embedded
+       thread groups at +0x40/+0x2A4, clear the items list, free the state, and null
+       the global. */
     struct FirstObject { virtual void destroy(int); };
     struct ElementBase { int pad; };
     struct ElementObject : ElementBase { virtual void destroy(int); };
-    struct State {
+    struct ManagerState {
         char pad0[8];
-        void *first;
-        int active;
+        void *firstObject;
+        int activeHandle;
         char pad10[8];
         void **items;
-        int count;
+        int itemCount;
         int field20;
     };
     int i;
     int offset;
-    int active;
+    int activeHandle;
     ElementObject *element;
-    FirstObject *first;
-    State *state;
-    int *words;
+    FirstObject *firstObject;
+    ManagerState *manager;
+    int *managerWords;
 
-    state = (State *)lbl_8055E884;
-    if (state != 0) {
-        active = state->active;
-        if (active != 0) ((void (*)(int))fn_80235380)(active);
-        state->active = 0;
-        first = (FirstObject *)state->first;
-        if (first != 0) {
-            if (first != 0) first->destroy(1);
+    manager = (ManagerState *)lbl_8055E884;
+    if (manager != 0) {
+        activeHandle = manager->activeHandle;
+        if (activeHandle != 0) ((void (*)(int))fn_80235380)(activeHandle);
+        manager->activeHandle = 0;
+        firstObject = (FirstObject *)manager->firstObject;
+        if (firstObject != 0) {
+            if (firstObject != 0) firstObject->destroy(1);
         }
-        deleteThreads__6SystemFv((char *)state + 0x40);
-        deleteThreads__6SystemFv((char *)state + 0x2A4);
+        deleteThreads__6SystemFv((char *)manager + 0x40);
+        deleteThreads__6SystemFv((char *)manager + 0x2A4);
         i = 0;
         offset = 0;
-        while (i < state->count) {
-            element = (ElementObject *)((char *)state->items + offset);
+        while (i < manager->itemCount) {
+            element = (ElementObject *)((char *)manager->items + offset);
             element = *(ElementObject **)element;
             if (element != 0) element->destroy(1);
             offset += 4;
             i++;
         }
-        state->count = 0;
-        words = (int *)state;
-        if (&words[6] != 0) {
-            if (&words[6] != 0) {
-                state->items = 0;
-                state->count = 0;
-                state->field20 = 0;
+        manager->itemCount = 0;
+        managerWords = (int *)manager;
+        if (&managerWords[6] != 0) {
+            if (&managerWords[6] != 0) {
+                manager->items = 0;
+                manager->itemCount = 0;
+                manager->field20 = 0;
             }
         }
-        fn_80128668(state);
+        fn_80128668(manager);
     }
     lbl_8055E884 = 0;
 }
