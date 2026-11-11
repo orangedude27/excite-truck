@@ -628,6 +628,7 @@ test_loop:
 extern "C" void fn_802CAC54(int);
 extern "C" void fn_80235380(int);
 #pragma scheduling invalid_target
+/* Loads global resource handles from named configuration entries, then calls setup() on each item in the global item list. */
 extern "C" void fn_801617BC(void) {
     class Item {
     public:
@@ -636,10 +637,11 @@ extern "C" void fn_801617BC(void) {
         virtual void v2();
         virtual void setup();
     };
-    s32 offset;
-    s32 i;
-    s32 *count;
-    void *item;
+    s32 itemOffset;
+    s32 itemIndex;
+    s32 *itemCountPtr;
+    void *itemPtr;
+
     lbl_8055E2E0 = fn_80145E70(lbl_8032F588 + 0x11C);
     lbl_8055E2E4 = (int)fn_80145E70(lbl_8032F588 + 0x12C);
     lbl_8055E2E8 = (int)fn_802CAC28(lbl_8032F588 + 0x138, 0);
@@ -648,14 +650,15 @@ extern "C" void fn_801617BC(void) {
     lbl_8055E2F4 = (int)fn_802CAC28(lbl_8032F588 + 0x168, 0);
     lbl_8055E2F8 = (int)fn_802CAC28(lbl_8032F588 + 0x178, 0);
     lbl_8055E2FC = (int)fn_8023512C(lbl_8032F588 + 0x188);
-    count = (s32 *)(lbl_8042FDEC + 4);
-    i = 0;
-    offset = 0;
-    while (i < *count) {
-        item = *(void **)(*(s32 *)lbl_8042FDEC + offset);
-        ((Item *)item)->setup();
-        offset += 4;
-        i++;
+
+    itemCountPtr = (s32 *)(lbl_8042FDEC + 4);
+    itemIndex = 0;
+    itemOffset = 0;
+    while (itemIndex < *itemCountPtr) {
+        itemPtr = *(void **)(*(s32 *)lbl_8042FDEC + itemOffset);
+        ((Item *)itemPtr)->setup();
+        itemOffset += 4;
+        itemIndex++;
     }
 }
 
