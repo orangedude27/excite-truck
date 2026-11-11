@@ -235,18 +235,16 @@ void fn_8023158C(void *arg0, const char *arg1) {
 s32 fn_802315FC(s32 arg0) {
     s32 offset = arg0 * 0xC;
     u8 *entry = lbl_8055F068 + offset;
-
-    /* Decrement the entry reference count; replace its slot after releasing an expired entry. */
     if ((*(s32 *)(entry + 8) -= 1) < 1) {
-        u8 *destination;
-        u8 *source;
-        u8 *base;
+        char *base;
+        char *destination;
+        char *source;
         s32 last;
         s32 lastOffset;
         fn_802CAC54(*(void **)*(void **)entry);
         fn_8012C4D8(*(void **)entry);
         fn_80128670(*(void **)(entry + 4));
-        base = lbl_8055F068;
+        base = (char *)lbl_8055F068;
         destination = base + offset;
         last = *(s32 *)(base + 0x168);
         last -= 1;
@@ -1299,12 +1297,14 @@ void fn_802337A0(f32 a, s32 b, f32 c, s32 d, f32 e, f32 f, s32 g, f32 h, const c
 #pragma push
 #pragma use_lmw_stmw off
 #pragma processor 750
-void fn_8023389C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, const char *fmt, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, ...) {
-    char buffer[0x80];
+void fn_8023389C(s32 x, s32 y, s32 color, s32 param, const char *fmt, f32 scaleX, f32 scaleY, f32 unkF2, f32 unkF3, f32 alpha, ...) {
+    /* Format a debug text string and draw it if non-empty. */
+    char text[0x80];
     va_list args;
-    va_start(args, farg4);
-    vsprintf(buffer, fmt, args);
-    fn_80232D3C((u8 *)buffer, arg0, arg1, arg2, arg3, farg0, farg1, farg3, farg2, farg4);
+
+    va_start(args, alpha);
+    vsprintf(text, fmt, args);
+    fn_80232D3C((u8 *)text, x, y, color, param, scaleX, scaleY, unkF3, unkF2, alpha);
 }
 #pragma pop
 
