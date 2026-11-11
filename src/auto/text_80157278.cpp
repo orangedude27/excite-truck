@@ -2184,14 +2184,14 @@ extern "C" f32 fn_8015AE18(void *a, void *arg1) {
 #pragma pop
 extern "C" void fn_8015B0A4(Unk801577F0 *arg0) {
     f32 f;
-    s32 count = *(s32*)((u8*)arg0 + 0x260);
-    *(s32*)((u8*)arg0 + 0x264) = 0;
+    s32 count = arg0->m260;
+    arg0->m264 = 0;
     if (count > 0) {
-        void* r3 = *(void**)((u8*)arg0 + 0x258);
-        if (r3 != 0) {
-            fn_801CB6E4(r3, *(s32*)((u8*)arg0 + 4));
+        void* ptr = (void*)(u32)arg0->m258;
+        if (ptr != 0) {
+            fn_801CB6E4(ptr, arg0->m4);
         }
-        *(s32*)((u8*)arg0 + 0x260) = 0;
+        arg0->m260 = 0;
         f32 a = lbl_80561754;
         Unk801577F0* self = arg0;
         f = lbl_80561750;
@@ -2199,20 +2199,19 @@ extern "C" void fn_8015B0A4(Unk801577F0 *arg0) {
         self->m25c = f;
         self->v31();
     }
-    s32 count2 = *(s32*)((u8*)arg0 + 0x278);
     s32 zero = 0;
+    count = *(s32*)((u8*)arg0 + 0x278);
     f = lbl_80561754;
     *(u8*)((u8*)arg0 + 0x26C) = zero;
     *(f32*)((u8*)arg0 + 0x270) = f;
     *(s32*)((u8*)arg0 + 0x274) = zero;
-    if (count2 > 0) {
-        fn_801CB6E4((void*)0x50204, *(s32*)((u8*)arg0 + 4));
+    if (count > 0) {
+        fn_801CB6E4((void*)0x50204, arg0->m4);
         *(s32*)((u8*)arg0 + 0x278) = zero;
     }
 }
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void fn_8015B15C(Unk801577F0* arg0) {
-    // Note: tail literal is materialized before its byte flag store; reversed post-loop temps test f1/f0 order.
     f32 zero = lbl_80561754;
     s32 i = 0;
     s32 offset = 0;
@@ -2228,8 +2227,10 @@ extern "C" void fn_8015B15C(Unk801577F0* arg0) {
         *(f32*)((u8*)p + offset + 0xC) = zero;
         offset += 0x38;
     }
-    f32 b = lbl_80561750;
-    f32 a = lbl_80561754;
+    f32 b;
+    f32 a;
+    a = lbl_80561754;
+    b = lbl_80561750;
     *(s32*)((u8*)arg0 + 0x264) = 0;
     *(s32*)((u8*)arg0 + 0x260) = 0;
     *(f32*)((u8*)arg0 + 0x254) = a;
@@ -2241,7 +2242,6 @@ extern "C" void fn_8015B15C(Unk801577F0* arg0) {
     *(s32*)((u8*)arg0 + 0x274) = 0;
     *(s32*)((u8*)arg0 + 0x278) = 0;
 }
-#pragma scheduling on
 extern "C" void fn_8015B228(void* arg0, s32 arg1, s32 arg2) {
     if (arg2 == 6) *(u8*)((char*)arg0 + 0x26C) = 1;
 }
@@ -2714,37 +2714,32 @@ extern "C" void* fn_8015C07C(void* arg0, s32 arg1) {
     return arg0;
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void fn_8015C0E8(Unk801577F0* arg0) {
-    // Note: explicit loop check models the target's entry branch and keeps post-call resets together.
-    f32 entryValue = lbl_80561754;
+    f32 entryValue = 0.0f;
     s32 r6 = 0;
     s32 r7 = 0;
     s32 r5 = 0;
-    goto check;
-loop:
-    r6++;
-    *(s32*)(arg0->mData + r7) = r5;
-    *(s32*)(arg0->mData + r7 + 4) = r5;
-    *(s32*)(arg0->mData + r7 + 8) = r5;
-    *(f32*)(arg0->mData + r7 + 0xC) = entryValue;
-    r7 += 0x38;
-check:
-    if (r6 < arg0->mCount) goto loop;
-    f32 resetValue = lbl_80561754;
-    entryValue = lbl_80561750;
+    for (; r6 < arg0->mCount; r6++) {
+        *(s32*)(arg0->mData + r7) = r5;
+        *(s32*)(arg0->mData + r7 + 4) = r5;
+        *(s32*)(arg0->mData + r7 + 8) = r5;
+        *(f32*)(arg0->mData + r7 + 0xC) = entryValue;
+        r7 += 0x38;
+    }
+    f32 resetValue = 0.0f;
+    entryValue = 1.0f;
     arg0->m264 = 0;
     arg0->m260 = 0;
     arg0->m254 = resetValue;
     arg0->m25c = entryValue;
     arg0->v31();
-    f32 tail = lbl_80561754;
+    f32 tail = 0.0f;
     arg0->m26c = 0;
     *(s32*)((u8*)arg0 + 0x274) = 0;
     arg0->m278 = tail;
     arg0->m27c = tail;
 }
-#pragma scheduling on
 extern "C" void fn_8015C1B0(Unk801577F0* arg0) {
     // Note: v31 selects slot 0x84; direct field stores retain the target's float literals.
     s32 active = arg0->m260;
