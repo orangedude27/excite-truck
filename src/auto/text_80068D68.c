@@ -18957,6 +18957,10 @@ typedef struct {
     u8      pad_5A[2];
 } tL2C_LCB_ENTRY;
 
+/* Entries in l2cb's LCB pool: MAX_L2CAP_LINKS as this build was configured.  The
+ * bt_target.h shipped with the headers says 7, which is newer than this stack. */
+#define L2C_LCB_POOL_SIZE 4
+
 void *l2cu_allocate_lcb(u8 *addr) {
     u8 *lcb;
     u16 id;
