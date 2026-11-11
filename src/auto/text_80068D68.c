@@ -22204,7 +22204,7 @@ void rfc_send_dm(void *arg0, u8 arg1, u8 arg2) {
     u8 *buf;
     u8 flag;
     u8 control;
-    u8 shifted;
+    u32 shifted;
     u8 command;
 
     flag = 1;
@@ -22217,7 +22217,7 @@ void rfc_send_dm(void *arg0, u8 arg1, u8 arg2) {
         *(u16 *)(buf + 4) = 9;
         data = buf + 0x11;
         control |= 1;
-        shifted = (u8)(arg1 << 2);
+        shifted = arg1 << 2;
         command = (u8)(control | shifted);
         data[0] = command;
         data[1] = (u8)((((-(s32)arg2 | arg2) >> 31) & 0x10) | 0xF);
