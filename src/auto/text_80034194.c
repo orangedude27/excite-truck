@@ -982,32 +982,36 @@ void fn_800357A8(void) {
 }
 
 void DVDInit(void) {
-    s32 temp_r3;
-    u8 temp_r4;
+    s32 bootMagic;
+    s32 one = 1;
+    s32 ver;
+    u32 diskBase;
+    u8 *disk;
     if (DVDInitialized_8055D888 == 0) {
         OSRegisterVersion(__DVDVersion);
-        DVDInitialized_8055D888 = 1;
+        DVDInitialized_8055D888 = one;
         DVDLowInit();
         __DVDFSInit();
         __DVDClearWaitingQueue();
         MotorState_8055D8A8 = 0;
         bootInfo_8055D8C0 = (void *)0x80000000;
-        IDShouldBe_8055D8C4 = 0x80000000;
+        IDShouldBe_8055D8C4 = (s32)0x80000000;
         OSInitThreadQueue(__DVDThreadQueue);
         DVDLowUnmaskStatusInterrupts();
         DVDLowMaskCoverInterrupt();
-        temp_r3 = *(s32 *)((u8 *)bootInfo_8055D8C0 + 0x20);
-        if (((u32)temp_r3 + 0x1AE00000U != 0x7C22U) &&
-            ((u32)(temp_r3 - (s32)0xD1500000U) != 0xEA5EU)) {
-            FirstTimeInBootrom_8055D868 = 1;
+        bootMagic = *(s32 *)((u8 *)bootInfo_8055D8C0 + 0x20);
+        if (((u32)(bootMagic + 0x1AE00000) != 0x7C22) && ((u32)(bootMagic - 0x0D150000) != 0xEA5E)) {
+            FirstTimeInBootrom_8055D868 = one;
         }
         memset(__ErrorInfo, 0, 0x80);
         memcpy(__ErrorInfo, (void *)0x80000000, 4);
-        __ErrorInfo[4] = *(u8 *)0x80000006;
-        temp_r4 = *(u8 *)0x80000007;
-        __ErrorInfo[5] = temp_r4;
+        diskBase = 0x80000000;
+        disk = (u8 *)diskBase;
+        __ErrorInfo[4] = disk[6];
+        ver = disk[7];
+        __ErrorInfo[5] = (u8)ver;
         __DVDLayoutFormat = 0;
-        DVDSetAutoFatalMessaging(1, temp_r4, __ErrorInfo, (void *)0x80000000);
+        DVDSetAutoFatalMessaging(one, (u8)ver, __ErrorInfo, (void *)diskBase);
     }
 }
 
@@ -1172,6 +1176,10 @@ extern u32 lbl_8055D8B0;
 extern s32 lbl_8055D860;
 extern s32 lbl_8055D8CC;
 extern void fn_80037A8C(void);
+/* Categorize a DVD drive error/status code (low 24 bits) and return a retry/
+ * handling category: 0 = ignore, 1 = clear/recover, 2 = retry, 3 = fatal.
+ * Updates lbl_8055D8B0 with the (masked) code and tracks repeats in lbl_8055D860,
+ * with special cases for certain codes and the executing command/callback state. */
 s32 fn_80035CB4(u32 arg0) {
     u32 diimmval;
 
