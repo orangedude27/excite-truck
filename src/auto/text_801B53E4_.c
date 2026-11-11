@@ -2,6 +2,29 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
 #include <stddef.h>
+#include <revolution/MTX/mtxtypes.h>
+
+/* One link of the object list fn_801B5D30 packs into a quad tree; the same
+ * list fn_801B5D10 counts and fn_801B5BDC turns into an array. */
+struct ObjectLink {
+    u8 pad[0x3C];
+    void *object;              /* +0x3C: the BPX object this link stands for */
+    u8 pad_40[4];
+    struct ObjectLink *next;   /* +0x44: the next link, NULL at the list's end */
+};
+
+/* A BPX scene object, as far as this unit reads it.  Its 3x4 transform holds a
+ * direction in [6..8] and its position in [9..11]; fn_801B5410 walks the
+ * position by +-length along that direction to get the two ends of the
+ * straight segment the object stands for. */
+struct BpxObject {
+    u8 pad[0x0C];
+    f32 *matrix;  /* +0x0C */
+    u32 magic;    /* +0x18: 'BPX ' */
+    u32 kind;     /* +0x20: what the object is; fn_801B53E4 filters on it */
+    f32 length;   /* +0x2C: how far each end sits from the position */
+    s32 links;    /* +0x34: bit 0 / bit 1 - the first / second end has a neighbour */
+};
 
 extern f32 lbl_80562690;
 extern f32 lbl_805626A0;
