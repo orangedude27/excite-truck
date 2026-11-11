@@ -26484,8 +26484,11 @@ void AXGetAuxACallback_8009CDBC(void **arg0, void **arg1) {
 
 extern char lbl_8031AD78[];
 extern char lbl_805590B8;
-void TPLBind(void *arg0) {
-    u8 *base = (u8 *)arg0;
+/* Bind a TPL (texture palette) image loaded at the given base address.
+ * Validates the TPL magic, relocates the descriptor table offset, then for each
+ * descriptor relocates image/palette header pointers and (once) their data offsets. */
+void TPLBind(void *tplBase) {
+    u8 *base = (u8 *)tplBase;
     u16 i;
     u32 flag = 1;
 
