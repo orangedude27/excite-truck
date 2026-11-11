@@ -25,6 +25,7 @@ extern char lbl_80349378[];
 __declspec(section ".sdata") extern char lbl_8055CA30[];
 #pragma scheduling invalid_target
 #pragma cplusplus on
+/* Allocates an 8-byte object for a "FlipBookElem", initializes its vtable and a computed field from the "resource" and "config" virtual queries, and deletes it (returns NULL) if its validity check fails. */
 extern "C" void *fn_802971B0(void *arg0) {
     struct Dummy {
         virtual void v0(int);
