@@ -14333,27 +14333,28 @@ BOOLEAN btsnd_hcic_per_inq_mode(UINT16 max_period, UINT16 min_period, const LAP 
 }
 
 BOOLEAN btsnd_hcic_create_conn(BD_ADDR dest, UINT16 packet_types, UINT8 page_scan_rep_mode, UINT8 page_scan_mode, UINT16 clock_offset, UINT8 allow_switch) {
-    u8 *p = (u8 *)GKI_getpoolbuf(2);
-    if (p == NULL) return FALSE;
-    *(u16 *)(p + 2) = 0x10;
-    *(u16 *)(p + 4) = 0;
-    p[8] = 5;
-    p[9] = 4;
-    p[10] = 0xD;
-    p[11] = dest[5];
-    p[12] = dest[4];
-    p[13] = dest[3];
-    p[14] = dest[2];
-    p[15] = dest[1];
-    p[16] = dest[0];
-    p[17] = packet_types;
-    p[18] = packet_types >> 8;
-    p[19] = page_scan_rep_mode;
-    p[20] = page_scan_mode;
-    p[21] = clock_offset;
-    p[22] = clock_offset >> 8;
-    p[23] = allow_switch;
-    btu_hcif_send_cmd(p);
+    /* Builds and sends an HCI Create_Connection command buffer for the destination device. */
+    u8 *cmdBuffer = (u8 *)GKI_getpoolbuf(2);
+    if (cmdBuffer == NULL) return FALSE;
+    *(u16 *)(cmdBuffer + 2) = 0x10;
+    *(u16 *)(cmdBuffer + 4) = 0;
+    cmdBuffer[8] = 5;
+    cmdBuffer[9] = 4;
+    cmdBuffer[10] = 0xD;
+    cmdBuffer[11] = dest[5];
+    cmdBuffer[12] = dest[4];
+    cmdBuffer[13] = dest[3];
+    cmdBuffer[14] = dest[2];
+    cmdBuffer[15] = dest[1];
+    cmdBuffer[16] = dest[0];
+    cmdBuffer[17] = packet_types;
+    cmdBuffer[18] = packet_types >> 8;
+    cmdBuffer[19] = page_scan_rep_mode;
+    cmdBuffer[20] = page_scan_mode;
+    cmdBuffer[21] = clock_offset;
+    cmdBuffer[22] = clock_offset >> 8;
+    cmdBuffer[23] = allow_switch;
+    btu_hcif_send_cmd(cmdBuffer);
     return TRUE;
 }
 
