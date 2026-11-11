@@ -372,54 +372,56 @@ void fn_801B02E0(void *arg0) {
 
 #pragma push
 #pragma scheduling invalid_target
+/* Initializes an object from a 12-word matrix block, applies fn_8017A580, then copies
+   two 3-float vectors and a 16-bit id into the object's fields. */
 void fn_801B04B0(void *arg0, s32 arg1, s32 arg2, s32 arg3, void *arg4) {
-    volatile s32 *src = (volatile s32 *)arg1;
-    f32 *vec1 = (f32 *)arg2;
-    f32 *vec2 = (f32 *)arg3;
-    s16 *value_ptr = (s16 *)arg4;
-    s32 t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
-    f32 f0, f1, f2, f3, f4, f5;
-    s16 value;
-    t0 = src[0];
-    t1 = src[1];
-    t2 = src[2];
-    t3 = src[3];
-    t4 = src[4];
-    t5 = src[5];
-    t6 = src[6];
-    t7 = src[7];
-    t8 = src[8];
-    t9 = src[9];
-    t10 = src[10];
-    t11 = src[11];
+    volatile s32 *matrixWords = (volatile s32 *)arg1;
+    f32 *vecA = (f32 *)arg2;
+    f32 *vecB = (f32 *)arg3;
+    s16 *idSrc = (s16 *)arg4;
+    s32 w11, w10, w9, w8, w7, w6, w5, w4, w3, w2, w1, w0;
+    f32 vB2, vB1, vB0, vA2, vA1, vA0;
+    s16 idValue;
+    w0 = matrixWords[0];
+    w1 = matrixWords[1];
+    w2 = matrixWords[2];
+    w3 = matrixWords[3];
+    w4 = matrixWords[4];
+    w5 = matrixWords[5];
+    w6 = matrixWords[6];
+    w7 = matrixWords[7];
+    w8 = matrixWords[8];
+    w9 = matrixWords[9];
+    w10 = matrixWords[10];
+    w11 = matrixWords[11];
 
-    *(s32 *)((u8 *)arg0 + 0x3C) = t0;
-    *(s32 *)((u8 *)arg0 + 0x40) = t1;
-    *(s32 *)((u8 *)arg0 + 0x44) = t2;
-    *(s32 *)((u8 *)arg0 + 0x48) = t3;
-    *(s32 *)((u8 *)arg0 + 0x4C) = t4;
-    *(s32 *)((u8 *)arg0 + 0x50) = t5;
-    *(s32 *)((u8 *)arg0 + 0x54) = t6;
-    *(s32 *)((u8 *)arg0 + 0x58) = t7;
-    *(s32 *)((u8 *)arg0 + 0x5C) = t8;
-    *(s32 *)((u8 *)arg0 + 0x60) = t9;
-    *(s32 *)((u8 *)arg0 + 0x64) = t10;
-    *(s32 *)((u8 *)arg0 + 0x68) = t11;
+    *(s32 *)((u8 *)arg0 + 0x3C) = w0;
+    *(s32 *)((u8 *)arg0 + 0x40) = w1;
+    *(s32 *)((u8 *)arg0 + 0x44) = w2;
+    *(s32 *)((u8 *)arg0 + 0x48) = w3;
+    *(s32 *)((u8 *)arg0 + 0x4C) = w4;
+    *(s32 *)((u8 *)arg0 + 0x50) = w5;
+    *(s32 *)((u8 *)arg0 + 0x54) = w6;
+    *(s32 *)((u8 *)arg0 + 0x58) = w7;
+    *(s32 *)((u8 *)arg0 + 0x5C) = w8;
+    *(s32 *)((u8 *)arg0 + 0x60) = w9;
+    *(s32 *)((u8 *)arg0 + 0x64) = w10;
+    *(s32 *)((u8 *)arg0 + 0x68) = w11;
     ((void (*)(void *))fn_8017A580)(arg0);
-    f5 = vec1[0];
-    f4 = vec1[1];
-    f3 = vec1[2];
-    f2 = vec2[0];
-    f1 = vec2[1];
-    f0 = vec2[2];
-    value = *value_ptr;
-    *(f32 *)((u8 *)arg0 + 0x118) = f5;
-    *(f32 *)((u8 *)arg0 + 0x11C) = f4;
-    *(f32 *)((u8 *)arg0 + 0x120) = f3;
-    *(f32 *)((u8 *)arg0 + 0x124) = f2;
-    *(f32 *)((u8 *)arg0 + 0x128) = f1;
-    *(f32 *)((u8 *)arg0 + 0x12C) = f0;
-    *(s16 *)((u8 *)arg0 + 0x6C) = value;
+    vA0 = vecA[0];
+    vA1 = vecA[1];
+    vA2 = vecA[2];
+    vB0 = vecB[0];
+    vB1 = vecB[1];
+    vB2 = vecB[2];
+    idValue = *idSrc;
+    *(f32 *)((u8 *)arg0 + 0x118) = vA0;
+    *(f32 *)((u8 *)arg0 + 0x11C) = vA1;
+    *(f32 *)((u8 *)arg0 + 0x120) = vA2;
+    *(f32 *)((u8 *)arg0 + 0x124) = vB0;
+    *(f32 *)((u8 *)arg0 + 0x128) = vB1;
+    *(f32 *)((u8 *)arg0 + 0x12C) = vB2;
+    *(s16 *)((u8 *)arg0 + 0x6C) = idValue;
 }
 #pragma pop
 s32 fn_801B0588(void *arg0, u8 *arg1) {
