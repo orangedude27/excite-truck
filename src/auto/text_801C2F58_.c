@@ -2923,25 +2923,37 @@ extern s32 lbl_8055AB10;
 extern s32 lbl_80562950;
 extern int fn_80238A20(void);
 #pragma scheduling invalid_target
+/* Details panel of the debug overlay for the timeline entry the player has
+ * selected (sTimelineSelection).  With the timeline non-empty it prints the
+ * entry's event-type name ("type: %s"; the name is the entry->type-th string of
+ * the sTimelineTypeNames blob) at x=400, y=180, then its time ("t: %.2f") one
+ * line advance below, and finally hands the entry to draw_entry_details to
+ * print the fields that go with its type under both lines. */
 void fn_801CA5A8(void) {
-    if (lbl_8055E7F0 != 0) {
+    if (sTimelineCount != 0) {
+        typedef struct TimelineEntry {
+            f32 time; /* +0x0: sort key of the entry */
+            s32 rank; /* +0x4: order among entries sharing the time */
+            s32 type; /* +0x8: event kind, indexes sTimelineTypeNames */
+        } TimelineEntry; /* one 0x30C-byte entry of sTimelineEntries */
         char buffer[0x100];
-        s32 context;
+        s32 lineHeight;
         s32 index;
         s32 y;
-        f32 value;
-        char *record;
-        context = fn_80238A20();
-        index = lbl_8055E828;
-        record = (char *)(s32)lbl_8055E7F8 + index * 0x30C;
-        sprintf(buffer, lbl_80337944,
-                ((char *(*)(u8 *, s32))fn_801C98F4)((u8 *)(s32)lbl_80562950, *(s32 *)(record + 8)));
-        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(0x190, 0xB4, buffer, -1);
-        value = *(f32 *)record;
-        y = context + 0xB4;
-        sprintf(buffer, (char *)&lbl_8055AB10, value);
-        ((void (*)(s32, s32, char *, s32))fn_801C94B8)(0x190, y, buffer, -1);
-        fn_801CA1C4((char *)(s32)lbl_8055E7F8 + lbl_8055E828 * 0x30C, 0x190, y + context, context);
+        f32 entryTime;
+        TimelineEntry *record;
+        lineHeight = text_line_height();
+        index = sTimelineSelection;
+        record = (TimelineEntry *)((char *)(s32)sTimelineEntries + index * 0x30C);
+        sprintf(buffer, STR_TIMELINE_TYPE,
+                ((char *(*)(u8 *, s32))nth_string)((u8 *)(s32)sTimelineTypeNames, record->type));
+        ((void (*)(s32, s32, char *, s32))debug_draw_text)(0x190, 0xB4, buffer, -1);
+        entryTime = record->time;
+        y = lineHeight + 0xB4;
+        sprintf(buffer, (char *)&STR_TIMELINE_TIME, entryTime);
+        ((void (*)(s32, s32, char *, s32))debug_draw_text)(0x190, y, buffer, -1);
+        draw_entry_details((char *)(s32)sTimelineEntries + sTimelineSelection * 0x30C, 0x190,
+                           y + lineHeight, lineHeight);
     }
 }
 #pragma scheduling on
