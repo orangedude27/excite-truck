@@ -453,14 +453,15 @@ appended:                   ;
 extern char lbl_8033C3F4[];
 #pragma scheduling invalid_target
 void *fn_8020B1C8(void *arg0, int arg1) {
-    void *old;
+    /* Destroys a voice-sound object, releasing owned SPU resources and freeing it when requested. */
+    void *oldSlot;
     int value;
 
     if (arg0 != 0) {
-        old = *(void **)((char *)arg0 + 8);
-        *(void **)arg0 = lbl_8033C3F4;
-        if (old != 0)
-            fn_802E61D8(old);
+        oldSlot = *(void **)((char *)arg0 + 8);
+        *(void **)arg0 = (void *)lbl_8033C3F4;
+        if (oldSlot != 0)
+            fn_802E61D8(oldSlot);
         value = *(int *)((char *)arg0 + 0xC);
         if (value != 0)
             fn_802E61D8((void *)value);
