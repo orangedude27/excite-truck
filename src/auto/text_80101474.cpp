@@ -61,6 +61,11 @@ struct CharWriterCursor {
     unsigned char pad[0x2C];
     float x, y, z;
 };
+// ...and the same cursor in the unit's other copy of the class, one word later.
+struct CharWriterCursor2 {
+    unsigned char pad[0x30];
+    float x, y, z;
+};
 extern "C" void __register_global_object(void *, void *, void *);
 extern "C" void fn_800D2DD4(void);
 extern "C" unsigned char lbl_8055DE90;
