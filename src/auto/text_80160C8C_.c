@@ -2134,7 +2134,8 @@ extern "C" void fn_801638A0(void *arg0) {
 
 #pragma push
 #pragma processor 750
-s32 fn_80163C38(void *arg0) {
+#pragma cplusplus on
+extern "C" s32 fn_80163C38(void *arg0) {
     s32 sp8;
     s32 pad[4];
     f32 limit;
@@ -2859,7 +2860,7 @@ void fn_80164F50(void *arg0) {
     s32 first;
     s32 second;
     u8 *base = lbl_8032F588;
-    s32 zero = 0;
+    s32 zero;
     f32 f2;
     f32 f1;
     f32 f0;
@@ -2873,6 +2874,7 @@ void fn_80164F50(void *arg0) {
     if (*(s32 *)((u8 *)self + 8) >= *(s32 *)(lbl_8042FDEC + 4)) {
         *(s32 *)((u8 *)self + 8) = *(s32 *)(lbl_8042FDEC + 4);
     }
+    zero = 0;
     f2 = lbl_80561888;
     *(u8 *)((u8 *)self + 4) = zero;
     outPtr = out;
