@@ -133,7 +133,6 @@ void fn_80136CB8(void *arg0, s32 arg1) {
 #pragma cplusplus on
 #pragma scheduling invalid_target
 #pragma opt_propagation off
-#pragma opt_dead_code off
 extern "C" void fn_80136D20(void *arg0, s32 arg1) {
     struct Dummy {
         virtual void v0();
