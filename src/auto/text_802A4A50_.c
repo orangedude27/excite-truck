@@ -493,10 +493,9 @@ extern "C" void fn_802A50F8(void) {
 #pragma cplusplus reset
 #pragma scheduling on
 void fn_802A5270(f32 arg0) {
-    f32 value = *(volatile f32 *)&lbl_8056485C;
+    f32 value = lbl_8056485C;
     s32 amount;
     s32 result;
-
     value = (value < arg0) ? value : arg0;
     value = (value > lbl_80564858) ? value : lbl_80564858;
     amount = (s32)(lbl_80564878 * value);
@@ -512,11 +511,9 @@ extern f32 lbl_80564858, lbl_8056485C, lbl_80564878;
 extern char lbl_80349C94[];
 s32 fn_801284F8(s32, char *);
 void *fn_802A5AE8(void *, s32, s32);
-#pragma push
-#pragma processor 750
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802A52FC(f32 arg0) {
-    f32 value = lbl_8056485C;
+    register f32 value = lbl_8056485C;
     s32 result;
     s32 amount;
     value = (value < arg0) ? value : arg0;
@@ -526,8 +523,6 @@ void fn_802A52FC(f32 arg0) {
     if (result != 0) result = (s32)fn_802A5AE8((void *)result, amount, 0);
     lbl_8055F888 = result;
 }
-#pragma scheduling on
-#pragma pop
 void fn_802A5270(f32);
 s32 fn_802A5384(s32 arg0) {
     s32 value = *(s32 *)arg0;
@@ -662,40 +657,41 @@ extern char lbl_8055CBF0;
 #pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" s32 fn_802A5878(void) {
+    /* Collect "spar" child items from each list: allocate/init an entry per match and append its handle to lbl_804BCFA8, tracking count in lbl_8055F890. */
     struct Item {
         virtual const char *name();
         virtual void *child(s32);
     };
-    s32 *table;
-    Item *list;
-    s32 i;
-    s32 j;
-    Item *child;
-    s32 check;
-    s32 count;
+    s32 *handleTable;
+    Item *listItem;
+    s32 listIndex;
+    s32 childIndex;
+    Item *childItem;
+    s32 entry;
+    s32 entryCount;
 
     lbl_8055F890 = 0;
     if (fn_800167F4() > 1) {
         goto done;
     }
-    table = lbl_804BCFA8;
-    i = 0;
-    while ((list = (Item *)fn_802AE4C8(i)) != 0) {
-        j = 0;
-        while (list->child(j) != 0) {
-            child = (Item *)list->child(j);
-            if (strncmp(child->name(), &lbl_8055CBF0, 4) == 0) {
-                check = fn_801284F8(0x40, &lbl_8055CBF0);
-                if (check != 0) {
-                    check = fn_802A7370(check, child);
+    handleTable = lbl_804BCFA8;
+    listIndex = 0;
+    while ((listItem = (Item *)fn_802AE4C8(listIndex)) != 0) {
+        childIndex = 0;
+        while (listItem->child(childIndex) != 0) {
+            childItem = (Item *)listItem->child(childIndex);
+            if (strncmp(childItem->name(), &lbl_8055CBF0, 4) == 0) {
+                entry = fn_801284F8(0x40, &lbl_8055CBF0);
+                if (entry != 0) {
+                    entry = fn_802A7370(entry, childItem);
                 }
-                count = lbl_8055F890;
-                table[count] = check;
-                lbl_8055F890 = count + 1;
+                entryCount = lbl_8055F890;
+                handleTable[entryCount] = entry;
+                lbl_8055F890 = entryCount + 1;
             }
-            j++;
+            childIndex++;
         }
-        i++;
+        listIndex++;
     }
 done:
     ;
@@ -774,17 +770,19 @@ extern s32 lbl_8055F890;
 s32 fn_802A7680(s32);
 #pragma scheduling invalid_target
 s32 fn_802A5B8C(s32 arg0, s32 arg1) {
+    s32 *p = (s32 *)arg0;
     s32 temp;
-    s32 second;
-    s32 minusOne = -1;
-    volatile s32 *p = (volatile s32 *)arg0;
+    s32 neg;
+    s32 v3;
     if (arg0 != 0) {
         fn_802CAC54(p[4]);
-        second = p[3];
-        p[4] = minusOne;
-        fn_802CAC54(second);
+        neg = -1;
+        v3 = p[3];
+        p[4] = neg;
+        fn_802CAC54(v3);
         temp = p[0];
-        if ((p[3] = minusOne, temp != 0)) fn_80128670(temp - 0x10);
+        p[3] = neg;
+        if (temp != 0) fn_80128670(temp - 0x10);
         p[0] = 0;
         if (arg1 > 0) fn_80128668((void *)arg0);
     }
@@ -792,33 +790,28 @@ s32 fn_802A5B8C(s32 arg0, s32 arg1) {
 }
 #pragma scheduling on
 void fn_802A5C1C(void *arg0) {
-    f32 d;
-    f32 b;
-    f32 c;
-    f32 a;
-    f32 *p = (f32 *)arg0;
-    d = lbl_80564858;
-    a = lbl_8056485C;
-    c = lbl_80564850;
-    b = lbl_80564888;
-    p[8] = a;
-    p[9] = c;
-    p[10] = b;
-    p[11] = d;
-    p[12] = d;
-    p[13] = d;
-    p[14] = d;
-    p[15] = d;
-    p[16] = d;
-    p[17] = d;
-    p[18] = d;
-    p[19] = d;
-    p[20] = d;
-    p[21] = a;
-    p[22] = d;
-    p[6] = d;
-    p[5] = d;
-    fn_802A6234(b, c, a);
+    f32 zero = lbl_80564858;
+    f32 a = lbl_8056485C;
+    f32 b = lbl_80564850;
+    f32 c = lbl_80564888;
+    *(f32 *)((u8 *)arg0 + 0x20) = a;
+    *(f32 *)((u8 *)arg0 + 0x24) = b;
+    *(f32 *)((u8 *)arg0 + 0x28) = c;
+    *(f32 *)((u8 *)arg0 + 0x2C) = zero;
+    *(f32 *)((u8 *)arg0 + 0x30) = zero;
+    *(f32 *)((u8 *)arg0 + 0x34) = zero;
+    *(f32 *)((u8 *)arg0 + 0x38) = zero;
+    *(f32 *)((u8 *)arg0 + 0x3C) = zero;
+    *(f32 *)((u8 *)arg0 + 0x40) = zero;
+    *(f32 *)((u8 *)arg0 + 0x44) = zero;
+    *(f32 *)((u8 *)arg0 + 0x48) = zero;
+    *(f32 *)((u8 *)arg0 + 0x4C) = zero;
+    *(f32 *)((u8 *)arg0 + 0x50) = zero;
+    *(f32 *)((u8 *)arg0 + 0x54) = a;
+    *(f32 *)((u8 *)arg0 + 0x58) = zero;
+    *(f32 *)((u8 *)arg0 + 0x18) = zero;
+    *(f32 *)((u8 *)arg0 + 0x14) = zero;
+    fn_802A6234(c, b, a);
     fn_802A6790(arg0);
 }
 #pragma scheduling on
@@ -1197,13 +1190,9 @@ void fn_802A6838(void *arg0) {
 #pragma pop
 s32 fn_802A6944(s32 arg0, s32 arg1, s32 arg2) {
     s32 *object = (s32 *)arg0;
-
-    object[0] = fn_8002F37C(
-        fn_8012850C(arg1 * 0xC + 0x10, lbl_80349CAC),
-        (void *)fn_8001BA68,
-        0,
-        0xC,
-        arg1);
+    void *base = (void *)lbl_80349CAC;
+    s32 size = arg1 * 0xC + 0x10;
+    object[0] = fn_8002F37C(fn_8012850C(size, base), (void *)fn_8001BA68, 0, 0xC, arg1);
     object[2] = arg1;
     object[3] = fn_802CAC28((void *)lbl_8055CBC0, 0);
     object[4] = arg2;
