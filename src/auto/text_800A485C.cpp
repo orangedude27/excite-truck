@@ -17540,10 +17540,13 @@ extern "C" void fn_800C68B0(void) {
 }
 
 extern "C" void *__ct__Q34nw4r3lyt8DrawInfoFv(void *);
-extern "C" void *fn_800C6914(void *arg0, void *arg1) {
-    u8 *self = (u8 *)arg0;
+/* Initializes a HomeButton-like object: stores the owner pointer, clears state and
+ * display fields, constructs the embedded nw4r::lyt::DrawInfo at +0x200, creates
+ * the per-controller OSAlarm pairs plus a final alarm, and clears tail state. */
+extern "C" void *fn_800C6914(void *obj, void *owner) {
+    u8 *self = (u8 *)obj;
     s32 offset, i;
-    M2C_FIELD(self, void **, 4) = arg1;
+    M2C_FIELD(self, void **, 4) = owner;
     M2C_FIELD(self, u32 *, 0x1E0) = 0;
     M2C_FIELD(self, u32 *, 0x1F8) = 0;
     __ct__Q34nw4r3lyt8DrawInfoFv(self + 0x200);
@@ -17577,7 +17580,7 @@ extern "C" void *fn_800C6914(void *arg0, void *arg1) {
     M2C_FIELD(self, u32 *, 0x5CC) = 0;
     M2C_FIELD(self, u32 *, 0x5D0) = 0;
     M2C_FIELD(self, u32 *, 0x5D4) = 0;
-    return arg0;
+    return obj;
 }
 
 extern "C" void *fn_800D0F1C(void *, s32);
