@@ -216,6 +216,7 @@ done:
 }
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_8025878C(void *arg0, const char *arg1, int flags, int arg3, float x, float y) {
     int index = 0;
