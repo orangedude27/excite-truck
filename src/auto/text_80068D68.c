@@ -5533,20 +5533,19 @@ u8 BTA_DmAddDevice(u8 *bd_addr, u8 *link_key, u32 trusted_mask, u8 is_trusted) {
     u32 bit_index;
     u8 index = 0;
     u8 result;
-
-    memset(service_mask, 0, 8);
+    memset(service_mask, 0, sizeof(service_mask));
     if (is_trusted != 0) {
         do {
-            bit = 1 << index;
-            if (trusted_mask & bit) {
+            bit = 1u << index;
+            if ((trusted_mask & bit) != 0u) {
                 trusted_mask &= ~bit;
                 mapped = lbl_802EE9C0[index];
-                offset = (mapped >> 3) & 0x3FC;
-                bit_index = mapped - (mapped & 0x1FE0);
-                *(u32 *)((u8 *)service_mask + offset) |= 1 << bit_index;
+                offset = (mapped >> 3) & 0x3FCu;
+                bit_index = mapped - (mapped & 0x1FE0u);
+                *(u32 *)((u8 *)service_mask + offset) |= 1u << bit_index;
             }
-            index++;
-        } while (trusted_mask != 0 && index < 0x17);
+            ++index;
+        } while (trusted_mask != 0u && index < 0x17u);
     }
     fn_8006EAD0();
     result = ((BOOLEAN (*)(BD_ADDR, DEV_CLASS, BD_NAME, BD_FEATURES,
@@ -14531,28 +14530,33 @@ BOOLEAN btsnd_hcic_set_conn_encrypt(UINT16 handle, BOOLEAN enable) {
     return TRUE;
 }
 
-u8 btsnd_hcic_rmt_name_req(u8 *bd_addr, u8 page_scan_rep_mode, u8 page_scan_mode, u16 clock_offset) {
+/* Build and send an HCI Remote_Name_Request command: ask the remote device
+   bd_addr for its friendly name. The stack pages it with the given page scan
+   repetition mode / page scan mode and clock_offset (clock offset of the
+   piconet to join, bit 15 selects an R2 request). Returns FALSE when the HCI
+   command pool has no buffer left. */
+BOOLEAN btsnd_hcic_rmt_name_req(BD_ADDR bd_addr, UINT8 page_scan_rep_mode,
+                                UINT8 page_scan_mode, UINT16 clock_offset) {
     BT_HDR *p;
-    u8 *pp;
-    p = (BT_HDR *)GKI_getpoolbuf(2);
-    if (p == NULL) return FALSE;
-    p->len = 0xD;
+    UINT8 *pp;
+
+    if ((p = HCI_GET_CMD_BUF(HCIC_PARAM_SIZE_RMT_NAME_REQ)) == NULL)
+        return FALSE;
+
+    pp = (UINT8 *)(p + 1);
+
+    p->len    = HCIC_PREAMBLE_SIZE + HCIC_PARAM_SIZE_RMT_NAME_REQ;
     p->offset = 0;
-    pp = (u8 *)(p + 1);
-    pp[0] = 0x19;
-    pp[1] = 4;
-    pp[2] = 0xA;
-    pp[3] = bd_addr[5];
-    pp[4] = bd_addr[4];
-    pp[5] = bd_addr[3];
-    pp[6] = bd_addr[2];
-    pp[7] = bd_addr[1];
-    pp[8] = bd_addr[0];
-    pp[9] = page_scan_rep_mode;
-    pp[10] = page_scan_mode;
-    pp[11] = clock_offset;
-    pp[12] = clock_offset >> 8;
-    ((void (*)(void *))btu_hcif_send_cmd)(p);
+
+    UINT16_TO_STREAM (pp, HCI_RMT_NAME_REQUEST);
+    UINT8_TO_STREAM  (pp, HCIC_PARAM_SIZE_RMT_NAME_REQ);
+
+    BDADDR_TO_STREAM (pp, bd_addr);
+    UINT8_TO_STREAM  (pp, page_scan_rep_mode);
+    UINT8_TO_STREAM  (pp, page_scan_mode);
+    UINT16_TO_STREAM (pp, clock_offset);
+
+    btu_hcif_send_cmd(p);
     return TRUE;
 }
 
