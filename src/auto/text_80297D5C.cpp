@@ -13,6 +13,14 @@ extern "C" void fn_80287B38(void*);
 extern "C" char lbl_80349408[];
 extern "C" char lbl_803494A4[];
 extern "C" char lbl_803494B8[];
+extern "C" void fn_80298AD8(void *);
+extern "C" int fn_8029BA0C(void *);
+extern "C" void fn_8029BDB8(void *);
+extern "C" void fn_80299504(void *);
+extern "C" void fn_802982A8(void *);
+extern "C" void fn_80299988(void);
+extern "C" void fn_8029A114(void *);
+extern "C" void fn_8029A8B8(void *);
 
 struct Fn80299A88Matrix { float v[9]; };
 struct Fn80299A88Frame { float temp[6]; Fn80299A88Matrix matrix, rotation; unsigned char config[0x90]; };
@@ -1147,24 +1155,29 @@ extern "C" void fn_8029A4B4(void*, int);
     }
 }
 
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
 extern "C" int fn_8029A290(void* arg0, void* arg1) {
     extern float PSVECSquareDistance(const void*, const void*);
     extern float PSVECDotProduct(const void*, const void*);
     extern float lbl_80564604;
-    double threshold = lbl_80564594;
-    int result = 1;
+    float threshold;
+    int result;
+    threshold = lbl_80564594;
+    result = 1;
     if (PSVECSquareDistance((char*)arg0 + 0x24, (char*)arg1 + 0x24) > threshold) {
         goto done;
     }
+    {
     int below = PSVECDotProduct(arg0, arg1) < lbl_80564604;
     if (below == 0) {
         result = 0;
     }
+    }
 done:
     return result;
 }
-#pragma scheduling on
+#pragma pop
 extern float lbl_805645C8;
 extern float lbl_805645E8;
 extern "C" void fn_8029A318(float *a, float *b, float *c, float *d, float x, float y, float z) {
