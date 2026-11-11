@@ -915,7 +915,6 @@ extern float lbl_80565028;
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma unroll off
-#pragma opt_common_subs off
 void fn_802D94E4(void *arg0, void *arg1, void *arg2, float farg0) {
     unsigned int *dst;
     unsigned int *src1;
