@@ -414,6 +414,10 @@ typedef struct SoeventClass {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+/* Run one vehicle's soevent instance against its class record: once the truck's
+ * speed passes a group's threshold, take a free spawn slot for it (fn_801D2C70)
+ * or run the class' particle emitters around the vehicle and switch the instance
+ * off (fn_801A4868). A class id with no record is fatal. */
 void fn_801D2414(SoeventInstance *instance, Vec *position, VehicleObject *object) {
     u32 fourcc = object->fourcc;
     s32 isCar = 0; /* reused below as the class id of the error message */
