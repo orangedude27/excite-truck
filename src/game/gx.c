@@ -1116,23 +1116,18 @@ void fn_802D2218(void);
 #pragma paired_single off
 #pragma scheduling invalid_target
 void fn_802D01E0(int arg0, int arg1, int arg2, int arg3) {
-    int var_r31;
-    int var_r29;
-
-    var_r29 = arg1;
-    var_r31 = arg3;
     if (lbl_8055FE24 == 0) {
-        var_r29 = (int)(lbl_80564F94 + ((lbl_80564FB8 * (float)arg1) / lbl_80564FBC));
-        var_r31 = (int)(lbl_80564F94 + ((lbl_80564FB8 * (float)arg3) / lbl_80564FBC));
+        arg1 = (int)(lbl_80564F94 + ((lbl_80564FB8 * (float)arg1) / lbl_80564FBC));
+        arg3 = (int)(lbl_80564F94 + ((lbl_80564FB8 * (float)arg3) / lbl_80564FBC));
     }
     fn_802D2218();
     *(int *)(lbl_804C9778 + 0x1C) = arg0;
-    *(int *)(lbl_804C9778 + 0x20) = var_r29;
+    *(int *)(lbl_804C9778 + 0x20) = arg1;
     *(int *)(lbl_804C9778 + 0x24) = arg2;
-    *(int *)(lbl_804C9778 + 0x28) = var_r31;
+    *(int *)(lbl_804C9778 + 0x28) = arg3;
     lbl_804C9778[1] = 1;
     lbl_804C9778[0] = 1;
-    *(float *)(lbl_804C9778 + 0x18) = (float)arg2 / (float)var_r31;
+    *(float *)(lbl_804C9778 + 0x18) = (float)arg2 / (float)arg3;
 }
 #pragma scheduling on
 #pragma paired_single reset
