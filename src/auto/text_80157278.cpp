@@ -1158,26 +1158,25 @@ extern "C" void fn_80158824(Unk801577F0* arg0) {
 extern "C" f32 lbl_8056177C;
 extern "C" s32 fn_80141F7C(f32);
 extern "C" void fn_8015889C(void* arg0) {
-    f32 field = *(f32*)((u8*)arg0 + 0x25c);
-    f32 zero = lbl_80561754;
     Fn8015889C* self = (Fn8015889C*)arg0;
-    f32 sp8;
-    if (zero < field) {
-        sp8 = zero;
-        if (*(f32*)((u8*)arg0 + 0x25c) > *(f32*)((u8*)arg0 + 0x24c)) {
+    if (self->mProgress25C > 0.0f) {
+        volatile f32 value = 0.0f;
+        if (self->mProgress25C > self->mLevel24C) {
             if (self->v23() > 0) {
-                sp8 = *(f32*)((u8*)arg0 + 0x250) * self->v20(self->v23());
-                self->v35(&sp8);
-                self->v33();
+                value = self->mGain250 * self->v20(self->v23());
+                self->v35((f32*)&value); self->v33();
             }
         }
-        if (fn_80141F7C(sp8) == 0)
-            self->v38(*(f32*)((u8*)arg0 + 0x25c));
-        f32 sum = *(f32*)((u8*)arg0 + 0x258) + lbl_8056177C;
-        f32 finalZero = lbl_80561754;
-        *(f32*)((u8*)arg0 + 0x25c) = finalZero;
-        *(f32*)((u8*)arg0 + 0x264) = finalZero;
-        *(f32*)((u8*)arg0 + 0x258) = sum;
+        if (fn_80141F7C(value) == 0) self->v38(self->mProgress25C);
+        f32 frameTime;
+        f32 elapsed;
+        f32 zero;
+        elapsed = self->mTime258;
+        frameTime = lbl_8056177C;
+        zero = lbl_80561754;
+        self->mProgress25C = zero;
+        self->mProgress264 = zero;
+        self->mTime258 = elapsed + frameTime;
     }
 }
 
@@ -1308,8 +1307,8 @@ extern "C" void fn_80158D0C(void* arg0) {
 #pragma processor gekko
 #pragma dont_inline on
 extern "C" f32 fn_80158D60(void* arg0, void*) {
-    Fn8015889C* self = (Fn8015889C*)arg0;
     f32 sp8 = lbl_80561754;
+    Fn8015889C* self = (Fn8015889C*)arg0;
     if (*(f32*)((u8*)arg0 + 0x25c) > *(f32*)((u8*)arg0 + 0x24c) && self->v23() > 0) {
         sp8 = *(f32*)((u8*)arg0 + 0x250) * self->v20(self->v23());
         self->v35(&sp8);
@@ -1372,6 +1371,8 @@ extern "C" s32 fn_80158F60(Unk8015A368C* arg0) {
     return arg0->v21() > 0;
 }
 
+#pragma push
+#pragma processor 750
 extern "C" s32 fn_80158F98(void *arg0, f32 *arg1) {
     struct Dummy {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -1386,26 +1387,21 @@ extern "C" s32 fn_80158F98(void *arg0, f32 *arg1) {
     };
     extern f32 lbl_80561750;
     extern f32 lbl_80561754;
-    extern f64 lbl_80561780;
-    Dummy *obj = (Dummy *)arg0;
     if (*(u8 *)((u8 *)arg0 + 0x273) != 0) {
         if (arg1 != 0) {
-            f32 value0 = (f32)obj->getB();
-            f32 value1 = (f32)obj->getA();
-            f32 ratio = (*(f32 *)((u8 *)arg0 + 0x274) - value1) / (value0 - value1);
-            if (ratio < lbl_80561750) {
-                ratio = lbl_80561750;
-            }
-            if (ratio > lbl_80561754) {
-                ratio = lbl_80561754;
-            }
+            f32 field = *(f32 *)((u8 *)arg0 + 0x274);
+            f32 value0 = (f32)((Dummy *)arg0)->getB();
+            f32 value1 = (f32)((Dummy *)arg0)->getA();
+            f32 ratio = (field - value1) / (value0 - value1);
+            ratio = (lbl_80561750 > ratio) ? lbl_80561750 : ratio;
+            ratio = (ratio > lbl_80561754) ? lbl_80561754 : ratio;
             *arg1 = lbl_80561754 + ratio * lbl_80561750;
         }
         return 1;
     }
     return 0;
 }
-
+#pragma pop
 extern "C" void fn_801590A8(void* arg0) {
     f32 f0;
     f32 f1;
@@ -3330,7 +3326,8 @@ extern "C" void fn_8015D554(void *arg0) {
     obj->v19(value);
 }
 
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
 extern "C" f32 fn_8015D5A4(void *arg0) {
     struct V {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -3358,7 +3355,7 @@ extern "C" f32 fn_8015D5A4(void *arg0) {
     }
     return (f32)idx + fraction;
 }
-#pragma scheduling on
+#pragma pop
 extern "C" void fn_8015D6BC(Unk8015A368C* arg0) {
     fn_80131234(lbl_8032E668[arg0->GetType()]);
 }
@@ -3796,27 +3793,28 @@ extern "C" void fn_8015E5F4(Unk801577F0V* arg0, s32 arg1) {
 }
 extern "C" void fn_8015E674(void *arg0, int arg1) {
  struct A { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void call(int); };
- int offset=0, i=0; void **array; void *obj,*state;
+ int i = 0; int off = 0; void **arr; void *st; void *ob2;
  goto check;
 loop:
- array=*(void ***)((char *)arg0+4);
- ((A *)array[offset/4])->call(arg1);
- offset+=4; i++;
+ arr=*(void ***)((char *)arg0+4);
+ ((A *)arr[off/4])->call(arg1);
+ off+=4; i++;
 check:
  if(i<*(int *)((char *)arg0+8)) goto loop;
- state=*(void **)((char *)arg0+0x50);
- if((obj=*(void **)state)==0) return;
- if(*(int *)((char *)state+8)==0) {
-  *(char *)((char *)obj+0x4a)=0; *(char *)((char *)obj+0x4b)=1; *(char *)((char *)obj+0x49)=1;
+ st=*(void **)((char *)arg0+0x50); ob2=*(void **)st;
+ if(!ob2) goto done;
+ if(*(int *)((char *)st+8)==0) {
+  *(char *)((char *)ob2+0x4a)=0; *(char *)((char *)ob2+0x4b)=1; *(char *)((char *)ob2+0x49)=1;
  } else {
-  obj=*(void **)((char *)state+4);
-  if(obj && *(int *)((char *)state+0xc)==0) {
-   *(char *)((char *)obj+0x49)=1; *(char *)((char *)obj+0x4b)=0; *(char *)((char *)obj+0x4a)=0;
+  ob2=*(void **)((char *)st+4);
+  if(ob2 && *(int *)((char *)st+0xc)==0) {
+   *(char *)((char *)ob2+0x49)=1; *(char *)((char *)ob2+0x4b)=0; *(char *)((char *)ob2+0x4a)=0;
   }
-  obj=*(void **)state; *(char *)((char *)obj+0x4a)=1; *(char *)((char *)obj+0x4c)=0;
+  ob2=*(void **)st; *(char *)((char *)ob2+0x4a)=1; *(char *)((char *)ob2+0x4c)=0;
  }
- *(int *)((char *)state+0xc)=*(int *)((char *)state+8);
- *(int *)((char *)state+8)=1;
+ *(int *)((char *)st+0xc)=*(int *)((char *)st+8);
+ *(int *)((char *)st+8)=1;
+done:;
 }
 
 #pragma use_lmw_stmw off
