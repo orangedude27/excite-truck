@@ -160,11 +160,11 @@ extern "C" void *fn_802E40A0(void *arg0, char *arg1) {
     switch (obj->valid) {
     case 0:
         if (obj != 0) obj->release(1);
+        obj = 0;
         break;
     default:
         break;
     }
-    obj = 0;
     return obj;
 }
 #pragma cplusplus reset
