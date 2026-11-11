@@ -16,6 +16,8 @@ extern void OSSleepThread(void *);
 extern void memset(void *, int, unsigned int);
 extern unsigned int lbl_8055D958;
 extern void *lbl_8055D95C;
+extern void *lbl_8055D94C;
+extern void OSClearContext(void *);
 extern unsigned char lbl_80558E80;
 extern int __cntlzw(unsigned int);
 extern unsigned int lbl_8055D954;
