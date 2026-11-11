@@ -57,6 +57,10 @@ struct Fn80157CF0Obj {
     s32 unk268;
 };
 
+// Frame-driven player over a list of 0x38-byte records (mRecords / mCount).
+// fn_80158B0C and fn_80159728 advance the progress counters by
+// (speed * FRAME_TIME) each frame; fn_80158D60, fn_80159AB4 and fn_8015B23C
+// emit the current record's value and reset the counters.
 class Fn8015889C {
 public:
  virtual void v2(); virtual void v3();
