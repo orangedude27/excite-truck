@@ -262,13 +262,13 @@ extern "C" void fn_802B5808(int arg0) {
 set_loop_body:
     texIndex = 0;
     set = (int)UMatSetList.entries + offset;
-    texSlot = set + 0x10;
+    texSlot = set + 0x10; /* &((struct UMatSet *)set)->tex[0].load */
     do {
         fn_802B5404((int *)texSlot);
         texIndex += 1;
         texSlot += 8;
     } while (texIndex < 4);
-    modelId = *(int *)(set + 0x2C);
+    modelId = ((struct UMatSet *)set)->modelId;
     if (modelId != -1) {
         ((void (*)(int))fn_802C6CF8)(modelId);
     }
