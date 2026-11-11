@@ -17,30 +17,31 @@ void fn_801CECB4(void) {
     lbl_8055E890 = 0;
 }
 
+/* Reset 8 entries of 0x30 bytes (4 sub-slots of 0xC: id, f4, f8) in lbl_8055E890 to inactive/default values. */
 void fn_801CECE0(void) {
     extern int lbl_8055E890;
     extern float lbl_80562A20;
-    register float zero = lbl_80562A20;
-    register char *p;
-    register int offset = 0;
-    register int neg = -1;
-    register int i;
-    for (i = 0; i < 8; i++) {
-        p = (char *)lbl_8055E890;
-        p += offset;
-        *(int *)p = neg;
-        offset += 0x30;
-        *(float *)(p + 8) = zero;
-        *(float *)(p + 4) = zero;
-        *(int *)(p + 0xC) = neg;
-        *(float *)(p + 0x14) = zero;
-        *(float *)(p + 0x10) = zero;
-        *(int *)(p + 0x18) = neg;
-        *(float *)(p + 0x20) = zero;
-        *(float *)(p + 0x1C) = zero;
-        *(int *)(p + 0x24) = neg;
-        *(float *)(p + 0x2C) = zero;
-        *(float *)(p + 0x28) = zero;
+    register float zeroValue = lbl_80562A20;
+    register char *entryPtr;
+    register int entryOffset = 0;
+    register int inactiveId = -1;
+    register int entryIndex;
+    for (entryIndex = 0; entryIndex < 8; entryIndex++) {
+        entryPtr = (char *)lbl_8055E890;
+        entryPtr += entryOffset;
+        *(int *)entryPtr = inactiveId;
+        entryOffset += 0x30;
+        *(float *)(entryPtr + 8) = zeroValue;
+        *(float *)(entryPtr + 4) = zeroValue;
+        *(int *)(entryPtr + 0xC) = inactiveId;
+        *(float *)(entryPtr + 0x14) = zeroValue;
+        *(float *)(entryPtr + 0x10) = zeroValue;
+        *(int *)(entryPtr + 0x18) = inactiveId;
+        *(float *)(entryPtr + 0x20) = zeroValue;
+        *(float *)(entryPtr + 0x1C) = zeroValue;
+        *(int *)(entryPtr + 0x24) = inactiveId;
+        *(float *)(entryPtr + 0x2C) = zeroValue;
+        *(float *)(entryPtr + 0x28) = zeroValue;
     }
 }
 
