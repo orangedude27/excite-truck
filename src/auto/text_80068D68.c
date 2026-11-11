@@ -19958,26 +19958,27 @@ send_reply:
 
 extern void RFCOMM_DlcEstablishReq(void *, u8);
 extern char lbl_80319300[];
-void PORT_ParNegCnf(void *arg0, u8 arg1, u16 arg2, u8 arg3, u8 arg4) {
-    void *port;
-    u8 *mcb;
-    port = port_find_mcb_dlci_port(arg0, arg1);
+/* RFCOMM port parameter negotiation confirm: logs when enabled, updates the port's negotiated MTU/control state, and starts DLC establishment if it was pending. */
+void PORT_ParNegCnf(void *p_mcb, u8 dlci, u16 mtu, u8 cl_type, u8 k) {
+    void *p_port;
+    u8 *port_cb;
+    p_port = port_find_mcb_dlci_port(p_mcb, dlci);
     if (lbl_803C4828[0x414] >= 4)
-        ((void (*)(u32, void *, u8, u16, u8, u8))fn_8007099C)(0x90003, lbl_80319300, arg1, arg2, arg3, arg4);
-    if (port == 0) return;
-    mcb = (u8 *)port;
-    if (*((u8 *)arg0 + 0x72) == 0) {
-        if (arg3 == 0xE0) *((u8 *)arg0 + 0x72) = 2;
-        else *((u8 *)arg0 + 0x72) = 1;
+        ((void (*)(u32, void *, u8, u16, u8, u8))fn_8007099C)(0x90003, lbl_80319300, dlci, mtu, cl_type, k);
+    if (p_port == 0) return;
+    port_cb = (u8 *)p_port;
+    if (*((u8 *)p_mcb + 0x72) == 0) {
+        if (cl_type == 0xE0) *((u8 *)p_mcb + 0x72) = 2;
+        else *((u8 *)p_mcb + 0x72) = 1;
     }
-    if (*(u16 *)(mcb + 0x12) < arg2) arg2 = *(u16 *)(mcb + 0x12);
-    *(u16 *)(mcb + 0x12) = arg2;
-    *(u16 *)(mcb + 0x14) = arg2;
-    if (*((u8 *)arg0 + 0x72) == 2) {
-        *(s16 *)(mcb + 0x98) = arg4;
-        if (arg4 == 0) mcb[0x24] = 1;
+    if (*(u16 *)(port_cb + 0x12) < mtu) mtu = *(u16 *)(port_cb + 0x12);
+    *(u16 *)(port_cb + 0x12) = mtu;
+    *(u16 *)(port_cb + 0x14) = mtu;
+    if (*((u8 *)p_mcb + 0x72) == 2) {
+        *(s16 *)(port_cb + 0x98) = k;
+        if (k == 0) port_cb[0x24] = 1;
     }
-    if (mcb[2] == 1) ((void (*)(void *, u8, u16))RFCOMM_DlcEstablishReq)(arg0, mcb[0xD], *(u16 *)(mcb + 0x12));
+    if (port_cb[2] == 1) ((void (*)(void *, u8, u16))RFCOMM_DlcEstablishReq)(p_mcb, port_cb[0xD], *(u16 *)(port_cb + 0x12));
 }
 
 void PORT_DlcEstablishInd(s32 arg0, s32 arg1, s32 arg2) {
