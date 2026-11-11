@@ -2545,9 +2545,12 @@ void fn_80038870(void) {
 
 #pragma pop
 
+/* Start an asynchronous absolute DVD read into a command block at the given
+ * priority. Sets up the read request, invalidates the destination cache range
+ * when needed, queues the block, and kicks the DVD driver if idle. */
 s32 DVDReadAbsAsyncPrio(void *block, void *addr, s32 length, s32 offset, void *callback, s32 prio) {
     s32 result;
-    s32 interrupts;
+    s32 savedInterrupts;
     u32 command;
 
     *(u32 *)((u8 *)block + 8) = 1;
@@ -2566,13 +2569,13 @@ s32 DVDReadAbsAsyncPrio(void *block, void *addr, s32 length, s32 offset, void *c
         }
     }
 
-    interrupts = OSDisableInterrupts();
+    savedInterrupts = OSDisableInterrupts();
     *(u32 *)((u8 *)block + 0xC) = 2;
     result = __DVDPushWaitingQueue(prio, block);
     if (executing_8055D8C8 == 0 && lbl_8055D84C == 0) {
         fn_80038040();
     }
-    OSRestoreInterrupts(interrupts);
+    OSRestoreInterrupts(savedInterrupts);
     return result;
 }
 
