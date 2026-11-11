@@ -157,20 +157,21 @@ extern "C" void fn_801D9284(void) {
     extern void fn_801D9654(void *, void *, void *, int);
     extern void fn_801D91D8(void);
     extern int fn_802C6FC0(void *, int, int);
+    register char *base = lbl_80339108;
     void *a;
     void *b;
     void *c;
     void *v;
     lbl_8055E96C = 0;
-    a = fn_80131810(lbl_80339108 + 0x44);
+    a = fn_80131810(base + 0x44);
     if (a != 0) {
-        b = fn_80131810(lbl_80339108 + 0x50);
+        b = fn_80131810(base + 0x50);
         if (b != 0) {
-            v = ((struct Getter801D9284 *)b)->get(lbl_80339108 + 0x5C);
-            fn_801D9394((void **)&lbl_8055E96C, v, lbl_80339108 + 0x6C, a);
-            c = fn_80131810(lbl_80339108 + 0x78);
+            v = ((struct Getter801D9284 *)b)->get(base + 0x5C);
+            fn_801D9394((void **)&lbl_8055E96C, v, base + 0x6C, a);
+            c = fn_80131810(base + 0x78);
             if (c != 0) {
-                v = ((struct Getter801D9284 *)c)->get(lbl_80339108 + 0x88);
+                v = ((struct Getter801D9284 *)c)->get(base + 0x88);
                 fn_801D9654(&lbl_8055E964, v, &lbl_8055AD60, 0);
                 fn_801D91D8();
                 fn_80131818(c);
@@ -179,7 +180,7 @@ extern "C" void fn_801D9284(void) {
         }
         fn_80131818(a);
     }
-    lbl_8055E960 = fn_802C6FC0(&lbl_80339108[0x94], 0, 0);
+    lbl_8055E960 = fn_802C6FC0(base + 0x94, 0, 0);
     lbl_8055E968 = 0;
 }
 #pragma cplusplus reset
