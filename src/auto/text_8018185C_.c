@@ -1565,6 +1565,31 @@ void fn_8018956C(void *arg0, float *arg1, float *arg2, int mode, void *obj, int 
         fn_8018E3EC(arg0, dir, d, 0, r30, mode, obj, arg5);
     }
 }
+
+int fn_80189BDC(void *arg0) {
+    void **vt;
+    void **vt2;
+    if ((unsigned int)(*(int *)((char *)arg0 + 0x10) + 0xABAE0000) != 0x4C52U) {
+        void *obj = *(void **)((char *)arg0 + 0x270);
+        void *ret;
+        vt = *(void ***)obj;
+        vt = (void **)vt[0x10 / 4];
+        ret = ((void *(*)(void *))vt)(obj);
+        if (ret != 0) {
+            int v = *(int *)((char *)ret + 0x24);
+            if (v == 1 || v == 3) {
+                return 0;
+            }
+        }
+    }
+    {
+        void *tmp = (void *)fn_801B83A0();
+        vt2 = *(void ***)tmp;
+        vt2 = (void **)vt2[0xCC / 4];
+        return ((int (*)(void *, int))vt2)(tmp, *(int *)((char *)arg0 + 0x1EC));
+    }
+}
+
 #pragma pop
 typedef unsigned char u8;
 typedef unsigned int u32;
@@ -2547,14 +2572,14 @@ void fn_8018BE54(void *arg0, float farg0) {
         temp_f6 = *(float *)(p + 0x474) * temp_f11;
         temp_f3 = temp_f11 * *(float *)(p + 0x4E4);
         temp_f2 = temp_f11 * *(float *)(p + 0x508);
-        *(float *)(p + 0x330) = temp_f10;
         temp_f1 = temp_f11 * *(float *)(p + 0x52C);
+        *(float *)(p + 0x330) = temp_f10;
         *(float *)(p + 0x334) = temp_f9;
         *(float *)(p + 0x338) = temp_f8;
         *(float *)(p + 0x344) = temp_f7;
         *(float *)(p + 0x33C) = temp_f6;
-        *(float *)(p + 0x340) = temp_f5;
         *(float *)(p + 0x34C) = temp_f4;
+        *(float *)(p + 0x340) = temp_f5;
         *(float *)(p + 0x3AC) = temp_f3;
         *(float *)(p + 0x3D0) = temp_f2;
         *(float *)(p + 0x3F4) = temp_f1;
@@ -2588,3 +2613,5 @@ extern void fn_80279C00(int, void *);
 extern void fn_8017B0B0(void);
 extern void fn_801BD808(void *);
 extern int lbl_8055E4D0;
+#pragma push
+#pragma cplusplus on
