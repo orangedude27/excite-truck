@@ -1921,22 +1921,23 @@ extern "C" void fn_800E55B4(void *arg0, float arg1) {
     }
 }
 
-extern "C" void SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif(void *self, int index, f32 value) {
-    int valid = 0;
-    if (index >= 0 && index < 4) valid = 1;
-    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x2C2, lbl_803222F0, index, 0, 4);
-    f32 result;
-    if (value > lbl_80560F38) {
-        result = lbl_80560F38;
-    } else if (value < lbl_80560F3C) {
-        result = lbl_80560F3C;
+extern "C" void SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif(void *voice, int remoteIndex, f32 volume) {
+    /* Set the clamped remote output volume for a remote channel on this AxVoice and mark params dirty when changed. */
+    int isValidIndex = 0;
+    if (remoteIndex >= 0 && remoteIndex < 4) isValidIndex = 1;
+    if (isValidIndex == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x2C2, lbl_803222F0, remoteIndex, 0, 4);
+    f32 clampedVolume;
+    if (volume > lbl_80560F38) {
+        clampedVolume = lbl_80560F38;
+    } else if (volume < lbl_80560F3C) {
+        clampedVolume = lbl_80560F3C;
     } else {
-        result = value;
+        clampedVolume = volume;
     }
-    f32 *slot = (f32 *)((char *)self + 0x154 + index * 4);
-    if (result != *slot) {
-        *slot = result;
-        *((u8 *)self + 0x123) |= 0x20;
+    f32 *slot = (f32 *)((char *)voice + 0x154 + remoteIndex * 4);
+    if (clampedVolume != *slot) {
+        *slot = clampedVolume;
+        *((u8 *)voice + 0x123) |= 0x20;
     }
 }
 
