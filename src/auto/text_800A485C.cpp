@@ -822,6 +822,7 @@ extern "C" s32 fn_800A59CC(s32 arg0) {
 
 #pragma dont_inline reset
 
+#pragma opt_common_subs off
 extern "C" s32 fn_800A59FC(void *arg0) {
     struct State {
         u16 value0;
@@ -845,18 +846,14 @@ extern "C" s32 fn_800A59FC(void *arg0) {
     State *state = (State *)arg0;
     u32 value = state->value0;
     state->shift0 = 0;
-    do {
+    while (((value = (value >> 1) & 0x7FFF) != 0)) {
         state->shift0++;
-        value = (value >> 1) & 0x7FFF;
-    } while (value != 0);
-
+    }
     value = state->value6;
     state->shift1 = 0;
-    do {
+    while (((value = (value >> 1) & 0x7FFF) != 0)) {
         state->shift1++;
-        value = (value >> 1) & 0x7FFF;
-    } while (value != 0);
-
+    }
     s32 x = ((state->value0 + (state->value4 << 5)) - 1) >> state->shift0;
     state->result24 = (s16)x;
     s32 scaled = state->value7 * state->valueC;
@@ -876,7 +873,7 @@ extern "C" s32 fn_800A59FC(void *arg0) {
         state->result2C = 0;
     }
 }
-
+#pragma opt_common_subs reset
 extern "C" s32 fn_800A59FC(void *);
 extern "C" s32 fn_800A6A40(void *);
 #pragma use_lmw_stmw off
@@ -18493,9 +18490,8 @@ check:
 #pragma small_data on
 void homebutton::gui::PaneManager::setAllBoundingBoxComponentTriggerTarget(bool arg0) {
     u8 *self = (u8 *)this;
-    u32 index = 0;
     void *list = self + 8;
-    void *typeId = &lbl_8055DDE0;
+    u32 index = 0;
     struct ParentDispatch { virtual void v0(); virtual void *parent(); };
     struct TriggerDispatch {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -18513,7 +18509,7 @@ loop_body:
         u32 found;
         goto node_check;
 node_compare:
-        if (node != typeId) goto node_parent;
+        if (node != (void *)&lbl_8055DDE0) goto node_parent;
         found = 1;
         goto type_done;
 node_parent:
@@ -19184,31 +19180,25 @@ extern "C" void fn_800D1AEC(void) {
 
 extern "C" void fn_800D1B1C(s32 index, s32 mode) {
     u8 *base = (u8 *)lbl_8055DDB0;
-
     if (base == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E960, 0xA3, lbl_8031E9A0);
     }
-
     if (mode == -1)
         goto done;
     if (mode >= -1)
         goto play;
-    if (mode >= -2)
-        goto rearm;
-    goto done;
-
+    if (mode < -2)
+        goto done;
+    goto rearm;
 play:
     if (mode >= 1)
         goto done;
     {
-        s32 one = 1;
         u8 *entry = base + index * 0x68;
-        entry[0x5C] = one;
-        ((u32 (*)(s32, u32, void *, u32))fn_80060CC0)(
-            index, 4, (void *)fn_800D1C48, one);
+        entry[0x5C] = 1;
+        fn_80060CC0((void *)index, 4, (u32)&fn_800D1C48);
     }
     goto done;
-
 rearm:
     {
         void *alarm = base + index * 0x68;
@@ -19219,7 +19209,6 @@ rearm:
         ((void (*)(OSAlarm *, u32, u32, u32, OSAlarmHandler))OSSetAlarm)(
             (OSAlarm *)alarm, 0x10624DD3, 0, delay, (OSAlarmHandler)fn_800D1AEC);
     }
-
 done:
     return;
 }
@@ -23909,62 +23898,65 @@ copy_bytes:
 extern "C" int fn_800A499C(const char *dstArg, int fill, int count) {
     u8 *dst = (u8 *)dstArg;
     u32 size = (u32)count;
-    u32 words;
-    u32 blocks;
+    int words;
+    int blocks;
     u32 pattern;
-    u32 adjust;
-
-    do {
+    int adjust;
+    while (((u32)dst & 3) != 0) {
         *dst++ = (u8)fill;
         size--;
-    } while (((u32)dst & 3) != 0);
-
-    pattern = (u32)fill;
-    pattern |= (u32)fill << 8;
-    pattern |= (u32)fill << 16;
-    pattern |= (u32)fill << 24;
-
-    if (size > 3) {
-        words = size >> 2;
-        blocks = words >> 3;
-        adjust = -(s32)(words << 2);
-        if (blocks != 0) {
-            do {
-                ((u32*)dst)[0] = pattern;
-                ((u32*)dst)[1] = pattern;
-                ((u32*)dst)[2] = pattern;
-                ((u32*)dst)[3] = pattern;
-                ((u32*)dst)[4] = pattern;
-                ((u32*)dst)[5] = pattern;
-                ((u32*)dst)[6] = pattern;
-                ((u32*)dst)[7] = pattern;
-                dst += 32;
-            } while (--blocks != 0);
-        }
-        words &= 7;
-        while (words != 0) {
-            *(u32*)dst = pattern;
+    }
+    pattern = (u32)fill | ((u32)fill << 8) | ((u32)fill << 16) | ((u32)fill << 24);
+    words = (int)(size >> 2);
+    if (size <= 3)
+        goto tail;
+    blocks = (int)(words >> 3);
+    adjust = -((words << 2));
+    if (blocks != 0) {
+        do {
+            ((u32 *)dst)[0] = pattern;
+            ((u32 *)dst)[1] = pattern;
+            ((u32 *)dst)[2] = pattern;
+            ((u32 *)dst)[3] = pattern;
+            ((u32 *)dst)[4] = pattern;
+            ((u32 *)dst)[5] = pattern;
+            ((u32 *)dst)[6] = pattern;
+            ((u32 *)dst)[7] = pattern;
+            dst += 32;
+        } while (--blocks);
+    }
+    words &= 7;
+    if (words != 0) {
+        do {
+            *(u32 *)dst = pattern;
             dst += 4;
-            words--;
-        }
-        size += adjust;
+        } while (--words);
     }
-
-    if ((s32)size != 0) {
-        u32 bytes = size >> 3;
-        if (bytes != 0) {
-            do {
-                dst[0] = (u8)fill; dst[1] = (u8)fill; dst[2] = (u8)fill; dst[3] = (u8)fill;
-                dst[4] = (u8)fill; dst[5] = (u8)fill; dst[6] = (u8)fill; dst[7] = (u8)fill;
-                dst += 8;
-            } while (--bytes != 0);
-            size &= 7;
-        }
-        while (size != 0) {
-            *dst++ = (u8)fill;
-            size--;
-        }
+    size += (u32)adjust;
+    if (size == 0)
+        return (int)dstArg;
+tail:
+    blocks = (int)(size >> 3);
+    if (blocks != 0) {
+        do {
+            dst[0] = (u8)fill;
+            dst[1] = (u8)fill;
+            dst[2] = (u8)fill;
+            dst[3] = (u8)fill;
+            dst[4] = (u8)fill;
+            dst[5] = (u8)fill;
+            dst[6] = (u8)fill;
+            dst[7] = (u8)fill;
+            dst += 8;
+        } while (--blocks);
     }
+    blocks = (int)(size & 7);
+    if (blocks == 0)
+        return (int)dstArg;
+    do {
+        *dst++ = (u8)fill;
+    } while (--blocks);
+    return (int)dstArg;
 }
 
 #pragma push
