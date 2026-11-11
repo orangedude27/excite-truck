@@ -17930,24 +17930,25 @@ extern "C" void *List_GetNext__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListPCv(const void *,
 extern "C" void List_Remove__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv(void *, void *);
 extern "C" void *__dt__Q310homebutton3gui7ManagerFv(void *arg0, s32 arg1) {
     void *node;
-    void *list = (u8 *)arg0 + 8;
+    u8 *self;
 
     if (arg0 != 0) {
         *(void **)arg0 = (void *)lbl_8031E83C;
-        node = List_GetNext__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListPCv(list, 0);
+        self = (u8 *)arg0;
+        node = List_GetNext__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListPCv(self + 8, 0);
         while (node != 0) {
-            List_Remove__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv((u8 *)arg0 + 8, node);
-            if (*(void **)((u8 *)arg0 + 0x14) != 0) {
-                MEMFreeToAllocator((MEMAllocator *)*(void **)((u8 *)arg0 + 0x14), node);
+            List_Remove__Q26nw4hbm2utFPQ36nw4hbm2ut4ListPv(self + 8, node);
+            if (*(void **)(self + 0x14) != 0) {
+                MEMFreeToAllocator((MEMAllocator *)*(void **)(self + 0x14), node);
             } else {
                 ((void (*)(void *))fn_80128668)(node);
             }
-            node = List_GetNext__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListPCv((u8 *)arg0 + 8, 0);
+            node = List_GetNext__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListPCv(self + 8, 0);
         }
         if (arg1 > 0)
-            ((void (*)(void *))fn_80128668)(arg0);
+            ((void (*)(void *))fn_80128668)(self);
     }
-    return arg0;
+    return self;
 }
 
 void homebutton::gui::Manager::init() {
@@ -18687,13 +18688,13 @@ extern "C" void soundOnCallback__Q210homebutton10ControllerFP7OSAlarmP9OSContext
 
 extern "C" void *fn_800D0E68(void *arg0, s32 arg1, s32 arg2) {
     u8 *base = lbl_80407600;
+    struct D0E68Tail *t = (struct D0E68Tail *)lbl_80407600;
     s32 temp_r30;
-    register s32 zero = 0;
-    f32 f = lbl_80560E38;
+    s32 zero = 0;
     *(s32 *)((u8 *)arg0 + 0x20) = zero;
     *(s32 *)arg0 = arg1;
     *((u8 *)arg0 + 0x1C) = zero;
-    *(f32 *)((u8 *)arg0 + 4) = f;
+    *(f32 *)((u8 *)arg0 + 4) = lbl_80560E38;
     *(s32 *)((u8 *)arg0 + 0x24) = arg2;
     *(s32 *)((u8 *)arg0 + 0x28) = zero;
     *(s32 *)((u8 *)arg0 + 0x2C) = zero;
@@ -18704,7 +18705,7 @@ extern "C" void *fn_800D0E68(void *arg0, s32 arg1, s32 arg2) {
         lbl_8055DDA8[arg1] = zero;
         OSCreateAlarm((OSAlarm *)(base + temp_r30));
         OSCreateAlarm((OSAlarm *)(base + 0xC0 + temp_r30));
-        *(void **)(base + 0x180 + arg1 * 4) = arg0;
+        t->slots[arg1] = arg0;
     }
     return arg0;
 }
