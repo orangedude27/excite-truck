@@ -1501,21 +1501,32 @@ extern u32 lbl_8055DBD8;
 // the bus. Nothing else in the game writes either of the two.
 #define viI2cBusUsed lbl_8055DBD8
 
+// Writes size bytes to an I2C slave - always the AVE video encoder, whose
+// address 0xE0 the callers pass - by bit-banging the GPIO1B clock and data
+// lines, with interrupts off so nothing stretches a pulse. The transfer is a
+// start condition and the address byte (sendSlaveAddr), then one byte at a
+// time, most significant bit first, each followed by a ninth clock whose SDA
+// level is the slave's acknowledge, and finally a stop condition: SDA released
+// while the clock is high. Returns 1 when every byte was acknowledged, and 0
+// as soon as one acknowledge is missing.
 s32 __VISendI2CData(u8 addr, u8 *data, s32 size)
 {
     OSTime start;
     s32 i;
-    u8 b;
+    u8 byte;
     BOOL enabled;
 
-    if (!lbl_8055DBD8) {
-        lbl_80558FB8 = 1;
-        lbl_8055DBD8 = 1;
+    // first transfer on this bus: settle on the non-inverted SDA polarity
+    if (!viI2cBusUsed) {
+        viI2cSdaNonInverted = 1;
+        viI2cBusUsed = 1;
     }
     enabled = OSDisableInterrupts();
+    // both lines driven, clock idle high, ...
     IPC_HW_REGS[IPC_GPIO1BDIR] = (IPC_HW_REGS[IPC_GPIO1BDIR] & ~GPIO_AVE_SDA) | (GPIO_AVE_SCL | GPIO_AVE_SDA);
     IPC_HW_REGS[IPC_GPIO1BOUT] = (IPC_HW_REGS[IPC_GPIO1BOUT] & ~GPIO_AVE_SCL) | GPIO_AVE_SCL;
-    if (lbl_80558FB8 == 0) {
+    // ... and SDA at its idle level
+    if (viI2cSdaNonInverted == 0) {
         IPC_HW_REGS[IPC_GPIO1BOUT] &= ~GPIO_AVE_SDA;
     } else {
         IPC_HW_REGS[IPC_GPIO1BOUT] = (IPC_HW_REGS[IPC_GPIO1BOUT] & ~GPIO_AVE_SDA) | GPIO_AVE_SDA;
@@ -1525,6 +1536,7 @@ s32 __VISendI2CData(u8 addr, u8 *data, s32 size)
     start = __OSGetSystemTime();
     while (OS_TICKS_TO_USEC(__OSGetSystemTime() - start) < 2) {}
 
+    // start condition + address byte; give up when the slave stays silent
     if (!sendSlaveAddr(addr)) {
         OSRestoreInterrupts(enabled);
         return 0;
@@ -1533,30 +1545,32 @@ s32 __VISendI2CData(u8 addr, u8 *data, s32 size)
     IPC_HW_REGS[IPC_GPIO1BDIR] = (IPC_HW_REGS[IPC_GPIO1BDIR] & ~GPIO_AVE_SDA) | (GPIO_AVE_SCL | GPIO_AVE_SDA);
 
     while (size != 0) {
-        b = *data++;
+        byte = *data++;
         for (i = 0; i < 8; i++) {
-            if (b & 0x80) {
-                if (lbl_80558FB8 == 0) {
+            // the bit to send, complemented when the SDA line is inverted
+            if (byte & 0x80) {
+                if (viI2cSdaNonInverted == 0) {
                     IPC_HW_REGS[IPC_GPIO1BOUT] &= ~GPIO_AVE_SDA;
                 } else {
                     IPC_HW_REGS[IPC_GPIO1BOUT] = (IPC_HW_REGS[IPC_GPIO1BOUT] & ~GPIO_AVE_SDA) | GPIO_AVE_SDA;
                 }
             } else {
-                if (lbl_80558FB8 == 0) {
+                if (viI2cSdaNonInverted == 0) {
                     IPC_HW_REGS[IPC_GPIO1BOUT] = (IPC_HW_REGS[IPC_GPIO1BOUT] & ~GPIO_AVE_SDA) | GPIO_AVE_SDA;
                 } else {
                     IPC_HW_REGS[IPC_GPIO1BOUT] &= ~GPIO_AVE_SDA;
                 }
             }
             start = __OSGetSystemTime();
-            while (OS_TICKS_TO_USEC(__OSGetSystemTime() - start) < 2) {}
+            while (OS_TICKS_TO_USEC(__OSGetSystemTime() - start) < 2) {} // data set up, ...
             IPC_HW_REGS[IPC_GPIO1BOUT] = (IPC_HW_REGS[IPC_GPIO1BOUT] & ~GPIO_AVE_SCL) | GPIO_AVE_SCL;
             start = __OSGetSystemTime();
-            while (OS_TICKS_TO_USEC(__OSGetSystemTime() - start) < 2) {}
-            b = (u8)(b << 1);
-            IPC_HW_REGS[IPC_GPIO1BOUT] &= ~GPIO_AVE_SCL;
+            while (OS_TICKS_TO_USEC(__OSGetSystemTime() - start) < 2) {} // ... clocked, ...
+            byte = (u8)(byte << 1);
+            IPC_HW_REGS[IPC_GPIO1BOUT] &= ~GPIO_AVE_SCL;                 // ... and clock low
         }
 
+        // ninth clock: hand SDA over to the slave and see whether it answers
         IPC_HW_REGS[IPC_GPIO1BDIR] = (IPC_HW_REGS[IPC_GPIO1BDIR] & ~GPIO_AVE_SDA) | GPIO_AVE_SCL;
         start = __OSGetSystemTime();
         while (OS_TICKS_TO_USEC(__OSGetSystemTime() - start) < 2) {}
@@ -1564,12 +1578,14 @@ s32 __VISendI2CData(u8 addr, u8 *data, s32 size)
         start = __OSGetSystemTime();
         while (OS_TICKS_TO_USEC(__OSGetSystemTime() - start) < 2) {}
 
-        if (lbl_80558FB8 == 1 && ((IPC_HW_REGS[IPC_GPIO1BIN] >> 15) & 1)) {
+        if (viI2cSdaNonInverted == 1 && ((IPC_HW_REGS[IPC_GPIO1BIN] >> 15) & 1)) {
+            // GPIO_AVE_SDA still high: the slave did not acknowledge
             OSRestoreInterrupts(enabled);
             return 0;
         }
 
-        if (lbl_80558FB8 == 0) {
+        // SDA back to its idle level, driven again, clock low for the next byte
+        if (viI2cSdaNonInverted == 0) {
             IPC_HW_REGS[IPC_GPIO1BOUT] = (IPC_HW_REGS[IPC_GPIO1BOUT] & ~GPIO_AVE_SDA) | GPIO_AVE_SDA;
         } else {
             IPC_HW_REGS[IPC_GPIO1BOUT] &= ~GPIO_AVE_SDA;
@@ -1579,8 +1595,9 @@ s32 __VISendI2CData(u8 addr, u8 *data, s32 size)
         IPC_HW_REGS[IPC_GPIO1BOUT] &= ~GPIO_AVE_SCL;
     }
 
+    // stop: SDA to its other level, clock high, then release SDA while it stays high
     IPC_HW_REGS[IPC_GPIO1BDIR] = (IPC_HW_REGS[IPC_GPIO1BDIR] & ~GPIO_AVE_SDA) | (GPIO_AVE_SCL | GPIO_AVE_SDA);
-    if (lbl_80558FB8 == 0) {
+    if (viI2cSdaNonInverted == 0) {
         IPC_HW_REGS[IPC_GPIO1BOUT] = (IPC_HW_REGS[IPC_GPIO1BOUT] & ~GPIO_AVE_SDA) | GPIO_AVE_SDA;
     } else {
         IPC_HW_REGS[IPC_GPIO1BOUT] &= ~GPIO_AVE_SDA;
@@ -1590,7 +1607,7 @@ s32 __VISendI2CData(u8 addr, u8 *data, s32 size)
     IPC_HW_REGS[IPC_GPIO1BOUT] = (IPC_HW_REGS[IPC_GPIO1BOUT] & ~GPIO_AVE_SCL) | GPIO_AVE_SCL;
     start = __OSGetSystemTime();
     while (OS_TICKS_TO_USEC(__OSGetSystemTime() - start) < 2) {}
-    if (lbl_80558FB8 == 0) {
+    if (viI2cSdaNonInverted == 0) {
         IPC_HW_REGS[IPC_GPIO1BOUT] &= ~GPIO_AVE_SDA;
     } else {
         IPC_HW_REGS[IPC_GPIO1BOUT] = (IPC_HW_REGS[IPC_GPIO1BOUT] & ~GPIO_AVE_SDA) | GPIO_AVE_SDA;
