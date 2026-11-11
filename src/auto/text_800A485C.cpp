@@ -2,6 +2,14 @@
 extern "C" s32 OSWaitSemaphore(void *);
 extern "C" s32 OSInitSemaphore(void *, s32);
 extern "C" const char lbl_8031B1E4[];
+struct D0E68Entry {
+    u8 bytes[0x30];
+};
+struct D0E68Objs {
+    struct D0E68Entry a[4];
+    struct D0E68Entry b[4];
+    void *slots[4];
+};
 typedef u16 *Fn800A4B78Ret;
 struct Fn800B10E0Ent {
     u16 first;
@@ -20534,22 +20542,19 @@ extern "C" void* fn_800D55B0(void *self, s32 arg1) {
 }
 #pragma pop
 extern "C" s32 fn_800D5640(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
-    void *node = *(void **)((u8 *)arg0 + 8);
-    s32 a = arg1;
-    s32 b = arg2;
-    s32 c = arg3;
-    void *end = (u8 *)arg0 + 8;
+    u32 end = (u32)arg0 + 8;
+    u32 node = *(u32 *)((u8 *)arg0 + 8);
     while (node != end) {
-        if (node == NULL) {
+        if (node == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F4A4, 0x23D, lbl_8031F480);
         }
-        void *next = (u8 *)node + 8;
-        if (node == NULL) {
+        u32 next = node + 8;
+        if (node == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F4A4, 0x23D, lbl_8031F480);
         }
-        s32 result = ((s32 (*)(long, long, long, long, long))fn_800D51F4)((long)next, (long)((u8 *)node + 0x24), a, b, c);
+        s32 result = ((s32 (*)(long, long, long, long, long))fn_800D51F4)((long)next, (long)(node + 0x24), arg1, arg2, arg3);
         if (result != 0) return result;
-        node = *(void **)node;
+        node = *(u32 *)node;
     }
     return 0;
 }
