@@ -100,32 +100,35 @@ extern "C" void *fn_8024E6E4(void *self, s32 shouldDelete) {
 }
 #pragma scheduling on
 #pragma pop
-void *fn_8024E818(void *arg0, s32 arg1) {
+void *fn_8024E818(void *object, s32 destroyFlag) {
+    /* Destructor-like teardown: clear a global state word, optionally run two vtable-staged
+       cleanup sequences releasing associated resources/refcounts, and conditionally perform a
+       final delete/free step based on destroyFlag. */
     extern unsigned int lbl_8055F2EC;
     extern unsigned char lbl_8034453C[];
     extern s32 fn_80128670(s32);
     extern s32 fn_80235380(s32);
     extern s32 fn_802CAC54(s32);
     extern s32 fn_80128668(void *);
-    if (arg0 != 0) {
+    if (object != 0) {
         lbl_8055F2EC = 0;
-        if (arg0 != 0) {
-            *(void **)arg0 = lbl_803444D8;
-            fn_80128670(*(s32 *)((u8 *)arg0 + 0xCC));
+        if (object != 0) {
+            *(void **)object = lbl_803444D8;
+            fn_80128670(*(s32 *)((u8 *)object + 0xCC));
             if (--lbl_8055F2E8 == 0) {
                 CleanupEntries(lbl_8055F2E4);
                 lbl_8055F2E4 = 0;
             }
-            if (arg0 != 0) {
-                *(void **)arg0 = lbl_8034453C;
-                fn_80128670(*(s32 *)((u8 *)arg0 + 0x18));
-                fn_80235380(*(s32 *)((u8 *)arg0 + 0x24));
-                fn_802CAC54(*(s32 *)((u8 *)arg0 + 0x20));
+            if (object != 0) {
+                *(void **)object = lbl_8034453C;
+                fn_80128670(*(s32 *)((u8 *)object + 0x18));
+                fn_80235380(*(s32 *)((u8 *)object + 0x24));
+                fn_802CAC54(*(s32 *)((u8 *)object + 0x20));
             }
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (destroyFlag > 0) fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 void *fn_8024E920(void *arg0, s32 arg1) {
