@@ -511,9 +511,8 @@ void SamplingHandler(s16 intr, OSContext* ctx) {
 }
 
 BOOL __PADDisableRecalibration(BOOL disable) {
-    BOOL old = (OS_PAD_FLAGS & 0x40) ? TRUE : FALSE;
     BOOL enabled = OSDisableInterrupts();
-
+    BOOL old = (OS_PAD_FLAGS & 0x40) ? TRUE : FALSE;
     OS_PAD_FLAGS &= ~0x40;
     if (disable) {
         OS_PAD_FLAGS |= 0x40;
@@ -524,6 +523,7 @@ BOOL __PADDisableRecalibration(BOOL disable) {
 
 #pragma dont_inline on
 BOOL fn_80057460(void) {
-    return !SIIsChanBusy(SI_CHAN_NONE);
+    extern long Si_80311630;
+    return (unsigned long)((-1 - Si_80311630) | (Si_80311630 + 1)) >> 31;
 }
 #pragma dont_inline off
