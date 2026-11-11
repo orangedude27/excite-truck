@@ -21,6 +21,7 @@ extern void OSClearContext(void *);
 extern void OSSetCurrentContext(void *);
 extern void OSResumeThread(void *);
 extern void OSSuspendThread(void *);
+#define GXD (*(unsigned int * volatile *)&__GXData)
 extern unsigned char lbl_80558E80;
 extern int __cntlzw(unsigned int);
 extern unsigned int lbl_8055D954;
@@ -365,6 +366,40 @@ void __GXInitRevisionBits(void) {
         *w = zero | 1;
         *b = 0x61;
         *w = (0x58 << 24) | (zero | 0xF);
+    }
+}
+
+void GXCPInterruptHandler(short intr, void *ctx) {
+    unsigned char sp[0x2c8];
+    unsigned int *gx = __GXData;
+    gx[3] = *__cpReg;
+    if (((gx[2] >> 3) & 1) && ((gx[3] >> 1) & 1)) {
+        OSResumeThread(lbl_8055D95C);
+        lbl_8055D958 = 0;
+        __GXData[4] |= 3;
+        *(volatile unsigned short *)((char *)__cpReg + 4) = __GXData[4];
+        gx[2] = (gx[2] | 4) & ~8;
+        *(volatile unsigned short *)((char *)__cpReg + 2) = gx[2];
+    }
+    if (((gx[2] >> 2) & 1) && (gx[3] & 1)) {
+        lbl_8055D94C = (char *)lbl_8055D94C + 1;
+        gx[2] = (gx[2] & ~4) | 8;
+        *(volatile unsigned short *)((char *)__cpReg + 2) = gx[2];
+        __GXData[4] = (__GXData[4] | 1) & ~2;
+        *(volatile unsigned short *)((char *)__cpReg + 4) = __GXData[4];
+        lbl_8055D958 = 1;
+        OSSuspendThread(lbl_8055D95C);
+    }
+    if (((gx[2] >> 5) & 1) && ((gx[3] >> 4) & 1)) {
+        gx[2] &= ~0x20;
+        *(volatile unsigned short *)((char *)__cpReg + 2) = gx[2];
+        if (lbl_8055D954 != 0) {
+            OSClearContext(sp);
+            OSSetCurrentContext(sp);
+            ((void (*)(void))lbl_8055D954)();
+            OSClearContext(sp);
+            OSSetCurrentContext(ctx);
+        }
     }
 }
 
