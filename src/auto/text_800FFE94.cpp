@@ -503,6 +503,7 @@ extern "C" void SetChannelPriority__Q46nw4hbm3snd6detail9SeqPlayerFi_80100FA8(vo
 
 #pragma push
 #pragma use_lmw_stmw off
+/* Invalidates this WSD player if its data range falls within [start, end). */
 extern "C" void InvalidateData__Q46nw4hbm3snd6detail9WsdPlayerFPCvPCv(void* arg0, const void* arg1, const void* arg2) {
     extern char lbl_80327C88[];
     extern char lbl_80327CAC[];
@@ -511,32 +512,32 @@ extern "C" void InvalidateData__Q46nw4hbm3snd6detail9WsdPlayerFPCvPCv(void* arg0
     extern void* GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(void);
     extern void UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(void*, void*);
     extern void Close__Q46nw4hbm3snd6detail8WsdTrackFv(void*);
-    int level1;
-    int level2;
-    void* node;
+    int outerIrq;
+    int innerIrq;
+    void* callbackNode;
     void* manager;
-    level1 = OSDisableInterrupts();
+    outerIrq = OSDisableInterrupts();
     if (*((unsigned char*)arg0 + 0x1D) != 0 &&
         (unsigned int)arg1 <= *(unsigned int*)((char*)arg0 + 0x9C) &&
         *(unsigned int*)((char*)arg0 + 0x9C) <= (unsigned int)arg2) {
-        level2 = OSDisableInterrupts();
+        innerIrq = OSDisableInterrupts();
         if (*((unsigned char*)arg0 + 0x1F) != 0) {
             if (arg0 == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327CAC, 0x233, lbl_80327C88);
             Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(lbl_8041D4C4, (char*)arg0 + 0x14);
         }
         if (*((unsigned char*)arg0 + 0x1D) != 0) {
-            node = arg0;
+            callbackNode = arg0;
             if (arg0 != 0)
-                node = (char*)arg0 + 8;
+                callbackNode = (char*)arg0 + 8;
             manager = GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
-            UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(manager, node);
+            UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(manager, callbackNode);
         }
-        OSRestoreInterrupts(level2);
+        OSRestoreInterrupts(innerIrq);
         Close__Q46nw4hbm3snd6detail8WsdTrackFv((void*)((unsigned int)arg0 + 0x9C));
         *((unsigned char*)arg0 + 0x1D) = 0;
     }
-    OSRestoreInterrupts(level1);
+    OSRestoreInterrupts(outerIrq);
 }
 
 #pragma scheduling invalid_target
