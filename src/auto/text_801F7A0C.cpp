@@ -1291,48 +1291,48 @@ extern "C" s32 fn_801F9BD0(s32 **arg0, s32 **arg1) {
 
 #pragma scheduling invalid_target
 extern "C" void fn_801F9BE8(void) {
-    extern void *lbl_8055EC4C, *lbl_8055EC50;
-    extern void **lbl_8055EC54;
-    extern s32 lbl_8055EC58;
-    extern char lbl_8033B32C[];
+    extern void *lbl_8055EC4C, *lbl_8055EC50;   // heads of the two GOB lists
+    extern void **lbl_8055EC54;                 // the sorted GOB pointer table
+    extern s32 lbl_8055EC58;                    // entries in that table
+    extern char lbl_8033B32C[];                 // "StaticGOB tab": alloc name
     extern void *fn_8012850C(u32, void *);
     extern int qsort(void *, u32, u32, int (*)(const void *, const void *));
     extern int fn_801F9BD0(const void *, const void *);
     s32 index;
     lbl_8055EC58 = 0;
     {
-        void *node = lbl_8055EC4C;
+        StaticGob *node = (StaticGob *)lbl_8055EC4C;
         while (node != 0) {
-            if (*(s32 *)((u8 *)node + 0x3C) >= 0)
+            if (node->gobId >= 0)
                 ++lbl_8055EC58;
-            node = *(void **)((u8 *)node + 0x44);
+            node = node->next;
         }
     }
     {
-        void *node = lbl_8055EC50;
+        StaticGob *node = (StaticGob *)lbl_8055EC50;
         while (node != 0) {
-            if (*(s32 *)((u8 *)node + 0x3C) >= 0)
+            if (node->gobId >= 0)
                 ++lbl_8055EC58;
-            node = *(void **)((u8 *)node + 0x44);
+            node = node->next;
         }
     }
     if (lbl_8055EC58 >= 1) {
         lbl_8055EC54 = (void **)fn_8012850C(lbl_8055EC58 * 4, lbl_8033B32C);
         index = 0;
         {
-            void *node = lbl_8055EC4C;
+            StaticGob *node = (StaticGob *)lbl_8055EC4C;
             while (node != 0) {
-                if (*(s32 *)((u8 *)node + 0x3C) >= 0)
-                    ((void **)lbl_8055EC54)[index++] = node;
-                node = *(void **)((u8 *)node + 0x44);
+                if (node->gobId >= 0)
+                    ((StaticGob **)lbl_8055EC54)[index++] = node;
+                node = node->next;
             }
         }
         {
-            void *node = lbl_8055EC50;
+            StaticGob *node = (StaticGob *)lbl_8055EC50;
             while (node != 0) {
-                if (*(s32 *)((u8 *)node + 0x3C) >= 0)
-                    ((void **)lbl_8055EC54)[index++] = node;
-                node = *(void **)((u8 *)node + 0x44);
+                if (node->gobId >= 0)
+                    ((StaticGob **)lbl_8055EC54)[index++] = node;
+                node = node->next;
             }
         }
         qsort(lbl_8055EC54, lbl_8055EC58, 4, fn_801F9BD0);
