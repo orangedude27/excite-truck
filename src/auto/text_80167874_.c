@@ -170,6 +170,10 @@ extern double lbl_80561930;
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma optimize_for_size off
+/* Rebuilds the 16-entry spin-matrix table at lbl_8042FF60. Entry i holds a
+   Y-axis rotation by 2*pi*(phase + i/16) -- 22.5 degrees apart -- where phase
+   advances with the frame timer (lbl_8055E3C4 + lbl_8055E460). The trailing
+   translate[] of each entry is left for fn_80168020 to fill per object. */
 void fn_801678D8(void) {
     extern unsigned char lbl_8042FF60[];
     struct SpinMatrix *mtx;
