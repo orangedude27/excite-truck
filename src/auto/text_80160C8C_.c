@@ -665,11 +665,14 @@ extern "C" void fn_801617BC(void) {
 #pragma cplusplus on
 #pragma scheduling invalid_target
 extern "C" void fn_801618B4(void) {
-    class Obj {
+    /* Teardown counterpart to fn_801617BC: release global resource handles,
+     * destroy the two UI screen objects, then call teardown() on each item in
+     * the global item list (lbl_8042FDEC: items pointer at +0, count at +4). */
+    class UIScreen {
     public:
-        virtual void cleanup(int);
+        virtual void destroy(s32 shouldFree);
     };
-    class Item {
+    class ManagedItem {
     public:
         virtual void v0();
         virtual void v1();
@@ -677,10 +680,10 @@ extern "C" void fn_801618B4(void) {
         virtual void setup();
         virtual void teardown();
     };
-    s32 offset;
-    s32 i;
-    s32 *count;
-    void *item;
+    s32 itemOffset;
+    s32 itemIndex;
+    s32 *itemCountPtr;
+    void *itemPtr;
 
     fn_802CAC54(lbl_8055E2E8);
     fn_802CAC54(lbl_8055E2EC);
@@ -690,24 +693,22 @@ extern "C" void fn_801618B4(void) {
     fn_80235380(lbl_8055E2FC);
 
     if (lbl_8055E2E0 != 0 && lbl_8055E2E0 != 0) {
-        ((Obj *)lbl_8055E2E0)->cleanup(1);
+        ((UIScreen *)lbl_8055E2E0)->destroy(1);
     }
     if (lbl_8055E2E4 != 0 && lbl_8055E2E4 != 0) {
-        ((Obj *)lbl_8055E2E4)->cleanup(1);
+        ((UIScreen *)lbl_8055E2E4)->destroy(1);
     }
 
-    count = (s32 *)(lbl_8042FDEC + 4);
-    i = 0;
-    offset = 0;
-    while (i < *count) {
-        item = *(void **)(*(s32 *)lbl_8042FDEC + offset);
-        ((Item *)item)->teardown();
-        offset += 4;
-        i++;
+    itemCountPtr = (s32 *)(lbl_8042FDEC + 4);
+    itemIndex = 0;
+    itemOffset = 0;
+    while (itemIndex < *itemCountPtr) {
+        itemPtr = *(void **)(*(s32 *)lbl_8042FDEC + itemOffset);
+        ((ManagedItem *)itemPtr)->teardown();
+        itemOffset += 4;
+        itemIndex++;
     }
 }
-#pragma scheduling on
-#pragma cplusplus reset
 
 #pragma scheduling on
 #pragma cplusplus reset
