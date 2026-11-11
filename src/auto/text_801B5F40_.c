@@ -2,6 +2,11 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+typedef struct PhobNode {
+    s32 value;
+    struct PhobNode *next;
+} PhobNode;
+
 extern s32 lbl_8055E708;
 extern s32 lbl_8055E70C;
 extern s32 lbl_8055E714;
@@ -81,57 +86,71 @@ void fn_801B60A8(void) {
     if (lbl_8055E70C != 0) fn_80128670(lbl_8055E70C - 0x10);
 }
 
-s32 fn_801B60F4(f32 *arg0, f32 arg1) {
-    f32 step = lbl_805626B0;
+s32 fn_801B60F4(void *arg0, f32 arg1) {
     s32 x;
     s32 y;
-    if (!(arg1 <= step)) return lbl_8055E714;
-    x = (s32)((arg0[0] + lbl_805626B4) / step);
-    if (x < 0) x = 0;
-    else if (x >= 100) x = 99;
-    y = (s32)((arg0[2] + lbl_805626B4) / step);
-    if (y < 0) y = 0;
-    else if (y >= 100) y = 99;
-    return (s32)((u32)lbl_8055E70C + ((y * 100 + x) * 4));
+    if (arg1 > lbl_805626B0)
+        return lbl_8055E714;
+    x = (s32)((*(f32 *)arg0 + lbl_805626B4) / lbl_805626B0);
+    if (x < 0)
+        x = 0;
+    else if (x >= 0x64)
+        x = 0x63;
+    y = (s32)((*(f32 *)((u8 *)arg0 + 8) + lbl_805626B4) / lbl_805626B0);
+    if (y < 0)
+        y = 0;
+    else if (y >= 0x64)
+        y = 0x63;
+    return lbl_8055E70C + ((x + y * 0x64) * 4);
 }
 
 extern float lbl_805626B8;
-void fn_801B619C(void *arg0, int *arg1, float *arg2) {
-    int x0, x1, y0, y1, count;
-    float t;
-    t = arg2[0] - lbl_805626B8; t = t + lbl_805626B4; x0 = (int)(t / lbl_805626B0);
+#pragma scheduling on
+void fn_801B619C(u32 *arg0, s32 *arg1, f32 *arg2) {
+    s32 x0, x1, y0, y1;
+    f32 f;
+    f = arg2[0] - lbl_805626B8;
+    f += lbl_805626B4;
+    x0 = (s32)(f / lbl_805626B0);
     if (x0 < 0) x0 = 0; else if (x0 >= 100) x0 = 99;
-    t = lbl_805626B8 + arg2[0]; t = t + lbl_805626B4; x1 = (int)(t / lbl_805626B0);
+    f = lbl_805626B8 + arg2[0];
+    f += lbl_805626B4;
+    x1 = (s32)(f / lbl_805626B0);
     if (x1 < 0) x1 = 0; else if (x1 >= 100) x1 = 99;
-    t = arg2[2] - lbl_805626B8; t = t + lbl_805626B4; y0 = (int)(t / lbl_805626B0);
+    f = arg2[2] - lbl_805626B8;
+    f += lbl_805626B4;
+    y0 = (s32)(f / lbl_805626B0);
     if (y0 < 0) y0 = 0; else if (y0 >= 100) y0 = 99;
-    t = lbl_805626B8 + arg2[2]; t = t + lbl_805626B4; y1 = (int)(t / lbl_805626B0);
+    f = lbl_805626B8 + arg2[2];
+    f += lbl_805626B4;
+    y1 = (s32)(f / lbl_805626B0);
     if (y1 < 0) y1 = 0; else if (y1 >= 100) y1 = 99;
     if (x0 != x1) {
         if (y0 != y1) {
             *arg1 = 4;
-            ((unsigned int *)arg0)[0] = lbl_8055E70C + ((x0 + y0 * 100) * 4);
-            ((unsigned int *)arg0)[1] = lbl_8055E70C + ((x1 + y0 * 100) * 4);
-            ((unsigned int *)arg0)[2] = lbl_8055E70C + ((x0 + y1 * 100) * 4);
-            ((unsigned int *)arg0)[3] = lbl_8055E70C + ((x1 + y1 * 100) * 4);
+            arg0[0] = lbl_8055E70C + ((x0 + y0 * 100) * 4);
+            arg0[1] = lbl_8055E70C + ((x1 + y0 * 100) * 4);
+            arg0[2] = lbl_8055E70C + ((x0 + y1 * 100) * 4);
+            arg0[3] = lbl_8055E70C + ((x1 + y1 * 100) * 4);
         } else {
             *arg1 = 2;
-            ((unsigned int *)arg0)[0] = lbl_8055E70C + ((x0 + y0 * 100) * 4);
-            ((unsigned int *)arg0)[1] = lbl_8055E70C + ((x1 + y0 * 100) * 4);
+            arg0[0] = lbl_8055E70C + ((x0 + y0 * 100) * 4);
+            arg0[1] = lbl_8055E70C + ((x1 + y0 * 100) * 4);
         }
     } else if (y0 != y1) {
         *arg1 = 2;
-        ((unsigned int *)arg0)[0] = lbl_8055E70C + ((x0 + y0 * 100) * 4);
-        ((unsigned int *)arg0)[1] = lbl_8055E70C + ((x0 + y1 * 100) * 4);
+        arg0[0] = lbl_8055E70C + ((x0 + y0 * 100) * 4);
+        arg0[1] = lbl_8055E70C + ((x0 + y1 * 100) * 4);
     } else {
         *arg1 = 1;
-        ((unsigned int *)arg0)[0] = lbl_8055E70C + ((x0 + y0 * 100) * 4);
+        arg0[0] = lbl_8055E70C + ((x0 + y0 * 100) * 4);
     }
-    count = *arg1;
-    ((unsigned int *)arg0)[count] = lbl_8055E714;
-    *arg1 = count + 1;
+    {
+        s32 count = *arg1;
+        arg0[count] = lbl_8055E714;
+        *arg1 = count + 1;
+    }
 }
-#pragma scheduling on
 extern void *fn_801B5F40(void);
 extern void __AXPushCallbackStack(void *);
 extern char lbl_80335F20[];
@@ -142,23 +161,27 @@ void fn_801B63E0(void **head, s32 value) {
     *head = node;
 }
 
-#pragma scheduling invalid_target
+#pragma scheduling on
+#pragma dont_inline on
 void fn_801B6428(void **head, void *value) {
     void *node = *head;
-    void *next;
+    void *prev;
+    void *cur;
     if (*(void **)node == value) {
         *head = *(void **)((u8 *)node + 4);
         __AXPushCallbackStack(node);
         return;
     }
-    next = *(void **)((u8 *)node + 4);
-    if (next != 0) {
-        if (*(void **)next == value) {
-            *(void **)((u8 *)node + 4) = *(void **)((u8 *)next + 4);
-            __AXPushCallbackStack(next);
-        } else {
-            fn_802E317C((const char *)&lbl_80335F20);
+    prev = node;
+    cur = *(void **)((u8 *)node + 4);
+    while (cur != 0) {
+        if (*(void **)cur == value) {
+            *(void **)((u8 *)prev + 4) = *(void **)((u8 *)cur + 4);
+            __AXPushCallbackStack(cur);
+            return;
         }
+        prev = cur;
+        cur = *(void **)((u8 *)cur + 4);
     }
+    fn_802E317C(lbl_80335F20);
 }
-#pragma scheduling on
