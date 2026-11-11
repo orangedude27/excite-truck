@@ -158,9 +158,10 @@ extern int lbl_8055E3C4;
 extern float lbl_8055E460;
 extern float lbl_80561918, lbl_8056191C, lbl_80561920, lbl_80561924, lbl_80561928;
 extern double lbl_80561930;
-#pragma cplusplus reset
+#pragma push
+#pragma processor 750
 #pragma use_lmw_stmw off
-#pragma optimize_for_size on
+#pragma optimize_for_size off
 void fn_801678D8(void) {
     extern unsigned char lbl_8042FF60[];
     float *out;
@@ -171,14 +172,18 @@ void fn_801678D8(void) {
     float temp_f30;
     float temp_f29;
     float temp_f28;
+    float intpart;
+    float base;
     int index;
     out = (float *)lbl_8042FF60;
     index = 0;
+    base = lbl_8055E460;
+    intpart = (float)lbl_8055E3C4;
     temp_f28 = lbl_80561920;
     temp_f29 = lbl_8056191C;
     temp_f30 = lbl_80561924;
     temp_f31 = lbl_80561928;
-    temp_f25 = lbl_80561918 * ((float)lbl_8055E3C4 + lbl_8055E460);
+    temp_f25 = lbl_80561918 * (intpart + base);
     do {
         temp_f26 = (float)cos(temp_f29 * (temp_f25 + ((float)index * temp_f28)));
         temp_f1 = (float)sin(temp_f29 * (temp_f25 + ((float)index * temp_f28)));
@@ -195,8 +200,7 @@ void fn_801678D8(void) {
         out += 12;
     } while (index < 0x10);
 }
-#pragma use_lmw_stmw reset
-#pragma optimize_for_size reset
+#pragma pop
 extern s32 *__AXFXGetLfoSinTable_801769CC(void);
 extern void *fn_8001285C(s32);
 extern void *fn_801284F8(s32, void *, void *, void *);
@@ -497,8 +501,8 @@ void fn_80168020(void) {
 first_body:
     {
         register u8 *object;
-        register f32 z;
         register f32 h;
+        register f32 z;
         register f32 y;
 
         record = (u8 *)(u32)*(u32 *)manager + offset;
@@ -1020,19 +1024,21 @@ extern "C" s32 fn_80169160(void *arg0, DummyArg1 *arg1, DummyManager *arg2, f32 
 #pragma pop
 
 s32 fn_801698B8(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    s32 temp_r0, temp_r0_2, temp_r0_3, var_r3, var_r4, var_r5;
+    s32 var_r3, var_r4, var_r5;
     var_r3 = arg0;
     var_r4 = arg1;
-    temp_r0 = arg2 - var_r3;
-    if (var_r3 > temp_r0) var_r3 = temp_r0;
-    temp_r0_2 = arg3 - var_r4;
-    if (var_r4 > temp_r0_2) var_r4 = temp_r0_2;
+    if (var_r3 > arg2 - var_r3)
+        var_r3 = arg2 - var_r3;
+    if (var_r4 > arg3 - var_r4)
+        var_r4 = arg3 - var_r4;
     var_r5 = var_r3;
-    if (var_r4 < var_r3) var_r5 = var_r4;
-    if (var_r4 > var_r3) var_r3 = var_r4;
-    temp_r0_3 = var_r3 + ((s32)(((u32)var_r5 >> 31) + var_r5) >> 1);
-    if (temp_r0_3 >= 3) {
-        if (temp_r0_3 >= 5) return 1;
+    if (var_r4 < var_r3)
+        var_r5 = var_r4;
+    if (var_r4 > var_r3)
+        var_r3 = var_r4;
+    if (var_r3 + var_r5 / 2 >= 3) {
+        if (var_r3 + var_r5 / 2 >= 5)
+            return 1;
         return 2;
     }
     return 3;
