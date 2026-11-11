@@ -17941,19 +17941,24 @@ void homebutton::gui::Manager::init() {
         virtual void d0();
         virtual void init();
     };
-    void *list = (u8 *)this + 8;
+    u8 *th = (u8 *)this;
+    u8 *list = th + 8;
     s32 index = 0;
-    void *entry;
-    ComponentDispatch *component;
-
-    do {
-        entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs((u8 *)this + 8, (u16)index);
-        component = *(ComponentDispatch **)((u8 *)entry + 4);
+    goto check;
+loop:
+    {
+        void *entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(th + 8, (u16)index);
+        ComponentDispatch *component = *(ComponentDispatch **)((u8 *)entry + 4);
         component->init();
         index++;
-        if (list == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
-    } while ((u32)index < *(u16 *)((u8 *)this + 0x10));
+    }
+check:
+    if (list == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
+    }
+    if ((u32)index < *(u16 *)(th + 0x10)) {
+        goto loop;
+    }
 }
 
 extern "C" void fn_800CFAC8(void *arg0) {
