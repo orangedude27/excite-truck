@@ -265,23 +265,25 @@ extern const float lbl_80562730;
 extern float lbl_80562734;
 #pragma push
 #pragma processor 750
-void fn_801B7F4C(void *arg0, int arg1, int arg2) {
-    void *root;
+void fn_801B7F4C(void *arg0, int deltaY, int arg2) {
+    void *rootObj;
     void *container;
-    void *object;
-    float scale;
-    float base;
+    void *subObject;
+    float yStep;
+    float baseOffset;
+
+    /* Position arg0 relative to the current root: offset from a subobject if present, else use a scaled delta. */
     (void)arg2;
-    scale = lbl_80562730;
+    yStep = lbl_80562730;
     if (*(void **)((char *)*(void **)((char *)fn_80178C9C() + 0x2C) + 0x20) != 0) {
         container = *(void **)((char *)fn_80178C9C() + 0x2C);
-        object = *(void **)((char *)container + 0x20);
-        base = lbl_80562734 + *(float *)((char *)object + 0x1C);
-        root = fn_80178C9C();
-        fn_801B8054((int)arg0, (int)root, lbl_80562708, (lbl_80562720 + base) + (float)arg1 * scale);
+        subObject = *(void **)((char *)container + 0x20);
+        baseOffset = lbl_80562734 + *(float *)((char *)subObject + 0x1C);
+        rootObj = fn_80178C9C();
+        fn_801B8054((int)arg0, (int)rootObj, lbl_80562708, (lbl_80562720 + baseOffset) + (float)deltaY * yStep);
     } else {
-        root = fn_80178C9C();
-        fn_801B78EC((int)arg0, (int)root, 0, lbl_80562708, (float)arg1 * scale, lbl_80562708);
+        rootObj = fn_80178C9C();
+        fn_801B78EC((int)arg0, (int)rootObj, 0, lbl_80562708, (float)deltaY * yStep, lbl_80562708);
     }
 }
 #pragma pop
