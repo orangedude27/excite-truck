@@ -95,8 +95,8 @@ extern int fn_8018AF04(void *);
 extern void fn_8017A57C(void *);
 extern void fn_8017B2D0(void *, float, float, float, float);
 extern void fn_801BDA74(int, void *, float);
-extern void fn_801D11D8(void *);
-extern void fn_801D1540(void *);
+extern void fn_801D11D8();
+extern void fn_801D1540();
 extern void fn_802E30C8(const char *, ...);
 extern int lbl_8055E908, lbl_8055E918;
 extern float lbl_80561CD0, lbl_80561D54, lbl_80561D58;
@@ -1867,7 +1867,7 @@ extern "C" void fn_8018A180(void *arg0, float a1, float a2, float a3, float a4, 
     class Driver {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-        virtual v4(); virtual v5(); virtual v6(); virtual v7();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
         virtual void v8(); virtual void v9(); virtual void v10();
         virtual int slot34();
         virtual int slot38();
@@ -1877,7 +1877,6 @@ extern "C" void fn_8018A180(void *arg0, float a1, float a2, float a3, float a4, 
     float y;
     float x;
 #pragma unused(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)
-
     value = *(int *)((char *)arg0 + 0x328);
     if (value != 0) {
         fn_80279B28(value, (void *)((unsigned int)arg0 + 0x1E44));
@@ -1890,7 +1889,6 @@ extern "C" void fn_8018A180(void *arg0, float a1, float a2, float a3, float a4, 
             }
         }
     }
-
     x = *(float *)((char *)arg0 + 0x458);
     y = *(float *)((char *)arg0 + 0x45C);
     z = *(float *)((char *)arg0 + 0x460);
@@ -1903,13 +1901,11 @@ extern "C" void fn_8018A180(void *arg0, float a1, float a2, float a3, float a4, 
         *(float *)((char *)arg0 + 0x334) / lbl_80561D58,
         *(float *)((char *)arg0 + 0x338) / lbl_80561D58);
     x = *(float *)((char *)arg0 + 0x32C);
-    *(volatile float *)((char *)arg0 + 0xD4) = x;
+    *(float *)((char *)arg0 + 0xD4) = x;
     *(float *)((char *)arg0 + 0xE4) = lbl_80561CD0 / x;
-    fn_801BDA74(*(volatile int *)((char *)arg0 + 0x1EC), (void *)((unsigned int)arg0 + 0x32C), x);
-    value = *(int *)((char *)arg0 + 0x1EC);
-    fn_801D11D8((char *)lbl_8055E908 + value * 0x34);
-    value = *(int *)((char *)arg0 + 0x1EC);
-    fn_801D1540((char *)lbl_8055E918 + value * 0x9C);
+    fn_801BDA74(*(int *)((char *)arg0 + 0x1EC), (void *)((unsigned int)arg0 + 0x32C), x);
+    fn_801D11D8((char *)lbl_8055E908 + *(int *)((char *)arg0 + 0x1EC) * 0x34);
+    fn_801D1540((char *)lbl_8055E918 + *(int *)((char *)arg0 + 0x1EC) * 0x9C);
 }
 #pragma cplusplus reset
 void fn_8018A2BC(void) {
