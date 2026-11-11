@@ -578,26 +578,32 @@ extern "C" void fn_8029FB00(void *arg0) {
 #pragma processor 750
 #pragma scheduling invalid_target
 #pragma cplusplus on
+// Loads the "partemit.val" resource group (lbl_8034989C) and registers every child named
+// "emitter" (lbl_8055CB60) into the emitter table via fn_8029FB00. The emitter-record bump
+// allocator (lbl_804B9B7C: base pointer at [0], count at [1]) is reset first; the group
+// handle is released again at the end.
 extern "C" void fn_8029FD04(void) {
-    class Object {
+    /* Dummy interface for a "partemit.val" resource group: name() returns a child's
+       resource name, child(i) returns the i-th child (NULL past the end). */
+    class PartemitGroup {
     public:
         virtual const char *name();
-        virtual Object *child(int);
+        virtual PartemitGroup *child(int);
     };
-    Object *object;
-    int i;
-    Object *child;
+    PartemitGroup *group;
+    int childIndex;
+    PartemitGroup *child;
     lbl_804B9B7C[1] = 0;
-    object = (Object *)fn_80131810(lbl_8034989C);
-    if (object != 0) {
-        i = 0;
-        child = object->child(i++);
+    group = (PartemitGroup *)fn_80131810(lbl_8034989C);
+    if (group != 0) {
+        childIndex = 0;
+        child = group->child(childIndex++);
         while (child != 0) {
             if (stricmp(child->name(), lbl_8055CB60) == 0)
                 fn_8029FB00(child);
-            child = object->child(i++);
+            child = group->child(childIndex++);
         }
-        fn_80131818(object);
+        fn_80131818(group);
     }
 }
 #pragma cplusplus off
