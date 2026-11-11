@@ -541,6 +541,7 @@ static s32 __ios_Seek(IPCRequestEx* req, s32 offset, IPCSeekMode mode) {
     return ret;
 }
 
+/* Asynchronously seeks an IOS file descriptor and queues the request. */
 s32 IOS_SeekAsync(s32 fd, s32 offset, IPCSeekMode mode,
                   IPCAsyncCallback callback, void* callbackArg) {
     IPCRequestEx* req;
