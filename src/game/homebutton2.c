@@ -161,6 +161,28 @@ extern u8 SCGetLanguage(void);
 extern void fn_801282F4(void);
 extern void fn_800C64F4(void *);
 extern void *memset(void *, int, unsigned int);
+
+/* Home-button channel 2's resource block at lbl_80558860: fn_802EC614() fills it
+ * in at start-up and fn_802EC7AC() releases it at shutdown.  The handles are
+ * what fn_802EC4E8() returns for the names after this file's string block. */
+struct HomeBtn2Resources {
+    s32 homeBtnArc;   /* 0x00: the per-language homeBtn_*.arc file */
+    s32 file04;       /* 0x04: file opened from base + 0x100 */
+    s32 file08;       /* 0x08: file opened from base + 0x110 */
+    s32 file0C;       /* 0x0C: file opened from base + 0x11C */
+    void *archive;    /* 0x10: 0x80000-byte buffer the archive loads into */
+    s32 field14;      /* 0x14 */
+    s32 field18;      /* 0x18 */
+    s32 language;     /* 0x1C: SCGetLanguage() */
+    s32 field20;      /* 0x20 */
+    s32 archiveSize;  /* 0x24: 0x80000 */
+};
+
+/* The home-button callbacks registered by the game (lbl_805588D8); a slot still
+ * set when the kernel shuts the module down is fatal. */
+#define HOMEBTN2_CALLBACK_COUNT 8
+#define HOMEBTN2_UNREMOVED_MSG (lbl_8034EB28) /* "homebtn: callback %p never removed" */
+
 #pragma scheduling invalid_target
 void fn_802EC7AC(void) {
     s32 *p;
