@@ -826,7 +826,10 @@ extern "C" void fn_8014630C(void) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-extern "C" void *fn_80146310(void *arg0, const char *arg1, s32 arg2) {
+extern "C" void *fn_80146310(void *collection, const char *wantedName, s32 unused) {
+    /* Builds a result table for items in collection whose name matches wantedName:
+       counts matches, allocates 0x10-byte header and array (0xC per entry) via fn_801284F8/fn_8012850C/fn_8002F37C,
+       then appends each matching item with fn_80145670 and returns the header. */
     struct Result {
         void *data;
         s32 count;
@@ -844,7 +847,7 @@ extern "C" void *fn_80146310(void *arg0, const char *arg1, s32 arg2) {
     };
 
     Result *result;
-    s32 size = fn_80145140(arg0, arg1);
+    s32 size = fn_80145140(collection, wantedName);
     result = (Result *)fn_801284F8(0x10, lbl_8032D108);
     if (result != 0) {
         void *arena = fn_8012850C(size * 0xC + 0x10, lbl_80559E48);
@@ -858,11 +861,11 @@ extern "C" void *fn_80146310(void *arg0, const char *arg1, s32 arg2) {
 
     s32 i = 0;
     while (1) {
-        void *item = ((Collection *)arg0)->get(i);
+        void *item = ((Collection *)collection)->get(i);
         if (item == 0)
             break;
         const char *name = ((Item *)item)->name();
-        if (stricmp(name, arg1) == 0) {
+        if (stricmp(name, wantedName) == 0) {
             s32 count = result->count;
             void *data = result->data;
             s32 offset = count * 0xC;
