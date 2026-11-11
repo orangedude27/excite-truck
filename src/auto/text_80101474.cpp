@@ -1418,8 +1418,6 @@ float nw4hbm::ut::CharWriter::Print(unsigned short character) {
     return advance;
 }
 
-extern "C" const char lbl_80328178[];
-extern "C" const char lbl_8032818C[];
 /* nw4hbm::ut::CharWriter::SetCursor(f32 x, f32 y). Second copy of nw4hbm's text
    writer in this unit (the one built from ut_CharWriter.cpp); its drawing cursor
    is the float pair at +0x2C (X) and +0x30 (Y), one word later than the other
