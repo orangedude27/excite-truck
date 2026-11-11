@@ -1973,6 +1973,7 @@ extern void fn_8018A174(void *);
 extern void fn_8017B4AC(void *, float *, float, float);
 extern float lbl_80562240;
 #pragma cplusplus on
+/* Conditionally applies a random directional impulse to the object's secondary controller. */
 extern "C" void fn_801964D0(void *arg0) {
     float vector[3];
     float scale;
@@ -1980,6 +1981,7 @@ extern "C" void fn_801964D0(void *arg0) {
     float temp_f2;
     float var_f3;
     Vt_80194C4C *controller;
+
     controller = (Vt_80194C4C *)*(void **)((char *)arg0 + 0x28C);
     if (fn_80196468(*(int *)((char *)controller->v2() + 4)) != 0) {
         *((unsigned char *)arg0 + 0x2A7) = 1;
@@ -1989,6 +1991,7 @@ extern "C" void fn_801964D0(void *arg0) {
                 var_f3 = lbl_805621A4;
             else
                 var_f3 = lbl_80562140;
+
             controller = (Vt_80194C4C *)*(void **)((char *)arg0 + 0x294);
             scale = *(float *)((char *)controller + 0xD4);
             temp_f2 = lbl_805621AC * scale;
