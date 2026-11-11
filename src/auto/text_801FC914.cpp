@@ -1167,35 +1167,46 @@ found:
     }
 }
 
-extern "C" void fn_801FEC74(void* arg) {
-    char* result = (char*)lbl_8055EC98;
-    char* name = *(char**)arg;
+extern "C" void fn_801FEC74(void *arg) {
+    char *result = (char *)lbl_8055EC98;
+    char *name = *(char **)arg;
     int i = 0;
-    char* item = result;
-    for (;;) {
+    char *item = result;
+    while (i < *(int *)(result + 0x2C0)) {
         if (stricmp(name, item) == 0) {
             result += i * 0x58;
-            break;
+            goto foundEntry;
         }
         item += 0x58;
         i++;
-        if (i >= *(int*)(result + 0x2C0)) { result = 0; break; }
     }
-    if (result == 0) fn_802E317C(lbl_8033B7F0, *(char**)arg);
-    int index = 0;
-    void* p = result;
-    int count = *(int*)(result + 0x54);
-    for (; index < count; p = (char*)p + 4, ++index) {
-        if (*(void**)((char*)p + 0x30) == arg) break;
+    result = 0;
+foundEntry:
+    if (result == 0) {
+        fn_802E317C(lbl_8033B7F0, *(char **)arg);
     }
-    if (index >= count) fn_802E317C(lbl_8033B820, count, *(int*)(result + 0x50));
-    int j = index + 1;
-    int* q = (int*)(result + j * 4);
-    for (; j < *(int*)(result + 0x54); ++j, ++q) q[11] = q[12];
-    *(int*)(result + 0x54) = j - 1;
-    int n = *(int*)(result + 0x50);
-    *(void**)(result + 0x10 + n * 4) = arg;
-    *(int*)(result + 0x50) = n + 1;
+    int usedCount = *(int *)(result + 0x54);
+    int foundIdx = 0;
+    void *searchPtr = result;
+    for (int k = usedCount; k > 0; k--) {
+        if (*(void **)((char *)searchPtr + 0x30) == arg) {
+            break;
+        }
+        searchPtr = (char *)searchPtr + 4;
+        foundIdx++;
+    }
+    if (foundIdx >= usedCount) {
+        fn_802E317C(lbl_8033B820, usedCount, *(int *)(result + 0x50));
+    }
+    int *shiftPtr = (int *)(result + (foundIdx + 1) * 4);
+    int j = foundIdx + 1;
+    for (; j < *(int *)(result + 0x54); j++, shiftPtr++) {
+        shiftPtr[11] = shiftPtr[12];
+    }
+    *(int *)(result + 0x54) -= 1;
+    int freeCount = *(int *)(result + 0x50);
+    *(void **)(result + 0x10 + freeCount * 4) = arg;
+    *(int *)(result + 0x50) = freeCount + 1;
 }
 
 extern "C" int stricmp(const char *, const char *);
