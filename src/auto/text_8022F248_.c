@@ -456,6 +456,61 @@ void fn_8022FB6C(OverlayQuad *quad) {
         }
     }
 }
+
+extern void PSVECCrossProduct(float *, float *, float *);
+extern void PSVECNormalize(float *, float *);
+extern void fn_8022FF10(void *, void *);
+extern void fn_80015B20(void *, void *, void *);
+void fn_8022FD9C(void *arg0, float farg0) {
+    float b[9];
+    float a[3];
+    float c[3];
+    float f[3];
+    float e[3];
+    float d[3];
+    float x0, x1, x2, y0, y1, y2;
+    a[0] = 0.0f;
+    a[1] = 0.0f;
+    a[2] = *(float *)((char *)arg0 + 0x8C) * farg0;
+    if (*((u8 *)arg0 + 0x9C)) {
+        fn_8022FF10(b, a);
+        fn_80015B20(arg0, arg0, b);
+    }
+    c[0] = *(float *)((char *)arg0 + 0x94) * farg0;
+    c[1] = *(float *)((char *)arg0 + 0x98) * farg0;
+    c[2] = 0.0f;
+    if (*((u8 *)arg0 + 0x9D)) {
+        *(float *)((char *)arg0 + 0x24) += c[0];
+        *(float *)((char *)arg0 + 0x28) += c[1];
+        *(float *)((char *)arg0 + 0x2C) += c[2];
+    }
+    x2 = *(float *)((char *)arg0 + 8);
+    x1 = *(float *)((char *)arg0 + 4);
+    x0 = *(float *)arg0;
+    d[0] = x0;
+    d[1] = x1;
+    d[2] = x2;
+    y2 = *(float *)((char *)arg0 + 0x20);
+    y1 = *(float *)((char *)arg0 + 0x1C);
+    y0 = *(float *)((char *)arg0 + 0x18);
+    f[0] = y0;
+    f[1] = y1;
+    f[2] = y2;
+    PSVECCrossProduct(f, d, e);
+    PSVECNormalize(d, d);
+    PSVECNormalize(e, e);
+    PSVECCrossProduct(d, e, f);
+    *(float *)arg0 = d[0];
+    *(float *)((char *)arg0 + 4) = d[1];
+    *(float *)((char *)arg0 + 8) = d[2];
+    *(float *)((char *)arg0 + 0xC) = e[0];
+    *(float *)((char *)arg0 + 0x10) = e[1];
+    *(float *)((char *)arg0 + 0x14) = e[2];
+    *(float *)((char *)arg0 + 0x18) = f[0];
+    *(float *)((char *)arg0 + 0x1C) = f[1];
+    *(float *)((char *)arg0 + 0x20) = f[2];
+}
+
 #pragma push
 #pragma processor 750
 void fn_8022FF10(void *arg0, void *arg1) {
