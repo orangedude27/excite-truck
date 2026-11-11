@@ -1438,7 +1438,6 @@ void fn_8016DFB8(void *arg0) {
 void fn_8016E06C(void *arg0) {
     u8 **baseSlot;
     s32 index = *(s32 *)((u8 *)arg0 + 0x2c);
-
     if (index < *(s32 *)((u8 *)arg0 + 0x3c)) {
         s32 i = 0;
         u8 *item;
@@ -1450,9 +1449,8 @@ void fn_8016E06C(void *arg0) {
         *(f32 *)(item + 0xc) = lbl_8055E3C8;
         offset = 0;
         *(volatile s32 *)(item + 0x10) = 0;
-        while (i < *(s32 *)((u8 *)*(void * volatile *)item + 4)) {
-            register u8 *list = (u8 *)*(void * volatile *)item;
-            s32 value = *(s32 *)(list + offset + 4);
+        while (i < *(s32 *)(*(u8 **)item + 4)) {
+            s32 value = *(s32 *)(*(u8 **)*(u8 **)item + offset + 4);
             if (value != 0) {
                 fn_802BAF98((void *)value, 1);
             }
