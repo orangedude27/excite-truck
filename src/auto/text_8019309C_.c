@@ -76,6 +76,13 @@ public:
 };
 #pragma cplusplus reset
 typedef unsigned char u8;
+/* clamp helper (inlined by the original in fn_801941A8) */
+static inline float Clamp801941A8(float lo, float v, float hi) {
+    float r = lo;
+    r = r < v ? v : r;
+    r = r > hi ? hi : r;
+    return r;
+}
 extern void *lbl_804349C0[];
 extern float lbl_8056223C, lbl_8055E57C;
 extern int lbl_804348E8[];
@@ -212,7 +219,7 @@ float fn_801931EC(float a, float b) {
 
 #pragma processor 750
 void fn_8019321C(void *arg0, void *arg1, void *arg2) {
-    float stack[10];
+    float stack[8];
     float x = *(float *)((char *)arg2 + 0x18);
     float y = *(float *)((char *)arg2 + 0x20);
     float magnitude = x * x + y * y;
@@ -221,14 +228,10 @@ void fn_8019321C(void *arg0, void *arg1, void *arg2) {
     float dx;
     float dy;
     double neg;
-    float c;
     float d;
-    float term0;
-    float term1;
-    float term2;
-    float term3;
-    float ox;
+    float c;
     float oy;
+    float ox;
     stack[2] = x;
     stack[3] = y;
     length = (float)fn_8002F234(magnitude);
@@ -237,20 +240,16 @@ void fn_8019321C(void *arg0, void *arg1, void *arg2) {
     scale = lbl_80562140 / length;
     dx = stack[2] * scale;
     dy = stack[3] * scale;
+    stack[7] = *(float *)((char *)arg2 + 0x2C);
     c = *(float *)arg1;
     d = *(float *)((char *)arg1 + 4);
-    stack[7] = *(float *)((char *)arg2 + 0x2C);
     neg = -(double)dx;
     stack[2] = dx;
     stack[3] = dy;
     stack[4] = dy;
     stack[5] = (float)neg;
-    term0 = dy * c;
-    term1 = dx * d;
-    term2 = (float)neg * c;
-    term3 = dy * d;
-    ox = term0 + term1;
-    oy = term2 + term3;
+    ox = dy * c + dx * d;
+    oy = (float)neg * c + dy * d;
     ox += stack[6];
     oy += stack[7];
     *(float *)arg0 = ox;
