@@ -335,19 +335,40 @@ struct StartupCalendar {
 #define KERNEL_STACK_CHECK_NAME (base + 0xA0) /* "check_stack" */
 
 #pragma scheduling on
+/* Start-up: bring up the OS and every engine subsystem in order, log the date and time
+ * the game started, then arm the stack watermark check - fn_802E27F0 fills the guard
+ * area with 0x53FFEEDD and fn_802E2A1C, registered under the name "check_stack",
+ * reports "STACK OVERRUN!" once that marker is gone.  Returning 1 is main()'s cue to
+ * run the matching shutdown (fn_802E2B34) and panic. */
 int fn_802E2A5C(void) {
-    unsigned short local[12];
+    struct StartupCalendar now;
     char * const base = lbl_8034CCE0;
-    OSInit(); fn_8005954C(); LCEnable(); fn_802E77A8(); fn_802E3498();
-    fn_801293B4(); fn_802E302C(); fn_802E2A54(); fn_8012820C(0x02000000);
-    fn_802E98D0(); fn_802E7318(); fn_802E46B0(); fn_80127C8C();
-    fn_802E8CA8(); fn_80127538(); fn_80129790(); fn_802E5478();
-    fn_802E7578(); fn_802EBE2C(); fn_802CF600(); fn_802EC614();
-    fn_802E2CFC(local);
-    fn_802E30C8(base + 0x78, local[1], local[2], local[0], *(int *)((char *)local + 0x10));
-    fn_802E30C8(base + 0x8C, local[3], local[4], local[5]);
+    OSInit();
+    fn_8005954C();
+    LCEnable();
+    fn_802E77A8();
+    fn_802E3498();
+    fn_801293B4();
+    fn_802E302C();
+    fn_802E2A54();
+    fn_8012820C(0x02000000);
+    fn_802E98D0();
+    fn_802E7318();
+    fn_802E46B0();
+    fn_80127C8C();
+    fn_802E8CA8();
+    fn_80127538();
+    fn_80129790();
+    fn_802E5478();
+    fn_802E7578();
+    fn_802EBE2C();
+    fn_802CF600();
+    fn_802EC614();
+    fn_802E2CFC(&now);
+    fn_802E30C8(KERNEL_DATE_FORMAT, now.month, now.day, now.year, now.weekDay);
+    fn_802E30C8(KERNEL_TIME_FORMAT, now.hour, now.minute, now.second);
     fn_802E27F0();
-    fn_80127C90(fn_802E2A1C, base + 0xA0);
+    fn_80127C90(fn_802E2A1C, KERNEL_STACK_CHECK_NAME);
     return 1;
 }
 extern void DCStoreRange(void *, int);
