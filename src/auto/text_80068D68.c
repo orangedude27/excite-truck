@@ -2248,8 +2248,8 @@ s32 WUDSetDisableChannel(s8 arg0) {
     extern char lbl_80313550[];
     extern char lbl_80313568[];
     extern u8 lbl_80392960[];
-    register s32 result = 0;
-    register volatile u8 *base = lbl_80392960;
+    s32 result = 0;
+    volatile u8 *base = lbl_80392960;
     s32 min;
     s32 max;
     s32 channel;
@@ -15684,35 +15684,35 @@ u8 HID_HostDeregister(void) {
     extern u8 hidh_conn_disconnect(u32);
     extern void fn_80070F90(void *);
     extern void fn_80089248(void);
+    u8 *base;
     u8 *entry;
-    u8 *base = lbl_803C3C38;
     u32 i;
     u32 offset;
     u8 one = 1;
     u8 zero = 0;
-    if (base[0x400] == 0)
+    base = lbl_803C3C38;
+    if (lbl_803C3C38[0x400] == 0)
         return 1;
     for (i = 0; i < 0x10; i++) {
         u8 flag = base[0x400];
-        u8 idx = (u8)i;
         u8 active;
         if (flag == 0)
             continue;
-        if (idx > 0x10)
+        if ((u8)i > 0x10)
             continue;
-        offset = idx * 0x34;
+        offset = ((u8)i) * 0x34;
         entry = base + offset;
         active = base[offset];
         if (active == 0)
             continue;
-        if (flag == 0 || idx > 0x10 || active == 0)
+        if (flag == 0 || (u8)i > 0x10 || active == 0)
             goto do_clear;
         entry[0xC] = one;
         fn_80070F90(entry + 0x1C);
         if (entry[0xA] != 1)
             goto do_clear;
         entry[0xC] = one;
-        hidh_conn_disconnect(idx);
+        hidh_conn_disconnect((u8)i);
 do_clear:
         entry[0] = zero;
         entry[0x10] = zero;
@@ -23473,29 +23473,34 @@ void *fn_80096904(void *arg0, u32 arg1, u32 arg2) {
     return NULL;
 }
 
+/* Create an empty service record in the SDP server database (stack/sdp/sdp_db.c).
+   Its handle is one past the last record's, or 0x10000 for the first record, and
+   the service-record-handle attribute is added to it automatically.
+   Returns the new handle, or 0 when all SDP_MAX_RECORDS records are in use. */
 u32 SDP_CreateRecord(void) {
-    u8 *base = lbl_803C4C40 + 0x121C;
+    tSDP_DB_BUILD_VIEW *p_db = sdp_cb_server_db_view;
     u32 count;
     u32 handle;
     u8 bytes[4];
     u16 stored_count;
-    if (*(u16 *)(lbl_803C4C40 + 0x1222) < 0x14) {
-        memset(base + (*(u16 *)(lbl_803C4C40 + 0x1222) * 0x298) + 8, 0, 0x298);
-        count = *(u16 *)(base + 6);
+    if (sdp_cb_num_records < SDP_MAX_RECORDS) {
+        memset(&p_db->record[sdp_cb_num_records], 0, sizeof(tSDP_RECORD_BUILD_VIEW));
+        count = p_db->num_records;
         if (count != 0) {
-            handle = *(u32 *)(base + ((count - 1) * 0x298) + 8) + 1;
+            u32 prev = count - 1;
+            handle = p_db->record[prev].record_handle + 1;
         } else {
             handle = 0x10000;
         }
         bytes[0] = (u8)(handle >> 24);
-        *(u32 *)(base + (count * 0x298) + 8) = handle;
-        stored_count = *(u16 *)(base + 6);
+        p_db->record[count].record_handle = handle;
+        stored_count = p_db->num_records;
         bytes[1] = (u8)(handle >> 16);
-        *(volatile u16 *)(base + 6) = stored_count + 1;
+        *(volatile u16 *)&p_db->num_records = stored_count + 1;
         bytes[2] = (u8)(handle >> 8);
         bytes[3] = (u8)handle;
-        SDP_AddAttribute(handle, 0, 1, 4, bytes);
-        return *(u32 *)(base + ((*(u16 *)(base + 6) - 1) * 0x298) + 8);
+        SDP_AddAttribute(handle, ATTR_ID_SERVICE_RECORD_HDL, UINT_DESC_TYPE, 4, bytes);
+        return p_db->record[p_db->num_records - 1].record_handle;
     }
     return 0;
 }
