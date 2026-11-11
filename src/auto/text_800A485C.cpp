@@ -2533,8 +2533,7 @@ extern "C" void VFiPFCACHE_FreeFATPage(void *arg0, void *arg1) {
 
 extern "C" s32 VFiPFCACHE_FreeFATPage_800A8E10(void *arg0, void *arg1) {
     u8 *page = (u8 *)arg1;
-    volatile void **headSlot = (volatile void **)((u8 *)arg0 + 0x1634);
-    void *head = (void *)*headSlot;
+    void *head = *(void **)((u8 *)arg0 + 0x1634);
     void *nextHead;
     void *tail;
     if (head == 0)
@@ -2544,18 +2543,18 @@ extern "C" s32 VFiPFCACHE_FreeFATPage_800A8E10(void *arg0, void *arg1) {
     *(u32 *)(page + 0x10) = 0;
     *(u32 *)(page + 0x18) = -1;
     *(u32 *)(page + 0x1C) = 0;
-    head = (void *)*headSlot;
+    head = *(void **)((u8 *)arg0 + 0x1634);
     if (arg1 == head) {
-        *headSlot = *(void **)(page + 0x20);
+        *(void **)((u8 *)arg0 + 0x1634) = *(void **)(page + 0x20);
         return;
     }
     if (arg1 == *(void **)((u8 *)head + 0x24))
         return;
     *(void **)(*(u8 **)(page + 0x24) + 0x20) = *(void **)(page + 0x20);
     *(void **)(*(u8 **)(page + 0x20) + 0x24) = *(void **)(page + 0x24);
-    nextHead = (void *)*headSlot;
+    nextHead = *(void **)((u8 *)arg0 + 0x1634);
     *(void **)(page + 0x20) = nextHead;
-    tail = (void *)*headSlot;
+    tail = *(void **)((u8 *)arg0 + 0x1634);
     *(void **)(page + 0x24) = *(void **)((u8 *)tail + 0x24);
     *(void **)((u8 *)nextHead + 0x24) = arg1;
     *(void **)(*(u8 **)(page + 0x24) + 0x20) = arg1;
@@ -18339,16 +18338,22 @@ extern "C" void fn_800D0560(void *arg0, s32 arg1) {
 extern "C" s32 getPaneComponentByPane__Q310homebutton3gui11PaneManagerFPQ36nw4hbm3lyt4Pane(u8 *arg0, void *arg1) {
     register void *list = arg0 + 8;
     u32 i = 0;
-    do {
+    goto check;
+loop:
+    {
         void *item = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(arg0 + 0x18, (u16)i);
         if (*(void **)item == arg1) {
             return *(s32 *)((u8 *)item + 4);
         }
         ++i;
-        if (list == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
-        }
-    } while (i < *(u16 *)(arg0 + 0x10));
+    }
+check:
+    if (list == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
+    }
+    if (i < *(u16 *)(arg0 + 0x10)) {
+        goto loop;
+    }
     return 0;
 }
 
@@ -18756,8 +18761,9 @@ extern "C" s32 fn_80060C7C(void *);
 void fn_800D120C(void *arg0) {
     if (((u8 *)arg0)[0x41] == 0) {
         f32 value = *(f32 *)((u8 *)arg0 + 4);
-        Play__Q210homebutton9RemoteSpkFliSc(*(void **)((u8 *)arg0 + 0x24),
-            *(s32 *)arg0, (int)(lbl_80560E40 * value), (signed char)(lbl_80560E40 * value));
+        extern f32 lbl_80560E40;
+        f32 prod = lbl_80560E40 * value;
+        Play__Q210homebutton9RemoteSpkFliSc(*(void **)((u8 *)arg0 + 0x24), *(long *)arg0, (int)prod, (signed char)prod);
         if (fn_80060C7C(*(void **)arg0) != 0) {
             if (((u8 *)arg0)[0x42] == 0) {
                 OSTime time = OSGetTime();
@@ -19028,7 +19034,7 @@ extern "C" void *fn_800D19F8(void *arg0, s32 arg1) {
 }
 
 extern "C" void Start__Q210homebutton9RemoteSpkFv(void *this_ptr) {
-    register u8 *self = (u8 *)this_ptr;
+    u8 *self = (u8 *)this_ptr;
     if (self[0x1EC] != 0) {
         OSCreateAlarm((OSAlarm *)(self + 0x1A0));
         OSTime time = OSGetTime();
@@ -20630,14 +20636,13 @@ extern "C" void fn_800C790C(void *arg0) {
         u16 *table[7][6];
     };
     Context *ctx = (Context *)arg0;
-    register u16 *var_r7;
+    u16 *var_r7 = 0;
+    u32 row = 0;
     s32 var_r9 = 0;
     s32 col = 0;
     s32 in_quote = 0;
     u16 *str = *(u16 **)((u8 *)ctx->inner + 8);
-    s32 row = 0;
     var_r7 = str;
-
     while (*var_r7 != 0) {
         if (*var_r7 == 0x22) {
             *var_r7 = 0;
