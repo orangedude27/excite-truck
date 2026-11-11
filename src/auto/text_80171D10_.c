@@ -301,6 +301,7 @@ extern double fn_8002EFB4(float, double);
 extern float lbl_80561A44, lbl_80561A68, lbl_80561A6C;
 extern float lbl_80561A70, lbl_80561A74, lbl_80561A7C;
 extern double lbl_80561A88;
+extern double lbl_80561A60;
 extern float lbl_80561A70, lbl_80561A74;
 #pragma optimization_level 3
 #pragma scheduling invalid_target
