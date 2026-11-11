@@ -1243,41 +1243,40 @@ foundEntry:
 
 extern "C" int stricmp(const char *, const char *);
 void fn_801FEDA4(void *arg0) {
-    struct Obj {
-        int unused;
-        char name[1];
-    };
-    Obj *obj = (Obj *)arg0;
-    char *base = (char *)lbl_8055EC98;
+    // Spawn a path prop: look up the pool named in the spawner entry (arg0+4) in the
+    // global pool table, take a random object off that pool's unused list, initialize
+    // it from the entry's source object and add it to the pool's in-use list.
+    PathSpawnEntry *entry = (PathSpawnEntry *)arg0;
+    PathPool *pool = (PathPool *)lbl_8055EC98;
     int i = 0;
-    char *entry = base;
-    while (i < *(int *)(base + 0x2C0)) {
-        if (stricmp(obj->name, entry) == 0) {
-            base += i * 0x58;
+    PathPool *scan = pool;
+    while (i < ((PathPoolTable *)pool)->poolCount) {
+        if (stricmp(entry->poolName, scan->name) == 0) {
+            pool = pool + i;
             goto found;
         }
-        entry += 0x58;
+        scan = scan + 1;
         i++;
     }
-    base = 0;
+    pool = 0;
 found:
-    if (base == 0) {
-        fn_802E317C(lbl_8033B84C, obj->name);
+    if (pool == 0) {
+        fn_802E317C(lbl_8033B84C, entry->poolName);
     }
-    int count = *(int *)(base + 0x50);
+    int count = pool->unusedCount;
     if (count > 0) {
         int index = fn_80129D18(0, count);
-        int selected = *(int *)(base + 0x10 + index * 4);
+        void *selected = pool->unused[index];
         int j = index + 1;
-        int *p = (int *)(base + j * 4);
-        for (; j < *(int *)(base + 0x50); j++, p++) {
+        void **p = (void **)((char *)pool + j * 4);
+        for (; j < pool->unusedCount; j++, p++) {
             p[3] = p[4];
         }
-        *(int *)(base + 0x50) -= 1;
-        fn_801FD024((void *)selected, arg0);
-        int c2 = *(int *)(base + 0x54);
-        *(int *)(base + 0x30 + c2 * 4) = selected;
-        *(int *)(base + 0x54) = c2 + 1;
+        pool->unusedCount -= 1;
+        fn_801FD024(selected, arg0);
+        int c2 = pool->inUseCount;
+        pool->inUse[c2] = selected;
+        pool->inUseCount = c2 + 1;
     }
 }
 
