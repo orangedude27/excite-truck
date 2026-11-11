@@ -647,6 +647,9 @@ BOOL EXILock(EXIChannel chan, u32 dev, EXICallback callback) {
     }
 }
 
+/* Unlocks an EXI channel. If queued lock callbacks are waiting, it dequeues and
+ * invokes the next one; otherwise it clears the lock state and updates the
+ * channel interrupt mask. Returns TRUE if the channel was unlocked. */
 BOOL EXIUnlock(EXIChannel chan) {
     EXIData* exi = &Ecb[chan];
     BOOL enabled;
