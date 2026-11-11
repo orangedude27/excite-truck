@@ -355,6 +355,8 @@ extern float fn_80129DC4(int, float, float);
 extern float fn_802798E8(int);
 extern void fn_802799EC(int, float);
 #pragma ppc_psq_save off
+#pragma push
+#pragma processor 750
 #pragma dont_inline on
 void fn_80181EAC(int arg0) {
     float minA = lbl_80561D38;
@@ -369,6 +371,7 @@ void fn_80181EAC(int arg0) {
         fn_802799EC(arg0, temp_f1 - temp_f31);
 }
 #pragma dont_inline off
+#pragma pop
 #pragma push
 #pragma small_data off
 void fn_80181F30(void) {
@@ -2269,7 +2272,7 @@ float fn_8018AE7C(void *arg0) {
     if (*(u32 *)((u8 *)table + 4) - 0x00180000U == 0x304U) {
         return lbl_80561DE0;
     }
-    if (!(*(float *)((u8 *)arg0 + 0x25bc) <= lbl_80558DC4)) {
+    if (!(*(float *)((u8 *)arg0 + 0x25bc) <= *(float *)(void *)&lbl_80558DC4)) {
         return lbl_80561DE0;
     }
     if (*(float *)((u8 *)arg0 + 0xd4) > lbl_80561F28) {
