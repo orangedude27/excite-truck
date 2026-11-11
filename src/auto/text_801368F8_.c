@@ -133,6 +133,7 @@ void fn_80136CB8(void *arg0, s32 arg1) {
 #pragma cplusplus on
 #pragma scheduling invalid_target
 #pragma opt_propagation off
+#pragma opt_dead_code off
 extern "C" void fn_80136D20(void *arg0, s32 arg1) {
     struct Dummy {
         virtual void v0();
@@ -145,41 +146,34 @@ extern "C" void fn_80136D20(void *arg0, s32 arg1) {
     void *base = *(void**)((char*)arg0 + 0x10);
     void *entry = (char*)base + arg1 * stride;
     void *obj = ((Dummy*)fn_801B2ED0(arg1))->v4();
-
     if (*(unsigned char*)((char*)entry + 0x15) != 0) {
-        *(unsigned char*)((char*)entry + 0x14) = 0;
+        volatile unsigned char zero = 0;
+        *(unsigned char*)((char*)entry + 0x14) = zero;
         void *r5 = *(void**)((char*)obj + 4);
         float f2 = *(float*)((char*)obj + 8);
         void *r4 = *(void**)((char*)r5 + 0x14);
         float f1 = *(float*)((char*)r5 + 0x2C);
         float f0 = *(float*)((char*)r4 + 0x2C);
         float f3 = *(float*)((char*)obj + 0x40);
-
         f0 = (f0 - f1) * f2 + f1;
         f2 = f3 + f0;
-
         f1 = *(float*)((char*)obj + 0x48) + *(float*)((char*)r5 + 0x30);
-        if (*(unsigned char*)((char*)entry + 0x14) != 0) {
+        if (zero != 0) {
             f1 = *(float*)((char*)arg0 + 0x14) - f1;
         }
-
         *(float*)((char*)entry + 8) = *(float*)((char*)obj + 0x44);
         *(float*)((char*)entry + 0) = f2;
         *(float*)((char*)entry + 4) = f1;
-
         f2 = *(float*)((char*)entry + 0xC);
         *(float*)((char*)entry + 0xC) = *(float*)((char*)obj + 0x4C);
-
         if (*(unsigned char*)((char*)entry + 0x14) != 0) {
             *(float*)((char*)entry + 0xC) *= lbl_8056136C;
         }
-
         f0 = *(float*)((char*)entry + 0xC);
         f1 = (f0 - f2) / lbl_80561370;
         f3 = *(float*)((char*)entry + 0x10);
         f0 = (f1 - f3) * lbl_80561374 + f3;
         *(float*)((char*)entry + 0x10) = f0;
-
         unsigned char flag = *(unsigned char*)((char*)*(void**)((char*)obj + 4) + 0x35);
         *(unsigned char*)((char*)entry + 0x16) = flag;
         if ((flag & ~1) && (flag & 1)) {
@@ -189,11 +183,11 @@ extern "C" void fn_80136D20(void *arg0, s32 arg1) {
             }
         }
     } else {
-        float zero = lbl_80561368;
-        *(float*)((char*)entry + 4) = zero;
-        *(float*)((char*)entry + 0) = zero;
-        *(float*)((char*)entry + 0xC) = zero;
-        *(float*)((char*)entry + 8) = zero;
+        float zero2 = lbl_80561368;
+        *(float*)((char*)entry + 4) = zero2;
+        *(float*)((char*)entry + 0) = zero2;
+        *(float*)((char*)entry + 0xC) = zero2;
+        *(float*)((char*)entry + 8) = zero2;
         *(unsigned char*)((char*)entry + 0x16) = 0;
     }
 }
