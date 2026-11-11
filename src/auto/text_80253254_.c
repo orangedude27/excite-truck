@@ -657,9 +657,9 @@ void fn_802543FC(void *arg0) {
     union { s32 i; float f; } c, b, a;
     s32 index;
     u8 *point;
-    float scale;
-    float zero;
     float difference;
+    float zero;
+    float scale;
 
     if (*(s32 *)(base + 0x28) != -1) {
         v = fn_802C86DC();
@@ -1086,11 +1086,6 @@ __declspec(section ".sdata") extern float lbl_80563A60;
 #pragma scheduling invalid_target
 void fn_80255928(void *arg0, char *arg1) {
     typedef struct {
-        char name[0x20];
-        s32 id;
-        s32 refCount;
-    } StringEntry;
-    typedef struct {
         char pad0[0x58];
         char name[1];
     } Obj;
@@ -1099,25 +1094,26 @@ void fn_80255928(void *arg0, char *arg1) {
     extern void fn_8012D3D8(s32);
     extern int stricmp(const char *, const char *);
     Obj *obj;
+    register void *object;
     register s32 i;
-    register StringEntry **entries;
-    register StringEntry *entry;
+    register void **entries;
+
     obj = (Obj *)arg0;
     if (obj->name[0] != 0) {
-        entries = (StringEntry **)lbl_80498E08;
+        entries = lbl_80498E08;
         i = 0;
         goto scan_test;
     scan:
-        if (stricmp((*entries)->name, obj->name) == 0) {
+        if (stricmp((char *)*entries, obj->name) == 0) {
+            object = lbl_80498E08[i];
             {
                 char ch;
                 char *src;
                 s32 count;
                 char *dst;
-                entry = ((StringEntry **)lbl_80498E08)[i];
-                dst = entry->name;
-                if (--entry->refCount == 0) {
-                    fn_8012D3D8(entry->id);
+                dst = (char *)object;
+                if (--*(s32 *)((u8 *)object + 0x24) == 0) {
+                    fn_8012D3D8(*(s32 *)((u8 *)object + 0x20));
                     src = lbl_8055C1C0;
                     count = 0x20;
                     goto name_copy;
@@ -1676,12 +1672,44 @@ void fn_80255D3C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, float farg0
 #pragma use_lmw_stmw on
 
 #pragma dont_inline reset
+
+/* The car shown in the UI ("caruimod"; fn_802556BC builds it, its methods
+ * run from the two tables below lbl_80344B98 and lbl_80344BC0). */
+struct CarUIModelRec {
+    void *vtable;          /* 0x00: lbl_80344B98 */
+    s32 cameraIndex;       /* 0x04: entry of the camera table (stride 0x78) */
+    void *vehicle;         /* 0x08: vehicle object; its byte 0 says "ready" */
+    s32 unkC;              /* 0x0C */
+    u8 pad10[0x48];        /* 0x10 */
+    char name[1];          /* 0x58: resource name, compared case-insensitively */
+    u8 pad59[0x4F];        /* 0x59 */
+    float modelMtx[4][3];  /* 0xA8: world matrix; row 3 is the position */
+    u8 padD8[4];           /* 0xD8 */
+    u8 stretch;            /* 0xDC: draw stretched (1,1.01,1) and un-tinted */
+    u8 padDD[3];           /* 0xDD */
+    s32 unkE0;             /* 0xE0 */
+    s32 modelIndex;        /* 0xE4: "cc_back.mod" handle, -1 while unloaded */
+    s32 resId;             /* 0xE8 */
+    u8 padEC[0x10];        /* 0xEC */
+    void *vtable2;         /* 0xFC: lbl_80344BC0 */
+    u8 pad100[0x10];       /* 0x100 */
+    s32 unk110;            /* 0x110 */
+    u8 unk114;             /* 0x114 */
+    u8 pad115[3];          /* 0x115 */
+    u8 tinted;             /* 0x118: draw in the level's colour and scale */
+    u8 pad119[3];          /* 0x119 */
+    float level;           /* 0x11C: grows with time; drives that scale/colour */
+    s32 mode;              /* 0x120: 0 = to the screen, 1 = fn_802569DC path */
+};
+
+/* The 0x78-byte view setup fn_80253004 copies out of the camera table
+ * (lbl_80498D00, 0x78 bytes per camera) or fn_802545C4 builds from a vehicle. */
 struct Obj_80256548 {
     char pad[0x24];
-    float pos[3];
+    float pos[3];          /* 0x24: where the model is drawn */
     char pad2[0x48];
 };
-void fn_80256548(void *arg0) {
+void fn_80256548(struct CarUIModelRec *arg0) {
     extern unsigned char lbl_8055F330, lbl_8055F344, lbl_8055F345, lbl_8055F346, lbl_8055F347;
     extern char lbl_803447C0[], lbl_8055C1D0;
     extern int lbl_8055CFF0, lbl_8055CFF4;
