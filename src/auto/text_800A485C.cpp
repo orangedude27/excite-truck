@@ -2191,48 +2191,63 @@ next:
 
 #pragma pop
 extern "C" s32 fn_800A7B34(void *, void *);
-extern "C" s32 fn_800A8504(void *arg0, void *arg1, s32 arg2, s32 arg3) {
-    s32 temp_r0;
-    s32 temp_r3;
-    s32 temp_r4;
-    s32 temp_r4_2;
-    s32 temp_r7_2;
-    void *temp_r7;
-    void *temp_r8;
-    volatile u16 *flags;
-    temp_r7 = *(void **)arg1;
-    if ((void *)arg2 != temp_r7) {
-        if ((void *)arg2 == (void *)M2C_FIELD(temp_r7, void **, 0x24)) *(void **)arg1 = (void *)arg2;
-        else {
-            M2C_FIELD(M2C_FIELD((void *)arg2, void **, 0x24), void **, 0x20) = (void *)M2C_FIELD((void *)arg2, void **, 0x20);
-            M2C_FIELD(M2C_FIELD((void *)arg2, void **, 0x20), void **, 0x24) = (void *)M2C_FIELD((void *)arg2, void **, 0x24);
-            temp_r8 = *(void **)arg1;
-            M2C_FIELD((void *)arg2, void **, 0x20) = temp_r8;
-            M2C_FIELD((void *)arg2, void **, 0x24) = (void *)M2C_FIELD(*(void **)arg1, void **, 0x24);
-            M2C_FIELD(temp_r8, void **, 0x24) = (void *)arg2;
-            M2C_FIELD(M2C_FIELD((void *)arg2, void **, 0x24), void **, 0x20) = (void *)arg2;
-            *(void **)arg1 = (void *)arg2;
+extern "C" s32 fn_800A8504(void *manager, void *listHeadPtr, s32 nodePtr, s32 setTimestamp) {
+    /* Move node to the front of the cache-block list, mark it dirty, update its
+     * tracked range/timestamp, and flush it through fn_800A7B34 when required. */
+    s32 scratch0;
+    s32 flushResult;
+    s32 cachedStart;
+    s32 managerFlags;
+    s32 nodeStart;
+    void *headNode;
+    void *oldHead;
+    volatile u16 *nodeFlags;
+
+    headNode = *(void **)listHeadPtr;
+    if ((void *)nodePtr != headNode) {
+        if ((void *)nodePtr == (void *)M2C_FIELD(headNode, void **, 0x24)) {
+            *(void **)listHeadPtr = (void *)nodePtr;
+        } else {
+            M2C_FIELD(M2C_FIELD((void *)nodePtr, void **, 0x24), void **, 0x20) = (void *)M2C_FIELD((void *)nodePtr, void **, 0x20);
+            M2C_FIELD(M2C_FIELD((void *)nodePtr, void **, 0x20), void **, 0x24) = (void *)M2C_FIELD((void *)nodePtr, void **, 0x24);
+            oldHead = *(void **)listHeadPtr;
+            M2C_FIELD((void *)nodePtr, void **, 0x20) = oldHead;
+            M2C_FIELD((void *)nodePtr, void **, 0x24) = (void *)M2C_FIELD(*(void **)listHeadPtr, void **, 0x24);
+            M2C_FIELD(oldHead, void **, 0x24) = (void *)nodePtr;
+            M2C_FIELD(M2C_FIELD((void *)nodePtr, void **, 0x24), void **, 0x20) = (void *)nodePtr;
+            *(void **)listHeadPtr = (void *)nodePtr;
         }
     }
-    flags=(volatile u16 *)arg2;
-    temp_r0 = *flags;
-    temp_r4 = M2C_FIELD((void *)arg2, s32 *, 0xC);
-    *flags = (u16)(temp_r0 | 2);
-    if (temp_r4 == 0) {
-        temp_r0 = M2C_FIELD((void *)arg2, s32 *, 8);
-        M2C_FIELD((void *)arg2, s32 *, 0xC) = temp_r0;
-        M2C_FIELD((void *)arg2, s32 *, 0x10) = temp_r0;
+
+    nodeFlags = (volatile u16 *)nodePtr;
+    scratch0 = *nodeFlags;
+    cachedStart = M2C_FIELD((void *)nodePtr, s32 *, 0xC);
+    *nodeFlags = (u16)(scratch0 | 2);
+    if (cachedStart == 0) {
+        scratch0 = M2C_FIELD((void *)nodePtr, s32 *, 8);
+        M2C_FIELD((void *)nodePtr, s32 *, 0xC) = scratch0;
+        M2C_FIELD((void *)nodePtr, s32 *, 0x10) = scratch0;
     } else {
-        temp_r7_2 = M2C_FIELD((void *)arg2, s32 *, 8);
-        if ((u32)temp_r7_2 < (u32)temp_r4) M2C_FIELD((void *)arg2, s32 *, 0xC) = temp_r7_2;
-        else if ((u32)temp_r7_2 > (u32)M2C_FIELD((void *)arg2, s32 *, 0x10)) M2C_FIELD((void *)arg2, s32 *, 0x10) = temp_r7_2;
+        nodeStart = M2C_FIELD((void *)nodePtr, s32 *, 8);
+        if ((u32)nodeStart < (u32)cachedStart) {
+            M2C_FIELD((void *)nodePtr, s32 *, 0xC) = nodeStart;
+        } else if ((u32)nodeStart > (u32)M2C_FIELD((void *)nodePtr, s32 *, 0x10)) {
+            M2C_FIELD((void *)nodePtr, s32 *, 0x10) = nodeStart;
+        }
     }
-    if (arg3 != 0) M2C_FIELD((void *)arg2, s32 *, 0x1C) = (s32)M2C_FIELD(arg0, s32 *, 0x1644);
-    else M2C_FIELD((void *)arg2, s32 *, 0x1C) = 0;
-    temp_r4_2 = M2C_FIELD(arg0, s32 *, 0x1624);
-    if ((temp_r4_2 & 1) || ((temp_r4_2 & 4) && (*flags & 4))) {
-        temp_r3 = ((s32 (*)(void *, void *))fn_800A7B34)(arg0, (void *)arg2);
-        if (temp_r3 != 0) return temp_r3;
+
+    if (setTimestamp != 0) {
+        M2C_FIELD((void *)nodePtr, s32 *, 0x1C) = (s32)M2C_FIELD(manager, s32 *, 0x1644);
+    } else {
+        M2C_FIELD((void *)nodePtr, s32 *, 0x1C) = 0;
+    }
+
+    managerFlags = M2C_FIELD(manager, s32 *, 0x1624);
+    if ((managerFlags & 1) || ((managerFlags & 4) && (*nodeFlags & 4))) {
+        flushResult = ((s32 (*)(void *, void *))fn_800A7B34)(manager, (void *)nodePtr);
+        if (flushResult != 0) {
+            return flushResult;
+        }
     }
     return 0;
 }
