@@ -145,44 +145,48 @@ extern "C" void fn_801DE890(int arg0) {
 #pragma cplusplus reset
 
 #pragma small_data off
-void fn_801DE9F0(int kind, int updateObject) {
-    /* If kind==8, copies a queued 0x1C-byte record from lbl_804873B8 into
-     * lbl_804872B0+0xE0 and advances lbl_8055E9E0 (guarded by table count).
-     * Always (when allowed) records current kind/bitmask, samples time via
-     * fn_802E2C9C into lbl_8055ADF0/4, and if updateObject with lbl_8055E9F0
-     * set, reads "effects_volume" into object+8 and sets flags at 0x49..0x4D. */
-    float value;
-    register float newValue;
-    register void* object;
-    int bits;
-    unsigned long long time;
+/* Show popup `popupId`.  The queued popup (POPUP_QUEUED) first copies the next entry
+   of the run-time queue into row 8 of the popup table and stops once the queue is
+   empty.  The popup is remembered as seen in the saved popups_seen mask, its id and
+   the time it was raised are kept for fn_801DEFE0/fn_801DF238, and - when playSound
+   is set - the level-up sound is given the effects_volume setting and started once
+   without looping. */
+void fn_801DE9F0(int popupId, int playSound) {
+    float volume;
+    register float newVolume;
+    register struct SoundObject *sound;
+    int seenBits;
+    unsigned long long start;
 
-    if (kind != 8 || lbl_8055E9E0 < *(int*)((char*)lbl_804873B8 + 4)) {
-        if (kind == 8) {
-            int count = lbl_8055E9E0;
-            int *table = *(int**)lbl_804873B8;
-            memcpy(lbl_804872B0 + 0xE0, (char*)table + count * 0x1C, 0x1C);
+    if (popupId != POPUP_QUEUED ||
+        lbl_8055E9E0 < ((struct PopupQueue *)lbl_804873B8)->count) {
+        if (popupId == POPUP_QUEUED) {
+            int next = lbl_8055E9E0;
+            struct PopupEntry *entries = ((struct PopupQueue *)lbl_804873B8)->entries;
+            memcpy(lbl_804872B0 + POPUP_QUEUED * sizeof(struct PopupEntry),
+                   (char *)entries + next * sizeof(struct PopupEntry),
+                   sizeof(struct PopupEntry));
             lbl_8055E9E0 = lbl_8055E9E0 + 1;
         }
-        bits = lbl_8055E9DC;
-        lbl_8055E9E8 = kind;
-        lbl_8055E9DC = bits | (1 << kind);
-        time = fn_802E2C9C(bits);
-        lbl_8055ADF4 = (int)time;
-        lbl_8055ADF0 = (int)(time >> 32);
-        if (lbl_8055E9F0 != 0 && updateObject != 0) {
-            value = lbl_80562BF4;
-            fn_801331C4(4, (int *)lbl_803394FC, &value);
-            newValue = value;
-            object = lbl_8055E9F0;
-            if (newValue != *(float*)((char*)object + 8)) {
-                *((unsigned char*)object + 0x4D) = 1;
-                *(float*)((char*)object + 8) = newValue;
+        seenBits = lbl_8055E9DC;
+        lbl_8055E9E8 = popupId;
+        lbl_8055E9DC = seenBits | (1 << popupId);
+        start = fn_802E2C9C(seenBits); /* time in us; the argument is left over */
+        lbl_8055ADF4 = (int)start;
+        lbl_8055ADF0 = (int)(start >> 32);
+        if (lbl_8055E9F0 != 0 && playSound != 0) {
+            volume = lbl_80562BF4;
+            fn_801331C4(4, (int *)lbl_803394FC, &volume); /* "effects_volume" */
+            newVolume = volume;
+            sound = (struct SoundObject *)lbl_8055E9F0;
+            if (newVolume != sound->volume) {
+                sound->volumeChanged = 1;
+                sound->volume = newVolume;
             }
-            object = lbl_8055E9F0;
-            *((unsigned char*)object + 0x49) = 1;
-            *((unsigned char*)object + 0x4B) = 0;
-            *((unsigned char*)object + 0x4A) = 0;
+            sound = (struct SoundObject *)lbl_8055E9F0;
+            sound->play = 1;
+            sound->stopMode = 0;
+            sound->loop = 0;
         }
     }
 }
