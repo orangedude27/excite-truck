@@ -25,15 +25,17 @@ extern s32 fn_80005580(s32);
 
 // split_file divides it into the game's real files (file_status shows its range).
 
-static void fn_800053CC(void) {
+#pragma push
+#pragma processor 750
+void fn_800053CC(void) {
     f32 sp8;
     f32 spC;
-
     if (fn_801298E8(&sp8, 0) != 0) {
+        f32 f1;
         f32 f30;
         f32 f29;
         f32 f31;
-
+        f1 = sp8 * sp8 + spC * spC;
         f30 = lbl_80560114 * sp8;
         f31 = lbl_80560110;
         f29 = lbl_80560118 * spC;
@@ -41,7 +43,8 @@ static void fn_800053CC(void) {
         fn_80010B80(0x800000FF, f30, f29, f31, f31);
     }
 }
-
+#pragma pop
+/* Does nothing. */
 void fn_8000545C(void) {
     return;
 }
@@ -96,14 +99,10 @@ s32 fn_80005580(s32 arg0) {
     }
     if (flags & 0x100) {
         s32 result = 0;
-        switch (*(s32 *)(state + 0x30)) {
-        case 3:
-            break;
-        default:
+        if (*(s32 *)(state + 0x30) != 3) {
             if (state[0x34] != 0) {
                 result = 1;
             }
-            break;
         }
         return result;
     }
