@@ -303,45 +303,73 @@ extern void fn_80179F94(void *, void *);
 extern char lbl_80333B98[];
 extern int lbl_80333B48[];
 extern float lbl_80562AAC, lbl_80562AB8;
+struct Obj3910 {
+    void *vtable;
+    void *unk4;
+    int unk8;
+    void *unkC;
+    float unk10;
+    float unk14;
+    int unk18;
+    int unk1C;
+    int unk20;
+    float unk24;
+    float unk28;
+    float unk2C;
+    float unk30;
+    float unk34;
+    float unk38;
+    float unk3C;
+    float unk40;
+    float unk44;
+    float unk48;
+    char unk4C;
+    char pad[3];
+    float unk50;
+};
 #pragma scheduling invalid_target
 void fn_801D3910(void *arg0) {
     char *p;
     int i;
-
     fn_8017B0F8();
     p = (char *)arg0 + 0x248;
     *(void **)((char *)arg0 + 0x244) = p;
     if (p != 0) {
-        double value = lbl_80562AAC;
-        double zero = lbl_80562AB8;
-        volatile float temp[3];
         void *initialVtable = lbl_80333B98;
-
+        float value = lbl_80562AAC;
+        float zero = lbl_80562AB8;
+        volatile float sp10;
+        volatile float spC;
+        volatile float sp8;
+        int zeroInt;
+        void *a;
         *(volatile void **)p = initialVtable;
-        temp[0] = (float)zero;
-        temp[1] = (float)zero;
-        temp[2] = (float)zero;
-        *(void **)(p + 0xC) = (char *)arg0 + 0x3C;
+        zeroInt = 0;
+        sp8 = zero;
+        a = (char *)arg0 + 0x3C;
+        spC = zero;
+        sp10 = zero;
+        *(void **)(p + 0xC) = a;
         *(void **)(p + 4) = arg0;
-        *(int *)(p + 8) = 0;
+        *(int *)(p + 8) = zeroInt;
         *(int *)(p + 0x18) = 0x53504852;
-        *(float *)(p + 0x10) = (float)value;
-        *(float *)(p + 0x14) = (float)value;
+        *(float *)(p + 0x10) = value;
+        *(float *)(p + 0x14) = value;
         *(int *)(p + 0x20) = 100;
-        *(int *)(p + 0x1C) = 0;
+        *(int *)(p + 0x1C) = zeroInt;
         *(void **)p = lbl_80333B48;
-        *(float *)(p + 0x24) = (float)value;
-        *(float *)(p + 0x34) = (float)zero;
-        *(float *)(p + 0x38) = (float)zero;
-        *(float *)(p + 0x3C) = (float)zero;
-        *(float *)(p + 0x40) = (float)zero;
-        *(float *)(p + 0x44) = (float)zero;
-        *(float *)(p + 0x48) = (float)zero;
-        *(char *)(p + 0x4C) = 0;
-        *(float *)(p + 0x50) = (float)zero;
-        *(float *)(p + 0x28) = (float)zero;
-        *(float *)(p + 0x2C) = (float)zero;
-        *(float *)(p + 0x30) = (float)zero;
+        *(float *)(p + 0x24) = value;
+        *(float *)(p + 0x34) = zero;
+        *(float *)(p + 0x38) = zero;
+        *(float *)(p + 0x3C) = zero;
+        *(float *)(p + 0x40) = zero;
+        *(float *)(p + 0x44) = zero;
+        *(float *)(p + 0x48) = zero;
+        *(char *)(p + 0x4C) = zeroInt;
+        *(float *)(p + 0x50) = zero;
+        *(float *)(p + 0x28) = zero;
+        *(float *)(p + 0x2C) = zero;
+        *(float *)(p + 0x30) = zero;
         if (arg0 != 0)
             fn_8019EECC(arg0, p + 0x28);
     }
@@ -581,20 +609,16 @@ extern void fn_801D4294(void *, void *);
 extern void fn_8017D2C8();
 extern void fn_801796CC();
 void fn_801D3E8C(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4) {
-    float tmp[8];
-
+    volatile float tmp[8];
     fn_8017D2C8(arg0, arg1, arg2);
     if (*(int *)((char *)arg0 + 0x238) > 0 && arg4 != 0) {
         float z_val;
         float y_val;
         float x_val;
-        int size;
-
         x_val = *(float *)arg2;
         y_val = *(float *)((char *)arg2 + 4);
         z_val = *(float *)((char *)arg2 + 8);
         tmp[0] = x_val;
-        size = 0x20;
         tmp[1] = y_val;
         tmp[2] = z_val;
         tmp[3] = *(float *)((char *)arg4 + 0x118);
@@ -602,12 +626,11 @@ void fn_801D3E8C(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4) {
         tmp[5] = *(float *)((char *)arg4 + 0x120);
         *(short *)((char *)tmp + 0x18) = *(short *)((char *)arg4 + 0x6C);
         *(int *)((char *)tmp + 0x1C) = *(int *)((char *)arg0 + 0x238);
-        fn_801796CC(10, tmp, size);
+        fn_801796CC(10, (float *)tmp, 0x20);
     }
     if (*(int *)((char *)arg0 + 0x230) == 2 && *(void **)((char *)arg0 + 0x22C) != arg4 && arg4 != 0) {
         int is_car = 0;
         unsigned int tag = *(unsigned int *)((char *)arg4 + 0x10);
-
         if (tag == 0x43415220 || tag == 0x50434152 || tag == 0x41434152 || tag == 0x4E434152) {
             is_car = 1;
         }
