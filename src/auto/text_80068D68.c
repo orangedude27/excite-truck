@@ -5991,24 +5991,19 @@ void bta_hh_api_disable(void) {
 }
 
 void bta_hh_disc_cmpl(void) {
-    s8 status = 0;
-    u8 *base;
-    u32 i;
-
-    if (HID_HostDeregister() == 0) {
+    volatile UINT8 status;
+    UINT8 i;
+    void (*cb)(int, void *);
+    status = 0;
+    if (HID_HostDeregister() == 0)
         return;
-    }
     status = 6;
-    i = 0;
-    base = lbl_803C0D48;
-    do {
-        fn_800716F0(base + ((u32)(u8)i << 5) + 0x14);
-        i++;
-    } while (i < 16);
-    base = lbl_803C0D48;
-    fn_800716F0(base + 0x228);
-    (*(void (**)(u32, void *))(base + 0x224))(1, &status);
-    memset(base, 0, 0x230);
+    for (i = 0; i < 0x10; i++)
+        fn_800716F0(lbl_803C0D48 + i * 0x20 + 0x14);
+    fn_800716F0(lbl_803C0D48 + 0x228);
+    cb = *(void (**)(int, void *))(lbl_803C0D48 + 0x224);
+    (*cb)(1, (void *)&status);
+    memset(lbl_803C0D48, 0, 0x230);
 }
 
 extern u8 bta_hh_tod_spt(void *, u8);
@@ -22108,18 +22103,11 @@ void RFCOMM_ControlReq(void *mcb, u8 dlci, void *ctrl) {
 
 void RFCOMM_FlowReq(void *mcb, u8 dlci, u8 state) {
     u8 *port = port_find_mcb_dlci_port(mcb, dlci);
-    if (port[2] != 2)
-        goto done;
-    if (port[0x68] == 4) {
-        port[0x5e] = state == 0;
-        port[0x69] |= 8;
-        rfc_send_msc(mcb, dlci, 1, port + 0x5a);
-        rfc_port_timer_start(port, 0x3c);
-    } else {
-        goto done;
-    }
-done:
-    return;
+    if ((port[2] != 2) || (port[0x68] != 4)) return;
+    port[0x5e] = state == 0;
+    port[0x69] |= 8;
+    rfc_send_msc(mcb, dlci, 1, port + 0x5a);
+    rfc_port_timer_start(port, 0x3c);
 }
 
 void RFCOMM_LineStatusReq(void *arg0, u8 arg1, u8 arg2) {
