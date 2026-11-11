@@ -81,6 +81,7 @@ void fn_80230114(void) {
 #define QUAD_UNSET_EDGE lbl_80563628  // .sdata2: -1.0f, "this edge of the wrapped copy is unused"
 #define QUAD_INDICES    lbl_802F9FCC  // .rodata: {0,3,1,0,2,3}, the quad as two triangles
 #define QUAD_INDICES_WRAPPED lbl_802F9FC0  // .rodata: the same list for the wrapped copy
+#define QUAD_INDICES_SOLID lbl_802F9FD8  // .rodata: {0,1,3,0,3,2}, the untextured quad as two triangles
 
 struct QuadIndices {
     u16 index[6];
