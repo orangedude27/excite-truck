@@ -154,30 +154,34 @@ int fn_801AE790(void *arg0) {
 #pragma dont_inline reset
 
 #pragma scheduling invalid_target
-void fn_801AE79C(int arg0) {
-    register int flag;
-    register int *base;
-    register char *entry;
-    short selected;
-    int index;
+/* End of the race-result pass: in mode 2 with a full grid, look up the placing
+   of the last competitor that sets lap times (id 0x50) and is still unplaced,
+   and hand it to the RecordMgr callback (fn_801AFABC, stubbed out here).  The
+   competitor table holds 8 records, so the count > 10 test never lets it run. */
+void fn_801AE79C(s32 mode) {
+    register s32 enabled;
+    register CompetitorTable *table;
+    register Ent78 *competitor;
+    s16 rank;
+    s32 index;
 
-    flag = 0;
-    if (arg0 == 2 && lbl_80435780[0x3C0 / 4] > 10)
-        flag = 1;
-    if (flag != 0) {
-        entry = (char *)lbl_80435780;
-        base = (int *)entry;
-        selected = 0;
+    enabled = 0;
+    if (mode == 2 && ((CompetitorTable *)lbl_80435780)->count > 10)
+        enabled = 1;
+    if (enabled != 0) {
+        competitor = (Ent78 *)lbl_80435780;
+        table = (CompetitorTable *)competitor;
+        rank = 0;
         index = 0;
-        for (; index < base[0x3C0 / 4]; entry += 0x78, index++) {
-            if (*(int *)entry == 0x50 && fn_801AE790(entry) == 0) {
-                void *value = fn_801AF8D0(index);
-                if (value != 0)
-                    selected = *(short *)((char *)value + 0xC);
+        for (; index < table->count; competitor++, index++) {
+            if (competitor->id == 0x50 && fn_801AE790(competitor) == 0) {
+                RaceResult *result = (RaceResult *)fn_801AF8D0(index);
+                if (result != 0)
+                    rank = result->rank;
             }
         }
-        if (selected >= 1)
-            fn_801AFABC(lbl_8055E628, selected);
+        if (rank >= 1)
+            fn_801AFABC(lbl_8055E628, rank);
     }
 }
 #pragma scheduling on
