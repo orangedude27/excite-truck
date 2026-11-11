@@ -1296,45 +1296,45 @@ extern "C" void fn_8001DEA8(void);
 extern "C" void fn_80011A50(void);
 extern "C" void fn_80005464(void);
 extern "C" void fn_800070DC(void) {
-    class Item {
+    class Overlay {
     public:
         virtual void v0();
         virtual void v1();
         virtual void v2();
-        virtual void v3();
-        virtual void v4();
-        virtual void dispatch();
+        virtual void show();  /* +0x14: take the screen */
+        virtual void hide();  /* +0x18: give the screen back */
+        virtual void init();  /* +0x1C: the ctor fn_80005C88 runs on a built overlay */
     };
-    s32 *base;
-    Item *item;
-    void *obj;
-    u8 *cursor;
-    s32 i;
-    s32 zero;
-    fn_80209190(lbl_8055D354, 1.0f);
-    base = lbl_8034EEB8;
-    ((Item *)base[3])->dispatch();
-    ((Item *)*(void **)((u8 *)base + 0x5C))->dispatch();
-    ((Item *)*(void **)((u8 *)base + 0x58))->dispatch();
-    if (base[20] != 0) {
-        ((Item *)base[20])->dispatch();
+    OverlayManager *mgr;
+    Overlay *overlay;
+    void *overlayObj;
+    u8 *cursor;   /* walks the manager's OverlayEntry slots, 0x10 bytes each */
+    s32 player;
+    s32 noOverlay;
+    fn_80209190(lbl_8055D354, 1.0f); /* the "dashboard" sound group back to full volume */
+    mgr = OVERLAY_MGR;
+    ((Overlay *)mgr->intro)->init();
+    ((Overlay *)mgr->results)->init();
+    ((Overlay *)mgr->closure)->init();
+    if (mgr->arena != 0) {
+        ((Overlay *)mgr->arena)->init();
     }
-    if (lbl_8034EEB8[2] != 0) {
-        ((Item *)lbl_8034EEB8[2])->dispatch();
+    if (OVERLAY_MGR->postRace != 0) {
+        ((Overlay *)OVERLAY_MGR->postRace)->init();
     }
-    if (lbl_8034EEB8[1] != 0) {
-        ((Item *)lbl_8034EEB8[1])->dispatch();
+    if (OVERLAY_MGR->preRace != 0) {
+        ((Overlay *)OVERLAY_MGR->preRace)->init();
     }
     cursor = (u8 *)lbl_8034EEB8;
-    i = 0;
-    zero = 0;
-    while (i < ((s32 *)lbl_8055D350)[5]) {
-        obj = *(void **)(cursor + 0x18);
-        item = (Item *)obj;
-        item->dispatch();
-        *(s32 *)(cursor + 0x10) = zero;
-        cursor += 0x10;
-        i++;
+    player = 0;
+    noOverlay = 0;
+    while (player < SESSION->playerCount) {
+        overlayObj = *(void **)(cursor + 0x18); /* OverlayEntry::racing */
+        overlay = (Overlay *)overlayObj;
+        overlay->init();
+        *(s32 *)(cursor + 0x10) = noOverlay;    /* OverlayEntry::active: none shown */
+        cursor += sizeof(OverlayEntry);
+        player++;
     }
     fn_8001DEA8();
     fn_80011A50();
