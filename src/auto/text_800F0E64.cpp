@@ -5908,6 +5908,17 @@ done:
     *((u8*)self + 0x48) = 0;
 }
 
+extern "C" void NotifyStrmHeaderAsyncEndCallback__Q46nw4hbm3snd6detail10StrmPlayerFbPCQ56nw4hbm3snd6detail10StrmPlayer10StrmHeaderPv(bool success, const void* header, void* player) {
+    if (player == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x4E8, lbl_803269A0);
+    }
+    if (success != 0) {
+        Setup__Q46nw4hbm3snd6detail10StrmPlayerFPCQ56nw4hbm3snd6detail10StrmPlayer10StrmHeader(player, header);
+    } else {
+        ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(player);
+    }
+}
+
 extern "C" void VoiceCallbackFunc__Q46nw4hbm3snd6detail10StrmPlayerFPQ46nw4hbm3snd6detail7AxVoiceQ56nw4hbm3snd6detail7AxVoice14CallbackStatusPv(void *voice, s32 status, void *player) {
     const char *base = lbl_80326768;
     if (player == 0)
