@@ -221,22 +221,23 @@ new_line:
 extern int VIGetTvFormat(short, short);
 extern int VIConfigure(void *);
 extern int VIConfigurePan(int, int, int, int);
-void ConfigureVideo(short arg0, short arg1) {
-    struct VideoConfig { int mode; volatile short a,b,c,d,e,f,g; int last; volatile int padding[12]; } config;
-    int format;
-    config.a=arg0; config.b=0x1E0; config.c=arg1;
-    config.d=0x28; config.f=0x280; config.g=arg1;
-    format=VIGetTvFormat(arg0,arg1);
-    switch(format) {
+void ConfigureVideo(short width, short height) {
+    /* Configure VI render mode from size/TV format and set display pan. */
+    struct VideoConfig { int mode; volatile short a,b,c,d,e,f,g; int last; volatile int padding[12]; } renderMode;
+    int tvFormat;
+    renderMode.a=width; renderMode.b=0x1E0; renderMode.c=height;
+    renderMode.d=0x28; renderMode.f=0x280; renderMode.g=height;
+    tvFormat=VIGetTvFormat(width,height);
+    switch(tvFormat) {
     case 0: case 2:
         if (*(volatile unsigned short *)0xCC00206C & 1) {
-            config.mode=2; config.e=0; config.last=0;
-        } else { config.mode=0; config.e=0; config.last=1; }
+            renderMode.mode=2; renderMode.e=0; renderMode.last=0;
+        } else { renderMode.mode=0; renderMode.e=0; renderMode.last=1; }
         break;
-    case 5: config.mode=0x14; config.e=0; config.last=1; break;
-    case 1: config.mode=4; config.e=0x2F; config.last=1; break;
+    case 5: renderMode.mode=0x14; renderMode.e=0; renderMode.last=1; break;
+    case 1: renderMode.mode=4; renderMode.e=0x2F; renderMode.last=1; break;
     }
-    VIConfigure(&config);
+    VIConfigure(&renderMode);
     VIConfigurePan(0,0,0x280,0x1E0);
 }
 
