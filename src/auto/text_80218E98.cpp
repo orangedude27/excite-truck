@@ -4275,24 +4275,25 @@ extern "C" void fn_8022071C(void *arg0) {
     }
 }
 
-extern "C" void *fn_80220778(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
+extern "C" void *fn_80220778(void *self, s32 x, s32 y, s32 width, s32 height, s32 param244, s32 param250, s32 param254) {
     extern void *lbl_8033E668[];
-    fn_80218F34(arg0, arg1, arg2, arg1 + arg3, arg2 + arg4, 0);
-    *(s32 *)((u8 *)arg0 + 0x244) = arg5;
-    *(void **)arg0 = lbl_8033E668;
-    *(s32 *)((u8 *)arg0 + 0x250) = arg6;
-    *(s32 *)((u8 *)arg0 + 0x254) = arg7;
-    fn_80219440(arg0, 0, (void *)arg5, 4);
-    *(s32 *)((u8 *)arg0 + 0x248) = ((s32 (*)(void *))fn_802C5130)(lbl_8033D9B0);
-    *(s32 *)((u8 *)arg0 + 0x24C) = ((s32 (*)(void *))fn_802C5130)(lbl_8033D9BC);
-    if (*(s32 *)((u8 *)arg0 + 0x248) != 0) {
-        s32 count = fn_802C5220(*(s32 *)((u8 *)arg0 + 0x248));
-        fn_80219284(arg0, ((Vf78 *)arg0)->get(), count);
+    /* Initializes a slider-like UI object: sets bounds, vtable, image resources, and an initial value. */
+    fn_80218F34(self, x, y, x + width, y + height, 0);
+    *(s32 *)((u8 *)self + 0x244) = param244;
+    *(void **)self = lbl_8033E668;
+    *(s32 *)((u8 *)self + 0x250) = param250;
+    *(s32 *)((u8 *)self + 0x254) = param254;
+    fn_80219440(self, 0, (void *)param244, 4);
+    *(s32 *)((u8 *)self + 0x248) = ((s32 (*)(void *))fn_802C5130)(lbl_8033D9B0);
+    *(s32 *)((u8 *)self + 0x24C) = ((s32 (*)(void *))fn_802C5130)(lbl_8033D9BC);
+    if (*(s32 *)((u8 *)self + 0x248) != 0) {
+        s32 count = fn_802C5220(*(s32 *)((u8 *)self + 0x248));
+        fn_80219284(self, ((Vf78 *)self)->get(), count);
     }
-    *(u8 *)((u8 *)arg0 + 0x258) = 0;
-    *(s32 *)((u8 *)arg0 + 0x25C) = 0;
-    *(s32 *)((u8 *)arg0 + 0x260) = fn_80228F40(arg1, arg2);
-    return arg0;
+    *(u8 *)((u8 *)self + 0x258) = 0;
+    *(s32 *)((u8 *)self + 0x25C) = 0;
+    *(s32 *)((u8 *)self + 0x260) = fn_80228F40(x, y);
+    return self;
 }
 
 extern "C" void *lbl_8033E668[];
