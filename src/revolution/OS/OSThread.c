@@ -560,6 +560,8 @@ BOOL OSCreateThread(OSThread* thread, OSThreadFunc func, void* funcArg,
     return TRUE;
 }
 
+// Terminates the current thread: marks it detached/exit or moribund with a join value,
+// releases its mutexes, wakes joiners, and reschedules without returning.
 void OSExitThread(OSThread* thread) {
     BOOL enabled;
     OSThread* currThread;
