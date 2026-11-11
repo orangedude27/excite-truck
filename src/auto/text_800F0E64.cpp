@@ -1384,35 +1384,39 @@ extern "C" s32 ReadWaveSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCF
 
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" s32 ReadBankInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive8BankInfo(void *self, u32 index, void *out) {
-    register void *bankInfo = *(void **)((u8 *)self + 0x28);
-    register void *reader = self;
+/* Reads bank table entry `index` out of the sound archive's INFO chunk: resolves the
+   data reference the entry holds (asserting it is a plain one) and returns the bank
+   block's offset in info->offset. Returns 0 when the archive has no bank table or
+   `index` is past its end. */
+BOOL nw4hbm::snd::detail::SoundArchiveFileReader::ReadBankInfo(u32 index, nw4hbm::snd::SoundArchive::BankInfo *info) const {
+    register void *bankRef = *(void **)((u8 *)this + 0x28);
+    register const void *reader = this;
     register u32 bankIndex = index;
-    register void *outInfo = out;
-    register u8 *table;
+    register nw4hbm::snd::SoundArchive::BankInfo *outInfo = info;
+    register u8 *bankTable;
     void *bank;
-    if (*((u8 *)bankInfo + 9) != 0)
+
+    if (*((u8 *)bankRef + 9) != 0)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80559858, 0x6F, lbl_80324B24);
-    table = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
-        *((u8 *)bankInfo + 8), *(u32 *)((u8 *)bankInfo + 0xC), bankInfo);
-    if (table == 0)
+    bankTable = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
+        *((u8 *)bankRef + 8), *(u32 *)((u8 *)bankRef + 0xC), bankRef);
+    if (bankTable == 0)
         bank = 0;
-    else if (bankIndex >= *(u32 *)table)
+    else if (bankIndex >= *(u32 *)bankTable)
         bank = 0;
     else {
         bankIndex <<= 3;
-        bankInfo = *(void **)((u8 *)reader + 0x28);
-        if (table[bankIndex + 5] != 0)
+        bankRef = *(void **)((u8 *)reader + 0x28);
+        if (bankTable[bankIndex + 5] != 0)
             Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80559860, 0x6F, lbl_80324B50);
         bank = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
-            table[bankIndex + 4], *(u32 *)(table + bankIndex + 8), bankInfo);
+            bankTable[bankIndex + 4], *(u32 *)(bankTable + bankIndex + 8), bankRef);
     }
     if (bank == 0)
         return 0;
-    *(u32 *)outInfo = *(u32 *)((u8 *)bank + 4);
+    outInfo->offset = *(u32 *)((u8 *)bank + 4);
     return 1;
 }
-
 extern "C" s32 ReadPlayerInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive10PlayerInfo(void *self, u32 index, void *out) {
     extern char lbl_805598A8;
     extern const char lbl_80324CDC[];
