@@ -68,9 +68,9 @@ extern void fn_80179E00_virtual_call(void *);
 #pragma scheduling off
 static f32 fn_load(void) { return lbl_80561B78; }
 #pragma scheduling invalid_target
-void* fn_80179D08(void *arg0) {
-    register f32 a = lbl_80561B7C;
-    register f32 b = lbl_80561B78;
+void *fn_80179D08(void *arg0) {
+    f32 a = lbl_80561B7C;
+    f32 b = lbl_80561B78;
     *(s32 *)arg0 = (s32)&lbl_80331C70[0];
     *(s32 *)((u8 *)arg0 + 0xC) = 0;
     *(f32 *)((u8 *)arg0 + 0x3C) = b;
@@ -126,41 +126,42 @@ void fn_80179D94(void *arg0, void *arg1) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_80179E00(void *arg0) {
+extern "C" void fn_80179E00(void *object) {
+    /* Resets the object's per-frame state, updates children and transform, snapshots the current transform, and clears a flag word. */
     struct Dummy {
         virtual void m0() = 0; virtual void m1() = 0; virtual void m2() = 0;
         virtual void m3() = 0; virtual void m4() = 0; virtual void m5() = 0;
         virtual void m6() = 0; virtual void m7() = 0; virtual void m8() = 0;
     };
-    s32 i;
-    void *p;
+    s32 childIndex;
+    void *childIter;
     s32 m, l, k, j, h, g, f, e, d, c, b, a;
-    volatile s32 *base = (volatile s32 *)arg0;
+    volatile s32 *base = (volatile s32 *)object;
 
-    *(s32 *)((u8 *)arg0 + 4) = 0;
-    i = 0;
-    p = arg0;
+    *(s32 *)((u8 *)object + 4) = 0;
+    childIndex = 0;
+    childIter = object;
     goto check;
 loop:
-    ((struct Dummy *)*(void **)((u8 *)p + 0x14))->m8();
-    p = (u8 *)p + 4;
-    i++;
+    ((struct Dummy *)*(void **)((u8 *)childIter + 0x14))->m8();
+    childIter = (u8 *)childIter + 4;
+    childIndex++;
 check:
-    if (i < *(s32 *)((u8 *)arg0 + 0x28)) goto loop;
-    fn_8017A580(arg0);
+    if (childIndex < *(s32 *)((u8 *)object + 0x28)) goto loop;
+    fn_8017A580(object);
     b = base[0x70 / 4]; a = base[0x74 / 4];
     c = base[0x78 / 4]; d = base[0x7C / 4];
     e = base[0x80 / 4]; f = base[0x84 / 4];
     g = base[0x88 / 4]; h = base[0x8C / 4];
     j = base[0x90 / 4]; k = base[0x94 / 4];
     l = base[0x98 / 4]; m = base[0x9C / 4];
-    *(s32 *)((u8 *)arg0 + 0xA0) = b; *(s32 *)((u8 *)arg0 + 0xA4) = a;
-    *(s32 *)((u8 *)arg0 + 0xA8) = c; *(s32 *)((u8 *)arg0 + 0xAC) = d;
-    *(s32 *)((u8 *)arg0 + 0xB0) = e; *(s32 *)((u8 *)arg0 + 0xB4) = f;
-    *(s32 *)((u8 *)arg0 + 0xB8) = g; *(s32 *)((u8 *)arg0 + 0xBC) = h;
-    *(s32 *)((u8 *)arg0 + 0xC0) = j; *(s32 *)((u8 *)arg0 + 0xC4) = k;
-    *(s32 *)((u8 *)arg0 + 0xC8) = l; *(s32 *)((u8 *)arg0 + 0xCC) = m;
-    fn_801E9DC4((u8 *)arg0 + 0x6C);
+    *(s32 *)((u8 *)object + 0xA0) = b; *(s32 *)((u8 *)object + 0xA4) = a;
+    *(s32 *)((u8 *)object + 0xA8) = c; *(s32 *)((u8 *)object + 0xAC) = d;
+    *(s32 *)((u8 *)object + 0xB0) = e; *(s32 *)((u8 *)object + 0xB4) = f;
+    *(s32 *)((u8 *)object + 0xB8) = g; *(s32 *)((u8 *)object + 0xBC) = h;
+    *(s32 *)((u8 *)object + 0xC0) = j; *(s32 *)((u8 *)object + 0xC4) = k;
+    *(s32 *)((u8 *)object + 0xC8) = l; *(s32 *)((u8 *)object + 0xCC) = m;
+    fn_801E9DC4((u8 *)object + 0x6C);
     return;
 }
 #pragma cplusplus reset
