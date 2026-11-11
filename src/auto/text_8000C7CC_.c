@@ -423,8 +423,9 @@ s32 fn_8000C840(void) {
     return 1;
 }
 
-s32 fn_8000C848(s32 arg0) {
-    switch (arg0) {
+s32 fn_8000C848(s32 messageId) {
+    /* Handle UI/input state messages: toggle or clear state flags, invoke the state callback when enabled, then refresh; returns 1 if handled. */
+    switch (messageId) {
     case 0x126:
         if (lbl_8055D406 == 0) { lbl_8055D406 = 1; fn_80230E90(1); }
         goto done;
