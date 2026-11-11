@@ -983,6 +983,8 @@ _exit:
 }
 
 static BOOL SCFindIntegerItem(void* dst, SCItemID id, u8 primType) {
+    /* Shared body of SCFindU8Item()/SCFindS8Item()/SCFindU32Item(): copies an item's
+       value into dst when the item exists and has the primitive type primType. */
     BOOL success;
     BOOL enabled;
     SCItem item;
