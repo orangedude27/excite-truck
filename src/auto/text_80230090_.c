@@ -305,7 +305,7 @@ void fn_802307AC(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
 #pragma paired on
 #pragma paired_single on
 
-#pragma processor gekko
+#pragma processor 750
 #pragma use_lmw_stmw on
 #pragma scheduling invalid_target
 #pragma paired_single off
