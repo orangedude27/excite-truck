@@ -3195,30 +3195,34 @@ extern "C" void fn_8019CE3C(void*, s32);
 extern "C" void fn_802E30C8(const char*, ...);
 extern "C" const char lbl_80333650[];
 #pragma scheduling on
-extern "C" void fn_801A1ABC(void* arg0, void* arg1) {
-    s32 value = *(s32*)((u8*)arg1 + 0x18);
-    switch (value) {
+extern "C" void fn_801A1ABC(void* object, void* shapeNode) {
+    /* Dispatch collision handling by 4-byte shape type tag at shapeNode+0x18.
+     * Some types are no-ops; others call the corresponding shape handler.
+     * 'GRUP' forwards to its child shape pointer at shapeNode+0x17C.
+     * Unknown types report "Unsupported collision type" with the raw tag. */
+    s32 shapeType = *(s32*)((u8*)shapeNode + 0x18);
+    switch (shapeType) {
     case 'RAGD':
     case 'POLY':
     case 'RING':
         break;
     case 'FLSR':
-        fn_8019CF60(arg0, arg1);
+        fn_8019CF60(object, shapeNode);
         break;
     case 'SPHR':
-        fn_8019CE3C(arg1, (s32)arg0);
+        fn_8019CE3C(shapeNode, (s32)object);
         break;
     case 'BOX ':
-        fn_8019EA7C(arg0, arg1);
+        fn_8019EA7C(object, shapeNode);
         break;
     case 'TUBE':
-        fn_8019DC04(arg0, arg1);
+        fn_8019DC04(object, shapeNode);
         break;
     case 'GRUP':
-        fn_8019EA7C(arg0, *(void**)((u8*)arg1 + 0x17C));
+        fn_8019EA7C(object, *(void**)((u8*)shapeNode + 0x17C));
         break;
     default:
-        fn_802E30C8(lbl_80333650, value);
+        fn_802E30C8(lbl_80333650, shapeType);
         break;
     }
 }
