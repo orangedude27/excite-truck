@@ -232,12 +232,11 @@ void fn_8019321C(void *arg0, void *arg1, void *arg2) {
     stack[2] = x;
     stack[3] = y;
     length = (float)fn_8002F234(magnitude);
-    if (lbl_80562148 > length)
-        length = lbl_80562148;
+    length = lbl_80562148 > length ? lbl_80562148 : length;
+    stack[6] = *(float *)((char *)arg2 + 0x24);
     scale = lbl_80562140 / length;
     dx = stack[2] * scale;
     dy = stack[3] * scale;
-    stack[6] = *(float *)((char *)arg2 + 0x24);
     c = *(float *)arg1;
     d = *(float *)((char *)arg1 + 4);
     stack[7] = *(float *)((char *)arg2 + 0x2C);
@@ -262,8 +261,8 @@ extern float lbl_80562140, lbl_80562148;
 #pragma dont_inline on
 void fn_8019330C(void *out, void *in, int arg2) {
     volatile float work[8];
-    float x = *(float *)((char *)arg2 + 0x18);
     float y = *(float *)((char *)arg2 + 0x20);
+    float x = *(float *)((char *)arg2 + 0x18);
     float sq = x * x + y * y;
     float length;
     float denom;
@@ -299,15 +298,17 @@ void fn_801933FC(void *arg0, void *arg1) {
 int fn_80193524(void *arg0, void *arg1) {
     extern float PSVECDotProduct(const void *, const void *);
     extern float lbl_8056215C;
-    float delta[3];
-    float dot = __fabs(PSVECDotProduct((char *)arg1 + 0x54, (char *)arg0 + 0x54));
+    struct S93524 *a = arg0, *b = arg1;
     int result = 0;
+    float delta[3];
+    float dot;
+    dot = __fabs(PSVECDotProduct(a->dir, b->dir));
     if (dot < lbl_8056215C) {
-        delta[0] = *(float *)((char *)arg1 + 0x60) - *(float *)((char *)arg0 + 0x60);
-        delta[1] = *(float *)((char *)arg1 + 0x64) - *(float *)((char *)arg0 + 0x64);
-        delta[2] = *(float *)((char *)arg1 + 0x68) - *(float *)((char *)arg0 + 0x68);
-        dot = PSVECDotProduct(delta, (char *)arg0 + 0x54);
-        result = dot > -PSVECDotProduct(delta, (char *)arg1 + 0x54);
+        delta[0] = b->pos[0] - a->pos[0];
+        delta[1] = b->pos[1] - a->pos[1];
+        delta[2] = b->pos[2] - a->pos[2];
+        dot = PSVECDotProduct(delta, a->dir);
+        result = dot > -PSVECDotProduct(delta, b->dir);
     }
     return result;
 }
