@@ -54,6 +54,13 @@ extern "C" unsigned char lbl_8041D4E0[];
         if (cw_r5 == 0 && (cw_addr & 0xFFFFC000U) != 0xE0000000U) cw_r4 = 0; \
         if (cw_r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(UT_CHARWRITER_CPP, line, UT_PTR_ERROR_MSG, self); \
     }
+// nw4hbm::ut::CharWriter's drawing cursor -- where the next glyph is printed.  This copy
+// of the library keeps it at +0x2C X, +0x30 Y, +0x34 Z (its other copy in this unit,
+// e.g. SetCursorX__Q36nw4hbm2ut10CharWriterFf_801062CC, starts one word later).
+struct CharWriterCursor {
+    unsigned char pad[0x2C];
+    float x, y, z;
+};
 extern "C" void __register_global_object(void *, void *, void *);
 extern "C" void fn_800D2DD4(void);
 extern "C" unsigned char lbl_8055DE90;
