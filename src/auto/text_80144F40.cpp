@@ -218,6 +218,7 @@ extern "C" f32 fn_801452C8(f32 arg0) {
 extern "C" f32 fn_801452D4(f32 arg0) { return lbl_805615F0 - arg0; }
 
 #pragma push
+#pragma processor 750
 #pragma dont_inline on
 extern "C" float fn_801452E0(void *arg0, const char *arg1) {
     extern char *strchr(const char *, int);
