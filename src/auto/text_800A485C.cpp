@@ -18445,23 +18445,24 @@ extern "C" void draw__Q310homebutton3gui13PaneComponentFv(void *arg0) {
 
 extern "C" s32 fn_800D0AA8(void *pane);
 extern "C" s32 fn_800D0AB4(void *pane);
+/* Returns 1 if the pane and its parent chain (via child link at +0xC) are marked visible. */
 extern "C" s32 is_visible__Q210homebutton3guiFPQ34nw4r3lyt4Pane(void *pane) {
-    void *child;
+    void *current;
     if (!(((u8 *)pane)[0xCF] & 1)) return 0;
-    child = *(void **)((u8 *)pane + 0xC);
-    if (!child) return 1;
-    if (!(((u8 *)child)[0xCF] & 1)) return 0;
-    child = *(void **)((u8 *)child + 0xC);
-    if (!child) return 1;
-    if (!(((u8 *)child)[0xCF] & 1)) return 0;
-    child = *(void **)((u8 *)child + 0xC);
-    if (!child) return 1;
-    if (!(((u8 *)child)[0xCF] & 1)) return 0;
-    child = *(void **)((u8 *)child + 0xC);
-    if (!child) return 1;
-    if (!fn_800D0AA8(child)) return 0;
-    if (fn_800D0AB4(child) == 0) return 1;
-    return is_visible__Q210homebutton3guiFPQ34nw4r3lyt4Pane((void *)fn_800D0AB4(child));
+    current = *(void **)((u8 *)pane + 0xC);
+    if (!current) return 1;
+    if (!(((u8 *)current)[0xCF] & 1)) return 0;
+    current = *(void **)((u8 *)current + 0xC);
+    if (!current) return 1;
+    if (!(((u8 *)current)[0xCF] & 1)) return 0;
+    current = *(void **)((u8 *)current + 0xC);
+    if (!current) return 1;
+    if (!(((u8 *)current)[0xCF] & 1)) return 0;
+    current = *(void **)((u8 *)current + 0xC);
+    if (!current) return 1;
+    if (!fn_800D0AA8(current)) return 0;
+    if (fn_800D0AB4(current) == 0) return 1;
+    return is_visible__Q210homebutton3guiFPQ34nw4r3lyt4Pane((void *)fn_800D0AB4(current));
 }
 
 extern "C" s32 fn_800D0AA8(void *arg0) { return (*(u8 *)((u8 *)arg0 + 0xCF)) & 1; }
