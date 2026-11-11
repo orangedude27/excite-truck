@@ -1670,24 +1670,24 @@ extern void fn_8016E984(void *);
 extern s32 fn_80179650(void);
 #pragma scheduling invalid_target
 void fn_8016E880(void *arg0, void *arg1) {
-    register u8 *input = (u8 *)arg0;
-    register u8 *output = (u8 *)arg1;
-    register s32 index = 0;
-    register s32 offset = 0;
-    u8 *entry = (u8 *)arg1;
-
+    u8 *input = (u8 *)arg0;
+    u8 *output = (u8 *)arg1;
+    u8 *entry;
+    s32 offset;
+    s32 index;
     *(s32 *)output = *(s32 *)(input + 8);
     *(s32 *)(output + 4) = fn_80179650();
     *(u8 *)(output + 0xD) = 1;
     *(u8 *)(output + 0xE) = 0;
+    index = 0;
+    offset = 0;
+    entry = output;
     goto check;
-
 loop:
     *(s32 *)(entry + 0x10) = index;
     index++;
     *(u8 *)(entry + 0x20) = 0;
-    *(s32 *)(entry + 0x18) =
-        **(s32 **)(*(u32 *)(input + 4) + offset);
+    *(s32 *)(entry + 0x18) = **(s32 **)(*(u32 *)(input + 4) + offset);
     offset += 4;
     *(s32 *)(entry + 0x14) = 1;
     *(u8 *)(output + 0xC) = 1;
