@@ -600,6 +600,7 @@ void fn_8000FF88(s32 arg0, s32 arg1, const char *fmt, f32 farg0, f32 farg1, f32 
     char buffer[0x200];
     va_list args;
 
+    /* Format a printf-style string and draw it with fn_802344CC, scaling text by lbl_805602C8 (0.733333). */
     va_start(args, farg2);
     vsprintf(buffer, fmt, args);
     fn_802344CC(buffer, arg0, arg1, 0, farg1, farg2, lbl_805602C8 * farg0);
