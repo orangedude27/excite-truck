@@ -754,42 +754,43 @@ extern "C" void fn_802A2AE8(void* arg0, s32 arg1) {
     *(s32*)((char*)arg0 + 4) = ((s32 (*)(void*, void*, s32))fn_8028E2F8)(cfg + 0x18, lbl_80349A00, arg1);
 }
 
+/* Initializes an effect configuration on the stack and creates an effect instance stored at arg0+8. */
 extern "C" void fn_802A2BF4(void* arg0, s32 arg1) {
     u8 space[0xA8];
-    u8* cfg = space;
-    fn_8028E61C(cfg + 0x18);
-    *(s32*)(cfg + 0x1C) = 0x200;
-    *(f32*)(cfg + 0x20) = lbl_80564730;
-    *(f32*)(cfg + 0x24) = lbl_80564740;
-    *(s32*)(cfg + 0x18) = 0;
-    *(f32*)(cfg + 0x60) = lbl_80564798;
-    *(s32*)(cfg + 0x5C) = 4;
-    *(f32*)(cfg + 0x0C) = lbl_8056479C;
-    *(f32*)(cfg + 0x10) = lbl_80564760;
-    *(f32*)(cfg + 0x14) = lbl_8056479C;
-    *(f32*)(cfg + 0x28) = lbl_8056479C;
-    *(f32*)(cfg + 0x2C) = lbl_80564760;
-    *(f32*)(cfg + 0x30) = lbl_8056479C;
-    *(f32*)(cfg + 0x00) = lbl_80564798;
-    *(f32*)(cfg + 0x04) = lbl_80564734;
-    *(f32*)(cfg + 0x08) = lbl_80564798;
-    *(f32*)(cfg + 0x34) = lbl_80564798;
-    *(f32*)(cfg + 0x38) = lbl_80564734;
-    *(f32*)(cfg + 0x3C) = lbl_80564798;
-    *(f32*)(cfg + 0x40) = lbl_805647AC;
-    *(f32*)(cfg + 0x44) = lbl_805647A0;
-    *(f32*)(cfg + 0x48) = lbl_80564744;
-    *(f32*)(cfg + 0x4C) = lbl_80564734;
-    *(f32*)(cfg + 0x8C) = lbl_80564730;
-    *(f32*)(cfg + 0x84) = lbl_80564730;
-    *(f32*)(cfg + 0x7C) = lbl_80564730;
-    *(f32*)(cfg + 0x70) = lbl_8056475C;
-    *(f32*)(cfg + 0x74) = lbl_80564730;
-    *(f32*)(cfg + 0x68) = lbl_805647B0;
-    *(f32*)(cfg + 0x6C) = lbl_80564734;
-    *(f32*)(cfg + 0x90) = lbl_805647A8;
-    *(f32*)(cfg + 0x94) = lbl_80564764;
-    *(s32*)((char*)arg0 + 8) = ((s32 (*)(void*, void*, s32))fn_8028E2F8)(cfg + 0x18, lbl_80349A14, arg1);
+    u8* config = space;
+    fn_8028E61C(config + 0x18);
+    *(s32*)(config + 0x1C) = 0x200;
+    *(f32*)(config + 0x20) = lbl_80564730;
+    *(f32*)(config + 0x24) = lbl_80564740;
+    *(s32*)(config + 0x18) = 0;
+    *(f32*)(config + 0x60) = lbl_80564798;
+    *(s32*)(config + 0x5C) = 4;
+    *(f32*)(config + 0x0C) = lbl_8056479C;
+    *(f32*)(config + 0x10) = lbl_80564760;
+    *(f32*)(config + 0x14) = lbl_8056479C;
+    *(f32*)(config + 0x28) = lbl_8056479C;
+    *(f32*)(config + 0x2C) = lbl_80564760;
+    *(f32*)(config + 0x30) = lbl_8056479C;
+    *(f32*)(config + 0x00) = lbl_80564798;
+    *(f32*)(config + 0x04) = lbl_80564734;
+    *(f32*)(config + 0x08) = lbl_80564798;
+    *(f32*)(config + 0x34) = lbl_80564798;
+    *(f32*)(config + 0x38) = lbl_80564734;
+    *(f32*)(config + 0x3C) = lbl_80564798;
+    *(f32*)(config + 0x40) = lbl_805647AC;
+    *(f32*)(config + 0x44) = lbl_805647A0;
+    *(f32*)(config + 0x48) = lbl_80564744;
+    *(f32*)(config + 0x4C) = lbl_80564734;
+    *(f32*)(config + 0x8C) = lbl_80564730;
+    *(f32*)(config + 0x84) = lbl_80564730;
+    *(f32*)(config + 0x7C) = lbl_80564730;
+    *(f32*)(config + 0x70) = lbl_8056475C;
+    *(f32*)(config + 0x74) = lbl_80564730;
+    *(f32*)(config + 0x68) = lbl_805647B0;
+    *(f32*)(config + 0x6C) = lbl_80564734;
+    *(f32*)(config + 0x90) = lbl_805647A8;
+    *(f32*)(config + 0x94) = lbl_80564764;
+    *(s32*)((char*)arg0 + 8) = ((s32 (*)(void*, void*, s32))fn_8028E2F8)(config + 0x18, lbl_80349A14, arg1);
 }
 
 void fn_802A2D04(void *arg0, s32 arg1) {
