@@ -219,17 +219,17 @@ extern "C" f32 fn_801452D4(f32 arg0) { return lbl_805615F0 - arg0; }
 
 #pragma push
 #pragma dont_inline on
-extern "C" f32 fn_801452E0(void *arg0, const char *arg1) {
+extern "C" float fn_801452E0(void *arg0, const char *arg1) {
     extern char *strchr(const char *, int);
     extern double atof(const char *);
-    class V { public: virtual void a(); virtual void b(); virtual void c(); virtual void d(); virtual const char *get(const char *); };
-    f64 temp_f31;
+    class V { public: virtual void a(); virtual void b(); virtual void c(); virtual const char *get(const char *); };
+    double temp_f31;
     const char *text = ((V *)arg0)->get(arg1);
     if (strchr(text, '/') != 0) {
         temp_f31 = atof(strchr(text, '/') + 1);
-        return (f32)(atof(text) / temp_f31);
+        return (float)(atof(text) / temp_f31);
     }
-    return (f32)atof(text);
+    return (float)atof(text);
 }
 #pragma dont_inline reset
 #pragma pop
@@ -1678,16 +1678,17 @@ extern "C" void fn_801479A8(void *arg0, void *arg1, const char *format, f64 valu
     fn_80147230(buffer, (const char *)&lbl_80559E1C, text);
 }
 
+/* Formats a message with vsprintf, checks for buffer overflow, builds a prefix, and emits the final log line. */
 extern "C" void fn_80147ABC(void *arg0, void *arg1, const char *format, f64 value, ...) {
     char text[0x200];
-    char buffer[0x20];
+    char prefixBuffer[0x20];
     va_list args;
     va_start(args, value);
     vsprintf(text, format, args);
     if (strlen(text) >= 0x200)
         fn_802E317C(lbl_8032D1A4, strlen(text), format);
-    fn_80147CEC(buffer, (s32)arg0, (s32)arg1, value);
-    fn_80147314(buffer, (const char *)&lbl_80559E1C, text);
+    fn_80147CEC(prefixBuffer, (s32)arg0, (s32)arg1, value);
+    fn_80147314(prefixBuffer, (const char *)&lbl_80559E1C, text);
 }
 
 extern "C" void fn_80147BD0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5) {
