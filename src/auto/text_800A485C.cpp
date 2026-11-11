@@ -1712,23 +1712,24 @@ extern "C" s32 fn_800A6728(void *, s32);
 extern "C" s32 fn_800A6B74(void *);
 extern "C" s32 fn_800A728C(void *arg0) {
     s32 result;
-    if (!(*(u32 *)arg0 & 8)) {
-        result = fn_800A625C(*(void **)((u8 *)arg0 + 4), (s32)arg0);
-        if (result == 0) {
-            result = fn_800A6358(*(void **)((u8 *)arg0 + 4));
-            if (result == 0) {
-                result = fn_800A6B74(arg0);
-                if (result != 0) {
-                    fn_800A6728(*(void **)((u8 *)arg0 + 4), 0);
-                } else {
-                    *(u32 *)arg0 = (*(u32 *)arg0 & ~2) | 8;
-                }
-            }
-        }
-    } else {
-        result = 0xC;
-    }
+    if ((*(u32 *)arg0 & 8) != 0)
+        goto retC;
+    result = fn_800A625C(*(void **)((u8 *)arg0 + 4), (s32)arg0);
+    if (result != 0)
+        return result;
+    result = fn_800A6358(*(void **)((u8 *)arg0 + 4));
+    if (result != 0)
+        return result;
+    result = fn_800A6B74(arg0);
+    if (result == 0)
+        goto setflag;
+    fn_800A6728(*(void **)((u8 *)arg0 + 4), 0);
     return result;
+retC:
+    return 0xC;
+setflag:
+    *(u32 *)arg0 = (*(u32 *)arg0 & ~2) | 8;
+    return 0;
 }
 
 extern "C" s32 fn_800A7338(void *arg0, s32 arg1) {
@@ -24204,20 +24205,19 @@ extern "C" u16 VFiPFSTR_StrNumChar(s32 context, s32 selector) {
 
 #pragma dont_inline on
 typedef s32 (*UnicodeCompareCallback)(s32, u16 *);
+#pragma dont_inline on
 extern "C" s32 VFiPFSTR_StrCmp(void *arg0, s32 arg1) {
-    u16 converted;
     register u8 *table;
     register u16 *cursor;
-    register s32 code = arg1;
+    register u32 code = (u32)arg1;
+    u16 converted;
     u16 current;
-
-    if (*(volatile u32 *)((u8 *)arg0 + 0xC) == 1)
+    if (*(u32 *)((u8 *)arg0 + 0xC) == 1)
         return fn_800A4AD0(*(u8 **)arg0, (u8 *)arg1);
-
     table = (u8 *)lbl_803D2140;
     cursor = *(u16 **)arg0;
 loop:
-    ((UnicodeCompareCallback *)(table + 0x48))[0](code, &converted);
+    ((UnicodeCompareCallback *)(table + 0x48))[0]((s32)code, &converted);
     current = *cursor;
     code++;
     cursor++;
@@ -24225,7 +24225,7 @@ loop:
         goto loop;
     return *(cursor - 1) - converted;
 }
-
+#pragma dont_inline reset
 extern "C" s32 VFiPFSTR_StrNCmp(s32 arg0_, const void *arg1_, s32 arg2_, s32 arg3, s32 arg4_) {
     void *arg0 = (void *)arg0_;
     u32 arg2 = (u32)arg2_;
