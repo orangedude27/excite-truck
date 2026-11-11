@@ -14469,26 +14469,7 @@ BOOLEAN btsnd_hcic_pin_code_req_reply(BD_ADDR bd_addr, UINT8 pin_code_len, PIN_C
     return TRUE;
 }
 
-BOOL btsnd_hcic_link_key_neg_reply_800840C8(void *link_key) {
-    u8 *p;
-    p = GKI_getpoolbuf(2);
-    if (p == 0) {
-        return FALSE;
-    }
-    *(u16 *)(p + 2) = 9;
-    *(u16 *)(p + 4) = 0;
-    p[8] = 0xE;
-    p[9] = 4;
-    p[10] = 6;
-    p[11] = ((u8 *)link_key)[5];
-    p[12] = ((u8 *)link_key)[4];
-    p[13] = ((u8 *)link_key)[3];
-    p[14] = ((u8 *)link_key)[2];
-    p[15] = ((u8 *)link_key)[1];
-    p[16] = ((u8 *)link_key)[0];
-    btu_hcif_send_cmd(4, (BT_HDR *)p);
-    return TRUE;
-}
+BOOL btsnd_hcic_link_key_neg_reply_800840C8(void *link_key) { u8 *p; p = GKI_getpoolbuf(2); if (p == 0) return FALSE; *(u16 *)(p + 2) = 9; *(u16 *)(p + 4) = 0; p[8] = 0xE; p[9] = 4; p[10] = 6; p[11] = ((u8 *)link_key)[5]; p[12] = ((u8 *)link_key)[4]; p[13] = ((u8 *)link_key)[3]; p[14] = ((u8 *)link_key)[2]; p[15] = ((u8 *)link_key)[1]; p[16] = ((u8 *)link_key)[0]; btu_hcif_send_cmd(p); return TRUE; }
 
 BOOLEAN btsnd_hcic_change_conn_type(UINT16 handle, UINT16 packet_types) {
     u8 *p = (u8 *)GKI_getpoolbuf(2);
