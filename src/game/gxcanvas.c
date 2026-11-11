@@ -618,6 +618,7 @@ loop_24:
 #pragma scheduling invalid_target
 void fn_802C3C68(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
                  s32 arg5, s32 arg6, s32 arg7) {
+    /* Blit a 32bpp rectangle from arg0 (arg1,arg2)-(arg3,arg4) to arg5 at (arg6,arg7), clipped to arg5 bounds. */
     s32 sp1C, sp18, sp14, sp10, spC, sp8;
     s32 *src, *dst;
     s32 i, widthBytes, skipSrc, skipDst;
