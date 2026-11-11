@@ -276,24 +276,25 @@ extern float lbl_80561C60;
 #pragma push
 #pragma processor 750
 void fn_8017F628(void *arg0) {
-    float scale = lbl_8055A334;
+    /* Updates rumble/audio parameters from the object's state when active; otherwise resets them. */
+    float scaleFactor = lbl_8055A334;
     if (fn_801769F8() == 0 && fn_801B526C() == 0 && fn_801C5B60() == 0 &&
         *(unsigned char *)((char *)arg0 + 0x5C) && *(unsigned char *)((char *)arg0 + 0x350)) {
-        float a = *(float *)((char *)arg0 + 0x30C) * scale;
-        fn_802E85AC(*(int *)((char *)arg0 + 8), *(float *)((char *)arg0 + 0x314) + a,
-                    *(float *)((char *)arg0 + 0x310) * scale, a);
+        float scaledBase = *(float *)((char *)arg0 + 0x30C) * scaleFactor;
+        fn_802E85AC(*(int *)((char *)arg0 + 8), *(float *)((char *)arg0 + 0x314) + scaledBase,
+                    *(float *)((char *)arg0 + 0x310) * scaleFactor, scaledBase);
         {
-            float b = *(float *)((char *)arg0 + 0x318) * scale;
-            float c = *(float *)((char *)arg0 + 0x320) * scale;
-            float d = *(float *)((char *)arg0 + 0x31C);
-            fn_802E85A8(*(int *)((char *)arg0 + 8), b, d, c);
+            float scaledParamB = *(float *)((char *)arg0 + 0x318) * scaleFactor;
+            float scaledParamC = *(float *)((char *)arg0 + 0x320) * scaleFactor;
+            float paramD = *(float *)((char *)arg0 + 0x31C);
+            fn_802E85A8(*(int *)((char *)arg0 + 8), scaledParamB, paramD, scaledParamC);
         }
         {
-            float x = *(float *)((char *)arg0 + 0x324) * scale;
-            float y = *(float *)((char *)arg0 + 0x328);
-            float z = __fabs(y);
-            float w = __fabs(x);
-            fn_802E8528(*(int *)((char *)arg0 + 8), lbl_80561C60 * w, z);
+            float scaledX = *(float *)((char *)arg0 + 0x324) * scaleFactor;
+            float rawY = *(float *)((char *)arg0 + 0x328);
+            float absY = __fabs(rawY);
+            float absScaledX = __fabs(scaledX);
+            fn_802E8528(*(int *)((char *)arg0 + 8), lbl_80561C60 * absScaledX, absY);
         }
     } else ((void (*)(int))fn_802E8518)(*(int *)((char *)arg0 + 8));
 }
