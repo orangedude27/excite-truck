@@ -76,13 +76,6 @@ public:
 };
 #pragma cplusplus reset
 typedef unsigned char u8;
-/* clamp helper (inlined by the original in fn_801941A8) */
-static inline float Clamp801941A8(float lo, float v, float hi) {
-    float r = lo;
-    r = r < v ? v : r;
-    r = r > hi ? hi : r;
-    return r;
-}
 extern void *lbl_804349C0[];
 extern float lbl_8056223C, lbl_8055E57C;
 extern int lbl_804348E8[];
