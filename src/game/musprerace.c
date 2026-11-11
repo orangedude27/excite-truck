@@ -43,6 +43,12 @@ extern f32 lbl_8055EE4C;
 extern f32 lbl_8055EE50;
 extern f32 lbl_8055EE54;
 extern f32 lbl_805632F0;
+extern s8 lbl_8055EE58;
+extern f32 lbl_805632D8;
+extern f32 lbl_805632E0;
+extern f64 lbl_805632E8;
+extern void fn_80210510(f32);
+extern s32 fn_801E8838(void);
 
 extern void fn_8021037C(void);
 extern s32 fn_80207848(const char *, s32);
@@ -290,13 +296,14 @@ extern s32 lbl_80489BE0;
 extern s32 lbl_80489C50;
 extern s32 lbl_8055B5D8;
 extern s32 lbl_8055B5DC;
-#pragma scheduling off
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 void fn_8020C920(s32 arg0) {
     s32 i = 0;
     s32 j = 0;
     char *dst = (char *)&lbl_80489BE0;
-
-    fn_801345D8((char *)&lbl_80489C50, 0x20, lbl_8033C5D8 + 0x34, arg0);
+    fn_801345D8((char *)&lbl_80489C50, 32, lbl_8033C5D8 + 52, arg0);
     fn_8012DDA8(&lbl_80489C50);
     fn_8012DDA8(lbl_8055B5D0);
     fn_8012DDA8(lbl_8055B5D4);
@@ -304,18 +311,19 @@ void fn_8020C920(s32 arg0) {
         switch (i) {
         case 0:
             if (j != 1)
-                fn_801345D8(dst, 0x20, lbl_8033C5D8 + 0x40, arg0, &lbl_8055B5DC);
+                fn_801345D8(dst, 32, lbl_8033C5D8 + 64, arg0, &lbl_8055B5DC);
             else
-                fn_801345D8(dst, 0x20, lbl_8033C5D8 + 0x40, arg0, &lbl_8055B5D8);
+                fn_801345D8(dst, 32, lbl_8033C5D8 + 64, arg0, &lbl_8055B5D8);
             break;
         case 1:
-            fn_801345D8(dst, 0x20, lbl_8033C5D8 + 0x50, arg0);
+            fn_801345D8(dst, 32, lbl_8033C5D8 + 80, arg0);
             break;
         default:
-            fn_801345D8(dst, 0x20, lbl_8033C5D8 + 0x60, arg0);
+            fn_801345D8(dst, 32, lbl_8033C5D8 + 96, arg0);
             break;
         }
         i++;
-        dst += 0x24;
+        dst += 36;
     } while (i < 3);
 }
+#pragma pop
