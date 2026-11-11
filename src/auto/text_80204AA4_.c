@@ -8,7 +8,7 @@ extern const char lbl_8033BBE4[];
 extern void *fn_80131808(const char *);
 extern int fn_80012854(void);
 extern char lbl_802F9D68[];
-extern int lbl_8033BBA0;
+extern char lbl_8033BBA0[];
 extern int *lbl_8055ED5C;
 extern int lbl_8055B468;
 extern int lbl_8055B470;
@@ -38,6 +38,45 @@ void *fn_80204B18(int arg0) {
 int fn_80204BB4(const char *arg0) {
     return fn_80204B2C(arg0);
 }
+
+#pragma dont_inline on
+void fn_80204BB8(void) {
+    void *r31;
+    void *alloc;
+    int r28;
+    int r31b;
+    volatile void *r31c;
+    void *cur;
+    void *stage;
+    int v;
+    lbl_8055ED58 = 1;
+    lbl_8055ED5C = 0;
+    r31 = fn_801E87A8();
+    alloc = fn_801284F8(0x14, lbl_8033BBD8);
+    if (alloc == 0) goto done;
+    r28 = *(int *)((char *)r31 + 0);
+    r31b = *(int *)((char *)r31 + 8);
+    *(void **)alloc = (void *)r31b;
+    *(int *)((char *)alloc + 4) = 0;
+    *(int *)((char *)alloc + 8) = 0;
+    *(int *)((char *)alloc + 0xC) = 0;
+    *(int *)((char *)alloc + 0x10) = 0;
+    *(void **)((char *)alloc + 4) = fn_80131808(lbl_8033BBE4);
+    r31c = fn_80204B18(r31b);
+    cur = (*(void *(**)(void *, int))(*(void ***)(*(void **)((char *)alloc + 4)) + 2))(*(void **)((char *)alloc + 4), *(int *)((char *)r31c + 8));
+    *(void **)((char *)alloc + 8) = cur;
+    if (r28 >= 0 && r28 < fn_80012854()) {
+        stage = *(void **)((char *)((void *(*)(int))fn_8001285C)(r28) + 0x20);
+        v = (*(int (**)(void *, int))(*(void ***)stage + 23))(stage, *(int *)((char *)r31c + 8));
+        if (((unsigned int)(-v | v) >> 31) != 0) {
+            *(int *)((char *)alloc + 0xC) = (*(int (**)(void *, int))(*(void ***)stage + 23))(stage, *(int *)((char *)r31c + 8));
+        }
+        *(void **)((char *)alloc + 0x10) = ((void *(*)(int))fn_80204AA4)(r28);
+    }
+done:
+    lbl_8055ED5C = (int *)alloc;
+}
+#pragma dont_inline reset
 
 extern int *lbl_8055ED5C;
 int fn_80204CF0(void) {
