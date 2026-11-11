@@ -1,3 +1,5 @@
+#include <types.h>
+#include <macros.h>
 #include <revolution/OS.h>
 #include <revolution/SC.h>
 #include <string.h>
@@ -9,22 +11,26 @@ typedef struct SCRegion {
     char name[4]; // at 0x1
 } SCRegion;
 
-static SCRegion lbl_8031B120[] = {{SC_AREA_JPN, "JPN"},
-                                             {SC_AREA_USA, "USA"},
-                                             {SC_AREA_EUR, "EUR"},
-                                             {SC_AREA_AUS, "AUS"},
-                                             {SC_AREA_BRA, "BRA"},
-                                             {SC_AREA_TWN, "TWN"},
-                                             {SC_AREA_TWN, "ROC"},
-                                             {SC_AREA_KOR, "KOR"},
-                                             {SC_AREA_HKG, "HKG"},
-                                             {SC_AREA_ASI, "ASI"},
-                                             {SC_AREA_LTN, "LTN"},
-                                             {SC_AREA_SAF, "SAF"},
-                                             {-1, ""}};
+char lbl_805591E8[] = "AREA";
+
+u8 lbl_8031B120[72] = {
+    SC_AREA_JPN, 'J', 'P', 'N', 0,
+    SC_AREA_USA, 'U', 'S', 'A', 0,
+    SC_AREA_EUR, 'E', 'U', 'R', 0,
+    SC_AREA_AUS, 'A', 'U', 'S', 0,
+    SC_AREA_BRA, 'B', 'R', 'A', 0,
+    SC_AREA_TWN, 'T', 'W', 'N', 0,
+    SC_AREA_TWN, 'R', 'O', 'C', 0,
+    SC_AREA_KOR, 'K', 'O', 'R', 0,
+    SC_AREA_HKG, 'H', 'K', 'G', 0,
+    SC_AREA_ASI, 'A', 'S', 'I', 0,
+    SC_AREA_LTN, 'L', 'T', 'N', 0,
+    SC_AREA_SAF, 'S', 'A', 'F', 0,
+    (u8)-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
 
 /* Looks up a key in SC product info and copies its value into buf if found. */
-BOOL __SCF1(const char* type, char* buf, u32 sz) {
+static BOOL __SCF1(const char* type, char* buf, u32 sz) {
     u8 ptext;
     BOOL found = FALSE;
     u32 i;
@@ -74,14 +80,14 @@ BOOL __SCF1(const char* type, char* buf, u32 sz) {
     return FALSE;
 }
 
-BOOL SCGetProductAreaString(char* buf, u32 sz) {
-    return __SCF1("AREA", buf, sz);
+static inline BOOL SCGetProductAreaString(char* buf, u32 sz) {
+    return __SCF1(lbl_805591E8, buf, sz);
 }
 
 s8 SCGetProductArea(void) {
     s8 area;
     char name[4];
-    SCRegion* iter = lbl_8031B120;
+    SCRegion* iter = (SCRegion*)lbl_8031B120;
 
     if (SCGetProductAreaString(name, sizeof(name))) {
         for (; (area = iter->area) != -1; iter++) {
