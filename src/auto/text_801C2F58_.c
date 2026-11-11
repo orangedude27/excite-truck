@@ -1214,9 +1214,9 @@ void fn_801C7394(void) {
 }
 
 void fn_801C73DC(void) {
-    s32 index;
-    s32 current;
     s32 count;
+    s32 current;
+    s32 index;
     s32 previousOffset;
     s32 currentOffset;
     char *base;
@@ -1249,22 +1249,21 @@ done:
 
 #pragma scheduling invalid_target
 void fn_801C7480(void) {
-    register s32 index = lbl_8055E828;
-    register s32 next = index + 1;
-    register s32 count = lbl_8055E7F0;
-
-    if (count != 0) {
-        if (next >= 0) {
+    register long index = lbl_8055E828;
+    long next = index + 1;
+    int count = lbl_8055E7F0;
+    if (count) {
+        if (0 <= (int)next) {
             if (next < count) {
-                if (fn_801C34CC(
-                        *(f32 *)((char *)(s32)lbl_8055E7F8 + next * 0x30C),
-                        *(f32 *)((char *)(s32)lbl_8055E7F8 + index * 0x30C))) {
-                    s32 *current = (s32 *)((char *)(s32)lbl_8055E7F8 + index * 0x30C);
-                    s32 *following = (s32 *)((char *)(s32)lbl_8055E7F8 + next * 0x30C);
-                    s32 value = current[1];
+                long nextOff = next * 0x30C;
+                long idxOff = index * 0x30C;
+                if (fn_801C34CC(*(f32 *)((char *)(s32)lbl_8055E7F8 + idxOff), *(f32 *)((char *)(s32)lbl_8055E7F8 + nextOff))) {
+                    s32 *current = (s32 *)((char *)lbl_8055E7F8 + idxOff);
+                    s32 *following = (s32 *)((char *)lbl_8055E7F8 + nextOff);
+                    int value = current[1];
                     current[1] = following[1];
                     following[1] = value;
-                    qsort((void *)(s32)lbl_8055E7F8, (size_t)lbl_8055E7F0, 0x30C, (int (*)(const void *, const void *))fn_801C3B7C);
+                    qsort((void *)lbl_8055E7F8, (size_t)lbl_8055E7F0, 0x30C, (int (*)(const void *, const void *))fn_801C3B7C);
                 }
             }
         }
@@ -1334,18 +1333,17 @@ void fn_801C7698(void) {
         offset = index * 0x30C;
         if (value + *(f32 *)((char *)(*(volatile s32 *)&lbl_8055E7F8) + offset) < lbl_80562970) {
             sprintf(lbl_80437FC0, lbl_80336F0C);
-            goto cleanup;
+        } else {
+            do {
+                *(f32 *)((char *)(*(volatile s32 *)&lbl_8055E7F8) + offset) =
+                    fn_801C3450(value + *(f32 *)((char *)(*(volatile s32 *)&lbl_8055E7F8) + offset));
+                index++;
+                offset += 0x30C;
+            } while (index < lbl_8055E7F0);
+            qsort((void *)lbl_8055E7F8, lbl_8055E7F0, 0x30C,
+                  (int (*)(const void *, const void *))fn_801C3B7C);
         }
-        do {
-            *(f32 *)((char *)(*(volatile s32 *)&lbl_8055E7F8) + offset) =
-                fn_801C3450(value + *(f32 *)((char *)(*(volatile s32 *)&lbl_8055E7F8) + offset));
-            index++;
-            offset += 0x30C;
-        } while (index < lbl_8055E7F0);
-        qsort((void *)lbl_8055E7F8, lbl_8055E7F0, 0x30C,
-              (int (*)(const void *, const void *))fn_801C3B7C);
     }
-cleanup:
     fn_801C957C(0);
 }
 #pragma pop
