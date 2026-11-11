@@ -164,13 +164,19 @@ extern "C" s32 fn_801450A0(u32 arg0, u32 arg1, f32 arg2) {
     f32 temp_f1 = (f32)arg0 + arg2 * ((f32)arg1 - (f32)arg0);
     f32 var_f0;
     s32 temp_r3;
+    s32 var_r0;
     s32 temp_r4;
-    s32 var_r0 = 0xFF;
-    if (temp_f1 < lbl_805615D4) var_f0 = temp_f1 - lbl_805615D0;
-    else var_f0 = lbl_805615D0 + temp_f1;
+    if (temp_f1 < lbl_805615D4) {
+        var_f0 = temp_f1 - lbl_805615D0;
+    } else {
+        var_f0 = lbl_805615D0 + temp_f1;
+    }
+    var_r0 = 0xFF;
     temp_r4 = (s32)var_f0;
     temp_r3 = temp_r4 & ((s32)(-temp_r4 & ~temp_r4) >> 31);
-    if (temp_r3 < 0xFF) var_r0 = temp_r3;
+    if (temp_r3 < 0xFF) {
+        var_r0 = temp_r3;
+    }
     return (u8)var_r0;
 }
 
@@ -263,6 +269,8 @@ extern "C" s32 lbl_80559DEC;
 extern "C" s32 lbl_80559DF0;
 extern "C" s32 lbl_80559DF4;
 extern "C" __declspec(section ".sdata") char lbl_80559DFC[];
+extern "C" __declspec(section ".sdata") char lbl_80559E04[];
+extern "C" __declspec(section ".sdata") char lbl_80559E0C[];
 extern "C" void fn_80145438(void *arg0, void *arg1) {
     class V { public: virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual f32 f7(const char *); };
     V *obj = (V *)arg1;
@@ -580,15 +588,19 @@ extern "C" void fn_80145C7C(void * __restrict arg0, u32 arg1) {
 #pragma dont_inline on
 #pragma scheduling invalid_target
 extern "C" void fn_80145CF4(void *arg0, void *arg1, u32 arg2) {
-    f32 input10 = *(f32 *)((u8 *)arg0 + 0x10);
-    f32 temp_f31 = fn_801452A0(*(s32 *)((u8 *)arg0 + 0xC), input10);
-    f32 temp_f30 = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
-    f32 input4 = *(f32 *)((u8 *)arg0 + 4);
-    s32 mode = *(s32 *)((u8 *)arg0 + 0xC);
-    f32 value = ((f32 (*)(s32, f32))fn_801451DC)(mode, input4);
+    f32 temp_f31;
+    f32 temp_f30;
+    f32 input4;
+    s32 mode;
+    f32 value;
+    temp_f30 = fn_801452A0(*(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 0x10));
+    temp_f31 = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
+    input4 = *(f32 *)((u8 *)arg0 + 4);
+    mode = *(s32 *)((u8 *)arg0 + 0xC);
+    value = ((f32 (*)(s32, f32))fn_801451DC)(mode, input4);
     ((void (*)(s32, s32, f32, f32, f32, f32, f32, s32))fn_802354A0)(
-        (s32)arg1, arg2, value, temp_f30, lbl_805615D4,
-        temp_f31, *(f32 *)((u8 *)arg0 + 0x14),
+        (s32)arg1, arg2, value, temp_f31, lbl_805615D4,
+        temp_f30, *(f32 *)((u8 *)arg0 + 0x14),
         *(s32 *)((u8 *)arg0 + 0x18));
 }
 #pragma scheduling on
