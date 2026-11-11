@@ -80,27 +80,33 @@ u32 lbl_8055DB18[2];
 #define PAD_ORIGIN(chan) ((PADStatus*)(lbl_8038F080 + (chan) * sizeof(PADStatus)))
 
 void UpdateOrigin(s32 chan) {
-    PADStatus* origin;
     u32 mask = PAD_CHAN0_BIT >> chan;
+    PADStatus* origin = PAD_ORIGIN(chan);
 
-    origin = PAD_ORIGIN(chan);
     switch (lbl_80558F7C & 0x00000700u) {
-    case 0x00000100u:
-    case 0x00000200u:
-    case 0x00000400u:
+    case 0x00000000u:
+    case 0x00000500u:
+    case 0x00000600u:
     case 0x00000700u:
         origin->triggerLeft &= ~15;
         origin->triggerRight &= ~15;
         origin->analogA &= ~15;
         origin->analogB &= ~15;
         break;
-    case 0x00000500u:
-    case 0x00000600u:
+    case 0x00000100u:
+        origin->substickX &= ~15;
+        origin->substickY &= ~15;
         origin->analogA &= ~15;
         origin->analogB &= ~15;
         break;
-    case 0x00000000u:
+    case 0x00000200u:
+        origin->substickX &= ~15;
+        origin->substickY &= ~15;
+        origin->triggerLeft &= ~15;
+        origin->triggerRight &= ~15;
+        break;
     case 0x00000300u:
+    case 0x00000400u:
         break;
     }
 
