@@ -2111,45 +2111,51 @@ extern "C" s32 fn_8012CC24(void *, void *);
 #pragma push
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
+/* Work the manager's load queue (fn_8012DDA8 queues a set and calls this): while
+ * the set at the head has no read in flight, start one with fn_8012CC24; once
+ * its request has the set in memory, give the loaded resource the use count the
+ * queue collected, mark it ready and retire the queue node.  Stops as soon as
+ * the head stops making progress; the manager's pumping byte keeps a set that
+ * finishes inside fn_8012CC24 from re-entering this. */
 extern "C" void fn_8012DEE4(void *arg0) {
-    u8 *obj = (u8 *)arg0;
+    ResTocManager *manager = (ResTocManager *)arg0;
     s32 one = 1;
     s32 zero = 0;
-    void *entry;
-    s32 done;
+    ResTocMount *entry;
+    s32 progress;
     s32 state;
 
-    if (obj[0xA20] != 0) return;
-    obj[0xA20] = (u8)one;
+    if (manager->pumping != 0) return;
+    manager->pumping = (u8)one;
     do {
-        done = 0;
-        entry = *(void **)(obj + 0xA18);
+        progress = 0;
+        entry = manager->mounts.head;
         if (entry != 0) {
-            state = fn_8012D838(*(s32 *)((u8 *)entry + 0x4C));
+            state = fn_8012D838((s32)entry->request);
             switch (state) {
-            case 0:
-                fn_8012CC24(*(void **)((u8 *)entry + 0x4C), (u8 *)entry + 0xC);
+            case 0:  // idle: have the request read on with this set's path list
+                fn_8012CC24(entry->request, entry->name);
                 break;
-            case 2: {
-                void *node = fn_8012BD3C(lbl_8055E000, (const char *)((u8 *)entry + 0xC));
-                *(s32 *)((u8 *)node + 0x9C) = *(s32 *)((u8 *)entry + 8);
-                *(u8 *)((u8 *)node + 0xAD) = (u8)one;
-                entry = *(void **)(obj + 0xA18);
+            case 2: {  // the set is in memory: hand it the queue's use count
+                void *node = fn_8012BD3C(lbl_8055E000, entry->name);
+                *(s32 *)((u8 *)node + 0x9C) = entry->uses;  // resource use count
+                *(u8 *)((u8 *)node + 0xAD) = (u8)one;       // resource is ready
+                entry = manager->mounts.head;
                 if (entry != 0) {
-                    void *next = *(void **)((u8 *)entry + 4);
-                    *(void **)(obj + 0xA18) = next;
-                    if (next == 0) *(void **)(obj + 0xA1C) = obj + 0xA18;
-                    *(void **)((u8 *)entry + 4) = (void *)zero;
+                    ResTocMount *next = entry->next;
+                    manager->mounts.head = next;
+                    if (next == 0) manager->mounts.tail = &manager->mounts.head;
+                    entry->next = (ResTocMount *)zero;
                 }
-                done = 1;
+                progress = 1;
                 break;
             }
-            default:
+            default:  // a read is still in flight: nothing more to do for now
                 break;
             }
         }
-    } while (done != 0);
-    obj[0xA20] = 0;
+    } while (progress != 0);
+    manager->pumping = 0;
 }
 #pragma pop
 
