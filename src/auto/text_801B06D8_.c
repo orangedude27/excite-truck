@@ -398,39 +398,48 @@ extern "C" s32 fn_801B0DF0(s32 arg0) {
 extern s32 fn_801B2F40(s32);
 extern s32 fn_801B0DF0(s32);
 #pragma cplusplus on
-extern "C" s32 fn_801B0E40(s32 arg0, s32 *arg1) {
-    struct Dummy {
-        virtual void *d0();
-        virtual void *d1();
-        virtual void *d2();
+extern "C" s32 fn_801B0E40(s32 slotIndex, s32 *minRank) {
+    struct DeitySlot {
+        virtual void d0();
+        virtual void d1();
+        virtual void *getRankNode();
     };
-    s32 temp;
-    s32 loop1;
-    s32 loop2;
-    s32 bound;
-    s32 lim;
-    void *base = lbl_8055E684;
-    Dummy *obj = (Dummy *)((u8 *)base + (arg0 << 7));
-    base = obj->d2();
-    temp = *(s32 *)((u8 *)base + 4);
-    loop1 = temp;
-    while (loop1 <= (s32)lbl_8055E678) {
-        fn_801B2F40(loop1 - 1);
+    s32 rank;
+    s32 forwardRank;
+    s32 backRank;
+    s32 floorRank;
+    s32 requestedRank;
+    /* Guard for one deity (AI truck) slot in the ranked order table: from this
+     * slot's own rank up to the last entry, fail (0) if any slot holds a 'PCAR'
+     * (player car) object. Otherwise walk down from the rank below to *minRank
+     * and, at the first player-car slot, push *minRank just past it; succeed
+     * with 1. fn_801B2F40(rank - 1) reads the order table (lbl_80435C30) and its
+     * result stays in r3 as fn_801B0DF0's slot index -- the cast-call keeps that
+     * (a normal call would let the compiler inline the test). */
+    void *slotTable = lbl_8055E684;
+    DeitySlot *slot = (DeitySlot *)((u8 *)slotTable + (slotIndex << 7));
+    void *rankNode;
+
+    rankNode = slot->getRankNode();
+    rank = *(s32 *)((u8 *)rankNode + 4);
+    forwardRank = rank;
+    while (forwardRank <= (s32)lbl_8055E678) {
+        fn_801B2F40(forwardRank - 1);
         if (((s32 (*)(void))fn_801B0DF0)() != 0) return 0;
-        loop1++;
+        forwardRank++;
     }
-    lim = *arg1;
-    loop2 = temp - 1;
-    bound = 1;
-    if (lim > 1)
-        bound = lim;
-    while (loop2 >= bound) {
-        fn_801B2F40(loop2 - 1);
+    requestedRank = *minRank;
+    backRank = rank - 1;
+    floorRank = 1;
+    if (requestedRank > 1)
+        floorRank = requestedRank;
+    while (backRank >= floorRank) {
+        fn_801B2F40(backRank - 1);
         if (((s32 (*)(void))fn_801B0DF0)() != 0) {
-            *arg1 = loop2 + 1;
+            *minRank = backRank + 1;
             break;
         }
-        loop2--;
+        backRank--;
     }
     return 1;
 }
