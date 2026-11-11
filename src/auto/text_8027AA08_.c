@@ -22,41 +22,42 @@ extern char lbl_804A3EE0[];
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
 void fn_8027AA50(int arg0) {
-    char *outer;
-    char *inner;
+    /* Scans entries for close scores and notifies for pairs whose score distance exceeds a threshold. */
+    char *currentEntry;
+    char *candidateEntry;
     int i;
-    int score;
-    int best_value;
-    int best_index;
+    int currentScore;
+    int closestValue;
+    int closestIndex;
     int j;
-    int other_value;
-    int old_score;
+    int candidateValue;
+    int previousDistance;
 
     if ((unsigned char)lbl_8055F634 != 0) {
-        outer = lbl_804A3EE0;
+        currentEntry = lbl_804A3EE0;
         i = 0;
         while (i < *(int *)(lbl_804A3EE0 + 0x3EC)) {
-            score = fn_8027ABF8(*(int *)(outer + 0x94));
-            inner = lbl_804A3EE0;
-            best_value = -1;
-            best_index = -1;
+            currentScore = fn_8027ABF8(*(int *)(currentEntry + 0x94));
+            candidateEntry = lbl_804A3EE0;
+            closestValue = -1;
+            closestIndex = -1;
             j = 0;
             while (j < *(int *)(lbl_804A3EE0 + 0x3EC)) {
                 if (j != i) {
-                    other_value = *(int *)(inner + 0x94);
-                    if (best_value == -1 ||
-                        ((old_score = fn_8027AC08(score, best_value)),
-                         fn_8027AC08(score, other_value) < old_score)) {
-                        best_value = other_value;
-                        best_index = j;
+                    candidateValue = *(int *)(candidateEntry + 0x94);
+                    if (closestValue == -1 ||
+                        ((previousDistance = fn_8027AC08(currentScore, closestValue)),
+                         fn_8027AC08(currentScore, candidateValue) < previousDistance)) {
+                        closestValue = candidateValue;
+                        closestIndex = j;
                     }
                 }
-                inner += 0x78;
+                candidateEntry += 0x78;
                 j++;
             }
-            if (best_value != -1 && fn_8027AC08(score, best_value) > lbl_8055F638)
-                fn_8013CA3C(best_index, i);
-            outer += 0x78;
+            if (closestValue != -1 && fn_8027AC08(currentScore, closestValue) > lbl_8055F638)
+                fn_8013CA3C(closestIndex, i);
+            currentEntry += 0x78;
             i++;
         }
     }
