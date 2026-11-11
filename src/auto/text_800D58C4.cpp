@@ -3166,9 +3166,9 @@ extern "C" void SetColorElement__Q36nw4hbm3lyt4PaneFUlUc(void* self, u32 index, 
             virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3();
             virtual void a4(); virtual void a5(); virtual void a6(); virtual void a7();
             virtual void a8(); virtual void a9(); virtual void a10(); virtual void a11();
-            virtual void a12(); virtual void a13(); virtual void v14(u32, u8);
+            virtual void v12(u32, u8);
         };
-        ((Obj*)self)->v14(index, color);
+        ((Obj*)self)->v12(index, color);
     }
 }
 
@@ -3560,11 +3560,13 @@ extern "C" void AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLi
     extern const char lbl_803200F8[];
     extern const char lbl_8031FF54[];
     extern const char lbl_8031FF30[];
-    void* iterator;
+    register void* iterator;
+    void* slot;
     if (!link) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031FF90, 0x289, lbl_803200F8);
     iterator = (char*)self + 0x20;
     if (!link) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031FF54, 0x233, lbl_8031FF30);
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char*)self + 0x1c, &iterator, link);
+    slot = iterator;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char*)self + 0x1c, &slot, link);
 }
 
 extern "C" void* FindAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform(void* self, void* anim) {
