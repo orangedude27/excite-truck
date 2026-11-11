@@ -734,26 +734,26 @@ extern void fn_801A7530(void *, void *);
 extern void fn_801BE168(void *, void *, void *, void *);
 extern float PSVECDotProduct(void *, void *);
 void fn_801A7444(void *arg0) {
-    float sp8, one, up, side;
-    char *p = (char *)arg0;
-    fn_801A7530(p, &sp8);
-    fn_801A69F4(p, &sp8);
-    fn_801A7178(p, &sp8);
+    float blend, one, up, side;
+    char *obj = (char *)arg0;
+    fn_801A7530(obj, &blend);
+    fn_801A69F4(obj, &blend);
+    fn_801A7178(obj, &blend);
     one = lbl_8056242C;
-    *(float *)(p + 0x124) *= one - sp8;
-    *(float *)(p + 0x128) *= one - sp8;
-    *(float *)(p + 0x12C) *= one - sp8;
-    if (PSVECDotProduct(p + 0x118, p + 0x118) > lbl_80562448) {
+    *(float *)(obj + 0x124) *= one - blend;
+    *(float *)(obj + 0x128) *= one - blend;
+    *(float *)(obj + 0x12C) *= one - blend;
+    if (PSVECDotProduct(obj + 0x118, obj + 0x118) > lbl_80562448) {
         side = lbl_80562430;
         up = lbl_8056242C;
-        *(float *)(p + 0x118) = side;
-        *(float *)(p + 0x11C) = up;
-        *(float *)(p + 0x120) = side;
+        *(float *)(obj + 0x118) = side;
+        *(float *)(obj + 0x11C) = up;
+        *(float *)(obj + 0x120) = side;
     }
-    fn_801BE168(*(void **)(p + 0x1EC), p + 0x3C, p + 0x118, p + 0x124);
-    if (*(unsigned char *)(*(char **)(p + 0x2700) + 0x48)) {
-        fn_801A6C14(p);
-        *(unsigned char *)(*(char **)(p + 0x2700) + 0x48) = 0;
+    fn_801BE168(*(void **)(obj + 0x1EC), obj + 0x3C, obj + 0x118, obj + 0x124);
+    if (*(unsigned char *)(*(char **)(obj + 0x2700) + 0x48)) {
+        fn_801A6C14(obj);
+        *(unsigned char *)(*(char **)(obj + 0x2700) + 0x48) = 0;
     }
 }
 
