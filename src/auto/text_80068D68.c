@@ -5071,31 +5071,33 @@ void bta_sys_init(void) {
     lbl_8055DC80 = lbl_80559038[4];
 }
 
+/* Dispatches a BTA system event to the registered handler for its subsystem id, or frees it if unhandled/disabled. */
 void bta_sys_event(BT_HDR *msg) {
     extern char lbl_80315010[];
     extern char lbl_80315024[];
     extern u8 lbl_803C0AD8[];
     extern void fn_80070954(u32, void *, u16);
     extern void fn_80073A00(void);
-    u8 id;
-    u8 freebuf = 1;
+    u8 subsystemId;
+    u8 shouldFree = 1;
 
     if (lbl_8055DC80 >= 4)
         fn_80070954(0x503, lbl_80315010, msg->event);
-    id = msg->event >> 8;
+    subsystemId = msg->event >> 8;
+    /* lbl_803C0AD8+0x7E: system disabled flag */
     if (lbl_803C0AD8[0x7E] != 0) {
         if (msg->event == 0x101)
             fn_80073A00();
         GKI_freebuf(msg);
         return;
     }
-    if (id < 0x1A && *(void **)(lbl_803C0AD8 + id * 4) != 0) {
-        void *reg = *(void **)(lbl_803C0AD8 + id * 4);
-        freebuf = ((u8 (*)(BT_HDR *))*(void **)reg)(msg);
+    if (subsystemId < 0x1A && *(void **)(lbl_803C0AD8 + subsystemId * 4) != 0) {
+        void *handlerReg = *(void **)(lbl_803C0AD8 + subsystemId * 4);
+        shouldFree = ((u8 (*)(BT_HDR *))*(void **)handlerReg)(msg);
     } else if (lbl_8055DC80 >= 2) {
-        fn_80070954(0x501, lbl_80315024, id);
+        fn_80070954(0x501, lbl_80315024, subsystemId);
     }
-    if (freebuf)
+    if (shouldFree)
         GKI_freebuf(msg);
 }
 
