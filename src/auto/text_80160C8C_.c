@@ -2159,6 +2159,7 @@ extern "C" s32 fn_80163C38(void *arg0) {
     }
     return 0;
 }
+#pragma cplusplus off
 
 #pragma cplusplus on
 // Draws the tutorial/progress HUD: the top and bottom bar graphics, a status
