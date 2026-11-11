@@ -15504,10 +15504,12 @@ u16 fn_800C0DF8(u8 *arg0, s32 arg1, u32 *arg2) {
 }
 
 extern "C" void fn_800C1984(s32 *, s32 *);
-extern "C" void fn_800C18A0(void *arg0, void *arg1) {
+extern "C" void fn_800C18A0(void *input, void *output) {
+    /* Unpack 18 transformed samples: copy temp[9..17] to out[0..8] and
+     * negated temp[8..0] in reverse order to out[18..26]. */
     s32 temp[0x12];
-    s32 *out = (s32 *)arg1;
-    ((void (*)(void *, s32 *))fn_800C1984)(arg0, temp);
+    s32 *out = (s32 *)output;
+    ((void (*)(void *, s32 *))fn_800C1984)(input, temp);
     out[0] = temp[9];
     out[1] = temp[10];
     out[2] = temp[11];
