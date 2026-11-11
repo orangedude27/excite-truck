@@ -412,6 +412,7 @@ BOOL SIEnablePollingInterrupt(BOOL enable) {
 }
 #pragma dont_inline off
 
+/* Remove a handler from the SI RDST polling table; disable polling interrupt if none remain. */
 BOOL SIUnregisterPollingHandler(OSInterruptHandler handler) {
     BOOL enabled;
     s32 i;
