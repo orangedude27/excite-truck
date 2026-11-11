@@ -655,7 +655,39 @@ extern unsigned char lbl_8055D948;
 extern void GXGetVtxDesc(void);
 extern void __GXSaveFifo(void);
 
+// The texture filter and anisotropy codes of GXTypes.h; this unit carries no
+// Revolution headers, so the two the texture-object setters take are spelled out.
+typedef enum _GXTexFilter {
+    GX_NEAR,
+    GX_LINEAR,
+    GX_NEAR_MIP_NEAR,
+    GX_LIN_MIP_NEAR,
+    GX_NEAR_MIP_LIN,
+    GX_LIN_MIP_LIN
+} GXTexFilter;
+
+typedef enum _GXAnisotropy {
+    GX_ANISO_1,
+    GX_ANISO_2,
+    GX_ANISO_4,
+    GX_MAX_ANISOTROPY
+} GXAnisotropy;
+
+// The first two words of a GXTexObj: images of the BP texmode0/texmode1 registers,
+// which the driver sends out when the texture is bound.
 typedef struct { unsigned int mode0; unsigned int mode1; } __GXTexObjInt;
+
+// Where the level-of-detail settings live in those two words (GX_BITSET positions,
+// counted from the MSB; the BP bit number counted from the LSB is 31 - position).
+#define TEXMODE0_LODBIAS_FIELD 15   // 8 bits: lod_bias * 32
+#define TEXMODE0_BIASCLAMP_FIELD 10 // 1 bit:  keep the LOD bias in range
+#define TEXMODE0_ANISO_FIELD 11     // 2 bits: GXAnisotropy
+#define TEXMODE0_EDGELOD_FIELD 23   // 1 bit:  set when edge LOD is off
+#define TEXMODE0_MINFILT_FIELD 24   // 3 bits: GX2HWFiltConv[min_filt]
+#define TEXMODE0_MAGFILT_FIELD 27   // 1 bit:  set when mag_filt == GX_LINEAR
+#define TEXMODE1_MINLOD_FIELD 24    // 8 bits: min_lod * 16
+#define TEXMODE1_MAXLOD_FIELD 16    // 8 bits: max_lod * 16
+
 static unsigned char GX2HWFiltConv[6] = { 0x00, 0x04, 0x01, 0x05, 0x02, 0x06 };
 #pragma dont_inline on
 int GXGetCPUFifo(void *fifo) {
