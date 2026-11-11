@@ -690,6 +690,16 @@ typedef struct {
     UINT8           attr_pad[SDP_BUILD_MAX_PAD_LEN];
 } tSDP_RECORD_BUILD_VIEW;                 /* 0x298 */
 
+/* tSDP_DB with those records: the server database as this build lays it out,
+   num_records at +6 and record[] at +8. */
+typedef struct {
+    UINT32                  di_primary_handle;
+    UINT8                   brcm_di_registered;
+    UINT16                  num_records;
+    tSDP_RECORD_BUILD_VIEW  record[SDP_MAX_RECORDS];
+} tSDP_DB_BUILD_VIEW;
+#define sdp_cb_server_db_view   ((tSDP_DB_BUILD_VIEW *)(lbl_803C4C40 + 0x121C))
+
 /* lbl_803C4C40 is the SDP control block (tSDP_CB of stack/sdp/sdpint.h).  Its
    server database starts at 0x121C - di_primary_handle, brcm_di_registered at
    0x1220, num_records at 0x1222 and record[] at 0x1224 - and sdp_cb.trace_level
@@ -7730,10 +7740,11 @@ s32 fn_80078310(s32 arg0)
 
 extern char lbl_80315F24[];
 void btm_qos_setup_complete(UINT8 status, UINT16 handle, FLOW_SPEC *p_flow) {
-    tBTM_CMPL_CB *p_cb = *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x618);
+    u8 *base = lbl_803C0F78;
+    tBTM_CMPL_CB *p_cb = *(tBTM_CMPL_CB **)(base + 0x618);
     volatile tBTM_QOS_SETUP_CMPL qossu;
-    fn_80070F90(lbl_803C0F78 + 0x600);
-    *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x618) = NULL;
+    fn_80070F90(base + 0x600);
+    *(tBTM_CMPL_CB **)(base + 0x618) = NULL;
     if (p_cb) {
         qossu.status = status;
         qossu.handle = handle;
@@ -15679,27 +15690,34 @@ u8 HID_HostDeregister(void) {
     u32 offset;
     u8 one = 1;
     u8 zero = 0;
-
     if (base[0x400] == 0)
         return 1;
     for (i = 0; i < 0x10; i++) {
         u8 flag = base[0x400];
+        u8 idx = (u8)i;
         u8 active;
-        offset = ((u8)i) * 0x34;
+        if (flag == 0)
+            continue;
+        if (idx > 0x10)
+            continue;
+        offset = idx * 0x34;
         entry = base + offset;
         active = base[offset];
-        if (active != 0 && flag != 0 && (u8)i <= 0x10) {
-            entry[0xC] = one;
-            fn_80070F90(entry + 0x1C);
-            if (entry[0xA] == 1) {
-                entry[0xC] = one;
-                hidh_conn_disconnect((u8)i);
-            }
-            entry[0] = zero;
-            entry[0x10] = zero;
-            *(u16 *)(entry + 0x16) = 0;
-            *(u16 *)(entry + 0x14) = 0;
-        }
+        if (active == 0)
+            continue;
+        if (flag == 0 || idx > 0x10 || active == 0)
+            goto do_clear;
+        entry[0xC] = one;
+        fn_80070F90(entry + 0x1C);
+        if (entry[0xA] != 1)
+            goto do_clear;
+        entry[0xC] = one;
+        hidh_conn_disconnect(idx);
+do_clear:
+        entry[0] = zero;
+        entry[0x10] = zero;
+        *(u16 *)(entry + 0x16) = 0;
+        *(u16 *)(entry + 0x14) = 0;
     }
     fn_80089248();
     lbl_803C3C38[0x400] = 0;
@@ -21756,14 +21774,17 @@ void rfc_process_pn(void *arg0, s32 arg1, void *arg2) {
         }
     } else {
         mcb = port_find_mcb_dlci_port(arg0, dlci);
-        if (mcb != 0) {
-            flag = *(u8 *)((u8 *)mcb + 0x69);
-            if ((flag & 1) != 0) {
-                *(u8 *)((u8 *)mcb + 0x69) = flag & 0xFE;
-                rfc_port_timer_stop(mcb);
-                PORT_ParNegCnf(arg0, dlci, *(u16 *)((u8 *)arg2 + 0xE), *(u8 *)((u8 *)arg2 + 0xA), *(u8 *)((u8 *)arg2 + 0x11));
-            }
-        }
+        if (mcb == 0)
+            return;
+        flag = *(u8 *)((u8 *)mcb + 0x69);
+        if ((flag & 1) != 0)
+            goto do_clear;
+        goto end;
+    do_clear:
+        *(u8 *)((u8 *)mcb + 0x69) = flag & 0xFE;
+        rfc_port_timer_stop(mcb);
+        PORT_ParNegCnf(arg0, dlci, *(u16 *)((u8 *)arg2 + 0xE), *(u8 *)((u8 *)arg2 + 0xA), *(u8 *)((u8 *)arg2 + 0x11));
+    end:;
     }
 }
 
