@@ -893,7 +893,7 @@ void fn_802113D8(void) {
     void *container;
     struct Dummy_802113D8 *resource;
 
-    /* Initialize track-music selection state, refresh the current track resource, and decode the current track index into page/digit selection. */
+    /* Initializes track-music selection state, refreshes the current track resource, and decodes the saved track index into page/digit selection. */
     if (fn_80265D64() == 0) {
         __AXDSPInitCallback_801769E0();
     }
