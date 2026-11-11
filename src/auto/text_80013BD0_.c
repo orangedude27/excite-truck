@@ -72,16 +72,14 @@ extern "C" void fn_80013BD0(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     class Obj {
     public:
         virtual void v0();
-        virtual void v1();
-        virtual void v2();
-        virtual void v3(void *);
+        virtual void v1(void *);
     };
     char first[20];
     char second[20];
     u8 *base = lbl_802FCB98;
-    ((Obj *)arg0)->v3(base + 0);
+    ((Obj *)arg0)->v1((u8 *)(0 + (u32)base));
     fn_801476C4();
-    ((Obj *)arg0)->v3(base + 0xC);
+    ((Obj *)arg0)->v1(base + 0xC);
     fn_801476C4();
     fn_80130FCC(first, 20, arg1);
     fn_801473F8(arg0, base + 0x1C, first);
@@ -301,21 +299,31 @@ extern s32 fn_800167F4(void);
 extern void *fn_80145E70(void *);
 #pragma push
 #pragma cplusplus on
-extern "C" void *fn_80014524(void *arg0, s32 arg1) {
- class Obj { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); };
- u8 *obj=(u8 *)arg0; u8 *base=lbl_802FCB98;
- *(void **)obj=lbl_802FCE18; lbl_803577E0[arg1]=arg0; obj[8]=0;
- *(void **)(obj+0x34)=fn_8023512C(base+0x130);
- *(void **)(obj+0x38)=fn_8023512C(base+0x140);
- *(void **)(obj+0x3C)=fn_8023512C(base+0x14C);
- *(void **)(obj+0x40)=fn_8023512C(base+0x158);
- *(void **)(obj+0x44)=fn_802CAC28(base+0x168,0);
- *(s32 *)(obj+4)=arg1; obj[0x4C]=0;
- fn_801333E8(5,&lbl_80558B80,obj+0x4C);
- *(void **)(obj+0x48)=fn_80019C68(arg1);
- if(fn_800167F4()==1) *(void **)(obj+0x50)=fn_80145E70(base+0x178);
- else *(void **)(obj+0x50)=fn_80145E70(base+0x184);
- ((Obj *)obj)->v5(); return arg0;
+/* Constructor/initializer for a game object: sets vtable and slot, clears flags,
+ * resolves several resource handles from a base string table, stores the object
+ * index/state, registers it, picks a mode-specific handle, then runs vfunc v5. */
+extern "C" void *fn_80014524(void *object, s32 index) {
+    class Obj { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); };
+    u8 *self = (u8 *)object;
+    u8 *strBase = lbl_802FCB98;
+    *(void **)self = lbl_802FCE18;
+    lbl_803577E0[index] = object;
+    self[8] = 0;
+    *(void **)(self + 0x34) = fn_8023512C(strBase + 0x130);
+    *(void **)(self + 0x38) = fn_8023512C(strBase + 0x140);
+    *(void **)(self + 0x3C) = fn_8023512C(strBase + 0x14C);
+    *(void **)(self + 0x40) = fn_8023512C(strBase + 0x158);
+    *(void **)(self + 0x44) = fn_802CAC28(strBase + 0x168, 0);
+    *(s32 *)(self + 4) = index;
+    self[0x4C] = 0;
+    fn_801333E8(5, &lbl_80558B80, self + 0x4C);
+    *(void **)(self + 0x48) = fn_80019C68(index);
+    if (fn_800167F4() == 1)
+        *(void **)(self + 0x50) = fn_80145E70(strBase + 0x178);
+    else
+        *(void **)(self + 0x50) = fn_80145E70(strBase + 0x184);
+    ((Obj *)self)->v5();
+    return object;
 }
 #pragma pop
 
