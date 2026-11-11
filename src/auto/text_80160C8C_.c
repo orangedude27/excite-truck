@@ -1407,7 +1407,8 @@ s32 fn_80162734(void *arg0) { return *(s32 *)((u8 *)arg0 + 8) != 0; }
 
 s32 fn_80162748(void *arg0) { return *(s32 *)((u8 *)arg0 + 8) == 1; }
 
-void fn_8016275C(void *arg0, s32 arg1, s32 arg2) {
+#pragma cplusplus on
+extern "C" void fn_8016275C(void *arg0, s32 arg1, s32 arg2) {
     if (((s32 (*)(void))(*(void ***)arg0)[0x24 / 4])() != 0)
         goto done;
     if (arg1 == 0) {
@@ -2853,13 +2854,12 @@ void fn_80164F50(void *arg0) {
     s32 first;
     s32 second;
     u8 *base = lbl_8032F588;
-    s32 zero;
+    s32 zero = 0;
     f32 f2;
     f32 f1;
     f32 f0;
     f32 *outPtr;
     f32 *inPtr;
-
     fn_801796BC(1);
     value = fn_80160CE4();
     if (lbl_8055E2DC != 0 && value <= *(s32 *)(lbl_8042FDEC + 4)) {
@@ -2868,15 +2868,14 @@ void fn_80164F50(void *arg0) {
     if (*(s32 *)((u8 *)self + 8) >= *(s32 *)(lbl_8042FDEC + 4)) {
         *(s32 *)((u8 *)self + 8) = *(s32 *)(lbl_8042FDEC + 4);
     }
-    zero = 0;
-    f2 = *(volatile f32 *)&lbl_80561888;
-    *(volatile u8 *)((u8 *)self + 4) = zero;
+    f2 = lbl_80561888;
+    *(u8 *)((u8 *)self + 4) = zero;
     outPtr = out;
-    f1 = *(volatile f32 *)&lbl_80561840;
+    f1 = lbl_80561840;
     inPtr = in;
-    *(volatile u8 *)((u8 *)self + 6) = zero;
-    f0 = *(volatile f32 *)&lbl_80561848;
-    *(volatile u8 *)((u8 *)self + 5) = zero;
+    *(u8 *)((u8 *)self + 6) = zero;
+    f0 = lbl_80561848;
+    *(u8 *)((u8 *)self + 5) = zero;
     outPtr[0] = f2;
     outPtr[1] = f2;
     inPtr[0] = f1;
