@@ -13070,36 +13070,39 @@ have_all:
     return 0;
 }
 
-u8 btm_sec_start_authorization(u8 *p) {
-    u8 *peer;
-    u8 *remote = 0;
-    u8 status;
-    u8 flag;
-    u8 result;
+u8 btm_sec_start_authorization(u8 *devRec) {
+    u8 *peerRec;
+    u8 *remoteName;
+    u8 prevSecState;
+    u8 peerFlag;
+    u8 authResult;
 
-    if ((p[0x76] & 8) != 0 || *(u16 *)(p + 0x18) == 0xFFFF) {
+    remoteName = 0;
+
+    /* Start authorization for a device: if known/connected, invoke the authorization callback (or fail if none); otherwise initiate a remote name request first. */
+    if ((devRec[0x76] & 8) != 0 || *(u16 *)(devRec + 0x18) == 0xFFFF) {
         if (*(u32 *)(lbl_803C0F78 + 0x190C) == 0)
             return 4;
-        peer = *(u8 **)p;
-        if (peer != 0) {
-            remote = p[0x80] ? peer + 0x10 : peer + 0x26;
-            flag = peer[0xF];
+        peerRec = *(u8 **)devRec;
+        if (peerRec != 0) {
+            remoteName = devRec[0x80] ? peerRec + 0x10 : peerRec + 0x26;
+            peerFlag = peerRec[0xF];
         } else {
-            flag = 0;
+            peerFlag = 0;
         }
-        p[0x7F] = 4;
-        result = (*(u8 (**)(void *, void *, void *, void *, u8, u8))(lbl_803C0F78 + 0x190C))(p + 0x1C, p + 0x22, p + 0x35, remote, flag, p[0x80]);
-        if (result == 0) {
-            status = p[0x76];
-            p[0x7F] = 0;
-            p[0x76] = status | 1;
+        devRec[0x7F] = 4;
+        authResult = (*(u8 (**)(void *, void *, void *, void *, u8, u8))(lbl_803C0F78 + 0x190C))(devRec + 0x1C, devRec + 0x22, devRec + 0x35, remoteName, peerFlag, devRec[0x80]);
+        if (authResult == 0) {
+            prevSecState = devRec[0x76];
+            devRec[0x7F] = 0;
+            devRec[0x76] = prevSecState | 1;
         }
-        return result;
+        return authResult;
     }
-    status = p[0x7F];
-    p[0x7F] = 3;
-    if (btm_initiate_rem_name(p + 0x1C, 0, 2, 0x1E, 0) != 1)
-        p[0x7F] = status;
+    prevSecState = devRec[0x7F];
+    devRec[0x7F] = 3;
+    if (btm_initiate_rem_name(devRec + 0x1C, 0, 2, 0x1E, 0) != 1)
+        devRec[0x7F] = prevSecState;
     return 1;
 }
 
