@@ -1980,7 +1980,7 @@ extern "C" void fn_80140728(void *arg0, void *arg1, void *arg2) {
     }
 }
 
-void fn_80140A6C(void *arg0, int arg1) {
+extern "C" void fn_80140A6C(void *arg0, int arg1) {
     extern char lbl_8032CA64[];
     int base;
     int tmp;
