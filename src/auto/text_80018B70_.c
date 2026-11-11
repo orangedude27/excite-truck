@@ -169,8 +169,8 @@ s32 fn_80018E40(void) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-s32 fn_80018E44(const char *arg0, s32 arg1) {
-    /* Fix note: select the matching record and reject it only when its mode is newer and its flag is clear. */
+s32 fn_80018E44(const char *categoryName, s32 itemName) {
+    /* Returns whether the named record is allowed: skips lookup when disabled and rejects a matching entry whose rank is above the current mode and not flagged. */
     register s32 mode;
     register s32 offset;
     register s32 index;
@@ -178,7 +178,7 @@ s32 fn_80018E44(const char *arg0, s32 arg1) {
     if ((u8)lbl_8055D588 != 0) {
         return 1;
     }
-    if (stricmp(arg0, lbl_80558C50) == 0) {
+    if (stricmp(categoryName, lbl_80558C50) == 0) {
         mode = fn_80018E3C();
     } else {
         mode = fn_80018E40();
@@ -187,9 +187,9 @@ s32 fn_80018E44(const char *arg0, s32 arg1) {
     offset = 0;
     goto check;
 loop:
-    if (stricmp((const char *)arg1,
+    if (stricmp((const char *)itemName,
                 *(const char **)((char *)*(void **)lbl_80357E0C + offset + 4)) == 0 &&
-        stricmp(arg0,
+        stricmp(categoryName,
                 *(const char **)((char *)*(void **)lbl_80357E0C + offset)) == 0) {
         char *entry = (char *)*(void **)lbl_80357E0C + index * 0x14;
         s32 rank = *(s32 *)(entry + 8);
