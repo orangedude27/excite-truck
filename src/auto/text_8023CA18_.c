@@ -346,9 +346,9 @@ void fn_8023D304(void *arg0, int arg1) {
         idx = *(int *)(*(int *)((char *)arg0 + 0x24));
         if (idx >= 0 && idx < (int)fn_80208D3C()) {
 #pragma cplusplus on
-            struct IV { virtual void u0(); virtual void u1(); virtual void u2(); virtual const char *getName(); };
+            struct IV1 { virtual void u0(); virtual const char *getName(); };
             item = fn_80208D4C(idx);
-            strcpy(*(char **)((char *)arg0 + 0x28), ((struct IV *)item)->getName());
+            strcpy(*(char **)((char *)arg0 + 0x28), ((struct IV1 *)item)->getName());
 #pragma cplusplus reset
             return;
         }
@@ -381,6 +381,11 @@ void fn_8023D304(void *arg0, int arg1) {
             *(char *)((char *)o38 + 0x4B) = 0;
             *(char *)((char *)o38 + 0x4A) = 0;
         }
+        return;
+    case 5:
+    case 6:
+        return;
+    default:
         return;
     }
 }
