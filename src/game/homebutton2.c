@@ -184,21 +184,29 @@ struct HomeBtn2Resources {
 #define HOMEBTN2_UNREMOVED_MSG (lbl_8034EB28) /* "homebtn: callback %p never removed" */
 
 #pragma scheduling invalid_target
+/* Home-button channel 2 shutdown, the mirror of fn_802EC614(): clears the
+ * "ready" flag, tears down the home-button driver's heap, panics on every
+ * callback the game left registered, then frees the archive buffer, the four
+ * opened files and the two home-button UI resources. */
 void fn_802EC7AC(void) {
-    s32 *p;
+    s32 *callback;
     s32 i;
+    struct HomeBtn2Resources *res;
+
     lbl_805600EC = 0;
     fn_800C657C();
-    p = (s32 *)lbl_805588D8;
+
+    callback = (s32 *)lbl_805588D8;
     i = 0;
     do {
-        if (*p != 0)
-            ((void (*)(void *, ...))fn_802E317C)(lbl_8034EB28, (void *)*p);
+        if (*callback != 0)
+            ((void (*)(void *, ...))fn_802E317C)(HOMEBTN2_UNREMOVED_MSG, (void *)*callback);
         ++i;
-        ++p;
-    } while (i < 8);
-    p = (s32 *)&lbl_80558860;
-    fn_80128670(p[4]);
+        ++callback;
+    } while (i < HOMEBTN2_CALLBACK_COUNT);
+
+    res = (struct HomeBtn2Resources *)&lbl_80558860;
+    fn_80128670((s32)res->archive);
     fn_80128670(*(s32 *)lbl_80558860);
     if (*(s32 *)(lbl_80558860 + 4) != 0)
         fn_80128670(*(s32 *)(lbl_80558860 + 4));
