@@ -1,3 +1,7 @@
+#include <types.h>
+
+/* Competitor table (see CompetitorTable below), inside the static race block
+   that starts at lbl_80435740. */
 extern int lbl_80435780[];
 extern float fn_801AF9EC(int, float *);
 extern void *fn_801AF8D0(int);
@@ -523,26 +527,22 @@ void fn_801AF598(void) {
     register int **array;
     int value = lbl_8055E628;
     int zero = 0;
-    lbl_8055E635 = zero;
+    lbl_8055E635 = 0;
     fn_801AFA5C(value);
     array = (int **)lbl_8055E620;
     lbl_8055E628 = zero;
     if (array != 0) {
         slot = array;
-        i = 0;
-        while (i < 8U) {
+        for (i = 0; i < 8U; i++, slot++) {
             entry = *slot;
-            if (entry == 0)
-                goto clear;
-            if (entry == 0)
-                goto clear;
-            fn_80128670((void *)*entry);
-            *entry = zero;
-            fn_80128668(entry);
-        clear:
+            if (entry != 0) {
+                if (entry != 0) {
+                    fn_80128670((void *)*entry);
+                    *entry = zero;
+                    fn_80128668(entry);
+                }
+            }
             *(volatile int **)slot = 0;
-            i++;
-            slot++;
         }
         fn_80128668(array);
     }
