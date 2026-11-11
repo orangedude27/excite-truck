@@ -519,7 +519,7 @@ BOOL fn_800572DC(BOOL final, u32 event) {
 }
 
 void SamplingHandler(s16 intr, OSContext* ctx) {
-    unsigned char local[0x2D8];
+    unsigned char local[0x2D0];
     (void)intr;
     if (lbl_8055DAF4 != 0) {
         OSClearContext((OSContext*)local);
