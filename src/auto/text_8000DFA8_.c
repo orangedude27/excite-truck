@@ -688,12 +688,18 @@ void fn_800103B8(s32 color, s32 flags, f32 scale, f32 x, f32 y, f32 width, const
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-void fn_800104B0(s32 arg0, s32 arg1, const char *fmt, f32 farg0, f32 farg1, f32 farg2, ...) {
-    char buffer[0x200];
+/* printf-style draw with the large font: formats the message into a scratch buffer
+   and queues a draw of it (fn_80232BA4) with the "bigtext.gtx" font context
+   (lbl_8055D498) in the given colour and line height, at (x, y) and at the given
+   text scale -- unlike fn_80010188, which draws the same way with the normal UI
+   font, the scale is used as-is and not multiplied by the UI scale lbl_805602C8.
+   The two trailing floats are the default 0.0f and 1.0f pen values. */
+void fn_800104B0(s32 color, s32 lineHeight, const char *fmt, f32 scale, f32 x, f32 y, ...) {
+    char textBuffer[0x200];
     va_list args;
-    va_start(args, farg2);
-    vsprintf(buffer, fmt, args);
-    fn_80232BA4(buffer, lbl_8055D498, arg0, arg1, farg1, farg2, farg0, lbl_80560280, lbl_80560264);
+    va_start(args, y);
+    vsprintf(textBuffer, fmt, args);
+    fn_80232BA4(textBuffer, lbl_8055D498, color, lineHeight, x, y, scale, lbl_80560280, lbl_80560264);
 }
 #pragma scheduling on
 #pragma pop
