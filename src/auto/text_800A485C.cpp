@@ -1,4 +1,7 @@
   #include <types.h>
+extern "C" s32 OSWaitSemaphore(void *);
+extern "C" s32 OSInitSemaphore(void *, s32);
+extern "C" const char lbl_8031B1E4[];
 typedef u16 *Fn800A4B78Ret;
 struct Fn800B10E0Ent {
     u16 first;
