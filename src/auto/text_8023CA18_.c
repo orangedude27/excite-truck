@@ -384,7 +384,6 @@ void fn_8023D304(void *arg0, int arg1) {
         return;
     }
 }
-#pragma cplusplus reset
 
 extern s32 lbl_8055BB68;
 typedef struct Obj8023 {
