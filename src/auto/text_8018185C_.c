@@ -2269,10 +2269,12 @@ char *fn_8018AE5C(void) {
 
 float fn_8018AE7C(void *arg0) {
     void *table = __AXFXGetLfoSinTable_801769CC();
+    int cond;
     if (*(u32 *)((u8 *)table + 4) - 0x00180000U == 0x304U) {
         return lbl_80561DE0;
     }
-    if (!(*(float *)((u8 *)arg0 + 0x25bc) <= *(float *)(void *)&lbl_80558DC4)) {
+    cond = (*(float *)((u8 *)arg0 + 0x25bc) > lbl_80558DC4);
+    if (cond) {
         return lbl_80561DE0;
     }
     if (*(float *)((u8 *)arg0 + 0xd4) > lbl_80561F28) {
