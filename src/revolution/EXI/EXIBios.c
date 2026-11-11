@@ -15,6 +15,8 @@ static u32 IDSerialPort1;
 
 static BOOL __EXIProbe(EXIChannel chan);
 
+/* Updates the EXI interrupt mask for the given channel based on its callback
+ * and lock state (and channel 2's state for channel 0). */
 static void SetExiInterruptMask(EXIChannel chan, EXIData* exi) {
     EXIData* exi2 = &Ecb[EXI_CHAN_2];
 
