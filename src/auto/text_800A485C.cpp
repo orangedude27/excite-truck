@@ -6473,33 +6473,35 @@ extern "C" s32 fn_800AFF28(void *arg0, s32 arg1, u16 arg2) {
 
 extern "C" s32 fn_800B5260(void *, void *, u32, u32, s32);
 extern "C" s32 fn_800B5618(void *, void *, u32, u16, s32);
-extern "C" s32 fn_800AFFE0(void *arg0, s32 arg1, u16 arg2, void *arg3, s32 arg4) {
-    u8 *obj = (u8 *)arg0;
-    u8 *ctx = (u8 *)arg3;
-    u32 scaled = (u32)arg1 << 1;
+extern "C" s32 fn_800AFFE0(void *cache, s32 sampleIndex, u16 value, void *state, s32 arg4) {
+    u8 *obj = (u8 *)cache;
+    u8 *ctx = (u8 *)state;
+    u32 scaled = (u32)sampleIndex << 1;
     u16 block = (u16)(*(u32 *)(obj + 0x28) + (scaled >> obj[0x20]));
     u16 index = (u16)(scaled & (*(u16 *)obj - 1));
     s32 result = 0;
     u32 i;
-    s32 saved = 0;
+    s32 savedError = 0;
     volatile s32 *bufferHandle = (volatile s32 *)(ctx + 8);
 
+    /* Write a 16-bit sample into a block-cached buffer, flushing dirty blocks and
+       loading the target block when needed; preserves the first nonzero error. */
     if (*(u32 *)(ctx + 0x18) != block) {
         for (i = 0; i < obj[0x22]; i++) {
-            s32 r = fn_800B5618(arg0, (void *)*bufferHandle,
+            s32 r = fn_800B5618(cache, (void *)*bufferHandle,
                 *(u32 *)(ctx + 0x18) + i * *(u32 *)(obj + 0xC),
                 0, *(u16 *)obj);
-            if (r != 0 && saved == 0)
-                saved = r;
+            if (r != 0 && savedError == 0)
+                savedError = r;
         }
         *(u32 *)(ctx + 0x18) = block;
-        result = fn_800B5260(arg0, (void *)*bufferHandle, block, 0, *(u16 *)obj);
+        result = fn_800B5260(cache, (void *)*bufferHandle, block, 0, *(u16 *)obj);
     }
-    *(u8 *)(*bufferHandle + index) = (u8)arg2;
-    *(u8 *)(*bufferHandle + index + 1) = (u8)(arg2 >> 8);
+    *(u8 *)(*bufferHandle + index) = (u8)value;
+    *(u8 *)(*bufferHandle + index + 1) = (u8)(value >> 8);
     if (result != 0)
-        saved = result;
-    return saved;
+        savedError = result;
+    return savedError;
 }
 
 extern "C" s32 fn_800B00E8(void *arg0, s32 arg1, u32 *arg2, void *arg3) {
