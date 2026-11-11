@@ -1387,23 +1387,25 @@ extern "C" s32 ReadBankInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ4
     register u32 bankIndex = index;
     register void *outInfo = out;
     register u8 *table;
-    s32 failure = 0;
+    void *bank;
     if (*((u8 *)bankInfo + 9) != 0)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80559858, 0x6F, lbl_80324B24);
     table = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
         *((u8 *)bankInfo + 8), *(u32 *)((u8 *)bankInfo + 0xC), bankInfo);
     if (table == 0)
-        return failure;
-    if (bankIndex >= *(u32 *)table)
-        return failure;
-    bankIndex <<= 3;
-    bankInfo = *(void **)((u8 *)reader + 0x28);
-    if (table[bankIndex + 5] != 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80559860, 0x6F, lbl_80324B50);
-    void *bank = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
-        table[bankIndex + 4], *(u32 *)(table + bankIndex + 8), bankInfo);
+        bank = 0;
+    else if (bankIndex >= *(u32 *)table)
+        bank = 0;
+    else {
+        bankIndex <<= 3;
+        bankInfo = *(void **)((u8 *)reader + 0x28);
+        if (table[bankIndex + 5] != 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80559860, 0x6F, lbl_80324B50);
+        bank = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
+            table[bankIndex + 4], *(u32 *)(table + bankIndex + 8), bankInfo);
+    }
     if (bank == 0)
-        return failure;
+        return 0;
     *(u32 *)outInfo = *(u32 *)((u8 *)bank + 4);
     return 1;
 }
@@ -3920,8 +3922,8 @@ extern "C" void *__dt__Q36nw4hbm3snd11SoundPlayerFv(void *arg0, s32 arg1) {
         virtual void v3() {}
         virtual void destroy(s32) {}
     };
-    register void *head;
     register void *it;
+    register void *head;
     register void *node;
     if (arg0 != 0) {
         head = (char *)arg0 + 4;
@@ -4531,18 +4533,19 @@ extern "C" void *Alloc__Q44nw4r3snd6detail14StrmBufferPoolFv(void *arg0) {
     u32 interruptState = OSDisableInterrupts();
     s32 capacity = pool->capacity;
     s32 used = pool->used;
+    u32 value;
     if (used >= capacity) {
         OSRestoreInterrupts(interruptState);
         return 0;
     }
-    capacity = ((capacity + 7) & ~7) / 8;
-    for (s32 i = 0; i < capacity; ++i) {
-        u8 value = pool->bits[i];
+    s32 numBytes = ((capacity + 7) & ~7) / 8;
+    for (s32 i = 0; i < numBytes; ++i) {
+        value = pool->bits[i];
         if (value != 0xFF) {
             u8 mask = 1;
             for (s32 bit = 0; bit < 8; ++bit) {
                 if ((value & mask) == 0) {
-                    ((volatile u8 *)pool->bits)[i] |= mask;
+                    pool->bits[i] |= mask;
                     s32 index = bit + (i << 3);
                     s32 stride = pool->stride;
                     s32 oldUsed = pool->used;
@@ -5923,8 +5926,8 @@ extern "C" void VoiceCallbackFunc__Q46nw4hbm3snd6detail10StrmPlayerFPQ46nw4hbm3s
         Panic__Q26nw4hbm2dbFPCciPCce(base, 0x506, base + 0x268);
     if (status < 2) {
         if (status >= 0)
-            goto free_voice;
         goto invalid_status;
+            goto free_voice;
     }
     if (status < 4)
         goto clear_voice;
