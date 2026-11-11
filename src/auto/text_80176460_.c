@@ -123,6 +123,25 @@ extern f32 lbl_80561B44;
 extern void fn_80209190(s32, f32);
 extern s32 fn_802ECC10(void);
 
+/* Physics module command: lbl_804303D4 is the request fn_80176780 files,
+ * lbl_804303C8 the one in effect that fn_80176C4C copies it over on the next
+ * tick.  The mode to switch to travels in the low byte of the first argument
+ * of fn_80176780, the flags in its bits 0x1FF00. */
+typedef struct PhysicsCommand {
+    s32 mode;  /* 0x00: mode to switch to, PHYS_MODE_NONE when there is none */
+    s32 flags; /* 0x04: PHYS_FLAG_* bits of the request */
+    u8 extra;  /* 0x08: argument that goes with the mode */
+} PhysicsCommand;
+
+#define PHYS_MODE_NONE      4       /* no command pending */
+#define PHYS_FLAG_100       0x100   /* dropped while lbl_8055E3E4 is set */
+#define PHYS_FLAG_200       0x200   /* fn_80176EC0 also calls fn_801AED5C */
+#define PHYS_FLAG_APPLY_NOW 0x1000  /* take the command through at once */
+#define PHYS_FLAG_FADE      0x8000  /* fade, unless one is already running */
+#define PHYS_FLAG_REFADE    0x10000 /* mark the fade done, then fade again */
+#define PHYS_FLAG_MASK      0x1FF00 /* the flag bits of a fn_80176780 request */
+#define sPendingCommand     lbl_804303D4 /* the PhysicsCommand waiting its turn */
+
 #pragma push
 #pragma scheduling invalid_target
 void fn_80176460(void *arg0, const char *arg1, s32 *arg2) {
