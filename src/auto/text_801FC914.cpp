@@ -1184,45 +1184,48 @@ found:
 }
 
 extern "C" void fn_801FEC74(void *arg) {
-    char *result = (char *)lbl_8055EC98;
+    // Return a path object to the pool named by its first field: find that pool,
+    // remove the object from the pool's in-use list, and push it back onto the
+    // unused list. Logs (and carries on) if the pool or the in-use slot is missing.
+    PathPool *pool = (PathPool *)lbl_8055EC98;
     char *name = *(char **)arg;
     int i = 0;
-    char *item = result;
-    while (i < *(int *)(result + 0x2C0)) {
-        if (stricmp(name, item) == 0) {
-            result += i * 0x58;
+    PathPool *scan = pool;
+    while (i < ((PathPoolTable *)pool)->poolCount) {
+        if (stricmp(name, scan->name) == 0) {
+            pool = pool + i;
             goto foundEntry;
         }
-        item += 0x58;
+        scan = scan + 1;
         i++;
     }
-    result = 0;
+    pool = 0;
 foundEntry:
-    if (result == 0) {
+    if (pool == 0) {
         fn_802E317C(lbl_8033B7F0, *(char **)arg);
     }
-    int usedCount = *(int *)(result + 0x54);
-    int foundIdx = 0;
-    void *searchPtr = result;
-    for (int k = usedCount; k > 0; k--) {
-        if (*(void **)((char *)searchPtr + 0x30) == arg) {
+    int inUseCount = pool->inUseCount;
+    int slotIdx = 0;
+    void *scanPtr = pool;
+    for (int k = inUseCount; k > 0; k--) {
+        if (*(void **)((char *)scanPtr + 0x30) == arg) {
             break;
         }
-        searchPtr = (char *)searchPtr + 4;
-        foundIdx++;
+        scanPtr = (char *)scanPtr + 4;
+        slotIdx++;
     }
-    if (foundIdx >= usedCount) {
-        fn_802E317C(lbl_8033B820, usedCount, *(int *)(result + 0x50));
+    if (slotIdx >= inUseCount) {
+        fn_802E317C(lbl_8033B820, inUseCount, pool->unusedCount);
     }
-    int *shiftPtr = (int *)(result + (foundIdx + 1) * 4);
-    int j = foundIdx + 1;
-    for (; j < *(int *)(result + 0x54); j++, shiftPtr++) {
+    int *shiftPtr = (int *)((char *)pool + (slotIdx + 1) * 4);
+    int j = slotIdx + 1;
+    for (; j < pool->inUseCount; j++, shiftPtr++) {
         shiftPtr[11] = shiftPtr[12];
     }
-    *(int *)(result + 0x54) -= 1;
-    int freeCount = *(int *)(result + 0x50);
-    *(void **)(result + 0x10 + freeCount * 4) = arg;
-    *(int *)(result + 0x50) = freeCount + 1;
+    pool->inUseCount -= 1;
+    int freeCount = pool->unusedCount;
+    *(void **)((char *)pool + 0x10 + freeCount * 4) = arg;
+    pool->unusedCount = freeCount + 1;
 }
 
 extern "C" int stricmp(const char *, const char *);
