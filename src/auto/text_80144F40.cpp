@@ -2013,21 +2013,22 @@ extern "C" void *fn_80148294(const char *arg0, void *arg1) {
     return NULL;
 }
 #pragma pop
-extern "C" void fn_80148334(s32, s32, void *);
+extern "C" void *fn_80148334(s32, s32, void *);
 extern "C" void fn_80148324(void *arg0, s32 arg1) {
     fn_80148334(arg1, *(s32 *)((u8 *)arg0 + 0x2C), arg0);
 }
 
-extern "C" void fn_80148334(s32 arg0, s32 arg1, void *arg2) {
+extern "C" void *fn_80148334(s32 arg0, s32 arg1, void *arg2) {
     s32 offset = 0;
     s32 i = 0;
     while (i < *(s32 *)((u8 *)arg1 + 4)) {
         if (stricmp(*(const char **)(*(u32 *)arg1 + offset), (const char *)arg0) == 0) {
-            return;
+            return (void *)(*(u32 *)arg1 + i * 0x28);
         }
         offset += 0x28;
         i++;
     }
+    return NULL;
 }
 
 extern "C" void *fn_801483D4(const char *, void *);
