@@ -121,130 +121,55 @@ extern float lbl_80562B64;
 extern float lbl_80562B68;
 extern float lbl_80562B6C;
 #pragma push
-#pragma paired_single off
+#pragma processor 750
 #pragma opt_common_subs off
 #pragma scheduling invalid_target
 float fn_801DB398(float grid[4][4], float t, float u) {
     float values[4];
-    float *src = &grid[0][0];
-    float *out = values;
-    float t2;
-    float t3;
-    float p2;
-    float p0;
-    float p1;
-    float p3;
-    float dp20;
-    float dp21;
-    float dp31;
-    float half20;
-    float half31;
-    float twice20;
-    float twice21;
-    float sum;
-    float coeff2;
-    float coeff3;
-    float base;
-    float term1;
-    float term2;
-    float p2y;
-    float p0y;
-    float p3y;
-    float p1y;
-    float dy20;
-    float dy21;
-    float dy31;
-    float yhalf20;
-    float yhalf31;
-    float ytwice20;
-    float ytwice21;
-    float ysum;
-    float ycoeff2;
-    float ycoeff3;
-    float ybase;
-    float yterm1;
-    float yterm2;
     int i;
-
-    t2 = t * t;
-    t3 = t2 * t;
-    for (i = 0; i < 2; i++) {
-        p2 = src[8];
-        p0 = src[0];
-        p1 = src[4];
-        dp20 = p2 - p0;
-        p3 = src[12];
-        dp21 = p2 - p1;
-        p2y = src[9];
-        dp31 = p3 - p1;
-        half20 = lbl_80562B64 * dp20;
-        p0y = src[1];
-        half31 = lbl_80562B64 * dp31;
-        p3y = src[13];
-
-        twice20 = lbl_80562B68 * half20;
-        sum = half20 + half31;
-        twice21 = lbl_80562B68 * dp21;
-        coeff3 = lbl_80562B6C * dp21;
-        coeff3 = coeff3 - twice20;
-        base = half20 * t;
-        coeff2 = sum - twice21;
-        coeff3 = coeff3 - half31;
-        term1 = coeff2 * t3;
-        term2 = coeff3 * t2;
-        coeff2 = term1 + term2;
-        coeff2 = base + coeff2;
-        out[0] = p1 + coeff2;
-
-        p1y = src[5];
-        src += 2;
-        dy20 = p2y - p0y;
-        dy21 = p2y - p1y;
-        dy31 = p3y - p1y;
-        yhalf31 = lbl_80562B64 * dy31;
-        yhalf20 = lbl_80562B64 * dy20;
-        ytwice20 = lbl_80562B68 * yhalf20;
-        ysum = yhalf20 + yhalf31;
-        ytwice21 = lbl_80562B68 * dy21;
-        ycoeff3 = lbl_80562B6C * dy21;
-        ycoeff3 = ycoeff3 - ytwice20;
-        ybase = yhalf20 * t;
-        ycoeff2 = ysum - ytwice21;
-        ycoeff3 = ycoeff3 - yhalf31;
-        yterm1 = ycoeff2 * t3;
-        yterm2 = ycoeff3 * t2;
-        ycoeff2 = yterm1 + yterm2;
-        ycoeff2 = ybase + ycoeff2;
-        out[1] = p1y + ycoeff2;
-
-        out += 2;
-    }
-
-    {
-        float p0 = values[0];
-        float p1 = values[1];
-        float p2 = values[2];
-        float p3 = values[3];
-        float d20 = p2 - p1;
-        float d21 = p2 - p0;
-        float d31 = p3 - p1;
-        float half20 = lbl_80562B64 * d21;
-        float half31 = lbl_80562B64 * d31;
-        float two20 = lbl_80562B68 * half20;
+    for (i = 0; i < 4; i++) {
+        const float *p = &grid[0][i];
+        float p2 = p[8];
+        float p0 = p[0];
+        float p1 = p[4];
+        float dp20 = p2 - p0;
+        float p3 = p[12];
+        float dp21 = p2 - p1;
+        float dp31 = p3 - p1;
+        float half20 = lbl_80562B64 * dp20;
+        float twice20 = lbl_80562B68 * half20;
+        float c3t = lbl_80562B6C * dp21;
+        float half31 = lbl_80562B64 * dp31;
+        float twice21 = lbl_80562B68 * dp21;
         float sum = half20 + half31;
-        float two21 = lbl_80562B68 * d20;
-        float coeff3 = lbl_80562B6C * d20;
-        float base = half20 * u;
-        float coeff2 = sum - two21;
-        float u2 = u * u;
-        float u3 = u2 * u;
-        coeff3 = coeff3 - two20;
+        float coeff3 = c3t - twice20;
+        float coeff2 = sum - twice21;
+        float t2 = t * t;
+        float t3 = t2 * t;
         coeff3 = coeff3 - half31;
-        coeff2 = coeff2 * u3;
-        coeff3 = coeff3 * u2;
-        coeff2 = coeff2 + coeff3;
-        coeff2 = base + coeff2;
-        return p1 + coeff2;
+        values[i] = (coeff2 * t3 + coeff3 * t2) + half20 * t + p1;
+    }
+    {
+        const float *p = values;
+        float p2 = p[2];
+        float p0 = p[0];
+        float p1 = p[1];
+        float dp20 = p2 - p0;
+        float p3 = p[3];
+        float dp21 = p2 - p1;
+        float dp31 = p3 - p1;
+        float half20 = lbl_80562B64 * dp20;
+        float twice20 = lbl_80562B68 * half20;
+        float c3t = lbl_80562B6C * dp21;
+        float half31 = lbl_80562B64 * dp31;
+        float twice21 = lbl_80562B68 * dp21;
+        float sum = half20 + half31;
+        float coeff3 = c3t - twice20;
+        float coeff2 = sum - twice21;
+        float t2 = u * u;
+        float t3 = t2 * u;
+        coeff3 = coeff3 - half31;
+        return (coeff2 * t3 + coeff3 * t2) + half20 * u + p1;
     }
 }
 #pragma pop
@@ -336,6 +261,20 @@ int fn_801DB74C(int arg0, int arg1, float *arg2, int *arg3, void *arg4, void *ar
     }
     return 1;
 }
+
+#pragma push
+#pragma processor 750
+int fn_801DC258(void *arg0, void *arg1, void *arg2, void *arg3, float farg0, float farg1) {
+    extern int lbl_8055E990;
+    float *state = (float *)lbl_8055E990;
+    float temp_x, fx, temp_z, fz;
+    temp_x = (farg0 + state[0]) * state[2];
+    temp_z = (farg1 + state[1]) * state[3];
+    fx = floor(temp_x);
+    fz = floor(temp_z);
+    return fn_801DB74C((int)fx, (int)fz, (float *)arg0, (int *)arg1, arg2, arg3, temp_x - fx, temp_z - fz);
+}
+#pragma pop
 
 #pragma use_lmw_stmw off
 void fn_801DC32C(void *base) {
@@ -588,18 +527,28 @@ void fn_801DCE10(void) {
 int fn_801DCE14(short *arg0, float *arg1, float *arg2, int arg3, int *arg4) {
     float spC;
     int sp8;
+    float b2;
+    float b0;
+    float t0;
+    float tC;
+    float t2;
 
     if (arg0 != 0) {
         *arg0 = 0;
     }
+    b0 = arg1[0];
     sp8 = 0xFF;
-    if (fn_801DC258(&spC, &sp8, arg0, (void *)arg3, arg1[0], arg1[2]) != 0) {
+    b2 = arg1[2];
+    if (((int (*)(float *, int *, short *, int, float, float))fn_801DC258)((float *)&spC, &sp8, arg0, arg3, b0, b2) != 0) {
         if (arg4 != 0) {
             *arg4 = sp8;
         }
-        arg2[1] = spC;
-        arg2[0] = arg1[0];
-        arg2[2] = arg1[2];
+        tC = spC;
+        t2 = arg1[2];
+        t0 = arg1[0];
+        arg2[1] = tC;
+        arg2[0] = t0;
+        arg2[2] = t2;
         return 1;
     }
     return 0;
