@@ -1057,34 +1057,36 @@ static inline f32 PSQUATMultiply_f32(void *a, void *b) {
     return PSQUATMultiply(a, b);
 }
 extern "C" f32 lbl_80561498, lbl_805614A4;
-extern "C" void fn_8013E19C(void *arg0, f32 arg1) {
-    f32 *p = (f32 *)arg0;
-    f32 unit = *(volatile f32 *)&lbl_805614A4;
+#pragma push
+#pragma processor 750
+extern "C" void fn_8013E19C(void *arg0, float arg1) {
+    float *p = (float *)arg0;
+    float unit = lbl_805614A4;
     void *other = (char *)arg0 + 0xC;
     p[4] = unit;
     p[1] = unit;
-          f32 t = arg1 / PSQUATMultiply(arg0, other);
-    f32 d = p[1];
-    f32 b = p[2];
-    f32 g = p[0];
-    f32 e = p[3];
-    f32 c = p[4];
-    f32 a = p[5];
-    f32 x = b + lbl_80561498 * (a - b);
-    f32 y = d + lbl_80561498 * (c - d);
-    f32 z = g + lbl_80561498 * (e - g);
-    f32 bx = b - x;
-    f32 by = d - y;
-    f32 bz = g - z;
-    f32 ax = a - x;
-    f32 ay = c - y;
-    f32 az = e - z;
-    f32 qx = x + t * bx;
-    f32 qy = y + t * by;
-    f32 qz = z + t * bz;
-    f32 rx = x + t * ax;
-    f32 ry = y + t * ay;
-    f32 rz = z + t * az;
+    float t = arg1 / PSQUATMultiply(arg0, other);
+    float d = p[1];
+    float b = p[2];
+    float g = p[0];
+    float e = p[3];
+    float c = p[4];
+    float a = p[5];
+    float x = b + lbl_80561498 * (a - b);
+    float y = d + lbl_80561498 * (c - d);
+    float z = g + lbl_80561498 * (e - g);
+    float bx = b - x;
+    float by = d - y;
+    float bz = g - z;
+    float ax = a - x;
+    float ay = c - y;
+    float az = e - z;
+    float qx = x + t * bx;
+    float qy = y + t * by;
+    float qz = z + t * bz;
+    float rx = x + t * ax;
+    float ry = y + t * ay;
+    float rz = z + t * az;
     p[2] = qx;
     p[0] = qz;
     p[1] = qy;
@@ -1092,7 +1094,6 @@ extern "C" void fn_8013E19C(void *arg0, f32 arg1) {
     p[4] = ry;
     p[5] = rx;
 }
-#pragma scheduling reset
 #pragma pop
 
 extern "C" void fn_8013E2AC(void *arg0, void *arg1) {
@@ -1650,18 +1651,23 @@ extern "C" s32 fn_8013F438(f32 x) {
 }
 #pragma pop
 extern float lbl_805614A4, lbl_805614AC, lbl_805614F8, lbl_80561518, lbl_80561544, lbl_80561548;
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void fn_8013F498(void *arg0, void *arg1, f32 farg0) {
     volatile f32 scratch[6];
-    f32 temp_f0, temp_f0_2, temp_f6, temp_f7, temp_f8;
-    f32 var_f3 = lbl_805614AC;
+    register f32 var_f3 = lbl_805614AC;
     f32 var_f4;
+    f32 temp_f0;
+    f32 temp_f0_2;
+    f32 temp_f6;
+    f32 temp_f8;
+    f32 temp_f7;
     f64 temp_f2, temp_f5;
     temp_f0 = (farg0 - lbl_805614A4) / var_f3;
     var_f3 = var_f3 < temp_f0 ? var_f3 : temp_f0;
     var_f3 = var_f3 > lbl_805614A4 ? var_f3 : lbl_805614A4;
+    farg0 = farg0 * farg0;
     var_f4 = lbl_805614AC;
-    temp_f0_2 = (farg0 * farg0 - lbl_805614A4) / var_f4;
+    temp_f0_2 = (farg0 - lbl_805614A4) / var_f4;
     temp_f6 = lbl_80561544 + var_f3 * lbl_805614F8;
     temp_f8 = temp_f6 * lbl_80561518;
     var_f4 = var_f4 < temp_f0_2 ? var_f4 : temp_f0_2;
@@ -1684,8 +1690,6 @@ extern "C" void fn_8013F498(void *arg0, void *arg1, f32 farg0) {
     *(f32 *)arg1 = out2;
     *(f32 *)((u8 *)arg1 + 4) = out3;
 }
-
-#pragma use_lmw_stmw off
 extern "C" void fn_8013F580(void *arg0, void *arg1, void *arg2) {
     struct Lookup {
         virtual void dummy();
@@ -1829,13 +1833,13 @@ extern "C" int fn_8013FC6C(void* arg0) {
     return 0;
 }
 #pragma scheduling on
-extern "C" int fn_8013FD20(void *arg0, int arg1) {
-    int result = 1;
-    int valid = 0;
-    if (*(int *)(*(char **)((char *)arg0 + 0xB8) + arg1 * 0x12C + 0x11C) != 0) {
-        float diff = fn_8001DAE8((char *)arg0 + 0x74) -
-                     *(float *)((char *)arg0 + 0x78);
-        if (diff >= lbl_805614A4 && diff < *(float *)((char *)arg0 + 0x74)) {
+extern "C" s32 fn_8013FD20(void *arg0, s32 arg1) {
+    u8 *self = (u8 *)arg0;
+    s32 result = 1;
+    if (*(s32 *)(*(u8 **)(self + 0xB8) + arg1 * 0x12C + 0x11C) != 0) {
+        f32 diff = fn_8001DAE8(self + 0x74) - *(f32 *)(self + 0x78);
+        s32 valid = 0;
+        if (diff >= lbl_805614A4 && diff < *(f32 *)(self + 0x74)) {
             valid = 1;
         }
         if (valid == 0) {
@@ -1900,14 +1904,14 @@ extern "C" void fn_80140614(void *arg0, void *arg1, void *arg2) {
             if (d2 < bounds->low0)
                 flag = 1;
         }
+        if (flag != 0) {
+            void *r1 = ((Item *)*(void **)((char *)arg0 + 0x54))->lookup(lbl_8032CA48);
+            void *r2 = ((Item *)*(void **)((char *)arg0 + 0x54))->lookup(lbl_8032CA58);
+            f32 d = fn_8001DAF0((f32 *)&bounds->low0);
+            fn_80147ABC(r1, r2, (const char *)*(s32 *)((char *)r1 + 0x1C), (f64)(d * d));
+        }
     }
-    if (flag != 0) {
-        void *r1 = ((Item *)*(void **)((char *)arg0 + 0x54))->lookup(lbl_8032CA48);
-        void *r2 = ((Item *)*(void **)((char *)arg0 + 0x54))->lookup(lbl_8032CA58);
-        f32 d = fn_8001DAF0((f32 *)&bounds->low0);
-        fn_80147ABC(r1, r2, (const char *)*(s32 *)((char *)r1 + 0x1C), (f64)(d * d));
-    }
-  }
+}
 
 #pragma processor 750
 #pragma push
@@ -2682,15 +2686,16 @@ extern "C" void fn_80142650(void *arg0) {
     }
 }
   extern "C" f32 lbl_8042FB3C_arr[8];
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" s32 fn_801427DC(void *arg0, s32 arg1) {
     u8 *table = *(u8 **)((u8 *)arg0 + 0x64);
+    u8 *base = lbl_8042FB3C;
     u8 *items = *(u8 **)(table + 4);
     u8 *item = items + arg1 * 0x14;
+    f32 scale = *(f32 *)(base + 0x1C);
     f32 first = (f32)*(s32 *)(item + 0x10);
-    f32 scale = *(f32 *)(lbl_8042FB3C + 0x1C);
     f32 second = (f32)*(s32 *)(item + 0xC);
-    f32 value = first * scale * second;
+    f32 value = scale * first * second;
     if (value < lbl_805614A4) {
         value -= lbl_80561498;
     } else {
@@ -2698,7 +2703,6 @@ extern "C" s32 fn_801427DC(void *arg0, s32 arg1) {
     }
     return (s32)value;
 }
-#pragma scheduling on
 extern "C" s32 fn_80142870(void *arg0, void *arg1) {
     f32 time = fn_8013CB3C() - *(f32 *)((u8 *)arg1 + 0x84);
     time -= *(f32 *)(lbl_8042FB3C + 0x24);
@@ -2708,10 +2712,16 @@ extern "C" s32 fn_80142870(void *arg0, void *arg1) {
     f32 position = *(f32 *)(lbl_8042FB3C + 0x1C);
     time -= one;
     f32 ratio = time / (span - one);
-
-    value = value < ratio ? ratio : value;
-    value = value > lbl_805614A4 ? lbl_805614A4 : value;
-
+    if (value < ratio) {
+        value = ratio;
+    } else {
+        value = value;
+    }
+    if (value > lbl_805614A4) {
+        value = lbl_805614A4;
+    } else {
+        value = value;
+    }
     f32 result = position + value * (lbl_805614A4 - position);
     if (result > lbl_805614A4) {
         f32 current = *(f32 *)(lbl_8042FB3C + 0x1C);
