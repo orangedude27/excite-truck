@@ -1116,6 +1116,57 @@ double __kernel_sin(int iy, double x, double y) {
     return x - ((z * (lbl_80560A08 * y - v * r) - y) - lbl_80560A00 * v);
 }
 
+extern double lbl_80560A10, lbl_80560A18, lbl_80560A20, lbl_80560A28, lbl_80560A30, lbl_80560A38;
+extern double lbl_802EE6E0[];
+double __kernel_tan(int iy, double x, double y) {
+    double z, r, v, w, s, t, a;
+    int ix, hx;
+
+    hx = __HI(x);
+    ix = hx & 0x7fffffff;
+    if (ix < 0x3e300000) {
+        if ((int)x == 0) {
+            if (((ix | __LO(x)) | (iy + 1)) == 0) {
+                return lbl_80560A10 / __fabs(x);
+            } else {
+                if (iy == 1) return x;
+                else return lbl_80560A18 / x;
+            }
+        }
+    }
+    if (ix >= 0x3FE59428) {
+        if (hx < 0) { x = -x; y = -y; }
+        z = lbl_80560A20 - x;
+        w = lbl_80560A28 - y;
+        x = z + w;
+        *(volatile double *)&x = x;
+        y = lbl_80560A30;
+    }
+    z = x * x;
+    *(volatile double *)&z = z;
+    w = z * z;
+    r = lbl_802EE6E0[1] + w * (lbl_802EE6E0[3] + w * (lbl_802EE6E0[5] + w * (lbl_802EE6E0[7] + w * (lbl_802EE6E0[9] + w * lbl_802EE6E0[11]))));
+    v = z * (lbl_802EE6E0[2] + w * (lbl_802EE6E0[4] + w * (lbl_802EE6E0[6] + w * (lbl_802EE6E0[8] + w * (lbl_802EE6E0[10] + w * lbl_802EE6E0[12])))));
+    s = z * x;
+    r = y + z * (s * (r + v) + y);
+    r += lbl_802EE6E0[0] * s;
+    w = x + r;
+    if (ix >= 0x3FE59428) {
+        v = (double)iy;
+        return (double)(1 - ((hx >> 30) & 2)) * (v - lbl_80560A38 * (x - (w * w / (w + v) - r)));
+    }
+    if (iy == 1) return w;
+    else {
+        z = w;
+        __LO(z) = 0;
+        v = r - (z - x);
+        t = a = lbl_80560A18 / w;
+        __LO(t) = 0;
+        s = lbl_80560A10 + t * z;
+        return t + a * (s + t * v);
+    }
+}
+
 extern double lbl_802EE748[];
 extern double lbl_80560A48, lbl_80560A50, lbl_80560A58, lbl_80560A60, lbl_80560A68;
 double atan(double x) {
