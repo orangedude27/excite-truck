@@ -217,38 +217,66 @@ extern int strncmp(const char *, const char *, unsigned int);
 extern char *strcpy(char *, const char *);
 extern void *memset(void *, int, unsigned int);
 extern int DVDGetCurrentDir(char **, char *);
-int fn_802E4280(void *arg0, char *arg1) {
-    char cwd[0x110];
-    void *obj;
+#pragma push
+#pragma cplusplus on
+extern "C" int fn_802E4280(void *arg0, char *arg1) {
+    class Obj {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual int f4();
+        virtual void f5();
+        virtual void f6(int);
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+        virtual void release(int);
+        char unk_04[0x3C];
+        char pathText[0x40];
+        unsigned char valid;
+        unsigned char pad_81[3];
+        int length;
+        int cursor;
+        void *owner;
+    };
+    char cwd[0x100];
+    Obj *obj;
     char *path;
     int status;
     path = arg1;
-    obj = ((void *(*)(int, void *))fn_802E3EBC)(0x90, &lbl_8055D1B4);
+    obj = (Obj *)((void *(*)(int, void *))fn_802E3EBC)(0x90, &lbl_8055D1B4);
     if (obj != 0) {
         *(void **)obj = &lbl_8034D130;
-        *(void **)((char *)obj + 0x8C) = arg0;
+        obj->owner = arg0;
         if (strncmp(path, (char *)&lbl_8055D1B8, 2) == 0) path += 2;
         if (*path == '\\') path++;
-        strcpy((char *)obj + 0x40, path);
-        memset((char *)obj + 4, 0, 0x3C);
-        *(int *)((char *)obj + 0x88) = 0;
-        *(int *)((char *)obj + 0x84) = 0;
-        strcpy(cwd, (char *)obj + 0x40);
-        status = DVDGetCurrentDir((char **)&cwd, (char *)obj + 4);
-        *((unsigned char *)obj + 0x80) = (status != 0);
-        if (status != 0) *(int *)((char *)obj + 0x84) = *(int *)((char *)obj + 0x38);
+        strcpy(obj->pathText, path);
+        memset(obj->unk_04, 0, 0x3C);
+        obj->cursor = 0;
+        obj->length = 0;
+        strcpy(cwd, obj->pathText);
+        status = DVDGetCurrentDir((char **)&cwd, obj->unk_04);
+        obj->valid = (unsigned int)(-status | status) >> 31;
+        if (obj->valid != 0) obj->length = *(int *)((char *)obj + 0x38);
     }
-    if (obj == 0 || *(unsigned char *)((char *)obj + 0x80) == 0) {
-        if (obj != 0) ((void (*)(void *, int))(*(void ***)obj)[12])(obj, 1);
+    switch (obj->valid) {
+    case 0:
+        if (obj != 0) obj->release(1);
         obj = 0;
+        break;
+    default:
+        break;
     }
     if (obj != 0) {
-        int val = ((int (*)(void *))(*(void ***)obj)[6])(obj);
-        ((void (*)(void *, int))(*(void ***)obj)[8])(obj, val);
+        int val = obj->f4();
+        obj->f6(val);
     }
     return 0;
 }
-
+#pragma cplusplus reset
+#pragma pop
 int fn_802E43D8(void *arg0, int arg1) {
     if (arg1 >= 0 && arg1 <= *(int *)((char *)arg0 + 0x84)) {
         *(int *)((char *)arg0 + 0x88) = arg1;
