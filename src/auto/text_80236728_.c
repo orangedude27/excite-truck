@@ -794,35 +794,36 @@ void fn_80237DA0(char *name, void *unused) {
     register unsigned char zero = 0;
     register unsigned char one = 1;
     register char *table;
-    register int outer;
-    register int offset;
-    outer = 0;
+    register int entryIndex;
+    register int entryOffset;
+    entryIndex = 0;
     table = *(char **)(context + 0x30);
-    offset = 0;
-    while (outer < *(int *)(table + 8)) {
-        if (stricmp(*(char **)(table + 4) + offset, name) == 0) {
-            register int inner;
-            register int innerOffset;
+    entryOffset = 0;
+    /* Find the named table entry, mark it selected with the current value, and clear other entries in the same group. */
+    while (entryIndex < *(int *)(table + 8)) {
+        if (stricmp(*(char **)(table + 4) + entryOffset, name) == 0) {
+            register int scanIndex;
+            register int scanOffset;
             float value;
-            (*(char **)(table + 4) + offset)[0x2d] = one;
+            (*(char **)(table + 4) + entryOffset)[0x2d] = one;
             value = fn_8023659C();
-            inner = 0;
-            innerOffset = 0;
-            *(float *)(*(char **)(table + 4) + offset + 0x30) = value;
-            while (inner < *(int *)(table + 8)) {
-                if (inner != outer) {
+            scanIndex = 0;
+            scanOffset = 0;
+            *(float *)(*(char **)(table + 4) + entryOffset + 0x30) = value;
+            while (scanIndex < *(int *)(table + 8)) {
+                if (scanIndex != entryIndex) {
                     char *entries = *(char **)(table + 4);
-                    char *other = entries + innerOffset;
-                    char *record = (char *)(offset + (int)entries);
+                    char *other = entries + scanOffset;
+                    char *record = (char *)(entryOffset + (int)entries);
                     if (*(int *)(other + 0x20) == *(int *)(record + 0x20))
                         other[0x2d] = zero;
                 }
-                innerOffset += 0x34;
-                inner++;
+                scanOffset += 0x34;
+                scanIndex++;
             }
         }
-        offset += 0x34;
-        outer++;
+        entryOffset += 0x34;
+        entryIndex++;
     }
 }
 #pragma use_lmw_stmw reset
