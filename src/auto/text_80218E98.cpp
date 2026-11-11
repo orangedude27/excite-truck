@@ -692,13 +692,18 @@ extern "C" void fn_80218FEC(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, 
 extern "C" void fn_80219044(void *arg0) {
     u8 *p = (u8 *)arg0;
     u8 flag;
-    f32 rate;
+    f32 threshold;
     f32 factor;
     f32 current;
     f32 product;
-    f32 threshold;
+    f32 rate;
     f32 value;
-
+    f32 threshold2;
+    f32 factor2;
+    f32 current2;
+    f32 product2;
+    f32 rate2;
+    f32 value2;
     if (*(u8 *)(p + 0x1A) != 0) {
         if (*(f32 *)(p + 0x1C) >= lbl_805634A8) {
             rate = fn_80214D48();
@@ -708,9 +713,9 @@ extern "C" void fn_80219044(void *arg0) {
             threshold = lbl_805634AC;
             value = current - product;
             *(f32 *)(p + 0x1C) = value;
-            if (threshold >= value) {
+            if (value <= threshold) {
                 flag = *(u8 *)(p + 0x1A);
-                if (flag != 0) {
+                if ((unsigned)flag != 0) {
                     if (flag != 0) {
                         *(u8 *)(p + 0x234) = 1;
                     }
@@ -722,19 +727,18 @@ extern "C" void fn_80219044(void *arg0) {
     } else {
         *(f32 *)(p + 0x1C) = lbl_805634A0;
     }
-
     if (*(u8 *)(p + 0x1A) == 0) {
         if (*(f32 *)(p + 0x20) >= lbl_805634A8) {
-            rate = fn_80214D48();
-            factor = *(f32 *)(p + 0x28);
-            current = *(f32 *)(p + 0x20);
-            product = factor * rate;
-            threshold = lbl_805634AC;
-            value = current - product;
-            *(f32 *)(p + 0x20) = value;
-            if (threshold >= value) {
+            rate2 = fn_80214D48();
+            factor2 = *(f32 *)(p + 0x28);
+            current2 = *(f32 *)(p + 0x20);
+            product2 = factor2 * rate2;
+            threshold2 = lbl_805634AC;
+            value2 = current2 - product2;
+            *(f32 *)(p + 0x20) = value2;
+            if (value2 <= threshold2) {
                 flag = *(u8 *)(p + 0x1A);
-                if (flag == 0) {
+                if (!flag) {
                     *(u8 *)(p + 0x1A) = 1;
                     *(u8 *)(p + 0x234) = 1;
                 }
@@ -1549,8 +1553,8 @@ extern "C" void fn_8021ACC0(void *arg0, s32 arg1) {
 #pragma scheduling invalid_target
 extern "C" void fn_8021AD10(void *arg0) {
     s32 value;
-    f32 screenX;
-    f32 screenY;
+    s32 screenX;
+    s32 screenY;
 
     if (*(u8 *)((u8 *)arg0 + 0x18) != 0) {
         value = (*(u8 *)((u8 *)arg0 + 0x244) != 0) + 2;
@@ -1566,13 +1570,13 @@ extern "C" void fn_8021AD10(void *arg0) {
         value %= fn_802C51AC(*(s32 *)((u8 *)arg0 + 0x250));
     }
 
-    screenX = (f32)(*(s32 *)((u8 *)arg0 + 4) -
-        ((s32)(lbl_8055FB9C + ((u32)lbl_8055FB9C >> 31)) >> 1));
-    screenY = (f32)(((s32)(lbl_8055FBA0 + ((u32)lbl_8055FBA0 >> 31)) >> 1) -
-        *(s32 *)((u8 *)arg0 + 8));
+    screenX = *(s32 *)((u8 *)arg0 + 4) -
+        ((s32)(lbl_8055FB9C + ((u32)lbl_8055FB9C >> 31)) >> 1);
+    screenY = ((s32)(lbl_8055FBA0 + ((u32)lbl_8055FBA0 >> 31)) >> 1) -
+        *(s32 *)((u8 *)arg0 + 8);
 
     fn_802C5310(*(s32 *)((u8 *)arg0 + 0x250), value,
-        screenX, screenY, lbl_805634A8);
+        (f32)screenX, (f32)screenY, lbl_805634A8);
 }
 #pragma scheduling on
 #pragma pop
@@ -2086,9 +2090,9 @@ extern "C" void fn_8021BD48(void *arg0, s32 arg1) {
 #pragma small_data off
 extern "C" __declspec(align(32)) void *lbl_8033EF68;
 #pragma scheduling invalid_target
-extern "C" void *fn_8021BD98(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, f32 arg6, f32 arg7) {
+extern "C" void *fn_8021BD98(void *arg0, s32 arg1, s32 arg2d, s32 arg3, s32 arg4, s32 arg5, f32 arg6, f32 arg7) {
     register void *vtable = (char *)&lbl_8033EF68;
-    ((void *(*)(void *, s32, s32, s32, s32, s32, s32))fn_80219568)(arg0, arg1, arg2, 0, arg5, 0, 0);
+    ((void *(*)(void *, s32, s32, s32, s32, s32, s32))fn_80219568)(arg0, arg1, arg2d, 0, arg5, 0, 0);
     *(s32 *)((u8 *)arg0 + 0x25C) = arg3;
     *(void **)arg0 = vtable;
     *(f32 *)((u8 *)arg0 + 0x254) = arg6;
@@ -3356,35 +3360,57 @@ check:
 #pragma pop
 extern "C" s32 fn_8022D3F8(s32, s32, s32 *, s32, s32);
 extern "C" void fn_8021E51C(void *self, s32 arg1) {
-    struct Local { s32 sp8; s32 pad; s32 sp10; } local;
-    s32 base = 0, i, item, selected, difference, flagMask, equal, combined;
-    s32 result, yBase, xBase;
+    struct Local {
+        s32 sp8;
+        s32 pad;
+        s32 sp10;
+    } local;
+    s32 base = 0;
+    s32 i;
+    s32 item;
+    s32 selected;
+    s32 difference;
+    s32 flagMask;
+    s32 equal;
+    s32 combined;
+    s32 result;
+    s32 yBase;
+    s32 xBase;
     void *entries = *(void **)((u8 *)self + 0x248);
-    if (entries != 0) base = *(s32 *)((u8 *)entries + 8);
+
+    if (entries != 0) {
+        base = *(s32 *)((u8 *)entries + 8);
+    }
     local.sp10 = 0;
     i = 0;
     goto probe;
+
 body:
     selected = **(s32 **)((u8 *)self + 0x25C);
     yBase = *(s32 *)((u8 *)self + 8);
     xBase = *(s32 *)((u8 *)self + 4);
     difference = item - selected;
-    equal = difference == 0;
+    equal = (difference == 0);
     flagMask = (-local.sp10 | local.sp10) >> 31;
-    result = fn_8022D3F8(*(s32 *)((u8 *)self + 0x244), item, 0,
-                         flagMask, equal);
+    result = fn_8022D3F8(*(s32 *)((u8 *)self + 0x244),
+                         item, 0, flagMask, equal);
     local.sp8 = 0;
     combined = equal | ((flagMask & 2) >> 1);
     fn_8022BAD0(7, xBase + 2,
                 yBase + i * *(s32 *)((u8 *)self + 0x258) + 2,
                 0, 0, 0, result, combined, lbl_805634A4);
+
     ++i;
-    if (i < *(s32 *)((u8 *)self + 0x254)) goto probe;
-    return;
+    if (i >= *(s32 *)((u8 *)self + 0x254)) {
+        return;
+    }
+
 probe:
     item = i + base;
     if (((s32 (*)(s32, s32, s32 *))fn_8022D3F8)(
-            *(s32 *)((u8 *)self + 0x244), item, &local.sp10) != 0) goto body;
+            *(s32 *)((u8 *)self + 0x244), item, &local.sp10) != 0) {
+        goto body;
+    }
 }
 
 extern "C" void fn_8021E7D4(void *);
@@ -4014,14 +4040,9 @@ extern "C" void fn_8021FC40(void *arg0, s32 arg1) {
     s32 temp_r30;
     s32 temp_r29;
     s32 var_r28;
-
     fn_802C3034(arg1);
     ((void (*)(void *, s32))fn_802192A0)(arg0, arg1);
-
-    temp_r29 = (s32)(((f32)(((VfObj *)arg0)->vf28() - 11) *
-        (**(f32 **)((u8 *)arg0 + 0x250) - *(f32 *)((u8 *)arg0 + 0x248))) /
-        (*(f32 *)((u8 *)arg0 + 0x24C) - *(f32 *)((u8 *)arg0 + 0x248)));
-
+    temp_r29 = (s32)(((**(f32 **)((u8 *)arg0 + 0x250) - *(f32 *)((u8 *)arg0 + 0x248)) * (f32)(((VfObj *)arg0)->vf28() - 11)) / (*(f32 *)((u8 *)arg0 + 0x24C) - *(f32 *)((u8 *)arg0 + 0x248)));
     var_r28 = 0;
     temp_r5 = *(s32 **)((u8 *)arg0 + 0x274);
     if (temp_r5 != 0) {
@@ -4029,14 +4050,10 @@ extern "C" void fn_8021FC40(void *arg0, s32 arg1) {
             var_r28 = 1;
             temp_r31 = *(s32 *)((u8 *)arg0 + 8);
             temp_r30 = *(s32 *)((u8 *)arg0 + 4);
-            fn_80228DC4(arg1, *(s32 *)((u8 *)arg0 + 0x25C),
-                temp_r30, temp_r31, ((VfObj *)arg0)->vf28(), var_r28);
+            fn_80228DC4(arg1, *(s32 *)((u8 *)arg0 + 0x25C), temp_r30, temp_r31, ((VfObj *)arg0)->vf28(), var_r28);
         }
     }
-
-    fn_80228DC4(arg1, *(s32 *)((u8 *)arg0 + 0x260),
-        *(s32 *)((u8 *)arg0 + 4) + 5, *(s32 *)((u8 *)arg0 + 8) + 5,
-        temp_r29, var_r28);
+    fn_80228DC4(arg1, *(s32 *)((u8 *)arg0 + 0x260), *(s32 *)((u8 *)arg0 + 4) + 5, *(s32 *)((u8 *)arg0 + 8) + 5, temp_r29, var_r28);
 }
 
 extern "C" s32 fn_802C5334(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32);
@@ -4068,14 +4085,12 @@ extern "C" void fn_8021FD68(void *arg0, s32 arg1) {
     }
 }
 
-#pragma push
-#pragma scheduling invalid_target
+#pragma paired_single off
 extern "C" void *fn_8021FF34(void *arg0, void *arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1) {
     f32 temp_f0;
     f32 temp_f2;
     s32 temp_r4;
     s32 temp_r8;
-
     temp_r8 = *(s32 *)((u8 *)arg1 + 0xC);
     temp_r4 = *(s32 *)((u8 *)arg1 + 8);
     fn_80218F34(arg0, temp_r4, temp_r8,
@@ -4098,7 +4113,6 @@ extern "C" void *fn_8021FF34(void *arg0, void *arg1, s32 arg2, s32 arg3, f32 far
     *(f32 *)((u8 *)arg0 + 0x260) = temp_f0;
     return arg0;
 }
-#pragma pop
 extern "C" u8 lbl_8033E7F4[];
 extern "C" void* __dt__Q34Game10MemoryCard8ResourceFv_8022003C(void* arg0, s32 arg1) {
     if (arg0 != 0) {
@@ -4988,11 +5002,11 @@ extern "C" void fn_80222234(void *obj, s32 x, s32 y) {
     current = state[0x24C / 4];
     if (current < 0) return;
     left = state[1];
-    if (x < left + current * 50) goto fail_x;
-    if (x > left + (current + 1) * 50) goto fail_x;
-    s32 delta = y - top;
+    if (x < current * 50 + left) goto fail_x;
+    if (x > (current + 1) * 50 + left) goto fail_x;
+    y = y - top;
     items = *(s32 **)((u8 *)obj + 0x244);
-    row = (delta - 10) / 10;
+    row = (y - 10) / 10;
     entry = *(s32 **)((u8 *)items + current * 0x24);
     if (row < 0) goto fail_row;
     if (row >= entry[2]) goto fail_row;
