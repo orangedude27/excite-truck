@@ -14,6 +14,35 @@ public:
     virtual void m6(int);
 };
 #pragma cplusplus off
+// A DVD file node.  One of the 16 slots of the "fdo" pool (fn_802E3EBC) is
+// carved into this; the vtable is lbl_8034D130.  This ABI puts the first
+// declared method in slot 0x8 (two leading destructor slots), which is how the
+// offsets below line up with the functions that make up the table.
+#pragma push
+#pragma cplusplus on
+class FileDisk {
+public:
+    virtual int read(void *dst, int len);         // 0x08 fn_802E4440
+    virtual int write(const void *src, int len);  // 0x0C fn_802E4648: "write not supported"
+    virtual int readAsync(void *dst, int len);    // 0x10 fn_802E45AC
+    virtual int isReadDone(void);                 // 0x14 fn_802E461C
+    virtual int getLength(void);                  // 0x18 fn_802E4400
+    virtual int tell(void);                       // 0x1C fn_802E4680
+    virtual int seek(int pos);                    // 0x20 fn_802E43D8
+    virtual void seekRelative(int delta);         // 0x24 fn_802E4688
+    virtual void flush(void);                     // 0x28 fn_802E46A0
+    virtual void *getOwner(void);                 // 0x2C fn_802E4438
+    virtual void release(int freeSlot);           // 0x30 fn_802E41C4
+    char info[0x3C];     // 0x04 DVD info block: +0x30 file address, +0x34 length, +0x38 position
+    char pathText[0x40]; // 0x40 the path it was opened with, prefix stripped
+    unsigned char valid; // 0x80 set once the DVD info block was filled in
+    unsigned char pad_81[3];
+    int length;   // 0x84 file length, from the DVD info block
+    int cursor;   // 0x88 next read position
+    void *owner;  // 0x8C whoever opened the node
+};
+#pragma cplusplus reset
+#pragma pop
 typedef struct VObj { struct VObjVt { int pad[8]; void (*fn)(struct VObj *, int); } *vt; char pad[0x84]; int off; } VObj;
 typedef struct VtObj88 { struct VtObj88Vt { int pad[8]; void (*fn)(struct VtObj88 *, int); } *vt; char pad[0x84]; int off; } VtObj88;
 extern unsigned int lbl_8055FF38;
@@ -328,7 +357,8 @@ extern void VIFlush(void);
 extern void VIWaitForRetrace(void);
 extern void fn_80127464(void);
 extern void* memcpy(void*, const void*, unsigned int);
-#pragma scheduling off
+#pragma push
+#pragma use_lmw_stmw off
 int fn_802E4440(void *arg0, void *arg1, int arg2) {
     int pos, aligned, offset, size;
     int result, count;
@@ -338,12 +368,17 @@ int fn_802E4440(void *arg0, void *arg1, int arg2) {
     offset = pos - aligned;
     size = (arg2 + offset + 0x1F) & ~0x1F;
     if (size > 0x20000) size = 0x20000;
+    count = 0;
     for (;;) {
-        result = DVDReadAsyncPrio((char *)arg0 + 4, lbl_804DBAA0, size, aligned, 0, 2);
-        if (result > 0) {
-            while (DVDGetCommandBlockStatus((char *)arg0 + 4) != 0)
-                fn_80127464();
-            result = size;
+        if (count != 0) {
+            result = DVDReadPrio((char *)arg0 + 4, lbl_804DBAA0, size, aligned, 2);
+        } else {
+            result = DVDReadAsyncPrio((char *)arg0 + 4, lbl_804DBAA0, size, aligned, 0, 2);
+            if (result > 0) {
+                while (DVDGetCommandBlockStatus((char *)arg0 + 4) != 0)
+                    fn_80127464();
+                result = size;
+            }
         }
         if (result >= 0) break;
         count = DVDGetDriveStatus();
@@ -359,10 +394,10 @@ int fn_802E4440(void *arg0, void *arg1, int arg2) {
         *(int *)((char *)arg0 + 0x88) += count;
         return count;
     }
-    if (count == 0) return 0;
-    return -1;
+    if (count != 0) return -1;
+    return 0;
 }
-#pragma scheduling on
+#pragma pop
 int fn_802E45AC(void *arg0, void *arg1, int arg2) {
     int result;
     result = DVDReadAsyncPrio((char *)arg0 + 4, arg1, arg2, *(int *)((char *)arg0 + 0x88), 0, 2);
