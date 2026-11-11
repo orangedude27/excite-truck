@@ -1170,8 +1170,8 @@ void fn_80118C44(void* arg0) {
     iterations = (volatile u32 *)((u8*)arg0 + 0x2E8);
     var_r8 = 0;
     if (arg0 != 0) {
-        temp_r5 = 0;
         *flag = 1;
+        temp_r5 = 0;
         var_r9 = 0;
         var_r6 = 0;
         *(s32*)((u8*)arg0 + 0x2F8) = temp_r5;
@@ -1213,14 +1213,67 @@ void fn_80118C44(void* arg0) {
         if (*(s32*)((u8*)arg0 + 0x2E8) != 0)
             fn_80117074(arg0);
         fn_80118C1C(arg0, fn_80116D30());
-        temp_r5 = *(s32*)((u8*)arg0 + 0x0C);
+        temp_r5_2 = *(u32*)((u8*)arg0 + 0x0C);
         var_r4 = 1;
-        if ((u32)temp_r5 < *(u32*)((u8*)arg0 + 0x08))
-            var_r4 = temp_r5 + 1;
+        if (temp_r5_2 < *(u32*)((u8*)arg0 + 0x08))
+            var_r4 = temp_r5_2 + 1;
         fn_80117380(arg0, var_r4);
         *flag = 0;
     }
 }
+
+/* --- RAD Bink movie player (this unit is the Bink library itself) -------- */
+
+/* The file interface a movie reads through; fn_8011770C (BinkOpen) installs
+ * the hooks and every slot is then called through a cast. */
+typedef struct BinkFile {
+    /* +0x00 */ void *hooks[5];
+} BinkFile;
+
+/* A listener on the shared Bink tick: fn_8011BEC8 links it into the tick's
+ * list at tick+0x30, fn_8011BF4C unlinks it. */
+typedef struct BinkTickNode {
+    /* +0x00 */ struct BinkTickNode *next;
+    /* +0x0C */ s32 registered;
+    /* +0x10 */ s32 unknown_10;
+    /* +0x14 */ s32 (*Check)(s32 node, s32 time);
+    /* +0x18 */ void (*Tick)(s32 node, s32 time);
+} BinkTickNode;
+
+/* One frame of a movie in Bink.frames[]; 0x17C bytes each. */
+typedef struct BinkFrame {
+    /* +0x00 */ u8 pad00[0x14];
+    /* +0x14 */ void (*SetPaused)(struct BinkFrame *frame, s32 paused);
+    /* +0x18 */ u8 pad18[0x4];
+    /* +0x1C */ void (*Close)(struct BinkFrame *frame);
+    /* +0x20 */ u8 pad20[0x8];
+    /* +0x28 */ s32 dataSize;
+    /* +0x2C */ void *data;
+    /* +0x30 */ u8 pad30[0xC];
+    /* +0x3C */ void *texture;
+} BinkFrame;
+
+/* The movie object fn_8011770C (BinkOpen) returns; 0x388 bytes. */
+typedef struct Bink {
+    /* +0x00 */ u8 pad00[0x20];
+    /* +0x20 */ u32 flags;
+    /* +0x24 */ u8 pad24[0xC4];
+    /* +0xE8 */ void *fileBuffer;
+    /* +0xF0 */ BinkFile file;
+    /* +0x104 */ s32 (*fileClose)(void *file);
+    /* +0x108 */ u8 pad108[0xEC];
+    /* +0x1F4 */ BinkTickNode localNode;
+    /* +0x210 */ u8 pad210[0x24];
+    /* +0x234 */ void *fileData;
+    /* +0x238 */ u8 pad238[0xB0];
+    /* +0x2E8 */ u32 frameCount;
+    /* +0x2EC */ u8 pad2EC[0x4];
+    /* +0x2F0 */ BinkFrame *frames;
+    /* +0x2F4 */ u8 pad2F4[0x4C];
+    /* +0x340 */ BinkTickNode tickNode;
+    /* +0x35C */ u8 pad35C[0x28];
+    /* +0x384 */ void *textureLayout;
+} Bink;
 
 extern s32 fn_80118F78(void*, s32);
 extern s32 fn_8011BFFC(s32, s32, s32, s32, s32);
@@ -1551,16 +1604,13 @@ s32 fn_80119824(void *arg0) {
     u32 temp_r3_3;
     u32 temp_r4_3;
     u32 var_r30;
-
     if (*(s32 *)((u8 *)arg0 + 0xB4) == 0) {
-        if (*(s32 *)((u8 *)arg0 + 0x64) != 0) {
-        } else {
+        if (*(s32 *)((u8 *)arg0 + 0x64) == 0) {
             return 0;
         }
-    } else {
     }
     if (*(s32 *)((u8 *)arg0 + 0xB0) == 0) {
-        fn_801195D8(arg0);
+        ((void (*)(void))fn_801195D8)();
         return 0;
     }
     var_r30 = *(u32 *)((u8 *)arg0 + 0xC4);
@@ -1587,11 +1637,19 @@ s32 fn_80119824(void *arg0) {
     temp_r3_3 = (var_r4 < 0x400)
         ? 0
         : ((var_r4 - 0x400) & 0xFFFFFFFC);
-    if (temp_r3_3 >= *(u32 *)((u8 *)arg0 + 0x9C)) goto block_15;
-    if (*(s32 *)((u8 *)arg0 + 0xBC) == 0) goto return_zero;
-    if (temp_r3_3 == 0) goto return_zero;
+    if (temp_r3_3 >= *(u32 *)((u8 *)arg0 + 0x9C)) {
+        goto block_15;
+    }
+    if (*(s32 *)((u8 *)arg0 + 0xBC) == 0) {
+        goto return_zero;
+    }
+    if (temp_r3_3 == 0) {
+        goto return_zero;
+    }
 block_15:
-    if (temp_r3_3 < *(u32 *)((u8 *)arg0 + 0xC8)) goto block_18;
+    if (temp_r3_3 < *(u32 *)((u8 *)arg0 + 0xC8)) {
+        goto block_18;
+    }
 block_16:
     *(s32 *)((u8 *)arg0 + 0x5C) = 1;
     fn_80119300((u8 *)arg0 + 0x7C,
@@ -6768,7 +6826,7 @@ void fn_801254E4(s32 arg0, f32 *arg1, s32 arg2, f32 *arg3) {
     count = (u32)(half - 1);
     if (half <= 1) goto finish;
     pairs = count >> 1;
-    while (pairs != 0) {
+    for (; pairs != 0; pairs--) {
         j += step;
         a = arg3[arg2 - j];
         b = *(tw += step);
@@ -6791,7 +6849,6 @@ void fn_801254E4(s32 arg0, f32 *arg1, s32 arg2, f32 *arg3) {
         arg1[arg0 - i] = f * c - e * d;
         i++;
         out += 2;
-        pairs--;
     }
     if (count & 1) {
         j += step;
