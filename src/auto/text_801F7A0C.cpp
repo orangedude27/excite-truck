@@ -1423,7 +1423,7 @@ void fn_80128668(void);
 void fn_80128670(void);
 extern "C" void fn_801FA010(void **);
 void fn_801F9A24(void *);
-void fn_801FA0B0(void **);
+extern "C" void fn_801FA0B0(void **);
 void fn_801FA138(void *);
 extern "C" void clear__Q211J2DBloSaver19CTextureNameConnectFv(void **);
 void fn_80128668(void);
@@ -1474,7 +1474,7 @@ extern "C" void fn_801FA010(void **arg0) {
     *arg0 = 0;
 }
 
-extern "C" void fn_801FA0B0(void **arg0) {
+void fn_801FA0B0(void **arg0) {
     void *node = *arg0;
     goto check;
 loop:
