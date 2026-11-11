@@ -45,6 +45,8 @@ static SIPollSetting XYPAL = {
     // clang-format on
 };
 
+/* Sets the SI controller polling rate for the current TV format, updating the
+ * stored sampling rate and programming the SI poll timing registers. */
 void SISetSamplingRate(u32 msec) {
     BOOL enabled;
     SIPollSetting* xy;
