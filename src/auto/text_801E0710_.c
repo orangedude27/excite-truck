@@ -208,6 +208,30 @@ typedef struct List_801E0890 {
     s32 cap;
 } List_801E0890;
 
+/* One player's boost-area draw state (BoostMan.slots[], 0x18 bytes each). */
+typedef struct BoostSlot_801E0710 {
+    s32 areaId;      /* +0x00 area the player is on, -1 = none */
+    u8 pad04;        /* +0x04 set when the player is on the area */
+    f32 speed;       /* +0x08 player speed on the previous frame */
+    f32 timer;       /* +0x0C glow countdown, raised while boosting */
+    s32 arrowColor;  /* +0x10 RGBA used for the arrow pass */
+    s32 lineColor;   /* +0x14 RGBA used for the outline pass */
+} BoostSlot_801E0710;
+
+/* BoostMan (lbl_8055EA10, allocated 0xB78 bytes under the name "BoostMan"):
+ * subdivides every boost area into a grid of cells and redraws the grids into
+ * two draw lists, the area outlines (bstrlines.tex) and the arrows on them
+ * (bstrarrows.tex).  fn_801E0710 builds it, fn_801E1710 updates the colours. */
+typedef struct BoostMan_801E0710 {
+    void *vtable;                  /* +0x00 */
+    void *lineList;                /* +0x04 draw list of the outlines */
+    void *arrowList;               /* +0x08 draw list of the arrows */
+    BoostSlot_801E0710 slots[4];   /* +0x0C one per player */
+    s32 slotArea[4];               /* +0x6C area each player is on */
+    List_801E0890 areas;           /* +0x7C boost areas, at most 100 */
+    Rec_801E0890 areaStore[100];   /* +0x88 areas.data points here */
+} BoostMan_801E0710;
+
 static inline void List_801E0890_Remove(List_801E0890 *l, s32 idx) {
     if (idx >= 0 && idx < l->count) {
         s32 last = l->count - 1;
