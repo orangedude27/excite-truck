@@ -23415,6 +23415,7 @@ attr_found:
 
 BOOLEAN find_uuid_in_seq(UINT8 *p, UINT32 seq_len, UINT8 *p_uuid, UINT16 uuid_len, int nest_level)
 {
+    /* Search an SDP data element sequence (recursively, up to depth 3) for a UUID element matching p_uuid. */
     UINT8 *p_end = p + seq_len;
     UINT8 type;
     UINT32 len;
