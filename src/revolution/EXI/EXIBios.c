@@ -347,6 +347,8 @@ static BOOL __EXIAttach(EXIChannel chan, EXICallback callback) {
 }
 
 BOOL EXIAttach(EXIChannel chan, EXICallback callback) {
+    /* Attaches to an EXI channel if a device is inserted (lastInsert != 0),
+     * probing first and serializing state checks under disabled interrupts. */
     EXIData* exi = &Ecb[chan];
     BOOL enabled;
     BOOL ret;
