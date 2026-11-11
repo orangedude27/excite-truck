@@ -301,52 +301,56 @@ extern "C" f32 lbl_80407E40[8];
 #define sTexCoordTemplate lbl_80407E40
 #pragma optimize_for_size on
 #pragma unroll off
-extern "C" void SetSize__Q46nw4hbm3lyt6detail11TexCoordAryFUc(void *self, u8 size) {
-    if (*(void **)((u8 *)self + 4) == 0)
+// Puts `size` entries of the array into use: the array has to be reserved and
+// `size` has to fit its capacity, every entry past mTop is filled with the
+// default quad texture coordinates (0,0) (1,0) (0,1) (1,1) - built once into
+// the function-local static sTexCoordTemplate - and mTop then becomes `size`.
+extern "C" void SetSize__Q46nw4hbm3lyt6detail11TexCoordAryFUc(nw4hbm::lyt::detail::TexCoordAry *self, u8 size) {
+    if (self->mpTexCoord == 0)
         return;
-    if (size > *(u8 *)self)
+    if (size > self->mSize)
         return;
-    if (lbl_8055DDE8 == 0) {
-        lbl_80407E40[0] = lbl_80560E68;
-        lbl_80407E40[1] = lbl_80560E68;
-        lbl_80407E40[2] = lbl_80560E6C;
-        lbl_80407E40[3] = lbl_80560E68;
-        lbl_80407E40[4] = lbl_80560E68;
-        lbl_80407E40[5] = lbl_80560E6C;
-        lbl_80407E40[6] = lbl_80560E6C;
-        lbl_80407E40[7] = lbl_80560E6C;
-        lbl_8055DDE8 = 1;
+    if (sTexCoordReady == 0) {
+        sTexCoordTemplate[0] = lbl_80560E68;
+        sTexCoordTemplate[1] = lbl_80560E68;
+        sTexCoordTemplate[2] = lbl_80560E6C;
+        sTexCoordTemplate[3] = lbl_80560E68;
+        sTexCoordTemplate[4] = lbl_80560E68;
+        sTexCoordTemplate[5] = lbl_80560E6C;
+        sTexCoordTemplate[6] = lbl_80560E6C;
+        sTexCoordTemplate[7] = lbl_80560E6C;
+        sTexCoordReady = 1;
     }
-    u8 oldSize = *((u8 *)self + 1);
-    f32 v7, v6, v5, v4, v3, v2, v1, v0;
-    v0 = lbl_80407E40[0];
-    v1 = lbl_80407E40[1];
-    v2 = lbl_80407E40[2];
-    v3 = lbl_80407E40[3];
-    v4 = lbl_80407E40[4];
-    v5 = lbl_80407E40[5];
-    v6 = lbl_80407E40[6];
-    v7 = lbl_80407E40[7];
-    s32 offset = ((s32)oldSize) << 5;
-    for (s32 i = oldSize; i < size; ++i) {
-        void *base0 = *(void **)((u8 *)self + 4);
-        *(f32 *)((u8 *)base0 + offset) = v0;
-        ((f32 *)((u8 *)base0 + offset))[1] = v1;
-        void *base1 = *(void **)((u8 *)self + 4);
-        f32 *p2 = (f32 *)((u8 *)base1 + offset);
-        p2[2] = v2;
-        p2[3] = v3;
-        void *base2 = *(void **)((u8 *)self + 4);
-        f32 *p3 = (f32 *)((u8 *)base2 + offset);
-        p3[4] = v4;
-        p3[5] = v5;
-        void *base3 = *(void **)((u8 *)self + 4);
-        f32 *p4 = (f32 *)((u8 *)base3 + offset);
-        p4[6] = v6;
-        p4[7] = v7;
+    u8 oldTop = self->mTop;
+    f32 t3, s3, t2, s2, t1, s1, t0, s0;
+    s0 = sTexCoordTemplate[0];
+    t0 = sTexCoordTemplate[1];
+    s1 = sTexCoordTemplate[2];
+    t1 = sTexCoordTemplate[3];
+    s2 = sTexCoordTemplate[4];
+    t2 = sTexCoordTemplate[5];
+    s3 = sTexCoordTemplate[6];
+    t3 = sTexCoordTemplate[7];
+    s32 offset = ((s32)oldTop) << 5;
+    for (s32 i = oldTop; i < size; ++i) {
+        void *coord0 = self->mpTexCoord;
+        *(f32 *)((u8 *)coord0 + offset) = s0;
+        ((f32 *)((u8 *)coord0 + offset))[1] = t0;
+        void *coord1 = self->mpTexCoord;
+        f32 *dst2 = (f32 *)((u8 *)coord1 + offset);
+        dst2[2] = s1;
+        dst2[3] = t1;
+        void *coord2 = self->mpTexCoord;
+        f32 *dst3 = (f32 *)((u8 *)coord2 + offset);
+        dst3[4] = s2;
+        dst3[5] = t2;
+        void *coord3 = self->mpTexCoord;
+        f32 *dst4 = (f32 *)((u8 *)coord3 + offset);
+        dst4[6] = s3;
+        dst4[7] = t3;
         offset += 0x20;
     }
-    *((u8 *)self + 1) = size;
+    self->mTop = size;
 }
 #pragma unroll reset
 #pragma optimize_for_size reset
