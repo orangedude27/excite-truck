@@ -289,28 +289,22 @@ f32 fn_801C3B6C(void) {
     return lbl_8055E7E4 + r_a;
 }
 
-#pragma scheduling invalid_target
 #pragma dont_inline fn_801C34CC
 s32 fn_801C3B7C(const void *arg0, const void *arg1) {
-    volatile f32 *left;
-    volatile f32 *right;
-    f32 b;
-    f32 a;
-    left = (volatile f32 *)arg0;
-    right = (volatile f32 *)arg1;
-    b = *right;
-    if (b < lbl_80562990)
+    if (*(f32 *)arg1 < -1.0f) {
         return -1;
-    a = *left;
-    if (a < lbl_80562990)
+    }
+    if (*(f32 *)arg0 < -1.0f) {
         return 1;
-    if (((s32 (*)(void))fn_801C34CC)())
+    }
+    if (fn_801C34CC(*(f32 *)arg0, *(f32 *)arg1)) {
         return *(s32 *)((char *)arg0 + 4) - *(s32 *)((char *)arg1 + 4);
-    if (*left < *right)
+    }
+    if (*(f32 *)arg0 < *(f32 *)arg1) {
         return -1;
+    }
     return 1;
 }
-#pragma scheduling on
 
 #pragma push
 #pragma scheduling on
@@ -1220,9 +1214,9 @@ void fn_801C7394(void) {
 }
 
 void fn_801C73DC(void) {
-    s32 count;
-    s32 current;
     s32 index;
+    s32 current;
+    s32 count;
     s32 previousOffset;
     s32 currentOffset;
     char *base;
@@ -1235,7 +1229,7 @@ void fn_801C73DC(void) {
         goto done;
     if (index < 0)
         goto done;
-    if (index >= count)
+    if (count <= index)
         goto done;
     previousOffset = index * 0x30C;
     currentOffset = current * 0x30C;
@@ -2504,14 +2498,14 @@ void fn_801C95EC(f32 arg0) {
         s32 id;
         s32 flags;
     };
+    struct L1 { struct Entry *e; s32 f4; s32 f8; s32 fC; };
     struct Entry *entry;
     s32 id;
     s32 prev;
-
     strcpy(lbl_80437FC0, lbl_8055AA44);
-    entry = &(*(struct Entry **)((char *)lbl_8055E86C + lbl_8055E81C * 0x10))[lbl_8055E820];
+    entry = &((struct L1 *)lbl_8055E86C)[lbl_8055E81C].e[lbl_8055E820];
     entry->callback(entry);
-    entry = &(*(struct Entry **)((char *)lbl_8055E86C + lbl_8055E81C * 0x10))[lbl_8055E820];
+    entry = &((struct L1 *)lbl_8055E86C)[lbl_8055E81C].e[lbl_8055E820];
     id = entry->id;
     if (id == 0x22) {
         lbl_8055E81C = lbl_8055E870;
