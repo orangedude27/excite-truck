@@ -20,9 +20,13 @@ struct ObjectLink {
 struct BpxObject {
     u8 pad[0x0C];
     f32 *matrix;  /* +0x0C */
+    u8 pad_10[8];
     u32 magic;    /* +0x18: 'BPX ' */
+    u8 pad_1C[4];
     u32 kind;     /* +0x20: what the object is; fn_801B53E4 filters on it */
+    u8 pad_24[8];
     f32 length;   /* +0x2C: how far each end sits from the position */
+    u8 pad_30[4];
     s32 links;    /* +0x34: bit 0 / bit 1 - the first / second end has a neighbour */
 };
 
