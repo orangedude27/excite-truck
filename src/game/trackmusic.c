@@ -885,14 +885,15 @@ extern signed char lbl_8055EEED;
 extern float lbl_80563400;
 void fn_802113D8(void) {
     long mode;
-    long n;
-    long q;
-    long r;
+    long trackIndex;
+    long pageIndex;
+    long digitIndex;
     long zero = 0;
     long minusTwo = -2;
-    void *base;
-    struct Dummy_802113D8 *object;
+    void *container;
+    struct Dummy_802113D8 *resource;
 
+    /* Initialize track-music selection state, refresh the current track resource, and decode the current track index into page/digit selection. */
     if (fn_80265D64() == 0) {
         __AXDSPInitCallback_801769E0();
     }
@@ -903,19 +904,19 @@ void fn_802113D8(void) {
     lbl_8055B65C = lbl_8055B658;
     lbl_8055EEEC = zero;
     lbl_8055EEED = zero;
-    base = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
-    object = *(struct Dummy_802113D8 **)((char *)base + 0x20);
-    object->f6(&lbl_8055B674, lbl_8033C970);
+    container = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
+    resource = *(struct Dummy_802113D8 **)((char *)container + 0x20);
+    resource->f6(&lbl_8055B674, lbl_8033C970);
     mode = *(long *)fn_8020FAF0();
     if (mode == 1) {
         lbl_8055EEE0 = -1;
     } else if (mode == 2) {
-        n = lbl_8055B658;
-        if (n >= 0) {
-            q = n / 10;
-            r = n % 10;
-            lbl_8055EEE4 = q;
-            lbl_8055EEE0 = r;
+        trackIndex = lbl_8055B658;
+        if (trackIndex >= 0) {
+            pageIndex = trackIndex / 10;
+            digitIndex = trackIndex % 10;
+            lbl_8055EEE4 = pageIndex;
+            lbl_8055EEE0 = digitIndex;
         }
     }
 }
