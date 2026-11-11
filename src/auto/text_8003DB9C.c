@@ -265,13 +265,12 @@ int __GXShutdown(int shutdown) {
     if (shutdown == 0) {
         if (lbl_8055D940 == 0) {
             mem = (volatile unsigned short *)__memReg;
-            for (;;) {
-                high = mem[0x4E / 2];
+            high = mem[0x4E / 2];
+            do {
                 firstHigh = high;
                 low = mem[0x50 / 2];
                 high = mem[0x4E / 2];
-                if (firstHigh == high) break;
-            }
+            } while (high != firstHigh);
             lbl_8055D930 = (high << 16) | low;
             now = OSGetTime();
             lbl_8055D938 = (unsigned int)(now >> 32);
@@ -282,15 +281,15 @@ int __GXShutdown(int shutdown) {
 
         now = OSGetTime();
         mem = (volatile unsigned short *)__memReg;
+        high = mem[0x4E / 2];
         do {
-            high = mem[0x4E / 2];
             firstHigh = high;
             low = mem[0x50 / 2];
             high = mem[0x4E / 2];
         } while (high != firstHigh);
+        current = (high << 16) | low;
         oldLow = *(volatile unsigned int *)&lbl_8055D93C;
         oldHigh = *(volatile unsigned int *)&lbl_8055D938;
-        current = (high << 16) | low;
         previous = ((unsigned long long)oldHigh << 32) | oldLow;
         if ((signed long long)((unsigned long long)now - previous) < 10) {
             return 0;
@@ -372,21 +371,25 @@ void __GXInitRevisionBits(void) {
 void GXCPInterruptHandler(short intr, void *ctx) {
     unsigned char sp[0x2c8];
     unsigned int *gx = __GXData;
+    unsigned int *p;
     gx[3] = *__cpReg;
     if (((gx[2] >> 3) & 1) && ((gx[3] >> 1) & 1)) {
         OSResumeThread(lbl_8055D95C);
         lbl_8055D958 = 0;
-        __GXData[4] |= 3;
-        *(volatile unsigned short *)((char *)__cpReg + 4) = __GXData[4];
+        p = GXD;
+        p[4] |= 3;
+        *(volatile unsigned short *)((char *)__cpReg + 4) = p[4];
         gx[2] = (gx[2] | 4) & ~8;
         *(volatile unsigned short *)((char *)__cpReg + 2) = gx[2];
     }
     if (((gx[2] >> 2) & 1) && (gx[3] & 1)) {
         lbl_8055D94C = (char *)lbl_8055D94C + 1;
-        gx[2] = (gx[2] & ~4) | 8;
+        p = GXD;
+        gx[2] &= ~4;
+        gx[2] |= 8;
         *(volatile unsigned short *)((char *)__cpReg + 2) = gx[2];
-        __GXData[4] = (__GXData[4] | 1) & ~2;
-        *(volatile unsigned short *)((char *)__cpReg + 4) = __GXData[4];
+        p[4] = (p[4] | 1) & ~2;
+        *(volatile unsigned short *)((char *)__cpReg + 4) = p[4];
         lbl_8055D958 = 1;
         OSSuspendThread(lbl_8055D95C);
     }
@@ -1731,7 +1734,6 @@ void GXGetVtxAttrFmt(void) {
     unsigned int old;
     unsigned int value;
     unsigned long long start;
-    unsigned long long now;
 
     if (*(unsigned char *)((char *)__GXData + 0x5FA) &&
         (((unsigned int)__GXIsGPFifoReady() & 0xFF) != 0)) {
@@ -1751,9 +1753,7 @@ void GXGetVtxAttrFmt(void) {
 
         for (;;) {
             start = OSGetTime();
-            do {
-                now = OSGetTime();
-            } while (now - start < 8);
+            while (OSGetTime() - start < 8) {}
             do {
                 high = *(volatile unsigned short *)((char *)__memReg + 0x4E);
                 firstHigh = high;
@@ -1774,14 +1774,10 @@ void GXGetVtxAttrFmt(void) {
 
     *(volatile unsigned int *)0xCC003018 = 1;
     start = OSGetTime();
-    do {
-        now = OSGetTime();
-    } while (now - start < 50);
+    while (OSGetTime() - start < 50) {}
     *(volatile unsigned int *)0xCC003018 = 0;
     start = OSGetTime();
-    do {
-        now = OSGetTime();
-    } while (now - start < 5);
+    while (OSGetTime() - start < 5) {}
 }
 #pragma dont_inline reset
 #pragma use_lmw_stmw off
@@ -2940,6 +2936,26 @@ void GXCopyDisp(unsigned int source, int clear) {
     *(volatile unsigned short *)((volatile unsigned char *)gx + 2) = 0;
 }
 
+/* The GX data block (__GXData) holds every BP register GX has set so that it can
+ * re-send them; this build of GX keeps them 0x50 above the release SDK's
+ * layout, and only the fields the texture copy needs are named here. */
+typedef struct {
+    unsigned char pad_000[0x002];
+    unsigned short bpSent;                 /* 0x002 BP state the CP is not told about */
+    unsigned char pad_004[0x220 - 0x004];
+    unsigned int cmode0;                   /* 0x220 colour and alpha compare modes */
+    unsigned char pad_224[4];
+    unsigned int zmode;                    /* 0x228 depth test and write modes */
+    unsigned int peCtrl;                   /* 0x22C pixel type and z-update control */
+    unsigned char pad_230[0x240 - 0x230];
+    unsigned int cpTexSrc;                 /* 0x240 copy source: format and address */
+    unsigned int cpTexSize;                /* 0x244 copy width and height */
+    unsigned int cpTexStride;              /* 0x248 copy stride */
+    unsigned int cpTex;                    /* 0x24C copy control: clear bit and destination */
+    unsigned char cpTexZ;                  /* 0x250 the copy covers the depth buffer too */
+} GXTexCopyData;
+#define GXRegs (*(GXTexCopyData *)__GXData)
+
 void GXCopyTex(u32 width, s32 clear) {
     s32 changed;
     u32 value;
@@ -3710,36 +3726,37 @@ void __SetSURegs(s32 arg0, s32 arg1) {
 }
 
 void __GXSetSUTexRegs(void) {
-    volatile u32 *gx = (volatile u32 *)(void *)__GXData;
-    u32 mode = gx[0x5E4 / 4];
-    u32 cfg, count, limit, i, word, texmap, coord;
-    if (mode == 0xFF) return;
-    cfg = gx[0x254 / 4];
-    limit = ((cfg >> 10) & 0xF) + 1;
-    count = (cfg >> 16) & 7;
-    for (i = 0; i < count; i++) {
-        switch (i) {
-        case 0:
-            word = gx[0x170 / 4]; texmap = word & 7; coord = (word >> 3) & 7; break;
-        case 1:
-            word = gx[0x170 / 4]; texmap = (word >> 6) & 7; coord = (word >> 9) & 7; break;
-        case 2:
-            word = gx[0x170 / 4]; texmap = (word >> 12) & 7; coord = (word >> 15) & 7; break;
-        default:
-            word = gx[0x170 / 4]; texmap = (word >> 18) & 7; coord = (word >> 21) & 7; break;
+    unsigned int *gx = __GXData;
+    unsigned int *g2;
+    char *tr;
+    unsigned int count, i, limit, map, coord, word, off;
+    if (gx[0x5E4 / 4] != 0xFF) {
+        word = gx[0x254 / 4];
+        count = (word >> 16) & 7;
+        limit = ((word >> 10) & 0xF) + 1;
+        for (i = 0; i < count; i++) {
+            switch (i) {
+            case 0:
+                word = gx[0x170 / 4]; map = word & 7; coord = (word >> 3) & 7; break;
+            case 1:
+                word = gx[0x170 / 4]; map = (word >> 6) & 7; coord = (word >> 9) & 7; break;
+            case 2:
+                word = gx[0x170 / 4]; map = (word >> 12) & 7; coord = (word >> 15) & 7; break;
+            case 3:
+                word = gx[0x170 / 4]; map = (word >> 18) & 7; coord = (word >> 21) & 7; break;
+            }
+            if ((gx[0x5E4 / 4] & (1 << coord)) == 0) __SetSURegs(map, coord);
         }
-        if ((gx[0x5E4 / 4] & (1 << coord)) == 0) __SetSURegs(texmap, coord);
-    }
-    for (i = 0; i < limit; i++) {
-        u32 mapreg = gx[(0x5A4 / 4) + i];
-        u32 field = (mapreg >> 24) & 0xFF;
-        u32 tex;
-        if (i & 1) tex = (gx[(0x150 / 4) + i] >> 15) & 7;
-        else tex = (gx[(0x150 / 4) + i] >> 3) & 7;
-        if (field != 0xFF &&
-            (gx[0x5E4 / 4] & (1 << tex)) == 0 &&
-            (gx[0x5E8 / 4] & (1 << i)) != 0)
-            __SetSURegs(field, tex);
+        g2 = GXD;
+        tr = (char *)g2 + 0x150;
+        for (i = 0; i < limit; i++) {
+            off = (i & ~1) << 1;
+            map = g2[0x5A4 / 4 + i] & ~0x100;
+            if (i & 1) coord = (*(unsigned int *)(tr + off) >> 15) & 7;
+            else coord = (*(unsigned int *)(tr + off) >> 3) & 7;
+            if (map != 0xFF && (gx[0x5E4 / 4] & (1 << coord)) == 0 && (g2[0x5E8 / 4] & (1 << i)) != 0)
+                __SetSURegs(map, coord);
+        }
     }
 }
 
@@ -4428,12 +4445,13 @@ void GXSetZTexture(unsigned int op, unsigned int format, unsigned int bias) {
 
 extern unsigned int lbl_80303C80[];
 void GXSetTevOrder(int stage, int texCoord, int texMap, int color) {
+    extern unsigned int lbl_80303C80[];
     unsigned int map = (unsigned int)texMap & ~0x100u;
-    unsigned int mapSel;
     unsigned int *data = __GXData;
-    unsigned int *stageData = data + stage;
     int stageAdj = stage + ((unsigned int)stage >> 31);
     unsigned int *bp = (unsigned int *)((char *)data + 0x150 + ((stageAdj << 1) & ~3));
+    unsigned int *stageData = data + stage;
+    unsigned int mapSel = (map >= 8) ? 0 : map;
     int colorSel;
     int texEnable;
     union {
@@ -4451,7 +4469,6 @@ void GXSetTevOrder(int stage, int texCoord, int texMap, int color) {
             unsigned int map0 : 3;
         } fields;
     } tev;
-    mapSel = map & ~(0u - (unsigned int)(map >= 8u));
     stageData[0x5a4 / 4] = texMap;
     if (texCoord >= 8) {
         texCoord = 0;
