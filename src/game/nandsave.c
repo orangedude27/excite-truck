@@ -73,35 +73,37 @@ extern int fn_80131234(int, int, int, int, int, int, int, int);
 #pragma cplusplus on
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-extern "C" int fn_802E8744(void *arg0) {
+extern "C" int fn_802E8744(void *entry) {
     struct Dummy {
         virtual void f0();
         virtual void f1();
         virtual int f2(int *);
     };
-    volatile int *p = (volatile int *)arg0;
+    volatile int *p = (volatile int *)entry;
     int v13, v12, v11, v10, v9, v8, v7, v6, v5, v4, v3, v2, v1, v0;
-    int values[14];
-    int *out;
-    int i;
+    int params[14];
+    int *dst;
+    int slot;
+
+    /* Copy a NAND-save request entry, normalize selected fields via fn_80131234, then dispatch it. */
     v0 = p[0]; v1 = p[1]; v2 = p[2]; v3 = p[3];
     v4 = p[4]; v5 = p[5]; v6 = p[6]; v7 = p[7];
     v8 = p[8]; v9 = p[9]; v10 = p[10]; v11 = p[11];
     v12 = p[12]; v13 = p[13];
-    values[0] = v0; values[1] = v1; values[2] = v2; values[3] = v3;
-    values[4] = v4; values[5] = v5; values[6] = v6; values[7] = v7;
-    values[8] = v8; values[9] = v9; values[10] = v10; values[11] = v11;
-    values[12] = v12; values[13] = v13;
-    values[1] = fn_80131234(v1, v12, v11, v10, v9, v8, v7, v6);
-    out = values;
-    p = (volatile int *)arg0;
-    for (i = 0; i < 4; i++) {
+    params[0] = v0; params[1] = v1; params[2] = v2; params[3] = v3;
+    params[4] = v4; params[5] = v5; params[6] = v6; params[7] = v7;
+    params[8] = v8; params[9] = v9; params[10] = v10; params[11] = v11;
+    params[12] = v12; params[13] = v13;
+    params[1] = fn_80131234(v1, v12, v11, v10, v9, v8, v7, v6);
+    dst = params;
+    p = (volatile int *)entry;
+    for (slot = 0; slot < 4; slot++) {
         int value = p[6];
-        if (value != 0) out[6] = ((int (*)(int))fn_80131234)(value);
+        if (value != 0) dst[6] = ((int (*)(int))fn_80131234)(value);
         p += 2;
-        out += 2;
+        dst += 2;
     }
-    return ((Dummy *)lbl_80560024)->f2(values);
+    return ((Dummy *)lbl_80560024)->f2(params);
 }
 #pragma cplusplus off
 void fn_802E8838(void) {
