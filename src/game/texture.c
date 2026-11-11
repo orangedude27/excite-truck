@@ -165,16 +165,15 @@ int fn_802CA380(int arg0) {
 
 #pragma use_lmw_stmw off
 int fn_802CA3F4(void *arg0, int arg1, int arg2, int arg3, int arg4) {
-    register unsigned char *src = (unsigned char *)arg1;
-    register int value = arg2;
-    register int mode1 = arg3;
-    register int mode2 = arg4;
-    register int *dst = (int *)arg0;
+    unsigned char *src = (unsigned char *)arg1;
+    int value = arg2;
+    int mode1 = arg3;
+    int mode2 = arg4;
+    int *dst = (int *)arg0;
     unsigned char c5, c12, c4, c7, c6, c10;
     unsigned short h12, h0, h2;
     int ptr14;
     int flags;
-
     memset(arg0, 0, 0x34);
     c5 = src[5];
     c12 = src[0xB];
@@ -211,7 +210,6 @@ int fn_802CA3F4(void *arg0, int arg1, int arg2, int arg3, int arg4) {
         dst[2] = flags;
     }
 }
-#pragma use_lmw_stmw off
 int fn_802CA4E0(int arg0, int arg1, int arg2, int arg3, int arg4) {
     char sp8[0x34];
     if (fn_802C90E0() == 0 && (unsigned int)arg1 != (unsigned int)lbl_8055D058)
@@ -224,48 +222,45 @@ int fn_802CA4E0(int arg0, int arg1, int arg2, int arg3, int arg4) {
 extern void fn_802D8DCC(void *, int);
 #pragma scheduling invalid_target
 void fn_802CA57C(void *arg0, int arg1, int arg2, int arg3) {
-    register unsigned char *resource = (unsigned char *)arg0;
-    register int context = arg1;
-    volatile unsigned char *base = resource;
-    unsigned char temp_r10;
-    unsigned char temp_r11;
-    unsigned char temp_r12;
-    unsigned char temp_r29;
-    unsigned char temp_r30;
-    unsigned char temp_r8;
-    unsigned char temp_r9;
-    unsigned char temp_r9_2;
-    unsigned char temp_r0;
     char sp8[0x34];
-
+    volatile unsigned char *base = (volatile unsigned char *)arg0;
+    unsigned char t14 = 0;
+    unsigned char t17 = 0;
+    unsigned char t15 = 0;
+    unsigned char t16 = 0;
+    unsigned char t0 = 0;
+    unsigned char t1 = 0;
+    unsigned char t2 = 0;
+    unsigned char t3 = 0;
+    unsigned char tC = 0;
+    unsigned char tD = 0;
     if ((base[5] & 0x80) == 0) {
-        temp_r9 = base[0x14];
-        temp_r8 = base[0x17];
-        temp_r29 = base[0x15];
-        temp_r0 = base[0x16];
-        base[0x14] = temp_r8;
-        temp_r11 = base[0];
-        temp_r10 = base[1];
-        base[0x17] = temp_r9;
-        temp_r12 = base[2];
-        temp_r9_2 = base[3];
-        base[0x15] = temp_r0;
-        temp_r30 = base[0xC];
-        temp_r8 = base[0xD];
-        base[0x16] = temp_r29;
-        base[0] = temp_r10;
-        base[1] = temp_r11;
-        base[2] = temp_r9_2;
-        base[3] = temp_r12;
-        base[0xC] = temp_r8;
-        base[0xD] = temp_r30;
-        *(int *)(base + 0x14) = (int)(resource + *(int *)(base + 0x14));
-        ((void (*)(void *, int, int, int, int, int, int, int))fn_802CA3F4)(sp8, (int)resource, 0, arg2, arg3, temp_r8, temp_r9_2, temp_r10);
-        fn_802D8DCC(sp8, context);
+        t14 = base[0x14];
+        t17 = base[0x17];
+        t15 = base[0x15];
+        t16 = base[0x16];
+        base[0x14] = t17;
+        t0 = base[0];
+        t1 = base[1];
+        base[0x17] = t14;
+        t2 = base[2];
+        t3 = base[3];
+        base[0x15] = t16;
+        tC = base[0xC];
+        tD = base[0xD];
+        base[0x16] = t15;
+        base[0] = t1;
+        base[1] = t0;
+        base[2] = t3;
+        base[3] = t2;
+        base[0xC] = tD;
+        base[0xD] = tC;
+        *(int *)(base + 0x14) = (int)((unsigned char *)arg0 + *(int *)(base + 0x14));
+        fn_802CA3F4(sp8, (int)arg0, 0, arg2, arg3);
+        fn_802D8DCC(sp8, arg1);
         base[5] |= 0x80;
     }
 }
-#pragma scheduling on
 extern int fn_8012C370(const char *, int *, int *, signed char *, unsigned char *);
 extern char lbl_8034B634[];
 extern char lbl_8034B658[];
@@ -793,29 +788,22 @@ extern unsigned short lbl_8055FCAA;
 #pragma small_data off
 #pragma pop
 extern int fn_802CB2FC(int, int, int, unsigned char, unsigned short, unsigned char);
-#pragma push
-#pragma small_data on
-#pragma small_data off
-#pragma pop
-#pragma push
 #pragma dont_inline on
-#pragma use_lmw_stmw off
 int fn_802CB128(int arg0, int arg1, int arg2, int arg3) {
     register int n;
     const char *name;
     unsigned short id;
-    int flags;
+    unsigned char flags;
     int *p;
-
     id = lbl_8055FCAA;
     name = &lbl_8055D05C;
     flags = 3;
     if (arg3 & 0x20)
         flags = 2;
     if (arg3 & 0x40)
-        flags = (unsigned char)(flags & 7);
+        flags &= ~2;
     n = (arg3 & 1) + 2;
-    p = (int *)((int (*)(int))fn_802CB018)(arg3 & 1);
+    p = (int *)((int (*)(int))fn_802CB018)(n - 2);
     memset(p, 0, 0x4C);
     p[0] = 1;
     p[9] = 0;
@@ -828,10 +816,6 @@ int fn_802CB128(int arg0, int arg1, int arg2, int arg3) {
     p[10] = fn_802CA4E0(p[11], (int)&lbl_8055D064, 1, 0, p[13]);
     return ((char *)p - (char *)lbl_8055FCB0) / 0x4C;
 }
-#pragma use_lmw_stmw on
-#pragma dont_inline reset
-#pragma pop
-
 void fn_802CB228(int arg0) { int *entry = (int *)(lbl_8055FCB0 + arg0 * 0x4C); ((void (*)(int))fn_802D8FB4)(entry[0x28 / 4]); fn_80128668(entry[0x2C / 4]); entry[0x2C / 4] = 0; entry[0] = 0; }
 
 unsigned short fn_802CB3FC(int arg0) {
@@ -1156,23 +1140,25 @@ extern char lbl_8034BA28[];
 extern char lbl_8055D088;
 extern void fn_802CBD30(void **, void **, void *);
 #pragma use_lmw_stmw off
+/* Discard texture nodes with priority <= arg1 from the active list, moving them to
+ * the free list and releasing/dereferencing any associated child resources. */
 void fn_802CBC3C(void *arg0, int arg1) {
-    register void **root = (void **)arg0;
-    register int limit = arg1;
+    register void **manager = (void **)arg0;
+    register int priorityLimit = arg1;
     register char *child;
-    register char *node = (char *)root[3];
+    register char *node = (char *)manager[3];
     register int zero = 0;
     register int minusOne = -1;
     int refCount;
 
     goto check;
 inspect:
-    if (*(int *)(node + 8) > limit)
+    if (*(int *)(node + 8) > priorityLimit)
         goto advance;
     ((void (*)(int, const char *))fn_802CB3F8)(*(int *)node, lbl_8034BA28);
     ((void (*)(int))fn_802CB3F4)(*(int *)(node + 4));
     *(int *)(node + 4) = zero;
-    fn_802CBD30(root + 4, root + 3, node);
+    fn_802CBD30(manager + 4, manager + 3, node);
     child = *(char **)(node + 0xC);
     if (child != 0) {
         refCount = *(int *)(child + 0x10) - 1;
@@ -1188,7 +1174,7 @@ inspect:
         }
         *(void **)(node + 0xC) = 0;
     }
-    node = (char *)root[3];
+    node = (char *)manager[3];
     goto check;
 advance:
     node = *(char **)(node + 0x10);
