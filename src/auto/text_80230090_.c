@@ -313,40 +313,40 @@ void fn_802307AC(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
 #pragma paired off
 #pragma ppc_psq_save off
 #pragma cplusplus on
-extern "C" void fn_80230924(void *, f32, f32, f32, f32, f32);
-extern "C" void fn_802C8B98(s32, s32);
-extern "C" void fn_802C8D74(void);
-extern "C" void fn_802C8DB8(void *, s32, u16 *, s32);
-extern "C" void fn_80231380(void *, s32, f32, f32, f32, f32, f32);
-extern "C" s32 fn_80230B9C(u32);
-extern "C" f32 lbl_80563614;
-extern "C" u16 lbl_802F9FD8[6];
-void fn_80230924(void *arg0, f32 x, f32 y, f32 z, f32 w, f32 v) {
-    s32 state;
-    struct Frame {
-        u16 indices[6];
-        u8 pad1[4];
-        f32 sp20[6];
-        f32 sp38[6];
-        f32 sp50[6];
-        f32 sp68[6];
-    } __attribute__((aligned(16))) frame;
+extern "C" void fn_80230924(u32 color, f32 left, f32 top, f32 right, f32 bottom, f32 depth);
+extern "C" void fn_802C8B98(s32, s32);      // begin a draw into a display list
+extern "C" void fn_802C8D74(void);          // end the draw
+extern "C" void fn_802C8DB8(void *, s32, u16 *, s32); // submit verts: verts, count, indices, index count
+extern "C" void fn_80231380(void *, s32, f32, f32, f32, f32, f32); // fill one vertex: colour, x, y, z, s, t
+extern "C" s32 fn_80230B9C(u32);            // RGBA colour -> packed, RGB scaled by the global brightness
+extern "C" f32 lbl_80563614;                // .sdata2: 0.0f
+extern "C" u16 lbl_802F9FD8[6];             // QUAD_INDICES_SOLID
+// Draws one untextured quad of the 2D overlay: the box (left,top)-(right,bottom)
+// at `depth`, filled with `color` (RGBA, dimmed by the current global brightness)
+// and texture coordinate 0 at every vertex.
+void fn_80230924(u32 color, f32 left, f32 top, f32 right, f32 bottom, f32 depth) {
+    s32 packedColor;
+    struct SolidQuad {
+        u16 indices[6];   // the two triangles the four vertices make
+        u8 pad[4];
+        f32 vertex[4][6]; // x, y, z, packed colour, s, t
+    } __attribute__((aligned(16))) quad;
     fn_802C8B98(-1, (s32)fn_8022EDC4());
-    state = fn_80230B9C((u32)arg0);
-    fn_80231380(frame.sp20, state, x, y, v, lbl_80563614, lbl_80563614);
-    fn_80231380(frame.sp38, state, z, y, v, lbl_80563614, lbl_80563614);
-    fn_80231380(frame.sp50, state, x, w, v, lbl_80563614, lbl_80563614);
-    fn_80231380(frame.sp68, state, z, w, v, lbl_80563614, lbl_80563614);
+    packedColor = fn_80230B9C(color);
+    fn_80231380(quad.vertex[0], packedColor, left, top, depth, QUAD_TEX_EMPTY, QUAD_TEX_EMPTY);
+    fn_80231380(quad.vertex[1], packedColor, right, top, depth, QUAD_TEX_EMPTY, QUAD_TEX_EMPTY);
+    fn_80231380(quad.vertex[2], packedColor, left, bottom, depth, QUAD_TEX_EMPTY, QUAD_TEX_EMPTY);
+    fn_80231380(quad.vertex[3], packedColor, right, bottom, depth, QUAD_TEX_EMPTY, QUAD_TEX_EMPTY);
     {
-        u16 *source = lbl_802F9FD8;
-        frame.indices[0] = *source++;
-        frame.indices[1] = *source++;
-        frame.indices[2] = *source++;
-        frame.indices[3] = *source++;
-        frame.indices[4] = *source++;
-        frame.indices[5] = *source++;
+        u16 *source = QUAD_INDICES_SOLID;
+        quad.indices[0] = *source++;
+        quad.indices[1] = *source++;
+        quad.indices[2] = *source++;
+        quad.indices[3] = *source++;
+        quad.indices[4] = *source++;
+        quad.indices[5] = *source++;
     }
-    fn_802C8DB8(frame.sp20, 4, frame.indices, 6);
+    fn_802C8DB8(quad.vertex, 4, quad.indices, 6);
     fn_802C8D74();
 }
 #pragma scheduling on
