@@ -64,21 +64,16 @@ void fn_8022EAB8(void) {
 }
 
 #pragma dont_inline on
-void fn_8022EB30(void *arg0) {
-    void *object;
-    void **vtable;
-    void (*destroy)(void *, int);
+#pragma cplusplus on
+extern "C" void fn_8022EB30(void *arg0) {
+    class Unk8022EB30 { public: virtual ~Unk8022EB30(); };
     fn_8012A364(lbl_8055F000, arg0);
     if (--lbl_8055EFFC == 0) {
-        object = lbl_8055F000;
-        if (object) {
-            vtable = *(void ***)object;
-            destroy = (void (*)(void *, int))vtable[2];
-            destroy(object, 1);
-        }
+        delete (Unk8022EB30 *)lbl_8055F000;
         lbl_8055F000 = 0;
     }
 }
+#pragma cplusplus reset
 #pragma push
 #pragma scheduling invalid_target
 void fn_8022EB90(void) {
@@ -167,6 +162,45 @@ s32 fn_8022EDC4(void) {
     if (p) return *p;
     return 0;
 }
+
+#pragma push
+#pragma processor 750
+void *fn_8022EDE4(f32 *arg0, f32 farg0) {
+    s32 *dst = (s32 *)((void *(*)(int, void *))fn_8022EAB8)(0x3c, (void *)&lbl_80340344);
+    s32 *src = (s32 *)arg0;
+    s32 t0, t1;
+    f32 k;
+    t0 = src[0];
+    t1 = src[1];
+    dst[0] = t0;
+    t0 = src[2];
+    dst[1] = t1;
+    t1 = src[3];
+    dst[2] = t0;
+    t0 = src[4];
+    dst[3] = t1;
+    t1 = src[5];
+    dst[4] = t0;
+    t0 = src[6];
+    dst[5] = t1;
+    t1 = src[7];
+    dst[6] = t0;
+    t0 = src[8];
+    dst[7] = t1;
+    t1 = src[9];
+    dst[8] = t0;
+    t0 = src[10];
+    dst[9] = t1;
+    t1 = src[11];
+    dst[10] = t0;
+    k = lbl_805635E0;
+    dst[11] = t1;
+    ((f32 *)dst)[12] = farg0;
+    ((f32 *)dst)[13] = k;
+    ((f32 *)dst)[14] = k;
+    return dst;
+}
+#pragma pop
 
 void fn_8022EE98(void *arg0) {
     fn_8022EB30(arg0);
