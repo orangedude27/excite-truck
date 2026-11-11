@@ -752,13 +752,13 @@ char fn_802CAFF0(int arg0) {
 }
 
 extern char lbl_8034B940[];
-#pragma scheduling invalid_target
+#pragma push
+#pragma opt_propagation off
 int fn_802CB018(void) {
     int index = 1;
     int result = -1;
     int group;
     unsigned char *base = (unsigned char *)lbl_8055FCB0 + 0x4C;
-
     for (group = 0; group < 0x49; group++) {
         if (*(int *)(base + 0x00) == 0) { result = index; goto found; }
         index++;
@@ -773,15 +773,15 @@ int fn_802CB018(void) {
         if (*(int *)(base + 0x17C) == 0) { result = index; goto found; }
         index++;
         if (*(int *)(base + 0x1C8) == 0) { result = index; goto found; }
-        index++;
         base += 0x214;
+        index++;
     }
 found:
     if (result < 0)
         fn_802E317C(lbl_8034B940);
     return (int)((unsigned char *)lbl_8055FCB0 + result * 0x4C);
 }
-#pragma scheduling on
+#pragma pop
 
 #pragma push
 #pragma small_data on
@@ -922,8 +922,8 @@ extern char lbl_8034BBA8[];
 extern char lbl_8055D098;
 #pragma use_lmw_stmw off
 void fn_802CB6B4(void) {
-    register void *manager;
     register unsigned int total;
+    register void *manager;
     register void *record;
     register void *root = *(void **)lbl_8055FCBC;
     register unsigned int secondTotal;
@@ -1582,13 +1582,13 @@ extern float lbl_80564F48;
 extern int fn_802E2C20(void);
 #pragma scheduling invalid_target
 void fn_802CC60C(void) {
-    float value = lbl_80564F48;
+    void *root;
     int offset = 0;
     int i;
-    int zero = 0;
     int counter;
+    int zero = 0;
     int next;
-    void *root;
+    float value = lbl_80564F48;
 
     for (i = 0; i < 0x40; i++) {
         *(float *)((char *)lbl_8055FCB0 + offset + 0x38) = value;
@@ -1613,8 +1613,8 @@ void fn_802CC60C(void) {
     root = *(void **)lbl_8055FCBC;
     counter = lbl_8055FCC0;
     *(int *)((char *)root + 0x2844) = zero;
-    next = counter + 1;
     *(int *)((char *)root + 0x283C) = zero;
+    next = counter + 1;
     *(int *)((char *)root + 0x2840) = zero;
     lbl_8055FCC0 = next;
     if ((unsigned char)counter == 0)
