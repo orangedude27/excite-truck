@@ -102,6 +102,14 @@ struct DummyManager {
     u8 flag1E158;
 };
 
+/* One entry of the 16-entry spin-matrix table at lbl_8042FF60 (48 bytes each).
+   fn_801678D8 fills rot[] with a Y-axis rotation; the consumer (fn_80168020)
+   picks an entry by (record/12)&0xF and writes translate[] per object. */
+struct SpinMatrix {
+    f32 rot[9];      /* 3x3 rotation about the Y axis */
+    f32 translate[3]; /* object position, filled in by the consumer */
+};
+
 extern "C" {
 extern char lbl_8055A1C0[8];
 extern char lbl_8055A1C8[4];
@@ -434,55 +442,48 @@ extern void fn_802C6CF8(s32);
 #pragma cplusplus on
 void fn_8002F634(void *, void *, s32, s32);
 void fn_802C6CF8(s32);
-void fn_80167EEC(void) {
-    u8 *manager = (u8 *)(u32)lbl_8055E354;
-    s32 i;
-    s32 offset;
-    s32 *global;
+extern "C" void fn_80167EEC(void) {
     u8 *entry;
-
-    if (manager != 0) {
-        global = (s32 *)lbl_80330020;
-        global[7] = 0;
-        global[15] = 0;
-        global[23] = 0;
-        global[31] = 0;
-        global[39] = 0;
-
-        i = *(s32 *)(manager + 4);
-        offset = i * 0x18;
-        do {
-            *(s32 *)(*(u32 *)manager + offset) = 0;
-            offset -= 0x18;
-        } while (i-- > 0);
-
-        *(s32 *)(manager + 4) = 0;
+    s32 *global;
+    s32 i;
+    u8 *manager = (u8 *)(u32)lbl_8055E354;
+    if (manager == 0) {
+        return;
+    }
+    global = (s32 *)lbl_80330020;
+    global[7] = 0;
+    global[15] = 0;
+    global[23] = 0;
+    global[31] = 0;
+    global[39] = 0;
+    i = *(s32 *)(manager + 4);
+    while (i-- > 0) {
+        *(s32 *)(*(u32 *)manager + i * 0x18) = 0;
+    }
+    *(s32 *)(manager + 4) = 0;
+    *(s32 *)(manager + 0x1D4D0) = 0;
+    *(u8 *)(manager + 0x1E158) = 0;
+    entry = (u8 *)lbl_80330020;
+    i = 0;
+    for (; i < 5; i++, entry += 0x20) {
+        if (*(s32 *)(entry + 0x10) != -1) {
+            fn_802C6CF8(*(s32 *)(entry + 0x10));
+            *(s32 *)(entry + 0x10) = -1;
+        }
+    }
+    if ((manager + 0x1D4CC) != 0 && (manager + 0x1D4CC) != 0) {
+        *(s32 *)(manager + 0x1D4CC) = 0;
         *(s32 *)(manager + 0x1D4D0) = 0;
-        *(u8 *)(manager + 0x1E158) = 0;
-
-        entry = (u8 *)lbl_80330020;
-        i = 0;
-        for (; i < 5; i++, entry += 0x20) {
-            if (*(s32 *)(entry + 0x10) != -1) {
-                fn_802C6CF8(*(s32 *)(entry + 0x10));
-                *(s32 *)(entry + 0x10) = -1;
-            }
-        }
-
-        if ((manager + 0x1D4CC) != 0 && (manager + 0x1D4CC) != 0) {
-            *(s32 *)(manager + 0x1D4CC) = 0;
-            *(s32 *)(manager + 0x1D4D0) = 0;
-            *(s32 *)(manager + 0x1D4D4) = 0;
-        }
+        *(s32 *)(manager + 0x1D4D4) = 0;
+    }
+    if (manager != 0) {
+        fn_8002F634(manager + 0xC, (void *)fn_80167E98, 0x18, 0x1388);
         if (manager != 0) {
-            fn_8002F634(manager + 0xC, (void *)fn_80167E98, 0x18, 0x1388);
-            if (manager != 0) {
-                *(s32 *)(manager + 0) = 0;
-                *(s32 *)(manager + 4) = 0;
-                *(s32 *)(manager + 8) = 0;
-            }
-            ((s32 (*)(void *))fn_80128668)(manager);
+            *(s32 *)(manager + 0) = 0;
+            *(s32 *)(manager + 4) = 0;
+            *(s32 *)(manager + 8) = 0;
         }
+        ((s32 (*)(void *))fn_80128668)(manager);
     }
 }
 #pragma cplusplus reset
