@@ -4656,6 +4656,11 @@ void fn_801A48E4(void* arg0) {
     s32 type;
     void* mat;
     f32 scale;
+    f32 matVal;
+    f32 mul;
+    f32 x;
+    f32 y;
+    f32 z;
     volatile f32 out[3];
     *(u8*)(obj + 0x40) = 1;
     ((Matrix*)*(void**)(obj + 0x3C))->update();
@@ -4667,10 +4672,11 @@ void fn_801A48E4(void* arg0) {
     }
     if (type == 0x54554245) {
         scale = *(f32*)(obj + 0x20) > lbl_805622D0 ? lbl_805622DC : lbl_805622E0;
-        f32 mul = *(f32*)((u8*)*(void**)(obj + 0x3C) + 0x28) * scale;
-        f32 x = *(f32*)(obj + 0x28) + *(f32*)(obj + 0x1C) * mul;
-        f32 z = *(f32*)(obj + 0x30) + *(f32*)(obj + 0x24) * mul;
-        f32 y = *(f32*)(obj + 0x2C) + *(f32*)(obj + 0x20) * mul;
+        matVal = *(f32*)((u8*)*(void**)(obj + 0x3C) + 0x28);
+        mul = scale * matVal;
+        x = *(f32*)(obj + 0x28) + *(f32*)(obj + 0x1C) * mul;
+        y = *(f32*)(obj + 0x2C) + *(f32*)(obj + 0x20) * mul;
+        z = *(f32*)(obj + 0x30) + *(f32*)(obj + 0x24) * mul;
         out[0] = x;
         out[1] = y;
         out[2] = z;
