@@ -1375,6 +1375,7 @@ static s32 WPADiGetStatus(s32 chan) {
 }
 
 void WPADGetAccGravityUnit(s32 chan, u32 type, WPADAccGravityUnit* pAcc) {
+    /* Copy the 1g accelerometer calibration delta (1g - 0g) for the requested device into pAcc, with interrupts disabled. */
     WPADCB* p = lbl_8038F4F0[chan];
     BOOL enabled = OSDisableInterrupts();
 
