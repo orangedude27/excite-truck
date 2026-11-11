@@ -7867,37 +7867,37 @@ not_found:
     return (tBTM_STATUS)7;
 }
 
-void btm_read_rssi_complete(u8 *p) {
-    tBTM_CMPL_CB *p_cb;
+void btm_read_rssi_complete(u8 *hciEvent) {
+    tBTM_CMPL_CB *completionCb;
     tBTM_RSSI_RESULTS results;
-    u16 handle;
-    u8 *p_acl_cb;
-    u16 index;
+    u16 connHandle;
+    u8 *aclRec;
+    u16 aclIndex;
 
-    p_cb = *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x5E0);
-    p_acl_cb = lbl_803C0F78 + 0x34;
+    completionCb = *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x5E0);
+    aclRec = lbl_803C0F78 + 0x34;
     fn_80070F90(lbl_803C0F78 + 0x5C8);
     *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x5E0) = 0;
 
-    if (p_cb != 0) {
-        results.hci_status = p[0];
+    if (completionCb != 0) {
+        results.hci_status = hciEvent[0];
         if (results.hci_status == 0) {
             results.status = 0;
-            handle = (u16)(p[1] + (p[2] << 8));
-            results.rssi = (s8)p[3];
+            connHandle = (u16)(hciEvent[1] + (hciEvent[2] << 8));
+            results.rssi = (s8)hciEvent[3];
             if (lbl_803C0F78[0x27C0] >= 4)
                 ((void (*)(u32, void *, s32, u32))fn_8007096C)(
                     0xD0003, lbl_80315FBC, results.rssi, results.hci_status);
-            for (index = 0; index < 4; index++, p_acl_cb += 0x11C) {
-                if (p_acl_cb[0x119] != 0 && handle == *(u16 *)p_acl_cb) {
-                    memcpy(results.rem_bda, p_acl_cb + 8, 6);
+            for (aclIndex = 0; aclIndex < 4; aclIndex++, aclRec += 0x11C) {
+                if (aclRec[0x119] != 0 && connHandle == *(u16 *)aclRec) {
+                    memcpy(results.rem_bda, aclRec + 8, 6);
                     break;
                 }
             }
         } else {
             results.status = 0xA;
         }
-        (*p_cb)(&results);
+        (*completionCb)(&results);
     }
 }
 
