@@ -1,4 +1,12 @@
 #include <stdarg.h>
+#pragma cplusplus on
+class T746D0 {
+public:
+    virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+    virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+    virtual void d8(); virtual int v9();
+};
+#pragma cplusplus reset
 typedef struct { float pos[3]; int w; float a, b; } Elem_801720FC;
 typedef struct { float m[12]; float v[3]; } Fn8017431CCam;
 typedef union { unsigned long long ull; float f[2]; } Fn8017431CPair;
@@ -1595,29 +1603,19 @@ void fn_801746D0(int *arg0, int *arg1, int arg2) {
         src += 0x1C / 4;
     }
 }
-#pragma scheduling on
-#pragma pop
+#pragma use_lmw_stmw off
 void fn_80174794(void **arg0) {
-    extern float fn_801B306C(void);
-    extern int fn_800216D0(void);
-    extern int fn_801EA994(void);
-    extern int fn_801E866C(int);
-    extern void fn_8017248C(int);
-    extern float lbl_80561A44;
     int count;
     int i;
     if (fn_801B306C() < lbl_80561A44 && fn_800216D0() == 0) {
         count = fn_801EA994();
         for (i = 0; i < count; i++) {
-            if (i != fn_801E866C(-1) &&
-                (*(int (**)(void **, int))((char *)*arg0 + 0x20))(arg0, i) != 0) {
+            if (i != fn_801E866C(-1) && ((int (**)(void **, int))*arg0)[8](arg0, i) != 0) {
                 fn_8017248C(i);
             }
         }
     }
 }
-#pragma push
-#pragma scheduling invalid_target
 int fn_8017483C(void *arg0, void *arg1, int arg2) {
     extern double fn_8002F234(float);
     extern void fn_801B7C8C(void *, void *, float *);
@@ -2088,19 +2086,19 @@ int fn_80175A38(void *arg0, float *arg1, float *arg2, int arg3, int arg4, int *a
 extern void *fn_8017960C();
 extern float lbl_80561AF0;
 extern float lbl_80561AF4;
+extern void *fn_8017960C(int);
 int fn_80175A68(void *unused, float *arg0, float *arg1, int arg2, void *unused2, int *arg3) {
     float *p = (float *)fn_8017960C(arg2);
     float first = p[0x54 / 4];
     float scale = lbl_80561AF0;
-    float outValue = lbl_80561AF4;
     float x = first * scale + p[0x60 / 4];
-    float z = p[0x58 / 4] * scale + p[0x64 / 4];
     float y = p[0x5C / 4] * scale + p[0x68 / 4];
-    volatile float stack[3];
+    float z = p[0x58 / 4] * scale + p[0x64 / 4];
+    float stack[3];
     arg0[0] = x;
     arg0[1] = y;
     *arg3 = 0x21F;
-    *arg1 = outValue;
+    *arg1 = lbl_80561AF4;
     stack[0] = x;
     stack[1] = z;
     stack[2] = y;
