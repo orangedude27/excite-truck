@@ -80,8 +80,8 @@ extern "C" void fn_8012D8A8(s32);
 extern "C" void *fn_801282EC(u32);
 extern "C" void *fn_8012850C(u32, void *);
 extern "C" void *memset(void *, s32, u32);
-extern "C" u8 lbl_805599C8[];
-extern "C" u8 lbl_805599D0[];
+extern "C" u8 lbl_805599C8;
+extern "C" u8 lbl_805599D0;
 extern "C" u8 lbl_805599E0;
 
 extern "C" void fn_8012E498(void *);
