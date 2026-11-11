@@ -1020,16 +1020,18 @@ extern const char lbl_8055B3D8[7];
 extern "C" void* fn_802AE414(int);
 extern "C" char* strncpy(char*, const char*, unsigned long);
 #pragma use_lmw_stmw off
-extern "C" int fn_801FE88C(void* unused, void* out) {
+extern "C" int fn_801FE88C(void *unused, void *outRec) {
+    // Look up an object by ID from outRec, read its name and configuration fields
+    // (including optional float parameters when type == 1), and write them into outRec.
     struct Obj {
         virtual void v0();
         virtual void v1();
         virtual void v2();
-        virtual const char* getName(const char*);
+        virtual const char *getName(const char *);
         virtual void v4();
         virtual void v5();
         virtual void v6();
-        virtual float getFloat(const char*);
+        virtual float getFloat(const char *);
         virtual void v8();
         virtual void v9();
         virtual void v10();
@@ -1041,27 +1043,27 @@ extern "C" int fn_801FE88C(void* unused, void* out) {
         virtual void v16();
         virtual void v17();
         virtual void v18();
-        virtual unsigned short getUshort(const char*, const char*);
+        virtual unsigned short getUshort(const char *, const char *);
     };
     const char *base = lbl_8033B5D8;
     const char *strA = base + 0xA0;
     const char *strB = base + 0xB0;
-    Obj* obj = (Obj*)fn_802AE414(*(int*)out);
+    Obj *obj = (Obj *)fn_802AE414(*(int *)outRec);
     if (obj == 0) {
         fn_802E317C(base + 0xC8);
     }
-    strncpy((char*)out + 4, obj->getName(lbl_8055B3C8), 0x10);
-    *((char*)out + 0x13) = 0;
-    *(unsigned short*)((char*)out + 0x14) = obj->getUshort(lbl_8055B3D0, strA);
-    *(unsigned short*)((char*)out + 0x16) = obj->getUshort(lbl_8055B3D8, strB);
-    if (*(unsigned short*)((char*)out + 0x14) == 1) {
+    strncpy((char *)outRec + 4, obj->getName(lbl_8055B3C8), 0x10);
+    *((char *)outRec + 0x13) = 0;
+    *(unsigned short *)((char *)outRec + 0x14) = obj->getUshort(lbl_8055B3D0, strA);
+    *(unsigned short *)((char *)outRec + 0x16) = obj->getUshort(lbl_8055B3D8, strB);
+    if (*(unsigned short *)((char *)outRec + 0x14) == 1) {
         float val;
         float zero;
-        *(float*)((char*)out + 0x18) = obj->getFloat(base + 0x104);
+        *(float *)((char *)outRec + 0x18) = obj->getFloat(base + 0x104);
         val = obj->getFloat(base + 0x114);
         zero = lbl_80563034;
-        *(float*)((char*)out + 0x1C) = val;
-        *(float*)((char*)out + 0x20) = zero;
+        *(float *)((char *)outRec + 0x1C) = val;
+        *(float *)((char *)outRec + 0x20) = zero;
     }
 }
 extern "C" void* fn_801FE9A8(void* arg0, int arg1) {
