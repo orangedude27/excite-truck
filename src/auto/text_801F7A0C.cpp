@@ -205,6 +205,7 @@ struct F92Node {
 };
 
 extern "C" void fn_801FA010(void **);
+extern "C" void fn_801F9A24(F92Node **);
 extern "C" s32 fn_801F9CF8(void *);
 extern "C" void fn_801FA138(void **);
 extern "C" void clear__Q211J2DBloSaver19CTextureNameConnectFv(void **);
