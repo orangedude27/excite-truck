@@ -1738,6 +1738,9 @@ extern "C" s32 fn_800A7338(void *arg0, s32 arg1) {
 #pragma use_lmw_stmw off
 #pragma dont_inline on
 extern "C" s32 fn_800A73A0(void *arg0, s32 arg1, u32 arg2, s32 arg3, s32 arg4, s32 arg5) {
+    /* Read from an opened device/file object: require open & not-error flags, bind
+       the object, reject offsets past end, clamp the length to the object size,
+       then read via fn_800A6520 at the sector computed by fn_800A6FC4. */
     s32 result;
     u32 flags;
     u32 size;
@@ -1764,7 +1767,6 @@ extern "C" s32 fn_800A73A0(void *arg0, s32 arg1, u32 arg2, s32 arg3, s32 arg4, s
     }
     return 0;
 }
-
 // Reads from a file/device object into a buffer, clamping the request to the available size.
 extern "C" s32 fn_800A7484(void *arg0, s32 arg1, u32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     s32 result;
