@@ -54,7 +54,7 @@ extern "C" f32 lbl_8055E200;
 extern "C" f32 lbl_8055E204;
 extern "C" int stricmp(const char *, const char *);
 extern "C" void *lbl_8032D1D8;
-extern "C" f32 fn_801451DC(s32);
+extern "C" f32 fn_801451DC(s32, f32);
 extern "C" f32 fn_801452B4(f32);
 extern "C" void fn_800104B0(s32, s32, s32, f32, f32, f32);
 extern "C" void fn_80011278(s32, f32, f32, f32, f32);
