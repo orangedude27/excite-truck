@@ -4018,7 +4018,7 @@ int fn_8006F284(s32 arg0) {
     return 0;
 }
 
-void uusb_CloseDeviceCB(s8 arg0) { register u8 *control; register s32 zero; control = (u8 *)&lbl_803BD1E0; zero = 0; *(s32 *)&lbl_803BD1E0 = zero; control[0x10] = (u8)zero; control[0x11] = (u8)zero; control[0x12] = (u8)zero; control[0x13] = (u8)zero; lbl_8055DC50 = (u8)zero; fn_8009B0E0(); fn_8006EBAC(); control[0x28] = (u8)zero; control[0x29] = 5; lbl_8055DC51 = (u8)zero; fn_8006EB88(); if (*(void (**)(s32, s8))(control + 0x20) != 0) (*(void (**)(s32, s8))(control + 0x20))(4, arg0); }
+void uusb_CloseDeviceCB(s8 arg0) { register u8 *control = (u8 *)&lbl_803BD1E0; register u8 zero = 0; *(s32 *)&lbl_803BD1E0 = zero; control[0x10] = zero; control[0x11] = zero; control[0x12] = zero; control[0x13] = zero; lbl_8055DC50 = zero; fn_8009B0E0(); fn_8006EBAC(); control[0x28] = zero; control[0x29] = 5; lbl_8055DC51 = zero; fn_8006EB88(); if (*(void (**)(s32, s8))(control + 0x20) != 0) (*(void (**)(s32, s8))(control + 0x20))(4, arg0); }
 
 void uusb_ReadIntrDataCB(s32 length, BT_HDR *buf) {
     extern char lbl_803BD240[];
@@ -7549,16 +7549,9 @@ u16 BTM_GetHCIConnHandle(u8 *arg0) {
     var_r31 = 0;
     var_r30 = lbl_803C0F78 + 0x34;
 loop:
-    if (var_r30[0x119] == 0) {
-        goto next;
-    }
-    switch (memcmp(var_r30 + 8, arg0, 6)) {
-    case 0:
+    if (var_r30[0x119] != 0 && memcmp(var_r30 + 8, arg0, 6) == 0) {
         goto found;
-    default:
-        goto next;
     }
-next:
     var_r31++;
     var_r30 += 0x11C;
     if (var_r31 < 4) {
@@ -22158,12 +22151,16 @@ done:
 
 void RFCOMM_LineStatusReq(void *arg0, u8 arg1, u8 arg2) {
     void *mcb = port_find_mcb_dlci_port(arg0, arg1);
+    unsigned int mode;
     if (*((u8 *)mcb + 2) != 2) return;
-    if (*((u8 *)mcb + 0x68) == 4) {
+    mode = *((unsigned char *)mcb + 0x68);
+    switch (mode) {
+    case 4:
         *((u8 *)mcb + 0x69) |= 0x10;
         rfc_send_rls(arg0, arg1, 1, arg2);
         rfc_port_timer_start(mcb, 0x3C);
-    } else {
+        break;
+    default:
         return;
     }
 }
@@ -24645,6 +24642,23 @@ tCONN_CB *sdp_conn_originate(UINT8 *p_bd_addr) {
         fn_8007093C(0xA0001, log + 0x2C0);
     fn_80099F58(p_ccb);
     return NULL;
+}
+
+void sdp_disconnect(tCONN_CB *p_ccb, UINT16 reason) {
+    extern u8 lbl_803C4C40[];
+    extern char lbl_8031A344[];
+    if (lbl_803C4C40[0x4630] >= 4) {
+        fn_80070954(0xA0003, lbl_8031A344, p_ccb->connection_id);
+    }
+    if (p_ccb->con_state != 1) {
+        L2CA_DisconnectReq(p_ccb->connection_id);
+        *(u16 *)((u8 *)p_ccb + 0x472) = reason;
+        return;
+    }
+    if (*(void (**)(UINT16))((u8 *)p_ccb + 0x414) != 0) {
+        (*(void (**)(UINT16))((u8 *)p_ccb + 0x414))(reason);
+    }
+    fn_80099F58(p_ccb);
 }
 
 void sdp_disconnect_cfm(u16 cid, u16 result) {
