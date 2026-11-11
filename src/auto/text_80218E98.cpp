@@ -5044,7 +5044,7 @@ extern "C" void fn_80222340(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, 
     *(s32 *)((u8 *)arg0 + 0x24C) = arg2;
     *(s32 *)((u8 *)arg0 + 0x250) = arg3;
     *(s32 *)((u8 *)arg0 + 0x244) = arg6;
-    return ((Dummy *)arg0)->Init();
+    ((Dummy *)arg0)->Init();
 }
 #pragma pop
 
@@ -5125,14 +5125,17 @@ extern "C" void fn_802225E8(void *arg0, s32 arg1, s32 arg2) {
                 *(s32 *)((u8 *)arg0 + 8));
 }
 
-#pragma scheduling invalid_target
 extern "C" void fn_8022264C(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg4, s32 *arg5, s32 *arg6) {
     f32 scale = lbl_805634A4;
-    *arg3 = arg1;
+    register void *a0 = arg0;
+    register s32 a1 = arg1;
+    register s32 *p5 = arg5;
+    register s32 *p6 = arg6;
+    *arg3 = a1;
     *arg4 = arg2;
-    s32 value = (s32)fn_8023293C(*(s32 *)((u8 *)arg0 + 4), *(s32 *)((u8 *)arg0 + 8), scale);
-    *arg5 = arg1 + value;
-    *arg6 = arg1 + fn_80232B70(*(s32 *)((u8 *)arg0 + 4));
+    s32 value = (s32)fn_8023293C(*(s32 *)((u8 *)a0 + 4), *(s32 *)((u8 *)a0 + 8), scale);
+    *p5 = a1 + value;
+    *p6 = a1 + fn_80232B70(*(s32 *)((u8 *)a0 + 4));
 }
 #pragma scheduling on
 extern "C" void *fn_802226D4(void *arg0, s32 arg1) {
@@ -5694,13 +5697,10 @@ extern "C" void fn_802235B4(void *arg0) {
 
 #pragma scheduling invalid_target
 extern "C" void fn_80223644(void *arg0) {
-    s32 i = 1;
+    s32 i;
     s32 *pIndex = *(s32 **)((u8 *)arg0 + 0x2CC);
     s32 cur = *pIndex;
-
-    goto loop_cond;
-loop_body:
-    {
+    for (i = 1; cur - i >= 0; i++) {
         u8 *p = (u8 *)arg0 + (cur - i);
         if (p[0x2D0] != 0) {
             *pIndex -= i;
@@ -5708,15 +5708,11 @@ loop_body:
             return;
         }
     }
-    i++;
-loop_cond:
-    if (cur - i >= 0) goto loop_body;
-
     s32 count = *(s32 *)((u8 *)arg0 + 0x2C8);
     u8 *base = (u8 *)arg0 + cur;
     s32 diff = count - cur;
     for (s32 j = diff - 1; j > 0; j--) {
-        u8 *p = base + j;
+        u8 *p = j + base;
         if (p[0x2D0] != 0) {
             *pIndex += j;
             ((void (*)(void *))fn_8022375C)(arg0);
