@@ -2483,8 +2483,8 @@ void fn_801971AC(void *arg0, void *arg1) {
     float speed;
     float old0;
     float old1;
-    register float result0;
-    register float result1;
+    float res1;
+    float res0;
     float *point;
     char *base;
     point = (float *)arg1;
@@ -2498,10 +2498,10 @@ void fn_801971AC(void *arg0, void *arg1) {
     old0 = point[0];
     sp18[1] = *(float *)(base + 0x4C) + (*(float *)(base + 0x5C) * speed);
     old1 = point[1];
-    result1 = old1 + (factor * (sp18[1] - old1));
-    result0 = old0 + (factor * (sp18[0] - old0));
-    sp8[0] = result0;
-    sp8[1] = result1;
+    res1 = old1 + (factor * (sp18[1] - old1));
+    res0 = old0 + (factor * (sp18[0] - old0));
+    sp8[1] = res1;
+    sp8[0] = res0;
     sp10 = *(double *)sp8;
     point[0] = *(float *)&sp10;
     point[1] = *((float *)&sp10 + 1);
