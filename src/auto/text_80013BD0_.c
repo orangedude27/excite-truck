@@ -969,7 +969,8 @@ extern void fn_802354A0(void *, s32, s32, f32, f32, f32, f32, f32);
 extern f32 lbl_805603D4, lbl_805603D8, lbl_805603DC, lbl_805603E0, lbl_805603E4;
 extern f32 lbl_80560360, lbl_805603A0;
 #pragma push
-#pragma use_lmw_stmw on
+#pragma use_lmw_stmw off
+#pragma optimize_for_size off
 void fn_80015658(void *arg0) {
     char sp9;
     char sp8;
@@ -977,7 +978,6 @@ void fn_80015658(void *arg0) {
     f32 temp_f30;
     s32 temp_r31;
     s32 temp_r30;
-
     temp_r31 = fn_80144F34(*(void **)((u8 *)lbl_8055D350 + 0x24), 0, &sp9);
     temp_r30 = fn_80144F34(*(void **)((u8 *)lbl_8055D350 + 0x24), 1, &sp8);
     temp_f31 = fn_80011DEC(*(void **)((u8 *)lbl_8055D350 + 0x1C)) - lbl_805603D4;
@@ -986,7 +986,7 @@ void fn_80015658(void *arg0) {
     ((void (*)(s32, s32, void *, s32, ...))fn_8000FF88)(-0x100, 0xA, &lbl_80558BA4, temp_r31, lbl_805603E0, temp_f31 - lbl_805603A0, temp_f30);
     ((void (*)(s32, s32, void *, s32, ...))fn_8000FF88)(-0x100, 0xA, &lbl_80558BA4, temp_r30, lbl_805603E0, temp_f31 - lbl_805603A0, temp_f30 - lbl_805603E4);
 }
-
+#pragma pop
 void fn_80015A20();
 #pragma push
 #pragma use_lmw_stmw off
