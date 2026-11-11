@@ -1474,20 +1474,18 @@ extern "C" void fn_801FA010(void **arg0) {
     *arg0 = 0;
 }
 
-void fn_801FA0B0(void **arg0) {
+extern "C" void fn_801FA0B0(void **arg0) {
     void *node = *arg0;
-    goto check;
-loop:
-    {
+    while (node != 0) {
         void *next = *(void **)((char *)node + 4);
-        void *value = *(void **)node;
-        if (value != 0) fn_80131818(value);
-        *(s32 *)node = 0;
-        ((void (*)(void *))fn_80128668)(node);
+        if (node != 0) {
+            void *value = *(void **)node;
+            if (value != 0) fn_80131818(value);
+            *(s32 *)node = 0;
+            ((void (*)(void *))fn_80128668)(node);
+        }
         node = next;
     }
-check:
-    if (node != 0) goto loop;
     *arg0 = 0;
 }
 
