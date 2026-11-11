@@ -2135,19 +2135,38 @@ extern "C" void fn_801638A0(void *arg0) {
 #pragma push
 #pragma processor 750
 #pragma cplusplus on
+// Draws the countdown-timer HUD.  While the timed run is still going (the flag at
+// +0x56D clear), play time has passed the object's own delay (vtable slot 0x34)
+// and the run has not ended (vtable slot 0x28): it shows the "timer_art" graphic
+// and the "timer_title" caption and writes the time left -- the target time at
+// +0x84 minus the time run at +0x98 -- into the "timer" text element.
+// Returns 0 so the HUD object stays on the draw list.
 extern "C" s32 fn_80163C38(void *arg0) {
-    s32 sp8[3];
-    Dummy_80162800 *obj = (Dummy_80162800 *)arg0;
-    f32 limit;
-    if (*((u8 *)arg0 + 0x56D) == 0) {
-        limit = lbl_8055E3C8;
-        if (limit > obj->f11()) {
-            if (obj->f8() == 0) {
-                fn_801476D8((s32)((Dummy_80162800 *)lbl_8055E2E0)->f2(lbl_8032FA38), -1, lbl_8055E2F8);
-                ((Dummy_80162800 *)lbl_8055E2E0)->f1(lbl_8032FA44);
-                fn_801476C4();
-                fn_80130980(&sp8, 0x14, 3, *(f32 *)((u8 *)arg0 + 0x84) - *(f32 *)((u8 *)arg0 + 0x98));
-                fn_801475D0(lbl_8055E2E0, &lbl_8055A0EC, &lbl_8055A0DC, &sp8);
+    class HudObject {
+    public:
+        virtual void m08(); virtual void m0C(); virtual void m10(); virtual void m14();
+        virtual void m18(); virtual void m1C(); virtual void m20(); virtual void m24();
+        virtual s32 isOver();   // vtable slot 0x28: the run has already ended
+        virtual void m2C(); virtual void m30();
+        virtual f32 getDelay(); // vtable slot 0x34: seconds of play before the timer shows
+    };
+    class UiManager {
+    public:
+        virtual void m08();
+        virtual void *getText(const char *); // vtable slot 0xC: named text element
+        virtual void *getArt(const char *);  // vtable slot 0x10: named graphic element
+    };
+    char timeStr[0x14];
+    HudObject *obj = (HudObject *)arg0;
+    f32 playTime;
+    if (*((u8 *)arg0 + 0x56D) == 0) { // timer not stopped
+        playTime = lbl_8055E3C8; // seconds played so far
+        if (playTime > obj->getDelay()) {
+            if (obj->isOver() == 0) {
+                fn_801476D8((s32)((UiManager *)lbl_8055E2E0)->getArt(lbl_8032FA38), -1, lbl_8055E2F8); // "timer_art"
+                ((void (*)(void *))fn_801476C4)(((UiManager *)lbl_8055E2E0)->getText(lbl_8032FA44)); // "timer_title"
+                fn_80130980(timeStr, 0x14, 3, *(f32 *)((u8 *)arg0 + 0x84) - *(f32 *)((u8 *)arg0 + 0x98));
+                fn_801475D0(lbl_8055E2E0, &lbl_8055A0EC, &lbl_8055A0DC, timeStr); // "timer": "%s"
             }
         }
         return 0;
