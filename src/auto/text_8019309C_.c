@@ -1477,7 +1477,7 @@ void fn_80195830(void *arg0) {
     obj->outY *= scale;
 }
 
-extern void fn_801958D8(void);
+extern void fn_801958D8();
 extern void fn_80195F6C(void *, void *);
 extern void fn_80194624(void *);
 extern float lbl_8055E3C8;
