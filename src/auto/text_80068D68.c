@@ -5330,6 +5330,7 @@ void bta_dm_link_quality_cback(unsigned char *arg) {
 
 extern u8 lbl_803C0B68[];
 extern u8 lbl_803150DC[];
+// Looks up a BTA DM L2CAP server entry by BD address and forwards the compress callback for its BTA ID.
 s32 bta_dm_l2cap_server_compress_cback(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8) {
     u8 *entry = lbl_803C0B68;
     u8 *scan = entry;
