@@ -5538,6 +5538,21 @@ extern "C" void InitParam__Q46nw4hbm3snd6detail10StrmPlayerFi(void* arg0, s32 ar
     *(s32*)((u8*)arg0 + 0x4E4) = 0;
 }
 
+/* nw4hbm::snd::detail::StrmPlayer fields Setup() uses.  The player holds one
+ * STRM_CHANNEL_SIZE-byte record per channel, starting just past its channel count. */
+#define STRM_BLOCK_COUNT(p)       (*(u32 *)((u8 *)(p) + 0x28))         /* 0x28 blocks in the stream */
+#define STRM_LOOPING(p)           (*(u8 *)((u8 *)(p) + 0x11))          /* 0x11 stream restarts at its end */
+#define STRM_SAMPLES_PER_BLOCK(p) (*(u32 *)((u8 *)(p) + 0x30))         /* 0x30 samples in one block */
+#define STRM_START_SAMPLE(p)      (*(u32 *)((u8 *)(p) + 0x38))         /* 0x38 sample the stream starts from */
+#define STRM_STOP_SCHEDULED(p)    (*(u8 *)((u8 *)(p) + 0x52))          /* 0x52 voice has an end point set */
+#define STRM_AT_END(p)            (*(u8 *)((u8 *)(p) + 0x53))          /* 0x53 loading reached the last block */
+#define STRM_LOAD_REQUESTS(p)     (*(s32 *)((u8 *)(p) + 0x58))         /* 0x58 block loads still in flight */
+#define STRM_QUEUE_LIMIT(p)       (*(s32 *)((u8 *)(p) + 0x68))         /* 0x68 blocks to keep queued, less one */
+#define STRM_AX_VOICE(p)          (*(s32 *)((u8 *)(p) + 0x438))        /* 0x438 AxVoice playing the stream */
+#define STRM_CHANNEL_COUNT(p)     (*(s32 *)((u8 *)(p) + 0x4A0))        /* 0x4A0 channels of that voice */
+#define STRM_CHANNEL_BUFFER(c)    (*(const void **)((u8 *)(c) + 0x4A8)) /* 0x4A8 one channel's stream buffer */
+#define STRM_CHANNEL_SIZE         0x38                                 /* bytes of one channel's record */
+
 extern "C" s32 SetupPlayer__Q46nw4hbm3snd6detail10StrmPlayerFPCQ56nw4hbm3snd6detail10StrmPlayer10StrmHeader(void *, const void *);
 extern "C" void UpdateLoadingBlockIndex__Q46nw4hbm3snd6detail10StrmPlayerFQ66nw4hbm3snd6detail10StrmPlayer11LoadCommand6Status(void *, s32);
 extern "C" void StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(s32, s32, const void *, unsigned long);
