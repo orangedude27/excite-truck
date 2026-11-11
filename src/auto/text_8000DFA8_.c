@@ -629,12 +629,14 @@ extern void fn_80232BA4(char *, s32, s32, s32, f32, f32, f32, f32, f32);
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
-void fn_80010188(s32 arg0, s32 arg1, const char *fmt, f32 scale, f32 x, f32 y, ...) {
-    char buffer[0x200];
+void fn_80010188(s32 color, s32 lineHeight, const char *fmt, f32 scale, f32 x, f32 y, ...) {
+    char textBuffer[0x200];
     va_list args;
+
+    /* Format a string and draw it at (x, y) using the given color and scaled text size. */
     va_start(args, y);
-    vsprintf(buffer, fmt, args);
-    fn_80232BA4(buffer, lbl_8055D490, arg0, arg1,
+    vsprintf(textBuffer, fmt, args);
+    fn_80232BA4(textBuffer, lbl_8055D490, color, lineHeight,
                 x, y, lbl_805602C8 * scale,
                 lbl_80560280, lbl_80560264);
 }
