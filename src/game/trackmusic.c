@@ -69,10 +69,10 @@ int fn_8020F3BC(int arg0, int arg1, int arg2) {
     return arg1;
 }
 #pragma scheduling on
-long fn_8020F400(long arg0, long arg1, long arg2) {
-    long result = arg1;
-    ((void (*)(long, long, long *, long))fn_801345D8)(arg1, arg2, (long *)&lbl_8055B664, arg0);
-    return result;
+extern long lbl_8055B66C;
+int fn_8020F400(int arg0, int arg1, int arg2) {
+    fn_801345D8((void *)arg1, arg2, (void *)&lbl_8055B66C, arg0);
+    return arg1;
 }
 
 #pragma dont_inline on
