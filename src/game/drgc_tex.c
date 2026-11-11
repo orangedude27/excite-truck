@@ -113,6 +113,7 @@ void fn_802D768C(void *arg0) {
 #pragma dont_inline reset
 
 #pragma scheduling invalid_target
+#pragma dont_inline on
 int fn_802D76DC(int arg0) {
     switch (arg0) {
     case 3:
@@ -916,6 +917,9 @@ extern float lbl_80565028;
 #pragma scheduling invalid_target
 #pragma unroll off
 void fn_802D94E4(void *arg0, void *arg1, void *arg2, float farg0) {
+    struct TexWrap { u8 pad[0x24]; u8 tex; } *t0 = arg0;
+    struct TexWrap *t1 = arg1;
+    struct TexWrap *t2 = arg2;
     unsigned int *dst;
     unsigned int *src1;
     unsigned int *src2;
@@ -931,12 +935,12 @@ void fn_802D94E4(void *arg0, void *arg1, void *arg2, float farg0) {
     unsigned int c1;
     unsigned int c2;
     unsigned int c3;
-    wrapS = GXGetTexObjWrapS((char *)arg0 + 0x24);
-    wrapT = GXGetTexObjWrapT((char *)arg0 + 0x24);
+    wrapS = GXGetTexObjWrapS(&t0->tex);
+    wrapT = GXGetTexObjWrapT(&t0->tex);
     count = (wrapS * wrapT * 16) / 32;
-    dst = (unsigned int *)((char *)GXGetTexObjFmt((char *)arg0 + 0x24) - 0x40000000);
-    src1 = (unsigned int *)((char *)GXGetTexObjFmt((char *)arg1 + 0x24) - 0x40000000);
-    src2 = (unsigned int *)((char *)GXGetTexObjFmt((char *)arg2 + 0x24) - 0x40000000);
+    dst = (unsigned int *)((char *)GXGetTexObjFmt(&t0->tex) - 0x40000000);
+    src1 = (unsigned int *)((char *)GXGetTexObjFmt(&t1->tex) - 0x40000000);
+    src2 = (unsigned int *)((char *)GXGetTexObjFmt(&t2->tex) - 0x40000000);
     blend = (unsigned int)(lbl_80565028 * farg0);
     inv = 256 - blend;
     for (i = 0; i < count; i++) {
