@@ -18342,6 +18342,7 @@ void l2c_link_role_change_failed(void) {
 
 extern char lbl_80318E20[];
 void l2c_link_segments_xmitted(BT_HDR *p_msg) {
+    /* Handle completion of a transmitted ACL segment: requeue for connected LCB or free on unknown/non-connected. */
     u8 *p;
     u16 handle;
     void *p_lcb;
