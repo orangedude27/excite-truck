@@ -1639,22 +1639,23 @@ void fn_801C7F64(void) {
 #pragma opt_propagation off
 void fn_801C7FE4(void) {
     extern char lbl_80336FB0[];
-    Unk_80437D88 *base = &lbl_80437D88;
-    void *obj;
-    register f32 *v;
+    char *base = (char *)&lbl_80437D88;
+    char *obj;
+    Vec *v = (Vec *)(base + 0x4E0);
+    Vec *dst;
     lbl_8055E83A = 0;
     obj = fn_801C3C80();
-    *(s32 *)((char *)obj + 8) = 6;
-    *(s32 *)((char *)obj + 0xC) = lbl_8055E850;
-    strcpy((char *)obj + 0x14, (char *)base + 0x4F8);
-    strcpy((char *)obj + 0x114, (char *)base + 0x5F8);
-    *(s32 *)((char *)obj + 0x10) = fn_801C3954((s32)obj + 0x14);
-    *(s32 *)((char *)obj + 0x10) &= ~fn_801C3954((s32)obj + 0x114);
-    v = (f32 *)((char *)base + 0x4E0);
-    *(f32 *)((char *)obj + 0x214) = *(f32 *)((char *)base + 0x4E0);
-    *(f32 *)((char *)obj + 0x218) = v[1];
-    *(f32 *)((char *)obj + 0x21C) = v[2];
-    sprintf((char *)base + 0x238, lbl_80336FB0, *(f32 *)obj);
+    *(s32 *)(obj + 8) = 6;
+    *(s32 *)(obj + 0xC) = lbl_8055E850;
+    strcpy(obj + 0x14, base + 0x4F8);
+    strcpy(obj + 0x114, base + 0x5F8);
+    *(s32 *)(obj + 0x10) = fn_801C3954((s32)obj + 0x14);
+    *(s32 *)(obj + 0x10) &= ~fn_801C3954((s32)obj + 0x114);
+    dst = (Vec *)(obj + 0x214);
+    dst->x = v->x;
+    dst->y = v->y;
+    dst->z = v->z;
+    sprintf(base + 0x238, lbl_80336FB0, *(f32 *)obj);
     qsort((void *)lbl_8055E7F8, lbl_8055E7F0, 0x30C, (int (*)(const void *, const void *))fn_801C3B7C);
 }
 #pragma pop
@@ -1740,7 +1741,7 @@ void fn_801C8298(void) {
     lbl_8055E864 = 0;
     fn_801C7BA0();
 }
-#pragma scheduling off
+#pragma scheduling on
 
 void fn_801C82E0(void) {
     extern char lbl_80336FC4[];
