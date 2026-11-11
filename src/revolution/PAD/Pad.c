@@ -259,13 +259,13 @@ BOOL fn_800568C4(u32 chanMask) {
     u32 pollingMask;
 
     chanMask |= lbl_8055DB00;
-    lbl_8055DB00 = 0;
     chanMask &= ~(lbl_8055DB08 | lbl_8055DB04);
+    lbl_8055DB00 = 0;
     lbl_8055DB10 |= chanMask;
     pollingMask = lbl_8055DB10 & lbl_8055DB14;
     lbl_8055DB14 &= ~chanMask;
     lbl_8055DAFC &= ~chanMask;
-    if (lbl_80558F80 == 4) {
+    if (((*(volatile u8*)0x800030E3) & 0x40) == 0) {
         lbl_8055DB0C |= chanMask;
     }
     SIDisablePolling(pollingMask);
@@ -543,7 +543,8 @@ BOOL __PADDisableRecalibration(BOOL disable) {
 
 #pragma dont_inline on
 BOOL fn_80057460(void) {
-    extern long Si_80311630;
-    return (unsigned long)((-1 - Si_80311630) | (Si_80311630 + 1)) >> 31;
+    extern char Si_80311630[];
+    long x = *(long *)Si_80311630;
+    return (unsigned long)((-1 - x) | (x + 1)) >> 31;
 }
 #pragma dont_inline off
