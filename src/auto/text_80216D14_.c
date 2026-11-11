@@ -257,7 +257,7 @@ void fn_8021747C(void *arg0, void *arg1, void *arg2) {
 extern void fn_80218198(void *, void **);
 extern int fn_80218214(void *, int, int);
 #pragma cplusplus on
-extern "C" void fn_8021749C(void *arg0, int arg1, int arg2) {
+extern "C" void fn_8021749C(void *menuGroup, int screenX, int screenY) {
     class Dummy {
     public:
         virtual void v0();
@@ -286,25 +286,27 @@ extern "C" void fn_8021749C(void *arg0, int arg1, int arg2) {
         virtual void v23();
         virtual int v24();
     };
-    char *base = (char *)arg0;
-    int x;
-    int y;
-    int index;
-    Dummy *obj;
-    if (*(void **)(base + 0x44C) == 0) {
-        x = arg1 - *(int *)(base + 0x454);
-        y = arg2 - *(int *)(base + 0x458);
-        index = fn_80218214(arg0, x, y);
-        obj = 0;
-        if (index >= 0) obj = (Dummy *)*(void **)(base + index * 4 + 0x30);
-        *(void **)(base + 0x44C) = obj;
-        if (obj != 0 && obj->v24() != 0) {
-            if (*(void **)(base + 0x450) != obj)
-                fn_80218198(arg0, (void **)obj);
+    char *groupBase = (char *)menuGroup;
+    int localX;
+    int localY;
+    int hitIndex;
+    Dummy *widget;
+
+    /* On pointer press, hit-test widgets to set the pressed widget, update selection, and notify it. */
+    if (*(void **)(groupBase + 0x44C) == 0) {
+        localX = screenX - *(int *)(groupBase + 0x454);
+        localY = screenY - *(int *)(groupBase + 0x458);
+        hitIndex = fn_80218214(menuGroup, localX, localY);
+        widget = 0;
+        if (hitIndex >= 0) widget = (Dummy *)*(void **)(groupBase + hitIndex * 4 + 0x30);
+        *(void **)(groupBase + 0x44C) = widget;
+        if (widget != 0 && widget->v24() != 0) {
+            if (*(void **)(groupBase + 0x450) != widget)
+                fn_80218198(menuGroup, (void **)widget);
         } else {
-            fn_80218198(arg0, 0);
+            fn_80218198(menuGroup, 0);
         }
-        if (obj != 0) obj->v13(x, y);
+        if (widget != 0) widget->v13(localX, localY);
     }
 }
 #pragma cplusplus off
