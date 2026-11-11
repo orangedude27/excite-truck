@@ -1118,32 +1118,35 @@ void fn_80035A04(u32 result) {
 #pragma dont_inline off
 extern void __DVDPrintFatalMessage(void);
 extern s32 lbl_8055D858;
-void fn_80035B88(u32 arg0) {
-    u32 *task;
-    void (*callback)(s32, void *);
+void fn_80035B88(u32 dvdStatus) {
+    u32 *currentBlock;
+    void (*completionCb)(s32, void *);
 
+    /* Fatal DVD command result: mark current block failed, save log for
+     * 0x10/0x20 resets, otherwise report fatal and complete callbacks,
+     * then continue the waiting queue. */
     *(s32 *)((u8 *)executing_8055D8C8 + 0xC) = -1;
-    if (arg0 == 0x10) {
+    if (dvdStatus == 0x10) {
         fn_8003A1A0(0x1234568, fn_80035C78);
         return;
     }
-    if (arg0 == 0x20) {
+    if (dvdStatus == 0x20) {
         fn_8003A1A0(0x1234569, fn_80035C78);
         return;
     }
 
     __DVDPrintFatalMessage();
-    task = (u32 *)executing_8055D8C8;
+    currentBlock = (u32 *)executing_8055D8C8;
     FatalErrorFlag_8055D854 = 1;
     executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
-    callback = *(void (**)(s32, void *))((u8 *)task + 0x28);
-    if (callback != 0)
-        callback(-1, task);
+    completionCb = *(void (**)(s32, void *))((u8 *)currentBlock + 0x28);
+    if (completionCb != 0)
+        completionCb(-1, currentBlock);
     if (lbl_8055D858 != 0) {
-        callback = lbl_8055D8B8;
+        completionCb = lbl_8055D8B8;
         lbl_8055D858 = 0;
-        if (callback != 0)
-            callback(0, task);
+        if (completionCb != 0)
+            completionCb(0, currentBlock);
     }
     fn_80038040();
 }
