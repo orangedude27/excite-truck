@@ -752,34 +752,45 @@ char fn_802CAFF0(int arg0) {
 }
 
 extern char lbl_8034B940[];
+// The texture slot table: 0x200 slots of texSlotSize bytes, allocated as one
+// block by fn_802CA0E4. Slot 0 is the reserved "no texture" slot, so
+// allocation starts at 1. A slot is
+// { s32 inUse; char name[0x20]; ?; s32 texture; void *sizeRecord; ... }.
+#define textureSlots lbl_8055FCB0
+#define texSlotSize 0x4C
+#define texSlotGroups 0x49 /* 73 groups of 7 slots: the 511 allocatable ones */
 #pragma push
 #pragma opt_propagation off
+// Allocate a texture slot: return the address of the first free one (its
+// "in use" flag clear) after the reserved slot 0, walking the table 7 slots
+// at a time. With none left it reports that and hands back the slot in front
+// of the array, which no caller may use.
 int fn_802CB018(void) {
     int index = 1;
     int result = -1;
     int group;
-    unsigned char *base = (unsigned char *)lbl_8055FCB0 + 0x4C;
-    for (group = 0; group < 0x49; group++) {
-        if (*(int *)(base + 0x00) == 0) { result = index; goto found; }
+    unsigned char *slot = (unsigned char *)textureSlots + texSlotSize;
+    for (group = 0; group < texSlotGroups; group++) {
+        if (*(int *)slot == 0) { result = index; goto found; }
         index++;
-        if (*(int *)(base + 0x4C) == 0) { result = index; goto found; }
+        if (*(int *)(slot + texSlotSize) == 0) { result = index; goto found; }
         index++;
-        if (*(int *)(base + 0x98) == 0) { result = index; goto found; }
+        if (*(int *)(slot + 2 * texSlotSize) == 0) { result = index; goto found; }
         index++;
-        if (*(int *)(base + 0xE4) == 0) { result = index; goto found; }
+        if (*(int *)(slot + 3 * texSlotSize) == 0) { result = index; goto found; }
         index++;
-        if (*(int *)(base + 0x130) == 0) { result = index; goto found; }
+        if (*(int *)(slot + 4 * texSlotSize) == 0) { result = index; goto found; }
         index++;
-        if (*(int *)(base + 0x17C) == 0) { result = index; goto found; }
+        if (*(int *)(slot + 5 * texSlotSize) == 0) { result = index; goto found; }
         index++;
-        if (*(int *)(base + 0x1C8) == 0) { result = index; goto found; }
-        base += 0x214;
+        if (*(int *)(slot + 6 * texSlotSize) == 0) { result = index; goto found; }
+        slot += 7 * texSlotSize;
         index++;
     }
 found:
     if (result < 0)
-        fn_802E317C(lbl_8034B940);
-    return (int)((unsigned char *)lbl_8055FCB0 + result * 0x4C);
+        fn_802E317C(lbl_8034B940); /* "tex: Out of texture slots" */
+    return (int)((unsigned char *)textureSlots + result * texSlotSize);
 }
 #pragma pop
 
