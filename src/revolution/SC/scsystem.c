@@ -1044,6 +1044,8 @@ BOOL SCFindS8Item(s8* dst, SCItemID id) {
 }
 
 BOOL SCFindU32Item(u32* dst, SCItemID id) {
+    /* Read a 32-bit System Config item's value by ID into *dst; succeeds only when
+       the item exists and its primitive type is SC_ITEM_LONG. */
     return SCFindIntegerItem(dst, id, SC_ITEM_LONG);
 }
 
