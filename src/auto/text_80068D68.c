@@ -8764,23 +8764,24 @@ tBTM_STATUS BTM_VendorSpecificCommand(UINT16 opcode, UINT8 param_len, UINT8 *p_p
     extern char lbl_8031615C[];
     extern char lbl_8031619C[];
     void *buffer;
-    UINT8 *base;
+    UINT8 *btmCb;
 
+    /* Sends a vendor-specific HCI command, logging and rejecting if a previous command is still pending. */
     if (lbl_803C0F78[0x27C0] >= 4) {
         fn_8007096C(0xD0003, lbl_8031615C, opcode, param_len);
     }
-    base = lbl_803C0F78;
-    if (base[0x650] != 0) {
-        if (base[0x27C0] >= 4) {
+    btmCb = lbl_803C0F78;
+    if (btmCb[0x650] != 0) {
+        if (btmCb[0x27C0] >= 4) {
             fn_8007093C(0xD0003, lbl_8031619C);
         }
         return 2;
     }
     buffer = GKI_getbuf(param_len + 0xB);
     if (buffer != 0) {
-        *(tBTM_VSC_CMPL_CB **)(base + 0x61C) = p_cb;
+        *(tBTM_VSC_CMPL_CB **)(btmCb + 0x61C) = p_cb;
         if (p_cb != 0) {
-            base[0x650] = 1;
+            btmCb[0x650] = 1;
         }
         ((void (*)(void *, UINT16, UINT8, UINT8 *))btsnd_hcic_vendor_spec_cmd)(buffer, opcode, param_len, p_param_buf);
         if (p_cb != 0) {
