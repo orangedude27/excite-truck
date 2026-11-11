@@ -1261,6 +1261,22 @@ void fn_8019CE3C(void* arg0, s32 arg1) {
     fn_8019CCCC(arg0, (u8*)arg0 + 0x34, arg1, *(f32*)((u8*)arg0 + 0x24));
 }
 
+/* Collision objects the influence/collision handlers in this file work on.
+   fn_8019F064 and fn_8019F26C choose a handler from the four-character shape tag
+   at +0x18 ('SPHR' sphere, 'TUBE', 'BOX ', 'FLSR' floor, 'RING', 'POLY', 'GRUP'). */
+struct CollisionObject {
+    u32 flags;             /* 0x00: which side fn_8019AA34 reports the hit against */
+    u8 pad04[0x8];
+    void *axisSource;      /* 0x0C: object whose +0x0C holds the influence axis */
+    u8 pad10[0x14];
+    f32 radius;            /* 0x24: collision radius the handlers below write and fn_8019AA34 reads */
+    u8 pad28[0xC];
+    Vec position;          /* 0x34: world position */
+    u8 pad40[0x14];
+    f32 minRadius;         /* 0x54: radius the directional falloff scales down to */
+    f32 maxRadius;         /* 0x58: radius it scales up to */
+};
+
 extern "C" void fn_8019CE4C(void *arg0, void *arg1) {
     struct Target { u8 pad[0x34]; Vec point; };
     Target *target = (Target *)arg1;
