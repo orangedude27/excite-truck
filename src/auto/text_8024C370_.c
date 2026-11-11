@@ -663,33 +663,35 @@ struct MessageWidget {
 };
 
 #pragma scheduling invalid_target
-void fn_8024D0EC(struct S8024D0EC *arg0) {
+/* Draws one message widget: its text at the widget's position, a bar along the
+ * whole message and a cursor after the characters revealed so far. */
+void fn_8024D0EC(struct MessageWidget *widget) {
     float x, y;
     char buf[0x18];
     int count;
-    int scale;
+    int height;
     float w;
-    float temp2;
-    float temp;
+    float barWidth;
+    float cursorX;
     float sx, sy;
-    fn_80230C30(&x, &y, arg0->unk4, arg0->unk8);
-    if (arg0->unk48 != 0) {
-        arg0->unk38 = -1;
+    fn_80230C30(&x, &y, widget->screenX, widget->screenY);
+    if (widget->full != 0) {
+        widget->color = -1;
     } else {
-        scale = arg0->unk10;
-        arg0->unk38 = 0xFF000000;
-        w = fn_8023293C(arg0->unk34, arg0->unk2C, arg0->unk44);
-        temp2 = arg0->unk40 * w;
-        fn_80230924((void *)-1, x, y, x + temp2, y - (float)scale, lbl_80563940);
+        height = widget->height;
+        widget->color = 0xFF000000;
+        w = fn_8023293C(widget->font, widget->message, widget->extra);
+        barWidth = widget->scale * w;
+        fn_80230924((void *)-1, x, y, x + barWidth, y - (float)height, lbl_80563940);
     }
     sy = y;
     sx = x;
-    fn_80232BA4(arg0->unk18, arg0->unk34, arg0->unk38, arg0->unk3C, sx, sy, arg0->unk40, lbl_80563930, arg0->unk44);
-    count = arg0->unk30;
-    sprintf(buf, &lbl_8055C08C, count, count, arg0->unk2C);
-    w = fn_8023293C(arg0->unk34, buf, arg0->unk44);
-    temp = x + arg0->unk40 * w;
-    fn_80230924((void *)-0x2FC1, temp - lbl_80563930, y, lbl_80563930 + temp, y - (float)arg0->unk10, lbl_80563940);
+    fn_80232BA4(widget->text, widget->font, widget->color, widget->unk3C, sx, sy, widget->scale, lbl_80563930, widget->extra);
+    count = widget->shown;
+    sprintf(buf, &lbl_8055C08C, count, count, widget->message); /* "%*.*s" */
+    w = fn_8023293C(widget->font, buf, widget->extra);
+    cursorX = x + widget->scale * w;
+    fn_80230924((void *)-0x2FC1, cursorX - lbl_80563930, y, lbl_80563930 + cursorX, y - (float)widget->height, lbl_80563940);
 }
 #pragma scheduling on
 extern float lbl_80563948, lbl_80563944, lbl_8056394C;
