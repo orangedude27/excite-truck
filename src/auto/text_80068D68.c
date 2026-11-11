@@ -9501,6 +9501,8 @@ tINQ_DB_ENT *btm_inq_db_new(BD_ADDR p_bda) {
 }
 
 static tBTM_STATUS btm_set_inq_event_filter(UINT8 filter_cond_type, UINT8 *p_filt_cond) {
+    /* Set the HCI inquiry event filter (clear, device class, or BD address)
+     * and record that an inquiry filter is active. */
     void *p_buf;
     UINT8 condition_length = 6;
     UINT8 condition_buf[6];
