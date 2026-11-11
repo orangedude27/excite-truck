@@ -10759,29 +10759,33 @@ typedef struct {
 #define bta_service_id_to_btm_srv_id_lkup_tbl   lbl_802EE9C0
 #define BTM_ReadTrustedMask                     fn_8008128C  /* -> device record + 0x10 */
 
-void bta_dm_auth_reply(u8 *arg0) {
-    u32 trusted_mask[2];
+/* Sends the application's answer to a device authorization request back to BTM:
+ * the peer's current trusted-service mask is copied, a permanent grant sets the
+ * bit of the requested service in it, and BTM_DeviceAuthorized() records the
+ * result (BTM_NOT_AUTHORIZED when the request was refused). */
+void bta_dm_auth_reply(tBTA_DM_AUTH_REPLY *p_data) {
+    u32 trusted_mask[BTM_TRUSTED_MASK_WORDS];
     u32 service_id;
     u32 word_index;
-    u32 *p;
-    p = (u32 *)fn_8008128C(arg0 + 8);
-    if (p != 0) {
-        memcpy(trusted_mask, p, 8);
+    u32 *current_trusted_mask;
+    current_trusted_mask = (u32 *)BTM_ReadTrustedMask(p_data->bd_addr);
+    if (current_trusted_mask != 0) {
+        memcpy(trusted_mask, current_trusted_mask, sizeof(trusted_mask));
     } else {
-        memset(trusted_mask, 0, 8);
+        memset(trusted_mask, 0, sizeof(trusted_mask));
     }
-    if (arg0[0xF] != 2) {
-        if (arg0[0xF] == 0) {
-            u8 index = arg0[0xE];
-            if (index <= 0x17) {
-                service_id = lbl_802EE9C0[index];
+    if (p_data->response != BTA_DM_NOT_AUTH) {
+        if (p_data->response == BTA_DM_AUTH_PERM) {
+            u8 service_index = p_data->service;
+            if (service_index <= BTA_DM_LAST_SERVICE_ID) {
+                service_id = bta_service_id_to_btm_srv_id_lkup_tbl[service_index];
                 word_index = (service_id >> 3) & 0x3FC;
                 *(u32 *)((u8 *)trusted_mask + word_index) |= 1 << (service_id - (service_id & 0x1FE0));
             }
         }
-        BTM_DeviceAuthorized(arg0 + 8, 0, trusted_mask);
+        BTM_DeviceAuthorized(p_data->bd_addr, BTM_SUCCESS, trusted_mask);
     } else {
-        BTM_DeviceAuthorized(arg0 + 8, 0xB, trusted_mask);
+        BTM_DeviceAuthorized(p_data->bd_addr, BTM_NOT_AUTHORIZED, trusted_mask);
     }
 }
 
