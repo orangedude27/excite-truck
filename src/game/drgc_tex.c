@@ -675,11 +675,12 @@ extern void *fn_802D8A84(void *, void *);
 extern void *fn_802D8C00(void *, void *);
 extern void fn_802D9340(void *);
 extern char lbl_8034C5C8[];
+#pragma push
+#pragma scheduling on
 void *fn_802D8E9C(void *arg0, void *arg1) {
-    void *obj = 0;
-    int kind = *(int *)arg0;
-    void *name = arg1;
-
+    register void *name = arg1;
+    register int kind = *(int *)arg0;
+    register void *obj = 0;
     if (kind == 0x17) goto use_a84;
     if (kind >= 0x17) goto high_range;
     if (kind == 0x10) goto use_a84;
@@ -687,27 +688,22 @@ void *fn_802D8E9C(void *arg0, void *arg1) {
     if (kind >= 0x02) goto low_two;
     if (kind < 0) goto report_error;
     goto use_b5c;
-
 low_two:
     if (kind < 0x04) goto use_d98;
     goto report_error;
-
 low_mid:
     if (kind < 0x12) goto use_c00;
     goto report_error;
-
 high_range:
     if (kind == 0x44) goto use_c00;
     if (kind >= 0x44) goto high_tail;
     if (kind >= 0x42) goto use_a84;
     if (kind < 0x40) goto report_error;
     goto use_b5c;
-
 high_tail:
     if (kind == 0x47) goto use_d98;
     if (kind < 0x47) goto use_fa0;
     if (kind >= 0x4C) goto report_error;
-
 use_fa0:
     obj = fn_802D7FA0(arg0, name);
     goto finish;
@@ -724,12 +720,12 @@ use_d98:
     obj = fn_802D7D98(arg0, name);
     goto finish;
 report_error:
-    fn_802E317C(lbl_8034C5C8, kind);
+    fn_802E317C(lbl_8034C5C8, kind, name);
 finish:
     fn_802D9340(obj);
     return obj;
 }
-
+#pragma pop
 void fn_802D8FB4(void *arg0) {
     if (*(unsigned int *)((char *)arg0 + 0xF0) != 0 &&
         (unsigned int)(lbl_8055FD2C - *(unsigned int *)((char *)arg0 + 0xEC)) >= 0xFFFFFF00U) {
@@ -913,12 +909,13 @@ void* fn_802D94DC(void) {
 
 extern float lbl_80565028;
 #pragma push
+#pragma processor 750
 #pragma paired off
 #pragma paired_single off
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma unroll off
-void fn_802D94E4(register void *arg0, register void *arg1, register void *arg2, float farg0) {
+void fn_802D94E4(void *arg0, void *arg1, void *arg2, float farg0) {
     unsigned int *dst;
     unsigned int *src1;
     unsigned int *src2;
@@ -928,24 +925,20 @@ void fn_802D94E4(register void *arg0, register void *arg1, register void *arg2, 
     unsigned int blend;
     unsigned int inv;
     int i;
-    register unsigned int a;
-    register unsigned int b;
-    register unsigned int c0;
-    register unsigned int c1;
-    register unsigned int c2;
-    register unsigned int c3;
-
+    unsigned int a;
+    unsigned int b;
+    unsigned int c0;
+    unsigned int c1;
+    unsigned int c2;
+    unsigned int c3;
     wrapS = GXGetTexObjWrapS((char *)arg0 + 0x24);
     wrapT = GXGetTexObjWrapT((char *)arg0 + 0x24);
     count = (wrapS * wrapT * 16) / 32;
-
     dst = (unsigned int *)((char *)GXGetTexObjFmt((char *)arg0 + 0x24) - 0x40000000);
     src1 = (unsigned int *)((char *)GXGetTexObjFmt((char *)arg1 + 0x24) - 0x40000000);
     src2 = (unsigned int *)((char *)GXGetTexObjFmt((char *)arg2 + 0x24) - 0x40000000);
-
     blend = (unsigned int)(lbl_80565028 * farg0);
     inv = 256 - blend;
-
     for (i = 0; i < count; i++) {
         a = *src1;
         src1++;
@@ -959,8 +952,7 @@ void fn_802D94E4(register void *arg0, register void *arg1, register void *arg2, 
         b >>= 8;
         c2 = (a & 255) * inv + (b & 255) * blend;
         c3 = (a >> 8) * inv + (b >> 8) * blend;
-        *dst = (c0 >> 8) | (c1 & 0xFFFFFF00) |
-               ((c2 << 8) & 0xFFFF0000) | ((c3 << 16) & 0xFF000000);
+        *dst = (c0 >> 8) | (c1 & 0xFFFFFF00) | ((c2 << 8) & 0xFFFF0000) | ((c3 << 16) & 0xFF000000);
         dst++;
     }
 }
@@ -969,7 +961,7 @@ void fn_802D94E4(register void *arg0, register void *arg1, register void *arg2, 
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-void fn_802D9628(register void *arg0, register s32 arg1, register s32 arg2, register s32 arg3) {
+void fn_802D9628(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     int mip;
     int wrap;
     int base;
@@ -979,21 +971,20 @@ void fn_802D9628(register void *arg0, register s32 arg1, register s32 arg2, regi
     unsigned int xsign;
     unsigned int xoff;
     int pixel;
-
+    void *saved;
     mip = GXGetTexObjMipMap((char *)arg0 + 0x24);
-    wrap = GXGetTexObjWrapS((char *)arg0 + 0x24) & 0xFFFF;
-    GXGetTexObjWrapT((char *)arg0 + 0x24);
-    base = (int)GXGetTexObjFmt((char *)arg0 + 0x24) - 0x40000000;
+    saved = arg0;
+    wrap = GXGetTexObjWrapS((char *)saved + 0x24) & 0xFFFF;
+    GXGetTexObjWrapT((char *)saved + 0x24);
+    base = (int)GXGetTexObjFmt((char *)saved + 0x24) - 0x40000000;
     if (mip == 0) {
         tile = arg1 / 8 + (arg2 / 8) * (wrap / 8);
         base += tile << 5;
-
         ysign = (unsigned int)arg2 >> 31;
         yoff = (arg2 << 29) - ysign;
         xsign = (unsigned int)arg1 >> 31;
         xoff = (arg1 << 29) - xsign;
-        pixel = (int)((((xoff << 3) | (xoff >> 29)) + xsign +
-                      ((((yoff << 3) | (yoff >> 29)) + ysign) * 8)) * 4) / 8;
+        pixel = (int)((((xoff << 3) | (xoff >> 29)) + xsign + ((((yoff << 3) | (yoff >> 29)) + ysign) * 8)) * 4) / 8;
         {
             unsigned char value = (unsigned char)arg3;
             if (arg1 & 1) {
@@ -1079,24 +1070,23 @@ void *fn_802D8C00(void *arg0, void *arg1) {
     int w;
     int h;
     unsigned char *p;
-
     obj = fn_802D8A84(arg0, arg1);
-    h = *(int *)((char *)arg0 + 0x28);
     w = *(int *)((char *)arg0 + 0x24);
+    h = *(int *)((char *)arg0 + 0x28);
     *(volatile unsigned char *)((char *)obj + 0xCC) = 1;
     GXGetTexBufferSize((unsigned short)w, (unsigned short)h, 0xE, 0, 1);
     p = *(unsigned char **)(*(unsigned char **)((char *)arg0 + 0x2C) + 8);
     DCFlushRange(p, (w * h) / 2);
     {
-        int fmt = *(int *)((char *)arg0 + 0x20);
-        int b = fmt ^ 2;
+        int b = *(int *)((char *)arg0 + 0x20) ^ 2;
         int a = b >> 1;
         u32 lod;
-        b = b & fmt;
+        b = b & *(int *)((char *)arg0 + 0x20);
         lod = (u32)(a - b) >> 31;
         GXInitTexObj((char *)obj + 0x78, p, (unsigned short)w, (unsigned short)h, 0, 1, 1, lod);
         if (lod != 0) {
-            GXInitTexObjLOD((char *)((u32)obj + 0x78), 5, 1, 0, 1, 0, lbl_80565018, (float)(*(int *)((char *)arg0 + 0x20) - 1), lbl_8056501C);
+            float conv = (float)(*(int *)((char *)arg0 + 0x20) - 1);
+            GXInitTexObjLOD((char *)((u32)obj + 0x78), 5, 1, lbl_80565018, conv, lbl_8056501C, 0, 1, 0);
         }
     }
     fn_802D7780(obj, arg0);
