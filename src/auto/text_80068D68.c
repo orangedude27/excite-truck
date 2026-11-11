@@ -18961,27 +18961,31 @@ typedef struct {
  * bt_target.h shipped with the headers says 7, which is newer than this stack. */
 #define L2C_LCB_POOL_SIZE 4
 
-void *l2cu_allocate_lcb(u8 *addr) {
-    u8 *lcb;
-    u16 id;
-    s32 i;
-    for (i = 0, lcb = lbl_803C4040 + 8; i < 4; i++, lcb += 0x5C) {
-        if (lcb[0] == 0) {
-            memset(lcb, 0, 0x5C);
-            lcb[0] = 1;
-            memcpy(lcb + 0x2A, addr, 6);
-            *(u32 *)(lcb + 4) = 0;
-            *(u16 *)(lcb + 0x28) = 0xFFFF;
-            *(u32 *)(lcb + 0x50) = 0;
-            *(u16 *)(lcb + 0x32) = 0xFFFF;
-            *(u32 *)(lcb + 0x20) = (u32)lcb;
-            *(u16 *)(lcb + 0x38) = 0;
-            *(u16 *)(lcb + 0x58) = *(u16 *)(lbl_803C4040 + 0x7BA);
-            lcb[0x31] = 0;
-            id = *(u16 *)(lbl_803C4040 + 0x7B8);
-            *(u16 *)(lbl_803C4040 + 0x7B8) = id + 1;
+/* l2cu_allocate_lcb(): look for a free entry in l2cb's LCB pool, clear it and set the
+ * fields every LCB starts with for a connection to p_bd_addr, then let
+ * l2c_link_adjust_allocation() share the link buffers out again.  Returns the LCB, or
+ * NULL when all of them are in use. */
+void *l2cu_allocate_lcb(BD_ADDR p_bd_addr) {
+    tL2C_LCB_ENTRY *p_lcb;
+    u16 numLinksActive;
+    s32 xx;
+    for (xx = 0, p_lcb = (tL2C_LCB_ENTRY *)(lbl_803C4040 + 8); xx < L2C_LCB_POOL_SIZE; xx++, p_lcb++) {
+        if (p_lcb->in_use == 0) {
+            memset(p_lcb, 0, sizeof(tL2C_LCB_ENTRY));
+            p_lcb->in_use = TRUE;
+            memcpy(p_lcb->remote_bd_addr, p_bd_addr, BD_ADDR_LEN);
+            p_lcb->link_state = LST_DISCONNECTED;
+            p_lcb->handle = HCI_INVALID_HANDLE;
+            p_lcb->p_pending_rx_buf = 0;
+            p_lcb->link_flush_tout = HCI_INVALID_HANDLE;
+            p_lcb->timer_entry.param = (TIMER_PARAM_TYPE)p_lcb;
+            p_lcb->link_xmit_quota = 0;   /* until the LM tells us our quota */
+            p_lcb->idle_timeout = l2cb_idle_timeout;
+            p_lcb->id = 0;                /* the first command sent pre-increments it */
+            numLinksActive = l2cb_num_links_active;
+            l2cb_num_links_active = numLinksActive + 1;
             l2c_link_adjust_allocation();
-            return lcb;
+            return p_lcb;
         }
     }
     return 0;
