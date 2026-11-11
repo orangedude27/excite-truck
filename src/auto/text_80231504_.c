@@ -1021,6 +1021,7 @@ void fn_80232BA4(char *arg0, s32 arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1,
 #pragma push
 #pragma processor 750
 #pragma dont_inline on
+/* Measures string width/spacing and draws it (via fn_80232040) when non-empty, after adjusting arg2 via fn_80231714. */
 void fn_80232C50(char *arg0, s32 arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, f32 farg5) {
     s32 sp8 = arg2;
     f32 spacing = farg3 - farg2 * fn_8023293C(arg1, arg0, farg5);
