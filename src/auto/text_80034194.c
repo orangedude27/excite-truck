@@ -2247,11 +2247,15 @@ void fn_80037CEC(void) {
 #pragma push
 #pragma scheduling invalid_target
 #pragma dont_inline on
-void fn_80037DBC(u32 arg0) {
-    register u32 value = arg0;
+// Handle DVD command block callback status and dispatch appropriate action.
+void fn_80037DBC(u32 status) {
+    register u32 value = status;
     s32 interrupts = OSDisableInterrupts();
-    if (*(volatile u32 *)&lbl_8055D848 == 0) *(u32 *)(__ErrorInfo + 0x78) = value;
-    else *(u32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x14) = value;
+    if (*(volatile u32 *)&lbl_8055D848 == 0) {
+        *(u32 *)(__ErrorInfo + 0x78) = value;
+    } else {
+        *(u32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x14) = value;
+    }
     OSRestoreInterrupts(interrupts);
     if (value == 0x10) {
         fn_8003A1A0(0x1234568, fn_80035C78);
