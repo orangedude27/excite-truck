@@ -1392,10 +1392,9 @@ extern int fn_802C9904(void);
 #pragma push
 #pragma processor 750
 void fn_801F3F8C(void *arg0, void *arg1) {
-    float lower = lbl_80562F40;
-    float upper = lbl_80562F44;
-    void *node;
-    do {
+    float lower = 0.0f;
+    float upper = 1.0f;
+    while (arg1 != 0) {
         int index = *(int *)((char *)arg1 + 0x14);
         if (index >= 0 && index < 0x30) {
             char *entry = *(char **)((char *)arg0 + 4) + index * 0x18;
@@ -1403,16 +1402,15 @@ void fn_801F3F8C(void *arg0, void *arg1) {
             float threshold = *(float *)(entry + 0x14);
             if (value > threshold) {
                 float amount = *(float *)(entry + 0x10) * (value - threshold);
-                if (amount < upper) amount = upper;
-                if (amount > lower) amount = lower;
+                if (upper < amount) amount = upper;
+                amount = (amount > lower) ? lower : amount;
                 fn_802C9900(amount);
                 fn_802C7040(*(int *)(entry + 0xC));
                 fn_802C9904();
             }
         }
-        node = *(void **)((char *)arg1 + 0xC);
-        arg1 = node;
-    } while (node != 0);
+        arg1 = *(void **)((char *)arg1 + 0xC);
+    }
 }
 
 #pragma push
@@ -1802,7 +1800,9 @@ extern double fn_8002EFB4(float, double);
 extern int fn_802C7A3C(float, float, float);
 extern double lbl_80562FA0;
 extern float lbl_80562FA8;
-void fn_801F4B18(void *arg0, int arg1) {
+void fn_801F4B18(void *collection, int arg1) {
+    // For each active entry in the collection, convert its pair of scaled values
+    // into an index/result and apply a 3x4 value matrix via fn_802C70AC.
     struct LocalValues {
         float scaledLow;
         float scaledHigh;
@@ -1834,9 +1834,9 @@ void fn_801F4B18(void *arg0, int arg1) {
     local.values[10] = low;
     local.values[11] = low;
 
-    entry = (int *)arg0;
+    entry = (int *)collection;
     index = 0;
-    while (index < *(int *)((char *)arg0 + 0x104)) {
+    while (index < *(int *)((char *)collection + 0x104)) {
         if (fn_802CDB20(arg1, entry[2]) != 0) {
             value10 = ((float *)entry)[4];
             value0C = ((float *)entry)[3];
