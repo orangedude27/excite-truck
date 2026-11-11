@@ -53,7 +53,6 @@ __declspec(section ".sdata") extern char lbl_80559E3C[];
 extern "C" f32 lbl_8055E200;
 extern "C" f32 lbl_8055E204;
 extern "C" int stricmp(const char *, const char *);
-extern "C" void fn_80148334(s32, s32, void *);
 extern "C" void *lbl_8032D1D8;
 extern "C" f32 fn_801451DC(s32);
 extern "C" f32 fn_801452B4(f32);
