@@ -430,6 +430,50 @@ void fn_801836DC(void) {
 
 }
 
+extern void fn_801D1100(int, void *);
+extern void fn_8018A6F4(void *);
+extern void fn_80179EE8(void *, int);
+extern void fn_802792EC(int);
+#pragma push
+#pragma cplusplus on
+extern "C" void *fn_801836E0(void *arg0, int arg1) {
+    class V8 {
+    public:
+        virtual void m8(int);
+    };
+    void *p1;
+    void *p2;
+    void *p3;
+    if (arg0 != 0) {
+        *(void **)arg0 = (void *)lbl_803326F8;
+        fn_801D1100(*(int *)((char *)arg0 + 0x1EC), lbl_803326F8);
+        p1 = *(void **)((char *)arg0 + 0x257C);
+        if (p1 != 0 && p1 != 0) {
+            ((V8 *)p1)->m8(1);
+        }
+        p2 = *(void **)((char *)arg0 + 0x2580);
+        if (p2 != 0 && p2 != 0) {
+            ((V8 *)p2)->m8(1);
+        }
+        p3 = *(void **)((char *)arg0 + 0x2584);
+        if (p3 != 0) {
+            ((V8 *)p3)->m8(1);
+        }
+        fn_8018A6F4(arg0);
+        fn_802792EC(*(int *)((char *)arg0 + 0x26C));
+        lbl_8055E4D0--;
+        if (arg0 != 0) {
+            fn_80179EE8(arg0, 0);
+        }
+        if (arg1 > 0) {
+            ((void (*)(void *))fn_80128668)(arg0);
+        }
+    }
+    return arg0;
+}
+#pragma cplusplus off
+#pragma pop
+
 int fn_801837DC(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
