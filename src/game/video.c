@@ -45,6 +45,24 @@ extern void GXSetTevDirect(GXTevStageID);
 extern void fn_80118DC0(void *);
 extern void fn_802E1728(void *);
 
+/* SimpleHeap: the small first-fit heap this TU creates in fn_802E0F98.
+ * One 0x10-byte header owns two block lists; every block carries a
+ * 0xABCFEED0 signature and the user pointer sits at block + 0x10. */
+typedef struct SimpleHeapBlock {
+    /* +0x00 */ u32 magic;                        /* 0xABCFEED0 */
+    /* +0x04 */ u32 size;                         /* usable bytes after the header */
+    /* +0x08 */ struct SimpleHeapBlock *next;
+    /* +0x0C */ struct SimpleHeap *heap;          /* heap this block came from */
+} SimpleHeapBlock;
+
+typedef struct SimpleHeap {
+    /* +0x00 */ u8 enabled;                       /* set once the free block exists */
+    u8 pad[3];
+    /* +0x04 */ u32 alignMask;                    /* allocation alignment (0x1F) */
+    /* +0x08 */ SimpleHeapBlock *freeList;        /* free blocks */
+    /* +0x0C */ SimpleHeapBlock *allocList;       /* blocks handed out */
+} SimpleHeap;
+
 void fn_802DEAC4(void) {
     register u32 x = 1;
     GXSetTexCoordGen2(0, x, 0, 0x21, 0, 0x7D);
