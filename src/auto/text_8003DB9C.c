@@ -968,7 +968,7 @@ typedef struct {
 // driver flushes, and 0x6 is the vertex size __GXCalculateVLim derives from the
 // vertex descriptor.
 typedef struct {
-    u32 unused_000;     // 0x00 primitive word GXBegin tests for "no primitive"
+    u16 unused_000;     // 0x00 primitive word GXBegin tests for "no primitive"
     u16 lastWriteWasXF; // 0x02 last FIFO command was an XF load, not a BP one
     u16 numChans;       // 0x04 color channels to send with the flush primitive
     u16 vLim;           // 0x06 attribute words per channel
