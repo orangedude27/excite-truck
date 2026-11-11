@@ -5265,18 +5265,19 @@ void fn_80073044(u8 *arg0) {
 
 extern void bta_dm_rssi_cback(unsigned char *);
 extern void bta_dm_link_quality_cback(unsigned char *);
-void bta_dm_signal_strength_timer_cback(void *arg0) {
-    u8 i;
+void bta_dm_signal_strength_timer_cback(void *timerEnt) {
+    u8 deviceIndex;
     u16 timeout;
 
+    /* Poll RSSI and/or link quality for connected devices, then reschedule the timer if configured. */
     if (lbl_803C0C14[0x6C] & 1) {
-        for (i = 0; i < lbl_803C0C14[0x4D]; i++) {
-            BTM_ReadRSSI(lbl_803C0C14 + i * 0xB, (tBTM_CMPL_CB *)bta_dm_rssi_cback);
+        for (deviceIndex = 0; deviceIndex < lbl_803C0C14[0x4D]; deviceIndex++) {
+            BTM_ReadRSSI(lbl_803C0C14 + deviceIndex * 0xB, (tBTM_CMPL_CB *)bta_dm_rssi_cback);
         }
     }
     if (lbl_803C0C14[0x6C] & 2) {
-        for (i = 0; i < lbl_803C0C14[0x4D]; i++) {
-            BTM_ReadLinkQuality(lbl_803C0C14 + i * 0xB, (tBTM_CMPL_CB *)bta_dm_link_quality_cback);
+        for (deviceIndex = 0; deviceIndex < lbl_803C0C14[0x4D]; deviceIndex++) {
+            BTM_ReadLinkQuality(lbl_803C0C14 + deviceIndex * 0xB, (tBTM_CMPL_CB *)bta_dm_link_quality_cback);
         }
     }
     timeout = *(u16 *)(lbl_803C0C14 + 0x70);
