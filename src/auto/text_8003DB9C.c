@@ -3839,6 +3839,7 @@ void GXSetIndTexMtx(s32 type, f32 *matrix, s32 scale) {
 void GXSetIndTexCoordScale(s32 stage, s32 scaleS, s32 scaleT) {
     u32 reg;
 
+    /* Configure indirect texture coordinate S/T scale for the given stage and write the register to the GX FIFO. */
     switch (stage) {
     case 0:
         reg = __GXData[0x178 / 4];
