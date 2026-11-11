@@ -15,7 +15,7 @@ extern int lbl_8055B470;
 extern int lbl_8055B478;
 extern signed char lbl_8055ED58;
 extern int stricmp(const char *, const char *);
-extern void fn_802E317C(const char *, const char *);
+extern void fn_802E317C(const char *, ...);
 extern void *fn_8001285C(void);
 extern void fn_80131818(int);
 extern void fn_80128668(void *);
