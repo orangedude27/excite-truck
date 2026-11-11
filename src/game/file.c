@@ -369,6 +369,10 @@ extern int vsprintf(char *, const char *, va_list);
 extern "C" int vsprintf(char *, const char *, va_list);
 #pragma scheduling invalid_target
 extern "C" void fn_802E3AD0(s32 arg0, const char *fmt, ...) {
+    /* Variadic formatted print: format into a 0x400-byte buffer. If arg0 is not
+       the special sink -0x29A, write the buffer (length via strlen) with
+       fn_802E3A64; otherwise fetch the global output object via fn_802E333C(0)
+       (queried twice) and, if non-null, call its vtable method v6(buf). */
     char buf[0x400];
     va_list args;
     va_start(args, fmt);
