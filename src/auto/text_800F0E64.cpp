@@ -1669,7 +1669,7 @@ extern "C" s32 ReadFilePos__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlUlPQ
 }
 
 extern "C" int strcmp(const char *, const char *);
-extern "C" const char lbl_80324A8C[];
+extern "C" const char lbl_80324A8C[]; /* "NW4HBM:Failed assertion id < mStringTable->offsetTable.count" */
 #pragma push
 #pragma scheduling on
 /* Looks a label string up in the archive's string trie and returns the sound id stored
