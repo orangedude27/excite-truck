@@ -203,28 +203,34 @@ extern char lbl_8032E270[];
 extern char lbl_8032E2AC[];
 #pragma push
 #pragma scheduling invalid_target
-s32 fn_801563BC(s32 arg0, void* arg1) {
+/*
+ * Loads a racing line resource by path for the given provider.
+ * Tries the normal path, then a ghostcar fallback, then a centerline fallback.
+ * On success, updates the resource handle from the provider; on failure returns 0.
+ */
+s32 fn_801563BC(s32 nameArg, void *provider) {
     struct Obj {
         virtual void v0();
         virtual s32 get(s32);
     };
-    char buffer[0x40];
-    s32 result;
-    fn_801562BC(buffer, 0x40, arg0, 0);
-    result = fn_80138968(buffer);
-    if (result == 0) {
-        fn_802E30C8(lbl_8032E270, buffer);
-        fn_801562BC(buffer, 0x40, arg0, 1);
-        result = fn_80138968(buffer);
+    char path[0x40];
+    s32 resource;
+
+    fn_801562BC(path, 0x40, nameArg, 0);
+    resource = fn_80138968(path);
+    if (resource == 0) {
+        fn_802E30C8(lbl_8032E270, path);
+        fn_801562BC(path, 0x40, nameArg, 1);
+        resource = fn_80138968(path);
     }
-    if (result == 0) {
-        fn_802E30C8(lbl_8032E2AC, buffer);
-        result = fn_80138968((void *)fn_80156248(buffer, 0x40));
+    if (resource == 0) {
+        fn_802E30C8(lbl_8032E2AC, path);
+        resource = fn_80138968((void *)fn_80156248(path, 0x40));
     } else {
-        s32 value = ((Obj *)arg1)->get(0);
-        fn_80138BA0(result, value);
+        s32 value = ((Obj *)provider)->get(0);
+        fn_80138BA0(resource, value);
     }
-    return result;
+    return resource;
 }
 #pragma pop
 extern "C" void *fn_801284F8(s32, const char *);
