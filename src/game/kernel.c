@@ -146,30 +146,33 @@ extern unsigned int fn_802E1960(unsigned int);
 #pragma optimization_level 2
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-void fn_802E1A9C(void *arg0, int *arg1, int *arg2, int *arg3, int *arg4, int *arg5, int *arg6, int *arg7, int arg8) {
-    int d, e, f, g;
-    int width, height;
-    int a, b, c;
-    int sum, out;
-    a = *(int *)((char *)arg0 + 0x18) ? *(int *)((char *)arg0 + 4) : 0;
-    b = *(int *)((char *)arg0 + 0x3C) ? *(int *)((char *)arg0 + 4) : 0;
-    c = *(int *)((char *)arg0 + 0x24) ? *(int *)((char *)arg0 + 0xC) : 0;
-    width = *(int *)((char *)arg0 + 8);
-    height = *(int *)((char *)arg0 + 0x10);
-    d = fn_802E1954(a * width);
-    e = fn_802E1954(b * width);
-    f = fn_802E1954(c * height);
-    g = fn_802E1954(fn_802E1960(*(int *)((char *)arg0 + 0xC)) << 3);
-    out = fn_802E1954(fn_802E1960(*(int *)((char *)arg0 + 4)) << 3);
-    out += g;
-    *arg5 = out;
-    sum = d + e;
-    *arg3 = d;
-    *arg1 = sum;
-    *arg2 = f + sum;
-    *arg4 = sum + (f << 1);
-    *arg6 = a | b;
-    *arg7 = c;
+/* Computes aligned layout sizes/offsets for a texture/image block descriptor.
+ * Selects width/height factors from descriptor flags, rounds dimensions via
+ * fn_802E1954/fn_802E1960, and outputs combined byte spans and factor flags. */
+void fn_802E1A9C(void *desc, int *outCombinedWidth, int *outCombinedPlusHeight, int *outAlignedWidthA, int *outCombinedPlusDoubleHeight, int *outTotalAlignedBytes, int *outWidthFactorMask, int *outHeightFactor, int unused) {
+    int alignedWidthA, alignedWidthB, alignedHeight, alignedDimC;
+    int baseWidth, baseHeight;
+    int widthFactorA, widthFactorB, heightFactor;
+    int combinedWidth, totalAlignedBytes;
+    widthFactorA = *(int *)((char *)desc + 0x18) ? *(int *)((char *)desc + 4) : 0;
+    widthFactorB = *(int *)((char *)desc + 0x3C) ? *(int *)((char *)desc + 4) : 0;
+    heightFactor = *(int *)((char *)desc + 0x24) ? *(int *)((char *)desc + 0xC) : 0;
+    baseWidth = *(int *)((char *)desc + 8);
+    baseHeight = *(int *)((char *)desc + 0x10);
+    alignedWidthA = fn_802E1954(widthFactorA * baseWidth);
+    alignedWidthB = fn_802E1954(widthFactorB * baseWidth);
+    alignedHeight = fn_802E1954(heightFactor * baseHeight);
+    alignedDimC = fn_802E1954(fn_802E1960(*(int *)((char *)desc + 0xC)) << 3);
+    totalAlignedBytes = fn_802E1954(fn_802E1960(*(int *)((char *)desc + 4)) << 3);
+    totalAlignedBytes += alignedDimC;
+    *outTotalAlignedBytes = totalAlignedBytes;
+    combinedWidth = alignedWidthA + alignedWidthB;
+    *outAlignedWidthA = alignedWidthA;
+    *outCombinedWidth = combinedWidth;
+    *outCombinedPlusHeight = alignedHeight + combinedWidth;
+    *outCombinedPlusDoubleHeight = combinedWidth + (alignedHeight << 1);
+    *outWidthFactorMask = widthFactorA | widthFactorB;
+    *outHeightFactor = heightFactor;
 }
 #pragma use_lmw_stmw reset
 #pragma optimization_level reset
