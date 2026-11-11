@@ -6399,47 +6399,48 @@ retry:
     return 0;
 }
 
-extern "C" s32 fn_800AFE14(void *arg0, s32 arg1, s32 *arg2) {
-    u16 value;
-    u32 index;
-    u16 offset;
-    s32 result;
-    u32 retry = 1;
-    s32 *output = arg2;
-    void *object = arg0;
-    u32 scaled = (u32)arg1 * 2;
-    u16 flags = *(u16 *)((u8 *)object + 0x18);
+extern "C" s32 fn_800AFE14(void *stream, s32 sampleIndex, s32 *outSample) {
+    u16 sampleValue;
+    u32 blockIndex;
+    u16 blockOffset;
+    s32 status;
+    u32 retries = 1;
+    s32 *resultOut = outSample;
+    void *streamObj = stream;
+    u32 scaledIndex = (u32)sampleIndex * 2;
+    u16 flags = *(u16 *)((u8 *)streamObj + 0x18);
 
-    index = (u16)(*(u32 *)((u8 *)object + 0x28) +
-                  (scaled >> *(u8 *)((u8 *)object + 0x20)));
-    offset = (u16)(scaled & (*(u16 *)object - 1));
+    /* Read a 16-bit sample from a stream buffer, retrying via callback on 0x1000 (needs-more-data). */
+    blockIndex = (u16)(*(u32 *)((u8 *)streamObj + 0x28) +
+                       (scaledIndex >> *(u8 *)((u8 *)streamObj + 0x20)));
+    blockOffset = (u16)(scaledIndex & (*(u16 *)streamObj - 1));
     if (flags & 0x80)
-        retry = flags & 7;
+        retries = flags & 7;
 loop:
-    result = fn_800B5260(object, &value, index, offset, 2);
-    if (result == 0x1000) {
-        s32 (*callback)(void *) =
-            *(s32 (**)(void *))((u8 *)object + 0x1FC0);
-        if (callback != 0) {
-            s32 callbackResult = callback(*(void **)((u8 *)object + 0x1F84));
+    status = fn_800B5260(streamObj, &sampleValue, blockIndex, blockOffset, 2);
+    if (status == 0x1000) {
+        s32 (*feedCallback)(void *) =
+            *(s32 (**)(void *))((u8 *)streamObj + 0x1FC0);
+        if (feedCallback != 0) {
+            s32 callbackResult = feedCallback(*(void **)((u8 *)streamObj + 0x1F84));
             if (callbackResult == 0)
                 goto retryCheck;
             if (callbackResult == 1 &&
-                *(u8 *)((u8 *)object + 0x22) >= 2 &&
-                retry < *(u8 *)((u8 *)object + 0x22)) {
-                retry++;
-                index += *(u32 *)((u8 *)object + 0xC);
+                *(u8 *)((u8 *)streamObj + 0x22) >= 2 &&
+                retries < *(u8 *)((u8 *)streamObj + 0x22)) {
+                retries++;
+                blockIndex += *(u32 *)((u8 *)streamObj + 0xC);
                 goto retryCheck;
             }
         }
     }
-    if (result != 0) {
-        *output = -1;
-        return result;
+    if (status != 0) {
+        *resultOut = -1;
+        return status;
     }
 retryCheck:
-    if (result == 0) {
-        *output = ((value & 0xFF00) >> 8) | ((value & 0x00FF) << 8);
+    if (status == 0) {
+        *resultOut = ((sampleValue & 0xFF00) >> 8) | ((sampleValue & 0x00FF) << 8);
         return 0;
     }
     goto loop;
