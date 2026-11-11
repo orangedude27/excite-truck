@@ -662,9 +662,9 @@ extern float lbl_8056427C, lbl_80564284, lbl_8056428C, lbl_8056429C;
 extern float lbl_80564274, lbl_80564280, lbl_80564288, lbl_80564290, lbl_80564294, lbl_80564298, lbl_805642A0, lbl_805642A4, lbl_805642A8, lbl_805642AC;
 extern int lbl_80348AE8;
 extern float lbl_805642B0, lbl_805642F8, lbl_805642FC, lbl_80564300;
-#pragma push
 #pragma scheduling invalid_target
 int fn_802897E0(int arg0) {
+    /* Create the "dark exhaust" smoke effect (lbl_80348B34) and store its handle at +0xA4. */
     char stack[0xA8];
     fn_8028E61C((int *)&stack[0x18]);
     *(int *)(stack+0x1c)=0x60;
@@ -699,7 +699,6 @@ int fn_802897E0(int arg0) {
     *(float *)(stack+0x6c)=lbl_80564300;
     return *(int *)((char *)arg0+0xa4)=((int (*)(void *, void *, int))fn_8028E2F8)(&stack[0x18],(void *)&lbl_80348B34,lbl_8055C880);
 }
-#pragma scheduling invalid_target
 void fn_802898CC(void *self, int arg0, int arg1, int arg2) {
     extern void *fn_80287B24(int);
     extern int fn_80288208(int);
