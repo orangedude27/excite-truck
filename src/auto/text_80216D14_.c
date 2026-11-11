@@ -511,42 +511,36 @@ void fn_80218E08(void *arg0, int arg1);
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" void fn_80217874(void *arg0, int arg1) {
-    class Obj {
-    public:
-        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
-        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
-        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
-        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
-        virtual void v20(); virtual void v21(); virtual void v22();
-        virtual int check(int);
-    };
-    char *base = (char *)arg0;
+/* Key input for a UI menu group: fn_802164D8 hands this the code fn_802E46F0 read
+   from the keyboard.  It clears the UI key-sound flag, and while the pointer is
+   not held down on a widget asks the widget the menu is on - then every other
+   widget that is shown (or whose off timer has run down) and enabled - whether it
+   takes this key (UiWidget::TakesKey).  The first widget that does gets the UI
+   key sound for that key (fn_80218E08), and no other is asked. */
+extern "C" void fn_80217874(void *menuGroup, int key) {
+    UiMenuGroup *group = (UiMenuGroup *)menuGroup;
     char *cursor;
     int i;
-    Obj *obj;
-    int found;
-    float threshold;
-    void (*reset)(void) = fn_80216D34;
-    reset();
-    if (*(int *)(base + 0x44C) == 0) {
-        obj = *(Obj **)(base + 0x450);
-        if (obj != 0 && obj->check(arg1)) {
-            fn_80218E08(arg0, arg1);
+    UiWidget *widget;
+    int eligible;
+    float timerLimit;
+    void (*clearKeySoundFlag)(void) = fn_80216D34;
+    clearKeySoundFlag();
+    if (group->pressed == 0) {
+        widget = (UiWidget *)group->current;
+        if (widget != 0 && widget->TakesKey(key)) {
+            fn_80218E08(menuGroup, key);
             return;
         }
-        threshold = lbl_80563490;
-        cursor = base;
+        timerLimit = lbl_80563490; /* 0.0f */
+        cursor = (char *)group;
         i = 0;
-        while (i < *(int *)(base + 0x430)) {
-            obj = *(Obj **)(cursor + 0x30);
-            if (obj != *(Obj **)(base + 0x450)) {
-                found = (*(unsigned char *)((char *)obj + 0x1A) != 0) ||
-                        (*(float *)((char *)obj + 0x20) >= threshold);
-                if (found && *(unsigned char *)((char *)obj + 0x1B) != 0 &&
-                    obj->check(arg1)) {
-                    fn_80218E08(arg0, arg1);
+        while (i < group->widgetCount) {
+            widget = *(UiWidget **)(cursor + 0x30);
+            if (widget != (UiWidget *)group->current) {
+                eligible = (widget->shown != 0) || (widget->offTimer >= timerLimit);
+                if (eligible && widget->enabled != 0 && widget->TakesKey(key)) {
+                    fn_80218E08(menuGroup, key);
                     return;
                 }
             }
