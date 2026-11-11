@@ -470,18 +470,19 @@ int fn_802E8D8C(const char *path, void *buf, int len) {
 #pragma push
 #pragma optimization_level 3
 void fn_802E9010(void) {
-    char *data = (char *)&lbl_80507288;
-    fn_802E9254(data + 4);
-    switch ((&lbl_80507288)[0]) {
+    char *data;
+    fn_802E9254((char *)&lbl_80507288 + 4);
+    data = (char *)&lbl_80507288;
+    switch (lbl_80507288) {
     case 2:
         fn_802E91D8(data + 4, lbl_8034E108, *(int *)(data + 0x260), *(int *)(data + 0x264));
-        (&lbl_80507288)[0] = 3;
+        lbl_80507288 = 3;
         break;
     case 3:
         if (fn_802E91BC((int *)(data + 4)) != 0) {
             if (fn_802E91AC((int *)(data + 4)) == 0) {
                 fn_802E91D8(data + 4, data + 0x270, *(int *)(data + 0x268), *(int *)(data + 0x26C));
-                (&lbl_80507288)[0] = 4;
+                lbl_80507288 = 4;
             } else fn_802E9160(data);
         }
         break;
