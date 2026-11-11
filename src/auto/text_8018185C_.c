@@ -355,6 +355,7 @@ extern float fn_80129DC4(int, float, float);
 extern float fn_802798E8(int);
 extern void fn_802799EC(int, float);
 #pragma ppc_psq_save off
+#pragma dont_inline on
 void fn_80181EAC(int arg0) {
     float minA = lbl_80561D38;
     float maxA = lbl_80561D3C;
