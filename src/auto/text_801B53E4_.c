@@ -45,6 +45,9 @@ extern void *fn_801B591C(void *, s32);
 extern void fn_8002F6AC(void *(*)(void *, s32));
 extern void fn_80128668(void *);
 
+/* True for the BPX scene objects this unit links together: +0x18 carries the
+ * 'BPX ' magic (0x42505820, written here as the add-and-compare the game's
+ * compiler produced) and +0x20 the kind that stands for a linkable segment. */
 s32 fn_801B53E4(void *arg0) {
     s32 var_r5;
 
