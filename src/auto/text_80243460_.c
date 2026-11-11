@@ -38,49 +38,23 @@ void fn_80243470(void* arg0) {
 s32 fn_80243478(s32 arg0) {
     s32 (*entry)[3] = lbl_803428B0[arg0];
     s32 count = 0;
-    s32 i;
-    for (i = 0; i < 16; i++) {
+    s32 i = 0;
+    while (i < 16) {
         if ((*entry)[0] == 0) break;
         count++;
         entry++;
+        i++;
     }
     return count;
 }
 
 s32 fn_80243528(s32 arg0, s32 arg1) {
-    s32 *p = (s32 *)lbl_803428B0 + arg1 * 48;
+    s32 n = arg0;
+    s32 *base = (s32 *)lbl_803428B0 + arg1 * 48;
     s32 sum = 0;
-    s32 processed = 0;
-    s32 groups;
-    s32 left;
-    if (arg0 <= 0) return 0;
-    if (arg0 > 8) {
-        groups = arg0 - 8;
-        if (arg0 <= 0x7FFFFFFE) {
-            groups = (groups + 7) >> 3;
-            if (arg0 - 8 > 0) {
-                do {
-                    sum += p[1];
-                    sum += p[4];
-                    sum += p[7];
-                    sum += p[10];
-                    sum += p[13];
-                    sum += p[16];
-                    sum += p[19];
-                    sum += p[22];
-                    processed += 8;
-                    p += 24;
-                } while (--groups);
-            }
-        }
-    }
-    left = arg0 - processed;
-    p = (s32 *)lbl_803428B0 + arg1 * 48 + processed * 3;
-    if (processed < arg0) {
-        do {
-            sum += p[1];
-            p += 3;
-        } while (--left);
+    s32 i;
+    for (i = 0; i < n; i++) {
+        sum += base[i * 3 + 1];
     }
     return sum;
 }
@@ -308,6 +282,141 @@ void fn_80243C18(void) {
     fn_80221E7C();
 }
 
+void fn_80243C1C(void *arg0) {
+    char buffer[32];
+    u8 sp8;
+    s16 spC;
+    s32 sp10;
+    float sp14;
+    float sp18;
+    float sp1C;
+    float f23, f24, f25;
+    s32 var_r21, var_r20, var_r19, var_r25, var_r18;
+    s32 *entry;
+    char *str;
+    s32 type;
+    s32 color;
+    char *dst;
+    char *src;
+    s32 left;
+    s32 limit;
+    s32 len2;
+    s32 maxIdx;
+    float fmodRes;
+    s32 eq;
+    s32 idx;
+    s32 var0;
+    s32 col;
+    char *buf;
+    fn_80230C30(&sp1C, &sp18, *(s32 *)((u8 *)arg0 + 4), *(s32 *)((u8 *)arg0 + 8));
+    var_r21 = 0;
+    do {
+        var_r20 = 0;
+        do {
+            entry = lbl_803428B0[var_r21][0] + var_r20 * 48;
+            f24 = sp1C;
+            f25 = sp18 - lbl_80563798 * (float)var_r20;
+            var_r19 = 0;
+            do {
+                var_r25 = 0;
+                if (var_r20 == *(s32 *)((u8 *)arg0 + 0x2C) && var_r19 == *(s32 *)((u8 *)arg0 + 0x30))
+                    var_r25 = 1;
+                str = (char *)entry[0];
+                if (str != (char *)0) {
+                    type = entry[2];
+                    if (type == 1)
+                        f23 = lbl_8056379C;
+                    else
+                        f23 = lbl_805637A0;
+                    var_r18 = 0xE0FFFFFF;
+                    if (var_r25 != 0)
+                        var_r18 = 0xE00000FF;
+                    if (type == 1 && strlen(str) == 2) {
+                        buffer[0] = str[*(u8 *)((u8 *)arg0 + 0x29)];
+                        buffer[1] = 0;
+                    } else {
+                        dst = buffer;
+                        src = str;
+                        left = 32;
+                        goto copy_body;
+                    copy_check:
+                        if (--left > 0)
+                            goto copy_body;
+                        dst[-1] = 0;
+                        goto copy_done;
+                    copy_body:
+                        while ((*dst++ = *src++) != 0)
+                            goto copy_check;
+                    copy_done:;
+                    }
+                    sp8 = 0;
+                    sp14 = lbl_805637A4;
+                    if (var_r25 != 0) {
+                        sp10 = 0;
+                        fn_80230F78((signed char *)&sp8, &sp14, (long)&sp10, 0);
+                        var_r18 = sp10;
+                    }
+                    if (var_r21 == 0 || (var_r25 != 0 && sp8 != 0)) {
+                        if (var_r25 != 0) {
+                            color = 0xFFC34C05;
+                        } else if (type == 1) {
+                            color = 0x50000000;
+                        } else if ((type == 5 || type == 2) && fn_80244558(arg0) == 0) {
+                            color = 0x78000000;
+                            var_r18 = 0x28000000;
+                        } else {
+                            color = 0x50000078;
+                        }
+                        if (var_r21 == 1) {
+                            color = (color & 0x00FFFFFF) | ((s32)sp8 << 24);
+                            fn_80230924((void *)(long)color, (lbl_805637AC + f24) - (lbl_805637A8 * sp14), (lbl_80563798 * sp14) + (f25 - lbl_805637AC), (lbl_805637A8 * sp14) + ((f24 + (lbl_805637A8 * (float)entry[1])) - lbl_805637B0), (lbl_805637B0 + (f25 - lbl_80563798)) - (lbl_80563798 * sp14), lbl_805637A4);
+                        } else {
+                            fn_80230924((void *)(long)color, (lbl_805637AC + f24) - lbl_805637A4, lbl_805637A4 + (f25 - lbl_805637AC), lbl_805637A4 + ((f24 + (lbl_805637A8 * (float)entry[1])) - lbl_805637B0), (lbl_805637B0 + (f25 - lbl_80563798)) - lbl_805637A4, lbl_805637A4);
+                        }
+                    }
+                    if (var_r25 == var_r21) {
+                        fn_80232BA4(buffer, *(s32 *)((u8 *)arg0 + 0x20), var_r18, 0x14, lbl_805637B4 + (f24 + (lbl_805637B8 * (lbl_805637A8 * (float)entry[1]))), f25 - lbl_805637BC, f23, lbl_805637A4, lbl_805637AC);
+                    }
+                }
+                var_r19++;
+                f24 += lbl_805637A8 * (float)entry[1];
+                entry += 3;
+                if (var_r19 >= 16)
+                    break;
+            } while (1);
+            var_r20++;
+        } while (var_r20 < 5);
+        var_r21++;
+    } while (var_r21 < 2);
+    f23 = lbl_805637C0 + sp1C;
+    f24 = lbl_805637C4 + sp18;
+    limit = *(s32 *)((u8 *)arg0 + 0x1C) - 1;
+    len2 = fn_80244558(arg0);
+    maxIdx = limit - 1;
+    if (len2 < maxIdx)
+        maxIdx = len2;
+    fmodRes = (float)fn_8002EFB4(fn_8023659C(), lbl_805637C8);
+    eq = (fmodRes == lbl_805637D0);
+    idx = 0;
+    while (idx < limit) {
+        var0 = 0;
+        if (eq != 0 && idx == maxIdx)
+            var0 = 1;
+        col = -1;
+        if (var0 != 0)
+            col = 0xFF000000;
+        spC = ((char *)*(s32 *)((u8 *)arg0 + 0x18))[idx];
+        if (var0 != 0) {
+            fn_80230924((void *)0x80FFFF00L, lbl_805637D8 + f24, f24 - lbl_805637D8, lbl_805637DC + ((f23 + (lbl_805637D4 * (float)(idx + 1))) - lbl_805637E0), f24 - lbl_805637D8, lbl_805637A4);
+        }
+        buf = lbl_8055BE14;
+        if (idx < fn_80244558(arg0))
+            buf = (char *)&spC;
+        fn_80232BA4(buf, *(s32 *)((u8 *)arg0 + 0x20), col, 0x14, f23 + (lbl_805637D4 * (lbl_805637B8 + (float)idx)), f24, lbl_805637E4, lbl_805637A4, lbl_805637AC);
+        idx++;
+    }
+}
+
 extern float fn_8023293C(s32, char *, float);
 extern char lbl_80342CE0[];
 __declspec(section ".sdata") extern char lbl_8055BE18[];
@@ -421,13 +530,15 @@ copy3_done:;
 
 extern void fn_80243938(char *, char *);
 void fn_802443C0(void *arg0) {
-    u8 *str;
-    fn_802438EC(*(char **)((u8 *)arg0 + 0x18));
-    str = (u8 *)*(char **)((u8 *)arg0 + 0x18);
-    if (strlen((char *)str) != 0) {
-        *(u8 *)(str + strlen((char *)str) - 1) = (u8)0;
+    char *str;
+    fn_802438EC(*(char **)((char *)arg0 + 0x18));
+    str = *(char **)((char *)arg0 + 0x18);
+    if (strlen(str) != 0) {
+        char *end = str;
+        end += strlen(str);
+        *(end - 1) = 0;
     }
-    fn_80243938(*(char **)((u8 *)arg0 + 0x18), *(char **)((u8 *)arg0 + 0x1C));
+    fn_80243938(*(char **)((char *)arg0 + 0x18), *(char **)((char *)arg0 + 0x1C));
 }
 
 void fn_8024442C(void *arg0) {
@@ -464,24 +575,25 @@ struct Dummy_80244440 {
     virtual void f23();
 };
 #pragma cplusplus on
-extern "C" s32 fn_80244440(void *arg0, s32 arg1) {
-    switch (arg1) {
-    case 0x125: fn_80243764((u8 *)arg0 + 0x30, (u8 *)arg0 + 0x2C, -1, 0); goto yes;
-    case 0x127: fn_80243764((u8 *)arg0 + 0x30, (u8 *)arg0 + 0x2C, 1, 0); goto yes;
-    case 0x126: fn_80243764((u8 *)arg0 + 0x30, (u8 *)arg0 + 0x2C, 0, -1); goto yes;
-    case 0x128: fn_80243764((u8 *)arg0 + 0x30, (u8 *)arg0 + 0x2C, 0, 1); goto yes;
+extern "C" s32 fn_80244440(void *object, s32 inputCode) {
+    /* Dispatch input codes to movement/action/cancel handlers. */
+    switch (inputCode) {
+    case 0x125: fn_80243764((u8 *)object + 0x30, (u8 *)object + 0x2C, -1, 0); goto handled;
+    case 0x127: fn_80243764((u8 *)object + 0x30, (u8 *)object + 0x2C, 1, 0); goto handled;
+    case 0x126: fn_80243764((u8 *)object + 0x30, (u8 *)object + 0x2C, 0, -1); goto handled;
+    case 0x128: fn_80243764((u8 *)object + 0x30, (u8 *)object + 0x2C, 0, 1); goto handled;
     case 0xD:
-        ((Dummy_80244440 *)arg0)->f22();
-        goto yes;
+        ((Dummy_80244440 *)object)->f22();
+        goto handled;
     case 0x1B:
-        if (fn_80244558(arg0) > 0) {
-            ((Dummy_80244440 *)arg0)->f23();
-            goto yes;
+        if (fn_80244558(object) > 0) {
+            ((Dummy_80244440 *)object)->f23();
+            goto handled;
         }
         return 0;
     default: return 0;
     }
-yes:
+handled:
     return 1;
 }
 #pragma cplusplus off
