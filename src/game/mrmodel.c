@@ -765,6 +765,7 @@ void fn_802C6B2C(s32 *arg0, s32 arg1) {
     }
 }
 
+/* Loads a MODL resource, validates its version, and optionally prepares it for use. */
 int fn_802C6B44(int arg0) {
     void *result;
     int sp10;
