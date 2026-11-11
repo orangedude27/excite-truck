@@ -472,18 +472,23 @@ typedef struct UITextEntry {
     UITextObject *text;
 } UITextEntry;
 
-void *fn_80258D58(void *arg0, int arg1, int arg2, int arg3, int arg4) {
-    char *base = (char *)arg0;
+/* UIObjects_impl: set up the named text object.  Looks the name up in the
+ * manager's text table (+0x910, count +0x914), copies the low seven bits of
+ * `flags` into the object's draw flags, makes its scale `height` pixels over
+ * the font's own height (gText keeps that as a byte in the font block) and
+ * stores `value`; returns the object, or 0 when the name is unknown. */
+void *fn_80258D58(void *mgr, const char *name, int flags, int height, int value) {
+    char *base = (char *)mgr;
     int index = 0;
     int offset = 0;
     int compare;
-    char *obj;
+    UITextObject *text;
     unsigned int old;
     unsigned int temp;
     unsigned int mask;
     goto check;
 loop:
-    compare = stricmp(*(char **)(base + 0x910) + offset, (char *)arg1);
+    compare = stricmp((*(UITextEntry **)(base + 0x910))->name + offset, name);
     switch ((unsigned int)__cntlzw((unsigned int)compare) >> 5) {
     case 0:
         goto increment;
@@ -500,16 +505,16 @@ check:
 found:
     if (index >= 0) {
         int divisor;
-        obj = *(char **)(*(char **)(base + 0x910) + index * 0x24 + 0x20);
-        temp = (unsigned int)arg2 & 7;
-        old = *(unsigned int *)(obj + 8);
-        mask = (unsigned int)arg2 & 0x78;
+        text = *(UITextObject **)(*(char **)(base + 0x910) + index * 0x24 + 0x20);
+        temp = (unsigned int)flags & 7;
+        old = text->flags;
+        mask = (unsigned int)flags & 0x78;
         temp = __rlwimi(temp, old, 0, 0, 28);
-        *(unsigned int *)(obj + 8) = (temp & ~0x58U) | mask;
-        divisor = fn_80232B70(*(int *)obj, temp, old);
-        *(float *)(obj + 0xC) = (float)arg3 / (float)divisor;
-        *(int *)(obj + 4) = arg4;
-        return obj;
+        text->flags = (temp & ~0x58U) | mask;
+        divisor = fn_80232B70((int)text->font, temp, old);
+        text->scale = (float)height / (float)divisor;
+        text->value = value;
+        return text;
     }
     return 0;
 }
