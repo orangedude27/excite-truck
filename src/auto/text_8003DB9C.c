@@ -4680,11 +4680,16 @@ void GXSetZCompLoc(s32 enable) {
 
 extern u32 lbl_80303CA8[];
 void GXSetPixelFmt(s32 pixelFmt, s32 zFmt) {
-    unsigned int * const gx = __GXData;
-    unsigned int * const table = (unsigned int *)lbl_80303CA8;
-    unsigned int offset = pixelFmt * 4;
-    unsigned int old = gx[0x22C / 4];
-    unsigned int value = old;
+    unsigned int old;
+    unsigned int value;
+    unsigned int offset;
+    unsigned int *gx;
+    unsigned int *table;
+    gx = __GXData;
+    table = (unsigned int *)lbl_80303CA8;
+    offset = (unsigned int)pixelFmt * 4;
+    old = gx[0x22C / 4];
+    value = old;
     value = __rlwimi(value, table[pixelFmt], 0, 29, 31);
     value = __rlwimi(value, zFmt, 3, 26, 28);
     gx[0x22C / 4] = value;
@@ -5299,7 +5304,7 @@ void GXClearGPMetric(void) {
 }
 
 void KPADSetBtnRepeat(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
-    unsigned int first, second, low;
+    unsigned int low, second, first;
     volatile unsigned short *cp;
     cp = __cpReg;
     first = cp[0x42/2];
