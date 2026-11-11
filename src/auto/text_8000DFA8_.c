@@ -1270,6 +1270,8 @@ void fn_80010FDC(char *name, s32 id) {
     }
 }
 #pragma pop
+#pragma push
+#pragma use_lmw_stmw off
 void fn_800111A4(char *name, s32 a1, s32 a2, s32 a3, s32 a4, f32 f) {
     s32 idx;
     Unk80350F88 *base;
@@ -1289,6 +1291,7 @@ void fn_800111A4(char *name, s32 a1, s32 a2, s32 a3, s32 a4, f32 f) {
     entry->unk_0x3C = f;
     entry->unk_0x34 = a3;
 }
+#pragma pop
 #pragma scheduling on
 #pragma use_lmw_stmw on
 void fn_8001123C(s32 arg0) {
@@ -1702,21 +1705,17 @@ f32 fn_80011EDC(void) {
     f32 scale;
     f32 best;
     f32 value;
-    s32 i;
-
+    s32 i = 0;
     scale = lbl_805602C8;
     best = lbl_80560280;
-    i = 0;
     do {
         sprintf(buffer, lbl_80558ACC, (char)(i + 0x30));
         value = scale * ((f32 (*)(s32, char *, f32))fn_8023293C)(
             lbl_8055D490, buffer, lbl_80560264);
-        if (value > best) {
+        if (value > best)
             best = value;
-        }
         i++;
     } while (i < 10);
-
     return best;
 }
 #pragma pop
@@ -1806,11 +1805,12 @@ extern "C" void fn_800120BC(void) {
     struct Dummy {
         virtual void release(s32);
         virtual void v1();
+        virtual void v2();
     };
     register s32 *base = lbl_8055D4AC;
     if (base != 0) {
-        register s32 *outer = base;
         register s32 i = 0;
+        register s32 *outer = base;
         for (; i < 2; ++i, outer += 3) {
             register s32 *inner = outer;
             register s32 j = 0;
@@ -2123,11 +2123,11 @@ f32 fn_8000EDC0(s32 arg0) {
     if (fn_801E85A4() > 2)
         return lbl_80560264;
     switch (arg0) {
+    case 13:
+        return lbl_805602BC;
     case 12:
     case 14:
         return lbl_805602B8;
-    case 13:
-        return lbl_805602BC;
     case 11:
         return lbl_80560264;
     default:
