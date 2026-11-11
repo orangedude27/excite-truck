@@ -123,11 +123,13 @@ extern u8 lbl_8034EC78[];
 extern s32 fn_802E2C20(void);
 extern s32 fn_80005580(s32);
 extern u8 *lbl_8055D350;
+/* Iterates through items and returns 1 if all pass fn_80005580. */
 s32 fn_8000561C(void) {
     s32 i = 0;
     while (i < *(s32 *)(lbl_8055D350 + 0x14)) {
-        if (fn_80005580(i) == 0)
+        if (fn_80005580(i) == 0) {
             return 0;
+        }
         i++;
     }
     return 1;
