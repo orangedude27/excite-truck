@@ -3097,7 +3097,9 @@ public:
 };
 }}}
 #pragma push
-void *nw4hbm::snd::detail::BankFileReader::ReadWaveParam(WaveData *wave, int index, const void *src) const {
+// Reads a wave parameter entry from the bank file by index into waveData, resolving the
+// referenced wave data and delegating the read to a temporary WaveFileReader.
+void *nw4hbm::snd::detail::BankFileReader::ReadWaveParam(WaveData *waveData, int waveIndex, const void *waveFile) const {
     unsigned int count;
     void *bank;
     void *entry;
@@ -3111,15 +3113,15 @@ void *nw4hbm::snd::detail::BankFileReader::ReadWaveParam(WaveData *wave, int ind
     if (bank == 0) return 0;
     count = *(unsigned int *)((char *)bank + 8);
     base = (char *)bank + 8;
-    if ((unsigned int)index >= count) return 0;
-    entry = (char *)bank + (index << 3);
+    if ((unsigned int)waveIndex >= count) return 0;
+    entry = (char *)bank + (waveIndex << 3);
     if (*((unsigned char *)entry + 0xd)) Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80559818, 0x6f, lbl_803226DC);
     type = *((unsigned char *)entry + 0xc);
     data = *(unsigned int *)((char *)entry + 0x10);
     bank = (void *)(unsigned int)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(type, data, base);
     if (bank == 0) return 0;
     fn_800FEC1C(pad, bank);
-    return ((void *(*)(void *, void *, const void *))ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3snd6detail8WaveDataPCv)(pad, wave, src);
+    return ((void *(*)(void *, void *, const void *))ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3snd6detail8WaveDataPCv)(pad, waveData, waveFile);
 }
 #pragma pop
 
