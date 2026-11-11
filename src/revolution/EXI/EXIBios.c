@@ -611,18 +611,19 @@ void EXIInit(void) {
     OSRegisterVersion(__EXIVersion);
 }
 
+/* Locks an EXI channel for a device, or queues a callback if already locked. */
 BOOL EXILock(EXIChannel chan, u32 dev, EXICallback callback) {
     EXIData* exi = &Ecb[chan];
-    BOOL enabled;
+    BOOL interrupts;
     int i;
 
-    enabled = OSDisableInterrupts();
+    interrupts = OSDisableInterrupts();
 
     if (exi->state & EXI_STATE_LOCKED) {
         if (callback != NULL) {
             for (i = 0; i < exi->numItems; i++) {
                 if (exi->items[i].dev == dev) {
-                    OSRestoreInterrupts(enabled);
+                    OSRestoreInterrupts(interrupts);
                     return FALSE;
                 }
             }
@@ -632,13 +633,13 @@ BOOL EXILock(EXIChannel chan, u32 dev, EXICallback callback) {
             exi->numItems++;
         }
 
-        OSRestoreInterrupts(enabled);
+        OSRestoreInterrupts(interrupts);
         return FALSE;
     } else {
         exi->state |= EXI_STATE_LOCKED;
         exi->dev = dev;
         SetExiInterruptMask(chan, exi);
-        OSRestoreInterrupts(enabled);
+        OSRestoreInterrupts(interrupts);
         return TRUE;
     }
 }
