@@ -7483,23 +7483,21 @@ BOOLEAN BTM_IsAclConnectionUp(BD_ADDR remote_bda) {
     extern char lbl_80315E80[];
     u32 i;
     u8 *entry;
-
     if (lbl_803C0F78[0x27C0] >= 3) {
         fn_800709CC(0xD0002, lbl_80315E80,
                     remote_bda[0], remote_bda[1], remote_bda[2],
                     remote_bda[3], remote_bda[4], remote_bda[5]);
     }
-    i = 0;
     entry = lbl_803C0F78 + 0x34;
-loop:
-    if (entry[0x119] != 0) {
-        if (memcmp(entry + 8, remote_bda, 6) == 0)
-            goto found;
+    for (i = 0; i < 4; i++, entry += 0x11C) {
+        if (entry[0x119] != 0) {
+            if (memcmp(entry + 8, remote_bda, 6) == 0)
+                goto found;
+            else
+                goto cont;
+        }
+cont: ;
     }
-    i++;
-    entry += 0x11C;
-    if (i < 4)
-        goto loop;
     entry = NULL;
 found:
     if (entry != NULL)
@@ -7730,16 +7728,13 @@ s32 fn_80078310(s32 arg0)
     return 0;
 }
 
+extern char lbl_80315F24[];
 void btm_qos_setup_complete(UINT8 status, UINT16 handle, FLOW_SPEC *p_flow) {
-    tBTM_CMPL_CB *p_cb = btm_cb.devcb.p_qossu_cmpl_cb;
-    tBTM_QOS_SETUP_CMPL qossu;
-
-    BTM_TRACE_DEBUG0("btm_qos_setup_complete");
-    btu_stop_timer(&btm_cb.devcb.qossu_timer);
-    btm_cb.devcb.p_qossu_cmpl_cb = NULL;
-
+    tBTM_CMPL_CB *p_cb = *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x618);
+    volatile tBTM_QOS_SETUP_CMPL qossu;
+    fn_80070F90(lbl_803C0F78 + 0x600);
+    *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x618) = NULL;
     if (p_cb) {
-        memset(&qossu, 0, sizeof(tBTM_QOS_SETUP_CMPL));
         qossu.status = status;
         qossu.handle = handle;
         if (p_flow != NULL) {
@@ -7749,9 +7744,11 @@ void btm_qos_setup_complete(UINT8 status, UINT16 handle, FLOW_SPEC *p_flow) {
             qossu.flow.peak_bandwidth = p_flow->peak_bandwidth;
             qossu.flow.latency = p_flow->latency;
             qossu.flow.delay_variation = p_flow->delay_variation;
+            if (*(volatile u8 *)(lbl_803C0F78 + 0x27C0) >= 5) {
+                ((void (*)(u32, void *, u32))fn_80070954)(0xD0004, lbl_80315F24, p_flow->delay_variation);
+            }
         }
-        BTM_TRACE_DEBUG1("BTM: p_flow->delay_variation: 0x%02x", qossu.flow.delay_variation);
-        (*p_cb)(&qossu);
+        (*p_cb)((void *)&qossu);
     }
 }
 
@@ -9302,9 +9299,9 @@ tBTM_STATUS BTM_ClearInqDb(BD_ADDR p_bda) {
     u16 i;
     u8 *entry;
     tBTM_INQ_DB_CHANGE_CB *callback;
-    base = lbl_803C0F78;
-    if (base[0x1848] != 0 || base[0x16AE] != 0 || base[0x1844] != 0)
+    if (lbl_803C0F78[0x1848] != 0 || lbl_803C0F78[0x16AE] != 0 || lbl_803C0F78[0x1844] != 0)
         return BTM_BUSY;
+    base = lbl_803C0F78;
     for (i = 0, entry = base + 0x16E4; i < 0xC; i++, entry += 0x1C) {
         if (entry[0x1A] != 0 && (p_bda == NULL || memcmp(entry + 0xA, p_bda, BD_ADDR_LEN) == 0)) {
             entry[0x1A] = FALSE;
@@ -13733,16 +13730,32 @@ done:
 void btu_hcif_link_key_notification_evt(u8 *p, u16 evt_len) {
     BD_ADDR bda;
     LINK_KEY key;
-    u8 *key_type_ptr = p;
+    u8 key_type;
 
-    key_type_ptr += sizeof(bda) + sizeof(key);
-    bda[5] = p[0]; bda[4] = p[1]; bda[3] = p[2];
-    bda[2] = p[3]; bda[1] = p[4]; bda[0] = p[5];
-    key[15] = p[6]; key[14] = p[7]; key[13] = p[8]; key[12] = p[9];
-    key[11] = p[10]; key[10] = p[11]; key[9] = p[12]; key[8] = p[13];
-    key[7] = p[14]; key[6] = p[15]; key[5] = p[16]; key[4] = p[17];
-    key[3] = p[18]; key[2] = p[19]; key[1] = p[20]; key[0] = p[21];
-    btm_sec_link_key_notification(bda, key, *key_type_ptr);
+    bda[5] = p[0];
+    bda[4] = p[1];
+    bda[3] = p[2];
+    bda[2] = p[3];
+    bda[1] = p[4];
+    bda[0] = p[5];
+    key[15] = p[6];
+    key[14] = p[7];
+    key[13] = p[8];
+    key[12] = p[9];
+    key[11] = p[10];
+    key[10] = p[11];
+    key[9] = p[12];
+    key[8] = p[13];
+    key[7] = p[14];
+    key[6] = p[15];
+    key[5] = p[16];
+    key[4] = p[17];
+    key[3] = p[18];
+    key[2] = p[19];
+    key[1] = p[20];
+    key[0] = p[21];
+    key_type = p[22];
+    btm_sec_link_key_notification(bda, key, key_type);
 }
 
 void fn_8008251C(void) {
@@ -23445,7 +23458,6 @@ u32 SDP_CreateRecord(void) {
     u32 handle;
     u8 bytes[4];
     u16 stored_count;
-
     if (*(u16 *)(lbl_803C4C40 + 0x1222) < 0x14) {
         memset(base + (*(u16 *)(lbl_803C4C40 + 0x1222) * 0x298) + 8, 0, 0x298);
         count = *(u16 *)(base + 6);
@@ -23454,10 +23466,10 @@ u32 SDP_CreateRecord(void) {
         } else {
             handle = 0x10000;
         }
-        bytes[1] = (u8)(handle >> 16);
         bytes[0] = (u8)(handle >> 24);
         *(u32 *)(base + (count * 0x298) + 8) = handle;
         stored_count = *(u16 *)(base + 6);
+        bytes[1] = (u8)(handle >> 16);
         *(volatile u16 *)(base + 6) = stored_count + 1;
         bytes[2] = (u8)(handle >> 8);
         bytes[3] = (u8)handle;
