@@ -729,6 +729,7 @@ end:
     return ret;
 }
 
+/* Asynchronously creates an ISFS file with the specified attributes/permissions. */
 s32 ISFS_CreateFileAsync(const char* path, u32 attr, u32 ownerPerm,
                          u32 groupPerm, u32 otherPerm, FSAsyncCallback callback,
                          void* callbackArg) {
