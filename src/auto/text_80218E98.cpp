@@ -919,16 +919,14 @@ extern "C" void fn_80219510(void *arg0, s32 arg1, s32 arg2) {
 }
 
 extern "C" void fn_8021952C(void* arg0, s32 arg1, s32 arg2) {
-    void* p = *(void**)((char*)arg0 + 0x2C);
-    if (*(unsigned char*)((char*)arg0 + 0x24C) != 0) {
-        s32 a = *(s32*)((char*)arg0 + 0x244);
-        s32 old1 = *(s32*)((char*)p + 0x454);
-        s32 dx = a + arg1;
-        s32 b = *(s32*)((char*)arg0 + 0x248);
-        s32 old2 = *(s32*)((char*)p + 0x458);
-        s32 dy = b + arg2;
-        *(s32*)((char*)p + 0x454) = old1 + dx;
-        *(s32*)((char*)p + 0x458) = old2 + dy;
+    void* p = *(void**)((u8*)arg0 + 0x2C);
+    if (*(u8*)((u8*)arg0 + 0x24C) != 0) {
+        s32 dx = *(s32*)((u8*)arg0 + 0x244) + arg1;
+        s32 old1 = *(s32*)((u8*)p + 0x454);
+        s32 dy = *(s32*)((u8*)arg0 + 0x248) + arg2;
+        s32 old2 = *(s32*)((u8*)p + 0x458);
+        *(s32*)((u8*)p + 0x454) = old1 + dx;
+        *(s32*)((u8*)p + 0x458) = old2 + dy;
     }
 }
 
@@ -6345,6 +6343,27 @@ extern "C" void fn_802248FC(void *arg0) {
 }
 #pragma scheduling on
 #pragma pop
+// ---------------------------------------------------------------------------
+// One handler of the menu widget that tracks an entry of the list its owner
+// holds at +0x2C (fn_80217BD8 makes the tracking object for an id and
+// fn_80219440 links it in; fn_8022455C is what stores it here).  Of the
+// fields this handler touches:
+//
+//   +0x250 s32          the value handed to the confirm callback
+//   +0x254 s32          the id this widget tracks
+//   +0x258 void*        the tracking object for that id; its first word is
+//                       the id it is still valid for, so the handler does
+//                       nothing once that has moved on
+//   +0x25C s32 (*)(s32) confirm callback, called with +0x250; returning 0
+//                       swallows the confirm
+//
+// fn_802168BC hands the value to the dialog loop waiting in fn_802168F0, and
+// fn_80217D84 / fn_80217C4C step the list at +0x2C back / forward one entry.
+// The same three actions, on another widget, are fn_802267C4.
+#define ACTION_CONFIRM 0xD    // the confirm action
+#define ACTION_PREV    0x126  // step to the previous entry of the list
+#define ACTION_NEXT    0x128  // step to the next entry of the list
+
 extern "C" s32 fn_80224A38(void *arg0, s32 arg1) {
     s32 *temp_r6 = *(s32 **)((u8 *)arg0 + 0x258);
     s32 (*temp_r12)(s32);
