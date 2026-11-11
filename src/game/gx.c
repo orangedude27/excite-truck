@@ -760,6 +760,27 @@ void fn_802CF850(void) {
     lbl_8055FDB4 = 0;
 }
 
+/* Reading names for the buffers the graphics shutdown below releases; every
+ * one of them is allocated by fn_802CF600 (graphics init).
+ *   GX_XFB_BLOCK          frame-buffer block: [0] XFB base, [1] the buffer
+ *                         currently being displayed (flipped on copy),
+ *                         [2] width, [3] height, [4] buffers per frame (2)
+ *   GX_SCREEN_TEX_BUFFER  640x440 copy of the EFB used as a texture
+ *                         (GXCopyTex/GXLoadTexObj); its GXTexObj sits at +4
+ *   GX_WORK_MEMORY        3 MiB of work memory handed to GXInit
+ *   GX_RECORD_TABLE       0x800 records of 0x4C bytes; the allocator's
+ *                         0x10-byte header sits before the table, so that is
+ *                         the address that gets freed
+ *   GX_DYNAMIC_DATA       0x177000-byte GX dynamic-data (display list) buffer
+ *                         the frame is flushed out of, see fn_802CFDE0
+ *   GX_DYNAMIC_HIGH_WATER high-water mark of GX_DYNAMIC_DATA, reported here */
+#define GX_XFB_BLOCK lbl_804C9760
+#define GX_SCREEN_TEX_BUFFER lbl_804C9940
+#define GX_WORK_MEMORY lbl_8055FD68
+#define GX_RECORD_TABLE lbl_8055FDB0
+#define GX_DYNAMIC_DATA lbl_8055FDA0
+#define GX_DYNAMIC_HIGH_WATER lbl_8055FD98
+
 void fn_802CFBA8(void) {
     extern void fn_802D9A50(void);
     extern void fn_80127D58(void (*)(void));
@@ -1200,8 +1221,10 @@ void fn_802D050C(void* hi) {
 }
 
 int fn_802D0514(void *source) {
-          extern unsigned long lbl_8055FDAC;
-      int index;
+    extern unsigned long lbl_8055FDAC;
+    struct Entry { int w[12]; unsigned char b[9]; unsigned char pad[3]; int x, y, z; float f; };
+    struct Aux { unsigned char b[9]; unsigned char pad2[3]; int x, y, z; float f; };
+    int index;
     unsigned long next;
     unsigned int *src;
     unsigned char *dst;
