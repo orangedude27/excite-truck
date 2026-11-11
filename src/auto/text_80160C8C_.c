@@ -1396,12 +1396,11 @@ extern "C" void fn_801625E0(void *arg0) {
 #pragma cplusplus on
 struct Obj8016275C {
     virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
-    virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
-    virtual void f8(); virtual s32 f9();
-    virtual void f10(); virtual void f11(); virtual void f12(); virtual void f13();
-    virtual void f14(); virtual void f15(); virtual void f16(); virtual void f17();
-    virtual void f18(); virtual void f19(); virtual void f20(); virtual void f21();
-    virtual void f22(); virtual void f23(); virtual void f24(s32);
+    virtual void f4(); virtual void f5(); virtual void f6(); virtual s32 f7();
+    virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
+    virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15();
+    virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19();
+    virtual void f20(); virtual void f21(); virtual void f22(s32);
 };
 #pragma cplusplus off
 s32 fn_80162734(void *arg0) { return *(s32 *)((u8 *)arg0 + 8) != 0; }
@@ -2371,16 +2370,16 @@ extern "C" void fn_80163F7C(void *arg0) {
 #pragma scheduling on
 #pragma cplusplus off
 int fn_801643C8(void *arg0) {
-    register int var_r30 = 0;
-    register int var_r31 = 0;
+    int a = 0;
+    int b = 0;
     void *obj;
-    while (var_r31 < *((int *)((char *)arg0 + 0xE4))) {
+    while (b < *((int *)((char *)arg0 + 0xE4))) {
         obj = *((void **)((char *)arg0 + 0xE0));
-        if (*((int *)((char *)obj + var_r30 + 0x34)) != 0) {
+        if (*((int *)((char *)obj + a + 0x34)) != 0) {
             fn_80128658();
         }
-        var_r30 += 0x48;
-        var_r31 += 1;
+        a += 0x48;
+        b += 1;
     }
     obj = *((void **)((char *)arg0 + 0xDC));
     if (obj != 0) {
