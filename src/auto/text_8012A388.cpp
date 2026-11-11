@@ -2517,12 +2517,12 @@ extern "C" const char lbl_8032AD88[];
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void fn_8012E81C(s32 arg0) {
-    nw4r::ef::Effect *effect = lbl_8055E014;
     s32 limit;
     void *entry;
     s32 start;
     s32 current;
     const char *format;
+    nw4r::ef::Effect *effect = lbl_8055E014;
 
     if (effect == 0) return;
     entry = (void *)fn_8012E490((s32 *)((u8 *)effect + 0xA18));
@@ -2773,17 +2773,16 @@ extern "C" void fn_8012EE80(void *arg0) {
         s32 limit;
         s32 boundary;
     };
-
     Buffer *buffer = (Buffer *)arg0;
     Entry *entries = buffer->entries;
     Entry *cursor = entries;
     s32 i;
+    s32 j;
     s32 end = buffer->boundary;
     s32 status;
     s32 pos;
     s32 len;
     s32 request;
-
     for (i = 0; i < 2; i++, cursor++) {
         status = cursor->state;
         if (status != 0) {
@@ -2794,23 +2793,20 @@ extern "C" void fn_8012EE80(void *arg0) {
                 end = pos;
         }
     }
-
-    i = 0;
+    j = 0;
     cursor = 0;
-    for (; i < 2; i++, entries++) {
+    for (; j < 2; j++, entries++) {
         status = entries->state;
         if (status != 0)
             goto check_state;
         if (entries->file != 0)
             goto process_entry;
-
 check_state:
         if (status != 2)
             goto next_entry;
         pos = entries->position + buffer->size;
         if (pos >= buffer->boundary)
             goto next_entry;
-
 process_entry:
         entries->position = end;
         pos = end;
@@ -2825,7 +2821,6 @@ process_entry:
         } else {
             entries->state = (s32)cursor;
         }
-
 next_entry:
         ;
     }
@@ -3060,28 +3055,27 @@ extern "C" void fn_8012C720(void *request, s32 buffer, s32 size, s32 fileOffset)
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" s32 fn_8012C7FC(void *arg0, s32 *arg1) {
-    s32 *w = (s32 *)arg0;
-    void *entry;
+    char *entry;
     s32 result = 0;
     s32 temp;
-    temp = w[3];
+    temp = *(s32 *)((char *)arg0 + 0xC);
     if (temp != -1 && fn_802E7544(temp)) {
-        fn_802E7548(w[3]);
-        w[3] = -1;
+        fn_802E7548(*(s32 *)((char *)arg0 + 0xC));
+        *(s32 *)((char *)arg0 + 0xC) = -1;
     }
-    temp = w[3];
-    if (temp == -1 && w[4]) {
-        entry = *(void **)((char *)arg0 + 4);
-        if (w[5] < *(s32 *)((char *)entry + 0x28) ||
-            *(u32 *)((char *)entry + 0x30) == ((u32 (*)(void))fn_80132E7C)()) {
-            result = w[4];
-            if (arg1) *arg1 = *(s32 *)((char *)entry + 0x28);
+    temp = *(s32 *)((char *)arg0 + 0xC);
+    if (temp == -1 && *(s32 *)((char *)arg0 + 0x10)) {
+        entry = *(char **)((char *)arg0 + 4);
+        if (*(s32 *)((char *)arg0 + 0x14) < *(s32 *)(entry + 0x28) ||
+            *(u32 *)(entry + 0x30) == ((u32 (*)(void))fn_80132E7C)()) {
+            result = *(s32 *)((char *)arg0 + 0x10);
+            if (arg1) *arg1 = *(s32 *)(entry + 0x28);
         } else {
             fn_802E30C8(lbl_8032AC68, entry);
-            fn_8012C720(arg0, w[4] -
+            fn_8012C720(arg0, *(s32 *)((char *)arg0 + 0x10) -
                 ((*(s32 *)((char *)*(void **)((char *)arg0 + 4) + 0x2C) +
                   *(s32 *)((char *)*(void **)((char *)arg0 + 8) + 0x80)) & 0x7FF),
-                w[5], 0);
+                *(s32 *)((char *)arg0 + 0x14), 0);
         }
     }
     return result;
