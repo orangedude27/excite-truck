@@ -267,17 +267,17 @@ int fn_80139EC4(void *arg0, float arg1, float arg2) {
     return 0;
 }
 
-extern int fn_80007F90(int);
-extern void *__AXGetStudio_8000AC2C(void);
-extern int fn_80029004(char *, int);
+extern int fn_80007F90(int); /* zone id -> its name string; kept int here, cast at the call */
+extern void *__AXGetStudio_8000AC2C(void); /* -> the device/directory name buffer used in archive paths */
+extern char *fn_80029004(char *, int); /* strrchr: last occurrence of the character */
 extern int sprintf(char *, const char *, ...);
 extern char *strchr(const char *, int);
 extern char *strncpy(char *, const char *, unsigned int);
 extern char *strcpy(char *, const char *);
-extern const char lbl_80559C50[];
-extern const char lbl_80559C58[];
-extern const char lbl_8032C0D4[];
-extern const char lbl_8032C0E4[];
+extern const char lbl_80559C50[]; /* "c_%s" */
+extern const char lbl_80559C58[]; /* ".val" */
+extern const char lbl_8032C0D4[]; /* "external_table" */
+extern const char lbl_8032C0E4[]; /* "*%s/%s.va0" */
 extern __declspec(section ".sdata") const char lbl_80559C50[];
 extern __declspec(section ".sdata") const char lbl_80559C58[];
 #pragma cplusplus on
