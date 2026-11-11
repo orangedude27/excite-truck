@@ -1260,6 +1260,7 @@ typedef struct Bink {
     /* +0x20 */ u32 flags;
     /* +0x24 */ u8 pad24[0xC4];
     /* +0xE8 */ void *fileBuffer;
+    /* +0xEC */ u8 padEC[0x4];
     /* +0xF0 */ BinkFile file;
     /* +0x104 */ s32 (*fileClose)(void *file);
     /* +0x108 */ u8 pad108[0xEC];
