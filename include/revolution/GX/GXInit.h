@@ -16,7 +16,10 @@ typedef struct _GXData {
             u16 lastWriteWasXF; // at 0x2
         };
     }; // at 0x0
-    u16 SHORT_0x4;
+    union {
+        u16 SHORT_0x4;
+        u16 numChans; // at 0x4: color channels; __GXSendFlushPrim flushes this many
+    };                // at 0x4
     u16 vlim;      // at 0x6
     u32 cpCtrlReg; // at 0x8
     u32 cpStatReg; // at 0xC
