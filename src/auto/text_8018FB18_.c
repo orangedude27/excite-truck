@@ -1686,6 +1686,15 @@ void fn_80191860(void *arg0, void *arg1) {
 #pragma push
 #pragma processor 750
 #pragma cplusplus on
+/* Per-frame state machine for the controller at ctrl: state at +0x30 (0 = off,
+   4 = ready, 5.. = counting, 3 = loop), actor pointer at +0x34, and a
+   speed()/result() interface at +0x38. Returns while off. If the actor's
+   +0x2618 timer exceeds 1.0 it drops back to state 4. Otherwise it samples the
+   interface's speed() and result() and the dot product of the actor's +0x54 and
+   +0x118 vectors; when moving fast enough (speed > 0.1) and that dot is under
+   the per-state threshold (0.888889 in state 4, else 2.66667) and result() == 0,
+   it advances 4 -> 5 and then counts up each frame, wrapping to 3 after 0x1D
+   frames or as soon as the dot falls under -1.33333. Any other failure -> 4. */
 extern "C" void fn_80191928(void *ctrl) {
     class Interface {
     public:
