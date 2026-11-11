@@ -94,20 +94,13 @@ extern long *lbl_8055EB3C;
 extern long lbl_8055EB38;
 extern long *lbl_8055EB40;
 void fn_801E78D8(long arg0) {
-    long count;
-    long i;
-    long j;
-    unsigned char *base;
-    unsigned char *entry;
-    count = fn_800167F4();
-    fn_80206464();
-    for (i = 0; i < count; i++) fn_8020646C(i, -1);
-    base = (unsigned char *)arg0 + 0x20;
-    j = 0;
-    entry = base;
-    for (; j < *(long *)(base + 0x3C0); entry += 0x78, j++) {
-        if (*(long *)entry == 0x50) fn_8020646C(*(entry + 0x70) & 3, j);
-    }
+ long count; long i; long j; unsigned char *entry;
+ count=fn_800167F4(); fn_80206464();
+ for(i=0;i<count;i++) fn_8020646C(i,-1);
+ entry=(unsigned char *)arg0+0x20;
+ for(j=0;j<*((long *)((unsigned char *)arg0+0x3E0)); entry+=0x78,j++) {
+  if(*(long *)entry==0x50) fn_8020646C(*(entry+0x70)&3,j);
+ }
 }
 
 #pragma dont_inline on
@@ -644,7 +637,9 @@ void *fn_801E87A8(void) {
 }
 
 #pragma dont_inline on
-void fn_801E87B8(long arg0) { unsigned long i = lbl_8055EB34; unsigned long *base = (unsigned long *)lbl_8055EB3C; base[i] = arg0; lbl_8055EB34 = i + 1; }
+void fn_801E87B8(long arg0) {
+    lbl_8055EB3C[lbl_8055EB34++] = arg0;
+}
 void fn_801E87D4(long arg0) {
     long value2 = arg0;
     int index;
@@ -949,7 +944,8 @@ void fn_801E9564(long arg0) {
     for (i = 0; i < 0x40; i++) fn_801E8E38();
 }
 
-#pragma paired_single off
+#pragma push
+#pragma processor 750
 void fn_801E95DC(void) {
     extern double fn_8002EFB4(double, double);
     extern float fn_80203FE0(void);
@@ -958,7 +954,7 @@ void fn_801E95DC(void) {
     extern double lbl_80562E10;
     extern float lbl_80562E18;
     float matrix[12];
-    float x, y;
+    double x, y;
     float time;
     long flags;
     unsigned long index;
@@ -978,9 +974,8 @@ void fn_801E95DC(void) {
         matrix[10] = lbl_80562DBC;
         matrix[11] = lbl_80562DBC;
         time = ((float (*)(float))fn_801E7E18)(lbl_80562DD4);
-        time = (float)fn_8002EFB4(time, lbl_80562E10);
+        x = lbl_80562DD4 - (float)fn_8002EFB4(time, lbl_80562E10);
         y = lbl_80562DBC;
-        x = lbl_80562DD4 - time;
         index = fn_801E866C((long)lbl_8055AF0C);
         if (index < 8) entry = lbl_80488648[index];
         else entry = 0;
@@ -992,7 +987,7 @@ void fn_801E95DC(void) {
         fn_802C7D54(lbl_8055AF10, matrix, mode, x, y, lbl_80562E18);
     }
 }
-#pragma paired_single reset
+#pragma pop
 void fn_801E9BE4(void) {
     long value = lbl_8055AF10;
     if (value != -1) fn_802C6CF8(value);
