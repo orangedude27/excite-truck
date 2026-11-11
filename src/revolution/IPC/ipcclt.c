@@ -555,6 +555,7 @@ s32 IOS_SeekAsync(s32 fd, s32 offset, IPCSeekMode mode,
     return ret;
 }
 
+/* Issues a synchronous IOS seek request and returns the resulting status. */
 s32 IOS_Seek(s32 fd, s32 offset, IPCSeekMode mode) {
     IPCRequestEx* req;
     s32 ret = __ios_Ipc1(fd, IPC_REQ_SEEK, NULL, NULL, &req);
