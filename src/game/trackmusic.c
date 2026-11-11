@@ -63,12 +63,12 @@ extern long fn_802EC12C();
 extern long fn_802EC0FC(void);
 long fn_8020F3B4(void) { return -1; }
  
+#pragma scheduling invalid_target
 int fn_8020F3BC(int arg0, int arg1, int arg2) {
-    ((void (*)())fn_801345D8)(arg1, arg2, &lbl_8055B664, arg0);
+    fn_801345D8((void *)arg1, arg2, (void *)&lbl_8055B664, arg0);
     return arg1;
 }
-
-#pragma scheduling invalid_target
+#pragma scheduling on
 long fn_8020F400(long arg0, long arg1, long arg2) {
     long result = arg1;
     ((void (*)(long, long, long *, long))fn_801345D8)(arg1, arg2, (long *)&lbl_8055B664, arg0);
@@ -927,7 +927,7 @@ extern void fn_801769EC(void);
 #pragma scheduling on
 void fn_802114C4(void) {
     float value = lbl_80563404;
-    ((void (*)(float, long))fn_80209190)(value, lbl_8055EEF0);
+    fn_80209190(lbl_8055EEF0, value);
     fn_80206454();
     fn_801769EC();
 }
