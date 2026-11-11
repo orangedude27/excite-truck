@@ -425,46 +425,34 @@ extern const char lbl_802FD750[];
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
+#pragma scheduling on
 s32 fn_8001C35C(s32 arg0, s32 arg1, s32 arg2) {
-    struct List { void *data; s32 count; s32 capacity; };
-    struct TextBuffer { char *data; s32 size; };
-    struct Record {
-        s32 key;
-        char *name;
-        u8 pad08[8];
-        u8 state10;
-        u8 pad11[11];
-        u8 state1c;
-        u8 pad1d[11];
-        u8 state28;
-    };
-    struct List *list = (struct List *)lbl_80358658[arg0];
-    struct TextBuffer *descriptor;
-    s32 count = list->count;
-    char *input = (char *)arg2;
-    char *records;
-    s32 offset;
-    struct Record *entry;
     char *p;
     char *out;
     s32 room;
     char c;
-
-    if (count + 1 > list->capacity) {
+    s32 *descriptor;
+    void *list;
+    s32 count;
+    char *records;
+    s32 offset;
+    char *entry;
+    char *input = (char *)arg2;
+    list = lbl_80358658[arg0];
+    count = *(s32 *)((u8 *)list + 4);
+    if (count + 1 > *(s32 *)((u8 *)list + 8)) {
         ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD750, arg0, 0x280);
     }
-
-    list = (struct List *)lbl_80358658[arg0];
-    count = list->count;
-    records = (char *)list->data;
-    offset = count * 0x2C;
-    list->count = count + 1;
-    entry = (struct Record *)(records + offset);
-    entry->key = arg1;
-
-    descriptor = (struct TextBuffer *)lbl_8055D5D0;
-    ((u8 *)descriptor)[8] = 0;
-    p = descriptor->data;
+    list = lbl_80358658[arg0];
+    count = *(s32 *)((u8 *)list + 4);
+    records = *(char **)list;
+    offset = count * 44;
+    *(s32 *)((u8 *)list + 4) = count + 1;
+    entry = records + offset;
+    *(s32 *)entry = arg1;
+    descriptor = lbl_8055D5D0;
+    *((u8 *)descriptor + 8) = 0;
+    p = *(char **)descriptor;
     for (;;) {
         if (stricmp(p, input) == 0) {
             break;
@@ -474,11 +462,11 @@ s32 fn_8001C35C(s32 arg0, s32 arg1, s32 arg2) {
         }
         p++;
         if (*p == 0) {
-            room = descriptor->size - (p - descriptor->data) - 1;
+            out = p;
+            room = descriptor[1] - (p - *(char **)descriptor) - 1;
             if (room <= 0) {
-                p[-1] = 0;
+                out[-1] = 0;
             } else {
-                out = p;
                 do {
                     c = *input++;
                     *out++ = c;
@@ -487,12 +475,11 @@ s32 fn_8001C35C(s32 arg0, s32 arg1, s32 arg2) {
             break;
         }
     }
-
-    entry->name = p;
-    entry->state10 = 0;
-    entry->state1c = 0;
-    entry->state28 = 0;
-    *(s32 *)(lbl_8055D5CC + arg0 * 0xDAC4 + 0x6E00) = list->count;
+    *(char **)(entry + 4) = p;
+    *(u8 *)(entry + 0x10) = 0;
+    *(u8 *)(entry + 0x1C) = 0;
+    *(u8 *)(entry + 0x28) = 0;
+    *(s32 *)(lbl_8055D5CC + arg0 * 0xDAC4 + 0x6E00) = *(s32 *)((u8 *)lbl_80358658[arg0] + 4);
     return (s32)entry;
 }
 #pragma pop
