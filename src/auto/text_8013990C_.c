@@ -9,7 +9,7 @@ int fn_80128658(int);
 int fn_80139B70(int, float, float);
 extern int lbl_8055E138;
 extern int lbl_8055E13C;
-extern unsigned char lbl_8042F7C0;
+extern __declspec(section ".data") unsigned char lbl_8042F7C0;
 extern const char lbl_8032BFD8[];
 extern const char lbl_8032C018[];
 extern const char lbl_80559C40[];
