@@ -3,24 +3,25 @@
 
 #include "MSL/ansi_fp.h"
 
-void __str2dec(decimal *arg0, const char *arg1, short arg2) {
-    unsigned char *p;
-    unsigned char *q;
-    unsigned char *last;
-    unsigned char *first;
+/* Convert a decimal digit string to a `decimal`, rounding at SIGDIGLEN digits. */
+void __str2dec(decimal *d, const char *str, short exponent) {
+    unsigned char *src;
+    unsigned char *trailing;
+    unsigned char *lastDigit;
+    unsigned char *firstDigit;
     int count;
     int ch;
 
-    p = (unsigned char *)arg1;
-    *(short *)((char *)arg0 + 2) = arg2;
-    *(unsigned char *)arg0 = 0;
-    for (count = 0; count < 0x24 && (signed char)*p != 0;) {
-        *((volatile unsigned char *)((unsigned int)arg0 + count++ + 5)) =
-            (unsigned char)(*p++ - 0x30);
+    src = (unsigned char *)str;
+    d->exp = exponent;
+    d->sign = 0;
+    for (count = 0; count < SIGDIGLEN && (signed char)*src != 0;) {
+        *((volatile unsigned char *)&d->sig.text[count++]) =
+            (unsigned char)(*src++ - '0');
     }
 
-    *(volatile unsigned char *)((char *)arg0 + 4) = (unsigned char)count;
-    ch = *p;
+    d->sig.length = (unsigned char)count;
+    ch = *src;
     if ((signed char)ch == 0)
         return;
     if ((signed char)ch < 5)
@@ -28,33 +29,33 @@ void __str2dec(decimal *arg0, const char *arg1, short arg2) {
     if ((signed char)ch > 5)
         goto round_up;
 
-    q = p + 1;
+    trailing = src + 1;
     goto load_trailing;
 check_zero:
-    if ((signed char)ch != 0x30)
+    if ((signed char)ch != '0')
         goto round_up;
-    q++;
+    trailing++;
 load_trailing:
-    ch = *q;
+    ch = *trailing;
     if ((signed char)ch != 0)
         goto check_zero;
-    if ((*(unsigned char *)(count + (int)arg0 + 4) & 1) == 0)
+    if ((d->sig.text[count - 1] & 1) == 0)
         return;
 
 round_up:
-    first = (unsigned char *)arg0 + 5;
-    last = first + *(unsigned char *)((char *)arg0 + 4) - 1;
+    firstDigit = d->sig.text;
+    lastDigit = firstDigit + d->sig.length - 1;
 carry:
-    if (*last < 9) {
-        *last = *last + 1;
+    if (*lastDigit < 9) {
+        *lastDigit = *lastDigit + 1;
         return;
     }
-    if (last == first) {
-        *last = 1;
-        *(short *)((char *)arg0 + 2) = *(short *)((char *)arg0 + 2) + 1;
+    if (lastDigit == firstDigit) {
+        *lastDigit = 1;
+        d->exp = d->exp + 1;
         return;
     }
-    *last = 0;
-    last--;
+    *lastDigit = 0;
+    lastDigit--;
     goto carry;
 }
