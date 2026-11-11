@@ -348,32 +348,34 @@ extern void fn_80016D14(void **);
 extern void fn_802E317C(const char *, ...);
 #pragma push
 #pragma processor 750
+/* Rebuilds vehicle-related lookup data: resets counts, loads driver/vehicle tables if present, resolves each entry's vehicle index, then finalizes initialization. */
 void fn_80016C1C(void) {
-    int offset;
-    unsigned char *p;
-    int i;
-    unsigned char *entry;
-    int found, j;
-    int count;
+    int entryOffset;
+    unsigned char *vehiclePtr;
+    int entryIndex;
+    unsigned char *entryPtr;
+    int foundMatch, vehicleIndex;
+    int vehicleCount;
+
     fn_8013C804();
     lbl_8055D54C = 0;
     lbl_8055D550 = 0;
     if (lbl_8055D538 != 0) fn_80016D14(lbl_8055D538);
     if (lbl_8055D53C != 0) fn_80016D14(lbl_8055D53C);
     if (lbl_8055D550 == 0) fn_802E317C(lbl_802FCEEC);
-    for (i = 0, offset = 0; i < (int)lbl_8055D54C; offset += 0x5C, i++) {
-        count = (int)lbl_8055D550;
-        found = 0;
-        entry = lbl_8055D540 + offset;
-        p = lbl_8055D544;
-        for (j = 0; j < count; p += 0xA8, j++) {
-            if (*(int *)(p + 4) == *(int *)(entry + 0x4C)) {
-                *(int *)(entry + 0x4C) = j;
-                found = 1;
+    for (entryIndex = 0, entryOffset = 0; entryIndex < (int)lbl_8055D54C; entryOffset += 0x5C, entryIndex++) {
+        vehicleCount = (int)lbl_8055D550;
+        foundMatch = 0;
+        entryPtr = lbl_8055D540 + entryOffset;
+        vehiclePtr = lbl_8055D544;
+        for (vehicleIndex = 0; vehicleIndex < vehicleCount; vehiclePtr += 0xA8, vehicleIndex++) {
+            if (*(int *)(vehiclePtr + 4) == *(int *)(entryPtr + 0x4C)) {
+                *(int *)(entryPtr + 0x4C) = vehicleIndex;
+                foundMatch = 1;
                 break;
             }
         }
-        if (!found) *(int *)(entry + 0x4C) = i % (int)lbl_8055D550;
+        if (!foundMatch) *(int *)(entryPtr + 0x4C) = entryIndex % (int)lbl_8055D550;
     }
     fn_80017558();
     fn_8013C8B8();
