@@ -211,6 +211,37 @@ done:
     return count;
 }
 
+#pragma push
+#pragma processor 750
+extern "C" f32 fn_801451DC(s32 arg0, f32 farg0) {
+    f32 var_f31 = farg0 - lbl_805615E0;
+    s32 var_r31 = arg0;
+    if ((fn_802C9A58() != 0) || (fn_802C9A60() != 0)) {
+        if (var_r31 == 0) {
+            if (var_f31 < lbl_805615E8) {
+                var_r31 = 2;
+            } else if (var_f31 > lbl_805615E4) {
+                var_r31 = 1;
+            } else {
+                var_r31 = 3;
+            }
+        }
+        switch (var_r31 & 0xFFFFFFDF) {
+        case 2:
+            var_f31 -= lbl_805615EC;
+            break;
+        case 1:
+            var_f31 += lbl_805615EC;
+            break;
+        default:
+            break;
+        }
+    }
+    var_f31 += lbl_8055E200;
+    return var_f31;
+}
+#pragma pop
+
 #pragma dont_inline on
 extern "C" f32 fn_801452A0(s32 arg0, f32 arg1) {
     if (arg0 & 0x20)
@@ -813,13 +844,13 @@ extern "C" void fn_80146200(void) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-extern "C" void *fn_80146204(void *arg0, const char *arg1, s32 arg2) {
+extern "C" void *fn_80146204(void *collection, const char *wantedName, s32 unused) {
     extern void fn_8014630C(void);
     struct Result { void *data; s32 count; s32 size; void *end; };
     class Collection { public: virtual void a(); virtual void *get(s32); };
     class Item { public: virtual const char *name(); };
     Result *result;
-    s32 size = fn_80145140(arg0, arg1);
+    s32 size = fn_80145140(collection, wantedName);
     result = (Result *)fn_801284F8(0x10, lbl_8032D108);
     if (result != 0) {
         s32 bytes = size * 0x1C + 0x10;
@@ -831,10 +862,10 @@ extern "C" void *fn_80146204(void *arg0, const char *arg1, s32 arg2) {
     }
     s32 i = 0;
     while (1) {
-        void *item = ((Collection *)arg0)->get(i);
+        void *item = ((Collection *)collection)->get(i);
         if (item == 0) break;
         const char *name = ((Item *)item)->name();
-        if (stricmp(name, arg1) == 0) {
+        if (stricmp(name, wantedName) == 0) {
             s32 count = result->count;
             void *data = result->data;
             s32 offset = count * 0x1C;
@@ -843,6 +874,8 @@ extern "C" void *fn_80146204(void *arg0, const char *arg1, s32 arg2) {
         }
         i++;
     }
+    /* Build a result table of collection items whose name matches wantedName:
+       count matches, allocate header/array (0x1C-byte entries), then append each match. */
     return result;
 }
 #pragma dont_inline reset
