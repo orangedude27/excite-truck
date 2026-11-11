@@ -13773,27 +13773,29 @@ void fn_80082548(void) {
 }
 
 BOOLEAN WBT_ExtCreateRecord(void) {
-    UINT8 info[0xFC];
-    volatile UINT32 handle = 0;
-    UINT8 attr[2];
-    UINT16 uuid = 0x1002;
-    register UINT8 *record;
+    /* Ensure a local SDP Device ID record exists, add the public browse root
+     * UUID to its browse group list, and mark it as the primary record. */
+    UINT8 diRecordBuf[0xFC];
+    volatile UINT32 recordHandle = 0;
+    UINT8 isPrimaryAttr[2];
+    UINT16 browseGroupUuid = 0x1002;
+    register UINT8 *diRecord;
 
-    if (SDP_GetLocalDiRecord((tSDP_DI_GET_RECORD *)info, (UINT32 *)&handle) != SDP_SUCCESS) {
-        record = info + 2;
-        memset(record, 0, 0xFA);
-        *(UINT16 *)(info + 2) = 0xF;
-        *(UINT16 *)(info + 4) = 1;
-        info[10] = 1;
-        if (SDP_SetLocalDiRecord((tSDP_DI_RECORD *)record, (UINT32 *)&handle) != SDP_SUCCESS) {
-            handle = 0;
+    if (SDP_GetLocalDiRecord((tSDP_DI_GET_RECORD *)diRecordBuf, (UINT32 *)&recordHandle) != SDP_SUCCESS) {
+        diRecord = diRecordBuf + 2;
+        memset(diRecord, 0, 0xFA);
+        *(UINT16 *)(diRecordBuf + 2) = 0xF;
+        *(UINT16 *)(diRecordBuf + 4) = 1;
+        diRecordBuf[10] = 1;
+        if (SDP_SetLocalDiRecord((tSDP_DI_RECORD *)diRecord, (UINT32 *)&recordHandle) != SDP_SUCCESS) {
+            recordHandle = 0;
             return FALSE;
         }
     }
-    SDP_AddUuidSequence(handle, 5, 1, &uuid);
-    attr[0] = 0;
-    attr[1] = 1;
-    SDP_AddAttribute(handle, 0x8001, 1, 2, attr);
+    SDP_AddUuidSequence(recordHandle, 5, 1, &browseGroupUuid);
+    isPrimaryAttr[0] = 0;
+    isPrimaryAttr[1] = 1;
+    SDP_AddAttribute(recordHandle, 0x8001, 1, 2, isPrimaryAttr);
     return TRUE;
 }
 
