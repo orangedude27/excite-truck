@@ -712,31 +712,32 @@ extern s32 fn_8011770C(void *, u32);
 extern void fn_80117618(s32, void *);
 extern s32 fn_802E1BB4(void *);
 extern void fn_801176FC(s32, void *);
+/* Open a Bink movie into this video object, logging open/failure status. */
 void fn_802E0EAC(void *arg0) {
-    s32 tmp;
-    char buf[0x20];
-    char *label = (char *)lbl_8034CB68;
-    s32 ret;
-    unsigned char *a = arg0;
+    s32 movieId;
+    char nameBuf[0x20];
+    char *strings = (char *)lbl_8034CB68;
+    s32 handle;
+    unsigned char *obj = arg0;
     fn_802E0E60(arg0);
-    tmp = fn_802E36D8(a + 8);
-    if (tmp != -1) {
-        ((void (*)(s32, void *, s32))fn_802E3804)(tmp, buf, 0x20);
-        fn_802E3734(&tmp);
+    movieId = fn_802E36D8(obj + 8);
+    if (movieId != -1) {
+        ((void (*)(s32, void *, s32))fn_802E3804)(movieId, nameBuf, 0x20);
+        fn_802E3734(&movieId);
     }
-    ret = fn_8011770C(a + 8, 0x100400);
-    *(s32 *)(a + 4) = ret;
-    if (ret != 0) {
-        fn_802E30C8(label + 0x10, a + 8);
-        fn_80117618(*(s32 *)(a + 4), a + 0x150);
-        fn_80117618(*(s32 *)(a + 4), a + 0x150);
-        if (fn_802E1BB4(a + 0x50) == 0) {
-            fn_802E317C(label + 0x20);
+    handle = fn_8011770C(obj + 8, 0x100400);
+    *(s32 *)(obj + 4) = handle;
+    if (handle != 0) {
+        fn_802E30C8(strings + 0x10, obj + 8);
+        fn_80117618(*(s32 *)(obj + 4), obj + 0x150);
+        fn_80117618(*(s32 *)(obj + 4), obj + 0x150);
+        if (fn_802E1BB4(obj + 0x50) == 0) {
+            fn_802E317C(strings + 0x20);
         }
-        fn_801176FC(*(s32 *)(a + 4), a + 0x150);
-        *(s32 *)(a + 0x4C) = ((s32 (*)(void))fn_802E2C20)();
+        fn_801176FC(*(s32 *)(obj + 4), obj + 0x150);
+        *(s32 *)(obj + 0x4C) = ((s32 (*)(void))fn_802E2C20)();
     } else {
-        fn_802E30C8(label + 0x48, a + 8);
+        fn_802E30C8(strings + 0x48, obj + 8);
     }
 }
 
