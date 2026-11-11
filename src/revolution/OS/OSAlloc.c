@@ -89,15 +89,16 @@ static OSHeapCell* DLInsert(OSHeapCell* list, OSHeapCell* child) {
     }
 }
 
+/* Allocate a block from the given heap, splitting a free cell if enough space remains. */
 void* OSAllocFromHeap(s32 handle, s32 size) {
-    OSHeapDescriptor* hd = &HeapArray[handle];
+    OSHeapDescriptor* heapDesc = &HeapArray[handle];
     OSHeapCell* cell;
-    u32 avail;
+    u32 remainingSize;
 
-    hd = &HeapArray[handle];
+    heapDesc = &HeapArray[handle];
     size = ROUND_UP(size + sizeof(OSHeapCell), 32);
 
-    for (cell = hd->freeList; cell != NULL; cell = cell->next) {
+    for (cell = heapDesc->freeList; cell != NULL; cell = cell->next) {
         if (size <= cell->size) {
             break;
         }
@@ -107,30 +108,30 @@ void* OSAllocFromHeap(s32 handle, s32 size) {
         return NULL;
     }
 
-    avail = cell->size - size;
-    if (avail < 64) {
-        hd->freeList = DLExtract(hd->freeList, cell);
+    remainingSize = cell->size - size;
+    if (remainingSize < 64) {
+        heapDesc->freeList = DLExtract(heapDesc->freeList, cell);
     } else {
-        OSHeapCell* adj;
+        OSHeapCell* splitCell;
         cell->size = size;
 
-        adj = (OSHeapCell*)((u8*)cell + size);
-        adj->size = avail;
-        adj->prev = cell->prev;
-        adj->next = cell->next;
+        splitCell = (OSHeapCell*)((u8*)cell + size);
+        splitCell->size = remainingSize;
+        splitCell->prev = cell->prev;
+        splitCell->next = cell->next;
 
-        if (adj->next != NULL) {
-            adj->next->prev = adj;
+        if (splitCell->next != NULL) {
+            splitCell->next->prev = splitCell;
         }
 
-        if (adj->prev != NULL) {
-            adj->prev->next = adj;
+        if (splitCell->prev != NULL) {
+            splitCell->prev->next = splitCell;
         } else {
-            hd->freeList = adj;
+            heapDesc->freeList = splitCell;
         }
     }
 
-    hd->usedList = DLAddFront(hd->usedList, cell);
+    heapDesc->usedList = DLAddFront(heapDesc->usedList, cell);
     return (u8*)cell + sizeof(OSHeapCell);
 }
 
