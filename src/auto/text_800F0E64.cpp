@@ -1234,13 +1234,13 @@ extern "C" void fn_800F2EAC(void *self, void *arg) {
 }
 
 extern "C" void SetInfoChunk__Q46nw4hbm3snd6detail22SoundArchiveFileReaderFPCvUl(void *self, const void *chunk, u32 size) {
-    extern const char lbl_80324868[];
-    const char *base = lbl_80324868;
+    typedef char Pool[4096];
+    register const char *base = lbl_80324868;
     const u32 *data = (const u32 *)chunk;
     if (data == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)(base + 0), 0x78, base + 0x198);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)*(Pool*)base, 0x78, base + 0x198);
     if (data[0] != 0x494E464FU)
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)(base + 0), 0x7B, base + 0x1C4);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)*(Pool*)base, 0x7B, base + 0x1C4);
     *(const void **)((char *)self + 0x28) = (const u8 *)data + 8;
 }
 
@@ -3854,34 +3854,33 @@ extern "C" void DisposeCallbackFunc__Q36nw4hbm3snd9SoundHeapFPvUlPv(void* arg0, 
 
 extern "C" void __ct__Q36nw4hbm3snd11SoundPlayerFv(void* self) {
     u8* p = (u8*)self;
-    register u32 zero = 0;
-    register u32 one = 1;
+    register int zero = 0;
+    register int one = 1;
     register f32 initialValue = lbl_805610B8;
     register u8* firstList = p + 4;
     register u8* secondList = p + 0x10;
     register u8* thirdList = p + 0x1c;
-
-    *(volatile u32*)(p + 4) = zero;
-    *(volatile u32*)(p + 8) = zero;
-    *(volatile u32*)(p + 0x10) = zero;
-    *(volatile u32*)(p + 0x14) = zero;
-    *(volatile u32*)(p + 0x1c) = zero;
-    *(volatile u32*)(p + 0x20) = zero;
-    *(u32*)p = zero;
-    *(u32*)(p + 4) = (u32)firstList;
-    *(u32*)(p + 8) = (u32)firstList;
-    *(u32*)(p + 0xc) = zero;
-    *(u32*)(p + 0x10) = (u32)secondList;
-    *(u32*)(p + 0x14) = (u32)secondList;
-    *(u32*)(p + 0x18) = zero;
-    *(u32*)(p + 0x1c) = (u32)thirdList;
-    *(u32*)(p + 0x20) = (u32)thirdList;
-    *(u16*)(p + 0x24) = one;
-    *(u16*)(p + 0x26) = one;
-    *(u8*)(p + 0x2d) = zero;
+    *(volatile int*)(p + 8) = zero;
+    *(volatile int*)(p + 4) = zero;
+    *(volatile int*)(p + 0x10) = zero;
+    *(volatile int*)(p + 0x14) = zero;
+    *(volatile int*)(p + 0x1c) = zero;
+    *(volatile int*)(p + 0x20) = zero;
+    *(int*)p = zero;
+    *(int*)(p + 4) = (int)firstList;
+    *(int*)(p + 8) = (int)firstList;
+    *(int*)(p + 0xc) = zero;
+    *(int*)(p + 0x10) = (int)secondList;
+    *(int*)(p + 0x14) = (int)secondList;
+    *(int*)(p + 0x18) = zero;
+    *(int*)(p + 0x1c) = (int)thirdList;
+    *(int*)(p + 0x20) = (int)thirdList;
+    *(u16*)(p + 0x24) = (u16)one;
+    *(u16*)(p + 0x26) = (u16)one;
+    *(u8*)(p + 0x2d) = (u8)zero;
     *(f32*)(p + 0x28) = initialValue;
-    *(u32*)(p + 0x30) = one;
-    *(u8*)(p + 0x2c) = zero;
+    *(int*)(p + 0x30) = one;
+    *(u8*)(p + 0x2c) = (u8)zero;
     *(f32*)(p + 0x34) = initialValue;
     *(f32*)(p + 0x38) = initialValue;
     *(f32*)(p + 0x3c) = initialValue;
@@ -3947,11 +3946,9 @@ void Update__Q36nw4hbm3snd11SoundPlayerFv(void *self) {
         virtual void f0();
         virtual void update();
     };
-
-    void *head = *(void **)((u8 *)self + 4);
     void *end = (u8 *)self + 4;
+    void *head = *(void **)((u8 *)self + 4);
     void *node;
-
     while (head != end) {
         node = head;
         head = *(void **)node;
@@ -4149,19 +4146,16 @@ extern "C" int CheckPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFiPQ46nw4hbm3s
     return 1;
 }
 #pragma pop
-extern "C" void detail_AppendPlayerHeap__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10PlayerHeap(void* this_, void* pHeap) {
-    void* heap = pHeap;
-    void* self = this_;
-    if (heap == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80325C50, 0x256, (const char*)lbl_80325D6C);
-    }
-    *(void**)((u8*)heap + 0x38) = self;
-    void* node = (u8*)self + 0x1C;
-    if (self == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323834, 0x233, (const char*)lbl_80323810);
-    }
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((void*)((u8*)self + 0x18), &node, (void*)((u8*)heap + 0x2C));
-    *(u8*)((u8*)self + 0x2D) = 1;
+extern "C" void detail_AppendPlayerHeap__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10PlayerHeap(void *self, void *heap) {
+    register void *iterator;
+    void *slot;
+    if (!heap) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80325C50, 0x256, (const char *)lbl_80325D6C);
+    *(void **)((u8 *)heap + 0x38) = self;
+    iterator = (char *)self + 0x1C;
+    if (!heap) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80323834, 0x233, (const char *)lbl_80323810);
+    slot = iterator;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)self + 0x18, &slot, (char *)heap + 0x2C);
+    *(u8 *)((u8 *)self + 0x2D) = 1;
 }
 
 extern "C" void detail_FreePlayerHeap__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *player, void *sound) {
@@ -5831,30 +5825,26 @@ extern "C" s32 AllocChannels__Q46nw4hbm3snd6detail10StrmPlayerFii(void *player, 
 #pragma dont_inline on
 #pragma use_lmw_stmw off
 void FreeChannels__Q46nw4hbm3snd6detail10StrmPlayerFv(void *self) {
-    u32 irqState = OSDisableInterrupts();
+    register BOOL irqState = OSDisableInterrupts();
     u8 *player = (u8 *)self;
     s32 index = 0;
-    register s32 zero = 0;
-
     while (index < *(s32 *)((u8 *)self + 0x4A0)) {
         void *buffer = *(void **)(player + 0x4A8);
         if (buffer != 0) {
             Free__Q44nw4r3snd6detail14StrmBufferPoolFPv(*(void **)((u8 *)self + 0x42C), buffer);
-            *(s32 *)(player + 0x4A8) = zero;
-            *(s32 *)(player + 0x4AC) = zero;
+            *(void **)(player + 0x4A8) = 0;
+            *(void **)(player + 0x4AC) = 0;
         }
         player += 0x38;
         index += 1;
     }
-
-    *(s32 *)((u8 *)self + 0x4A0) = zero;
+    *(s32 *)((u8 *)self + 0x4A0) = 0;
     if (*(void **)((u8 *)self + 0x438) != 0) {
         Free__Q46nw4hbm3snd6detail7AxVoiceFv(*(void **)((u8 *)self + 0x438));
-        *(s32 *)((u8 *)self + 0x438) = zero;
+        *(void **)((u8 *)self + 0x438) = 0;
     }
     OSRestoreInterrupts(irqState);
 }
-
 extern "C" void Stop__Q46nw4hbm3snd6detail7AxVoiceFv(void*);
 extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(void*, void*);
 extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(void*, s32*);
