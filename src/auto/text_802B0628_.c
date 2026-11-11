@@ -342,74 +342,75 @@ int fn_802B127C(void *arg0, Vec3_802B *src) {
     return (unsigned short)(self[0x31C / 4] - 1);
 }
 
-int fn_802B12E0(void *arg0, void *arg1, void *arg2, int arg3) {
-    typedef struct Node_802B {
+/* Allocates/reserves 0x18 bytes from a per-index chain of pool nodes (selected from arg0's 0x934 table by arg2[2]&0x3F, or index 0 for the special case), creating a new pool entry from lbl_8055F9A0 when the current node is missing or full; stores the resulting buffer and size 0x18 into *outDesc, records the chain slot at arg0+0xA38 on success, and returns 1 on success, 0 on failure. */
+int fn_802B12E0(void *owner, void *outDesc, void *selector, int mode) {
+    typedef struct BlockNode {
         void *data;
-        volatile int size;
+        volatile int usedSize;
         int capacity;
-        struct Node_802B *next;
-    } Node_802B;
+        struct BlockNode *next;
+    } BlockNode;
 
-    typedef struct Pool_802B {
-        void *buf;
-        Node_802B *entries;
-        volatile int used;
+    typedef struct BlockPool {
+        void *bufferBase;
+        BlockNode *entries;
+        volatile int usedCount;
         int capacity;
-    } Pool_802B;
+    } BlockPool;
 
-    int index;
-    Node_802B *entry;
-    Pool_802B *pool;
-    void *result;
-    int next;
-    int size;
-    void *data;
+    int chainIndex;
+    BlockNode *node;
+    BlockPool *pool;
+    void *allocResult;
+    int success;
+    int currentUsed;
+    void *nodeData;
 
-    if (arg0 == 0) return 0;
+    if (owner == 0) return 0;
 
-    if ((4 >= arg3) || (((unsigned char *)arg0)[1] != 0)) {
-        index = ((int *)arg2)[2] & 0x3f;
+    if ((4 >= mode) || (((unsigned char *)owner)[1] != 0)) {
+        chainIndex = ((int *)selector)[2] & 0x3f;
     } else {
-        index = 0;
+        chainIndex = 0;
     }
 
-    pool = (Pool_802B *)lbl_8055F9A0;
-    arg2 = (char *)arg0 + index * 4;
-    entry = *(Node_802B **)(arg2 = (char *)arg2 + 0x934);
-    result = 0;
+    pool = (BlockPool *)lbl_8055F9A0;
+    selector = (char *)owner + chainIndex * 4;
+    node = *(BlockNode **)(selector = (char *)selector + 0x934);
+    allocResult = 0;
 
-    if (entry == 0 || entry->size + 0x18 > entry->capacity) {
-        entry = 0;
-        if (pool->used + 1 <= pool->capacity) {
-            entry = &pool->entries[pool->used++];
-            entry->size = 0;
-            entry->next = 0;
+    if (node == 0 || node->usedSize + 0x18 > node->capacity) {
+        node = 0;
+        if (pool->usedCount + 1 <= pool->capacity) {
+            node = &pool->entries[pool->usedCount++];
+            node->usedSize = 0;
+            node->next = 0;
         }
-        if (entry != 0) {
-            entry->next = *(Node_802B **)arg2;
-            *(Node_802B **)arg2 = entry;
-            size = entry->size;
-            data = entry->data;
-            result = (char *)data + size * 2;
-            entry->size = size + 0x18;
+        if (node != 0) {
+            node->next = *(BlockNode **)selector;
+            *(BlockNode **)selector = node;
+            currentUsed = node->usedSize;
+            nodeData = node->data;
+            allocResult = (char *)nodeData + currentUsed * 2;
+            node->usedSize = currentUsed + 0x18;
         }
     } else {
-        size = entry->size;
-        data = entry->data;
-        result = (char *)data + size * 2;
-        entry->size = size + 0x18;
+        currentUsed = node->usedSize;
+        nodeData = node->data;
+        allocResult = (char *)nodeData + currentUsed * 2;
+        node->usedSize = currentUsed + 0x18;
     }
 
-    if (result != 0) {
-        *(void **)arg1 = result;
-        *(short *)((char *)arg1 + 6) = 0x18;
+    if (allocResult != 0) {
+        *(void **)outDesc = allocResult;
+        *(short *)((char *)outDesc + 6) = 0x18;
     }
 
-    next = (result == 0) ? 0 : 1;
-    if (next) {
-        *(void **)((char *)arg0 + 0xA38) = arg2;
+    success = (allocResult == 0) ? 0 : 1;
+    if (success) {
+        *(void **)((char *)owner + 0xA38) = selector;
     }
-    return next;
+    return success;
 }
 
 #pragma scheduling invalid_target
