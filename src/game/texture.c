@@ -111,28 +111,31 @@ int fn_802CA294(int arg0) {
 extern char *fn_80029004(char *, int); /* strchr */
 extern char lbl_8055D048;              /* ".tm0": suffix of a texture archive member's name */
 int fn_802CA2A8(void *arg0, int arg1, int arg2) {
+    /* Build a texture archive name: copy the given name into the caller's
+     * buffer of arg1 bytes, drop whatever extension it already had and append
+     * the ".tm0" texture suffix in its place; returns the buffer. */
     int remaining = arg1;
-    char *dst = (char *)arg0;
+    char *name = (char *)arg0;
     const char *src = (const char *)arg2;
     const char *suffix;
     char *cursor;
     char *dot;
 
     {
-        int copy_count = arg1;
-        char *write = dst;
+        int space = arg1;
+        char *write = name;
         while ((signed char)(*write++ = *src++) != 0) {
-            if (--copy_count <= 0) {
+            if (--space <= 0) {
                 write[-1] = 0;
                 break;
             }
         }
     }
 
-    dot = fn_80029004(dst, '.');
+    dot = fn_80029004(name, '.'); /* strchr: cut the name at its extension */
     *dot = 0;
     suffix = &lbl_8055D048;
-    cursor = dst;
+    cursor = name;
     while ((signed char)*cursor != 0) {
         --remaining;
         ++cursor;
@@ -145,7 +148,7 @@ int fn_802CA2A8(void *arg0, int arg1, int arg2) {
             }
         }
     }
-    return (int)dst;
+    return (int)name;
 }
 
 int fn_802CA380(int arg0) {
