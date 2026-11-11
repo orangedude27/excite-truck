@@ -573,41 +573,41 @@ extern int fn_801E868C(int, int *, int *);
 extern int fn_801E86F8(int);
 extern void *fn_801EA9A0(void);
 void fn_8000B838(void) {
-    int spC;
-    int sp8;
-    char *p = (char *)&lbl_8034F5B8;
-    int i = 0;
+    int eventType;
+    int eventParam;
+    char *slotData = (char *)&lbl_8034F5B8;
+    int slot = 0;
 
     goto check;
 
 loop:
-    spC = 0;
-    sp8 = 0;
-    if (fn_801E868C(i, &spC, &sp8) != 0) {
-        switch (spC) {
+    eventType = 0;
+    eventParam = 0;
+    if (fn_801E868C(slot, &eventType, &eventParam) != 0) {
+        switch (eventType) {
         case 3:
-            fn_801E86F8(i);
+            fn_801E86F8(slot);
             if (*(int *)((char *)fn_801EA9A0() + 0x30) != 3) {
-                if (fn_801E7DF0(i) != 0)
-                    fn_801E7E04(i, 0);
+                if (fn_801E7DF0(slot) != 0)
+                    fn_801E7E04(slot, 0);
                 else
-                    fn_801E7E04(i, 3);
+                    fn_801E7E04(slot, 3);
             }
             break;
         case 0:
-            fn_801E86F8(i);
+            fn_801E86F8(slot);
             if (*(int *)((char *)fn_801EA9A0() + 0x30) != 3)
-                fn_8000BD9C(i, 0, (int)p);
+                fn_8000BD9C(slot, 0, (int)slotData);
             break;
         default:
-            ((int (*)(int, int, int))fn_80007554)(i, spC, sp8);
+            ((int (*)(int, int, int))fn_80007554)(slot, eventType, eventParam);
             break;
         }
     }
-    p += 8;
-    i++;
+    slotData += 8;
+    slot++;
 check:
-    if (i < fn_801E85A4())
+    if (slot < fn_801E85A4())
         goto loop;
 }
 
