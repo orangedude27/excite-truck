@@ -1,4 +1,6 @@
 extern void __AXDSPInitCallback_801769E0(void);
+#pragma dont_inline fn_8000B3DC
+#pragma dont_inline fn_8000ADE0
 extern void fn_8000D000(void *, void *, int);
 extern void AXFXSetHooks_80210950(void *, int);
 extern float lbl_805601FC, lbl_80560204;
