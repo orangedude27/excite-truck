@@ -209,76 +209,77 @@ int fn_80270D4C(void *arg0, void *arg1) {
 #pragma peephole reset
 extern float lbl_80563F40;
 #pragma scheduling invalid_target
-void fn_80270DB0(void *arg0, void *arg1, float farg0) {
+void fn_80270DB0(void *arg0, void *arg1, float delta) {
+    /* Update a shared clamped value for two nodes, using alternating record offsets selected by each node's flag. */
     unsigned char flag = *(unsigned char *)((char *)arg0 + 4);
     char *record;
-    float *left, *right;
-    float f2, f3, f0;
+    float *valuePtr, *otherValuePtr;
+    float value, otherValue, average;
 
     if (flag) {
         record = *(char **)arg0;
-        left = (float *)(record + 0x10);
+        valuePtr = (float *)(record + 0x10);
     } else {
         record = *(char **)arg0;
-        left = (float *)(record + 8);
+        valuePtr = (float *)(record + 8);
     }
-    f2 = *left;
+    value = *valuePtr;
 
     if (*(unsigned char *)((char *)arg1 + 4)) {
-        right = (float *)(*(char **)arg1 + 0xC);
+        otherValuePtr = (float *)(*(char **)arg1 + 0xC);
     } else {
-        right = (float *)(*(char **)arg1 + 4);
+        otherValuePtr = (float *)(*(char **)arg1 + 4);
     }
-    f3 = *right;
+    otherValue = *otherValuePtr;
 
     if (flag) {
-        left = (float *)(record + 0xC);
+        valuePtr = (float *)(record + 0xC);
     } else {
-        left = (float *)(record + 4);
+        valuePtr = (float *)(record + 4);
     }
-    if (f2 < *left) {
-        f2 += farg0;
-    }
-
-    if (flag) {
-        left = (float *)(record + 0xC);
-    } else {
-        left = (float *)(record + 4);
-    }
-    if (f3 < *left) {
-        f3 += farg0;
+    if (value < *valuePtr) {
+        value += delta;
     }
 
     if (flag) {
-        left = (float *)(record + 0xC);
+        valuePtr = (float *)(record + 0xC);
     } else {
-        left = (float *)(record + 4);
+        valuePtr = (float *)(record + 4);
     }
-
-    f0 = lbl_80563F40 * (f2 + f3);
-    if (*left > f0) {
-        f3 = *left;
-    } else {
-        f3 = f0;
-    }
-
-    if (f3 >= farg0) {
-        f3 -= farg0;
+    if (otherValue < *valuePtr) {
+        otherValue += delta;
     }
 
     if (flag) {
-        left = (float *)(record + 0x10);
+        valuePtr = (float *)(record + 0xC);
     } else {
-        left = (float *)(record + 8);
+        valuePtr = (float *)(record + 4);
     }
-    *left = f3;
+
+    average = lbl_80563F40 * (value + otherValue);
+    if (*valuePtr > average) {
+        otherValue = *valuePtr;
+    } else {
+        otherValue = average;
+    }
+
+    if (otherValue >= delta) {
+        otherValue -= delta;
+    }
+
+    if (flag) {
+        valuePtr = (float *)(record + 0x10);
+    } else {
+        valuePtr = (float *)(record + 8);
+    }
+    *valuePtr = otherValue;
 
     if (*(unsigned char *)((char *)arg1 + 4)) {
-        right = (float *)(*(char **)arg1 + 0xC);
+        otherValuePtr = (float *)(*(char **)arg1 + 0xC);
     } else {
-        right = (float *)(*(char **)arg1 + 4);
+        otherValuePtr = (float *)(*(char **)arg1 + 4);
     }
-    *right = f3;
+    *otherValuePtr = otherValue;
 }
 
 #pragma push
