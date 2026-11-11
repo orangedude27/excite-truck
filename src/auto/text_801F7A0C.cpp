@@ -876,10 +876,10 @@ extern "C" int fn_801F88F4(void *arg0) {
     table[2] = *source;
     char *name = ((F88Node *)arg0)->v14((const char *)lbl_8055B2CC, table[1], table[0]);
     u32 *entry = table;
-    do {
-        if (stricmp(name, (const char *)*entry) == 0) return 1;
+    while (*entry != 0) {
+        if (stricmp((const char *)*entry, name) == 0) return 1;
         entry++;
-    } while (*entry != 0);
+    }
     return 0;
 }
 
