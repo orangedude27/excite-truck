@@ -23,7 +23,8 @@ struct UiWidget {
     virtual void v15(int, int); /* 0x44: pointer handler of fn_802175F0, at group-local (x, y) */
     virtual void v16();
     virtual void v17(); virtual void v18(); virtual void v19(); virtual void v20();
-    virtual void v21(); virtual void v22(); virtual void v23();
+    virtual void v21(); virtual void v22();
+    virtual int TakesKey(int);   /* 0x64: does this widget take this key code (fn_80217874) */
     virtual int IsSelectable();  /* 0x68: the menu can be moved onto this widget */
     virtual void v25();
     virtual int HitTest(int, int); /* 0x70: is this group-local (x, y) on the widget */
@@ -687,20 +688,20 @@ void fn_80217C4C(void *arg0) {
     char *base = (char *)arg0;
     char *entry;
     int count;
-    char *item;
+    float threshold;
+    int i;
     int last;
     int matches;
-    int i;
-    float threshold;
+    int eligible;
     count = *(int *)(base + 0x494);
-    if (count < 1) return;
+    if (1 > count) return;
     threshold = lbl_80563490;
     entry = base;
     last = -1;
     matches = 0;
     i = 0;
     for (; i < count; i++, entry += 8) {
-        int eligible;
+        char *item;
         float value;
         if (*(int *)(base + 0x498) == *(int *)(entry + 0x4A0)) last = i;
         item = *(char **)(entry + 0x4A4);
@@ -712,7 +713,7 @@ void fn_80217C4C(void *arg0) {
     first_yes:
         eligible = 1;
     first_check:
-        if (eligible != 0 && *(unsigned char *)(item + 0x1B) != 0) matches++;
+        if (eligible != 0 && *(unsigned char *)(item + 0x1B) != 0) matches += 1;
     }
     {
         int found = -1;
@@ -721,18 +722,18 @@ void fn_80217C4C(void *arg0) {
         for (step = 1; step < count; step++) {
             int idx = (last + step) % count;
             char *current = base + idx * 8;
-            int eligible;
+            char *item2;
             float value;
-            item = *(char **)(current + 0x4A4);
+            item2 = *(char **)(current + 0x4A4);
             eligible = 0;
-            if (*(unsigned char *)(item + 0x1A) != 0) goto second_yes;
-            value = *(float *)(item + 0x20);
+            if (*(unsigned char *)(item2 + 0x1A) != 0) goto second_yes;
+            value = *(float *)(item2 + 0x20);
             if (value >= threshold) goto second_yes;
             goto second_check;
         second_yes:
             eligible = 1;
         second_check:
-            if (eligible != 0 && *(unsigned char *)(item + 0x1B) != 0) {
+            if (eligible != 0 && *(unsigned char *)(item2 + 0x1B) != 0) {
                 found = idx;
                 break;
             }
@@ -762,7 +763,7 @@ first_body:
     if (*(volatile int *)(base + 0x498) == *(int *)(entry + 0x4A0)) last = i;
     item1 = *(char **)(entry + 0x4A4);
     item_ok = 0;
-    if (*(unsigned char *)(item1 + 0x1A) == 0 && *(float *)(item1 + 0x20) < lbl_80563490) item_ok = 1;
+    if (*(unsigned char *)(item1 + 0x1A) == 0 && *(volatile float *)(item1 + 0x20) < lbl_80563490) item_ok = 1;
     if (item_ok && *(unsigned char *)(item1 + 0x1B) != 0) matches++;
 first_test:
     entry -= 8;
@@ -774,7 +775,7 @@ first_test:
         e2 = base + idx * 8;
         item2 = *(char **)(e2 + 0x4A4);
         item_ok = 0;
-        if (*(unsigned char *)(item2 + 0x1A) == 0 && *(float *)(item2 + 0x20) < lbl_80563490) item_ok = 1;
+        if (*(unsigned char *)(item2 + 0x1A) == 0 && *(volatile float *)(item2 + 0x20) < lbl_80563490) item_ok = 1;
         if (item_ok && *(unsigned char *)(item2 + 0x1B) != 0) { found = idx; break; }
         step++;
     }
