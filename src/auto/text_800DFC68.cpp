@@ -207,7 +207,7 @@ void* nw4hbm::lyt::Window::FindMaterialByName(const char* name, bool searchChild
         virtual void v12(); virtual void v13();
         virtual void* FindMaterialByName(const char*, bool);
     };
-    int i;
+    int i; // try4
     int offset;
     if (material != 0 && fn_800D58F0((char*)material + 4, name) != 0)
         return this->material;
@@ -313,7 +313,7 @@ extern "C" void SetVtxColorElement__Q36nw4hbm3lyt7PictureFUlUc_800E03BC(void* th
 }
 
 extern "C" void GetFrameSize__Q36nw4hbm3lyt6WindowFUcPCQ46nw4hbm3lyt6Window5Frame(f64* out, void* self, u8 a, u32 b);
-extern "C" void GetVtxPos__Q34nw4r3lyt4PaneCFv(void* self);
+extern "C" u64 GetVtxPos__Q34nw4r3lyt4PaneCFv(void* self);
 extern "C" void fn_800E0434(void* self) {
     struct WindowV {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -410,7 +410,9 @@ void nw4r::lyt::Window::DrawContent(const nw4r::math::VEC2 &arg1, const nw4r::ly
     s32 modulate;
     s32 useVtxColor;
     void *vtxColor;
-    volatile f32 quad[4];
+    s32 texture;
+    u8 format;
+    f32 quad[4];
     register f32 temp_f0;
     register f32 temp_f1;
     register f32 temp_f2;
@@ -418,9 +420,7 @@ void nw4r::lyt::Window::DrawContent(const nw4r::math::VEC2 &arg1, const nw4r::ly
     register f32 temp_f4;
     register f32 temp_f5;
     register f32 temp_f6;
-    s32 texture;
-    u8 format;
-
+    // try931
     modulate = IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(self + 0xE4, arg3);
     useVtxColor = ((MaterialVTable *)*(void **)(self + 0x28))->draw(modulate, arg3);
     SetVertexFormat__Q34nw4r3lyt6detailFbUc(useVtxColor, self[0xF5]);
@@ -428,7 +428,6 @@ void nw4r::lyt::Window::DrawContent(const nw4r::math::VEC2 &arg1, const nw4r::ly
         vtxColor = self + 0xE4;
     else
         vtxColor = 0;
-
     temp_f1 = *(f32 *)(self + 0x50);
     temp_f6 = frame[2];
     temp_f3 = temp_f1 - temp_f6;
@@ -461,7 +460,6 @@ void nw4r::lyt::Window::DrawContent(const nw4r::math::VEC2 &arg1, const nw4r::ly
     temp_f0 = temp_f1 - temp_f0;
     quad[3] = temp_f2;
     quad[2] = temp_f0;
-
     DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(
         (f32 *)&quad[2], (f32 *)&quad[0], format,
         (f32 (*)[])texture, (s32)vtxColor, arg3);
