@@ -372,6 +372,7 @@ void fn_8001F76C(void) {
 int fn_8001F7E4(s32 arg0, s32 arg1) {
     s32 limit;
     s32 adjusted;
+    s32 *dst;
 
     if (fn_8001FD24()) {
         if (arg0 == 0 && *(u8 *)&lbl_8055D614 != 0) {
@@ -382,7 +383,8 @@ int fn_8001F7E4(s32 arg0, s32 arg1) {
             fn_802E30C8(lbl_802FE060, arg1, adjusted);
             arg1 = adjusted;
         }
-        *(s32 *)(arg0 * 4 + (u32)lbl_8035AF38) += arg1;
+        dst = (s32 *)(lbl_8035AF38 + arg0 * 4);
+        *dst = *dst + arg1;
     }
 }
 #pragma scheduling on
@@ -516,8 +518,8 @@ int fn_8001FAC8(int arg0, const char *arg1) {
     for (; (unsigned int)arg0 < 0x32; arg0++) {
         if (stricmp(nameTable, name) == 0)
             total += *(int *)(valueTable + 0x70);
-        nameTable += 0x28;
         valueTable += 0x28;
+        nameTable += 0x28;
     }
     return total;
 }
@@ -533,10 +535,8 @@ void fn_8001FBE4(s32 arg0, const char *arg1, s32 arg2) {
     u32 i;
     s32 address;
     s32 rowOffset;
-
     if (fn_8001FD24() == 0)
         return;
-
     name = (char *)fn_80016720(arg1);
     record = lbl_8035AF38;
     entry = record + 0x50;
@@ -552,19 +552,20 @@ void fn_8001FBE4(s32 arg0, const char *arg1, s32 arg2) {
         record += 0x28;
         entry += 0x28;
     } while (i < 0x32);
-
     if (found < 0) {
         rowOffset = empty * 0x28;
         address = (s32)lbl_8035AF38;
         address += rowOffset;
         dst = (char *)(address + 0x50);
         count = 0x20;
+        goto copy;
         do {
             count--;
             if (count <= 0) {
                 dst[-1] = 0;
                 break;
             }
+        copy:
             *dst++ = *name++;
         } while ((signed char)dst[-1] != 0);
         address = (s32)lbl_8035AF38;
