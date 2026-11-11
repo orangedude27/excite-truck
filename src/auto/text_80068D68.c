@@ -26563,29 +26563,38 @@ void* TPLGet(void* tpl, u32 index) {
     return entries + (index % count) * 8;
 }
 
+/* Initialize the EUART interface by writing the required EXI setup bytes; returns 1 on
+ * success or if already initialized, 0 if unsupported or EXI writes fail. */
 s32 EUARTInit(void) {
-    u8 sp8;
-    s32 temp_r31;
+    u8 cmdByte;
+    s32 savedIrq;
     extern u32 lbl_8055DC98, lbl_8055DC9C, lbl_8055DCA0;
-    if (lbl_8055DC98 != 0) return 1;
+
+    if (lbl_8055DC98 != 0)
+        return 1;
+
     if (!(OSGetConsoleType() & 0x10000000)) {
         lbl_8055DC9C = 2;
         return 0;
     }
-    temp_r31 = OSDisableInterrupts();
-    sp8 = 0xF2;
-    if (EXIWriteReg(0, 1, 0xB0000000, &sp8, 1) == 0) {
+
+    savedIrq = OSDisableInterrupts();
+
+    cmdByte = 0xF2;
+    if (EXIWriteReg(0, 1, 0xB0000000, &cmdByte, 1) == 0) {
         lbl_8055DC9C = 5;
-        OSRestoreInterrupts(temp_r31);
+        OSRestoreInterrupts(savedIrq);
         return 0;
     }
-    sp8 = 0xF3;
-    if (EXIWriteReg(0, 1, 0xB0000000, &sp8, 1) == 0) {
+
+    cmdByte = 0xF3;
+    if (EXIWriteReg(0, 1, 0xB0000000, &cmdByte, 1) == 0) {
         lbl_8055DC9C = 5;
-        OSRestoreInterrupts(temp_r31);
+        OSRestoreInterrupts(savedIrq);
         return 0;
     }
-    OSRestoreInterrupts(temp_r31);
+
+    OSRestoreInterrupts(savedIrq);
     lbl_8055DC98 = 1;
     lbl_8055DC9C = 0;
     lbl_8055DCA0 = 0;
