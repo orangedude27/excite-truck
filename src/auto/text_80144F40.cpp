@@ -120,19 +120,17 @@ extern "C" u8 lbl_80559DCC;
 #pragma scheduling invalid_target
 extern "C" s32 fn_80144FB0(void *arg0, s32 arg1, s32 arg2, const char *arg3) {
     struct Entry { const char *text; u32 mask; };
-    const char *separator = (const char *)&lbl_80559DCC;
     Entry *entry = (Entry *)arg3;
     char *dst = (char *)arg0;
     s32 zero = 0;
-    const char *src;
-    s32 remaining;
-    char *cursor;
+    const char *separator = (const char *)&lbl_80559DCC;
     *dst = zero;
     while (entry->text != 0) {
         if ((entry->mask & (u32)arg2) == entry->mask) {
             if ((s8)*dst != 0) {
-                remaining = arg1;
-                cursor = dst;
+                const char *src;
+                s32 remaining = arg1;
+                char *cursor = dst;
                 while ((s8)*cursor != 0) {
                     --remaining;
                     ++cursor;
@@ -147,18 +145,20 @@ extern "C" s32 fn_80144FB0(void *arg0, s32 arg1, s32 arg2, const char *arg3) {
                     }
                 }
             }
-            remaining = arg1;
-            cursor = dst;
-            while ((s8)*cursor != 0) {
-                --remaining;
-                ++cursor;
-            }
-            if (remaining > 0) {
-                src = entry->text;
-                while ((s8)(*cursor++ = *src++) != 0) {
-                    if (--remaining <= 0) {
-                        cursor[-1] = zero;
-                        break;
+            {
+                const char *src = entry->text;
+                s32 remaining = arg1;
+                char *cursor = dst;
+                while ((s8)*cursor != 0) {
+                    --remaining;
+                    ++cursor;
+                }
+                if (remaining > 0) {
+                    while ((s8)(*cursor++ = *src++) != 0) {
+                        if (--remaining <= 0) {
+                            cursor[-1] = zero;
+                            break;
+                        }
                     }
                 }
             }
