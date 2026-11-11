@@ -364,6 +364,10 @@ extern "C" void *fn_802A194C(void *terrainObj) {
 
 #pragma use_lmw_stmw on
 extern "C" void fn_802A1B20(void* arg0, s32 count) {
+    /* For each entry in arg0 array (0x10 stride), when active (arg0+0xC) and a non-zero
+       value from fn_801E7E24() exceeds threshold lbl_80558DC4, scans 4 subslots (0x3C stride)
+       at *arg0 and, if slot enabled and item index 0..7 has handler in lbl_804BCF88 and
+       passes fn_802BF4F0/fn_802BF590 check, invokes virtual slot 5 on that handler. */
     struct Dummy {
         virtual void f0();
         virtual void f1();
