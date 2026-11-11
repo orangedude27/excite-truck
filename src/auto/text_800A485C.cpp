@@ -3,6 +3,10 @@ extern "C" s32 OSWaitSemaphore(void *);
 extern "C" s32 OSInitSemaphore(void *, s32);
 extern "C" const char lbl_8031B1E4[];
 typedef u16 *Fn800A4B78Ret;
+struct CBPair53F8 {
+    void *cb0;
+    void *cb1;
+};
 struct Fn800B10E0Ent {
     u16 first;
     u8 pad2[0x20A - 2];
@@ -3196,15 +3200,18 @@ extern "C" void fn_800AA4EC(u8 *p_ent, u8 *p_buf) {
 }
 #pragma pop
 extern "C" void VFiPFENT_loadEntryNumericFieldsFromBuf(u8 *p_ent, u8 *p_buf) {
-    register u32 h1A = *(u16 *)(p_buf + 0x1A);
-    register u32 h14 = *(u16 *)(p_buf + 0x14);
-    u32 word = *(u32 *)(p_buf + 0x1C);
+    u32 word;
+    u32 h1A;
+    u32 h14;
     p_ent[0x21C] = p_buf[0xB];
     p_ent[0x21B] = p_buf[0xC];
     p_ent[0x21D] = p_buf[0xD];
     __sthbrx(*(u16 *)(p_buf + 0xE), p_ent + 0x21E, 0);
     __sthbrx(*(u16 *)(p_buf + 0x10), p_ent + 0x220, 0);
+    word = *(u32 *)(p_buf + 0x1C);
+    h1A = *(u16 *)(p_buf + 0x1A);
     __sthbrx(*(u16 *)(p_buf + 0x12), p_ent + 0x222, 0);
+    h14 = *(u16 *)(p_buf + 0x14);
     __sthbrx(*(u16 *)(p_buf + 0x16), p_ent + 0x224, 0);
     __sthbrx(*(u16 *)(p_buf + 0x18), p_ent + 0x226, 0);
     *(u32 *)(p_ent + 0x228) = (word >> 24) | ((word >> 8) & 0xFF00) | ((word & 0xFF00) << 8) | (word << 24);
@@ -20552,7 +20559,7 @@ extern "C" s32 fn_800D5640(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 #pragma pop
 extern "C" s32 fn_800D56FC(void *obj, const char *name, s32 unused) {
-    register u32 node = *(u32 *)((u8 *)obj + 0x14);
+    u32 node = *(u32 *)((u8 *)obj + 0x14);
     u32 end = (u32)obj + 0x14;
     while (node != end) {
         if (node == 0)
@@ -24294,12 +24301,12 @@ extern "C" s32 fn_800A53DC(void *arg0) { return ((u16)*(u16 *)((u8 *)arg0 + 0x1F
 extern "C" void fn_800A53E8(void *arg0) { *(u16 *)((u8 *)arg0 + 0x1F8C) = (u16)(*(u16 *)((u8 *)arg0 + 0x1F8C) & 0xFFFFFFDF); }
 
 extern "C" s32 fn_800A53F8(void *arg0) {
-    void *local1 = (void *)fn_800A535C;
-    void *local2 = (void *)fn_800A52DC;
+    void *local1 = (void *)fn_800A52DC;
+    void *local2 = (void *)fn_800A535C;
     s32 result;
     s32 value;
 
-    if (fn_800A7688(*(void **)((u8 *)arg0 + 0x1FBC), &local1, &local2) != 0)
+    if (fn_800A7688(*(void **)((u8 *)arg0 + 0x1FBC), &local2, (void **)local1) != 0)
         return -1;
 
     result = fn_800A7214(*(void **)((u8 *)arg0 + 0x1FBC));
@@ -24307,7 +24314,7 @@ extern "C" s32 fn_800A53F8(void *arg0) {
         fn_800A76A0(*(void **)((u8 *)arg0 + 0x1FBC));
         if (result == 0x15) {
             value = fn_800A71D8(*(void **)((u8 *)arg0 + 0x1FBC));
-            lbl_803D2140[17] = value;
+            *(s32 *)((u8 *)lbl_803D2140 + 0x44) = value;
             *(s32 *)((u8 *)arg0 + 0x1F84) = value;
             return 0x1000;
         }
