@@ -13,10 +13,11 @@ struct ObjectLink {
     struct ObjectLink *next;   /* +0x44: the next link, NULL at the list's end */
 };
 
-/* A BPX scene object, as far as this unit reads it.  Its 3x4 transform holds a
- * direction in [6..8] and its position in [9..11]; fn_801B5410 walks the
- * position by +-length along that direction to get the two ends of the
- * straight segment the object stands for. */
+/* A BPX scene object, as far as this unit reads it.  Its transform is twelve
+ * floats in four rows of three: row 2 ([6..8]) is a direction and row 3
+ * ([9..11]) the position.  fn_801B5410 walks the position by +-length along
+ * that direction, with the height forced to zero, to get the two ends of the
+ * straight segment the object stands for - so ends are matched on the ground. */
 struct BpxObject {
     u8 pad[0x0C];
     f32 *matrix;  /* +0x0C */
