@@ -1,4 +1,5 @@
 #include <types.h>
+struct E7FC { char pad[0x28]; int v28; unsigned int v30; };
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" s32 lbl_80559984;
 extern "C" char lbl_805599AC[];
@@ -916,15 +917,12 @@ extern "C" void fn_8012BB20(s32 arg0, void *arg1) {
     fn_8012BC24((void **)arg0, arg1);
     if (arg1 == 0) return;
     if (*(u8 *)((u8 *)arg1 + 0xAC) != 0) {
-        i = 0;
-        offset = 0;
-        while (i < *(s32 *)((u8 *)arg1 + 0x88)) {
+        for (i = 0, offset = 0; i < *(s32 *)((u8 *)arg1 + 0x88); i++) {
             entry = *(u8 **)((u8 *)arg1 + 0x60) + offset;
             flags = *(u32 *)(entry + 0x34);
             if ((flags & 4) != 0) {
                 fn_802E317C(lbl_8032AE20);
             }
-            i++;
             entry = *(u8 **)((u8 *)arg1 + 0x60) + offset;
             flags = *(u32 *)(entry + 0x34);
             offset += 0x44;
@@ -3062,27 +3060,28 @@ extern "C" void fn_8012C720(void *request, s32 buffer, s32 size, s32 fileOffset)
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" s32 fn_8012C7FC(void *arg0, s32 *arg1) {
+    s32 *w = (s32 *)arg0;
     void *entry;
     s32 result = 0;
     s32 temp;
-    temp = *(s32 *)((char *)arg0 + 0xC);
+    temp = w[3];
     if (temp != -1 && fn_802E7544(temp)) {
-        fn_802E7548(*(s32 *)((char *)arg0 + 0xC));
-        *(s32 *)((char *)arg0 + 0xC) = -1;
+        fn_802E7548(w[3]);
+        w[3] = -1;
     }
-    temp = *(s32 *)((char *)arg0 + 0xC);
-    if (temp == -1 && *(s32 *)((char *)arg0 + 0x10)) {
+    temp = w[3];
+    if (temp == -1 && w[4]) {
         entry = *(void **)((char *)arg0 + 4);
-        if (*(s32 *)((char *)arg0 + 0x14) < *(s32 *)((char *)entry + 0x28) ||
+        if (w[5] < *(s32 *)((char *)entry + 0x28) ||
             *(u32 *)((char *)entry + 0x30) == ((u32 (*)(void))fn_80132E7C)()) {
-            result = *(s32 *)((char *)arg0 + 0x10);
+            result = w[4];
             if (arg1) *arg1 = *(s32 *)((char *)entry + 0x28);
         } else {
             fn_802E30C8(lbl_8032AC68, entry);
-            fn_8012C720(arg0, *(s32 *)((char *)arg0 + 0x10) -
+            fn_8012C720(arg0, w[4] -
                 ((*(s32 *)((char *)*(void **)((char *)arg0 + 4) + 0x2C) +
                   *(s32 *)((char *)*(void **)((char *)arg0 + 8) + 0x80)) & 0x7FF),
-                *(s32 *)((char *)arg0 + 0x14), 0);
+                w[5], 0);
         }
     }
     return result;
