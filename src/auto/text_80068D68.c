@@ -13504,6 +13504,7 @@ void btu_hcif_qos_setup_comp_evt(void *event) {
     btm_qos_setup_complete(status, handle, &flow);
 }
 
+/* Handles an HCI eSCO Connection Complete event and reports it to BTM. */
 void btu_hcif_esco_connection_comp_evt(u8 *p) {
     u8 status;
     tBTM_ESCO_DATA data;
