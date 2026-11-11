@@ -22032,38 +22032,39 @@ void RFCOMM_DlcEstablishRsp(void *arg0, u8 arg1, s32 arg2, u16 arg3) {
     rfc_port_sm_execute(port, 0xB, &sp8);
 }
 
-void RFCOMM_ParNegReq(void *arg0, s32 arg1, s32 arg2) {
-    u8 *port;
+void RFCOMM_ParNegReq(void *mcb, s32 dlci, s32 mtu) {
+    /* Sends an RFCOMM parameter negotiation request for a DLCI, choosing frame/credit limits from the port when required. */
+    u8 *p_port;
     u32 max_frame;
-    u16 mtu;
+    u16 peer_mtu;
     u16 frame;
     u8 value;
     u8 credits;
 
-    port = ((u8 * (*)())port_find_mcb_dlci_port)();
-    if (((u8 *)arg0)[0x6C] != 5) {
-        port[0xE] = 0xD;
+    p_port = ((u8 * (*)())port_find_mcb_dlci_port)();
+    if (((u8 *)mcb)[0x6C] != 5) {
+        p_port[0xE] = 0xD;
         return;
     }
-    value = ((u8 *)arg0)[0x72];
+    value = ((u8 *)mcb)[0x72];
     frame = 2;
     if ((s32)value != 0)
         frame = value;
     if ((u8)frame == 2) {
-        mtu = *(u16 *)(port + 0x9C);
+        peer_mtu = *(u16 *)(p_port + 0x9C);
         max_frame = 0xF0;
         frame = 7;
-        if (mtu < 7)
-            frame = mtu;
+        if (peer_mtu < 7)
+            frame = peer_mtu;
         credits = (u8)frame;
-        *(u16 *)(port + 0x9A) = credits;
+        *(u16 *)(p_port + 0x9A) = credits;
     } else {
         max_frame = 0;
         credits = 0;
     }
-    port[0x69] |= 1;
-    rfc_send_pn(arg0, arg1, 1, arg2, max_frame, credits);
-    rfc_port_timer_start(port, 0x3C);
+    p_port[0x69] |= 1;
+    rfc_send_pn(mcb, dlci, 1, mtu, max_frame, credits);
+    rfc_port_timer_start(p_port, 0x3C);
 }
 
 void fn_800936BC(void *p, u16 a1, u16 a2, u16 a3, u16 a4, u16 a5, u16 a6) {
