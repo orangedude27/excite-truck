@@ -413,7 +413,7 @@ extern int fn_802E30C8(void *);
 extern void fn_8000B3DC(unsigned char);
 extern void fn_8000ADE0(int);
 extern unsigned char lbl_8055D3D4, lbl_8055D3D5;
-extern int lbl_802FBF80;
+extern char lbl_802FBF80[];
 int fn_8000B42C(int arg0) {
     int var_r31 = 1;
     if (fn_8016212C() == 0) {
