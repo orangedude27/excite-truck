@@ -191,6 +191,7 @@ u8 fn_80193184(void *unused, int index) {
 #pragma dont_inline reset
 
 typedef float f32;
+struct S93524 { char pad[0x54]; float dir[3]; float pos[3]; };
 f32 fn_801931AC(f32 a, f32 b, f32 c, f32 d) {
     f32 t = lbl_80562140 - a / d;
     t = (lbl_80562140 < t) ? t : lbl_80562140;
@@ -263,7 +264,7 @@ void fn_8019330C(void *out, void *in, int arg2) {
     volatile float work[8];
     float x = *(float *)((char *)arg2 + 0x18);
     float y = *(float *)((char *)arg2 + 0x20);
-    float sq = y * y + x * x;
+    float sq = x * x + y * y;
     float length;
     float denom;
     float scale;
@@ -271,9 +272,7 @@ void fn_8019330C(void *out, void *in, int arg2) {
     work[2] = x;
     work[3] = y;
     length = (float)fn_8002F234(sq);
-    denom = lbl_80562148;
-    if (denom <= length)
-        denom = length;
+    denom = lbl_80562148 > length ? lbl_80562148 : length;
     scale = lbl_80562140 / denom;
     sy = work[3] * scale;
     sx = work[2] * scale;
@@ -301,9 +300,8 @@ int fn_80193524(void *arg0, void *arg1) {
     extern float PSVECDotProduct(const void *, const void *);
     extern float lbl_8056215C;
     float delta[3];
-    float dot = __fabs(PSVECDotProduct((char *)arg0 + 0x54, (char *)arg1 + 0x54));
+    float dot = __fabs(PSVECDotProduct((char *)arg1 + 0x54, (char *)arg0 + 0x54));
     int result = 0;
-
     if (dot < lbl_8056215C) {
         delta[0] = *(float *)((char *)arg1 + 0x60) - *(float *)((char *)arg0 + 0x60);
         delta[1] = *(float *)((char *)arg1 + 0x64) - *(float *)((char *)arg0 + 0x64);
@@ -408,9 +406,9 @@ extern float lbl_80562144, lbl_80562180;
 extern const char lbl_80333348[];
 #pragma cplusplus on
 extern "C" void *fn_801938F4(void *arg0) {
-    int minusOne = -1;
-    int zero = 0;
-    int limit = 0x2710;
+    register int minusOne = -1;
+    register int zero = 0;
+    register int limit = 0x2710;
     float initial = lbl_80562144;
     char *obj = (char *)arg0 + 0x168;
     *(int *)((char *)arg0 + 0x68) = zero;
@@ -426,8 +424,8 @@ extern "C" void *fn_801938F4(void *arg0) {
     fn_801352B8(obj);
     fn_801352B8(obj + 0x34);
     *(float *)(obj + 0x68) = lbl_80562180;
-    ((Dummy_801938F4 *)(obj + 0x34))->d3(0);
-    ((Dummy_801938F4 *)obj)->d3(0);
+    ((Dummy_801938F4 *)(obj + 0x34))->d1(0);
+    ((Dummy_801938F4 *)obj)->d1(0);
     *(int *)((char *)arg0 + 0x294) = zero;
     *(int *)((char *)arg0 + 0x290) = -1000;
     return arg0;
@@ -1922,8 +1920,8 @@ void fn_80196250(float *arg0, float *arg1, int *arg2, float farg0, float farg1, 
     if ((int)(*(unsigned int *)&spC & 0x80000000U) != (int)(*(unsigned int *)&sp8 & 0x80000000U))
         goto different_sign;
 direct_case:
-    out1 = lbl_80562144;
     out0 = (float)__fabs((double)temp_f5) / lbl_80562234;
+    out1 = lbl_80562144;
     *arg0 = out0;
     *arg1 = out1;
     goto finish;
