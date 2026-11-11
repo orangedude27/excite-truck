@@ -1323,33 +1323,41 @@ extern s32 fn_8023D6FC(void);
 extern s32 fn_800053CC(void);
 extern s32 fn_800217E4(void);
 #pragma dont_inline fn_800057BC
+/* Updates per-frame game state values and runs the main scene update/dispatch sequence. */
 void fn_80007238(void) {
     char stack[0x28];
     f32 f3;
     f32 f0;
     s32 mode;
+
     ((s32 *)lbl_8034EE84)[3] = ((s32 (*)(void))fn_801E7E3C)();
     ((f32 *)lbl_8034EE84)[4] = ((f32 (*)(void))fn_801E7E18)();
     ((s32 *)lbl_8034EE84)[6] = ((s32 (*)(void))fn_801E85A4)();
+
     fn_80230B5C(stack);
     fn_802C8638(stack);
+
     mode = ((s32 *)lbl_8034EE84)[6];
     f0 = lbl_80560194;
     f3 = lbl_80560198;
     f3 = (mode > 2) ? f3 : f0;
     fn_802C974C(lbl_80560130, lbl_80560124, f3);
+
     fn_800057D0();
     fn_80161C18();
     if (fn_80021258() != 0) goto done;
     if (fn_801DF110() != 0) goto done;
     if (fn_80161A70() != 0) goto done;
     fn_80005930();
+
 done:
     fn_80005B6C();
     ((void (*)(s32))fn_80005B70)(0);
     fn_8000545C();
     fn_80005460();
-    if (fn_8023D6FC() == 3) fn_800053CC();
+    if (fn_8023D6FC() == 3) {
+        fn_800053CC();
+    }
     fn_80005B74();
     fn_80011A2C();
     fn_800057BC();
