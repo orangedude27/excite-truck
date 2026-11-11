@@ -4018,25 +4018,7 @@ int fn_8006F284(s32 arg0) {
     return 0;
 }
 
-void uusb_CloseDeviceCB(s8 arg0) {
-    register u8 *control = (u8 *)&lbl_803BD1E0;
-    register s32 zero = 0;
-
-    *(s32 *)&lbl_803BD1E0 = zero;
-    control[0x10] = zero;
-    control[0x11] = zero;
-    control[0x12] = zero;
-    control[0x13] = zero;
-    lbl_8055DC50 = zero;
-    fn_8009B0E0();
-    fn_8006EBAC();
-    control[0x29] = 5;
-    control[0x28] = zero;
-    lbl_8055DC51 = zero;
-    fn_8006EB88();
-    if (*(void (**)(s32, s8))(control + 0x20) != 0)
-        (*(void (**)(s32, s8))(control + 0x20))(4, arg0);
-}
+void uusb_CloseDeviceCB(s8 arg0) { register u8 *control; register s32 zero; control = (u8 *)&lbl_803BD1E0; zero = 0; *(s32 *)&lbl_803BD1E0 = zero; control[0x10] = (u8)zero; control[0x11] = (u8)zero; control[0x12] = (u8)zero; control[0x13] = (u8)zero; lbl_8055DC50 = (u8)zero; fn_8009B0E0(); fn_8006EBAC(); control[0x28] = (u8)zero; control[0x29] = 5; lbl_8055DC51 = (u8)zero; fn_8006EB88(); if (*(void (**)(s32, s8))(control + 0x20) != 0) (*(void (**)(s32, s8))(control + 0x20))(4, arg0); }
 
 void uusb_ReadIntrDataCB(s32 length, BT_HDR *buf) {
     extern char lbl_803BD240[];
@@ -20585,18 +20567,23 @@ void *port_find_mcb_dlci_port(void *mcb, u8 dlci) {
 }
 
 void *port_find_dlci_port(unsigned int arg0) {
+    u8 *entry;
+    u8 *base;
+    unsigned int odd;
+    unsigned int prev;
     unsigned short i;
-    unsigned int odd = arg0 & 1;
-    unsigned int prev = arg0 - 1;
-    u8 *base = (u8 *)&lbl_803C4828;
+    unsigned int dlci;
+    u8 *port;
+    odd = arg0 & 1;
+    prev = arg0 - 1;
+    base = (u8 *)&lbl_803C4828;
     for (i = 0; i < 5; i++) {
-        u8 *entry = base + (i * 0xA4);
-        u8 *port = entry + 0x68;
-        u8 dlci;
+        entry = base + (i * 0xA4);
+        port = entry + 0x68;
         if (*(u8 *)(entry + 0x69) == 0) continue;
         if (*(unsigned int *)(port + 0x6C) != 0) continue;
         dlci = *(u8 *)(port + 0xD);
-        if ((unsigned int)dlci == arg0) return port;
+        if (dlci == arg0) return port;
         if (odd != 0 && (int)dlci == (int)prev) {
             *(u8 *)(port + 0xD) = dlci + 1;
             return port;
