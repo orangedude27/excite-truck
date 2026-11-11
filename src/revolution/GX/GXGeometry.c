@@ -143,10 +143,10 @@ void GXBegin(GXPrimitive prim, GXVtxFmt fmt, u16 verts) {
 
 void __GXSendFlushPrim(void) {
     u32 i;
-    u32 sz = gxdt->SHORT_0x4 * gxdt->vlim;
+    u32 sz = gxdt->numChans * gxdt->vlim;
 
     WGPIPE.uc = GX_TRIANGLESTRIP;
-    WGPIPE.us = gxdt->SHORT_0x4;
+    WGPIPE.us = gxdt->numChans;
 
     for (i = 0; i < sz; i += 4) {
         WGPIPE.i = 0;
