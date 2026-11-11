@@ -1286,6 +1286,7 @@ void fn_802336AC(s32 arg0, s32 arg1, s32 arg2, const char *fmt, f32 farg0, f32 f
 }
 
 void fn_802337A0(f32 a, s32 b, f32 c, s32 d, f32 e, f32 f, s32 g, f32 h, const char *fmt, ...) {
+    /* Formats a string with vsprintf and draws it via fn_80232BA4 with the given font, color, flags, position, scale, spacing, and extra scale. */
     #pragma scheduling invalid_target
     char buffer[0x80];
     va_list args;
