@@ -3064,30 +3064,31 @@ extern "C" s32 fn_8012C6F0(void *arg0) {
 
 extern "C" s32 fn_802E748C(s32, s32, void *);
 extern "C" const char lbl_8032AC34[];
-extern "C" void fn_8012C720(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+extern "C" void fn_8012C720(void *request, s32 buffer, s32 size, s32 fileOffset) {
+    /* Start or satisfy a stream read request: queue a disc read unless the file is resident, then copy resident data. */
     void *context;
-    void *file = *(void * volatile *)((u8 *)arg0 + 4);
-    void *successFile;
+    void *file = *(void * volatile *)((u8 *)request + 4);
+    void *residentFile;
     s32 offset;
-    s32 temp;
+    s32 adjustedOffset;
     if ((*(volatile u32 *)((u8 *)file + 0x34) & 8) == 0) {
-        successFile = *(void * volatile *)((u8 *)arg0 + 4);
-        context = *(void * volatile *)((u8 *)arg0 + 8);
-        temp = arg3 + *(volatile s32 *)((u8 *)successFile + 0x2C);
+        residentFile = *(void * volatile *)((u8 *)request + 4);
+        context = *(void * volatile *)((u8 *)request + 8);
+        adjustedOffset = fileOffset + *(volatile s32 *)((u8 *)residentFile + 0x2C);
         context = (void *)*(volatile s32 *)((u8 *)context + 0x80);
-        offset = (s32)context + temp;
-        context = *(void * volatile *)((u8 *)arg0 + 8);
-        *(s32 *)((u8 *)arg0 + 0xC) = ((s32 (*)(s32, s32, s32, s32))fn_802E748C)(
-            *(volatile s32 *)((u8 *)context + 0xA4) + offset / 2048, arg1, arg2, arg3);
-        *(s32 *)((u8 *)arg0 + 0x10) = arg1 + (offset & 0x7FF);
-        *(s32 *)((u8 *)arg0 + 0x14) = arg2;
+        offset = (s32)context + adjustedOffset;
+        context = *(void * volatile *)((u8 *)request + 8);
+        *(s32 *)((u8 *)request + 0xC) = ((s32 (*)(s32, s32, s32, s32))fn_802E748C)(
+            *(volatile s32 *)((u8 *)context + 0xA4) + offset / 2048, buffer, size, fileOffset);
+        *(s32 *)((u8 *)request + 0x10) = buffer + (offset & 0x7FF);
+        *(s32 *)((u8 *)request + 0x14) = size;
     } else {
         fn_802E30C8(lbl_8032AC34, file);
-        file = *(void * volatile *)((u8 *)arg0 + 4);
-        memcpy((void *)arg1, (void *)(*(u32 *)((u8 *)file + 0x3C) + 8), *(u32 *)((u8 *)file + 0x28));
-        *(s32 *)((u8 *)arg0 + 0x10) = arg1;
-        *(s32 *)((u8 *)arg0 + 0xC) = -1;
-        *(s32 *)((u8 *)arg0 + 0x14) = arg2;
+        file = *(void * volatile *)((u8 *)request + 4);
+        memcpy((void *)buffer, (void *)(*(u32 *)((u8 *)file + 0x3C) + 8), *(u32 *)((u8 *)file + 0x28));
+        *(s32 *)((u8 *)request + 0x10) = buffer;
+        *(s32 *)((u8 *)request + 0xC) = -1;
+        *(s32 *)((u8 *)request + 0x14) = size;
     }
 }
 
