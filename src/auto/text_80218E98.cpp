@@ -4404,22 +4404,30 @@ extern "C" void fn_80220B3C(void *arg0) {
 }
 
 extern "C" void fn_80220B5C(void *arg0, s32 arg1) {
-    s32 result;
-    s32 temp_r26;
-    s32 flag = 0;
-    s32 *p = *(s32 **)((u8 *)arg0 + 0x25C);
+    s32 v0;
+    s32 *entries;
+    s32 *p;
+    s32 flag;
+    s32 cur;
+    s32 div;
+    s32 f4b;
+    s32 f8b;
+    s32 v1;
     fn_802C3034(arg1);
-    result = ((VfObj *)arg0)->vf28();
-    temp_r26 = ((result - 11) * (**(s32 **)((u8 *)arg0 + 0x244) - *(s32 *)((u8 *)arg0 + 0x250))) /
-        (*(s32 *)((u8 *)arg0 + 0x254) - *(s32 *)((u8 *)arg0 + 0x250) - 1);
+    v0 = ((VfObj *)arg0)->vf28();
+    entries = *(s32 **)((u8 *)arg0 + 0x244);
+    p = *(s32 **)((u8 *)arg0 + 0x25C);
+    flag = 0;
+    cur = *(s32 *)((u8 *)arg0 + 0x250);
+    div = ((v0 - 11) * (*entries - cur)) / (*(s32 *)((u8 *)arg0 + 0x254) - cur - 1);
     if (p != 0 && *p == *(s32 *)((u8 *)arg0 + 0x260)) {
         flag = 1;
-        result = ((VfObj *)arg0)->vf28();
     }
-    fn_80228DC4(arg1, *(s32 *)((u8 *)arg0 + 0x248),
-        *(s32 *)((u8 *)arg0 + 4), *(s32 *)((u8 *)arg0 + 8), result, flag);
-    fn_80228DC4(arg1, *(s32 *)((u8 *)arg0 + 0x24C),
-        *(s32 *)((u8 *)arg0 + 4) + 5, *(s32 *)((u8 *)arg0 + 8) + 5, temp_r26, flag);
+    f8b = *(s32 *)((u8 *)arg0 + 8);
+    f4b = *(s32 *)((u8 *)arg0 + 4);
+    v1 = ((VfObj *)arg0)->vf28();
+    fn_80228DC4(arg1, *(s32 *)((u8 *)arg0 + 0x248), f4b, f8b, v1, flag);
+    fn_80228DC4(arg1, *(s32 *)((u8 *)arg0 + 0x24C), *(s32 *)((u8 *)arg0 + 4) + 5, *(s32 *)((u8 *)arg0 + 8) + 5, div, flag);
 }
 
 extern "C" void fn_80220C54(void *arg0) {
@@ -5789,6 +5797,27 @@ extern "C" void fn_80223880(void *arg0) {
     fn_8021818C(*(s32 *)((u8 *)arg0 + 0x2C));
 }
 
+// View of the sound-list class fn_802238D0 belongs to: a menu whose rows each
+// carry a sound id (fn_80223280 draws the same rows as text).
+struct MenuSoundList {
+    void *vtable;                // 0x00
+    u8 pad_0x04[0x1A - 0x04];
+    u8 active;                   // 0x1A set while the list is running
+    u8 pad_0x1B[0x2C - 0x1B];
+    s32 soundMgr;                // 0x2C sound manager: fn_8021889C mutes / fn_80218968 unmutes one sound id
+    u8 pad_0x30[0x234 - 0x30];
+    u8 dirty;                    // 0x234 set to ask the list for an update
+    u8 pad_0x235[0x2C8 - 0x235];
+    s32 rowCount;                // 0x2C8 rows in the list (fn_802237E8)
+    u8 pad_0x2CC[0x378 - 0x2CC];
+    s32 soundIds[1];             // 0x378 sound id of each row (fn_802237F0)
+    u8 pad_0x37C[0x420 - 0x37C];
+    s32 *selected;               // 0x420 -> row the cursor is on
+};
+
+// Unmutes the sound of the row the cursor is on and mutes every other row's.
+// lbl_805634A8 is 0.0 and lbl_805634E8 is 0.3: mode 2 switches the sounds at
+// once, any other mode fades them over 0.3 (see fn_80219358 / fn_802193C8).
 #pragma push
 #pragma processor 750
 extern "C" void fn_802238D0(void *arg0, s32 arg1) {
