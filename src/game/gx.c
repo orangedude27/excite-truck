@@ -781,6 +781,13 @@ void fn_802CF850(void) {
 #define GX_DYNAMIC_DATA lbl_8055FDA0
 #define GX_DYNAMIC_HIGH_WATER lbl_8055FD98
 
+/* fn_802CFBA8 - shuts the graphics subsystem down.  Called from the engine's
+ * exit sequence (fn_802E2B34) after that sequence has dropped its own alarm:
+ * drops the draw-sync alarm fn_802D9A50, the AI DMA callback and the VI
+ * retrace callback, reports the GX dynamic-data high-water mark and any
+ * visibility tests still in use, blanks the screen over two retraces while
+ * clearing the draw-sync callback, then frees every buffer fn_802CF600
+ * allocated and empties the frame-buffer block. */
 void fn_802CFBA8(void) {
     extern void fn_802D9A50(void);
     extern void fn_80127D58(void (*)(void));
@@ -797,37 +804,37 @@ void fn_802CFBA8(void) {
     extern void fn_802DAE18(void);
     extern void fn_802D8DA0(void);
     extern char lbl_8034C038[];
-    fn_80127D58(fn_802D9A50);
-    fn_802D9C4C();
-    fn_800591AC(0);
-    fn_802E30C8(lbl_8034C038, lbl_8055FD98);
+    fn_80127D58(fn_802D9A50);          /* drop the draw-sync alarm */
+    fn_802D9C4C();                     /* AIRegisterDMACallback(0) */
+    fn_800591AC(0);                    /* VISetRetraceCallback(0) */
+    fn_802E30C8(lbl_8034C038, GX_DYNAMIC_HIGH_WATER);
     fn_802DD5F4();
-    fn_802D3894();
+    fn_802D3894();                     /* report visibility tests still in use */
     fn_802D6860();
-    fn_80128670(lbl_804C9940);
-    lbl_804C9940 = 0;
+    fn_80128670(GX_SCREEN_TEX_BUFFER);
+    GX_SCREEN_TEX_BUFFER = 0;
     fn_802DA4C4();
     fn_802D0C98();
-    VISetBlack(1);
+    VISetBlack(1);                     /* blank the screen and wait for it */
     VIFlush();
     VIWaitForRetrace();
     GXGetVtxDesc();
-    GXSetDrawSyncCallback();
+    GXSetDrawSyncCallback();           /* clears it; r3 is the retrace count */
     VIFlush();
     VIWaitForRetrace();
     fn_802DAE18();
-    fn_80128670(lbl_8055FD68);
-    lbl_8055FD68 = 0;
-    fn_80128670(lbl_804C9760[0]);
-    lbl_804C9760[0] = 0;
+    fn_80128670(GX_WORK_MEMORY);       /* the 3 MiB GXInit work memory */
+    GX_WORK_MEMORY = 0;
+    fn_80128670(GX_XFB_BLOCK[0]);      /* the frame buffers */
+    GX_XFB_BLOCK[0] = 0;
     fn_802D8DA0();
-    if (lbl_8055FDB0 != 0) {
-        fn_80128670((char *)lbl_8055FDB0 - 0x10);
+    if (GX_RECORD_TABLE != 0) {
+        fn_80128670((char *)GX_RECORD_TABLE - 0x10);  /* free from the header */
     }
-    lbl_8055FDB0 = 0;
-    lbl_804C9760[1] = 0;
-    fn_80128670(lbl_8055FDA0, lbl_804C9760);
-    lbl_8055FDA0 = 0;
+    GX_RECORD_TABLE = 0;
+    GX_XFB_BLOCK[1] = 0;
+    fn_80128670(GX_DYNAMIC_DATA, GX_XFB_BLOCK);       /* 2nd arg: r4 left over */
+    GX_DYNAMIC_DATA = 0;
 }
 
 extern double __fabs(double);
