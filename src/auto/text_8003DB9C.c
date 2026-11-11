@@ -5304,23 +5304,33 @@ void GXClearGPMetric(void) {
 }
 
 void KPADSetBtnRepeat(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
-    unsigned int low, second, first;
-    volatile unsigned short *cp;
-    cp = __cpReg;
-    first = cp[0x42/2];
-    for (;;) { second = first; low = cp[0x40/2]; first = cp[0x42/2]; if (second == first) break; }
-    *arg2 = (first << 16) | low;
-    cp = __cpReg;
-    first = cp[0x46/2];
-    for (;;) { second = first; low = cp[0x44/2]; first = cp[0x46/2]; if (second == first) break; }
-    *arg3 = (first << 16) | low;
-    cp = __cpReg;
-    first = cp[0x4A/2];
-    for (;;) { second = first; low = cp[0x48/2]; first = cp[0x4A/2]; if (second == first) break; }
-    *arg0 = (first << 16) | low;
-    cp = __cpReg;
-    first = cp[0x4E/2];
-    for (;;) { second = first; low = cp[0x4C/2]; first = cp[0x4E/2]; if (second == first) break; }
-    *arg1 = (first << 16) | low;
+    {
+        unsigned int low, second, first;
+        volatile unsigned short *cp = __cpReg;
+        first = cp[0x42/2];
+        for (;;) { second = first; low = cp[0x40/2]; first = cp[0x42/2]; if (first == second) break; }
+        *arg2 = (first << 16) | low;
+    }
+    {
+        unsigned int low, second, first;
+        volatile unsigned short *cp = __cpReg;
+        first = cp[0x46/2];
+        for (;;) { second = first; low = cp[0x44/2]; first = cp[0x46/2]; if (first == second) break; }
+        *arg3 = (first << 16) | low;
+    }
+    {
+        unsigned int low, second, first;
+        volatile unsigned short *cp = __cpReg;
+        first = cp[0x4A/2];
+        for (;;) { second = first; low = cp[0x48/2]; first = cp[0x4A/2]; if (first == second) break; }
+        *arg0 = (first << 16) | low;
+    }
+    {
+        unsigned int low, second, first;
+        volatile unsigned short *cp = __cpReg;
+        first = cp[0x4E/2];
+        for (;;) { second = first; low = cp[0x4C/2]; first = cp[0x4E/2]; if (first == second) break; }
+        *arg1 = (first << 16) | low;
+    }
 }
 typedef struct { unsigned int unk[9]; unsigned char unk24[3]; } GXSetCPUFifoObj;
