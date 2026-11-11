@@ -316,6 +316,40 @@ int fn_8001BCF0(void *);
 void *fn_8001BD38(void *, void *, int);
 void fn_8022D76C(void);
 extern char lbl_80344CE4[];
+
+/* A "UITB" text table: rows of strings packed into one character buffer, each
+   row rowSize bytes and each column a fixed offset/size inside it.
+   Built by fn_8022D458, cleared by fn_8022D76C, cells written by fn_8022D894
+   and read back by fn_8022D850. */
+struct UITable {
+    char *text;               /* 0x00 every cell's string */
+    int columns;              /* 0x04 */
+    int rowsUsed;             /* 0x08 highest row written + 1 */
+    int rows;                 /* 0x0C capacity */
+    int rowsInit;             /* 0x10 capacity the text buffer was sized for */
+    int rowSize;              /* 0x14 bytes of text per row */
+    int *columnSizes;         /* 0x18 string capacity of each column */
+    int *columnStarts;        /* 0x1C where each column starts in a row */
+    int cursor;               /* 0x20 */
+    int updates;              /* 0x24 bumped by every change */
+    int magic;                /* 0x28 'UITB' */
+    int field_2C;             /* 0x2C -1 as built */
+    int recordSet;            /* 0x30 which set of records to list */
+};
+
+/* One record of the listed set, as filled in by fn_8001BC38: the config node
+   carrying the record plus the value stored for it. */
+struct RecordValue {
+    int context;              /* 0x00 profile/archive the record belongs to */
+    int flags;                /* 0x04 record id, with its value format in bits 8-9 */
+    int recordSet;            /* 0x08 set the record's node name is looked up in */
+    int entryIndex;           /* 0x0C entry within the record table */
+    unsigned char found;      /* 0x10 the record's config node has a value */
+    int nodeValue;            /* 0x14 value read straight from the config node */
+    void *entries;            /* 0x18 record table holding entryIndex */
+    int value;                /* 0x1C value stored for the entry */
+    unsigned char changed;    /* 0x20 */
+};
 #pragma dont_inline on
 void fn_80257A8C(void *arg0) {
     char sp1C[0x24];
