@@ -1116,8 +1116,20 @@ double __kernel_sin(int iy, double x, double y) {
     return x - ((z * (lbl_80560A08 * y - v * r) - y) - lbl_80560A00 * v);
 }
 
+/* k_tan.c constants (see src/MSL/k_tan.c); unnamed in the game's .sdata2/.rodata. */
 extern double lbl_80560A10, lbl_80560A18, lbl_80560A20, lbl_80560A28, lbl_80560A30, lbl_80560A38;
 extern double lbl_802EE6E0[];
+#define tan_one       lbl_80560A10 /*  1.0 */
+#define tan_negone    lbl_80560A18 /* -1.0 */
+#define tan_pio4      lbl_80560A20 /*  pi/4 rounded to 33 bits */
+#define tan_pio4lo    lbl_80560A28 /*  tail of tan_pio4 */
+#define tan_zero      lbl_80560A30 /*  0.0 */
+#define tan_two       lbl_80560A38 /*  2.0 */
+#define tan_T(i)      lbl_802EE6E0[i] /* x^3, x^5, ... x^27 coefficients of tan */
+
+/* fdlibm FORCE_EVAL: force the value to be rounded through memory as a double. */
+#define FORCE_EVAL(_x_) (*(volatile double *)&(_x_) = (_x_))
+
 double __kernel_tan(int iy, double x, double y) {
     double z, r, v, w, s, t, a;
     int ix, hx;
