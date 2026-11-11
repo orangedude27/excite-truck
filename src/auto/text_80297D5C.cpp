@@ -1659,6 +1659,10 @@ extern float lbl_80564620;
 extern float lbl_805645EC;
 extern float lbl_8056461C;
 extern "C" void fn_8029B044(void* arg0, int arg1, void* arg2) {
+    /* Set or clear the slot at arg1 in the 0x38-byte entry table: when arg2 is
+     * non-null, copy its data into the slot, compute and store a scaled value and
+     * a random byte, and mark the slot active (updating the active count); when
+     * arg2 is null, clear the slot's active flag and decrement the count. */
     int value;
     char* item;
     item = (char*)arg0 + arg1 * 0x38;
