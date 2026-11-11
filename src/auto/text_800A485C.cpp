@@ -1047,22 +1047,44 @@ status_done:
 #define VF_VOL_CLUSTER_COUNT(v) (*(u32 *)((u8 *)(v) + 0x34)) /* clusters the volume holds */
 #define VF_FAT_FIRST_CLUSTER    2                            /* first cluster a file may hold */
 
-extern "C" s32 fn_800A5E00(void *arg0, void *arg1, u32 *arg2, u32 *arg3) {
- u32 a,b,c,x,y;
- *arg2=-1; *arg3=-1;
- a=M2C_FIELD(arg1,u32*,0); a=(a>>24)|((a>>8)&0xFF00)|((a<<8)&0xFF0000)|(a<<24);
- if(a==0x41615252){
- b=M2C_FIELD(arg1,u32*,0x1E4); b=(b>>24)|((b>>8)&0xFF00)|((b<<8)&0xFF0000)|(b<<24);
- if(b==0x61417272){
- c=M2C_FIELD(arg1,u32*,0x1FC); c=(c>>24)|((c>>8)&0xFF00)|((c<<8)&0xFF0000)|(c<<24);
- if(c==0xAA550000){
- x=M2C_FIELD(arg1,u32*,0x1E8); y=M2C_FIELD(arg1,u32*,0x1EC);
- x=(x>>24)|((x>>8)&0xFF00)|((x<<8)&0xFF0000)|(x<<24);
- y=(y>>24)|((y>>8)&0xFF00)|((y<<8)&0xFF0000)|(y<<24);
- if(x>=2&&x<(u32)(M2C_FIELD(arg0,s32*,0x34)+2))*arg2=x;
- if(y>=2&&y<(u32)(M2C_FIELD(arg0,s32*,0x34)+2))*arg3=y;
- }}}
- return 0;
+/* VFiPFFSInfo_ReadFreeClusters: take a FAT32 volume's free-cluster counts out of
+ * the FSInfo sector the mount (fn_800A5530) has just read into `fsInfo`.
+ *
+ * All three signatures of the sector have to be there.  Even then the two
+ * counts stay -1 - the "unknown" the mount starts from - unless they are
+ * cluster numbers the volume's heap can hold, 2 .. clusters + 1; a sector that
+ * is not an FSInfo one simply leaves them unknown.  Always answers 0.
+ */
+extern "C" s32 fn_800A5E00(void *volume, void *fsInfo, u32 *outFreeClusters, u32 *outNextFree) {
+    u32 sig1, sig2, trailer;      /* the sector's three signatures, host order */
+    u32 freeClusters, nextFree;   /* 0x1E8 and 0x1EC, likewise */
+
+    *outFreeClusters = -1;
+    *outNextFree = -1;
+
+    sig1 = *(u32 *)((u8 *)fsInfo + 0x00);
+    sig1 = VF_SWAP32(sig1);
+    if (sig1 == VF_FSINFO_SIG1) {
+        sig2 = *(u32 *)((u8 *)fsInfo + 0x1E4);
+        sig2 = VF_SWAP32(sig2);
+        if (sig2 == VF_FSINFO_SIG2) {
+            trailer = *(u32 *)((u8 *)fsInfo + 0x1FC);
+            trailer = VF_SWAP32(trailer);
+            if (trailer == VF_FSINFO_TRAILER) {
+                freeClusters = *(u32 *)((u8 *)fsInfo + 0x1E8);
+                nextFree = *(u32 *)((u8 *)fsInfo + 0x1EC);
+                freeClusters = VF_SWAP32(freeClusters);
+                nextFree = VF_SWAP32(nextFree);
+                if (freeClusters >= VF_FAT_FIRST_CLUSTER &&
+                    freeClusters < (u32)(VF_VOL_CLUSTER_COUNT(volume) + VF_FAT_FIRST_CLUSTER))
+                    *outFreeClusters = freeClusters;
+                if (nextFree >= VF_FAT_FIRST_CLUSTER &&
+                    nextFree < (u32)(VF_VOL_CLUSTER_COUNT(volume) + VF_FAT_FIRST_CLUSTER))
+                    *outNextFree = nextFree;
+            }
+        }
+    }
+    return 0;
 }
 
 extern "C" s32 fn_800A7688(void *, void **, void **);
