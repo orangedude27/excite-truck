@@ -573,23 +573,26 @@ extern s32 fn_801E137C(void *);
 extern void fn_802C8BD0(void *);
 extern void fn_802C8D74(void);
 #pragma scheduling invalid_target
+/* Redraw every boost area into the two boost draw lists, tinted with the
+ * colours the current player's slot holds (fn_801E1710 works out their RGBA
+ * from how much boost that player has built up). */
 void fn_801E12A4(void) {
-    u8 *obj = (u8 *)lbl_8055EA10;
+    BoostMan_801E0710 *man = (BoostMan_801E0710 *)lbl_8055EA10;
     s32 slot;
     s32 i;
-    s32 *entry;
-    if (obj != 0) {
+    BoostColors_801E12A4 *colors;
+    if (man != 0) {
         slot = fn_801E85B4();
-        *(s32 *)(obj + slot * 4 + 0x6C) = fn_801E866C();
-        fn_802C8BD0(*(void **)(obj + 4));
-        entry = (s32 *)(obj + slot * 0x18);
-        for (i = 0; i < fn_801E137C(obj + 0x7C); i++) {
-            fn_801E1384(fn_801E1510((s32 *)(obj + 0x7C), i), *(s32 *)(entry + 8));
+        man->slotArea[slot] = fn_801E866C();
+        fn_802C8BD0(man->lineList);
+        colors = (BoostColors_801E12A4 *)((u8 *)man + slot * 0x18);
+        for (i = 0; i < fn_801E137C(&man->areas); i++) {
+            fn_801E1384(fn_801E1510((s32 *)&man->areas, i), colors->lineColor);
         }
         fn_802C8D74();
-        fn_802C8BD0(*(void **)(obj + 8));
-        for (i = 0; i < fn_801E137C(obj + 0x7C); i++) {
-            fn_801E1384(fn_801E1510((s32 *)(obj + 0x7C), i), *(s32 *)(entry + 7));
+        fn_802C8BD0(man->arrowList);
+        for (i = 0; i < fn_801E137C(&man->areas); i++) {
+            fn_801E1384(fn_801E1510((s32 *)&man->areas, i), colors->arrowColor);
         }
         fn_802C8D74();
     }
