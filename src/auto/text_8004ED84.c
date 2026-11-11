@@ -974,44 +974,39 @@ done:
     return 1;
 }
 
-char *OSGetFontTexture(char *arg0, void **arg1, int *arg2, int *arg3, int *arg4) {
-    typedef struct {
-        unsigned char pad0[0x10];
-        volatile unsigned short width;
-        volatile unsigned short height;
-        volatile int dataStride;
-        unsigned char pad1[2];
-        volatile unsigned short tilesWide;
-        volatile unsigned short tilesHigh;
-        unsigned char pad2[4];
-        volatile unsigned short glyphOffset;
-        volatile int bitmapOffset;
-    } FontTexture;
+/* Looks the first character of `str` up in the loaded font and says where to
+ * draw it: *texOut is the start of the 4-bit glyph sheet that holds its cell,
+ * *xOut and *yOut that cell's pixel position inside the sheet, *widthOut (when
+ * given) the character's advance; the return is the rest of the string. */
+char *OSGetFontTexture(char *str, void **texOut, int *xOut, int *yOut, int *widthOut) {
     unsigned short encode;
-    FontTexture *texture;
-    int index;
-    int tile;
+    volatile OSFontHeader *font;
+    int code;
+    int sheet;
     int tmp;
-    int remainder;
+    int numRestTex;
     unsigned short tilesWide;
-    int column;
     int row;
-    char *(*parse)(int, char *, int **, int *);
+    int col;
+    char *(*parseString)(int, char *, int **, int *);
     char *next;
+    /* The parser (ParseStringS/ParseStringW for the current encoding) hands
+     * back the font the character belongs to and its glyph index. */
     encode = OSGetFontEncode();
-    parse = (char *(*)(int, char *, int **, int *))lbl_8055DA48;
-    next = parse(encode, arg0, (int **)&texture, &index);
-    tile = index / (texture->tilesWide * texture->tilesHigh);
-    *arg1 = (char *)texture + texture->bitmapOffset + texture->dataStride * tile;
-    tilesWide = texture->tilesWide;
-    tmp = tile * tilesWide;
-    remainder = index - tmp * texture->tilesHigh;
-    column = remainder / tilesWide;
-    row = remainder - column * tilesWide;
-    *arg2 = row * texture->width;
-    *arg3 = column * texture->height;
-    if (arg4 != 0)
-        *arg4 = *(unsigned char *)((char *)texture + texture->glyphOffset + index);
+    parseString = (char *(*)(int, char *, int **, int *))lbl_8055DA48;
+    next = parseString(encode, str, (int **)&font, &code);
+    /* Glyphs lie sheetNumCol by sheetNumRow deep on one sheet image. */
+    sheet = code / (font->sheetNumCol * font->sheetNumRow);
+    *texOut = (char *)font + font->sheetImageOfs + font->sheetSize * sheet;
+    tilesWide = font->sheetNumCol;
+    tmp = sheet * tilesWide;
+    numRestTex = code - tmp * font->sheetNumRow;
+    row = numRestTex / tilesWide;
+    col = numRestTex - row * tilesWide;
+    *xOut = col * font->cellWidth;
+    *yOut = row * font->cellHeight;
+    if (widthOut != 0)
+        *widthOut = *(unsigned char *)((char *)font + font->widthTableOfs + code);
     return next;
 }
 
