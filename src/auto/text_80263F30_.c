@@ -117,53 +117,63 @@ extern void *fn_80264968(void *, int);
 #pragma use_lmw_stmw off
 #pragma dont_inline off
 #pragma cplusplus on
-extern "C" void fn_80263F30(int arg0, unsigned char arg1, int arg2) {
-    struct ItemIt { virtual const char *getName(); };
-    struct ListIt { virtual void f0(); virtual void *get(int); };
-    char sp8[40];
-    char sp30[224];
+/* Starts the credits sequence.
+ *
+ * Pushes the credits movie (lbl_8055C450 -> "credits.bik") onto the movie stack, opens the
+ * "credits.val" table and hands the entry named "credits_page" to fn_802656C8, which builds
+ * the credits_page_items list and posts the request that shows them, then pops the movie
+ * again.  The music song is switched to 1 for the walk and restored at the end; fadeOut and
+ * fadeIn ask for the screen fade before and after it (fn_80265A74 = "fade_out",
+ * fn_80265940 = "fade_in"), and skip is the flag fn_80265B5C reports the credits as
+ * finished on.  Returns nothing; does nothing at all if credits.val is missing.
+ */
+extern "C" void fn_80263F30(int fadeOut, unsigned char skip, int fadeIn) {
+    struct ValEntry { virtual const char *getName(); };             /* .val item, vtable+0x8 = getName */
+    struct ValList { virtual void f0(); virtual void *get(int); };  /* .val list, vtable+0xC = get(index) */
+    char timerObj[0x28];  /* sp8:  fade/timer object, vtable lbl_803466D8 */
+    char pageObj[0xE0];   /* sp30: credits page object, vtable lbl_80346678 */
     register const char *base asm("r31") = lbl_80346338;
-    register int prev_state asm("r30");
-    register void *list asm("r29");
-    register void *item asm("r28");
-    register int cont asm("r27");
-    register int r_arg0 asm("r26") = arg0;
-    register int r_arg2 asm("r25") = arg2;
-    lbl_8055F450 = arg1;
-    prev_state = fn_8020A69C();
+    register int prevSong asm("r30");
+    register void *valList asm("r29");
+    register void *entry asm("r28");
+    register int keepGoing asm("r27");
+    register int r_fadeOut asm("r26") = fadeOut;
+    register int r_fadeIn asm("r25") = fadeIn;
+    lbl_8055F450 = skip;
+    prevSong = fn_8020A69C();
     fn_8020A648(1);
-    if (r_arg0 != 0) {
+    if (r_fadeOut != 0) {
         fn_80265A74();
     }
-    list = fn_80131810((void *)(base + 104));
-    if (list != 0) {
+    valList = fn_80131810((void *)(base + CREDITS_VAL_NAME));
+    if (valList != 0) {
         if (fn_802ECF00(lbl_8055C450) == 0) {
-            fn_802E317C(base + 116, lbl_8055C450);
+            fn_802E317C(base + CREDITS_PUSH_FAIL_MSG, lbl_8055C450);
         }
         fn_80265940();
-        fn_802646D0(sp30);
-        fn_8026451C(sp8);
-        cont = 1;
-        r_arg0 = 0;
-        while (cont != 0 && (item = ((ListIt *)list)->get(r_arg0)) != 0) {
-            if (stricmp(((ItemIt *)item)->getName(), base + 172) == 0) {
-                cont = fn_802656C8(item);
+        fn_802646D0(pageObj);
+        fn_8026451C(timerObj);
+        keepGoing = 1;
+        r_fadeOut = 0;
+        while (keepGoing != 0 && (entry = ((ValList *)valList)->get(r_fadeOut)) != 0) {
+            if (stricmp(((ValEntry *)entry)->getName(), base + CREDITS_PAGE_NAME) == 0) {
+                keepGoing = fn_802656C8(entry);
             }
-            r_arg0++;
+            r_fadeOut++;
         }
         fn_8020A648(-1);
         fn_80265A74();
         if (fn_802ECF04() == 0) {
-            fn_802E317C(base + 192);
+            fn_802E317C(base + CREDITS_POP_FAIL_MSG);
         }
-        fn_80131818(list);
-        fn_80264538((int)sp8, -1);
-        fn_80264968(sp30, -1);
+        fn_80131818(valList);
+        fn_80264538((int)timerObj, -1);
+        fn_80264968(pageObj, -1);
     }
-    if (r_arg2 != 0) {
+    if (r_fadeIn != 0) {
         fn_80265940();
     }
-    fn_8020A648(prev_state);
+    fn_8020A648(prevSong);
 }
 #pragma cplusplus off
 #pragma use_lmw_stmw on
