@@ -71,7 +71,8 @@ __declspec(section ".sdata") extern const char lbl_8055CE18[];
 #pragma cplusplus on
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-extern "C" int fn_802B5510(const char *arg0) {
+extern "C" int fn_802B5510(const char *resourcePath) {
+    /* Load a resource manager/list for the given path, register it, and recursively process/load referenced entries. */
     class Manager {
     public:
         virtual void f0();
@@ -92,7 +93,7 @@ extern "C" int fn_802B5510(const char *arg0) {
     int index;
 
     manager = (Manager *)((void *(*)(void (*)(void *), void *))fn_802B561C)(
-        (void (*)(void *))fn_80131810, (void *)arg0);
+        (void (*)(void *))fn_80131810, (void *)resourcePath);
     if (manager == 0)
         goto report_error;
     list = &lbl_804BE454;
@@ -117,7 +118,7 @@ fetch_item:
     return;
 
 report_error:
-    fn_802E317C(lbl_8034A53C, arg0);
+    fn_802E317C(lbl_8034A53C, resourcePath);
 }
 
 #pragma scheduling invalid_target
