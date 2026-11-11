@@ -31,7 +31,8 @@ typedef struct OverlayQuad {
     s32 height;       /* 0x88: corners span -height..height (0x1E0 = 480) */
     /* 0x8C..0xB0: scroll/drift state, walked every frame by fn_8022FB6C and
      * applied by fn_8022FD9C; the defaults come from .sdata2 in fn_8022F638. */
-    f32 scrollOffset; /* 0x8C: random-walk offset, kept inside +-scrollLimit */
+    f32 scrollOffset; /* 0x8C: random-walk offset, kept inside +-scrollLimit;
+                       * fn_8022FD9C turns the quad about Z by scrollOffset * dt */
     f32 unused90;     /* 0x90: only ever copied from and to the current quad */
     f32 driftVelX;    /* 0x94: drift velocity x, kept inside +-driftLimit */
     f32 driftVelY;    /* 0x98: drift velocity y, kept inside +-driftLimit */
