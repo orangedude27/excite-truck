@@ -1541,6 +1541,10 @@ extern "C" void fn_80147230(void *arg0, const char *arg1, ...) {
 #pragma scheduling on
 extern "C" void fn_80145C08(void *arg0, const char *arg1);
 extern "C" void fn_80147314(void *arg0, const char *format, ...) {
+    /* Format varargs text into a stack buffer and pass it to the text renderer.
+       If the formatted result would be >= 0x200 bytes (including terminator), log
+       an oversized-text error via fn_802E317C with the length and format string,
+       but still pass the buffer to fn_80145C08. No-op if arg0 is NULL. */
     char buffer[0x200];
     if (arg0 != 0) {
         va_list args;
