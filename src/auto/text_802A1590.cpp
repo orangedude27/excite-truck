@@ -1304,39 +1304,40 @@ extern "C" void fn_8028E61C(void*);
 extern "C" int lbl_80349A80[];
 extern "C" f32 lbl_8056472C, lbl_80564730, lbl_80564734, lbl_80564738, lbl_8056475C, lbl_80564764, lbl_80564830;
 #pragma scheduling invalid_target
-extern "C" void fn_802A3C50(void *arg0, s32 arg1) {
-    struct Settings { f32 values[42]; } settings;
-    s32 *words = (s32 *)settings.values;
-    fn_8028E61C(&settings.values[6]);
-    words[6] = 2;
-    words[7] = 0x100;
-    settings.values[8] = lbl_80564734;
-    settings.values[9] = lbl_80564830;
-    settings.values[3] = lbl_80564730;
-    settings.values[4] = lbl_80564730;
-    settings.values[5] = lbl_80564730;
-    settings.values[10] = lbl_80564730;
-    settings.values[11] = lbl_80564730;
-    settings.values[12] = lbl_80564730;
-    settings.values[0] = lbl_80564730;
-    settings.values[1] = lbl_80564730;
-    settings.values[2] = lbl_80564730;
-    settings.values[13] = lbl_80564730;
-    settings.values[14] = lbl_80564730;
-    settings.values[15] = lbl_80564730;
-    settings.values[18] = lbl_80564738;
-    settings.values[19] = lbl_8056472C;
-    words[23] = 5;
-    settings.values[24] = lbl_80564738;
-    settings.values[27] = lbl_80564734;
-    settings.values[26] = lbl_80564764;
-    settings.values[29] = lbl_80564730;
-    settings.values[28] = lbl_8056475C;
-    settings.values[35] = lbl_80564730;
-    settings.values[33] = lbl_80564730;
-    settings.values[31] = lbl_80564730;
-    settings.values[37] = lbl_80564730;
-    *(s32 *)((char *)arg0 + 4) = ((s32 (*)(void *, void *, s32))fn_8028E2F8)(&settings.values[6], lbl_80349A80, arg1);
+extern "C" void fn_802A3C50(void *owner, s32 param) {
+    /* Initialize and create the "trail water" effect on owner+4. */
+    struct Settings { f32 values[42]; } config;
+    s32 *configWords = (s32 *)config.values;
+    fn_8028E61C(&config.values[6]);
+    configWords[6] = 2;
+    configWords[7] = 0x100;
+    config.values[8] = lbl_80564734;
+    config.values[9] = lbl_80564830;
+    config.values[3] = lbl_80564730;
+    config.values[4] = lbl_80564730;
+    config.values[5] = lbl_80564730;
+    config.values[10] = lbl_80564730;
+    config.values[11] = lbl_80564730;
+    config.values[12] = lbl_80564730;
+    config.values[0] = lbl_80564730;
+    config.values[1] = lbl_80564730;
+    config.values[2] = lbl_80564730;
+    config.values[13] = lbl_80564730;
+    config.values[14] = lbl_80564730;
+    config.values[15] = lbl_80564730;
+    config.values[18] = lbl_80564738;
+    config.values[19] = lbl_8056472C;
+    configWords[23] = 5;
+    config.values[24] = lbl_80564738;
+    config.values[27] = lbl_80564734;
+    config.values[26] = lbl_80564764;
+    config.values[29] = lbl_80564730;
+    config.values[28] = lbl_8056475C;
+    config.values[35] = lbl_80564730;
+    config.values[33] = lbl_80564730;
+    config.values[31] = lbl_80564730;
+    config.values[37] = lbl_80564730;
+    *(s32 *)((char *)owner + 4) = ((s32 (*)(void *, void *, s32))fn_8028E2F8)(&config.values[6], lbl_80349A80, param);
 }
 #pragma scheduling on
 extern "C" void* fn_802A3D3C(void* arg0, DummyReceiver_802A3314* arg1) {
