@@ -107,27 +107,32 @@ extern "C" void fn_801DE890(int arg0) {
 #pragma cplusplus reset
 
 #pragma small_data off
-void fn_801DE9F0(int arg0, int arg1) {
+void fn_801DE9F0(int kind, int updateObject) {
+    /* If kind==8, copies a queued 0x1C-byte record from lbl_804873B8 into
+     * lbl_804872B0+0xE0 and advances lbl_8055E9E0 (guarded by table count).
+     * Always (when allowed) records current kind/bitmask, samples time via
+     * fn_802E2C9C into lbl_8055ADF0/4, and if updateObject with lbl_8055E9F0
+     * set, reads "effects_volume" into object+8 and sets flags at 0x49..0x4D. */
     float value;
     register float newValue;
     register void* object;
     int bits;
     unsigned long long time;
 
-    if (arg0 != 8 || lbl_8055E9E0 < *(int*)((char*)lbl_804873B8 + 4)) {
-        if (arg0 == 8) {
+    if (kind != 8 || lbl_8055E9E0 < *(int*)((char*)lbl_804873B8 + 4)) {
+        if (kind == 8) {
             int count = lbl_8055E9E0;
             int *table = *(int**)lbl_804873B8;
             memcpy(lbl_804872B0 + 0xE0, (char*)table + count * 0x1C, 0x1C);
             lbl_8055E9E0 = lbl_8055E9E0 + 1;
         }
         bits = lbl_8055E9DC;
-        lbl_8055E9E8 = arg0;
-        lbl_8055E9DC = bits | (1 << arg0);
+        lbl_8055E9E8 = kind;
+        lbl_8055E9DC = bits | (1 << kind);
         time = fn_802E2C9C(bits);
         lbl_8055ADF4 = (int)time;
         lbl_8055ADF0 = (int)(time >> 32);
-        if (lbl_8055E9F0 != 0 && arg1 != 0) {
+        if (lbl_8055E9F0 != 0 && updateObject != 0) {
             value = lbl_80562BF4;
             fn_801331C4(4, (int *)lbl_803394FC, &value);
             newValue = value;
