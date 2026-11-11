@@ -1883,15 +1883,19 @@ typedef struct {
 
 #pragma push
 #pragma processor 750
-void fn_80234AFC(void *arg0, const char *fmt, f32 farg0, f32 farg1, ...) {
+/* printf-style text draw for a screen object: formats `fmt` (plus the variadic
+   arguments) into a scratch buffer and draws it at (x, y) with fn_80232BA4, using the
+   font, colour, style flags, scale and spacing of the text settings record `style`.
+   The fixed 1.0f (lbl_80563684) is the pen value fn_80232BA4's callers normally pass
+   there. */
+void fn_80234AFC(TextDrawStyle *style, const char *fmt, f32 x, f32 y, ...) {
     char buffer[0x80];
     va_list args;
-    va_start(args, farg1);
+
+    va_start(args, y);
     vsprintf(buffer, fmt, args);
-    fn_80232BA4(buffer, *(s32 *)arg0, *(s32 *)((char *)arg0 + 4),
-                *(s32 *)((char *)arg0 + 8), farg0, farg1,
-                *(f32 *)((char *)arg0 + 0xC), lbl_80563684,
-                *(f32 *)((char *)arg0 + 0x10));
+    fn_80232BA4(buffer, style->font, style->color, style->style, x, y,
+                style->scale, lbl_80563684, style->spacing);
 }
 #pragma pop
 extern s32 fn_802315FC(s32);
