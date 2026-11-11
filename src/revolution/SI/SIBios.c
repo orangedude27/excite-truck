@@ -1173,6 +1173,17 @@ BOOL fn_800572DC(BOOL final) {
     return TRUE;
 }
 
+/**
+ * Get the controller type for a SI channel asynchronously.
+ *
+ * If the channel's type is currently being determined (SI_ERROR_BUSY set),
+ * queue the callback to be invoked when type detection completes. If there is
+ * already a pending slot for this callback or a free slot is found, it is
+ * stored; otherwise the callback is not queued. If the type is already known,
+ * invoke the callback immediately with the current type.
+ *
+ * Returns the current type value for the channel.
+ */
 u32 SIGetTypeAsync(s32 chan, SICallback callback) {
     BOOL enabled;
     u32 type;
