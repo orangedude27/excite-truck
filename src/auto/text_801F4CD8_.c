@@ -807,40 +807,40 @@ extern float lbl_80562FE0;
 #pragma paired reset
 #pragma paired_single reset
 void fn_801F65D0(void *arg0) {
+    // Relax one pass of the cloth's distance constraints: for every edge, pull
+    // its two grid vertices toward each other in proportion to how far the edge
+    // is stretched from its rest length (0.5 / -0.5 split between the two ends).
     float delta[3];
-    float var_f31;
-    float var_f30;
-    float weight, dot;
+    float half, negHalf;
+    float stiffness, distSq;
     int offset, i;
-    unsigned char *entry;
-    float *a, *b;
+    ClothEdge *edge;
+    float *vA, *vB;
 
-    var_f31 = lbl_80562FDC;
-    var_f30 = lbl_80562FE0;
+    half = lbl_80562FDC;
+    negHalf = lbl_80562FE0;
     i = 0;
     offset = 0;
     goto check;
 
 loop:
-    entry = *(unsigned char **)((char *)arg0 + 0x14) + offset;
-    a = (float *)(*(unsigned char **)((char *)arg0 + 4) +
-                  *(unsigned short *)entry * 0xC);
-    b = (float *)(*(unsigned char **)((char *)arg0 + 4) +
-                  *(unsigned short *)(entry + 2) * 0xC);
-    delta[0] = b[0] - a[0];
-    delta[1] = b[1] - a[1];
-    delta[2] = b[2] - a[2];
-    dot = PSVECDotProduct(delta, delta);
-    weight = *(float *)(entry + 4);
+    edge = (ClothEdge *)(*(unsigned char **)((char *)arg0 + 0x14) + offset);
+    vA = (float *)(*(unsigned char **)((char *)arg0 + 4) + edge->from * 0xC);
+    vB = (float *)(*(unsigned char **)((char *)arg0 + 4) + edge->to * 0xC);
+    delta[0] = vB[0] - vA[0];
+    delta[1] = vB[1] - vA[1];
+    delta[2] = vB[2] - vA[2];
+    distSq = PSVECDotProduct(delta, delta);
+    stiffness = edge->restDistSq;
     offset += 8;
     i += 1;
-    weight = var_f31 - weight / (weight + dot);
-    a[0] += delta[0] * (var_f31 * weight);
-    a[1] += delta[1] * (var_f31 * weight);
-    a[2] += delta[2] * (var_f31 * weight);
-    b[0] += delta[0] * (var_f30 * weight);
-    b[1] += delta[1] * (var_f30 * weight);
-    b[2] += delta[2] * (var_f30 * weight);
+    stiffness = half - stiffness / (stiffness + distSq);
+    vA[0] += delta[0] * (half * stiffness);
+    vA[1] += delta[1] * (half * stiffness);
+    vA[2] += delta[2] * (half * stiffness);
+    vB[0] += delta[0] * (negHalf * stiffness);
+    vB[1] += delta[1] * (negHalf * stiffness);
+    vB[2] += delta[2] * (negHalf * stiffness);
 check:
     if (i < *(int *)((char *)arg0 + 0x18)) goto loop;
 }
