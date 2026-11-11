@@ -137,6 +137,7 @@ int fn_802D76DC(int arg0) {
     fn_802E317C(lbl_8034C4B0, arg0);
     return 1;
 }
+#pragma dont_inline reset
 
 #pragma push
 #pragma scheduling invalid_target
