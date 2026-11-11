@@ -5183,18 +5183,19 @@ extern "C" void fn_80222800(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg4
     }
 }
 #pragma pop
-extern "C" void *fn_802228B0(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+/* Initializes an object with vtable lbl_8033F998 and an image/resource handle; uses given size or queries it. */
+extern "C" void *fn_802228B0(void *obj, s32 name, s32 width, s32 height) {
     typedef s32 (*CreateFn)(s32);
-    *(void **)arg0 = lbl_8033F998;
-    *(s32 *)((u8 *)arg0 + 4) = ((CreateFn)fn_802C5130)(arg1);
-    if (arg2 > 0 && arg3 > 0) {
-        *(f32 *)((u8 *)arg0 + 8) = (f32)arg2;
-        *(f32 *)((u8 *)arg0 + 0xC) = (f32)arg3;
+    *(void **)obj = lbl_8033F998;
+    *(s32 *)((u8 *)obj + 4) = ((CreateFn)fn_802C5130)(name);
+    if (width > 0 && height > 0) {
+        *(f32 *)((u8 *)obj + 8) = (f32)width;
+        *(f32 *)((u8 *)obj + 0xC) = (f32)height;
     } else {
-        *(f32 *)((u8 *)arg0 + 8) = (f32)fn_802C51C0(*(s32 *)((u8 *)arg0 + 4));
-        *(f32 *)((u8 *)arg0 + 0xC) = (f32)fn_802C5220(*(s32 *)((u8 *)arg0 + 4));
+        *(f32 *)((u8 *)obj + 8) = (f32)fn_802C51C0(*(s32 *)((u8 *)obj + 4));
+        *(f32 *)((u8 *)obj + 0xC) = (f32)fn_802C5220(*(s32 *)((u8 *)obj + 4));
     }
-    return arg0;
+    return obj;
 }
 
 extern "C" int lbl_8033F998[];
