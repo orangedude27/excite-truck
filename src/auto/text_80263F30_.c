@@ -97,9 +97,12 @@ extern void *fn_80264968(void *, int);
 
 #pragma use_lmw_stmw off
 #pragma dont_inline off
-void fn_80263F30(int arg0, unsigned char arg1, int arg2) {
-    char sp8[0x28];
-    char sp30[0xE0];
+#pragma cplusplus on
+extern "C" void fn_80263F30(int arg0, unsigned char arg1, int arg2) {
+    struct ItemIt { virtual const char *getName(); };
+    struct ListIt { virtual void f0(); virtual void *get(int); };
+    char sp8[40];
+    char sp30[224];
     register const char *base asm("r31") = lbl_80346338;
     register int prev_state asm("r30");
     register void *list asm("r29");
@@ -107,25 +110,24 @@ void fn_80263F30(int arg0, unsigned char arg1, int arg2) {
     register int cont asm("r27");
     register int r_arg0 asm("r26") = arg0;
     register int r_arg2 asm("r25") = arg2;
-
     lbl_8055F450 = arg1;
     prev_state = fn_8020A69C();
     fn_8020A648(1);
     if (r_arg0 != 0) {
         fn_80265A74();
     }
-    list = fn_80131810((void *)(base + 0x68));
+    list = fn_80131810((void *)(base + 104));
     if (list != 0) {
         if (fn_802ECF00(lbl_8055C450) == 0) {
-            fn_802E317C(base + 0x74, lbl_8055C450);
+            fn_802E317C(base + 116, lbl_8055C450);
         }
         fn_80265940();
         fn_802646D0(sp30);
         fn_8026451C(sp8);
         cont = 1;
         r_arg0 = 0;
-        while (cont != 0 && (item = ((void *(*)(void *, int))(*(void ***)list)[3])(list, r_arg0)) != 0) {
-            if (stricmp(((char *(*)(void *))(*(void ***)item)[2])(item), base + 0xAC) == 0) {
+        while (cont != 0 && (item = ((ListIt *)list)->get(r_arg0)) != 0) {
+            if (stricmp(((ItemIt *)item)->getName(), base + 172) == 0) {
                 cont = fn_802656C8(item);
             }
             r_arg0++;
@@ -133,7 +135,7 @@ void fn_80263F30(int arg0, unsigned char arg1, int arg2) {
         fn_8020A648(-1);
         fn_80265A74();
         if (fn_802ECF04() == 0) {
-            fn_802E317C(base + 0xC0);
+            fn_802E317C(base + 192);
         }
         fn_80131818(list);
         fn_80264538((int)sp8, -1);
@@ -144,6 +146,7 @@ void fn_80263F30(int arg0, unsigned char arg1, int arg2) {
     }
     fn_8020A648(prev_state);
 }
+#pragma cplusplus off
 #pragma use_lmw_stmw on
 #pragma dont_inline on
 
