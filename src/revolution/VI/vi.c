@@ -1153,7 +1153,7 @@ void VIFlush(void)
     shdwChanged |= changed;
     while (changed != 0) {
         regIndex = cntlzd(changed);
-        shdwRegs[regIndex] = regs[regIndex];
+        regs[regIndex] = shdwRegs[regIndex];
         changed &= ~((u64)1 << (63 - regIndex));
     }
     lbl_8055DBCC = 1;
