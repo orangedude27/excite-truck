@@ -89,15 +89,21 @@ void* fn_8020A76C(void) {
 
 void *fn_8020A774(int arg0) { return lbl_804892D0 + arg0 * 0x24; }
 
-void fn_8020A788(void) {
+int fn_8020A788(void) {
+    void *value;
+    int ret;
     if (lbl_8055EE0C == 0) {
-        void *obj = (void *)fn_801284F8(0x20, lbl_8033C368);
-        if (obj != 0)
-            lbl_8055EE10 = ((void *(*)(void *, void *, int, int))fn_8012A13C)(obj, lbl_8033C368, 0x200, 0x54);
+        value = (void *)fn_801284F8(0x20, lbl_8033C368);
+        if (value != 0) {
+            value = ((void *(*)(void *, void *, int, int))fn_8012A13C)(value, lbl_8033C368, 0x200, 0x54);
+        }
+        lbl_8055EE10 = value;
     }
-    if (fn_8012A2D8(lbl_8055EE10) == 0)
-        return;
-    lbl_8055EE0C++;
+    ret = fn_8012A2D8(lbl_8055EE10);
+    if (ret != 0) {
+        lbl_8055EE0C += 1;
+    }
+    return ret;
 }
 
 #pragma push
