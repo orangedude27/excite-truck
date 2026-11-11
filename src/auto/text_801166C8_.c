@@ -5987,23 +5987,24 @@ void fn_80123CEC(s32 count, void *dst, s32 srcIndex, void *src) {
 extern void fn_8012440C(void *, void *);
 extern void fn_80124CE8(void *, void *);
 void fn_80123DC0(s32 count, void *dst, s32 srcIndex, void *src) {
+    /* Apply one of two DCT/transform kernels to dst based on count, using src at the given index offsets. */
     void *srcBase = src;
-    void *temp_r31;
-    void *temp_r30;
+    void *coeffPtr1;
+    void *coeffPtr2;
     if (count == 0x80) {
-        temp_r31 = (u8 *)srcBase + ((srcIndex - 8) * 4);
-        fn_80123E98(dst, temp_r31);
-        temp_r30 = (u8 *)srcBase + ((srcIndex - 0x20) * 4);
-        fn_8012440C((u8 *)dst + 0x80, temp_r30);
-        fn_80123E98((u8 *)dst + 0x100, temp_r31);
-        fn_8012440C((u8 *)dst + 0x180, temp_r30);
+        coeffPtr1 = (u8 *)srcBase + ((srcIndex - 8) * 4);
+        fn_80123E98(dst, coeffPtr1);
+        coeffPtr2 = (u8 *)srcBase + ((srcIndex - 0x20) * 4);
+        fn_8012440C((u8 *)dst + 0x80, coeffPtr2);
+        fn_80123E98((u8 *)dst + 0x100, coeffPtr1);
+        fn_8012440C((u8 *)dst + 0x180, coeffPtr2);
         return;
     } else {
-        void *tempElse = (u8 *)srcBase + ((srcIndex - 0x10) * 4);
-        fn_80124AD8(dst, tempElse);
-        fn_80124CE8((u8 *)dst + 0x40, tempElse);
-        fn_80124AD8((u8 *)dst + 0x80, tempElse);
-        fn_80124CE8((u8 *)dst + 0xC0, tempElse);
+        void *coeffPtr = (u8 *)srcBase + ((srcIndex - 0x10) * 4);
+        fn_80124AD8(dst, coeffPtr);
+        fn_80124CE8((u8 *)dst + 0x40, coeffPtr);
+        fn_80124AD8((u8 *)dst + 0x80, coeffPtr);
+        fn_80124CE8((u8 *)dst + 0xC0, coeffPtr);
     }
 }
 
