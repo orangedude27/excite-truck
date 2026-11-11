@@ -2124,6 +2124,13 @@ extern "C" s32 fn_800A7B34(void *volume, void *block) {
 #define VF_SECTOR_IS_END(s)     ((u32)((s) + 0x10000) == 0xFFFFU) /* no sector at all */
 #define VF_ERR_NO_FREE_PAGE     0x1E /* the page cache has no page left to hand out */
 
+/* How big a cluster is on the volume (from its boot sector): a cluster holds
+ * VF_VOL_SECTORS_PER_CLUSTER sectors and VF_VOL_CLUSTER_SHIFT is log2 of it, so
+ * a sector of the cluster heap is that many shifts away from a cluster number -
+ * which starts at VF_FAT_FIRST_CLUSTER once the heap's first sector is subtraced. */
+#define VF_VOL_SECTORS_PER_CLUSTER(v) (*(u8 *)((u8 *)(v) + 0x06))  /* 0x0006 sectors in a cluster */
+#define VF_VOL_CLUSTER_SHIFT(v)       (*(u8 *)((u8 *)(v) + 0x21))  /* 0x0021 log2 of it */
+
 #pragma push
 #pragma use_lmw_stmw off
 /* Take the cache page covering `sector` off one of the volume's page lists
