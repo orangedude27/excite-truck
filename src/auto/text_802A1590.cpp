@@ -721,6 +721,9 @@ extern "C" void fn_802A2A38(void* arg0, void* arg1) {
 }
 #pragma scheduling on
 extern "C" void fn_802A2AE8(void* arg0, s32 arg1) {
+    /* Builds effect/config params in a stack buffer (0xA8 bytes), initializes via fn_8028E61C,
+       fills many fields from lbl_805647xx float constants, then creates/stores an effect object
+       for "small trail dust" (lbl_80349A00) using fn_8028E2F8 into arg0+4. */
     u8 space[0xA8];
     u8* cfg = space;
     fn_8028E61C(cfg + 0x18);
