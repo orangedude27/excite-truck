@@ -640,6 +640,28 @@ struct S8024D0EC {
     unsigned char unk48;
 };
 
+/* One on-screen message widget, drawn by fn_8024D0EC.
+ * Its screen position is turned into overlay coordinates (origin at the
+ * screen centre) by fn_80230C30; height is the text box height and the
+ * numerator of the horizontal scale fn_8024CFE8 works out for the font. */
+struct MessageWidget {
+    int pad0;
+    int screenX;           /* raw screen position, from the UI layout */
+    int screenY;
+    int padC;
+    int height;            /* box height, in pixels */
+    int pad14;
+    char text[0x14];       /* short text drawn at the origin */
+    char *message;         /* message the bar and cursor run along */
+    int shown;             /* characters of message revealed so far */
+    int font;              /* font handle, see fn_8023293C */
+    unsigned int color;    /* text colour, picked again every frame */
+    int unk3C;             /* draw style, passed on to fn_80232BA4 */
+    float scale;           /* horizontal text scale (height / font width) */
+    float extra;           /* extra spacing handed to the width measure */
+    unsigned char full;    /* whole message shown: white text, no bar */
+};
+
 #pragma scheduling invalid_target
 void fn_8024D0EC(struct S8024D0EC *arg0) {
     float x, y;
