@@ -256,40 +256,41 @@ static s32 WPADiSendData(s32 chan, WPADCommand command) {
 }
 
 static void WPADiRadioSensitivity(s32 chan) {
-    WPADCB* p = lbl_8038F4F0[chan];
-    u8* q = (u8*)p;
+    WPADCB *p = lbl_8038F4F0[chan];
+    u8 *q = (u8 *)p;
     u32 two = 2;
     u16 a;
 
-    a = *(u8*)(q + 0x8c3) * 9;
-    a += (u16)(*(u16*)(q + 0x8c4) * 100 / two);
+    // Calculate radio sensitivity value
+    a = *(u8 *)(q + 0x8c3) * 9;
+    a += (u16)(*(u16 *)(q + 0x8c4) * 100 / two);
     a /= 10;
     a = MIN(100, a);
 
-    *(u8*)(q + 0x8c3) = a;
-    *(u16*)(q + 0x8c4) = 0;
+    *(u8 *)(q + 0x8c3) = a;
+    *(u16 *)(q + 0x8c4) = 0;
 
-    if (*(u8*)(q + 0x80c) != WPAD_RADIO_QUALITY_GOOD) {
+    if (*(u8 *)(q + 0x80c) != 0) {
         if (a > 85) {
-            *(u8*)(q + 0x80c) = WPAD_RADIO_QUALITY_GOOD;
-            *(u8*)(q + 0x80d) = 0;
+            *(u8 *)(q + 0x80c) = 0;
+            *(u8 *)(q + 0x80d) = 0;
         } else if (a > 80) {
-            (*(u8*)(q + 0x80d))++;
+            (*(u8 *)(q + 0x80d))++;
 
-            if (*(u8*)(q + 0x80d) >= 20) {
-                *(u8*)(q + 0x80c) = WPAD_RADIO_QUALITY_GOOD;
-                *(u8*)(q + 0x80d) = 0;
+            if (*(u8 *)(q + 0x80d) >= 20) {
+                *(u8 *)(q + 0x80c) = 0;
+                *(u8 *)(q + 0x80d) = 0;
             }
         }
     } else if (a < 75) {
-        *(u8*)(q + 0x80c) = WPAD_RADIO_QUALITY_BAD;
-        *(u8*)(q + 0x80d) = 0;
+        *(u8 *)(q + 0x80c) = 1;
+        *(u8 *)(q + 0x80d) = 0;
     } else if (a < 80) {
-        (*(u8*)(q + 0x80d))++;
+        (*(u8 *)(q + 0x80d))++;
 
-        if (*(u8*)(q + 0x80d) >= 1) {
-            *(u8*)(q + 0x80c) = WPAD_RADIO_QUALITY_BAD;
-            *(u8*)(q + 0x80d) = 0;
+        if (*(u8 *)(q + 0x80d) >= 1) {
+            *(u8 *)(q + 0x80c) = 1;
+            *(u8 *)(q + 0x80d) = 0;
         }
     }
 }
