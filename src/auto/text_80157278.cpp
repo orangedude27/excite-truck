@@ -1540,33 +1540,29 @@ extern "C" f32 fn_80159728(void* arg0, void* arg1) {
  return result;
 }
 #pragma pop
+// One frame of the record-list player while it runs on its own: while the main
+// progress counter has passed the level, hand the current record's value to
+// v35 and let v33 emit it, notify v38 when that value is not zero, then clear
+// the progress counters and advance the elapsed time by one 60 Hz frame.
 extern "C" void fn_80159AB4(void* arg0) {
-    class V {
-    public:
-        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
-        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17();
-        virtual f32 v20(s32); virtual void v21(); virtual void v22(); virtual s32 v23();
-        virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27(); virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31(); virtual void v32(); virtual void v33(); virtual void v34(); virtual void v35(f32*); virtual void v36(); virtual void v37(); virtual void v38(f32);
-    };
-    V* self = (V*)arg0;
-    volatile f32 sp8 = 0.0f;
-    if (*(f32*)((u8*)arg0 + 0x25c) > *(f32*)((u8*)arg0 + 0x24c)) {
+    Fn8015889C* self = (Fn8015889C*)arg0;
+    volatile f32 value = 0.0f;
+    if (self->mProgress25C > self->mLevel24C) {
         if (self->v23() > 0) {
-            sp8 = *(f32*)((u8*)arg0 + 0x250) * self->v20(self->v23());
-            self->v35((f32*)&sp8); self->v33();
+            value = self->mGain250 * self->v20(self->v23());
+            self->v35((f32*)&value); self->v33();
         }
     }
-    if (fn_80141F7C(sp8) == 0) self->v38(*(f32*)((u8*)arg0 + 0x25c));
-    f32 y;
-    f32 x;
-    f32 z;
-    x = *(f32*)((u8*)arg0 + 0x258);
-    y = lbl_8056177C;
-    z = lbl_80561754;
-    *(f32*)((u8*)arg0 + 0x25c) = z;
-    *(f32*)((u8*)arg0 + 0x264) = z;
-    *(f32*)((u8*)arg0 + 0x258) = x + y;
+    if (fn_80141F7C(value) == 0) self->v38(self->mProgress25C);
+    f32 frameTime;
+    f32 elapsed;
+    f32 zero;
+    elapsed = self->mTime258;
+    frameTime = lbl_8056177C;
+    zero = lbl_80561754;
+    self->mProgress25C = zero;
+    self->mProgress264 = zero;
+    self->mTime258 = elapsed + frameTime;
 }
 
 extern "C" void fn_80159BB4(Unk801577F0* arg0) {
