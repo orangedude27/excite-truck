@@ -5989,10 +5989,14 @@ void bta_hh_api_enable(void *enableRequest) {
     (*(void (**)(u32, void *, void *))(lbl_803C0D48 + 0x224))(0, &status, lbl_803C0D48);
 }
 
+/* Disable the BTA HID host: if no disable is pending, deregister the HID host,
+ * free each device descriptor buffer and the discovery database buffer, invoke
+ * the disable callback with the status, and clear the control block; otherwise
+ * mark disable pending and request disconnect for each connected device. */
 void bta_hh_api_disable(void) {
-    UINT8 xx;
+    UINT8 deviceIndex;
     UINT8 status;
-    void (*callback)(int, void *);
+    void (*disableCb)(int, void *);
 
     if (*(void **)(lbl_803C0D48 + 0x224) == NULL)
         return;
@@ -6000,17 +6004,17 @@ void bta_hh_api_disable(void) {
         status = 0;
         if (HID_HostDeregister() != HID_SUCCESS)
             status = 6;
-        for (xx = 0; xx < 0x10; xx++)
-            fn_800716F0(lbl_803C0D48 + xx * 0x20 + 0x14);
+        for (deviceIndex = 0; deviceIndex < 0x10; deviceIndex++)
+            fn_800716F0(lbl_803C0D48 + deviceIndex * 0x20 + 0x14);
         fn_800716F0(lbl_803C0D48 + 0x228);
-        callback = *(void (**)(int, void *))(lbl_803C0D48 + 0x224);
-        (*callback)(1, &status);
+        disableCb = *(void (**)(int, void *))(lbl_803C0D48 + 0x224);
+        (*disableCb)(1, &status);
         memset(lbl_803C0D48, 0, 0x230);
     } else {
         lbl_803C0D48[0x22E] = 1;
-        for (xx = 0; xx < 0x10; xx++) {
-            if (lbl_803C0D48[xx * 0x20 + 0x2C] == 3)
-                bta_hh_sm_execute((tBTA_HH_DEV_CB *)(lbl_803C0D48 + xx * 0x20 + 0x10), 0x1701, NULL);
+        for (deviceIndex = 0; deviceIndex < 0x10; deviceIndex++) {
+            if (lbl_803C0D48[deviceIndex * 0x20 + 0x2C] == 3)
+                bta_hh_sm_execute((tBTA_HH_DEV_CB *)(lbl_803C0D48 + deviceIndex * 0x20 + 0x10), 0x1701, NULL);
         }
     }
 }
