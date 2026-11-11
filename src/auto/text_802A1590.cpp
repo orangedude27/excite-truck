@@ -261,20 +261,21 @@ extern "C" char lbl_80349934[];
 extern "C" int stricmp(const char*, const char*);
 extern "C" void fn_802E317C(const char*, const char*);
 #pragma use_lmw_stmw off
+/* Look up a trail system type ID by name from a static name/ID table. */
 extern "C" s32 fn_802A1864(const char *name) {
     register s32 table[12];
     register s32 *src = (s32 *)lbl_802FAA10;
     register s32 *dst = table;
-    register s32 *p = table;
+    register s32 *entry = table;
     register unsigned int i = 0;
     *dst++ = *src++; *dst++ = *src++; *dst++ = *src++; *dst++ = *src++;
     *dst++ = *src++; *dst++ = *src++; *dst++ = *src++; *dst++ = *src++;
     *dst++ = *src++; *dst++ = *src++; *dst++ = *src++; *dst = *src;
     do {
-        if (stricmp(name, (const char *)p[0]) == 0)
+        if (stricmp(name, (const char *)entry[0]) == 0)
             return ((s32 *)((char *)table + 4))[i * 2];
         ++i;
-        p += 2;
+        entry += 2;
     } while (i < 6);
     ((void (*)(const char *, ...))fn_802E317C)(lbl_80349934, name);
     return 0;
