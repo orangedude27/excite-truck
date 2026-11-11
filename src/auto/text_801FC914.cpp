@@ -17,6 +17,19 @@ struct PathPoolTable {
     PathPool pools[8];
     int poolCount;    // +0x2C0
 };
+
+// One entry of a path spawner's list (the spawner object keeps 4 of them at +4,
+// count at +0x94; fn_801FE88C fills one from the archive). fn_801FEDA4 spawns a
+// prop from the pool named here, fn_801FEC74 hands it back.
+struct PathSpawnEntry {
+    void *source;          // +0x00: object to place the prop at (position +0x10, quaternion +0x1C)
+    char poolName[0x10];   // +0x04: pool the prop is taken from, matched with stricmp
+    unsigned short mode;   // +0x14: 0 = spawn every frame, 1 = spawn on a timer
+    unsigned short unk16;  // +0x16: second archive parameter, unused here
+    float minDelay;        // +0x18: timer range, low end
+    float maxDelay;        // +0x1C: timer range, high end
+    float nextSpawn;       // +0x20: time the next prop is due
+};
 extern "C" void fn_801FEA28(void*);
 class SHMainMenu { public: ~SHMainMenu(); };
 extern "C" {
