@@ -225,9 +225,9 @@ void fn_80291B14(float *arg0) {
 #pragma push
 #pragma processor 750
 void fn_80291B9C(void *arg0, float *arg1, float arg2) {
-    float a = arg1[0];
     float c = arg1[2];
     float b = arg1[1];
+    float a = arg1[0];
     char *entry;
     int i;
     *((float *)((char *)arg0 + 0x130)) = a;
@@ -236,7 +236,7 @@ void fn_80291B9C(void *arg0, float *arg1, float arg2) {
     fn_802C8E70(arg1, (char *)arg0 + 0x13C);
     *((float *)((char *)arg0 + 0x144)) = arg2;
     if (fn_802C8FF4((char *)arg0 + 0x13C, *((float *)((char *)arg0 + 0x12C)))) {
-        *((unsigned char *)arg0 + 0x148) = *((int *)((char *)arg0 + 0x120)) != 0;
+        *((unsigned char *)arg0 + 0x148) = *((unsigned int *)((char *)arg0 + 0x120)) != 0;
         entry = (char *)arg0;
         i = 0;
         do {
@@ -398,6 +398,8 @@ extern "C" void fn_80292114(void) {
     void *object;
     int enabled;
     unsigned char active;
+
+    /* Query the "sun" property from flare.val config and cache it when the global state allows. */
     state = fn_801E1F44();
     active = 0;
     enabled = 0;
@@ -406,6 +408,7 @@ extern "C" void fn_80292114(void) {
     if (enabled != 0)
         active = 1;
     lbl_8055F75C = active;
+
     if (active != 0) {
         object = fn_80131810(&lbl_80349164);
         if (object != 0) {
@@ -505,20 +508,21 @@ extern float lbl_8056449C;
 extern double lbl_805644C8;
 __declspec(section ".data") extern int lbl_804B3EC0;
 void fn_802923EC(float arg0) {
-    register float value;
+    register int *table = 0;
     register int *settings;
-    register int *table;
+    register int amount = 0;
     register int *entry;
-    register int i;
-    register unsigned int packed;
-    register int amount;
+    register int i = 0;
+    register unsigned int packed = 0;
+    register float value = 0;
     if (lbl_8055F75C != 0) {
         value = lbl_80564480 < arg0 ? arg0 : lbl_80564480;
         value = value > lbl_80564484 ? lbl_80564484 : value;
         settings = (int *)&lbl_804B4010;
-        packed = (unsigned int)settings[6] & 0xFFFFFFu;
+        packed = (unsigned int)settings[6];
+        packed &= 0xFFFFFFu;
         amount = (int)(lbl_8056449C * value);
-        settings[6] = (int)(packed | ((unsigned int)amount << 24));
+        settings[6] = (int)(((unsigned int)amount << 24) | packed);
         entry = (int *)&lbl_804B3EC0;
         table = entry;
         i = 0;
