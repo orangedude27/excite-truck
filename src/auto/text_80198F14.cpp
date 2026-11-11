@@ -9,6 +9,7 @@ extern "C" void fn_801A0378(void*, void*);
 extern "C" void fn_801A1F44(void*, void*);
 extern "C" s32 fn_8019C854(void*, void*);
 #include <revolution/MTX/vec.h>
+struct CornerV3 { f32 x, y, z; };
 
 static inline void fn801A1F98Transform(volatile f32 *dst, volatile f32 *src, f32 *matrix) {
     f32 x = src[0];
@@ -2062,9 +2063,9 @@ extern "C" void fn_8017B5D4(s32, s32, s32, s32, s32, s32, s32);
 
 #pragma scheduling invalid_target
 extern "C" void* fn_8019EDB8(void* arg0, void* arg1, s32 arg2) {
-    s32 copyFlag = arg2;
-    void *self = arg0;
     u8 second, first, opposite, other;
+    void *self = arg0;
+    s32 copyFlag = arg2;
     fn_8019ECC4();
     *(void **)self = &lbl_80333B48;
     if (copyFlag != 0) {
@@ -2132,33 +2133,33 @@ extern "C" void fn_8019EF00(void* arg0) {
     Object* self = (Object*)arg0;
     f32* m = self->matrix;
     if (&self->output == (volatile Vec*)&self->input) {
-        register f32 y = self->input.y;
-        register f32 p03 = y * m[3];
-        register f32 p14 = y * m[4];
-        register f32 p25 = y * m[5];
-        register f32 x = self->input.x;
-        register f32 p00 = x * m[0];
-        register f32 p11 = x * m[1];
-        register f32 p22 = x * m[2];
-        register f32 z = self->input.z;
-        register f32 p06 = z * m[6];
-        register f32 p17 = z * m[7];
-        register f32 p28 = z * m[8];
+        f32 y = self->input.y;
+        f32 p03 = y * m[3];
+        f32 p14 = y * m[4];
+        f32 p25 = y * m[5];
+        f32 x = self->input.x;
+        f32 p00 = x * m[0];
+        f32 p11 = x * m[1];
+        f32 p22 = x * m[2];
+        f32 z = self->input.z;
+        f32 p06 = z * m[6];
+        f32 p17 = z * m[7];
+        f32 p28 = z * m[8];
         self->output.x = p00 + p03 + p06;
         self->output.y = p11 + p14 + p17;
         self->output.z = p22 + p25 + p28;
     } else {
-        register f32 p03 = self->input.y * m[3];
-        register f32 p00 = self->input.x * m[0];
-        register f32 p06 = self->input.z * m[6];
+        f32 p03 = self->input.y * m[3];
+        f32 p00 = self->input.x * m[0];
+        f32 p06 = self->input.z * m[6];
         self->output.x = p00 + p03 + p06;
-        register f32 p14 = self->input.y * m[4];
-        register f32 p11 = self->input.x * m[1];
-        register f32 p17 = self->input.z * m[7];
+        f32 p14 = self->input.y * m[4];
+        f32 p11 = self->input.x * m[1];
+        f32 p17 = self->input.z * m[7];
         self->output.y = p11 + p14 + p17;
-        register f32 p25 = self->input.y * m[5];
-        register f32 p22 = self->input.x * m[2];
-        register f32 p28 = self->input.z * m[8];
+        f32 p25 = self->input.y * m[5];
+        f32 p22 = self->input.x * m[2];
+        f32 p28 = self->input.z * m[8];
         self->output.z = p22 + p25 + p28;
     }
     self->output.x += m[9];
@@ -2721,7 +2722,7 @@ extern "C" void fn_801A0258(void *arg0, void *arg1, f32 farg0, f32 farg1, f32 fa
     };
     Object *object = (Object *)fn_801284F8(0x54, lbl_80333640);
     if (object != 0) {
-        s32 type = *(s32 *)((u8 *)arg0 + 4);
+        u32 type = *(u32 *)((u8 *)arg0 + 4);
         object->fieldC = *(s32 *)((u8 *)arg0 + 0xC);
         f32 zero = lbl_805622D0;
         object->field4 = type;
