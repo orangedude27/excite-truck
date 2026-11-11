@@ -97,6 +97,17 @@ extern "C" void *fn_801A520C(void *, void *);
 extern "C" char lbl_80332E70[];
 extern "C" char lbl_80332E80[];
 extern "C" char lbl_8055A470[7];
+/* Builds the local player's car for a race.
+ * The current game mode's master object (fn_801B83A0, one of the masters chosen by
+ * fn_801B81E0 from the mode id in the session settings record) says which driver
+ * object drives the car; when it has none, one is made here: an AI driver
+ * ("AIDriver", fn_80134E90) for modes flagged 0x100 or for the 0x180201 mode,
+ * otherwise a park driver ("ParkDriver", fn_80135078).
+ * Then, in order: the player's input driver ("PlayerDriver", fn_801912B4), the
+ * "Hybrid" that ties the driver to that input driver (fn_8018FD88) and finally the
+ * car itself ("LocalCar (player)", fn_801A520C) built on top of the hybrid.
+ * Also latches bit 8 of the mode word into lbl_8055E522, which the 0x180304 mode
+ * always clears. */
 extern "C" void fn_8018FB18(void) {
     class ModeMaster {
     public:
