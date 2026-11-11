@@ -7547,27 +7547,42 @@ extern "C" void VFiPFFILE_FinalizeAllFiles(u8 *arg0) {
     VF_HANDLE_ERROR(f) = (e)
 #endif /* VF_FILE_HANDLES_DEFINED */
 
-extern "C" s32 fn_800B1AFC(s32 arg0, s32 arg1, s32 *arg2, s32 arg3) {
-    void *context;
+/* Open a file on the volume the path's drive names - the open behind
+ * pf2_fopen (VFipf2_fopen), which parses the mode and the path first.
+ *
+ * The volume's recursive lock is held over the whole operation, and
+ * fn_800B6004 first carries out any mount or unmount waiting on the volume
+ * and says whether it can be used at all.  A write-protected volume still
+ * lets an open for writing get as far as the open itself - the same
+ * allowance close() makes - so the handle is created and the error recorded
+ * there instead of the open being refused here.  fn_800B143C then looks the
+ * file up (or creates it), takes a stream and one of the volume's five file
+ * handles for it and hands that handle back in *handleOut; a file open on
+ * the volume is counted.  A failure is left in the VF instance's last error
+ * and in the volume's, and is the return value.
+ */
+extern "C" s32 fn_800B1AFC(s32 path, s32 mode, s32 *handleOut, s32 arg3 /* unused */) {
+    u8 *volume;
     s32 result;
-    *arg2 = 0;
-    context = ((void *(*)(void))fn_800B36D4)();
-    fn_800B77C0((u8 *)context + 0x1F90);
-    result = fn_800B6004(context);
-    if (result != 0 && (result != 0xB || arg1 != 2)) {
-        fn_800B783C((void *)((volatile u8 *)context + 0x1F90));
-        lbl_803D2140[16] = result;
-        *(s32 *)((u8 *)context + 0x1F80) = result;
+
+    *handleOut = 0;
+    volume = ((u8 *(*)(void))fn_800B36D4)();
+    VFiPFLOCK_Acquire(VF_VOL_LOCK(volume));
+    result = fn_800B6004(volume);
+    if (result != 0 && (result != VF_ERR_WRITE_PROTECTED || mode != VF_MODE_WRITE)) {
+        VFiPFLOCK_Release((void *)((volatile u8 *)volume + 0x1F90));
+        VF_LAST_ERROR = result;
+        VF_VOL_ERROR(volume) = result;
         return result;
     }
-    result = fn_800B143C(context, arg0, arg1, (void **)arg2);
+    result = fn_800B143C(volume, path, mode, (void **)handleOut);
     if (result != 0) {
-        lbl_803D2140[16] = result;
-        *(s32 *)((u8 *)context + 0x1F80) = result;
+        VF_LAST_ERROR = result;
+        VF_VOL_ERROR(volume) = result;
     } else {
-        ++*(s32 *)((u8 *)context + 0x161C);
+        ++VF_VOL_OPEN_FILES(volume);
     }
-    fn_800B783C((void *)((volatile u8 *)context + 0x1F90));
+    VFiPFLOCK_Release((void *)((volatile u8 *)volume + 0x1F90));
     return result;
 }
 
