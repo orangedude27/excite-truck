@@ -117,9 +117,22 @@ void UpdateOrigin(s32 chan) {
 }
 
 void fn_80056308(s32 chan, u32 status) {
-    (void)status;
-    UpdateOrigin(chan);
-    fn_800563C8(chan, 0);
+    u32 data[2];
+    s32 enabledChan;
+    if ((status & 0xF) == 0) {
+        UpdateOrigin(lbl_80558F74);
+        enabledChan = lbl_80558F74;
+        lbl_8055DB14 |= PAD_CHAN0_BIT >> enabledChan;
+        SIGetResponse(enabledChan, data);
+        fn_80057F2C(enabledChan, lbl_80558F7C | 0x00400000);
+        SIEnablePolling(lbl_8055DB14);
+    }
+    lbl_80558F74 = __cntlzw(lbl_8055DB10);
+    if (lbl_80558F74 != 32) {
+        lbl_8055DB10 &= ~(PAD_CHAN0_BIT >> lbl_80558F74);
+        memset(&lbl_8038F080[lbl_80558F74 * 12], 0, 12);
+        SIGetTypeAsync(lbl_80558F74, fn_8005649C);
+    }
 }
 
 void fn_800563C8(s32 chan, u32 status) {
@@ -506,8 +519,15 @@ BOOL fn_800572DC(BOOL final, u32 event) {
 }
 
 void SamplingHandler(s16 intr, OSContext* ctx) {
+    unsigned char local[0x2D8];
     (void)intr;
-    (void)ctx;
+    if (lbl_8055DAF4 != 0) {
+        OSClearContext((OSContext*)local);
+        OSSetCurrentContext((OSContext*)local);
+        ((void (*)(void))lbl_8055DAF4)();
+        OSClearContext((OSContext*)local);
+        OSSetCurrentContext(ctx);
+    }
 }
 
 BOOL __PADDisableRecalibration(BOOL disable) {
