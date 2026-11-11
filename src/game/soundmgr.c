@@ -199,6 +199,7 @@ extern char lbl_8033BEE8[];
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma cplusplus on
+/* Destructor for a sound-manager object: tear down active sounds/resources, log leaks, then optionally delete. */
 extern "C" void* fn_80207B60(void* arg0, signed long arg1) {
     struct Obj {
         virtual void f0();
