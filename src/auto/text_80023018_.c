@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+// Returns nonzero if two decimal representations hold the same numeric value.
 int __equals_dec(void *a, void *b) {
     unsigned char *x = (unsigned char *)a;
     unsigned char *y = (unsigned char *)b;
