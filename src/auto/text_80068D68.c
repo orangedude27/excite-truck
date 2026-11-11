@@ -24672,25 +24672,36 @@ void sdp_disconnect_ind(u16 handle, u8 reason) {
 
 extern char lbl_8031A3E8[];
 extern void (sdp_server_handle_client_req)(tCONN_CB *, BT_HDR *);
+/* L2CAP data indication for SDP (sdp_main.c).  p_msg is the received SDP PDU
+ * (a GKI buffer, BT_HDR).  Finds the connection the CID belongs to and, while it
+ * is connected, passes the PDU to the discovery client when this side originated
+ * the connection (we are the SDP client) or to the server otherwise; anything
+ * else - unknown CID, or data outside the connected state - is only logged.
+ * The buffer is always freed here. */
 void sdp_data_ind(u16 l2cap_cid, void *p_msg) {
     tCONN_CB *p_ccb;
     u8 con_state;
 
-    p_ccb = l2cu_find_lcb_by_handle_80099E54(l2cap_cid);
-    if (p_ccb != 0) {
+    /* Find CCB based on CID */
+    p_ccb = sdpu_find_ccb_by_cid(l2cap_cid);
+    if (p_ccb != NULL) {
         con_state = p_ccb->con_state;
         if (con_state == SDP_STATE_CONNECTED) {
             if (p_ccb->con_flags & SDP_FLAGS_IS_ORIG) {
+                /* we are the client: this is a response from the server */
                 sdp_disc_server_rsp(p_ccb, p_msg);
             } else {
+                /* we are the server: the parens keep sdpint.h's empty
+                   sdp_server_handle_client_req() macro away */
                 (sdp_server_handle_client_req)(p_ccb, p_msg);
             }
-        } else if (lbl_803C4C40[0x4630] >= 2) {
-            fn_8007096C(0xA0001, lbl_8031A3B0, con_state, l2cap_cid);
+        } else if (sdp_cb_trace_level >= BT_TRACE_LEVEL_WARNING) {
+            fn_8007096C(TRACE_LAYER_SDP | TRACE_TYPE_WARNING, lbl_8031A3B0, con_state, l2cap_cid); /* "SDP - Ignored L2CAP data while in state: %d, CID: 0x%x" */
         }
-    } else if (lbl_803C4C40[0x4630] >= 2) {
-        fn_80070954(0xA0001, lbl_8031A3E8, l2cap_cid);
+    } else if (sdp_cb_trace_level >= BT_TRACE_LEVEL_WARNING) {
+        fn_80070954(TRACE_LAYER_SDP | TRACE_TYPE_WARNING, lbl_8031A3E8, l2cap_cid); /* "SDP - Rcvd L2CAP data, unknown CID: 0x%x" */
     }
+
     GKI_freebuf(p_msg);
 }
 
