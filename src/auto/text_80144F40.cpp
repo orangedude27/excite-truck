@@ -2177,6 +2177,7 @@ extern char lbl_8032D28C[];
 #pragma dont_inline on
 #pragma scheduling invalid_target
 extern "C" void fn_80148534(void *arg0) {
+    /* Replace an object's name extension with ".txt", resolve it, apply loaded data to sub-objects at +0x2C/+0x30/+0x34/+0x3C, and release the handle. */
     strcpy(fn_80029004((char *)arg0 + 5, '.'), lbl_80559E70);
     char *name = (char *)arg0;
     name += 5;
