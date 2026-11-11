@@ -2939,41 +2939,42 @@ process:
 extern "C" void fn_800B36CC(s32, s32, s32, s32);
 extern "C" void fn_800ACA50(s32, s32, s32, s32);
 extern "C" void fn_800B4BD8(char *, u16 *, void *);
-extern "C" s32 fn_800A98B8(void *arg0, s32 arg1, s32 arg2, void *arg3) {
-    u32 frame[0xB4];
+extern "C" s32 fn_800A98B8(void *volumeContext, s32 pathId, s32 outputIndexByte, void *outputInfo) {
+    /* Initializes and populates a file/info record from volume/path data, returning a status code. */
+    u32 scratch[0xB4];
 
     s32 result = ((s32 (*)(s32, void *, void *))fn_800B36CC)(
-        arg1, (u8 *)frame + 0x10, frame);
+        pathId, (u8 *)scratch + 0x10, scratch);
     if (result != 0)
         return result;
 
     result = ((s32 (*)(void *, void *, s32, void *))fn_800ACA50)(
-        (u8 *)frame + 0x20, (u8 *)frame + 0x90, (s32)arg0,
-        (u8 *)frame + 0x10);
+        (u8 *)scratch + 0x20, (u8 *)scratch + 0x90, (s32)volumeContext,
+        (u8 *)scratch + 0x10);
     if (result != 0)
         return result;
 
-    if ((((u8 *)frame)[0x2AC] & 0x10) == 0)
+    if ((((u8 *)scratch)[0x2AC] & 0x10) == 0)
         return 0x14;
 
     register s32 zero = 0;
-    *(s32 *)((u8 *)arg3 + 0xC) = *(s32 *)((u8 *)frame + 0x2C4);
-    *(s32 *)((u8 *)arg3 + 0x10) = zero;
-    *(s32 *)((u8 *)arg3 + 8) = *(s32 *)((u8 *)frame + 0x2BC);
-    *((s8 *)arg3 + 0x1B) = (s8)arg2;
-    *(s32 *)((u8 *)arg3 + 0x14) = zero;
+    *(s32 *)((u8 *)outputInfo + 0xC) = *(s32 *)((u8 *)scratch + 0x2C4);
+    *(s32 *)((u8 *)outputInfo + 0x10) = zero;
+    *(s32 *)((u8 *)outputInfo + 8) = *(s32 *)((u8 *)scratch + 0x2BC);
+    *((s8 *)outputInfo + 0x1B) = (s8)outputIndexByte;
+    *(s32 *)((u8 *)outputInfo + 0x14) = zero;
 
-    if ((u32)fn_800A4D44(frame) == 1U) {
+    if ((u32)fn_800A4D44(scratch) == 1U) {
         ((void (*)(void *, void *, void *))fn_800B4BD8)(
-            (u8 *)arg3 + 0x1C, (void *)zero, frame);
-        *(s32 *)((u8 *)arg3 + 0x14) |= 1;
+            (u8 *)outputInfo + 0x1C, (void *)zero, scratch);
+        *(s32 *)((u8 *)outputInfo + 0x14) |= 1;
     } else {
         ((void (*)(void *, void *, void *))fn_800B4BD8)(
-            (u8 *)arg3 + 0x1C, (u16 *)((u8 *)arg3 + 0x444), frame);
-        *(s32 *)((u8 *)arg3 + 0x14) |= 2;
+            (u8 *)outputInfo + 0x1C, (u16 *)((u8 *)outputInfo + 0x444), scratch);
+        *(s32 *)((u8 *)outputInfo + 0x14) |= 2;
     }
 
-    return fn_800A95B4(arg3);
+    return fn_800A95B4(outputInfo);
 }
 
 #pragma pop
