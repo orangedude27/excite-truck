@@ -1250,7 +1250,7 @@ extern "C" void SetInfoChunk__Q46nw4hbm3snd6detail22SoundArchiveFileReaderFPCvUl
     *(const void **)((char *)self + 0x28) = (const u8 *)data + 8;
 }
 
-namespace nw4hbm { namespace snd { namespace detail { class SoundArchiveFile { public: class StringTree; }; } class SoundArchive { public: class SoundInfo; typedef detail::SoundArchiveFile::StringTree StringTree; }; namespace detail { class SoundArchiveFileReader { public: s32 GetSoundType(u32) const; BOOL ReadSoundInfo(u32, SoundArchive::SoundInfo *) const; s32 ConvertLabelStringToId(const SoundArchive::StringTree *, const char *) const; }; } } }
+namespace nw4hbm { namespace snd { namespace detail { class SoundArchiveFile { public: class StringTree; }; } class SoundArchive { public: class SoundInfo; struct BankInfo { u32 offset; }; typedef detail::SoundArchiveFile::StringTree StringTree; }; namespace detail { class SoundArchiveFileReader { public: s32 GetSoundType(u32) const; BOOL ReadSoundInfo(u32, SoundArchive::SoundInfo *) const; BOOL ReadBankInfo(u32, SoundArchive::BankInfo *) const; s32 ConvertLabelStringToId(const SoundArchive::StringTree *, const char *) const; }; } } }
 extern "C" const char lbl_80324DE4[];
 extern "C" const char lbl_80324E10[];
 extern "C" char lbl_805598C8;
@@ -4895,12 +4895,15 @@ extern "C" s32 Prepare__Q46nw4hbm3snd6detail10StrmPlayerFPQ46nw4hbm3snd6detail14
     *(u32 *)((char *)self + 0x434) = arg6;
     *(void **)((char *)self + 0x42C) = pool;
     s32 result = ((Callback *)callback)->Start((void *)NotifyStrmHeaderAsyncEndCallback__Q46nw4hbm3snd6detail10StrmPlayerFbPCQ56nw4hbm3snd6detail10StrmPlayer10StrmHeaderPv, self, self, arg6);
-    if (result == 2) {
-    } else if (result >= 2) {
-    } else if (result == 0) {
-    } else if (result >= 0) {
-        ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(self);
-    }
+    if (result == 2) goto done;
+    if (result >= 2) goto done;
+    if (result == 0) goto done;
+    if (result >= 0) goto doForce;
+    goto done;
+doForce:
+    ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(self);
+    goto done;
+done:
     *((u8 *)self + 0x48) = 1;
     return 1;
 }
