@@ -3119,6 +3119,7 @@ void GXSetChanAmbColor_Internal(s32 type, void *color) {
 }
 
 void GXSetChanMatColor_Internal(s32 type, void *color) {
+    /* Update a GX channel material color register (RGB, alpha, or full word) for channel 0/1 and mark it dirty. */
     unsigned int value;
     register unsigned int which;
     unsigned int colorValue;
