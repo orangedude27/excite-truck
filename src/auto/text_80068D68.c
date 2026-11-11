@@ -17097,6 +17097,7 @@ success:
 
 extern u8 lbl_80560D48[];
 BOOLEAN L2CA_SetIdleTimeoutByBdAddr(BD_ADDR addr, UINT16 timeout) {
+    extern u8 lbl_80560D48[6];
     void *p;
     u8 *entry;
     if (memcmp(lbl_80560D48, addr, 6) != 0) {
@@ -17109,7 +17110,8 @@ BOOLEAN L2CA_SetIdleTimeoutByBdAddr(BD_ADDR addr, UINT16 timeout) {
     }
     entry = lbl_803C4040;
     if (entry[8] != 0 && *(s32 *)(entry + 0xC) == 4) *(u16 *)(entry + 0x60) = timeout;
-    if ((entry += 0x64)[0] != 0 && *(s32 *)(entry + 4) == 4) *(u16 *)(entry + 0x58) = timeout;
+    entry += 0x64;
+    if (entry[0] != 0 && *(s32 *)(entry + 4) == 4) *(u16 *)(entry + 0x58) = timeout;
     if (entry[0x5C] != 0 && *(s32 *)(entry + 0x60) == 4) *(u16 *)(entry + 0xB4) = timeout;
     if (entry[0xB8] != 0 && *(s32 *)(entry + 0xBC) == 4) *(u16 *)(entry + 0x110) = timeout;
 done:
@@ -19084,15 +19086,11 @@ void l2cu_send_peer_cmd_reject(void *arg0, u16 arg1, u8 arg2, u16 arg3, u16 arg4
     u16 size;
     void *packet;
     u8 *p;
-
-    if (arg1 != 1) {
-        goto calc_size;
+    if (arg1 == 1) {
+        size = 2;
+    } else {
+        size = ((s32)~((arg1 - 2) | (2 - arg1)) >> 31) & 4;
     }
-    size = 2;
-    goto size_done;
-calc_size:
-    size = ((s32)~((arg1 - 2) | (2 - arg1)) >> 31) & 4;
-size_done:
     packet = ((void *(*)(u16, u16, u8, s32))l2cu_build_header)(
         *(u16 *)((u8 *)arg0 + 0x28), size + 2, 1, arg2);
     if (packet == 0) {
@@ -20430,36 +20428,32 @@ extern void fn_800939CC(void *, u8, void *);
 extern int port_flow_control_user(void *);
 u32 port_rfc_send_tx_data(void *port) {
     u8 *p = (u8 *)port;
-    u32 events = 0;
-    void *packet;
-
-    if (*(s32 *)(p + 0x28) != 0) {
-        for (;;) {
-            packet = GKI_dequeue((BUFFER_Q *)(p + 0x18));
-            if (packet != 0) {
-                if (lbl_803C4828[0x414] >= 4)
-                    fn_8007093C(0x90003, lbl_803194FC);
-
-                *(s32 *)(p + 0x28) -= *(u16 *)((u8 *)packet + 2);
-                fn_800939CC(*(void **)(p + 0x6c), p[0xd], packet);
-                events |= 0x4000;
-                if (*(s32 *)(p + 0x28) != 0)
-                    continue;
-                events |= 4;
-                goto flow;
-            }
-            events |= 4;
+    u32 events = 0u;
+    void *packet = (void *)0;
+    if (*(s32 *)(p + 0x28) == 0)
+        goto flow;
+    for (;;) {
+        packet = GKI_dequeue((BUFFER_Q *)(p + 0x18));
+        if (packet != (void *)0) {
+            if (lbl_803C4828[0x414] >= (s32)4)
+                fn_8007093C(0x90003u, lbl_803194FC);
+            *(s32 *)(p + 0x28) -= (s32)*(u16 *)((u8 *)packet + 2);
+            fn_800939CC(*(void **)(p + 0x6c), p[0xd], packet);
+            events |= 0x4000u;
+            if (*(s32 *)(p + 0x28) != (s32)0)
+                continue;
+            events |= 4u;
             goto flow;
         }
+        events |= 4u;
+        goto flow;
     }
-
 flow:
     if (p[0x24] == 0) {
         void *mcb = *(void **)(p + 0x6c);
-        if (mcb != 0 && *((u8 *)mcb + 0x71) == 0)
+        if (mcb != (void *)0 && *((u8 *)mcb + 0x71) == 0)
             events |= port_flow_control_user(port);
     }
-
     return events & *(u32 *)(p + 0x88);
 }
 
@@ -20936,7 +20930,10 @@ typedef struct t_rfc_mcb_view {
     u16 lcid;           /* +0x68  L2CAP channel carrying the multiplexer */
     u16 pad_6A;
     u8  state;          /* +0x6C  RFC_MX_STATE_* */
-    u8  pad_6D[4];
+    u8  is_initiator;   /* +0x6D  we asked for this multiplexer channel */
+    u8  local_cfg_sent; /* +0x6E  our L2CA_ConfigReq() has been confirmed */
+    u8  peer_cfg_rcvd;  /* +0x6F  the peer's L2CA_ConfigInd() has arrived */
+    u8  pad_70;
     u8  peer_ready;     /* +0x71  peer is up on the multiplexer channel */
 } tRFC_MCB_VIEW;
 
@@ -24591,10 +24588,10 @@ void sdp_disconnect_ind(u16 handle, u8 reason) {
     u8 *ccb;
     void (*callback)(u16, s32, u8);
     u8 state;
-    s32 result;
     s32 stateDelta;
     s32 reverseDelta;
     s32 equalityMask;
+    u32 result;
 
     ccb = (u8 *)l2cu_find_lcb_by_handle_80099E54(handle);
     if (ccb == 0) {
@@ -24615,12 +24612,11 @@ void sdp_disconnect_ind(u16 handle, u8 reason) {
     callback = *(void (**)(u16, s32, u8))(ccb + 0x414);
     if (callback != 0) {
         state = ccb[0];
-        result = 0x10000;
-        result -= 15;
+        result = 0xFFF1;
         stateDelta = state - 3;
         reverseDelta = 3 - state;
         equalityMask = (s32)~(stateDelta | reverseDelta) >> 31;
-        result = result & ~equalityMask;
+        result &= ~equalityMask;
         callback((u16)result, stateDelta, state);
     }
 
@@ -25805,20 +25801,16 @@ s32 IUSB_OpenLib(void) {
     register char *base = lbl_8031A620;
     s32 result = 0;
     s32 interruptState;
-    s32 heapHandle;
 
     interruptState = OSDisableInterrupts();
-    heapHandle = lbl_805590A0;
-    if (heapHandle != -1) {
+    if (lbl_805590A0 != -1) {
         USB_LOG(base + 0xC);
         goto done;
     }
-
     if (lbl_8055DC88 == 0) {
         lbl_8055DC88 = (s32)IPCGetBufferLo();
         USB_LOG(base + 0x3C, 0x80, lbl_8055DC88,
                 (lbl_8055DC8C = (u32)IPCGetBufferHi()));
-
         if ((u32)lbl_8055DC88 + 0x1000 > lbl_8055DC8C) {
             USB_ERR(base + 0x5C);
             result = -0x16;
@@ -25826,12 +25818,10 @@ s32 IUSB_OpenLib(void) {
         }
         IPCSetBufferLo((void *)((u32)lbl_8055DC88 + 0x1000));
     }
-
     if ((lbl_805590A0 = iosCreateHeap((void *)lbl_8055DC88, 0x1000)) < 0) {
         USB_ERR(base + 0x74);
         result = -0x16;
     }
-
 done:
     OSRestoreInterrupts(interruptState);
     return result;
