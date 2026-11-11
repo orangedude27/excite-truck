@@ -165,31 +165,34 @@ extern void fn_802C519C(void *);
 extern void fn_80128668(void *);
 
 #pragma cplusplus on
-extern "C" void *fn_80217270(void *arg0, int arg1) {
+extern "C" void *fn_80217270(void *container, int shouldFree) {
     class Obj {
     public:
         virtual void v0(int);
     };
-    char *entry;
-    int i;
-    if (arg0 != 0) {
-        i = *(int *)((char *)arg0 + 0x430) - 1;
-        entry = (char *)arg0 + i * 4;
-        while (i >= 0) {
-            void *obj = *(void **)(entry + 0x30);
-            if (obj != 0) {
-                ((Obj *)obj)->v0(1);
+    char *slotPtr;
+    int index;
+    /* Destructor-like cleanup: walk child object slots at +0x30 (count at +0x430)
+     * and virtual-delete non-null entries, release embedded/owned substructures,
+     * then optionally free the container itself. */
+    if (container != 0) {
+        index = *(int *)((char *)container + 0x430) - 1;
+        slotPtr = (char *)container + index * 4;
+        while (index >= 0) {
+            void *child = *(void **)(slotPtr + 0x30);
+            if (child != 0) {
+                ((Obj *)child)->v0(1);
             }
-            entry -= 4;
-            i--;
+            slotPtr -= 4;
+            index--;
         }
-        fn_802C2D94((char *)arg0 + 0xC);
-        if (*(void **)arg0 != 0) fn_802C4C80(*(void **)arg0);
-        if (*(void **)((char *)arg0 + 4) != 0) fn_802C2FC4(*(void **)((char *)arg0 + 4));
-        if (*(void **)((char *)arg0 + 8) != 0) fn_802C519C(*(void **)((char *)arg0 + 8));
-        if (arg1 > 0) fn_80128668(arg0);
+        fn_802C2D94((char *)container + 0xC);
+        if (*(void **)container != 0) fn_802C4C80(*(void **)container);
+        if (*(void **)((char *)container + 4) != 0) fn_802C2FC4(*(void **)((char *)container + 4));
+        if (*(void **)((char *)container + 8) != 0) fn_802C519C(*(void **)((char *)container + 8));
+        if (shouldFree > 0) fn_80128668(container);
     }
-    return arg0;
+    return container;
 }
 #pragma scheduling invalid_target
 #pragma cplusplus on
