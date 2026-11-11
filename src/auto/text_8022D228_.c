@@ -344,7 +344,7 @@ void fn_8022DD9C(void *arg0,int *arg1,int *arg2) {
 }
 
 #pragma push
-#pragma opt_propagation off
+#pragma opt_propagation on
 void fn_8022DDB0(void *arg0) {
     float c = lbl_805635D4;
     float *p = *(float **)((char *)arg0 + 0x18);
@@ -357,9 +357,8 @@ void fn_8022DDB0(void *arg0) {
 void fn_8022DE1C(void *arg0) {
     float c = lbl_805635D4;
     float *p = *(float **)((char *)arg0 + 0x18);
-    float val = *p;
     float step = *(float *)((char *)arg0 + 0x14);
-    float v = step * (float)(int)(c + ((val - step) / step));
+    float v = step * (float)(int)(c + ((*p - step) / step));
     float low = *(float *)((char *)arg0 + 0x0C);
     *p = (low > v) ? low : v;
 }
@@ -386,11 +385,11 @@ int fn_8022DEC4(void *arg0) {
     float value = *valuePtr;
     float diff = current - value;
     float mag = __fabs(diff);
-    if (!(mag <= lbl_80558DC4[0]))
-        goto ret1;
-    return 0;
-ret1:
-    return 1;
+    if (mag <= lbl_80558DC4[0]) {
+        return 0;
+    } else {
+        return 1;
+    }
 }
 #pragma pop
 void fn_8022DF00(void *arg0, int *arg1, int *arg2) {
