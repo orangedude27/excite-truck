@@ -11773,25 +11773,30 @@ extern "C" s32 fn_800B9BB4(s32 status) {
 extern "C" const char lbl_8031B2EC[];
 #pragma dont_inline on
 extern "C" s32 fn_800B9CC4(s32 arg0) {
-    u8 value;
+    u8 rxByte;
 
+    /* Handle a specific control/event flag: clear state, run pending callback work, and
+       optionally deliver a received byte to the registered handler. */
     if ((arg0 & 2) != 2)
         return 0;
 
     *(volatile s32 *)(lbl_80407300 + 0x10) = 0;
+
     if (*(volatile s32 *)(lbl_80407300 + 8) != 0) {
         lbl_8055DD60 = 1;
         if (fn_800BC474((s32 *)*(volatile s32 *)(lbl_80407300 + 8), (s32)fn_800B9BB4, &lbl_8055DD60) != 0)
             OSReport(lbl_8031B2EC);
     }
+
     if (*(volatile s32 *)(lbl_80407300 + 0xC) != 0) {
         if (*(volatile s8 *)(lbl_80407300 + 0x14) == 0 &&
-            (*fn_800BA974)(*(volatile s32 *)(lbl_80407300 + 0xC), &value, 1) == 1)
-            *(volatile u8 *)(lbl_80407300 + 0x14) = value;
+            (*fn_800BA974)(*(volatile s32 *)(lbl_80407300 + 0xC), &rxByte, 1) == 1)
+            *(volatile u8 *)(lbl_80407300 + 0x14) = rxByte;
         fn_800A68C8((void *)*(volatile s32 *)(lbl_80407300 + 0xC));
         if (*(volatile s8 *)(lbl_80407300 + 0x14) != 0 && lbl_8055DD44 != 0)
             ((void (*)(s8))lbl_8055DD44)(*(volatile s8 *)(lbl_80407300 + 0x14));
     }
+
     return 0;
 }
 
