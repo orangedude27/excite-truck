@@ -312,8 +312,8 @@ extern "C" void SetSize__Q46nw4hbm3lyt6detail11TexCoordAryFUc(void *self, u8 siz
     v5 = lbl_80407E40[5];
     v6 = lbl_80407E40[6];
     v7 = lbl_80407E40[7];
-    for (register s32 i = oldSize; i < size; ++i) {
-        register s32 offset = i << 5;
+    s32 offset = ((s32)oldSize) << 5;
+    for (s32 i = oldSize; i < size; ++i) {
         void *base0 = *(void **)((u8 *)self + 4);
         *(f32 *)((u8 *)base0 + offset) = v0;
         ((f32 *)((u8 *)base0 + offset))[1] = v1;
@@ -329,6 +329,7 @@ extern "C" void SetSize__Q46nw4hbm3lyt6detail11TexCoordAryFUc(void *self, u8 siz
         f32 *p4 = (f32 *)((u8 *)base3 + offset);
         p4[6] = v6;
         p4[7] = v7;
+        offset += 0x20;
     }
     *((u8 *)self + 1) = size;
 }
@@ -573,30 +574,30 @@ extern "C" void *__ct__Q36nw4hbm3lyt5GroupFPCQ46nw4hbm3lyt3res5GroupPQ36nw4hbm3l
 }
 #pragma pop
 extern "C" void __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void*, s32);
-extern "C" void* __dt__Q36nw4hbm3lyt5GroupFv(void* arg0, s32 arg1) {
+extern "C" void* __dt__Q36nw4hbm3lyt5GroupFv(void* arg0, int arg1) {
     extern const char lbl_8031E764[];
     extern const char lbl_8031E740[];
     extern const char lbl_8031F718[];
     extern const char lbl_8031F6F4[];
     GroupLayout* group = (GroupLayout*)arg0;
     void* slot;
-    register GroupListNode* current;
-    register GroupListNode* node;
-    register void* end;
+    unsigned int end;
+    unsigned int node;
+    unsigned int current;
     if (group != 0) {
-        node = group->children.first;
-        end = &group->children.first;
+        node = *(unsigned int*)((char*)group + 0x10);
+        end = (unsigned int)((char*)group + 0x10);
         group->vtable = lbl_8031F628;
         while (node != end) {
             current = node;
-            node = node->next;
-            slot = current;
+            node = *(unsigned int*)current;
+            slot = (void*)current;
             Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(&group->children, &slot);
             if (current == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E764, 0x23D, lbl_8031E740);
             if (current == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F718, 0x193, lbl_8031F6F4);
-            MEMFreeToAllocator(lbl_8055DDF0, current);
+            MEMFreeToAllocator(lbl_8055DDF0, (void*)current);
         }
         if (&group->children != 0)
             __dt__Q46nw4hbm2ut6detail12LinkListImplFv(&group->children, 0);
@@ -661,8 +662,8 @@ extern "C" void* FindGroupByName__Q36nw4hbm3lyt14GroupContainerFPCc(void* arg0, 
     extern const char lbl_8031F694[];
     extern const char lbl_8031F688[];
     extern const char lbl_8031F664[];
-    void* node = *(void**)((u8*)arg0 + 4);
-    void* sentinel = (u8*)arg0 + 4;
+    register void* node = *(void**)((u8*)arg0 + 4);
+    register void* sentinel = (u8*)arg0 + 4;
     while (node != sentinel) {
         if (node == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F6B8, 0x23D, lbl_8031F694);
@@ -2017,30 +2018,31 @@ extern "C" char* fn_800D9584(char* arg0, const char* arg1) {
     return strncpy(arg0 + 4, arg1, 0x14);
 }
 
-extern "C" void SetTextureNum__Q36nw4hbm3lyt8MaterialFUc(void *arg0, u8 arg1) {
+extern "C" void SetTextureNum__Q36nw4hbm3lyt8MaterialFUc(void *arg0, unsigned char arg1) {
     extern const char lbl_8031F990[];
     extern void memset(void *, int, unsigned int);
-    const char *data = lbl_8031F990;
-    u32 capacity = *(u32 *)((u8 *)arg0 + 0x4C) >> 28;
-    if ((u32)arg1 > capacity)
-        Panic__Q26nw4hbm2dbFPCciPCce(&data[0], 0x38B, data + 0x330);
+    struct Blob800D { char f; char _p[0x32F]; char m1; char _q[0x2F]; char m2; };
+    struct Blob800D *base = (struct Blob800D *)lbl_8031F990;
+    unsigned int capacity = *(unsigned int *)((unsigned char *)arg0 + 0x4C) >> 28;
+    if ((unsigned int)arg1 > capacity)
+        Panic__Q26nw4hbm2dbFPCciPCce(&base->f, 0x38B, &base->m1);
     if (arg1 == 0)
         return;
-    if (*(u32 *)((u8 *)arg0 + 0x58) == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(&data[0], 0x38E, data + 0x360);
-    u32 packed = *(u32 *)((u8 *)arg0 + 0x50);
-    u8 *texture = (u8 *)*(void **)((u8 *)arg0 + 0x58) + ((packed >> 23) & 0x1E0);
-    u32 index = packed >> 28;
+    if (*(unsigned int *)((unsigned char *)arg0 + 0x58) == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(&base->f, 0x38E, &base->m2);
+    unsigned int packed = *(unsigned int *)((unsigned char *)arg0 + 0x50);
+    unsigned char *texture = (unsigned char *)*(void **)((unsigned char *)arg0 + 0x58) + ((packed >> 23) & 0x1E0);
+    unsigned int index = packed >> 28;
     while (index < arg1) {
         memset(texture, 0, 0x20);
         texture += 0x20;
         index++;
     }
     struct TextureCountWord {
-        u32 count : 4;
-        u32 rest : 28;
+        unsigned int count : 4;
+        unsigned int rest : 28;
     };
-    ((TextureCountWord *)((u8 *)arg0 + 0x50))->count = arg1;
+    ((TextureCountWord *)((unsigned char *)arg0 + 0x50))->count = arg1;
 }
 
 extern "C" const char lbl_8031F990[];
@@ -2898,14 +2900,16 @@ extern "C" void fn_800DB098(void* arg0, void* arg1) {
         virtual void v4();
         virtual void Animate(u16, void*);
     };
-    register void* node = *(void**)((u8*)arg0 + 0x1C);
-    register void* end = (u8*)arg0 + 0x1C;
+    extern const char lbl_8031F1FC[];
+    extern const char lbl_8031F1D8[];
+    void* node = *(void**)((u8*)arg0 + 0x1C);
+    void* end = (u8*)arg0 + 0x1C;
     while (node != end) {
-        AssertNode(node);
+        if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
         if (*(u8*)((u8*)node + 0xE) == 0) {
-            AssertNode(node);
+            if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
             AnimTarget* obj = *(AnimTarget**)((u8*)node + 8);
-            AssertNode(node);
+            if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
             obj->Animate(*(u16*)((u8*)node + 0xC), arg0);
         }
         node = *(void**)node;
@@ -3213,28 +3217,29 @@ extern "C" const char lbl_8031E8FC[];
 extern "C" const char lbl_8031E8D8[];
 extern "C" const char lbl_8031F1D8[];
 extern "C" const char lbl_8031F1FC[];
-extern "C" int FindMaterialByName__Q36nw4hbm3lyt4PaneFPCcb(void* self, const char* name, bool recursive) {
+extern "C" void* FindMaterialByName__Q36nw4hbm3lyt4PaneFPCcb(void* self, const char* name, bool recursive) {
     struct V {
         virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
         virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
         virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
         virtual void f12(); virtual void f13();
-        virtual int find(const char*, bool);
+        virtual void* find(const char*, bool);
     };
-    void* data = *(void**)((char*)self + 0x28);
-    if (data != 0 && ((int (*)(const char*, const char*))fn_800D58F0)((const char*)data + 4, name))
-        return (int)*(void**)((char*)self + 0x28);
+    unsigned char* pane = (unsigned char*)self;
+    unsigned int data = *(unsigned int*)(pane + 0x28);
+    if (data != 0 && ((int (*)(const char*, const char*))fn_800D58F0)((const char*)(data + 4), name))
+        return *(void**)(pane + 0x28);
     if (recursive) {
-        void* node = *(void**)((char*)self + 0x14);
-        void* end = (char*)self + 0x14;
+        register unsigned int node = *(unsigned int*)(pane + 0x14);
+        register unsigned int end = (unsigned int)(pane + 0x14);
         while (node != end) {
             if (node == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
-            V* object = (V*)((char*)node - 4);
-            int result = object->find(name, true);
+            V* object = (V*)(node - 4);
+            void* result = object->find(name, true);
             if (result != 0)
                 return result;
-            node = *(void**)node;
+            node = *(unsigned int*)node;
         }
     }
     return 0;
@@ -3528,12 +3533,10 @@ extern "C" void fn_800DC204(void* self, void* arg) {
 
 #pragma push
 #pragma opt_propagation off
-extern "C" void UnbindAnimationSelf__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform(void* pane_arg, void* anim_arg) {
+extern "C" void UnbindAnimationSelf__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform(void* pane, void* anim) {
     extern const char lbl_8031F1FC[];
     extern const char lbl_8031F1D8[];
     extern void Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(void*, void**);
-    register void* pane = pane_arg;
-    register void* anim = anim_arg;
     void* node;
     void* end;
     void* current;
@@ -3611,14 +3614,17 @@ extern "C" void SetAnimationEnable__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTrans
         virtual void setRecursive(void *, u32, u32);
     };
     void *p = ((void *(*)(void *))fn_800D4F98)((u8 *)self + 0x1C);
-    if (p != 0)
-        *(u8 *)((u8 *)p + 0xE) = !enable;
+    if (p != 0) {
+        u32 count = __cntlzw((u32)enable);
+        s32 result = count / 0x20;
+        *(s8*)((u8*)p + 0xE) = (s8)result;
+    }
     AnimEnableDispatch *obj = (AnimEnableDispatch *)*(void **)((u8 *)self + 0x28);
     if (obj != 0)
         obj->setEnable(anim, enable);
     if (recursive) {
-        void *end = (u8 *)self + 0x14;
         void *node = *(void **)((u8 *)self + 0x14);
+        void *end = (u8 *)self + 0x14;
         while (node != end) {
             if (node == 0)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
