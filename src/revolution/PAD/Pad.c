@@ -260,8 +260,8 @@ BOOL fn_800568C4(u32 chanMask) {
 
     chanMask |= lbl_8055DB00;
     chanMask &= ~(lbl_8055DB08 | lbl_8055DB04);
-    lbl_8055DB00 = 0;
     lbl_8055DB10 |= chanMask;
+    lbl_8055DB00 = 0;
     pollingMask = lbl_8055DB10 & lbl_8055DB14;
     lbl_8055DB14 &= ~chanMask;
     lbl_8055DAFC &= ~chanMask;
@@ -364,25 +364,23 @@ void SPEC0_MakeStatus(s32 chan, PADStatus *status, u32 data[2])
 void SPEC1_MakeStatus(s32 chan, PADStatus* status, u32 data[2]) {
     (void)chan;
     status->button = 0;
-    status->button |= ((data[0] >> 31) & 1) ? PAD_BUTTON_A : 0;
-    status->button |= ((data[0] >> 30) & 1) ? PAD_BUTTON_B : 0;
-    status->button |= ((data[0] >> 29) & 1) ? PAD_BUTTON_X : 0;
-    status->button |= ((data[0] >> 28) & 1) ? PAD_BUTTON_Y : 0;
-    status->button |= ((data[0] >> 27) & 1) ? PAD_BUTTON_START : 0;
-
-    status->stickX = (s8)(data[0] >> 16);
-    status->stickY = (s8)(data[0] >> 8);
-    status->substickX = (s8)data[0];
-    status->substickY = (s8)(data[1] >> 24);
-    status->triggerLeft = (u8)(data[1] >> 16);
-    status->triggerRight = (u8)(data[1] >> 8);
-    status->analogA = (u8)data[1];
-    status->analogB = (u8)(data[1] >> 4);
-
-    if (170 <= status->triggerLeft) {
+    status->button |= (data[0] & 0x00800000) ? PAD_BUTTON_A : 0;
+    status->button |= (data[0] & 0x01000000) ? PAD_BUTTON_B : 0;
+    status->button |= (data[0] & 0x00200000) ? PAD_BUTTON_X : 0;
+    status->button |= (data[0] & 0x00100000) ? PAD_BUTTON_Y : 0;
+    status->button |= (data[0] & 0x02000000) ? PAD_BUTTON_START : 0;
+    status->stickX = (s8)(data[1] >> 16);
+    status->stickY = (s8)(data[1] >> 24);
+    status->substickX = (s8)(data[1]);
+    status->substickY = (s8)(data[1] >> 8);
+    status->triggerLeft = (u8)(data[0] >> 8);
+    status->triggerRight = (u8)data[0];
+    status->analogA = 0;
+    status->analogB = 0;
+    if (0xAA <= status->triggerLeft) {
         status->button |= PAD_TRIGGER_L;
     }
-    if (170 <= status->triggerRight) {
+    if (0xAA <= status->triggerRight) {
         status->button |= PAD_TRIGGER_R;
     }
     status->stickX -= 128;
