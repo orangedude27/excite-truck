@@ -5456,32 +5456,33 @@ extern "C" s32 fn_800ADD84(void *arg0, s32 arg1, s32 arg2, s32 arg3, u32 *arg4, 
 }
 
 extern "C" s32 fn_800AD24C(void *, s32, s32, s32 *, s32 *);
-extern "C" s32 fn_800AE108(void *arg0, s32 arg1, s32 arg2, u32 arg3, s32 *arg4, s32 arg5) {
-    void *context = *(void **)((u8 *)arg0 + 0x34);
-    s32 end = -1;
+extern "C" s32 fn_800AE108(void *file, s32 cluster, s32 pageIndex, u32 limit, s32 *outBytes, s32 unused) {
+    void *context = *(void **)((u8 *)file + 0x34);
+    s32 endCluster = -1;
     s32 one = 1;
-    void *object = arg0;
-    s32 position = arg1;
+    void *fileObj = file;
+    s32 currentCluster = cluster;
 
-    while (end != 0) {
-        s32 result = fn_800AD24C(object, position, arg2, &end, &one);
+    /* Walk cluster pages, reading each page and accumulating size until limit/end-of-chain is reached. */
+    while (endCluster != 0) {
+        s32 result = fn_800AD24C(fileObj, currentCluster, pageIndex, &endCluster, &one);
         if (result != 0) return result;
-        if ((u32)(position + 1) != (u32)end) {
+        if ((u32)(currentCluster + 1) != (u32)endCluster) {
             u32 index = *(u32 *)((u8 *)context + 0x1C);
             u32 expected = *(u32 *)((u8 *)lbl_802EEF40 + index * 0x14 + 8);
-            if ((u32)end == expected) {
-                *(s32 *)((u8 *)object + 0xC) = position;
-                *(s32 *)((u8 *)object + 0x10) = arg2 - 1;
+            if ((u32)endCluster == expected) {
+                *(s32 *)((u8 *)fileObj + 0xC) = currentCluster;
+                *(s32 *)((u8 *)fileObj + 0x10) = pageIndex - 1;
             }
             break;
         }
-        ++*(s32 *)*(void **)((u8 *)object + 0x30);
-        *(s32 *)((u8 *)*(void **)((u8 *)object + 0x30) + 4) = end;
-        *arg4 += *(u8 *)((u8 *)context + 6);
-        if (((u32)*arg4 << *(u8 *)((u8 *)context + 0x20)) >= arg3)
+        ++*(s32 *)*(void **)((u8 *)fileObj + 0x30);
+        *(s32 *)((u8 *)*(void **)((u8 *)fileObj + 0x30) + 4) = endCluster;
+        *outBytes += *(u8 *)((u8 *)context + 6);
+        if (((u32)*outBytes << *(u8 *)((u8 *)context + 0x20)) >= limit)
             break;
-        position = end;
-        ++arg2;
+        currentCluster = endCluster;
+        ++pageIndex;
     }
     return 0;
 }
