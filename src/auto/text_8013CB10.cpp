@@ -1853,6 +1853,7 @@ extern "C" f32 fn_8001DAF0(f32 *);
 extern "C" s32 fn_801E866C(s32);
 extern "C" void fn_8001DF08(s32, s32);
 extern "C" f64 lbl_805614D8;
+/* Compute a clamped/adjusted value and forward it to fn_8001DF08 for the given handle/state. */
 extern "C" void fn_8014052C(void *unused, s32 arg0, u8 *arg1) {
     s32 v = *(s32 *)(arg1 + 0x10C) - *(s32 *)(arg1 + 0x114);
     f32 f = fn_8001DAE8((void *)(arg1 + 0x98)) - *(f32 *)(arg1 + 0x9C);
