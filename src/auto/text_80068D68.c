@@ -15241,20 +15241,27 @@ BOOLEAN btsnd_hcic_set_afh_channels(u8 first_disabled, u8 last_disabled) {
     return TRUE;
 }
 
+/* Builds an HCI vendor-specific command in a GKI buffer the caller allocated
+   (room for BT_HDR + 3-byte preamble + len parameters) and queues it for the
+   HCI task: the opcode is OR'd with the vendor-specific OGF, written little-
+   endian at the start of the payload, followed by the parameter length and the
+   parameters themselves. This build keeps the command-complete callback in the
+   BTM control block instead of in the buffer, so p_cmd_cplt_cback is unused. */
 void btsnd_hcic_vendor_spec_cmd(void *buffer, u16 opcode, u8 len, u8 *p_data, void *p_cmd_cplt_cback) {
-    BT_HDR *header = (BT_HDR *)buffer;
+    BT_HDR *p_hdr = (BT_HDR *)buffer;
     u8 *p = (u8 *)buffer;
     u8 *pp;
-    u16 cmd = 0xfc00 | opcode;
-    register int ijk;
-    header->len = len + 3;
-    pp = p + 0xb;
-    header->offset = 0;
-    p[8] = (u8)cmd;
-    p[9] = (u8)(cmd >> 8);
-    p[10] = len;
-    for (ijk = 0; ijk < len; ijk++)
-        *pp++ = p_data[ijk];
+    u16 cmd = HCI_GRP_VENDOR_SPECIFIC | opcode;
+    register int i;
+
+    p_hdr->len = HCIC_PREAMBLE_SIZE + len;
+    pp = p + BT_HDR_SIZE + HCIC_PREAMBLE_SIZE;
+    p_hdr->offset = 0;
+    p[BT_HDR_SIZE] = (u8)cmd;
+    p[BT_HDR_SIZE + 1] = (u8)(cmd >> 8);
+    p[BT_HDR_SIZE + 2] = len;
+    for (i = 0; i < len; i++) /* ARRAY_TO_STREAM(pp, p_data, len) */
+        *pp++ = p_data[i];
     btu_hcif_send_cmd(buffer);
 }
 
@@ -17110,7 +17117,7 @@ BOOLEAN L2CA_SetIdleTimeoutByBdAddr(BD_ADDR addr, UINT16 timeout) {
     }
     entry = lbl_803C4040;
     if (entry[8] != 0 && *(s32 *)(entry + 0xC) == 4) *(u16 *)(entry + 0x60) = timeout;
-    entry = (u8 *)((u32)entry + 0x64);
+    entry += 0x64;
     if (entry[0] != 0 && *(s32 *)(entry + 4) == 4) *(u16 *)(entry + 0x58) = timeout;
     if (entry[0x5C] != 0 && *(s32 *)(entry + 0x60) == 4) *(u16 *)(entry + 0xB4) = timeout;
     if (entry[0xB8] != 0 && *(s32 *)(entry + 0xBC) == 4) *(u16 *)(entry + 0x110) = timeout;
