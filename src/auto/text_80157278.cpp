@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
+static inline s32 F2I_80159708(f32 f) { return (s32)f; }
 extern "C" void fn_8014AEC8(void*);
 extern "C" s32 fn_80141F7C(f32);
 extern "C" s32 fn_80158D04(void*);
@@ -4198,8 +4199,8 @@ extern "C" void fn_80159624(void *tracker, void *truck) {
     }
 }
 extern "C" int fn_80159708(void *arg0) {
-    float f = *(float *)((char *)arg0 + 0x25C);
-    return (int)f;
+    struct S { char pad[0x25C]; float v; };
+    return (int)((S *)arg0)->v;
 }
 #pragma pop
 class Fn8015E338Item {
