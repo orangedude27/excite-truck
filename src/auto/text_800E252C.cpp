@@ -3562,13 +3562,13 @@ extern "C" void Update__Q46nw4hbm3snd6detail10BasicSoundFv(void *self) {
     }
 }
 
+// Declared here because the file's other copies of these prototypes sit further
+// down; they have to be at file scope, where extern "C" is allowed.
+extern "C" void DetachSound__Q34nw4r3snd11SoundHandleFv(void *);
+extern "C" void detail_FreePlayerHeap__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *, void *);
+extern "C" void detail_RemoveSoundList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound_800F8880(void *, void *);
+extern "C" void RemoveSoundList__Q46nw4hbm3snd6detail19ExternalSoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *, void *);
 void nw4hbm::snd::detail::BasicSound::Shutdown() {
-    extern void DetachSound__Q34nw4r3snd11SoundHandleFv(void *);
-    extern void detail_FreePlayerHeap__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *, void *);
-    extern void detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *, void *);
-    extern void detail_RemoveSoundList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound_800F8880(void *, void *);
-    extern void RemoveSoundList__Q46nw4hbm3snd6detail19ExternalSoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *, void *);
-    extern float lbl_80560FB0;
     BasicSoundVt *sound = (BasicSoundVt *)this;
     SoundPlayerVt *player = sound->GetPlayer();
     if (player->IsValid() != 0) {
