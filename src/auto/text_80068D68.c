@@ -13472,16 +13472,17 @@ void btu_hcif_connection_request_evt(u8 *event) {
     }
 }
 
+/* Parses the HCI QoS Setup Complete event and forwards the result to BTM. */
 void btu_hcif_qos_setup_comp_evt(void *event) {
-    register u8 *p = (u8 *)event;
-    register UINT8 *stream = p + 5;
+    register u8 *event_bytes = (u8 *)event;
+    register UINT8 *stream = event_bytes + 5;
     FLOW_SPEC flow;
     UINT8 status;
     UINT16 handle;
-    status = p[0];
-    handle = (UINT16)((p[1] + (p[2] << 8)));
-    flow.qos_flags = p[3];
-    flow.service_type = p[4];
+    status = event_bytes[0];
+    handle = (UINT16)((event_bytes[1] + (event_bytes[2] << 8)));
+    flow.qos_flags = event_bytes[3];
+    flow.service_type = event_bytes[4];
     STREAM_TO_UINT32(flow.token_rate, stream);
     STREAM_TO_UINT32(flow.peak_bandwidth, stream);
     STREAM_TO_UINT32(flow.latency, stream);
