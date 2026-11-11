@@ -19055,27 +19055,29 @@ extern "C" void fn_800D1C18(void) {
     fn_80060CC0(data, 4, (u32)&fn_800D1C48);
 }
 
-extern "C" void fn_800D1C48(s32 index, s32 mode) {
-    u8 *base = (u8 *)lbl_8055DDB0;
+extern "C" void fn_800D1C48(s32 speakerIndex, s32 action) {
+    /* Home button RemoteSpk callback: action 0 enables entry flag 0x62, -1 clears it,
+       -2 rearms the per-entry OSAlarm to re-dispatch via fn_800D1C18. */
+    u8 *remoteSpkTable = (u8 *)lbl_8055DDB0;
 
-    if (base == 0) {
+    if (remoteSpkTable == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E960, 0xDE, lbl_8031E9A0);
     }
 
-    switch (mode) {
+    switch (action) {
     case 0: {
-        u8 *entry = base + index * 0x68;
+        u8 *entry = remoteSpkTable + speakerIndex * 0x68;
         entry[0x62] = 1;
         break;
     }
     case -1: {
-        u8 *entry = base + index * 0x68;
+        u8 *entry = remoteSpkTable + speakerIndex * 0x68;
         entry[0x62] = 0;
         break;
     }
     case -2: {
-        void *alarm = base + index * 0x68;
-        OSSetAlarmUserData((OSAlarm *)alarm, (void *)index);
+        void *alarm = remoteSpkTable + speakerIndex * 0x68;
+        OSSetAlarmUserData((OSAlarm *)alarm, (void *)speakerIndex);
         OSCancelAlarm((OSAlarm *)alarm);
         u32 ticks = *(volatile u32 *)0x800000F8;
         u32 delay = ((ticks >> 2) / 1000U) * 0x32U;
