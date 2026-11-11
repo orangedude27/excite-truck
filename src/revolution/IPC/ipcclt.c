@@ -373,6 +373,8 @@ static s32 __ios_Open(IPCRequestEx* req, const char* path, IPCOpenMode mode) {
     return ret;
 }
 
+/* Asynchronously open an IOS device path: build an OPEN IPC request, prepare the
+   open arguments, and submit it with the provided callback. */
 s32 IOS_OpenAsync(const char* path, IPCOpenMode mode, IPCAsyncCallback callback,
                   void* callbackArg) {
     IPCRequestEx* req;
