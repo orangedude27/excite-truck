@@ -94,49 +94,23 @@ extern "C" void fn_8012D024(void *, s32, s32);
 
 #pragma use_lmw_stmw off
 extern "C" s32 fn_8012A388(void *arg0) {
-    u8 t0;
-    u8 t24;
-    u8 t25;
-    u8 t26;
-    u8 t27;
-    u8 t28;
-    u8 t29;
-    u8 t30;
-    u8 t31;
-    u8 t6;
-    t6 = *(u8 *)((char *)arg0 + 0x24);
-    t0 = *(u8 *)((char *)arg0 + 0x26);
-    *(u8 *)((char *)arg0 + 0x24) = *(u8 *)((char *)arg0 + 0x27);
-    t31 = *(u8 *)((char *)arg0 + 0x20);
-    *(u8 *)((char *)arg0 + 0x27) = t6;
-    t27 = *(u8 *)((char *)arg0 + 0x21);
-    *(u8 *)((char *)arg0 + 0x26) = *(u8 *)((char *)arg0 + 0x25);
-    t30 = *(u8 *)((char *)arg0 + 0x28);
-    *(u8 *)((char *)arg0 + 0x25) = t0;
-    t26 = *(u8 *)((char *)arg0 + 0x29);
-    *(u8 *)((char *)arg0 + 0x21) = *(u8 *)((char *)arg0 + 0x22);
-    t29 = *(u8 *)((char *)arg0 + 0x2C);
-    t25 = *(u8 *)((char *)arg0 + 0x2D);
-    t28 = *(u8 *)((char *)arg0 + 0x30);
-    t24 = *(u8 *)((char *)arg0 + 0x31);
-    *(u8 *)((char *)arg0 + 0x20) = *(u8 *)((char *)arg0 + 0x23);
-    *(u8 *)((char *)arg0 + 0x23) = t31;
-    *(u8 *)((char *)arg0 + 0x22) = t27;
-    *(u8 *)((char *)arg0 + 0x28) = *(u8 *)((char *)arg0 + 0x2B);
-    *(u8 *)((char *)arg0 + 0x2B) = t30;
-    *(u8 *)((char *)arg0 + 0x29) = *(u8 *)((char *)arg0 + 0x2A);
-    *(u8 *)((char *)arg0 + 0x2A) = t26;
-    *(u8 *)((char *)arg0 + 0x2C) = *(u8 *)((char *)arg0 + 0x2F);
-    *(u8 *)((char *)arg0 + 0x2F) = t29;
-    *(u8 *)((char *)arg0 + 0x2D) = *(u8 *)((char *)arg0 + 0x2E);
-    *(u8 *)((char *)arg0 + 0x2E) = t25;
-    *(u8 *)((char *)arg0 + 0x30) = *(u8 *)((char *)arg0 + 0x33);
-    *(u8 *)((char *)arg0 + 0x33) = t28;
-    *(u8 *)((char *)arg0 + 0x31) = *(u8 *)((char *)arg0 + 0x32);
-    *(u8 *)((char *)arg0 + 0x32) = t24;
-    *(u32 *)((char *)arg0 + 0x38) = 0;
-    *(u32 *)((char *)arg0 + 0x34) = 0;
-    *(u32 *)((char *)arg0 + 0x24) &= 0xFFFF;
+    u8 t0; u8 t24; u8 t25; u8 t26; u8 t27; u8 t28; u8 t29; u8 t30; u8 t31; u8 t6;
+    t6 = *(u8 *)((char *)arg0 + 0x24); t0 = *(u8 *)((char *)arg0 + 0x26);
+    *(u8 *)((char *)arg0 + 0x24) = *(u8 *)((char *)arg0 + 0x27); t31 = *(u8 *)((char *)arg0 + 0x20);
+    *(u8 *)((char *)arg0 + 0x27) = t6; t27 = *(u8 *)((char *)arg0 + 0x21);
+    *(u8 *)((char *)arg0 + 0x26) = *(u8 *)((char *)arg0 + 0x25); t30 = *(u8 *)((char *)arg0 + 0x28);
+    *(u8 *)((char *)arg0 + 0x25) = t0; t26 = *(u8 *)((char *)arg0 + 0x29);
+    *(u8 *)((char *)arg0 + 0x21) = *(u8 *)((char *)arg0 + 0x22); t29 = *(u8 *)((char *)arg0 + 0x2C);
+    t25 = *(u8 *)((char *)arg0 + 0x2D); t28 = *(u8 *)((char *)arg0 + 0x30); t24 = *(u8 *)((char *)arg0 + 0x31);
+    *(u8 *)((char *)arg0 + 0x20) = *(u8 *)((char *)arg0 + 0x23); *(u8 *)((char *)arg0 + 0x23) = t31;
+    *(u8 *)((char *)arg0 + 0x22) = t27; *(u8 *)((char *)arg0 + 0x28) = *(u8 *)((char *)arg0 + 0x2B);
+    *(u8 *)((char *)arg0 + 0x2B) = t30; *(u8 *)((char *)arg0 + 0x29) = *(u8 *)((char *)arg0 + 0x2A);
+    *(u8 *)((char *)arg0 + 0x2A) = t26; *(u8 *)((char *)arg0 + 0x2C) = *(u8 *)((char *)arg0 + 0x2F);
+    *(u8 *)((char *)arg0 + 0x2F) = t29; *(u8 *)((char *)arg0 + 0x2D) = *(u8 *)((char *)arg0 + 0x2E);
+    *(u8 *)((char *)arg0 + 0x2E) = t25; *(u8 *)((char *)arg0 + 0x30) = *(u8 *)((char *)arg0 + 0x33);
+    *(u8 *)((char *)arg0 + 0x33) = t28; *(u8 *)((char *)arg0 + 0x31) = *(u8 *)((char *)arg0 + 0x32);
+    *(u8 *)((char *)arg0 + 0x32) = t24; *(u32 *)((char *)arg0 + 0x38) = 0;
+    *(u32 *)((char *)arg0 + 0x34) = 0; *(u32 *)((char *)arg0 + 0x24) &= 0xFFFF;
     return (s32)arg0;
 }
 #pragma use_lmw_stmw reset
@@ -166,13 +140,11 @@ extern "C" s32 fn_8012A470(void *arg0, s32 arg1, void *arg2, void *arg3) {
             fn_802E30C8(strings + 0x34);
             fn_802E30C8(strings + 0x5C);
             fn_802E30C8(strings + 0xC);
-            const char *message = strings + 0x88;
-            fn_802E317C(message, arg0, arg1, arg2);
+            fn_802E317C(strings + 0x88, arg0, arg1, arg2);
         }
         *(u32 *)((char *)arg2 + 0x34) |= 8;
     } else {
-        const char *message = strings + 0xA8;
-        fn_802E30C8(message, arg0, arg1, arg2);
+        fn_802E30C8(strings + 0xA8, arg0, arg1, arg2);
     }
     return result;
 }
@@ -898,33 +870,27 @@ extern "C" s32 strstr(const char *, const char *);
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void fn_8012BA1C(void *arg0) {
-    struct EntryView {
-        u8 pad[0x38];
-        s32 value;
-    };
     const char *strings = lbl_8032A630;
     s32 offset, i;
     s32 j, offset2;
     register s32 value;
-    register EntryView *entry;
+    register u8 *entry;
     register u32 flags;
-
     i = 0;
     offset = 0;
     while (i < *(s32 *)((char *)arg0 + 0x88)) {
-        entry = (EntryView *)(*(u8 **)((char *)arg0 + 0x60) + offset);
-        value = entry->value;
+        entry = *(u8 **)((char *)arg0 + 0x60) + offset;
+        value = *(s32 *)(entry + 0x38);
         if (value > 0) fn_802E30C8(strings + 0x470, arg0);
         offset += 0x44;
         i++;
     }
-    if (strstr((const char *)arg0, &lbl_805599A4[0]) != 0 &&
-        stricmp((const char *)arg0, strings + 0x4A0) != 0) {
+    if (strstr((const char *)arg0, &lbl_805599A4[0]) != 0 && stricmp((const char *)arg0, strings + 0x4A0) != 0) {
         j = 0;
         offset2 = 0;
         while (j < *(s32 *)((char *)arg0 + 0x88)) {
-            entry = (EntryView *)(*(u8 **)((char *)arg0 + 0x60) + offset2);
-            flags = *(u32 *)((u8 *)entry + 0x34);
+            entry = *(u8 **)((char *)arg0 + 0x60) + offset2;
+            flags = *(u32 *)(entry + 0x34);
             if ((flags & 0xA) == 8) fn_802E30C8(strings + 0x4AC, arg0);
             offset2 += 0x44;
             j++;
@@ -1041,17 +1007,17 @@ extern "C" void *fn_8012B32C(const char *);
 extern "C" void fn_8012748C(s32);
 extern "C" const char lbl_8032AB2C[];
 extern "C" const char lbl_8032AB58[];
-#pragma scheduling off
-#pragma dont_inline on
-#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 extern "C" void *fn_8012BD98(const char *arg0, void **arg1, s32 arg2) {
     void *p;
     s32 tries;
+    s32 zero;
     p = fn_8012BD3C(*arg1, arg0);
     if (p == 0) {
         tries = 0;
+        zero = 0;
         do {
-            lbl_8055DFF9 = 0;
+            lbl_8055DFF9 = (u8)zero;
             p = fn_8012B32C(arg0);
             if (p != 0) {
                 *(void **)((char *)p + 0xA8) = *arg1;
@@ -1070,8 +1036,6 @@ extern "C" void *fn_8012BD98(const char *arg0, void **arg1, s32 arg2) {
     } else ++*(s32 *)((char *)p + 0x9C);
     return p;
 }
-
-#pragma scheduling invalid_target
 extern "C" s32 fn_8012BE90(void) {
     fn_8012A648();
     lbl_8055DFF8 = 1;
@@ -1860,11 +1824,12 @@ extern "C" void fn_8012D8A8(s32 arg0) {
 #define RES_TOC_ENTRY_SIZE 0x44              // one ETOC entry
 #define RES_TOC_EXT_PATH ((char *)&lbl_805599E0)  // ".toc"
 
-struct ResTocMount {  // one mounted resource set, 0x50 bytes
-    void *unk_0x0;    // filled in by fn_8012DFE8
+struct ResTocMount {  // one resource set whose load is in flight, 0x50 bytes
+    void *poolNext;   // 0x00: next free node in the manager's pool (fn_8012E460)
     ResTocMount *next;
-    s32 uses;         // times this set has been asked for (fn_8012DDA8)
-    char name[0x44];  // resource set name, e.g. "tracks"
+    s32 uses;         // 0x08: times this set has been asked for (fn_8012DDA8)
+    char name[0x40];  // 0x0C: resource set name, e.g. "tracks"
+    void *request;    // 0x4C: fn_8012CAA0 request reading the set (fn_8012DFE8)
 };
 
 struct ResTocMountList {
@@ -1873,9 +1838,9 @@ struct ResTocMountList {
 };
 
 struct ResTocManager {
-    u8 unk_0x0[0xA18];
-    ResTocMountList mounts;  // the mounted sets, in mount order
-    u8 unk_0xA20;
+    u8 unk_0x0[0xA18];         // +0x8: the 0x20-node pool, +0x18: its free list
+    ResTocMountList mounts;    // the sets being loaded, in queue order
+    u8 pumping;                // 0xA20: fn_8012DEE4 is working the queue
 };
 
 // fn_8012B534 could not find NAME (arg0) in any loaded resource table.  Ask
