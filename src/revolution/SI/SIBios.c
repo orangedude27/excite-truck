@@ -1079,7 +1079,7 @@ BOOL fn_800569D0(void) {
         lbl_8055DB18 = TRUE;
         if (flag) {
             s64 time = OSGetTime();
-            *(u16*)0x800030E0 = ((time & 0xFFFFLL) + ((time >> 16) & 0xFFFFLL) + ((time >> 32) & 0xFFFFLL) + ((time >> 48) & 0xFFFFLL)) & 0x3FFF;
+            *(u16*)0x800030E0 = ((time & 0xFFFF) + ((time >> 16) & 0xFFFF) + ((time >> 32) & 0xFFFF) + ((time >> 48) & 0xFFFF)) & 0x3FFF;
             lbl_8055DB0C = 0xF0000000;
         }
     }
@@ -1183,7 +1183,11 @@ static inline u8 ClampU8(u8 var, u8 org) {
     return var - org;
 }
 
-#define SQR_DIFF(a, b) abs((s32)(a) * (a) - (s32)(b) * (b))
+static inline s32 abs_diff_sqr(s32 a, s32 b) {
+    s32 diff = a * a - b * b;
+    return (diff < 0) ? -diff : diff;
+}
+#define SQR_DIFF(a, b) abs_diff_sqr(a, b)
 
 void fn_80056D5C(s32 chan, PADStatus* status, u32 data[2]) {
     u8* origin = (u8*)lbl_8038F080;
@@ -1245,7 +1249,7 @@ void fn_80056D5C(s32 chan, PADStatus* status, u32 data[2]) {
     status->substickX -= 128;
     status->substickY -= 128;
 
-    if ((*(u32*)(origin + 0x30 + chan * 4) & 0xFFFF0000) == 0x09000000 && !(status->button & 0x80)) {
+    if ((*(u32*)(origin + 0x30 + chan * 4) & 0xFFFF0000) == 0x09000000 && (status->button & 0x80) == 0) {
         lbl_8055DAFC |= 0x80000000 >> chan;
         status->stickX = 0;
         status->stickY = 0;
@@ -1267,7 +1271,7 @@ void fn_80056D5C(s32 chan, PADStatus* status, u32 data[2]) {
     status->triggerRight = ClampU8(status->triggerRight, *(u8*)(chanOrigin + 7));
 
     {
-        u8* prev = origin + 0x50 + chanOffset;
+        u8* prev = (origin + 0x50) + chanOffset;
         if (SQR_DIFF(status->stickX, *(s8*)(prev + 2)) >= 9 ||
             SQR_DIFF(status->stickY, *(s8*)(prev + 3)) >= 9 ||
             SQR_DIFF(status->substickX, *(s8*)(prev + 4)) >= 9 ||
@@ -1279,7 +1283,7 @@ void fn_80056D5C(s32 chan, PADStatus* status, u32 data[2]) {
         }
     }
 
-    memcpy(origin + 0x50 + chanOffset, status, 12);
+    memcpy((origin + 0x50) + chanOffset, status, 12);
 }
 
 BOOL fn_800572DC(BOOL final) {

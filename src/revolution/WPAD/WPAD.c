@@ -5258,18 +5258,10 @@ s32 WPADiHIDParser(u8 port, u8* p_rpt) {
 void fn_80064A80(s32 chan, s32 param_2) {
     WPADCB* cb = lbl_8038F4F0[chan];
     if (param_2 != 0) {
-        u8 value;
         WPADiClearQueue_80063BD4(&cb->extCmdQueue);
-        if (param_2 == -1) {
-            value = 0xfd;
-        } else {
-            s32 val = *(s32*)((u8*)cb + 0x780);
-            s32 sign = (-val | val) >> 31;
-            value = (u8)sign & 0xfc;
-        }
-        ((u8*)cb)[0x801] = value;
-        if (*(s32*)((u8*)cb + 0x7e0) != 0) {
-            ((void (*)(s32))*(void**)((u8*)cb + 0x7e0))(chan);
+        ((u8*)cb)[0x801] = (param_2 == -1) ? 0xfd : ((((s32)*(s32*)((u8*)cb + 0x780) | -*(s32*)((u8*)cb + 0x780)) >> 31) & 0xfc);
+        if (*(WPADSamplingCallback*)((u8*)cb + 0x7E0) != NULL) {
+            (*(WPADSamplingCallback*)((u8*)cb + 0x7E0))(chan);
         }
     }
 }
