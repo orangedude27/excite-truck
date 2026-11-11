@@ -25774,25 +25774,26 @@ extern s32 _intBlkCtrlCb(s32, void *);
 extern void *iosAllocAligned(s32, u32, u32);
 extern s32 iosFree(s32, void *);
 extern s32 IOS_CloseAsync(s32, s32 (*)(s32, void *), void *);
+/* Asynchronously closes an IOS USB device, allocating a control block to carry the callback and freeing it on failure. */
 s32 IUSB_CloseDeviceAsync(s32 device, void (*callback)(void), void *callbackArg) {
-    char *base = lbl_8031A620;
-    void *block;
+    char *logBase = lbl_8031A620;
+    void *ctrlBlock;
     s32 result;
-    USB_LOG(base + 0x1FC);
-    block = iosAllocAligned(lbl_805590A0, 0x80, 0x20);
-    if (block == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x80, block);
-    if (block == 0) {
-        USB_ERR(base + 0x228);
+    USB_LOG(logBase + 0x1FC);
+    ctrlBlock = iosAllocAligned(lbl_805590A0, 0x80, 0x20);
+    if (ctrlBlock == 0) USB_ERR(logBase + 0x13C, lbl_805590A0, 0x80, ctrlBlock);
+    if (ctrlBlock == 0) {
+        USB_ERR(logBase + 0x228);
         result = -0x16;
     } else {
-        *(void **)block = (void *)callback;
-        *(void **)((u8 *)block + 4) = callbackArg;
-        *(s32 *)((u8 *)block + 0x2C) = 0;
-        result = IOS_CloseAsync(device, _intBlkCtrlCb, block);
-        USB_LOG(base + 0x20C, result);
-        if (result < 0 && block != 0) {
-            s32 freeResult = iosFree(lbl_805590A0, block);
-            if (freeResult < 0) USB_ERR(base + 0x108, lbl_805590A0, block, freeResult);
+        *(void **)ctrlBlock = (void *)callback;
+        *(void **)((u8 *)ctrlBlock + 4) = callbackArg;
+        *(s32 *)((u8 *)ctrlBlock + 0x2C) = 0;
+        result = IOS_CloseAsync(device, _intBlkCtrlCb, ctrlBlock);
+        USB_LOG(logBase + 0x20C, result);
+        if (result < 0 && ctrlBlock != 0) {
+            s32 freeResult = iosFree(lbl_805590A0, ctrlBlock);
+            if (freeResult < 0) USB_ERR(logBase + 0x108, lbl_805590A0, ctrlBlock, freeResult);
         }
     }
     return result;
