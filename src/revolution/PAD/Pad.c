@@ -137,7 +137,7 @@ void fn_800563C8(s32 chan, u32 status) {
     lbl_80558F74 = __cntlzw(lbl_8055DB10);
     if (lbl_80558F74 != 32) {
         lbl_8055DB10 &= ~(PAD_CHAN0_BIT >> lbl_80558F74);
-        memset(&lbl_8038F080[lbl_80558F74], 0, sizeof(PADStatus));
+        memset(PAD_ORIGIN(lbl_80558F74), 0, sizeof(PADStatus));
         SIGetTypeAsync(lbl_80558F74, fn_8005649C);
     }
 }
