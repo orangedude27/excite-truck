@@ -401,11 +401,11 @@ extern void OSReport(void *, ...);
 extern char lbl_803036E0[];
 extern char lbl_803036F8[];
 int CPGPLinkCheck(void) {
-    unsigned int error = 0;
-    unsigned int first;
-    unsigned int second;
+    int error = 0;
     int diff1;
     int diff2;
+    unsigned int first;
+    unsigned int second;
 
     if (lbl_8055D948 == 0 || (unsigned char)lbl_8055D949 == 0) {
         return 0;
@@ -420,7 +420,7 @@ int CPGPLinkCheck(void) {
     if (first == second) {
         error++;
     }
-    if (error == 2) {
+    if ((unsigned int)error == 2) {
         return 1;
     }
     diff1 = (int)*(unsigned int *)(lbl_8037C0E4 + 4) -
@@ -602,36 +602,35 @@ void GXSetGPFifo(unsigned int *fifo) {
 }
 
 void __GXSaveFifo(void) {
-    s32 level;
-    unsigned char hasCPUFifo;
-
+    register u8 hasCPUFifo;
+    int level;
     level = OSDisableInterrupts();
     hasCPUFifo = lbl_8055D948;
-    if (hasCPUFifo) {
+    if (hasCPUFifo != 0) {
         GXFifoObjInternal *fifo = (GXFifoObjInternal *)lbl_8037C0E4;
         u32 reg = __piReg[5];
+        fifo->wrap = (u8)((reg >> 29) & 1);
         fifo->wrPtr = (void *)((reg & 0x1FFFFFE0) + 0x80000000);
-        fifo->wrap = (reg >> 29) & 1;
     }
-    if (*(unsigned char *)&lbl_8055D949 != 0) {
+    if (*(u8 *)&lbl_8055D949 != 0) {
         GXFifoObjInternal *fifo = (GXFifoObjInternal *)lbl_8037C0C0;
-        unsigned short *cp = __cpReg;
-        fifo->rdPtr = (void *)((((unsigned int)cp[0x3A / 2] << 16) | cp[0x38 / 2]) + 0x80000000);
-        fifo->count = ((unsigned int)cp[0x32 / 2] << 16) | cp[0x30 / 2];
+        u16 *cp = (u16 *)__cpReg;
+        fifo->rdPtr = (void *)((((u32)cp[0x3A / 2] << 16) | cp[0x38 / 2]) + 0x80000000);
+        fifo->count = ((u32)cp[0x32 / 2] << 16) | cp[0x30 / 2];
     }
-    if (*(unsigned char *)&lbl_8055D960 != 0) {
+    if (*(u8 *)&lbl_8055D960 != 0) {
         (*(GXFifoObjInternal *)lbl_8037C0E4).rdPtr = (*(GXFifoObjInternal *)lbl_8037C0C0).rdPtr;
         (*(GXFifoObjInternal *)lbl_8037C0E4).count = (*(GXFifoObjInternal *)lbl_8037C0C0).count;
         (*(GXFifoObjInternal *)lbl_8037C0C0).wrPtr = (*(GXFifoObjInternal *)lbl_8037C0E4).wrPtr;
         (*(GXFifoObjInternal *)lbl_8037C0C0).wrap = (*(GXFifoObjInternal *)lbl_8037C0E4).wrap;
-    } else if (hasCPUFifo) {
+    } else if (hasCPUFifo != 0) {
         int count = (char *)(*(GXFifoObjInternal *)lbl_8037C0E4).wrPtr - (char *)(*(GXFifoObjInternal *)lbl_8037C0E4).rdPtr;
         (*(GXFifoObjInternal *)lbl_8037C0E4).count = count;
-        if (count < 0) {
+        if (0 > count) {
             (*(GXFifoObjInternal *)lbl_8037C0E4).count = count + (*(GXFifoObjInternal *)lbl_8037C0E4).size;
         }
     }
-    ((void (*)(s32))OSRestoreInterrupts)(level);
+    ((void (*)(int))OSRestoreInterrupts)(level);
 }
 
 #pragma dont_inline on
@@ -962,6 +961,23 @@ typedef struct {
 
 // Written as a cast rather than a local pointer: every case reloads __GXData.
 #define gxdata ((GXVtxDescData *)__GXData)
+
+// __GXData's draw bookkeeping head, what GXBegin, __GXSendFlushPrim and
+// __GXCalculateVLim work on. include/revolution/GX/GXInit.h spells the same
+// block out but leaves 0x4 unnamed (SHORT_0x4): it is the channel count the
+// driver flushes, and 0x6 is the vertex size __GXCalculateVLim derives from the
+// vertex descriptor.
+typedef struct {
+    u32 unused_000;     // 0x00 primitive word GXBegin tests for "no primitive"
+    u16 lastWriteWasXF; // 0x02 last FIFO command was an XF load, not a BP one
+    u16 numChans;       // 0x04 color channels to send with the flush primitive
+    u16 vLim;           // 0x06 attribute words per channel
+} GXDrawData;
+
+#define gxdraw ((GXDrawData *)__GXData)
+
+// GXPrimitive of GXTypes.h: the strip that carries the flush data.
+#define GX_TRIANGLESTRIP 0x98
 
 // Sets how one vertex attribute reaches the geometry pipeline: its GXAttrType is
 // written into the vcdLo/vcdHi vertex descriptor. attr is a GXAttr (the dispatch
