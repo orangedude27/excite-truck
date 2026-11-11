@@ -502,6 +502,9 @@ extern "C" void fn_80217854(void *arg0) {
 }
 #pragma cplusplus off
 void fn_80218E08(void *arg0, int arg1);
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_80217874(void *arg0, int arg1) {
@@ -521,7 +524,8 @@ extern "C" void fn_80217874(void *arg0, int arg1) {
     Obj *obj;
     int found;
     float threshold;
-    ((void (*)(void))fn_80216D34)();
+    void (*reset)(void) = fn_80216D34;
+    reset();
     if (*(int *)(base + 0x44C) == 0) {
         obj = *(Obj **)(base + 0x450);
         if (obj != 0 && obj->check(arg1)) {
@@ -548,7 +552,7 @@ extern "C" void fn_80217874(void *arg0, int arg1) {
     }
 }
 #pragma cplusplus off
-#pragma scheduling on
+#pragma pop
 
 #pragma push
 #pragma processor 750
@@ -624,9 +628,9 @@ extern "C" void fn_80217AC0(void *arg0) {
     };
     char *base = (char *)arg0;
     int scan;
-    int i;
-    int initialCount;
     float threshold;
+    int initialCount;
+    int i;
     initialCount = *(int *)(base + 0x450);
     if (initialCount != 0) scan = fn_802182F0(arg0, (void *)initialCount);
     else scan = 0;
@@ -636,7 +640,7 @@ extern "C" void fn_80217AC0(void *arg0) {
         void *obj;
         int eligible;
         scan--;
-        entry = base + ((scan + *(int *)(base + 0x450)) %
+        entry = base + (((short)scan + *(int *)(base + 0x450)) %
                         *(int *)(base + 0x450)) * 4;
         obj = *(void **)(entry + 0x30);
         eligible = 0;
