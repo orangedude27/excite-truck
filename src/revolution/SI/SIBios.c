@@ -919,22 +919,23 @@ BOOL fn_800567BC(u32 mask) {
     return TRUE;
 }
 
-BOOL fn_800568C4(u32 mask) {
-    BOOL enabled;
-    u32 disable;
+/* Enables/reset-handles PAD channels for the given mask, updating PAD/SI polling state and starting type detection if needed. */
+BOOL fn_800568C4(u32 chanMask) {
+    BOOL intrEnabled;
+    u32 pollingMask;
 
-    enabled = OSDisableInterrupts();
-    mask |= lbl_8055DB00;
+    intrEnabled = OSDisableInterrupts();
+    chanMask |= lbl_8055DB00;
     lbl_8055DB00 = 0;
-    mask &= ~(lbl_8055DB08 | lbl_8055DB04);
-    lbl_8055DB10 |= mask;
-    disable = lbl_8055DB10 & lbl_8055DB14;
-    lbl_8055DB14 &= ~mask;
-    lbl_8055DAFC &= ~mask;
+    chanMask &= ~(lbl_8055DB08 | lbl_8055DB04);
+    lbl_8055DB10 |= chanMask;
+    pollingMask = lbl_8055DB10 & lbl_8055DB14;
+    lbl_8055DB14 &= ~chanMask;
+    lbl_8055DAFC &= ~chanMask;
     if ((OS_PAD_FLAGS & 0x40) == 0) {
-        lbl_8055DB0C |= mask;
+        lbl_8055DB0C |= chanMask;
     }
-    SIDisablePolling(disable);
+    SIDisablePolling(pollingMask);
     if (lbl_80558F74 == 32) {
         lbl_80558F74 = __cntlzw(lbl_8055DB10);
         if (lbl_80558F74 != 32) {
@@ -943,7 +944,7 @@ BOOL fn_800568C4(u32 mask) {
             SIGetTypeAsync(lbl_80558F74, fn_8005649C);
         }
     }
-    OSRestoreInterrupts(enabled);
+    OSRestoreInterrupts(intrEnabled);
     return TRUE;
 }
 
