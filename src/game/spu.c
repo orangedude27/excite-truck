@@ -418,7 +418,6 @@ void fn_802E56F0(void) {
     int offset;
     int i;
     int offset2;
-
     OSCancelAlarm(lbl_804FC690);
     lbl_8055FFA5 = 0;
     fn_802E6B34();
@@ -434,18 +433,16 @@ void fn_802E56F0(void) {
         *(int *)(lbl_8055FF94 + offset + 4) = 0;
         offset += 0x2C;
     } while (i < 0x20);
-
     offset2 = 0;
     i = 0;
     do {
-        unsigned char *sample = (unsigned char *)lbl_8055FF90 + offset2;
+        unsigned char *sample = (unsigned char *)lbl_8055FF90 + i;
         if (*(int *)(sample + 0x94) > 0) {
             fn_802E317C(lbl_8034D470, sample);
         }
-        i++;
-        offset2 += 0xB0;
-    } while (i < 0x100);
-
+        offset2++;
+        i += 0xB0;
+    } while (offset2 < 0x100);
     fn_80128670((int)lbl_8055FF94);
     lbl_8055FF94 = 0;
     fn_80128670((int)lbl_8055FF90);
