@@ -474,32 +474,37 @@ s32 fn_80132098(void* arg0, s32 index, void* dst1, void* dst2) {
 
 extern char lbl_8032B764[];
 #pragma cplusplus on
-extern "C" s32 fn_801320D8(void *arg0, const char *name) {
+extern "C" s32 fn_801320D8(void *table, const char *name) {
+    /* Looks up a named entry in a value table and its parent chain, aborts with an error if missing, and returns the entry's value. */
     class Dummy {
     public:
         virtual char *v0(void);
     };
-    volatile struct { const char *name; s32 value; } key;
+    volatile struct {
+        const char *name;
+        s32 value;
+    } key;
     s32 index;
     char *found;
     s32 offset;
+
     key.name = name;
     key.value = 0;
     found = NULL;
     index = 0;
     offset = 0;
-    while (index < *(s32 *)((char *)arg0 + 0xC)) {
-        if (stricmp(name, *(char **)(*(char **)((char *)arg0 + 0x10) + offset)) == 0) {
-            found = *(char **)((char *)arg0 + 0x10) + index * 8;
+    while (index < *(s32 *)((char *)table + 0xC)) {
+        if (stricmp(name, *(char **)(*(char **)((char *)table + 0x10) + offset)) == 0) {
+            found = *(char **)((char *)table + 0x10) + index * 8;
             break;
         }
         offset += 8;
         index++;
     }
-    if (found == NULL && *(void **)((char *)arg0 + 0x14) != NULL)
-        found = ((char *(*)(void *, const char *))fn_80131C88)(*(void **)((char *)arg0 + 0x14), name);
+    if (found == NULL && *(void **)((char *)table + 0x14) != NULL)
+        found = ((char *(*)(void *, const char *))fn_80131C88)(*(void **)((char *)table + 0x14), name);
     if (found == NULL)
-        fn_802E317C(lbl_8032B764, name, ((Dummy *)arg0)->v0());
+        fn_802E317C(lbl_8032B764, name, ((Dummy *)table)->v0());
     return *(s32 *)(found + 4);
 }
 #pragma cplusplus reset
@@ -592,15 +597,14 @@ extern "C" void fn_80132410(void *arg0, void *arg1, const char *arg2) {
     public:
         virtual char *f0(); virtual void f1(); virtual void f2(); virtual char *f3(const char *);
     };
-    typedef struct { s32 x, y, z; } Vector;
-    Vector values;
+    s32 values[3];
     char *value = ((A *)arg1)->f3(arg2);
-    if (sscanf(value, lbl_8032B80C, &values.x, &values.y, &values.z) != 3) {
+    if (sscanf(value, lbl_8032B80C, &values[0], &values[1], &values[2]) != 3) {
         fn_802E317C(lbl_8032B7E4, value, arg2, ((A *)arg1)->f0());
     }
-    ((Vector *)arg0)->x = values.x;
-    ((Vector *)arg0)->y = values.y;
-    ((Vector *)arg0)->z = values.z;
+    ((s32 *)arg0)[0] = values[0];
+    ((s32 *)arg0)[1] = values[1];
+    ((s32 *)arg0)[2] = values[2];
 }
 #pragma small_data on
 #pragma cplusplus on
@@ -751,11 +755,16 @@ extern "C" s32 fn_801328D4(void *arg0, s32 arg1) {
 #pragma cplusplus off
 #pragma small_data off
 struct Unk80132968Vector { s32 x, y, z; };
-struct Unk80132968Vector fn_80132968(void *arg1, s32 arg2, struct Unk80132968Vector *arg3) {
+#pragma cplusplus on
+extern "C" struct Unk80132968Vector fn_80132968(void *arg1, s32 arg2, struct Unk80132968Vector *arg3) {
+    class A {
+    public:
+        virtual void f0(); virtual s32 f1(s32); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
+    };
     struct Unk80132968Vector copy;
-    struct Unk80132968Vector result;
     struct Unk80132968Vector value;
-    if (((s32 (**)(void *, s32))*(void **)arg1)[3](arg1, arg2)) {
+    struct Unk80132968Vector result;
+    if (((A *)arg1)->f1(arg2)) {
         ((void (**)(struct Unk80132968Vector *, void *, s32))*(void **)arg1)[13](&value, arg1, arg2);
         result = value;
     } else {
@@ -763,7 +772,7 @@ struct Unk80132968Vector fn_80132968(void *arg1, s32 arg2, struct Unk80132968Vec
     }
     return copy = result;
 }
-#pragma use_lmw_stmw reset
+#pragma cplusplus off
 
 struct Unk80132AE4Value {
     struct { s32 a[9]; } matrix;
@@ -790,20 +799,24 @@ extern "C" unsigned long long fn_80132A48(void *arg0, s32 arg1, void *arg2) {
     res = *(double*)&tmp;
     return *(unsigned long long*)&res;
 }
-#pragma cplusplus off
-void fn_80132AE4(void* arg0, void* arg1, s32 arg2, void* arg3) {
+#pragma cplusplus on
+extern "C" void fn_80132AE4(void *arg0, void *arg1, s32 arg2, void *arg3) {
+    class A {
+    public:
+        virtual void f0(); virtual s32 f1(s32);
+    };
     typedef struct { s32 a[9]; } Matrix;
     typedef struct { Matrix matrix; struct Unk80132968Vector vector; } Value;
     Value value;
-    Value* source = arg3;
-    if (((s32 (**)(void*, s32))*(void**)arg1)[3](arg1, arg2)) {
-        ((void (**)(Value*, void*, s32))*(void**)arg1)[17](&value, arg1, arg2);
+    Value *source = (Value *)arg3;
+    if (((A *)arg1)->f1(arg2)) {
+        ((void (**)(Value *, void *, s32))(*(void ***)arg1))[17](&value, arg1, arg2);
         source = &value;
     }
-    ((Value*)arg0)->matrix = source->matrix;
-    ((Value*)arg0)->vector = source->vector;
+    ((Value *)arg0)->matrix = source->matrix;
+    ((Value *)arg0)->vector = source->vector;
 }
-
+#pragma cplusplus off
 typedef float f32;
 typedef signed long s32;
 #pragma cplusplus on
