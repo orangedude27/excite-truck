@@ -1063,22 +1063,21 @@ struct Dummy80218464 {
 #pragma cplusplus reset
 struct VTab80218464 { void *pad[32]; void (*f32)(void *); };
 struct VObj80218464 { struct VTab80218464 *vt; };
-#pragma cplusplus off
-void fn_80218464(void *arg0) {
+#pragma cplusplus on
+extern "C" void fn_80218464(void *arg0) {
     char *cursor;
     int i = 0;
     char *base;
     base = (char *)arg0;
     cursor = base;
     while (i < *(int *)(base + 0x430)) {
-        void *obj = *(void **)(cursor + 0x30);
-        void **vtable = *(void ***)obj;
-        ((void (*)(void *))vtable[32])(obj);
+        Dummy80218464 *obj = *(Dummy80218464 **)(cursor + 0x30);
+        obj->f30();
         cursor += 4;
         i++;
     }
 }
-
+#pragma cplusplus off
 extern float lbl_80563490;
 #pragma push
 #pragma processor 750
