@@ -186,7 +186,7 @@ unsigned long long fn_80139C5C(void *arg0) {
     }
 }
 
-void *fn_80131810(void);
+void *fn_80131810(void); /* opens a table from a path in r3; the prototype stays arg-less because fn_80139D4C calls it with no argument, so fn_80139F5C casts at the call */
 void *fn_801284F8(int, const char *);
 void *fn_801399FC();
 extern const char lbl_8032C0C8[];
