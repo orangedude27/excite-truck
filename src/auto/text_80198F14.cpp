@@ -3141,9 +3141,7 @@ extern "C" void fn_801A17B8(void* arg0) {
     sp8 = temp_f3;
     spC = temp_f2;
     sp10 = sp34 + (sp28 * temp_f0_2);
-    fn_801E41D8(&sp14, &sp8, 0x40FFFF00, temp_r6, temp_r7, temp_r8, arg0,
-                lbl_8056234C * *(f32*)((u8*)arg0 + 0x24),
-                temp_f2, temp_f3, sp34, sp28, sp30, sp24, sp2C, sp20);
+    fn_801E41D8(&sp14, &sp8, 0x40FFFF00, temp_r6, temp_r7, temp_r8, arg0, lbl_8056234C * *(f32*)((u8*)arg0 + 0x24), temp_f2, temp_f3, sp34, sp28, sp30, sp24, sp2C, sp20);
 }
 #pragma scheduling on
 extern int lbl_80333918[64];
@@ -3271,44 +3269,48 @@ extern "C" void fn_801A1CA0(void* arg0) {
 #pragma scheduling on
 extern char lbl_803338C0[];
 #pragma use_lmw_stmw off
-extern "C" void* fn_801A1CE4(void *arg0, s32 arg1, s32 arg2) {
-    u8 temp_r12, temp_r30, temp_r29, temp_r28, temp_r27;
-    u8 temp_r26, temp_r25, temp_r24, temp_r23, temp_r22;
+extern "C" void* fn_801A1CE4(void *shape, s32 owner, s32 swap) {
+    // The ten bytes kept aside while reversing: b24 is the byte at 0x24, and so
+    // on. The five first bytes of the words are declared before the five second
+    // ones because that declaration order is what gives each of them its own
+    // register, so all twenty bytes are read before any is written back.
+    u8 b24, b28, b2c, b30, b34;
+    u8 b25, b29, b2d, b31, b35;
     fn_8019ECC4();
-    *(void**)arg0 = &lbl_803338C0;
-    if (arg2 != 0) {
-        temp_r12 = *(u8*)((u8*)arg0 + 0x24);
-        temp_r26 = *(u8*)((u8*)arg0 + 0x25);
-        temp_r30 = *(u8*)((u8*)arg0 + 0x28);
-        temp_r25 = *(u8*)((u8*)arg0 + 0x29);
-        temp_r29 = *(u8*)((u8*)arg0 + 0x2C);
-        temp_r24 = *(u8*)((u8*)arg0 + 0x2D);
-        temp_r28 = *(u8*)((u8*)arg0 + 0x30);
-        temp_r23 = *(u8*)((u8*)arg0 + 0x31);
-        temp_r27 = *(u8*)((u8*)arg0 + 0x34);
-        temp_r22 = *(u8*)((u8*)arg0 + 0x35);
-        *(u8*)((u8*)arg0 + 0x24) = *(u8*)((u8*)arg0 + 0x27);
-        *(u8*)((u8*)arg0 + 0x27) = temp_r12;
-        *(u8*)((u8*)arg0 + 0x25) = *(u8*)((u8*)arg0 + 0x26);
-        *(u8*)((u8*)arg0 + 0x26) = temp_r26;
-        *(u8*)((u8*)arg0 + 0x28) = *(u8*)((u8*)arg0 + 0x2B);
-        *(u8*)((u8*)arg0 + 0x2B) = temp_r30;
-        *(u8*)((u8*)arg0 + 0x29) = *(u8*)((u8*)arg0 + 0x2A);
-        *(u8*)((u8*)arg0 + 0x2A) = temp_r25;
-        *(u8*)((u8*)arg0 + 0x2C) = *(u8*)((u8*)arg0 + 0x2F);
-        *(u8*)((u8*)arg0 + 0x2F) = temp_r29;
-        *(u8*)((u8*)arg0 + 0x2D) = *(u8*)((u8*)arg0 + 0x2E);
-        *(u8*)((u8*)arg0 + 0x2E) = temp_r24;
-        *(u8*)((u8*)arg0 + 0x30) = *(u8*)((u8*)arg0 + 0x33);
-        *(u8*)((u8*)arg0 + 0x33) = temp_r28;
-        *(u8*)((u8*)arg0 + 0x31) = *(u8*)((u8*)arg0 + 0x32);
-        *(u8*)((u8*)arg0 + 0x32) = temp_r23;
-        *(u8*)((u8*)arg0 + 0x34) = *(u8*)((u8*)arg0 + 0x37);
-        *(u8*)((u8*)arg0 + 0x37) = temp_r27;
-        *(u8*)((u8*)arg0 + 0x35) = *(u8*)((u8*)arg0 + 0x36);
-        *(u8*)((u8*)arg0 + 0x36) = temp_r22;
+    *(void**)shape = &lbl_803338C0;
+    if (swap != 0) {
+        b24 = *(u8*)((u8*)shape + 0x24);
+        b25 = *(u8*)((u8*)shape + 0x25);
+        b28 = *(u8*)((u8*)shape + 0x28);
+        b29 = *(u8*)((u8*)shape + 0x29);
+        b2c = *(u8*)((u8*)shape + 0x2C);
+        b2d = *(u8*)((u8*)shape + 0x2D);
+        b30 = *(u8*)((u8*)shape + 0x30);
+        b31 = *(u8*)((u8*)shape + 0x31);
+        b34 = *(u8*)((u8*)shape + 0x34);
+        b35 = *(u8*)((u8*)shape + 0x35);
+        *(u8*)((u8*)shape + 0x24) = *(u8*)((u8*)shape + 0x27);
+        *(u8*)((u8*)shape + 0x27) = b24;
+        *(u8*)((u8*)shape + 0x25) = *(u8*)((u8*)shape + 0x26);
+        *(u8*)((u8*)shape + 0x26) = b25;
+        *(u8*)((u8*)shape + 0x28) = *(u8*)((u8*)shape + 0x2B);
+        *(u8*)((u8*)shape + 0x2B) = b28;
+        *(u8*)((u8*)shape + 0x29) = *(u8*)((u8*)shape + 0x2A);
+        *(u8*)((u8*)shape + 0x2A) = b29;
+        *(u8*)((u8*)shape + 0x2C) = *(u8*)((u8*)shape + 0x2F);
+        *(u8*)((u8*)shape + 0x2F) = b2c;
+        *(u8*)((u8*)shape + 0x2D) = *(u8*)((u8*)shape + 0x2E);
+        *(u8*)((u8*)shape + 0x2E) = b2d;
+        *(u8*)((u8*)shape + 0x30) = *(u8*)((u8*)shape + 0x33);
+        *(u8*)((u8*)shape + 0x33) = b30;
+        *(u8*)((u8*)shape + 0x31) = *(u8*)((u8*)shape + 0x32);
+        *(u8*)((u8*)shape + 0x32) = b31;
+        *(u8*)((u8*)shape + 0x34) = *(u8*)((u8*)shape + 0x37);
+        *(u8*)((u8*)shape + 0x37) = b34;
+        *(u8*)((u8*)shape + 0x35) = *(u8*)((u8*)shape + 0x36);
+        *(u8*)((u8*)shape + 0x36) = b35;
     }
-    return arg0;
+    return shape;
 }
 #pragma use_lmw_stmw on
 extern "C" void fn_801A1DD4(void* arg0, void* arg1) {
