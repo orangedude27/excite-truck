@@ -1208,31 +1208,33 @@ void fn_801FEDA4(void *arg0) {
     char *base = (char *)lbl_8055EC98;
     int i = 0;
     char *entry = base;
-
-search:
-    if (stricmp(obj->name, entry) != 0) goto advance;
-    base += i * 0x58;
-    goto selected;
-advance:
-    entry += 0x58;
-    i++;
-    if (i < *(volatile int *)(base + 0x2C0)) goto search;
+    while (i < *(int *)(base + 0x2C0)) {
+        if (stricmp(obj->name, entry) == 0) {
+            base += i * 0x58;
+            goto found;
+        }
+        entry += 0x58;
+        i++;
+    }
     base = 0;
-selected:
-    if (base == 0) fn_802E317C(lbl_8033B84C, obj->name);
-    if (*(int *)(base + 0x50) > 0) {
-        int index = fn_80129D18(0);
+found:
+    if (base == 0) {
+        fn_802E317C(lbl_8033B84C, obj->name);
+    }
+    int count = *(int *)(base + 0x50);
+    if (count > 0) {
+        int index = fn_80129D18(0, count);
         int selected = *(int *)(base + 0x10 + index * 4);
         int j = index + 1;
         int *p = (int *)(base + j * 4);
-        for (; j < *(int *)(base + 0x50); j++, p++) p[3] = p[4];
-        *(int *)(base + 0x50) = j - 1;
-        fn_801FD024((void *)selected, arg0);
-        {
-            int count = *(int *)(base + 0x54);
-            *(int *)(base + 0x30 + count * 4) = selected;
-            *(int *)(base + 0x54) = count + 1;
+        for (; j < *(int *)(base + 0x50); j++, p++) {
+            p[3] = p[4];
         }
+        *(int *)(base + 0x50) -= 1;
+        fn_801FD024((void *)selected, arg0);
+        int c2 = *(int *)(base + 0x54);
+        *(int *)(base + 0x30 + c2 * 4) = selected;
+        *(int *)(base + 0x54) = c2 + 1;
     }
 }
 
@@ -1484,39 +1486,33 @@ void fn_801FF770(void* arg0) {
 extern "C" int stricmp(const char *, const char *);
 #pragma use_lmw_stmw off
 void fn_801FF7D4(void *arg0, void *arg1) {
-    const char *name;
-    int i;
-    char *entry;
-    int count;
-    name = *(const char **)arg1;
-    i = 0;
-    entry = (char *)arg0;
-    for (;;) {
-        if (stricmp(name, entry) == 0) {
+    const char *name = *(const char **)arg1;
+    int i = 0;
+    void *entry = arg0;
+    while (i < *(int *)((char *)arg0 + 0x4C0)) {
+        if (stricmp(name, (char *)entry) == 0) {
             entry = (char *)arg0 + i * 0x98;
-            break;
+            goto found;
         }
-        entry += 0x98;
+        entry = (char *)entry + 0x98;
         i++;
-        if (i >= *(volatile int *)((char *)arg0 + 0x4C0)) {
-            entry = 0;
-            break;
-        }
     }
+    entry = 0;
+found:
     if (entry == 0) {
-        if (*(int *)((char *)arg0 + 0x4C0) >= 8)
+        if (*(int *)((char *)arg0 + 0x4C0) >= 8) {
             fn_802E317C(lbl_8033B8EC, 8);
+        }
         entry = (char *)arg0 + *(int *)((char *)arg0 + 0x4C0) * 0x98;
         fn_801FF8DC(arg0, entry, *(int *)arg1);
-        *(int *)((char *)arg0 + 0x4C0) =
-            *(int *)((char *)arg0 + 0x4C0) + 1;
+        *(int *)((char *)arg0 + 0x4C0) += 1;
     }
-    count = *(int *)(entry + 0x90);
-    if (count + 1 > 0x10)
+    if (*(int *)((char *)entry + 0x90) + 1 > 0x10) {
         fn_802E317C(lbl_8033B90C, 0x10);
-    count = *(int *)(entry + 0x90);
-    *(void **)(entry + 0x10 + count * 4) = arg1;
-    *(int *)(entry + 0x90) = count + 1;
+    }
+    int count = *(int *)((char *)entry + 0x90);
+    *(void **)((char *)entry + 0x10 + count * 4) = arg1;
+    *(int *)((char *)entry + 0x90) = count + 1;
 }
 extern "C" void fn_801FF8DC(void *arg0, void *dest, int src) {
     strncpy((char *)dest, (const char *)src, 0x10);
