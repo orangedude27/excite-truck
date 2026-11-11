@@ -7,6 +7,7 @@ void OSInitMutex(OSMutex* mutex) {
 }
 
 void OSLockMutex(OSMutex* mutex) {
+    /* Lock a mutex, sleeping and promoting the owner if contended, and track it on the current thread's owned-mutex queue. */
     BOOL enabled = OSDisableInterrupts();
     OSThread* currThread = OSGetCurrentThread();
 
