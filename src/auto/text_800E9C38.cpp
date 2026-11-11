@@ -137,35 +137,39 @@ extern "C" char lbl_80322A78[];
 extern "C" char lbl_80322AA0[];
 extern "C" char lbl_80322AB4[];
 extern "C" char lbl_80322AD8[];
-extern "C" int __dt__Q46nw4hbm3snd6detail7ChannelFv(void* arg0, int arg1) {
-    if (arg0 != 0) {
-        if ((signed char)lbl_8055DE28 == 0) {
-            char* manager = lbl_80412778;
-            *(volatile void**)(manager + 4) = 0;
-            char* tail = manager + 0x10;
-            char* head = manager + 4;
-            *(volatile void**)(manager + 8) = 0;
-            *(volatile void**)(manager + 0x10) = 0;
-            *(volatile void**)(manager + 0x14) = 0;
-            *(volatile int*)lbl_80412778 = 0;
-            *(void**)(manager + 4) = head;
-            *(void**)(manager + 8) = head;
-            *(int*)(manager + 0xC) = 0;
-            *(void**)(manager + 0x10) = tail;
-            *(void**)(manager + 0x14) = tail;
+extern "C" int __dt__Q46nw4hbm3snd6detail7ChannelFv(void *channel, int deleteFlag) {
+    // nw4hbm::snd::detail::Channel::~Channel() (the deleting destructor): take the
+    // channel out of the global ChannelManager's idle list - building that singleton
+    // and queueing its own destruction with __register_global_object the first time
+    // one is used - and free the channel itself when the flag says "deleting".
+    if (channel != 0) {
+        if ((signed char)lbl_8055DE28 == 0) {  // ChannelManager not built yet
+            ChannelManagerLayout *manager = (ChannelManagerLayout *)lbl_80412778;
+            *(volatile void **)&manager->idle.head.next = 0;
+            char *activeSentinel = (char *)manager + 0x10;
+            char *idleSentinel = (char *)manager + 4;
+            *(volatile void **)&manager->idle.head.prev = 0;
+            *(volatile void **)&manager->active.head.next = 0;
+            *(volatile void **)&manager->active.head.prev = 0;
+            *(volatile int *)lbl_80412778 = 0;  // manager->idle.size
+            manager->idle.head.next = idleSentinel;  // an empty list circles itself
+            manager->idle.head.prev = idleSentinel;
+            manager->active.size = 0;
+            manager->active.head.next = activeSentinel;
+            manager->active.head.prev = activeSentinel;
             ((void (*)(void *, void *, void *))__register_global_object)(manager, &__dt__Q46nw4hbm3snd6detail14ChannelManagerFv, lbl_8040EC78);
             lbl_8055DE28 = 1;
         }
-        void* list = lbl_80412778;
-        if (arg0 == 0)
+        ChannelManagerLayout *list = (ChannelManagerLayout *)lbl_80412778;
+        if (channel == 0)  // NW4HBM_DB_ASSERT(obj, "InstanceManager.h", 0x54)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322AA0, 0x54, lbl_80322A78);
-        if (arg0 == 0)
+        if (channel == 0)  // NW4HBM_DB_ASSERT(p, "LinkList.h", 0x233)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322AD8, 0x233, lbl_80322AB4);
-        Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(list, arg0);
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(list, channel);
+        if (deleteFlag > 0)
+            fn_80128668(channel);
     }
-    return (int)arg0;
+    return (int)channel;
 }
 
 extern float lbl_80560FC0;
