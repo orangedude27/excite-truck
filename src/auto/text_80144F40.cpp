@@ -1906,7 +1906,6 @@ extern "C" void fn_80148070(void *__restrict arg0, s32 arg1, s32 arg2) {
 #pragma scheduling on
 
 extern "C" void *lbl_8032D1D8;
-extern "C" f32 fn_801451DC(s32);
 extern "C" f32 fn_801452B4(f32);
 extern "C" f32 lbl_805615D4;
 extern "C" void fn_801470B0(s32, s32, s32, f32, f32, f32, f32, f32, f32, f32, f32);
