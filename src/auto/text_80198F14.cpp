@@ -1277,36 +1277,41 @@ struct CollisionObject {
     f32 maxRadius;         /* 0x58: radius it scales up to */
 };
 
-extern "C" void fn_8019CE4C(void *arg0, void *arg1) {
-    struct Target { u8 pad[0x34]; Vec point; };
-    Target *target = (Target *)arg1;
-    Vec *a = (Vec *)((u8 *)arg0 + 0x34);
-    f32 delta[3];
-    delta[0] = a->x - target->point.x;
-    delta[1] = a->y - target->point.y;
-    f32 targetZ = target->point.z;
-    f32 sourceZ = a->z;
-    delta[2] = sourceZ - targetZ;
-    f32 distance = PSVECSquareDistance(a, &target->point);
-    f32 result;
-    if (distance > lbl_8056232C) {
-        f32 scale = lbl_805622E0 / (f32)fn_8002F234(distance);
-        delta[0] *= scale;
-        delta[1] *= scale;
-        delta[2] *= scale;
-        Vec *axis = (Vec *)((u8 *)*(void **)((u8 *)arg1 + 0xC) + 0xC);
-        f32 dot = PSVECDotProduct((Vec *)delta, axis);
-        f32 high = *(f32 *)((u8 *)arg1 + 0x58);
-        f32 low = *(f32 *)((u8 *)arg1 + 0x54);
-        f32 magnitude = (f32)__fabs((f64)dot);
-        result = low + magnitude * (high - low);
+extern "C" void fn_8019CE4C(void *object, void *shape) {
+    /* Sphere ('SPHR') influence pass: point this sphere's collision radius at an object.
+       The vector from the sphere's centre to the object is normalised (1/distance) and
+       projected on the sphere's influence axis; how well the two line up (|dot|, 0..1)
+       picks a radius between the sphere's min (+0x54) and max (+0x58).  Objects closer
+       than 0.1 (squared) simply get the larger of the two.  The radius is stored at
+       +0x24, which the sphere/sphere collision fn_8019B068 then runs with. */
+    CollisionObject *sphere = (CollisionObject *)shape;
+    Vec *objectPos = (Vec *)((u8 *)object + 0x34);
+    f32 push[3];
+    push[0] = objectPos->x - sphere->position.x;
+    push[1] = objectPos->y - sphere->position.y;
+    f32 sphereZ = sphere->position.z;
+    f32 objectZ = objectPos->z;
+    push[2] = objectZ - sphereZ;
+    f32 squareDistance = PSVECSquareDistance(objectPos, &sphere->position);
+    f32 radius;
+    if (squareDistance > lbl_8056232C /* 0.1f */) {
+        f32 invDistance = lbl_805622E0 /* 1.0f */ / (f32)fn_8002F234(squareDistance);
+        push[0] *= invDistance;
+        push[1] *= invDistance;
+        push[2] *= invDistance;
+        Vec *axis = (Vec *)((u8 *)sphere->axisSource + 0xC);
+        f32 alignment = PSVECDotProduct((Vec *)push, axis);
+        f32 maxRadius = sphere->maxRadius;
+        f32 minRadius = sphere->minRadius;
+        f32 strength = (f32)__fabs((f64)alignment);
+        radius = minRadius + strength * (maxRadius - minRadius);
     } else {
-        f32 high = *(f32 *)((u8 *)arg1 + 0x58);
-        f32 low = *(f32 *)((u8 *)arg1 + 0x54);
-        result = (low > high) ? low : high;
+        f32 maxRadius = sphere->maxRadius;
+        f32 minRadius = sphere->minRadius;
+        radius = (minRadius > maxRadius) ? minRadius : maxRadius;
     }
-    *(f32 *)((u8 *)arg1 + 0x24) = result;
-    fn_8019B068(arg0, arg1, 0, 0);
+    sphere->radius = radius;
+    fn_8019B068(object, shape, 0, 0);
 }
 
 extern "C" void fn_8019CF60(void *arg0, void *arg1) {
