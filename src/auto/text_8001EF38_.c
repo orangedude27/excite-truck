@@ -9,12 +9,34 @@ extern s8 lbl_8055D614;
 extern s32 lbl_8055D618;
 extern char lbl_802FE060[];
 
+/* One of the 8 lifetime counters (lbl_802FDF30): the short key a caller
+ * looks it up by ("score", "win", ...), its "Achievements:<KEY>" archive
+ * key, the id resolved by fn_80131234 and the value list fn_8001EFF0 builds. */
 typedef struct SrcCoef {
     s32 unk0;
     s32 unk4;
     s32 unk8;
     void* unkC;
 } SrcCoef;
+
+/* Achievements module (registered as the 'ACHV' archive block).
+ * Statistics live in ACH_BLOCK_SIZE-byte blocks: ACH_COUNTER_COUNT lifetime
+ * counters at the head, then ACH_ENTRY_COUNT named per-object entries.
+ * lbl_80358698 holds one block per profile (4 of them, indexed by
+ * fn_8000DA10), lbl_8035A718 the block in play and lbl_8035AF38 this
+ * session's pending additions, merged into it by fn_8001F724/fn_8001F5BC. */
+#define ACH_BLOCK_SIZE 0x820  /* size of one statistics block */
+#define ACH_COUNTER_COUNT 0x14 /* lifetime counters, indexed by counter id */
+#define ACH_NAME_OFFSET 0x50  /* first entry's name, from the block start */
+#define ACH_ENTRY_SIZE 0x28   /* one named entry */
+#define ACH_ENTRY_COUNT 0x32  /* named entries per block */
+#define ACH_NAME_SIZE 0x20    /* name held in an entry */
+#define ACH_VALUE_OFFSET 0x70 /* an entry's values, from its row start */
+
+typedef struct AchEntry {
+    char name[ACH_NAME_SIZE]; /* object name; empty when the entry is free */
+    s32 value[2];             /* the two statistics fn_8001FAC8 sums up */
+} AchEntry;                   /* == ACH_ENTRY_SIZE */
 
 extern SrcCoef lbl_802FDF30[8];
 extern s32 lbl_8055D610;
@@ -308,15 +330,14 @@ void fn_8001F578(void) {
 #pragma scheduling on
 extern void *memcpy(void *, const void *, unsigned long);
 void fn_8001F5BC(void *arg0, void *arg1, int arg2) {
-    volatile int *a = (volatile int *)arg0;
-    volatile int *b = (volatile int *)arg1;
+    s32 *a = (s32 *)arg0;
+    s32 *b = (s32 *)arg1;
     char *input = (char *)arg1 + 0x50;
     char *output = (char *)arg0;
     char *entry;
-    int sum7, sum6, sum5, sum4, sum3, sum2, sum1, sum0;
+    s32 sum7, sum6, sum5, sum4, sum3, sum2, sum1, sum0;
     int found, empty;
     unsigned int i, j;
-
     sum0 = a[0] + b[0];
     sum1 = a[1] + b[1];
     sum2 = a[2] + b[2];
@@ -333,26 +354,25 @@ void fn_8001F5BC(void *arg0, void *arg1, int arg2) {
     a[5] = sum5;
     a[6] = sum6;
     a[7] = sum7;
-
-    i = 0;
-    for (; i < 0x32; i++, input += 0x28) {
+    for (i = 0; i < 0x32; i++) {
         entry = output + 0x50;
         found = 0;
         empty = -1;
         for (j = 0; found == 0 && j < 0x32; entry += 0x28, j++) {
             if (empty < 0 && (signed char)*entry == 0) {
-                empty = j;
+                empty = (int)j;
             } else if (stricmp(entry, input) == 0) {
                 int value20 = *(int *)(entry + 0x20) + *(int *)(input + 0x20);
                 int value24 = *(int *)(input + 0x24);
                 found = 1;
-                *(volatile int *)(entry + 0x20) = value20;
+                *(int *)(entry + 0x20) = value20;
                 *(int *)(entry + 0x24) += value24;
             }
         }
         if (found == 0) {
             memcpy(output + 0x50 + empty * 0x28, input, 0x28);
         }
+        input += 0x28;
     }
 }
 
