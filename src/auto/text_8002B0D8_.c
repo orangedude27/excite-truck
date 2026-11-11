@@ -1130,51 +1130,61 @@ extern double lbl_802EE6E0[];
 /* fdlibm FORCE_EVAL: force the value to be rounded through memory as a double. */
 #define FORCE_EVAL(_x_) (*(volatile double *)&(_x_) = (_x_))
 
+/*
+ * __kernel_tan: kernel tangent on [-pi/4, pi/4] (MSL/fdlibm k_tan.c).
+ * x is the argument reduced to that range and y is its tail; iy picks the
+ * result: 1 for tan(x), -1 for -1/tan(x).  For |x| >= 0.6744 the angle is
+ * re-folded as pi/4 - x and the polynomial result mirrored about 1.
+ * The game's MSL source declares __kernel_tan(double x, double y, int iy);
+ * PowerPC gives iy r3 and x,y f1,f2 either way, so this order is equivalent.
+ */
 double __kernel_tan(int iy, double x, double y) {
     double z, r, v, w, s, t, a;
     int ix, hx;
 
-    hx = __HI(x);
-    ix = hx & 0x7fffffff;
-    if (ix < 0x3e300000) {
-        if ((int)x == 0) {
-            if (((ix | __LO(x)) | (iy + 1)) == 0) {
-                return lbl_80560A10 / __fabs(x);
+    hx = __HI(x);                             /* high word of x */
+    ix = hx & 0x7fffffff;                     /* high word of |x| */
+    if (ix < 0x3e300000) {                    /* |x| < 2**-28 */
+        if ((int)x == 0) {                    /* x is 0: generate inexact */
+            if (((ix | __LO(x)) | (iy + 1)) == 0) {   /* |x|+|y| == 0 && iy == -1 */
+                return tan_one / __fabs(x);   /* tan(0) with iy == -1: overflow */
             } else {
-                if (iy == 1) return x;
-                else return lbl_80560A18 / x;
+                if (iy == 1) return x;        /* tan(x) ~ x */
+                else return tan_negone / x;   /* -1/tan(x) ~ -1/x */
             }
         }
     }
-    if (ix >= 0x3FE59428) {
-        if (hx < 0) { x = -x; y = -y; }
-        z = lbl_80560A20 - x;
-        w = lbl_80560A28 - y;
+    if (ix >= 0x3FE59428) {                   /* |x| >= 0.6744 */
+        if (hx < 0) { x = -x; y = -y; }       /* tan is odd */
+        z = tan_pio4 - x;                     /* z = pi/4 - x */
+        w = tan_pio4lo - y;                   /* w = its tail - y */
         x = z + w;
-        *(volatile double *)&x = x;
-        y = lbl_80560A30;
+        FORCE_EVAL(x);
+        y = tan_zero;                         /* the tail is folded into x */
     }
     z = x * x;
-    *(volatile double *)&z = z;
+    FORCE_EVAL(z);
     w = z * z;
-    r = lbl_802EE6E0[1] + w * (lbl_802EE6E0[3] + w * (lbl_802EE6E0[5] + w * (lbl_802EE6E0[7] + w * (lbl_802EE6E0[9] + w * lbl_802EE6E0[11]))));
-    v = z * (lbl_802EE6E0[2] + w * (lbl_802EE6E0[4] + w * (lbl_802EE6E0[6] + w * (lbl_802EE6E0[8] + w * (lbl_802EE6E0[10] + w * lbl_802EE6E0[12])))));
-    s = z * x;
-    r = y + z * (s * (r + v) + y);
-    r += lbl_802EE6E0[0] * s;
-    w = x + r;
+    /* x^5*(T[1]+x^2*T[2]+...) split into x^5*(even powers) + x^5*z*(odd ones) */
+    r = tan_T(1) + w * (tan_T(3) + w * (tan_T(5) + w * (tan_T(7) + w * (tan_T(9) + w * tan_T(11)))));
+    v = z * (tan_T(2) + w * (tan_T(4) + w * (tan_T(6) + w * (tan_T(8) + w * (tan_T(10) + w * tan_T(12))))));
+    s = z * x;                                /* s = x^3 */
+    r = y + z * (s * (r + v) + y);            /* tan(x+y) ~ tan(x) + (1+x*x)*y */
+    r += tan_T(0) * s;
+    w = x + r;                                /* w = tan(x) */
     if (ix >= 0x3FE59428) {
-        v = (double)iy;
-        return (double)(1 - ((hx >> 30) & 2)) * (v - lbl_80560A38 * (x - (w * w / (w + v) - r)));
+        v = (double)iy;                       /* +1 or -1 */
+        return (double)(1 - ((hx >> 30) & 2)) * (v - tan_two * (x - (w * w / (w + v) - r)));
     }
     if (iy == 1) return w;
     else {
+        /* compute -1.0/(x+r) carefully */
         z = w;
-        __LO(z) = 0;
-        v = r - (z - x);
-        t = a = lbl_80560A18 / w;
+        __LO(z) = 0;                          /* z = w without its low bits */
+        v = r - (z - x);                      /* v = r - delta, so z+x = w+r */
+        t = a = tan_negone / w;               /* a = -1.0/w */
         __LO(t) = 0;
-        s = lbl_80560A10 + t * z;
+        s = tan_one + t * z;
         return t + a * (s + t * v);
     }
 }
