@@ -205,6 +205,8 @@ struct F92Node {
 };
 
 extern "C" void fn_801FA010(void **);
+extern "C" void fn_80204020(void);
+extern "C" void fn_80128670(void *);
 extern "C" void fn_801FA0B0(void **);
 extern "C" void fn_801F9A24(F92Node **);
 extern "C" s32 fn_801F9CF8(void *);
@@ -1763,7 +1765,8 @@ extern "C" void fn_801F973C(void *, void *, u32);
 #pragma use_lmw_stmw off
 extern "C" void fn_801FA7F4(void *arg0, s32 *arg1, s32 arg2) {
     volatile u32 *src = (volatile u32 *)arg1;
-    u32 zero, t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
+    register u32 zero;
+    u32 t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
     f32 data[14];
 
     zero = 0;
@@ -2636,7 +2639,7 @@ extern "C" void fn_801FC774(void *arg0) {
     f32 speed = fn_801E88F0(-1);
     f32 speed2 = speed * speed;
     f32 value;
-    if (fn_802C88E8((u8 *)arg0 + 0x28) * speed2 >
+    if (speed2 * fn_802C88E8((u8 *)arg0 + 0x28) >
         *(f32 *)((u8 *)arg0 + 0x4C) * *(f32 *)((u8 *)arg0 + 0x4C)) {
         f32 time = (f32)fn_8002F234();
         f32 current = *(f32 *)((u8 *)arg0 + 0x4C);
