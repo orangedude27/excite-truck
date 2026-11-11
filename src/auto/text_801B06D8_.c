@@ -1257,6 +1257,9 @@ extern void *fn_8013C9F4(s32);
 #pragma cplusplus on
 #pragma scheduling invalid_target
 extern "C" void fn_801B2024(void *arg0) {
+    /* Initialize this subsystem: load named resources/config, derive mode flags
+     * from arg0, allocate and set up the object pool, then obtain the primary
+     * object (vtable slot 0xE8 initialize) with a fallback. */
     class InitObject {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -1275,33 +1278,33 @@ extern "C" void fn_801B2024(void *arg0) {
         virtual void v52(); virtual void v53(); virtual void v54(); virtual void v55();
         virtual void *initialize();
     };
-    register char *base = lbl_80335A58;
+    register char *resourceBase = lbl_80335A58;
     u32 flags;
-    u8 index;
-    s32 count;
-    s32 pool;
-    void *result;
-    lbl_8055E66C = fn_80139D4C(base + 0xF8);
-    lbl_8055E670 = fn_80139D4C(base + 0x10C);
-    fn_80204A1C(base + 0x120, &lbl_8055E692);
+    u8 modeIndex;
+    s32 itemCount;
+    s32 poolMemory;
+    void *primaryObject;
+    lbl_8055E66C = fn_80139D4C(resourceBase + 0xF8);
+    lbl_8055E670 = fn_80139D4C(resourceBase + 0x10C);
+    fn_80204A1C(resourceBase + 0x120, &lbl_8055E692);
     flags = *(u32 *)((u8 *)arg0 + 4);
-    index = (flags >> 8) & 1;
-    lbl_8055E690 = index;
+    modeIndex = (flags >> 8) & 1;
+    lbl_8055E690 = modeIndex;
     lbl_8055E691 = (flags >> 9) & 1;
-    count = *fn_801769D8(index);
-    lbl_8055E678 = (void *)count;
+    itemCount = *fn_801769D8(modeIndex);
+    lbl_8055E678 = (void *)itemCount;
     lbl_8055E67C = 0;
-    pool = fn_8012850C((count << 7) + 0x10, base + 0x130);
+    poolMemory = fn_8012850C((itemCount << 7) + 0x10, resourceBase + 0x130);
     lbl_8055E684 =
         ((void *(*)(s32, void *(*)(void *), void (*)(void), s32, s32))fn_8002F37C)(
-            pool, fn_801B21B8, (void (*)(void))fn_801B2118, 0x80, count);
+            poolMemory, fn_801B21B8, (void (*)(void))fn_801B2118, 0x80, itemCount);
     __AXFXGetLfoSinTable_801769CC();
     lbl_8055E680 = fn_800081F0();
-    result = ((InitObject *)fn_801B83A0())->initialize();
-    lbl_8055E68C = result;
-    if (result == 0) {
-        result = fn_8013C9F4(0);
-        lbl_8055E68C = result;
+    primaryObject = ((InitObject *)fn_801B83A0())->initialize();
+    lbl_8055E68C = primaryObject;
+    if (primaryObject == 0) {
+        primaryObject = fn_8013C9F4(0);
+        lbl_8055E68C = primaryObject;
     }
     lbl_8055E674 = 0;
 }
