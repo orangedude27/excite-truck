@@ -328,7 +328,8 @@ extern __declspec(section ".sdata") int lbl_8055E13C;
 extern const char lbl_8032C0F0[];
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" int *fn_8013A0B0(int *arg0, int arg1, char *arg2) {
+/* Resolves a named entry from the primary handler if available, otherwise falls back to the default handler. */
+extern "C" int *fn_8013A0B0(int *outValue, int context, char *name) {
     class Dispatch {
     public:
         virtual int f0(char *);
@@ -355,17 +356,17 @@ extern "C" int *fn_8013A0B0(int *arg0, int arg1, char *arg2) {
         virtual int f21(char *);
     };
 
-    *arg0 = 0;
-    if (lbl_8055E138 != 0 && *arg2 != 0) {
-        if (((Dispatch *)lbl_8055E138)->f2(arg2) != 0) {
-            *arg0 = ((Dispatch *)lbl_8055E138)->f0(arg2);
+    *outValue = 0;
+    if (lbl_8055E138 != 0 && *name != 0) {
+        if (((Dispatch *)lbl_8055E138)->f2(name) != 0) {
+            *outValue = ((Dispatch *)lbl_8055E138)->f0(name);
         } else {
-            fn_802E30C8(lbl_8032C0F0, arg1, arg2, &lbl_8042F7C0);
+            fn_802E30C8(lbl_8032C0F0, context, name, &lbl_8042F7C0);
         }
     }
-    if (*arg0 == 0)
-        *arg0 = ((Dispatch *)lbl_8055E13C)->f21(arg2);
-    return arg0;
+    if (*outValue == 0)
+        *outValue = ((Dispatch *)lbl_8055E13C)->f21(name);
+    return outValue;
 }
 #pragma cplusplus reset
 #pragma scheduling on
