@@ -72,7 +72,7 @@ extern float lbl_805635FC;
 extern float lbl_8056360C;
 void fn_8022FB6C();
 float fn_80214D48(void);
-void fn_80015EB0(float);
+void fn_80015EB0();
 void fn_80015E30(void *, float);
 void fn_80015B20(void *, void *, void *);
 void fn_80015AA0(void *, float);
@@ -522,16 +522,14 @@ void fn_8022FD9C(OverlayQuad *quad, float dt) {
 #pragma push
 #pragma processor 750
 void fn_8022FF10(void *arg0, void *arg1) {
-    int temp[12];
-    float angle, temp_f31, temp_f30;
-    angle = *(float *)((char *)arg1 + 4);
-    temp_f31 = *(float *)((char *)arg1 + 0);
-    temp_f30 = *(float *)((char *)arg1 + 8);
-    fn_80015EB0(angle);
-    fn_80015E30(temp, temp_f31);
-    fn_80015B20(arg0, arg0, temp);
-    fn_80015AA0(temp, temp_f30);
-    fn_80015B20(arg0, arg0, temp);
+    float matrix[9];
+    float angle0 = ((float *)arg1)[0];
+    float angle2 = ((float *)arg1)[2];
+    ((void (*)(void *, float))fn_80015EB0)(arg0, ((float *)arg1)[1]);
+    fn_80015E30(matrix, angle0);
+    fn_80015B20(arg0, arg0, matrix);
+    fn_80015AA0(matrix, angle2);
+    fn_80015B20(arg0, arg0, matrix);
 }
 #pragma pop
 void fn_8022FF90(void *arg0) {
