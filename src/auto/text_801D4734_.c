@@ -677,7 +677,7 @@ fetch:
     }
 }
 
-extern void fn_801D52A4(int);
+extern void fn_801D52A4();
 int fn_801D56C0(void *alarm) {
     int offset;
     int i;
@@ -3053,6 +3053,36 @@ extern "C" void fn_801D8ABC(void *arg0) {
     };
     ((Dummy *)arg0)->v11();
 }
+
+#pragma push
+#pragma cplusplus on
+extern "C" s32 fn_801D8ACC(void *arg0, void *arg1) {
+    extern float lbl_80562ADC;
+    extern float lbl_80562B14;
+    extern char lbl_8055ACB8;
+    extern char lbl_8055ACB0;
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual float get(char *, float);
+    };
+    float value = lbl_80562ADC;
+    Dummy *obj = (Dummy *)arg1;
+    *(int *)((char *)arg0 + 4) = 1;
+    *(float *)((char *)arg0 + 0x10) = value;
+    *(float *)((char *)arg0 + 8) = obj->get(&lbl_8055ACB8, value);
+    *(float *)((char *)arg0 + 0xC) = obj->get(&lbl_8055ACB0, lbl_80562B14);
+    return 1;
+}
+#pragma pop
+#pragma cplusplus reset
+
 #pragma cplusplus reset
 
 void fn_801D8B50(void) {
