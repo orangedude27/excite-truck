@@ -989,7 +989,8 @@ extern "C" void fn_8012BC24(void **arg0, void *arg1) {
 
 extern "C" const char lbl_8032AAFC[];
 #pragma scheduling reset
-extern "C" s32 fn_8012BC50(void *arg0, void *arg1, s32 arg2) {
+/* Decrement a control block's refcount and invoke a release callback/cleanup when it reaches zero. */
+extern "C" s32 fn_8012BC50(void *ownerPtr, void *onRelease, s32 releaseArg) {
     struct Struct8012BC50 {
         u8 pad[0x34];
         u32 f0 : 28;
@@ -1000,29 +1001,29 @@ extern "C" s32 fn_8012BC50(void *arg0, void *arg1, s32 arg2) {
         s32 field_3c;
         s32 field_40;
     };
-    u8 *r31 = *(u8 **)((u8 *)arg0 - 8);
-    if (r31 == NULL) {
+    u8 *controlBlock = *(u8 **)((u8 *)ownerPtr - 8);
+    if (controlBlock == NULL) {
         return 0;
     }
-    if (*(s32 *)(r31 + 0x38) != 0) {
-        *(s32 *)(r31 + 0x38) -= 1;
+    if (*(s32 *)(controlBlock + 0x38) != 0) {
+        *(s32 *)(controlBlock + 0x38) -= 1;
     } else {
-        fn_802E30C8(lbl_8032AAFC, r31);
+        fn_802E30C8(lbl_8032AAFC, controlBlock);
     }
-    if (*(s32 *)(r31 + 0x38) == 0) {
-        if (arg1 != NULL) {
-            ((void (*)(void *, s32))arg1)(arg0, arg2);
+    if (*(s32 *)(controlBlock + 0x38) == 0) {
+        if (onRelease != NULL) {
+            ((void (*)(void *, s32))onRelease)(ownerPtr, releaseArg);
         }
-        if (*(u32 *)(r31 + 0x34) & 4) {
-            register Struct8012BC50 *s = (Struct8012BC50 *)r31;
-            fn_80128660(s->field_40);
-            s->f1 = 0;
-            s->field_40 = 0;
-            s->field_3c = 0;
-            s->f3 = 0;
+        if (*(u32 *)(controlBlock + 0x34) & 4) {
+            register Struct8012BC50 *releaseState = (Struct8012BC50 *)controlBlock;
+            fn_80128660(releaseState->field_40);
+            releaseState->f1 = 0;
+            releaseState->field_40 = 0;
+            releaseState->field_3c = 0;
+            releaseState->f3 = 0;
         }
     }
-    return *(s32 *)(r31 + 0x38) == 0;
+    return *(s32 *)(controlBlock + 0x38) == 0;
 }
 extern "C" void *fn_8012BD3C(void *arg0, const char *arg1) {
     void *entry = arg0;
