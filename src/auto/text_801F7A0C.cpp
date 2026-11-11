@@ -1062,6 +1062,10 @@ extern "C" void fn_801F94CC(const char *format, ...) {
 
 __declspec(section ".sdata") extern u8 lbl_8055B2DC[];
 extern "C" void *fn_801F95C4(void *arg0, void *arg1) {
+    /* Search the linked list of owners in lbl_8055EC44 for a node accepted by
+       the predicate arg0 whose name (looked up with key "name" / lbl_8055B2DC)
+       matches arg1. Walks each owner's get(index) sequence; aborts with
+       "Can't find \"%s\"" if not found. */
     class Owner {
     public:
         virtual void f0();
