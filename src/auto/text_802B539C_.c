@@ -107,7 +107,7 @@ extern "C" int fn_802B5510(const char *resourcePath) {
         virtual const char *process(const char *);
     };
     Manager *manager;
-    struct TplLike *list;
+    struct UMatList *list;
     void **entries;
     unsigned int count;
     void *item;
