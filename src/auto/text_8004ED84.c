@@ -66,42 +66,42 @@ extern char *ParseStringS(int, char *, int **, int *);
 extern void *ParseStringW(int, void *, int *, int *, int);
 extern int IOS_IoctlvReboot(int, int, int, int, void *, int);
 int IOS_Ioctlv(int, int, int, int, void *, int);
-int _ES_GetTicketViews(int *fd, int unused, int inputA, int inputB, unsigned int size, int *outCount) {
+int _ES_GetTicketViews(int *fd, int unused, int inputA, int inputB, void *views, int *outCount) {
     struct Frame {
         int vec[6];
         char pad0[8];
         int args[2];
         char pad1[0x18];
         int output;
-        char pad2[0x9C];
+        char pad2[0xDC];
     } __attribute__((aligned(32))) frame;
+    int *vec = &frame.vec[0];
+    int *args = &frame.args[0];
+    int *outp = &frame.output;
     int result;
-
     if (*fd < 0) return -0x3F9;
-    if (outCount == 0) return -0x3F9;
-    if (size & 0x1F) return -0x3F9;
-
-    frame.args[0] = inputA;
+    if (outCount == (int *)0) return -0x3F9;
+    if (((unsigned int)views & 0x1F) != 0) return -0x3F9;
     frame.args[1] = inputB;
-    if (size == 0) {
-        frame.vec[0] = (int)&frame.args[0];
-        frame.vec[1] = 8;
-        frame.vec[2] = (int)&frame.output;
-        frame.vec[3] = 4;
-        result = ((int (*)(int, int, int, int, void *))IOS_Ioctlv)(*fd, 0x12, 1, 1, &frame.vec[0]);
+    frame.args[0] = inputA;
+    if (views == (void *)0) {
+        vec[0] = (int)args;
+        vec[1] = 8;
+        vec[2] = (int)outp;
+        vec[3] = 4;
+        result = ((int (*)(int, int, int, int, void *))IOS_Ioctlv)(*fd, 0x12, 1, 1, vec);
         if (result == 0) *outCount = frame.output;
         return result;
     }
-
     if (*outCount == 0) return -0x3F9;
-    frame.vec[0] = (int)&frame.args[0];
-    frame.vec[1] = 8;
-    frame.vec[2] = (int)&frame.output;
-    frame.vec[3] = 4;
-    frame.vec[4] = size;
+    vec[1] = 8;
+    vec[0] = (int)args;
+    vec[3] = 4;
+    vec[2] = (int)outp;
+    vec[4] = (int)views;
     frame.output = *outCount;
-    frame.vec[5] = *outCount * 0xD8;
-    return ((int (*)(int, int, int, int, void *))IOS_Ioctlv)(*fd, 0x13, 2, 1, &frame.vec[0]);
+    vec[5] = *outCount * 0xD8;
+    return ((int (*)(int, int, int, int, void *))IOS_Ioctlv)(*fd, 0x13, 2, 1, vec);
 }
 
 int _ES_LaunchTitle(int *fd, int unused, int tidHigh, int tidLow, void *views)
@@ -989,31 +989,29 @@ char *OSGetFontTexture(char *arg0, void **arg1, int *arg2, int *arg3, int *arg4)
     } FontTexture;
     unsigned short encode;
     FontTexture *texture;
-    register int index;
-    int indexOut;
+    int index;
     int tile;
+    int tmp;
     int remainder;
     unsigned short tilesWide;
-    unsigned short tilesHigh;
     int column;
     int row;
     char *(*parse)(int, char *, int **, int *);
     char *next;
     encode = OSGetFontEncode();
     parse = (char *(*)(int, char *, int **, int *))lbl_8055DA48;
-    next = parse(encode, arg0, (int **)&texture, &indexOut);
-    index = indexOut;
+    next = parse(encode, arg0, (int **)&texture, &index);
     tile = index / (texture->tilesWide * texture->tilesHigh);
     *arg1 = (char *)texture + texture->bitmapOffset + texture->dataStride * tile;
     tilesWide = texture->tilesWide;
-    tilesHigh = texture->tilesHigh;
-    remainder = indexOut - tile * tilesWide * tilesHigh;
+    tmp = tile * tilesWide;
+    remainder = index - tmp * texture->tilesHigh;
     column = remainder / tilesWide;
     row = remainder - column * tilesWide;
     *arg2 = row * texture->width;
     *arg3 = column * texture->height;
     if (arg4 != 0)
-        *arg4 = *(unsigned char *)((char *)texture + texture->glyphOffset + indexOut);
+        *arg4 = *(unsigned char *)((char *)texture + texture->glyphOffset + index);
     return next;
 }
 
