@@ -1480,22 +1480,13 @@ extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(CharWriterCurso
     return writer->x;
 }
 
-extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(void *arg0) {
-    int v0 = 1;
-    int v1 = 1;
-    int v2 = 1;
-    int v3 = 1;
-    int v4 = 1;
-    int v5 = 1;
-    unsigned int top = (unsigned int)arg0 & 0xFF000000U;
-    if ((top != 0x80000000U) && (((unsigned int)arg0 & 0xFF800000U) != 0x81000000U)) v5 = 0;
-    if ((v5 == 0) && (((unsigned int)arg0 & 0xF8000000U) != 0x90000000U)) v4 = 0;
-    if ((v4 == 0) && (top != 0xC0000000U)) v3 = 0;
-    if ((v3 == 0) && (((unsigned int)arg0 & 0xFF800000U) != 0xC1000000U)) v2 = 0;
-    if ((v2 == 0) && (((unsigned int)arg0 & 0xF8000000U) != 0xD0000000U)) v1 = 0;
-    if ((v1 == 0) && (((unsigned int)arg0 & 0xFFFFC000U) != 0xE0000000U)) v0 = 0;
-    if (v0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x435, lbl_8032818C, arg0);
-    return *(float *)((char *)arg0 + 0x30);
+/* nw4hbm::ut::CharWriter's cursor-Y getter -- like its siblings the symbol table names
+   every float getter of this class GetScaleH.  Despite the name it hands back the
+   absolute Y the next glyph is drawn at (+0x30, what SetCursor writes), after
+   NW4HBM_ASSERT_VALID_PTR(this).  The real scale floats are +0x24/+0x28. */
+extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(CharWriterCursor *writer) {
+    CW_CHECK_THIS(writer, 0x435); // NW4HBM_ASSERT_VALID_PTR(this)
+    return writer->y;
 }
 
 extern "C" void GXBegin(int, int, int);
