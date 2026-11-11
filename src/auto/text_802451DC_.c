@@ -565,8 +565,10 @@ void fn_802464A8(void *arg0) {
 
 extern int fn_80230E90(int);
 extern int fn_80216D28(void);
-int fn_802464B4(void *arg0, int arg1) {
-    switch (arg1) {
+/* Handle directional input events (0x125-0x128) for a widget, using flag at +0x19
+ * to choose between selection/value changes and the alternate action path. */
+int fn_802464B4(void *arg0, int eventId) {
+    switch (eventId) {
     case 0x125:
         if (*(unsigned char *)((char *)arg0 + 0x19) == 0) {
             fn_80214CB4(0); fn_80230E90(0);
