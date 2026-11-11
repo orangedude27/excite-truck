@@ -88,12 +88,15 @@ void fn_8022EAB8(void) {
 
 #pragma dont_inline on
 #pragma cplusplus on
-extern "C" void fn_8022EB30(void *arg0) {
-    class Unk8022EB30 { public: virtual ~Unk8022EB30(); };
-    fn_8012A364(lbl_8055F000, arg0);
-    if (--lbl_8055EFFC == 0) {
-        delete (Unk8022EB30 *)lbl_8055F000;
-        lbl_8055F000 = 0;
+// Releases one UIContext: pushes it back onto the "UIContext::pool" free list
+// (fn_8012A364) and, once the last context handed out is back, deletes the pool
+// itself through its virtual destructor and forgets it.
+extern "C" void fn_8022EB30(void *context) {
+    class PoolObject { public: virtual ~PoolObject(); };
+    fn_8012A364(sUIContextPool, context);
+    if (--sUIContextLiveCount == 0) {
+        delete (PoolObject *)sUIContextPool;
+        sUIContextPool = 0;
     }
 }
 #pragma cplusplus reset
