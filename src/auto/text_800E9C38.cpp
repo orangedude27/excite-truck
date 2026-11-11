@@ -5,13 +5,27 @@ typedef signed char s8;
 typedef signed int s32;
 typedef float f32;
 
+// nw4hbm::ut::LinkListNode: a link's next/prev, the first two words of anything put
+// into a LinkListImpl (a Channel is its own node).
+struct LinkListNode {
+    void *next;    // +0x00
+    void *prev;    // +0x04
+};
+
+// nw4hbm::ut::detail::LinkListImpl: doubly-linked list with the count in front of the
+// sentinel node the links circle around when empty (head.next == head.prev == &head).
+struct LinkListImpl {
+    s32 size;          // +0x00
+    LinkListNode head; // +0x04
+};
+
+// The global nw4hbm::snd::detail::ChannelManager singleton at lbl_80412778. Every
+// Channel sits in one of its two lists: a new or stopped one in `idle`, a started one
+// in `active`, which the per-frame update walks. The first Channel built it
+// (lbl_8055DE28 says so) and queued its own destruction with __register_global_object.
 struct ChannelManagerLayout {
-    int first;
-    void *head;
-    void *tail;
-    int count;
-    void *begin;
-    void *end;
+    LinkListImpl idle;    // +0x00: channels not playing
+    LinkListImpl active;  // +0x0C: channels being updated
 };
 
 namespace nw4hbm {
@@ -386,7 +400,7 @@ extern "C" void Update__Q46nw4hbm3snd6detail7ChannelFb(void *, int);
 #pragma use_lmw_stmw off
 extern "C" void UpdateAllChannel__Q46nw4hbm3snd6detail7ChannelFv(void) {
     char *manager;
-    int zero = 0;
+    register int zero = 0;
     int one = 1;
     void *head;
     void *end;
@@ -414,7 +428,7 @@ extern "C" void UpdateAllChannel__Q46nw4hbm3snd6detail7ChannelFv(void) {
     node = *(void **)(manager + 0x10);
     do {
         current = node;
-        node = *reinterpret_cast<void **>(node);
+        node = *(void **)node;
         if (current == 0)
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_803229D0, 0x23D, lbl_803229AC);
         Update__Q46nw4hbm3snd6detail7ChannelFb(current, 1);
@@ -424,7 +438,7 @@ extern "C" void UpdateAllChannel__Q46nw4hbm3snd6detail7ChannelFv(void) {
             void *initTail = manager + 0x10;
             *(void **)(manager + 8) = (void *)zero;
             *(void **)(manager + 0x10) = (void *)zero;
-            *(void **)(manager + 0x14) = (void *)zero;
+            *(void **)((unsigned short)manager + 0x14) = (void *)zero;
             *(int *)lbl_80412778 = zero;
             *(void **)(manager + 4) = head;
             *(void **)(manager + 8) = head;
