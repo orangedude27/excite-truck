@@ -753,21 +753,6 @@ struct SoundDevState {
     signed long allow2D;  /* +0x08 otherwise a 2D voice, else the plain one */
 };
 
-/* Sound classes the manager keeps a list of (names: the table lbl_802F9DA0).
- * fn_802085F0 calls 3,4,5,6,8 the positional ones; fn_80207964 singles out UI. */
-enum SndClass {
-    SNDCLASS_UI = 0,
-    SNDCLASS_COUNTDOWN = 1,
-    SNDCLASS_ENGINE_2D = 2,
-    SNDCLASS_ENGINE = 3,
-    SNDCLASS_TIRESQUEAL = 4,
-    SNDCLASS_CRASH = 5,
-    SNDCLASS_ENGINE_START = 6,
-    SNDCLASS_GEARCHANGE = 7,
-    SNDCLASS_WIND = 8,
-    SNDCLASS_COUNT = 9
-};
-
 /* 3rd argument of the device's createSound: 0 asks for a 3D voice (the
  * manager's own message says so), 1 is what it retries with when that
  * fails, 2 is the voice used for sounds that need no positioning. */
