@@ -124,21 +124,22 @@ int fn_80171EC0(int unused) {
 }
 
 extern float lbl_80561A3C, lbl_80561A40;
-#pragma dont_inline on
+#pragma processor 750
+#pragma use_lmw_stmw off
 int fn_80171EF8(void *arg0, void *arg1) {
-    float *start = (float *)arg0;
-    float *endPoint = (float *)arg1;
+    float coords[2];
+    double point;
     float dy;
     float dx;
     float sum;
     volatile float savedY;
     volatile float savedX;
     float distance;
-    float step;
     float limit;
+    float step;
     float t;
-    dy = start[1] - endPoint[1];
-    dx = start[0] - endPoint[0];
+    dy = ((float *)arg0)[1] - ((float *)arg1)[1];
+    dx = ((float *)arg0)[0] - ((float *)arg1)[0];
     sum = dy * dy + dx * dx;
     savedY = dy;
     savedX = dx;
@@ -147,12 +148,10 @@ int fn_80171EF8(void *arg0, void *arg1) {
     limit = lbl_80561A40 - step;
     t = step;
     while (t < limit) {
-        float coords[2];
-        double point;
-        float y0 = start[1];
-        float y1 = endPoint[1];
-        float x0 = start[0];
-        float x1 = endPoint[0];
+        float y1 = ((float *)arg1)[1];
+        float y0 = ((float *)arg0)[1];
+        float x1 = ((float *)arg1)[0];
+        float x0 = ((float *)arg0)[0];
         coords[0] = x0 + (x1 - x0) * t;
         coords[1] = y0 + (y1 - y0) * t;
         point = *(double *)coords;
@@ -162,7 +161,6 @@ int fn_80171EF8(void *arg0, void *arg1) {
     }
     return 1;
 }
-#pragma dont_inline reset
 
 #pragma push
 #pragma processor 750
@@ -172,10 +170,11 @@ unsigned long long fn_80171FF0(void *arg0, int arg1, float angle, float step) {
     extern double cos(double);
     extern double sin(double);
     extern int fn_80171E3C(void *);
-    float zero = lbl_80561A44;
+    float zero;
     float off[2];
     float pos[2];
     float rad, c, s;
+    zero = lbl_80561A44;
     while (arg1-- > 0) {
         off[0] = angle;
         off[1] = zero;
@@ -1976,7 +1975,8 @@ int fn_801757B0(void) { return 1; }
 
 #pragma push
 #pragma cplusplus on
-extern "C" int fn_801757B8(void *arg0, int arg1) {
+/* Updates state for the given index and invokes callbacks based on range/state checks; returns 1 if the status field equals 4. */
+extern "C" int fn_801757B8(void *self, int index) {
     class Query {
     public:
         virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
@@ -1994,24 +1994,24 @@ extern "C" int fn_801757B8(void *arg0, int arg1) {
     extern void fn_8001DFCC(void);
     extern float lbl_80561A44;
     float value;
-    int result;
-    fn_801E866C(arg1);
-    value = fn_8001DAE8((char *)arg0 + 0x17C) - *(float *)((char *)arg0 + 0x180);
-    result = value >= lbl_80561A44 &&
-             value < ((State *)arg0)->upper;
-    if (result != 0) {
-        ((Query *)arg0)->callback(arg1);
+    int inRange;
+    fn_801E866C(index);
+    value = fn_8001DAE8((char *)self + 0x17C) - *(float *)((char *)self + 0x180);
+    inRange = value >= lbl_80561A44 &&
+              value < ((State *)self)->upper;
+    if (inRange != 0) {
+        ((Query *)self)->callback(index);
     } else {
-        if (*(unsigned char *)((char *)arg0 + 0x1B4) != 0)
-            ((Query *)arg0)->callback(arg1);
-        if (*(int *)((char *)arg0 + 0x1B8) != 0)
-            fn_802AE220(*(int *)((char *)arg0 + 0x1B8), 0);
+        if (*(unsigned char *)((char *)self + 0x1B4) != 0)
+            ((Query *)self)->callback(index);
+        if (*(int *)((char *)self + 0x1B8) != 0)
+            fn_802AE220(*(int *)((char *)self + 0x1B8), 0);
     }
-    if (((Query *)arg0)->query() != 0)
+    if (((Query *)self)->query() != 0)
         fn_8001DFCC();
     {
-        int field = *(int *)((char *)arg0 + 0x1AC);
-        return (unsigned int)((4 - field) | (field - 4)) >> 31;
+        int status = *(int *)((char *)self + 0x1AC);
+        return (unsigned int)((4 - status) | (status - 4)) >> 31;
     }
 }
 #pragma cplusplus reset
