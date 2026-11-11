@@ -4318,38 +4318,39 @@ extern "C" void fn_802208EC(void *arg0) {
     }
 }
 
-extern "C" s32 fn_80220948(void *arg0, s32 arg1) {
-    s32 *temp_r6 = *(s32 **)((u8 *)arg0 + 0x25C);
-    if (temp_r6 == 0)
+extern "C" s32 fn_80220948(void *menu, s32 msg) {
+    // Validate cached selection state pointer before handling menu navigation.
+    s32 *selection = *(s32 **)((u8 *)menu + 0x25C);
+    if (selection == 0)
         return 0;
-    if (*(s32 *)((u8 *)arg0 + 0x260) != *temp_r6)
+    if (*(s32 *)((u8 *)menu + 0x260) != *selection)
         return 0;
-    switch (arg1) {
+    switch (msg) {
     case 0x127: {
-        s32 *temp_r5 = *(s32 **)((u8 *)arg0 + 0x244);
-        if (*temp_r5 < *(s32 *)((u8 *)arg0 + 0x254) - 1)
-            *temp_r5 = *temp_r5 + 1;
+        s32 *index = *(s32 **)((u8 *)menu + 0x244);
+        if (*index < *(s32 *)((u8 *)menu + 0x254) - 1)
+            *index = *index + 1;
         else
             fn_80216D28();
         return 1;
     }
     case 0x125: {
-        s32 *temp_r4 = *(s32 **)((u8 *)arg0 + 0x244);
-        if (*temp_r4 > *(s32 *)((u8 *)arg0 + 0x250))
-            *temp_r4 = *temp_r4 - 1;
+        s32 *index = *(s32 **)((u8 *)menu + 0x244);
+        if (*index > *(s32 *)((u8 *)menu + 0x250))
+            *index = *index - 1;
         else
             fn_80216D28();
         return 1;
     }
     case 0x126:
-        if (*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x2C) + 0x494) > 1) {
-            fn_80217D84(*(s32 *)((u8 *)arg0 + 0x2C));
+        if (*(s32 *)((u8 *)*(void **)((u8 *)menu + 0x2C) + 0x494) > 1) {
+            fn_80217D84(*(s32 *)((u8 *)menu + 0x2C));
             return 1;
         }
         goto done;
     case 0x128:
-        if (*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x2C) + 0x494) > 1) {
-            fn_80217C4C(*(s32 *)((u8 *)arg0 + 0x2C));
+        if (*(s32 *)((u8 *)*(void **)((u8 *)menu + 0x2C) + 0x494) > 1) {
+            fn_80217C4C(*(s32 *)((u8 *)menu + 0x2C));
             return 1;
         }
     done:
