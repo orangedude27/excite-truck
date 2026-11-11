@@ -417,15 +417,30 @@ extern "C" s32 fn_8013126C(void *, s32);
 extern "C" s32 fn_80144FB0(void *, s32, s32, const char *);
 #pragma scheduling invalid_target
 extern "C" void fn_801456E8(void *arg0, s32 arg1) {
-    struct Entry { s32 unk0; f32 unk4; f32 unk8; s32 unkC; f32 unk10; s32 unk14; s32 unk18; s32 unk1C; };
-    struct List { Entry *entries; s32 count; };
+    /* Print a formatted dump of a 0x20-byte-entry list to the given output:
+       write two header lines, then for each entry emit its floats, counts, id,
+       a flag string, a value, and a resolved name, and finish with "end\r\n". */
+    struct Entry {
+        s32 unk0;
+        f32 unk4;
+        f32 unk8;
+        s32 unkC;
+        f32 unk10;
+        s32 unk14;
+        s32 unk18;
+        s32 unk1C;
+    };
+    struct List {
+        Entry *entries;
+        s32 count;
+    };
     char *base = lbl_8032CEC8;
     List *list = (List *)arg0;
-    char buffer[0x40];
-    char result[0x138];
+    char flagBuffer[0x40];
+    char nameBuffer[0x138];
     fn_802E3AD0(arg1, base + 0x90);
     fn_802E3AD0(arg1, base + 0xA0);
-    s32 value;
+    s32 nameValue;
     Entry *entry;
     s32 offset;
     s32 i;
@@ -433,9 +448,9 @@ extern "C" void fn_801456E8(void *arg0, s32 arg1) {
     offset = 0;
     while (i < list->count) {
         entry = (Entry *)((u8 *)list->entries + offset);
-        value = fn_8013126C(result, entry->unk1C);
-        s32 formatted = fn_80144FB0(buffer, 0x40, entry->unk14, base + 0x10);
-        fn_802E3AD0(arg1, base + 0xD4, entry->unk4, entry->unk8, entry->unkC, entry->unk18, formatted, entry->unk10, entry->unk0, value);
+        nameValue = fn_8013126C(nameBuffer, entry->unk1C);
+        s32 flags = fn_80144FB0(flagBuffer, 0x40, entry->unk14, base + 0x10);
+        fn_802E3AD0(arg1, base + 0xD4, entry->unk4, entry->unk8, entry->unkC, entry->unk18, flags, entry->unk10, entry->unk0, nameValue);
         offset += 0x20;
         i++;
     }
