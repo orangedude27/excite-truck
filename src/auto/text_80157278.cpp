@@ -1160,11 +1160,11 @@ extern "C" s32 fn_80141F7C(f32);
 extern "C" void fn_8015889C(void* arg0) {
     Fn8015889C* self = (Fn8015889C*)arg0;
     if (self->mProgress25C > 0.0f) {
-        volatile f32 value = 0.0f;
+        f32 value = 0.0f;
         if (self->mProgress25C > self->mLevel24C) {
             if (self->v23() > 0) {
                 value = self->mGain250 * self->v20(self->v23());
-                self->v35((f32*)&value); self->v33();
+                self->v35(&value); self->v33();
             }
         }
         if (fn_80141F7C(value) == 0) self->v38(self->mProgress25C);
@@ -1173,7 +1173,7 @@ extern "C" void fn_8015889C(void* arg0) {
         f32 zero;
         elapsed = self->mTime258;
         frameTime = lbl_8056177C;
-        zero = 0.0f;
+        zero = lbl_80561754;
         self->mProgress25C = zero;
         self->mProgress264 = zero;
         self->mTime258 = elapsed + frameTime;
@@ -1792,11 +1792,16 @@ extern "C" void fn_8015A40C(void *arg0) {
  s32 r6 = 0;
  s32 r7 = 0;
  s32 r5 = 0;
- for (; r6 < *(s32 *)((char *)arg0 + 0xc); r6++) {
-  *(s32 *)(*(char **)((char *)arg0 + 8) + r7) = r5;
-  *(s32 *)(*(char **)((char *)arg0 + 8) + r7 + 4) = r5;
-  *(s32 *)(*(char **)((char *)arg0 + 8) + r7 + 8) = r5;
-  *(f32 *)(*(char **)((char *)arg0 + 8) + r7 + 0xc) = entryValue;
+ while (r6 < *(s32 *)((char *)arg0 + 0xc)) {
+  char *p = *(char **)((char *)arg0 + 8);
+  r6++;
+  *(s32 *)(p + r7) = r5;
+  p = *(char **)((char *)arg0 + 8);
+  *(s32 *)(p + r7 + 4) = r5;
+  p = *(char **)((char *)arg0 + 8);
+  *(s32 *)(p + r7 + 8) = r5;
+  p = *(char **)((char *)arg0 + 8);
+  *(f32 *)(p + r7 + 0xc) = entryValue;
   r7 += 0x38;
  }
  f32 resetValue = lbl_80561754;
