@@ -989,8 +989,10 @@ check:
 #pragma push
 #pragma inline off
 void fn_802A0794(void *arg0) {
+    /* Dispatches an effect update/spawn request by id, applying position/params and invoking
+       active handlers, then writes back the possibly-updated request id. Logs if the id is missing. */
     Unk802A0794Params params;
-    unsigned char *object;
+    unsigned char *effect;
     params.unk_0x18 = *(short *)((char *)arg0 + 0x2C);
     params.values[0] = *(float *)((char *)arg0 + 4);
     params.values[1] = *(float *)((char *)arg0 + 8);
@@ -999,13 +1001,13 @@ void fn_802A0794(void *arg0) {
     params.values[4] = *(float *)((char *)arg0 + 20);
     params.values[5] = *(float *)((char *)arg0 + 24);
     params.unk_0x1C = *(int *)((char *)arg0 + 0x28);
-    object = (unsigned char *)fn_8029FE1C(params.unk_0x1C);
-    if (object != 0) {
-        fn_802A042C(object, &params);
-        if (object[0x60] != 0)
-            fn_802A01C8(object, &params);
-        if (object[0x6C] != 0)
-            fn_802A02F4(object, &params);
+    effect = (unsigned char *)fn_8029FE1C(params.unk_0x1C);
+    if (effect != 0) {
+        fn_802A042C(effect, &params);
+        if (effect[0x60] != 0)
+            fn_802A01C8(effect, &params);
+        if (effect[0x6C] != 0)
+            fn_802A02F4(effect, &params);
     } else {
         fn_802E30C8(lbl_803498AC, params.unk_0x1C);
     }
