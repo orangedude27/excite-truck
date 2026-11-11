@@ -3,6 +3,8 @@
 extern wchar_t UcsAnsiTable[32];
 extern wchar_t* UcsSjisTable[256];
 
+/* Decodes one UTF-8 code point into utf32, validating continuation bytes and
+ * overlong/surrogate encodings; returns pointer after the sequence or NULL. */
 const u8* OSUTF8to32(const u8* utf8, u32* utf32) {
     u32 code;
     u32 full;
