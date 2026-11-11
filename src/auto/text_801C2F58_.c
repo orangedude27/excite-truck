@@ -1146,9 +1146,7 @@ check:
 done:
     return result;
 }
-#pragma paired_single reset
-#pragma paired reset
-#pragma scheduling reset
+#pragma pop
 void fn_801C6CB0(void) {
     return;
 }
