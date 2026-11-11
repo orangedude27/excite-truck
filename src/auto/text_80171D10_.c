@@ -1637,26 +1637,30 @@ typedef struct {
     int f4C;             /* 0x4C ground-query result */
 } Fn8017483CFrame;
 
-int fn_8017483C(void *arg0, void *arg1, int arg2) {
+/* Aim the camera at key `index` of a camera-key list: place it on that key's ground point
+   and point it back at the world origin (the key negated and normalized), then set the
+   frame up as a fixed key camera.  Returns 0 if the list holds no such key. */
+int fn_8017483C(Fn8017483CKeyList *keyList, Fn8017483CFrame *frame, int index) {
     extern double fn_8002F234(float);
     extern void fn_801B7C8C(void *, void *, float *);
+    /* lbl_80561A50 = -1.0f, lbl_80561AD0 = 0.01f (shortest vector), lbl_80561A40 = 1.0f */
     extern float lbl_80561A40, lbl_80561A50, lbl_80561AD0;
-    float xy[2], length, minimum, scale;
-    void *entry;
-    if (arg2 < *(int *)((char *)arg0 + 8)) {
-        entry = (char *)*(void **)((char *)arg0 + 4) + arg2 * 8;
-        xy[0] = *(float *)entry * lbl_80561A50;
-        xy[1] = *(float *)((char *)entry + 4) * lbl_80561A50;
-        length = (float)fn_8002F234(xy[0] * xy[0] + xy[1] * xy[1]);
+    float dirXZ[2], length, minimum, scale;
+    Fn8017483CKey *key;
+    if (index < keyList->keyCount) {
+        key = &keyList->keys[index];
+        dirXZ[0] = key->x * lbl_80561A50;
+        dirXZ[1] = key->z * lbl_80561A50;
+        length = (float)fn_8002F234(dirXZ[0] * dirXZ[0] + dirXZ[1] * dirXZ[1]);
         minimum = lbl_80561AD0;
         minimum = (minimum > length) ? minimum : length;
         scale = lbl_80561A40 / minimum;
-        xy[0] = xy[0] * scale;
-        xy[1] = xy[1] * scale;
-        fn_801B7C8C(arg1, entry, xy);
-        *(int *)((char *)arg1 + 0x44) = 2;
-        *(int *)((char *)arg1 + 0x48) = 0;
-        *(int *)((char *)arg1 + 0x4C) = 0;
+        dirXZ[0] = dirXZ[0] * scale;
+        dirXZ[1] = dirXZ[1] * scale;
+        fn_801B7C8C(frame, key, dirXZ);
+        frame->mode = 2;
+        frame->f48 = 0;
+        frame->f4C = 0;
         return 1;
     }
     return 0;
