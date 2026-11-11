@@ -12,6 +12,7 @@ s32 nandCreate(const char* path, u8 perm, u8 attr, NANDCommandBlock* block,
 
 s32 nandCreate(const char* path, u8 perm, u8 attr,
                       NANDCommandBlock* block, BOOL async, BOOL priv) {
+    /* Create a NAND file at the given path, rejecting private paths for non-privileged callers and dispatching sync/async ISFS create. */
     char absPath[64];
     u32 ownerPerm, groupPerm, otherPerm;
 
