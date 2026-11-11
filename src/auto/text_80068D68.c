@@ -2535,7 +2535,9 @@ int fn_8006B598(void *addr) {
 }
 
 #pragma use_lmw_stmw off
-void *WUDiGetDevInfo(u8 *addr) {
+/* Returns the WUD device-info record whose 6-byte Bluetooth address matches bdAddr,
+   searching the 10 standard slots then the 6 simple-pairing slots, or NULL if not found. */
+void *WUDiGetDevInfo(u8 *bdAddr) {
     struct WUDDevInfoView {
         u8 pad[0x40];
         u8 addr[6];
@@ -2547,32 +2549,32 @@ void *WUDiGetDevInfo(u8 *addr) {
         struct WUDDevInfoView smpDevs[6];
     };
     struct WUDControlView *control;
-    void *result;
-    s32 interrupt;
-    s32 i;
-    u8 *entry;
+    void *devInfo;
+    s32 enabled;
+    s32 index;
+    u8 *devEntry;
 
     control = (struct WUDControlView *)lbl_80392960;
-    result = 0;
-    interrupt = OSDisableInterrupts();
-    entry = control->stdDevs[0].addr;
-    for (i = 0; i < 10; i++, entry += 0x60) {
-        if (memcmp(entry, addr, 6) == 0) {
-            result = &control->stdDevs[i];
+    devInfo = 0;
+    enabled = OSDisableInterrupts();
+    devEntry = control->stdDevs[0].addr;
+    for (index = 0; index < 10; index++, devEntry += 0x60) {
+        if (memcmp(devEntry, bdAddr, 6) == 0) {
+            devInfo = &control->stdDevs[index];
             break;
         }
     }
-    if (result == 0) {
-        entry = control->smpDevs[0].addr;
-        for (i = 0; i < 6; i++, entry += 0x60) {
-            if (memcmp(entry, addr, 6) == 0) {
-                result = &control->smpDevs[i];
+    if (devInfo == 0) {
+        devEntry = control->smpDevs[0].addr;
+        for (index = 0; index < 6; index++, devEntry += 0x60) {
+            if (memcmp(devEntry, bdAddr, 6) == 0) {
+                devInfo = &control->smpDevs[index];
                 break;
             }
         }
     }
-    OSRestoreInterrupts(interrupt);
-    return result;
+    OSRestoreInterrupts(enabled);
+    return devInfo;
 }
 #pragma use_lmw_stmw on
 extern char lbl_8031377C[];
