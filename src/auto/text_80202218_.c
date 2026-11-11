@@ -360,43 +360,49 @@ test:
     fn_802CE4F4(lbl_8055ECC8);
 }
 void fn_802029FC(void) {
-    extern double lbl_805630A8;
-    extern float lbl_805630A4, lbl_805630B0, lbl_805630B4;
+    /* Re-apply the current one-second pulse to every model picked out for this
+     * frame: the time left in the current second, 1.0 - fmod(time, 1.0), is
+     * turned into an effect record by fn_802C7A3C and handed to each listed
+     * model together with an identity transform. */
+    extern double lbl_805630A8;                            /* 1.0: pulse period, in seconds */
+    extern float lbl_805630A4, lbl_805630B0, lbl_805630B4; /* 0.0f, 1.0f, 50.0f */
     extern int lbl_804888E0[];
     extern float fn_801E7E18(void);
     extern double fn_8002EFB4();
     extern int fn_802C7A3C(float, float, float);
     extern void fn_802C70AC(int, float *, int, int);
-    float values[12];
-    float first;
-    int *base, *entry;
-    int result, index;
 
-    first = fn_801E7E18();
-    result = fn_802C7A3C(lbl_805630B0 - (float)fn_8002EFB4(first, lbl_805630A8),
+    struct ModelTransform identity;
+    float time;
+    struct ModelIdList *list;
+    int *entry;
+    int effect, index;
+
+    time = fn_801E7E18();
+    effect = fn_802C7A3C(lbl_805630B0 - (float)fn_8002EFB4(time, lbl_805630A8),
                          lbl_805630A4, lbl_805630B4);
-    values[0] = lbl_805630B0;
-    values[1] = lbl_805630A4;
-    values[2] = lbl_805630A4;
-    values[3] = lbl_805630A4;
-    values[4] = lbl_805630B0;
-    values[5] = lbl_805630A4;
-    values[6] = lbl_805630A4;
-    values[7] = lbl_805630A4;
-    values[8] = lbl_805630B0;
-    values[9] = lbl_805630A4;
-    values[10] = lbl_805630A4;
-    values[11] = lbl_805630A4;
+    identity.basis[0].x = lbl_805630B0;
+    identity.basis[0].y = lbl_805630A4;
+    identity.basis[0].z = lbl_805630A4;
+    identity.basis[1].x = lbl_805630A4;
+    identity.basis[1].y = lbl_805630B0;
+    identity.basis[1].z = lbl_805630A4;
+    identity.basis[2].x = lbl_805630A4;
+    identity.basis[2].y = lbl_805630A4;
+    identity.basis[2].z = lbl_805630B0;
+    identity.translate.x = lbl_805630A4;
+    identity.translate.y = lbl_805630A4;
+    identity.translate.z = lbl_805630A4;
     entry = lbl_804888E0;
-    base = entry;
+    list = (struct ModelIdList *)entry;
     index = 0;
     goto test;
 loop:
-    fn_802C70AC(*entry, values, result, 8);
+    fn_802C70AC(*entry, (float *)&identity, effect, 8);
     entry++;
     index++;
 test:
-    if (index < base[0x20])
+    if (index < list->count)
         goto loop;
 }
 
