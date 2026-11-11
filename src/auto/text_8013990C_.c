@@ -7,9 +7,9 @@ int fn_80128668();
 int fn_80131818();
 int fn_80128658(int);
 int fn_80139B70(int, float, float);
-extern int lbl_8055E138;
-extern int lbl_8055E13C;
-extern __declspec(section ".data") unsigned char lbl_8042F7C0;
+extern int lbl_8055E138; /* the resource table fn_80131810 opened (fn_8013A074 closes it) */
+extern int lbl_8055E13C; /* the source that table was opened from (fn_8013A0B0's fallback lookup) */
+extern __declspec(section ".data") unsigned char lbl_8042F7C0; /* the path it was opened from, as text */
 extern const char lbl_8032BFD8[];
 extern const char lbl_8032C018[];
 extern const char lbl_80559C40[];
@@ -67,12 +67,11 @@ extern "C" void *fn_801399FC(void *arg0) {
         virtual char *check(char *, int);
     };
     char buffer[12];
+    int *cursor;
     int count;
     void *table;
-    int *cursor;
     char *entry;
     Object *obj = (Object *)arg0;
-
     count = fn_8013990C(arg0);
     table = fn_801284E8(&lbl_8032C108, count * 8 + 8);
     *(int *)((char *)table + 4) = count;
