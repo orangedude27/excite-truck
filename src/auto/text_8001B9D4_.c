@@ -446,7 +446,7 @@ s32 fn_8001C35C(s32 arg0, s32 arg1, s32 arg2) {
     list = lbl_80358658[arg0];
     count = *(s32 *)((u8 *)list + 4);
     records = *(char **)list;
-    offset = count * 44;
+    offset = count * 0x2C;
     *(s32 *)((u8 *)list + 4) = count + 1;
     entry = records + offset;
     *(s32 *)entry = arg1;
