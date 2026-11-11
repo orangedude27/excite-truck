@@ -1015,7 +1015,7 @@ int fn_8021832C(void *arg0) {
 
 extern void fn_80217D84(void *);
 #pragma cplusplus on
-extern "C" void fn_80218370(void *arg0) {
+extern "C" void fn_80218370(void *menuGroup) {
     class Entry {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -1028,41 +1028,42 @@ extern "C" void fn_80218370(void *arg0) {
         virtual void v28();
         virtual void update();
     };
-    register char *base = (char *)arg0;
-    register char *cursor = base;
-    register int i = 0;
-    int j;
-    char *scan;
-    void *object;
-    int found;
+    register char *groupBase = (char *)menuGroup;
+    register char *widgetCursor = groupBase;
+    register int widgetIndex = 0;
+    int entryCount;
+    char *entryScan;
+    void *entryObject;
+    int foundActiveEntry;
 
+    /* Update each menu widget, then ensure the selected entry still has an active/selectable object. */
     goto checkFirst;
 firstLoop:
-    ((Entry *)*(void **)(cursor + 0x30))->update();
-    cursor += 4;
-    i++;
+    ((Entry *)*(void **)(widgetCursor + 0x30))->update();
+    widgetCursor += 4;
+    widgetIndex++;
 checkFirst:
-    if (i < *(int *)(base + 0x430))
+    if (widgetIndex < *(int *)(groupBase + 0x430))
         goto firstLoop;
 
-    j = *(int *)(base + 0x494);
-    scan = base;
-    found = 0;
-    for (i = 0; i < j; i++, scan += 8) {
-        if (*(int *)(base + 0x498) == *(int *)(scan + 0x4A0)) {
-            object = *(void **)(scan + 0x4A4);
-            if (*(unsigned char *)((char *)object + 0x1B) != 0) {
-                int matched = (*(unsigned char *)((char *)object + 0x1A) != 0) ||
-                              (*(float *)((char *)object + 0x20) >= lbl_80563490);
+    entryCount = *(int *)(groupBase + 0x494);
+    entryScan = groupBase;
+    foundActiveEntry = 0;
+    for (widgetIndex = 0; widgetIndex < entryCount; widgetIndex++, entryScan += 8) {
+        if (*(int *)(groupBase + 0x498) == *(int *)(entryScan + 0x4A0)) {
+            entryObject = *(void **)(entryScan + 0x4A4);
+            if (*(unsigned char *)((char *)entryObject + 0x1B) != 0) {
+                int matched = (*(unsigned char *)((char *)entryObject + 0x1A) != 0) ||
+                              (*(float *)((char *)entryObject + 0x20) >= lbl_80563490);
                 if (matched) {
-                    found = 1;
+                    foundActiveEntry = 1;
                     break;
                 }
             }
         }
     }
-    if (!found)
-        fn_80217D84(arg0);
+    if (!foundActiveEntry)
+        fn_80217D84(menuGroup);
 }
 #pragma cplusplus off
 void fn_80218464(void *arg0) {
