@@ -3568,6 +3568,9 @@ extern "C" void DetachSound__Q34nw4r3snd11SoundHandleFv(void *);
 extern "C" void detail_FreePlayerHeap__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *, void *);
 extern "C" void detail_RemoveSoundList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound_800F8880(void *, void *);
 extern "C" void RemoveSoundList__Q46nw4hbm3snd6detail19ExternalSoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *, void *);
+/* Shut the sound down for good: stop the player it plays through, drop the
+ * handles attached to it, hand back the track it was holding, take it off its
+ * players' lists and tell the shutdown hook that its sound is gone. */
 void nw4hbm::snd::detail::BasicSound::Shutdown() {
     BasicSoundVt *sound = (BasicSoundVt *)this;
     SoundPlayerVt *player = sound->GetPlayer();
