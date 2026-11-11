@@ -4381,11 +4381,11 @@ extern "C" void fn_80220A50(void *arg0, s32 arg1) {
     duration -= 10;
     adjusted /= duration;
     register s32 result = field250;
-    result = result + adjusted;
-    result = result < field250 ? field250 : result;
+    result += adjusted;
+    if (result < field250) result = field250;
     register s32 max = *(volatile s32 *)((u8 *)arg0 + 0x254);
     max -= 1;
-    result = result >= max ? max : result;
+    if (result >= max) result = max;
     *(s32 *)*(void **)((u8 *)arg0 + 0x244) = result;
 }
 
@@ -7596,6 +7596,32 @@ extern "C" void *fn_80227E84(void *self, s32 arg1, void *arg2, s32 arg3) {
     if (resource == 0)
         fn_802E30C8(base + 0x3E0);
     return self;
+}
+
+extern "C" void *fn_80227F5C(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        s32 tmp = *(s32 *)((u8 *)arg0 + 0x250);
+        *(void **)arg0 = lbl_8033DF30;
+        if (tmp != 0) {
+            fn_802328D4((void *)tmp);
+        }
+        s32 tmp2 = *(s32 *)((u8 *)arg0 + 0x254);
+        *(s32 *)((u8 *)arg0 + 0x250) = 0;
+        if (tmp2 != 0) {
+            fn_80235380(tmp2);
+        }
+        s32 tmp3 = *(s32 *)((u8 *)arg0 + 0x258);
+        *(s32 *)((u8 *)arg0 + 0x254) = 0;
+        if (tmp3 != 0) {
+            fn_80235380(tmp3);
+        }
+        *(s32 *)((u8 *)arg0 + 0x258) = 0;
+        fn_8021915C(arg0, 0);
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
 }
 
 extern "C" s32 fn_8022DD80(s32);
