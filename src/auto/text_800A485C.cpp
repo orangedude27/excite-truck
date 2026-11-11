@@ -18532,6 +18532,9 @@ extern "C" s32 isVisible__Q310homebutton3gui13PaneComponentFv(void *component) {
     if (!LytPaneIsShown(parent)) return 0;
     if (LytPaneParent(parent) == 0)
         return 1;
+    /* tail branch to is_visible(nw4r::lyt::Pane*); the name spelled without the
+     * "r" of nw4r is the one this unit's branch goes to -- calling the defined
+     * symbol instead lets the compiler inline the walk away. */
     return is_visible__Q210homebutton3guiFPQ34nw4lyt4Pane((void *)LytPaneParent(parent));
 }
 
