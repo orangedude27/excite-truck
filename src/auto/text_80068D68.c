@@ -7173,13 +7173,12 @@ block_done:
 }
 
 void btm_acl_removed(u8 *addr) {
-    u32 i;
+    unsigned int i;
     u8 *entry;
     void (*callback)(u8 *, u32, u32, u32, u32);
-
     entry = lbl_803C0F78 + 0x34;
     for (i = 0; i < 4; i++, entry += 0x11C) {
-        if (entry[0x119] != 0 && memcmp(entry + 8, addr, 6) == 0)
+        if (entry[0x119] && memcmp(entry + 8, addr, 6) == 0)
             goto found;
     }
     entry = 0;
@@ -9299,16 +9298,13 @@ tBTM_INQ_INFO *BTM_InqDbNext(tBTM_INQ_INFO *p_cur) {
 }
 
 tBTM_STATUS BTM_ClearInqDb(BD_ADDR p_bda) {
-    u8 *base_copy = lbl_803C0F78;
-    register u8 *base;
+    u8 *base;
     u16 i;
     u8 *entry;
     tBTM_INQ_DB_CHANGE_CB *callback;
-
-    base = base_copy;
+    base = lbl_803C0F78;
     if (base[0x1848] != 0 || base[0x16AE] != 0 || base[0x1844] != 0)
         return BTM_BUSY;
-
     for (i = 0, entry = base + 0x16E4; i < 0xC; i++, entry += 0x1C) {
         if (entry[0x1A] != 0 && (p_bda == NULL || memcmp(entry + 0xA, p_bda, BD_ADDR_LEN) == 0)) {
             entry[0x1A] = FALSE;
@@ -14532,7 +14528,7 @@ u8 btsnd_hcic_rmt_name_req(u8 *bd_addr, u8 page_scan_rep_mode, u8 page_scan_mode
     pp[10] = page_scan_mode;
     pp[11] = clock_offset;
     pp[12] = clock_offset >> 8;
-    btu_hcif_send_cmd(0, p);
+    ((void (*)(void *))btu_hcif_send_cmd)(p);
     return TRUE;
 }
 
@@ -19798,7 +19794,6 @@ void l2cu_create_conn_after_switch(void *arg0) {
     UINT8 var_r5;
     UINT8 var_r6;
     void *temp_r3;
-
     temp_r4 = *((UINT8 *)fn_8007A3A4());
     *(UINT32 *)((UINT8 *)arg0 + 4) = 3;
     allow_switch = (temp_r4 >> 5) & 1;
@@ -19812,8 +19807,7 @@ void l2cu_create_conn_after_switch(void *arg0) {
         var_r6 = 0;
         var_r7 = 0;
     }
-    if (!btsnd_hcic_create_conn((UINT8 *)arg0 + 0x2A, 0x18, var_r5, var_r6,
-                                var_r7, allow_switch)) {
+    if (!btsnd_hcic_create_conn((UINT8 *)arg0 + 0x2A, 0x18, var_r5, var_r6, var_r7, allow_switch)) {
         if (lbl_803C4040[0] >= 1) {
             fn_8007093C(0x80000, lbl_80319218);
         }
