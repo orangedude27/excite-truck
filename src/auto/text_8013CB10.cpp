@@ -372,7 +372,7 @@ extern "C" char lbl_80559D40[4];
 extern "C" char lbl_80559D58[7];
 extern "C" char lbl_80559D60[7];
 
-extern "C" void fn_80140A6C(void);
+extern "C" void fn_80140A6C(void *, int);
 extern "C" s32 fn_801B8514(void);
   extern "C" u8 *fn_8017960C(s32);
   extern "C" u32 fn_8013D148(u8 *, f32);
@@ -963,65 +963,44 @@ extern "C" s32 fn_8013DE7C(TObj60 *arg0, const char *arg1) {
     return count;
 }
 
+#pragma push
+#pragma processor 750
 extern "C" void fn_8013DF24(void *arg0, void *arg1, void *arg2) {
-    f32 unit = lbl_805614A4;
     f32 *from = (f32 *)arg1;
     f32 *to = (f32 *)arg2;
     f32 *out = (f32 *)arg0;
-    volatile f32 temp[10];
+    f32 s[2], e[2], d[2], c[2], o[2];
     u32 i = 0;
+    f32 unit = lbl_805614A4;
+    f32 one = lbl_805614AC;
     do {
-        f32 startZ;
-        f32 startX;
-        f32 dz;
-        f32 dx;
-        f32 endZ;
-        f32 endX;
-        startX = from[0];
-        endX = to[0];
-        startZ = from[2];
-        endZ = to[2];
-        dx = endX - startX;
-        temp[8] = startX;
-        dz = endZ - startZ;
-        temp[9] = startZ;
-        f32 xx = dx * dx;
-        f32 zz = dz * dz;
-        temp[6] = endX;
-        temp[7] = endZ;
-        f32 squared = xx + zz;
-        temp[4] = dx;
-        temp[5] = dz;
-        f32 length = (f32)fn_8002F234(squared);
-        f32 currentX = out[0];
+        s[0] = from[0];
+        e[0] = to[0];
+        s[1] = from[2];
+        e[1] = to[2];
+        d[0] = e[0] - s[0];
+        d[1] = e[1] - s[1];
+        f32 length = (f32)fn_8002F234(d[0] * d[0] + d[1] * d[1]);
         i++;
-        f32 sx = temp[8];
-        f32 vx = temp[4];
-        f32 scale = lbl_805614AC / length;
-        f32 vz = temp[5];
-        f32 currentZ = out[2];
-        f32 sz = temp[9];
-        f32 dirX = vx * scale;
-        temp[2] = currentX;
-        f32 offsetX = currentX - sx;
+        f32 scale = one / length;
+        c[0] = out[0];
+        c[1] = out[2];
+        o[0] = c[0] - s[0];
+        o[1] = c[1] - s[1];
+        d[0] = d[0] * scale;
+        d[1] = d[1] * scale;
         from += 3;
-        f32 dirZ = vz * scale;
         to += 3;
-        f32 offsetZ = currentZ - sz;
-        temp[4] = dirX;
-        temp[5] = dirZ;
-        f32 projection = dirX * offsetX + dirZ * offsetZ;
-        f32 resultX = sx + dirX * projection;
-        f32 resultZ = sz + dirZ * projection;
-        out[0] = resultX;
+        f32 p = d[0] * o[0] + d[1] * o[1];
+        c[0] = s[0] + d[0] * p;
+        c[1] = s[1] + d[1] * p;
+        out[0] = c[0];
         out[1] = unit;
-        out[2] = resultZ;
+        out[2] = c[1];
         out += 3;
-        temp[2] = resultX;
-        temp[3] = resultZ;
     } while (i < 2);
 }
-
+#pragma pop
 extern "C" void fn_8013E054(void *outPtr, void *objPtr, f32 angle) {
     u8 *out = (u8 *)outPtr;
     TVec2 center = ((TVec2 (*)(void *, const char *))(*(void ***)objPtr)[0x3C / 4])(objPtr, lbl_80559D58);
@@ -2000,6 +1979,33 @@ extern "C" void fn_80140728(void *arg0, void *arg1, void *arg2) {
         }
     }
 }
+
+void fn_80140A6C(void *arg0, int arg1) {
+    extern char lbl_8032CA64[];
+    int base;
+    int tmp;
+    void *obj;
+    int vr;
+    base = *(int *)((char *)arg0 + 0xB8);
+    tmp = base + fn_801E866C(arg1) * 0x12C;
+    if (fn_8013CB10() == 0) {
+        fn_8013F0A0(arg0, (void *)arg1, (void *)tmp);
+        fn_8013F434();
+        fn_8013F580(arg0, (void *)arg1, (void *)tmp);
+        fn_8013F918(arg0, (void *)tmp);
+        fn_8013FDB0(arg0, (void *)tmp);
+        fn_8014052C(arg0, arg1, (unsigned char *)tmp);
+        fn_80140728(arg0, (void *)arg1, (void *)tmp);
+        fn_80140614(arg0, (void *)arg1, (void *)tmp);
+        if (lbl_8055E1BC != 0) {
+            obj = *(void **)((char *)arg0 + 0x54);
+            vr = ((int (*)(void *, const char *))(*(void ***)obj)[4])(obj, lbl_8032CA64);
+            if (vr != 0)
+                fn_801476D8((void *)vr, (void *)-1, *(int *)((char *)arg0 + 0xA0));
+        }
+    }
+}
+
 #pragma optimize reset
 #pragma pop
 
@@ -3403,36 +3409,32 @@ extern "C" void fn_80143CB0(void *arg0) {
         int value118;
     };
     Manager *p = (Manager *)arg0;
+    int zero = 0;
     int ref = p->ref;
-    Item *item14;
-    Item *item18;
-    Item *item1C;
-    Item *item24;
-    Item *item28;
-    Item *item2C;
-    p->value0 = 0;
+    p->value0 = zero;
     p->value4 = lbl_805614BC;
     p->flag8 = 1;
-    p->flag9 = 0;
-    p->flag10 = 0;
-    p->value10C = 0;
-    p->value110 = 0;
-    p->value114 = 0;
-    p->value118 = 0;
+    p->flag9 = zero;
+    p->flag10 = zero;
+    p->value10C = zero;
+    p->value110 = zero;
+    p->value114 = zero;
+    p->value118 = zero;
     if (ref != 0) fn_802AE0E0(ref);
-    item14 = p->item14;
-    if (item14 != 0) { item14->active = 1; item14->state = 0; }
-    item18 = p->item18;
-    if (item18 != 0) { item18->active = 1; item18->state = 0; }
-    item1C = p->item1C;
-    if (item1C != 0) { item1C->active = 1; item1C->state = 0; }
-    item24 = p->item24;
-    p->flag20 = 0;
-    if (item24 != 0) { item24->active = 1; item24->state = 0; }
-    item28 = p->item28;
-    if (item28 != 0) { item28->active = 1; item28->state = 0; }
-    item2C = p->item2C;
-    if (item2C != 0) { item2C->active = 1; item2C->state = 0; }
+    Item *i;
+    i = p->item14;
+    if (i != 0) { i->active = 1; i->state = 0; }
+    i = p->item18;
+    if (i != 0) { i->active = 1; i->state = 0; }
+    i = p->item1C;
+    if (i != 0) { i->active = 1; i->state = 0; }
+    i = p->item24;
+    p->flag20 = zero;
+    if (i != 0) { i->active = 1; i->state = zero; }
+    i = p->item28;
+    if (i != 0) { i->active = 1; i->state = 0; }
+    i = p->item2C;
+    if (i != 0) { i->active = 1; i->state = 0; }
 }
 #pragma pop
 extern "C" void fn_80130980(void *, s32, s32, f32);
