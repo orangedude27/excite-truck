@@ -4506,25 +4506,22 @@ void UUSB_Close(void *arg0) {
     extern s32 IUSB_CloseDeviceAsync(s32, void (*)(void), void *);
     fn_8006EBAC();
     {
-        register uusb_cb_t *control = &lbl_803BD1E0;
-        control->state = 0;
+        u32 base = (u32)&lbl_803BD1E0;
+        *(u8 *)(base + 0x29) = 0;
         fn_8006EB88();
-        if (*(u16 *)((u8 *)&control->acl_q + 8) != 0) {
-            while (*(u16 *)((u8 *)&control->acl_q + 8) != 0) {
-                GKI_freebuf(GKI_dequeue(&control->acl_q));
+        if (*(u16 *)(base + 0x34) != 0) {
+            while (*(u16 *)(base + 0x34) != 0) {
+                GKI_freebuf(GKI_dequeue((BUFFER_Q *)(base + 0x2C)));
+            }
+        }
+        base = (u32)&lbl_803BD1E0;
+        if (*(u16 *)(base + 0x44) != 0) {
+            while (*(u16 *)(base + 0x44) != 0) {
+                GKI_freebuf(GKI_dequeue((BUFFER_Q *)(base + 0x3C)));
             }
         }
     }
-    {
-        register uusb_cb_t *control = &lbl_803BD1E0;
-        if (*(u16 *)((u8 *)&control->sco_q + 8) != 0) {
-            while (*(u16 *)((u8 *)&control->sco_q + 8) != 0) {
-                GKI_freebuf(GKI_dequeue(&control->sco_q));
-            }
-        }
-    }
-    IUSB_CloseDeviceAsync(lbl_803BD1E0.fd,
-                          (void (*)(void))uusb_CloseDeviceCB, 0);
+    IUSB_CloseDeviceAsync(lbl_803BD1E0.fd, (void (*)(void))uusb_CloseDeviceCB, 0);
 }
 
 /* uusb control block at lbl_803BD1E0 (96 bytes): fd @0, state u8 @0x29,
@@ -8057,15 +8054,22 @@ done:
 }
 
 BOOLEAN BTM_SecDeleteDevice(BD_ADDR bd_addr) {
-    s32 i = 0;
-    u8 *entry = lbl_803C0F78 + 0x1F30;
-    while (i < 16) {
-        if ((entry[0x76] & 0x80) && memcmp(entry + 0x1C, bd_addr, 6) == 0)
-            break;
-        i++;
-        entry += 0x88;
-    }
-    if (i == 16) return FALSE;
+    s32 i;
+    u8 *entry;
+    i = 0;
+    entry = lbl_803C0F78 + 0x1F30;
+    do {
+        if (((entry[0x76] & 0x80) == 0) || (memcmp(entry + 0x1C, bd_addr, 6) != 0)) {
+            i++;
+            entry += 0x88;
+        } else {
+            goto found;
+        }
+    } while (i < 16);
+    entry = 0;
+found:
+    if (entry == 0)
+        return FALSE;
     entry[0x76] = 0;
     BTM_DeleteStoredLinkKey(bd_addr, 0);
     return TRUE;
@@ -22363,17 +22367,13 @@ void rfc_send_msc(void *p_mcb, s32 dlci, s32 is_command, u8 *p_pars) {
 void rfc_send_rls(void *arg0, u8 arg1, s32 arg2, u8 arg3) {
     u8 *buf = GKI_getpoolbuf(2);
     if (buf != 0) {
-        s32 iVar;
-        s32 iVar2;
         *(u16 *)(buf + 4) = 0xC;
-        iVar = ((-arg2 | arg2) >> 31) & 2;
-        iVar2 = (arg1 << 2) | 3;
-        buf[0x14] = iVar | 0x51;
+        buf[0x14] = (u8)((((s32)(-arg2 | arg2) >> 31) & 2) | 0x51);
         buf[0x15] = 5;
-        buf[0x16] = iVar2;
+        buf[0x16] = (u8)((arg1 << 2) | 3);
         buf[0x17] = arg3 | 1;
         *(u16 *)(buf + 2) = 4;
-        rfc_send_buf_uih(arg0, 0, buf, buf[0x17], buf[0x16]);
+        rfc_send_buf_uih(arg0, 0, buf);
     }
 }
 
@@ -22412,18 +22412,19 @@ void rfc_send_rpn(void *p_mcb, s32 dlci, s32 is_command, u8 *p_pars, s32 mask) {
 void rfc_send_test(s32 arg0, s32 arg1, void *p_buf) {
     u8 *p = p_buf;
     u16 len = *(u16 *)(p + 4);
-    u16 new_len;
     u16 count;
     u8 *src;
     u16 i;
     u8 *dst;
     u8 byte;
-
+    s32 tmp;
+    u16 old;
+    u16 new_len;
+    u8 *q;
     if (len < 0x10) {
         count = *(u16 *)(p + 2);
         src = p + len + count + 7;
-        dst = p + count;
-        dst += 0x17;
+        dst = p + count + 0x17;
         i = 0;
         while (i < *(u16 *)(p + 2)) {
             byte = *src;
@@ -22434,10 +22435,13 @@ void rfc_send_test(s32 arg0, s32 arg1, void *p_buf) {
         }
         *(u16 *)(p + 4) = 0x10;
     }
-    new_len = *(u16 *)(p + 4) - 2;
+    tmp = -arg1 | arg1;
+    old = *(u16 *)(p + 4);
+    new_len = old - 2;
     *(u16 *)(p + 4) = new_len;
-    p[new_len + 8] = (((-arg1 | arg1) >> 31) & 2) | 0x21;
-    p[new_len + 9] = (*(u16 *)(p + 2) << 1) | 1;
+    q = p + new_len;
+    q[8] = ((tmp >> 31) & 2) | 0x21;
+    q[9] = (*(u16 *)(p + 2) << 1) | 1;
     count = *(u16 *)(p + 2);
     *(u16 *)(p + 2) = count + 2;
     rfc_send_buf_uih((void *)arg0, 0);
