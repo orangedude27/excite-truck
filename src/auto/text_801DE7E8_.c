@@ -105,9 +105,9 @@ void fn_801DE88C(void) {
 extern void fn_801473F8(void *, const char *, ...);
 extern int fn_802E2C20(void);
 extern void fn_801476D8(int, int, int);
-extern void fn_80147F30(int, int, int, float, float, float, float, float, float, float, float);
+extern void fn_80147F30(int, int, int, float, float, float, float, float, float, float, float, float, float);
 extern void fn_8014E7D8(int, int, int);
-extern unsigned int lbl_8055CFF0;
+extern int lbl_8055CFF0;
 extern float lbl_80562BE0, lbl_80562BE4, lbl_80562BE8, lbl_80562BEC, lbl_80562BF0, lbl_80562BF4;
 extern char lbl_803394B0[], lbl_804872B0[];
 #pragma cplusplus on
@@ -133,7 +133,8 @@ extern "C" void fn_801DE890(int arg0) {
                     *(float *)((char *)result + 4) + *(float *)((char *)result + 0x10) * lbl_80562BE4,
                     *(float *)((char *)result + 8) + *(float *)((char *)result + 0x14) * lbl_80562BE4,
                     lbl_80562BE0 * (*(float *)((char *)result + 0x10) * lbl_80562BE4),
-                    lbl_80562BE8, lbl_80562BEC, lbl_80562BF0, lbl_80562BE8, lbl_80562BE8);
+                    lbl_80562BE8, lbl_80562BEC, lbl_80562BF0, lbl_80562BE8, lbl_80562BE8,
+                    lbl_80562BF4, lbl_80562BF4);
             }
         }
         break;
@@ -489,7 +490,6 @@ extern "C" int fn_801DF110(void) {
             char *base = lbl_804872B0;
             struct Entry *entry = (struct Entry *)(base + lbl_8055E9E8 * 0x1C);
             int (*callback)(int, int) = entry->callback;
-
             if (callback != 0) {
                 callback(entry->arg2, entry->arg1);
             } else {
@@ -497,9 +497,8 @@ extern "C" int fn_801DF110(void) {
                 entry = (struct Entry *)(base + lbl_8055E9E8 * 0x1C);
                 fn_800103B8(-1, 0xC, lbl_80562BF4, lbl_80562BE8, lbl_80562C08, lbl_80562C0C, (const char *)&lbl_8055AE28, entry->arg1);
                 fn_8000FF88(-1, 0xC, (const char *)lbl_803395C4, lbl_80562BF4, lbl_80562BE8, lbl_80562C10);
-                fn_801DE890(lbl_8055E9E8);
+                ((void (*)(int))fn_801DE890)(lbl_8055E9E8);
             }
-
             entry = (struct Entry *)(lbl_804872B0 + lbl_8055E9E8 * 0x1C);
             if (entry->object != 0)
                 ((Dummy *)entry->object)->call();
