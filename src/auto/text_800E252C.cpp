@@ -2667,30 +2667,31 @@ extern "C" void fn_80033584(void *, void *);
 extern "C" void fn_80033C8C(void *, int);
 extern "C" void fn_80033CD8(void *, void *);
 extern "C" void UpdateAxMix__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
-    char mix[0x30];
-    char rmt[0x20];
-    char *row = (char *)self;
-    char *entry;
-    int outer = 0;
-    int inner;
-    while (outer < *((int *)((char *)self + 0x104))) {
-        entry = row;
-        inner = 0;
-        while (inner < *((int *)((char *)self + 0x108))) {
-            CalcAXPBMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP8_AXPBMIX(self, outer, inner, mix);
-            fn_80033584(*((void **)(entry + 0xC)), mix);
+    char axMix[0x30];
+    char axRmtMix[0x20];
+    char *rowBase = (char *)self;
+    char *slot;
+    int rowIdx = 0;
+    int slotIdx;
+    /* Recalculate and apply main/aux DSP mix and (when enabled) remote mix for each AX voice slot. */
+    while (rowIdx < *((int *)((char *)self + 0x104))) {
+        slot = rowBase;
+        slotIdx = 0;
+        while (slotIdx < *((int *)((char *)self + 0x108))) {
+            CalcAXPBMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP8_AXPBMIX(self, rowIdx, slotIdx, axMix);
+            fn_80033584(*((void **)(slot + 0xC)), axMix);
             if (*((unsigned int *)((char *)self + 0x13C)) <= 1) {
-                fn_80033C8C(*((void **)(entry + 0xC)), 0);
+                fn_80033C8C(*((void **)(slot + 0xC)), 0);
             } else {
-                CalcAXPBRMTMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP11_AXPBRMTMIX(self, outer, inner, rmt);
-                fn_80033C8C(*((void **)(entry + 0xC)), 1);
-                fn_80033CD8(*((void **)(entry + 0xC)), rmt);
+                CalcAXPBRMTMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP11_AXPBRMTMIX(self, rowIdx, slotIdx, axRmtMix);
+                fn_80033C8C(*((void **)(slot + 0xC)), 1);
+                fn_80033CD8(*((void **)(slot + 0xC)), axRmtMix);
             }
-            entry += 4;
-            inner++;
+            slot += 4;
+            slotIdx++;
         }
-        row += 0x10;
-        outer++;
+        rowBase += 0x10;
+        rowIdx++;
     }
 }
 
