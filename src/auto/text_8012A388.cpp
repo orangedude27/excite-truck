@@ -2789,67 +2789,61 @@ extern "C" void fn_8012C720(void *, s32, s32, s32);
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void fn_8012EE80(void *arg0) {
-    struct Entry {
-        s32 first;
-        void *file;
-        s32 position;
-        s32 state;
-    };
-    struct Buffer {
-        s32 size;
-        Entry entries[2];
-        s32 limit;
-        s32 boundary;
-    };
-    Buffer *buffer = (Buffer *)arg0;
-    Entry *entries = buffer->entries;
-    Entry *cursor = entries;
+    // Run the ResourceStream prefetch machine once: retire the reads that have
+    // finished, then give every free or already-read-past slot the next chunk of
+    // the file, reading it into that slot's half of the stream buffer.
+    ResourceStream *stream = (ResourceStream *)arg0;
+    ResourceStreamEntry *slot = stream->entries;
+    ResourceStreamEntry *scan = slot;
     s32 i;
     s32 j;
-    s32 end = buffer->boundary;
-    s32 status;
+    s32 end = stream->boundary;  // file offset just past the chunks held in memory
+    s32 state;
     s32 pos;
     s32 len;
     s32 request;
-    for (i = 0; i < 2; i++, cursor++) {
-        status = cursor->state;
-        if (status != 0) {
-            if (status == 1 && fn_8012C7FC(cursor->file, 0))
-                cursor->state = 2;
-            pos = cursor->position + buffer->size;
+
+    // a slot whose disc read finished is now readable; find the end of the held range
+    for (i = 0; i < STREAM_SLOT_COUNT; i++, scan++) {
+        state = scan->state;
+        if (state != STREAM_SLOT_FREE) {
+            if (state == STREAM_SLOT_READING && fn_8012C7FC(scan->request, 0))
+                scan->state = STREAM_SLOT_READY;
+            pos = scan->position + stream->size;
             if (pos > end)
                 end = pos;
         }
     }
+
     j = 0;
-    cursor = 0;
-    for (; j < 2; j++, entries++) {
-        status = entries->state;
-        if (status != 0)
+    scan = 0;  // null, stored as the FREE state below
+    for (; j < STREAM_SLOT_COUNT; j++, slot++) {
+        state = slot->state;
+        if (state != STREAM_SLOT_FREE)
             goto check_state;
-        if (entries->file != 0)
-            goto process_entry;
+        if (slot->request != 0)  // a slot the file was just opened into
+            goto fill_slot;
 check_state:
-        if (status != 2)
-            goto next_entry;
-        pos = entries->position + buffer->size;
-        if (pos >= buffer->boundary)
-            goto next_entry;
-process_entry:
-        entries->position = end;
+        if (state != STREAM_SLOT_READY)
+            goto next_slot;  // still reading
+        pos = slot->position + stream->size;
+        if (pos >= stream->boundary)
+            goto next_slot;  // the reader has not passed this chunk yet
+fill_slot:
+        slot->position = end;
         pos = end;
-        len = buffer->size;
+        len = stream->size;
         end += len;
         request = len;
-        if (pos + len > buffer->limit)
-            request = buffer->limit - pos;
+        if (pos + len > stream->limit)
+            request = stream->limit - pos;  // the last chunk is short
         if (request > 0) {
-            fn_8012C720(entries->file, entries->first, request, pos);
-            entries->state = 1;
+            fn_8012C720(slot->request, slot->buffer, request, pos);
+            slot->state = STREAM_SLOT_READING;
         } else {
-            entries->state = (s32)cursor;
+            slot->state = (s32)scan;  // nothing left to read: the slot goes free
         }
-next_entry:
+next_slot:
         ;
     }
 }
