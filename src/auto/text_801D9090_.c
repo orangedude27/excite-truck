@@ -14,7 +14,23 @@ extern int strcmp(const char *, const char *);
 extern void *fn_801284F8(int, const char *);
 extern int fn_801D94DC(void *, void *, const char *, int);
 
+#define dtbNameKey lbl_8055AD90     /* "name": a DTB item's own name field */
+#define morphRegionKey lbl_803391EC /* "morph_region": the sub-table fn_801D94DC reads */
+#define dtbZeroWeight lbl_80562B2C  /* 0.0f: the weight every morph group starts at */
+
 #pragma cplusplus on
+// One "morph_group" item of the mmorph.val DTB, built by fn_801D9394 and linked
+// into the list at lbl_8055E96C; fn_801D9B58 walks the same nodes.
+struct MorphGroup {
+    char name[0x20];         // 0x00 the item's "name", copied in when the node is built
+    float weight;            // 0x20 blend weight; fn_801D9AB8 applies it to the morph regions
+    void *morphRegions;      // 0x24 head of the "morph_region" list fn_801D94DC builds
+    void **children;         // 0x28 the oml_list nodes using this group; points at childrenInline
+    int childCount;          // 0x2C
+    int childLimit;          // 0x30 room in the inline array
+    void *childrenInline[8]; // 0x34 the first 8 children, stored inside the node
+    struct MorphGroup *next; // 0x54
+};
 struct DtbManager801D9394 {
     virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
     virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
@@ -543,7 +559,9 @@ int fn_801D9B28(void *arg0, int arg1) {
     return 0;
 }
 
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_801D9B58(void) {
     float workspace[4];
     int markOffset;
@@ -582,15 +600,16 @@ void fn_801D9B58(void) {
     markNode = lbl_8055E96C;
     markThreshold = lbl_80562B2C;
     while (markNode != 0) {
-        if (markThreshold < markNode->value) {
+        float v = markNode->value;
+        if (markThreshold < v) {
             int markIndex = 0;
             markOffset = 0;
-            do {
+            while (markIndex < markNode->childCount) {
                 ++markIndex;
                 child = *(void **)((char *)markNode->children + markOffset);
                 *(unsigned char *)((char *)child + 0x30) = 1;
                 markOffset += 4;
-            } while (markIndex < markNode->childCount);
+            }
         }
         markNode = markNode->next;
     }
@@ -600,17 +619,17 @@ void fn_801D9B58(void) {
     while (node != 0) {
         if (node->active != 0) {
             int sampleOffset;
-            float *sampleDest;
+            float *sampleDest2;
             int sampleIndex;
-            sampleDest = workspace;
+            sampleDest2 = workspace;
             sampleIndex = 0;
             sampleOffset = 0;
-            do {
+            while (sampleIndex < (count = node->sampleCount)) {
                 ++sampleIndex;
                 child = *(void **)((char *)node->samples + sampleOffset);
                 sampleOffset += 4;
-                *sampleDest++ = *(float *)((char *)child + 0x20);
-            } while (sampleIndex < (count = node->sampleCount));
+                *sampleDest2++ = *(float *)((char *)child + 0x20);
+            }
 
             fn_801D9120(workspace + 2, workspace, count, lbl_80562B28);
             {
@@ -636,4 +655,4 @@ void fn_801D9B58(void) {
     }
     fn_802C9904();
 }
-#pragma scheduling on
+#pragma pop
