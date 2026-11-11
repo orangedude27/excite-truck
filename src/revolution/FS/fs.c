@@ -231,6 +231,7 @@ static s32 _FSGetStatsCb(s32 result, FSCommandBlock* block) {
     return IPC_RESULT_OK;
 }
 
+/* Creates an ISFS directory with the specified attributes/permissions. */
 s32 ISFS_CreateDir(const char* path, u32 attr, u32 ownerPerm, u32 groupPerm,
                    u32 otherPerm) {
     FSCommandBlock* block;
