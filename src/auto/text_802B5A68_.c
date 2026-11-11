@@ -1127,7 +1127,9 @@ void fn_802B7420(s16 arg0, s16 arg1, s32 arg2) {
 extern s16 lbl_8055FA50[4];
 extern s32 fn_802BE8B4(s16, s16, s16);
 #pragma use_lmw_stmw off
-/* use_lmw_stmw off selects the matching save helpers; scoped nextX/nextY temporaries defer sign extension until after end-coordinate increments. */
+/* Subdivide the world grid at increasing block sizes (4..64) and submit any
+ * block overlapping the current bounds in lbl_8055FA50 for rebuild when the
+ * terrain mode is 2. */
 void fn_802B7434(void) {
     s32 endX, endY, xMinusSize, start, step;
     s16 size, x, y;
