@@ -194,12 +194,10 @@ void fn_8022D98C(void *arg0, int arg1, float arg2, float arg3, float arg4, float
     *(float *)((char *)arg0 + 0x10) = arg6;
     *count = 0;
     do {
-        float frac;
         n = *count;
-        value *= lbl_805635C0;
+        value = value * lbl_805635C0;
         *count = n + 1;
-        frac = value - (float)(int)value;
-        if ((frac > lbl_805635C4) == 0)
+        if ((value - (float)(int)value > lbl_805635C4) == 0)
             break;
         if (*count < 4)
             continue;
@@ -347,11 +345,13 @@ void fn_8022DD9C(void *arg0,int *arg1,int *arg2) {
 #pragma opt_propagation off
 #pragma scheduling invalid_target
 void fn_8022DDB0(void *arg0) {
+    double m = lbl_805635C8;
     float c = lbl_805635D4;
     float *p = *(float **)((char *)arg0 + 0x18);
     float step = *(float *)((char *)arg0 + 0x14);
     float v = step * (float)(int)(c + ((*p + step) / step));
     float low = *(float *)((char *)arg0 + 0x10);
+    (void)m;
     *p = (low < v) ? low : v;
 }
 #pragma opt_propagation on
@@ -365,16 +365,13 @@ void fn_8022DE1C(void *arg0) {
 }
 #pragma opt_propagation reset
 int fn_8022DE88(void *arg0) {
-    float *epsilon_ptr = (float *)&lbl_80558DC4;
     float current = *(float *)((char *)arg0 + 0x10);
     float *value_ptr = *(float **)((char *)arg0 + 0x18);
     float value = *value_ptr;
-    float diff = current - value;
-    int result = 0;
-    if (!((float)__fabs(diff) <= *epsilon_ptr)) {
-        result = 1;
-    }
-    return result;
+    float mag = (float)__fabs(current - value);
+    if (mag <= *(float *)(void *)&lbl_80558DC4) return 0;
+    if (mag > *(float *)(void *)&lbl_80558DC4) return 1;
+    return 1;
 }
 #pragma pop
 extern double __fabs(double);
