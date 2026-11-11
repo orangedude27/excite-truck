@@ -462,43 +462,44 @@ extern float lbl_80561368;
 extern float lbl_80561394;
 extern float __fabsf(float);
 extern double __fabs(double);
-int fn_80137598(void *arg0, void *arg1, void *arg2) {
-    unsigned char a;
-    unsigned char b;
-    int id;
+int fn_80137598(void *context, void *left, void *right) {
+    unsigned char leftState;
+    unsigned char rightState;
+    int contextId;
     float diff;
 
-    if (arg1 == 0 || arg2 == 0)
+    /* Compare two entries for the given context id, by state flags and value. */
+    if (left == 0 || right == 0)
         goto null_arg;
 
-    id = *(int*)((char*)arg0 + 4);
-    if (id == *(int*)((char*)arg1 + 0xC))
-        a = *(unsigned char*)((char*)arg1 + 8);
+    contextId = *(int*)((char*)context + 4);
+    if (contextId == *(int*)((char*)left + 0xC))
+        leftState = *(unsigned char*)((char*)left + 8);
     else
-        a = *(unsigned char*)((char*)arg1 + 0x10);
+        leftState = *(unsigned char*)((char*)left + 0x10);
 
-    if (id == *(int*)((char*)arg2 + 0xC))
-        b = *(unsigned char*)((char*)arg2 + 8);
+    if (contextId == *(int*)((char*)right + 0xC))
+        rightState = *(unsigned char*)((char*)right + 8);
     else
-        b = *(unsigned char*)((char*)arg2 + 0x10);
+        rightState = *(unsigned char*)((char*)right + 0x10);
 
-    if (a ^ b) {
-        if (a != 0)
+    if (leftState ^ rightState) {
+        if (leftState != 0)
             return -1;
         return 1;
     }
 
-    if (a != 0 && b != 0) {
-        if (*(unsigned char*)arg1 != 0 || *(unsigned char*)arg2 != 0) {
-            if (*(unsigned char*)arg1 ^ *(unsigned char*)arg2) {
-                if (*(unsigned char*)arg1 == 0)
+    if (leftState != 0 && rightState != 0) {
+        if (*(unsigned char*)left != 0 || *(unsigned char*)right != 0) {
+            if (*(unsigned char*)left ^ *(unsigned char*)right) {
+                if (*(unsigned char*)left == 0)
                     return -1;
                 return 1;
             }
             return 0;
         }
 
-        diff = *(float*)((char*)arg1 + 4) - *(float*)((char*)arg2 + 4);
+        diff = *(float*)((char*)left + 4) - *(float*)((char*)right + 4);
         if ((float)__fabs(diff) < lbl_80561394)
             return 0;
         if (diff > lbl_80561368)
@@ -509,7 +510,7 @@ int fn_80137598(void *arg0, void *arg1, void *arg2) {
     return 0;
 
 null_arg:
-    return arg1 == 0 ? 1 : -1;
+    return left == 0 ? 1 : -1;
 }
 
 s32 fn_8002F768(void *, s32, s32);
