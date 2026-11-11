@@ -12307,30 +12307,31 @@ extern "C" s32 fn_800BABD0(void *arg0, s32 arg1, s32 *arg2, s32 arg3) {
     return result;
 }
 
-extern "C" s32 fn_800BAD9C(void *arg0, u32 *arg1) {
-    const char *str = lbl_8031B838;
+extern "C" s32 fn_800BAD9C(void *device, u32 *outValue) {
+    /* Issues IOS ioctl 0xB to read a 4-byte value into the shared buffer, serializing access with the shared mutex/busy flag. */
+    const char *logStrings = lbl_8031B838;
     s32 result = (s32)0xC1000000;
 
-    if (lbl_80559248 >= 0 && arg1 != 0) {
+    if (lbl_80559248 >= 0 && outValue != 0) {
         OSLockMutex(lbl_80407560);
         if (lbl_8055DD6C != 0) {
             OSUnlockMutex(lbl_80407560);
         } else {
             lbl_8055DD6C = 1;
             OSUnlockMutex(lbl_80407560);
-            result = IOS_Ioctl(*(s32 *)arg0, 0xB, 0, 0, lbl_8055DD70, 4);
+            result = IOS_Ioctl(*(s32 *)device, 0xB, 0, 0, lbl_8055DD70, 4);
             if (result != 0) {
-                OSReport(str + 0x124);
+                OSReport(logStrings + 0x124);
                 lbl_8055DD6C = 0;
             } else {
-                *arg1 = *lbl_8055DD70;
+                *outValue = *lbl_8055DD70;
                 lbl_8055DD6C = 0;
             }
         }
     }
 
     if (result != 0) {
-        OSReport(str + 0xAC, str + 0x110, result);
+        OSReport(logStrings + 0xAC, logStrings + 0x110, result);
     }
     return result;
 }
