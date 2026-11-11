@@ -1203,73 +1203,87 @@ struct ActionGroup {
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_801D611C(void *arg0, void *arg1, void *arg2) {
-    struct Dummy {
-        virtual void *get();
+    // Fire an action-sequence group at an object: unless the object's "group_id"
+    // parameter is this group's, do nothing; otherwise send one record for every
+    // threshold the object's transformed vector is long enough to pass, stopping
+    // at the first threshold it does not reach.
+    struct ActionObject {               // the object the group is fired at
+        virtual void *get();            // +0x8  its parameter set
         virtual void v1();
         virtual void v2();
-        virtual void *transform();
-        virtual short index();
+        virtual void *transform();      // +0x14 the vector in the object's own space
+        virtual short index();          // +0x18 which of the object's slots this is
         virtual void v5();
-        virtual int find(char *, int);
     };
-    struct Data {
-        float input[3];
-        float output[3];
-        short index;
+    struct ParameterSet {               // an object's values, looked up by name
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual int find(char *, int);  // +0x20 the id of a name, -1 when absent
+    };
+    struct GroupRecord {                // the 32 bytes sent per threshold reached
+        float input[3];                 // the vector handed to the group
+        float output[3];                // that vector as the object sees it
+        short index;                    // the object's slot
         short pad;
-        int value;
+        int value;                      // what this threshold is worth
     };
     extern float PSVECDotProduct(float *, float *);
     extern void fn_801796CC(int, void *, int);
-    Data data;
-    float t0;
-    float t1;
-    float t2;
-    float dot;
+    struct GroupRecord record;
+    float inZ;
+    float inY;
+    float inX;
+    float length;   // squared length of the transformed vector
     int offset;
-    int count;
+    int sent;
     int valid;
-    int fid;
-    void *found;
+    int groupId;
+    void *params;
     float *transformed;
-    if (*(int *)((char *)arg0 + 0x14) <= 0) return;
-    found = ((Dummy *)arg1)->get();
-    if (*(int *)((char *)arg0 + 0xC) < 0) goto is_invalid;
-    if (found == 0) goto is_invalid;
-    fid = ((Dummy *)found)->find(lbl_803385D0, -1);
-    if (fid != *(int *)((char *)arg0 + 0xC)) goto is_invalid;
+
+    if (((struct ActionGroup *)arg0)->count <= 0) return;
+    params = ((struct ActionObject *)arg1)->get();
+    if (((struct ActionGroup *)arg0)->groupId < 0) goto is_invalid;
+    if (params == 0) goto is_invalid;
+    groupId = ((struct ParameterSet *)params)->find(lbl_803385D0, -1);
+    if (groupId != ((struct ActionGroup *)arg0)->groupId) goto is_invalid;
     valid = 1;
     goto check_valid;
 is_invalid:
     valid = 0;
 check_valid:
     if (valid == 0) return;
-    t2 = *(float *)arg2;
-    t1 = *((float *)arg2 + 1);
-    t0 = *((float *)arg2 + 2);
-    data.input[0] = t2;
-    data.input[1] = t1;
-    data.input[2] = t0;
-    transformed = (float *)((Dummy *)arg1)->transform();
-    data.output[0] = transformed[0];
-    data.output[1] = transformed[1];
-    data.output[2] = transformed[2];
-    data.index = ((Dummy *)arg1)->index();
-    dot = PSVECDotProduct(data.output, data.output);
-    count = 0;
+    inX = ((float *)arg2)[0];
+    inY = ((float *)arg2)[1];
+    inZ = ((float *)arg2)[2];
+    record.input[0] = inX;
+    record.input[1] = inY;
+    record.input[2] = inZ;
+    transformed = (float *)((struct ActionObject *)arg1)->transform();
+    record.output[0] = transformed[0];
+    record.output[1] = transformed[1];
+    record.output[2] = transformed[2];
+    record.index = ((struct ActionObject *)arg1)->index();
+    length = PSVECDotProduct(record.output, record.output);
+    sent = 0;
     offset = 0;
-    goto test;
-loop:
+    goto threshold_test;
+threshold_loop:
     {
-        char *entry = (char *)*(int *)((char *)arg0 + 0x10) + offset;
-        if (dot < *(float *)(entry + 4)) return;
-        data.value = *(int *)entry;
-        fn_801796CC(10, &data, 32);
+        struct ActionThreshold *step = (struct ActionThreshold *)
+            ((char *)((struct ActionGroup *)arg0)->thresholds + offset);
+        if (length < step->limit) return;  // the object is not moving fast enough
+        record.value = step->value;
+        fn_801796CC(10, &record, 32);
     }
     offset += 8;
-    count += 1;
-test:
-    if (count < *(int *)((char *)arg0 + 0x14)) goto loop;
+    sent += 1;
+threshold_test:
+    if (sent < ((struct ActionGroup *)arg0)->count) goto threshold_loop;
 }
 #pragma pop
 
