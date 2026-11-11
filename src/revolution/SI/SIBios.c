@@ -73,7 +73,7 @@ static BOOL InputBufferValid[SI_MAX_CHAN];
 static u32 InputBufferVcount[SI_MAX_CHAN];
 #define RDSTHandler lbl_8038F2C0
 static OSInterruptHandler RDSTHandler[SI_MAX_CHAN];
-static SICallback TypeCallback[SI_MAX_TYPE][SI_MAX_CHAN];
+static SICallback TypeCallback[SI_MAX_CHAN][SI_MAX_TYPE];
 extern OSAlarm Alarm[SI_MAX_CHAN];
 
 extern u32 __PADFixBits;
