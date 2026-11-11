@@ -244,6 +244,27 @@ extern "C" void fn_80297FA4(void) {
     fn_80298A4C(lbl_8055F7C8, 1); lbl_8055F7C8 = 0;
 }
 
+extern "C" void fn_802980A0(void) {
+    fn_80298AD8(lbl_8055F7C8);
+    fn_8029BA0C(lbl_8055F7D8);
+    fn_8029BDB8(lbl_8055F7DC);
+    if (lbl_8055F7C4 != 0) {
+        fn_80299504(lbl_8055F7C4);
+    }
+    if (lbl_8055F7C0 != 0) {
+        fn_802982A8(lbl_8055F7C0);
+    }
+    if (lbl_8055F7CC != 0) {
+        ((void (*)(void *))fn_80299988)(lbl_8055F7CC);
+    }
+    if (lbl_8055F7D0 != 0) {
+        fn_8029A114(lbl_8055F7D0);
+    }
+    if (lbl_8055F7D4 != 0) {
+        fn_8029A8B8(lbl_8055F7D4);
+    }
+}
+
     extern "C" void fn_80298124(void) {
         fn_80298BBC(lbl_8055F7C8);
         fn_8029BA8C(lbl_8055F7D8);
@@ -1161,10 +1182,8 @@ extern "C" int fn_8029A290(void* arg0, void* arg1) {
     extern float PSVECSquareDistance(const void*, const void*);
     extern float PSVECDotProduct(const void*, const void*);
     extern float lbl_80564604;
-    float threshold;
-    int result;
-    threshold = lbl_80564594;
-    result = 1;
+    float threshold = lbl_80564594;
+    int result = 1;
     if (PSVECSquareDistance((char*)arg0 + 0x24, (char*)arg1 + 0x24) > threshold) {
         goto done;
     }
