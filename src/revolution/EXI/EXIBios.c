@@ -436,23 +436,23 @@ BOOL EXISelect(EXIChannel chan, u32 dev, u32 freq) {
 }
 
 BOOL EXIDeselect(EXIChannel chan) {
-    EXIData* exi = &Ecb[chan];
-    u32 cpr;
-    BOOL enabled;
+    EXIData* exiControl = &Ecb[chan];
+    u32 savedCpr;
+    BOOL interruptsEnabled;
 
-    enabled = OSDisableInterrupts();
+    interruptsEnabled = OSDisableInterrupts();
 
-    if (!(exi->state & EXI_STATE_SELECTED)) {
-        OSRestoreInterrupts(enabled);
+    if (!(exiControl->state & EXI_STATE_SELECTED)) {
+        OSRestoreInterrupts(interruptsEnabled);
         return FALSE;
     }
 
-    exi->state &= ~EXI_STATE_SELECTED;
-    cpr = EXI_CHAN_PARAMS[chan].cpr;
+    exiControl->state &= ~EXI_STATE_SELECTED;
+    savedCpr = EXI_CHAN_PARAMS[chan].cpr;
     EXI_CHAN_PARAMS[chan].cpr =
-        cpr & (EXI_CPR_EXIINTMASK | EXI_CPR_TCINTMASK | EXI_CPR_EXTINTMASK);
+        savedCpr & (EXI_CPR_EXIINTMASK | EXI_CPR_TCINTMASK | EXI_CPR_EXTINTMASK);
 
-    if (exi->state & EXI_STATE_ATTACHED) {
+    if (exiControl->state & EXI_STATE_ATTACHED) {
         switch (chan) {
         case EXI_CHAN_0: {
             __OSUnmaskInterrupts(OS_INTR_MASK(OS_INTR_EXI_0_EXT));
@@ -469,9 +469,9 @@ BOOL EXIDeselect(EXIChannel chan) {
         }
     }
 
-    OSRestoreInterrupts(enabled);
+    OSRestoreInterrupts(interruptsEnabled);
 
-    if (chan != EXI_CHAN_2 && cpr & EXI_CPR_CS0B) {
+    if (chan != EXI_CHAN_2 && savedCpr & EXI_CPR_CS0B) {
         return __EXIProbe(chan) != FALSE;
     }
 
