@@ -994,31 +994,58 @@ extern void fn_80135F4C(void *);
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_801B1A5C(void *arg0) {
-    struct Manager {
+    /* One pass over a 0x80-byte slot of the AI-truck slot table (lbl_8055E684).
+     * The resource manager singleton (fn_80156A40) answers for the slot's index
+     * (slot+0x60): its +0x10 method returns the id held by the manager's helper
+     * object and its +0x14 method picks one of the configured objects for that
+     * index.  Each answer is handed to one of the slot's request objects
+     * (slot+0x58 for the helper id, slot+0x3C for the picked object); their +0xC
+     * method stores the id at +0x2C and resets the object when it changes.
+     * fn_80135F4C then re-evaluates the helper-side object, and the
+     * (value, weight, limit) triple each object settled on at +0x4/+0x8/+0xC is
+     * copied back into the slot at +0x40..+0x48 and +0x4C..+0x54. */
+    struct ResourceManager {
         virtual void v0();
         virtual void v1();
-        virtual void *getFirst(void *);
-        virtual void *getSecond(void *);
+        virtual s32 getHelperId(s32 index); /* +0x10: id of the manager's helper */
+        virtual s32 pickObject(s32 index);  /* +0x14: object chosen for index */
     };
-    struct Target {
+    struct RequestObject {
         virtual void v0();
-        virtual void set(void *);
+        virtual s32 setRequest(s32 id);     /* +0xC: store the id, reset on change */
+        s32 value;                          /* +0x4 */
+        f32 weight;                         /* +0x8 */
+        s32 limit;                          /* +0xC */
     };
-    Manager *manager = (Manager *)fn_80156A40();
-    void *first = manager->getFirst(*(void **)((u8 *)arg0 + 0x60));
-    Target *targetA = *(Target **)((u8 *)arg0 + 0x58);
-    targetA->set(first);
-    void *second = manager->getSecond(*(void **)((u8 *)arg0 + 0x60));
-    Target *targetB = *(Target **)((u8 *)arg0 + 0x3C);
-    targetB->set(second);
+    struct Slot {
+        u8 pad0[0x3C];
+        RequestObject *configEntry;         /* +0x3C: fed with the picked object */
+        s32 helperValue;                    /* +0x40 */
+        f32 helperWeight;                   /* +0x44 */
+        s32 helperLimit;                    /* +0x48 */
+        s32 configValue;                    /* +0x4C */
+        f32 configWeight;                   /* +0x50 */
+        s32 configLimit;                    /* +0x54 */
+        RequestObject *helperEntry;         /* +0x58: fed with the helper's id */
+        u8 pad5c[4];                        /* +0x5C: entity this slot belongs to */
+        s32 index;                          /* +0x60: passed to the manager */
+    };
+    Slot *slot = (Slot *)arg0;
+    ResourceManager *manager = (ResourceManager *)fn_80156A40();
+    s32 helperId = manager->getHelperId(slot->index);
+    RequestObject *helperEntry = slot->helperEntry;
+    helperEntry->setRequest(helperId);
+    s32 objectId = manager->pickObject(slot->index);
+    RequestObject *configEntry = slot->configEntry;
+    configEntry->setRequest(objectId);
 
-    fn_80135F4C(*(void **)((u8 *)arg0 + 0x58));
-    *(s32 *)((u8 *)arg0 + 0x40) = *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x58) + 4);
-    *(f32 *)((u8 *)arg0 + 0x44) = *(f32 *)((u8 *)*(void **)((u8 *)arg0 + 0x58) + 8);
-    *(s32 *)((u8 *)arg0 + 0x48) = *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x58) + 0xC);
-    *(s32 *)((u8 *)arg0 + 0x4C) = *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x3C) + 4);
-    *(f32 *)((u8 *)arg0 + 0x50) = *(f32 *)((u8 *)*(void **)((u8 *)arg0 + 0x3C) + 8);
-    *(s32 *)((u8 *)arg0 + 0x54) = *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x3C) + 0xC);
+    fn_80135F4C(slot->helperEntry);
+    slot->helperValue = slot->helperEntry->value;
+    slot->helperWeight = slot->helperEntry->weight;
+    slot->helperLimit = slot->helperEntry->limit;
+    slot->configValue = slot->configEntry->value;
+    slot->configWeight = slot->configEntry->weight;
+    slot->configLimit = slot->configEntry->limit;
 }
 #pragma cplusplus off
 #pragma pop
