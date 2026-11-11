@@ -972,7 +972,7 @@ void *fn_80010BEC(void *arg0) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_80010C74(register f32 farg0, register f32 farg1, register f32 farg2) {
+void fn_80010C74(f32 farg0, f32 farg1, f32 farg2) {
     volatile s32 sp34;
     volatile s32 sp30;
     volatile f32 sp2C;
@@ -985,12 +985,11 @@ void fn_80010C74(register f32 farg0, register f32 farg1, register f32 farg2) {
     volatile f32 sp10;
     volatile f32 spC;
     volatile f32 sp8;
-    register f32 temp_f4;
-    register f32 temp_f5;
-    register f32 temp_f6;
-    register s32 index;
-    register s32 next;
-
+    f32 temp_f4;
+    f32 temp_f5;
+    f32 temp_f6;
+    s32 index;
+    s32 next;
     index = lbl_8055D4A8;
     if (index < 0xFF) {
         *(volatile u32 *)&sp2C = lbl_802ED758[3];
@@ -1746,18 +1745,16 @@ void fn_80011F64(void) {
     extern char lbl_802FC580[];
     extern s32 *lbl_8055D4AC;
     f32 sp8;
-    register f32 value;
+    f32 value;
     s32 *temp_r3;
     s32 var_r29;
     s32 *var_r28;
-    s32 var_r29_2;
     s32 *var_r28_2;
-    register s32 *var_r3;
-    register s32 var_ctr;
+    s32 var_r29_2;
+    u32 var_ctr;
     void *temp_r4;
     void *temp_r4_2;
     void *temp_r4_3;
-
     temp_r3 = fn_801284F8(0x1C, lbl_802FC550);
     if (temp_r3 != 0) {
         *temp_r3 = 0;
@@ -1780,9 +1777,8 @@ void fn_80011F64(void) {
         sp8 = lbl_80560264;
         fn_801331C4(4, (void *)lbl_802FC580, &sp8);
         var_ctr = 2;
-        var_r3 = temp_r3;
         do {
-            temp_r4 = (void *)var_r3[1];
+            temp_r4 = (void *)temp_r3[1];
             if (temp_r4 != 0) {
                 value = sp8;
                 if (value != *(f32 *)((char *)temp_r4 + 8)) {
@@ -1790,7 +1786,7 @@ void fn_80011F64(void) {
                     *(f32 *)((char *)temp_r4 + 8) = value;
                 }
             }
-            temp_r4_2 = (void *)var_r3[2];
+            temp_r4_2 = (void *)temp_r3[2];
             if (temp_r4_2 != 0) {
                 value = sp8;
                 if (value != *(f32 *)((char *)temp_r4_2 + 8)) {
@@ -1798,7 +1794,7 @@ void fn_80011F64(void) {
                     *(f32 *)((char *)temp_r4_2 + 8) = value;
                 }
             }
-            temp_r4_3 = (void *)var_r3[3];
+            temp_r4_3 = (void *)temp_r3[3];
             if (temp_r4_3 != 0) {
                 value = sp8;
                 if (value != *(f32 *)((char *)temp_r4_3 + 8)) {
@@ -1806,9 +1802,8 @@ void fn_80011F64(void) {
                     *(f32 *)((char *)temp_r4_3 + 8) = value;
                 }
             }
-            var_r3 += 3;
-            var_ctr--;
-        } while (var_ctr != 0);
+            temp_r3 += 3;
+        } while (--var_ctr != 0);
     }
     lbl_8055D4AC = temp_r3;
 }
@@ -1847,19 +1842,15 @@ extern "C" void fn_800120BC(void) {
 }
 #pragma cplusplus reset
 void fn_80012158(void) {
-    u8 * __restrict obj;
-    s32 * __restrict base;
-    s32 n;
+    u8 *obj;
+    s32 *base;
     base = (s32 *)lbl_8055D4AC;
     obj = *(u8 **)((u8 *)base + base[0] * 4 + 4);
     if (obj == 0) return;
     obj[0x49] = 1;
     obj[0x4B] = 0;
     obj[0x4A] = 0;
-    n = base[0];
-    n++;
-    base[0] = n;
-    if (n < 3) return;
+    if (++base[0] < 3) return;
     base[0] = 0;
 }
 
