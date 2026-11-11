@@ -250,13 +250,11 @@ void fn_802CEC50(int arg0) {
     extern char lbl_8055FD3C;
     extern float lbl_80564F80, lbl_80564F84;
     unsigned long long now;
+    unsigned long long old;
     unsigned long long delta;
-    unsigned int oldLow;
-    unsigned int oldHigh;
-    float value;
     float previous;
+    float value;
     float difference;
-
     switch (arg0) {
     case 1:
         now = fn_802E2C9C();
@@ -266,9 +264,8 @@ void fn_802CEC50(int arg0) {
         break;
     case 2:
         now = fn_802E2C9C();
-        oldLow = lbl_8055FD14;
-        oldHigh = lbl_8055FD10;
-        delta = now - (((unsigned long long)oldHigh << 32) | oldLow);
+        old = ((unsigned long long)lbl_8055FD10 << 32) | lbl_8055FD14;
+        delta = now - old;
         value = fn_8002FD54((unsigned int)(delta >> 32), (unsigned int)delta);
         previous = lbl_8055D0B4;
         value = lbl_80564F80 * value;
@@ -383,29 +380,26 @@ void fn_802CEF90(void) {
 }
 
 void fn_802CF048(int arg0) {
-    extern void GXSetGPMetric(int, int);
-    volatile unsigned int *fifo = (volatile unsigned int *)0xCC010000;
-
     if (arg0 != 0) {
         GXSetGPMetric(0x23, 0x16);
-        *(volatile unsigned char *)((volatile unsigned char *)fifo - 0x8000) = 0x61;
-        *(volatile unsigned int *)(fifo - 0x2000) = 0x2402C004;
-        *(volatile unsigned char *)((volatile unsigned char *)fifo - 0x8000) = 0x61;
-        *(volatile unsigned int *)(fifo - 0x2000) = 0x23000020;
-        *(volatile unsigned char *)((volatile unsigned char *)fifo - 0x8000) = 0x10;
-        *(volatile unsigned short *)((volatile unsigned char *)fifo - 0x8000) = 0;
-        *(volatile unsigned short *)((volatile unsigned char *)fifo - 0x8000) = 0x1006;
-        *(volatile unsigned int *)(fifo - 0x2000) = 0x84400;
+        *(volatile unsigned char *)0xCC008000 = 0x61;
+        *(volatile unsigned int *)0xCC008000 = 0x2402C004;
+        *(volatile unsigned char *)0xCC008000 = 0x61;
+        *(volatile unsigned int *)0xCC008000 = 0x23000020;
+        *(volatile unsigned char *)0xCC008000 = 0x10;
+        *(volatile unsigned short *)0xCC008000 = 0;
+        *(volatile unsigned short *)0xCC008000 = 0x1006;
+        *(volatile unsigned int *)0xCC008000 = 0x84400;
         return;
     }
-    *(volatile unsigned char *)((volatile unsigned char *)fifo - 0x8000) = 0x61;
-    *(volatile unsigned int *)(fifo - 0x2000) = 0x24000000;
-    *(volatile unsigned char *)((volatile unsigned char *)fifo - 0x8000) = 0x61;
-    *(volatile unsigned int *)(fifo - 0x2000) = 0x23000000;
-    *(volatile unsigned char *)((volatile unsigned char *)fifo - 0x8000) = 0x10;
-    *(volatile unsigned short *)((volatile unsigned char *)fifo - 0x8000) = 0;
-    *(volatile unsigned short *)((volatile unsigned char *)fifo - 0x8000) = 0x1006;
-    *(volatile unsigned int *)(fifo - 0x2000) = 0;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = 0x24000000;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = 0x23000000;
+    *(volatile unsigned char *)0xCC008000 = 0x10;
+    *(volatile unsigned short *)0xCC008000 = 0;
+    *(volatile unsigned short *)0xCC008000 = 0x1006;
+    *(volatile unsigned int *)0xCC008000 = 0;
 }
 
 #pragma dont_inline on
@@ -1146,15 +1140,18 @@ void fn_802D0368(float arg0, float arg1, float arg2, float arg3) {
     extern unsigned char lbl_804C9778[];
     extern unsigned char lbl_804C97B0[];
     extern double fn_8002EF30(double);
-    register int one = 1;
     register unsigned char *p = lbl_804C9778;
+    register int one = 1;
     float result;
+
     *(float *)(p + 4) = arg0;
-    p[0] = one;
+    lbl_804C9778[0] = one;
     *(float *)(p + 8) = arg1;
     *(float *)(p + 0xc) = arg2;
     *(float *)(p + 0x14) = arg3;
+
     result = fn_8002EF30(arg2 * lbl_80564F94);
+
     *(float *)(lbl_804C97B0 + 0x14) = arg0;
     *(float *)(p + 0x10) = result;
     *(float *)(lbl_804C97B0 + 0x18) = arg1;
@@ -1521,7 +1518,7 @@ void fn_802D0BD8(void) {
     extern float lbl_80564F88;
     extern float lbl_80564F8C;
     extern double lbl_80564FA0;
-    extern void VIGetNextField(void);
+    extern unsigned long VIGetNextField(void);
     extern void GXSetViewportJitter(unsigned short, float, float, float, float, float, float);
     extern void GXSetViewport(unsigned short, float, float, float, float, float, float);
     extern void GXInvalidateVtxCache(void);
@@ -1529,15 +1526,16 @@ void fn_802D0BD8(void) {
     unsigned char *p = (unsigned char *)lbl_8055FD64;
     unsigned short x;
     unsigned short y;
+    unsigned long field;
     if (p[0x18]) {
-        VIGetNextField();
+        field = VIGetNextField();
         x = *(unsigned short *)(p + 4);
         y = *(unsigned short *)(p + 6);
-        GXSetViewportJitter(x, lbl_80564F88, lbl_80564F88, (float)x, (float)y, lbl_80564F88, lbl_80564F8C);
+        ((void (*)(unsigned long, float, float, float, float, float, float))GXSetViewportJitter)(field, lbl_80564F88, lbl_80564F88, (float)x, (float)y, lbl_80564F88, lbl_80564F8C);
     } else {
         x = *(unsigned short *)(p + 4);
         y = *(unsigned short *)(p + 6);
-        GXSetViewport(x, lbl_80564F88, lbl_80564F88, (float)x, (float)y, lbl_80564F88, lbl_80564F8C);
+        ((void (*)(float, float, float, float, float, float))GXSetViewport)(lbl_80564F88, lbl_80564F88, (float)x, (float)y, lbl_80564F88, lbl_80564F8C);
     }
     GXInvalidateVtxCache();
     GXInvalidateTexAll();
@@ -2344,6 +2342,24 @@ void* fn_802D3138(void) {
     return (char*)lbl_8055FD58 + 0x24;
 }
 
+#pragma dont_inline on
+void fn_802D3144(void) {
+    if (lbl_8055FD86 == lbl_8055FD08) {
+        GXSetBlendMode(0, 0, 0, 5);
+    } else {
+        int lowMapped;
+        int high;
+        int low;
+        high = (int)lbl_8055FD86 >> 8;
+        low = (int)lbl_8055FD86 & 255;
+        lowMapped = fn_802D0EC8(low);
+        GXSetBlendMode(1, fn_802D0EC8(high), lowMapped, 5);
+    }
+    lbl_8055FD88 = lbl_8055FD86;
+    lbl_804C5700[0] = 1;
+}
+#pragma dont_inline reset
+
 void fn_802D3304(void) {
     lbl_804C5700[0] = 1;
     fn_802CFF50();
@@ -2426,28 +2442,28 @@ void fn_802D3420(void) {
 
 #pragma dont_inline reset
 void fn_802D37E4(void) {
-    int i = 4;
     unsigned char *p = (unsigned char *)lbl_804C9984;
+    int i = 4;
     do {
-        p[0xC] = 0; p[0xD] = 0;
-        p[0x24] = 0; p[0x25] = 0;
-        p[0x3C] = 0; p[0x3D] = 0;
-        p[0x54] = 0; p[0x55] = 0;
-        p[0x6C] = 0; p[0x6D] = 0;
-        p[0x84] = 0; p[0x85] = 0;
-        p[0x9C] = 0; p[0x9D] = 0;
-        p[0xB4] = 0; p[0xB5] = 0;
-        p[0xCC] = 0; p[0xCD] = 0;
-        p[0xE4] = 0; p[0xE5] = 0;
-        p[0xFC] = 0; p[0xFD] = 0;
-        p[0x114] = 0; p[0x115] = 0;
-        p[0x12C] = 0; p[0x12D] = 0;
-        p[0x144] = 0; p[0x145] = 0;
-        p[0x15C] = 0; p[0x15D] = 0;
-        p[0x174] = 0; p[0x175] = 0;
-        p += 0x180;
+        p[12] = 0; p[13] = 0;
+        p[36] = 0; p[37] = 0;
+        p[60] = 0; p[61] = 0;
+        p[84] = 0; p[85] = 0;
+        p[108] = 0; p[109] = 0;
+        p[132] = 0; p[133] = 0;
+        p[156] = 0; p[157] = 0;
+        p[180] = 0; p[181] = 0;
+        p[204] = 0; p[205] = 0;
+        p[228] = 0; p[229] = 0;
+        p[252] = 0; p[253] = 0;
+        p[276] = 0; p[277] = 0;
+        p[300] = 0; p[301] = 0;
+        p[324] = 0; p[325] = 0;
+        p[348] = 0; p[349] = 0;
+        p[372] = 0; p[373] = 0;
+        p += 384;
     } while (--i);
-    *(int *)(lbl_804C9984 + 0x700) = 0;
+    *(int *)(lbl_804C9984 + 1792) = 0;
 }
 
 void fn_802D3894(void) {
@@ -2486,31 +2502,28 @@ extern float lbl_80564F88;
 #pragma processor 7400
 void *fn_802D39A4(float value) {
     unsigned char *p;
-    int index = 0;
-    unsigned char *found = 0;
+    int index;
+    unsigned char *found;
     int count;
-    int active;
     float initialValue;
-
     p = (unsigned char *)lbl_804C9984;
-    for (count = 0; count < 0x40; ++count) {
-        if (p[0xC] == 0) {
-            found = (unsigned char *)lbl_804C9984 + index * 0x18;
+    index = 0;
+    found = 0;
+    for (count = 0; count < 64; ++count) {
+        if (p[12] == 0) {
+            found = (unsigned char *)lbl_804C9984 + index * 24;
             break;
         }
-        p += 0x18;
+        p += 24;
         index++;
     }
     if (found == 0)
         fn_802E317C(lbl_8034C1E4);
-#pragma scheduling off
-    active = 1;
     initialValue = lbl_80564F88;
-    found[0xC] = active;
-    found[0xD] = 0;
-    *(float *)(found + 0x10) = value;
-    *(float *)(found + 0x14) = initialValue;
-#pragma scheduling on
+    found[12] = 1;
+    found[13] = 0;
+    *(float *)(found + 16) = value;
+    *(float *)(found + 20) = initialValue;
     return found;
 }
 #pragma processor gekko
