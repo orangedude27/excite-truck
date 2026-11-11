@@ -443,15 +443,13 @@ void fn_80193A38(void *arg0) {
 }
 
 void *fn_80193A50(void *arg0, int arg1) {
-    int temp_r0;
-
     if (arg0 != 0) {
-        temp_r0 = *(int *)((char *)arg0 + 0x290);
-        if (temp_r0 != -1000) {
-            ((int *)lbl_804349C0)[temp_r0] = 0;
+        int v = *(int *)((char *)arg0 + 0x290);
+        if (v != -1000) {
+            ((int *)lbl_804349C0)[v] = 0;
         }
         lbl_8055E550 -= 1;
-        if ((char *)arg0 + 0x168 != 0) {
+        if ((int)arg0 + 0x168 != 0) {
             fn_8013530C((char *)arg0 + 0x19C, -1);
             fn_8013530C((char *)arg0 + 0x168, -1);
         }
