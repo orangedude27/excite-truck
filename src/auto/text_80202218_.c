@@ -36,6 +36,20 @@ extern float lbl_805630A0;
 extern unsigned char lbl_80488964[];
 extern void fn_802C6CF8(int);
 
+/* Model transform handed to fn_802C70AC: a 3x3 basis stored as three column
+ * Vecs, followed by the translation. */
+struct ModelTransform {
+    Vec basis[3];
+    Vec translate;
+};
+
+/* lbl_804888E0: the models picked out for this frame by fn_80202718 - up to
+ * 0x20 model ids followed by their count (at +0x80). */
+struct ModelIdList {
+    s32 id[0x20];
+    s32 count;
+};
+
 extern int lbl_8055B410;
 extern int lbl_8055ECD4;
 extern int fn_801E85A4(void);
