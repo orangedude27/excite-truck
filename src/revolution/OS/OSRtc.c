@@ -292,9 +292,10 @@ BOOL __OSGetRTCFlags(u32* out) {
     return error == FALSE;
 }
 
+/* Clears the RTC flags via EXI by writing zero to the RTC control register. */
 BOOL __OSClearRTCFlags(void) {
-    u32 imm;
-    u32 flags = 0;
+    u32 rtcCommand;
+    u32 rtcFlags = 0;
     BOOL error = FALSE;
 
     if (!EXILock(EXI_CHAN_0, EXI_DEV_INT, NULL)) {
@@ -306,10 +307,10 @@ BOOL __OSClearRTCFlags(void) {
         return FALSE;
     }
 
-    imm = 0xA1000800;
-    error |= !EXIImm(EXI_CHAN_0, &imm, sizeof(imm), EXI_WRITE, NULL);
+    rtcCommand = 0xA1000800;
+    error |= !EXIImm(EXI_CHAN_0, &rtcCommand, sizeof(rtcCommand), EXI_WRITE, NULL);
     error |= !EXISync(EXI_CHAN_0);
-    error |= !EXIImm(EXI_CHAN_0, &flags, sizeof(flags), EXI_WRITE, NULL);
+    error |= !EXIImm(EXI_CHAN_0, &rtcFlags, sizeof(rtcFlags), EXI_WRITE, NULL);
     error |= !EXISync(EXI_CHAN_0);
     error |= !EXIDeselect(EXI_CHAN_0);
     EXIUnlock(EXI_CHAN_0);
