@@ -158,46 +158,47 @@ void fn_8023DA2C(long arg0, void *arg1, char arg2, long arg3) {
 
 extern char *fn_8023DCCC(char *);
 #pragma use_lmw_stmw off
-void fn_8023DA64(void *arg0, int arg1, int arg2) {
+void fn_8023DA64(void *context, int skipLookup, int flag) {
+    /* Applies name/value entries from two tables into a target object, then finalizes a field. */
     typedef struct { int unk0; char *name; } Entry;
     struct StackLocals { int sp8; int spC; char pad[4]; char sp14; };
     volatile struct StackLocals locals;
     register int zero = 0;
     Entry *entry;
-    char *base;
-    int i;
-    int j;
-    void *found;
+    char *targetBase;
+    int index;
+    int secondIndex;
+    void *foundEntry;
 
-    locals.spC = (int)arg0;
+    locals.spC = (int)context;
     locals.sp14 = (char)zero;
-    base = (char *)arg0 + 8;
+    targetBase = (char *)context + 8;
     entry = (Entry *)lbl_802FA0A8;
-    i = 0;
+    index = 0;
     do {
-        found = fn_8023DCCC(entry->name);
-        if (found != 0) {
+        foundEntry = fn_8023DCCC(entry->name);
+        if (foundEntry != 0) {
             locals.sp8 = zero;
-            if (arg1 == 0)
-                fn_801A7974((const char *)&locals.sp8, (int)entry->name, (int)base);
+            if (skipLookup == 0)
+                fn_801A7974((const char *)&locals.sp8, (int)entry->name, (int)targetBase);
             if (locals.sp8 == 0)
-                fn_8013358C((int)base, (int)entry->name, *(void **)((char *)found + 4));
+                fn_8013358C((int)targetBase, (int)entry->name, *(void **)((char *)foundEntry + 4));
         } else {
-            fn_8013358C((int)base, (int)entry->name, (void *)&lbl_8055BC08);
+            fn_8013358C((int)targetBase, (int)entry->name, (void *)&lbl_8055BC08);
         }
-        i++;
+        index++;
         entry++;
-    } while (i < 0x1D);
+    } while (index < 0x1D);
 
     entry = (Entry *)lbl_802FA218;
-    j = 0;
+    secondIndex = 0;
     do {
-        fn_8013358C((int)base, entry->unk0, (void *)entry->name);
-        j++;
+        fn_8013358C((int)targetBase, entry->unk0, (void *)entry->name);
+        secondIndex++;
         entry++;
-    } while (j < 8);
+    } while (secondIndex < 8);
 
-    fn_8023DA2C((long)base, lbl_80341B8C, 1, arg2);
+    fn_8023DA2C((long)targetBase, lbl_80341B8C, 1, flag);
 }
 #pragma use_lmw_stmw on
 
