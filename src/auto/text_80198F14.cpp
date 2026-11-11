@@ -1755,29 +1755,30 @@ extern "C" f32 fn_8019DF88(void *arg0, f32 *arg1, void *arg2, f32 *arg3, f32 *ar
 }
 #pragma pop
 
-extern "C" s32 fn_8019E1F4(f32* arg0, f32* arg1, f32 f0, f32 f1, f32 f2) {
-    if ((f32)__fabs(f1) <= lbl_80558DC4) {
-        if (f0 < -f2) goto ret0;
-        if (!(f0 > f2)) goto ret1;
+extern "C" s32 fn_8019E1F4(f32* minT, f32* maxT, f32 origin, f32 dir, f32 extent) {
+    /* Clip a ray parameter interval against one axis-aligned slab; updates [*minT, *maxT] and returns nonzero if it remains valid. */
+    if ((f32)__fabs(dir) <= lbl_80558DC4) {
+        if (origin < -extent) goto ret0;
+        if (!(origin > extent)) goto ret1;
 ret0:
         return 0;
 ret1:
         return 1;
     }
     f32 diff;
-    f32 neg_f2 = -f2;
-    diff = f2 - f0;
-    f0 = neg_f2 - f0;
-    f2 = diff / f1;
-    f1 = f0 / f1;
-    f32 min_t = (f1 < f2) ? f1 : f2;
-    f32 cur_min = *arg0;
-    *arg0 = (cur_min > min_t) ? cur_min : min_t;
-    f32 max_t = (f1 > f2) ? f1 : f2;
-    f32 cur_max = *arg1;
-    *arg1 = (cur_max < max_t) ? cur_max : max_t;
-    if (*arg0 > *arg1) return 0;
-    return !(*arg1 < lbl_805622D0);
+    f32 negExtent = -extent;
+    diff = extent - origin;
+    origin = negExtent - origin;
+    extent = diff / dir;
+    dir = origin / dir;
+    f32 tNear = (dir < extent) ? dir : extent;
+    f32 curMin = *minT;
+    *minT = (curMin > tNear) ? curMin : tNear;
+    f32 tFar = (dir > extent) ? dir : extent;
+    f32 curMax = *maxT;
+    *maxT = (curMax < tFar) ? curMax : tFar;
+    if (*minT > *maxT) return 0;
+    return !(*maxT < lbl_805622D0);
 }
 
 #pragma push
