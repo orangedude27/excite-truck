@@ -662,6 +662,7 @@ static s32 __ios_Ioctlv(IPCRequestEx *req, s32 type, s32 inCount, s32 outCount, 
     return ret;
 }
 
+// Submits an asynchronous IOS ioctlv request and returns the submission result.
 s32 IOS_IoctlvAsync(s32 fd, s32 type, s32 inCount, s32 outCount,
                     IPCIOVector* vectors, IPCAsyncCallback callback,
                     void* callbackArg) {
