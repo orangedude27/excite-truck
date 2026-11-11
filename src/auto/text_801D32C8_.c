@@ -170,31 +170,33 @@ extern int lbl_80562AB4;
 extern char lbl_803383BC[];
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" void fn_801D3610(void *arg0, int arg1) {
-    int ids[2];
-    int *current;
-    unsigned int count;
-    Fn801D3610Interface *object;
-    void *value;
-    ids[0] = lbl_80562AB0;
-    current = &ids[0];
-    ids[1] = lbl_80562AB4;
-    count = 0;
+extern "C" void fn_801D3610(void *outConfig, int configName) {
+    /* Look up a config by name in the known config stores and copy it into outConfig, logging if missing. */
+    int storeIds[2];
+    int *storeIdPtr;
+    unsigned int storeIndex;
+    Fn801D3610Interface *store;
+    void *configValue;
+
+    storeIds[0] = lbl_80562AB0;
+    storeIdPtr = &storeIds[0];
+    storeIds[1] = lbl_80562AB4;
+    storeIndex = 0;
     do {
-        object = (Fn801D3610Interface *)fn_80131810(*current);
-        if (object != 0) {
-            if (object->isAvailable(arg1) != 0) {
-                value = object->getValue(arg1);
-                fn_801D334C(arg0, value);
-                fn_80131818(object);
+        store = (Fn801D3610Interface *)fn_80131810(*storeIdPtr);
+        if (store != 0) {
+            if (store->isAvailable(configName) != 0) {
+                configValue = store->getValue(configName);
+                fn_801D334C(outConfig, configValue);
+                fn_80131818(store);
                 return;
             }
-            fn_80131818(object);
+            fn_80131818(store);
         }
-        count++;
-        current++;
-    } while (count < 2U);
-    fn_802E317C(lbl_803383BC, arg1);
+        storeIndex++;
+        storeIdPtr++;
+    } while (storeIndex < 2U);
+    fn_802E317C(lbl_803383BC, configName);
 }
 #pragma scheduling on
 #pragma cplusplus reset
