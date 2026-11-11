@@ -95,6 +95,7 @@ second:
     if (arg1 != 0) fn_802090BC(p[2]);
     else if (p[2] != p[3]) fn_802090BC(p[2]);
 }
+#pragma dont_inline reset
 
 #pragma push
 #pragma cplusplus on
