@@ -1686,7 +1686,7 @@ void fn_80191860(void *arg0, void *arg1) {
 #pragma push
 #pragma processor 750
 #pragma cplusplus on
-extern "C" void fn_80191928(void *arg0) {
+extern "C" void fn_80191928(void *ctrl) {
     class Interface {
     public:
         virtual void f0();
@@ -1700,49 +1700,49 @@ extern "C" void fn_80191928(void *arg0) {
         virtual void f8();
         virtual s32 result();
     };
-    s32 combined;
+    s32 aligned;
     s32 state;
-    bool hit;
+    bool fast;
     s32 result;
-    s32 nextState;
+    s32 next;
     f32 speed;
     f32 dot;
-    if (*(s32 *)((u8 *)arg0 + 0x30) == 0)
+    if (*(s32 *)((u8 *)ctrl + 0x30) == 0)
         return;
-    if (*(f32 *)((u8 *)*(void **)((u8 *)arg0 + 0x34) + 0x2618) > lbl_80562090) {
-        *(s32 *)((u8 *)arg0 + 0x30) = 4;
+    if (*(f32 *)((u8 *)*(void **)((u8 *)ctrl + 0x34) + 0x2618) > lbl_80562090) {
+        *(s32 *)((u8 *)ctrl + 0x30) = 4;
         return;
     }
-    speed = ((Interface *)*(void **)((u8 *)arg0 + 0x38))->speed();
-    result = ((Interface *)*(void **)((u8 *)arg0 + 0x38))->result();
-    hit = speed > lbl_805620C0;
-    dot = PSVECDotProduct((u8 *)*(void **)((u8 *)arg0 + 0x34) + 0x54,
-                          (u8 *)*(void **)((u8 *)arg0 + 0x34) + 0x118);
-    state = *(s32 *)((u8 *)arg0 + 0x30);
+    speed = ((Interface *)*(void **)((u8 *)ctrl + 0x38))->speed();
+    result = ((Interface *)*(void **)((u8 *)ctrl + 0x38))->result();
+    fast = speed > lbl_805620C0;
+    dot = PSVECDotProduct((u8 *)*(void **)((u8 *)ctrl + 0x34) + 0x54,
+                          (u8 *)*(void **)((u8 *)ctrl + 0x34) + 0x118);
+    state = *(s32 *)((u8 *)ctrl + 0x30);
     if (state == 4) {
-        combined = 0;
-        if (hit && dot < lbl_805620C4)
-            combined = 1;
+        aligned = 0;
+        if (fast && dot < lbl_805620C4)
+            aligned = 1;
     } else {
-        combined = 0;
-        if (hit && dot < lbl_805620C8)
-            combined = 1;
+        aligned = 0;
+        if (fast && dot < lbl_805620C8)
+            aligned = 1;
     }
-    if ((combined == 0) || (result != 0)) {
-        *(s32 *)((u8 *)arg0 + 0x30) = 4;
+    if ((aligned == 0) || (result != 0)) {
+        *(s32 *)((u8 *)ctrl + 0x30) = 4;
         return;
     }
     if (state == 4) {
-        *(s32 *)((u8 *)arg0 + 0x30) = 5;
+        *(s32 *)((u8 *)ctrl + 0x30) = 5;
         return;
     }
     if (state >= 5) {
-        nextState = *(volatile s32 *)((u8 *)arg0 + 0x30) + 1;
-        *(s32 *)((u8 *)arg0 + 0x30) = nextState;
-        if (nextState - 5 == 0x1D)
-            *(s32 *)((u8 *)arg0 + 0x30) = 3;
+        next = *(volatile s32 *)((u8 *)ctrl + 0x30) + 1;
+        *(s32 *)((u8 *)ctrl + 0x30) = next;
+        if (next - 5 == 0x1D)
+            *(s32 *)((u8 *)ctrl + 0x30) = 3;
         if (dot < lbl_805620CC)
-            *(s32 *)((u8 *)arg0 + 0x30) = 3;
+            *(s32 *)((u8 *)ctrl + 0x30) = 3;
     }
 }
 #pragma cplusplus off
