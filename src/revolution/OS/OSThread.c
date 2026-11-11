@@ -931,6 +931,7 @@ void OSSleepThread(OSThreadQueue* queue) {
     OSThread* iter;
     OSThread* iterPrev;
 
+    /* Put the current thread to sleep on the queue in priority order, then reschedule. */
     enabled = OSDisableInterrupts();
     currThread = OSGetCurrentThread();
 
