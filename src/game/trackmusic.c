@@ -379,9 +379,9 @@ long fn_8020FC6C(void) {
 extern "C" void fn_8020FCC4(void) {
     long result;
     long index;
-    long current;
     void *base;
     struct Dummy_802113D8 *object;
+    long current;
 
     base = fn_8001285C(*(long *)__AXFXGetLfoSinTable_801769CC());
     object = *(struct Dummy_802113D8 **)((char *)base + 0x20);
@@ -390,23 +390,17 @@ extern "C" void fn_8020FCC4(void) {
     if (index >= 0 && index < lbl_804900AC.m_count) {
         fn_802E30C8(lbl_8033C980, index, lbl_804900AC.m_entries[index], result);
     }
-    if (index == ((long (*)(long))fn_8020F3B4)(0)) {
-        if (lbl_8055B658 == ((long (*)(long))fn_8020F3B4)(1)) {
-            index = ((long (*)(long))fn_8020F3B4)(1);
-        }
+    if (index == ((long (*)(long))fn_8020F3B4)(0) && lbl_8055B658 == ((long (*)(long))fn_8020F3B4)(1)) {
+        index = ((long (*)(long))fn_8020F3B4)(1);
     }
-    if (index == ((long (*)(long))fn_8020F3B4)(0)) {
-        if (lbl_8055B658 == ((long (*)(long))fn_8020F3B4)(2)) {
-            index = ((long (*)(long))fn_8020F3B4)(2);
-        }
+    if (index == ((long (*)(long))fn_8020F3B4)(0) && lbl_8055B658 == ((long (*)(long))fn_8020F3B4)(2)) {
+        index = ((long (*)(long))fn_8020F3B4)(2);
     }
-#pragma scheduling off
     current = lbl_8055B658;
     if (current != -1 && current != index) {
         fn_802EC1D8();
         lbl_8055B658 = index;
     }
-#pragma scheduling on
 }
 #pragma cplusplus off
 #pragma scheduling on
@@ -590,6 +584,8 @@ struct Record_802101F8 {
     long f18;
 };
 #pragma processor 750
+#pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" void fn_802101F8(Dummy_802101F8 *arg0, long arg1, long arg2, struct Record_802101F8 *arg3) {
     long temp_r31;
@@ -712,38 +708,35 @@ void fn_80210510(void) {
 void fn_80210514(int x){switch(x){case 0: fn_8020F608(0,fn_8000DA10()); break; case 1: fn_8020F608(1,fn_8000DA10()); break; case 2: break;}}
 
 long fn_80210570(void) {
-    long val = 3;
+    register long val = 3;
     char *ptr = (char *)fn_8020F5F0(fn_8000DA10());
-    long i;
-
+    register long i;
+    long k;
     for (i = 0; i < 48; i += 3) {
-        if (val == 3) {
-            val = *(long *)(ptr + 0x000);
-        } else if (*(long *)(ptr + 0x000) != val) {
-            return 2;
+        for (k = 0; k < 1; k++) {
+            if (val == 3) {
+                val = *(long *)(ptr + 0x000);
+            } else if (*(long *)(ptr + 0x000) != val) {
+                return 2;
+            }
+            if (val == 3) {
+                val = *(long *)(ptr + 0x064);
+            } else if (*(long *)(ptr + 0x064) != val) {
+                return 2;
+            }
+            if (val == 3) {
+                val = *(long *)(ptr + 0x0C8);
+            } else if (*(long *)(ptr + 0x0C8) != val) {
+                return 2;
+            }
+            if (val == 3) {
+                val = *(long *)(ptr + 0x12C);
+            } else if (*(long *)(ptr + 0x12C) != val) {
+                return 2;
+            }
         }
-
-        if (val == 3) {
-            val = *(long *)(ptr + 0x064);
-        } else if (*(long *)(ptr + 0x064) != val) {
-            return 2;
-        }
-
-        if (val == 3) {
-            val = *(long *)(ptr + 0x0C8);
-        } else if (*(long *)(ptr + 0x0C8) != val) {
-            return 2;
-        }
-
-        if (val == 3) {
-            val = *(long *)(ptr + 0x12C);
-        } else if (*(long *)(ptr + 0x12C) != val) {
-            return 2;
-        }
-
         ptr += 0x190;
     }
-
     switch (val) {
     case 0:
         return 0;
