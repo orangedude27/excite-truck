@@ -920,6 +920,7 @@ int __ieee754_rem_pio2(double x, double *y)
 #undef pio2_two_over_pi
 #undef pio2_npio2_hw
 extern double lbl_80560950, lbl_80560958, lbl_80560960, lbl_80560968, lbl_80560970, lbl_80560978, lbl_80560980, lbl_80560988, lbl_80560990;
+/* Kernel cosine function: computes cos(x) - 1 + x^2/2 for small x (fdlibm __kernel_cos). */
 double __kernel_cos(double x, double y) {
     double a, hz, z, r, qx;
     int ix, hx;
