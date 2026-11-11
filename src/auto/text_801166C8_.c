@@ -4283,17 +4283,18 @@ s32 fn_8011DF68(s32 arg0, u32 arg1, u32 arg2, u32 arg3) {
     return (((u32)(arg0 * var_r5) >> 3) + ((temp * (arg1 >> 3)) >> 3) + 3) & 0xFFFFFFFC;
 }
 
-void fn_8011DFAC(void* arg0, u32 arg1) {
-    s32* out = (s32*)arg0;
-    out[0] = fn_8011DF68(0x200, arg1, 4, 1);
-    out[1] = fn_8011DF68(0x200, arg1 >> 1, 4, 1);
-    out[2] = fn_8011DF68(0x200, arg1, 8, 0x40);
-    out[3] = fn_8011DF68(0x200, arg1, 8, 8);
-    out[4] = fn_8011DF68(0x200, arg1, 5, 1);
-    out[5] = fn_8011DF68(0x200, arg1, 5, 1);
-    out[6] = fn_8011DF68(0x200, arg1, 0xB, 1);
-    out[7] = fn_8011DF68(0x200, arg1, 0xB, 1);
-    out[8] = fn_8011DF68(0x200, arg1, 4, 0x30);
+void fn_8011DFAC(void* output, u32 count) {
+    /* Compute and store nine size values derived from count using fn_8011DF68. */
+    s32* values = (s32*)output;
+    values[0] = fn_8011DF68(0x200, count, 4, 1);
+    values[1] = fn_8011DF68(0x200, count >> 1, 4, 1);
+    values[2] = fn_8011DF68(0x200, count, 8, 0x40);
+    values[3] = fn_8011DF68(0x200, count, 8, 8);
+    values[4] = fn_8011DF68(0x200, count, 5, 1);
+    values[5] = fn_8011DF68(0x200, count, 5, 1);
+    values[6] = fn_8011DF68(0x200, count, 0xB, 1);
+    values[7] = fn_8011DF68(0x200, count, 0xB, 1);
+    values[8] = fn_8011DF68(0x200, count, 4, 0x30);
 }
 
 extern void fn_8011CD78(void *, void *);
