@@ -1189,19 +1189,20 @@ copy_if_valid:
 }
 #pragma pop
 
+struct FileMsg800F2EAC { char a[0x104]; char b[0x34]; char c[1]; };
 extern "C" const char lbl_80324868[];
 extern "C" void fn_800F2EAC(void *self, void *arg) {
     u8 *object = (u8 *)self;
-    volatile const char *base = lbl_80324868;
+    u32 base = (u32)lbl_80324868;
     u8 *bytes = (u8 *)arg;
     u8 *table;
     u32 baseAddress;
     u8 *offsetPtr;
     u32 value;
     if (arg == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)base, 0x60, (const char *)base + 0x104);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)base, 0x60, (const char *)(base + 0x104));
     if ((*(u32 *)bytes - 0x53590000U) != 0x4d42U)
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)base, 0x63, (const char *)base + 0x138);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)base, 0x63, (const char *)(base + 0x138));
     table = bytes + 8;
     *(u8 **)(object + 0x2c) = table;
     u32 offset = *(u32 *)(bytes + 8);
@@ -3487,28 +3488,29 @@ extern "C" void* GetBaseAddress__Q46nw4hbm3snd6detail13SeqFileReaderCFv(void*);
 extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer11SeqLoadTaskFv(void* arg0) {
     char buffer[0x220];
     char reader[8];
-    void* callback;
-    void* result;
     void* mutex;
+    void* p;
+    void* callback;
     void* base;
 
     fn_800F41D0(buffer, *(s32*)((char*)arg0 + 0x14));
     mutex = *(void**)((char*)arg0 + 0x2c);
     OSLockMutex(mutex);
-    *(void**)((char*)arg0 + 0x10) = buffer;
+    p = buffer;
+    *(void**)((char*)arg0 + 0x10) = p;
     OSUnlockMutex(mutex);
-    result = LoadFile__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hbm3snd22SoundMemoryAllocatable(buffer, *(u32*)((char*)arg0 + 0x18), *(void**)((char*)arg0 + 0x20));
+    p = LoadFile__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hbm3snd22SoundMemoryAllocatable(p, *(u32*)((char*)arg0 + 0x18), *(void**)((char*)arg0 + 0x20));
     mutex = *(void**)((char*)arg0 + 0x2c);
     OSLockMutex(mutex);
     *(void**)((char*)arg0 + 0x10) = 0;
     OSUnlockMutex(mutex);
-    if (result == 0) {
+    if (p == 0) {
         callback = *(void**)((char*)arg0 + 0x24);
         if (callback) ((void (*)(s32, void*, s32, void*))callback)(0, 0, 0, *(void**)((char*)arg0 + 0x28));
         fn_800F420C((s32)buffer, -1);
         return;
     }
-    __ct__Q46nw4hbm3snd6detail13SeqFileReaderFPCv(reader, result);
+    __ct__Q46nw4hbm3snd6detail13SeqFileReaderFPCv(reader, p);
     base = (void*)GetBaseAddress__Q46nw4hbm3snd6detail13SeqFileReaderCFv(reader);
     callback = *(void**)((char*)arg0 + 0x24);
     if (callback) ((void (*)(s32, void*, s32, void*))callback)(1, base, *(s32*)((char*)arg0 + 0x1c), *(void**)((char*)arg0 + 0x28));
@@ -4625,14 +4627,17 @@ extern "C" const char lbl_80326518[];
 extern "C" const char lbl_80326688[];
 extern "C" const char lbl_80326738[];
 extern "C" char lbl_805598F8;
+#pragma push
+#pragma processor 750
+#pragma scheduling on
 extern "C" s32 fn_800FAB98(void *arg0, void *arg1) {
-    register s32 valid = *(s32 *)arg0;
-    void *base = arg0;
+    s32 valid;
     void *ref;
     void *data;
+    valid = *(s32 *)arg0;
     if (valid == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326518, 0x89, lbl_80326688);
-    ref = *(void **)((u8 *)base + 4);
+    ref = *(void **)((u8 *)arg0 + 4);
     ref = (u8 *)ref + 8;
     if (*((u8 *)ref + 1) != 0)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598F8, 0x6F, lbl_80326738);
@@ -4655,7 +4660,7 @@ extern "C" s32 fn_800FAB98(void *arg0, void *arg1) {
     *(u32 *)((u8 *)arg1 + 0x34) = *(u32 *)((u8 *)data + 0x30);
     return 1;
 }
-
+#pragma pop
 extern "C" const char lbl_803266B4[];
 extern "C" const char lbl_803266E0[];
 extern "C" const char lbl_8032670C[];
@@ -6010,20 +6015,20 @@ extern "C" const char lbl_80326C7C[];
 extern "C" const char lbl_80326C58[];
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling on
 extern "C" void NotifyAsyncEnd__Q56nw4hbm3snd6detail10StrmPlayer11LoadCommandFb(void *self, bool success) {
     u32 token;
-    void *iterator;
     void *list1;
+    u32 successSave;
     void *node;
     void *list2;
-    bool successCopy = success;
+    void *iterator;
+    successSave = success;
     token = OSDisableInterrupts();
     list1 = (u8 *)*(void **)((u8 *)self + 4) + 0xA0;
     if (self == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326C7C, 0x233, lbl_80326C58);
     node = (u8 *)self + 0x14;
     Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(list1, node);
-    if (successCopy != 0) {
+    if (successSave != 0) {
         if (*(u32 *)((u8 *)self + 8) == 0) {
             if (--*(u32 *)((u8 *)*(void **)((u8 *)self + 4) + 0x58) == 0)
                 *(u8 *)((u8 *)*(void **)((u8 *)self + 4) + 0x4A) = 1;
