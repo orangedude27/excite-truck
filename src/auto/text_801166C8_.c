@@ -471,6 +471,7 @@ tail:
 
 #pragma push
 #pragma use_lmw_stmw off
+extern void memset(void *, int, unsigned int);
 u32 fn_80116F8C(void *arg0) {
     s32 temp_r28;
     s32 temp_r30;
@@ -2024,13 +2025,11 @@ u32 fn_8011A388(void *arg0, s32 arg1, s32 arg2, u32 arg3) {
     u32 newPosition;
     u32 capacity;
     u32 remaining;
-
     if (arg1 == -1) goto return_arg3;
     if (*offset == (u32)arg1) goto return_arg3;
     *offset = (u32)arg1;
     current = *offset;
-    result = fn_8011A240((u8 *)arg0 + 0x54,
-                         current + *base, arg2, arg3);
+    result = fn_8011A240((u8 *)arg0 + 0x54, current + *base, arg2, arg3);
     if (result != arg3) {
         *(s32 *)((u8 *)arg0 + 0x20) = 1;
         fn_8011A330(arg0);
@@ -2043,7 +2042,7 @@ u32 fn_8011A388(void *arg0, s32 arg1, s32 arg2, u32 arg3) {
     capacity = *capacityPtr;
     remaining = end - current;
     *(u32 *)((u8 *)arg0 + 0x98) = current;
-    if (remaining >= capacity) {
+    if (capacity <= remaining) {
         *(u32 *)((u8 *)arg0 + 0x48) = *capacityPtr;
     }
     fn_8011A1A0((u32 *)arg2, result);
@@ -2980,22 +2979,21 @@ void fn_8011BD20(s32 arg0) {
     };
     struct Node *node;
     struct Node *pending;
-    volatile s32 *count;
-    volatile s32 *state;
-    s32 newCount;
-    s32 stateValue;
-
-    count = (volatile s32 *)(arg0 + 0x34);
-    state = (volatile s32 *)arg0;
+    volatile int *count;
+    volatile int *state;
+    int newCount;
+    int stateValue;
+    count = (volatile int *)(arg0 + 0x34);
+    state = (volatile int *)arg0;
     newCount = *count;
     stateValue = *state;
-    newCount = newCount + 1;
+    newCount++;
     *count = newCount;
     if (stateValue == 1) {
         node = *(struct Node **)(arg0 + 0x30);
         pending = 0;
         while (node != 0) {
-            if (*(s32 *)arg0 != 1) {
+            if (*(int *)arg0 != 1) {
                 return;
             }
             if (node->enabled == 1) {
@@ -3106,19 +3104,19 @@ check:
         goto yield;
 }
 
-void fn_8011C120(void *arg0) {
+void fn_8011C120(s32 arg0) {
     if (arg0 != 0) {
         BOOL enabled = OSDisableInterrupts();
-        s32 count = *(volatile s32 *)((u8 *)arg0 + 4);
-        *(volatile s32 *)((u8 *)arg0 + 4) = count - 1;
-        if (*(volatile s32 *)((u8 *)arg0 + 4) == 0) {
+        s32 count = *(volatile s32 *)(arg0 + 4);
+        *(volatile s32 *)(arg0 + 4) = count - 1;
+        if (*(volatile s32 *)(arg0 + 4) == 0) {
             if (*(volatile s32 *)arg0 == 0) {
                 u64 time = (u64)OSGetTime();
                 u32 time_word = (u32)time;
-                u32 period = (0x3E8U / *(u32 *)((u8 *)arg0 + 0x3C)) *
+                u32 period = (0x3E8U / *(u32 *)(arg0 + 0x3C)) *
                              (*(volatile u32 *)0x800000F8 / 4U / 1000U);
                 ((void (*)(void *, u32, u32, u32, u32, u32, void (*)(s32)))OSSetPeriodicAlarm)(
-                    (u8 *)arg0 + 8, time_word, (u32)(time >> 32),
+                    (void *)(arg0 + 8), time_word, (u32)(time >> 32),
                     time_word, 0, period, fn_8011BDF0);
             }
             *(s32 *)arg0 = 1;
@@ -5723,7 +5721,7 @@ void fn_80122ED8(s32 arg0, void *arg1, s32 arg2, void *arg3) {
         fn_80122E08(n, arg1, arg2, arg3);
         fn_80122ED8(n, (u8 *)arg1 + n * 4, arg2, arg3);
         fn_80122E08(n, (u8 *)arg1 + n * 8, arg2, arg3);
-        fn_80122ED8(n, (u8 *)arg1 + n * 12, arg2, arg3);
+        fn_80122ED8(n, (u8 *)arg1 + (12 * n), arg2, arg3);
         return;
     }
     fn_801231B8(arg0, arg1, arg2, arg3);
