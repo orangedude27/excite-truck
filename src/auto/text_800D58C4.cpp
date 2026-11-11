@@ -3141,14 +3141,18 @@ extern "C" u8 GetColorElement__Q36nw4hbm3lyt4PaneCFUl(void* self, u32 index) {
     extern const char lbl_8031FF90[];
     extern const char lbl_80320090[];
     if (index >= 0x11) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031FF90, 0x13F, lbl_80320090);
-    if ((s32)index == 0x10) return *((u8*)self + 0xCD);
     struct Obj {
         virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3();
         virtual void a4(); virtual void a5(); virtual void a6(); virtual void a7();
         virtual void a8(); virtual void a9(); virtual void a10();
         virtual u8 v11(u32);
     };
-    return ((Obj*)self)->v11(index);
+    switch (index) {
+    case 0x10:
+        return *((u8*)self + 0xCD);
+    default:
+        return ((Obj*)self)->v11(index);
+    }
 }
 
 extern "C" void SetColorElement__Q36nw4hbm3lyt4PaneFUlUc(void* self, u32 index, u8 color) {
