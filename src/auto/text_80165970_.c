@@ -399,21 +399,24 @@ extern "C" float fn_8016618C(void *arg0) {
         virtual void v5();
         virtual void *v6();
     };
+    /* Compute arg0's progress time relative to the current reference object,
+       wrapping by fn_8013672C() when their indices differ, plus lbl_8042FE38+0x58. */
     float result;
-    float a;
-    float b;
-    int index;
-    void *other;
-    other = ((void *(*)(void))fn_80166098)();
-    a = *(float *)((char *)((Obj *)other)->v4() + 0x48);
-    b = *(float *)((char *)((Obj *)arg0)->v4() + 0x48);
-    index = *(int *)((char *)((Obj *)arg0)->v2() + 4);
-    if (*(int *)((char *)((Obj *)other)->v2() + 4) < index) {
-        if (a < b) a += ((float (*)(void))fn_8013672C)();
-        result = b - a;
+    float refProgress;
+    float objProgress;
+    int objIndex;
+    void *refObj;
+
+    refObj = ((void *(*)(void))fn_80166098)();
+    refProgress = *(float *)((char *)((Obj *)refObj)->v4() + 0x48);
+    objProgress = *(float *)((char *)((Obj *)arg0)->v4() + 0x48);
+    objIndex = *(int *)((char *)((Obj *)arg0)->v2() + 4);
+    if (*(int *)((char *)((Obj *)refObj)->v2() + 4) < objIndex) {
+        if (refProgress < objProgress) refProgress += ((float (*)(void))fn_8013672C)();
+        result = objProgress - refProgress;
     } else {
-        if (b < a) b += ((float (*)(void))fn_8013672C)();
-        result = b - a;
+        if (objProgress < refProgress) objProgress += ((float (*)(void))fn_8013672C)();
+        result = objProgress - refProgress;
     }
     return result + *(float *)((char *)&lbl_8042FE38 + 0x58);
 }
@@ -868,8 +871,8 @@ extern float lbl_805618A0, lbl_805618F4, lbl_805618F8, lbl_805618FC;
 #pragma optimization_level 2
 #pragma scheduling on
 float fn_80166F90(float *arg0) {
-    register float prod = lbl_805618A0 * arg0[2];
-    register float diff = lbl_8055E318 - arg0[3];
+    float prod = lbl_805618A0 * arg0[2];
+    float diff = lbl_8055E318 - arg0[3];
     float x;
     float value;
     float start;
