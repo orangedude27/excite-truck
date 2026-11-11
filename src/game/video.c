@@ -410,6 +410,8 @@ void fn_802E0218(void) {
 }
 
 #pragma scheduling invalid_target
+/* Configures GX for 1 texgen and 1 TEV stage: tex map 1 with constant K color
+   sel 0xD and K alpha sel 0x1D (color 0xF,8,0xE,0xF; alpha 7,4,6,7). */
 void fn_802E0420(void) {
     GXSetTexCoordGen2(0, 1, 4, 0x3C, 0, 0x7D);
     GXSetNumTexGens(1);
