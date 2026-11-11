@@ -28,6 +28,17 @@ typedef unsigned long long u64;
 typedef float f32;
 typedef double f64;
 typedef int BOOL;
+// nw4hbm::snd ids.  A label string the archive does not know, or a sound the archive
+// does not hold, is reported as InvalidSoundId; a string-tree leaf that ends a string
+// which is not itself a label carries InvalidLabelId.
+enum {
+    InvalidSoundId = -1,
+    InvalidLabelId = 0xFFFEFFFF
+};
+// One node of nw4hbm::snd::detail::SoundArchiveFile's label string trie.  An inner node
+// tests bit `bitIndex' of the string being looked up (bit 0 is the top bit of the first
+// byte) and walks to zeroChild or oneChild; flag bit 0 marks a leaf, which holds the
+// label id reached and the sound id belonging to it.
 struct StringTreeNodeLayout {
     u16 flags;
     u16 bitIndex;
@@ -36,15 +47,20 @@ struct StringTreeNodeLayout {
     u32 labelId;
     u32 soundId;
 };
+enum { StringTreeNodeIsLeaf = 1 };
+// The trie itself; a search enters it at nodes[nodeCount], which must be a valid node.
 struct StringTreeLayout {
     u32 nodeCount;
     u32 maxNodeCount;
     StringTreeNodeLayout nodes[1];
 };
+// nw4hbm's string table: an offset per label over the archive's string block, so label
+// id n's string is stringBase + labelOffsets[n] (a 0 offset meaning "no string").
 struct SoundArchiveLabelTableLayout {
     u32 count;
     u32 labelOffsets[1];
 };
+// The two fields of nw4hbm::snd::detail::SoundArchiveFileReader a label lookup reads.
 struct SoundArchiveFileReaderLayout {
     u8 pad[0x2C];
     const char *stringBase;
@@ -4905,7 +4921,7 @@ done:
 #pragma pop
 s32 nw4hbm::snd::detail::StrmPlayer::Start() {
     u8 *self = (u8 *)this;
-    u32 outerIrq = OSDisableInterrupts();
+    register u32 outerIrq = OSDisableInterrupts();
     if (self[0x4A] == 0) {
         OSRestoreInterrupts(outerIrq);
         return 0;
@@ -4915,7 +4931,7 @@ s32 nw4hbm::snd::detail::StrmPlayer::Start() {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x97, lbl_803267AC);
         }
         fn_800E519C(*(void **)(self + 0x438));
-        u32 innerIrq = OSDisableInterrupts();
+        register u32 innerIrq = OSDisableInterrupts();
         u8 paused = 0;
         if (self[0x4B] != 0) {
             paused = 1;
@@ -4931,7 +4947,7 @@ s32 nw4hbm::snd::detail::StrmPlayer::Start() {
             self[0x4D] = paused;
         }
         OSRestoreInterrupts(innerIrq);
-        u32 iteratorValue = (u32)&lbl_8041506C[4];
+        register u32 iteratorValue = (u32)&lbl_8041506C[4];
         if (this == 0) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326C4C, 0x233, lbl_80326C28);
         }
