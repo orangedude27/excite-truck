@@ -12446,6 +12446,7 @@ void btm_sec_auth_complete(register UINT16 handle, register UINT8 status) {
     }
 }
 
+/* Handles master-key completion by logging and notifying the registered callback. */
 void btm_sec_mkey_comp_event(u16 handle, u8 status, u8 event) {
     extern char lbl_80316EB0[];
     extern u8 lbl_80560D40;
@@ -12454,29 +12455,29 @@ void btm_sec_mkey_comp_event(u16 handle, u8 status, u8 event) {
     extern u8 lbl_80560D43;
     extern u8 lbl_80560D44;
     extern u8 lbl_80560D45;
-    u8 bd_addr[6];
-    tBTM_SEC_DEV_REC *dev;
+    u8 fallback_bd_addr[6];
+    tBTM_SEC_DEV_REC *device;
     void (*callback)(u8 *, u8, u8);
 
-    dev = btm_find_dev_by_handle(handle);
-    bd_addr[0] = lbl_80560D40;
-    bd_addr[1] = lbl_80560D41;
-    bd_addr[2] = lbl_80560D42;
-    bd_addr[3] = lbl_80560D43;
-    bd_addr[4] = lbl_80560D44;
-    bd_addr[5] = lbl_80560D45;
+    device = btm_find_dev_by_handle(handle);
+    fallback_bd_addr[0] = lbl_80560D40;
+    fallback_bd_addr[1] = lbl_80560D41;
+    fallback_bd_addr[2] = lbl_80560D42;
+    fallback_bd_addr[3] = lbl_80560D43;
+    fallback_bd_addr[4] = lbl_80560D44;
+    fallback_bd_addr[5] = lbl_80560D45;
 
     if (lbl_803C0F78[0x27C0] >= 4) {
         fn_8007096C(0xD0003, lbl_80316EB0, status,
-                    dev != 0 ? ((u8 *)dev)[0x7F] : 0);
+                    device != 0 ? ((u8 *)device)[0x7F] : 0);
     }
 
     callback = *(void (**)(u8 *, u8, u8))(lbl_803C0F78 + 0x27B0);
     if (callback != 0) {
-        if (dev == 0) {
-            callback(bd_addr, status, event);
+        if (device == 0) {
+            callback(fallback_bd_addr, status, event);
         } else {
-            callback((u8 *)dev + 0x1C, status, event);
+            callback((u8 *)device + 0x1C, status, event);
         }
     }
 }
