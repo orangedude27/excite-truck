@@ -243,12 +243,12 @@ void fn_802BBBC8(void) {
     extern signed char fn_802B05E4(void);
     char sp10[0x20];
     int args[2];
+    register int *var_r27;
+    register int *var_r26;
+    register int var_r25;
     register signed char *colors;
-    int *var_r26;
-    int *var_r27;
     int temp_r3;
-    int var_r25;
-    int var_r3;
+    register int var_r3;
 
     args[0] = lbl_80564CF8;
     var_r27 = lbl_804C0098;
@@ -299,14 +299,14 @@ void fn_802BBCC4(void) {
 unsigned char fn_802BBD38(int arg0, int arg1, int arg2) {
     extern signed char lbl_8055FA90;
     extern int fn_802D972C(void *, int, int);
-    unsigned char result;
     int *slot;
     int value;
     int x;
     short y;
     int x2;
     int y2;
-    int invalid;
+    register int invalid;
+    register int result;
 
     if ((unsigned char)lbl_8055FA90 != 0)
         return (unsigned char)(~((arg2 - 1) | (1 - arg2)) >> 31);
@@ -331,7 +331,7 @@ unsigned char fn_802BBD38(int arg0, int arg1, int arg2) {
             result = (unsigned char)(~((arg2 - 2) | (2 - arg2)) >> 31);
         }
     }
-    return result;
+    return (unsigned char)result;
 }
 #pragma pop
   extern int lbl_804C0098[];
@@ -431,6 +431,7 @@ int fn_802BBF94(unsigned char arg0) {
 #pragma scheduling invalid_target
 #pragma dont_inline on
 #pragma use_lmw_stmw off
+/* Normalizes 6 nibble-duplicated bytes and adjusts them so their sum becomes 0xFF. */
 void fn_802BBFA4(unsigned char *arg0, int arg1, int arg2, int arg3) {
     register unsigned char *base = arg0;
     register int index = arg1;
