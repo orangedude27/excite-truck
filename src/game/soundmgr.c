@@ -820,15 +820,3 @@ extern "C" void fn_80208858(void *soundMgr, signed long soundName, signed long s
 }
 #pragma pop
 
-#pragma cplusplus on
-struct Dummy80208858 {
-    virtual void v0();
-    virtual void v1();
-    virtual void v2();
-    virtual void v3();
-    virtual void *get();
-    virtual void v5();
-    virtual void v6();
-    virtual int invoke(int, int, int);
-};
-#pragma cplusplus reset
