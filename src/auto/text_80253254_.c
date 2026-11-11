@@ -46,7 +46,8 @@ static inline void mtx33_mult_vec(const float *m, const float *v, float *d) {
 #define AO(T, o) (*(T *)((char *)arg0 + (o)))
 void fn_80253254(void) {}
 
-#pragma scheduling invalid_target
+#pragma push
+#pragma scheduling on
 void fn_80253258(void) {
     extern float lbl_80563A04, lbl_80563A08, lbl_80563A0C, lbl_80563A10;
     extern void PSVECNormalize(float *, float *);
@@ -61,8 +62,7 @@ void fn_80253258(void) {
     PSVECNormalize(&v[3], &v[3]);
     fn_802C9A1C(&v[3]);
 }
-
-#pragma scheduling on
+#pragma pop
 void fn_802532BC(void *arg0) {
     struct Struct_802532BC_Offset28 {
         char pad[0x28];
@@ -619,12 +619,12 @@ void fn_8025419C(void *arg0) {
 extern void fn_802C7AE0(s32, void *, s32, float);
 #pragma scheduling invalid_target
 void fn_80254354(void *arg0) {
+    #pragma scheduling on
     extern float lbl_80563A2C;
     u8 *p;
     s32 i;
     s32 var_r0;
-    register float initial;
-    initial = lbl_80563A2C;
+    float initial = lbl_80563A2C;
     fn_802C7AE0(*(s32 *)((u8 *)arg0 + 0x14), (u8 *)arg0 + 0x598, -1, initial);
     p = (u8 *)arg0 + 0x5D8;
     i = 0;
@@ -1101,7 +1101,7 @@ void fn_80255928(void *arg0, char *arg1) {
     Obj *obj;
     register s32 i;
     register StringEntry **entries;
-
+    register StringEntry *entry;
     obj = (Obj *)arg0;
     if (obj->name[0] != 0) {
         entries = (StringEntry **)lbl_80498E08;
@@ -1114,7 +1114,6 @@ void fn_80255928(void *arg0, char *arg1) {
                 char *src;
                 s32 count;
                 char *dst;
-                StringEntry *entry;
                 entry = ((StringEntry **)lbl_80498E08)[i];
                 dst = entry->name;
                 if (--entry->refCount == 0) {
@@ -1205,11 +1204,16 @@ void fn_80255A84(void *arg0) {
         }
     }
     *(s32 *)((char *)arg0 + 4) = lbl_8055F340;
-    lbl_8055F340++;
-    lbl_80498E28[*(s32 *)((char *)arg0 + 4)] = arg0;
-    *(float *)((char *)arg0 + 0x9C) = lbl_80563A68;
-    *(float *)((char *)arg0 + 0xA0) = lbl_80563A6C;
-    *(float *)((char *)arg0 + 0xA4) = lbl_80563A70;
+    {
+        float t3 = lbl_80563A70;
+        float t2 = lbl_80563A6C;
+        float t1 = lbl_80563A68;
+        lbl_8055F340++;
+        lbl_80498E28[*(s32 *)((char *)arg0 + 4)] = arg0;
+        *(float *)((char *)arg0 + 0x9C) = t1;
+        *(float *)((char *)arg0 + 0xA0) = t2;
+        *(float *)((char *)arg0 + 0xA4) = t3;
+    }
 }
 
 #pragma use_lmw_stmw off
@@ -1322,6 +1326,352 @@ scan58_test:
             fn_8025567C();
     }
 }
+
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+void fn_80255D3C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, float farg0) {
+    typedef struct {
+        char name[0x20];
+        s32 id;
+        s32 refCount;
+    } StringEntry;
+    typedef struct {
+        float x, y, z;
+    } Vec3;
+    typedef struct {
+        char pad0[0x10];
+        char n10[0x20];
+        u8 f30;
+        char pad31[7];
+        char n38[0x20];
+        char n58[0x20];
+        char n78[0x20];
+    } Obj;
+    extern void *lbl_80498E08[];
+    extern s32 lbl_8055F33C;
+    extern float lbl_8055F334, lbl_8055F338;
+    extern float lbl_80563A04, lbl_80563A10, lbl_80563A14, lbl_80563A20, lbl_80563A24, lbl_80563A28;
+    extern float lbl_80563A48, lbl_80563A74, lbl_80563A78, lbl_80563A88, lbl_80563A8C;
+    extern double lbl_80563A80;
+    extern char lbl_803447C0[];
+    extern s32 fn_802D3EBC(void);
+    extern float fn_8023659C(void);
+    extern void fn_80252F50(float);
+    extern void fn_801345D8(void *, int, const char *, ...);
+    extern s32 fn_8012D838(s32);
+    extern s32 fn_8012CC20(s32, void *);
+    extern void fn_8012D3D8(s32);
+    extern int stricmp(const char *, const char *);
+    extern void fn_802E30C8(void *, ...);
+    extern void fn_80253510(void *, unsigned char *);
+    extern void *fn_8001668C(void *, int);
+    extern void fn_80253104(s32, void *);
+    extern s32 fn_80147C50(s32, s32, float);
+    extern void fn_802C77F0(s32, float *);
+    extern void fn_802C7808(s32);
+    extern void fn_8002F234();
+    extern void fn_802AB9E0(float);
+    extern void fn_802AB9E4(void);
+    extern void fn_802ABC80(void *, float *, float, float, float);
+    extern void fn_80253004(s32, void *);
+    extern void fn_802545C4(void *, int, int);
+    extern void fn_802C98DC(void *, void *, void *, void *);
+    extern void fn_80254938(void *, s32, s32, s32, s32, float, float);
+    char *msg = lbl_803447C0;
+    Obj *o = (Obj *)arg0;
+    char *src;
+    char *dst;
+    char ch;
+    s32 count;
+    s32 i1, i2, i3, i4;
+    s32 cond;
+    s32 found;
+    s32 freeIdx;
+    StringEntry **e1, **e2, **e3;
+    StringEntry *entry;
+    unsigned char *obj;
+    float dt;
+    Vec3 spA0;
+    float sp40[24];
+    float sp28[6];
+    Vec3 sp18;
+    s32 sp14, sp10, spC, sp8;
+    float temp_f0, temp_f2, var_f1;
+    register float var_f4;
+    s32 isLive;
+    unsigned int target;
+    float a0, a9c;
+
+    dt = farg0;
+    lbl_8055F334 = dt;
+    if (fn_802D3EBC() != 0) {
+        dt = lbl_80563A04;
+        lbl_8055F334 = dt;
+    }
+    if (AO(s32, 4) == 0) {
+        lbl_8055F338 = lbl_8055F338 + dt;
+    }
+    if (lbl_8055F330 != 0 && AO(s32, 4) == 0) {
+        fn_80252F50(dt);
+    }
+    cond = 0;
+    if (o->f30 != 0 && fn_8023659C() - AO(float, 0x34) > lbl_80563A74) {
+        cond = 1;
+    }
+    if (cond != 0 && (s8)o->n58[0] == 0) {
+        o->f30 = 0;
+        fn_801345D8(o->n58, 0x20, lbl_8055C128, o->n10);
+        src = o->n10;
+        dst = o->n38;
+        count = 0x20;
+        goto copyA;
+    checkA:
+        if (--count > 0) goto copyA;
+        dst[-1] = 0;
+        goto endA;
+    copyA:
+        ch = *src++;
+        *dst++ = ch;
+        if ((s8)ch != 0) goto checkA;
+    endA:
+        e1 = (StringEntry **)lbl_80498E08;
+        freeIdx = -1;
+        i1 = 0;
+        goto scanTest;
+    scanBody:
+        if (((unsigned int)__cntlzw((unsigned int)fn_8012D838((*e1)->id)) >> 5)) {
+            freeIdx = i1;
+            goto scanNext;
+        }
+        if (stricmp((*e1)->name, o->n58) == 0) {
+            entry = ((StringEntry **)lbl_80498E08)[i1];
+            entry->refCount = entry->refCount + 1;
+            found = 1;
+            goto scanDone;
+        }
+    scanNext:
+        e1++;
+        i1++;
+    scanTest:
+        if (i1 < lbl_8055F33C) goto scanBody;
+        entry = ((StringEntry **)lbl_80498E08)[freeIdx];
+        src = o->n58;
+        count = 0x20;
+        dst = entry->name;
+        goto copyB;
+    checkB:
+        if (--count > 0) goto copyB;
+        dst[-1] = 0;
+        goto endB;
+    copyB:
+        ch = *src++;
+        *dst++ = ch;
+        if ((s8)ch != 0) goto checkB;
+    endB:
+        if (fn_8012CC20(entry->id, entry) != 0) {
+            entry->refCount = 1;
+            found = 1;
+        } else {
+            fn_802E30C8(msg + 0x294, entry);
+            dst = entry->name;
+            src = lbl_8055C1C0;
+            count = 0x20;
+            goto copyC;
+        checkC:
+            if (--count > 0) goto copyC;
+            dst[-1] = 0;
+            goto endC;
+        copyC:
+            ch = *src++;
+            *dst++ = ch;
+            if ((s8)ch != 0) goto checkC;
+        endC:
+            entry->refCount = 0;
+            found = 0;
+        }
+    scanDone:
+        if (found == 0) {
+            fn_802E30C8(msg + 0x2BC, o->n58);
+            o->n58[0] = 0;
+        }
+    } else if ((s8)o->n58[0] != 0) {
+        if ((s8)o->n58[0] == 0) {
+            fn_802E30C8(msg + 0x2D8);
+            isLive = 0;
+        } else {
+            e2 = (StringEntry **)lbl_80498E08;
+            i2 = 0;
+            goto liveTest;
+        liveBody:
+            if (stricmp((*e2)->name, o->n58) == 0) {
+                isLive = (fn_8012D838(((StringEntry **)lbl_80498E08)[i2]->id) - 2) == 0;
+                goto liveDone;
+            }
+            e2++;
+            i2++;
+        liveTest:
+            if (i2 < lbl_8055F33C) goto liveBody;
+            isLive = 0;
+        }
+    liveDone:
+        if (isLive != 0) {
+            if ((s8)o->n78[0] != 0) {
+                fn_80253824(AO(void *, 8));
+                e3 = (StringEntry **)lbl_80498E08;
+                i3 = 0;
+                goto relTest;
+            relBody:
+                if (stricmp((*e3)->name, o->n78) == 0) {
+                    entry = ((StringEntry **)lbl_80498E08)[i3];
+                    if (--entry->refCount == 0) {
+                        fn_8012D3D8(entry->id);
+                        src = lbl_8055C1C0;
+                        count = 0x20;
+                        dst = entry->name;
+                        goto copyD;
+                    checkD:
+                        if (--count > 0) goto copyD;
+                        dst[-1] = 0;
+                        goto endD;
+                    copyD:
+                        ch = *src++;
+                        *dst++ = ch;
+                        if ((s8)ch != 0) goto checkD;
+                    endD:
+                        ;
+                    }
+                    goto relDone;
+                }
+                e3++;
+                i3++;
+            relTest:
+                if (i3 < lbl_8055F33C) goto relBody;
+            }
+        relDone:
+            fn_80253510(AO(void *, 8), (unsigned char *)o->n38);
+            ((void (*)(void *, int))fn_80255920)(arg0, (*(unsigned int *)((char *)fn_8001668C(o->n38, 0) + 0xA0) >> 2) & 1);
+            if (lbl_8055F330 != 0) {
+                fn_80253104(AO(s32, 4), (char *)AO(void *, 8) + 0x45C);
+            }
+            src = o->n58;
+            dst = o->n78;
+            count = 0x20;
+            goto copyE;
+        checkE:
+            if (--count > 0) goto copyE;
+            dst[-1] = 0;
+            goto endE;
+        copyE:
+            ch = *src++;
+            *dst++ = ch;
+            if ((s8)ch != 0) goto checkE;
+        endE:
+            obj = AO(unsigned char *, 8);
+            o->n58[0] = 0;
+            target = AO(unsigned int, 0xC);
+            o->n38[0] = 0;
+            *(unsigned int *)(obj + 8) = target;
+            *(unsigned int *)(obj + 0xC) = target;
+            AO(u8, 0xDC) = AO(u8, 0xDD);
+        }
+    }
+    if ((s8)o->n58[0] == 0) {
+        obj = AO(unsigned char *, 8);
+        if (obj[0] != 0 && o->f30 == 0) {
+            target = AO(unsigned int, 0xC);
+            if (*(unsigned int *)(obj + 8) != target) {
+                if (*(s32 *)(obj + 8) != 0) {
+                    temp_f0 = fn_8023659C();
+                    var_f4 = lbl_80563A14;
+                    temp_f0 = ((temp_f0 - *(float *)(obj + 4)) - lbl_80563A04) / lbl_80563A20;
+                    if (var_f4 < temp_f0) {} else var_f4 = temp_f0;
+                    if (var_f4 > lbl_80563A04) {} else var_f4 = lbl_80563A04;
+                    var_f1 = lbl_80563A10;
+                    temp_f2 = lbl_80563A04 + (var_f4 * lbl_80563A14);
+                    if (temp_f2 < var_f1) {
+                    } else if (temp_f2 > lbl_80563A14) var_f1 = lbl_80563A14;
+                    else if (temp_f2 > lbl_80563A04) {
+                        var_f1 = lbl_80563A24 * temp_f2; temp_f0 = lbl_80563A28 * temp_f2;
+                        var_f1 = var_f1 * temp_f2; temp_f0 = temp_f0 * temp_f2; var_f1 = temp_f2 * var_f1; var_f1 = var_f1 + temp_f0;
+                    } else {
+                        var_f1 = lbl_80563A24 * temp_f2; temp_f0 = lbl_80563A28 * temp_f2;
+                        var_f1 = var_f1 * temp_f2; temp_f0 = temp_f0 * temp_f2; var_f1 = temp_f2 * var_f1; var_f1 = var_f1 - temp_f0;
+                    }
+                    *(s32 *)(obj + 0xC) = fn_80147C50(*(s32 *)(obj + 0xC), *(s32 *)(obj + 8), var_f1);
+                } else {
+                    *(unsigned int *)(obj + 0xC) = target;
+                }
+                *(unsigned int *)(obj + 8) = target;
+                *(float *)(obj + 4) = fn_8023659C();
+            }
+        }
+    }
+    obj = AO(unsigned char *, 8);
+    temp_f0 = AO(float, 0x98) + dt;
+    AO(float, 0x98) = temp_f0;
+    if (obj[0] == 0) {
+        if (temp_f0 > lbl_80563A48) {
+            float t = AO(float, 0x9C);
+            a0 = AO(float, 0xA0) + lbl_80563A78 * dt;
+            a9c = t + lbl_80563A64 * (lbl_80563A68 - t);
+            AO(float, 0xA0) = a0;
+            AO(float, 0x9C) = a9c;
+        }
+        fn_80254938(arg0, arg1, arg2, arg3, arg4, AO(float, 0xA0), AO(float, 0x9C));
+        return;
+    }
+    fn_802C77F0(*(s32 *)(obj + 0x10), sp28);
+    fn_802C7808(*(s32 *)((char *)AO(void *, 8) + 0x10));
+    {
+        float dy = sp28[3] - sp28[2];
+        float dx = sp28[1] - sp28[0];
+        float dz = sp28[5] - sp28[4];
+        fn_8002F234(dz * dz + (dx * dx + dy * dy));
+    }
+    fn_8002F234(lbl_80563A80);
+    if (AO(s32, 4) == 0) {
+        void **list;
+        float k = lbl_80563A88;
+        float zero = lbl_80563A04;
+        fn_802AB9E0(lbl_8055F338);
+        list = lbl_80498E28;
+        i4 = 0;
+        while (i4 < lbl_8055F340) {
+            if (*(u8 *)((char *)*list + 0x118) != 0) {
+                sp18.x = zero;
+                sp18.y = zero;
+                sp18.z = zero;
+                if (AO(s32, 0x120) == 0) {
+                    if (lbl_8055F330 != 0) {
+                        fn_80253004(i4, sp40);
+                    } else {
+                        fn_802545C4(sp40, AO(s32, 0xE4), (int)AO(void *, 8));
+                        spA0.x = sp40[6] * k;
+                        spA0.y = sp40[7] * k;
+                        spA0.z = sp40[8] * k;
+                        sp18 = spA0;
+                    }
+                }
+                fn_802ABC80((char *)*(void **)((char *)*list + 8) + 0x598, &sp18.x, lbl_80563A14, lbl_80563A8C, lbl_80563A14);
+            }
+            list++;
+            i4++;
+        }
+        fn_802AB9E4();
+    }
+    fn_802C98DC(&spC, &sp14, &sp10, &sp8);
+    if (AO(float, 0x98) > lbl_80563A48) {
+        float t = AO(float, 0x9C);
+        a0 = AO(float, 0xA0) + lbl_80563A78 * dt;
+        a9c = t + lbl_80563A64 * (lbl_80563A68 - t);
+        AO(float, 0xA0) = a0;
+        AO(float, 0x9C) = a9c;
+    }
+    fn_80254938(arg0, arg1, arg2, arg3, arg4, AO(float, 0xA0), AO(float, 0x9C));
+}
+#pragma pop
+
 #pragma scheduling on
 #pragma use_lmw_stmw on
 
@@ -1332,7 +1682,6 @@ struct Obj_80256548 {
     char pad2[0x48];
 };
 void fn_80256548(void *arg0) {
-    extern float lbl_80563A04;
     extern unsigned char lbl_8055F330, lbl_8055F344, lbl_8055F345, lbl_8055F346, lbl_8055F347;
     extern char lbl_803447C0[], lbl_8055C1D0;
     extern int lbl_8055CFF0, lbl_8055CFF4;
@@ -1349,11 +1698,9 @@ void fn_80256548(void *arg0) {
         struct Obj_80256548 out;
     } frame;
     char *str_base = lbl_803447C0;
-
-    frame.vec[0] = lbl_80563A04;
-    frame.vec[1] = lbl_80563A04;
-    frame.vec[2] = lbl_80563A04;
-
+    frame.vec[0] = 0.0f;
+    frame.vec[1] = 0.0f;
+    frame.vec[2] = 0.0f;
     if (*(int *)((char *)arg0 + 0x120) == 0) {
         if (lbl_8055F330 != 0) {
             fn_80253004(*(int *)((char *)arg0 + 4), &frame.out);
