@@ -1871,6 +1871,16 @@ void fn_80234AEC(void) {
     *(s32 *)((u8 *)&lbl_8055F058 + 4) = 0;
 }
 
+/* Text draw settings kept inside a HUD/screen object; fn_80234AFC and friends read
+   these to draw a formatted string (see fn_80232BA4 for the draw call itself). */
+typedef struct {
+    void *font;      /* font context, e.g. the "bigtext.gtx" one at lbl_8055D498 */
+    s32 color;       /* RGBA pen colour, 0xFF000000 = shadowed text */
+    s32 style;       /* layout flags passed to fn_80233BF0 (wrap/spacing modes) */
+    f32 scale;       /* text scale */
+    f32 spacing;     /* extra horizontal scale used when measuring the string */
+} TextDrawStyle;
+
 #pragma push
 #pragma processor 750
 void fn_80234AFC(void *arg0, const char *fmt, f32 farg0, f32 farg1, ...) {
