@@ -26323,34 +26323,35 @@ void __BzeroDelayLines(void *arg0) {
 }
 
 void __FreeDelayLine(void *arg0) {
-    extern void *lbl_805590B4;
-    AXFX_REVERBHI_EXP_FREE_VIEW *fx = (AXFX_REVERBHI_EXP_FREE_VIEW *)arg0;
-    u32 ch, i;
+    /* Free the AXFX reverb delay-line buffers for all channels and clear their pointers. */
+    extern void *lbl_805590B4; /* __AXFXFreeFunction */
+    AXFX_REVERBHI_EXP_FREE_VIEW *reverb = (AXFX_REVERBHI_EXP_FREE_VIEW *)arg0;
+    u32 channel, line;
 
-    for (ch = 0; ch < 3; ch++) {
-        if (fx->earlyLine[ch] != 0) {
-            ((void (*)(void *))lbl_805590B4)(fx->earlyLine[ch]);
-            fx->earlyLine[ch] = 0;
+    for (channel = 0; channel < 3; channel++) {
+        if (reverb->earlyLine[channel] != 0) {
+            ((void (*)(void *))lbl_805590B4)(reverb->earlyLine[channel]);
+            reverb->earlyLine[channel] = 0;
         }
-        if (fx->preDelayLine[ch] != 0) {
-            ((void (*)(void *))lbl_805590B4)(fx->preDelayLine[ch]);
-            fx->preDelayLine[ch] = 0;
+        if (reverb->preDelayLine[channel] != 0) {
+            ((void (*)(void *))lbl_805590B4)(reverb->preDelayLine[channel]);
+            reverb->preDelayLine[channel] = 0;
         }
-        for (i = 0; i < 3; i++) {
-            if (fx->combLine[ch][i] != 0) {
-                ((void (*)(void *))lbl_805590B4)(fx->combLine[ch][i]);
-                fx->combLine[ch][i] = 0;
+        for (line = 0; line < 3; line++) {
+            if (reverb->combLine[channel][line] != 0) {
+                ((void (*)(void *))lbl_805590B4)(reverb->combLine[channel][line]);
+                reverb->combLine[channel][line] = 0;
             }
         }
-        for (i = 0; i < 2; i++) {
-            if (fx->allpassLine[ch][i] != 0) {
-                ((void (*)(void *))lbl_805590B4)(fx->allpassLine[ch][i]);
-                fx->allpassLine[ch][i] = 0;
+        for (line = 0; line < 2; line++) {
+            if (reverb->allpassLine[channel][line] != 0) {
+                ((void (*)(void *))lbl_805590B4)(reverb->allpassLine[channel][line]);
+                reverb->allpassLine[channel][line] = 0;
             }
         }
-        if (fx->lastAllpassLine[ch] != 0) {
-            ((void (*)(void *))lbl_805590B4)(fx->lastAllpassLine[ch]);
-            fx->lastAllpassLine[ch] = 0;
+        if (reverb->lastAllpassLine[channel] != 0) {
+            ((void (*)(void *))lbl_805590B4)(reverb->lastAllpassLine[channel]);
+            reverb->lastAllpassLine[channel] = 0;
         }
     }
 }
