@@ -85,7 +85,8 @@ extern s32 fn_80007554(s32, s32, s32);
  * The overlays' own vtables (lbl_802FB2DC .. lbl_802FB520, one per class) answer
  * slot 0x14 with "take the screen", 0x18 with "give it back", 0x1C with the init
  * fn_80005C88 runs right after storing the vtable (and fn_800070DC runs again to
- * reset them), 0x20/0x24 with their update/draw and 0x38 with a "finished" byte. */
+ * reset them), 0x20/0x24/0x2C with their per-frame update calls (0x2C also gets
+ * the player index), 0x28 with a state byte and 0x38 with a "finished" byte. */
 typedef struct OverlayEntry { /* manager + 0x10, one per player */
     void *active;     /* 0x00: the overlay this player's HUD shows now */
     void *lastActive; /* 0x04: the overlay it showed last frame */
