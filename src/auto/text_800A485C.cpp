@@ -24636,20 +24636,21 @@ loop_51:
 extern "C" void fn_800D272C(void*, void*);
 extern "C" char lbl_804077D8[0x400];
 extern "C" { DECL_SECTION(".sdata") extern const char lbl_805597E4[]; }
-extern "C" void Console_VFPrintf__Q26nw4hbm2dbFQ36nw4hbm2db17ConsoleOutputTypePQ46nw4hbm2db6detail11ConsoleHeadPCcP16__va_list_struct(void *arg0, void *arg1, const char *arg2, void *arg3) {
-    if (arg1 == 0) {
+// Formats a message into the shared debug console buffer and outputs it to the selected console targets.
+extern "C" void Console_VFPrintf__Q26nw4hbm2dbFQ36nw4hbm2db17ConsoleOutputTypePQ46nw4hbm2db6detail11ConsoleHeadPCcP16__va_list_struct(void *outputType, void *console, const char *format, void *args) {
+    if (console == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA80, 0x368, lbl_8031EA90);
     }
     OSLockMutex(&lbl_804077C0);
-    vsnprintf(lbl_804077D8, 0x400, arg2, (VaList1 *)arg3);
-    if (arg1 == 0) {
+    vsnprintf(lbl_804077D8, 0x400, format, (VaList1 *)args);
+    if (console == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA80, 0x34B, lbl_8031EA90);
     }
-    if (((u32)arg0 & 2) != 0) {
+    if (((u32)outputType & 2) != 0) {
         OSReport(lbl_805597E4, lbl_804077D8);
     }
-    if (((u32)arg0 & 1) != 0) {
-        fn_800D272C(arg1, lbl_804077D8);
+    if (((u32)outputType & 1) != 0) {
+        fn_800D272C(console, lbl_804077D8);
     }
     OSUnlockMutex(&lbl_804077C0);
 }
