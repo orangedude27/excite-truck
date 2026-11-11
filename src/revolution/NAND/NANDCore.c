@@ -65,9 +65,15 @@ void nandRemoveTailToken(char* newp, const char* oldp) {
     }
 }
 
+/* Splits path at its first '/': the component in front of it goes into head and
+   everything behind it into rest; both are always NUL-terminated. A path with no
+   '/' leaves all of it in head and an empty rest. nandConvertPath() uses this to
+   walk a relative path one component at a time (head == "." or ".." or a name,
+   rest == what is left to resolve). */
 void nandGetHeadToken(char* head, char* rest, const char* path) {
     int i;
 
+    /* i runs to the terminator inclusive, so the '\0' case below is reached */
     for (i = 0; i <= strlen(path); i++) {
         if (path[i] == '/') {
             strncpy(head, path, i);
@@ -80,6 +86,7 @@ void nandGetHeadToken(char* head, char* rest, const char* path) {
             }
             break;
         } else if (path[i] == '\0') {
+            /* no separator: the whole path is the head token */
             strncpy(head, path, i);
             head[i] = '\0';
             *rest = '\0';
