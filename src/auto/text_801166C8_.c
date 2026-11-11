@@ -362,18 +362,16 @@ s32 fn_80116D30(void) {
     u64 delta;
     u32 quotient;
     u64 remainder;
-
-    if (lbl_8055DEC0 | lbl_8055DEC4) {
-    } else {
+    if ((lbl_8055DEC4 | (lbl_8055DEC0 ^ (0 >> 31))) == 0) {
         lbl_8055DEC4 = (u32)time;
-        lbl_8055DEC0 = (u32)(time >> 32);
+        lbl_8055DEC0 = (s32)(time >> 32);
     }
     saved_low = *(volatile u32 *)&lbl_8055DEC4;
     saved_high = *(volatile u32 *)&lbl_8055DEC0;
     delta = time - (((u64)saved_high << 32) | saved_low);
     quotient = (u32)(delta >> 32) * 70699U;
     remainder = delta - ((u64)quotient * 60750U);
-    return (s32)(quotient + (u32)((remainder * 0x8A15866BULL) >> 47));
+    return (s32)((u64)quotient + (u32)((remainder * 0x8A15866BULL) >> 47));
 }
 
 extern void* fn_8011FF24(void);
@@ -1933,26 +1931,23 @@ void *fn_8011A168(void *arg0) {
 #pragma unroll on
 void fn_8011A1A0(u32 *data, u32 size) {
     u32 count = (size + 3) >> 2;
-    u32 groups;
-    if (count) {
-        groups = count >> 3;
-        if (groups) {
-            do {
-                *data = __lwbrx(data, 0); data++;
-                *data = __lwbrx(data, 0); data++;
-                *data = __lwbrx(data, 0); data++;
-                *data = __lwbrx(data, 0); data++;
-                *data = __lwbrx(data, 0); data++;
-                *data = __lwbrx(data, 0); data++;
-                *data = __lwbrx(data, 0); data++;
-                *data = __lwbrx(data, 0); data++;
-            } while (--groups);
+    if (count != 0) {
+        u32 groups = count >> 3;
+        if (groups != 0) {
+            while (groups--) {
+                *data = __lwbrx(0, (s32)data); data++;
+                *data = __lwbrx(0, (s32)data); data++;
+                *data = __lwbrx(0, (s32)data); data++;
+                *data = __lwbrx(0, (s32)data); data++;
+                *data = __lwbrx(0, (s32)data); data++;
+                *data = __lwbrx(0, (s32)data); data++;
+                *data = __lwbrx(0, (s32)data); data++;
+                *data = __lwbrx(0, (s32)data); data++;
+            }
             count &= 7;
         }
-        if (count) {
-            do {
-                *data = __lwbrx(data, 0); data++;
-            } while (--count);
+        while (count--) {
+            *data = __lwbrx(0, (s32)data); data++;
         }
     }
 }
@@ -2455,21 +2450,17 @@ void fn_8011AE68(s32 out, f32 *in, u32 count, f32 scale) {
 void fn_8011AED8(s32 outArg, f32 *in, u32 count, f32 scale) {
     s16 *dest = (s16 *)(outArg - 2);
     f32 *second = in + count;
-
-    if (count != 0) {
-        do {
-            s32 left = (s32)(in[0] * scale);
-            s32 right = (s32)(second[0] * scale);
-            left = left < -0x8000 ? -0x8000 : left;
-            left = left > 0x7FFF ? 0x7FFF : left;
-            right = right < -0x8000 ? -0x8000 : right;
-            right = right > 0x7FFF ? 0x7FFF : right;
-            dest[1] = (s16)left;
-            dest[2] = (s16)right;
-            dest += 2;
-            in++;
-            second++;
-        } while (--count);
+    s32 i;
+    for (i = 0; i < (s32)count; i++) {
+        s32 left = (s32)(in[i] * scale);
+        s32 right = (s32)(scale * second[i]);
+        left = left < -0x8000 ? -0x8000 : left;
+        left = left > 0x7FFF ? 0x7FFF : left;
+        right = right < -0x8000 ? -0x8000 : right;
+        right = right > 0x7FFF ? 0x7FFF : right;
+        dest[1] = (s16)left;
+        dest[2] = (s16)right;
+        dest += 2;
     }
 }
 #pragma pop
@@ -3064,6 +3055,24 @@ void fn_8011BEC8(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     *(void **)((u8 *)arg0 + 0x30) = arg1;
     *(s32 *)((u8 *)arg0 + 0x38) = old + 1;
     OSRestoreInterrupts(interruptState);
+}
+
+void fn_8011C364(s32);
+s32 fn_8011BF4C(s32 arg0, s32 arg1, s32 arg2) {
+    int ret = 0;
+    int save;
+    if (arg0 != 0 && arg1 != 0 && *(int *)(arg1 + 0x18) != 0 && *(int *)(arg1 + 0x14) != 0) {
+        save = OSDisableInterrupts();
+        if (fn_8011BC4C((void *)arg0, (void *)arg1) != 0) {
+            *(int *)(arg0 + 0x38) -= 1;
+            if ((arg2 & 1) && *(int *)(arg0 + 0x30) == 0) {
+                fn_8011C364(arg0);
+                ret = 1;
+            }
+        }
+        OSRestoreInterrupts(save);
+    }
+    return ret;
 }
 
 s32 fn_8011BFFC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
@@ -4480,7 +4489,7 @@ void *fn_8011FFC4(s32 arg0) {
     u8 offset;
     u32 mode;
     s32 result;
-    if (arg0 == 0 || (u32)(arg0 + 0x10000) == 0xFFFFFFFF) return 0;
+    if (arg0 == 0 || (u32)(arg0 + 0x10000) == 0xFFFF) return 0;
     if (lbl_8055DEF8 != 0) {
         result = ((s32 (*)(s32))lbl_8055DEF8)(arg0 + 0x40);
         if (result != 0) {
