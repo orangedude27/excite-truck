@@ -7,10 +7,13 @@
 extern unsigned char lbl_80488678[];
 void *memset(void *, int, unsigned int);
 #pragma scheduling off
+/* Clears the whole event-handler registry (18 event types x 4 handler slots). */
 void fn_801EEFC8(void) {
     memset(lbl_80488678, 0, 0x120);
 }
 #pragma scheduling invalid_target
+/* Registers handler arg0 for event type arg1 & 0xFF: first free slot of that
+ * type's 4-slot row; does nothing when the row is full. */
 void fn_801EEFDC(int arg0, unsigned int arg1) {
     unsigned int *p;
     unsigned int *base;
@@ -28,6 +31,8 @@ void fn_801EEFDC(int arg0, unsigned int arg1) {
 void fn_802E317C(const char *, ...);
 extern char lbl_8033A328[];
 #pragma scheduling invalid_target
+/* Removes handler arg0 from the registry (scanning every type's row); reports
+ * "No handler ..." when it is not registered. */
 void fn_801EF024(unsigned int arg0) {
     unsigned int *base = (unsigned int *)lbl_80488678;
     unsigned int *p;
