@@ -1425,38 +1425,39 @@ extern "C" void fn_8019D19C(void* arg0, void* arg1) {
     fn_8019B068(arg0, arg1, 0, 0);
 }
 
-extern "C" void fn_8019D378(void *arg0, void *arg1) {
-    struct Target { u8 pad[0x34]; Vec point; };
-    struct Origin { u8 pad[0x24]; Vec point; };
-    Target *target = (Target *)arg0;
-    Origin *origin = (Origin *)*(void **)((u8 *)arg1 + 0xC);
-    Vec *point = &origin->point;
+extern "C" void fn_8019D378(void *self, void *context) {
+    struct TargetBody { u8 pad[0x34]; Vec point; };
+    struct OriginBody { u8 pad[0x24]; Vec point; };
+    /* Compute a distance/axis-based weight into self+0x24, falling back to the max of the bounds when very close. */
+    TargetBody *target = (TargetBody *)self;
+    OriginBody *origin = (OriginBody *)*(void **)((u8 *)context + 0xC);
+    Vec *originPoint = &origin->point;
     f32 delta[3];
-    delta[0] = point->x - target->point.x;
-    delta[1] = point->y - target->point.y;
+    delta[0] = originPoint->x - target->point.x;
+    delta[1] = originPoint->y - target->point.y;
     f32 targetZ = target->point.z;
-    f32 originZ = point->z;
+    f32 originZ = originPoint->z;
     delta[2] = originZ - targetZ;
-    f32 distance = PSVECSquareDistance(point, &target->point);
+    f32 distance = PSVECSquareDistance(originPoint, &target->point);
     f32 result;
     if (distance > lbl_8056232C) {
         f32 scale = lbl_805622E0 / (f32)fn_8002F234(distance);
         delta[0] *= scale;
         delta[1] *= scale;
         delta[2] *= scale;
-        Vec *axis = (Vec *)((u8 *)*(void **)((u8 *)arg0 + 0xC) + 0xC);
+        Vec *axis = (Vec *)((u8 *)*(void **)((u8 *)self + 0xC) + 0xC);
         f32 dot = PSVECDotProduct((Vec *)delta, axis);
-        f32 high = *(f32 *)((u8 *)arg0 + 0x58);
-        f32 low = *(f32 *)((u8 *)arg0 + 0x54);
+        f32 high = *(f32 *)((u8 *)self + 0x58);
+        f32 low = *(f32 *)((u8 *)self + 0x54);
         f32 magnitude = (f32)__fabs((f64)dot);
         result = low + magnitude * (high - low);
     } else {
-        f32 high = *(f32 *)((u8 *)arg0 + 0x58);
-        f32 low = *(f32 *)((u8 *)arg0 + 0x54);
+        f32 high = *(f32 *)((u8 *)self + 0x58);
+        f32 low = *(f32 *)((u8 *)self + 0x54);
         result = (low > high) ? low : high;
     }
-    *(f32 *)((u8 *)arg0 + 0x24) = result;
-    fn_8019C854(arg0, arg1);
+    *(f32 *)((u8 *)self + 0x24) = result;
+    fn_8019C854(self, context);
 }
 
 extern "C" void PSVECCrossProduct(const Vec *, const Vec *, Vec *);
