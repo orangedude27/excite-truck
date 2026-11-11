@@ -394,6 +394,15 @@ void fn_80193878(void *arg0) {
     fn_8017B4E0(*(void **)((unsigned char *)arg0 + 0x294), a, b, lbl_80562140);
 }
 
+#pragma cplusplus on
+class Dummy_801938F4 {
+public:
+    virtual void d0();
+    virtual void d1();
+    virtual void d2();
+    virtual void d3(int);
+};
+#pragma cplusplus reset
 extern void fn_801352B8(void *);
 extern float lbl_80562144, lbl_80562180;
 extern const char lbl_80333348[];
@@ -416,8 +425,8 @@ void *fn_801938F4(void *arg0) {
     fn_801352B8(obj);
     fn_801352B8(obj + 0x34);
     *(float *)(obj + 0x68) = lbl_80562180;
-    (*(void (**)(void *, int))(*(char **)(obj + 0x34) + 0xC))(obj + 0x34, 0);
-    (*(void (**)(void *, int))(*(char **)obj + 0xC))(obj, 0);
+    ((void (**)(void *, int))*(void **)(obj + 0x34))[3](obj + 0x34, 0);
+    ((void (**)(void *, int))*(void **)obj)[3](obj, 0);
     *(int *)((char *)arg0 + 0x294) = zero;
     *(int *)((char *)arg0 + 0x290) = -1000;
     return arg0;
@@ -1489,6 +1498,41 @@ extern float lbl_80562140;
 extern float lbl_80562148;
 extern float lbl_80562204;
 void fn_801958C4(void *arg0) { *(float *)((unsigned char *)arg0+0x248) *= lbl_80562204; }
+
+extern char lbl_803332D8[];
+extern float lbl_805621A0;
+extern void fn_802E317C(const char *, ...);
+void fn_801958D8(void *arg0) {
+    register void *tmp = *(void **)((char *)arg0 + 0x288);
+    register int cur = *(int *)((char *)arg0 + 0x268);
+    int state = *(int *)((char *)tmp + 0x24);
+    float f;
+    if (cur != state) {
+        switch (state) {
+        case 0:
+            *(float *)((char *)arg0 + 0x1E4) = *(float *)((char *)arg0 + 0x26C);
+            *(float *)((char *)arg0 + 0x2B8) = *(float *)((char *)tmp + 0x34);
+            *(int *)((char *)arg0 + 0x260) = 0;
+            break;
+        case 1:
+            *(float *)((char *)arg0 + 0x1E8) = lbl_805621A0;
+            break;
+        case 3:
+            *(float *)((char *)arg0 + 0x1DC) = *(float *)((char *)arg0 + 0x26C);
+            if (*(float *)((char *)arg0 + 0x278) > lbl_80562144) {
+                f = lbl_80562140;
+            } else {
+                f = lbl_805621A4;
+            }
+            *(float *)((char *)arg0 + 0x2C0) = f;
+            break;
+        default:
+            fn_802E317C(lbl_803332D8);
+            break;
+        }
+        *(int *)((char *)arg0 + 0x268) = state;
+    }
+}
 
 /* Updates a state machine/object step, applying damage/offroad checks and idle tracking. */
 void fn_801959AC(void *arg0) {
