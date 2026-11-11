@@ -1446,6 +1446,31 @@ extern "C" void fn_801F9E04(void *context) {
     fn_801EEFDC((void *)fn_801F9CF8, 0xC);
 }
 
+extern void fn_801EF024(void *);
+extern void fn_80204020(void);
+extern void fn_80128668(void);
+extern void fn_80128670(void *);
+extern "C" void fn_801F9F08(void) {
+    fn_801EF024((void *)fn_801F9CF8);
+    fn_80204020();
+    lbl_8055EC70 = 0;
+    if (lbl_8055EC74 != 0) {
+        *lbl_8055EC74 = 0;
+        fn_80128668();
+    }
+    lbl_8055EC74 = 0;
+    if (lbl_8055EC54 != 0) {
+        fn_80128670((void *)lbl_8055EC54);
+    }
+    clear__Q211J2DBloSaver19CTextureNameConnectFv((void **)&lbl_8055EC4C);
+    clear__Q211J2DBloSaver19CTextureNameConnectFv((void **)&lbl_8055EC50);
+    fn_801FA010((void **)&lbl_8055EC5C);
+    fn_801FA010((void **)&lbl_8055EC60);
+    fn_801F9A24((F92Node **)&lbl_8055EC38);
+    fn_801FA0B0((void **)&lbl_8055EC44);
+    fn_801FA138((void **)&lbl_8055EC6C);
+}
+
 extern "C" void fn_802C6CF8(s32);
 void fn_801EF024(void *);
 void fn_80204020(void);
@@ -2303,35 +2328,36 @@ extern "C" void fn_801FC048(void *arg0) {
     void *heap = lbl_8033B54C;
     void *obj = fn_801284F8(0x54, heap);
     if (obj != 0) {
-        f32 value, zero, x;
-        zero = lbl_80562FF0;
+        f32 value, zero;
+        register f32 x;
         value = lbl_80563014;
-        *(void **)obj = lbl_80333B98;
-        *(s32 *)((u8 *)obj + 0xC) = 0;
-        *(s32 *)((u8 *)obj + 4) = 0;
-        *(s32 *)((u8 *)obj + 8) = 0;
+        zero = lbl_80562FF0;
+        *(volatile void **)obj = lbl_80333B98;
+        *(volatile s32 *)((u8 *)obj + 0xC) = 0;
+        *(volatile s32 *)((u8 *)obj + 4) = 0;
+        *(volatile s32 *)((u8 *)obj + 8) = 0;
         x = *(f32 *)((u8 *)arg0 + 0x58);
-        *(s32 *)((u8 *)obj + 0x18) = 0x53504852;
-        *(f32 *)((u8 *)obj + 0x10) = temp_f31;
-        *(f32 *)((u8 *)obj + 0x14) = value;
-        *(s32 *)((u8 *)obj + 0x20) = 0x64;
-        *(s32 *)((u8 *)obj + 0x1C) = 0;
-        *(void **)obj = lbl_80333B48;
-        *(f32 *)((u8 *)obj + 0x24) = x;
-        *(f32 *)((u8 *)obj + 0x34) = zero;
-        *(f32 *)((u8 *)obj + 0x38) = zero;
-        *(f32 *)((u8 *)obj + 0x3C) = zero;
-        *(f32 *)((u8 *)obj + 0x40) = zero;
-        *(f32 *)((u8 *)obj + 0x44) = zero;
-        *(f32 *)((u8 *)obj + 0x48) = zero;
-        *(u8 *)((u8 *)obj + 0x4C) = 0;
-        *(f32 *)((u8 *)obj + 0x50) = zero;
-        *(f32 *)((u8 *)obj + 0x28) = zero;
-        *(f32 *)((u8 *)obj + 0x2C) = zero;
+        *(volatile s32 *)((u8 *)obj + 0x18) = 0x53504852;
+        *(volatile f32 *)((u8 *)obj + 0x10) = temp_f31;
+        *(volatile f32 *)((u8 *)obj + 0x14) = value;
+        *(volatile s32 *)((u8 *)obj + 0x20) = 0x64;
+        *(volatile s32 *)((u8 *)obj + 0x1C) = 0;
+        *(volatile void **)obj = lbl_80333B48;
+        *(volatile f32 *)((u8 *)obj + 0x24) = x;
+        *(volatile f32 *)((u8 *)obj + 0x34) = zero;
+        *(volatile f32 *)((u8 *)obj + 0x38) = zero;
+        *(volatile f32 *)((u8 *)obj + 0x3C) = zero;
+        *(volatile f32 *)((u8 *)obj + 0x40) = zero;
+        *(volatile f32 *)((u8 *)obj + 0x44) = zero;
+        *(volatile f32 *)((u8 *)obj + 0x48) = zero;
+        *(volatile u8 *)((u8 *)obj + 0x4C) = 0;
+        *(volatile f32 *)((u8 *)obj + 0x50) = zero;
+        *(volatile f32 *)((u8 *)obj + 0x28) = zero;
+        *(volatile f32 *)((u8 *)obj + 0x2C) = zero;
         sp8 = zero;
         spC = zero;
         sp10 = zero;
-        *(f32 *)((u8 *)obj + 0x30) = zero;
+        *(volatile f32 *)((u8 *)obj + 0x30) = zero;
     } else {
         fn_8019EECC();
     }
@@ -2617,13 +2643,13 @@ extern "C" void fn_801FC774(void *arg0) {
         f32 start = *(f32 *)((u8 *)arg0 + 0x48);
         f32 t = ((time - current) - lbl_80562FF0) / lbl_80563020;
         f32 blend = lbl_80562FFC;
-        if (blend < t) blend = t;
-        if (blend > lbl_80562FF0) blend = lbl_80562FF0;
+        blend = (blend < t) ? t : blend;
+        blend = (blend > lbl_80562FF0) ? lbl_80562FF0 : blend;
         value = start + blend * (lbl_80562FF0 - start);
     } else {
         value = *(f32 *)((u8 *)arg0 + 0x48);
     }
-    if ((f32)__fabs((f64)value) > lbl_80558DC4)
+    if (!( (f32)__fabs((f64)value) <= lbl_80558DC4))
         fn_802C7AE0(*(s32 *)((u8 *)arg0 + 0x44), (u8 *)arg0 + 4, -1);
 }
 #pragma pop
