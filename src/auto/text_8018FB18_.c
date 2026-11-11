@@ -83,6 +83,105 @@ extern void fn_802E30C8(const char *, ...);
 extern char lbl_80332E94[], lbl_80332EA0[];
 #pragma use_lmw_stmw off
 #pragma inline off(fn_8018FC38)
+#pragma cplusplus on
+extern "C" void *__AXFXGetLfoSinTable_801769CC(void);
+extern "C" void *fn_801B83A0(void);
+extern "C" unsigned char lbl_8055E522;
+extern "C" void *fn_801284F8(s32, const void *);
+extern "C" void fn_801912B4(void *);
+extern "C" void *fn_8018FD88(void *, s32, s32);
+extern "C" void *fn_80134E90(void);
+extern "C" void *fn_80134EC8(int);
+extern "C" void *fn_80135078(void);
+extern "C" void *fn_801A520C(void *, void *);
+extern "C" char lbl_80332E70[];
+extern "C" char lbl_80332E80[];
+extern "C" char lbl_8055A470[7];
+extern "C" void fn_8018FB18(void) {
+    class Mgr {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+        virtual void f10();
+        virtual void f11();
+        virtual void f12();
+        virtual void f13();
+        virtual void f14();
+        virtual void f15();
+        virtual void f16();
+        virtual void f17();
+        virtual void f18();
+        virtual void f19();
+        virtual void f20();
+        virtual void f21();
+        virtual void f22();
+        virtual void f23();
+        virtual void f24();
+        virtual void f25();
+        virtual void f26();
+        virtual void f27();
+        virtual void f28();
+        virtual void f29();
+        virtual void f30();
+        virtual void f31();
+        virtual void f32();
+        virtual void f33();
+        virtual void f34();
+        virtual void f35();
+        virtual void f36();
+        virtual void f37();
+        virtual void f38();
+        virtual void f39();
+        virtual void f40();
+        virtual void f41();
+        virtual void f42();
+        virtual void f43();
+        virtual void f44();
+        virtual void f45();
+        virtual void f46();
+        virtual void f47();
+        virtual void f48();
+        virtual void f49();
+        virtual void f50();
+        virtual void f51();
+        virtual void f52();
+        virtual void f53();
+        virtual void f54();
+        virtual void f55();
+        virtual void f56();
+        virtual int f57();
+    };
+    void *p = __AXFXGetLfoSinTable_801769CC();
+    void *obj;
+    void *v;
+    v = (void *)((Mgr *)fn_801B83A0())->f57();
+    lbl_8055E522 = (unsigned char)((((unsigned int *)p)[1] >> 8) & 1);
+    if (((unsigned int *)p)[1] == 0x180304) lbl_8055E522 = 0;
+    if (v == 0) {
+        unsigned int bits = ((unsigned int *)p)[1];
+        if ((bits & 0x100) != 0) v = fn_80134E90();
+        else if (bits == 0x180201) v = fn_80134EC8(bits);
+        else v = fn_80135078();
+    }
+    p = fn_801284F8(0x44, lbl_80332E70);
+    if (p != 0) p = ((void *(*)(void *))fn_801912B4)(p);
+    obj = fn_801284F8(0x3C, lbl_8055A470);
+    if (obj != 0) obj = fn_8018FD88(obj, (s32)v, (s32)p);
+    {
+        void *res = fn_801284F8(0x2844, lbl_80332E80);
+        if (res != 0) fn_801A520C(res, obj);
+    }
+}
+#pragma cplusplus reset
+
 void fn_8018FC38(void) {
     s32 count = fn_80137C74();
     s32 *p = (s32 *)lbl_804349B0;
@@ -1521,51 +1620,46 @@ void fn_801916F4(void *arg0) {
 extern char *strcpy(char *, const char *);
 extern unsigned char lbl_804A16E8[];
 #pragma scheduling invalid_target
-int fn_80191758(arg0)
-void *arg0;
-{
-    struct Row {
-        char name[0x20];
-        float value[32];
-    } *row;
-    row = (struct Row *)lbl_804A16E8 + *(int *)((char *)arg0 + 0x28);
-    strcpy(row->name, *(char **)((char *)arg0 + 0x20) + 0x234);
-    row = (struct Row *)lbl_804A16E8 + *(int *)((char *)arg0 + 0x28);
-    row->value[2] = lbl_8056208C;
-    row->value[1] = lbl_8056208C;
-    row->value[0] = lbl_8056208C;
-    row->value[5] = lbl_80562090;
-    row->value[4] = lbl_80562090;
-    row->value[3] = lbl_80562090;
-    row->value[6] = lbl_80562090;
-    row->value[7] = lbl_80562090;
-    row = (struct Row *)lbl_804A16E8 + *(int *)((char *)arg0 + 0x28);
-    row->value[10] = lbl_8056208C;
-    row->value[9] = lbl_8056208C;
-    row->value[8] = lbl_8056208C;
-    row->value[13] = lbl_80562090;
-    row->value[12] = lbl_80562090;
-    row->value[11] = lbl_80562090;
-    row->value[14] = lbl_80562090;
-    row->value[15] = lbl_80562090;
-    row = (struct Row *)lbl_804A16E8 + *(int *)((char *)arg0 + 0x28);
-    row->value[18] = lbl_8056208C;
-    row->value[17] = lbl_8056208C;
-    row->value[16] = lbl_8056208C;
-    row->value[21] = lbl_80562090;
-    row->value[20] = lbl_80562090;
-    row->value[19] = lbl_80562090;
-    row->value[22] = lbl_80562090;
-    row->value[23] = lbl_80562090;
-    row = (struct Row *)lbl_804A16E8 + *(int *)((char *)arg0 + 0x28);
-    row->value[26] = lbl_8056208C;
-    row->value[25] = lbl_8056208C;
-    row->value[24] = lbl_8056208C;
-    row->value[29] = lbl_80562090;
-    row->value[28] = lbl_80562090;
-    row->value[27] = lbl_80562090;
-    row->value[30] = lbl_80562090;
-    row->value[31] = lbl_80562090;
+int fn_80191758(void *arg0) {
+    unsigned char *dst;
+    dst = lbl_804A16E8 + *(int *)((char *)arg0 + 0x28) * 0xA0;
+    strcpy((char *)dst, *(char **)((char *)arg0 + 0x20) + 0x234);
+    dst = lbl_804A16E8 + *(int *)((char *)arg0 + 0x28) * 0xA0;
+    *(float *)(dst + 0x28) = lbl_8056208C;
+    *(float *)(dst + 0x24) = lbl_8056208C;
+    *(float *)(dst + 0x20) = lbl_8056208C;
+    *(float *)(dst + 0x34) = lbl_80562090;
+    *(float *)(dst + 0x30) = lbl_80562090;
+    *(float *)(dst + 0x2C) = lbl_80562090;
+    *(float *)(dst + 0x38) = lbl_80562090;
+    *(float *)(dst + 0x3C) = lbl_80562090;
+    dst = lbl_804A16E8 + *(int *)((char *)arg0 + 0x28) * 0xA0;
+    *(float *)(dst + 0x48) = lbl_8056208C;
+    *(float *)(dst + 0x44) = lbl_8056208C;
+    *(float *)(dst + 0x40) = lbl_8056208C;
+    *(float *)(dst + 0x54) = lbl_80562090;
+    *(float *)(dst + 0x50) = lbl_80562090;
+    *(float *)(dst + 0x4C) = lbl_80562090;
+    *(float *)(dst + 0x58) = lbl_80562090;
+    *(float *)(dst + 0x5C) = lbl_80562090;
+    dst = lbl_804A16E8 + *(int *)((char *)arg0 + 0x28) * 0xA0;
+    *(float *)(dst + 0x68) = lbl_8056208C;
+    *(float *)(dst + 0x64) = lbl_8056208C;
+    *(float *)(dst + 0x60) = lbl_8056208C;
+    *(float *)(dst + 0x74) = lbl_80562090;
+    *(float *)(dst + 0x70) = lbl_80562090;
+    *(float *)(dst + 0x6C) = lbl_80562090;
+    *(float *)(dst + 0x78) = lbl_80562090;
+    *(float *)(dst + 0x7C) = lbl_80562090;
+    dst = lbl_804A16E8 + *(int *)((char *)arg0 + 0x28) * 0xA0;
+    *(float *)(dst + 0x88) = lbl_8056208C;
+    *(float *)(dst + 0x84) = lbl_8056208C;
+    *(float *)(dst + 0x80) = lbl_8056208C;
+    *(float *)(dst + 0x94) = lbl_80562090;
+    *(float *)(dst + 0x90) = lbl_80562090;
+    *(float *)(dst + 0x8C) = lbl_80562090;
+    *(float *)(dst + 0x98) = lbl_80562090;
+    *(float *)(dst + 0x9C) = lbl_80562090;
 }
 
 void fn_80191860(void *arg0, void *arg1) {
