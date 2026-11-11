@@ -1638,8 +1638,9 @@ s32 fn_80119994(void) { return 0; }
 
 s32 fn_8011999C(void) { return 0; }
 
-s32 fn_801199A4(void* arg0, s32 arg1) {
-    extern void fn_8003381C(void*, s16*);
+/* Configures a rect parameter block and applies it to the primary target (and optional secondary target) via fn_8003381C. When useMidpointLimit is non-zero, each axis limit is set to its midpoint; otherwise it is read from the target object at +0x1BC. */
+s32 fn_801199A4(void *obj, s32 useMidpointLimit) {
+    extern void fn_8003381C(void *, s16 *);
     s16 rect[8];
     u32 limit;
     u32 x0;
@@ -1650,35 +1651,35 @@ s32 fn_801199A4(void* arg0, s32 arg1) {
     u32 y1;
     rect[0] = 1;
     rect[1] = 10;
-    width = *(u32*)((u8*)arg0 + 0x10);
+    width = *(u32 *)((u8 *)obj + 0x10);
     x0 = width >> 1;
-    x1 = ((width + *(u32*)((u8*)arg0 + 0x1C)) >> 1) - 1;
-    if (arg1 != 0)
+    x1 = ((width + *(u32 *)((u8 *)obj + 0x1C)) >> 1) - 1;
+    if (useMidpointLimit != 0)
         limit = x0;
     else
-        limit = *(u32*)(*(u32*)arg0 + 0x1BC);
+        limit = *(u32 *)(*(u32 *)obj + 0x1BC);
     rect[2] = x0 >> 16;
     rect[3] = x0;
     rect[4] = x1 >> 16;
     rect[5] = x1;
     rect[6] = limit >> 16;
     rect[7] = limit;
-    fn_8003381C(*(void**)arg0, rect);
-    if (*(void**)((u8*)arg0 + 4) != 0) {
-        height = *(u32*)((u8*)arg0 + 0x14);
+    fn_8003381C(*(void **)obj, rect);
+    if (*(void **)((u8 *)obj + 4) != 0) {
+        height = *(u32 *)((u8 *)obj + 0x14);
         y0 = height >> 1;
-        y1 = ((height + *(u32*)((u8*)arg0 + 0x1C)) >> 1) - 1;
-        if (arg1 != 0)
+        y1 = ((height + *(u32 *)((u8 *)obj + 0x1C)) >> 1) - 1;
+        if (useMidpointLimit != 0)
             limit = y0;
         else
-            limit = *(u32*)(*(u32*)((u8*)arg0 + 4) + 0x1BC);
+            limit = *(u32 *)(*(u32 *)((u8 *)obj + 4) + 0x1BC);
         rect[2] = y0 >> 16;
         rect[3] = y0;
         rect[4] = y1 >> 16;
         rect[5] = y1;
         rect[6] = limit >> 16;
         rect[7] = limit;
-        fn_8003381C(*(void**)((u8*)arg0 + 4), rect);
+        fn_8003381C(*(void **)((u8 *)obj + 4), rect);
     }
 }
 
