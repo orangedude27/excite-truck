@@ -20935,7 +20935,7 @@ typedef struct t_rfc_mcb_view {
     u8  pad_00[0x62];
     u8  sec_bd_addr[6]; /* +0x62  peer this multiplexer channel runs to */
     u16 lcid;           /* +0x68  L2CAP channel carrying the multiplexer */
-    u16 pad_6A;
+    u16 peer_l2cap_mtu;  /* +0x6A  peer's L2CAP MTU, less the RFCOMM framing */
     u8  state;          /* +0x6C  RFC_MX_STATE_* */
     u8  is_initiator;   /* +0x6D  we asked for this multiplexer channel */
     u8  local_cfg_sent; /* +0x6E  our L2CA_ConfigReq() has been confirmed */
