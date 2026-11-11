@@ -649,7 +649,24 @@ void fn_802D8DA0(void) {
 
 extern void fn_802D81C4(void *, int);
 extern void fn_802D86BC(void *, int);
-void fn_802D8DCC(void *arg0, int arg1) { unsigned int kind; unsigned char t; unsigned char *p = *(unsigned char **)((char *)arg0 + 0x2C); t=p[0]; p[0]=p[3]; p[3]=t; t=p[1]; p[1]=p[2]; p[2]=t; if (*(int *)(p+0) != 0) *(unsigned char **)(p+0) = p + *(int *)(p+0); t=p[4]; p[4]=p[7]; p[7]=t; t=p[5]; p[5]=p[6]; p[6]=t; if (*(int *)(p+4) != 0) *(unsigned char **)(p+4) = p + *(int *)(p+4); t=p[8]; p[8]=p[11]; p[11]=t; t=p[9]; p[9]=p[10]; p[10]=t; if (*(int *)(p+8) != 0) *(unsigned char **)(p+8) = p + *(int *)(p+8); kind=*(unsigned int *)arg0; if (kind == 0x40 || kind == 0) fn_802D81C4(arg0,arg1); else if (kind == 0x41 || kind == 1) fn_802D86BC(arg0,arg1); }
+void fn_802D8DCC(void *arg0, int arg1) {
+    unsigned char *p;
+    unsigned char t;
+    unsigned int kind;
+    p = *(unsigned char **)((char *)arg0 + 0x2C);
+    t = p[0]; p[0] = p[3]; p[3] = t;
+    t = p[1]; p[1] = p[2]; p[2] = t;
+    if (*(int *)(p + 0) != 0) *(unsigned char **)(p + 0) = p + *(int *)(p + 0);
+    t = p[4]; p[4] = p[7]; p[7] = t;
+    t = p[5]; p[5] = p[6]; p[6] = t;
+    if (*(int *)(p + 4) != 0) *(unsigned char **)(p + 4) = p + *(int *)(p + 4);
+    t = p[8]; p[8] = p[11]; p[11] = t;
+    t = p[9]; p[9] = p[10]; p[10] = t;
+    if (*(int *)(p + 8) != 0) *(unsigned char **)(p + 8) = p + *(int *)(p + 8);
+    kind = *(unsigned int *)arg0;
+    if (kind == 0x40 || kind == 0) fn_802D81C4(arg0, arg1);
+    else if (kind == 0x41 || kind == 1) fn_802D86BC(arg0, arg1);
+}
 
 extern void *fn_802D7B5C(void *, void *);
 extern void *fn_802D7D98(void *, void *);
@@ -741,13 +758,14 @@ extern void *lbl_8055FE1C;
 extern void *lbl_8055FE20;
 extern void fn_802CFEEC(void);
 
+/* Return 1 if any texture slot in the table has no owner at +0x20, else 0. */
 int fn_802D9068(void) {
-    unsigned char *p = (unsigned char *)lbl_8055FE28;
-    int i = 0;
-    while (i < 450) {
-        if (p[0x20] == 0) return 1;
-        p += 0xF4;
-        i++;
+    unsigned char *slot = (unsigned char *)lbl_8055FE28;
+    int slotIndex = 0;
+    while (slotIndex < 450) {
+        if (slot[0x20] == 0) return 1;
+        slot += 0xF4;
+        slotIndex++;
     }
     return 0;
 }
@@ -868,25 +886,24 @@ extern void GXSetTexCopyDst(unsigned short, unsigned short, int, unsigned char);
 extern void GXSetZMode(int, int, int);
 extern void GXSetColorUpdate(int);
 extern void fn_802CFF50(void);
-#pragma push
-#pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_802D9418(void) {
     void *obj;
     unsigned int s, t;
+    int zero = 0;
     fn_802D2614();
     obj = (char *)lbl_8055FE24 + 0x24;
     s = GXGetTexObjWrapS(obj) & 0xFFFF;
     t = GXGetTexObjWrapT(obj) & 0xFFFF;
-    GXSetTexCopySrc(0, 0, s, t);
-    GXSetTexCopyDst(s, t, GXGetTexObjMipMap(obj), 0);
+    GXSetTexCopySrc(zero, zero, s, t);
+    GXSetTexCopyDst(s, t, GXGetTexObjMipMap(obj), zero);
     GXSetZMode(1, 7, 1);
     GXSetColorUpdate(1);
     GXCopyTex(GXGetTexObjFmt(obj), 1);
-    lbl_8055FE24 = 0;
+    lbl_8055FE24 = zero;
     fn_802CFF50();
 }
-#pragma pop
+#pragma scheduling on
 extern void *lbl_8055FE28;
 extern char lbl_8034C5B8[];
 extern void *fn_8012850C(void *, void *);
