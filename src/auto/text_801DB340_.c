@@ -123,47 +123,46 @@ extern float lbl_80562B6C;
 #pragma push
 #pragma processor 750
 #pragma opt_common_subs off
-#pragma scheduling invalid_target
 float fn_801DB398(float grid[4][4], float t, float u) {
     float values[4];
+    float *src = (float *)grid;
     int i;
     for (i = 0; i < 4; i++) {
-        const float *p = &grid[0][i];
-        float p2 = p[8];
-        float p0 = p[0];
-        float p1 = p[4];
+        float p2 = src[8];
+        float p0 = src[0];
+        float p1 = src[4];
         float dp20 = p2 - p0;
-        float p3 = p[12];
+        float p3 = src[12];
         float dp21 = p2 - p1;
         float dp31 = p3 - p1;
         float half20 = lbl_80562B64 * dp20;
         float twice20 = lbl_80562B68 * half20;
-        float c3t = lbl_80562B6C * dp21;
         float half31 = lbl_80562B64 * dp31;
-        float twice21 = lbl_80562B68 * dp21;
+        float c3t = lbl_80562B6C * dp21;
         float sum = half20 + half31;
+        float twice21 = lbl_80562B68 * dp21;
         float coeff3 = c3t - twice20;
         float coeff2 = sum - twice21;
         float t2 = t * t;
         float t3 = t2 * t;
         coeff3 = coeff3 - half31;
         values[i] = (coeff2 * t3 + coeff3 * t2) + half20 * t + p1;
+        src++;
     }
     {
-        const float *p = values;
-        float p2 = p[2];
-        float p0 = p[0];
-        float p1 = p[1];
+        float p2 = values[2];
+        float p0 = values[0];
+        float p1 = values[1];
         float dp20 = p2 - p0;
-        float p3 = p[3];
+        float p3 = values[3];
         float dp21 = p2 - p1;
         float dp31 = p3 - p1;
         float half20 = lbl_80562B64 * dp20;
         float twice20 = lbl_80562B68 * half20;
-        float c3t = lbl_80562B6C * dp21;
         float half31 = lbl_80562B64 * dp31;
-        float twice21 = lbl_80562B68 * dp21;
+        float c3t = lbl_80562B6C * dp21;
         float sum = half20 + half31;
+        float twice21 = lbl_80562B68 * dp21;
         float coeff3 = c3t - twice20;
         float coeff2 = sum - twice21;
         float t2 = u * u;
