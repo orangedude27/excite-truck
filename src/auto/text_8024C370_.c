@@ -622,24 +622,6 @@ int fn_8024D054(void *arg0, int arg1) {
     }
 }
 
-struct S8024D0EC {
-    int pad0;
-    int unk4;
-    int unk8;
-    int padC;
-    int unk10;
-    int pad14;
-    char unk18[0x14];
-    char *unk2C;
-    int unk30;
-    int unk34;
-    int unk38;
-    int unk3C;
-    float unk40;
-    float unk44;
-    unsigned char unk48;
-};
-
 /* One on-screen message widget, drawn by fn_8024D0EC.
  * Its screen position is turned into overlay coordinates (origin at the
  * screen centre) by fn_80230C30; height is the text box height and the
