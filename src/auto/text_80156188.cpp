@@ -154,12 +154,15 @@ extern "C" char lbl_80559FC8;
 #pragma push
 #pragma scheduling invalid_target
 #pragma dont_inline on
-s32 fn_801562BC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+/* Format a ghostcar resource path string: copy up to 0x20 bytes from the current
+ * name source into a local buffer, normalize it, then append either .il0 (with an
+ * optional '_' infix when a name is provided) or .ili depending on the flag. */
+s32 fn_801562BC(void *out, s32 arg1, s32 nameArg, s32 useIl0Path) {
     u8 buffer[0x20];
     u8 *src = fn_801E879C();
     s32 count = 0x20;
     u8 *dst = buffer;
-    u8 *name = (u8 *)arg2;
+    u8 *name = (u8 *)nameArg;
 
     goto copy;
 check:
@@ -172,22 +175,22 @@ copy:
         goto check;
 done:
     fn_801561E8(buffer);
-    if (arg3 != 0) {
-        const char *choice;
+    if (useIl0Path != 0) {
+        const char *infix;
         if ((s8)*name != 0)
-            choice = (const char *)&lbl_80559FC4;
+            infix = (const char *)&lbl_80559FC4;
         else
-            choice = (const char *)&lbl_80559FC0;
-        fn_801345D8((s32)arg0, arg1, lbl_8032E254, name, choice, buffer);
+            infix = (const char *)&lbl_80559FC0;
+        fn_801345D8((s32)out, arg1, lbl_8032E254, name, infix, buffer);
     } else {
         const char *text;
         if ((s8)*name != 0)
             text = (const char *)name;
         else
             text = (const char *)buffer;
-        fn_801345D8((s32)arg0, arg1, (const char *)&lbl_80559FC8, text);
+        fn_801345D8((s32)out, arg1, (const char *)&lbl_80559FC8, text);
     }
-    return (s32)arg0;
+    return (s32)out;
 }
 #pragma dont_inline off
 #pragma pop
@@ -697,19 +700,24 @@ extern "C" void* fn_80135420(f32*, s32, s32);
 extern f32 lbl_80561748;
 extern "C" void fn_80156E74(void *arg0, s32 arg1, void *arg2) {
     f32 point[2];
-    f32 minimum = lbl_80561748;
+    volatile f32 vs0;
+    volatile f32 vs1;
+    f32 minimum;
+    s32 offset = 0;
     s32 best = -1;
     s32 i = 0;
-    s32 offset = 0;
 
     point[0] = ((f32 *)arg2)[0];
     point[1] = ((f32 *)arg2)[2];
+    minimum = lbl_80561748;
     while (i < *(s32 *)((u8 *)arg0 + 8)) {
         void *entry = *(void **)((u8 *)*(void **)((u8 *)arg0 + 4) + offset);
         void *result = fn_80135420(point, 0, (s32)entry);
         f32 dy = point[1] - *(f32 *)((u8 *)result + 4);
         f32 dx = point[0] - *(f32 *)result;
-        f32 distance = dx * dx + dy * dy;
+        f32 distance = dy * dy + dx * dx;
+        vs1 = dy;
+        vs0 = dx;
         if (distance < minimum) {
             best = i;
             minimum = distance;
@@ -719,12 +727,16 @@ extern "C" void fn_80156E74(void *arg0, s32 arg1, void *arg2) {
     }
 
     {
-        s32 value = *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 4) + best * 8);
-        f32 base = lbl_8055E3C8;
-        f32 result = ((f32 (*)(s32, f32, f32))fn_80129DC4)(
+        void *tbl = *(void **)((u8 *)arg0 + 4);
+        f32 base;
+        f32 result;
+        offset = *(s32 *)((u8 *)tbl + best * 8);
+        base = lbl_8055E3C8;
+        best = arg1 * 8;
+        result = ((f32 (*)(s32, f32, f32))fn_80129DC4)(
             4, *(f32 *)((u8 *)arg0 + 0xDC), *(f32 *)((u8 *)arg0 + 0xE0));
-        *(f32 *)((u8 *)arg0 + arg1 * 8 + 0xE4) = base + result;
-        *(s32 *)((u8 *)arg0 + arg1 * 8 + 0xE8) = value;
+        *(f32 *)((u8 *)arg0 + best + 0xE4) = base + result;
+        *(s32 *)((u8 *)arg0 + best + 0xE8) = offset;
     }
 }
 #pragma pop
