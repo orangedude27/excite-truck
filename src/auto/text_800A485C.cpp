@@ -2837,9 +2837,12 @@ second_test:
  * cluster-chain cache (the VF_CHAIN_* fields further down are these same two
  * words at +0x14 and +0x18): which cluster of the file the position is at, and
  * the number that cluster has on the volume.  Following the chain starts from
- * them instead of from the file's first cluster (fn_800ADD84). */
-#define VF_STREAM_LAST_CLUSTER_INDEX(s) (*(u32 *)((u8 *)(s) + 0x18)) /* which cluster of the file */
-#define VF_STREAM_LAST_CLUSTER(s)       (*(s32 *)((u8 *)(s) + 0x1C)) /* its number on the volume */
+ * them instead of from the file's first cluster (fn_800ADD84).  They are
+ * reached through the handle; the stream pointer is re-read for every write,
+ * which is what the original does. */
+#define VF_HANDLE_STREAM_OF(f)          (*(void **)((u8 *)(f) + 8))   /* the stream, plain */
+#define VF_STREAM_LAST_CLUSTER_INDEX(f) (*(u32 *)((u8 *)VF_HANDLE_STREAM_OF(f) + 0x18)) /* which cluster of the file */
+#define VF_STREAM_LAST_CLUSTER(f)       (*(s32 *)((u8 *)VF_HANDLE_STREAM_OF(f) + 0x1C)) /* its number on the volume */
 
 extern "C" void VFiPFCLUSTER_UpdateLastAccessCluster(void *arg0, s32 arg1) {
     s32 temp_r6;
