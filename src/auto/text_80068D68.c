@@ -13558,28 +13558,30 @@ void btu_hcif_hdl_command_complete(s32 opcode, UINT8 *param2, UINT16 param3) {
     }
 }
 
-void btu_hcif_command_complete_evt(UINT8 *p, UINT16 len) {
+void btu_hcif_command_complete_evt(UINT8 *eventData, UINT16 dataLength) {
     UINT16 opcode;
-    UINT16 queued_opcode;
-    void *buf;
-    *(UINT16 *)(lbl_803C0A50 + 0x80) = p[0];
-    opcode = (UINT16)(p[1] + (p[2] << 8));
+    UINT16 queuedOpcode;
+    void *commandBuffer;
+
+    /* Handle HCI command-complete event: update status, reconcile queued command, manage timer, dispatch. */
+    *(UINT16 *)(lbl_803C0A50 + 0x80) = eventData[0];
+    opcode = (UINT16)(eventData[1] + (eventData[2] << 8));
     if (opcode != 0xC03 && opcode != 0xC35 && opcode != 0) {
-        buf = GKI_dequeue((BUFFER_Q *)(lbl_803C0A50 + 0x70));
-        if (buf != 0) {
-            queued_opcode = (UINT16)(((UINT8 *)buf)[8] + (((UINT8 *)buf)[9] << 8));
-            if (opcode == 0xFC4C && queued_opcode != opcode) {
-                GKI_enqueue_head((BUFFER_Q *)(lbl_803C0A50 + 0x70), buf);
+        commandBuffer = GKI_dequeue((BUFFER_Q *)(lbl_803C0A50 + 0x70));
+        if (commandBuffer != 0) {
+            queuedOpcode = (UINT16)(((UINT8 *)commandBuffer)[8] + (((UINT8 *)commandBuffer)[9] << 8));
+            if (opcode == 0xFC4C && queuedOpcode != opcode) {
+                GKI_enqueue_head((BUFFER_Q *)(lbl_803C0A50 + 0x70), commandBuffer);
                 return;
             }
-            GKI_freebuf(buf);
+            GKI_freebuf(commandBuffer);
         }
         if (fn_8006DF84(lbl_803C0A50 + 0x70) == 0)
             btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0A50 + 0x4C), 0x3C, 8);
         else
             fn_80070F90(lbl_803C0A50 + 0x4C);
     }
-    btu_hcif_hdl_command_complete(opcode, p + 3, len - 3);
+    btu_hcif_hdl_command_complete(opcode, eventData + 3, dataLength - 3);
     btu_hcif_send_cmd(0);
 }
 
