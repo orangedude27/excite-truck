@@ -2748,14 +2748,15 @@ extern "C" void *fn_8012EC90(s32 arg0) {
 extern "C" void fn_8012ED20(void *arg0) {
  u8 *p;
  s32 i;
+ struct S { s32 a; s32 b; };
  for (i=0, p=(u8 *)arg0+4; i<2; i++, p+=0x10) {
   if (*(s32 *)(p+4)) {
-   fn_8012C958((void *)*(s32 *)(p+4));
    fn_8012C90C((void *)*(s32 *)(p+4));
+   fn_8012C958((void *)*(s32 *)(p+4));
    *(s32 *)(p+4)=0;
   }
  }
- fn_80128670(*(s32 *)((u8 *)arg0+8));
+ fn_80128670(((struct S *)arg0)->b);
  fn_80128668(arg0);
 }
 
