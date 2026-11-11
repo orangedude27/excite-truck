@@ -351,6 +351,7 @@ VIRetraceCallback AIRegisterDMACallback_800591F0(VIRetraceCallback cb)
     return oldcb;
 }
 
+// Return a pointer/offset into lbl_80311738 based on the given index.
 u32 fn_80059234(u32 index)
 {
     switch (index) {
