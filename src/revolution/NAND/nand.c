@@ -215,6 +215,9 @@ s32 NANDPrivateCreateDir(const char* path, u8 perm, u8 attr) {
     return nandConvertErrorCode(result);
 }
 
+// Async version of NANDPrivateCreateDir: remembers the caller's callback in the command
+// block, then queues an ISFS directory create for the absolute path with the permission
+// nibbles split out; the result comes back through nandCallback.
 s32 NANDPrivateCreateDirAsync(const char* path, u8 perm, u8 attr,
                               NANDAsyncCallback callback,
                               NANDCommandBlock* block) {
