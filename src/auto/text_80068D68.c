@@ -13135,22 +13135,34 @@ u8 btm_sec_start_authorization(u8 *devRec) {
     return 1;
 }
 
+/* Retry the security procedure for the collided device after a collision timeout. */
 void btm_sec_collision_timeout(void) {
     extern u8 btm_sec_execute_procedure(void *);
     extern void fn_8007093C(u32, void *);
     extern char lbl_80317264[];
     u8 status;
-    if (lbl_803C0F78[0x27C0] >= 4) fn_8007093C(0xD0003, lbl_80317264);
+
+    if (lbl_803C0F78[0x27C0] >= 4) {
+        fn_8007093C(0xD0003, lbl_80317264);
+    }
+
     *(u32 *)(lbl_803C0F78 + 0x196C) = 0;
+
     status = btm_sec_execute_procedure(*(void **)(lbl_803C0F78 + 0x1938));
     if (status != 1) {
-        void *sec = *(void **)(lbl_803C0F78 + 0x1938);
-        if (*(u32 *)((u8 *)sec + 4) != 0) {
-            if (*((u8 *)sec + 0x80) != 0) {
-                void *entry = *(void **)sec;
-                if (entry != 0 && *(u32 *)entry == 3) *(u32 *)((u8 *)entry + 4) = 0;
+        void *dev_rec = *(void **)(lbl_803C0F78 + 0x1938);
+        if (*(u32 *)((u8 *)dev_rec + 4) != 0) {
+            if (*((u8 *)dev_rec + 0x80) != 0) {
+                void *cur_service = *(void **)dev_rec;
+                if (cur_service != 0 && *(u32 *)cur_service == 3) {
+                    *(u32 *)((u8 *)cur_service + 4) = 0;
+                }
             }
-            ((void (*)(void *, void *, u8))(*(void **)(*(u8 **)(lbl_803C0F78 + 0x1938) + 4)))((u8 *)*(void **)(lbl_803C0F78 + 0x1938) + 0x1C, *(void **)(*(u8 **)(lbl_803C0F78 + 0x1938) + 8), status);
+
+            ((void (*)(void *, void *, u8))(*(void **)(*(u8 **)(lbl_803C0F78 + 0x1938) + 4)))(
+                (u8 *)*(void **)(lbl_803C0F78 + 0x1938) + 0x1C,
+                *(void **)(*(u8 **)(lbl_803C0F78 + 0x1938) + 8),
+                status);
             *(u32 *)(*(u8 **)(lbl_803C0F78 + 0x1938) + 4) = 0;
         }
     }
