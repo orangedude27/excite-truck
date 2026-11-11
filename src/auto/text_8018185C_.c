@@ -357,10 +357,11 @@ extern void fn_802799EC(int, float);
 #pragma ppc_psq_save off
 #pragma push
 #pragma processor 750
+#pragma scheduling off
 #pragma dont_inline on
 void fn_80181EAC(int arg0) {
-    register float minA = lbl_80561D38;
-    register float maxA = lbl_80561D3C;
+    float minA = lbl_80561D38;
+    float maxA = lbl_80561D3C;
     float temp_f1;
     float temp_f30;
     float temp_f31;
@@ -371,6 +372,7 @@ void fn_80181EAC(int arg0) {
         fn_802799EC(arg0, temp_f1 - temp_f31);
 }
 #pragma dont_inline off
+#pragma scheduling on
 #pragma pop
 #pragma push
 #pragma small_data off
