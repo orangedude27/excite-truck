@@ -101,16 +101,17 @@ s32 fn_802A9FB0(void *arg0) {
     return 8;
 }
 #pragma scheduling on
-void fn_802A9FE0(void *arg0) {
-    float value = lbl_805649F0;
-    int i;
-    for (i = 0; i <= 0xC0; i += 4) *(float *)((char *)arg0 + i) = value;
-    *(unsigned char *)((char *)arg0 + 0xC4) = 0;
-    *(float *)((char *)arg0 + 0xCC) = value;
-    *(float *)((char *)arg0 + 0xC8) = value;
-    *(float *)((char *)arg0 + 0xD0) = value;
-    *(float *)((char *)arg0 + 0xD4) = value;
-    *(float *)((char *)arg0 + 0xD8) = value;
+/* Clears the per-entry state block (0x00..0xD8) to the default float zero value. */
+void fn_802A9FE0(void *entry) {
+    float zero = lbl_805649F0;
+    int offset;
+    for (offset = 0; offset <= 0xC0; offset += 4) *(float *)((char *)entry + offset) = zero;
+    *(unsigned char *)((char *)entry + 0xC4) = 0;
+    *(float *)((char *)entry + 0xCC) = zero;
+    *(float *)((char *)entry + 0xC8) = zero;
+    *(float *)((char *)entry + 0xD0) = zero;
+    *(float *)((char *)entry + 0xD4) = zero;
+    *(float *)((char *)entry + 0xD8) = zero;
 }
 
 #pragma scheduling invalid_target
