@@ -192,7 +192,7 @@ extern "C" void OSInitMutex(void*);
 extern "C" const char lbl_80326768[];
 extern "C" const char lbl_8032677C[];
 extern "C" void InitParam__Q46nw4hbm3snd6detail10StrmPlayerFi(void *, s32);
-extern "C" void NotifyStrmHeaderAsyncEndCallback__Q46nw4hbm3snd6detail10StrmPlayerFbPCQ56nw4hbm3snd6detail10StrmPlayer10StrmHeaderPv();
+extern "C" void NotifyStrmHeaderAsyncEndCallback__Q46nw4hbm3snd6detail10StrmPlayerFbPCQ56nw4hbm3snd6detail10StrmPlayer10StrmHeaderPv(bool, const void *, void *);
 extern "C" const char lbl_80324B24[];
 extern "C" const char lbl_80324B50[];
 extern "C" char lbl_80559858;
@@ -3970,11 +3970,9 @@ void StopAllSound__Q36nw4hbm3snd11SoundPlayerFi(void *self, s32 arg1) {
         virtual void f2();
         virtual void stopAllSound(s32);
     };
-
-    register void *end = (u8 *)self + 4;
-    register void *head = *(void **)((u8 *)self + 4);
+    void *end = (u8 *)self + 4;
+    void *head = *(void **)((u8 *)self + 4);
     void *node;
-
     while (head != end) {
         node = head;
         head = *(void **)node;
