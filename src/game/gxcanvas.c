@@ -386,37 +386,38 @@ void fn_802C365C(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
     } while (height > 0);
 }
 
-void fn_802C3754(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
-    u8 mode = *(u8 *)arg0;
-    s32 flag = 0;
-    if ((s8)mode != 5 && (s8)mode != 6) flag = 1;
-    if (flag) {
-        flag = 0;
-        if (*(s8 *)arg5 != 5 && *(s8 *)arg5 != 6) flag = 1;
-        if (flag) {
-            fn_802C3918(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7);
+void fn_802C3754(s32 left, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 right, s32 arg6, s32 arg7) {
+    /* Dispatches a canvas copy/blit operation based on the mode bytes (5/6 are special cases) of the left and right canvas objects, falling back to a trace when unsupported. */
+    u8 leftMode = *(u8 *)left;
+    s32 isOtherMode = 0;
+    if ((s8)leftMode != 5 && (s8)leftMode != 6) isOtherMode = 1;
+    if (isOtherMode) {
+        isOtherMode = 0;
+        if (*(s8 *)right != 5 && *(s8 *)right != 6) isOtherMode = 1;
+        if (isOtherMode) {
+            fn_802C3918(left,arg1,arg2,arg3,arg4,right,arg6,arg7);
             return;
         }
     }
-    if ((s8)mode == 5 && (s32)*(u8 *)arg5 == 5) {
-        fn_802C3C68(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7);
+    if ((s8)leftMode == 5 && (s32)*(u8 *)right == 5) {
+        fn_802C3C68(left,arg1,arg2,arg3,arg4,right,arg6,arg7);
         return;
     }
-    flag = 0;
-    if ((s8)mode != 5 && (s8)mode != 6) flag = 1;
-    if (flag && (s32)*(u8 *)arg5 == 5) {
-        fn_802C3D74(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7);
+    isOtherMode = 0;
+    if ((s8)leftMode != 5 && (s8)leftMode != 6) isOtherMode = 1;
+    if (isOtherMode && (s32)*(u8 *)right == 5) {
+        fn_802C3D74(left,arg1,arg2,arg3,arg4,right,arg6,arg7);
         return;
     }
-    if ((s8)mode == 5) {
-        flag = 0;
-        if (*(s8 *)arg5 != 5 && *(s8 *)arg5 != 6) flag = 1;
-        if (flag) {
-            fn_802C3F00(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7);
+    if ((s8)leftMode == 5) {
+        isOtherMode = 0;
+        if (*(s8 *)right != 5 && *(s8 *)right != 6) isOtherMode = 1;
+        if (isOtherMode) {
+            fn_802C3F00(left,arg1,arg2,arg3,arg4,right,arg6,arg7);
             return;
         }
     }
-    fn_802E317C(lbl_8034B078, (s32)*(s8 *)arg0, (s32)*(s8 *)arg5);
+    fn_802E317C(lbl_8034B078, (s32)*(s8 *)left, (s32)*(s8 *)right);
 }
 
 #pragma pop
