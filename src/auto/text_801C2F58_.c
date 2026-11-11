@@ -449,9 +449,9 @@ void fn_801C4BAC(void) {
     lbl_8055E7F4 = zero;
     lbl_8055E7E3 = zero;
     lbl_8055E7E4 = lbl_80562970;
-    memset(state, zero, 0x9C);
-    lo = (u8 *)state;
-    hi = lo + 0x9C;
+    memset(state->x00, zero, 0x9C);
+    lo = (u8 *)state->x00;
+    hi = (u8 *)&state->x9C;
     *(f32 *)(lo + 0x14) = lbl_8056296C;
     *(f32 *)(lo + 0x18) = lbl_80562970;
     *(f32 *)(lo + 0x1C) = lbl_80562970;
@@ -476,7 +476,7 @@ void fn_801C4BAC(void) {
     *(f32 *)(lo + 0x94) = lbl_80562970;
     *(f32 *)(lo + 0x98) = lbl_805629A8;
     *(f32 *)(hi + 0x8) = lbl_80562994;
-    *(s32 *)((u8 *)state + 0x9C) = zero;
+    state->x9C = zero;
     if (lbl_8055E7F0 == 0) {
         lbl_8055E7E2 = zero;
         return;
@@ -2818,11 +2818,13 @@ extern "C" s32 fn_801CA070(s32 *arg0) {
   virtual void v2();
   virtual s32 v3(char *);
  };
- s32 value;
  char *base=lbl_80336B00;
  s32 handle;
  s32 offset, i;
+ s32 value;
  Dummy *obj;
+ Dummy *obj2;
+ s32 t;
  handle=fn_802E367C();
  if(handle!=-1) {
   value=lbl_8055E814;
@@ -2830,9 +2832,10 @@ extern "C" s32 fn_801CA070(s32 *arg0) {
   case 0:
    obj=(Dummy*)fn_801C3D5C();
    if(obj->v1(base+0x130)!=0) {
-    obj=(Dummy*)fn_801C3D5C();
-    value=obj->v3(base+0x130);
-   } else value=(s32)fn_80007F90(__AXFXGetLfoSinTable_801769CC()[1]);
+    obj2=(Dummy*)fn_801C3D5C();
+    t=obj2->v3(base+0x130);
+   } else t=(s32)fn_80007F90(__AXFXGetLfoSinTable_801769CC()[1]);
+   value=t;
    break;
   default:
    goto common;
