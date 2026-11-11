@@ -19087,23 +19087,24 @@ size_done:
     }
 }
 
-void l2cu_send_peer_connect_req(void *arg0) {
-    void *p;
-    extern void *l2cu_build_header(u16, u8, u8, s32);
-    extern void l2c_link_check_send_pkts(void *, u8, void *, u8);
-    extern void fn_8007093C(u32, void *);
-    extern char lbl_80319174[];
-    *(u8 *)((u8 *)*(void **)((u8 *)arg0 + 0x10) + 0x31) += 1;
-    *(u8 *)((u8 *)arg0 + 0x35) = *(u8 *)((u8 *)*(void **)((u8 *)arg0 + 0x10) + 0x31);
-    p = l2cu_build_header(*(u16 *)((u8 *)*(void **)((u8 *)arg0 + 0x10) + 0x28), 4, 2, *(u8 *)((u8 *)arg0 + 0x35));
-    if (p == 0) {
-        if (lbl_803C4040[0] >= 2) fn_8007093C(0x80001, lbl_80319174);
+void l2cu_send_peer_connect_req(void *p_ccb) {
+    UINT8 id;
+    void *p_buf;
+    u8 *p_lcb;
+    p_lcb = *(u8 **)((u8 *)p_ccb + 0x10);
+    id = *(u8 *)(p_lcb + 0x31) + 1;
+    *(u8 *)(p_lcb + 0x31) = id;
+    *(volatile u8 *)((u8 *)p_ccb + 0x35) = id;
+    p_buf = l2cu_build_header(*(u16 *)(*(u8 * volatile *)((u8 *)p_ccb + 0x10) + 0x28), 4, 2, id);
+    if (p_buf == NULL) {
+        if (lbl_803C4040[0] >= 2)
+            fn_8007093C(0x80001, lbl_80319174);
     } else {
-        *(u8 *)((u8 *)p + 0x14) = *(u16 *)((u8 *)*(void **)((u8 *)arg0 + 0x30) + 2);
-        *(u8 *)((u8 *)p + 0x15) = *(u16 *)((u8 *)*(void **)((u8 *)arg0 + 0x30) + 2) >> 8;
-        *(u8 *)((u8 *)p + 0x16) = *(u16 *)((u8 *)arg0 + 0x14);
-        *(u8 *)((u8 *)p + 0x17) = *(u16 *)((u8 *)arg0 + 0x14) >> 8;
-        l2c_link_check_send_pkts(*(void **)((u8 *)arg0 + 0x10), 0, p, 0);
+        *(u8 *)((u8 *)p_buf + 0x14) = *(u16 *)((u8 *)*(void **)((u8 *)p_ccb + 0x30) + 2);
+        *(u8 *)((u8 *)p_buf + 0x15) = *(u16 *)((u8 *)*(void **)((u8 *)p_ccb + 0x30) + 2) >> 8;
+        *(u8 *)((u8 *)p_buf + 0x16) = *(u16 *)((u8 *)p_ccb + 0x14);
+        *(u8 *)((u8 *)p_buf + 0x17) = *(u16 *)((u8 *)p_ccb + 0x14) >> 8;
+        ((void (*)(void *, void *, void *))l2c_link_check_send_pkts)(*(u8 **)((u8 *)p_ccb + 0x10), NULL, p_buf);
     }
 }
 
@@ -19425,19 +19426,23 @@ void l2cu_send_peer_disc_req(void *p_ccb) {
 
 int l2cu_send_peer_disc_rsp(void *p_lcb, int remote_id, int local_cid, int remote_cid) {
     void *p_buf = l2cu_build_header(*(u16 *)((u8 *)p_lcb + 0x28), 4, 7, remote_id);
-    if (p_buf == 0) {
-        if (lbl_803C4040[0] >= 2)
+    u8 *packet;
+    if (p_buf == NULL) {
+        if (lbl_803C4040[0] >= 2) {
             fn_8007093C(0x80001, lbl_80319174);
-    } else {
-        u8 *packet = p_buf;
-        packet[0x14] = local_cid;
-        packet[0x15] = local_cid >> 8;
-        packet[0x16] = remote_cid;
-        packet[0x17] = (u32)remote_cid >> 8;
-        *(u16 *)(packet + 6) = 0;
-        GKI_enqueue((BUFFER_Q *)((u8 *)p_lcb + 0x44), p_buf);
-        ((void (*)(void *, u8, void *))l2c_link_check_send_pkts)(p_lcb, 0, 0);
+        }
+        goto done;
     }
+    packet = p_buf;
+    packet[0x14] = local_cid;
+    packet[0x15] = local_cid >> 8;
+    packet[0x16] = remote_cid;
+    packet[0x17] = (u32)remote_cid >> 8;
+    *(u16 *)(packet + 6) = 0;
+    GKI_enqueue((BUFFER_Q *)((u8 *)p_lcb + 0x44), p_buf);
+    ((void (*)(void *, u8, void *))l2c_link_check_send_pkts)(p_lcb, 0, 0);
+done:
+    ;
 }
 
 /* Sends an L2CAP echo request to a peer, or logs an error if no buffer is available. */
