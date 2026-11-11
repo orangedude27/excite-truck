@@ -57,6 +57,7 @@ extern long fn_800B7C08(long, long *);
 #pragma push
 #pragma scheduling invalid_target
 #pragma cplusplus on
+/* Open an MP3 stream handle by id/path, populate info, or log and clean up on failure. */
 extern "C" long *fn_802E9A6C(long arg0) {
     extern long fn_802E30C8(char *, long);
     class Obj {
@@ -64,25 +65,25 @@ extern "C" long *fn_802E9A6C(long arg0) {
         virtual void f(int);
     };
     long info[8];
-    register long *p;
+    register long *obj;
 
-    p = lbl_80507600;
+    obj = lbl_80507600;
     lbl_80560060 = 1;
-    if (p != 0) {
-        p[0] = (long)&lbl_8034E9B0;
-        p[1] = fn_800B7C34(arg0, &lbl_8055D258);
-        p[2] = 0;
-        if (p[1] != 0) {
-            if (fn_800B7C08(p[1], info) == 0) p[2] = info[0];
+    if (obj != 0) {
+        obj[0] = (long)&lbl_8034E9B0;
+        obj[1] = fn_800B7C34(arg0, &lbl_8055D258);
+        obj[2] = 0;
+        if (obj[1] != 0) {
+            if (fn_800B7C08(obj[1], info) == 0) obj[2] = info[0];
             else {
                 ((long (*)(char *, ...))fn_802E30C8)((char *)&lbl_8034E260, arg0);
-                fn_800B7BDC(p[1]);
-                p[1] = 0;
+                fn_800B7BDC(obj[1]);
+                obj[1] = 0;
             }
         }
     }
-    if (p[1] != 0) return p;
-    if (p != 0) ((Obj *)p)->f(1);
+    if (obj[1] != 0) return obj;
+    if (obj != 0) ((Obj *)obj)->f(1);
     return 0;
 }
 #pragma cplusplus reset
