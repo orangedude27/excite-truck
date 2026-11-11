@@ -131,31 +131,31 @@ void *fn_8024E818(void *object, s32 destroyFlag) {
     return object;
 }
 
-void *fn_8024E920(void *arg0, s32 arg1) {
+void *fn_8024E920(void *self, s32 shouldDelete) {
     extern unsigned char lbl_8034453C[];
     extern s32 fn_80128670(s32);
     extern s32 fn_80235380(s32);
     extern s32 fn_802CAC54(s32);
     extern s32 fn_80128668(void *);
-    unsigned char *entry;
-    s32 i, offset;
-    void *table;
-    if (arg0 != 0) {
-        *(void **)arg0 = lbl_803444D8;
-        fn_80128670(*(s32 *)((u8 *)arg0 + 0xCC));
+    /* Destructor-like teardown: set the first vtable, release the resource at +0xCC, drop the
+       shared refcount and clean up its table on zero, then run the base vtable stage releasing
+       +0x18/+0x24/+0x20; conditionally delete the object and return it. */
+    if (self != 0) {
+        *(void **)self = lbl_803444D8;
+        fn_80128670(*(s32 *)((u8 *)self + 0xCC));
         if (--lbl_8055F2E8 == 0) {
             CleanupEntries(lbl_8055F2E4);
             lbl_8055F2E4 = 0;
         }
-        if (arg0 != 0) {
-            *(void **)arg0 = lbl_8034453C;
-            fn_80128670(*(s32 *)((u8 *)arg0 + 0x18));
-            fn_80235380(*(s32 *)((u8 *)arg0 + 0x24));
-            fn_802CAC54(*(s32 *)((u8 *)arg0 + 0x20));
+        if (self != 0) {
+            *(void **)self = lbl_8034453C;
+            fn_80128670(*(s32 *)((u8 *)self + 0x18));
+            fn_80235380(*(s32 *)((u8 *)self + 0x24));
+            fn_802CAC54(*(s32 *)((u8 *)self + 0x20));
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (shouldDelete > 0) fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
 #pragma push
