@@ -501,29 +501,29 @@ static inline void inline_transform_vec(float *out, const float *in, const float
     } else {
         {
             float m3 = m[3];
-            float y0 = in[1] * m3;
+            float y0 = m3 * in[1];
             float m0 = m[0];
-            float x0 = in[0] * m0;
+            float x0 = m0 * in[0];
             float m6 = m[6];
-            float z0 = in[2] * m6;
+            float z0 = m6 * in[2];
             out[0] = (x0 + y0) + z0;
         }
         {
             float m4 = m[4];
-            float y1 = in[1] * m4;
+            float y1 = m4 * in[1];
             float m1 = m[1];
-            float x1 = in[0] * m1;
+            float x1 = m1 * in[0];
             float m7 = m[7];
-            float z1 = in[2] * m7;
+            float z1 = m7 * in[2];
             out[1] = (x1 + y1) + z1;
         }
         {
             float m5 = m[5];
-            float y2 = in[1] * m5;
+            float y2 = m5 * in[1];
             float m2 = m[2];
-            float x2 = in[0] * m2;
+            float x2 = m2 * in[0];
             float m8 = m[8];
-            float z2 = in[2] * m8;
+            float z2 = m8 * in[2];
             out[2] = (x2 + y2) + z2;
         }
     }
