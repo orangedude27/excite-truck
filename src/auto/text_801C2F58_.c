@@ -2802,53 +2802,76 @@ s32 fn_801C9920(s32 arg0, s32 arg1) {
     }
 }
 #pragma pop
+/* fn_801CA070 writes the debug interlude timeline out as a text "table" file.
+ * The strings it prints live in the format pool at lbl_80336B00, so they are
+ * named here by their offset into that pool. */
+enum {
+    OFF_INTERLUDE_VAR_NAME = 0x130, /* "interlude_name": variable holding the table name */
+    OFF_TABLE_HEADER       = 0xD04, /* "table %s\r\n" */
+    OFF_TABLE_DURATION     = 0xD10, /* "\tduration\t%.2f\r\n" */
+    OFF_TABLE_FOOTER       = 0xD24, /* "end\r\nend\r\n" */
+    OFF_TABLE_SAVED        = 0xD30, /* "Saved interlude to %s" */
+    OFF_TABLE_SAVE_FAILED  = 0xD48  /* "Error: couldn't save interlude to %s!" */
+};
+#define sInterludeTableName  lbl_8055E814 /* name to save under; 0 = ask the scene's variable table */
+#define sInterludeDuration   lbl_8055A958 /* interlude duration, set from the console */
+#define console_message      lbl_80437FC0 /* console line the result is reported on */
+#define file_create          fn_802E367C  /* name -> write handle, -1 on failure */
+#define file_printf          fn_802E3AD0  /* handle, printf-style format, ... */
+#define file_close           fn_802E3734  /* &handle */
+#define timeline_write_entry fn_801C9920  /* entry, handle: one entry as text */
 extern char lbl_80336B00[];
 extern s32 lbl_8055E814;
-extern s32 fn_802E367C(void);
+extern s32 fn_802E367C(const char *);
 extern s32 fn_801C9920(s32, s32);
 extern const char *fn_80007F90(u32);
 extern void fn_802E3734(s32 *);
 extern void fn_802E3AD0(s32, const char *, ...);
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" s32 fn_801CA070(void *arg0) {
- struct Dummy {
+/* Save the debug interlude timeline to fileName as a text "table" file: a
+ * "table <name>" header, the duration, one block per timeline entry and the
+ * "end"/"end" footer; then report on the console whether it was written. */
+extern "C" void fn_801CA070(char *fileName) {
+ /* Named-variable table of the current scene: slot 0xC looks a name up and
+  * slot 0x14 returns that variable's value as a string. */
+ struct DebugVarTable {
   virtual void v0();
-  virtual s32 v1(char *);
+  virtual s32 find(char *name);
   virtual void v2();
-  virtual s32 v3(char *);
+  virtual char *valueOf(char *name);
  };
  char *base=lbl_80336B00;
  s32 handle;
  s32 offset, i;
- s32 value;
- Dummy *obj;
- Dummy *obj2;
- s32 t;
- handle=fn_802E367C();
+ s32 tableName;
+ DebugVarTable *table;
+ DebugVarTable *table2;
+ s32 foundName;
+ handle=file_create(fileName);
  if(handle!=-1) {
-  value=lbl_8055E814;
-  switch(value) {
+  tableName=sInterludeTableName;
+  switch(tableName) {
   case 0:
-   obj=(Dummy*)fn_801C3D5C();
-   if(obj->v1(base+0x130)!=0) {
-    obj2=(Dummy*)fn_801C3D5C();
-    t=obj2->v3(base+0x130);
-   } else t=(s32)fn_80007F90(__AXFXGetLfoSinTable_801769CC()[1]);
-   value=t;
+   table=(DebugVarTable*)fn_801C3D5C();
+   if(table->find(base+OFF_INTERLUDE_VAR_NAME)!=0) {
+    table2=(DebugVarTable*)fn_801C3D5C();
+    foundName=(s32)table2->valueOf(base+OFF_INTERLUDE_VAR_NAME);
+   } else foundName=(s32)fn_80007F90(__AXFXGetLfoSinTable_801769CC()[1]);
+   tableName=foundName;
    break;
   default:
    goto common;
   }
-common:
-  fn_802E3AD0(handle,base+0xD04,value);
-  fn_802E3AD0(handle,base+0xD10,lbl_8055A958);
-  for(i=0,offset=0;i<lbl_8055E7F0;offset+=0x30C,i++)
-   fn_801C9920(lbl_8055E7F8+offset,handle);
-  fn_802E3AD0(handle,base+0xD24);
-  fn_802E3734(&handle);
-  sprintf(lbl_80437FC0,base+0xD30,arg0);
- } else sprintf(lbl_80437FC0,base+0xD48,arg0);
+ common:
+  file_printf(handle,base+OFF_TABLE_HEADER,tableName);
+  file_printf(handle,base+OFF_TABLE_DURATION,sInterludeDuration);
+  for(i=0,offset=0;i<sTimelineCount;offset+=0x30C,i++)
+   timeline_write_entry(sTimelineEntries+offset,handle);
+  file_printf(handle,base+OFF_TABLE_FOOTER);
+  file_close(&handle);
+  sprintf(console_message,base+OFF_TABLE_SAVED,fileName);
+ } else sprintf(console_message,base+OFF_TABLE_SAVE_FAILED,fileName);
 }
 
 #pragma push
