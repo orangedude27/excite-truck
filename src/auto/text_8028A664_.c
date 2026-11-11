@@ -285,25 +285,29 @@ void fn_8028AA6C(void *arg0, s32 arg1, f32 arg2) {
 extern s32 fn_8029771C(void *, void *, f32);
 #pragma push
 #pragma processor 750
+extern s32 fn_8029771C(void *sequence, void *pos, f32 elapsed);
+#pragma push
+#pragma processor 750
 #pragma scheduling invalid_target
+/* Advances every live explosion in the spawn queue: each instance's FXSequence is
+   played at its spawn position for the time since it started, and instances whose
+   sequence has finished are dropped, the last queued one moving into their slot. */
 void fn_8028AB14(void) {
-    struct Entry { f32 time; struct { s32 x, y, z; } pos; void *obj; };
     f32 now = fn_801E7E18();
-    struct Entry *entry = (struct Entry *)lbl_804B32B8;
+    struct FxSpawn *spawn = (struct FxSpawn *)lbl_804B32B8;
     s32 i = 0;
-    while (i < lbl_804B32B8[0x50]) {
-        if (!fn_8029771C(entry->obj, &entry->pos, now - entry->time)) {
-            struct Entry *last = (struct Entry *)lbl_804B32B8 + --lbl_804B32B8[0x50];
-            entry->time = last->time;
-            entry->pos = last->pos;
-            entry->obj = last->obj;
+    while (i < FX_SPAWN_COUNT) {
+        if (!fn_8029771C(spawn->sequence, &spawn->pos, now - spawn->spawnTime)) {
+            struct FxSpawn *last = (struct FxSpawn *)lbl_804B32B8 + --FX_SPAWN_COUNT;
+            spawn->spawnTime = last->spawnTime;
+            spawn->pos = last->pos;
+            spawn->sequence = last->sequence;
         } else {
-            entry++;
+            spawn++;
             i++;
         }
     }
 }
-
 #pragma push
 #pragma use_lmw_stmw off
 #pragma cplusplus on
