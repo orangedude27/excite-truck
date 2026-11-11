@@ -2308,6 +2308,7 @@ extern "C" void fn_80141CC0(char *arg0) {
 
 #pragma push
 #pragma scheduling invalid_target
+// Initializes several fixed-size string fields on a record (copies a results overlay timeout label and two empty strings).
 extern "C" void fn_80141DAC(char *arg0) {
     {
         char *src = (char *)fn_80131234(lbl_8032CC64);
