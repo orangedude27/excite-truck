@@ -1292,8 +1292,8 @@ int fn_802734F0(int arg0) {
         if (arg0 == 1) goto done;
         if (arg0 == 1) goto fallback;
         if (arg0 >= 1) goto check3;
-        if (0 <= arg0) goto flag8;
-        goto fallback;
+        if (arg0 < 0) goto fallback;
+        goto flag8;
 check3:
         if (arg0 >= 3) goto fallback;
         flags |= 6;
