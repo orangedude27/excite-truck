@@ -405,7 +405,7 @@ end:;
 #pragma dont_inline reset
   
   #pragma scheduling invalid_target
-  void fn_80287D70(void *arg0, int arg1, int arg2) {
+void fn_80287D70(void *arg0, int arg1, int arg2) {
     char name[0x20];
     const char *format = lbl_80348A40;
 
@@ -454,40 +454,65 @@ extern "C" void fn_80287E80(void **arg0, s32 arg1) {
 #pragma cplusplus reset
 #pragma pop
 
-#pragma scheduling invalid_target
-void fn_80287ED0(Obj *arg0, Obj **arg1, s32 arg2, s32 arg3) {
-    Obj *obj = *arg1;
-    if (obj == 0 || ((s32 (*)(Obj *, s32))obj->vtable[2])(obj, arg2) == 0) {
-        fn_802E317C(lbl_80348A4C, arg2);
+#pragma cplusplus on
+extern "C" void fn_80287ED0(void *b0, void **b1, s32 b2, s32 b3) {
+    struct Ifc {
+        virtual void *f0(s32);
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+        virtual void f10();
+        virtual void f11(void *, s32);
+    };
+    Ifc *obj = *(Ifc **)b1;
+    if (obj == 0 || obj->f0(b2) == 0) {
+        fn_802E317C(lbl_80348A4C, b2);
     }
-    obj = *arg1;
-    obj = ((Obj *(*)(Obj *, s32))obj->vtable[2])(obj, arg2);
-    ((void (*)(Obj *, Obj *, s32))obj->vtable[13])(arg0, obj, arg3);
+    obj = *(Ifc **)b1;
+    obj = (Ifc *)obj->f0(b2);
+    ((Ifc *)b0)->f11(obj, b3);
 }
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
-void fn_80287F90(void *arg0, Obj **arg1, s32 arg2, s32 arg3, s32 *src) {
+#pragma cplusplus on
+extern "C" void fn_80287F90(void *arg0, void **arg1, s32 arg2, s32 arg3, s32 *src) {
+    struct Ifc {
+        virtual void *f0(s32);
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+        virtual void f10();
+        virtual void f11();
+        virtual void f12(void *, s32, void *);
+    };
     s32 sp8[3];
-    Obj *obj;
-    Obj *ret;
-    s32 a;
-    s32 b;
-    s32 c;
-    obj = *arg1;
-    if (obj == 0 || ((s32 (*)(Obj *, s32))obj->vtable[2])(obj, arg2) == 0) {
+    s32 a, b, c;
+    Ifc *obj = *(Ifc **)arg1;
+    if (obj == 0 || obj->f0(arg2) == 0) {
         fn_802E317C(lbl_80348A4C, arg2);
     }
-    a = src[0];
-    b = src[1];
     c = src[2];
+    b = src[1];
+    a = src[0];
     sp8[0] = a;
+    obj = *(Ifc **)arg1;
     sp8[1] = b;
     sp8[2] = c;
-    obj = *arg1;
-    ret = ((Obj *(*)(Obj *, s32))obj->vtable[2])(obj, arg2);
-    ((void (*)(void *, Obj *, s32, s32 *))ret->vtable[14])(arg0, ret, arg3, sp8);
+    obj = (Ifc *)obj->f0(arg2);
+    ((Ifc *)arg0)->f12(obj, arg3, sp8);
 }
-#pragma scheduling on
+#pragma cplusplus off
 #pragma use_lmw_stmw reset
 s32 fn_80288060(s32 arg0, s32 arg1) {
     return *(s32 *)(arg0 + (arg1 << 2) + 4);
@@ -505,6 +530,7 @@ void fn_80288070(s32 arg0, s32 arg1, s32 arg2) {
 }
 
 void fn_802880F4(void) {
+    /* Initializes the per-car effect table from the active car entries. */
     extern int fn_801EA994(void);
     extern int fn_8012850C(int, const char *, int);
     extern int fn_8002F37C(int, void *, void *, int, int);
@@ -513,36 +539,36 @@ void fn_802880F4(void) {
     extern int lbl_80488648[];
     extern int lbl_8055F6C4;
     extern char lbl_80348A74[];
-    int count = fn_801EA994();
-    int memory = fn_8012850C(count * 0x28 + 0x10, lbl_80348A74, count * 0x28);
-    lbl_8055F6C4 = fn_8002F37C(memory, fn_80287C30, fn_80287C80, 0x28, count);
+    int entryCount = fn_801EA994();
+    int tableBuffer = fn_8012850C(entryCount * 0x28 + 0x10, lbl_80348A74, entryCount * 0x28);
+    lbl_8055F6C4 = fn_8002F37C(tableBuffer, fn_80287C30, fn_80287C80, 0x28, entryCount);
     {
-        int *table = lbl_80488648;
-        int offset;
-        int i;
-        i = 0;
-        offset = 0;
+        int *idCursor = lbl_80488648;
+        int entryOffset;
+        int index;
+        index = 0;
+        entryOffset = 0;
         goto test;
     loop:
         {
-            int obj = fn_801EA9A0(i);
-            int id;
-            int value;
-            if ((unsigned)i < 8)
-                id = *table;
+            int carEntry = fn_801EA9A0(index);
+            int tableId;
+            int effectId;
+            if ((unsigned)index < 8)
+                tableId = *idCursor;
             else
-                id = 0;
-            value = fn_801EE0C8(id);
-            fn_80287CE8(lbl_8055F6C4 + offset,
-                        (void *)(obj + 0x88), value,
-                        *(int *)(obj + 0xB8));
+                tableId = 0;
+            effectId = fn_801EE0C8(tableId);
+            fn_80287CE8(lbl_8055F6C4 + entryOffset,
+                        (void *)(carEntry + 0x88), effectId,
+                        *(int *)(carEntry + 0xB8));
         }
-        table++;
-        offset += 0x28;
-        i++;
+        idCursor++;
+        entryOffset += 0x28;
+        index++;
     test:
-        count = fn_801EA994();
-        if (i < count)
+        entryCount = fn_801EA994();
+        if (index < entryCount)
             goto loop;
     }
 }
