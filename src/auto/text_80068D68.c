@@ -18946,7 +18946,7 @@ typedef struct {
     u8      link_role;          /* +0x30  master or slave */
     u8      id;                 /* +0x31  identifier of the next command we send */
     u16     link_flush_tout;    /* +0x32  flush timeout in use */
-    u8      pad_34[2];
+    u8      pad_34[4];
     u16     link_xmit_quota;    /* +0x38  packets we may still send; l2c_link_adjust_allocation() sets it */
     u8      pad_3A[7];
     u8      is_congested;       /* +0x41  transmit queue is at or over its quota */
