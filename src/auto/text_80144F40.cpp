@@ -1585,6 +1585,10 @@ extern "C" void fn_801473F8(void *arg0, s32 arg1, const char *format, ...) {
 #pragma scheduling invalid_target
 #pragma dont_inline on
 extern "C" void fn_801474EC(void *arg0, const char *arg1, ...) {
+    /* Format varargs text into a stack buffer and append it to the text object.
+       If the formatted result would be >= 0x200 bytes (including terminator), log
+       an oversized-text error via fn_802E317C with the length and format string,
+       but still pass the buffer to fn_80145C7C. No-op if arg0 is NULL. */
     char buffer[0x200];
     if (arg0 != 0) {
         va_list args;
