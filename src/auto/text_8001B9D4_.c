@@ -351,21 +351,16 @@ void fn_8001C0E8(void) {
 
 extern const char lbl_802FD718[];
 #pragma dont_inline on
-s32 fn_8001C0EC(s32 arg0, s32 arg1) {
-    s32 var_r30;
-    s32 temp_r3;
-    s32 temp_r31;
-    if (fn_8001BCF0((void *)arg0) == 0) {
-        if (((s32 (*)(void *))fn_8001BD30)((void *)arg0) == 0)
-            goto return_one;
-    }
-    if (fn_8001BCF0((void *)arg0) != 0) {
-        var_r30 = ((s32 (*)(void *))fn_8001C0C4)((void *)arg0);
-    } else {
-        var_r30 = ((s32 (*)(void *))fn_8001C0A0)((void *)arg0);
-    }
-    temp_r3 = fn_8001BD28((void *)arg0) & 0x60000;
-    switch (temp_r3) {
+s32 fn_8001C0EC(void *arg0, s32 arg1) {
+    s32 value;
+    s32 mode2;
+    if (fn_8001BCF0(arg0) == 0 && ((s32 (*)(void *))fn_8001BD30)(arg0) == 0)
+        goto return_one;
+    if (fn_8001BCF0(arg0) != 0)
+        value = ((s32 (*)(void *))fn_8001C0C4)(arg0);
+    else
+        value = ((s32 (*)(void *))fn_8001C0A0)(arg0);
+    switch (fn_8001BD28(arg0) & 0x60000) {
     case 0x40000:
         goto compare_a;
     case 0x20000:
@@ -373,15 +368,15 @@ s32 fn_8001C0EC(s32 arg0, s32 arg1) {
     default:
         break;
     }
-    temp_r31 = fn_8001BD28((void *)arg0) & 0x60000;
+    mode2 = fn_8001BD28(arg0) & 0x60000;
     {
-        s32 logValue = fn_8001BD28((void *)arg0);
-        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD718, logValue, temp_r31);
+        s32 logValue = fn_8001BD28(arg0);
+        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD718, logValue, mode2);
     }
 compare_a:
-    return var_r30 < arg1;
+    return value < arg1;
 compare_b:
-    return arg1 < var_r30;
+    return arg1 < value;
 return_one:
     return 1;
 }
@@ -1146,16 +1141,8 @@ extern void memset(void *, s32, u32);
 extern u8 lbl_8055D5D8;
 #pragma dont_inline on
 void fn_8001D5F0(s32 arg0) {
-    if (arg0 == 2) {
-        memset(lbl_8055D5CC, 0, 0x3E7D0);
-        ((s32 *)lbl_80358658[0])[1] = *(s32 *)(lbl_8055D5CC + 0x6E00);
-        ((s32 *)lbl_80358658[1])[1] = *(s32 *)(lbl_8055D5CC + 0x148C4);
-        ((s32 *)lbl_80358658[2])[1] = *(s32 *)(lbl_8055D5CC + 0x22388);
-        ((s32 *)lbl_80358658[3])[1] = *(s32 *)(lbl_8055D5CC + 0x2FE4C);
-        return;
-    }
-    if (arg0 < 2) {
-        if (arg0 == 0) return;
+    switch (arg0) {
+    case 1:
         fn_8001D5D8();
         ((s32 *)lbl_80358658[0])[1] = *(s32 *)(lbl_8055D5CC + 0x6E00);
         ((s32 *)lbl_80358658[1])[1] = *(s32 *)(lbl_8055D5CC + 0x148C4);
@@ -1165,14 +1152,25 @@ void fn_8001D5F0(s32 arg0) {
             fn_8001D7A4();
             lbl_8055D5D8 = 0;
         }
+    case 0:
         return;
-    }
-    if (arg0 >= 6) return;
-    if (arg0 < 4) {
+    case 2:
+        memset(lbl_8055D5CC, 0, 0x3E7D0);
+        ((s32 *)lbl_80358658[0])[1] = *(s32 *)(lbl_8055D5CC + 0x6E00);
+        ((s32 *)lbl_80358658[1])[1] = *(s32 *)(lbl_8055D5CC + 0x148C4);
+        ((s32 *)lbl_80358658[2])[1] = *(s32 *)(lbl_8055D5CC + 0x22388);
+        ((s32 *)lbl_80358658[3])[1] = *(s32 *)(lbl_8055D5CC + 0x2FE4C);
+        return;
+    case 3:
         fn_8001D5E4();
         return;
+    case 4:
+    case 5:
+        fn_8001D5D8();
+        break;
+    default:
+        return;
     }
-    fn_8001D5D8();
 }
 
 extern void fn_802E30C8(const char *, ...);
