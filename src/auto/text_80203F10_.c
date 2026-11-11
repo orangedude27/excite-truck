@@ -18,7 +18,6 @@ extern int lbl_8055ECF8;
 
 #pragma push
 #pragma scheduling invalid_target
-#pragma opt_propagation off
 void fn_80203F10(void) {
     int a;
     int b;
