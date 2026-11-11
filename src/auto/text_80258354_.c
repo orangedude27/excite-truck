@@ -214,6 +214,8 @@ done:
     *(float *)(entry + 0x28) = lbl_80563AC8;
     *(char *)(entry + 0x24) = (char)arg3;
 }
+#pragma push
+#pragma processor 750
 #pragma scheduling invalid_target
 void fn_8025878C(void *arg0, const char *arg1, int flags, int arg3, float x, float y) {
     int index = 0;
@@ -252,34 +254,28 @@ found:
         *(int *)(index + 0x40), *(int *)(index + 0x44), arg3,
         x, y, lbl_80563AD0, cosine, sine);
 }
-#pragma paired_single off
-#pragma ppc_psq_save on
-#pragma use_lmw_stmw on
-#pragma scheduling invalid_target
+#pragma pop
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma scheduling on
 void fn_802588C8(void *arg0, const char *arg1, int flags, int arg3, float x, float y, float scale) {
     int index = 0;
     int offset = 0;
     int result;
-    int callId0;
-    int callId1;
-    float callX;
-    float callY;
-    float callColor;
-    float callCosine;
-    register float sine;
-    register float cosine;
+    float c;
+    float s;
     goto check;
 loop:
     result = stricmp((const char *)(*(unsigned int *)((char *)arg0 + 4) + offset), arg1);
-    if ((unsigned int)__cntlzw(result) >> 5) {
-        if (lbl_80563AD0)
-            goto found;
-        else
-            goto found;
+    switch (((unsigned int)__cntlzw(result) >> 5)) {
+    case 0:
+        offset += 0x48;
+        index++;
+        goto check;
+    default:
+        goto found;
     }
-    offset += 0x48;
-    index++;
-    goto check;
 check:
     if (index < *(int *)((char *)arg0 + 8))
         goto loop;
@@ -288,28 +284,20 @@ found:
     if (index < 0)
         return;
     index = *(int *)((char *)arg0 + 4) + index * 0x48;
-    cosine = scale * fn_80235EF0(*(int *)(index + 0x40), *(int *)(index + 0x44));
-    sine = scale * fn_80235F64(*(int *)(index + 0x40), *(int *)(index + 0x44));
+    c = scale * fn_80235EF0(*(int *)(index + 0x40), *(int *)(index + 0x44));
+    s = scale * fn_80235F64(*(int *)(index + 0x40), *(int *)(index + 0x44));
     if (flags & 2)
-        x -= cosine;
+        x -= c;
     else if (flags & 4)
-        x -= lbl_80563ACC * cosine;
+        x -= lbl_80563ACC * c;
     if (flags & 0x40)
-        y += sine;
+        y += s;
     else if (flags & 0x10)
-        y += lbl_80563ACC * sine;
-    callX = x;
-    callId0 = *(int *)(index + 0x40);
-    callY = y;
-    callColor = lbl_80563AD0;
-    callCosine = cosine;
-    callId1 = *(int *)(index + 0x44);
-    fn_802354A0(callId0, callId1, arg3, callX, callY, callColor, callCosine);
+        y += lbl_80563ACC * s;
+    ((void (*)(int, int, int, float, float, float, float, float))fn_802354A0)(*(int *)(index + 0x40), *(int *)(index + 0x44), arg3, x, y, lbl_80563AD0, c, s);
 }
-#pragma scheduling on
-#pragma paired_single reset
-#pragma ppc_psq_save off
-#pragma use_lmw_stmw reset
+#pragma scheduling reset
+#pragma pop
 float fn_80258A00(void *arg0, int arg1) {
     int index = 0;
     int offset = 0;
