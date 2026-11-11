@@ -463,7 +463,15 @@ void fn_8023C268(void) {}
 extern "C" s32 fn_80007FF0(s32);
 extern "C" s32 fn_80137C7C(s32, s32);
 extern "C" u32 lbl_8055BB34;
-extern const char lbl_8034137C[];
+extern const char lbl_8034137C[]; /* "GameDoEve: eve [%s] contest [%s] at %s" */
+
+/* lbl_8055BB34: the .sdata string "name", the parameter-table element a
+ * contest's own name is read from. */
+#define contest_name_key lbl_8055BB34
+/* lbl_8055BB30: how many players the debug console asked the next race to run
+ * with (fn_8023BF68 rejects 0 and anything past 4).  A negative count gives
+ * every player its own index instead of the currently selected player. */
+#define player_count lbl_8055BB30
 extern "C" void fn_8023BFBC(s32 arg0, s32 arg1) {
     struct Dummy {
         virtual void f0();
