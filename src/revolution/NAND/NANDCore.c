@@ -484,6 +484,7 @@ static s32 nandGetType(const char* path, u8* type, NANDCommandBlock* block,
     }
 }
 
+/* Asynchronously determines whether a NAND path refers to a file or directory, allowing access to private paths. */
 s32 NANDPrivateGetTypeAsync(const char* path, u8* type,
                             NANDAsyncCallback callback,
                             NANDCommandBlock* block) {
