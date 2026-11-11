@@ -1125,12 +1125,13 @@ void VIConfigurePan(u16 xOrg, u16 yOrg, u16 width, u16 height)
     OSRestoreInterrupts(enabled);
 }
 
+/* Commits pending VI register and framebuffer state changes (shadow -> hardware view) under disabled interrupts. */
 void VIFlush(void)
 {
-    BOOL enabled;
+    BOOL interrupts;
     s32 regIndex;
 
-    enabled = OSDisableInterrupts();
+    interrupts = OSDisableInterrupts();
     lbl_8055DB70 |= lbl_8055DB60;
     lbl_8055DB60 = 0;
     shdwChanged |= changed;
@@ -1142,7 +1143,7 @@ void VIFlush(void)
     lbl_8055DBCC = 1;
     lbl_8055DBC8 = 1;
     lbl_8055DB98 = HorVer.bufAddr;
-    OSRestoreInterrupts(enabled);
+    OSRestoreInterrupts(interrupts);
 }
 
 void VISetNextFrameBuffer(void *fb)
