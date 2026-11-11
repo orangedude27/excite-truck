@@ -21384,32 +21384,48 @@ void rfc_mx_conf_cnf(void *arg0, u16 *arg1) {
     }
 }
 
-void rfc_mx_conf_ind(void *arg0, void *arg1) {
+/* Handle the peer's L2CA_ConfigInd on the RFCOMM multiplexer channel: save the
+   peer's L2CAP MTU (less the framing RFCOMM puts on every frame), answer the
+   configuration with L2CAP_CFG_OK, and note that the peer's configuration has
+   arrived.  Once our own configuration has been confirmed as well, send the
+   multiplexer SABME (if we are the initiator) or wait for the peer's. */
+void rfc_mx_conf_ind(void *p_mcb, void *p_data) {
     extern u8 lbl_803C4828[];
     extern char lbl_80319A94[];
     extern void rfc_send_sabme();
-    u8 *mcb = (u8 *)arg0;
-    u8 *info = (u8 *)arg1;
-    if (lbl_803C4828[0x414] >= 4)
-        ((void (*)(u32, void *, void *))fn_80070954)(0x90003, lbl_80319A94, arg1);
-    if (info[2] != 0) {
-        *(s16 *)(mcb + 0x6A) = (s16)(*(u16 *)(info + 4) - 6);
+    tRFC_MCB_VIEW *mcb = (tRFC_MCB_VIEW *)p_mcb;
+    /* the peer's L2CAP configuration, handed straight back in the response */
+    tL2CAP_CFG_INFO *p_cfg = (tL2CAP_CFG_INFO *)p_data;
+
+    if (rfc_cb_trace_level >= BT_TRACE_LEVEL_EVENT)
+        /* "rfc_mx_conf_ind p_cfg:%0x" */
+        ((void (*)(u32, void *, void *))fn_80070954)(
+            TRACE_LAYER_RFCOMM | TRACE_TYPE_EVENT, lbl_80319A94, p_cfg);
+
+    /* RFCOMM adds 3-4 bytes in the beginning and 1 byte FCS to the MTU */
+    if (p_cfg->mtu_present) {
+        mcb->peer_l2cap_mtu = p_cfg->mtu - RFCOMM_MIN_OFFSET - 1;
     } else {
-        *(s16 *)(mcb + 0x6A) = 0x29A;
+        mcb->peer_l2cap_mtu = L2CAP_DEFAULT_MTU - RFCOMM_MIN_OFFSET - 1;
     }
-    info[2] = 0;
-    info[0x20] = 0;
-    info[6] = 0;
-    *(u16 *)info = 0;
-    L2CA_ConfigRsp(*(u16 *)(mcb + 0x68), (tL2CAP_CFG_INFO *)info);
-    mcb[0x6F] = 1;
-    if (mcb[0x6C] == 2 && mcb[0x6E] != 0) {
-        if (mcb[0x6D] != 0) {
-            mcb[0x6C] = 3;
-            ((void (*)(void *, u8))rfc_send_sabme)(arg0, 0);
+
+    /* Nothing of ours to negotiate: reply to the peer's request as-is */
+    p_cfg->mtu_present = FALSE;
+    p_cfg->flush_to_present = FALSE;
+    p_cfg->qos_present = FALSE;
+    p_cfg->result = L2CAP_CFG_OK;
+    L2CA_ConfigRsp(mcb->lcid, p_cfg);
+
+    mcb->peer_cfg_rcvd = TRUE;
+    if (mcb->state == RFC_MX_STATE_CONFIGURE && mcb->local_cfg_sent) {
+        if (mcb->is_initiator) {
+            mcb->state = RFC_MX_STATE_SABME_WAIT_UA;
+            /* rfc_send_sabme() is defined in this unit with one argument too
+               many; the original symbol takes (p_mcb, dlci). */
+            ((void (*)(void *, u8))rfc_send_sabme)(p_mcb, RFCOMM_MX_DLCI);
             return;
         }
-        mcb[0x6C] = 4;
+        mcb->state = RFC_MX_STATE_WAIT_SABME;
     }
 }
 
