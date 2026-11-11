@@ -146,6 +146,7 @@ void fn_80202BFC(s32 arg0) {
         i++; p1++; p2++;
     } while (i < 2);
 }
+#pragma processor reset
 
 #pragma push
 #pragma paired_single off
