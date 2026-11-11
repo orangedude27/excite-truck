@@ -695,19 +695,19 @@ extern char lbl_802FD040[];
  * printed to the debug console with the two names and the number. */
 void fn_80017558(void) {
     {
-        register int innerOffset;
-        register int outerOffset;
+        register int nextOffset;
+        register int offset;
         register int i;
         register int j;
-        register int k1;
-        register int k2;
+        register int nextNumber;
+        register int number;
 
-        for (i = 0, outerOffset = 0; i < (int)lbl_8055D54C; outerOffset += 0x5C, i++) {
-            for (j = i + 1, innerOffset = j * 0x5C; j < (int)lbl_8055D54C; innerOffset += 0x5C, j++) {
-                k1 = *(int *)(lbl_8055D540 + innerOffset + 4);
-                k2 = *(int *)((u32)outerOffset + (u32)lbl_8055D540 + 4);
-                if (k2 == k1) {
-                    fn_802E317C(lbl_802FD00C, (void *)((u32)outerOffset + (u32)lbl_8055D540 + 8), lbl_8055D540 + innerOffset + 8, k1);
+        for (i = 0, offset = 0; i < (int)sDriverCount; offset += 0x5C, i++) {
+            for (j = i + 1, nextOffset = j * 0x5C; j < (int)sDriverCount; nextOffset += 0x5C, j++) {
+                nextNumber = *(int *)(sDriverList + nextOffset + 4);
+                number = *(int *)((u32)offset + (u32)sDriverList + 4);
+                if (number == nextNumber) {
+                    debug_print(STR_DUP_DRIVER_NUM, (void *)((u32)offset + (u32)sDriverList + 8), sDriverList + nextOffset + 8, nextNumber);
                 }
             }
         }
@@ -716,17 +716,17 @@ void fn_80017558(void) {
     {
         register int j;
         register int i;
-        register int innerOffset;
-        register int outerOffset;
-        register int k1;
-        register int k2;
+        register int nextOffset;
+        register int offset;
+        register int number;
+        register int nextNumber;
 
-        for (i = 0, outerOffset = 0; i < (int)lbl_8055D550; outerOffset += 0xA8, i++) {
-            for (j = i + 1, innerOffset = j * 0xA8; j < (int)lbl_8055D550; innerOffset += 0xA8, j++) {
-                k1 = *(int *)((u32)outerOffset + (u32)lbl_8055D544 + 4);
-                k2 = *(int *)(lbl_8055D544 + innerOffset + 4);
-                if (k1 == k2) {
-                    fn_802E317C(lbl_802FD040, (void *)((u32)outerOffset + (u32)lbl_8055D544 + 0x2C), lbl_8055D544 + innerOffset + 0x2C, k1);
+        for (i = 0, offset = 0; i < (int)sVehicleCount; offset += 0xA8, i++) {
+            for (j = i + 1, nextOffset = j * 0xA8; j < (int)sVehicleCount; nextOffset += 0xA8, j++) {
+                number = *(int *)((u32)offset + (u32)sVehicleList + 4);
+                nextNumber = *(int *)(sVehicleList + nextOffset + 4);
+                if (number == nextNumber) {
+                    debug_print(STR_DUP_VEHICLE_NUM, (void *)((u32)offset + (u32)sVehicleList + 0x2C), sVehicleList + nextOffset + 0x2C, number);
                 }
             }
         }
