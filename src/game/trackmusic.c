@@ -655,10 +655,10 @@ void fn_802103B8(void) {
 #pragma push
 #pragma cplusplus on
 #pragma dont_inline on
-#pragma scheduling invalid_target
 extern "C" void fn_802103BC(void) {
     class Obj { public: virtual void f(int); };
-    fn_802EC1C0(lbl_80563400);
+    float f = lbl_80563400;
+    fn_802EC1C0(f);
     fn_802EC12C();
     fn_802EC1E4();
     if (lbl_8055EED4 != 0) {
