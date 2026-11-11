@@ -128,13 +128,28 @@ extern "C" void fn_801DE890(int arg0) {
             struct Dummy *object = *(struct Dummy **)(entry + 0xC);
             void *result = object->call(text + 0x38);
             if (result != 0) {
+                float r10;
+                float be4;
+                float r14;
+                float t6;
+                float t5;
+                float r4v;
+                float r8v;
+                float bf4;
+                float be0;
                 fn_801476D8((int)result, -1, *(int *)(entry + 0x14));
-                fn_80147F30(0xFFC8C800, 0x3E8, -1,
-                    *(float *)((char *)result + 4) + *(float *)((char *)result + 0x10) * lbl_80562BE4,
-                    *(float *)((char *)result + 8) + *(float *)((char *)result + 0x14) * lbl_80562BE4,
-                    lbl_80562BE0 * (*(float *)((char *)result + 0x10) * lbl_80562BE4),
+                r10 = *(float *)((char *)result + 0x10);
+                be4 = lbl_80562BE4;
+                r14 = *(float *)((char *)result + 0x14);
+                t6 = r10 * be4;
+                t5 = r14 * be4;
+                r4v = *(float *)((char *)result + 4);
+                r8v = *(float *)((char *)result + 8);
+                bf4 = lbl_80562BF4;
+                be0 = lbl_80562BE0;
+                fn_80147F30(0xFFC8C800, 0x3E8, -1, r4v + t6, r8v + t5, be0 * t6,
                     lbl_80562BE8, lbl_80562BEC, lbl_80562BF0, lbl_80562BE8, lbl_80562BE8,
-                    lbl_80562BF4, lbl_80562BF4);
+                    bf4, bf4);
             }
         }
         break;
