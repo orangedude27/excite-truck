@@ -2212,7 +2212,7 @@ extern "C" void fn_8015B0A4(Unk801577F0 *arg0) {
 }
 #pragma scheduling on
 extern "C" void fn_8015B15C(Unk801577F0* arg0) {
-    f32 zero = lbl_80561754;
+    f32 zero = 0.0f;
     s32 i = 0;
     s32 offset = 0;
     s32 value = 0;
@@ -2229,14 +2229,14 @@ extern "C" void fn_8015B15C(Unk801577F0* arg0) {
     }
     f32 b;
     f32 a;
-    a = lbl_80561754;
-    b = lbl_80561750;
+    a = 0.0f;
+    b = 1.0f;
     *(s32*)((u8*)arg0 + 0x264) = 0;
     *(s32*)((u8*)arg0 + 0x260) = 0;
     *(f32*)((u8*)arg0 + 0x254) = a;
     *(f32*)((u8*)arg0 + 0x25C) = b;
     arg0->v31();
-    f32 tail = lbl_80561754;
+    f32 tail = 0.0f;
     *(u8*)((u8*)arg0 + 0x26C) = 1;
     *(f32*)((u8*)arg0 + 0x270) = tail;
     *(s32*)((u8*)arg0 + 0x274) = 0;
