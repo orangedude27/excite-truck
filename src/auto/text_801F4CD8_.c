@@ -806,8 +806,8 @@ extern float lbl_80562FE0;
 #pragma paired_single reset
 void fn_801F65D0(void *arg0) {
     float delta[3];
-    register float var_f31;
-    register float var_f30;
+    float var_f31;
+    float var_f30;
     float weight, dot;
     int offset, i;
     unsigned char *entry;
