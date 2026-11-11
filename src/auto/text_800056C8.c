@@ -1582,7 +1582,7 @@ extern f32 lbl_805601A0, lbl_805601A4, lbl_805601A8, lbl_805601AC;
 extern u8 lbl_802FB6B4[];
 #pragma cplusplus on
 #pragma processor 750
-extern "C" void fn_80007898(void *arg0) {
+extern "C" void fn_80007898(void *object) {
     struct Dummy {
         virtual s32 f0(); virtual s32 f1(); virtual s32 f2(); virtual s32 f3();
         virtual s32 f4(); virtual s32 f5(); virtual s32 f6(); virtual s32 f7();
@@ -1592,15 +1592,17 @@ extern "C" void fn_80007898(void *arg0) {
         virtual s32 f20(); virtual s32 f21(); virtual s32 f22(); virtual s32 f23();
         virtual s32 f24();
     };
-    f32 first;
-    f32 second;
+    f32 xPos;
+    f32 yPos;
+    /* If the global UI state allows it and object flag f12() is clear,
+     * draw the "Continue" prompt at the standard screen position. */
     if (((Dummy *)fn_801B83A0())->f23() == 0) return;
     if (((Dummy *)fn_801B83A0())->f24() == 0) return;
-    if (((Dummy *)arg0)->f12() != 0) return;
-    first = fn_80011E44() - lbl_805601A0;
-    second = lbl_805601A4 + fn_80011E60();
-    fn_8000FBE8(first - lbl_805601A8, second, lbl_80560130);
-    fn_8000FF88(-1, 0x11, lbl_802FB6B4, lbl_805601AC, first, second);
+    if (((Dummy *)object)->f12() != 0) return;
+    xPos = fn_80011E44() - lbl_805601A0;
+    yPos = lbl_805601A4 + fn_80011E60();
+    fn_8000FBE8(xPos - lbl_805601A8, yPos, lbl_80560130);
+    fn_8000FF88(-1, 0x11, lbl_802FB6B4, lbl_805601AC, xPos, yPos);
 }
 #pragma cplusplus reset
 u32 fn_80007974(void) { return 1; }
