@@ -5534,21 +5534,23 @@ u8 BTA_DmAddDevice(u8 *bd_addr, u8 *link_key, u32 trusted_mask, u8 is_trusted) {
     u8 index = 0;
     u8 result;
     memset(service_mask, 0, 8);
-    if (is_trusted != 0) {
-        do {
-            bit = 1 << index;
-            if (trusted_mask & bit) {
-                trusted_mask &= ~bit;
-                mapped = lbl_802EE9C0[index];
-                offset = (mapped >> 3) & 0x3FC;
-                bit_index = mapped - (mapped & 0x1FE0);
-                *(u32 *)((u8 *)service_mask + offset) |= 1 << bit_index;
-            }
-            index++;
-            if (trusted_mask == 0)
-                break;
-        } while (index < 0x17);
+    if (is_trusted == 0)
+        goto done;
+loop:
+    bit = 1 << index;
+    if (trusted_mask & bit) {
+        trusted_mask &= ~bit;
+        mapped = lbl_802EE9C0[index];
+        offset = (mapped >> 3) & 0x3FC;
+        bit_index = mapped - (mapped & 0x1FE0);
+        *(u32 *)((u8 *)service_mask + offset) |= 1 << bit_index;
     }
+    index++;
+    if (trusted_mask == 0)
+        goto done;
+    if (index < 0x17)
+        goto loop;
+done:
     fn_8006EAD0();
     result = ((BOOLEAN (*)(BD_ADDR, DEV_CLASS, BD_NAME, BD_FEATURES,
                            UINT32 *, LINK_KEY))BTM_SecAddDevice)(
@@ -21337,35 +21339,29 @@ void rfc_mx_sm_state_disc_wait_ua(void *muxCb, s32 event, void *eventData) {
 }
 
 void rfc_mx_conf_cnf(void *arg0, u16 *arg1) {
-    extern void PORT_StartCnf(void *, u16);
-    extern void rfc_release_multiplexer_channel(void *);
-    extern void rfc_send_sabme();
+    extern u8 lbl_803C4828[];
     extern char lbl_80319A70[];
-    void (*start)(void *, u16) = PORT_StartCnf;
-    void (*disconnect)(u16) = (void (*)(u16))L2CA_DisconnectReq;
-    void (*release)(void *) = rfc_release_multiplexer_channel;
-    void (*sabme)(void *, u8) = (void (*)(void *, u8))rfc_send_sabme;
+    extern void rfc_send_sabme();
     u8 *p = (u8 *)arg0;
     if (lbl_803C4828[0x414] >= 4) {
-        void (*logfn)(u32, void *, void *, u16) = (void (*)(u32, void *, void *, u16))fn_8007096C;
-        logfn(0x90003, lbl_80319A70, arg1, arg1 ? *arg1 : 0);
+        ((void (*)(u32, void *, void *, u16))fn_8007096C)(0x90003, lbl_80319A70, arg1, arg1 ? *arg1 : 0);
     }
     if (*arg1 != 0) {
         if (p[0x6D] != 0) {
-            start(arg0, 0);
-            disconnect(*(u16 *)(p + 0x68));
+            PORT_StartCnf(arg0, *arg1);
+            L2CA_DisconnectReq(*(u16 *)(p + 0x68));
         }
-        release(arg0);
+        rfc_release_multiplexer_channel(arg0);
         return;
     }
     p[0x6E] = 1;
     if (p[0x6C] == 2 && p[0x6F] != 0) {
         if (p[0x6D] != 0) {
             p[0x6C] = 3;
-            sabme(arg0, 0);
-        } else {
-            p[0x6C] = 4;
+            ((void (*)(void *, u8))rfc_send_sabme)(arg0, 0);
+            return;
         }
+        p[0x6C] = 4;
     }
 }
 
