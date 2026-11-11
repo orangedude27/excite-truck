@@ -30,7 +30,7 @@ extern f32 lbl_805625BC;
 extern f32 lbl_80562604;
 extern f32 lbl_80562610;
 extern void *memset(void *, int, unsigned long);
-extern void *lbl_8055E678;
+extern void *lbl_8055E678; /* count (s32) of deity slot indices in the order table lbl_80435C30 */
 extern u8 lbl_8055E6A0;
 extern f32 lbl_8055E6A4;
 extern s32 lbl_8055E688;
