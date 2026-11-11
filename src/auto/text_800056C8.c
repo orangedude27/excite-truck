@@ -89,6 +89,13 @@ typedef struct OverlayEntry { /* manager + 0x10, one per player */
     void *fallback;   /* 0x0C: "ArenaOverlay" in arena mode, else racing */
 } OverlayEntry;
 
+/* fn_800057D0 walks the players by advancing the manager's own address 0x10
+ * bytes at a time, so the player it is looking at has its entry at +0x1C. */
+typedef struct OverlayCursor {
+    u8 pad[0x1C];
+    OverlayEntry entry; /* 0x1C: the player being looked at */
+} OverlayCursor;
+
 typedef struct OverlayManager {
     void *interlude; /* 0x00: "InterludeOverlay" */
     void *preRace;   /* 0x04: "PreRaceOverlay", only while the race is ahead */
