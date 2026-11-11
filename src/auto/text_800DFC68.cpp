@@ -23,7 +23,10 @@ namespace nw4hbm { namespace lyt {
         Link children;
         u8 unk_20[0xC];
         void* material;
-        u8 unk_2C[0xD0];
+        u8 unk_2C[0xA2];
+        u8 alpha;      /* 0xCE: pane alpha, passed to DrawQuad */
+        u8 flags;      /* 0xCF: bit 0 keeps the children from being animated */
+        u8 unk_D0[0x2C];
         void* materials;
         u8 materialCount;
         void* FindMaterialByName(const char*, bool);
