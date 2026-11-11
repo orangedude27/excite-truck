@@ -344,7 +344,8 @@ void fn_8022DD9C(void *arg0,int *arg1,int *arg2) {
 }
 
 #pragma push
-#pragma opt_propagation on
+#pragma opt_propagation off
+#pragma scheduling invalid_target
 void fn_8022DDB0(void *arg0) {
     float c = lbl_805635D4;
     float *p = *(float **)((char *)arg0 + 0x18);
