@@ -1335,6 +1335,9 @@ extern "C" s32 fn_800A6624(void *device, s32 arg1, s32 sector, s32 offset, s32 c
 
 // Matched by preserving the unsigned arg1 comparison while using the existing s32 signature.
 extern "C" s32 fn_800A6728(void *arg0, s32 arg1) {
+    /* Step a pending device operation: on active state invoke its callback,
+     * record nonzero callback results, then decrement state when complete or
+     * when arg1 requests finalization; return 0 on idle/not-ready. */
     s16 state = *(s16 *)((u8 *)arg0 + 0xE);
     s32 result = 0;
     void *obj;
