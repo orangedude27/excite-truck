@@ -3940,7 +3940,7 @@ extern "C" void *__dt__Q36nw4hbm3snd11SoundPlayerFv(void *arg0, s32 arg1) {
     }
     return arg0;
 }
-#pragma use_lmw_stmw reset
+#pragma use_lmw_stmw off
 void Update__Q36nw4hbm3snd11SoundPlayerFv(void *self) {
     struct Dummy {
         virtual ~Dummy();
@@ -3971,9 +3971,11 @@ void StopAllSound__Q36nw4hbm3snd11SoundPlayerFi(void *self, s32 arg1) {
         virtual void f2();
         virtual void stopAllSound(s32);
     };
-    register void *head = *(void **)((u8 *)self + 4);
-    register void *end = (u8 *)self + 4;
-    register void *node;
+
+    void *end = (u8 *)self + 4;
+    void *head = *(void **)((u8 *)self + 4);
+    void *node;
+
     while (head != end) {
         node = head;
         head = *(void **)node;
