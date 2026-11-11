@@ -270,8 +270,10 @@ extern "C" void fn_80206750(s32, s32, s32);
 extern "C" void fn_8020F15C(void *arg0) {
     void *p = *(void **)((char *)arg0 + 4);
     int value = *(int *)((char *)p + 0x1EC);
-    int mode = 2;
-    if (fn_80009C84() != 0)
+    int mode;
+    int t = fn_80009C84();
+    mode = 2;
+    if (t != 0)
         mode = 0;
     if (*(int *)((char *)arg0 + 0x48) != 0)
         fn_80206750(*(int *)((char *)arg0 + 0x48), value, mode);
@@ -324,32 +326,29 @@ void fn_8020F240(void *arg0) {
 }
 #pragma scheduling off
 void fn_8020F284(void *arg0, float farg0) {
+    float var_f2;
     float temp_f0;
     float temp_f1;
-    float var_f2;
+    float sub;
+    float div;
     void *temp_r4;
-    void *temp_r4_2;
     temp_r4 = *(void **)((char *)arg0 + 0x1C);
     if (temp_r4 != 0) {
+        div = lbl_805633F4;
+        sub = farg0 - lbl_805633DC;
         var_f2 = lbl_80563368;
-        temp_f0 = (farg0 - lbl_805633DC) / lbl_805633F4;
-        if (var_f2 < temp_f0) {
-        } else {
-            var_f2 = temp_f0;
-        }
-        if (var_f2 > lbl_80563370) {
-        } else {
-            var_f2 = lbl_80563370;
-        }
-        temp_f1 = lbl_805633F8 + (var_f2 * lbl_805633FC);
+        temp_f0 = sub / div;
+        var_f2 = (var_f2 < temp_f0) ? var_f2 : temp_f0;
+        var_f2 = (var_f2 > lbl_80563370) ? var_f2 : lbl_80563370;
+        temp_f1 = lbl_805633F8 + var_f2 * lbl_805633FC;
         if (temp_f1 != *(float *)((char *)temp_r4 + 8)) {
             *(signed char *)((char *)temp_r4 + 0x4D) = 1;
             *(float *)((char *)temp_r4 + 8) = temp_f1;
         }
-        temp_r4_2 = *(void **)((char *)arg0 + 0x1C);
-        *(signed char *)((char *)temp_r4_2 + 0x49) = 1;
-        *(char *)((char *)temp_r4_2 + 0x4B) = 0;
-        *(char *)((char *)temp_r4_2 + 0x4A) = 0;
+        temp_r4 = *(void **)((char *)arg0 + 0x1C);
+        *(signed char *)((char *)temp_r4 + 0x49) = 1;
+        *(signed char *)((char *)temp_r4 + 0x4B) = 0;
+        *(signed char *)((char *)temp_r4 + 0x4A) = 0;
     }
 }
 
