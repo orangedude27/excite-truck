@@ -93,6 +93,8 @@ extern char lbl_8032D0D0[];
 void fn_8000FF88(s32, s32, s32, f32, f32, f32);
 extern char lbl_8032CF48[];
 extern __declspec(section ".sdata") char lbl_80559DD0[];
+extern __declspec(section ".sdata") char lbl_80559DD8[];
+extern __declspec(section ".sdata") char lbl_80559DDC[];
 s32 fn_8023512C(void);
 void fn_802E3AD0(s32, const char *, ...);
 }
