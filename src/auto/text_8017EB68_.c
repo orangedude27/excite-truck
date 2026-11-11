@@ -1042,55 +1042,25 @@ void fn_80181480(void *arg0, int arg1) {
 extern "C" float fn_80181498(void *arg0) {
     class Callback {
     public:
-        virtual void f0();
-        virtual void f1();
-        virtual void f2();
-        virtual void f3();
-        virtual void f4();
-        virtual void f5();
-        virtual void f6();
-        virtual void f7();
-        virtual void f8();
-        virtual void f9();
-        virtual void f10();
-        virtual void f11();
-        virtual void f12();
-        virtual void f13();
-        virtual void f14();
-        virtual void f15();
-        virtual void f16();
-        virtual void f17();
-        virtual void f18();
-        virtual void f19();
-        virtual void f20();
-        virtual int f21();
+        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+        virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
+        virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
+        virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15();
+        virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19();
+        virtual void f20(); virtual int f21();
     };
-    float f31 = *(float *)((char *)arg0 + 0xC);
-    float f2;
-    float f0;
-
-    f0 = lbl_80561C48;
-    if (f31 > f0) {
-    } else {
-        f31 = f0;
-    }
-    f2 = *(float *)((char *)arg0 + 0xC);
-    f0 = lbl_80561C58;
-    if (f2 < f0) {
-        f2 = f0;
-    }
-    f0 = *(float *)((char *)arg0 + 0xC);
-    f0 += *(float *)((char *)arg0 + 0x10);
-    if (f31 < f0) {
-        f31 = f0;
-    }
-    if (f31 > f2) {
-        f31 = f2;
-    }
+    float a;
+    float b;
+    a = *(float *)((char *)arg0 + 0xC);
+    a = (a > lbl_80561C48) ? a : lbl_80561C48;
+    b = *(float *)((char *)arg0 + 0xC);
+    b = (b < lbl_80561C58) ? lbl_80561C58 : b;
+    a = (a < (*(float *)((char *)arg0 + 0xC) + *(float *)((char *)arg0 + 0x10))) ? (*(float *)((char *)arg0 + 0xC) + *(float *)((char *)arg0 + 0x10)) : a;
+    a = (a > b) ? b : a;
     if (((Callback *)arg0)->f21() != 0) {
-        f31 = *(float *)((char *)arg0 + 0xC);
+        a = *(float *)((char *)arg0 + 0xC);
     }
-    return f31;
+    return a;
 }
 #pragma pop
 float fn_80181548(void *arg0) {
@@ -1137,15 +1107,17 @@ void fn_801815DC(void *arg0, float arg1) {
 extern int fn_801A8E68(void *);
 extern void fn_801797F8(int, int, int);
 void fn_8018160C(void *arg0) {
-    char *p;
-    int i;
+    /* Poll input/state slots on this object and queue events through fn_801797F8
+     * (using the id at +0x4) when fn_801A8E68 reports a triggered edge. */
+    char *slotPtr;
+    int slotIndex;
     if (fn_801A8E68((char *)arg0 + 0x25c)) fn_801797F8(*(int *)((char *)arg0 + 4), 2, 0);
     if (fn_801A8E68((char *)arg0 + 0x26c)) fn_801797F8(*(int *)((char *)arg0 + 4), 1, 0);
     if (fn_801A8E68((char *)arg0 + 0x27c)) fn_801797F8(*(int *)((char *)arg0 + 4), 3, 0);
     if (fn_801A8E68((char *)arg0 + 0x24c)) fn_801797F8(*(int *)((char *)arg0 + 4), 0, 0);
-    for (p = (char *)arg0 + 0x2cc, i = 0; i < 4; i++, p += 0x10) {
-        if (fn_801A8E68(p)) {
-            fn_801797F8(*(int *)((char *)arg0 + 4), 4, i);
+    for (slotPtr = (char *)arg0 + 0x2cc, slotIndex = 0; slotIndex < 4; slotIndex++, slotPtr += 0x10) {
+        if (fn_801A8E68(slotPtr)) {
+            fn_801797F8(*(int *)((char *)arg0 + 4), 4, slotIndex);
             break;
         }
     }
