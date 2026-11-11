@@ -22276,6 +22276,7 @@ void rfc_send_pn(void *p_mcb, s32 dlci, s32 is_command, s32 mtu, s32 cl, s32 k) 
     u8 *p_data;
     s32 sign;
 
+    /* Build and send an RFCOMM Parameter Negotiation (PN) multiplexer command/response. */
     buf = (u8 *)GKI_getpoolbuf(2);
     if (buf == NULL)
         return;
