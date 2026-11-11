@@ -115,6 +115,7 @@ void fn_80137F74(void *arg0) {
     ((unsigned char *)arg0)[0xa] = a9;
 }
 
+/* Byte-swaps a 6-byte header region at +0x8..+0x13 and then swaps 8-byte records at +0x14 (count from *(int*)(base+8)). */
 void fn_80137FF0(void *arg0) {
     unsigned char *base = (unsigned char *)arg0;
     unsigned char a, c, e;
@@ -320,34 +321,34 @@ void *fn_8013846C(void *);
 #pragma dont_inline on
 void fn_801384A0(void *arg0, int arg1) {
     char sp[0x70];
-    int value;
-    int max;
-    void *node;
-    void *head;
+    register int value;
+    register int max;
+    register int *node;
+    register void *head;
     fn_80135DC4(sp, 1, arg1);
     head = *(void **)((char *)arg0 + 0x1C);
     fn_80135F64(sp, head, (char *)head + 8, 0, 0);
-    node = *(void **)((char *)arg0 + 0x1C);
+    node = *(int **)((char *)arg0 + 0x1C);
     do {
         fn_80136068(sp, node, 0);
         *(float *)((char *)node + 0x2C) = *(float *)(sp + 0x40);
         *(int *)((char *)node + 0x10) = *(int *)((char *)*(void **)(sp + 4) + 0x10);
-        node = *(void **)((char *)node + 0x14);
-    } while (node != *(void **)((char *)arg0 + 0x1C));
-    node = fn_80138438(node);
+        node = *(int **)((char *)node + 0x14);
+    } while (node != *(int **)((char *)arg0 + 0x1C));
+    node = (int *)fn_80138438(node);
     head = fn_8013846C(node);
     *(int *)((char *)head + 0x10) = 0;
-    node = head;
+    node = (int *)head;
     max = 0;
     do {
-        value = *(int *)((char *)node + 0x10);
+        value = node[4];
         if (max > value) {
             value = max;
-            *(int *)((char *)node + 0x10) = value;
+            node[4] = value;
         }
         max = value;
-        node = *(void **)((char *)node + 0x14);
-    } while (node != head);
+        node = *(int **)((char *)node + 0x14);
+    } while ((void *)node != head);
     if (*(void **)(sp + 0x50) != 0) fn_80128670(*(void **)(sp + 0x50));
     *(void **)(sp + 0x50) = 0;
     fn_8013530C(sp, 0);
