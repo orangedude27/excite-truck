@@ -54,8 +54,11 @@ extern void OSReport(const char *, ...);
 extern unsigned char lbl_804FBAA0[0x10 * 0x91];
 extern unsigned int lbl_8055D1B4;
 extern unsigned int lbl_8055D1B8;
+#define fdoPoolName lbl_8055D1B4    /* "fdo": the node pool fn_802E3EBC hands out */
+#define dotSlashPrefix lbl_8055D1B8 /* ".\\": path prefix the file layer strips */
 #pragma small_data off
 extern char lbl_8034D130[];
+#define FileDiskVTable lbl_8034D130 /* FileDisk's vtable */
 #pragma small_data on
 extern int strncmp(const char *, const char *, unsigned int);
 extern char *strcpy(char *, const char *);
