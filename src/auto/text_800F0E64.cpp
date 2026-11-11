@@ -3961,7 +3961,7 @@ void Update__Q36nw4hbm3snd11SoundPlayerFv(void *self) {
     }
     detail_SortPriorityList__Q36nw4hbm3snd11SoundPlayerFv(self);
 }
-#pragma use_lmw_stmw reset
+#pragma use_lmw_stmw off
 void StopAllSound__Q36nw4hbm3snd11SoundPlayerFi(void *self, s32 arg1) {
     struct Dummy {
         virtual ~Dummy();
