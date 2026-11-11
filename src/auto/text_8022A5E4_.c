@@ -331,15 +331,16 @@ void fn_8022ABC8(void *arg0, const char *arg1, int arg2) {
 #pragma scheduling on
 extern void fn_8022ACFC(int, char *, float *, float *, float *, float *, float, float);
 __declspec(section ".sdata2") extern double lbl_80563590;
-void fn_8022AC1C(int unused0, char *unused1, int arg2, int arg3, int *arg4, int *arg5, int *arg6, int *arg7) {
-    float a, b, c, d;
-    float x = (float)arg2;
-    float y = (float)arg3;
-    fn_8022ACFC(unused0, unused1, &a, &b, &c, &d, x, y);
-    *arg4 = (int)a;
-    *arg5 = (int)b;
-    *arg6 = (int)c;
-    *arg7 = (int)d;
+void fn_8022AC1C(int unused0, char *unused1, int screenX, int screenY, int *outLeft, int *outTop, int *outRight, int *outBottom) {
+    /* Convert screen coordinates to viewport rect (left, top, right, bottom) via fn_8022ACFC. */
+    float left, top, right, bottom;
+    float fx = (float)screenX;
+    float fy = (float)screenY;
+    fn_8022ACFC(unused0, unused1, &left, &top, &right, &bottom, fx, fy);
+    *outLeft = (int)left;
+    *outTop = (int)top;
+    *outRight = (int)right;
+    *outBottom = (int)bottom;
 }
 
 #pragma push
