@@ -536,6 +536,45 @@ void fn_801D50B8(int arg0) {
         }
     }
 }
+
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_801D52A4(void *arg0) {
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void run();
+    };
+    int offset;
+    int count;
+    void *obj;
+    if (*(int *)((char *)arg0 + 4) != 0) {
+        count = 0;
+        offset = 0;
+        while (count < *(int *)((char *)arg0 + 0x34)) {
+            obj = *(void **)(*(char **)((char *)arg0 + 0x30) + offset);
+            ((Dummy *)obj)->run();
+            offset += 4;
+            count += 1;
+        }
+        *(int *)((char *)arg0 + 4) = 1;
+    }
+}
+#pragma cplusplus reset
+#pragma pop
+#pragma use_lmw_stmw reset
+
 #pragma cplusplus reset
 #pragma pop
 
