@@ -10940,7 +10940,7 @@ extern "C" s32 fn_800B7FC4(s32 arg0) {
 }
 
 extern "C" void OSReport(const char *, ...);
-extern "C" s32 OSWaitSemaphore(void);
+extern "C" s32 OSWaitSemaphore(void *);
 extern "C" s32 fn_800B76E8(s8);
 extern "C" const char lbl_8031B190[];
 extern "C" const char lbl_8031B1C0[];
@@ -10951,7 +10951,7 @@ extern "C" s32 fn_800B8004(s32 arg0) {
         OSReport(lbl_8031B24C);
         return -2;
     }
-    OSWaitSemaphore();
+    OSWaitSemaphore((void *)arg0);
     return 0;
 }
 
