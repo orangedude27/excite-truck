@@ -53,33 +53,34 @@ out:
     return result;
 }
 extern int fn_802B5070(void *, int);
-int fn_802B50E8(int arg0, int arg1, int arg2) {
+/* Reads a count of values from an open file into output, using 32-bit or 24-bit entries based on the header. */
+int fn_802B50E8(int unused, int output, int count) {
     int result = 0;
-    int handle;
+    int fileHandle;
     char header[0x12];
-    int value;
-    int i;
+    int entryValue;
+    int index;
 
-    handle = fn_802E3D04();
-    if (handle != -1) {
-        if (fn_802E39D0(handle, header, 0x12) != 0 &&
-            fn_802B5070(header, arg2) != 0) {
+    fileHandle = fn_802E3D04();
+    if (fileHandle != -1) {
+        if (fn_802E39D0(fileHandle, header, 0x12) != 0 &&
+            fn_802B5070(header, count) != 0) {
             if ((unsigned char)header[0x10] == 0x20) {
-                result = fn_802E39D0(handle, (void *)arg1, arg2 * 4);
+                result = fn_802E39D0(fileHandle, (void *)output, count * 4);
             } else {
                 result = 1;
-                i = 0;
-                while (result != 0 && i < arg2) {
-                    if (fn_802E39D0(handle, &value, 3) != 0) {
-                        *(int *)(arg1 + i * 4) = value;
+                index = 0;
+                while (result != 0 && index < count) {
+                    if (fn_802E39D0(fileHandle, &entryValue, 3) != 0) {
+                        *(int *)(output + index * 4) = entryValue;
                     } else {
                         result = 0;
                     }
-                    i++;
+                    index++;
                 }
             }
         }
-        fn_802E3734(&handle);
+        fn_802E3734(&fileHandle);
     }
     return result;
 }
@@ -126,8 +127,8 @@ int fn_802B52C0(int arg0, void *arg1) {
     memset(spC, 0, 0x12);
     value0 = *(int *)arg1;
     spC[2] = 2;
-    value1 = *(int *)((char *)arg1 + 4);
     *(short *)(spC + 0xC) = (short)value0;
+    value1 = *(int *)((char *)arg1 + 4);
     *(short *)(spC + 0xE) = (short)value1;
     spC[0x10] = 0x20;
     sp8 = fn_802E3D68(arg0, value1, value0);
