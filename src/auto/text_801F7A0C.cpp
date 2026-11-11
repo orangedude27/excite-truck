@@ -2560,16 +2560,14 @@ void fn_80128668(void *);
 extern "C" void *fn_801FC674(void *arg0, s32 arg1) {
     void **link;
     void *next;
-    volatile u8 *field;
     if (arg0 != 0) {
-        *(void **)arg0 = (void *)((u8 *)&lbl_8033B588)[0];
+        *(void **)arg0 = lbl_8033B588;
         link = (void **)&lbl_8055EC48;
         while ((next = *link) != 0) {
             if (next == arg0) { *link = *(void **)((u8 *)arg0 + 0x54); break; }
             link = (void **)((u8 *)next + 0x54);
         }
-        field = (volatile u8 *)arg0 + 0x44;
-        if (field != 0 && *(s32 *)field != -1) fn_802C6CF8(*(s32 *)field);
+        if ((u32)arg0 + 0x44 != 0 && ((s32 *)arg0)[17] != -1) fn_802C6CF8(((s32 *)arg0)[17]);
         __dt__Q28PSSystem7SeqHeapFv_801EACF8(arg0, 0);
         if (arg1 > 0) fn_80128668(arg0);
     }
