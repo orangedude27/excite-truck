@@ -408,6 +408,7 @@ extern "C" void fn_801BFD34(void *, void *, void *);
 s32 fn_80015B20(void *, void *, s32);
 extern "C" void fn_80015B20(void *, void *, void *);
 #pragma scheduling invalid_target
+/* Gets "local_frame" via vtable slot get() into a 3x4 matrix (out); on success fills from frame64 data, else writes identity. If arg is non-null, transforms the translation/rotation parts with arg and returns 1 when a frame or arg was applied. */
 extern "C" s32 fn_801F7EB0(void *out, void *self, s32 arg) {
     struct VCall {
         virtual s32 f0();
@@ -465,7 +466,6 @@ set_result:
 done:
     return ret;
 }
-
 // Reads a parent descriptor into output: stores model/extend_dist/cutoff_dist, then copies
 // each child named "offset" as (vector xyz, value) records and writes the record count.
 extern "C" void fn_801F7FA0(void *output, void *input, void *unused) {
