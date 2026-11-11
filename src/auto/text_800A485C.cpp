@@ -1027,15 +1027,15 @@ status_done:
 extern "C" s32 fn_800A5E00(void *arg0, void *arg1, u32 *arg2, u32 *arg3) {
  u32 a,b,c,x,y;
  *arg2=-1; *arg3=-1;
- a=M2C_FIELD(arg1,u32*,0); a=(((a<<8)|(a>>24))&0x00FF0000)|(((a<<24)|(a>>8))&0x000000FF)|(((a<<24)|(a>>8))&0x00FF0000)|(((a<<8)|(a>>24))&0xFF000000);
+ a=M2C_FIELD(arg1,u32*,0); a=(a>>24)|((a>>8)&0xFF00)|((a<<8)&0xFF0000)|(a<<24);
  if(a==0x41615252){
- b=M2C_FIELD(arg1,u32*,0x1E4); b=(((b<<8)|(b>>24))&0x00FF0000)|(((b<<24)|(b>>8))&0x000000FF)|(((b<<24)|(b>>8))&0x00FF0000)|(((b<<8)|(b>>24))&0xFF000000);
+ b=M2C_FIELD(arg1,u32*,0x1E4); b=(b>>24)|((b>>8)&0xFF00)|((b<<8)&0xFF0000)|(b<<24);
  if(b==0x61417272){
- c=M2C_FIELD(arg1,u32*,0x1FC); c=(((c<<8)|(c>>24))&0x00FF0000)|(((c<<24)|(c>>8))&0x000000FF)|(((c<<24)|(c>>8))&0x00FF0000)|(((c<<8)|(c>>24))&0xFF000000);
+ c=M2C_FIELD(arg1,u32*,0x1FC); c=(c>>24)|((c>>8)&0xFF00)|((c<<8)&0xFF0000)|(c<<24);
  if(c==0xAA550000){
  x=M2C_FIELD(arg1,u32*,0x1E8); y=M2C_FIELD(arg1,u32*,0x1EC);
- x=(((x<<8)|(x>>24))&0x00FF0000)|(((x<<24)|(x>>8))&0x000000FF)|(((x<<24)|(x>>8))&0x00FF0000)|(((x<<8)|(x>>24))&0xFF000000);
- y=(((y<<8)|(y>>24))&0x00FF0000)|(((y<<24)|(y>>8))&0x000000FF)|(((y<<24)|(y>>8))&0x00FF0000)|(((y<<8)|(y>>24))&0xFF000000);
+ x=(x>>24)|((x>>8)&0xFF00)|((x<<8)&0xFF0000)|(x<<24);
+ y=(y>>24)|((y>>8)&0xFF00)|((y<<8)&0xFF0000)|(y<<24);
  if(x>=2&&x<(u32)(M2C_FIELD(arg0,s32*,0x34)+2))*arg2=x;
  if(y>=2&&y<(u32)(M2C_FIELD(arg0,s32*,0x34)+2))*arg3=y;
  }}}
@@ -15781,31 +15781,38 @@ extern "C" void fn_800C1C1C(void *arg0, s32 *out) {
     out[3] = (s32)(((s64)g3 * -0x1BB67ALL) >> 20);
 }
 
+#pragma push
+#pragma use_lmw_stmw on
 extern "C" void fn_800C1E88(const s32 *a, const s32 *b, s32 *out) {
-    register s32 a0 = a[0];
-    register s32 a1 = a[1];
-    register s32 a2 = a[2];
-    register s32 a3 = a[3];
+    s32 a0 = a[0];
+    s32 a1 = a[1];
+    s32 a2 = a[2];
+    s32 a3 = a[3];
     s32 i;
     for (i = 0; i < 4; i++) {
-        s32 zero = 0;
-        s64 p = zero;
-        p += (s64)a0 * b[0];
-        p += (s64)a1 * b[1];
-        p += (s64)a2 * b[2];
-        p += (s64)a3 * b[3];
-        p += (s64)a[4] * b[4];
-        p += (s64)a[5] * b[5];
+        s32 b0 = b[0];
+        s32 b1 = b[1];
+        s32 b2 = b[2];
+        s32 b3 = b[3];
+        s32 b4 = b[4];
+        s32 b5 = b[5];
+        b += 6;
+        s64 p = 0;
+        p += (s64)a0 * b0;
+        p += (s64)a1 * b1;
+        p += (s64)a2 * b2;
+        p += (s64)a3 * b3;
+        p += (s64)a[4] * b4;
+        p += (s64)a[5] * b5;
         *out = (s32)(p >> 20);
         if (i & 1) {
             out += 4;
         } else {
             out += 2;
         }
-        b += 6;
     }
 }
-
+#pragma pop
 extern "C" void fn_800C1F6C(volatile u32 *dst, const volatile u32 *a, const volatile u32 *b) {
     /* Adds 18 input values and stores results at 0x40-word strides in the destination buffer. */
     dst[0] = a[0] + b[0];
@@ -21875,22 +21882,22 @@ void homebutton::HomeButton::calc_battery(int n) {
 }
 extern "C" void fn_800CA064(void) {
     u32 userData = (u32)((void *(*)(void))((void *(*)(const OSAlarm *))OSGetAlarmUserData))();
-    u32 index = userData >> 16;
+    u8 *base = (u8 *)lbl_8055DD98;
+    s32 index = (s32)(userData >> 16);
     u32 low = userData & 0xFFFF;
-    void *base = lbl_8055DD98;
     void *entry;
     void *alarm;
     if (fn_80060C7C((void *)index) == 0) goto setup;
-    entry = *(void **)((u8 *)base + index * 4 + 0x254);
+    entry = *(void **)(base + index * 4 + 0x254);
     if (((s32 (*)(void *))fn_800D1548)(entry) != 0) goto do_call;
 setup:
-    alarm = (u8 *)base + index * 0x30 + 0x4D0;
+    alarm = base + index * 0x30 + 0x4D0;
     OSSetAlarmUserData((OSAlarm *)alarm, (void *)((index << 16) | (index + 2)));
     OSCancelAlarm((OSAlarm *)alarm);
     ((void (*)(OSAlarm *, u32, u32, u32, void (*)(void)))OSSetAlarm)((OSAlarm *)alarm, 0x10624DD3, 0, (((*(volatile u32 *)0x800000F8) >> 2) / 1000U) * 50, fn_800CA064);
     return;
 do_call:
-    fn_800D120C(*(void **)((u8 *)base + index * 4 + 0x254), *(void **)((u8 *)base + 0x5C0), low);
+    fn_800D120C(*(void **)(base + index * 4 + 0x254), *(void **)(base + 0x5C0), low);
 }
 
 extern "C" void fn_800D15B4(void*);
