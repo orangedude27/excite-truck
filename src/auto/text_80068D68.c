@@ -19467,44 +19467,46 @@ void l2cu_send_peer_info_rsp(void *arg0, s32 arg1, u16 arg2) {
     }
 }
 
-void *l2cu_allocate_ccb(void *arg0, u16 arg1) {
-    u8 *ccb = *(u8 **)(lbl_803C4040 + 0x7B0);
+/* Allocates a free L2CAP channel control block from l2cb, attaches it to the given
+ * L2CAP link's CCB list, and initializes its default state/timer fields. */
+void *l2cu_allocate_ccb(void *p_lcb, u16 psm) {
+    u8 *p_ccb = *(u8 **)(lbl_803C4040 + 0x7B0);
     s32 offset;
     u16 index;
     u8 *next;
 
-    if (ccb == NULL) return NULL;
+    if (p_ccb == NULL) return NULL;
 
-    next = *(u8 **)(ccb + 8);
+    next = *(u8 **)(p_ccb + 8);
     *(u8 **)(lbl_803C4040 + 0x7B0) = next;
-    ccb[0] = 1;
-    offset = (s32)(ccb - (lbl_803C4040 + 0x178));
+    p_ccb[0] = 1;
+    offset = (s32)(p_ccb - (lbl_803C4040 + 0x178));
     index = (u16)(offset / 0x7C);
-    *(u16 *)(ccb + 0x14) = index + 0x40;
-    *(void **)(ccb + 0x10) = arg0;
-    if (*(void **)((u8 *)arg0 + 8) == NULL) {
-        *(u8 **)((u8 *)arg0 + 0xC) = ccb;
-        *(u8 **)((u8 *)arg0 + 8) = ccb;
-        *(u32 *)(ccb + 8) = 0;
-        *(u32 *)(ccb + 0xC) = 0;
+    *(u16 *)(p_ccb + 0x14) = index + 0x40;
+    *(void **)(p_ccb + 0x10) = p_lcb;
+    if (*(void **)((u8 *)p_lcb + 8) == NULL) {
+        *(u8 **)((u8 *)p_lcb + 0xC) = p_ccb;
+        *(u8 **)((u8 *)p_lcb + 8) = p_ccb;
+        *(u32 *)(p_ccb + 8) = 0;
+        *(u32 *)(p_ccb + 0xC) = 0;
     } else {
-        *(u32 *)(ccb + 8) = 0;
-        *(u8 **)(ccb + 0xC) = *(u8 **)((u8 *)arg0 + 0xC);
-        *(u8 **)(*(u8 **)((u8 *)arg0 + 0xC) + 8) = ccb;
-        *(u8 **)((u8 *)arg0 + 0xC) = ccb;
+        *(u32 *)(p_ccb + 8) = 0;
+        *(u8 **)(p_ccb + 0xC) = *(u8 **)((u8 *)p_lcb + 0xC);
+        *(u8 **)(*(u8 **)((u8 *)p_lcb + 0xC) + 8) = p_ccb;
+        *(u8 **)((u8 *)p_lcb + 0xC) = p_ccb;
     }
-    *(u16 *)(ccb + 0x3C) = 0xFFFF;
-    *(u16 *)(ccb + 0x3A) = 0x2A0;
-    *(u16 *)(ccb + 0x38) = 0x2A0;
-    ccb[0x59] = 1; ccb[0x41] = 1;
-    *(u32 *)(ccb + 0x5C) = 0; *(u32 *)(ccb + 0x44) = 0;
-    *(u32 *)(ccb + 0x60) = 0; *(u32 *)(ccb + 0x48) = 0;
-    *(u32 *)(ccb + 0x64) = 0; *(u32 *)(ccb + 0x4C) = 0;
-    *(u32 *)(ccb + 0x68) = -1; *(u32 *)(ccb + 0x50) = -1;
-    *(u32 *)(ccb + 0x6C) = -1; *(u32 *)(ccb + 0x54) = -1;
-    ccb[0x34] = 0; *(u32 *)(ccb + 4) = 0; ccb[0x37] = 1;
-    *(u8 **)(ccb + 0x28) = ccb;
-    return ccb;
+    *(u16 *)(p_ccb + 0x3C) = 0xFFFF;
+    *(u16 *)(p_ccb + 0x3A) = 0x2A0;
+    *(u16 *)(p_ccb + 0x38) = 0x2A0;
+    p_ccb[0x59] = 1; p_ccb[0x41] = 1;
+    *(u32 *)(p_ccb + 0x5C) = 0; *(u32 *)(p_ccb + 0x44) = 0;
+    *(u32 *)(p_ccb + 0x60) = 0; *(u32 *)(p_ccb + 0x48) = 0;
+    *(u32 *)(p_ccb + 0x64) = 0; *(u32 *)(p_ccb + 0x4C) = 0;
+    *(u32 *)(p_ccb + 0x68) = -1; *(u32 *)(p_ccb + 0x50) = -1;
+    *(u32 *)(p_ccb + 0x6C) = -1; *(u32 *)(p_ccb + 0x54) = -1;
+    p_ccb[0x34] = 0; *(u32 *)(p_ccb + 4) = 0; p_ccb[0x37] = 1;
+    *(u8 **)(p_ccb + 0x28) = p_ccb;
+    return p_ccb;
 }
 
 /* Releases an L2CAP channel control block from its connection, frees queued buffers, returns it to the free CCB list, and may schedule disconnect cleanup. */
