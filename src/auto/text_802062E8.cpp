@@ -93,26 +93,27 @@ extern "C" int fn_802062E8(void) {
     struct Dispose {
         virtual void f0(int);
     };
-    int value;
-    void *object;
+    int mixerName;
+    void *soundManager;
 
+    /* Initialize the sound system and SoundManager; returns 1 on success, 0 on failure. */
     fn_80208B8C(lbl_8055ED84 == 0);
     fn_80208D70();
-    value = ((Service *)fn_80208D4C())->f1();
-    fn_802E30C8(lbl_8033BC50, value);
-    object = (void *)fn_801284F8(0x118, lbl_8033BC68);
-    if (object != 0) {
+    mixerName = ((Service *)fn_80208D4C())->f1();
+    fn_802E30C8(lbl_8033BC50, mixerName); /* "using sound mixer %s" */
+    soundManager = (void *)fn_801284F8(0x118, lbl_8033BC68); /* "SoundManager" */
+    if (soundManager != 0) {
         fn_80208D70();
-        object = fn_80207990(object, fn_80208D4C());
+        soundManager = fn_80207990(soundManager, fn_80208D4C());
     }
-    lbl_8055ED80 = (int)object;
-    if (object != 0) {
-        if (((unsigned char *)object)[4] != 0) {
+    lbl_8055ED80 = (int)soundManager;
+    if (soundManager != 0) {
+        if (((unsigned char *)soundManager)[4] != 0) {
             fn_8020A368();
             return 1;
         }
-        if (object != 0)
-            ((Dispose *)object)->f0(1);
+        if (soundManager != 0)
+            ((Dispose *)soundManager)->f0(1);
         lbl_8055ED80 = 0;
     }
     fn_80208D80(lbl_8055ED84 == 0);
