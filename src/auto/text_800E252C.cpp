@@ -1708,9 +1708,11 @@ extern "C" void fn_800E519C(void *arg0) {
 
 #pragma use_lmw_stmw off
 extern "C" void Stop__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
+    /* Stops this AxVoice if it is active: halts all per-row/channel AX voices,
+     * clears active/pause flags and resets running state under interrupt lock. */
     unsigned int level;
     unsigned int innerLevel;
-    void *item;
+    void *axVoice;
     int active;
     int innerIndex;
     int outer;
@@ -1720,12 +1722,12 @@ extern "C" void Stop__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
     level = OSDisableInterrupts();
     if (*((unsigned char *)self + 0x11E) != 0) {
         innerLevel = OSDisableInterrupts();
-        item = *(void **)((unsigned char *)self + 0xC);
-        if (item == 0) {
+        axVoice = *(void **)((unsigned char *)self + 0xC);
+        if (axVoice == 0) {
             OSRestoreInterrupts(innerLevel);
             active = 0;
         } else {
-            active = (*(unsigned short *)((unsigned char *)item + 0x148) == 1);
+            active = (*(unsigned short *)((unsigned char *)axVoice + 0x148) == 1);
             OSRestoreInterrupts(innerLevel);
         }
         if (active != 0) {
@@ -1735,8 +1737,8 @@ extern "C" void Stop__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
                 voice = row;
                 innerIndex = 0;
                 while (innerIndex < *(int *)((unsigned char *)self + 0x108)) {
-                    item = *(void **)(voice + 0xC);
-                    if (item != 0) AXSetVoiceState(item, 0);
+                    axVoice = *(void **)(voice + 0xC);
+                    if (axVoice != 0) AXSetVoiceState(axVoice, 0);
                     voice += 4;
                     innerIndex++;
                 }
