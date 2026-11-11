@@ -60,6 +60,8 @@ static u32 nandCheck(u32 neededBlocks, u32 neededFiles, u32 homeDirBlocks,
 // In the original SDK build, nandCalcUserUsage() and nandCheck() were inlined
 // by the compiler into NANDCheck(); neither exists as an out-of-line function.
 
+// Checks whether the home and user NAND directories have enough free space for
+// the requested blocks and files. Sets *answer to a bitmask of NANDCheckFlags.
 s32 NANDCheck(u32 neededBlocks, u32 neededFiles, u32* answer) {
     s32 result;
 
