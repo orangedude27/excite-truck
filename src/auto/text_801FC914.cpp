@@ -1,6 +1,22 @@
 #include <revolution/MTX/vec.h>
 #include <revolution/MTX/quat.h>
 #include <types.h>
+
+// A named pool of "path" objects (props spawned along a track). The manager keeps
+// up to 8 pools in a table at lbl_8055EC98 (pool count at +0x2C0). Each pool hands
+// objects out from its unused[] list and tracks handed-out ones in inUse[].
+struct PathPool {
+    char name[0x10];  // +0x00: pool name, matched with stricmp
+    void *unused[8];  // +0x10: objects available to hand out
+    void *inUse[8];   // +0x30: objects currently handed out
+    int unusedCount;  // +0x50
+    int inUseCount;   // +0x54
+};
+
+struct PathPoolTable {
+    PathPool pools[8];
+    int poolCount;    // +0x2C0
+};
 extern "C" void fn_801FEA28(void*);
 class SHMainMenu { public: ~SHMainMenu(); };
 extern "C" {
