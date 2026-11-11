@@ -1274,6 +1274,17 @@ extern "C" int fn_801F9B28(void) {
 }
 #pragma dont_inline reset
 
+// One node of the static-object ("StaticObject"/GOB) lists chained through
+// `next`. Only the fields this unit reads are named; the rest is id, name and
+// position data handled by the code that creates the nodes.
+struct StaticGob {
+    u8 pad[0x3C];
+    s32 gobId;        // +0x3C GOB id to sort/search on (negative: not in the table)
+    u8 flag40;        // +0x40
+    u8 flag41;        // +0x41
+    StaticGob *next;  // +0x44 next GOB in the list
+};
+
 extern "C" s32 fn_801F9BD0(s32 **arg0, s32 **arg1) {
     return (*arg0)[15] - (*arg1)[15];
 }
