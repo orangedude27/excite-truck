@@ -198,50 +198,54 @@ void *arg0;
     *(float *)((char *)lbl_80497E3C + 0xb0) = value;
 }
 
-void fn_8022F548(void *arg0) {
+/*
+ * Copies a configuration/state record from the global lbl_80497E3C buffer into dst.
+ * Mirrors fn_8022F418's field layout but reads from the global buffer (omits string copy and 0x30 write).
+ */
+void fn_8022F548(void *dstArg) {
     struct Pair { unsigned int a; unsigned int b; };
-    unsigned int *src = (unsigned int *)lbl_80497E3C;
-    struct Pair *dst = (struct Pair *)arg0;
-    struct Pair *from = (struct Pair *)src;
-    float fvalue;
-    unsigned char byte;
+    unsigned int *srcWords = (unsigned int *)lbl_80497E3C;
+    struct Pair *dstPairs = (struct Pair *)dstArg;
+    struct Pair *srcPairs = (struct Pair *)srcWords;
+    float value;
+    unsigned char byteValue;
 
-    dst[0] = from[0];
-    dst[1] = from[1];
-    dst[2] = from[2];
-    dst[3] = from[3];
-    *(unsigned int *)((char *)arg0 + 0x20) = src[8];
-    *(struct Pair *)((char *)arg0 + 0x24) = *(struct Pair *)((char *)src + 0x24);
-    *(unsigned int *)((char *)arg0 + 0x2C) = src[11];
-    *(unsigned int *)((char *)arg0 + 0x34) = src[13];
-    *(unsigned int *)((char *)arg0 + 0x38) = src[14];
-    fvalue = *(float *)((char *)src + 0x7C);
-    *(float *)((char *)arg0 + 0x7C) = fvalue;
-    *(unsigned int *)((char *)arg0 + 0x80) = *(unsigned int *)((char *)src + 0x80);
-    *(unsigned int *)((char *)arg0 + 0x84) = *(unsigned int *)((char *)src + 0x84);
-    *(unsigned int *)((char *)arg0 + 0x88) = *(unsigned int *)((char *)src + 0x88);
-    fvalue = *(float *)((char *)src + 0x8C);
-    *(float *)((char *)arg0 + 0x8C) = fvalue;
-    fvalue = *(float *)((char *)src + 0x90);
-    *(float *)((char *)arg0 + 0x90) = fvalue;
-    fvalue = *(float *)((char *)src + 0x94);
-    *(float *)((char *)arg0 + 0x94) = fvalue;
-    fvalue = *(float *)((char *)src + 0x98);
-    *(float *)((char *)arg0 + 0x98) = fvalue;
-    byte = *((unsigned char *)src + 0x9C);
-    *((unsigned char *)arg0 + 0x9C) = byte;
-    byte = *((unsigned char *)src + 0x9D);
-    *((unsigned char *)arg0 + 0x9D) = byte;
-    fvalue = *(float *)((char *)src + 0xA0);
-    *(float *)((char *)arg0 + 0xA0) = fvalue;
-    fvalue = *(float *)((char *)src + 0xA4);
-    *(float *)((char *)arg0 + 0xA4) = fvalue;
-    fvalue = *(float *)((char *)src + 0xA8);
-    *(float *)((char *)arg0 + 0xA8) = fvalue;
-    fvalue = *(float *)((char *)src + 0xAC);
-    *(float *)((char *)arg0 + 0xAC) = fvalue;
-    fvalue = *(float *)((char *)src + 0xB0);
-    *(float *)((char *)arg0 + 0xB0) = fvalue;
+    dstPairs[0] = srcPairs[0];
+    dstPairs[1] = srcPairs[1];
+    dstPairs[2] = srcPairs[2];
+    dstPairs[3] = srcPairs[3];
+    *(unsigned int *)((char *)dstArg + 0x20) = srcWords[8];
+    *(struct Pair *)((char *)dstArg + 0x24) = *(struct Pair *)((char *)srcWords + 0x24);
+    *(unsigned int *)((char *)dstArg + 0x2C) = srcWords[11];
+    *(unsigned int *)((char *)dstArg + 0x34) = srcWords[13];
+    *(unsigned int *)((char *)dstArg + 0x38) = srcWords[14];
+    value = *(float *)((char *)srcWords + 0x7C);
+    *(float *)((char *)dstArg + 0x7C) = value;
+    *(unsigned int *)((char *)dstArg + 0x80) = *(unsigned int *)((char *)srcWords + 0x80);
+    *(unsigned int *)((char *)dstArg + 0x84) = *(unsigned int *)((char *)srcWords + 0x84);
+    *(unsigned int *)((char *)dstArg + 0x88) = *(unsigned int *)((char *)srcWords + 0x88);
+    value = *(float *)((char *)srcWords + 0x8C);
+    *(float *)((char *)dstArg + 0x8C) = value;
+    value = *(float *)((char *)srcWords + 0x90);
+    *(float *)((char *)dstArg + 0x90) = value;
+    value = *(float *)((char *)srcWords + 0x94);
+    *(float *)((char *)dstArg + 0x94) = value;
+    value = *(float *)((char *)srcWords + 0x98);
+    *(float *)((char *)dstArg + 0x98) = value;
+    byteValue = *((unsigned char *)srcWords + 0x9C);
+    *((unsigned char *)dstArg + 0x9C) = byteValue;
+    byteValue = *((unsigned char *)srcWords + 0x9D);
+    *((unsigned char *)dstArg + 0x9D) = byteValue;
+    value = *(float *)((char *)srcWords + 0xA0);
+    *(float *)((char *)dstArg + 0xA0) = value;
+    value = *(float *)((char *)srcWords + 0xA4);
+    *(float *)((char *)dstArg + 0xA4) = value;
+    value = *(float *)((char *)srcWords + 0xA8);
+    *(float *)((char *)dstArg + 0xA8) = value;
+    value = *(float *)((char *)srcWords + 0xAC);
+    *(float *)((char *)dstArg + 0xAC) = value;
+    value = *(float *)((char *)srcWords + 0xB0);
+    *(float *)((char *)dstArg + 0xB0) = value;
 }
 
 extern char lbl_803403DC[];
