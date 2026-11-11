@@ -2780,8 +2780,8 @@ extern "C" int GetDspAddressBySample__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hb
 
 extern "C" int GetSampleByDspAddress__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hbm3snd6detail7AxVoice6Format(const void *arg0, unsigned int arg1, int arg2) {
     unsigned int address = (unsigned int)arg0;
-    int result = 0;
     if (address != 0) address += 0x80000000;
+    int result = 0;
     switch (arg2) {
     case 0: { unsigned int delta = arg1 - address * 2; result = ((delta & 15) + ((delta >> 4) * 14)) - 2; break; }
     case 25: result = arg1 - address; break;
