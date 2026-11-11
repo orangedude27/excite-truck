@@ -929,22 +929,23 @@ _error:
     return FALSE;
 }
 
-BOOL SCFindByteArrayItem(void* dst, u32 len, SCItemID id) {
-    BOOL success;
-    BOOL enabled;
-    SCItem item;
+BOOL SCFindByteArrayItem(void* dstBuffer, u32 itemLength, SCItemID itemId) {
+    BOOL found;
+    BOOL interruptsEnabled;
+    SCItem confItem;
 
-    success = FALSE;
-    enabled = OSDisableInterrupts();
+    /* Finds a byte-array SC item by ID and copies its contents into dstBuffer when lengths match. */
+    found = FALSE;
+    interruptsEnabled = OSDisableInterrupts();
 
-    if (dst != ((void*)NULL) && FindItemByID(id, &item) &&
-        item.arrayType != 0 && item.dataLen == len) {
-        memcpy(dst, item.data, len);
-        success = TRUE;
+    if (dstBuffer != ((void*)NULL) && FindItemByID(itemId, &confItem) &&
+        confItem.arrayType != 0 && confItem.dataLen == itemLength) {
+        memcpy(dstBuffer, confItem.data, itemLength);
+        found = TRUE;
     }
 
-    OSRestoreInterrupts(enabled);
-    return success;
+    OSRestoreInterrupts(interruptsEnabled);
+    return found;
 }
 
 BOOL SCReplaceByteArrayItem(const void* src, u32 len, SCItemID id) {
