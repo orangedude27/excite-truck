@@ -9960,13 +9960,13 @@ extern "C" s32 fn_800B63FC(void) {
 
 extern "C" s32 fn_800A485C(s32);
 extern "C" void *fn_800B65A0(s8 arg0) {
-    s16 index = fn_800A485C(arg0) - 0x41;
-    fn_800B77C0((u8 *)lbl_803D2140 + 0x64);
+    s16 index = (s16)(fn_800A485C(arg0) - 0x41);
+    fn_800B77C0((void *)(lbl_803D2140 + 0x19));
     if (index < 0 || index >= 0x1A) {
-        fn_800B783C((u8 *)lbl_803D2140 + 0x64);
+        fn_800B783C((void *)(lbl_803D2140 + 0x19));
         return 0;
     }
-    fn_800B783C((u8 *)lbl_803D2140 + 0x64);
+    fn_800B783C((void *)(lbl_803D2140 + 0x19));
     return (u8 *)lbl_803D2140 + index * 0x1FC8 + 0xA0;
 }
 
@@ -14054,24 +14054,24 @@ block61:
     return 0;
 }
 #pragma pop
-void fn_800BEDE0(void *arg0, void *arg1) {
+extern "C" void fn_800BEDE0(void *arg0, void *arg1) {
     u32 rate;
     s16 mode;
-    *(s32 *)arg1 = *(u32 *)((u8 *)arg0 + 4) == 0;
-    rate = 0xAC44;
+    *(s32 *)arg1 = *(u32 *)((u8 *)arg0 + 4) == 0u;
+    rate = 0xAC44u;
     mode = *(s16 *)((u8 *)arg0 + 0x1C);
     if (mode == 0) {
     } else if (mode == 1) {
-        rate = 0xBB80;
+        rate = 0xBB80u;
     } else if (mode == 2) {
-        rate = 0x7D00;
+        rate = 0x7D00u;
     }
     if (*(s32 *)arg1 == 0)
-        rate = (rate + (rate >> 31)) >> 1;
-    *(u32 *)((u8 *)arg1 + 4) = rate;
-    *(s32 *)((u8 *)arg1 + 8) = (s8)*(u8 *)arg0;
-    *(s32 *)((u8 *)arg1 + 0x10) = *(s32 *)((u8 *)arg0 + 0xED74);
-    *(s32 *)((u8 *)arg1 + 0xC) = *(s32 *)((u8 *)arg0 + 0xED70);
+        rate = (u32)((s32)(rate + (rate >> 31u)) >> 1);
+    *(u32 *)((u8 *)arg1 + 4u) = rate;
+    *(s32 *)((u8 *)arg1 + 8u) = (s8)*(u8 *)arg0;
+    *(s32 *)((u8 *)arg1 + 16u) = *(s32 *)((u8 *)arg0 + 0xED74);
+    *(s32 *)((u8 *)arg1 + 12u) = *(s32 *)((u8 *)arg0 + 0xED70);
 }
 
 extern "C" s16 fn_800BDD7C(s32, s32, s32 *);
