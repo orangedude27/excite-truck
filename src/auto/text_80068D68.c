@@ -2922,43 +2922,44 @@ void *GKI_getbuf(UINT16 size) {
     return NULL;
 }
 
+/* Allocate a buffer from a GKI pool free queue, or fall back to GKI_getbuf(pool size). */
 void *GKI_getpoolbuf(UINT8 pool_id) {
     extern u32 lbl_803946C0[];
     extern void fn_8006EBAC(void);
     extern void fn_8006EB88(void);
     extern u8 fn_8006EB80(void);
-    FREE_QUEUE_T *Q;
-    BUFFER_HDR_T *p_hdr;
-    tGKI_COM_CB *p_cb = (tGKI_COM_CB *)((UINT8 *)lbl_803946C0 + 0x54);
+    FREE_QUEUE_T *queue;
+    BUFFER_HDR_T *hdr;
+    tGKI_COM_CB *com = (tGKI_COM_CB *)((UINT8 *)lbl_803946C0 + 0x54);
 
     if (pool_id >= GKI_NUM_TOTAL_BUF_POOLS)
         return NULL;
 
     fn_8006EBAC();
 
-    Q = &p_cb->freeq[pool_id];
-    if (Q->cur_cnt < Q->total) {
-        p_hdr = Q->p_first;
-        Q->p_first = p_hdr->p_next;
+    queue = &com->freeq[pool_id];
+    if (queue->cur_cnt < queue->total) {
+        hdr = queue->p_first;
+        queue->p_first = hdr->p_next;
 
-        if (!Q->p_first)
-            Q->p_last = NULL;
+        if (!queue->p_first)
+            queue->p_last = NULL;
 
-        if (++Q->cur_cnt > Q->max_cnt)
-            Q->max_cnt = Q->cur_cnt;
+        if (++queue->cur_cnt > queue->max_cnt)
+            queue->max_cnt = queue->cur_cnt;
 
         fn_8006EB88();
 
-        p_hdr->task_id = fn_8006EB80();
-        p_hdr->status = BUF_STATUS_UNLINKED;
-        p_hdr->p_next = NULL;
-        p_hdr->Type = 0;
+        hdr->task_id = fn_8006EB80();
+        hdr->status = BUF_STATUS_UNLINKED;
+        hdr->p_next = NULL;
+        hdr->Type = 0;
 
-        return (void *)((UINT8 *)p_hdr + BUFFER_HDR_SIZE);
+        return (void *)((UINT8 *)hdr + BUFFER_HDR_SIZE);
     }
 
     fn_8006EB88();
-    return GKI_getbuf(p_cb->freeq[pool_id].size);
+    return GKI_getbuf(com->freeq[pool_id].size);
 }
 
 /* GKI_exception() message strings, as offsets into the GKI strings block that
