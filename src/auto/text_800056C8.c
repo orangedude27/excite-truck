@@ -72,6 +72,44 @@ extern f32 lbl_80560190;
 extern u8 lbl_802FB0C8[];
 extern s32 lbl_8055D354;
 extern s32 fn_80007554(s32, s32, s32);
+
+/* --- HUD overlay manager -------------------------------------------------
+ * lbl_8034EEB8 is the game's one static HUD overlay manager.  fn_80005C88
+ * fills it with the overlay objects it builds by name (the names are the
+ * strings in the table at lbl_802FB0C8: "IntroOverlay", "RacingOverlay",
+ * ...), fn_800057D0 picks each frame which overlay every player's HUD shows
+ * and fn_80005930 updates the ones it picked.  Every overlay answers slot
+ * 0x38 of its vtable with a "this overlay is finished" byte, which is what
+ * fn_800057D0 asks the scene overlays before letting go of them.
+ * lbl_8055D350 points at the per-session state block at lbl_8034EE84. */
+typedef struct OverlayEntry { /* manager + 0x10, one per player */
+    void *active;     /* 0x00: the overlay this player's HUD shows now */
+    void *lastActive; /* 0x04: the overlay it showed last frame */
+    void *racing;     /* 0x08: this player's own "RacingOverlay" */
+    void *fallback;   /* 0x0C: "ArenaOverlay" in arena mode, else racing */
+} OverlayEntry;
+
+typedef struct OverlayManager {
+    void *interlude; /* 0x00: "InterludeOverlay" */
+    void *preRace;   /* 0x04: "PreRaceOverlay", only while the race is ahead */
+    void *postRace;  /* 0x08: "PostRaceOverlay" */
+    void *intro;     /* 0x0C: "IntroOverlay", "ArenaIntroOverlay" in arenas */
+    OverlayEntry entries[4]; /* 0x10: one slot per player */
+    void *arena;     /* 0x50: "ArenaOverlay", shared by all players */
+    void *replay;    /* 0x54: "ReplayOverlay" */
+    void *closure;   /* 0x58: "ClosureOverlay", the race's end sequence */
+    void *results;   /* 0x5C: lbl_8055D344, else a "ResultsOverlay" */
+    s32 field60;     /* 0x60 */
+} OverlayManager;
+
+typedef struct SessionState { /* lbl_8034EE84, what lbl_8055D350 points at */
+    u8 pad0[0x14];
+    s32 playerCount; /* 0x14: how many of the four slots are in use */
+} SessionState;
+
+#define OVERLAY_MGR ((OverlayManager *)lbl_8034EEB8)
+#define SESSION     ((SessionState *)lbl_8055D350)
+
 #pragma scheduling invalid_target
 #pragma push
 #pragma dont_inline on
@@ -523,6 +561,7 @@ extern "C" void fn_80006110(void *arg0) {
     };
     extern void fn_8001071C(void *, s32);
     extern u8 lbl_802FB69C[];
+    extern s32 lbl_8034EEB8[];
     f32 threshold;
     s32 flag;
     s32 *settings;
@@ -540,10 +579,7 @@ extern "C" void fn_80006110(void *arg0) {
     }
     if (flag == 0) {
         if (fn_80005564() == 0) {
-            s32 *settings2 = (s32 *)lbl_8055D350;
-            s32 *entries = (s32 *)lbl_8034EEB8;
-            s32 index2 = settings2[7];
-            s32 *p = entries + index2 * 4;
+            s32 *p = lbl_8034EEB8 + ((s32 *)lbl_8055D350)[7] * 4;
             void *obj = *(void **)(p + 7);
             ((VTable *)obj)->v7();
         }
