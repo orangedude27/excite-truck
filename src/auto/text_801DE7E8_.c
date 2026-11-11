@@ -34,6 +34,44 @@ extern void *memcpy(void *, const void *, unsigned int);
 extern unsigned long long fn_802E2C9C(int);
 extern void fn_801331C4(int, int *, float *);
 
+/* Popup ids: the nine rows of lbl_804872B0.  Id 8 is the run-time queue pushed by
+   fn_801DF380 (level-up and friends); showing it copies the next queued entry into
+   row 8, so it repeats for as long as the queue holds entries. */
+#define POPUP_QUEUED 8
+
+/* One popup: a row of lbl_804872B0 or an entry of the run-time queue. */
+struct PopupEntry {
+    unsigned char always;        /* 0x00: show again even when already seen */
+    int id;                      /* 0x04 */
+    int arg1;                    /* 0x08 */
+    void *text;                  /* 0x0C: text/resource handle */
+    int arg3;                    /* 0x10 */
+    int state;                   /* 0x14: sound state, -1 once stopped */
+    int (*callback)(int, int);   /* 0x18: replaces the default message */
+};
+
+/* Header of the run-time popup queue at lbl_804873B8, filled by fn_801DF380. */
+struct PopupQueue {
+    struct PopupEntry *entries;
+    int count;
+};
+
+/* The sound object fn_80207848 builds (0x70 bytes, see src/auto/text_802062E8.cpp).
+   Each flag below queues the matching call on the sound at +0xC when it is next
+   updated; fn_80206824 is what starts, loops and stops it. */
+struct SoundObject {
+    void *vtable;                /* 0x00 */
+    float volume2;               /* 0x04: second volume, queued by flag 0x4E */
+    float volume;                /* 0x08 */
+    void *sound;                 /* 0x0C */
+    unsigned char gap10[0x39];
+    unsigned char play;          /* 0x49: start playing on the next update */
+    unsigned char loop;          /* 0x4A */
+    unsigned char stopMode;      /* 0x4B */
+    unsigned char gap4C;         /* 0x4C */
+    unsigned char volumeChanged; /* 0x4D: hand `volume` to the sound */
+};
+
 #pragma scheduling invalid_target
 void fn_801DE7E8(int arg0) {
     extern char lbl_804872B0[];
