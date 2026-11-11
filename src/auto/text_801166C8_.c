@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
+typedef struct { f32 x, y; } V2_80121848;
 extern void fn_8012440C(void *, void *);
 extern void fn_80124CE8(void *, void *);
 extern f64 cos(f64);
@@ -473,32 +474,31 @@ tail:
 #pragma use_lmw_stmw off
 extern void memset(void *, int, unsigned int);
 u32 fn_80116F8C(void *arg0) {
-    s32 temp_r28;
     s32 temp_r30;
-    u32 temp_r0;
     u32 temp_r29;
+    s32 temp_r28;
+    u32 temp_r0;
     u32 temp_r4;
     u32 temp_r6;
     u32 temp_r9;
     u32 *data = (u32 *)arg0;
-
     temp_r4 = data[0x4C / 4];
     temp_r0 = data[0x40 / 4];
     if (temp_r0 < temp_r4) {
         temp_r30 = temp_r4 - temp_r0;
+        temp_r29 = (u32)(0x3E8 * temp_r30) / (u32)((data[0x78 / 4] * (data[0x70 / 4] * data[0x74 / 4])) >> 3);
         temp_r6 = data[0x38 / 4] - temp_r30;
         temp_r9 = data[0x2C / 4];
         data[0x38 / 4] = temp_r6;
-        temp_r29 = (temp_r30 * 0x3E8) / ((data[0x78 / 4] * (data[0x70 / 4] * data[0x74 / 4])) >> 3);
         if (temp_r6 < temp_r9) {
             temp_r28 = temp_r9 - temp_r6;
             data[0x38 / 4] = temp_r6 + data[0x28 / 4];
-            __memclr((void *)temp_r9, temp_r30 - temp_r28);
-            __memclr((void *)data[0x38 / 4], temp_r28);
+            memset((void *)temp_r9, 0, temp_r30 - temp_r28);
+            memset((void *)data[0x38 / 4], 0, temp_r28);
         } else {
-            __memclr((void *)temp_r6, temp_r30);
+            memset((void *)temp_r6, 0, temp_r30);
         }
-        data[0x40 / 4] += temp_r30;
+        data[0x40 / 4] = data[0x40 / 4] + temp_r30;
         return temp_r29;
     }
     return 0;
@@ -567,8 +567,8 @@ u32 fn_80116BD4(s32, s32, s32);
 u32 fn_801174B0(s32 count, u32 *values, s32 offset, s32 *outIndex, s32 *outFlag) {
     s32 byteOffset;
     u32 *base;
-    s32 i;
     u32 *value;
+    s32 i;
     u32 diff;
     u32 maxDiff;
     s32 index;
@@ -1226,24 +1226,20 @@ extern s32 fn_80118F78(void*, s32);
 extern s32 fn_8011BFFC(s32, s32, s32, s32, s32);
 extern void fn_8011BC48();
 void fn_80118DC0(void* arg0) {
-#pragma scheduling off
     s32 offset;
     s32 i;
+    s32 callback;
     s32 status;
+    register s32 zero = 0;
     s32 fileInfo;
-
     if (arg0 == 0) return;
     fn_80118F78(arg0, 1);
     fileInfo = (s32)((u8*)arg0 + 0x1F4);
-    status = fn_8011BFFC(
-        0,
-        fileInfo,
-        *(s32*)((u8*)arg0 + 0x2E8) != 0
-            ? *(volatile s32*)&lbl_8055DED4
-            : 0,
-        (s32)((u8*)arg0 + 0x340),
-        1
-    );
+    if (*(s32*)((u8*)arg0 + 0x2E8) != zero)
+        callback = *(s32*)&lbl_8055DED4;
+    else
+        callback = 0;
+    status = fn_8011BFFC(zero, fileInfo, callback, (s32)((u8*)arg0 + 0x340), 1);
     switch (status) {
     case 3:
         goto status3;
@@ -1287,9 +1283,8 @@ status_done:
         void* field = *(void**)((u8*)arg0 + 0x384);
         if (field != 0) fn_80120084(field);
     }
-    memset(arg0, 0, 0x388);
+    memset(arg0, zero, 0x388);
     fn_80120084(arg0);
-#pragma scheduling reset
 }
 
 void fn_80118F1C(void *arg0, s32 arg1) {
@@ -1311,58 +1306,47 @@ void fn_80118F1C(void *arg0, s32 arg1) {
 }
 
 s32 fn_80118F78(void *arg0, s32 arg1) {
-    s32 result;
-    s32 elapsed;
-    s32 reset;
-    s32 offset;
-    u32 index;
-
-    reset = 0;
+    u32 index = 0;
+    s32 off = 0;
+    s32 reset = 0;
     if (arg0 == 0) {
         return 0;
     }
-
-    elapsed = fn_80116D30();
-    fn_80118C1C(arg0, elapsed);
-    fn_80118F1C(arg0, elapsed);
-
+    off = fn_80116D30();
+    fn_80118C1C(arg0, off);
+    fn_80118F1C(arg0, off);
     if (arg1 == 0) {
         if (*(s32 *)((u8 *)arg0 + 0xDC) != 0) {
             reset = 1;
         }
     } else if (*(s32 *)((u8 *)arg0 + 0xDC) == 0) {
-        result = *(s32 *)((u8 *)arg0 + 0x268);
+        s32 result = *(s32 *)((u8 *)arg0 + 0x268);
         if (result != 0) {
-            *(s32 *)((u8 *)arg0 + 0x330) = elapsed - result;
+            *(s32 *)((u8 *)arg0 + 0x330) = off - result;
         } else {
             *(s32 *)((u8 *)arg0 + 0x330) = 0;
         }
     }
-
     *(s32 *)((u8 *)arg0 + 0xDC) = arg1;
     fn_8011C274(lbl_8055DED4, (u8 *)arg0 + 0x340);
-
     index = 0;
-    offset = 0;
+    off = 0;
     while (index < *(u32 *)((u8 *)arg0 + 0x2E8)) {
-        void *object = *(u8 **)((u8 *)arg0 + 0x2F0) + offset;
+        void *object = *(u8 **)((u8 *)arg0 + 0x2F0) + off;
         (*(void (**)(void *, s32))((u8 *)object + 0x14))(object, arg1);
-        offset += 0x17C;
+        off += 0x17C;
         index++;
     }
-
     fn_8011C2EC(lbl_8055DED4, (u8 *)arg0 + 0x340);
     if (*(s32 *)((u8 *)arg0 + 0x258) != 0 &&
         *(s32 *)((u8 *)arg0 + 0x2E8) != 0) {
         fn_80117074(arg0);
     }
-
     if (reset != 0) {
-        result = fn_80116D30();
+        s32 result = fn_80116D30();
         *(s32 *)((u8 *)arg0 + 0x268) =
             result - *(s32 *)((u8 *)arg0 + 0x330);
     }
-
     return *(s32 *)((u8 *)arg0 + 0xDC);
 }
 
@@ -1964,7 +1948,6 @@ u32 fn_8011A240(void *arg0, u32 arg1, s32 arg2, u32 arg3) {
     register s32 dst = arg2;
     register s32 offset = (s32)arg1;
     s32 status;
-
     bufferAddr = (u32)(buffer + 0x1F) & 0xFFFFFFE0;
     available = ((u32)(buffer + 0x41F) - bufferAddr) & 0xFFFFFFE0;
     while (remaining != 0) {
@@ -1979,8 +1962,8 @@ poll_drive:
         goto read_failed;
 status_nonnegative:
         if (status >= 0xC) goto poll_drive;
-        if (status >= 3) goto read_failed;
-        goto poll_drive;
+        else if (status >= 3) goto read_failed;
+        else goto poll_drive;
 read_failed:
         return 0;
 read_done:
@@ -2373,8 +2356,10 @@ extern s32 fn_8011A7CC(DVDFileInfo*);
 extern void fn_8011AC84(void*);
 extern s32 fn_8011A870(void*, s32);
 s32 fn_8011ACC4(void* arg0, void* arg1, s32 arg2) {
+    s32 entry;
     memset(arg0, 0, 0x144);
     if (arg2 & 0x800000) {
+        u32 size = *(u32*)((u8*)arg1 + 0x2C);
         u32 v0 = *(u32*)((u8*)arg1 + 0x00);
         u32 v1 = *(u32*)((u8*)arg1 + 0x04);
         u32 v2 = *(u32*)((u8*)arg1 + 0x08);
@@ -2386,7 +2371,6 @@ s32 fn_8011ACC4(void* arg0, void* arg1, s32 arg2) {
         u32 v8 = *(u32*)((u8*)arg1 + 0x20);
         u32 v9 = *(u32*)((u8*)arg1 + 0x24);
         u32 v10 = *(u32*)((u8*)arg1 + 0x28);
-        u32 size = *(u32*)((u8*)arg1 + 0x2C);
         u32 v12 = *(u32*)((u8*)arg1 + 0x30);
         u32 v13 = *(u32*)((u8*)arg1 + 0x34);
         u32 v14 = *(u32*)((u8*)arg1 + 0x38);
@@ -2408,8 +2392,9 @@ s32 fn_8011ACC4(void* arg0, void* arg1, s32 arg2) {
         *(u32*)((u8*)arg0 + 0xB0) = 1;
         *(u32*)((u8*)arg0 + 0xB4) = size;
     } else {
-        if (DVDConvertPathToEntrynum(arg1) == -1) return 0;
-        if (DVDFastOpen((u8*)arg0 + 0x54) == 0) return 0;
+        entry = DVDConvertPathToEntrynum(arg1);
+        if (entry == -1) return 0;
+        if (DVDFastOpen(entry, (u8*)arg0 + 0x54) == 0) return 0;
     }
     ((void**)arg0)[0] = fn_8011A388;
     ((void**)arg0)[1] = fn_8011A8FC;
@@ -4418,14 +4403,8 @@ u32 fn_8011FC2C(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 arg4, s32 arg5, s
 }
 
 void fn_8011FE20(u32 **arg0, u32 arg1) {
-    register u32 size = arg1;
-    register u32 **slot = arg0;
     void *newBuffer;
     void *newSizes;
-    u32 base;
-    u32 rounded;
-    u32 extra;
-    u32 total;
     if (lbl_80559950 == lbl_8055DEF4) {
         newBuffer = fn_8011FFC4(lbl_80559950 << 4);
         newSizes = (u8 *)newBuffer + (lbl_80559950 << 3);
@@ -4435,17 +4414,18 @@ void fn_8011FE20(u32 **arg0, u32 arg1) {
         if (lbl_80559950 != 0x40) {
             fn_80120084(lbl_80559948);
         }
-        lbl_80559948 = (void **)newBuffer;
-        lbl_8055994C = (u32 *)newSizes;
+        lbl_80559948 = newBuffer;
+        lbl_8055994C = newSizes;
     }
-    base = (u32)lbl_8055DEF0;
-    rounded = size + 0x1F;
-    extra = (((base >> 5) & 0x1F) + 0x21 - ((rounded >> 5) & 0x1F)) & 0x1F;
-    total = (rounded & ~0x1F) + (extra << 5);
-    lbl_8055DEF0 = (void *)(base + total);
-    lbl_8055994C[lbl_8055DEF4] = total;
-    lbl_80559948[lbl_8055DEF4] = slot;
-    lbl_8055DEF4++;
+    {
+        u32 rounded = arg1 + 0x1F;
+        u32 extra = ((((u32)lbl_8055DEF0 >> 5) & 0x1F) + 0x21 - ((rounded >> 5) & 0x1F)) & 0x1F;
+        u32 total = (rounded & ~0x1F) + (extra << 5);
+        lbl_8055DEF0 = (void *)((u32)lbl_8055DEF0 + total);
+        lbl_8055994C[lbl_8055DEF4] = total;
+        lbl_80559948[lbl_8055DEF4] = arg0;
+        lbl_8055DEF4++;
+    }
 }
 
 extern void *lbl_8055DEF0;
