@@ -70,7 +70,8 @@ struct FxSpawnQueue {
     struct FxSpawn spawn[0x10];     /* +0x000 instances, packed from the front */
     s32 count;                      /* +0x140 live instances */
 };
-#define FX_QUEUE ((struct FxSpawnQueue *)lbl_804B32B8)
+/* the live instance count: word 0x50 of the queue, right after the 16 slots */
+#define FX_SPAWN_COUNT (lbl_804B32B8[0x50])
 
 extern void fn_8028BC88(s32);
 extern f32 lbl_805643A0;
