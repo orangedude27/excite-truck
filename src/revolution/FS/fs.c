@@ -688,6 +688,7 @@ static s32 _FSGetUsageCb(s32 result, FSCommandBlock* block) {
     return IPC_RESULT_OK;
 }
 
+/* Creates a file at the given path on the IOS file system with the specified attributes and access permissions, returning the IOS result. */
 s32 ISFS_CreateFile(const char* path, u32 attr, u32 ownerPerm, u32 groupPerm,
                     u32 otherPerm) {
     FSCommandBlock* block;
