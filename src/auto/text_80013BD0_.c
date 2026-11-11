@@ -348,34 +348,35 @@ extern void fn_80128668(void *);
 #pragma push
 #pragma cplusplus on
 #pragma use_lmw_stmw off
-extern "C" void *fn_80014664(void *arg0, s32 arg1) {
+extern "C" void *fn_80014664(void *object, s32 deleting) {
+    /* Destructor/cleanup for the object with vtable lbl_802FCE18. */
     class Obj {
     public:
         virtual void v0(int);
     };
-    void *obj;
-    if (arg0 != 0) {
-        *(void **)arg0 = lbl_802FCE18;
-        lbl_803577E0[*(s32 *)((u8 *)arg0 + 4)] = 0;
-        obj = *(void **)((u8 *)arg0 + 0x50);
-        if (obj != 0) {
-            ((Obj *)obj)->v0(1);
+    void *child;
+    if (object != 0) {
+        *(void **)object = lbl_802FCE18;
+        lbl_803577E0[*(s32 *)((u8 *)object + 4)] = 0;
+        child = *(void **)((u8 *)object + 0x50);
+        if (child != 0) {
+            ((Obj *)child)->v0(1);
         }
-        fn_8001A04C(*(void **)((u8 *)arg0 + 0x48));
-        *(void **)((u8 *)arg0 + 0x48) = 0;
-        fn_802CAC54(*(s32 *)((u8 *)arg0 + 0x44));
-        *(s32 *)((u8 *)arg0 + 0x44) = -2;
-        fn_80235380(*(void **)((u8 *)arg0 + 0x40));
-        *(void **)((u8 *)arg0 + 0x40) = 0;
-        fn_80235380(*(void **)((u8 *)arg0 + 0x3C));
-        *(void **)((u8 *)arg0 + 0x3C) = 0;
-        fn_80235380(*(void **)((u8 *)arg0 + 0x34));
-        *(void **)((u8 *)arg0 + 0x34) = 0;
-        fn_80235380(*(void **)((u8 *)arg0 + 0x38));
-        *(void **)((u8 *)arg0 + 0x38) = 0;
-        if (arg1 > 0) fn_80128668(arg0);
+        fn_8001A04C(*(void **)((u8 *)object + 0x48));
+        *(void **)((u8 *)object + 0x48) = 0;
+        fn_802CAC54(*(s32 *)((u8 *)object + 0x44));
+        *(s32 *)((u8 *)object + 0x44) = -2;
+        fn_80235380(*(void **)((u8 *)object + 0x40));
+        *(void **)((u8 *)object + 0x40) = 0;
+        fn_80235380(*(void **)((u8 *)object + 0x3C));
+        *(void **)((u8 *)object + 0x3C) = 0;
+        fn_80235380(*(void **)((u8 *)object + 0x34));
+        *(void **)((u8 *)object + 0x34) = 0;
+        fn_80235380(*(void **)((u8 *)object + 0x38));
+        *(void **)((u8 *)object + 0x38) = 0;
+        if (deleting > 0) fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 #pragma pop
 
