@@ -16453,41 +16453,44 @@ extern "C" void fn_800C55D8(void *arg0, void *arg1, s32 *arg2) {
 }
 
 extern "C" void fn_800C56A4(void *arg0, void *arg1, s32 arg2) {
-    s32 *out = (s32 *)arg0;
-    s32 *in = (s32 *)arg1;
-    out[0] = in[0];
-    out[1] = in[1];
-    out[2] = in[3];
-    out[3] = in[2];
-    out[4] = in[7];
-    out[5] = in[6];
-    out[6] = in[4];
-    out[7] = in[5];
-    out[8] = in[15];
-    out[9] = in[14];
-    out[10] = in[12];
-    out[11] = in[13];
-    out[12] = in[8];
-    out[13] = in[9];
-    out[14] = in[11];
-    out[15] = in[10];
+    /* Copy 16 or 32 u32 words from src to dst in a fixed permuted order; arg2 == 1 copies only the first block. */
+    s32 *dstWords = (s32 *)arg0;
+    s32 *srcWords = (s32 *)arg1;
+
+    dstWords[0] = srcWords[0];
+    dstWords[1] = srcWords[1];
+    dstWords[2] = srcWords[3];
+    dstWords[3] = srcWords[2];
+    dstWords[4] = srcWords[7];
+    dstWords[5] = srcWords[6];
+    dstWords[6] = srcWords[4];
+    dstWords[7] = srcWords[5];
+    dstWords[8] = srcWords[15];
+    dstWords[9] = srcWords[14];
+    dstWords[10] = srcWords[12];
+    dstWords[11] = srcWords[13];
+    dstWords[12] = srcWords[8];
+    dstWords[13] = srcWords[9];
+    dstWords[14] = srcWords[11];
+    dstWords[15] = srcWords[10];
+
     if (arg2 != 1) {
-        out[16] = in[31];
-        out[17] = in[30];
-        out[18] = in[28];
-        out[19] = in[29];
-        out[20] = in[24];
-        out[21] = in[25];
-        out[22] = in[27];
-        out[23] = in[26];
-        out[24] = in[16];
-        out[25] = in[17];
-        out[26] = in[19];
-        out[27] = in[18];
-        out[28] = in[23];
-        out[29] = in[22];
-        out[30] = in[20];
-        out[31] = in[21];
+        dstWords[16] = srcWords[31];
+        dstWords[17] = srcWords[30];
+        dstWords[18] = srcWords[28];
+        dstWords[19] = srcWords[29];
+        dstWords[20] = srcWords[24];
+        dstWords[21] = srcWords[25];
+        dstWords[22] = srcWords[27];
+        dstWords[23] = srcWords[26];
+        dstWords[24] = srcWords[16];
+        dstWords[25] = srcWords[17];
+        dstWords[26] = srcWords[19];
+        dstWords[27] = srcWords[18];
+        dstWords[28] = srcWords[23];
+        dstWords[29] = srcWords[22];
+        dstWords[30] = srcWords[20];
+        dstWords[31] = srcWords[21];
     }
 }
 
