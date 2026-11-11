@@ -12349,6 +12349,22 @@ extern "C" s32 fn_800BA874(u32 *outSize, u16 *outBlockSize) {
     return 0;
 }
 
+/* The IOS SD module's host-controller register ioctls: ioctl 1 writes a register
+   and ioctl 2 reads one (the answer lands in the library's scratch buffer
+   lbl_8055DD70).  Both take the 0x18 byte block the library allocated at
+   lbl_8055DD7C.  The game's own report strings name the two helpers
+   ISD_SetHCRegister and ISD_GetHCRegister (lbl_8031B838 +0xC4 and +0x60). */
+#define SD_IOCTL_SET_HC_REG 1
+#define SD_IOCTL_GET_HC_REG 2
+
+struct SDHostRegIoctl {
+    s32 reg;         /* 0x00 the host-controller register to touch, e.g. 0x28 */
+    u8  pad04[8];
+    s32 field0C;     /* 0x0C what the access is; the only caller passes 1 */
+    s32 value;       /* 0x10 value to write (a read returns it in lbl_8055DD70) */
+    s32 pad14;
+};
+
 extern "C" s32 fn_800BABD0(void *arg0, s32 arg1, s32 *arg2, s32 arg3) {
     const char *logStrings = lbl_8031B838;
     s32 result;
@@ -21850,27 +21866,23 @@ void homebutton::HomeButton::calc_battery(int n) {
     ((void (*)(s32 *))fn_800D16A8)(*(s32 **)((u8 *)((void **)self + n) + 0x254));
 }
 extern "C" void fn_800CA064(void) {
-    typedef void (*SetAlarmCallback)(void);
-    typedef void (*SetAlarmFn)(OSAlarm *, u32, u32, s32, SetAlarmCallback);
     u32 userData = (u32)((void *(*)(void))((void *(*)(const OSAlarm *))OSGetAlarmUserData))();
     u32 index = userData >> 16;
     u32 low = userData & 0xFFFF;
     void *base = lbl_8055DD98;
     void *entry;
     void *alarm;
-
-    if (fn_80060C7C((void *)index) != 0) {
-        entry = *(void **)((u8 *)base + index * 4 + 0x254);
-        if (((s32 (*)(void *))fn_800D1548)(entry) != 0) {
-            fn_800D120C(entry, *(void **)((u8 *)base + 0x5C0), low);
-            return;
-        }
-    }
-
+    if (fn_80060C7C((void *)index) == 0) goto setup;
+    entry = *(void **)((u8 *)base + index * 4 + 0x254);
+    if (((s32 (*)(void *))fn_800D1548)(entry) != 0) goto do_call;
+setup:
     alarm = (u8 *)base + index * 0x30 + 0x4D0;
     OSSetAlarmUserData((OSAlarm *)alarm, (void *)((index << 16) | (index + 2)));
     OSCancelAlarm((OSAlarm *)alarm);
-    ((SetAlarmFn)OSSetAlarm)((OSAlarm *)alarm, 0x10624DD3, 0, (((*(volatile u32 *)0x800000F8) >> 2) / 1000U) * 50, fn_800CA064);
+    ((void (*)(OSAlarm *, u32, u32, u32, void (*)(void)))OSSetAlarm)((OSAlarm *)alarm, 0x10624DD3, 0, (((*(volatile u32 *)0x800000F8) >> 2) / 1000U) * 50, fn_800CA064);
+    return;
+do_call:
+    fn_800D120C(*(void **)((u8 *)base + index * 4 + 0x254), *(void **)((u8 *)base + 0x5C0), low);
 }
 
 extern "C" void fn_800D15B4(void*);
@@ -24173,20 +24185,17 @@ extern "C" void VFiPFSTR_MoveStrPos(void *arg0, s16 arg1, s32 arg2) {
     if (data->mode == 1) {
         u8 *str = data->pos;
         Table *table = (Table *)lbl_803D2140;
-        while (arg1 != 0) {
+        for (; arg1 != 0; arg1--) {
             if (table->is_lead((s8)*str, 1) != 0)
                 count = (s16)(count + 1);
             count++;
-            arg1--;
         }
     } else {
         u8 *str = data->pos;
         Table *table = (Table *)lbl_803D2140;
-        s16 i = 0;
-        while (i < arg1) {
+        for (s16 i = 0; i < arg1; i++) {
             s32 len = table->length(str);
             str += len * 2;
-            i++;
             count += (s16)len;
         }
     }
