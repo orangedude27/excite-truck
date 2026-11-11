@@ -1578,6 +1578,7 @@ extern "C" void fn_801474EC(void *arg0, const char *arg1, ...) {
 }
 #pragma dont_inline reset
 #pragma scheduling on
+/* Formats a printf-style message and sends it through the object's second virtual handler; logs when the text would exceed the 0x200-byte buffer. */
 extern "C" void fn_801475D0(void *arg0, s32 arg1, const char *format, ...) {
     class V {
     public:
