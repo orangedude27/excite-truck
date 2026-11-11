@@ -52,6 +52,33 @@ extern s32 fn_8001CE34(s32, s32, s32, s32);
 extern s32 fn_8001CE74(s32, s32, s32, s32);
 extern s32 lbl_80558C90;
 
+/* --- the "Stat" memory-card section ---------------------------------------
+ * fn_8001C9C4 allocates the 0x3E7D0-byte statistics buffer (lbl_8055D5CC) and
+ * registers it with the memory-card code as the 'Stat' section, with
+ * fn_8001D5F0 as its callback; the card code calls that back with 0 before and
+ * 1 after the section is read in, 2 when no save was found, and 3 before and
+ * 4 (or 5) after it is written out.
+ * The buffer is four 0xDAC4-byte slots followed by the string archive at
+ * +0x3D7D0 (its descriptor is lbl_8055D5D0).  A slot starts with its record
+ * count at +0x6E00 and then holds that many 0x2C-byte records; the records
+ * keep pointers into the archive, so they are shifted by the archive's address
+ * while the game runs and shifted back before being written to the card.
+ * fn_8001C9C4 builds one StatSlot per slot and keeps the four in lbl_80358658. */
+typedef struct StatSlot {
+    u8 *records;     /* 0x00: the slot's records inside the buffer */
+    s32 recordCount; /* 0x04: records in use, the buffer's count kept in RAM */
+    s32 maxRecords;  /* 0x08: how many fit (0x280) */
+} StatSlot;
+
+#define STAT_SLOTS       ((StatSlot **)lbl_80358658)
+#define STAT_BUFFER      lbl_8055D5CC
+#define STAT_BUFFER_SIZE 0x3E7D0
+#define STAT_SLOT_SIZE   0xDAC4
+/* the record count a slot is saved with, at the head of the slot */
+#define STAT_SAVED_COUNT(slot)                                             \
+    (*(s32 *)((u8 *)lbl_8055D5CC + (slot) * STAT_SLOT_SIZE + 0x6E00))
+#define STAT_FIRST_LOAD lbl_8055D5D8 /* set until the first load is reported */
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
