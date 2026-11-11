@@ -11297,6 +11297,7 @@ complete:
 }
 
 void bta_dm_discover_next_device(void) {
+    /* Advances to the next inquiry result and starts service/name discovery, or posts search-complete when none remain. */
     u8 *search = lbl_803C0B98;
     extern void fn_80072AE4(u8 *, u8 *, u8 *);
     *(void **)(search + 4) = BTM_InqDbNext(*(void **)(search + 4));
