@@ -20079,8 +20079,8 @@ void PORT_PortNegInd(void *arg0, u8 arg1, u8 *arg2, u16 arg3) {
 extern char lbl_80319240[];
 extern void fn_800939A0(void *, u8);
 extern void RFCOMM_ControlReq(void *, u8, void *);
-/* RFCOMM port negotiation confirmation: update port state and either
- * complete open (send control request) or close/fail on negotiation result. */
+/* RFCOMM port negotiation confirmation: find the port for (mcb,dlci), log via
+ * trace, then on error mark/close it, else send control request or log. */
 void PORT_PortNegCnf(void *p_mcb, u8 dlci, void *p_pars, u16 result) {
     register char *p_messages = lbl_80319240;
     struct t_port_info *p_port;
