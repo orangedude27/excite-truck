@@ -800,7 +800,7 @@ void *__dt__12PhysicsWorldFv_80289C20(void *arg0, int arg1) {
     return arg0;
 }
 
-extern int lbl_80348B44;
+extern char lbl_80348B44[];
 extern float lbl_8056427C;
 extern float lbl_80564290;
 extern float lbl_80564294;
@@ -809,61 +809,75 @@ extern float lbl_80564300;
 extern float lbl_80564304;
 extern float lbl_80564308;
 void fn_80289C80(int *arg0) {
-    struct Frame {
-        float sp8, spC, sp10, sp14, sp18, sp1C;
-        int sp20;
-        int sp24;
-        float sp28, sp2C, sp30, sp34, sp38, sp3C, sp40, sp44;
-        float sp48, sp4C, sp50, sp54;
-        unsigned char pad58[0xC];
-        int sp64;
-        float sp68;
-        unsigned char pad6C[4];
-        float sp70, sp74, sp78, sp7C, sp80, sp84, sp88, sp8C, sp90, sp94, sp98, sp9C;
-    } frame;
-
-    fn_8028E61C(&frame.sp20);
-    frame.sp24 = 0x60;
-    frame.sp28 = lbl_8056427C;
-    frame.sp2C = lbl_80564300;
-    frame.sp20 = 0;
-    frame.sp68 = lbl_80564284;
+    fn_802897E0Frame frame;
+    register float f0;
+    register float f1;
+    register float f2;
+    register float f3;
+    register float f4;
+    register float f5;
+    register float f6;
+    register float f7;
+    register float f8;
+    register float f9;
+    register float f10;
+    register float f11;
+    register float f12;
+    register float f13;
+    register int emitterNum;
+    register int zero;
+    fn_8028E61C((int *)&frame.sp20);
+    f9 = *(volatile float *)&lbl_8056428C;
+    emitterNum = 0x60;
+    f10 = *(volatile float *)&lbl_80564304;
+    zero = 0;
+    f6 = *(volatile float *)&lbl_80564274;
+    f5 = *(volatile float *)&lbl_805642C8;
+    f11 = *(volatile float *)&lbl_80564284;
+    f13 = *(volatile float *)&lbl_8056427C;
+    f12 = *(volatile float *)&lbl_80564300;
+    f8 = *(volatile float *)&lbl_80564290;
+    f7 = *(volatile float *)&lbl_80564294;
+    f4 = *(volatile float *)&lbl_80564308;
+    f3 = *(volatile float *)&lbl_805642B8;
+    f2 = *(volatile float *)&lbl_80564278;
+    f1 = *(volatile float *)&lbl_805642C0;
+    f0 = *(volatile float *)&lbl_805642D8;
+    frame.sp24 = emitterNum;
+    frame.sp28 = f13;
+    frame.sp2C = f12;
+    frame.sp20 = zero;
+    frame.sp68 = f11;
     frame.sp64 = 1;
-    frame.sp14 = lbl_80564304;
-    frame.sp18 = lbl_80564304;
-    frame.sp1C = lbl_80564304;
-    frame.sp30 = lbl_80564304;
-    frame.sp34 = lbl_80564304;
-    frame.sp38 = lbl_80564304;
-    frame.sp8 = lbl_8056428C;
-    frame.spC = lbl_8056428C;
-    frame.sp10 = lbl_8056428C;
-    frame.sp3C = lbl_8056428C;
-    frame.sp40 = lbl_8056428C;
-    frame.sp44 = lbl_8056428C;
-    frame.sp48 = lbl_8056428C;
-    frame.sp4C = lbl_80564290;
-    frame.sp50 = lbl_80564294;
-    frame.sp54 = lbl_80564284;
-    frame.sp90 = lbl_80564274;
-    frame.sp88 = lbl_80564274;
-    frame.sp80 = lbl_80564274;
-    frame.sp94 = lbl_805642C8;
-    frame.sp8C = lbl_805642C8;
-    frame.sp84 = lbl_805642C8;
-    frame.sp78 = lbl_80564308;
-    frame.sp7C = lbl_805642B8;
-    frame.sp70 = lbl_80564278;
-    frame.sp74 = lbl_805642C0;
-    frame.sp98 = lbl_805642D8;
-    frame.sp9C = lbl_8056428C;
-
-    *arg0 = ((int (*)(int *, int *, int, int, float, float, float, float, float,
-                      float, float, float, float, float, float, float, float))fn_8028E2F8)(
-        &frame.sp20, &lbl_80348B44, lbl_8055C880, 0,
-        lbl_805642C0, lbl_80564278, lbl_805642B8, lbl_80564308,
-        lbl_805642C8, lbl_80564274, lbl_80564294, lbl_80564290,
-        lbl_8056428C, lbl_80564304, lbl_80564284, lbl_80564300, lbl_8056427C);
+    frame.sp14 = f10;
+    frame.sp18 = f10;
+    frame.sp1C = f10;
+    frame.sp30 = f10;
+    frame.sp34 = f10;
+    frame.sp38 = f10;
+    frame.sp8 = f9;
+    frame.spC = f9;
+    frame.sp10 = f9;
+    frame.sp3C = f9;
+    frame.sp40 = f9;
+    frame.sp44 = f9;
+    frame.sp48 = f9;
+    frame.sp4C = f8;
+    frame.sp50 = f7;
+    frame.sp54 = f11;
+    frame.sp90 = f6;
+    frame.sp88 = f6;
+    frame.sp80 = f6;
+    frame.sp94 = f5;
+    frame.sp8C = f5;
+    frame.sp84 = f5;
+    frame.sp78 = f4;
+    frame.sp7C = f3;
+    frame.sp70 = f2;
+    frame.sp74 = f1;
+    frame.sp98 = f0;
+    frame.sp9C = f9;
+    *arg0 = ((int (*)(int *, const char *, int))fn_8028E2F8)((int *)&frame.sp20, (const char *)&lbl_80348B44, lbl_8055C880);
 }
 
 extern char lbl_80348B58[];
