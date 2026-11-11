@@ -4169,30 +4169,34 @@ extern "C" f32 lbl_80561790;
 
 #pragma push
 #pragma processor 750
-extern "C" void fn_80159624(void *arg0, void *arg1) {
-    if (*(void **)((u8 *)arg0 + 0x278) != 0) {
-        u32 result;
-        f32 magnitude = (f32)__fabs((f64)*(f32 *)((u8 *)arg1 + 0x2690));
-        u8 enabled = *(u8 *)((u8 *)arg0 + 0x274);
-        f32 value = *(f32 *)((u8 *)arg1 + 0x25D4);
-        if (magnitude <= lbl_80558DC4[0] && value > lbl_80561788 && *(f32 *)((u8 *)arg0 + 0x270) < lbl_80561760) {
-            f64 dtmp = __fabs((f64)PSVECDotProduct((const void *)((u8 *)arg1 + 0x118), (const void *)((u8 *)arg1 + 0x3C)));
-            f32 dot = (f32)dtmp;
-            f32 scale = enabled != 0 ? lbl_8056178C : lbl_80561790;
-            result = dot > value * scale;
+extern "C" void fn_80159624(void *tracker, void *truck) {
+    // One frame of the drift tracker's sound switch: while the truck is still
+    // sliding sideways at speed its drift sound keeps playing, and as soon as
+    // it is not, the tracker asks that sound to stop.  A drift counts when the
+    // truck is neither spinning nor crawling, has been in its current ground
+    // state under half a second, and enough of its velocity runs along the
+    // sideways axis -- more to start a drift (0.35 of the speed) than to keep
+    // one going (0.15), which is what the previous frame's flag selects.
+    if (*(void **)((u8 *)tracker + 0x278) != 0) {
+        u32 drifting;
+        f32 spin = (f32)__fabs((f64)*(f32 *)((u8 *)truck + 0x2690));
+        u8 wasDrifting = *(u8 *)((u8 *)tracker + 0x274);
+        f32 speed = *(f32 *)((u8 *)truck + 0x25D4);
+        if (spin <= DRIFT_EPSILON && speed > DRIFT_MIN_SPEED && *(f32 *)((u8 *)tracker + 0x270) < DRIFT_MAX_TIME) {
+            f64 dtmp = __fabs((f64)PSVECDotProduct((const void *)((u8 *)truck + 0x118), (const void *)((u8 *)truck + 0x3C)));
+            f32 sideways = (f32)dtmp;
+            f32 slip = wasDrifting != 0 ? DRIFT_KEEP_SLIP : DRIFT_START_SLIP;
+            drifting = sideways > speed * slip;
         } else {
-            result = 0;
+            drifting = 0;
         }
-        if (result != 0)
+        if (drifting != 0)
             return;
-        u8 *obj = *(u8 **)((u8 *)arg0 + 0x278);
-        obj[0x4A] = 1;
-        obj[0x4C] = 0;
+        u8 *sound = *(u8 **)((u8 *)tracker + 0x278);
+        sound[0x4A] = 1;
+        sound[0x4C] = 0;
     }
 }
-#pragma push
-#pragma processor 750
-#pragma scheduling 750
 extern "C" int fn_80159708(void *arg0) {
     float f = *(float *)((char *)arg0 + 0x25C);
     return (int)f;
