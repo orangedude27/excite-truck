@@ -9445,25 +9445,26 @@ void fn_8007BC88(void) {
 
 }
 
-BOOLEAN btm_inq_find_bdaddr(BD_ADDR addr) {
-    u8 *state = lbl_803C0F78;
-    u16 count;
-    u8 *entry;
+/* Check if a peer BD_ADDR was already reported in the current inquiry; if not and there is space, record it. */
+BOOLEAN btm_inq_find_bdaddr(BD_ADDR p_bda) {
+    u8 *p_btm_cb = lbl_803C0F78;
+    u16 inq_count;
+    u8 *p_inq_ent;
     u16 i;
 
-    entry = *(u8 **)(state + 0x16DC);
-    if ((state[0x1848] & 4) != 0 || entry == NULL)
+    p_inq_ent = *(u8 **)(p_btm_cb + 0x16DC);
+    if ((p_btm_cb[0x1848] & 4) != 0 || p_inq_ent == NULL)
         return FALSE;
-    count = *(u16 *)(state + 0x16E0);
-    for (i = 0; i < count; i++, entry += 0xC) {
-        if (memcmp(entry + 4, addr, 6) == 0 &&
-            *(u32 *)entry == *(u32 *)(state + 0x16C0))
+    inq_count = *(u16 *)(p_btm_cb + 0x16E0);
+    for (i = 0; i < inq_count; i++, p_inq_ent += 0xC) {
+        if (memcmp(p_inq_ent + 4, p_bda, 6) == 0 &&
+            *(u32 *)p_inq_ent == *(u32 *)(p_btm_cb + 0x16C0))
             return TRUE;
     }
-    if (i < *(u16 *)(state + 0x16E2)) {
-        *(u32 *)entry = *(u32 *)(state + 0x16C0);
-        memcpy(entry + 4, addr, 6);
-        *(u16 *)(state + 0x16E0) = *(u16 *)(state + 0x16E0) + 1;
+    if (i < *(u16 *)(p_btm_cb + 0x16E2)) {
+        *(u32 *)p_inq_ent = *(u32 *)(p_btm_cb + 0x16C0);
+        memcpy(p_inq_ent + 4, p_bda, 6);
+        *(u16 *)(p_btm_cb + 0x16E0) = *(u16 *)(p_btm_cb + 0x16E0) + 1;
     }
     return FALSE;
 }
