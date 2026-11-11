@@ -36,7 +36,10 @@ void fn_802C0D70(float *arg0) {
 #pragma pop
 
 #pragma scheduling invalid_target
-void fn_802C0E68(int arg0) {
+void fn_802C0E68(int resourceId) {
+    /* Update the cached sun direction/light vector for the given resource id,
+     * loading direction data from the resource when available or falling back
+     * to defaults, then normalizing and applying it. */
     extern char lbl_8055FB14[4];
     extern char lbl_8055CF90[4];
     extern float lbl_804C0800[3];
@@ -51,13 +54,13 @@ void fn_802C0E68(int arg0) {
     void *sp8;
     float vector[3];
 
-    if (*(int *)lbl_8055FB14 != arg0) {
-        *(int *)lbl_8055FB14 = arg0;
+    if (*(int *)lbl_8055FB14 != resourceId) {
+        *(int *)lbl_8055FB14 = resourceId;
         sp8 = 0;
-        if (arg0 == -1) {
+        if (resourceId == -1) {
             goto default_values;
         }
-        if (((int (*)(int, char *, void **))fn_801E2CCC)(arg0, lbl_8055CF90, &sp8) == 0) {
+        if (((int (*)(int, char *, void **))fn_801E2CCC)(resourceId, lbl_8055CF90, &sp8) == 0) {
             goto default_values;
         }
         lbl_804C0800[0] = *(float *)((char *)sp8 + 0x24);
