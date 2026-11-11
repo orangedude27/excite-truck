@@ -11738,9 +11738,12 @@ extern "C" u8 fn_800BA974(s32, u8 *, s32);
 extern "C" s32 fn_800B9CC4(s32);
 extern "C" s32 lbl_8055DD60;
 extern "C" const char lbl_8031B2B0[];
-extern "C" s32 fn_800B9BB4(s32 arg0) {
-    u8 value;
-    if ((arg0 & 1) != 1)
+/* Callback invoked for status bit 1: (re)registers the interrupt handler if needed,
+ * lazily reads and stores a state byte, performs cleanup and user notification, then marks ready. */
+extern "C" s32 fn_800B9BB4(s32 status) {
+    u8 stateByte;
+
+    if ((status & 1) != 1)
         return 0;
 
     if (*(volatile s32 *)((u8 *)lbl_80407300 + 8) != 0) {
@@ -11752,14 +11755,14 @@ extern "C" s32 fn_800B9BB4(s32 arg0) {
 
     if (*(volatile s32 *)((u8 *)lbl_80407300 + 0xC) != 0) {
         if (*(volatile s8 *)((u8 *)lbl_80407300 + 0x14) == 0 &&
-            (*fn_800BA974)(*(volatile s32 *)((u8 *)lbl_80407300 + 0xC), &value, 1) == 1)
-            *(volatile u8 *)((u8 *)lbl_80407300 + 0x14) = value;
+            (*fn_800BA974)(*(volatile s32 *)((u8 *)lbl_80407300 + 0xC), &stateByte, 1) == 1)
+            *(volatile u8 *)((u8 *)lbl_80407300 + 0x14) = stateByte;
 
         {
-            u8 *after = lbl_80407300;
-            fn_800A68DC(*(volatile s32 *)(after + 0xC));
-            if (*(volatile s8 *)(after + 0x14) != 0 && lbl_8055DD40 != 0)
-                ((void (*)(s8))lbl_8055DD40)(*(volatile s8 *)(after + 0x14));
+            u8 *state = lbl_80407300;
+            fn_800A68DC(*(volatile s32 *)(state + 0xC));
+            if (*(volatile s8 *)(state + 0x14) != 0 && lbl_8055DD40 != 0)
+                ((void (*)(s8))lbl_8055DD40)(*(volatile s8 *)(state + 0x14));
         }
     }
 
