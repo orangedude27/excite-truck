@@ -1619,6 +1619,24 @@ void fn_80174794(void **arg0) {
         }
     }
 }
+/* One camera key: a point on the ground plane (x, z) the camera can be parked at. */
+typedef struct { float x, z; } Fn8017483CKey;
+/* The list of camera keys a route/cutscene walks through. */
+typedef struct { void *f0; Fn8017483CKey *keys; int keyCount; } Fn8017483CKeyList;
+/* A camera frame (basis, position and view vector, as fn_8017431C builds one) with the
+   ground-query handle fn_801B7C8C samples the terrain through right behind it. */
+typedef struct {
+    Fn8017431CM9 m;      /* 0x00 camera basis: rows are right, up and view direction */
+    Fn8017431CV3 pos;    /* 0x24 camera position */
+    Fn8017431CV3 v;      /* 0x30 view vector */
+    int zero;            /* 0x3C cleared by fn_801B7C8C */
+    short tileIndex;     /* 0x40 ground tile the camera is over; -1 = not looked up */
+    short pad42;
+    int mode;            /* 0x44 camera mode; 2 = fixed key looking at the world origin */
+    int f48;             /* 0x48 ground-query result */
+    int f4C;             /* 0x4C ground-query result */
+} Fn8017483CFrame;
+
 int fn_8017483C(void *arg0, void *arg1, int arg2) {
     extern double fn_8002F234(float);
     extern void fn_801B7C8C(void *, void *, float *);
