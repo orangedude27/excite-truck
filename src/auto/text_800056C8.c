@@ -81,7 +81,11 @@ extern s32 fn_80007554(s32, s32, s32);
  * and fn_80005930 updates the ones it picked.  Every overlay answers slot
  * 0x38 of its vtable with a "this overlay is finished" byte, which is what
  * fn_800057D0 asks the scene overlays before letting go of them.
- * lbl_8055D350 points at the per-session state block at lbl_8034EE84. */
+ * lbl_8055D350 points at the per-session state block at lbl_8034EE84.
+ * The overlays' own vtables (lbl_802FB2DC .. lbl_802FB520, one per class) answer
+ * slot 0x14 with "take the screen", 0x18 with "give it back", 0x1C with the init
+ * fn_80005C88 runs right after storing the vtable (and fn_800070DC runs again to
+ * reset them), 0x20/0x24 with their update/draw and 0x38 with a "finished" byte. */
 typedef struct OverlayEntry { /* manager + 0x10, one per player */
     void *active;     /* 0x00: the overlay this player's HUD shows now */
     void *lastActive; /* 0x04: the overlay it showed last frame */
