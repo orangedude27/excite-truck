@@ -3612,21 +3612,25 @@ extern const char lbl_80322470[];
 #pragma pop
 
 extern "C" void VoiceCallback__Q46nw4hbm3snd6detail7AxVoiceFPv(void *arg0) {
-    char *self = (char *)arg0;
-    unsigned int level = OSDisableInterrupts();
+    /* AX voice callback: notify the voice owner, release attached non-self buffers, unregister/free the voice, and clear its state. */
+    char *callbackContext = (char *)arg0;
+    unsigned int savedInterrupts = OSDisableInterrupts();
     char *row;
     char *entry;
-    char *voice = (char *)*(void **)(self + 0x14);
+    char *voice = (char *)*(void **)(callbackContext + 0x14);
     int rowIndex;
     int column;
     int zero = 0;
+
     if (voice == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x51F, lbl_80322470);
     }
-    void (*callback)(void *, int, void *) = (void (*)(void *, int, void *))(*(void ***)(voice + 0x10C));
-    if (callback != 0) {
-        callback(voice, 3, *(void **)(voice + 0x110));
+
+    void (*ownerCallback)(void *, int, void *) = (void (*)(void *, int, void *))(*(void ***)(voice + 0x10C));
+    if (ownerCallback != 0) {
+        ownerCallback(voice, 3, *(void **)(voice + 0x110));
     }
+
     row = voice;
     rowIndex = 0;
     while (rowIndex < *(int *)(voice + 0x104)) {
@@ -3634,7 +3638,7 @@ extern "C" void VoiceCallback__Q46nw4hbm3snd6detail7AxVoiceFPv(void *arg0) {
         column = 0;
         while (column < *(int *)(voice + 0x108)) {
             unsigned int buffer = *(unsigned int *)(entry + 0xC);
-            if (buffer != 0 && buffer != (unsigned int)self) {
+            if (buffer != 0 && buffer != (unsigned int)callbackContext) {
                 TRKGetFreeBuffer((void *)buffer);
             }
             entry += 4;
@@ -3643,6 +3647,7 @@ extern "C" void VoiceCallback__Q46nw4hbm3snd6detail7AxVoiceFPv(void *arg0) {
         row += 0x10;
         rowIndex++;
     }
+
     UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(
         GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(), voice);
     FreeVoice__Q46nw4hbm3snd6detail9AxManagerFPQ46nw4hbm3snd6detail7AxVoice(
@@ -3651,5 +3656,5 @@ extern "C" void VoiceCallback__Q46nw4hbm3snd6detail7AxVoiceFPv(void *arg0) {
     *(unsigned char *)(voice + 0x11D) = zero;
     *(int *)(voice + 0x104) = zero;
     *(unsigned char *)(voice + 0x11C) = zero;
-    OSRestoreInterrupts(level);
+    OSRestoreInterrupts(savedInterrupts);
 }
