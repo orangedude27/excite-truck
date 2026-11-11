@@ -18162,31 +18162,33 @@ void l2c_link_adjust_allocation(void) {
     }
 }
 
+/* Process HCI Number Of Completed Packets event: update each LCB's completed/
+ * sent packet counts and total controller completed count, then trigger sends. */
 void l2c_link_process_num_completed_pkts(u8 *p, u16 evt_len) {
     extern void l2c_link_check_send_pkts(void *, u8, void *, u8);
-    u8 count = p[0];
+    u8 numHandles = p[0];
     u8 i = 0;
     u8 *entry = p + 1;
     u16 zero = 0;
 
-    while (i < count) {
+    while (i < numHandles) {
         u16 handle = (u16)(entry[0] + (entry[1] << 8));
-        u16 completed = (u16)(entry[2] + (entry[3] << 8));
+        u16 numCompleted = (u16)(entry[2] + (entry[3] << 8));
         void *lcb;
-        u32 value;
+        u32 pendingCount;
 
         entry += 4;
         lcb = l2cu_find_lcb_by_handle(handle);
         if (lcb != 0) {
-            value = *(u16 *)((u8 *)lcb + 0x36) + completed;
-            *(u16 *)((u8 *)lcb + 0x36) = value;
-            if ((u16)value > *(u16 *)((u8 *)lcb + 0x34))
+            pendingCount = *(u16 *)((u8 *)lcb + 0x36) + numCompleted;
+            *(u16 *)((u8 *)lcb + 0x36) = pendingCount;
+            if ((u16)pendingCount > *(u16 *)((u8 *)lcb + 0x34))
                 *(u16 *)((u8 *)lcb + 0x36) = *(u16 *)((u8 *)lcb + 0x34);
-            if (*(u16 *)((u8 *)lcb + 0x38) > completed)
-                *(u16 *)((u8 *)lcb + 0x38) -= completed;
+            if (*(u16 *)((u8 *)lcb + 0x38) > numCompleted)
+                *(u16 *)((u8 *)lcb + 0x38) -= numCompleted;
             else
                 *(u16 *)((u8 *)lcb + 0x38) = zero;
-            *(u16 *)(lbl_803C4040 + 4) += completed;
+            *(u16 *)(lbl_803C4040 + 4) += numCompleted;
             ((void (*)(void *, u8, void *))l2c_link_check_send_pkts)(lcb, 0, 0);
         }
         i++;
