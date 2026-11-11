@@ -2650,6 +2650,7 @@ void WUDiMoveTopSmpDevInfoPtr(u8 *arg0, void *arg1) {
 
 #pragma use_lmw_stmw off
 void WUDiMoveBottomSmpDevInfoPtr_8006B98C(void *arg0) {
+    /* Move the SMP device-info list entry matching arg0's device address to the bottom of the list, if it is not already there. */
     typedef struct WUDDevInfoView {
         u8 pad[0x40];
         u8 devAddr[6];
@@ -2667,35 +2668,35 @@ void WUDiMoveBottomSmpDevInfoPtr_8006B98C(void *arg0) {
         WUDListEntry smpList[6];
     } WUDCBView;
 
-    WUDCBView *p = (WUDCBView *)lbl_80392960;
-    WUDDevInfoView *pInfo = (WUDDevInfoView *)arg0;
-    BOOL enabled;
+    WUDCBView *wudCb = (WUDCBView *)lbl_80392960;
+    WUDDevInfoView *targetDevInfo = (WUDDevInfoView *)arg0;
+    BOOL interrupts;
     s32 i;
 
-    enabled = OSDisableInterrupts();
+    interrupts = OSDisableInterrupts();
     for (i = 0; i < 6; i++) {
-        if (memcmp(p->smpList[i].devInfo->devAddr, pInfo->devAddr, 6) != 0) {
+        if (memcmp(wudCb->smpList[i].devInfo->devAddr, targetDevInfo->devAddr, 6) != 0) {
             continue;
         }
 
-        if (memcmp(p->smpListTail->devInfo->devAddr, p->smpList[i].devInfo->devAddr, 6) == 0) {
+        if (memcmp(wudCb->smpListTail->devInfo->devAddr, wudCb->smpList[i].devInfo->devAddr, 6) == 0) {
             break;
         }
 
-        p->smpList[i].next->prev = p->smpList[i].prev;
-        if (memcmp(p->smpListHead->devInfo->devAddr, p->smpList[i].devInfo->devAddr, 6) == 0) {
-            p->smpListHead = p->smpList[i].next;
+        wudCb->smpList[i].next->prev = wudCb->smpList[i].prev;
+        if (memcmp(wudCb->smpListHead->devInfo->devAddr, wudCb->smpList[i].devInfo->devAddr, 6) == 0) {
+            wudCb->smpListHead = wudCb->smpList[i].next;
         } else {
-            p->smpList[i].prev->next = p->smpList[i].next;
+            wudCb->smpList[i].prev->next = wudCb->smpList[i].next;
         }
 
-        p->smpList[i].prev = p->smpListTail;
-        p->smpListTail->next = &p->smpList[i];
-        p->smpListTail = &p->smpList[i];
-        p->smpList[i].next = 0;
+        wudCb->smpList[i].prev = wudCb->smpListTail;
+        wudCb->smpListTail->next = &wudCb->smpList[i];
+        wudCb->smpListTail = &wudCb->smpList[i];
+        wudCb->smpList[i].next = 0;
         break;
     }
-    OSRestoreInterrupts(enabled);
+    OSRestoreInterrupts(interrupts);
 }
 #pragma use_lmw_stmw reset
 extern char lbl_80319994[];
