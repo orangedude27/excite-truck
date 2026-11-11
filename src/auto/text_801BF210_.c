@@ -958,37 +958,38 @@ void fn_801C0D3C(void *arg0)
 #pragma pop
 /* Reverse-ordered scalar loads keep the vector copies and final register restore matching. */
 void fn_801C0D6C(void *arg0) {
+    /* Orthonormalize a 3x3 basis (3 row vectors in a float[9]) using cross products and normalization. */
     extern void PSVECNormalize(void *, void *);
-    float vec1[3];
+    float vec2[3];
     float cross[3];
     float vec0[3];
-    float *input = (float *)arg0;
+    float *matrix = (float *)arg0;
     float x, y, z, a, b, c;
-    z = input[2];
-    y = input[1];
-    x = input[0];
+    z = matrix[2];
+    y = matrix[1];
+    x = matrix[0];
     vec0[0] = x;
     vec0[1] = y;
     vec0[2] = z;
-    c = input[8];
-    b = input[7];
-    a = input[6];
-    vec1[0] = a;
-    vec1[1] = b;
-    vec1[2] = c;
-    PSVECCrossProduct(vec1, vec0, cross);
+    c = matrix[8];
+    b = matrix[7];
+    a = matrix[6];
+    vec2[0] = a;
+    vec2[1] = b;
+    vec2[2] = c;
+    PSVECCrossProduct(vec2, vec0, cross);
     PSVECNormalize(vec0, vec0);
     PSVECNormalize(cross, cross);
-    PSVECCrossProduct(vec0, cross, vec1);
-    input[0] = vec0[0];
-    input[1] = vec0[1];
-    input[2] = vec0[2];
-    input[3] = cross[0];
-    input[4] = cross[1];
-    input[5] = cross[2];
-    input[6] = vec1[0];
-    input[7] = vec1[1];
-    input[8] = vec1[2];
+    PSVECCrossProduct(vec0, cross, vec2);
+    matrix[0] = vec0[0];
+    matrix[1] = vec0[1];
+    matrix[2] = vec0[2];
+    matrix[3] = cross[0];
+    matrix[4] = cross[1];
+    matrix[5] = cross[2];
+    matrix[6] = vec2[0];
+    matrix[7] = vec2[1];
+    matrix[8] = vec2[2];
 }
 #pragma scheduling on
 extern float PSVECDotProduct(void *, void *);
