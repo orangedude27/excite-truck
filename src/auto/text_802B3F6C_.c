@@ -464,20 +464,23 @@ extern void fn_802B4DC0(void *);
 __declspec(section ".sdata") extern int lbl_8055F9D0[];
 #pragma push
 #pragma scheduling invalid_target
+/* Frees everything the skagbag tables hold: first the cell objects of each of
+ * the 128 lookup tables of lbl_804BE248, then every record block of the skag
+ * list at lbl_8055F9D0 and the list itself. */
 void fn_802B4BDC(void) {
-    void *entry;
+    SkagBlock_802B4BDC *block;
     int zero;
     int offset;
-    int *p;
+    SkagTable_802B4BDC **table;
     int i;
     int count;
 
     i = 0;
-    p = lbl_804BE248;
+    table = (SkagTable_802B4BDC **)lbl_804BE248;
     do {
-        fn_802B4CB4(p);
+        fn_802B4CB4(table);
         i += 1;
-        p += 1;
+        table += 1;
     } while ((unsigned int)i < 0x80);
 
     count = 0;
@@ -485,24 +488,24 @@ void fn_802B4BDC(void) {
     zero = 0;
     goto check_count;
 loop:
-    entry = *(void **)((char *)*(void **)*(void * volatile *)lbl_8055F9D0 + offset);
-    if (entry != 0) {
-        if (entry != 0) {
-            int data = *(int *)((char *)entry + 0xC);
-            if (data != 0)
-                fn_80128670(data - 0x10);
-            if (entry != 0) {
-                *(int *)entry = zero;
-                *(int *)((char *)entry + 4) = zero;
-                *(int *)((char *)entry + 8) = zero;
+    block = *(SkagBlock_802B4BDC **)((char *)SKAG_LIST->blocks + offset);
+    if (block != 0) {
+        if (block != 0) {
+            int end = block->end;
+            if (end != 0)
+                fn_80128670(end - 0x10);
+            if (block != 0) {
+                block->records = zero;
+                block->used = zero;
+                block->capacity = zero;
             }
         }
-        fn_80128668(entry);
+        fn_80128668(block);
     }
     offset += 4;
     count += 1;
 check_count:
-    if (count < ((int *)*(void * volatile *)lbl_8055F9D0)[1])
+    if (count < SKAG_LIST->count)
         goto loop;
     fn_802B4DC0(lbl_8055F9D0);
 }
