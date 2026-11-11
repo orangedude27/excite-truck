@@ -1424,30 +1424,29 @@ extern "C" s32 ReadPlayerInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlP
     extern char lbl_80559850;
     extern const char lbl_80324AF8[];
     register void *archive = *(void **)((u8 *)self + 0x28);
-    register void *reader = self;
+    register const void *reader = self;
     register u32 playerIndex = index;
     register void *outInfo = out;
     register u8 *players;
-    s32 failure = 0;
-
+    void *player;
     if (*((u8 *)archive + 0x11) != 0)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598A8, 0x6f, lbl_80324CDC);
     players = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
         *((u8 *)archive + 0x10), *(u32 *)((u8 *)archive + 0x14), archive);
     if (players == 0)
-        return failure;
-    if (playerIndex >= *(u32 *)players)
-        return failure;
-
-    playerIndex <<= 3;
-    archive = *(void **)((u8 *)reader + 0x28);
-    if (players[playerIndex + 5] != 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80559850, 0x6f, lbl_80324AF8);
-
-    void *player = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
-        players[playerIndex + 4], *(u32 *)(players + playerIndex + 8), archive);
+        player = 0;
+    else if (playerIndex >= *(u32 *)players)
+        player = 0;
+    else {
+        playerIndex <<= 3;
+        archive = *(void **)((u8 *)reader + 0x28);
+        if (players[playerIndex + 5] != 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80559850, 0x6f, lbl_80324AF8);
+        player = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
+            players[playerIndex + 4], *(u32 *)(players + playerIndex + 8), archive);
+    }
     if (player == 0)
-        return failure;
+        return 0;
     *(u32 *)outInfo = *(u8 *)((u8 *)player + 4);
     *(u32 *)((u8 *)outInfo + 4) = *(u32 *)((u8 *)player + 8);
     return 1;
@@ -3486,11 +3485,11 @@ extern "C" void* LoadFile__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hbm
 extern "C" void* __ct__Q46nw4hbm3snd6detail13SeqFileReaderFPCv(void*, void*);
 extern "C" void* GetBaseAddress__Q46nw4hbm3snd6detail13SeqFileReaderCFv(void*);
 extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer11SeqLoadTaskFv(void* arg0) {
-    char buffer[0x230];
+    char buffer[0x220];
     char reader[8];
     void* callback;
-    void* mutex;
     void* result;
+    void* mutex;
     void* base;
 
     fn_800F41D0(buffer, *(s32*)((char*)arg0 + 0x14));
@@ -3594,11 +3593,11 @@ extern "C" void *__ct__Q46nw4hbm3snd18SoundArchivePlayer16StrmDataLoadTaskFPvUll
     *(void **)((u8 *)self + 0x3c) = (void *)&arg12;
 
     if (((u32)arg1 & 31) != 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80324E88[0], 0x762, base + 0x6c0, arg1);
+        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80324E88[0x6c0 - 0x6c0], 0x762, base + 0x6c0, arg1);
     if (((u32)arg2 & 31) != 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80324E88[0], 0x763, base + 0x708, (u32)arg2);
+        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80324E88[0x708 - 0x708], 0x763, base + 0x708, (u32)arg2);
     if (((u32)arg3 & 3) != 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80324E88[0], 0x764, base + 0x750, (u32)arg3);
+        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80324E88[0x750 - 0x750], 0x764, base + 0x750, (u32)arg3);
     return self;
 }
 #pragma pop
@@ -6013,18 +6012,18 @@ extern "C" const char lbl_80326C58[];
 #pragma use_lmw_stmw off
 #pragma scheduling on
 extern "C" void NotifyAsyncEnd__Q56nw4hbm3snd6detail10StrmPlayer11LoadCommandFb(void *self, bool success) {
-    register u32 successFlag = success;
     u32 token;
+    void *iterator;
     void *list1;
     void *node;
     void *list2;
-    void *iterator;
+    bool successCopy = success;
     token = OSDisableInterrupts();
     list1 = (u8 *)*(void **)((u8 *)self + 4) + 0xA0;
     if (self == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326C7C, 0x233, lbl_80326C58);
     node = (u8 *)self + 0x14;
     Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(list1, node);
-    if (successFlag != 0) {
+    if (successCopy != 0) {
         if (*(u32 *)((u8 *)self + 8) == 0) {
             if (--*(u32 *)((u8 *)*(void **)((u8 *)self + 4) + 0x58) == 0)
                 *(u8 *)((u8 *)*(void **)((u8 *)self + 4) + 0x4A) = 1;
