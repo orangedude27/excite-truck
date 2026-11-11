@@ -55,14 +55,19 @@ typedef struct ObjectPool {
 // split_file divides it into the game's real files (file_status shows its range).
 
 #pragma scheduling invalid_target
-void fn_8022E9E0(void) {
+void *fn_8022E9E0(int arg0, void *arg1) {
+    void *value;
+    (void)arg0;
+    (void)arg1;
     if (lbl_8055EFF4 == 0) {
-        void *p = fn_801284F8(0x20, (void *)&lbl_80340280);
-        if (p) p = fn_8012A13C(p, lbl_80340280, 0x20, 8);
-        lbl_8055EFF8 = (void **)p;
+        value = fn_801284F8(0x20, lbl_80340280);
+        if (value != 0) {
+            value = fn_8012A13C(value, lbl_80340280, 0x20, 8);
+        }
+        lbl_8055EFF8 = value;
     }
-    if (((int (*)(void **))fn_8012A2D8)(lbl_8055EFF8) != 0) {
-        *(volatile s32 *)&lbl_8055EFF4 = *(volatile s32 *)&lbl_8055EFF4 + 1;
+    if (fn_8012A2D8(lbl_8055EFF8) != 0) {
+        lbl_8055EFF4 += 1;
     }
 }
 #pragma scheduling reset
