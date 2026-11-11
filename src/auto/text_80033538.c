@@ -23,36 +23,40 @@ void fn_80033538(void *arg0, short arg1) {
     OSRestoreInterrupts(state);
 }
 
-void fn_80033584(void *arg1, void *arg0) {
+void fn_80033584(void *arg0, void *arg1) {
     unsigned int flags = 0;
-    unsigned short *src = (unsigned short *)((char *)arg1 + 4);
-    unsigned short *dst = (unsigned short *)((char *)arg0 + 0x14E);
-    unsigned short value;
+    unsigned short *out = (unsigned short *)((char *)arg0 + 0x14C);
+    unsigned short *in = (unsigned short *)arg1;
+    unsigned short *d;
+    unsigned short *s;
+    unsigned short v;
     OSDisableInterrupts();
-    value = *(unsigned short *)arg1; *(unsigned short *)((char *)arg0 + 0x14C) = value; if (value) flags |= 0x1;
-    value = *(unsigned short *)((char *)arg1 + 2); dst[0] = value; if (value) flags |= 0x5;
-    value = src[0]; dst[1] = value; if (value) flags |= 0x2;
-    value = src[1]; dst[2] = value; if (value) flags |= 0x6;
-    value = src[2]; dst[3] = value; if (value) flags |= 0x10000;
-    value = src[3]; dst[4] = value; if (value) flags |= 0x50000;
-    value = src[4]; dst[5] = value; if (value) flags |= 0x20000;
-    value = src[5]; dst[6] = value; if (value) flags |= 0x60000;
-    value = src[6]; dst[7] = value; if (value) flags |= 0x200000;
-    value = src[7]; dst[8] = value; if (value) flags |= 0xA00000;
-    value = src[8]; dst[9] = value; if (value) flags |= 0x400000;
-    value = src[9]; dst[10] = value; if (value) flags |= 0xC00000;
-    value = src[10]; dst[11] = value; if (value) flags |= 0x04000000;
-    value = src[11]; dst[12] = value; if (value) flags |= 0x14000000;
-    value = src[12]; dst[13] = value; if (value) flags |= 0x08000000;
-    value = src[13]; dst[14] = value; if (value) flags |= 0x18000000;
-    value = src[14]; dst[15] = value; if (value) flags |= 0x8;
-    value = src[15]; dst[16] = value; if (value) flags |= 0x18;
-    value = src[16]; dst[17] = value; if (value) flags |= 0x80000;
-    value = src[17]; dst[18] = value; if (value) flags |= 0x180000;
-    value = src[18]; dst[19] = value; if (value) flags |= 0x01000000;
-    value = src[19]; dst[20] = value; if (value) flags |= 0x03000000;
-    value = src[20]; dst[21] = value; if (value) flags |= 0x20000000;
-    value = src[21]; dst[22] = value; if (value) flags |= 0x60000000;
+    v = in[0]; out[0] = v; if (v) flags |= 0x1;
+    d = out + 1;
+    s = in + 2;
+    v = in[1]; d[0] = v; if (v) flags |= 0x5;
+    v = s[0]; d[1] = v; if (v) flags |= 0x2;
+    v = s[1]; d[2] = v; if (v) flags |= 0x6;
+    v = s[2]; d[3] = v; if (v) flags |= 0x10000;
+    v = s[3]; d[4] = v; if (v) flags |= 0x50000;
+    v = s[4]; d[5] = v; if (v) flags |= 0x20000;
+    v = s[5]; d[6] = v; if (v) flags |= 0x60000;
+    v = s[6]; d[7] = v; if (v) flags |= 0x200000;
+    v = s[7]; d[8] = v; if (v) flags |= 0xA00000;
+    v = s[8]; d[9] = v; if (v) flags |= 0x400000;
+    v = s[9]; d[10] = v; if (v) flags |= 0xC00000;
+    v = s[10]; d[11] = v; if (v) flags |= 0x04000000;
+    v = s[11]; d[12] = v; if (v) flags |= 0x14000000;
+    v = s[12]; d[13] = v; if (v) flags |= 0x08000000;
+    v = s[13]; d[14] = v; if (v) flags |= 0x18000000;
+    v = s[14]; d[15] = v; if (v) flags |= 0x8;
+    v = s[15]; d[16] = v; if (v) flags |= 0x18;
+    v = s[16]; d[17] = v; if (v) flags |= 0x80000;
+    v = s[17]; d[18] = v; if (v) flags |= 0x180000;
+    v = s[18]; d[19] = v; if (v) flags |= 0x01000000;
+    v = s[19]; d[20] = v; if (v) flags |= 0x03000000;
+    v = s[20]; d[21] = v; if (v) flags |= 0x20000000;
+    v = s[21]; d[22] = v; if (v) flags |= 0x60000000;
     *(unsigned int *)((char *)arg0 + 0x144) = flags;
     *(unsigned int *)((char *)arg0 + 0x1C) |= 0x12;
     OSRestoreInterrupts(0);
@@ -67,45 +71,47 @@ void fn_800337C4(void *arg0, void *arg1) {
     OSRestoreInterrupts(state);
 }
 
-void fn_8003381C(void *arg0, void *arg1) {
-    int state;
+void fn_8003381C(void *dest, void *src) {
+    int savedInterrupts;
     unsigned short mode;
-    state = OSDisableInterrupts();
-    *(unsigned int *)((unsigned char *)arg0 + 0x1B0) = *(unsigned int *)((unsigned char *)arg1 + 0x0);
-    *(unsigned int *)((unsigned char *)arg0 + 0x1B4) = *(unsigned int *)((unsigned char *)arg1 + 0x4);
-    *(unsigned int *)((unsigned char *)arg0 + 0x1B8) = *(unsigned int *)((unsigned char *)arg1 + 0x8);
-    *(unsigned int *)((unsigned char *)arg0 + 0x1BC) = *(unsigned int *)((unsigned char *)arg1 + 0xC);
-    mode = *(unsigned short *)((unsigned char *)arg1 + 2);
+    /* Copy a 16-byte command block into dest+0x1B0 and, based on src mode, initialize the
+       block at dest+0x1C0; update dest status flags, with interrupts disabled. */
+    savedInterrupts = OSDisableInterrupts();
+    *(unsigned int *)((unsigned char *)dest + 0x1B0) = *(unsigned int *)((unsigned char *)src + 0x0);
+    *(unsigned int *)((unsigned char *)dest + 0x1B4) = *(unsigned int *)((unsigned char *)src + 0x4);
+    *(unsigned int *)((unsigned char *)dest + 0x1B8) = *(unsigned int *)((unsigned char *)src + 0x8);
+    *(unsigned int *)((unsigned char *)dest + 0x1BC) = *(unsigned int *)((unsigned char *)src + 0xC);
+    mode = *(unsigned short *)((unsigned char *)src + 2);
     switch (mode) {
     case 0:
         break;
     case 10:
-        *(unsigned int *)((unsigned char *)arg0 + 0x1C0) = 0;
-        *(unsigned int *)((unsigned char *)arg0 + 0x1C4) = 0;
-        *(unsigned int *)((unsigned char *)arg0 + 0x1C8) = 0;
-        *(unsigned int *)((unsigned char *)arg0 + 0x1CC) = 0;
-        *(unsigned int *)((unsigned char *)arg0 + 0x1D0) = 0;
-        *(unsigned int *)((unsigned char *)arg0 + 0x1D4) = 0;
-        *(unsigned int *)((unsigned char *)arg0 + 0x1D8) = 0;
-        *(unsigned int *)((unsigned char *)arg0 + 0x1DC) = 0;
-        *(unsigned int *)((unsigned char *)arg0 + 0x1E0) = 0x08000000;
-        *(unsigned int *)((unsigned char *)arg0 + 0x1E4) = 0;
+        *(unsigned int *)((unsigned char *)dest + 0x1C0) = 0;
+        *(unsigned int *)((unsigned char *)dest + 0x1C4) = 0;
+        *(unsigned int *)((unsigned char *)dest + 0x1C8) = 0;
+        *(unsigned int *)((unsigned char *)dest + 0x1CC) = 0;
+        *(unsigned int *)((unsigned char *)dest + 0x1D0) = 0;
+        *(unsigned int *)((unsigned char *)dest + 0x1D4) = 0;
+        *(unsigned int *)((unsigned char *)dest + 0x1D8) = 0;
+        *(unsigned int *)((unsigned char *)dest + 0x1DC) = 0;
+        *(unsigned int *)((unsigned char *)dest + 0x1E0) = 0x08000000;
+        *(unsigned int *)((unsigned char *)dest + 0x1E4) = 0;
         break;
     case 25:
-        *(unsigned int *)((unsigned char *)arg0 + 0x1C0) = 0;
-        *(unsigned int *)((unsigned char *)arg0 + 0x1C4) = 0;
-        *(unsigned int *)((unsigned char *)arg0 + 0x1C8) = 0;
-        *(unsigned int *)((unsigned char *)arg0 + 0x1CC) = 0;
-        *(unsigned int *)((unsigned char *)arg0 + 0x1D0) = 0;
-        *(unsigned int *)((unsigned char *)arg0 + 0x1D4) = 0;
-        *(unsigned int *)((unsigned char *)arg0 + 0x1D8) = 0;
-        *(unsigned int *)((unsigned char *)arg0 + 0x1DC) = 0;
-        *(unsigned int *)((unsigned char *)arg0 + 0x1E0) = 0x01000000;
-        *(unsigned int *)((unsigned char *)arg0 + 0x1E4) = 0;
+        *(unsigned int *)((unsigned char *)dest + 0x1C0) = 0;
+        *(unsigned int *)((unsigned char *)dest + 0x1C4) = 0;
+        *(unsigned int *)((unsigned char *)dest + 0x1C8) = 0;
+        *(unsigned int *)((unsigned char *)dest + 0x1CC) = 0;
+        *(unsigned int *)((unsigned char *)dest + 0x1D0) = 0;
+        *(unsigned int *)((unsigned char *)dest + 0x1D4) = 0;
+        *(unsigned int *)((unsigned char *)dest + 0x1D8) = 0;
+        *(unsigned int *)((unsigned char *)dest + 0x1DC) = 0;
+        *(unsigned int *)((unsigned char *)dest + 0x1E0) = 0x01000000;
+        *(unsigned int *)((unsigned char *)dest + 0x1E4) = 0;
         break;
     }
-    *(unsigned int *)((unsigned char *)arg0 + 0x1C) = (*(unsigned int *)((unsigned char *)arg0 + 0x1C) & 0xFFFF0FFF) | 0x10000 | 0x800;
-    OSRestoreInterrupts(state);
+    *(unsigned int *)((unsigned char *)dest + 0x1C) = (*(unsigned int *)((unsigned char *)dest + 0x1C) & 0xFFFF0FFF) | 0x10000 | 0x800;
+    OSRestoreInterrupts(savedInterrupts);
 }
 
 void fn_80033918(void *arg0, void *arg1) {
@@ -179,8 +185,10 @@ void fn_80033B74(void *arg0, short arg1, short arg2) {
     OSRestoreInterrupts(state);
 }
 
+#pragma scheduling invalid_target
 void AXGetLpfCoefs(unsigned int arg0, short *arg1, short *arg2) {
-    float angle = ((float)arg0 * lbl_80560AF0) / lbl_80560AF4;
+    float input = (float)arg0;
+    float angle = (lbl_80560AF0 * input) / lbl_80560AF4;
     float c = (float)cos((double)angle);
     float t = lbl_80560AEC - c;
     float v = (float)fn_8002F234(t * t - lbl_80560AF8);
@@ -188,7 +196,7 @@ void AXGetLpfCoefs(unsigned int arg0, short *arg1, short *arg2) {
     *arg2 = coef;
     *arg1 = 0x7fff - (unsigned short)coef;
 }
-
+#pragma scheduling on
 void fn_80033C8C(void *arg0, short arg1) {
     int state = OSDisableInterrupts();
     *(short *)((char *)arg0 + 0x20C) = arg1;
