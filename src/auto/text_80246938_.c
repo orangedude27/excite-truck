@@ -194,7 +194,8 @@ void fn_80246CB8(void *arg0) {
     s32 text[12];
     s32 item[10];
     s32 menu[6];
-    s32 *p = text;
+    s32 taddr = (s32)text;
+    s32 a = (s32)arg0;
     text[5] = 0;
     text[0] = (s32)lbl_803436C0;
     text[8] = 2500;
@@ -204,7 +205,7 @@ void fn_80246CB8(void *arg0) {
     text[6] = 1;
     item[1] = 5;
     item[0] = 0;
-    item[2] = (s32)p;
+    item[2] = taddr;
     item[3] = 0;
     item[4] = 0;
     item[5] = lbl_804988F0[0];
@@ -215,7 +216,7 @@ void fn_80246CB8(void *arg0) {
     menu[2] = 0;
     menu[3] = 0;
     menu[4] = 0;
-    menu[0] = (s32)arg0;
+    menu[0] = a;
     menu[1] = (s32)item;
     fn_80216CA8();
     fn_802146BC(menu, -999, -999, 1);
@@ -386,7 +387,7 @@ Obj_802470D4 *fn_802470D4(Obj_802470D4 *arg0, s32 arg1) {
 void fn_80247174(void) {
     s32 i = 0;
     do {
-        fn_80246CAC(lbl_80563898 - ((float)i / lbl_805638A8));
+        fn_80246CAC(lbl_80563898 - (float)i / lbl_805638A8);
         fn_80127464();
         fn_802E2D74(16);
         i++;
@@ -683,32 +684,48 @@ void fn_80247768(void) {
 extern void *lbl_8055BEB0;
 extern s32 lbl_8055BEB8;
 extern s32 lbl_8055F26C;
+#pragma push
+#pragma scheduling invalid_target
 void fn_8024778C(void) {
     s32 var_r31;
-    register s32 previous = lbl_8055BEB8;
+    s32 previous = lbl_8055BEB8;
     if (previous != lbl_8055F26C) {
         lbl_8055BEB8 = lbl_8055F26C;
-        switch ((s32)lbl_8055F26C) {
-        case 2: lbl_8055BEB0 = (void*)1; break;
-        case 3: lbl_8055BEB0 = (void*)2; break;
-        default: lbl_8055BEB0 = 0; break;
+        switch (lbl_8055F26C) {
+        case 2:
+            lbl_8055BEB0 = (void *)1;
+            break;
+        case 3:
+            lbl_8055BEB0 = (void *)2;
+            break;
+        default:
+            lbl_8055BEB0 = 0;
+            break;
         }
     }
     fn_80214CB4((s32)lbl_8055BEB0);
-    switch ((s32)lbl_8055F26C) {
-    case 1: fn_80214B44(2); fn_80214A9C(3); break;
+    switch ((s32)lbl_8055BEB8) {
+    case 1:
+        fn_80214B44(2);
+        fn_80214A9C(3);
+        break;
     case 2:
-        if (fn_8027B8C0(1) != 0) fn_80214B44(3);
-        else fn_80214A9C(3);
+        if (fn_8027B8C0(1) != 0) {
+            fn_80214B44(3);
+        } else {
+            fn_80214A9C(3);
+        }
         break;
     }
     var_r31 = 0;
     do {
-        if (fn_8027B94C(var_r31) == 0) fn_80214A9C(var_r31 + 0xB);
+        if (fn_8027B94C(var_r31) == 0) {
+            fn_80214A9C(var_r31 + 0xB);
+        }
         var_r31 += 1;
     } while (var_r31 < 3);
 }
-
+#pragma pop
 extern void* lbl_8055BEB0;
 extern s32 lbl_8055BEB4;
 void fn_80247880(void) {
@@ -807,32 +824,42 @@ static void fn_80247A0C_init(s32 a, s32 b) {
     }
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_80247A0C(void) {
-    s32 var_r31;
+    unsigned int var_r31;
     s32 a;
     s32 b;
-    s32 flag;
-
+    b = (int)lbl_8055BEA8;
     a = lbl_8055BEBC;
-    b = lbl_8055BEA8;
     if (a != b) {
-        flag = (b == 5) ? 1 : 0;
         lbl_8055BEBC = b;
-        lbl_8055BEB4 = flag;
+        switch (b) {
+        case 5:
+            lbl_8055BEB4 = 1;
+            break;
+        default:
+            lbl_8055BEB4 = 0;
+            break;
+        }
     }
     fn_80214CB4(lbl_8055BEB4);
-    if (lbl_8055BEBC == 4) {
+    switch (lbl_8055BEBC) {
+    case 4:
         fn_80214B44(2);
+        break;
+    default:
+        break;
     }
     var_r31 = 0;
     do {
         if (fn_8027B9EC(var_r31) == 0) {
             fn_80214A9C(var_r31 + 0xB);
         }
-        var_r31 += 1;
-    } while (var_r31 < 2);
+        ++var_r31;
+    } while (2 > var_r31);
 }
-
+#pragma pop
 void fn_80247AAC(void) {
     lbl_8055BEB4 = (s32) (void*)fn_80214D04();
 }
@@ -1330,16 +1357,18 @@ void fn_802353F4(s32, s32, float, float, float);
 #pragma push
 #pragma processor 750
 void fn_80248AF0(void *arg0) {
-    float spC, sp8;
+    /* Position a UI element relative to layout coords, wrapping its local X
+     * offset within the element width and placing it with computed Y. */
+    float layoutX, layoutY;
     float width, height;
-    s32 flag;
-    fn_80230C30(&spC, &sp8, *(s32*)((char*)arg0+4), *(s32*)((char*)arg0+8));
+    s32 useOffset;
+    fn_80230C30(&layoutX, &layoutY, *(s32*)((char*)arg0+4), *(s32*)((char*)arg0+8));
     width = (float)*(s32*)((char*)arg0+0xC);
     height = (float)*(s32*)((char*)arg0+0x10);
     if (*(float*)((char*)arg0+0x1C) > width)
         *(float*)((char*)arg0+0x1C) -= width;
-    flag = *(float*)((char*)arg0+0x1C) > lbl_805638C8;
-    fn_802353F4(*(s32*)((char*)arg0+0x18), flag, spC + *(float*)((char*)arg0+0x1C), (sp8-height)+fn_80235F64(*(s32*)((char*)arg0+0x18), flag), lbl_805638B0);
+    useOffset = *(float*)((char*)arg0+0x1C) > lbl_805638C8;
+    fn_802353F4(*(s32*)((char*)arg0+0x18), useOffset, layoutX + *(float*)((char*)arg0+0x1C), (layoutY-height)+fn_80235F64(*(s32*)((char*)arg0+0x18), useOffset), lbl_805638B0);
 }
 #pragma pop
 
@@ -1481,7 +1510,7 @@ void fn_80248E30(void *arg0) {
 
 #pragma scheduling off
 s32 fn_80248FB0(void *arg0, s32 arg1) {
-    s32 now, start, duration;
+    s32 duration, start, now;
     now = fn_802E2C20();
     start = *(s32 *)((char *)arg0 + 0x1C);
     if (now < start + 750) return 0;
@@ -1490,11 +1519,13 @@ s32 fn_80248FB0(void *arg0, s32 arg1) {
     if (*(s32 *)((char *)arg0 + 0x18) != 1) return 0;
     switch (arg1) {
     case 27:
-        if (*(s32 *)((char *)arg0 + 0x24) & 2) *(s32 *)((char *)arg0 + 0x18) = 4;
+        if (*(s32 *)((char *)arg0 + 0x24) & 2)
+            *(s32 *)((char *)arg0 + 0x18) = 4;
         else return 0;
         break;
     case 13:
-        if (*(s32 *)((char *)arg0 + 0x24) & 1) *(s32 *)((char *)arg0 + 0x18) = 2;
+        if (*(s32 *)((char *)arg0 + 0x24) & 1)
+            *(s32 *)((char *)arg0 + 0x18) = 2;
         else return 0;
         break;
     default: return 0;
