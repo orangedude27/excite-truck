@@ -73,6 +73,18 @@ public:
  virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31();
  virtual void v32(); virtual void v33(); virtual void v34(); virtual void v35(f32*);
  virtual void v36(); virtual s32 v37(); virtual void v38(f32); virtual s32 v39();
+
+  s32 m4;
+  u8* mRecords;      // 0x08: mCount records, 0x38 bytes each
+  s32 mCount;        // 0x0C: number of records
+  u8 mPad10[0x23C];
+  f32 mLevel24C;     // progress the counters have to pass
+  f32 mGain250;      // scales the value read for the current record
+  f32 m254;
+  f32 mTime258;      // seconds since the last reset (one frame per update)
+  f32 mProgress25C;  // main progress counter
+  f32 mProgress260;  // progress of the instance held at 0x268
+  f32 mProgress264;  // second progress counter
 };
 
 
