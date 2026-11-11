@@ -1,8 +1,4 @@
   #include <types.h>
-extern "C" void OSReport(const char *, ...);
-extern "C" s32 OSWaitSemaphore(void);
-extern "C" s32 OSInitSemaphore(void *, s32);
-extern "C" const char lbl_8031B1E4[];
 typedef u16 *Fn800A4B78Ret;
 struct Fn800B10E0Ent {
     u16 first;
@@ -13651,12 +13647,14 @@ extern "C" void fn_800BD970(s32 arg0, s32 arg1, s8 arg2, s32 arg3, s32 *arg4) {
 }
 #pragma pop
 extern "C" s16 fn_800BDD7C(s32 arg0, s32 arg1, s32 *arg2) {
-    u32 value = ((s32 (*)(s32, s32, s32, s32 *))fn_800BDE18)(arg0, arg1, 0xC, arg2);
+    s32 *a2 = arg2;
+    u32 value = ((s32 (*)(s32, s32, s32, s32 *))fn_800BDE18)(arg0, arg1, 0xC, a2);
     while ((value & 0xFFFFU) != 0xFFFU) {
-        value = (value * 2) & 0xFFFEU;
-        value |= ((s32 (*)(s32, s32, s32, s32 *))fn_800BDE18)(arg0, arg1, 1, arg2);
-        if (*arg2 > 0x3FFF)
+        value = (value << 1) & 0xFFFEU;
+        value |= ((s32 (*)(s32, s32, s32, s32 *))fn_800BDE18)(arg0, arg1, 1, a2);
+        if (*a2 > 0x3FFF) {
             return 0;
+        }
     }
     return 1;
 }
