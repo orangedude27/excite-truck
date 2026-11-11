@@ -2956,6 +2956,12 @@ typedef struct {
 } GXTexCopyData;
 #define GXRegs (*(GXTexCopyData *)__GXData)
 
+/* Copy the texture the TEV pipeline produced into the frame-buffer target at
+ * dest: re-send the depth, colour and pixel-engine registers the copy needs,
+ * then the copy source, size, stride, destination and control registers.  With
+ * clear the depth buffer is cleared along with the image, so the depth test is
+ * forced on and colour writes turned off first, and both registers are re-sent
+ * once the copy has been queued. */
 void GXCopyTex(void *dest, s32 clear) {
     s32 changePeCtrl;
     u32 reg;
@@ -2999,7 +3005,7 @@ void GXCopyTex(void *dest, s32 clear) {
     reg = __rlwimi(reg, 0x52, 24, 0, 7);        /* CP_TEX_COPY */
     GXRegs.cpTex = reg;
     GXCopyWGFifo.u8 = 0x61;
-    reg = *(volatile unsigned int *)((char *)__GXData + 0x24C);
+    reg = *(volatile unsigned int *)((char *)__GXData + 0x24C); /* reload what gets queued */
     GXCopyWGFifo.u32 = reg;
     if (clear != 0) {
         GXCopyWGFifo.u8 = 0x61;
