@@ -1887,49 +1887,54 @@ extern "C" void fn_8029B274(void *arg0, float *arg1, unsigned char arg2, void *a
 #pragma processor 750
 #pragma scheduling invalid_target
 #pragma use_lmw_stmw off
+/* Draw one sprite per note now playing: for every track that is switched on,
+ * copy each note's transform into that track's slot (with the track's own
+ * transform applied), place the sprite above the note by the slot's scale and
+ * hand it to fn_8029B274, which emits the camera-facing quad into the draw
+ * list. */
 extern "C" void fn_8029B6E4(void *arg0) {
-    float vector[3];
-    int value;
-    char *entry;
-    char *item;
-    void *context;
-    void *transform;
-    int i;
-    void *info;
-    int count;
-    int j;
-    void *object;
-    float scaleFactor;
+    float center[3];
+    int trackMatrix;
+    struct NoteSlot *entry;
+    struct NoteSlot *slot;
+    float *viewRight;
+    float *viewUp;
+    int trackIndex;
+    struct Track *track;
+    int noteCount;
+    int noteIndex;
+    struct Note *note;
+    float sizeFactor;
     float scale;
     float finalScale;
-    context = fn_802C86DC();
-    transform = (char *)fn_802C86DC() + 0xC;
-    scaleFactor = lbl_805645C8;
-    entry = (char *)arg0;
-    item = (char *)arg0;
-    i = 0;
-    while (i < fn_80287B14()) {
-        if (*(unsigned char *)(entry + 0x35) != 0) {
-            info = fn_80288208(i);
-            count = *(int *)((char *)info + 0x24);
-            j = 0;
-            while (j < count) {
-                object = fn_80288060(info, j);
-                value = fn_80287B24(i);
-                fn_801BFD34(item + 0x24, (char *)object + 0x24, value);
-                fn_80015B20(item, object, value);
-                scale = *(volatile float *)(entry + 0x30);
-                vector[0] = *(float *)(item + 0x24) + *(float *)(item + 0x0C) * scale;
-                vector[1] = *(float *)(item + 0x28) + *(float *)(item + 0x10) * scale;
-                vector[2] = *(float *)(item + 0x2C) + *(float *)(item + 0x14) * scale;
-                finalScale = *(volatile float *)(entry + 0x30);
-                fn_8029B274(arg0, vector, *(unsigned char *)(entry + 0x34), context, transform, scaleFactor * finalScale, scale);
-                ++j;
+    viewRight = (float *)fn_802C86DC();
+    viewUp = (float *)((char *)fn_802C86DC() + 0xC);
+    sizeFactor = lbl_805645C8;
+    entry = (struct NoteSlot *)arg0;
+    slot = (struct NoteSlot *)arg0;
+    trackIndex = 0;
+    while (trackIndex < fn_80287B14()) {
+        if (entry->inUse != 0) {
+            track = (struct Track *)fn_80288208(trackIndex);
+            noteCount = track->noteCount;
+            noteIndex = 0;
+            while (noteIndex < noteCount) {
+                note = (struct Note *)fn_80288060(track, noteIndex);
+                trackMatrix = fn_80287B24(trackIndex);
+                fn_801BFD34(&slot->position, &note->position, trackMatrix);
+                fn_80015B20(slot, note, trackMatrix);
+                scale = entry->scale;
+                center[0] = slot->position.x + slot->yAxis.x * scale;
+                center[1] = slot->position.y + slot->yAxis.y * scale;
+                center[2] = slot->position.z + slot->yAxis.z * scale;
+                finalScale = entry->scale;
+                fn_8029B274(arg0, center, entry->cell, viewRight, viewUp, sizeFactor * finalScale, scale);
+                ++noteIndex;
             }
         }
-        entry += 0x38;
-        item += 0x38;
-        ++i;
+        entry++;
+        slot++;
+        ++trackIndex;
     }
 }
 #pragma pop
