@@ -621,63 +621,89 @@ BOOL SITransfer(s32 chan, void* outAddr, u32 outSize, void* inAddr, u32 inSize,
     return TRUE;
 }
 
+/**
+ * SI transfer callback for the "type and status" command that SIGetType and
+ * SIGetTypeAsync queue on a channel.
+ *
+ * Merges the reply into the channel's cached Type[] (clearing SI_ERROR_BUSY),
+ * stamps when it arrived and clears the channel's bit in the PAD driver's
+ * __PADFixBits. For a usable GameCube-protocol wireless receiver it then
+ * brings the ID held by the receiver and the one stored in the RTC into
+ * agreement: whichever side has no ID adopts the other's, and a receiver that
+ * has to be programmed gets an SI_CMD_SET_WIRELESS transfer queued, which
+ * re-enters this callback. Any other device loses its stored ID. Finally the
+ * callbacks SIGetTypeAsync left pending for the channel are each run once and
+ * removed from the list.
+ */
 static void GetTypeCallback(s32 chan, u32 status) {
     static u32 cmdFixDevice[SI_MAX_CHAN];
     u32 type;
     u32 chanBit;
     BOOL fix;
-    u32 id;
+    u32 wirelessId;
     s32 i;
-    SICallback* callback;
+    SICallback* callbacks;
     SICallback cb;
 
     Type[chan] &= ~SI_ERROR_BUSY;
     Type[chan] |= status;
     TypeTime[chan] = __OSGetSystemTime();
     type = Type[chan];
-    chanBit = 0x80000000 >> chan;
+    chanBit = PAD_CHAN0_BIT >> chan;
     fix = __PADFixBits & chanBit;
     __PADFixBits &= ~chanBit;
 
-    if ((status & 0xF) || (type & 0x18000000) != 0x08000000 ||
-        !(type & 0x80000000) || (type & 0x04000000)) {
+    /* Error, or no device we can talk to: drop the channel's stored ID. */
+    if ((status & SI_STATUS_ERROR_MASK) ||
+        (type & SI_TYPE_MASK) != SI_TYPE_GC || !(type & SI_TYPE_GC_WIRELESS) ||
+        (type & SI_TYPE_GC_FAULT)) {
         OSSetWirelessID(chan, 0);
         type = Type[chan];
-        callback = (SICallback*)((u8*)TypeCallback + chan * 16);
-        for (i = 0; i < SI_MAX_TYPE; i++, callback++) {
-            cb = *callback;
+        callbacks = TypeCallback[chan];
+        for (i = 0; i < SI_MAX_TYPE; i++, callbacks++) {
+            cb = *callbacks;
             if (cb != NULL) {
-                *callback = NULL;
+                *callbacks = NULL;
                 cb(chan, type);
             }
         }
         return;
     } else {
-        id = OSGetWirelessID(chan) << 8;
-        if (fix && (id & 0x00100000)) {
-            cmdFixDevice[chan] = (0x4E << 24) | (id & 0x00CFFF00) | 0x4E100000;
+        wirelessId = OSGetWirelessID(chan) << SI_WIRELESS_ID_SHIFT;
+        /* The PAD driver asked for this channel to be re-activated. */
+        if (fix && (wirelessId & SI_WIRELESS_SET)) {
+            cmdFixDevice[chan] = (SI_CMD_SET_WIRELESS << 24) |
+                                 (wirelessId & SI_WIRELESS_ID_MASK) |
+                                 SI_WIRELESS_SET;
             Type[chan] = SI_ERROR_BUSY;
-            SITransfer(chan, &cmdFixDevice[chan], 3, &Type[chan], 3, GetTypeCallback, 0);
+            SITransfer(chan, &cmdFixDevice[chan], 3, &Type[chan], 3,
+                       GetTypeCallback, 0);
             return;
         }
-        if (type & 0x00100000) {
-            if ((id & 0x00CFFF00) != (type & 0x00CFFF00)) {
-                if (!(id & 0x00100000)) {
-                    id = (type & 0x00CFFF00) | 0x00100000;
-                    OSSetWirelessID(chan, (u16)(id >> 8));
+        if (type & SI_WIRELESS_SET) {
+            /* Receiver has an ID; make it and the RTC agree on one. */
+            if ((wirelessId & SI_WIRELESS_ID_MASK) !=
+                (type & SI_WIRELESS_ID_MASK)) {
+                if (!(wirelessId & SI_WIRELESS_SET)) {
+                    wirelessId = (type & SI_WIRELESS_ID_MASK) | SI_WIRELESS_SET;
+                    OSSetWirelessID(chan, (u16)(wirelessId >>
+                                                SI_WIRELESS_ID_SHIFT));
                 }
-                cmdFixDevice[chan] = (0x4E << 24) | id;
+                cmdFixDevice[chan] = (SI_CMD_SET_WIRELESS << 24) | wirelessId;
                 Type[chan] = SI_ERROR_BUSY;
-                SITransfer(chan, &cmdFixDevice[chan], 3, &Type[chan], 3, GetTypeCallback, 0);
+                SITransfer(chan, &cmdFixDevice[chan], 3, &Type[chan], 3,
+                           GetTypeCallback, 0);
                 return;
             }
-        } else if (type & 0x40000000) {
-            id = type & 0x00CFFF00;
-            id |= 0x00100000;
-            OSSetWirelessID(chan, (u16)(id >> 8));
-            cmdFixDevice[chan] = (0x4E << 24) | id;
+        } else if (type & SI_TYPE_GC_ID_REQUEST) {
+            /* Receiver has no ID: adopt the one it asked for. */
+            wirelessId = type & SI_WIRELESS_ID_MASK;
+            wirelessId |= SI_WIRELESS_SET;
+            OSSetWirelessID(chan, (u16)(wirelessId >> SI_WIRELESS_ID_SHIFT));
+            cmdFixDevice[chan] = (SI_CMD_SET_WIRELESS << 24) | wirelessId;
             Type[chan] = SI_ERROR_BUSY;
-            SITransfer(chan, &cmdFixDevice[chan], 3, &Type[chan], 3, GetTypeCallback, 0);
+            SITransfer(chan, &cmdFixDevice[chan], 3, &Type[chan], 3,
+                       GetTypeCallback, 0);
             return;
         } else {
             OSSetWirelessID(chan, 0);
@@ -685,11 +711,11 @@ static void GetTypeCallback(s32 chan, u32 status) {
     }
     type = Type[chan];
     {
-        SICallback* cbPtr = (SICallback*)((u8*)TypeCallback + chan * 16);
-        for (i = 0; i < SI_MAX_TYPE; i++, cbPtr++) {
-            cb = *cbPtr;
+        SICallback* pending = TypeCallback[chan];
+        for (i = 0; i < SI_MAX_TYPE; i++, pending++) {
+            cb = *pending;
             if (cb != NULL) {
-                *cbPtr = NULL;
+                *pending = NULL;
                 cb(chan, type);
             }
         }
