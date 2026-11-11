@@ -354,6 +354,10 @@ extern "C" char lbl_8033AFB8[];
 extern "C" char lbl_8033AFC8[];
 #pragma scheduling invalid_target
 extern "C" void fn_801F7D10(void *arg0, void *arg1, void *arg2) {
+    /* Initializes output record arg1 from queried object arg2:
+       if "unfloat_frame64" is present, loads base data via fn_801F7B10 then scales/adds offsets 0x0C/0x10/0x14 into 0x24/0x28/0x2C using scale at arg0+0x28;
+       if "difficulty_level" is present, sets arg1+0x38 from fn_80204BB4() and finishes it, else uses fn_80204CF0();
+       stores arg2 at arg1+0x34. */
     struct VTable {
         virtual void slot0();
         virtual s32 check(const char *);
