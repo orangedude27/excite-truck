@@ -1312,13 +1312,14 @@ extern void fn_80232DF4(u8 *, s32, s32, s32, f32, f32, f32, f32, f32);
 #pragma push
 #pragma use_lmw_stmw off
 // Matched with the shared variadic wrapper signature and 0x80-byte formatting buffer.
-void fn_802339A8(f32 a, s32 b, f32 c, s32 d, f32 e, f32 f, s32 g, f32 h, const char *fmt, ...) {
+void fn_802339A8(f32 x, s32 font, f32 y, s32 color, f32 spacing, f32 scale, s32 flags, f32 extra, const char *fmt, ...) {
+    /* Formats a string with vsprintf and draws it via fn_80232DF4 with the given font, color, flags, position, scale, spacing, and extra scale. */
     #pragma scheduling invalid_target
     char buffer[0x80];
     va_list args;
     va_start(args, fmt);
     vsprintf(buffer, fmt, args);
-    fn_80232DF4((u8 *)buffer, b, d, g, a, c, f, e, h);
+    fn_80232DF4((u8 *)buffer, font, color, flags, x, y, scale, spacing, extra);
 }
 
 extern void fn_80231380(void *, s32, f32, f32, f32, f32, f32);
