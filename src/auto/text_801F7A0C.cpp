@@ -2551,9 +2551,9 @@ extern "C" void fn_801FC670(void) {
 
 }
 
-extern u32 lbl_8033B588;
+extern u8 lbl_8033B588[];
 extern s32 lbl_8055EC48;
-void fn_802C6CF8(void);
+void fn_802C6CF8(s32);
 void *__dt__Q28PSSystem7SeqHeapFv_801EACF8(void *, s32);
 void fn_80128668(void *);
 #pragma small_data off
