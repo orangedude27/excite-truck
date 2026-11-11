@@ -2922,17 +2922,28 @@ extern "C" void fn_8028679C(void *arg0) {
 }
 #pragma cplusplus off
 int fn_802867B0(void *arg0) {
-    extern double lbl_80564220;
-    void * volatile p = *(void **)((char *)arg0 + 0x20);
+    void *p;
     int value;
-    if (p != 0) {
-        value = (int)((float)*(int *)p + *(float *)((char *)p + 0x10));
-        if (value > *(int *)((char *)p + 4))
-            value = *(int *)((char *)p + 4);
+    int limit;
+    p = *(void **)((char *)arg0 + 0x20);
+    if (p == 0) goto fallback;
+    value = (int)((float)*(int *)p + *(float *)((char *)p + 0x10));
+    limit = *(int *)((char *)p + 4);
+    if (value < limit)
         return value;
+    return limit;
+fallback:
+#pragma cplusplus on
+    struct Iface {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual int v8();
+    };
+    {
+    void *q = *(void **)((char *)arg0 + 0x1c);
+    return ((struct Iface *)q)->v8();
     }
-    p = *(void **)((char *)arg0 + 0x1c);
-    return ((int (*)(void *))(*(void **)((char *)*(void **)p + 0x28)))(p);
+#pragma cplusplus reset
 }
 
 void fn_80286834(void *arg0) {
@@ -3244,21 +3255,34 @@ int fn_80287364(void* arg0) {
 extern "C" void fn_802873F8(void* arg0) {
     ((ebi::title::TBlackPlane*)arg0)->m_a->v7();
 }
-#pragma cplusplus off
-int fn_8028740C(void* arg0) {
-    int i;
-    void* item;
-
-    for (i = 0; i < ((int (*)(void*))(*(void***)arg0)[6])(arg0); i++) {
-        item = ((void* (*)(void*, int))(*(void***)arg0)[7])(arg0, i);
-        if (((int (*)(void))(*(void***)item)[18])() == 0) {
+#pragma cplusplus on
+extern "C" int fn_8028740C(void *arg0) {
+    class List {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual long count();
+        virtual void *item(long);
+    };
+    class Item {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual long valid();
+    };
+    long i = 0;
+    while (i < ((List *)arg0)->count()) {
+        if (((Item *)((List *)arg0)->item(i))->valid() == 0)
             return 0;
-        }
+        i++;
     }
     return 1;
 }
-
-#pragma cplusplus on
+#pragma cplusplus reset
 extern "C" void fn_802874A0(void* arg0) {
     ((ebi::title::TBlackPlane*)arg0)->m_a->v9();
 }
