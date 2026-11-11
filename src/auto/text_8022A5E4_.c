@@ -1205,8 +1205,8 @@ void *fn_8022CA2C(int arg0) {
 }
 
 float fn_8022CA40(void *arg0) {
-    if (*(float *)((char *)arg0 + 0x34) < lbl_80563588)
-        return lbl_80563588;
+    if (*(float *)((char *)arg0 + 0x34) < 1.0f)
+        return 1.0f;
     else {
         int value = fn_80232B70(*(int *)((char *)arg0 + 8));
         return *(float *)((char *)arg0 + 0x34) / (float)value;
