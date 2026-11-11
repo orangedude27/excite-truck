@@ -7041,30 +7041,31 @@ BOOLEAN bta_hh_tod_spt(void *p_cb, UINT8 sub_class) {
 }
 
 void bta_hh_trace_dev_db(void) {
+    /* Traces the HID host device database when debug tracing is enabled. */
     extern u8 lbl_803159E0[];
     extern void fn_8007093C(u32, void *);
     extern void fn_80070984(u32, void *);
     extern void fn_8007099C(u32, void *);
-    u8 *s = lbl_803159E0;
-    u32 i;
-    u8 *entry;
+    u8 *traceStrings = lbl_803159E0;
+    u32 index;
+    u8 *deviceEntry;
 
     if (lbl_8055DC80 >= 5)
-        fn_8007093C(0x504, s + 0x1E4);
-    i = 0;
+        fn_8007093C(0x504, traceStrings + 0x1E4);
+    index = 0;
     do {
         if (lbl_8055DC80 >= 5) {
-            entry = lbl_803C0D48 + ((u8)i << 5);
-            ((void (*)(u32, void *, u8, u8, u8))fn_80070984)(0x504, s + 0x220, (u8)i, entry[0x28], entry[0x26]);
+            deviceEntry = lbl_803C0D48 + ((u8)index << 5);
+            ((void (*)(u32, void *, u8, u8, u8))fn_80070984)(0x504, traceStrings + 0x220, (u8)index, deviceEntry[0x28], deviceEntry[0x26]);
         }
         if (lbl_8055DC80 >= 5) {
-            entry = lbl_803C0D48 + ((u8)i << 5);
-            ((void (*)(u32, void *, u16, u8, u8, u8))fn_8007099C)(0x504, s + 0x244, *(u16 *)(entry + 0x1E), entry[0x2C], entry[0x23], entry[0x22]);
+            deviceEntry = lbl_803C0D48 + ((u8)index << 5);
+            ((void (*)(u32, void *, u16, u8, u8, u8))fn_8007099C)(0x504, traceStrings + 0x244, *(u16 *)(deviceEntry + 0x1E), deviceEntry[0x2C], deviceEntry[0x23], deviceEntry[0x22]);
         }
-        i++;
-    } while (i < 0x10);
+        index++;
+    } while (index < 0x10);
     if (lbl_8055DC80 >= 5)
-        fn_8007093C(0x504, s + 0x280);
+        fn_8007093C(0x504, traceStrings + 0x280);
 }
 
 extern u8 *lbl_80559030;
