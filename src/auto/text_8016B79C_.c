@@ -872,38 +872,39 @@ void fn_8016CEFC(void *arg0) {
     ((s32 *)arg0)[1] = 0;
 }
 
-void *fn_8016CF08(void *arg0) {
+void *fn_8016CF08(void *obj) {
+    // Initialize/clear fields and several fixed-size byte regions of this object.
     register s32 size = 0x30;
     register s32 count = 3;
     s32 zero = 0;
-    *(s32 *)((u8 *)arg0 + 0xC) = zero;
-    *(s32 *)((u8 *)arg0 + 0x14) = zero;
-    *(s32 *)((u8 *)arg0 + 0x18) = zero;
-    *(s32 *)((u8 *)arg0 + 0x1C) = zero;
-    *(s32 *)((u8 *)arg0 + 0x24) = zero;
-    *(s32 *)((u8 *)arg0 + 0x28) = zero;
-    *(s32 *)((u8 *)arg0 + 0x2C) = zero;
-    memset((u8 *)arg0 + 0x30, size, count);
-    *((u8 *)arg0 + 0x33) = 0;
-    memset((u8 *)arg0 + 0x44, size, count);
-    *((u8 *)arg0 + 0x47) = 0;
-    memset((u8 *)arg0 + 0x58, size, count);
-    *((u8 *)arg0 + 0x5B) = 0;
-    memset((u8 *)arg0 + 0x6C, size, count);
-    *((u8 *)arg0 + 0x6F) = 0;
-    memset((u8 *)arg0 + 0x80, size, count);
-    *((u8 *)arg0 + 0x83) = 0;
-    memset((u8 *)arg0 + 0x8A, size, count);
-    *((u8 *)arg0 + 0x8D) = 0;
-    memset((u8 *)arg0 + 0x9E, size, count);
-    *((u8 *)arg0 + 0xA1) = 0;
-    memset((u8 *)arg0 + 0xB2, size, count);
-    *((u8 *)arg0 + 0xB5) = 0;
-    memset((u8 *)arg0 + 0xC6, size, count);
-    *((u8 *)arg0 + 0xC9) = 0;
-    memset((u8 *)arg0 + 0xDA, size, count);
-    *((u8 *)arg0 + 0xDD) = 0;
-    return arg0;
+    *(s32 *)((u8 *)obj + 0xC) = zero;
+    *(s32 *)((u8 *)obj + 0x14) = zero;
+    *(s32 *)((u8 *)obj + 0x18) = zero;
+    *(s32 *)((u8 *)obj + 0x1C) = zero;
+    *(s32 *)((u8 *)obj + 0x24) = zero;
+    *(s32 *)((u8 *)obj + 0x28) = zero;
+    *(s32 *)((u8 *)obj + 0x2C) = zero;
+    memset((u8 *)obj + 0x30, size, count);
+    *((u8 *)obj + 0x33) = 0;
+    memset((u8 *)obj + 0x44, size, count);
+    *((u8 *)obj + 0x47) = 0;
+    memset((u8 *)obj + 0x58, size, count);
+    *((u8 *)obj + 0x5B) = 0;
+    memset((u8 *)obj + 0x6C, size, count);
+    *((u8 *)obj + 0x6F) = 0;
+    memset((u8 *)obj + 0x80, size, count);
+    *((u8 *)obj + 0x83) = 0;
+    memset((u8 *)obj + 0x8A, size, count);
+    *((u8 *)obj + 0x8D) = 0;
+    memset((u8 *)obj + 0x9E, size, count);
+    *((u8 *)obj + 0xA1) = 0;
+    memset((u8 *)obj + 0xB2, size, count);
+    *((u8 *)obj + 0xB5) = 0;
+    memset((u8 *)obj + 0xC6, size, count);
+    *((u8 *)obj + 0xC9) = 0;
+    memset((u8 *)obj + 0xDA, size, count);
+    *((u8 *)obj + 0xDD) = 0;
+    return obj;
 }
 
 extern char lbl_80330A90[];
