@@ -274,6 +274,8 @@ char *fn_8027A798(char *arg0) {
     input = arg0;
     entry = (char *)lbl_804A1968;
     i = 0;
+    /* Search the fixed 32-entry name table for an existing match; if found,
+       return the pointer to its associated data (entry + 0x20). */
     while (i < 0x20) {
         if (strcmp(entry, input) == 0) {
             return entry + 0x20;
@@ -282,6 +284,8 @@ char *fn_8027A798(char *arg0) {
         entry += 0x44;
     }
 
+    /* Otherwise claim the first empty slot, copy the name (up to 0x20 bytes),
+       initialize its data, and return it; log and fail if the table is full. */
     entry = (char *)lbl_804A1968;
     for (i = 0; i < 0x20; i++) {
         if (*entry == 0) {
