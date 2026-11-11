@@ -62,28 +62,29 @@ void **fn_801EF1F0(void **arg0, void *arg1) {
     return arg0;
 }
 
-int *fn_801EF428(int *arg0, int arg1) {
-    if (arg0 != 0) {
-        fn_801E323C((void *)((int *)(*(volatile int *)arg0))[2]);
-        fn_801E323C((void *)((int *)(*(volatile int *)arg0))[3]);
-        fn_801E323C((void *)((int *)(*(volatile int *)arg0))[6]);
-        fn_801E323C((void *)((int *)(*(volatile int *)arg0))[4]);
-        fn_801E323C((void *)((int *)(*(volatile int *)arg0))[5]);
-        fn_801E323C((void *)((int *)(*(volatile int *)arg0))[7]);
-        fn_802C6CF8((void *)((int *)(*(volatile int *)arg0))[1]);
-        fn_801E323C((void *)((int *)(*(volatile int *)arg0))[11]);
-        fn_801E323C((void *)((int *)(*(volatile int *)arg0))[12]);
-        fn_801E323C((void *)((int *)(*(volatile int *)arg0))[15]);
-        fn_801E323C((void *)((int *)(*(volatile int *)arg0))[13]);
-        fn_801E323C((void *)((int *)(*(volatile int *)arg0))[14]);
-        fn_801E323C((void *)((int *)(*(volatile int *)arg0))[16]);
-        fn_802C6CF8((void *)((int *)(*(volatile int *)arg0))[10]);
-        fn_802C6CF8((void *)((int *)(*(volatile int *)arg0))[0]);
-        fn_80128668((void *)*(volatile int *)arg0);
-        *arg0 = 0;
-        if (arg1 > 0) fn_80128668(arg0);
+/* Releases the owned objects referenced by *objectPtr in the original order, clears the handle, and optionally frees the handle itself. */
+int *fn_801EF428(int *objectPtr, int freeHandle) {
+    if (objectPtr != 0) {
+        fn_801E323C((void *)((int *)(*(volatile int *)objectPtr))[2]);
+        fn_801E323C((void *)((int *)(*(volatile int *)objectPtr))[3]);
+        fn_801E323C((void *)((int *)(*(volatile int *)objectPtr))[6]);
+        fn_801E323C((void *)((int *)(*(volatile int *)objectPtr))[4]);
+        fn_801E323C((void *)((int *)(*(volatile int *)objectPtr))[5]);
+        fn_801E323C((void *)((int *)(*(volatile int *)objectPtr))[7]);
+        fn_802C6CF8((void *)((int *)(*(volatile int *)objectPtr))[1]);
+        fn_801E323C((void *)((int *)(*(volatile int *)objectPtr))[11]);
+        fn_801E323C((void *)((int *)(*(volatile int *)objectPtr))[12]);
+        fn_801E323C((void *)((int *)(*(volatile int *)objectPtr))[15]);
+        fn_801E323C((void *)((int *)(*(volatile int *)objectPtr))[13]);
+        fn_801E323C((void *)((int *)(*(volatile int *)objectPtr))[14]);
+        fn_801E323C((void *)((int *)(*(volatile int *)objectPtr))[16]);
+        fn_802C6CF8((void *)((int *)(*(volatile int *)objectPtr))[10]);
+        fn_802C6CF8((void *)((int *)(*(volatile int *)objectPtr))[0]);
+        fn_80128668((void *)*(volatile int *)objectPtr);
+        *objectPtr = 0;
+        if (freeHandle > 0) fn_80128668(objectPtr);
     }
-    return arg0;
+    return objectPtr;
 }
 
 extern float lbl_80562EE4;
