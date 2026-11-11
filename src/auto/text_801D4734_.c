@@ -1182,6 +1182,22 @@ extern "C" void fn_801D6080(void *arg0) {
 #pragma pop
 #pragma cplusplus reset
 
+// One value of an action-sequence group and how strong the object's vector has
+// to be (its squared length) for the value to fire; the table is in step order.
+struct ActionThreshold {
+    int value;                  // +0x00 what the group sends when this step is reached
+    float limit;                // +0x04 least squared length that reaches it
+};
+
+// An action-sequence group: the id its objects must carry and the values it can
+// send, in the order their thresholds have to be passed.
+struct ActionGroup {
+    unsigned char pad[0xC];     // +0x00 the group's own state
+    int groupId;                // +0x0C id the object's "group_id" must equal
+    struct ActionThreshold *thresholds;  // +0x10 the value/threshold table
+    int count;                  // +0x14 entries in it
+};
+
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
