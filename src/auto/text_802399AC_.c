@@ -78,6 +78,7 @@ s32 fn_80239DE4(void) {
     return 1;
 }
 #pragma pop
+#pragma dont_inline on
 s32 fn_80239E5C(void *arg0, s32 arg1) {
     s32 *p = (s32 *)arg0;
     fn_80209030(*(float *)((char *)arg0 + 0x14));
@@ -524,16 +525,14 @@ void fn_8023AFD0(void *arg0) {
     s32 temp_r3;
     s32 sp8;
     float factor;
-    void *p = arg0;
-    temp_r28 = *(s32 *)((char *)p + 0x10);
-    temp_r29 = *(s32 *)((char *)p + 0xC);
-    temp_r30 = *(s32 *)((char *)p + 8);
-    temp_r31 = *(s32 *)((char *)p + 4);
+    temp_r28 = *(s32 *)((char *)arg0 + 0x10);
+    temp_r29 = *(s32 *)((char *)arg0 + 0xC);
+    temp_r30 = *(s32 *)((char *)arg0 + 8);
+    temp_r31 = *(s32 *)((char *)arg0 + 4);
     temp_r3 = fn_80131234(&lbl_8034127C[0]);
     sp8 = 0;
     factor = lbl_80563730;
-    fn_8022BAD0(0xCB, temp_r31, temp_r30, 0, temp_r29, temp_r28, temp_r3,
-                *(s32 *)((char *)p + 0x1C), sp8, factor);
+    fn_8022BAD0(0xCB, temp_r31, temp_r30, 0, temp_r29, temp_r28, temp_r3, *(s32 *)((char *)arg0 + 0x1C), sp8, factor);
 }
 #pragma pop
 
@@ -753,17 +752,22 @@ void fn_8023B368(void) {}
 s32 fn_8023B36C(void) { return 0; }
 
 void fn_8023B374(void *arg0) {
+    void **base = (void **)arg0;
     s32 mode = fn_80210570();
     void *obj;
+    s32 (**tbl)(void *, s32);
     if (mode == 2) {
-        obj = *(void **)((char *)arg0 + 0x1C);
-        ((s32 (**)(void *, s32))*(void **)((char *)obj + 0xC))[12](obj, 3);
+        obj = base[7];
+        tbl = *(s32 (***)(void *, s32))((char *)obj + 0xC);
+        tbl[12](obj, 3);
     } else {
-        obj = *(void **)((char *)arg0 + 0x1C);
-        ((s32 (**)(void *, s32))*(void **)((char *)obj + 0xC))[12](obj, 2);
+        obj = base[7];
+        tbl = *(s32 (***)(void *, s32))((char *)obj + 0xC);
+        tbl[12](obj, 2);
     }
-    obj = *(void **)((char *)arg0 + 0x1C);
-    ((s32 (**)(void *, s32))*(void **)((char *)obj + 0xC))[13](obj, mode);
+    obj = base[7];
+    tbl = *(s32 (***)(void *, s32))((char *)obj + 0xC);
+    tbl[13](obj, mode);
 }
 
 void fn_8023B400(void) {}
