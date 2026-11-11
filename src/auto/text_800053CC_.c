@@ -58,6 +58,7 @@ extern s32 fn_801769B8(void);
 extern s32 fn_801EA994(void);
 extern u8 lbl_8034EE84[];
 #pragma scheduling invalid_target
+/* Sets game mode in lbl_8034EE84 and updates flags based on fn_801769B8/fn_801EA994. */
 void fn_80005464(void) {
     s32 mode = fn_801769B8();
     s32 *w = (s32 *)lbl_8034EE84;
