@@ -98,7 +98,7 @@ extern "C" char lbl_80332E70[];
 extern "C" char lbl_80332E80[];
 extern "C" char lbl_8055A470[7];
 extern "C" void fn_8018FB18(void) {
-    class Mgr {
+    class ModeMaster {
     public:
         virtual void f0();
         virtual void f1();
@@ -157,27 +157,29 @@ extern "C" void fn_8018FB18(void) {
         virtual void f54();
         virtual void f55();
         virtual void f56();
-        virtual int f57();
+        virtual int getDriver();
     };
-    void *p = __AXFXGetLfoSinTable_801769CC();
-    void *obj;
-    void *v;
-    v = (void *)((Mgr *)fn_801B83A0())->f57();
-    lbl_8055E522 = (unsigned char)((((unsigned int *)p)[1] >> 8) & 1);
-    if (((unsigned int *)p)[1] == 0x180304) lbl_8055E522 = 0;
-    if (v == 0) {
-        unsigned int bits = ((unsigned int *)p)[1];
-        if ((bits & 0x100) != 0) v = fn_80134E90();
-        else if (bits == 0x180201) v = fn_80134EC8(bits);
-        else v = fn_80135078();
+    /* Session settings record: [0] = manager id, [1] = game mode id/flags.
+     * ptr is reused for the PlayerDriver once the record has been read. */
+    void *ptr = __AXFXGetLfoSinTable_801769CC();
+    void *hybrid;
+    void *driver;
+    driver = (void *)((ModeMaster *)fn_801B83A0())->getDriver();
+    lbl_8055E522 = (unsigned char)((((unsigned int *)ptr)[1] >> 8) & 1);
+    if (((unsigned int *)ptr)[1] == 0x180304) lbl_8055E522 = 0;
+    if (driver == 0) {
+        unsigned int mode = ((unsigned int *)ptr)[1];
+        if ((mode & 0x100) != 0) driver = fn_80134E90();
+        else if (mode == 0x180201) driver = fn_80134EC8(mode);
+        else driver = fn_80135078();
     }
-    p = fn_801284F8(0x44, lbl_80332E70);
-    if (p != 0) p = ((void *(*)(void *))fn_801912B4)(p);
-    obj = fn_801284F8(0x3C, lbl_8055A470);
-    if (obj != 0) obj = fn_8018FD88(obj, (s32)v, (s32)p);
+    ptr = fn_801284F8(0x44, lbl_80332E70);
+    if (ptr != 0) ptr = ((void *(*)(void *))fn_801912B4)(ptr);
+    hybrid = fn_801284F8(0x3C, lbl_8055A470);
+    if (hybrid != 0) hybrid = fn_8018FD88(hybrid, (s32)driver, (s32)ptr);
     {
-        void *res = fn_801284F8(0x2844, lbl_80332E80);
-        if (res != 0) fn_801A520C(res, obj);
+        void *localCar = fn_801284F8(0x2844, lbl_80332E80);
+        if (localCar != 0) fn_801A520C(localCar, hybrid);
     }
 }
 #pragma cplusplus reset
