@@ -549,41 +549,51 @@ extern "C" s32 fn_80157278(s32);
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 extern "C" void* fn_8015783C(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
-    Fn80157CF0Obj* obj = (Fn80157CF0Obj*)arg0;
-    struct Derived : Fn80157CF0Obj {
+    struct Tail {
+        u8 pad[0x244];
         s32 field26C;
+        unsigned field248;
+        f32 field24C;
+        f32 field250;
+        f32 field254;
+        s32 field258;
+        long field25C;
+        long field260;
+        s32 field244;
+        s32 field268;
+        s32 field264;
         s32 field270;
         s32 field274;
         void* field278;
     };
-    Derived* d = (Derived*)arg0;
     extern f32 lbl_80561758;
-    u8* ptr = (u8*)arg0 + 0x14;
-    obj->entries = ptr;
-    obj->vtable = &lbl_8032F2BC;
-    obj->count = 10;
-    obj->unkC = 0;
+    register u8* ptr = (u8*)arg0 + 0x14;
+    *(void**)((u8*)arg0 + 8) = ptr;
+    *(void**)arg0 = &lbl_8032F2BC;
+    *(s32*)((u8*)arg0 + 0x10) = 10;
+    *(s32*)((u8*)arg0 + 0xC) = 0;
     do {
         memset(ptr, 0, 4);
         ptr += 0x38;
     } while (ptr < (u8*)arg0 + 0x244);
 
     f32 val = lbl_80561758;
-    obj->unk4 = arg2;
-    obj->unkC = 0;
-    obj->unk244 = arg1;
-    obj->unk258 = 0;
-    obj->value250 = val;
-    obj->unk268 = 0;
-    obj->unk248 = 0;
-    obj->vtable = &lbl_8032EB58;
-    d->field274 = arg2;
+    u32 zero = 0;
+    *(s32*)((u8*)arg0 + 0xC) = zero;
+    *(s32*)((u8*)arg0 + 4) = (unsigned short)arg2;
+    ((Tail*)arg0)->field244 = arg1;
+    ((Tail*)arg0)->field258 = zero;
+    ((Tail*)arg0)->field250 = val;
+    ((Tail*)arg0)->field268 = zero;
+    ((Tail*)arg0)->field248 = zero;
+    *(void**)arg0 = &lbl_8032EB58;
+    ((Tail*)arg0)->field274 = arg2;
 
     bool ok = !fn_80157278(arg2);
     if (ok) {
-        d->field278 = fn_802076A0(lbl_8032EAF0, 1, arg2, 2);
+        ((Tail*)arg0)->field278 = fn_802076A0(lbl_8032EAF0, 1, arg2, 2);
     } else {
-        d->field278 = 0;
+        ((Tail*)arg0)->field278 = (void*)zero;
     }
     return arg0;
 }
@@ -788,6 +798,7 @@ extern "C" void* fn_80157F98(void* self, s32 arg1, s32 arg2) {
 #pragma small_data off
 extern "C" void *fn_80158054(void *arg0, s32 arg1, s32 arg2) {
     u8 *ptr = (u8 *)arg0 + 0x14;
+    u8 *end = (u8 *)arg0 + 0x244;
     s32 zero = 0;
     *(void **)arg0 = lbl_8032F2BC;
     *(void **)((u8 *)arg0 + 8) = ptr;
@@ -796,7 +807,7 @@ extern "C" void *fn_80158054(void *arg0, s32 arg1, s32 arg2) {
     do {
         memset(ptr, 0, 4);
         ptr += 0x38;
-    } while (ptr < (u8 *)arg0 + 0x244);
+    } while (ptr < end);
     f32 f0 = lbl_80561768;
     *(s32 *)((u8 *)arg0 + 4) = arg2;
     *(s32 *)((u8 *)arg0 + 0x0C) = zero;
@@ -816,7 +827,7 @@ extern "C" f32 lbl_8056176C;
 extern "C" void* fn_8015812C(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
     extern f32 lbl_80561770;
     struct Tail {
-        u8 pad[0x244];
+        u8 pad244[0x244];
         s32 field244;
         s32 field248;
         f32 field24C;
@@ -858,12 +869,10 @@ extern "C" void* fn_8015812C(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
     *(void **)arg0 = &lbl_8032F0E8;
     ((Tail *)arg0)->field278 = zero;
     if (ptr != end) {
-        register u8 *zeroPtr = (u8 *)zero;
-        s32 temp = 1;
-        zeroPtr[0x4D] = (u8)temp;
+        u8 *zeroPtr = (u8 *)zero;
+        zeroPtr[0x4D] = 1;
         *(f32 *)(zeroPtr + 8) = f0;
-        temp = 0;
-        ((Tail *)arg0)->field26C = temp;
+        ((Tail *)arg0)->field26C = 0;
     }
     return arg0;
 }
@@ -1525,7 +1534,7 @@ extern "C" void fn_80159AB4(void* arg0) {
         virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27(); virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31(); virtual void v32(); virtual void v33(); virtual void v34(); virtual void v35(f32*); virtual void v36(); virtual void v37(); virtual void v38(f32);
     };
     V* self = (V*)arg0;
-    volatile f32 sp8 = lbl_80561754;
+    volatile f32 sp8 = 0.0f;
     if (*(f32*)((u8*)arg0 + 0x25c) > *(f32*)((u8*)arg0 + 0x24c)) {
         if (self->v23() > 0) {
             sp8 = *(f32*)((u8*)arg0 + 0x250) * self->v20(self->v23());
@@ -1533,12 +1542,15 @@ extern "C" void fn_80159AB4(void* arg0) {
         }
     }
     if (fn_80141F7C(sp8) == 0) self->v38(*(f32*)((u8*)arg0 + 0x25c));
-    f32 x = *(f32*)((u8*)arg0 + 0x258);
-    f32 y = lbl_8056177C;
-    f32 z = lbl_80561754;
+    f32 y;
+    f32 x;
+    f32 z;
+    x = *(f32*)((u8*)arg0 + 0x258);
+    y = lbl_8056177C;
+    z = lbl_80561754;
     *(f32*)((u8*)arg0 + 0x25c) = z;
     *(f32*)((u8*)arg0 + 0x264) = z;
-    *(f32*)((u8*)arg0 + 0x258) = y + x;
+    *(f32*)((u8*)arg0 + 0x258) = x + y;
 }
 
 extern "C" void fn_80159BB4(Unk801577F0* arg0) {
@@ -3049,37 +3061,38 @@ extern "C" s32 fn_8015CE48(void) {
     return 0xE;
 }
 
-extern "C" void fn_8015CF00(void* self) {
-    extern s32 fn_80009C84();
-    extern void fn_80206750(s32, s32);
-    s32 i = 0;
-    s32 offset = 0;
-    s32 zero = 0;
-    f32 initial = lbl_80561754;
-    do {
-        ++i;
-        *(s32 *)(*(u8 **)((u8 *)self + 8) + offset) = zero;
-        *(s32 *)(*(u8 **)((u8 *)self + 8) + offset + 4) = zero;
-        *(s32 *)(*(u8 **)((u8 *)self + 8) + offset + 8) = zero;
-        *(f32 *)(*(u8 **)((u8 *)self + 8) + offset + 0xC) = initial;
-        offset += 0x38;
-    } while (i < *(s32 *)((u8 *)self + 0xC));
-    *(s32 *)((u8 *)self + 0x264) = zero;
-    *(s32 *)((u8 *)self + 0x260) = zero;
-    *(f32 *)((u8 *)self + 0x254) = lbl_80561754;
-    *(f32 *)((u8 *)self + 0x25C) = lbl_80561750;
-    ((Unk801577F0 *)self)->v31();
-    void *target = *(void **)((u8 *)self + 0x278);
-    *(s32 *)((u8 *)self + 0x26C) = zero;
-    *(s32 *)((u8 *)self + 0x270) = zero;
+extern "C" s32 fn_80009C84(void);
+extern "C" void fn_80206750(void*, s32, s32);
+extern "C" void fn_8015CF00(Unk801577F0* arg0) {
+    f32 entryValue = 0.0f;
+    s32 r6 = 0;
+    s32 r7 = 0;
+    s32 r5 = 0;
+    for (; r6 < arg0->mCount; r6++) {
+        *(s32*)(arg0->mData + r7) = r5;
+        *(s32*)(arg0->mData + r7 + 4) = r5;
+        *(s32*)(arg0->mData + r7 + 8) = r5;
+        *(f32*)(arg0->mData + r7 + 0xC) = entryValue;
+        r7 += 0x38;
+    }
+    f32 resetValue = 0.0f;
+    entryValue = 1.0f;
+    arg0->m264 = 0;
+    arg0->m260 = 0;
+    arg0->m254 = resetValue;
+    arg0->m25c = entryValue;
+    arg0->v31();
+    void* target = *(void**)((u8*)arg0 + 0x278);
+    arg0->m26c = 0;
+    *(s32*)((u8*)arg0 + 0x270) = 0;
     if (target != 0) {
-        *((u8 *)target + 0x4A) = 1;
-        *((u8 *)target + 0x4C) = 0;
+        *(u8*)((u8*)target + 0x4A) = 1;
+        *(u8*)((u8*)target + 0x4C) = 0;
         s32 mode = 2;
         if (fn_80009C84() != 0)
             mode = 0;
-        if (*(void **)((u8 *)self + 0x278) != 0)
-            fn_80206750(*(s32 *)((u8 *)self + 0x274), mode);
+        if (*(void**)((u8*)arg0 + 0x278) != 0)
+            fn_80206750(*(void**)((u8*)arg0 + 0x278), *(s32*)((u8*)arg0 + 0x274), mode);
     }
 }
 
