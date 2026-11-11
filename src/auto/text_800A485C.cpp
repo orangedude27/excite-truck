@@ -25094,58 +25094,59 @@ extern "C" s32 VFiPFENT_searchEmptyTailSFN(void *arg0, u32 firstIndex, void *tem
     return 0;
 }
 #pragma pop
-extern "C" void VFiPFSTR_ToUpperNStr(s32 arg0, u16 arg1, u8 *arg2) {
-    u8 *var_r31;
-    u8 *var_r30;
-    s32 var_r29;
-    u32 var_r3;
-    u8 *var_r4;
-    s32 var_r0;
-    u8 temp_r3;
+extern "C" void VFiPFSTR_ToUpperNStr(s32 srcStr, u16 maxChars, u8 *dst) {
+    u8 *srcPtr;
+    u8 *dstPtr;
+    s32 remaining;
+    u32 ch16;
+    u8 *srcWide;
+    s32 isLower;
+    u8 tempChar;
 
-    var_r30 = arg2;
-    var_r29 = (u16)arg1;
-    if (*(u32 *)((u8 *)arg0 + 0xC) == 1U) {
-        var_r31 = *(u8 **)arg0;
+    /* Copy up to maxChars chars from srcStr to dst, uppercasing ASCII letters; handles 1-byte and 2-byte encodings via srcStr+0xC. */
+    dstPtr = dst;
+    remaining = (u16)maxChars;
+    if (*(u32 *)((u8 *)srcStr + 0xC) == 1U) {
+        srcPtr = *(u8 **)srcStr;
         goto single_check;
         do {
-            *var_r30 = (u8)fn_800A485C((s32)(s8)temp_r3);
-            var_r30 += 1;
-            var_r31 += 1;
-            var_r29 -= 1;
+            *dstPtr = (u8)fn_800A485C((s32)(s8)tempChar);
+            dstPtr += 1;
+            srcPtr += 1;
+            remaining -= 1;
         single_check:
-            if ((u16)var_r29 == 0) {
+            if ((u16)remaining == 0) {
                 break;
             }
-            temp_r3 = *var_r31;
-        } while ((s8)temp_r3 != 0);
+            tempChar = *srcPtr;
+        } while ((s8)tempChar != 0);
     } else {
-        var_r4 = *(u8 **)arg0;
+        srcWide = *(u8 **)srcStr;
         goto wide_check;
     wide_body:
-        var_r0 = 0;
-        if ((var_r3 >= 0x61U) && (var_r3 <= 0x7AU)) {
-            var_r0 = 1;
+        isLower = 0;
+        if ((ch16 >= 0x61U) && (ch16 <= 0x7AU)) {
+            isLower = 1;
         }
-        if (var_r0 != 0) {
-            var_r3 -= 0x20;
+        if (isLower != 0) {
+            ch16 -= 0x20;
         }
-        var_r30[0] = (u8)var_r3;
-        var_r4 += 2;
-        var_r29 -= 1;
-        var_r30[1] = (u8)(var_r3 >> 8);
-        var_r30 += 2;
+        dstPtr[0] = (u8)ch16;
+        srcWide += 2;
+        remaining -= 1;
+        dstPtr[1] = (u8)(ch16 >> 8);
+        dstPtr += 2;
         goto wide_check;
     wide_check:
-        if ((u16)var_r29 == 0) {
+        if ((u16)remaining == 0) {
             goto wide_done;
         }
-        var_r3 = *(u16 *)var_r4;
-        if (var_r3 != 0) {
+        ch16 = *(u16 *)srcWide;
+        if (ch16 != 0) {
             goto wide_body;
         }
     wide_done:
-        *var_r30 = 0;
+        *dstPtr = 0;
     }
-    *var_r30 = 0;
+    *dstPtr = 0;
 }
