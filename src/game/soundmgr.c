@@ -740,6 +740,46 @@ void fn_80208620(void* arg0, void* arg1) {
         fn_802E317C(lbl_8033BE80, (char*)arg1 + 0x37);
     }
 }
+
+#pragma push
+#pragma cplusplus on
+#pragma inline_depth(0)
+extern "C" void fn_80208858(void *arg0, signed long arg1, signed long arg2) {
+    struct Obj {
+        virtual void v0();
+        virtual void v1();
+        virtual void *get();
+        virtual void v3();
+        virtual void v4();
+        virtual int invoke(int, int, int);
+    };
+    signed long mode1 = fn_802085F0(arg0, arg2);
+    signed long mode2 = fn_80207964(arg2);
+    void *item = (*(Obj **)((char *)arg0 + 0x90))->get();
+    unsigned char active = *(unsigned char *)item;
+    signed long choice;
+    signed long res;
+    extern char lbl_8033BEB0[];
+    if (active == 0 || mode1 != 0) {
+        if (*(signed long *)((char *)item + 4) != 0 && mode1 != 0) {
+            choice = 0;
+        } else {
+            choice = 2;
+            if (*(signed long *)((char *)item + 8) != 0) {
+                choice = 1;
+            }
+        }
+        res = (*(Obj **)((char *)arg0 + 0x90))->invoke(arg1, choice, mode2);
+        if (choice == 0 && res == 0) {
+            fn_802E30C8(lbl_8033BEB0);
+            (*(Obj **)((char *)arg0 + 0x90))->invoke(arg1, 1, mode2);
+        }
+    } else {
+        (*(Obj **)((char *)arg0 + 0x90))->invoke(arg1, 2, mode2);
+    }
+}
+#pragma pop
+
 #pragma cplusplus on
 struct Dummy80208858 {
     virtual void v0();
