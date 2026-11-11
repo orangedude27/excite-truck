@@ -940,7 +940,7 @@ extern "C" void fn_80218198(void *arg0, void **arg1) {
 #pragma processor 750
 #pragma dont_inline on
 #pragma cplusplus on
-extern "C" int fn_80218214(void *arg0, int arg1, int arg2) {
+extern "C" int fn_80218214(void *menuGroup, int x, int y) {
     struct Dummy {
         virtual int f0(); virtual int f1(); virtual int f2(); virtual int f3();
         virtual int f4(); virtual int f5(); virtual int f6(); virtual int f7();
@@ -950,24 +950,25 @@ extern "C" int fn_80218214(void *arg0, int arg1, int arg2) {
         virtual int f20(); virtual int f21(); virtual int f22(); virtual int f23();
         virtual int f24(); virtual int f25(); virtual int f26(int, int);
     };
+    /* Scan menu widgets from back to front and return the index of the last eligible widget whose hit-test (slot 0x70) accepts (x, y), or -1. */
     char *entry;
-    int i = *(int *)((char *)arg0 + 0x430) - 1;
-    entry = (char *)arg0 + i * 4;
-    while (i >= 0) {
-        void *obj = *(void **)(entry + 0x30);
-        if (*(unsigned char *)((char *)obj + 0x1B) != 0) {
-            int eligible = 0;
-            if (*(unsigned char *)((char *)obj + 0x1A) != 0) goto eligible_yes;
-            if (*(float *)((char *)obj + 0x20) >= 0.0f) goto eligible_yes;
+    int index = *(int *)((char *)menuGroup + 0x430) - 1;
+    entry = (char *)menuGroup + index * 4;
+    while (index >= 0) {
+        void *widget = *(void **)(entry + 0x30);
+        if (*(unsigned char *)((char *)widget + 0x1B) != 0) {
+            int isEligible = 0;
+            if (*(unsigned char *)((char *)widget + 0x1A) != 0) goto eligible_yes;
+            if (*(float *)((char *)widget + 0x20) >= 0.0f) goto eligible_yes;
             goto eligible_check;
         eligible_yes:
-            eligible = 1;
+            isEligible = 1;
         eligible_check:
-            if (eligible != 0 && ((Dummy *)obj)->f26(arg1, arg2) != 0)
-                return i;
+            if (isEligible != 0 && ((Dummy *)widget)->f26(x, y) != 0)
+                return index;
         }
         entry -= 4;
-        i--;
+        index--;
     }
     return -1;
 }
