@@ -107,7 +107,7 @@ s32 fn_801B60F4(void *arg0, f32 arg1) {
 
 extern float lbl_805626B8;
 static inline s32 GridCell(f32 v) {
-    s32 i = (s32)((lbl_805626B4 + v) / lbl_805626B0);
+    s32 i = (s32)((v + lbl_805626B4) / lbl_805626B0);
     if (i < 0)
         i = 0;
     else if (i >= 0x64)
