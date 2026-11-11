@@ -88,6 +88,7 @@ typedef struct SCControl {
     SCFlushCallback flushCallback;           // at 0x180
     SCStatus flushStatus;                    // at 0x184
     u32 flushSize;                           // at 0x188
+    u32 unk18C;                              // at 0x18C
 } SCControl;
 
 typedef struct SCNameAndID {

@@ -120,12 +120,9 @@ void fn_802889F0(void) {
 void fn_80288A1C(void) {}
 
 #pragma push
-#pragma peephole off
-float fn_801E7E24(void);
-float fn_801E7E24();
+#pragma optimize_tail_call off
 void fn_80288A20(void) {
-    volatile float f;
-    f = fn_801E7E24();
+    fn_801E7E24();
 }
 #pragma pop
 extern void *lbl_8055F6E0;

@@ -1,6 +1,16 @@
 #include <types.h>
 #include <revolution/OS/OSHardware.h>
 #include <revolution/OS/OSMemory.h>
+#include <revolution/BASE/PPCArch.h>
+#include <revolution/OS/OSContext.h>
+
+void __OSDBJUMPSTART(void);
+void __OSDBJUMPDEST(void);
+void __OSDBJUMPEND(void);
+void __OSEVStart(void);
+void __DBVECTOR(void);
+void __OSEVSetNumber(void);
+void __OSEVEnd(void);
 
 extern char DriveInfo[];
 
@@ -8,7 +18,6 @@ extern BOOL __OSInIPL;
 extern const char lbl_80558F0C[4];
 
 extern void **OSExceptionTable_8055D9D0;
-extern void OSExceptionVector(void);
 extern void OSReport(const char *, ...);
 extern u32 OSGetConsoleType(void);
 extern u32 OSGetConsoleSimulatedMem1Size(void);
@@ -667,8 +676,11 @@ void __OSDBIntegrator(void) {
     PPCMtmsr(0x30);
 }
 
-void __OSDBJump(void) {
-    OSExceptionVector();
+asm void __OSDBJump(void) {
+    nofralloc
+    entry __OSDBJUMPSTART
+    bl __OSDBJUMPDEST
+    entry __OSDBJUMPEND
 }
 
 #pragma small_data on
@@ -684,9 +696,90 @@ void *__OSGetExceptionHandler(s32 arg0) {
     return OSExceptionTable_8055D9D0[(u8)arg0];
 }
 
+void OSDefaultExceptionHandler(u8 exception, void *context);
+asm void OSExceptionVector(void) {
+    nofralloc
+    entry __OSEVStart
+    mtsprg0 r4
+    lwz r4, 0x000000C0(0)
+    stw r3, OSContext.gprs[3](r4)
+    mfsprg0 r3
+    stw r3, OSContext.gprs[4](r4)
+    stw r5, OSContext.gprs[5](r4)
+    lhz r3, OSContext.state(r4)
+    ori r3, r3, 0x2
+    sth r3, OSContext.state(r4)
+    mfcr r3
+    stw r3, OSContext.cr(r4)
+    mflr r3
+    stw r3, OSContext.lr(r4)
+    mfctr r3
+
+    entry __OSDBJUMPDEST
+
+    stw r3, OSContext.ctr(r4)
+    mfxer r3
+    stw r3, OSContext.xer(r4)
+    mfsrr0 r3
+    stw r3, OSContext.srr0(r4)
+    mfsrr1 r3
+    stw r3, OSContext.srr1(r4)
+    mr r5, r3
+
+    entry __DBVECTOR
+
+    nop
+    mfmsr r3
+    ori r3, r3, (MSR_IR | MSR_DR)
+    mtsrr1 r3
+
+    entry __OSEVSetNumber
+
+    li r3, 0
+    lwz r4, 0x000000D4(r0)
+    rlwinm. r5, r5, 0, 30, 30
+    bne lbl_800ECF70
+    lis r5, OSDefaultExceptionHandler@ha;
+    addi r5, r5, OSDefaultExceptionHandler@l;
+    mtsrr0 r5
+    rfi
+
+lbl_800ECF70:
+    rlwinm r5, r3, 2, 22, 29
+    lwz r5, 0x3000(r5)
+    mtsrr0 r5
+    rfi
+
+    entry __OSEVEnd
+
+    nop
+}
+
 extern void __OSUnhandledException(u8, void *, u32, u32);
-void OSDefaultExceptionHandler(u8 exception, void *context) {
-    __OSUnhandledException(exception, context, 0, 0);
+asm void OSDefaultExceptionHandler(u8 exception, void *context) {
+    nofralloc
+    stw r0, 0x0(r4)
+    stw r1, 0x4(r4)
+    stw r2, 0x8(r4)
+    stmw r6, 0x18(r4)
+    mfspr r0, GQR1
+    stw r0, 0x1a8(r4)
+    mfspr r0, GQR2
+    stw r0, 0x1ac(r4)
+    mfspr r0, GQR3
+    stw r0, 0x1b0(r4)
+    mfspr r0, GQR4
+    stw r0, 0x1b4(r4)
+    mfspr r0, GQR5
+    stw r0, 0x1b8(r4)
+    mfspr r0, GQR6
+    stw r0, 0x1bc(r4)
+    mfspr r0, GQR7
+    stw r0, 0x1c0(r4)
+    mfdsisr r5
+    mfdar r6
+    stwu r1, -0x8(r1)
+    b __OSUnhandledException
 }
 
 void __OSPSInit(void) {
