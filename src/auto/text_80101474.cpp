@@ -1516,22 +1516,22 @@ extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(void *arg0) {
     return *(float *)((char *)arg0 + 0x2C);
 }
 
-extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(int arg0) {
- unsigned int temp_r11=(unsigned int)arg0&0xFF000000U;
- int var_r10=1;
- int var_r9=1;
- int var_r8=1;
- int var_r7=1;
- int var_r6=1;
- int var_r5=1;
- if ((temp_r11+0x80000000U)!=0U && (((unsigned int)arg0&0xFF800000U)+0x7F000000U)!=0U) var_r10=0;
- if (var_r10==0 && (((unsigned int)arg0&0xF8000000U)+0x70000000U)!=0U) var_r9=0;
- if (var_r9==0 && temp_r11+0x40000000U!=0U) var_r8=0;
- if (var_r8==0 && (((unsigned int)arg0&0xFF800000U)+0x3F000000U)!=0U) var_r7=0;
- if (var_r7==0 && (((unsigned int)arg0&0xF8000000U)+0x30000000U)!=0U) var_r6=0;
- if (var_r6==0 && (((unsigned int)arg0&0xFFFFC000U)+0x20000000U)!=0U) var_r5=0;
- if (var_r5==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178,0x435,lbl_8032818C,arg0);
- return *(float*)((char*)arg0+0x30);
+extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(void *arg0) {
+    int v0 = 1;
+    int v1 = 1;
+    int v2 = 1;
+    int v3 = 1;
+    int v4 = 1;
+    int v5 = 1;
+    unsigned int top = (unsigned int)arg0 & 0xFF000000U;
+    if ((top != 0x80000000U) && (((unsigned int)arg0 & 0xFF800000U) != 0x81000000U)) v5 = 0;
+    if ((v5 == 0) && (((unsigned int)arg0 & 0xF8000000U) != 0x90000000U)) v4 = 0;
+    if ((v4 == 0) && (top != 0xC0000000U)) v3 = 0;
+    if ((v3 == 0) && (((unsigned int)arg0 & 0xFF800000U) != 0xC1000000U)) v2 = 0;
+    if ((v2 == 0) && (((unsigned int)arg0 & 0xF8000000U) != 0xD0000000U)) v1 = 0;
+    if ((v1 == 0) && (((unsigned int)arg0 & 0xFFFFC000U) != 0xE0000000U)) v0 = 0;
+    if (v0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x435, lbl_8032818C, arg0);
+    return *(float *)((char *)arg0 + 0x30);
 }
 
 extern "C" void GXBegin(int, int, int);
