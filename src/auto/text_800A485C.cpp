@@ -18032,21 +18032,29 @@ extern "C" void fn_800CFDBC(void *arg0, s32 arg1, void *arg2) {
     }
 }
 
-extern "C" void calc__Q310homebutton3gui7ManagerFv_800CFDEC(void *arg0) {
+extern "C" void calc__Q310homebutton3gui7ManagerFv_800CFDEC(u8 *arg0) {
     class ComponentDispatch {
     public:
         virtual void d0();
         virtual void d1();
         virtual void calc();
     };
-    void *list = (u8 *)arg0 + 8;
-
-    for (s32 i = 0; (u32)i < (u32)*(u16 *)((u8 *)arg0 + 0x10); i++) {
-        void *entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs((u8 *)arg0 + 8, (u16)i);
+    u8 *list = arg0 + 8;
+    s32 i = 0;
+    goto check;
+loop:
+    {
+        void *entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(arg0 + 8, (u16)i);
         ComponentDispatch *obj = *(ComponentDispatch **)((u8 *)entry + 4);
         obj->calc();
-        if (list == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
+        i++;
+    }
+check:
+    if (list == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
+    }
+    if ((u32)i < *(u16 *)(arg0 + 0x10)) {
+        goto loop;
     }
 }
 
