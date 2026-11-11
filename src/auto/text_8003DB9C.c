@@ -2284,13 +2284,16 @@ void GXBegin(unsigned char prim, unsigned char vtxfmt, unsigned short nverts) {
 #pragma dont_inline on
 void __GXSendFlushPrim(void) {
     u32 i;
-    u32 sz = ((u16 *)__GXData)[2] * ((u16 *)__GXData)[3];
-    WGPIPE.uc = 0x98;
-    WGPIPE.us = ((u16 *)__GXData)[2];
+    u32 sz = gxdraw->numChans * gxdraw->vLim;
+
+    WGPIPE.uc = GX_TRIANGLESTRIP;
+    WGPIPE.us = gxdraw->numChans;
+
     for (i = 0; i < sz; i += 4) {
         WGPIPE.i = 0;
     }
-    ((u16 *)__GXData)[1] = 1;
+
+    gxdraw->lastWriteWasXF = TRUE;
 }
 #pragma dont_inline reset
 void GXSetLineWidth(s32 width, s32 format) {
