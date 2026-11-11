@@ -3210,7 +3210,6 @@ void fn_80287238(void *arg0) {
 #pragma dont_inline reset
 extern float lbl_80564200;
 extern float lbl_805641FC;
-extern int lbl_80347FB4;
 extern void* fn_8027ED70(void);
 extern int fn_80214A9C(int);
 #pragma cplusplus on
