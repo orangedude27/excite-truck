@@ -1280,21 +1280,25 @@ typedef struct Bink {
 extern s32 fn_80118F78(void*, s32);
 extern s32 fn_8011BFFC(s32, s32, s32, s32, s32);
 extern void fn_8011BC48();
-void fn_80118DC0(void* arg0) {
+void fn_80118DC0(Bink *bink) {
     s32 offset;
     s32 i;
-    s32 callback;
+    s32 tick;
     s32 status;
     register s32 zero = 0;
-    s32 fileInfo;
-    if (arg0 == 0) return;
-    fn_80118F78(arg0, 1);
-    fileInfo = (s32)((u8*)arg0 + 0x1F4);
-    if (*(s32*)((u8*)arg0 + 0x2E8) != zero)
-        callback = *(s32*)&lbl_8055DED4;
+    s32 localNode;
+
+    /* BinkClose: shut a movie down. */
+    if (bink == 0) return;
+    fn_80118F78(bink, 1); /* BinkChangePause(bink, TRUE) */
+    localNode = (s32)&bink->localNode;
+    if (bink->frameCount != zero)
+        tick = *(s32*)&lbl_8055DED4; /* the shared Bink tick object */
     else
-        callback = 0;
-    status = fn_8011BFFC(zero, fileInfo, callback, (s32)((u8*)arg0 + 0x340), 1);
+        tick = 0;
+    /* Unlink both tick nodes; bit 1 is set when the shared tick, having no
+     * listener left, cancelled its alarm and freed itself. */
+    status = fn_8011BFFC(zero, localNode, tick, (s32)&bink->tickNode, 1);
     switch (status) {
     case 2:
         goto status2;
@@ -1312,34 +1316,34 @@ status3:
 status_done:
     i = 0;
     offset = 0;
-    while ((u32)i < *(u32*)((u8*)arg0 + 0x2E8)) {
-        void* item = *(void**)((u8*)arg0 + 0x2F0);
-        item = (u8*)item + offset;
-        ((void (*)(void*))(*(void**)((u8*)item + 0x1C)))(item);
-        fn_8011BC48(*(s32*)((u8*)*(void**)((u8*)arg0 + 0x2F0) + offset + 0x3C));
+    while ((u32)i < bink->frameCount) {
+        BinkFrame *frame = (BinkFrame *)((u8 *)bink->frames + offset);
+        frame->Close(frame);
+        /* the calls above may move the frame list: walk it from the top again */
+        fn_8011BC48(((BinkFrame *)((u8 *)bink->frames + offset))->texture);
         {
-            void* handle = *(void**)((u8*)*(void**)((u8*)arg0 + 0x2F0) + offset + 0x2C);
-            if (handle != 0) fn_80120084(handle);
+            void *data = ((BinkFrame *)((u8 *)bink->frames + offset))->data;
+            if (data != 0) fn_80120084(data);
         }
         offset += 0x17C;
         i += 1;
     }
     {
-        void* field = *(void**)((u8*)arg0 + 0xE8);
-        if (field != 0) {
-            if ((*(u32*)((u8*)arg0 + 0x20) & 0x04000000) == 0)
-                fn_80120084(field);
+        void *fileBuffer = bink->fileBuffer;
+        if (fileBuffer != 0) {
+            if ((bink->flags & 0x04000000) == 0) /* not opened from memory */
+                fn_80120084(fileBuffer);
         } else {
-            ((void (*)(void*))(*(void**)((u8*)arg0 + 0x104)))((u8*)arg0 + 0xF0);
-            fn_80120084(*(void**)((u8*)arg0 + 0x234));
+            bink->fileClose(&bink->file);
+            fn_80120084(bink->fileData);
         }
     }
     {
-        void* field = *(void**)((u8*)arg0 + 0x384);
-        if (field != 0) fn_80120084(field);
+        void *textureLayout = bink->textureLayout;
+        if (textureLayout != 0) fn_80120084(textureLayout);
     }
-    memset(arg0, zero, 0x388);
-    fn_80120084(arg0);
+    memset(bink, zero, sizeof(Bink));
+    fn_80120084(bink);
 }
 
 void fn_80118F1C(void *arg0, s32 arg1) {
