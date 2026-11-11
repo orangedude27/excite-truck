@@ -2617,7 +2617,7 @@ extern "C" s32 fn_800A900C(void *arg0, s32 arg1, s32 arg2) {
 
 extern "C" s32 fn_800A861C(void *, void *, s32, u32);
 extern "C" s32 VFiPFCACHE_SearchForPage(s32, s32, s32);
-extern "C" s32 fn_800A8AD4(s32);
+extern "C" s32 fn_800A8AD4(void *, void *);
 extern "C" s32 VFiPFCACHE_WriteFATSectorAndFreeIfNeeded(void *arg0, s32 arg1, u32 arg2) {
     s32 temp_r3;
     if (arg2 >= *(u32 *)((u8 *)arg0 + 8))
@@ -18688,8 +18688,7 @@ extern "C" void soundOnCallback__Q210homebutton10ControllerFP7OSAlarmP9OSContext
 
 extern "C" void *fn_800D0E68(void *arg0, s32 arg1, s32 arg2) {
     u8 *base = lbl_80407600;
-    struct D0E68Tail *t = (struct D0E68Tail *)lbl_80407600;
-    s32 temp_r30;
+    s32 off;
     s32 zero = 0;
     *(s32 *)((u8 *)arg0 + 0x20) = zero;
     *(s32 *)arg0 = arg1;
@@ -18701,11 +18700,11 @@ extern "C" void *fn_800D0E68(void *arg0, s32 arg1, s32 arg2) {
     *((u8 *)arg0 + 0x40) = zero;
     *((u8 *)arg0 + 0x41) = zero;
     if (arg1 < 4) {
-        temp_r30 = arg1 * 0x30;
+        off = arg1 * 0x30;
         lbl_8055DDA8[arg1] = zero;
-        OSCreateAlarm((OSAlarm *)(base + temp_r30));
-        OSCreateAlarm((OSAlarm *)(base + 0xC0 + temp_r30));
-        t->slots[arg1] = arg0;
+        OSCreateAlarm((OSAlarm *)(base + off));
+        OSCreateAlarm((OSAlarm *)(base + 0xC0 + off));
+        *(void **)(base + 0x180 + arg1 * 4) = arg0;
     }
     return arg0;
 }
@@ -20192,34 +20191,23 @@ void nw4hbm::lyt::AnimTransformBasic::SetResource(const nw4hbm::lyt::res::Animat
     }
 }
 
-void nw4hbm::lyt::AnimTransformBasic::Bind(nw4hbm::lyt::Pane *pane, bool bind) {
+void nw4hbm::lyt::AnimTransformBasic::Bind(nw4hbm::lyt::Material *material) {
     register u8 *self = (u8 *)this;
-    register u8 *target = (u8 *)pane;
-    register u16 i;
     register u8 *offsets = (u8 *)*(void **)(self + 0xC);
     offsets += *(s32 *)(offsets + 0x10);
-    for (i = 0; i < *(u16 *)(*(u8 **)(self + 0xC) + 0xE); i++) {
-        u8 *entry = target + *(s32 *)(offsets + i * 4);
-        void *boundObject;
-        if (entry[0x15] == 0) {
-            boundObject = ((PaneAnimTransformDispatch *)target)->bindPane(entry, bind);
-            if (boundObject != 0) {
+    register u16 i = 0;
+    register u8 *materialPtr = (u8 *)material;
+    while (i < *(u16 *)((u8 *)*(void **)(self + 0xC) + 0xE)) {
+        u8 *entry = *(u8 **)(self + 0xC) + *(s32 *)(offsets + i * 4);
+        if (entry[0x15] == 1) {
+            if (fn_800D58F0(materialPtr + 4) != 0) {
                 u8 *link = (u8 *)*(void **)(self + 0x18) + i * 0x10;
                 *(void **)(link + 8) = self;
                 *(u16 *)(link + 0xC) = i;
-                AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLink(
-                    boundObject, (u8 *)*(void **)(self + 0x18) + i * 0x10);
-            }
-        } else {
-            boundObject = ((PaneAnimTransformDispatch *)target)->bindMaterial(entry, bind);
-            if (boundObject != 0) {
-                u8 *link = (u8 *)*(void **)(self + 0x18) + i * 0x10;
-                *(void **)(link + 8) = self;
-                *(u16 *)(link + 0xC) = i;
-                AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(
-                    boundObject, (u8 *)*(void **)(self + 0x18) + i * 0x10);
+                AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(materialPtr, (u8 *)*(void **)(self + 0x18) + i * 0x10);
             }
         }
+        i++;
     }
 }
 
