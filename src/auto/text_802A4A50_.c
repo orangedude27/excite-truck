@@ -248,34 +248,35 @@ void fn_802A4CA8(void) {
 void fn_802A4D00(void) { fn_802C2C00(0); }
 
 #pragma scheduling invalid_target
+/* Draws the active overlay/hint UI each frame, using state flags and fade amount. */
 void fn_802A4D08(void) {
     u8 *state = (u8 *)fn_801E1F44();
-    s32 flag;
-    f32 value;
-    s32 scaled;
-    s32 nonnegative;
+    s32 selectedFlag;
+    f32 fadeValue;
+    s32 scaledAlpha;
+    s32 nonnegativeAlpha;
     s32 alpha;
 
     fn_802A5A90();
     if (state[0x18] != 0)
         fn_802D3D50();
 
-    flag = lbl_8055F88C;
-    if (flag != 0) {
-        fn_802A6D68((void *)flag);
+    selectedFlag = lbl_8055F88C;
+    if (selectedFlag != 0) {
+        fn_802A6D68((void *)selectedFlag);
     } else {
-        flag = lbl_8055F888;
-        if (flag != 0)
-            ((void (*)(s32))fn_802A5FE4)(flag);
+        selectedFlag = lbl_8055F888;
+        if (selectedFlag != 0)
+            ((void (*)(s32))fn_802A5FE4)(selectedFlag);
     }
 
-    value = *(f32 *)((u8 *)fn_801E7E34() + 0xDC);
-    if (!((f32)__fabs((double)value) <= *(f32 *)(void *)&lbl_80558DC4)) {
-        scaled = (s32)(lbl_80564850 * (lbl_80564854 * value));
-        nonnegative = scaled & ((-scaled & ~scaled) >> 31);
+    fadeValue = *(f32 *)((u8 *)fn_801E7E34() + 0xDC);
+    if (!((f32)__fabs((double)fadeValue) <= *(f32 *)(void *)&lbl_80558DC4)) {
+        scaledAlpha = (s32)(lbl_80564850 * (lbl_80564854 * fadeValue));
+        nonnegativeAlpha = scaledAlpha & ((-scaledAlpha & ~scaledAlpha) >> 31);
         alpha = 0xFF;
-        if (nonnegative < 0xFF)
-            alpha = nonnegative;
+        if (nonnegativeAlpha < 0xFF)
+            alpha = nonnegativeAlpha;
 
         fn_802C90F0(lbl_8055F89C);
         ((void (*)(f32, f32, f32, f32, s32, s32, s32, s32, s32))fn_802C9124)(
@@ -770,18 +771,14 @@ extern s32 lbl_8055F890;
 s32 fn_802A7680(s32);
 #pragma scheduling invalid_target
 s32 fn_802A5B8C(s32 arg0, s32 arg1) {
-    s32 *p = (s32 *)arg0;
     s32 temp;
-    s32 neg;
-    s32 v3;
+    s32 *p = (s32 *)arg0;
     if (arg0 != 0) {
         fn_802CAC54(p[4]);
-        neg = -1;
-        v3 = p[3];
-        p[4] = neg;
-        fn_802CAC54(v3);
+        p[4] = -1;
+        fn_802CAC54(p[3]);
         temp = p[0];
-        p[3] = neg;
+        p[3] = -1;
         if (temp != 0) fn_80128670(temp - 0x10);
         p[0] = 0;
         if (arg1 > 0) fn_80128668((void *)arg0);
