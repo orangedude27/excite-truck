@@ -118,18 +118,19 @@ extern "C" s32 fn_80144F40(const char *arg0, void *arg1) {
 
 extern "C" u8 lbl_80559DCC;
 #pragma scheduling invalid_target
-extern "C" s32 fn_80144FB0(void *arg0, s32 arg1, s32 arg2, const char *arg3) {
-    struct Entry { const char *text; u32 mask; };
-    Entry *entry = (Entry *)arg3;
-    char *dst = (char *)arg0;
+extern "C" s32 fn_80144FB0(void *outStr, s32 maxLen, s32 flags, const char *flagDefs) {
+    struct FlagDef { const char *name; u32 mask; };
+    /* Builds a '_' separated string of flag names whose masks are fully set in flags. */
+    FlagDef *def = (FlagDef *)flagDefs;
+    char *dst = (char *)outStr;
     s32 zero = 0;
     const char *separator = (const char *)&lbl_80559DCC;
     *dst = zero;
-    while (entry->text != 0) {
-        if ((entry->mask & (u32)arg2) == entry->mask) {
+    while (def->name != 0) {
+        if ((def->mask & (u32)flags) == def->mask) {
             if ((s8)*dst != 0) {
                 const char *src;
-                s32 remaining = arg1;
+                s32 remaining = maxLen;
                 char *cursor = dst;
                 while ((s8)*cursor != 0) {
                     --remaining;
@@ -146,8 +147,8 @@ extern "C" s32 fn_80144FB0(void *arg0, s32 arg1, s32 arg2, const char *arg3) {
                 }
             }
             {
-                const char *src = entry->text;
-                s32 remaining = arg1;
+                const char *src = def->name;
+                s32 remaining = maxLen;
                 char *cursor = dst;
                 while ((s8)*cursor != 0) {
                     --remaining;
@@ -163,7 +164,7 @@ extern "C" s32 fn_80144FB0(void *arg0, s32 arg1, s32 arg2, const char *arg3) {
                 }
             }
         }
-        ++entry;
+        ++def;
     }
     return (s32)dst;
 }
