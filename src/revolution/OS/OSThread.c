@@ -970,6 +970,7 @@ void OSSleepThread(OSThreadQueue* queue) {
     OSRestoreInterrupts(enabled);
 }
 
+/* Wakes all threads in a queue, moving them to the ready state and enqueuing them to run as needed. */
 void OSWakeupThread(OSThreadQueue* queue) {
     BOOL enabled;
     OSThread* head;
