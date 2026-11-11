@@ -338,13 +338,13 @@ void fn_80230924(u32 color, f32 left, f32 top, f32 right, f32 bottom, f32 depth)
     fn_80231380(quad.vertex[2], packedColor, left, bottom, depth, QUAD_TEX_EMPTY, QUAD_TEX_EMPTY);
     fn_80231380(quad.vertex[3], packedColor, right, bottom, depth, QUAD_TEX_EMPTY, QUAD_TEX_EMPTY);
     {
-        u16 *source = QUAD_INDICES_SOLID;
-        quad.indices[0] = *source++;
-        quad.indices[1] = *source++;
-        quad.indices[2] = *source++;
-        quad.indices[3] = *source++;
-        quad.indices[4] = *source++;
-        quad.indices[5] = *source++;
+        u16 *indexList = QUAD_INDICES_SOLID;
+        quad.indices[0] = *indexList++;
+        quad.indices[1] = *indexList++;
+        quad.indices[2] = *indexList++;
+        quad.indices[3] = *indexList++;
+        quad.indices[4] = *indexList++;
+        quad.indices[5] = *indexList++;
     }
     fn_802C8DB8(quad.vertex, 4, quad.indices, 6);
     fn_802C8D74();
