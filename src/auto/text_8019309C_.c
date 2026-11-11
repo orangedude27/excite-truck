@@ -1598,8 +1598,10 @@ void fn_80195B28(void *arg0, float arg1) {
 extern void fn_80194324();
 extern void fn_801944C0(void *);
 extern float lbl_805621BC, lbl_80562210, lbl_80562214, lbl_80562218;
+/* Periodically refreshes an object's state, updates a timed fade/state transition
+ * based on threshold checks, and advances its tick counter. */
 void fn_80195CA8(void *arg0) {
-    int temp_r3;
+    int savedMode;
     if (!(*(int *)((char *)arg0 + 4) & 0x7F)) {
         fn_80194324();
         fn_801944C0(arg0);
@@ -1608,10 +1610,10 @@ void fn_80195CA8(void *arg0) {
         *(float *)((char *)arg0 + 0x2A0) > lbl_80562210) {
         *(float *)((char *)arg0 + 0x2A0) = lbl_80562214;
         if (*(int *)((char *)arg0 + 0x260) == 0) {
-            temp_r3 = *(int *)((char *)arg0 + 0x210);
-            if (temp_r3 != 1) {
+            savedMode = *(int *)((char *)arg0 + 0x210);
+            if (savedMode != 1) {
                 if (*(int *)((char *)arg0 + 0x214) == 2) {
-                    *(int *)((char *)arg0 + 0x214) = temp_r3;
+                    *(int *)((char *)arg0 + 0x214) = savedMode;
                     *(int *)((char *)arg0 + 0x210) = 1;
                 } else {
                     *(int *)((char *)arg0 + 0x210) = 1;
