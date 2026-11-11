@@ -2073,27 +2073,28 @@ extern "C" void fn_8015168C(s32 arg0, void *arg1) {
 #pragma cplusplus off
 extern f32 PSVECMag(void *);
 #pragma cplusplus on
-extern "C" void fn_8015180C(void *ctx, void *a, void *b, void *unused, void *vec) {
+extern "C" void fn_8015180C(void *ctx, void *objA, void *objB, void *unused, void *vec) {
+    // Handle collision response between two objects based on priority.
     f32 mag = PSVECMag(vec);
-    s32 first = 1;
-    s32 second = 1;
-    if (*(s32 *)((u8 *)a + 0x1F0) == 0x50 && *(s32 *)((u8 *)b + 0x1F0) == 0x50) {
-        f32 valueB = *(f32 *)((u8 *)b + 0x25D4);
-        f32 valueA = *(f32 *)((u8 *)a + 0x25D4);
-        first = valueA > valueB;
-        second = !first;
+    s32 callA = 1;
+    s32 callB = 1;
+    if (*(s32 *)((u8 *)objA + 0x1F0) == 0x50 && *(s32 *)((u8 *)objB + 0x1F0) == 0x50) {
+        f32 valueB = *(f32 *)((u8 *)objB + 0x25D4);
+        f32 valueA = *(f32 *)((u8 *)objA + 0x25D4);
+        callA = valueA > valueB;
+        callB = !callA;
     }
-    if (first) {
+    if (callA) {
         s32 address = (s32)ctx;
-        address += *(s32 *)((u8 *)a + 0x1EC) * 0xC0;
+        address += *(s32 *)((u8 *)objA + 0x1EC) * 0xC0;
         void *slot = (void *)(address + 0x9E4);
-        if (slot) ((Dummy_8015180C *)*(void **)((u8 *)slot + 0x10))->call(*(s32 *)((u8 *)b + 0x1EC), mag);
+        if (slot) ((Dummy_8015180C *)*(void **)((u8 *)slot + 0x10))->call(*(s32 *)((u8 *)objB + 0x1EC), mag);
     }
-    if (second) {
+    if (callB) {
         s32 address = (s32)ctx;
-        address += *(s32 *)((u8 *)b + 0x1EC) * 0xC0;
+        address += *(s32 *)((u8 *)objB + 0x1EC) * 0xC0;
         void *slot = (void *)(address + 0x9E4);
-        if (slot) ((Dummy_8015180C *)*(void **)((u8 *)slot + 0x10))->call(*(s32 *)((u8 *)a + 0x1EC), mag);
+        if (slot) ((Dummy_8015180C *)*(void **)((u8 *)slot + 0x10))->call(*(s32 *)((u8 *)objA + 0x1EC), mag);
     }
 }
 #pragma cplusplus off
