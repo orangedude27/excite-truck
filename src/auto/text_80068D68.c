@@ -24524,6 +24524,11 @@ void sdp_data_ind(u16 l2cap_cid, void *p_msg) {
     GKI_freebuf(p_msg);
 }
 
+/* Originates an SDP (Service Discovery Protocol) L2CAP connection to the given peer.
+ * Allocates an SDP connection control block, emits trace logs based on the SDP
+ * trace level, copies the peer BD address, sets connection state/flags, and
+ * requests an L2CAP connection on PSM 1. On success stores the returned CID in
+ * the CCB; on failure logs and releases the CCB. */
 tCONN_CB *sdp_conn_originate(UINT8 *p_bd_addr) {
     char *log = lbl_8031A188;
     tCONN_CB *p_ccb;
