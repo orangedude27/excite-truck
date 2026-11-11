@@ -325,39 +325,35 @@ extern "C" void fn_800E0434(void* self) {
         virtual void fn60();
         virtual void v64();
         virtual void v68();
-        virtual void fn6c(f64*, f64*, u8);
-        virtual void fn70(f64*, u32, f64*, u8);
-        virtual void fn74(f64*, u32, f64*, u8);
-        virtual void fn78(f64*, u32, f64*, u8);
+        virtual void fn6c(double*, double*, unsigned char);
+        virtual void fn70(double*, unsigned int, double*, unsigned char);
+        virtual void fn74(double*, unsigned int, double*, unsigned char);
+        virtual void fn78(double*, unsigned int, double*, unsigned char);
     };
-    struct Pos { f32 x; f32 y; };
-    union PosBits { Pos pos; f64 value; };
     struct Scratch {
-        PosBits posret;
-        f64 pos;
-        f64 frameA;
-        f64 frameB;
-        f64 copyA;
-        f64 copyB;
+        unsigned long long tmp;
+        double pos;
+        double frame[2];
+        double copy[2];
     };
-    u8* bytes = (u8*)self;
-    Scratch scratch;
+    unsigned char* bytes = (unsigned char*)self;
+    Scratch s;
     ((WindowV*)self)->fn60();
-    GetFrameSize__Q36nw4hbm3lyt6WindowFUcPCQ46nw4hbm3lyt6Window5Frame(&scratch.frameA, self, bytes[0x100], *(u32*)(bytes + 0xFC));
-    scratch.copyA = scratch.frameA;
-    scratch.copyB = scratch.frameB;
-    scratch.posret.pos = ((Pos (*)(void*))GetVtxPos__Q34nw4r3lyt4PaneCFv)(self);
-    scratch.pos = scratch.posret.value;
-    ((WindowV*)self)->fn6c(&scratch.pos, &scratch.copyA, bytes[0xCE]);
+    GetFrameSize__Q36nw4hbm3lyt6WindowFUcPCQ46nw4hbm3lyt6Window5Frame(s.frame, self, bytes[0x100], *(unsigned int*)(bytes + 0xFC));
+    s.copy[0] = s.frame[0];
+    s.copy[1] = s.frame[1];
+    s.tmp = GetVtxPos__Q34nw4r3lyt4PaneCFv(self);
+    s.pos = *(double*)&s.tmp;
+    ((WindowV*)self)->fn6c(&s.pos, s.copy, bytes[0xCE]);
     switch (bytes[0x100]) {
     case 1:
-        ((WindowV*)self)->fn70(&scratch.pos, *(u32*)(bytes + 0xFC), &scratch.copyA, bytes[0xCE]);
+        ((WindowV*)self)->fn70(&s.pos, *(unsigned int*)(bytes + 0xFC), s.copy, bytes[0xCE]);
         break;
     case 4:
-        ((WindowV*)self)->fn74(&scratch.pos, *(u32*)(bytes + 0xFC), &scratch.copyA, bytes[0xCE]);
+        ((WindowV*)self)->fn74(&s.pos, *(unsigned int*)(bytes + 0xFC), s.copy, bytes[0xCE]);
         break;
     case 8:
-        ((WindowV*)self)->fn78(&scratch.pos, *(u32*)(bytes + 0xFC), &scratch.copyA, bytes[0xCE]);
+        ((WindowV*)self)->fn78(&s.pos, *(unsigned int*)(bytes + 0xFC), s.copy, bytes[0xCE]);
         break;
     }
 }
