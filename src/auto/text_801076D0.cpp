@@ -177,26 +177,21 @@ extern "C" void Clear__Q46nw4hbm2ut6detail12LinkListImplFv(void *self) {
         node = next;
     }
 }
-#pragma pop
+#pragma use_lmw_stmw off
 extern "C" void* Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void* arg0, void** arg1, void* arg2) {
     extern const char lbl_80328680[];
     extern void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
+    struct FileName { char name[16]; };
     const char* file = lbl_80328680;
-    const char* message;
-    int line;
     void* node;
     void* prev;
-    if (arg2 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x4A, file + 0x34);
+    if (arg2 == 0) Panic__Q26nw4hbm2dbFPCciPCce(((struct FileName*)file)->name, 0x4A, file + 0x34);
     node = *arg1;
-    if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x4C, file + 0xFC);
+    if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(((struct FileName*)file)->name, 0x4C, file + 0xFC);
     prev = *(void**)((char*)node + 4);
-    if (prev == 0) {
-        message = file + 0x124;
-        line = 0x4F;
-        Panic__Q26nw4hbm2dbFPCciPCce(file, line, message);
-    }
-    if (*(void**)arg2 != 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x51, file + 0x150);
-    if (*(void**)((char*)arg2 + 4) != 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x52, file + 0x17C);
+    if (prev == 0) Panic__Q26nw4hbm2dbFPCciPCce(((struct FileName*)file)->name, 0x4F, file + 0x124);
+    if (*(void**)arg2 != 0) Panic__Q26nw4hbm2dbFPCciPCce(((struct FileName*)file)->name, 0x51, file + 0x150);
+    if (*(void**)((char*)arg2 + 4) != 0) Panic__Q26nw4hbm2dbFPCciPCce(((struct FileName*)file)->name, 0x52, file + 0x17C);
     *(void**)arg2 = node;
     *(void**)((char*)arg2 + 4) = prev;
     *(void**)((char*)node + 4) = arg2;
@@ -204,21 +199,21 @@ extern "C" void* Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12
     ++*(int*)arg0;
     return arg2;
 }
-#pragma use_lmw_stmw off
+#pragma use_lmw_stmw reset
 extern "C" void* Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(int* arg0, void* arg1) {
     extern const char lbl_80328680[];
     extern void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
-    const char* file = lbl_80328680;
+    const char* file = (const char*)&lbl_80328680[0];
     void* next;
     void* prev;
-    if (*arg0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x60, file + 0x10);
-    if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x61, file + 0x34);
-    if (arg1 == (char*)arg0 + 4) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x62, file + 0x58);
+    if (*arg0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x60, file + 0x10);
+    if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x61, file + 0x34);
+    if (arg1 == (char*)arg0 + 4) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x62, file + 0x58);
     next = *(void**)arg1;
     prev = *(void**)((char*)arg1 + 4);
-    if (next == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x65, file + 0x80);
+    if (next == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x65, file + 0x80);
     *(void**)((char*)next + 4) = prev;
-    if (prev == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0x67, file + 0xA8);
+    if (prev == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x67, file + 0xA8);
     *(void**)prev = next;
     --*arg0;
     *(void**)arg1 = 0;
@@ -268,11 +263,11 @@ void nw4hbm::ut::List_Append(nw4hbm::ut::List* list, void* item) {
 
 void nw4hbm::ut::List_Remove(nw4hbm::ut::List* list, void* item) {
     const char* file = lbl_80328828;
-    if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0xcb, file + 0xc);
-    if (item == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0xcc, file + 0x34);
+    if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xcb, file + 0xc);
+    if (item == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0, 0xcc, file + 0x34);
     unsigned short offset = *(unsigned short*)((char*)list + 0xa);
-    void* prev = *(void* volatile*)((char*)item + offset);
     char* link = (char*)item + offset;
+    void* prev = *(void**)link;
     if (prev == 0) *(void**)list = *(void**)(link + 4);
     else *(void**)((char*)prev + offset + 4) = *(void**)(link + 4);
     void* next = *(void**)(link + 4);
@@ -292,6 +287,8 @@ void* nw4hbm::ut::List_GetNext(const nw4hbm::ut::List* list, const void* item) {
 extern "C" const char lbl_80328828[];
 extern "C" const char lbl_80328834[];
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
+#pragma push
+#pragma use_lmw_stmw off
 void* nw4hbm::ut::List_GetNth(const nw4hbm::ut::List* list, unsigned short index) {
     int i = 0;
     void* node = 0;
@@ -307,7 +304,7 @@ void* nw4hbm::ut::List_GetNth(const nw4hbm::ut::List* list, unsigned short index
     } while (node != 0);
     return 0;
 }
-
+#pragma pop
 extern "C" void* fn_80107FE4(void* arg0, const void* arg1) {
     fn_80108FFC(arg0, arg1);
     *(const char**)arg0 = lbl_803290E8;
@@ -5500,17 +5497,22 @@ extern "C" void SetCursorX__Q36nw4hbm2ut10CharWriterFf_80111EAC(void *writer, fl
     *(float *)((char *)writer + 0x4C) = leftMargin;
 }
 
-extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80111FD0(int arg0) {
- unsigned int temp_r11=(unsigned int)arg0&0xFF000000U;
- int var_r5=1,var_r6=1,var_r7=1,var_r8=1,var_r9=1,var_r10=1;
- if ((temp_r11+0x80000000U)>=1U && (((unsigned int)arg0&0xFF800000U)+0x7F000000U)>=1U) var_r10=0;
- if (var_r10==0 && (((unsigned int)arg0&0xF8000000U)+0x70000000U)>=1U) var_r9=0;
- if (var_r9==0 && temp_r11+0x40000000U>=1U) var_r8=0;
- if (var_r8==0 && (((unsigned int)arg0&0xFF800000U)+0x3F000000U)>=1U) var_r7=0;
- if (var_r7==0 && (((unsigned int)arg0&0xF8000000U)+0x30000000U)>=1U) var_r6=0;
- if (var_r6==0 && (((unsigned int)arg0&0xFFFFC000U)+0x20000000U)>=1U) var_r5=0;
- if (var_r5==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329560,0x138,lbl_80329578,arg0);
- return *(float*)((char*)arg0+0x4C);
+extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80111FD0(void *arg0) {
+    int v0 = 1;
+    int v1 = 1;
+    int v2 = 1;
+    int v3 = 1;
+    int v4 = 1;
+    int v5 = 1;
+    unsigned int top = (unsigned int)arg0 & 0xFF000000U;
+    if ((top != 0x80000000U) && (((unsigned int)arg0 & 0xFF800000U) != 0x81000000U)) v5 = 0;
+    if ((v5 == 0) && (((unsigned int)arg0 & 0xF8000000U) != 0x90000000U)) v4 = 0;
+    if ((v4 == 0) && (top != 0xC0000000U)) v3 = 0;
+    if ((v3 == 0) && (((unsigned int)arg0 & 0xFF800000U) != 0xC1000000U)) v2 = 0;
+    if ((v2 == 0) && (((unsigned int)arg0 & 0xF8000000U) != 0xD0000000U)) v1 = 0;
+    if ((v1 == 0) && (((unsigned int)arg0 & 0xFFFFC000U) != 0xE0000000U)) v0 = 0;
+    if (v0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329560, 0x138, lbl_80329578, arg0);
+    return *(float *)((char *)arg0 + 0x4C);
 }
 
 extern "C" s32 GetFont__Q36nw4hbm2ut10CharWriterCFv_801120E8(void *arg0) {
