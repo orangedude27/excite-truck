@@ -137,12 +137,12 @@ extern "C" void fn_80263F30(int fadeOut, unsigned char skip, int fadeIn) {
     register void *valList asm("r29");
     register void *entry asm("r28");
     register int keepGoing asm("r27");
-    register int r_fadeOut asm("r26") = fadeOut;
+    register int fadeOutOrIndex asm("r26") = fadeOut; /* the .val walk index takes over below */
     register int r_fadeIn asm("r25") = fadeIn;
     lbl_8055F450 = skip;
     prevSong = fn_8020A69C();
     fn_8020A648(1);
-    if (r_fadeOut != 0) {
+    if (fadeOutOrIndex != 0) {
         fn_80265A74();
     }
     valList = fn_80131810((void *)(base + CREDITS_VAL_NAME));
@@ -154,12 +154,12 @@ extern "C" void fn_80263F30(int fadeOut, unsigned char skip, int fadeIn) {
         fn_802646D0(pageObj);
         fn_8026451C(timerObj);
         keepGoing = 1;
-        r_fadeOut = 0;
-        while (keepGoing != 0 && (entry = ((ValList *)valList)->get(r_fadeOut)) != 0) {
+        fadeOutOrIndex = 0;
+        while (keepGoing != 0 && (entry = ((ValList *)valList)->get(fadeOutOrIndex)) != 0) {
             if (stricmp(((ValEntry *)entry)->getName(), base + CREDITS_PAGE_NAME) == 0) {
                 keepGoing = fn_802656C8(entry);
             }
-            r_fadeOut++;
+            fadeOutOrIndex++;
         }
         fn_8020A648(-1);
         fn_80265A74();
