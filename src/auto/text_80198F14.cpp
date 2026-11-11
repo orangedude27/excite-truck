@@ -2864,6 +2864,9 @@ extern "C" void fn_801A0F10(void* arg0) {
 }
 #pragma pop
 extern "C" void fn_801A0160(void*);
+#pragma push
+#pragma dont_inline on
+#pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 extern "C" s32 fn_801A1148(void *arg0, const f32 *vec, s32 arg2, f32 *arg3, s32 arg4) {
     f32 sp[3];
