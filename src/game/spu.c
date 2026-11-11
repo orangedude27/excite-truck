@@ -441,46 +441,54 @@ struct SpuSample {
     void *res;                  /* +0xAC: the loaded SFX0 blob */
 };
 
+/* Shuts the SPU layer down (the counterpart of fn_802E5478): stops the
+ * speaker-stream alarm and the mixer hook, then checks the pools for leaks --
+ * any channel still handed out or sample still referenced panics with
+ * "Spu: channel %s still in use" / "Spu: sample %s still in use" -- hands each
+ * channel's voice object back to the allocator, frees the channel, sample and
+ * slot pools, resets the debugger event state and the mix buffer size, and
+ * frees the mix buffer itself. */
 void fn_802E56F0(void) {
     extern void OSCancelAlarm(void *);
     extern void fn_802E6B34(void);
-    extern void TRKGetFreeBuffer(int);
+    extern void TRKGetFreeBuffer(void *);
     extern void TRKConstructEvent(void);
     extern void fn_80128658(void *);
-    extern char lbl_8034D450[];
-    extern char lbl_8034D470[];
-    extern unsigned char lbl_804FC690[];
-    extern char lbl_8055FFA5;
-    extern int lbl_8055FF84;
-    extern void *lbl_8055FFB0;
+    extern char lbl_8034D450[]; /* "Spu: channel %s still in use" */
+    extern char lbl_8034D470[]; /* "Spu: sample %s still in use" */
+    extern unsigned char lbl_804FC690[]; /* alarm for the speaker stream */
+    extern char lbl_8055FFA5;   /* SPU layer running */
+    extern int lbl_8055FF84;    /* mix buffer size */
+    extern void *lbl_8055FFB0;  /* mix buffer */
     int offset;
     int i;
-    int offset2;
+    int count;
     OSCancelAlarm(lbl_804FC690);
     lbl_8055FFA5 = 0;
     fn_802E6B34();
     i = 0;
     offset = 0;
     do {
-        unsigned char *entry = lbl_8055FF94 + offset;
-        if (entry[0x20] != 0) {
-            fn_802E317C(lbl_8034D450, *(int *)(entry + 0x1C));
+        struct SpuChannel *channel = (struct SpuChannel *)(lbl_8055FF94 + offset);
+        if (channel->active != 0) {
+            fn_802E317C(lbl_8034D450, channel->sample);
         }
-        TRKGetFreeBuffer(*(int *)(lbl_8055FF94 + offset + 4));
+        /* the voice object is reached through the pool base each time */
+        TRKGetFreeBuffer(((struct SpuChannel *)(lbl_8055FF94 + offset))->voice);
         i++;
-        *(int *)(lbl_8055FF94 + offset + 4) = 0;
+        ((struct SpuChannel *)(lbl_8055FF94 + offset))->voice = 0;
         offset += 0x2C;
     } while (i < 0x20);
-    offset2 = 0;
+    count = 0;
     i = 0;
     do {
-        unsigned char *sample = (unsigned char *)lbl_8055FF90 + i;
-        if (*(int *)(sample + 0x94) > 0) {
-            fn_802E317C(lbl_8034D470, sample);
+        struct SpuSample *sample = (struct SpuSample *)((unsigned char *)lbl_8055FF90 + i);
+        if (sample->refCount > 0) {
+            fn_802E317C(lbl_8034D470, sample->name);
         }
-        offset2++;
+        count++;
         i += 0xB0;
-    } while (offset2 < 0x100);
+    } while (count < 0x100);
     fn_80128670((int)lbl_8055FF94);
     lbl_8055FF94 = 0;
     fn_80128670((int)lbl_8055FF90);
