@@ -66,6 +66,15 @@ struct CharWriterCursor2 {
     unsigned char pad[0x30];
     float x, y, z;
 };
+// Fixed-width text fields of this copy of nw4hbm::ut::CharWriter: +0x43 (IsWidthFixed)
+// says whether every glyph advances by the width at +0x44 -- Print() centers the glyph
+// inside it -- instead of by the glyph's own width.  The constructor clears the flag and
+// puts 0.0f in the width.
+struct CharWriterFixedWidth {
+    unsigned char pad[0x43];
+    unsigned char widthFixed;
+    float fixedWidth;
+};
 extern "C" void __register_global_object(void *, void *, void *);
 extern "C" void fn_800D2DD4(void);
 extern "C" unsigned char lbl_8055DE90;
