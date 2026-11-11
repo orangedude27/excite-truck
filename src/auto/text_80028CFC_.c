@@ -102,51 +102,54 @@ done:
     return dst;
 }
 
-int strcmp(const unsigned char *p, const unsigned char *q) {
+/* Compare two null-terminated byte strings lexicographically.
+   Fast path compares a word at a time when both pointers share alignment,
+   using 0xFEFEFEFF/0x80808080 to detect a zero byte within a word. */
+int strcmp(const unsigned char *left, const unsigned char *right) {
     int diff;
-    unsigned int align;
-    unsigned int a, b, x;
-    unsigned char c;
-    c = *p;
-    diff = c - *q;
+    unsigned int alignment;
+    unsigned int wordLeft, wordRight, zeroCheck;
+    unsigned char ch;
+    ch = *left;
+    diff = ch - *right;
     if (diff) return diff;
-    if (((unsigned int)q & 3) != (align = (unsigned int)p & 3)) goto byte_loop;
-    if (align == 0) goto word_loop;
-    if (c == 0) return 0;
+    if (((unsigned int)right & 3) != (alignment = (unsigned int)left & 3)) goto byte_loop;
+    if (alignment == 0) goto word_loop;
+    if (ch == 0) return 0;
     {
-        int n = 3 - align;
-        while (n-- != 0) {
-            c = *++p;
-            diff = c - *++q;
+        int remaining = 3 - alignment;
+        while (remaining-- != 0) {
+            ch = *++left;
+            diff = ch - *++right;
             if (diff) return diff;
-            if (!c) return 0;
+            if (!ch) return 0;
         }
     }
-    p++; q++;
+    left++; right++;
 word_loop:
-    a = *(const unsigned int *)p;
-    b = *(const unsigned int *)q;
-    x = a + 0xFEFEFEFFu;
-    x &= ~a;
-    if (x & 0x80808080u) goto compare_tail;
-    while (a == b) {
-        a = *(const unsigned int *)(p += 4);
-        b = *(const unsigned int *)(q += 4);
-        x = a + 0xFEFEFEFFu;
-        x &= 0x80808080u;
-        if (x) goto compare_tail;
+    wordLeft = *(const unsigned int *)left;
+    wordRight = *(const unsigned int *)right;
+    zeroCheck = wordLeft + 0xFEFEFEFFu;
+    zeroCheck &= ~wordLeft;
+    if (zeroCheck & 0x80808080u) goto compare_tail;
+    while (wordLeft == wordRight) {
+        wordLeft = *(const unsigned int *)(left += 4);
+        wordRight = *(const unsigned int *)(right += 4);
+        zeroCheck = wordLeft + 0xFEFEFEFFu;
+        zeroCheck &= 0x80808080u;
+        if (zeroCheck) goto compare_tail;
     }
 compare_tail:
-    c = *p;
-    diff = c - *q;
+    ch = *left;
+    diff = ch - *right;
     if (diff) return diff;
 byte_loop:
-    if (!c) return 0;
+    if (!ch) return 0;
     do {
-        c = *++p;
-        diff = c - *++q;
+        ch = *++left;
+        diff = ch - *++right;
         if (diff) return diff;
-        if (!c) return 0;
+        if (!ch) return 0;
     } while (1);
 }
 
