@@ -1672,12 +1672,13 @@ extern "C" int strcmp(const char *, const char *);
 extern "C" const char lbl_80324A8C[]; /* "NW4HBM:Failed assertion id < mStringTable->offsetTable.count" */
 #pragma push
 #pragma scheduling on
-/* Looks a label string up in the archive's string trie and returns the sound id stored
-   at the leaf it leads to, or InvalidSoundId when the archive holds no such sound: the
-   tree is missing or its root index is out of range, the leaf carries no label, or the
-   string the archive stores for the leaf's label id is not the one asked for.
-   The trie holds one node per bit of the labels it was built from: an inner node tests
-   that bit of `labelString' and walks to the child for 0 or for 1. */
+/* nw4hbm::snd::detail::SoundArchiveFileReader::ConvertLabelStringToId: looks a label
+   string up in the archive's string trie and returns the sound id stored at the leaf it
+   leads to, or InvalidSoundId when the archive holds no such sound -- the tree is
+   missing, its root index is out of range, or the string the archive stores for the
+   leaf's label id is not the one asked for.  The trie holds one node per bit of the
+   labels it was built from: an inner node tests that bit of `labelString' and walks to
+   the child for 0 or for 1. */
 s32 nw4hbm::snd::detail::SoundArchiveFileReader::ConvertLabelStringToId(const nw4hbm::snd::SoundArchive::StringTree *stringTree, const char *labelString) const {
     const char *str = labelString;
     const StringTreeLayout *tree = (const StringTreeLayout *)stringTree;
@@ -1712,13 +1713,14 @@ s32 nw4hbm::snd::detail::SoundArchiveFileReader::ConvertLabelStringToId(const nw
         if (table == 0) {
             label = 0;
         } else {
+            /* NW4HBM_ASSERT(id < mStringTable->offsetTable.count) */
             if ((u32)tree >= table->count)
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324868, 0x1BA, lbl_80324A8C);
             table = *(SoundArchiveLabelTableLayout * volatile *)((u8 *)reader + 0x30);
             const char *base = reader->stringBase;
             u32 offset = table->labelOffsets[(u32)tree];
             if (offset == 0) {
-                label = 0;
+                label = 0; /* the label has no string */
             } else {
                 label = (const char *)(offset + (u32)base);
             }
