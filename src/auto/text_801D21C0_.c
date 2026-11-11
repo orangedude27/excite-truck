@@ -414,35 +414,35 @@ typedef struct SoeventClass {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_801D2414(void *arg0, s32 arg1, void *arg2) {
-    u32 type = *(u32 *)((char *)arg2 + 0x10);
-    int match = 0;
-    void *entry;
+void fn_801D2414(SoeventInstance *instance, Vec *position, VehicleObject *object) {
+    u32 fourcc = object->fourcc;
+    s32 isCar = 0; /* reused below as the class id of the error message */
+    SoeventClass *entry;
 
-    if (type == 0x43415220 || type == 0x50434152 ||
-        type == 0x41434152 || type == 0x4E434152) {
-        match = 1;
+    if (fourcc == FOURCC_CAR || fourcc == FOURCC_PCAR ||
+        fourcc == FOURCC_ACAR || fourcc == FOURCC_NCAR) {
+        isCar = 1;
     }
-    if (match != 0) {
-        entry = (void *)fn_801D2C20(*(s32 *)((char *)arg0 + 0x34));
+    if (isCar != 0) {
+        entry = (SoeventClass *)fn_801D2C20(instance->classId);
         if (entry != 0) {
-            register f32 magnitude = PSVECMag(&((f32 *)arg2)[70]);
-            if (*((u8 *)entry + 4) != 0 &&
-                magnitude > *(f32 *)((char *)entry + 8)) {
-                fn_801D2C70(&((u8 *)entry)[4], arg1, arg2,
-                            *(s32 *)((char *)arg0 + 0x34));
+            register f32 speed = PSVECMag(&object->velocity);
+            if (entry->spawnActive != 0 &&
+                speed > entry->spawnMinSpeed) {
+                fn_801D2C70(&entry->spawnActive, (s32)position, object,
+                            instance->classId);
             }
-            if (*((u8 *)entry + 0x30) != 0) {
-                if (magnitude > *(f32 *)((char *)entry + 0x34)) {
-                    fn_801D2E38(&((u8 *)entry)[0x30], arg0, arg1,
-                                (char *)arg2 + 0x118, *(f32 *)((char *)arg2 + 0xD4));
-                    fn_801A4868(arg0, 0);
+            if (entry->emitActive != 0) {
+                if (speed > entry->emitMinSpeed) {
+                    fn_801D2E38(&entry->emitActive, instance, (s32)position,
+                                &object->velocity, object->scale);
+                    fn_801A4868(instance, 0);
                 }
             }
         } else {
-            match = *(s32 *)((char *)arg0 + 0x34);
-            if (match > 0) {
-                fn_802E317C(lbl_803382DC, match);
+            isCar = instance->classId;
+            if (isCar > 0) {
+                fn_802E317C(lbl_803382DC, isCar); /* soevent: no such event class */
             }
         }
     }
