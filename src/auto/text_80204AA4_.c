@@ -4,6 +4,9 @@
 extern char lbl_8033BBD8[];
 extern void *fn_801E87A8(void);
 extern void *fn_801284F8(int, void *);
+extern const char lbl_8033BBE4[];
+extern void *fn_80131808(const char *);
+extern int fn_80012854(void);
 extern char lbl_802F9D68[];
 extern int lbl_8033BBA0;
 extern int *lbl_8055ED5C;
