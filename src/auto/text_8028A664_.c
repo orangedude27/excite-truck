@@ -57,6 +57,20 @@ extern f64 lbl_805643C8;
 
 extern f32 fn_801E7E18(void);
 extern s32 lbl_804B32B8[];
+
+/* Queue of live explosion-effect instances, at lbl_804B32B8. fn_8028AA6C
+   appends one per explosion (fn_8028BA44's callback), fn_8028AB14 plays and
+   retires them; all 16 slots plus the count are cleared on init. */
+struct FxSpawn {
+    f32 spawnTime;                  /* +0x00 game time the effect started */
+    struct { s32 x, y, z; } pos;    /* +0x04 world position, as 3 f32 */
+    void *sequence;                 /* +0x10 FXSequence to play (lbl_8055F700) */
+};
+struct FxSpawnQueue {
+    struct FxSpawn spawn[0x10];     /* +0x000 instances, packed from the front */
+    s32 count;                      /* +0x140 live instances */
+};
+
 extern void fn_8028BC88(s32);
 extern f32 lbl_805643A0;
 extern f32 lbl_80564394;
