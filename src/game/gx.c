@@ -904,19 +904,13 @@ int fn_802CFDE0(void) {
     extern char lbl_8034C058[];
     extern void fn_802ECA48(void);
     extern int fn_802E2C20(void);
-    int a;
-    int b;
-    int c;
-    int sum;
+    int next;
     int end;
     int start;
-    a = (int)lbl_8055FD94;
-    b = lbl_8055FD9C;
-    c = (int)lbl_8055FD98;
-    sum = a + b;
-    if (sum > c) {
-        c = sum;
-        lbl_8055FD98 = (unsigned int)c;
+    fn_802ECA48();
+    next = lbl_8055FD9C + (int)lbl_8055FD94;
+    if (next > (int)lbl_8055FD98) {
+        lbl_8055FD98 = (unsigned int)next;
     }
     fn_802D6C78();
     GXGetVtxDesc();
@@ -932,14 +926,14 @@ int fn_802CFDE0(void) {
     DCFlushRange((void *)lbl_8055FDA0, (unsigned long)lbl_8055FDA8);
     lbl_8055FD38 = 0;
     lbl_8055FD34 = 1;
-    while ((unsigned char)lbl_8055FD3C == 0) {
-        if (lbl_8055FD38 > 10) {
+    while (*(volatile unsigned char *)&lbl_8055FD3C == 0) {
+        if (*(volatile int *)&lbl_8055FD38 > 10) {
             OSReport(lbl_8034C058);
             fn_802CED78();
             fn_802CFD74();
             fn_802CF048(1);
             lbl_8055FD40 = fn_802E2C20();
-            continue;
+            break;
         }
     }
     lbl_8055FD34 = 0;
@@ -1585,7 +1579,7 @@ void fn_802D0BD8(void) {
 extern void GXSetColorUpdate(unsigned char);
 extern float GXGetYScaleFactor(unsigned short, unsigned short);
 extern unsigned int GXSetDispCopyYScale(float);
-extern void GXSetDispCopySrc(unsigned short, unsigned short, unsigned short, unsigned short);
+extern void GXSetDispCopySrc(int, int, int, int);
 extern void GXSetDispCopyDst(unsigned short, unsigned short);
 extern void GXSetCopyFilter(unsigned char, unsigned char *, unsigned char, unsigned char *);
 extern void GXCopyDisp(void *, int);
@@ -1599,7 +1593,7 @@ void fn_802D0C98(void) {
     extern int lbl_804C9760[];
     unsigned short temp_r31;
     int temp_r30 = 0;
-    unsigned char *display;
+    unsigned short *p;
 
     lbl_8055FD4C = temp_r30;
     GXSetZMode(1, 3, 1);
@@ -1612,8 +1606,8 @@ void fn_802D0C98(void) {
     temp_r31 = (unsigned short)GXSetDispCopyYScale(
         GXGetYScaleFactor(*(unsigned short *)((unsigned char *)lbl_8055FD64 + 6),
                           *(unsigned short *)((unsigned char *)lbl_8055FD64 + 8)));
-    display = (unsigned char *)lbl_8055FD64;
-    GXSetDispCopySrc(0, 0, *(unsigned short *)(display + 4), *(unsigned short *)(display + 6));
+    p = (unsigned short *)lbl_8055FD64;
+    GXSetDispCopySrc(0, 0, p[2], p[3]);
     GXSetDispCopyDst(*(unsigned short *)((unsigned char *)lbl_8055FD64 + 4), temp_r31);
     GXSetCopyFilter(*((unsigned char *)lbl_8055FD64 + 0x19),
                     (unsigned char *)lbl_8055FD64 + 0x1A, 1,
@@ -1769,12 +1763,10 @@ extern double lbl_80564FA0;
 #pragma push
 #pragma processor 750
 void fn_802D17BC(void *light, float *a, float *b, unsigned char *color, float scale) {
-    unsigned char c2, c0, c3;
     unsigned char rgba[4];
     float vec[3];
     float x, y, z, mag, k;
-    c0=color[0]; c2=color[2]; c3=color[3];
-    rgba[1]=color[1]; rgba[0]=c0; rgba[2]=c2; rgba[3]=c3;
+    rgba[0]=color[0]; rgba[1]=color[1]; rgba[2]=color[2]; rgba[3]=color[3];
     GXInitLightColor(light, rgba);
     x=a[0]+b[0];
     y=a[1]+b[1];
@@ -1784,7 +1776,6 @@ void fn_802D17BC(void *light, float *a, float *b, unsigned char *color, float sc
     mag = mag > lbl_80564F80 ? mag : lbl_80564F80;
     k=lbl_80564F90/mag;
     x=vec[0]*k; y=vec[1]*k; z=vec[2]*k;
-    vec[0]=x; vec[1]=y; vec[2]=z;
     GXGetLightDir_Internal(light,b[0],b[1],-b[2],x,y,-z);
     {
         float v=scale*lbl_80564F94;
