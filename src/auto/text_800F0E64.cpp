@@ -183,6 +183,9 @@ extern "C" const char lbl_803244D4[];
     #pragma small_data off
     extern u8 lbl_80412CC8[];
     extern u8 lbl_80412CB8[];
+    extern "C" s32 OSJoinThread(void *, s32);
+    extern "C" const char lbl_80326450[];
+    extern "C" const char lbl_80326488[];
     #pragma pop
     extern u8 lbl_8055DE68;
     extern "C" void* __dt__10TitleSceneFv(void*, s32);
