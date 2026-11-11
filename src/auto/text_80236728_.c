@@ -90,7 +90,7 @@ void fn_80236774(void) {
 extern char *fn_80237C40(void);
 #pragma scheduling invalid_target
 void fn_80236780(void) {
-    char *p;
+    char *p; // v1
     if (lbl_8055F0BC == 0) {
         p = fn_80237C40();
         lbl_8055F0BC = p;
@@ -104,8 +104,6 @@ void fn_80236780(void) {
     lbl_8055F0C0[0x20] = 0;
     if ((unsigned char)lbl_8055F0C5 != 0 || (unsigned char)lbl_8055F0C6 == 0)
         lbl_8055F0C0[0x21] = 1;
-    else
-        lbl_8055F0C0[0x21] = 0;
     *(int *)(lbl_8055F0C0 + 0x28) = lbl_8055F0B0;
     *(int *)(lbl_8055F0C0 + 0x2C) = lbl_8055F0B4;
     *(int *)(lbl_8055F0C0 + 0x30) = lbl_8055F0B8;
@@ -845,38 +843,39 @@ void fn_80237E7C(char *arg0, int unused) {
 #pragma push
 #pragma processor 750
 #pragma opt_propagation off
-int fn_80237EFC(char *arg0) {
-    register TrailMgr *manager;
-    register int i;
-    register int active;
+/* Returns trail state for the named trail: 0 = not found, 1 = active/recent, 2 = found but inactive/expired. */
+int fn_80237EFC(char *trailName) {
+    register TrailMgr *trailManager;
+    register int index;
+    register int isActive;
     register int found;
-    register int offset;
+    register int entryOffset;
     float currentTime;
     found = 0;
-    manager = *(TrailMgr **)((char *)lbl_8055F0C0 + 0x30);
-    active = 0;
+    trailManager = *(TrailMgr **)((char *)lbl_8055F0C0 + 0x30);
+    isActive = 0;
     currentTime = fn_8023659C();
-    i = 0;
-    offset = 0;
-    while (i < manager->count) {
-        if (stricmp((char *)manager->entries + offset, arg0) == 0) {
-            if (((TrailEntry *)((char *)manager->entries + offset))->active != 0) {
-                TrailEntry *entry = (TrailEntry *)((char *)manager->entries + offset);
-                float keyTime;
+    index = 0;
+    entryOffset = 0;
+    while (index < trailManager->count) {
+        if (stricmp((char *)trailManager->entries + entryOffset, trailName) == 0) {
+            if (((TrailEntry *)((char *)trailManager->entries + entryOffset))->active != 0) {
+                TrailEntry *entry = (TrailEntry *)((char *)trailManager->entries + entryOffset);
+                float lastKeyTime;
                 found = 1;
                 if (entry->keyCount > 0)
-                    keyTime = entry->keys[entry->keyCount - 1].time;
+                    lastKeyTime = entry->keys[entry->keyCount - 1].time;
                 else
-                    keyTime = lbl_805636E0;
-                if (keyTime > currentTime - entry->field30)
-                    active = 1;
+                    lastKeyTime = lbl_805636E0;
+                if (lastKeyTime > currentTime - entry->field30)
+                    isActive = 1;
             }
         }
-        offset += 0x34;
-        i++;
+        entryOffset += 0x34;
+        index++;
     }
     if (found != 0) {
-        switch (active) {
+        switch (isActive) {
         default:
             return 1;
         case 0:
