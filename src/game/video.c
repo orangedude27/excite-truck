@@ -27,13 +27,19 @@ extern void fn_802E30C8(const char *, ...);
 extern void fn_802E2C20(void);
 extern void fn_801284F8(void *, void *);
 extern char lbl_8034CB68[];
-extern void *lbl_8055FEEC;
-extern void fn_80128668();
-extern void fn_80128670();
-extern char lbl_8034BAEC[], lbl_8034BB1C[], lbl_8034BB5C[], lbl_8034BB68[];
-extern char lbl_8034BB7C[], lbl_8034BB88[], lbl_8034BB9C[], lbl_8034BBA8[];
-extern char lbl_8034CB68[];
-extern char lbl_8055D098;
+ extern void *lbl_8055FEEC; /* SimpleHeap backing memory (0x600000 bytes) */
+ extern void fn_80128668(); /* free to the system heap */
+ extern void fn_80128670(); /* free to the system heap */
+ /* SimpleHeap dump text, shared with the twin heap in texture.c:
+    lbl_8034BAEC "SimpleHeap Destroyed with pending allocations" (panic)
+    lbl_8034BB1C "~SimpleHeap"          lbl_8034BB9C "Allocated:"
+    lbl_8034BBA8 "SimpleHeap dump: %s"  lbl_8034BB88 "\tuser ptr %8.8p: %d"
+    lbl_8034BB7C "\t%dK total"          (lbl_8034BB68/BB5C reuse those two) */
+ extern char lbl_8034BAEC[], lbl_8034BB1C[], lbl_8034BB5C[], lbl_8034BB68[];
+ extern char lbl_8034BB7C[], lbl_8034BB88[], lbl_8034BB9C[], lbl_8034BBA8[];
+ extern char lbl_8034CB68[];
+ extern char lbl_8055D098; /* "Free:" */
+
 #include <revolution/GX/GXTypes.h>
 #include <revolution/GX/GXTev.h>
 #include <revolution/GX/GXAttr.h>
