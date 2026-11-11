@@ -281,35 +281,45 @@ extern const char lbl_8032C0E4[]; /* "*%s/%s.va0" */
 extern __declspec(section ".sdata") const char lbl_80559C50[];
 extern __declspec(section ".sdata") const char lbl_80559C58[];
 #pragma cplusplus on
-extern "C" void fn_80139F5C(void *arg0) {
+/* Opens the current zone's resource table.  The loader's zone id (+8) is mapped
+   to the zone's name (fn_80007F90) and asked for as "c_<zone>" in the external
+   table of the source object at +0x20.  A path that already holds a '/' is taken
+   as it is; otherwise it is put on the default device as "<device>/c_<zone>.va0".
+   fn_80131810 opens that; when it fails for a device-built path, the same name
+   with the ".val" extension is opened instead, without the leading '*'.  The
+   table goes to lbl_8055E138, the text of the path to lbl_8042F7C0 and the
+   source to lbl_8055E13C (fn_8013A0B0's fallback); fn_8013A074 closes them. */
+extern "C" void fn_80139F5C(void *loader) {
+    /* The archive source the loader opens through (+0x20).  Two destructor slots
+       precede the declared methods, so getPath sits at vtable + 0x18. */
     class Source {
     public:
         virtual void unused0();
         virtual void unused1();
         virtual void unused2();
         virtual void unused3();
-        virtual char *getPath(const char *, char *);
+        virtual char *getPath(const char *table, char *entry);
     };
-    char name[0x40];
+    char entryName[0x40];
     char path[0x80];
-    int id = fn_80007F90(*(int *)((char *)arg0 + 8));
-    void *result;
+    const char *zoneName = (const char *)fn_80007F90(*(int *)((char *)loader + 8));
+    void *entryPath;
     unsigned char hasSlash;
-    sprintf(name, lbl_80559C50, id);
-    result = ((Source *)*(void **)((char *)arg0 + 0x20))->getPath(lbl_8032C0D4, name);
-    hasSlash = strchr((char *)result, '/') != 0;
+    sprintf(entryName, lbl_80559C50, zoneName); /* "c_%s" */
+    entryPath = ((Source *)*(void **)((char *)loader + 0x20))->getPath(lbl_8032C0D4, entryName);
+    hasSlash = strchr((char *)entryPath, '/') != 0;
     if (hasSlash) {
-        strncpy(path, (char *)result, 0x80);
+        strncpy(path, (char *)entryPath, 0x80);
     } else {
-        sprintf(path, lbl_8032C0E4, __AXGetStudio_8000AC2C(), result);
+        sprintf(path, lbl_8032C0E4, __AXGetStudio_8000AC2C(), entryPath); /* "*%s/%s.va0" */
     }
     lbl_8055E138 = ((int (*)(char *))fn_80131810)(path);
     if (lbl_8055E138 == 0 && !hasSlash) {
-        strcpy(((char *(*)(char *, int))fn_80029004)(path, '.'), lbl_80559C58);
+        strcpy(fn_80029004(path, '.'), lbl_80559C58); /* ".val" over the old extension */
         lbl_8055E138 = ((int (*)(char *))fn_80131810)(path + 1);
     }
     strcpy((char *)&lbl_8042F7C0, path);
-    lbl_8055E13C = (int)*(void **)((char *)arg0 + 0x20);
+    lbl_8055E13C = (int)*(void **)((char *)loader + 0x20);
 }
 #pragma cplusplus reset
 extern __declspec(section ".data") unsigned char lbl_8042F7C0;
