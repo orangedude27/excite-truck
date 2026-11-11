@@ -1635,10 +1635,10 @@ s32 WUDiTerminateDevice(void) {
 s32 WUDiDeleteDevice(void)
 {
     u8 busy;
-    register s32 i;
-    register u8 *entry;
-    register s32 j;
-    register u8 *entry2;
+    s32 i;
+    u8 *entry;
+    s32 j;
+    u8 *entry2;
     u32 interrupt_state;
     register u8 *base = lbl_80392960;
 
@@ -1648,11 +1648,11 @@ s32 WUDiDeleteDevice(void)
     if (busy != 0)
         return 3;
 
-    for (i = 0, entry = base + 0x64; i < 10; i++, entry += 0x60) {
+    for (entry = base + 0x64, i = 0; i < 10; i++, entry += 0x60) {
         if (entry[0x59] == 1)
             fn_8006B598(entry + 0x40);
     }
-    for (j = 0, entry2 = base + 0x424; j < 6; j++, entry2 += 0x60) {
+    for (entry2 = base + 0x424, j = 0; j < 6; j++, entry2 += 0x60) {
         if (entry2[0x59] == 1)
             fn_8006B598(entry2 + 0x40);
     }
@@ -10740,6 +10740,7 @@ void bta_dm_pin_reply(u8 *arg0) {
 typedef struct {
     u16 event;          /* BT_HDR: BTA_DM_API_AUTH_REPLY_EVT */
     u16 len;            /* BT_HDR */
+    u32 _reserved;      /* start of the union's payload */
     u8  bd_addr[6];     /* BD_ADDR of the peer */
     u8  service;        /* BTA service id, an index into the table below */
     u8  response;       /* one of BTA_DM_AUTH_* / BTA_DM_NOT_AUTH */
