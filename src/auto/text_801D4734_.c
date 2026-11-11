@@ -2593,6 +2593,39 @@ void fn_801D825C(void *arg0) {
     }
 }
 
+#pragma cplusplus on
+extern "C" void fn_801D82A0(void *arg0) {
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3(float);
+    };
+    extern int lbl_8055E3C4;
+    extern float lbl_80562AE0;
+    extern float lbl_80562AEC;
+    register void *self = arg0;
+    int v40 = *(int *)((char *)self + 0x40);
+    int v34 = *(int *)((char *)self + 0x34);
+    int v30 = *(int *)((char *)self + 0x30);
+    int diff = lbl_8055E3C4 - (v34 + v30);
+    Dummy *p;
+    float f;
+    if (v40 == 2 && diff >= 0) {
+        p = *(Dummy **)((char *)self + 0x2C);
+        if (p != 0) {
+            if (*(int *)((char *)self + 0x38) == 0) {
+                f = lbl_80562AE0;
+            } else {
+                f = lbl_80562AEC;
+            }
+            p->v3(f);
+        }
+        *(int *)((char *)self + 0x40) = 3;
+    }
+}
+#pragma cplusplus reset
+
 void fn_801D832C(void *arg0) {
     if (*(int *)((char *)arg0 + 0x40) != 0) {
         *(int *)((char *)arg0 + 0x40) = 1;
