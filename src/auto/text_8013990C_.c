@@ -294,13 +294,13 @@ extern "C" void fn_80139F5C(void *arg0) {
     char name[0x40];
     char path[0x80];
     int id = fn_80007F90(*(int *)((char *)arg0 + 8));
-    char *result;
-    int hasSlash;
+    void *result;
+    unsigned char hasSlash;
     sprintf(name, lbl_80559C50, id);
     result = ((Source *)*(void **)((char *)arg0 + 0x20))->getPath(lbl_8032C0D4, name);
-    hasSlash = strchr(result, '/') != 0;
+    hasSlash = strchr((char *)result, '/') != 0;
     if (hasSlash) {
-        strncpy(path, result, 0x80);
+        strncpy(path, (char *)result, 0x80);
     } else {
         sprintf(path, lbl_8032C0E4, __AXGetStudio_8000AC2C(), result);
     }
@@ -309,7 +309,7 @@ extern "C" void fn_80139F5C(void *arg0) {
         strcpy(((char *(*)(char *, int))fn_80029004)(path, '.'), lbl_80559C58);
         lbl_8055E138 = ((int (*)(char *))fn_80131810)(path + 1);
     }
-    strcpy(*(char (*)[1])&lbl_8042F7C0, path);
+    strcpy((char *)&lbl_8042F7C0, path);
     lbl_8055E13C = (int)*(void **)((char *)arg0 + 0x20);
 }
 #pragma cplusplus reset
