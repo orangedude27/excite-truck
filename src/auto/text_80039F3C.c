@@ -106,6 +106,7 @@ typedef struct DVDDiskID {
 } DVDDiskID;
 
 int DVDCompareDiskID(const DVDDiskID *id1, const DVDDiskID *id2) {
+    /* Compare two DVD disk IDs; empty game/company and 0xFF disk/version fields act as wildcards. */
     if (id1->game[0] != '\0' && id2->game[0] != '\0' &&
         strncmp(id1->game, id2->game, 4) != 0) {
         return 0;
@@ -130,11 +131,11 @@ int DVDCompareDiskID(const DVDDiskID *id1, const DVDDiskID *id2) {
 #pragma scheduling invalid_target
 void __DVDShowFatalMessage(void) {
     unsigned char color[4];
-    int zero = 0;
+    int zero;
     int foreground;
     int background;
     const char *message;
-
+    zero = 0;
     color[0] = lbl_80560B08;
     color[1] = lbl_80560B09;
     color[2] = lbl_80560B0A;
