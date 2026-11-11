@@ -14,6 +14,11 @@ struct D0E68Tail {
     u8 pad[0x180];
     void *slots[4];
 };
+struct CacheHdr1624 {
+    u32 flags;
+    u16 count;
+    u16 extra;
+};
 typedef u16 *Fn800A4B78Ret;
 struct Fn800B10E0Ent {
     u16 first;
@@ -1596,16 +1601,18 @@ extern "C" s32 fn_800A6FC4(void *arg0, s32 arg1, u32 arg2) {
     u16 value;
     fn_800A6298(*(void **)((u8 *)arg0 + 4), &value);
     if (arg2 == value)
-        return arg1 + M2C_FIELD(arg0, u32 *, 0xC);
-    u32 shift = (value >> 9) & 0x7F;
-    u32 result = M2C_FIELD(arg0, u32 *, 0xC);
+        return arg1 + *(u32 *)((u8 *)arg0 + 0xC);
+    u32 shift = value >> 9;
+    shift &= 0x7F;
+    u32 result = *(u32 *)((u8 *)arg0 + 0xC);
     if (shift == 2)
         result <<= 1;
     else if (shift == 4)
         result <<= 2;
     else if (shift == 8)
         result <<= 3;
-    shift = (arg2 >> 9) & 0x7F;
+    shift = arg2 >> 9;
+    shift &= 0x7F;
     if (shift == 2)
         result >>= 1;
     else if (shift == 4)
@@ -2483,12 +2490,14 @@ extern "C" void fn_800A8BB8(void *arg0, s32 arg1) {
 extern "C" s32 fn_800A7774(void *, void *, void *, void *, u16, void *, s32);
 extern "C" s32 VFiPFCACHE_InitCaches(void *arg0) {
     u32 flags = *(u32 *)((u8 *)arg0 + 0x1624);
-    u16 count = *(u16 *)((u8 *)arg0 + 0x1628);
-    flags = (flags & ~1U) | 2U;
-    u16 extra = *(u16 *)((u8 *)arg0 + 0x162A);
-    flags &= ~4U;
-    s32 total = (s32)count + (s32)extra;
-    *(u32 *)((u8 *)arg0 + 0x1624) = flags;
+    u32 count = *(u16 *)((u8 *)arg0 + 0x1628);
+    u32 masked = flags & ~1U;
+    u32 extra = *(u16 *)((u8 *)arg0 + 0x162A);
+    s32 total;
+    masked |= 2U;
+    masked &= ~4U;
+    total = (s32)(count + extra);
+    *(u32 *)((u8 *)arg0 + 0x1624) = masked;
     fn_800A499C((const char *)*(void **)((u8 *)arg0 + 0x1638), 0, total << 9);
     s32 result = fn_800A7774(arg0, (u8 *)arg0 + 0x1630,
                              *(void **)((u8 *)arg0 + 0x162C),
@@ -2666,7 +2675,8 @@ extern "C" s32 fn_800A9138(void *arg0, u32 arg1) {
     s32 result = 0;
     void *head;
     void *node;
-    if (*(u32 *)((u8 *)arg0 + 0x1624) & 7) {
+    register u32 flags = *(u32 *)((u8 *)arg0 + 0x1624);
+    if (flags & 7) {
         head = *(void **)((u8 *)arg0 + 0x1634);
         if (*(u32 *)((u8 *)head + 0x1C) != 0 && *(u32 *)((u8 *)head + 0x1C) == arg1) {
             result = ((s32 (*)(void *, void *))fn_800A7B34)(arg0, head);
@@ -16508,13 +16518,13 @@ extern "C" void fn_800C5508(void *arg0, void *arg1, void *arg2) {
     s32 *dst = (s32 *)arg0;
     s32 *src = (s32 *)arg1;
     for (s32 i = 0; i < 4; i++) {
-        s32 b0 = src[0]; s32 a0 = dst[0]; s32 d0 = a0 - b0; s32 sum0 = a0 + b0;
+        s32 b0 = src[0]; s32 a0 = dst[0]; s32 sum0 = a0 + b0; s32 d0 = a0 - b0;
         dst[0] = sum0; src[0] = (s32)(((s64)d0 * scale0) >> 24);
-        s32 b1 = src[1]; s32 a1 = dst[1]; s32 d1 = a1 - b1; s32 sum1 = a1 + b1;
+        s32 b1 = src[1]; s32 a1 = dst[1]; s32 sum1 = a1 + b1; s32 d1 = a1 - b1;
         dst[1] = sum1; src[1] = (s32)(((s64)d1 * scale1) >> 24);
-        s32 b2 = src[4]; s32 a2 = dst[4]; s32 d2 = a2 - b2; s32 sum2 = a2 + b2;
+        s32 b2 = src[4]; s32 a2 = dst[4]; s32 sum2 = a2 + b2; s32 d2 = a2 - b2;
         dst[4] = sum2; src[4] = (s32)(((s64)d2 * scale0) >> 24);
-        s32 b3 = src[5]; s32 a3 = dst[5]; s32 d3 = a3 - b3; s32 sum3 = a3 + b3;
+        s32 b3 = src[5]; s32 a3 = dst[5]; s32 sum3 = a3 + b3; s32 d3 = a3 - b3;
         dst[5] = sum3; src[5] = (s32)(((s64)d3 * scale1) >> 24);
         dst += 8;
         src += 8;
