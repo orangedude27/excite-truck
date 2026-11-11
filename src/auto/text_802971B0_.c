@@ -127,14 +127,12 @@ s32 fn_80297354(void *arg0, void *arg1) {
         struct Vec3 copy;
         struct Vec3 defaults;
         float initial;
-        float default_value;
 
         initial = ((float (*)(void *, char *))(*(void **)((char *)*(void **)arg1 + 0x24)))(arg1, lbl_8055CA48);
-        default_value = lbl_80564578;
+        defaults.x = lbl_80564578;
+        defaults.y = lbl_80564578;
+        defaults.z = lbl_80564578;
         *(float *)arg0 = initial;
-        defaults.x = default_value;
-        defaults.y = default_value;
-        defaults.z = default_value;
         copy = defaults;
         ((void (*)(struct Vec3 *, void *, char *, struct Vec3 *))(*(void **)((char *)*(void **)arg1 + 0x38)))(&value, arg1, lbl_8055CA50, &copy);
         *(float *)((char *)arg0 + 4) = value.x;
@@ -282,6 +280,7 @@ void fn_802976DC(s32 *arg0) {
 #pragma processor 750
 #pragma cplusplus on
 extern "C" s32 fn_8029771C(void *arg0, void *arg1, float arg2) {
+    /* Iterates time-bounded entries, applies offset, invokes v3 on active ones, returns arg2 < arg0+8. */
     struct Dummy {
         virtual void v0(int);
         virtual int v1();
