@@ -19109,6 +19109,7 @@ void l2cu_send_peer_connect_req(void *arg0) {
 }
 
 void l2cu_send_peer_connect_rsp(void *p_ccb, u16 result, u16 status) {
+    /* Send L2CAP connection response (cmd 3) with local/remote CIDs, result, and status. */
     void *p_buf;
     u8 *p;
 
