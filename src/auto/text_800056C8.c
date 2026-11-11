@@ -1295,6 +1295,19 @@ extern "C" void fn_80209190(s32, f32);
 extern "C" void fn_8001DEA8(void);
 extern "C" void fn_80011A50(void);
 extern "C" void fn_80005464(void);
+/* Puts the HUD overlays back the way fn_80005C88 built them.
+ *
+ * Runs every overlay's init - vtable slot 0x1C, the one fn_80005C88 calls right after it
+ * hands a freshly built overlay its vtable - on the intro overlay, the race's Results- and
+ * ClosureOverlay, and on the Arena-, PreRace- and PostRaceOverlay when this mode has them.
+ * It then does the same for every player's own RacingOverlay and, as it goes, forgets which
+ * overlay that player was showing (its OverlayEntry::active), so fn_800057D0 picks a fresh
+ * one next frame.  The "dashboard" sound group (lbl_8055D354, registered by name from
+ * lbl_802FB0C8 + 0x1F8) is brought back to full volume first; fn_8001DEA8 resets the six
+ * screen managers, fn_80011A50 the message/text state and fn_80005464 the session's mode
+ * flags.  Called once startup finishes (fn_80006D9C), on a mode change (fn_8000AEC4) and
+ * from fn_80007210.
+ */
 extern "C" void fn_800070DC(void) {
     class Overlay {
     public:
