@@ -2442,6 +2442,29 @@ loop_2:
     return 0;
 }
 
+extern "C" s32 fn_800A8AD4(void *arg0, void *arg1) {
+    void *head = arg1;
+    void *node = arg1;
+    u16 flags = *(u16 *)arg1;
+    s32 result = 0;
+    s32 cfg;
+    if ((flags & 1) == 0)
+        return 0;
+    cfg = *(s32 *)((u8 *)arg0 + 0x1624);
+    if ((cfg & 1) || ((cfg & 4) && (flags & 4)))
+        return 0;
+    do {
+        s32 t;
+        if ((*(u16 *)node & 1) == 0)
+            break;
+        t = fn_800A7B34(arg0, node);
+        if (t != 0 && result == 0)
+            result = t;
+        node = *(void **)((u8 *)node + 0x20);
+    } while (node != head);
+    return result;
+}
+
 #pragma dont_inline reset
 extern "C" void fn_800A8B94(void *arg0, s32 arg1, s32 arg2, s16 arg3, s16 arg4) {
     *(s32 *)((u8 *)arg0 + 0x162C) = arg1;
@@ -20198,7 +20221,7 @@ void nw4hbm::lyt::AnimTransformBasic::Bind(nw4hbm::lyt::Material *material) {
     register u16 i = 0;
     register u8 *materialPtr = (u8 *)material;
     while (i < *(u16 *)((u8 *)*(void **)(self + 0xC) + 0xE)) {
-        u8 *entry = *(u8 **)(self + 0xC) + *(s32 *)(offsets + i * 4);
+        register u8 *entry = *(u8 **)(self + 0xC) + *(s32 *)(offsets + i * 4);
         if (entry[0x15] == 1) {
             if (fn_800D58F0(materialPtr + 4) != 0) {
                 u8 *link = (u8 *)*(void **)(self + 0x18) + i * 0x10;
