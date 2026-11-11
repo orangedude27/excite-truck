@@ -65,7 +65,7 @@ void fn_8023B77C(void) {
 #pragma dont_inline reset
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma opt_common_subs off
 void fn_8023B7EC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 sp8[16];
     fn_802ECC18(0);
@@ -75,9 +75,9 @@ void fn_8023B7EC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     fn_8027B77C();
     fn_80211F4C();
     fn_8023C0EC(arg0, arg1, arg2);
-    fn_80018318((u8 *)arg0 + 1016, arg1);
-    fn_800126B4(arg0, (u8 *)arg0 + 1016, 0, 1);
-    fn_80018440(sp8, *(s32 *)((u8 *)arg0 + 0x3E4), (u8 *)arg0 + 1016);
+    fn_80018318((u8 *)arg0 + 0x3F8, arg1);
+    fn_800126B4(arg0, (u8 *)arg0 + 0x3F8, 0, 1);
+    fn_80018440(sp8, *(s32 *)((u8 *)arg0 + 0x3E4), (u8 *)arg0 + 0x3F8);
     fn_8000AB48(arg0, sp8);
 }
 #pragma pop
@@ -225,10 +225,11 @@ extern int fn_8024DAE0(int, int, int, int, int);
 typedef struct VTbl_8023BC24 { void *slot[2]; void (*fn2)(void *, int); } VTbl_8023BC24;
 typedef struct Obj_8023BC24 { VTbl_8023BC24 *vt; } Obj_8023BC24;
 int fn_8023BC24(int ignored, int arg1, int arg2) {
-    int *obj = (int *)fn_8027DB40(1);
+    Obj_8023BC24 *obj = (Obj_8023BC24 *)fn_8027DB40(1);
     int result = fn_8024DAE0(arg1, arg2, 0, (int)obj, 0);
     if (obj != 0) {
-        ((void (*)(int *, int))(*(int **)obj)[2])(obj, 1);
+        void (**tbl)(void *, int) = (void (**)(void *, int))obj->vt;
+        tbl[2](obj, 1);
     }
     return result;
 }
