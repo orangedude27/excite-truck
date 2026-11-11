@@ -8858,31 +8858,32 @@ tBTM_STATUS BTM_WritePageTimeout(UINT16 timeout) {
     return 3;
 }
 
-tBTM_STATUS BTM_ReadStoredLinkKey(BD_ADDR bd_addr, tBTM_CMPL_CB *p_cb) {
+/* Reads stored link key(s) for bdAddr (or all if NULL) via HCI and invokes completionCb when done. */
+tBTM_STATUS BTM_ReadStoredLinkKey(BD_ADDR bdAddr, tBTM_CMPL_CB *completionCb) {
     extern char lbl_80316290[];
     extern u8 lbl_80559064;
     extern u8 lbl_8055906C;
-    BD_ADDR local_bd_addr;
-    BOOLEAN read_all_flag = FALSE;
-    u8 *p_buf;
+    BD_ADDR tempBdAddr;
+    BOOLEAN readAll = FALSE;
+    u8 *cmdBuf;
 
     if (*(u32 *)(lbl_803C0F78 + 0x570) != 0)
         return BTM_BUSY;
-    if (bd_addr == NULL) {
-        read_all_flag = TRUE;
-        bd_addr = local_bd_addr;
+    if (bdAddr == NULL) {
+        readAll = TRUE;
+        bdAddr = tempBdAddr;
     }
     if (lbl_803C0F78[0x27C0] >= 4) {
         fn_80070954(
             0xD0003,
             lbl_80316290,
-            read_all_flag ? (u16)&lbl_80559064 : (u16)&lbl_8055906C
+            readAll ? (u16)&lbl_80559064 : (u16)&lbl_8055906C
         );
     }
-    p_buf = GKI_getpoolbuf(2);
-    if (p_buf != NULL) {
-        *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x570) = p_cb;
-        ((void (*)())btsnd_hcic_read_stored_key)(p_buf, bd_addr, read_all_flag, lbl_803C0F78);
+    cmdBuf = GKI_getpoolbuf(2);
+    if (cmdBuf != NULL) {
+        *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x570) = completionCb;
+        ((void (*)())btsnd_hcic_read_stored_key)(cmdBuf, bdAddr, readAll, lbl_803C0F78);
         return BTM_SUCCESS;
     }
     return BTM_NO_RESOURCES;
