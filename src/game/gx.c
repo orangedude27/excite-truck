@@ -16,7 +16,7 @@ extern unsigned char lbl_8055FD50;
 #pragma dont_inline fn_802CFD74
 extern int lbl_804C9760[];
 #pragma small_data off
-extern unsigned int lbl_804C9940;
+extern __declspec(section ".data") unsigned int lbl_804C9940;
 #pragma small_data on
 extern void OSReport(const char *, ...);
 extern int DCFlushRange(void *, unsigned long);
@@ -1326,29 +1326,50 @@ void fn_802D0610(int arg0) {
 
 void fn_802D07E4(char* arg0, int arg1) {
     extern unsigned long lbl_8055D0B8;
-extern int lbl_8055D0BC;
-extern int lbl_8055D0C0;
+    extern int lbl_8055D0BC;
+    extern int lbl_8055D0C0;
     extern signed char lbl_8055FD90;
     extern unsigned char lbl_804C9830[];
     extern int lbl_804C9760[];
     extern char lbl_8034C0EC[], lbl_8034C108[];
     extern void fn_802E30C8(const char*, ...);
-    register char c;
-    register unsigned char* out;
+    unsigned char *src = (unsigned char *)arg0;
+    register unsigned char c;
+    register int count;
+    register unsigned char *dst;
     if ((int)lbl_8055D0B8 >= 0) {
         fn_802E30C8(lbl_8034C0EC);
         lbl_8055D0B8 = lbl_8055D0BC * lbl_8055D0C0;
         return;
     }
     lbl_8055FD90 = 1;
-    out = lbl_804C9830;
-    out[-1] = 0;
-    do {
-        c = *arg0++;
-        *out++ = c;
-    } while (c != 0);
+    dst = lbl_804C9830;
+    count = 0x100;
+    goto copy;
+dec:
+    count -= 1;
+    if (count > 0) {
+        goto copy;
+    }
+    dst[-1] = 0;
+    goto done;
+copy:
+    c = *src;
+    src += 1;
+    *dst = c;
+    dst += 1;
+    if ((signed char)c != 0) {
+        goto dec;
+    }
+done:
     if (arg1 != 0) {
-        fn_802E30C8(lbl_8034C108, lbl_8055D0BC * lbl_804C9760[2], lbl_8055D0C0 * lbl_804C9760[3], lbl_804C9760, lbl_8055D0BC);
+        long *base = (long *)lbl_804C9760;
+        long d0 = base[2];
+        long d1 = base[3];
+        char *fmt = lbl_8034C108;
+        long a = lbl_8055D0BC * d0;
+        long b = lbl_8055D0C0 * d1;
+        fn_802E30C8(fmt, (int)a, (int)b, base, lbl_8055D0BC);
         lbl_8055D0B8 = 0;
     }
 }
@@ -1408,9 +1429,6 @@ void fn_802D0910(int, int, int, int, int, int) {
 #pragma scheduling invalid_target
 void fn_802D0914(int arg0, short arg1, short arg2) {
     extern int fn_802E3A64(int, unsigned char *, int, int, int, int, int, int);
-    register int first = arg0;
-    register short second = arg1;
-    register short third = arg2;
     unsigned char buffer[0x12];
     unsigned char b8;
     unsigned char b9;
@@ -1420,12 +1438,11 @@ void fn_802D0914(int arg0, short arg1, short arg2) {
     unsigned char b13;
     unsigned char b14;
     unsigned char b15;
-
     memset(buffer, 0, 0x12);
     *(unsigned short *)(buffer + 8) = 0;
     *(unsigned short *)(buffer + 10) = 0;
-    *(unsigned short *)(buffer + 12) = second;
-    *(unsigned short *)(buffer + 14) = third;
+    *(unsigned short *)(buffer + 12) = arg1;
+    *(unsigned short *)(buffer + 14) = arg2;
     b8 = buffer[8];
     b9 = buffer[9];
     b10 = buffer[10];
@@ -1437,6 +1454,8 @@ void fn_802D0914(int arg0, short arg1, short arg2) {
     buffer[0] = 0;
     buffer[1] = 0;
     buffer[2] = 2;
+    buffer[16] = 24;
+    buffer[17] = 0;
     buffer[8] = b9;
     buffer[9] = b8;
     buffer[10] = b11;
@@ -1445,9 +1464,7 @@ void fn_802D0914(int arg0, short arg1, short arg2) {
     buffer[13] = b12;
     buffer[14] = b15;
     buffer[15] = b14;
-    buffer[16] = 0x18;
-    buffer[17] = 0;
-    fn_802E3A64(first, buffer, 0x12, b13, b11, b9, 0x18, 2);
+    fn_802E3A64(arg0, buffer, 0x12, b13, b11, b9, 24, 2);
 }
 #pragma scheduling on
 void fn_802D09E4(void) {
