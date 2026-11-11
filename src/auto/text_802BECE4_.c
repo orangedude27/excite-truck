@@ -383,23 +383,37 @@ extern "C" void fn_802BF598(int arg0, float farg0) {
 extern float lbl_80564DA8;
 extern float lbl_80564DB0;
 extern "C" void fn_802BF600(void *arg0, void *dst, void *src) {
-    float v4 = *(float *)((char *)src + 4);
-    float v10 = *(float *)((char *)src + 0x10);
-    float v1c = *(float *)((char *)src + 0x1C);
-    float v28 = *(float *)((char *)src + 0x28);
+    extern float lbl_80564DA8;
+    extern float lbl_80564DB0;
+    extern float lbl_8055FAE0;
+    int t4 = *(int *)((char *)src + 4);
+    int t10 = *(int *)((char *)src + 0x10);
+    int t1c = *(int *)((char *)src + 0x1C);
+    int t28 = *(int *)((char *)src + 0x28);
     float scale = lbl_80564DA8;
-    int i0 = *(int *)((char *)src + 0);
-    int i8 = *(int *)((char *)src + 8);
-    int ic = *(int *)((char *)src + 0xC);
-    int i14 = *(int *)((char *)src + 0x14);
-    int i18 = *(int *)((char *)src + 0x18);
-    int i20 = *(int *)((char *)src + 0x20);
-    int i24 = *(int *)((char *)src + 0x24);
-    int i2c = *(int *)((char *)src + 0x2C);
-    *(float *)((char *)dst + 4) = v4;
-    *(float *)((char *)dst + 0x10) = v10;
-    *(float *)((char *)dst + 0x1C) = v1c;
-    *(float *)((char *)dst + 0x28) = v28;
+    float f4, f10, f1c, f28;
+    float s4, s10, s1c, s28;
+    int i0, i8, ic, i14, i18, i20, i24, i2c;
+    *(int *)((char *)dst + 4) = t4;
+    *(int *)((char *)dst + 0x10) = t10;
+    *(int *)((char *)dst + 0x1C) = t1c;
+    *(int *)((char *)dst + 0x28) = t28;
+    f4 = *(float *)((char *)dst + 4);
+    f10 = *(float *)((char *)dst + 0x10);
+    f1c = *(float *)((char *)dst + 0x1C);
+    f28 = *(float *)((char *)dst + 0x28);
+    s4 = f4 * scale;
+    s10 = f10 * scale;
+    s1c = f1c * scale;
+    s28 = f28 * scale;
+    i0 = *(int *)((char *)src + 0);
+    i8 = *(int *)((char *)src + 8);
+    ic = *(int *)((char *)src + 0xC);
+    i14 = *(int *)((char *)src + 0x14);
+    i18 = *(int *)((char *)src + 0x18);
+    i20 = *(int *)((char *)src + 0x20);
+    i24 = *(int *)((char *)src + 0x24);
+    i2c = *(int *)((char *)src + 0x2C);
     *(int *)((char *)dst + 0) = i0;
     *(int *)((char *)dst + 8) = i8;
     *(int *)((char *)dst + 0xC) = ic;
@@ -408,10 +422,10 @@ extern "C" void fn_802BF600(void *arg0, void *dst, void *src) {
     *(int *)((char *)dst + 0x20) = i20;
     *(int *)((char *)dst + 0x24) = i24;
     *(int *)((char *)dst + 0x2C) = i2c;
-    *(float *)((char *)dst + 4) = v4 * scale;
-    *(float *)((char *)dst + 0x10) = v10 * scale;
-    *(float *)((char *)dst + 0x1C) = v1c * scale;
-    *(float *)((char *)dst + 0x28) = v28 * scale;
+    *(float *)((char *)dst + 4) = s4;
+    *(float *)((char *)dst + 0x10) = s10;
+    *(float *)((char *)dst + 0x1C) = s1c;
+    *(float *)((char *)dst + 0x28) = s28;
     *(float *)((char *)dst + 0x28) += lbl_80564DB0 * lbl_8055FAE0;
 }
 
@@ -591,10 +605,10 @@ extern void *lbl_8055FB00;
 extern char lbl_8034AE40[];
 #pragma cplusplus on
 #pragma use_lmw_stmw off
-extern "C" void *fn_802BFA58(void *arg0, int arg1) {
+extern "C" void *fn_802BFA58(void *object, int shouldDelete) {
     struct SharedTable {
         void *items[6];
-        int val;
+        int value;
         void cleanup() {
             void **cur = items;
             int i = 0;
@@ -603,33 +617,33 @@ extern "C" void *fn_802BFA58(void *arg0, int arg1) {
                 cur++;
                 i++;
             } while (i < 6);
-            if (val != -2) {
-                fn_802CAC54(val);
+            if (value != -2) {
+                fn_802CAC54(value);
             }
             fn_80128668(this);
         }
     };
     int id;
-    int c;
+    int handle;
 
-    if (arg0 != 0) {
-        id = *(int *)((char *)arg0 + 8);
-        *(char **)arg0 = lbl_8034AE40;
+    if (object != 0) {
+        id = *(int *)((char *)object + 8);
+        *(char **)object = lbl_8034AE40;
         if (id != -2) {
             fn_802CB228((void *)id);
-            *(int *)((char *)arg0 + 8) = -2;
+            *(int *)((char *)object + 8) = -2;
         }
-        c = *(int *)((char *)arg0 + 0xC);
-        if (c != -1) {
-            fn_802C6CF8(c);
-            *(int *)((char *)arg0 + 0xC) = -1;
+        handle = *(int *)((char *)object + 0xC);
+        if (handle != -1) {
+            fn_802C6CF8(handle);
+            *(int *)((char *)object + 0xC) = -1;
         }
-        c = *(int *)((char *)arg0 + 0x10);
-        if (c != -1) {
-            fn_802C6CF8(c);
-            *(int *)((char *)arg0 + 0x10) = -1;
+        handle = *(int *)((char *)object + 0x10);
+        if (handle != -1) {
+            fn_802C6CF8(handle);
+            *(int *)((char *)object + 0x10) = -1;
         }
-        if (*(int *)((char *)arg0 + 4) != 0) {
+        if (*(int *)((char *)object + 4) != 0) {
             if (--lbl_8055FAFC == 0) {
                 SharedTable *table = (SharedTable *)lbl_8055FB00;
                 if (table != 0) {
@@ -637,13 +651,13 @@ extern "C" void *fn_802BFA58(void *arg0, int arg1) {
                 }
                 lbl_8055FB00 = 0;
             }
-            *(int *)((char *)arg0 + 4) = 0;
+            *(int *)((char *)object + 4) = 0;
         }
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+        if (shouldDelete > 0) {
+            fn_80128668(object);
         }
     }
-    return arg0;
+    return object;
 }
 
 #pragma push
