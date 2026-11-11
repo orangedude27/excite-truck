@@ -1666,16 +1666,17 @@ extern "C" void fn_80147940(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
 #pragma dont_inline reset
 #pragma pop
   extern "C" void fn_80147CEC(void *, s32, s32, f64);
-extern "C" void fn_801479A8(void *arg0, void *arg1, const char *format, f64 value, ...) {
-    char text[0x200];
-    char buffer[0x20];
+/* Formats a message with vsprintf, checks for overflow, builds a prefix via fn_80147CEC, then forwards it for output. */
+extern "C" void fn_801479A8(void *param0, void *param1, const char *format, f64 value, ...) {
+    char formattedText[0x200];
+    char prefix[0x20];
     va_list args;
     va_start(args, value);
-    vsprintf(text, format, args);
-    if (strlen(text) >= 0x200)
-        fn_802E317C(lbl_8032D1A4, strlen(text), format);
-    fn_80147CEC(buffer, (s32)arg0, (s32)arg1, value);
-    fn_80147230(buffer, (const char *)&lbl_80559E1C, text);
+    vsprintf(formattedText, format, args);
+    if (strlen(formattedText) >= 0x200)
+        fn_802E317C(lbl_8032D1A4, strlen(formattedText), format);
+    fn_80147CEC(prefix, (s32)param0, (s32)param1, value);
+    fn_80147230(prefix, (const char *)&lbl_80559E1C, formattedText);
 }
 
 /* Formats a message with vsprintf, checks for buffer overflow, builds a prefix, and emits the final log line. */
