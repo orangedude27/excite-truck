@@ -10807,24 +10807,25 @@ void bta_dm_search_cancel(void) {
     }
 }
 
-void bta_dm_discover(void *arg0) {
+/* Starts BTA device discovery: initializes the search state from the request, registers the remote-name notify callback, copies the peer address, then either starts service discovery or requests the remote name and posts a failure message if needed. */
+void bta_dm_discover(void *data) {
     u8 *search = lbl_803C0B98;
-    u8 *input = (u8 *)arg0;
+    u8 *input = (u8 *)data;
     u16 timeout;
     u32 value;
-    void *msg;
-    tBTM_RMT_NAME_CALLBACK *callback;
+    void *msg_buf;
+    tBTM_RMT_NAME_CALLBACK *remote_name_cb;
 
     value = *(u32 *)(input + 0x14);
     *(u32 *)lbl_803C0B98 = value;
-    callback = fn_80072AE4;
+    remote_name_cb = fn_80072AE4;
     value = *(u32 *)(input + 0x10);
     *(u32 *)(search + 8) = value;
     *(u32 *)(search + 0xC) = value;
     search[0x70] = 0;
     *(u32 *)(search + 0x10) = 0;
     search[0x20] = 0;
-    BTM_SecAddRmtNameNotifyCallback(callback);
+    BTM_SecAddRmtNameNotifyCallback(remote_name_cb);
     fn_80070FA4(search + 0x1A, input + 8);
 
     if (*(u32 *)(search + 8) != 0) {
@@ -10838,12 +10839,12 @@ void bta_dm_discover(void *arg0) {
 
     if (BTM_ReadRemoteDeviceName(lbl_803C0B98 + 0x1A, (tBTM_CMPL_CB *)bta_dm_disc_remname_cback) != 1) {
         fn_8007148C((s32)(lbl_803C0B98 + 0x58));
-        msg = GKI_getbuf(0x110);
-        if (msg != 0) {
-            fn_80070FA4((u8 *)msg + 8, lbl_803C0B98 + 0x1A);
-            *((u8 *)msg + 0xE) = 0;
-            *(u16 *)msg = 0x204;
-            fn_80071450(msg);
+        msg_buf = GKI_getbuf(0x110);
+        if (msg_buf != 0) {
+            fn_80070FA4((u8 *)msg_buf + 8, lbl_803C0B98 + 0x1A);
+            *((u8 *)msg_buf + 0xE) = 0;
+            *(u16 *)msg_buf = 0x204;
+            fn_80071450(msg_buf);
         }
     }
 }
