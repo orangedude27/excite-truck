@@ -1036,6 +1036,8 @@ BOOL SCFindU8Item(u8* dst, SCItemID id) {
 }
 
 BOOL SCFindS8Item(s8* dst, SCItemID id) {
+    /* Read an 8-bit System Config item's value by ID into *dst as a signed byte.
+       Same SC_ITEM_BYTE item as SCFindU8Item(); only the caller's type differs. */
     return SCFindIntegerItem(dst, id, SC_ITEM_BYTE);
 }
 
