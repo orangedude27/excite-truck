@@ -1586,11 +1586,9 @@ extern "C" void *fn_80288208(int);
 extern "C" int fn_80287E20(void *, const char *);
 extern "C" void *fn_80287E80(void *, const char *);
 extern "C" char lbl_80349508[];
-/* lbl_8055CA90 is actually a char array "engine", declared as int elsewhere */
-extern "C" char lbl_8055CA90[];
-  #pragma scheduling invalid_target
-#pragma dont_inline on
-#pragma cplusplus on
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 extern "C" int fn_8029ADCC(void *arg0) {
     class Dummy {
     public:
@@ -1608,15 +1606,16 @@ extern "C" int fn_8029ADCC(void *arg0) {
     void *cursor;
     int i;
     void *obj;
-
+    register float c;
     fn_8029B1B8(arg0);
     count = fn_80287B14();
+    c = lbl_80564590;
     cursor = arg0;
     i = 0;
     while (i < count) {
         obj = fn_80288208(i);
-        *(float *)((char *)cursor + 0x1C0) = lbl_80564590;
-        if (fn_80287E20(obj, (const char *)&lbl_8055CA90) != 0) {
+        *(float *)((char *)cursor + 0x1C0) = c;
+        if (fn_80287E20(obj, (const char *)lbl_8055CA90) != 0) {
             obj = fn_80287E80(obj, (const char *)&lbl_8055CA90);
             *(float *)((char *)cursor + 0x1C0) = ((Dummy *)obj)->apply(lbl_80349508, *(float *)((char *)cursor + 0x1C0));
         }
@@ -1626,9 +1625,7 @@ extern "C" int fn_8029ADCC(void *arg0) {
     fn_8029AEE8(arg0);
     return (int)arg0;
 }
-#pragma cplusplus reset
-#pragma dont_inline reset
-#pragma scheduling on
+#pragma pop
 
 extern "C" void* __dt__Q210JASDrumSet5TPercFv_8029AE88(void* arg0, int arg1) {
     if (arg0 != 0) {
@@ -2151,23 +2148,24 @@ extern "C" int fn_8029C190(void*);
 extern "C" void* fn_80288208(int);
 extern "C" int fn_80287B14(void);
 extern "C" int fn_8029AEE8(void*);
+#pragma scheduling invalid_target
 extern "C" void fn_8029BDC4(void* arg0) {
     float values[3];
-    int i = 0;
     char* entry = (char*)arg0 + 4;
+    int i = 0;
     values[0] = lbl_8056459C;
     values[1] = lbl_8056459C;
     values[2] = lbl_8056459C;
-    do {
+    while (i < *(int*)((char*)arg0 + 0xA4)) {
         if (*(unsigned char*)(entry + 0x10)) {
             fn_80288A58(entry, values);
             fn_8028E584(*(void**)arg0, entry, values, 0.0f);
         }
         entry += 0x14;
         i++;
-    } while (i < *(int*)((char*)arg0 + 0xA4));
+    }
 }
-
+#pragma scheduling on
 extern "C" void fn_802CAC54(int);
 extern float lbl_805645B8;
 extern "C" void fn_8029A890(void*, void*);
