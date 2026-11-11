@@ -2050,35 +2050,38 @@ extern "C" f32 fn_8015A8D8(void* a, void* arg1) {
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 extern "C" void fn_8015ACB0(void *arg0, void *arg1, s32 arg2, f32 arg3) {
+    /* Initialize 8 UI slots (two 4-slot blocks) when mode==3: mark object enabled,
+     * store arg3, then for each slot set {state,id} to disabled {-1,0,0} if the
+     * slot index equals arg1+0x1EC count, else {index,1,1}. */
     if (arg2 != 3) return;
-    volatile f32 saved = arg3;
+    volatile f32 savedValue = arg3;
     register s32 one = 1;
-    s32 limit;
+    s32 slotCount;
     u8 *obj = (u8 *)arg0;
-    s32 index = 0;
+    s32 slotIndex = 0;
     *(u8 *)(obj + 0x2F0) = one;
-    *(u32 *)(obj + 0x26C) = *(volatile u32 *)&saved;
-    for (s32 outer = 0; outer < 2; outer++) {
+    *(u32 *)(obj + 0x26C) = *(volatile u32 *)&savedValue;
+    for (s32 block = 0; block < 2; block++) {
 #define SET_SLOT(off) \
-        limit = *(s32 *)((u8 *)arg1 + 0x1EC); \
-        if (index == limit) { \
+        slotCount = *(s32 *)((u8 *)arg1 + 0x1EC); \
+        if (slotIndex == slotCount) { \
             *(s32 *)(obj + (off) + 8) = -1; \
             *(s32 *)(obj + (off)) = 0; \
             *(s32 *)(obj + (off) + 4) = 0; \
         } else { \
-            *(s32 *)(obj + (off) + 8) = index; \
+            *(s32 *)(obj + (off) + 8) = slotIndex; \
             *(s32 *)(obj + (off)) = one; \
             *(s32 *)(obj + (off) + 4) = one; \
         }
         SET_SLOT(0x270)
-        index++;
+        slotIndex++;
         SET_SLOT(0x280)
-        index++;
+        slotIndex++;
         SET_SLOT(0x290)
-        index++;
+        slotIndex++;
         SET_SLOT(0x2A0)
         obj += 0x40;
-        index++;
+        slotIndex++;
     }
 #undef SET_SLOT
 }
