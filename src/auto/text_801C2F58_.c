@@ -320,33 +320,35 @@ extern char lbl_8055E80D;
 extern f32 lbl_8055E810;
 #pragma scheduling invalid_target
 void *fn_801C3C80(void) {
-    register s32 offset;
-    register char *entry;
-    register s32 max;
-    register s32 count;
-    entry = (char *)lbl_8055E7F8 + lbl_8055E7F0++ * 0x30C;
+    /* Allocate the next 0x30C-byte entry in lbl_8055E7F8, initialize its key at +0,
+       then assign a rank at +4 one higher than any existing entry with the same key. */
+    register s32 byteOffset;
+    register char *newEntry;
+    register s32 maxRank;
+    register s32 index;
+    newEntry = (char *)lbl_8055E7F8 + lbl_8055E7F0++ * 0x30C;
     if ((u8)lbl_8055E80D != 0) {
-        *(f32 *)entry = lbl_8055E810;
+        *(f32 *)newEntry = lbl_8055E810;
     } else {
         fn_801C3B6C();
-        *(f32 *)entry = ((f32 (*)(void))fn_801C3450)();
+        *(f32 *)newEntry = ((f32 (*)(void))fn_801C3450)();
     }
-    max = 0;
-    count = 0;
-    offset = 0;
+    maxRank = 0;
+    index = 0;
+    byteOffset = 0;
     goto test;
 loop:
-    if (fn_801C34CC(*(f32 *)entry, *(f32 *)((char *)lbl_8055E7F8 + offset))) {
-        if (*(s32 *)((char *)lbl_8055E7F8 + offset + 4) > max)
-            max = *(s32 *)((char *)lbl_8055E7F8 + offset + 4);
+    if (fn_801C34CC(*(f32 *)newEntry, *(f32 *)((char *)lbl_8055E7F8 + byteOffset))) {
+        if (*(s32 *)((char *)lbl_8055E7F8 + byteOffset + 4) > maxRank)
+            maxRank = *(s32 *)((char *)lbl_8055E7F8 + byteOffset + 4);
     }
-    offset += 0x30C;
-    count += 1;
+    byteOffset += 0x30C;
+    index += 1;
 test:
-    if (count < lbl_8055E7F0 - 1)
+    if (index < lbl_8055E7F0 - 1)
         goto loop;
-    *(s32 *)(entry + 4) = max + 1;
-    return entry;
+    *(s32 *)(newEntry + 4) = maxRank + 1;
+    return newEntry;
 }
 #pragma scheduling on
 extern void fn_80128670(s32);
