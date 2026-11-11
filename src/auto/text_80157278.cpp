@@ -994,8 +994,8 @@ extern "C" void fn_801584C4(void **arg0) {
     *arg0 = (void *)&lbl_8032F350;
 }
 
-extern "C" void fn_801584D4(s32 arg0, s32 arg1, s32 arg2) {
 #pragma use_lmw_stmw off
+extern "C" void fn_801584D4(s32 arg0, s32 arg1, s32 arg2) {
     struct Dummy {
         virtual void f0(s32, s32, s32);
     };
@@ -1009,10 +1009,8 @@ extern "C" void fn_801584D4(s32 arg0, s32 arg1, s32 arg2) {
         offset += 4;
         i++;
     }
-#pragma use_lmw_stmw reset
 }
-
-#pragma scheduling invalid_target
+#pragma use_lmw_stmw reset
 extern "C" void fn_80158558(s32 arg0) {
     s32* state = lbl_8042FD34;
     s32* items = (s32*)state[0];
