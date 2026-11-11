@@ -1989,43 +1989,44 @@ mount_test:
 #pragma push
 #pragma scheduling invalid_target
 extern "C" void fn_8012DBD0(void) {
-    void *object;
-    s32 i;
-    u32 offset;
-    s32 last;
-    u32 *base;
+    /* Allocate and initialize the async set queue/effect object when enabled, then register it. */
+    void *queue;
+    s32 index;
+    u32 slotOffset;
+    s32 lastIndex;
+    u32 *entryBase;
     u32 endAddress;
 
     if (lbl_8055DFFC != 0) {
-        object = fn_801284F8(0xA24, lbl_8032ACA0);
-        if (object != 0) {
-            *(void **)object = lbl_8032ACB0;
-            *(s32 *)((char *)object + 0xC) = 0x20;
-            *(void ***)((char *)object + 8) = (void **)((char *)object + 0x18);
-            *(void **)((char *)object + 0x14) = 0;
-            *(s32 *)((char *)object + 0x10) = 0;
-            i = 0;
-            offset = 0;
+        queue = fn_801284F8(0xA24, lbl_8032ACA0);
+        if (queue != 0) {
+            *(void **)queue = lbl_8032ACB0;
+            *(s32 *)((char *)queue + 0xC) = 0x20;
+            *(void ***)((char *)queue + 8) = (void **)((char *)queue + 0x18);
+            *(void **)((char *)queue + 0x14) = 0;
+            *(s32 *)((char *)queue + 0x10) = 0;
+            index = 0;
+            slotOffset = 0;
             goto loop_test;
         loop_body:
-            base = *(u32 * volatile *)((char *)object + 8);
-            *(u32 *)((char *)base + offset) = (u32)((char *)base + (u32)(i + 1) * 0x50);
-            offset += 0x50;
-            i += 1;
+            entryBase = *(u32 * volatile *)((char *)queue + 8);
+            *(u32 *)((char *)entryBase + slotOffset) = (u32)((char *)entryBase + (u32)(index + 1) * 0x50);
+            slotOffset += 0x50;
+            index += 1;
         loop_test:
-            last = *(s32 *)((char *)object + 0xC) - 1;
-            if (i < last) goto loop_body;
-            base = *(u32 * volatile *)((char *)object + 8);
-            *(u32 *)((char *)base + (u32)last * 0x50) = 0;
-            endAddress = (u32)object + 0xA18;
-            base = *(u32 * volatile *)((char *)object + 8);
-            *(u32 *)((char *)object + 0x14) = (u32)base;
-            *(s32 *)((char *)object + 0xA18) = 0;
-            *(u32 *)((char *)object + 0xA1C) = endAddress;
-            fn_80127CF4((s32)object, (s32)lbl_8032ACD0);
-            *(u8 *)((char *)object + 0xA20) = 0;
+            lastIndex = *(s32 *)((char *)queue + 0xC) - 1;
+            if (index < lastIndex) goto loop_body;
+            entryBase = *(u32 * volatile *)((char *)queue + 8);
+            *(u32 *)((char *)entryBase + (u32)lastIndex * 0x50) = 0;
+            endAddress = (u32)queue + 0xA18;
+            entryBase = *(u32 * volatile *)((char *)queue + 8);
+            *(u32 *)((char *)queue + 0x14) = (u32)entryBase;
+            *(s32 *)((char *)queue + 0xA18) = 0;
+            *(u32 *)((char *)queue + 0xA1C) = endAddress;
+            fn_80127CF4((s32)queue, (s32)lbl_8032ACD0);
+            *(u8 *)((char *)queue + 0xA20) = 0;
         }
-        lbl_8055E014 = (nw4r::ef::Effect *)object;
+        lbl_8055E014 = (nw4r::ef::Effect *)queue;
     }
 }
 #pragma pop
