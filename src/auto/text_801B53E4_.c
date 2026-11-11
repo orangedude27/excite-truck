@@ -114,48 +114,55 @@ extern float PSVECSquareDistance(void *, void *);
 #pragma processor 750
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-void fn_801B54B0(s32 arg0) {
-    s32 sp2C[3];
-    s32 sp20[3];
-    s32 sp14[3];
-    s32 sp8[3];
+void fn_801B54B0(s32 listHead) {
+    Vec start;
+    Vec end;
+    Vec otherStart;
+    Vec otherEnd;
     f32 threshold;
-    void *outer;
-    void *inner;
-    void *a;
-    void *b;
-    threshold = lbl_80562694;
-    outer = (void *)arg0;
-    while (outer != NULL) {
-        if (fn_801B53E4(*(void **)((u8 *)outer + 0x3C)) != 0) {
-            a = (void *)fn_801B54A8(outer);
-            fn_801B5410(*(void **)((u8 *)outer + 0x3C), sp2C, sp20);
-            inner = (void *)arg0;
-            while (inner != NULL) {
-                if (fn_801B53E4(*(void **)((u8 *)inner + 0x3C)) != 0) {
-                    b = (void *)fn_801B54A8(inner);
-                    fn_801B5410(*(void **)((u8 *)inner + 0x3C), sp14, sp8);
-                    if (PSVECSquareDistance(sp2C, sp14) < threshold) {
-                        *(s32 *)((u8 *)a + 0x34) |= 1;
-                        *(s32 *)((u8 *)b + 0x34) |= 1;
+    struct ObjectLink *node;
+    struct ObjectLink *other;
+    struct BpxObject *a;
+    struct BpxObject *b;
+
+    /* Every pair of linkable BPX objects in the list: fn_801B5410 gives the two
+     * ends of the straight segment each object stands for (on the ground, at
+     * +-BpxObject.length from its position), and whenever any end of one lands
+     * within LINK_SQ_DISTANCE of an end of the other both objects are told they
+     * join there - bit 0 of BpxObject.links for a segment's first end, bit 1
+     * for its second. */
+    threshold = LINK_SQ_DISTANCE;
+    node = (struct ObjectLink *)listHead;
+    while (node != NULL) {
+        if (fn_801B53E4(node->object) != 0) {
+            a = (struct BpxObject *)fn_801B54A8(node);
+            fn_801B5410(node->object, &start, &end);
+            other = (struct ObjectLink *)listHead;
+            while (other != NULL) {
+                if (fn_801B53E4(other->object) != 0) {
+                    b = (struct BpxObject *)fn_801B54A8(other);
+                    fn_801B5410(other->object, &otherStart, &otherEnd);
+                    if (PSVECSquareDistance(&start, &otherStart) < threshold) {
+                        a->links |= 1;
+                        b->links |= 1;
                     }
-                    if (PSVECSquareDistance(sp2C, sp8) < threshold) {
-                        *(s32 *)((u8 *)a + 0x34) |= 1;
-                        *(s32 *)((u8 *)b + 0x34) |= 2;
+                    if (PSVECSquareDistance(&start, &otherEnd) < threshold) {
+                        a->links |= 1;
+                        b->links |= 2;
                     }
-                    if (PSVECSquareDistance(sp20, sp14) < threshold) {
-                        *(s32 *)((u8 *)a + 0x34) |= 2;
-                        *(s32 *)((u8 *)b + 0x34) |= 1;
+                    if (PSVECSquareDistance(&end, &otherStart) < threshold) {
+                        a->links |= 2;
+                        b->links |= 1;
                     }
-                    if (PSVECSquareDistance(sp20, sp8) < threshold) {
-                        *(s32 *)((u8 *)a + 0x34) |= 2;
-                        *(s32 *)((u8 *)b + 0x34) |= 2;
+                    if (PSVECSquareDistance(&end, &otherEnd) < threshold) {
+                        a->links |= 2;
+                        b->links |= 2;
                     }
                 }
-                inner = *(void **)((u8 *)inner + 0x44);
+                other = other->next;
             }
         }
-        outer = *(void **)((u8 *)outer + 0x44);
+        node = node->next;
     }
 }
 #pragma pop
