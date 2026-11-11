@@ -373,14 +373,14 @@ extern "C" void *fn_8016BE60(void *arg0) {
         }
         fn_8016A0B0();
         fn_8016C328(object + 0x30);
-        s32 zero = 0;
-        f32 initialValue = lbl_80561998;
-        *(volatile s32 *)(object + 0x98) = zero;
-        s32 flag = 1;
-        *(volatile u8 *)(object + 0x9C) = (u8)flag;
-        *(volatile f32 *)(object + 0xA0) = initialValue;
+        {
+            f32 initialValue = lbl_80561998;
+            *(s32 *)(object + 0x98) = 0;
+            *(u8 *)(object + 0x9C) = 1;
+            *(f32 *)(object + 0xA0) = initialValue;
+        }
         *(s32 *)(object + 0xA4) = fn_80207848(strings + 0x3C, 1);
-        *(volatile u8 *)(object + 0xA8) = (u8)zero;
+        *(u8 *)(object + 0xA8) = 0;
     }
     return object;
 }
@@ -618,8 +618,8 @@ extern "C" int strcmp(const char *, const char *);
 extern "C" char *strstr(const char *, const char *);
 extern "C" char lbl_803307C8[];
 extern "C" char lbl_803307D8[];
-extern "C" char lbl_8055A218[];
-extern "C" char lbl_8055A220[];
+extern "C" __declspec(section ".sdata") char lbl_8055A218[];
+extern "C" __declspec(section ".sdata") char lbl_8055A220[];
 extern "C" s32 fn_8016C5F0(void) {
     struct Manager {
         virtual void m0();
@@ -2048,16 +2048,26 @@ extern f32 lbl_80561980, lbl_80561984, lbl_805619A4, lbl_80561A0C, lbl_805619D0,
 extern "C" void fn_802C744C(s32, void *);
 extern "C" void fn_802C9900(void);
 extern "C" void fn_802C9904(void);
-#pragma cplusplus off
+#pragma push
+#pragma processor 750
 #pragma use_lmw_stmw off
-void fn_8016FE2C(void *arg0, s32 arg1) {
-    register f32 f29 = lbl_80561980;
-    register f32 f28 = lbl_80561984;
-    register s32 i = 0;
-    register f32 f30 = lbl_805619A4;
-    register f32 f31 = lbl_80561A0C;
-    register s32 offset = 0;
-    register f32 f27 = lbl_805619D0;
+extern "C" void fn_8016FE2C(void *arg0, s32 arg1) {
+    extern float lbl_80561980;
+    extern float lbl_80561984;
+    extern float lbl_805619A4;
+    extern float lbl_805619D0;
+    extern float lbl_80561A0C;
+    extern float lbl_8055E3C8;
+    extern void fn_802C744C(s32, void *);
+    extern void fn_802C9900(void);
+    extern void fn_802C9904(void);
+    f32 f29 = lbl_80561980;
+    f32 f28 = lbl_80561984;
+    s32 i = 0;
+    f32 f30 = lbl_805619A4;
+    f32 f31 = lbl_80561A0C;
+    s32 offset = 0;
+    f32 f27 = lbl_805619D0;
     u8 *entry;
     s32 j;
     s32 suboff;
@@ -2120,8 +2130,7 @@ outer_check:
         goto outer_body;
     }
 }
-#pragma use_lmw_stmw on
-#pragma cplusplus on
+#pragma pop
 
 #pragma cplusplus reset
 void fn_8016FF98(void *arg0) {
@@ -2628,11 +2637,11 @@ loop_80:
 extern f64 fn_8002F234(f32, f32, f32, f32, f32);
 #pragma use_lmw_stmw off
 void fn_80170DA8(void *arg0, void *arg1) {
-    u8 (*items)[0x38];
+    u8 *base;
     u8 *item;
     s32 index;
     s32 next;
-    s32 *pool;
+    s32 off;
     volatile f32 sp1C, sp18, sp14, sp10, spC, sp8;
     f32 x;
     f32 y;
@@ -2640,15 +2649,14 @@ void fn_80170DA8(void *arg0, void *arg1) {
     f32 dy;
     f32 distance;
     f32 threshold;
-
-    pool = *(s32 **)((u8 *)arg0 + 4);
     index = *(s32 *)((u8 *)arg0 + 0x10);
     next = index + 1;
-    if (next < *(s32 *)((u8 *)pool + 4)) {
-        items = (u8 (*)[0x38])*pool;
-        item = items[next];
+    if (next < *(s32 *)(*(u8 **)((u8 *)arg0 + 4) + 4)) {
+        off = (index + 1) * 0x38;
+        base = *(u8 **)*(void **)((u8 *)arg0 + 4);
         x = *(f32 *)((u8 *)arg1 + 0x60);
         y = *(f32 *)((u8 *)arg1 + 0x68);
+        item = base + off;
         dx = *(f32 *)(item + 0x24) - x;
         sp18 = *(f32 *)(item + 0x24);
         dy = *(f32 *)(item + 0x2C) - y;
@@ -2660,12 +2668,9 @@ void fn_80170DA8(void *arg0, void *arg1) {
         distance = (f32)fn_8002F234(dx * dx + dy * dy, y, x, dx, dy);
         threshold = *(f32 *)(item + 0x34);
         if (distance < threshold) {
-            u32 nextOffset = next * 0x38;
-            items[index][0x30] = 0;
+            *(u8 *)(base + index * 0x38 + 0x30) = 0;
             *(s32 *)((u8 *)arg0 + 0x10) = next;
-            pool = *(s32 **)((u8 *)arg0 + 4);
-            items = (u8 (*)[0x38])*pool;
-            *(u8 *)((u8 *)items + nextOffset + 0x30) = 1;
+            *(u8 *)(*(u8 **)*(void **)((u8 *)arg0 + 4) + next * 0x38 + 0x30) = 1;
         }
     }
 }
@@ -2744,7 +2749,7 @@ public:
 };
 extern "C" u32 fn_80170FDC(void *arg0) {
     s32 temp_r4;
-    if ((lbl_8055E3C8 - *(f32 *)((u8 *)arg0 + 0xA0)) < lbl_80561A1C) {
+    if ((lbl_8055E3C8 - *(volatile f32 *)((u8 *)arg0 + 0xA0)) < lbl_80561A1C) {
         ((Q70FDC *)arg0)->f17();
     } else {
         if (*(u8 *)((u8 *)arg0 + 0xB4) != 0)
