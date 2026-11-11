@@ -1178,31 +1178,37 @@ s32 fn_801CD49C(void) {
 
 extern void fn_8001EF5C(int, int);
 extern char lbl_80337D34[];
-void fn_801CD4CC(int arg0, int arg1) {
-    u8 *base;
+void fn_801CD4CC(int playerIndex, int place) {
+    u8 *awardsBase;
     u8 *entry;
-    s32 index;
-    u8 state;
+    s32 slotIndex;
+    u8 slotState;
+
+    /* Queue a pending award place for a player, or abort if one is already pending. */
     if (fn_801CE898() != 0) return;
-    base = (u8 *)lbl_8055E884;
-    if (base[0x10] != 0) return;
-    entry = ((u8 *(*)(s32))fn_801EA9A0)(arg0);
+    awardsBase = (u8 *)lbl_8055E884;
+    if (awardsBase[0x10] != 0) return;
+
+    entry = ((u8 *(*)(s32))fn_801EA9A0)(playerIndex);
     if (entry[0] != 0) {
-        index = entry[0xB4] & 3;
+        slotIndex = entry[0xB4] & 3;
     } else {
-        index = -1;
+        slotIndex = -1;
     }
-    if (index >= 0) {
-        state = base[index + 0x11];
+
+    if (slotIndex >= 0) {
+        slotState = awardsBase[slotIndex + 0x11];
     } else {
-        state = 1;
+        slotState = 1;
     }
-    if (state != 0) return;
-    entry = ((u8 *(*)(s32))fn_801EA9A0)(arg0);
+    if (slotState != 0) return;
+
+    entry = ((u8 *(*)(s32))fn_801EA9A0)(playerIndex);
     if (entry[0] == 0) return;
-    if (*(s32 *)(base + 0x2A8) == 0) {
-        *(s32 *)(base + 0x2A8) = arg1;
-        if (arg1 == 1) fn_8001EF5C(1, 1);
+
+    if (*(s32 *)(awardsBase + 0x2A8) == 0) {
+        *(s32 *)(awardsBase + 0x2A8) = place;
+        if (place == 1) fn_8001EF5C(1, 1);
     } else {
         ((void (*)(char *, ...))fn_802E317C)(lbl_80337D34);
     }
