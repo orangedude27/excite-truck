@@ -98,33 +98,47 @@ extern int fn_802C7888(void *, int);
 extern int fn_802C9C24(int);
 extern int memset(void *, int, unsigned int);
 extern char *strncpy(char *, const char *, unsigned int);
-  #pragma push
-  #pragma use_lmw_stmw off
-  #pragma cplusplus on
-extern "C" void fn_801F004C(int unused, int arg1, void *arg2) {
-    class VTable801F004C {
+#pragma push
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+/* Enumerate entries in a model/resource list and submit a 0x2C-byte name record
+ * (primary name, associated id, secondary name) for each entry accepted by the
+ * provider's vtable checks. */
+extern "C" void fn_801F004C(int unused, int recordId, void *provider) {
+    class ProviderVTable {
     public:
         virtual void v0();
-        virtual int v3(int);
+        virtual int acceptsEntry(int entryName);
         virtual void v4();
-        virtual void *v5(int);
+        virtual void *getEntryObject(int entryName);
     };
-    int offset; void *list; int i; int zero; char temp[0x2c];
-    list = fn_802C6B44(); zero = 0; i = 0; offset = 0;
-    while (i < *(int *)list) {
-        int name = fn_802C9C24(*(int *)((char *)list + 4) + offset);
-        if (((VTable801F004C *)arg2)->v3(name)) {
-            void *object = ((VTable801F004C *)arg2)->v5(name);
-            memset(temp, 0, 0x2c);
-            strncpy(temp, (char *)name, 0x10); temp[0xf] = zero;
-            strncpy(temp + 0x14, (char *)object, 0x10); temp[0x23] = zero;
-            *(int *)(temp + 0x10) = arg1; fn_802C7888(temp, 1);
+    int entryOffset;
+    void *list;
+    int index;
+    int terminator;
+    char record[0x2c];
+
+    list = fn_802C6B44();
+    terminator = 0;
+    index = 0;
+    entryOffset = 0;
+    while (index < *(int *)list) {
+        int entryName = fn_802C9C24(*(int *)((char *)list + 4) + entryOffset);
+        if (((ProviderVTable *)provider)->acceptsEntry(entryName)) {
+            void *entryObject = ((ProviderVTable *)provider)->getEntryObject(entryName);
+            memset(record, 0, 0x2c);
+            strncpy(record, (char *)entryName, 0x10);
+            record[0xf] = terminator;
+            strncpy(record + 0x14, (char *)entryObject, 0x10);
+            record[0x23] = terminator;
+            *(int *)(record + 0x10) = recordId;
+            fn_802C7888(record, 1);
         }
-        offset += 0x10; i++;
+        entryOffset += 0x10;
+        index++;
     }
     fn_802C6C20(list);
 }
-
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" int sscanf(const char *, const char *, ...);
 extern "C" char *strchr(const char *, int);
