@@ -674,9 +674,25 @@ extern "C" void fn_80017010(void *arg0) {
 #pragma cplusplus reset
 extern char lbl_802FD00C[];
 extern char lbl_802FD040[];
+/* The two lists fn_80016ED4 and fn_80017010 build up, both allocated under the
+ * names in lbl_802FCEA8 and holding at most 50 entries:
+ *   DriverInfo  { int id; int number; char name[0x40]; ... }  0x5C bytes
+ *   VehicleInfo { int id; int number; ... char name[]; ... }  0xA8 bytes
+ * The number at +4 is what the game hands out to a driver / vehicle and has to
+ * be unique, which is what fn_80017558 checks. */
+#define sDriverList          lbl_8055D540 /* DriverInfo[50], "DriverInfoList" */
+#define sDriverCount         lbl_8055D54C /* entries in sDriverList */
+#define sVehicleList         lbl_8055D544 /* VehicleInfo[50], "VehicleInfoList" */
+#define sVehicleCount        lbl_8055D550 /* entries in sVehicleList */
+#define STR_DUP_DRIVER_NUM   lbl_802FD00C /* "driver: Drivers %s and %s have the same number (%d)" */
+#define STR_DUP_VEHICLE_NUM  lbl_802FD040 /* "driver: two vehicles (%s and %s) have the same number (%d)" */
+#define debug_print          fn_802E317C  /* debug console print */
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling on
+/* Report every pair of drivers, and every pair of vehicles, that were given the
+ * same number: both lists are walked as an O(n^2) triangle and each clash is
+ * printed to the debug console with the two names and the number. */
 void fn_80017558(void) {
     {
         register int innerOffset;
