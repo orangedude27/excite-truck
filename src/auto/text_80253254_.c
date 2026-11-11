@@ -1709,7 +1709,18 @@ struct Obj_80256548 {
     float pos[3];          /* 0x24: where the model is drawn */
     char pad2[0x48];
 };
-void fn_80256548(struct CarUIModelRec *arg0) {
+void fn_80256548(struct CarUIModelRec *model) {
+    /* Put the UI car where the current view wants it and set up the whole
+     * screen to draw it on.
+     *
+     * When the model is the one drawn to the screen (mode == 0) its position is
+     * taken from the 0x78-byte view setup: the camera table entry of
+     * cameraIndex while a UI view is being drawn (lbl_8055F330), or one built
+     * from the vehicle and the loaded model otherwise.  The position at +0x24
+     * of that record is handed to fn_80203E88 together with the model's world
+     * matrix.  Then the four "GC: CarUIModel is clearing screen ..." debug
+     * reports, each printed only the first time through, and the full-screen
+     * viewport (0, 0, screen width, screen height) the car is drawn into. */
     extern unsigned char lbl_8055F330, lbl_8055F344, lbl_8055F345, lbl_8055F346, lbl_8055F347;
     extern char lbl_803447C0[], lbl_8055C1D0;
     extern int lbl_8055CFF0, lbl_8055CFF4;
@@ -1721,31 +1732,33 @@ void fn_80256548(struct CarUIModelRec *arg0) {
     extern void fn_802C87B4(int, int, int, int);
     extern void fn_802C88BC(int);
     struct {
-        float vec[3];
+        float pos[3];
         unsigned int pad;
-        struct Obj_80256548 out;
+        struct Obj_80256548 view;
     } frame;
-    char *str_base = lbl_803447C0;
-    frame.vec[0] = 0.0f;
-    frame.vec[1] = 0.0f;
-    frame.vec[2] = 0.0f;
-    if (*(int *)((char *)arg0 + 0x120) == 0) {
+    char *strings = lbl_803447C0;
+    frame.pos[0] = 0.0f;
+    frame.pos[1] = 0.0f;
+    frame.pos[2] = 0.0f;
+    if (model->mode == 0) {
         if (lbl_8055F330 != 0) {
-            fn_80253004(*(int *)((char *)arg0 + 4), &frame.out);
+            fn_80253004(model->cameraIndex, &frame.view);
         } else {
-            fn_802545C4(&frame.out, *(int *)((char *)arg0 + 0xE4), *(int *)((char *)arg0 + 8));
+            fn_802545C4(&frame.view, model->modelIndex, (int)model->vehicle);
         }
-        frame.vec[0] = frame.out.pos[0];
-        frame.vec[1] = frame.out.pos[1];
-        frame.vec[2] = frame.out.pos[2];
+        frame.pos[0] = frame.view.pos[0];
+        frame.pos[1] = frame.view.pos[1];
+        frame.pos[2] = frame.view.pos[2];
     }
-    fn_80203E88((char *)arg0 + 0xA8, frame.vec, 0);
-    if (!lbl_8055F344) { lbl_8055F344 = 1; fn_802E30C8(&lbl_8055C1D0, str_base + 0x314); }
-    if (!lbl_8055F345) { lbl_8055F345 = 1; fn_802E30C8(&lbl_8055C1D0, str_base + 0x338); }
-    if (!lbl_8055F346) { lbl_8055F346 = 1; fn_802E30C8(&lbl_8055C1D0, str_base + 0x36C); }
-    if (!lbl_8055F347) { lbl_8055F347 = 1; fn_802E30C8(&lbl_8055C1D0, str_base + 0x398); }
+    fn_80203E88((void *)model->modelMtx, frame.pos, 0); /* the callee takes no arguments */
+    /* printf("%s", ...), once per message: the car preview is what clears the
+     * screen here, as the text below lbl_80344A48 explains. */
+    if (!lbl_8055F344) { lbl_8055F344 = 1; fn_802E30C8(&lbl_8055C1D0, strings + 0x314 /* "GC: CarUIModel is clearing screen" */); }
+    if (!lbl_8055F345) { lbl_8055F345 = 1; fn_802E30C8(&lbl_8055C1D0, strings + 0x338 /* "GC: because this screen has no background right now." */); }
+    if (!lbl_8055F346) { lbl_8055F346 = 1; fn_802E30C8(&lbl_8055C1D0, strings + 0x36C /* "GC: and the GC envmap stomps the backbuffer." */); }
+    if (!lbl_8055F347) { lbl_8055F347 = 1; fn_802E30C8(&lbl_8055C1D0, strings + 0x398 /* "GC: so no one is actually clearing the backbuffer besides me" */); }
     fn_802C86E8(0);
-    fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
+    fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4); /* the whole screen */
     fn_802C88BC(-1);
 }
 
