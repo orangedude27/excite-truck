@@ -352,54 +352,30 @@ void fn_80218198(void *, void **);
 int fn_80218214(void *, int, int);
 #pragma scheduling invalid_target
 #pragma cplusplus on
-extern "C" void fn_802175F0(void *arg0, int arg1, int arg2) {
-    class Dummy {
-    public:
-        virtual void v0();
-        virtual void v1();
-        virtual void v2();
-        virtual void v3();
-        virtual void v4();
-        virtual void v5();
-        virtual void v6();
-        virtual void v7();
-        virtual void v8();
-        virtual void v9();
-        virtual void v10();
-        virtual void v11();
-        virtual void v12();
-        virtual void v13();
-        virtual void v14();
-        virtual void v15(int, int);
-        virtual void v16();
-        virtual void v17();
-        virtual void v18();
-        virtual void v19();
-        virtual void v20();
-        virtual void v21();
-        virtual void v22();
-        virtual void v23();
-        virtual int v24();
-    };
-    char *base = (char *)arg0;
-    int x;
-    int y;
-    int index;
-    Dummy *obj;
+extern "C" void fn_802175F0(void *menuGroup, int screenX, int screenY) {
+    /* Second pointer-press handler: while no widget is being held, hit-test the
+       group's widgets, hold the one under the pointer, move the menu onto it when it
+       is selectable and not the current widget yet, and give it the press at the
+       group-local position. */
+    char *base = (char *)menuGroup;
+    int localX;
+    int localY;
+    int hitIndex;
+    UiWidget *widget;
     if (*(void **)(base + 0x44C) == 0) {
-        x = arg1 - *(int *)(base + 0x454);
-        y = arg2 - *(int *)(base + 0x458);
-        index = fn_80218214(arg0, x, y);
-        obj = 0;
-        if (index >= 0) obj = (Dummy *)*(void **)(base + index * 4 + 0x30);
-        *(void **)(base + 0x44C) = obj;
-        if (obj != 0 && *(void **)(base + 0x450) != obj) {
-            if (obj->v24() != 0) {
-                fn_80218198(arg0, (void **)obj);
+        localX = screenX - *(int *)(base + 0x454);
+        localY = screenY - *(int *)(base + 0x458);
+        hitIndex = fn_80218214(menuGroup, localX, localY);
+        widget = 0;
+        if (hitIndex >= 0) widget = (UiWidget *)*(void **)(base + hitIndex * 4 + 0x30);
+        *(void **)(base + 0x44C) = widget;
+        if (widget != 0 && *(void **)(base + 0x450) != widget) {
+            if (widget->IsSelectable() != 0) {
+                fn_80218198(menuGroup, (void **)widget);
             }
         }
-        if (obj != 0) {
-            obj->v15(x, y);
+        if (widget != 0) {
+            widget->v15(localX, localY);
         }
     }
 }
