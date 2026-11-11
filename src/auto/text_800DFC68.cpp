@@ -317,7 +317,10 @@ extern "C" void SetVtxColorElement__Q36nw4hbm3lyt7PictureFUlUc_800E03BC(void* th
 
 extern "C" void GetFrameSize__Q36nw4hbm3lyt6WindowFUcPCQ46nw4hbm3lyt6Window5Frame(f64* out, void* self, u8 a, u32 b);
 extern "C" u64 GetVtxPos__Q34nw4r3lyt4PaneCFv(void* self);
-extern "C" void fn_800E0434(void* self) {
+/* nw4hbm::lyt::Window::DrawSelf(const DrawInfo&): load the pane's matrix and
+ * draw the window's background quad plus its frame border at the pane's corner,
+ * picking the border routine that fits the number of frame materials (1, 4, 8). */
+extern "C" void fn_800E0434(nw4hbm::lyt::Window* window) {
     struct WindowV {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
@@ -325,38 +328,37 @@ extern "C" void fn_800E0434(void* self) {
         virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
         virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
         virtual void v20(); virtual void v21();
-        virtual void fn60();
+        virtual void LoadMtx(); /* 0x60 Pane::LoadMtx(rInfo): the DrawInfo is still in r4 */
         virtual void v64();
         virtual void v68();
-        virtual void fn6c(double*, double*, unsigned char);
-        virtual void fn70(double*, unsigned int, double*, unsigned char);
-        virtual void fn74(double*, unsigned int, double*, unsigned char);
-        virtual void fn78(double*, unsigned int, double*, unsigned char);
+        virtual void DrawContent(double*, double*, unsigned char); /* 0x6C */
+        virtual void DrawFrame1(double*, unsigned int, double*, unsigned char); /* 0x70 */
+        virtual void DrawFrame4(double*, unsigned int, double*, unsigned char); /* 0x74 */
+        virtual void DrawFrame8(double*, unsigned int, double*, unsigned char); /* 0x78 */
     };
     struct Scratch {
-        unsigned long long tmp;
-        double pos;
-        double frame[2];
-        double copy[2];
+        u64 vtxPosWords; /* GetVtxPos() hands back its VEC2 as two words... */
+        f64 pos;         /* ...re-read here as the one VEC2 the draws take */
+        f64 size[2];     /* WindowFrameSize: the border sizes GetFrameSize returns */
+        f64 drawn[2];    /* a copy of it, handed to DrawContent and the frame draws */
     };
-    unsigned char* bytes = (unsigned char*)self;
     Scratch s;
-    ((WindowV*)self)->fn60();
-    GetFrameSize__Q36nw4hbm3lyt6WindowFUcPCQ46nw4hbm3lyt6Window5Frame(s.frame, self, bytes[0x100], *(unsigned int*)(bytes + 0xFC));
-    s.copy[0] = s.frame[0];
-    s.copy[1] = s.frame[1];
-    s.tmp = GetVtxPos__Q34nw4r3lyt4PaneCFv(self);
-    s.pos = *(double*)&s.tmp;
-    ((WindowV*)self)->fn6c(&s.pos, s.copy, bytes[0xCE]);
-    switch (bytes[0x100]) {
+    ((WindowV*)window)->LoadMtx();
+    GetFrameSize__Q36nw4hbm3lyt6WindowFUcPCQ46nw4hbm3lyt6Window5Frame(s.size, window, window->materialCount, (u32)window->materials);
+    s.drawn[0] = s.size[0];
+    s.drawn[1] = s.size[1];
+    s.vtxPosWords = GetVtxPos__Q34nw4r3lyt4PaneCFv(window);
+    s.pos = *(f64*)&s.vtxPosWords;
+    ((WindowV*)window)->DrawContent(&s.pos, s.drawn, window->alpha);
+    switch (window->materialCount) {
     case 1:
-        ((WindowV*)self)->fn70(&s.pos, *(unsigned int*)(bytes + 0xFC), s.copy, bytes[0xCE]);
+        ((WindowV*)window)->DrawFrame1(&s.pos, (u32)window->materials, s.drawn, window->alpha);
         break;
     case 4:
-        ((WindowV*)self)->fn74(&s.pos, *(unsigned int*)(bytes + 0xFC), s.copy, bytes[0xCE]);
+        ((WindowV*)window)->DrawFrame4(&s.pos, (u32)window->materials, s.drawn, window->alpha);
         break;
     case 8:
-        ((WindowV*)self)->fn78(&s.pos, *(unsigned int*)(bytes + 0xFC), s.copy, bytes[0xCE]);
+        ((WindowV*)window)->DrawFrame8(&s.pos, (u32)window->materials, s.drawn, window->alpha);
         break;
     }
 }
