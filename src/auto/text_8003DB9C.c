@@ -201,14 +201,18 @@ typedef struct _GXLightObjImpl {
   extern char lbl_8055D960;
   extern int OSDisableInterrupts(void);
   extern void OSRestoreInterrupts(void);
+/*
+ * Default texture region callback: selects a GXTexRegion based on mipmap
+ * configuration for the given texture object and texmap.
+ */
 void *__GXDefaultTexRegionCallback(void *obj, unsigned int region) {
     int mipmap;
-    int isMipMap;
+    int hasMipMap;
     unsigned int shifted;
     unsigned int carry;
 
     mipmap = GXGetTexObjMipMap(obj);
-    isMipMap = GXGetTexObjAll(obj);
+    hasMipMap = GXGetTexObjAll(obj);
     shifted = region << 29;
     carry = region >> 31;
     shifted -= carry;
@@ -216,7 +220,7 @@ void *__GXDefaultTexRegionCallback(void *obj, unsigned int region) {
 
     switch (mipmap) {
     case 6:
-        if ((unsigned char)isMipMap != 0) {
+        if ((unsigned char)hasMipMap != 0) {
             return (char *)__GXData + region * 16 + 0x358;
         }
         return (char *)__GXData + region * 16 + 0x2D8;
@@ -225,7 +229,7 @@ void *__GXDefaultTexRegionCallback(void *obj, unsigned int region) {
     case 10:
         return (char *)__GXData + region * 16 + 0x258;
     default:
-        if ((unsigned char)isMipMap != 0) {
+        if ((unsigned char)hasMipMap != 0) {
             return (char *)__GXData + region * 16 + 0x2D8;
         }
         return (char *)__GXData + region * 16 + 0x258;
