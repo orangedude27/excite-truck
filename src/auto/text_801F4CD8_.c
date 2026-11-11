@@ -870,34 +870,34 @@ void fn_801F6728(void *arg0) {
 extern void fn_801E8CB8(float *, float *);
 extern float fn_80287BC8(float, float);
 extern float lbl_80562FE4;
+#pragma push
+#pragma processor 750
 void fn_801F6778(float *out, int count, float *angles, float offset, float scale) {
-    float spC, sp8;
+    float buf[4];
     float f6, f4, f31, f30, f29, f28, f27, f26;
     int i;
-    float *dst;
-    dst = out;
-    sp8 = lbl_80562FE4;
-    fn_801E8CB8(&spC, &sp8);
+    buf[0] = lbl_80562FE4;
+    fn_801E8CB8(&buf[1], &buf[0]);
     i = 0;
-    f6 = sp8 * scale;
-    f4 = spC; /* placeholder overwritten below */
-    f31 = spC * f6;
-    f29 = spC * f6;
-    f30 = spC * f6 - offset;
+    f6 = buf[0] * scale;
+    f31 = buf[1] * f6;
+    f4 = buf[2] * f6;
+    f29 = buf[3] * f6;
+    f30 = f4 - offset;
+    buf[0] = f6;
     f28 = angles[0] * f6;
     f27 = angles[1] * f6;
     f26 = angles[2] * f6;
     while (i < count) {
-        dst[0] = f31 + fn_80287BC8(-f28, f28);
-        dst[1] = f30 + fn_80287BC8(-f27, f27);
-        dst[2] = f29 + fn_80287BC8(-f26, f26);
+        out[0] = f31 + fn_80287BC8(-f28, f28);
+        out[1] = f30 + fn_80287BC8(-f27, f27);
+        out[2] = f29 + fn_80287BC8(-f26, f26);
         i++;
-        dst += 3;
+        out += 3;
     }
 }
-
-#pragma paired_single off
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
 void fn_801F6880(void *arg0) {
     extern float fn_802C9A4C(float);
     extern void fn_802C8BD0(void *);
@@ -905,58 +905,45 @@ void fn_801F6880(void *arg0) {
     extern void fn_802C8E00(int, int, void *, float, float, float, float, float);
     extern void fn_802C8E48(void);
     extern void fn_802C8D74(void);
-    float temp_f31;
-    int temp_r0, temp_r0_2, temp_r3, temp_r4, temp_r5_2;
-    int var_r30, var_r31, var_r28;
-    void *temp_r3_2, *temp_r3_3, *temp_r5, *temp_r5_3;
-
-    temp_f31 = fn_802C9A4C(*(float *)((char *)arg0 + 0x28));
+    float tmp;
+    int a0, a1, b0, b1, c0;
+    int w0, w1, w2;
+    void *q0, *q1, *q2, *q3;
+    tmp = fn_802C9A4C(*(float *)((char *)arg0 + 0x28));
     fn_802C8BD0(*(void **)((char *)arg0 + 0x24));
-    if (fn_802C8DBC((*(int *)((char *)arg0 + 0x30) - 1) *
-                    (*(int *)((char *)arg0 + 0x2C) * 2)) != 0) {
-        var_r31 = 1;
-        goto row_setup;
-    inner_body:
-        temp_r0 = *(int *)((char *)arg0 + 0x2C);
-        temp_r4 = (var_r30 + var_r28 * temp_r0) * 0xC;
-        temp_r0_2 = *(int *)((char *)arg0 + 0xC);
-        temp_r3 = *(int *)((char *)arg0 + 4);
-        temp_r3_2 = (void *)(temp_r3 + temp_r4);
-        temp_r5 = (void *)(temp_r0_2 + temp_r4);
-        fn_802C8E00(*(int *)((char *)temp_r5 + 8), var_r30 > 0, temp_r5,
-                    *(float *)(temp_r3 + temp_r4),
-                    *(float *)((char *)temp_r3_2 + 4),
-                    *(float *)((char *)temp_r3_2 + 8),
-                    *(float *)(temp_r4 + temp_r0_2),
-                    *(float *)((char *)temp_r5 + 4));
-        temp_r5_2 = (var_r30 + var_r31 * *(int *)((char *)arg0 + 0x2C)) * 0xC;
-        temp_r3_3 = (void *)(*(int *)((char *)arg0 + 0xC) + temp_r5_2);
-        temp_r5_3 = (void *)(*(int *)((char *)arg0 + 4) + temp_r5_2);
-        fn_802C8E00(*(int *)((char *)temp_r3_3 + 8), var_r30 > 0, temp_r5_3,
-                    *(float *)temp_r5_3,
-                    *(float *)((char *)temp_r5_3 + 4),
-                    *(float *)((char *)temp_r5_3 + 8),
-                    *(float *)temp_r3_3,
-                    *(float *)((char *)temp_r3_3 + 4));
-        var_r30 += 1;
-    inner_check:
-        if (var_r30 < *(int *)((char *)arg0 + 0x2C)) goto inner_body;
-        var_r31 += 1;
-    outer_check:
-        if (var_r31 < *(int *)((char *)arg0 + 0x30)) goto row_setup;
-        goto done;
-    row_setup:
-        var_r28 = var_r31 - 1;
-        var_r30 = 0;
-        goto inner_check;
-    done:
+    if (fn_802C8DBC((*(int *)((char *)arg0 + 0x30) - 1) * (*(int *)((char *)arg0 + 0x2C) * 2)) != 0) {
+        w1 = 1;
+        goto rs;
+    ib:
+        a0 = *(int *)((char *)arg0 + 0x2C);
+        b1 = (w0 + w2 * a0) * 0xC;
+        a1 = *(int *)((char *)arg0 + 0xC);
+        b0 = *(int *)((char *)arg0 + 4);
+        q0 = (void *)(b0 + b1);
+        q1 = (void *)(a1 + b1);
+        fn_802C8E00(*(int *)((char *)q1 + 8), w0 > 0, q1, *(float *)(b0 + b1), *(float *)((char *)q0 + 4), *(float *)((char *)q0 + 8), *(float *)(b1 + a1), *(float *)((char *)q1 + 4));
+        c0 = (w0 + w1 * *(int *)((char *)arg0 + 0x2C)) * 0xC;
+        q2 = (void *)(*(int *)((char *)arg0 + 0xC) + c0);
+        q3 = (void *)(*(int *)((char *)arg0 + 4) + c0);
+        fn_802C8E00(*(int *)((char *)q2 + 8), w0 > 0, q3, *(float *)q3, *(float *)((char *)q3 + 4), *(float *)((char *)q3 + 8), *(float *)q2, *(float *)((char *)q2 + 4));
+        w0 += 1;
+    ic:
+        if (w0 < *(int *)((char *)arg0 + 0x2C)) goto ib;
+        w1 += 1;
+    oc:
+        if (w1 < *(int *)((char *)arg0 + 0x30)) goto rs;
+        goto dn;
+    rs:
+        w2 = w1 - 1;
+        w0 = 0;
+        goto ic;
+    dn:
         fn_802C8E48();
     }
     fn_802C8D74();
-    fn_802C9A4C(temp_f31);
+    fn_802C9A4C(tmp);
 }
-#pragma scheduling on
-#pragma paired_single reset
+#pragma pop
 
 void *fn_801F69C8(void *arg0) {
     memset(arg0,0,0x900);
@@ -1449,7 +1436,6 @@ extern char lbl_8033AF20[];
 extern char lbl_8033AF08[];
 #pragma push
 #pragma use_lmw_stmw off
-#pragma scheduling invalid_target
 void fn_801F75A4(void *arg0, void *arg1, void *arg2, int arg3) {
     char *data = lbl_8033AC68;
     void *sp8[0x1A];
