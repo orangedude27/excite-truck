@@ -71,11 +71,10 @@ void fn_801294FC(s32 arg0, s32 arg1) {
 void fn_80129508(void *arg0, s32 arg1, void *arg2) {
     u8* p = (u8*)arg0;
     u8* q = (u8*)arg2;
-    s32 flags;
     s32 action = 0;
+    s32 flags;
     s32 changed;
     f32 value;
-
     if (q[0] != 0) {
         flags = *(s32*)(p + 0x5C);
         if (flags == 0 && q[1] != 0 && lbl_8055DFD0 != 0) {
@@ -113,7 +112,7 @@ void fn_80129508(void *arg0, s32 arg1, void *arg2) {
         }
     }
     if (action != 0) {
-        fn_801294FC(action, 0);
+        ((void (*)(s32, s32))fn_801294FC)(action, arg1);
     }
 }
 
