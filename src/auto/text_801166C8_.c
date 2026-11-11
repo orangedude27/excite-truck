@@ -632,37 +632,41 @@ void fn_801175C4(s32 arg0, s32 arg1) {
     *(s32 *)(base + 0x33C) = arg1;
 }
 
+/* Compute render/texture buffer layout parameters (sizes, strides, and flags) from
+ * a video/source object into the output descriptor. Stores base mode 1 if the
+ * source has a non-zero flag at +0x380, otherwise fills the extended layout and
+ * sets mode 2. */
 void fn_80117618(void *arg0, void *arg1) {
-    volatile s32 *out = (volatile s32 *)arg1;
+    volatile s32 *layout = (volatile s32 *)arg1;
     s32 temp_r5;
-    u32 half;
+    u32 halfDim;
 
-    out[5] = 0;
-    out[1] = (*(s32 *)((u8 *)arg0 + 0x23C) + 7) & ~7;
-    out[2] = (*(s32 *)((u8 *)arg0 + 0x240) + 7) & ~7;
-    half = (u32)(*(s32 *)((u8 *)arg0 + 0x23C) + 1);
-    out[3] = ((half >> 1) + 7) & ~7;
-    half = (u32)(*(s32 *)((u8 *)arg0 + 0x240) + 1);
-    out[6] = 1;
-    temp_r5 = ((half >> 1) + 7) & ~7;
-    out[9] = 1;
-    out[4] = temp_r5;
-    out[12] = 1;
+    layout[5] = 0;
+    layout[1] = (*(s32 *)((u8 *)arg0 + 0x23C) + 7) & ~7;
+    layout[2] = (*(s32 *)((u8 *)arg0 + 0x240) + 7) & ~7;
+    halfDim = (u32)(*(s32 *)((u8 *)arg0 + 0x23C) + 1);
+    layout[3] = ((halfDim >> 1) + 7) & ~7;
+    halfDim = (u32)(*(s32 *)((u8 *)arg0 + 0x240) + 1);
+    layout[6] = 1;
+    temp_r5 = ((halfDim >> 1) + 7) & ~7;
+    layout[9] = 1;
+    layout[4] = temp_r5;
+    layout[12] = 1;
     temp_r5 = (*(u32 *)((u8 *)arg0 + 0x20) >> 20) & 1;
-    out[7] = 0;
-    out[15] = temp_r5;
-    out[10] = 0;
-    out[13] = 0;
-    out[16] = 0;
-    out[8] = 0;
-    out[11] = 0;
-    out[14] = 0;
-    out[17] = 0;
-    if (*(s32 *)((u8 *)arg0 + 0x380) != 0) { out[0] = 1; return; }
-    out[18] = 1; out[0] = 2;
-    out[19] = 0; out[20] = 0; out[21] = 1; out[22] = 0;
-    out[23] = 0; out[24] = 1; out[25] = 0; out[26] = 0;
-    out[27] = temp_r5; out[28] = 0; out[29] = 0;
+    layout[7] = 0;
+    layout[15] = temp_r5;
+    layout[10] = 0;
+    layout[13] = 0;
+    layout[16] = 0;
+    layout[8] = 0;
+    layout[11] = 0;
+    layout[14] = 0;
+    layout[17] = 0;
+    if (*(s32 *)((u8 *)arg0 + 0x380) != 0) { layout[0] = 1; return; }
+    layout[18] = 1; layout[0] = 2;
+    layout[19] = 0; layout[20] = 0; layout[21] = 1; layout[22] = 0;
+    layout[23] = 0; layout[24] = 1; layout[25] = 0; layout[26] = 0;
+    layout[27] = temp_r5; layout[28] = 0; layout[29] = 0;
 }
 
 void fn_801176FC(void* arg0,s32 arg1){if(arg0)*(s32*)((u8*)arg0+0xb8)=arg1;}
