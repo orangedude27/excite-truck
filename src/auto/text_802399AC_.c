@@ -183,7 +183,6 @@ extern s32 fn_80209030(float);
 extern s32 fn_802090BC(s32);
 extern s32 fn_8020A5F8(float);
 extern s32 fn_802C82C4(s32);
-extern s32 fn_802E30C8();
 extern s32 lbl_8055BB00;
 extern s32 fn_80239E5C(void *, s32);
 extern void *lbl_8055F10C;
