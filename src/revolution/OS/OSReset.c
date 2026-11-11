@@ -133,6 +133,8 @@ static void KillThreads(void) {
 }
 
 void OSShutdownSystem(void) {
+    /* Shut down the system: finalize idle/SC state, persist disc and boot flags, then
+     * either return to the Wii Menu for WC24 idle mode or power off to standby. */
     SCIdleModeInfo idleMode;
     OSStateFlags stateFlags;
     u32 rtcFlags;
