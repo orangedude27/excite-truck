@@ -641,25 +641,26 @@ extern void fn_8026A248(s32, s32);
 extern s32 fn_8026A27C(s32);
 #pragma cplusplus on
 #pragma scheduling invalid_target
-extern "C" void fn_801B1390(s32 arg0, s32 arg1) {
+extern "C" /* Cycle the selected track index by an offset, using a remapped order table unless in a special mode. */
+void fn_801B1390(s32 trackIndex, s32 offset) {
     struct Dummy {
         virtual void d0();
         virtual void d1();
         virtual void *d2();
     };
-    s32 count = fn_8026A344();
+    s32 currentIndex = fn_8026A344();
     if (fn_801B526C() != 0) {
-        s32 index = ((s32)lbl_8055E678 + arg1 + count) % (s32)lbl_8055E678;
-        fn_8026A248(index, arg0);
+        s32 newIndex = ((s32)lbl_8055E678 + offset + currentIndex) % (s32)lbl_8055E678;
+        fn_8026A248(newIndex, trackIndex);
     } else {
-        s32 index = 0;
-        if (count >= 0 && count < (s32)lbl_8055E678) {
-            Dummy *obj = (Dummy *)((u8 *)lbl_8055E684 + (count << 7));
-            void *result = obj->d2();
-            index = *(s32 *)((u8 *)result + 4) - 1;
+        s32 mappedIndex = 0;
+        if (currentIndex >= 0 && currentIndex < (s32)lbl_8055E678) {
+            Dummy *entry = (Dummy *)((u8 *)lbl_8055E684 + (currentIndex << 7));
+            void *result = entry->d2();
+            mappedIndex = *(s32 *)((u8 *)result + 4) - 1;
         }
-        index = ((s32)lbl_8055E678 + arg1 + index) % (s32)lbl_8055E678;
-        fn_8026A248(lbl_80435C30[index], arg0);
+        mappedIndex = ((s32)lbl_8055E678 + offset + mappedIndex) % (s32)lbl_8055E678;
+        fn_8026A248(lbl_80435C30[mappedIndex], trackIndex);
     }
 }
 
