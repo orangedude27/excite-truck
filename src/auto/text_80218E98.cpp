@@ -5790,7 +5790,7 @@ extern "C" void fn_80223880(void *arg0) {
 }
 
 #pragma push
-#pragma scheduling invalid_target
+#pragma processor 750
 extern "C" void fn_802238D0(void *arg0, s32 arg1) {
     register f32 value;
     s32 texture;
