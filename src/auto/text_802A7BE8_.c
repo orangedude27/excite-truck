@@ -119,6 +119,7 @@ void fn_802339A8(s32 a, f32 b, s32 c, f32 d, ...);
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
+// Comparator: orders objects by squared distance to the manager position (+Y offset), returning -1/1 for qsort.
 s32 fn_802A7E08(s32 *arg0, s32 *arg1) {
     unsigned int a[3];
     unsigned int x;
