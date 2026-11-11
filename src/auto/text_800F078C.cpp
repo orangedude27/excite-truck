@@ -48,6 +48,7 @@ struct SoundInterface {
  * SeqPlayer (at 0xD8); only the fields this file touches are named. */
 struct SeqSound {
     void *vtable;                                   /* 0x000 */
+    u8 pad_004[0x0B8 - 0x004];
     struct LinkNode link;                           /* 0x0B8 node in activeList */
     u8 pad_0C0[0x1E4 - 0x0C0];
     struct SoundInstanceManager *instanceManager;   /* 0x1E4 owner's sound pool */
