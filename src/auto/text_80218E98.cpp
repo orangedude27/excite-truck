@@ -1599,7 +1599,7 @@ struct AnimClock_8021AE18 {
 // just restarts at 0.0 / 0.3.
 #pragma push
 #pragma processor 750
-extern "C" void fn_8021AE18(void *arg0) {
+extern "C" void fn_8021AE18(AnimClock_8021AE18 *clock) {
     struct Dispatch {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
@@ -1611,44 +1611,41 @@ extern "C" void fn_8021AE18(void *arg0) {
         virtual void v28(); virtual void v29(); virtual void v30();
         virtual void Update(f32);
     };
-    register f32 base;
-    register f32 step;
-    register f32 threshold;
-    if (*(u8 *)((u8 *)arg0 + 0x244) != 0 &&
-        *(u8 *)((u8 *)arg0 + 0x18) != 0) {
-        f32 now = fn_80214D48();
-        f32 current = *(f32 *)((u8 *)arg0 + 0x248);
-        threshold = *(volatile f32 *)&lbl_805634A8;
-        current -= now;
-        *(f32 *)((u8 *)arg0 + 0x248) = current;
-        if (current < threshold) {
-            step = lbl_805634A4;
-            base = lbl_805634EC;
-            s32 count = 10;
+    register f32 two;
+    register f32 one;
+    register f32 zero;
+    if (clock->animating != 0 && clock->visible != 0) {
+        f32 frameTime = fn_80214D48();
+        f32 time = clock->time;
+        zero = *(volatile f32 *)&lbl_805634A8;
+        time -= frameTime;
+        clock->time = time;
+        if (time < zero) {
+            one = lbl_805634A4;
+            two = lbl_805634EC;
+            s32 catchUps = 10;
             goto loop_test;
         loop_body:
-            register f32 old = *(f32 *)((u8 *)arg0 + 0x248);
-            *(f32 *)((u8 *)arg0 + 0x248) =
-                old + *(f32 *)((u8 *)arg0 + 0x24C);
-            ((Dispatch *)arg0)->Update(old);
-            *(f32 *)((u8 *)arg0 + 0x24C) =
-                step / (base + step / *(f32 *)((u8 *)arg0 + 0x24C));
-            count--;
-            if (count < 0)
+            register f32 updateAt = clock->time;
+            clock->time = updateAt + clock->step;
+            ((Dispatch *)clock)->Update(updateAt);
+            clock->step = one / (two + one / clock->step);
+            catchUps--;
+            if (catchUps < 0)
                 goto done;
         loop_test:
-            if (*(f32 *)((u8 *)arg0 + 0x248) < threshold)
+            if (clock->time < zero)
                 goto loop_body;
         done:
-            *(f32 *)((u8 *)arg0 + 0x248) = *(f32 *)((u8 *)arg0 + 0x24C);
+            clock->time = clock->step;
         }
     } else {
-        f32 resetDelta;
-        f32 resetTime;
-        resetTime = lbl_805634A8;
-        resetDelta = lbl_805634E8;
-        *(f32 *)((u8 *)arg0 + 0x248) = resetTime;
-        *(f32 *)((u8 *)arg0 + 0x24C) = resetDelta;
+        f32 initialStep;
+        f32 initialTime;
+        initialTime = lbl_805634A8;
+        initialStep = lbl_805634E8;
+        clock->time = initialTime;
+        clock->step = initialStep;
     }
 }
 #pragma pop
