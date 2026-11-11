@@ -135,6 +135,7 @@ void fn_8028A664(void) {
 #pragma cplusplus on
 
 extern "C" void fn_8028A784(void) {
+    /* Shutdown: unregister callbacks, destroy subsystems/owned objects, and clear global handles. */
     class Obj {
     public:
         virtual void v0(int);
@@ -144,12 +145,13 @@ extern "C" void fn_8028A784(void) {
     extern s32 fn_8028BA9C(void *);
     extern s32 fn_8028BA44(void *);
     extern s32 fn_8028B500(void *);
-extern s32 fn_8028B93C(f32 *);
+    extern s32 fn_8028B93C(f32 *);
     extern void fn_8028B4CC(void), fn_8028AD78(void);
     extern void fn_802976DC(s32);
     extern void *fn_8028C8C0(void *, s32);
     extern s32 fn_8028BC1C(s32, s32);
-    void *p;
+    void *object;
+
     fn_801EF024((void *)fn_8028BB14);
     fn_801EF024((void *)fn_8028BA9C);
     fn_801EF024((void *)fn_8028BA44);
@@ -159,8 +161,8 @@ extern s32 fn_8028B93C(f32 *);
     fn_8028AD78();
     if (lbl_8055F700) fn_802976DC(lbl_8055F700);
     lbl_8055F700 = 0;
-    p = lbl_8055F6FC;
-    if (p) ((Obj *)p)->v0(1);
+    object = lbl_8055F6FC;
+    if (object) ((Obj *)object)->v0(1);
     lbl_8055F6FC = 0;
     fn_8028C8C0((void *)lbl_8055F6F8, 1);
     lbl_8055F6F8 = 0;
