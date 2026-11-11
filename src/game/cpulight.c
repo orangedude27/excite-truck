@@ -159,6 +159,7 @@ int fn_802DB69C(void **arg0, int arg1) {
     int tex = 0;
     unsigned char *obj;
     int i = 0;
+    /* Load texture objects into GX and set up TEV stages for each active texture; returns the number of stages configured. */
     while (i < lbl_8055FEA4) {
         int base;
         unsigned char *texture;
