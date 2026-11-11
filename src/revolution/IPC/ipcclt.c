@@ -459,11 +459,12 @@ s32 IOS_ReadAsync(s32 fd, void* buf, s32 len, IPCAsyncCallback callback,
     return ret;
 }
 
-s32 IOS_Read(s32 fd, void* buf, s32 len) {
+/* Issues an IPC read request and waits for the synchronous result. */
+s32 IOS_Read(s32 fd, void* buffer, s32 length) {
     IPCRequestEx* req;
     s32 ret = __ios_Ipc1(fd, IPC_REQ_READ, NULL, NULL, &req);
     if (ret == IPC_RESULT_OK) {
-        ret = __ios_Read(req, buf, len);
+        ret = __ios_Read(req, buffer, length);
         if (ret == IPC_RESULT_OK) {
             ret = __ios_Ipc2(req, NULL);
         }
