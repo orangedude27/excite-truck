@@ -801,6 +801,7 @@ extern float PSVECDotProduct(const void *, const void *);
 extern float lbl_80562FDC;
 extern float lbl_80562FE0;
 #pragma push
+#pragma processor 750
 #pragma paired reset
 #pragma paired_single reset
 void fn_801F65D0(void *arg0) {
@@ -1442,6 +1443,7 @@ void fn_801F75A4(void *arg0, void *arg1, void *arg2, int arg3) {
     void *temp_r30;
     void *temp_r29;
     void **allocated;
+    void *copy4;
 
     temp_r30 = ((void *(*)(void *))fn_802AE414)(arg1);
     if (temp_r30 == 0) {
@@ -1455,20 +1457,22 @@ void fn_801F75A4(void *arg0, void *arg1, void *arg2, int arg3) {
             lbl_8055EC10, sp8, temp_r29, temp_r30, arg3);
         if (arg2 != 0 && lbl_8055EC1C == 0) {
             allocated = ((void **(*)(int, void *))fn_801284F8)(4, data + 0x240);
+            copy4 = allocated;
             if (allocated != 0) {
                 *allocated = lbl_8033AF20;
                 lbl_8055EC1C = allocated;
-                fn_802CD320(arg2, (int)allocated);
+                fn_802CD320(arg2, (int)copy4);
             }
         }
     } else {
         fn_801F6F3C(lbl_8055EC14, (int)sp8, (int)temp_r29, temp_r30, arg3);
         if (arg2 != 0 && lbl_8055EC20 == 0) {
             allocated = ((void **(*)(int, void *))fn_801284F8)(4, data + 0x254);
+            copy4 = allocated;
             if (allocated != 0) {
                 *allocated = lbl_8033AF08;
                 lbl_8055EC20 = allocated;
-                fn_802CD320(arg2, (int)allocated);
+                fn_802CD320(arg2, (int)copy4);
             }
         }
     }
