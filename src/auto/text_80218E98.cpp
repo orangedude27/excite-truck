@@ -6097,21 +6097,26 @@ extern "C" void fn_8022419C(void *arg0) {
  s32 ptr=*(s32 *)((u8 *)arg0+0x254); if(ptr) fn_802ED038(ptr,*(f32 *)((u8 *)arg0+0x244),*(f32 *)((u8 *)arg0+0x248),*(f32 *)((u8 *)arg0+0x24C),*(f32 *)((u8 *)arg0+0x250));
 }
 
-extern "C" void *fn_802241C8(void *arg0, void *arg1) {
-    char sp8[256];
+/* Initializes a UI image object from a descriptor and loads its image resource. */
+extern "C" void *fn_802241C8(void *object, void *descriptor) {
+    char pathBuffer[256];
+
     fn_80218F80();
-    *(void **)arg0 = lbl_8033E2CC;
-    fn_80230C30((f32 *)((u8 *)arg0 + 0x244), (f32 *)((u8 *)arg0 + 0x248),
-                *(s32 *)((u8 *)arg1 + 8), *(s32 *)((u8 *)arg1 + 0xC));
-    *(f32 *)((u8 *)arg0 + 0x24C) = *(s32 *)((u8 *)arg1 + 0x14);
-    *(f32 *)((u8 *)arg0 + 0x250) = *(s32 *)((u8 *)arg1 + 0x18);
-    sprintf(sp8, lbl_8033DAAC, (char *)arg1 + 0x40);
-    s32 res = ((s32 (*)(void *))fn_802C5130)(sp8);
-    *(s32 *)((u8 *)arg0 + 0x254) = res;
-    if (res == 0) {
-        fn_802E30C8(lbl_8033DABC, sp8);
+    *(void **)object = lbl_8033E2CC;
+
+    fn_80230C30((f32 *)((u8 *)object + 0x244), (f32 *)((u8 *)object + 0x248),
+                *(s32 *)((u8 *)descriptor + 8), *(s32 *)((u8 *)descriptor + 0xC));
+    *(f32 *)((u8 *)object + 0x24C) = *(s32 *)((u8 *)descriptor + 0x14);
+    *(f32 *)((u8 *)object + 0x250) = *(s32 *)((u8 *)descriptor + 0x18);
+
+    sprintf(pathBuffer, lbl_8033DAAC, (char *)descriptor + 0x40);
+    s32 imageRes = ((s32 (*)(void *))fn_802C5130)(pathBuffer);
+    *(s32 *)((u8 *)object + 0x254) = imageRes;
+    if (imageRes == 0) {
+        fn_802E30C8(lbl_8033DABC, pathBuffer);
     }
-    return arg0;
+
+    return object;
 }
 
 extern "C" void *fn_802242A4(void *arg0,s32 arg1) {
