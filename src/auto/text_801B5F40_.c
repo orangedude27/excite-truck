@@ -107,7 +107,7 @@ s32 fn_801B60F4(void *arg0, f32 arg1) {
 
 extern float lbl_805626B8;
 static inline s32 GridCell(f32 v) {
-    s32 i = (s32)(v / lbl_805626B0);
+    s32 i = (s32)((v + lbl_805626B4) / lbl_805626B0);
     if (i < 0)
         i = 0;
     else if (i >= 0x64)
@@ -115,24 +115,10 @@ static inline s32 GridCell(f32 v) {
     return i;
 }
 void fn_801B619C(u32 *arg0, s32 *arg1, f32 *arg2) {
-    s32 x0, x1, y0, y1;
-    f32 f;
-    f = arg2[0] - lbl_805626B8;
-    f += lbl_805626B4;
-    x0 = (s32)(f / lbl_805626B0);
-    if (x0 < 0) x0 = 0; else if (x0 >= 100) x0 = 99;
-    f = lbl_805626B8 + arg2[0];
-    f += lbl_805626B4;
-    x1 = (s32)(f / lbl_805626B0);
-    if (x1 < 0) x1 = 0; else if (x1 >= 100) x1 = 99;
-    f = arg2[2] - lbl_805626B8;
-    f += lbl_805626B4;
-    y0 = (s32)(f / lbl_805626B0);
-    if (y0 < 0) y0 = 0; else if (y0 >= 100) y0 = 99;
-    f = lbl_805626B8 + arg2[2];
-    f += lbl_805626B4;
-    y1 = (s32)(f / lbl_805626B0);
-    if (y1 < 0) y1 = 0; else if (y1 >= 100) y1 = 99;
+    s32 x0 = GridCell(lbl_805626B4 + (arg2[0] - lbl_805626B8));
+    s32 x1 = GridCell(lbl_805626B4 + (lbl_805626B8 + arg2[0]));
+    s32 y0 = GridCell(lbl_805626B4 + (arg2[2] - lbl_805626B8));
+    s32 y1 = GridCell(lbl_805626B4 + (lbl_805626B8 + arg2[2]));
     if (x0 != x1) {
         if (y0 != y1) {
             *arg1 = 4;
