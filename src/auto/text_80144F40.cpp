@@ -814,38 +814,33 @@ extern "C" void fn_801460F4(void) {
 #pragma push
 #pragma use_lmw_stmw off
 #pragma dont_inline on
-extern "C" void *fn_801460F8(void *arg0, const char *arg1, s32 arg2) {
-    struct Result { void *data; s32 count; s32 size; void *end; };
-    extern void *fn_801284F8(u32, void *);
-    extern void *fn_8012850C(u32, void *);
-    extern void *fn_8002F37C(void *, void *, s32, s32, s32);
-    extern s32 fn_80145140(void *, const char *);
-    extern void fn_801455B8(void *, void *, s32, s32);
+extern "C" void *fn_801460F8(void *collection, const char *wantedName, s32 unused) {
     extern void fn_80146200(void);
-    extern char lbl_8032D108[];
-    extern char lbl_80559E48[];
-    extern int stricmp(const char *, const char *);
+    struct Result { void *data; s32 count; s32 size; void *end; };
+    class Collection { public: virtual void a(); virtual void *get(s32); };
+    class Item { public: virtual const char *name(); };
     Result *result;
-    s32 size = fn_80145140(arg0, arg1);
+    s32 size = fn_80145140(collection, wantedName);
     result = (Result *)fn_801284F8(0x10, lbl_8032D108);
     if (result != 0) {
-        void *arena = fn_8012850C((size << 5) + 0x10, lbl_80559E48);
-        result->data = fn_8002F37C(arena, (void *)fn_80146200, 0, 0x20, size);
+        s32 bytes = (size << 5) + 0x10;
+        s32 allocator = (s32)fn_8012850C(bytes, &lbl_80559E48);
+        result->data = ((void *(*)(s32, void *, s32, s32, s32))fn_8002F37C)(allocator, (void *)fn_80146200, 0, 0x20, size);
         result->size = size;
         result->count = 0;
         result->end = result->data;
     }
     s32 i = 0;
     while (1) {
-        void *item = ((void *(*)(void *, s32))(*(void ***)arg0)[3])(arg0, i);
+        void *item = ((Collection *)collection)->get(i);
         if (item == 0) break;
-        const char *name = ((const char *(*)(void *))(*(void ***)item)[2])(item);
-        if (stricmp(name, arg1) == 0) {
+        const char *name = ((Item *)item)->name();
+        if (stricmp(name, wantedName) == 0) {
             s32 count = result->count;
             void *data = result->data;
-            s32 offset = count << 5;
+            s32 offset = count * 0x20;
             result->count = count + 1;
-            fn_801455B8((char *)data + offset, item, count, (s32)data);
+            fn_801455B8((char *)data + offset, item);
         }
         i++;
     }
