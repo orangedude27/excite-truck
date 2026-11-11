@@ -904,17 +904,19 @@ int fn_802CFDE0(void) {
     extern char lbl_8034C058[];
     extern void fn_802ECA48(void);
     extern int fn_802E2C20(void);
-    register int temp_r0;
-    register int var_r4;
+    int a;
+    int b;
+    int c;
+    int sum;
     int end;
     int start;
-
-    fn_802ECA48();
-    temp_r0 = (int)lbl_8055FD94 + lbl_8055FD9C;
-    var_r4 = (int)lbl_8055FD98;
-    if (temp_r0 > var_r4) {
-        var_r4 = temp_r0;
-        lbl_8055FD98 = (unsigned int)var_r4;
+    a = (int)lbl_8055FD94;
+    b = lbl_8055FD9C;
+    c = (int)lbl_8055FD98;
+    sum = a + b;
+    if (sum > c) {
+        c = sum;
+        lbl_8055FD98 = (unsigned int)c;
     }
     fn_802D6C78();
     GXGetVtxDesc();
@@ -930,15 +932,15 @@ int fn_802CFDE0(void) {
     DCFlushRange((void *)lbl_8055FDA0, (unsigned long)lbl_8055FDA8);
     lbl_8055FD38 = 0;
     lbl_8055FD34 = 1;
-    for (;;) {
-        if (*(volatile int *)&lbl_8055FD38 > 10) {
+    while ((unsigned char)lbl_8055FD3C == 0) {
+        if (lbl_8055FD38 > 10) {
             OSReport(lbl_8034C058);
             fn_802CED78();
             fn_802CFD74();
             fn_802CF048(1);
             lbl_8055FD40 = fn_802E2C20();
+            continue;
         }
-        if ((unsigned char)lbl_8055FD3C != 0) break;
     }
     lbl_8055FD34 = 0;
     lbl_8055FD2C = (int)lbl_8055FD30 - 1;
@@ -1765,9 +1767,7 @@ extern float PSVECMag(float *);
 extern float lbl_80564F80, lbl_80564F88, lbl_80564F8C, lbl_80564F90, lbl_80564F94;
 extern double lbl_80564FA0;
 #pragma push
-#pragma paired off
-#pragma paired_single off
-#pragma scheduling invalid_target
+#pragma processor 750
 void fn_802D17BC(void *light, float *a, float *b, unsigned char *color, float scale) {
     unsigned char c2, c0, c3;
     unsigned char rgba[4];
@@ -2397,6 +2397,34 @@ void fn_802D3144(void) {
     lbl_8055FD88 = lbl_8055FD86;
     lbl_804C5700[0] = 1;
 }
+
+int fn_802D31D8(void) {
+    volatile unsigned char col[4];
+    unsigned long c;
+
+    lbl_8055FDB4 = 1;
+    GXSetColorUpdate(0);
+    GXSetAlphaUpdate(1);
+    GXSetDstAlpha(0, 0);
+    fn_802CF5D4();
+    lbl_8055FD1C = (void *)((unsigned long)lbl_8055FD1C & 0xFFFFFFF7);
+    GXSetNumTevStages(1);
+    GXSetNumTexGens(0);
+    GXSetZMode(1, 6, 0);
+    GXSetTevOrder(0, 0xFF, 0xFF, 4);
+    GXSetTevAlphaIn(0, 7, 7, 7, 1);
+    GXSetTevAlphaOp(0, 0, 0, 0, 0, 0);
+    GXSetTevColorOp(0, 0, 0, 0, 1, 0);
+    GXSetTevColorIn(0, 0xF, 0xF, 0xF, 0xF);
+    c = fn_802CE9FC(0, 0, 0, 4);
+    col[3] = c;
+    col[0] = c >> 24;
+    col[1] = c >> 16;
+    col[2] = c >> 8;
+    ((void (*)(int, volatile unsigned char *))GXSetTevColor)(1, col);
+    return 1;
+}
+
 #pragma dont_inline reset
 
 void fn_802D3304(void) {
