@@ -643,7 +643,7 @@ void fn_801D5488(void) {
     extern float lbl_80562AE0;
     extern float lbl_80562B08;
     char *base;
-    unsigned char *obj = *(unsigned char **)lbl_804422F0;
+    char *obj = *(char **)lbl_804422F0;
     if (obj == 0) return;
     base = lbl_804422F0;
     if (*(float *)(base + 4) > lbl_80562ADC) {
@@ -651,12 +651,12 @@ void fn_801D5488(void) {
         float f0 = *(float *)(base + 4) - lbl_80562B08;
         *(float *)(base + 4) = f0;
         f2 = (f2 < f0) ? f2 : f0;
-        obj = *(unsigned char **)lbl_804422F0;
+        obj = *(char **)lbl_804422F0;
         if (f2 != *(float *)(obj + 8)) {
             obj[0x4d] = 1;
             *(float *)(obj + 8) = f2;
         }
-        obj = *(unsigned char **)lbl_804422F0;
+        obj = *(char **)lbl_804422F0;
         obj[0x4a] = 0;
         obj[0x4b] = 1;
         obj[0x49] = 1;
