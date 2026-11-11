@@ -2922,34 +2922,38 @@ struct Fn867B0Iface {
     virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
     virtual int v8();
 };
+struct Fn87238A {
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+    virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+    virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+    virtual void v12(); virtual void v13(); virtual int v14();
+};
+struct Fn87238B {
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+    virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+    virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+    virtual void v12(char *);
+};
 #pragma cplusplus on
 extern "C" void fn_8028679C(void *arg0) {
     ((ebi::title::TPlaneObj*)arg0)->m_sub->v7();
 }
 #pragma cplusplus off
 int fn_802867B0(void *arg0) {
-    void *p;
-    int value;
-    int limit;
-    p = *(void **)((char *)arg0 + 0x20);
-    if (p == 0) goto fallback;
-    value = (int)((float)*(int *)p + *(float *)((char *)p + 0x10));
-    limit = *(int *)((char *)p + 4);
-    if (value < limit)
-        return value;
-    return limit;
-fallback:
-#pragma cplusplus on
-    struct Iface {
-        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
-        virtual int v8();
-    };
+    void *p = *(void **)((char *)arg0 + 0x20);
+    if (p != 0) {
+        int value = (int)((float)*(int *)p + *(float *)((char *)p + 0x10));
+        int limit = *(int *)((char *)p + 4);
+        if (value < limit)
+            return value;
+        return limit;
+    }
     {
     void *q = *(void **)((char *)arg0 + 0x1c);
-    return ((struct Iface *)q)->v8();
-    }
+#pragma cplusplus on
+    return ((struct Fn867B0Iface *)q)->v8();
 #pragma cplusplus reset
+    }
 }
 
 void fn_80286834(void *arg0) {
