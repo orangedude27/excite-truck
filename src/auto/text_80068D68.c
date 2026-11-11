@@ -23607,13 +23607,15 @@ BOOLEAN SDP_AddAttribute(UINT32 handle, UINT16 attr_id, UINT8 attr_type,
 }
 
 extern char lbl_80319FCC[];
+/* Builds a data element sequence of 16-bit UUIDs and adds it as an SDP
+ * attribute, stopping early with a trace warning if the buffer would overflow. */
 BOOLEAN SDP_AddUuidSequence(UINT32 handle, UINT16 attr_id, UINT16 num_uuids, UINT16 *p_uuids) {
-    UINT16 xx;
+    UINT16 uuidIndex;
     UINT8 buff[0xA0];
     UINT8 *p = buff;
     INT32 max_len = 0x4D;
 
-    for (xx = 0; xx < num_uuids; xx++, p_uuids++) {
+    for (uuidIndex = 0; uuidIndex < num_uuids; uuidIndex++, p_uuids++) {
         p[0] = 0x19;
         p[1] = *p_uuids >> 8;
         p[2] = *p_uuids;
@@ -23621,7 +23623,7 @@ BOOLEAN SDP_AddUuidSequence(UINT32 handle, UINT16 attr_id, UINT16 num_uuids, UIN
 
         if ((p - buff) > max_len) {
             if (lbl_803C4C40[0x4630] >= 2) {
-                fn_8007096C(0xA0001, lbl_80319FCC, xx, num_uuids);
+                fn_8007096C(0xA0001, lbl_80319FCC, uuidIndex, num_uuids);
             }
             break;
         }
