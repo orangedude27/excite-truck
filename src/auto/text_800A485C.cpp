@@ -19644,6 +19644,8 @@ extern "C" char *fn_800D3944(char *str, s32 count, u32 delim) {
     s32 inDelim = 0;
     char *p = str;
 
+    /* Find and return a pointer to the Nth non-delimiter token in the string,
+       using the configured character reader; returns 0 at end-of-string/newline. */
     if (lbl_8055DDD8 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EC50, 0x1B0, lbl_8031ED84);
     }
