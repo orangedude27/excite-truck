@@ -544,9 +544,12 @@ int fn_8001FAC8(int arg0, const char *arg1) {
     return total;
 }
 
-void fn_8001FBE4(s32 arg0, const char *arg1, s32 arg2) {
-    char *record;
-    char *entry;
+/* Adds amount to statistic `stat` of the object named `objectName` in this
+ * session's pending achievements block, giving the object an entry of its own
+ * (its canonical name copied in) the first time it is scored. */
+void fn_8001FBE4(s32 stat, const char *objectName, s32 amount) {
+    char *row;
+    AchEntry *entry;
     char *name;
     s32 count;
     char *dst;
@@ -557,27 +560,27 @@ void fn_8001FBE4(s32 arg0, const char *arg1, s32 arg2) {
     s32 rowOffset;
     if (fn_8001FD24() == 0)
         return;
-    name = (char *)fn_80016720(arg1);
-    record = lbl_8035AF38;
-    entry = record + 0x50;
+    name = (char *)fn_80016720(objectName);
+    row = lbl_8035AF38;
+    entry = (AchEntry *)(row + ACH_NAME_OFFSET);
     found = -1;
     empty = -1;
     i = 0;
     do {
-        if (empty < 0 && (signed char)record[0x50] == 0)
+        if (empty < 0 && (signed char)row[ACH_NAME_OFFSET] == 0)
             empty = i;
-        else if (stricmp(entry, name) == 0)
+        else if (stricmp(entry->name, name) == 0)
             found = i;
         i++;
-        record += 0x28;
-        entry += 0x28;
-    } while (i < 0x32);
+        row += ACH_ENTRY_SIZE;
+        entry++;
+    } while (i < ACH_ENTRY_COUNT);
     if (found < 0) {
-        rowOffset = empty * 0x28;
+        rowOffset = empty * ACH_ENTRY_SIZE;
         address = (s32)lbl_8035AF38;
         address += rowOffset;
-        dst = (char *)(address + 0x50);
-        count = 0x20;
+        dst = (char *)(address + ACH_NAME_OFFSET);
+        count = ACH_NAME_SIZE;
         goto copy;
         do {
             count--;
@@ -590,13 +593,13 @@ void fn_8001FBE4(s32 arg0, const char *arg1, s32 arg2) {
         } while ((signed char)dst[-1] != 0);
         address = (s32)lbl_8035AF38;
         address += rowOffset;
-        address += arg0 * 4;
-        *(s32 *)(address + 0x70) = arg2;
+        address += stat * 4;
+        *(s32 *)(address + ACH_VALUE_OFFSET) = amount;
     } else {
         address = (s32)lbl_8035AF38;
-        address += found * 0x28;
-        address += arg0 * 4;
-        *(s32 *)(address + 0x70) += arg2;
+        address += found * ACH_ENTRY_SIZE;
+        address += stat * 4;
+        *(s32 *)(address + ACH_VALUE_OFFSET) += amount;
     }
 }
 
