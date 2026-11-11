@@ -205,6 +205,7 @@ struct F92Node {
 };
 
 extern "C" void fn_801FA010(void **);
+extern "C" void fn_801FA0B0(void **);
 extern "C" void fn_801F9A24(F92Node **);
 extern "C" s32 fn_801F9CF8(void *);
 extern "C" void fn_801FA138(void **);
@@ -1132,7 +1133,7 @@ extern "C" void fn_801F973C(void *arg0, void *arg1, u32 arg2) {
     register s32 zero;
     void *node;
 
-    if ((arg2 & 2) != 0) {
+    if (arg2 & 2) {
         state = *(volatile u8 *)&lbl_8055EC7C;
         flags = *(volatile s32 *)((u8 *)arg0 + 0x24);
         state = (state == 0);
@@ -1157,7 +1158,7 @@ extern "C" void fn_801F973C(void *arg0, void *arg1, u32 arg2) {
             if (node != 0) goto loop_body;
         }
     }
-    if ((arg2 & 1) != 0) fn_80204018(arg0, arg1);
+    if (arg2 & 1) fn_80204018(arg0, arg1);
 }
 
 extern "C" void *fn_801F981C(void *object, s32 flags) {
@@ -2306,10 +2307,10 @@ extern "C" void fn_801FC048(void *arg0) {
         zero = lbl_80562FF0;
         value = lbl_80563014;
         *(void **)obj = lbl_80333B98;
-        x = *(f32 *)((u8 *)arg0 + 0x58);
         *(s32 *)((u8 *)obj + 0xC) = 0;
         *(s32 *)((u8 *)obj + 4) = 0;
         *(s32 *)((u8 *)obj + 8) = 0;
+        x = *(f32 *)((u8 *)arg0 + 0x58);
         *(s32 *)((u8 *)obj + 0x18) = 0x53504852;
         *(f32 *)((u8 *)obj + 0x10) = temp_f31;
         *(f32 *)((u8 *)obj + 0x14) = value;
