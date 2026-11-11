@@ -23118,35 +23118,58 @@ tSDP_DISC_REC *SDP_FindServiceInDb(tSDP_DISCOVERY_DB *p_db, UINT16 service_uuid,
     return NULL;
 }
 
-tSDP_DISC_REC *SDP_FindServiceUUIDInDb(tSDP_DISCOVERY_DB *p_db, tBT_UUID *p_uuid, tSDP_DISC_REC *p_start_rec) {
-    tSDP_DISC_REC *p_rec;
+/*******************************************************************************
+**
+** Function         SDP_FindServiceUUIDInDb
+**
+** Description      Searches a discovery database for a service record that
+**                  contains the given UUID, either in its ServiceClassIDList
+**                  attribute sequence or directly as the ServiceID attribute.
+**                  The search starts after p_start_rec when provided,
+**                  otherwise from the first record in the database.
+**
+** Returns          Pointer to the matching discovery record, or NULL if none
+**                  is found.
+**
+*******************************************************************************/
+tSDP_DISC_REC *SDP_FindServiceUUIDInDb(tSDP_DISCOVERY_DB *p_db, tBT_UUID *p_uuid, tSDP_DISC_REC *p_start_rec)
+{
+    tSDP_DISC_REC  *p_rec;
     tSDP_DISC_ATTR *p_attr;
-    tSDP_DISC_ATTR *p_sub_attr;
+    tSDP_DISC_ATTR *p_svc_class_attr;
 
-    p_rec = (p_start_rec == NULL) ? p_db->p_first_rec : p_start_rec->p_next_rec;
-    while (p_rec != NULL) {
-        p_attr = p_rec->p_first_attr;
-        while (p_attr != NULL) {
-            if (p_attr->attr_id == ATTR_ID_SERVICE_CLASS_ID_LIST &&
-                SDP_DISC_ATTR_TYPE(p_attr->attr_len_type) == DATA_ELE_SEQ_DESC_TYPE) {
-                p_sub_attr = p_attr->attr_value.v.p_sub_attr;
-                while (p_sub_attr != NULL) {
-                    if (SDP_DISC_ATTR_TYPE(p_sub_attr->attr_len_type) == UUID_DESC_TYPE &&
-                        sdpu_compare_uuid_with_attr(p_uuid, p_sub_attr))
-                        return p_rec;
-                    p_sub_attr = p_sub_attr->p_next_attr;
+    for (p_rec = (p_start_rec == NULL) ? p_db->p_first_rec : p_start_rec->p_next_rec;
+         p_rec != NULL;
+         p_rec = p_rec->p_next_rec)
+    {
+        for (p_attr = p_rec->p_first_attr; p_attr != NULL; p_attr = p_attr->p_next_attr)
+        {
+            if ((p_attr->attr_id == ATTR_ID_SERVICE_CLASS_ID_LIST) &&
+                (SDP_DISC_ATTR_TYPE(p_attr->attr_len_type) == DATA_ELE_SEQ_DESC_TYPE))
+            {
+                for (p_svc_class_attr = p_attr->attr_value.v.p_sub_attr;
+                     p_svc_class_attr != NULL;
+                     p_svc_class_attr = p_svc_class_attr->p_next_attr)
+                {
+                    if ((SDP_DISC_ATTR_TYPE(p_svc_class_attr->attr_len_type) == UUID_DESC_TYPE) &&
+                        sdpu_compare_uuid_with_attr(p_uuid, p_svc_class_attr))
+                    {
+                        return (p_rec);
+                    }
                 }
                 break;
             }
-            if (p_attr->attr_id == ATTR_ID_SERVICE_ID &&
-                SDP_DISC_ATTR_TYPE(p_attr->attr_len_type) == UUID_DESC_TYPE &&
+
+            if ((p_attr->attr_id == ATTR_ID_SERVICE_ID) &&
+                (SDP_DISC_ATTR_TYPE(p_attr->attr_len_type) == UUID_DESC_TYPE) &&
                 sdpu_compare_uuid_with_attr(p_uuid, p_attr))
-                return p_rec;
-            p_attr = p_attr->p_next_attr;
+            {
+                return (p_rec);
+            }
         }
-        p_rec = p_rec->p_next_rec;
     }
-    return NULL;
+
+    return (NULL);
 }
 
 UINT16 SDP_SetLocalDiRecord(tSDP_DI_RECORD *p_device_info, UINT32 *p_handle) {
