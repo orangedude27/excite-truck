@@ -951,46 +951,49 @@ void fn_8025B134(void) {
 }
 
 void fn_8025B138(void *arg0) {
-    typedef void (*Fmt)(char *, int, const char *, ...);
+    /* Update this object's cached text/labels from a resource string: copy up to 0x32
+     * chars from fn_8001EFAC(id,size) into the child buffer, set a "Level %d" label
+     * when size > 0, then format the display string at arg0+0x20. */
+    typedef void (*FormatFn)(char *, int, const char *, ...);
     void *tmp = arg0;
-    void *obj;
-    int size;
-    int res;
-    unsigned char c;
-    int count;
+    void *child;
+    int textSize;
+    int resourceId;
+    unsigned char ch;
+    int remaining;
     unsigned char *dst;
     unsigned char *src;
-    size = *(int *)((char *)arg0 + 0x1C);
-    obj = *(void **)((char *)tmp + 0x18);
-    res = *(int *)((char *)arg0 + 0x70);
-    *(int *)((char *)arg0 + 0x74) = size;
-    *(int *)((char *)obj + 0x4C) = size;
-    src = fn_8001EFAC(res, size);
+    textSize = *(int *)((char *)arg0 + 0x1C);
+    child = *(void **)((char *)tmp + 0x18);
+    resourceId = *(int *)((char *)arg0 + 0x70);
+    *(int *)((char *)arg0 + 0x74) = textSize;
+    *(int *)((char *)child + 0x4C) = textSize;
+    src = fn_8001EFAC(resourceId, textSize);
     if (src == 0)
-        goto else_copy;
-    dst = (unsigned char *)obj + 4;
-    count = 0x32;
-    goto copy;
-next:
-    count--;
-    if (count > 0)
-        goto copy;
+        goto noSource;
+    dst = (unsigned char *)child + 4;
+    remaining = 0x32;
+    goto copyChar;
+nextChar:
+    remaining--;
+    if (remaining > 0)
+        goto copyChar;
     dst[-1] = 0;
-    goto done;
-copy:
-    c = *src++;
-    *dst++ = c;
-    if ((signed char)c == 0)
-        goto done;
-    goto next;
-else_copy:
-    *((unsigned char *)obj + 4) = 0;
-done:
-    if (size > 0)
-        ((Fmt)fn_801345D8)((char *)obj + 0x36, 0x14, lbl_80344F08, size);
+    goto copyDone;
+copyChar:
+    ch = *src++;
+    *dst++ = ch;
+    if ((signed char)ch == 0)
+        goto copyDone;
+    goto nextChar;
+noSource:
+    *((unsigned char *)child + 4) = 0;
+copyDone:
+    if (textSize > 0)
+        ((FormatFn)fn_801345D8)((char *)child + 0x36, 0x14, lbl_80344F08, textSize);
     else
-        *((unsigned char *)obj + 0x36) = 0;
-    ((Fmt)fn_801345D8)((char *)arg0 + 0x20, 0x50, &lbl_8055C38C, fn_8001EFAC(*(int *)((char *)arg0 + 0x70), *(int *)((char *)arg0 + 0x74)));
+        *((unsigned char *)child + 0x36) = 0;
+    ((FormatFn)fn_801345D8)((char *)arg0 + 0x20, 0x50, &lbl_8055C38C, fn_8001EFAC(*(int *)((char *)arg0 + 0x70), *(int *)((char *)arg0 + 0x74)));
 }
 
 extern int fn_80214A9C(int);
@@ -1592,36 +1595,49 @@ done:
 }
 
 void fn_8025BED0(void *arg0) {
+    typedef void (*Fmt)(char *, int, const char *, ...);
+    void *tmp = arg0;
     void *data = *(void **)((char *)arg0 + 0x1C);
     void *obj;
     int size;
-    unsigned char *src;
-    unsigned char *dst;
+    int res;
+    unsigned char c;
     int count;
-    if (*(unsigned char *)((char *)data + 0xC5) == 0) return;
-    if (*(unsigned char *)((char *)data + 0x58) != 0) return;
+    unsigned char *dst;
+    unsigned char *src;
+    if (*(unsigned char *)((char *)data + 0xC5) == 0)
+        return;
+    if (*(unsigned char *)((char *)data + 0x58) != 0)
+        return;
     size = *(int *)((char *)data + 0xC8);
-    obj = *(void **)((char *)arg0 + 0x18);
+    res = *(int *)((char *)data + 0x18);
+    obj = *(void **)((char *)tmp + 0x18);
     *(int *)((char *)arg0 + 0x24) = size;
-    *(int *)((char *)data + 0x18);
-    *(int *)((char *)arg0 + 0x20) = *(int *)((char *)data + 0x18);
+    *(int *)((char *)arg0 + 0x20) = res;
     *(int *)((char *)obj + 0x4C) = size;
-    src = fn_8001EFAC(*(int *)((char *)arg0 + 0x20), size);
-    if (src != 0) {
-        dst = (unsigned char *)obj + 4;
-        count = 0x32;
-        while (--count > 0) {}
-        dst[-1] = 0;
-        do {
-            unsigned char c = *src++;
-            *dst++ = c;
-            if ((signed char)c == 0) break;
-        } while (1);
-    } else {
-        *((unsigned char *)obj + 4) = 0;
-    }
+    src = fn_8001EFAC(res, size);
+    if (src == 0)
+        goto else_copy;
+    dst = (unsigned char *)obj + 4;
+    count = 0x32;
+    goto copy;
+next:
+    count--;
+    if (count > 0)
+        goto copy;
+    dst[-1] = 0;
+    goto done;
+copy:
+    c = *src++;
+    *dst++ = c;
+    if ((signed char)c == 0)
+        goto done;
+    goto next;
+else_copy:
+    *((unsigned char *)obj + 4) = 0;
+done:
     if (size > 0)
-        fn_801345D8((char *)obj + 0x36, 0x14, lbl_80344F08, size);
+        ((Fmt)fn_801345D8)((char *)obj + 0x36, 0x14, lbl_80344F08, size);
     else
         *((unsigned char *)obj + 0x36) = 0;
     obj = *(void **)((char *)arg0 + 0x18);
