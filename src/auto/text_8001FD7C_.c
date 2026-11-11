@@ -818,30 +818,31 @@ extern float lbl_80560560, lbl_80560564, lbl_805604B8, lbl_805604B4, lbl_8056056
 extern int fn_802E2C20(void);
 extern void fn_80020860(int);
 void fn_800217E4(void) {
-    float temp_f1;
-    float var_f0;
-    float var_f4;
-    int temp_r0;
-    int temp_r31;
+    /* While active, updates a time-based value from elapsed ticks and applies it for up to 1500 ticks. */
+    float computedValue;
+    float convertedValue;
+    float progress;
+    int elapsed;
+    int amount;
 
     if (lbl_8055D648 != 0) {
-        temp_r0 = fn_802E2C20() - lbl_8055D63C;
-        if (temp_r0 < 0x5DC) {
-            var_f4 = lbl_805604B8;
-            var_f4 = var_f4 < ((float)temp_r0 - lbl_80560560) / lbl_80560564
-                ? var_f4
-                : ((float)temp_r0 - lbl_80560560) / lbl_80560564;
-            var_f4 = var_f4 > lbl_805604B4 ? var_f4 : lbl_805604B4;
-            temp_f1 = lbl_80560554 + (var_f4 * lbl_80560568);
-            if (temp_f1 < lbl_805604B4) {
-                var_f0 = temp_f1 - lbl_805604FC;
+        elapsed = fn_802E2C20() - lbl_8055D63C;
+        if (elapsed < 0x5DC) {
+            progress = lbl_805604B8;
+            progress = progress < ((float)elapsed - lbl_80560560) / lbl_80560564
+                ? progress
+                : ((float)elapsed - lbl_80560560) / lbl_80560564;
+            progress = progress > lbl_805604B4 ? progress : lbl_805604B4;
+            computedValue = lbl_80560554 + (progress * lbl_80560568);
+            if (computedValue < lbl_805604B4) {
+                convertedValue = computedValue - lbl_805604FC;
             } else {
-                var_f0 = lbl_805604FC + temp_f1;
+                convertedValue = lbl_805604FC + computedValue;
             }
-            temp_r31 = (int)var_f0;
-            if (temp_r31 > 0) {
-                fn_80020860(temp_r31);
-                fn_800209A0(temp_r31, lbl_805604B4);
+            amount = (int)convertedValue;
+            if (amount > 0) {
+                fn_80020860(amount);
+                fn_800209A0(amount, lbl_805604B4);
             }
         } else {
             lbl_8055D648 = 0;
