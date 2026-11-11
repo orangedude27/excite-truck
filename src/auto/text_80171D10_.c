@@ -3,8 +3,7 @@
 class T746D0 {
 public:
     virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
-    virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
-    virtual void d8(); virtual int v9();
+    virtual void d4(); virtual void d5(); virtual void d6(); virtual int v9();
 };
 #pragma cplusplus reset
 typedef struct { float pos[3]; int w; float a, b; } Elem_801720FC;
@@ -165,8 +164,14 @@ int fn_80171EF8(void *arg0, void *arg1) {
 }
 #pragma dont_inline reset
 
+#pragma push
+#pragma processor 750
 unsigned long long fn_80171FF0(void *arg0, int arg1, float angle, float step) {
     extern float lbl_80561A44, lbl_80561A48;
+    extern float fn_80129DC4(int, float, float);
+    extern double cos(double);
+    extern double sin(double);
+    extern int fn_80171E3C(void *);
     float zero = lbl_80561A44;
     float off[2];
     float pos[2];
@@ -187,8 +192,7 @@ unsigned long long fn_80171FF0(void *arg0, int arg1, float angle, float step) {
     }
     return *(unsigned long long *)pos;
 }
-
-#pragma dont_inline on
+#pragma pop
 unsigned int fn_801720E0(unsigned int arg0) {
     return (arg0 & 0xFF000000) | ((arg0 & 0xFEFEFE) >> 1);
 }
@@ -1573,37 +1577,35 @@ void fn_8017431C(int arg0, int arg1) {
     }
 }
 
-#pragma push
-#pragma scheduling invalid_target
+#pragma cplusplus on
 void fn_801746D0(int *arg0, int *arg1, int arg2) {
     extern float lbl_8043038C[];
-    int i;
+    register int *src;
+    register int *table;
+    register int *row;
+    register int i;
+    register int *dst;
     int is_zero;
-    int *src;
-    int *row;
-    int *table;
-
-    arg1[0] = arg0[0x170 / 4];
-    arg1[1] = 1;
-    *(unsigned char *)((unsigned char *)arg1 + 0xD) =
-        (unsigned char)((int (*)(void *))(*(void ***)arg0)[9])(arg0);
-    *(unsigned char *)((unsigned char *)arg1 + 0xC) = 0;
+    dst = arg1;
     src = arg0;
-    row = (int *)((unsigned char *)arg1 + 0x10);
     table = (int *)lbl_8043038C;
+    row = (int *)((unsigned char *)dst + 0x10);
     i = 0;
-    while (i < arg1[0]) {
+    dst[0] = src[0x170 / 4];
+    dst[1] = 1;
+    *(unsigned char *)((unsigned char *)dst + 0xD) = (unsigned char)((T746D0 *)src)->v9();
+    *(unsigned char *)((unsigned char *)dst + 0xC) = 0;
+    while (i < dst[0]) {
         is_zero = !((int (*)(int))fn_80171EC0)(i);
         *(unsigned char *)((unsigned char *)row + 0x10) = (unsigned char)is_zero;
         row[1] = i;
         i += 1;
-        row[2] = src[0x94 / 4] +
-            ((src[0x9C / 4] + src[0x98 / 4]) * table[5]);
+        row[2] = src[0x94 / 4] + ((src[0x9C / 4] + src[0x98 / 4]) * table[5]);
         row = (int *)((unsigned char *)row + 0x14);
         src += 0x1C / 4;
     }
 }
-#pragma use_lmw_stmw off
+#pragma cplusplus reset
 void fn_80174794(void **arg0) {
     int count;
     int i;
