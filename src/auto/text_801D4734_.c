@@ -1581,6 +1581,44 @@ int fn_801D6C3C(int arg0) {
     return 0;
 }
 
+void fn_801D6C68(void *arg0) {
+    s32 remaining;
+    void *obj;
+    f32 value;
+    remaining = lbl_8055E3C4 - (*(s32 *)((u8 *)arg0 + 0x10) + *(s32 *)((u8 *)arg0 + 0xC));
+    if (*(s32 *)((u8 *)arg0 + 4) != 2) return;
+    if (remaining <= 0) return;
+    if (*(u8 *)((u8 *)arg0 + 0x16) != 0) {
+        obj = *(void **)((u8 *)arg0 + 0x30);
+        value = lbl_80562AE0;
+        if (value != *(f32 *)((u8 *)obj + 8)) {
+            *(u8 *)((u8 *)obj + 0x4D) = 1;
+            *(f32 *)((u8 *)obj + 8) = value;
+        }
+    }
+    if (*(u8 *)((u8 *)arg0 + 0x15) != 0) {
+        obj = *(void **)((u8 *)arg0 + 0x30);
+        *(u8 *)((u8 *)obj + 0x4A) = 0;
+        *(u8 *)((u8 *)obj + 0x4B) = 1;
+        *(u8 *)((u8 *)obj + 0x49) = 1;
+        if (remaining >= *(s32 *)((u8 *)arg0 + 8)) {
+            obj = *(void **)((u8 *)arg0 + 0x30);
+            *(s32 *)((u8 *)arg0 + 4) = 3;
+            *(u8 *)((u8 *)obj + 0x4A) = 1;
+            *(u8 *)((u8 *)obj + 0x4C) = 0;
+        }
+    } else {
+        int v;
+        obj = *(void **)((u8 *)arg0 + 0x30);
+        v = 1;
+        *(u8 *)((u8 *)obj + 0x49) = v;
+        v = 3;
+        *(u8 *)((u8 *)obj + 0x4B) = 0;
+        *(u8 *)((u8 *)obj + 0x4A) = 0;
+        *(s32 *)((u8 *)arg0 + 4) = v;
+    }
+}
+
 #pragma scheduling invalid_target
 void fn_801D6D28(void* arg0) {
     unsigned char* ptr = *(unsigned char**)((char*)arg0 + 0x30);
@@ -1673,67 +1711,66 @@ int fn_801D6EDC(int arg0) {
     return ((int *)arg0)[1];
 }
 
+#pragma push
+#pragma scheduling invalid_target
 int fn_801D6EE4(void *arg0) {
+    extern char lbl_80442310[];
+    extern float lbl_8055E3C8;
     register unsigned char c;
     register unsigned char *src;
     register unsigned char *dst;
     register int count;
     register char *base;
-
+    float t0;
+    float t1;
     if (*(int *)((char *)arg0 + 4) != 1) {
         goto fail;
     }
-
     base = lbl_80442310;
-    *(float *)(base + 4) = *(float *)((char *)arg0 + 8);
-    *(float *)base = lbl_8055E3C8;
-
+    t0 = *(float *)((char *)arg0 + 8);
+    t1 = lbl_8055E3C8;
+    *(float *)(base + 4) = t0;
+    *(float *)base = t1;
     src = (unsigned char *)arg0 + 0xC;
     dst = (unsigned char *)base + 0x48;
     count = 0x40;
     goto copy_first;
-
 first_count:
     if (--count > 0) {
         goto copy_first;
     }
     dst[-1] = 0;
     goto first_done;
-
 copy_first:
     c = *src++;
     *dst++ = c;
     if ((signed char)c != 0) {
         goto first_count;
     }
-
 first_done:
     src = (unsigned char *)arg0 + 0x4C;
     dst = (unsigned char *)lbl_80442310 + 8;
     count = 0x40;
     goto copy_second;
-
 second_count:
     if (--count > 0) {
         goto copy_second;
     }
     dst[-1] = 0;
     goto second_done;
-
 copy_second:
     c = *src++;
     *dst++ = c;
     if ((signed char)c != 0) {
         goto second_count;
     }
-
 second_done:
     *(int *)((char *)arg0 + 4) = 3;
     return 1;
-
 fail:
     return 0;
 }
+#pragma pop
 
 void fn_801D6FA0(int arg0) {
     if (((int *)arg0)[1] != 0) {
@@ -2234,9 +2271,7 @@ found:
 extern "C" char lbl_803385D0[];
 #pragma cplusplus on
 extern "C" void fn_801D7874(void *arg0, void *arg1) {
-    struct ObjA {
-        virtual void *v0();
-    };
+    struct ObjA { virtual void *v0(); };
     struct ObjB {
         virtual void v0();
         virtual void v1();
@@ -2246,10 +2281,10 @@ extern "C" void fn_801D7874(void *arg0, void *arg1) {
         virtual void v5();
         virtual int v6(char *, int);
     };
-    ObjA *b = (ObjA *)arg1;
+    struct ObjA *b = (struct ObjA *)arg1;
     void *node = b->v0();
     int match;
-    if (*(int *)((char *)arg0 + 0xc) >= 0 && node != 0 && *(int *)((char *)arg0 + 0xc) == ((ObjB *)node)->v6(lbl_803385D0, -1)) {
+    if (*(int *)((char *)arg0 + 0xc) >= 0 && node != 0 && ((struct ObjB *)node)->v6(lbl_803385D0, -1) == *(int *)((char *)arg0 + 0xc)) {
         match = 1;
     } else {
         match = 0;
