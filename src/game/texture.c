@@ -766,8 +766,8 @@ extern char lbl_8034B940[];
 // at a time. With none left it reports that and hands back the slot in front
 // of the array, which no caller may use.
 int fn_802CB018(void) {
-    int index = 1;
-    int result = -1;
+    int index = 1;                    /* slot 0 is reserved */
+    int result = -1;                  /* slot number, -1 while none is free */
     int group;
     unsigned char *slot = (unsigned char *)textureSlots + texSlotSize;
     for (group = 0; group < texSlotGroups; group++) {
