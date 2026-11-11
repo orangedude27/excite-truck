@@ -3493,6 +3493,7 @@ extern "C" void fn_8015D9BC(Unk801577F0* arg0, f32* arg1) {
 #pragma use_lmw_stmw off
 #pragma processor 750
 extern "C" void fn_8015DC98(Unk801577F0* arg0) {
+    /* Debug-print a header (v23 name) and a table of items with per-item fields/times, then totals. */
     struct Dispatch { virtual const char *v0(); virtual const char *v1(); virtual const char *v2(); virtual const char *v3(); virtual const char *v4(); virtual const char *v5(); virtual const char *v6(); virtual const char *v7(); virtual const char *v8(); virtual const char *v9(); virtual const char *v10(); virtual const char *v11(); virtual const char *v12(); virtual const char *v13(); virtual const char *v14(); virtual const char *v15(); virtual const char *v16(); virtual const char *v17(); virtual const char *v18(); virtual const char *v19(); virtual const char *v20(); virtual const char *v21(); virtual const char *v22(); virtual const char *v23(); };
     struct Item { s32 a; s32 b; s32 c; f32 value; u8 pad[0x28]; };
     const char *base = lbl_8032E4E0;
@@ -3501,27 +3502,27 @@ extern "C" void fn_8015DC98(Unk801577F0* arg0) {
     fn_802E30C8(base + 0xEC8);
     fn_802E30C8(base + 0xEFC);
 
-    f32 total = lbl_80561754;
+    f32 totalTime = lbl_80561754;
     s32 count;
     s32 sumB;
     s32 sumA;
-    Item *item;
+    Item *itemPtr;
     s32 offset;
     sumA = 0;
     sumB = 0;
     count = 0;
     offset = 0;
     while (count < arg0->mCount) {
-        item = (Item *)((u8 *)arg0->mData + offset);
-        fn_802E30C8(base + 0xF30, count, ((s32 *)item) + 6, item->a,
-                    item->a - item->b, item->c, item->value);
+        itemPtr = (Item *)((u8 *)arg0->mData + offset);
+        fn_802E30C8(base + 0xF30, count, ((s32 *)itemPtr) + 6, itemPtr->a,
+                    itemPtr->a - itemPtr->b, itemPtr->c, itemPtr->value);
         offset += 0x38;
         count += 1;
-        total += item->value;
-        sumA += item->a;
-        sumB += item->b;
+        totalTime += itemPtr->value;
+        sumA += itemPtr->a;
+        sumB += itemPtr->b;
     }
-    fn_802E30C8(base + 0xF60, sumA, sumA - sumB, total);
+    fn_802E30C8(base + 0xF60, sumA, sumA - sumB, totalTime);
 }
 #pragma pop
 extern "C" s32 lbl_8055A06C[1];
