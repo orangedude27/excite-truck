@@ -1061,6 +1061,8 @@ struct Dummy80218464 {
     virtual void f28(); virtual void f29(); virtual void f30();
 };
 #pragma cplusplus reset
+struct VTab80218464 { void *pad[32]; void (*f32)(void *); };
+struct VObj80218464 { struct VTab80218464 *vt; };
 #pragma cplusplus off
 void fn_80218464(void *arg0) {
     char *cursor;
