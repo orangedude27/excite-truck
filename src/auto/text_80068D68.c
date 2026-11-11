@@ -712,6 +712,14 @@ typedef struct {
 #define sdp_cb_record_db        ((tSDP_RECORD_BUILD_VIEW *)(lbl_803C4C40 + 0x1224))
 #define sdp_cb_trace_level      (lbl_803C4C40[0x4630])
 #define sdp_cb_max_attr_list_size   (*(UINT16 *)(lbl_803C4C40 + 0x462C))
+
+/* sdp_utils.c's sdpu_find_ccb_by_cid(): looks an SDP connection up in sdp_cb.ccb[]
+   (SDP_MAX_CONNECTIONS blocks of 0x478 at sdp_cb + 0x3C) by its L2CAP CID.  It is
+   not the L2CAP l2cu_find_lcb_by_handle() its symbol suggests, but this project
+   cannot rename the game's symbol, so the source uses the SDK name through this. */
+#define sdpu_find_ccb_by_cid sdpu_find_ccb_by_cid_80099E54
+extern tCONN_CB *sdpu_find_ccb_by_cid_80099E54(UINT16 cid);
+
 typedef struct { UINT8 pad[0x476]; UINT16 cont_offset; } tSDP_CCB_CONT_VIEW;
 static void process_service_attr_rsp(tCONN_CB *, UINT8 *, UINT16);
 typedef struct { UINT8 pad[0x418]; UINT32 handles[0x15]; } tSDP_CCB_HANDLE_VIEW;
