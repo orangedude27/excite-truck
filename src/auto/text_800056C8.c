@@ -93,7 +93,7 @@ typedef struct OverlayEntry { /* manager + 0x10, one per player */
  * bytes at a time, so the player it is looking at has its entry at +0x1C. */
 typedef struct OverlayCursor {
     u8 pad[0x1C];
-    OverlayEntry entry; /* 0x1C: the player being looked at */
+    void *fallback; /* 0x1C: the player being looked at's own overlay */
 } OverlayCursor;
 
 typedef struct OverlayManager {
