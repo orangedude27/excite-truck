@@ -329,6 +329,63 @@ void fn_8023D1FC(void *obj) {
     }
 }
 
+extern void fn_80208D60(int);
+extern void fn_8020A5F8(float *, float);
+void fn_8023D304(void *arg0, int arg1) {
+    float *tmp;
+    float f;
+    int idx;
+    void *item;
+    void *o38;
+    switch (arg1) {
+    case 2:
+        if (*(int *)(*(int *)((char *)arg0 + 0x24)) >= (int)fn_80208D3C()) {
+            *(int *)(*(int *)((char *)arg0 + 0x24)) = (int)fn_80208D3C() - 1;
+        }
+        fn_80208D60(*(int *)(*(int *)((char *)arg0 + 0x24)));
+        idx = *(int *)(*(int *)((char *)arg0 + 0x24));
+        if (idx >= 0 && idx < (int)fn_80208D3C()) {
+#pragma cplusplus on
+            struct IV { virtual void u0(); virtual void u1(); virtual void u2(); virtual const char *getName(); };
+            item = fn_80208D4C(idx);
+            strcpy(*(char **)((char *)arg0 + 0x28), ((struct IV *)item)->getName());
+#pragma cplusplus reset
+            return;
+        }
+        strcpy(*(char **)((char *)arg0 + 0x28), (const char *)&lbl_8055BB98);
+        return;
+    case 3:
+        tmp = *(float **)((char *)arg0 + 0x1C);
+        fn_8020A5F8(tmp, *tmp);
+        return;
+    case 0:
+        tmp = *(float **)((char *)arg0 + 0x18);
+        ((void (*)(float *, float))fn_80209030)(tmp, *tmp);
+        return;
+    case 1:
+        fn_80209090(*(int *)(*(int *)((char *)arg0 + 0x20)));
+        return;
+    case 4:
+        o38 = *(void **)((char *)arg0 + 0x38);
+        if (o38 != 0) {
+            f = *(float *)(*(int *)((char *)arg0 + 0x2C));
+            if (f != *(float *)((char *)o38 + 8)) {
+                *(char *)((char *)o38 + 0x4D) = 1;
+                *(float *)((char *)o38 + 8) = f;
+            }
+            o38 = *(void **)((char *)arg0 + 0x38);
+            *(char *)((char *)o38 + 0x4A) = 1;
+            *(char *)((char *)o38 + 0x4C) = 0;
+            o38 = *(void **)((char *)arg0 + 0x38);
+            *(char *)((char *)o38 + 0x49) = 1;
+            *(char *)((char *)o38 + 0x4B) = 0;
+            *(char *)((char *)o38 + 0x4A) = 0;
+        }
+        return;
+    }
+}
+#pragma cplusplus reset
+
 extern s32 lbl_8055BB68;
 typedef struct Obj8023 {
     u8 pad[0x18];
