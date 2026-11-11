@@ -811,7 +811,7 @@ config.libs = [
             Object(NonMatching, "auto/text_8022A594_.c"),
             Object(NonMatching, "auto/text_8022A5E4_.c"),
             Object(NonMatching, "auto/text_8022D088_.c"),
-            Object(NonMatching, "auto/text_8022D0D8_.c"),
+            Object(Matching, "auto/text_8022D0D8_.c"),
             Object(NonMatching, "auto/text_8022D1E0_.c"),
             Object(NonMatching, "auto/text_8022D228_.c"),
             Object(NonMatching, "auto/text_8022E0A4_.c"),
@@ -1211,7 +1211,7 @@ config.libs = [
             Object(Matching, "revolution/KPAD/KPADSampling.c"),
             Object(NonMatching, "revolution/KPAD/KPADAcc.c"),
             Object(Matching, "revolution/KPAD/KPADAccData.c"),
-            Object(Matching, "revolution/PAD/Pad.c"),
+            Object(NonMatching, "revolution/PAD/Pad.c"),
             # WPAD.c is reviewable but WPADSetSamplingCallback_800603D0 is fuzzy
             # (extensionCB offset + DEBUGPrint reloc mismatch); keep reference object linked.
             Object(NonMatching, "revolution/WPAD/WPAD.c"),
