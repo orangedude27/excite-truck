@@ -353,6 +353,64 @@ extern void fn_801D2C70(void*, s32, void*, s32);
 extern void fn_801D2E38(void*, void*, s32, void*, f32);
 extern void fn_802E317C(const char*, ...);
 extern const char lbl_803382DC[];
+
+/* Scene object tags (object+0x10) of the vehicles that carry soevents. */
+#define FOURCC_CAR  0x43415220 /* 'CAR ' */
+#define FOURCC_PCAR 0x50434152 /* 'PCAR' player truck */
+#define FOURCC_ACAR 0x41434152 /* 'ACAR' AI truck */
+#define FOURCC_NCAR 0x4E434152 /* 'NCAR' */
+
+/* A scene object as the soevent code sees it. */
+typedef struct VehicleObject {
+    /* 0x00 */ void *vt;
+    /* 0x04 */ u8 pad04[0x0C];
+    /* 0x10 */ u32 fourcc;      /* FOURCC_* above */
+    /* 0x14 */ u8 pad14[0x28];
+    /* 0x3C */ f32 rotation[9]; /* object space -> world */
+    /* 0x60 */ Vec position;
+    /* 0x6C */ s16 type;
+    /* 0x6E */ u8 pad6E[0x66];
+    /* 0xD4 */ f32 scale;       /* size of the body, scales what the event emits */
+    /* 0xD8 */ u8 padD8[0x40];
+    /* 0x118 */ Vec velocity;
+    /* 0x124 */ u8 pad124[0xC8];
+    /* 0x1EC */ s32 recordIndex; /* its slot in the per-object table lbl_80438898 */
+} VehicleObject;
+
+/* A live soevent instance; fn_801A4A8C builds one from a class id and a matrix. */
+typedef struct SoeventInstance {
+    /* 0x00 */ void *vt;
+    /* 0x04 */ f32 matrix[12];  /* instance space -> world */
+    /* 0x34 */ s32 classId;     /* SoeventClass to run, -1 when unbound */
+    /* 0x38 */ s32 instanceId;  /* reported when the state below changes */
+    /* 0x3C */ void *owner;
+    /* 0x40 */ u8 active;       /* fn_801A4868 clears it and posts the change */
+    /* 0x41 */ u8 pad41[7];
+    /* 0x48 */ s32 extra;       /* second handler, run by fn_801D0738 */
+} SoeventInstance;
+
+/* One spawn slot of a class' first group (fn_801D2C70 takes a free one). */
+typedef struct SoeventSpawn {
+    /* 0x00 */ s32 itemId;      /* item class index, -1 while free */
+    /* 0x04 */ f32 bonus;       /* added to the time the spawn is due */
+} SoeventSpawn;
+
+/* One record of the soevent class table lbl_80438958 (lbl_8055E930 of them,
+ * sorted by id; fn_801D2A24 fills one from a 'soevent' scene object). */
+typedef struct SoeventClass {
+    /* 0x00 */ s32 id;
+    /* 0x04 */ u8 spawnActive;    /* first group armed */
+    /* 0x08 */ f32 spawnMinSpeed; /* vehicle speed it needs */
+    /* 0x0C */ SoeventSpawn spawns[4];
+    /* 0x2C */ s32 spawnCount;
+    /* 0x30 */ u8 emitActive;     /* particle group armed */
+    /* 0x34 */ f32 emitMinSpeed;
+    /* 0x38 */ u8 pad38[0x34];
+    /* 0x6C */ s32 resHandle;     /* archive holding the emitted models */
+    /* 0x70 */ u8 emitters[0x450]; /* 0x5C-byte emitters, fn_801D2E38 runs them */
+    /* 0x4C0 */ s32 emitCount;
+} SoeventClass; /* size 0x4C4 */
+
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
