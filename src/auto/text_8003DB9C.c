@@ -3062,6 +3062,7 @@ void GXLoadLightObjImm(void *arg0, s32 arg1) {
 }
 
 void GXSetChanAmbColor_Internal(s32 type, void *color) {
+    /* Update a GX channel ambient color register (RGB, alpha, or full word) for channel 0/1 and mark it dirty. */
     unsigned int value;
     register unsigned int which;
     unsigned int colorValue;
