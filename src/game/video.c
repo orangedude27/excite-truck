@@ -75,6 +75,7 @@ void fn_802DEE1C(void) {
     GXSetTevSwapMode(4, 0, 0);
 }
 #pragma scheduling on
+/* Configures a single-texture GX TEV pipeline and standard alpha blending. */
 void fn_802DEE88(void) {
     GXSetTexCoordGen2(0, 1, 4, 0x3C, 0, 0x7D);
     GXSetNumTexGens(1);
