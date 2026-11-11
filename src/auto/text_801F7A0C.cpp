@@ -1049,14 +1049,14 @@ extern "C" void fn_801F94CC(const char *format, ...) {
     node = fn_801284F8(8, lbl_8033B200);
     if (node != 0) {
         *(void * volatile *)node = fn_80131810((void *)buffer);
-        if (*(void * volatile *)node != 0) {
-            *(void **)((u8 *)node + 4) = lbl_8055EC44;
-            lbl_8055EC44 = node;
-        } else {
-            fn_80131818(0);
-            *(void * volatile *)node = 0;
-            ((void (*)(void *))fn_80128668)(node);
-        }
+    }
+    if (node != 0 && *(void * volatile *)node != 0) {
+        *(void **)((u8 *)node + 4) = lbl_8055EC44;
+        lbl_8055EC44 = node;
+    } else if (node != 0) {
+        fn_80131818(*(void * volatile *)node);
+        *(void * volatile *)node = 0;
+        ((void (*)(void *))fn_80128668)(node);
     }
 }
 
@@ -1766,13 +1766,11 @@ extern "C" void fn_801FA738(void) {
 extern "C" void *fn_801F96C8(void *);
 extern "C" void fn_801F973C(void *, void *, u32);
 #pragma dont_inline on
-#pragma use_lmw_stmw off
+#pragma use_lmw_stmw on
 extern "C" void fn_801FA7F4(void *arg0, s32 *arg1, s32 arg2) {
     volatile u32 *src = (volatile u32 *)arg1;
-    register u32 zero;
-    u32 t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
+    u32 zero, t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
     f32 data[14];
-
     zero = 0;
     t0 = src[0];
     t1 = src[1];
@@ -1786,10 +1784,8 @@ extern "C" void fn_801FA7F4(void *arg0, s32 *arg1, s32 arg2) {
     t9 = src[9];
     t10 = src[10];
     t11 = src[11];
-
     ((u32 *)data)[13] = zero;
     ((u32 *)data)[12] = zero;
-
     *(u32 *)&data[0] = t0;
     *(u32 *)&data[1] = t1;
     *(u32 *)&data[2] = t2;
@@ -1803,7 +1799,6 @@ extern "C" void fn_801FA7F4(void *arg0, s32 *arg1, s32 arg2) {
     *(u32 *)&data[10] = t10;
     *(u32 *)&data[11] = t11;
     *(s32 *)&data[13] = arg2;
-
     {
         void *obj = fn_801F96C8(arg0);
         f32 scale = *(f32 *)((u8 *)obj + 0x28);
