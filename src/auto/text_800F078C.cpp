@@ -89,10 +89,15 @@ extern "C" void Setup__Q46nw4hbm3snd6detail8SeqSoundFPQ46nw4hbm3snd6detail17SeqT
         virtual void slot19() = 0;
         virtual void method() = 0;
     };
-    typedef char Message[0x44];
-    Message *panicBase = (Message *)lbl_80324060;
-    if (arg4 == 0) Panic__Q26nw4hbm2dbFPCciPCce((char *)&panicBase[0], 0x57, (char *)panicBase + 0x14);
-    if (*(s32 *)((u8 *)arg0 + 0x10) == 0) Panic__Q26nw4hbm2dbFPCciPCce((char *)&panicBase[0], 0x58, (char *)panicBase + 0x40);
+    struct PanicMsgs {
+        char file;
+        char pad[0x13];
+        char msg57[0x2C];
+        char msg58[4];
+    };
+    PanicMsgs *panicBase = (PanicMsgs *)lbl_80324060;
+    if (arg4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&panicBase->file, 0x57, panicBase->msg57);
+    if (*(s32 *)((u8 *)arg0 + 0x10) == 0) Panic__Q26nw4hbm2dbFPCciPCce(&panicBase->file, 0x58, panicBase->msg58);
     ((VtableProxy *)arg0)->method();
     Setup__Q46nw4hbm3snd6detail9SeqPlayerFPQ46nw4hbm3snd6detail17SeqTrackAllocatorUliPQ46nw4hbm3snd6detail14NoteOnCallback((u8 *)arg0 + 0xD8, (unsigned long)arg1, (int)arg2, arg3, arg4);
 }
@@ -123,27 +128,33 @@ extern "C" void Prepare__Q46nw4hbm3snd6detail8SeqSoundFPCQ56nw4hbm3snd6detail8Se
     };
     if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80324060, 0x80, (const char *)lbl_80324074);
     if (arg1 != 0) {
-        ((const SeqLoadCallback *)arg1)->Invoke(
-            NotifyLoadAsyncEndSeqData__Q46nw4hbm3snd6detail8SeqSoundFbPCvlPv, arg0, arg2);
+        ((const SeqLoadCallback *)arg1)->Invoke(NotifyLoadAsyncEndSeqData__Q46nw4hbm3snd6detail8SeqSoundFbPCvlPv, arg0, arg2);
     }
     *(void **)((u8 *)arg0 + 0x1EC) = (void *)arg1;
     *(unsigned long *)((u8 *)arg0 + 0x1F0) = arg2;
-    *(u8 *)((u8 *)arg0 + 0x1E8) = 1;
+    *(volatile u8 *)((u8 *)arg0 + 0x1E8) = 1;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void NotifyLoadAsyncEndSeqData__Q46nw4hbm3snd6detail8SeqSoundFbPCvlPv(int arg0, const void *arg1, unsigned long arg2, void *arg3) {
+    struct Vt {
+        virtual void s0();
+        virtual void s1();
+        virtual void s2();
+        virtual void s3();
+        virtual void s4(int);
+    };
     const char *f = (const char *)lbl_80324060;
-    if (arg3 == 0) Panic__Q26nw4hbm2dbFPCciPCce(f, 0x9A, f + 0xA0);
+    if (arg3 == 0) Panic__Q26nw4hbm2dbFPCciPCce(f + 0, 0x9A, f + 0xA0);
     *(u8 *)((u8 *)arg3 + 0x1E8) = 0;
     if (arg0 == 0) {
-        void (**vt)(void *) = *(void (***)(void *))arg3;
-        vt[6](arg3);
+        ((Vt *)arg3)->s4(0);
         return;
     }
-    if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(f, 0x70, f + 0x74);
+    if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(f + 0, 0x70, f + 0x74);
     SetSeqData__Q46nw4hbm3snd6detail9SeqPlayerFPCvl((u8 *)arg3 + 0xD8, arg1, (s32)arg2);
 }
-
 #pragma pop
 extern "C" void Shutdown__Q46nw4hbm3snd6detail10BasicSoundFv(void *);
 extern "C" s32 OSDisableInterrupts(void);
@@ -156,33 +167,44 @@ extern "C" const char lbl_80324350[];
 extern "C" const char lbl_80324344[];
 extern "C" const char lbl_80324320[];
 void nw4hbm::snd::detail::SeqSound::Shutdown() {
+    struct SoundList { void *head; void *tail; };
+    struct SeqPlayer { int unk0; struct SoundList activeList; };
+    struct LinkNode { char pad[0]; };
+    struct SeqSoundVTable {
+        virtual void m0();
+        virtual void DetachFromPlayer(int playerIndex);
+    };
+    struct SeqSoundObj { void *vtable; char pad[0xB8 - 4]; struct LinkNode link; };
     struct SeqLoadCallback {
         virtual void unused0();
         virtual void unused1();
-        virtual void Invoke(s32);
+        virtual void Invoke(int);
     };
-    struct SoundBase {
-        virtual void unused0();
-        virtual void Shutdown(s32);
-    };
+
+    struct SeqSoundObj *sound = (struct SeqSoundObj *)this;
+    int interrupts;
+    struct SeqPlayer *player;
+
     if (*(u8 *)((u8 *)this + 0x1E8) != 0) {
-        void *ptr = *(void **)((u8 *)this + 0x1EC);
-        if (ptr != 0) {
-            ((SeqLoadCallback *)ptr)->Invoke(*(s32 *)((u8 *)this + 0x1F0));
+        void *cb = *(void **)((u8 *)this + 0x1EC);
+        if (cb != 0) {
+            ((struct SeqLoadCallback *)cb)->Invoke(*(int *)((u8 *)this + 0x1F0));
         }
     }
     Shutdown__Q46nw4hbm3snd6detail10BasicSoundFv(this);
-    void *list = *(void **)((u8 *)this + 0x1E4);
-    if (this == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324378, 0x86, lbl_80324350);
-    s32 interrupts = OSDisableInterrupts();
-    if (*(s32 *)((u8 *)list + 4) == 0) {
+    player = *(struct SeqPlayer **)((u8 *)this + 0x1E4);
+    if (this == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324378, 0x86, lbl_80324350);
+    interrupts = OSDisableInterrupts();
+    if (player->activeList.head == 0) {
         OSRestoreInterrupts(interrupts);
         return;
     }
-    if (this == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324344, 0x233, lbl_80324320);
-    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((u8 *)list + 4, (u8 *)this + 0xB8);
-    ((SoundBase *)this)->Shutdown(-1);
-    fn_800EC848(list, this);
+    if (this == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324344, 0x233, lbl_80324320);
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(&player->activeList, &sound->link);
+    ((struct SeqSoundVTable *)this)->DetachFromPlayer(-1);
+    fn_800EC848(player, this);
     OSRestoreInterrupts(interrupts);
 }
 
