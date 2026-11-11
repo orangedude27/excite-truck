@@ -749,17 +749,19 @@ extern "C" s32 fn_8012B6FC(void *arg0, s32 arg1) {
     void *object;
     s32 handle;
     s32 startTime;
-    register s32 allocSize;
+    s32 allocSize;
     u32 flags;
-    register const char *strings;
+    const char *strings;
+    s32 size;
 
     entry = (u8 *)*(void **)((u8 *)arg0 + 0x60) + arg1 * 0x44;
     flags = *(u32 *)(entry + 0x34);
     strings = lbl_8032A630;
     if (!(flags & 8)) {
-        allocSize = *(s32 *)(entry + 0x28) + 0x80;
-        ((void (*)(s32))fn_801282F4)(allocSize - 0x80);
-        fn_801282EC(0x80);
+        allocSize = (size = *(s32 *)(entry + 0x28)) + 0x80;
+        ((void (*)(s32))fn_801282F4)(size);
+        size = 0x80;
+        fn_801282EC(size);
         object = ((void *(*)(void *, s32))fn_801284F0)(entry, allocSize);
         if (object != 0) {
             startTime = fn_802E2C20();
@@ -2064,8 +2066,7 @@ extern "C" const char lbl_8032ACE0[];
 extern "C" void fn_8012DDA8(s32 arg0) {
     nw4r::ef::Effect *obj;
     Unk8012DFCCNode *node;
-    bool found;
-
+    s32 found;
     if (fn_8012BD3C(lbl_8055E000, (const char *)arg0) != 0) {
         return;
     }
@@ -2073,19 +2074,17 @@ extern "C" void fn_8012DDA8(s32 arg0) {
     if (obj == 0) {
         return;
     }
-
-    found = false;
+    found = 0;
     node = (Unk8012DFCCNode *)fn_8012E490((s32 *)((char *)obj + 0xA18));
     do {
         if (stricmp(node->unk_0xC, (const char *)arg0) == 0) {
-            found = true;
+            found = 1;
             node->unk_0x8 += 1;
             break;
         }
         node = node->next;
     } while (node != 0);
-
-    if (!found) {
+    if (found == 0) {
         fn_802E30C8(lbl_8032ACE0, (const char *)arg0);
         node = (Unk8012DFCCNode *)fn_8012E460((char *)obj + 8);
         if (node == 0) {
@@ -2096,9 +2095,9 @@ extern "C" void fn_8012DDA8(s32 arg0) {
             fn_8012DFE8(node, (const char *)arg0, (s32)fn_8012E060((char *)obj + 4, (const char *)arg0));
             fn_8012DFCC((Unk8012DFCCList *)((char *)obj + 0xA18), node);
             fn_8012DEE4(obj);
-            found = true;
+            found = 1;
         }
-        if (!found) {
+        if (found == 0) {
             ((void *(*)(const char *, void **))fn_8012BD98)((const char *)arg0, &lbl_8055E000);
         }
     }
@@ -2364,7 +2363,6 @@ extern "C" void fn_8012E498(void *arg0) {
     s32 entry;
     s32 effect;
     s32 object;
-
     fn_8012E81C((s32)arg0);
     object = (s32)fn_8012BD3C(lbl_8055E000, (const char *)arg0);
     if (object != 0 && --*(s32 *)(object + 0x9C) == 0) {
@@ -2392,7 +2390,9 @@ extern "C" void fn_8012E498(void *arg0) {
                     fn_8012E630((void *)entry);
                     fn_8012E5E4((void *)(effect + 8), (void *)entry);
                     removed = 1;
+                    goto next_entry;
                 }
+next_entry:
                 entry = *(s32 *)entry;
             }
             if (removed != 0) return;
@@ -2691,6 +2691,34 @@ mount_test:
     return (s32)matched;
 }
 
+// Double-buffered streaming reader over a resource file ("ResourceStream"), 0x2C
+// bytes. Two prefetch slots read the file ahead in chunks of `size` bytes into
+// the buffer of 2 * size bytes made by fn_8012EC90; fn_8012EE80 runs the machine
+// each frame and fn_8012EFB0 takes bytes out of a ready chunk at `boundary`.
+struct ResourceStream {
+    s32 size;                // +0x00 bytes of the file one slot holds
+    s32 entries[2][4];       // +0x04 the two prefetch slots, see ResourceStreamEntry
+    s32 limit;               // +0x24 size of the streamed file
+    s32 boundary;            // +0x28 offset the reader has reached
+};
+
+// One prefetch slot, 0x10 bytes.
+struct ResourceStreamEntry {
+    s32 buffer;              // +0x00 where the chunk lands in the stream's buffer
+    void *request;           // +0x04 async read of the chunk (fn_8012C720/fn_8012C7FC)
+    s32 position;            // +0x08 file offset the chunk was read from
+    s32 state;               // +0x0C StreamSlotState
+};
+
+// What a prefetch slot is doing.
+enum StreamSlotState {
+    STREAM_SLOT_FREE = 0,    // holds nothing
+    STREAM_SLOT_READING = 1, // the disc read of the chunk is running
+    STREAM_SLOT_READY = 2    // the chunk is in memory and can be read from
+};
+
+#define STREAM_SLOT_COUNT 2  // prefetch slots in a ResourceStream
+
 extern "C" void *fn_8012EC90(s32 arg0) {
     s32 count = arg0;
     void *obj = fn_801284F8(0x2C, (void *)&lbl_805599C8);
@@ -2939,69 +2967,50 @@ extern "C" const char lbl_8032AC08[];
 #pragma push
 #pragma scheduling invalid_target
 extern "C" s32 fn_8012C5B8(s32 arg0, s32 arg1, s32 arg2) {
-    struct Item {
-        u8 pad[0x20];
-        s32 key;
-        s32 value;
-    };
-    struct Manager {
-        u8 pad[0x60];
-        Item *items;
-    };
-    struct Allocation {
-        s32 magic;
-        Item *item;
-        Manager *manager;
-        s32 state;
-        s32 reserved10;
-        s32 reserved14;
-    };
-
-    s32 index;
-    s32 result = 0;
-    Manager *manager = (Manager *)((s32 *(*)(s32, s32 *, s32))fn_8012B534)(arg0, &index, 1);
+    long index;
+    long result = 0;
+    s32 *manager;
+    s32 *entry;
+    manager = ((s32 *(*)(s32, s32 *, s32))fn_8012B534)(arg0, &index, 1);
     if (manager != 0) {
-        Item *item = (Item *)((char *)manager->items + index * 0x44);
-        if ((u32)item->key == (u32)arg1) {
-            *(s32 *)arg2 = item->value;
-            void *allocation = fn_8012A570(0x18, (void *)lbl_8032ABF8);
+        entry = (s32 *)((char *)*(void **)((char *)manager + 0x60) + index * 0x44);
+        if (*(u32 *)((char *)entry + 0x20) == (u32)arg1) {
+            *(s32 *)arg2 = *(s32 *)((char *)entry + 0x24);
+            register void *allocation = fn_8012A570(0x18, (void *)lbl_8032ABF8);
             if (allocation != 0) {
-                volatile Allocation *object = (volatile Allocation *)allocation;
-                object->state = -1;
-                object->reserved10 = 0;
-                object->item = 0;
-                object->manager = 0;
-                object->reserved14 = 0;
-                object->magic = 0x19AFEE2A;
-                object->item = item;
+                volatile s32 *fields = (volatile s32 *)allocation;
+                fields[3] = -1;
+                fields[4] = 0;
+                fields[1] = 0;
+                fields[2] = 0;
                 result = (s32)allocation;
-                object->manager = manager;
+                fields[5] = 0;
+                fields[0] = 0x19AFEE2A;
+                fields[1] = (s32)entry;
+                fields[2] = (s32)manager;
             }
         } else {
-            u8 queryText[5];
-            u8 entryText[5];
-            u8 zero = 0;
-            u8 q0, q3, q1, q2;
-            u8 e0, e3, e1, e2;
-
+            char queryText[5];
+            char entryText[5];
+            char e0, e3, e1, e2;
+            char q0, q3, q1, q2;
             *(u32 *)queryText = (u32)arg1;
-            queryText[4] = zero;
             q0 = queryText[0];
             q3 = queryText[3];
+            queryText[4] = 0;
             q1 = queryText[1];
             q2 = queryText[2];
             queryText[0] = q3;
             queryText[3] = q0;
-            queryText[1] = q2;
             queryText[2] = q1;
-
-            *(u32 *)entryText = (u32)item->key;
-            entryText[4] = zero;
+            queryText[1] = q2;
+            *(u32 *)entryText = *(u32 *)((char *)entry + 0x20);
+            entryText[4] = 0;
             e0 = entryText[0];
             e3 = entryText[3];
             e1 = entryText[1];
             e2 = entryText[2];
-            entryText[0] = e3;
+            entryText[0] = (unsigned)e3;
             entryText[3] = e0;
             entryText[1] = e2;
             entryText[2] = e1;
