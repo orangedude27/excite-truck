@@ -1147,18 +1147,27 @@ int fn_8016208C(void) {
     extern void *fn_8001285C();
     extern int stricmp(const char *, const char *);
     extern char lbl_8032F5DC[];
-    int count = 0, i = 0;
-    void *mgr = fn_8001285C(), *iter;
-    do {
-        void *obj = *(void **)((char *)mgr + 0x20);
-        void **vt = *(void ***)obj;
-        iter = ((void *(*)(void *, int))vt[0x60 / 4])(obj, i++);
-        if (iter != 0) {
-            void **ivt = *(void ***)iter;
-            const char *name = ((const char *(*)(void *))ivt[2])(iter);
-            if (stricmp(name, lbl_8032F5DC) == 0) count++;
-        }
-    } while (iter != 0);
+    void *mgr = fn_8001285C();
+    int count = 0;
+    int index = 0;
+    void *obj;
+    void *iter;
+loop:
+    obj = *(void **)((char *)mgr + 0x20);
+    {
+        volatile void **vt = *(volatile void ***)obj;
+        int cur = index++;
+        iter = ((void *(*)(void *, int))vt[0x60 / 4])(obj, cur);
+    }
+    if (iter == 0)
+        goto done;
+    {
+        const char *name = ((const char *(*)(void *))(*(void ***)iter)[2])(iter);
+        if (stricmp(name, lbl_8032F5DC) == 0)
+            count++;
+    }
+    goto loop;
+done:
     return count;
 }
 #pragma pop
@@ -1189,6 +1198,7 @@ extern "C" void fn_80162178(void *arg0, s32 arg1) {
         virtual void *f4(s32 *, s32 *);
     };
     extern float lbl_8056184C;
+    extern void fn_80161438(void);
     extern void fn_801DF380(void *, s32, void (*)(void), s32);
     s32 offset;
     s32 i;
@@ -1196,16 +1206,12 @@ extern "C" void fn_80162178(void *arg0, s32 arg1) {
     *(s32 *)((char *)arg0 + 8) = 0;
     *(u8 *)((char *)arg0 + 0x10) = 0;
     *(float *)((char *)arg0 + 0xC) = lbl_8056184C;
-    i = 0;
-    offset = 0;
-    while (i < *(s32 *)((char *)arg0 + 0x38)) {
+    for (i = 0, offset = 0; i < *(s32 *)((char *)arg0 + 0x38); offset += 8, i++) {
         void *obj = *(void **)((char *)arg0 + 4);
         char *entries = *(char **)((char *)arg0 + 0x34);
         s32 *entry = (s32 *)(entries + offset);
         void *result = ((Dummy *)obj)->f4(&lbl_8055A0E0, &lbl_8055A0E8);
-        fn_801DF380(result, entry[0], (void (*)())fn_80161438, entry[1]);
-        offset += 8;
-        i++;
+        fn_801DF380(result, entry[0], fn_80161438, entry[1]);
     }
 }
 #pragma cplusplus off
@@ -1387,6 +1393,17 @@ extern "C" void fn_801625E0(void *arg0) {
 #pragma scheduling on
 
 #pragma pop
+#pragma cplusplus on
+struct Obj8016275C {
+    virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+    virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
+    virtual void f8(); virtual s32 f9();
+    virtual void f10(); virtual void f11(); virtual void f12(); virtual void f13();
+    virtual void f14(); virtual void f15(); virtual void f16(); virtual void f17();
+    virtual void f18(); virtual void f19(); virtual void f20(); virtual void f21();
+    virtual void f22(); virtual void f23(); virtual void f24(s32);
+};
+#pragma cplusplus off
 s32 fn_80162734(void *arg0) { return *(s32 *)((u8 *)arg0 + 8) != 0; }
 
 s32 fn_80162748(void *arg0) { return *(s32 *)((u8 *)arg0 + 8) == 1; }
@@ -2354,17 +2371,12 @@ extern "C" void fn_80163F7C(void *arg0) {
 #pragma scheduling on
 #pragma cplusplus off
 int fn_801643C8(void *arg0) {
-    int var_r30;
-    int var_r31;
+    register int var_r30 = 0;
+    register int var_r31 = 0;
     void *obj;
-    register int value;
-
-    var_r30 = 0;
-    var_r31 = 0;
     while (var_r31 < *((int *)((char *)arg0 + 0xE4))) {
         obj = *((void **)((char *)arg0 + 0xE0));
-        value = *((int *)((char *)obj + var_r30 + 0x34));
-        if (value != 0) {
+        if (*((int *)((char *)obj + var_r30 + 0x34)) != 0) {
             fn_80128658();
         }
         var_r30 += 0x48;
