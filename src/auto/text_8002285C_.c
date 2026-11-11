@@ -6,33 +6,36 @@ typedef unsigned int u32;
 typedef unsigned long long u64;
 extern u64 __mod2u(u64, u64);
 extern u64 __div2u(u64, u64);
-void __ull2dec(u8 *buf, u32 unused, u64 value) {
-    u32 count;
+void __ull2dec(u8 *decimal, u32 unused, u64 value) {
+    u32 digitCount;
     u32 high;
     u32 low;
     u64 result;
-    u8 *right;
-    u8 *left;
+    u8 *tail;
+    u8 *head;
 
-    buf[0] = 0;
-    buf[4] = 0;
+    /* Convert unsigned 64-bit value to decimal digits into the internal decimal buffer:
+     * [0]=sign, [2..3]=last digit index, [4]=digit count, [5..]=digit bytes.
+     * Digits are produced least-significant first, then reversed in place. */
+    decimal[0] = 0;
+    decimal[4] = 0;
     while (value != 0) {
         high = (u32)(value >> 32);
         low = (u32)value;
         result = ((u64 (*)(u32, u32, u64))__mod2u)(high, low, 10);
-        count = buf[4];
-        buf[5 + count] = (u8)result;
-        buf[4] = count + 1;
+        digitCount = decimal[4];
+        decimal[5 + digitCount] = (u8)result;
+        decimal[4] = digitCount + 1;
         result = ((u64 (*)(u32, u32, u64))__div2u)(high, low, 10);
         value = result;
     }
-    count = buf[4];
-    right = buf + count + 5;
-    left = buf + 5;
-    while (left < --right) {
-        u8 temp = *left;
-        *left++ = *right;
-        *right = temp;
+    digitCount = decimal[4];
+    tail = decimal + digitCount + 5;
+    head = decimal + 5;
+    while (head < --tail) {
+        u8 temp = *head;
+        *head++ = *tail;
+        *tail = temp;
     }
-    *(unsigned short *)(buf + 2) = buf[4] - 1;
+    *(unsigned short *)(decimal + 2) = decimal[4] - 1;
 }
