@@ -39,6 +39,9 @@ static char s_currentDir[64] ALIGN(32) = "/";
 
 static char s_homeDir[64] ALIGN(32);
 
+/* Drops the last '/'-separated component of oldp (its "tail token") and writes the
+   remaining directory path into newp, i.e. dirname(). The root "/" is copied as-is;
+   a path with no '/' leaves newp untouched. */
 void nandRemoveTailToken(char* newp, const char* oldp) {
     int i;
 
