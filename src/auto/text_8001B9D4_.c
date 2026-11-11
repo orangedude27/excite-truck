@@ -1154,32 +1154,37 @@ extern void fn_8001D7A4(void);
 extern void memset(void *, s32, u32);
 extern u8 lbl_8055D5D8;
 #pragma dont_inline on
-void fn_8001D5F0(s32 arg0) {
-    switch (arg0) {
-    case 1:
+/* The 'Stat' section's memory-card callback.  It keeps the four slots' record
+ * counts in RAM in step with the buffer, and moves the record pointers onto
+ * and back off the string archive around a transfer: fn_8001D5D8 adds the
+ * archive's address (records hold offsets on the card), fn_8001D5E4 takes it
+ * back off. */
+void fn_8001D5F0(s32 command) {
+    switch (command) {
+    case 1: /* the section has just been read off the card */
         fn_8001D5D8();
-        ((s32 *)lbl_80358658[0])[1] = *(s32 *)(lbl_8055D5CC + 0x6E00);
-        ((s32 *)lbl_80358658[1])[1] = *(s32 *)(lbl_8055D5CC + 0x148C4);
-        ((s32 *)lbl_80358658[2])[1] = *(s32 *)(lbl_8055D5CC + 0x22388);
-        ((s32 *)lbl_80358658[3])[1] = *(s32 *)(lbl_8055D5CC + 0x2FE4C);
-        if (lbl_8055D5D8 != 0) {
+        STAT_SLOTS[0]->recordCount = STAT_SAVED_COUNT(0);
+        STAT_SLOTS[1]->recordCount = STAT_SAVED_COUNT(1);
+        STAT_SLOTS[2]->recordCount = STAT_SAVED_COUNT(2);
+        STAT_SLOTS[3]->recordCount = STAT_SAVED_COUNT(3);
+        if (STAT_FIRST_LOAD != 0) { /* the very first load of the session */
             fn_8001D7A4();
-            lbl_8055D5D8 = 0;
+            STAT_FIRST_LOAD = 0;
         }
-    case 0:
+    case 0: /* the section is about to be read */
         return;
-    case 2:
-        memset(lbl_8055D5CC, 0, 0x3E7D0);
-        ((s32 *)lbl_80358658[0])[1] = *(s32 *)(lbl_8055D5CC + 0x6E00);
-        ((s32 *)lbl_80358658[1])[1] = *(s32 *)(lbl_8055D5CC + 0x148C4);
-        ((s32 *)lbl_80358658[2])[1] = *(s32 *)(lbl_8055D5CC + 0x22388);
-        ((s32 *)lbl_80358658[3])[1] = *(s32 *)(lbl_8055D5CC + 0x2FE4C);
+    case 2: /* nothing on the card: start the statistics from empty */
+        memset(STAT_BUFFER, 0, STAT_BUFFER_SIZE);
+        STAT_SLOTS[0]->recordCount = STAT_SAVED_COUNT(0);
+        STAT_SLOTS[1]->recordCount = STAT_SAVED_COUNT(1);
+        STAT_SLOTS[2]->recordCount = STAT_SAVED_COUNT(2);
+        STAT_SLOTS[3]->recordCount = STAT_SAVED_COUNT(3);
         return;
-    case 3:
+    case 3: /* the section is about to be written: store archive offsets */
         fn_8001D5E4();
         return;
     case 4:
-    case 5:
+    case 5: /* the section is on the card: the pointers are ours again */
         fn_8001D5D8();
         break;
     default:
