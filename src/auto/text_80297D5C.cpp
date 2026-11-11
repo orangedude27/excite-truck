@@ -1274,34 +1274,33 @@ extern "C" void fn_8029A4B4(void *arg0, int arg1) {
 extern "C" void fn_8029A318(float*, float*, float*, float*, float, float, float);
 #pragma dont_inline on
 extern "C" void fn_8029A60C(void* arg0, void* arg1) {
-    struct Vectors {
-        float c[3];
-        float b[3];
-        float a[3];
-    };
-    volatile Vectors vectors;
+    volatile float vectors[9];
     volatile unsigned int *src = (volatile unsigned int *)arg1;
     unsigned int v11, v10, v9, v8, v7, v6, v5, v4, v3, v2, v1, v0;
+    register float *pMid;
+    register float *pLow;
     float value = lbl_8056459C;
 
     v0 = src[0];
-    vectors.a[0] = value;
+    vectors[6] = value;
     v1 = src[1];
-    vectors.a[1] = value;
+    pMid = (float *)&vectors[3];
+    vectors[7] = value;
+    pLow = (float *)&vectors[0];
     v2 = src[2];
-    vectors.a[2] = value;
+    vectors[8] = value;
     v3 = src[3];
-    vectors.b[0] = value;
+    vectors[3] = value;
     v4 = src[4];
-    vectors.b[1] = value;
+    vectors[4] = value;
     v5 = src[5];
-    vectors.b[2] = value;
+    vectors[5] = value;
     v6 = src[6];
-    vectors.c[0] = value;
+    vectors[0] = value;
     v7 = src[7];
-    vectors.c[1] = value;
+    vectors[1] = value;
     v8 = src[8];
-    vectors.c[2] = value;
+    vectors[2] = value;
     v9 = src[9];
     v10 = src[10];
     v11 = src[11];
@@ -1319,8 +1318,8 @@ extern "C" void fn_8029A60C(void* arg0, void* arg1) {
     *(unsigned int *)((char *)arg0 + 0x28) = v10;
     *(unsigned int *)((char *)arg0 + 0x2C) = v11;
 
-    ((void (*)(void*, float*, float*, float*))fn_8029A318)(arg0, (float *)&vectors.a[0], (float *)&vectors.b[0], (float *)&vectors.c[0]);
-    fn_80298458((int)lbl_8055F7C0, *(int *)((char *)arg0 + 0x40), (void *)&vectors.a[0], (void *)&vectors.b[0], (void *)&vectors.c[0], *(short *)((char *)arg1 + 0x30));
+    ((void (*)(void*, float*, float*, float*))fn_8029A318)(arg0, (float *)&vectors[6], pMid, pLow);
+    fn_80298458((int)lbl_8055F7C0, *(int *)((char *)arg0 + 0x40), (void *)&vectors[6], (void *)&vectors[3], (void *)&vectors[0], *(short *)((char *)arg1 + 0x30));
 }
 
 extern "C" void* memset(void*, int, unsigned long);
@@ -2296,45 +2295,36 @@ extern "C" int fn_8029C054(int* arg0) {
     extern "C" void fn_8029BBD4(void*, void*, int);
   extern "C" void fn_8029A208(void*, int, int);
 extern "C" void fn_8029A904(void* arg0, int arg1, void* arg2, float farg0, float farg1);
+#pragma push
+#pragma processor 750
 #pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 extern "C" void fn_8029C084(void *arg0, int arg1) {
     float temp_f31 = fn_801E7E24();
-    if (__fabsf(temp_f31) <= lbl_80558DC4) {
+    if ((float)__fabs((double)temp_f31) <= lbl_80558DC4) {
         return;
     }
     int i = 0;
     while (i < arg1) {
-        void *data;
-        void *obj;
-        unsigned char flag;
-        int enabled;
-        void *ctx;
-
-        flag = *(unsigned char *)((char *)arg0 + 0xC);
-        enabled = 0;
-        obj = *(void **)((char *)arg0 + 4);
-        data = *(void **)arg0;
-        ctx = lbl_8055F7C8;
-        if (flag != 0 && *(int *)((char *)data + 0x5C) == 0xB) {
-            enabled = 1;
-        }
+        void *data = *(void **)arg0;
+        void *obj = *(void **)((char *)arg0 + 4);
+        unsigned char flag = *(unsigned char *)((char *)arg0 + 0xC);
+        void *ctx = lbl_8055F7C8;
+        int enabled = (flag != 0 && *(int *)((char *)data + 0x5C) == 0xB) ? 1 : 0;
         fn_80298DE0(ctx, obj, enabled);
         fn_8029BBD4(lbl_8055F7D8, obj, flag);
         if (lbl_8055F7D0 != 0) {
-            int enabled2 = 0;
-            if (flag != 0 && *(int *)((char *)data + 0x5C) == 0xC) {
-                enabled2 = 1;
-            }
+            int enabled2 = (flag != 0 && *(int *)((char *)data + 0x5C) == 0xC) ? 1 : 0;
             ((void (*)(void *, void *, int))fn_8029A208)(lbl_8055F7D0, obj, enabled2);
         }
-                            if (lbl_8055F7D4 != 0) {
-              fn_8029A904(lbl_8055F7D4, (int)obj, data, temp_f31, *(float *)((char *)arg0 + 8));
-          }
+        if (lbl_8055F7D4 != 0) {
+            ((void (*)(void *, void *, void *, float, float))fn_8029A904)(lbl_8055F7D4, obj, data, temp_f31, *(float *)((char *)arg0 + 8));
+        }
         arg0 = (char *)arg0 + 0x10;
         i += 1;
     }
 }
-#pragma scheduling on
+#pragma pop
 int fn_8029C190(void* arg0) {
     fn_8029BE54(lbl_8055F7DC, arg0);
     return 0x14;
