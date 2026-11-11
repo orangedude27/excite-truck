@@ -80,6 +80,31 @@ struct Dummy_80163550 {
     virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
     virtual void f4(); virtual void f5(); virtual void f6(); virtual s32 f7(); virtual s32 f8();
 };
+
+/* One goal of a tutorial level, made from a child of its "tutorial_level"
+   node (fn_80160CF4): the kind of event that meets it (-1 until the level
+   script picks one), how much of that is needed, and whether it is met. */
+struct TutorialGoal {
+    s32 type;
+    s32 target;
+    u8 met;
+};
+
+/* The tutorial level object (vtable lbl_8032F858, 0x5BC bytes). */
+struct TutorialLevel {
+    virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+    virtual void f4(); virtual void f5(); virtual void f6();
+    virtual s32 f7();                  // 0x24: goals done / level over
+    char pad4[0x570 - 0x4];
+    TutorialGoal *goals;               // 0x570: goalCount goals of 0xC bytes
+    s32 goalCount;                     // 0x574
+    char pad578[0x5AC - 0x578];
+    s32 metCount;                      // 0x5AC: goals met so far
+};
+
+/* Vehicle type FourCC at +0x10 of the trucks in the car table lbl_804348E8
+   ('CAR ', 'PCAR', 'ACAR', 'NCAR', 'TRLR' all appear in the game). */
+#define CAR_TAG_PLAYER_CAR 0x50434152 /* 'PCAR' */
 #pragma cplusplus off
 
 extern s32 fn_8000DA10(void);
