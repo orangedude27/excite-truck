@@ -20588,17 +20588,17 @@ void *port_find_dlci_port(unsigned int arg0) {
     unsigned short i;
     unsigned int odd = arg0 & 1;
     unsigned int prev = arg0 - 1;
-    char *base = (char *)&lbl_803C4828;
+    u8 *base = (u8 *)&lbl_803C4828;
     for (i = 0; i < 5; i++) {
-        char *entry = base + (i * 0xA4);
-        char *port = entry + 0x68;
-        unsigned char dlci;
-        if (*(unsigned char *)(entry + 0x69) == 0) continue;
+        u8 *entry = base + (i * 0xA4);
+        u8 *port = entry + 0x68;
+        u8 dlci;
+        if (*(u8 *)(entry + 0x69) == 0) continue;
         if (*(unsigned int *)(port + 0x6C) != 0) continue;
-        dlci = *(unsigned char *)(port + 0xD);
+        dlci = *(u8 *)(port + 0xD);
         if ((unsigned int)dlci == arg0) return port;
         if (odd != 0 && (int)dlci == (int)prev) {
-            *(unsigned char *)(port + 0xD) = dlci + 1;
+            *(u8 *)(port + 0xD) = dlci + 1;
             return port;
         }
     }
@@ -22370,7 +22370,7 @@ void rfc_send_fcon(void *arg0, s32 arg1, void *arg2) {
     }
 }
 
-void rfc_send_fcon_80093FDC(void *arg0, s32 arg1) { void *buf = GKI_getpoolbuf(2); if (buf != NULL) { *(s16 *)((u8 *)buf + 4) = 0xC; *(s8 *)((u8 *)buf + 0x14) = (s8)((((-arg1 | arg1) >> 31) & 2) | 0x61); *(s8 *)((u8 *)buf + 0x15) = 1; *(s16 *)((u8 *)buf + 2) = 2; rfc_send_buf_uih(arg0, 0, buf, 2); } }
+void rfc_send_fcon_80093FDC(void *arg0, s32 arg1) { BT_HDR *p_buf; UINT8 *p_data; if ((p_buf = (BT_HDR *)GKI_getpoolbuf(2)) == NULL) return; p_buf->offset = 12; p_data = (UINT8 *)(p_buf + 1) + p_buf->offset; *p_data++ = (UINT8)(0x61 | (arg1 ? 2 : 0)); *p_data = 1; p_buf->len = 2; rfc_send_buf_uih(arg0, 0, p_buf); }
 
 void rfc_send_msc(void *p_mcb, s32 dlci, s32 is_command, u8 *p_pars) {
     struct PORT_CTRL_VIEW {
