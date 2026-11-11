@@ -108,8 +108,8 @@ int fn_802CA294(int arg0) {
     return *(int *)((char *)base + offset + 0x28);
 }
 
-extern char *fn_80029004(char *, int);
-extern char lbl_8055D048;
+extern char *fn_80029004(char *, int); /* strchr */
+extern char lbl_8055D048;              /* ".tm0": suffix of a texture archive member's name */
 int fn_802CA2A8(void *arg0, int arg1, int arg2) {
     int remaining = arg1;
     char *dst = (char *)arg0;
