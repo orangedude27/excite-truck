@@ -977,9 +977,8 @@ extern "C" void fn_80219660(void *arg0) {
     x = ((Dispatch *)self)->At84();
     y = ((Dispatch *)self)->At88();
     register s32 z = ((Dispatch *)self)->At78();
-    register s32 zero = 0;
     f32 scale = lbl_805634A4;
-    ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, f32, s32))fn_8022BAD0)(*(s32 *)((u8 *)self + 0x250), *(s32 *)((u8 *)self + 0x244) + b, *(s32 *)((u8 *)self + 0x248) + a, *(s32 *)((u8 *)self + 0x24C), z, diff, y, x, scale, zero);
+    ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, f32, u8))fn_8022BAD0)(*(s32 *)((u8 *)self + 0x250), *(s32 *)((u8 *)self + 0x244) + b, *(s32 *)((u8 *)self + 0x248) + a, *(s32 *)((u8 *)self + 0x24C), z, diff, y, x, scale, 0);
 }
 #pragma scheduling on
 #pragma pop
@@ -1578,8 +1577,8 @@ extern "C" void fn_8021AD10(void *arg0) {
 #pragma scheduling on
 #pragma pop
 extern "C" f32 lbl_805634EC;
-#pragma ppc_psq_save on
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
 extern "C" void fn_8021AE18(void *arg0) {
     struct Dispatch {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -1624,14 +1623,15 @@ extern "C" void fn_8021AE18(void *arg0) {
             *(f32 *)((u8 *)arg0 + 0x248) = *(f32 *)((u8 *)arg0 + 0x24C);
         }
     } else {
-        f32 resetDelta = lbl_805634E8;
-        f32 resetTime = lbl_805634A8;
+        f32 resetDelta;
+        f32 resetTime;
+        resetTime = lbl_805634A8;
+        resetDelta = lbl_805634E8;
         *(f32 *)((u8 *)arg0 + 0x248) = resetTime;
         *(f32 *)((u8 *)arg0 + 0x24C) = resetDelta;
     }
 }
-#pragma ppc_psq_save reset
-#pragma scheduling on
+#pragma pop
 extern "C" void *fn_8021AF0C(void *arg0, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5, s32 a6, f32 x, f32 y) {
     fn_8021AC24(arg0, a1, a2, a6, a4);
     *(s32 *)((u8 *)arg0 + 0x254) = a3;
@@ -1655,22 +1655,16 @@ extern double lbl_805634B8;
 extern float lbl_805634C4;
 #pragma scheduling invalid_target
 extern "C" void fn_8021AFF4(void *arg0) {
-    f32 step = (*(f32 *)((u8 *)arg0 + 0x25C) - *(f32 *)((u8 *)arg0 + 0x258)) /
-               (f32)(*(s32 *)((u8 *)arg0 + 0x260) - 1);
-    *(f32 *)*(void **)((u8 *)arg0 + 0x254) +=
-        (f32)*(s32 *)((u8 *)arg0 + 0x264) * step;
-    *(f32 *)*(void **)((u8 *)arg0 + 0x254) =
-        step * (f32)(s32)(lbl_805634C4 +
-                          (*(f32 *)*(void **)((u8 *)arg0 + 0x254) / step));
-    if (*(f32 *)*(void **)((u8 *)arg0 + 0x254) <
-        *(f32 *)((u8 *)arg0 + 0x258)) {
-        *(f32 *)*(void **)((u8 *)arg0 + 0x254) =
-            *(f32 *)((u8 *)arg0 + 0x258);
+    f32 diff = *(f32 *)((u8 *)arg0 + 0x25C) - *(f32 *)((u8 *)arg0 + 0x258);
+    f32 frames = (f32)(*(s32 *)((u8 *)arg0 + 0x260) - 1);
+    f32 step = diff / frames;
+    *(f32 *)*(void **)((u8 *)arg0 + 0x254) += (f32)*(s32 *)((u8 *)arg0 + 0x264) * step;
+    *(f32 *)*(void **)((u8 *)arg0 + 0x254) = step * (f32)(s32)(lbl_805634C4 + (*(f32 *)*(void **)((u8 *)arg0 + 0x254) / step));
+    if (*(f32 *)*(void **)((u8 *)arg0 + 0x254) < *(f32 *)((u8 *)arg0 + 0x258)) {
+        *(f32 *)*(void **)((u8 *)arg0 + 0x254) = *(f32 *)((u8 *)arg0 + 0x258);
     }
-    if (*(f32 *)*(void **)((u8 *)arg0 + 0x254) >
-        *(f32 *)((u8 *)arg0 + 0x25C)) {
-        *(f32 *)*(void **)((u8 *)arg0 + 0x254) =
-            *(f32 *)((u8 *)arg0 + 0x25C);
+    if (*(f32 *)*(void **)((u8 *)arg0 + 0x254) > *(f32 *)((u8 *)arg0 + 0x25C)) {
+        *(f32 *)*(void **)((u8 *)arg0 + 0x254) = *(f32 *)((u8 *)arg0 + 0x25C);
     }
 }
 #pragma scheduling on
@@ -3199,8 +3193,7 @@ extern "C" s32 fn_8021E1C8(void *arg0, s32 arg1, s32 arg2) {
     s32 var_r5;
     void *temp_r6;
     s32 var_r7;
-    void *temp_r4_3;
-
+    s32 *temp_r4_3;
     *(s32 *)((u8 *)arg0 + 0x260) = 0;
     if (*(u8 *)((u8 *)arg0 + 0x268) != 0) {
         if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
@@ -3221,15 +3214,17 @@ extern "C" s32 fn_8021E1C8(void *arg0, s32 arg1, s32 arg2) {
                 *(s32 *)((u8 *)arg0 + 0x260) = -1;
                 var_r5 = temp_r4_2;
             }
-            temp_r4_3 = *(void **)((u8 *)arg0 + 0x248);
-            temp_r4_4 = *(s32 *)((u8 *)temp_r4_3 + 8) + *(s32 *)((u8 *)temp_r4_3 + 4);
+            temp_r4_3 = *(s32 **)((u8 *)arg0 + 0x248);
+            temp_r4_4 = temp_r4_3[1] + temp_r4_3[2];
             if (var_r5 >= temp_r4_4) {
                 *(s32 *)((u8 *)arg0 + 0x260) = 1;
                 var_r5 = temp_r4_4 - 1;
             }
         }
-        if (var_r5 >= 0 && var_r5 < *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x244) + 8))
-            **(s32 **)((u8 *)arg0 + 0x25C) = var_r5;
+        if (var_r5 >= 0 && var_r5 < *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x244) + 8)) {
+            void *dst = *(void **)((u8 *)arg0 + 0x25C);
+            *(s32 *)dst = var_r5;
+        }
     }
 }
 
@@ -4822,18 +4817,10 @@ extern "C" void fn_80221EA0(void *arg0, s32 arg1, void *arg2, s32 arg3) {
 #pragma dont_inline reset
 extern "C" s32 fn_80221EA8(void *arg0) {
     extern char lbl_8033DA2C[];
-    struct Bar {
-        u8 pad[0x238];
-        u32 mask;
-    };
-    struct Foo {
-        u8 pad[0x14];
-        Bar *bar;
-    };
-    u32 value = ((Foo *)arg0)->bar->mask;
-    for (s32 i = 0; i < 32; i++) {
-        if (value == (1U << i)) {
-            return i;
+    u32 value = *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 0x14) + 0x238);
+    for (u32 i = 0; i < 32; i++) {
+        if (value == (1u << i)) {
+            return (s32)i;
         }
     }
     fn_802E317C(lbl_8033DA2C);
