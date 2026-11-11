@@ -18929,6 +18929,34 @@ void l2c_process_held_packets(u8 timed_out) {
         btu_start_timer((TIMER_LIST_ENT *)(lbl_803C4040 + 0x7CC), 4, 1);
 }
 
+/* One entry of l2cb's LCB pool (l2c_int.h's tL2C_LCB, as this older stack lays it
+ * out), sized the way the pool lays them out: 0x5C bytes each, MAX_L2CAP_LINKS of
+ * them at l2cb + 8.  Only l2cu_allocate_lcb() uses this view of it, so the field
+ * names live here rather than in tL2C_LCB_VIEW, whose layout the rest of the unit
+ * is compiled against. */
+typedef struct {
+    u8      in_use;             /* +0x00  TRUE once the entry was handed out */
+    u8      pad_01[3];
+    s32     link_state;         /* +0x04  a LST_* link state */
+    void   *p_first_ccb;        /* +0x08  first channel on this link */
+    u8      pad_0C[4];
+    TIMER_LIST_ENT timer_entry; /* +0x10  the link's timeout entry; .param points back here */
+    u16     handle;             /* +0x28  ACL connection handle, used with the LM */
+    u8      remote_bd_addr[6];  /* +0x2A  the peer's Bluetooth address */
+    u8      link_role;          /* +0x30  master or slave */
+    u8      id;                 /* +0x31  identifier of the next command we send */
+    u16     link_flush_tout;    /* +0x32  flush timeout in use */
+    u8      pad_34[2];
+    u16     link_xmit_quota;    /* +0x38  packets we may still send; l2c_link_adjust_allocation() sets it */
+    u8      pad_3A[7];
+    u8      is_congested;       /* +0x41  transmit queue is at or over its quota */
+    u8      pad_42[0xE];
+    void   *p_pending_rx_buf;   /* +0x50  a segmented SDU waiting for the rest of it */
+    void   *p_echo_rsp_cb;      /* +0x54  echo response callback, NULL when none is set */
+    u16     idle_timeout;       /* +0x58  seconds this link may stay idle */
+    u8      pad_5A[2];
+} tL2C_LCB_ENTRY;
+
 void *l2cu_allocate_lcb(u8 *addr) {
     u8 *lcb;
     u16 id;
