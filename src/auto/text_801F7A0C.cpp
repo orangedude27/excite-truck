@@ -1380,38 +1380,39 @@ extern "C" s32 fn_801F9D70(void *arg0) {
 extern "C" void fn_801EEFDC(void *, s32);
 extern "C" void fn_8020401C(void);
 __declspec(section ".sdata") extern const char lbl_8055B390[];
-extern "C" void fn_801F9E04(void *arg0) {
+extern "C" void fn_801F9E04(void *context) {
+    /* Initializes global subsystem state, logs setup strings, allocates a small handle slot, and registers callbacks. */
     extern s32 lbl_8055EC64;
     extern void *lbl_8055EC68;
     extern void *lbl_8055EC50;
     extern u8 lbl_8055EC42;
     register u32 zero = 0;
-    s32 base = (s32)lbl_8033AF80;
-    void *memory;
+    s32 stringsBase = (s32)lbl_8033AF80;
+    void *allocated;
 
     lbl_8055EC38 = (void *)zero;
-    fn_801F94CC((const char *)(base + 0x3BC));
-    fn_801F94CC((const char *)(base + 0x3D4), arg0);
-    fn_801F94CC((const char *)(base + 0x39C));
-    fn_801F94CC((const char *)(base + 0x3E8));
+    fn_801F94CC((const char *)(stringsBase + 0x3BC));
+    fn_801F94CC((const char *)(stringsBase + 0x3D4), context);
+    fn_801F94CC((const char *)(stringsBase + 0x39C));
+    fn_801F94CC((const char *)(stringsBase + 0x3E8));
 
     lbl_8055EC4C = (void *)zero;
     lbl_8055EC3C = 1;
     lbl_8055EC50 = (void *)zero;
     lbl_8055EC54 = (void **)zero;
     lbl_8055EC58 = zero;
-    lbl_8055EC42 = (u8)fn_801F9D70(arg0);
+    lbl_8055EC42 = (u8)fn_801F9D70(context);
     lbl_8055B1C8 = -0x4E20;
 
-    memory = fn_801284F8(4, (void *)(base + 0x3F8));
-    if (memory != 0)
-        *(s32 *)memory = zero;
-    lbl_8055EC74 = (void **)memory;
+    allocated = fn_801284F8(4, (void *)(stringsBase + 0x3F8));
+    if (allocated != 0)
+        *(s32 *)allocated = zero;
+    lbl_8055EC74 = (void **)allocated;
     lbl_8055EC78 = 0x2710;
     lbl_8055EC64 = zero;
     lbl_8055EC68 = ((void *(*)(void *))fn_801F96B8)((void *)lbl_8055B390);
     lbl_8055EC70 = (s32)(u32)((void *(*)(void *))fn_801F96B8)((void *)lbl_8055B2C4);
-    ((void (*)(void *))fn_8020401C)(arg0);
+    ((void (*)(void *))fn_8020401C)(context);
     fn_801EEFDC((void *)fn_801F9CF8, 0xC);
 }
 
