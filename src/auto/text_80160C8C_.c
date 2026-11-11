@@ -1422,6 +1422,7 @@ extern "C" void fn_8016275C(void *arg0, s32 arg1, s32 arg2) {
 done:
     ;
 }
+#pragma cplusplus off
 
 #pragma push
 #pragma small_data off
