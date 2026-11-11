@@ -2103,7 +2103,8 @@ extern "C" void *fn_8021BD98(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
 #pragma dont_inline on
 extern "C" void fn_8021BE48(void *arg0) {
     f32 value = *(f32 *)*(void **)((u8 *)arg0 + 0x25C);
-    sprintf((char *)arg0 + 0x264,
+    volatile char *buf = (char *)arg0 + 0x264;
+    sprintf((char *)buf,
             *(const char **)((u8 *)arg0 + 0x260),
             *(f32 *)((u8 *)arg0 + 0x258) +
                 value * *(f32 *)((u8 *)arg0 + 0x254),
@@ -2590,17 +2591,18 @@ extern "C" void fn_8021CB4C(void *arg0, s32 arg1) {
     };
     volatile s32 spC;
     volatile s32 sp8;
+    s32 tmp;
     register s32 result;
     register s32 start;
     First *first;
-
     fn_802C3034(arg1);
     first = *(First **)((u8 *)arg0 + 0x248);
     first->call();
     result = ((Second *)arg0)->get();
     start = *(s32 *)((u8 *)arg0 + 0x254);
+    tmp = result - start;
     sp8 = 0x43300000;
-    spC = (result - start) ^ 0x80000000;
+    spC = tmp ^ 0x80000000;
 }
 extern "C" void fn_8021CBBC(void *arg0) {
     register s32 y;
@@ -8468,17 +8470,18 @@ extern "C" void fn_80229998(void *arg0) {
 
 #pragma scheduling invalid_target
 extern "C" s32 fn_802299B0(void *arg0) {
-    s32 result;
-    s32 value;
     s32 *p;
-    result = 0;
-    if (*(unsigned char *)((char *)arg0 + 0x18) != 0)
+    s32 result = 0;
+    s32 value;
+    if (*(u8 *)((u8 *)arg0 + 0x18) != 0)
         result = 2;
-    p = *(s32 **)((char *)arg0 + 0x254);
+    p = *(s32 **)((u8 *)arg0 + 0x254);
     value = 0;
-    if (p != 0 && *p == *(s32 *)((char *)arg0 + 0x258))
-        value = 1;
-    return (s32)((((unsigned int)(-value | value)) >> 31) | (unsigned int)result);
+    if (p != 0) {
+        if (*p == *(s32 *)((u8 *)arg0 + 0x258))
+            value = 1;
+    }
+    return (((u32)(-value | value)) >> 31) | result;
 }
 #pragma scheduling reset
 extern "C" void fn_802299FC(void *arg0) {
