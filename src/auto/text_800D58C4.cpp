@@ -415,16 +415,17 @@ extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4Si
 extern "C" void MultipleAlpha__Q34nw4r3lyt6detailFQ34nw4r2ut5ColorUc(void*, void*, u8);
 extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5Color(const void *, const void *, u8, const void *, const void *);
 #pragma use_lmw_stmw off
-extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(const void* pos, const void* size, u8 count, const void* texCoords, const void* colors, u8 alpha) {
-    u32 adjusted[4];
-    adjusted[0] = 0xffffffff;
-    adjusted[1] = 0xffffffff;
-    adjusted[2] = 0xffffffff;
-    adjusted[3] = 0xffffffff;
+extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(const void* pos, const void* size, u8 texCoordCount, const void* texCoords, const void* colors, u8 alpha) {
+    /* Draw a quad, optionally multiplying each vertex color's alpha before forwarding. */
+    u32 adjustedColors[4];
+    adjustedColors[0] = 0xffffffff;
+    adjustedColors[1] = 0xffffffff;
+    adjustedColors[2] = 0xffffffff;
+    adjustedColors[3] = 0xffffffff;
     if (colors != 0) {
         int i = 0;
         const u8* src = (const u8*)colors;
-        u8* dst = (u8*)adjusted;
+        u8* dst = (u8*)adjustedColors;
         u8 result[4];
         u8 color[4];
         while (i < 4) {
@@ -444,8 +445,8 @@ extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4Si
     }
     u32 mask = (u32)(-(u32)colors | (u32)colors);
     mask = (u32)((s32)mask >> 31);
-    const void* out = (const void*)((u32)adjusted & mask);
-    DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5Color(pos, size, count, texCoords, out);
+    const void* outColors = (const void*)((u32)adjustedColors & mask);
+    DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5Color(pos, size, texCoordCount, texCoords, outColors);
 }
 
 #pragma use_lmw_stmw off
