@@ -3238,45 +3238,48 @@ extern "C" s32 fn_8021E1C8(void *arg0, s32 arg1, s32 arg2) {
     }
 }
 
-extern "C" void fn_8021E2A0(void *arg0) {
-    f32 low, oldValue, delta, value, upper, current, minimum, difference;
-    fn_802192AC(arg0);
-    if (*(void **)((u8 *)arg0 + 0x248) == 0) goto reset;
-    if (*(s32 *)((u8 *)arg0 + 0x260) == 0) goto reset;
+/* Update a timed scroll/step state: accumulates delta into a timer, and when it
+   leaves [0, 0.15) advances a bounded counter by a signed step and writes the
+   resulting index (or end index for positive step) through an output pointer. */
+extern "C" void fn_8021E2A0(void *self) {
+    f32 zero, previousTime, delta, time, upperBound, currentTime, clampedTime, overflow;
+    fn_802192AC(self);
+    if (*(void **)((u8 *)self + 0x248) == 0) goto reset;
+    if (*(s32 *)((u8 *)self + 0x260) == 0) goto reset;
     delta = fn_80214D48();
-    oldValue = *(f32 *)((u8 *)arg0 + 0x264);
-    low = lbl_805634A8;
-    value = oldValue + delta;
-    *(f32 *)((u8 *)arg0 + 0x264) = value;
-    if (value < low) goto adjust;
-    if (value >= lbl_80563504) goto adjust;
+    previousTime = *(f32 *)((u8 *)self + 0x264);
+    zero = lbl_805634A8;
+    time = previousTime + delta;
+    *(f32 *)((u8 *)self + 0x264) = time;
+    if (time < zero) goto adjust;
+    if (time >= lbl_80563504) goto adjust;
     goto done;
 adjust:
-    current = *(f32 *)((u8 *)arg0 + 0x264);
-    upper = lbl_80563504;
-    minimum = lbl_80563510;
-    difference = current - upper;
-    minimum = (minimum > difference) ? minimum : difference;
-    *(f32 *)((u8 *)arg0 + 0x264) = minimum;
-    s32 add;
-    s32 max;
-    s32 *obj;
-    obj = *(s32 **)((u8 *)arg0 + 0x248);
-    add = obj[2] + *(s32 *)((u8 *)arg0 + 0x260);
-    obj[2] = add;
-    max = obj[0] - obj[1];
-    if (add > max) obj[2] = max;
-    if (obj[2] < 0) obj[2] = 0;
-    if (*(s32 *)((u8 *)arg0 + 0x260) < 0) {
-        obj = *(s32 **)((u8 *)arg0 + 0x248);
-        *(s32 *)*(s32 **)((u8 *)arg0 + 0x25C) = obj[2];
+    currentTime = *(f32 *)((u8 *)self + 0x264);
+    upperBound = lbl_80563504;
+    clampedTime = lbl_80563510;
+    overflow = currentTime - upperBound;
+    clampedTime = (clampedTime > overflow) ? clampedTime : overflow;
+    *(f32 *)((u8 *)self + 0x264) = clampedTime;
+    s32 stepped;
+    s32 maxValue;
+    s32 *range;
+    range = *(s32 **)((u8 *)self + 0x248);
+    stepped = range[2] + *(s32 *)((u8 *)self + 0x260);
+    range[2] = stepped;
+    maxValue = range[0] - range[1];
+    if (stepped > maxValue) range[2] = maxValue;
+    if (range[2] < 0) range[2] = 0;
+    if (*(s32 *)((u8 *)self + 0x260) < 0) {
+        range = *(s32 **)((u8 *)self + 0x248);
+        *(s32 *)*(s32 **)((u8 *)self + 0x25C) = range[2];
         goto done;
     }
-    obj = *(s32 **)((u8 *)arg0 + 0x248);
-    *(s32 *)*(s32 **)((u8 *)arg0 + 0x25C) = obj[2] + obj[1] - 1;
+    range = *(s32 **)((u8 *)self + 0x248);
+    *(s32 *)*(s32 **)((u8 *)self + 0x25C) = range[2] + range[1] - 1;
     goto done;
 reset:
-    *(f32 *)((u8 *)arg0 + 0x264) = lbl_805634A8;
+    *(f32 *)((u8 *)self + 0x264) = lbl_805634A8;
 done:
     ;
 }
