@@ -2588,6 +2588,7 @@ s32 DVDReadAbsAsyncPrio(void *block, void *addr, s32 length, s32 offset, void *c
 extern void DCInvalidateRange(void *, u32);
 #pragma opt_propagation off
 s32 DVDInquiryAsync(void *block, void *addr, void *callback) {
+    /* Issue an asynchronous DVD inquiry command, invalidating the 0x20-byte reply buffer when needed and kicking the DVD queue. */
     s32 result;
     s32 enabled;
     u32 cmd = 0xE;
