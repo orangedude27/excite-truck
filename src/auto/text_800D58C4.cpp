@@ -3077,7 +3077,6 @@ extern "C" void *__dt__Q36nw4hbm3lyt4PaneFv(void *self, s32 del) {
     return self;
 }
 
-struct PaneMsgBlock_800D58C4 { char file[0x10]; char msg1[0x2C]; char msg2[]; };
 extern "C" const char lbl_8031FF90[];
 extern "C" const char lbl_80320250[];
 extern "C" const char lbl_8032022C[];
