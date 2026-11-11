@@ -3098,7 +3098,7 @@ void fn_80198E7C(int index) {
   extern void fn_80136EA4(int, int);
   extern void fn_80136E8C(int, int, int);
   int fn_80198EA4(void) { return 0; }
-extern void fn_801958D8(void);
+extern void fn_801958D8();
 extern void fn_80195F6C(void *, void *);
 extern void fn_80194624(void *);
 extern void fn_80195654(void *, void *);
