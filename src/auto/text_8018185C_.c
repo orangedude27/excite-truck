@@ -436,40 +436,53 @@ extern void fn_80179EE8(void *, int);
 extern void fn_802792EC(int);
 #pragma push
 #pragma cplusplus on
-extern "C" void *fn_801836E0(void *arg0, int arg1) {
-    class V8 {
+/* Destructor of the car/game object whose vtable is lbl_803326F8: the
+   constructor fn_80182010 installs that vtable and files the instance in the
+   lbl_804348E8[] list, of which lbl_8055E4D0 are alive.  Here the vtable goes
+   back to this class, every registered listener is told the +0x1EC object is
+   going away (fn_801D1100), the three sub-objects owned at +0x257C..+0x2584
+   are deleted through their own virtual destructors, the sound/effect objects
+   fn_8018A6F4 knows are released, the shared node at +0x26C loses one
+   reference, the instance count drops, the base-class destructor fn_80179EE8
+   runs and the memory itself is freed (fn_80128668, operator delete) when
+   deleteFlag is positive. */
+extern "C" void *fn_801836E0(void *object, int deleteFlag) {
+    /* CodeWarrior keeps two destructor slots before the first declared virtual,
+       so the one method below is fetched from vtable+8: the sub-object's
+       deleting destructor, which the game always calls with the 1 flag. */
+    class SubObject {
     public:
-        virtual void m8(int);
+        virtual void deleteNow(int);
     };
-    void *p1;
-    void *p2;
-    void *p3;
-    if (arg0 != 0) {
-        *(void **)arg0 = (void *)lbl_803326F8;
-        fn_801D1100(*(int *)((char *)arg0 + 0x1EC), lbl_803326F8);
-        p1 = *(void **)((char *)arg0 + 0x257C);
-        if (p1 != 0 && p1 != 0) {
-            ((V8 *)p1)->m8(1);
+    SubObject *child0;
+    SubObject *child1;
+    SubObject *child2;
+    if (object != 0) {
+        *(void **)object = (void *)lbl_803326F8;
+        fn_801D1100(*(int *)((char *)object + 0x1EC), lbl_803326F8);
+        child0 = *(SubObject **)((char *)object + 0x257C);
+        if (child0 != 0 && child0 != 0) {
+            child0->deleteNow(1);
         }
-        p2 = *(void **)((char *)arg0 + 0x2580);
-        if (p2 != 0 && p2 != 0) {
-            ((V8 *)p2)->m8(1);
+        child1 = *(SubObject **)((char *)object + 0x2580);
+        if (child1 != 0 && child1 != 0) {
+            child1->deleteNow(1);
         }
-        p3 = *(void **)((char *)arg0 + 0x2584);
-        if (p3 != 0) {
-            ((V8 *)p3)->m8(1);
+        child2 = *(SubObject **)((char *)object + 0x2584);
+        if (child2 != 0) {
+            child2->deleteNow(1);
         }
-        fn_8018A6F4(arg0);
-        fn_802792EC(*(int *)((char *)arg0 + 0x26C));
+        fn_8018A6F4(object);
+        fn_802792EC(*(int *)((char *)object + 0x26C));
         lbl_8055E4D0--;
-        if (arg0 != 0) {
-            fn_80179EE8(arg0, 0);
+        if (object != 0) {
+            fn_80179EE8(object, 0);
         }
-        if (arg1 > 0) {
-            ((void (*)(void *))fn_80128668)(arg0);
+        if (deleteFlag > 0) {
+            ((void (*)(void *))fn_80128668)(object);
         }
     }
-    return arg0;
+    return object;
 }
 #pragma cplusplus off
 #pragma pop
