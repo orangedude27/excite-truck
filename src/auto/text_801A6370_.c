@@ -733,6 +733,9 @@ extern void fn_801A7178(void *, float *);
 extern void fn_801A7530(void *, void *);
 extern void fn_801BE168(void *, void *, void *, void *);
 extern float PSVECDotProduct(void *, void *);
+/* Updates object/camera state: computes blend via fn_801A7530/fn_801A69F4/
+   fn_801A7178, scales vector at +0x124 by (1-blend), resets direction at +0x118
+   if its dot product exceeds threshold, applies transform, and clears a flag. */
 void fn_801A7444(void *arg0) {
     float blend, one, up, side;
     char *obj = (char *)arg0;
