@@ -5557,16 +5557,20 @@ extern "C" void SetFont__Q36nw4hbm2ut10CharWriterFRCQ36nw4hbm2ut4Font_80112200(v
 }
 
 extern "C" void *GetFont__Q36nw4hbm2ut10CharWriterCFv_80112410(void *arg0) {
-    const unsigned int p = (unsigned int)arg0;
-    unsigned int r5=1, r6=1, r7=1, r8=1, r9=1, r10=1;
-    unsigned int r11=p&0xFF000000;
-    if (!((u32)(r11+0x80000000U)<1U) && !((u32)((p&0xFF800000)+0x7F000000U)<1U)) r10=0;
-    if (r10==0 && !((u32)((p&0xF8000000)+0x70000000U)<1U)) r9=0;
-    if (r9==0 && !((u32)(r11+0x40000000U)<1U)) r8=0;
-    if (r8==0 && !((u32)((p&0xFF800000)+0x3F000000U)<1U)) r7=0;
-    if (r7==0 && !((u32)((p&0xF8000000)+0x30000000U)<1U)) r6=0;
-    if (r6==0 && !((u32)((p&0xFFFFC000)+0x20000000U)<1U)) r5=0;
-    if (r5==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329560,0x97,lbl_80329578,arg0);
+    int v0 = 1;
+    int v1 = 1;
+    int v2 = 1;
+    int v3 = 1;
+    int v4 = 1;
+    int v5 = 1;
+    unsigned int top = (unsigned int)arg0 & 0xFF000000U;
+    if ((top != 0x80000000U) && (((unsigned int)arg0 & 0xFF800000U) != 0x81000000U)) v5 = 0;
+    if ((v5 == 0) && (((unsigned int)arg0 & 0xF8000000U) != 0x90000000U)) v4 = 0;
+    if ((v4 == 0) && (top != 0xC0000000U)) v3 = 0;
+    if ((v3 == 0) && (((unsigned int)arg0 & 0xFF800000U) != 0xC1000000U)) v2 = 0;
+    if ((v2 == 0) && (((unsigned int)arg0 & 0xF8000000U) != 0xD0000000U)) v1 = 0;
+    if ((v1 == 0) && (((unsigned int)arg0 & 0xFFFFC000U) != 0xE0000000U)) v0 = 0;
+    if (v0 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329560, 0x97, lbl_80329578, arg0);
     return *(void **)((char *)arg0 + 0x5C);
 }
 
