@@ -411,8 +411,8 @@ extern "C" int fn_802984D0(void* unused, void* arg1, void* arg2, void* arg3, voi
     return 1;
 }
 
-#pragma paired_single off
-#pragma scheduling invalid_target
+#pragma push
+#pragma processor 750
 extern "C" void fn_8029871C(void *arg0, void *arg1, float deltaTime) {
     char *entry = (char *)arg1;
     float remaining = *(float *)(entry + 0x24);
@@ -421,41 +421,39 @@ extern "C" void fn_8029871C(void *arg0, void *arg1, float deltaTime) {
         ((void (*)(void *, int))fn_8029840C)(arg0, index);
         return;
     }
-    float secondArg = lbl_80564590;
-    float firstAngle = lbl_805645B8;
     int mode = 0;
+    float firstAngle = lbl_805645B8;
+    float secondArg = lbl_80564590;
     *(float *)(entry + 0x24) = remaining - deltaTime;
     float angle = fn_80129DC4(mode, firstAngle, secondArg);
     float angle2 = angle * angle;
     float otherAngle = (float)fn_8002F234(lbl_80564590 - angle2);
     float cosine = fn_80129DC4(mode, -otherAngle, otherAngle);
-
-    float target[3];
-    float positions[3];
+    volatile float target[3];
+    volatile float positions[3];
     target[0] = lbl_8056459C;
     target[1] = lbl_8056459C;
     target[2] = lbl_8056459C;
-
     float x = *(float *)(entry + 0x00) + *(float *)(entry + 0x0C) * angle;
     positions[0] = x;
     float y = *(float *)(entry + 0x04) + *(float *)(entry + 0x10) * angle;
     positions[1] = y;
     float z = *(float *)(entry + 0x08) + *(float *)(entry + 0x14) * angle;
     positions[2] = z;
-    x = x + *(float *)(entry + 0x18) * cosine;
-    positions[0] = x;
+    float x2 = x + *(float *)(entry + 0x18) * cosine;
+    positions[0] = x2;
     float yAdjusted = y + *(float *)(entry + 0x1C) * cosine;
+    positions[1] = yAdjusted;
     float zOffset = *(float *)(entry + 0x20);
     float zVelocity = zOffset * cosine;
     positions[1] = yAdjusted + lbl_805645BC;
-    z = z + zVelocity;
-    positions[2] = z;
+    float zFinal = z + zVelocity;
+    positions[2] = zFinal;
     ((void (*)(void *, float *, float *, float, float, float, float, float))fn_8028E584)(
-        *(void **)((char *)arg0 + 0xB0), positions, target, zVelocity, zOffset, z, y, x);
-    fn_80288A40(positions, target);
+        *(void **)((char *)arg0 + 0xB0), (float *)positions, (float *)target, zVelocity, zOffset, z, y, x);
+    fn_80288A40((float *)positions, (float *)target);
 }
-#pragma scheduling on
-#pragma paired_single reset
+#pragma pop
 
 extern "C" void* fn_80298868(void* arg0) {
     char* p = (char*)arg0;
@@ -859,25 +857,21 @@ extern "C" void fn_80299628(void* arg0) {
 
 #pragma scheduling invalid_target
 extern "C" int fn_802996B0(void *arg0, int *out) {
-    int state, best = -1, found = 0;
-    state = *(int *)((char *)arg0 + 0x34);
-    if (state == 0) { *out = 0; return 1; }
-    if (state == 2 && (!found || *(float *)((char *)arg0 + 0x38) < *(float *)((char *)arg0 - 8))) { best = 0; found = 1; }
-
-    state = *(int *)((char *)arg0 + 0x74);
-    if (state == 0) { *out = 1; return 1; }
-    if (state == 2 && (!found || *(float *)((char *)arg0 + 0x78) < *(float *)((char *)arg0 + (best << 6) + 0x38))) { best = 1; found = 1; }
-
-    state = *(int *)((char *)arg0 + 0xB4);
-    if (state == 0) { *out = 2; return 1; }
-    if (state == 2 && (!found || *(float *)((char *)arg0 + 0xB8) < *(float *)((char *)arg0 + (best << 6) + 0x38))) { best = 2; found = 1; }
-
-    state = *(int *)((char *)arg0 + 0xF4);
-    if (state == 0) { *out = 3; return 1; }
-    if (state == 2 && (!found || *(float *)((char *)arg0 + 0xF8) < *(float *)((char *)arg0 + (best << 6) + 0x38))) { best = 3; found = 1; }
-
-    if (found) *out = best;
-    return found;
+ int state, best=-1, found=0;
+ state=*(int*)((char*)arg0+0x34);
+ if(state==0){*out=0;return 1;}
+ if(state==2 && (!found || *(float*)((char*)arg0+0x38)<*(float*)((char*)arg0-8))){best=0;found=1;}
+ state=*(int*)((char*)arg0+0x74);
+ if(state==0){*out=1;return 1;}
+ if(state==2 && (!found || *(float*)((char*)arg0+0x78)<*(float*)((char*)arg0+(best<<6)+0x38))){best=1;found=1;}
+ state=*(int*)((char*)arg0+0xB4);
+ if(state==0){*out=2;return 1;}
+ if(state==2 && (!found || *(float*)((char*)arg0+0xB8)<*(float*)((char*)arg0+(best<<6)+0x38))){best=2;found=1;}
+ state=*(int*)((char*)arg0+0xF4);
+ if(state==0){*out=3;return 1;}
+ if(state==2 && (!found || *(float*)((char*)arg0+0xF8)<*(float*)((char*)arg0+(best<<6)+0x38))){best=3;found=1;}
+ if(found)*out=best;
+ return found;
 }
 #pragma scheduling on
 
@@ -1068,10 +1062,9 @@ extern "C" void* fn_80299FA8(void* arg0, void* arg1) {
 extern "C" float fn_80129DC4(int, float, float);
 extern "C" void fn_80288A58(void *, float *);
 extern float lbl_80564600;
-#pragma paired_single off
-#pragma scheduling invalid_target
+#pragma scheduling on
 extern "C" void fn_80299FE0(void *unused, void *arg1, float unusedTime) {
-    register float upper = lbl_80564590;
+    float upper = lbl_80564590;
     float time = *(float *)((char *)arg1 + 0x98);
     if (time > upper - lbl_80558DC4) {
         register void *obj = arg1;
@@ -1113,8 +1106,6 @@ extern "C" void fn_80299FE0(void *unused, void *arg1, float unusedTime) {
         *(float *)((char *)arg1 + 0x98) = time + lbl_80564594;
     }
 }
-#pragma scheduling on
-#pragma paired_single reset
 extern "C" void fn_8029A114(void* arg0) {
     float value0 = lbl_8056459C;
     float value1 = lbl_80564590;
@@ -1231,10 +1222,10 @@ extern "C" void fn_8029A4B4(void *arg0, int arg1) {
     register void *dest = arg0;
     register int index = arg1;
     register void *data;
-    float home[3], a[3], b[3], c[3], screen[6];
+    float a[3], b[3], c[3], home[3], screen[6];
     int selector, handle;
-    unsigned int *src, *dst;
-    unsigned int v0, v1;
+    int *src, *dst;
+    register int v0, v1;
 
     data = (void *)fn_80287B24(index);
     if ((unsigned int)index < 8U)
@@ -1244,8 +1235,8 @@ extern "C" void fn_8029A4B4(void *arg0, int arg1) {
     handle = fn_801EE0C8(selector);
     fn_802C77F0(handle, screen);
 
-    src = (unsigned int *)data;
-    dst = (unsigned int *)dest;
+    src = (int *)data;
+    dst = (int *)dest;
     v0=src[0]; v1=src[1]; dst[0]=v0; dst[1]=v1;
     v0=src[2]; v1=src[3]; dst[2]=v0; dst[3]=v1;
     v0=src[4]; v1=src[5]; dst[4]=v0; dst[5]=v1;
@@ -1254,17 +1245,17 @@ extern "C" void fn_8029A4B4(void *arg0, int arg1) {
     dst[10]=src[10];
     v0=src[11]; dst[11]=v0;
 
-    home[0] = screen[0];
-    home[1] = screen[2];
     home[2] = screen[4];
+    home[1] = screen[2];
+    home[0] = screen[0];
     *(float *)((char *)dest + 0x30) = home[0];
     *(float *)((char *)dest + 0x34) = home[1];
     *(float *)((char *)dest + 0x38) = home[2];
     *(unsigned int *)((char *)dest + 0x3C) = (unsigned int)index;
 
-    c[0] = lbl_8056459C; c[1] = lbl_8056459C; c[2] = lbl_8056459C;
-    b[0] = lbl_8056459C; b[1] = lbl_8056459C; b[2] = lbl_8056459C;
     a[0] = lbl_8056459C; a[1] = lbl_8056459C; a[2] = lbl_8056459C;
+    b[0] = lbl_8056459C; b[1] = lbl_8056459C; b[2] = lbl_8056459C;
+    c[0] = lbl_8056459C; c[1] = lbl_8056459C; c[2] = lbl_8056459C;
     ((void (*)(void *, float *, float *, float *, float, float, float))fn_8029A318)
         (dest, a, b, c, home[0], home[1], home[2]);
     *(int *)((char *)dest + 0x40) =
@@ -1862,6 +1853,34 @@ extern "C" void fn_8029B43C(void *arg0, void *entry, unsigned char arg2, float f
     fn_802C8E00(0xC0FFFFFF, 1, v[9], v[10], v[11], sp10, sp8);
 }
 #pragma pop
+/* One 0x38-byte drawing slot per track of the note renderer: the object the
+ * fn_8029B6E4 / fn_8029B824 / fn_8029BA0C family walks starts with an array
+ * of these, fn_80287B14() of them, one per track. */
+struct NoteSlot {
+    Vec3f xAxis;          /* 0x00 transform, the note's with the track's applied */
+    Vec3f yAxis;          /* 0x0C */
+    Vec3f zAxis;          /* 0x18 */
+    Vec3f position;       /* 0x24 where the sprite is placed */
+    volatile float scale; /* 0x30 sprite size; read again after the calls below */
+    unsigned char cell;   /* 0x34 which cell of the sprite sheet to draw */
+    unsigned char inUse;  /* 0x35 the track has something to draw */
+    unsigned char pad_36[2];
+};
+
+/* fn_80288208's track record; only the number of notes it holds is read here. */
+struct Track {
+    unsigned char pad_0[0x24];
+    int noteCount; /* 0x24 */
+};
+
+/* fn_80288060's note: the transform the track's own matrix is applied to. */
+struct Note {
+    Vec3f xAxis;    /* 0x00 */
+    Vec3f yAxis;    /* 0x0C */
+    Vec3f zAxis;    /* 0x18 */
+    Vec3f position; /* 0x24 */
+};
+
 extern "C" void *fn_802C86DC(void);
 extern "C" void fn_8029B274(void *arg0, float *arg1, unsigned char arg2, void *arg3, void *arg4, float farg0, float arg6);
 #pragma push
@@ -2016,6 +2035,7 @@ extern "C" void fn_8029BA94(void *arg0, void *arg1) {
     char *record;
     int size;
     void *info;
+    int value;
 
     if (((const Args *)arg1)->index < 0)
         return;
@@ -2028,16 +2048,17 @@ extern "C" void fn_8029BA94(void *arg0, void *arg1) {
     case 1:
         info = fn_80288208(index);
         index = ((const Args *)arg1)->index;
+        value = ((const Args *)arg1)->value;
         size = *(int *)((char *)info + 0x24);
         record = (char *)arg0 + index * 0x14;
-        if (((const Args *)arg1)->value < 0) {
+        if (value < 0) {
             *(int *)(record + 4) = 2;
             *(float *)(record + 8) = ((const Args *)arg1)->rate;
             *(float *)(record + 0xC) = fn_80287BC8(lbl_80564598, lbl_80564590);
-            int choice = fn_80287B5C(size);
-            *(int *)(record + 0x10) = choice;
-            choice = ((int *)lbl_802FA9F0)[choice] % size;
-            *(int *)(record + 0x14) = (int)fn_80288060(info, choice);
+            value = fn_80287B5C(size);
+            *(int *)(record + 0x10) = value;
+            value = ((int *)lbl_802FA9F0)[value] % size;
+            *(int *)(record + 0x14) = (int)fn_80288060(info, value);
         } else {
             *(int *)(record + 4) = 0x12;
             *(float *)(record + 8) = ((const Args *)arg1)->rate;
@@ -2045,9 +2066,9 @@ extern "C" void fn_8029BA94(void *arg0, void *arg1) {
             int remainderSource = ((const Args *)arg1)->value;
             int zero = 0;
             *(float *)(record + 0xC) = result;
-            int remainder = remainderSource % size;
+            value = remainderSource % size;
             *(int *)(record + 0x10) = zero;
-            *(int *)(record + 0x14) = (int)fn_80288060(info, remainder);
+            *(int *)(record + 0x14) = (int)fn_80288060(info, value);
         }
         break;
     default:
