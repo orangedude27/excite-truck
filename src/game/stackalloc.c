@@ -626,15 +626,14 @@ void *fn_802DA550(void *arg0, void *arg1, int arg2, void *arg3, void *arg4, int 
 #pragma scheduling invalid_target
 void *fn_802DA704(int owner, void *data, int count) {
     volatile unsigned char *state;
-    unsigned char saved;
+    int saved;
     unsigned char *base;
     int bytes;
+    int used;
     int size;
     int rounded;
-    int used;
     int aligned;
-    int limit;
-    int position;
+    unsigned int position;
     int updated;
     void *result;
     state = (volatile unsigned char *)lbl_8055FE5C;
@@ -645,30 +644,30 @@ void *fn_802DA704(int owner, void *data, int count) {
     rounded = size + 3;
     used = *(volatile int *)(state + 0x10);
     aligned = rounded & ~3;
-    limit = *(volatile int *)(state + 0x0C);
-    if (aligned + used + 8 > limit) {
-        fn_802E317C(lbl_80346798, *(volatile int *)(state + 8), size, *(volatile int *)(state + 0x0C) / 1024);
+    if (aligned + used + 8 > *(volatile int *)(state + 0x0C)) {
+        int limit = *(volatile int *)(state + 0x0C);
+        fn_802E317C(lbl_80346798, *(volatile int *)(state + 8), size, limit / 1024);
         result = 0;
     } else {
-        base = (unsigned char *)used;
-        base += *(unsigned int *)(state + 4);
+        position = *(unsigned int *)(state + 4);
+        base = (unsigned char *)*(volatile int *)(state + 0x10);
+        base += position;
         *(int *)base = 1;
         result = base + 4;
         position = *(unsigned int *)(state + 4);
-        position += *(volatile int *)(state + 0x10);
-        position += aligned;
+        used = *(volatile int *)(state + 0x10);
+        used = position + used;
+        position = used + aligned;
         *(int *)(position + 4) = aligned;
-        updated = *(volatile int *)(state + 0x10);
-        updated += aligned;
-        updated += 8;
-        *(volatile int *)(state + 0x10) = updated;
+        updated = aligned + *(volatile int *)(state + 0x10);
+        *(volatile int *)(state + 0x10) = updated + 8;
     }
     *(int *)((char *)result + 0) = 7;
     *(int *)((char *)result + 4) = owner;
     *(int *)((char *)result + 8) = count;
     *(int *)((char *)result + 0x0C) = 0;
     *(int *)((char *)result + 0x14) = 0;
-    *((unsigned char *)result + 0x10) = saved;
+    *(unsigned char *)((char *)result + 0x10) = (unsigned char)saved;
     memcpy((char *)result + 0x18, data, bytes);
     return result;
 }
