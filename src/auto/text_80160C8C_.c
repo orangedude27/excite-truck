@@ -1409,15 +1409,19 @@ s32 fn_80162748(void *arg0) { return *(s32 *)((u8 *)arg0 + 8) == 1; }
 
 #pragma cplusplus on
 extern "C" void fn_8016275C(void *arg0, s32 arg1, s32 arg2) {
-    if (((s32 (*)(void))(*(void ***)arg0)[0x24 / 4])() != 0)
+    if (((Obj8016275C *)arg0)->f7() != 0) {
         goto done;
-    if (arg1 == 0) {
-        if (((s32 *)lbl_804348E8[arg2])[4] == (s32)0x50434152) {
-            ((void (*)(void *, s32))(*(void ***)arg0)[0x60 / 4])(arg0, 2);
-            *((u8 *)arg0 + 0x91) = 1;
-        }
-    } else {
+    }
+    switch (arg1) {
+    case 0:
+        goto body;
+    default:
         goto done;
+    }
+body:
+    if (((s32 *)lbl_804348E8[arg2])[4] == (s32)0x50434152) {
+        ((Obj8016275C *)arg0)->f22(2);
+        *((u8 *)arg0 + 0x91) = 1;
     }
 done:
     ;
