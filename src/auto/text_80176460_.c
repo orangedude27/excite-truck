@@ -287,20 +287,27 @@ void fn_8017677C(void) {
 
 #pragma push
 #pragma scheduling invalid_target
-void fn_80176780(int arg0, u8 *arg1) {
+/* fn_80176780 - files a physics mode change and starts it.  The low byte of
+ * `mode` is the mode to switch to and its PHYS_FLAG_MASK bits the flags for
+ * the request (PHYS_FLAG_100 is dropped while lbl_8055E3E4 is set).  The
+ * request goes into sPendingCommand, which fn_80176C4C takes over on the next
+ * tick, and the switch is started: straight through with
+ * PHYS_FLAG_APPLY_NOW, otherwise behind a fade - warning first if a fade of
+ * the previous mode is still running. */
+void fn_80176780(int mode, u8 *extraByte) {
     s32 flags;
     s32 masked;
-    masked = arg0 & 0x1FF00;
-    arg0 = (u8)arg0;
-    flags = masked & ~(((s32)(-(s32)lbl_8055E3E4 | (s32)lbl_8055E3E4) >> 31) & 0x100);
-    ((void (*)(int, int, int, int))fn_8017677C)(arg0, flags, lbl_8055E3E4, masked);
-    if (fn_80176F9C()) fn_802E30C8(lbl_803316B4);
-    lbl_804303D4[0] = arg0;
-    lbl_804303D4[1] = flags;
-    if (arg1) *((u8 *)lbl_804303D4 + 8) = *arg1;
-    if (flags & 0x1000) fn_80176F24();
-    else if (flags & 0x8000) fn_80176FC4();
-    else if (flags & 0x10000) { fn_801775EC(); fn_80177048(); }
+    masked = mode & PHYS_FLAG_MASK;
+    mode = (u8)mode;
+    flags = masked & ~(((s32)(-(s32)lbl_8055E3E4 | (s32)lbl_8055E3E4) >> 31) & PHYS_FLAG_100);
+    ((void (*)(int, int, int, int))fn_8017677C)(mode, flags, lbl_8055E3E4, masked);
+    if (fn_80176F9C()) fn_802E30C8(STR_PHYS_FADER_ACTIVE);
+    ((PhysicsCommand *)sPendingCommand)->mode = mode;
+    ((PhysicsCommand *)sPendingCommand)->flags = flags;
+    if (extraByte) ((PhysicsCommand *)sPendingCommand)->extra = *extraByte;
+    if (flags & PHYS_FLAG_APPLY_NOW) fn_80176F24();
+    else if (flags & PHYS_FLAG_FADE) fn_80176FC4();
+    else if (flags & PHYS_FLAG_REFADE) { fn_801775EC(); fn_80177048(); }
     else fn_80177048();
 }
 #pragma scheduling on
