@@ -335,7 +335,6 @@ extern "C" void SetSize__Q46nw4hbm3lyt6detail11TexCoordAryFUc(void *self, u8 siz
 }
 #pragma unroll reset
 #pragma optimize_for_size reset
-#pragma optimize_for_size on
 #pragma unroll off
 extern "C" void Copy__Q46nw4hbm3lyt6detail11TexCoordAryFPCvUc(void* self, const void* src, u8 count) {
     u8* p = (u8*)self;
