@@ -2,8 +2,9 @@
 
 static void nandOpenCallback(s32 result, void* arg);
 
-static s32 nandOpen(const char* path, u8 mode, NANDCommandBlock* block,
-                    BOOL async, BOOL priv) {
+// Open a NAND file at the given path with the requested access mode, synchronously or asynchronously.
+static s32 nandOpen(const char* path, u8 accessMode, NANDCommandBlock* block,
+                    BOOL isAsync, BOOL isPrivileged) {
     IPCOpenMode ipcMode;
     char absPath[64];
 
@@ -11,11 +12,11 @@ static s32 nandOpen(const char* path, u8 mode, NANDCommandBlock* block,
     ipcMode = IPC_OPEN_NONE;
     nandGenerateAbsPath(absPath, path);
 
-    if (!priv && nandIsPrivatePath(absPath)) {
+    if (!isPrivileged && nandIsPrivatePath(absPath)) {
         return IPC_RESULT_ACCESS;
     }
 
-    switch (mode) {
+    switch (accessMode) {
     case NAND_ACCESS_RW:
         ipcMode = IPC_OPEN_RW;
         break;
@@ -27,7 +28,7 @@ static s32 nandOpen(const char* path, u8 mode, NANDCommandBlock* block,
         break;
     }
 
-    if (async) {
+    if (isAsync) {
         return ISFS_OpenAsync(absPath, ipcMode, nandOpenCallback, block);
     } else {
         return ISFS_Open(absPath, ipcMode);
