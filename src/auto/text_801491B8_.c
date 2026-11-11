@@ -1449,38 +1449,39 @@ extern "C" void *fn_8014E1D0(void *arg0, s32 arg1) {
 #pragma cplusplus off
 
 #pragma cplusplus on
-extern "C" void* fn_8014E3CC(void* arg0, s32 arg1) {
+extern "C" void *fn_8014E3CC(void *object, s32 shouldFree) {
     class VObj {
     public:
         virtual void d0(s32);
     };
-    VObj* p;
-    if (arg0 != NULL) {
-        p = *(VObj**)((char*)arg0 + 8);
-        if (p != NULL) {
-            fn_802ADE60((void**)p, 1);
-            *(VObj**)((char*)arg0 + 8) = NULL;
+    /* Destroys owned subobjects at offsets 0x8, 0x10, 0x14, 0x18, then frees the
+       object itself when shouldFree > 0. */
+    VObj *child;
+    if (object != NULL) {
+        child = *(VObj **)((char *)object + 8);
+        if (child != NULL) {
+            fn_802ADE60((void **)child, 1);
+            *(VObj **)((char *)object + 8) = NULL;
         }
-        p = *(VObj**)((char*)arg0 + 0x10);
-        if (p != NULL) {
-            if (p != NULL) p->d0(1);
-            *(VObj**)((char*)arg0 + 0x10) = NULL;
+        child = *(VObj **)((char *)object + 0x10);
+        if (child != NULL) {
+            if (child != NULL) child->d0(1);
+            *(VObj **)((char *)object + 0x10) = NULL;
         }
-        p = *(VObj**)((char*)arg0 + 0x14);
-        if (p != NULL) {
-            if (p != NULL) p->d0(1);
-            *(VObj**)((char*)arg0 + 0x14) = NULL;
+        child = *(VObj **)((char *)object + 0x14);
+        if (child != NULL) {
+            if (child != NULL) child->d0(1);
+            *(VObj **)((char *)object + 0x14) = NULL;
         }
-        p = *(VObj**)((char*)arg0 + 0x18);
-        if (p != NULL) {
-            if (p != NULL) p->d0(1);
-            *(VObj**)((char*)arg0 + 0x18) = NULL;
+        child = *(VObj **)((char *)object + 0x18);
+        if (child != NULL) {
+            if (child != NULL) child->d0(1);
+            *(VObj **)((char *)object + 0x18) = NULL;
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (shouldFree > 0) fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
-
 #pragma cplusplus off
 extern void *memset(void *, s32, s32);
 void *fn_8014E4BC(void *arg0) {
