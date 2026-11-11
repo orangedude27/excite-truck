@@ -97,6 +97,10 @@ s32 fn_801B54A8(void *arg0) {
 }
 
 extern float lbl_80562694;
+/* lbl_80562694: 0.01f - the squared distance two segment ends may be apart and
+ * still count as touching, i.e. 0.1 world units. */
+#define LINK_SQ_DISTANCE lbl_80562694
+/* takes the two Vecs as void * so this unit's s32[3] temporaries pass too */
 extern float PSVECSquareDistance(void *, void *);
 #pragma push
 #pragma processor 750
