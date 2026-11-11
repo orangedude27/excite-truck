@@ -564,6 +564,7 @@ s32 ISFS_Delete(const char* path) {
 
     block = NULL;
 
+    /* Delete the file or directory at the given path via ISFS. */
     if (path == NULL || __fsFd < 0 ||
         (len = strnlen(path, FS_MAX_PATH)) == FS_MAX_PATH) {
         ret = IPC_RESULT_INVALID;
