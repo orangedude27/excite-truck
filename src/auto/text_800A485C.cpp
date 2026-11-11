@@ -12395,28 +12395,36 @@ extern "C" s32 fn_800BABD0(void *arg0, s32 arg1, s32 *arg2, s32 arg3) {
     return result;
 }
 
-extern "C" s32 fn_800BACC4(void *arg0, s32 arg1, s32 *arg2, s32 arg3) {
+/* ISD_SetHCRegister - the name this function's own report prints (lbl_8031B838 +
+ * 0xC4).  Writes one SD host-controller register through the IOS SD module's
+ * ioctl 1: "device" is the IosDevice whose IOS handle (+0x00) the ioctl goes to,
+ * and the library's shared parameter block gets the register at +0x00, arg3 at
+ * +0x0C and the value to write - taken from *value - at +0x10.  Returns 0, or
+ * 0xC1000000 (IPC_E_FAIL) when the SD library was never initialised, value is
+ * NULL, or IOS failed; every failure ends in the "%s: exit rc is 0x%X" report.
+ * fn_800BC134 read-modify-writes register 0x28 with it to switch the bus width. */
+extern "C" s32 fn_800BACC4(void *device, s32 reg, s32 *value, s32 arg3) {
     const char *logStrings = lbl_8031B838;
     s32 result;
-    if (lbl_80559248 < 0) {
+    if (lbl_80559248 < 0) { /* the SD library's heap: not initialised */
         result = (s32)0xC1000000;
     } else {
-        *(s32 *)lbl_8055DD7C = arg1;
-        *(s32 *)((u8 *)lbl_8055DD7C + 0xC) = arg3;
-        if (arg2 != 0) {
-            *(s32 *)((u8 *)lbl_8055DD7C + 0x10) = *arg2;
-            result = IOS_Ioctl(*(s32 *)arg0, 1, lbl_8055DD7C, 0x18, 0, 0);
+        ((SDHostRegIoctl *)lbl_8055DD7C)->reg = reg;
+        ((SDHostRegIoctl *)lbl_8055DD7C)->field0C = arg3;
+        if (value != 0) {
+            ((SDHostRegIoctl *)lbl_8055DD7C)->value = *value;
+            result = IOS_Ioctl(*(s32 *)device, SD_IOCTL_SET_HC_REG, lbl_8055DD7C, 0x18, 0, 0);
             if (result != 0) {
-                OSReport(logStrings + 0xD8);
+                OSReport(logStrings + 0xD8); /* "Write HC Register Failed" */
                 result = (s32)0xC1000000;
             }
         } else {
-            OSReport(logStrings + 0xF4);
+            OSReport(logStrings + 0xF4); /* "Write HC Register NULL ptr" */
             result = (s32)0xC1000000;
         }
     }
     if (result != 0) {
-        OSReport(logStrings + 0xAC, logStrings + 0xC4, result);
+        OSReport(logStrings + 0xAC, logStrings + 0xC4, result); /* "%s: exit rc is 0x%X" / "ISD_SetHCRegister" */
     }
     return result;
 }
