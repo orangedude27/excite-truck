@@ -572,6 +572,10 @@ extern int fn_801E85A4(void);
 extern int fn_801E868C(int, int *, int *);
 extern int fn_801E86F8(int);
 extern void *fn_801EA9A0(void);
+/* Polls per-slot controller/input events and dispatches them: acknowledges type 0/3
+ * changes (updating slot state or cycling a config entry in lbl_8034F5B8 when the
+ * global at fn_801EA9A0()+0x30 is not 3), and forwards other event types to
+ * fn_80007554. */
 void fn_8000B838(void) {
     int eventType;
     int eventParam;
