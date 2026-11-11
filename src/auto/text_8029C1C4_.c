@@ -83,58 +83,62 @@ void fn_8029C25C(void) {
     int *p;
     int i;
     float v = fn_801E7E24();
-    if (__fabsf(v) > lbl_80558DC4) {
+    if (!((float)__fabs((double)v) <= lbl_80558DC4)) {
         p = (int *)&lbl_804B5010;
-        i = 0;
-        do { fn_8029D574(*p++); ++i; } while (i < lbl_8055F7F0);
+        for (i = 0; i < lbl_8055F7F0; i++) {
+            fn_8029D574(*p);
+            p++;
+        }
     }
 }
 
 #pragma push
 #pragma processor 750
 #pragma scheduling invalid_target
+/* Selects the nearest valid candidate from the first object list (based on distance minus spread)
+ * and notifies it, then runs an update callback on each active object in the second list. */
 void fn_8029C2D4(void) {
-    float spC[3];
-    float sp8;
+    float position[3];
+    float spread;
     float difference;
-    float bestValue;
-    int *entries;
-    void *best;
+    float bestDifference;
+    int *entry;
+    void *bestObject;
     int i;
 
     if (lbl_8055CAA8 != -1)
         fn_802C7040(lbl_8055CAA8);
 
-    bestValue = lbl_80564628;
-    entries = lbl_804B5010;
-    best = 0;
+    bestDifference = lbl_80564628;
+    entry = lbl_804B5010;
+    bestObject = 0;
     i = 0;
     while (i < *(volatile int *)&lbl_8055F7F0) {
         void *object;
-        object = (void *)*entries;
+        object = (void *)*entry;
         if (fn_8029D4CC(object)) {
-            fn_8029D550(object, spC, &sp8);
-            difference = fn_802C88D4(spC) - sp8;
-            if (best == 0 || difference < bestValue) {
-                best = object;
-                bestValue = difference;
+            fn_8029D550(object, position, &spread);
+            difference = fn_802C88D4(position) - spread;
+            if (bestObject == 0 || difference < bestDifference) {
+                bestObject = object;
+                bestDifference = difference;
             }
         }
-        entries++;
+        entry++;
         i++;
     }
 
-    if (best != 0)
-        fn_8029D644(best);
+    if (bestObject != 0)
+        fn_8029D644(bestObject);
 
     {
         int j;
-        entries = lbl_804B5030;
+        entry = lbl_804B5030;
         j = 0;
         while (j < *(volatile int *)&lbl_8055F7F4) {
-            if (fn_8029EAE8((void *)*entries))
-                ((void (*)(void *))fn_8029E8E0)((void *)*entries);
-            entries++;
+            if (fn_8029EAE8((void *)*entry))
+                ((void (*)(void *))fn_8029E8E0)((void *)*entry);
+            entry++;
             j++;
         }
     }
@@ -646,8 +650,9 @@ void fn_8029CD48(void *arg0) {
         }
     }
 }
-#pragma scheduling on
-#pragma ppc_psq_save reset
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 void *fn_8029D148(void *arg0, void *arg1, float *arg2, int arg3) {
     extern double fn_8002F234(float);
     extern void *fn_8012850C(int, const char *);
@@ -760,7 +765,7 @@ void *fn_8029D148(void *arg0, void *arg1, float *arg2, int arg3) {
     fn_8014E740(scratch, *(float *)((char *)arg0 + 0x60), f1, f4, f0, f5, f6, f7, f8, f9, f10, f11, f12);
     return (void *)arg0;
 }
-
+#pragma pop
 void *fn_8029D464(void *arg0,int arg1) {
  if(arg0) { fn_802CAC54(*(int *)((unsigned char *)arg0+0x74)); fn_80128670(*(int *)((unsigned char *)arg0+0x70)); fn_80128670(*(int *)arg0); if(arg1>0) fn_80128668(arg0); }
  return arg0;
@@ -893,6 +898,57 @@ void fn_8029D644(void *arg0) {
     }
     fn_802C8D74();
 }
+
+extern void fn_8029E49C(int, void *, int);
+extern void fn_8029E130(void *, float *, float *, float);
+void fn_8029D7D0(int arg0, void **arg1) {
+    extern void fn_801EE0C8(int);
+    extern void *fn_802C6C34(void);
+    extern int lbl_80488648[];
+    extern float lbl_80564688;
+    char *o = (char *)arg0;
+    char **st = (char **)arg1;
+    char *info = st[0];
+    float sp[3];
+    float dz = *(float *)(info + 0x2C) - *(float *)(o + 0x5C);
+    float dx = *(float *)(info + 0x24) - *(float *)(o + 0x54);
+    float r = *(float *)(o + 0x60);
+    int off, i;
+    unsigned idx;
+    float *v;
+    float *m;
+
+    if (dx * dx + dz * dz > r * r)
+        return;
+    for (i = 0, off = 0; i < 4; i++, off += 0x3C) {
+        if ((*(int *)(st[0] + off + 0x9C) & 8) == 0)
+            fn_8029E49C(arg0, st[0], i);
+    }
+    idx = *(unsigned *)(st + 1);
+    fn_801EE0C8(idx < 8 ? lbl_80488648[idx] : 0);
+    v = (float *)fn_802C6C34();
+    m = (float *)st[0];
+    if (sp == v + 8) {
+        float b = v[9];
+        float a = v[8];
+        float c = v[10];
+        float t0 = c * m[6] + (a * m[0] + b * m[3]);
+        float t1 = c * m[7] + (a * m[1] + b * m[4]);
+        float t2 = c * m[8] + (a * m[2] + b * m[5]);
+        sp[0] = t0;
+        sp[1] = t1;
+        sp[2] = t2;
+    } else {
+        sp[0] = v[10] * m[6] + (v[8] * m[0] + v[9] * m[3]);
+        sp[1] = v[10] * m[7] + (v[8] * m[1] + v[9] * m[4]);
+        sp[2] = v[10] * m[8] + (v[8] * m[2] + v[9] * m[5]);
+    }
+    sp[0] += m[9];
+    sp[1] += m[10];
+    sp[2] += m[11];
+    fn_8029E130((void *)arg0, sp, (float *)(st[0] + 0x34), lbl_80564688 * v[7]);
+}
+
 #pragma pop
 
 #pragma push
@@ -951,6 +1007,47 @@ done:
     ;
 }
 
+extern float PSVECDotProduct(float *, float *);
+extern float lbl_80564690;
+#pragma push
+#pragma scheduling invalid_target
+void fn_8029DB78(void *arg0, void *arg1, int x, int z) {
+    extern double fn_8002F234(float);
+    extern float lbl_80564658, lbl_8056465C, lbl_8056468C;
+    extern void PSVECNormalize(float *, float *);
+    char *p = (char *)arg0;
+    float *out = (float *)arg1;
+    float normal[3];
+    float diff[3];
+    float proj[3];
+    short *heights = *(short **)(p + 4);
+    float h = lbl_8056468C * (*(float *)(p + 0x14) * (float)heights[x + z * *(int *)(p + 0xC)]);
+    float len, scale, ysq;
+    int lo, hi;
+
+    out[2] = *(float *)(p + 0x40) + (float)x * *(float *)(p + 0x48) + (float)z * *(float *)(p + 0x50);
+    out[1] = *(float *)(p + 0x3C) + h;
+    out[0] = *(float *)(p + 0x38) + (float)x * *(float *)(p + 0x44) + (float)z * *(float *)(p + 0x4C);
+    fn_8029DA24(arg0, normal, x, z);
+    diff[0] = out[0] - *(float *)(p + 0x64);
+    diff[1] = out[1] - *(float *)(p + 0x68);
+    diff[2] = out[2] - *(float *)(p + 0x6C);
+    scale = lbl_80564690 * PSVECDotProduct(normal, diff);
+    proj[0] = diff[0] + normal[0] * scale;
+    proj[1] = diff[1] + normal[1] * scale;
+    proj[2] = diff[2] + normal[2] * scale;
+    PSVECNormalize(proj, proj);
+    ysq = lbl_80564658 + proj[1];
+    len = (float)fn_8002F234(ysq * ysq + (proj[0] * proj[0] + proj[2] * proj[2]));
+    scale = lbl_8056465C / len;
+    out[4] = lbl_8056465C + proj[0] * scale;
+    out[5] = lbl_8056465C + proj[2] * scale;
+    lo = *(unsigned char *)(p + 0x30);
+    hi = *(unsigned char *)(p + 0x31);
+    *(int *)(out + 3) = *(int *)(p + 0x2C) |
+        ((lo + (int)((float)(hi - lo) * (lbl_80564658 - proj[1] * proj[1]))) << 24);
+}
+#pragma pop
 extern float lbl_8056462C, lbl_80564634, lbl_80564640, lbl_80564658, lbl_80564694, lbl_80564698;
 #pragma push
 #pragma processor 750
@@ -1043,7 +1140,7 @@ extern float lbl_8056469C;
 #pragma optimization_level 4
 void fn_8029DF64(void *arg0, int arg1, int arg2, float arg3) {
     short *data;
-    int low = -32768;
+    register int low = -32768;
     int index;
     int stride;
     float val;
@@ -1093,7 +1190,9 @@ int fn_8029DFE0(void *arg0, void *arg1) {
         result = 1;
     return result;
 }
-#pragma pop
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 void fn_8029E130(void *arg0, float *pos, float *vel, float radius) {
  extern double fn_8002F234(float);
  extern float fn_80287BC8(float,float);
@@ -1106,9 +1205,9 @@ void fn_8029E130(void *arg0, float *pos, float *vel, float radius) {
  char *obj = arg0;
  height = *(float *)(obj+0x3c);
  if (pos[1]-radius > height-lbl_80564634) return;
- direction[0]=vel[0]; direction[1]=vel[2];
- delta[0]=pos[0]-*(float *)(obj+0x38);
  delta[1]=pos[2]-*(float *)(obj+0x40);
+ direction[1]=vel[2]; direction[0]=vel[0];
+ delta[0]=pos[0]-*(float *)(obj+0x38);
  if ((float)__fabs(direction[0]*direction[0]+direction[1]*direction[1]) <= lbl_80558DC4) return;
  x=pos[1]-height;
  reach=fn_8002F234(radius*radius-x*x);
@@ -1131,7 +1230,7 @@ void fn_8029E130(void *arg0, float *pos, float *vel, float radius) {
  perpendicular[1]=direction[0]*inv;
  spread=lbl_80564640;
  x=lbl_80564670*length;
- if (!(spread<x)) spread=x;
+ if (spread < x) spread=x;
  count=(int)(lbl_8056464C*length)<10 ? (int)(lbl_8056464C*length):10;
  vertical=lbl_80564634*length;
  factor=lbl_80564698; cap=lbl_805646A4; lift=lbl_80564640;
@@ -1147,7 +1246,6 @@ void fn_8029E130(void *arg0, float *pos, float *vel, float radius) {
    fn_8028E584(lbl_8055F7F8,outpos,outvel);
  }
 }
-#pragma pop
 extern float fn_80287BC8(float, float);
 extern void fn_8028E590(int, float *, float *, float);
 extern int fn_8029DFE0();
@@ -1301,7 +1399,7 @@ void fn_8029EA34(void *arg0, void **arg1) {
 #pragma push
 #pragma processor 750
 int fn_8029EAE8(void *arg0) {
-    register float temp_f31 = lbl_805646A8;
+    register float temp_f31 = *(volatile float *)&lbl_805646A8;
     int result = 0;
     if (fn_802C88E8((char *)arg0 + 0x30) < temp_f31) {
         void *second_obj = (char *)arg0 + 0x18;
