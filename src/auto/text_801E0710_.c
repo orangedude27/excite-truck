@@ -218,6 +218,15 @@ typedef struct BoostSlot_801E0710 {
     s32 lineColor;   /* +0x14 RGBA used for the outline pass */
 } BoostSlot_801E0710;
 
+/* The draw code reaches a player's colours from a base of BoostMan + slot *
+ * 0x18 instead of the slot itself (which starts at +0xC), so the two RGBA
+ * fields land at +0x1C and +0x20 of that base. */
+typedef struct BoostColors_801E12A4 {
+    u8 pad00[0x1C];
+    s32 arrowColor;  /* +0x1C: slots[slot].arrowColor */
+    s32 lineColor;   /* +0x20: slots[slot].lineColor */
+} BoostColors_801E12A4;
+
 /* BoostMan (lbl_8055EA10, allocated 0xB78 bytes under the name "BoostMan"):
  * subdivides every boost area into a grid of cells and redraws the grids into
  * two draw lists, the area outlines (bstrlines.tex) and the arrows on them
