@@ -3270,9 +3270,10 @@ extern "C" void fn_801A1CA0(void* arg0) {
 }
 #pragma scheduling on
 extern char lbl_803338C0[];
+#pragma use_lmw_stmw off
 extern "C" void* fn_801A1CE4(void *arg0, s32 arg1, s32 arg2) {
-    u8 temp_r12, temp_r22, temp_r23, temp_r24, temp_r25;
-    u8 temp_r26, temp_r27, temp_r28, temp_r29, temp_r30;
+    u8 temp_r12, temp_r30, temp_r29, temp_r28, temp_r27;
+    u8 temp_r26, temp_r25, temp_r24, temp_r23, temp_r22;
     fn_8019ECC4();
     *(void**)arg0 = &lbl_803338C0;
     if (arg2 != 0) {
@@ -3309,7 +3310,7 @@ extern "C" void* fn_801A1CE4(void *arg0, s32 arg1, s32 arg2) {
     }
     return arg0;
 }
-
+#pragma use_lmw_stmw on
 extern "C" void fn_801A1DD4(void* arg0, void* arg1) {
     switch (*(s32*)((u8*)arg1 + 0x18)) {
     case 'FLSR':
@@ -3467,6 +3468,7 @@ extern "C" void* fn_801A2354(void* arg0, s32 arg1, void* arg2, s32 arg3, f32 far
     f32 diffX = farg3 - lbl_80562300;
     f32 diffY = farg2 - lbl_80562300;
     f32 diffZ = farg4 - lbl_80562300;
+    f32 dist = diffX * diffX + diffY * diffY + diffZ * diffZ;
     *(f32*)((u8*)arg0 + 0x10) = farg0;
     *(s32*)((u8*)arg0 + 0xC) = arg1;
     *(s32*)((u8*)arg0 + 4) = arg3;
@@ -3480,7 +3482,6 @@ extern "C" void* fn_801A2354(void* arg0, s32 arg1, void* arg2, s32 arg3, f32 far
     *(f32*)((u8*)arg0 + 0x28) = diffX;
     *(f32*)((u8*)arg0 + 0x2C) = diffZ;
     *(s32*)((u8*)arg0 + 0x34) = 0;
-    f32 dist = diffX * diffX + diffY * diffY + diffZ * diffZ;
     f64 distance = fn_8002F234(dist);
     volatile f32* input = (volatile f32*)arg2;
     f32 x = input[0];
@@ -4699,21 +4700,23 @@ void fn_801A49FC(s32 arg0) {
 #pragma scheduling invalid_target
 extern "C" void fn_801A4A10(s32 arg0, s32 arg1, s32 arg2, s32 arg3) { if (*(u8*)((u8*)arg0 + 0x40) != 0) { fn_801D2414(); if (*(s32*)((u8*)arg0 + 0x48) != 0) { fn_801D0738((void*)arg0, (void*)arg1, (void*)arg2, (void*)arg3); } } }
 #pragma scheduling on
-extern "C" void fn_801A4A8C(void* arg0, s32 arg1, s32 arg2, void* arg3, u32* arg4, s32 arg5, s32 arg6) {
+extern "C" void* fn_801A4A8C(void* arg0, s32 arg1, s32 arg2, void* arg3, u32* arg4, s32 arg5, s32 arg6) {
     struct VTable2C {
-        virtual void v0() = 0; virtual void v1() = 0; virtual void v2() = 0;
-        virtual void v3() = 0; virtual void v4() = 0; virtual void v5() = 0;
-        virtual void v6() = 0; virtual void v7() = 0; virtual void v8() = 0;
-        virtual void Call(void*, s32, s32) = 0;
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void Call(void*, s32, s32);
     };
-    register void* vtable = lbl_803336F8;
     s32 t11; s32 t10; s32 t9; s32 t8; s32 t7; s32 t6;
     s32 t5; s32 t4; s32 t3; s32 t2; s32 t1; s32 t0;
     t0 = arg4[0]; t1 = arg4[1]; t2 = arg4[2]; t3 = arg4[3];
     t4 = arg4[4]; t5 = arg4[5]; t6 = arg4[6]; t7 = arg4[7];
     t8 = arg4[8]; t9 = arg4[9]; t10 = arg4[10]; t11 = arg4[11];
-
+    void* vtable = lbl_803336F8;
+    *(s32*)((u8*)arg0 + 0x38) = arg1;
     *(void**)arg0 = vtable;
+    *(s32*)((u8*)arg0 + 0x48) = arg5;
+    *(s32*)((u8*)arg0 + 0x34) = arg2;
+    *(void**)((u8*)arg0 + 0x3C) = arg3;
     *(s32*)((u8*)arg0 + 4) = t0;
     *(s32*)((u8*)arg0 + 8) = t1;
     *(s32*)((u8*)arg0 + 0xC) = t2;
@@ -4726,13 +4729,9 @@ extern "C" void fn_801A4A8C(void* arg0, s32 arg1, s32 arg2, void* arg3, u32* arg
     *(s32*)((u8*)arg0 + 0x28) = t9;
     *(s32*)((u8*)arg0 + 0x2C) = t10;
     *(s32*)((u8*)arg0 + 0x30) = t11;
-    *(s32*)((u8*)arg0 + 0x34) = arg2;
-    *(s32*)((u8*)arg0 + 0x38) = arg1;
-    *(void**)((u8*)arg0 + 0x3C) = arg3;
-    *(s32*)((u8*)arg0 + 0x48) = arg5;
-
     ((VTable2C*)arg3)->Call(arg0, arg2, (s32)arg3);
     fn_801A48E4(arg0);
+    return arg0;
 }
 
 extern "C" void* fn_801A4B5C(void* arg0, s32 arg1, void* arg2) {
