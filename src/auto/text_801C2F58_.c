@@ -401,7 +401,11 @@ extern void fn_801C98F0(void);
 #pragma scheduling on
 #define UNK_80437D88_DEFINED
 extern struct Unk_80437D88 {
-    char pad_0[0x4D4];
+    char x00[0x9C];
+    s32 x9C;
+    s32 xA0;
+    f32 xA4;
+    char pad_0[0x4D4 - 0xA8];
     Vec f_4D4;
     Vec f_4E0;
     char pad_1[0x6F8 - 0x4EC];
@@ -434,6 +438,8 @@ void fn_801C4B74(void) {
 void fn_801C4BAC(void) {
     register Unk_80437D88 *state;
     register s32 zero;
+    u8 *lo;
+    u8 *hi;
     s32 flag;
     state = &lbl_80437D88;
     zero = 0;
@@ -444,30 +450,32 @@ void fn_801C4BAC(void) {
     lbl_8055E7E3 = zero;
     lbl_8055E7E4 = lbl_80562970;
     memset(state, zero, 0x9C);
-    *(f32 *)((u8 *)state + 0x14) = lbl_8056296C;
-    *(f32 *)((u8 *)state + 0x18) = lbl_80562970;
-    *(f32 *)((u8 *)state + 0x1C) = lbl_80562970;
-    *(f32 *)((u8 *)state + 0x20) = lbl_80562970;
-    *(f32 *)((u8 *)state + 0x24) = lbl_8056296C;
-    *(f32 *)((u8 *)state + 0x28) = lbl_80562970;
-    *(f32 *)((u8 *)state + 0x2C) = lbl_80562970;
-    *(f32 *)((u8 *)state + 0x30) = lbl_80562970;
-    *(f32 *)((u8 *)state + 0x34) = lbl_8056296C;
-    *(f32 *)((u8 *)state + 0x50) = lbl_805629A8;
-    *(f32 *)((u8 *)state + 0x68) = lbl_8056296C;
-    *(f32 *)((u8 *)state + 0x6C) = lbl_80562970;
-    *(f32 *)((u8 *)state + 0x70) = lbl_80562970;
-    *(f32 *)((u8 *)state + 0x74) = lbl_80562970;
-    *(f32 *)((u8 *)state + 0x78) = lbl_8056296C;
-    *(f32 *)((u8 *)state + 0x7C) = lbl_80562970;
-    *(f32 *)((u8 *)state + 0x80) = lbl_80562970;
-    *(f32 *)((u8 *)state + 0x84) = lbl_80562970;
-    *(f32 *)((u8 *)state + 0x88) = lbl_8056296C;
-    *(f32 *)((u8 *)state + 0x8C) = lbl_80562970;
-    *(f32 *)((u8 *)state + 0x90) = lbl_80562970;
-    *(f32 *)((u8 *)state + 0x94) = lbl_80562970;
-    *(f32 *)((u8 *)state + 0x98) = lbl_805629A8;
-    *(f32 *)((u8 *)state + 0xA4) = lbl_80562994;
+    lo = (u8 *)state;
+    hi = lo + 0x9C;
+    *(f32 *)(lo + 0x14) = lbl_8056296C;
+    *(f32 *)(lo + 0x18) = lbl_80562970;
+    *(f32 *)(lo + 0x1C) = lbl_80562970;
+    *(f32 *)(lo + 0x20) = lbl_80562970;
+    *(f32 *)(lo + 0x24) = lbl_8056296C;
+    *(f32 *)(lo + 0x28) = lbl_80562970;
+    *(f32 *)(lo + 0x2C) = lbl_80562970;
+    *(f32 *)(lo + 0x30) = lbl_80562970;
+    *(f32 *)(lo + 0x34) = lbl_8056296C;
+    *(f32 *)(lo + 0x50) = lbl_805629A8;
+    *(f32 *)(lo + 0x68) = lbl_8056296C;
+    *(f32 *)(lo + 0x6C) = lbl_80562970;
+    *(f32 *)(lo + 0x70) = lbl_80562970;
+    *(f32 *)(lo + 0x74) = lbl_80562970;
+    *(f32 *)(lo + 0x78) = lbl_8056296C;
+    *(f32 *)(lo + 0x7C) = lbl_80562970;
+    *(f32 *)(lo + 0x80) = lbl_80562970;
+    *(f32 *)(lo + 0x84) = lbl_80562970;
+    *(f32 *)(lo + 0x88) = lbl_8056296C;
+    *(f32 *)(lo + 0x8C) = lbl_80562970;
+    *(f32 *)(lo + 0x90) = lbl_80562970;
+    *(f32 *)(lo + 0x94) = lbl_80562970;
+    *(f32 *)(lo + 0x98) = lbl_805629A8;
+    *(f32 *)(hi + 0x8) = lbl_80562994;
     *(s32 *)((u8 *)state + 0x9C) = zero;
     if (lbl_8055E7F0 == 0) {
         lbl_8055E7E2 = zero;
@@ -2557,30 +2565,33 @@ void fn_801C96E4(void) {
 #pragma scheduling invalid_target
 s32 fn_801C9708(s32 arg0) {
     switch (arg0) {
-    case 0xD: ((void (*)(void))fn_801C95EC)(); break;
-    case 0x126: fn_801C968C(-1); break;
-    case 0x128: fn_801C968C(1); break;
+    case 0xD:
+        ((void (*)(void))fn_801C95EC)();
+        break;
+    case 0x126:
+        fn_801C968C(-1);
+        break;
+    case 0x128:
+        fn_801C968C(1);
+        break;
     case 0x8:
     case 0x12E:
-        if (strlen(lbl_804380F0) != 0)
+        if (strlen(lbl_804380F0) != 0) {
             *(char*)((u32)lbl_804380F0 + strlen(lbl_804380F0) - 1) = 0;
+        }
         break;
-    default: {
-        u32 length;
-        char *end;
+    default:
         if ((arg0 >= 0x41 && arg0 <= 0x7A) ||
             (arg0 >= 0x30 && arg0 <= 0x39) ||
-            arg0 == 0x3A || arg0 == 0x2E || arg0 == 0x20 || arg0 == 0x2D) {
-            length = strlen(lbl_804380F0);
+            arg0 == 0x3A || arg0 == 0x2E ||
+            arg0 == 0x20 || arg0 == 0x2D) {
+            u32 length = strlen(lbl_804380F0);
             if (length < 0xFF) {
                 lbl_804380F0[length] = (char)arg0;
-                end = (char*)length;
-                end += (u32)lbl_804380F0;
-                end[1] = 0;
+                *(length + lbl_804380F0 + 1) = 0;
             }
         }
         break;
-    }
     }
     return 1;
 }
