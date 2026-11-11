@@ -115,6 +115,7 @@ void OSSetPeriodicAlarm(OSAlarm* alarm, s64 tick, s64 period,
     OSRestoreInterrupts(enabled);
 }
 
+// Cancels a queued alarm, removing it from AlarmQueue and updating the decrementer if needed.
 void OSCancelAlarm(OSAlarm* alarm) {
     OSAlarm* next;
 
