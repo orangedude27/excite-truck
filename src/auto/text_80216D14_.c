@@ -19,7 +19,9 @@ struct UiWidget {
     virtual void v8(); virtual void v9(); virtual void v10();
     virtual void OnSelected();   /* 0x34: became the group's current widget */
     virtual void OnDeselected(); /* 0x38: no longer the group's current widget */
-    virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16();
+    virtual void v13(); virtual void v14(); /* 0x3C/0x40: other pointer handlers */
+    virtual void v15(int, int); /* 0x44: pointer handler of fn_802175F0, at group-local (x, y) */
+    virtual void v16();
     virtual void v17(); virtual void v18(); virtual void v19(); virtual void v20();
     virtual void v21(); virtual void v22(); virtual void v23();
     virtual int IsSelectable();  /* 0x68: the menu can be moved onto this widget */
