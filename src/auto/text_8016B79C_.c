@@ -2729,23 +2729,35 @@ extern "C" s32 fn_80170F7C(void *arg0) {
 u32 fn_80170FD4(void) { return 1; }
 
 extern f32 lbl_80561A1C;
-extern s32 fn_802AE220(s32);
+extern s32 fn_802AE220(s32, s32);
 extern s32 fn_8001DFCC(void);
-u32 fn_80170FDC(void *arg0) {
+#pragma cplusplus on
+class Q70FDC {
+public:
+    virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+    virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
+    virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
+    virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15();
+    virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19();
+    virtual void f20(); virtual void f21(); virtual void f22(); virtual void f23();
+    virtual s32 query();
+};
+extern "C" u32 fn_80170FDC(void *arg0) {
     s32 temp_r4;
     if ((lbl_8055E3C8 - *(f32 *)((u8 *)arg0 + 0xA0)) < lbl_80561A1C) {
-        ((void (*)(void *))(*(void ***)((u8 *)arg0))[0x13])(arg0);
+        ((Q70FDC *)arg0)->f17();
     } else {
         if (*(u8 *)((u8 *)arg0 + 0xB4) != 0)
-            ((void (*)(void *))(*(void ***)((u8 *)arg0))[0x13])(arg0);
+            ((Q70FDC *)arg0)->f17();
         if (*(s32 *)((u8 *)arg0 + 0xB8) != 0)
-            fn_802AE220(0);
+            fn_802AE220(*(s32 *)((u8 *)arg0 + 0xB8), 0);
     }
-    if (((s32 (*)(void *))(*(void ***)((u8 *)arg0))[0x1A])(arg0) != 0)
+    if (((Q70FDC *)arg0)->query() != 0)
         fn_8001DFCC();
     temp_r4 = *(s32 *)((u8 *)arg0 + 0xAC);
-    return ((4 - temp_r4) | (temp_r4 - 4)) >> 31;
+    return (u32)((4 - temp_r4) | (temp_r4 - 4)) >> 31;
 }
+#pragma cplusplus reset
 
 extern s32 fn_802AE118(void);
 #pragma cplusplus on
