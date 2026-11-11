@@ -123,6 +123,7 @@ extern float lbl_80562B6C;
 #pragma push
 #pragma processor 750
 #pragma opt_common_subs off
+#pragma scheduling invalid_target
 float fn_801DB398(float grid[4][4], float t, float u) {
     float values[4];
     float *src = (float *)grid;
