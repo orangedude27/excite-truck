@@ -37,10 +37,10 @@ extern s32 lbl_8055E688;
 extern s32 lbl_8055E66C;
 extern s32 lbl_8055E670;
 extern void *lbl_8055E680;
-extern void *lbl_8055E684;
+extern void *lbl_8055E684; /* base of the deity (AI truck) slot table; one 0x80-byte slot per index */
 extern f32 lbl_8055E3C8;
 extern f32 lbl_8055E6AC;
-extern s32 lbl_80435C30[];
+extern s32 lbl_80435C30[]; /* order table: up to 8 slot indices, sorted by fn_801B11DC (fn_801B1318) */
 extern s32 lbl_80435BE8[];
 extern void *lbl_8055E694;
 extern f32 lbl_805625F0;
