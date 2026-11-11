@@ -3204,8 +3204,8 @@ void GXSetChanCtrl(s32 chan, s32 enable, s32 matColor, s32 ambColor, s32 lightMa
     u.f.mat = matColor;
     if (attnFn == 0) attn = 0;
     u.f.diff = attn;
-    u.f.attnLow = (2 - attnFn) | (attnFn - 2);
-    u.f.attnHigh = -attnFn | attnFn;
+    u.f.attnLow = (attnFn != 2);
+    u.f.attnHigh = (attnFn != 0);
     u.f.lightLow = lightMask;
     u.f.lightHigh = ((unsigned int)lightMask) >> 4;
     base = __GXData;
@@ -3571,21 +3571,25 @@ unsigned short GXGetTexObjTlut(void *arg0) {
 }
 
 void GXLoadTlut(void *arg0, int arg1) {
+    union Low10 {
+        unsigned int v;
+        struct { unsigned int hi : 22; unsigned int lo : 10; } f;
+    };
+    union Low10 v;
     unsigned int *src = (unsigned int *)arg0;
     unsigned int *dst = ((unsigned int *(*)(int))__GXData[0x51C / 4])(arg1);
-    unsigned int v;
     __GXFlushTextureState();
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = src[1];
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = dst[0];
     __GXFlushTextureState();
-    v = dst[0];
-    v = src[0] | (v & 0x3FF);
-    dst[1] = v;
+    v.v = src[0];
+    v.f.lo = dst[0];
+    dst[1] = v.v;
     dst[2] = src[1];
     dst[3] = src[2];
-    src[0] = v;
+    src[0] = v.v;
 }
 
 void GXInitTexCacheRegion(void *obj, signed char arg1, unsigned int arg2, int arg3, unsigned int arg4, int arg5) {
@@ -4040,9 +4044,9 @@ void GXSetTevOp(int stage, int mode) {
     unsigned int *tev;
     unsigned int *color;
     unsigned int *alpha;
-    unsigned int inputValue;
-    unsigned int oldValue;
     unsigned int value;
+    unsigned int oldValue;
+    unsigned int inputValue;
 
     if (stage == 0) {
         color = base;
@@ -4340,29 +4344,27 @@ void GXSetAlphaCompare(s32 comp0, s32 ref0, s32 op, s32 comp1, s32 ref1) {
     *(volatile u16 *)((u8 *)__GXData + 2) = 0;
 }
 
-void GXSetZTexture(s32 op, s32 format, s32 bias) {
+void GXSetZTexture(unsigned int op, unsigned int format, unsigned int bias) {
     union {
-        u32 value;
+        unsigned int value;
         struct {
-            u32 top : 8;
-            u32 bias : 24;
+            unsigned int top : 8;
+            unsigned int bias : 24;
         } bits;
     } first;
     union {
-        u32 value;
+        unsigned int value;
         struct {
-            u32 top : 8;
-            u32 reserved : 20;
-            u32 op : 2;
-            u32 mode : 2;
+            unsigned int top : 8;
+            unsigned int reserved : 20;
+            unsigned int op : 2;
+            unsigned int mode : 2;
         } bits;
     } second;
-    s32 zmode;
-
+    unsigned int zmode;
     first.value = 0;
     first.bits.bias = bias;
     first.bits.top = 0xF4;
-
     switch (format) {
     case 0x11:
         zmode = 0;
@@ -4377,14 +4379,13 @@ void GXSetZTexture(s32 op, s32 format, s32 bias) {
         zmode = 2;
         break;
     }
-
-    *(volatile unsigned char *)0xCC008000 = 0x61;
     second.value = 0;
     second.bits.mode = zmode;
-    *(volatile unsigned int *)0xCC008000 = first.value;
-    second.bits.op = op;
-    second.bits.top = 0xF5;
     *(volatile unsigned char *)0xCC008000 = 0x61;
+    second.bits.op = op;
+    *(volatile unsigned int *)0xCC008000 = first.value;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    second.bits.top = 0xF5;
     *(volatile unsigned int *)0xCC008000 = second.value;
     *(volatile unsigned short *)((char *)__GXData + 2) = 0;
 }
@@ -5298,19 +5299,23 @@ void GXClearGPMetric(void) {
 }
 
 void KPADSetBtnRepeat(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
-    volatile unsigned short *cp;
     unsigned int first, second, low;
-    cp=__cpReg; first=cp[0x42/2]; second=first;
-    for (;;) { low=cp[0x40/2]; second=cp[0x42/2]; if (second==first) break; }
-    *arg2=(second<<16)|low;
-    cp=__cpReg; first=cp[0x46/2]; second=first;
-    for (;;) { low=cp[0x44/2]; second=cp[0x46/2]; if (second==first) break; }
-    *arg3=(second<<16)|low;
-    cp=__cpReg; first=cp[0x4A/2]; second=first;
-    for (;;) { low=cp[0x48/2]; second=cp[0x4A/2]; if (second==first) break; }
-    *arg0=(second<<16)|low;
-    cp=__cpReg; first=cp[0x4E/2]; second=first;
-    for (;;) { low=cp[0x4C/2]; second=cp[0x4E/2]; if (second==first) break; }
-    *arg1=(second<<16)|low;
+    volatile unsigned short *cp;
+    cp = __cpReg;
+    first = cp[0x42/2];
+    for (;;) { second = first; low = cp[0x40/2]; first = cp[0x42/2]; if (second == first) break; }
+    *arg2 = (first << 16) | low;
+    cp = __cpReg;
+    first = cp[0x46/2];
+    for (;;) { second = first; low = cp[0x44/2]; first = cp[0x46/2]; if (second == first) break; }
+    *arg3 = (first << 16) | low;
+    cp = __cpReg;
+    first = cp[0x4A/2];
+    for (;;) { second = first; low = cp[0x48/2]; first = cp[0x4A/2]; if (second == first) break; }
+    *arg0 = (first << 16) | low;
+    cp = __cpReg;
+    first = cp[0x4E/2];
+    for (;;) { second = first; low = cp[0x4C/2]; first = cp[0x4E/2]; if (second == first) break; }
+    *arg1 = (first << 16) | low;
 }
 typedef struct { unsigned int unk[9]; unsigned char unk24[3]; } GXSetCPUFifoObj;
