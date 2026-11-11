@@ -1397,6 +1397,39 @@ int fn_801D67E8(int arg0) {
     return 0;
 }
 
+#pragma push
+#pragma scheduling invalid_target
+void fn_801D6814(void *arg0) {
+    extern int lbl_8055E3C4;
+    extern void fn_801E9DC4(void *);
+    extern void fn_801796CC(int, void *, int);
+    struct Data {
+        float values[6];
+        int unk18;
+        int unk1C;
+    };
+    struct Data data;
+    int v4 = *(int *)((char *)arg0 + 4);
+    int v10 = *(int *)((char *)arg0 + 0x10);
+    int vC = *(int *)((char *)arg0 + 0x0C);
+    int elapsed = lbl_8055E3C4 - (v10 + vC);
+    if (v4 == 2 && elapsed > 0) {
+        data.values[0] = *(float *)((char *)arg0 + 0x14);
+        data.values[1] = *(float *)((char *)arg0 + 0x18);
+        data.values[2] = *(float *)((char *)arg0 + 0x1C);
+        data.values[3] = *(float *)((char *)arg0 + 0x20);
+        data.values[4] = *(float *)((char *)arg0 + 0x24);
+        data.values[5] = *(float *)((char *)arg0 + 0x28);
+        fn_801E9DC4((char *)&data + 0x18);
+        data.unk1C = *(int *)((char *)arg0 + 0x2C);
+        fn_801796CC(10, data.values, 0x20);
+        if (elapsed >= *(int *)((char *)arg0 + 8)) {
+            *(int *)((char *)arg0 + 4) = 3;
+        }
+    }
+}
+#pragma pop
+
 void fn_801D68D0(int arg0) {
     if (((int *)arg0)[1] != 0) {
         ((int *)arg0)[1] = 1;
@@ -2213,11 +2246,10 @@ extern "C" void fn_801D7874(void *arg0, void *arg1) {
         virtual void v5();
         virtual int v6(char *, int);
     };
-
     ObjA *b = (ObjA *)arg1;
     void *node = b->v0();
     int match;
-    if (*(int *)((char *)arg0 + 0xc) >= 0 && node != 0 && ((ObjB *)node)->v6(lbl_803385D0, -1) == *(int *)((char *)arg0 + 0xc)) {
+    if (*(int *)((char *)arg0 + 0xc) >= 0 && node != 0 && *(int *)((char *)arg0 + 0xc) == ((ObjB *)node)->v6(lbl_803385D0, -1)) {
         match = 1;
     } else {
         match = 0;
