@@ -8317,6 +8317,8 @@ u8 fn_80079514(void) {
     return (u8)((lbl_803C0F78[0x64E] - 5) == 0);
 }
 
+/* Set the disabled AFH channel range (first..last), updating HCI only when changed.
+ * Returns 0 on success, 3 if no resources, 4 if AFH/device mode is unsupported. */
 u8 BTM_SetAfhChannels(u8 first, u8 last) {
     if (lbl_803C0F78[0x27C0] >= 3) {
         ((void (*)(u32, void *, u8, u8, u8, u8))fn_8007099C)(
