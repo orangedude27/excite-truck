@@ -2234,6 +2234,8 @@ extern "C" f32 fn_80141C9C(f32 arg0) {
 
 #pragma push
 #pragma scheduling invalid_target
+/* Copy three bounded (20-byte) name strings into fixed fields of the record:
+   offsets 0xC6 and 0xDA from looked-up names, and 0xEE from a default string. */
 extern "C" void fn_80141CC0(char *arg0) {
     {
         char *src = (char *)fn_80131234(lbl_8032CC1C);
