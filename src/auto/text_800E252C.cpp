@@ -1140,7 +1140,7 @@ extern "C" void fn_800E4064(void *arg0, void *arg1) {
     }
     OSRestoreInterrupts(level);
 }
-#pragma pop
+#pragma use_lmw_stmw off
 extern "C" void UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv(void *this_) {
     void *end = (char *)this_ + 0x18;
     unsigned int level = OSDisableInterrupts();
@@ -1154,9 +1154,7 @@ extern "C" void UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv(void *this_) {
     }
     OSRestoreInterrupts(level);
 }
-
-#pragma push
-#pragma scheduling on
+#pragma use_lmw_stmw reset
 extern "C" void fn_800E41EC(void) {
     if ((s8)lbl_8055DE18 == 0) {
         fn_800E279C(&lbl_80407F6C);
@@ -2033,15 +2031,16 @@ extern "C" void SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif_800E58CC(voi
 
 extern "C" void *Instance__15EmissionManagerFv(void);
 extern "C" void fn_800E3DDC(void *, void *);
-void SetPriority__Q46nw4hbm3snd6detail7AxVoiceFi(void *arg0, int arg1) {
-    int valid;
-    valid = 0;
-    if (arg1 >= 0 && arg1 <= 0xFF) valid = 1;
-    if (valid == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x306, lbl_803223BC, arg1, 0, 0xFF);
+extern "C" void SetPriority__Q46nw4hbm3snd6detail7AxVoiceFi(void *this_, int priority) {
+    int valid = 0;
+    if (priority >= 0) {
+        if (priority <= 0xFF) valid = 1;
     }
-    *(int *)((char *)arg0 + 0x124) = arg1;
-    fn_800E3DDC(Instance__15EmissionManagerFv(), arg0);
+    if (!valid) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x306, lbl_803223BC, priority, 0, 0xFF);
+    }
+    *(int *)((char *)this_ + 0x124) = priority;
+    fn_800E3DDC(Instance__15EmissionManagerFv(), this_);
 }
 
 extern "C" int GetCurrentPlayingDspAddress__Q46nw4hbm3snd6detail7AxVoiceCFv(void *self) {
