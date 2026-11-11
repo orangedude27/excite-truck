@@ -5,6 +5,10 @@ extern float lbl_80560F20;
 static inline void FillTmp(ElemTmp* end, ElemTmp* q, float f) { if (q < end) { do { q->f1 = f; q->f2 = f; q->i1 = 0; q->i2 = 0; q++; } while (q < end); } }
 typedef unsigned int u32;
 typedef signed char s8;
+static inline float lerpCount(float lo, float hi, int cur, int max) {
+    if (cur >= max) return hi;
+    return lo + (float)cur * (hi - lo) / (float)max;
+}
 typedef int M2C_UNK;
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((char *)(expr) + (offset)))
 extern "C" void *GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(void);
@@ -895,16 +899,15 @@ extern "C" void SetOutputMode__Q46nw4hbm3snd6detail9AxManagerFQ36nw4hbm3snd10Out
     case 3: fn_80031C6C(0); break;
     }
     unsigned int interrupts = OSDisableInterrupts();
-    void *end = (char *)self + 0x18;
-    void *node = *(void **)((char *)self + 0x18);
-    while (node != end) {
-        void *current = node;
+    void *node;
+    void *current;
+    for (node = *(void **)((char *)self + 0x18); node != (char *)self + 0x18; ) {
+        current = node;
         node = *(void **)node;
         if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23d, lbl_803220A0);
-        if (*((unsigned char *)current - 0x8c) != 0) {
-            if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23d, lbl_803220A0);
-            *((unsigned char *)current - 0x85) |= 0x20;
-        }
+        if (*((unsigned char *)current - 0x8c) == 0) continue;
+        if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23d, lbl_803220A0);
+        *((unsigned char *)current - 0x85) |= 0x20;
     }
     OSRestoreInterrupts(interrupts);
 }
