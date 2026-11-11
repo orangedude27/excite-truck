@@ -1872,15 +1872,13 @@ extern "C" void fn_800A76B4(void *arg0, s32 arg1) {
     for (index = 0; index < 0x1A; index++) {
         u8 *entry = (u8 *)lbl_803D1640 + index * 0x28;
         s32 flags = *(s32 *)(entry + 0x61C);
-        if ((flags & 1) == 0)
-            continue;
-        if (*(void **)(entry + 0x620) != arg0)
-            continue;
-        *(volatile s32 *)(entry + 0x61C) = flags | 2;
-        if (arg1 == 0 && *(void (**)(void))(entry + 0x640) != 0) {
-            (*(void (**)(void))(entry + 0x640))();
-        } else if (*(void (**)(void))(entry + 0x63C) != 0) {
-            (*(void (**)(void))(entry + 0x63C))();
+        if ((flags & 1) != 0 && *(void **)(entry + 0x620) == arg0) {
+            *(s32 *)(entry + 0x61C) = flags | 2;
+            if (arg1 == 0 && *(void (**)(void))(entry + 0x640) != 0) {
+                (*(void (**)(void))(entry + 0x640))();
+            } else if (*(void (**)(void))(entry + 0x63C) != 0) {
+                (*(void (**)(void))(entry + 0x63C))();
+            }
         }
     }
 }
@@ -23630,12 +23628,14 @@ void homebutton::HomeButtonEventHandler::onEvent(unsigned long, unsigned long ev
     EventDispatchA *a = dispatch;
     EventDispatchB *b = (EventDispatchB *)a->first();
     void *owner = b->second();
+    const char *t = text;
+    const char *name = (const char *)((u8 *)owner + 0xB4);
     switch (event) {
-    case 1: fn_800CB820((void *)text, (const char *)((u8 *)owner + 0xB4), arg); break;
-    case 2: startLeftEvent__Q210homebutton10HomeButtonFPCc(text); break;
+    case 1: fn_800CB820((void *)t, name, arg); break;
+    case 2: startLeftEvent__Q210homebutton10HomeButtonFPCc(t); break;
     case 0:
         if ((((unsigned long *)arg)[4] & 0x800) || (((unsigned long *)arg)[4] & 0x01000000))
-            fn_800CD38C(text, (const char *)((u8 *)owner + 0xB4));
+            fn_800CD38C(t, name);
         break;
     }
 }
