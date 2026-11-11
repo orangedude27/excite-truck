@@ -103,7 +103,7 @@ void fn_8023B904(void *arg0, void *dest, s32 flag) {
     } local;
     s32 *source;
     s32 *target;
-
+    s32 count;
     if (flag == 0) {
         local.data = lbl_803413A8;
         ((void (*)(void *, void *))fn_8000BF20)(arg0, &local);
@@ -116,15 +116,13 @@ void fn_8023B904(void *arg0, void *dest, s32 flag) {
             ((u8 *)dest)[0xE] = local.bytes[2];
             target = (s32 *)((u8 *)dest + 0xC);
             source = (s32 *)local.bytes;
-            {
-                s32 i = 0x14;
-                do {
-                    target[1] = source[1];
-                    target[2] = source[2];
-                    source += 2;
-                    target += 2;
-                } while (--i != 0);
-            }
+            count = 0x14;
+            do {
+                target[1] = source[1];
+                target[2] = source[2];
+                source += 2;
+                target += 2;
+            } while (--count != 0);
         }
     } else {
         fn_8000C0E8();
@@ -224,13 +222,13 @@ check:
 #pragma scheduling on
 extern int fn_8027DB40(int);
 extern int fn_8024DAE0(int, int, int, int, int);
+typedef struct VTbl_8023BC24 { void *slot[2]; void (*fn2)(void *, int); } VTbl_8023BC24;
+typedef struct Obj_8023BC24 { VTbl_8023BC24 *vt; } Obj_8023BC24;
 int fn_8023BC24(int ignored, int arg1, int arg2) {
     int *obj = (int *)fn_8027DB40(1);
     int result = fn_8024DAE0(arg1, arg2, 0, (int)obj, 0);
     if (obj != 0) {
-        void **vt = *(void ***)obj;
-        void (*fn)(void *, int) = (void (*)(void *, int))vt[2];
-        fn(obj, 1);
+        ((void (*)(int *, int))(*(int **)obj)[2])(obj, 1);
     }
     return result;
 }
