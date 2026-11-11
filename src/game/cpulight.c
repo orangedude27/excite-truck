@@ -85,6 +85,7 @@ void fn_802DB394(void) { GXSetTevOp(0, 3); GXSetTevOp(1, 3); GXSetTevAlphaOp(1, 
 
 #pragma push
 #pragma processor 750
+/* Configures the 4-stage GX TEV op/alpha setup used by this draw mode. */
 void fn_802DB3FC(void) {
     GXSetTevOp(0, 3);
     GXSetTevOp(1, 4);
