@@ -866,6 +866,9 @@ extern float lbl_80563940, lbl_80563944, lbl_80563948, lbl_80563950, lbl_8056395
 extern double lbl_80563938;
 extern signed char lbl_80344120[], lbl_80344148[];
 extern char lbl_8055C098[1], lbl_8055C0A0[1], lbl_8055C0A8[1];
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 void fn_8024D810(void *arg0) {
     float x, y;
     float dx, dy, cx, cy, e;
