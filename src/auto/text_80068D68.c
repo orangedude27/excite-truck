@@ -8862,29 +8862,30 @@ tBTM_STATUS BTM_WriteStoredLinkKey(UINT8 num_keys, BD_ADDR *bd_addr, LINK_KEY *l
     return BTM_NO_RESOURCES;
 }
 
-tBTM_STATUS BTM_DeleteStoredLinkKey(BD_ADDR bd_addr, tBTM_CMPL_CB *p_cb) {
+tBTM_STATUS BTM_DeleteStoredLinkKey(BD_ADDR bdAddr, tBTM_CMPL_CB *completionCb) {
     extern u8 lbl_803162E8[];
     extern u8 lbl_80559064;
     extern u8 lbl_8055906C;
     extern s32 btsnd_hcic_switch_role_8008515C(BD_ADDR, UINT8);
-    BD_ADDR local_bd_addr;
-    BOOLEAN delete_all_flag = FALSE;
+    BD_ADDR tempBdAddr;
+    BOOLEAN deleteAll = FALSE;
 
     if (*(u32 *)(lbl_803C0F78 + 0x570) != 0)
         return BTM_BUSY;
-    if (bd_addr == NULL) {
-        delete_all_flag = TRUE;
-        bd_addr = local_bd_addr;
+    if (bdAddr == NULL) {
+        deleteAll = TRUE;
+        bdAddr = tempBdAddr;
     }
     if (lbl_803C0F78[0x27C0] >= 4) {
         fn_80070954(
             0xD0003,
             lbl_803162E8,
-            delete_all_flag ? (u16)&lbl_80559064 : (u16)&lbl_8055906C
+            deleteAll ? (u16)&lbl_80559064 : (u16)&lbl_8055906C
         );
     }
-    *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x570) = p_cb;
-    if ((u8)btsnd_hcic_switch_role_8008515C(bd_addr, delete_all_flag) == 0)
+    /* Requests deletion of one stored link key (or all when bdAddr is NULL) and records the completion callback. */
+    *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x570) = completionCb;
+    if ((u8)btsnd_hcic_switch_role_8008515C(bdAddr, deleteAll) == 0)
         return BTM_NO_RESOURCES;
     return BTM_SUCCESS;
 }
@@ -20728,7 +20729,7 @@ void RFCOMM_ConfigInd(u32 arg0, u8 *arg1) {
     char *msg = lbl_803196B8;
     void *port;
     if (index >= 10) {
-        if (lbl_803C4828[0x414] >= 1) ((void (*)(u32, char *, u32))fn_80070954)(0x90000, msg, arg0);
+        if (lbl_803C4828[0x414] >= 1) ((void (*)(u32, char *, u32))fn_80070954)(0x90000, msg + 0, arg0);
         port = NULL;
     } else {
         port = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
@@ -20746,29 +20747,25 @@ void RFCOMM_ConfigCnf_800910D4(u32 arg0, u8 *arg1) {
     s32 index = (s32)arg0 - 0x40;
     char *trace_msg = lbl_803196B8;
     void *port;
-
+    u16 port_lcid;
     if (index >= 10) {
         if (lbl_803C4828[0x414] >= 1)
-            ((void (*)(u32, void *, u32))fn_80070954)(
-                0x90000, trace_msg, arg0);
+            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, trace_msg + 0, arg0);
         port = NULL;
     } else {
         port = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
-        if (port != NULL && *(u16 *)((u8 *)port + 0x68) != arg0) {
-            if (lbl_803C4828[0x414] >= 2) {
-                char *message = trace_msg + 0x1C;
-                u32 severity = 0x90000;
-                severity += 1;
-                ((void (*)(u32, void *, u32))fn_8007096C)(
-                    severity, message, arg0);
+        if (port != NULL) {
+            port_lcid = *(u16 *)((u8 *)port + 0x68);
+            if (port_lcid != arg0) {
+                if (lbl_803C4828[0x414] >= 2)
+                    ((void (*)(u32, void *, u32))fn_8007096C)(0x90001, trace_msg + 0x1C, arg0);
+                port = NULL;
             }
-            port = NULL;
         }
     }
     if (port == NULL) {
         if (lbl_803C4828[0x414] >= 1)
-            ((void (*)(u32, void *, u32))fn_80070954)(
-                0x90000, trace_msg + 0x8C, arg0);
+            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, trace_msg + 0x8C, arg0);
     } else {
         ((void (*)(void *, u32, u8 *))fn_800916F4)(port, 0xB, arg1);
     }
