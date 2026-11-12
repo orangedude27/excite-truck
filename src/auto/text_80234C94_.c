@@ -530,10 +530,9 @@ void fn_80235CBC(void *arg0, int arg1, int arg2, float x, float y, float z, floa
     void *node;
     int index;
     float n0, n1, n2, n3;
-    Vtx_80235CBC t0, t1, t2, t3;
+    Idx_80235CBC ids;
+    Vtx_80235CBC t3, t2, t1, t0;
     struct Frame {
-        Idx_80235CBC ids;
-        unsigned char pad[4];
         Vtx_80235CBC v[4];
     } __attribute__((aligned(16))) frame;
     if (arg1 < 0)
@@ -557,8 +556,8 @@ void fn_80235CBC(void *arg0, int arg1, int arg2, float x, float y, float z, floa
     frame.v[2].a = t1.a; frame.v[2].b = t1.b; frame.v[2].c = t1.c; frame.v[2].d = t1.d; frame.v[2].e = t1.e;
     t0 = fn_80230A68(index, x + dx, y - dy, z, n2, n3);
     frame.v[3].a = t0.a; frame.v[3].b = t0.b; frame.v[3].c = t0.c; frame.v[3].d = t0.d; frame.v[3].e = t0.e;
-    frame.ids = lbl_802FA020;
-    fn_802C8DB8(frame.v, 4, frame.ids.i, 6);
+    ids = lbl_802FA020;
+    fn_802C8DB8(frame.v, 4, ids.i, 6);
     fn_802C8D74();
 }
 #pragma pop
