@@ -1341,21 +1341,23 @@ finish:
     return 1;
 }
 #pragma pop
-extern "C" s32 ReadSeqSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive12SeqSoundInfo(void *self, u32 index, void *info) {
-    extern const char lbl_80324BD4[];
-    extern char lbl_80559878;
-    u64 result = impl_GetSoundInfoOffset__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUl(self, index);
-    u8 *bytes = (u8 *)&result;
-    void *base = *(void **)((u8 *)self + 0x28);
-    if (bytes[1] != 1)
+extern "C" s32 ReadSeqSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive12SeqSoundInfo(void *reader, u32 soundId, void *seqSoundInfo) {
+    extern const char lbl_80324BD4[]; /* "NW4HBM:Failed assertion ref.dataType == 1" */
+    extern char lbl_80559878;        /* "Util.h" */
+    /* Looks up the sequence sound entry for soundId and copies its SeqSoundInfo fields
+       (data file id, start offset, alloc track, channel priority) into seqSoundInfo. */
+    u64 soundRef = impl_GetSoundInfoOffset__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUl(reader, soundId);
+    u8 *soundRefBytes = (u8 *)&soundRef;
+    void *infoBase = *(void **)((u8 *)reader + 0x28);
+    if (soundRefBytes[1] != 1)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80559878, 0x70, lbl_80324BD4);
-    void *data = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(bytes[0], *(u32 *)(bytes + 4), base);
-    if (!data)
+    void *soundData = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(soundRefBytes[0], *(u32 *)(soundRefBytes + 4), infoBase);
+    if (!soundData)
         return 0;
-    *(u32 *)info = *(u32 *)data;
-    *(u32 *)((u8 *)info + 4) = *(u32 *)((u8 *)data + 4);
-    *(u32 *)((u8 *)info + 12) = *(u8 *)((u8 *)data + 12);
-    *(u32 *)((u8 *)info + 8) = *(u32 *)((u8 *)data + 8);
+    *(u32 *)seqSoundInfo = *(u32 *)soundData;
+    *(u32 *)((u8 *)seqSoundInfo + 4) = *(u32 *)((u8 *)soundData + 4);
+    *(u32 *)((u8 *)seqSoundInfo + 12) = *(u8 *)((u8 *)soundData + 12);
+    *(u32 *)((u8 *)seqSoundInfo + 8) = *(u32 *)((u8 *)soundData + 8);
     return 1;
 }
 
