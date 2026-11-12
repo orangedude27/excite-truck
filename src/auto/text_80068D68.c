@@ -1821,7 +1821,7 @@ void fn_80069FE8(void)
 
             if ((*(u16 *)(version + 2) & 0xFFF) == 0xA7) {
                 volatile u8 *addr = lbl_803135C0;
-                u32 byte, first, second;
+                u32 first, second, byte;
                 DBPrintf_8006CFA8((const char *)(strings + 0x360));
                 first = addr[3];
                 second = addr[7];
@@ -10053,7 +10053,7 @@ extern u8 lbl_80560D3C;
 extern tBTM_STATUS btm_pm_snd_md_req(UINT8, int, tBTM_PM_PWR_MD *);
 tBTM_STATUS BTM_SetPowerMode(UINT8 pm_id, BD_ADDR remote_bda, tBTM_PM_PWR_MD *p_mode)
 {
-    tBTM_PM_MODE mode;
+    register tBTM_PM_MODE mode;
     int ind;
     u32 acl_ind;
     UINT8 acl_index;
@@ -10457,7 +10457,6 @@ static void btm_esco_conn_rsp(UINT16 sco_inx, UINT8 hci_status, BD_ADDR bda, tBT
     UINT8 *p_sco;
     void *p_buf;
     UINT16 pkt_types;
-
     p_sco = 0;
     p_buf = GKI_getpoolbuf(2);
     if (p_buf == 0) {
@@ -10467,7 +10466,8 @@ static void btm_esco_conn_rsp(UINT16 sco_inx, UINT8 hci_status, BD_ADDR bda, tBT
         return;
     }
     if (sco_inx < 3) {
-        p_sco = lbl_803C0F78 + (sco_inx * 0x34) + 0x1854;
+        u32 tmp = (u32)lbl_803C0F78 + (u32)(sco_inx * 0x34);
+        p_sco = (UINT8 *)(tmp + 0x1854);
     }
     if (hci_status != 0) {
         if (p_sco != 0) {
@@ -10480,7 +10480,6 @@ static void btm_esco_conn_rsp(UINT16 sco_inx, UINT8 hci_status, BD_ADDR bda, tBT
         }
         return;
     }
-
     btm_chg_all_acl_pkt_types(1);
     *(UINT16 *)(p_sco + 8) = 3;
     if (lbl_803C0F78[0x1908] != 0 && p_sco[0x2E] == 2) {
@@ -14046,12 +14045,12 @@ void gap_connect_cfm(u32 cid, s32 result) {
     u16 psm;
     while (i < 8) {
         if (entry[0] != 0 && *(u16 *)(entry + 6) == cid)
-            break;
+            goto found;
         i++;
         entry += 0x60;
     }
-    if (i == 8)
-        entry = 0;
+    entry = 0;
+found:
     if (entry == 0)
         return;
     if (result == 0 && entry[0] == 2) {
