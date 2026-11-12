@@ -444,31 +444,42 @@ extern void GXBegin(int, int, unsigned short);
 void fn_802DBF54(int verts, int count) {
     int n;
     int i;
-    volatile unsigned short *fifo = (volatile unsigned short *)0xCC008000;
+    volatile unsigned short *fifo;
+    fifo = (volatile unsigned short *)0xCC008000;
     while (count > 0) {
         n = *(unsigned short *)verts;
         verts += 2;
         GXBegin(0xA0, 0, n);
         count -= n + 1;
-        #pragma unroll 8
-        for (i = 0; i < n; i++, verts += 2) {
-            *fifo = *(unsigned short *)verts;
+        for (i = 0; i < n; i++) {
+            unsigned short v = *(unsigned short *)verts;
+            verts += 2;
+            *fifo = v;
         }
     }
 }
 #pragma push
 #pragma use_lmw_stmw off
-void fn_802DC078(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
+/* Draws one batch of CPU-lit billboards (a light's triangle-fan display list)
+ * with the current lighting mode: applies the mode's texture and TEV setup, the
+ * blend mode, points GX at the batch's position array and replays the list into
+ * the FIFO.  `first` is the lowest light of a chain, which replaces the
+ * framebuffer instead of adding to it; the light index is passed in unused.
+ * In the second mode (lbl_8055FEBA) the list is replayed once more with colour
+ * writes off and the Z test and Z write on, so the batch also fills the Z
+ * buffer it was blended over. */
+void fn_802DC078(void* positions, s32 posCount, u16* list, s32 size, s32 first,
+                 s32 light) {
     fn_802DBA1C(lbl_8055FEBA);
-    fn_802DB9DC(arg4);
-    fn_802DBBE4(arg0, arg1);
-    fn_802DBF54(arg2, arg3);
+    fn_802DB9DC(first);
+    fn_802DBBE4((int)positions, posCount);
+    fn_802DBF54((int)list, size);
     if (lbl_8055FEBA != 0) {
-        GXSetZMode(1, 3, 1);
-        GXSetAlphaCompare(7, 0, 1, 7, 0);
-        GXSetColorUpdate(0);
-        fn_802DBF54(arg2, arg3);
-        GXSetColorUpdate(1);
+        GXSetZMode(GX_ENABLE, GX_LEQUAL, GX_ENABLE);
+        GXSetAlphaCompare(GX_ALWAYS, 0, GX_AOP_OR, GX_ALWAYS, 0);
+        GXSetColorUpdate(GX_DISABLE);
+        fn_802DBF54((int)list, size);
+        GXSetColorUpdate(GX_ENABLE);
     }
 }
 #pragma pop
@@ -489,13 +500,12 @@ void fn_802DC138(int verts, int count, unsigned short *list, int size) {
     fn_802DB778(0);
     fn_802DBCFC(verts, count);
     while (size > 0) {
-        n = *list;
-        list++;
+        n = *list++;
         GXBegin(0xA0, 0, n);
         size -= n + 1;
+        #pragma unroll 8
         for (i = 0; i < n; i++) {
-            val = *list;
-            list++;
+            val = *list++;
             *fifo = val;
         }
     }
@@ -510,19 +520,17 @@ void fn_802DC27C(void) { fn_802DBDD8(); }
 void fn_802DC280(int verts, int count, unsigned short *list, int size) {
     int n;
     int i;
-    unsigned short val;
     volatile unsigned short *fifo = (volatile unsigned short *)0xCC008000;
     fn_802DB778(1);
     fn_802DBC70(verts, count);
     while (size > 0) {
-        n = *list++;
+        n = *list;
+        list++;
         GXBegin(0xA0, 0, n);
         size -= n + 1;
         #pragma unroll 8
-        for (i = 0; i < n; i++) {
-            val = *list;
-            list++;
-            *fifo = val;
+        for (i = 0; i < n; i++, list++) {
+            *fifo = *list;
         }
     }
 }
