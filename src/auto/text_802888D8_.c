@@ -312,6 +312,7 @@ extern float lbl_80564274, lbl_80564278;
 #pragma push
 #pragma scheduling invalid_target
 void fn_80289084(void *arg0) {
+    /* Fills per-entry position triples from the "engine"/"arm" data, using (0,2,0) when unavailable. */
     float result[3];
     volatile float fallback[3];
     float f31 = 2.0f;
