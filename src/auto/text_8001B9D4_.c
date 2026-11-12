@@ -467,6 +467,8 @@ s32 fn_8001C27C(void *arg0, u32 arg1, const char *arg2) {
     return result;
 }
 #pragma dont_inline reset
+#pragma push
+#pragma use_lmw_stmw off
 s32 fn_8001C2CC(s32 arg0, u32 arg1, const char *arg2, s32 arg3) {
     s32 offset = 0;
     s32 i = 0;
@@ -485,6 +487,7 @@ s32 fn_8001C2CC(s32 arg0, u32 arg1, const char *arg2, s32 arg3) {
         }
     }
 }
+#pragma pop
 #pragma use_lmw_stmw reset
 #pragma dont_inline reset
 extern const char lbl_802FD750[];
