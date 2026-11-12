@@ -549,35 +549,39 @@ void fn_80235AFC(void *arg0, int texNodeIndex, int vertexFlags,
 }
 #pragma push
 #pragma paired_single off
-void fn_80235CBC(void *arg0, int arg1, int arg2, float x, float y, float z, float dx, float dy) {
-    void *node;
-    int index;
-    float n0, n1, n2, n3;
+/* Draws one picture of an art set as a textured quad width x height at
+ * (x, y, z): the picture gives the texture rectangle, rgba gives the colour
+ * with its alpha scaled by the current fade.  Logs and draws nothing when the
+ * index is not in the set. */
+void fn_80235CBC(ArtSet *artSet, int pictureIndex, int rgba, float x, float y, float z, float width, float height) {
+    ArtPicture *picture;
+    int color;
+    float u0, v0, u1, v1;
     Idx_80235CBC ids;
     Vtx_80235CBC t3, t2, t1, t0;
     struct Frame {
         Vtx_80235CBC v[4];
     } __attribute__((aligned(16))) frame;
-    if (arg1 < 0)
+    if (pictureIndex < 0)
         return;
-    node = fn_8023505C(arg0, arg1);
-    if (node == 0) {
-        fn_802E30C8(lbl_80340808, arg1, arg0);
+    picture = fn_8023505C(artSet, pictureIndex);
+    if (picture == 0) {
+        fn_802E30C8(lbl_80340808, pictureIndex, artSet);
         return;
     }
-    n0 = *(float *)node;
-    n1 = *((float *)node + 1);
-    n2 = *((float *)node + 2);
-    n3 = *((float *)node + 3);
-    fn_802C8C04(*(int *)((char *)arg0 + 0x84));
-    index = fn_80230B9C(arg2);
-    t3 = fn_80230A68(index, x, y, z, n0, n1);
+    u0 = picture->s0;
+    v0 = picture->t0;
+    u1 = picture->s1;
+    v1 = picture->t1;
+    fn_802C8C04(artSet->drawHandle);
+    color = fn_80230B9C(rgba);
+    t3 = fn_80230A68(color, x, y, z, u0, v0);
     frame.v[0].a = t3.a; frame.v[0].b = t3.b; frame.v[0].c = t3.c; frame.v[0].d = t3.d; frame.v[0].e = t3.e;
-    t2 = fn_80230A68(index, x + dx, y, z, n2, n1);
+    t2 = fn_80230A68(color, x + width, y, z, u1, v0);
     frame.v[1].a = t2.a; frame.v[1].b = t2.b; frame.v[1].c = t2.c; frame.v[1].d = t2.d; frame.v[1].e = t2.e;
-    t1 = fn_80230A68(index, x, y - dy, z, n0, n3);
+    t1 = fn_80230A68(color, x, y - height, z, u0, v1);
     frame.v[2].a = t1.a; frame.v[2].b = t1.b; frame.v[2].c = t1.c; frame.v[2].d = t1.d; frame.v[2].e = t1.e;
-    t0 = fn_80230A68(index, x + dx, y - dy, z, n2, n3);
+    t0 = fn_80230A68(color, x + width, y - height, z, u1, v1);
     frame.v[3].a = t0.a; frame.v[3].b = t0.b; frame.v[3].c = t0.c; frame.v[3].d = t0.d; frame.v[3].e = t0.e;
     ids = lbl_802FA020;
     fn_802C8DB8(frame.v, 4, ids.i, 6);
