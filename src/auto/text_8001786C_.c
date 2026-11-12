@@ -314,6 +314,8 @@ extern const char lbl_802FD0C8[];
 extern const char lbl_802FD0D8[];
 extern const char lbl_80357DC0[];
 #pragma cplusplus on
+/* Read "force_chassis" from a DAV map interface and fill each entry slot
+ * (+0x28) with the matching resource ID for that name. */
 extern "C" void fn_80018030(void *arg0, s32 arg1) {
     struct V {
         virtual void m0();
