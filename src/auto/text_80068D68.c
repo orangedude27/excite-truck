@@ -1657,8 +1657,8 @@ s32 WUDiTerminateDevice(void) {
 s32 WUDiDeleteDevice(void)
 {
     u8 busy;
-    s32 i;
     u8 *entry;
+    s32 i;
     s32 j;
     u8 *entry2;
     u32 interrupt_state;
@@ -1670,11 +1670,11 @@ s32 WUDiDeleteDevice(void)
     if (busy != 0)
         return 3;
 
-    for (entry = base + 0x64, i = 0; i < 10; i++, entry += 0x60) {
+    for (i = 0, entry = base + 0x64; i < 10; i++, entry += 0x60) {
         if (entry[0x59] == 1)
             fn_8006B598(entry + 0x40);
     }
-    for (entry2 = base + 0x424, j = 0; j < 6; j++, entry2 += 0x60) {
+    for (j = 0, entry2 = base + 0x424; j < 6; j++, entry2 += 0x60) {
         if (entry2[0x59] == 1)
             fn_8006B598(entry2 + 0x40);
     }
@@ -8288,10 +8288,8 @@ found:
 }
 
 BOOLEAN BTM_SecDeleteDevice(BD_ADDR bd_addr) {
-    s32 i;
-    u8 *entry;
-    i = 0;
-    entry = lbl_803C0F78 + 0x1F30;
+    int i = 0;
+    u8 *entry = lbl_803C0F78 + 0x1F30;
     do {
         if (entry[0x76] & 0x80) {
             if (memcmp(entry + 0x1C, bd_addr, 6) == 0)
