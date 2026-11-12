@@ -88,18 +88,39 @@ __declspec(section ".sdata") extern const char lbl_80559CF0[];
 extern "C" void fn_8013BD5C(void *arg0, void *arg1) {
     class Selector {
     public:
-        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
-        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
-        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
-        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual void v13();
+        virtual void v14();
+        virtual void v15();
+        virtual void v16();
+        virtual void v17();
+        virtual void v18();
+        virtual void v19();
         virtual void v20();
         virtual void *select(const char *);
     };
     class Getter {
     public:
-        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
-        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
         virtual float get(const char *, float);
     };
     float *v = (float *)arg0;
@@ -123,25 +144,29 @@ extern void fn_8013BD5C(void *, void *);
 extern const char lbl_8032C420[];
 void *fn_8013BE64(void *arg0, const char *arg1) {
     void *p;
-    char *dst;
-    const char *src;
     int n;
-    char c;
+    char *dst;
+    unsigned char c;
     p = fn_801284F8(0x78, lbl_8032C414);
-    if (p != 0) fn_8013A264((char *)p + 0x40);
+    if (p != 0)
+        fn_8013A264((char *)p + 0x40);
     dst = (char *)p;
-    src = arg1;
     n = 0x40;
-    while (--n > 0) {
-        c = *src++;
-        *dst++ = c;
-        if (!c) goto copied;
-    }
+    goto copy;
+count_check:
+    if (--n > 0)
+        goto copy;
     dst[-1] = 0;
+    goto copied;
+copy:
+    c = *arg1++;
+    *dst++ = c;
+    if ((signed char)c != 0)
+        goto count_check;
 copied:
-    fn_8013A2FC((char *)p + 0x40, (*(int (**)(void *, const char *))((char *)*(void **)arg0 + 0x5c))(arg0, lbl_8032C420));
-    fn_8013BD5C((char *)p + 0x60, arg0);
-    *(int *)((char *)p + 0x74) = 0;
+    fn_8013A2FC((char *)p + 0x40, ((int (*)(void *, const char *))(*(void ***)arg0)[23])(arg0, lbl_8032C420));
+    ((void (*)(void *, void *))fn_8013BD5C)((char *)p + 0x60, arg0);
+    *(volatile int *)((char *)p + 0x74) = 0;
     return p;
 }
 
@@ -320,6 +345,7 @@ typedef struct CacheTable {
 #define CACHE_ENTRY_SIZE sizeof(CacheEntry)
 #define CACHE_COUNT (*(int *)(lbl_8042F8C8 + 0x240))
 
+#ifndef CACHE_RESOURCE_DECLARED
 // A cached resource, as fn_8013BF40 builds it.
 typedef struct CacheResource {
     unsigned char name[0x40];   // at 0x00: the name the entry is filed under
@@ -327,6 +353,7 @@ typedef struct CacheResource {
     unsigned char unk60[0x14];  // at 0x60: set up by fn_8013BF3C
     int buffer;                 // at 0x74: buffer released with the resource
 } CacheResource;
+#endif
 
 // The game's compiler copies an entry's 64-byte name (bytes 4..0x43 of the
 // entry) two bytes at a time, one register per byte and both loads before
