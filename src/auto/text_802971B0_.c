@@ -68,24 +68,26 @@ extern "C" void *fn_802971B0(void *arg0) {
 }
 
 #pragma dont_inline on
-extern "C" void *fn_802972A4(void *arg0) {
+extern "C" void *fn_802972A4(void *node) {
     struct Dummy {
         virtual void v0();
         virtual void v1();
         virtual void v2();
         virtual char *v3(char *);
     };
-    s32 flag = 0;
-    void *result = 0;
-    char *name = ((Dummy *)arg0)->v3(lbl_8055CA40);
-    if (stricmp(lbl_8055CA38[1], name) == 0) {
-        result = ((void *(*)(void *))lbl_8055CA38[0])(arg0);
-        flag = 1;
+    s32 handled = 0;
+    void *element = 0;
+    char *typeName = ((Dummy *)node)->v3(lbl_8055CA40);
+
+    /* Create the FlipBookElem handler when the node's "name" is "FlipBookElem" (lbl_8055CA38 factory/name pair); otherwise log the unrecognized type. */
+    if (stricmp(lbl_8055CA38[1], typeName) == 0) {
+        element = ((void *(*)(void *))lbl_8055CA38[0])(node);
+        handled = 1;
     }
-    if (flag == 0) {
-        fn_802E317C(lbl_80349384, name);
+    if (handled == 0) {
+        fn_802E317C(lbl_80349384, typeName);
     }
-    return result;
+    return element;
 }
 #pragma dont_inline reset
 #pragma cplusplus reset
