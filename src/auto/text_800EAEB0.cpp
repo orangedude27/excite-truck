@@ -287,23 +287,21 @@ extern "C" void Dispose__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv(voi
         virtual void unused();
         virtual void dispose(void*, void*);
     };
-    u32 zero = 0;
-    u32 one = 1;
     void* start = object;
     void* end = (u8*)start + size;
-    u32 outerLevel = OSDisableInterrupts();
-    u32 level = OSDisableInterrupts();
+    unsigned long outerLevel = OSDisableInterrupts();
+    unsigned long level = OSDisableInterrupts();
     if ((s8)lbl_8055DE30 == 0) {
         void* sentinel = lbl_8041279C + 4;
-        *(u32*)(lbl_8041279C + 4) = zero;
-        *(u32*)(lbl_8041279C + 8) = zero;
-        *(u32*)lbl_8041279C = zero;
+        *(u32*)(lbl_8041279C + 4) = 0;
+        *(u32*)(lbl_8041279C + 8) = 0;
+        *(u32*)lbl_8041279C = 0;
         *(void**)(lbl_8041279C + 4) = sentinel;
         *(void**)(lbl_8041279C + 8) = sentinel;
         __register_global_object(lbl_8041279C,
             (void*)__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_800EAF54,
             lbl_80412790);
-        lbl_8055DE30 = one;
+        lbl_8055DE30 = 1;
     }
     OSRestoreInterrupts(level);
     void* node = *(void**)(lbl_8041279C + 4);
@@ -311,22 +309,22 @@ extern "C" void Dispose__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv(voi
     do {
         void* current = node;
         node = *(void**)node;
-        if (current == (void*)zero)
+        if (!current)
             Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322B44, 0x23D, (const char*)lbl_80322B20);
         ((Callback*)current)->dispose(start, end);
         level = OSDisableInterrupts();
         if ((s8)lbl_8055DE30 == 0) {
             void* sentinel = lbl_8041279C + 4;
-            *(u32*)(lbl_8041279C + 4) = zero;
+            *(u32*)(lbl_8041279C + 4) = 0;
             void* value = lbl_8041279C;
-            *(u32*)(lbl_8041279C + 8) = zero;
-            *(u32*)lbl_8041279C = zero;
-            *(void**)(lbl_8041279C + 4) = sentinel;
+            *(u32*)(lbl_8041279C + 8) = 0;
+            *(u32*)lbl_8041279C = 0;
+            *(void**)((short)lbl_8041279C + 4) = sentinel;
             *(void**)(lbl_8041279C + 8) = sentinel;
             __register_global_object(value,
                 (void*)__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_800EAF54,
                 lbl_80412790);
-            lbl_8055DE30 = one;
+            lbl_8055DE30 = 1;
         }
         OSRestoreInterrupts(level);
     } while (node != head);
@@ -346,8 +344,8 @@ extern "C" void DisposeWave__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv
     };
     void* start = object;
     void* end = (u8*)start + size;
-    u32 outerLevel = OSDisableInterrupts();
-    u32 level = OSDisableInterrupts();
+    unsigned long outerLevel = OSDisableInterrupts();
+    unsigned long level = OSDisableInterrupts();
     if ((s8)lbl_8055DE30 == 0) {
         void* sentinel = lbl_8041279C + 4;
         *(u32*)(lbl_8041279C + 4) = 0;
@@ -363,10 +361,10 @@ extern "C" void DisposeWave__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv
     OSRestoreInterrupts(level);
     void* node = *(void**)(lbl_8041279C + 4);
     void* head = lbl_8041279C + 4;
-    while (node != head) {
+    do {
         void* current = node;
         node = *(void**)node;
-        if (current == 0)
+        if (!current)
             Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322B44, 0x23D, (const char*)lbl_80322B20);
         ((Callback*)current)->dispose(start, end);
         level = OSDisableInterrupts();
@@ -376,7 +374,7 @@ extern "C" void DisposeWave__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv
             void* value = lbl_8041279C;
             *(u32*)(lbl_8041279C + 8) = 0;
             *(u32*)lbl_8041279C = 0;
-            *(void**)(lbl_8041279C + 4) = sentinel;
+            *(void**)((short)lbl_8041279C + 4) = sentinel;
             *(void**)(lbl_8041279C + 8) = sentinel;
             __register_global_object(value,
                 (void*)__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_800EAF54,
@@ -384,7 +382,7 @@ extern "C" void DisposeWave__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv
             lbl_8055DE30 = 1;
         }
         OSRestoreInterrupts(level);
-    }
+    } while (node != head);
     OSRestoreInterrupts(outerLevel);
 }
 #pragma pop
@@ -855,7 +853,7 @@ void *nw4hbm::snd::detail::FrameHeap::Alloc(unsigned long size, void (*callback)
     register const char *file = (const char *)lbl_80322D60;
     if (*(void **)this == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(file, 0xA2, file + 0x44);
-    block = MEMAllocFromFrmHeapEx(*(void **)this, ((size + 0x1f) & ~31UL) + 0x20, 0x20);
+    block = MEMAllocFromFrmHeapEx(*(void **)this, ((size + 0x1f) & 0xFFFFFFE0) + 0x20, 0x20);
     if (block == 0)
         return 0;
     *(u32 *)block = 0;
@@ -899,18 +897,19 @@ extern "C" void CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void* headArg, 
     u32 start;
     u32 stride;
     u32 count;
-    u32 i;
     u32 irq;
     u32 previous;
+    u32 node;
+    u32 idx;
     if (buffer == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323058, 0x26, (const char*)lbl_80323070);
     irq = OSDisableInterrupts();
-    start = (addr + 3) & ~3;
-    stride = (blockSize + 3) & ~3;
+    start = (addr + 3) & ~3u;
+    stride = (blockSize + 3) & ~3u;
     count = (size - (start - addr)) / stride;
     if (count != 0) {
-        u32 node = start;
+        node = start;
         previous = (u32)*head;
-        for (i = 0; i < count; i++) {
+        for (idx = 0; idx < count; idx++) {
             *(u32*)node = previous;
             *head = (void*)node;
             previous = node;
@@ -1781,6 +1780,32 @@ extern "C" void* GetInstance__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv(void)
     }
     return lbl_804127A8;
 }
+
+#pragma push
+#pragma use_lmw_stmw off
+void nw4hbm::snd::detail::RemoteSpeakerManager::Setup() {
+    u8 *p;
+    s32 i;
+    if (((u8 *)this)[0] == 0) {
+        p = (u8 *)this + 0x38;
+        i = 0;
+        do {
+            fn_800EE568(p);
+            i++;
+            p += 0xA0;
+        } while (i < 4);
+        OSCreateAlarm((void *)((u8 *)this + 8));
+        u64 time = OSGetTime();
+        u32 ticks = *(volatile u32 *)0x800000F8;
+        u32 q = (ticks >> 2) / 125000;
+        u32 period = q * 0x0065B9AB;
+        u32 interval = period / 8000;
+        OSSetPeriodicAlarm((void *)((u8 *)this + 8), q, (u32)(time >> 32), (u32)time, 0, interval, (void *)&fn_800EEBA8);
+        ((u8 *)this)[0] = 1;
+    }
+}
+#pragma pop
+
 extern "C" u64 OSGetTime(void);
 extern "C" void OSSetPeriodicAlarm(void*, u32, u32, u32, u32, u32, void*);
 extern "C" void fn_800EE568(void*);
@@ -1941,16 +1966,16 @@ extern "C" void fn_800EEBA8(void* arg0, u64 unused1, u64 unused2) {
 #pragma pop
 extern "C" void* __ct__Q46nw4hbm3snd6detail13SeqFileReaderFPCv(void* self, const void* data) {
     const u8* bytes = (const u8*)data;
-    const u8 (*file)[0x100] = (const u8 (*)[0x100])lbl_803239C0;
+    const u8* file = (const u8*)lbl_803239C0;
     volatile const u16* sizeField;
     u32 magic;
     u32 size;
     u32 valid;
     *(void**)self = 0;
     *(void**)((u8*)self + 4) = 0;
-    if (data == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)*file, 0x47, (const char*)(*file + 0xB4));
+    if (data == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)file, 0x47, (const char*)(file + 0xB4));
     magic = *(const u32*)bytes;
-    if (magic != 0x52534551) Panic__Q26nw4hbm2dbFPCciPCce((const char*)*file, 0x26, (const char*)(*file + 0x10));
+    if (magic != 0x52534551) Panic__Q26nw4hbm2dbFPCciPCce((const char*)file, 0x26, (const char*)(file + 0x10));
     magic = *(const u32*)bytes;
     if (magic != 0x52534551) {
         valid = 0;
@@ -1958,20 +1983,20 @@ extern "C" void* __ct__Q46nw4hbm3snd6detail13SeqFileReaderFPCv(void* self, const
     }
     sizeField = (volatile const u16*)(bytes + 6);
     size = *sizeField;
-    if (size < 0x100) Panic__Q26nw4hbm2dbFPCciPCce((const char*)file, 0x2E, (const char*)(*file + 0x5C));
+    if (size < 0x100) Panic__Q26nw4hbm2dbFPCciPCce((const char*)file, 0x2E, (const char*)(file + 0x5C));
     size = *sizeField;
     if (size < 0x100) {
         valid = 0;
         goto check_valid;
     }
-    if (size > 0x100) Panic__Q26nw4hbm2dbFPCciPCce((const char*)file, 0x34, (const char*)(*file + 0x5C));
+    if (size > 0x100) Panic__Q26nw4hbm2dbFPCciPCce((const char*)file, 0x34, (const char*)(file + 0x5C));
     size = *sizeField;
     valid = (~(size & ~0x100u) - ((0x100u - size) >> 1)) >> 31;
 check_valid:
     if (valid == 0) return self;
     *(void**)self = (void*)data;
     *(void**)((u8*)self + 4) = (void*)(*(const u32*)(bytes + 0x10) + (u32)bytes);
-    if (*(const u32*)*(void**)((u8*)self + 4) != 0x44415441) Panic__Q26nw4hbm2dbFPCciPCce((const char*)*file, 0x50, (const char*)(*file + 0xE0));
+    if (*(const u32*)*(void**)((u8*)self + 4) != 0x44415441) Panic__Q26nw4hbm2dbFPCciPCce((const char*)file, 0x50, (const char*)(file + 0xE0));
     return self;
 }
 
@@ -2086,8 +2111,7 @@ extern "C" void InitParam__Q46nw4hbm3snd6detail9SeqPlayerFiPQ46nw4hbm3snd6detail
     register f32 zeroValue = lbl_8056106C;
     register f32 baseValue = lbl_80561068;
     u8 *p = (u8 *)self;
-    s32 i;
-
+    int i;
     p[0x16] = 0; p[0x17] = 0;
     p[0x18] = 0; p[0x19] = 0;
     p[0x14] = 0;
@@ -2151,9 +2175,9 @@ extern "C" void Stop__Q46nw4hbm3snd6detail9SeqPlayerFv(void* self) {
         virtual void unused1();
         virtual void RemoveTrack(void*);
     };
-    register void* player = self;
-    register s32 state;
-    register u32 level;
+    void* player = self;
+    s32 state;
+    u32 level;
     if (*(u8*)((u8*)player + 0x15) == 0) return;
     level = OSDisableInterrupts();
     if (*(u8*)((u8*)player + 0x17) != 0) {
@@ -2169,8 +2193,8 @@ extern "C" void Stop__Q46nw4hbm3snd6detail9SeqPlayerFv(void* self) {
     }
     OSRestoreInterrupts(level);
     state = 0;
-    register u8* entry = (u8*)player;
-    register s32 zero = 0;
+    u8* entry = (u8*)player;
+    s32 zero = 0;
     s32 valid;
     void* seq;
     do {
@@ -2581,6 +2605,7 @@ extern "C" u8 lbl_80323E64[];
 extern "C" s16 lbl_80412A78[];
 extern "C" void fn_800F0360(void*);
 extern "C" void Stop__Q46nw4hbm3snd6detail9SeqPlayerFv(void*);
+/* Return pointer to a sequence player variable: local vars 0-15, global vars 16-31, else NULL. */
 extern "C" s16* GetVariablePtr__Q46nw4hbm3snd6detail9SeqPlayerFi(void* this_, s32 varNo) {
     s32 index = varNo;
     s32 valid = 0;
