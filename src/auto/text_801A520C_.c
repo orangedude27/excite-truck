@@ -165,6 +165,7 @@ extern "C" void *fn_801A538C(void *arg0, int arg1) {
     return arg0;
 }
 extern "C" void fn_801A5434(void *arg0) {
+    /* Periodically validate this object's position and notify via v41 if stuck. */
     class Obj {
     public:
         virtual void f0();
@@ -211,7 +212,7 @@ extern "C" void fn_801A5434(void *arg0) {
         virtual void f41(int);
     };
     int count;
-    int values[3];
+    int position[3];
     int first;
     int second;
     void *obj;
@@ -221,10 +222,10 @@ extern "C" void fn_801A5434(void *arg0) {
         return;
     first = *(int *)((char *)arg0 + 0x60);
     second = *(int *)((char *)arg0 + 0x64);
-    values[0] = first;
-    values[1] = second;
-    values[2] = *(int *)((char *)arg0 + 0x68);
-    if (((int (*)(void *, int *, int))fn_801E9E30)((char *)arg0 + 0x6C, values, first) == 0) {
+    position[0] = first;
+    position[1] = second;
+    position[2] = *(int *)((char *)arg0 + 0x68);
+    if (((int (*)(void *, int *, int))fn_801E9E30)((char *)arg0 + 0x6C, position, first) == 0) {
         *(int *)((char *)arg0 + 0x2700) = *(int *)((char *)arg0 + 0x2700) + 1;
     } else {
         *(int *)((char *)arg0 + 0x2700) = 0;
