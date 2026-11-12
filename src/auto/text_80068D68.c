@@ -18395,17 +18395,18 @@ void fn_8008C464(u8 *bd_addr) {
 void l2c_init(void) {
     typedef struct { u8 _a[8]; void *p_next; u8 _b[0x70]; } CcbEnt;
     typedef struct { u8 _h[0x178]; CcbEnt pool[10]; u8 _rcb[0x160]; void *p_first; void *p_last; u16 num_links; u16 idle; } L2cbView;
+    /* Initialize the global L2CAP control block and free CCB pool. */
     memset(lbl_803C4040, 0, 0x7E8);
     {
-        L2cbView *p = (L2cbView *)lbl_803C4040;
-        INT16 xx;
-        for (xx = 0; xx < 9; xx++) {
-            p->pool[xx].p_next = &p->pool[xx + 1];
+        L2cbView *cb = (L2cbView *)lbl_803C4040;
+        INT16 index;
+        for (index = 0; index < 9; index++) {
+            cb->pool[index].p_next = &cb->pool[index + 1];
         }
-        p->p_first = &p->pool[0];
-        p->p_last = &p->pool[9];
-        ((u8 *)p)[1] = 0;
-        p->idle = 2;
+        cb->p_first = &cb->pool[0];
+        cb->p_last = &cb->pool[9];
+        ((u8 *)cb)[1] = 0;
+        cb->idle = 2;
         lbl_803C4040[0] = 0;
     }
 }
