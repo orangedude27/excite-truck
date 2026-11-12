@@ -1428,7 +1428,7 @@ extern "C" void fn_80218C98(void *parent, void **child, int arg2) {
     *(void **)((char *)obj + 0x2C) = parent;
     obj->v3();
 }
-extern "C" void fn_80218D54(void *arg0, int arg1) {
+extern "C" void fn_80218D54(void *menu, int widgetId) {
     class Obj {
     public:
         virtual int v0();
@@ -1457,14 +1457,16 @@ extern "C" void fn_80218D54(void *arg0, int arg1) {
         virtual int v23();
         virtual int v24();
     };
-    char *base = (char *)arg0;
+    char *base = (char *)menu;
     char *cursor = base;
     int i = 0;
+
+    /* Find the first selectable child widget with matching id and set it as current. */
     while (i < *(int *)(base + 0x430)) {
-        Obj *obj = *(Obj **)(cursor + 0x30);
-        if (obj->v24() != 0 &&
-            (*(Obj **)(cursor + 0x30))->v4() == arg1) {
-            fn_80218198(arg0, *(void ***)(base + i * 4 + 0x30));
+        Obj *child = *(Obj **)(cursor + 0x30);
+        if (child->v24() != 0 &&
+            (*(Obj **)(cursor + 0x30))->v4() == widgetId) {
+            fn_80218198(menu, *(void ***)(base + i * 4 + 0x30));
             return;
         }
         cursor += 4;
