@@ -4531,6 +4531,9 @@ void *fn_8011FFC4(s32 arg0) {
     u8 offset;
     u32 mode;
     s32 result;
+
+    /* Allocate arg0+0x40 bytes via custom allocator hook (mode 3) or malloc (mode 0),
+       return a 32-byte-aligned pointer with metadata stored before it. */
     if (arg0 == 0 || (u32)(arg0 + 0x10000) == 0xFFFF) return 0;
     if (lbl_8055DEF8 != 0) {
         result = ((s32 (*)(s32))lbl_8055DEF8)(arg0 + 0x40);
