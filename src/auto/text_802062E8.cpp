@@ -597,6 +597,7 @@ extern "C" void fn_80206D3C(void *self, void *list, int count) {
     }
 }
 #pragma processor gekko
+#pragma use_lmw_stmw reset
 #pragma scheduling on
 #pragma dont_inline reset
 extern "C" void *fn_802065F8(void *, int, int);
