@@ -18,6 +18,11 @@ void fn_802C3014(void *);
 
 void fn_802C5024(s32, s32, s32, s32);
 
+/* The built-in canvas font: a fixed-pitch bitmap face, one cell per character. */
+#define CANVAS_CHAR_WIDTH   8    /* pixels a character advances */
+#define CANVAS_CHAR_UNKNOWN '#'  /* drawn for anything outside printable ASCII */
+#define DrawCanvasChar      fn_802C5024 /* one character at (x,y) in a colour; empty in this build */
+
 extern void fn_8012C4D8(void);
 
 extern s32 lbl_8055FC00;
@@ -670,10 +675,8 @@ void fn_802C3D74(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
     s32 sp1C, sp18, sp14, sp10, spC, sp8;
     u16 *src;
     s32 *dst;
-    s32 srcRemain, dstRemain, srcSkip, dstSkip, i;
+    s32 srcRemain, dstRemain, dstSkip, srcSkip, i;
     u8 format;
-    register s32 width;
-
     sp8 = arg1;
     spC = arg2;
     sp10 = arg6;
@@ -683,10 +686,9 @@ void fn_802C3D74(s32 arg0, s32 arg1, s32 arg2, s32 arg3,
     if (fn_802C3170((void *)arg5, &sp10, &sp14, &sp8, &spC, &sp1C, &sp18) != 0) {
         src = (u16 *)fn_802C3044((void *)arg0, sp8, spC);
         dst = (s32 *)fn_802C3060((void *)arg5, sp10, sp14);
-        width = sp1C;
-        srcRemain = *(s32 *)((u8 *)arg0 + 0x10) - width * 2;
+        srcRemain = *(s32 *)((u8 *)arg0 + 0x10) - sp1C * 2;
         format = *(u8 *)arg0;
-        dstRemain = *(s32 *)((u8 *)arg5 + 0x10) - width * 4;
+        dstRemain = *(s32 *)((u8 *)arg5 + 0x10) - sp1C * 4;
         srcSkip = (srcRemain + (s32)((u32)srcRemain >> 31)) >> 1;
         dstSkip = dstRemain / 4;
         if ((s8)format == 4) {
@@ -763,7 +765,7 @@ void fn_802C3F00(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
             do {
                 i = sp1C;
                 do {
-                    pixel = *src++;
+                    pixel = *src += 1;
                     i--;
                     {
                         s32 part = ((pixel >> 6) & 0x3E0) |
@@ -788,7 +790,7 @@ void fn_802C3F00(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
                 } while (i > 0);
                 src += skipSrc;
                 dst += skipDst;
-                sp18--;
+                sp18 -= 1;
             } while (sp18 > 0);
         } else {
             fn_802E317C((char *)lbl_8034B100, *(s8 *)sourceObj);
@@ -819,8 +821,6 @@ void fn_802C4108(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
     s32 skipSrc, skipDst, i, a, ia;
     u16 *src, *dst;
     u32 s, d, b, g, r;
-    s32 g5;
-
     sp8 = arg1;
     spC = arg2;
     sp10 = arg6;
@@ -847,8 +847,7 @@ void fn_802C4108(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
                     b = (ia * ((d << 3) & 0xF8) + a * ((s << 4) & 0xF0)) / 15;
                     r = (ia * ((d >> 7) & 0xF8) + a * ((s >> 4) & 0xF0)) / 15;
                     g = (ia * ((d >> 2) & 0xF8) + a * (s & 0xF0)) / 15;
-                    g5 = (s32)(g & 0xFF) >> 3;
-                    *dst = ((s32)(b & 0xFF) >> 3) | ((g >> 1) & 0x3E0) | (((s32)(r & 0xFF) >> 3) << 10);
+                    *dst = (((s32)(b & 0xFF) >> 3) | (((g >> 3) << 5) & 0x3E0)) | (((s32)(r & 0xFF) >> 3) << 10);
                     dst++;
                 } while (i > 0);
                 src += skipSrc;
