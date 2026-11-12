@@ -224,27 +224,28 @@ void fn_801DEB10(void) {
 
 #pragma small_data on
 
-unsigned int fn_801DEB6C(const char *arg0) {
+/* Return the index of the given event/popup name in the 7-entry lbl_802F99C8 name table, or 0 if not found. */
+unsigned int fn_801DEB6C(const char *name) {
     extern const char *lbl_802F99C8[7];
     extern int stricmp(const char *, const char *);
-    const char *items[7];
+    const char *nameTable[7];
     const char **src = lbl_802F99C8;
-    const char **p;
-    unsigned int i;
-    items[0] = *src++;
-    items[1] = *src++;
-    items[2] = *src++;
-    items[3] = *src++;
-    items[4] = *src++;
-    items[5] = *src++;
-    items[6] = *src++;
-    p = items;
-    i = 0;
+    const char **entry;
+    unsigned int index;
+    nameTable[0] = *src++;
+    nameTable[1] = *src++;
+    nameTable[2] = *src++;
+    nameTable[3] = *src++;
+    nameTable[4] = *src++;
+    nameTable[5] = *src++;
+    nameTable[6] = *src++;
+    entry = nameTable;
+    index = 0;
     do {
-        if (stricmp(arg0, *p) == 0) return i;
-        ++i;
-        ++p;
-    } while (i < 7);
+        if (stricmp(name, *entry) == 0) return index;
+        ++index;
+        ++entry;
+    } while (index < 7);
     return 0;
 }
 
