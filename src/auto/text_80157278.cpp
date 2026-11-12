@@ -1350,18 +1350,20 @@ extern "C" f32 fn_80158E80(void* arg0) {
 
 extern "C" void fn_80158F34(void**);
 extern "C" f32 fn_80158D60(void*, void*);
-extern "C" void fn_80158E88(void* arg0, void* arg1) {
-    void* sp8 = arg1;
-    s32 temp_r31;
-    fn_80158F34(&sp8);
-    if (*(f32*)((u8*)arg0 + 0x25C) > lbl_80561754) {
-        fn_80158D60(arg0, sp8);
+/* Run a per-frame update for this object: apply a pre-hook, emit its current value when active,
+ * and trigger an event for the selected entry under specific game-state conditions. */
+extern "C" void fn_80158E88(void* self, void* context) {
+    void* savedContext = context;
+    s32 selectedValue;
+    fn_80158F34(&savedContext);
+    if (*(f32*)((u8*)self + 0x25C) > lbl_80561754) {
+        fn_80158D60(self, savedContext);
     }
-    temp_r31 = *(s32*)((u8*)(*(u32*)((u8*)arg0 + 8) +
-        (*(s32*)((u8*)arg0 + 0xC) - 1) * 0x38) + 4);
-    if (temp_r31 > 0 && fn_80179650() == 1 &&
-        *(s32*)((u8*)arg1 + 0x1F0) == 0x50 && fn_801CF064() == 0) {
-        fn_8001EF5C(3, temp_r31);
+    selectedValue = *(s32*)((u8*)(*(u32*)((u8*)self + 8) +
+        (*(s32*)((u8*)self + 0xC) - 1) * 0x38) + 4);
+    if (selectedValue > 0 && fn_80179650() == 1 &&
+        *(s32*)((u8*)context + 0x1F0) == 0x50 && fn_801CF064() == 0) {
+        fn_8001EF5C(3, selectedValue);
     }
 }
 
