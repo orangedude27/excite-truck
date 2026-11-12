@@ -103,16 +103,17 @@ extern "C" void fn_802E339C(void) {
 s32 fn_802E33D0(void) { return 0; }
 
 #pragma scheduling invalid_target
-s32 fn_802E33D8(s32 arg0, const char *arg1, s32 arg2) {
+/* Validate a file handle index and return the address of its entry in the file table, logging on invalid/unused cases. */
+s32 fn_802E33D8(s32 fileId, const char *name, s32 line) {
     s32 offset;
     unsigned char *entry;
-    if (arg0 < 0 || arg0 == -1 || arg0 > 0x10) {
-        fn_802E317C(lbl_8034CF40, arg0, arg1, arg2);
+    if (fileId < 0 || fileId == -1 || fileId > 0x10) {
+        fn_802E317C(lbl_8034CF40, fileId, name, line);
     }
-    offset = arg0 * 0x28;
+    offset = fileId * 0x28;
     entry = (unsigned char *)(lbl_804DB810 + offset);
     if (entry[0x20] == 0) {
-        fn_802E317C(lbl_8034CF60, arg0, entry, arg1, arg2);
+        fn_802E317C(lbl_8034CF60, fileId, entry, name, line);
     }
     return (s32)lbl_804DB810 + offset;
 }
