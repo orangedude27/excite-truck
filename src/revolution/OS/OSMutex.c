@@ -96,14 +96,18 @@ void __OSUnlockAllMutex(OSThread* thread) {
     }
 };
 
+/* Non-blocking version of OSLockMutex(): takes the mutex when it is free (or already owned by the
+ * current thread) and links it onto that thread's owned-mutex queue, but returns FALSE instead of
+ * sleeping when some other thread owns it. Returns TRUE if the mutex is held on return. */
 BOOL OSTryLockMutex(OSMutex* mutex) {
     BOOL enabled = OSDisableInterrupts();
     OSThread* currThread = OSGetCurrentThread();
-    BOOL lock = FALSE;
+    BOOL acquired = FALSE;
 
     if (mutex->thread == NULL) {
         OSMutex* tail;
 
+        /* unowned: become the owner and append the mutex to this thread's owned-mutex queue */
         mutex->thread = currThread;
         mutex->lock++;
 
@@ -118,14 +122,15 @@ BOOL OSTryLockMutex(OSMutex* mutex) {
         mutex->next = NULL;
 
         currThread->mutexQueue.tail = mutex;
-        lock = TRUE;
+        acquired = TRUE;
     } else if (mutex->thread == currThread) {
+        /* already ours: only the recursion count grows */
         mutex->lock++;
-        lock = TRUE;
+        acquired = TRUE;
     } else {
-        lock = FALSE;
+        acquired = FALSE;
     }
 
     OSRestoreInterrupts(enabled);
-    return lock;
+    return acquired;
 }
