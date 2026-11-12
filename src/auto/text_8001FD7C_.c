@@ -9,6 +9,34 @@ extern int fn_80012820(int);
 extern void fn_800081BC(int);
 extern int fn_80008188(void);
 extern int fn_80012910(int);
+#pragma cplusplus on
+struct KObjCPP {
+    virtual void *_00();
+    virtual void *_04();
+    virtual void *f08();
+    virtual unsigned char f0C(void *);
+    virtual void *f10();
+    virtual void *f14();
+    virtual int f18(void *, int);
+    virtual void *f1C();
+    virtual void *f20();
+    virtual void *f24();
+    virtual void *f28();
+    virtual void *f2C();
+    virtual void *f30();
+    virtual void *f34();
+    virtual void *f38();
+    virtual void *f3C();
+    virtual void *f40();
+    virtual void *f44();
+    virtual void *f48();
+    virtual void *f4C();
+    virtual void *f50();
+    virtual void *f54();
+    virtual void *f58();
+    virtual int f5C(int);
+};
+#pragma cplusplus reset
 typedef struct KObj KObj;
 struct KVt {
     char pad0[0xC];
@@ -730,20 +758,18 @@ int fn_800213DC(int arg0) {
 }
 
 void fn_80021464(KArg *a, int arg1) {
-    KArg *p;
-    KObj *o;
+    int c;
+    int n, r, k, v, h, id;
     int sp[6];
-    int c, n, r, k, v, h, id;
+    KArg *p;
     char *base = lbl_802FE138;
     lbl_8055D62C = 1;
     fn_8001FEE8();
     fn_800081BC(fn_80012820(a->f4) + 8);
     lbl_8055D660 = fn_80008188();
     id = fn_80012910(a->f0);
-    o = a->obj;
-    lbl_8055D664 = o->vt->f18(o, base + 0x284, id);
-    o = a->obj;
-    lbl_8055D646 = o->vt->f0C(o, base + 0x294);
+    lbl_8055D664 = a->obj->vt->f18(a->obj, base + 0x284, id);
+    lbl_8055D646 = a->obj->vt->f0C(a->obj, base + 0x294);
     if (lbl_8055D646 != 0) {
         lbl_8055D660 = fn_80131234(base + 0x2A0);
     }
@@ -754,8 +780,7 @@ void fn_80021464(KArg *a, int arg1) {
     p = fn_8001285C(a->f0);
     fn_80012820(p->f4);
     lbl_8035BAD8.f8 = p->fC;
-    o = p->obj;
-    v = o->vt->f5C(o, fn_80205268(base + 0x2B4, lbl_8055D66C, lbl_8055D668));
+    v = p->obj->vt->f5C(p->obj, fn_80205268(base + 0x2B4, lbl_8055D66C, lbl_8055D668));
     if (v != 0) {
         fn_8001D884(sp, v);
         r = fn_8027DED0();
