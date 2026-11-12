@@ -221,9 +221,10 @@ __declspec(section ".sdata") extern char lbl_8055CFAC[];
 __declspec(section ".sdata") extern char lbl_8055CFB8[];
 __declspec(section ".sdata") extern char lbl_8055CFC0[];
 extern void fn_801FA7F4(int, f32 *, void *);
+#pragma push
+#pragma processor 750
 #pragma cplusplus on
 #pragma paired off
-#pragma paired_single off
 extern "C" void fn_802C1550(void) {
     struct Dispatch {
         virtual void u0();
@@ -249,15 +250,14 @@ extern "C" void fn_802C1550(void) {
         virtual void u20();
         virtual Dispatch *find(const char *);
     };
-    register char *strings = lbl_8034AED0;
-    register char *entry = lbl_804C0810;
-    register int outer = 0;
-    register int zero = 0;
+    char *strings = lbl_8034AED0;
+    char *entry = lbl_804C0810;
+    int outer = 0;
+    int zero = 0;
     register f32 depth;
     register f32 blank;
     register f32 diagonal;
     f32 pos[12];
-
     diagonal = lbl_80564E54;
     blank = lbl_80564E50;
     depth = lbl_80564E58;
@@ -318,14 +318,14 @@ extern "C" void fn_802C1550(void) {
         outer++;
     }
 }
-#pragma paired_single reset
-#pragma paired reset
-#pragma cplusplus reset
+#pragma pop
 extern f64 sin(f32);
 extern void fn_8022FF10(void *, void *);
 extern void fn_80015B20(void *, void *, void *);
 extern f32 lbl_80564E50, lbl_80564E54, lbl_80564E5C, lbl_80564E60;
 extern f32 lbl_80564E64, lbl_80564E68, lbl_80564E6C;
+#pragma push
+#pragma processor 750
 #pragma paired_single off
 void fn_802C173C(float time) {
     struct Scratch { f32 vec[3]; f32 rot[3]; char padding[0x18]; int data[12]; };
@@ -343,7 +343,7 @@ void fn_802C173C(float time) {
             if (age >= lower && age < upper) {
                 struct Scratch scratch;
                 int d11, d10, d9, d8, d7, d6, d5, d4, d3, d2, d1, d0;
-                f32 clamped, sn, product, x, y, z, delta, scaledSin, factor;
+                f32 factor, scaledSin, delta, z, y, x, product, sn, clamped;
                 d0 = *(volatile int *)(record + 8);
                 d1 = *(volatile int *)(record + 0xC);
                 d2 = *(volatile int *)(record + 0x10);
@@ -386,10 +386,12 @@ void fn_802C173C(float time) {
                     dst[4] = out0; dst[5] = out1;
                     out0 = scratch.data[6]; out1 = scratch.data[7];
                     dst[6] = out0; dst[7] = out1;
-                    out0 = scratch.data[8]; out1 = scratch.data[9];
-                    dst[8] = out0; dst[9] = out1;
-                    out0 = scratch.data[10]; out1 = scratch.data[11];
-                    dst[10] = out0; dst[11] = out1;
+                    out0 = scratch.data[8];
+                    dst[8] = out0;
+                    out0 = scratch.data[9]; out1 = scratch.data[10];
+                    dst[9] = out0; dst[10] = out1;
+                    out0 = scratch.data[11];
+                    dst[11] = out0;
                 }
             } else fn_802C1180((void *)record);
         }
@@ -397,6 +399,7 @@ void fn_802C173C(float time) {
         record = record + 0x48;
     } while (i < 8);
 }
+#pragma pop
 extern f32 lbl_804C1050[16];
 extern f32 lbl_80564E58;
 extern f32 lbl_80564E70;
@@ -450,6 +453,67 @@ void fn_802C1928(void) {
 }
 #pragma pop
 void fn_802C1A08(void) {}
+
+/* ---- treehit: the trees the trucks drive into ------------------------------
+ * lbl_804C0810  the tree classes (fn_802C143C adds one per level object,
+ *               fn_802C1550 fills them in from the object's parameters,
+ *               count lbl_8055FB28, looked up by tree index in fn_802C110C)
+ * lbl_8055FB30  the tree list (heap block "treehittree", lbl_8034AEF8),
+ *               count lbl_8055FB2C; fn_802C1500 appends a tree to it
+ * lbl_8055CFA0  base of the tree handles fn_801500 hands out: handle - base is
+ *               the index in the tree list, which is what the level objects
+ *               report when something hits them
+ * lbl_804C0E10  the eight queued hits (ring, next slot lbl_8055FB34); fn_802C1C34
+ *               queues one, fn_802C1180 hands its pose back to the tree and
+ *               fn_802C173C swings the tree about the hit axis (time lbl_8055FB38)
+ * lbl_80564E50 / lbl_80564E54  0.0f / 1.0f
+ * lbl_80564E70  -2000.0f: a tree whose Y is under it has been cut
+ * lbl_80564E74  -9000.0f: how far below a cut tree is dropped
+ */
+struct TreeClass {
+    int firstTree;     /* 0x00 this class's tree indices, -1 until it has one */
+    int lastTree;      /* 0x04 */
+    char name[0x20];   /* 0x08 the "drop_model" object's name */
+    u8 wobbles;        /* 0x28 clear when the model has "no_wobble" */
+    u8 pad29[3];       /* 0x29 */
+    f32 dropHeight;    /* 0x2C how far above the tree its drops spawn */
+    void *modelObject; /* 0x30 the level's tree object */
+    void **drops;      /* 0x34 the drop models, added by fn_802C1F8C */
+    int dropCount;     /* 0x38 how many the model asks for */
+    int dropsAdded;    /* 0x3C how many have been added */
+    int eventId[8];    /* 0x40 "efx_event_id%d" per slot, -1 when it has none */
+};                     /* 0x60 */
+
+struct TreeObject {
+    f32 matrix[9];     /* 0x00 rotation, swung about the hit axis by fn_802C173C */
+    f32 pos[3];        /* 0x24 Y goes 9000 below the ground once the tree is cut */
+};
+
+struct TreeHitRecord {
+    int treeIndex;     /* 0x00 the tree this hit is waiting for */
+    struct TreeObject *tree; /* 0x04 0 once fn_802C1180 gave the pose back */
+    f32 matrix[9];     /* 0x08 the pose to give it */
+    f32 pos[3];        /* 0x2C */
+    f32 axis[3];       /* 0x38 the axis it is being swung about */
+    f32 time;          /* 0x44 when it was hit */
+};                     /* 0x48 */
+
+struct TreeHitEvent {  /* the 0x20-byte payload of efx event 10, fn_801796EC */
+    f32 pos[3];        /* 0x00 where the tree was hit */
+    f32 velocity[3];   /* 0x0C the player's velocity */
+    s16 angle;         /* 0x18 the player's heading */
+    u8 pad1A[2];       /* 0x1A */
+    int eventId;       /* 0x1C the class slot's "efx_event_id" */
+};                     /* 0x20 */
+
+struct PlayerObject {  /* one of the eight players of lbl_80430830, fn_8017960C */
+    u8 pad0[0x6C];
+    s16 heading;       /* 0x6C */
+    u8 pad6E[0x118 - 0x6E];
+    f32 velocity[3];   /* 0x118 */
+};
+
+#define TREE_CLASS_EVENT_ID 0x40 /* offsetof(struct TreeClass, eventId) */
 
 extern void *fn_8017960C(int);
 extern void fn_801796EC(int, void *, int);
