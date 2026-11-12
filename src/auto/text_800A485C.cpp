@@ -2271,6 +2271,16 @@ extern "C" s32 fn_800A7C20(void *volume, void **list, u32 sector, void **outPage
     return 0;
 }
 
+/* The file a page was read for, and the file the volume is reading for now:
+ * before a page goes to another file its old owner's changes are written back.
+ * VF_VOL_PAGE_OWNER, VF_VOL_CACHE_FLAGS, VF_CACHE_ACTIVE and
+ * VF_ERR_SHORT_TRANSFER are named again further down, with the same text. */
+#define VF_PAGE_OWNER(p)          (*(u32 *)((u8 *)(p) + 0x1C))     /* 0x1C file the page is claimed for */
+#define VF_VOL_PAGE_OWNER(v)      (*(void **)((u8 *)(v) + 0x1644)) /* pages read now belong to this file */
+#define VF_VOL_CACHE_FLAGS(v)     (*(u32 *)((u8 *)(v) + 0x1624))   /* state of the page cache */
+#define VF_CACHE_ACTIVE           2U                               /* the page cache has been set up */
+#define VF_ERR_SHORT_TRANSFER     0x11                             /* a read stopped short of its run */
+
 extern "C" s32 fn_800A8050(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     u32 spC;
     s32 sp8;
@@ -6646,9 +6656,9 @@ extern "C" s32 fn_800AF8EC(void *arg0, s32 arg1, u32 arg2, void *arg3) {
 extern "C" s32 fn_800AFBA8(void *arg0, u16 arg1, u32 *result, void *page) {
     u8 *ctx=(u8*)arg0;
     u8 *pg=(u8*)page;
-    s32 status;
     u32 sector;
     u32 copy;
+    s32 status;
     u32 offset;
     offset=(u16)(arg1+((u32)arg1>>1));
     sector=(u16)(*(u32*)(ctx+0x28)+(offset>>*(u8*)(ctx+0x20)));
@@ -10694,7 +10704,6 @@ extern "C" s32 VFiPFCODE_CP932_Unicode2OEM(s32 arg0, u32 *arg1) {
     u16 raw = *(u16 *)arg0;
     u8 lo = raw;
     u8 hi = raw >> 8;
-    s32 w;
 
     if (lo < 0x80 && hi == 0) {
         out[0] = lo;
@@ -10703,10 +10712,9 @@ extern "C" s32 VFiPFCODE_CP932_Unicode2OEM(s32 arg0, u32 *arg1) {
     }
     code = (hi << 8) + lo;
     if (code >= 0xff61 && code <= 0xff9f) {
-        w = code - 0x10000;
-        w += 0x140;
+        s32 v = code - 0x10000;
+        out[0] = v + 0x140;
         out[1] = 0;
-        out[0] = w;
         return fn_800A4BE8(1, 2);
     }
     if (code == 0x5f) {
@@ -16290,24 +16298,111 @@ extern "C" void fn_800C21D8(s32* arg0, s32* arg1) {
 #pragma pop
 extern "C" s32 lbl_8031D670[];
 extern "C" void fn_800C2590(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
-    arg2[0] = arg1[0] + (s32)(((s64)arg0[0] * (s64)lbl_8031D670[0]) >> 20);
-    *(s32 *)((u8 *)arg3 - 0) = *(s32 *)((u8 *)arg1 + 68) + (s32)(((s64)arg0[0] * (s64)lbl_8031D670[1]) >> 20);
-    arg2[64] = arg1[1] + (s32)(((s64)arg0[1] * (s64)lbl_8031D670[2]) >> 20);
-    *(s32 *)((u8 *)arg3 - 256) = *(s32 *)((u8 *)arg1 + 64) + (s32)(((s64)arg0[1] * (s64)lbl_8031D670[3]) >> 20);
-    arg2[128] = arg1[2] + (s32)(((s64)arg0[2] * (s64)lbl_8031D670[4]) >> 20);
-    *(s32 *)((u8 *)arg3 - 512) = *(s32 *)((u8 *)arg1 + 60) + (s32)(((s64)arg0[2] * (s64)lbl_8031D670[5]) >> 20);
-    arg2[192] = arg1[3] + (s32)(((s64)arg0[3] * (s64)lbl_8031D670[6]) >> 20);
-    *(s32 *)((u8 *)arg3 - 768) = *(s32 *)((u8 *)arg1 + 56) + (s32)(((s64)arg0[3] * (s64)lbl_8031D670[7]) >> 20);
-    arg2[256] = arg1[4] + (s32)(((s64)arg0[4] * (s64)lbl_8031D670[8]) >> 20);
-    *(s32 *)((u8 *)arg3 - 1024) = *(s32 *)((u8 *)arg1 + 52) + (s32)(((s64)arg0[4] * (s64)lbl_8031D670[9]) >> 20);
-    arg2[320] = arg1[5] + (s32)(((s64)arg0[5] * (s64)lbl_8031D670[10]) >> 20);
-    *(s32 *)((u8 *)arg3 - 1280) = *(s32 *)((u8 *)arg1 + 48) + (s32)(((s64)arg0[5] * (s64)lbl_8031D670[11]) >> 20);
-    arg2[384] = arg1[6] + (s32)(((s64)arg0[6] * (s64)lbl_8031D670[12]) >> 20);
-    *(s32 *)((u8 *)arg3 - 1536) = *(s32 *)((u8 *)arg1 + 44) + (s32)(((s64)arg0[6] * (s64)lbl_8031D670[13]) >> 20);
-    arg2[448] = arg1[7] + (s32)(((s64)arg0[7] * (s64)lbl_8031D670[14]) >> 20);
-    *(s32 *)((u8 *)arg3 - 1792) = *(s32 *)((u8 *)arg1 + 40) + (s32)(((s64)arg0[7] * (s64)lbl_8031D670[15]) >> 20);
-    arg2[512] = arg1[8] + (s32)(((s64)arg0[8] * (s64)lbl_8031D670[16]) >> 20);
-    *(s32 *)((u8 *)arg3 - 2048) = *(s32 *)((u8 *)arg1 + 36) + (s32)(((s64)arg0[8] * (s64)lbl_8031D670[17]) >> 20);
+    s32 *t = (s32 *)lbl_8031D670;
+    s32 a0 = arg0[0]; s32 c0 = *t++; s32 c1 = *t++;
+    arg2[0] = arg1[0] + (s32)(((s64)a0 * c0) >> 20);
+    arg3[0] = arg1[17] + (s32)(((s64)a0 * c1) >> 20);
+    s32 a1 = arg0[1]; s32 d0 = *t++; s32 d1 = *t++;
+    arg2[64] = arg1[1] + (s32)(((s64)a1 * d0) >> 20);
+    arg3[-64] = arg1[16] + (s32)(((s64)a1 * d1) >> 20);
+    s32 a2 = arg0[2]; s32 e0 = *t++; s32 e1 = *t++;
+    arg2[128] = arg1[2] + (s32)(((s64)a2 * e0) >> 20);
+    arg3[-128] = arg1[15] + (s32)(((s64)a2 * e1) >> 20);
+    s32 a3 = arg0[3]; s32 f0 = *t++; s32 f1 = *t++;
+    arg2[192] = arg1[3] + (s32)(((s64)a3 * f0) >> 20);
+    arg3[-192] = arg1[14] + (s32)(((s64)a3 * f1) >> 20);
+    s32 a4 = arg0[4]; s32 g0 = *t++; s32 g1 = *t++;
+    arg2[256] = arg1[4] + (s32)(((s64)a4 * g0) >> 20);
+    arg3[-256] = arg1[13] + (s32)(((s64)a4 * g1) >> 20);
+    s32 a5 = arg0[5]; s32 h0 = *t++; s32 h1 = *t++;
+    arg2[320] = arg1[5] + (s32)(((s64)a5 * h0) >> 20);
+    arg3[-320] = arg1[12] + (s32)(((s64)a5 * h1) >> 20);
+    s32 a6 = arg0[6]; s32 i0 = *t++; s32 i1 = *t++;
+    arg2[384] = arg1[6] + (s32)(((s64)a6 * i0) >> 20);
+    arg3[-384] = arg1[11] + (s32)(((s64)a6 * i1) >> 20);
+    s32 a7 = arg0[7]; s32 j0 = *t++; s32 j1 = *t++;
+    arg2[448] = arg1[7] + (s32)(((s64)a7 * j0) >> 20);
+    arg3[-448] = arg1[10] + (s32)(((s64)a7 * j1) >> 20);
+    s32 a8 = arg0[8]; s32 k0 = *t++; s32 k1 = *t++;
+    arg2[512] = arg1[8] + (s32)(((s64)a8 * k0) >> 20);
+    arg3[-512] = arg1[9] + (s32)(((s64)a8 * k1) >> 20);
+}
+
+extern u32 lbl_8031D6B8[];
+extern "C" void fn_800C280C(s32 *a0, s32 *a1, s32 *o2, s32 *o3) {
+    s32 *t = (s32 *)lbl_8031D6B8;
+    s32 c0 = t[0];
+    s32 a = a0[0];
+    s32 b = a1[0];
+    s32 p = (s32)(((s64)a * c0) >> 20);
+    s32 c1 = t[1];
+    s32 q = (s32)(((s64)a * c1) >> 20);
+    o2[0] = p + b;
+    o3[0] = q - a1[17];
+    c0 = t[2];
+    a = a0[1];
+    b = a1[1];
+    p = (s32)(((s64)a * c0) >> 20);
+    c1 = t[3];
+    q = (s32)(((s64)a * c1) >> 20);
+    o2[64] = p - b;
+    o3[-64] = q + a1[16];
+    c0 = t[4];
+    a = a0[2];
+    b = a1[2];
+    p = (s32)(((s64)a * c0) >> 20);
+    c1 = t[5];
+    q = (s32)(((s64)a * c1) >> 20);
+    o2[128] = p + b;
+    o3[-128] = q - a1[15];
+    c0 = t[6];
+    a = a0[3];
+    b = a1[3];
+    p = (s32)(((s64)a * c0) >> 20);
+    c1 = t[7];
+    q = (s32)(((s64)a * c1) >> 20);
+    o2[192] = p - b;
+    o3[-192] = q + a1[14];
+    c0 = t[8];
+    a = a0[4];
+    b = a1[4];
+    p = (s32)(((s64)a * c0) >> 20);
+    c1 = t[9];
+    q = (s32)(((s64)a * c1) >> 20);
+    o2[256] = p + b;
+    o3[-256] = q - a1[13];
+    c0 = t[10];
+    a = a0[5];
+    b = a1[5];
+    p = (s32)(((s64)a * c0) >> 20);
+    c1 = t[11];
+    q = (s32)(((s64)a * c1) >> 20);
+    o2[320] = p - b;
+    o3[-320] = q + a1[12];
+    c0 = t[12];
+    a = a0[6];
+    b = a1[6];
+    p = (s32)(((s64)a * c0) >> 20);
+    c1 = t[13];
+    q = (s32)(((s64)a * c1) >> 20);
+    o2[384] = p + b;
+    o3[-384] = q - a1[11];
+    c0 = t[14];
+    a = a0[7];
+    b = a1[7];
+    p = (s32)(((s64)a * c0) >> 20);
+    c1 = t[15];
+    q = (s32)(((s64)a * c1) >> 20);
+    o2[448] = p - b;
+    o3[-448] = q + a1[10];
+    c0 = t[16];
+    a = a0[8];
+    b = a1[8];
+    p = (s32)(((s64)a * c0) >> 20);
+    c1 = t[17];
+    q = (s32)(((s64)a * c1) >> 20);
+    o2[512] = p + b;
+    o3[-512] = q - a1[9];
 }
 
 extern "C" void fn_800C2A88(volatile s32 *a, volatile s32 *b, volatile s32 *c, volatile s32 *d) {
@@ -24006,14 +24101,16 @@ extern "C" void reset_btn__Q210homebutton10HomeButtonFv(void *arg0) {
     u8 *self=(u8*)arg0;
     register void *pane;
     register u8 *cursor=self;
-    s32 i=0, j;
+    register s32 i=0;
+    s32 j;
     for(;i<*(s32*)(self+8);cursor+=4,i++) {
-        if(*(s32*)(cursor+0x1c)) {
+        if(*(s32*)(cursor+0x1c)!=0) {
             s32 *entry=lbl_802F4528;
             s32 count=*(s32*)(self+0xc);
             for(j=0;j<count;entry+=2,j++) {
-                if(i != entry[0]) continue;
-                if(entry[1]==2) goto found;
+                if(i==entry[0] && entry[1]==2) {} else goto next_inner;
+                goto found;
+next_inner: continue;
             }
             j=-1;
 found:
@@ -24023,20 +24120,27 @@ found:
             *(s32*)(cursor+0x1c)=0;
         }
     }
-    if(*(s32*)(self+0x1c+*(s32*)(self+8)*4)) {
+    if(*(s32*)(self+0x1c+*(s32*)(self+8)*4)!=0) {
         pane=*(void**)(self+0x3f0);
         fn_800CF3EC(pane);
         *(s32*)((u8*)pane+0x14)=1;
         *(s32*)(self+0x1c+(*(s32*)(self+8)+1)*4)=0;
     }
-    if(*(s32*)(self+0x1c+(*(s32*)(self+8)+1)*4)) {
+    if(*(s32*)(self+0x1c+(*(s32*)(self+8)+1)*4)!=0) {
         if(*(s32*)self==1) {
             if(*(s32*)(self+0x18)==0) {
                 s32 *entry=lbl_802F4588;
-                j=0; for(s32 k=0;k<37;k++,entry+=4,j++) {
- if(entry[0]==5 && entry[1]==20) goto found20;
- j++; if(entry[2]==5 && entry[3]==20) goto found20;
-}
+                s32 k;
+                j=0;
+                for(k=0;k<0x25;k++,entry+=4,j++) {
+                    if(entry[0]==5 && entry[1]==0x14) {} else goto second20;
+                    goto found20;
+second20:
+                    j++;
+                    if(entry[2]==5 && entry[3]==0x14) {} else goto third20;
+                    goto found20;
+third20: continue;
+                }
                 j=-1;
 found20:
                 pane=*(void**)(self+0x298+j*4);
@@ -24046,10 +24150,17 @@ found20:
             }
         } else {
             s32 *entry=lbl_802F4588;
-            j=0; for(s32 k=0;k<37;k++,entry+=4,j++) {
- if(entry[0]==5 && entry[1]==3) goto found3;
- j++; if(entry[2]==5 && entry[3]==3) goto found3;
-}
+            s32 k;
+            j=0;
+            for(k=0;k<0x25;k++,entry+=4,j++) {
+                if(entry[0]==5 && entry[1]==3) {} else goto second3;
+                goto found3;
+second3:
+                j++;
+                if(entry[2]==5 && entry[3]==3) {} else goto third3;
+                goto found3;
+third3: continue;
+            }
             j=-1;
 found3:
             pane=*(void**)(self+0x298+j*4);
