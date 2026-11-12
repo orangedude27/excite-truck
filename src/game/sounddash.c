@@ -4,6 +4,12 @@
 // auto/text_8020C114_.c pending a promotion pass.
 extern int fn_8020A76C(void);
 extern char *fn_8020A774(int);
+extern void fn_8020BCE4(void);
+extern void fn_802E30C8(const char *, ...);
+extern int lbl_8055EE24, lbl_8055EE28;
+extern float lbl_805632C8, lbl_805632CC, lbl_805632D0;
+extern char lbl_8033C5B4[];
+extern char lbl_8033C5CC[];
 extern void fn_8023895C(void);
 extern void fn_802389E4(void);
 extern void fn_80238A74(int, int, const char *, int);
