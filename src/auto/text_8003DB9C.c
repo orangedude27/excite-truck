@@ -3342,6 +3342,11 @@ typedef union _GXChanCtrl {
     } f;
 } GXChanCtrl;
 
+/* Writes the XF COLORnCNTRL word of one color or alpha channel: whether it is
+   lit, where its ambient and material colors come from, which lights reach it
+   and how its diffuse/attenuation term is computed. GX_COLOR0A0 and GX_COLOR1A1
+   copy the word into ALPHA0CNTRL/ALPHA1CNTRL too. The channel's dirty bit makes
+   __GXSetDirtyState resend the words to the XF before the next draw. */
 void GXSetChanCtrl(GXChannelID chan, GXBool enable, GXColorSrc ambSrc, GXColorSrc matSrc,
                    GXLightID lightMask, GXDiffuseFn diffFn, GXAttnFn attnFn) {
     GXChanCtrl u;
