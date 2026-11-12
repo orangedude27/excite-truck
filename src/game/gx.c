@@ -2506,6 +2506,26 @@ void fn_802D3420(void) {
 }
 #pragma pop
 
+// Depth queries, pool at 0x804C9984 (lbl_804C9984). fn_802D39A4 takes a free
+// query, fn_802D3A5C projects a world point into it (pixel x/y + its 24-bit
+// fixed point depth) and queues it for a depth read, and fn_802D3900 reads the
+// depth back for every queued query. fn_802D37E4 releases them all.
+typedef struct {
+    int x;                 // +0x00 screen pixel column of the point
+    int y;                 // +0x04 screen pixel row of the point
+    unsigned int z;        // +0x08 point depth, 24-bit fixed point
+    unsigned char used;    // +0x0C query is taken from the pool
+    unsigned char visible; // +0x0D point is nearer than the depth at its pixel
+    float step;            // +0x10 fade step toward the read visibility
+    float fade;            // +0x14 faded visibility, 0..1
+} ZQuery;
+
+typedef struct {
+    ZQuery query[64];      // +0x000 the pool
+    ZQuery *pending[64];   // +0x600 queries waiting for their depth read
+    int pendingCount;      // +0x700 entries in pending
+} ZQueryPool;
+
 #pragma dont_inline reset
 void fn_802D37E4(void) {
     unsigned char *p = (unsigned char *)lbl_804C9984;
