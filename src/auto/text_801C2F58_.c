@@ -226,6 +226,7 @@ s32 fn_801C3524(char *who) {
 
 #pragma auto_inline off
 s32 fn_801C3954(s32 arg0) {
+    /* Parse a space-separated list of "who" tokens into a combined player mask. */
     char buf[0x100];
     char *token;
     char *p;
@@ -235,13 +236,13 @@ s32 fn_801C3954(s32 arg0) {
     p = token;
     result = 0;
     do {
-        s32 found = 0;
+        s32 isLastToken = 0;
         char c;
         while ((c = *p) != ' ' && c != 0) p++;
-        if (c == 0) found = 1;
+        if (c == 0) isLastToken = 1;
         *p = 0;
         result |= fn_801C3524(token);
-        if (found) break;
+        if (isLastToken) break;
         p++;
         token = p;
     } while (1);
