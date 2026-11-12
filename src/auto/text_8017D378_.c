@@ -423,24 +423,100 @@ done:
 #pragma push
 #pragma processor 750
 #pragma ppc_psq_save off
+/* One step of the ball body (vtable slot 0x1C of lbl_80331D18).  While the game flags keep
+   the simulation off the body is kept glued to the object it follows; when it has not been
+   placed yet it is dropped on a random spot beside a live target, upright and lifted off
+   that target's height.  Afterwards the ground under it is looked up: with none below the
+   body asks to be repositioned, and the rigid-body step runs. */
 void fn_8017DCB4(void *arg0) {
- unsigned char *p=(unsigned char*)arg0; struct BC8017DCB4{float b[9]; float c[3];} bc; float v2[3],v1[3]; int v3[3]; float d[3],a[2]; unsigned tag; int mode; int fl; int x; float z;
- extern void fn_8017B164(void); extern void fn_8017D380(float*,int); extern void fn_8017A580(void*);
- extern float fn_8017D378(void); extern void *fn_8017960C(int); extern void *fn_801B2EC0(int);
- extern void fn_801602B0(void*); extern void fn_8017E3C4(void*,void*,short*);
- extern void fn_80144DC8(void*); extern void fn_8017E388(void*); extern void fn_80160230(void*,void*);
- extern float fn_8017E380(); extern void *fn_801602B4(void);
- extern void GXInitLightAttnA_80144B44(float*,float,float,float);
- extern void fn_8017DEE0(void*,long,long,short,float); extern int fn_801E9E30(void*,int*);
- extern void fn_8017B81C(void*);
- struct V3I8017DCB4{int x,y,z;};
- if(p[0x1FC]) { fn_8017B164(); fn_8017D380(v1,*(int*)(p+0x1F8)); *(float*)(p+0x60)=v1[0]; *(float*)(p+0x64)=v1[1]; *(float*)(p+0x68)=v1[2]; fn_8017A580(arg0); p[0x1E9]=0; p[0x1FC]=0; }
- if(*(int*)(p+0x1F0)==0 && *(float*)(p+0x1F4)<fn_8017D378()) { tag=*(unsigned*)((char*)fn_8017960C(*(int*)(p+0x1F8))+0x10); mode=1; if(tag==0x41434152) mode=2; *(int*)(p+0x1F0)=mode; }
- x=lbl_8055D430; fl=0; if((x&1)&&(x&0x88)) fl=1;
- if(fl==0) { fn_8017D380(v2,*(int*)(p+0x1F8)); *(float*)(p+0x60)=v2[0]; *(float*)(p+0x64)=v2[1]; *(float*)(p+0x68)=v2[2]; fn_8017A580(arg0); z=lbl_80561BE0; *(float*)(p+0x118)=z; *(float*)(p+0x11C)=z; *(float*)(p+0x120)=z; }
- if(!p[0x1FE]) { x=lbl_8055D430; fl=0; if((x&1)&&(x&0x80)) fl=1;
- if(fl!=0) { void*obj=fn_801B2EC0(*(int*)(p+0x1F8)); void*r=((struct VT8017DCB4*)obj)->f2(); if(*(int*)((char*)r+0x24)==0) { short angle; float f31; float t; fn_801602B0(a); fn_8017E3C4(arg0,a,&angle); fn_80144DC8(bc.b); fn_8017E388(bc.b); fn_80160230(bc.c,a); f31=fn_8017E380(arg0); fn_8017960C(*(int*)(p+0x1F8)); t=*(float*)((char*)fn_801602B4()+0x28); bc.c[1]=t+f31; GXInitLightAttnA_80144B44(d,lbl_80561BE0,lbl_80561BE0,lbl_80561BE0); fn_8017DEE0(arg0,(long)bc.b,(long)d,angle,lbl_80561BE0); } } }
- *(struct V3I8017DCB4*)v3=*(struct V3I8017DCB4*)(p+0x60); if(fn_801E9E30(p+0x6C,v3)==0)p[0x1FC]=1; fn_8017B81C(arg0);
+    BallBody *body = (BallBody *)arg0;
+    struct BodyTransform { f32 rotation[9]; f32 translation[3]; } xf; /* one 12-float transform */
+    f32 idlePos[3], spawnPos[3];
+    WordVec3 posWords;
+    f32 attn[3];
+    Vec2 spot;
+    unsigned tag;
+    int mode;
+    int allowed;
+    int flags;
+    float zero;
+
+    extern void fn_8017B164(void);                  /* drops the body's contacts; object in r3 */
+    extern void fn_8017D380(float *, int);          /* the spawn point of a target id */
+    extern void fn_8017A580(void *);                /* refreshes the body's world transform */
+    extern float fn_8017D378(void);                 /* the clock the body's timers run on */
+    extern void *fn_8017960C(int);                  /* scene object by id; its tag is at +0x10 */
+    extern void *fn_801B2EC0(int);                  /* the target's vehicle by id */
+    extern void fn_801602B0(void *);                /* no-op */
+    extern void fn_8017E3C4(void *, void *, short *); /* a random spot beside the target */
+    extern void fn_80144DC8(void *);                /* no-op */
+    extern void fn_8017E388(void *);                /* identity transform, all 12 floats */
+    extern void fn_80160230(void *, void *);        /* (x, const, z) from an (x, z) pair */
+    extern float fn_8017E380();                     /* the height the body floats at */
+    extern void *fn_801602B4(void);                 /* object+0x3C; r3 comes from fn_8017960C */
+    extern void GXInitLightAttnA_80144B44(float *, float, float, float); /* writes three floats */
+    extern void fn_8017DEE0(void *, long, long, short, float); /* move the body to a transform */
+    extern int fn_801E9E30(void *, void *);         /* the ground under a point */
+    extern void fn_8017B81C(void *);                /* the rigid-body step */
+
+    if (body->needsReposition) {
+        fn_8017B164();
+        fn_8017D380(spawnPos, body->targetId);
+        body->position.x = spawnPos[0];
+        body->position.y = spawnPos[1];
+        body->position.z = spawnPos[2];
+        fn_8017A580(arg0);
+        body->moved = 0;
+        body->needsReposition = 0;
+    }
+    if (body->followMode == 0 && body->decideTime < fn_8017D378()) {
+        tag = *(unsigned *)((char *)fn_8017960C(body->targetId) + 0x10);
+        mode = 1;
+        if (tag == FOURCC_ACAR) mode = 2;
+        body->followMode = mode;
+    }
+    flags = lbl_8055D430;
+    allowed = 0;
+    if ((flags & 1) && (flags & 0x88)) allowed = 1;
+    if (allowed == 0) { /* not being simulated: stay on top of the target */
+        fn_8017D380(idlePos, body->targetId);
+        body->position.x = idlePos[0];
+        body->position.y = idlePos[1];
+        body->position.z = idlePos[2];
+        fn_8017A580(arg0);
+        zero = lbl_80561BE0;
+        body->velocity.x = zero;
+        body->velocity.y = zero;
+        body->velocity.z = zero;
+    }
+    if (!body->placed) {
+        flags = lbl_8055D430;
+        allowed = 0;
+        if ((flags & 1) && (flags & 0x80)) allowed = 1;
+        if (allowed != 0) {
+            void *vehicle = fn_801B2EC0(body->targetId);
+            void *state = ((struct VT8017DCB4 *)vehicle)->f2();
+            if (*(int *)((char *)state + 0x24) == 0) { /* the target is still in play */
+                short groundId;
+                float lift;
+                float targetY;
+                fn_801602B0(&spot);
+                fn_8017E3C4(arg0, &spot, &groundId);
+                fn_80144DC8(xf.rotation);
+                fn_8017E388(xf.rotation);
+                fn_80160230(xf.translation, &spot); /* upright, on that spot */
+                lift = fn_8017E380(arg0);
+                fn_8017960C(body->targetId);
+                targetY = *(float *)((char *)fn_801602B4() + 0x28); /* the target's height */
+                xf.translation[1] = targetY + lift;
+                GXInitLightAttnA_80144B44(attn, lbl_80561BE0, lbl_80561BE0, lbl_80561BE0);
+                fn_8017DEE0(arg0, (long)xf.rotation, (long)attn, groundId, lbl_80561BE0);
+            }
+        }
+    }
+    posWords = *(const WordVec3 *)&body->position;
+    if (fn_801E9E30(&body->groundId, &posWords) == 0) body->needsReposition = 1;
+    fn_8017B81C(arg0);
 }
 #pragma pop
 
