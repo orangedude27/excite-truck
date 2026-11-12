@@ -2213,12 +2213,15 @@ read_valid:
     goto done;
 }
 
-s32 fn_8011A7CC(DVDFileInfo *info) {
-    s32 *p = (s32 *)info;
+s32 fn_8011A7CC(DVDFileInfo *fileInfo) {
+    /* Check DVD drive state for this file: return 0 if an operation/error is
+     * already flagged (+0x20/+0x50), on status 0 invoke fn_8011A6A0, on certain
+     * error statuses set the error flag at +0x20, and return the value at +0x24. */
+    s32 *file = (s32 *)fileInfo;
     s32 status;
 
-    if (p[0x20 / 4] != 0) return 0;
-    if (p[0x50 / 4] != 0) return 0;
+    if (file[0x20 / 4] != 0) return 0;
+    if (file[0x50 / 4] != 0) return 0;
     status = DVDGetDriveStatus();
     if (status < 3) {
         if (status == 0) goto call_callback;
@@ -2232,12 +2235,12 @@ s32 fn_8011A7CC(DVDFileInfo *info) {
     goto done;
 
 call_callback:
-    fn_8011A6A0(info);
+    fn_8011A6A0(fileInfo);
     goto done;
 set_error:
-    p[0x20 / 4] = 1;
+    file[0x20 / 4] = 1;
 done:
-    return p[0x24 / 4];
+    return file[0x24 / 4];
 }
 
 #pragma push
