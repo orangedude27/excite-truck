@@ -1558,32 +1558,33 @@ u32 WPADGetDataFormat(s32 chan) {
     return format;
 }
 
+/* Sets the WPAD data report format for a channel; queues a format change when needed and returns WPAD status. */
 s32 WPADSetDataFormat(s32 chan, u32 format) {
-    WPADCB* p = lbl_8038F4F0[chan];
+    WPADCB* cb = lbl_8038F4F0[chan];
     s32 status;
     BOOL enabled;
-    BOOL handshake;
-    u32 currFormat;
+    BOOL handshakeFinished;
+    u32 currentFormat;
 
     enabled = OSDisableInterrupts();
-    handshake = *(BOOL*)((u8*)p + 0x81C);
-    status = *(s32*)((u8*)p + 0x7FC);
-    currFormat = *(u32*)((u8*)p + 0x7F8);
+    handshakeFinished = *(BOOL*)((u8*)cb + 0x81C);
+    status = *(s32*)((u8*)cb + 0x7FC);
+    currentFormat = *(u32*)((u8*)cb + 0x7F8);
     OSRestoreInterrupts(enabled);
 
     if (status == WPAD_ERR_NO_CONTROLLER) {
         goto _end;
     }
-    if (!handshake) {
+    if (!handshakeFinished) {
         status = WPAD_ERR_COMMUNICATION_ERROR;
         goto _end;
     }
-    if (currFormat != format) {
-        if (!fn_80063564(&p->stdCmdQueue, format, NULL)) {
+    if (currentFormat != format) {
+        if (!fn_80063564(&cb->stdCmdQueue, format, NULL)) {
             status = WPAD_ERR_COMMUNICATION_ERROR;
         } else {
             enabled = OSDisableInterrupts();
-            *(u32*)((u8*)p + 0x7F8) = format;
+            *(u32*)((u8*)cb + 0x7F8) = format;
             OSRestoreInterrupts(enabled);
             status = WPAD_ERR_OK;
         }
