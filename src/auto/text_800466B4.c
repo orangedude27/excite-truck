@@ -657,6 +657,13 @@ void clamp_stick_cross(void *arg0, void *arg1) {
     }
 }
 
+/* The SDK's check_device(chan, kp) (see src/review_KPAD.c:1236); this unit's
+   symbol name is a machine-draft misnomer. Ask WPAD which device chan has now and
+   bring kp in step with it: stop sampling when the controller went away, and ask
+   WPAD for pointer (DPD) or plain sampling again when the device or the DPD state
+   no longer matches what kp recorded. Any of those changes what the next sample
+   holds, so kp is reset and 1 is returned to tell the caller to drop the sample it
+   was building; -1 means chan has no usable device. */
 s32 read_kpad_stick(s32 chan, KPADInsideStatus *kp) {
     BOOL irqState;
     s32 devType;
