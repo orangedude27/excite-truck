@@ -911,7 +911,7 @@ extern "C" void* fn_80158218(void* arg0, s32 arg1) {
  return arg0;
 }
 
-extern "C" s32 *fn_80158280(void *arg0, s32 *arg1) {
+extern "C" void *fn_80158280(void *arg0, s32 *arg1) {
     s32 val = *arg1;
     s32 idx = ((s32 *)arg0)[1];
     s32 *base = *(s32 **)arg0;
@@ -1624,15 +1624,18 @@ extern "C" s32 fn_80159E6C(void) {
 }
 
 extern "C" void* fn_80159E74(void* arg0, s32 arg1) {
+    /* Destructor-like cleanup: installs vtable lbl_8032EFA8, optionally destroys the
+     * owned subobject at +0x2D8, clears the embedded subobject at +8, and frees when
+     * arg1 > 0. */
     if (arg0 != 0) {
-        void* r0 = *(void**)((char*)arg0 + 0x2D8);
+        void* owned = *(void**)((char*)arg0 + 0x2D8);
         *(void**)arg0 = lbl_8032EFA8;
-        if (r0 != 0) {
-            if (r0 != 0) {
-                struct Dummy {
-                    virtual void f0(s32);
+        if (owned != 0) {
+            if (owned != 0) {
+                struct VTable {
+                    virtual void destroy(s32);
                 };
-                ((Dummy*)r0)->f0(1);
+                ((VTable*)owned)->destroy(1);
             }
         }
         if (arg0 != 0) {
@@ -4238,8 +4241,8 @@ extern "C" void fn_80159624(void *tracker, void *truck) {
     }
 }
 extern "C" int fn_80159708(void *arg0) {
-    struct S { char pad[0x25C]; float v; };
-    return (int)((S *)arg0)->v;
+    float v = *(float *)((char *)arg0 + 0x25C);
+    return (int)v;
 }
 #pragma pop
 class Fn8015E338Item {
