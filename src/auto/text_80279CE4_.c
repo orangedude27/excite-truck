@@ -138,6 +138,7 @@ void fn_80279D40(void *arg0, int arg1) {
     f[68] = lbl_80564120; f[69] = lbl_80564120; f[70] = lbl_80564120;
     f[71] = lbl_8056418C; f[72] = lbl_80564190; f[73] = lbl_80564120; f[74] = lbl_80564194;
 }
+#pragma pop
 
 #pragma cplusplus on
 void fn_80279F58(void *arg0, void *arg1) {
