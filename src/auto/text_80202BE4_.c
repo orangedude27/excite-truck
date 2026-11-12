@@ -107,24 +107,29 @@ void fn_80202BFC(s32 arg0) {
     typedef union { f32 f; s32 s; } WorkValue;
     typedef struct { s32 pair2[2]; s32 pair1[2]; u16 table[6]; u16 pad[2]; WorkValue values[24]; } Work;
     Work work;
-    register f64 f31 = lbl_805630D4;
-    register f64 f30 = lbl_805630D0;
-    register f64 f29 = lbl_805630CC;
-    register f64 f28 = lbl_805630C8;
-    register volatile u16 *table = lbl_802F9D48;
+    register f32 f31;
+    register f32 f30;
+    register f32 f29;
+    register f32 f28;
+    register volatile u16 *table;
     register s32 *p1;
     register s32 *p2;
     register u32 i;
     u16 v0, v1, v2, v3, v4, v5;
     s32 pair;
 
-    work.pair1[0] = lbl_805630B8;
+    work.pair1[0] = *(volatile s32 *)&lbl_805630B8;
+    f28 = lbl_805630C8;
+    table = (volatile u16 *)lbl_802F9D48;
     work.pair1[1] = arg0;
-    work.pair2[0] = lbl_805630C0;
-    work.pair2[1] = lbl_805630C4;
+    f29 = lbl_805630CC;
+    i = 0;
+    work.pair2[0] = *(volatile s32 *)&lbl_805630C0;
+    f30 = lbl_805630D0;
+    work.pair2[1] = *(volatile s32 *)&lbl_805630C4;
+    f31 = lbl_805630D4;
     p1 = work.pair1;
     p2 = work.pair2;
-    i = 0;
     do {
         fn_802C8C04(*p1);
         v0 = table[0]; v1 = table[1]; v2 = table[2];
@@ -603,7 +608,6 @@ void fn_802039CC(s32 arg0, struct lbl_80488B88_t* arg1) {
 
     lbl_8055ED1C = -1;
     fn_802C8BD0(-1);
-    dest = &lbl_80488B88;
     w0 = arg1->w[0];
     w1 = arg1->w[1];
     w2 = arg1->w[2];
@@ -616,6 +620,7 @@ void fn_802039CC(s32 arg0, struct lbl_80488B88_t* arg1) {
     w9 = arg1->w[9];
     w10 = arg1->w[10];
     w11 = arg1->w[11];
+    dest = &lbl_80488B88;
     dest->w[0] = w0;
     dest->w[1] = w1;
     dest->w[2] = w2;
@@ -637,7 +642,6 @@ void fn_80203A88(void* arg0, s32 arg1, unk_80203A88_dest* arg2) {
     f32 var_f1;
     f32 var_f2;
     f32 var_f3;
-
     if (fn_80202BE4() == 0) {
         fn_802D3050(1);
         fn_802D306C(0x5A);
@@ -749,35 +753,35 @@ void fn_80203D84(s32* arg0) {
 
 #pragma scheduling invalid_target
 void fn_80203DC8(void) {
-    struct lbl_8048897C_t* var_r30;
-    struct lbl_8048897C_t* var_r31;
-    s32 var_r29;
-    s32 var_r28;
-    s32 temp;
+    /* Release global texture/resource handles, reset cached resources, and clear all entries in the global resource list. */
+    struct lbl_8048897C_t *resourceListBase;
+    struct lbl_8048897C_t *resourceList;
+    s32 byteOffset;
+    s32 index;
+    s32 savedResource;
 
-    temp = lbl_8055ECFC;
-    *(volatile u8*)&lbl_8055ED18 = 0;
-    if (temp != -2) {
+    savedResource = lbl_8055ECFC;
+    *(volatile u8 *)&lbl_8055ED18 = 0;
+    if (savedResource != -2) {
         fn_802CB228();
         lbl_8055ECFC = -2;
     }
     fn_80203D84(&lbl_8055ED00);
     fn_80203D84(&lbl_8055ED04);
     fn_80203D84(&lbl_8055ED0C);
-    ((void(*)(void*))fn_802D050C)(0);
+    ((void (*)(void *))fn_802D050C)(0);
     fn_802D30DC(0);
-    var_r30 = (struct lbl_8048897C_t*)((s32)&lbl_8048897C - 0x8000);
-    var_r31 = (struct lbl_8048897C_t*)((s32)var_r30 + 0x8000);
-    var_r28 = 0;
-    var_r29 = 0;
-    while (var_r28 < var_r31->count) {
-        fn_80203D84((s32*)((u8*)lbl_8048897C.ptr + var_r29));
-        var_r29 += 8;
-        var_r28 += 1;
+    resourceListBase = (struct lbl_8048897C_t *)((s32)&lbl_8048897C - 0x8000);
+    resourceList = (struct lbl_8048897C_t *)((s32)resourceListBase + 0x8000);
+    index = 0;
+    byteOffset = 0;
+    while (index < resourceList->count) {
+        fn_80203D84((s32 *)((u8 *)lbl_8048897C.ptr + byteOffset));
+        byteOffset += 8;
+        index += 1;
     }
-    var_r31->count = 0;
+    resourceList->count = 0;
 }
-#pragma scheduling on
 extern void fn_802D050C(void*);
 void fn_80203E88(void) {
     ((void (*)(void))fn_80203B20)();
