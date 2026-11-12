@@ -7,7 +7,10 @@
 
 #include <string.h>
 
-// Shared with OSInterrupt.c
+// Shared with the rest of the SDK's OSInterrupt.c, kept in
+// src/revolution/OS/OSInterruptRest.c: the MEM1 handler table, the helper that
+// rewrites one hardware group's interrupt-mask register, and the handler this
+// file installs for the external-interrupt exception.
 extern OSInterruptHandler* InterruptHandlerTable;
 extern u32 SetInterruptMask(u32 type, u32 mask);
 extern void ExternalInterruptHandler(u8 type, OSContext* ctx);
