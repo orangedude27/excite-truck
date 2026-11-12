@@ -2288,51 +2288,56 @@ extern void fn_8003773C(void);
 #define StateAlarm      lbl_80376AD0  // the DVD state timeout alarm
 #define ExecutingBlock  executing_8055D8C8 // block the driver is running
 
+// Callback for the cover-register read kicked off by fn_8003801C: it reads the
+// drive's cover/motor status and advances the state machine. If we were waiting
+// on the cover interrupt and the cover is now open it stops that wait and
+// re-enters the motor-standby path; if the cover just closed it hands over from
+// the timeout alarm to waiting on the cover interrupt.
 void fn_80037E94(void) {
     s32 zero = 0;
-    *(volatile s32 *)&lbl_8055D880 = zero;
-    if (*(volatile s32 *)&lbl_8055D874 != 0) {
+    *(volatile s32 *)&CoverRegPending = zero;
+    if (*(volatile s32 *)&AlarmInfo != 0) {
         if (!(fn_8003BB48() & 1)) {
-            OSCancelAlarm(&lbl_80376AD0);
-            *(volatile s32 *)&lbl_8055D874 = zero;
-            *(volatile s32 *)&lbl_8055D874 = zero;
-            if ((u32)*(volatile s32 *)&lbl_8055D8BC == 3) lbl_8055D87C = 1;
+            OSCancelAlarm(&StateAlarm);
+            *(volatile s32 *)&AlarmInfo = zero;
+            *(volatile s32 *)&AlarmInfo = zero;
+            if ((u32)*(volatile s32 *)&DriveCommand == 3) DiskChanged = 1;
             if ((u32)MotorState_8055D8A8 == 2) {
-                if (executing_8055D8C8 != 0) *(s32 *)((u8 *)executing_8055D8C8 + 0xC) = 0xC;
+                if (ExecutingBlock != 0) *(s32 *)((u8 *)ExecutingBlock + 0xC) = 0xC;
             } else {
                 DVDLowMaskCoverInterrupt();
-                if (executing_8055D8C8 != 0) {
-                    *(s32 *)((u8 *)executing_8055D8C8 + 0xC) = 3;
+                if (ExecutingBlock != 0) {
+                    *(s32 *)((u8 *)ExecutingBlock + 0xC) = 3;
                     fn_8003773C();
                     return;
                 }
-                lbl_8055D85C = 7;
+                StateToChange = 7;
             }
         }
     } else {
         if (fn_8003BB48() & 1) {
-            lbl_8055D870 = zero;
-            *(volatile s32 *)&lbl_8055D874 = 1;
-            if ((u32)MotorState_8055D8A8 == 2) *(s32 *)((u8 *)executing_8055D8C8 + 0xC) = 0xC;
-            else *(s32 *)((u8 *)executing_8055D8C8 + 0xC) = 5;
+            Transferring = zero;
+            *(volatile s32 *)&AlarmInfo = 1;
+            if ((u32)MotorState_8055D8A8 == 2) *(s32 *)((u8 *)ExecutingBlock + 0xC) = 0xC;
+            else *(s32 *)((u8 *)ExecutingBlock + 0xC) = 5;
             return;
         }
         if (fn_8003BB48() & 4) {
-            OSCancelAlarm(&lbl_80376AD0);
-            lbl_8055D870 = zero;
+            OSCancelAlarm(&StateAlarm);
+            Transferring = zero;
             fn_8003BCDC(zero);
-            *(volatile s32 *)&lbl_8055D874 = zero;
-            if ((u32)*(volatile s32 *)&lbl_8055D8BC == 3) lbl_8055D87C = 1;
+            *(volatile s32 *)&AlarmInfo = zero;
+            if ((u32)*(volatile s32 *)&DriveCommand == 3) DiskChanged = 1;
             if ((u32)MotorState_8055D8A8 == 2) {
-                if (executing_8055D8C8 != 0) *(s32 *)((u8 *)executing_8055D8C8 + 0xC) = 0xC;
+                if (ExecutingBlock != 0) *(s32 *)((u8 *)ExecutingBlock + 0xC) = 0xC;
             } else {
                 DVDLowMaskCoverInterrupt();
-                if (executing_8055D8C8 != 0) {
-                    *(s32 *)((u8 *)executing_8055D8C8 + 0xC) = 3;
+                if (ExecutingBlock != 0) {
+                    *(s32 *)((u8 *)ExecutingBlock + 0xC) = 3;
                     fn_8003773C();
                     return;
                 }
-                lbl_8055D85C = 7;
+                StateToChange = 7;
             }
         }
     }
