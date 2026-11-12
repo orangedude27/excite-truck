@@ -1126,6 +1126,11 @@ void fn_801F383C(void *arg0, int arg1) {
     *(char *)((char *)arg0 + 4) = 1;
 }
 
+/* One 4-byte word of a render parameter block's raw 16-byte value field (the
+   field at +0x2C that fn_801F1CE8 returns), addressed byte by byte so its byte
+   order can be flipped. */
+struct ValueWordBytes { unsigned char b[4]; };
+
 void fn_801F387C(void *unused, int arg1) {
     extern int *fn_801F1CE8(int);
     unsigned char *p = (unsigned char *)fn_801F1CE8(arg1);
