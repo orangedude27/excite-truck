@@ -12799,6 +12799,7 @@ void btm_sec_connected(UINT8 *bda, UINT16 handle, UINT8 status, UINT8 enc_mode) 
 }
 
 tBTM_STATUS btm_sec_disconnect(UINT16 handle, UINT8 reason) {
+    // Requests HCI disconnect for a security device record, storing reason when disconnect is deferred and restoring state on failure.
     tBTM_SEC_DEV_REC *p_dev_rec;
     UINT8 old_state;
 
