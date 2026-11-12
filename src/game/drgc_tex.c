@@ -589,8 +589,8 @@ void *fn_802D8A84(void *arg0, void *arg1) {
     int count;
     char *dst;
     unsigned char ch;
-    int height;
     int width;
+    int height;
     int bytes;
     int format;
 
@@ -786,6 +786,7 @@ extern unsigned char lbl_8055FD24;
 extern unsigned int lbl_8055FD30;
 void fn_802D9160(void *arg0) {
     char *obj = (char *)arg0;
+    /* Bind a texture (and optional secondary texture/T LUT) to GX state and record it as the active primary texture. */
     fn_802D6C68();
     lbl_8055FE18 = arg0;
     fn_802CFF5C((void *)(*(unsigned int *)(obj + 0xE0) | (lbl_8055FD1C & ~0x14E)));
