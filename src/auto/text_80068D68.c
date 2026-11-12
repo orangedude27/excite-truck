@@ -2399,16 +2399,19 @@ void fn_8006B044(tBTM_VSC_CMPL *arg0) {
     fn_8006B330();
 }
 
-void fn_8006B26C(tBTM_VSC_CMPL *arg0) {
-    extern u8 lbl_8055DC39;
-    extern u8 lbl_8055DC3A;
-    extern u8 lbl_80313600[];
-    extern void fn_8006B330(void);
+/* Continuation callback for the Nintendo BT install-patch VSC (0xFC4F): sends the
+ * next chunk (up to 0x13 entries * 0xD bytes each) from the patch data table,
+ * tracking progress in the sent/total counters, and completes when done. */
+void fn_8006B26C(tBTM_VSC_CMPL *p_vsc_cmpl) {
+    extern u8 lbl_8055DC39; /* sInstallPatchSentCount */
+    extern u8 lbl_8055DC3A; /* sInstallPatchTotalCount */
+    extern u8 lbl_80313600[]; /* sInstallPatchData */
+    extern void fn_8006B330(void); /* WUDiInstallPatchComplete */
     s32 count;
     s32 size;
     u8 packet[0x100];
 
-    if (arg0 != 0) {
+    if (p_vsc_cmpl != 0) {
         if (lbl_8055DC3A == lbl_8055DC39) {
             fn_8006B330();
             return;
@@ -6077,22 +6080,22 @@ extern u8 bta_hh_tod_spt(void *, u8);
 void bta_hh_sdp_cback(s32 arg0, u16 arg1, void *arg2) {
     u8 sp9;
     u8 sp8 = 0x10;
-    register void *temp_r31 = *(void **)(lbl_803C0D48 + 0x210);
-    register void *var_r30 = arg2;
-    register u16 var_r29 = arg1;
+    void *temp_r31 = *(void **)(lbl_803C0D48 + 0x210);
+    void *var_r30 = arg2;
+    int var_r29 = arg1;
     if (arg0 == 0) {
         if (*(u8 *)((u8 *)temp_r31 + 0x14) != 0) {
             var_r29 |= 0x8000;
         }
         if (lbl_8055DC80 >= 4) {
-            ((void (*)(u32, void *, void *, s32, u16))fn_80070984)(0x503, lbl_803151D8, temp_r31, arg0, var_r29);
+            ((void (*)(u32, void *, void *, s32, u16))fn_80070984)(0x503, lbl_803151D8, temp_r31, arg0, (u16)var_r29);
         }
         if (bta_hh_tod_spt(temp_r31, *(u8 *)((u8 *)var_r30 + 0x64)) != 0) {
             if (*(u8 *)((u8 *)temp_r31 + 0x16) == 0xFF) {
-                sp8 = HID_HostAddDev((u8 *)temp_r31 + 8, var_r29, &sp9);
+                sp8 = HID_HostAddDev((u8 *)temp_r31 + 8, (u16)var_r29, &sp9);
                 if (sp8 == 0) {
                     *(u8 *)(lbl_803C0D48 + 0x214 + sp9) = *(u8 *)((u8 *)temp_r31 + 0x12);
-                    ((void (*)(void *, u8, u16, void *, u8, u8))bta_hh_add_device_to_list)(temp_r31, sp9, var_r29, (u8 *)var_r30 + 0x68, *(u8 *)((u8 *)var_r30 + 0x64), *(u8 *)((u8 *)temp_r31 + 0x15));
+                    ((void (*)(void *, u8, u16, void *, u8, u8))bta_hh_add_device_to_list)(temp_r31, sp9, (u16)var_r29, (u8 *)var_r30 + 0x68, *(u8 *)((u8 *)var_r30 + 0x64), *(u8 *)((u8 *)temp_r31 + 0x15));
                 } else {
                     *(u8 *)((u8 *)temp_r31 + 0x15) = 0;
                 }
