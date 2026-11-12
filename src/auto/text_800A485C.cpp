@@ -345,7 +345,29 @@ extern "C" const char lbl_8031E764[];
 extern "C" const char lbl_8031E740[];
 #include <revolution/OS/OSAlarm.h>
 #include <stdarg.h>
-namespace nw4hbm { namespace db { namespace detail { struct ConsoleHead; } s32 Console_GetTotalLines(detail::ConsoleHead *); } }
+namespace nw4hbm { namespace db { namespace detail {
+/* nw4hbm::db::detail::ConsoleHead (db_console.cpp): the state of one on-screen
+   debug console. Its text is a ring buffer of lineCount strings, each of
+   lineWidth+1 bytes; lines are numbered absolutely from 0, of which the
+   oldest droppedLines are no longer in the ring. */
+struct ConsoleHead {
+    char *lines;       /* 0x00 ring buffer of NUL-terminated lines */
+    u16 lineWidth;     /* 0x04 characters per line */
+    u16 lineCount;     /* 0x06 lines the ring buffer holds */
+    u16 pad8;          /* 0x08 */
+    u16 flags;         /* 0x0A bit 1: drop the tail of a line too long for it; bit 2: stop at the last line instead of wrapping the ring back to 0 */
+    u16 writeLine;     /* 0x0C ring index of the line being written */
+    u16 column;        /* 0x0E characters already written on that line */
+    s16 partial;       /* 0x10 the line being written holds text not yet terminated */
+    u16 readLine;      /* 0x12 ring index of the oldest line kept */
+    s32 droppedLines;  /* 0x14 lines overwritten and no longer in the ring */
+    s32 topLine;       /* 0x18 absolute index of the first line to display (scroll position) */
+    s16 drawX;         /* 0x1C screen position of the console's first character */
+    s16 drawY;         /* 0x1E */
+    u16 viewLines;     /* 0x20 lines the console shows at once */
+    u8 visible;        /* 0x22 shown by Console_DrawDirect */
+};
+} s32 Console_GetTotalLines(detail::ConsoleHead *); } }
 extern "C" void OSLockMutex(void*);
 extern "C" void OSUnlockMutex(void*);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...) __attribute__((noreturn));
