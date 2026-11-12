@@ -121,6 +121,38 @@ enum DrTexFormat {
     DRTEX_FMT_4C = 0x4C     /* opaque; drCreateTexture rejects it */
 };
 
+/* The game's GXTlutObj, as GXInitTlutObj()/GXGetTexObjTlut() use it here: the
+ * CLUT entry count the caller passes as the size is kept at +8 and read back
+ * by GXGetTexObjTlut(). */
+typedef struct DrTlutObj {
+    unsigned int sizeReg;  /* at 0x00 */
+    unsigned int attrReg;  /* at 0x04: type 0x64 | CLUT address >> 5 */
+    unsigned short entries;/* at 0x08: CLUT entry count */
+} DrTlutObj;
+
+/* One slot of the drgc texture table (lbl_8055FE28, 0xF4 bytes per slot;
+ * fn_802D7600 hands out a free one and fn_802D768C frees it): the runtime
+ * texture record the drCreateTexture (fn_802D8E9C) format creators build.
+ * Only the fields this TU touches are named; the two GX object pairs are 0x40
+ * and 0xC bytes apart, matching GXInitTexObj()/GXInitTlutObj(). */
+typedef struct DrTexRecord {
+    char name[0x20];          /* at 0x00: texture name, copied by the creator */
+    unsigned char inUse;      /* at 0x20: slot owner flag */
+    char pad_21[0x03];
+    char texObj[0x40];        /* at 0x24: primary GXTexObj */
+    DrTlutObj tlutObj;        /* at 0x64: its GXTlutObj (the RGB565 CLUT) */
+    void *rgbClut;            /* at 0x70: RGB565 palette, rgbClutSize bytes */
+    unsigned int rgbClutSize; /* at 0x74 */
+    char alphaTexObj[0x40];   /* at 0x78: secondary GXTexObj (the alpha plane) */
+    DrTlutObj alphaTlutObj;   /* at 0xB8: its GXTlutObj (the alpha CLUT) */
+    void *alphaClut;          /* at 0xC4: alpha palette, alphaClutSize bytes */
+    unsigned int alphaClutSize;/* at 0xC8 */
+    unsigned char hasAlphaTex;/* at 0xCC: format ships the second texture */
+    void *texelData;          /* at 0xD0: primary texture image */
+    unsigned int texelSize;   /* at 0xD4: its size */
+    void *srcClut;            /* at 0xD8: source RGBA8888 palette the CLUTs come from */
+} DrTexRecord;
+
 #pragma dont_inline on
 void fn_802D768C(void *arg0) {
     extern void fn_80128658(s32);
