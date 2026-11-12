@@ -24,6 +24,18 @@ extern void fn_80247624(void);
 extern void *fn_80131234(const char *);
 extern char lbl_802FC24C[];
 extern int fn_80128658(int);
+static inline void copyName(char *dst, const char *src) {
+    int n = 0x12;
+    char c;
+    while (1) {
+        c = *src++;
+        *dst++ = c;
+        if (c == 0) return;
+        if (--n <= 0) break;
+    }
+    dst[-1] = 0;
+}
+
 void fn_8000D884(int arg0, int arg1, int arg2, int arg3, int arg4) {
     int count;
     int *entry;
