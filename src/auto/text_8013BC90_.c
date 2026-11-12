@@ -28,6 +28,25 @@ extern void *fn_801284F8(int, const char *);
 extern void fn_8013A264(void *);
 extern void fn_8013BF3C(void);
 extern const char lbl_8032C414[];
+
+/* The heap tag every LineInfo is allocated under. */
+#define LINE_INFO_TAG lbl_8032C414 /* "LineInfo" */
+
+#define CACHE_RESOURCE_DECLARED
+// A LineInfo: the record the resource cache (lbl_8042F8C8) holds a resource
+// under its name, as fn_8013BE64 builds it around a loaded resource and
+// fn_8013BF40 builds the default one used when it cannot be opened.
+typedef struct CacheResource {
+    unsigned char name[0x40];   // at 0x00: the name the entry is filed under
+    unsigned char blocks[0x20]; // at 0x40: block list head and line parameters;
+                                //        fn_8013A264 defaults them, fn_8013A598
+                                //        frees the list with the resource
+    float params[5];            // at 0x60: min_t, max_t, min_dist, curv_t and
+                                //        curv_dist; fn_8013BF3C sets the
+                                //        defaults, fn_8013BD5C the configured
+                                //        values (see the "lineinfo" selector)
+    int buffer;                 // at 0x74: buffer released with the resource
+} CacheResource;
 char *fn_8013BC90(char *arg0, int arg1, const char *arg2) {
     char *base = arg0;
     char *dst = base;
