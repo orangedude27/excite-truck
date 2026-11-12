@@ -804,12 +804,14 @@ extern void fn_80230C30(float *, float *, int, int);
 #pragma push
 #pragma processor 750
 void fn_8022BB60(float *arg0, float *arg1, float farg0, float farg1) {
+    /* Converts integer screen coordinates to centered floats, then restores the fractional offsets. */
     fn_80230C30(arg0, arg1, (int)farg0, (int)farg1);
     *arg0 += farg0 - (float)(int)farg0;
     *arg1 -= farg1 - (float)(int)farg1;
 }
 #pragma pop
 extern double lbl_805635A0;
+#pragma scheduling invalid_target
 unsigned int fn_8022BC30(unsigned int arg0, unsigned int arg1, float farg0) {
     float e = (float)(unsigned char)arg1;
     float a = (float)(unsigned char)arg0;
@@ -826,7 +828,7 @@ unsigned int fn_8022BC30(unsigned int arg0, unsigned int arg1, float farg0) {
     return ((r3 & 0xFF) << 24) | ((r2 & 0xFF) << 16) |
            ((r1 & 0xFF) << 8) | (r0 & 0xFF);
 }
-
+#pragma scheduling on
 extern double fn_8002EFB4(float arg0, double arg1);
 extern float fn_8023659C(void);
 extern float fn_80235EF0(int arg0, int arg1);
@@ -1320,7 +1322,6 @@ extern char lbl_80340070[];
 extern int sscanf(const char *, const char *, ...);
 int fn_8022CD0C(char *arg0) {
     extern int __rlwimi(int, int, int, int, int);
-    extern int __rlwinm(int, int, int, int);
     volatile int sp18;
     int sp14;
     int sp10;
@@ -1335,10 +1336,10 @@ int fn_8022CD0C(char *arg0) {
 
     result = sscanf(arg0, lbl_80340070, &sp14, &sp10, &spC, &sp8);
     if (result == 3) {
-        high = __rlwinm(sp14, 16, 8, 15);
-        high |= 0xFF000000;
-        low = (unsigned)__rlwinm(sp10, 8, 16, 23);
+        high = (sp14 & 0xFF) << 16;
+        low = (unsigned)((sp10 & 0xFF) << 8);
         low = (unsigned)__rlwimi((int)low, spC, 0, 24, 31);
+        high |= 0xFF000000;
         result = (int)(low | (unsigned)high);
         sp18 = result;
         return result;
