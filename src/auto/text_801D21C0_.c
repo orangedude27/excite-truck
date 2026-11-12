@@ -568,23 +568,24 @@ extern "C" void fn_801D2A24(void *obj_) {
 #pragma cplusplus on
 #pragma scheduling invalid_target
 extern "C" void fn_801D2AD4(void *arg0) {
+    /* Scan a global object list and apply event-object setup to each child whose name starts with "soevent". */
     struct Dummy {
         virtual char *fn8();
         virtual Dummy *child(s32);
     };
     Dummy *list = (Dummy *)fn_80131810();
-    s32 i;
+    s32 index;
 
     if (list == NULL) {
         return;
     }
-    i = 0;
-    while (list->child(i) != NULL) {
-        Dummy *obj = list->child(i);
-        if (strncmp(obj->fn8(), (char *)&lbl_8055AC28, 7) == 0) {
-            fn_801D2A24(obj);
+    index = 0;
+    while (list->child(index) != NULL) {
+        Dummy *child = list->child(index);
+        if (strncmp(child->fn8(), (char *)&lbl_8055AC28, 7) == 0) {
+            fn_801D2A24(child);
         }
-        i++;
+        index++;
     }
     fn_80131818(list);
 }
