@@ -1229,19 +1229,23 @@ struct ResManager {
 
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" void fn_8012C41C(s32 (*arg0)(void *, void *, void *, s32), s32 arg1, const char *arg2) {
+/* Walks the global resource-manager list (lbl_8055E000) and calls
+ * callback(entry, entry->data, manager, userData) for every loaded entry
+ * (RES_ENTRY_LOADED) of every manager whose directory matches dirName --
+ * every manager when dirName is NULL. Stops at the first callback returning 0. */
+extern "C" void fn_8012C41C(s32 (*callback)(void *, void *, void *, s32), s32 userData, const char *dirName) {
     s32 off;
-    void *node;
+    struct ResManager *manager;
     s32 i;
-    for (node = lbl_8055E000; node != NULL; node = *(void **)((u8 *)node + 0xA8)) {
-        if (arg2 == 0 || stricmp((const char *)node, arg2) == 0) {
+    for (manager = (struct ResManager *)lbl_8055E000; manager != NULL; manager = manager->next) {
+        if (dirName == 0 || stricmp((const char *)manager, dirName) == 0) {
             i = 0;
             off = 0;
-            while (i < *(s32 *)((u8 *)node + 0x88)) {
-                u8 *entry = *(u8 **)((u8 *)node + 0x60) + off;
-                if (*(u32 *)(entry + 0x34) & 8) {
-                    volatile void *param = *(void **)(entry + 0x20);
-                    if (arg0(entry, (void *)param, node, arg1) == 0) return;
+            while (i < manager->entryCount) {
+                struct ResEntry *entry = (struct ResEntry *)(manager->entries + off);
+                if (entry->flags & RES_ENTRY_LOADED) {
+                    volatile void *param = entry->data;
+                    if (callback(entry, (void *)param, manager, userData) == 0) return;
                 }
                 off += 0x44;
                 i++;
