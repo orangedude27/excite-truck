@@ -6828,19 +6828,24 @@ typedef struct {
 #define BTA_HH_INVALID_HANDLE                     0xff    /* no device handle yet */
 #define bta_sys_sendmsg                           fn_80071450  /* -> BTA task */
 
-void BTA_HhAddDev(const u8 *arg0, u16 arg1, u8 arg2, u8 arg3, const void *arg4) {
-    u8 *buf = GKI_getbuf(0x1C);
-    if (buf != 0) {
-        memset(buf, 0, 0x1C);
-        *(u16 *)buf = 0x170A;
-        *(u16 *)(buf + 0x10) = 0xB;
-        *(u16 *)(buf + 6) = 0xFF;
-        *(u16 *)(buf + 0xE) = arg1;
-        buf[0x12] = arg2;
-        buf[0x13] = arg3;
-        memcpy(buf + 0x14, arg4, 8);
-        fn_80070FA4(buf + 8, arg0);
-        fn_80071450(buf);
+void BTA_HhAddDev(const u8 *bda, tBTA_HH_ATTR_MASK attr_mask, u8 sub_class,
+                  u8 app_id, const void *dscp_info) {
+    /* Queue a virtually-cabled HID device for HID-Host to manage: its address,
+     * attribute mask, class-of-device sub-class, application ID and report
+     * descriptor go to the BTA-HID state machine as an add-device maintenance
+     * message, with no device handle assigned yet. */
+    tBTA_HH_MAINT_DEV *p_buf = (tBTA_HH_MAINT_DEV *)GKI_getbuf(sizeof(tBTA_HH_MAINT_DEV));
+    if (p_buf != 0) {
+        memset(p_buf, 0, sizeof(tBTA_HH_MAINT_DEV));
+        p_buf->hdr.event = BTA_HH_API_MAINT_DEV_EVT;
+        p_buf->sub_event = BTA_HH_ADD_DEV_EVT;
+        p_buf->hdr.layer_specific = BTA_HH_INVALID_HANDLE;
+        p_buf->attr_mask = attr_mask;
+        p_buf->sub_class = sub_class;
+        p_buf->app_id = app_id;
+        memcpy(&p_buf->dscp_info, dscp_info, sizeof(tBTA_HH_DEV_DESCR));
+        bdcpy(p_buf->bda, bda);
+        bta_sys_sendmsg(p_buf);
     }
 }
 
