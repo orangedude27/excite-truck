@@ -936,15 +936,16 @@ extern "C" void *fn_8013D8D0(void *out, TPathDocument *document) {
 #pragma dont_inline off
 
 #pragma dont_inline on
-extern "C" s32 fn_8013DDD4(TObjC *arg0, const char *arg1) {
+// Count elements in the collection whose name matches, as tested by fn_8013CB44.
+extern "C" s32 fn_8013DDD4(TObjC *collection, const char *name) {
     s32 count = 0;
-    s32 i = 0;
+    s32 index = 0;
 
-    while (arg0->vC(i) != 0) {
-        if (fn_8013CB44(arg1, (TObj10 *)arg0->vC(i))) {
+    while (collection->vC(index) != 0) {
+        if (fn_8013CB44(name, (TObj10 *)collection->vC(index))) {
             count++;
         }
-        i++;
+        index++;
     }
     return count;
 }
