@@ -22343,6 +22343,7 @@ void fn_800936BC(void *p, u16 a1, u16 a2, u16 a3, u16 a4, u16 a5, u16 a6) {
 }
 
 void RFCOMM_PortNegReq(void *mcb, u8 dlci, void *pars) {
+    // Requests port parameter negotiation for a DLCI, marking pending flags and sending RPN when the multiplexer is connected.
     void *port = port_find_mcb_dlci_port(mcb, dlci);
     if (*(u8 *)((u8 *)mcb + 0x6c) != 5) {
         PORT_PortNegCnf(mcb, dlci, 0, 1);
