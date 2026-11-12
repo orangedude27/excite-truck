@@ -262,33 +262,35 @@ extern "C" void fn_80127D58(void *);
 extern "C" void fn_80128668(void *);
 extern "C" s32 lbl_8055EDBC;
 extern "C" u8 lbl_8033C1E0[];
-extern "C" void *fn_8020999C(void *arg0, s32 arg1) {
+/* Destroy this sound-object collection, deleting owned items and freeing when requested. */
+extern "C" void *fn_8020999C(void *obj, s32 shouldFree) {
     struct ItemDummy {
         virtual void m0(s32) = 0;
     };
-    u8 *p;
+    u8 *cursor;
     void *item;
-    s32 i;
-    if (arg0 != 0) {
-        *(s32 *)arg0 = (s32)&lbl_8033C1E0[0];
-        p = (u8 *)arg0;
-        i = 0;
+    s32 index;
+
+    if (obj != 0) {
+        *(s32 *)obj = (s32)&lbl_8033C1E0[0];
+        cursor = (u8 *)obj;
+        index = 0;
         goto check;
     loop:
-        item = *(void **)(p + 4);
+        item = *(void **)(cursor + 4);
         if (item != 0)
             ((ItemDummy *)item)->m0(1);
-        p += 0x34;
-        i += 1;
+        cursor += 0x34;
+        index += 1;
     check:
-        if (i < *(s32 *)((u8 *)arg0 + 0x13C))
+        if (index < *(s32 *)((u8 *)obj + 0x13C))
             goto loop;
         if (--lbl_8055EDBC == 0)
             fn_80127D58((void *)fn_80209904);
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (shouldFree > 0)
+            fn_80128668(obj);
     }
-    return arg0;
+    return obj;
 }
 
 #pragma pop
