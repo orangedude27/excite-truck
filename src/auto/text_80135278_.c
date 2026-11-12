@@ -160,6 +160,16 @@ void fn_801353C8(Unk_80135278 *arg0, s32 arg1, s32 arg2, s32 arg3) {
     fn_801355C0(arg0, arg1, arg2, &arg0->unk_4, 0);
     fn_801357A4(arg0, arg1);
 }
+// The circular list of stretches the samplers search: only its first stretch
+// is read here.  (The searches below walk it with fn_80135420's own loads.)
+#define PATH_FIRST(list) (*(PathNode **)((char *)(list) + 0x1C))
+
+#define PATH_ZERO lbl_80561320        /* 0.0f: the side of a stretch's start */
+#define PAIR_ACROSS_LIMIT lbl_80561328 /* 1000.0f: how far off a straddling stretch a point may sit */
+#define NEAREST_LIMIT lbl_8056132C    /* 4e6: squared reach of the fallback search */
+#define MSG_NO_PAIR lbl_8032BDB8      /* "ideal: Can't find a good pair for %.2f,%.2f" */
+#define MSG_UPSET lbl_8032BDE4        /* "ideal: Someone is probably going to be upset about this." */
+
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
