@@ -1298,22 +1298,27 @@ static inline void fn_80268358_vecmat(float *out, float *v, float *m) {
         out[2] = m[5] * v[1] + m[2] * v[0] + m[8] * v[2];
     }
 }
-void fn_802682B0(void *arg0) {
-    char *p = (char *)arg0;
+void fn_802682B0(void *object) {
+    /* Update object transforms/output: if flag at +0x138 is set, fill the 3x4
+       float matrix at lbl_80499050 as identity rows {1,0,0,0} repeated; then
+       compute fn_801BFD34(object+0x7C, lbl_80499050+9, object+0xC0), copy via
+       fn_80015B20(object+0x58, lbl_80499050, object+0xC0), and store
+       lbl_8055F47C into object+0xBC. */
+    char *p = (char *)object;
     float *base;
     if (*(unsigned char *)(p + 0x138) != 0) {
-        float b;
-        float a;
-        float *q;
-        a = lbl_80563C2C;
-        q = lbl_80499050 - 1;
-        b = lbl_80563C20;
-        *++q = a;
-        q[1] = b; q[2] = b; q[3] = b;
-        q[4] = a;
-        q[5] = b; q[6] = b; q[7] = b;
-        q[8] = a;
-        q[9] = b; q[10] = b; q[11] = b;
+        float zeroVal;
+        float oneVal;
+        float *matrixCursor;
+        oneVal = lbl_80563C2C;       /* 1.0f */
+        matrixCursor = lbl_80499050 - 1;
+        zeroVal = lbl_80563C20;      /* 0.0f */
+        *++matrixCursor = oneVal;
+        matrixCursor[1] = zeroVal; matrixCursor[2] = zeroVal; matrixCursor[3] = zeroVal;
+        matrixCursor[4] = oneVal;
+        matrixCursor[5] = zeroVal; matrixCursor[6] = zeroVal; matrixCursor[7] = zeroVal;
+        matrixCursor[8] = oneVal;
+        matrixCursor[9] = zeroVal; matrixCursor[10] = zeroVal; matrixCursor[11] = zeroVal;
     }
     base = lbl_80499050;
     fn_801BFD34(p + 0x7c, base + 9, p + 0xc0);
