@@ -1921,6 +1921,8 @@ void GXSetDrawSyncCallback(void) {
     s32 state1 = OSDisableInterrupts();
     volatile unsigned char *fifo8 = (volatile unsigned char *)0xCC008000;
     volatile unsigned int *fifo = (volatile unsigned int *)0xCC008000;
+
+    /* Issue a draw-sync command/token sequence to the GX FIFO, flush dirty state, then wait for completion. */
     *fifo8 = 0x61;
     *fifo = 0x45000002;
     if (__GXData[0x5FC / 4] != 0) {
