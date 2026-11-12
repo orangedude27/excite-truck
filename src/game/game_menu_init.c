@@ -376,6 +376,7 @@ after_lookup:
     RestoreMenuFlag(&saved);
     return 0;
 }
+/* Shutdown/reset sequence for game/menu subsystems during bootstrap teardown. */
 void fn_80004CB4(void) {
     fn_8020A634();
     fn_802E9880(0);
