@@ -112,7 +112,7 @@ s32 ARCConvertPathToEntrynum(ARCHandle *handle, const char *path) {
         u32 length, limit, node;
         int hasSlash;
         if (*path == 0) return entry;
-        if (*path == '/') { entry = 0; path++; continue; }
+        if (*path == '/') { entry = 0; ++path; continue; }
         if (*path == '.') {
             if (path[1] == '.') {
                 if (path[2] == '/') { entry = fst[entry * 3 + 1]; path += 3; continue; }
@@ -123,10 +123,10 @@ s32 ARCConvertPathToEntrynum(ARCHandle *handle, const char *path) {
             }
         }
         end = path;
-        while (*end && *end != '/') end++;
+        while (*end && *end != '/') ++end;
         length = end - path;
         limit = fst[entry * 3 + 2];
-        entry++;
+        ++entry;
         hasSlash = *end != 0;
         while (entry < limit) {
             char *name;
@@ -134,7 +134,7 @@ s32 ARCConvertPathToEntrynum(ARCHandle *handle, const char *path) {
             node = fst[entry * 3];
             if ((node >> 24) == 0 && hasSlash == 1) goto next;
             name = handle->FSTStringStart + (node & 0xffffff);
-            if (name[0] == '.' && name[1] == 0) { entry++; continue; }
+            if (name[0] == '.' && name[1] == 0) { ++entry; continue; }
             p = path;
             while (*name) {
                 int a = *name++;
@@ -147,7 +147,7 @@ s32 ARCConvertPathToEntrynum(ARCHandle *handle, const char *path) {
             if (*p == '/' || *p == 0) goto found;
         next:
             if (fst[entry * 3] & 0xff000000) entry = fst[entry * 3 + 2];
-            else entry++;
+            else ++entry;
         }
         return -1;
     found:
@@ -1560,9 +1560,8 @@ void fn_801195A0(void *arg0) {
 void fn_801195D8(void *arg0) {
     u8 *base = (u8 *)arg0;
     u32 available = *(u32 *)(base + 0x40);
-    register u8 *src;
-    register u32 count;
-    u32 pos, capacity, state;
+    u8 *src;
+    u32 count, pos, capacity, state;
     if (available > *(u32 *)(base + 0x54)) {
         count = *(u32 *)(base + 0xbc);
         if (count > available) count = available;
@@ -1572,8 +1571,9 @@ void fn_801195D8(void *arg0) {
         src = *(u8 **)(base + 0x38);
         if (src + count > *(u8 **)(base + 0x30)) count = *(u8 **)(base + 0x30) - src;
         if (*(s32 *)(base + 0x78) != 1) {
-            u16 *left = (u16 *)(*(u8 **)(base + 0x84) + (pos >> 1));
-            u16 *right = (u16 *)(*(u8 **)(base + 0x88) + (pos >> 1));
+            u32 p = *(volatile u32 *)(base + 0xb8);
+            u16 *left = (u16 *)(*(u8 **)(base + 0x84) + (p >> 1));
+            u16 *right = (u16 *)(*(u8 **)(base + 0x88) + (p >> 1));
             u16 *l = left, *r = right;
             u32 i;
             for (i = count >> 2; i != 0; --i) {
@@ -3364,63 +3364,72 @@ void fn_8011C3A8(s32 arg0, void *arg1, s32 arg2, u32 arg3, s32 arg4, s32 arg5, s
     *(s32 *)((u8 *)arg1 + 0x2C) = arg0;
 }
 
-s32 fn_8011C400(u32 arg0, u8 *arg1, u8 *arg2, u8 *arg3, s32 arg4) {
-    s32 var_r7;
-    s32 var_r8;
-    s32 var_r9;
-    u32 var_r3;
-    u8 *var_r4;
-    u8 *var_r5;
-    u8 *var_r6;
-    u8 temp_r0;
-    u8 temp_r0_2;
-    u8 temp_r0_3;
-    u8 temp_r0_4;
+/* Merge the two halves of a permutation chunk into the output.
+ *
+ * run0 and run1 hold the same number of bytes; the next output byte comes
+ * from run1 while the low bit of mask is set and from run0 when it is clear,
+ * the mask shifting along with every byte written.  Once one run is used up
+ * the choice no longer matters, so the rest of the other run is copied
+ * without reading the mask at all - which is why the number of mask bits the
+ * merge needed is returned: fn_8011C4A0 only has to skip that many bits of
+ * the stream it is decoding, not one per output byte. */
+s32 fn_8011C400(u32 mask, u8 *dst, u8 *run0, u8 *run1, s32 count) {
+    s32 left0;
+    s32 left1;
+    s32 bitsUsed;
+    u32 bits;
+    u8 *out;
+    u8 *src0;
+    u8 *src1;
+    u8 from1;
+    u8 from0;
+    u8 rest0;
+    u8 rest1;
 
-    var_r3 = arg0;
-    var_r4 = arg1;
-    var_r5 = arg2;
-    var_r6 = arg3;
-    var_r7 = arg4;
-    var_r8 = var_r7;
-    var_r9 = 0;
-loop_1:
-    var_r9 += 1;
-    if (var_r3 & 1) {
-        temp_r0 = *var_r6;
-        var_r8 -= 1;
-        var_r6 += 1;
-        *var_r4 = temp_r0;
-        var_r4 += 1;
+    bits = mask;
+    out = dst;
+    src0 = run0;
+    src1 = run1;
+    left0 = count;
+    left1 = left0;
+    bitsUsed = 0;
+merge:
+    bitsUsed += 1;
+    if (bits & 1) {
+        from1 = *src1;
+        left1 -= 1;
+        src1 += 1;
+        *out = from1;
+        out += 1;
     } else {
-        temp_r0_2 = *var_r5;
-        var_r7 -= 1;
-        var_r5 += 1;
-        *var_r4 = temp_r0_2;
-        var_r4 += 1;
+        from0 = *src0;
+        left0 -= 1;
+        src0 += 1;
+        *out = from0;
+        out += 1;
     }
-    var_r3 = var_r3 >> 1U;
-    if ((var_r7 != 0) && (var_r8 != 0)) {
-        goto loop_1;
+    bits = bits >> 1U;
+    if ((left0 != 0) && (left1 != 0)) {
+        goto merge;
     }
-    if (var_r7 != 0) {
+    if (left0 != 0) {
         do {
-            temp_r0_3 = *var_r5;
-            var_r7 -= 1;
-            var_r5 += 1;
-            *var_r4 = temp_r0_3;
-            var_r4 += 1;
-        } while (var_r7 != 0);
-    } else if (var_r8 != 0) {
+            rest0 = *src0;
+            left0 -= 1;
+            src0 += 1;
+            *out = rest0;
+            out += 1;
+        } while (left0 != 0);
+    } else if (left1 != 0) {
         do {
-            temp_r0_4 = *var_r6;
-            var_r8 -= 1;
-            var_r6 += 1;
-            *var_r4 = temp_r0_4;
-            var_r4 += 1;
-        } while (var_r8 != 0);
+            rest1 = *src1;
+            left1 -= 1;
+            src1 += 1;
+            *out = rest1;
+            out += 1;
+        } while (left1 != 0);
     }
-    return var_r9;
+    return bitsUsed;
 }
 
 #pragma push
@@ -4013,8 +4022,8 @@ void fn_8011D378(void *arg0, void *arg1, void *arg2) {
             count--;
             if (remain >= n) {
                 v = (*(u8 **)((u8 *)arg2 + node * 4 + 0x140))[value & (0xffffffffU >> (32 - n))];
-                node = *((u8 *)arg2 + node * 16 + (v & 15));
                 tmp = v >> 4;
+                node = *((u8 *)arg2 + node * 16 + (v & 15));
                 value >>= tmp; remain -= tmp;
             } else {
                 u32 next = *src;
@@ -4037,7 +4046,7 @@ void fn_8011D378(void *arg0, void *arg1, void *arg2) {
             }
             *out++ = tmp | (node << 4);
         } while (count > 0);
-        if (count < -22) memset(*(u8 **)((u8 *)arg0 + 0x2c), **(u8 **)((u8 *)arg0 + 0x2c), -count - 21);
+        if (count < -22) memset(*(u8 **)((u8 *)arg0 + 0x2c), **(u8 **)((u8 *)arg0 + 0x2c), -(count + 21));
         *(u32 *)((u8 *)arg2 + 0x180) = node;
     } else {
         out = *(u8 **)((u8 *)arg0 + 0x2c);
@@ -4248,7 +4257,7 @@ void fn_8011D7F8(void *arg0, void *arg1) {
 
 void fn_8011D9E4(void *arg0, void *arg1) {
     u32 *bits;
-    u32 value, bitCount, available, mask, count, i, code, len, bit;
+    u32 value, bitCount, count, code, bit, len, available;
     u8 *lookup, *table, *dst;
     s32 symbol;
     if (*(u32 *)arg0 != *(u32 *)((u8 *)arg0 + 4)) return;
@@ -4277,16 +4286,17 @@ void fn_8011D9E4(void *arg0, void *arg1) {
             table = (u8 *)arg0 + 0x10;
             lookup = *(u8 **)((u8 *)arg0 + 0x24);
             available = *(u32 *)((u8 *)arg0 + 0x20);
-            mask = 0xFFFFFFFFU >> (32 - available);
             do {
                 count--;
                 if (bitCount >= available) {
-                    code = value & mask; code = lookup[code]; len = code >> 4; symbol = code;
+                    code = value & (0xFFFFFFFFU >> (32 - available)); code = lookup[code]; len = code >> 4; symbol = code;
                     symbol = table[symbol & 15]; value >>= len; bitCount -= len;
                 } else {
                     u32 next = *bits;
-                    code = (value | (next << bitCount)) & mask;
-                    { u32 entry = lookup[code]; symbol = table[entry & 15]; len = entry >> 4; }
+                    code = (value | (next << bitCount)) & (0xFFFFFFFFU >> (32 - available));
+                    len = lookup[code];
+                    symbol = table[len & 15];
+                    len >>= 4;
                     if (bitCount >= len) { value >>= len; bitCount -= len; }
                     else { value = next >> (len - bitCount); bits++; bitCount = bitCount + 32 - len; }
                 }
@@ -5913,18 +5923,64 @@ void fn_80122ED8(s32 arg0, void *arg1, s32 arg2, void *arg3) {
     fn_801231B8(arg0, arg1, arg2, arg3);
 }
 
+void fn_80122FA4(s32 arg0, void *arg1, s32 arg2, void *arg3) {
+    s32 n = arg0 >> 2;
+    f32 *a = (f32 *)arg1;
+    f32 *w = (f32 *)arg3;
+    s32 m, k, step;
+    f32 *pa, *pb;
+    while (n > 0x80) {
+        pa = w + (arg2 - (n >> 1));
+        pb = w + (arg2 - n);
+        for (m = n; m < arg0; m *= 4) {
+            step = m * 4;
+            for (k = m - n; k < arg0; k += step) {
+                fn_801233F8(n, (volatile f32 *)(a + k), pa);
+                fn_801237C4(n, a + (m + k), pb);
+                fn_801233F8(n, (volatile f32 *)(a + (k + m * 2)), pa);
+            }
+        }
+        fn_801233F8(n, (volatile f32 *)(a + (arg0 - n)), pa);
+        n >>= 2;
+    }
+    pa = w + (arg2 - (n >> 1));
+    pb = w + (arg2 - n);
+    for (m = n; m < arg0; m *= 4) {
+        step = m * 4;
+        for (k = m - n; k < arg0; k += step) {
+            f32 *q;
+            fn_801233F8(n, (volatile f32 *)(a + k), pa);
+            fn_80123CEC(n, a + k, arg2, w);
+            q = a + (m + k);
+            fn_801237C4(n, q, pb);
+            fn_80123DC0(n, q, arg2, w);
+            q = a + (k + m * 2);
+            fn_801233F8(n, (volatile f32 *)q, pa);
+            fn_80123CEC(n, q, arg2, w);
+        }
+    }
+    {
+        f32 *q = a + (arg0 - n);
+        fn_801233F8(n, (volatile f32 *)q, pa);
+        fn_80123CEC(n, q, arg2, w);
+    }
+}
+
 void fn_801231B8(s32 n, void *data, s32 index, void *table) {
-    s32 half = n >> 1, size = n >> 2, step, i;
-    f32 *a, *b, *p, *q;
+    s32 half = n >> 1;
+    s32 size = n >> 2;
+    s32 step;
+    s32 i;
+    f32 *p, *q, *a, *b;
     while (size > 0x80) {
         a = (f32 *)((u8 *)table + (index - (size >> 1)) * 4);
         b = (f32 *)((u8 *)table + (index - size) * 4);
         for (step = size; step < half; step *= 4) {
-            for (i = step - size, p = (f32 *)data + i; i < half; p += step * 2, i += step * 2) {
+            for (i = step - size, p = (f32 *)((u8 *)data + (s32)i * 4); i < half; i += step * 2, p += step * 2) {
                 fn_801233F8(size, p, a);
                 fn_801233F8(size, (f32 *)((u8 *)data + (half + i) * 4), a);
             }
-            for (i = step * 2 - size, p = (f32 *)data + i; i < half; i += step * 4, p += step * 4) {
+            for (i = step * 2 - size, p = (f32 *)((u8 *)data + (s32)i * 4); i < half; i += step * 4, p += step * 4) {
                 fn_801237C4(size, p, b);
                 fn_801237C4(size, (f32 *)((u8 *)data + (half + i) * 4), b);
             }
@@ -5934,14 +5990,14 @@ void fn_801231B8(s32 n, void *data, s32 index, void *table) {
     a = (f32 *)((u8 *)table + (index - (size >> 1)) * 4);
     b = (f32 *)((u8 *)table + (index - size) * 4);
     for (step = size; step < half; step *= 4) {
-        for (i = step - size, p = (f32 *)data + i; i < half; p += step * 2, i += step * 2) {
+        for (i = step - size, p = (f32 *)((u8 *)data + (s32)i * 4); i < half; i += step * 2, p += step * 2) {
             fn_801233F8(size, p, a);
             fn_80123CEC(size, p, index, table);
             q = (f32 *)((u8 *)data + (half + i) * 4);
             fn_801233F8(size, q, a);
             fn_80123CEC(size, q, index, table);
         }
-        for (i = step * 2 - size, p = (f32 *)data + i; i < half; i += step * 4, p += step * 4) {
+        for (i = step * 2 - size, p = (f32 *)((u8 *)data + (s32)i * 4); i < half; i += step * 4, p += step * 4) {
             fn_801237C4(size, p, b);
             fn_80123DC0(size, p, index, table);
             q = (f32 *)((u8 *)data + (half + i) * 4);
@@ -6624,6 +6680,7 @@ void fn_80124AD8(void *arg0, void *arg1) {
     temp_f9 = ((f32 *)arg0)[5];
     temp_f6_2 = ((f32 *)arg0)[13];
     temp_f2_3 = ((f32 *)arg1)[1];
+    temp_f28 = temp_f28 - temp_f29;
     temp_f5_2 = temp_f10 - temp_f5;
     temp_f22_2 = temp_f12 + temp_f11;
     temp_f7 = temp_f25 + temp_f26;
@@ -6647,10 +6704,10 @@ void fn_80124AD8(void *arg0, void *arg1) {
     ((f32 *)arg0)[1] = (f32) (temp_f24_2 + temp_f25_2);
     temp_f7_3 = temp_f5_2 - temp_f10_2;
     ((f32 *)arg0)[4] = (f32) (temp_f3_3 - temp_f22_3);
-    temp_f11_3 = temp_f2_3 * (temp_f28 - temp_f29);
+    temp_f11_3 = temp_f2_3 * temp_f28;
     ((f32 *)arg0)[6] = (f32) (temp_f3_3 + temp_f22_3);
     temp_f8_2 = temp_f6_3 + temp_f9_2;
-    temp_f12_3 = temp_f2_3 * (temp_f28 + temp_f29);
+    temp_f12_3 = temp_f2_3 * (temp_f28 + 2.0f * temp_f29);
     ((f32 *)arg0)[5] = (f32) (temp_f7_2 + temp_f0_3);
     ((f32 *)arg0)[7] = (f32) (temp_f7_2 - temp_f0_3);
     ((f32 *)arg0)[8] = (f32) (temp_f7_3 + temp_f11_3);
@@ -6900,32 +6957,39 @@ void fn_80125098(void *arg0) {
 #pragma push
 #pragma use_lmw_stmw off
 void fn_801250CC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    s32 j = 2;
-    s32 i = 0;
-    f32 *a = (f32 *)arg1, *w = (f32 *)arg3, *q = w;
+    f32 *a = (f32 *)arg1, *w = (f32 *)arg3;
     s32 half = arg0 >> 1;
+    u32 n = (u32)(half - 1) >> 1;
     s32 step = (arg2 * 2) / half;
     f32 *p = a + 2;
-    u32 n = (u32)(half - 1) >> 1;
+    f32 *q = w;
     f32 one = lbl_80561210;
+    s32 i = 0;
+    s32 j = 2;
     if (half > 2) {
-        u32 k = n / 2;
+        u32 k = n >> 1;
         while (k--) {
             f32 x, y, t, v, z, c, re, im;
             f32 *back;
             i += step;
-            back = &a[arg0 - j];
-            x = p[0]; y = w[arg2 - i];
-            z = one - y; t = x - back[0];
-            v = p[1] + back[1]; q += step; c = *q;
+            back = (f32 *)((char *)a + ((arg0 - j) << 2));
+            x = p[0];
+            y = w[arg2 - i];
+            t = x - back[0];
+            z = one - y;
+            v = p[1] + back[1];
+            q += step; c = *q;
             re = z*t-c*v; im = c*t+z*v;
             p[0] = x-re; p[1] -= im;
             back[0] += re; back[1] -= im;
             j += 2; i += step;
-            back = &a[arg0 - j];
-            x = p[2]; y = w[arg2 - i];
-            z = one-y; t = x-back[0];
-            v = p[3]+back[1]; q += step; c = *q;
+            back = (f32 *)((char *)a + ((arg0 - j) << 2));
+            x = p[2];
+            y = w[arg2 - i];
+            t = x-back[0];
+            z = one-y;
+            v = p[3]+back[1];
+            q += step; c = *q;
             re = z*t-c*v; im = c*t+z*v;
             p[2]=x-re; p[3]-=im;
             back[0]+=re; back[1]-=im;
@@ -6937,10 +7001,13 @@ void fn_801250CC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
                 f32 x, y, t, v, z, c, re, im;
                 f32 *back;
                 i += step;
-                back = &a[arg0 - j];
-                x = p[0]; y = w[arg2 - i];
-                z = one-y; t = x-back[0];
-                v = p[1]+back[1]; q += step; c = *q;
+                back = (f32 *)((char *)a + ((arg0 - j) << 2));
+                x = p[0];
+                y = w[arg2 - i];
+                t = x-back[0];
+                z = one-y;
+                v = p[1]+back[1];
+                q += step; c = *q;
                 re=z*t-c*v; im=c*t+z*v;
                 p[0]=x-re; p[1]-=im;
                 back[0]+=re; back[1]-=im;
