@@ -2645,29 +2645,39 @@ void WUDiMoveTopSmpDevInfoPtr(u8 *arg0, void *arg1) {
         WUDListEntry smpList[6];
     } WUDCBView;
 
-    register WUDCBView *p = (WUDCBView *)lbl_80392960;
-    BOOL enabled;
+    WUDCBView *wudCb = (WUDCBView *)lbl_80392960;
+    WUDDevInfoView *targetDevInfo = (WUDDevInfoView *)arg0;
+    BOOL interrupts;
     s32 i;
+    u8 *scan;
 
-    enabled = OSDisableInterrupts();
-    for (i = 0; i < 6; i++) {
+    interrupts = OSDisableInterrupts();
+    scan = (u8 *)wudCb;
+    for (i = 0; i < 6; i++, scan += 0xC) {
         WUDListEntry *entry;
-        if (memcmp(p->smpList[i].devInfo->devAddr, arg0 + 0x40, 6) != 0) continue;
-        entry = (WUDListEntry *)((u8 *)p + i * 0xC + 0x1C);
-        if (memcmp(p->smpListHead->devInfo->devAddr, entry->devInfo->devAddr, 6) == 0) break;
-        entry->prev->next = entry->next;
-        if (memcmp(p->smpListTail->devInfo->devAddr, entry->devInfo->devAddr, 6) == 0) {
-            p->smpListTail = entry->prev;
-        } else {
-            entry->next->prev = entry->prev;
+        WUDListEntry *cur = (WUDListEntry *)(scan + 0x1C);
+        if (memcmp(cur->devInfo->devAddr, targetDevInfo->devAddr, 6) != 0)
+            continue;
+        {
+            u8 *baseOff = (u8 *)wudCb + (s32)i * 0xC;
+            WUDListEntry *e2 = (WUDListEntry *)(baseOff + 0x1C);
+            if (memcmp(wudCb->smpListHead->devInfo->devAddr, e2->devInfo->devAddr, 6) == 0)
+                break;
+            *(WUDListEntry **)(*(u8 **)(baseOff + 0x20) + 8) = *(WUDListEntry **)(baseOff + 0x24);
+            if (memcmp(wudCb->smpListTail->devInfo->devAddr, e2->devInfo->devAddr, 6) == 0) {
+                wudCb->smpListTail = *(WUDListEntry **)(baseOff + 0x20);
+            } else {
+                *(WUDListEntry **)(*(u8 **)(baseOff + 0x24) + 4) = *(WUDListEntry **)(baseOff + 0x20);
+            }
+            entry = e2;
+            entry->next = wudCb->smpListHead;
+            wudCb->smpListHead->prev = entry;
+            wudCb->smpListHead = entry;
+            entry->prev = 0;
+            break;
         }
-        entry->next = p->smpListHead;
-        p->smpListHead->prev = entry;
-        p->smpListHead = entry;
-        entry->prev = 0;
-        break;
     }
-    OSRestoreInterrupts(enabled);
+    OSRestoreInterrupts(interrupts);
 }
 #pragma use_lmw_stmw reset
 
@@ -18383,18 +18393,21 @@ void fn_8008C464(u8 *bd_addr) {
 }
 
 void l2c_init(void) {
-    u8 *base = lbl_803C4040;
-    u32 i;
-
-    memset(base, 0, 0x7E8);
-    for (i = 1; i <= 9; i++) {
-        *(u8 **)(base + 0x180 + (i - 1) * 0x7C) = base + 0x178 + i * 0x7C;
+    typedef struct { u8 _a[8]; void *p_next; u8 _b[0x70]; } CcbEnt;
+    typedef struct { u8 _h[0x178]; CcbEnt pool[10]; u8 _rcb[0x160]; void *p_first; void *p_last; u16 num_links; u16 idle; } L2cbView;
+    memset(lbl_803C4040, 0, 0x7E8);
+    {
+        L2cbView *p = (L2cbView *)lbl_803C4040;
+        INT16 xx;
+        for (xx = 0; xx < 9; xx++) {
+            p->pool[xx].p_next = &p->pool[xx + 1];
+        }
+        p->p_first = &p->pool[0];
+        p->p_last = &p->pool[9];
+        ((u8 *)p)[1] = 0;
+        p->idle = 2;
+        lbl_803C4040[0] = 0;
     }
-    *(u8 **)(base + 0x7B0) = base + 0x178;
-    *(u8 **)(base + 0x7B4) = base + 0x5D4;
-    base[1] = 0;
-    *(u16 *)(base + 0x7BA) = 2;
-    base[0] = 0;
 }
 
 void l2c_rcv_acl_data(register BT_HDR *arg0) {
