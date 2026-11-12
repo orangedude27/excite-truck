@@ -481,24 +481,26 @@ extern "C" void fn_801457D0(void *arg0, s32 arg1) {
     fn_802E3AD0(arg1, lbl_80559E14);
 }
 #pragma scheduling on
-extern "C" void fn_8014589C(void *arg0, s32 arg1) {
-    char *base = lbl_8032CEC8;
-    fn_802E3AD0(arg1, base + 0x170);
-    fn_802E3AD0(arg1, base + 0x180);
+extern "C" void fn_8014589C(void *arg0, s32 outputHandle) {
+    /* Dump a table of 0x1C-byte entries (floats and ids) to the output handle using format strings from lbl_8032CEC8. */
+    char *formatBase = lbl_8032CEC8;
     s32 offset;
-    s32 i;
-    i = 0;
+    s32 index;
+
+    fn_802E3AD0(outputHandle, formatBase + 0x170);
+    fn_802E3AD0(outputHandle, formatBase + 0x180);
+    index = 0;
     offset = 0;
-    while (i < *(s32 *)((u8 *)arg0 + 4)) {
+    while (index < *(s32 *)((u8 *)arg0 + 4)) {
         u8 *entry = *(u8 **)arg0 + offset;
-        fn_802E3AD0(arg1, base + 0x1A8,
+        fn_802E3AD0(outputHandle, formatBase + 0x1A8,
             *(f32 *)(entry + 4), *(f32 *)(entry + 8),
             *(f32 *)(entry + 0x10), *(f32 *)(entry + 0x14),
             *(s32 *)(entry + 0x18), *(s32 *)(entry + 0xC), *(s32 *)entry);
         offset += 0x1C;
-        i++;
+        index++;
     }
-    fn_802E3AD0(arg1, lbl_80559E14);
+    fn_802E3AD0(outputHandle, lbl_80559E14);
 }
 #pragma use_lmw_stmw off
 extern "C" void fn_8014595C(void *arg0, const char *arg1) {
