@@ -1662,6 +1662,7 @@ clear_nodes:
         while (node) { node->count = zero; node->batches = (RenderBatch *)zero; node = node->next; }
     }
 }
+#pragma pop
 
 extern int lbl_804C0088[];
 extern char lbl_8034AA50[];
