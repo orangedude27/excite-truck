@@ -233,8 +233,8 @@ void fn_8022A8E4(int arg0) {
     extern void fn_80235380(void *);
     unsigned long offset;
     register unsigned char *entry;
-    register unsigned int *destination;
     register const unsigned int *source;
+    register unsigned int *destination;
     register unsigned int b, a;
     float f0, f1;
 
@@ -248,8 +248,8 @@ void fn_8022A8E4(int arg0) {
     if (*(void **)(entry + 0x70) != 0) fn_80235380(*(void **)(entry + 0x70));
 
     entry[0] = *(unsigned char *)lbl_80497D68;
-    destination = (unsigned int *)((unsigned char *)lbl_80490968 + arg0 * 0x74);
     source = (const unsigned int *)lbl_80497D68;
+    destination = (unsigned int *)((unsigned char *)lbl_80490968 + arg0 * 0x74);
     a = source[1];
     b = source[2];
     destination[1] = a; a = source[3];
@@ -1368,12 +1368,11 @@ int fn_8022CD0C(char *arg0) {
     return result;
 }
 
-extern char lbl_8033FBE8[];
-extern char lbl_8055B930[];
-extern char lbl_8055B938[];
-extern char lbl_8055B940[];
-extern char lbl_8055B948[];
-extern char lbl_8055B950[];
+__declspec(section ".sdata") extern char lbl_8055B930[];
+__declspec(section ".sdata") extern char lbl_8055B938[];
+__declspec(section ".sdata") extern char lbl_8055B940[];
+__declspec(section ".sdata") extern char lbl_8055B948[];
+__declspec(section ".sdata") extern char lbl_8055B950[];
 extern char lbl_8033FBE8[], lbl_8055B930[], lbl_8055B938[], lbl_8055B940[], lbl_8055B948[], lbl_8055B950[];
 #pragma dont_inline(fn_8022CD0C)
 void fn_8022CDE4(int *d, void *o) {
