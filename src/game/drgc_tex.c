@@ -137,27 +137,37 @@ void fn_802D768C(void *arg0) {
 
 #pragma scheduling invalid_target
 #pragma dont_inline on
-int fn_802D76DC(int arg0) {
-    switch (arg0) {
-    case 3:
-    case 0x40:
-    case 0x41:
-    case 0x43:
-    case 0x46:
-    case 0x47:
-    case 0x4A:
-    case 0x4B:
+/* Does this drgc texture format carry an alpha channel?  1 = yes: fn_802D7780
+ * then sets the 0x100 bit of the texture's draw-state word (+0xE0), which is
+ * what makes the texture stage take TEV alpha from the texture (GX_CA_TEXA in
+ * the TEV pipeline builder fn_802D2684).  Paletted formats count as alpha
+ * because their CLUT entries carry it; the CMPR pair splits on the alpha block
+ * (DRTEX_CMPR_A vs DRTEX_CMPR), and DRTEX_CMPR_I4 keeps its alpha in the second
+ * (I4) texture, so the primary one reports none.  The legacy paletted ids 0 and
+ * 1 are deliberately absent: they abort here, so only the 0x40.. pair reaches
+ * this code.  An id the switch does not know prints
+ * "drgc/tex: 0x%x is unrecognized tex format" and exits. */
+int fn_802D76DC(int format) {
+    switch (format) {
+    case DRTEX_OLD_RGBA8:
+    case DRTEX_C4:
+    case DRTEX_C8:
+    case DRTEX_CMPR_A:
+    case DRTEX_RGB5A3:
+    case DRTEX_RGBA8:
+    case DRTEX_IA4:
+    case DRTEX_IA8:
         return 1;
-    case 2:
-    case 0x42:
-    case 0x44:
-    case 0x45:
-    case 0x48:
-    case 0x49:
-    case 0x4C:
+    case DRTEX_OLD_RGB565:
+    case DRTEX_CMPR:
+    case DRTEX_CMPR_I4:
+    case DRTEX_RGB565:
+    case DRTEX_I4:
+    case DRTEX_I8:
+    case DRTEX_FMT_4C:
         return 0;
     }
-    fn_802E317C(lbl_8034C4B0, arg0);
+    fn_802E317C(lbl_8034C4B0, format);
     return 1;
 }
 #pragma dont_inline reset
