@@ -193,15 +193,19 @@ void fn_8013BF3C(void) {
 }
 
 #pragma scheduling invalid_target
-void *fn_8013BF40(char *arg0) {
-    void *p = fn_801284F8(0x78, lbl_8032C414);
+/* Builds the default LineInfo the resource cache falls back on when a named
+   resource cannot be opened: a fresh record carrying that name, the default
+   line parameters at +0x40 and the default curve parameters at +0x60, and no
+   buffer yet.  Returns NULL when the record cannot be allocated. */
+void *fn_8013BF40(char *name) {
+    CacheResource *line = (CacheResource *)fn_801284F8(sizeof(CacheResource), LINE_INFO_TAG);
     int count;
     char *dst;
     unsigned char c;
-    if (p != 0)
-        fn_8013A264((char *)p + 0x40);
-    dst = (char *)p;
-    count = 0x40;
+    if (line != 0)
+        fn_8013A264(line->blocks);
+    dst = (char *)line;
+    count = sizeof(line->name);
     goto copy;
 count_check:
     if (--count > 0)
@@ -209,14 +213,14 @@ count_check:
     dst[-1] = 0;
     goto copied;
 copy:
-    c = (unsigned char)*arg0++;
+    c = (unsigned char)*name++;
     *dst++ = c;
     if ((signed char)c != 0)
         goto count_check;
 copied:
-    ((void (*)(void *))fn_8013BF3C)((char *)p + 0x60);
-    *(volatile int *)((char *)p + 0x74) = 0;
-    return p;
+    ((void (*)(void *))fn_8013BF3C)(line->params);
+    *(volatile int *)&line->buffer = 0;
+    return line;
 }
 #pragma scheduling on
 void fn_8013BFE0(void) {
