@@ -637,12 +637,10 @@ extern "C" s32 fn_8016C5F0(void) {
         virtual void m2();
         virtual const char *search(const char *);
     };
-
     Manager *manager = *(Manager **)((char *)fn_8000AC38() + 0x20);
     void *resource = fn_80204EA0(lbl_803307C8);
     s32 count = 0;
     char buffer[0x1E];
-
     if (manager->probe(resource) != 0) {
         manager->release(resource);
         SourceList *list = (SourceList *)fn_80131810();
@@ -650,15 +648,14 @@ extern "C" s32 fn_8016C5F0(void) {
             for (;;) {
                 s32 found = 0;
                 s32 i;
-
                 fn_801345D8(buffer, 0x1E, lbl_8055A218, count);
                 for (i = 0; list->at(i) != 0; i++) {
-                    Entry *entry = (Entry *)list->at(i);
-                    if (strcmp(entry->name(), lbl_803307D8) == 0 &&
-                        strstr(entry->search(lbl_8055A220), buffer) != 0) {
-                        found = 1;
-                        count++;
-                        break;
+                    if (strcmp(((Entry *)list->at(i))->name(), lbl_803307D8) == 0) {
+                        if (strstr(((Entry *)list->at(i))->search(lbl_8055A220), buffer) != 0) {
+                            found = 1;
+                            count++;
+                            break;
+                        }
                     }
                 }
                 if (found == 0) {
@@ -1414,24 +1411,28 @@ extern f32 lbl_8055E3C8;
 extern f32 lbl_80561998;
 extern void fn_8001B450(s32);
 extern void fn_802BAF98(void *, s8);
-void fn_8016DFB8(void *arg0) {
-    char sp8[30];
-    char *base = lbl_803306D0;
-    switch (*(s32 *)((u8 *)arg0 + 0x44)) {
+void fn_8016DFB8(void *object) {
+    /* Formats a mode-specific label for this object's value (+0x2C) based on its
+       display mode (+0x44): modes 0/1/2 use format strings at lbl_803306D0+0x264/
+       0x270/0x27C, any other logs the error string at +0x288, then passes the
+       resulting text buffer to fn_8016A15C. */
+    char textBuffer[30];
+    char *formatBase = lbl_803306D0;
+    switch (*(s32 *)((u8 *)object + 0x44)) {
     case 0:
-        fn_801345D8(sp8, 0x1E, base + 0x264, *(s32 *)((u8 *)arg0 + 0x2C));
+        fn_801345D8(textBuffer, 0x1E, formatBase + 0x264, *(s32 *)((u8 *)object + 0x2C));
         break;
     case 1:
-        fn_801345D8(sp8, 0x1E, base + 0x270, *(s32 *)((u8 *)arg0 + 0x2C));
+        fn_801345D8(textBuffer, 0x1E, formatBase + 0x270, *(s32 *)((u8 *)object + 0x2C));
         break;
     case 2:
-        fn_801345D8(sp8, 0x1E, base + 0x27C, *(s32 *)((u8 *)arg0 + 0x2C));
+        fn_801345D8(textBuffer, 0x1E, formatBase + 0x27C, *(s32 *)((u8 *)object + 0x2C));
         break;
     default:
-        fn_802E317C(base + 0x288);
+        fn_802E317C(formatBase + 0x288);
         break;
     }
-    fn_8016A15C(sp8);
+    fn_8016A15C(textBuffer);
 }
 
 #pragma scheduling invalid_target
@@ -2061,13 +2062,13 @@ extern "C" void fn_8016FE2C(void *arg0, s32 arg1) {
     extern void fn_802C744C(s32, void *);
     extern void fn_802C9900(void);
     extern void fn_802C9904(void);
-    f32 f29 = lbl_80561980;
-    f32 f28 = lbl_80561984;
+    f32 b0 = lbl_80561980;
+    f32 b1 = lbl_80561984;
     s32 i = 0;
-    f32 f30 = lbl_805619A4;
-    f32 f31 = lbl_80561A0C;
+    f32 b2 = lbl_805619A4;
+    f32 b3 = lbl_80561A0C;
     s32 offset = 0;
-    f32 f27 = lbl_805619D0;
+    f32 b4 = lbl_805619D0;
     u8 *entry;
     s32 j;
     s32 suboff;
@@ -2092,37 +2093,38 @@ first_check:
         if (j < *(s32 *)((u8 *)*(void **)entry + 4)) {
             goto first_body;
         }
+        goto outer_inc;
     }
-    if (*(u8 *)(entry + 9) == 0) {
-        t = lbl_8055E3C8 - *(f32 *)(entry + 0xC);
-        if (t < f27) {
-            v = (t - f29) / f27;
-            if (f28 < v) {
-                v = f28;
-            }
-            if (v > f29) {
-                v = f29;
-            }
-            if (f28 + v * f30 > f31) {
-                fn_802C9900();
-                j = 0;
-                suboff = 0;
-                goto second_check;
+    if (*(u8 *)(entry + 9) != 0) {
+        goto outer_inc;
+    }
+    t = lbl_8055E3C8 - *(f32 *)(entry + 0xC);
+    if (t < b4) {
+        v = (t - b0) / b4;
+        if (b1 < v) {
+            v = b1;
+        }
+        v = v > b0 ? b0 : v;
+        if (b1 + v * b2 > b3) {
+            fn_802C9900();
+            j = 0;
+            suboff = 0;
+            goto second_check;
 second_body:
-                item = *(u8 **)*(void **)entry + suboff;
-                if (*(s32 *)(item + 0xC) == 1) {
-                    fn_802C744C(*(s32 *)item, item + 0x14);
-                }
-                suboff += 0x44;
-                j += 1;
-second_check:
-                if (j < *(s32 *)((u8 *)*(void **)entry + 4)) {
-                    goto second_body;
-                }
-                fn_802C9904();
+            item = *(u8 **)*(void **)entry + suboff;
+            if (*(s32 *)(item + 0xC) == 1) {
+                fn_802C744C(*(s32 *)item, item + 0x14);
             }
+            suboff += 0x44;
+            j += 1;
+second_check:
+            if (j < *(s32 *)((u8 *)*(void **)entry + 4)) {
+                goto second_body;
+            }
+            fn_802C9904();
         }
     }
+outer_inc:
     offset += 0x14;
     i += 1;
 outer_check:
