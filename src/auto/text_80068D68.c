@@ -21185,6 +21185,7 @@ void rfc_mx_sm_state_wait_conn_cnf(void *muxCb, s32 event, void *eventData) {
     }
 }
 
+/* Handle RFCOMM multiplexer events while in the configure state. */
 void rfc_mx_sm_state_configure(void *p_mcb, s32 event, void *p_data) {
     extern u8 lbl_803C4828[];
     extern char jumptable_803197F8[];
