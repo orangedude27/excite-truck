@@ -91,28 +91,31 @@ extern "C" int lbl_8055E188;
 #pragma cplusplus on
 #pragma dont_inline on
 extern "C" void fn_8013C804(void) {
-    SearchObject *object;
-    const char *name;
-    void *entry;
-    int index;
+    /* Load the "carclass.val" search manager, then for each returned object look up
+     * its registry entry by name and, unless the entry's type (+4) is 6, store the
+     * object pointer at +8. Reports an error if the manager cannot be loaded. */
+    SearchObject *managerObject;
+    const char *objectName;
+    void *registryEntry;
+    int objectIndex;
 
     fn_8013C748();
     lbl_8055E188 = fn_80131808((int)lbl_8032C4C0);
     if (lbl_8055E188 != 0) {
-        index = 0;
+        objectIndex = 0;
         goto get_object;
     }
     goto report_error;
 loop_body:
-    name = object->name();
-    entry = fn_8013C770(name);
-    if (*(int *)((char *)entry + 4) != 6) {
-        *(void **)((char *)entry + 8) = object;
+    objectName = managerObject->name();
+    registryEntry = fn_8013C770(objectName);
+    if (*(int *)((char *)registryEntry + 4) != 6) {
+        *(void **)((char *)registryEntry + 8) = managerObject;
     }
-    index += 1;
+    objectIndex += 1;
 get_object:
-    object = ((SearchManager *)lbl_8055E188)->get(index);
-    if (object != 0) {
+    managerObject = ((SearchManager *)lbl_8055E188)->get(objectIndex);
+    if (managerObject != 0) {
         goto loop_body;
     }
     return;
@@ -177,16 +180,16 @@ extern "C" int fn_8013C8E8(const char *arg0) {
     int unused;
     const char *name;
     void *manager;
-
     i = 0;
     do {
         manager = ((void *(*)(int))fn_8013C800)(i);
         result = ((SearchHead *)*(void **)((char *)manager + 8))->get(lbl_80559D10);
         j = 0;
         do {
-            if (stricmp(name, arg0) == 0)
+            if (stricmp(name, arg0) == 0) {
                 return *(int *)((char *)manager + 4);
-        } while (result->query(++j, &unused, &name) != 0);
+            }
+        } while (((volatile SearchResult *)result)->query(++j, &unused, &name) != 0);
         i++;
     } while (i < 5);
     return 6;
