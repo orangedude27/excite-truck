@@ -11808,24 +11808,41 @@ int btm_num_sco_links_active(void) {
     int count = 0;
     int state;
     state = *(unsigned short *)(base + 0x185c);
-    if (state >= 7) goto next1;
-    if (state >= 2) goto set1;
-    goto next1;
-set1:
-    count = 1;
-next1:
+    switch (state) {
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+        count = 1;
+        break;
+    default:
+        break;
+    }
     state = *(unsigned short *)(base + 0x1890);
-    if (state >= 7) goto next2;
-    if (state >= 2) goto set2;
-    goto next2;
-set2:
-    count++;
-next2:
-    state = *(unsigned short *)(base + 0x18c4);
-    if (state >= 7)
-        return count;
-    if (state >= 2)
+    switch (state) {
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    case 6:
         count++;
+        break;
+    default:
+        break;
+    }
+    state = *(unsigned short *)(base + 0x18c4);
+    switch (state) {
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+        count++;
+        break;
+    default:
+        break;
+    }
     return count;
 }
 
