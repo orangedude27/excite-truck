@@ -1821,10 +1821,7 @@ void fn_80174918(void *arg0, int arg1) {
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma cplusplus on
-#pragma push
-#pragma small_data on
-extern "C" const char lbl_8055A2EC[4];
-#pragma pop
+extern "C" __declspec(section ".sdata") const char lbl_8055A2EC[4];
 extern "C" void fn_80175080(void **arg0, int arg1, int arg2, char *fmt, double farg0, ...) {
     struct Dummy {
         virtual void *unused();
