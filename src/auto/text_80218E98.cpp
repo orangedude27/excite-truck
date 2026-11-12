@@ -5219,16 +5219,17 @@ extern "C" void fn_80222788(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) 
     }
 }
 #pragma pop
-extern "C" void fn_80222800(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg4, s32 *arg5, s32 *arg6) {
-    *arg3 = arg1;
-    *arg4 = arg2;
-    s32 field = *(s32 *)((u8 *)arg0 + 4);
-    if (field == 0) {
-        *arg5 = arg1 + 10;
-        *arg6 = arg2 + 10;
+extern "C" void fn_80222800(void *resource, s32 x, s32 y, s32 *outX, s32 *outY, s32 *outRight, s32 *outBottom) {
+    /* Compute bounds for a resource: returns (x,y) and (x+width, x+height); uses 10x10 when the handle is null. */
+    *outX = x;
+    *outY = y;
+    s32 handle = *(s32 *)((u8 *)resource + 4);
+    if (handle == 0) {
+        *outRight = x + 10;
+        *outBottom = y + 10;
     } else {
-        *arg5 = arg1 + (s32)fn_80235EF0(field, 0);
-        *arg6 = arg1 + (s32)fn_80235F64(*(s32 *)((u8 *)arg0 + 4), 0);
+        *outRight = x + (s32)fn_80235EF0(handle, 0);
+        *outBottom = x + (s32)fn_80235F64(*(s32 *)((u8 *)resource + 4), 0);
     }
 }
 #pragma pop
