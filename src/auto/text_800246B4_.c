@@ -32,28 +32,29 @@ typedef struct FILE {
 } FILE;
 s32 fflush();
 void free(void *);
-s32 fclose(void *arg0) {
-    FILE *f = (FILE *)arg0;
-    s32 temp_r30;
-    s32 temp_r31;
-    s32 var_r0;
+/* Flushes and closes a stream, freeing its owned buffer; returns 0 on success, -1 on failure or NULL. */
+s32 fclose(void *stream) {
+    FILE *file = (FILE *)stream;
+    s32 flushResult;
+    s32 closeResult;
+    s32 failed;
 
-    if (arg0 == 0) {
+    if (stream == 0) {
         return -1;
     }
-    if (f->file_kind == 0) {
+    if (file->file_kind == 0) {
         return 0;
     }
-    temp_r30 = fflush(f);
-    temp_r31 = f->close(f->fp);
-    f->fp = 0;
-    f->file_kind = 0;
-    if (f->free_buffer != 0) {
-        free(f->mem);
+    flushResult = fflush(file);
+    closeResult = file->close(file->fp);
+    file->fp = 0;
+    file->file_kind = 0;
+    if (file->free_buffer != 0) {
+        free(file->mem);
     }
-    var_r0 = 0;
-    if ((temp_r30 != 0) || (temp_r31 != 0)) {
-        var_r0 = 1;
+    failed = 0;
+    if ((flushResult != 0) || (closeResult != 0)) {
+        failed = 1;
     }
-    return -var_r0;
+    return -failed;
 }
