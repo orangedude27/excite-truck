@@ -9536,7 +9536,7 @@ extern "C" s32 fn_800B51FC(void *arg0, s32 arg1) {
 
 extern "C" s32 fn_800A8EA0(void *, u32, void **);
 extern "C" s32 fn_800B5260(void *volume, void *dst, u32 sector, u32 offset, s32 size) {
-    /* Reads `size` bytes from the cached page for `sector` of `volume` at byte `offset` into `dst` (VFipf cache read helper). */
+    /* Reads `size` bytes from the cached page for `sector` of `volume` at byte `offset` into `dst` (returns 9 if inaccessible, 10 if out of range). */
     void *page;
     if (!(M2C_FIELD(volume, u16 *, 0x1F8C) & 1) || fn_800A53B4(volume) == 0) {
         return 9;
