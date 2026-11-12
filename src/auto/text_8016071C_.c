@@ -167,16 +167,17 @@ int fn_80160998(int arg0) {
 }
 #pragma dont_inline off
 
+/* Returns a rank index for value using the active handler if present, otherwise scans the 5-entry bounds table. */
 int fn_801609C4(int value) {
-    int i;
-    int *p;
+    int index;
+    int *boundPtr;
     if (lbl_8055E2BC != 0)
         return fn_8001D9B4((int *)lbl_8055E2BC, value);
-    p = lbl_8042FD60;
-    for (i = 0; i < 5; i++) {
-        int bound = *p++;
+    boundPtr = lbl_8042FD60;
+    for (index = 0; index < 5; index++) {
+        int bound = *boundPtr++;
         if (bound >= 0 && value >= bound)
-            return i;
+            return index;
     }
     return 4;
 }
