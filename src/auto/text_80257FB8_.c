@@ -5,21 +5,26 @@ extern int fn_80161D14(void);
 extern int fn_80161ECC(void);
 extern void fn_80161E40(int);
 extern int fn_8016208C(void);
-#pragma dont_inline on
+#pragma use_lmw_stmw off
 int fn_80257FB8(void) {
-    int total = fn_80161D14();
-    int count = fn_80161ECC();
-    int accum = 0;
-    int i = 0;
+    register int total asm("r30");
+    register int count asm("r31");
+    register int accum asm("r29");
+    register int i asm("r28");
+    total = fn_80161D14();
+    count = fn_80161ECC();
+    accum = 0;
+    i = 0;
     while (i < count) {
         fn_80161E40(i);
         accum += fn_8016208C();
-        if (total <= accum) return i;
+        if (total <= accum)
+            return i;
         i++;
     }
     return 0;
 }
-#pragma dont_inline reset
+#pragma use_lmw_stmw reset
 
 __declspec(section ".sdata") extern int lbl_8055F370;
 extern void fn_80214CB4(int);
@@ -29,6 +34,7 @@ extern void fn_80214AF0(int);
 #pragma push
 #pragma use_lmw_stmw off
 void fn_80258040(void) {
+    /* Update per-track UI elements based on the current playback position/width progress. */
     int total, count, accum, i, width;
     fn_80214CB4(lbl_8055F370);
     total = fn_80161D14();
@@ -94,13 +100,13 @@ extern void fn_80258040(void);
 #pragma dont_inline fn_80257FB8
 void fn_8025812C(void) {
     MenuArgs args;
-    int result, previous, current;
+    int temp_r18, temp_r31, temp_r3, temp_r3_2;
 
     lbl_8055F368 = fn_80257FB8();
-    current = fn_8000DA10();
-    if (((int *)&lbl_8055F370)[1] != current) {
+    temp_r3 = fn_8000DA10();
+    if (((int *)&lbl_8055F370)[1] != temp_r3) {
         int old = *(volatile int *)&lbl_8055F368;
-        ((volatile int *)&lbl_8055F370)[1] = current;
+        ((volatile int *)&lbl_8055F370)[1] = temp_r3;
         *(volatile int *)&lbl_8055F370 = old;
     }
 
@@ -151,14 +157,14 @@ void fn_8025812C(void) {
     args.header.v[1] = (int)args.entries;
 
     do {
-        result = fn_802146BC(&args.header, -999, -999, 1);
-        previous = fn_80257FB8();
-        if (result != -1) {
-            fn_80161F10(result);
-            current = fn_80257FB8();
-            if (current != previous) lbl_8055F370 = current;
+        temp_r18 = fn_802146BC(&args.header, -999, -999, 1);
+        temp_r31 = fn_80257FB8();
+        if (temp_r18 != -1) {
+            fn_80161F10(temp_r18);
+            temp_r3_2 = fn_80257FB8();
+            if (temp_r3_2 != temp_r31) *(int *)&lbl_8055F370 = temp_r3_2;
         }
-    } while (result != -1);
+    } while (temp_r18 != -1);
 }
 #pragma scheduling on
 #pragma pop
