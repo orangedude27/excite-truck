@@ -24,6 +24,12 @@ struct WsdPlayerIface {
     virtual float m8C(int); virtual float m90(int); virtual float m94(int);
 };
 extern "C" const char lbl_80328030[];
+struct CharStrmReaderMsgs {
+    char file[0x18];
+    char msgThis[0x38];
+    char msgStrm[0xAC];
+    char msgAlign[0x50];
+};
 extern "C" const char lbl_80327EE0[];
 extern "C" void Warning__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
 // split_file divides it into the game's real files (file_status shows its range).
@@ -543,7 +549,7 @@ extern "C" unsigned short ReadNextCharUTF16__Q36nw4hbm2ut14CharStrmReaderFv(void
 
 extern "C" const char lbl_80328030[];
 extern "C" unsigned char ReadNextCharCP1252__Q36nw4hbm2ut14CharStrmReaderFv(void *arg0) {
-    const char *file = lbl_80328030;
+    const char (&file)[0x200] = *(const char (*)[0x200])lbl_80328030;
     int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
     unsigned int top = (unsigned int)arg0 & 0xFF000000U;
     if (top != 0x80000000U && ((unsigned int)arg0 & 0xFF800000U) != 0x81000000U) r10 = 0;
@@ -552,7 +558,7 @@ extern "C" unsigned char ReadNextCharCP1252__Q36nw4hbm2ut14CharStrmReaderFv(void
     if (r8 == 0 && ((unsigned int)arg0 & 0xFF800000U) != 0xC1000000U) r7 = 0;
     if (r7 == 0 && ((unsigned int)arg0 & 0xF8000000U) != 0xD0000000U) r6 = 0;
     if (r6 == 0 && ((unsigned int)arg0 & 0xFFFFC000U) != 0xE0000000U) r5 = 0;
-    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(&file[0], 0x9B, &file[0x18], arg0);
+    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x9B, file + 0x18, arg0);
     int f4 = 1, f5 = 1;
     unsigned int value = *(unsigned int *)arg0;
     int f6 = 1, f7 = 1, f8 = 1, f9 = 1;
@@ -563,9 +569,11 @@ extern "C" unsigned char ReadNextCharCP1252__Q36nw4hbm2ut14CharStrmReaderFv(void
     if (f7 == 0 && (value & 0xFF800000U) != 0xC1000000U) f6 = 0;
     if (f6 == 0 && (value & 0xF8000000U) != 0xD0000000U) f5 = 0;
     if (f5 == 0 && (value & 0xFFFFC000U) != 0xE0000000U) f4 = 0;
-    if (f4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328030 + 0, 0x9C, file + 0x50);
-    unsigned char result = **(unsigned char **)arg0;
-    *(unsigned int *)arg0 = *(unsigned int *)arg0 + 1;
+    if (f4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x9C, file + 0x50);
+    unsigned int v1 = *(volatile unsigned int *)arg0;
+    unsigned int v2 = *(volatile unsigned int *)arg0;
+    unsigned char result = *(unsigned char *)v1;
+    *(volatile unsigned int *)arg0 = v2 + 1;
     return result;
 }
 
@@ -681,7 +689,12 @@ extern "C" s32 fn_801033F0(s32 arg0, s32 arg1) {
 }
 
 extern "C" void SetFont__Q36nw4hbm2ut10CharWriterFRCQ36nw4hbm2ut4Font(void *arg0, void *arg1) {
-    const char *panicData = lbl_80328178;
+    struct PanicData {
+        char file[0x14];
+        char msg1[0x38];
+        char msg2[0x38];
+    };
+    const PanicData *panicData = (const PanicData *)lbl_80328178;
     void *writer = arg0;
     void *font = arg1;
 
@@ -693,7 +706,7 @@ extern "C" void SetFont__Q36nw4hbm2ut10CharWriterFRCQ36nw4hbm2ut4Font(void *arg0
     if (r8 == 0 && (((unsigned int)writer & 0xFF800000) != 0xC1000000)) r7 = 0;
     if (r7 == 0 && (((unsigned int)writer & 0xF8000000) != 0xD0000000)) r6 = 0;
     if (r6 == 0 && (((unsigned int)writer & 0xFFFFC000) != 0xE0000000)) r5 = 0;
-    if (r5 == 0) ((void (*)(const char *, int, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(panicData, 0x85, panicData + 0x14, writer);
+    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(panicData->file, 0x85, panicData->msg1, writer);
 
     int f4 = 1, f5 = 1, f6 = 1, f7 = 1, f8 = 1, f9 = 1;
     unsigned int ftop = (unsigned int)font & 0xFF000000;
@@ -703,7 +716,7 @@ extern "C" void SetFont__Q36nw4hbm2ut10CharWriterFRCQ36nw4hbm2ut4Font(void *arg0
     if (f7 == 0 && (((unsigned int)font & 0xFF800000) != 0xC1000000)) f6 = 0;
     if (f6 == 0 && (((unsigned int)font & 0xF8000000) != 0xD0000000)) f5 = 0;
     if (f5 == 0 && (((unsigned int)font & 0xFFFFC000) != 0xE0000000)) f4 = 0;
-    if (f4 == 0) ((void (*)(const char *, int, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(panicData, 0x86, panicData + 0x4C, font);
+    if (f4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(panicData->file, 0x86, panicData->msg2, font);
 
     *(void **)((char *)writer + 0x48) = font;
 }
@@ -1324,7 +1337,6 @@ extern "C" float GetFontWidth__Q36nw4hbm2ut10CharWriterCFv_801058DC(void *arg0) 
     };
     const char *base = lbl_80328178;
     void *self = arg0;
-
     int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
     unsigned int top = (unsigned int)self & 0xFF000000U;
     if (top != 0x80000000U && ((unsigned int)self & 0xFF800000U) != 0x81000000U) r10 = 0;
@@ -1333,8 +1345,7 @@ extern "C" float GetFontWidth__Q36nw4hbm2ut10CharWriterCFv_801058DC(void *arg0) 
     if (r8 == 0 && ((unsigned int)self & 0xFF800000U) != 0xC1000000U) r7 = 0;
     if (r7 == 0 && ((unsigned int)self & 0xF8000000U) != 0xD0000000U) r6 = 0;
     if (r6 == 0 && ((unsigned int)self & 0xFFFFC000U) != 0xE0000000U) r5 = 0;
-    if (r5 == 0) ((void (*)(const char *, int, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(base, 0x27B, base + 0x14, self);
-
+    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x27B, base + 0x14, self);
     {
         int f4 = 1, f5 = 1;
         void *font = *(void **)((char *)self + 0x48);
@@ -1346,9 +1357,8 @@ extern "C" float GetFontWidth__Q36nw4hbm2ut10CharWriterCFv_801058DC(void *arg0) 
         if (f8 == 0 && ((unsigned int)font & 0xFF800000U) != 0xC1000000U) f7 = 0;
         if (f7 == 0 && ((unsigned int)font & 0xF8000000U) != 0xD0000000U) f5 = 0;
         if (f5 == 0 && ((unsigned int)font & 0xFFFFC000U) != 0xE0000000U) f4 = 0;
-        if (f4 == 0) ((void (*)(const char *, int, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(base, 0x27C, base + 0xF4, font);
+        if (f4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x27C, base + 0xF4);
     }
-
     const FontVTable *f = *(const FontVTable **)((char *)self + 0x48);
     int width = f->GetWidth();
     return *(float *)((char *)self + 0x28) * (float)width;
