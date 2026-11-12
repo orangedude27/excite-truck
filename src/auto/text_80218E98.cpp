@@ -2331,38 +2331,32 @@ extern "C" void fn_8021C478(void *arg0) {
 }
 
 extern "C" void fn_8021C4D4(void *arg0) {
-    register u8 *self = (u8 *)arg0;
-    register s32 *statusPtr;
+    u8 *self = (u8 *)arg0;
+    s32 *statusPtr;
     s32 state;
-    register s32 valid;
+    s32 valid;
     s32 temp;
     s32 first;
     s32 second;
     f32 sp14;
     f32 sp10;
-
     fn_80219660((void *)self);
     statusPtr = *(s32 **)(self + 0x2A8);
     valid = 0;
-    state = (s32)statusPtr;
     if (statusPtr != 0) {
-        state = *statusPtr;
-        if (state == *(s32 *)(self + 0x2AC)) {
+        if (*statusPtr == *(s32 *)(self + 0x2AC))
             valid = 1;
-            state = *(s32 *)(self + 0x2CC);
-        }
     }
-    if (valid != 0) {
-        valid = (s32)((u32)(valid | -valid) >> 31);
-        if (state == 0) {
-            if (*(s32 *)(self + 0x2C8) != 0) {
-                ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, f32, s32))fn_8022BAD0)(
-                    *(s32 *)(self + 0x2C4), *(s32 *)(self + 0x2BC),
-                    *(s32 *)(self + 0x2B8) - 3, 0, 0, 0,
-                    *(s32 *)(self + 0x2C8), valid, lbl_805634A8, 1);
-            }
-            goto after_modes;
+    state = *(s32 *)(self + 0x2CC);
+    valid = (s32)(((u32)(valid | -valid)) >> 31);
+    if (state == 0) {
+        if (*(s32 *)(self + 0x2C8) != 0) {
+            ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, f32, s32))fn_8022BAD0)(
+                *(s32 *)(self + 0x2C4), *(s32 *)(self + 0x2BC),
+                *(s32 *)(self + 0x2B8) - 3, 0, 0, 0,
+                *(s32 *)(self + 0x2C8), valid, lbl_805634A8, 1);
         }
+        goto after_modes;
     }
     if (state == 1 && *(s32 *)(self + 0x2C8) != 0) {
         ((void (*)(s32, s32, s32, s32, s32, s32, s32, s32, f32, s32))fn_8022BAD0)(
@@ -3876,7 +3870,6 @@ handled:
 #pragma scheduling on
 }
 
-extern "C" void *lbl_8033EF68;
 #pragma push
 #pragma small_data off
 extern "C" void *lbl_8033E8FC[];
@@ -4500,13 +4493,12 @@ extern "C" void fn_80220A50(void *arg0, s32 arg1) {
     register s32 frame = arg1;
     register s32 field4 = *(s32 *)((u8 *)arg0 + 4);
     register s32 field250 = *(s32 *)((u8 *)arg0 + 0x250);
-    register s32 duration = ((Dispatch *)arg0)->get();
+    s32 duration = ((Dispatch *)arg0)->get();
     register s32 range = *(volatile s32 *)((u8 *)arg0 + 0x254);
     register s32 time = frame - field4;
     time -= 5;
     register s32 distance = range - field250;
-    register s32 tmp = distance * time;
-    register s32 adjusted = tmp;
+    register s32 adjusted = distance * time;
     duration -= 10;
     adjusted /= duration;
     register s32 result = field250;
