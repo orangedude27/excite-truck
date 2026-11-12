@@ -22524,25 +22524,26 @@ void rfc_send_dm(void *p_mcb, u8 dlci, u8 pf) {
 
 typedef struct tRFC_MCB tRFC_MCB;
 
-void rfc_send_disc(void *arg0, s32 arg1, void *arg2) {
+/* Send an RFCOMM DISC (disconnect) command frame for dlci on the multiplexer control block. */
+void rfc_send_disc(void *p_mcb, s32 dlci, void *unused) {
     BT_HDR *p_buf;
     u8 *p_data;
     u8 is_initiator;
     u8 cr;
 
-    is_initiator = *((u8 *)arg0 + 0x6D);
+    is_initiator = *((u8 *)p_mcb + 0x6D);
     cr = (u8)((((is_initiator) && 1) || (!(is_initiator) && !1)) << 1);
     if ((p_buf = (BT_HDR *)GKI_getpoolbuf(2)) == 0)
         return;
 
     p_buf->offset = 9;
     p_data = (u8 *)(p_buf + 1) + 9;
-    *p_data++ = 1 | cr | (((u8)arg1) << 2);
+    *p_data++ = 1 | cr | (((u8)dlci) << 2);
     p_data[0] = 0x53;
     p_data[1] = 1;
     p_data[2] = fn_8009504C(3, (u8 *)(p_buf + 1) + 9);
     p_buf->len = 4;
-    rfc_check_send_cmd(arg0, p_buf);
+    rfc_check_send_cmd(p_mcb, p_buf);
 }
 
 /* Builds and sends an RFCOMM UIH frame for a DLCI, prepending address/control,
