@@ -105,7 +105,7 @@ void fn_8013A7E8(unkVtable **arg0, char *arg1, char *arg2) {
 extern char lbl_8032C1E8[];
 extern char lbl_8032C1F8[];
 #pragma cplusplus on
-extern "C" int fn_8013A860(float *arg0, void *arg1) {
+extern "C" int fn_8013A860(float *outValues, void *reader) {
     class LocalVtable {
     public:
         virtual void v1();
@@ -117,12 +117,13 @@ extern "C" int fn_8013A860(float *arg0, void *arg1) {
         virtual void v7();
         virtual float get(char *);
     };
-    int result = ((LocalVtable *)arg1)->check(lbl_8032C1E8);
-    if (result != 0) {
-        arg0[0] = ((LocalVtable *)arg1)->get(lbl_8032C1F8);
-        arg0[1] = ((LocalVtable *)arg1)->get(lbl_8032C1E8);
+    /* Read "speed_factor"/"skill_range" from reader into outValues[0..1] (skill_range, speed_factor); return nonzero if present. */
+    int hasValue = ((LocalVtable *)reader)->check(lbl_8032C1E8);
+    if (hasValue != 0) {
+        outValues[0] = ((LocalVtable *)reader)->get(lbl_8032C1F8);
+        outValues[1] = ((LocalVtable *)reader)->get(lbl_8032C1E8);
     }
-    return result;
+    return hasValue;
 }
 
 #pragma push
