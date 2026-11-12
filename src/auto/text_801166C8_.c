@@ -18,6 +18,7 @@ extern s32 lbl_8055DEE0;
 extern s32 lbl_8055DEE8;
 extern void TRKGetFreeBuffer(void *);
 extern void fn_80117074(void*);
+#define E8117074(a) ((u8 *)(off + *(s32 *)((a) + 0x2F0)))
 extern s32 lbl_8055DED4;
 extern u32 fn_8011C1E0(s32, void *);
 extern void *memcpy(void *, const void *, u32);
@@ -542,6 +543,72 @@ u32 fn_80116F8C(void *arg0) {
     }
     return 0;
 }
+
+void fn_80117074(void *arg0) {
+    u8 *a = (u8 *)arg0;
+    u8 *e;
+    s32 off;
+    u32 i;
+    u32 sp8;
+    s32 spC;
+    u32 rem;
+    if (*(s32 *)(*(u8 **)(a + 0x2F0) + (*(u32 *)(a + 0x2E8) - 1) * 0x17C) != 0 &&
+        fn_8011C1E0(lbl_8055DED4, a + 0x340) != 0) {
+        off = 0;
+        for (i = 0; i < *(u32 *)(a + 0x2E8); i++, off += 0x17C) {
+            while (((s32 (*)(void *))*(u32 *)(*(u8 **)(a + 0x2F0) + off))(*(u8 **)(a + 0x2F0) + off) != 0) {
+                e = off + *(u8 **)(a + 0x2F0);
+                if (!(*(u32 *)(e + 0x40) > *(u32 *)(e + 0x54) ||
+                      (*(s32 *)(a + 0xC) > *(s32 *)(e + 0x48) && *(s32 *)(e + 0x40) != 0)))
+                    break;
+                if (((s32 (*)(s32 *, u32 *))*(u32 *)(e + 4))(&spC, &sp8) == 0)
+                    break;
+                if (*(s32 *)(off + *(u8 **)(a + 0x2F0) + 0x44) != 0)
+                    sp8 *= 2;
+                if (sp8 > *(u32 *)(off + *(u8 **)(a + 0x2F0) + 0x40))
+                    sp8 = *(u32 *)(off + *(u8 **)(a + 0x2F0) + 0x40);
+                e = off + *(u8 **)(a + 0x2F0);
+                if (*(s32 *)(a + 0xC) <= *(s32 *)(e + 0x48))
+                    sp8 &= *(s32 *)(e + 0x58) << *(s32 *)(e + 0x44);
+                e = off + *(u8 **)(a + 0x2F0);
+                *(u32 *)(e + 0x40) -= sp8;
+                e = off + *(u8 **)(a + 0x2F0);
+                rem = *(u32 *)(e + 0x30) - *(u32 *)(e + 0x38);
+                if (rem < sp8) {
+                    if (rem != 0) {
+                        if (*(s32 *)(e + 0x44) != 0) {
+                            spC = (s32)fn_80116EE4((s8 *)spC, 0, rem);
+                        } else {
+                            memcpy((void *)spC, 0, rem);
+                            spC += rem;
+                        }
+                    }
+                    e = off + *(u8 **)(a + 0x2F0);
+                    if (*(s32 *)(e + 0x44) != 0)
+                        fn_80116EE4((s8 *)spC, *(s16 **)(e + 0x2C), sp8 - rem);
+                    else
+                        memcpy((void *)spC, *(void **)(e + 0x2C), sp8 - rem);
+                    e = off + *(u8 **)(a + 0x2F0);
+                    *(u32 *)(e + 0x38) = *(u32 *)(e + 0x2C) + (sp8 - rem);
+                } else {
+                    if (*(s32 *)(e + 0x44) != 0)
+                        fn_80116EE4((s8 *)spC, 0, 0);
+                    else
+                        memcpy((void *)spC, 0, 0);
+                    e = off + *(u8 **)(a + 0x2F0);
+                    *(u32 *)(e + 0x38) += sp8;
+                }
+                e = off + *(u8 **)(a + 0x2F0);
+                if (*(s32 *)(e + 0x44) != 0)
+                    sp8 >>= 1;
+                e = *(u8 **)(a + 0x2F0) + off;
+                ((void (*)(void *, u32))*(u32 *)(e + 8))(e, sp8);
+            }
+        }
+        fn_8011C2EC(lbl_8055DED4, a + 0x340);
+    }
+}
+
 #pragma pop
 extern s32 fn_80116D30(void);
 void fn_80117330(void* arg0) {
