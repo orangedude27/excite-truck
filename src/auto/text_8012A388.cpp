@@ -2540,22 +2540,25 @@ extern "C" void fn_8012E630(void *arg0) {
 
   #pragma push
   #pragma scheduling invalid_target
-extern "C" void fn_8012E67C(s32 arg0, s32 arg1) {
-    u8 *self = (u8 *)arg0;
+/* Waits for the pending resource request named `name` on loader `loader` to
+ * finish loading (state 2), draining the loader's request queue meanwhile, then
+ * clears the resource entry's "pending" flag (+0xAD). */
+extern "C" void fn_8012E67C(s32 loader, s32 name) {
+    u8 *self = (u8 *)loader;
     s32 start, deadline, now, done;
     void *entry;
-    void *n;
-    u8 *node;
-    for (node = *(u8 **)(self + 0xA18); node != 0; node = *(u8 **)(node + 4)) {
-        if (stricmp((const char *)arg1, (const char *)(node + 0xC)) == 0) {
+    void *resEntry;
+    u8 *req;
+    for (req = *(u8 **)(self + 0xA18); req != 0; req = *(u8 **)(req + 4)) {
+        if (stricmp((const char *)name, (const char *)(req + 0xC)) == 0) {
             start = fn_802E2C20();
             deadline = start + 0x7D0;
-            while (fn_8012D838(*(s32 *)(node + 0x4C)) != 2) {
+            while (fn_8012D838(*(s32 *)(req + 0x4C)) != 2) {
                 fn_80127464();
                 fn_802E2D74(0xA);
                 now = fn_802E2C20();
                 if (now > deadline) {
-                    fn_802E30C8(lbl_8032AD88, (const char *)(node + 0xC));
+                    fn_802E30C8(lbl_8032AD88, (const char *)(req + 0xC));
                     deadline = now + 0x7D0;
                 }
             }
@@ -2570,9 +2573,9 @@ extern "C" void fn_8012E67C(s32 arg0, s32 arg1) {
                             fn_8012E40C((void *)*(s32 *)((u8 *)entry + 0x4C), (s32)((u8 *)entry + 0xC));
                             break;
                         case 2:
-                            n = fn_8012BD3C(lbl_8055E000, (const char *)((u8 *)entry + 0xC));
-                            *(s32 *)((u8 *)n + 0x9C) = *(s32 *)((u8 *)entry + 8);
-                            *(u8 *)((u8 *)n + 0xAD) = 1;
+                            resEntry = fn_8012BD3C(lbl_8055E000, (const char *)((u8 *)entry + 0xC));
+                            *(s32 *)((u8 *)resEntry + 0x9C) = *(s32 *)((u8 *)entry + 8);
+                            *(u8 *)((u8 *)resEntry + 0xAD) = 1;
                             fn_8012E3D4(self + 0xA18);
                             done = 1;
                             break;
@@ -2581,15 +2584,15 @@ extern "C" void fn_8012E67C(s32 arg0, s32 arg1) {
                 } while (done != 0);
                 self[0xA20] = 0;
             }
-            fn_802E30C8(lbl_8032AD6C, (const char *)(node + 0xC), fn_802E2C20() - start);
+            fn_802E30C8(lbl_8032AD6C, (const char *)(req + 0xC), fn_802E2C20() - start);
             break;
         }
     }
-    n = fn_8012BD3C(lbl_8055E000, (const char *)arg1);
-    if (n != 0) {
-        *(u8 *)((u8 *)n + 0xAD) = 0;
+    resEntry = fn_8012BD3C(lbl_8055E000, (const char *)name);
+    if (resEntry != 0) {
+        *(u8 *)((u8 *)resEntry + 0xAD) = 0;
     } else {
-        fn_802E30C8(lbl_8032AD2C, (const char *)arg1);
+        fn_802E30C8(lbl_8032AD2C, (const char *)name);
     }
 }
   #pragma pop
