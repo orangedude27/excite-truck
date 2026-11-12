@@ -20928,18 +20928,38 @@ void PORT_DlcReleaseInd(void *arg0, u8 arg1) {
         port_rfc_closed((struct t_port_info *)port, 0x13);
 }
 
-void PORT_CloseInd(void *arg0) {
+/* ---- RFCOMM port pool names (port_rfc.c) ----------------------------------
+ * rfc_cb is the RFCOMM control block at lbl_803C4828 (0x418 bytes, cleared by
+ * rfc_init_cb): its trace level (BT_TRACE_LEVEL_*) at +0x414 and the port pool
+ * at +0x68, where this build keeps 5 tPORT entries of 0xA4 bytes -- its
+ * MAX_RFC_PORTS, while the SDK's bt_target.h default is 30, so the count is
+ * spelled out under its own name.  tPORT.rfc.p_mcb, the multiplexer control
+ * block a port runs on, is at +0x6C.  port_api.h is not part of this unit, so
+ * the close reason it passes to the port callback is spelled out here too.
+ */
+#define rfc_cb                        lbl_803C4828 /* tRFC_CB */
+#define rfc_cb_ports                  (lbl_803C4828 + 0x68) /* tPORT port[0] */
+#define RFC_PORT_COUNT                5     /* tPORT entries in the pool */
+#define PORT_INFO_SIZE                0xA4  /* sizeof(tPORT) */
+#define PORT_MCB                      0x6C  /* tPORT.rfc.p_mcb */
+#define PORT_PEER_CONNECTION_FAILED   0x10  /* port_api.h: PORT_ERR_BASE + 16 */
+
+/* port_rfc.c's PORT_CloseInd(): the RFCOMM layer reports that the multiplexer
+ * connection under p_mcb is gone.  Every port running on it is closed with
+ * PORT_PEER_CONNECTION_FAILED (its callback gets the event), then the
+ * multiplexer channel itself is released. */
+void PORT_CloseInd(void *p_mcb) {
     extern u8 lbl_803C4828[];
-    extern char lbl_80319468[];
-    extern void fn_8007093C(u32, void *);
-      extern void rfc_release_multiplexer_channel(void *);
-    u8 *entry;
+    extern char lbl_80319468[];               /* "PORT_CloseInd" */
+    extern void fn_8007093C(u32, void *);     /* RFCOMM trace event -> LogMsg */
+    extern void rfc_release_multiplexer_channel(void *);
+    u8 *p_port;
     s32 i;
 
-    if (lbl_803C4828[0x414] >= 4) fn_8007093C(0x90003, lbl_80319468);
-    for (i = 0, entry = lbl_803C4828 + 0x68; i < 5; i++, entry += 0xA4)
-        if (*(void **)(entry + 0x6C) == arg0) port_rfc_closed((struct t_port_info *)entry, 0x10);
-    rfc_release_multiplexer_channel(arg0);
+    if (rfc_cb[0x414] >= BT_TRACE_LEVEL_EVENT) fn_8007093C(0x90003, lbl_80319468);
+    for (i = 0, p_port = rfc_cb_ports; i < RFC_PORT_COUNT; i++, p_port += PORT_INFO_SIZE)
+        if (*(void **)(p_port + PORT_MCB) == p_mcb) port_rfc_closed((struct t_port_info *)p_port, PORT_PEER_CONNECTION_FAILED);
+    rfc_release_multiplexer_channel(p_mcb);
 }
 
 void Port_TimeOutCloseMux(void *arg0) {
