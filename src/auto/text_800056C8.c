@@ -1735,6 +1735,8 @@ extern "C" void fn_80007AC4(void *arg0) {
     };
     s32 temp_r3;
     u32 temp_r0;
+
+    /* Initialize object state from game mode/id and global flags, and set lbl_8055D340[1]. */
     ((Obj *)arg0)->v5();
     temp_r3 = ((s32 *)fn_801E87A8())[1];
     if (((s32 *)lbl_8055D350)[5] > 1) ((s32 *)arg0)[1] = 3;
