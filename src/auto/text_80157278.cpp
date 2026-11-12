@@ -911,6 +911,15 @@ extern "C" void* fn_80158218(void* arg0, s32 arg1) {
  return arg0;
 }
 
+extern "C" s32 *fn_80158280(void *arg0, s32 *arg1) {
+    s32 val = *arg1;
+    s32 idx = ((s32 *)arg0)[1];
+    s32 *base = *(s32 **)arg0;
+    ((s32 *)arg0)[1] = idx + 1;
+    base[idx] = val;
+    return &base[idx];
+}
+
 extern "C" char lbl_8032F184[];
 extern "C" f32 lbl_80561774;
 extern "C" f32 lbl_80561770;
@@ -1184,18 +1193,21 @@ extern "C" void fn_8015889C(void* arg0) {
 #pragma push
 #pragma processor 750
 extern "C" f32 fn_801589A8(Unk801577F0* self, s32 index) {
+    /* Returns the record value for index, scaled by a 1x/2x factor when the
+       AXFX LFO state flag 0x200000 and this object's enable flags (0x271/0x270)
+       are set; returns 0 when the index is out of range or the flags are off. */
     struct V { virtual void a(); virtual void b(); virtual void c(); virtual void d(); virtual void e(); virtual void f(); virtual void g(); virtual void h(); virtual void i(); virtual void j(); virtual void k(); virtual void l(); virtual void m(); virtual void n(); virtual void o(); virtual void p(); virtual void q(); virtual s32 count(s32); };
     f32 value;
-    f32 tmp;
+    f32 scale;
     if (index >= ((V*)self)->count(index)) value = *(f32*)(*(u8**)((u8*)self + 8) + index * 0x38 + 0x10);
-    else value = lbl_80561754;
+    else value = lbl_80561754; /* 0.0f */
     if ((*((u32*)__AXFXGetLfoSinTable_801769CC() + 1) & 0x200000) != 0) {
         if (*((u8*)self + 0x271) != 0) {
-            if (*((u8*)self + 0x270) != 0) tmp = lbl_80561758;
-            else tmp = lbl_80561750;
-            return value * tmp;
+            if (*((u8*)self + 0x270) != 0) scale = lbl_80561758; /* 2.0f */
+            else scale = lbl_80561750; /* 1.0f */
+            return value * scale;
         }
-        return lbl_80561754;
+        return lbl_80561754; /* 0.0f */
     }
     return value;
 }
