@@ -667,6 +667,7 @@ void fn_8016B634(s32 arg0) {
     count = 0;
     offset = 0;
 
+    /* Release all active model entries, then destroy the model-entry pool. */
     while (count < lbl_804302F0.count) {
         entry = (void*)((u8*)lbl_804302F0.data + offset);
         if (*(u8*)entry != 0) {
