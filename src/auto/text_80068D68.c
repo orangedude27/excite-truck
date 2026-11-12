@@ -1650,6 +1650,8 @@ typedef struct {
     u8 subclass;    /* 0x57 */
     u8 appID;       /* 0x58 */
     u8 status;      /* 0x59: 0 = free, 1 = registered, >1 while a link is up */
+    u8 flags[4];    /* 0x5A: link-key/registration flags */
+    u16 hhAttrMask; /* 0x5E: tBTA_HH_ATTR_MASK, the HID attributes read from the device */
 } WUDDevInfoSlot;
 
 /* The WUD control block (lbl_80392960, the SDK's "WUDCB _wcb").  This build has no
@@ -8203,16 +8205,21 @@ void btm_read_link_quality_complete(u8 *arg0) {
 }
 
 tBTM_STATUS btm_remove_acl(BD_ADDR bd_addr) {
-    u32 i;
+    u32 i = 0;
     u8 *entry = lbl_803C0F78 + 0x34;
     u16 handle;
-    for (i = 0; i < 4; i++, entry += 0x11C) {
-        if (entry[0x119] == 0)
-            continue;
-        if (memcmp(entry + 8, bd_addr, 6) != 0)
-            continue;
+loop:
+    if (entry[0x119] == 0)
+        goto next;
+    if (memcmp(entry + 8, bd_addr, 6) != 0)
+        goto next;
+    else
         goto found;
-    }
+next:
+    i++;
+    entry += 0x11C;
+    if (i < 4)
+        goto loop;
     entry = 0;
 found:
     if (entry != 0)
