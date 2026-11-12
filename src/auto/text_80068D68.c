@@ -3095,27 +3095,29 @@ valid_buffer:
 }
 
 void *GKI_read_mbox(UINT8 mbox) {
-    UINT8 task_id = GKI_get_taskid();
-    void *p_buf = NULL;
-    BUFFER_HDR_T *p_hdr;
+    /* Read and dequeue the first buffer from the current task's mailbox queue,
+     * returning a pointer to the buffer payload (or NULL if invalid/empty). */
+    UINT8 taskId = GKI_get_taskid();
+    void *buffer = NULL;
+    BUFFER_HDR_T *bufferHeader;
 
-    if (task_id >= GKI_MAX_TASKS || mbox >= NUM_TASK_MBOX) {
+    if (taskId >= GKI_MAX_TASKS || mbox >= NUM_TASK_MBOX) {
         return NULL;
     }
 
     GKI_disable();
 
-    if (gki_cb.com.OSTaskQFirst[task_id][mbox]) {
-        p_hdr = gki_cb.com.OSTaskQFirst[task_id][mbox];
-        gki_cb.com.OSTaskQFirst[task_id][mbox] = p_hdr->p_next;
-        p_hdr->p_next = NULL;
-        p_hdr->status = BUF_STATUS_UNLINKED;
-        p_buf = (UINT8 *)p_hdr + BUFFER_HDR_SIZE;
+    if (gki_cb.com.OSTaskQFirst[taskId][mbox]) {
+        bufferHeader = gki_cb.com.OSTaskQFirst[taskId][mbox];
+        gki_cb.com.OSTaskQFirst[taskId][mbox] = bufferHeader->p_next;
+        bufferHeader->p_next = NULL;
+        bufferHeader->status = BUF_STATUS_UNLINKED;
+        buffer = (UINT8 *)bufferHeader + BUFFER_HDR_SIZE;
     }
 
     GKI_enable();
 
-    return p_buf;
+    return buffer;
 }
 
 void GKI_enqueue(BUFFER_Q *p_q, void *p_buf) {
