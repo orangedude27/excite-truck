@@ -93,6 +93,19 @@ extern "C" s32 fn_8019A820(void*, void*, s32, s32, s32, f32);
 extern "C" s32 fn_801E9F08(void*, void*, void*, s32, s32, f32);
 extern "C" void fn_8017B4AC(void*, Vec*);
 extern "C" f32 fn_8019DF88(void*, f32*, void*, f32*, f32*, f32, f32);
+// 3x3 matrix times vector; the original inlines it with a src == dst check, so both branches are emitted.
+static inline void Fn8019DF88MultVec(const f32 *m, const f32 *src, f32 *dst) {
+    if (src == dst) {
+        f32 x = src[2]*m[6] + (src[1]*m[3] + src[0]*m[0]);
+        f32 y = src[2]*m[7] + (src[0]*m[1] + src[1]*m[4]);
+        f32 z = src[2]*m[8] + (src[0]*m[2] + src[1]*m[5]);
+        dst[0] = x; dst[1] = y; dst[2] = z;
+    } else {
+        dst[0] = src[2]*m[6] + (src[1]*m[3] + src[0]*m[0]);
+        dst[1] = src[2]*m[7] + (src[0]*m[1] + src[1]*m[4]);
+        dst[2] = src[2]*m[8] + (src[0]*m[2] + src[1]*m[5]);
+    }
+}
 extern "C" void fn_801B34DC(void*, s32, Vec*, Vec*, Vec*, s32);
 extern "C" f32 PSVECMag(const Vec*);
 extern "C" f32 PSVECDotProduct(const Vec*, const Vec*);
