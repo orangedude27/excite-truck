@@ -83,12 +83,11 @@ void TRKPostEvent(s32 arg0) {
     extern void __OSUnmaskInterrupts(u32);
     extern void TRKGetNextEvent(void *, void *);
     s32 irq;
-    register u32 zero asm("r7");
     u32 ticks;
+    u32 zero = 0;
     if ((s32)lbl_8055D6A8 != 1) {
         OSRegisterVersion(lbl_80558DD0);
         ticks = (*(volatile u32 *)0x800000F8 >> 2) / 125000;
-        zero = 0U;
         lbl_8055D6D0 = zero;
         lbl_8055D6C8 = zero;
         lbl_8055D6C0 = zero;
@@ -110,7 +109,7 @@ void TRKPostEvent(s32 arg0) {
             *(volatile u32 *)0xCD006C00 |= 0x40;
             OSRestoreInterrupts(irq);
         }
-        lbl_8055D6E0 = (void *)zero;
+        lbl_8055D6E0 = 0;
         lbl_8055D6DC = arg0;
         __OSSetInterruptHandler(5, TRKGetNextEvent);
         __OSUnmaskInterrupts(0x04000000);
@@ -128,12 +127,16 @@ void TRKGetNextEvent(void *arg0, void *restoreContext) {
     *(volatile u16 *)0xCC00500A = (*(volatile u16 *)0xCC00500A & ~0xA0) | 8;
     OSClearContext(context);
     OSSetCurrentContext(context);
-    if (lbl_8055D6E0 != 0 && lbl_8055D6AC == 0) {
-        value = lbl_8055D6DC;
-        lbl_8055D6AC = 1;
-        if (value != 0) TRKInitializeEventQueue();
-        else ((void (*)(void))lbl_8055D6E0)();
-        lbl_8055D6AC = 0;
+    if (lbl_8055D6E0 != 0) {
+        if (lbl_8055D6AC == 0) {
+            value = lbl_8055D6DC;
+            lbl_8055D6AC = 1;
+            if (value != 0)
+                TRKInitializeEventQueue();
+            else
+                ((void (*)(void))lbl_8055D6E0)();
+            lbl_8055D6AC = 0;
+        }
     }
     OSClearContext(context);
     OSSetCurrentContext(restoreContext);
@@ -738,12 +741,17 @@ void* fn_80031248(void) {
 
 #pragma dont_inline on
 void *gdev_cc_initialize(void) {
-    unsigned int next;
-    unsigned int old = lbl_8055D748;
+    s32 old;
+    s32 next;
+    s32 newOff;
+    s32 oldOff;
+    old = lbl_8055D748;
     next = (old + 1) & 1;
+    newOff = next * 0x300;
     lbl_8055D748 = next;
-    lbl_8055D744 = (unsigned char *)&lbl_8035E820 + next * 0x300;
-    return (unsigned char *)&lbl_8035E820 + old * 0x300;
+    oldOff = old * 0x300;
+    lbl_8055D744 = (u8 *)&lbl_8035E820 + newOff;
+    return (u8 *)&lbl_8035E820 + oldOff;
 }
 
 extern void DCFlushRange(void *, u32);
@@ -1115,6 +1123,9 @@ void CircleBufferInitialize(u32 arg0) {
     }
 }
 
+/* Initialize/tick the audio/DSP path: capture start time on first entry,
+ * transition state (reset + CircleBufferInitialize or assert DSP task), and
+ * advance the AI DMA buffer ring when enabled. */
 void fn_80031ED4(void) {
     u64 time;
     if ((s32)lbl_8055D780 == 0) {
@@ -1363,7 +1374,8 @@ s32 AXRmtGetSamples(s32 arg0, s16 *arg1, s32 arg2) {
     if (count < 0) count += lbl_8055D758;
     count = count - lbl_8055D750;
     if (count < 0) count += lbl_8055D758;
-    if (arg2 > count) {
+    if (arg2 <= count) {
+    } else {
         count = arg2;
     }
     index = lbl_8055D750;
