@@ -6918,42 +6918,6 @@ return arg0;
 }
 #pragma scheduling on
 #pragma pop
-extern "C" void *fn_80225828(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        s32 ptr = *(s32 *)((u8 *)arg0 + 0x278);
-        *(void **)arg0 = lbl_8033E140;
-        if (ptr != 0) {
-            fn_80128670(ptr);
-        }
-        void *resource = *(void **)((u8 *)arg0 + 0x248);
-        *(s32 *)((u8 *)arg0 + 0x278) = 0;
-        if (resource != 0) {
-            fn_802328D4(resource);
-        }
-        *(s32 *)((u8 *)arg0 + 0x248) = 0;
-        *(s32 *)((u8 *)arg0 + 0x244) = 0;
-        fn_8021915C(arg0, 0);
-        if (arg1 > 0) {
-            fn_80128668(arg0);
-        }
-    }
-    return arg0;
-}
-
-extern "C" void fn_802258C8(void *arg0) {
-    void *result;
-    result = fn_80217BD8(*(s32 *)((u8 *)arg0 + 0x2C), *(s32 *)((u8 *)arg0 + 0x280), arg0);
-    *(void **)((u8 *)arg0 + 0x27C) = result;
-    fn_80219440(arg0, 1, result, 4);
-}
-
-#pragma pop
-extern "C" void fn_80225918(void *arg0) {
-    fn_802192AC(arg0);
-}
-
-extern "C" f32 lbl_80563548;
-
 /* The row table the scrolling list walks (built elsewhere; fn_8022553C reads its
  * counts and fn_802263CC asks it before accepting a message). */
 typedef struct ScrollRowTable {
@@ -6995,6 +6959,42 @@ typedef struct ScrollList {
     s32            scrollDir;   /* 0x274: 0 settled, 1 rows moving down, 2 up */
     ScrollRow     *rows;        /* 0x278: rowCount of them */
 } ScrollList;
+
+extern "C" void *fn_80225828(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        s32 ptr = *(s32 *)((u8 *)arg0 + 0x278);
+        *(void **)arg0 = lbl_8033E140;
+        if (ptr != 0) {
+            fn_80128670(ptr);
+        }
+        void *resource = *(void **)((u8 *)arg0 + 0x248);
+        *(s32 *)((u8 *)arg0 + 0x278) = 0;
+        if (resource != 0) {
+            fn_802328D4(resource);
+        }
+        *(s32 *)((u8 *)arg0 + 0x248) = 0;
+        *(s32 *)((u8 *)arg0 + 0x244) = 0;
+        fn_8021915C(arg0, 0);
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
+}
+
+extern "C" void fn_802258C8(void *arg0) {
+    void *result;
+    result = fn_80217BD8(*(s32 *)((u8 *)arg0 + 0x2C), *(s32 *)((u8 *)arg0 + 0x280), arg0);
+    *(void **)((u8 *)arg0 + 0x27C) = result;
+    fn_80219440(arg0, 1, result, 4);
+}
+
+#pragma pop
+extern "C" void fn_80225918(void *arg0) {
+    fn_802192AC(arg0);
+}
+
+extern "C" f32 lbl_80563548;
 
 #define SCROLL_TWEEN_TIME lbl_80563548 /* 0.2f: how long a one-row scroll takes */
 
