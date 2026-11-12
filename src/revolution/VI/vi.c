@@ -1411,6 +1411,7 @@ u32 fn_8005AD9C(void)
 
 void __VIDisplayPositionToXY(s32 hpos, s32 vpos, s16 *px, s16 *py)
 {
+    /* Convert a display (hpos,vpos) to XY using current timing/interlace state, or -1 if in blanking. */
     u32 index = (u32)(vpos - 1) * 2 + (u32)(hpos - 1) / lbl_8055DBA0->hlw;
 
     if (HorVer.nonInter == 0) {
