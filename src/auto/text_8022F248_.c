@@ -127,21 +127,23 @@ void *fn_801284F8(int, const char *);
 void fn_80128668(void *);
 int fn_8022EDC4(void);
 void fn_801BFD34(void *, void *, int);
-void fn_8022F364(void *arg0) {
+/* Add an overlay quad to the global list (lbl_8055F014). Each 0xC-byte
+ * "gBack tracker" node (lbl_803403CC) holds {payload, refCount, next}. */
+void fn_8022F364(void *quad) {
     void *node;
-    if (arg0 == 0) return;
+    if (quad == 0) return;
     node = lbl_8055F014;
     if (node == 0) {
         node = fn_801284F8(0xc, lbl_803403CC);
         lbl_8055F014 = node;
-        *(void **)node = arg0;
+        *(void **)node = quad;
         *(int *)((char *)lbl_8055F014 + 4) = 1;
         *(void **)((char *)lbl_8055F014 + 8) = 0;
     } else {
         while (*(void **)((char *)node + 8) != 0) node = *(void **)((char *)node + 8);
         *(void **)((char *)node + 8) = fn_801284F8(0xc, lbl_803403CC);
         node = *(void **)((char *)node + 8);
-        *(void **)node = arg0;
+        *(void **)node = quad;
         *(int *)((char *)node + 4) = 1;
         *(void **)((char *)node + 8) = 0;
     }
@@ -525,7 +527,7 @@ void fn_8022FF10(void *arg0, void *arg1) {
     float matrix[9];
     float angle0 = ((float *)arg1)[0];
     float angle2 = ((float *)arg1)[2];
-    ((void (*)(void *, float))fn_80015EB0)(arg0, ((float *)arg1)[1]);
+    fn_80015EB0(arg0, ((float *)arg1)[1]);
     fn_80015E30(matrix, angle0);
     fn_80015B20(arg0, arg0, matrix);
     fn_80015AA0(matrix, angle2);
