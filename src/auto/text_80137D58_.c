@@ -219,6 +219,8 @@ void fn_80138144(void *arg0) {
 }
 
 extern void fn_80138434();
+#pragma push
+#pragma use_lmw_stmw off
 void fn_801381B4(void *arg0) {
     volatile unsigned char *v = (volatile unsigned char *)arg0;
     unsigned char *base = (unsigned char *)arg0;
