@@ -41,7 +41,7 @@ extern int lbl_8055D680;
 int _ftell(file)
 void *file;
 {
-    /* Return the current file position for a stream, accounting for buffer/undo state and newlines in text mode; sets errno on invalid stream. */
+    /* Return the current file position for a stream, accounting for buffer/undo state and newlines; sets errno on invalid stream. */
     unsigned int ioState;
     int wideCharAdjust, bufferUsed, position, charsToScan;
     unsigned char *bufferPtr;
