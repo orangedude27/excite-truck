@@ -1275,24 +1275,26 @@ void *fn_801AC330(void *arg0) {
 }
 
 extern void fn_801C1C7C(void);
-void **fn_801AC3AC(void **arg0, int arg1) {
-    if (arg0 != 0) {
-        *arg0 = lbl_80335808;
+/* Destructor-like cleanup: reset vtable, decrement shared instance count and
+ * release shared resource when last, run base cleanup, and optionally free. */
+void **fn_801AC3AC(void **obj, int shouldFree) {
+    if (obj != 0) {
+        *obj = lbl_80335808;
         lbl_8055E5EC = lbl_8055E5EC - 1;
         if (lbl_8055E5EC == 0) {
-            int ptr = lbl_8055E5F0;
-            if (ptr != 0) {
-                ((void (*)(int))fn_801C1C7C)(ptr);
+            int sharedResource = lbl_8055E5F0;
+            if (sharedResource != 0) {
+                ((void (*)(int))fn_801C1C7C)(sharedResource);
                 lbl_8055E5F0 = 0;
             }
         }
-        if (arg0 != 0) {
+        if (obj != 0) {
             lbl_8055E5E4 = 0;
-            if (arg0 != 0 && arg0 != 0) fn_80179EE8(arg0, 0);
+            if (obj != 0 && obj != 0) fn_80179EE8(obj, 0);
         }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (shouldFree > 0) fn_80128668(obj);
     }
-    return arg0;
+    return obj;
 }
 
 extern void fn_802E30C8(const char *, ...);
