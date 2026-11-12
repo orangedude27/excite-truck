@@ -1589,15 +1589,16 @@ extern "C" int fn_8029ADCC(void *arg0) {
     void *cursor;
     int i;
     void *obj;
-    register float c;
+    register float defaultSize;
+    /* Initializes exhaust/torch sizes per engine: sets each slot's value (at +0x1C0, stride 4) to 1.0, overriding with "exhaust_torch_size" from the "engine" property when present. */
     fn_8029B1B8(arg0);
     count = fn_80287B14();
-    c = lbl_80564590;
+    defaultSize = lbl_80564590;
     cursor = arg0;
     i = 0;
     while (i < count) {
         obj = fn_80288208(i);
-        *(float *)((char *)cursor + 0x1C0) = c;
+        *(float *)((char *)cursor + 0x1C0) = defaultSize;
         if (fn_80287E20(obj, (const char *)&lbl_8055CA90) != 0) {
             obj = fn_80287E80(obj, (const char *)&lbl_8055CA90);
             *(float *)((char *)cursor + 0x1C0) = ((Dummy *)obj)->apply(lbl_80349508, *(float *)((char *)cursor + 0x1C0));
