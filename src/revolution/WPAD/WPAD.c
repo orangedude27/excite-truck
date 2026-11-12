@@ -1883,42 +1883,43 @@ void WPADSetAutoSamplingBuf(s32 chan, void* pBuffer, u32 len) {
     OSRestoreInterrupts(enabled);
 }
 
+/* Exclude conflicting simultaneous D-pad inputs from the current status (core and classic). */
 void WPADiExcludeButton(s32 chan) {
-    WPADCB* p = lbl_8038F4F0[chan];
+    WPADCB* wcb = lbl_8038F4F0[chan];
     BOOL enabled = OSDisableInterrupts();
 
-    u8 rxBufIndex = *(u8*)((u8*)p + 0x806) != 0 ? 0 : 1;
-    void* pRxBuffer = p->rxBufs[rxBufIndex];
+    u8 bufIndex = *(u8*)((u8*)wcb + 0x806) != 0 ? 0 : 1;
+    void* rxBuf = wcb->rxBufs[bufIndex];
 
-    WPADStatus* pStatus;
-    WPADCLStatus* pStatusCL;
+    WPADStatus* coreStatus;
+    WPADCLStatus* clStatus;
 
-    pStatus = (WPADStatus*)pRxBuffer;
+    coreStatus = (WPADStatus*)rxBuf;
 
-    if ((pStatus->button & (WPAD_BUTTON_LEFT | WPAD_BUTTON_RIGHT)) ==
+    if ((coreStatus->button & (WPAD_BUTTON_LEFT | WPAD_BUTTON_RIGHT)) ==
         (WPAD_BUTTON_LEFT | WPAD_BUTTON_RIGHT)) {
-        pStatus->button &= ~WPAD_BUTTON_RIGHT;
+        coreStatus->button &= ~WPAD_BUTTON_RIGHT;
     }
 
-    if ((pStatus->button & (WPAD_BUTTON_UP | WPAD_BUTTON_DOWN)) ==
+    if ((coreStatus->button & (WPAD_BUTTON_UP | WPAD_BUTTON_DOWN)) ==
         (WPAD_BUTTON_UP | WPAD_BUTTON_DOWN)) {
-        pStatus->button &= ~WPAD_BUTTON_DOWN;
+        coreStatus->button &= ~WPAD_BUTTON_DOWN;
     }
 
-    if (*(u32*)((u8*)p + 0x7F8) == WPAD_FMT_CLASSIC_BTN ||
-        *(u32*)((u8*)p + 0x7F8) == WPAD_FMT_CLASSIC_BTN_ACC ||
-        *(u32*)((u8*)p + 0x7F8) == WPAD_FMT_CLASSIC_BTN_ACC_DPD) {
-        pStatusCL = (WPADCLStatus*)pRxBuffer;
+    if (*(u32*)((u8*)wcb + 0x7F8) == WPAD_FMT_CLASSIC_BTN ||
+        *(u32*)((u8*)wcb + 0x7F8) == WPAD_FMT_CLASSIC_BTN_ACC ||
+        *(u32*)((u8*)wcb + 0x7F8) == WPAD_FMT_CLASSIC_BTN_ACC_DPD) {
+        clStatus = (WPADCLStatus*)rxBuf;
 
-        if ((pStatusCL->clButton &
+        if ((clStatus->clButton &
              (WPAD_BUTTON_CL_LEFT | WPAD_BUTTON_CL_RIGHT)) ==
             (WPAD_BUTTON_CL_LEFT | WPAD_BUTTON_CL_RIGHT)) {
-            pStatusCL->clButton &= ~WPAD_BUTTON_CL_RIGHT;
+            clStatus->clButton &= ~WPAD_BUTTON_CL_RIGHT;
         }
 
-        if ((pStatusCL->clButton & (WPAD_BUTTON_CL_UP | WPAD_BUTTON_CL_DOWN)) ==
+        if ((clStatus->clButton & (WPAD_BUTTON_CL_UP | WPAD_BUTTON_CL_DOWN)) ==
             (WPAD_BUTTON_CL_UP | WPAD_BUTTON_CL_DOWN)) {
-            pStatusCL->clButton &= ~WPAD_BUTTON_CL_DOWN;
+            clStatus->clButton &= ~WPAD_BUTTON_CL_DOWN;
         }
     }
 
