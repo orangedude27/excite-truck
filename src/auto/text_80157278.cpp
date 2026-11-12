@@ -511,11 +511,11 @@ struct VObj {
     virtual void vslot3();
     virtual s32 vslot4(const void*);
     virtual void vslot5();
-    virtual s32 vslot6(const void*, const void*);
-    virtual s32 vslot7(const void*);
-    virtual s32 vslot8(const void*, s32);
-    virtual f32 vslot9(const void*);
-    virtual f32 vslot10(const void*, f32);
+    virtual s32 vslot6(const char*, const char*);
+    virtual s32 vslot7(const char*);
+    virtual s32 vslot8(const char*, s32);
+    virtual f32 vslot9(const char*);
+    virtual f32 vslot10(const char*, f32);
     virtual void vslot11();
     virtual void vslot12();
     virtual void vslot13();
@@ -590,18 +590,15 @@ extern "C" void fn_80157560(VObj *arg0) {
             if (f1v < best) {
                 f1v = b0->vslot2(lbl_8055A030)->vslot24(idx)->vslot9(lbl_8055A050);
             }
-            s32 n = *(s32 *)((char *)arg0 + 0xC);
-            char *base = *(char **)((char *)arg0 + 8);
-            *(s32 *)((char *)arg0 + 0xC) = n + 1;
-            s32 off = s28 * 0x38;
-            *(s32 *)(base + off) = 0;
-            char *rec = base + off;
-            *(s32 *)(rec + 4) = 0;
-            *(s32 *)(rec + 8) = 0;
-            *(f32 *)(rec + 12) = best;
-            *(f32 *)(rec + 16) = f1v;
-            *(s32 *)(rec + 20) = s29;
-            fn_801345D8(rec + 24, 0x20, lbl_8055A054, s22);
+            Rec157560 *recs = *(Rec157560 **)((char *)arg0 + 8);
+            *(s32 *)((char *)arg0 + 0xC) += 1;
+            recs[s28].a = 0;
+            recs[s28].b = 0;
+            recs[s28].c = 0;
+            recs[s28].d = best;
+            recs[s28].e = f1v;
+            recs[s28].f = s29;
+            fn_801345D8(recs[s28].name, 0x20, lbl_8055A054, s22);
             idx++;
             iter = b1->vslot24(idx);
         }
