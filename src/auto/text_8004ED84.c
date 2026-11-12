@@ -1011,10 +1011,10 @@ char *OSGetFontTexture(char *str, void **texOut, int *xOut, int *yOut, int *widt
 }
 
 char *OSGetFontWidth(char *str, int *out) {
-    unsigned char *p;
-    int n;
-    unsigned short e = OSGetFontEncode();
-    str = ((char *(*)(int, char *, int **, int *))lbl_8055DA48)((int)e, str, (int **)&p, &n);
-    if (out) *out = p[*(unsigned short *)(p + 0x22) + n];
+    unsigned char *fontData;
+    int glyphIndex;
+    unsigned short encoding = OSGetFontEncode();
+    str = ((char *(*)(int, char *, int **, int *))lbl_8055DA48)((int)encoding, str, (int **)&fontData, &glyphIndex);
+    if (out) *out = fontData[*(unsigned short *)(fontData + 0x22) + glyphIndex];
     return str;
 }
