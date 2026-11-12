@@ -933,7 +933,6 @@ void fn_801F163C(void *instance, int lodIndex, float spinAngle) {
     char *lodBase;
     WheelModLod *lod;
     int useFastRemap;
-    int spare0, spare1;
     int matrix[12];
     float rollMtx[9];
     Vec angles;
@@ -954,7 +953,6 @@ void fn_801F163C(void *instance, int lodIndex, float spinAngle) {
     matrix[8] = *(int *)&wheel->matrix[8];
     *(MatrixPair *)&matrix[9] = *(MatrixPair *)&wheel->matrix[9];
     matrix[11] = *(int *)&wheel->matrix[11];
-    (void)spare0; (void)spare1;
     if (*(unsigned char *)(lodBase + WHEELMOD_LOD_SPIN_FLAG) != 0) {
         /* the lod entry's 'y' flag: roll the model by the wheel's angle */
         float direction = (spinsForward != 0) ? wheelmod_spin_forward : wheelmod_spin_reversed;
