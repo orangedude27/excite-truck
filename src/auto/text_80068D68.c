@@ -3721,6 +3721,7 @@ void GKI_init(void) {
     gki_cb.os.int_index++;
 }
 
+/* Shut down the GKI kernel: mark the PPC task dead and restore all nested interrupt-disable states. */
 void GKI_shutdown(void) {
     gki_cb.os.int_state[gki_cb.os.int_index] = OSDisableInterrupts();
     gki_cb.os.int_index++;
