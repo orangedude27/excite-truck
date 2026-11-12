@@ -204,22 +204,24 @@ extern s32 fn_8017960C(void);
 extern u8 lbl_8055E364;
 extern f64 lbl_80561968;
 extern f32 lbl_80561960;
+#pragma push
+#pragma use_lmw_stmw off
+#pragma processor 750
 s32 fn_8016A30C(void) {
- f32 a,b; s32 f,e,g,c,h,d; void *p;
+ f32 a,b; s32 f,e,g,c,h,d; u8 *p;
  c=fn_8017960C(); if(c) { a=lbl_80561960; f=0;e=0;g=0;
  goto check;
  loop:
- d=0;h=0;p=(void *)(*(s32 *)&lbl_80430318+g);
- if(*(u8 *)((u8 *)p+0x3c) && !*(u8 *)((u8 *)p+0x3d)) h=1;
- if(h) { b=(f32)*(s32 *)((u8 *)p+4); if(lbl_8055E364)b+=a;
- if(PSVECSquareDistance((void *)(c+0x60),(u8 *)p+0x30)<b*b) {*(u8 *)((u8 *)p+0x3d)=1;d=1;*(f32 *)((u8 *)p+0x40)=lbl_8055E3C8;} }
+ d=0;h=0;p=(u8 *)(*(s32 *)&lbl_80430318+g);
+ if(p[0x3c] && !p[0x3d]) h=1;
+ if(h) { b=(f32)*(s32 *)(p+4); if(lbl_8055E364)b+=a;
+ if(PSVECSquareDistance((void *)(c+0x60),p+0x30)<b*b) {p[0x3d]=1;d=1;*(f32 *)(p+0x40)=lbl_8055E3C8;} }
  if(d)f++; g+=0x48;e++;
  check:
  if(e < *(s32 *)((u8 *)&lbl_80430318+4)) goto loop;
  return f;} return 0;
 }
-
-#pragma ppc_psq_save off
+#pragma pop
 void fn_8016A438(void) {
     Blk8016A438 blk;
     s32 i;
@@ -283,24 +285,26 @@ extern f32 lbl_80561970;
 typedef struct { f32 first; f32 second; } FloatPair8016A6B0;
 FloatPair8016A6B0 fn_8016A6B0(const char *arg0, s32 arg1) {
     register s32 nameOffset;
-    register s32 itemOffset;
-    register s32 i;
-    i = 0;
+    register s32 recordOffset;
+    register s32 index;
+    /* Find the course marker record matching name (arg0) and ring type (arg1),
+       returning its (first, second) position pair, or (0, 0) if not found. */
+    index = 0;
     nameOffset = 0;
-    itemOffset = 0;
-    while (i < lbl_80430340.unk_0x4) {
+    recordOffset = 0;
+    while (index < lbl_80430340.unk_0x4) {
         if (stricmp(lbl_80430340.unk_0x0 + nameOffset + 1, arg0) == 0) {
             char *records = *(char **)lbl_80430318;
-            if (arg1 == *(s32 *)(records + itemOffset + 4)) {
+            if (arg1 == *(s32 *)(records + recordOffset + 4)) {
                 FloatPair8016A6B0 result;
-                result.second = *(f32 *)(records + i * 0x48 + 0x38);
-                result.first = *(f32 *)(records + i * 0x48 + 0x30);
+                result.second = *(f32 *)(records + index * 0x48 + 0x38);
+                result.first = *(f32 *)(records + index * 0x48 + 0x30);
                 return result;
             }
         }
         nameOffset += 0x2c;
-        itemOffset += 0x48;
-        i++;
+        recordOffset += 0x48;
+        index++;
     }
     {
         FloatPair8016A6B0 result;
