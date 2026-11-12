@@ -78,43 +78,44 @@ void fn_801E45CC(void) {
 /* Key handler of the debug overlay panel (fn_801E45CC): takes one typed key as
  * its ASCII code, adjusts the LOD factor or flips one of the debug flags, and
  * returns 0 when the key is not the panel's. */
-int fn_801E47BC(int arg0) {
-    double var_f1;
-    int var_r31 = 1;
-    int t;
-    switch (arg0) {
-    case 0x74:
+int fn_801E47BC(int key) {
+    double lod;
+    int handled = 1;
+    int toggle;
+    switch (key) {
+    case 't': /* the DMA test, armed only while the physics are paused */
         if (fn_801769F8() != 0) {
-            if (lbl_8055AEC0 == 0x41) lbl_8055AEC0 = 0;
-            else lbl_8055AEC0 = 0x41;
+            if (DBG_DMA_TEST == 'A') DBG_DMA_TEST = 0;
+            else DBG_DMA_TEST = 'A';
         } else {
-            fn_802E30C8(lbl_803399CC);
+            fn_802E30C8(DBG_NEED_PAUSE);
         }
         break;
-    case 0x66:
-        if (fn_801769F8() == 0) fn_802E30C8(lbl_803399CC);
+    case 'f': /* likewise needs the physics paused; it only complains otherwise */
+        if (fn_801769F8() == 0) fn_802E30C8(DBG_NEED_PAUSE);
         break;
-    case 0x5B: lbl_8055AEC4 -= lbl_80562D30; break;
-    case 0x27: lbl_8055AEC4 = lbl_80562D34; break;
-    case 0x5D: lbl_8055AEC4 += lbl_80562D30; break;
-    case 0x6E: t = (unsigned char)lbl_8055EA8C; lbl_8055EA8C = t == 0; break;
-    case 0x63: t = (unsigned char)lbl_8055AEDC; lbl_8055AEDC = t == 0; break;
-    case 0x6D: lbl_8055EA8E = 1; break;
-    case 0x6C: t = lbl_8055EA8F; *(char *)&lbl_8055EA8F = t == 0; break;
-    case 0x77: t = lbl_8055EA90; *(char *)&lbl_8055EA90 = t == 0; break;
-    case 0x45: t = (unsigned char)lbl_8055EA8D; lbl_8055EA8D = t == 0; break;
-    case 0xB: fn_801EC1F8(); fn_802E4CDC(); break;
-    case 0x4: fn_801EC204(); fn_802E4CDC(); break;
-    case 0x9: break;
-    default: var_r31 = 0; break;
+    case '[': DBG_LOD_FACTOR -= LOD_STEP; break;   /* finer LOD */
+    case '\'': DBG_LOD_FACTOR = LOD_DEFAULT; break; /* back to 1.0 */
+    case ']': DBG_LOD_FACTOR += LOD_STEP; break;   /* coarser LOD */
+    case 'n': toggle = (unsigned char)lbl_8055EA8C; lbl_8055EA8C = toggle == 0; break;
+    case 'c': toggle = (unsigned char)lbl_8055AEDC; lbl_8055AEDC = toggle == 0; break;
+    case 'm': lbl_8055EA8E = 1; break;
+    case 'l': toggle = DBG_LOG_WINDOW; *(char *)&DBG_LOG_WINDOW = toggle == 0; break; /* the log lines */
+    case 'w': toggle = lbl_8055EA90; *(char *)&lbl_8055EA90 = toggle == 0; break;     /* the "WIRE" line */
+    case 'E': toggle = (unsigned char)lbl_8055EA8D; lbl_8055EA8D = toggle == 0; break;
+    case 0xB: fn_801EC1F8(); fn_802E4CDC(); break; /* first cache table, then the vmem hook */
+    case 0x4: fn_801EC204(); fn_802E4CDC(); break; /* the second one */
+    case 0x9: break;                              /* tab: swallowed, nothing to do */
+    default: handled = 0; break;
     }
-    var_f1 = lbl_8055AEC4;
-    if (var_f1 > lbl_80562D38) {
-        var_f1 = lbl_80562D38;
-        lbl_8055AEC4 = lbl_80562D38;
+    /* the panel's factor stays inside [0.2, 20.0] however it was changed */
+    lod = DBG_LOD_FACTOR;
+    if (lod > LOD_MAX) {
+        lod = LOD_MAX;
+        DBG_LOD_FACTOR = LOD_MAX;
     }
-    if ((float)var_f1 < lbl_80562D30) lbl_8055AEC4 = lbl_80562D30;
-    return var_r31;
+    if ((float)lod < LOD_STEP) DBG_LOD_FACTOR = LOD_STEP;
+    return handled;
 }
 
 #pragma scheduling on
