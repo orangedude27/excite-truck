@@ -24943,12 +24943,12 @@ void sdp_server_handle_client_req(tCONN_CB *p_ccb, BT_HDR *p_msg) {
     extern char lbl_8031A4E8[];
     UINT8 *p;
     UINT8 *p_end;
-    UINT16 off;
+    UINT32 base;
     UINT8 opcode;
     UINT16 trans_num;
     UINT16 param_len;
-    off = p_msg->offset;
-    p = (UINT8 *)p_msg + off + 8;
+    base = (UINT32)p_msg + p_msg->offset;
+    p = (UINT8 *)(base + 8);
     p_end = p + p_msg->len;
     btu_start_timer((TIMER_LIST_ENT *)((UINT8 *)p_ccb + 8), 5, 0x1E);
     opcode = *p++;
