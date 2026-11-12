@@ -209,6 +209,29 @@ typedef struct WheelMod {
     /* 0xE8 */ int lodCount;          /* how many lod%d entries were found */
 } WheelMod;
 
+/* One wheel of a car, as the module above attaches it (0x4C bytes, fn_801EFF94
+ * allocates them).  fn_801F0DC0 and fn_801F0E88 fill one in for a car's wheel
+ * slot, fn_801F1878 registers it in the (car, wheel) table lbl_80488798, and
+ * fn_801F0F78 writes its world matrix and spin angle every frame; fn_801F163C
+ * below hands the model to the model manager. */
+typedef struct WheelInstance {
+    /* 0x00 */ WheelMod *mod;            /* the wheel record, looked up by name */
+    /* 0x04 */ unsigned int state;       /* draw state 0..2 (3 hides the wheel), |0x10 once the wheel turns fast enough for the fast_remap models */
+    /* 0x08 */ int carIndex;             /* the car this wheel hangs off */
+    /* 0x0C */ int wheelIndex;           /* its wheel slot 0..3; 1 and 3 are mirrored, so their roll runs backwards */
+    /* 0x10 */ int side;                 /* which side's model to draw, a WHEELMOD_SIDES index */
+    /* 0x14 */ unsigned char notRegistered; /* fn_801F0E88 leaves the wheel out of the table */
+    /* 0x15 */ unsigned char pad15[3];
+    /* 0x18 */ float matrix[12];         /* 3x3 rotation then the translation, as the model manager takes them */
+    /* 0x48 */ float spinAngle;          /* radians to roll the model by */
+} WheelInstance;
+
+/* Two matrix words copied at a time; the wheel matrix is copied in these pairs. */
+typedef struct MatrixPair {
+    int lo;
+    int hi;
+} MatrixPair;
+
 #pragma push
 #pragma processor 750
 /* Read a wheel mod's level-of-detail table: lod0..lod7 of the .mod resource each
