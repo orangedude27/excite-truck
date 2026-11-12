@@ -3417,11 +3417,8 @@ extern "C" s32 VFiPFENT_LoadLFNEntryFieldsFromBuf(void *arg0, void *arg1) {
 
 extern "C" void fn_800A4C14(void *, s32);
 extern "C" void VFiPFENT_storeLFNEntryFieldsToBuf(void *out, u8 *entries, s32 index, s32 type, s32 flag) {
-    if (flag) {
-        *(u8 *)out = (u8)(index | 0x40);
-    } else {
-        *(u8 *)out = (u8)index;
-    }
+    if (flag) *(u8 *)out = (u8)(index | 0x40);
+    else *(u8 *)out = (u8)index;
     u8 *dst = (u8 *)out;
     u32 zero = 0;
     s32 slot = index - 1;
@@ -3434,17 +3431,13 @@ extern "C" void VFiPFENT_storeLFNEntryFieldsToBuf(void *out, u8 *entries, s32 in
         u16 *p = (u16 *)entry;
         u16 *end = (u16 *)(entry + 0x1A);
         for (; p < end;) {
-            if (*p != 0) {
-                goto nonzero;
-            }
+            if (*p != 0) goto nonzero;
             ++p;
             break;
         nonzero:
             ++p;
         }
-        for (; p < end; ++p) {
-            *p = 0xFFFF;
-        }
+        for (; p < end; ++p) *p = 0xFFFF;
     }
     VFipf_memcpy(dst + 1, entry, 0xA);
     VFipf_memcpy(dst + 0xE, entry + 0xA, 0xC);
@@ -7474,20 +7467,22 @@ extern "C" s32 VFiPFFILE_p_finfo(void *arg0, void *arg1) {
     return 0;
 }
 
-extern "C" void VFiPFFILE_FinalizeAllFiles(u8 *arg0) {
+/* Finalize all open file streams/handles on a VFi PF volume: clear per-stream
+ * state, reset stream objects, clear handle-in-use bits, and reset open count. */
+extern "C" void VFiPFFILE_FinalizeAllFiles(u8 *volume) {
     extern s32 fn_800AF574(void *);
-    u16 i;
-    for (i = 0; i < 5; i++) {
-        u8 *file = arg0 + i * 0x29C;
-        *(s32 *)(file + 0x40) = 0;
-        fn_800AF574(file + 0x44);
+    u16 streamIndex;
+    for (streamIndex = 0; streamIndex < 5; streamIndex++) {
+        u8 *stream = volume + streamIndex * 0x29C;
+        *(s32 *)(stream + 0x40) = 0;
+        fn_800AF574(stream + 0x44);
     }
-    *(u32 *)(arg0 + 0xD4C) &= ~1U;
-    *(u32 *)(arg0 + 0xD7C) &= ~1U;
-    *(u32 *)(arg0 + 0xDAC) &= ~1U;
-    *(u32 *)(arg0 + 0xDDC) &= ~1U;
-    *(u32 *)(arg0 + 0xE0C) &= ~1U;
-    *(s32 *)(arg0 + 0x161C) = 0;
+    *(u32 *)(volume + 0xD4C) &= ~1U;
+    *(u32 *)(volume + 0xD7C) &= ~1U;
+    *(u32 *)(volume + 0xDAC) &= ~1U;
+    *(u32 *)(volume + 0xDDC) &= ~1U;
+    *(u32 *)(volume + 0xE0C) &= ~1U;
+    *(s32 *)(volume + 0x161C) = 0;
 }
 
 #ifndef VF_FILE_HANDLES_DEFINED
