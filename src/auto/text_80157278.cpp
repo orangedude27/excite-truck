@@ -2276,16 +2276,19 @@ extern "C" void fn_8015B228(void* arg0, s32 arg1, s32 arg2) {
     if (arg2 == 6) *(u8*)((char*)arg0 + 0x26C) = 1;
 }
 
-extern "C" void fn_8015B23C(Unk8015A368C* arg0) {
-    if (*(s32*)((u8*)arg0 + 0x264) > 0) {
+extern "C" void fn_8015B23C(Unk8015A368C* object) {
+    /* If this object has a pending update (+0x264 > 0), apply scale factor
+     * (+0x25C) times v18(v21()) via v33, run v31, then clear the pending
+     * count and reset the scale to 1.0 (lbl_80561750). */
+    if (*(s32*)((u8*)object + 0x264) > 0) {
         f32 value;
-        s32 result = arg0->v21();
-        value = *(f32*)((u8*)arg0 + 0x25C) * arg0->v18(result);
-        arg0->v33(&value);
-        arg0->v31();
+        s32 result = object->v21();
+        value = *(f32*)((u8*)object + 0x25C) * object->v18(result);
+        object->v33(&value);
+        object->v31();
         f32 zero = lbl_80561750;
-        *(s32*)((u8*)arg0 + 0x264) = 0;
-        *(f32*)((u8*)arg0 + 0x25C) = zero;
+        *(s32*)((u8*)object + 0x264) = 0;
+        *(f32*)((u8*)object + 0x25C) = zero;
     }
 }
 
