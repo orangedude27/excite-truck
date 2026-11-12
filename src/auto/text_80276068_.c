@@ -528,16 +528,8 @@ done:
 extern float lbl_80564070, lbl_80564074;
 extern int sprintf(char*, const char*, ...);
 extern char *strcpy(char*, const char*);
-struct Entry {
-    unsigned char unk_00;
-    float rot[3][3];
-    float pos[3];
-    float unk_34;
-    char name[16];
-};
-
 void fn_80277828(void) {
-    struct Entry *def = (struct Entry *)lbl_8049FE98;
+    struct CameraEntry *def = (struct CameraEntry *)lbl_8049FE98;
     def->rot[0][0] = lbl_8056404C;
     def->rot[0][1] = lbl_80564048;
     def->rot[0][2] = lbl_80564048;
@@ -550,14 +542,14 @@ void fn_80277828(void) {
     def->pos[0] = lbl_80564048;
     def->pos[1] = lbl_80564048;
     def->pos[2] = lbl_80564048;
-    def->unk_34 = lbl_80564070;
+    def->fov = lbl_80564070;
     def->name[0] = 0;
-    ((struct Entry *)lbl_8049FE98)->unk_00 = 1;
+    ((struct CameraEntry *)lbl_8049FE98)->inUse = 1;
 
     if (lbl_8055F598 == 0) {
         char *fmt = *(char**)&lbl_8055C638;
         int i = lbl_8055F5A0;
-        struct Entry *entry = (struct Entry *)&lbl_8049FEE0 + i;
+        struct CameraEntry *entry = (struct CameraEntry *)&lbl_8049FEE0 + i;
         entry->rot[0][0] = lbl_8056404C;
         entry->rot[0][1] = lbl_80564048;
         entry->rot[0][2] = lbl_80564048;
@@ -570,21 +562,21 @@ void fn_80277828(void) {
         entry->pos[0] = lbl_80564048;
         entry->pos[1] = lbl_80564048;
         entry->pos[2] = lbl_80564048;
-        entry->unk_34 = lbl_80564070;
+        entry->fov = lbl_80564070;
         ((volatile char *)entry->name)[0] = 0;
         lbl_8055F5A0 = i + 1;
         lbl_8055F598 = (int)entry;
-        entry->unk_00 = 1;
+        entry->inUse = 1;
         sprintf(entry->name, fmt);
     }
     if (lbl_8055F59C == 0) {
         int i = lbl_8055F5A0;
-        struct Entry *entry = (struct Entry *)&lbl_8049FEE0 + i;
+        struct CameraEntry *entry = (struct CameraEntry *)&lbl_8049FEE0 + i;
         lbl_8055F59C = (int)entry;
         lbl_8055F5A0 = i + 1;
-        entry->unk_00 = 1;
-        entry->unk_34 = lbl_80564074;
-        strcpy(((struct Entry *)lbl_8055F59C)->name, &lbl_8055C644);
+        entry->inUse = 1;
+        entry->fov = lbl_80564074;
+        strcpy(((struct CameraEntry *)lbl_8055F59C)->name, &lbl_8055C644);
     }
 }
 int fn_80277960(void *arg0, void *arg1, float *arg2) {
