@@ -2,7 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 extern int lbl_8055AEC0;
 extern float lbl_8055AEC4;
-extern unsigned char lbl_8055AEDC, lbl_8055EA8C, lbl_8055EA8D, lbl_8055EA8E, lbl_8055EA8F, lbl_8055EA90;
+extern char lbl_8055AEDC, lbl_8055EA8C, lbl_8055EA8D, lbl_8055EA8E;
 extern const char lbl_803399CC[];
 extern float lbl_80562D30, lbl_80562D34, lbl_80562D38;
 extern int fn_801769F8(void);
@@ -64,4 +64,43 @@ void fn_801E45CC(void) {
     }
     fn_802389E4();
 }
+
+int fn_801E47BC(int arg0) {
+    double var_f1;
+    int var_r31 = 1;
+    switch (arg0) {
+    case 0x74:
+        if (fn_801769F8() != 0) {
+            if (lbl_8055AEC0 == 0x41) lbl_8055AEC0 = 0;
+            else lbl_8055AEC0 = 0x41;
+        } else {
+            fn_802E30C8(lbl_803399CC);
+        }
+        break;
+    case 0x66:
+        if (fn_801769F8() == 0) fn_802E30C8(lbl_803399CC);
+        break;
+    case 0x5B: lbl_8055AEC4 -= lbl_80562D30; break;
+    case 0x27: lbl_8055AEC4 = lbl_80562D34; break;
+    case 0x5D: lbl_8055AEC4 += lbl_80562D30; break;
+    case 0x6E: lbl_8055EA8C = !lbl_8055EA8C; break;
+    case 0x63: lbl_8055AEDC = !lbl_8055AEDC; break;
+    case 0x6D: lbl_8055EA8E = 1; break;
+    case 0x6C: lbl_8055EA8F = !lbl_8055EA8F; break;
+    case 0x77: lbl_8055EA90 = !lbl_8055EA90; break;
+    case 0x45: lbl_8055EA8D = !lbl_8055EA8D; break;
+    case 0xB: fn_801EC1F8(); fn_802E4CDC(); break;
+    case 0x4: fn_801EC204(); fn_802E4CDC(); break;
+    case 0x9: break;
+    default: var_r31 = 0; break;
+    }
+    var_f1 = lbl_8055AEC4;
+    if (var_f1 > lbl_80562D38) {
+        var_f1 = lbl_80562D38;
+        lbl_8055AEC4 = lbl_80562D38;
+    }
+    if (var_f1 < lbl_80562D30) lbl_8055AEC4 = lbl_80562D30;
+    return var_r31;
+}
+
 #pragma scheduling on
