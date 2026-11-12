@@ -1110,30 +1110,42 @@ extern void fn_801345D8(void *, int, const char *, int, int);
 extern void fn_80292CD8(void *, int, u8 *);
 extern int fn_802C6FC0(void *, int, int);
 extern char lbl_80349250[];
-void fn_80293CD0(void *arg0, int arg1, int arg2, int arg3) {
+void fn_80293CD0(void *chunkSys, int modelBase, int instance, int remapTexture) {
     char name[0x20];
     int count;
-    *(s32 *)((u8 *)arg0 + 0x28) = 0;
+    /* Loads the terrain chunk effect's chunk models.  The profile gives a base
+     * name and its models are the MODL resources "<base>1.mod" .. "<base>8.mod"
+     * (lbl_80349250 is "%s%d.mod"): every one the resource system has is
+     * instantiated for `instance` -- its textures remapped first when the
+     * profile names a texture to remap -- and the handle is stored in the
+     * object's model table.  The slots no model was found for are left at -1.
+     *
+     * This is the "ter" chunk sys (0x4C30 bytes, built by fn_802928D4 case 2);
+     * it keeps its models at +0x08, one handle each, and the number it found at
+     * +0x28.  fn_80293374 and fn_80294530 do the same for the "car" and "wood"
+     * ones.  modelBase and remapTexture are the profile's "model_base" and
+     * "remap_texture" strings, handed over as ints by the file's prototype. */
+    *(s32 *)((u8 *)chunkSys + 0x28) = 0;
     goto check;
 loop:
-    ((void (*)(void *, int, const char *, ...))fn_801345D8)(name, 0x20, lbl_80349250, arg1, *(s32 *)((u8 *)arg0 + 0x28) + 1);
-    if (fn_8012C33C(name) == 0)
+    ((void (*)(void *, int, const char *, ...))fn_801345D8)(name, 0x20, lbl_80349250, modelBase, *(s32 *)((u8 *)chunkSys + 0x28) + 1);
+    if (fn_8012C33C(name) == 0)  /* no such resource: the list of models ends here */
         goto padding;
-    if (arg3 != 0 && *(s8 *)arg3 != 0)
-        fn_80292CD8(name, arg2, (u8 *)arg3);
-    *(s32 *)((u8 *)arg0 + *(s32 *)((u8 *)arg0 + 0x28) * 4 + 8) = fn_802C6FC0(name, arg2, 0);
-    count = *(s32 *)((u8 *)arg0 + 0x28);
+    if (remapTexture != 0 && *(s8 *)remapTexture != 0)
+        fn_80292CD8(name, instance, (u8 *)remapTexture);
+    *(s32 *)((u8 *)chunkSys + *(s32 *)((u8 *)chunkSys + 0x28) * 4 + 8) = fn_802C6FC0(name, instance, 0);
+    count = *(s32 *)((u8 *)chunkSys + 0x28);
     count++;
-    *(s32 *)((u8 *)arg0 + 0x28) = count;
+    *(s32 *)((u8 *)chunkSys + 0x28) = count;
 check:
-    if (*(s32 *)((u8 *)arg0 + 0x28) < 8)
+    if (*(s32 *)((u8 *)chunkSys + 0x28) < 8)
         goto loop;
 padding:
     {
-        s32 *arr = (s32 *)arg0;
-        count = *(s32 *)((u8 *)arg0 + 0x28);
+        s32 *models = (s32 *)chunkSys;  /* models[2 + i] is model handle i */
+        count = *(s32 *)((u8 *)chunkSys + 0x28);
         for (; count < 8; count++)
-            arr[count + 2] = -1;
+            models[count + 2] = -1;
     }
 }
 
