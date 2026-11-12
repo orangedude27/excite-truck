@@ -1307,21 +1307,23 @@ extern "C" void fn_80158D0C(void* arg0) {
 #pragma processor gekko
 #pragma dont_inline on
 extern "C" f32 fn_80158D60(void* arg0, void*) {
+    /* Emit the current record's scaled value for this frame player and reset its
+     * progress/time counters, returning the emitted value (or 0 when nothing is emitted). */
     Fn8015889C* self = (Fn8015889C*)arg0;
-    f32 sp8 = 0.0f;
+    f32 value = 0.0f;
     if (*(f32*)((u8*)arg0 + 0x25c) > *(f32*)((u8*)arg0 + 0x24c) && self->v23() > 0) {
-        sp8 = *(f32*)((u8*)arg0 + 0x250) * self->v20(self->v23());
-        self->v35(&sp8);
+        value = *(f32*)((u8*)arg0 + 0x250) * self->v20(self->v23());
+        self->v35(&value);
         self->v33();
     }
-    if (!((f32)__fabs(sp8) <= lbl_80558DC4[0]))
+    if (!((f32)__fabs(value) <= lbl_80558DC4[0]))
         self->v38(*(f32*)((u8*)arg0 + 0x25c));
-    f32 x = *(f32*)((u8*)arg0 + 0x258) + lbl_8056177C;
-    f32 z = lbl_80561754;
-    *(f32*)((u8*)arg0 + 0x25c) = z;
-    *(f32*)((u8*)arg0 + 0x264) = z;
-    *(f32*)((u8*)arg0 + 0x258) = x;
-    return sp8;
+    f32 time = *(f32*)((u8*)arg0 + 0x258) + lbl_8056177C;
+    f32 zero = lbl_80561754;
+    *(f32*)((u8*)arg0 + 0x25c) = zero;
+    *(f32*)((u8*)arg0 + 0x264) = zero;
+    *(f32*)((u8*)arg0 + 0x258) = time;
+    return value;
 }
 #pragma pop
 
