@@ -628,6 +628,8 @@ extern char lbl_8031806C[];
 extern char lbl_80318090[];
 extern void *l2cu_find_lcb_by_bd_addr(u8 *addr);
 extern void l2c_link_hci_conn_req(u8 *bd_addr);
+extern char lbl_80318BE8[];
+extern char lbl_80318C08[];
 extern void l2cu_create_conn_after_switch(void *p_lcb);
 extern u8 lbl_803130C8[];
 extern u8 lbl_80392960[];
