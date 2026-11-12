@@ -656,16 +656,26 @@ extern unsigned char lbl_8055D672, lbl_8055D673;
 extern float lbl_80560554, lbl_80560500, lbl_80560558, lbl_8056055C;
 #pragma dont_inline on
 int fn_80021258(void) {
-    int count;
-    float rate;
-    unsigned int currentID;
+    /* Per-frame update of the results overlay shown over the tips box.
+       Does nothing while the overlay is switched off (lbl_8055D644).
+       fn_80020184() is the overlay's own fade-out: still fully opaque for the
+       first 300 ms of the results screen and gone a second later.  While it is
+       up the "loadback" image is drawn over the box (fn_80020860) and the box
+       itself gets no fade of its own; afterwards the box follows the race's own
+       0..255 value (fn_801E8838), scaled down to 0..1.  Finally, unless the
+       sound system is muted (fn_8020DE1C), the two "press a button" prompts are
+       drawn under the box. */
+    int fade;
+    float boxAlpha;
+    unsigned int fontSetId;
     if (!lbl_8055D644) return 0;
-    count = fn_80020184();
-    if (count > 0) fn_80020860(count);
-    if (count > 0) rate = lbl_805604B4;
-    else rate = (float)fn_801E8838() / lbl_80560554;
-    fn_800209A0(255, rate);
+    fade = fn_80020184();
+    if (fade > 0) fn_80020860(fade);
+    if (fade > 0) boxAlpha = lbl_805604B4;
+    else boxAlpha = (float)fn_801E8838() / ALPHA_TO_UNIT;
+    fn_800209A0(ALPHA_OPAQUE, boxAlpha);
     if (fn_8020DE1C() == 0) {
+        /* the two prompts are built once, the first time they are needed */
         if ((signed char)lbl_8055D672 == 0) {
             fn_801312EC(&lbl_8035BAFC, &lbl_802FE374);
             lbl_8055D672 = 1;
@@ -674,14 +684,14 @@ int fn_80021258(void) {
             fn_801312EC(&lbl_8035BB08, &lbl_802FE398);
             lbl_8055D673 = 1;
         }
-        currentID = *(unsigned int *)((char *)&lbl_8035BB08 + 8);
-        if (currentID != lbl_8055E044) fn_80131318(&lbl_8035BB08, currentID);
-        fn_80232BA4(*(int *)((char *)&lbl_8035BB08 + 4), lbl_8055D64C, -1, 20,
-                    lbl_80560500, lbl_80560558, lbl_805604B0, lbl_805604B4, lbl_805604B8);
-        currentID = *(unsigned int *)((char *)&lbl_8035BAFC + 8);
-        if (currentID != lbl_8055E044) fn_80131318(&lbl_8035BAFC, currentID);
-        fn_80232BA4(*(int *)((char *)&lbl_8035BAFC + 4), lbl_8055D64C, -1, 20,
-                    lbl_8056055C, lbl_80560558, lbl_805604B0, lbl_805604B4, lbl_805604B8);
+        fontSetId = lbl_8035BB08.resolvedFor;
+        if (fontSetId != lbl_8055E044) fn_80131318(&lbl_8035BB08, fontSetId);
+        fn_80232BA4(lbl_8035BB08.text, lbl_8055D64C, -1, PROMPT_LAYOUT,
+                    PROMPT_LEFT_X, PROMPT_Y, PROMPT_SCALE, lbl_805604B4, lbl_805604B8);
+        fontSetId = lbl_8035BAFC.resolvedFor;
+        if (fontSetId != lbl_8055E044) fn_80131318(&lbl_8035BAFC, fontSetId);
+        fn_80232BA4(lbl_8035BAFC.text, lbl_8055D64C, -1, PROMPT_LAYOUT,
+                    PROMPT_RIGHT_X, PROMPT_Y, PROMPT_SCALE, lbl_805604B4, lbl_805604B8);
     }
     return 1;
 }
