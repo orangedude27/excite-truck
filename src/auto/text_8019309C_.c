@@ -2077,72 +2077,72 @@ typedef union GroundPoint {
 #define GROUND_DEPTH_FLOOR lbl_80562244 /* -0.01f: keeps the ground depth off zero */
 #define PITCH_CUTOFF lbl_805621EC /* 0.7f: nose-up wanted when off the ground */
 #define PITCH_CUTOFF_SWEEP lbl_80562248 /* -1.1f: how far that cut-off falls */
-void fn_801965AC(void *arg0) {
-    float position[3];
-    int transform[3];
-    float delta;
+void fn_801965AC(void *self) {
+    float up[3];
+    GroundPoint ground;
+    float height;
     float depth;
-    float range;
-    float diff;
-    float value;
-    float scalar;
+    float amount;
+    float heightAboveGround;
+    float tilt;
+    float tiltScale;
     float adjusted;
     float product;
-    int doEffect;
-    int first;
-    int second;
-    void *obj;
+    int nearGround;
+    int positionX;
+    int positionY;
+    char *vehicle;
 
-    if (*(int *)((char *)*(void **)((char *)arg0 + 0x294) + 0x2620) != 0)
+    if (*(int *)((char *)*(void **)((char *)self + 0x294) + 0x2620) != 0)
         return;
 
-    position[0] = lbl_80562144;
-    position[1] = lbl_80562140;
-    position[2] = lbl_80562144;
-    obj = *(void **)((char *)arg0 + 0x294);
-    first = *(int *)((char *)obj + 0x60);
-    second = *(int *)((char *)obj + 0x64);
-    transform[0] = first;
-    transform[1] = second;
-    transform[2] = *(int *)((char *)obj + 0x68);
-    fn_801EA18C(transform, position, 0, transform[0], obj, lbl_80562144);
+    up[0] = F_ZERO;
+    up[1] = F_ONE;
+    up[2] = F_ZERO;
+    vehicle = *(char **)((char *)self + 0x294);
+    positionX = *(int *)((char *)vehicle + 0x60);
+    positionY = *(int *)((char *)vehicle + 0x64);
+    ground.word[0] = positionX;
+    ground.word[1] = positionY;
+    ground.word[2] = *(int *)((char *)vehicle + 0x68);
+    fn_801EA18C(&ground, up, 0, ground.word[0], vehicle, F_ZERO);
 
-    obj = *(void **)((char *)arg0 + 0x294);
-    delta = lbl_80562144;
-    diff = *(float *)((char *)obj + 0x64) - *(float *)((char *)transform + 4);
-    delta = delta > diff ? delta : diff;
-    depth = *(float *)((char *)obj + 0x11C);
-    depth = depth < lbl_80562244 ? depth : lbl_80562244;
-    range = lbl_80562140;
-    doEffect = (-delta / depth) < range;
-    scalar = lbl_80562184;
-    if (doEffect) {
-        float output;
-        product = scalar * PSVECDotProduct(position, (char *)obj + 0x54);
-        output = lbl_80562140;
-        output = output < product ? output : product;
-        output = output > lbl_805621A4 ? output : lbl_805621A4;
-        fn_8018AE2C(*(void **)((char *)arg0 + 0x294), output);
+    vehicle = *(char **)((char *)self + 0x294);
+    height = F_ZERO;
+    heightAboveGround = TRUCK_XF(vehicle)->position[1] - ground.f[1];
+    height = height > heightAboveGround ? height : heightAboveGround;
+    depth = *(float *)(vehicle + 0x11C);
+    depth = depth < GROUND_DEPTH_FLOOR ? depth : GROUND_DEPTH_FLOOR;
+    amount = F_ONE;
+    nearGround = (-height / depth) < amount;
+    tiltScale = TILT_SCALE;
+    if (nearGround) {
+        float clamped;
+        product = tiltScale * PSVECDotProduct(up, TRUCK_XF(vehicle)->forward);
+        clamped = F_ONE;
+        clamped = clamped < product ? clamped : product;
+        clamped = clamped > TILT_MIN ? clamped : TILT_MIN;
+        fn_8018AE2C(*(void **)((char *)self + 0x294), clamped);
 
-        product = scalar * PSVECDotProduct(position, (char *)*(void **)((char *)arg0 + 0x294) + 0x3C);
-        output = lbl_80562140;
-        output = output < product ? output : product;
-        output = output > lbl_805621A4 ? output : lbl_805621A4;
-        fn_8018AE34(*(void **)((char *)arg0 + 0x294), output);
+        product = tiltScale * PSVECDotProduct(up, TRUCK_XF(*(void **)((char *)self + 0x294))->right);
+        clamped = F_ONE;
+        clamped = clamped < product ? clamped : product;
+        clamped = clamped > TILT_MIN ? clamped : TILT_MIN;
+        fn_8018AE34(*(void **)((char *)self + 0x294), clamped);
         return;
     }
 
-    value = __fabs(*(float *)((char *)arg0 + 0x23C));
-    value = (value - lbl_80562144) / range;
-    range = range < value ? range : value;
-    range = range > lbl_80562144 ? range : lbl_80562144;
-    adjusted = *(float *)((char *)obj + 0x58) - (lbl_805621EC + range * lbl_80562248);
-    product = scalar * adjusted;
-    value = lbl_80562140;
-    value = value < product ? value : product;
-    value = value > lbl_805621A4 ? value : lbl_805621A4;
-    fn_8018AE2C(obj, value);
-    fn_8018AE34(*(void **)((char *)arg0 + 0x294), lbl_80562144);
+    tilt = __fabs(*(float *)((char *)self + 0x23C));
+    tilt = (tilt - F_ZERO) / amount;
+    amount = amount < tilt ? amount : tilt;
+    amount = amount > F_ZERO ? amount : F_ZERO;
+    adjusted = TRUCK_XF(vehicle)->forward[1] - (PITCH_CUTOFF + amount * PITCH_CUTOFF_SWEEP);
+    product = tiltScale * adjusted;
+    tilt = F_ONE;
+    tilt = tilt < product ? tilt : product;
+    tilt = tilt > TILT_MIN ? tilt : TILT_MIN;
+    fn_8018AE2C(vehicle, tilt);
+    fn_8018AE34(*(void **)((char *)self + 0x294), F_ZERO);
 }
 
 extern void fn_80196AA0(void *);
