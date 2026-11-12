@@ -780,7 +780,7 @@ void fn_801F131C(int arg0, int arg1) {
         int value;
         if (arg1 != 0) value = 0;
         else value = fn_801F15A8(arg0, arg0 + 0x3C);
-        fn_801F163C(arg0, value, *(float *)(arg0 + 0x48));
+        fn_801F163C((void *)arg0, value, *(float *)(arg0 + 0x48));
     }
 }
 
