@@ -1420,14 +1420,15 @@ extern "C" s32 fn_800A6728(void *arg0, s32 arg1) {
     return result;
 }
 
+/* Steps a pending device operation: when active (state 1) runs the device callback under the semaphore, records a nonzero result, returns 0x15 if failed or 0x14 on semaphore error; returns 0xD when idle (state 0), otherwise decrements the state counter. */
 extern "C" s32 fn_800A6808(void *arg0) {
     s16 state = *(s16 *)((u8 *)arg0 + 0xC);
     s32 result;
-    void *obj;
+    void *device;
     if (state == 1) {
         if (fn_800B8004(*(s32 *)((u8 *)arg0 + 0x14)) != 0) return 0x14;
-        obj = *(void **)((u8 *)arg0 + 4);
-        result = ((s32 (*)(void *, void *))(*(u32 **)((u8 *)obj + 4)))(arg0, obj);
+        device = *(void **)((u8 *)arg0 + 4);
+        result = ((s32 (*)(void *, void *))(*(u32 **)((u8 *)device + 4)))(arg0, device);
         if (fn_800B8048(*(s32 *)((u8 *)arg0 + 0x14)) != 0) return 0x14;
         if (result != 0) {
             fn_800A71D0((void *)*(s32 *)((u8 *)arg0 + 0x2C), result);
