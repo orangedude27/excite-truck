@@ -3455,6 +3455,8 @@ bad_pool:
     fn_8006EB88();
 }
 #pragma pop
+/* Initialize GKI timer state by clearing the timer tick counters and
+ * per-task timer slots in gki_cb.com (fixed-offset fields relative to lbl_803946C0). */
 void gki_timers_init(void) {
     u8 *base = (u8 *)&lbl_803946C0 + 0x30000;
     *(u32 *)(base - 0x77C8) = 0;
@@ -20663,10 +20665,11 @@ void port_rfc_closed(struct t_port_info *arg0, u8 arg1) {
 
 extern char lbl_80319570[];
 void port_select_mtu(void *arg0) {
-    char *messages = lbl_80319570;
-    u8 *port = (u8 *)arg0;
+    register char *messages = lbl_80319570;
+    register u8 *port = (u8 *)arg0;
     u16 packet_size;
     u32 mtu;
+
     mtu = *(u16 *)(port + 0x12);
     if (mtu == 0) {
         packet_size = btm_get_max_packet_size(port + 6);
@@ -20687,6 +20690,7 @@ void port_select_mtu(void *arg0) {
     } else if (lbl_803C4828[0x414] >= 5) {
         ((void (*)(u32, void *))fn_80070954)(0x90004, messages + 0x90);
     }
+
     *(u16 *)(port + 0x9C) = 0x1F40 / *(u16 *)(port + 0x12);
     *(u16 *)(port + 0x9E) = 0x1388 / *(u16 *)(port + 0x12);
     *(u16 *)(port + 0xA0) = 0x2EE0 / *(u16 *)(port + 0x12);
