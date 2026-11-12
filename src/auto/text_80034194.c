@@ -1531,8 +1531,8 @@ void fn_80036624(s32 arg0) {
 
     if (*(volatile s32 *)&lbl_8055D858 != 0) {
         block = (void *)executing_8055D8C8;
-        lbl_8055D85C = 2;
-        lbl_8055D858 = 0;
+        *(volatile s32 *)&lbl_8055D85C = 2;
+        *(volatile s32 *)&lbl_8055D858 = 0;
         executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
         *(s32 *)((char *)block + 0xC) = 0xA;
         callback = *(void (**)(s32, void *))((u8 *)block + 0x28);
@@ -2692,13 +2692,14 @@ s32 fn_800393C4(s32 value) {
 #pragma push
 #pragma scheduling invalid_target
 void fn_800393D4(void) {
-    BOOL interruptsEnabled = OSDisableInterrupts();
-    *(volatile s32 *)&lbl_8055D84C = 0;
+    s32 enabled = OSDisableInterrupts();
+    s32 zero = 0;
+    *(volatile s32 *)&lbl_8055D84C = zero;
     if (PausingFlag_8055D850 != 0) {
         PausingFlag_8055D850 = 0;
         fn_80038040();
     }
-    OSRestoreInterrupts(interruptsEnabled);
+    OSRestoreInterrupts(enabled);
 }
 #pragma pop
 // The DVD driver's command block and its status codes. include/revolution/DVD/dvd.h
@@ -2981,8 +2982,8 @@ void fn_8003998C(void* hi) {
 u32 __DVDGetCoverStatus(void) {
     u32 status;
     u64 now;
-    u32 lo;
     u32 hi;
+    u32 lo;
     lbl_8055D88C = 0;
     fn_8003BB58((void (*)(void))fn_8003998C);
     while (*(volatile u32 *)&lbl_8055D88C == 0) {
@@ -2992,8 +2993,8 @@ u32 __DVDGetCoverStatus(void) {
     }
     status = fn_8003BB48();
     now = __OSGetSystemTime();
-    lo = lbl_8055D8A4;
     hi = lbl_8055D8A0;
+    lo = lbl_8055D8A4;
     if ((s64)now - (s64)(((u64)hi << 32) | lo) < (s64)(((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 100)) {
         return 0;
     }
