@@ -575,6 +575,13 @@ extern f32 lbl_805602B0, lbl_805602E8;
 #pragma processor 750
 #pragma paired_single off
 #pragma scheduling on
+/* Draw one line of interlude text as a banner at the bottom of the screen: a
+ * translucent black panel with the "interlude.art" end caps on both ends, and the
+ * message (a "%s" printf of one argument, measured with fn_8023293C) scaled to
+ * INTERLUDE_TEXT_HEIGHT pixels and centred on the screen's middle, white over a
+ * black shadow. Called from fn_801C6B70 while an interlude message is pending.
+ * (rename_symbol is refused here, so the suggested name DashHelper_DrawInterludeBanner
+ * only lives in this comment; the original took a second, unused argument.) */
 void fn_8000FDF0(const char *text) {
     extern f32 fn_80011E60(void);
     extern f32 fn_80011E70(void);
