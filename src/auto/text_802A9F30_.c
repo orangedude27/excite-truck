@@ -672,30 +672,37 @@ void fn_802AB5B8(void) {
 
 #pragma push
 #pragma use_lmw_stmw off
-void fn_802AB628(float farg0) {
-    extern int fn_80287B14(void);
-    extern int fn_80287B24(int);
+void fn_802AB628(float deltaTime) {
+    /* Per-frame update for each active object: for each index, run AA1D0 setup
+       (index), then update entry at lbl_8055F928 + i*0x108 via AA25C/AA9D4/AAC80
+       with the object returned by fn_80287B24(i). */
+    extern int fn_80287B14(void);              /* object count */
+    extern int fn_80287B24(int);               /* object pointer/data by index */
+    extern void fn_802AA1D0(unsigned int);     /* per-index setup using lbl_80488648 */
     extern void fn_802AA25C(void *, void *, float);
-    extern int lbl_8055F928;
+    extern void fn_802AA9D4(UnkAA9D4 *, void *, float);
+    extern void fn_802AAC80(void *, void *, float);
+    extern int lbl_8055F928;                   /* base of per-object state entries (stride 0x108) */
     int count = fn_80287B14();
-    int offset;
-    int i;
+    int entryOffset;
+    int index;
     int object;
-    int base;
-    i = 0;
-    offset = i;
+    int entryBase;
+
+    index = 0;
+    entryOffset = index;
     goto check;
 loop:
-    object = fn_80287B24(i);
-    base = lbl_8055F928 + offset;
-    fn_802AA1D0(i);
-    fn_802AA25C((void *)base, (void *)object, farg0);
-    fn_802AA9D4((void *)base, (void *)object, farg0);
-    fn_802AAC80((void *)base, (void *)object, farg0);
-    offset += 0x108;
-    i += 1;
+    object = fn_80287B24(index);
+    entryBase = lbl_8055F928 + entryOffset;
+    fn_802AA1D0(index);
+    fn_802AA25C((void *)entryBase, (void *)object, deltaTime);
+    fn_802AA9D4((UnkAA9D4 *)entryBase, (void *)object, deltaTime);
+    fn_802AAC80((void *)entryBase, (void *)object, deltaTime);
+    entryOffset += 0x108;
+    index += 1;
 check:
-    if (i < count)
+    if (index < count)
         goto loop;
 }
 #pragma pop
