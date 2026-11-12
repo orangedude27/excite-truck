@@ -4120,6 +4120,8 @@ extern "C" void fn_8021FC40(void *arg0, s32 arg1) {
 }
 
 extern "C" s32 fn_802C5334(s32, s32, f32, f32, f32, f32, f32, f32, f32, f32);
+#pragma push
+#pragma processor 750
 extern "C" void fn_8021FD68(void *arg0, s32 arg1) {
     VfObj *obj = (VfObj *)arg0;
     s32 step = obj->vf28() - 11;
@@ -4147,6 +4149,7 @@ extern "C" void fn_8021FD68(void *arg0, s32 arg1) {
             (f32)progress, z, lbl_805634A8, lbl_805634A8, (f32)progress / fRange, lbl_805634A4);
     }
 }
+#pragma pop
 
 #pragma paired_single off
 extern "C" void *fn_8021FF34(void *arg0, void *arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1) {
@@ -4533,8 +4536,8 @@ extern "C" void fn_80220C54(void *arg0) {
     register void *self = arg0;
     register s32 size;
     s32 *entries;
-    s32 *check;
     s32 current;
+    s32 *check;
     s32 target;
     register s32 enabled;
     s32 e0;
