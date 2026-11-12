@@ -168,8 +168,6 @@ struct SomeVIStruct {
 static u16 regs[60];
 static SomeVIStruct HorVer;
 static u16 shdwRegs[60];
-extern u16 lbl_8038F320[];
-extern u16 lbl_8038F418[];
 static u8 lbl_8038F490[0x30];
 
 #define MARK_CHANGED(index) (changed |= (u64)1 << (63 - (index)))
