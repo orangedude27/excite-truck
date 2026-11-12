@@ -2748,15 +2748,12 @@ typedef enum {
     DVD_STATE_MOTOR_STOPPED,
 } DVDAsyncState;
 
-// The cancel state machine's statics (dvdcancel.c).
+// The cancel state machine's own statics (dvdcancel.c); the cover/motor statics
+// it shares with the state machine (Transferring, AlarmInfo, StateToChange,
+// StateAlarm, ExecutingBlock) are named above fn_80037E94.
 #define Canceling      lbl_8055D858  // a cancel is waiting for the drive
 #define ResetFlag      lbl_8055D86C  // the drive must be reset before the next command
-#define Transferring   lbl_8055D870  // the state timeout alarm is running
-#define AlarmInfo      lbl_8055D874  // waiting on the cover interrupt instead
-#define StateToChange  lbl_8055D85C  // drive state __DVDIssueCallback moves to next
 #define CancelCallback lbl_8055D8B8  // called once the cancel has finished
-#define StateAlarm     lbl_80376AD0  // the DVD state timeout alarm
-#define ExecutingBlock executing_8055D8C8 // block the driver is running
 #define DummyBlock     DummyCommandBlock_80376AA0 // "nothing is executing" block
 
 extern s32 lbl_8055D858, lbl_8055D86C;
