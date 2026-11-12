@@ -215,6 +215,9 @@ void fn_800527CC(u32 param_1) {
 }
 
 void OSReturnToMenu(void) {
+    /* Stop play/state recording, persist disc/RTC state into OSStateFlags,
+       shut down devices for a menu return (event 5), then launch the system
+       menu. Panics if __OSLaunchMenu returns. */
     OSStateFlags stateFlags;
     u32 rtcFlags;
 
