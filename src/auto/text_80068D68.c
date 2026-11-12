@@ -6984,27 +6984,28 @@ done:
 
 extern char lbl_80315700[];
 extern void *jumptable_803159A0[];
+/* Map a BTA HH API event code to its debug string name. */
 char *bta_hh_evt_code(u32 event) {
     u32 index = event - 0x1700;
-    char *base = lbl_80315700;
+    char *evt_strings = lbl_80315700;
     switch (index) {
-    case 0: return base + 0x108;
-    case 1: return base + 0x120;
-    case 2: return base + 0x138;
-    case 3: return base + 0x14C;
-    case 4: return base + 0x164;
-    case 5: return base + 0x178;
-    case 6: return base + 0x190;
-    case 7: return base + 0x1A8;
-    case 8: return base + 0x1BC;
-    case 9: return base + 0x1D4;
-    case 10: return base + 0x1F0;
-    case 11: return base + 0x204;
-    case 12: return base + 0x21C;
-    case 13: return base + 0x238;
-    case 14: return base + 0x250;
-    case 15: return base + 0x268;
-    default: return base + 0x284;
+    case 0: return evt_strings + 0x108;
+    case 1: return evt_strings + 0x120;
+    case 2: return evt_strings + 0x138;
+    case 3: return evt_strings + 0x14C;
+    case 4: return evt_strings + 0x164;
+    case 5: return evt_strings + 0x178;
+    case 6: return evt_strings + 0x190;
+    case 7: return evt_strings + 0x1A8;
+    case 8: return evt_strings + 0x1BC;
+    case 9: return evt_strings + 0x1D4;
+    case 10: return evt_strings + 0x1F0;
+    case 11: return evt_strings + 0x204;
+    case 12: return evt_strings + 0x21C;
+    case 13: return evt_strings + 0x238;
+    case 14: return evt_strings + 0x250;
+    case 15: return evt_strings + 0x268;
+    default: return evt_strings + 0x284;
     }
 }
 
