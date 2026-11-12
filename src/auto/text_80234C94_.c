@@ -306,15 +306,16 @@ extern void fn_802C8D74(void);
 extern void fn_802C8B98(int, int);
 #pragma push
 #pragma processor 750
-void fn_802353F4(int arg0, int arg1, float arg2, float arg3, float arg4) {
-    void *node;
-    if (arg1 < 0) return;
-    node = ((void *(*)(void *, int))fn_8023505C)((void *)arg0, arg1);
-    if (node == 0) {
-        fn_802E30C8(lbl_80340808, arg1, arg0);
+/* Draws a picture from an art set by index at (x, y, z), or logs if the index is not found. */
+void fn_802353F4(int artSet, int pictureIndex, float x, float y, float z) {
+    void *pictureNode;
+    if (pictureIndex < 0) return;
+    pictureNode = ((void *(*)(void *, int))fn_8023505C)((void *)artSet, pictureIndex);
+    if (pictureNode == 0) {
+        fn_802E30C8(lbl_80340808, pictureIndex, artSet);
         return;
     }
-    fn_802354A0(arg0, arg1, -1, arg2, arg3, arg4, *(float *)((char *)node + 0x14), *(float *)((char *)node + 0x10));
+    fn_802354A0(artSet, pictureIndex, -1, x, y, z, *(float *)((char *)pictureNode + 0x14), *(float *)((char *)pictureNode + 0x10));
 }
 
 #pragma push
