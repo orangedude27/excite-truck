@@ -61,12 +61,13 @@ void fn_8028CF64(void) {
 #pragma processor 750
 #pragma scheduling invalid_target
 void fn_8028CFB0(void) {
+    /* Update active entries in the table, processing those with pending work and restoring the previous timer state. */
     int *entry;
     int i;
     float scale;
-    float time;
+    float savedTime;
     if (lbl_8055F714 != 0) {
-        time = fn_802C9A4C(lbl_8055F710);
+        savedTime = fn_802C9A4C(lbl_8055F710);
         fn_802C9648(lbl_805643E8);
         entry = &lbl_804B3400;
         scale = lbl_805643EC;
@@ -82,7 +83,7 @@ void fn_8028CFB0(void) {
             entry = (int *)((char *)entry + 0x1C);
         }
         fn_802C967C();
-        fn_802C9A4C(time);
+        fn_802C9A4C(savedTime);
     }
 }
 #pragma pop
