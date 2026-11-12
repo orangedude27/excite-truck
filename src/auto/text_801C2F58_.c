@@ -3025,28 +3025,37 @@ void fn_801C9514(void);
 #define menu_move         fn_801C968C  /* steps the menu item selection, wrapping */
 #define timeline_page     fn_801C96E4  /* entry list page = selection / 10 */
 #define menu_activate     fn_801C95EC  /* runs the selected menu entry */
-s32 fn_801CB114(s32 arg0) {
-    if ((u8)lbl_8055E838 != 0) return fn_801C9708();
-    if (arg0 == 0x68) lbl_8055E7E0 = (u8)lbl_8055E7E0 == 0;
-    if ((u8)lbl_8055E7E0 != 0) return 0;
-    switch (arg0) {
-    case 0x63: lbl_8055E80C = (u8)lbl_8055E80C == 0; break;
-    case 0x72: fn_80176780(0x4200, 0); lbl_8055E7E1 = 1; break;
-    case 0x6C: fn_801CA070(lbl_8033701C); break;
-    case 0x69: fn_801C9514(); break;
-    case 0x126: fn_801C968C(-1); break;
-    case 0x128: fn_801C968C(1); break;
-    case 0x5B:
-        if ((u8)lbl_8055E839 != 0) {
-            if (lbl_8055E828 > 0) lbl_8055E828 -= 1;
-            fn_801C96E4();
+/* Key handler of the debug interlude overlay.  `key` is a debug keyboard code: a
+ * typed character, or one of the cursor/Enter messages above 0x100.  While a
+ * console text field is being typed into the key goes to the line editor
+ * instead; 'h' hides the overlay, which then swallows every other key.  Of the
+ * rest 'c' stops the interlude driving the camera, 'r' restarts it (physics mode
+ * none), 'l' saves the recorded timeline to "intrlude.txt", 'i' fast-forwards
+ * 0.1 s, the cursor keys step the menu selection, '[' and ']' scroll the
+ * selected timeline entry while its list is shown, and Enter runs the selected
+ * menu entry.  Returns the line editor's result, or 0. */
+s32 fn_801CB114(s32 key) {
+    if ((u8)sTextInputActive != 0) return console_text_key(key);
+    if (key == 'h') sOverlayHidden = (u8)sOverlayHidden == 0;
+    if ((u8)sOverlayHidden != 0) return 0;
+    switch (key) {
+    case 'c': sFreeCamera = (u8)sFreeCamera == 0; break;
+    case 'r': physics_switch(0x4200, 0); sRestartRequested = 1; break;
+    case 'l': save_interlude(INTERLUDE_FILE); break;
+    case 'i': fast_forward_time(); break;
+    case KEY_CURSOR_LEFT: menu_move(-1); break;
+    case KEY_CURSOR_RIGHT: menu_move(1); break;
+    case '[':
+        if ((u8)sEntryListShown != 0) {
+            if (sTimelineSelection > 0) sTimelineSelection -= 1;
+            timeline_page();
         } break;
-    case 0x5D:
-        if ((u8)lbl_8055E839 != 0) {
-            if (lbl_8055E828 < lbl_8055E7F0 - 1) lbl_8055E828 += 1;
-            fn_801C96E4();
+    case ']':
+        if ((u8)sEntryListShown != 0) {
+            if (sTimelineSelection < sTimelineCount - 1) sTimelineSelection += 1;
+            timeline_page();
         } break;
-    case 0xD: ((void (*)(void))fn_801C95EC)(); break;
+    case '\r': ((void (*)(void))menu_activate)(); break;
     }
     return 0;
 }
