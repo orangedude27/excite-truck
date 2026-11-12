@@ -1,4 +1,4 @@
-// sounddash — sound debug dash ("SOUND DASH", sounds.txt dump).
+// sounddash - sound debug dash ("SOUND DASH", sounds.txt dump).
 // Recovered TU window 0x8020BCE4..0x8020C114+thunk (see docs/attribution_analysis.md).
 // Static-init thunk fn_8020C114 (+ .ctors slot 0x802ED394) remains in
 // auto/text_8020C114_.c pending a promotion pass.
