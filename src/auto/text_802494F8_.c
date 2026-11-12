@@ -69,7 +69,8 @@ int fn_80249660(void) { return 1; }
 
 #pragma push
 #pragma scheduling invalid_target
-int fn_80249668(int *arg0) {
+int fn_80249668(int *outResult) {
+    /* Copy a language-selected location string into lbl_8055F294 and optionally set a failure result. */
     extern char *lbl_802FA4C8[3];
     extern unsigned char lbl_8055F290;
     extern unsigned char *lbl_8055F294;
@@ -102,12 +103,11 @@ copy2:
         goto decrement2;
 done2:
     if (lbl_8055F290 != 0 && fn_802411D4() == 0) {
-        *(volatile int *)arg0 = -1;
+        *(volatile int *)outResult = -1;
         return 1;
     }
     return 0;
 }
-
 void fn_80249720(void) {
     lbl_8055BF34 = (void*)fn_80214D04();
 }
@@ -586,18 +586,16 @@ u8 fn_8024B070(s32 *arg0, s32 **arg1) {
     s32 sp8;
     s32 i = 0;
     s32 offset = 0;
-    s32 count = *(s32 *)((u8 *)arg1 + 4);
-
-    if (count > 0) {
-        for (; i < count; i++) {
+    s32 n = *(s32 *)((u8 *)arg1 + 4);
+    if (n > 0) {
+        do {
             s32 item = *(s32 *)((u8 *)*arg1 + offset);
-            s32 key = *arg0;
-            if (item != key) {
-                offset += 0x18;
-                continue;
+            if (item == *arg0) {
+                goto found;
             }
-            goto found;
-        }
+            offset += 0x18;
+            i++;
+        } while (--n != 0);
     }
     i = -1;
 found:
@@ -1058,25 +1056,23 @@ s32 fn_8024B9EC(void *arg0) {
 void fn_8024BA00(void *arg0) {
     s32 count;
     s32 index;
-    s32 sum;
-    s32 value;
-    s32 item;
     s32 *items;
-
+    s32 value;
+    s32 next;
+    void *obj;
+    s32 item;
     count = *(s32 *)((char *)arg0 + 0x14);
     index = *(s32 *)((char *)arg0 + 0x11C);
     items = *(s32 **)((char *)arg0 + 0x10);
-    sum = count + index;
     value = *(s32 *)((char *)arg0 + 0x120);
-    index = (sum - 1) % count;
-    *(s32 *)((char *)arg0 + 0x11C) = index;
-    item = items[index * 2 + 1];
-    ((void (*)(void *, s32, s32, s32, s32))*(void **)((char *)*(void **)((char *)*(void **)((char *)arg0 + 0x124) + 0xC) + 0x30))(
-        *(void **)((char *)arg0 + 0x124), value, item, count - 1, count);
+    next = (count + index - 1) % count;
+    *(s32 *)((char *)arg0 + 0x11C) = next;
+    obj = *(void **)((char *)arg0 + 0x124);
+    item = items[next * 2 + 1];
+    ((void (*)(void *, s32, s32))*(void **)((char *)*(void **)((char *)obj + 0xC) + 0x30))(obj, value, item);
     index = *(s32 *)((char *)arg0 + 0x11C);
     items = *(s32 **)((char *)arg0 + 0x10);
-    fn_801345D8((char *)arg0 + 0x128, 0x20, (const char *)&lbl_80343E70,
-        items[index * 2 + 1], (const char *)&lbl_8055BFF8);
+    fn_801345D8((char *)arg0 + 0x128, 0x20, (const char *)&lbl_80343E70, items[index * 2 + 1], (const char *)&lbl_8055BFF8);
 }
 
 #pragma scheduling invalid_target
