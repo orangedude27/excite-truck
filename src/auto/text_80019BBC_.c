@@ -18,7 +18,6 @@ extern float lbl_80560444, lbl_80560448, lbl_8056044C;
 extern float fn_80235EF0(void *, int);
 extern void fn_80235AFC(void *, int, unsigned int, float, float, float, float, float, float);
 extern void fn_802354A0(void *, int, int, float, float, float, float, float);
-extern void fn_8001B478(float);
 extern void *fn_80156A40(void);
 extern float lbl_80560418;
 extern float lbl_8056041C;
