@@ -557,6 +557,7 @@ extern "C" void fn_80191084(int, int);
 extern "C" int fn_80191100(void *);
 #pragma cplusplus on
 extern "C" void fn_801902B4(void *arg0) {
+    /* Refresh this object's active references and notify listeners/virtual slot 10. */
     class VTable {
     public:
         virtual void f0();
@@ -571,22 +572,22 @@ extern "C" void fn_801902B4(void *arg0) {
         virtual void f9();
         virtual void f10();
     };
-    unsigned int temp_r3;
-    unsigned int field;
+    unsigned int selectedRef;
+    unsigned int primaryRef;
     VTable *obj;
     int (*callback)(void *);
 
     fn_80191084((int)arg0, 0);
     fn_801B6650(*(int *)((char *)arg0 + 0x20));
     callback = (int (*)(void *))fn_80191100;
-    temp_r3 = callback(arg0);
-    field = *(unsigned int *)((char *)arg0 + 8);
-    if (temp_r3 != field) {
-        fn_80191084((int)arg0, field);
+    selectedRef = callback(arg0);
+    primaryRef = *(unsigned int *)((char *)arg0 + 8);
+    if (selectedRef != primaryRef) {
+        fn_80191084((int)arg0, primaryRef);
     } else {
         fn_80191084((int)arg0, *(unsigned int *)((char *)arg0 + 0xC));
     }
-    fn_80191084((int)arg0, temp_r3);
+    fn_80191084((int)arg0, selectedRef);
     if (*(unsigned char *)((char *)arg0 + 0x38) != 0) {
         *(unsigned char *)((char *)arg0 + 0x38) = 0;
         fn_802793B0(*(int *)((char *)arg0 + 0x28));
