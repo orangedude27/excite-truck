@@ -306,7 +306,11 @@ void fn_80235380(void *arg0) {
     }
 }
 
+/* A draw-list vertex: x, y, z, an RGBA colour packed by fn_80230B9C and the
+ * texture coordinates.  The frame copies move x and y together as one double,
+ * which is what the double field stands for. */
 typedef struct Vtx_80235CBC { double a; int b, c; float d, e; } Vtx_80235CBC;
+/* The frame's four vertices as two triangles: {0, 1, 3, 3, 2, 0}. */
 typedef struct Idx_80235CBC { unsigned short i[6]; } Idx_80235CBC;
 extern Vtx_80235CBC fn_80230A68(int, float, float, float, float, float);
 extern int fn_80230B9C(int);
