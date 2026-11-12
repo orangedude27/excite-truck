@@ -48,6 +48,8 @@ void OSRegisterShutdownFunction(OSShutdownFunctionInfo* info) {
     }
 }
 
+/* Run registered shutdown functions in priority order, stopping early on failure
+ * when the priority changes, then sync SRAM. Returns TRUE if all succeeded. */
 BOOL __OSCallShutdownFunctions(u32 arg0, u32 arg1) {
     OSShutdownFunctionInfo* iter;
     BOOL failure;
