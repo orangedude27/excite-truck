@@ -772,29 +772,30 @@ void fn_80017708(void *arg0, int arg1, void *arg2) {
     *(int *)((char *)arg2 + 4) = temp_r0_2;
 }
 #pragma dont_inline on
+/* Clear the 0x960-byte output buffer and, for each active vehicle entry (stride 0xA8, count lbl_8055D550) not flagged +0xA0 bit 2, fill 4 slots via fn_80017708/fn_80016BC8. */
 void fn_800177B8(void) {
-    int var_r31;
-    int var_r30;
-    void *temp_r29;
-    int var_r28;
+    int entryOffset;
+    int entryIndex;
+    void *entry;
+    int slotIndex;
 
     memset(lbl_8055D548, 0, 0x960);
-    var_r30 = 0;
-    var_r31 = 0;
+    entryIndex = 0;
+    entryOffset = 0;
     goto loop_test;
 loop_body:
-    temp_r29 = lbl_8055D544 + var_r31;
-    if ((*(int *)((char *)temp_r29 + 0xA0) & 2) == 0) {
-        var_r28 = 0;
+    entry = lbl_8055D544 + entryOffset;
+    if ((*(int *)((char *)entry + 0xA0) & 2) == 0) {
+        slotIndex = 0;
         do {
-            fn_80017708(temp_r29, var_r28, fn_80016BC8(temp_r29, var_r28));
-            var_r28++;
-        } while (var_r28 < 4);
+            fn_80017708(entry, slotIndex, fn_80016BC8(entry, slotIndex));
+            slotIndex++;
+        } while (slotIndex < 4);
     }
-    var_r31 += 0xA8;
-    var_r30++;
+    entryOffset += 0xA8;
+    entryIndex++;
 loop_test:
-    if (var_r30 < (int)lbl_8055D550) {
+    if (entryIndex < (int)lbl_8055D550) {
         goto loop_body;
     }
 }
