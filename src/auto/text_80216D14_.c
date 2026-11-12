@@ -1384,7 +1384,8 @@ void fn_80218C14(void *arg0, int arg1, void *arg2) {
     ((float *)dst)[14] = z;
 }
 #pragma cplusplus on
-extern "C" void fn_80218C98(void *arg0, void **arg1, int arg2) {
+/* Registers a child object in the parent's list and activates it if needed. */
+extern "C" void fn_80218C98(void *parent, void **child, int arg2) {
     class Obj {
     public:
         virtual void v0();
@@ -1413,18 +1414,18 @@ extern "C" void fn_80218C98(void *arg0, void **arg1, int arg2) {
         virtual void v23();
         virtual int v24();
     };
-    char *base = (char *)arg0;
-    Obj *obj = (Obj *)arg1;
+    char *base = (char *)parent;
+    Obj *obj = (Obj *)child;
     int count = *(int *)(base + 0x430);
-    *(void **)(base + 0x30 + count * 4) = arg1;
+    *(void **)(base + 0x30 + count * 4) = child;
     *(int *)(base + 0x430) = count + 1;
     if (obj->v24() != 0 &&
         *(int *)(base + 0x450) == 0 &&
         *(unsigned char *)(base + 0xDE4) != 0) {
-        fn_80218198(arg0, arg1);
+        fn_80218198(parent, child);
     }
     *(int *)((char *)obj + 0x238) = fn_80216D14(arg2);
-    *(void **)((char *)obj + 0x2C) = arg0;
+    *(void **)((char *)obj + 0x2C) = parent;
     obj->v3();
 }
 extern "C" void fn_80218D54(void *arg0, int arg1) {
