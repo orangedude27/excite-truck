@@ -539,14 +539,14 @@ test1:
             unsigned char flag = *(unsigned char *)((char *)arg0 + 0x20);
             if (flag != 0) {
                 int j = 0;
-                int off2 = 0;
+                offset = 0;
                 goto test2;
 loop2:
                 {
-                    Item *obj2 = *(Item **)(*(char **)((char *)arg0 + 0x30) + off2);
+                    Item *obj2 = *(Item **)(*(char **)((char *)arg0 + 0x30) + offset);
                     obj2->run3();
                 }
-                off2 += 4;
+                offset += 4;
                 j++;
 test2:
                 if (j < *(int *)((char *)arg0 + 0x34)) goto loop2;
@@ -577,13 +577,13 @@ test3:
         if (maxVal >= 0) {
             if (*(int *)((char *)arg0 + 4) == 1) {
                 if ((*(int *)((char *)arg0 + 0x24) >= 0 && maxVal < *(int *)((char *)arg0 + 0x24)) ||
-                    (*(int *)((char *)arg0 + 0x28) < 0 || maxVal > *(int *)((char *)arg0 + 0x28))) {
+                    (*(int *)((char *)arg0 + 0x28) >= 0 && maxVal > *(int *)((char *)arg0 + 0x28))) {
                     *(int *)((char *)arg0 + 4) = 4;
                     return;
                 }
             } else if (*(int *)((char *)arg0 + 4) == 4) {
                 if ((*(int *)((char *)arg0 + 0x24) < 0 || maxVal >= *(int *)((char *)arg0 + 0x24)) &&
-                    (*(int *)((char *)arg0 + 0x28) >= 0 && maxVal <= *(int *)((char *)arg0 + 0x28))) {
+                    (*(int *)((char *)arg0 + 0x28) < 0 || maxVal <= *(int *)((char *)arg0 + 0x28))) {
                     *(int *)((char *)arg0 + 4) = 1;
                 }
             }
