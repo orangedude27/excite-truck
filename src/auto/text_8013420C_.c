@@ -1,20 +1,45 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
-typedef int s32;
-typedef struct Entry { s32 state; s32 unk4; void *obj; void (*cb)(void *, void *, void *); void *unk10; s32 pad; } Entry;
-typedef struct Container { void *data; s32 count; s32 stride; Entry *entries; } Container;
+// Load pool / async stream pool: init, destroy/cancel, poll, request, and release helpers.
+// (fn_/lbl_ names kept: rename_symbol not available for this project yet.)
 
+typedef int s32;
 typedef unsigned int u32;
+
+/* Slot in a load pool's entry table (0x18 bytes). */
+typedef struct LoadPoolEntry {
+    s32 state;                    /* 0 = free, 1 = loading, 2 = ready */
+    s32 unk4;                     /* per-entry word (buffer/offset context) */
+    void *obj;                    /* active stream/load object */
+    void (*cb)(void *, void *, void *); /* completion callback */
+    void *unk10;                  /* callback user data */
+    s32 pad;                      /* reserved / request size */
+} LoadPoolEntry;
+
+/* Load pool container. */
+typedef struct LoadPool {
+    void *data;                   /* backing data buffer */
+    s32 count;                    /* number of entries */
+    s32 stride;                   /* bytes per data slot */
+    LoadPoolEntry *entries;       /* entry array */
+} LoadPool;
+
+/* Compatibility aliases for other matched functions in this unit. */
+typedef LoadPoolEntry Entry;
+typedef LoadPool Container;
+
 extern void *lbl_80559BD0;
 extern char lbl_8032BB18[];
-extern char lbl_8032BB24[];
+extern char lbl_8032BB24[]; /* "loadpool: canceling stream..." */
+#define sLoadPoolCancelStreamMsg lbl_8032BB24
+
 s32 fn_8012850C(s32, void *);
 s32 fn_8012C7FC(void *, s32 *);
-void fn_8012C958(void *);
-void fn_8012C90C(void *);
-void fn_80128670(void *);
-void fn_80128668(void *);
-void fn_802E30C8(const char *, ...);
+void fn_8012C958(void *); /* finalize/reset stream/load object */
+void fn_8012C90C(void *); /* cancel/stop active stream/load object */
+void fn_80128670(void *); /* free block (heap op 0) */
+void fn_80128668(void *); /* free block (heap op 3) */
+void fn_802E30C8(const char *, ...); /* formatted log/warning */
 #pragma unroll off
 #pragma scheduling invalid_target
 void *fn_8013420C(void *arg0, s32 arg1, s32 arg2) {
