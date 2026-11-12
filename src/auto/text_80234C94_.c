@@ -616,29 +616,30 @@ void *fn_80236008(void *arg0, int arg1, int arg2) {
     return arg0;
 }
 
-void *fn_80236074(void *arg0, int arg1) {
+/* Destructor-like cleanup: clears vtable/entries, releases per-element resources and the backing array, optionally deletes the object when arg1 > 0. */
+void *fn_80236074(void *object, int deleteFlag) {
     int offset;
     int i;
     int mode;
-    if (arg0 != 0) {
-        *(void **)arg0 = lbl_803408CC;
+    if (object != 0) {
+        *(void **)object = lbl_803408CC;
         i = 0;
         offset = 0;
-        while (i < *(int *)((char *)arg0 + 0xC)) {
-            fn_802CAC54(*(void **)(*(char **)((char *)arg0 + 4) + offset + 0x24));
+        while (i < *(int *)((char *)object + 0xC)) {
+            fn_802CAC54(*(void **)(*(char **)((char *)object + 4) + offset + 0x24));
             offset += 0x2C;
             i++;
         }
-        fn_80128670(*(void **)((char *)arg0 + 4));
-        mode = *(int *)((char *)arg0 + 0x10);
-        *(int *)((char *)arg0 + 8) = 0;
-        *(int *)((char *)arg0 + 0xC) = 0;
+        fn_80128670(*(void **)((char *)object + 4));
+        mode = *(int *)((char *)object + 0x10);
+        *(int *)((char *)object + 8) = 0;
+        *(int *)((char *)object + 0xC) = 0;
         if (mode != -2)
             fn_802CAC54();
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (deleteFlag > 0)
+            fn_80128668(object);
     }
-    return arg0;
+    return object;
 }
 
 #pragma dont_inline reset
