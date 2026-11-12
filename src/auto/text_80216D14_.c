@@ -1208,6 +1208,9 @@ int fn_8021885C(void *arg0, int arg1) {
 
 extern int fn_80216D14(int);
 extern void fn_802193C8(float);
+/* Set the given sound-id bit on this sound manager and notify matching slots
+ * (object at cursor+0x30 has mask at +0x238) via fn_802193C8; mark 0x46C if
+ * more than 8 slots were notified. */
 void fn_8021889C(void *arg0, int arg1, float arg2) {
     int mask = fn_80216D14(arg1);
     if (*(int *)((char *)arg0 + 0x464) & mask)
