@@ -2351,6 +2351,45 @@ extern "C" s32 fn_800A8504(void *manager, void *listHeadPtr, s32 nodePtr, s32 se
     return 0;
 }
 
+extern "C" s32 fn_800A861C(void *arg0, void *arg1, s32 arg2, u32 arg3) {
+    u32 sp8;
+    void *page;
+    s32 result;
+    page = (void *)VFiPFCACHE_SearchForPage((s32)arg0, *(s32 *)arg1, (s32)arg3);
+    if (page != 0) {
+        volatile u16 *nodeFlags;
+        s32 scratch0;
+        s32 cachedStart;
+        s32 nodeStart;
+        VFipf_memcpy(VF_PAGE_DATA(page), (const void *)arg2, *(u16 *)arg0);
+        nodeFlags = (volatile u16 *)page;
+        scratch0 = *nodeFlags;
+        *nodeFlags = (u16)(scratch0 | 2);
+        cachedStart = VF_PAGE_CHANGED_FROM(page);
+        if (cachedStart == 0) {
+            VF_PAGE_CHANGED_FROM(page) = (s32)VF_PAGE_DATA(page);
+            VF_PAGE_CHANGED_TO(page) = (s32)VF_PAGE_DATA(page);
+        } else {
+            nodeStart = (s32)VF_PAGE_DATA(page);
+            if ((u32)nodeStart < (u32)cachedStart) {
+                VF_PAGE_CHANGED_FROM(page) = nodeStart;
+            } else if ((u32)nodeStart > (u32)VF_PAGE_CHANGED_TO(page)) {
+                VF_PAGE_CHANGED_TO(page) = nodeStart;
+            }
+        }
+        result = fn_800A7B34(arg0, page);
+        if (result != 0)
+            return result;
+    } else {
+        result = fn_800A58E0(arg0, arg2, (s32)arg3, 1, (s32)&sp8);
+        if (result != 0)
+            return result;
+        if (sp8 != 1)
+            return 0x11;
+    }
+    return 0;
+}
+
 extern "C" s32 fn_800A58E0(void *, s32, s32, s32, s32);
 extern "C" s32 fn_800A8730(void *arg0, u32 *arg1, void *arg2, u32 arg3, s32 arg4, s32 *arg5) {
     u32 temp_r7;
