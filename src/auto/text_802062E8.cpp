@@ -768,6 +768,9 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80207748(
 
 #pragma scheduling on
 extern "C" void *fn_802077A4(int arg0, int arg1, int arg2, int arg3) {
+    /* Allocate and initialize a Sound3D object (0x78 bytes, pool tag
+     * lbl_8055B4C0 "Sound3D"); if initialization yields no inner handle at
+     * +0xC, destroy and return NULL. */
     struct Callback { virtual ~Callback(); };
     void *obj = fn_80206BF8(0x78, lbl_8055B4C0);
     if (obj != 0)
