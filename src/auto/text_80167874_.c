@@ -165,6 +165,7 @@ s32 *fn_80167874(s32 arg0) {
 }
 #pragma scheduling on
 #pragma optimization_level reset
+#pragma dont_inline reset
 extern double cos(float);
 extern double sin(float);
 extern int lbl_8055E3C4;
