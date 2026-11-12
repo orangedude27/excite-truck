@@ -2,7 +2,7 @@
 // Recovered TU window 0x8020F3B4..0x802114F4+thunk (see docs/attribution_analysis.md).
 // Static-init thunk fn_802114F4 (+ .ctors slot 0x802ED3A8) remains in
 // auto/text_802114F4_.c pending a promotion pass.
-extern long fn_802EC104(long);
+extern char *fn_802EC104(long);  // path of entry i of the dash's scanned music table
 #pragma cplusplus on
 struct Dummy_802113D8 {
     virtual void f0();
