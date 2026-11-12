@@ -144,6 +144,15 @@ struct DummyWorkerCallback10 : DummyWorkerLink { virtual void f0(); virtual void
 
 extern "C" s32 fn_80128668(void);
 extern "C" const char lbl_80324E88[];
+extern "C" const char lbl_80325520[];
+extern "C" u8 lbl_80412AA0[];
+extern "C" u8 lbl_80412CA0[];
+extern "C" u8 lbl_8055DE58;
+extern "C" void OSInitMutex(void*);
+extern "C" void NWC24Data_Init(void*);
+extern "C" s32 fn_800FAB98(void*, void*);
+extern "C" s32 fn_800FACC0(void*, void*, s32);
+extern "C" s32 fn_800FAF10(void*, void*, unsigned long, s32);
 extern "C" const char lbl_803251B0[];
 extern "C" const char lbl_80325158[];
 extern "C" const char lbl_803250C8[];
@@ -1027,18 +1036,18 @@ extern "C" void *detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(void 
     if (!ReadFileInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive8FileInfo(*(void **)((u8 *)self + 4), file, &info)) return 0;
     const char *path = info.path;
     if (path != 0) {
-        if (*path == '/') goto open_file;
-        unsigned long pathLen = strlen(path);
-        unsigned long prefixLen = strlen((const char *)self + 8);
-        if (pathLen + prefixLen >= 0x100) {
-            Warning__Q26nw4hbm2dbFPCciPCce(lbl_803247E0, 0x155, lbl_80324828, (const char *)self + 8, path);
-            return 0;
-        }
         char buf[0x100];
-        strncpy(buf, (const char *)self + 8, prefixLen + 1);
-        fn_80028E2C(buf, path, pathLen + 1);
-        path = buf;
-    open_file:
+        if (*path != '/') {
+            unsigned long pathLen = strlen(path);
+            unsigned long prefixLen = strlen((const char *)self + 8);
+            if (pathLen + prefixLen >= 0x100) {
+                Warning__Q26nw4hbm2dbFPCciPCce(lbl_803247E0, 0x155, lbl_80324828, (const char *)self + 8, path);
+                return 0;
+            }
+            strncpy(buf, (const char *)self + 8, prefixLen + 1);
+            fn_80028E2C(buf, path, pathLen + 1);
+            path = buf;
+        }
         return archive->f5(buffer, size, path, 0, 0);
     }
     if (!ReadFilePos__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlUlPQ46nw4hbm3snd12SoundArchive7FilePos(*(void **)((u8 *)self + 4), file, 0, &pos)) return 0;
@@ -1048,18 +1057,18 @@ extern "C" void *detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi(void 
     u32 offset = group.offset + item.offset;
     u32 length = item.size;
     if (path != 0) {
-        if (*path == '/') goto open_group;
-        unsigned long pathLen = strlen(path);
-        unsigned long prefixLen = strlen((const char *)self + 8);
-        if (pathLen + prefixLen >= 0x100) {
-            Warning__Q26nw4hbm2dbFPCciPCce(lbl_803247E0, 0x155, lbl_80324828, (const char *)self + 8, path);
-            return 0;
-        }
         char buf[0x100];
-        strncpy(buf, (const char *)self + 8, prefixLen + 1);
-        fn_80028E2C(buf, path, pathLen + 1);
-        path = buf;
-    open_group:
+        if (*path != '/') {
+            unsigned long pathLen = strlen(path);
+            unsigned long prefixLen = strlen((const char *)self + 8);
+            if (pathLen + prefixLen >= 0x100) {
+                Warning__Q26nw4hbm2dbFPCciPCce(lbl_803247E0, 0x155, lbl_80324828, (const char *)self + 8, path);
+                return 0;
+            }
+            strncpy(buf, (const char *)self + 8, prefixLen + 1);
+            fn_80028E2C(buf, path, pathLen + 1);
+            path = buf;
+        }
         return archive->f5(buffer, size, path, offset, length);
     }
     return archive->f4(buffer, size, offset, length);
@@ -4177,8 +4186,80 @@ extern "C" void detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm
     Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((u8 *)self + 0xC, (u8 *)pSound + 0xC8);
 }
 
-#pragma push
 #pragma use_lmw_stmw off
+extern "C" void detail_SortPriorityList__Q36nw4hbm3snd11SoundPlayerFv(void* arg0) {
+    extern void* fn_8002F53C(void*, void (*)(void*), void* (*)(void*, int), s32, s32);
+    extern void* fn_8002F634(void*, void* (*)(void*, int), s32, s32);
+    extern void Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(void*, void**);
+    extern void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void*, void**, void*);
+    extern void fn_800F8520(void*);
+    extern void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8540(void*, int);
+    u8* self = (u8*)arg0;
+    void *it_14, *it_10, *it_C, *it_8;
+    u8 arr[0x600];
+    fn_8002F53C(arr, fn_800F8520, __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8540, 0xC, 0x80);
+    while (*(s32*)(self + 0xC) != 0) {
+        if (*(s32*)(self + 0xC) == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803263A8, 0x1F1, lbl_80326384);
+        }
+        {
+            void* node = *(void**)(self + 0x10);
+            if (node == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326348, 0x23D, lbl_80326324);
+            }
+            u8* elt = (u8*)node - 0xC8;
+            if (elt == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326378, 0x193, lbl_80326354);
+            }
+            it_14 = *(void**)(self + 0x10);
+            Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(self + 0xC, (void**)&it_14);
+            s32 prio = *(u8*)(elt + 0x74) + *(s32*)(elt + 0x40);
+            prio = prio > 0x7F ? 0x7F : prio & ~(prio >> 31);
+            u8* bucket = arr + prio * 0xC;
+            it_10 = (void*)(bucket + 4);
+            if (elt == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80326288, 0x233, (const char*)lbl_80326264);
+            }
+            Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(bucket, (void**)&it_10, elt + 0xC8);
+        }
+    }
+    {
+        u8* entry = arr;
+        u32 k = 0;
+        do {
+            if (*(void**)entry != 0) {
+                void* temp;
+                do {
+                    temp = *(void**)entry;
+                    if (temp != 0) {
+                        if (temp == 0) {
+                            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803263A8, 0x1F1, lbl_80326384);
+                        }
+                        void* next2 = *(void**)(entry + 4);
+                        if (next2 == 0) {
+                            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326348, 0x23D, lbl_80326324);
+                        }
+                        u8* elt2 = (u8*)next2 - 0xC8;
+                        if (elt2 == 0) {
+                            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326378, 0x193, lbl_80326354);
+                        }
+                        it_C = *(void**)(entry + 4);
+                        Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(entry, (void**)&it_C);
+                        if (elt2 == 0) {
+                            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80326288, 0x233, (const char*)lbl_80326264);
+                        }
+                        it_8 = (void*)(self + 0x10);
+                        Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(self + 0xC, (void**)&it_8, elt2 + 0xC8);
+                    }
+                    temp = *(void**)entry;
+                } while (temp != 0);
+            }
+            k += 1;
+            entry += 0xC;
+        } while (k < 0x80);
+    }
+    fn_8002F634(arr, __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8540, 0xC, 0x80);
+}
 extern "C" void SetPlayableSoundCount__Q36nw4hbm3snd11SoundPlayerFi(void *self, s32 count) {
     struct SoundNode {
         virtual void f0();
@@ -4869,8 +4950,8 @@ extern "C" s32 fn_800FACC0(void *arg0, void *arg1, s32 arg2) {
     a = src[10]; b = src[11]; dst[10] = a; dst[11] = b;
     a = src[12]; b = src[13]; dst[12] = a; dst[13] = b;
     a = src[14]; b = src[15]; dst[14] = a; dst[15] = b;
-    a = src[16]; b = src[17]; dst[16] = a; dst[17] = b;
-    b = src[18]; a = src[19]; dst[19] = a; dst[18] = b;
+    a = src[16]; b = src[17]; dst[17] = b; dst[16] = a;
+    a = src[18]; b = src[19]; dst[19] = b; dst[18] = a;
     dst[20] = src[20];
     dst[21] = src[21];
     dst[22] = src[22];
