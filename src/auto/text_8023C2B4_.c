@@ -13,6 +13,8 @@ typedef signed long s32;
 int fn_8027AA48(void); /* extern */
 void fn_80214A9C(s32); /* extern */
 
+typedef struct { s32 w[5]; } Fn8023C55C_Rec;
+
 void fn_8023C2B4(void) {
     if (fn_8027AA48() == 0) {
         fn_80214A9C(0x1F);
@@ -34,8 +36,9 @@ extern char lbl_8055BB48[];
 __declspec(section ".sdata") extern char lbl_8055BB48[];
 #pragma scheduling invalid_target
 s32 fn_8023C308(s32 arg0) {
-    s32 val, cur, mode;
-    register s32 diff;
+    s32 val, cur;
+    u32 mode;
+    s32 diff;
     if (arg0) {
         mode = (u32)(fn_80214D04() - 2) == 0;
         cur = lbl_8055F154;
@@ -102,18 +105,13 @@ extern void fn_802146BC(s32 *, s32, s32, s32, s32, s32, s32, s32);
 void fn_8023C3D4(void) {
     s32 data[46];
     s32 *v = lbl_802FA068;
+    s32 *w = lbl_80498788;
 
     data[0] = v[0];
+    data[1] = (s32)&data[6];
     data[2] = v[2];
     data[3] = v[3];
     data[4] = v[4];
-    data[40] = 0;
-    data[41] = lbl_80498788[0];
-    data[42] = lbl_80498788[1];
-    data[43] = lbl_80498788[2];
-    data[44] = lbl_80498788[3];
-    data[45] = lbl_80498788[4];
-    data[1] = (s32)&data[6];
     data[6] = (s32)&lbl_8055B860;
     data[7] = 6;
     data[8] = (s32)fn_8023C2E4;
@@ -148,7 +146,13 @@ void fn_8023C3D4(void) {
     data[37] = (s32)fn_8023C2B4;
     data[38] = 0;
     data[39] = 0;
-    fn_802146BC(data, -0x3E7, -0x3E7, 1, v[3], v[2], v[0], lbl_80498788[4]);
+    data[40] = 0;
+    data[41] = w[0];
+    data[42] = w[1];
+    data[43] = w[2];
+    data[44] = w[3];
+    data[45] = w[4];
+    fn_802146BC(data, -0x3E7, -0x3E7, 1, v[3], v[2], v[0], w[4]);
 }
 
 void fn_8023C55C(void *arg0) {
@@ -157,7 +161,7 @@ void fn_8023C55C(void *arg0) {
     char obj2[0x1C];
     s32 hdr[5];
     s32 data[35];
-    s32 *v = lbl_802FA07C;
+    s32 *v;
 
     lbl_8055F148 = fn_802C83C4();
     lbl_8055F150 = lbl_8055F148;
@@ -201,6 +205,7 @@ void fn_8023C55C(void *arg0) {
     data[32] = lbl_80498788[2];
     data[33] = lbl_80498788[3];
     data[34] = lbl_80498788[4];
+    v = lbl_802FA07C;
     hdr[0] = v[0];
     hdr[2] = v[2];
     hdr[3] = v[3];
@@ -210,7 +215,6 @@ void fn_8023C55C(void *arg0) {
     lbl_8055F154 = 0;
     while (((s32 (*)(s32 *, s32, s32, s32))fn_802146BC)(hdr, -0x3E7, -0x3E7, 1) == 3) {
         fn_8023C3D4();
-        lbl_8055F154 = 0;
     }
     fn_8023C308(0);
     *(s32 **)(obj2 + 0xC) = &lbl_80341448;
