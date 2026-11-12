@@ -14,6 +14,9 @@ namespace nw4hbm {
 namespace math {
 struct VEC2 { f32 x, y; };
 }
+namespace lyt {
+struct Size { f32 x, y; };
+}
 namespace ut {
 struct Color { u8 r, g, b, a; };
 }
@@ -3068,12 +3071,12 @@ extern "C" const char lbl_8031E92C[];
 extern "C" void *__dt__Q36nw4hbm3lyt4PaneFv(void *self, s32 del) {
     if (self != 0) {
         *(void **)self = lbl_8032012C;
+        void *head = (u8 *)self + 0x14;
         void *cur = *(void **)((u8 *)self + 0x14);
-        void *it;
-        while (cur != (u8 *)self + 0x14) {
+        while (cur != head) {
             void *node = cur;
             cur = *(void **)node;
-            it = node;
+            void *it = node;
             Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator((u8 *)self + 0x10, &it);
             if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
             if (*(u8 *)((u8 *)node + 0xCC) == 0) {
@@ -3081,7 +3084,8 @@ extern "C" void *__dt__Q36nw4hbm3lyt4PaneFv(void *self, s32 del) {
                 void **vt = *(void ***)((u8 *)node - 4);
                 ((void (*)(void *, s32))vt[2])((u8 *)node - 4, -1);
                 if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
-                if ((node = (u8 *)node - 4) == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
+                node = (u8 *)node - 4;
+                if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E92C, 0x193, lbl_8031E908);
                 MEMFreeToAllocator(lbl_8055DDF0, node);
             }
         }
@@ -3094,7 +3098,7 @@ extern "C" void *__dt__Q36nw4hbm3lyt4PaneFv(void *self, s32 del) {
             MEMFreeToAllocator(lbl_8055DDF0, *(void **)((u8 *)self + 0x28));
         }
         if ((u32)self + 0x1C != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)self + 0x1C, 0);
-        if ((u32)self + 0x10 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)self + 0x10, 0);
+        if ((u32)self + 0x10 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)self + (unsigned)0x10, 0);
     }
     if (del > 0) ((void (*)(void *))fn_80128668)(self);
     return self;
