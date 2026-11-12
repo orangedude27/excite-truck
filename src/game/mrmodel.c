@@ -50,6 +50,47 @@ void fn_802C6C38(int);
 extern float *fn_802C9A40(void);
 extern float lbl_80564EF4;
 extern int fn_802C9638(void *, unsigned char *, float);
+
+/* The model manager's tables, as the dispatch code below walks them.
+ *
+ * lbl_804C139C is the {count, capacity, base} of the model instances and
+ * fn_802C5390(id) returns base + id * 0x10, one ModelInstance.  Its groups are
+ * the GroupEntry records listed by the {count, items} header at +0x04; the
+ * instance's own 4x3 world matrix and view tolerance follow that header at
+ * +0x1C and +0x20 (fn_802C70AC transforms a caller's matrix into them).  Each
+ * group holds the ModelElements of the model that belong to it, and an element
+ * keeps one display-node pointer per instance from +0x14.  fn_802C53C4 links a
+ * display entry into a node's list and fn_802C5720 sorts those entries and
+ * submits them; lbl_8055FC20 says whether the caller is batching the submits
+ * (fn_802C7A44 sets it, fn_802C7A50 clears it), and lbl_8055D008 is the mask of
+ * group bits the caller wants drawn (fn_802C70AC and fn_802C7458 set it per
+ * call). */
+struct GroupList;
+struct ElementList;
+struct ModelInstance {
+    void *field_0;            /* +0x00 */
+    struct GroupList *groups; /* +0x04 the groups drawn for this instance */
+    int nodeSlot;             /* +0x08 which of an element's node slots to link */
+    char *groupPositions;     /* +0x0C per-group {position, tolerance}, or 0 */
+};
+struct GroupList {
+    int count;                /* +0x00 */
+    char *items;              /* +0x04 count GroupEntry records, 0x10 each */
+};
+struct GroupEntry {
+    int bitIndex;             /* +0x00 this group's bit in the group mask lbl_8055D008 */
+    int flags;                /* +0x04 bit 0: keep the caller's id in the entry */
+    struct ElementList *elements; /* +0x08 the group's elements */
+    int id;                   /* +0x0C stored in every entry made for the group */
+};
+struct ElementList {
+    int count;                /* +0x00 */
+    char *items;              /* +0x04 pointers to the group's ModelElements */
+};
+struct ModelElement {
+    unsigned int type;        /* +0x00; the instance's node slots follow at +0x14 */
+};
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -118,11 +159,11 @@ void fn_802C54D4(void) {
     int level;
     int sourceIndex;
     int sourceOffset;
-    int itemOffset;
     int itemIndex;
     int count;
     int oldCount;
-    void **items;
+    int itemOffset;
+    register void **items;
     void *table;
 
     if (*(volatile unsigned char *)&lbl_8055FC21 == 0)
@@ -138,7 +179,7 @@ void fn_802C54D4(void) {
             void *base = (void *)(unsigned long)*(volatile u32 *)((char *)sourceData + 8);
             void *entry = (char *)base + sourceOffset;
             if (*(unsigned short *)((char *)entry + 4) != 0) {
-                oldCount = *(volatile int *)listData;
+                register oldCount = *(volatile int *)listData;
                 if (oldCount < *(volatile int *)((char *)listData + 4)) {
                     count = oldCount + 1;
                     *(volatile int *)listData = count;
@@ -146,7 +187,7 @@ void fn_802C54D4(void) {
                 } else {
                     slot = 0;
                 }
-                if (slot != 0)
+                if (slot)
                     *slot = entry;
             }
         }
@@ -874,7 +915,7 @@ int fn_802C6DC4(int arg0, int arg1, int arg2, int arg3) {
     char *scan = (char *)(unsigned long)lbl_804C139C[2];
     char *found = 0;
     char *empty = 0;
-    register int userArg = arg3;
+    char *entry;
     int i;
 
     for (i = 0; i < count; i++) {
@@ -922,27 +963,29 @@ int fn_802C6DC4(int arg0, int arg1, int arg2, int arg3) {
             register int temp = fn_802C6D5C((void *)(unsigned long)arg1);
             register int outer = 0;
             arg0 = 0;
-            for (; outer < *(int *)((char *)(unsigned long)arg1 + 8); outer++, arg0 += 4) {
+            for (; outer < *(int *)((char *)(unsigned long)arg1 + 8); arg0 += 4, outer++) {
                 void **list = *(void ***)((char *)(unsigned long)arg1 + 0xC);
                 char *sub = *(char **)((char *)list + arg0);
                 register int inner = 0;
                 arg2 = 0;
-                for (; inner < *(int *)sub; inner++, arg2 += 4) {
+                for (; inner < *(int *)sub; arg2 += 4, inner++) {
                     void **items = *(void ***)(sub + 4);
                     void *item = *(void **)((char *)items + arg2);
                     if (*(u32 *)item == 7) {
                         fn_802C5C40((int *)item, *(int *)(empty + 8), *(int *)items);
                     } else {
-                        fn_802C5CC4(item, *(int *)(empty + 8), temp, userArg);
+                        fn_802C5CC4(item, *(int *)(empty + 8), temp, arg3);
                     }
                 }
             }
         }
-        found = empty;
+        entry = empty;
+    } else {
+        entry = found;
     }
 
-    (*(int *)found)++;
-    return (int)(found - (char *)(unsigned long)lbl_804C139C[2]) / 0x10;
+    (*(int *)entry)++;
+    return (int)(entry - (char *)(unsigned long)lbl_804C139C[2]) / 0x10;
 }
 
 #pragma push
@@ -1011,7 +1054,7 @@ void fn_802C70AC(int arg0, void *arg1, int arg2, int arg3) {
     rot = (float *)((char *)*(void **)((char *)fn_802C5390(arg0) + 4) + 0x20);
     out = local.vector;
     input = (float *)arg1;
-    if (local.vector == rot) {
+    if (out == rot) {
         float y = input[3];
         float y0 = y * rot[1];
         float y1 = input[4] * rot[1];
