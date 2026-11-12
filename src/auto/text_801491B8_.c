@@ -1059,7 +1059,7 @@ extern "C" void fn_8014D700(void *arg0, s32 arg1) {
     fn_80149658(arg1, (void *)((u8 *)arg0 + 0x6C), *(void **)((u8 *)arg0 + 0xC), var_r6);
 }
 
-extern "C" BOOL fn_8014D794(void *arg0, void *arg1) {
+extern "C" bool fn_8014D794(void *arg0, void *arg1) {
     fn_801E7E18();
     if (*(u8 *)((u8 *)arg0 + 0xA0) == 0) {
         if (fn_800167F4() == 2) {
@@ -1085,7 +1085,13 @@ extern "C" BOOL fn_8014D794(void *arg0, void *arg1) {
 #pragma cplusplus off
 extern char *lbl_80559F30;
 extern char *lbl_80559F38;
-void fn_8014D840(void *arg0, void *arg1) {
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_8014D840(void *arg0, void *arg1) {
+    struct Dummy {
+        virtual void v0();
+        virtual void m(const char *);
+    };
     u8 *manager;
     s32 i;
     s32 best;
@@ -1118,14 +1124,14 @@ void fn_8014D840(void *arg0, void *arg1) {
         count--;
     }
     if (*(s32 *)arg0 == best) {
-        ((void (*)(void *, const char *))(*(void ***)arg1)[3])(arg1, (const char *)&lbl_80559F30);
+        ((Dummy *)arg1)->m((const char *)&lbl_80559F30);
         fn_801476C4();
     } else {
-        ((void (*)(void *, const char *))(*(void ***)arg1)[3])(arg1, (const char *)&lbl_80559F38);
+        ((Dummy *)arg1)->m((const char *)&lbl_80559F38);
         fn_801476C4();
     }
 }
-#pragma cplusplus on
+#pragma pop
 
 #pragma cplusplus on
 extern "C" void fn_8014D918(void *arg0, s32 arg1, s32 arg2) {
@@ -1485,25 +1491,24 @@ extern "C" void *fn_8014E3CC(void *object, s32 shouldFree) {
 #pragma cplusplus off
 extern void *memset(void *, s32, s32);
 void *fn_8014E4BC(void *arg0) {
-    u8 *base = (u8 *)arg0;
-    u32 p;
-    u32 end;
-    s32 zero = 0;
-    *(u32 *)(base + 8) = zero; *(u32 *)(base + 0x10) = zero;
-    *(u32 *)(base + 0x14) = zero; *(u32 *)(base + 0x18) = zero;
-    memset(base + 0x2C, 0x7A, 3); base[0x2F] = zero;
-    memset(base + 0x40, 0x7A, 3); base[0x43] = zero;
-    memset(base + 0x45, 0x7A, 3); base[0x48] = zero;
-    memset(base + 0x59, 0x7A, 3); base[0x5C] = zero;
-    memset(base + 0x6D, 0x7A, 3); base[0x70] = zero;
-    memset(base + 0x81, 0x7A, 3); base[0x84] = zero;
-    memset(base + 0x8B, 0x7A, 3); base[0x8E] = zero;
-    p = (u32)base + 0x95; end = (u32)base + 0x149;
-    do { memset((void *)p, 0x7A, 3); *(u8 *)(p + 3) = zero; p += 0x14; } while (p < end);
-    p = end; end = (u32)base + 0x1FD;
-    do { memset((void *)p, 0x7A, 3); *(u8 *)(p + 3) = zero; p += 0x14; } while (p < end);
-    memset((void *)end, 0x7A, 3); base[0x200] = zero;
-    memset(base + 0x225, 0x7A, 3); base[0x228] = zero;
+    u8 *base = (u8*)arg0;
+    u8 *p;
+    u8 *end;
+    *(u32*)(base + 8) = 0; *(u32*)(base + 0x10) = 0;
+    *(u32*)(base + 0x14) = 0; *(u32*)(base + 0x18) = 0;
+    memset(base + 0x2C, 0x7A, 3); base[0x2F] = 0;
+    memset(base + 0x40, 0x7A, 3); base[0x43] = 0;
+    memset(base + 0x45, 0x7A, 3); base[0x48] = 0;
+    memset(base + 0x59, 0x7A, 3); base[0x5C] = 0;
+    memset(base + 0x6D, 0x7A, 3); base[0x70] = 0;
+    memset(base + 0x81, 0x7A, 3); base[0x84] = 0;
+    memset(base + 0x8B, 0x7A, 3); base[0x8E] = 0;
+    p = base + 0x95; end = base + 0x149;
+    do { memset(p, 0x7A, 3); p[3] = 0; p += 0x14; } while (p < end);
+    p = end; end = base + 0x1FD;
+    do { memset(p, 0x7A, 3); p[3] = 0; p += 0x14; } while (p < end);
+    memset(end, 0x7A, 3); base[0x200] = 0;
+    memset(base + 0x225, 0x7A, 3); base[0x228] = 0;
     return arg0;
 }
 
@@ -1517,7 +1522,6 @@ void fn_8014E61C(s32 arg0, s32 arg1, f32 arg2) {
     f32 value;
     void *other;
     void **obj;
-    void (*callback)(void *, void *, s32, f32);
     if (lbl_8055E268 != 0) {
         entry = (u8 *)lbl_8055E268 + arg0 * 0xC0 + 0x9E4;
         if (entry != 0) {
@@ -1539,8 +1543,7 @@ void fn_8014E61C(s32 arg0, s32 arg1, f32 arg2) {
             }
             other = fn_8017960C(arg0);
             obj = *(void ***)(entry + 0x10);
-            callback = *(void (**)(void *, void *, s32, f32))((u8 *)*obj + 0x2C);
-            callback(obj, other, arg1, value);
+            (*(void (**)(void *, void *, s32, f32))((u8 *)*obj + 0x2C))(obj, other, arg1, value);
         }
     }
 }
@@ -1825,27 +1828,28 @@ extern "C" void *fn_8014E9C4(char *p, s32 arg1) {
 #pragma use_lmw_stmw reset
 
 #pragma cplusplus on
-extern "C" void *fn_8014EF00(void *arg0, s32 arg1) {
+/* Destructor: restores vtable, destroys owned objects at +0x125C/+0x1258, cleans the array at +4, and optionally deletes self when deleteFlag > 0. */
+extern "C" void *fn_8014EF00(void *object, s32 deleteFlag) {
     class VObj {
     public:
         virtual void d0(s32);
     };
-    if (arg0 != 0) {
-        VObj *p0 = *(VObj **)((char *)arg0 + 0x125C);
-        *(void **)arg0 = lbl_8032E190;
-        if (p0 != 0) {
-            if (p0 != 0) p0->d0(1);
+    if (object != 0) {
+        VObj *firstOwned = *(VObj **)((char *)object + 0x125C);
+        *(void **)object = lbl_8032E190;
+        if (firstOwned != 0) {
+            if (firstOwned != 0) firstOwned->d0(1);
         }
-        VObj *p1 = *(VObj **)((char *)arg0 + 0x1258);
-        if (p1 != 0) {
-            if (p1 != 0) p1->d0(1);
+        VObj *secondOwned = *(VObj **)((char *)object + 0x1258);
+        if (secondOwned != 0) {
+            if (secondOwned != 0) secondOwned->d0(1);
         }
-        fn_8002F634((char *)arg0 + 4, (void *)fn_8014EFC0, 0x124, 0x10);
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+        fn_8002F634((char *)object + 4, (void *)fn_8014EFC0, 0x124, 0x10);
+        if (deleteFlag > 0) {
+            fn_80128668(object);
         }
     }
-    return arg0;
+    return object;
 }
 #pragma cplusplus reset
 
@@ -1998,22 +2002,22 @@ extern "C" void fn_8015168C(s32 arg0, void *arg1) {
         u8 pad0[4];
         u8 flag;
         u8 pad1[0x117];
-        Node *prev;
-        Node *next;
+        struct Node *prev;
+        struct Node *next;
     };
     struct Owner {
         u8 pad[0x1244];
-        Node *first;
-        Node *tail;
-        Node *last;
-        Node *end;
+        struct Node *first;
+        struct Node *tail;
+        struct Node *last;
+        struct Node *end;
     };
     u8 *entry;
-    Owner *owner;
-    Node *cur;
-    Node *next;
-    Node *link;
-    u8 *obj;
+    struct Owner *owner;
+    struct Node *cur;
+    struct Node *next;
+    s32 linkAddr;
+    struct Node *link;
     f32 factor;
     f32 delta;
     f32 zero;
@@ -2028,12 +2032,13 @@ extern "C" void fn_8015168C(s32 arg0, void *arg1) {
         *(volatile f32 *)(entry + 0x3C) = delta;
         *(f32 *)(entry + 0x1C) = factor * *(f32 *)(entry + 0x1C);
         *(s32 *)(entry + 0xA4) = zeroInt;
-        owner = *(Owner **)(entry + 8);
+        owner = *(struct Owner **)(entry + 8);
         cur = owner->last;
         next = cur != 0 ? cur->prev : 0;
         while (cur != 0) {
             if (cur->flag != 0) {
-                link = cur->next;
+                linkAddr = (s32)cur->next;
+                link = (struct Node *)linkAddr;
                 if (link != 0)
                     link->prev = cur->prev;
                 else
@@ -2057,8 +2062,7 @@ extern "C" void fn_8015168C(s32 arg0, void *arg1) {
             next = cur != 0 ? cur->prev : 0;
         }
         *(f32 *)(entry + 0x14) += delta;
-        obj = *(u8 **)(entry + 0x10);
-        ((VNode *)obj)->m2();
+        ((VNode *)*(void **)(entry + 0x10))->m2();
         if (*(s32 *)(entry + 0x34) > 1)
             *(f32 *)(entry + 0x40) = lbl_80561688;
         count = *(s32 *)(entry + 0x34) - 1;
@@ -2148,14 +2152,14 @@ void fn_80151A40(void *arg0) {
     extern s32 fn_801E41D8(s32 *, s32 *, s32, s32, f32);
     extern s32 lbl_8055E230;
     extern f32 lbl_805616FC;
-    s32 self = fn_801E85B4();
-    s32 index = fn_801E866C(self);
-    s32 entry_base = (s32)arg0 + index * 0xC0 + 0x9E4;
+    register s32 self = fn_801E85B4();
+    register unsigned index = fn_801E866C(self);
+    unsigned int entry_base = (s32)arg0 + index * 0xC0 + 0x9E4;
     s32 *check = (s32 *)entry_base;
-    s32 offset;
-    s32 global_value;
-    s32 i;
+    register s32 offset;
+    u32 global_value;
     f32 y_offset;
+    s32 i;
     if (check != 0 && check[1] != 0) {
         global_value = lbl_8055E230;
         i = 0;
@@ -2168,17 +2172,17 @@ void fn_80151A40(void *arg0) {
             s32 second[3];
             s32 first[3];
             s32 x = *(s32 *)(item + 0);
-            s32 y = *(s32 *)(item + 4);
-            f32 y_minus;
-            f32 y_plus;
+            u32 y = *(s32 *)(item + 4);
+            register f32 y_minus;
+            register f32 y_plus;
             first[1] = y;
-            first[0] = x;
+            first[0] = (unsigned short)x;
             y_minus = ((f32 *)first)[1] - y_offset;
             first[2] = *(s32 *)(item + 8);
             x = *(s32 *)(item + 0);
             y = *(s32 *)(item + 4);
             second[1] = y;
-            second[0] = x;
+            second[0] = (int)x;
             y_plus = ((f32 *)second)[1] + y_offset;
             second[2] = *(s32 *)(item + 8);
             ((f32 *)first)[1] = y_minus;
@@ -2186,7 +2190,7 @@ void fn_80151A40(void *arg0) {
             fn_801E41D8(first, second, global_value, x, *(f32 *)(item + 0xC));
         }
         offset += 4;
-        i += 1;
+        i++;
     }
 }
 
@@ -2208,28 +2212,29 @@ extern f32 fn_801495D4(s32);
 #pragma cplusplus on
 extern "C" void fn_80151B48(void *arg0) {
     struct Dummy {
+        virtual void f2();
         virtual void f0();
         virtual void f1();
-        virtual void f2();
         virtual void f3();
         virtual void f4();
         virtual void f5();
         virtual s32 check(s32);
     };
     void *self = arg0;
-    void *obj;
+    s32 addr;
     s32 flag;
-    void *entry;
+    register void *entry;
+    void *p;
+    void *obj;
     s32 index;
     s32 i;
-    void *p;
-    s32 addr;
     f32 f;
 
-    index = fn_801E866C(fn_801E85B4());
+    fn_801E85B4();
+    index = ((s32 (*)(void))fn_801E866C)();
     if (((struct Dummy *)self)->check(index) == 0) goto done;
     addr = (s32)self + index * 0xC0 + 0x9E4;
-    if (addr == 0) goto done;
+    if (!addr) goto done;
     if (*(s32 *)(addr + 4) == 0) {
         flag = 0;
     } else if (*(s32 *)(addr + 4) == 1) {
@@ -2705,15 +2710,15 @@ s32 fn_801537CC(s32 arg0, s32 arg1, f32 t) {
     f32 delta1 = b1 - a1;
     f32 delta2 = b2 - a2;
     f32 delta3 = b3 - a3;
-    u8 c0 = (u8)(a0 + t * delta0);
-    u8 c1 = (u8)(a1 + t * delta1);
-    u8 c2 = (u8)(a2 + t * delta2);
-    u8 c3 = (u8)(a3 + t * delta3);
+    s32 c0 = (s32)(a0 + t * delta0);
+    s32 c1 = (s32)(a1 + t * delta1);
+    s32 c2 = (s32)(a2 + t * delta2);
+    s32 c3 = (s32)(a3 + t * delta3);
     u8 out[4];
-    out[0] = c0;
-    out[1] = c1;
-    out[2] = c2;
-    out[3] = c3;
+    out[0] = (u8)c0;
+    out[1] = (u8)c1;
+    out[2] = (u8)c2;
+    out[3] = (u8)c3;
     return *(s32 *)out;
 }
 #pragma pop
@@ -2721,25 +2726,52 @@ void *fn_801538E4(void *arg0) {
     return (void *)((u8 *)arg0 + ((*(s32 *)((u8 *)arg0 + 0x38) + *(s32 *)((u8 *)arg0 + 0x14)) * 0x14) + 0x3C);
 }
 
-void fn_80153900(void *arg0, s32 arg1) {
-    void *v;
-    s32 p;
-    if (*(u8 *)((u8 *)arg0 + 0x9E0)) {
-        (*(void (**)(void))(*(u32 *)arg0 + 0x88))();
+#pragma push
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+extern "C" void fn_80153900(void *arg0, long arg1) {
+    struct Obj {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
+        virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
+        virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31();
+        virtual void v32();
+    };
+    struct V {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5();
+    };
+    extern long fn_801E85A4(void);
+    extern long fn_801E866C(long);
+    extern long fn_8014AFD4(void *, void *, long);
+    extern long fn_801CB7BC(long);
+    extern long lbl_8055E23C;
+    extern long lbl_8055E238;
+    void *vv;
+    long pp;
+    unsigned char flag;
+    flag = *(unsigned char *)((char *)arg0 + 0x9E0);
+    if (flag != 0) {
+        ((Obj *)arg0)->v32();
     } else {
-        if (fn_801E85A4() == 2) v = (void *)lbl_8055E23C;
-        else v = (void *)lbl_8055E238;
-        (*(void (**)(void))(*(u32 *)v + 0x1C))();
+        if (fn_801E85A4() == 2) vv = (void *)lbl_8055E23C;
+        else vv = (void *)lbl_8055E238;
+        ((V *)vv)->v5();
     }
-    p = (s32)arg0 + fn_801E866C(arg1) * 0xC0 + 0x9E4;
-    if (p) {
-        if (fn_801E85A4() == 2) v = (void *)lbl_8055E23C;
-        else v = (void *)lbl_8055E238;
-        fn_8014AFD4((void *)p, v, arg1);
+    pp = (long)arg0 + fn_801E866C(arg1) * 0xC0 + 0x9E4;
+    if (pp != 0) {
+        if (fn_801E85A4() == 2) vv = (void *)lbl_8055E23C;
+        else vv = (void *)lbl_8055E238;
+        fn_8014AFD4((void *)pp, vv, arg1);
         fn_801CB7BC(0);
     }
 }
-
+#pragma cplusplus reset
+#pragma pop
 void fn_801539C0(s32 arg0, s32 arg1) {
     s32 temp_r31 = arg0 + (fn_801E866C(arg1) * 0xC0) + 0x9E4;
     if (temp_r31 != 0) {
@@ -3771,62 +3803,62 @@ void fn_80155E64(void *arg0, signed char arg1) { *((signed char *)arg0 + 5) = ar
 void *fn_80155E6C(void *arg0) {
     typedef struct Node Node;
     struct Node {
-        u8 pad[0x11C];
+        unsigned char pad[0x11C];
         Node *prev;
         Node *next;
     };
     typedef struct {
-        u8 pad[0x1244];
+        unsigned char pad[0x1244];
         Node *head;
         Node *tail;
         Node *first;
         Node *list;
     } Owner;
-    Owner *owner = (Owner *)arg0;
-    Node *node = owner->head;
-    Node *next;
-    Node *prev;
-    Node *tail;
-
-    if (node != 0) {
-        next = node->next;
-        if (next != 0) {
-            next->prev = node->prev;
+    extern float lbl_80561648;
+    extern float lbl_8055E3C8;
+    Owner *own = (Owner *)arg0;
+    Node *nd = own->head;
+    Node *nx;
+    Node *pr;
+    Node *tl;
+    float f1648 = lbl_80561648;
+    if (nd != 0) {
+        nx = nd->next;
+        if (nx != 0) {
+            nx->prev = nd->prev;
         } else {
-            owner->head = node->prev;
+            own->head = nd->prev;
         }
-        prev = node->prev;
-        if (prev != 0) {
-            prev->next = node->next;
+        pr = nd->prev;
+        if (pr != 0) {
+            pr->next = nd->next;
         } else {
-            owner->tail = node->next;
+            own->tail = nd->next;
         }
-
-        node->next = 0;
-        node->prev = 0;
-        node->next = owner->list;
-        tail = owner->list;
-        if (tail != 0) {
-            tail->prev = node;
+        nd->next = 0;
+        nd->prev = 0;
+        nd->next = own->list;
+        tl = own->list;
+        if (tl != 0) {
+            tl->prev = nd;
         }
-        owner->list = node;
-        if (owner->first == 0) {
-            owner->first = node;
+        own->list = nd;
+        if (own->first == 0) {
+            own->first = nd;
         }
-
-        *((u8 *)node + 4) = 1;
-        *(f32 *)((u8 *)node + 0x10) = lbl_8055E3C8;
-        *(f32 *)((u8 *)node + 0xC) = lbl_80561648;
-        *(f32 *)((u8 *)node + 8) = lbl_80561648;
-        *((u8 *)node + 0x14) = 0;
-        *((u8 *)node + 0x64) = 0;
-        *((u8 *)node + 0xB4) = 0;
-        *((u8 *)node + 5) = 0;
-        *(s32 *)((u8 *)node + 0x10C) = -1;
-        *(f32 *)((u8 *)node + 0x104) = lbl_80561648;
-        *(s32 *)((u8 *)node + 0x108) = 0;
-        *(s32 *)((u8 *)node + 0x114) = 1;
-        return node;
+        *((unsigned char *)nd + 4) = 1;
+        *(float *)((unsigned char *)nd + 0x10) = lbl_8055E3C8;
+        *(float *)((unsigned char *)nd + 0xC) = f1648;
+        *(float *)((unsigned char *)nd + 8) = f1648;
+        *((unsigned char *)nd + 0x14) = 0;
+        *((unsigned char *)nd + 0x64) = 0;
+        *((unsigned char *)nd + 0xB4) = 0;
+        *((unsigned char *)nd + 5) = 0;
+        *(int *)((unsigned char *)nd + 0x10C) = -1;
+        *(float *)((unsigned char *)nd + 0x104) = f1648;
+        *(int *)((unsigned char *)nd + 0x108) = 0;
+        *(int *)((unsigned char *)nd + 0x114) = 1;
+        return nd;
     }
     return 0;
 }
@@ -3898,19 +3930,20 @@ void fn_8014F108(void *arg0) {
 }
 
 #pragma cplusplus on
-extern "C" void fn_8014FB7C(register u8 *arg0) {
+extern "C" void fn_8014FB7C(void *arg0) {
     class VObj {
     public:
         virtual void d0(s32);
     };
-    register VObj *p;
-    p = *(VObj **)(arg0 + 0x9D8);
+    VObj *p;
+    register u8 *obj = (u8 *)arg0;
+    register s32 i = 1;
+    p = *(VObj **)(obj + 0x9D8);
     if (p != 0) {
         if (p != 0) p->d0(1);
-        *(VObj **)(arg0 + 0x9D8) = 0;
+        *(VObj **)(obj + 0x9D8) = 0;
     }
-    register s32 i = 1;
-    register u8 *obj = arg0 + 0x240;
+    obj += 0x240;
     do {
         if (*(void **)(obj + 0x45C) != 0) {
             fn_802ADE60((void **)*(void **)(obj + 0x45C), 1);
