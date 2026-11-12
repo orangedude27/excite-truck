@@ -1732,6 +1732,32 @@ extern "C" void fn_801FA550(void) {
     }
 }
 
+/* The model manager's batched-draw API (src/game/mrmodel.c) and the render
+ * state, as this file's draw passes use them. */
+#define GetRenderState      fn_801E87A8  /* the game's render-state block */
+#define RENDER_FLAG_MIRROR  2            /* its +0x10 bit 1: the view is mirrored, so front and back culling swap */
+#define ModelSetCullMode    fn_802C9C58  /* GXSetCullMode for the next draws; returns the mode it replaced */
+#define ModelBeginBatch     fn_802C7A44  /* start a batched submit run */
+#define ModelFlushBatch     fn_802C7A50  /* submit the 9 sort groups and end the run */
+#define ModelFinishBatch    fn_802C7AD4  /* ModelFlushGroup(9): the last group, then reset */
+#define ModelDraw           fn_802C70AC  /* draw a model instance at a world matrix */
+#define GOB_DRAW_LIST       lbl_8055EC48 /* head of the batched GOB list */
+#define GOB_GROUP_MASK      (-0xF)       /* draw groups to keep: all but the first four */
+
+/* One node of the batched object ("GOB") list chained through `next`, beside
+ * the two StaticGob lists in lbl_8055EC4C and lbl_8055EC50.  Only the fields
+ * the draw passes read are named; the rest is handled by the code that builds
+ * and destroys the node (its destructor is fn_801FC674). */
+struct BatchedGob {
+    void *vtable;        // +0x00 the node's vtable, lbl_8033B588
+    f32 world[12];       // +0x04 3x4 world matrix the model is drawn at
+    s32 gobId;           // +0x3C model instance drawn from `world`
+    u8 pad40[0x50 - 0x40];
+    u8 batchDraw;        // +0x50 set: drawn by the batched pass, clear: drawn on its own
+    u8 pad51[3];
+    BatchedGob *next;    // +0x54 next GOB in the list
+};
+
 extern "C" void fn_801FA618(void) {
     u32 flags = *(u32 *)((u8 *)fn_801E87A8() + 0x10);
     s32 mode = 2;
