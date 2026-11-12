@@ -464,6 +464,7 @@ int fn_801386D0(void *arg0, float farg0, float farg1, float farg2) {
     } while (f25 < farg0 && hit == 0);
     return hit == 0;
 }
+#pragma pop
 
 extern float lbl_805613A4;
 int fn_801388F4(void *arg0) {
