@@ -297,6 +297,7 @@ s32 fn_801CF828(u8 *arg0, f32 *origin, f32 *dir, f32 *dist, f32 *out) {
     }
     return hit;
 }
+#pragma pop
 void fn_801CFA48(void *arg0) {
  typedef struct { unsigned char *ptr1; int count1; unsigned char *ptr2; int count2; unsigned char *ptr3; int count3; } tFA48View;
  volatile unsigned char *b=(volatile unsigned char *)arg0;
