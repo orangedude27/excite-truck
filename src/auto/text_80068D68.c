@@ -5038,14 +5038,15 @@ void bta_sys_conn_open(s32 arg0, s32 arg1, s32 arg2) {
     if (callbacks[0x88 / 4] != 0) callbacks[0x88 / 4](0, arg0, arg1, arg2);
 }
 
-void bta_sys_conn_open_8007116C(s32 arg0, s32 arg1, s32 arg2) {
+void bta_sys_conn_open_8007116C(s32 connId, s32 param1, s32 param2) {
+    /* Notifies registered BTA system connection-open callbacks (at offsets 0x80/0x84/0x88 in lbl_803C0AD8) with event=1. */
     typedef void (*tConnOpenCb2)(s32, s32, s32, s32);
     tConnOpenCb2 *callbacks = (tConnOpenCb2 *)lbl_803C0AD8;
-    if (callbacks[0x80 / 4] != 0) callbacks[0x80 / 4](1, arg0, arg1, arg2);
+    if (callbacks[0x80 / 4] != 0) callbacks[0x80 / 4](1, connId, param1, param2);
     callbacks = (tConnOpenCb2 *)lbl_803C0AD8;
-    if (callbacks[0x84 / 4] != 0) callbacks[0x84 / 4](1, arg0, arg1, arg2);
+    if (callbacks[0x84 / 4] != 0) callbacks[0x84 / 4](1, connId, param1, param2);
     callbacks = (tConnOpenCb2 *)lbl_803C0AD8;
-    if (callbacks[0x88 / 4] != 0) callbacks[0x88 / 4](1, arg0, arg1, arg2);
+    if (callbacks[0x88 / 4] != 0) callbacks[0x88 / 4](1, connId, param1, param2);
 }
 
 void fn_80071230(void *arg0, void *arg1, void *arg2) {
@@ -22510,7 +22511,7 @@ void rfc_send_msc(void *p_mcb, s32 dlci, s32 is_command, u8 *p_pars) {
         len = 2;
     *p_data++ = (u8)(0xE1 | (is_command ? 2 : 0));
     *p_data++ = (u8)(1 | (len << 1));
-    *p_data++ = (u8)(3 | (((u8)dlci) << 2));
+    *p_data++ = (u8)(3 | (dlci << 2));
     *p_data++ = (u8)(1 | (p_pars[4] ? 2 : 0) | ((signals & 1) ? 4 : 0) | ((signals & 2) ? 8 : 0) | ((signals & 4) ? 0x40 : 0) | ((signals & 8) ? 0x80 : 0));
     if (break_duration)
         *p_data++ = (u8)(3 | (break_duration << 4));
@@ -26505,7 +26506,6 @@ BOOL __AllocDelayLine(AXFX_REVERBHI_EXP_FREE_VIEW *reverb) {
 }
 
 void __BzeroDelayLines(void *arg0) {
-    u8 *base = (u8 *)arg0;
     u8 *entry = (u8 *)arg0;
     u8 *entry2 = (u8 *)arg0;
     u8 *entry3 = (u8 *)arg0;
@@ -26517,9 +26517,9 @@ void __BzeroDelayLines(void *arg0) {
         if (*(void **)(entry + 0x2C))
             memset(*(void **)(entry + 0x2C), 0, *(u32 *)((u8 *)arg0 + 0x40) * 4);
         {
-            u8 *p = entry2;
-            u8 *q = base;
-            u32 j = 0;
+            register u8 *p = entry2;
+            register u8 *q = (u8 *)arg0;
+            register u32 j = 0;
             do {
                 if (*(void **)(p + 0x44))
                     memset(*(void **)(p + 0x44), 0, *(u32 *)(q + 0x80) * 4);
@@ -26529,9 +26529,9 @@ void __BzeroDelayLines(void *arg0) {
             } while (j < 3);
         }
         {
-            u8 *p = entry3;
-            u8 *q = base;
-            u32 j = 0;
+            register u8 *p = entry3;
+            register u8 *q = (u8 *)arg0;
+            register u32 j = 0;
             do {
                 if (*(void **)(p + 0x98))
                     memset(*(void **)(p + 0x98), 0, *(u32 *)(q + 0xC0) * 4);
