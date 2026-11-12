@@ -103,13 +103,14 @@ extern int lbl_8055D514;
 void fn_80012794(void) {
     void **p;
     void **base = (void **)&lbl_8035183C[0];
-    int i = 0;
+    int i;
+    i = 0;
     p = base;
     lbl_80558AD8 = 0x134;
     while (i < *(int *)((char *)base + 0x80)) {
         fn_80131818(*p);
-        p++;
-        i++;
+        ++p;
+        ++i;
     }
     *(int *)((char *)base + 0x80) = 0;
     lbl_8055D500 = 0;
@@ -473,25 +474,35 @@ extern int stricmp();
 extern int fn_8012C33C();
 extern int fn_80012AB4();
 extern void fn_80012B50();
-void fn_8001335C(int a0, int arg1) {
-    Obj_8001335C *arg0 = (Obj_8001335C *)a0;
-    Obj_8001335C *obj;
+#pragma cplusplus on
+extern "C" void fn_8001335C(int a0, int arg1) {
+    struct Dummy {
+        virtual void *_00();
+        virtual void *_04();
+        virtual char *name();
+        virtual void *child(int);
+        virtual void *_10();
+        virtual char *get(char *);
+        virtual void set(char *, int);
+    };
+    Dummy *arg0 = (Dummy *)a0;
+    Dummy *obj;
     int i;
     if (arg0 != 0) {
-        for (i = 0; (obj = arg0->vt->child(arg0, i)) != 0; i++) {
-            if (stricmp(obj->vt->name(obj), lbl_80558B68) == 0) {
-                if (fn_8012C33C(obj->vt->get(obj, lbl_80558B1C)) == 0)
-                    fn_802E317C(lbl_802FC610 + 0x488, obj->vt->get(obj, lbl_80558B1C));
-                obj->vt->set(obj, lbl_80558B1C, 0);
+        for (i = 0; (obj = (Dummy *)arg0->child(i)) != 0; i++) {
+            if (stricmp(obj->name(), lbl_80558B68) == 0) {
+                if (fn_8012C33C(obj->get(lbl_80558B1C)) == 0)
+                    fn_802E317C(lbl_802FC610 + 0x488, obj->get(lbl_80558B1C));
+                obj->set(lbl_80558B1C, 0);
                 ((void (*)())fn_80013618)();
-            } else if (stricmp(obj->vt->name(obj), lbl_80558B70) == 0) {
+            } else if (stricmp(obj->name(), lbl_80558B70) == 0) {
                 if ((int)lbl_8055D504 >= 0x23)
                     fn_802E317C(lbl_802FC610 + 0x4B4, (int)lbl_8055D504 - 1);
                 if (fn_80012AB4(obj) != 0) {
                     fn_80012B50(lbl_803518C0 + (int)lbl_8055D504 * 0x84, (int)lbl_8055D504, obj, arg1);
                     lbl_8055D504 = (void *)((int)lbl_8055D504 + 1);
                 }
-            } else if (stricmp(obj->vt->name(obj), lbl_80558B78) == 0) {
+            } else if (stricmp(obj->name(), lbl_80558B78) == 0) {
                 if (lbl_8055D518 >= 0x23)
                     fn_802E317C(lbl_802FC610 + 0x4E4, lbl_8055D518 - 1);
                 if (fn_80012AB4(obj) != 0) {
@@ -499,12 +510,13 @@ void fn_8001335C(int a0, int arg1) {
                     *(int *)(lbl_803551E0 + lbl_8055D518 * 0x88 + 0x84) = 0;
                     lbl_8055D518 += 1;
                 }
-            } else if (stricmp(obj->vt->name(obj), lbl_802FC610 + 0x524) == 0 && lbl_8055D514 == 0) {
+            } else if (stricmp(obj->name(), lbl_802FC610 + 0x524) == 0 && lbl_8055D514 == 0) {
                 lbl_8055D514 = (int)obj;
             }
         }
     }
 }
+#pragma cplusplus reset
 
 #pragma cplusplus on
 extern "C" void fn_800135AC(char *arg0, void *arg1, char *arg2) {
@@ -522,16 +534,16 @@ extern int fn_80131808(int);
 extern void fn_8001335C(int, int);
 #pragma scheduling invalid_target
 void fn_80013618(int arg0) {
-    unsigned int count;
+    int count;
     int result;
     if (arg0 == 0)
         return;
     if (fn_8012C33C() == 0)
         return;
     result = fn_80131808(arg0);
-    count = *(unsigned int *)(lbl_8035183C + 0x80);
-    *(int *)(lbl_8035183C + count * 4) = result;
-    *(unsigned int *)(lbl_8035183C + 0x80) = count + 1;
+    count = ((int *)lbl_8035183C)[0x20];
+    ((int *)lbl_8035183C)[count] = result;
+    ((int *)lbl_8035183C)[0x20] = count + 1;
     fn_8001335C(result, arg0);
 }
 
@@ -547,8 +559,10 @@ extern "C" int fn_80013680(void *arg0, void *arg1) {
         virtual int f5();
         virtual int f6(char *, int);
     };
-    return ((Dummy *)*(void **)((char *)arg0 + 0x80))->f6(lbl_802FCB74, 0x63)
-        - ((Dummy *)*(void **)((char *)arg1 + 0x80))->f6(lbl_802FCB74, 0x63);
+    void *a = *(void **)((char *)arg0 + 0x80);
+    int x = ((Dummy *)a)->f6(lbl_802FCB74, 0x63);
+    int y = ((Dummy *)*(void **)((char *)arg1 + 0x80))->f6(lbl_802FCB74, 0x63);
+    return x - y;
 }
 #pragma cplusplus reset
 #pragma scheduling invalid_target
