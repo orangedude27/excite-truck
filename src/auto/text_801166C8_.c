@@ -549,56 +549,63 @@ u32 fn_80116F8C(void *arg0) {
     return 0;
 }
 
-void fn_80117074(void *arg0) {
-    u8 *a = (u8 *)arg0;
-    s32 off;
+// Refills the output buffer of every active stream in the manager. Runs only
+// when the stream table is initialized (last entry has a handler) and the
+// manager lock (+0x340) can be acquired. For each stream it asks the stream
+// (callback at +4) for a destination pointer and a transfer size, then copies
+// that many bytes out of the stream's circular source buffer, wrapping at its
+// end; when the stream's format flag (+0x44) is set the 16-bit source samples
+// are narrowed to 8-bit with fn_80116EE4, otherwise they are copied verbatim.
+void fn_80117074(void *mgr) {
+    u8 *base = (u8 *)mgr;
+    s32 entryOff;
     u32 i;
-    s32 spC;
-    u32 sp8;
-    if (*(s32 *)(*(u8 **)(a + 0x2F0) + (*(u32 *)(a + 0x2E8) - 1) * 0x17C) != 0 &&
-        fn_8011C1E0(lbl_8055DED4, a + 0x340) != 0) {
-        for (i = 0, off = 0; i < *(u32 *)(a + 0x2E8); off += 0x17C, i++) {
-            while (((s32 (*)(void *))*(u32 *)(*(u8 **)(a + 0x2F0) + off))(*(u8 **)(a + 0x2F0) + off) != 0 &&
-                   (*(u32 *)(E8117074(a) + 0x40) > *(u32 *)(E8117074(a) + 0x54) ||
-                    (*(s32 *)(a + 0xC) > *(s32 *)(E8117074(a) + 0x48) && *(s32 *)(E8117074(a) + 0x40) != 0))) {
+    s32 dstPtr;
+    u32 size;
+    if (*(s32 *)(*(u8 **)(base + 0x2F0) + (*(u32 *)(base + 0x2E8) - 1) * 0x17C) != 0 &&
+        fn_8011C1E0(lbl_8055DED4, base + 0x340) != 0) {
+        for (i = 0, entryOff = 0; i < *(u32 *)(base + 0x2E8); entryOff += 0x17C, i++) {
+            while (((s32 (*)(void *))*(u32 *)(*(u8 **)(base + 0x2F0) + entryOff))(*(u8 **)(base + 0x2F0) + entryOff) != 0 &&
+                   (*(u32 *)(STREAM_AT(base, entryOff) + 0x40) > *(u32 *)(STREAM_AT(base, entryOff) + 0x54) ||
+                    (*(s32 *)(base + 0xC) > *(s32 *)(STREAM_AT(base, entryOff) + 0x48) && *(s32 *)(STREAM_AT(base, entryOff) + 0x40) != 0))) {
                 u32 rem;
-                if (((s32 (*)(void *, s32 *, u32 *))*(u32 *)(E8117074(a) + 4))(E8117074(a), &spC, &sp8) == 0)
+                if (((s32 (*)(void *, s32 *, u32 *))*(u32 *)(STREAM_AT(base, entryOff) + 4))(STREAM_AT(base, entryOff), &dstPtr, &size) == 0)
                     break;
-                if (*(s32 *)(E8117074(a) + 0x44) != 0)
-                    sp8 *= 2;
-                if (sp8 > *(u32 *)(E8117074(a) + 0x40))
-                    sp8 = *(u32 *)(E8117074(a) + 0x40);
-                if (*(s32 *)(a + 0xC) <= *(s32 *)(E8117074(a) + 0x48))
-                    sp8 &= *(s32 *)(E8117074(a) + 0x58) << *(s32 *)(E8117074(a) + 0x44);
-                *(u32 *)(E8117074(a) + 0x40) -= sp8;
-                rem = *(u32 *)(E8117074(a) + 0x30) - *(u32 *)(E8117074(a) + 0x38);
-                if (rem < sp8) {
+                if (*(s32 *)(STREAM_AT(base, entryOff) + 0x44) != 0)
+                    size *= 2;
+                if (size > *(u32 *)(STREAM_AT(base, entryOff) + 0x40))
+                    size = *(u32 *)(STREAM_AT(base, entryOff) + 0x40);
+                if (*(s32 *)(base + 0xC) <= *(s32 *)(STREAM_AT(base, entryOff) + 0x48))
+                    size &= *(s32 *)(STREAM_AT(base, entryOff) + 0x58) << *(s32 *)(STREAM_AT(base, entryOff) + 0x44);
+                *(u32 *)(STREAM_AT(base, entryOff) + 0x40) -= size;
+                rem = *(u32 *)(STREAM_AT(base, entryOff) + 0x30) - *(u32 *)(STREAM_AT(base, entryOff) + 0x38);
+                if (rem < size) {
                     if (rem != 0) {
-                        if (*(s32 *)(E8117074(a) + 0x44) != 0) {
-                            spC = (s32)fn_80116EE4((s8 *)spC, *(s16 **)(E8117074(a) + 0x38), rem);
+                        if (*(s32 *)(STREAM_AT(base, entryOff) + 0x44) != 0) {
+                            dstPtr = (s32)fn_80116EE4((s8 *)dstPtr, *(s16 **)(STREAM_AT(base, entryOff) + 0x38), rem);
                         } else {
-                            memcpy((void *)spC, *(void **)(E8117074(a) + 0x38), rem);
-                            spC += rem;
+                            memcpy((void *)dstPtr, *(void **)(STREAM_AT(base, entryOff) + 0x38), rem);
+                            dstPtr += rem;
                         }
                     }
-                    if (*(s32 *)(E8117074(a) + 0x44) != 0)
-                        fn_80116EE4((s8 *)spC, *(s16 **)(E8117074(a) + 0x2C), sp8 - rem);
+                    if (*(s32 *)(STREAM_AT(base, entryOff) + 0x44) != 0)
+                        fn_80116EE4((s8 *)dstPtr, *(s16 **)(STREAM_AT(base, entryOff) + 0x2C), size - rem);
                     else
-                        memcpy((void *)spC, *(void **)(E8117074(a) + 0x2C), sp8 - rem);
-                    *(u32 *)(E8117074(a) + 0x38) = *(u32 *)(E8117074(a) + 0x2C) + (sp8 - rem);
+                        memcpy((void *)dstPtr, *(void **)(STREAM_AT(base, entryOff) + 0x2C), size - rem);
+                    *(u32 *)(STREAM_AT(base, entryOff) + 0x38) = *(u32 *)(STREAM_AT(base, entryOff) + 0x2C) + (size - rem);
                 } else {
-                    if (*(s32 *)(E8117074(a) + 0x44) != 0)
-                        fn_80116EE4((s8 *)spC, *(s16 **)(E8117074(a) + 0x38), sp8);
+                    if (*(s32 *)(STREAM_AT(base, entryOff) + 0x44) != 0)
+                        fn_80116EE4((s8 *)dstPtr, *(s16 **)(STREAM_AT(base, entryOff) + 0x38), size);
                     else
-                        memcpy((void *)spC, *(void **)(E8117074(a) + 0x38), sp8);
-                    *(u32 *)(E8117074(a) + 0x38) += sp8;
+                        memcpy((void *)dstPtr, *(void **)(STREAM_AT(base, entryOff) + 0x38), size);
+                    *(u32 *)(STREAM_AT(base, entryOff) + 0x38) += size;
                 }
-                if (*(s32 *)(E8117074(a) + 0x44) != 0)
-                    sp8 >>= 1;
-                ((void (*)(void *, u32))*(u32 *)(E8117074(a) + 8))(*(u8 **)(a + 0x2F0) + off, sp8);
+                if (*(s32 *)(STREAM_AT(base, entryOff) + 0x44) != 0)
+                    size >>= 1;
+                ((void (*)(void *, u32))*(u32 *)(STREAM_AT(base, entryOff) + 8))(*(u8 **)(base + 0x2F0) + entryOff, size);
             }
         }
-        fn_8011C2EC(lbl_8055DED4, a + 0x340);
+        fn_8011C2EC(lbl_8055DED4, base + 0x340);
     }
 }
 
