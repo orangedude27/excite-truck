@@ -577,9 +577,10 @@ void clamp_stick_cross(void *arg0, void *arg1) {
 }
 
 s32 read_kpad_stick(s32 chan, void *arg1) {
+    s32 irq;
     u32 probe;
     s32 ret;
-    s32 irq;
+    u8 *state;
     u8 *obj = (u8 *)arg1;
     extern s32 WPADProbe(s32, s32 *);
     extern void WPADSetAutoSamplingBuf(s32, void *, u32);
@@ -596,12 +597,12 @@ s32 read_kpad_stick(s32 chan, void *arg1) {
             WPADSetAutoSamplingBuf(chan, 0, 0);
             *(s16 *)(obj + 0x114) = chan - 4;
             *(u32 *)(obj + 0x5C) = 0xFD;
-            obj = lbl_8037C808 + (chan << 10);
+            state = lbl_8037C808 + (chan << 10);
             irq = OSDisableInterrupts();
-            if (*(u32 *)(obj + 0x3F0) != 0) {
-                *(u32 *)(obj + 0x3F0) = 0;
-                if (*(u32 *)(obj + 0x3F8) != 0) {
-                    ((void (*)(s32, s32))(*(u32 *)(obj + 0x3F8)))(chan, 1);
+            if (*(u32 *)(state + 0x3F0) != 0) {
+                *(u32 *)(state + 0x3F0) = 0;
+                if (*(u32 *)(state + 0x3F8) != 0) {
+                    ((void (*)(s32, s32))(*(u32 *)(state + 0x3F8)))(chan, 1);
                 }
             }
             OSRestoreInterrupts(irq);
@@ -753,9 +754,10 @@ extern f32 lbl_80560BD8, lbl_80560BE0, lbl_80560BE4, lbl_80560BE8, lbl_80560BEC,
 extern const char *lbl_80558E88;
 extern f64 lbl_80560C28;
 extern u8 lbl_8037C808[];
+#pragma fp_contract on
 void KPADInit(void) {
-    f32 f29, f30;
     f64 bias;
+    f32 f30, f29;
     union { u32 word[2]; f64 value; } conversion;
     u8 *p;
     s32 i;
@@ -813,4 +815,4 @@ void KPADInit(void) {
     for (p = lbl_8037C808 + 0xC00; p >= lbl_8037C808; p -= 0x400) reset_kpad(p);
     OSRegisterVersion(lbl_80558E88);
 }
-
+#pragma fp_contract reset
