@@ -2565,22 +2565,21 @@ void fn_802D3894(void) {
 }
 
 void fn_802D3900(void) {
-    unsigned char *base;
-    unsigned char *slot;
+    ZQueryPool *pool;
+    ZQuery **slot;
     int count = 0;
-    void *light;
-    unsigned long result;
-    slot = lbl_804C9984;
-    base = slot;
-    while (count < *(int *)(base + 0x700)) {
-        light = *(void **)(slot + 0x600);
-        GXInitLightDir(*(unsigned long *)light, *(unsigned long *)((char *)light + 4), &result);
-        *(unsigned char *)((char *)light + 0xD) =
-            *(unsigned long *)((char *)light + 8) < result;
-        slot += 4;
+    ZQuery *query;
+    unsigned long depth;
+    slot = (ZQuery **)lbl_804C9984;
+    pool = (ZQueryPool *)slot;
+    while (count < pool->pendingCount) {
+        query = slot[0x600 / sizeof(ZQuery *)];
+        GXInitLightDir(query->x, query->y, &depth);
+        query->visible = query->z < depth;
+        slot++;
         count++;
     }
-    *(int *)(base + 0x700) = 0;
+    pool->pendingCount = 0;
 }
 
 extern char lbl_8034C1E4[];
