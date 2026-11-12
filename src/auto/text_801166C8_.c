@@ -5120,70 +5120,76 @@ void fn_80121848(void *arg0) {
     p[28] = i0; p[29] = i1;
 }
 
-void fn_801219B4(void *arg0) {
-    float a08, a0C, a10, a14, a18, a1C, a20, a24, a28, a2C;
-    float a30, a34, a38, a3C, a40, a44, a48, a4C, a50, a54;
-    float a58, a5C, a60, a64, a68, a6C, a70, a74, a78, a7C;
-    a08 = *(float *)((unsigned char *)arg0 + 8);
-    a40 = *(float *)((unsigned char *)arg0 + 0x40);
-    a78 = *(float *)((unsigned char *)arg0 + 0x78);
-    a0C = *(float *)((unsigned char *)arg0 + 0xC);
-    a44 = *(float *)((unsigned char *)arg0 + 0x44);
-    a7C = *(float *)((unsigned char *)arg0 + 0x7C);
-    a10 = *(float *)((unsigned char *)arg0 + 0x10);
-    a38 = *(float *)((unsigned char *)arg0 + 0x38);
-    a48 = *(float *)((unsigned char *)arg0 + 0x48);
-    a60 = *(float *)((unsigned char *)arg0 + 0x60);
-    a68 = *(float *)((unsigned char *)arg0 + 0x68);
-    a28 = *(float *)((unsigned char *)arg0 + 0x28);
-    a30 = *(float *)((unsigned char *)arg0 + 0x30);
-    a50 = *(float *)((unsigned char *)arg0 + 0x50);
-    a58 = *(float *)((unsigned char *)arg0 + 0x58);
-    a18 = *(float *)((unsigned char *)arg0 + 0x18);
-    a20 = *(float *)((unsigned char *)arg0 + 0x20);
-    a70 = *(float *)((unsigned char *)arg0 + 0x70);
-    a14 = *(float *)((unsigned char *)arg0 + 0x14);
-    a3C = *(float *)((unsigned char *)arg0 + 0x3C);
-    a4C = *(float *)((unsigned char *)arg0 + 0x4C);
-    a64 = *(float *)((unsigned char *)arg0 + 0x64);
-    a6C = *(float *)((unsigned char *)arg0 + 0x6C);
-    a2C = *(float *)((unsigned char *)arg0 + 0x2C);
-    a34 = *(float *)((unsigned char *)arg0 + 0x34);
-    a54 = *(float *)((unsigned char *)arg0 + 0x54);
-    a5C = *(float *)((unsigned char *)arg0 + 0x5C);
-    a1C = *(float *)((unsigned char *)arg0 + 0x1C);
-    a24 = *(float *)((unsigned char *)arg0 + 0x24);
-    a74 = *(float *)((unsigned char *)arg0 + 0x74);
-    *(float *)((unsigned char *)arg0 + 8) = a78;
-    *(float *)((unsigned char *)arg0 + 0xC) = a7C;
-    *(float *)((unsigned char *)arg0 + 0x10) = a38;
-    *(float *)((unsigned char *)arg0 + 0x14) = a3C;
-    *(float *)((unsigned char *)arg0 + 0x18) = a58;
-    *(float *)((unsigned char *)arg0 + 0x1C) = a5C;
-    *(float *)((unsigned char *)arg0 + 0x20) = a18;
-    *(float *)((unsigned char *)arg0 + 0x24) = a1C;
-    *(float *)((unsigned char *)arg0 + 0x28) = a68;
-    *(float *)((unsigned char *)arg0 + 0x2C) = a6C;
-    *(float *)((unsigned char *)arg0 + 0x30) = a28;
-    *(float *)((unsigned char *)arg0 + 0x34) = a2C;
-    *(float *)((unsigned char *)arg0 + 0x38) = a48;
-    *(float *)((unsigned char *)arg0 + 0x3C) = a4C;
-    *(float *)((unsigned char *)arg0 + 0x40) = a08;
-    *(float *)((unsigned char *)arg0 + 0x44) = a0C;
-    *(float *)((unsigned char *)arg0 + 0x48) = a70;
-    *(float *)((unsigned char *)arg0 + 0x4C) = a74;
-    *(float *)((unsigned char *)arg0 + 0x50) = a30;
-    *(float *)((unsigned char *)arg0 + 0x54) = a34;
-    *(float *)((unsigned char *)arg0 + 0x58) = a50;
-    *(float *)((unsigned char *)arg0 + 0x5C) = a54;
-    *(float *)((unsigned char *)arg0 + 0x60) = a10;
-    *(float *)((unsigned char *)arg0 + 0x64) = a14;
-    *(float *)((unsigned char *)arg0 + 0x68) = a60;
-    *(float *)((unsigned char *)arg0 + 0x6C) = a64;
-    *(float *)((unsigned char *)arg0 + 0x70) = a20;
-    *(float *)((unsigned char *)arg0 + 0x74) = a24;
-    *(float *)((unsigned char *)arg0 + 0x78) = a40;
-    *(float *)((unsigned char *)arg0 + 0x7C) = a44;
+// Fixed output-ordering permutation for the n == 32 inverse-FFT butterfly
+// (fn_80123E98).  `a` holds 16 complex samples as re/im float pairs; the
+// butterfly leaves them in an internal order, so this shuffles the 15 samples
+// after sample 0 (offsets 0x08..0x7C) into natural order.  Sample 0 (offsets
+// 0x00/0x04) is already correct and is left alone.  Each aXX temporary holds
+// the value read from a + 0xXX so the in-place move can be done from registers.
+void fn_801219B4(void *a) {
+    f32 a08, a0C, a10, a14, a18, a1C, a20, a24, a28, a2C;
+    f32 a30, a34, a38, a3C, a40, a44, a48, a4C, a50, a54;
+    f32 a58, a5C, a60, a64, a68, a6C, a70, a74, a78, a7C;
+    a08 = *(f32 *)((unsigned char *)a + 8);
+    a40 = *(f32 *)((unsigned char *)a + 0x40);
+    a78 = *(f32 *)((unsigned char *)a + 0x78);
+    a0C = *(f32 *)((unsigned char *)a + 0xC);
+    a44 = *(f32 *)((unsigned char *)a + 0x44);
+    a7C = *(f32 *)((unsigned char *)a + 0x7C);
+    a10 = *(f32 *)((unsigned char *)a + 0x10);
+    a38 = *(f32 *)((unsigned char *)a + 0x38);
+    a48 = *(f32 *)((unsigned char *)a + 0x48);
+    a60 = *(f32 *)((unsigned char *)a + 0x60);
+    a68 = *(f32 *)((unsigned char *)a + 0x68);
+    a28 = *(f32 *)((unsigned char *)a + 0x28);
+    a30 = *(f32 *)((unsigned char *)a + 0x30);
+    a50 = *(f32 *)((unsigned char *)a + 0x50);
+    a58 = *(f32 *)((unsigned char *)a + 0x58);
+    a18 = *(f32 *)((unsigned char *)a + 0x18);
+    a20 = *(f32 *)((unsigned char *)a + 0x20);
+    a70 = *(f32 *)((unsigned char *)a + 0x70);
+    a14 = *(f32 *)((unsigned char *)a + 0x14);
+    a3C = *(f32 *)((unsigned char *)a + 0x3C);
+    a4C = *(f32 *)((unsigned char *)a + 0x4C);
+    a64 = *(f32 *)((unsigned char *)a + 0x64);
+    a6C = *(f32 *)((unsigned char *)a + 0x6C);
+    a2C = *(f32 *)((unsigned char *)a + 0x2C);
+    a34 = *(f32 *)((unsigned char *)a + 0x34);
+    a54 = *(f32 *)((unsigned char *)a + 0x54);
+    a5C = *(f32 *)((unsigned char *)a + 0x5C);
+    a1C = *(f32 *)((unsigned char *)a + 0x1C);
+    a24 = *(f32 *)((unsigned char *)a + 0x24);
+    a74 = *(f32 *)((unsigned char *)a + 0x74);
+    *(f32 *)((unsigned char *)a + 8) = a78;
+    *(f32 *)((unsigned char *)a + 0xC) = a7C;
+    *(f32 *)((unsigned char *)a + 0x10) = a38;
+    *(f32 *)((unsigned char *)a + 0x14) = a3C;
+    *(f32 *)((unsigned char *)a + 0x18) = a58;
+    *(f32 *)((unsigned char *)a + 0x1C) = a5C;
+    *(f32 *)((unsigned char *)a + 0x20) = a18;
+    *(f32 *)((unsigned char *)a + 0x24) = a1C;
+    *(f32 *)((unsigned char *)a + 0x28) = a68;
+    *(f32 *)((unsigned char *)a + 0x2C) = a6C;
+    *(f32 *)((unsigned char *)a + 0x30) = a28;
+    *(f32 *)((unsigned char *)a + 0x34) = a2C;
+    *(f32 *)((unsigned char *)a + 0x38) = a48;
+    *(f32 *)((unsigned char *)a + 0x3C) = a4C;
+    *(f32 *)((unsigned char *)a + 0x40) = a08;
+    *(f32 *)((unsigned char *)a + 0x44) = a0C;
+    *(f32 *)((unsigned char *)a + 0x48) = a70;
+    *(f32 *)((unsigned char *)a + 0x4C) = a74;
+    *(f32 *)((unsigned char *)a + 0x50) = a30;
+    *(f32 *)((unsigned char *)a + 0x54) = a34;
+    *(f32 *)((unsigned char *)a + 0x58) = a50;
+    *(f32 *)((unsigned char *)a + 0x5C) = a54;
+    *(f32 *)((unsigned char *)a + 0x60) = a10;
+    *(f32 *)((unsigned char *)a + 0x64) = a14;
+    *(f32 *)((unsigned char *)a + 0x68) = a60;
+    *(f32 *)((unsigned char *)a + 0x6C) = a64;
+    *(f32 *)((unsigned char *)a + 0x70) = a20;
+    *(f32 *)((unsigned char *)a + 0x74) = a24;
+    *(f32 *)((unsigned char *)a + 0x78) = a40;
+    *(f32 *)((unsigned char *)a + 0x7C) = a44;
 }
 
 void fn_80121BB0(void *arg0) {
