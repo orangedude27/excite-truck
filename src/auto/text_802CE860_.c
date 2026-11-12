@@ -17,9 +17,8 @@ extern float lbl_802FAC60[];
 #pragma scheduling invalid_target
 void fn_802CE86C(void *arg0, int arg1, float scale, double x0, double y0, double z0) {
     struct SignTable { float v[3]; };
-    float signs[3];
-    volatile float out[3];
-    volatile float homes[3];
+    struct Locals { volatile float output[3]; float signs[3]; volatile float homes[3]; };
+    struct Locals local;
     float *a;
     float *b;
     float xBase;
@@ -33,15 +32,15 @@ void fn_802CE86C(void *arg0, int arg1, float scale, double x0, double y0, double
     int i;
     a = (float *)fn_802C86DC();
     b = (float *)fn_802C86DC();
-    *(struct SignTable *)signs = *(struct SignTable *)lbl_802FAC60;
+    *(struct SignTable *)local.signs = *(struct SignTable *)lbl_802FAC60;
     xBase = (float)x0;
     yBase = (float)y0;
     zBase = (float)z0;
-    homes[0] = xBase;
-    homes[1] = yBase;
-    homes[2] = zBase;
-    x = signs[arg1 & 1];
-    y = signs[arg1 & 2];
+    local.homes[0] = xBase;
+    local.homes[1] = yBase;
+    local.homes[2] = zBase;
+    x = local.signs[arg1 & 1];
+    y = local.signs[arg1 & 2];
     coeff0 = lbl_80564F78;
     zero = lbl_80564F70;
     coeff1 = lbl_80564F7C;
@@ -70,9 +69,9 @@ void fn_802CE86C(void *arg0, int arg1, float scale, double x0, double y0, double
         xx = u + b[3] * t;
         yy = v + b[4] * t;
         zz = w + b[5] * t;
-        out[0] = xx;
-        out[1] = yy;
-        out[2] = zz;
+        local.output[0] = xx;
+        local.output[1] = yy;
+        local.output[2] = zz;
         if (fn_801E4F3C((int)arg0, i >= 2, xx, yy, zz, f4, f5) != 0) break;
     }
 }
