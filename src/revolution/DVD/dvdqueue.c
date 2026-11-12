@@ -37,7 +37,10 @@ BOOL __DVDPushWaitingQueue(s32 prio, DVDCommandBlock* block) {
     return TRUE;
 }
 
-static DVDCommandBlock* PopWaitingQueuePrio(s32 prio) {
+/* Unlink and return the first block of one priority's queue, or the head itself
+ * when that queue is empty (the caller has checked).  The links of the returned
+ * block are cleared so a caller can tell it is not queued. */
+static DVDCommandBlock* __DVDPopWaitingQueuePrio(s32 prio) {
     BOOL enabled = OSDisableInterrupts();
 
     DVDCommandBlock* head = (DVDCommandBlock*)&WaitingQueue[prio];
@@ -62,7 +65,7 @@ DVDCommandBlock* __DVDPopWaitingQueue(void) {
 
         if (head->next != head) {
             OSRestoreInterrupts(enabled);
-            return PopWaitingQueuePrio(i);
+            return __DVDPopWaitingQueuePrio(i);
         }
     }
 
