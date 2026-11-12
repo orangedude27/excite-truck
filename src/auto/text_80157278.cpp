@@ -884,7 +884,7 @@ extern "C" void* fn_80157F98(void* self, s32 arg1, s32 arg2) {
     return self;
 }
 #pragma small_data off
-extern "C" void *fn_80158054(void *arg0, s32 arg1, s32 arg2) {
+extern "C" void *fn_80158054(void *arg0, s32 arg1, s32 arg2, void *arg3) {
     u8 *ptr = (u8 *)arg0 + 0x14;
     u8 *end = (u8 *)arg0 + 0x244;
     s32 zero = 0;
