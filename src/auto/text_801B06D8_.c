@@ -152,7 +152,7 @@ extern void fn_801B8040(void *, void *, f32);
 extern f32 lbl_805625BC, lbl_805625C8, lbl_805625CC, lbl_805625D0, lbl_805625D4, lbl_805625D8;
 #pragma scheduling invalid_target
 void fn_801B07B4(void *arg0, void *arg1) {
-    void *first = *(void **)arg1;
+    register s32 first = *(s32 *)arg1;
     f32 argAngle = *(f32 *)((u8 *)arg1 + 4);
     s32 argWord = *(s32 *)((u8 *)arg1 + 8);
     volatile s32 sp20;
@@ -162,10 +162,10 @@ void fn_801B07B4(void *arg0, void *arg1) {
     volatile f32 sp8;
     f32 x, scale, angle, finalPos, finalScale;
 
-    sp18 = first;
+    sp18 = (void *)first;
     sp1C = argAngle;
     sp20 = argWord;
-    while (fn_801B06D8(sp18, (u8 *)sp18 + 8, (s32)first))
+    while (fn_801B06D8(sp18, (u8 *)sp18 + 8, first))
         sp18 = *(void **)((u8 *)sp18 + 0x14);
     fn_801B8040(arg0, (void *)&sp18, lbl_805625BC);
     x = *(f32 *)((u8 *)arg0 + 0x18);
@@ -574,6 +574,7 @@ extern "C" s32 fn_801B1130(s32 arg0) {
 #pragma scheduling invalid_target
 #pragma push
 #pragma use_lmw_stmw off
+__declspec(section ".data") extern float lbl_80558DC4;
 extern "C" s32 fn_801B11DC(const void *arg0, const void *arg1) {
     extern int __cntlzw(unsigned int);
     struct Item {
@@ -583,23 +584,19 @@ extern "C" s32 fn_801B11DC(const void *arg0, const void *arg1) {
         virtual void d12(); virtual void d13(); virtual void *get();
     };
     u32 idx0 = *(volatile const u32 *)arg0;
-    u32 offset0;
     u32 cutoff = *(volatile u32 *)&lbl_8055E680;
-    u32 offset1;
+    u32 off0 = idx0 << 7;
     void *base = *(void * volatile *)&lbl_8055E684;
     u32 idx1 = *(volatile const u32 *)arg1;
-    Item *obj0;
-    Item *obj1;
+    u32 off1 = idx1 << 7;
+    Item *obj0 = (Item *)((u8 *)base + off0);
+    Item *obj1 = (Item *)((u8 *)base + off1);
     u32 flag0;
     u32 flag1;
     s32 key0;
     s32 key1;
     s32 tie0;
     s32 tie1;
-    offset0 = idx0 << 7;
-    offset1 = idx1 << 7;
-    obj0 = (Item *)((u8 *)base + offset0);
-    obj1 = (Item *)((u8 *)base + offset1);
     cutoff += 1;
     flag0 = (u32)__cntlzw(*(u32 *)((u8 *)obj0 + 0x68) - cutoff) >> 5;
     flag1 = (u32)__cntlzw(*(u32 *)((u8 *)obj1 + 0x68) - cutoff) >> 5;
@@ -607,7 +604,9 @@ extern "C" s32 fn_801B11DC(const void *arg0, const void *arg1) {
     key1 = *(s32 *)((u8 *)obj1->get() + 0x10);
     tie0 = *(s32 *)((u8 *)obj0 + 0x74);
     tie1 = *(s32 *)((u8 *)obj1 + 0x74);
-    if (flag0 != 0 && flag1 != 0) {
+    if (flag0 == 0) goto fallback;
+    if (flag1 == 0) goto fallback;
+    {
         f32 a = *(f32 *)((u8 *)obj0 + 0x70);
         f32 b = *(f32 *)((u8 *)obj1 + 0x70);
         f32 difference = (f32)(double)__fabsf(a - b);
@@ -615,6 +614,7 @@ extern "C" s32 fn_801B11DC(const void *arg0, const void *arg1) {
         if (b < a) return 1;
         return -1;
     }
+fallback:
     if (flag0 != 0) goto compare_keys;
     if (flag1 == 0) goto compare_keys;
     if (flag0 == 0) return 1;
@@ -876,45 +876,48 @@ extern "C" void fn_801B179C(void *self, s32 index, s32 data) {
 #pragma cplusplus reset
 extern void fn_80135F64(s32, f32 *, f32 *, s32, s32, void *, f32, f32, f32, f32, f32);
 extern void fn_801353C8(s32, f32 *, f32 *, s32);
-void fn_801B18B8(void *arg0, s32 arg1, s32 arg2) {
-    f32 p0[5];
-    f32 p1[2];
-    f32 yBase;
+/* Build position/offset parameter arrays from a deity slot's source transform
+ * (slot+0x5C, scaled local offsets plus base position) and forward them to the
+ * slot's attached handlers at +0x58 and +0x3C. */
+void fn_801B18B8(void *slot, s32 arg1, s32 arg2) {
+    f32 positionData[5];
+    f32 offsetData[2];
+    f32 baseY;
     f32 scale;
-    f32 secondY;
-    f32 y;
-    f32 xBase;
-    void *obj;
-    f32 originalZ;
-    f32 zBase;
-    f32 z;
-    f32 secondX;
-    f32 x;
+    f32 localY;
+    f32 worldY;
+    f32 baseX;
+    void *source;
+    f32 localZ;
+    f32 baseZ;
+    f32 worldZ;
+    f32 localX;
+    f32 worldX;
 
-    obj = *(void **)((u8 *)arg0 + 0x5C);
-    scale = *(f32 *)((u8 *)obj + 0x5BC);
-    x = *(f32 *)((u8 *)obj + 0x54) * scale;
-    y = *(f32 *)((u8 *)obj + 0x5C) * scale;
-    xBase = *(f32 *)((u8 *)obj + 0x94);
-    yBase = *(f32 *)((u8 *)obj + 0x9C);
-    originalZ = *(f32 *)((u8 *)obj + 0x58);
-    x = xBase + x;
-    zBase = *(f32 *)((u8 *)obj + 0x98);
-    y = yBase + y;
-    z = originalZ * scale;
-    p0[0] = x;
-    p0[1] = y;
-    z = zBase + z;
-    obj = *(void **)((u8 *)arg0 + 0x5C);
-    p0[2] = x;
-    secondX = *(f32 *)((u8 *)obj + 0x54);
-    p0[3] = z;
-    p1[0] = secondX;
-    secondY = *(f32 *)((u8 *)obj + 0x5C);
-    p0[4] = y;
-    p1[1] = secondY;
-    fn_80135F64(*(s32 *)((u8 *)arg0 + 0x58), p0, p1, arg1, arg2, obj, y, z, originalZ, x, scale);
-    fn_801353C8(*(s32 *)((u8 *)arg0 + 0x3C), p0, p1, 0);
+    source = *(void **)((u8 *)slot + 0x5C);
+    scale = *(f32 *)((u8 *)source + 0x5BC);
+    worldX = *(f32 *)((u8 *)source + 0x54) * scale;
+    worldY = *(f32 *)((u8 *)source + 0x5C) * scale;
+    baseX = *(f32 *)((u8 *)source + 0x94);
+    baseY = *(f32 *)((u8 *)source + 0x9C);
+    localZ = *(f32 *)((u8 *)source + 0x58);
+    worldX = baseX + worldX;
+    baseZ = *(f32 *)((u8 *)source + 0x98);
+    worldY = baseY + worldY;
+    worldZ = localZ * scale;
+    positionData[0] = worldX;
+    positionData[1] = worldY;
+    worldZ = baseZ + worldZ;
+    source = *(void **)((u8 *)slot + 0x5C);
+    positionData[2] = worldX;
+    localX = *(f32 *)((u8 *)source + 0x54);
+    positionData[3] = worldZ;
+    offsetData[0] = localX;
+    localY = *(f32 *)((u8 *)source + 0x5C);
+    positionData[4] = worldY;
+    offsetData[1] = localY;
+    fn_80135F64(*(s32 *)((u8 *)slot + 0x58), positionData, offsetData, arg1, arg2, source, worldY, worldZ, localZ, worldX, scale);
+    fn_801353C8(*(s32 *)((u8 *)slot + 0x3C), positionData, offsetData, 0);
 }
 
 #pragma cplusplus on
@@ -2017,7 +2020,6 @@ void fn_801B30D0(s32 arg0) {
     fn_801B196C((s32)((u8 *)lbl_8055E684 + (arg0 << 7)), (s32)lbl_8055E684);
 }
 
-#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_801B30E0(s32 index) {
     void *record = (u8 *)lbl_8055E684 + (index << 7);
@@ -2025,9 +2027,9 @@ extern "C" void fn_801B30E0(s32 index) {
     void *reference = *(void **)((u8 *)record + 0x40);
     void *bestNode;
     if (reference != 0) {
-        s32 bestDiff = 0x7FFFFFFF;
-        s32 referenceValue = *(s32 *)((u8 *)reference + 0x10);
         void *parent = *(void **)((u8 *)header + 0x2C);
+        s32 referenceValue = *(s32 *)((u8 *)reference + 0x10);
+        s32 bestDiff = 0x7FFFFFFF;
         void *first = *(void **)((u8 *)parent + 0x1C);
         void *node = first;
         bestNode = 0;
@@ -2064,7 +2066,6 @@ extern "C" void fn_801B30E0(s32 index) {
     }
 }
 #pragma cplusplus off
-#pragma scheduling on
 
 #pragma push
 #pragma processor 750
