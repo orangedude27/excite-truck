@@ -2090,72 +2090,83 @@ typedef union GroundPoint {
 #define GROUND_DEPTH_FLOOR lbl_80562244 /* -0.01f: keeps the ground depth off zero */
 #define PITCH_CUTOFF lbl_805621EC /* 0.7f: nose-up wanted when off the ground */
 #define PITCH_CUTOFF_SWEEP lbl_80562248 /* -1.1f: how far that cut-off falls */
-void fn_801965AC(void *self) {
-    float up[3];
+void fn_801965AC(void *controller) {
+    /* Body tilt tick for a truck controller in its grounded state (fn_801967A4
+     * case 0).  The truck's position is dropped onto the terrain, which hands
+     * back the ground point and the surface normal there (normal keeps the
+     * world up it is seeded with if the query finds nothing).  Close enough to
+     * the ground - within the truck's own ground depth - the body's pitch and
+     * roll follow that normal, so it leans with the slope.  Further up, the
+     * roll goes flat and the nose is aimed up, the wanted nose-up falling from
+     * 0.7 to -0.4 as the controller's air value runs from 0 to 1.  Either way
+     * the tilt is scaled by 5 and clamped to -1..1 before the truck's physics
+     * picks it up (fn_8018AE2C pitch, fn_8018AE34 roll).  Held still while the
+     * truck's +0x2620 flag is set. */
+    float normal[3];
     GroundPoint ground;
-    float height;
-    float depth;
+    float airHeight;
+    float groundDepth;
     float amount;
-    float heightAboveGround;
-    float tilt;
+    float aboveGround;
+    float pitch;
     float tiltScale;
-    float adjusted;
-    float product;
+    float noseUp;
+    float scaled;
     int nearGround;
     int positionX;
     int positionY;
-    char *vehicle;
+    char *truck;
 
-    if (*(int *)((char *)*(void **)((char *)self + 0x294) + 0x2620) != 0)
+    if (TRUCK_TILT_FROZEN(CTRL_TRUCK(controller)) != 0)
         return;
 
-    up[0] = F_ZERO;
-    up[1] = F_ONE;
-    up[2] = F_ZERO;
-    vehicle = *(char **)((char *)self + 0x294);
-    positionX = *(int *)((char *)vehicle + 0x60);
-    positionY = *(int *)((char *)vehicle + 0x64);
+    normal[0] = F_ZERO;
+    normal[1] = F_ONE;
+    normal[2] = F_ZERO;
+    truck = (char *)CTRL_TRUCK(controller);
+    positionX = *(int *)(truck + 0x60);   /* the translation, as words */
+    positionY = *(int *)(truck + 0x64);
     ground.word[0] = positionX;
     ground.word[1] = positionY;
-    ground.word[2] = *(int *)((char *)vehicle + 0x68);
-    fn_801EA18C(&ground, up, 0, ground.word[0], vehicle, F_ZERO);
+    ground.word[2] = *(int *)(truck + 0x68);
+    fn_801EA18C(&ground, normal, 0, ground.word[0], truck, F_ZERO);
 
-    vehicle = *(char **)((char *)self + 0x294);
-    height = F_ZERO;
-    heightAboveGround = TRUCK_XF(vehicle)->position[1] - ground.f[1];
-    height = height > heightAboveGround ? height : heightAboveGround;
-    depth = *(float *)(vehicle + 0x11C);
-    depth = depth < GROUND_DEPTH_FLOOR ? depth : GROUND_DEPTH_FLOOR;
+    truck = (char *)CTRL_TRUCK(controller);
+    airHeight = F_ZERO;
+    aboveGround = TRUCK_XF(truck)->position[1] - ground.f[1];
+    airHeight = airHeight > aboveGround ? airHeight : aboveGround;
+    groundDepth = TRUCK_GROUND_DEPTH(truck);
+    groundDepth = groundDepth < GROUND_DEPTH_FLOOR ? groundDepth : GROUND_DEPTH_FLOOR;
     amount = F_ONE;
-    nearGround = (-height / depth) < amount;
+    nearGround = (-airHeight / groundDepth) < amount;
     tiltScale = TILT_SCALE;
     if (nearGround) {
         float clamped;
-        product = tiltScale * PSVECDotProduct(up, TRUCK_XF(vehicle)->forward);
+        scaled = tiltScale * PSVECDotProduct(normal, TRUCK_XF(truck)->forward);
         clamped = F_ONE;
-        clamped = clamped < product ? clamped : product;
+        clamped = clamped < scaled ? clamped : scaled;
         clamped = clamped > TILT_MIN ? clamped : TILT_MIN;
-        fn_8018AE2C(*(void **)((char *)self + 0x294), clamped);
+        fn_8018AE2C(CTRL_TRUCK(controller), clamped);
 
-        product = tiltScale * PSVECDotProduct(up, TRUCK_XF(*(void **)((char *)self + 0x294))->right);
+        scaled = tiltScale * PSVECDotProduct(normal, TRUCK_XF(CTRL_TRUCK(controller))->right);
         clamped = F_ONE;
-        clamped = clamped < product ? clamped : product;
+        clamped = clamped < scaled ? clamped : scaled;
         clamped = clamped > TILT_MIN ? clamped : TILT_MIN;
-        fn_8018AE34(*(void **)((char *)self + 0x294), clamped);
+        fn_8018AE34(CTRL_TRUCK(controller), clamped);
         return;
     }
 
-    tilt = __fabs(*(float *)((char *)self + 0x23C));
-    tilt = (tilt - F_ZERO) / amount;
-    amount = amount < tilt ? amount : tilt;
+    pitch = __fabs(CTRL_AIR_VALUE(controller));
+    pitch = (pitch - F_ZERO) / amount;
+    amount = amount < pitch ? amount : pitch;
     amount = amount > F_ZERO ? amount : F_ZERO;
-    adjusted = TRUCK_XF(vehicle)->forward[1] - (PITCH_CUTOFF + amount * PITCH_CUTOFF_SWEEP);
-    product = tiltScale * adjusted;
-    tilt = F_ONE;
-    tilt = tilt < product ? tilt : product;
-    tilt = tilt > TILT_MIN ? tilt : TILT_MIN;
-    fn_8018AE2C(vehicle, tilt);
-    fn_8018AE34(*(void **)((char *)self + 0x294), F_ZERO);
+    noseUp = TRUCK_XF(truck)->forward[1] - (PITCH_CUTOFF + amount * PITCH_CUTOFF_SWEEP);
+    scaled = tiltScale * noseUp;
+    pitch = F_ONE;
+    pitch = pitch < scaled ? pitch : scaled;
+    pitch = pitch > TILT_MIN ? pitch : TILT_MIN;
+    fn_8018AE2C(truck, pitch);
+    fn_8018AE34(CTRL_TRUCK(controller), F_ZERO);
 }
 
 extern void fn_80196AA0(void *);
