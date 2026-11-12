@@ -10666,6 +10666,7 @@ void btm_sco_removed(u16 handle, u8 packet_types) {
 }
 
 extern u8 lbl_8031A3B0[];
+/* Notify SCO connections that an ACL link was removed and clear their state. */
 void btm_sco_acl_removed(BD_ADDR addr) {
     u8 *entry;
     u16 i;
