@@ -719,11 +719,12 @@ char *ParseStringS(int format, char *text, int **outWidths, int *outCode) {
     return (char *)next;
 }
 
+/* UTF-32 is the font code's currency: these convert to and from it. */
 extern void *OSUTF8to32(void *, int *);
 extern void *OSUTF16to32(void *, int *);
 extern int OSUTF32toANSI(void);
 extern unsigned short OSUTF32toSJIS(int);
-extern int lbl_8055DA4C;
+extern int lbl_8055DA4C; // FixedPitch: the loaded font is fixed-pitch
 #pragma push
 #pragma use_lmw_stmw off
 void *ParseStringW(int format, void *input, int *outFont, int *outCode, int unused) {
