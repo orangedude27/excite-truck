@@ -386,6 +386,7 @@ extern void fn_80016ED4(void *);
 extern void fn_80017010(void *);
 #pragma cplusplus on
 extern "C" void fn_80016D14(void **arg0) {
+    /* Iterate child nodes and dispatch "driver"/"vehicle" entries to their handlers. */
     struct Node {
         virtual const char *name();
     };
